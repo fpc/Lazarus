@@ -36,11 +36,11 @@ object EditorKeymappingOptionsFrame: TEditorKeymappingOptionsFrame
   object FilterEdit: TTreeFilterEdit
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Side = asrBottom
-    AnchorSideRight.Side = asrBottom
+    AnchorSideRight.Control = FindKeyButton
     Left = 0
     Height = 23
     Top = 6
-    Width = 232
+    Width = 248
     ButtonWidth = 23
     NumGlyphs = 0
     Anchors = [akTop, akLeft, akRight]
@@ -75,6 +75,7 @@ object EditorKeymappingOptionsFrame: TEditorKeymappingOptionsFrame
     Width = 104
     Anchors = [akTop, akRight]
     AutoSize = True
+    BorderSpacing.Left = 70
     BorderSpacing.Around = 2
     Caption = 'FindKeyButton'
     OnClick = FindKeyButtonClick
