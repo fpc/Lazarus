@@ -28,7 +28,8 @@ uses
   Classes, SysUtils, FileUtil, TreeFilterEdit, Forms, StdCtrls, ComCtrls,
   Controls, Dialogs, LCLType, LCLProc, Menus, Buttons, Clipbrd, EditorOptions,
   LazarusIDEStrConsts, IDEOptionsIntf, IDEImagesIntf, editor_general_options,
-  KeymapSchemeDlg, KeyMapping, IDECommands, KeyMapShortCutDlg, SrcEditorIntf;
+  KeymapSchemeDlg, KeyMapping, IDECommands, KeyMapShortCutDlg, SrcEditorIntf,
+  EditBtn;
 
 type
 
@@ -43,6 +44,7 @@ type
     FindKeyButton: TBitBtn;
     CommandLabel: TLabel;
     SchemeLabel: TLabel;
+    ResetKeyFilterBtn: TSpeedButton;
     TreeView: TTreeView;
     EditMenuItem: TMenuItem;
     ClearMenuItem: TMenuItem;
@@ -54,6 +56,7 @@ type
     procedure ClearButtonClick(Sender: TObject);
     procedure ConsistencyCheckButtonClick(Sender: TObject);
     procedure FindKeyButtonClick(Sender: TObject);
+    procedure ResetKeyFilterBtnClick(Sender: TObject);
     procedure TreeViewDblClick(Sender: TObject);
     procedure TreeViewKeyPress(Sender: TObject; var Key: char);
     procedure TreeViewSelectionChanged(Sender: TObject);
@@ -236,6 +239,14 @@ begin
   FillKeyMappingTreeView;
 end;
 
+procedure TEditorKeymappingOptionsFrame.ResetKeyFilterBtnClick(Sender: TObject);
+begin
+  KeyMapKeyFilter.Key1 := VK_UNKNOWN;
+  KeyMapKeyFilter.Key2 := VK_UNKNOWN;
+  UpdateKeyFilterButton;
+  FillKeyMappingTreeView;
+end;
+
 procedure TEditorKeymappingOptionsFrame.TreeViewDblClick(Sender: TObject);
 var
   P: TPoint;
@@ -316,6 +327,9 @@ begin
   PopupMenu1.Images := IDEImages.Images_16;
   EditMenuItem.ImageIndex := IDEImages.LoadImage(16, 'laz_edit');
   ClearMenuItem.ImageIndex := IDEImages.LoadImage(16, 'menu_clean');
+
+  ResetKeyFilterBtn.LoadGlyphFromLazarusResource(ResBtnListFilter);
+  ResetKeyFilterBtn.Enabled := not IDEShortCutEmpty(KeyMapKeyFilter);
 
   FillKeyMappingTreeView;
   UpdateSchemeLabel;
@@ -452,6 +466,7 @@ begin
   else
     FindKeyButton.Caption:=
       Format(lisFilter3, [KeyAndShiftStateToEditorKeyString(KeyMapKeyFilter)]);
+  ResetKeyFilterBtn.Enabled := not IDEShortCutEmpty(KeyMapKeyFilter);
 end;
 
 procedure TEditorKeymappingOptionsFrame.UpdateSchemeLabel;

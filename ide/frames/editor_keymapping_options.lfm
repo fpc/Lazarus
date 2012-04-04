@@ -16,8 +16,8 @@ object EditorKeymappingOptionsFrame: TEditorKeymappingOptionsFrame
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 0
-    Height = 420
-    Top = 30
+    Height = 418
+    Top = 32
     Width = 461
     Anchors = [akTop, akLeft, akRight, akBottom]
     BorderSpacing.Top = 3
@@ -38,7 +38,7 @@ object EditorKeymappingOptionsFrame: TEditorKeymappingOptionsFrame
     AnchorSideTop.Side = asrBottom
     AnchorSideRight.Side = asrBottom
     Left = 0
-    Height = 21
+    Height = 23
     Top = 6
     Width = 232
     ButtonWidth = 23
@@ -52,10 +52,10 @@ object EditorKeymappingOptionsFrame: TEditorKeymappingOptionsFrame
   end
   object ClearButton: TBitBtn
     AnchorSideRight.Side = asrBottom
-    Left = 381
+    Left = 372
     Height = 25
     Top = 455
-    Width = 80
+    Width = 89
     Anchors = [akRight, akBottom]
     AutoSize = True
     BorderSpacing.Bottom = 6
@@ -64,15 +64,18 @@ object EditorKeymappingOptionsFrame: TEditorKeymappingOptionsFrame
     TabOrder = 3
   end
   object FindKeyButton: TBitBtn
-    AnchorSideLeft.Control = Owner
-    AnchorSideRight.Side = asrBottom
-    Left = 0
+    AnchorSideLeft.Control = FilterEdit
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = FilterEdit
+    AnchorSideTop.Side = asrCenter
+    AnchorSideRight.Control = ResetKeyFilterBtn
+    Left = 320
     Height = 25
-    Top = 455
-    Width = 94
-    Anchors = [akLeft, akBottom]
+    Top = 5
+    Width = 104
+    Anchors = [akTop, akRight]
     AutoSize = True
-    BorderSpacing.Bottom = 6
+    BorderSpacing.Around = 2
     Caption = 'FindKeyButton'
     OnClick = FindKeyButtonClick
     TabOrder = 2
@@ -82,10 +85,10 @@ object EditorKeymappingOptionsFrame: TEditorKeymappingOptionsFrame
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = Owner
     AnchorSideBottom.Side = asrBottom
-    Left = 306
+    Left = 302
     Height = 25
     Top = 485
-    Width = 155
+    Width = 159
     Anchors = [akRight, akBottom]
     AutoSize = True
     Caption = 'ConsistencyCheckButton'
@@ -99,7 +102,7 @@ object EditorKeymappingOptionsFrame: TEditorKeymappingOptionsFrame
     Left = 0
     Height = 25
     Top = 485
-    Width = 138
+    Width = 144
     Anchors = [akLeft, akBottom]
     AutoSize = True
     Caption = 'ChooseSchemeButton'
@@ -111,10 +114,10 @@ object EditorKeymappingOptionsFrame: TEditorKeymappingOptionsFrame
     AnchorSideLeft.Side = asrBottom
     AnchorSideTop.Control = ChooseSchemeButton
     AnchorSideTop.Side = asrCenter
-    Left = 144
+    Left = 150
     Height = 16
     Top = 489
-    Width = 76
+    Width = 71
     BorderSpacing.Around = 6
     Caption = 'SchemeLabel'
     ParentColor = False
@@ -123,10 +126,10 @@ object EditorKeymappingOptionsFrame: TEditorKeymappingOptionsFrame
     AnchorSideTop.Control = ClearButton
     AnchorSideTop.Side = asrCenter
     AnchorSideRight.Control = ClearButton
-    Left = 301
+    Left = 284
     Height = 25
     Top = 455
-    Width = 74
+    Width = 82
     Anchors = [akTop, akRight]
     AutoSize = True
     BorderSpacing.Right = 6
@@ -139,14 +142,28 @@ object EditorKeymappingOptionsFrame: TEditorKeymappingOptionsFrame
     AnchorSideTop.Control = EditButton
     AnchorSideTop.Side = asrCenter
     AnchorSideRight.Control = EditButton
-    Left = 207
+    Left = 192
     Height = 16
     Top = 459
-    Width = 88
+    Width = 86
     Anchors = [akTop, akRight]
     BorderSpacing.Right = 6
     Caption = 'CommandLabel'
     ParentColor = False
+  end
+  object ResetKeyFilterBtn: TSpeedButton
+    AnchorSideTop.Control = FindKeyButton
+    AnchorSideTop.Side = asrCenter
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 426
+    Height = 22
+    Top = 6
+    Width = 29
+    Anchors = [akTop, akRight]
+    BorderSpacing.Right = 6
+    NumGlyphs = 0
+    OnClick = ResetKeyFilterBtnClick
   end
   object PopupMenu1: TPopupMenu
     OnPopup = PopupMenu1Popup
