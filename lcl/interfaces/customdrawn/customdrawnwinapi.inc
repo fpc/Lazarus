@@ -2612,7 +2612,7 @@ begin
 
   Result := NULLREGION;
   if lpRect <> nil then
-    lpRect^ := Rect(0,0,0,0);
+    lpRect^ := Types.Rect(0,0,0,0);
 
   if DC = 0 then DC := HDC(ScreenDC);
 
@@ -2629,7 +2629,7 @@ begin
     if lClipRegion = nil then
     begin
       Result := NULLREGION;
-      lpRect^ := Bounds(0, 0, LazDC.Width, LazDC.Height);
+      lpRect^ := Types.Bounds(0, 0, LazDC.Width, LazDC.Height);
     end
     else
     begin
