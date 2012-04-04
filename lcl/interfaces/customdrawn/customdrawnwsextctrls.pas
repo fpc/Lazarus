@@ -34,14 +34,14 @@ uses
   Types,
 //  {$ifdef CD_Windows}Windows, customdrawn_WinProc,{$endif}
   {$ifdef CD_Cocoa}MacOSAll, CocoaAll, customdrawn_cocoaproc, CocoaGDIObjects,{$endif}
-//  {$ifdef CD_X11}X, XLib, XUtil, BaseUnix, customdrawn_x11proc,{$ifdef CD_UseNativeText}xft, fontconfig,{$endif}{$endif}
+  {$ifdef CD_X11}X, XLib, XUtil, BaseUnix, customdrawn_x11proc,{$endif}
 //  {$ifdef CD_Android}customdrawn_androidproc, jni, bitmap, log, keycodes,{$endif}
   // LCL
-  LCLProc,
+  LCLProc, LCLIntf,
   SysUtils, Classes, Controls, Graphics, Forms, ExtCtrls, LCLType,
   ImgList, InterfaceBase,
   // Widgetset
-  WSExtCtrls, WSProc, WSLCLClasses,
+  CustomDrawnInt, WSExtCtrls, WSProc, WSLCLClasses,
   customdrawncontrols, customdrawnwscontrols, customdrawnproc;
 
 type
