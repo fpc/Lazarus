@@ -115,6 +115,9 @@ begin
   XWindowList := TStringList.Create;
   {$ifdef CD_X11_UseNewTimer}
   XTimerListHead := nil;
+  {$ifdef TimerUseCThreads}
+  X11TimerThread := TCDX11TimerThread.Create(False); // Create Not Suspended
+  {$endif}
   {$endif}
 end;
 
@@ -538,6 +541,60 @@ end;*)
   Passes execution control to X11, but processes timer messages while waiting
  ------------------------------------------------------------------------------}
 procedure TCDWidgetSet.AppWaitMessage;
+{$ifdef TimerUseCThreads}
+var
+  // timer variables
+  rfds: baseunix.TFDSet;
+  xconnnum, selectresult: integer;
+  AnyTimerProcessed: Boolean = False;
+  AnyXEventReceived: Boolean = False;
+  lTimer: TCDX11Timer;
+  i: Integer;
+  lBuf: array [0..15] of byte; // to hold timer message
+  LRecTime: Integer absolute lBuf;
+  lTimeoutInterval: Integer; // miliseconds
+begin
+  lTimeoutInterval:= -1; // Wait Forever for an event
+  xconnnum := XConnectionNumber(FDisplay);
+  if XPending(FDisplay) > 0 then Exit; // We have a X message to process
+
+  while not Application.Terminated do begin
+
+    fpFD_ZERO(rfds);
+    fpFD_SET(xconnnum, rfds);
+
+    // Add all other X connections
+    for i := 0 to XConnections.Count-1 do
+      fpFD_SET(cint(PtrInt(XConnections.Items[i])), rfds);
+    // Add Timer Connection, if activated
+    if X11TimerThread.MainLoopPipeIn > 0 then
+      fpFD_SET(X11TimerThread.MainLoopPipeIn,rfds);
+    // wait both for an X message and a Timer message
+    selectresult := fpSelect(fpFD_SETSIZE, @rfds, nil, nil, lTimeoutInterval);
+    if selectresult <> 0 then begin
+      // Timer event?
+      if fpFD_ISSET(X11TimerThread.MainLoopPipeIn,rfds) <> 0 then begin
+        // We are notified that the first timer in list need service
+        FileRead(X11TimerThread.MainLoopPipeIn,lBuf,SizeOf(lBuf));
+        if XTimerListHead <> nil then begin
+          lTimer := XTimerListHead;
+          lTimer.Expired;
+          // this will execute the timer code, and put next timer on top
+          // of the list.
+          //DebugLn(Format('AppWaitMessage: Timer Message=%d',[LRecTime]));
+          AnyTimerProcessed := True;
+        end;
+      end;
+      if fpFD_ISSET(xconnnum,rfds) <> 0 then AnyXEventReceived:= True;
+      for i := 0 to XConnections.Count-1 do begin
+        if fpFD_ISSET(cint(PtrInt(XConnections.Items[i])), rfds) <> 0 then
+          AnyXEventReceived:= True;
+        end;
+      end;
+    if AnyXEventReceived or AnyTimerProcessed then exit;
+    end;
+end;
+{$else}
 var
   // timer variables
   rfds: baseunix.TFDSet;
@@ -555,7 +612,10 @@ begin
   IsFirstTimeout := True;
 
   {$ifdef CD_X11_UseNewTimer}
-  if XTimerListHead = nil then lTimeoutInterval:= -1
+  if XTimerListHead = nil then begin
+    lTimeoutInterval:= -1;
+    lTimer:=Nil;
+  end
   else begin
     lTimer := XTimerListHead;
     lTimeoutInterval:= trunc((lTimer.Expires-now)*KMsToDateTime);
@@ -659,6 +719,7 @@ begin
     end;
   end;
 end;
+{$endif TimerUseCThreads}
 
 {------------------------------------------------------------------------------
   Method: TWinCEWidgetSet.AppTerminate

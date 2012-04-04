@@ -151,6 +151,52 @@ end;
        So get this internal bitmap and pass it to RawImage_FromBitmap
  ------------------------------------------------------------------------------}
 function TCDWidgetSet.RawImage_FromDevice(out ARawImage: TRawImage; ADC: HDC; const ARect: TRect): Boolean;
+var
+  Image: XLib.PXImage;
+  //XImage: XLib.TXImage;
+  Pdata: Pchar;
+  RootWindow: TWindow;
+  PlaneMask: culong;
+  lx,ly,lwidth,lheight: culong;
+  lDataLength: Integer;
+
+procedure DescriptionFix(var ArawImage: TRawImage; Awidth,AHeight: Integer);
+Var
+  Description: TRawImageDescription absolute ArawImage.Description;
+begin
+  // setup an artificial ScanLineImage with format RGB 32 bit, 32bit depth format
+  //FillChar(Description, SizeOf(Description), 0);
+  with Description do begin;
+    Format := ricfRGBA;
+    Depth := 24; // used bits per pixel
+    Width := AWidth;
+    Height := AHeight;
+    BitOrder := riboBitsInOrder;
+    ByteOrder := riboLSBFirst;
+    LineOrder := riloTopToBottom;
+    BitsPerPixel := 32; // bits per pixel. can be greater than Depth.
+    LineEnd := rileDWordBoundary;
+    RedPrec := 8; // red precision. bits for red
+    RedShift := 16;
+    GreenPrec := 8;
+    GreenShift := 8; // bitshift. Direction: from least to most signifikant
+    BluePrec := 8;
+    BlueShift := 0;
+    AlphaPrec := 0;
+    AlphaShift := 0;
+    MaskBitsPerPixel := 1;
+    MaskShift:= 0;
+    MaskLineEnd:=rileByteBoundary;
+    MaskBitOrder:=riboBitsInOrder;
+    PaletteColorCount:= 0;
+    PaletteBitsPerIndex:=0;
+    PaletteShift:= 0;
+    PaletteLineEnd:=rileTight;
+    PaletteBitOrder:=riboBitsInOrder;
+    PaletteByteOrder:=riboLSBFirst;
+  end;
+end;
+
 begin
   {$ifdef VerboseCDWinAPI}
     DebugLn('Trace:> [WinAPI GetRawImageFromDevice] SrcDC: ', dbghex(ADC),
@@ -158,11 +204,50 @@ begin
      ' SrcHeight: ', dbgs(ARect.Bottom - ARect.Top));
   {$endif}
 
-  // todo: copy only passed rectangle
-
+  // create a raw Image to hold screenshot
+  lx:=ARect.Left;
+  ly:=ARect.Top;
+  lwidth:=ARect.Right-ARect.Left;
+  lheight:=Arect.Bottom-ARect.Top;
+  ARawImage.Init;
+  // We should get the description from the drawable but this may do
+  ARawImage.Description.Init_BPP32_A8R8G8B8_BIO_TTB(lwidth, lheight);
+  ARawImage.CreateData(True);
+  // Get root Window
+  RootWindow:= XDefaultRootWindow(FDisplay);
+  // Get Plane mask
+  PlaneMask:=XAllPlanes();
+  // Take the screenshot
+  Image:= XGetImage(
+               FDisplay,RootWindow, // Screen, Window
+               lx,ly, // x , y
+               lwidth,lheight, // width, height
+               PlaneMask, // All planes
+               ZPixmap);  // Image format
+  // copy screen shot to our rawImage
+  lDataLength:= ARawImage.DataSize;
+  System.Move( Image^.Data^,ARawImage.Data^,lDataLength);
+  // We should fix the description from the drawable but this will do for now
+  DescriptionFix(ARawImage,lwidth,lheight);
+  ARawImage.Mask:=nil;
+  ARawImage.Palette:=nil;
   Result := True;
 
-  ARawImage.Init;
+(*  ARawImage.Init;
+  ARawImage.Description.Init_BPP32_A8R8G8B8_BIO_TTB(ScreenBitmapWidth, ScreenBitmapHeight);
+
+  // Take the screenshot
+  screenshotImage := CGDisplayCreateImage(CGMainDisplayID()); // Requires 10.6+
+
+  // Draw it to our screen bitmap
+  lRect := CGRectMake(0, 0, ScreenBitmapWidth, ScreenBitmapHeight);
+  CGContextDrawImage(ScreenBitmapContext, lRect, screenshotImage);
+
+  // Now copy the data
+  ScreenImage.GetRawImage(lScreenRawImage, False);
+  ARawImage.CreateData(False);
+  lDataLength := Min(lScreenRawImage.DataSize, ARawImage.DataSize);
+  System.Move(lScreenRawImage.Data^, ARawImage.Data^, lDataLength); *)
 end;
 
 procedure TCDWidgetset.ShowVirtualKeyboard();

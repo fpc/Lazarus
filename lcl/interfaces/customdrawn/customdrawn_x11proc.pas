@@ -11,6 +11,7 @@ uses
   Types, Classes, SysUtils,
   fpimage, fpcanvas, ctypes,
   X, XLib,
+  BaseUnix,Unix,
   // Custom Drawn Canvas
   IntfGraphics, lazcanvas,
   //
@@ -47,9 +48,30 @@ type
     destructor destroy;
     end;
 
-const
-  KMsToDateTime = 86400000; // # of milliseconds in a day
+  { TCDX11TimerThread }
+
+  TCDX11TimerThread = class(TThread)
+  private
+    rfds: TFDset;
+    Timeout: cint;
+    retval,ByteRec: integer;
+  protected
+    procedure Execute; override;
+  public
+    X11TimerPipeIn,X11TimerPipeOut: Integer; // Pipe to Timer
+    MainLoopPipeIn,MainLoopPipeOut: Integer; // Pipe to Main Loop
+    constructor Create(CreateSuspended: Boolean; const StackSize: SizeUInt=DefaultStackSize
+       );
+   end;
+
+var
+  X11TimerThread: TCDX11TimerThread;
+
 {$endif}
+
+const
+  fpFD_SETSIZE = 1024; // As defined in typesizes.h
+  KMsToDateTime = 86400000; // # of milliseconds in a day
 
 function RectToXRect(const ARect: TRect): TXRectangle;
 function XRectToRect(const ARect: TXRectangle): TRect;
@@ -59,6 +81,7 @@ function GetXEventName(Event: LongInt): String;
 implementation
 {$ifdef CD_X11_UseNewTimer}
 uses CustomDrawnInt;
+
 {$endif}
 
 function RectToXRect(const ARect: TRect): TXRectangle;
@@ -111,6 +134,89 @@ begin
 end;
 
 {$ifdef CD_X11_UseNewTimer}
+
+{ TCDX11TimerThread }
+
+procedure TCDX11TimerThread.Execute;
+var
+  Answ: array [0..80] of byte;
+  Answlen: Integer;
+  ANextTime: TDateTime absolute answ;
+  NextToExpire,TNow,TDiff: TDateTime;
+  HeadTimer: TCDX11Timer;
+begin
+    retval:= AssignPipe(X11TimerPipeIn,X11TimerPipeOut);
+    retval:= AssignPipe(MainLoopPipeIn,MainLoopPipeOut);
+    WriteLn('TimerThread: Started!');
+    NextToExpire:= Now+10; // Ten days in future - high enough
+    Repeat
+      TNow := Now;
+      if NextToExpire > TNow+7 then // no timers until next week,
+        //or List Head just processed
+        Timeout:= -1 // wait until the first timer is activated
+      else if CDWidgetSet.XTimerListHead = nil then
+        Timeout:= -1
+      else begin
+        // Pick up timer which will expire first
+        // We must recalculate each time, because a message in between
+        // may have interrupted our timeout.
+        HeadTimer := CDWidgetSet.XTimerListHead;
+        NextToExpire:= HeadTimer.Expires;
+        // Compute how many ms from now
+        TDiff:= NextToExpire-Now;
+        Timeout:= DateTimeToMilliseconds(Tdiff);
+        // if already expired (we're late) handle right now
+        if Timeout <=0 then Timeout:= 0;
+        end;
+      // Wait for a message telling that the timer list has changed,
+      // until our current timer (if any) expires
+      fpFD_ZERO(rfds);
+      fpFD_SET(X11TimerPipeIn,rfds);
+      retval:= fpSelect(fpFD_SETSIZE,@rfds,nil,nil,Timeout);
+      if (retval <> 0) then begin // We've received a message
+         ByteRec := FileRead(X11TimerPipeIn,Answ,sizeof(Answ));
+         // Debugln doesn't like to be executed in a thread which isn't the MT
+         // and after a number of writes crashes with a DISK FULL error!
+         //WriteLn('TimerThread: Got message!');
+         if ByteRec >=SizeOf(ANextTime) then begin
+           if ANextTime < NextToExpire then NextToExpire:=ANextTime;
+           end;
+         //WriteLn(Format('TimerThread: Message received - NextTime= %s',[DateTimeToStr(ANextTime)]));
+         end
+      else begin  // A Timer has expired - Send a message to Main Loop
+        // message content is irrelevant. We put Timeout for debug
+        ANextTime:= Timeout;
+        FileWrite(MainLoopPipeOut,Answ,sizeOf(Timeout));
+        // we don't want to send twice a messages for the same timer
+        // When timer is processed, the list is updateded and we will receive
+        // a new message. So we set NextToExpire to a value larger than any
+        // expectable value
+        NextToExpire:= TNow+10;
+        end;
+      until Terminated;
+end;
+
+constructor TCDX11TimerThread.Create(CreateSuspended: Boolean;
+  const StackSize: SizeUInt);
+var
+  thisTM: TThreadManager;
+begin
+  GetThreadManager(thisTM);
+  if not Assigned(thisTM.InitManager) then begin
+    Raise Exception.Create
+    ('You must define UseCThread (-dUseCThreads in Project Options-> Compiler Options) in order to run this program!');
+    end;
+  inherited Create (CreateSuspended);
+  {Priority := 99; // it would be nice to assign priority and policy
+  Policy := SCHED_RR;} // but it depends on application rights to do so
+  FreeOnTerminate := True;
+  // Pipes do not yet exist. Better make it clear
+  MainLoopPipeIn:= -1;
+  MainLoopPipeOut:= -1;
+  X11TimerPipeIn:= -1;
+  X11TimerPipeOut:= -1;
+end;
+
 { TCDX11Timer }
 
 constructor TCDX11Timer.create(WSInterval: Integer; WSfunc: TWSTimerProc);
@@ -120,6 +226,11 @@ var
   TDiff,TNow: TDateTime;
 {$endif}
 begin
+{$ifdef TimerUseCThreads}
+  if X11TimerThread.Suspended then begin
+     X11TimerThread.Suspended:= False; // Activate Timer Thread
+     end;
+{$endif}
   Interval:= WSInterval; // Interval in ms
   Func:= WSfunc; // OnTimeEvent
   Expires:= Now + Interval/KMsToDateTime; //
@@ -136,6 +247,8 @@ end;
 procedure TCDX11Timer.Insert;
 var
   lTimer,PTimer,NTimer: TCDX11Timer;
+  ABuffer: array[0..15] of byte;
+  ExpireTime: TDateTime absolute ABuffer;
 begin
   {$ifdef Verbose_CD_X11_Timer}
   DebugLn(Format('TCDX11Timer Insert: Interval := %d',[Interval]));
@@ -172,6 +285,10 @@ begin
       Previous := nil;
       end;
   end;
+  {$ifdef TimerUseCThreads}
+  ExpireTime := Expires; // Copy Expire time to Buffer and send to TimerThread
+  FileWrite(X11TimerThread.X11TimerPipeOut,ABuffer,SizeOf(ExpireTime));
+  {$endif}
   {$ifdef Verbose_CD_X11_Timer}
   lTimer := CDWidgetSet.XTimerListHead;
   while lTimer <> Nil do begin
@@ -204,13 +321,18 @@ begin
 end;
 
 procedure TCDX11Timer.Expired;
-{$ifdef Verbose_CD_X11_Timer}
 var
+  TNow: TDateTime;
+{$ifdef Verbose_CD_X11_Timer}
   lInterval,lTInterval: Integer;
-  TDiff,TNow: TDateTime;
+  TDiff: TDateTime;
 {$endif}
 begin
+  TNow:= Now;
   Expires:= Expires+Interval/KMsToDateTime; // don't leak
+  while Expires <= TNow do begin // but if we're late, let's skip some! Bad kludge
+    Expires:= Expires+Interval/KMsToDateTime;
+    end;
   {$ifdef Verbose_CD_X11_Timer}
   TNow:= Now;
   TDiff:= Expires - TNow;

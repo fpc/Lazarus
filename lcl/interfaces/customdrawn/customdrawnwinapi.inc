@@ -2894,9 +2894,33 @@ begin
     else
       Result := 0;
   end;
+end;*)
+
+function TCDWidgetSet.GetDeviceSize(DC: HDC; var P: TPoint): Boolean;
+Var
+  ScrSize: TPoint;
+  LazDC: TLazCanvas;
+begin
+  Result:= False;
+
+  // Screen size
+  if DC = 0 then
+  begin
+    P.X:= GetSystemMetrics(SM_CXSCREEN);
+    P.Y:= GetSystemMetrics(SM_CYSCREEN);
+    Exit(True);
+  end;
+
+  if not IsValidDC(DC) then exit;
+  LazDC := TLazCanvas(DC);
+
+  P.X := LazDC.Width;
+  P.Y := LazDC.Height;
+
+  Result := True;
 end;
 
-function TQtWidgetSet.GetDIBits(DC: HDC; Bitmap: HBitmap; StartScan, NumScans: UINT; Bits: Pointer; var BitInfo: BitmapInfo; Usage: UINT): Integer;
+(*function TQtWidgetSet.GetDIBits(DC: HDC; Bitmap: HBitmap; StartScan, NumScans: UINT; Bits: Pointer; var BitInfo: BitmapInfo; Usage: UINT): Integer;
 begin
   Result := 0;
   {$ifdef VerboseQtWinAPI_MISSING_IMPLEMENTATION}
