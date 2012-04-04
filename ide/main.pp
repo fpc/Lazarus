@@ -1294,9 +1294,14 @@ end;
 
 procedure TMainIDE.LoadGlobalOptions;
 // load environment, miscellaneous, editor and codetools options
+var
+  EnvOptsCfgExisted: boolean;
+  s: String;
+  StartFile: String;
 begin
   with EnvironmentOptions do
   begin
+    EnvOptsCfgExisted := FileExistsCached(GetDefaultConfigFilename);
     OnBeforeRead := @DoEnvironmentOptionsBeforeRead;
     OnBeforeWrite := @DoEnvironmentOptionsBeforeWrite;
     OnAfterWrite := @DoEnvironmentOptionsAfterWrite;
@@ -1324,6 +1329,34 @@ begin
     Application.ShowButtonGlyphs := ShowButtonGlyphs;
     Application.ShowMenuGlyphs := ShowMenuGlyphs;
   end;
+
+  //debugln(['TMainIDE.LoadGlobalOptions ',EnvOptsCfgExisted,' Old=',EnvironmentOptions.OldLazarusVersion,' Now=',GetLazarusVersionString]);
+  if EnvOptsCfgExisted
+  and (EnvironmentOptions.OldLazarusVersion<>GetLazarusVersionString) then begin
+    s:='Welcome to Lazarus '+GetLazarusVersionString+#13#13
+      +'There is already a configuration from version '+EnvironmentOptions.OldLazarusVersion+'.'#13
+      +'This configuration will be upgraded.'#13#13
+      +'If you want to use two different Lazarus versions with this user account you must start the second Lazarus with the command line parameter primary-config-path or pcp.'#13;
+    s+='For example:'#13;
+    StartFile:=Application.ExeName;
+    if StartedByStartLazarus then
+      StartFile:=ExtractFilePath(StartFile)+'startlazarus'+GetExeExt;
+    {$IFDEF Windows}
+      s+=StartFile+' --pcp=C:\test_lazarus\configs';
+    {$ELSE}
+      {$IFDEF darwin}
+      s+='open '+StartFile+' --pcp=~/.lazarus_test';
+      {$ELSE}
+      s+=StartFile+' --pcp=~/.lazarus_test';
+      {$ENDIF}
+    {$ENDIF}
+    if IDEQuestionDialog('Update',s,mtConfirmation,[mrOK,'Upgrade',mrAbort])<>mrOk
+    then begin
+      Application.Terminate;
+      exit;
+    end;
+  end;
+
   ExternalTools.OnNeedsOutputFilter := @OnExtToolNeedsOutputFilter;
   ExternalTools.OnFreeOutputFilter := @OnExtToolFreeOutputFilter;
   UpdateDefaultPascalFileExtensions;
@@ -1394,6 +1427,8 @@ begin
   CreatePrimaryConfigPath;
   StartProtocol;
   LoadGlobalOptions;
+  if Application.Terminated then exit;
+
   if EnvironmentOptions.SingleTaskBarButton then
     Application.TaskBarBehavior := tbSingleButton;
 

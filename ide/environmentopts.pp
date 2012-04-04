@@ -47,7 +47,8 @@ uses
   IDEOptionDefs, TransferMacros, Debugger;
 
 const
-  EnvOptsVersion: integer = 106;
+  EnvOptsVersion: integer = 107;
+  // 107: added
 
   //----------------------------------------------------------------------------
   
@@ -198,6 +199,7 @@ type
     FIDESpeedButtonsVisible: boolean;
     FIDETitleStartsWithProject: boolean;
     FIDEProjectDirectoryInIdeTitle: boolean;
+    FOldLazarusVersion: string;
     FShowButtonGlyphs: TApplicationShowGlyphs;
     FShowMenuGlyphs: TApplicationShowGlyphs;
     FXMLCfg: TRttiXMLConfig;
@@ -355,11 +357,14 @@ type
   public
     constructor Create;
     destructor Destroy; override;
-    procedure Load(OnlyDesktop:boolean);
-    procedure Save(OnlyDesktop:boolean);
+    procedure Load(OnlyDesktop: boolean);
+    procedure Save(OnlyDesktop: boolean);
     property Filename: string read FFilename write SetFilename;
+    function GetDefaultConfigFilename: string;
     procedure CreateConfig;
-    function GetParsedLazarusDirectory: string; // ToDo: use in IDE
+    property OldLazarusVersion: string read FOldLazarusVersion;
+
+    function GetParsedLazarusDirectory: string;
     function GetParsedTestBuildDirectory: string;
     function GetParsedCompilerFilename: string;
     function GetParsedFPCSourceDirectory: string;
@@ -368,7 +373,7 @@ type
     function GetParsedFPDocPaths: string;
     function GetParsedValue(o: TEnvOptParseType): string;
 
-    // macro functions
+    // macros
     procedure InitMacros(AMacroList: TTransferMacroList);
     function MacroFuncCompPath(const {%H-}s:string; const {%H-}Data: PtrInt;
                                var {%H-}Abort: boolean): string;
@@ -548,6 +553,7 @@ type
                                           write FLastSavedProjectFile;
     property OpenLastProjectAtStart: boolean read FOpenLastProjectAtStart
                                              write FOpenLastProjectAtStart;
+    property FileDialogFilter: string read FFileDialogFilter write FFileDialogFilter;
 
     // backup
     property BackupInfoProjectFiles: TBackupInfo read FBackupInfoProjectFiles
@@ -592,8 +598,6 @@ type
     // default template for each 'new item' category: Name=Path, Value=TemplateName
     property NewUnitTemplate: string read FNewUnitTemplate write FNewUnitTemplate;
     property NewFormTemplate: string read FNewFormTemplate write FNewFormTemplate;
-
-    property FileDialogFilter: string read FFileDialogFilter write FFileDialogFilter;
   end;
 
 var
@@ -919,7 +923,7 @@ procedure TEnvironmentOptions.CreateConfig;
 var
   ConfFileName: string;
 begin
-  ConfFileName:=TrimFilename(SetDirSeparators(GetPrimaryConfigPath+'/'+EnvOptsConfFileName));
+  ConfFileName:=GetDefaultConfigFilename;
   CopySecondaryConfigFile(EnvOptsConfFileName);
   if (not FileExistsUTF8(ConfFileName)) then begin
     //DebugLn('Note: environment config file not found - using defaults');
@@ -1008,6 +1012,16 @@ begin
     try
       Path:='EnvironmentOptions/';
       FileVersion:=XMLConfig.GetValue(Path+'Version/Value',0);
+      FOldLazarusVersion:=XMLConfig.GetValue(Path+'Version/Lazarus',LazarusVersionStr);
+      if FOldLazarusVersion='' then begin
+        FOldLazarusVersion:='prior 1.0';
+        // 1.1     r36507  106
+        // 0.9.31  r28811  106
+        // 0.9.29  r21344  106
+        // 0.9.27  r16725  106
+        // 0.9.25  r12751  106
+        // 0.9.23  r10809  106
+      end;
 
       // language
       LoadLanguage;
@@ -1342,6 +1356,7 @@ var
   CurLazDir: String;
   BaseDir: String;
 begin
+  DumpStack;
   Cfg:=nil;
   try
     XMLConfig:=GetXMLCfg(true);
@@ -1350,6 +1365,7 @@ begin
       Path:='EnvironmentOptions/';
 
       XMLConfig.SetValue(Path+'Version/Value',EnvOptsVersion);
+      XMLConfig.SetValue(Path+'Version/Lazarus',LazarusVersionStr);
 
       // language
       XMLConfig.SetDeleteValue(Path+'Language/ID',LanguageID,'');
@@ -1620,6 +1636,11 @@ begin
       DebugLn('[TEnvironmentOptions.Save]  error writing "',Filename,'": ',E.Message);
     end;
   end;
+end;
+
+function TEnvironmentOptions.GetDefaultConfigFilename: string;
+begin
+  Result:=TrimFilename(AppendPathDelim(GetPrimaryConfigPath)+EnvOptsConfFileName);
 end;
 
 procedure TEnvironmentOptions.AddToRecentOpenFiles(const AFilename: string);
