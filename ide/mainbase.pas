@@ -168,14 +168,6 @@ type
                                OnClickEvent: TNotifyEvent); override;
     procedure UpdateHighlighters(Immediately: boolean = false); override;
 
-    //function DoJumpToCodePos(
-    //                    ActiveSrcEdit: TSourceEditor;
-    //                    ActiveUnitInfo: TUnitInfo;
-    //                    NewSource: TCodeBuffer; NewX, NewY, NewTopLine: integer;
-    //                    AddJumpPoint: boolean;
-    //                    FocusEditor: Boolean = True;
-    //                    MarkLine: Boolean = False): TModalResult; virtual;
-
     procedure FindInFilesPerDialog(AProject: TProject); override;
     procedure FindInFiles(AProject: TProject; const FindText: string); override;
   end;
