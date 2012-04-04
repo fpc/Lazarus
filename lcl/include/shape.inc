@@ -49,6 +49,11 @@ begin
     PenDec := (Pen.Width - 1) div 2;
 
     PaintRect := Rect(PenInc, PenInc, Self.Width - PenDec, Self.Height - PenDec);
+    if PaintRect.Left = PaintRect.Right then
+      PaintRect.Right := PaintRect.Right + 1;
+    if PaintRect.Top = PaintRect.Bottom then
+      PaintRect.Bottom := PaintRect.Bottom + 1;
+
     with PaintRect do
     begin
       MinSize := Min(Right - Left, Bottom - Top);
