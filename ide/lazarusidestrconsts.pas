@@ -912,6 +912,20 @@ resourcestring
   lisDate = 'Date';
   lisFPCVersion = 'FPC Version: ';
   lisSVNRevision = 'SVN Revision: ';
+  lisPrior = 'prior %s';
+  lisWelcomeToLazarusThereIsAlreadyAConfigurationFromVe = 'Welcome to Lazarus '
+    +'%s%s%sThere is already a configuration from version %s in%s%s%s';
+  lisTheOldConfigurationWillBeUpgraded = 'The old configuration will be '
+    +'upgraded.';
+  lisTheConfigurationWillBeDowngradedConverted = 'The configuration will be '
+    +'downgraded/converted.';
+  lisIfYouWantToUseTwoDifferentLazarusVersionsYouMustSt = 'If you want to use '
+    +'two different Lazarus versions you must start the second Lazarus with '
+    +'the command line parameter primary-config-path or pcp.%s%sFor example:%s';
+  lisUpgradeConfiguration = 'Upgrade configuration';
+  lisUpgrade = 'Upgrade';
+  lisDowngradeConfiguration = 'Downgrade configuration';
+  lisDowngrade = 'Downgrade';
   lisAboutLazarusMsg =
        'License: GPL/LGPL. See Lazarus and Free Pascal sources for license details.'
       +'%s'

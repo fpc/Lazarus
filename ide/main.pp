@@ -1298,6 +1298,10 @@ var
   EnvOptsCfgExisted: boolean;
   s: String;
   StartFile: String;
+  OldVer: String;
+  NowVer: String;
+  IsUpgrade: boolean;
+  MsgResult: TModalResult;
 begin
   with EnvironmentOptions do
   begin
@@ -1330,14 +1334,25 @@ begin
     Application.ShowMenuGlyphs := ShowMenuGlyphs;
   end;
 
-  //debugln(['TMainIDE.LoadGlobalOptions ',EnvOptsCfgExisted,' Old=',EnvironmentOptions.OldLazarusVersion,' Now=',GetLazarusVersionString]);
-  if EnvOptsCfgExisted
-  and (EnvironmentOptions.OldLazarusVersion<>GetLazarusVersionString) then begin
-    s:='Welcome to Lazarus '+GetLazarusVersionString+#13#13
-      +'There is already a configuration from version '+EnvironmentOptions.OldLazarusVersion+'.'#13
-      +'This configuration will be upgraded.'#13#13
-      +'If you want to use two different Lazarus versions with this user account you must start the second Lazarus with the command line parameter primary-config-path or pcp.'#13;
-    s+='For example:'#13;
+  OldVer:=EnvironmentOptions.OldLazarusVersion;
+  NowVer:=GetLazarusVersionString;
+  //debugln(['TMainIDE.LoadGlobalOptions ',EnvOptsCfgExisted,' diff=',OldVer<>NowVer,' Now=',NowVer,' Old=',OldVer,' Comp=',CompareLazarusVersion(NowVer,OldVer)]);
+  if EnvOptsCfgExisted and (OldVer<>NowVer) then
+  begin
+    IsUpgrade:=CompareLazarusVersion(NowVer,OldVer)>0;
+    if OldVer='' then
+      OldVer:=Format(lisPrior, [GetLazarusVersionString]);
+    s:=Format(lisWelcomeToLazarusThereIsAlreadyAConfigurationFromVe, [
+      GetLazarusVersionString, #13, #13, OldVer, #13, GetPrimaryConfigPath, #13]
+      );
+    if IsUpgrade then
+      s+=lisTheOldConfigurationWillBeUpgraded
+    else
+      s+=lisTheConfigurationWillBeDowngradedConverted;
+    s+=#13
+      +#13;
+    s+=Format(lisIfYouWantToUseTwoDifferentLazarusVersionsYouMustSt, [#13, #13,
+      #13]);
     StartFile:=Application.ExeName;
     if StartedByStartLazarus then
       StartFile:=ExtractFilePath(StartFile)+'startlazarus'+GetExeExt;
@@ -1350,8 +1365,13 @@ begin
       s+=StartFile+' --pcp=~/.lazarus_test';
       {$ENDIF}
     {$ENDIF}
-    if IDEQuestionDialog('Update',s,mtConfirmation,[mrOK,'Upgrade',mrAbort])<>mrOk
-    then begin
+    if IsUpgrade then
+      MsgResult:=IDEQuestionDialog(lisUpgradeConfiguration, s, mtConfirmation, [
+        mrOK, lisUpgrade, mrAbort])
+    else
+      MsgResult:=IDEQuestionDialog(lisDowngradeConfiguration, s, mtWarning, [
+        mrOK, lisDowngrade, mrAbort]);
+    if MsgResult<>mrOk then begin
       Application.Terminate;
       exit;
     end;

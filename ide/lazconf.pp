@@ -64,6 +64,8 @@ const
       'customdraw (alpha)'
     );
 
+function CompareLazarusVersion(V1, V2: string): integer;
+
 { Config Path Functions }
 
 { The primary config path is the local or user specific path.
@@ -230,6 +232,47 @@ begin
   for Result:=Low(TLCLPlatform) to High(TLCLPlatform) do
     if CompareText(ADirName,LCLPlatformDirNames[Result])=0 then exit;
   Result:=lpGtk2;
+end;
+
+function CompareLazarusVersion(V1, V2: string): integer;
+
+  function ReadNumber(var p: PChar): integer;
+  begin
+    Result:=0;
+    while not (p^ in [#0,'0'..'9']) do inc(p);
+    while (p^ in ['0'..'9']) do begin
+      if Result<100000 then
+        Result:=Result*10+ord(p^)-ord('0');
+      inc(p);
+    end;
+    while not (p^ in ['.',#0]) do inc(p);
+    if p^='.' then inc(p);
+  end;
+
+var
+  p1: PChar;
+  p2: PChar;
+  Number1: Integer;
+  Number2: Integer;
+begin
+  if V1='' then begin
+    if V2='' then
+      exit(0)
+    else
+      exit(-1);
+  end else begin
+    if V2='' then
+      exit(1);
+  end;
+  p1:=PChar(V1);
+  p2:=PChar(V2);
+  while (p1^<>#0) or (p2^<>#0) do begin
+    Number1:=ReadNumber(p1);
+    Number2:=ReadNumber(p2);
+    if Number1>Number2 then exit(1);
+    if Number1<Number2 then exit(-1);
+  end;
+  Result:=0;
 end;
 
 {---------------------------------------------------------------------------

@@ -1012,9 +1012,8 @@ begin
     try
       Path:='EnvironmentOptions/';
       FileVersion:=XMLConfig.GetValue(Path+'Version/Value',0);
-      FOldLazarusVersion:=XMLConfig.GetValue(Path+'Version/Lazarus',LazarusVersionStr);
+      FOldLazarusVersion:=XMLConfig.GetValue(Path+'Version/Lazarus','');
       if FOldLazarusVersion='' then begin
-        FOldLazarusVersion:='prior 1.0';
         // 1.1     r36507  106
         // 0.9.31  r28811  106
         // 0.9.29  r21344  106
