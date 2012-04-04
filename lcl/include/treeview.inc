@@ -2756,7 +2756,8 @@ begin
 end;
 
 procedure TTreeNodes.ConsistencyCheck;
-var Node: TTreeNode;
+var
+  Node: TTreeNode;
   RealCount, i: integer;
   OldCache: TNodeCache;
 begin
@@ -2807,7 +2808,8 @@ begin
 end;
 
 procedure TTreeNodes.WriteDebugReport(const Prefix: string; AllNodes: boolean);
-var Node: TTreeNode;
+var
+  Node: TTreeNode;
 begin
   DbgOut('%s%s.WriteDebugReport Self=%p', [Prefix, ClassName, Pointer(Self)]);
   ConsistencyCheck;
