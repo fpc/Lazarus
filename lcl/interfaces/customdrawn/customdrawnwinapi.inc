@@ -2904,7 +2904,7 @@ begin
   Result:= False;
 
   // Screen size
-  if DC = 0 then
+  if IsScreenDC(DC) or (DC = 0) then
   begin
     P.X:= GetSystemMetrics(SM_CXSCREEN);
     P.Y:= GetSystemMetrics(SM_CYSCREEN);

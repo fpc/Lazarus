@@ -56,6 +56,7 @@ procedure HideVirtualKeyboard();
 (*
 function IsDesignerDC(WindowHandle: HWND; DC: HDC): Boolean; override;*)
 function IsMobilePlatform: Boolean; override;
+function IsScreenDC(ADC: HDC): Boolean;
 
 function PromptUser(const DialogCaption : string;
                     const DialogMessage : string;

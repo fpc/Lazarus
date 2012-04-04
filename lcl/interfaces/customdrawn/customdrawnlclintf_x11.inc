@@ -232,22 +232,6 @@ begin
   ARawImage.Mask:=nil;
   ARawImage.Palette:=nil;
   Result := True;
-
-(*  ARawImage.Init;
-  ARawImage.Description.Init_BPP32_A8R8G8B8_BIO_TTB(ScreenBitmapWidth, ScreenBitmapHeight);
-
-  // Take the screenshot
-  screenshotImage := CGDisplayCreateImage(CGMainDisplayID()); // Requires 10.6+
-
-  // Draw it to our screen bitmap
-  lRect := CGRectMake(0, 0, ScreenBitmapWidth, ScreenBitmapHeight);
-  CGContextDrawImage(ScreenBitmapContext, lRect, screenshotImage);
-
-  // Now copy the data
-  ScreenImage.GetRawImage(lScreenRawImage, False);
-  ARawImage.CreateData(False);
-  lDataLength := Min(lScreenRawImage.DataSize, ARawImage.DataSize);
-  System.Move(lScreenRawImage.Data^, ARawImage.Data^, lDataLength); *)
 end;
 
 procedure TCDWidgetset.ShowVirtualKeyboard();

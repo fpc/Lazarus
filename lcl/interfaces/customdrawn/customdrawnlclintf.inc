@@ -312,8 +312,12 @@ begin
     Result := TQtDesignWidget(WindowHandle).DesignContext = DC;
 end;*)
 
-function TCDWidgetSet.RadialPie(DC: HDC; x1, y1, x2, y2, Angle1, Angle2: Integer
-  ): Boolean;
+function TCDWidgetSet.IsScreenDC(ADC: HDC): Boolean;
+begin
+  Result := (ADC = HDC(Self.ScreenDC));
+end;
+
+function TCDWidgetSet.RadialPie(DC: HDC; x1, y1, x2, y2, Angle1, Angle2: Integer): Boolean;
 begin
   Result := IsValidDC(DC);
 {  if Result then
@@ -430,14 +434,21 @@ end;
   Params: ADC:
           ADesc:
   Returns:
-
-  Describes the standard format utilized by Qt
  ------------------------------------------------------------------------------}
 function TCDWidgetSet.RawImage_DescriptionFromDevice(ADC: HDC; out ADesc: TRawImageDescription): Boolean;
+var
+  lSize: TPoint;
 begin
   Result := true;
 
-  ADesc.Init_BPP32_A8R8G8B8_BIO_TTB(100, 100);
+  if ADC = 0 then
+  begin
+    GetDeviceSize(ADC, lSize);
+    ADesc.Init_BPP32_A8R8G8B8_BIO_TTB(lSize.X, lSize.Y);
+    Exit;
+  end;
+
+  ADesc := TLazIntfImage(TLazCanvas(ADC).Image).DataDescription;
 end;
 
 {------------------------------------------------------------------------------
