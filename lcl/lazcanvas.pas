@@ -79,7 +79,7 @@ type
     FAssignedFont: TFPCustomFont;
     FAssignedPen: TFPCustomPen;
     FBaseWindowOrg: TPoint;
-    {$if defined(ver2_4) or defined(ver2_5) or defined(ver2_6_0)}
+    {$if defined(ver2_4) or defined(ver2_5) or defined(ver2_6)}
     FLazClipRegion: TFPCustomRegion;
     {$endif}
     FWindowOrg: TPoint; // already in absolute coords with BaseWindowOrg summed up
@@ -143,7 +143,7 @@ type
     // because operations of SetWindowOrg inside a non-native wincontrol will be
     // based upon the BaseWindowOrg which is set relative to the Form canvas
     property BaseWindowOrg: TPoint read FBaseWindowOrg write FBaseWindowOrg;
-    {$if defined(ver2_4) or defined(ver2_5) or defined(ver2_6_0)}
+    {$if defined(ver2_4) or defined(ver2_5) or defined(ver2_6)}
     property ClipRegion: TFPCustomRegion read FLazClipRegion write FLazClipRegion;
     {$endif}
     property WindowOrg: TPoint read GetWindowOrg write SetWindowOrg;
@@ -206,7 +206,7 @@ var
 begin
   lx := x + FWindowOrg.X;
   ly := y + FWindowOrg.Y;
-  {$if defined(ver2_4) or defined(ver2_5) or defined(ver2_6_0)}
+  {$if defined(ver2_4) or defined(ver2_5) or defined(ver2_6)}
   if Clipping and (not FLazClipRegion.IsPointInRegion(lx, ly)) then
     Exit;
   if (lx >= 0) and (lx < width) and (ly >= 0) and (ly < height) then
@@ -417,7 +417,7 @@ end;
 procedure TLazCanvas.SetLazClipRegion(ARegion: TLazRegion);
 begin
   Clipping := True;
-  {$if defined(ver2_4) or defined(ver2_5) or defined(ver2_6_0)}
+  {$if defined(ver2_4) or defined(ver2_5) or defined(ver2_6)}
   ClipRect := TLazRegionRect(ARegion.Parts.Items[0]).Rect;
   FLazClipRegion := ARegion;
   {$else}
