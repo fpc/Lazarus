@@ -156,6 +156,7 @@ begin
   ScreenDC := TLazCanvas.Create(ScreenImage);
   ScreenDC.NativeDC := PtrInt(TCocoaContext.Create);
   TCocoaContext(ScreenDC.NativeDC).cgctx := ScreenBitmapContext; //NSGraphicsContext.graphicsContextWithBitmapImageRep(ScreenBitmap.imagerep);
+  ScreenFormat := clfRGB24UpsideDown;
 end;
 
 {------------------------------------------------------------------------------

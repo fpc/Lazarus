@@ -378,7 +378,7 @@ begin
   if (not ASkipMask) and (ARawImage.Mask <> nil) and (ARawImage.MaskSize > 0) then
   begin
     NewMaskData := GetMem(ARawImage.MaskSize);
-    Move(ARawImage.Mask^, NewMaskData^, ARawImage.MaskSize);
+    System.Move(ARawImage.Mask^, NewMaskData^, ARawImage.MaskSize);
   end
   else
     NewMaskData := nil;
