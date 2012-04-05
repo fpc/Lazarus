@@ -23,11 +23,6 @@ uses
   InterfaceBase, LCLIntf;
 
 type
-  TUpdateLazImageFormat = (
-    clfRGB16_R5G6B5,
-    clfRGB24, clfRGB24UpsideDown, clfBGR24,
-    clfBGRA32, clfRGBA32, clfARGB32);
-
   { TCDBaseControl }
 
   TCDBaseControl = class
@@ -139,7 +134,7 @@ function FindTopMostVisibleForm: TCDNonNativeForm;
 // Routines for non-native wincontrol
 
 procedure UpdateControlLazImageAndCanvas(var AImage: TLazIntfImage;
-  var ACanvas: TLazCanvas; AWidth, AHeight: Integer; AFormat: TUpdateLazImageFormat;
+  var ACanvas: TLazCanvas; AWidth, AHeight: Integer; AFormat: TLazCanvasImageFormat;
   AData: Pointer = nil; AForceUpdate: Boolean = False;
   AFreeImageOnUpdate: Boolean = True; ADataOwner: Boolean = True);
 procedure DrawFormBackground(var AImage: TLazIntfImage; var ACanvas: TLazCanvas);
@@ -183,6 +178,8 @@ procedure FontsScanDir(APath: string; var AFontPaths: TStringList; var AFontList
 {$endif}
 
 implementation
+
+uses customdrawnint;
 
 var
   // List with the Z-order of non-native forms, index=0 is the bottom-most form
@@ -353,7 +350,7 @@ end;
 
 // If AForceUpdate=True then it will update even if the width and height remain the same
 procedure UpdateControlLazImageAndCanvas(var AImage: TLazIntfImage;
-  var ACanvas: TLazCanvas; AWidth, AHeight: Integer; AFormat: TUpdateLazImageFormat;
+  var ACanvas: TLazCanvas; AWidth, AHeight: Integer; AFormat: TLazCanvasImageFormat;
   AData: Pointer = nil; AForceUpdate: Boolean = False;
   AFreeImageOnUpdate: Boolean = True; ADataOwner: Boolean = True);
 var
@@ -409,6 +406,7 @@ begin
 
     if (ACanvas <> nil) then ACanvas.Free;
     ACanvas := TLazCanvas.Create(AImage);
+    ACanvas.ImageFormat := AFormat;
   end;
   {$IFDEF VerboseCDLazCanvas}
     DebugLn(Format(':<[UpdateControlLazImageAndCanvas] Output Image: %x Canvas: %x',
@@ -950,7 +948,7 @@ end;
 procedure TCDWinControl.UpdateImageAndCanvas;
 begin
   UpdateControlLazImageAndCanvas(ControlImage, ControlCanvas,
-    WinControl.Width, WinControl.Height, clfARGB32);
+    WinControl.Width, WinControl.Height, {$ifdef CD_Support_Alpha_Controls}clfARGB32{$else}CDWidgetset.ScreenFormat{$endif});
 end;
 
 function TCDWinControl.IsControlBackgroundVisible: Boolean;

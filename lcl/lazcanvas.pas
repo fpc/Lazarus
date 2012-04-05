@@ -33,7 +33,9 @@
 unit lazcanvas;
 
 {$mode objfpc}{$H+}
-{.$define lazcanvas_debug}
+{ $define lazcanvas_debug}
+{ $define lazcanvas_profiling}
+{ $define lazcanvas_new_fast_copy}
 
 interface
 
@@ -42,11 +44,23 @@ uses
   Classes, SysUtils, contnrs, Math,
   // FCL-Image
   fpimgcanv, fpcanvas, fpimage, clipping, pixtools, fppixlcanv,
+  {$ifdef lazcanvas_new_fast_copy}
+  intfgraphics, // remove if fclimage gets RawPixel
+  {$endif}
   // regions
   lazregions
-  {$ifdef lazcanvas_debug}, LCLProc{$endif};
+  {$if defined(lazcanvas_debug) or defined(lazcanvas_profiling)}
+  , lazutf8sysutils, LCLProc
+  {$endif}
+  ;
 
 type
+
+  TLazCanvasImageFormat = (
+    clfOther,
+    clfRGB16_R5G6B5,
+    clfRGB24, clfRGB24UpsideDown, clfBGR24,
+    clfBGRA32, clfRGBA32, clfARGB32);
 
   { TFPSharpInterpolation }
 
@@ -102,6 +116,7 @@ type
     HasNoImage: Boolean;
     NativeDC: PtrInt; // Utilized by LCL-CustomDrawn
     ExtraFontData: TObject; // Utilized by LCL-CustomDrawn
+    ImageFormat: TLazCanvasImageFormat;
     constructor create (AnImage : TFPCustomImage);
     destructor destroy; override;
     procedure SetLazClipRegion(ARegion: TLazRegion);
@@ -595,31 +610,80 @@ procedure TLazCanvas.CanvasCopyRect(ASource: TLazCanvas; const ADestX, ADestY,
   ASourceX, ASourceY, ASourceWidth, ASourceHeight: Integer);
 var
   x, y, CurDestX, CurDestY, CurSrcX, CurSrcY: Integer;
+  lx, ly: Integer;
   lDrawWidth, lDrawHeight: Integer;
   lColor: TFPColor;
+  {$IFDEF lazcanvas_profiling}
+  lTimeStart: TDateTime;
+  {$ENDIF}
+  lScanlineSrc, lScanlineDest: PByte;
 begin
+  {$IFDEF lazcanvas_profiling}
+  lTimeStart := NowUTC();
+  {$ENDIF}
+
   // Take care not to draw outside the source and also not outside the destination area
   lDrawWidth := Min(Self.Width - ADestX, ASource.Width - ASourceX);
   lDrawHeight := Min(Self.Height - ADestY, ASource.Height - ASourceY);
   lDrawWidth := Min(lDrawWidth, ASourceWidth);
   lDrawHeight := Min(lDrawHeight, ASourceHeight);
 
-  for y := 0 to lDrawHeight - 1 do
+  {$ifdef lazcanvas_new_fast_copy}
+  // If the formats match, make a fast copy of the data itself, without pixel conversion
+  if (Image is TLazIntfImage) and (ASource.Image is TLazIntfImage) and
+     (ImageFormat in [clfRGB24, clfRGB24UpsideDown, clfBGR24, clfBGRA32, clfRGBA32, clfARGB32]) and
+     (ImageFormat = ASource.ImageFormat) then
   begin
-    for x := 0 to lDrawWidth - 1 do
+    for y := 0 to lDrawHeight - 1 do
     begin
-      CurDestX := ADestX + x;
-      CurDestY := ADestY + y;
-      CurSrcX := ASourceX + x;
+      CurDestY := ADestY + y + FWindowOrg.Y;
+      if CurDestY >= Height then Continue;
       CurSrcY := ASourceY + y;
 
-      // Never draw outside the destination
-      if (CurDestX < 0) or (CurDestY < 0) then Continue;
+      lScanlineSrc := TLazIntfImage(ASource.Image).GetDataLineStart(CurSrcY);
+      lScanlineDest := TLazIntfImage(Image).GetDataLineStart(CurDestY);
+      Inc(lScanlineSrc, (ASourceX)*3);
+      Inc(lScanlineDest, (ADestX + FWindowOrg.X)*3);
 
-      lColor := ASource.Colors[CurSrcX, CurSrcY];
-      Self.Colors[CurDestX, CurDestY] := lColor;
+      for x := 0 to lDrawWidth -1 do
+      begin
+        lScanlineDest^ := lScanlineSrc^;
+        Inc(lScanlineSrc, 1);
+        Inc(lScanlineDest, 1);
+        lScanlineDest^ := lScanlineSrc^;
+        Inc(lScanlineSrc, 1);
+        Inc(lScanlineDest, 1);
+        lScanlineDest^ := lScanlineSrc^;
+        Inc(lScanlineSrc, 1);
+        Inc(lScanlineDest, 1);
+      end;
+    end;
+  end
+  // General case of copying
+  else
+  {$endif}
+  begin
+    for y := 0 to lDrawHeight - 1 do
+    begin
+      for x := 0 to lDrawWidth - 1 do
+      begin
+        CurDestX := ADestX + x;
+        CurDestY := ADestY + y;
+        CurSrcX := ASourceX + x;
+        CurSrcY := ASourceY + y;
+
+        // Never draw outside the destination
+        if (CurDestX < 0) or (CurDestY < 0) then Continue;
+
+        lColor := ASource.Colors[CurSrcX, CurSrcY];
+        Self.Colors[CurDestX, CurDestY] := lColor;
+      end;
     end;
   end;
+
+  {$IFDEF lazcanvas_profiling}
+  DebugLn(Format('[TLazCanvas.CanvasCopyRect] Paint duration: %d ms', [DateTimeToTimeStamp(NowUTC() - lTimeStart).Time]));
+  {$ENDIF}
 end;
 
 {$if defined(ver2_4) or defined(ver2_5)}

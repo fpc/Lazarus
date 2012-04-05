@@ -104,6 +104,9 @@ begin
   FTerminating := False;
   DefaultFontSize := 10;
 
+  // To be resistent against backend issues
+  CDWidgetset.ScreenFormat := clfARGB32;
+
   {$ifndef CD_UseNativeText}
   FFontPaths:= TStringList.Create;
   FFontList := THashedStringList.Create;

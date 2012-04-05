@@ -185,6 +185,9 @@ begin
   ScreenInfo.PixelsPerInchY:= 96;
   ScreenInfo.Initialized:= True;
 
+  // ToDo: Actually check which format it is at
+  ScreenFormat := clfBGR24;
+
   //if (not (woX11SkipWMHints in WindowOptions)) and (woWindow in WindowOptions) then
   //begin
     LeaderWindow := XCreateSimpleWindow(FDisplay, XDefaultRootWindow(FDisplay), 0, 0, 1, 1, 0, 0, 0);

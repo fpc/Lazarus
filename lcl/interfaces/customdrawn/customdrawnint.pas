@@ -246,6 +246,7 @@ type
     ScreenBitmapHeight: Integer;
     ScreenBitmapWidth: Integer;
     ScreenImage: TLazIntfImage;
+    ScreenFormat: TLazCanvasImageFormat;
 
     // Android Activity callbacks
     ActivityOnCreate: TProcedure;
