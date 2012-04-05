@@ -343,7 +343,7 @@ end;
  ------------------------------------------------------------------------------}
 function TCDWidgetSet.RawImage_CreateBitmaps(const ARawImage: TRawImage; out ABitmap, AMask: HBitmap; ASkipMask: Boolean): Boolean;
 var
-  NewData: PByte;
+  NewData, NewMaskData: PByte;
   lRawImage: TRawImage;
   lBitmap: TCDBitmap;
 begin
@@ -373,25 +373,32 @@ begin
   ABitmap := HBITMAP(lBitmap);
   System.Move(ARawImage, lRawImage, SizeOf(TRawImage));
   lRawImage.Data := NewData;
-  lRawImage.Mask := nil;
+
+  // The Mask
+  if (not ASkipMask) and (ARawImage.Mask <> nil) and (ARawImage.MaskSize > 0) then
+  begin
+    NewMaskData := GetMem(ARawImage.MaskSize);
+    Move(ARawImage.Mask^, NewMaskData^, ARawImage.MaskSize);
+  end
+  else
+    NewMaskData := nil;
+
+  lRawImage.Mask := NewMaskData;
+
   lRawImage.Palette := nil;
   lBitmap.Image := TLazIntfImage.Create(lRawImage, True);
   Result := ABitmap <> 0;
 
-  // Currently we dont support the Mask
-  if not ASkipMask then
+  // Also create a bitmap for the mask
+  if (not ASkipMask) then
   begin
-    AMask := 0;
-
-{  if (ARawImage.Mask <> nil) and (ARawImage.MaskSize > 0) then
-  begin
-    NewData := GetMem(ARawImage.MaskSize);
-    Move(ARawImage.Mask^, NewData^, ARawImage.MaskSize);
-  end
-  else
-    NewData := nil;
-    
-  AMask := HBitmap(TQtImage.Create(NewData, Desc.Width, Desc.Height, QImageFormat_Mono, True));}
+    lBitmap := TCDBitmap.Create;
+    AMask := HBITMAP(lBitmap);
+    lRawImage.Description.Init_BPP1(ARawImage.Description.Width, ARawImage.Description.Height);
+    lRawImage.Data := NewMaskData;
+    lRawImage.Mask := nil;
+    lRawImage.Palette := nil;
+    lBitmap.Image := TLazIntfImage.Create(lRawImage, True);
   end;
 
   {$ifdef VerboseCDBitmap}
