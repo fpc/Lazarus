@@ -404,6 +404,7 @@ begin
   else
     EnvironmentOptions.NewFormTemplate:=Template.Name;
   //DebugLn(['TMainIDEBar.NewUFDefaultClick ',Template.Name]);
+
   EnvironmentOptions.Save(False);
 end;
 
