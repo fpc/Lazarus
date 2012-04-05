@@ -2714,15 +2714,35 @@ end;*)
   Returns: True if succesful
  ------------------------------------------------------------------------------}
 function TCDWidgetSet.GetCursorPos(var lpPoint: TPoint ): Boolean;
-{var
-  vPoint: TQtPoint;}
+var
+  number_of_screens, i: cint;
+  root_windows: PWindow;
+  window_returned: TWindow;
+  root_x, root_y, win_x, win_y: cint;
+  mask_return: cuint;
+  olderrorhandler: TXErrorHandler;
+  lScreen: XLib.TScreen;
 begin
-//  QCursor_pos(@vPoint);
+  root_x := 0;
+  root_y := 0;
 
-  lpPoint.x := 1;
-  lpPoint.y := 1;
+  //olderrorhandler := XSetErrorHandler(_XlibErrorHandler);
+  number_of_screens := XScreenCount(FDisplay);
+  //lScreen := XLib.DefaultScreen(FDisplay);
+  root_windows := GetMem(sizeof(TWindow) * number_of_screens);
 
-  Result := True;
+  for i := 0 to number_of_screens-1 do
+  begin
+    root_windows[i] := XRootWindow(FDisplay, i);
+    Result := XQueryPointer(FDisplay, root_windows[i], @window_returned,
+      @window_returned, @root_x, @root_y, @win_x, @win_y, @mask_return);
+    if Result then Break;
+  end;
+
+  lpPoint.x := root_x;
+  lpPoint.y := root_y;
+
+  FreeMem(root_windows);
 end;
 
 (*{------------------------------------------------------------------------------
