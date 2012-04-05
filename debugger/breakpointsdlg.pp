@@ -1026,13 +1026,13 @@ initialization
   BreakPointDlgWindowCreator.OnCreateFormProc := @CreateDebugDialog;
   BreakPointDlgWindowCreator.OnSetDividerSize := @BreakPointDlgColSizeSetter;
   BreakPointDlgWindowCreator.OnGetDividerSize := @BreakPointDlgColSizeGetter;
-  BreakPointDlgWindowCreator.DividerTemplate.Add('ColumnBreakState',     COL_BREAK_STATE,     drsColWidthState);
-  BreakPointDlgWindowCreator.DividerTemplate.Add('ColumnBreakFile',      COL_BREAK_FILE,      drsBreakPointColWidthFile);
-  BreakPointDlgWindowCreator.DividerTemplate.Add('ColumnBreakLine',      COL_BREAK_LINE,      drsBreakPointColWidthLine);
-  BreakPointDlgWindowCreator.DividerTemplate.Add('ColumnBreakCondition', COL_BREAK_CONDITION, drsBreakPointColWidthCondition);
-  BreakPointDlgWindowCreator.DividerTemplate.Add('ColumnBreakAction',    COL_BREAK_ACTION,    drsBreakPointColWidthAction);
-  BreakPointDlgWindowCreator.DividerTemplate.Add('ColumnBreakPassCnt',   COL_BREAK_PASS,      drsBreakPointColWidthPassCount);
-  BreakPointDlgWindowCreator.DividerTemplate.Add('ColumnBreakGroup',     COL_BREAK_GROUP,     drsBreakPointColWidthGroup);
+  BreakPointDlgWindowCreator.DividerTemplate.Add('ColumnBreakState',     COL_BREAK_STATE,     @drsColWidthState);
+  BreakPointDlgWindowCreator.DividerTemplate.Add('ColumnBreakFile',      COL_BREAK_FILE,      @drsBreakPointColWidthFile);
+  BreakPointDlgWindowCreator.DividerTemplate.Add('ColumnBreakLine',      COL_BREAK_LINE,      @drsBreakPointColWidthLine);
+  BreakPointDlgWindowCreator.DividerTemplate.Add('ColumnBreakCondition', COL_BREAK_CONDITION, @drsBreakPointColWidthCondition);
+  BreakPointDlgWindowCreator.DividerTemplate.Add('ColumnBreakAction',    COL_BREAK_ACTION,    @drsBreakPointColWidthAction);
+  BreakPointDlgWindowCreator.DividerTemplate.Add('ColumnBreakPassCnt',   COL_BREAK_PASS,      @drsBreakPointColWidthPassCount);
+  BreakPointDlgWindowCreator.DividerTemplate.Add('ColumnBreakGroup',     COL_BREAK_GROUP,     @drsBreakPointColWidthGroup);
   BreakPointDlgWindowCreator.CreateSimpleLayout;
 
 end.

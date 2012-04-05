@@ -370,9 +370,9 @@ initialization
   HistoryDlgWindowCreator.OnCreateFormProc := @CreateDebugDialog;
   HistoryDlgWindowCreator.OnSetDividerSize := @HistoryDlgColSizeSetter;
   HistoryDlgWindowCreator.OnGetDividerSize := @HistoryDlgColSizeGetter;
-  HistoryDlgWindowCreator.DividerTemplate.Add('HistoryColCur',      COL_HISTORY_CUR,  drsHistoryColWidthCurrent);
-  HistoryDlgWindowCreator.DividerTemplate.Add('HistoryColTime',     COL_HISTORY_TIME, drsHistoryColWidthTime);
-  HistoryDlgWindowCreator.DividerTemplate.Add('HistoryColLocation', COL_HISTORY_LOC,  drsHistoryColWidthLocation);
+  HistoryDlgWindowCreator.DividerTemplate.Add('HistoryColCur',      COL_HISTORY_CUR,  @drsHistoryColWidthCurrent);
+  HistoryDlgWindowCreator.DividerTemplate.Add('HistoryColTime',     COL_HISTORY_TIME, @drsHistoryColWidthTime);
+  HistoryDlgWindowCreator.DividerTemplate.Add('HistoryColLocation', COL_HISTORY_LOC,  @drsHistoryColWidthLocation);
   HistoryDlgWindowCreator.CreateSimpleLayout;
 
 end.
