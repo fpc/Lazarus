@@ -35,7 +35,7 @@ unit lazcanvas;
 {$mode objfpc}{$H+}
 { $define lazcanvas_debug}
 { $define lazcanvas_profiling}
-{ $define lazcanvas_new_fast_copy}
+{$define lazcanvas_new_fast_copy}
 
 interface
 
@@ -44,9 +44,7 @@ uses
   Classes, SysUtils, contnrs, Math,
   // FCL-Image
   fpimgcanv, fpcanvas, fpimage, clipping, pixtools, fppixlcanv,
-  {$ifdef lazcanvas_new_fast_copy}
-  intfgraphics, // remove if fclimage gets RawPixel
-  {$endif}
+  intfgraphics,
   // regions
   lazregions
   {$if defined(lazcanvas_debug) or defined(lazcanvas_profiling)}
@@ -298,10 +296,21 @@ begin
 end;
 
 procedure TLazCanvas.DoRectangleFill(const Bounds: TRect);
-var b : TRect;
+var
+  b : TRect;
 begin
   b := Bounds;
   SortRect (b);
+
+  // Optimize when filling everything
+  if (b.Left = 0) and (b.Top = 0) and (b.Right = Width) and (b.Bottom = Height)
+     and (Brush.Style = bsSolid) and (FWindowOrg.X = 0) and (FWindowOrg.Y = 0)
+     and ((Clipping=False) {or cliprect=entire area}) then
+  begin
+    FillColor(Brush.FPColor, True);
+    Exit;
+  end;
+
 //  if clipping then
 //    CheckRectClipping (ClipRect, B);
   with b do
@@ -709,7 +718,10 @@ var
 begin
   if AIgnoreClippingAndWindowOrg then
   begin
-    for y := 0 to Height-1 do
+    if Image is TLazIntfImage then
+      TLazIntfImage(Image).FillPixels(AColor)
+    else
+     for y := 0 to Height-1 do
       for x := 0 to Width-1 do
         Image.Colors[x, y] := AColor;
   end
