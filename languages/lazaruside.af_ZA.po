@@ -7342,6 +7342,14 @@ msgctxt "lazarusidestrconsts.lisdown"
 msgid "Down"
 msgstr "Af"
 
+#: lazarusidestrconsts.lisdowngrade
+msgid "Downgrade"
+msgstr ""
+
+#: lazarusidestrconsts.lisdowngradeconfiguration
+msgid "Downgrade configuration"
+msgstr ""
+
 #: lazarusidestrconsts.lisdoyoustillwanttocreatethenewproject
 msgid "Do you still want to create the new project?"
 msgstr ""
@@ -8729,6 +8737,10 @@ msgstr "Stoor na lêer"
 msgid "Save to recent"
 msgstr ""
 
+#: lazarusidestrconsts.lisifyouwanttousetwodifferentlazarusversionsyoumustst
+msgid "If you want to use two different Lazarus versions you must start the second Lazarus with the command line parameter primary-config-path or pcp.%s%sFor example:%s"
+msgstr ""
+
 #: lazarusidestrconsts.lisignoreall
 msgid "Ignore all"
 msgstr ""
@@ -9614,15 +9626,17 @@ msgid "Toggle marker 9"
 msgstr ""
 
 #: lazarusidestrconsts.liskmtoggleviewassembler
-msgid "Toggle view Assembler"
+msgctxt "lazarusidestrconsts.liskmtoggleviewassembler"
+msgid "View Assembler"
 msgstr ""
 
 #: lazarusidestrconsts.liskmtoggleviewbreakpoints
-msgid "Toggle view Breakpoints"
+msgid "View Breakpoints"
 msgstr ""
 
 #: lazarusidestrconsts.liskmtoggleviewcallstack
-msgid "Toggle view Call Stack"
+msgctxt "lazarusidestrconsts.liskmtoggleviewcallstack"
+msgid "View Call Stack"
 msgstr ""
 
 #: lazarusidestrconsts.liskmtoggleviewcodeexplorer
@@ -9634,11 +9648,11 @@ msgid "Toggle View Component Palette"
 msgstr ""
 
 #: lazarusidestrconsts.liskmtoggleviewdebugevents
-msgid "Toggle view Debuger Event Log"
+msgid "View Debuger Event Log"
 msgstr ""
 
 #: lazarusidestrconsts.liskmtoggleviewdebuggeroutput
-msgid "Toggle view Debugger Output"
+msgid "View Debugger Output"
 msgstr ""
 
 #: lazarusidestrconsts.liskmtoggleviewdocumentationeditor
@@ -9646,7 +9660,8 @@ msgid "Toggle view Documentation Editor"
 msgstr ""
 
 #: lazarusidestrconsts.liskmtoggleviewhistory
-msgid "Toggle view History"
+msgctxt "lazarusidestrconsts.liskmtoggleviewhistory"
+msgid "View History"
 msgstr ""
 
 #: lazarusidestrconsts.liskmtoggleviewidespeedbuttons
@@ -9654,7 +9669,7 @@ msgid "Toggle view IDE speed buttons"
 msgstr ""
 
 #: lazarusidestrconsts.liskmtoggleviewlocalvariables
-msgid "Toggle view Local Variables"
+msgid "View Local Variables"
 msgstr ""
 
 #: lazarusidestrconsts.liskmtoggleviewmessages
@@ -9666,11 +9681,12 @@ msgid "Toggle view Object Inspector"
 msgstr ""
 
 #: lazarusidestrconsts.liskmtoggleviewpseudoterminal
-msgid "Toggle view Terminal Output"
+msgctxt "lazarusidestrconsts.liskmtoggleviewpseudoterminal"
+msgid "View Terminal Output"
 msgstr ""
 
 #: lazarusidestrconsts.liskmtoggleviewregisters
-msgid "Toggle view Registers"
+msgid "View Registers"
 msgstr ""
 
 #: lazarusidestrconsts.liskmtoggleviewsearchresults
@@ -9682,11 +9698,12 @@ msgid "Toggle view Source Editor"
 msgstr ""
 
 #: lazarusidestrconsts.liskmtoggleviewthreads
-msgid "Toggle view Threads"
+msgctxt "lazarusidestrconsts.liskmtoggleviewthreads"
+msgid "View Threads"
 msgstr ""
 
 #: lazarusidestrconsts.liskmtoggleviewwatches
-msgid "Toggle view Watches"
+msgid "View Watches"
 msgstr ""
 
 #: lazarusidestrconsts.liskmviewjumphistory
@@ -13344,6 +13361,10 @@ msgstr ""
 msgid "Primary config path"
 msgstr ""
 
+#: lazarusidestrconsts.lisprior
+msgid "prior %s"
+msgstr ""
+
 #: lazarusidestrconsts.lisprivate
 msgid "Private"
 msgstr ""
@@ -14770,6 +14791,10 @@ msgstr ""
 msgid "The component name must be unique in all components on the form/datamodule.The name is compared case insensitive like a normal pascal identifier."
 msgstr ""
 
+#: lazarusidestrconsts.listheconfigurationwillbedowngradedconverted
+msgid "The configuration will be downgraded/converted."
+msgstr ""
+
 #: lazarusidestrconsts.listhecontainsanotexistingdirectory
 msgid "The %s contains a not existing directory:%s%s"
 msgstr ""
@@ -14965,6 +14990,10 @@ msgstr ""
 
 #: lazarusidestrconsts.listhenewunitisnotyetintheunitsearchpathadddirectory
 msgid "The new unit is not yet in the unit search path.%sAdd directory %s?"
+msgstr ""
+
+#: lazarusidestrconsts.listheoldconfigurationwillbeupgraded
+msgid "The old configuration will be upgraded."
 msgstr ""
 
 #: lazarusidestrconsts.listheothersourcescontainsadirectorywhichisalreadyint
@@ -15888,6 +15917,14 @@ msgstr "Op"
 msgid "Update references?"
 msgstr ""
 
+#: lazarusidestrconsts.lisupgrade
+msgid "Upgrade"
+msgstr ""
+
+#: lazarusidestrconsts.lisupgradeconfiguration
+msgid "Upgrade configuration"
+msgstr ""
+
 #: lazarusidestrconsts.lisuppercasestring
 msgid "uppercase string"
 msgstr ""
@@ -16026,6 +16063,7 @@ msgid "View Source"
 msgstr ""
 
 #: lazarusidestrconsts.lisviewsourcedisass
+msgctxt "lazarusidestrconsts.lisviewsourcedisass"
 msgid "View Assembler"
 msgstr ""
 
@@ -16108,6 +16146,10 @@ msgstr ""
 
 #: lazarusidestrconsts.liswelcometolazaruside
 msgid "Welcome to Lazarus IDE %s"
+msgstr ""
+
+#: lazarusidestrconsts.liswelcometolazarusthereisalreadyaconfigurationfromve
+msgid "Welcome to Lazarus %s%s%sThere is already a configuration from version %s in%s%s%s"
 msgstr ""
 
 #: lazarusidestrconsts.liswhenaunitisrenamedupdatereferences
@@ -17240,7 +17282,7 @@ msgid "quick compile, no linking"
 msgstr ""
 
 #: lazarusidestrconsts.srkmecremovebreakpoint
-msgid "remove break point"
+msgid "remove breakpoint"
 msgstr ""
 
 #: lazarusidestrconsts.srkmecremoveemptymethods
@@ -17545,7 +17587,7 @@ msgid "View assembler"
 msgstr ""
 
 #: lazarusidestrconsts.srkmectogglebreakpoint
-msgid "toggle break point"
+msgid "toggle breakpoint"
 msgstr ""
 
 #: lazarusidestrconsts.srkmectogglebreakpoints
@@ -17666,10 +17708,12 @@ msgid "View forms"
 msgstr ""
 
 #: lazarusidestrconsts.srkmecviewhistory
+msgctxt "lazarusidestrconsts.srkmecviewhistory"
 msgid "View History"
 msgstr ""
 
 #: lazarusidestrconsts.srkmecviewpseudoterminal
+msgctxt "lazarusidestrconsts.srkmecviewpseudoterminal"
 msgid "View Terminal Output"
 msgstr ""
 
@@ -17678,6 +17722,7 @@ msgid "View Tab Order"
 msgstr ""
 
 #: lazarusidestrconsts.srkmecviewthreads
+msgctxt "lazarusidestrconsts.srkmecviewthreads"
 msgid "View Threads"
 msgstr ""
 
@@ -17951,6 +17996,7 @@ msgid "Toggle &Breakpoint"
 msgstr ""
 
 #: lazarusidestrconsts.uemviewcallstack
+msgctxt "lazarusidestrconsts.uemviewcallstack"
 msgid "View Call Stack"
 msgstr ""
 

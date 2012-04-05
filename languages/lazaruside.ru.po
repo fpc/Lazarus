@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2012-04-04 02:06+0400\n"
+"PO-Revision-Date: 2012-04-06 00:48+0400\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -7547,6 +7547,14 @@ msgctxt "lazarusidestrconsts.lisdown"
 msgid "Down"
 msgstr "Вниз"
 
+#: lazarusidestrconsts.lisdowngrade
+msgid "Downgrade"
+msgstr "Понизить версию"
+
+#: lazarusidestrconsts.lisdowngradeconfiguration
+msgid "Downgrade configuration"
+msgstr "Понижение версии каталога настройки"
+
 #: lazarusidestrconsts.lisdoyoustillwanttocreatethenewproject
 msgid "Do you still want to create the new project?"
 msgstr "Вы действительно хотите создать новый проект?"
@@ -8945,6 +8953,10 @@ msgstr "Сохранить в файл"
 msgid "Save to recent"
 msgstr "Сохранить в недавних"
 
+#: lazarusidestrconsts.lisifyouwanttousetwodifferentlazarusversionsyoumustst
+msgid "If you want to use two different Lazarus versions you must start the second Lazarus with the command line parameter primary-config-path or pcp.%s%sFor example:%s"
+msgstr "Если вы хотите использовать два экземпляра Lazarus разных версий, вам следует запускать второй экземпляр Lazarus с параметром командной строки primary-config-path или pcp.%s%sНапример:%s"
+
 #: lazarusidestrconsts.lisignoreall
 msgid "Ignore all"
 msgstr "Игнорировать все"
@@ -9857,15 +9869,20 @@ msgid "Toggle marker 9"
 msgstr "Переключить закладку 9"
 
 #: lazarusidestrconsts.liskmtoggleviewassembler
-msgid "Toggle view Assembler"
-msgstr "Показать окно ассемблера"
+#| msgid "Toggle view Assembler"
+msgctxt "lazarusidestrconsts.liskmtoggleviewassembler"
+msgid "View Assembler"
+msgstr "Показать ассемблер"
 
 #: lazarusidestrconsts.liskmtoggleviewbreakpoints
-msgid "Toggle view Breakpoints"
+#| msgid "Toggle view Breakpoints"
+msgid "View Breakpoints"
 msgstr "Показать точки останова"
 
 #: lazarusidestrconsts.liskmtoggleviewcallstack
-msgid "Toggle view Call Stack"
+#| msgid "Toggle view Call Stack"
+msgctxt "lazarusidestrconsts.liskmtoggleviewcallstack"
+msgid "View Call Stack"
 msgstr "Показать стек вызовов"
 
 #: lazarusidestrconsts.liskmtoggleviewcodeexplorer
@@ -9878,12 +9895,13 @@ msgid "Toggle View Component Palette"
 msgstr "Показывать палитру компонентов"
 
 #: lazarusidestrconsts.liskmtoggleviewdebugevents
-#| msgid "Toggle view Debug Events"
-msgid "Toggle view Debuger Event Log"
-msgstr "Показать окно журнала событий отладчика"
+#| msgid "Toggle view Debuger Event Log"
+msgid "View Debuger Event Log"
+msgstr "Показать журнал событий отладчика"
 
 #: lazarusidestrconsts.liskmtoggleviewdebuggeroutput
-msgid "Toggle view Debugger Output"
+#| msgid "Toggle view Debugger Output"
+msgid "View Debugger Output"
 msgstr "Показать вывод отладчика"
 
 #: lazarusidestrconsts.liskmtoggleviewdocumentationeditor
@@ -9891,7 +9909,9 @@ msgid "Toggle view Documentation Editor"
 msgstr "Показать редактор документации"
 
 #: lazarusidestrconsts.liskmtoggleviewhistory
-msgid "Toggle view History"
+#| msgid "Toggle view History"
+msgctxt "lazarusidestrconsts.liskmtoggleviewhistory"
+msgid "View History"
 msgstr "Показать историю"
 
 #: lazarusidestrconsts.liskmtoggleviewidespeedbuttons
@@ -9899,7 +9919,8 @@ msgid "Toggle view IDE speed buttons"
 msgstr "Показывать кнопки быстрого запуска IDE"
 
 #: lazarusidestrconsts.liskmtoggleviewlocalvariables
-msgid "Toggle view Local Variables"
+#| msgid "Toggle view Local Variables"
+msgid "View Local Variables"
 msgstr "Показать локальные переменные"
 
 #: lazarusidestrconsts.liskmtoggleviewmessages
@@ -9911,12 +9932,15 @@ msgid "Toggle view Object Inspector"
 msgstr "Показывать инспектор объектов"
 
 #: lazarusidestrconsts.liskmtoggleviewpseudoterminal
-msgid "Toggle view Terminal Output"
+#| msgid "Toggle view Terminal Output"
+msgctxt "lazarusidestrconsts.liskmtoggleviewpseudoterminal"
+msgid "View Terminal Output"
 msgstr "Показать вывод в терминал"
 
 #: lazarusidestrconsts.liskmtoggleviewregisters
-msgid "Toggle view Registers"
-msgstr "Показать окно регистров"
+#| msgid "Toggle view Registers"
+msgid "View Registers"
+msgstr "Показать регистры"
 
 #: lazarusidestrconsts.liskmtoggleviewsearchresults
 msgid "Toggle view Search Results"
@@ -9927,11 +9951,14 @@ msgid "Toggle view Source Editor"
 msgstr "Показать редактор исходного кода"
 
 #: lazarusidestrconsts.liskmtoggleviewthreads
-msgid "Toggle view Threads"
-msgstr "Показать окно потоков исполнения"
+#| msgid "Toggle view Threads"
+msgctxt "lazarusidestrconsts.liskmtoggleviewthreads"
+msgid "View Threads"
+msgstr "Показать потоки исполнения"
 
 #: lazarusidestrconsts.liskmtoggleviewwatches
-msgid "Toggle view Watches"
+#| msgid "Toggle view Watches"
+msgid "View Watches"
 msgstr "Показать окно наблюдений"
 
 #: lazarusidestrconsts.liskmviewjumphistory
@@ -13690,6 +13717,10 @@ msgstr "первичный каталог настройки, где Lazarus х�
 msgid "Primary config path"
 msgstr "Первичный путь к каталогу настройки"
 
+#: lazarusidestrconsts.lisprior
+msgid "prior %s"
+msgstr "до %s"
+
 #: lazarusidestrconsts.lisprivate
 msgid "Private"
 msgstr "Private"
@@ -15126,6 +15157,10 @@ msgstr "Компонент %s унаследован от %s.%sДля переи
 msgid "The component name must be unique in all components on the form/datamodule.The name is compared case insensitive like a normal pascal identifier."
 msgstr "Имена компонентов должны быть уникальными в пределах формы/модуля данных. Сравнение имён, как и для обычных идентификаторов Паскаля, происходит без учёта регистра."
 
+#: lazarusidestrconsts.listheconfigurationwillbedowngradedconverted
+msgid "The configuration will be downgraded/converted."
+msgstr "Каталог настройки будет преобразован с понижением версии."
+
 #: lazarusidestrconsts.listhecontainsanotexistingdirectory
 msgid "The %s contains a not existing directory:%s%s"
 msgstr "%s содержит несуществующий каталог:%s%s"
@@ -15332,6 +15367,10 @@ msgstr "Путь к новому включаемому файлу отсутс�
 #: lazarusidestrconsts.listhenewunitisnotyetintheunitsearchpathadddirectory
 msgid "The new unit is not yet in the unit search path.%sAdd directory %s?"
 msgstr "Новый модуль ещё не находится в путях поиска.%sДобавить каталог %s?"
+
+#: lazarusidestrconsts.listheoldconfigurationwillbeupgraded
+msgid "The old configuration will be upgraded."
+msgstr "Старый каталог настройки будет обновлён."
 
 #: lazarusidestrconsts.listheothersourcescontainsadirectorywhichisalreadyint
 msgid "The \"Other sources\" contains a directory which is already in the \"Other unit files\".%s%s"
@@ -16262,6 +16301,14 @@ msgstr "Вверх"
 msgid "Update references?"
 msgstr "Обновить ссылки?"
 
+#: lazarusidestrconsts.lisupgrade
+msgid "Upgrade"
+msgstr "Обновить"
+
+#: lazarusidestrconsts.lisupgradeconfiguration
+msgid "Upgrade configuration"
+msgstr "Обновление каталога настройки"
+
 #: lazarusidestrconsts.lisuppercasestring
 msgid "uppercase string"
 msgstr "Преобразовать регистр строки в верхний"
@@ -16406,6 +16453,7 @@ msgid "View Source"
 msgstr "Просмотреть исходный код"
 
 #: lazarusidestrconsts.lisviewsourcedisass
+msgctxt "lazarusidestrconsts.lisviewsourcedisass"
 msgid "View Assembler"
 msgstr "Просмотреть код ассемблера"
 
@@ -16489,6 +16537,10 @@ msgstr "Создать точку останова с &наблюдением ..
 #: lazarusidestrconsts.liswelcometolazaruside
 msgid "Welcome to Lazarus IDE %s"
 msgstr "Добро пожаловать в Lazarus версии %s"
+
+#: lazarusidestrconsts.liswelcometolazarusthereisalreadyaconfigurationfromve
+msgid "Welcome to Lazarus %s%s%sThere is already a configuration from version %s in%s%s%s"
+msgstr "Добро пожаловать в Lazarus %s%s%sОбнаружен каталог настройки версии %s в%s%s%s"
 
 #: lazarusidestrconsts.liswhenaunitisrenamedupdatereferences
 #| msgid "When a unit is renamed, update references ..."
@@ -17640,7 +17692,8 @@ msgid "quick compile, no linking"
 msgstr "Быстрая компиляция, без компоновки"
 
 #: lazarusidestrconsts.srkmecremovebreakpoint
-msgid "remove break point"
+#| msgid "remove break point"
+msgid "remove breakpoint"
 msgstr "Удалить точку останова"
 
 #: lazarusidestrconsts.srkmecremoveemptymethods
@@ -17950,7 +18003,8 @@ msgid "View assembler"
 msgstr "Просмотр кода ассемблера"
 
 #: lazarusidestrconsts.srkmectogglebreakpoint
-msgid "toggle break point"
+#| msgid "toggle break point"
+msgid "toggle breakpoint"
 msgstr "Переключить точку останова"
 
 #: lazarusidestrconsts.srkmectogglebreakpoints
@@ -18072,10 +18126,12 @@ msgid "View forms"
 msgstr "Показать формы"
 
 #: lazarusidestrconsts.srkmecviewhistory
+msgctxt "lazarusidestrconsts.srkmecviewhistory"
 msgid "View History"
 msgstr "Показать историю"
 
 #: lazarusidestrconsts.srkmecviewpseudoterminal
+msgctxt "lazarusidestrconsts.srkmecviewpseudoterminal"
 msgid "View Terminal Output"
 msgstr "Показать вывод в терминал"
 
@@ -18084,6 +18140,7 @@ msgid "View Tab Order"
 msgstr "Показать порядок перехода"
 
 #: lazarusidestrconsts.srkmecviewthreads
+msgctxt "lazarusidestrconsts.srkmecviewthreads"
 msgid "View Threads"
 msgstr "Показать потоки исполнения"
 
@@ -18364,6 +18421,7 @@ msgid "Toggle &Breakpoint"
 msgstr "П&ереключить точку останова"
 
 #: lazarusidestrconsts.uemviewcallstack
+msgctxt "lazarusidestrconsts.uemviewcallstack"
 msgid "View Call Stack"
 msgstr "Показать стек вызовов"
 

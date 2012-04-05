@@ -7685,6 +7685,14 @@ msgctxt "lazarusidestrconsts.lisdown"
 msgid "Down"
 msgstr "Abaixo"
 
+#: lazarusidestrconsts.lisdowngrade
+msgid "Downgrade"
+msgstr ""
+
+#: lazarusidestrconsts.lisdowngradeconfiguration
+msgid "Downgrade configuration"
+msgstr ""
+
 #: lazarusidestrconsts.lisdoyoustillwanttocreatethenewproject
 msgid "Do you still want to create the new project?"
 msgstr ""
@@ -9091,6 +9099,10 @@ msgstr "Salvar para arquivo"
 msgid "Save to recent"
 msgstr "Salvar no recente"
 
+#: lazarusidestrconsts.lisifyouwanttousetwodifferentlazarusversionsyoumustst
+msgid "If you want to use two different Lazarus versions you must start the second Lazarus with the command line parameter primary-config-path or pcp.%s%sFor example:%s"
+msgstr ""
+
 #: lazarusidestrconsts.lisignoreall
 msgid "Ignore all"
 msgstr "Ignorar tudo"
@@ -10018,15 +10030,23 @@ msgid "Toggle marker 9"
 msgstr "Alternar marcador 9"
 
 #: lazarusidestrconsts.liskmtoggleviewassembler
-msgid "Toggle view Assembler"
+#, fuzzy
+#| msgid "Toggle view Assembler"
+msgctxt "lazarusidestrconsts.liskmtoggleviewassembler"
+msgid "View Assembler"
 msgstr "Alternar exibição Assembler"
 
 #: lazarusidestrconsts.liskmtoggleviewbreakpoints
-msgid "Toggle view Breakpoints"
+#, fuzzy
+#| msgid "Toggle view Breakpoints"
+msgid "View Breakpoints"
 msgstr "Alternar exibição pontos de parada"
 
 #: lazarusidestrconsts.liskmtoggleviewcallstack
-msgid "Toggle view Call Stack"
+#, fuzzy
+#| msgid "Toggle view Call Stack"
+msgctxt "lazarusidestrconsts.liskmtoggleviewcallstack"
+msgid "View Call Stack"
 msgstr "Alternar exibição chamada de pilha"
 
 #: lazarusidestrconsts.liskmtoggleviewcodeexplorer
@@ -10040,11 +10060,15 @@ msgid "Toggle View Component Palette"
 msgstr "Alternar exibição paleta de componentes"
 
 #: lazarusidestrconsts.liskmtoggleviewdebugevents
-msgid "Toggle view Debuger Event Log"
+#, fuzzy
+#| msgid "Toggle view Debuger Event Log"
+msgid "View Debuger Event Log"
 msgstr "Alternar exibição Histórico Eventos Depuração"
 
 #: lazarusidestrconsts.liskmtoggleviewdebuggeroutput
-msgid "Toggle view Debugger Output"
+#, fuzzy
+#| msgid "Toggle view Debugger Output"
+msgid "View Debugger Output"
 msgstr "Alternar exibição Saída do Depurador"
 
 #: lazarusidestrconsts.liskmtoggleviewdocumentationeditor
@@ -10052,7 +10076,8 @@ msgid "Toggle view Documentation Editor"
 msgstr "Alternar exibição Editor de Documentação"
 
 #: lazarusidestrconsts.liskmtoggleviewhistory
-msgid "Toggle view History"
+msgctxt "lazarusidestrconsts.liskmtoggleviewhistory"
+msgid "View History"
 msgstr ""
 
 #: lazarusidestrconsts.liskmtoggleviewidespeedbuttons
@@ -10060,7 +10085,9 @@ msgid "Toggle view IDE speed buttons"
 msgstr "Alternar exibição botões da IDE"
 
 #: lazarusidestrconsts.liskmtoggleviewlocalvariables
-msgid "Toggle view Local Variables"
+#, fuzzy
+#| msgid "Toggle view Local Variables"
+msgid "View Local Variables"
 msgstr "Alternar exibição Variáveis Locais"
 
 #: lazarusidestrconsts.liskmtoggleviewmessages
@@ -10072,11 +10099,14 @@ msgid "Toggle view Object Inspector"
 msgstr "Alternar exibição Inspetor de Objetos"
 
 #: lazarusidestrconsts.liskmtoggleviewpseudoterminal
-msgid "Toggle view Terminal Output"
+msgctxt "lazarusidestrconsts.liskmtoggleviewpseudoterminal"
+msgid "View Terminal Output"
 msgstr ""
 
 #: lazarusidestrconsts.liskmtoggleviewregisters
-msgid "Toggle view Registers"
+#, fuzzy
+#| msgid "Toggle view Registers"
+msgid "View Registers"
 msgstr "Alternar exibição Registradores"
 
 #: lazarusidestrconsts.liskmtoggleviewsearchresults
@@ -10088,11 +10118,14 @@ msgid "Toggle view Source Editor"
 msgstr "Alternar exibição Editor Código"
 
 #: lazarusidestrconsts.liskmtoggleviewthreads
-msgid "Toggle view Threads"
+msgctxt "lazarusidestrconsts.liskmtoggleviewthreads"
+msgid "View Threads"
 msgstr ""
 
 #: lazarusidestrconsts.liskmtoggleviewwatches
-msgid "Toggle view Watches"
+#, fuzzy
+#| msgid "Toggle view Watches"
+msgid "View Watches"
 msgstr "Alternar exibição Observadores"
 
 #: lazarusidestrconsts.liskmviewjumphistory
@@ -13978,6 +14011,10 @@ msgstr "diretório primário de configuração, onde Lazarus armazena seus arqui
 msgid "Primary config path"
 msgstr "Caminho primário configuração"
 
+#: lazarusidestrconsts.lisprior
+msgid "prior %s"
+msgstr ""
+
 #: lazarusidestrconsts.lisprivate
 msgid "Private"
 msgstr "Privado"
@@ -15435,6 +15472,10 @@ msgstr "O componente %s é herdado de %s.%sPara renomear um componente herdado a
 msgid "The component name must be unique in all components on the form/datamodule.The name is compared case insensitive like a normal pascal identifier."
 msgstr "O nome do componente deve ser único entre todos os componentes no formulário/\"datamodule\".O nome é comparado de forma insensível à caixa como um identificador pascal normal."
 
+#: lazarusidestrconsts.listheconfigurationwillbedowngradedconverted
+msgid "The configuration will be downgraded/converted."
+msgstr ""
+
 #: lazarusidestrconsts.listhecontainsanotexistingdirectory
 msgid "The %s contains a not existing directory:%s%s"
 msgstr "O %s contém um diretório inexistente:%s%s"
@@ -15649,6 +15690,10 @@ msgstr "O novo arquivo de inclusão não está no caminho de busca.%sAdicionar d
 #: lazarusidestrconsts.listhenewunitisnotyetintheunitsearchpathadddirectory
 msgid "The new unit is not yet in the unit search path.%sAdd directory %s?"
 msgstr "A nova unidade ainda não está no caminho de unidades.%sAdicionar diretório %s?"
+
+#: lazarusidestrconsts.listheoldconfigurationwillbeupgraded
+msgid "The old configuration will be upgraded."
+msgstr ""
 
 #: lazarusidestrconsts.listheothersourcescontainsadirectorywhichisalreadyint
 msgid "The \"Other sources\" contains a directory which is already in the \"Other unit files\".%s%s"
@@ -16581,6 +16626,14 @@ msgstr "Acima"
 msgid "Update references?"
 msgstr "Atualizar referências?"
 
+#: lazarusidestrconsts.lisupgrade
+msgid "Upgrade"
+msgstr ""
+
+#: lazarusidestrconsts.lisupgradeconfiguration
+msgid "Upgrade configuration"
+msgstr ""
+
 #: lazarusidestrconsts.lisuppercasestring
 msgid "uppercase string"
 msgstr "seq.caracteres maiúsculas"
@@ -16730,8 +16783,9 @@ msgid "View Source"
 msgstr ""
 
 #: lazarusidestrconsts.lisviewsourcedisass
+msgctxt "lazarusidestrconsts.lisviewsourcedisass"
 msgid "View Assembler"
-msgstr ""
+msgstr "Alternar exibição Assembler"
 
 #: lazarusidestrconsts.lisviewsourcelfm
 msgid "View Source (.lfm)"
@@ -16812,6 +16866,10 @@ msgstr ""
 
 #: lazarusidestrconsts.liswelcometolazaruside
 msgid "Welcome to Lazarus IDE %s"
+msgstr ""
+
+#: lazarusidestrconsts.liswelcometolazarusthereisalreadyaconfigurationfromve
+msgid "Welcome to Lazarus %s%s%sThere is already a configuration from version %s in%s%s%s"
 msgstr ""
 
 #: lazarusidestrconsts.liswhenaunitisrenamedupdatereferences
@@ -17981,7 +18039,9 @@ msgid "quick compile, no linking"
 msgstr "compilação rápida, sem vinculação"
 
 #: lazarusidestrconsts.srkmecremovebreakpoint
-msgid "remove break point"
+#, fuzzy
+#| msgid "remove break point"
+msgid "remove breakpoint"
 msgstr "remover ponto de parada"
 
 #: lazarusidestrconsts.srkmecremoveemptymethods
@@ -18298,7 +18358,9 @@ msgid "View assembler"
 msgstr "Exibir assembler"
 
 #: lazarusidestrconsts.srkmectogglebreakpoint
-msgid "toggle break point"
+#, fuzzy
+#| msgid "toggle break point"
+msgid "toggle breakpoint"
 msgstr "alternar ponto de parada"
 
 #: lazarusidestrconsts.srkmectogglebreakpoints
@@ -18419,10 +18481,12 @@ msgid "View forms"
 msgstr "Exibir formulários"
 
 #: lazarusidestrconsts.srkmecviewhistory
+msgctxt "lazarusidestrconsts.srkmecviewhistory"
 msgid "View History"
 msgstr ""
 
 #: lazarusidestrconsts.srkmecviewpseudoterminal
+msgctxt "lazarusidestrconsts.srkmecviewpseudoterminal"
 msgid "View Terminal Output"
 msgstr ""
 
@@ -18431,6 +18495,7 @@ msgid "View Tab Order"
 msgstr ""
 
 #: lazarusidestrconsts.srkmecviewthreads
+msgctxt "lazarusidestrconsts.srkmecviewthreads"
 msgid "View Threads"
 msgstr ""
 
@@ -18731,6 +18796,7 @@ msgid "Toggle &Breakpoint"
 msgstr "&Alternar Pontos de Parada"
 
 #: lazarusidestrconsts.uemviewcallstack
+msgctxt "lazarusidestrconsts.uemviewcallstack"
 msgid "View Call Stack"
 msgstr "Exibir Chamada de Pilha"
 

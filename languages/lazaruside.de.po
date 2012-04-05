@@ -7575,6 +7575,14 @@ msgctxt "lazarusidestrconsts.lisdown"
 msgid "Down"
 msgstr "Hinunter"
 
+#: lazarusidestrconsts.lisdowngrade
+msgid "Downgrade"
+msgstr ""
+
+#: lazarusidestrconsts.lisdowngradeconfiguration
+msgid "Downgrade configuration"
+msgstr ""
+
 #: lazarusidestrconsts.lisdoyoustillwanttocreatethenewproject
 msgid "Do you still want to create the new project?"
 msgstr "Wollen Sie das neue Projekt immer noch erzeugen?"
@@ -8971,6 +8979,10 @@ msgstr "In Datei sichern"
 msgid "Save to recent"
 msgstr "Zu den zuletzt geöffneten Dateien hinzufügen"
 
+#: lazarusidestrconsts.lisifyouwanttousetwodifferentlazarusversionsyoumustst
+msgid "If you want to use two different Lazarus versions you must start the second Lazarus with the command line parameter primary-config-path or pcp.%s%sFor example:%s"
+msgstr ""
+
 #: lazarusidestrconsts.lisignoreall
 msgid "Ignore all"
 msgstr "Alle übergehen"
@@ -9883,15 +9895,23 @@ msgid "Toggle marker 9"
 msgstr "Markerung 9 umschalten"
 
 #: lazarusidestrconsts.liskmtoggleviewassembler
-msgid "Toggle view Assembler"
+#, fuzzy
+#| msgid "Toggle view Assembler"
+msgctxt "lazarusidestrconsts.liskmtoggleviewassembler"
+msgid "View Assembler"
 msgstr "Assembleransicht umschalten"
 
 #: lazarusidestrconsts.liskmtoggleviewbreakpoints
-msgid "Toggle view Breakpoints"
+#, fuzzy
+#| msgid "Toggle view Breakpoints"
+msgid "View Breakpoints"
 msgstr "Ansicht der Haltepunkte umschalten"
 
 #: lazarusidestrconsts.liskmtoggleviewcallstack
-msgid "Toggle view Call Stack"
+#, fuzzy
+#| msgid "Toggle view Call Stack"
+msgctxt "lazarusidestrconsts.liskmtoggleviewcallstack"
+msgid "View Call Stack"
 msgstr "Ansicht des Aufrufstacks umschalten"
 
 #: lazarusidestrconsts.liskmtoggleviewcodeexplorer
@@ -9904,12 +9924,15 @@ msgid "Toggle View Component Palette"
 msgstr "Ansicht der Komponentenpalette umschalten"
 
 #: lazarusidestrconsts.liskmtoggleviewdebugevents
-#| msgid "Toggle view Debug Events"
-msgid "Toggle view Debuger Event Log"
+#, fuzzy
+#| msgid "Toggle view Debuger Event Log"
+msgid "View Debuger Event Log"
 msgstr "Ansicht der Debug-Ereignisse umschalten"
 
 #: lazarusidestrconsts.liskmtoggleviewdebuggeroutput
-msgid "Toggle view Debugger Output"
+#, fuzzy
+#| msgid "Toggle view Debugger Output"
+msgid "View Debugger Output"
 msgstr "Ansicht der Debugger-Ausgabe umschalten"
 
 #: lazarusidestrconsts.liskmtoggleviewdocumentationeditor
@@ -9917,7 +9940,10 @@ msgid "Toggle view Documentation Editor"
 msgstr "Ansicht des Dokumentationseditor umschalten"
 
 #: lazarusidestrconsts.liskmtoggleviewhistory
-msgid "Toggle view History"
+#, fuzzy
+#| msgid "Toggle view History"
+msgctxt "lazarusidestrconsts.liskmtoggleviewhistory"
+msgid "View History"
 msgstr "Ansicht der Historie umschalten"
 
 #: lazarusidestrconsts.liskmtoggleviewidespeedbuttons
@@ -9925,7 +9951,9 @@ msgid "Toggle view IDE speed buttons"
 msgstr "Ansicht der  IDE-Speedbuttons umschalten"
 
 #: lazarusidestrconsts.liskmtoggleviewlocalvariables
-msgid "Toggle view Local Variables"
+#, fuzzy
+#| msgid "Toggle view Local Variables"
+msgid "View Local Variables"
 msgstr "Ansicht der lokalen Variablen umschalten"
 
 #: lazarusidestrconsts.liskmtoggleviewmessages
@@ -9937,11 +9965,16 @@ msgid "Toggle view Object Inspector"
 msgstr "Ansicht des Objektinspektors umschalten"
 
 #: lazarusidestrconsts.liskmtoggleviewpseudoterminal
-msgid "Toggle view Terminal Output"
+#, fuzzy
+#| msgid "Toggle view Terminal Output"
+msgctxt "lazarusidestrconsts.liskmtoggleviewpseudoterminal"
+msgid "View Terminal Output"
 msgstr "Ansicht der Terminalausgabe umschalten"
 
 #: lazarusidestrconsts.liskmtoggleviewregisters
-msgid "Toggle view Registers"
+#, fuzzy
+#| msgid "Toggle view Registers"
+msgid "View Registers"
 msgstr "Registeransicht umschalten"
 
 #: lazarusidestrconsts.liskmtoggleviewsearchresults
@@ -9953,11 +9986,16 @@ msgid "Toggle view Source Editor"
 msgstr "Ansicht des Quelltexteditors umschalten"
 
 #: lazarusidestrconsts.liskmtoggleviewthreads
-msgid "Toggle view Threads"
+#, fuzzy
+#| msgid "Toggle view Threads"
+msgctxt "lazarusidestrconsts.liskmtoggleviewthreads"
+msgid "View Threads"
 msgstr "Ansicht der Threads umschalten"
 
 #: lazarusidestrconsts.liskmtoggleviewwatches
-msgid "Toggle view Watches"
+#, fuzzy
+#| msgid "Toggle view Watches"
+msgid "View Watches"
 msgstr "Ansicht der überwachten Ausdrücke umschalten"
 
 #: lazarusidestrconsts.liskmviewjumphistory
@@ -13740,6 +13778,10 @@ msgstr "primäres Konfigurationsverzeichnis in dem Lazarus seine Konfigurationsd
 msgid "Primary config path"
 msgstr "Primärer Konfigurationspfad"
 
+#: lazarusidestrconsts.lisprior
+msgid "prior %s"
+msgstr ""
+
 #: lazarusidestrconsts.lisprivate
 msgid "Private"
 msgstr "Private"
@@ -15189,6 +15231,10 @@ msgstr "Die Komponente %s ist von %s abgeleitet.%sUm eine abgeleitete Komponente
 msgid "The component name must be unique in all components on the form/datamodule.The name is compared case insensitive like a normal pascal identifier."
 msgstr "Alle Komponenten auf dem Form/Datamodul müssen einen eindeutigen Namen besitzen. Er ist wie jeder Pascal-Bezeichner schreibweisenunabhängig."
 
+#: lazarusidestrconsts.listheconfigurationwillbedowngradedconverted
+msgid "The configuration will be downgraded/converted."
+msgstr ""
+
 #: lazarusidestrconsts.listhecontainsanotexistingdirectory
 msgid "The %s contains a not existing directory:%s%s"
 msgstr "%s enthält ein nicht existierendes Verzeichnis:%s%s"
@@ -15394,6 +15440,10 @@ msgstr "Die neue Include-Datei befindet sich noch nicht im Include-Suchpfad.%sVe
 #: lazarusidestrconsts.listhenewunitisnotyetintheunitsearchpathadddirectory
 msgid "The new unit is not yet in the unit search path.%sAdd directory %s?"
 msgstr "Die neue Unit ist noch nicht im Unit-Suchpfad.%sVerzeichnis hinzufügen %s?"
+
+#: lazarusidestrconsts.listheoldconfigurationwillbeupgraded
+msgid "The old configuration will be upgraded."
+msgstr ""
 
 #: lazarusidestrconsts.listheothersourcescontainsadirectorywhichisalreadyint
 msgid "The \"Other sources\" contains a directory which is already in the \"Other unit files\".%s%s"
@@ -16324,6 +16374,14 @@ msgstr "Hoch"
 msgid "Update references?"
 msgstr "Verweise aktualisieren?"
 
+#: lazarusidestrconsts.lisupgrade
+msgid "Upgrade"
+msgstr ""
+
+#: lazarusidestrconsts.lisupgradeconfiguration
+msgid "Upgrade configuration"
+msgstr ""
+
 #: lazarusidestrconsts.lisuppercasestring
 msgid "uppercase string"
 msgstr "Großbuchstabige Zeichenkette"
@@ -16469,6 +16527,7 @@ msgid "View Source"
 msgstr "Quelle anzeigen"
 
 #: lazarusidestrconsts.lisviewsourcedisass
+msgctxt "lazarusidestrconsts.lisviewsourcedisass"
 msgid "View Assembler"
 msgstr "Assembler anzeigen"
 
@@ -16552,6 +16611,10 @@ msgstr "&Datenhaltepunkt erstellen ..."
 #: lazarusidestrconsts.liswelcometolazaruside
 msgid "Welcome to Lazarus IDE %s"
 msgstr "Willkommen zur Lazarus IDE %s"
+
+#: lazarusidestrconsts.liswelcometolazarusthereisalreadyaconfigurationfromve
+msgid "Welcome to Lazarus %s%s%sThere is already a configuration from version %s in%s%s%s"
+msgstr ""
 
 #: lazarusidestrconsts.liswhenaunitisrenamedupdatereferences
 #| msgid "When a unit is renamed, update references ..."
@@ -17704,7 +17767,9 @@ msgid "quick compile, no linking"
 msgstr "Schnelles Kompilieren, kein Linken"
 
 #: lazarusidestrconsts.srkmecremovebreakpoint
-msgid "remove break point"
+#, fuzzy
+#| msgid "remove break point"
+msgid "remove breakpoint"
 msgstr "Haltepunkt entfernen"
 
 #: lazarusidestrconsts.srkmecremoveemptymethods
@@ -18014,7 +18079,9 @@ msgid "View assembler"
 msgstr "Assembler anzeigen"
 
 #: lazarusidestrconsts.srkmectogglebreakpoint
-msgid "toggle break point"
+#, fuzzy
+#| msgid "toggle break point"
+msgid "toggle breakpoint"
 msgstr "Haltepunkt umschalten"
 
 #: lazarusidestrconsts.srkmectogglebreakpoints
@@ -18136,10 +18203,12 @@ msgid "View forms"
 msgstr "Formulare anzeigen"
 
 #: lazarusidestrconsts.srkmecviewhistory
+msgctxt "lazarusidestrconsts.srkmecviewhistory"
 msgid "View History"
 msgstr "Historie anzeigen"
 
 #: lazarusidestrconsts.srkmecviewpseudoterminal
+msgctxt "lazarusidestrconsts.srkmecviewpseudoterminal"
 msgid "View Terminal Output"
 msgstr "Zeige die Terminalausgaben"
 
@@ -18148,6 +18217,7 @@ msgid "View Tab Order"
 msgstr "Tabulatorreihenfolge anzeigen"
 
 #: lazarusidestrconsts.srkmecviewthreads
+msgctxt "lazarusidestrconsts.srkmecviewthreads"
 msgid "View Threads"
 msgstr "Zeige die Threads"
 
@@ -18433,6 +18503,7 @@ msgid "Toggle &Breakpoint"
 msgstr "Haltepunkt umschal&ten"
 
 #: lazarusidestrconsts.uemviewcallstack
+msgctxt "lazarusidestrconsts.uemviewcallstack"
 msgid "View Call Stack"
 msgstr "Aufrufstack anzeigen"
 

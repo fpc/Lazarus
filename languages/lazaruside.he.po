@@ -7663,6 +7663,14 @@ msgctxt "lazarusidestrconsts.lisdown"
 msgid "Down"
 msgstr "למטה"
 
+#: lazarusidestrconsts.lisdowngrade
+msgid "Downgrade"
+msgstr ""
+
+#: lazarusidestrconsts.lisdowngradeconfiguration
+msgid "Downgrade configuration"
+msgstr ""
+
 #: lazarusidestrconsts.lisdoyoustillwanttocreatethenewproject
 msgid "Do you still want to create the new project?"
 msgstr ""
@@ -9066,6 +9074,10 @@ msgstr "שמור לקובץ"
 msgid "Save to recent"
 msgstr "שמור את המצב הקודם האחרון"
 
+#: lazarusidestrconsts.lisifyouwanttousetwodifferentlazarusversionsyoumustst
+msgid "If you want to use two different Lazarus versions you must start the second Lazarus with the command line parameter primary-config-path or pcp.%s%sFor example:%s"
+msgstr ""
+
 #: lazarusidestrconsts.lisignoreall
 msgid "Ignore all"
 msgstr "התעלם מהכל"
@@ -9995,15 +10007,23 @@ msgid "Toggle marker 9"
 msgstr "החלף סמן 9"
 
 #: lazarusidestrconsts.liskmtoggleviewassembler
-msgid "Toggle view Assembler"
+#, fuzzy
+#| msgid "Toggle view Assembler"
+msgctxt "lazarusidestrconsts.liskmtoggleviewassembler"
+msgid "View Assembler"
 msgstr "החלף (הצג/הסתר) מהדר האסמבלי"
 
 #: lazarusidestrconsts.liskmtoggleviewbreakpoints
-msgid "Toggle view Breakpoints"
+#, fuzzy
+#| msgid "Toggle view Breakpoints"
+msgid "View Breakpoints"
 msgstr "החלף (הצג/הסתר) נקודות עצירה"
 
 #: lazarusidestrconsts.liskmtoggleviewcallstack
-msgid "Toggle view Call Stack"
+#, fuzzy
+#| msgid "Toggle view Call Stack"
+msgctxt "lazarusidestrconsts.liskmtoggleviewcallstack"
+msgid "View Call Stack"
 msgstr "החלף (הצג/הסתר) קריאות למחסנית"
 
 #: lazarusidestrconsts.liskmtoggleviewcodeexplorer
@@ -10017,11 +10037,15 @@ msgid "Toggle View Component Palette"
 msgstr "החלף (הצג/הסתר) לוח הרכיבים"
 
 #: lazarusidestrconsts.liskmtoggleviewdebugevents
-msgid "Toggle view Debuger Event Log"
+#, fuzzy
+#| msgid "Toggle view Debuger Event Log"
+msgid "View Debuger Event Log"
 msgstr "החלף (הצג/הסתר) לוג ארועי מנפה השגיאות"
 
 #: lazarusidestrconsts.liskmtoggleviewdebuggeroutput
-msgid "Toggle view Debugger Output"
+#, fuzzy
+#| msgid "Toggle view Debugger Output"
+msgid "View Debugger Output"
 msgstr "החלף (הצג/הסתר) פלט מנפה השגיאות"
 
 #: lazarusidestrconsts.liskmtoggleviewdocumentationeditor
@@ -10029,7 +10053,8 @@ msgid "Toggle view Documentation Editor"
 msgstr "החלף (הצג/הסתר) עורך התיעוד"
 
 #: lazarusidestrconsts.liskmtoggleviewhistory
-msgid "Toggle view History"
+msgctxt "lazarusidestrconsts.liskmtoggleviewhistory"
+msgid "View History"
 msgstr ""
 
 #: lazarusidestrconsts.liskmtoggleviewidespeedbuttons
@@ -10037,7 +10062,9 @@ msgid "Toggle view IDE speed buttons"
 msgstr "החלף (הצג/הסתר) לחצנים מהירים של ה IDE"
 
 #: lazarusidestrconsts.liskmtoggleviewlocalvariables
-msgid "Toggle view Local Variables"
+#, fuzzy
+#| msgid "Toggle view Local Variables"
+msgid "View Local Variables"
 msgstr "החלף (הצג/הסתר) משתנים מקומיים"
 
 #: lazarusidestrconsts.liskmtoggleviewmessages
@@ -10049,11 +10076,14 @@ msgid "Toggle view Object Inspector"
 msgstr "החלף (הצג/הסתר) צופה העצמים"
 
 #: lazarusidestrconsts.liskmtoggleviewpseudoterminal
-msgid "Toggle view Terminal Output"
+msgctxt "lazarusidestrconsts.liskmtoggleviewpseudoterminal"
+msgid "View Terminal Output"
 msgstr ""
 
 #: lazarusidestrconsts.liskmtoggleviewregisters
-msgid "Toggle view Registers"
+#, fuzzy
+#| msgid "Toggle view Registers"
+msgid "View Registers"
 msgstr "החלף (הצג/הסתר) אוגרים"
 
 #: lazarusidestrconsts.liskmtoggleviewsearchresults
@@ -10065,11 +10095,14 @@ msgid "Toggle view Source Editor"
 msgstr "החלף (הצג/הסתר) את עורך הקוד"
 
 #: lazarusidestrconsts.liskmtoggleviewthreads
-msgid "Toggle view Threads"
+msgctxt "lazarusidestrconsts.liskmtoggleviewthreads"
+msgid "View Threads"
 msgstr ""
 
 #: lazarusidestrconsts.liskmtoggleviewwatches
-msgid "Toggle view Watches"
+#, fuzzy
+#| msgid "Toggle view Watches"
+msgid "View Watches"
 msgstr "החלף (הצג/הסתר) משגיחים"
 
 #: lazarusidestrconsts.liskmviewjumphistory
@@ -13969,6 +14002,10 @@ msgstr "הספרייה הראשית בה לזרוס שומר את קבצי הה�
 msgid "Primary config path"
 msgstr ""
 
+#: lazarusidestrconsts.lisprior
+msgid "prior %s"
+msgstr ""
+
 #: lazarusidestrconsts.lisprivate
 msgid "Private"
 msgstr "פרטי"
@@ -15427,6 +15464,10 @@ msgstr "הרכיב s% הוא ירושה מ s%. כדי לשנות שם רכיב �
 msgid "The component name must be unique in all components on the form/datamodule.The name is compared case insensitive like a normal pascal identifier."
 msgstr "שם הרכיב חייב להיות יחודי בין כל הרכיבים של הטופס/מודול הנתונים.השם מושווה ללא רגישות לראשיות כמו כל מזהה פסקל נורמלי."
 
+#: lazarusidestrconsts.listheconfigurationwillbedowngradedconverted
+msgid "The configuration will be downgraded/converted."
+msgstr ""
+
 #: lazarusidestrconsts.listhecontainsanotexistingdirectory
 msgid "The %s contains a not existing directory:%s%s"
 msgstr "ה %s מכיל תיקייה בלתי קיימת %s%s"
@@ -15641,6 +15682,10 @@ msgstr "קובץ \"כלול\" החדש עדיין לא בנתיב החיפוש. 
 #: lazarusidestrconsts.listhenewunitisnotyetintheunitsearchpathadddirectory
 msgid "The new unit is not yet in the unit search path.%sAdd directory %s?"
 msgstr "היחידה החדשה עדיין אינה בנתיב חיפוש היחידות. להוסיף תיקייה?"
+
+#: lazarusidestrconsts.listheoldconfigurationwillbeupgraded
+msgid "The old configuration will be upgraded."
+msgstr ""
 
 #: lazarusidestrconsts.listheothersourcescontainsadirectorywhichisalreadyint
 msgid "The \"Other sources\" contains a directory which is already in the \"Other unit files\".%s%s"
@@ -16571,6 +16616,14 @@ msgstr "למעלה"
 msgid "Update references?"
 msgstr "עדכן מקורות"
 
+#: lazarusidestrconsts.lisupgrade
+msgid "Upgrade"
+msgstr ""
+
+#: lazarusidestrconsts.lisupgradeconfiguration
+msgid "Upgrade configuration"
+msgstr ""
+
 #: lazarusidestrconsts.lisuppercasestring
 msgid "uppercase string"
 msgstr "מחרוזת באותיות ראשיות"
@@ -16721,8 +16774,9 @@ msgid "View Source"
 msgstr ""
 
 #: lazarusidestrconsts.lisviewsourcedisass
+msgctxt "lazarusidestrconsts.lisviewsourcedisass"
 msgid "View Assembler"
-msgstr ""
+msgstr "החלף (הצג/הסתר) מהדר האסמבלי"
 
 #: lazarusidestrconsts.lisviewsourcelfm
 msgid "View Source (.lfm)"
@@ -16803,6 +16857,10 @@ msgstr ""
 
 #: lazarusidestrconsts.liswelcometolazaruside
 msgid "Welcome to Lazarus IDE %s"
+msgstr ""
+
+#: lazarusidestrconsts.liswelcometolazarusthereisalreadyaconfigurationfromve
+msgid "Welcome to Lazarus %s%s%sThere is already a configuration from version %s in%s%s%s"
 msgstr ""
 
 #: lazarusidestrconsts.liswhenaunitisrenamedupdatereferences
@@ -17978,7 +18036,9 @@ msgid "quick compile, no linking"
 msgstr "הידור מהיר ללא קישור"
 
 #: lazarusidestrconsts.srkmecremovebreakpoint
-msgid "remove break point"
+#, fuzzy
+#| msgid "remove break point"
+msgid "remove breakpoint"
 msgstr "הסר נקודת עצירה"
 
 #: lazarusidestrconsts.srkmecremoveemptymethods
@@ -18295,7 +18355,9 @@ msgid "View assembler"
 msgstr "הצג אסמבלר"
 
 #: lazarusidestrconsts.srkmectogglebreakpoint
-msgid "toggle break point"
+#, fuzzy
+#| msgid "toggle break point"
+msgid "toggle breakpoint"
 msgstr "החלף נקודת עצירה"
 
 #: lazarusidestrconsts.srkmectogglebreakpoints
@@ -18418,10 +18480,12 @@ msgid "View forms"
 msgstr "הצג טפסים"
 
 #: lazarusidestrconsts.srkmecviewhistory
+msgctxt "lazarusidestrconsts.srkmecviewhistory"
 msgid "View History"
 msgstr ""
 
 #: lazarusidestrconsts.srkmecviewpseudoterminal
+msgctxt "lazarusidestrconsts.srkmecviewpseudoterminal"
 msgid "View Terminal Output"
 msgstr ""
 
@@ -18430,6 +18494,7 @@ msgid "View Tab Order"
 msgstr ""
 
 #: lazarusidestrconsts.srkmecviewthreads
+msgctxt "lazarusidestrconsts.srkmecviewthreads"
 msgid "View Threads"
 msgstr ""
 
@@ -18730,6 +18795,7 @@ msgid "Toggle &Breakpoint"
 msgstr "החלף נקודת עצירה"
 
 #: lazarusidestrconsts.uemviewcallstack
+msgctxt "lazarusidestrconsts.uemviewcallstack"
 msgid "View Call Stack"
 msgstr "הצג את מחסנית הקריאות"
 

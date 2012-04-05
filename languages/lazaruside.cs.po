@@ -7343,6 +7343,14 @@ msgctxt "lazarusidestrconsts.lisdown"
 msgid "Down"
 msgstr "Dolů"
 
+#: lazarusidestrconsts.lisdowngrade
+msgid "Downgrade"
+msgstr ""
+
+#: lazarusidestrconsts.lisdowngradeconfiguration
+msgid "Downgrade configuration"
+msgstr ""
+
 #: lazarusidestrconsts.lisdoyoustillwanttocreatethenewproject
 msgid "Do you still want to create the new project?"
 msgstr "Stále si přejete vytvořit nový projekt?"
@@ -8730,6 +8738,10 @@ msgstr "Uložit soubor"
 msgid "Save to recent"
 msgstr "Uložit do nedávných"
 
+#: lazarusidestrconsts.lisifyouwanttousetwodifferentlazarusversionsyoumustst
+msgid "If you want to use two different Lazarus versions you must start the second Lazarus with the command line parameter primary-config-path or pcp.%s%sFor example:%s"
+msgstr ""
+
 #: lazarusidestrconsts.lisignoreall
 msgid "Ignore all"
 msgstr "Ignorovat vše"
@@ -9615,15 +9627,23 @@ msgid "Toggle marker 9"
 msgstr "Přepnout značkovač 9"
 
 #: lazarusidestrconsts.liskmtoggleviewassembler
-msgid "Toggle view Assembler"
+#, fuzzy
+#| msgid "Toggle view Assembler"
+msgctxt "lazarusidestrconsts.liskmtoggleviewassembler"
+msgid "View Assembler"
 msgstr "Přepnout zobrazení Assembleru"
 
 #: lazarusidestrconsts.liskmtoggleviewbreakpoints
-msgid "Toggle view Breakpoints"
+#, fuzzy
+#| msgid "Toggle view Breakpoints"
+msgid "View Breakpoints"
 msgstr "Prohodit zobrazení bodů přerušení"
 
 #: lazarusidestrconsts.liskmtoggleviewcallstack
-msgid "Toggle view Call Stack"
+#, fuzzy
+#| msgid "Toggle view Call Stack"
+msgctxt "lazarusidestrconsts.liskmtoggleviewcallstack"
+msgid "View Call Stack"
 msgstr "Přepnout zobrazení Zásobníku volání"
 
 #: lazarusidestrconsts.liskmtoggleviewcodeexplorer
@@ -9635,11 +9655,15 @@ msgid "Toggle View Component Palette"
 msgstr "Přepnout zobrazení palety komponent"
 
 #: lazarusidestrconsts.liskmtoggleviewdebugevents
-msgid "Toggle view Debuger Event Log"
+#, fuzzy
+#| msgid "Toggle view Debuger Event Log"
+msgid "View Debuger Event Log"
 msgstr "Přepnout zobrazení Záznamu událostí ladiče"
 
 #: lazarusidestrconsts.liskmtoggleviewdebuggeroutput
-msgid "Toggle view Debugger Output"
+#, fuzzy
+#| msgid "Toggle view Debugger Output"
+msgid "View Debugger Output"
 msgstr "Přepnout zobrazení Ladícího výstupu"
 
 #: lazarusidestrconsts.liskmtoggleviewdocumentationeditor
@@ -9647,7 +9671,10 @@ msgid "Toggle view Documentation Editor"
 msgstr "Přepnout zobrazení Editoru dokumentace"
 
 #: lazarusidestrconsts.liskmtoggleviewhistory
-msgid "Toggle view History"
+#, fuzzy
+#| msgid "Toggle view History"
+msgctxt "lazarusidestrconsts.liskmtoggleviewhistory"
+msgid "View History"
 msgstr "Přepnout zobrazení historie"
 
 #: lazarusidestrconsts.liskmtoggleviewidespeedbuttons
@@ -9655,7 +9682,9 @@ msgid "Toggle view IDE speed buttons"
 msgstr "Přepnout zobrazení Rychlých tlačítek IDE"
 
 #: lazarusidestrconsts.liskmtoggleviewlocalvariables
-msgid "Toggle view Local Variables"
+#, fuzzy
+#| msgid "Toggle view Local Variables"
+msgid "View Local Variables"
 msgstr "Přepnout zobrazení Místních proměnných"
 
 #: lazarusidestrconsts.liskmtoggleviewmessages
@@ -9667,11 +9696,16 @@ msgid "Toggle view Object Inspector"
 msgstr "Přepnout zobrazení Inspektoru objektů"
 
 #: lazarusidestrconsts.liskmtoggleviewpseudoterminal
-msgid "Toggle view Terminal Output"
+#, fuzzy
+#| msgid "Toggle view Terminal Output"
+msgctxt "lazarusidestrconsts.liskmtoggleviewpseudoterminal"
+msgid "View Terminal Output"
 msgstr "Přepnout zobrazení výstupu terminálu"
 
 #: lazarusidestrconsts.liskmtoggleviewregisters
-msgid "Toggle view Registers"
+#, fuzzy
+#| msgid "Toggle view Registers"
+msgid "View Registers"
 msgstr "Přepnout zobrazení Registrů"
 
 #: lazarusidestrconsts.liskmtoggleviewsearchresults
@@ -9683,11 +9717,16 @@ msgid "Toggle view Source Editor"
 msgstr "Přepnout zobrazení Zdrojového editoru"
 
 #: lazarusidestrconsts.liskmtoggleviewthreads
-msgid "Toggle view Threads"
+#, fuzzy
+#| msgid "Toggle view Threads"
+msgctxt "lazarusidestrconsts.liskmtoggleviewthreads"
+msgid "View Threads"
 msgstr "Přepnout zobrazení vláken"
 
 #: lazarusidestrconsts.liskmtoggleviewwatches
-msgid "Toggle view Watches"
+#, fuzzy
+#| msgid "Toggle view Watches"
+msgid "View Watches"
 msgstr "Přepnout zobrazení Sledování"
 
 #: lazarusidestrconsts.liskmviewjumphistory
@@ -13281,6 +13320,10 @@ msgstr "hlavní konfigurační složka, kde Lazarus uchovává své konfiguračn
 msgid "Primary config path"
 msgstr "Primární konfigurační cesta"
 
+#: lazarusidestrconsts.lisprior
+msgid "prior %s"
+msgstr ""
+
 #: lazarusidestrconsts.lisprivate
 msgid "Private"
 msgstr "Soukromý"
@@ -14701,6 +14744,10 @@ msgstr "Komponenta %s je zděděná z %s.%sKe přejmenování zděděné kompone
 msgid "The component name must be unique in all components on the form/datamodule.The name is compared case insensitive like a normal pascal identifier."
 msgstr "Jméno komponenty musí být jedinečné ve všech komponentách na formuláři/datovém modulu. Jméno je porovnáváno bez citlivosti na velikost písmen jako normální identifikátor pascalu."
 
+#: lazarusidestrconsts.listheconfigurationwillbedowngradedconverted
+msgid "The configuration will be downgraded/converted."
+msgstr ""
+
 #: lazarusidestrconsts.listhecontainsanotexistingdirectory
 msgid "The %s contains a not existing directory:%s%s"
 msgstr "%s obsahuje neexistující adresář:%s%s"
@@ -14897,6 +14944,10 @@ msgstr "Nový zahrnovaný soubor ještě není ve vyhledávací cestě zahrnutí
 #: lazarusidestrconsts.listhenewunitisnotyetintheunitsearchpathadddirectory
 msgid "The new unit is not yet in the unit search path.%sAdd directory %s?"
 msgstr "Nová jednotka zatím není v cestě hledání jednotek.%sPřidat adresář %s?"
+
+#: lazarusidestrconsts.listheoldconfigurationwillbeupgraded
+msgid "The old configuration will be upgraded."
+msgstr ""
 
 #: lazarusidestrconsts.listheothersourcescontainsadirectorywhichisalreadyint
 msgid "The \"Other sources\" contains a directory which is already in the \"Other unit files\".%s%s"
@@ -15821,6 +15872,14 @@ msgstr "Nahoru"
 msgid "Update references?"
 msgstr "Aktualizovat odkazy?"
 
+#: lazarusidestrconsts.lisupgrade
+msgid "Upgrade"
+msgstr ""
+
+#: lazarusidestrconsts.lisupgradeconfiguration
+msgid "Upgrade configuration"
+msgstr ""
+
 #: lazarusidestrconsts.lisuppercasestring
 msgid "uppercase string"
 msgstr "řetězec velkými písmeny"
@@ -15961,6 +16020,7 @@ msgid "View Source"
 msgstr "Zobrazit zdroje"
 
 #: lazarusidestrconsts.lisviewsourcedisass
+msgctxt "lazarusidestrconsts.lisviewsourcedisass"
 msgid "View Assembler"
 msgstr "Zobrazit assembler"
 
@@ -16044,6 +16104,10 @@ msgstr "Vytvořit data/Sledovat bod přerušení ..."
 #: lazarusidestrconsts.liswelcometolazaruside
 msgid "Welcome to Lazarus IDE %s"
 msgstr "Vítejte v Lazarus IDE %s"
+
+#: lazarusidestrconsts.liswelcometolazarusthereisalreadyaconfigurationfromve
+msgid "Welcome to Lazarus %s%s%sThere is already a configuration from version %s in%s%s%s"
+msgstr ""
 
 #: lazarusidestrconsts.liswhenaunitisrenamedupdatereferences
 msgid "When a unit is renamed, update references"
@@ -17165,7 +17229,9 @@ msgid "quick compile, no linking"
 msgstr "rychlý překlad, bez spojení"
 
 #: lazarusidestrconsts.srkmecremovebreakpoint
-msgid "remove break point"
+#, fuzzy
+#| msgid "remove break point"
+msgid "remove breakpoint"
 msgstr "odebrat bod přerušení"
 
 #: lazarusidestrconsts.srkmecremoveemptymethods
@@ -17468,7 +17534,9 @@ msgid "View assembler"
 msgstr "Zobrazit assembler"
 
 #: lazarusidestrconsts.srkmectogglebreakpoint
-msgid "toggle break point"
+#, fuzzy
+#| msgid "toggle break point"
+msgid "toggle breakpoint"
 msgstr "prohodit bod přerušení"
 
 #: lazarusidestrconsts.srkmectogglebreakpoints
@@ -17589,10 +17657,12 @@ msgid "View forms"
 msgstr "Zobrazit formuláře"
 
 #: lazarusidestrconsts.srkmecviewhistory
+msgctxt "lazarusidestrconsts.srkmecviewhistory"
 msgid "View History"
 msgstr "Ukázat historii"
 
 #: lazarusidestrconsts.srkmecviewpseudoterminal
+msgctxt "lazarusidestrconsts.srkmecviewpseudoterminal"
 msgid "View Terminal Output"
 msgstr "Ukázat výstup terminálu"
 
@@ -17601,6 +17671,7 @@ msgid "View Tab Order"
 msgstr "Ukázat pořadí záložek"
 
 #: lazarusidestrconsts.srkmecviewthreads
+msgctxt "lazarusidestrconsts.srkmecviewthreads"
 msgid "View Threads"
 msgstr "Ukázat vlákna"
 
@@ -17860,6 +17931,7 @@ msgid "Toggle &Breakpoint"
 msgstr "Přepnout záložku"
 
 #: lazarusidestrconsts.uemviewcallstack
+msgctxt "lazarusidestrconsts.uemviewcallstack"
 msgid "View Call Stack"
 msgstr "Zobrazit volací zásobník"
 

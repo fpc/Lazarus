@@ -7324,6 +7324,14 @@ msgctxt "lazarusidestrconsts.lisdown"
 msgid "Down"
 msgstr "Alas"
 
+#: lazarusidestrconsts.lisdowngrade
+msgid "Downgrade"
+msgstr ""
+
+#: lazarusidestrconsts.lisdowngradeconfiguration
+msgid "Downgrade configuration"
+msgstr ""
+
 #: lazarusidestrconsts.lisdoyoustillwanttocreatethenewproject
 msgid "Do you still want to create the new project?"
 msgstr "Tahdotko yhä luoda uuden projektin?"
@@ -8710,6 +8718,10 @@ msgstr "Tallenna tiedostoon"
 msgid "Save to recent"
 msgstr "Tallenna äskeisiin"
 
+#: lazarusidestrconsts.lisifyouwanttousetwodifferentlazarusversionsyoumustst
+msgid "If you want to use two different Lazarus versions you must start the second Lazarus with the command line parameter primary-config-path or pcp.%s%sFor example:%s"
+msgstr ""
+
 #: lazarusidestrconsts.lisignoreall
 msgid "Ignore all"
 msgstr "Ohita kaikki"
@@ -9593,15 +9605,23 @@ msgid "Toggle marker 9"
 msgstr "Vaihda merkki 9"
 
 #: lazarusidestrconsts.liskmtoggleviewassembler
-msgid "Toggle view Assembler"
+#, fuzzy
+#| msgid "Toggle view Assembler"
+msgctxt "lazarusidestrconsts.liskmtoggleviewassembler"
+msgid "View Assembler"
 msgstr "Vaihda Assembler näkymä"
 
 #: lazarusidestrconsts.liskmtoggleviewbreakpoints
-msgid "Toggle view Breakpoints"
+#, fuzzy
+#| msgid "Toggle view Breakpoints"
+msgid "View Breakpoints"
 msgstr "Vaihda keskeytyskohtien näkymä"
 
 #: lazarusidestrconsts.liskmtoggleviewcallstack
-msgid "Toggle view Call Stack"
+#, fuzzy
+#| msgid "Toggle view Call Stack"
+msgctxt "lazarusidestrconsts.liskmtoggleviewcallstack"
+msgid "View Call Stack"
 msgstr "Vaihda kutsu-pinon näkymä"
 
 #: lazarusidestrconsts.liskmtoggleviewcodeexplorer
@@ -9613,11 +9633,15 @@ msgid "Toggle View Component Palette"
 msgstr "Vaihda komponenttipaletti näkymä"
 
 #: lazarusidestrconsts.liskmtoggleviewdebugevents
-msgid "Toggle view Debuger Event Log"
+#, fuzzy
+#| msgid "Toggle view Debuger Event Log"
+msgid "View Debuger Event Log"
 msgstr "Vaihda virheenjäljittimen tapahtumat näkymä"
 
 #: lazarusidestrconsts.liskmtoggleviewdebuggeroutput
-msgid "Toggle view Debugger Output"
+#, fuzzy
+#| msgid "Toggle view Debugger Output"
+msgid "View Debugger Output"
 msgstr "Vaihda virheenjäljittimen tuloste näkymä"
 
 #: lazarusidestrconsts.liskmtoggleviewdocumentationeditor
@@ -9625,7 +9649,10 @@ msgid "Toggle view Documentation Editor"
 msgstr "Vaihda dokumentti-editori näkymä"
 
 #: lazarusidestrconsts.liskmtoggleviewhistory
-msgid "Toggle view History"
+#, fuzzy
+#| msgid "Toggle view History"
+msgctxt "lazarusidestrconsts.liskmtoggleviewhistory"
+msgid "View History"
 msgstr "Vaihda historianäkymä"
 
 #: lazarusidestrconsts.liskmtoggleviewidespeedbuttons
@@ -9633,7 +9660,9 @@ msgid "Toggle view IDE speed buttons"
 msgstr "Vaihda IDEn pikavalintojen näkymä"
 
 #: lazarusidestrconsts.liskmtoggleviewlocalvariables
-msgid "Toggle view Local Variables"
+#, fuzzy
+#| msgid "Toggle view Local Variables"
+msgid "View Local Variables"
 msgstr "Vaihda paikallisten muuttujien näkymä"
 
 #: lazarusidestrconsts.liskmtoggleviewmessages
@@ -9645,11 +9674,16 @@ msgid "Toggle view Object Inspector"
 msgstr "Vaihda komponenttimuokkain näkymä"
 
 #: lazarusidestrconsts.liskmtoggleviewpseudoterminal
-msgid "Toggle view Terminal Output"
+#, fuzzy
+#| msgid "Toggle view Terminal Output"
+msgctxt "lazarusidestrconsts.liskmtoggleviewpseudoterminal"
+msgid "View Terminal Output"
 msgstr "Vaihda komentorivituloste näkymä"
 
 #: lazarusidestrconsts.liskmtoggleviewregisters
-msgid "Toggle view Registers"
+#, fuzzy
+#| msgid "Toggle view Registers"
+msgid "View Registers"
 msgstr "Vaihda rekisterien näkymä"
 
 #: lazarusidestrconsts.liskmtoggleviewsearchresults
@@ -9661,11 +9695,16 @@ msgid "Toggle view Source Editor"
 msgstr "Vaihda lähdekoodimuokkaimen näkymä"
 
 #: lazarusidestrconsts.liskmtoggleviewthreads
-msgid "Toggle view Threads"
+#, fuzzy
+#| msgid "Toggle view Threads"
+msgctxt "lazarusidestrconsts.liskmtoggleviewthreads"
+msgid "View Threads"
 msgstr "Vaihda säienäkymä"
 
 #: lazarusidestrconsts.liskmtoggleviewwatches
-msgid "Toggle view Watches"
+#, fuzzy
+#| msgid "Toggle view Watches"
+msgid "View Watches"
 msgstr "Vaihda vahtinäkymä"
 
 #: lazarusidestrconsts.liskmviewjumphistory
@@ -13243,6 +13282,10 @@ msgstr "ensisijainen hakemisto, minne lazarus tallentaa config-tiedostot. Oletus
 msgid "Primary config path"
 msgstr "Ensisijainen config-hakemisto"
 
+#: lazarusidestrconsts.lisprior
+msgid "prior %s"
+msgstr ""
+
 #: lazarusidestrconsts.lisprivate
 msgid "Private"
 msgstr "Yksityinen"
@@ -14659,6 +14702,10 @@ msgstr "Komponentti %s periytyy luokasta %s.%sSen voi nimetä avaamalla kyseinen
 msgid "The component name must be unique in all components on the form/datamodule.The name is compared case insensitive like a normal pascal identifier."
 msgstr ""
 
+#: lazarusidestrconsts.listheconfigurationwillbedowngradedconverted
+msgid "The configuration will be downgraded/converted."
+msgstr ""
+
 #: lazarusidestrconsts.listhecontainsanotexistingdirectory
 msgid "The %s contains a not existing directory:%s%s"
 msgstr "%s sisältää olemattoman hakemiston:%s%s"
@@ -14854,6 +14901,10 @@ msgstr ""
 #: lazarusidestrconsts.listhenewunitisnotyetintheunitsearchpathadddirectory
 msgid "The new unit is not yet in the unit search path.%sAdd directory %s?"
 msgstr "Tämä käännösyksikkö ei vielä ole hakupolussa.%sLisätäänkö kansio %s hakupolkuun?"
+
+#: lazarusidestrconsts.listheoldconfigurationwillbeupgraded
+msgid "The old configuration will be upgraded."
+msgstr ""
 
 #: lazarusidestrconsts.listheothersourcescontainsadirectorywhichisalreadyint
 msgid "The \"Other sources\" contains a directory which is already in the \"Other unit files\".%s%s"
@@ -15776,6 +15827,14 @@ msgstr "Ylös"
 msgid "Update references?"
 msgstr "Päivitetäänkö viittaukset?"
 
+#: lazarusidestrconsts.lisupgrade
+msgid "Upgrade"
+msgstr ""
+
+#: lazarusidestrconsts.lisupgradeconfiguration
+msgid "Upgrade configuration"
+msgstr ""
+
 #: lazarusidestrconsts.lisuppercasestring
 msgid "uppercase string"
 msgstr "muuta isoiksi kirjaimiksi"
@@ -15915,6 +15974,7 @@ msgid "View Source"
 msgstr "Näytä lähdekoodi"
 
 #: lazarusidestrconsts.lisviewsourcedisass
+msgctxt "lazarusidestrconsts.lisviewsourcedisass"
 msgid "View Assembler"
 msgstr "Näytä assembler"
 
@@ -15998,6 +16058,10 @@ msgstr ""
 #: lazarusidestrconsts.liswelcometolazaruside
 msgid "Welcome to Lazarus IDE %s"
 msgstr "Tervetuloa lazarus IDE:en %s"
+
+#: lazarusidestrconsts.liswelcometolazarusthereisalreadyaconfigurationfromve
+msgid "Welcome to Lazarus %s%s%sThere is already a configuration from version %s in%s%s%s"
+msgstr ""
 
 #: lazarusidestrconsts.liswhenaunitisrenamedupdatereferences
 msgid "When a unit is renamed, update references"
@@ -17119,7 +17183,9 @@ msgid "quick compile, no linking"
 msgstr "nopea käännös, ei linkitystä"
 
 #: lazarusidestrconsts.srkmecremovebreakpoint
-msgid "remove break point"
+#, fuzzy
+#| msgid "remove break point"
+msgid "remove breakpoint"
 msgstr "poista keskeytyskohta"
 
 #: lazarusidestrconsts.srkmecremoveemptymethods
@@ -17420,7 +17486,9 @@ msgid "View assembler"
 msgstr "Näytä assembler"
 
 #: lazarusidestrconsts.srkmectogglebreakpoint
-msgid "toggle break point"
+#, fuzzy
+#| msgid "toggle break point"
+msgid "toggle breakpoint"
 msgstr "Keskeytyskohta päälle/pois"
 
 #: lazarusidestrconsts.srkmectogglebreakpoints
@@ -17540,10 +17608,12 @@ msgid "View forms"
 msgstr "Näytä lomakkeet"
 
 #: lazarusidestrconsts.srkmecviewhistory
+msgctxt "lazarusidestrconsts.srkmecviewhistory"
 msgid "View History"
 msgstr "Näytä historia"
 
 #: lazarusidestrconsts.srkmecviewpseudoterminal
+msgctxt "lazarusidestrconsts.srkmecviewpseudoterminal"
 msgid "View Terminal Output"
 msgstr "Näytä komentorivin tuloste"
 
@@ -17552,6 +17622,7 @@ msgid "View Tab Order"
 msgstr "Näytä tabulointijärjestys"
 
 #: lazarusidestrconsts.srkmecviewthreads
+msgctxt "lazarusidestrconsts.srkmecviewthreads"
 msgid "View Threads"
 msgstr "Näytä Säikeet"
 
@@ -17811,6 +17882,7 @@ msgid "Toggle &Breakpoint"
 msgstr "Keskeytyskohta päälle/pois"
 
 #: lazarusidestrconsts.uemviewcallstack
+msgctxt "lazarusidestrconsts.uemviewcallstack"
 msgid "View Call Stack"
 msgstr "Näytä kutsupino"
 
