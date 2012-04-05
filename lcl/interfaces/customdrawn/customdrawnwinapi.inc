@@ -2552,7 +2552,15 @@ begin
   if Handle=0 then Exit;
   lObject := TObject(Handle);
   if lObject is TCDForm then
+  begin
+    // Initial size guessed
+    if TCDForm(lObject).Image <> nil then
+      ARect := Bounds(0, 0, TCDForm(lObject).Image.Width, TCDForm(lObject).Image.Height)
+    else ARect := Bounds(0, 0, 0, 0);
+
+    // Now ask for the real size
     Result := BackendGetClientBounds(Handle, ARect)
+  end
   else
   begin
     ARect := TCDWinControl(lObject).WinControl.BoundsRect;
@@ -4353,6 +4361,19 @@ begin
   lObject := TObject(Handle);
   if lObject is TCDForm then
   begin
+    // Initial size guessed
+    if TCDForm(lObject).Image <> nil then
+    begin
+      Width := TCDForm(lObject).Image.Width;
+      Height := TCDForm(lObject).Image.Height;
+    end
+    else
+    begin
+      Width := 0;
+      Height := 0;
+    end;
+
+    // Now ask the backend
     Result := BackendGetWindowSize(Handle, Width, Height);
   end
   else if lObject is TCDWinControl then
