@@ -617,14 +617,15 @@ var
   lTimeStart: TDateTime;
   {$ENDIF}
   lScanlineSrc, lScanlineDest: PByte;
+  lBytesPerPixel: Byte;
 begin
   {$IFDEF lazcanvas_profiling}
   lTimeStart := NowUTC();
   {$ENDIF}
 
   // Take care not to draw outside the source and also not outside the destination area
-  lDrawWidth := Min(Self.Width - ADestX, ASource.Width - ASourceX);
-  lDrawHeight := Min(Self.Height - ADestY, ASource.Height - ASourceY);
+  lDrawWidth := Min(Self.Width - ADestX - FWindowOrg.X, ASource.Width - ASourceX);
+  lDrawHeight := Min(Self.Height - ADestY - FWindowOrg.Y, ASource.Height - ASourceY);
   lDrawWidth := Min(lDrawWidth, ASourceWidth);
   lDrawHeight := Min(lDrawHeight, ASourceHeight);
 
@@ -634,6 +635,13 @@ begin
      (ImageFormat in [clfRGB24, clfRGB24UpsideDown, clfBGR24, clfBGRA32, clfRGBA32, clfARGB32]) and
      (ImageFormat = ASource.ImageFormat) then
   begin
+    case ImageFormat of
+      clfRGB24, clfRGB24UpsideDown, clfBGR24: lBytesPerPixel := 3;
+      clfBGRA32, clfRGBA32, clfARGB32: lBytesPerPixel := 4;
+    else
+      lBytesPerPixel := 4;
+    end;
+
     for y := 0 to lDrawHeight - 1 do
     begin
       CurDestY := ADestY + y + FWindowOrg.Y;
@@ -642,21 +650,10 @@ begin
 
       lScanlineSrc := TLazIntfImage(ASource.Image).GetDataLineStart(CurSrcY);
       lScanlineDest := TLazIntfImage(Image).GetDataLineStart(CurDestY);
-      Inc(lScanlineSrc, (ASourceX)*3);
-      Inc(lScanlineDest, (ADestX + FWindowOrg.X)*3);
+      Inc(lScanlineSrc, (ASourceX)*lBytesPerPixel);
+      Inc(lScanlineDest, (ADestX + FWindowOrg.X)*lBytesPerPixel);
 
-      for x := 0 to lDrawWidth -1 do
-      begin
-        lScanlineDest^ := lScanlineSrc^;
-        Inc(lScanlineSrc, 1);
-        Inc(lScanlineDest, 1);
-        lScanlineDest^ := lScanlineSrc^;
-        Inc(lScanlineSrc, 1);
-        Inc(lScanlineDest, 1);
-        lScanlineDest^ := lScanlineSrc^;
-        Inc(lScanlineSrc, 1);
-        Inc(lScanlineDest, 1);
-      end;
+      move(lScanlineSrc^, lScanlineDest^, lBytesPerPixel * lDrawWidth);
     end;
   end
   // General case of copying
