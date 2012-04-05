@@ -155,7 +155,7 @@ procedure SetupCompilerFilename;
 function CheckFPCSrcDirQuality(ADirectory: string;
   out Note: string; FPCVer: string): TSDFilenameQuality;
 function SearchFPCSrcDirCandidates(StopIfFits: boolean;
-  const LazarusDir, FPCVer: string): TObjectList;
+  const FPCVer: string): TObjectList;
 
 function GetValueFromPrimaryConfig(OptionFilename, Path: string): string;
 function GetValueFromSecondaryConfig(OptionFilename, Path: string): string;
@@ -696,7 +696,7 @@ begin
 end;
 
 function SearchFPCSrcDirCandidates(StopIfFits: boolean;
-  const LazarusDir, FPCVer: string): TObjectList;
+  const FPCVer: string): TObjectList;
 
   function Check(AFilename: string; var List: TObjectList): boolean;
   var
@@ -1100,8 +1100,7 @@ var
 begin
   fCompilerFilenameChanged:=false;
   FreeAndNil(FDirs[sddtFPCSrcDir]);
-  Dirs:=SearchFPCSrcDirCandidates(false,
-                        EnvironmentOptions.GetParsedLazarusDirectory,GetFPCVer);
+  Dirs:=SearchFPCSrcDirCandidates(false,GetFPCVer);
   FDirs[sddtFPCSrcDir]:=Dirs;
   FillComboboxWithFileInfoList(FPCSrcDirComboBox,Dirs);
 end;
