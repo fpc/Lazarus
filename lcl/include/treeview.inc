@@ -889,7 +889,7 @@ begin
     if Result<>nil then
       Result:=Result.GetNextVisibleSibling;
   end;
-  if (Result<>nil) and ((not Result.IsVisible) or (not Result.FVisible)) then
+  if (Result<>nil) and ( (not Result.FVisible) or (not AreParentsExpandedAndVisible) ) then
     Result:=nil;
 end;
 
@@ -917,7 +917,7 @@ begin
   end
   else
     Result := Parent;
-  if (Result<>nil) and (TreeView<>nil) and (not TreeView.IsNodeVisible(Result)) then
+  if (Result<>nil) and ( (not Result.FVisible) or (not AreParentsExpandedAndVisible) ) then
     Result:=nil;
 end;
 
