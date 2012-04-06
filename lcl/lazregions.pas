@@ -330,11 +330,13 @@ begin
 end;
 
 procedure TLazRegion.DoChangeToComplexRegion;
+var
+  OldIsSimpleRectRegion: Boolean;
 begin
-  if IsSimpleRectRegion and (not IsSimpleRectEmpty()) then
-    AddRectangle(Rect);
-
+  OldIsSimpleRectRegion := IsSimpleRectRegion; // This avoids an endless loop when calling AddRectangle
   IsSimpleRectRegion := False;
+  if OldIsSimpleRectRegion and (not IsSimpleRectEmpty()) then
+    AddRectangle(Rect);
 end;
 
 procedure TLazRegion.SetAsSimpleRectRegion(ARect: TRect);
