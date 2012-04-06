@@ -5,5 +5,5 @@ object frmBrush: TfrmBrush
   Width = 400
   Caption = 'frmBrush'
   OnPaint = FormPaint
-  LCLVersion = '0.9.29'
+  LCLVersion = '1.1'
 end

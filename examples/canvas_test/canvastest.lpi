@@ -84,6 +84,7 @@
         <Filename Value="brushtest.pas"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="frmBrush"/>
+        <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="brushtest"/>
       </Unit3>
