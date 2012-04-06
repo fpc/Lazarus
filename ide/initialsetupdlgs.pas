@@ -117,7 +117,7 @@ type
     ImgIDError: LongInt;
     FHeadGraphic: TPortableNetworkGraphic;
     FSelectingPage: boolean;
-    FDirs: array[TSDFilenameType] of TObjectList; // list of TSDFileInfo
+    FCandidates: array[TSDFilenameType] of TObjectList; // list of TSDFileInfo
     procedure SelectPage(const NodeText: string);
     function SelectDirectory(aTitle: string): string;
     procedure UpdateLazarusDirCandidates;
@@ -131,6 +131,8 @@ type
     procedure UpdateFPCSrcDirNote;
     function FirstErrorNode: TTreeNode;
     function GetFPCVer: string;
+    function GetFirstCandidate(Candidates: TObjectList;
+      MinQuality: TSDFilenameQuality = sddqCompatible): TSDFileInfo;
   public
     TVNodeLazarus: TTreeNode;
     TVNodeCompiler: TTreeNode;
@@ -149,7 +151,7 @@ procedure SetupLazarusDirectory;
 function CheckCompilerQuality(AFilename: string;
   out Note: string; TestSrcFilename: string): TSDFilenameQuality;
 function SearchCompilerCandidates(StopIfFits: boolean;
-  const LazarusDir, TestSrcFilename: string): TObjectList;
+  const TestSrcFilename: string): TObjectList;
 procedure SetupCompilerFilename;
 
 function CheckFPCSrcDirQuality(ADirectory: string;
@@ -363,7 +365,7 @@ begin
   Dir:=EnvironmentOptions.GetParsedLazarusDirectory;
   Quality:=CheckLazarusDirectoryQuality(Dir,Note);
   if Quality<>sddqInvalid then exit;
-  // bad lazarus directory
+  // bad lazarus directory => searching a good one
   dbgout('SetupLazarusDirectory:');
   if EnvironmentOptions.LazarusDirectory<>'' then
   begin
@@ -438,7 +440,7 @@ begin
 end;
 
 function SearchCompilerCandidates(StopIfFits: boolean;
-  const LazarusDir, TestSrcFilename: string): TObjectList;
+  const TestSrcFilename: string): TObjectList;
 var
   Target: String;
   ShortCompFile: String;
@@ -548,14 +550,12 @@ begin
     Target:=GetCompiledTargetCPU+'-'+GetCompiledTargetOS;
     ShortCompFile:=GetDefaultCompilerFilename;
 
-    // check $(LazDir)\fpc\bin\i386-win32\fpc.exe
-    if (LazarusDir<>'')
-    and CheckFile(AppendPathDelim(LazarusDir)
-      +SetDirSeparators('fpc/bin/'+Target+'/'+ShortCompFile),Result)
+    // check $(LazarusDir)\fpc\bin\i386-win32\fpc.exe
+    if CheckFile('$(LazarusDir)'+SetDirSeparators('fpc/bin/'+Target+'/'+ShortCompFile),Result)
     then exit;
 
     if (GetDefaultSrcOSForTargetOS(GetCompiledTargetOS)='win') then begin
-      // windows has some special places
+      // Windows has some special places
       SysDrive:=GetEnvironmentVariableUTF8('SYSTEMDRIVE');
       if SysDrive='' then SysDrive:='C:';
       SysDrive:=AppendPathDelim(SysDrive);
@@ -597,8 +597,7 @@ begin
   end else begin
     debugln(' Searching compiler ...');
   end;
-  List:=SearchCompilerCandidates(true,EnvironmentOptions.GetParsedLazarusDirectory,
-                                 CodeToolBoss.FPCDefinesCache.TestFilename);
+  List:=SearchCompilerCandidates(true,CodeToolBoss.FPCDefinesCache.TestFilename);
   try
     BestDir:=nil;
     if List<>nil then
@@ -763,6 +762,10 @@ begin
     finally
       Dirs.Free;
     end;
+
+    // $(LazarusDir)/fpc/$(FPCVer)/source
+    if Check(SetDirSeparators('$(LazarusDir)/fpc/$(FPCVer)/source'),Result) then
+      exit;
   finally
     EnvironmentOptions.FPCSourceDirectory:=OldFPCSrcDir;
   end;
@@ -925,8 +928,8 @@ var
   d: TSDFilenameType;
 begin
   IdleConnected:=false;
-  for d:=low(FDirs) to high(FDirs) do
-    FreeAndNil(FDirs[d]);
+  for d:=low(FCandidates) to high(FCandidates) do
+    FreeAndNil(FCandidates[d]);
   FreeAndNil(FHeadGraphic);
 end;
 
@@ -1077,9 +1080,9 @@ procedure TInitialSetupDialog.UpdateLazarusDirCandidates;
 var
   Dirs: TObjectList;
 begin
-  FreeAndNil(FDirs[sddtLazarusSrcDir]);
   Dirs:=SearchLazarusDirectoryCandidates(false);
-  FDirs[sddtLazarusSrcDir]:=Dirs;
+  FreeAndNil(FCandidates[sddtLazarusSrcDir]);
+  FCandidates[sddtLazarusSrcDir]:=Dirs;
   FillComboboxWithFileInfoList(LazDirComboBox,Dirs);
 end;
 
@@ -1088,11 +1091,10 @@ var
   Files: TObjectList;
 begin
   FLazarusDirChanged:=false;
-  FreeAndNil(FDirs[sddtCompilerFilename]);
   Files:=SearchCompilerCandidates(false,
-                    EnvironmentOptions.GetParsedLazarusDirectory,
                     CodeToolBoss.FPCDefinesCache.TestFilename);
-  FDirs[sddtCompilerFilename]:=Files;
+  FreeAndNil(FCandidates[sddtCompilerFilename]);
+  FCandidates[sddtCompilerFilename]:=Files;
   FillComboboxWithFileInfoList(CompilerComboBox,Files);
 end;
 
@@ -1101,9 +1103,9 @@ var
   Dirs: TObjectList;
 begin
   fCompilerFilenameChanged:=false;
-  FreeAndNil(FDirs[sddtFPCSrcDir]);
   Dirs:=SearchFPCSrcDirCandidates(false,GetFPCVer);
-  FDirs[sddtFPCSrcDir]:=Dirs;
+  FreeAndNil(FCandidates[sddtFPCSrcDir]);
+  FCandidates[sddtFPCSrcDir]:=Dirs;
   FillComboboxWithFileInfoList(FPCSrcDirComboBox,Dirs);
 end;
 
@@ -1152,7 +1154,7 @@ begin
   EnvironmentOptions.LazarusDirectory:=CurCaption;
   if FLastParsedLazDir=EnvironmentOptions.GetParsedLazarusDirectory then exit;
   FLastParsedLazDir:=EnvironmentOptions.GetParsedLazarusDirectory;
-  debugln(['TInitialSetupDialog.UpdateLazDirNote ',FLastParsedLazDir]);
+  //debugln(['TInitialSetupDialog.UpdateLazDirNote ',FLastParsedLazDir]);
   Quality:=CheckLazarusDirectoryQuality(FLastParsedLazDir,Note);
   case Quality of
   sddqInvalid: s:=lisError;
@@ -1161,7 +1163,7 @@ begin
   end;
   if EnvironmentOptions.LazarusDirectory<>EnvironmentOptions.GetParsedLazarusDirectory
   then
-    s:='Directory: '+EnvironmentOptions.GetParsedLazarusDirectory+LineEnding+s;
+    s:='Directory: '+EnvironmentOptions.GetParsedLazarusDirectory+LineEnding+LineEnding+s;
   LazDirMemo.Text:=s+Note;
 
   if Quality=sddqCompatible then
@@ -1188,7 +1190,7 @@ begin
   EnvironmentOptions.CompilerFilename:=CurCaption;
   if fLastParsedCompiler=EnvironmentOptions.GetParsedCompilerFilename then exit;
   fLastParsedCompiler:=EnvironmentOptions.GetParsedCompilerFilename;
-  debugln(['TInitialSetupDialog.UpdateCompilerNote ',fLastParsedCompiler]);
+  //debugln(['TInitialSetupDialog.UpdateCompilerNote ',fLastParsedCompiler]);
   Quality:=CheckCompilerQuality(fLastParsedCompiler,Note,
                                 CodeToolBoss.FPCDefinesCache.TestFilename);
   if Quality<>sddqInvalid then begin
@@ -1203,7 +1205,7 @@ begin
   end;
   if EnvironmentOptions.CompilerFilename<>EnvironmentOptions.GetParsedCompilerFilename
   then
-    s:='File: '+EnvironmentOptions.GetParsedCompilerFilename+LineEnding+s;
+    s:='File: '+EnvironmentOptions.GetParsedCompilerFilename+LineEnding+LineEnding+s;
   CompilerMemo.Text:=s+Note;
 
   if Quality=sddqCompatible then
@@ -1231,7 +1233,7 @@ begin
   EnvironmentOptions.FPCSourceDirectory:=CurCaption;
   if fLastParsedFPCSrcDir=EnvironmentOptions.GetParsedFPCSourceDirectory then exit;
   fLastParsedFPCSrcDir:=EnvironmentOptions.GetParsedFPCSourceDirectory;
-  debugln(['TInitialSetupDialog.UpdateFPCSrcDirNote ',fLastParsedFPCSrcDir]);
+  //debugln(['TInitialSetupDialog.UpdateFPCSrcDirNote ',fLastParsedFPCSrcDir]);
   Quality:=CheckFPCSrcDirQuality(fLastParsedFPCSrcDir,Note,GetFPCVer);
   case Quality of
   sddqInvalid: s:=lisError;
@@ -1240,7 +1242,7 @@ begin
   end;
   if EnvironmentOptions.FPCSourceDirectory<>EnvironmentOptions.GetParsedFPCSourceDirectory
   then
-    s:='Directory: '+EnvironmentOptions.GetParsedFPCSourceDirectory+LineEnding+s;
+    s:='Directory: '+EnvironmentOptions.GetParsedFPCSourceDirectory+LineEnding+LineEnding+s;
   FPCSrcDirMemo.Text:=s+Note;
 
   if Quality=sddqCompatible then
@@ -1269,23 +1271,61 @@ begin
   GlobalMacroList.SubstituteStr(Result);
 end;
 
+function TInitialSetupDialog.GetFirstCandidate(Candidates: TObjectList;
+  MinQuality: TSDFilenameQuality): TSDFileInfo;
+var
+  i: Integer;
+begin
+  for i:=0 to Candidates.Count-1 do begin
+    Result:=TSDFileInfo(Candidates[i]);
+    if Result.Quality>=MinQuality then
+      exit;
+  end;
+  Result:=nil;
+end;
+
 procedure TInitialSetupDialog.Init;
 var
   Node: TTreeNode;
+  Candidate: TSDFileInfo;
 begin
+  // Lazarus directory
   UpdateLazarusDirCandidates;
+  if (not FileExistsCached(EnvironmentOptions.Filename)) then
+  begin
+    // first start => choose first best candidate
+    Candidate:=GetFirstCandidate(FCandidates[sddtLazarusSrcDir]);
+    if Candidate<>nil then
+      EnvironmentOptions.LazarusDirectory:=Candidate.Caption;
+  end;
   LazDirComboBox.Text:=EnvironmentOptions.LazarusDirectory;
   FLastParsedLazDir:='. .';
   UpdateLazDirNote;
   FLazarusDirChanged:=false;
 
+  // compiler filename
   UpdateCompilerFilenameCandidates;
+  if (not FileExistsCached(EnvironmentOptions.Filename)) then
+  begin
+    // first start => choose first best candidate
+    Candidate:=GetFirstCandidate(FCandidates[sddtCompilerFilename]);
+    if Candidate<>nil then
+      EnvironmentOptions.CompilerFilename:=Candidate.Caption;
+  end;
   CompilerComboBox.Text:=EnvironmentOptions.CompilerFilename;
   fLastParsedCompiler:='. .';
   UpdateCompilerNote;
   fCompilerFilenameChanged:=false;
 
+  // FPC source directory
   UpdateFPCSrcDirCandidates;
+  if (not FileExistsCached(EnvironmentOptions.Filename)) then
+  begin
+    // first start => choose first best candidate
+    Candidate:=GetFirstCandidate(FCandidates[sddtFPCSrcDir]);
+    if Candidate<>nil then
+      EnvironmentOptions.FPCSourceDirectory:=Candidate.Caption;
+  end;
   FPCSrcDirComboBox.Text:=EnvironmentOptions.FPCSourceDirectory;
   fLastParsedFPCSrcDir:='. .';
   UpdateFPCSrcDirNote;
