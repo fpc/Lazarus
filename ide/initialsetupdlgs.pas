@@ -159,6 +159,10 @@ function CheckFPCSrcDirQuality(ADirectory: string;
 function SearchFPCSrcDirCandidates(StopIfFits: boolean;
   const FPCVer: string): TObjectList;
 
+function CheckMakeQuality(AFilename: string;
+  out Note: string): TSDFilenameQuality;
+function SearchMakeCandidates(StopIfFits: boolean): TObjectList;
+
 function GetValueFromPrimaryConfig(OptionFilename, Path: string): string;
 function GetValueFromSecondaryConfig(OptionFilename, Path: string): string;
 function GetValueFromIDEConfig(OptionFilename, Path: string): string;
@@ -788,6 +792,125 @@ begin
     end;
   finally
     EnvironmentOptions.FPCSourceDirectory:=OldFPCSrcDir;
+  end;
+end;
+
+function CheckMakeQuality(AFilename: string; out Note: string
+  ): TSDFilenameQuality;
+begin
+  Result:=sddqInvalid;
+  AFilename:=TrimFilename(AFilename);
+  if not FileExistsCached(AFilename) then
+  begin
+    Note:=lisFileNotFound4;
+    exit;
+  end;
+  if DirPathExistsCached(AFilename) then
+  begin
+    Note:=lisFileIsDirectory;
+    exit;
+  end;
+  if not FileIsExecutableCached(AFilename) then
+  begin
+    Note:=lisFileIsNotAnExecutable;
+    exit;
+  end;
+
+  if (GetDefaultSrcOSForTargetOS(GetCompiledTargetOS)='win') then begin
+    // under Windows the make.exe is in the same directory as fpc.exe
+    if not FileExistsCached(ExtractFilePath(AFilename)+'fpc.exe') then begin
+      Note:='There is no fpc.exe in the directory of the '+ExtractFilename(AFilename)+'. Usually the make executable is installed together with the fpc compiler.';
+      Result:=sddqIncomplete;
+    end;
+  end;
+
+  Result:=sddqCompatible;
+end;
+
+function SearchMakeCandidates(StopIfFits: boolean): TObjectList;
+
+  function CheckFile(AFilename: string; var List: TObjectList): boolean;
+  var
+    Item: TSDFileInfo;
+    RealFilename: String;
+  begin
+    Result:=false;
+    if AFilename='' then exit;
+    DoDirSeparators(AFilename);
+    // check if already checked
+    if CaptionInSDFileList(AFilename,List) then exit;
+    EnvironmentOptions.MakeFilename:=AFilename;
+    RealFilename:=EnvironmentOptions.GetParsedMakeFilename;
+    debugln(['SearchMakeCandidates Value=',AFilename,' File=',RealFilename]);
+    if RealFilename='' then exit;
+    // check if exists
+    if not FileExistsCached(RealFilename) then exit;
+    // add to list and check quality
+    Item:=TSDFileInfo.Create;
+    Item.Filename:=RealFilename;
+    Item.Quality:=CheckMakeQuality(RealFilename,Item.Note);
+    Item.Caption:=AFilename;
+    if List=nil then
+      List:=TObjectList.create(true);
+    List.Add(Item);
+    Result:=(Item.Quality=sddqCompatible) and StopIfFits;
+  end;
+
+var
+  OldMakeFilename: String;
+  AFilename: String;
+  Files: TStringList;
+  i: Integer;
+begin
+  Result:=nil;
+
+  OldMakeFilename:=EnvironmentOptions.MakeFilename;
+  try
+    // check current setting
+    if CheckFile(EnvironmentOptions.MakeFilename,Result) then exit;
+
+    // check the primary options
+    AFilename:=GetValueFromPrimaryConfig(EnvOptsConfFileName,
+                                    'EnvironmentOptions/MakeFilename/Value');
+    if CheckFile(AFilename,Result) then exit;
+
+    // check the secondary options
+    AFilename:=GetValueFromSecondaryConfig(EnvOptsConfFileName,
+                                    'EnvironmentOptions/MakeFilename/Value');
+    if CheckFile(AFilename,Result) then exit;
+
+    if (GetDefaultSrcOSForTargetOS(GetCompiledTargetOS)='win') then begin
+      // check make in fpc.exe directory
+      if CheckFile(SetDirSeparators('$Path($(CompPath))/make.exe'),Result)
+      then exit;
+    end;
+
+    // check history
+    Files:=EnvironmentOptions.MakeFileHistory;
+    if Files<>nil then
+      for i:=0 to Files.Count-1 do
+        if CheckFile(Files[i],Result) then exit;
+
+    // check PATH
+    {$IFDEF FreeBSD}
+    AFilename:='gmake';
+    {$ELSE}
+    AFilename:='make';
+    {$ENDIF}
+    AFilename+=GetExecutableExt;
+    if CheckFile(FindDefaultExecutablePath(AFilename),Result) then exit;
+
+    // check common directories
+    Files:=TStringList.Create;
+    try
+      GetDefaultMakeFilenames(Files);
+      for i:=0 to Files.Count-1 do
+        if CheckFile(Files[i],Result) then exit;
+    finally
+      Files.Free;
+    end;
+  finally
+    EnvironmentOptions.MakeFilename:=OldMakeFilename;
   end;
 end;
 
