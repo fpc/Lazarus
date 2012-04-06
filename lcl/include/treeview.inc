@@ -889,7 +889,7 @@ begin
     if Result<>nil then
       Result:=Result.GetNextVisibleSibling;
   end;
-  if (Result<>nil) and ((not Result.IsVisible) or (not Result.FVisible)) then
+  if (Result<>nil) and ( (not Result.FVisible) or (not AreParentsExpandedAndVisible) ) then
     Result:=nil;
 end;
 
@@ -917,7 +917,7 @@ begin
   end
   else
     Result := Parent;
-  if (Result<>nil) and (TreeView<>nil) and (not TreeView.IsNodeVisible(Result)) then
+  if (Result<>nil) and ( (not Result.FVisible) or (not AreParentsExpandedAndVisible) ) then
     Result:=nil;
 end;
 
@@ -2756,7 +2756,8 @@ begin
 end;
 
 procedure TTreeNodes.ConsistencyCheck;
-var Node: TTreeNode;
+var
+  Node: TTreeNode;
   RealCount, i: integer;
   OldCache: TNodeCache;
 begin
@@ -2807,7 +2808,8 @@ begin
 end;
 
 procedure TTreeNodes.WriteDebugReport(const Prefix: string; AllNodes: boolean);
-var Node: TTreeNode;
+var
+  Node: TTreeNode;
 begin
   DbgOut('%s%s.WriteDebugReport Self=%p', [Prefix, ClassName, Pointer(Self)]);
   ConsistencyCheck;
