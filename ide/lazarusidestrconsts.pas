@@ -4015,6 +4015,10 @@ resourcestring
   
   // open installed packages dialog
   lisOIPFilename = 'Filename:  %s';
+  lisCurrentState = 'Current state: ';
+  lisInstalled = 'installed';
+  lisNotInstalled = 'not installed';
+  lisState = 'State: ';
   lisOIPThisPackageWasAutomaticallyCreated = '%sThis package was automatically created';
   lisOIPThisPackageIsInstalledButTheLpkFileWasNotFound = '%sThis package is '
     +'installed, but the lpk file was not found';

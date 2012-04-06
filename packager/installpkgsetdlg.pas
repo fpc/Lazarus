@@ -101,7 +101,8 @@ type
     procedure SetOldInstalledPackages(const AValue: TPkgDependency);
     procedure AssignOldInstalledPackagesToList;
     function PackageInInstallList(PkgName: string): boolean;
-    function ChooseImageIndex(Str: String; Data: TObject; var AIsEnabled: Boolean): Integer;
+    function GetPkgImgIndex(APackage: TLazPackage; InInstallList: boolean): integer;
+    function GetAvailablePkgImageIndex(Str: String; Data: TObject; var AIsEnabled: Boolean): Integer;
     procedure UpdateAvailablePackages(Immediately: boolean = false);
     procedure UpdateNewInstalledPackages;
     procedure OnIteratePackages(APackageID: TLazPackageID);
@@ -176,7 +177,7 @@ begin
   NoteLabel.Caption:=lisToInstallYouMustCompileAndRestartTheIDE;
 
   AvailablePkgGroupBox.Caption:=lisDoNotInstall;
-  AvailableFilterEdit.OnGetImageIndex:=@ChooseImageIndex;
+  AvailableFilterEdit.OnGetImageIndex:=@GetAvailablePkgImageIndex;
 
   ExportButton.Caption:=lisExportList;
   ImportButton.Caption:=lisImportList;
@@ -360,19 +361,38 @@ begin
   Result:=false;
 end;
 
-function TInstallPkgSetDialog.ChooseImageIndex(Str: String; Data: TObject;
-                                               var AIsEnabled: Boolean): Integer;
-var
-  Pkg: TLazPackageID;
-  APackage: TLazPackage;
+function TInstallPkgSetDialog.GetPkgImgIndex(APackage: TLazPackage;
+  InInstallList: boolean): integer;
 begin
-  Pkg:=TLazPackageID(Data);
-  Result:=ImgIndexPackage;
-  if (Pkg is TLazPackage) then begin
-    APackage:=TLazPackage(Pkg);
-    if APackage.Installed<>pitNope then
-      Result:=ImgIndexUninstallPackage; // is installed and will be uninstalled
+  if APackage.Installed<>pitNope then begin
+    // is not currently installed
+    if InInstallList then begin
+      // is installed and will be installed
+      Result:=ImgIndexPackage;
+    end
+    else begin
+      // is installed and will be uninstalled
+      Result:=ImgIndexUninstallPackage;
+    end;
+  end else begin
+    // is currently installed
+    if InInstallList then begin
+      // is not installed and will be installed
+      Result:=ImgIndexInstallPackage;
+    end
+    else begin
+      // is not installed and will be not be installed
+      Result:=ImgIndexPackage;
+    end;
   end;
+end;
+
+function TInstallPkgSetDialog.GetAvailablePkgImageIndex(Str: String; Data: TObject;
+                                               var AIsEnabled: Boolean): Integer;
+begin
+  Result:=ImgIndexPackage;
+  if (Data is TLazPackage) then
+    Result:=GetPkgImgIndex(TLazPackage(Data),false);
 end;
 
 procedure TInstallPkgSetDialog.UpdateAvailablePackages(Immediately: boolean);
@@ -438,8 +458,7 @@ begin
     ImgIndex:=ImgIndexInstallPackage;
     if NewPackageID is TLazPackage then begin
       APackage:=TLazPackage(NewPackageID);
-      if APackage.Installed<>pitNope then
-        ImgIndex:=ImgIndexInstalledPackage;    // stay installed
+      ImgIndex:=GetPkgImgIndex(APackage,true);
     end;
     TVNode.ImageIndex:=ImgIndex;
     TVNode.SelectedIndex:=ImgIndex;
@@ -507,6 +526,16 @@ end;
 
 procedure TInstallPkgSetDialog.UpdatePackageInfo(Tree: TTreeView);
 var
+  InfoStr: string;
+
+  procedure AddState(const NewState: string);
+  begin
+    if (InfoStr<>'') and (InfoStr[length(InfoStr)]<>' ') then
+      InfoStr:=InfoStr+', ';
+    InfoStr:=InfoStr+NewState;
+  end;
+
+var
   PkgName: String;
   PkgID: TLazPackageID;
   Author: String;
@@ -554,10 +583,22 @@ begin
       end;
     end;
     if Author<>'' then
-      PkgInfoMemo.Lines.Add(lisPckOptsAuthor + ' ' + Author);
+      PkgInfoMemo.Lines.Add(lisPckOptsAuthor + ': ' + Author);
     if Description<>'' then
       PkgInfoMemo.Lines.Add(lisPckOptsDescriptionAbstract
                             + ': ' + Description);
+    if FSelectedPkg<>nil then
+    begin
+      PkgInfoMemo.Lines.Add(Format(lisOIPFilename, [FSelectedPkg.Filename]));
+      InfoStr:=lisCurrentState;
+      if FSelectedPkg.Installed<>pitNope then
+        AddState(lisInstalled)
+      else
+        AddState(lisNotInstalled);
+      if FSelectedPkg.AutoCreated then
+        AddState(lisPckExplAutoCreated);
+      PkgInfoMemo.Lines.Add(InfoStr);
+    end;
   finally
     PkgId.Free;
   end;
