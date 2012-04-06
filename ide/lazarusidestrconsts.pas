@@ -89,8 +89,8 @@ resourcestring
   lisUp   = 'Up';
   lisRight = 'Right';
   lisLeft = 'Left';
-  lisTop = 'Top';
-  lisBottom = 'Bottom';
+  //lisTop = 'Top';
+  //lisBottom = 'Bottom';
   lisName = 'Name';
   lisKey = 'Key';
   lisValue = 'Value';
@@ -1321,6 +1321,10 @@ resourcestring
   dlgHideSingleTabInNotebook = 'Hide tab in single page windows';
   dlgTabNumbersNotebook = 'Show tab numbers in notebook';
   dlgNotebookTabPos = 'Source notebook tabs position';
+  lisNotebookTabPosTop = 'Top';
+  lisNotebookTabPosBottom = 'Bottom';
+  lisNotebookTabPosLeft = 'Left';
+  lisNotebookTabPosRight = 'Right';
   dlgUseTabsHistory = 'Use tab history when closing tabs';
   dlgShowScrollHint = 'Show scroll hint';
   dlgShowGutterHints = 'Show gutter hints';
@@ -4665,6 +4669,8 @@ resourcestring
   lisCopyAll = 'Copy All';
   lisIndex = 'Index';
   lisFunction = 'Function';
+  lisCSTop = 'Top';
+  lisCSBottom = 'Bottom';
 
   // Break Points Dialog
   lisFilenameAddress = 'Filename/Address';

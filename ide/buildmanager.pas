@@ -420,6 +420,21 @@ begin
   tr('PrimaryConfigPath',lisPrimaryConfigPath);
   tr('SecondaryConfigPath',lisSecondaryConfigPath);
   tr('FallbackOutputRoot',lisSecondaryConfigPath);
+  tr('CompPath',lisCompilerFilename);
+  tr('FPCSrcDir',lisFreePascalSourceDirectory);
+  tr('LazarusDir',lisLazarusDirectory);
+  tr('ExeExt',lisFileExtensionOfPrograms);
+  tr('LanguageID',lisLazarusLanguageID);
+  tr('LanguageName',lisLazarusLanguageName);
+  tr('TestDir',lisTestDirectory);
+  tr('ConfDir',lisConfigDirectory);
+  tr('Home',lisUserSHomeDirectory);
+  tr('Ext',lisTMFunctionExtractFileExtension);
+  tr('Path',lisTMFunctionExtractFilePath);
+  tr('Name',lisTMFunctionExtractFileNameExtension);
+  tr('NameOnly',lisTMFunctionExtractFileNameOnly);
+  tr('MakeDir',lisTMFunctionAppendPathDelimiter);
+  tr('MakeFile',lisTMFunctionChompPathDelimiter);
 end;
 
 procedure TBuildManager.SetupCompilerInterface;

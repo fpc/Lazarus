@@ -94,10 +94,10 @@ begin
   EditorTrimSpaceTypeCheckBox.Items.Add(dlgTrimSpaceTypeCaretMove);
   EditorTrimSpaceTypeCheckBox.Items.Add(dlgTrimSpaceTypePosOnly);
   EditorTrimSpaceTypeLabel.Caption := dlgTrimSpaceTypeCaption;
-  EditorTabPositionCheckBox.Items.Add(lisTop);
-  EditorTabPositionCheckBox.Items.Add(lisBottom);
-  EditorTabPositionCheckBox.Items.Add(lisLeft);
-  EditorTabPositionCheckBox.Items.Add(lisRight);
+  EditorTabPositionCheckBox.Items.Add(lisNotebookTabPosTop);
+  EditorTabPositionCheckBox.Items.Add(lisNotebookTabPosBottom);
+  EditorTabPositionCheckBox.Items.Add(lisNotebookTabPosLeft);
+  EditorTabPositionCheckBox.Items.Add(lisNotebookTabPosRight);
   EditorTabPositionLabel.Caption := dlgNotebookTabPos;
 end;
 
