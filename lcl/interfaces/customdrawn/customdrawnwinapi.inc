@@ -1039,39 +1039,27 @@ begin
     QtDC.Restore;
   end;
 
-end;
+end;*)
 
 {------------------------------------------------------------------------------
   Method: DrawFocusRect
   Params: DC: HDC; const Rect: TRect
   Returns: Boolean
  ------------------------------------------------------------------------------}
-function TQtWidgetSet.DrawFocusRect(DC: HDC; const Rect: TRect): boolean;
+function TCDWidgetSet.DrawFocusRect(DC: HDC; const Rect: TRect): boolean;
 var
-  StyleOption: QStyleOptionFocusRectH;
-  QtDC: TQtDeviceContext;
+  LazDC: TLazCanvas absolute DC;
 begin
-  {$ifdef VerboseQtWinAPI}
-    WriteLn('[TQtWidgetSet.DrawFocusRect] Handle: ', dbghex(DC));
+  {$ifdef VerboseCDWinAPI}
+    DebugLn(Format('[DrawFocusRect] DC: %x', [PtrUInt(DC)]));
   {$endif}
   Result := False;
 
   if not IsValidDC(DC) then exit;
 
-  QtDC := TQtDeviceContext(DC);
-  StyleOption := QStyleOptionFocusRect_create;
-  QtDC.save;
-  try
-    QStyleOption_setRect(StyleOption, @Rect);
-    if not QtDC.getClipping then
-      QtDC.setClipRect(Rect);
-    QStyle_drawPrimitive(QApplication_style, QStylePE_FrameFocusRect, StyleOption, QtDC.Widget, QtDC.Parent);
-    Result := True;
-  finally
-    QStyleOptionFocusRect_destroy(StyleOption);
-    QtDC.restore;
-  end;
-end;*)
+  GetDefaultDrawer().DrawFocusRect(LazDC, Point(Rect.Left, Rect.Top),
+    Size(Rect.Right - Rect.Left, Rect.Bottom - Rect.Top));
+end;
 
 function TCDWidgetSet.DrawFrameControl(DC: HDC; const Rect: TRect; uType,
   uState: Cardinal): Boolean;

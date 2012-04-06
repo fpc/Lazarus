@@ -36,7 +36,7 @@ type
       AState: TCDControlState; AStateEx: TCDControlStateEx): TRect; override;
     function DPIAdjustment(const AValue: Integer): Integer;
     // General drawing routines
-    procedure DrawFocusRect(ADest: TCanvas; ADestPos: TPoint; ASize: TSize); override;
+    procedure DrawFocusRect(ADest: TFPCustomCanvas; ADestPos: TPoint; ASize: TSize); override;
     procedure DrawRaisedFrame(ADest: TCanvas; ADestPos: TPoint; ASize: TSize); override;
     procedure DrawFrame3D(ADest: TFPCustomCanvas; ADestPos: TPoint; ASize: TSize;
       const FrameWidth : integer; const Style : TBevelCut); override;
@@ -324,14 +324,14 @@ begin
   else Result := Round(AValue * Screen.PixelsPerInch / 125);
 end;
 
-procedure TCDDrawerCommon.DrawFocusRect(ADest: TCanvas; ADestPos: TPoint;
+procedure TCDDrawerCommon.DrawFocusRect(ADest: TFPCustomCanvas; ADestPos: TPoint;
   ASize: TSize);
 begin
-  ADest.Pen.Color := clWhite;
+  ADest.Pen.FPColor := colWhite;
   ADest.Pen.Style := psSolid;
   ADest.Brush.Style := bsClear;
   ADest.Rectangle(ADestPos.X, ADestPos.Y, ADestPos.X + ASize.CX, ADestPos.Y + ASize.CY);
-  ADest.Pen.Color := clBlack;
+  ADest.Pen.FPColor := colBlack;
   ADest.Pen.Style := psDot;
   ADest.Rectangle(ADestPos.X, ADestPos.Y, ADestPos.X + ASize.CX, ADestPos.Y + ASize.CY);
 end;

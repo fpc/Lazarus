@@ -298,7 +298,7 @@ type
     procedure DrawControl(ADest: TCanvas; ASize: TSize;
       AControl: TCDControlID; AState: TCDControlState; AStateEx: TCDControlStateEx);
     // General drawing routines. The ones using TFPCustomCanvas are reusable in LCL-CustomDrawn
-    procedure DrawFocusRect(ADest: TCanvas; ADestPos: TPoint; ASize: TSize); virtual; abstract;
+    procedure DrawFocusRect(ADest: TFPCustomCanvas; ADestPos: TPoint; ASize: TSize); virtual; abstract;
     procedure DrawRaisedFrame(ADest: TCanvas; ADestPos: TPoint; ASize: TSize); virtual; abstract;
     procedure DrawFrame3D(ADest: TFPCustomCanvas; ADestPos: TPoint; ASize: TSize;
       const FrameWidth : integer; const Style : TBevelCut); virtual; abstract;
