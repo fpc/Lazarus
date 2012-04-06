@@ -55,6 +55,8 @@ type
     procedure ChooseSchemeButtonClick(Sender: TObject);
     procedure ClearButtonClick(Sender: TObject);
     procedure ConsistencyCheckButtonClick(Sender: TObject);
+    function FilterEditFilterItem(Item: TObject; out Done: Boolean): Boolean;
+    procedure FilterEditKeyPress(Sender: TObject; var Key: char);
     procedure FindKeyButtonClick(Sender: TObject);
     procedure ResetKeyFilterBtnClick(Sender: TObject);
     procedure TreeViewDblClick(Sender: TObject);
@@ -178,13 +180,13 @@ var
   NewScheme: String;
 begin
   NewScheme := EditorOpts.KeyMappingScheme;
-  if ShowChooseKeySchemeDialog(NewScheme) <> mrOk then
-    Exit;
-  EditorOpts.KeyMappingScheme := NewScheme;
-  EditingKeyMap.LoadScheme(NewScheme);
-  FillKeyMappingTreeView;
-  fModified:=False;
-  UpdateSchemeLabel;
+  if ShowChooseKeySchemeDialog(NewScheme) = mrOk then begin
+    EditorOpts.KeyMappingScheme := NewScheme;
+    EditingKeyMap.LoadScheme(NewScheme);
+    FillKeyMappingTreeView;
+    fModified:=False;
+    UpdateSchemeLabel;
+  end;
 end;
 
 procedure TEditorKeymappingOptionsFrame.EditButtonClick(Sender: TObject);
@@ -228,23 +230,47 @@ begin
   end;
 end;
 
+function TEditorKeymappingOptionsFrame.FilterEditFilterItem(Item: TObject; out Done: Boolean): Boolean;
+var
+  KeyRel: TKeyCommandRelation;
+begin
+  Done:=True;
+  Result:=False;
+  if Item is TKeyCommandRelation then begin
+    KeyRel:=TKeyCommandRelation(Item);        // Tree item is actual key command.
+    Done:=False;
+    Result:=KeyMapKeyFilter.Key1<>VK_UNKNOWN;
+    if Result then begin                      // Key filter is defined
+      Done:=True;
+      Result:=(CompareIDEShortCutKey1s(@KeyMapKeyFilter,@KeyRel.ShortcutA)=0)
+           or (CompareIDEShortCutKey1s(@KeyMapKeyFilter,@KeyRel.ShortcutB)=0);
+    end;
+  end;
+end;
+
+procedure TEditorKeymappingOptionsFrame.FilterEditKeyPress(Sender: TObject; var Key: char);
+begin
+  ResetKeyFilterBtnClick(Nil);
+end;
+
 procedure TEditorKeymappingOptionsFrame.FindKeyButtonClick(Sender: TObject);
 var
   KeyFilter: TIDEShortCut;
 begin
-  if ShowKeyMappingGrabForm(KeyFilter) <> mrOK then
-    Exit;
-  KeyMapKeyFilter := KeyFilter;
-  UpdateKeyFilterButton;
-  FillKeyMappingTreeView;
+  if ShowKeyMappingGrabForm(KeyFilter) = mrOK then begin
+    KeyMapKeyFilter := KeyFilter;
+    UpdateKeyFilterButton;
+    FilterEdit.Filter:='';         // Allow only one of the filters to be active.
+    FilterEdit.InvalidateFilter;
+  end;
 end;
 
 procedure TEditorKeymappingOptionsFrame.ResetKeyFilterBtnClick(Sender: TObject);
 begin
   KeyMapKeyFilter.Key1 := VK_UNKNOWN;
   KeyMapKeyFilter.Key2 := VK_UNKNOWN;
-  UpdateKeyFilterButton;
-  FillKeyMappingTreeView;
+  UpdateKeyFilterButton;           // Allow only one of the filters to be active.
+  FilterEdit.InvalidateFilter;
 end;
 
 procedure TEditorKeymappingOptionsFrame.TreeViewDblClick(Sender: TObject);
@@ -331,8 +357,8 @@ begin
   ResetKeyFilterBtn.LoadGlyphFromLazarusResource(ResBtnListFilter);
   ResetKeyFilterBtn.Enabled := not IDEShortCutEmpty(KeyMapKeyFilter);
 
-  FillKeyMappingTreeView;
-  UpdateSchemeLabel;
+//  FillKeyMappingTreeView;    ... Done in ReadSettings.
+//  UpdateSchemeLabel;
 end;
 
 procedure TEditorKeymappingOptionsFrame.ReadSettings(AOptions: TAbstractIDEOptions);
@@ -342,7 +368,7 @@ begin
   with AOptions as TEditorOptions do
     EditingKeyMap.Assign(KeyMap);
   FillKeyMappingTreeView;
-
+  UpdateSchemeLabel;
   with GeneralPage do
     for i := Low(PreviewEdits) to High(PreviewEdits) do
       if PreviewEdits[i] <> nil then
@@ -392,11 +418,6 @@ begin
       begin
         CurKeyRelation := TKeyCommandRelation(CurCategory[j]);
         ItemCaption:=KeyMappingRelationToString(CurKeyRelation);
-        if (KeyMapKeyFilter.Key1<>VK_UNKNOWN)
-        and (CompareIDEShortCutKey1s(@KeyMapKeyFilter,@CurKeyRelation.ShortcutA)<>0)
-        and (CompareIDEShortCutKey1s(@KeyMapKeyFilter,@CurKeyRelation.ShortcutB)<>0)
-        then
-          continue;
         if NewCategoryNode.Count > ChildNodeIndex then
         begin
           NewKeyNode := NewCategoryNode.Items[ChildNodeIndex];
