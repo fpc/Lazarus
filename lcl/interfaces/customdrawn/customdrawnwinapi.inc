@@ -6300,13 +6300,15 @@ function TCDWidgetSet.StretchMaskBlt(DestDC: HDC; X, Y, Width, Height: Integer;
 var
   SrcLazDC: TLazCanvas absolute SrcDC;
   DstLazDC: TLazCanvas absolute DestDC;
+  BufferImage: TLazIntfImage = nil;
+  BufferDC: TLazCanvas = nil;
+  FreeBuffer: Boolean;
   SrcRect, DstRect, MaskRect: TRect;
 begin
   {$ifdef VerboseCDDrawing}
     DebugLn('[WinAPI StretchMaskBlt]' +
      ' DestDC:' + dbghex(DestDC) +
      ' SrcDC:' + dbghex(SrcDC) +
-//     ' Image:', dbghex(PtrInt(Image)),
      ' X:' + dbgs(X) + ' Y:' + dbgs(Y) +
      ' W:' + dbgs(Width) + ' H:', dbgs(Height) +
      ' XSrc:' + dbgs(XSrc) + ' YSrc:' + dbgs(YSrc) +
@@ -6315,94 +6317,49 @@ begin
 
   Result := False;
 
-  DstLazDC.CanvasCopyRect(SrcLazDC, X, Y, XSrc, YSrc, SrcWidth, SrcHeight);
-
-(*  SrcMatrix := QPainter_transform(SrcQDC.Widget);
-  if SrcQDC.vImage = nil then
+  // Optimization if no stretch is desired
+  if (SrcWidth = Width) and (SrcHeight = Height) then
   begin
-    if SrcQDC.Parent <> nil then
-    begin
-      with SrcQDC.getDeviceSize do
-        TmpPixmap := QPixmap_create(x, y);
-      QPixmap_grabWindow(TmpPixmap, QWidget_winId(SrcQDC.Parent), 0, 0);
-      Image := QImage_create();
-      QPixmap_toImage(TmpPixmap, Image);
-      QPixmap_destroy(TmpPixmap);
-    end
-    else
-      Exit;
-  end
-  else
-    Image := SrcQDC.vImage.FHandle;
-
-  QTransform_map(SrcMatrix, XSrc, YSrc, @XSrc, @YSrc);
-  // our map can have some transformations
-  if XSrc < 0 then // we cannot draw from negative coord, so we will draw from zero with shift
-  begin
-    dx := -XSrc;
-    XSrc := 0;
-  end
-  else
-    dx := 0;
-
-  if YSrc < 0 then
-  begin
-    dy := -YSrc;
-    YSrc := 0;
-  end
-  else
-    dy := 0;
-
-  if dx <> 0 then // apply shifts
-  begin
-    inc(X, dx);        // shift destination
-    dec(Width, dx);    // substract width
-    dec(SrcWidth, dx); // and do not forget about SrcWidth or we will get unneeded stretching
+    DstLazDC.CanvasCopyRect(SrcLazDC, X, Y, XSrc, YSrc, SrcWidth, SrcHeight);
+    Exit;
   end;
 
-  if dy <> 0 then
-  begin
-    inc(Y, dy);
-    dec(Height, dy);
-    dec(SrcHeight, dy);
-  end;
+  // Otherwise do the real stretch
 
-  DstRect := Bounds(X, Y, Width, Height);
-  SrcRect := Bounds(XSrc, YSrc, SrcWidth, SrcHeight);
-  MaskRect := Bounds(XMask, YMask, SrcWidth, SrcHeight);
-  // #0011187 - makes painting wrong
-  //DstQDC.CorrectCoordinates(DstRect);
-  //DstQDC.CorrectCoordinates(SrcRect);
-  //DstQDC.CorrectCoordinates(MaskRect);
-  if Mask <> 0 then
-    QMask := TQtImage(Mask).FHandle
-  else
-    QMask := nil;
+  // Get an interpolation acording to the anti-aliasing option
+  {if DstLazDC. .AntiAliasing then
+    DstLazDC.Interpolation := TMitchelInterpolation.Create
+  else}
+    DstLazDC.Interpolation := TFPSharpInterpolation.Create;
 
-  if (DstRect.Right < DstRect.Left) or (DstRect.Bottom < DstRect.Top) then
+  // Copy the source rectangle to a temporary buffer if it is not the entire source
+  if (XSrc = 0) and (YSrc = 0) and (SrcWidth = SrcLazDC.Width) and (SrcHeight = SrcLazDC.Height) then
   begin
-    // Right < Left mean horizontal flip, Bottom < Top - vertical
-    TmpImage := QImage_create();
-    QImage_mirrored(Image, TmpImage, DstRect.Right < DstRect.Left, DstRect.Bottom < DstRect.Top);
-    if QMask <> nil then
-    begin
-      TmpMask := QImage_create();
-      QImage_mirrored(QMask, TmpMask, DstRect.Right < DstRect.Left, DstRect.Bottom < DstRect.Top);
-    end
-    else
-      TmpMask := QMask;
-    DstRect := NormalizeRect(DstRect);
-    MaskRect := NormalizeRect(MaskRect);
-    DstQDC.drawImage(@DstRect, TmpImage, @SrcRect, TmpMask, @MaskRect);
-    QImage_destroy(TmpImage);
-    if TmpMask <> nil then
-      QImage_destroy(TmpMask);
+    BufferDC := SrcLazDC;
+    BufferImage := TLazIntfImage(SrcLazDC.Image);
+    FreeBuffer := False;
   end
   else
-    DstQDC.drawImage(@DstRect, Image, @SrcRect, QMask, @MaskRect);
+  begin
+    UpdateControlLazImageAndCanvas(BufferImage, BufferDC,
+      SrcWidth, SrcHeight, clfARGB32);
+    BufferDC.CanvasCopyRect(SrcLazDC, 0, 0, XSrc, YSrc, SrcWidth, SrcHeight);
+    FreeBuffer := True;
+  end;
 
-  if SrcQDC.vImage = nil then
-    QImage_destroy(Image);  *)
+  // Execute the stretch
+  DstLazDC.StretchDraw(X, Y, Width, Height, BufferImage);
+
+  // Free the interpolation
+  DstLazDC.Interpolation.Free;
+  DstLazDC.Interpolation := nil;
+
+  // Free the buffer
+  if FreeBuffer then
+  begin
+    BufferDC.Free;
+    BufferImage.Free;
+  end;
 
   Result := True;
 end;
