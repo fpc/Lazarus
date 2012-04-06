@@ -171,7 +171,7 @@ begin
   //DebugLn(['TPkgGraphExplorerDlg.PkgPopupMenuPopup ',Pkg<>nil,' ',(Pkg<>nil) and (Pkg.AutoInstall<>pitNope)]);
   UninstallMenuItem.Visible:=(Pkg<>nil) and (Pkg.AutoInstall<>pitNope);
   if UninstallMenuItem.Visible then
-    UninstallMenuItem.Caption:='Uninstall package '+Pkg.IDAsString;
+    UninstallMenuItem.Caption:=Format(lisPckExplUninstallPackage, [Pkg.IDAsString]);
 end;
 
 procedure TPkgGraphExplorerDlg.PkgTreeViewDblClick(Sender: TObject);
