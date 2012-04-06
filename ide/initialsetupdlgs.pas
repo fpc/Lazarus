@@ -758,6 +758,10 @@ begin
     if Check(SetDirSeparators('$(LazarusDir)/fpc/$(FPCVer)/source'),Result) then
       exit;
 
+    // check relative to fpc.exe
+    if Check(SetDirSeparators('$Path($(CompPath))/../../source'),Result) then
+      exit;
+
     // check common directories
     Dirs:=GetDefaultFPCSrcDirectories;
     try
