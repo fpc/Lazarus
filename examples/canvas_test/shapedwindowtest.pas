@@ -14,6 +14,7 @@ type
 
   TfrmShapedWindow = class(TForm)
     btnClose: TButton;
+    procedure btnCloseClick(Sender: TObject);
     procedure FormShow(Sender: TObject);
   private
     { private declarations }
@@ -49,6 +50,11 @@ begin
   finally
     Shape.Free;
   end;
+end;
+
+procedure TfrmShapedWindow.btnCloseClick(Sender: TObject);
+begin
+  Close;
 end;
 
 end.

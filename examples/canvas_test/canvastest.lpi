@@ -135,6 +135,7 @@
         <Filename Value="imagetest.pas"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="frmImage"/>
+        <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="imagetest"/>
       </Unit10>
