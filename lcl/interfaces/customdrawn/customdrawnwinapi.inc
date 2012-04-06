@@ -2391,25 +2391,53 @@ begin
   Result := True;
 end;
 
-(*{------------------------------------------------------------------------------
+{------------------------------------------------------------------------------
   Function: FrameRect
   Params:  none
   Returns: Nothing
  ------------------------------------------------------------------------------}
-function TQtWidgetSet.FrameRect(DC: HDC; const ARect: TRect;
-  hBr: HBRUSH): Integer;
+function TCDWidgetSet.FrameRect(DC: HDC; const ARect: TRect; hBr: HBRUSH): Integer;
+var
+  LazDC: TLazCanvas absolute DC;
+  lOldBrush, lOldPen, lFramePen, lFrameBrush: HGDIOBJ;
+  lLogPen: TLogPen;
+  lLogBrush: TLogBrush;
 begin
   Result := 0;
 
-  if not IsValidDC(DC) then Exit;
+  {$ifdef VerboseCDDrawing}
+    DebugLn('[WinAPI FillRect Rect=', dbgs(ARect),' Brush=', dbghex(hBr));
+  {$endif}
 
-  TQtDeviceContext(DC).qDrawPLainRect(ARect.Left, ARect.Top,
-   ARect.Right - ARect.Left, ARect.Bottom - ARect.Top);
+  if not IsValidDC(DC) then
+    exit;
+  if not IsValidGdiObject(hBr) then
+    exit;
+
+  // Creates temporary pen and brush to help the drawing
+  lLogPen.lopnStyle := PS_SOLID;
+  lLogPen.lopnWidth := Point(1, 1);
+  lLogPen.lopnColor := FPColorToTColor(TFPCustomBrush(hBR).FPColor);
+  lFramePen := CreatePenIndirect(lLogPen);
+
+  lLogBrush.lbStyle := BS_NULL;
+  lFrameBrush := CreateBrushIndirect(lLogBrush);
+
+  // Do the drawing
+  lOldBrush := SelectObject(DC, lFrameBrush);
+  lOldPen := SelectObject(DC, lFramePen);
+  LazDC.Rectangle(ARect);
+  SelectObject(DC, lOldBrush);
+  SelectObject(DC, lOldPen);
+
+  // Delete the helper objects
+  DeleteObject(lFramePen);
+  DeleteObject(lFrameBrush);
 
   Result := 1;
 end;
 
-function TQtWidgetSet.GetActiveWindow: HWND;
+(*function TQtWidgetSet.GetActiveWindow: HWND;
 var
   Widget: QWidgetH;
   W: TQtWidget;
