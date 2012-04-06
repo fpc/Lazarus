@@ -238,11 +238,16 @@ begin
 
   if (fnCombineMode<>RGN_COPY) and not IsValidGDIObject(Src2) then Exit;
 
+  // If the operation is a copy, execute it now, as it will not involve Src2
+  // The common code would not work in this case
   if fnCombineMode = RGN_COPY then
   begin
     if Dest <> Src1 then DestRgn.Assign(Src1Rgn);
+    Result := DestRgn.GetRegionKind();
+    Exit;
   end;
 
+  // Now operations which involve Src2, consider both cases: Dest=Src1 and Dest<>Src1
   if Dest = Src1 then
     DestRgn.CombineWith(Src2Rgn, fnCombineMode)
   else
