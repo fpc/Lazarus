@@ -57,7 +57,7 @@ begin
   FImageIndex := -1;
   FStyle := tbsButton;
   FShowCaption := true;
-  ControlStyle := [csSetCaption, csDesignNoSmoothResize];
+  ControlStyle := [csCaptureMouse, csSetCaption, csDesignNoSmoothResize];
   with GetControlClassDefaultSize do
     SetInitialBounds(0, 0, CX, CY);
 end;
@@ -97,6 +97,7 @@ procedure TToolButton.MouseUp(Button: TMouseButton; Shift: TShiftState;
   X, Y: Integer);
 var
   DropDownMenuDropped: Boolean;
+  Pt: TPoint;
 begin
   //DebugLn('TToolButton.MouseUp ',Name,':',ClassName,' ',dbgs(ord(Button)),' ',dbgs(X),',',dbgs(Y));
   if (Button = mbLeft) and ([tbfArrowPressed, tbfPressed] * FToolButtonFlags <> []) then
@@ -110,6 +111,14 @@ begin
   
   if (Button = mbLeft) then
   begin
+    if FMouseInControl then
+    begin
+      Pt := Point(X, Y);
+      LCLIntf.GetCursorPos(Pt);
+      LCLIntf.ScreenToClient(Parent.Handle, Pt);
+      if not PtInRect(BoundsRect, Pt) then
+        SetMouseInControl(false);
+    end;
     DropDownMenuDropped := False;
     //DebugLn('TToolButton.MouseUp ',Name,':',ClassName,' ',Style=tbsCheck);
     if (Style in [tbsButton, tbsDropDown]) then
@@ -622,10 +631,6 @@ begin
   if FStyle = Value then exit;
   FStyle := Value;
   InvalidatePreferredSize;
-  if FStyle = tbsDropDown then
-    ControlStyle := ControlStyle + [csCaptureMouse]
-  else
-    ControlStyle := ControlStyle - [csCaptureMouse];
   if IsControlVisible then
     UpdateVisibleToolbar;
 end;
