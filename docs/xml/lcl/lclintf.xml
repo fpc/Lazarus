@@ -1504,9 +1504,46 @@ RGN_XOR - The result is the union of two combined regions except for any overlap
       <!-- function Visibility: default -->
       <element name="GetDeviceCaps">
         <short>Returns various device specific informations.</short>
-        <descr/>
+        <descr>
+          <p>Returns informations about any DC, which might be the screen DC representing the monitor, a control canvas or a offscreen bitmap canvas.
+            The following constants can be utilized in the index argument:</p>
+          <ul>
+            <li>HORZSIZE</li>
+            <li>VERTSIZE</li>
+            <li>HORZRES</li>
+            <li>BITSPIXEL</li>
+            <li>PLANES</li>
+            <li>SIZEPALETTE</li>
+            <li>LOGPIXELSX - the DPI in the X axis</li>
+            <li>LOGPIXELSY - the DPI in the Y axis</li>
+            <li>VERTRES</li>
+            <li>NUMRESERVED</li>
+          </ul>
+          <pre>An example showing how to obtain the screen DPI for the X axis using GetDeviceCaps, which is the method utilized by TScreen.PixelsPerInch:
+
+var
+  DC: HDC;
+begin
+  DC := GetDC(0);
+  FDPI := GetDeviceCaps(DC,LOGPIXELSX); // DPI in pixels per inch
+  ReleaseDC(0, DC);
+end;
+</pre>
+         </descr>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#lcl.Forms.TScreen.PixelsPerInch"/>
+          <link id="#lcl.LCLType.HORZSIZE"/>
+          <link id="#lcl.LCLType.VERTSIZE"/>
+          <link id="#lcl.LCLType.HORZRES"/>
+          <link id="#lcl.LCLType.BITSPIXEL"/>
+          <link id="#lcl.LCLType.PLANES"/>
+          <link id="#lcl.LCLType.SIZEPALETTE"/>
+          <link id="#lcl.LCLType.LOGPIXELSX"/>
+          <link id="#lcl.LCLType.LOGPIXELSY"/>
+          <link id="#lcl.LCLType.VERTRES"/>
+          <link id="#lcl.LCLType.NUMRESERVED"/>
+        </seealso>
       </element>
       <element name="GetDeviceCaps.Result">
         <short/>
