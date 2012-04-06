@@ -8263,6 +8263,10 @@ msgstr ""
 msgid "Export list"
 msgstr "Exportovať zoznam"
 
+#: lazarusidestrconsts.lisexportpackagelistxml
+msgid "Export package list (*.xml)"
+msgstr ""
+
 #: lazarusidestrconsts.lisexpression
 msgid "Expression:"
 msgstr "Výraz:"
@@ -9051,6 +9055,10 @@ msgstr ""
 #: lazarusidestrconsts.lisimportlist
 msgid "Import list"
 msgstr "Importný zoznam"
+
+#: lazarusidestrconsts.lisimportpackagelistxml
+msgid "Import package list (*.xml)"
+msgstr ""
 
 #: lazarusidestrconsts.lisimpossible
 msgid "Impossible"
@@ -12845,6 +12853,11 @@ msgstr "%sStav: "
 msgid "Uninstall on next start"
 msgstr "Odinštalovať pri ďalšom štarte"
 
+#: lazarusidestrconsts.lispckexpluninstallpackage
+msgctxt "lazarusidestrconsts.lispckexpluninstallpackage"
+msgid "Uninstall package %s"
+msgstr ""
+
 #: lazarusidestrconsts.lispckoptsaddoptionstodependentpackagesandprojects
 msgid "Add options to dependent packages and projects"
 msgstr "Pridať voľby k závislostiam balíčkov a projektov"
@@ -16489,6 +16502,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lisunusedunits
 msgid "Unused units"
+msgstr ""
+
+#: lazarusidestrconsts.lisunusualcompilerfilenameusuallyitstartswithfpcppcor
+msgid "Unusual compiler file name. Usually it starts with fpc, ppc or ppcross."
 msgstr ""
 
 #: lazarusidestrconsts.lisup

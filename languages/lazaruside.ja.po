@@ -8358,6 +8358,10 @@ msgstr ""
 msgid "Export list"
 msgstr "エクスポートリスト"
 
+#: lazarusidestrconsts.lisexportpackagelistxml
+msgid "Export package list (*.xml)"
+msgstr ""
+
 #: lazarusidestrconsts.lisexpression
 msgid "Expression:"
 msgstr "式: "
@@ -9148,6 +9152,10 @@ msgstr "クラスのためのImplementationコメント"
 #: lazarusidestrconsts.lisimportlist
 msgid "Import list"
 msgstr "インポートリスト"
+
+#: lazarusidestrconsts.lisimportpackagelistxml
+msgid "Import package list (*.xml)"
+msgstr ""
 
 #: lazarusidestrconsts.lisimpossible
 msgid "Impossible"
@@ -12994,6 +13002,11 @@ msgstr "%s状態:"
 msgid "Uninstall on next start"
 msgstr "次回の起動時にアンストール"
 
+#: lazarusidestrconsts.lispckexpluninstallpackage
+msgctxt "lazarusidestrconsts.lispckexpluninstallpackage"
+msgid "Uninstall package %s"
+msgstr ""
+
 #: lazarusidestrconsts.lispckoptsaddoptionstodependentpackagesandprojects
 msgid "Add options to dependent packages and projects"
 msgstr "単独パッケージとプロジェクトのオプションを追加"
@@ -16647,6 +16660,10 @@ msgstr "未署名"
 #: lazarusidestrconsts.lisunusedunits
 msgid "Unused units"
 msgstr "使われていないユニット"
+
+#: lazarusidestrconsts.lisunusualcompilerfilenameusuallyitstartswithfpcppcor
+msgid "Unusual compiler file name. Usually it starts with fpc, ppc or ppcross."
+msgstr ""
 
 #: lazarusidestrconsts.lisup
 msgctxt "lazarusidestrconsts.lisup"

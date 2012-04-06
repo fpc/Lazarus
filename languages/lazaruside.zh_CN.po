@@ -8287,6 +8287,10 @@ msgstr ""
 msgid "Export list"
 msgstr "导出列表"
 
+#: lazarusidestrconsts.lisexportpackagelistxml
+msgid "Export package list (*.xml)"
+msgstr ""
+
 #: lazarusidestrconsts.lisexpression
 msgid "Expression:"
 msgstr "表达式:"
@@ -9073,6 +9077,10 @@ msgstr ""
 #: lazarusidestrconsts.lisimportlist
 msgid "Import list"
 msgstr "导入列表"
+
+#: lazarusidestrconsts.lisimportpackagelistxml
+msgid "Import package list (*.xml)"
+msgstr ""
 
 #: lazarusidestrconsts.lisimpossible
 msgid "Impossible"
@@ -12875,6 +12883,11 @@ msgstr "%s状态: "
 msgid "Uninstall on next start"
 msgstr "下一次启动时卸载"
 
+#: lazarusidestrconsts.lispckexpluninstallpackage
+msgctxt "lazarusidestrconsts.lispckexpluninstallpackage"
+msgid "Uninstall package %s"
+msgstr ""
+
 #: lazarusidestrconsts.lispckoptsaddoptionstodependentpackagesandprojects
 msgid "Add options to dependent packages and projects"
 msgstr "添加选项到依赖的包和工程"
@@ -16516,6 +16529,10 @@ msgstr ""
 #: lazarusidestrconsts.lisunusedunits
 msgid "Unused units"
 msgstr "未用单元"
+
+#: lazarusidestrconsts.lisunusualcompilerfilenameusuallyitstartswithfpcppcor
+msgid "Unusual compiler file name. Usually it starts with fpc, ppc or ppcross."
+msgstr ""
 
 #: lazarusidestrconsts.lisup
 msgctxt "lazarusidestrconsts.lisup"

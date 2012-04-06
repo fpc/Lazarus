@@ -8265,6 +8265,10 @@ msgstr ""
 msgid "Export list"
 msgstr "Список експорту"
 
+#: lazarusidestrconsts.lisexportpackagelistxml
+msgid "Export package list (*.xml)"
+msgstr ""
+
 #: lazarusidestrconsts.lisexpression
 msgid "Expression:"
 msgstr "Вираз:"
@@ -9044,6 +9048,10 @@ msgstr "Коментар перед реалізацією класу"
 #: lazarusidestrconsts.lisimportlist
 msgid "Import list"
 msgstr "Список імпорту"
+
+#: lazarusidestrconsts.lisimportpackagelistxml
+msgid "Import package list (*.xml)"
+msgstr ""
 
 #: lazarusidestrconsts.lisimpossible
 msgid "Impossible"
@@ -12801,6 +12809,11 @@ msgstr "%sСтан: "
 msgid "Uninstall on next start"
 msgstr "Видалити при наст. пуску"
 
+#: lazarusidestrconsts.lispckexpluninstallpackage
+msgctxt "lazarusidestrconsts.lispckexpluninstallpackage"
+msgid "Uninstall package %s"
+msgstr ""
+
 #: lazarusidestrconsts.lispckoptsaddoptionstodependentpackagesandprojects
 msgid "Add options to dependent packages and projects"
 msgstr "Додати параметри до підпорядкованих пакунків і проектів"
@@ -16406,6 +16419,10 @@ msgstr "Непідписаний"
 #: lazarusidestrconsts.lisunusedunits
 msgid "Unused units"
 msgstr "Невикористані модулі"
+
+#: lazarusidestrconsts.lisunusualcompilerfilenameusuallyitstartswithfpcppcor
+msgid "Unusual compiler file name. Usually it starts with fpc, ppc or ppcross."
+msgstr ""
 
 #: lazarusidestrconsts.lisup
 msgctxt "lazarusidestrconsts.lisup"

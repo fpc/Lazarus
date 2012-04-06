@@ -8310,6 +8310,10 @@ msgstr ""
 msgid "Export list"
 msgstr "Eksportuoti sąrašą"
 
+#: lazarusidestrconsts.lisexportpackagelistxml
+msgid "Export package list (*.xml)"
+msgstr ""
+
 #: lazarusidestrconsts.lisexpression
 msgid "Expression:"
 msgstr "Išraiška:"
@@ -9099,6 +9103,10 @@ msgstr "Komentaras klasės „Implementation“ dalyje"
 #: lazarusidestrconsts.lisimportlist
 msgid "Import list"
 msgstr "Importuoti sąrašą"
+
+#: lazarusidestrconsts.lisimportpackagelistxml
+msgid "Import package list (*.xml)"
+msgstr ""
 
 #: lazarusidestrconsts.lisimpossible
 msgid "Impossible"
@@ -12911,6 +12919,11 @@ msgstr "%sBūsena: "
 msgid "Uninstall on next start"
 msgstr "Išdiegti kitąkart startuojant"
 
+#: lazarusidestrconsts.lispckexpluninstallpackage
+msgctxt "lazarusidestrconsts.lispckexpluninstallpackage"
+msgid "Uninstall package %s"
+msgstr ""
+
 #: lazarusidestrconsts.lispckoptsaddoptionstodependentpackagesandprojects
 msgid "Add options to dependent packages and projects"
 msgstr "Įdėti parinktis į priklausomus paketus bei projektus"
@@ -16571,6 +16584,10 @@ msgstr ""
 #: lazarusidestrconsts.lisunusedunits
 msgid "Unused units"
 msgstr "Nenaudojami moduliai"
+
+#: lazarusidestrconsts.lisunusualcompilerfilenameusuallyitstartswithfpcppcor
+msgid "Unusual compiler file name. Usually it starts with fpc, ppc or ppcross."
+msgstr ""
 
 #: lazarusidestrconsts.lisup
 msgctxt "lazarusidestrconsts.lisup"

@@ -8325,6 +8325,10 @@ msgstr ""
 msgid "Export list"
 msgstr "ייצא רשימה"
 
+#: lazarusidestrconsts.lisexportpackagelistxml
+msgid "Export package list (*.xml)"
+msgstr ""
+
 #: lazarusidestrconsts.lisexpression
 msgid "Expression:"
 msgstr "ביטוי:"
@@ -9113,6 +9117,10 @@ msgstr "הערת מימוש של המחלקה"
 #: lazarusidestrconsts.lisimportlist
 msgid "Import list"
 msgstr "ייבא רשימה"
+
+#: lazarusidestrconsts.lisimportpackagelistxml
+msgid "Import package list (*.xml)"
+msgstr ""
 
 #: lazarusidestrconsts.lisimpossible
 msgid "Impossible"
@@ -12949,6 +12957,11 @@ msgstr "מצב"
 msgid "Uninstall on next start"
 msgstr "הסר התקנה בהתחלה הבאה"
 
+#: lazarusidestrconsts.lispckexpluninstallpackage
+msgctxt "lazarusidestrconsts.lispckexpluninstallpackage"
+msgid "Uninstall package %s"
+msgstr ""
+
 #: lazarusidestrconsts.lispckoptsaddoptionstodependentpackagesandprojects
 msgid "Add options to dependent packages and projects"
 msgstr "הוסף אפשרויות לפרוייקטים וחבילות תלויות"
@@ -16606,6 +16619,10 @@ msgstr "ללא סימן"
 #: lazarusidestrconsts.lisunusedunits
 msgid "Unused units"
 msgstr "יחידות שאינן בשימוש"
+
+#: lazarusidestrconsts.lisunusualcompilerfilenameusuallyitstartswithfpcppcor
+msgid "Unusual compiler file name. Usually it starts with fpc, ppc or ppcross."
+msgstr ""
 
 #: lazarusidestrconsts.lisup
 msgctxt "lazarusidestrconsts.lisup"

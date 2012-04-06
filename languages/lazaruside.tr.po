@@ -8046,6 +8046,10 @@ msgstr ""
 msgid "Export list"
 msgstr ""
 
+#: lazarusidestrconsts.lisexportpackagelistxml
+msgid "Export package list (*.xml)"
+msgstr ""
+
 #: lazarusidestrconsts.lisexpression
 msgid "Expression:"
 msgstr ""
@@ -8823,6 +8827,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lisimportlist
 msgid "Import list"
+msgstr ""
+
+#: lazarusidestrconsts.lisimportpackagelistxml
+msgid "Import package list (*.xml)"
 msgstr ""
 
 #: lazarusidestrconsts.lisimpossible
@@ -12530,6 +12538,11 @@ msgstr "%sDurum:"
 msgid "Uninstall on next start"
 msgstr ""
 
+#: lazarusidestrconsts.lispckexpluninstallpackage
+msgctxt "lazarusidestrconsts.lispckexpluninstallpackage"
+msgid "Uninstall package %s"
+msgstr ""
+
 #: lazarusidestrconsts.lispckoptsaddoptionstodependentpackagesandprojects
 msgid "Add options to dependent packages and projects"
 msgstr "Bağımlı paketlere ve projelere seçenekler ekle"
@@ -16112,6 +16125,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lisunusedunits
 msgid "Unused units"
+msgstr ""
+
+#: lazarusidestrconsts.lisunusualcompilerfilenameusuallyitstartswithfpcppcor
+msgid "Unusual compiler file name. Usually it starts with fpc, ppc or ppcross."
 msgstr ""
 
 #: lazarusidestrconsts.lisup

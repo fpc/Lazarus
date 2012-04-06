@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2012-04-06 00:48+0400\n"
+"PO-Revision-Date: 2012-04-07 01:36+0400\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -8209,6 +8209,10 @@ msgstr "Экспортировать в HTML"
 msgid "Export list"
 msgstr "Список экспорта"
 
+#: lazarusidestrconsts.lisexportpackagelistxml
+msgid "Export package list (*.xml)"
+msgstr "Список экспортируемых пакетов (*.xml)"
+
 #: lazarusidestrconsts.lisexpression
 msgid "Expression:"
 msgstr "Выражение:"
@@ -8992,6 +8996,10 @@ msgstr "Комментарий перед реализацией класса"
 #: lazarusidestrconsts.lisimportlist
 msgid "Import list"
 msgstr "Список импорта"
+
+#: lazarusidestrconsts.lisimportpackagelistxml
+msgid "Import package list (*.xml)"
+msgstr "Список импортируемых пакетов (*.xml)"
 
 #: lazarusidestrconsts.lisimpossible
 msgid "Impossible"
@@ -12673,6 +12681,11 @@ msgstr "%sСостояние: "
 msgid "Uninstall on next start"
 msgstr "Удалить при след. пуске"
 
+#: lazarusidestrconsts.lispckexpluninstallpackage
+msgctxt "lazarusidestrconsts.lispckexpluninstallpackage"
+msgid "Uninstall package %s"
+msgstr "Удалить пакет %s"
+
 #: lazarusidestrconsts.lispckoptsaddoptionstodependentpackagesandprojects
 msgid "Add options to dependent packages and projects"
 msgstr "Добавление параметров к зависимым пакетам и проектам"
@@ -16291,6 +16304,10 @@ msgstr "Беззнаковое"
 #: lazarusidestrconsts.lisunusedunits
 msgid "Unused units"
 msgstr "Неиспользуемые модули"
+
+#: lazarusidestrconsts.lisunusualcompilerfilenameusuallyitstartswithfpcppcor
+msgid "Unusual compiler file name. Usually it starts with fpc, ppc or ppcross."
+msgstr "Необычное имя файла компилятора. Как правило, оно начинается с fpc, ppc либо ppcross."
 
 #: lazarusidestrconsts.lisup
 msgctxt "lazarusidestrconsts.lisup"
