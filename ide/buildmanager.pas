@@ -156,6 +156,7 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure SetupTransferMacros;
+    procedure TranslateMacros;
     procedure SetupCompilerInterface;
     procedure SetupInputHistories;
 
@@ -378,6 +379,47 @@ begin
     'PROJECTINCPATH',nil,@CTMacroFuncProjectIncPath);
   CodeToolBoss.DefineTree.MacroFunctions.AddExtended(
     'PROJECTSRCPATH',nil,@CTMacroFuncProjectSrcPath);
+end;
+
+procedure TBuildManager.TranslateMacros;
+
+  procedure tr(const MacroName, Description: string);
+  var
+    Macro: TTransferMacro;
+  begin
+    Macro:=GlobalMacroList.FindByName(MacroName);
+    if Macro=nil then exit;
+    Macro.Description:=Description;
+  end;
+
+begin
+  tr('Project',lisProjectMacroProperties);
+  tr('LCLWidgetType',lisLCLWidgetType);
+  tr('TargetCPU',lisTargetCPU);
+  tr('TargetOS',lisTargetOS);
+  tr('SrcOS',lisSrcOS);
+  tr('FPCVer',lisFPCVersionEG222);
+  tr('Params',lisCommandLineParamsOfProgram);
+  tr('ProjFile',lisProjectFilename);
+  tr('ProjPath',lisProjectDirectory);
+  tr('TargetFile',lisTargetFilenameOfProject);
+  tr('TargetCmdLine',lisTargetFilenamePlusParams);
+  tr('RunCmdLine',lisLaunchingCmdLine);
+  tr('ProjPublishDir',lisPublishProjDir);
+  tr('ProjUnitPath',lisProjectUnitPath);
+  tr('ProjIncPath',lisProjectIncPath);
+  tr('ProjSrcPath',lisProjectSrcPath);
+  tr('ProjOutDir',lisProjectOutDir);
+  tr('Env',lisEnvironmentVariableNameAsParameter);
+  tr('FPCMsgFile',lisFPCMessageFile);
+  tr('MakeExe',lisMakeExe);
+  tr('MakeLib',lisMakeExe);
+  tr('Make',lisPathOfTheMakeUtility);
+  tr('InstantFPCCache',lisPathOfTheInstantfpcCache);
+  tr('IDEBuildOptions',lisIDEBuildOptions);
+  tr('PrimaryConfigPath',lisPrimaryConfigPath);
+  tr('SecondaryConfigPath',lisSecondaryConfigPath);
+  tr('FallbackOutputRoot',lisSecondaryConfigPath);
 end;
 
 procedure TBuildManager.SetupCompilerInterface;
