@@ -48,7 +48,17 @@ uses
 
 const
   EnvOptsVersion: integer = 107;
-  // 107: added
+  // 107: added Lazarus version
+
+  {$IFDEF Windows}
+  DefaultMakefilename = '$Path($(CompPath))make.exe';
+  {$ELSE}
+    {$IFDEF FreeBSD}
+    DefaultMakefilename = 'gmake';
+    {$ELSE}
+    DefaultMakefilename = 'make';
+    {$ENDIF}
+  {$ENDIF}
 
   //----------------------------------------------------------------------------
   
@@ -822,7 +832,7 @@ begin
   FCompilerFileHistory:=TStringList.Create;
   FPCSourceDirectory:='';
   FFPCSourceDirHistory:=TStringList.Create;
-  MakeFilename:='';
+  MakeFilename:=DefaultMakefilename;
   FMakeFileHistory:=TStringList.Create;
   DebuggerFilename:='';
   FDebuggerFileHistory:=TStringList.Create;
@@ -1480,7 +1490,7 @@ begin
         XMLConfig.SetDeleteValue(Path+'FPCSourceDirectory/Value',FPCSourceDirectory,'');
         SaveRecentList(XMLConfig,FFPCSourceDirHistory,
            Path+'FPCSourceDirectory/History/');
-        XMLConfig.SetDeleteValue(Path+'MakeFilename/Value',MakeFilename,'');
+        XMLConfig.SetDeleteValue(Path+'MakeFilename/Value',MakeFilename,DefaultMakefilename);
         SaveRecentList(XMLConfig,FMakeFileHistory,
            Path+'MakeFilename/History/');
         XMLConfig.SetDeleteValue(Path+'TestBuildDirectory/Value',TestBuildDirectory,'');

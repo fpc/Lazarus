@@ -158,10 +158,12 @@ function CheckFPCSrcDirQuality(ADirectory: string;
   out Note: string; FPCVer: string): TSDFilenameQuality;
 function SearchFPCSrcDirCandidates(StopIfFits: boolean;
   const FPCVer: string): TObjectList;
+procedure SetupFPCSrcDir(FPCVer: string);
 
-function CheckMakeQuality(AFilename: string;
+function CheckMakeExeQuality(AFilename: string;
   out Note: string): TSDFilenameQuality;
-function SearchMakeCandidates(StopIfFits: boolean): TObjectList;
+function SearchMakeExeCandidates(StopIfFits: boolean): TObjectList;
+procedure SetupMakeExe;
 
 function GetValueFromPrimaryConfig(OptionFilename, Path: string): string;
 function GetValueFromSecondaryConfig(OptionFilename, Path: string): string;
@@ -388,7 +390,7 @@ begin
     if List<>nil then
       BestDir:=TSDFileInfo(List[List.Count-1]);
     if (BestDir=nil) or (BestDir.Quality=sddqInvalid) then begin
-      debugln(['SetupCompilerFilename: no proper Lazarus directory found.']);
+      debugln(['SetupLazarusDirectory: no proper Lazarus directory found.']);
       exit;
     end;
     EnvironmentOptions.LazarusDirectory:=BestDir.Filename;
@@ -595,21 +597,21 @@ end;
 procedure SetupCompilerFilename;
 var
   Note: string;
-  CompFile: String;
+  Filename: String;
   Quality: TSDFilenameQuality;
   BestDir: TSDFileInfo;
   List: TObjectList;
 begin
-  CompFile:=EnvironmentOptions.GetParsedCompilerFilename;
-  Quality:=CheckCompilerQuality(CompFile,Note,'');
+  Filename:=EnvironmentOptions.GetParsedCompilerFilename;
+  Quality:=CheckCompilerQuality(Filename,Note,'');
   if Quality<>sddqInvalid then exit;
   // bad compiler
   dbgout('SetupCompilerFilename:');
   if EnvironmentOptions.CompilerFilename<>'' then
   begin
     dbgout(' The compiler path "',EnvironmentOptions.CompilerFilename,'"');
-    if EnvironmentOptions.CompilerFilename<>CompFile then
-      dbgout(' => "',CompFile,'"');
+    if EnvironmentOptions.CompilerFilename<>Filename then
+      dbgout(' => "',Filename,'"');
     dbgout(' is invalid (Error: ',Note,')');
     debugln(' Searching a proper one ...');
   end else begin
@@ -794,7 +796,46 @@ begin
   end;
 end;
 
-function CheckMakeQuality(AFilename: string; out Note: string
+procedure SetupFPCSrcDir(FPCVer: string);
+var
+  Note: string;
+  Dir: String;
+  Quality: TSDFilenameQuality;
+  BestDir: TSDFileInfo;
+  List: TObjectList;
+begin
+  Dir:=EnvironmentOptions.GetParsedFPCSourceDirectory;
+  Quality:=CheckFPCSrcDirQuality(Dir,Note,FPCVer);
+  if Quality<>sddqInvalid then exit;
+  // bad fpc src directory => searching a good one
+  dbgout('SetupFPCSourceDirectory:');
+  if EnvironmentOptions.FPCSourceDirectory<>'' then
+  begin
+    dbgout(' The FPC source directory "',EnvironmentOptions.FPCSourceDirectory,'"');
+    if EnvironmentOptions.FPCSourceDirectory<>Dir then
+      dbgout(' => "',Dir,'"');
+    dbgout(' is invalid (Error: ',Note,')');
+    debugln(' Searching a proper one ...');
+  end else begin
+    debugln(' Searching ...');
+  end;
+  List:=SearchFPCSrcDirCandidates(true,FPCVer);
+  try
+    BestDir:=nil;
+    if List<>nil then
+      BestDir:=TSDFileInfo(List[List.Count-1]);
+    if (BestDir=nil) or (BestDir.Quality=sddqInvalid) then begin
+      debugln(['SetupFPCSourceDirectory: no proper FPC source directory found.']);
+      exit;
+    end;
+    EnvironmentOptions.FPCSourceDirectory:=BestDir.Filename;
+    debugln(['SetupFPCSourceDirectory: using ',EnvironmentOptions.FPCSourceDirectory]);
+  finally
+    List.Free;
+  end;
+end;
+
+function CheckMakeExeQuality(AFilename: string; out Note: string
   ): TSDFilenameQuality;
 begin
   Result:=sddqInvalid;
@@ -826,7 +867,7 @@ begin
   Result:=sddqCompatible;
 end;
 
-function SearchMakeCandidates(StopIfFits: boolean): TObjectList;
+function SearchMakeExeCandidates(StopIfFits: boolean): TObjectList;
 
   function CheckFile(AFilename: string; var List: TObjectList): boolean;
   var
@@ -840,14 +881,14 @@ function SearchMakeCandidates(StopIfFits: boolean): TObjectList;
     if CaptionInSDFileList(AFilename,List) then exit;
     EnvironmentOptions.MakeFilename:=AFilename;
     RealFilename:=EnvironmentOptions.GetParsedMakeFilename;
-    debugln(['SearchMakeCandidates Value=',AFilename,' File=',RealFilename]);
+    debugln(['SearchMakeExeCandidates Value=',AFilename,' File=',RealFilename]);
     if RealFilename='' then exit;
     // check if exists
     if not FileExistsCached(RealFilename) then exit;
     // add to list and check quality
     Item:=TSDFileInfo.Create;
     Item.Filename:=RealFilename;
-    Item.Quality:=CheckMakeQuality(RealFilename,Item.Note);
+    Item.Quality:=CheckMakeExeQuality(RealFilename,Item.Note);
     Item.Caption:=AFilename;
     if List=nil then
       List:=TObjectList.create(true);
@@ -910,6 +951,45 @@ begin
     end;
   finally
     EnvironmentOptions.MakeFilename:=OldMakeFilename;
+  end;
+end;
+
+procedure SetupMakeExe;
+var
+  Note: string;
+  Filename: String;
+  Quality: TSDFilenameQuality;
+  BestDir: TSDFileInfo;
+  List: TObjectList;
+begin
+  Filename:=EnvironmentOptions.GetParsedMakeFilename;
+  Quality:=CheckMakeExeQuality(Filename,Note);
+  if Quality<>sddqInvalid then exit;
+  // bad make exe
+  dbgout('SetupMakeExe:');
+  if EnvironmentOptions.MakeFilename<>'' then
+  begin
+    dbgout(' The "make" executable "',EnvironmentOptions.MakeFilename,'"');
+    if EnvironmentOptions.MakeFilename<>Filename then
+      dbgout(' => "',Filename,'"');
+    dbgout(' is invalid (Error: ',Note,')');
+    debugln(' Searching a proper one ...');
+  end else begin
+    debugln(' Searching "make" ...');
+  end;
+  List:=SearchMakeExeCandidates(true);
+  try
+    BestDir:=nil;
+    if List<>nil then
+      BestDir:=TSDFileInfo(List[List.Count-1]);
+    if (BestDir=nil) or (BestDir.Quality=sddqInvalid) then begin
+      debugln(['SetupMakeExe: no proper "make" found.']);
+      exit;
+    end;
+    EnvironmentOptions.MakeFilename:=BestDir.Filename;
+    debugln(['SetupMakeExe: using ',EnvironmentOptions.MakeFilename]);
+  finally
+    List.Free;
   end;
 end;
 
@@ -1153,6 +1233,8 @@ begin
   s:=FPCSrcDirComboBox.Text;
   if s<>'' then
     EnvironmentOptions.FPCSourceDirectory:=s;
+
+  SetupMakeExe;
 
   ModalResult:=mrOk;
 end;
