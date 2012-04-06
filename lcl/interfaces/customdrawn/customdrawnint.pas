@@ -207,8 +207,20 @@ type
     LiberationFont: Boolean;
     LuxiFont: Boolean;
     {$endif}
-    //
+    // Stock objects
+    FStockBlackBrush: TFPCustomBrush;
+    FStockDKGrayBrush: TFPCustomBrush;
+    FStockGrayBrush: TFPCustomBrush;
+    FStockLtGrayBrush: TFPCustomBrush;
+    FStockNullBrush: TFPCustomBrush;
+    FStockWhiteBrush: TFPCustomBrush;
+
+    FStockBlackPen: TFPCustomPen;
+    FStockNullPen: TFPCustomPen;
+    FStockWhitePen: TFPCustomPen;
+
     DefaultFontSize: Integer;
+    FDefaultGUIFont: TFPCustomFont;
     //
     AccumulatedStr: string;
     // The currently focused control

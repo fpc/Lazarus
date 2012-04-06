@@ -133,8 +133,8 @@ function GetRgnBox(RGN : HRGN; lpRect : PRect) : Longint; override;
 (*function GetROP2(DC: HDC): Integer; override;
 function GetScrollBarSize(Handle: HWND; BarKind: Integer): integer; override;
 function GetScrollbarVisible(Handle: HWND; SBStyle: Integer): boolean; override;
-function GetScrollInfo(Handle: HWND; BarFlag: Integer; Var ScrollInfo: TScrollInfo): Boolean; override;
-function GetStockObject(Value: Integer): THandle; override;*)
+function GetScrollInfo(Handle: HWND; BarFlag: Integer; Var ScrollInfo: TScrollInfo): Boolean; override;*)
+function GetStockObject(Value: Integer): THandle; override;
 function GetSysColor(nIndex: Integer): DWORD; override;
 //function GetSysColorBrush(nIndex: Integer): HBrush; override;
 function GetSystemMetrics(nIndex: Integer): Integer; override;

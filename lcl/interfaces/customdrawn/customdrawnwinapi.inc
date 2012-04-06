@@ -3482,64 +3482,50 @@ begin
 
     Result := True;
   end;
-end;
+end;*)
 
-function TQtWidgetSet.GetStockObject(Value: Integer): THandle;
+function TCDWidgetSet.GetStockObject(Value: Integer): THandle;
 begin
-  {$ifdef VerboseQtWinAPI}
-    WriteLn('Trace:> [WinAPI GetStockObject] Value: ', Value);
+  {$ifdef VerboseCDWinAPI}
+    DebugLn(Format('Trace:> [WinAPI GetStockObject] Value: %d', [Value]));
   {$endif}
 
   Result := 0;
 
   case Value of
     BLACK_BRUSH:         // Black brush.
-      Result := FStockBlackBrush;
+      Result := THandle(FStockBlackBrush);
     DKGRAY_BRUSH:        // Dark gray brush.
-      Result := FStockDKGrayBrush;
+      Result := THandle(FStockDKGrayBrush);
     GRAY_BRUSH:          // Gray brush.
-      Result := FStockGrayBrush;
+      Result := THandle(FStockGrayBrush);
     LTGRAY_BRUSH:        // Light gray brush.
-      Result := FStockLtGrayBrush;
+      Result := THandle(FStockLtGrayBrush);
     NULL_BRUSH:          // Null brush (equivalent to HOLLOW_BRUSH).
-      Result := FStockNullBrush;
+      Result := THandle(FStockNullBrush);
     WHITE_BRUSH:         // White brush.
-      Result := FStockWhiteBrush;
+      Result := THandle(FStockWhiteBrush);
 
     BLACK_PEN:           // Black pen.
-      Result := FStockBlackPen;
+      Result := THandle(FStockBlackPen);
     NULL_PEN:            // Null pen.
-      Result := FStockNullPen;
+      Result := THandle(FStockNullPen);
     WHITE_PEN:           // White pen.
-      Result := FStockWhitePen;
+      Result := THandle(FStockWhitePen);
 
     {System font. By default, Windows uses the system font to draw menus,
      dialog box controls, and text. In Windows versions 3.0 and later,
      the system font is a proportionally spaced font; earlier versions of
      Windows used a monospace system font.}
     DEFAULT_GUI_FONT, SYSTEM_FONT:
-      begin
+      Result := THandle(FDefaultGUIFont);
 
-        If FStockSystemFont <> 0 then
-        begin
-          DeleteObject(FStockSystemFont);
-          FStockSystemFont := 0;
-        end;
-
-        If FStockSystemFont = 0 then
-          FStockSystemFont := CreateDefaultFont;
-        Result := FStockSystemFont;
-      end;
-
-  {$ifdef VerboseQtWinAPI}
-    else
-    WriteLn('[WinAPI GetStockObject] UNHANDLED Value: ', Value);
+  {$ifdef VerboseCDWinAPI}
+  else
+    DebugLn(Format('[WinAPI GetStockObject] UNHANDLED Value: %d', [Value]));
   {$endif}
   end;
-  {$ifdef VerboseQtWinAPI}
-    WriteLn('Trace:< [WinAPI GetStockObject] Value: ', Value);
-  {$endif}
-end;*)
+end;
 
 {------------------------------------------------------------------------------
   Function: TCDWidgetSet.GetSysColor

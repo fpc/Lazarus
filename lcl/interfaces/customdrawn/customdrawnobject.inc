@@ -87,6 +87,29 @@ begin
   // if it's the first time, we must create the list
   if FFontPaths.Count = 0 then BackendListFontPaths(FFontPaths, FFontList);
   {$endif}
+
+  // Init stock objects
+  FStockBlackBrush := TFPCustomBrush.Create;
+  FStockBlackBrush.FPColor := colBlack;
+  FStockDKGrayBrush := TFPCustomBrush.Create;
+  FStockDKGrayBrush.FPColor := colDkGray;
+  FStockGrayBrush := TFPCustomBrush.Create;
+  FStockGrayBrush.FPColor := colGray;
+  FStockLtGrayBrush := TFPCustomBrush.Create;
+  FStockLtGrayBrush.FPColor := colLtGray;
+  FStockNullBrush := TFPCustomBrush.Create;
+  FStockNullBrush.Style := bsClear;
+  FStockWhiteBrush := TFPCustomBrush.Create;
+  FStockWhiteBrush.FPColor := colWhite;
+
+  FStockBlackPen := TFPCustomPen.Create;
+  FStockBlackPen.FPColor := colBlack;
+  FStockNullPen := TFPCustomPen.Create;
+  FStockNullPen.Style := psClear;
+  FStockWhitePen := TFPCustomPen.Create;
+  FStockWhitePen.FPColor := colWhite;
+
+  FDefaultGUIFont := TFPCustomFont.Create;
 end;
 
 {------------------------------------------------------------------------------
