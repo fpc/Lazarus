@@ -59,7 +59,7 @@ public class LCLActivity extends Activity implements SensorEventListener, Locati
       for (i = 0; i<text.length(); i++)
       {
         eventResult = LCLOnKey(-1, 0, null, (int) text.charAt(i));
-        if ((eventResult & 1) != 0) lclsurface.postInvalidate();
+        ProcessEventResult(eventResult);
       }
       return true;
     }
@@ -73,9 +73,9 @@ public class LCLActivity extends Activity implements SensorEventListener, Locati
       for (i = 0; i<leftLength; i++)
       {
         eventResult = LCLOnKey(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_DEL, null, (char) 0);
-        if ((eventResult & 1) != 0) lclsurface.postInvalidate();
+        ProcessEventResult(eventResult);
         eventResult = LCLOnKey(KeyEvent.ACTION_UP, KeyEvent.KEYCODE_DEL, null, (char) 0);
-        if ((eventResult & 1) != 0) lclsurface.postInvalidate();
+        ProcessEventResult(eventResult);
       }
 
       // For each right surrounding text deletion, send a del key
@@ -139,7 +139,7 @@ public class LCLActivity extends Activity implements SensorEventListener, Locati
       //Log.v("lclproject", "LCLSurface.onKeyDown");
       super.onKeyDown(keyCode, event);
       int eventResult = LCLOnKey(KeyEvent.ACTION_DOWN, keyCode, event, (char) 0);
-      if ((eventResult & 1) != 0) postInvalidate();
+      ProcessEventResult(eventResult);
       return true;
     }
 
@@ -147,7 +147,7 @@ public class LCLActivity extends Activity implements SensorEventListener, Locati
     {
       // First handle the KeyUp event
       int eventResult = LCLOnKey(KeyEvent.ACTION_UP, keyCode, event, event.getUnicodeChar());
-      if ((eventResult & 1) != 0) postInvalidate();
+      ProcessEventResult(eventResult);
 
       // Handling of the Back hardware key
       super.onKeyUp(keyCode, event);
@@ -212,8 +212,8 @@ public class LCLActivity extends Activity implements SensorEventListener, Locati
 
   public void ProcessEventResult(int eventResult)
   {
-    if (((eventResult | 1) != 0) && (lclsurface != null)) lclsurface.postInvalidate();
-    //if ((eventResult | 2) != 0) reserved for BACK key handling
+    if (((eventResult & 1) != 0) && (lclsurface != null)) lclsurface.postInvalidate();
+    //if ((eventResult & 2) != 0) reserved for BACK key handling and handled in onKeyUp, don't handle here!
   }
 
   // -------------------------------------------
