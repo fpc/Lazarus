@@ -7271,7 +7271,6 @@ begin
     //debugln('TCustomSynEdit.SizeOrFontChanged A ClientWidth=',dbgs(ClientWidth),' FLeftGutter.Width=',dbgs(FLeftGutter.Width),' ScrollBarWidth=',dbgs(ScrollBarWidth),' CharWidth=',dbgs(CharWidth),' CharsInWindow=',dbgs(CharsInWindow),' Width=',dbgs(Width));
     if bFont then begin
       UpdateScrollbars;
-      Exclude(fStateFlags, sfCaretChanged);
       Invalidate;
     end else
       UpdateScrollbars;
