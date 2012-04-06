@@ -249,11 +249,11 @@ var
   OpenDialog: TOpenDialog;
   AFilename: string;
 begin
-  OpenDialog:=TSaveDialog.Create(nil);
+  OpenDialog:=TOpenDialog.Create(nil);
   try
     InputHistories.ApplyFileDialogSettings(OpenDialog);
     OpenDialog.InitialDir:=GetPrimaryConfigPath;
-    OpenDialog.Title:='Import package list (*.xml)';
+    OpenDialog.Title:=lisImportPackageListXml;
     OpenDialog.Options:=OpenDialog.Options+[ofPathMustExist,ofFileMustExist];
     if OpenDialog.Execute then begin
       AFilename:=CleanAndExpandFilename(OpenDialog.Filename);
