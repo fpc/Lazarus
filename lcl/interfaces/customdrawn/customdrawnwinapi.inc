@@ -1057,8 +1057,11 @@ begin
 
   if not IsValidDC(DC) then exit;
 
+  // Drawer.DrawFocusRect alters the Pen and Brush, so we save the state here
+  LazDC.SaveState();
   GetDefaultDrawer().DrawFocusRect(LazDC, Point(Rect.Left, Rect.Top),
     Size(Rect.Right - Rect.Left, Rect.Bottom - Rect.Top));
+  LazDC.RestoreState(-1);
 end;
 
 function TCDWidgetSet.DrawFrameControl(DC: HDC; const Rect: TRect; uType,
