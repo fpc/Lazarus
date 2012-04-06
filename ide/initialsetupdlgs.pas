@@ -276,6 +276,7 @@ function SearchLazarusDirectoryCandidates(StopIfFits: boolean): TObjectList;
     if CaptionInSDFileList(Dir,List) then exit;
     EnvironmentOptions.LazarusDirectory:=Dir;
     RealDir:=ChompPathDelim(EnvironmentOptions.GetParsedLazarusDirectory);
+    debugln(['SearchLazarusDirectoryCandidates Value=',Dir,' File=',RealDir]);
     // check if exists
     if not DirPathExistsCached(RealDir) then exit;
     // add to list and check quality
@@ -456,7 +457,7 @@ var
     if CaptionInSDFileList(AFilename,List) then exit;
     EnvironmentOptions.CompilerFilename:=AFilename;
     RealFilename:=EnvironmentOptions.GetParsedCompilerFilename;
-    //debugln(['CheckFile AFilename=',AFilename,' Real=',RealFilename]);
+    debugln(['SearchCompilerCandidates Value=',AFilename,' File=',RealFilename]);
     if RealFilename='' then exit;
     // check if exists
     if not FileExistsCached(RealFilename) then exit;
@@ -696,19 +697,20 @@ end;
 function SearchFPCSrcDirCandidates(StopIfFits: boolean;
   const FPCVer: string): TObjectList;
 
-  function Check(AFilename: string; var List: TObjectList): boolean;
+  function Check(Dir: string; var List: TObjectList): boolean;
   var
     Item: TSDFileInfo;
     RealDir: String;
   begin
     Result:=false;
-    DoDirSeparators(AFilename);
-    AFilename:=ChompPathDelim(AFilename);
-    if AFilename='' then exit;
+    DoDirSeparators(Dir);
+    Dir:=ChompPathDelim(Dir);
+    if Dir='' then exit;
     // check if already checked
-    if CaptionInSDFileList(AFilename,List) then exit;
-    EnvironmentOptions.FPCSourceDirectory:=AFilename;
+    if CaptionInSDFileList(Dir,List) then exit;
+    EnvironmentOptions.FPCSourceDirectory:=Dir;
     RealDir:=EnvironmentOptions.GetParsedFPCSourceDirectory;
+    debugln(['SearchFPCSrcDirCandidates Value=',Dir,' File=',RealDir]);
     if RealDir='' then exit;
     // check if exists
     if not DirPathExistsCached(RealDir) then exit;
@@ -716,7 +718,7 @@ function SearchFPCSrcDirCandidates(StopIfFits: boolean;
     Item:=TSDFileInfo.Create;
     Item.Filename:=RealDir;
     Item.Quality:=CheckFPCSrcDirQuality(RealDir,Item.Note,FPCVer);
-    Item.Caption:=AFilename;
+    Item.Caption:=Dir;
     if List=nil then
       List:=TObjectList.create(true);
     List.Add(Item);
