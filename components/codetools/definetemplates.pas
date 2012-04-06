@@ -2605,7 +2605,7 @@ begin
     Result:='ppc' // the mach-o format supports "fat" binaries whereby
                   // a single executable contains machine code for several architectures
     {$else}
-    Result:='ppccross'
+    Result:='ppcross'
     {$endif}
   else
     Result:='ppc';

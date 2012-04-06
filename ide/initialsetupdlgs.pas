@@ -427,7 +427,6 @@ begin
   ShortFilename:=ExtractFileNameOnly(AFilename);
   if (CompareFilenames(ShortFilename,'fpc')<>0)
   and (CompareFilenames(copy(ShortFilename,1,3),'ppc')<>0)
-  and (CompareFilenames(copy(ShortFilename,1,7),'crossppc')<>0)
   then begin
     Note:=lisUnusualCompilerFileNameUsuallyItStartsWithFpcPpcOr;
     exit(sddqIncomplete);
