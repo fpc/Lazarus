@@ -256,19 +256,6 @@ object frBarCodeForm: TfrBarCodeForm
     Height = 34
     Top = 297
     Width = 368
-    OKButton.Name = 'OKButton'
-    OKButton.Caption = '&OK'
-    OKButton.DefaultCaption = False
-    HelpButton.Name = 'HelpButton'
-    HelpButton.Caption = '&Help'
-    HelpButton.DefaultCaption = False
-    CloseButton.Name = 'CloseButton'
-    CloseButton.Caption = '&Close'
-    CloseButton.DefaultCaption = False
-    CloseButton.Enabled = False
-    CancelButton.Name = 'CancelButton'
-    CancelButton.Caption = 'Cancel'
-    CancelButton.DefaultCaption = False
     TabOrder = 5
     ShowButtons = [pbOK, pbCancel, pbHelp]
   end
