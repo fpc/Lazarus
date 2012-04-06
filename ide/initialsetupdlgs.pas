@@ -1276,11 +1276,12 @@ function TInitialSetupDialog.GetFirstCandidate(Candidates: TObjectList;
 var
   i: Integer;
 begin
-  for i:=0 to Candidates.Count-1 do begin
-    Result:=TSDFileInfo(Candidates[i]);
-    if Result.Quality>=MinQuality then
-      exit;
-  end;
+  if Candidates<>nil then
+    for i:=0 to Candidates.Count-1 do begin
+      Result:=TSDFileInfo(Candidates[i]);
+      if Result.Quality>=MinQuality then
+        exit;
+    end;
   Result:=nil;
 end;
 
