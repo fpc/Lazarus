@@ -442,7 +442,6 @@ end;
 function SearchCompilerCandidates(StopIfFits: boolean;
   const TestSrcFilename: string): TObjectList;
 var
-  Target: String;
   ShortCompFile: String;
 
   function CheckFile(AFilename: string; var List: TObjectList): boolean;
@@ -482,7 +481,7 @@ var
   begin
     Result:=true;
     ADir:=AppendPathDelim(TrimFilename(ExpandFileNameUTF8(TrimFilename(ADir))));
-    SubFile:='bin'+PathDelim+Target+PathDelim+ShortCompFile;
+    SubFile:='bin/$(TargetCPU)-$(TargetOS)/'+ShortCompFile;
     if CheckFile(ADir+SubFile,List) then
       exit;
     try
@@ -536,6 +535,13 @@ begin
       for i:=0 to Files.Count-1 do
         if CheckFile(Files[i],Result) then exit;
 
+    // check paths with versions
+    ShortCompFile:=GetDefaultCompilerFilename;
+
+    // check $(LazarusDir)\fpc\bin\i386-win32\fpc.exe
+    if CheckFile(SetDirSeparators('$(LazarusDir)/fpc/bin/$(TargetCPU)-$(TargetOS)/')+ShortCompFile,Result)
+    then exit;
+
     // check common directories
     Files:=TStringList.Create;
     try
@@ -545,14 +551,6 @@ begin
     finally
       Files.Free;
     end;
-
-    // check paths with versions
-    Target:=GetCompiledTargetCPU+'-'+GetCompiledTargetOS;
-    ShortCompFile:=GetDefaultCompilerFilename;
-
-    // check $(LazarusDir)\fpc\bin\i386-win32\fpc.exe
-    if CheckFile('$(LazarusDir)'+SetDirSeparators('fpc/bin/'+Target+'/'+ShortCompFile),Result)
-    then exit;
 
     if (GetDefaultSrcOSForTargetOS(GetCompiledTargetOS)='win') then begin
       // Windows has some special places
@@ -753,6 +751,10 @@ begin
       for i:=0 to Dirs.Count-1 do
         if Check(Dirs[i],Result) then exit;
 
+    // $(LazarusDir)/fpc/$(FPCVer)/source
+    if Check(SetDirSeparators('$(LazarusDir)/fpc/$(FPCVer)/source'),Result) then
+      exit;
+
     // check common directories
     Dirs:=GetDefaultFPCSrcDirectories;
     try
@@ -762,10 +764,6 @@ begin
     finally
       Dirs.Free;
     end;
-
-    // $(LazarusDir)/fpc/$(FPCVer)/source
-    if Check(SetDirSeparators('$(LazarusDir)/fpc/$(FPCVer)/source'),Result) then
-      exit;
   finally
     EnvironmentOptions.FPCSourceDirectory:=OldFPCSrcDir;
   end;
