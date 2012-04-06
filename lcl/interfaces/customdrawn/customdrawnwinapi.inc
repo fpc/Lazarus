@@ -194,7 +194,7 @@ end;
 function TQtWidgetSet.ClipboardRegisterFormat(const AMimeType: string): TClipboardFormat;
 begin
   Result := Clipboard.RegisterFormat(AMimeType);
-end;
+end;*)
 
 
 {------------------------------------------------------------------------------
@@ -225,105 +225,34 @@ end;
       NullRegion
       SimpleRegion
       ComplexRegion
-
  ------------------------------------------------------------------------------}
-function TQtWidgetSet.CombineRgn(Dest, Src1, Src2: HRGN; fnCombineMode: Longint): Longint;
+function TCDWidgetSet.CombineRgn(Dest, Src1, Src2: HRGN; fnCombineMode: Longint): Longint;
 var
-  RDest,RSrc1,RSrc2: QRegionH;
+  DestRgn: TLazRegion absolute Dest;
+  Src1Rgn: TLazRegion absolute Src1;
+  Src2Rgn: TLazRegion absolute Src2;
 begin
-  result:=ERROR;
+  Result := ERROR;
 
-  if not IsValidGDIObject(Dest) or not IsValidGDIObject(Src1) then
-    exit
+  if not IsValidGDIObject(Dest) or not IsValidGDIObject(Src1) then Exit;
+
+  if (fnCombineMode<>RGN_COPY) and not IsValidGDIObject(Src2) then Exit;
+
+  if fnCombineMode = RGN_COPY then
+  begin
+    if Dest <> Src1 then DestRgn.Assign(Src1Rgn);
+  end;
+
+  if Dest = Src1 then
+    DestRgn.CombineWith(Src2Rgn, fnCombineMode)
   else
   begin
-    RDest := TQtRegion(Dest).FHandle;
-    RSrc1 := TQtRegion(Src1).FHandle;
+    DestRgn.Assign(Src1Rgn);
+    DestRgn.CombineWith(Src2Rgn, fnCombineMode);
   end;
 
-  if (fnCombineMode<>RGN_COPY) and not IsValidGDIObject(Src2) then
-    exit
-  else
-    RSrc2 := TQtRegion(Src2).FHandle;
-
-  case fnCombineMode of
-    RGN_AND:
-      QRegion_intersected(RSrc1, RDest, RSrc2);
-    RGN_COPY:
-      begin
-        // union of Src1 with a null region
-        RSrc2 := QRegion_create;
-        QRegion_united(RSrc1, RDest, RSrc2);
-        QRegion_destroy(RSrc2);
-      end;
-    RGN_DIFF:
-      QRegion_subtracted(RSrc1, RDest, RSrc2);
-    RGN_OR:
-      QRegion_united(RSrc1, RDest, RSrc2);
-    RGN_XOR:
-      QRegion_xored(RSrc1, RDest, RSrc2);
-  end;
-
-  if QRegion_isEmpty(RDest) then
-    Result := NULLREGION
-  else
-  begin
-    if TQtRegion(Dest).IsPolyRegion or (TQtRegion(Dest).numRects > 0) then
-      Result := COMPLEXREGION
-    else
-      Result := SIMPLEREGION;
-  end;
+  Result := DestRgn.GetRegionKind();
 end;
-
-{------------------------------------------------------------------------------
-  Method:  TQtWidgetSet.CreateCompatibleBitmap
-  Params: HDC, Width & Height
-  Returns: HBITMAP
-
- ------------------------------------------------------------------------------}
-function TQtWidgetSet.CreateCompatibleBitmap(DC: HDC; Width, Height: Integer): HBITMAP;
-var
-  QtDC: TQtDeviceContext;
-  Format: QImageFormat = QImageFormat_ARGB32;
-  ADevice: QPaintDeviceH = nil;
-  ADesktop: QDesktopWidgetH = nil;
-begin
-  {$ifdef VerboseQtWinAPI}
-    WriteLn('Trace:> [WinAPI CreateCompatibleBitmap]',
-     ' DC:', dbghex(DC),
-     ' Width:', dbgs(Width),
-     ' Height:', dbgs(Height));
-  {$endif}
-  Result := 0;
-  if IsValidDC(DC) then
-  begin
-    QtDC := TQtDeviceContext(DC);
-    case QtDC.getDepth of
-      1: Format := QImageFormat_Mono;
-      15, 16: Format := QImageFormat_RGB16;
-      24: Format := QImageFormat_RGB32;
-      32: Format := QImageFormat_ARGB32;
-    end;
-  end else
-  begin
-    ADesktop := QApplication_desktop();
-    if ADesktop <> nil then
-      ADevice := QWidget_to_QPaintDevice(ADesktop);
-    if ADevice <> nil then
-    begin
-      case QPaintDevice_depth(ADevice) of
-        1: Format := QImageFormat_Mono;
-        15, 16: Format := QImageFormat_RGB16;
-        24: Format := QImageFormat_RGB32;
-        32: Format := QImageFormat_ARGB32;
-      end;
-    end;
-  end;
-  Result := HBitmap(TQtImage.Create(nil, Width, Height, Format));
-  {$ifdef VerboseQtWinAPI}
-    WriteLn('Trace:< [WinAPI CreateCompatibleBitmap] Bitmap:', dbghex(Result));
-  {$endif}
-end;*)
 
 {------------------------------------------------------------------------------
   Method:  CreateBitmap
@@ -500,7 +429,7 @@ begin
   Result := HDC(TLazCanvas.Create(nil));
 end;
 
-(*{------------------------------------------------------------------------------
+{------------------------------------------------------------------------------
   Function: CreateEllipticRgn
   Params:  p1 - X position of the top-left corner
            p2 - Y position of the top-left corner
@@ -508,16 +437,17 @@ end;
            p4 - Y position of the bottom-right corner
   Returns: HRGN
  ------------------------------------------------------------------------------}
-function TQtWidgetSet.CreateEllipticRgn(p1, p2, p3, p4: Integer): HRGN;
+function TCDWidgetSet.CreateEllipticRgn(p1, p2, p3, p4: Integer): HRGN;
 var
-  QtRegion: TQtRegion;
+  lRegion: TLazRegion;
 begin
-  {$ifdef VerboseQtWinAPI}
-    WriteLn('[WinAPI CreateEllipticRgn] ');
+  {$ifdef VerboseCDRegions}
+    DebugLn('[WinAPI CreateEllipticRgn] ');
   {$endif}
-  QtRegion := TQtRegion.Create(True, p1, p2, p3, p4, QRegionEllipse);
-  Result := HRGN(QtRegion);
-end;*)
+  lRegion := TLazRegion.Create;
+  lRegion.AddEllipse(p1, p2, p3, p4);
+  Result := HRGN(lRegion);
+end;
 
 {------------------------------------------------------------------------------
   Function: CreateFontIndirect
@@ -5017,17 +4947,18 @@ begin
     QCoreApplication_postEvent(Widget.Widget, Event, 1 {high priority});
     Result := True;
   end;
-end;
+end;*)
 
-function TQtWidgetSet.PtInRegion(RGN: HRGN; X, Y: Integer): Boolean;
+function TCDWidgetSet.PtInRegion(RGN: HRGN; X, Y: Integer): Boolean;
+var
+  lRegion: TLazRegion absolute RGN;
 begin
   Result := False;
 
-  if not IsValidGDIObject(RGN) then
-    exit;
+  if not IsValidGDIObject(RGN) then Exit;
 
-  Result := TQtRegion(RGN).containsPoint(X, Y);
-end;*)
+  Result := lRegion.IsPointInRegion(X, Y);
+end;
 
 {------------------------------------------------------------------------------
   Function: Rectangle

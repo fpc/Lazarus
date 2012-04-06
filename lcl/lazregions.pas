@@ -10,7 +10,7 @@ unit lazregions;
 interface
 
 uses
-  Classes, SysUtils, fpcanvas;
+  Classes, SysUtils, LCLType, fpcanvas;
 
 type
   TLazRegionFillMode = (rfmOddEven, rfmWinding);
@@ -21,6 +21,7 @@ type
 
   TLazRegionPart = class
   public
+    function GetBoundingRect: TRect; virtual;
     function IsPointInPart(AX, AY: Integer): Boolean; virtual;
   end;
 
@@ -38,6 +39,14 @@ type
   public
     Points: array of TPoint;
     FillMode: TLazRegionFillMode;
+    function IsPointInPart(AX, AY: Integer): Boolean; override;
+  end;
+
+  { TLazRegionEllipse }
+
+  TLazRegionEllipse = class(TLazRegionPart)
+  public
+    X1, Y1, X2, Y2: Integer;
     function IsPointInPart(AX, AY: Integer): Boolean; override;
   end;
 
@@ -59,9 +68,21 @@ type
     Rect: TRect; // Used for performance increase when IsSimpleRectRegion is on
     constructor Create; virtual;
     destructor Destroy; override;
+    // Management operations
+    procedure Assign(ASrcRegion: TLazRegion);
+    procedure Clear;
+    procedure CombineWith(ASrcRegion: TLazRegion; AOperation: Longint);
+    function GetRegionKind(): Longint;
+    function IsSimpleRectEmpty: Boolean;
+    // Setting the contents
+    procedure AddPart(APart: TLazRegionPart);
     procedure AddRectangle(ARect: TRect);
     procedure AddPolygon(var APoints: TPointArray; AFillMode: TLazRegionFillMode);
+    procedure AddEllipse(AX1, AY1, AX2, AY2: Integer);
     procedure SetAsSimpleRectRegion(ARect: TRect);
+    procedure AddPartsFromRegion(ASrcRegion: TLazRegion);
+    procedure DoChangeToComplexRegion;
+    // Overrides of TFPCustomRegion information query routines
     function GetBoundingRect: TRect; override;
     function IsPointInRegion(AX, AY: Integer): Boolean; override;
   end;
@@ -137,7 +158,30 @@ begin
   Result := inside <> 0;
 end;
 
+{ TLazRegionEllipse }
+
+{
+  The equation of the inner area of an axis aligned ellipse:
+
+  (X/a)^2 + (Y/b)^2 <= 1
+}
+function TLazRegionEllipse.IsPointInPart(AX, AY: Integer): Boolean;
+var
+  a, b: Integer;
+begin
+  a := X2 - X1;
+  b := Y2 - Y1;
+  if (a < 0) or (b < 0) then Exit(False);
+
+  Result := Sqr(AX/a) + Sqr(AY/b) <= 1;
+end;
+
 { TLazRegionPart }
+
+function TLazRegionPart.GetBoundingRect: TRect;
+begin
+  Result := Bounds(0, 0, 0, 0);
+end;
 
 function TLazRegionPart.IsPointInPart(AX, AY: Integer): Boolean;
 begin
@@ -174,13 +218,71 @@ begin
   inherited Destroy;
 end;
 
+procedure TLazRegion.Assign(ASrcRegion: TLazRegion);
+begin
+  Clear;
+  AddPartsFromRegion(ASrcRegion);
+end;
+
+procedure TLazRegion.Clear;
+var
+  i: Integer;
+begin
+  // Free all items
+  for i := 0 to Parts.Count - 1 do
+    TLazRegionPart(Parts.Items[i]).Free;
+  Parts.Clear;
+
+  IsSimpleRectRegion := True;
+  Rect := Bounds(0, 0, 0, 0);
+end;
+
+procedure TLazRegion.CombineWith(ASrcRegion: TLazRegion; AOperation: Longint);
+begin
+  case AOperation of
+    {RGN_AND:
+      QRegion_intersected(RSrc1, RDest, RSrc2);}
+    RGN_COPY:
+    begin
+      Assign(ASrcRegion);
+    end;
+{    RGN_DIFF:
+      QRegion_subtracted(RSrc1, RDest, RSrc2);}
+    RGN_OR:
+      AddPartsFromRegion(ASrcRegion);
+    {RGN_XOR:
+      QRegion_xored(RSrc1, RDest, RSrc2);}
+  end;
+end;
+
+function TLazRegion.GetRegionKind: Longint;
+begin
+  if not IsSimpleRectRegion then
+    Result := COMPLEXREGION
+  else if IsSimpleRectEmpty() then
+    Result := NULLREGION
+  else
+    Result := SIMPLEREGION;
+end;
+
+function TLazRegion.IsSimpleRectEmpty: Boolean;
+begin
+  Result := (Rect.Bottom - Rect.Top <= 0) or (Rect.Right - Rect.Left <= 0);
+end;
+
+procedure TLazRegion.AddPart(APart: TLazRegionPart);
+begin
+  Parts.Add(APart);
+  DoChangeToComplexRegion();
+end;
+
 procedure TLazRegion.AddRectangle(ARect: TRect);
 var
   lNewRect: TLazRegionRect;
 begin
   lNewRect := TLazRegionRect.Create;
   lNewRect.Rect := ARect;
-  Parts.Add(lNewRect);
+  AddPart(lNewRect);
 end;
 
 procedure TLazRegion.AddPolygon(var APoints: TPointArray;
@@ -191,11 +293,53 @@ begin
   lNewPolygon := TLazRegionPolygon.Create;
   lNewPolygon.Points := APoints;
   lNewPolygon.FillMode := AFillMode;
-  Parts.Add(lNewPolygon);
+  AddPart(lNewPolygon);
+end;
+
+procedure TLazRegion.AddEllipse(AX1, AY1, AX2, AY2: Integer);
+var
+  lNewEllipse: TLazRegionEllipse;
+begin
+  lNewEllipse := TLazRegionEllipse.Create;
+  lNewEllipse.X1 := AX1;
+  lNewEllipse.Y1 := AY1;
+  lNewEllipse.X2 := AX2;
+  lNewEllipse.Y2 := AY2;
+  AddPart(lNewEllipse);
+end;
+
+procedure TLazRegion.AddPartsFromRegion(ASrcRegion: TLazRegion);
+var
+  i: Integer;
+begin
+  if ASrcRegion.IsSimpleRectRegion then
+  begin
+    if IsSimpleRectRegion and IsSimpleRectEmpty() then
+      Rect := ASrcRegion.Rect
+    else
+      AddRectangle(ASrcRegion.Rect);
+  end
+  else
+  begin
+    for i := 0 to ASrcRegion.Parts.Count-1 do
+    begin
+      Parts.Add(ASrcRegion.Parts.Items[i]);
+    end;
+    IsSimpleRectRegion := False;
+  end;
+end;
+
+procedure TLazRegion.DoChangeToComplexRegion;
+begin
+  if IsSimpleRectRegion and (not IsSimpleRectEmpty()) then
+    AddRectangle(Rect);
+
+  IsSimpleRectRegion := False;
 end;
 
 procedure TLazRegion.SetAsSimpleRectRegion(ARect: TRect);
 begin
+  Clear;
   IsSimpleRectRegion := True;
   Rect := ARect;
 end;
