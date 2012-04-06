@@ -272,6 +272,8 @@ procedure TSynPluginTemplateEdit.SetFinalCaret;
 var
   c: TSynPluginSyncronizedEditCell;
 begin
+  if FMarkup <> nil then
+    FMarkup.DoInvalidate;
   c := Cells.GroupCell[-2, 0];
   Editor.BlockBegin := c.LogStart;
   CaretObj.IncForcePastEOL;

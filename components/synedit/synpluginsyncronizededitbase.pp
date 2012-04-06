@@ -92,6 +92,7 @@ type
   public
     constructor Create(ASynEdit: TSynEditBase);
     destructor Destroy; override;
+    procedure DoInvalidate;
   end;
 
   { TSynPluginSyncronizedEditMarkup }
@@ -458,6 +459,11 @@ destructor TSynPluginSyncronizedEditMarkupBase.Destroy;
 begin
   Cells := nil;
   inherited Destroy;
+end;
+
+procedure TSynPluginSyncronizedEditMarkupBase.DoInvalidate;
+begin
+  DoEnabledChanged(nil);
 end;
 
 { TSynPluginSyncronizedEditMarkup }
