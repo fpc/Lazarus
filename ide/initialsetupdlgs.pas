@@ -272,10 +272,10 @@ function SearchLazarusDirectoryCandidates(StopIfFits: boolean): TObjectList;
     if Dir='' then Dir:='.';
     DoDirSeparators(Dir);
     Dir:=ChompPathDelim(Dir);
-    EnvironmentOptions.LazarusDirectory:=Dir;
-    RealDir:=ChompPathDelim(EnvironmentOptions.GetParsedLazarusDirectory);
     // check if already checked
     if CaptionInSDFileList(Dir,List) then exit;
+    EnvironmentOptions.LazarusDirectory:=Dir;
+    RealDir:=ChompPathDelim(EnvironmentOptions.GetParsedLazarusDirectory);
     // check if exists
     if not DirPathExistsCached(RealDir) then exit;
     // add to list and check quality
@@ -452,11 +452,12 @@ var
     Result:=false;
     if AFilename='' then exit;
     DoDirSeparators(AFilename);
-    EnvironmentOptions.CompilerFilename:=AFilename;
-    RealFilename:=EnvironmentOptions.GetParsedCompilerFilename;
-    if RealFilename='' then exit;
     // check if already checked
     if CaptionInSDFileList(AFilename,List) then exit;
+    EnvironmentOptions.CompilerFilename:=AFilename;
+    RealFilename:=EnvironmentOptions.GetParsedCompilerFilename;
+    //debugln(['CheckFile AFilename=',AFilename,' Real=',RealFilename]);
+    if RealFilename='' then exit;
     // check if exists
     if not FileExistsCached(RealFilename) then exit;
     // skip directories
@@ -704,11 +705,11 @@ function SearchFPCSrcDirCandidates(StopIfFits: boolean;
     DoDirSeparators(AFilename);
     AFilename:=ChompPathDelim(AFilename);
     if AFilename='' then exit;
+    // check if already checked
+    if CaptionInSDFileList(AFilename,List) then exit;
     EnvironmentOptions.FPCSourceDirectory:=AFilename;
     RealDir:=EnvironmentOptions.GetParsedFPCSourceDirectory;
     if RealDir='' then exit;
-    // check if already checked
-    if CaptionInSDFileList(AFilename,List) then exit;
     // check if exists
     if not DirPathExistsCached(RealDir) then exit;
     // add to list and check quality
