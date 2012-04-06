@@ -3841,6 +3841,7 @@ begin
   end;
   Dir:='$(FallbackOutputRoot)'+PathDelim+APackage.Name+PathDelim+Dir;
   GlobalMacroList.SubstituteStr(Dir);
+  Dir:=TrimFilename(Dir);
   debugln(['TLazPackageGraph.GetFallbackOutputDir  ',APackage.Name,': ',Dir]);
   Result:=Dir;
 end;
