@@ -1274,16 +1274,19 @@ var
 begin
   UpdateLazarusDirCandidates;
   LazDirComboBox.Text:=EnvironmentOptions.LazarusDirectory;
+  FLastParsedLazDir:='. .';
   UpdateLazDirNote;
   FLazarusDirChanged:=false;
 
   UpdateCompilerFilenameCandidates;
   CompilerComboBox.Text:=EnvironmentOptions.CompilerFilename;
+  fLastParsedCompiler:='. .';
   UpdateCompilerNote;
   fCompilerFilenameChanged:=false;
 
   UpdateFPCSrcDirCandidates;
   FPCSrcDirComboBox.Text:=EnvironmentOptions.FPCSourceDirectory;
+  fLastParsedFPCSrcDir:='. .';
   UpdateFPCSrcDirNote;
 
   // select first error
