@@ -399,6 +399,7 @@ function CheckCompilerQuality(AFilename: string; out Note: string;
 var
   CfgCache: TFPCTargetConfigCache;
   i: LongInt;
+  ShortFilename: String;
 begin
   Result:=sddqInvalid;
   AFilename:=TrimFilename(AFilename);
@@ -407,11 +408,27 @@ begin
     Note:=lisFileNotFound4;
     exit;
   end;
+  if DirPathExistsCached(AFilename) then
+  begin
+    Note:=lisFileIsDirectory;
+    exit;
+  end;
   if not FileIsExecutableCached(AFilename) then
   begin
     Note:=lisFileIsNotAnExecutable;
     exit;
   end;
+
+  // do not execute unusual exe files
+  ShortFilename:=ExtractFileNameOnly(AFilename);
+  if (CompareFilenames(ShortFilename,'fpc')<>0)
+  and (CompareFilenames(copy(ShortFilename,1,3),'ppc')<>0)
+  and (CompareFilenames(copy(ShortFilename,1,7),'crossppc')<>0)
+  then begin
+    Note:=lisUnusualCompilerFileNameUsuallyItStartsWithFpcPpcOr;
+    exit(sddqIncomplete);
+  end;
+
   if TestSrcFilename<>'' then
   begin
     CfgCache:=CodeToolBoss.FPCDefinesCache.ConfigCaches.Find(
@@ -461,8 +478,6 @@ var
     if RealFilename='' then exit;
     // check if exists
     if not FileExistsCached(RealFilename) then exit;
-    // skip directories
-    if DirPathExistsCached(RealFilename) then exit;
     // add to list and check quality
     Item:=TSDFileInfo.Create;
     Item.Filename:=RealFilename;
