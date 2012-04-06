@@ -354,6 +354,7 @@ begin
   Result := False;
   ABitmap := 0;
   AMask := 0;
+  NewMaskData := nil;
 
   // Copy the data (see bug 21274 as to why it is necessary)
   if ARawImage.DataSize > 0 then
@@ -373,18 +374,7 @@ begin
   ABitmap := HBITMAP(lBitmap);
   System.Move(ARawImage, lRawImage, SizeOf(TRawImage));
   lRawImage.Data := NewData;
-
-  // The Mask
-  if (not ASkipMask) and (ARawImage.Mask <> nil) and (ARawImage.MaskSize > 0) then
-  begin
-    NewMaskData := GetMem(ARawImage.MaskSize);
-    System.Move(ARawImage.Mask^, NewMaskData^, ARawImage.MaskSize);
-  end
-  else
-    NewMaskData := nil;
-
-  lRawImage.Mask := NewMaskData;
-
+  lRawImage.Mask := nil;//Setting it to NewMaskData crashes
   lRawImage.Palette := nil;
   lBitmap.Image := TLazIntfImage.Create(lRawImage, True);
   Result := ABitmap <> 0;
@@ -392,10 +382,20 @@ begin
   // Also create a bitmap for the mask
   if (not ASkipMask) then
   begin
+    // The Mask data
+    if (ARawImage.Mask <> nil) and (ARawImage.MaskSize > 0) then
+    begin
+      NewMaskData := GetMem(ARawImage.MaskSize);
+      System.Move(ARawImage.Mask^, NewMaskData^, ARawImage.MaskSize);
+    end
+    else
+      NewMaskData := nil;
+
     lBitmap := TCDBitmap.Create;
     AMask := HBITMAP(lBitmap);
     lRawImage.Description.Init_BPP1(ARawImage.Description.Width, ARawImage.Description.Height);
     lRawImage.Data := NewMaskData;
+    lRawImage.DataSize := ARawImage.MaskSize;
     lRawImage.Mask := nil;
     lRawImage.Palette := nil;
     lBitmap.Image := TLazIntfImage.Create(lRawImage, True);
