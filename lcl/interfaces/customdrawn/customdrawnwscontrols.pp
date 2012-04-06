@@ -288,6 +288,7 @@ end;
 class procedure TCDWSWinControl.SetBounds(const AWinControl: TWinControl;
   const ALeft, ATop, AWidth, AHeight: Integer);
 begin
+  Invalidate(AWinControl);
 end;
 
 class procedure TCDWSWinControl.SetColor(const AWinControl: TWinControl);
