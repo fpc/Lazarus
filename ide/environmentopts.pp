@@ -1454,9 +1454,10 @@ begin
             //   pcp=C:\Lazarus\config, lazdir=C:\Lazarus => store '..'
             //   pcp=/home/user/.lazarus, lazdir=/home/user/freepascal/lazarus => store ../freepascal/lazarus
             CurLazDir:=CreateRelativePath(CurLazDir,GetPrimaryConfigPath);
+            if CurLazDir='' then CurLazDir:='.';
           end;
+          XMLConfig.SetValue(Path+'LazarusDirectory/Value',CurLazDir); // always store, no SetDeleteValue
         end;
-        XMLConfig.SetValue(Path+'LazarusDirectory/Value',CurLazDir); // always store, no SetDeleteValue
         SaveRecentList(XMLConfig,FLazarusDirHistory,
            Path+'LazarusDirectory/History/');
         XMLConfig.SetDeleteValue(
