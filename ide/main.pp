@@ -695,7 +695,6 @@ type
     procedure SetupObjectInspector;
     procedure SetupFormEditor;
     procedure SetupSourceNotebook;
-    procedure SetupTransferMacros;
     procedure SetupCodeMacros;
     procedure SetupControlSelection;
     procedure SetupIDECommands;
@@ -862,7 +861,7 @@ type
                            OpenFlags: TOpenFlags): TModalResult; override;
     procedure BeginFixupComponentReferences;
     procedure EndFixupComponentReferences;
-    function DoSaveAll(Flags: TSaveFlags): TModalResult;
+    function DoSaveAll(Flags: TSaveFlags): TModalResult; override;
     procedure DoRestart;
     procedure DoExecuteRemoteControl;
     function DoOpenMainUnit(PageIndex, WindowIndex: integer; Flags: TOpenFlags): TModalResult;
@@ -1080,10 +1079,6 @@ type
 
     // methods for debugging, compiling and external tools
     function GetTestBuildDirectory: string; override;
-    procedure OnMacroSubstitution(TheMacro: TTransferMacro;
-                               const MacroName: string; var s: string;
-                               const Data: PtrInt; var Handled, Abort: boolean;
-                               Depth: integer);
     procedure GetIDEFileState(Sender: TObject; const AFilename: string;
       NeededFlags: TIDEFileStateFlags; out ResultFlags: TIDEFileStateFlags); override;
 
@@ -1391,7 +1386,7 @@ begin
   MainBuildBoss.HasGUI:=true;
   {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.Create BUILD MANAGER');{$ENDIF}
   // setup macros before loading options
-  SetupTransferMacros;
+  MainBuildBoss.SetupTransferMacros;
 
   // load options
   CreatePrimaryConfigPath;
@@ -1403,7 +1398,7 @@ begin
   // set the IDE mode to none (= editing mode)
   ToolStatus:=itNone;
 
-  // setup macros
+  // setup code templates
   SetupCodeMacros;
 
   // setup the code tools
@@ -2127,18 +2122,6 @@ begin
   MainIDEBar.itmOpenFileAtCursor.OnClick:=@mnuOpenFileAtCursorClicked;
 
   SourceEditorManager.InitMacros(GlobalMacroList);
-end;
-
-procedure TMainIDE.SetupTransferMacros;
-begin
-  MainBuildBoss.SetupTransferMacros;
-  GlobalMacroList.OnSubstitution:=@OnMacroSubstitution;
-
-  // source editor
-  GlobalMacroList.Add(TTransferMacro.Create('Save','',
-                      lisSaveCurrentEditorFile,nil,[tmfInteractive]));
-  GlobalMacroList.Add(TTransferMacro.Create('SaveAll','',
-                      lisSaveAllModified,nil,[tmfInteractive]));
 end;
 
 procedure TMainIDE.SetupCodeMacros;
@@ -13808,35 +13791,6 @@ begin
   FDisplayState:= dsSource;
 end;
 
-procedure TMainIDE.OnMacroSubstitution(TheMacro: TTransferMacro;
-  const MacroName: string; var s:string;
-  const Data: PtrInt; var Handled, Abort: boolean; Depth: integer);
-var MacroLName:string;
-begin
-  if TheMacro=nil then begin
-    DebugLn('WARNING: Macro not defined: "'+MacroName+'".');
-    {$IFDEF VerboseMacroNotDefined}
-    DumpStack;
-    {$ENDIF}
-    s:='';
-    //MessageDlg('Unknown Macro','Macro not defined: "'+s+'".',mtError,[mbAbort],0);
-    Handled:=true;
-    exit;
-  end;
-  MacroLName:=lowercase(MacroName);
-  Handled:=true;
-  if MacroLName='save' then begin
-    if (SourceEditorManager<>nil) and (SourceEditorManager.SourceEditorCount > 0) then
-      Abort:=(DoSaveEditorFile(SourceEditorManager.ActiveEditor,
-        [sfCheckAmbiguousFiles]) <> mrOk);
-    s:='';
-  end else if MacroLName='saveall' then begin
-    Abort:=(DoSaveAll([sfCheckAmbiguousFiles])<>mrOk);
-    s:='';
-  end else
-    Handled:=false;
-end;
-
 procedure TMainIDE.GetIDEFileState(Sender: TObject; const AFilename: string;
   NeededFlags: TIDEFileStateFlags; out ResultFlags: TIDEFileStateFlags);
 var
@@ -14826,19 +14780,28 @@ begin
   if InteractiveSetup then
   begin
     if (not ShowSetupDialog)
-    and ((CheckLazarusDirectoryQuality(EnvironmentOptions.GetParsedLazarusDirectory,Note)<>sddqCompatible)
-      or (CheckCompilerQuality(EnvironmentOptions.GetParsedCompilerFilename,Note,
-                         CodeToolBoss.FPCDefinesCache.TestFilename)=sddqInvalid))
-    then
+    and (CheckLazarusDirectoryQuality(EnvironmentOptions.GetParsedLazarusDirectory,Note)<>sddqCompatible)
+    then begin
+      debugln(['Warning: incompatible Lazarus directory: ',EnvironmentOptions.GetParsedLazarusDirectory]);
       ShowSetupDialog:=true;
+    end;
+    if (not ShowSetupDialog)
+    and (CheckCompilerQuality(EnvironmentOptions.GetParsedCompilerFilename,Note,
+                         CodeToolBoss.FPCDefinesCache.TestFilename)=sddqInvalid)
+    then begin
+      debugln(['Warning: invalid compiler: ',EnvironmentOptions.GetParsedCompilerFilename]);
+      ShowSetupDialog:=true;
+    end;
     if (not ShowSetupDialog) then
     begin
       CfgCache:=CodeToolBoss.FPCDefinesCache.ConfigCaches.Find(
         EnvironmentOptions.GetParsedCompilerFilename,'','','',true);
       if CheckFPCSrcDirQuality(EnvironmentOptions.GetParsedFPCSourceDirectory,Note,
         CfgCache.GetFPCVer)=sddqInvalid
-      then
+      then begin
+        debugln(['Warning: invalid fpc source directory: ',EnvironmentOptions.GetParsedFPCSourceDirectory]);
         ShowSetupDialog:=true;
+      end;
     end;
     if ShowSetupDialog then
       if ShowInitialSetupDialog<>mrOk then
