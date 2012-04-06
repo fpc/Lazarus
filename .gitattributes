@@ -3287,7 +3287,9 @@ docs/xml/lcl/comctrls/ttoolbutton.pas svneol=native#text/plain
 docs/xml/lcl/comctrls/ttreenode_data.pas svneol=native#text/plain
 docs/xml/lcl/commctrl.xml svneol=LF#text/xml eol=lf
 docs/xml/lcl/controls.xml svneol=LF#text/xml eol=lf
+docs/xml/lcl/customdrawn_android.xml svneol=native#text/plain
 docs/xml/lcl/customdrawn_common.xml svneol=native#text/plain
+docs/xml/lcl/customdrawn_winxp.xml svneol=native#text/plain
 docs/xml/lcl/customdrawncontrols.xml svneol=native#text/plain
 docs/xml/lcl/customdrawndrawers.xml svneol=native#text/plain
 docs/xml/lcl/customtimer.xml svneol=LF#text/xml eol=lf
