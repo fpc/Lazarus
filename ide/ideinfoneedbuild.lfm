@@ -9,6 +9,7 @@ object IDEInfoNeedBuildDlg: TIDEInfoNeedBuildDlg
   OnClose = FormClose
   OnCreate = FormCreate
   OnDestroy = FormDestroy
+  OnKeyDown = FormKeyDown
   Position = poScreenCenter
   LCLVersion = '1.1'
   object TargetLabel: TLabel
@@ -44,7 +45,7 @@ object IDEInfoNeedBuildDlg: TIDEInfoNeedBuildDlg
     AnchorSideTop.Control = TargetComboBox
     AnchorSideTop.Side = asrBottom
     Left = 6
-    Height = 389
+    Height = 341
     Top = 39
     Width = 543
     Align = alBottom
@@ -56,5 +57,21 @@ object IDEInfoNeedBuildDlg: TIDEInfoNeedBuildDlg
     ReadOnly = True
     ScrollBars = ssAutoBoth
     TabOrder = 1
+  end
+  object ButtonPanel1: TButtonPanel
+    Left = 6
+    Height = 42
+    Top = 386
+    Width = 543
+    OKButton.Name = 'OKButton'
+    OKButton.DefaultCaption = True
+    HelpButton.Name = 'HelpButton'
+    HelpButton.DefaultCaption = True
+    CloseButton.Name = 'CloseButton'
+    CloseButton.DefaultCaption = True
+    CancelButton.Name = 'CancelButton'
+    CancelButton.DefaultCaption = True
+    TabOrder = 2
+    ShowButtons = [pbClose]
   end
 end

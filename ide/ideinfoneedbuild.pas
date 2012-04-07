@@ -31,7 +31,7 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, AvgLvlTree, FileProcs, Forms, Controls, Graphics,
-  Dialogs, StdCtrls,
+  Dialogs, StdCtrls, Buttons, ButtonPanel, LCLType,
   IDEWindowIntf, LazIDEIntf, ProjectIntf,
   LazarusIDEStrConsts, PackageDefs, PackageSystem, Project, InputHistory,
   EnvironmentOpts, IDEProcs, BuildManager;
@@ -56,12 +56,14 @@ type
   { TIDEInfoNeedBuildDlg }
 
   TIDEInfoNeedBuildDlg = class(TForm)
+    ButtonPanel1: TButtonPanel;
     MainMemo: TMemo;
     TargetComboBox: TComboBox;
     TargetLabel: TLabel;
     procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
+    procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure OnIdle(Sender: TObject; var Done: Boolean);
     procedure TargetComboBoxChange(Sender: TObject);
   private
@@ -152,6 +154,13 @@ begin
   FreeAndNil(FTargetToItem);
   FreeAndNil(FTargets);
   MainTarget:=nil;
+end;
+
+procedure TIDEInfoNeedBuildDlg.FormKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if Key=VK_ESCAPE then
+    ModalResult:=mrCancel;
 end;
 
 procedure TIDEInfoNeedBuildDlg.OnIdle(Sender: TObject; var Done: Boolean);

@@ -3623,6 +3623,8 @@ begin
         s:=s+' -Fi'+SwitchPathDelims(IncPath,pdsUnix);
       if CustomOptions<>'' then
         s:=s+' '+CustomOptions;
+      // do no write the unit output directory
+      // it is not needed because it is the location of the Makefile.compiled
       s:=s+' '+SwitchPathDelims(CreateRelativePath(APackage.GetSrcFilename,APackage.Directory),pdsUnix);
 
       //debugln(['TLazPackageGraph.WriteMakeFile IncPath="',IncPath,'" UnitPath="',UnitPath,'" Custom="',CustomOptions,'" Out="',UnitOutputPath,'"']);
