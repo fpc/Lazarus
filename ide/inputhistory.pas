@@ -209,6 +209,7 @@ type
     FLastConvertDelphiPackage: string;
     FLastConvertDelphiProject: string;
     FLastConvertDelphiUnit: string;
+    FViewNeedBuildTarget: string;
     FNewFileType: string;
     FNewProjectType: string;
     FReplaceHistory: TStringList;
@@ -313,6 +314,10 @@ type
                                               write FLastConvertDelphiPackage;
     property LastConvertDelphiUnit: string read FLastConvertDelphiUnit
                                            write FLastConvertDelphiUnit;
+
+    // View / internals
+    property ViewNeedBuildTarget: string read FViewNeedBuildTarget
+                                         write FViewNeedBuildTarget;
                                            
     // file encodings
     property FileEncodings: TStringToStringTree read fFileEncodings write fFileEncodings;
@@ -558,6 +563,9 @@ begin
   FLastConvertDelphiPackage:=XMLConfig.GetValue(Path+'Conversion/Delphi/Package','');
   FLastConvertDelphiUnit:=XMLConfig.GetValue(Path+'Conversion/Delphi/Unit','');
 
+  // view internals
+  ViewNeedBuildTarget:=XMLConfig.GetValue(Path+'View/NeedBuild/Target','');
+
   // encodings
   LoadStringToStringTree(XMLConfig,fFileEncodings,Path+'FileEncodings/');
 
@@ -632,6 +640,10 @@ begin
                            FLastConvertDelphiPackage,'');
   XMLConfig.SetDeleteValue(Path+'Conversion/Delphi/Unit',
                            FLastConvertDelphiUnit,'');
+
+  // view internals
+  XMLConfig.SetDeleteValue(Path+'View/NeedBuild/Target',ViewNeedBuildTarget,'');
+
   // encodings
   SaveStringToStringTree(XMLConfig,fFileEncodings,Path+'FileEncodings/');
 

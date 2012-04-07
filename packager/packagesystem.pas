@@ -146,7 +146,8 @@ type
     function GetPackageCompilerParams(APackage: TLazPackage): string;
     function CheckIfCurPkgOutDirNeedsCompile(APackage: TLazPackage;
                     CheckDependencies, SkipDesignTimePackages: boolean;
-                    out NeedBuildAllFlag, ConfigChanged, DependenciesChanged: boolean): TModalResult;
+                    out NeedBuildAllFlag, ConfigChanged, DependenciesChanged: boolean;
+                    var Note: string): TModalResult;
     procedure InvalidateStateFile(APackage: TLazPackage);
   public
     constructor Create;
@@ -290,7 +291,7 @@ type
                           ): TModalResult;
     function CheckIfPackageNeedsCompilation(APackage: TLazPackage;
                     SkipDesignTimePackages: boolean;
-                    out NeedBuildAllFlag: boolean): TModalResult;
+                    out NeedBuildAllFlag: boolean; var Note: string): TModalResult;
     function PreparePackageOutputDirectory(APackage: TLazPackage;
                                            CleanUp: boolean): TModalResult;
     function GetFallbackOutputDir(APackage: TLazPackage): string;
@@ -2853,7 +2854,8 @@ begin
 end;
 
 function TLazPackageGraph.CheckIfPackageNeedsCompilation(APackage: TLazPackage;
-  SkipDesignTimePackages: boolean; out NeedBuildAllFlag: boolean): TModalResult;
+  SkipDesignTimePackages: boolean; out NeedBuildAllFlag: boolean; var
+  Note: string): TModalResult;
 var
   OutputDir: String;
   NewOutputDir: String;
@@ -2869,12 +2871,13 @@ begin
   {$ENDIF}
   NeedBuildAllFlag:=false;
 
-  if APackage.AutoUpdate=pupManually then exit(mrNo);
+  if APackage.AutoUpdate=pupManually then
+    exit(mrNo);
 
   // check the current output directory
   Result:=CheckIfCurPkgOutDirNeedsCompile(APackage,
              true,SkipDesignTimePackages,
-             NeedBuildAllFlag,ConfigChanged,DependenciesChanged);
+             NeedBuildAllFlag,ConfigChanged,DependenciesChanged,Note);
   if Result=mrNo then exit; // the current output is valid
 
   // the current output directory needs compilation
@@ -2888,6 +2891,7 @@ begin
       exit;
     end;
     debugln(['TLazPackageGraph.CheckIfPackageNeedsCompilation normal output dir is not writable: ',OutputDir]);
+    Note+='Normal output directory is not writable.'+LineEnding;
     // the normal output directory is not writable
     // => try the fallback directory
     NewOutputDir:=GetFallbackOutputDir(APackage);
@@ -2895,7 +2899,7 @@ begin
     APackage.CompilerOptions.ParsedOpts.OutputDirectoryOverride:=NewOutputDir;
     Result:=CheckIfCurPkgOutDirNeedsCompile(APackage,
                true,SkipDesignTimePackages,
-               NeedBuildAllFlag,ConfigChanged,DependenciesChanged);
+               NeedBuildAllFlag,ConfigChanged,DependenciesChanged,Note);
   end else begin
     // the last compile was put to the fallback output directory
     if not ConfigChanged then begin
@@ -2916,10 +2920,11 @@ begin
     OldNeedBuildAllFlag:=NeedBuildAllFlag;
     DefResult:=CheckIfCurPkgOutDirNeedsCompile(APackage,
                true,SkipDesignTimePackages,
-               NeedBuildAllFlag,ConfigChanged,DependenciesChanged);
+               NeedBuildAllFlag,ConfigChanged,DependenciesChanged,Note);
     if DefResult=mrNo then begin
       // switching back to the not writable output directory requires no compile
       debugln(['TLazPackageGraph.CheckIfPackageNeedsCompilation switching back to the normal output directory: ',APackage.GetOutputDirectory]);
+      Note+='Switching back to not writable output directory.'+LineEnding;
       exit(mrNo);
     end;
     // neither the default nor the fallback is valid
@@ -2930,10 +2935,9 @@ begin
 end;
 
 function TLazPackageGraph.CheckIfCurPkgOutDirNeedsCompile(
-  APackage: TLazPackage;
-  CheckDependencies, SkipDesignTimePackages: boolean;
-  out NeedBuildAllFlag,
-  ConfigChanged, DependenciesChanged: boolean): TModalResult;
+  APackage: TLazPackage; CheckDependencies, SkipDesignTimePackages: boolean;
+  out NeedBuildAllFlag, ConfigChanged, DependenciesChanged: boolean;
+  var Note: string): TModalResult;
 // returns: mrYes, mrNo, mrCancel, mrAbort
 var
   StateFilename: String;
@@ -2987,6 +2991,7 @@ begin
   if not Stats^.StateFileLoaded then begin
     // package was not compiled via Lazarus nor via Makefile
     DebugLn('TLazPackageGraph.CheckIfCurPkgOutDirNeedsCompile  Missing state file for ',APackage.IDAsString,': ',StateFilename);
+    Note+='Missing state file "'+StateFilename+'".'+LineEnding;
     ConfigChanged:=true;
     exit(mrYes);
   end;
@@ -3010,6 +3015,9 @@ begin
         DebugLn('TLazPackageGraph.CheckIfCurPkgOutDirNeedsCompile  Compiler custom params changed for ',APackage.IDAsString);
         DebugLn('  Old="',OldValue,'"');
         DebugLn('  Now="',NewValue,'"');
+        Note+='Compiler custom parameters changed:'+LineEnding
+           +'  Old="'+OldValue+'"'+LineEnding
+           +'  Now="'+NewValue+'"'+LineEnding;
         ConfigChanged:=true;
         exit(mrYes);
       end;
@@ -3020,6 +3028,9 @@ begin
         DebugLn('TLazPackageGraph.CheckIfCurPkgOutDirNeedsCompile  Compiler unit paths changed for ',APackage.IDAsString);
         DebugLn('  Old="',OldValue,'"');
         DebugLn('  Now="',NewValue,'"');
+        Note+='Compiler unit paths changed:'+LineEnding
+           +'  Old="'+OldValue+'"'+LineEnding
+           +'  Now="'+NewValue+'"'+LineEnding;
         ConfigChanged:=true;
         exit(mrYes);
       end;
@@ -3030,6 +3041,9 @@ begin
         DebugLn('TLazPackageGraph.CheckIfCurPkgOutDirNeedsCompile  Compiler include paths changed for ',APackage.IDAsString);
         DebugLn('  Old="',OldValue,'"');
         DebugLn('  Now="',NewValue,'"');
+        Note+='Compiler include paths changed:'+LineEnding
+           +'  Old="'+OldValue+'"'+LineEnding
+           +'  Now="'+NewValue+'"'+LineEnding;
         ConfigChanged:=true;
         exit(mrYes);
       end;
@@ -3042,6 +3056,9 @@ begin
     DebugLn('TLazPackageGraph.CheckIfCurPkgOutDirNeedsCompile  Compiler params changed for ',APackage.IDAsString);
     DebugLn('  Old="',LastParams,'"');
     DebugLn('  Now="',CompilerParams,'"');
+    Note+='Compiler parameters changed:'+LineEnding
+       +'  Old="'+OldValue+'"'+LineEnding
+       +'  Now="'+NewValue+'"'+LineEnding;
     ConfigChanged:=true;
     exit(mrYes);
   end;
@@ -3050,26 +3067,40 @@ begin
     DebugLn('TLazPackageGraph.CheckIfCurPkgOutDirNeedsCompile  Compiler filename changed for ',APackage.IDAsString);
     DebugLn('  Old="',Stats^.CompilerFilename,'"');
     DebugLn('  Now="',CompilerFilename,'"');
+    Note+='Compiler filename changed:'+LineEnding
+       +'  Old="'+Stats^.CompilerFilename+'"'+LineEnding
+       +'  Now="'+CompilerFilename+'"'+LineEnding;
     exit(mrYes);
   end;
   if not FileExistsCached(CompilerFilename) then begin
     DebugLn('TLazPackageGraph.CheckIfCurPkgOutDirNeedsCompile  Compiler filename not found for ',APackage.IDAsString);
     DebugLn('  File="',CompilerFilename,'"');
+    Note+='Compiler file "'+CompilerFilename+'" not found.'+LineEnding;
     exit(mrYes);
   end;
   if (not Stats^.ViaMakefile)
   and (FileAgeCached(CompilerFilename)<>Stats^.CompilerFileDate) then begin
     DebugLn('TLazPackageGraph.CheckIfCurPkgOutDirNeedsCompile  Compiler file changed for ',APackage.IDAsString);
     DebugLn('  File="',CompilerFilename,'"');
+    Note+='Compiler file "'+CompilerFilename+'" changed:'+LineEnding
+      +'  Old='+FileAgeToStr(Stats^.CompilerFileDate)+LineEnding
+      +'  Now='+FileAgeToStr(FileAgeCached(CompilerFilename))+LineEnding;
     exit(mrYes);
   end;
 
   // check main source file
   if (SrcFilename<>'') then
   begin
-    if (not FileExistsCached(SrcFilename)) or (StateFileAge<FileAgeUTF8(SrcFilename))
-    then begin
+    if not FileExistsCached(SrcFilename) then begin
+      DebugLn('TLazPackageGraph.CheckIfCurPkgOutDirNeedsCompile  SrcFile missing of ',APackage.IDAsString,': ',SrcFilename);
+      Note+='Source file "'+SrcFilename+'" missing.'+LineEnding;
+      exit(mrYes);
+    end;
+    if StateFileAge<FileAgeCached(SrcFilename) then begin
       DebugLn('TLazPackageGraph.CheckIfCurPkgOutDirNeedsCompile  SrcFile outdated of ',APackage.IDAsString,': ',SrcFilename);
+      Note+='Source file "'+SrcFilename+'" outdated:'+LineEnding
+        +'  state file age='+FileAgeToStr(StateFileAge)+LineEnding
+        +'  source file age='+FileAgeToStr(FileAgeCached(SrcFilename))+LineEnding;
       exit(mrYes);
     end;
     // check main source ppu file
@@ -3077,6 +3108,7 @@ begin
       SrcPPUFile:=APackage.GetSrcPPUFilename;
       if not FileExistsCached(SrcPPUFile) then begin
         DebugLn('TLazPackageGraph.CheckIfCurPkgOutDirNeedsCompile  main ppu file missing of ',APackage.IDAsString,': ',SrcPPUFile);
+        Note+='Main ppu file "'+SrcPPUFile+'" missing.'+LineEnding;
         exit(mrYes);
       end;
     end;
@@ -3091,6 +3123,7 @@ begin
 
   if not Stats^.Complete then begin
     DebugLn('TLazPackageGraph.CheckIfCurPkgOutDirNeedsCompile  Compile was incomplete for ',APackage.IDAsString);
+    Note+='Last compile was incomplete.'+LineEnding;
     exit(mrYes);
   end;
 
@@ -3107,6 +3140,9 @@ begin
   // check package files
   if StateFileAge<FileAgeCached(APackage.Filename) then begin
     DebugLn('TLazPackageGraph.CheckIfCurPkgOutDirNeedsCompile  StateFile older than lpk ',APackage.IDAsString);
+    Note+='State file older than lpk:'+LineEnding
+      +'  state file age='+FileAgeToStr(StateFileAge)+LineEnding
+      +'  lpk age='+FileAgeToStr(FileAgeCached(APackage.Filename))+LineEnding;
     exit(mrYes);
   end;
   for i:=0 to APackage.FileCount-1 do begin
@@ -3116,6 +3152,9 @@ begin
     if FileExistsCached(AFilename)
     and (StateFileAge<FileAgeCached(AFilename)) then begin
       DebugLn('TLazPackageGraph.CheckIfCurPkgOutDirNeedsCompile  Src has changed ',APackage.IDAsString,' ',CurFile.Filename);
+      Note+='State file older than source "'+AFilename+'"'+LineEnding
+        +'  state file age='+FileAgeToStr(StateFileAge)+LineEnding
+        +'  lpk age='+FileAgeToStr(FileAgeCached(APackage.Filename))+LineEnding;
       exit(mrYes);
     end;
   end;
@@ -3187,6 +3226,7 @@ var
   SrcPPUFile: String;
   SrcPPUFileExists: Boolean;
   CompilerParams: String;
+  Note: String;
 begin
   Result:=mrCancel;
 
@@ -3215,9 +3255,10 @@ begin
 
     // check if compilation is needed and if a clean build is needed
     NeedBuildAllFlag:=false;
+    Note:='';
     Result:=CheckIfPackageNeedsCompilation(APackage,
                           pcfSkipDesignTimePackages in Flags,
-                          NeedBuildAllFlag);
+                          NeedBuildAllFlag,Note);
     if (pcfOnlyIfNeeded in Flags) then begin
       if Result=mrNo then begin
         //DebugLn(['TLazPackageGraph.CompilePackage ',APackage.IDAsString,' does not need compilation.']);

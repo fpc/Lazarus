@@ -145,7 +145,7 @@ uses
   OutputFilter, JumpHistoryView, ManageExamples,
   BuildLazDialog, BuildProfileManager, BuildManager, CheckCompOptsForNewUnitDlg,
   MiscOptions, InputHistory, UnitDependencies, ClipBoardHistory,
-  IDEFPCInfo, IDEInfoDlg, ProcessList, InitialSetupDlgs,
+  IDEFPCInfo, IDEInfoDlg, IDEInfoNeedBuild, ProcessList, InitialSetupDlgs,
   NewDialog, MakeResStrDlg, DialogProcs, FindReplaceDialog, FindInFilesDlg,
   CodeExplorer, BuildFileDlg, ProcedureList, ExtractProcDlg,
   FindRenameIdentifier, AbstractsMethodsDlg, EmptyMethodsDlg, UnusedUnitsDlg,
@@ -261,6 +261,7 @@ type
     procedure mnuViewIDESpeedButtonsClicked(Sender: TObject);
     procedure mnuViewFPCInfoClicked(Sender: TObject);
     procedure mnuViewIDEInfoClicked(Sender: TObject);
+    procedure mnuViewNeedBuildClicked(Sender: TObject);
 
     // source menu
     procedure mnuSourceClicked(Sender: TObject);
@@ -2599,6 +2600,7 @@ begin
 
     itmViewFPCInfo.OnClick:=@mnuViewFPCInfoClicked;
     itmViewIDEInfo.OnClick:=@mnuViewIDEInfoClicked;
+    itmViewNeedBuild.OnClick:=@mnuViewNeedBuildClicked;
   end;
 end;
 
@@ -2798,6 +2800,11 @@ end;
 procedure TMainIDE.mnuViewIDEInfoClicked(Sender: TObject);
 begin
   ShowIDEInfo;
+end;
+
+procedure TMainIDE.mnuViewNeedBuildClicked(Sender: TObject);
+begin
+  ShowNeedBuildDialog;
 end;
 
 procedure TMainIDE.SetDesigning(AComponent: TComponent; Value: Boolean);

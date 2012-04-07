@@ -32,8 +32,8 @@ interface
 uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, StdCtrls,
   ComCtrls, LCLProc, LazHelpHTML, LazHelpIntf, DefineTemplates, EnvironmentOpts,
-  AboutFrm, LazConf, IDEHelpIntf, LazarusIDEStrConsts, Project, SourceEditor,
-  PackageSystem, PackageDefs;
+  AboutFrm, LazConf, IDEHelpIntf, IDEWindowIntf, LazarusIDEStrConsts, Project,
+  SourceEditor, PackageSystem, PackageDefs;
 
 type
 
@@ -47,6 +47,7 @@ type
     GeneralTabSheet: TTabSheet;
     ModifiedTabSheet: TTabSheet;
     HelpTabSheet: TTabSheet;
+    procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
     procedure FormCreate(Sender: TObject);
   private
     // general
@@ -99,7 +100,14 @@ begin
   UpdateGeneralMemo;
   UpdateModifiedMemo;
   UpdateHelpMemo;
-  PageControl1.ActivePage:=GeneralTabSheet;
+  PageControl1.PageIndex:=0;
+  IDEDialogLayoutList.ApplyLayout(Self);
+end;
+
+procedure TIDEInfoDialog.FormClose(Sender: TObject;
+  var CloseAction: TCloseAction);
+begin
+  IDEDialogLayoutList.SaveLayout(Self);
 end;
 
 procedure TIDEInfoDialog.GatherHelpDB(Prefix: string;

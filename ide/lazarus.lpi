@@ -63,7 +63,7 @@
         <PackageName Value="SynEdit"/>
       </Item6>
     </RequiredPackages>
-    <Units Count="90">
+    <Units Count="91">
       <Unit0>
         <Filename Value="lazarus.pp"/>
         <IsPartOfProject Value="True"/>
@@ -552,6 +552,7 @@
         <Filename Value="idefpcinfo.pas"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="IDEFPCInfoDialog"/>
+        <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="IDEFPCInfo"/>
       </Unit71>
@@ -573,6 +574,7 @@
         <Filename Value="ideinfodlg.pas"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="IDEInfoDialog"/>
+        <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="IDEInfoDlg"/>
       </Unit74>
@@ -676,6 +678,13 @@
         <ResourceBaseClass Value="Frame"/>
         <UnitName Value="editor_multiwindow_options"/>
       </Unit89>
+      <Unit90>
+        <Filename Value="ideinfoneedbuild.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="IDEInfoNeedBuildDlg"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="IDEInfoNeedBuild"/>
+      </Unit90>
     </Units>
   </ProjectOptions>
   <CompilerOptions>

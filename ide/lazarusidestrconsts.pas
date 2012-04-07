@@ -366,6 +366,7 @@ resourcestring
   lisMenuPackageLinks = 'Package Links ...';
   lisMenuAboutFPC = 'About FPC';
   lisAboutIDE = 'About IDE';
+  lisMenuWhatNeedsBuilding = 'What Needs Building';
 
   lisMenuNewProject = 'New Project ...';
   lisMenuNewProjectFromFile = 'New Project from File ...';
@@ -4607,6 +4608,9 @@ resourcestring
   lisUIClearIncludedByReference = 'Clear include cache';
   lisChangeParent = 'Change Parent';
   lisLazarusIDE = 'Lazarus IDE';
+  lisProject = 'Project %s';
+  lisWhatNeedsRebuilding = 'What needs rebuilding';
+  lisTarget = 'Target:';
   lisDirectives = 'Directives';
 
   //conditional defines dialog
