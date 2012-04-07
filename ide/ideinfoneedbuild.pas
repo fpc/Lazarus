@@ -230,7 +230,7 @@ var
   Pkg: TLazPackage;
   AProject: TProject;
   NeedBuildAll: boolean;
-  PGNeedBuild: TModalResult;
+  NeedBuild: TModalResult;
 begin
   NewTargets:=GetTargets(TargetComboBox.Text);
   try
@@ -279,15 +279,23 @@ begin
         // no check available
       end
       else if Item.Target is TProject then begin
-        // ToDo
-
+        AProject:=TProject(Item.Target);
+        Item.Note:='';
+        NeedBuild:=MainBuildBoss.DoCheckIfProjectNeedsCompilation(AProject,
+                                         NeedBuildAll,Item.Note);
+        if NeedBuild=mrYes then begin
+          if NeedBuildAll then
+            Item.NeedBuild:=inbClean
+          else
+            Item.NeedBuild:=inbNormal;
+        end;
       end
       else if Item.Target is TLazPackage then begin
         Pkg:=TLazPackage(Item.Target);
         Item.Note:='';
-        PGNeedBuild:=PackageGraph.CheckIfPackageNeedsCompilation(
+        NeedBuild:=PackageGraph.CheckIfPackageNeedsCompilation(
                              Pkg,SkipDesignTimePackages,NeedBuildAll,Item.Note);
-        if PGNeedBuild=mrYes then begin
+        if NeedBuild=mrYes then begin
           if NeedBuildAll then
             Item.NeedBuild:=inbClean
           else
