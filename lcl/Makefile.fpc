@@ -72,8 +72,11 @@ rsts=lclstrconsts
 packages=
 
 [prerules]
+STATEFILE=Makefile.compiled
 ifeq ($(findstring $(OS_TARGET),win32 win64 wince),)
 NONWIN32=nonwin32
+else
+STATEFILE=Makefile_win.compiled
 endif
 # disable checks on WinCE unless LCL_ENABLE_CHECKS
 ifeq ($(OS_TARGET),wince)
@@ -141,7 +144,7 @@ cleartarget:
 lclbase: cleartarget $(COMPILER_UNITTARGETDIR) alllclunits$(PPUEXT) compiled
 
 compiled:
-        $(COPY) Makefile.compiled $(COMPILER_UNITTARGETDIR)/LCLBase.compiled
+        $(COPY) $(STATEFILE) $(COMPILER_UNITTARGETDIR)/LCLBase.compiled
 
 intf: $(TARGET_DIRS)
 

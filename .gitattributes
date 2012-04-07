@@ -5139,6 +5139,7 @@ lazarus.app/Contents/Resources/startlazarus.app/Contents/MacOS/startlazarus -tex
 lazarus.app/Contents/Resources/startlazarus.app/Contents/PkgInfo svneol=native#text/plain
 lcl/LAYOUT.txt svneol=native#text/plain
 lcl/Makefile.compiled svneol=native#text/plain
+lcl/Makefile_win.compiled svneol=native#text/plain
 lcl/actnlist.pas svneol=native#text/pascal
 lcl/alllclunits.pp svneol=native#text/pascal
 lcl/arrow.pp svneol=native#text/pascal
