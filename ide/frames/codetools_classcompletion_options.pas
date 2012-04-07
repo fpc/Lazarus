@@ -76,7 +76,7 @@ procedure TCodetoolsClassCompletionOptionsFrame.Setup(
   ADialog: TAbstractOptionsEditorDialog);
 begin
   with ClassPartInsertPolicyRadioGroup do begin
-    Caption:=dlgClassInsertPolicy;
+    Caption:=dlgInsertClassParts;
     with Items do begin
       BeginUpdate;
       Add(dlgAlphabetically);
@@ -89,7 +89,7 @@ begin
     Caption:=dlgMixMethodsAndProperties;
 
   with MethodInsertPolicyRadioGroup do begin
-    Caption:=dlgMethodInsPolicy;
+    Caption:=dlgInsertMethods;
     with Items do begin
       BeginUpdate;
       Add(dlgAlphabetically);

@@ -1793,7 +1793,7 @@ resourcestring
   dlgCenterCursorLine = 'Center cursor line';
   dlgCursorBeyondEOL = 'Cursor beyond EOL';
   dlgSkipForwardClassDeclarations = 'Skip forward class declarations';
-  dlgClassInsertPolicy = 'Class part insert policy';
+  dlgInsertClassParts = 'Insert class parts';
   lisClassCompletion = 'Class Completion';
   dlgAlphabetically = 'Alphabetically';
   dlgCDTLast = 'Last';
@@ -1807,7 +1807,7 @@ resourcestring
   lisFirst = 'First';
   lisInFrontOfRelated = 'In front of related';
   lisBehindRelated = 'Behind related';
-  dlgMethodInsPolicy = 'Method insert policy';
+  dlgInsertMethods = 'Insert methods';
   dlgCDTClassOrder = 'Class order';
   dlgKeywordPolicy = 'Keyword policy';
   dlgCDTLower = 'lowercase';
