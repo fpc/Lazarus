@@ -2708,6 +2708,10 @@ begin
         stats^.Complete:=XMLConfig.GetValue('Complete/Value',true);
         stats^.MainPPUExists:=XMLConfig.GetValue('Complete/MainPPUExists',true);
         stats^.ViaMakefile:=XMLConfig.GetValue('Makefile/Value',false);
+        if stats^.ViaMakefile then begin
+          DoDirSeparators(stats^.CompilerFilename);
+          DoDirSeparators(stats^.Params);
+        end;
       finally
         XMLConfig.Free;
       end;
