@@ -907,7 +907,7 @@ type
     function DoSaveForBuild(AReason: TCompileReason): TModalResult; override;
     function DoCheckIfProjectNeedsCompilation(AProject: TProject;
                     const CompilerFilename, CompilerParams, SrcFilename: string;
-                    out NeedBuildAllFlag: boolean): TModalResult;
+                    out NeedBuildAllFlag: boolean; var Note: string): TModalResult;
     function DoBuildProject(const AReason: TCompileReason;
                             Flags: TProjectBuildFlags): TModalResult; override;
     function UpdateProjectPOFile(AProject: TProject): TModalResult;
@@ -11726,8 +11726,8 @@ begin
 end;
 
 function TMainIDE.DoCheckIfProjectNeedsCompilation(AProject: TProject;
-  const CompilerFilename, CompilerParams, SrcFilename: string;
-  out NeedBuildAllFlag: boolean): TModalResult;
+  const CompilerFilename, CompilerParams, SrcFilename: string; out
+  NeedBuildAllFlag: boolean; var Note: string): TModalResult;
 var
   StateFilename: String;
   StateFileAge: LongInt;
@@ -11749,6 +11749,7 @@ begin
   if Result<>mrOk then exit;
   if not (lpsfStateFileLoaded in AProject.StateFlags) then begin
     DebugLn('TMainIDE.CheckIfPackageNeedsCompilation  No state file for ',AProject.IDAsString);
+    Note+='State file "'+StateFilename+'" of '+AProject.IDAsString+' is missing.'+LineEnding;
     exit(mrYes);
   end;
 
@@ -11758,6 +11759,9 @@ begin
   if FileExistsCached(SrcFilename) and (StateFileAge<FileAgeCached(SrcFilename)) then
   begin
     DebugLn('TMainIDE.CheckIfProjectNeedsCompilation  SrcFile outdated ',AProject.IDAsString);
+    Note+='Source file "'+SrcFilename+'" of '+AProject.IDAsString+' outdated:'+LineEnding
+      +'  source age='+FileAgeToStr(FileAgeCached(SrcFilename))+LineEnding
+      +'  state file age='+FileAgeToStr(StateFileAge)+LineEnding;
     exit(mrYes);
   end;
 
@@ -11766,22 +11770,32 @@ begin
     DebugLn('TMainIDE.CheckIfProjectNeedsCompilation  Compiler filename changed for ',AProject.IDAsString);
     DebugLn('  Old="',AProject.LastCompilerFilename,'"');
     DebugLn('  Now="',CompilerFilename,'"');
+    Note+='Compiler filename changed for '+AProject.IDAsString+':'+LineEnding
+      +'  Old="'+AProject.LastCompilerFilename+'"'+LineEnding
+      +'  Now="'+CompilerFilename+'"'+LineEnding;
     exit(mrYes);
   end;
-  if not FileExistsUTF8(CompilerFilename) then begin
-    DebugLn('TMainIDE.CheckIfProjectNeedsCompilation  Compiler filename not found for ',AProject.IDAsString);
+  if not FileExistsCached(CompilerFilename) then begin
+    DebugLn('TMainIDE.CheckIfProjectNeedsCompilation  Compiler file not found for ',AProject.IDAsString);
     DebugLn('  File="',CompilerFilename,'"');
+    Note+='Compiler file "'+CompilerFilename+'" not found for '+AProject.IDAsString+'.'+LineEnding;
     exit(mrYes);
   end;
   if FileAgeCached(CompilerFilename)<>AProject.LastCompilerFileDate then begin
     DebugLn('TMainIDE.CheckIfProjectNeedsCompilation  Compiler file changed for ',AProject.IDAsString);
     DebugLn('  File="',CompilerFilename,'"');
+    Note+='Compiler file "'+CompilerFilename+'" for '+AProject.IDAsString+' changed:'+LineEnding
+      +'  Old="'+FileAgeToStr(AProject.LastCompilerFileDate)+'"'+LineEnding
+      +'  Now="'+FileAgeToStr(FileAgeCached(CompilerFilename))+'"'+LineEnding;
     exit(mrYes);
   end;
   if CompilerParams<>AProject.LastCompilerParams then begin
     DebugLn('TMainIDE.CheckIfProjectNeedsCompilation  Compiler params changed for ',AProject.IDAsString);
     DebugLn('  Old="',AProject.LastCompilerParams,'"');
     DebugLn('  Now="',CompilerParams,'"');
+    Note+='Compiler params changed for '+AProject.IDAsString+':'+LineEnding
+      +'  Old="'+AProject.LastCompilerParams+'"'+LineEnding
+      +'  Now="'+CompilerParams+'"'+LineEnding;
     exit(mrYes);
   end;
 
@@ -11793,15 +11807,19 @@ begin
   Result:=PackageGraph.CheckCompileNeedDueToDependencies(AProject,
                                 AProject.FirstRequiredDependency,
                                 not (pfUseDesignTimePackages in AProject.Flags),
-                                StateFileAge);
+                                StateFileAge,Note);
   if Result<>mrNo then exit;
 
   // check project files
   AnUnitInfo:=AProject.FirstPartOfProject;
   while AnUnitInfo<>nil do begin
-    if FileExistsCached(AnUnitInfo.Filename) then begin
+    if (not AnUnitInfo.IsVirtual) and FileExistsCached(AnUnitInfo.Filename) then
+    begin
       if (StateFileAge<FileAgeCached(AnUnitInfo.Filename)) then begin
         DebugLn('TMainIDE.CheckIfProjectNeedsCompilation  Src has changed ',AProject.IDAsString,' ',AnUnitInfo.Filename);
+        Note+='File "'+AnUnitInfo.Filename+'" of '+AProject.IDAsString+' is newer than state file:'+LineEnding
+          +'  file age="'+FileAgeToStr(FileAgeCached(AnUnitInfo.Filename))+'"'+LineEnding
+          +'  state file age="'+FileAgeToStr(StateFileAge)+'"'+LineEnding;
         exit(mrYes);
       end;
       if AnUnitInfo.ComponentName<>'' then begin
@@ -11809,6 +11827,9 @@ begin
         if FileExistsCached(LFMFilename)
         and (StateFileAge<FileAgeCached(LFMFilename)) then begin
           DebugLn('TMainIDE.CheckIfProjectNeedsCompilation  LFM has changed ',AProject.IDAsString,' ',LFMFilename);
+          Note+='File "'+LFMFilename+'" of '+AProject.IDAsString+' is newer than state file:'+LineEnding
+            +'  file age="'+FileAgeToStr(FileAgeCached(LFMFilename))+'"'+LineEnding
+            +'  state file age="'+FileAgeToStr(StateFileAge)+'"'+LineEnding;
           exit(mrYes);
         end;
       end;
@@ -11820,9 +11841,13 @@ begin
   AnUnitInfo:=AProject.FirstUnitWithEditorIndex;
   while AnUnitInfo<>nil do begin
     if (not AnUnitInfo.IsPartOfProject)
+    and (not AnUnitInfo.IsVirtual)
     and FileExistsCached(AnUnitInfo.Filename)
     and (StateFileAge<FileAgeCached(AnUnitInfo.Filename)) then begin
       DebugLn('TMainIDE.CheckIfProjectNeedsCompilation  Editor Src has changed ',AProject.IDAsString,' ',AnUnitInfo.Filename);
+      Note+='Editor file "'+AnUnitInfo.Filename+'" is newer than state file:'+LineEnding
+        +'  file age="'+FileAgeToStr(FileAgeCached(AnUnitInfo.Filename))+'"'+LineEnding
+        +'  state file age="'+FileAgeToStr(StateFileAge)+'"'+LineEnding;
       exit(mrYes);
     end;
     AnUnitInfo:=AnUnitInfo.NextUnitWithEditorIndex;
@@ -11979,6 +12004,7 @@ var
   err : TFPCErrorType;
   TargetExeDirectory: String;
   FPCVersion, FPCRelease, FPCPatch: integer;
+  Note: String;
 begin
   if Project1.MainUnitInfo=nil then begin
     // this project has no source to compile
@@ -12074,9 +12100,10 @@ begin
     // and check if a 'build all' is needed
     NeedBuildAllFlag:=false;
     if (AReason in Project1.CompilerOptions.CompileReasons) then begin
+      Note:='';
       Result:=DoCheckIfProjectNeedsCompilation(Project1,
                                                CompilerFilename,CompilerParams,
-                                               SrcFilename,NeedBuildAllFlag);
+                                               SrcFilename,NeedBuildAllFlag,Note);
       if  (pbfOnlyIfNeeded in Flags)
       and (not (pfAlwaysBuild in Project1.Flags)) then begin
         if Result=mrNo then begin

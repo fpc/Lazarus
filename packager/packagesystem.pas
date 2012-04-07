@@ -284,11 +284,11 @@ type
     function LoadPackageCompiledState(APackage: TLazPackage;
                                 IgnoreErrors, ShowAbort: boolean): TModalResult;
     function CheckCompileNeedDueToFPCUnits(TheOwner: TObject;
-                          StateFileAge: longint): boolean;
+                          StateFileAge: longint; var Note: string): boolean;
     function CheckCompileNeedDueToDependencies(TheOwner: TObject;
-                          FirstDependency: TPkgDependency;
-                          SkipDesignTimePackages: boolean; StateFileAge: longint
-                          ): TModalResult;
+                         FirstDependency: TPkgDependency;
+                         SkipDesignTimePackages: boolean; StateFileAge: longint;
+                         var Note: string): TModalResult;
     function CheckIfPackageNeedsCompilation(APackage: TLazPackage;
                     SkipDesignTimePackages: boolean;
                     out NeedBuildAllFlag: boolean; var Note: string): TModalResult;
@@ -2753,7 +2753,7 @@ begin
 end;
 
 function TLazPackageGraph.CheckCompileNeedDueToFPCUnits(TheOwner: TObject;
-  StateFileAge: longint): boolean;
+  StateFileAge: longint; var Note: string): boolean;
 var
   AProject: TLazProject;
   Pkg: TLazPackage;
@@ -2795,6 +2795,9 @@ begin
     Filename:=Item^.Value;
     if FileAgeCached(Filename)>StateFileAge then begin
       debugln(['TLazPackageGraph.CheckCompileNeedDueToFPCUnits FPC unit "',Filename,'" is newer than state file of ',ID]);
+      Note+='FPC unit "'+Filename+'" is newer than state file of '+ID+':'+LineEnding
+        +'  unit age='+FileAgeToStr(FileAgeCached(Filename))+LineEnding
+        +'  state file age='+FileAgeToStr(StateFileAge)+LineEnding;
       exit(true);
     end;
     Node:=CfgCache.Units.Tree.FindSuccessor(Node);
@@ -2803,7 +2806,7 @@ end;
 
 function TLazPackageGraph.CheckCompileNeedDueToDependencies(TheOwner: TObject;
   FirstDependency: TPkgDependency; SkipDesignTimePackages: boolean;
-  StateFileAge: longint): TModalResult;
+  StateFileAge: longint; var Note: string): TModalResult;
 
   function GetOwnerID: string;
   begin
@@ -2820,7 +2823,7 @@ begin
   if Dependency=nil then begin
     // no dependencies
     // => check FPC units
-    if CheckCompileNeedDueToFPCUnits(TheOwner,StateFileAge) then
+    if CheckCompileNeedDueToFPCUnits(TheOwner,StateFileAge,Note) then
       exit(mrYes);
     Result:=mrNo;
     exit;
@@ -2836,16 +2839,23 @@ begin
         // check compile state file of required package
         if not RequiredPackage.AutoCreated then begin
           Result:=LoadPackageCompiledState(RequiredPackage,false,true);
-          if Result<>mrOk then exit;
+          if Result<>mrOk then begin
+            Note+='unable to load state file of '+RequiredPackage.IDAsString;
+            exit;
+          end;
           Result:=mrYes;
           o:=RequiredPackage.GetOutputDirType;
           if not RequiredPackage.LastCompile[o].StateFileLoaded then begin
             DebugLn('TPkgManager.CheckCompileNeedDueToDependencies  Missing state file for ',RequiredPackage.IDAsString,': ',RequiredPackage.GetStateFilename);
+            Note+='Package '+RequiredPackage.IDAsString+' has no state file "'+RequiredPackage.GetStateFilename+'".'+LineEnding;
             exit;
           end;
           if StateFileAge<RequiredPackage.LastCompile[o].StateFileDate then begin
             DebugLn('TPkgManager.CheckCompileNeedDueToDependencies ',
               ' State file of ',RequiredPackage.IDAsString,' is newer than state file of ',GetOwnerID);
+            Note+='State file of '+RequiredPackage.IDAsString+' is newer than state file of '+GetOwnerID+LineEnding
+              +'  '+RequiredPackage.IDAsString+'='+FileAgeToStr(RequiredPackage.LastCompile[o].StateFileDate)+LineEnding
+              +'  '+GetOwnerID+'='+FileAgeToStr(StateFileAge)+LineEnding;
             exit;
           end;
         end;
@@ -2859,9 +2869,13 @@ begin
           and FileExistsCached(OtherStateFile)
           and (FileAgeCached(OtherStateFile)>StateFileAge) then begin
             DebugLn('TPkgManager.CheckCompileNeedDueToDependencies ',
-              ' OtherState of ',RequiredPackage.IDAsString,' file "',OtherStateFile,'" (',
+              ' State file of ',RequiredPackage.IDAsString,' "',OtherStateFile,'" (',
                 FileAgeToStr(FileAgeCached(OtherStateFile)),')'
-              ,' is newer than State file ',GetOwnerID,'(',FileAgeToStr(StateFileAge),')');
+              ,' is newer than state file ',GetOwnerID,'(',FileAgeToStr(StateFileAge),')');
+            Note+='State file of used package is newer than state file:'+LineEnding
+              +'  Used package '+RequiredPackage.IDAsString+', file="'+OtherStateFile+'", '
+              +' age='+FileAgeToStr(FileAgeCached(OtherStateFile))+LineEnding
+              +'  package '+GetOwnerID+', age='+FileAgeToStr(StateFileAge)+LineEnding;
             Result:=mrYes;
             exit;
           end;
@@ -2898,7 +2912,10 @@ begin
   Result:=CheckIfCurPkgOutDirNeedsCompile(APackage,
              true,SkipDesignTimePackages,
              NeedBuildAllFlag,ConfigChanged,DependenciesChanged,Note);
-  if Result=mrNo then exit; // the current output is valid
+  if Result=mrNo then begin
+    // the current output is valid
+    exit;
+  end;
 
   // the current output directory needs compilation
   if APackage.CompilerOptions.ParsedOpts.OutputDirectoryOverride='' then
@@ -2911,11 +2928,14 @@ begin
       exit;
     end;
     debugln(['TLazPackageGraph.CheckIfPackageNeedsCompilation normal output dir is not writable: ',OutputDir]);
-    Note+='Normal output directory is not writable.'+LineEnding;
     // the normal output directory is not writable
     // => try the fallback directory
     NewOutputDir:=GetFallbackOutputDir(APackage);
-    if (NewOutputDir=OutputDir) or (NewOutputDir='') then exit;
+    if (NewOutputDir=OutputDir) or (NewOutputDir='') then begin
+      Note+='Normal output directory is not writable. There is no fallback.'+LineEnding;
+      exit;
+    end;
+    Note+='Normal output directory is not writable, switching to fallback.'+LineEnding;
     APackage.CompilerOptions.ParsedOpts.OutputDirectoryOverride:=NewOutputDir;
     Result:=CheckIfCurPkgOutDirNeedsCompile(APackage,
                true,SkipDesignTimePackages,
@@ -3150,7 +3170,8 @@ begin
   if CheckDependencies then begin
     // check all required packages
     Result:=CheckCompileNeedDueToDependencies(APackage,
-          APackage.FirstRequiredDependency,SkipDesignTimePackages,StateFileAge);
+          APackage.FirstRequiredDependency,SkipDesignTimePackages,StateFileAge,
+          Note);
     if Result<>mrNo then begin
       DependenciesChanged:=true;
       exit;
