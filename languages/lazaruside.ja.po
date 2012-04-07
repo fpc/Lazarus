@@ -830,10 +830,6 @@ msgstr "フォーム作成時にパッケージをチェック"
 msgid "Choose code template file (*.dci)"
 msgstr "コードテンプテートファイル(*.dpi)を選択してください"
 
-#: lazarusidestrconsts.dlgclassinsertpolicy
-msgid "Class part insert policy"
-msgstr "クラス部分の挿入ポリシー"
-
 #: lazarusidestrconsts.dlgclosebuttonsnotebook
 msgid "Show close buttons in notebook"
 msgstr "ノートブックの[閉じる]ボタンを表示"
@@ -2013,6 +2009,10 @@ msgstr "メソッドの前"
 msgid "Constructor name must be 'init' (destructor must be 'done')"
 msgstr "コンストラクタの名前は'init'（デストラクタは'done'）でなければならない"
 
+#: lazarusidestrconsts.dlginsertclassparts
+msgid "Insert class parts"
+msgstr ""
+
 #: lazarusidestrconsts.dlginsertimplementation
 msgid "Implementation"
 msgstr "実装"
@@ -2020,6 +2020,10 @@ msgstr "実装"
 #: lazarusidestrconsts.dlginsertinterface
 msgid "Interface"
 msgstr "インターフェース"
+
+#: lazarusidestrconsts.dlginsertmethods
+msgid "Insert methods"
+msgstr ""
 
 #: lazarusidestrconsts.dlginsertsection
 msgid "Insert into Uses section of"
@@ -2210,10 +2214,6 @@ msgstr "最近扱ったファイル数の上限"
 #: lazarusidestrconsts.dlgmaxrecentprojs
 msgid "Max recent project files"
 msgstr "最近扱ったプロジェクトファイル数の上限"
-
-#: lazarusidestrconsts.dlgmethodinspolicy
-msgid "Method insert policy"
-msgstr "メソッド挿入ポリシー"
 
 #: lazarusidestrconsts.dlgmixmethodsandproperties
 msgid "Mix methods and properties"
@@ -11888,6 +11888,10 @@ msgstr "ユニット..."
 msgid "Watches"
 msgstr "監視"
 
+#: lazarusidestrconsts.lismenuwhatneedsbuilding
+msgid "What Needs Building"
+msgstr ""
+
 #: lazarusidestrconsts.lismenuwindow
 msgid "&Window"
 msgstr "ウィンドウ(&W)"
@@ -14206,6 +14210,10 @@ msgstr "プロジェクトに追加"
 msgid "Unit name already exists"
 msgstr "ユニット名はすでに存在します"
 
+#: lazarusidestrconsts.lisproject
+msgid "Project %s"
+msgstr ""
+
 #: lazarusidestrconsts.lisprojectchanged
 msgid "Project changed"
 msgstr "プロジェクトが変更されました。"
@@ -15424,6 +15432,10 @@ msgstr ""
 #: lazarusidestrconsts.listakesnapshot
 msgid "Take a Snapshot"
 msgstr "スナップショットを撮る"
+
+#: lazarusidestrconsts.listarget
+msgid "Target:"
+msgstr ""
 
 #: lazarusidestrconsts.listargetcpu
 msgid "Target CPU"
@@ -16917,6 +16929,10 @@ msgstr "Lazarus IDEへようこそ %s"
 
 #: lazarusidestrconsts.liswelcometolazarusthereisalreadyaconfigurationfromve
 msgid "Welcome to Lazarus %s%s%sThere is already a configuration from version %s in%s%s%s"
+msgstr ""
+
+#: lazarusidestrconsts.liswhatneedsrebuilding
+msgid "What needs rebuilding"
 msgstr ""
 
 #: lazarusidestrconsts.liswhenaunitisrenamedupdatereferences

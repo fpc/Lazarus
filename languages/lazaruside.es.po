@@ -830,10 +830,6 @@ msgstr "Comprobar los paquetes al crear el formulario"
 msgid "Choose code template file (*.dci)"
 msgstr "Escoja archivo de plantilla de código (*.dci)"
 
-#: lazarusidestrconsts.dlgclassinsertpolicy
-msgid "Class part insert policy"
-msgstr "Política de inserción de partes de la Clase"
-
 #: lazarusidestrconsts.dlgclosebuttonsnotebook
 msgid "Show close buttons in notebook"
 msgstr "Mostrar botón cerrar en las pestañas"
@@ -2007,6 +2003,10 @@ msgstr "Delante de métodos"
 msgid "Constructor name must be 'init' (destructor must be 'done')"
 msgstr "El Nombre del constructor debe de ser 'init' (destructor 'done')"
 
+#: lazarusidestrconsts.dlginsertclassparts
+msgid "Insert class parts"
+msgstr ""
+
 #: lazarusidestrconsts.dlginsertimplementation
 msgid "Implementation"
 msgstr "Implementación"
@@ -2014,6 +2014,10 @@ msgstr "Implementación"
 #: lazarusidestrconsts.dlginsertinterface
 msgid "Interface"
 msgstr "Interfaz"
+
+#: lazarusidestrconsts.dlginsertmethods
+msgid "Insert methods"
+msgstr ""
 
 #: lazarusidestrconsts.dlginsertsection
 msgid "Insert into Uses section of"
@@ -2203,10 +2207,6 @@ msgstr "Nº Máximo de Archivos recientes"
 #: lazarusidestrconsts.dlgmaxrecentprojs
 msgid "Max recent project files"
 msgstr "Nº Máximo de Archivos de Proyecto recientes"
-
-#: lazarusidestrconsts.dlgmethodinspolicy
-msgid "Method insert policy"
-msgstr "Política de inserción de métodos"
 
 #: lazarusidestrconsts.dlgmixmethodsandproperties
 msgid "Mix methods and properties"
@@ -11835,6 +11835,10 @@ msgstr "Unidades..."
 msgid "Watches"
 msgstr "Puntos de Observación"
 
+#: lazarusidestrconsts.lismenuwhatneedsbuilding
+msgid "What Needs Building"
+msgstr ""
+
 #: lazarusidestrconsts.lismenuwindow
 msgid "&Window"
 msgstr "Ven&tana"
@@ -14150,6 +14154,10 @@ msgstr "Añadir al proyecto"
 msgid "Unit name already exists"
 msgstr "Ya existe el nombre de unidad"
 
+#: lazarusidestrconsts.lisproject
+msgid "Project %s"
+msgstr ""
+
 #: lazarusidestrconsts.lisprojectchanged
 msgid "Project changed"
 msgstr "Proyecto cambiado"
@@ -15363,6 +15371,10 @@ msgstr ""
 
 #: lazarusidestrconsts.listakesnapshot
 msgid "Take a Snapshot"
+msgstr ""
+
+#: lazarusidestrconsts.listarget
+msgid "Target:"
 msgstr ""
 
 #: lazarusidestrconsts.listargetcpu
@@ -16860,6 +16872,10 @@ msgstr ""
 
 #: lazarusidestrconsts.liswelcometolazarusthereisalreadyaconfigurationfromve
 msgid "Welcome to Lazarus %s%s%sThere is already a configuration from version %s in%s%s%s"
+msgstr ""
+
+#: lazarusidestrconsts.liswhatneedsrebuilding
+msgid "What needs rebuilding"
 msgstr ""
 
 #: lazarusidestrconsts.liswhenaunitisrenamedupdatereferences

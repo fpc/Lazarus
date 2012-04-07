@@ -808,10 +808,6 @@ msgstr "Kontrolovat balíčky při vytváření formuláře"
 msgid "Choose code template file (*.dci)"
 msgstr "Vyberte šablonu kódu (*.dci)"
 
-#: lazarusidestrconsts.dlgclassinsertpolicy
-msgid "Class part insert policy"
-msgstr "Politika vkládání části tříd"
-
 #: lazarusidestrconsts.dlgclosebuttonsnotebook
 msgid "Show close buttons in notebook"
 msgstr "Ukázat tlačítka pro zavření v zápisníku"
@@ -1908,6 +1904,10 @@ msgstr "Před metodami"
 msgid "Constructor name must be 'init' (destructor must be 'done')"
 msgstr "Jméno konstruktoru musí být 'init' (destruktor musí být 'done')"
 
+#: lazarusidestrconsts.dlginsertclassparts
+msgid "Insert class parts"
+msgstr ""
+
 #: lazarusidestrconsts.dlginsertimplementation
 msgid "Implementation"
 msgstr "Implementace"
@@ -1915,6 +1915,10 @@ msgstr "Implementace"
 #: lazarusidestrconsts.dlginsertinterface
 msgid "Interface"
 msgstr "Rozhraní"
+
+#: lazarusidestrconsts.dlginsertmethods
+msgid "Insert methods"
+msgstr ""
 
 #: lazarusidestrconsts.dlginsertsection
 msgid "Insert into Uses section of"
@@ -2081,10 +2085,6 @@ msgstr "Maximum nedávných souborů"
 #: lazarusidestrconsts.dlgmaxrecentprojs
 msgid "Max recent project files"
 msgstr "Maximum nedávných souborů projektů"
-
-#: lazarusidestrconsts.dlgmethodinspolicy
-msgid "Method insert policy"
-msgstr "Způsob vkládání metod"
 
 #: lazarusidestrconsts.dlgmixmethodsandproperties
 msgid "Mix methods and properties"
@@ -11223,6 +11223,10 @@ msgstr "Jednotky ..."
 msgid "Watches"
 msgstr "Sledování"
 
+#: lazarusidestrconsts.lismenuwhatneedsbuilding
+msgid "What Needs Building"
+msgstr ""
+
 #: lazarusidestrconsts.lismenuwindow
 msgid "&Window"
 msgstr "&Okno"
@@ -13479,6 +13483,10 @@ msgstr "Přidat do projektu"
 msgid "Unit name already exists"
 msgstr "Jméno jednotky již existuje"
 
+#: lazarusidestrconsts.lisproject
+msgid "Project %s"
+msgstr ""
+
 #: lazarusidestrconsts.lisprojectchanged
 msgid "Project changed"
 msgstr "Projekt změněn"
@@ -14667,6 +14675,10 @@ msgstr ""
 #: lazarusidestrconsts.listakesnapshot
 msgid "Take a Snapshot"
 msgstr "Vytvoř snímek"
+
+#: lazarusidestrconsts.listarget
+msgid "Target:"
+msgstr ""
 
 #: lazarusidestrconsts.listargetcpu
 msgid "Target CPU"
@@ -16124,6 +16136,10 @@ msgstr "Vítejte v Lazarus IDE %s"
 
 #: lazarusidestrconsts.liswelcometolazarusthereisalreadyaconfigurationfromve
 msgid "Welcome to Lazarus %s%s%sThere is already a configuration from version %s in%s%s%s"
+msgstr ""
+
+#: lazarusidestrconsts.liswhatneedsrebuilding
+msgid "What needs rebuilding"
 msgstr ""
 
 #: lazarusidestrconsts.liswhenaunitisrenamedupdatereferences
