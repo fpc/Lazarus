@@ -905,9 +905,6 @@ type
     function DoWarnAmbiguousFiles: TModalResult;
     procedure DoUpdateProjectResourceInfo;
     function DoSaveForBuild(AReason: TCompileReason): TModalResult; override;
-    function DoCheckIfProjectNeedsCompilation(AProject: TProject;
-                    const CompilerFilename, CompilerParams, SrcFilename: string;
-                    out NeedBuildAllFlag: boolean; var Note: string): TModalResult;
     function DoBuildProject(const AReason: TCompileReason;
                             Flags: TProjectBuildFlags): TModalResult; override;
     function UpdateProjectPOFile(AProject: TProject): TModalResult;
@@ -11725,137 +11722,6 @@ begin
   Result:=PkgBoss.DoSaveAllPackages([]);
 end;
 
-function TMainIDE.DoCheckIfProjectNeedsCompilation(AProject: TProject;
-  const CompilerFilename, CompilerParams, SrcFilename: string; out
-  NeedBuildAllFlag: boolean; var Note: string): TModalResult;
-var
-  StateFilename: String;
-  StateFileAge: LongInt;
-  AnUnitInfo: TUnitInfo;
-  LFMFilename: String;
-begin
-  NeedBuildAllFlag:=false;
-  if (AProject.LastCompilerFilename<>CompilerFilename)
-  or (AProject.LastCompilerParams<>CompilerParams)
-  or ((AProject.LastCompilerFileDate>0)
-      and FileExistsCached(CompilerFilename)
-      and (FileAgeCached(CompilerFilename)<>AProject.LastCompilerFileDate))
-  then
-    NeedBuildAllFlag:=true;
-
-  // check state file
-  StateFilename:=AProject.GetStateFilename;
-  Result:=AProject.LoadStateFile(false);
-  if Result<>mrOk then exit;
-  if not (lpsfStateFileLoaded in AProject.StateFlags) then begin
-    DebugLn('TMainIDE.CheckIfPackageNeedsCompilation  No state file for ',AProject.IDAsString);
-    Note+='State file "'+StateFilename+'" of '+AProject.IDAsString+' is missing.'+LineEnding;
-    exit(mrYes);
-  end;
-
-  StateFileAge:=FileAgeCached(StateFilename);
-
-  // check main source file
-  if FileExistsCached(SrcFilename) and (StateFileAge<FileAgeCached(SrcFilename)) then
-  begin
-    DebugLn('TMainIDE.CheckIfProjectNeedsCompilation  SrcFile outdated ',AProject.IDAsString);
-    Note+='Source file "'+SrcFilename+'" of '+AProject.IDAsString+' outdated:'+LineEnding
-      +'  source age='+FileAgeToStr(FileAgeCached(SrcFilename))+LineEnding
-      +'  state file age='+FileAgeToStr(StateFileAge)+LineEnding;
-    exit(mrYes);
-  end;
-
-  // check compiler and params
-  if CompilerFilename<>AProject.LastCompilerFilename then begin
-    DebugLn('TMainIDE.CheckIfProjectNeedsCompilation  Compiler filename changed for ',AProject.IDAsString);
-    DebugLn('  Old="',AProject.LastCompilerFilename,'"');
-    DebugLn('  Now="',CompilerFilename,'"');
-    Note+='Compiler filename changed for '+AProject.IDAsString+':'+LineEnding
-      +'  Old="'+AProject.LastCompilerFilename+'"'+LineEnding
-      +'  Now="'+CompilerFilename+'"'+LineEnding;
-    exit(mrYes);
-  end;
-  if not FileExistsCached(CompilerFilename) then begin
-    DebugLn('TMainIDE.CheckIfProjectNeedsCompilation  Compiler file not found for ',AProject.IDAsString);
-    DebugLn('  File="',CompilerFilename,'"');
-    Note+='Compiler file "'+CompilerFilename+'" not found for '+AProject.IDAsString+'.'+LineEnding;
-    exit(mrYes);
-  end;
-  if FileAgeCached(CompilerFilename)<>AProject.LastCompilerFileDate then begin
-    DebugLn('TMainIDE.CheckIfProjectNeedsCompilation  Compiler file changed for ',AProject.IDAsString);
-    DebugLn('  File="',CompilerFilename,'"');
-    Note+='Compiler file "'+CompilerFilename+'" for '+AProject.IDAsString+' changed:'+LineEnding
-      +'  Old="'+FileAgeToStr(AProject.LastCompilerFileDate)+'"'+LineEnding
-      +'  Now="'+FileAgeToStr(FileAgeCached(CompilerFilename))+'"'+LineEnding;
-    exit(mrYes);
-  end;
-  if CompilerParams<>AProject.LastCompilerParams then begin
-    DebugLn('TMainIDE.CheckIfProjectNeedsCompilation  Compiler params changed for ',AProject.IDAsString);
-    DebugLn('  Old="',AProject.LastCompilerParams,'"');
-    DebugLn('  Now="',CompilerParams,'"');
-    Note+='Compiler params changed for '+AProject.IDAsString+':'+LineEnding
-      +'  Old="'+AProject.LastCompilerParams+'"'+LineEnding
-      +'  Now="'+CompilerParams+'"'+LineEnding;
-    exit(mrYes);
-  end;
-
-  // compiler and parameters are the same
-  // quick compile is possible
-  NeedBuildAllFlag:=false;
-
-  // check all required packages
-  Result:=PackageGraph.CheckCompileNeedDueToDependencies(AProject,
-                                AProject.FirstRequiredDependency,
-                                not (pfUseDesignTimePackages in AProject.Flags),
-                                StateFileAge,Note);
-  if Result<>mrNo then exit;
-
-  // check project files
-  AnUnitInfo:=AProject.FirstPartOfProject;
-  while AnUnitInfo<>nil do begin
-    if (not AnUnitInfo.IsVirtual) and FileExistsCached(AnUnitInfo.Filename) then
-    begin
-      if (StateFileAge<FileAgeCached(AnUnitInfo.Filename)) then begin
-        DebugLn('TMainIDE.CheckIfProjectNeedsCompilation  Src has changed ',AProject.IDAsString,' ',AnUnitInfo.Filename);
-        Note+='File "'+AnUnitInfo.Filename+'" of '+AProject.IDAsString+' is newer than state file:'+LineEnding
-          +'  file age="'+FileAgeToStr(FileAgeCached(AnUnitInfo.Filename))+'"'+LineEnding
-          +'  state file age="'+FileAgeToStr(StateFileAge)+'"'+LineEnding;
-        exit(mrYes);
-      end;
-      if AnUnitInfo.ComponentName<>'' then begin
-        LFMFilename:=ChangeFileExt(AnUnitInfo.Filename,'.lfm');
-        if FileExistsCached(LFMFilename)
-        and (StateFileAge<FileAgeCached(LFMFilename)) then begin
-          DebugLn('TMainIDE.CheckIfProjectNeedsCompilation  LFM has changed ',AProject.IDAsString,' ',LFMFilename);
-          Note+='File "'+LFMFilename+'" of '+AProject.IDAsString+' is newer than state file:'+LineEnding
-            +'  file age="'+FileAgeToStr(FileAgeCached(LFMFilename))+'"'+LineEnding
-            +'  state file age="'+FileAgeToStr(StateFileAge)+'"'+LineEnding;
-          exit(mrYes);
-        end;
-      end;
-    end;
-    AnUnitInfo:=AnUnitInfo.NextPartOfProject;
-  end;
-
-  // check all open editor files (maybe the user forgot to add them to the project)
-  AnUnitInfo:=AProject.FirstUnitWithEditorIndex;
-  while AnUnitInfo<>nil do begin
-    if (not AnUnitInfo.IsPartOfProject)
-    and (not AnUnitInfo.IsVirtual)
-    and FileExistsCached(AnUnitInfo.Filename)
-    and (StateFileAge<FileAgeCached(AnUnitInfo.Filename)) then begin
-      DebugLn('TMainIDE.CheckIfProjectNeedsCompilation  Editor Src has changed ',AProject.IDAsString,' ',AnUnitInfo.Filename);
-      Note+='Editor file "'+AnUnitInfo.Filename+'" is newer than state file:'+LineEnding
-        +'  file age="'+FileAgeToStr(FileAgeCached(AnUnitInfo.Filename))+'"'+LineEnding
-        +'  state file age="'+FileAgeToStr(StateFileAge)+'"'+LineEnding;
-      exit(mrYes);
-    end;
-    AnUnitInfo:=AnUnitInfo.NextUnitWithEditorIndex;
-  end;
-
-  Result:=mrNo;
-end;
-
 function TMainIDE.DoSaveProjectToTestDirectory(Flags: TSaveFlags): TModalResult;
 var
   TestDir: String;
@@ -12080,14 +11946,6 @@ begin
       if Result<>mrOk then exit;
     end;
 
-    CompilerFilename:=Project1.GetCompilerFilename;
-    //DebugLn(['TMainIDE.DoBuildProject CompilerFilename="',CompilerFilename,'" CompilerPath="',Project1.CompilerOptions.CompilerPath,'"']);
-    // Note: use absolute paths, because some external tools resolve symlinked directories
-    CompilerParams :=
-      Project1.CompilerOptions.MakeOptionsString(SrcFilename,[ccloAbsolutePaths])
-             + ' ' + PrepareCmdLineOption(SrcFilename);
-    //DebugLn('TMainIDE.DoBuildProject WorkingDir="',WorkingDir,'" SrcFilename="',SrcFilename,'" CompilerFilename="',CompilerFilename,'" CompilerParams="',CompilerParams,'"');
-
     // warn for ambiguous files
     Result:=DoWarnAmbiguousFiles;
     if Result<>mrOk then
@@ -12101,9 +11959,8 @@ begin
     NeedBuildAllFlag:=false;
     if (AReason in Project1.CompilerOptions.CompileReasons) then begin
       Note:='';
-      Result:=DoCheckIfProjectNeedsCompilation(Project1,
-                                               CompilerFilename,CompilerParams,
-                                               SrcFilename,NeedBuildAllFlag,Note);
+      Result:=MainBuildBoss.DoCheckIfProjectNeedsCompilation(Project1,
+                                               NeedBuildAllFlag,Note);
       if  (pbfOnlyIfNeeded in Flags)
       and (not (pfAlwaysBuild in Project1.Flags)) then begin
         if Result=mrNo then begin
@@ -12194,6 +12051,11 @@ begin
             TheOutputFilter.ErrorTypeName[err] := ErrorNames[err];
 
         // compile
+        CompilerFilename:=Project1.GetCompilerFilename;
+        // Note: use absolute paths, because some external tools resolve symlinked directories
+        CompilerParams :=
+          Project1.CompilerOptions.MakeOptionsString(SrcFilename,[ccloAbsolutePaths])
+                 + ' ' + PrepareCmdLineOption(SrcFilename);
         Result:=TheCompiler.Compile(Project1,
                                 WorkingDir,CompilerFilename,CompilerParams,
                                 (pbfCleanCompile in Flags) or NeedBuildAllFlag,
