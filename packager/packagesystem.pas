@@ -459,6 +459,14 @@ var
     AllPaths.Values[Typ]:=MergeSearchPaths(AllPaths.Values[Typ],Path);
   end;
 
+  procedure DeleteOption;
+  begin
+    while (EndPos<=length(Reduced)) and (Reduced[EndPos] in [' ',#9]) do
+      inc(EndPos);
+    System.Delete(Reduced,StartPos,EndPos-StartPos);
+    EndPos:=StartPos;
+  end;
+
 begin
   Result:=TStringList.Create;
   Reduced:=CompParams;
@@ -479,20 +487,19 @@ begin
           'i': AddSearchPath('IncPath');
           'o': AddSearchPath('ObjectPath');
           'l': AddSearchPath('LibPath');
+          else continue;
           end;
-          while (EndPos<=length(Reduced)) and (Reduced[EndPos] in [' ',#9]) do
-            inc(EndPos);
-          System.Delete(Reduced,StartPos,EndPos-StartPos);
-          EndPos:=StartPos;
+          DeleteOption;
         end;
       'v':
         // verbosity
-        begin
-          while (EndPos<=length(Reduced)) and (Reduced[EndPos] in [' ',#9]) do
-            inc(EndPos);
-          System.Delete(Reduced,StartPos,EndPos-StartPos);
-          EndPos:=StartPos;
-        end;
+        DeleteOption;
+      'i','l':
+        // information
+        DeleteOption;
+      'B':
+        // build clean
+        DeleteOption;
       end;
     end;
   end;
