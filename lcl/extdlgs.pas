@@ -1055,7 +1055,7 @@ function TCalculatorDialog.Execute: Boolean;
 var
   CPanel: TCalculatorPanel;
 begin
-  FCalc:=CreateCalculatorForm(Self, FLayout, HelpContext);
+  FCalc:=CreateCalculatorForm(Application, FLayout, HelpContext);
   try
     CPanel:=TCalculatorPanel(FCalc.FCalcPanel);
     FCalc.Caption:=Title;
@@ -1262,14 +1262,15 @@ begin
 end;
 
 function TCalendarDialog.Execute:boolean;
-const dw=8;
-var DF:TForm;
-    okButton,cancelButton:TButton;
-    panel:TPanel;
+const
+  dw=8;
+var
+  DF: TForm;
+  okButton,cancelButton: TButton;
+  panel: TPanel;
 begin
-  DF:=TForm(TForm.NewInstance);
+  DF:=TForm.CreateNew(Application, 0);
   DF.DisableAlign;
-  DF.Create(Self.Owner); // Self.Owner, so that poOwnerFormCenter works
   DF.Caption:=Title;
   DF.Position:=DialogPosition;
   DF.BorderStyle:=bsDialog;
