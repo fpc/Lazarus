@@ -185,6 +185,9 @@ components/tachart/demo/imagelist/lib
 components/tachart/demo/labels/*.exe
 components/tachart/demo/labels/*.lps
 components/tachart/demo/labels/lib
+components/tachart/demo/lazreport/*.exe
+components/tachart/demo/lazreport/*.lps
+components/tachart/demo/lazreport/lib
 components/tachart/demo/legend/*.exe
 components/tachart/demo/legend/*.lps
 components/tachart/demo/legend/lib
