@@ -184,7 +184,7 @@ type
     property DisplayLabel: TLabel read FDisplayLabel;
   public
     constructor Create(AOwner: TComponent); override;
-    constructor CreateLayout(AOwner: TComponent;ALayout : TCalculatorLayout);
+//    constructor CreateLayout(AOwner: TComponent;ALayout : TCalculatorLayout);
     property Value : Double read GetValue write SetValue;
   end;
 
@@ -1052,33 +1052,35 @@ begin
 end;
 
 function TCalculatorDialog.Execute: Boolean;
+var
+  CPanel: TCalculatorPanel;
 begin
   FCalc:=CreateCalculatorForm(Self, FLayout, HelpContext);
-  with FCalc do
   try
-    Caption:=Self.Title;
-    TCalculatorPanel(FCalcPanel).FMemory:=Self.FMemory;
-    TCalculatorPanel(FCalcPanel).UpdateMemoryLabel;
-    If Self.Precision>2 then
-      TCalculatorPanel(FCalcPanel).FPrecision:=Self.Precision
+    CPanel:=TCalculatorPanel(FCalc.FCalcPanel);
+    FCalc.Caption:=Title;
+    CPanel.FMemory:=FMemory;
+    CPanel.UpdateMemoryLabel;
+    If Precision>2 then
+      CPanel.FPrecision:=Precision
     else
-      TCalculatorPanel(FCalcPanel).FPrecision:=2;
-    TCalculatorPanel(FCalcPanel).FBeepOnError:=Self.BeepOnError;
-    if Self.FValue <> 0 then begin
-      TCalculatorPanel(FCalcPanel).DisplayValue:=Self.FValue;
-      TCalculatorPanel(FCalcPanel).FStatus:=csFirst;
-      TCalculatorPanel(FCalcPanel).FOperator:='=';
+      CPanel.FPrecision:=2;
+    CPanel.FBeepOnError:=BeepOnError;
+    if FValue <> 0 then begin
+      CPanel.DisplayValue:=FValue;
+      CPanel.FStatus:=csFirst;
+      CPanel.FOperator:='=';
     end;
-    Result:=(ShowModal = mrOk);
+    Result := (FCalc.ShowModal = mrOk);
     if Result then begin
-      Self.FMemory:=TCalculatorPanel(FCalcPanel).FMemory;
-      if (TCalculatorPanel(FCalcPanel).DisplayValue <> Self.FValue) then begin
-        Self.FValue:=TCalculatorPanel(FCalcPanel).DisplayValue;
+      FMemory:=CPanel.FMemory;
+      if CPanel.DisplayValue <> FValue then begin
+        FValue:=CPanel.DisplayValue;
         Change;
       end;
     end;
   finally
-    Free;
+    FCalc.Free;
     FCalc:=nil;
   end;
 end;
@@ -1086,23 +1088,21 @@ end;
 { TCalculatorForm }
 
 constructor TCalculatorForm.Create(AOwner: TComponent);
-
 begin
   BeginFormUpdate;
   inherited CreateNew(AOwner, 0);
   InitForm(clNormal);
   EndFormUpdate;
 end;
-
+{
 constructor TCalculatorForm.CreateLayout(AOwner: TComponent;ALayout : TCalculatorLayout);
-
 begin
   BeginFormUpdate;
   inherited CreateNew(AOwner, 0);
   InitForm(ALayout);
   EndFormUpdate;
 end;
-
+}
 
 procedure TCalculatorForm.InitForm(ALayout : TCalculatorLayout);
 begin
