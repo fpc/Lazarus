@@ -46,7 +46,7 @@ uses
   LCLType, Controls, Forms, Buttons, StdCtrls,
   Dialogs, ExtCtrls, LCLProc, ButtonPanel,
   IDEMsgIntf, IDEExternToolIntf, IDEHelpIntf,
-  PropEdits, TransferMacros, LazarusIDEStrConsts,
+  PropEdits, IDEDialogs, TransferMacros, LazarusIDEStrConsts,
   EditMsgScannersDlg;
 
 type
@@ -363,9 +363,9 @@ begin
   if (TitleEdit.Text<>'') and (FilenameEdit.Text<>'') then
     SaveToOptions
   else begin
-    MessageDlg(lisEdtExtToolTitleAndFilenameRequired,
+    IDEMessageDialog(lisEdtExtToolTitleAndFilenameRequired,
                   lisEdtExtToolAValidToolNeedsAtLeastATitleAndAFilename,
-                  mtError, [mbCancel], 0);
+                  mtError, [mbCancel]);
     ModalResult:=mrCancel;
   end;
 end;

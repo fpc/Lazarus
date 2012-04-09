@@ -257,7 +257,7 @@ begin
     DumpStack;
     {$ENDIF}
     s:='';
-    //IDEMessageDlg('Unknown Macro','Macro not defined: "'+s+'".',mtError,[mbAbort],0);
+    //IDEMessageDialog('Unknown Macro','Macro not defined: "'+s+'".',mtError,[mbAbort],0);
     Handled:=true;
     exit;
   end;
@@ -1475,8 +1475,8 @@ begin
               ACaption:=lisDeleteFileFailed;
               AText:=Format(lisUnableToRemoveOldBackupFile, ['"',
                 CounterFilename, '"']);
-              Result:=MessageDlg(ACaption,AText,mtError,
-                                 [mbAbort,mbRetry,mbIgnore],0);
+              Result:=IDEMessageDialog(ACaption,AText,mtError,
+                                 [mbAbort,mbRetry,mbIgnore]);
               if Result=mrAbort then exit;
               if Result=mrIgnore then Result:=mrOk;
             end;
@@ -1493,8 +1493,8 @@ begin
             ACaption:=lisRenameFileFailed;
             AText:=Format(lisUnableToRenameFileTo, ['"', BackupFilename+IntToStr
               (i), '"', '"', BackupFilename+IntToStr(i+1), '"']);
-            Result:=MessageDlg(ACaption,AText,mtError,
-                               [mbAbort,mbRetry,mbIgnore],0);
+            Result:=IDEMessageDialog(ACaption,AText,mtError,
+                               [mbAbort,mbRetry,mbIgnore]);
             if Result=mrAbort then exit;
             if Result=mrIgnore then Result:=mrOk;
           end;

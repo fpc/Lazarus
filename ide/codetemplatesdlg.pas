@@ -40,7 +40,7 @@ uses
   PascalParserTool,
   // IDEIntf
   IDECommands, TextTools, SrcEditorIntf, MenuIntf, IDEWindowIntf, LazIDEIntf,
-  IDEHelpIntf,
+  IDEHelpIntf, IDEDialogs,
   // IDE
   IDEProcs, InputHistory, LazarusIDEStrConsts, EditorOptions, CodeMacroSelect,
   CodeMacroPrompt;
@@ -917,7 +917,7 @@ begin
   else begin
     AText:=Format(lisCodeTemplATokenAlreadyExists, ['"', TokenEdit.Text, '"']);
     ACaption:=lisCodeTemplError;
-    MessageDlg(ACaption,AText,mterror,[mbok],0);
+    IDEMessageDialog(ACaption,AText,mterror,[mbok]);
   end;
 end;
 
@@ -1022,9 +1022,10 @@ begin
         SynAutoComplete.AutoCompleteList.SaveToFile(
           UTF8ToSys(EditorOpts.CodeTemplateFileName));
       except
-        res:=MessageDlg(' Unable to write code templates to file '''
+        res:=IDEMessageDialog(lisCCOErrorCaption, 'Unable to write code '
+          +'templates to file '''
           +EditorOpts.CodeTemplateFileName+'''! ',mtError
-          ,[mbAbort, mbIgnore, mbRetry],0);
+          ,[mbAbort, mbIgnore, mbRetry]);
         if res=mrAbort then exit;
       end;
     until Res<>mrRetry;
@@ -1084,10 +1085,10 @@ begin
   a := PtrInt(TemplateListBox.Items.Objects[idx]);
   if a < 0 then exit;
 
-  if MessageDlg(dlgDelTemplate
+  if IDEMessageDialog(lisConfirm, dlgDelTemplate
       +'"'+SynAutoComplete.Completions[a]+' - '
       +SynAutoComplete.CompletionComments[a]+'"'
-      +'?',mtConfirmation,[mbOk,mbCancel],0)=mrOK
+      +'?',mtConfirmation,[mbOk,mbCancel])=mrOK
   then begin
     SynAutoComplete.DeleteCompletion(a);
     LastTemplate := -1; // to prevent the saving of the deleted template

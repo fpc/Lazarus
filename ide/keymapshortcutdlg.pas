@@ -33,7 +33,7 @@ interface
 uses
   Classes, SysUtils, LCLProc, Forms, Controls, Graphics, Dialogs,
   ExtCtrls, StdCtrls, LCLType,
-  PropEdits, IDECommands, IDEWindowIntf,
+  PropEdits, IDECommands, IDEWindowIntf, IDEDialogs,
   KeyMapping, LazarusIDEStrConsts, Buttons, ButtonPanel;
 
 type
@@ -362,10 +362,10 @@ begin
       else
         ConflictName:=ConflictName
                  +' ('+KeyAndShiftStateToEditorKeyString(ConflictRelation.ShortcutB);
-      case MessageDlg(lisPEConflictFound,
+      case IDEMessageDialog(lisPEConflictFound,
          Format(lisTheKeyIsAlreadyAssignedToRemoveTheOldAssignmentAnd, [
            KeyAndShiftStateToEditorKeyString(Key), #13, ConflictName, #13, #13,
-           #13, CurName]), mtConfirmation, [mbYes, mbNo, mbCancel], 0)
+           #13, CurName]), mtConfirmation, [mbYes, mbNo, mbCancel])
       of
         mrYes:    Result:=mrOK;
         mrCancel: Result:=mrCancel;

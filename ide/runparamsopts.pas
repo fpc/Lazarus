@@ -48,8 +48,8 @@ uses
   MemCheck,
   {$ENDIF}
   Classes, SysUtils, LCLProc, Controls, Forms, Buttons, StdCtrls, ComCtrls,
-  Dialogs, ExtCtrls, BaseIDEIntf, IDEHelpIntf, ProjectIntf, IDEProcs,
-  SysVarUserOverrideDlg, InputHistory, LazarusIDEStrConsts, FileUtil,
+  Dialogs, ExtCtrls, BaseIDEIntf, IDEHelpIntf, ProjectIntf, IDEDialogs,
+  IDEProcs, SysVarUserOverrideDlg, InputHistory, LazarusIDEStrConsts, FileUtil,
   Laz2_XMLCfg, ButtonPanel;
 
 { The xml format version:
@@ -471,9 +471,9 @@ begin
     if OpenDialog.Execute then
     begin
       if (FileIsExecutable(OpenDialog.Filename)) or
-        (MessageDlg(lisRunParamsFileNotExecutable,
+        (IDEMessageDialog(lisRunParamsFileNotExecutable,
         Format(lisRunParamsTheHostApplicationIsNotExecutable,
-        ['"', OpenDialog.Filename, '"']), mtWarning, [mbCancel, mbIgnore], 0) =
+        ['"', OpenDialog.Filename, '"']), mtWarning, [mbCancel, mbIgnore]) =
         mrIgnore) then
       begin
         HostApplicationEdit.Text := OpenDialog.Filename;

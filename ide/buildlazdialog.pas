@@ -49,7 +49,7 @@ uses
   InterfaceBase, Themes, CheckLst, Menus, ComCtrls, DividerBevel,
   DefineTemplates,
   // IDEIntf
-  LazIDEIntf, IDEMsgIntf, IDEHelpIntf, IDEImagesIntf, IDEWindowIntf,
+  LazIDEIntf, IDEMsgIntf, IDEHelpIntf, IDEImagesIntf, IDEWindowIntf, IDEDialogs,
   // IDE
   LazarusIDEStrConsts, TransferMacros, LazConf, IDEProcs, DialogProcs, MainBar,
   InputHistory, ExtToolDialog, ExtToolEditDlg, EnvironmentOpts,
@@ -214,10 +214,10 @@ function MakeLazarus(Profile: TBuildLazarusProfile;
   begin
     if DirectoryIsWritableCached(Dir) then exit(true);
     Result:=false;
-    MessageDlg(lisBuildingLazarusFailed,
+    IDEMessageDialog(lisBuildingLazarusFailed,
                Format(lisThisSetOfOptionsToBuildLazarusIsNotSupportedByThis,
                       [#13, '"', Dir, '"', #13]),
-               mtError,[mbCancel],0);
+               mtError,[mbCancel]);
   end;
 
   procedure CleanLazarusSrcDir(Dir: string; Recursive: boolean = true);
@@ -280,10 +280,10 @@ begin
     if (Tool.Filename='') or (not FileExistsUTF8(Tool.Filename)) then begin
       Tool.Filename:=FindDefaultMakePath;
       if (Tool.Filename='') or (not FileExistsUTF8(Tool.Filename)) then begin
-        MessageDlg(lisMakeNotFound,
+        IDEMessageDialog(lisMakeNotFound,
                    Format(lisTheProgramMakeWasNotFoundThisToolIsNeededToBuildLa,
                           ['"', '"', #13, #13]),
-                   mtError,[mbCancel],0);
+                   mtError,[mbCancel]);
         exit;
       end;
     end;
@@ -690,10 +690,10 @@ begin
     end;
   except
     on E: Exception do begin
-      Result:=MessageDlg(lisLazBuildErrorWritingFile,
+      Result:=IDEMessageDialog(lisLazBuildErrorWritingFile,
         Format(lisLazBuildUnableToWriteFile, [Filename, #13])
         +E.Message,
-        mtError,[mbCancel,mbAbort],0);
+        mtError,[mbCancel,mbAbort]);
       exit;
     end;
   end;

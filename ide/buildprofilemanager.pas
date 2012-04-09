@@ -34,8 +34,8 @@ uses
   Classes, SysUtils, FileUtil, Laz2_XMLCfg, LazLogger, LResources, Forms,
   Controls, Graphics, Dialogs, ExtCtrls, Buttons, StdCtrls, ComCtrls, Contnrs,
   ButtonPanel, DefineTemplates, IDEImagesIntf, IDEMsgIntf, IDEHelpIntf,
-  LazarusIDEStrConsts, LazConf, InterfaceBase, IDEProcs, TransferMacros,
-  CompilerOptions;
+  IDEDialogs, LazarusIDEStrConsts, LazConf, InterfaceBase, IDEProcs,
+  TransferMacros, CompilerOptions;
 
 type
 
@@ -596,9 +596,9 @@ begin
   i := ProfilesListbox.ItemIndex;
   if i<0 then exit;
   // Remove the item from selected list.
-  if MessageDlg(lisLazBuildConfirmDeletion,
+  if IDEMessageDialog(lisLazBuildConfirmDeletion,
     lisLazBuildAreYouSureYouWantToDeleteThisBuildProfile, mtConfirmation,
-    [mbYes, mbNo], 0)=mrYes then
+    [mbYes, mbNo])=mrYes then
   begin
     SelI:=fProfsToManage.Selected.IndexOf(fProfsToManage[i].fName);
     if SelI>-1 then

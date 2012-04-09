@@ -63,7 +63,7 @@ uses
   // codetools
   LinkScanner, CodeToolManager,
   // IDEIntf
-  IDECommands, SrcEditorIntf, IDEOptionsIntf,
+  IDECommands, SrcEditorIntf, IDEOptionsIntf, IDEDialogs,
   // IDE
   LazarusIDEStrConsts, IDEProcs, KeyMapping, LazConf, typinfo;
 
@@ -3304,9 +3304,9 @@ procedure TEditorMouseOptions.ImportFromXml(aXMLConfig: TRttiXMLConfig; aPath: S
         MActions.AssertNoConflict(MAct);
       except
         MActions.Delete(MActions.Count-1);
-        MessageDlg(dlgMouseOptErrorDup, dlgMouseOptErrorDupText + LineEnding
+        IDEMessageDialog(dlgMouseOptErrorDup, dlgMouseOptErrorDupText + LineEnding
                    + Path + 'M' + IntToStr(i) + LineEnding + MAct.DisplayName,
-                   mtError, [mbOk], 0);
+                   mtError, [mbOk]);
       end;
     end;
     Mact.Free;

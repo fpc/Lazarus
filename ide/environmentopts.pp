@@ -41,7 +41,7 @@ uses
   Dialogs, LazConfigStorage, Laz2_XMLCfg,
   // IDEIntf
   ProjectIntf, ObjectInspector, IDEWindowIntf, IDEOptionsIntf,
-  CompOptsIntf, IDEExternToolIntf,
+  CompOptsIntf, IDEExternToolIntf, IDEDialogs,
   // IDE
   IDEProcs, LazarusIDEStrConsts, IDETranslations, LazConf,
   IDEOptionDefs, TransferMacros, Debugger;
@@ -698,8 +698,8 @@ begin
   end;
 
   if (not FileIsExecutable(Filename)) then begin
-    if MessageDlg(ErrorCaption,Format(ErrorMsg,[Filename]),
-      mtWarning,[mbIgnore,mbCancel],0)=mrCancel
+    if IDEMessageDialog(ErrorCaption,Format(ErrorMsg,[Filename]),
+      mtWarning,[mbIgnore,mbCancel])=mrCancel
     then begin
       Result:=false;
     end;
@@ -710,8 +710,8 @@ function CheckDirPathExists(const Dir,
   ErrorCaption, ErrorMsg: string): TModalResult;
 begin
   if not DirPathExists(Dir) then begin
-    Result:=MessageDlg(ErrorCaption,Format(ErrorMsg,[Dir]),mtWarning,
-                       [mbIgnore,mbCancel],0);
+    Result:=IDEMessageDialog(ErrorCaption,Format(ErrorMsg,[Dir]),mtWarning,
+                       [mbIgnore,mbCancel]);
   end else
     Result:=mrOk;
 end;
