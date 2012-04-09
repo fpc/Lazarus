@@ -177,12 +177,18 @@ type
     function Add(
       AValue: Double;
       AXLabel: String = ''; AColor: TColor = clTAColor): Integer; inline;
+    function AddArray(const AValues: array of Double): Integer;
+    function AddNull(ALabel: String = ''; AColor: TColor = clTAColor): Integer; inline;
+    function AddX(
+      AX: Double; ALabel: String = ''; AColor: TColor = clTAColor): Integer; inline;
     function AddXY(
       AX, AY: Double;
       AXLabel: String = ''; AColor: TColor = clTAColor): Integer; overload; inline;
     function AddXY(
       AX, AY: Double; const AYList: array of Double;
       AXLabel: String = ''; AColor: TColor = clTAColor): Integer; overload;
+    function AddY(
+      AY: Double; ALabel: String = ''; AColor: TColor = clTAColor): Integer; inline;
     procedure Clear; inline;
     function Count: Integer; inline;
     procedure Delete(AIndex: Integer); virtual;
@@ -537,6 +543,25 @@ begin
   Result := AddXY(GetXMaxVal + 1, AValue, AXLabel, AColor);
 end;
 
+function TChartSeries.AddArray(const AValues: array of Double): Integer;
+var
+  a: Double;
+begin
+  Result := ListSource.Count;
+  for a in AValues do
+    Add(a);
+end;
+
+function TChartSeries.AddNull(ALabel: String; AColor: TColor): Integer;
+begin
+  Result := ListSource.Add(SafeNan, SafeNan, ALabel, AColor);
+end;
+
+function TChartSeries.AddX(AX: Double; ALabel: String; AColor: TColor): Integer;
+begin
+  Result := ListSource.Add(AX, SafeNan, ALabel, AColor);
+end;
+
 function TChartSeries.AddXY(
   AX, AY: Double; const AYList: array of Double;
   AXLabel: String; AColor: TColor): Integer;
@@ -549,6 +574,11 @@ function TChartSeries.AddXY(
   AX, AY: Double; AXLabel: String; AColor: TColor): Integer;
 begin
   Result := ListSource.Add(AX, AY, AXLabel, AColor);
+end;
+
+function TChartSeries.AddY(AY: Double; ALabel: String; AColor: TColor): Integer;
+begin
+  Result := Add(AY, ALabel, AColor);
 end;
 
 procedure TChartSeries.AfterAdd;
