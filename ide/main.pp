@@ -14375,8 +14375,7 @@ begin
 
   // search file in debug path
   if fsfUseDebugPath in Flags then begin
-    SearchPath:=EnvironmentOptions.DebuggerSearchPath;
-    GlobalMacroList.SubstituteStr(SearchPath);
+    SearchPath:=EnvironmentOptions.GetParsedDebuggerSearchPath;
     SearchPath:=MergeSearchPaths(Project1.CompilerOptions.GetDebugPath(false),
                                  SearchPath);
     SearchPath:=TrimSearchPath(SearchPath,BaseDir);

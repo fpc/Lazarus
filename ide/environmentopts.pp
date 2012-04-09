@@ -38,7 +38,7 @@ uses
   ShlObj,
 {$endif}
   Classes, SysUtils, TypInfo, Graphics, Controls, Forms, LCLProc, FileProcs,
-  Dialogs, LazConfigStorage, Laz2_XMLCfg,
+  Dialogs, LazConfigStorage, Laz2_XMLCfg, LazUTF8,
   // IDEIntf
   ProjectIntf, ObjectInspector, IDEWindowIntf, IDEOptionsIntf,
   CompOptsIntf, IDEExternToolIntf, IDEDialogs,
@@ -189,9 +189,9 @@ type
     eopTestBuildDirectory,
     eopMakeFilename,
     eopFPDocPaths,
-    eopCompilerMessagesFilename
-    //eopDebuggerFilename,
-    //eopDebuggerSearchPath
+    eopCompilerMessagesFilename,
+    eopDebuggerFilename,
+    eopDebuggerSearchPath
     );
   TEnvOptParseTypes = set of TEnvOptParseType;
 
@@ -201,7 +201,6 @@ type
 
   TEnvironmentOptions = class(TAbstractIDEEnvironmentOptions)
   private
-    FDebuggerResetAfterRun: boolean;
     FFilename: string;
     FFileAge: longint;
     FFileHasChangedOnDisk: boolean;
@@ -280,9 +279,8 @@ type
 
    // TODO: store per debuggerclass options
     // Maybe these should go to a new TDebuggerOptions class
+    FDebuggerResetAfterRun: boolean;
     FDebuggerConfig: TDebuggerConfigStore;
-    FDebuggerSearchPath: string;
-    FDebuggerFilename: string;         // per debugger class
     FDebuggerFileHistory: TStringList; // per debugger class
     FDebuggerProperties: TStringList; // per debugger class
     FDebuggerShowStopMessage: Boolean;
@@ -337,6 +335,8 @@ type
     function GetCompilerFilename: string;
     function GetCompilerMessagesFilename: string;
     function GetDebuggerEventLogColors(AIndex: TDBGEventType): TDebuggerEventLogColor;
+    function GetDebuggerFilename: string;
+    function GetDebuggerSearchPath: string;
     function GetFPCSourceDirectory: string;
     function GetFPDocPaths: string;
     function GetLazarusDirectory: string;
@@ -347,9 +347,9 @@ type
     procedure SetDebuggerEventLogColors(AIndex: TDBGEventType;
       const AValue: TDebuggerEventLogColor);
     procedure SetDebuggerSearchPath(const AValue: string);
-    procedure SetFPDocPaths(AValue: string);
+    procedure SetFPDocPaths(const AValue: string);
     procedure SetMakeFilename(const AValue: string);
-    procedure SetDebuggerFilename(const AValue: string);
+    procedure SetDebuggerFilename(AValue: string);
     procedure SetFPCSourceDirectory(const AValue: string);
     procedure SetLazarusDirectory(const AValue: string);
     procedure SetParseValue(o: TEnvOptParseType; const NewValue: string);
@@ -381,6 +381,8 @@ type
     function GetParsedMakeFilename: string;
     function GetParsedCompilerMessagesFilename: string;
     function GetParsedFPDocPaths: string;
+    function GetParsedDebuggerFilename: string;
+    function GetParsedDebuggerSearchPath: string;
     function GetParsedValue(o: TEnvOptParseType): string;
 
     // macros
@@ -506,11 +508,11 @@ type
                                       write SetMakeFilename;
     property MakeFileHistory: TStringList read FMakeFileHistory
                                               write FMakeFileHistory;
-    property DebuggerFilename: string read FDebuggerFilename
+    property DebuggerFilename: string read GetDebuggerFilename
                                       write SetDebuggerFilename;
     property DebuggerFileHistory: TStringList read FDebuggerFileHistory
                                               write FDebuggerFileHistory;
-    property DebuggerSearchPath: string read FDebuggerSearchPath
+    property DebuggerSearchPath: string read GetDebuggerSearchPath
                                       write SetDebuggerSearchPath;
     property DebuggerShowStopMessage: boolean read FDebuggerShowStopMessage
                                               write FDebuggerShowStopMessage;
@@ -638,9 +640,9 @@ const
     'TestDir', // eopTestBuildDirectory
     'Make', // eopMakeFilename
     'FPDocPath', // eopFPDocPaths
-    'CompMsgFile' // eopCompilerMessagesFilename
-    //'Debugger', // eopDebuggerFilename
-    //'DebugPath', // eopDebuggerSearchPath
+    'CompMsgFile', // eopCompilerMessagesFilename
+    'Debugger', // eopDebuggerFilename
+    'DebugPath' // eopDebuggerSearchPath
   );
 
 function dbgs(o: TEnvOptParseType): string; overload;
@@ -837,7 +839,6 @@ begin
   DebuggerFilename:='';
   FDebuggerFileHistory:=TStringList.Create;
   FDebuggerProperties := TStringList.Create;
-  FDebuggerSearchPath:='';
   FDebuggerEventLogColors:=DebuggerDefaultColors;
 
   TestBuildDirectory:=GetDefaultTestBuildDirectory;
@@ -1511,7 +1512,7 @@ begin
         FDebuggerConfig.Save;
         SaveDebuggerPropertiesList;
         XMLConfig.SetDeleteValue(Path+'DebuggerFilename/Value',
-            FDebuggerFilename,'');
+            DebuggerFilename,'');
         XMLConfig.SetDeleteValue(Path+'DebuggerOptions/ShowStopMessage/Value',
             FDebuggerShowStopMessage, True);
         XMLConfig.SetDeleteValue(Path+'DebuggerOptions/DebuggerResetAfterRun/Value',
@@ -1519,7 +1520,7 @@ begin
         SaveRecentList(XMLConfig,FDebuggerFileHistory,
            Path+'DebuggerFilename/History/');
         XMLConfig.SetDeleteValue(Path+'DebuggerSearchPath/Value',
-            FDebuggerSearchPath,'');
+            DebuggerSearchPath,'');
         XMLConfig.SetDeleteValue(Path+'Debugger/EventLogClearOnRun',
             FDebuggerEventLogClearOnRun, True);
         XMLConfig.SetDeleteValue(Path+'Debugger/EventLogCheckLineLimit',
@@ -1717,7 +1718,20 @@ begin
   Result:=GetParsedValue(eopFPDocPaths);
 end;
 
+function TEnvironmentOptions.GetParsedDebuggerFilename: string;
+begin
+  Result:=GetParsedValue(eopDebuggerFilename);
+end;
+
+function TEnvironmentOptions.GetParsedDebuggerSearchPath: string;
+begin
+  Result:=GetParsedValue(eopDebuggerSearchPath);
+end;
+
 function TEnvironmentOptions.GetParsedValue(o: TEnvOptParseType): string;
+var
+  SpacePos: SizeInt;
+  CurParams: String;
 begin
   with FParseValues[o] do begin
     if (ParseStamp<>CompilerParseStamp)
@@ -1750,19 +1764,51 @@ begin
         eopCompilerMessagesFilename:
           // data file
           ParsedValue:=TrimAndExpandFilename(ParsedValue,GetParsedLazarusDirectory);
-        eopFPDocPaths{,eopDebuggerSearchPath}:
+        eopFPDocPaths,eopDebuggerSearchPath:
           // search path
           ParsedValue:=TrimSearchPath(ParsedValue,GetParsedLazarusDirectory,true);
-        eopCompilerFilename,eopMakeFilename{,eopDebuggerFilename}:
+        eopCompilerFilename,eopMakeFilename,eopDebuggerFilename:
           // program
           begin
+            ParsedValue:=Trim(ParsedValue);
+            CurParams:='';
+            if (o in [eopDebuggerFilename]) then begin
+              // program + params
+              // examples:
+              //   gdb -v
+              //   "C:\public folder\gdb"
+              SpacePos:=1;
+              while (SpacePos<=length(ParsedValue)) do begin
+                if ParsedValue[SpacePos]='"' then begin
+                  System.Delete(ParsedValue,1,1); // delete startng "
+                  while (SpacePos<=length(ParsedValue))
+                  and (ParsedValue[SpacePos]<>'"') do
+                    inc(SpacePos);
+                  if SpacePos<=length(ParsedValue) then
+                    System.Delete(ParsedValue,1,1); // dleete ending "
+                end else if ParsedValue[SpacePos]=' ' then
+                  break
+                else
+                  inc(SpacePos);
+              end;
+              CurParams:=copy(ParsedValue,SpacePos,length(ParsedValue));
+              system.Delete(ParsedValue,SpacePos,length(ParsedValue));
+            end;
+            // program
             ParsedValue:=TrimFilename(ParsedValue);
             if (ParsedValue<>'') and (not FilenameIsAbsolute(ParsedValue)) then
             begin
-              if ExtractFilePath(ParsedValue)='' then
+              if (ExtractFilePath(ParsedValue)='')
+              and (not FileExistsCached(GetParsedLazarusDirectory+ParsedValue)) then
                 ParsedValue:=FindDefaultExecutablePath(ParsedValue)
               else
-                ParsedValue:=GetParsedLazarusDirectory+ParsedValue;
+                ParsedValue:=TrimFilename(GetParsedLazarusDirectory+ParsedValue);
+            end;
+            // append parameters
+            if CurParams<>'' then begin
+              if System.Pos(' ',ParsedValue)>0 then
+                ParsedValue:='"'+ParsedValue+'"';
+              ParsedValue+=CurParams;
             end;
           end;
         end;
@@ -1961,29 +2007,32 @@ end;
 
 procedure TEnvironmentOptions.SetFPCSourceDirectory(const AValue: string);
 begin
-  if FPCSourceDirectory=AValue then exit;
   SetParseValue(eopFPCSourceDirectory,AValue);
 end;
 
 procedure TEnvironmentOptions.SetCompilerFilename(const AValue: string);
-var
-  NewValue: String;
 begin
-  NewValue:=TrimFilename(AValue);
-  SetParseValue(eopCompilerFilename,NewValue);
+  SetParseValue(eopCompilerFilename,TrimFilename(AValue));
 end;
 
 procedure TEnvironmentOptions.SetCompilerMessagesFilename(AValue: string);
-var
-  NewValue: String;
 begin
-  NewValue:=TrimFilename(AValue);
-  SetParseValue(eopCompilerMessagesFilename,NewValue);
+  SetParseValue(eopCompilerMessagesFilename,TrimFilename(AValue));
 end;
 
 function TEnvironmentOptions.GetDebuggerEventLogColors(AIndex: TDBGEventType): TDebuggerEventLogColor;
 begin
   Result := FDebuggerEventLogColors[AIndex];
+end;
+
+function TEnvironmentOptions.GetDebuggerFilename: string;
+begin
+  Result:=FParseValues[eopDebuggerFilename].UnparsedValue;
+end;
+
+function TEnvironmentOptions.GetDebuggerSearchPath: string;
+begin
+  Result:=FParseValues[eopDebuggerSearchPath].UnparsedValue;
 end;
 
 function TEnvironmentOptions.GetCompilerFilename: string;
@@ -2027,44 +2076,23 @@ begin
 end;
 
 procedure TEnvironmentOptions.SetDebuggerSearchPath(const AValue: string);
-var
-  NewValue: String;
 begin
-  NewValue:=TrimSearchPath(AValue,'');
-  if FDebuggerSearchPath=NewValue then exit;
-  FDebuggerSearchPath:=NewValue;
+  SetParseValue(eopDebuggerSearchPath,TrimSearchPath(AValue,''));
 end;
 
-procedure TEnvironmentOptions.SetFPDocPaths(AValue: string);
-var
-  NewValue: String;
+procedure TEnvironmentOptions.SetFPDocPaths(const AValue: string);
 begin
-  NewValue:=TrimSearchPath(AValue,'');
-  SetParseValue(eopFPDocPaths,NewValue);
+  SetParseValue(eopFPDocPaths,TrimSearchPath(AValue,''));
 end;
 
 procedure TEnvironmentOptions.SetMakeFilename(const AValue: string);
-var
-  NewValue: String;
 begin
-  NewValue:=TrimFilename(AValue);
-  SetParseValue(eopMakeFilename,NewValue);
+  SetParseValue(eopMakeFilename,TrimFilename(AValue));
 end;
 
-procedure TEnvironmentOptions.SetDebuggerFilename(const AValue: string);
-var
-  SpacePos: Integer;
+procedure TEnvironmentOptions.SetDebuggerFilename(AValue: string);
 begin
-  if FDebuggerFilename=AValue then exit;
-  FDebuggerFilename:=AValue;
-  // trim the filename and keep the options after the space (if any)
-  // TODO: split/find filename with spaces
-  SpacePos:=1;
-  while (SpacePos<=length(FDebuggerFilename))
-  and (FDebuggerFilename[SpacePos]<>' ') do
-    inc(SpacePos);
-  FDebuggerFilename:=Trim(copy(FDebuggerFilename,1,SpacePos-1))+
-    copy(FDebuggerFilename,SpacePos,length(FDebuggerFilename)-SpacePos+1);
+  SetParseValue(eopDebuggerFilename,UTF8Trim(AValue));
 end;
 
 initialization

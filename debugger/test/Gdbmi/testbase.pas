@@ -362,8 +362,8 @@ begin
   Result := TDebuggerList.Create;
   if FileExists(ConfDir + 'gdblist.txt') then
     Result.LoadFromFile(ConfDir + 'gdblist.txt');
-  if (Result.Count = 0) and (EnvironmentOptions.DebuggerFilename <> '') then
-    Result.Add('gdb from conf', EnvironmentOptions.DebuggerFilename);
+  if (Result.Count = 0) and (EnvironmentOptions.GetParsedDebuggerFilename <> '') then
+    Result.Add('gdb from conf', EnvironmentOptions.GetParsedDebuggerFilename);
   Debuggers := Result;
 end;
 

@@ -2060,7 +2060,7 @@ begin
 
     //todo: this check depends on the debugger class
     if (DebuggerClass <> TProcessDebugger)
-    and not FileIsExecutable(EnvironmentOptions.DebuggerFilename)
+    and not FileIsExecutable(EnvironmentOptions.GetParsedDebuggerFilename)
     then begin
       MessageDlg(lisDebuggerInvalid,
         Format(lisTheDebuggerDoesNotExistsOrIsNotExecutableSeeEnviro, ['"',
@@ -2078,7 +2078,7 @@ begin
     // check if debugger is already created with the right type
     if (FDebugger <> nil)
     and (not (FDebugger is DebuggerClass)
-          or (FDebugger.ExternalDebugger <> EnvironmentOptions.DebuggerFilename)
+          or (FDebugger.ExternalDebugger <> EnvironmentOptions.GetParsedDebuggerFilename)
         )
     then begin
       // the current debugger is the wrong type -> free it
@@ -2088,7 +2088,7 @@ begin
 
     // create debugger object
     if FDebugger = nil
-    then SetDebugger(DebuggerClass.Create(EnvironmentOptions.DebuggerFilename));
+    then SetDebugger(DebuggerClass.Create(EnvironmentOptions.GetParsedDebuggerFilename));
 
     if FDebugger = nil
     then begin
@@ -2503,7 +2503,7 @@ begin
   ABrkPoint := nil;
   if WarnIfNoDebugger
   and ((FindDebuggerClass(EnvironmentOptions.DebuggerConfig.DebuggerClass)=nil)
-    or (not FileIsExecutable(EnvironmentOptions.DebuggerFilename)))
+    or (not FileIsExecutableCached(EnvironmentOptions.GetParsedDebuggerFilename)))
   then begin
     if IDEQuestionDialog(lisDbgMangNoDebuggerSpecified,
       Format(lisDbgMangThereIsNoDebuggerSpecifiedSettingBreakpointsHaveNo, [#13]),
@@ -2523,7 +2523,7 @@ begin
   ABrkPoint := nil;
   if WarnIfNoDebugger
   and ((FindDebuggerClass(EnvironmentOptions.DebuggerConfig.DebuggerClass)=nil)
-    or (not FileIsExecutable(EnvironmentOptions.DebuggerFilename)))
+    or (not FileIsExecutableCached(EnvironmentOptions.GetParsedDebuggerFilename)))
   then begin
     if IDEQuestionDialog(lisDbgMangNoDebuggerSpecified,
       Format(lisDbgMangThereIsNoDebuggerSpecifiedSettingBreakpointsHaveNo, [#13]),

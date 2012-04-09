@@ -148,7 +148,7 @@ begin
   then SetComboBoxText(cmbDebuggerType, '(none)',cstCaseInsensitive)
   else SetComboBoxText(cmbDebuggerType, FCurDebuggerClass.Caption,cstCaseInsensitive);
 
-  txtAdditionalPath.Text:=EnvironmentOptions.DebuggerSearchPath;
+  txtAdditionalPath.Text:=EnvironmentOptions.GetParsedDebuggerSearchPath;
 end;
 
 procedure TDebuggerGeneralOptionsFrame.FetchDebuggerGeneralOptions;
