@@ -3724,7 +3724,7 @@ begin
   s:=s+'        -$(DEL) $(COMPILER_UNITTARGETDIR)/'+MainUnitName+'$(PPUEXT)'+e;
   s:=s+''+e;
   s:=s+'compiled:'+e;
-  s:=s+'        $(COPY) Makefile.compiled $(COMPILER_UNITTARGETDIR)/'+APackage.Name+'.compiled'+e;
+  s:=s+'        $(CPPROG) -f Makefile.compiled $(COMPILER_UNITTARGETDIR)/'+APackage.Name+'.compiled'+e;
   s:=s+''+e;
   s:=s+'all: cleartarget $(COMPILER_UNITTARGETDIR) '+MainUnitName+'$(PPUEXT) compiled'+e;
 
