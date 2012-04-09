@@ -394,11 +394,22 @@ function CreateIDEMakeOptions(Profile: TBuildLazarusProfile;
     Ext: String;
     BackupFilename: String;
     Backup2Filename: String;
+    AltFilename: String;
   begin
     if not FileExistsUTF8(ExeFilename) then exit;
     // the exe already exists
     Ext:=ExtractFileExt(ExeFilename);
+    AltFilename:=LeftStr(ExeFilename,length(ExeFilename)-length(Ext))+'.new'+Ext;
     if blfBackupOldExe in Flags then begin
+      // always delete the lazarus.new exe, so that users/startlazarus are not
+      // confused which one is the newest
+      if FileExistsUTF8(AltFilename) then begin
+        if DeleteFileUTF8(AltFilename) then
+          debugln(['Note: deleted file "',AltFilename,'"'])
+        else
+          debugln(['WARNING: unable to delete file "',AltFilename,'"']);
+      end;
+
       // try to rename the old exe
       BackupFilename:=LeftStr(ExeFilename,length(ExeFilename)-length(Ext))+'.old'+Ext;
       if FileExistsUTF8(BackupFilename) then
@@ -430,7 +441,7 @@ function CreateIDEMakeOptions(Profile: TBuildLazarusProfile;
     end;
     if (not (blfReplaceExe in Flags)) and FileExistsUTF8(ExeFilename) then begin
       // backup didn't work => use another file name
-      ExeFilename:=LeftStr(ExeFilename,length(ExeFilename)-length(Ext))+'.new'+Ext;
+      ExeFilename:=AltFilename;
     end;
   end;
 
