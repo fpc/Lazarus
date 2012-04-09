@@ -348,9 +348,9 @@ begin
   Result := TCompilerList.Create;
   if FileExists(ConfDir + 'fpclist.txt') then
     Result.LoadFromFile(ConfDir + 'fpclist.txt');
-  if (Result.Count = 0) and (EnvironmentOptions.CompilerFilename <> '') then begin
-    Result.Add('fpc from conf', EnvironmentOptions.CompilerFilename);
-    Result.Add('fpc from conf -Xe', EnvironmentOptions.CompilerFilename, '-Xe');
+  if (Result.Count = 0) and (EnvironmentOptions.GetParsedCompilerFilename <> '') then begin
+    Result.Add('fpc from conf', EnvironmentOptions.GetParsedCompilerFilename);
+    Result.Add('fpc from conf -Xe', EnvironmentOptions.GetParsedCompilerFilename, '-Xe');
   end;
   Compilers := Result;
 end;

@@ -519,8 +519,8 @@ begin
   // compile IDE
   CurResult:=MakeLazarus(BuildLazProfiles.Current,
                          EnvironmentOptions.ExternalTools,GlobalMacroList,
-                         PkgOptions,EnvironmentOptions.CompilerFilename,
-                         EnvironmentOptions.MakeFilename,
+                         PkgOptions,EnvironmentOptions.GetParsedCompilerFilename,
+                         EnvironmentOptions.GetParsedMakeFilename,
                          Flags+[blfUseMakeIDECfg,blfOnlyIDE],
                          ProfileChanged);
   if CurResult<>mrOk then begin
