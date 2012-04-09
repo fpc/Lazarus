@@ -225,7 +225,7 @@ begin
   try
     InputHistories.ApplyFileDialogSettings(SaveDialog);
     SaveDialog.InitialDir:=GetPrimaryConfigPath;
-    SaveDialog.Title:='Export package list (*.xml)';
+    SaveDialog.Title:=lisExportPackageListXml;
     SaveDialog.Options:=SaveDialog.Options+[ofPathMustExist];
     if SaveDialog.Execute then begin
       AFilename:=CleanAndExpandFilename(SaveDialog.Filename);
