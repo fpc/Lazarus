@@ -12,7 +12,6 @@ packages=regexpr
 [target]
 programs=lazarus startlazarus lazbuild
 dirs=
-exampledirs=examples
 
 [compiler]
 
