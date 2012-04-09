@@ -5404,6 +5404,8 @@ resourcestring
   lisFPCSources = 'FPC sources';
   lisConfigureLazarusIDE = 'Configure Lazarus IDE';
   lisFileIsNotAnExecutable = 'File is not an executable';
+  lisUnusualCompilerFileNameUsuallyItStartsWithFpcPpcOr = 'Unusual compiler '
+    +'file name. Usually it starts with fpc, ppc or ppcross.';
   lisFpcCfgIsMissing = 'fpc.cfg is missing.';
   lisSystemPpuNotFoundCheckYourFpcCfg = 'system.ppu not found. Check your fpc.cfg.';
   lisClassesPpuNotFoundCheckYourFpcCfg = 'classes.ppu not found. Check your fpc.cfg.';

@@ -86,8 +86,6 @@ type
     procedure MakeBold;
   end;
 
-  TCompileProgressClass = class of TCompileProgress;
-
   { TCompileProgress }
 
   TCompileProgress = class
@@ -101,6 +99,7 @@ type
     class procedure Ready(const AMessage: String = '');
     class procedure Ready(const AMessage: String; const AParams: array of const);
   end;
+  TCompileProgressClass = class of TCompileProgress;
 
 var
   CompileProgress: TCompileProgressClass = TCompileProgress;
