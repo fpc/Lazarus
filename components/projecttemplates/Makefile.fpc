@@ -2,7 +2,7 @@
 #
 #   Makefile.fpc for ProjTemplates 1.0
 #
-#   This file was generated on 15-3-12
+#   This file was generated on 9-4-12
 
 [package]
 name=projtemplates
@@ -50,6 +50,6 @@ cleartarget:
         -$(DEL) $(COMPILER_UNITTARGETDIR)/projtemplates$(PPUEXT)
 
 compiled:
-        $(COPY) Makefile.compiled $(COMPILER_UNITTARGETDIR)/ProjTemplates.compiled
+        $(CPPROG) -f Makefile.compiled $(COMPILER_UNITTARGETDIR)/ProjTemplates.compiled
 
 all: cleartarget $(COMPILER_UNITTARGETDIR) projtemplates$(PPUEXT) compiled

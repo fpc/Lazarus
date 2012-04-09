@@ -31,6 +31,6 @@ cleartarget:
                 $(COMPILER_UNITTARGETDIR)/interfaces$(OEXT)
 
 compiled:
-        $(COPY) Makefile.compiled $(COMPILER_UNITTARGETDIR)/LCL.compiled
+        $(CPPROG) -f Makefile.compiled $(COMPILER_UNITTARGETDIR)/LCL.compiled
 
 all: cleartarget $(COMPILER_UNITTARGETDIR) interfaces$(PPUEXT) compiled

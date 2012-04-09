@@ -144,7 +144,7 @@ cleartarget:
 lclbase: cleartarget $(COMPILER_UNITTARGETDIR) alllclunits$(PPUEXT) compiled
 
 compiled:
-        $(COPY) $(STATEFILE) $(COMPILER_UNITTARGETDIR)/LCLBase.compiled
+        $(CPPROG) -f $(STATEFILE) $(COMPILER_UNITTARGETDIR)/LCLBase.compiled
 
 intf: $(TARGET_DIRS)
 
