@@ -373,6 +373,17 @@ begin
                                                    LV, GetIndex, subItem, code);
 end;
 
+function TListItem.EditCaption: Boolean;
+var
+  LV: TCustomListView;
+begin
+  LV := FOwner.FOwner;
+  LV.Selected := Nil;           // First clear all selections,
+  LV.Selected := Self;          // then set this item as the only selected.
+  if not LV.ReadOnly and Assigned(LV.FEditor) then
+    LV.ShowEditor;
+end;
+
 {------------------------------------------------------------------------------}
 {   TListItem IntfUpdateText                                                   }
 {------------------------------------------------------------------------------}
