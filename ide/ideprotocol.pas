@@ -90,7 +90,6 @@ begin
     end;
   except
     on E: Exception do begin
-      // ToDo
       DebugLn('[TIDEProtocol.Load]  error reading "',Filename,'": ',E.Message);
     end;
   end;
@@ -112,7 +111,6 @@ begin
     end;
   except
     on E: Exception do begin
-      // ToDo
       DebugLn('[TIDEProtocol.Save]  error writing "',Filename,'": ',E.Message);
     end;
   end;

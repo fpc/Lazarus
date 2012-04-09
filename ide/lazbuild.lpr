@@ -438,6 +438,7 @@ begin
       Halt(ErrorBuildFailed);
     end;
     CurProf:=BuildLazProfiles[i];
+    BuildLazProfiles.CurrentIndex:=i;
   end;
   debugln(['Building Lazarus IDE with profile "',CurProf.Name,'"']);
 

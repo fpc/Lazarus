@@ -1293,9 +1293,18 @@ end;
 
 procedure TMainIDE.LoadGlobalOptions;
 // load environment, miscellaneous, editor and codetools options
+var
+  EnvOptsCfgExisted: boolean;
+  s: String;
+  StartFile: String;
+  OldVer: String;
+  NowVer: String;
+  IsUpgrade: boolean;
+  MsgResult: TModalResult;
 begin
   with EnvironmentOptions do
   begin
+    EnvOptsCfgExisted := FileExistsCached(GetDefaultConfigFilename);
     OnBeforeRead := @DoEnvironmentOptionsBeforeRead;
     OnBeforeWrite := @DoEnvironmentOptionsBeforeWrite;
     OnAfterWrite := @DoEnvironmentOptionsAfterWrite;
@@ -1323,6 +1332,50 @@ begin
     Application.ShowButtonGlyphs := ShowButtonGlyphs;
     Application.ShowMenuGlyphs := ShowMenuGlyphs;
   end;
+
+  OldVer:=EnvironmentOptions.OldLazarusVersion;
+  NowVer:=GetLazarusVersionString;
+  //debugln(['TMainIDE.LoadGlobalOptions ',EnvOptsCfgExisted,' diff=',OldVer<>NowVer,' Now=',NowVer,' Old=',OldVer,' Comp=',CompareLazarusVersion(NowVer,OldVer)]);
+  if EnvOptsCfgExisted and (OldVer<>NowVer) then
+  begin
+    IsUpgrade:=CompareLazarusVersion(NowVer,OldVer)>0;
+    if OldVer='' then
+      OldVer:=Format(lisPrior, [GetLazarusVersionString]);
+    s:=Format(lisWelcomeToLazarusThereIsAlreadyAConfigurationFromVe, [
+      GetLazarusVersionString, #13, #13, OldVer, #13, GetPrimaryConfigPath, #13]
+      );
+    if IsUpgrade then
+      s+=lisTheOldConfigurationWillBeUpgraded
+    else
+      s+=lisTheConfigurationWillBeDowngradedConverted;
+    s+=#13
+      +#13;
+    s+=Format(lisIfYouWantToUseTwoDifferentLazarusVersionsYouMustSt, [#13, #13,
+      #13]);
+    StartFile:=Application.ExeName;
+    if StartedByStartLazarus then
+      StartFile:=ExtractFilePath(StartFile)+'startlazarus'+GetExeExt;
+    {$IFDEF Windows}
+      s+=StartFile+' --pcp=C:\test_lazarus\configs';
+    {$ELSE}
+      {$IFDEF darwin}
+      s+='open '+StartFile+' --pcp=~/.lazarus_test';
+      {$ELSE}
+      s+=StartFile+' --pcp=~/.lazarus_test';
+      {$ENDIF}
+    {$ENDIF}
+    if IsUpgrade then
+      MsgResult:=IDEQuestionDialog(lisUpgradeConfiguration, s, mtConfirmation, [
+        mrOK, lisUpgrade, mrAbort])
+    else
+      MsgResult:=IDEQuestionDialog(lisDowngradeConfiguration, s, mtWarning, [
+        mrOK, lisDowngrade, mrAbort]);
+    if MsgResult<>mrOk then begin
+      Application.Terminate;
+      exit;
+    end;
+  end;
+
   ExternalTools.OnNeedsOutputFilter := @OnExtToolNeedsOutputFilter;
   ExternalTools.OnFreeOutputFilter := @OnExtToolFreeOutputFilter;
   UpdateDefaultPascalFileExtensions;
@@ -1393,6 +1446,8 @@ begin
   CreatePrimaryConfigPath;
   StartProtocol;
   LoadGlobalOptions;
+  if Application.Terminated then exit;
+
   if EnvironmentOptions.SingleTaskBarButton then
     Application.TaskBarBehavior := tbSingleButton;
 
