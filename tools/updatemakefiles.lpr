@@ -110,8 +110,12 @@ begin
     MainSrcFilename:=copy(MainSrcFilename,p,length(MainSrcFilename));
     LPKFilename:=FindLPK(ExtractFilePath(MakefileCompiledFilename),MainSrcFilename,HasConditionals);
     //writeln('  MakefileCompiled=',CreateRelativePath(MakefileCompiledFilename,LazarusDir),' MainSrc=',MainSrcFilename,' lpk=',CreateRelativePath(LPKFilename,LazarusDir),' HasConditionals=',HasConditionals);
-    if (LPKFilename<>'') and (not HasConditionals) then
-      LPKFiles.Add(CreateRelativePath(LPKFilename,LazarusDir));
+    if (LPKFilename='') then exit;
+    if HasConditionals then begin
+      writeln('Skipping ',LPKFilename,' due to conditionals');
+      exit;
+    end;
+    LPKFiles.Add(CreateRelativePath(LPKFilename,LazarusDir));
   finally
     MakefileCompiled.Free;
   end;
