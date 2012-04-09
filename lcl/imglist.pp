@@ -178,10 +178,14 @@ type
     procedure Draw(ACanvas: TCanvas; AX, AY, AIndex: Integer; ADrawingStyle: TDrawingStyle; AImageType: TImageType;
       ADrawEffect: TGraphicsDrawEffect); overload; virtual;
     procedure FillDescription(out ADesc: TRawImageDescription);
+
     procedure GetBitmap(Index: Integer; Image: TCustomBitmap); overload;
     procedure GetBitmap(Index: Integer; Image: TCustomBitmap; AEffect: TGraphicsDrawEffect); overload;
     procedure GetFullBitmap(Image: TCustomBitmap; AEffect: TGraphicsDrawEffect = gdeNormal);
     procedure GetFullRawImage(out Image: TRawImage);
+
+    procedure GetIcon(Index: Integer; Image: TIcon; AEffect: TGraphicsDrawEffect); overload;
+    procedure GetIcon(Index: Integer; Image: TIcon); overload;
     procedure GetRawImage(Index: Integer; out Image: TRawImage);
     function GetHotSpot: TPoint; virtual;
 
