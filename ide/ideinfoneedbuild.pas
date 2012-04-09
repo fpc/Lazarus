@@ -21,7 +21,7 @@
  Author: Mattias Gaertner
 
  Abstract:
-   IDE dialog showing packages needing rebuild.
+   IDE dialog showing packages needing (re)build.
 }
 unit IDEInfoNeedBuild;
 
@@ -133,7 +133,7 @@ begin
   FTargetToItem:=TAvgLvlTree.Create(@CompareInfoNeedBuildItemWithTargets);
   FTargets:=TFPList.Create;
 
-  Caption:=lisWhatNeedsRebuilding;
+  Caption:=lisWhatNeedsBuilding;
 
   TargetLabel.Caption:=lisTarget;
   FillTargets;

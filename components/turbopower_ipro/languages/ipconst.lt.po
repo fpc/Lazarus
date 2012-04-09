@@ -290,7 +290,9 @@ msgid "- expected"
 msgstr "- tikėtasi"
 
 #: ipconst.shtmldefbrowsecaption
-msgid "Browse..."
+#, fuzzy
+#| msgid "Browse..."
+msgid "Browse ..."
 msgstr "Naršyti..."
 
 #: ipconst.shtmldefresetcaption

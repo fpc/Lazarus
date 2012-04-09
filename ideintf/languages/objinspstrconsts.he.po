@@ -150,7 +150,9 @@ msgid "&Dataset:"
 msgstr "ערכת נתונים:"
 
 #: objinspstrconsts.fesfetitle
-msgid "Edit Fields..."
+#, fuzzy
+#| msgid "Edit Fields..."
+msgid "Edit Fields ..."
 msgstr "ערוך שדות ..."
 
 #: objinspstrconsts.fesfieldcantbec
@@ -328,7 +330,9 @@ msgid "Action"
 msgstr "פעולה"
 
 #: objinspstrconsts.oisactionlistcomponenteditor
-msgid "Action&List Editor..."
+#, fuzzy
+#| msgid "Action&List Editor..."
+msgid "Action&List Editor ..."
 msgstr "עורך רשימת-פעולות ..."
 
 #: objinspstrconsts.oisactionlisteditor
@@ -511,7 +515,9 @@ msgid "&Help"
 msgstr ""
 
 #: objinspstrconsts.oisimagelistcomponenteditor
-msgid "I&mageList Editor..."
+#, fuzzy
+#| msgid "I&mageList Editor..."
+msgid "I&mageList Editor ..."
 msgstr "עורך רשימת דמויות ..."
 
 #: objinspstrconsts.oisincompatibleidentifier
@@ -567,7 +573,9 @@ msgid "Load picture"
 msgstr "טען תמונה"
 
 #: objinspstrconsts.oismasks
-msgid "Masks..."
+#, fuzzy
+#| msgid "Masks..."
+msgid "Masks ..."
 msgstr "מסכות ..."
 
 #: objinspstrconsts.oismethod
@@ -748,7 +756,9 @@ msgid "Strings Editor Dialog"
 msgstr "דיאלוג של עורך מחרוזות"
 
 #: objinspstrconsts.oistdactcolorselect1headline
-msgid "Select &Color..."
+#, fuzzy
+#| msgid "Select &Color..."
+msgid "Select &Color ..."
 msgstr "בחר צבע ..."
 
 #: objinspstrconsts.oistdactcolorselecthint
@@ -930,7 +940,9 @@ msgid "Exit"
 msgstr "צא"
 
 #: objinspstrconsts.oistdactfileopenheadline
-msgid "&Open..."
+#, fuzzy
+#| msgid "&Open..."
+msgid "&Open ..."
 msgstr "פתח ..."
 
 #: objinspstrconsts.oistdactfileopenhint
@@ -943,7 +955,9 @@ msgid "Ctrl+O"
 msgstr "Ctrl+O"
 
 #: objinspstrconsts.oistdactfileopenwithheadline
-msgid "Open with..."
+#, fuzzy
+#| msgid "Open with..."
+msgid "Open with ..."
 msgstr "פתח באמצעות ..."
 
 #: objinspstrconsts.oistdactfileopenwithhint
@@ -951,7 +965,9 @@ msgid "Open with"
 msgstr "פתח באמצעות"
 
 #: objinspstrconsts.oistdactfilesaveasheadline
-msgid "Save &As..."
+#, fuzzy
+#| msgid "Save &As..."
+msgid "Save &As ..."
 msgstr "שמור בשם ..."
 
 #: objinspstrconsts.oistdactfilesaveashint
@@ -959,7 +975,9 @@ msgid "Save As"
 msgstr "שמור בשם"
 
 #: objinspstrconsts.oistdactfonteditheadline
-msgid "Select &Font..."
+#, fuzzy
+#| msgid "Select &Font..."
+msgid "Select &Font ..."
 msgstr "בחר גופן ..."
 
 #: objinspstrconsts.oistdactfontedithint
@@ -999,7 +1017,9 @@ msgid "Find first"
 msgstr "מצא את הראשון"
 
 #: objinspstrconsts.oistdactsearchfindheadline
-msgid "&Find..."
+#, fuzzy
+#| msgid "&Find..."
+msgid "&Find ..."
 msgstr "מצא ..."
 
 #: objinspstrconsts.oistdactsearchfindhint
@@ -1031,7 +1051,9 @@ msgid "Replace"
 msgstr "החלף"
 
 #: objinspstrconsts.oistestdialog
-msgid "Test dialog..."
+#, fuzzy
+#| msgid "Test dialog..."
+msgid "Test dialog ..."
 msgstr "בדוק דיאלוג ..."
 
 #: objinspstrconsts.oistestinput
@@ -1169,7 +1191,9 @@ msgid "Sections Editor ..."
 msgstr "עורך מקטעים"
 
 #: objinspstrconsts.sccsiledtadd
-msgid "Add..."
+#, fuzzy
+#| msgid "Add..."
+msgid "Add ..."
 msgstr "הוסף ..."
 
 #: objinspstrconsts.sccsiledtadjustment
@@ -1234,12 +1258,16 @@ msgid "Transparent Color:"
 msgstr "צבע שקוף:"
 
 #: objinspstrconsts.sccsiledtsave
+#, fuzzy
+#| msgid "Save..."
 msgctxt "objinspstrconsts.sccsiledtsave"
-msgid "Save..."
+msgid "Save ..."
 msgstr "שמור ..."
 
 #: objinspstrconsts.sccsiledtsaveall
-msgid "Save All..."
+#, fuzzy
+#| msgid "Save All..."
+msgid "Save All ..."
 msgstr "שמור הכל ..."
 
 #: objinspstrconsts.sccsiledtsavedialog
@@ -1255,8 +1283,10 @@ msgid "Edit Columns ..."
 msgstr "ערוך עמודות ..."
 
 #: objinspstrconsts.sccslvedt
+#, fuzzy
+#| msgid "Edit Items..."
 msgctxt "objinspstrconsts.sccslvedt"
-msgid "Edit Items..."
+msgid "Edit Items ..."
 msgstr "ערוך פריטים ..."
 
 #: objinspstrconsts.sccslvedtapply
@@ -1313,7 +1343,9 @@ msgid "New SubItem"
 msgstr "תת-פריט חדש"
 
 #: objinspstrconsts.sccsmaskeditor
-msgid "Edit Mask Editor..."
+#, fuzzy
+#| msgid "Edit Mask Editor..."
+msgid "Edit Mask Editor ..."
 msgstr "עורך מסכות עריכה ..."
 
 #: objinspstrconsts.sccssbeditpanels
@@ -1321,7 +1353,9 @@ msgid "Panels Editor ..."
 msgstr "עורך פנלים"
 
 #: objinspstrconsts.sccssgedt
-msgid "Edit StringGrid..."
+#, fuzzy
+#| msgid "Edit StringGrid..."
+msgid "Edit StringGrid ..."
 msgstr "ערוך StringGrid ..."
 
 #: objinspstrconsts.sccssgedtapply
@@ -1342,7 +1376,9 @@ msgid "String Grid"
 msgstr "רשת מחרוזות"
 
 #: objinspstrconsts.sccssgedtload
-msgid "Load..."
+#, fuzzy
+#| msgid "Load..."
+msgid "Load ..."
 msgstr "טען ..."
 
 #: objinspstrconsts.sccssgedtmoverowscols
@@ -1355,8 +1391,10 @@ msgid "Open"
 msgstr "פתח"
 
 #: objinspstrconsts.sccssgedtsave
+#, fuzzy
+#| msgid "Save..."
 msgctxt "objinspstrconsts.sccssgedtsave"
-msgid "Save..."
+msgid "Save ..."
 msgstr "שמור ..."
 
 #: objinspstrconsts.sccssgedtsavedialog
@@ -1365,8 +1403,10 @@ msgid "Save"
 msgstr "שמור"
 
 #: objinspstrconsts.sccstredt
+#, fuzzy
+#| msgid "Edit Items..."
 msgctxt "objinspstrconsts.sccstredt"
-msgid "Edit Items..."
+msgid "Edit Items ..."
 msgstr "ערוך פריטים"
 
 #: objinspstrconsts.sccstredtapply

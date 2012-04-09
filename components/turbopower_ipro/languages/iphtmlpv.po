@@ -22,7 +22,7 @@ msgid "Print preview"
 msgstr ""
 
 #: iphtmlpv.rsiphtmlpreviewselectprinter
-msgid "Select printer..."
+msgid "Select printer ..."
 msgstr ""
 
 #: iphtmlpv.rsiphtmlpreviewzoom

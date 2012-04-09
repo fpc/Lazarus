@@ -148,8 +148,8 @@ msgstr "データセット(&D)"
 
 #: objinspstrconsts.fesfetitle
 #, fuzzy
-#| msgid "Edit Fields"
-msgid "Edit Fields..."
+#| msgid "Edit Fields..."
+msgid "Edit Fields ..."
 msgstr "フィールドを編集..."
 
 #: objinspstrconsts.fesfieldcantbec
@@ -330,7 +330,9 @@ msgid "Action"
 msgstr "アクション"
 
 #: objinspstrconsts.oisactionlistcomponenteditor
-msgid "Action&List Editor..."
+#, fuzzy
+#| msgid "Action&List Editor..."
+msgid "Action&List Editor ..."
 msgstr "アクションリスト エディタ($L)..."
 
 #: objinspstrconsts.oisactionlisteditor
@@ -521,7 +523,9 @@ msgid "&Help"
 msgstr "ヘルプ(&H)"
 
 #: objinspstrconsts.oisimagelistcomponenteditor
-msgid "I&mageList Editor..."
+#, fuzzy
+#| msgid "I&mageList Editor..."
+msgid "I&mageList Editor ..."
 msgstr "ImageList エディタ(&M)..."
 
 #: objinspstrconsts.oisincompatibleidentifier
@@ -577,7 +581,9 @@ msgid "Load picture"
 msgstr "ピクチャの読み込み"
 
 #: objinspstrconsts.oismasks
-msgid "Masks..."
+#, fuzzy
+#| msgid "Masks..."
+msgid "Masks ..."
 msgstr "マスク..."
 
 #: objinspstrconsts.oismethod
@@ -760,7 +766,9 @@ msgid "Strings Editor Dialog"
 msgstr "Strings エディタダイアログ"
 
 #: objinspstrconsts.oistdactcolorselect1headline
-msgid "Select &Color..."
+#, fuzzy
+#| msgid "Select &Color..."
+msgid "Select &Color ..."
 msgstr "色を選択(&C)..."
 
 #: objinspstrconsts.oistdactcolorselecthint
@@ -942,7 +950,9 @@ msgid "Exit"
 msgstr "終了"
 
 #: objinspstrconsts.oistdactfileopenheadline
-msgid "&Open..."
+#, fuzzy
+#| msgid "&Open..."
+msgid "&Open ..."
 msgstr "開く(&O)..."
 
 #: objinspstrconsts.oistdactfileopenhint
@@ -955,7 +965,9 @@ msgid "Ctrl+O"
 msgstr "Ctrl+O"
 
 #: objinspstrconsts.oistdactfileopenwithheadline
-msgid "Open with..."
+#, fuzzy
+#| msgid "Open with..."
+msgid "Open with ..."
 msgstr "開く..."
 
 #: objinspstrconsts.oistdactfileopenwithhint
@@ -963,7 +975,9 @@ msgid "Open with"
 msgstr "開く"
 
 #: objinspstrconsts.oistdactfilesaveasheadline
-msgid "Save &As..."
+#, fuzzy
+#| msgid "Save &As..."
+msgid "Save &As ..."
 msgstr "名前を付けて保存(&A)..."
 
 #: objinspstrconsts.oistdactfilesaveashint
@@ -971,7 +985,9 @@ msgid "Save As"
 msgstr "名前を付けて保存"
 
 #: objinspstrconsts.oistdactfonteditheadline
-msgid "Select &Font..."
+#, fuzzy
+#| msgid "Select &Font..."
+msgid "Select &Font ..."
 msgstr "フォントの選択(&F)"
 
 #: objinspstrconsts.oistdactfontedithint
@@ -1011,7 +1027,9 @@ msgid "Find first"
 msgstr "先頭から検索"
 
 #: objinspstrconsts.oistdactsearchfindheadline
-msgid "&Find..."
+#, fuzzy
+#| msgid "&Find..."
+msgid "&Find ..."
 msgstr "検索(&F)"
 
 #: objinspstrconsts.oistdactsearchfindhint
@@ -1043,7 +1061,9 @@ msgid "Replace"
 msgstr "置換"
 
 #: objinspstrconsts.oistestdialog
-msgid "Test dialog..."
+#, fuzzy
+#| msgid "Test dialog..."
+msgid "Test dialog ..."
 msgstr "ダイアログをテスト..."
 
 #: objinspstrconsts.oistestinput
@@ -1180,7 +1200,9 @@ msgid "Sections Editor ..."
 msgstr "Sections エディタ"
 
 #: objinspstrconsts.sccsiledtadd
-msgid "Add..."
+#, fuzzy
+#| msgid "Add..."
+msgid "Add ..."
 msgstr "追加..."
 
 #: objinspstrconsts.sccsiledtadjustment
@@ -1245,12 +1267,16 @@ msgid "Transparent Color:"
 msgstr "透明色"
 
 #: objinspstrconsts.sccsiledtsave
+#, fuzzy
+#| msgid "Save..."
 msgctxt "objinspstrconsts.sccsiledtsave"
-msgid "Save..."
+msgid "Save ..."
 msgstr "保存..."
 
 #: objinspstrconsts.sccsiledtsaveall
-msgid "Save All..."
+#, fuzzy
+#| msgid "Save All..."
+msgid "Save All ..."
 msgstr "すべて保存..."
 
 #: objinspstrconsts.sccsiledtsavedialog
@@ -1267,9 +1293,9 @@ msgstr "列を編集..."
 
 #: objinspstrconsts.sccslvedt
 #, fuzzy
-#| msgid "Edit ListView Items..."
+#| msgid "Edit Items..."
 msgctxt "objinspstrconsts.sccslvedt"
-msgid "Edit Items..."
+msgid "Edit Items ..."
 msgstr "アイテムを編集..."
 
 #: objinspstrconsts.sccslvedtapply
@@ -1326,7 +1352,9 @@ msgid "New SubItem"
 msgstr "新規サブ項目"
 
 #: objinspstrconsts.sccsmaskeditor
-msgid "Edit Mask Editor..."
+#, fuzzy
+#| msgid "Edit Mask Editor..."
+msgid "Edit Mask Editor ..."
 msgstr "編集(マスクエディタ)"
 
 #: objinspstrconsts.sccssbeditpanels
@@ -1334,7 +1362,9 @@ msgid "Panels Editor ..."
 msgstr "Panels エディタ"
 
 #: objinspstrconsts.sccssgedt
-msgid "Edit StringGrid..."
+#, fuzzy
+#| msgid "Edit StringGrid..."
+msgid "Edit StringGrid ..."
 msgstr "StringGridを編集..."
 
 #: objinspstrconsts.sccssgedtapply
@@ -1355,7 +1385,9 @@ msgid "String Grid"
 msgstr "文字列グリッド"
 
 #: objinspstrconsts.sccssgedtload
-msgid "Load..."
+#, fuzzy
+#| msgid "Load..."
+msgid "Load ..."
 msgstr "読み込み..."
 
 #: objinspstrconsts.sccssgedtmoverowscols
@@ -1368,8 +1400,10 @@ msgid "Open"
 msgstr "開く"
 
 #: objinspstrconsts.sccssgedtsave
+#, fuzzy
+#| msgid "Save..."
 msgctxt "objinspstrconsts.sccssgedtsave"
-msgid "Save..."
+msgid "Save ..."
 msgstr "保存..."
 
 #: objinspstrconsts.sccssgedtsavedialog
@@ -1379,9 +1413,9 @@ msgstr "保存"
 
 #: objinspstrconsts.sccstredt
 #, fuzzy
-#| msgid "Edit TreeView Items..."
+#| msgid "Edit Items..."
 msgctxt "objinspstrconsts.sccstredt"
-msgid "Edit Items..."
+msgid "Edit Items ..."
 msgstr "アイテムを編集..."
 
 #: objinspstrconsts.sccstredtapply

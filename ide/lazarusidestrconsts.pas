@@ -4605,13 +4605,6 @@ resourcestring
   lisPListType                  = 'Type';
   lisPListAll                   = '<All>';
   lisPListNone                  = '<None>';
-  lisUIClearIncludedByReference = 'Clear include cache';
-  lisChangeParent = 'Change Parent';
-  lisLazarusIDE = 'Lazarus IDE';
-  lisProject = 'Project %s';
-  lisWhatNeedsRebuilding = 'What needs rebuilding';
-  lisTarget = 'Target:';
-  lisDirectives = 'Directives';
 
   //conditional defines dialog
   rsCreateNewDefine = 'Create new define';
@@ -5484,6 +5477,14 @@ resourcestring
   lisFileFiltersSetDefaults = 'Set defaults';
   lisMenuPkgNewPackageComponent = 'New package component';
   lisSaveChangedFiles = 'Save changed files?';
+
+  lisUIClearIncludedByReference = 'Clear include cache';
+  lisChangeParent = 'Change Parent';
+  lisLazarusIDE = 'Lazarus IDE';
+  lisProject = 'Project %s';
+  lisWhatNeedsBuilding = 'What needs building';
+  lisTarget = 'Target:';
+  lisDirectives = 'Directives';
 
 implementation
 
