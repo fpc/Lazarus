@@ -35,7 +35,7 @@
     </RunParams>
     <RequiredPackages Count="1">
       <Item1>
-        <PackageName Value="LCL"/>
+        <PackageName Value="LCLBase"/>
       </Item1>
     </RequiredPackages>
     <Units Count="1">
@@ -47,9 +47,10 @@
     </Units>
   </ProjectOptions>
   <CompilerOptions>
-    <Version Value="10"/>
+    <Version Value="11"/>
     <Linking>
       <Debugging>
+        <GenerateDebugInfo Value="False"/>
         <UseLineInfoUnit Value="False"/>
       </Debugging>
     </Linking>

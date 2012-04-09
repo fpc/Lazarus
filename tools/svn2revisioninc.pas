@@ -48,8 +48,8 @@ program Svn2RevisionInc;
 {$mode objfpc}{$H+}
 
 uses
-  Classes, CustApp, SysUtils, Process, UTF8Process, LCLProc, FileUtil,
-  Dom, XmlRead, GetOpts;
+  Classes, CustApp, SysUtils, Process, UTF8Process, LazFileUtils, LazUTF8,
+  LazLogger, FileUtil, Dom, XmlRead, GetOpts;
 
 type
 
@@ -280,7 +280,7 @@ begin
   writeln(RevisionIncText, RevisionIncComment);
   writeln(RevisionIncText, ConstStart, RevisionStr, ''';');
   CloseFile(RevisionIncText);
-  debugln(format('Created %s for revision: %s', [RevisionIncFileName, RevisionStr]));
+  DebugLn(format('Created %s for revision: %s', [RevisionIncFileName, RevisionStr]));
 end;
 
 procedure TSvn2RevisionApplication.ShowHelp;

@@ -32,16 +32,13 @@
         <LaunchingApplication PathPlusParams="/usr/bin/xterm -T 'Lazarus Run Output' -e $(LazarusDir)/tools/runwait.sh $(TargetCmdLine)"/>
       </local>
     </RunParams>
-    <RequiredPackages Count="3">
+    <RequiredPackages Count="2">
       <Item1>
         <PackageName Value="CodeTools"/>
       </Item1>
       <Item2>
         <PackageName Value="LCLBase"/>
       </Item2>
-      <Item3>
-        <PackageName Value="LazUtils"/>
-      </Item3>
     </RequiredPackages>
     <Units Count="1">
       <Unit0>

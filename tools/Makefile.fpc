@@ -17,8 +17,8 @@ packages=rtl
 
 [compiler]
 options=-gl $(LAZARUS_LIBPATHS)
-unitdir=. $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET) \
-          $(LAZDIR)/components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) \
+unitdir=. $(LAZDIR)/components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) \
+          $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET) \
           $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM)
 unittargetdir=.
 targetdir=.
@@ -28,26 +28,9 @@ LAZDIR=..
 
 # LCL Platform
 ifndef LCL_PLATFORM
-ifneq ($(findstring $(OS_TARGET),win32 win64),)
-LCL_PLATFORM=win32
-else
-ifeq ($(OS_TARGET),wince)
-LCL_PLATFORM=wince
-else
-ifeq ($(OS_TARGET),darwin)
-LCL_PLATFORM=carbon
-else
-LCL_PLATFORM=gtk2
-endif
-endif
-endif
+LCL_PLATFORM=nogui
 endif
 export LCL_PLATFORM
-
-ifeq ($(OS_TARGET),darwin)
-LAZARUS_LIBPATHS=-Fl/usr/X11R6/lib -Fl/sw/lib
-endif
-
 
 [rules]
 .PHONY: all
