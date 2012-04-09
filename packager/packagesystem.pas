@@ -3055,9 +3055,11 @@ begin
         DebugLn('TLazPackageGraph.CheckIfCurPkgOutDirNeedsCompile  Compiler custom params changed for ',APackage.IDAsString);
         DebugLn('  Old="',OldValue,'"');
         DebugLn('  Now="',NewValue,'"');
+        DebugLn('  State file="',Stats^.StateFileName,'"');
         Note+='Compiler custom parameters changed:'+LineEnding
            +'  Old="'+OldValue+'"'+LineEnding
-           +'  Now="'+NewValue+'"'+LineEnding;
+           +'  Now="'+NewValue+'"'+LineEnding
+           +'  State file="'+Stats^.StateFileName+'"'+LineEnding;
         ConfigChanged:=true;
         exit(mrYes);
       end;
@@ -3068,9 +3070,11 @@ begin
         DebugLn('TLazPackageGraph.CheckIfCurPkgOutDirNeedsCompile  Compiler unit paths changed for ',APackage.IDAsString);
         DebugLn('  Old="',OldValue,'"');
         DebugLn('  Now="',NewValue,'"');
+        DebugLn('  State file="',Stats^.StateFileName,'"');
         Note+='Compiler unit paths changed:'+LineEnding
            +'  Old="'+OldValue+'"'+LineEnding
-           +'  Now="'+NewValue+'"'+LineEnding;
+           +'  Now="'+NewValue+'"'+LineEnding
+           +'  State file="'+Stats^.StateFileName+'"'+LineEnding;
         ConfigChanged:=true;
         exit(mrYes);
       end;
@@ -3081,9 +3085,11 @@ begin
         DebugLn('TLazPackageGraph.CheckIfCurPkgOutDirNeedsCompile  Compiler include paths changed for ',APackage.IDAsString);
         DebugLn('  Old="',OldValue,'"');
         DebugLn('  Now="',NewValue,'"');
+        DebugLn('  State file="',Stats^.StateFileName,'"');
         Note+='Compiler include paths changed:'+LineEnding
            +'  Old="'+OldValue+'"'+LineEnding
-           +'  Now="'+NewValue+'"'+LineEnding;
+           +'  Now="'+NewValue+'"'+LineEnding
+           +'  State file="'+Stats^.StateFileName+'"'+LineEnding;
         ConfigChanged:=true;
         exit(mrYes);
       end;
@@ -3096,9 +3102,11 @@ begin
     DebugLn('TLazPackageGraph.CheckIfCurPkgOutDirNeedsCompile  Compiler params changed for ',APackage.IDAsString);
     DebugLn('  Old="',LastParams,'"');
     DebugLn('  Now="',CompilerParams,'"');
+    DebugLn('  State file="',Stats^.StateFileName,'"');
     Note+='Compiler parameters changed:'+LineEnding
        +'  Old="'+OldValue+'"'+LineEnding
-       +'  Now="'+NewValue+'"'+LineEnding;
+       +'  Now="'+NewValue+'"'+LineEnding
+       +'  State file="'+Stats^.StateFileName+'"'+LineEnding;
     ConfigChanged:=true;
     exit(mrYes);
   end;
@@ -3107,24 +3115,30 @@ begin
     DebugLn('TLazPackageGraph.CheckIfCurPkgOutDirNeedsCompile  Compiler filename changed for ',APackage.IDAsString);
     DebugLn('  Old="',Stats^.CompilerFilename,'"');
     DebugLn('  Now="',CompilerFilename,'"');
+    DebugLn('  State file="',Stats^.StateFileName,'"');
     Note+='Compiler filename changed:'+LineEnding
        +'  Old="'+Stats^.CompilerFilename+'"'+LineEnding
-       +'  Now="'+CompilerFilename+'"'+LineEnding;
+       +'  Now="'+CompilerFilename+'"'+LineEnding
+       +'  State file="'+Stats^.StateFileName+'"'+LineEnding;
     exit(mrYes);
   end;
   if not FileExistsCached(CompilerFilename) then begin
     DebugLn('TLazPackageGraph.CheckIfCurPkgOutDirNeedsCompile  Compiler filename not found for ',APackage.IDAsString);
     DebugLn('  File="',CompilerFilename,'"');
-    Note+='Compiler file "'+CompilerFilename+'" not found.'+LineEnding;
+    DebugLn('  State file="',Stats^.StateFileName,'"');
+    Note+='Compiler file "'+CompilerFilename+'" not found.'+LineEnding
+       +'  State file="'+Stats^.StateFileName+'"'+LineEnding;
     exit(mrYes);
   end;
   if (not Stats^.ViaMakefile)
   and (FileAgeCached(CompilerFilename)<>Stats^.CompilerFileDate) then begin
     DebugLn('TLazPackageGraph.CheckIfCurPkgOutDirNeedsCompile  Compiler file changed for ',APackage.IDAsString);
     DebugLn('  File="',CompilerFilename,'"');
+    DebugLn('  State file="',Stats^.StateFileName,'"');
     Note+='Compiler file "'+CompilerFilename+'" changed:'+LineEnding
       +'  Old='+FileAgeToStr(Stats^.CompilerFileDate)+LineEnding
-      +'  Now='+FileAgeToStr(FileAgeCached(CompilerFilename))+LineEnding;
+      +'  Now='+FileAgeToStr(FileAgeCached(CompilerFilename))+LineEnding
+      +'  State file="'+Stats^.StateFileName+'"'+LineEnding;
     exit(mrYes);
   end;
 
@@ -3139,8 +3153,9 @@ begin
     if StateFileAge<FileAgeCached(SrcFilename) then begin
       DebugLn('TLazPackageGraph.CheckIfCurPkgOutDirNeedsCompile  SrcFile outdated of ',APackage.IDAsString,': ',SrcFilename);
       Note+='Source file "'+SrcFilename+'" outdated:'+LineEnding
-        +'  state file age='+FileAgeToStr(StateFileAge)+LineEnding
-        +'  source file age='+FileAgeToStr(FileAgeCached(SrcFilename))+LineEnding;
+        +'  Source file age='+FileAgeToStr(FileAgeCached(SrcFilename))+LineEnding
+        +'  State file="'+Stats^.StateFileName+'"'+LineEnding
+        +'  State file age='+FileAgeToStr(StateFileAge)+LineEnding;
       exit(mrYes);
     end;
     // check main source ppu file
@@ -3163,7 +3178,9 @@ begin
 
   if not Stats^.Complete then begin
     DebugLn('TLazPackageGraph.CheckIfCurPkgOutDirNeedsCompile  Compile was incomplete for ',APackage.IDAsString);
-    Note+='Last compile was incomplete.'+LineEnding;
+    DebugLn('  State file="',Stats^.StateFileName,'"');
+    Note+='Last compile was incomplete.'+LineEnding
+       +'  State file="'+Stats^.StateFileName+'"'+LineEnding;
     exit(mrYes);
   end;
 
@@ -3181,9 +3198,11 @@ begin
   // check package files
   if StateFileAge<FileAgeCached(APackage.Filename) then begin
     DebugLn('TLazPackageGraph.CheckIfCurPkgOutDirNeedsCompile  StateFile older than lpk ',APackage.IDAsString);
+    DebugLn('  State file="',Stats^.StateFileName,'"');
     Note+='State file older than lpk:'+LineEnding
-      +'  state file age='+FileAgeToStr(StateFileAge)+LineEnding
-      +'  lpk age='+FileAgeToStr(FileAgeCached(APackage.Filename))+LineEnding;
+      +'  State file age='+FileAgeToStr(StateFileAge)+LineEnding
+      +'  State file="'+Stats^.StateFileName+'"'+LineEnding
+      +'  LPK age='+FileAgeToStr(FileAgeCached(APackage.Filename))+LineEnding;
     exit(mrYes);
   end;
   for i:=0 to APackage.FileCount-1 do begin
@@ -3193,9 +3212,11 @@ begin
     if FileExistsCached(AFilename)
     and (StateFileAge<FileAgeCached(AFilename)) then begin
       DebugLn('TLazPackageGraph.CheckIfCurPkgOutDirNeedsCompile  Src has changed ',APackage.IDAsString,' ',CurFile.Filename);
+      DebugLn('  State file="',Stats^.StateFileName,'"');
       Note+='State file older than source "'+AFilename+'"'+LineEnding
-        +'  state file age='+FileAgeToStr(StateFileAge)+LineEnding
-        +'  lpk age='+FileAgeToStr(FileAgeCached(APackage.Filename))+LineEnding;
+        +'  State file age='+FileAgeToStr(StateFileAge)+LineEnding
+        +'  State file="'+Stats^.StateFileName+'"'+LineEnding
+        +'  LPK age='+FileAgeToStr(FileAgeCached(APackage.Filename))+LineEnding;
       exit(mrYes);
     end;
   end;
