@@ -4293,6 +4293,10 @@ msgstr "Automatisch"
 msgid "Automatically convert .lfm files to .lrs include files"
 msgstr ".lfm-Dateien automatisch in .lrs-Include-Dateien umwandeln"
 
+#: lazarusidestrconsts.lisautomaticallyignoreforselection
+msgid "do not complete selection"
+msgstr ""
+
 #: lazarusidestrconsts.lisautomaticallyinvokeafterpoint
 msgid "Automatically invoke after point"
 msgstr "Automatisch nach Punkt aufrufen"
@@ -4304,6 +4308,10 @@ msgstr "Zeilenumbruch"
 #: lazarusidestrconsts.lisautomaticallyonspace
 msgid "space"
 msgstr "Leerzeichen"
+
+#: lazarusidestrconsts.lisautomaticallyontab
+msgid "tab"
+msgstr ""
 
 #: lazarusidestrconsts.lisautomaticallyonwordend
 msgid "word end"
@@ -4399,11 +4407,6 @@ msgstr "Nicht voreingestellte Werte fett hervorheben"
 #| msgid "BorderSpace"
 msgid "Border space"
 msgstr "Randbreite"
-
-#: lazarusidestrconsts.lisbottom
-msgctxt "lazarusidestrconsts.lisbottom"
-msgid "Bottom"
-msgstr "Unten"
 
 #: lazarusidestrconsts.lisbottomborderspacespinedithint
 msgid "Bottom borderspace. This value is added to base borderspace and used for the space below the control."
@@ -6746,6 +6749,16 @@ msgstr ".po Datei beim Speichern einer lfm Datei erstellen/aktualisieren"
 msgid "Creating file index of FPC sources %s ..."
 msgstr "Erzeuge Datei-Index des FPC-Quelltextverzeichnisses %s ..."
 
+#: lazarusidestrconsts.liscsbottom
+msgctxt "lazarusidestrconsts.liscsbottom"
+msgid "Bottom"
+msgstr "Unten"
+
+#: lazarusidestrconsts.liscstop
+msgctxt "lazarusidestrconsts.liscstop"
+msgid "Top"
+msgstr "Oben"
+
 #: lazarusidestrconsts.lisctdefchoosedirectory
 msgid "Choose Directory"
 msgstr "Verzeichnis auswählen"
@@ -6794,6 +6807,10 @@ msgstr "Code-Makro auswählen"
 msgctxt "lazarusidestrconsts.liscurrent"
 msgid "Current"
 msgstr "Aktuell"
+
+#: lazarusidestrconsts.liscurrentstate
+msgid "Current state: "
+msgstr ""
 
 #: lazarusidestrconsts.liscursorcolumnincurrenteditor
 msgid "Cursor column in current editor"
@@ -7558,6 +7575,14 @@ msgctxt "lazarusidestrconsts.lisdown"
 msgid "Down"
 msgstr "Hinunter"
 
+#: lazarusidestrconsts.lisdowngrade
+msgid "Downgrade"
+msgstr ""
+
+#: lazarusidestrconsts.lisdowngradeconfiguration
+msgid "Downgrade configuration"
+msgstr ""
+
 #: lazarusidestrconsts.lisdoyoustillwanttocreatethenewproject
 msgid "Do you still want to create the new project?"
 msgstr "Wollen Sie das neue Projekt immer noch erzeugen?"
@@ -7892,10 +7917,6 @@ msgstr "Kodierung der Datei %s%s%s%saus der Platte ist %s. Die neue Kodierung is
 msgid "Endless loop in macros"
 msgstr "Endlosschleife in Makros"
 
-#: lazarusidestrconsts.lisentertransla
-msgid "Enter translation language"
-msgstr "Übersetzungssprache angeben"
-
 #: lazarusidestrconsts.lisenvironmentvariablenameasparameter
 msgid "Environment variable, name as parameter"
 msgstr "Umgebungsvariable, Name als Parameter"
@@ -8206,9 +8227,17 @@ msgstr "Vollständiger Name der Datei im aktuellen Editor"
 msgid "Export ..."
 msgstr "Export ..."
 
+#: lazarusidestrconsts.lisexporthtml
+msgid "Export as HTML"
+msgstr ""
+
 #: lazarusidestrconsts.lisexportlist
 msgid "Export list"
 msgstr "Exportiere Liste"
+
+#: lazarusidestrconsts.lisexportpackagelistxml
+msgid "Export package list (*.xml)"
+msgstr ""
 
 #: lazarusidestrconsts.lisexpression
 msgid "Expression:"
@@ -8954,6 +8983,10 @@ msgstr "In Datei sichern"
 msgid "Save to recent"
 msgstr "Zu den zuletzt geöffneten Dateien hinzufügen"
 
+#: lazarusidestrconsts.lisifyouwanttousetwodifferentlazarusversionsyoumustst
+msgid "If you want to use two different Lazarus versions you must start the second Lazarus with the command line parameter primary-config-path or pcp.%s%sFor example:%s"
+msgstr ""
+
 #: lazarusidestrconsts.lisignoreall
 msgid "Ignore all"
 msgstr "Alle übergehen"
@@ -8989,6 +9022,10 @@ msgstr "Implementierungs-Kommentar für die Klasse"
 #: lazarusidestrconsts.lisimportlist
 msgid "Import list"
 msgstr "Importliste"
+
+#: lazarusidestrconsts.lisimportpackagelistxml
+msgid "Import package list (*.xml)"
+msgstr ""
 
 #: lazarusidestrconsts.lisimpossible
 msgid "Impossible"
@@ -9214,6 +9251,10 @@ msgstr "Properties"
 #: lazarusidestrconsts.lisinstallationfailed
 msgid "Installation failed"
 msgstr "Installation fehlgeschlagen"
+
+#: lazarusidestrconsts.lisinstalled
+msgid "installed"
+msgstr ""
 
 #: lazarusidestrconsts.lisinstallitilikethefat
 msgid "Install it, I like the fat"
@@ -9862,15 +9903,23 @@ msgid "Toggle marker 9"
 msgstr "Markerung 9 umschalten"
 
 #: lazarusidestrconsts.liskmtoggleviewassembler
-msgid "Toggle view Assembler"
+#, fuzzy
+#| msgid "Toggle view Assembler"
+msgctxt "lazarusidestrconsts.liskmtoggleviewassembler"
+msgid "View Assembler"
 msgstr "Assembleransicht umschalten"
 
 #: lazarusidestrconsts.liskmtoggleviewbreakpoints
-msgid "Toggle view Breakpoints"
+#, fuzzy
+#| msgid "Toggle view Breakpoints"
+msgid "View Breakpoints"
 msgstr "Ansicht der Haltepunkte umschalten"
 
 #: lazarusidestrconsts.liskmtoggleviewcallstack
-msgid "Toggle view Call Stack"
+#, fuzzy
+#| msgid "Toggle view Call Stack"
+msgctxt "lazarusidestrconsts.liskmtoggleviewcallstack"
+msgid "View Call Stack"
 msgstr "Ansicht des Aufrufstacks umschalten"
 
 #: lazarusidestrconsts.liskmtoggleviewcodeexplorer
@@ -9883,12 +9932,15 @@ msgid "Toggle View Component Palette"
 msgstr "Ansicht der Komponentenpalette umschalten"
 
 #: lazarusidestrconsts.liskmtoggleviewdebugevents
-#| msgid "Toggle view Debug Events"
-msgid "Toggle view Debuger Event Log"
+#, fuzzy
+#| msgid "Toggle view Debuger Event Log"
+msgid "View Debuger Event Log"
 msgstr "Ansicht der Debug-Ereignisse umschalten"
 
 #: lazarusidestrconsts.liskmtoggleviewdebuggeroutput
-msgid "Toggle view Debugger Output"
+#, fuzzy
+#| msgid "Toggle view Debugger Output"
+msgid "View Debugger Output"
 msgstr "Ansicht der Debugger-Ausgabe umschalten"
 
 #: lazarusidestrconsts.liskmtoggleviewdocumentationeditor
@@ -9896,7 +9948,10 @@ msgid "Toggle view Documentation Editor"
 msgstr "Ansicht des Dokumentationseditor umschalten"
 
 #: lazarusidestrconsts.liskmtoggleviewhistory
-msgid "Toggle view History"
+#, fuzzy
+#| msgid "Toggle view History"
+msgctxt "lazarusidestrconsts.liskmtoggleviewhistory"
+msgid "View History"
 msgstr "Ansicht der Historie umschalten"
 
 #: lazarusidestrconsts.liskmtoggleviewidespeedbuttons
@@ -9904,7 +9959,9 @@ msgid "Toggle view IDE speed buttons"
 msgstr "Ansicht der  IDE-Speedbuttons umschalten"
 
 #: lazarusidestrconsts.liskmtoggleviewlocalvariables
-msgid "Toggle view Local Variables"
+#, fuzzy
+#| msgid "Toggle view Local Variables"
+msgid "View Local Variables"
 msgstr "Ansicht der lokalen Variablen umschalten"
 
 #: lazarusidestrconsts.liskmtoggleviewmessages
@@ -9916,11 +9973,16 @@ msgid "Toggle view Object Inspector"
 msgstr "Ansicht des Objektinspektors umschalten"
 
 #: lazarusidestrconsts.liskmtoggleviewpseudoterminal
-msgid "Toggle view Terminal Output"
+#, fuzzy
+#| msgid "Toggle view Terminal Output"
+msgctxt "lazarusidestrconsts.liskmtoggleviewpseudoterminal"
+msgid "View Terminal Output"
 msgstr "Ansicht der Terminalausgabe umschalten"
 
 #: lazarusidestrconsts.liskmtoggleviewregisters
-msgid "Toggle view Registers"
+#, fuzzy
+#| msgid "Toggle view Registers"
+msgid "View Registers"
 msgstr "Registeransicht umschalten"
 
 #: lazarusidestrconsts.liskmtoggleviewsearchresults
@@ -9932,11 +9994,16 @@ msgid "Toggle view Source Editor"
 msgstr "Ansicht des Quelltexteditors umschalten"
 
 #: lazarusidestrconsts.liskmtoggleviewthreads
-msgid "Toggle view Threads"
+#, fuzzy
+#| msgid "Toggle view Threads"
+msgctxt "lazarusidestrconsts.liskmtoggleviewthreads"
+msgid "View Threads"
 msgstr "Ansicht der Threads umschalten"
 
 #: lazarusidestrconsts.liskmtoggleviewwatches
-msgid "Toggle view Watches"
+#, fuzzy
+#| msgid "Toggle view Watches"
+msgid "View Watches"
 msgstr "Ansicht der überwachten Ausdrücke umschalten"
 
 #: lazarusidestrconsts.liskmviewjumphistory
@@ -10070,10 +10137,6 @@ msgstr "Komponenten  (SynEdit, CodeTools) kompilieren"
 #: lazarusidestrconsts.lislazbuildbuildide
 msgid "Build IDE"
 msgstr "IDE kompilieren"
-
-#: lazarusidestrconsts.lislazbuildbuildjitform
-msgid "Build JITForm"
-msgstr "JIT-Formular kompilieren"
 
 #: lazarusidestrconsts.lislazbuildbuildmany
 msgid "Build Many"
@@ -10268,10 +10331,6 @@ msgstr "Kein gültiger FPDoc-Pfad"
 #: lazarusidestrconsts.lisldtheunitisnotownedbeanypackageorprojectpleaseaddthe
 msgid "The unit %s is not owned be any package or project.%sPlease add the unit to a package or project.%sUnable to create the fpdoc file."
 msgstr "Die Unit %s gehört zu keinem Package oder Projekt.%sBitte fügen Sie die Unit zu einem Package oder Projekt hinzu.%sKann die FPDoc-Datei nicht generieren."
-
-#: lazarusidestrconsts.lisleaveemptyfo
-msgid "Leave empty for default .po file"
-msgstr "Für voreingestellte .po-Datei freilassen"
 
 #: lazarusidestrconsts.lisleft
 msgctxt "lazarusidestrconsts.lisleft"
@@ -10635,10 +10694,6 @@ msgstr "Projekt schließen"
 msgid "CodeTools Defines Editor ..."
 msgstr "Editor für CodeTools-Eigenschaften ..."
 
-#: lazarusidestrconsts.lismenucollectpofil
-msgid "Collect .po files"
-msgstr ".PO-Dateien sammeln"
-
 #: lazarusidestrconsts.lismenucommentselection
 #| msgid "Comment selection"
 msgid "Comment Selection"
@@ -10708,10 +10763,6 @@ msgstr "Kodierungen von Projekten/Packages konvertieren ..."
 #: lazarusidestrconsts.lismenucreatefpdocfiles
 msgid "Create FPDoc files"
 msgstr "FPDoc-Dateien erzeugen"
-
-#: lazarusidestrconsts.lismenucreatepofile
-msgid "Create .po files"
-msgstr "Erzeuge .po-Dateien"
 
 #: lazarusidestrconsts.lismenudebugwindows
 #| msgid "Debug windows"
@@ -11933,6 +11984,26 @@ msgstr "Kein installierbares Package"
 msgid "Not a valid pascal identifier"
 msgstr "Kein gültiger Pascal-Bezeichner"
 
+#: lazarusidestrconsts.lisnotebooktabposbottom
+msgctxt "lazarusidestrconsts.lisnotebooktabposbottom"
+msgid "Bottom"
+msgstr "Unten"
+
+#: lazarusidestrconsts.lisnotebooktabposleft
+msgctxt "lazarusidestrconsts.lisnotebooktabposleft"
+msgid "Left"
+msgstr "Links"
+
+#: lazarusidestrconsts.lisnotebooktabposright
+msgctxt "lazarusidestrconsts.lisnotebooktabposright"
+msgid "Right"
+msgstr "Rechts"
+
+#: lazarusidestrconsts.lisnotebooktabpostop
+msgctxt "lazarusidestrconsts.lisnotebooktabpostop"
+msgid "Top"
+msgstr "Oben"
+
 #: lazarusidestrconsts.lisnotecouldnotcreatedefinetemplateforfreepascal
 msgid "NOTE: Could not create Define Template for Free Pascal Sources"
 msgstr "Hinweis: Kann definiertes Template für Free Pascal Quellenverzeichnis nicht finden"
@@ -11953,9 +12024,9 @@ msgstr "Nicht implementiert"
 msgid "Not implemented yet:%s%s"
 msgstr "Noch nicht implementiert:%s%s"
 
-#: lazarusidestrconsts.lisnotimplementedyet2
-msgid "Not implemented yet."
-msgstr "Noch nicht implementiert."
+#: lazarusidestrconsts.lisnotinstalled
+msgid "not installed"
+msgstr ""
 
 #: lazarusidestrconsts.lisnotnow
 msgid "Not now"
@@ -12669,6 +12740,11 @@ msgstr "%sZustand: "
 msgid "Uninstall on next start"
 msgstr "Beim nächsten Start entfernen"
 
+#: lazarusidestrconsts.lispckexpluninstallpackage
+msgctxt "lazarusidestrconsts.lispckexpluninstallpackage"
+msgid "Uninstall package %s"
+msgstr ""
+
 #: lazarusidestrconsts.lispckoptsaddoptionstodependentpackagesandprojects
 msgid "Add options to dependent packages and projects"
 msgstr "Neue Einstellungen für abhängige Packages und Projekte"
@@ -12981,10 +13057,6 @@ msgstr "Package zurücknehmen?"
 #| msgid "The file %s%s%s%sis currently not in the unitpath of the package.%s%sAdd %s%s%s to UnitPath?"
 msgid "The file %s%s%s%sis currently not in the unit path of the package.%s%sAdd %s%s%s to unit path?"
 msgstr "Die Datei %s%s%s%sbefindet sich derzeit nicht im Unitpfad des Packages.%s%s. %s%s%s in den Unitpfad aufnehmen?"
-
-#: lazarusidestrconsts.lispkgedonlinehelpnotyetimplemented
-msgid "Online Help not yet implemented"
-msgstr "Online-Hilfe noch nicht verfügbar"
 
 #: lazarusidestrconsts.lispkgedrightclickontheitemstreetogetthepopupmenuwithallav
 msgid "Right click on the items tree to get the popupmenu with all available package functions."
@@ -13718,6 +13790,10 @@ msgstr "primäres Konfigurationsverzeichnis in dem Lazarus seine Konfigurationsd
 #: lazarusidestrconsts.lisprimaryconfigpath
 msgid "Primary config path"
 msgstr "Primärer Konfigurationspfad"
+
+#: lazarusidestrconsts.lisprior
+msgid "prior %s"
+msgstr ""
 
 #: lazarusidestrconsts.lisprivate
 msgid "Private"
@@ -14825,10 +14901,6 @@ msgstr "Lieber kleiner als schneller"
 msgid "Matches"
 msgstr "Treffer"
 
-#: lazarusidestrconsts.lissorrynotimplementedyet
-msgid "Sorry, not implemented yet"
-msgstr "Noch nicht implementiert"
-
 #: lazarusidestrconsts.lissorrythistypeisnotyetimplemented
 msgid "Sorry, this type is not yet implemented"
 msgstr "Entschuldigung, dieser Typ ist (noch) nicht implementiert"
@@ -15172,6 +15244,10 @@ msgstr "Die Komponente %s ist von %s abgeleitet.%sUm eine abgeleitete Komponente
 msgid "The component name must be unique in all components on the form/datamodule.The name is compared case insensitive like a normal pascal identifier."
 msgstr "Alle Komponenten auf dem Form/Datamodul müssen einen eindeutigen Namen besitzen. Er ist wie jeder Pascal-Bezeichner schreibweisenunabhängig."
 
+#: lazarusidestrconsts.listheconfigurationwillbedowngradedconverted
+msgid "The configuration will be downgraded/converted."
+msgstr ""
+
 #: lazarusidestrconsts.listhecontainsanotexistingdirectory
 msgid "The %s contains a not existing directory:%s%s"
 msgstr "%s enthält ein nicht existierendes Verzeichnis:%s%s"
@@ -15377,6 +15453,10 @@ msgstr "Die neue Include-Datei befindet sich noch nicht im Include-Suchpfad.%sVe
 #: lazarusidestrconsts.listhenewunitisnotyetintheunitsearchpathadddirectory
 msgid "The new unit is not yet in the unit search path.%sAdd directory %s?"
 msgstr "Die neue Unit ist noch nicht im Unit-Suchpfad.%sVerzeichnis hinzufügen %s?"
+
+#: lazarusidestrconsts.listheoldconfigurationwillbeupgraded
+msgid "The old configuration will be upgraded."
+msgstr ""
 
 #: lazarusidestrconsts.listheothersourcescontainsadirectorywhichisalreadyint
 msgid "The \"Other sources\" contains a directory which is already in the \"Other unit files\".%s%s"
@@ -15740,11 +15820,6 @@ msgstr "Umschalten der Anzeige der Dateinamen zwischen voller/relativer Pfad"
 #: lazarusidestrconsts.listoinstallyoumustcompileandrestarttheide
 msgid "To install you must compile and restart the IDE"
 msgstr "Zum Installieren müssen Sie die IDE kompilieren und neu starten"
-
-#: lazarusidestrconsts.listop
-msgctxt "lazarusidestrconsts.listop"
-msgid "Top"
-msgstr "Oben"
 
 #: lazarusidestrconsts.listopanchoring
 msgid "Top anchoring"
@@ -16303,6 +16378,10 @@ msgstr ""
 msgid "Unused units"
 msgstr "Nicht verwendete Units"
 
+#: lazarusidestrconsts.lisunusualcompilerfilenameusuallyitstartswithfpcppcor
+msgid "Unusual compiler file name. Usually it starts with fpc, ppc or ppcross."
+msgstr ""
+
 #: lazarusidestrconsts.lisup
 msgctxt "lazarusidestrconsts.lisup"
 msgid "Up"
@@ -16311,6 +16390,14 @@ msgstr "Hoch"
 #: lazarusidestrconsts.lisupdatereferences
 msgid "Update references?"
 msgstr "Verweise aktualisieren?"
+
+#: lazarusidestrconsts.lisupgrade
+msgid "Upgrade"
+msgstr ""
+
+#: lazarusidestrconsts.lisupgradeconfiguration
+msgid "Upgrade configuration"
+msgstr ""
 
 #: lazarusidestrconsts.lisuppercasestring
 msgid "uppercase string"
@@ -16457,6 +16544,7 @@ msgid "View Source"
 msgstr "Quelle anzeigen"
 
 #: lazarusidestrconsts.lisviewsourcedisass
+msgctxt "lazarusidestrconsts.lisviewsourcedisass"
 msgid "View Assembler"
 msgstr "Assembler anzeigen"
 
@@ -16540,6 +16628,10 @@ msgstr "&Datenhaltepunkt erstellen ..."
 #: lazarusidestrconsts.liswelcometolazaruside
 msgid "Welcome to Lazarus IDE %s"
 msgstr "Willkommen zur Lazarus IDE %s"
+
+#: lazarusidestrconsts.liswelcometolazarusthereisalreadyaconfigurationfromve
+msgid "Welcome to Lazarus %s%s%sThere is already a configuration from version %s in%s%s%s"
+msgstr ""
 
 #: lazarusidestrconsts.liswhenaunitisrenamedupdatereferences
 #| msgid "When a unit is renamed, update references ..."
@@ -17692,7 +17784,9 @@ msgid "quick compile, no linking"
 msgstr "Schnelles Kompilieren, kein Linken"
 
 #: lazarusidestrconsts.srkmecremovebreakpoint
-msgid "remove break point"
+#, fuzzy
+#| msgid "remove break point"
+msgid "remove breakpoint"
 msgstr "Haltepunkt entfernen"
 
 #: lazarusidestrconsts.srkmecremoveemptymethods
@@ -18002,7 +18096,9 @@ msgid "View assembler"
 msgstr "Assembler anzeigen"
 
 #: lazarusidestrconsts.srkmectogglebreakpoint
-msgid "toggle break point"
+#, fuzzy
+#| msgid "toggle break point"
+msgid "toggle breakpoint"
 msgstr "Haltepunkt umschalten"
 
 #: lazarusidestrconsts.srkmectogglebreakpoints
@@ -18124,10 +18220,12 @@ msgid "View forms"
 msgstr "Formulare anzeigen"
 
 #: lazarusidestrconsts.srkmecviewhistory
+msgctxt "lazarusidestrconsts.srkmecviewhistory"
 msgid "View History"
 msgstr "Historie anzeigen"
 
 #: lazarusidestrconsts.srkmecviewpseudoterminal
+msgctxt "lazarusidestrconsts.srkmecviewpseudoterminal"
 msgid "View Terminal Output"
 msgstr "Zeige die Terminalausgaben"
 
@@ -18136,6 +18234,7 @@ msgid "View Tab Order"
 msgstr "Tabulatorreihenfolge anzeigen"
 
 #: lazarusidestrconsts.srkmecviewthreads
+msgctxt "lazarusidestrconsts.srkmecviewthreads"
 msgid "View Threads"
 msgstr "Zeige die Threads"
 
@@ -18421,20 +18520,13 @@ msgid "Toggle &Breakpoint"
 msgstr "Haltepunkt umschal&ten"
 
 #: lazarusidestrconsts.uemviewcallstack
+msgctxt "lazarusidestrconsts.uemviewcallstack"
 msgid "View Call Stack"
 msgstr "Aufrufstack anzeigen"
 
 #: lazarusidestrconsts.uenotimplcap
 msgid "Not implemented yet"
 msgstr "Noch nicht implementiert"
-
-#: lazarusidestrconsts.uenotimplcapagain
-msgid "I told You: Not implemented yet"
-msgstr "Ich habe es schon gesagt: Noch nicht implementiert"
-
-#: lazarusidestrconsts.uenotimpltext
-msgid "If You can help us to implement this feature, mail to lazarus@miraclec.com"
-msgstr "Wenn Sie uns helfen können, diese Funktion zu implementieren, senden Sie ein E-Mail an lazarus@miraclec.com"
 
 #: lazarusidestrconsts.uepins
 msgid "INS"

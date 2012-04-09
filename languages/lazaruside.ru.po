@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2012-04-01 15:22+0400\n"
+"PO-Revision-Date: 2012-04-07 01:36+0400\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -4273,6 +4273,10 @@ msgstr "Автоматическая"
 msgid "Automatically convert .lfm files to .lrs include files"
 msgstr "Автоматически преобразовывать файлы LFM в файлы LRS"
 
+#: lazarusidestrconsts.lisautomaticallyignoreforselection
+msgid "do not complete selection"
+msgstr "не завершать выделенное"
+
 #: lazarusidestrconsts.lisautomaticallyinvokeafterpoint
 msgid "Automatically invoke after point"
 msgstr "Автоматически вызывать после ввода точки"
@@ -4284,6 +4288,10 @@ msgstr "конца строки"
 #: lazarusidestrconsts.lisautomaticallyonspace
 msgid "space"
 msgstr "пробела"
+
+#: lazarusidestrconsts.lisautomaticallyontab
+msgid "tab"
+msgstr "символа табуляции"
 
 #: lazarusidestrconsts.lisautomaticallyonwordend
 msgid "word end"
@@ -4377,11 +4385,6 @@ msgstr "Выделять значения не по умолчанию жирн�
 #| msgid "BorderSpace"
 msgid "Border space"
 msgstr "Зазор"
-
-#: lazarusidestrconsts.lisbottom
-msgctxt "lazarusidestrconsts.lisbottom"
-msgid "Bottom"
-msgstr "Вниз"
 
 #: lazarusidestrconsts.lisbottomborderspacespinedithint
 msgid "Bottom borderspace. This value is added to base borderspace and used for the space below the control."
@@ -6717,6 +6720,16 @@ msgstr "Создавать/обновлять файлы PO при сохран�
 msgid "Creating file index of FPC sources %s ..."
 msgstr "Создание индекса файлов исходного кода FPC %s ..."
 
+#: lazarusidestrconsts.liscsbottom
+msgctxt "lazarusidestrconsts.liscsbottom"
+msgid "Bottom"
+msgstr "Вниз"
+
+#: lazarusidestrconsts.liscstop
+msgctxt "lazarusidestrconsts.liscstop"
+msgid "Top"
+msgstr "Вверх"
+
 #: lazarusidestrconsts.lisctdefchoosedirectory
 msgid "Choose Directory"
 msgstr "Выберите каталог"
@@ -6765,6 +6778,10 @@ msgstr "Выбрать макрос кода"
 msgctxt "lazarusidestrconsts.liscurrent"
 msgid "Current"
 msgstr "Текущий"
+
+#: lazarusidestrconsts.liscurrentstate
+msgid "Current state: "
+msgstr "Текущее состояние: "
 
 #: lazarusidestrconsts.liscursorcolumnincurrenteditor
 msgid "Cursor column in current editor"
@@ -7530,6 +7547,14 @@ msgctxt "lazarusidestrconsts.lisdown"
 msgid "Down"
 msgstr "Вниз"
 
+#: lazarusidestrconsts.lisdowngrade
+msgid "Downgrade"
+msgstr "Понизить версию"
+
+#: lazarusidestrconsts.lisdowngradeconfiguration
+msgid "Downgrade configuration"
+msgstr "Понижение версии каталога настройки"
+
 #: lazarusidestrconsts.lisdoyoustillwanttocreatethenewproject
 msgid "Do you still want to create the new project?"
 msgstr "Вы действительно хотите создать новый проект?"
@@ -7864,10 +7889,6 @@ msgstr "Файл %s%s%s%sна диске имеет кодировку %s. Но�
 msgid "Endless loop in macros"
 msgstr "Порочный круг макросов"
 
-#: lazarusidestrconsts.lisentertransla
-msgid "Enter translation language"
-msgstr "Введите язык перевода"
-
 #: lazarusidestrconsts.lisenvironmentvariablenameasparameter
 msgid "Environment variable, name as parameter"
 msgstr "Переменная окружения; параметром является имя"
@@ -8180,9 +8201,17 @@ msgstr "Полное имя файла в текущем редакторе"
 msgid "Export ..."
 msgstr "Экспортировать ..."
 
+#: lazarusidestrconsts.lisexporthtml
+msgid "Export as HTML"
+msgstr "Экспортировать в HTML"
+
 #: lazarusidestrconsts.lisexportlist
 msgid "Export list"
 msgstr "Список экспорта"
+
+#: lazarusidestrconsts.lisexportpackagelistxml
+msgid "Export package list (*.xml)"
+msgstr "Список экспортируемых пакетов (*.xml)"
 
 #: lazarusidestrconsts.lisexpression
 msgid "Expression:"
@@ -8928,6 +8957,10 @@ msgstr "Сохранить в файл"
 msgid "Save to recent"
 msgstr "Сохранить в недавних"
 
+#: lazarusidestrconsts.lisifyouwanttousetwodifferentlazarusversionsyoumustst
+msgid "If you want to use two different Lazarus versions you must start the second Lazarus with the command line parameter primary-config-path or pcp.%s%sFor example:%s"
+msgstr "Если вы хотите использовать два экземпляра Lazarus разных версий, вам следует запускать второй экземпляр Lazarus с параметром командной строки primary-config-path или pcp.%s%sНапример:%s"
+
 #: lazarusidestrconsts.lisignoreall
 msgid "Ignore all"
 msgstr "Игнорировать все"
@@ -8963,6 +8996,10 @@ msgstr "Комментарий перед реализацией класса"
 #: lazarusidestrconsts.lisimportlist
 msgid "Import list"
 msgstr "Список импорта"
+
+#: lazarusidestrconsts.lisimportpackagelistxml
+msgid "Import package list (*.xml)"
+msgstr "Список импортируемых пакетов (*.xml)"
 
 #: lazarusidestrconsts.lisimpossible
 msgid "Impossible"
@@ -9185,6 +9222,10 @@ msgstr "Свойства"
 #: lazarusidestrconsts.lisinstallationfailed
 msgid "Installation failed"
 msgstr "Установка не удалась"
+
+#: lazarusidestrconsts.lisinstalled
+msgid "installed"
+msgstr "установлен"
 
 #: lazarusidestrconsts.lisinstallitilikethefat
 msgid "Install it, I like the fat"
@@ -9836,15 +9877,20 @@ msgid "Toggle marker 9"
 msgstr "Переключить закладку 9"
 
 #: lazarusidestrconsts.liskmtoggleviewassembler
-msgid "Toggle view Assembler"
-msgstr "Показать окно ассемблера"
+#| msgid "Toggle view Assembler"
+msgctxt "lazarusidestrconsts.liskmtoggleviewassembler"
+msgid "View Assembler"
+msgstr "Показать ассемблер"
 
 #: lazarusidestrconsts.liskmtoggleviewbreakpoints
-msgid "Toggle view Breakpoints"
+#| msgid "Toggle view Breakpoints"
+msgid "View Breakpoints"
 msgstr "Показать точки останова"
 
 #: lazarusidestrconsts.liskmtoggleviewcallstack
-msgid "Toggle view Call Stack"
+#| msgid "Toggle view Call Stack"
+msgctxt "lazarusidestrconsts.liskmtoggleviewcallstack"
+msgid "View Call Stack"
 msgstr "Показать стек вызовов"
 
 #: lazarusidestrconsts.liskmtoggleviewcodeexplorer
@@ -9857,12 +9903,13 @@ msgid "Toggle View Component Palette"
 msgstr "Показывать палитру компонентов"
 
 #: lazarusidestrconsts.liskmtoggleviewdebugevents
-#| msgid "Toggle view Debug Events"
-msgid "Toggle view Debuger Event Log"
-msgstr "Показать окно журнала событий отладчика"
+#| msgid "Toggle view Debuger Event Log"
+msgid "View Debuger Event Log"
+msgstr "Показать журнал событий отладчика"
 
 #: lazarusidestrconsts.liskmtoggleviewdebuggeroutput
-msgid "Toggle view Debugger Output"
+#| msgid "Toggle view Debugger Output"
+msgid "View Debugger Output"
 msgstr "Показать вывод отладчика"
 
 #: lazarusidestrconsts.liskmtoggleviewdocumentationeditor
@@ -9870,7 +9917,9 @@ msgid "Toggle view Documentation Editor"
 msgstr "Показать редактор документации"
 
 #: lazarusidestrconsts.liskmtoggleviewhistory
-msgid "Toggle view History"
+#| msgid "Toggle view History"
+msgctxt "lazarusidestrconsts.liskmtoggleviewhistory"
+msgid "View History"
 msgstr "Показать историю"
 
 #: lazarusidestrconsts.liskmtoggleviewidespeedbuttons
@@ -9878,7 +9927,8 @@ msgid "Toggle view IDE speed buttons"
 msgstr "Показывать кнопки быстрого запуска IDE"
 
 #: lazarusidestrconsts.liskmtoggleviewlocalvariables
-msgid "Toggle view Local Variables"
+#| msgid "Toggle view Local Variables"
+msgid "View Local Variables"
 msgstr "Показать локальные переменные"
 
 #: lazarusidestrconsts.liskmtoggleviewmessages
@@ -9890,12 +9940,15 @@ msgid "Toggle view Object Inspector"
 msgstr "Показывать инспектор объектов"
 
 #: lazarusidestrconsts.liskmtoggleviewpseudoterminal
-msgid "Toggle view Terminal Output"
+#| msgid "Toggle view Terminal Output"
+msgctxt "lazarusidestrconsts.liskmtoggleviewpseudoterminal"
+msgid "View Terminal Output"
 msgstr "Показать вывод в терминал"
 
 #: lazarusidestrconsts.liskmtoggleviewregisters
-msgid "Toggle view Registers"
-msgstr "Показать окно регистров"
+#| msgid "Toggle view Registers"
+msgid "View Registers"
+msgstr "Показать регистры"
 
 #: lazarusidestrconsts.liskmtoggleviewsearchresults
 msgid "Toggle view Search Results"
@@ -9906,11 +9959,14 @@ msgid "Toggle view Source Editor"
 msgstr "Показать редактор исходного кода"
 
 #: lazarusidestrconsts.liskmtoggleviewthreads
-msgid "Toggle view Threads"
-msgstr "Показать окно потоков исполнения"
+#| msgid "Toggle view Threads"
+msgctxt "lazarusidestrconsts.liskmtoggleviewthreads"
+msgid "View Threads"
+msgstr "Показать потоки исполнения"
 
 #: lazarusidestrconsts.liskmtoggleviewwatches
-msgid "Toggle view Watches"
+#| msgid "Toggle view Watches"
+msgid "View Watches"
 msgstr "Показать окно наблюдений"
 
 #: lazarusidestrconsts.liskmviewjumphistory
@@ -10044,10 +10100,6 @@ msgstr "Собрать компоненты (SynEdit, CodeTools)"
 #: lazarusidestrconsts.lislazbuildbuildide
 msgid "Build IDE"
 msgstr "Собрать IDE"
-
-#: lazarusidestrconsts.lislazbuildbuildjitform
-msgid "Build JITForm"
-msgstr "Собрать JITForm"
 
 #: lazarusidestrconsts.lislazbuildbuildmany
 msgid "Build Many"
@@ -10241,14 +10293,10 @@ msgstr "Отсутствует корректный путь FPDoc"
 msgid "The unit %s is not owned be any package or project.%sPlease add the unit to a package or project.%sUnable to create the fpdoc file."
 msgstr "Модулем %s не владеет ни один из пакетов либо проектов.%sДобавьте модуль к пакету либо проекту.%sНевозможно создать файл FPDoc."
 
-#: lazarusidestrconsts.lisleaveemptyfo
-msgid "Leave empty for default .po file"
-msgstr "Оставьте пустым для файла .po по умолчанию"
-
 #: lazarusidestrconsts.lisleft
 msgctxt "lazarusidestrconsts.lisleft"
 msgid "Left"
-msgstr "Стрелка влево"
+msgstr "Влево"
 
 #: lazarusidestrconsts.lisleftborderspacespinedithint
 msgid "Left borderspace. This value is added to base borderspace and used for the space left to the control."
@@ -10605,10 +10653,6 @@ msgstr "Закрыть проект"
 msgid "CodeTools Defines Editor ..."
 msgstr "Редактор определений CodeTools ..."
 
-#: lazarusidestrconsts.lismenucollectpofil
-msgid "Collect .po files"
-msgstr "Собрать файлы .po"
-
 #: lazarusidestrconsts.lismenucommentselection
 #| msgid "Comment selection"
 msgid "Comment Selection"
@@ -10677,10 +10721,6 @@ msgstr "Преобразовать кодировку проектов/паке�
 #: lazarusidestrconsts.lismenucreatefpdocfiles
 msgid "Create FPDoc files"
 msgstr "Создать файлы FPDoc"
-
-#: lazarusidestrconsts.lismenucreatepofile
-msgid "Create .po files"
-msgstr "Создать файлы .po"
 
 #: lazarusidestrconsts.lismenudebugwindows
 #| msgid "Debug windows"
@@ -11888,6 +11928,26 @@ msgstr "Пакет не является устанавливаемым"
 msgid "Not a valid pascal identifier"
 msgstr "Неверный идентификатор Паскаля"
 
+#: lazarusidestrconsts.lisnotebooktabposbottom
+msgctxt "lazarusidestrconsts.lisnotebooktabposbottom"
+msgid "Bottom"
+msgstr "Снизу"
+
+#: lazarusidestrconsts.lisnotebooktabposleft
+msgctxt "lazarusidestrconsts.lisnotebooktabposleft"
+msgid "Left"
+msgstr "Слева"
+
+#: lazarusidestrconsts.lisnotebooktabposright
+msgctxt "lazarusidestrconsts.lisnotebooktabposright"
+msgid "Right"
+msgstr "Справа"
+
+#: lazarusidestrconsts.lisnotebooktabpostop
+msgctxt "lazarusidestrconsts.lisnotebooktabpostop"
+msgid "Top"
+msgstr "Сверху"
+
 #: lazarusidestrconsts.lisnotecouldnotcreatedefinetemplateforfreepascal
 msgid "NOTE: Could not create Define Template for Free Pascal Sources"
 msgstr "ЗАМЕТКА: Невозможно создать шаблон определений из исходного кода Free Pascal"
@@ -11908,9 +11968,9 @@ msgstr "Не реализовано"
 msgid "Not implemented yet:%s%s"
 msgstr "Ещё не реализовано:%s%s"
 
-#: lazarusidestrconsts.lisnotimplementedyet2
-msgid "Not implemented yet."
-msgstr "Еще не реализовано."
+#: lazarusidestrconsts.lisnotinstalled
+msgid "not installed"
+msgstr "не установлен"
 
 #: lazarusidestrconsts.lisnotnow
 msgid "Not now"
@@ -12621,6 +12681,11 @@ msgstr "%sСостояние: "
 msgid "Uninstall on next start"
 msgstr "Удалить при след. пуске"
 
+#: lazarusidestrconsts.lispckexpluninstallpackage
+msgctxt "lazarusidestrconsts.lispckexpluninstallpackage"
+msgid "Uninstall package %s"
+msgstr "Удалить пакет %s"
+
 #: lazarusidestrconsts.lispckoptsaddoptionstodependentpackagesandprojects
 msgid "Add options to dependent packages and projects"
 msgstr "Добавление параметров к зависимым пакетам и проектам"
@@ -12929,10 +12994,6 @@ msgstr "Возвратить пакет?"
 #| msgid "The file %s%s%s%sis currently not in the unitpath of the package.%s%sAdd %s%s%s to UnitPath?"
 msgid "The file %s%s%s%sis currently not in the unit path of the package.%s%sAdd %s%s%s to unit path?"
 msgstr "Файл %s%s%s%sсейчас не находится в списке путей к модулям пакета.%s%sДобавить %s%s%s к списку путей к модулям?"
-
-#: lazarusidestrconsts.lispkgedonlinehelpnotyetimplemented
-msgid "Online Help not yet implemented"
-msgstr "Контекстная справка ещё не реализована"
 
 #: lazarusidestrconsts.lispkgedrightclickontheitemstreetogetthepopupmenuwithallav
 msgid "Right click on the items tree to get the popupmenu with all available package functions."
@@ -13669,6 +13730,10 @@ msgstr "первичный каталог настройки, где Lazarus х�
 msgid "Primary config path"
 msgstr "Первичный путь к каталогу настройки"
 
+#: lazarusidestrconsts.lisprior
+msgid "prior %s"
+msgstr "до %s"
+
 #: lazarusidestrconsts.lisprivate
 msgid "Private"
 msgstr "Private"
@@ -14322,7 +14387,7 @@ msgstr "Возвращение не удалось"
 #: lazarusidestrconsts.lisright
 msgctxt "lazarusidestrconsts.lisright"
 msgid "Right"
-msgstr "Стрелка вправо"
+msgstr "Вправо"
 
 #: lazarusidestrconsts.lisrightanchoring
 msgid "Right anchoring"
@@ -14766,10 +14831,6 @@ msgstr "Приоритет размера над скоростью"
 msgid "Matches"
 msgstr "Совпадения"
 
-#: lazarusidestrconsts.lissorrynotimplementedyet
-msgid "Sorry, not implemented yet"
-msgstr "Извините, пока не реализовано"
-
 #: lazarusidestrconsts.lissorrythistypeisnotyetimplemented
 msgid "Sorry, this type is not yet implemented"
 msgstr "Извините, этот тип ещё не реализован"
@@ -15109,6 +15170,10 @@ msgstr "Компонент %s унаследован от %s.%sДля переи
 msgid "The component name must be unique in all components on the form/datamodule.The name is compared case insensitive like a normal pascal identifier."
 msgstr "Имена компонентов должны быть уникальными в пределах формы/модуля данных. Сравнение имён, как и для обычных идентификаторов Паскаля, происходит без учёта регистра."
 
+#: lazarusidestrconsts.listheconfigurationwillbedowngradedconverted
+msgid "The configuration will be downgraded/converted."
+msgstr "Каталог настройки будет преобразован с понижением версии."
+
 #: lazarusidestrconsts.listhecontainsanotexistingdirectory
 msgid "The %s contains a not existing directory:%s%s"
 msgstr "%s содержит несуществующий каталог:%s%s"
@@ -15315,6 +15380,10 @@ msgstr "Путь к новому включаемому файлу отсутс�
 #: lazarusidestrconsts.listhenewunitisnotyetintheunitsearchpathadddirectory
 msgid "The new unit is not yet in the unit search path.%sAdd directory %s?"
 msgstr "Новый модуль ещё не находится в путях поиска.%sДобавить каталог %s?"
+
+#: lazarusidestrconsts.listheoldconfigurationwillbeupgraded
+msgid "The old configuration will be upgraded."
+msgstr "Старый каталог настройки будет обновлён."
 
 #: lazarusidestrconsts.listheothersourcescontainsadirectorywhichisalreadyint
 msgid "The \"Other sources\" contains a directory which is already in the \"Other unit files\".%s%s"
@@ -15677,11 +15746,6 @@ msgstr "Переключение режимов показа имён файло
 #: lazarusidestrconsts.listoinstallyoumustcompileandrestarttheide
 msgid "To install you must compile and restart the IDE"
 msgstr "Для установки следует перекомпилировать и перезапустить IDE"
-
-#: lazarusidestrconsts.listop
-msgctxt "lazarusidestrconsts.listop"
-msgid "Top"
-msgstr "Вверх"
 
 #: lazarusidestrconsts.listopanchoring
 msgid "Top anchoring"
@@ -16241,6 +16305,10 @@ msgstr "Беззнаковое"
 msgid "Unused units"
 msgstr "Неиспользуемые модули"
 
+#: lazarusidestrconsts.lisunusualcompilerfilenameusuallyitstartswithfpcppcor
+msgid "Unusual compiler file name. Usually it starts with fpc, ppc or ppcross."
+msgstr "Необычное имя файла компилятора. Как правило, оно начинается с fpc, ppc либо ppcross."
+
 #: lazarusidestrconsts.lisup
 msgctxt "lazarusidestrconsts.lisup"
 msgid "Up"
@@ -16249,6 +16317,14 @@ msgstr "Вверх"
 #: lazarusidestrconsts.lisupdatereferences
 msgid "Update references?"
 msgstr "Обновить ссылки?"
+
+#: lazarusidestrconsts.lisupgrade
+msgid "Upgrade"
+msgstr "Обновить"
+
+#: lazarusidestrconsts.lisupgradeconfiguration
+msgid "Upgrade configuration"
+msgstr "Обновление каталога настройки"
 
 #: lazarusidestrconsts.lisuppercasestring
 msgid "uppercase string"
@@ -16394,6 +16470,7 @@ msgid "View Source"
 msgstr "Просмотреть исходный код"
 
 #: lazarusidestrconsts.lisviewsourcedisass
+msgctxt "lazarusidestrconsts.lisviewsourcedisass"
 msgid "View Assembler"
 msgstr "Просмотреть код ассемблера"
 
@@ -16477,6 +16554,10 @@ msgstr "Создать точку останова с &наблюдением ..
 #: lazarusidestrconsts.liswelcometolazaruside
 msgid "Welcome to Lazarus IDE %s"
 msgstr "Добро пожаловать в Lazarus версии %s"
+
+#: lazarusidestrconsts.liswelcometolazarusthereisalreadyaconfigurationfromve
+msgid "Welcome to Lazarus %s%s%sThere is already a configuration from version %s in%s%s%s"
+msgstr "Добро пожаловать в Lazarus %s%s%sОбнаружен каталог настройки версии %s в%s%s%s"
 
 #: lazarusidestrconsts.liswhenaunitisrenamedupdatereferences
 #| msgid "When a unit is renamed, update references ..."
@@ -17628,7 +17709,8 @@ msgid "quick compile, no linking"
 msgstr "Быстрая компиляция, без компоновки"
 
 #: lazarusidestrconsts.srkmecremovebreakpoint
-msgid "remove break point"
+#| msgid "remove break point"
+msgid "remove breakpoint"
 msgstr "Удалить точку останова"
 
 #: lazarusidestrconsts.srkmecremoveemptymethods
@@ -17938,7 +18020,8 @@ msgid "View assembler"
 msgstr "Просмотр кода ассемблера"
 
 #: lazarusidestrconsts.srkmectogglebreakpoint
-msgid "toggle break point"
+#| msgid "toggle break point"
+msgid "toggle breakpoint"
 msgstr "Переключить точку останова"
 
 #: lazarusidestrconsts.srkmectogglebreakpoints
@@ -18060,10 +18143,12 @@ msgid "View forms"
 msgstr "Показать формы"
 
 #: lazarusidestrconsts.srkmecviewhistory
+msgctxt "lazarusidestrconsts.srkmecviewhistory"
 msgid "View History"
 msgstr "Показать историю"
 
 #: lazarusidestrconsts.srkmecviewpseudoterminal
+msgctxt "lazarusidestrconsts.srkmecviewpseudoterminal"
 msgid "View Terminal Output"
 msgstr "Показать вывод в терминал"
 
@@ -18072,6 +18157,7 @@ msgid "View Tab Order"
 msgstr "Показать порядок перехода"
 
 #: lazarusidestrconsts.srkmecviewthreads
+msgctxt "lazarusidestrconsts.srkmecviewthreads"
 msgid "View Threads"
 msgstr "Показать потоки исполнения"
 
@@ -18352,20 +18438,13 @@ msgid "Toggle &Breakpoint"
 msgstr "П&ереключить точку останова"
 
 #: lazarusidestrconsts.uemviewcallstack
+msgctxt "lazarusidestrconsts.uemviewcallstack"
 msgid "View Call Stack"
 msgstr "Показать стек вызовов"
 
 #: lazarusidestrconsts.uenotimplcap
 msgid "Not implemented yet"
 msgstr "Еще не реализовано"
-
-#: lazarusidestrconsts.uenotimplcapagain
-msgid "I told You: Not implemented yet"
-msgstr "Вам сказано: не реализовано"
-
-#: lazarusidestrconsts.uenotimpltext
-msgid "If You can help us to implement this feature, mail to lazarus@miraclec.com"
-msgstr "Если Вы можете помочь нам реализовать эту функцию, пишите на lazarus@miraclec.com"
 
 #: lazarusidestrconsts.uepins
 msgid "INS"

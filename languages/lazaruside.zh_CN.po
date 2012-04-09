@@ -4343,6 +4343,10 @@ msgstr ""
 msgid "Automatically convert .lfm files to .lrs include files"
 msgstr ""
 
+#: lazarusidestrconsts.lisautomaticallyignoreforselection
+msgid "do not complete selection"
+msgstr ""
+
 #: lazarusidestrconsts.lisautomaticallyinvokeafterpoint
 msgid "Automatically invoke after point"
 msgstr ""
@@ -4353,6 +4357,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lisautomaticallyonspace
 msgid "space"
+msgstr ""
+
+#: lazarusidestrconsts.lisautomaticallyontab
+msgid "tab"
 msgstr ""
 
 #: lazarusidestrconsts.lisautomaticallyonwordend
@@ -4452,11 +4460,6 @@ msgstr "加粗非默认值"
 #| msgid "BorderSpace"
 msgid "Border space"
 msgstr "边界"
-
-#: lazarusidestrconsts.lisbottom
-msgctxt "lazarusidestrconsts.lisbottom"
-msgid "Bottom"
-msgstr "底部"
 
 #: lazarusidestrconsts.lisbottomborderspacespinedithint
 msgid "Bottom borderspace. This value is added to base borderspace and used for the space below the control."
@@ -6802,6 +6805,16 @@ msgstr ""
 msgid "Creating file index of FPC sources %s ..."
 msgstr ""
 
+#: lazarusidestrconsts.liscsbottom
+msgctxt "lazarusidestrconsts.liscsbottom"
+msgid "Bottom"
+msgstr "底部"
+
+#: lazarusidestrconsts.liscstop
+msgctxt "lazarusidestrconsts.liscstop"
+msgid "Top"
+msgstr ""
+
 #: lazarusidestrconsts.lisctdefchoosedirectory
 msgid "Choose Directory"
 msgstr "选择路径"
@@ -6850,6 +6863,10 @@ msgstr "选择代码宏"
 msgctxt "lazarusidestrconsts.liscurrent"
 msgid "Current"
 msgstr "当前"
+
+#: lazarusidestrconsts.liscurrentstate
+msgid "Current state: "
+msgstr ""
 
 #: lazarusidestrconsts.liscursorcolumnincurrenteditor
 msgid "Cursor column in current editor"
@@ -7610,6 +7627,14 @@ msgctxt "lazarusidestrconsts.lisdown"
 msgid "Down"
 msgstr "下移"
 
+#: lazarusidestrconsts.lisdowngrade
+msgid "Downgrade"
+msgstr ""
+
+#: lazarusidestrconsts.lisdowngradeconfiguration
+msgid "Downgrade configuration"
+msgstr ""
+
 #: lazarusidestrconsts.lisdoyoustillwanttocreatethenewproject
 msgid "Do you still want to create the new project?"
 msgstr ""
@@ -7944,10 +7969,6 @@ msgstr "编码文件%s%s%s%在磁盘上是%s，新的编码是%s."
 msgid "Endless loop in macros"
 msgstr ""
 
-#: lazarusidestrconsts.lisentertransla
-msgid "Enter translation language"
-msgstr "输入翻译的语言"
-
 #: lazarusidestrconsts.lisenvironmentvariablenameasparameter
 msgid "Environment variable, name as parameter"
 msgstr ""
@@ -8258,9 +8279,17 @@ msgstr "展开当前编辑器中文件的名称"
 msgid "Export ..."
 msgstr "导出 ..."
 
+#: lazarusidestrconsts.lisexporthtml
+msgid "Export as HTML"
+msgstr ""
+
 #: lazarusidestrconsts.lisexportlist
 msgid "Export list"
 msgstr "导出列表"
+
+#: lazarusidestrconsts.lisexportpackagelistxml
+msgid "Export package list (*.xml)"
+msgstr ""
 
 #: lazarusidestrconsts.lisexpression
 msgid "Expression:"
@@ -9009,6 +9038,10 @@ msgstr "保存到文件"
 msgid "Save to recent"
 msgstr "保存到最近的文件"
 
+#: lazarusidestrconsts.lisifyouwanttousetwodifferentlazarusversionsyoumustst
+msgid "If you want to use two different Lazarus versions you must start the second Lazarus with the command line parameter primary-config-path or pcp.%s%sFor example:%s"
+msgstr ""
+
 #: lazarusidestrconsts.lisignoreall
 msgid "Ignore all"
 msgstr "忽略所有"
@@ -9044,6 +9077,10 @@ msgstr ""
 #: lazarusidestrconsts.lisimportlist
 msgid "Import list"
 msgstr "导入列表"
+
+#: lazarusidestrconsts.lisimportpackagelistxml
+msgid "Import package list (*.xml)"
+msgstr ""
 
 #: lazarusidestrconsts.lisimpossible
 msgid "Impossible"
@@ -9271,6 +9308,10 @@ msgstr "属性"
 #: lazarusidestrconsts.lisinstallationfailed
 msgid "Installation failed"
 msgstr "安装失败"
+
+#: lazarusidestrconsts.lisinstalled
+msgid "installed"
+msgstr ""
 
 #: lazarusidestrconsts.lisinstallitilikethefat
 msgid "Install it, I like the fat"
@@ -9930,15 +9971,21 @@ msgid "Toggle marker 9"
 msgstr "切换到标记 9"
 
 #: lazarusidestrconsts.liskmtoggleviewassembler
-msgid "Toggle view Assembler"
+msgctxt "lazarusidestrconsts.liskmtoggleviewassembler"
+msgid "View Assembler"
 msgstr ""
 
 #: lazarusidestrconsts.liskmtoggleviewbreakpoints
-msgid "Toggle view Breakpoints"
+#, fuzzy
+#| msgid "Toggle view Breakpoints"
+msgid "View Breakpoints"
 msgstr "切换到断点查看器视图"
 
 #: lazarusidestrconsts.liskmtoggleviewcallstack
-msgid "Toggle view Call Stack"
+#, fuzzy
+#| msgid "Toggle view Call Stack"
+msgctxt "lazarusidestrconsts.liskmtoggleviewcallstack"
+msgid "View Call Stack"
 msgstr "切换到堆栈查看器视图"
 
 #: lazarusidestrconsts.liskmtoggleviewcodeexplorer
@@ -9952,11 +9999,13 @@ msgid "Toggle View Component Palette"
 msgstr "切换到组件面板视图"
 
 #: lazarusidestrconsts.liskmtoggleviewdebugevents
-msgid "Toggle view Debuger Event Log"
+msgid "View Debuger Event Log"
 msgstr ""
 
 #: lazarusidestrconsts.liskmtoggleviewdebuggeroutput
-msgid "Toggle view Debugger Output"
+#, fuzzy
+#| msgid "Toggle view Debugger Output"
+msgid "View Debugger Output"
 msgstr "切换到调试器输出视图"
 
 #: lazarusidestrconsts.liskmtoggleviewdocumentationeditor
@@ -9964,7 +10013,8 @@ msgid "Toggle view Documentation Editor"
 msgstr "切换到文档编辑器视图"
 
 #: lazarusidestrconsts.liskmtoggleviewhistory
-msgid "Toggle view History"
+msgctxt "lazarusidestrconsts.liskmtoggleviewhistory"
+msgid "View History"
 msgstr ""
 
 #: lazarusidestrconsts.liskmtoggleviewidespeedbuttons
@@ -9972,7 +10022,9 @@ msgid "Toggle view IDE speed buttons"
 msgstr ""
 
 #: lazarusidestrconsts.liskmtoggleviewlocalvariables
-msgid "Toggle view Local Variables"
+#, fuzzy
+#| msgid "Toggle view Local Variables"
+msgid "View Local Variables"
 msgstr "切换到本地变量视图"
 
 #: lazarusidestrconsts.liskmtoggleviewmessages
@@ -9984,11 +10036,12 @@ msgid "Toggle view Object Inspector"
 msgstr "切换到对象查看器视图"
 
 #: lazarusidestrconsts.liskmtoggleviewpseudoterminal
-msgid "Toggle view Terminal Output"
+msgctxt "lazarusidestrconsts.liskmtoggleviewpseudoterminal"
+msgid "View Terminal Output"
 msgstr ""
 
 #: lazarusidestrconsts.liskmtoggleviewregisters
-msgid "Toggle view Registers"
+msgid "View Registers"
 msgstr ""
 
 #: lazarusidestrconsts.liskmtoggleviewsearchresults
@@ -10000,11 +10053,14 @@ msgid "Toggle view Source Editor"
 msgstr "切换到源码编辑器视图"
 
 #: lazarusidestrconsts.liskmtoggleviewthreads
-msgid "Toggle view Threads"
+msgctxt "lazarusidestrconsts.liskmtoggleviewthreads"
+msgid "View Threads"
 msgstr ""
 
 #: lazarusidestrconsts.liskmtoggleviewwatches
-msgid "Toggle view Watches"
+#, fuzzy
+#| msgid "Toggle view Watches"
+msgid "View Watches"
 msgstr "切换到Watches视图"
 
 #: lazarusidestrconsts.liskmviewjumphistory
@@ -10140,10 +10196,6 @@ msgstr "构建组件 (SynEdit, CodeTools)"
 #: lazarusidestrconsts.lislazbuildbuildide
 msgid "Build IDE"
 msgstr "构建 IDE"
-
-#: lazarusidestrconsts.lislazbuildbuildjitform
-msgid "Build JITForm"
-msgstr "构建 JITForm"
 
 #: lazarusidestrconsts.lislazbuildbuildmany
 msgid "Build Many"
@@ -10338,10 +10390,6 @@ msgstr ""
 #: lazarusidestrconsts.lisldtheunitisnotownedbeanypackageorprojectpleaseaddthe
 msgid "The unit %s is not owned be any package or project.%sPlease add the unit to a package or project.%sUnable to create the fpdoc file."
 msgstr "单元文件 %s 不属于任何包或工程.%s请添加单元文件到一个包或工程.%s不能建立 fpdoc 文件."
-
-#: lazarusidestrconsts.lisleaveemptyfo
-msgid "Leave empty for default .po file"
-msgstr "默认 .po 文件为空"
 
 #: lazarusidestrconsts.lisleft
 msgctxt "lazarusidestrconsts.lisleft"
@@ -10714,10 +10762,6 @@ msgstr "关闭工程"
 msgid "CodeTools Defines Editor ..."
 msgstr "代码工具自定义编辑器 ..."
 
-#: lazarusidestrconsts.lismenucollectpofil
-msgid "Collect .po files"
-msgstr "搜集 .po 文件"
-
 #: lazarusidestrconsts.lismenucommentselection
 #, fuzzy
 #| msgid "Comment selection"
@@ -10794,10 +10838,6 @@ msgstr "转换工程/包的编码..."
 #: lazarusidestrconsts.lismenucreatefpdocfiles
 msgid "Create FPDoc files"
 msgstr "创建 FPDoc 文件"
-
-#: lazarusidestrconsts.lismenucreatepofile
-msgid "Create .po files"
-msgstr "创建 .po 文件"
 
 #: lazarusidestrconsts.lismenudebugwindows
 #, fuzzy
@@ -12078,6 +12118,26 @@ msgstr ""
 msgid "Not a valid pascal identifier"
 msgstr ""
 
+#: lazarusidestrconsts.lisnotebooktabposbottom
+msgctxt "lazarusidestrconsts.lisnotebooktabposbottom"
+msgid "Bottom"
+msgstr "底部"
+
+#: lazarusidestrconsts.lisnotebooktabposleft
+msgctxt "lazarusidestrconsts.lisnotebooktabposleft"
+msgid "Left"
+msgstr "左"
+
+#: lazarusidestrconsts.lisnotebooktabposright
+msgctxt "lazarusidestrconsts.lisnotebooktabposright"
+msgid "Right"
+msgstr "右"
+
+#: lazarusidestrconsts.lisnotebooktabpostop
+msgctxt "lazarusidestrconsts.lisnotebooktabpostop"
+msgid "Top"
+msgstr ""
+
 #: lazarusidestrconsts.lisnotecouldnotcreatedefinetemplateforfreepascal
 msgid "NOTE: Could not create Define Template for Free Pascal Sources"
 msgstr "注意: 不能为 Free Pascal 源代码产生自定义模板"
@@ -12098,9 +12158,9 @@ msgstr "尚未实现"
 msgid "Not implemented yet:%s%s"
 msgstr "尚未实现:%s%s"
 
-#: lazarusidestrconsts.lisnotimplementedyet2
-msgid "Not implemented yet."
-msgstr "尚未实现."
+#: lazarusidestrconsts.lisnotinstalled
+msgid "not installed"
+msgstr ""
 
 #: lazarusidestrconsts.lisnotnow
 msgid "Not now"
@@ -12823,6 +12883,11 @@ msgstr "%s状态: "
 msgid "Uninstall on next start"
 msgstr "下一次启动时卸载"
 
+#: lazarusidestrconsts.lispckexpluninstallpackage
+msgctxt "lazarusidestrconsts.lispckexpluninstallpackage"
+msgid "Uninstall package %s"
+msgstr ""
+
 #: lazarusidestrconsts.lispckoptsaddoptionstodependentpackagesandprojects
 msgid "Add options to dependent packages and projects"
 msgstr "添加选项到依赖的包和工程"
@@ -13136,10 +13201,6 @@ msgstr "重新打开包?"
 #| msgid "The file %s%s%s%sis currently not in the unitpath of the package.%s%sAdd %s%s%s to UnitPath?"
 msgid "The file %s%s%s%sis currently not in the unit path of the package.%s%sAdd %s%s%s to unit path?"
 msgstr "文件 %s%s%s%si不在当前包单元路径中间.%s%s添加 %s%s%s 到 UnitPath?"
-
-#: lazarusidestrconsts.lispkgedonlinehelpnotyetimplemented
-msgid "Online Help not yet implemented"
-msgstr "在线帮助还没有实现"
 
 #: lazarusidestrconsts.lispkgedrightclickontheitemstreetogetthepopupmenuwithallav
 msgid "Right click on the items tree to get the popupmenu with all available package functions."
@@ -13872,6 +13933,10 @@ msgstr "主要配置目录, Lazrus 将默认在此保存配置文件.默认"
 
 #: lazarusidestrconsts.lisprimaryconfigpath
 msgid "Primary config path"
+msgstr ""
+
+#: lazarusidestrconsts.lisprior
+msgid "prior %s"
 msgstr ""
 
 #: lazarusidestrconsts.lisprivate
@@ -14985,10 +15050,6 @@ msgstr "更小而非更快"
 msgid "Matches"
 msgstr "匹配"
 
-#: lazarusidestrconsts.lissorrynotimplementedyet
-msgid "Sorry, not implemented yet"
-msgstr "对不起, 尚未实现"
-
 #: lazarusidestrconsts.lissorrythistypeisnotyetimplemented
 msgid "Sorry, this type is not yet implemented"
 msgstr "对不起, 这种类型尚未实现"
@@ -15328,6 +15389,10 @@ msgstr ""
 msgid "The component name must be unique in all components on the form/datamodule.The name is compared case insensitive like a normal pascal identifier."
 msgstr ""
 
+#: lazarusidestrconsts.listheconfigurationwillbedowngradedconverted
+msgid "The configuration will be downgraded/converted."
+msgstr ""
+
 #: lazarusidestrconsts.listhecontainsanotexistingdirectory
 msgid "The %s contains a not existing directory:%s%s"
 msgstr ""
@@ -15542,6 +15607,10 @@ msgstr ""
 #: lazarusidestrconsts.listhenewunitisnotyetintheunitsearchpathadddirectory
 msgid "The new unit is not yet in the unit search path.%sAdd directory %s?"
 msgstr "新的单元文件还未放入单元文件搜索路径.%s添加目录 %s?"
+
+#: lazarusidestrconsts.listheoldconfigurationwillbeupgraded
+msgid "The old configuration will be upgraded."
+msgstr ""
 
 #: lazarusidestrconsts.listheothersourcescontainsadirectorywhichisalreadyint
 msgid "The \"Other sources\" contains a directory which is already in the \"Other unit files\".%s%s"
@@ -15901,11 +15970,6 @@ msgstr "切换文件名显示从全路径到相对路径"
 
 #: lazarusidestrconsts.listoinstallyoumustcompileandrestarttheide
 msgid "To install you must compile and restart the IDE"
-msgstr ""
-
-#: lazarusidestrconsts.listop
-msgctxt "lazarusidestrconsts.listop"
-msgid "Top"
 msgstr ""
 
 #: lazarusidestrconsts.listopanchoring
@@ -16466,6 +16530,10 @@ msgstr ""
 msgid "Unused units"
 msgstr "未用单元"
 
+#: lazarusidestrconsts.lisunusualcompilerfilenameusuallyitstartswithfpcppcor
+msgid "Unusual compiler file name. Usually it starts with fpc, ppc or ppcross."
+msgstr ""
+
 #: lazarusidestrconsts.lisup
 msgctxt "lazarusidestrconsts.lisup"
 msgid "Up"
@@ -16474,6 +16542,14 @@ msgstr "上移"
 #: lazarusidestrconsts.lisupdatereferences
 msgid "Update references?"
 msgstr "更新引用？"
+
+#: lazarusidestrconsts.lisupgrade
+msgid "Upgrade"
+msgstr ""
+
+#: lazarusidestrconsts.lisupgradeconfiguration
+msgid "Upgrade configuration"
+msgstr ""
 
 #: lazarusidestrconsts.lisuppercasestring
 msgid "uppercase string"
@@ -16619,6 +16695,7 @@ msgid "View Source"
 msgstr ""
 
 #: lazarusidestrconsts.lisviewsourcedisass
+msgctxt "lazarusidestrconsts.lisviewsourcedisass"
 msgid "View Assembler"
 msgstr ""
 
@@ -16701,6 +16778,10 @@ msgstr ""
 
 #: lazarusidestrconsts.liswelcometolazaruside
 msgid "Welcome to Lazarus IDE %s"
+msgstr ""
+
+#: lazarusidestrconsts.liswelcometolazarusthereisalreadyaconfigurationfromve
+msgid "Welcome to Lazarus %s%s%sThere is already a configuration from version %s in%s%s%s"
 msgstr ""
 
 #: lazarusidestrconsts.liswhenaunitisrenamedupdatereferences
@@ -17871,7 +17952,9 @@ msgid "quick compile, no linking"
 msgstr "快速编译(不连接)"
 
 #: lazarusidestrconsts.srkmecremovebreakpoint
-msgid "remove break point"
+#, fuzzy
+#| msgid "remove break point"
+msgid "remove breakpoint"
 msgstr "移除断点"
 
 #: lazarusidestrconsts.srkmecremoveemptymethods
@@ -18188,7 +18271,9 @@ msgid "View assembler"
 msgstr ""
 
 #: lazarusidestrconsts.srkmectogglebreakpoint
-msgid "toggle break point"
+#, fuzzy
+#| msgid "toggle break point"
+msgid "toggle breakpoint"
 msgstr "切换断点"
 
 #: lazarusidestrconsts.srkmectogglebreakpoints
@@ -18309,10 +18394,12 @@ msgid "View forms"
 msgstr "查看窗体"
 
 #: lazarusidestrconsts.srkmecviewhistory
+msgctxt "lazarusidestrconsts.srkmecviewhistory"
 msgid "View History"
 msgstr ""
 
 #: lazarusidestrconsts.srkmecviewpseudoterminal
+msgctxt "lazarusidestrconsts.srkmecviewpseudoterminal"
 msgid "View Terminal Output"
 msgstr ""
 
@@ -18321,6 +18408,7 @@ msgid "View Tab Order"
 msgstr ""
 
 #: lazarusidestrconsts.srkmecviewthreads
+msgctxt "lazarusidestrconsts.srkmecviewthreads"
 msgid "View Threads"
 msgstr ""
 
@@ -18594,20 +18682,13 @@ msgid "Toggle &Breakpoint"
 msgstr "切换断点(&T)"
 
 #: lazarusidestrconsts.uemviewcallstack
+msgctxt "lazarusidestrconsts.uemviewcallstack"
 msgid "View Call Stack"
 msgstr "查看栈"
 
 #: lazarusidestrconsts.uenotimplcap
 msgid "Not implemented yet"
 msgstr "尚未实现"
-
-#: lazarusidestrconsts.uenotimplcapagain
-msgid "I told You: Not implemented yet"
-msgstr "很遗憾的告诉你: 尚未实现"
-
-#: lazarusidestrconsts.uenotimpltext
-msgid "If You can help us to implement this feature, mail to lazarus@miraclec.com"
-msgstr "如果你能够帮助我们实现这个功能, 请发电子邮件到 lazarus@miraclec.com"
 
 #: lazarusidestrconsts.uepins
 msgid "INS"
