@@ -5,7 +5,7 @@ main=lcl
 packages=rtl
 
 [target]
-units=interfaces
+units=lcl.pas
 
 [prerules]
 ifneq ($(findstring $(OS_TARGET),$(UNIXs)),)
@@ -23,7 +23,11 @@ endif
 
 [compiler]
 options=-gl -dfpgui
-unitdir=../../units/$(CPU_TARGET)-$(OS_TARGET) ../../../components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) . corelib gui corelib/$(fpGUIPlatform)
+unitdir=../../units/$(CPU_TARGET)-$(OS_TARGET) \
+    ../../../packager/units/$(CPU_TARGET)-$(OS_TARGET) \
+    ../../../components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) \
+    corelib gui corelib/$(fpGUIPlatform) \
+    .. .
 unittargetdir=../../units/$(CPU_TARGET)-$(OS_TARGET)/fpgui
 includedir=corelib corelib/$(fpGUIPlatform)
 
@@ -40,10 +44,11 @@ files=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) \
 .PHONY: cleartarget compiled all
 
 cleartarget:
-        -$(DEL) $(COMPILER_UNITTARGETDIR)/interfaces$(PPUEXT) \
-                $(COMPILER_UNITTARGETDIR)/interfaces$(OEXT)
+        -$(DEL) $(COMPILER_UNITTARGETDIR)/lcl$(PPUEXT) \
+                $(COMPILER_UNITTARGETDIR)/lcl$(OEXT)
 
 compiled:
         $(CPPROG) -f Makefile.compiled $(COMPILER_UNITTARGETDIR)/LCL.compiled
 
-all: cleartarget $(COMPILER_UNITTARGETDIR) interfaces$(PPUEXT) compiled
+all: cleartarget $(COMPILER_UNITTARGETDIR) ../lcl$(PPUEXT) compiled
+
