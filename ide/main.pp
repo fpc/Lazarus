@@ -12535,7 +12535,7 @@ begin
     // save extra options
     IDEBuildFlags:=Flags;
     Result:=SaveIDEMakeOptions(BuildLazProfiles.Current,GlobalMacroList,PkgOptions,
-                               IDEBuildFlags-[blfUseMakeIDECfg,blfDontClean]);
+               IDEBuildFlags-[blfUseMakeIDECfg,blfDontClean]+[blfBackupOldExe]);
     if Result<>mrOk then begin
       DebugLn('TMainIDE.DoBuildLazarus: Save IDEMake options failed.');
       exit;
