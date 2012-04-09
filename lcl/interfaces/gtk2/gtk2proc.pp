@@ -918,7 +918,8 @@ begin
       if (AComponent<>nil) and (AComponent.Name<>'') then
         RCName:=AComponent.Name+'_'+RCName;
     end;
-    gtk_widget_set_name(AWidget,PChar(RCName));
+    // do not set widget name issue #21661
+    // gtk_widget_set_name(AWidget,PChar(RCName));
     //debugln('Set_RC_Name ',GetWidgetDebugReport(AWidget),' RCName="',RCName,'"');
     gtk_widget_set_rc_style(AWidget);
   end;
