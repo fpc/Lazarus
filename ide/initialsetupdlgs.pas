@@ -810,10 +810,12 @@ var
 begin
   InitialSetupDialog:=TInitialSetupDialog.Create(nil);
   try
+    Application.TaskBarBehavior:=tbMultiButton;
     InitialSetupDialog.Init;
     Result:=InitialSetupDialog.ShowModal;
   finally
     InitialSetupDialog.Free;
+    Application.TaskBarBehavior:=tbDefault;
   end;
 end;
 

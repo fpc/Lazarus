@@ -1355,7 +1355,6 @@ var
   CurLazDir: String;
   BaseDir: String;
 begin
-  //DumpStack;
   Cfg:=nil;
   try
     XMLConfig:=GetXMLCfg(true);

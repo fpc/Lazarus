@@ -644,6 +644,7 @@ type
     FApplicationIsActivate: boolean;
     FCheckingFilesOnDisk: boolean;
     FCheckFilesOnDiskNeeded: boolean;
+    fNeedSaveEnvironment: boolean;
     FRemoteControlTimer: TTimer;
     FRemoteControlFileAge: integer;
 
@@ -1104,7 +1105,7 @@ type
     procedure DoToggleViewIDESpeedButtons;
 
     // editor and environment options
-    procedure SaveEnvironment; override;
+    procedure SaveEnvironment(Immediately: boolean = false); override;
     procedure LoadDesktopSettings(TheEnvironmentOptions: TEnvironmentOptions);
     procedure SaveDesktopSettings(TheEnvironmentOptions: TEnvironmentOptions);
   end;
@@ -1898,7 +1899,7 @@ procedure TMainIDE.MainIDEFormClose(Sender: TObject;
   var CloseAction: TCloseAction);
 begin
   DoCallNotifyHandler(lihtIDEClose);
-  SaveEnvironment;
+  SaveEnvironment(true);
   if IDEDockMaster<>nil then
     IDEDockMaster.CloseAll
   else
@@ -4579,8 +4580,7 @@ begin
   if ShowExtToolDialog(ExternalTools,GlobalMacroList)=mrOk then
   begin
     // save to environment options
-    SaveDesktopSettings(EnvironmentOptions);
-    EnvironmentOptions.Save(false);
+    SaveEnvironment(true);
     // save shortcuts to editor options
     ExternalTools.SaveShortCuts(EditorOpts.KeyMap);
     EditorOpts.Save;
@@ -5258,8 +5258,14 @@ begin
   ShowEditorFileManagerForm;
 end;
 
-procedure TMainIDE.SaveEnvironment;
+procedure TMainIDE.SaveEnvironment(Immediately: boolean);
 begin
+  if not Immediately then
+  begin
+    fNeedSaveEnvironment:=true;
+    exit;
+  end;
+  fNeedSaveEnvironment:=false;
   SaveDesktopSettings(EnvironmentOptions);
   EnvironmentOptions.Save(false);
   //debugln('TMainIDE.SaveEnvironment A ',dbgsName(ObjectInspector1.Favourites));
@@ -8608,7 +8614,7 @@ function TMainIDE.DoCompleteLoadingProjectInfo: TModalResult;
 begin
   UpdateCaption;
   EnvironmentOptions.LastSavedProjectFile:=Project1.ProjectInfoFile;
-  EnvironmentOptions.Save(false);
+  SaveEnvironment;
 
   MainBuildBoss.SetBuildTargetProject1(false);
 
@@ -12276,7 +12282,7 @@ begin
   if CurResult=mrAbort then exit(mrAbort);
   if CurResult<>mrOk then Result:=mrCancel;
   CurResult:=DoSaveProject(Flags);
-  SaveEnvironment;
+  SaveEnvironment(true);
   SaveIncludeLinks;
   PkgBoss.SaveSettings;
   InputHistories.Save;
@@ -17455,6 +17461,9 @@ begin
     {$ENDIF}
     UpdateHighlighters(true);
   end;
+  if fNeedSaveEnvironment then
+    SaveEnvironment(true);
+
   GetDefaultProcessList.FreeStoppedProcesses;
   ExternalTools.FreeStoppedProcesses;
   if (SplashForm<>nil) then FreeThenNil(SplashForm);

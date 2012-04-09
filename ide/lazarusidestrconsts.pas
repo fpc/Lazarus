@@ -69,6 +69,7 @@ resourcestring
   lisOk = 'OK';
   lisMenuOk = '&OK';
   lisCancel = 'Cancel';
+  lisImportPackageListXml = 'Import package list (*.xml)';
 //  lisYes = 'Yes';
   lisNo = 'No';
   lisContinue = 'Continue';
