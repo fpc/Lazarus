@@ -15,7 +15,7 @@ resourcestring
   SHTMLCssFile       = '&CSS file';
   SHTMLJSFile        = '&Javascript file';
   SNewHtmlFileProps  = 'New Html file properties';
-  SEnterYouText      = 'Enter your text...';
+  SEnterYouText      = 'Enter your text ...';
 
   SmiHTMLEditor      = 'HTML Editor';
   SmiHTMLStandart    = 'Standard';
@@ -82,19 +82,19 @@ resourcestring
 
   SHtmlDesign               = 'HTML design';
   SHtmlFile                 = 'HTML file';
-  SHtmlFileDesc             = 'Create new HTML file...';
+  SHtmlFileDesc             = 'Create new HTML file ...';
 
   SJSFile                   = 'Javascript file';
-  SJSFileDesc               = 'Create new javascript file...';
+  SJSFileDesc               = 'Create new javascript file ...';
   SJSSource                 = 'Enter your javascript code here';
 
   SCSSFile                   = 'CSS file';
-  SCSSFileDesc               = 'Create new CSS file...';
+  SCSSFileDesc               = 'Create new CSS file ...';
   SCSSSource                 = 'Enter your classes/style definitions here';
 
   SHTMLTagProperty           = 'Tag property: %s';
 
-  SHTMLTableFormCaption      = 'New HTML table...';
+  SHTMLTableFormCaption      = 'New HTML table ...';
   SHTMLTableFormColumnCount  = 'Column count';
   SHTMLTableFormRowCount     = 'Row count';
   SHTMLTableFormBorderWidth  = 'Border width';

@@ -455,7 +455,7 @@ begin
   File1.Add(Open1);
 
   Save1 := TMenuItem.Create(Self);
-  Save1.Caption := '&Save as...';
+  Save1.Caption := '&Save as ...';
   Save1.OnClick := @SaveMemoAs;
   File1.Add(Save1);
 
@@ -860,7 +860,7 @@ begin
   MainMenu1.Items.Add(Help1);
 
   About1 := TMenuItem.Create(Self);
-  About1.Caption := '&About...';
+  About1.Caption := '&About ...';
   About1.OnClick := @ShowTestForm;
   Help1.Add(About1);
 end;

@@ -55,9 +55,9 @@ uses
   ;
 
 Const
-  cStateJob : Array[IPP_JOB_PENDING..IPP_JOB_COMPLETED] of string =('Pending...',
+  cStateJob : Array[IPP_JOB_PENDING..IPP_JOB_COMPLETED] of string =('Pending ...',
                                                                     'Held',
-                                                                    'Processing...',
+                                                                    'Processing ...',
                                                                     'Stopped',
                                                                     'Canceled',
                                                                     'Aborded',

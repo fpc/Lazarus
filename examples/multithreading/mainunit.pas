@@ -89,9 +89,9 @@ procedure TMyThread.Execute;
 var
   newStatus : string;
 begin
-  fStatusText := 'TMyThread Starting...';
+  fStatusText := 'TMyThread Starting ...';
   Synchronize(@Showstatus);
-  fStatusText := 'TMyThread Running...';
+  fStatusText := 'TMyThread Running ...';
   while (not Terminated) and (true {any condition required}) do begin
 
     //here goes the code of the main thread loop

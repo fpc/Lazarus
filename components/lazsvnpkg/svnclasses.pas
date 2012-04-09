@@ -46,9 +46,9 @@ resourcestring
   rsFileStatus = 'File status';
   rsIndexOutOfBoundsD = 'Index out of bounds (%d)';
   rsLazarusSVNCommit = 'LazarusSVN Commit';
-  rsLazarusSVNDiff = '%s - LazarusSVN Diff...';
-  rsLazarusSVNLog = '%s - LazarusSVN Log...';
-  rsLazarusSVNUpdate = '%s - LazarusSVN Update...';
+  rsLazarusSVNDiff = '%s - LazarusSVN Diff ...';
+  rsLazarusSVNLog = '%s - LazarusSVN Log ...';
+  rsLazarusSVNUpdate = '%s - LazarusSVN Update ...';
   rsCommitMsgHistory = 'Commit Message History';
   rsCommitMsg = 'Commit Message';
   rsMerged = 'Merged';

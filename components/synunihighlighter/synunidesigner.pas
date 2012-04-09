@@ -572,7 +572,7 @@ begin
   TreeMenu := TPopupMenu.Create( F );
   TreeMenu.OnPopup := @TreeMenuPopup;
   TreeMenu.Items.Add( TMenuItem.Create( F ) );
-  TreeMenu.Items.Items[0].Caption := 'Load from file...';
+  TreeMenu.Items.Items[0].Caption := 'Load from file ...';
   TreeMenu.Items.Items[0].OnClick := @LoadFromFileClick;
   Tree.PopupMenu := TreeMenu;
 

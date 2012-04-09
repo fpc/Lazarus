@@ -1103,7 +1103,7 @@ btnSave := TBitBtn.Create(Self); //Button Save
      Height := 21;
      Kind := bkCustom;
      Caption := ' Save ';
-     Hint := 'Save Memo as...';
+     Hint := 'Save Memo as ...';
      ShowHint := True;
      Visible := True;
    end;
@@ -1118,7 +1118,7 @@ btnOpen := TBitBtn.Create(Self); //Button Open
      Height := 21;
      Kind := bkCustom;
      Caption := ' Open ';
-     Hint := 'Open File...';
+     Hint := 'Open File ...';
      ShowHint := True;
      Visible := True;
    end;

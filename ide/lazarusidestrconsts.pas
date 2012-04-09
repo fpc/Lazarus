@@ -4720,7 +4720,7 @@ resourcestring
   lisGroupNameInvalid = 'BreakpointGroup name must be a valid Pascal identifier name.';
   lisGroupNameEmptyClearInstead = 'The group name cannot be empty. Clear breakpoints'' group(s)?';
   lisGroupAssignExisting = 'Assign to existing "%s" group?';
-  lisGroupSetNew = 'Set new group...';
+  lisGroupSetNew = 'Set new group ...';
   lisGroupSetNone = 'Clear group(s)';
   lisGroupEmptyDelete = 'No more breakpoints are assigned to group "%s", delete it?';
   lisGroupEmptyDeleteMore = '%sThere are %d more empty groups, delete all?';

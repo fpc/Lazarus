@@ -9,10 +9,10 @@ uses
 
 resourcestring
   sResourceExplorer = 'Resource explorer';
-  sSaveResource     = 'Save resource...';
-  sAbout            = 'About...';
+  sSaveResource     = 'Save resource ...';
+  sAbout            = 'About ...';
   sExit             = 'Exit';
-  sOpen             = 'Open...';
+  sOpen             = 'Open ...';
   sFile             = 'File';
   sHelp             = 'Help';
   sStrings          = 'Strings';

@@ -53,7 +53,7 @@ resourcestring
   rsIpHTMLPreviewClose = 'Close';
   rsIpHTMLPreviewPage = 'Page:';
   rsIpHTMLPreviewOf = 'of';
-  rsIpHTMLPreviewSelectPrinter = 'Select printer...';
+  rsIpHTMLPreviewSelectPrinter = 'Select printer ...';
 
 type
 

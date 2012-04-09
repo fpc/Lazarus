@@ -59,11 +59,11 @@ end;
 
 ////TL FPC wants resources defined globally... moved from the function below
 resourcestring
-  sEditUni = 'Edit...';
+  sEditUni = 'Edit ...';
 
 function TSynUniEditor.GetVerb(Index: Integer): string;
 ////TL resourcestring
-////TL  sEditUni = 'Edit...';
+////TL  sEditUni = 'Edit ...';
 begin
   Result := sEditUni;
 end;

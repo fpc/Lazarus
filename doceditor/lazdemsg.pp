@@ -172,7 +172,7 @@ ResourceString
   SMenuExtraBuild       = '&Build';
 
   SMenuHelp             = '&Help';
-  SMenuHelpAbout        = '&About...';
+  SMenuHelpAbout        = '&About ...';
     
 { ---------------------------------------------------------------------
     Hint strings  
@@ -181,7 +181,7 @@ ResourceString
   SHintFileOpen        = 'Open file';
   SHintFileSave        = 'Save file';
   SHintFileSaveAs      = 'Save file as';
-  SHintMenuNewFromFile = 'New from file...';
+  SHintMenuNewFromFile = 'New from file ...';
   SHintFileClose       = 'Close current file';
   SHintFileExit        = 'Close doc editor';
 

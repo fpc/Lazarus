@@ -177,7 +177,7 @@ resourcestring
   sld_ActionnewH           = 'Create a new Data Dictionary';
   sld_Actionexit           = 'E&xit';
   sld_ActionexitH          = 'Quit this program';
-  sld_Actionopen           = '&Open...';
+  sld_Actionopen           = '&Open ...';
   sld_ActionopenH          = 'Open a new Data Dictionary';
   sld_Actionclose          = '&Close';
   sld_ActioncloseH         = 'Close current Data Dictionary';
