@@ -7275,7 +7275,6 @@ begin
       Invalidate;
     end else
       UpdateScrollbars;
-    Exclude(fStateFlags, sfScrollbarChanged); // TODO: Why?
     if not (eoScrollPastEol in Options) then
       LeftChar := LeftChar;
     if not (eoScrollPastEof in Options) then
