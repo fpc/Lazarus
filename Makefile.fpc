@@ -10,8 +10,8 @@ version=$(IDEVERSION)
 packages=regexpr
 
 [target]
-programs=lazarus startlazarus
-dirs=lcl packager/registration ideintf components
+programs=lazarus startlazarus lazbuild
+dirs=
 exampledirs=examples
 
 [compiler]
@@ -45,22 +45,32 @@ endif
 
 #-----------------------------------------------------------------------------
 [rules]
-.PHONY: help lcl components packager/registration ideintf bigidecomponents lazbuild tools ide idepkg idebig cleanide bigide bigideclean useride starter all clean purge examples install
+.PHONY: help registration lazutils codetools lcl ideintf basecomponents bigidecomponents lazbuild ide idepkg idebig cleanide bigide useride starter all clean purge install
 
 #-----------------------------------------------------------------------------
 help:
 	@$(ECHO)
-	@$(ECHO) " Targets"
-	@$(ECHO) "   all          build minimal IDE, lazbuild, startlazarus"
-	@$(ECHO) "   clean        deletes files that 'all' creates"
-	@$(ECHO) "   lazbuild     build lazbuild and lcl with nogui widgetset"
-	@$(ECHO) "   starter      build startlazarus"
-	@$(ECHO) "   bigide       build IDE with some stable extra packages"
-	@$(ECHO) "   tools        build lazres, svn2revisioninc, updatepofiles, lrstolfm"
-	@$(ECHO) "   examples     build basic examples. Note: There are more examples having their own directory"
-	@$(ECHO) "   lcl          build lcl"
+	@$(ECHO) " Main targets"
+	@$(ECHO) "   all            build minimal IDE, lazbuild, startlazarus"
+	@$(ECHO) "   clean          deletes files that 'all' creates"
+	@$(ECHO) "   lazbuild       build lazbuild and lcl with nogui widgetset"
+	@$(ECHO) "   bigide         as all, except that the IDE is build with a lot of extra packages"
+	@$(ECHO) "   useride        calls lazbuild to build an IDE with your active profile, requires lazbuild"
 	@$(ECHO)
-	@$(ECHO) " Examples:"
+	@$(ECHO) " Sub targets"
+	@$(ECHO) "   registration   build package FCL"
+	@$(ECHO) "   lazutils       build package LazUtils, requires registration"
+	@$(ECHO) "   codetools      build package CodeTools, requires lazutils"
+	@$(ECHO) "   lcl            build package LCL, requires lazutils"
+	@$(ECHO) "   tools          build lazres, svn2revisioninc, updatepofiles, lrstolfm, requires LCL with nogui widgetset"
+	@$(ECHO) "   ideintf        build package IDEIntf, requires lcl"
+	@$(ECHO) "   basecomponents build synedit and lazcontrols for the LCL_PLATFORM, requires ideintf"
+	@$(ECHO) "   bigidecomponents build many extra packages for the LCL_PLATFORM, requires basecomponents"
+	@$(ECHO) "   starter        build startlazarus, requires basecomponents"
+	@$(ECHO) "   examples       build basic examples, requires basecomponents"
+	@$(ECHO) "                  Note: There are more examples having their own directory"
+	@$(ECHO)
+	@$(ECHO) " Usage examples:"
 	@$(ECHO)
 	@$(ECHO) " Updating svn and build a minimal IDE, startlazarus and lazbuild:"
 	@$(ECHO) "   make clean"
@@ -73,12 +83,9 @@ help:
 	@$(ECHO) " Updating svn and build an IDE with your last set of packages:"
 	@$(ECHO) "   make clean"
 	@$(ECHO) "   svn up"
-	@$(ECHO) "   make clean lazbuild"
-	@$(ECHO) "   ./lazbuild --build-ide="
+	@$(ECHO) "   make clean lazbuild useride"
 	@$(ECHO)
-	@$(ECHO) "   Note: Windows users must execute 'lazbuild.exe --build-ide='"
-	@$(ECHO)
-	@$(ECHO) Clean up:
+	@$(ECHO) " Clean up:"
 	@$(ECHO) "  There is no command to clean up a svn repository completely, but"
 	@$(ECHO) "  you can use the following command under Linux/OS X:"
 	@$(ECHO) "  svn status | grep '\?' | sed -e 's/\? *//' | xargs rm -r"
@@ -86,79 +93,123 @@ help:
 	@exit
 
 #-----------------------------------------------------------------------------
-lazutils: packager/registration
+# build package FCL (shared by all LCL_PLATFORMs)
+registration:
+	$(MAKE) -C packager/registration
+
+#-----------------------------------------------------------------------------
+# build package LazUtils, requires registration (shared by all LCL_PLATFORMs)
+lazutils:
 	$(MAKE) -C components/lazutils
 
 #-----------------------------------------------------------------------------
-# build lazarus exe with minimum of packages
+# build package CodeTools, requires lazutils (shared by all LCL_PLATFORMs)
+codetools:
+	$(MAKE) -C components/codetools
+
+#-----------------------------------------------------------------------------
+# build package LCLBase and LCL for LCL_PLATFORM
+# requires lazutils
+lcl:
+	$(MAKE) -C lcl
+
+#-----------------------------------------------------------------------------
+# build package IDEIntf for LCL_PLATFORM
+# requires lcl
+ideintf:
+	$(MAKE) -C ideintf
+
+#-----------------------------------------------------------------------------
+# build synedit and lazcontrols for the LCL_PLATFORM
+# (Note: lazutils and codetools are shared on all LCL platforms)
+# requires ideintf
+basecomponents:
+	$(MAKE) -C components base
+
+#-----------------------------------------------------------------------------
+# build a lot of extra packages for the LCL_PLATFORM
+# requires basecomponents
+bigidecomponents:
+	$(MAKE) -C components bigide
+
+#-----------------------------------------------------------------------------
+# build lazres, svn2revisioninc, updatepofiles, lrstolfm
+# requires codetools and LCL with nogui widgetset
+tools:
+	$(MAKE) -C tools
+
+#-----------------------------------------------------------------------------
+# build lazarus exe with minimum of packages for the LCL_PLATFORM
+# requires basecomponents and tools
 ide:
 	$(MAKE) -C ide ide
 
 #-----------------------------------------------------------------------------
-# build lazarus exe with user's packages
-idepkg:
-	$(MAKE) -C ide idepkg
-
-#-----------------------------------------------------------------------------
-# build lazarus exe with bigide packages
+# build lazarus exe with bigide packages for the LCL_PLATFORM
+# requires bigidecomponents and tools
 idebig:
 	$(MAKE) -C ide bigide
 
 #-----------------------------------------------------------------------------
-# build lazarus and packages with user's settings
+# build lazarus exe with user's packages for the LCL_PLATFORM
+# requires user's packages, idemake.cfg and staticpackages.inc
+# called by the IDE/lazbuild
+# the idemake.cfg and staticpackages.inc are created by the IDE or by lazbuild
+idepkg:
+	$(MAKE) -C ide idepkg
+
+#-----------------------------------------------------------------------------
+# calls lazbuild to build lazarus and packages with user's settings
+# requires lazbuild
+# ignores LCL_PLATFORM and OPTS
 useride: 
 	./lazbuild$(SRCEXEEXT) --build-ide=
 
-#-----------------------------------------------------------------------------
-# build lazarus,lcl,startlazarus with bigide packages
-bigide: lazbuild lcl ideintf bigidecomponents idebig starter
-
-#-----------------------------------------------------------------------------
-bigidecomponents:
-	$(MAKE) -C components bigidecomponents
-	
 #-----------------------------------------------------------------------------
 starter:
 	$(MAKE) -C ide starter
 
 #-----------------------------------------------------------------------------
-lazbuild: lazutils 
-	$(MAKE) -C components/codetools
-	$(MAKE) -C lcl lclbase intf LCL_PLATFORM=nogui
-	$(MAKE) -C ideintf all LCL_PLATFORM=nogui
-	$(MAKE) -C components/synedit all LCL_PLATFORM=nogui
-	$(MAKE) -C components/lazcontrols all LCL_PLATFORM=nogui
+lazbuild: registration lazutils codetools
+	$(MAKE) -C lcl LCL_PLATFORM=nogui
+	$(MAKE) -C tools
+	$(MAKE) -C ideintf LCL_PLATFORM=nogui
+	$(MAKE) -C components base LCL_PLATFORM=nogui
 	$(MAKE) -C ide lazbuilder LCL_PLATFORM=nogui
 
 #-----------------------------------------------------------------------------
-tools: lcl
-	$(MAKE) -C tools
-	
-#-----------------------------------------------------------------------------
-examples: lazutils lcl bigidecomponents
+# build examples for the LCL_PLATFORM
+# requires basecomponents
+examples:
+	$(MAKE) -C examples
 
 #-----------------------------------------------------------------------------
-all: lazbuild lcl ideintf components tools ide starter
+# build lazarus,lcl,lazbuild,startlazarus with base packages for the LCL_PLATFORM
+all: lazbuild lcl ideintf basecomponents ide starter
+
+#-----------------------------------------------------------------------------
+# build lazarus,lcl,lazbuild,startlazarus with bigide packages for the LCL_PLATFORM
+bigide: lazbuild lcl ideintf basecomponents bigidecomponents idebig starter
 
 #-----------------------------------------------------------------------------
 cleanide:
 	$(MAKE) -C ide cleanide
 
 cleanlaz: cleanide
+	$(MAKE) -C packager/registration clean
 	$(MAKE) -C lcl cleanall
 	$(MAKE) -C components clean
-	$(MAKE) -C packager/registration clean
 	$(MAKE) -C ideintf clean
 
 clean: cleanlaz
 	$(MAKE) -C . cleanlaz LCL_PLATFORM=nogui
+	$(MAKE) -C tools clean
 
 cleanbigide: clean
 
 purge: clean
 	$(MAKE) -C examples clean
 #	$(MAKE) -C doceditor clean
-	$(MAKE) -C tools clean
 
 cleanall: purge
 
@@ -191,14 +242,14 @@ else
 endif
 
 
+##########################################################################
+# Debian
+##########################################################################
+
 # Build dir
 ifndef BUILDDIR
 BUILDDIR=$(BASEDIR)/build
 endif
-
-##########################################################################
-# Debian
-##########################################################################
 
 ifeq ($(OS_TARGET),linux)
 

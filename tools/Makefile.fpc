@@ -5,10 +5,10 @@
 
 [package]
 name=lazarus-tools
-version=0.9b
+version=1.0
 
 [target]
-dirs=apiwizz
+dirs=
 programs=lazres svn2revisioninc updatepofiles lrstolfm
 
 [require]
@@ -19,23 +19,17 @@ packages=rtl
 options=-gl $(LAZARUS_LIBPATHS)
 unitdir=. $(LAZDIR)/components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) \
           $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET) \
-          $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM)
+          $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET)/nogui
 unittargetdir=.
 targetdir=.
 
 [prerules]
 LAZDIR=..
 
-# LCL Platform
-ifndef LCL_PLATFORM
-LCL_PLATFORM=nogui
-endif
-export LCL_PLATFORM
-
 [rules]
 .PHONY: all
 
-all: apiwizz_all
+all:
         echo $(LAZARUS_LIBPATHS)
         $(MAKE) --assume-new=lazres.pp lazres$(EXEEXT)
         $(MAKE) --assume-new=svn2revisioninc.pas svn2revisioninc$(EXEEXT)

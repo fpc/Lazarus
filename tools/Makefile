@@ -292,207 +292,8 @@ FPCFPMAKE=$(FPC)
 endif
 endif
 override PACKAGE_NAME=lazarus-tools
-override PACKAGE_VERSION=0.9b
+override PACKAGE_VERSION=1.0
 LAZDIR=..
-ifndef LCL_PLATFORM
-LCL_PLATFORM=nogui
-endif
-export LCL_PLATFORM
-ifeq ($(FULL_TARGET),i386-linux)
-override TARGET_DIRS+=apiwizz
-endif
-ifeq ($(FULL_TARGET),i386-go32v2)
-override TARGET_DIRS+=apiwizz
-endif
-ifeq ($(FULL_TARGET),i386-win32)
-override TARGET_DIRS+=apiwizz
-endif
-ifeq ($(FULL_TARGET),i386-os2)
-override TARGET_DIRS+=apiwizz
-endif
-ifeq ($(FULL_TARGET),i386-freebsd)
-override TARGET_DIRS+=apiwizz
-endif
-ifeq ($(FULL_TARGET),i386-beos)
-override TARGET_DIRS+=apiwizz
-endif
-ifeq ($(FULL_TARGET),i386-haiku)
-override TARGET_DIRS+=apiwizz
-endif
-ifeq ($(FULL_TARGET),i386-netbsd)
-override TARGET_DIRS+=apiwizz
-endif
-ifeq ($(FULL_TARGET),i386-solaris)
-override TARGET_DIRS+=apiwizz
-endif
-ifeq ($(FULL_TARGET),i386-qnx)
-override TARGET_DIRS+=apiwizz
-endif
-ifeq ($(FULL_TARGET),i386-netware)
-override TARGET_DIRS+=apiwizz
-endif
-ifeq ($(FULL_TARGET),i386-openbsd)
-override TARGET_DIRS+=apiwizz
-endif
-ifeq ($(FULL_TARGET),i386-wdosx)
-override TARGET_DIRS+=apiwizz
-endif
-ifeq ($(FULL_TARGET),i386-darwin)
-override TARGET_DIRS+=apiwizz
-endif
-ifeq ($(FULL_TARGET),i386-emx)
-override TARGET_DIRS+=apiwizz
-endif
-ifeq ($(FULL_TARGET),i386-watcom)
-override TARGET_DIRS+=apiwizz
-endif
-ifeq ($(FULL_TARGET),i386-netwlibc)
-override TARGET_DIRS+=apiwizz
-endif
-ifeq ($(FULL_TARGET),i386-wince)
-override TARGET_DIRS+=apiwizz
-endif
-ifeq ($(FULL_TARGET),i386-embedded)
-override TARGET_DIRS+=apiwizz
-endif
-ifeq ($(FULL_TARGET),i386-symbian)
-override TARGET_DIRS+=apiwizz
-endif
-ifeq ($(FULL_TARGET),i386-nativent)
-override TARGET_DIRS+=apiwizz
-endif
-ifeq ($(FULL_TARGET),i386-iphonesim)
-override TARGET_DIRS+=apiwizz
-endif
-ifeq ($(FULL_TARGET),m68k-linux)
-override TARGET_DIRS+=apiwizz
-endif
-ifeq ($(FULL_TARGET),m68k-freebsd)
-override TARGET_DIRS+=apiwizz
-endif
-ifeq ($(FULL_TARGET),m68k-netbsd)
-override TARGET_DIRS+=apiwizz
-endif
-ifeq ($(FULL_TARGET),m68k-amiga)
-override TARGET_DIRS+=apiwizz
-endif
-ifeq ($(FULL_TARGET),m68k-atari)
-override TARGET_DIRS+=apiwizz
-endif
-ifeq ($(FULL_TARGET),m68k-openbsd)
-override TARGET_DIRS+=apiwizz
-endif
-ifeq ($(FULL_TARGET),m68k-palmos)
-override TARGET_DIRS+=apiwizz
-endif
-ifeq ($(FULL_TARGET),m68k-embedded)
-override TARGET_DIRS+=apiwizz
-endif
-ifeq ($(FULL_TARGET),powerpc-linux)
-override TARGET_DIRS+=apiwizz
-endif
-ifeq ($(FULL_TARGET),powerpc-netbsd)
-override TARGET_DIRS+=apiwizz
-endif
-ifeq ($(FULL_TARGET),powerpc-amiga)
-override TARGET_DIRS+=apiwizz
-endif
-ifeq ($(FULL_TARGET),powerpc-macos)
-override TARGET_DIRS+=apiwizz
-endif
-ifeq ($(FULL_TARGET),powerpc-darwin)
-override TARGET_DIRS+=apiwizz
-endif
-ifeq ($(FULL_TARGET),powerpc-morphos)
-override TARGET_DIRS+=apiwizz
-endif
-ifeq ($(FULL_TARGET),powerpc-embedded)
-override TARGET_DIRS+=apiwizz
-endif
-ifeq ($(FULL_TARGET),powerpc-wii)
-override TARGET_DIRS+=apiwizz
-endif
-ifeq ($(FULL_TARGET),sparc-linux)
-override TARGET_DIRS+=apiwizz
-endif
-ifeq ($(FULL_TARGET),sparc-netbsd)
-override TARGET_DIRS+=apiwizz
-endif
-ifeq ($(FULL_TARGET),sparc-solaris)
-override TARGET_DIRS+=apiwizz
-endif
-ifeq ($(FULL_TARGET),sparc-embedded)
-override TARGET_DIRS+=apiwizz
-endif
-ifeq ($(FULL_TARGET),x86_64-linux)
-override TARGET_DIRS+=apiwizz
-endif
-ifeq ($(FULL_TARGET),x86_64-freebsd)
-override TARGET_DIRS+=apiwizz
-endif
-ifeq ($(FULL_TARGET),x86_64-solaris)
-override TARGET_DIRS+=apiwizz
-endif
-ifeq ($(FULL_TARGET),x86_64-openbsd)
-override TARGET_DIRS+=apiwizz
-endif
-ifeq ($(FULL_TARGET),x86_64-darwin)
-override TARGET_DIRS+=apiwizz
-endif
-ifeq ($(FULL_TARGET),x86_64-win64)
-override TARGET_DIRS+=apiwizz
-endif
-ifeq ($(FULL_TARGET),x86_64-embedded)
-override TARGET_DIRS+=apiwizz
-endif
-ifeq ($(FULL_TARGET),arm-linux)
-override TARGET_DIRS+=apiwizz
-endif
-ifeq ($(FULL_TARGET),arm-palmos)
-override TARGET_DIRS+=apiwizz
-endif
-ifeq ($(FULL_TARGET),arm-darwin)
-override TARGET_DIRS+=apiwizz
-endif
-ifeq ($(FULL_TARGET),arm-wince)
-override TARGET_DIRS+=apiwizz
-endif
-ifeq ($(FULL_TARGET),arm-gba)
-override TARGET_DIRS+=apiwizz
-endif
-ifeq ($(FULL_TARGET),arm-nds)
-override TARGET_DIRS+=apiwizz
-endif
-ifeq ($(FULL_TARGET),arm-embedded)
-override TARGET_DIRS+=apiwizz
-endif
-ifeq ($(FULL_TARGET),arm-symbian)
-override TARGET_DIRS+=apiwizz
-endif
-ifeq ($(FULL_TARGET),powerpc64-linux)
-override TARGET_DIRS+=apiwizz
-endif
-ifeq ($(FULL_TARGET),powerpc64-darwin)
-override TARGET_DIRS+=apiwizz
-endif
-ifeq ($(FULL_TARGET),powerpc64-embedded)
-override TARGET_DIRS+=apiwizz
-endif
-ifeq ($(FULL_TARGET),avr-embedded)
-override TARGET_DIRS+=apiwizz
-endif
-ifeq ($(FULL_TARGET),armeb-linux)
-override TARGET_DIRS+=apiwizz
-endif
-ifeq ($(FULL_TARGET),armeb-embedded)
-override TARGET_DIRS+=apiwizz
-endif
-ifeq ($(FULL_TARGET),mips-linux)
-override TARGET_DIRS+=apiwizz
-endif
-ifeq ($(FULL_TARGET),mipsel-linux)
-override TARGET_DIRS+=apiwizz
-endif
 ifeq ($(FULL_TARGET),i386-linux)
 override TARGET_PROGRAMS+=lazres svn2revisioninc updatepofiles lrstolfm
 endif
@@ -884,199 +685,199 @@ ifeq ($(FULL_TARGET),mipsel-linux)
 override COMPILER_OPTIONS+=-gl $(LAZARUS_LIBPATHS)
 endif
 ifeq ($(FULL_TARGET),i386-linux)
-override COMPILER_UNITDIR+=. $(LAZDIR)/components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET) $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM)
+override COMPILER_UNITDIR+=. $(LAZDIR)/components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET) $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET)/nogui
 endif
 ifeq ($(FULL_TARGET),i386-go32v2)
-override COMPILER_UNITDIR+=. $(LAZDIR)/components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET) $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM)
+override COMPILER_UNITDIR+=. $(LAZDIR)/components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET) $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET)/nogui
 endif
 ifeq ($(FULL_TARGET),i386-win32)
-override COMPILER_UNITDIR+=. $(LAZDIR)/components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET) $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM)
+override COMPILER_UNITDIR+=. $(LAZDIR)/components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET) $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET)/nogui
 endif
 ifeq ($(FULL_TARGET),i386-os2)
-override COMPILER_UNITDIR+=. $(LAZDIR)/components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET) $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM)
+override COMPILER_UNITDIR+=. $(LAZDIR)/components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET) $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET)/nogui
 endif
 ifeq ($(FULL_TARGET),i386-freebsd)
-override COMPILER_UNITDIR+=. $(LAZDIR)/components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET) $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM)
+override COMPILER_UNITDIR+=. $(LAZDIR)/components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET) $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET)/nogui
 endif
 ifeq ($(FULL_TARGET),i386-beos)
-override COMPILER_UNITDIR+=. $(LAZDIR)/components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET) $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM)
+override COMPILER_UNITDIR+=. $(LAZDIR)/components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET) $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET)/nogui
 endif
 ifeq ($(FULL_TARGET),i386-haiku)
-override COMPILER_UNITDIR+=. $(LAZDIR)/components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET) $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM)
+override COMPILER_UNITDIR+=. $(LAZDIR)/components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET) $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET)/nogui
 endif
 ifeq ($(FULL_TARGET),i386-netbsd)
-override COMPILER_UNITDIR+=. $(LAZDIR)/components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET) $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM)
+override COMPILER_UNITDIR+=. $(LAZDIR)/components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET) $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET)/nogui
 endif
 ifeq ($(FULL_TARGET),i386-solaris)
-override COMPILER_UNITDIR+=. $(LAZDIR)/components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET) $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM)
+override COMPILER_UNITDIR+=. $(LAZDIR)/components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET) $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET)/nogui
 endif
 ifeq ($(FULL_TARGET),i386-qnx)
-override COMPILER_UNITDIR+=. $(LAZDIR)/components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET) $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM)
+override COMPILER_UNITDIR+=. $(LAZDIR)/components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET) $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET)/nogui
 endif
 ifeq ($(FULL_TARGET),i386-netware)
-override COMPILER_UNITDIR+=. $(LAZDIR)/components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET) $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM)
+override COMPILER_UNITDIR+=. $(LAZDIR)/components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET) $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET)/nogui
 endif
 ifeq ($(FULL_TARGET),i386-openbsd)
-override COMPILER_UNITDIR+=. $(LAZDIR)/components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET) $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM)
+override COMPILER_UNITDIR+=. $(LAZDIR)/components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET) $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET)/nogui
 endif
 ifeq ($(FULL_TARGET),i386-wdosx)
-override COMPILER_UNITDIR+=. $(LAZDIR)/components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET) $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM)
+override COMPILER_UNITDIR+=. $(LAZDIR)/components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET) $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET)/nogui
 endif
 ifeq ($(FULL_TARGET),i386-darwin)
-override COMPILER_UNITDIR+=. $(LAZDIR)/components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET) $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM)
+override COMPILER_UNITDIR+=. $(LAZDIR)/components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET) $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET)/nogui
 endif
 ifeq ($(FULL_TARGET),i386-emx)
-override COMPILER_UNITDIR+=. $(LAZDIR)/components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET) $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM)
+override COMPILER_UNITDIR+=. $(LAZDIR)/components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET) $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET)/nogui
 endif
 ifeq ($(FULL_TARGET),i386-watcom)
-override COMPILER_UNITDIR+=. $(LAZDIR)/components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET) $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM)
+override COMPILER_UNITDIR+=. $(LAZDIR)/components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET) $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET)/nogui
 endif
 ifeq ($(FULL_TARGET),i386-netwlibc)
-override COMPILER_UNITDIR+=. $(LAZDIR)/components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET) $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM)
+override COMPILER_UNITDIR+=. $(LAZDIR)/components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET) $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET)/nogui
 endif
 ifeq ($(FULL_TARGET),i386-wince)
-override COMPILER_UNITDIR+=. $(LAZDIR)/components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET) $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM)
+override COMPILER_UNITDIR+=. $(LAZDIR)/components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET) $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET)/nogui
 endif
 ifeq ($(FULL_TARGET),i386-embedded)
-override COMPILER_UNITDIR+=. $(LAZDIR)/components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET) $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM)
+override COMPILER_UNITDIR+=. $(LAZDIR)/components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET) $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET)/nogui
 endif
 ifeq ($(FULL_TARGET),i386-symbian)
-override COMPILER_UNITDIR+=. $(LAZDIR)/components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET) $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM)
+override COMPILER_UNITDIR+=. $(LAZDIR)/components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET) $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET)/nogui
 endif
 ifeq ($(FULL_TARGET),i386-nativent)
-override COMPILER_UNITDIR+=. $(LAZDIR)/components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET) $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM)
+override COMPILER_UNITDIR+=. $(LAZDIR)/components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET) $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET)/nogui
 endif
 ifeq ($(FULL_TARGET),i386-iphonesim)
-override COMPILER_UNITDIR+=. $(LAZDIR)/components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET) $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM)
+override COMPILER_UNITDIR+=. $(LAZDIR)/components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET) $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET)/nogui
 endif
 ifeq ($(FULL_TARGET),m68k-linux)
-override COMPILER_UNITDIR+=. $(LAZDIR)/components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET) $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM)
+override COMPILER_UNITDIR+=. $(LAZDIR)/components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET) $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET)/nogui
 endif
 ifeq ($(FULL_TARGET),m68k-freebsd)
-override COMPILER_UNITDIR+=. $(LAZDIR)/components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET) $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM)
+override COMPILER_UNITDIR+=. $(LAZDIR)/components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET) $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET)/nogui
 endif
 ifeq ($(FULL_TARGET),m68k-netbsd)
-override COMPILER_UNITDIR+=. $(LAZDIR)/components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET) $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM)
+override COMPILER_UNITDIR+=. $(LAZDIR)/components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET) $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET)/nogui
 endif
 ifeq ($(FULL_TARGET),m68k-amiga)
-override COMPILER_UNITDIR+=. $(LAZDIR)/components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET) $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM)
+override COMPILER_UNITDIR+=. $(LAZDIR)/components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET) $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET)/nogui
 endif
 ifeq ($(FULL_TARGET),m68k-atari)
-override COMPILER_UNITDIR+=. $(LAZDIR)/components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET) $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM)
+override COMPILER_UNITDIR+=. $(LAZDIR)/components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET) $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET)/nogui
 endif
 ifeq ($(FULL_TARGET),m68k-openbsd)
-override COMPILER_UNITDIR+=. $(LAZDIR)/components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET) $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM)
+override COMPILER_UNITDIR+=. $(LAZDIR)/components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET) $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET)/nogui
 endif
 ifeq ($(FULL_TARGET),m68k-palmos)
-override COMPILER_UNITDIR+=. $(LAZDIR)/components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET) $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM)
+override COMPILER_UNITDIR+=. $(LAZDIR)/components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET) $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET)/nogui
 endif
 ifeq ($(FULL_TARGET),m68k-embedded)
-override COMPILER_UNITDIR+=. $(LAZDIR)/components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET) $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM)
+override COMPILER_UNITDIR+=. $(LAZDIR)/components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET) $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET)/nogui
 endif
 ifeq ($(FULL_TARGET),powerpc-linux)
-override COMPILER_UNITDIR+=. $(LAZDIR)/components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET) $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM)
+override COMPILER_UNITDIR+=. $(LAZDIR)/components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET) $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET)/nogui
 endif
 ifeq ($(FULL_TARGET),powerpc-netbsd)
-override COMPILER_UNITDIR+=. $(LAZDIR)/components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET) $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM)
+override COMPILER_UNITDIR+=. $(LAZDIR)/components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET) $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET)/nogui
 endif
 ifeq ($(FULL_TARGET),powerpc-amiga)
-override COMPILER_UNITDIR+=. $(LAZDIR)/components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET) $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM)
+override COMPILER_UNITDIR+=. $(LAZDIR)/components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET) $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET)/nogui
 endif
 ifeq ($(FULL_TARGET),powerpc-macos)
-override COMPILER_UNITDIR+=. $(LAZDIR)/components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET) $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM)
+override COMPILER_UNITDIR+=. $(LAZDIR)/components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET) $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET)/nogui
 endif
 ifeq ($(FULL_TARGET),powerpc-darwin)
-override COMPILER_UNITDIR+=. $(LAZDIR)/components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET) $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM)
+override COMPILER_UNITDIR+=. $(LAZDIR)/components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET) $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET)/nogui
 endif
 ifeq ($(FULL_TARGET),powerpc-morphos)
-override COMPILER_UNITDIR+=. $(LAZDIR)/components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET) $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM)
+override COMPILER_UNITDIR+=. $(LAZDIR)/components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET) $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET)/nogui
 endif
 ifeq ($(FULL_TARGET),powerpc-embedded)
-override COMPILER_UNITDIR+=. $(LAZDIR)/components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET) $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM)
+override COMPILER_UNITDIR+=. $(LAZDIR)/components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET) $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET)/nogui
 endif
 ifeq ($(FULL_TARGET),powerpc-wii)
-override COMPILER_UNITDIR+=. $(LAZDIR)/components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET) $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM)
+override COMPILER_UNITDIR+=. $(LAZDIR)/components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET) $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET)/nogui
 endif
 ifeq ($(FULL_TARGET),sparc-linux)
-override COMPILER_UNITDIR+=. $(LAZDIR)/components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET) $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM)
+override COMPILER_UNITDIR+=. $(LAZDIR)/components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET) $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET)/nogui
 endif
 ifeq ($(FULL_TARGET),sparc-netbsd)
-override COMPILER_UNITDIR+=. $(LAZDIR)/components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET) $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM)
+override COMPILER_UNITDIR+=. $(LAZDIR)/components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET) $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET)/nogui
 endif
 ifeq ($(FULL_TARGET),sparc-solaris)
-override COMPILER_UNITDIR+=. $(LAZDIR)/components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET) $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM)
+override COMPILER_UNITDIR+=. $(LAZDIR)/components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET) $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET)/nogui
 endif
 ifeq ($(FULL_TARGET),sparc-embedded)
-override COMPILER_UNITDIR+=. $(LAZDIR)/components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET) $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM)
+override COMPILER_UNITDIR+=. $(LAZDIR)/components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET) $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET)/nogui
 endif
 ifeq ($(FULL_TARGET),x86_64-linux)
-override COMPILER_UNITDIR+=. $(LAZDIR)/components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET) $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM)
+override COMPILER_UNITDIR+=. $(LAZDIR)/components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET) $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET)/nogui
 endif
 ifeq ($(FULL_TARGET),x86_64-freebsd)
-override COMPILER_UNITDIR+=. $(LAZDIR)/components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET) $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM)
+override COMPILER_UNITDIR+=. $(LAZDIR)/components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET) $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET)/nogui
 endif
 ifeq ($(FULL_TARGET),x86_64-solaris)
-override COMPILER_UNITDIR+=. $(LAZDIR)/components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET) $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM)
+override COMPILER_UNITDIR+=. $(LAZDIR)/components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET) $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET)/nogui
 endif
 ifeq ($(FULL_TARGET),x86_64-openbsd)
-override COMPILER_UNITDIR+=. $(LAZDIR)/components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET) $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM)
+override COMPILER_UNITDIR+=. $(LAZDIR)/components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET) $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET)/nogui
 endif
 ifeq ($(FULL_TARGET),x86_64-darwin)
-override COMPILER_UNITDIR+=. $(LAZDIR)/components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET) $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM)
+override COMPILER_UNITDIR+=. $(LAZDIR)/components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET) $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET)/nogui
 endif
 ifeq ($(FULL_TARGET),x86_64-win64)
-override COMPILER_UNITDIR+=. $(LAZDIR)/components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET) $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM)
+override COMPILER_UNITDIR+=. $(LAZDIR)/components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET) $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET)/nogui
 endif
 ifeq ($(FULL_TARGET),x86_64-embedded)
-override COMPILER_UNITDIR+=. $(LAZDIR)/components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET) $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM)
+override COMPILER_UNITDIR+=. $(LAZDIR)/components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET) $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET)/nogui
 endif
 ifeq ($(FULL_TARGET),arm-linux)
-override COMPILER_UNITDIR+=. $(LAZDIR)/components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET) $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM)
+override COMPILER_UNITDIR+=. $(LAZDIR)/components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET) $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET)/nogui
 endif
 ifeq ($(FULL_TARGET),arm-palmos)
-override COMPILER_UNITDIR+=. $(LAZDIR)/components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET) $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM)
+override COMPILER_UNITDIR+=. $(LAZDIR)/components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET) $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET)/nogui
 endif
 ifeq ($(FULL_TARGET),arm-darwin)
-override COMPILER_UNITDIR+=. $(LAZDIR)/components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET) $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM)
+override COMPILER_UNITDIR+=. $(LAZDIR)/components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET) $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET)/nogui
 endif
 ifeq ($(FULL_TARGET),arm-wince)
-override COMPILER_UNITDIR+=. $(LAZDIR)/components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET) $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM)
+override COMPILER_UNITDIR+=. $(LAZDIR)/components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET) $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET)/nogui
 endif
 ifeq ($(FULL_TARGET),arm-gba)
-override COMPILER_UNITDIR+=. $(LAZDIR)/components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET) $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM)
+override COMPILER_UNITDIR+=. $(LAZDIR)/components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET) $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET)/nogui
 endif
 ifeq ($(FULL_TARGET),arm-nds)
-override COMPILER_UNITDIR+=. $(LAZDIR)/components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET) $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM)
+override COMPILER_UNITDIR+=. $(LAZDIR)/components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET) $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET)/nogui
 endif
 ifeq ($(FULL_TARGET),arm-embedded)
-override COMPILER_UNITDIR+=. $(LAZDIR)/components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET) $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM)
+override COMPILER_UNITDIR+=. $(LAZDIR)/components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET) $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET)/nogui
 endif
 ifeq ($(FULL_TARGET),arm-symbian)
-override COMPILER_UNITDIR+=. $(LAZDIR)/components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET) $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM)
+override COMPILER_UNITDIR+=. $(LAZDIR)/components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET) $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET)/nogui
 endif
 ifeq ($(FULL_TARGET),powerpc64-linux)
-override COMPILER_UNITDIR+=. $(LAZDIR)/components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET) $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM)
+override COMPILER_UNITDIR+=. $(LAZDIR)/components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET) $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET)/nogui
 endif
 ifeq ($(FULL_TARGET),powerpc64-darwin)
-override COMPILER_UNITDIR+=. $(LAZDIR)/components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET) $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM)
+override COMPILER_UNITDIR+=. $(LAZDIR)/components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET) $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET)/nogui
 endif
 ifeq ($(FULL_TARGET),powerpc64-embedded)
-override COMPILER_UNITDIR+=. $(LAZDIR)/components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET) $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM)
+override COMPILER_UNITDIR+=. $(LAZDIR)/components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET) $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET)/nogui
 endif
 ifeq ($(FULL_TARGET),avr-embedded)
-override COMPILER_UNITDIR+=. $(LAZDIR)/components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET) $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM)
+override COMPILER_UNITDIR+=. $(LAZDIR)/components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET) $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET)/nogui
 endif
 ifeq ($(FULL_TARGET),armeb-linux)
-override COMPILER_UNITDIR+=. $(LAZDIR)/components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET) $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM)
+override COMPILER_UNITDIR+=. $(LAZDIR)/components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET) $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET)/nogui
 endif
 ifeq ($(FULL_TARGET),armeb-embedded)
-override COMPILER_UNITDIR+=. $(LAZDIR)/components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET) $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM)
+override COMPILER_UNITDIR+=. $(LAZDIR)/components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET) $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET)/nogui
 endif
 ifeq ($(FULL_TARGET),mips-linux)
-override COMPILER_UNITDIR+=. $(LAZDIR)/components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET) $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM)
+override COMPILER_UNITDIR+=. $(LAZDIR)/components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET) $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET)/nogui
 endif
 ifeq ($(FULL_TARGET),mipsel-linux)
-override COMPILER_UNITDIR+=. $(LAZDIR)/components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET) $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM)
+override COMPILER_UNITDIR+=. $(LAZDIR)/components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET) $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET)/nogui
 endif
 ifeq ($(FULL_TARGET),i386-linux)
 override COMPILER_TARGETDIR+=.
@@ -2925,263 +2726,23 @@ endif
 fpc_makefile_sub2: $(addsuffix _makefile_dirs,$(TARGET_DIRS) $(TARGET_EXAMPLEDIRS))
 fpc_makefile_dirs: fpc_makefile_sub1 fpc_makefile_sub2
 fpc_makefiles: fpc_makefile fpc_makefile_dirs
-ifeq ($(FULL_TARGET),i386-linux)
-TARGET_DIRS_APIWIZZ=1
-endif
-ifeq ($(FULL_TARGET),i386-go32v2)
-TARGET_DIRS_APIWIZZ=1
-endif
-ifeq ($(FULL_TARGET),i386-win32)
-TARGET_DIRS_APIWIZZ=1
-endif
-ifeq ($(FULL_TARGET),i386-os2)
-TARGET_DIRS_APIWIZZ=1
-endif
-ifeq ($(FULL_TARGET),i386-freebsd)
-TARGET_DIRS_APIWIZZ=1
-endif
-ifeq ($(FULL_TARGET),i386-beos)
-TARGET_DIRS_APIWIZZ=1
-endif
-ifeq ($(FULL_TARGET),i386-haiku)
-TARGET_DIRS_APIWIZZ=1
-endif
-ifeq ($(FULL_TARGET),i386-netbsd)
-TARGET_DIRS_APIWIZZ=1
-endif
-ifeq ($(FULL_TARGET),i386-solaris)
-TARGET_DIRS_APIWIZZ=1
-endif
-ifeq ($(FULL_TARGET),i386-qnx)
-TARGET_DIRS_APIWIZZ=1
-endif
-ifeq ($(FULL_TARGET),i386-netware)
-TARGET_DIRS_APIWIZZ=1
-endif
-ifeq ($(FULL_TARGET),i386-openbsd)
-TARGET_DIRS_APIWIZZ=1
-endif
-ifeq ($(FULL_TARGET),i386-wdosx)
-TARGET_DIRS_APIWIZZ=1
-endif
-ifeq ($(FULL_TARGET),i386-darwin)
-TARGET_DIRS_APIWIZZ=1
-endif
-ifeq ($(FULL_TARGET),i386-emx)
-TARGET_DIRS_APIWIZZ=1
-endif
-ifeq ($(FULL_TARGET),i386-watcom)
-TARGET_DIRS_APIWIZZ=1
-endif
-ifeq ($(FULL_TARGET),i386-netwlibc)
-TARGET_DIRS_APIWIZZ=1
-endif
-ifeq ($(FULL_TARGET),i386-wince)
-TARGET_DIRS_APIWIZZ=1
-endif
-ifeq ($(FULL_TARGET),i386-embedded)
-TARGET_DIRS_APIWIZZ=1
-endif
-ifeq ($(FULL_TARGET),i386-symbian)
-TARGET_DIRS_APIWIZZ=1
-endif
-ifeq ($(FULL_TARGET),i386-nativent)
-TARGET_DIRS_APIWIZZ=1
-endif
-ifeq ($(FULL_TARGET),i386-iphonesim)
-TARGET_DIRS_APIWIZZ=1
-endif
-ifeq ($(FULL_TARGET),m68k-linux)
-TARGET_DIRS_APIWIZZ=1
-endif
-ifeq ($(FULL_TARGET),m68k-freebsd)
-TARGET_DIRS_APIWIZZ=1
-endif
-ifeq ($(FULL_TARGET),m68k-netbsd)
-TARGET_DIRS_APIWIZZ=1
-endif
-ifeq ($(FULL_TARGET),m68k-amiga)
-TARGET_DIRS_APIWIZZ=1
-endif
-ifeq ($(FULL_TARGET),m68k-atari)
-TARGET_DIRS_APIWIZZ=1
-endif
-ifeq ($(FULL_TARGET),m68k-openbsd)
-TARGET_DIRS_APIWIZZ=1
-endif
-ifeq ($(FULL_TARGET),m68k-palmos)
-TARGET_DIRS_APIWIZZ=1
-endif
-ifeq ($(FULL_TARGET),m68k-embedded)
-TARGET_DIRS_APIWIZZ=1
-endif
-ifeq ($(FULL_TARGET),powerpc-linux)
-TARGET_DIRS_APIWIZZ=1
-endif
-ifeq ($(FULL_TARGET),powerpc-netbsd)
-TARGET_DIRS_APIWIZZ=1
-endif
-ifeq ($(FULL_TARGET),powerpc-amiga)
-TARGET_DIRS_APIWIZZ=1
-endif
-ifeq ($(FULL_TARGET),powerpc-macos)
-TARGET_DIRS_APIWIZZ=1
-endif
-ifeq ($(FULL_TARGET),powerpc-darwin)
-TARGET_DIRS_APIWIZZ=1
-endif
-ifeq ($(FULL_TARGET),powerpc-morphos)
-TARGET_DIRS_APIWIZZ=1
-endif
-ifeq ($(FULL_TARGET),powerpc-embedded)
-TARGET_DIRS_APIWIZZ=1
-endif
-ifeq ($(FULL_TARGET),powerpc-wii)
-TARGET_DIRS_APIWIZZ=1
-endif
-ifeq ($(FULL_TARGET),sparc-linux)
-TARGET_DIRS_APIWIZZ=1
-endif
-ifeq ($(FULL_TARGET),sparc-netbsd)
-TARGET_DIRS_APIWIZZ=1
-endif
-ifeq ($(FULL_TARGET),sparc-solaris)
-TARGET_DIRS_APIWIZZ=1
-endif
-ifeq ($(FULL_TARGET),sparc-embedded)
-TARGET_DIRS_APIWIZZ=1
-endif
-ifeq ($(FULL_TARGET),x86_64-linux)
-TARGET_DIRS_APIWIZZ=1
-endif
-ifeq ($(FULL_TARGET),x86_64-freebsd)
-TARGET_DIRS_APIWIZZ=1
-endif
-ifeq ($(FULL_TARGET),x86_64-solaris)
-TARGET_DIRS_APIWIZZ=1
-endif
-ifeq ($(FULL_TARGET),x86_64-openbsd)
-TARGET_DIRS_APIWIZZ=1
-endif
-ifeq ($(FULL_TARGET),x86_64-darwin)
-TARGET_DIRS_APIWIZZ=1
-endif
-ifeq ($(FULL_TARGET),x86_64-win64)
-TARGET_DIRS_APIWIZZ=1
-endif
-ifeq ($(FULL_TARGET),x86_64-embedded)
-TARGET_DIRS_APIWIZZ=1
-endif
-ifeq ($(FULL_TARGET),arm-linux)
-TARGET_DIRS_APIWIZZ=1
-endif
-ifeq ($(FULL_TARGET),arm-palmos)
-TARGET_DIRS_APIWIZZ=1
-endif
-ifeq ($(FULL_TARGET),arm-darwin)
-TARGET_DIRS_APIWIZZ=1
-endif
-ifeq ($(FULL_TARGET),arm-wince)
-TARGET_DIRS_APIWIZZ=1
-endif
-ifeq ($(FULL_TARGET),arm-gba)
-TARGET_DIRS_APIWIZZ=1
-endif
-ifeq ($(FULL_TARGET),arm-nds)
-TARGET_DIRS_APIWIZZ=1
-endif
-ifeq ($(FULL_TARGET),arm-embedded)
-TARGET_DIRS_APIWIZZ=1
-endif
-ifeq ($(FULL_TARGET),arm-symbian)
-TARGET_DIRS_APIWIZZ=1
-endif
-ifeq ($(FULL_TARGET),powerpc64-linux)
-TARGET_DIRS_APIWIZZ=1
-endif
-ifeq ($(FULL_TARGET),powerpc64-darwin)
-TARGET_DIRS_APIWIZZ=1
-endif
-ifeq ($(FULL_TARGET),powerpc64-embedded)
-TARGET_DIRS_APIWIZZ=1
-endif
-ifeq ($(FULL_TARGET),avr-embedded)
-TARGET_DIRS_APIWIZZ=1
-endif
-ifeq ($(FULL_TARGET),armeb-linux)
-TARGET_DIRS_APIWIZZ=1
-endif
-ifeq ($(FULL_TARGET),armeb-embedded)
-TARGET_DIRS_APIWIZZ=1
-endif
-ifeq ($(FULL_TARGET),mips-linux)
-TARGET_DIRS_APIWIZZ=1
-endif
-ifeq ($(FULL_TARGET),mipsel-linux)
-TARGET_DIRS_APIWIZZ=1
-endif
-ifdef TARGET_DIRS_APIWIZZ
-apiwizz_all:
-	$(MAKE) -C apiwizz all
-apiwizz_debug:
-	$(MAKE) -C apiwizz debug
-apiwizz_smart:
-	$(MAKE) -C apiwizz smart
-apiwizz_release:
-	$(MAKE) -C apiwizz release
-apiwizz_units:
-	$(MAKE) -C apiwizz units
-apiwizz_examples:
-	$(MAKE) -C apiwizz examples
-apiwizz_shared:
-	$(MAKE) -C apiwizz shared
-apiwizz_install:
-	$(MAKE) -C apiwizz install
-apiwizz_sourceinstall:
-	$(MAKE) -C apiwizz sourceinstall
-apiwizz_exampleinstall:
-	$(MAKE) -C apiwizz exampleinstall
-apiwizz_distinstall:
-	$(MAKE) -C apiwizz distinstall
-apiwizz_zipinstall:
-	$(MAKE) -C apiwizz zipinstall
-apiwizz_zipsourceinstall:
-	$(MAKE) -C apiwizz zipsourceinstall
-apiwizz_zipexampleinstall:
-	$(MAKE) -C apiwizz zipexampleinstall
-apiwizz_zipdistinstall:
-	$(MAKE) -C apiwizz zipdistinstall
-apiwizz_clean:
-	$(MAKE) -C apiwizz clean
-apiwizz_distclean:
-	$(MAKE) -C apiwizz distclean
-apiwizz_cleanall:
-	$(MAKE) -C apiwizz cleanall
-apiwizz_info:
-	$(MAKE) -C apiwizz info
-apiwizz_makefiles:
-	$(MAKE) -C apiwizz makefiles
-apiwizz:
-	$(MAKE) -C apiwizz all
-.PHONY: apiwizz_all apiwizz_debug apiwizz_smart apiwizz_release apiwizz_units apiwizz_examples apiwizz_shared apiwizz_install apiwizz_sourceinstall apiwizz_exampleinstall apiwizz_distinstall apiwizz_zipinstall apiwizz_zipsourceinstall apiwizz_zipexampleinstall apiwizz_zipdistinstall apiwizz_clean apiwizz_distclean apiwizz_cleanall apiwizz_info apiwizz_makefiles apiwizz
-endif
 debug: fpc_debug
 smart: fpc_smart
 release: fpc_release
-units: fpc_units $(addsuffix _units,$(TARGET_DIRS))
-examples: $(addsuffix _examples,$(TARGET_DIRS))
+units: fpc_units
+examples:
 shared: fpc_shared
-install: fpc_install $(addsuffix _install,$(TARGET_DIRS))
+install: fpc_install
 sourceinstall: fpc_sourceinstall
-exampleinstall: fpc_exampleinstall $(addsuffix _exampleinstall,$(TARGET_DIRS))
+exampleinstall: fpc_exampleinstall
 distinstall: fpc_distinstall
 zipinstall: fpc_zipinstall
 zipsourceinstall: fpc_zipsourceinstall
-zipexampleinstall: fpc_zipexampleinstall $(addsuffix _zipexampleinstall,$(TARGET_DIRS))
+zipexampleinstall: fpc_zipexampleinstall
 zipdistinstall: fpc_zipdistinstall
-clean: fpc_clean $(addsuffix _clean,$(TARGET_DIRS))
-distclean: fpc_distclean $(addsuffix _distclean,$(TARGET_DIRS))
-cleanall: fpc_cleanall $(addsuffix _cleanall,$(TARGET_DIRS))
+clean: fpc_clean
+distclean: fpc_distclean
+cleanall: fpc_cleanall
 info: fpc_info
 makefiles: fpc_makefiles
 .PHONY: debug smart release units examples shared install sourceinstall exampleinstall distinstall zipinstall zipsourceinstall zipexampleinstall zipdistinstall clean distclean cleanall info makefiles
@@ -3189,7 +2750,7 @@ ifneq ($(wildcard fpcmake.loc),)
 include fpcmake.loc
 endif
 .PHONY: all
-all: apiwizz_all
+all:
 	echo $(LAZARUS_LIBPATHS)
 	$(MAKE) --assume-new=lazres.pp lazres$(EXEEXT)
 	$(MAKE) --assume-new=svn2revisioninc.pas svn2revisioninc$(EXEEXT)

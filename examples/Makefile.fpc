@@ -4,7 +4,7 @@
 
 [package]
 name=lazarus-examples
-version=0.9b
+version=1.0
 
 [target]
 units=hello \
@@ -111,6 +111,7 @@ help:
 	@$(ECHO)
 	@$(ECHO) " Targets"
 	@$(ECHO) "   all    build all simple examples"
+	@$(ECHO) "          Requires LCL and basecomponents, see make help of main directory"
 	@$(ECHO) "          Note: There are more complex examples in the sub directories."
 	@$(ECHO) "   clean  deletes files that 'all' creates"
 	@$(ECHO)
