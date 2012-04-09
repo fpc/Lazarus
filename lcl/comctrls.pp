@@ -1792,6 +1792,7 @@ type
     property Visible;
     property Wrap;
     property OnChanging;
+    property OnChangingEx;
     property OnClick;
     property OnContextPopup;
     property OnEnter;
