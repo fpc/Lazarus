@@ -67,6 +67,7 @@ procedure TToolButton.MouseDown(Button: TMouseButton; Shift: TShiftState;
 var
   NewFlags: TToolButtonFlags;
 begin
+  debugln(['TToolButton.MouseDown ',DbgSName(Self)]);
   NewFlags := FToolButtonFlags - [tbfPressed, tbfArrowPressed];
   if (Button = mbLeft) then
   begin
@@ -99,7 +100,7 @@ var
   DropDownMenuDropped: Boolean;
   Pt: TPoint;
 begin
-  //DebugLn('TToolButton.MouseUp ',Name,':',ClassName,' ',dbgs(ord(Button)),' ',dbgs(X),',',dbgs(Y));
+  //DebugLn(['TToolButton.MouseUp ',Name,':',ClassName,' ',dbgs(ord(Button)),' ',X,',',Y]);
   if (Button = mbLeft) and ([tbfArrowPressed, tbfPressed] * FToolButtonFlags <> []) then
   begin
     Exclude(FToolButtonFlags, tbfPressed);
@@ -108,14 +109,12 @@ begin
   end;
 
   inherited MouseUp(Button, Shift, X, Y);
-  
+
   if (Button = mbLeft) then
   begin
     if FMouseInControl then
     begin
       Pt := Point(X, Y);
-      LCLIntf.GetCursorPos(Pt);
-      LCLIntf.ScreenToClient(Parent.Handle, Pt);
       if not PtInRect(BoundsRect, Pt) then
         SetMouseInControl(false);
     end;
@@ -129,6 +128,7 @@ begin
       Down := False;
     end;
 
+    //debugln(['TToolButton.MouseUp ',DbgSName(Self),' FMouseInControl=',FMouseInControl,' DropDownMenuDropped=',DropDownMenuDropped]);
     if FMouseInControl and not DropDownMenuDropped then
     begin
       if (Style = tbsCheck) then
