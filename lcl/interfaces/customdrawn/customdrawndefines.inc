@@ -66,7 +66,7 @@
 // ==================
 // Debug options
 // ==================
-{.$define VerboseCDPaintProfiler}
+{$define VerboseCDPaintProfiler}
 {.$define Verbose_CD_X11_Timer}
 {.$define CD_Debug_TTF}
 {.$define VerboseCDDrawing}

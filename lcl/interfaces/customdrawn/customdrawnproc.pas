@@ -584,12 +584,14 @@ begin
   // then we need to force drawing the background to erase old contents of the buffer
   //
   // Consider also if the user wants to manually disable the background drawing
-  lDrawControl := True;
+  lDrawControl := lWindowHandle.IsControlBackgroundVisible() or (AForm.Height < AImage.Height);
   if Assigned(CDWidgetset.DisableFormBackgroundDrawingProc) then
-    lDrawControl := not CDWidgetset.DisableFormBackgroundDrawingProc(AForm);
-  if lDrawControl then
-    lDrawControl := lWindowHandle.IsControlBackgroundVisible() or (AForm.Height < AImage.Height);
-  if lDrawControl then
+  begin
+    if not CDWidgetset.DisableFormBackgroundDrawingProc(AForm) then
+      if lDrawControl then
+        DrawFormBackground(AImage, ACanvas);
+  end
+  else if lDrawControl then
     DrawFormBackground(AImage, ACanvas);
 
   // Consider the form scrolling
