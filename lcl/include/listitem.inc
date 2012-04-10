@@ -380,8 +380,10 @@ begin
   LV := FOwner.FOwner;
   LV.Selected := Nil;           // First clear all selections,
   LV.Selected := Self;          // then set this item as the only selected.
-  if not LV.ReadOnly and Assigned(LV.FEditor) then
-    LV.ShowEditor;
+  if LV.ReadOnly or (LV.FEditor=nil) then
+    exit(false);
+  LV.ShowEditor;
+  Result:=true;
 end;
 
 {------------------------------------------------------------------------------}
