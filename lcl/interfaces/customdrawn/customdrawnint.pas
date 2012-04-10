@@ -29,7 +29,7 @@ interface
 
 uses
   // RTL
-  Types, Classes, SysUtils, Math,
+  Classes, SysUtils, Math,
   fpimage, fpcanvas, fpimgcanv, ctypes, dateutils,
   // XML
   XMLRead, Dom,
@@ -47,6 +47,8 @@ uses
   // LazFreeType
   LazFreeTypeIntfDrawer, LazFreeType, EasyLazFreeType, IniFiles,
   {$endif}
+  // Types needs to be after the platform-specif units or else Mac will catch MacOSAll.Rect/Size/Point
+  Types,
   // Widgetset
   customdrawnproc,
   // LCL
