@@ -607,7 +607,9 @@ msgid "&Variable"
 msgstr "&Variabel"
 
 #: lr_const.sevformvars
-msgid "Va&riables..."
+#, fuzzy
+#| msgid "Va&riables..."
+msgid "Va&riables ..."
 msgstr "Va&riabel..."
 
 #: lr_const.sexportfilterindexerror
@@ -688,7 +690,9 @@ msgid "Variable format"
 msgstr "Format variabel"
 
 #: lr_const.sfont
-msgid "Font..."
+#, fuzzy
+#| msgid "Font..."
+msgid "Font ..."
 msgstr "Font..."
 
 #: lr_const.sformat11
@@ -1071,7 +1075,9 @@ msgid "Width align"
 msgstr "Jajar panjang"
 
 #: lr_const.sfrdesignerform_about
-msgid "&About..."
+#, fuzzy
+#| msgid "&About..."
+msgid "&About ..."
 msgstr "Tent&ang..."
 
 #: lr_const.sfrdesignerform_addpg
@@ -1103,8 +1109,10 @@ msgid "&Delete"
 msgstr "&Hapus"
 
 #: lr_const.sfrdesignerform_edit
+#, fuzzy
+#| msgid "&Edit..."
 msgctxt "lr_const.sfrdesignerform_edit"
-msgid "&Edit..."
+msgid "&Edit ..."
 msgstr "&Edit..."
 
 #: lr_const.sfrdesignerform_edit2
@@ -1112,8 +1120,10 @@ msgid "&Edit"
 msgstr "&Edit"
 
 #: lr_const.sfrdesignerform_editp
+#, fuzzy
+#| msgid "&Edit..."
 msgctxt "lr_const.sfrdesignerform_editp"
-msgid "&Edit..."
+msgid "&Edit ..."
 msgstr "&Edit..."
 
 #: lr_const.sfrdesignerform_exit
@@ -1141,7 +1151,9 @@ msgid "Line style"
 msgstr "Gaya garis"
 
 #: lr_const.sfrdesignerform_new
-msgid "&New..."
+#, fuzzy
+#| msgid "&New..."
+msgid "&New ..."
 msgstr "&Baru..."
 
 #: lr_const.sfrdesignerform_obj
@@ -1149,11 +1161,15 @@ msgid "&Objects"
 msgstr "&Obyek"
 
 #: lr_const.sfrdesignerform_open
-msgid "&Open..."
+#, fuzzy
+#| msgid "&Open..."
+msgid "&Open ..."
 msgstr "&Buka"
 
 #: lr_const.sfrdesignerform_opts
-msgid "&Options..."
+#, fuzzy
+#| msgid "&Options..."
+msgid "&Options ..."
 msgstr "&Opsi..."
 
 #: lr_const.sfrdesignerform_paste
@@ -1161,7 +1177,9 @@ msgid "&Paste"
 msgstr "&Paste"
 
 #: lr_const.sfrdesignerform_pgopt
-msgid "&Page options..."
+#, fuzzy
+#| msgid "&Page options..."
+msgid "&Page options ..."
 msgstr "Opsi &halaman..."
 
 #: lr_const.sfrdesignerform_preview
@@ -1181,7 +1199,9 @@ msgid "&Remove page"
 msgstr "&Hapus halaman"
 
 #: lr_const.sfrdesignerform_rptopt
-msgid "&Report options..."
+#, fuzzy
+#| msgid "&Report options..."
+msgid "&Report options ..."
 msgstr "Opsi &laporan"
 
 #: lr_const.sfrdesignerform_save
@@ -1189,7 +1209,9 @@ msgid "&Save"
 msgstr "&Simpan"
 
 #: lr_const.sfrdesignerform_saveas
-msgid "Save &as..."
+#, fuzzy
+#| msgid "Save &as..."
+msgid "Save &as ..."
 msgstr "Simpan seb&agai..."
 
 #: lr_const.sfrdesignerform_selectall
@@ -1227,7 +1249,9 @@ msgid "&Undo"
 msgstr "&Undo"
 
 #: lr_const.sfrdesignerform_var
-msgid "Variables &list..."
+#, fuzzy
+#| msgid "Variables &list..."
+msgid "Variables &list ..."
 msgstr "Da&ftar variabel..."
 
 #: lr_const.sfrferror
@@ -1251,7 +1275,9 @@ msgid "&Clear"
 msgstr "Be&rsihkan"
 
 #: lr_const.sgeditorformload
-msgid "&Load..."
+#, fuzzy
+#| msgid "&Load..."
+msgid "&Load ..."
 msgstr "&Ambil..."
 
 #: lr_const.sgeditorformmemo
@@ -1286,11 +1312,15 @@ msgid "&Bold"
 msgstr "Te&bal"
 
 #: lr_const.shilightformcolor
-msgid "C&olor..."
+#, fuzzy
+#| msgid "C&olor..."
+msgid "C&olor ..."
 msgstr "&Warna..."
 
 #: lr_const.shilightformcolor2
-msgid "Co&lor..."
+#, fuzzy
+#| msgid "Co&lor..."
+msgid "Co&lor ..."
 msgstr "&Warna..."
 
 #: lr_const.shilightformcond
@@ -1433,7 +1463,9 @@ msgid "On last page"
 msgstr "Pada halaman terakhir"
 
 #: lr_const.sother
-msgid "Other..."
+#, fuzzy
+#| msgid "Other..."
+msgid "Other ..."
 msgstr "Lain-lain..."
 
 #: lr_const.sothercategory
@@ -2364,7 +2396,9 @@ msgid "&Categories and variables"
 msgstr "&Kategori dan variabel"
 
 #: lr_const.svarformat
-msgid "Variable format..."
+#, fuzzy
+#| msgid "Variable format..."
+msgid "Variable format ..."
 msgstr "Format variabel..."
 
 #: lr_const.svarformcapt

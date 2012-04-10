@@ -54,7 +54,7 @@ msgid "Goto selected source line"
 msgstr ""
 
 #: todoliststrconsts.listodolistoptions
-msgid "ToDo options..."
+msgid "ToDo options ..."
 msgstr ""
 
 #: todoliststrconsts.listodolistprintlist

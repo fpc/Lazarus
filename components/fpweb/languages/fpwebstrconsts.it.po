@@ -1,4 +1,4 @@
-# Massimo Soricetti <notturno@quipo.it>, 2011.
+ Massimo Soricetti <notturno@quipo.it>, 2011.
 msgid ""
 msgstr ""
 "PO-Revision-Date: 2011-04-21 20:12+0200\n"
@@ -16,7 +16,9 @@ msgid "CSS file"
 msgstr "file CSS"
 
 #: fpwebstrconsts.scssfiledesc
-msgid "Create new CSS file..."
+#, fuzzy
+#| msgid "Create new CSS file..."
+msgid "Create new CSS file ..."
 msgstr "Crea nuovo file CSS..."
 
 #: fpwebstrconsts.scsssource
@@ -32,7 +34,9 @@ msgid "&Directory"
 msgstr ""
 
 #: fpwebstrconsts.senteryoutext
-msgid "Enter your text..."
+#, fuzzy
+#| msgid "Enter your text..."
+msgid "Enter your text ..."
 msgstr "Scrivi il tuo testo..."
 
 #: fpwebstrconsts.shtmlautor
@@ -60,7 +64,9 @@ msgid "HTML file"
 msgstr "File HTML"
 
 #: fpwebstrconsts.shtmlfiledesc
-msgid "Create new HTML file..."
+#, fuzzy
+#| msgid "Create new HTML file..."
+msgid "Create new HTML file ..."
 msgstr "Crea nuovo file HTML..."
 
 #: fpwebstrconsts.shtmlinputformaccesskey
@@ -116,7 +122,9 @@ msgid "Border width"
 msgstr "Spessore bordo"
 
 #: fpwebstrconsts.shtmltableformcaption
-msgid "New HTML table..."
+#, fuzzy
+#| msgid "New HTML table..."
+msgid "New HTML table ..."
 msgstr "Nuova tabella html..."
 
 #: fpwebstrconsts.shtmltableformcellpadding
@@ -172,7 +180,9 @@ msgid "Javascript file"
 msgstr "File javascript"
 
 #: fpwebstrconsts.sjsfiledesc
-msgid "Create new javascript file..."
+#, fuzzy
+#| msgid "Create new javascript file..."
+msgid "Create new javascript file ..."
 msgstr "Crea nuovo file javascript..."
 
 #: fpwebstrconsts.sjssource

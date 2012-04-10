@@ -170,7 +170,9 @@ msgid "Configuration"
 msgstr "Configuração"
 
 #: ldd_consts.smenuconfprojdatadict
-msgid "Set..."
+#, fuzzy
+#| msgid "Set..."
+msgid "Set ..."
 msgstr "Ajustar..."
 
 #: ldd_consts.smenudatadesktop

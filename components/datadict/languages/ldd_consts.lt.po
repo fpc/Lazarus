@@ -1,4 +1,4 @@
-# Valdas Jankūnas <zmuogs@gmail.com>, 2010.
+ Valdas Jankūnas <zmuogs@gmail.com>, 2010.
 msgid ""
 msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -172,7 +172,9 @@ msgid "Configuration"
 msgstr "Sąranka"
 
 #: ldd_consts.smenuconfprojdatadict
-msgid "Set..."
+#, fuzzy
+#| msgid "Set..."
+msgid "Set ..."
 msgstr "Nustatyti..."
 
 #: ldd_consts.smenudatadesktop

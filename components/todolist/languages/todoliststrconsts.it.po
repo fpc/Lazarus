@@ -1,4 +1,4 @@
-# Massimo Soricetti <notturno@quipo.it>, 2011.
+ Massimo Soricetti <notturno@quipo.it>, 2011.
 msgid ""
 msgstr ""
 "PO-Revision-Date: 2011-04-20 18:13+0200\n"
@@ -66,7 +66,9 @@ msgid "Goto selected source line"
 msgstr "Vai alla riga di codice selezionata"
 
 #: todoliststrconsts.listodolistoptions
-msgid "ToDo options..."
+#, fuzzy
+#| msgid "ToDo options..."
+msgid "ToDo options ..."
 msgstr "Opzioni ToDo..."
 
 #: todoliststrconsts.listodolistprintlist

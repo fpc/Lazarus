@@ -15,8 +15,10 @@ msgid "CSS file"
 msgstr "CSS-Datei"
 
 #: fpwebstrconsts.scssfiledesc
+#, fuzzy
+#| msgid "Create new CSS file..."
 msgctxt "fpwebstrconsts.scssfiledesc"
-msgid "Create new CSS file..."
+msgid "Create new CSS file ..."
 msgstr "Erzeuge neue CSS-Datei..."
 
 #: fpwebstrconsts.scsssource
@@ -33,7 +35,7 @@ msgstr ""
 
 #: fpwebstrconsts.senteryoutext
 msgctxt "fpwebstrconsts.senteryoutext"
-msgid "Enter your text..."
+msgid "Enter your text ..."
 msgstr ""
 
 #: fpwebstrconsts.shtmlautor
@@ -63,8 +65,10 @@ msgid "HTML file"
 msgstr "HTML-Datei"
 
 #: fpwebstrconsts.shtmlfiledesc
+#, fuzzy
+#| msgid "Create new HTML file..."
 msgctxt "fpwebstrconsts.shtmlfiledesc"
-msgid "Create new HTML file..."
+msgid "Create new HTML file ..."
 msgstr "Erzeuge neue HTML-Datei"
 
 #: fpwebstrconsts.shtmlinputformaccesskey
@@ -121,8 +125,10 @@ msgid "Border width"
 msgstr ""
 
 #: fpwebstrconsts.shtmltableformcaption
+#, fuzzy
+#| msgid "New HTML table..."
 msgctxt "fpwebstrconsts.shtmltableformcaption"
-msgid "New HTML table..."
+msgid "New HTML table ..."
 msgstr "Neue HTML-Tabelle..."
 
 #: fpwebstrconsts.shtmltableformcellpadding
@@ -185,7 +191,9 @@ msgid "Javascript file"
 msgstr "Javascript-Datei"
 
 #: fpwebstrconsts.sjsfiledesc
-msgid "Create new javascript file..."
+#, fuzzy
+#| msgid "Create new javascript file..."
+msgid "Create new javascript file ..."
 msgstr "Erzeuge neue Javascript-Datei..."
 
 #: fpwebstrconsts.sjssource

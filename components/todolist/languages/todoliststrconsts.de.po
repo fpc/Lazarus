@@ -63,7 +63,9 @@ msgid "Goto selected source line"
 msgstr "Zur gewählten Quelltextzeile springen"
 
 #: todoliststrconsts.listodolistoptions
-msgid "ToDo options..."
+#, fuzzy
+#| msgid "ToDo options..."
+msgid "ToDo options ..."
 msgstr "ToDo-Einstellungen..."
 
 #: todoliststrconsts.listodolistprintlist

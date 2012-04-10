@@ -94,15 +94,21 @@ msgid "LazarusSVN Commit"
 msgstr "Фіксація змін LazarusSVN"
 
 #: svnclasses.rslazarussvndiff
-msgid "%s - LazarusSVN Diff..."
+#, fuzzy
+#| msgid "%s - LazarusSVN Diff..."
+msgid "%s - LazarusSVN Diff ..."
 msgstr "%s - Відмінності Diff LazarusSVN..."
 
 #: svnclasses.rslazarussvnlog
-msgid "%s - LazarusSVN Log..."
+#, fuzzy
+#| msgid "%s - LazarusSVN Log..."
+msgid "%s - LazarusSVN Log ..."
 msgstr "%s - Журнал LazarusSVN..."
 
 #: svnclasses.rslazarussvnupdate
-msgid "%s - LazarusSVN Update..."
+#, fuzzy
+#| msgid "%s - LazarusSVN Update..."
+msgid "%s - LazarusSVN Update ..."
 msgstr "%s - Оновлення LazarusSVN..."
 
 #: svnclasses.rsmerged

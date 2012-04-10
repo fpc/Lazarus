@@ -6004,6 +6004,10 @@ msgstr ""
 msgid "Confirm"
 msgstr ""
 
+#: lazarusidestrconsts.lisconfirmation
+msgid "Confirmation"
+msgstr ""
+
 #: lazarusidestrconsts.lisconfirmbuildallprofiles
 msgid "Lazarus will be rebuilt with the following profiles:%sContinue?"
 msgstr ""
@@ -8484,7 +8488,7 @@ msgid "BreakpointGroup name must be a valid Pascal identifier name."
 msgstr ""
 
 #: lazarusidestrconsts.lisgroupsetnew
-msgid "Set new group..."
+msgid "Set new group ..."
 msgstr ""
 
 #: lazarusidestrconsts.lisgroupsetnone
@@ -16065,8 +16069,8 @@ msgstr ""
 msgid "Welcome to Lazarus %s%s%sThere is already a configuration from version %s in%s%s%s"
 msgstr ""
 
-#: lazarusidestrconsts.liswhatneedsrebuilding
-msgid "What needs rebuilding"
+#: lazarusidestrconsts.liswhatneedsbuilding
+msgid "What needs building"
 msgstr ""
 
 #: lazarusidestrconsts.liswhenaunitisrenamedupdatereferences

@@ -5,7 +5,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2012-04-01 14:58+0400\n"
+"PO-Revision-Date: 2012-04-10 04:39+0400\n"
 "Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
 "Language-Team: \n"
 
@@ -607,8 +607,9 @@ msgid "&Variable"
 msgstr "&Переменная"
 
 #: lr_const.sevformvars
-msgid "Va&riables..."
-msgstr "Пере&менные..."
+#| msgid "Va&riables..."
+msgid "Va&riables ..."
+msgstr "Пере&менные ..."
 
 #: lr_const.sexportfilterindexerror
 msgid "Export filter index out of range"
@@ -688,8 +689,9 @@ msgid "Variable format"
 msgstr "Формат переменной"
 
 #: lr_const.sfont
-msgid "Font..."
-msgstr "Шрифт..."
+#| msgid "Font..."
+msgid "Font ..."
+msgstr "Шрифт ..."
 
 #: lr_const.sformat11
 msgctxt "lr_const.sformat11"
@@ -1071,8 +1073,9 @@ msgid "Width align"
 msgstr "Выравнивание по ширине"
 
 #: lr_const.sfrdesignerform_about
-msgid "&About..."
-msgstr "&О программе..."
+#| msgid "&About..."
+msgid "&About ..."
+msgstr "&О программе ..."
 
 #: lr_const.sfrdesignerform_addpg
 msgid "&Add page"
@@ -1103,18 +1106,20 @@ msgid "&Delete"
 msgstr "&Удалить"
 
 #: lr_const.sfrdesignerform_edit
+#| msgid "&Edit..."
 msgctxt "lr_const.sfrdesignerform_edit"
-msgid "&Edit..."
-msgstr "П&равка..."
+msgid "&Edit ..."
+msgstr "П&равка ..."
 
 #: lr_const.sfrdesignerform_edit2
 msgid "&Edit"
 msgstr "&Правка"
 
 #: lr_const.sfrdesignerform_editp
+#| msgid "&Edit..."
 msgctxt "lr_const.sfrdesignerform_editp"
-msgid "&Edit..."
-msgstr "П&равка..."
+msgid "&Edit ..."
+msgstr "П&равка ..."
 
 #: lr_const.sfrdesignerform_exit
 msgid "E&xit"
@@ -1141,28 +1146,32 @@ msgid "Line style"
 msgstr "Стиль линии"
 
 #: lr_const.sfrdesignerform_new
-msgid "&New..."
-msgstr "&Новый"
+#| msgid "&New..."
+msgid "&New ..."
+msgstr "&Новый ..."
 
 #: lr_const.sfrdesignerform_obj
 msgid "&Objects"
 msgstr "&Объекты"
 
 #: lr_const.sfrdesignerform_open
-msgid "&Open..."
-msgstr "&Открыть..."
+#| msgid "&Open..."
+msgid "&Open ..."
+msgstr "&Открыть ..."
 
 #: lr_const.sfrdesignerform_opts
-msgid "&Options..."
-msgstr "П&араметры..."
+#| msgid "&Options..."
+msgid "&Options ..."
+msgstr "П&араметры ..."
 
 #: lr_const.sfrdesignerform_paste
 msgid "&Paste"
 msgstr "В&ставить"
 
 #: lr_const.sfrdesignerform_pgopt
-msgid "&Page options..."
-msgstr "Свойства страни&цы..."
+#| msgid "&Page options..."
+msgid "&Page options ..."
+msgstr "Свойства страни&цы ..."
 
 #: lr_const.sfrdesignerform_preview
 msgid "Pre&view"
@@ -1181,16 +1190,18 @@ msgid "&Remove page"
 msgstr "Уда&лить страницу"
 
 #: lr_const.sfrdesignerform_rptopt
-msgid "&Report options..."
-msgstr "Свойс&тва отчёта..."
+#| msgid "&Report options..."
+msgid "&Report options ..."
+msgstr "Свойс&тва отчёта ..."
 
 #: lr_const.sfrdesignerform_save
 msgid "&Save"
 msgstr "&Сохранить"
 
 #: lr_const.sfrdesignerform_saveas
-msgid "Save &as..."
-msgstr "Сохранить &как..."
+#| msgid "Save &as..."
+msgid "Save &as ..."
+msgstr "Сохранить &как ..."
 
 #: lr_const.sfrdesignerform_selectall
 msgid "Select &all"
@@ -1227,8 +1238,9 @@ msgid "&Undo"
 msgstr "&Отменить"
 
 #: lr_const.sfrdesignerform_var
-msgid "Variables &list..."
-msgstr "Сп&исок переменных..."
+#| msgid "Variables &list..."
+msgid "Variables &list ..."
+msgstr "Сп&исок переменных ..."
 
 #: lr_const.sfrferror
 msgid "Unsupported FRF format"
@@ -1251,8 +1263,9 @@ msgid "&Clear"
 msgstr "&Очистить"
 
 #: lr_const.sgeditorformload
-msgid "&Load..."
-msgstr "&Загрузить"
+#| msgid "&Load..."
+msgid "&Load ..."
+msgstr "&Загрузить ..."
 
 #: lr_const.sgeditorformmemo
 msgctxt "lr_const.sgeditorformmemo"
@@ -1286,12 +1299,14 @@ msgid "&Bold"
 msgstr "&Жирный"
 
 #: lr_const.shilightformcolor
-msgid "C&olor..."
-msgstr "&Цвет..."
+#| msgid "C&olor..."
+msgid "C&olor ..."
+msgstr "&Цвет ..."
 
 #: lr_const.shilightformcolor2
-msgid "Co&lor..."
-msgstr "&Цвет..."
+#| msgid "Co&lor..."
+msgid "Co&lor ..."
+msgstr "&Цвет ..."
 
 #: lr_const.shilightformcond
 msgctxt "lr_const.shilightformcond"
@@ -1433,8 +1448,9 @@ msgid "On last page"
 msgstr "На последней странице"
 
 #: lr_const.sother
-msgid "Other..."
-msgstr "Другой..."
+#| msgid "Other..."
+msgid "Other ..."
+msgstr "Другой ..."
 
 #: lr_const.sothercategory
 msgctxt "lr_const.sothercategory"
@@ -2364,8 +2380,9 @@ msgid "&Categories and variables"
 msgstr "Категории и переменные"
 
 #: lr_const.svarformat
-msgid "Variable format..."
-msgstr "Формат переменной..."
+#| msgid "Variable format..."
+msgid "Variable format ..."
+msgstr "Формат переменной ..."
 
 #: lr_const.svarformcapt
 msgid "Variables"

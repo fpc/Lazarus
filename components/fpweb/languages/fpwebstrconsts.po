@@ -6,7 +6,7 @@ msgid "CSS file"
 msgstr ""
 
 #: fpwebstrconsts.scssfiledesc
-msgid "Create new CSS file..."
+msgid "Create new CSS file ..."
 msgstr ""
 
 #: fpwebstrconsts.scsssource
@@ -22,7 +22,7 @@ msgid "&Directory"
 msgstr ""
 
 #: fpwebstrconsts.senteryoutext
-msgid "Enter your text..."
+msgid "Enter your text ..."
 msgstr ""
 
 #: fpwebstrconsts.shtmlautor
@@ -50,7 +50,7 @@ msgid "HTML file"
 msgstr ""
 
 #: fpwebstrconsts.shtmlfiledesc
-msgid "Create new HTML file..."
+msgid "Create new HTML file ..."
 msgstr ""
 
 #: fpwebstrconsts.shtmlinputformaccesskey
@@ -106,7 +106,7 @@ msgid "Border width"
 msgstr ""
 
 #: fpwebstrconsts.shtmltableformcaption
-msgid "New HTML table..."
+msgid "New HTML table ..."
 msgstr ""
 
 #: fpwebstrconsts.shtmltableformcellpadding
@@ -162,7 +162,7 @@ msgid "Javascript file"
 msgstr ""
 
 #: fpwebstrconsts.sjsfiledesc
-msgid "Create new javascript file..."
+msgid "Create new javascript file ..."
 msgstr ""
 
 #: fpwebstrconsts.sjssource
