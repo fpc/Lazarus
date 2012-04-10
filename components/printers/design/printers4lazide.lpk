@@ -19,12 +19,16 @@
         <CompilerPath Value="$(CompPath)"/>
       </Other>
     </CompilerOptions>
-    <Files Count="1">
+    <Files Count="2">
       <Item1>
         <Filename Value="ideprinting.pas"/>
         <HasRegisterProc Value="True"/>
         <UnitName Value="ideprinting"/>
       </Item1>
+      <Item2>
+        <Filename Value="sourceprinter.pas"/>
+        <UnitName Value="SourcePrinter"/>
+      </Item2>
     </Files>
     <i18n>
       <EnableI18N Value="True"/>
