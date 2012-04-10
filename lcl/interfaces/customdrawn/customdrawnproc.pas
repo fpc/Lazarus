@@ -579,8 +579,16 @@ begin
 
   // Disable the drawing itself, but keep the window org and region operations
   // or else clicking and other things are broken, specially in Android
-  lDrawControl := lWindowHandle.IsControlBackgroundVisible();
-
+  //
+  // If the form is smaller then the buffer (this might happen in Android)
+  // then we need to force drawing the background to erase old contents of the buffer
+  //
+  // Consider also if the user wants to manually disable the background drawing
+  lDrawControl := True;
+  if Assigned(CDWidgetset.DisableFormBackgroundDrawingProc) then
+    lDrawControl := CDWidgetset.DisableFormBackgroundDrawingProc(AForm);
+  if lDrawControl then
+    lDrawControl := lWindowHandle.IsControlBackgroundVisible() or (AForm.Height < AImage.Height);
   if lDrawControl then
     DrawFormBackground(AImage, ACanvas);
 

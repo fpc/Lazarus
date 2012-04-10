@@ -46,7 +46,7 @@ public class LCLActivity extends Activity implements SensorEventListener, Locati
         .newEditable("Placeholder");
       }
       return _editable;
-    } This crashes in HTC */
+    } This crashes in HTC!!! */
 
     // This method sends a text to be added at the current cursor position
     @Override public boolean commitText(CharSequence text, int newCursorPosition)
@@ -97,6 +97,8 @@ public class LCLActivity extends Activity implements SensorEventListener, Locati
   // -------------------------------------------
   private class LCLSurface extends View
   {
+    private Bitmap canvasbitmap; // This is the buffered canvas bitmap, which is reused until the canvas size changes
+
     public LCLSurface(Context context)
     {
       super(context);
@@ -121,16 +123,19 @@ public class LCLActivity extends Activity implements SensorEventListener, Locati
       lclscreenwidth = lclformwidth;
       lclscreenheight = lclformheight;
 
-      // Check if we rotated in the draw event, OnConfigurationChanged can't return the new form width =(
+      // Check if we rotated in the draw event.
+      // LCLOnConfigurationChanged is called from here because the Android event
+      // OnConfigurationChanged can't return the new form width =(
       // see http://stackoverflow.com/questions/2524683/how-to-get-new-width-height-of-root-layout-in-onconfigurationchanged
       if (lWidth != oldlclformwidth) LCLOnConfigurationChanged(lclxdpi, lWidth); // we send xdpi because thats what the LCL uses for Screen.PixelsPerInch
 
       //Log.v("lclproject", "LCLSurface.onDraw width=" + Integer.toString(lWidth)
       //  + " height=" + Integer.toString(lHeight));
- 
-      Bitmap localbitmap = Bitmap.createBitmap(lWidth, lHeight, Bitmap.Config.ARGB_8888);
-      LCLDrawToBitmap(lWidth, lHeight, localbitmap);
-      canvas.drawBitmap(localbitmap, 0, 0, null);
+
+      if ((canvasbitmap == null) || (canvasbitmap.getWidth() != lWidth) || (canvasbitmap.getHeight() != lHeight))
+	canvasbitmap = Bitmap.createBitmap(lWidth, lHeight, Bitmap.Config.ARGB_8888);
+      LCLDrawToBitmap(lWidth, lHeight, canvasbitmap);
+      canvas.drawBitmap(canvasbitmap, 0, 0, null);
       //Log.i("lclapp", "onDraw finished");
     }
 

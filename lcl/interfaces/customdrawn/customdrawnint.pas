@@ -91,6 +91,9 @@ type
   end;
   {$endif}
 
+  // Return true to disable the form background drawing
+  TDisableFormBackgroundDrawingProc = function (AForm: TCustomForm): Boolean of object;
+
   { TLazCDCustomFont }
 
   TLazCDCustomFont = class(TFPCustomFont)
@@ -304,6 +307,15 @@ type
     {$ifdef WinCE}
     WinCETitlePolicy: TWinCETitlePolicy;
     {$endif}
+
+    // This callback might be set to provide a routine which will select for
+    // which forms the drawing of the background should be disabled
+    // This is provided for speeding up the drawing
+    //
+    // Only use it if you are 100% sure that you are filling the entire buffer
+    // in the form paint event. Note that the form might sometimes be smaller
+    // then the buffer in Android so fill the entire Canvas area, not only the form size
+    DisableFormBackgroundDrawingProc: TDisableFormBackgroundDrawingProc;
   end;
 
 var
