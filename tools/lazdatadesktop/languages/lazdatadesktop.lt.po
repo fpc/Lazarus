@@ -332,7 +332,9 @@ msgid "Create a new table"
 msgstr "Kurti naują lentelę"
 
 #: lazdatadeskstr.sld_actionopen
-msgid "&Open..."
+#, fuzzy
+#| msgid "&Open..."
+msgid "&Open ..."
 msgstr "&Atverti..."
 
 #: lazdatadeskstr.sld_actionopenconnection
