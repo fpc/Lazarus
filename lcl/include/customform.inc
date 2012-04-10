@@ -98,9 +98,9 @@ var
         NewHeight := GetSystemMetrics(SM_LCLMAXIMIZEDHEIGHT);
         NewWidth := GetSystemMetrics(SM_LCLMAXIMIZEDWIDTH);
         // if some ws does not implement this then provide normal metrics.
-        if NewHeight = 0 then
+        if NewHeight <= 0 then
           NewHeight := GetSystemMetrics(SM_CYMAXIMIZED);
-        if NewWidth = 0 then
+        if NewWidth <= 0 then
           NewHeight := GetSystemMetrics(SM_CXMAXIMIZED);
       end else
       begin
@@ -112,8 +112,21 @@ var
         NewWidth := Min(Constraints.MaxWidth, NewWidth);
       if Constraints.MaxHeight > 0 then
         NewHeight := Min(Constraints.MaxHeight, NewHeight);
-      Width := NewWidth;
-      Height := NewHeight;
+
+      // for unknown reasons on some systems SM_*MAXIMIZED* system metrics
+      // (tested xubuntu,64bits) return 0 or negative values, in this case
+      // a maximized window is expected to have at least WorkArea width/height.
+      // In the event WorkArea is also 0 width/height, at least
+      // design sizes should be respected, see bug #21634
+      if NewWidth<=0 then
+        NewWidth := Screen.WorkAreaWidth;
+      if NewHeight<=0 then
+        NewHeight := Screen.WorkAreaHeight;
+
+      if NewWidth>0 then
+        Width := NewWidth;
+      if NewHeight>0 then
+        Height := NewHeight;
     end;
 
     if (WindowState = wsFullScreen) and (FormStyle <> fsMDIChild) then
