@@ -2658,7 +2658,8 @@ endif
 help:
 	@$(ECHO)
 	@$(ECHO) " Main targets"
-	@$(ECHO) "   all            build minimal IDE, lazbuild, startlazarus"
+	@$(ECHO) "                  Without any target, target 'all' will be invoked."
+	@$(ECHO) "   all            build minimal IDE, lazbuild, startlazarus."
 	@$(ECHO) "   clean          deletes files that 'all' creates"
 	@$(ECHO) "   lazbuild       build lazbuild and lcl with nogui widgetset"
 	@$(ECHO) "   bigide         as all, except that the IDE is build with a lot of extra packages"
