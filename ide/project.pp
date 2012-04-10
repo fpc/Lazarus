@@ -3072,9 +3072,19 @@ begin
 end;
 
 function TProject.TitleIsDefault(Fuzzy: boolean): boolean;
+var
+  t: String;
+  p: Integer;
 begin
-  Result:=(Title='') or (Title=GetDefaultTitle)
-    or (Fuzzy and (SysUtils.CompareText(Title,GetDefaultTitle)=0));
+  Result:=true;
+  t:=Title;
+  if (t='') or (t=GetDefaultTitle) then exit;
+  if Fuzzy and (SysUtils.CompareText(t,GetDefaultTitle)=0) then exit;
+  // check for project+number
+  p:=length(t);
+  while (p>0) and (t[p] in ['0'..'9']) do dec(p);
+  if SysUtils.CompareText(copy(t,1,p),'project')=0 then exit;
+  Result:=false;
 end;
 
 function TProject.IDAsString: string;
