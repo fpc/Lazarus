@@ -2654,7 +2654,7 @@ makefiles: fpc_makefiles
 ifneq ($(wildcard fpcmake.loc),)
 include fpcmake.loc
 endif
-.PHONY: help registration lazutils codetools lcl ideintf basecomponents bigidecomponents lazbuild ide idepkg idebig cleanide bigide useride starter all clean purge install
+.PHONY: help registration lazutils codetools tools lcl ideintf basecomponents bigidecomponents lazbuild ide idepkg idebig cleanide bigide useride starter all clean purge install
 help:
 	@$(ECHO)
 	@$(ECHO) " Main targets"
