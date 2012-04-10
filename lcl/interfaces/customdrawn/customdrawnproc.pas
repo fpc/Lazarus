@@ -1059,6 +1059,9 @@ begin
     if not (lChild is TWinControl) then Continue;
     lWinChild := TWinControl(lChild);
 
+    // Ignore invisible controls
+    if not lWinChild.Visible then Continue;
+
     // ToDo: Ignore alpha blended controls
 
     // Basic case: alClient
