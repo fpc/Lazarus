@@ -115,7 +115,7 @@ begin
     if FMouseInControl then
     begin
       Pt := Point(X, Y);
-      if not PtInRect(BoundsRect, Pt) then
+      if not PtInRect(Rect(0,0,Width,Height), Pt) then
         SetMouseInControl(false);
     end;
     DropDownMenuDropped := False;
