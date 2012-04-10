@@ -2664,6 +2664,8 @@ help:
 	@$(ECHO) "   lazbuild       build lazbuild and lcl with nogui widgetset"
 	@$(ECHO) "   bigide         as all, except that the IDE is build with a lot of extra packages"
 	@$(ECHO) "   useride        calls lazbuild to build an IDE with your active profile, requires lazbuild"
+	@$(ECHO) "   install        installs Lazarus under $(LAZARUS_INSTALL_DIR)"
+	@$(ECHO) "                  You can change the directory by appending INSTALL_PREFIX=/some/path"
 	@$(ECHO)
 	@$(ECHO) " Sub targets"
 	@$(ECHO) "   registration   build package FCL"
@@ -2697,6 +2699,16 @@ help:
 	@$(ECHO) "  There is no command to clean up a svn repository completely, but"
 	@$(ECHO) "  you can use the following command under Linux/OS X:"
 	@$(ECHO) "  svn status | grep '\?' | sed -e 's/\? *//' | xargs rm -r"
+	@$(ECHO)
+	@$(ECHO) "  Another possibility is to create a clean copy via the "svn export" command."
+	@$(ECHO)
+	@$(ECHO) " Install:"
+	@$(ECHO) "   Note: You can use Lazarus without installing. Just start the lazarus executable."
+	@$(ECHO) "   1. Build Lazarus as normal user with one of the above commands."
+	@$(ECHO) "   2. Install as root into /usr"
+	@$(ECHO) "          sudo make install"
+	@$(ECHO) "      This installs startlazarus, lazarus-ide, lazbuild under /usr/bin"
+	@$(ECHO) "      and copies the whole lazarus source directory to /usr/share/lazarus"
 	@$(ECHO)
 	@exit
 registration:
