@@ -814,6 +814,7 @@ procedure TCustomImageList.InsertMasked(Index: Integer; AImage: TCustomBitmap;
 var
   RawImg: TRawImage;
   SourceImage, MaskedImage: TLazIntfImage;
+  MaskedDescription, DeviceDescription: TRawImageDescription;
 begin
   if AImage = nil then Exit;
   SourceImage := TLazIntfImage.Create(AImage.RawImage, False);
@@ -821,6 +822,16 @@ begin
     MaskedImage := TLazIntfImage.Create(0,0,[]);
     try
       MaskedImage.DataDescription := SourceImage.DataDescription;
+      if MaskedImage.DataDescription.MaskBitsPerPixel = 0 then
+      begin
+        MaskedDescription := MaskedImage.DataDescription;
+        DeviceDescription := GetDescriptionFromDevice(0, 0, 0);
+        MaskedDescription.MaskBitsPerPixel := DeviceDescription.MaskBitsPerPixel;
+        MaskedDescription.MaskBitOrder := DeviceDescription.MaskBitOrder;
+        MaskedDescription.MaskLineEnd := DeviceDescription.MaskLineEnd;
+        MaskedDescription.MaskShift := DeviceDescription.MaskShift;
+        MaskedImage.DataDescription := MaskedDescription;
+      end;
       MaskedImage.CopyPixels(SourceImage);
       MaskedImage.Mask(TColorToFPColor(ColorToRGB(MaskColor)));
       MaskedImage.GetRawImage(RawImg);
