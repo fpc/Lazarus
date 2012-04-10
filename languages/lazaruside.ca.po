@@ -2687,6 +2687,10 @@ msgstr ""
 msgid "Application"
 msgstr "Aplicació"
 
+#: lazarusidestrconsts.dlgpoasinvoker
+msgid "as invoker (asInvoker)"
+msgstr ""
+
 #: lazarusidestrconsts.dlgpoclearicon
 msgid "Clear Icon"
 msgstr ""
@@ -2706,6 +2710,10 @@ msgstr ""
 #: lazarusidestrconsts.dlgpofroms
 msgid "Forms"
 msgstr "Formes"
+
+#: lazarusidestrconsts.dlgpohighestavailable
+msgid "highest available (highestAvailable)"
+msgstr ""
 
 #: lazarusidestrconsts.dlgpoi18n
 msgid "i18n"
@@ -2739,6 +2747,10 @@ msgstr "Miscel·lània"
 msgid "Output settings"
 msgstr "Paràmetres de la sortida"
 
+#: lazarusidestrconsts.dlgporequireadministrator
+msgid "require administrator (requireAdministrator)"
+msgstr ""
+
 #: lazarusidestrconsts.dlgposaveicon
 msgid "Save Icon"
 msgstr ""
@@ -2754,6 +2766,10 @@ msgstr "Nom del fitxer destinació:"
 #: lazarusidestrconsts.dlgpotitle
 msgid "Title:"
 msgstr "Títol"
+
+#: lazarusidestrconsts.dlgpouiaccess
+msgid "UI Access (uiAccess)"
+msgstr ""
 
 #: lazarusidestrconsts.dlgpouseappbundle
 msgid "Use Application Bundle for running and debugging (Darwin only)"

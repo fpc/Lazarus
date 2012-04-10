@@ -2741,6 +2741,10 @@ msgstr "パッケージグループ"
 msgid "Application"
 msgstr "アプリケーション"
 
+#: lazarusidestrconsts.dlgpoasinvoker
+msgid "as invoker (asInvoker)"
+msgstr ""
+
 #: lazarusidestrconsts.dlgpoclearicon
 msgid "Clear Icon"
 msgstr "アイコンをクリア"
@@ -2762,6 +2766,10 @@ msgstr ""
 #: lazarusidestrconsts.dlgpofroms
 msgid "Forms"
 msgstr "フォーム"
+
+#: lazarusidestrconsts.dlgpohighestavailable
+msgid "highest available (highestAvailable)"
+msgstr ""
 
 #: lazarusidestrconsts.dlgpoi18n
 msgid "i18n"
@@ -2795,6 +2803,10 @@ msgstr "その他"
 msgid "Output settings"
 msgstr "出力設定"
 
+#: lazarusidestrconsts.dlgporequireadministrator
+msgid "require administrator (requireAdministrator)"
+msgstr ""
+
 #: lazarusidestrconsts.dlgposaveicon
 msgid "Save Icon"
 msgstr "アイコンを保存"
@@ -2810,6 +2822,10 @@ msgstr "対象ファイル名"
 #: lazarusidestrconsts.dlgpotitle
 msgid "Title:"
 msgstr "タイトル："
+
+#: lazarusidestrconsts.dlgpouiaccess
+msgid "UI Access (uiAccess)"
+msgstr ""
 
 #: lazarusidestrconsts.dlgpouseappbundle
 #, fuzzy

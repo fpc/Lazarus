@@ -2586,6 +2586,10 @@ msgstr "Skupina balíčků"
 msgid "Application"
 msgstr "Aplikace"
 
+#: lazarusidestrconsts.dlgpoasinvoker
+msgid "as invoker (asInvoker)"
+msgstr ""
+
 #: lazarusidestrconsts.dlgpoclearicon
 msgid "Clear Icon"
 msgstr "Vyčistit ikonu"
@@ -2607,6 +2611,10 @@ msgstr ""
 #: lazarusidestrconsts.dlgpofroms
 msgid "Forms"
 msgstr "Formuláře"
+
+#: lazarusidestrconsts.dlgpohighestavailable
+msgid "highest available (highestAvailable)"
+msgstr ""
 
 #: lazarusidestrconsts.dlgpoi18n
 msgid "i18n"
@@ -2638,6 +2646,10 @@ msgstr "Různé"
 msgid "Output settings"
 msgstr "Nastavení výstupu"
 
+#: lazarusidestrconsts.dlgporequireadministrator
+msgid "require administrator (requireAdministrator)"
+msgstr ""
+
 #: lazarusidestrconsts.dlgposaveicon
 msgid "Save Icon"
 msgstr "Uložit ikonu"
@@ -2653,6 +2665,10 @@ msgstr "Cílové jméno souboru:"
 #: lazarusidestrconsts.dlgpotitle
 msgid "Title:"
 msgstr "Nadpis:"
+
+#: lazarusidestrconsts.dlgpouiaccess
+msgid "UI Access (uiAccess)"
+msgstr ""
 
 #: lazarusidestrconsts.dlgpouseappbundle
 msgid "Use Application Bundle for running and debugging (Darwin only)"

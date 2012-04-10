@@ -2743,6 +2743,10 @@ msgstr "Grupa"
 msgid "Application"
 msgstr "Aplikacja"
 
+#: lazarusidestrconsts.dlgpoasinvoker
+msgid "as invoker (asInvoker)"
+msgstr ""
+
 #: lazarusidestrconsts.dlgpoclearicon
 msgid "Clear Icon"
 msgstr "Wyczyść ikonę"
@@ -2764,6 +2768,10 @@ msgstr ""
 #: lazarusidestrconsts.dlgpofroms
 msgid "Forms"
 msgstr "Formularze"
+
+#: lazarusidestrconsts.dlgpohighestavailable
+msgid "highest available (highestAvailable)"
+msgstr ""
 
 #: lazarusidestrconsts.dlgpoi18n
 msgid "i18n"
@@ -2797,6 +2805,10 @@ msgstr "Pozostałe"
 msgid "Output settings"
 msgstr "Ustawienia wyjścia"
 
+#: lazarusidestrconsts.dlgporequireadministrator
+msgid "require administrator (requireAdministrator)"
+msgstr ""
+
 #: lazarusidestrconsts.dlgposaveicon
 msgid "Save Icon"
 msgstr "Zapisz ikonę"
@@ -2812,6 +2824,10 @@ msgstr "Docelowa nazwa pliku"
 #: lazarusidestrconsts.dlgpotitle
 msgid "Title:"
 msgstr "Nazwa:"
+
+#: lazarusidestrconsts.dlgpouiaccess
+msgid "UI Access (uiAccess)"
+msgstr ""
 
 #: lazarusidestrconsts.dlgpouseappbundle
 #, fuzzy

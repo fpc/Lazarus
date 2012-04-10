@@ -2691,6 +2691,10 @@ msgstr ""
 msgid "Application"
 msgstr "Applicatie"
 
+#: lazarusidestrconsts.dlgpoasinvoker
+msgid "as invoker (asInvoker)"
+msgstr ""
+
 #: lazarusidestrconsts.dlgpoclearicon
 msgid "Clear Icon"
 msgstr ""
@@ -2710,6 +2714,10 @@ msgstr ""
 #: lazarusidestrconsts.dlgpofroms
 msgid "Forms"
 msgstr "Forms"
+
+#: lazarusidestrconsts.dlgpohighestavailable
+msgid "highest available (highestAvailable)"
+msgstr ""
 
 #: lazarusidestrconsts.dlgpoi18n
 msgid "i18n"
@@ -2743,6 +2751,10 @@ msgstr "Overige"
 msgid "Output settings"
 msgstr "Uitvoer Instellingen"
 
+#: lazarusidestrconsts.dlgporequireadministrator
+msgid "require administrator (requireAdministrator)"
+msgstr ""
+
 #: lazarusidestrconsts.dlgposaveicon
 msgid "Save Icon"
 msgstr ""
@@ -2758,6 +2770,10 @@ msgstr "Doelbestandsnaam:"
 #: lazarusidestrconsts.dlgpotitle
 msgid "Title:"
 msgstr "Titel:"
+
+#: lazarusidestrconsts.dlgpouiaccess
+msgid "UI Access (uiAccess)"
+msgstr ""
 
 #: lazarusidestrconsts.dlgpouseappbundle
 msgid "Use Application Bundle for running and debugging (Darwin only)"

@@ -2714,6 +2714,10 @@ msgstr "包分组"
 msgid "Application"
 msgstr "应用程序"
 
+#: lazarusidestrconsts.dlgpoasinvoker
+msgid "as invoker (asInvoker)"
+msgstr ""
+
 #: lazarusidestrconsts.dlgpoclearicon
 msgid "Clear Icon"
 msgstr "清除图标"
@@ -2733,6 +2737,10 @@ msgstr ""
 #: lazarusidestrconsts.dlgpofroms
 msgid "Forms"
 msgstr "窗体"
+
+#: lazarusidestrconsts.dlgpohighestavailable
+msgid "highest available (highestAvailable)"
+msgstr ""
 
 #: lazarusidestrconsts.dlgpoi18n
 msgid "i18n"
@@ -2766,6 +2774,10 @@ msgstr "杂项"
 msgid "Output settings"
 msgstr "输出设置"
 
+#: lazarusidestrconsts.dlgporequireadministrator
+msgid "require administrator (requireAdministrator)"
+msgstr ""
+
 #: lazarusidestrconsts.dlgposaveicon
 msgid "Save Icon"
 msgstr "保存图标"
@@ -2781,6 +2793,10 @@ msgstr "目标文件名:"
 #: lazarusidestrconsts.dlgpotitle
 msgid "Title:"
 msgstr "标题:"
+
+#: lazarusidestrconsts.dlgpouiaccess
+msgid "UI Access (uiAccess)"
+msgstr ""
 
 #: lazarusidestrconsts.dlgpouseappbundle
 #, fuzzy

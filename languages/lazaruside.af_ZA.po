@@ -2581,6 +2581,10 @@ msgstr ""
 msgid "Application"
 msgstr ""
 
+#: lazarusidestrconsts.dlgpoasinvoker
+msgid "as invoker (asInvoker)"
+msgstr ""
+
 #: lazarusidestrconsts.dlgpoclearicon
 msgid "Clear Icon"
 msgstr ""
@@ -2599,6 +2603,10 @@ msgstr ""
 
 #: lazarusidestrconsts.dlgpofroms
 msgid "Forms"
+msgstr ""
+
+#: lazarusidestrconsts.dlgpohighestavailable
+msgid "highest available (highestAvailable)"
 msgstr ""
 
 #: lazarusidestrconsts.dlgpoi18n
@@ -2631,6 +2639,10 @@ msgstr ""
 msgid "Output settings"
 msgstr ""
 
+#: lazarusidestrconsts.dlgporequireadministrator
+msgid "require administrator (requireAdministrator)"
+msgstr ""
+
 #: lazarusidestrconsts.dlgposaveicon
 msgid "Save Icon"
 msgstr ""
@@ -2645,6 +2657,10 @@ msgstr ""
 
 #: lazarusidestrconsts.dlgpotitle
 msgid "Title:"
+msgstr ""
+
+#: lazarusidestrconsts.dlgpouiaccess
+msgid "UI Access (uiAccess)"
 msgstr ""
 
 #: lazarusidestrconsts.dlgpouseappbundle
