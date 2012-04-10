@@ -3573,7 +3573,8 @@ function TMainIDE.OnIDEMessageDialog(const aCaption, aMsg: string;
   DlgType: TMsgDlgType; Buttons: TMsgDlgButtons; const HelpKeyword: string
   ): Integer;
 begin
-  Result:=IDEMessageDialog(aCaption,aMsg,DlgType,Buttons,HelpKeyword);
+  Result:=MessageDlg{ !!! DO NOT REPLACE WITH IDEMessageDialog }
+            (aCaption,aMsg,DlgType,Buttons,HelpKeyword);
 end;
 
 function TMainIDE.OnIDEQuestionDialog(const aCaption, aMsg: string;
