@@ -443,10 +443,12 @@ procedure Register;
 
 
 const
-//  cHotkeyPrefix   = '&';
+  cHotkeyPrefix   = '&';
   cLineCaption    = '-';
-//  cDialogSuffix   = '...';
-//  ValidMenuHotkeys: string = '1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+  cDialogSuffix   = '...';
+
+  ValidMenuHotkeys: string = '1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+
 
 
 implementation
