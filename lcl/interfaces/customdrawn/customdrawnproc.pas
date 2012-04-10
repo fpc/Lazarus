@@ -586,7 +586,7 @@ begin
   // Consider also if the user wants to manually disable the background drawing
   lDrawControl := True;
   if Assigned(CDWidgetset.DisableFormBackgroundDrawingProc) then
-    lDrawControl := CDWidgetset.DisableFormBackgroundDrawingProc(AForm);
+    lDrawControl := not CDWidgetset.DisableFormBackgroundDrawingProc(AForm);
   if lDrawControl then
     lDrawControl := lWindowHandle.IsControlBackgroundVisible() or (AForm.Height < AImage.Height);
   if lDrawControl then
