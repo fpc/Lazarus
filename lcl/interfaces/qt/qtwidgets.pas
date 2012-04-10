@@ -648,6 +648,8 @@ type
 
   TQtStaticText = class(TQtFrame)
   private
+    function GetWordWrap: Boolean;
+    procedure SetWordWrap(AValue: Boolean);
   protected
     function CreateWidget(const AParams: TCreateParams):QWidgetH; override;
   public
@@ -655,6 +657,7 @@ type
     function getText: WideString; override;
     procedure setText(const W: WideString); override;
     procedure setAlignment(const AAlignment: QtAlignment);
+    property WordWrap: Boolean read GetWordWrap write SetWordWrap;
   end;
 
   { TQtCheckBox }
@@ -6479,6 +6482,16 @@ begin
 end;
 
 { TQtStaticText }
+
+function TQtStaticText.GetWordWrap: Boolean;
+begin
+  Result := QLabel_wordWrap(QLabelH(Widget));
+end;
+
+procedure TQtStaticText.SetWordWrap(AValue: Boolean);
+begin
+  QLabel_setWordWrap(QLabelH(Widget), AValue);
+end;
 
 function TQtStaticText.CreateWidget(const AParams: TCreateParams): QWidgetH;
 var

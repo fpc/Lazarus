@@ -1069,8 +1069,8 @@ var
   QtStaticText: TQtStaticText;
 begin
   QtStaticText := TQtStaticText.Create(AWinControl, AParams);
+  QtStaticText.WordWrap := True;
   QtStaticText.AttachEvents;
-  
   QtStaticText.setAlignment(AlignmentMap[TCustomStaticText(AWinControl).Alignment]);
   QtStaticText.setFrameShape(StaticBorderFrameShapeMap[TCustomStaticText(AWinControl).BorderStyle]);
   QtStaticText.setFrameShadow(StaticBorderFrameShadowMap[TCustomStaticText(AWinControl).BorderStyle]);
