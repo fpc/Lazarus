@@ -91,17 +91,17 @@ begin
     AutoSize := True;
     Caption := dlgSyntaxOptions;
 
-    Items.Add(dlgCOCOps + ' (-Sc)');
-    Items.Add(dlgAssertCode + ' (-Sa)');
-    Items.Add(dlgLabelGoto + ' (-Sg)');
-    Items.Add(dlgCppInline + ' (-Si)');
-    Items.Add(dlgCMacro + ' (-Sm)');
+    Items.Add(dlgCOCOps + ' (-Sc, {$COPERATORS ON})');
+    Items.Add(dlgAssertCode + ' (-Sa, {$ASSERTIONS ON})');
+    Items.Add(dlgLabelGoto + ' (-Sg, {$GOTO ON})');
+    Items.Add(dlgCppInline + ' (-Si, {$INLINE ON})');
+    Items.Add(dlgCMacro + ' (-Sm, {$MACRO ON})');
     Items.Add(dlgInitDoneOnly + ' (-Ss)');
     Items.Add(dlgStaticKeyword + ' (-St)');
-    Items.Add(dlgCOAnsiStr + ' (-Sh)');
+    Items.Add(dlgCOAnsiStr + ' (-Sh, {$H+})');
   end;
 
-  grpSyntaxMode.Caption := lisSyntaxMode + ' (-M)';
+  grpSyntaxMode.Caption := lisSyntaxMode + ' (-M, {$MODE})';
   cmbSyntaxMode.Items.BeginUpdate;
   cmbSyntaxMode.Items.Clear;
   for m := Low(TCompilerMode) to High(TCompilerMode) do
