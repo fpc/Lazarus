@@ -209,6 +209,10 @@ begin
 
   GCValues.graphics_exposures := 0;
   AWindowInfo.GC := XCreateGC(CDWidgetSet.FDisplay, AWindowInfo.Window, GCGraphicsExposures, @GCValues);
+  {$ifdef CD_X11_SmartPaint}
+  AWindowInfo.Valid:= False; // Need Paint
+  AWindowInfo.Moved:= False; // And not move
+  {$endif}
 //  if not Assigned(GC) then
 //    raise EX11Error.Create(SGCCreationFailed);
 
@@ -665,9 +669,18 @@ begin
    TrueColor = 4;
    DirectColor = 5;}
   {$ENDIF}
+
+  {$ifdef CD_X11_SmartPaint}
+  if AWindowInfo.InvalidateRequestedInAnyControl then AWindowInfo.Valid:= False;
+  if (not AWindowInfo.Moved) or (not AWindowInfo.Valid) then begin // we're here just because a Move. We don't need to repaint
+    UpdateControlLazImageAndCanvas(AWindowInfo.Image, AWindowInfo.Canvas, lWidth, lHeight, clfBGR24);
+    RenderForm(AWindowInfo.Image, AWindowInfo.Canvas, TCustomForm(AWinControl));
+  end;
+  {$else}
   UpdateControlLazImageAndCanvas(AWindowInfo.Image, AWindowInfo.Canvas, lWidth, lHeight, clfBGR24);
 
   RenderForm(AWindowInfo.Image, AWindowInfo.Canvas, TCustomForm(AWinControl));
+  {$endif}
 
   {$IFDEF VerboseCDPaintProfiler}
   lCDTimeEnd := NowUTC();
@@ -732,11 +745,17 @@ begin
   // Move event
   if (Event.x <> AWinControl.Left) or (Event.y <> AWinControl.Top) then
   begin
+    {$ifdef CD_X11_SmartPaint}
+    AWindowInfo.Moved:= True; // doesn't need full painting
+    {$endif}
     LCLSendMoveMsg(AWinControl, Event.x, Event.y);
   end;
   // Size event
   if (Event.Width <> AWinControl.Width) or (Event.Height <> AWinControl.Height) then
   begin
+    {$ifdef CD_X11_SmartPaint}
+    AWindowInfo.Valid:= False; // Needs full Painting
+    {$endif}
     //SIZENORMAL, SIZEICONIC, SIZEFULLSCREEN, SIZEZOOMSHOW, SIZEZOOMHIDE.
     LCLSendSizeMsg(AWinControl, Event.Width, Event.Height, SIZENORMAL);
 

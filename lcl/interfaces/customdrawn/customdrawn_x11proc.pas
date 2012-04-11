@@ -29,6 +29,10 @@ type
     Colormap: TColormap;
     GC: TGC;
     ColorDepth: Byte;
+    {$ifdef CD_X11_SmartPaint}
+    Valid: Boolean;
+    Moved: Boolean;
+    {$endif}
   end;
 
 {$ifdef CD_X11_UseNewTimer}

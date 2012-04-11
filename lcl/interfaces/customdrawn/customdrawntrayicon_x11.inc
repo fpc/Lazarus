@@ -21,6 +21,7 @@ type
     procedure PaintForm(Sender: TObject);
     function  Send_Message(window: TWindow; msg: Integer;data1, data2,data3: Integer): boolean;
   public
+    constructor create;
     destructor Destroy; override;
     procedure CreateForm(id: Integer);
     function  GetPosition: TPoint;
@@ -149,6 +150,11 @@ begin
   Result := false;//(untrap_errors() = 0);
 end;
 
+constructor TX11TrayIconHandle.create;
+begin
+  inherited create;
+end;
+
 function TX11TrayIconHandle.TrayParent(UseCachedValue: Boolean = True): TWindow;
 var
   buf: array[0..32] of char;
@@ -157,14 +163,11 @@ begin
   if (fTrayParent <> 0) and UseCachedValue then
     Exit(fTrayParent);
   fDisplay := CDWidgetset.FDisplay;
-  fScreenID := DefaultScreen(CDWidgetSet.FDisplay);
-  XGrabServer(fDisplay);
+  fScreenID := CDWidgetSet.FScreen;
 
   buf :=  PChar('_NET_SYSTEM_TRAY_S' + IntToStr(fScreenID));
   selection_atom := XInternAtom(fDisplay, buf, false);
   fTrayParent := XGetSelectionOwner(fDisplay, selection_atom);
-
-  XUngrabServer(fDisplay);
 
   Result := fTrayParent;
 end;
@@ -208,10 +211,7 @@ begin
   Sleep(80);
   xsync(fdisplay,true);
 
-  XGrabServer(fDisplay);
   XSelectInput(fDisplay, TrayParent, StructureNotifyMask);
-  XUngrabServer(fDisplay);
-  XFlush(fDisplay);
 
   //fWindow := GDK_WINDOW_XWINDOW (Pointer(PGtkWidget(plug)^.window));
 
@@ -251,7 +251,6 @@ begin
   gtk_signal_connect_object(G_OBJECT(drawingarea), 'motion-notify-event', TGtkSignalFunc(@TGtk1TrayIconHandle.NotifyMouseMove), G_OBJECT(Self));
   gtk_signal_connect_object(G_OBJECT(drawingarea), 'button-press-event', TGtkSignalFunc(@TGtk1TrayIconHandle.NotifyMouseDown), G_OBJECT(Self));
   gtk_signal_connect_object(G_OBJECT(drawingarea), 'button-release-event', TGtkSignalFunc(@TGtk1TrayIconHandle.NotifyMouseUp), G_OBJECT(Self));}
-  //
 
   fEmbedded := False;
   GetCanvas;

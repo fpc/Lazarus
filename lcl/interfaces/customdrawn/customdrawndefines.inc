@@ -50,6 +50,7 @@
 {$define CD_X11_NewNativePaint}
 {$define CD_X11_UseLCL_MainLoop}
 {$define CD_X11_UseNewTimer}
+{$define CD_X11_SmartPaint}
 
 // ==================
 // X11 experimental options
@@ -58,7 +59,7 @@
 // To be able to use TThreads, UseCThreads must be defined in the application!
 { $ifdef UseCTthreads}
  {$ifdef CD_X11_UseNewTimer}
-   { $define TimerUseCThreads}
+   {.$define TimerUseCThreads}
  {$endif}
 { $endif}
 {$endif}
@@ -73,5 +74,6 @@
 {.$define VerboseCDBitmap}
 {.$define VerboseCDForms}
 {.$define VerboseCDX11WinAPI}
+{.$define VerboseCDEvents}
 {.$define VerboseCDAccessibility}
 

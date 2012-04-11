@@ -29,13 +29,15 @@ interface
 
 uses
   // RTL
-  Classes, SysUtils, Math,
+  // for CD_Cocoa Types needs to be after the platform-specif units or else Mac
+  // will catch MacOSAll.Rect/Size/Point
+  {$ifndef CD_Cocoa}Types,{$endif}Classes, SysUtils, Math,
   fpimage, fpcanvas, fpimgcanv, ctypes, dateutils,
   // XML
   XMLRead, Dom,
   // Platform specific
   {$ifdef CD_Windows}Windows, customdrawn_WinProc,{$endif}
-  {$ifdef CD_Cocoa}MacOSAll, CocoaAll, customdrawn_cocoaproc, CocoaGDIObjects,{$endif}
+  {$ifdef CD_Cocoa}MacOSAll, CocoaAll, customdrawn_cocoaproc, CocoaGDIObjects,Types,{$endif}
   {$ifdef CD_X11}X, XLib, XUtil, BaseUnix, customdrawn_x11proc,{$ifdef CD_UseNativeText}xft, fontconfig,{$endif}{$endif}
   {$ifdef CD_Android}
   customdrawn_androidproc, jni, bitmap, log, keycodes,
@@ -47,8 +49,6 @@ uses
   // LazFreeType
   LazFreeTypeIntfDrawer, LazFreeType, EasyLazFreeType, IniFiles,
   {$endif}
-  // Types needs to be after the platform-specif units or else Mac will catch MacOSAll.Rect/Size/Point
-  Types,
   // Widgetset
   customdrawnproc,
   // LCL
@@ -91,6 +91,9 @@ type
   TCDAppDelegate = objcclass(NSObject, NSApplicationDelegateProtocol)
     function applicationShouldTerminate(sender: NSApplication): NSApplicationTerminateReply; message 'applicationShouldTerminate:';
   end;
+  {$endif}
+  {$ifdef CD_X11}
+  // Just in case...
   {$endif}
 
   // Return true to disable the form background drawing
@@ -148,6 +151,8 @@ type
     {$ifdef CD_X11}
     FDisplayName: string;
     FDisplay: PDisplay;
+    FScreen: longint;
+    FVisual: TVisual; // Visual from X11
 
     LeaderWindow: X.TWindow;
     ClientLeaderAtom: TAtom;

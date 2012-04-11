@@ -42,6 +42,10 @@ begin
       if XWindowList.Strings[I] <> 'Paint' then begin
         XWindowList.Strings[I] := 'Paint';
         Result:= True;
+        {$ifdef CD_X11_SmartPaint}
+        AWindowInfo.Valid:= True;
+        AWindowInfo.Moved:= False;
+        {$endif}
         Exit;
       end;
     end;
@@ -152,6 +156,10 @@ end;
 procedure TCDWidgetSet.AppInit(var ScreenInfo: TScreenInfo);
 var
   ClassHint: PXClassHint;
+  DW,DH,DWMM,DHMM: culong;
+  I: Integer;
+  APVisual: PVisual;
+
 begin
   {$ifdef Verbose_CDWS}
 //  DebugLn('TCDWidgetSet.AppInit');
@@ -171,6 +179,8 @@ begin
 
   if not Assigned(FDisplay) then
     raise Exception.Create('[TCDWidgetSet.AppInit] XOpenDisplay failed');
+  // if we have a Display then we should have a Screen too
+  FScreen:= XDefaultScreen(FDisplay);
 
   // Keyboard initialization
 
@@ -181,12 +191,47 @@ begin
   if InputContext = nil then DebugLn('[TCDWidgetSet.BackendInit] Failed to initialize the Keyboard handling!');
 
   // Initialize ScreenInfo
-  ScreenInfo.PixelsPerInchX:= 96;
-  ScreenInfo.PixelsPerInchY:= 96;
+
+  // Screen Metrics
+  DW:= XDisplayWidth(FDisplay,FScreen);
+  DWMM:= XDisplayWidthMM(FDisplay,FScreen);
+  ScreenInfo.PixelsPerInchX:= round(float(DW)/(DWMM/25.4));
+  DH:= XDisplayHeight(FDisplay,FScreen);
+  DHMM:=XDisplayHeightMM(FDisplay,FScreen);
+  ScreenInfo.PixelsPerInchY:= round(float(DH)/(DHMM/25.4));
+  // Color Depth
+  ScreenInfo.ColorDepth:= XDefaultDepth(FDisplay,FScreen);
   ScreenInfo.Initialized:= True;
 
-  // ToDo: Actually check which format it is at
-  ScreenFormat := clfBGR24;
+  // Pixmap Format
+  APVisual:= XDefaultVisual(FDisplay,FScreen);
+  FVisual:= APVisual^;
+  if (ScreenInfo.ColorDepth = 16) then ScreenFormat:= clfRGB16_R5G6B5
+  else if (ScreenInfo.ColorDepth = 24) then begin
+    if (FVisual.blue_mask = $FF) and
+      (FVisual.green_mask = $FF00) and
+      (FVisual.red_mask = $FF0000) then
+    ScreenFormat:= clfBGR24
+    else if (FVisual.red_mask = $FF) and
+      (FVisual.green_mask = $FF00) and
+      (FVisual.blue_mask = $FF0000) then
+    ScreenFormat:= clfRGB24;
+  end
+  else if (ScreenInfo.ColorDepth = 32) then begin
+    if (FVisual.blue_mask = $FF) and
+      (FVisual.green_mask = $FF00) and
+      (FVisual.red_mask = $FF0000) then
+    ScreenFormat:= clfBGRA32
+    else if (FVisual.red_mask = $FF) and
+      (FVisual.green_mask = $FF00) and
+      (FVisual.blue_mask = $FF0000) then
+    ScreenFormat:= clfRGBA32
+    else if (FVisual.red_mask = $FF00) and
+      (FVisual.green_mask = $FF0000) and
+      (FVisual.blue_mask = $FF000000) then
+    ScreenFormat:= clfARGB32;
+  end;
+  //ScreenFormat := clfBGR24;
 
   //if (not (woX11SkipWMHints in WindowOptions)) and (woWindow in WindowOptions) then
   //begin
@@ -440,7 +485,15 @@ begin
        // http://tronche.com/gui/x/xlib/events/exposure/expose.html
        if XEvent.xexpose.count = 0 then
        begin
-         TCDWSCustomForm.EvPaint(WindowEntry, CurWindowInfo);
+         {$ifdef VerboseCDEvents}
+         DebugLn(Format('X11 event X.Expose - Window %d',[CurWindowInfo.Window]));
+         {$endif}
+         {$ifdef CD_X11_SmartPaint}
+         if CurWindowInfo.Valid then
+           TCDWSCustomForm.EvPaintEx(WindowEntry, CurWindowInfo)
+         else
+         {$endif}
+           TCDWSCustomForm.EvPaint(WindowEntry, CurWindowInfo);
        end;
      end;
      X.ConfigureNotify:
@@ -450,12 +503,13 @@ begin
      X.ClientMessage:
      begin
        if XClientEvent.message_type = CDWidgetSet.FWMPaint then begin
-         {$ifdef VerboseCDEvents}
-         DebugLn(Format('X11 event WM_PAINT - Window %d',[CurWindowInfo.Window]));
-         {$endif}
          {$IFDEF VerboseCDPaintProfiler}
           lMessageTime:= DateTimeToMilliseconds(Now)-XClientEvent.data.l[1];
-          DebugLn(Format('X11 event WM_PAINT - Window %d, Delay %d ms',[CurWindowInfo.Window,lMessageTime]));
+          DebugLn(Format('CD_X11 event WM_PAINT - Window %d, Delay %d ms',[CurWindowInfo.Window,lMessageTime]));
+         {$else}
+         {$ifdef VerboseCDEvents}
+         DebugLn(Format('CD_X11 event WM_PAINT - Window %d',[CurWindowInfo.Window]));
+         {$endif}
          {$ENDIF}
          TCDWSCustomForm.EvPaintEx(WindowEntry, CurWindowInfo);
          WindowUpdated(CurWindowInfo.Window);
