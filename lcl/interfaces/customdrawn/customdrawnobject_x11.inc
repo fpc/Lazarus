@@ -159,7 +159,6 @@ var
   DW,DH,DWMM,DHMM: culong;
   I: Integer;
   APVisual: PVisual;
-
 begin
   {$ifdef Verbose_CDWS}
 //  DebugLn('TCDWidgetSet.AppInit');
@@ -203,9 +202,12 @@ begin
   ScreenInfo.ColorDepth:= XDefaultDepth(FDisplay,FScreen);
   ScreenInfo.Initialized:= True;
 
-  // Pixmap Format
+  // Screen Pixmap Format
+  // ScreenFormat is just a hint to tell controls to use the screen format
+  // because using the same format as the screen increases the speed of canvas copy operations
   APVisual:= XDefaultVisual(FDisplay,FScreen);
   FVisual:= APVisual^;
+  ScreenFormat := clfARGB32; // Standard value with alpha blending support if we don't find a enum which matches the screen format
   if (ScreenInfo.ColorDepth = 16) then ScreenFormat:= clfRGB16_R5G6B5
   else if (ScreenInfo.ColorDepth = 24) then begin
     if (FVisual.blue_mask = $FF) and
@@ -231,7 +233,6 @@ begin
       (FVisual.blue_mask = $FF000000) then
     ScreenFormat:= clfARGB32;
   end;
-  //ScreenFormat := clfBGR24;
 
   //if (not (woX11SkipWMHints in WindowOptions)) and (woWindow in WindowOptions) then
   //begin
