@@ -749,6 +749,7 @@ type
     FAllEditorsInfoMap: TMap;
     FAutoCreateForms: boolean;
     FEnableI18NForLFM: boolean;
+    FLastCompileComplete: boolean;
     FMacroEngine: TTransferMacroList;
     FMacroValues: TProjectBuildMacros;
     FTmpAutoCreatedForms: TStrings; // temporary, used to apply auto create forms changes
@@ -1014,8 +1015,8 @@ type
 
     // state file
     function LoadStateFile(IgnoreErrors: boolean): TModalResult;
-    function SaveStateFile(const CompilerFilename, CompilerParams: string
-                           ): TModalResult;
+    function SaveStateFile(const CompilerFilename, CompilerParams: string;
+                           Complete: boolean): TModalResult;
                            
     // source editor
     procedure UpdateAllCustomHighlighter;
@@ -1067,6 +1068,7 @@ type
                                           write FLastCompilerFilename;
     property LastCompilerParams: string read FLastCompilerParams
                                         write FLastCompilerParams;
+    property LastCompileComplete: boolean read FLastCompileComplete write FLastCompileComplete;
     property MacroEngine: TTransferMacroList read FMacroEngine;
     property MacroValues: TProjectBuildMacros read FMacroValues;
     property MainFilename: String read GetMainFilename;
@@ -5002,6 +5004,7 @@ begin
         LastCompilerFilename:=XMLConfig.GetValue('Compiler/Value','');
         LastCompilerFileDate:=XMLConfig.GetValue('Compiler/Date',0);
         LastCompilerParams:=XMLConfig.GetValue('Params/Value','');
+        LastCompileComplete:=XMLConfig.GetValue('Complete/Value',true);
       finally
         XMLConfig.Free;
       end;
@@ -5025,8 +5028,8 @@ begin
   Result:=mrOk;
 end;
 
-function TProject.SaveStateFile(const CompilerFilename, CompilerParams: string
-  ): TModalResult;
+function TProject.SaveStateFile(const CompilerFilename, CompilerParams: string;
+  Complete: boolean): TModalResult;
 var
   XMLConfig: TXMLConfig;
   StateFile: String;
@@ -5041,6 +5044,7 @@ begin
       XMLConfig.SetValue('Compiler/Value',CompilerFilename);
       XMLConfig.SetValue('Compiler/Date',CompilerFileDate);
       XMLConfig.SetValue('Params/Value',CompilerParams);
+      XMLConfig.SetDeleteValue('Complete/Value',Complete,true);
       InvalidateFileStateCache;
       XMLConfig.Flush;
     finally
@@ -5049,6 +5053,7 @@ begin
     LastCompilerFilename:=CompilerFilename;
     LastCompilerFileDate:=CompilerFileDate;
     LastCompilerParams:=CompilerParams;
+    LastCompileComplete:=Complete;
     StateFileDate:=FileAgeCached(StateFile);
     StateFlags:=StateFlags+[lpsfStateFileLoaded];
   except

@@ -3013,6 +3013,21 @@ begin
   o:=APackage.GetOutputDirType;
   Stats:=@APackage.LastCompile[o];
   //debugln(['TLazPackageGraph.CheckIfCurPkgOutDirNeedsCompile  Last="',ExtractCompilerParamsForBuildAll(APackage.LastCompilerParams),'" Now="',ExtractCompilerParamsForBuildAll(CompilerParams),'"']);
+
+  // check state file
+  StateFilename:=APackage.GetStateFilename;
+  Result:=LoadPackageCompiledState(APackage,false,true);
+  if Result<>mrOk then exit; // read error and user aborted
+  if not Stats^.StateFileLoaded then begin
+    // package was not compiled via Lazarus nor via Makefile
+    DebugLn('TLazPackageGraph.CheckIfCurPkgOutDirNeedsCompile  Missing state file for ',APackage.IDAsString,': ',StateFilename);
+    Note+='Missing state file "'+StateFilename+'".'+LineEnding;
+    NeedBuildAllFlag:=true;
+    ConfigChanged:=true;
+    exit(mrYes);
+  end;
+
+  // check if build all (-B) is needed
   if (Stats^.CompilerFilename<>CompilerFilename)
   or (ExtractFPCParamsForBuildAll(Stats^.Params)
       <>ExtractFPCParamsForBuildAll(CompilerParams))
@@ -3022,18 +3037,6 @@ begin
   then begin
     NeedBuildAllFlag:=true;
     ConfigChanged:=true;
-  end;
-
-  // check state file
-  StateFilename:=APackage.GetStateFilename;
-  Result:=LoadPackageCompiledState(APackage,false,true);
-  if Result<>mrOk then exit;
-  if not Stats^.StateFileLoaded then begin
-    // package was not compiled via Lazarus nor via Makefile
-    DebugLn('TLazPackageGraph.CheckIfCurPkgOutDirNeedsCompile  Missing state file for ',APackage.IDAsString,': ',StateFilename);
-    Note+='Missing state file "'+StateFilename+'".'+LineEnding;
-    ConfigChanged:=true;
-    exit(mrYes);
   end;
 
   StateFileAge:=FileAgeUTF8(StateFilename);
