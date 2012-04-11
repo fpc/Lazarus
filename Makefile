@@ -2734,7 +2734,7 @@ idebig:
 idepkg:
 	$(MAKE) -C ide idepkg
 useride: 
-	./lazbuild$(SRCEXEEXT) --build-ide=
+	./lazbuild$(SRCEXEEXT) --lazarusdir=. --build-ide=
 starter:
 	$(MAKE) -C ide starter
 lazbuild: registration lazutils codetools

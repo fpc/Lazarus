@@ -175,7 +175,7 @@ idepkg:
 # requires lazbuild
 # ignores LCL_PLATFORM and OPTS
 useride: 
-	./lazbuild$(SRCEXEEXT) --build-ide=
+	./lazbuild$(SRCEXEEXT) --lazarusdir=. --build-ide=
 
 #-----------------------------------------------------------------------------
 starter:
