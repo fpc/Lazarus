@@ -506,7 +506,7 @@ begin
     if (VItem=Item) then
       FIdentLowVarToItem.Remove(VarName);
 
-    FOriginalToItem.Remove(Item.Original);
+    FOriginalToItem.Remove(Item.Original, Item);
     FItems.Delete(i);
     Item.Free;
   end;
@@ -1041,7 +1041,7 @@ begin
     if Item.Tag<>aTag then
       Continue;
     FIdentifierLowToItem.Remove(Item.IdentifierLow);
-    FOriginalToItem.Remove(Item.Original);
+    FOriginalToItem.Remove(Item.Original, Item);
     FItems.Delete(i);
     Item.Free;
   end;
