@@ -210,7 +210,7 @@ const
 var
   ATabsStateEx: TCDCTabControlStateEx absolute AStateEx;
   lCaption: String;
-  lTabWidth, i: Integer;
+  lTabWidth, i, t: Integer;
   IsPainting: Boolean = False;
 begin
   ADest.Font.Assign(AStateEx.Font);
@@ -241,7 +241,12 @@ begin
       if i = ATabsStateEx.LeftmostTabVisibleIndex then IsPainting := True;
 
       if IsPainting then
+      begin
+        t := ATabsStateEx.CurTabIndex;
+        ATabsStateEx.CurTabIndex := i;
         Result := Result + GetMeasuresEx(ADest, TCDCTABCONTROL_TAB_WIDTH, AState, AStateEx);
+        ATabsStateEx.CurTabIndex := t;
+      end;
     end;
   end;
   TCDCTABCONTROL_CLOSE_BUTTON_POS_X:
