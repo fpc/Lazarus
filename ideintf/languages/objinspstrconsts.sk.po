@@ -154,8 +154,8 @@ msgstr ""
 
 #: objinspstrconsts.fesfetitle
 #, fuzzy
-#| msgid "Edit Fields"
-msgid "Edit Fields..."
+#| msgid "Edit Fields..."
+msgid "Edit Fields ..."
 msgstr "Upraviť polia"
 
 #: objinspstrconsts.fesfieldcantbec
@@ -336,7 +336,7 @@ msgid "Action"
 msgstr "Činnosť"
 
 #: objinspstrconsts.oisactionlistcomponenteditor
-msgid "Action&List Editor..."
+msgid "Action&List Editor ..."
 msgstr ""
 
 #: objinspstrconsts.oisactionlisteditor
@@ -527,7 +527,7 @@ msgid "&Help"
 msgstr ""
 
 #: objinspstrconsts.oisimagelistcomponenteditor
-msgid "I&mageList Editor..."
+msgid "I&mageList Editor ..."
 msgstr ""
 
 #: objinspstrconsts.oisincompatibleidentifier
@@ -583,7 +583,9 @@ msgid "Load picture"
 msgstr "Načítať obrázok"
 
 #: objinspstrconsts.oismasks
-msgid "Masks..."
+#, fuzzy
+#| msgid "Masks..."
+msgid "Masks ..."
 msgstr "Masky..."
 
 #: objinspstrconsts.oismethod
@@ -766,7 +768,9 @@ msgid "Strings Editor Dialog"
 msgstr "Dialóg Editor reťazcov"
 
 #: objinspstrconsts.oistdactcolorselect1headline
-msgid "Select &Color..."
+#, fuzzy
+#| msgid "Select &Color..."
+msgid "Select &Color ..."
 msgstr "V&ybrať farbu..."
 
 #: objinspstrconsts.oistdactcolorselecthint
@@ -948,7 +952,9 @@ msgid "Exit"
 msgstr "Koniec"
 
 #: objinspstrconsts.oistdactfileopenheadline
-msgid "&Open..."
+#, fuzzy
+#| msgid "&Open..."
+msgid "&Open ..."
 msgstr "&Otvoriť..."
 
 #: objinspstrconsts.oistdactfileopenhint
@@ -961,7 +967,9 @@ msgid "Ctrl+O"
 msgstr "Ctrl+O"
 
 #: objinspstrconsts.oistdactfileopenwithheadline
-msgid "Open with..."
+#, fuzzy
+#| msgid "Open with..."
+msgid "Open with ..."
 msgstr "Otvoriť pomocou ..."
 
 #: objinspstrconsts.oistdactfileopenwithhint
@@ -969,7 +977,9 @@ msgid "Open with"
 msgstr "Otvoriť pomocou"
 
 #: objinspstrconsts.oistdactfilesaveasheadline
-msgid "Save &As..."
+#, fuzzy
+#| msgid "Save &As..."
+msgid "Save &As ..."
 msgstr "Uložiť &ako..."
 
 #: objinspstrconsts.oistdactfilesaveashint
@@ -977,7 +987,9 @@ msgid "Save As"
 msgstr "Uložiť ako"
 
 #: objinspstrconsts.oistdactfonteditheadline
-msgid "Select &Font..."
+#, fuzzy
+#| msgid "Select &Font..."
+msgid "Select &Font ..."
 msgstr "Vybrať &font..."
 
 #: objinspstrconsts.oistdactfontedithint
@@ -1017,7 +1029,9 @@ msgid "Find first"
 msgstr "Hľadať prvé"
 
 #: objinspstrconsts.oistdactsearchfindheadline
-msgid "&Find..."
+#, fuzzy
+#| msgid "&Find..."
+msgid "&Find ..."
 msgstr "&Hľadať..."
 
 #: objinspstrconsts.oistdactsearchfindhint
@@ -1049,7 +1063,9 @@ msgid "Replace"
 msgstr "Nahradiť"
 
 #: objinspstrconsts.oistestdialog
-msgid "Test dialog..."
+#, fuzzy
+#| msgid "Test dialog..."
+msgid "Test dialog ..."
 msgstr "Testovať dialóg..."
 
 #: objinspstrconsts.oistestinput
@@ -1186,7 +1202,9 @@ msgid "Sections Editor ..."
 msgstr "Editor sekcií .."
 
 #: objinspstrconsts.sccsiledtadd
-msgid "Add..."
+#, fuzzy
+#| msgid "Add..."
+msgid "Add ..."
 msgstr "Pridať..."
 
 #: objinspstrconsts.sccsiledtadjustment
@@ -1251,12 +1269,16 @@ msgid "Transparent Color:"
 msgstr "Transparentná farba:"
 
 #: objinspstrconsts.sccsiledtsave
+#, fuzzy
+#| msgid "Save..."
 msgctxt "objinspstrconsts.sccsiledtsave"
-msgid "Save..."
+msgid "Save ..."
 msgstr "Uložiť..."
 
 #: objinspstrconsts.sccsiledtsaveall
-msgid "Save All..."
+#, fuzzy
+#| msgid "Save All..."
+msgid "Save All ..."
 msgstr "Uložiť všetko..."
 
 #: objinspstrconsts.sccsiledtsavedialog
@@ -1273,9 +1295,9 @@ msgstr "Upraviť stĺpce ..."
 
 #: objinspstrconsts.sccslvedt
 #, fuzzy
-#| msgid "Edit ListView Items..."
+#| msgid "Edit Items..."
 msgctxt "objinspstrconsts.sccslvedt"
-msgid "Edit Items..."
+msgid "Edit Items ..."
 msgstr "Editvať položky ListView..."
 
 #: objinspstrconsts.sccslvedtapply
@@ -1332,7 +1354,7 @@ msgid "New SubItem"
 msgstr "Nová podpoložka"
 
 #: objinspstrconsts.sccsmaskeditor
-msgid "Edit Mask Editor..."
+msgid "Edit Mask Editor ..."
 msgstr ""
 
 #: objinspstrconsts.sccssbeditpanels
@@ -1340,7 +1362,9 @@ msgid "Panels Editor ..."
 msgstr "Editor panelov ..."
 
 #: objinspstrconsts.sccssgedt
-msgid "Edit StringGrid..."
+#, fuzzy
+#| msgid "Edit StringGrid..."
+msgid "Edit StringGrid ..."
 msgstr "Editovať StringGrid..."
 
 #: objinspstrconsts.sccssgedtapply
@@ -1361,7 +1385,9 @@ msgid "String Grid"
 msgstr "String Grid"
 
 #: objinspstrconsts.sccssgedtload
-msgid "Load..."
+#, fuzzy
+#| msgid "Load..."
+msgid "Load ..."
 msgstr "Načítať..."
 
 #: objinspstrconsts.sccssgedtmoverowscols
@@ -1374,8 +1400,10 @@ msgid "Open"
 msgstr "Otvoriť"
 
 #: objinspstrconsts.sccssgedtsave
+#, fuzzy
+#| msgid "Save..."
 msgctxt "objinspstrconsts.sccssgedtsave"
-msgid "Save..."
+msgid "Save ..."
 msgstr "Uložiť..."
 
 #: objinspstrconsts.sccssgedtsavedialog
@@ -1385,9 +1413,9 @@ msgstr "Uložiť"
 
 #: objinspstrconsts.sccstredt
 #, fuzzy
-#| msgid "Edit TreeView Items..."
+#| msgid "Edit Items..."
 msgctxt "objinspstrconsts.sccstredt"
-msgid "Edit Items..."
+msgid "Edit Items ..."
 msgstr "Editovať položky TreeView..."
 
 #: objinspstrconsts.sccstredtapply

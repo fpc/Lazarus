@@ -155,8 +155,8 @@ msgstr ""
 
 #: objinspstrconsts.fesfetitle
 #, fuzzy
-#| msgid "Edit Fields"
-msgid "Edit Fields..."
+#| msgid "Edit Fields..."
+msgid "Edit Fields ..."
 msgstr "编辑字段"
 
 #: objinspstrconsts.fesfieldcantbec
@@ -337,7 +337,7 @@ msgid "Action"
 msgstr "动作"
 
 #: objinspstrconsts.oisactionlistcomponenteditor
-msgid "Action&List Editor..."
+msgid "Action&List Editor ..."
 msgstr ""
 
 #: objinspstrconsts.oisactionlisteditor
@@ -528,7 +528,7 @@ msgid "&Help"
 msgstr ""
 
 #: objinspstrconsts.oisimagelistcomponenteditor
-msgid "I&mageList Editor..."
+msgid "I&mageList Editor ..."
 msgstr ""
 
 #: objinspstrconsts.oisincompatibleidentifier
@@ -584,7 +584,9 @@ msgid "Load picture"
 msgstr "载入图像"
 
 #: objinspstrconsts.oismasks
-msgid "Masks..."
+#, fuzzy
+#| msgid "Masks..."
+msgid "Masks ..."
 msgstr "掩码..."
 
 #: objinspstrconsts.oismethod
@@ -767,7 +769,9 @@ msgid "Strings Editor Dialog"
 msgstr "Strings 编辑对话框"
 
 #: objinspstrconsts.oistdactcolorselect1headline
-msgid "Select &Color..."
+#, fuzzy
+#| msgid "Select &Color..."
+msgid "Select &Color ..."
 msgstr "选择颜色(&C)"
 
 #: objinspstrconsts.oistdactcolorselecthint
@@ -949,7 +953,9 @@ msgid "Exit"
 msgstr "退出"
 
 #: objinspstrconsts.oistdactfileopenheadline
-msgid "&Open..."
+#, fuzzy
+#| msgid "&Open..."
+msgid "&Open ..."
 msgstr "打开(&O)..."
 
 #: objinspstrconsts.oistdactfileopenhint
@@ -962,7 +968,7 @@ msgid "Ctrl+O"
 msgstr "Ctrl+O"
 
 #: objinspstrconsts.oistdactfileopenwithheadline
-msgid "Open with..."
+msgid "Open with ..."
 msgstr ""
 
 #: objinspstrconsts.oistdactfileopenwithhint
@@ -970,7 +976,9 @@ msgid "Open with"
 msgstr ""
 
 #: objinspstrconsts.oistdactfilesaveasheadline
-msgid "Save &As..."
+#, fuzzy
+#| msgid "Save &As..."
+msgid "Save &As ..."
 msgstr "另存为(&A)"
 
 #: objinspstrconsts.oistdactfilesaveashint
@@ -978,7 +986,9 @@ msgid "Save As"
 msgstr "另存为"
 
 #: objinspstrconsts.oistdactfonteditheadline
-msgid "Select &Font..."
+#, fuzzy
+#| msgid "Select &Font..."
+msgid "Select &Font ..."
 msgstr "选择字体(&F)"
 
 #: objinspstrconsts.oistdactfontedithint
@@ -1018,7 +1028,9 @@ msgid "Find first"
 msgstr "查找最前"
 
 #: objinspstrconsts.oistdactsearchfindheadline
-msgid "&Find..."
+#, fuzzy
+#| msgid "&Find..."
+msgid "&Find ..."
 msgstr "查找(&F)"
 
 #: objinspstrconsts.oistdactsearchfindhint
@@ -1050,7 +1062,9 @@ msgid "Replace"
 msgstr "替换"
 
 #: objinspstrconsts.oistestdialog
-msgid "Test dialog..."
+#, fuzzy
+#| msgid "Test dialog..."
+msgid "Test dialog ..."
 msgstr "测试对话框..."
 
 #: objinspstrconsts.oistestinput
@@ -1187,7 +1201,9 @@ msgid "Sections Editor ..."
 msgstr "节编辑器"
 
 #: objinspstrconsts.sccsiledtadd
-msgid "Add..."
+#, fuzzy
+#| msgid "Add..."
+msgid "Add ..."
 msgstr "添加..."
 
 #: objinspstrconsts.sccsiledtadjustment
@@ -1252,12 +1268,16 @@ msgid "Transparent Color:"
 msgstr "透明的颜色"
 
 #: objinspstrconsts.sccsiledtsave
+#, fuzzy
+#| msgid "Save..."
 msgctxt "objinspstrconsts.sccsiledtsave"
-msgid "Save..."
+msgid "Save ..."
 msgstr "保存..."
 
 #: objinspstrconsts.sccsiledtsaveall
-msgid "Save All..."
+#, fuzzy
+#| msgid "Save All..."
+msgid "Save All ..."
 msgstr "全部保存..."
 
 #: objinspstrconsts.sccsiledtsavedialog
@@ -1274,9 +1294,9 @@ msgstr "编辑列..."
 
 #: objinspstrconsts.sccslvedt
 #, fuzzy
-#| msgid "Edit ListView Items..."
+#| msgid "Edit Items..."
 msgctxt "objinspstrconsts.sccslvedt"
-msgid "Edit Items..."
+msgid "Edit Items ..."
 msgstr "编辑 ListView 标签..."
 
 #: objinspstrconsts.sccslvedtapply
@@ -1333,7 +1353,9 @@ msgid "New SubItem"
 msgstr "新建子项"
 
 #: objinspstrconsts.sccsmaskeditor
-msgid "Edit Mask Editor..."
+#, fuzzy
+#| msgid "Edit Mask Editor..."
+msgid "Edit Mask Editor ..."
 msgstr "掩码编辑器"
 
 #: objinspstrconsts.sccssbeditpanels
@@ -1341,7 +1363,9 @@ msgid "Panels Editor ..."
 msgstr "面板编辑器"
 
 #: objinspstrconsts.sccssgedt
-msgid "Edit StringGrid..."
+#, fuzzy
+#| msgid "Edit StringGrid..."
+msgid "Edit StringGrid ..."
 msgstr "编辑 StringGrid..."
 
 #: objinspstrconsts.sccssgedtapply
@@ -1362,7 +1386,9 @@ msgid "String Grid"
 msgstr "String 网格"
 
 #: objinspstrconsts.sccssgedtload
-msgid "Load..."
+#, fuzzy
+#| msgid "Load..."
+msgid "Load ..."
 msgstr "载入..."
 
 #: objinspstrconsts.sccssgedtmoverowscols
@@ -1375,8 +1401,10 @@ msgid "Open"
 msgstr "打开"
 
 #: objinspstrconsts.sccssgedtsave
+#, fuzzy
+#| msgid "Save..."
 msgctxt "objinspstrconsts.sccssgedtsave"
-msgid "Save..."
+msgid "Save ..."
 msgstr "保存..."
 
 #: objinspstrconsts.sccssgedtsavedialog
@@ -1386,9 +1414,9 @@ msgstr "保存"
 
 #: objinspstrconsts.sccstredt
 #, fuzzy
-#| msgid "Edit TreeView Items..."
+#| msgid "Edit Items..."
 msgctxt "objinspstrconsts.sccstredt"
-msgid "Edit Items..."
+msgid "Edit Items ..."
 msgstr "编辑 TreeView 标签..."
 
 #: objinspstrconsts.sccstredtapply

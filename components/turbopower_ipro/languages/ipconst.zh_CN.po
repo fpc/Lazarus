@@ -294,7 +294,9 @@ msgid "- expected"
 msgstr ""
 
 #: ipconst.shtmldefbrowsecaption
-msgid "Browse..."
+#, fuzzy
+#| msgid "Browse..."
+msgid "Browse ..."
 msgstr "浏览..."
 
 #: ipconst.shtmldefresetcaption

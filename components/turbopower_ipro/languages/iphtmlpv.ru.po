@@ -30,7 +30,9 @@ msgid "Print preview"
 msgstr "Предварительный просмотр"
 
 #: iphtmlpv.rsiphtmlpreviewselectprinter
-msgid "Select printer..."
+#, fuzzy
+#| msgid "Select printer..."
+msgid "Select printer ..."
 msgstr "Выбрать принтер..."
 
 #: iphtmlpv.rsiphtmlpreviewzoom

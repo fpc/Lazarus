@@ -146,7 +146,8 @@ type
     function GetPackageCompilerParams(APackage: TLazPackage): string;
     function CheckIfCurPkgOutDirNeedsCompile(APackage: TLazPackage;
                     CheckDependencies, SkipDesignTimePackages: boolean;
-                    out NeedBuildAllFlag, ConfigChanged, DependenciesChanged: boolean): TModalResult;
+                    out NeedBuildAllFlag, ConfigChanged, DependenciesChanged: boolean;
+                    var Note: string): TModalResult;
     procedure InvalidateStateFile(APackage: TLazPackage);
   public
     constructor Create;
@@ -283,14 +284,14 @@ type
     function LoadPackageCompiledState(APackage: TLazPackage;
                                 IgnoreErrors, ShowAbort: boolean): TModalResult;
     function CheckCompileNeedDueToFPCUnits(TheOwner: TObject;
-                          StateFileAge: longint): boolean;
+                          StateFileAge: longint; var Note: string): boolean;
     function CheckCompileNeedDueToDependencies(TheOwner: TObject;
-                          FirstDependency: TPkgDependency;
-                          SkipDesignTimePackages: boolean; StateFileAge: longint
-                          ): TModalResult;
+                         FirstDependency: TPkgDependency;
+                         SkipDesignTimePackages: boolean; StateFileAge: longint;
+                         var Note: string): TModalResult;
     function CheckIfPackageNeedsCompilation(APackage: TLazPackage;
                     SkipDesignTimePackages: boolean;
-                    out NeedBuildAllFlag: boolean): TModalResult;
+                    out NeedBuildAllFlag: boolean; var Note: string): TModalResult;
     function PreparePackageOutputDirectory(APackage: TLazPackage;
                                            CleanUp: boolean): TModalResult;
     function GetFallbackOutputDir(APackage: TLazPackage): string;
@@ -2707,6 +2708,10 @@ begin
         stats^.Complete:=XMLConfig.GetValue('Complete/Value',true);
         stats^.MainPPUExists:=XMLConfig.GetValue('Complete/MainPPUExists',true);
         stats^.ViaMakefile:=XMLConfig.GetValue('Makefile/Value',false);
+        if stats^.ViaMakefile then begin
+          DoDirSeparators(stats^.CompilerFilename);
+          DoDirSeparators(stats^.Params);
+        end;
       finally
         XMLConfig.Free;
       end;
@@ -2732,7 +2737,7 @@ begin
 end;
 
 function TLazPackageGraph.CheckCompileNeedDueToFPCUnits(TheOwner: TObject;
-  StateFileAge: longint): boolean;
+  StateFileAge: longint; var Note: string): boolean;
 var
   AProject: TLazProject;
   Pkg: TLazPackage;
@@ -2774,6 +2779,9 @@ begin
     Filename:=Item^.Value;
     if FileAgeCached(Filename)>StateFileAge then begin
       debugln(['TLazPackageGraph.CheckCompileNeedDueToFPCUnits FPC unit "',Filename,'" is newer than state file of ',ID]);
+      Note+='FPC unit "'+Filename+'" is newer than state file of '+ID+':'+LineEnding
+        +'  unit age='+FileAgeToStr(FileAgeCached(Filename))+LineEnding
+        +'  state file age='+FileAgeToStr(StateFileAge)+LineEnding;
       exit(true);
     end;
     Node:=CfgCache.Units.Tree.FindSuccessor(Node);
@@ -2782,7 +2790,7 @@ end;
 
 function TLazPackageGraph.CheckCompileNeedDueToDependencies(TheOwner: TObject;
   FirstDependency: TPkgDependency; SkipDesignTimePackages: boolean;
-  StateFileAge: longint): TModalResult;
+  StateFileAge: longint; var Note: string): TModalResult;
 
   function GetOwnerID: string;
   begin
@@ -2799,7 +2807,7 @@ begin
   if Dependency=nil then begin
     // no dependencies
     // => check FPC units
-    if CheckCompileNeedDueToFPCUnits(TheOwner,StateFileAge) then
+    if CheckCompileNeedDueToFPCUnits(TheOwner,StateFileAge,Note) then
       exit(mrYes);
     Result:=mrNo;
     exit;
@@ -2815,16 +2823,23 @@ begin
         // check compile state file of required package
         if not RequiredPackage.AutoCreated then begin
           Result:=LoadPackageCompiledState(RequiredPackage,false,true);
-          if Result<>mrOk then exit;
+          if Result<>mrOk then begin
+            Note+='unable to load state file of '+RequiredPackage.IDAsString;
+            exit;
+          end;
           Result:=mrYes;
           o:=RequiredPackage.GetOutputDirType;
           if not RequiredPackage.LastCompile[o].StateFileLoaded then begin
             DebugLn('TPkgManager.CheckCompileNeedDueToDependencies  Missing state file for ',RequiredPackage.IDAsString,': ',RequiredPackage.GetStateFilename);
+            Note+='Package '+RequiredPackage.IDAsString+' has no state file "'+RequiredPackage.GetStateFilename+'".'+LineEnding;
             exit;
           end;
           if StateFileAge<RequiredPackage.LastCompile[o].StateFileDate then begin
             DebugLn('TPkgManager.CheckCompileNeedDueToDependencies ',
               ' State file of ',RequiredPackage.IDAsString,' is newer than state file of ',GetOwnerID);
+            Note+='State file of '+RequiredPackage.IDAsString+' is newer than state file of '+GetOwnerID+LineEnding
+              +'  '+RequiredPackage.IDAsString+'='+FileAgeToStr(RequiredPackage.LastCompile[o].StateFileDate)+LineEnding
+              +'  '+GetOwnerID+'='+FileAgeToStr(StateFileAge)+LineEnding;
             exit;
           end;
         end;
@@ -2838,9 +2853,13 @@ begin
           and FileExistsCached(OtherStateFile)
           and (FileAgeCached(OtherStateFile)>StateFileAge) then begin
             DebugLn('TPkgManager.CheckCompileNeedDueToDependencies ',
-              ' OtherState of ',RequiredPackage.IDAsString,' file "',OtherStateFile,'" (',
+              ' State file of ',RequiredPackage.IDAsString,' "',OtherStateFile,'" (',
                 FileAgeToStr(FileAgeCached(OtherStateFile)),')'
-              ,' is newer than State file ',GetOwnerID,'(',FileAgeToStr(StateFileAge),')');
+              ,' is newer than state file ',GetOwnerID,'(',FileAgeToStr(StateFileAge),')');
+            Note+='State file of used package is newer than state file:'+LineEnding
+              +'  Used package '+RequiredPackage.IDAsString+', file="'+OtherStateFile+'", '
+              +' age='+FileAgeToStr(FileAgeCached(OtherStateFile))+LineEnding
+              +'  package '+GetOwnerID+', age='+FileAgeToStr(StateFileAge)+LineEnding;
             Result:=mrYes;
             exit;
           end;
@@ -2853,7 +2872,8 @@ begin
 end;
 
 function TLazPackageGraph.CheckIfPackageNeedsCompilation(APackage: TLazPackage;
-  SkipDesignTimePackages: boolean; out NeedBuildAllFlag: boolean): TModalResult;
+  SkipDesignTimePackages: boolean; out NeedBuildAllFlag: boolean; var
+  Note: string): TModalResult;
 var
   OutputDir: String;
   NewOutputDir: String;
@@ -2869,13 +2889,17 @@ begin
   {$ENDIF}
   NeedBuildAllFlag:=false;
 
-  if APackage.AutoUpdate=pupManually then exit(mrNo);
+  if APackage.AutoUpdate=pupManually then
+    exit(mrNo);
 
   // check the current output directory
   Result:=CheckIfCurPkgOutDirNeedsCompile(APackage,
              true,SkipDesignTimePackages,
-             NeedBuildAllFlag,ConfigChanged,DependenciesChanged);
-  if Result=mrNo then exit; // the current output is valid
+             NeedBuildAllFlag,ConfigChanged,DependenciesChanged,Note);
+  if Result=mrNo then begin
+    // the current output is valid
+    exit;
+  end;
 
   // the current output directory needs compilation
   if APackage.CompilerOptions.ParsedOpts.OutputDirectoryOverride='' then
@@ -2891,11 +2915,15 @@ begin
     // the normal output directory is not writable
     // => try the fallback directory
     NewOutputDir:=GetFallbackOutputDir(APackage);
-    if (NewOutputDir=OutputDir) or (NewOutputDir='') then exit;
+    if (NewOutputDir=OutputDir) or (NewOutputDir='') then begin
+      Note+='Normal output directory is not writable. There is no fallback.'+LineEnding;
+      exit;
+    end;
+    Note+='Normal output directory is not writable, switching to fallback.'+LineEnding;
     APackage.CompilerOptions.ParsedOpts.OutputDirectoryOverride:=NewOutputDir;
     Result:=CheckIfCurPkgOutDirNeedsCompile(APackage,
                true,SkipDesignTimePackages,
-               NeedBuildAllFlag,ConfigChanged,DependenciesChanged);
+               NeedBuildAllFlag,ConfigChanged,DependenciesChanged,Note);
   end else begin
     // the last compile was put to the fallback output directory
     if not ConfigChanged then begin
@@ -2916,10 +2944,11 @@ begin
     OldNeedBuildAllFlag:=NeedBuildAllFlag;
     DefResult:=CheckIfCurPkgOutDirNeedsCompile(APackage,
                true,SkipDesignTimePackages,
-               NeedBuildAllFlag,ConfigChanged,DependenciesChanged);
+               NeedBuildAllFlag,ConfigChanged,DependenciesChanged,Note);
     if DefResult=mrNo then begin
       // switching back to the not writable output directory requires no compile
       debugln(['TLazPackageGraph.CheckIfPackageNeedsCompilation switching back to the normal output directory: ',APackage.GetOutputDirectory]);
+      Note+='Switching back to not writable output directory.'+LineEnding;
       exit(mrNo);
     end;
     // neither the default nor the fallback is valid
@@ -2930,10 +2959,9 @@ begin
 end;
 
 function TLazPackageGraph.CheckIfCurPkgOutDirNeedsCompile(
-  APackage: TLazPackage;
-  CheckDependencies, SkipDesignTimePackages: boolean;
-  out NeedBuildAllFlag,
-  ConfigChanged, DependenciesChanged: boolean): TModalResult;
+  APackage: TLazPackage; CheckDependencies, SkipDesignTimePackages: boolean;
+  out NeedBuildAllFlag, ConfigChanged, DependenciesChanged: boolean;
+  var Note: string): TModalResult;
 // returns: mrYes, mrNo, mrCancel, mrAbort
 var
   StateFilename: String;
@@ -2987,6 +3015,7 @@ begin
   if not Stats^.StateFileLoaded then begin
     // package was not compiled via Lazarus nor via Makefile
     DebugLn('TLazPackageGraph.CheckIfCurPkgOutDirNeedsCompile  Missing state file for ',APackage.IDAsString,': ',StateFilename);
+    Note+='Missing state file "'+StateFilename+'".'+LineEnding;
     ConfigChanged:=true;
     exit(mrYes);
   end;
@@ -3010,6 +3039,11 @@ begin
         DebugLn('TLazPackageGraph.CheckIfCurPkgOutDirNeedsCompile  Compiler custom params changed for ',APackage.IDAsString);
         DebugLn('  Old="',OldValue,'"');
         DebugLn('  Now="',NewValue,'"');
+        DebugLn('  State file="',Stats^.StateFileName,'"');
+        Note+='Compiler custom parameters changed:'+LineEnding
+           +'  Old="'+OldValue+'"'+LineEnding
+           +'  Now="'+NewValue+'"'+LineEnding
+           +'  State file="'+Stats^.StateFileName+'"'+LineEnding;
         ConfigChanged:=true;
         exit(mrYes);
       end;
@@ -3020,6 +3054,11 @@ begin
         DebugLn('TLazPackageGraph.CheckIfCurPkgOutDirNeedsCompile  Compiler unit paths changed for ',APackage.IDAsString);
         DebugLn('  Old="',OldValue,'"');
         DebugLn('  Now="',NewValue,'"');
+        DebugLn('  State file="',Stats^.StateFileName,'"');
+        Note+='Compiler unit paths changed:'+LineEnding
+           +'  Old="'+OldValue+'"'+LineEnding
+           +'  Now="'+NewValue+'"'+LineEnding
+           +'  State file="'+Stats^.StateFileName+'"'+LineEnding;
         ConfigChanged:=true;
         exit(mrYes);
       end;
@@ -3030,6 +3069,11 @@ begin
         DebugLn('TLazPackageGraph.CheckIfCurPkgOutDirNeedsCompile  Compiler include paths changed for ',APackage.IDAsString);
         DebugLn('  Old="',OldValue,'"');
         DebugLn('  Now="',NewValue,'"');
+        DebugLn('  State file="',Stats^.StateFileName,'"');
+        Note+='Compiler include paths changed:'+LineEnding
+           +'  Old="'+OldValue+'"'+LineEnding
+           +'  Now="'+NewValue+'"'+LineEnding
+           +'  State file="'+Stats^.StateFileName+'"'+LineEnding;
         ConfigChanged:=true;
         exit(mrYes);
       end;
@@ -3042,6 +3086,11 @@ begin
     DebugLn('TLazPackageGraph.CheckIfCurPkgOutDirNeedsCompile  Compiler params changed for ',APackage.IDAsString);
     DebugLn('  Old="',LastParams,'"');
     DebugLn('  Now="',CompilerParams,'"');
+    DebugLn('  State file="',Stats^.StateFileName,'"');
+    Note+='Compiler parameters changed:'+LineEnding
+       +'  Old="'+OldValue+'"'+LineEnding
+       +'  Now="'+NewValue+'"'+LineEnding
+       +'  State file="'+Stats^.StateFileName+'"'+LineEnding;
     ConfigChanged:=true;
     exit(mrYes);
   end;
@@ -3050,26 +3099,47 @@ begin
     DebugLn('TLazPackageGraph.CheckIfCurPkgOutDirNeedsCompile  Compiler filename changed for ',APackage.IDAsString);
     DebugLn('  Old="',Stats^.CompilerFilename,'"');
     DebugLn('  Now="',CompilerFilename,'"');
+    DebugLn('  State file="',Stats^.StateFileName,'"');
+    Note+='Compiler filename changed:'+LineEnding
+       +'  Old="'+Stats^.CompilerFilename+'"'+LineEnding
+       +'  Now="'+CompilerFilename+'"'+LineEnding
+       +'  State file="'+Stats^.StateFileName+'"'+LineEnding;
     exit(mrYes);
   end;
   if not FileExistsCached(CompilerFilename) then begin
     DebugLn('TLazPackageGraph.CheckIfCurPkgOutDirNeedsCompile  Compiler filename not found for ',APackage.IDAsString);
     DebugLn('  File="',CompilerFilename,'"');
+    DebugLn('  State file="',Stats^.StateFileName,'"');
+    Note+='Compiler file "'+CompilerFilename+'" not found.'+LineEnding
+       +'  State file="'+Stats^.StateFileName+'"'+LineEnding;
     exit(mrYes);
   end;
   if (not Stats^.ViaMakefile)
   and (FileAgeCached(CompilerFilename)<>Stats^.CompilerFileDate) then begin
     DebugLn('TLazPackageGraph.CheckIfCurPkgOutDirNeedsCompile  Compiler file changed for ',APackage.IDAsString);
     DebugLn('  File="',CompilerFilename,'"');
+    DebugLn('  State file="',Stats^.StateFileName,'"');
+    Note+='Compiler file "'+CompilerFilename+'" changed:'+LineEnding
+      +'  Old='+FileAgeToStr(Stats^.CompilerFileDate)+LineEnding
+      +'  Now='+FileAgeToStr(FileAgeCached(CompilerFilename))+LineEnding
+      +'  State file="'+Stats^.StateFileName+'"'+LineEnding;
     exit(mrYes);
   end;
 
   // check main source file
   if (SrcFilename<>'') then
   begin
-    if (not FileExistsCached(SrcFilename)) or (StateFileAge<FileAgeUTF8(SrcFilename))
-    then begin
+    if not FileExistsCached(SrcFilename) then begin
+      DebugLn('TLazPackageGraph.CheckIfCurPkgOutDirNeedsCompile  SrcFile missing of ',APackage.IDAsString,': ',SrcFilename);
+      Note+='Source file "'+SrcFilename+'" missing.'+LineEnding;
+      exit(mrYes);
+    end;
+    if StateFileAge<FileAgeCached(SrcFilename) then begin
       DebugLn('TLazPackageGraph.CheckIfCurPkgOutDirNeedsCompile  SrcFile outdated of ',APackage.IDAsString,': ',SrcFilename);
+      Note+='Source file "'+SrcFilename+'" outdated:'+LineEnding
+        +'  Source file age='+FileAgeToStr(FileAgeCached(SrcFilename))+LineEnding
+        +'  State file="'+Stats^.StateFileName+'"'+LineEnding
+        +'  State file age='+FileAgeToStr(StateFileAge)+LineEnding;
       exit(mrYes);
     end;
     // check main source ppu file
@@ -3077,6 +3147,7 @@ begin
       SrcPPUFile:=APackage.GetSrcPPUFilename;
       if not FileExistsCached(SrcPPUFile) then begin
         DebugLn('TLazPackageGraph.CheckIfCurPkgOutDirNeedsCompile  main ppu file missing of ',APackage.IDAsString,': ',SrcPPUFile);
+        Note+='Main ppu file "'+SrcPPUFile+'" missing.'+LineEnding;
         exit(mrYes);
       end;
     end;
@@ -3091,13 +3162,17 @@ begin
 
   if not Stats^.Complete then begin
     DebugLn('TLazPackageGraph.CheckIfCurPkgOutDirNeedsCompile  Compile was incomplete for ',APackage.IDAsString);
+    DebugLn('  State file="',Stats^.StateFileName,'"');
+    Note+='Last compile was incomplete.'+LineEnding
+       +'  State file="'+Stats^.StateFileName+'"'+LineEnding;
     exit(mrYes);
   end;
 
   if CheckDependencies then begin
     // check all required packages
     Result:=CheckCompileNeedDueToDependencies(APackage,
-          APackage.FirstRequiredDependency,SkipDesignTimePackages,StateFileAge);
+          APackage.FirstRequiredDependency,SkipDesignTimePackages,StateFileAge,
+          Note);
     if Result<>mrNo then begin
       DependenciesChanged:=true;
       exit;
@@ -3107,6 +3182,11 @@ begin
   // check package files
   if StateFileAge<FileAgeCached(APackage.Filename) then begin
     DebugLn('TLazPackageGraph.CheckIfCurPkgOutDirNeedsCompile  StateFile older than lpk ',APackage.IDAsString);
+    DebugLn('  State file="',Stats^.StateFileName,'"');
+    Note+='State file older than lpk:'+LineEnding
+      +'  State file age='+FileAgeToStr(StateFileAge)+LineEnding
+      +'  State file="'+Stats^.StateFileName+'"'+LineEnding
+      +'  LPK age='+FileAgeToStr(FileAgeCached(APackage.Filename))+LineEnding;
     exit(mrYes);
   end;
   for i:=0 to APackage.FileCount-1 do begin
@@ -3116,6 +3196,11 @@ begin
     if FileExistsCached(AFilename)
     and (StateFileAge<FileAgeCached(AFilename)) then begin
       DebugLn('TLazPackageGraph.CheckIfCurPkgOutDirNeedsCompile  Src has changed ',APackage.IDAsString,' ',CurFile.Filename);
+      DebugLn('  State file="',Stats^.StateFileName,'"');
+      Note+='State file older than source "'+AFilename+'"'+LineEnding
+        +'  State file age='+FileAgeToStr(StateFileAge)+LineEnding
+        +'  State file="'+Stats^.StateFileName+'"'+LineEnding
+        +'  LPK age='+FileAgeToStr(FileAgeCached(APackage.Filename))+LineEnding;
       exit(mrYes);
     end;
   end;
@@ -3187,6 +3272,7 @@ var
   SrcPPUFile: String;
   SrcPPUFileExists: Boolean;
   CompilerParams: String;
+  Note: String;
 begin
   Result:=mrCancel;
 
@@ -3215,9 +3301,10 @@ begin
 
     // check if compilation is needed and if a clean build is needed
     NeedBuildAllFlag:=false;
+    Note:='';
     Result:=CheckIfPackageNeedsCompilation(APackage,
                           pcfSkipDesignTimePackages in Flags,
-                          NeedBuildAllFlag);
+                          NeedBuildAllFlag,Note);
     if (pcfOnlyIfNeeded in Flags) then begin
       if Result=mrNo then begin
         //DebugLn(['TLazPackageGraph.CompilePackage ',APackage.IDAsString,' does not need compilation.']);
@@ -3541,6 +3628,8 @@ begin
         s:=s+' -Fi'+SwitchPathDelims(IncPath,pdsUnix);
       if CustomOptions<>'' then
         s:=s+' '+CustomOptions;
+      // do no write the unit output directory
+      // it is not needed because it is the location of the Makefile.compiled
       s:=s+' '+SwitchPathDelims(CreateRelativePath(APackage.GetSrcFilename,APackage.Directory),pdsUnix);
 
       //debugln(['TLazPackageGraph.WriteMakeFile IncPath="',IncPath,'" UnitPath="',UnitPath,'" Custom="',CustomOptions,'" Out="',UnitOutputPath,'"']);

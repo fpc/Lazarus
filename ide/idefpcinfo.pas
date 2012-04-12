@@ -32,7 +32,8 @@ interface
 uses
   Classes, SysUtils, AVL_Tree, FileUtil, Forms, Controls, Graphics, Dialogs,
   StdCtrls, ComCtrls, FileProcs, DefineTemplates, CodeToolManager,
-  BaseBuildManager, Project, EnvironmentOpts, LazarusIDEStrConsts, AboutFrm;
+  BaseBuildManager, Project, EnvironmentOpts, LazarusIDEStrConsts, AboutFrm,
+  IDEWindowIntf;
 
 type
 
@@ -44,6 +45,7 @@ type
     PageControl1: TPageControl;
     ValuesTabSheet: TTabSheet;
     OutputTabSheet: TTabSheet;
+    procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
     procedure FormCreate(Sender: TObject);
   private
     procedure UpdateValuesMemo;
@@ -84,6 +86,13 @@ begin
   UpdateValuesMemo;
   UpdateCmdLinePage;
   PageControl1.PageIndex:=0;
+  IDEDialogLayoutList.ApplyLayout(Self);
+end;
+
+procedure TIDEFPCInfoDialog.FormClose(Sender: TObject;
+  var CloseAction: TCloseAction);
+begin
+  IDEDialogLayoutList.SaveLayout(Self);
 end;
 
 procedure TIDEFPCInfoDialog.UpdateValuesMemo;

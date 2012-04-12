@@ -1,0 +1,77 @@
+object IDEInfoNeedBuildDlg: TIDEInfoNeedBuildDlg
+  Left = 275
+  Height = 434
+  Top = 248
+  Width = 555
+  Caption = 'IDEInfoNeedBuildDlg'
+  ClientHeight = 434
+  ClientWidth = 555
+  OnClose = FormClose
+  OnCreate = FormCreate
+  OnDestroy = FormDestroy
+  OnKeyDown = FormKeyDown
+  Position = poScreenCenter
+  LCLVersion = '1.1'
+  object TargetLabel: TLabel
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = TargetComboBox
+    AnchorSideTop.Side = asrCenter
+    Left = 6
+    Height = 15
+    Top = 12
+    Width = 65
+    BorderSpacing.Around = 6
+    Caption = 'TargetLabel'
+    ParentColor = False
+  end
+  object TargetComboBox: TComboBox
+    AnchorSideLeft.Control = TargetLabel
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = Owner
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 77
+    Height = 27
+    Top = 6
+    Width = 472
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Around = 6
+    ItemHeight = 0
+    OnChange = TargetComboBoxChange
+    TabOrder = 0
+    Text = 'TargetComboBox'
+  end
+  object MainMemo: TMemo
+    AnchorSideTop.Control = TargetComboBox
+    AnchorSideTop.Side = asrBottom
+    Left = 6
+    Height = 341
+    Top = 39
+    Width = 543
+    Align = alBottom
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    BorderSpacing.Around = 6
+    Lines.Strings = (
+      'MainMemo'
+    )
+    ReadOnly = True
+    ScrollBars = ssAutoBoth
+    TabOrder = 1
+  end
+  object ButtonPanel1: TButtonPanel
+    Left = 6
+    Height = 42
+    Top = 386
+    Width = 543
+    OKButton.Name = 'OKButton'
+    OKButton.DefaultCaption = True
+    HelpButton.Name = 'HelpButton'
+    HelpButton.DefaultCaption = True
+    CloseButton.Name = 'CloseButton'
+    CloseButton.DefaultCaption = True
+    CancelButton.Name = 'CancelButton'
+    CancelButton.DefaultCaption = True
+    TabOrder = 2
+    ShowButtons = [pbClose]
+  end
+end

@@ -6,8 +6,9 @@ object IDEInfoDialog: TIDEInfoDialog
   Caption = 'IDEInfoDialog'
   ClientHeight = 397
   ClientWidth = 735
+  OnClose = FormClose
   OnCreate = FormCreate
-  LCLVersion = '0.9.31'
+  LCLVersion = '1.1'
   object PageControl1: TPageControl
     Left = 0
     Height = 397
@@ -19,8 +20,8 @@ object IDEInfoDialog: TIDEInfoDialog
     TabOrder = 0
     object GeneralTabSheet: TTabSheet
       Caption = 'General'
-      ClientHeight = 361
-      ClientWidth = 727
+      ClientHeight = 365
+      ClientWidth = 729
       object GeneralMemo: TMemo
         Left = 0
         Height = 361
@@ -37,8 +38,8 @@ object IDEInfoDialog: TIDEInfoDialog
     end
     object ModifiedTabSheet: TTabSheet
       Caption = 'Modified'
-      ClientHeight = 361
-      ClientWidth = 727
+      ClientHeight = 365
+      ClientWidth = 729
       object ModifiedMemo: TMemo
         Left = 0
         Height = 361
@@ -54,13 +55,13 @@ object IDEInfoDialog: TIDEInfoDialog
     end
     object HelpTabSheet: TTabSheet
       Caption = 'Help'
-      ClientHeight = 361
-      ClientWidth = 727
+      ClientHeight = 365
+      ClientWidth = 729
       object HelpMemo: TMemo
         Left = 0
-        Height = 361
+        Height = 365
         Top = 0
-        Width = 727
+        Width = 729
         Align = alClient
         Lines.Strings = (
           'HelpMemo'

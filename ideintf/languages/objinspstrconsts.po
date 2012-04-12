@@ -146,7 +146,7 @@ msgid "&Dataset:"
 msgstr ""
 
 #: objinspstrconsts.fesfetitle
-msgid "Edit Fields..."
+msgid "Edit Fields ..."
 msgstr ""
 
 #: objinspstrconsts.fesfieldcantbec
@@ -313,7 +313,7 @@ msgid "Action"
 msgstr ""
 
 #: objinspstrconsts.oisactionlistcomponenteditor
-msgid "Action&List Editor..."
+msgid "Action&List Editor ..."
 msgstr ""
 
 #: objinspstrconsts.oisactionlisteditor
@@ -494,7 +494,7 @@ msgid "&Help"
 msgstr ""
 
 #: objinspstrconsts.oisimagelistcomponenteditor
-msgid "I&mageList Editor..."
+msgid "I&mageList Editor ..."
 msgstr ""
 
 #: objinspstrconsts.oisincompatibleidentifier
@@ -550,7 +550,7 @@ msgid "Load picture"
 msgstr ""
 
 #: objinspstrconsts.oismasks
-msgid "Masks..."
+msgid "Masks ..."
 msgstr ""
 
 #: objinspstrconsts.oismethod
@@ -731,7 +731,7 @@ msgid "Strings Editor Dialog"
 msgstr ""
 
 #: objinspstrconsts.oistdactcolorselect1headline
-msgid "Select &Color..."
+msgid "Select &Color ..."
 msgstr ""
 
 #: objinspstrconsts.oistdactcolorselecthint
@@ -913,7 +913,7 @@ msgid "Exit"
 msgstr ""
 
 #: objinspstrconsts.oistdactfileopenheadline
-msgid "&Open..."
+msgid "&Open ..."
 msgstr ""
 
 #: objinspstrconsts.oistdactfileopenhint
@@ -926,7 +926,7 @@ msgid "Ctrl+O"
 msgstr ""
 
 #: objinspstrconsts.oistdactfileopenwithheadline
-msgid "Open with..."
+msgid "Open with ..."
 msgstr ""
 
 #: objinspstrconsts.oistdactfileopenwithhint
@@ -934,7 +934,7 @@ msgid "Open with"
 msgstr ""
 
 #: objinspstrconsts.oistdactfilesaveasheadline
-msgid "Save &As..."
+msgid "Save &As ..."
 msgstr ""
 
 #: objinspstrconsts.oistdactfilesaveashint
@@ -942,7 +942,7 @@ msgid "Save As"
 msgstr ""
 
 #: objinspstrconsts.oistdactfonteditheadline
-msgid "Select &Font..."
+msgid "Select &Font ..."
 msgstr ""
 
 #: objinspstrconsts.oistdactfontedithint
@@ -982,7 +982,7 @@ msgid "Find first"
 msgstr ""
 
 #: objinspstrconsts.oistdactsearchfindheadline
-msgid "&Find..."
+msgid "&Find ..."
 msgstr ""
 
 #: objinspstrconsts.oistdactsearchfindhint
@@ -1014,7 +1014,7 @@ msgid "Replace"
 msgstr ""
 
 #: objinspstrconsts.oistestdialog
-msgid "Test dialog..."
+msgid "Test dialog ..."
 msgstr ""
 
 #: objinspstrconsts.oistestinput
@@ -1151,7 +1151,7 @@ msgid "Sections Editor ..."
 msgstr ""
 
 #: objinspstrconsts.sccsiledtadd
-msgid "Add..."
+msgid "Add ..."
 msgstr ""
 
 #: objinspstrconsts.sccsiledtadjustment
@@ -1217,11 +1217,11 @@ msgstr ""
 
 #: objinspstrconsts.sccsiledtsave
 msgctxt "objinspstrconsts.sccsiledtsave"
-msgid "Save..."
+msgid "Save ..."
 msgstr ""
 
 #: objinspstrconsts.sccsiledtsaveall
-msgid "Save All..."
+msgid "Save All ..."
 msgstr ""
 
 #: objinspstrconsts.sccsiledtsavedialog
@@ -1238,7 +1238,7 @@ msgstr ""
 
 #: objinspstrconsts.sccslvedt
 msgctxt "objinspstrconsts.sccslvedt"
-msgid "Edit Items..."
+msgid "Edit Items ..."
 msgstr ""
 
 #: objinspstrconsts.sccslvedtapply
@@ -1295,7 +1295,7 @@ msgid "New SubItem"
 msgstr ""
 
 #: objinspstrconsts.sccsmaskeditor
-msgid "Edit Mask Editor..."
+msgid "Edit Mask Editor ..."
 msgstr ""
 
 #: objinspstrconsts.sccssbeditpanels
@@ -1303,7 +1303,7 @@ msgid "Panels Editor ..."
 msgstr ""
 
 #: objinspstrconsts.sccssgedt
-msgid "Edit StringGrid..."
+msgid "Edit StringGrid ..."
 msgstr ""
 
 #: objinspstrconsts.sccssgedtapply
@@ -1324,7 +1324,7 @@ msgid "String Grid"
 msgstr ""
 
 #: objinspstrconsts.sccssgedtload
-msgid "Load..."
+msgid "Load ..."
 msgstr ""
 
 #: objinspstrconsts.sccssgedtmoverowscols
@@ -1338,7 +1338,7 @@ msgstr ""
 
 #: objinspstrconsts.sccssgedtsave
 msgctxt "objinspstrconsts.sccssgedtsave"
-msgid "Save..."
+msgid "Save ..."
 msgstr ""
 
 #: objinspstrconsts.sccssgedtsavedialog
@@ -1348,7 +1348,7 @@ msgstr ""
 
 #: objinspstrconsts.sccstredt
 msgctxt "objinspstrconsts.sccstredt"
-msgid "Edit Items..."
+msgid "Edit Items ..."
 msgstr ""
 
 #: objinspstrconsts.sccstredtapply

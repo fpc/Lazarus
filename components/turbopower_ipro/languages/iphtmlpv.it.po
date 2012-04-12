@@ -1,4 +1,4 @@
-# Massimo Soricetti <notturno@quipo.it>, 2011.
+ Massimo Soricetti <notturno@quipo.it>, 2011.
 msgid ""
 msgstr ""
 "PO-Revision-Date: 2011-04-20 18:14+0200\n"
@@ -32,7 +32,9 @@ msgid "Print preview"
 msgstr "Anteprima di stampa"
 
 #: iphtmlpv.rsiphtmlpreviewselectprinter
-msgid "Select printer..."
+#, fuzzy
+#| msgid "Select printer..."
+msgid "Select printer ..."
 msgstr "Scegli stampante..."
 
 #: iphtmlpv.rsiphtmlpreviewzoom

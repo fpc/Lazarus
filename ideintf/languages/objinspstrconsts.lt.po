@@ -152,8 +152,9 @@ msgid "&Dataset:"
 msgstr ""
 
 #: objinspstrconsts.fesfetitle
-#| msgid "Edit Fields"
-msgid "Edit Fields..."
+#, fuzzy
+#| msgid "Edit Fields..."
+msgid "Edit Fields ..."
 msgstr "Keisti laukus..."
 
 #: objinspstrconsts.fesfieldcantbec
@@ -334,7 +335,9 @@ msgid "Action"
 msgstr "Veiksmas"
 
 #: objinspstrconsts.oisactionlistcomponenteditor
-msgid "Action&List Editor..."
+#, fuzzy
+#| msgid "Action&List Editor..."
+msgid "Action&List Editor ..."
 msgstr "ActionList &rengyklė..."
 
 #: objinspstrconsts.oisactionlisteditor
@@ -521,7 +524,9 @@ msgid "&Help"
 msgstr ""
 
 #: objinspstrconsts.oisimagelistcomponenteditor
-msgid "I&mageList Editor..."
+#, fuzzy
+#| msgid "I&mageList Editor..."
+msgid "I&mageList Editor ..."
 msgstr "I&mageList rengyklė..."
 
 #: objinspstrconsts.oisincompatibleidentifier
@@ -577,7 +582,9 @@ msgid "Load picture"
 msgstr "Įkelti paveikslą"
 
 #: objinspstrconsts.oismasks
-msgid "Masks..."
+#, fuzzy
+#| msgid "Masks..."
+msgid "Masks ..."
 msgstr "Kaukės..."
 
 #: objinspstrconsts.oismethod
@@ -759,7 +766,9 @@ msgid "Strings Editor Dialog"
 msgstr "Teksto rengyklė"
 
 #: objinspstrconsts.oistdactcolorselect1headline
-msgid "Select &Color..."
+#, fuzzy
+#| msgid "Select &Color..."
+msgid "Select &Color ..."
 msgstr "Išrinkti &spalvą..."
 
 #: objinspstrconsts.oistdactcolorselecthint
@@ -941,7 +950,9 @@ msgid "Exit"
 msgstr "Baigti darbą"
 
 #: objinspstrconsts.oistdactfileopenheadline
-msgid "&Open..."
+#, fuzzy
+#| msgid "&Open..."
+msgid "&Open ..."
 msgstr "At&verti..."
 
 #: objinspstrconsts.oistdactfileopenhint
@@ -954,7 +965,9 @@ msgid "Ctrl+O"
 msgstr "Ctrl+O"
 
 #: objinspstrconsts.oistdactfileopenwithheadline
-msgid "Open with..."
+#, fuzzy
+#| msgid "Open with..."
+msgid "Open with ..."
 msgstr "Atverti su..."
 
 #: objinspstrconsts.oistdactfileopenwithhint
@@ -962,7 +975,9 @@ msgid "Open with"
 msgstr "Atverti su"
 
 #: objinspstrconsts.oistdactfilesaveasheadline
-msgid "Save &As..."
+#, fuzzy
+#| msgid "Save &As..."
+msgid "Save &As ..."
 msgstr "Įrašyti &kaip..."
 
 #: objinspstrconsts.oistdactfilesaveashint
@@ -970,7 +985,9 @@ msgid "Save As"
 msgstr "Įrašyti taip"
 
 #: objinspstrconsts.oistdactfonteditheadline
-msgid "Select &Font..."
+#, fuzzy
+#| msgid "Select &Font..."
+msgid "Select &Font ..."
 msgstr "Išrinkti šri&ftą..."
 
 #: objinspstrconsts.oistdactfontedithint
@@ -1010,7 +1027,9 @@ msgid "Find first"
 msgstr "Ieškoti pirmojo"
 
 #: objinspstrconsts.oistdactsearchfindheadline
-msgid "&Find..."
+#, fuzzy
+#| msgid "&Find..."
+msgid "&Find ..."
 msgstr "&Ieškoti..."
 
 #: objinspstrconsts.oistdactsearchfindhint
@@ -1042,7 +1061,9 @@ msgid "Replace"
 msgstr "Pakeisti"
 
 #: objinspstrconsts.oistestdialog
-msgid "Test dialog..."
+#, fuzzy
+#| msgid "Test dialog..."
+msgid "Test dialog ..."
 msgstr "Išbandyti dialogą..."
 
 #: objinspstrconsts.oistestinput
@@ -1181,7 +1202,9 @@ msgid "Sections Editor ..."
 msgstr "Antraščių rengyklė..."
 
 #: objinspstrconsts.sccsiledtadd
-msgid "Add..."
+#, fuzzy
+#| msgid "Add..."
+msgid "Add ..."
 msgstr "Pridėti..."
 
 #: objinspstrconsts.sccsiledtadjustment
@@ -1246,12 +1269,16 @@ msgid "Transparent Color:"
 msgstr "Permatoma spalva:"
 
 #: objinspstrconsts.sccsiledtsave
+#, fuzzy
+#| msgid "Save..."
 msgctxt "objinspstrconsts.sccsiledtsave"
-msgid "Save..."
+msgid "Save ..."
 msgstr "Įrašyti..."
 
 #: objinspstrconsts.sccsiledtsaveall
-msgid "Save All..."
+#, fuzzy
+#| msgid "Save All..."
+msgid "Save All ..."
 msgstr "Įrašyti visus…"
 
 #: objinspstrconsts.sccsiledtsavedialog
@@ -1267,9 +1294,10 @@ msgid "Edit Columns ..."
 msgstr "Keisti stulpelis..."
 
 #: objinspstrconsts.sccslvedt
-#| msgid "Edit ListView Items..."
+#, fuzzy
+#| msgid "Edit Items..."
 msgctxt "objinspstrconsts.sccslvedt"
-msgid "Edit Items..."
+msgid "Edit Items ..."
 msgstr "Keisti elementus..."
 
 #: objinspstrconsts.sccslvedtapply
@@ -1326,7 +1354,9 @@ msgid "New SubItem"
 msgstr "Naujas poelementis"
 
 #: objinspstrconsts.sccsmaskeditor
-msgid "Edit Mask Editor..."
+#, fuzzy
+#| msgid "Edit Mask Editor..."
+msgid "Edit Mask Editor ..."
 msgstr "Keitimo kaukės rengyklė..."
 
 #: objinspstrconsts.sccssbeditpanels
@@ -1334,7 +1364,9 @@ msgid "Panels Editor ..."
 msgstr "Panelių rengyklė..."
 
 #: objinspstrconsts.sccssgedt
-msgid "Edit StringGrid..."
+#, fuzzy
+#| msgid "Edit StringGrid..."
+msgid "Edit StringGrid ..."
 msgstr "Keisti StringGrid..."
 
 #: objinspstrconsts.sccssgedtapply
@@ -1355,7 +1387,9 @@ msgid "String Grid"
 msgstr "Teksto lentelė"
 
 #: objinspstrconsts.sccssgedtload
-msgid "Load..."
+#, fuzzy
+#| msgid "Load..."
+msgid "Load ..."
 msgstr "Įkelti..."
 
 #: objinspstrconsts.sccssgedtmoverowscols
@@ -1368,8 +1402,10 @@ msgid "Open"
 msgstr "Atverti"
 
 #: objinspstrconsts.sccssgedtsave
+#, fuzzy
+#| msgid "Save..."
 msgctxt "objinspstrconsts.sccssgedtsave"
-msgid "Save..."
+msgid "Save ..."
 msgstr "Įrašyti..."
 
 #: objinspstrconsts.sccssgedtsavedialog
@@ -1378,9 +1414,10 @@ msgid "Save"
 msgstr "Įrašyti"
 
 #: objinspstrconsts.sccstredt
-#| msgid "Edit TreeView Items..."
+#, fuzzy
+#| msgid "Edit Items..."
 msgctxt "objinspstrconsts.sccstredt"
-msgid "Edit Items..."
+msgid "Edit Items ..."
 msgstr "Keisti elementus..."
 
 #: objinspstrconsts.sccstredtapply

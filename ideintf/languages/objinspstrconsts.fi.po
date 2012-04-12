@@ -146,7 +146,9 @@ msgid "&Dataset:"
 msgstr ""
 
 #: objinspstrconsts.fesfetitle
-msgid "Edit Fields..."
+#, fuzzy
+#| msgid "Edit Fields..."
+msgid "Edit Fields ..."
 msgstr "Muokkaa kenttiä..."
 
 #: objinspstrconsts.fesfieldcantbec
@@ -325,7 +327,9 @@ msgid "Action"
 msgstr "Toiminto"
 
 #: objinspstrconsts.oisactionlistcomponenteditor
-msgid "Action&List Editor..."
+#, fuzzy
+#| msgid "Action&List Editor..."
+msgid "Action&List Editor ..."
 msgstr "Toimintolistan (ActionList) muokkain..."
 
 #: objinspstrconsts.oisactionlisteditor
@@ -510,7 +514,9 @@ msgid "&Help"
 msgstr "Ohje"
 
 #: objinspstrconsts.oisimagelistcomponenteditor
-msgid "I&mageList Editor..."
+#, fuzzy
+#| msgid "I&mageList Editor..."
+msgid "I&mageList Editor ..."
 msgstr "Kuvaluettelon muokkain..."
 
 #: objinspstrconsts.oisincompatibleidentifier
@@ -566,7 +572,9 @@ msgid "Load picture"
 msgstr "Tuo kuva"
 
 #: objinspstrconsts.oismasks
-msgid "Masks..."
+#, fuzzy
+#| msgid "Masks..."
+msgid "Masks ..."
 msgstr "Maskit..."
 
 #: objinspstrconsts.oismethod
@@ -747,7 +755,9 @@ msgid "Strings Editor Dialog"
 msgstr "Merkkijonojen muokkain"
 
 #: objinspstrconsts.oistdactcolorselect1headline
-msgid "Select &Color..."
+#, fuzzy
+#| msgid "Select &Color..."
+msgid "Select &Color ..."
 msgstr "Valitse väri"
 
 #: objinspstrconsts.oistdactcolorselecthint
@@ -929,7 +939,9 @@ msgid "Exit"
 msgstr "Lopeta"
 
 #: objinspstrconsts.oistdactfileopenheadline
-msgid "&Open..."
+#, fuzzy
+#| msgid "&Open..."
+msgid "&Open ..."
 msgstr "Avaa"
 
 #: objinspstrconsts.oistdactfileopenhint
@@ -942,7 +954,9 @@ msgid "Ctrl+O"
 msgstr ""
 
 #: objinspstrconsts.oistdactfileopenwithheadline
-msgid "Open with..."
+#, fuzzy
+#| msgid "Open with..."
+msgid "Open with ..."
 msgstr "Avaa jollain..."
 
 #: objinspstrconsts.oistdactfileopenwithhint
@@ -950,7 +964,9 @@ msgid "Open with"
 msgstr "Avaa jollain"
 
 #: objinspstrconsts.oistdactfilesaveasheadline
-msgid "Save &As..."
+#, fuzzy
+#| msgid "Save &As..."
+msgid "Save &As ..."
 msgstr "Tallenna nimellä..."
 
 #: objinspstrconsts.oistdactfilesaveashint
@@ -958,7 +974,9 @@ msgid "Save As"
 msgstr "Tallenna nimellä"
 
 #: objinspstrconsts.oistdactfonteditheadline
-msgid "Select &Font..."
+#, fuzzy
+#| msgid "Select &Font..."
+msgid "Select &Font ..."
 msgstr "Valitse Fontti"
 
 #: objinspstrconsts.oistdactfontedithint
@@ -998,7 +1016,9 @@ msgid "Find first"
 msgstr "Etsi ensimmäinen"
 
 #: objinspstrconsts.oistdactsearchfindheadline
-msgid "&Find..."
+#, fuzzy
+#| msgid "&Find..."
+msgid "&Find ..."
 msgstr "Etsi..."
 
 #: objinspstrconsts.oistdactsearchfindhint
@@ -1030,7 +1050,9 @@ msgid "Replace"
 msgstr "Korvaa"
 
 #: objinspstrconsts.oistestdialog
-msgid "Test dialog..."
+#, fuzzy
+#| msgid "Test dialog..."
+msgid "Test dialog ..."
 msgstr "Testaa dialogia ..."
 
 #: objinspstrconsts.oistestinput
@@ -1167,7 +1189,9 @@ msgid "Sections Editor ..."
 msgstr "Lohkojen muokkain ..."
 
 #: objinspstrconsts.sccsiledtadd
-msgid "Add..."
+#, fuzzy
+#| msgid "Add..."
+msgid "Add ..."
 msgstr "Lisää ..."
 
 #: objinspstrconsts.sccsiledtadjustment
@@ -1232,12 +1256,16 @@ msgid "Transparent Color:"
 msgstr "Läpinäkyvä väri:"
 
 #: objinspstrconsts.sccsiledtsave
+#, fuzzy
+#| msgid "Save..."
 msgctxt "objinspstrconsts.sccsiledtsave"
-msgid "Save..."
+msgid "Save ..."
 msgstr "Tallenna..."
 
 #: objinspstrconsts.sccsiledtsaveall
-msgid "Save All..."
+#, fuzzy
+#| msgid "Save All..."
+msgid "Save All ..."
 msgstr "Tallenna kaikki..."
 
 #: objinspstrconsts.sccsiledtsavedialog
@@ -1254,7 +1282,7 @@ msgstr ""
 
 #: objinspstrconsts.sccslvedt
 msgctxt "objinspstrconsts.sccslvedt"
-msgid "Edit Items..."
+msgid "Edit Items ..."
 msgstr ""
 
 #: objinspstrconsts.sccslvedtapply
@@ -1311,7 +1339,7 @@ msgid "New SubItem"
 msgstr ""
 
 #: objinspstrconsts.sccsmaskeditor
-msgid "Edit Mask Editor..."
+msgid "Edit Mask Editor ..."
 msgstr ""
 
 #: objinspstrconsts.sccssbeditpanels
@@ -1319,7 +1347,9 @@ msgid "Panels Editor ..."
 msgstr ""
 
 #: objinspstrconsts.sccssgedt
-msgid "Edit StringGrid..."
+#, fuzzy
+#| msgid "Edit StringGrid..."
+msgid "Edit StringGrid ..."
 msgstr "Muokkaa StringGrid:ä..."
 
 #: objinspstrconsts.sccssgedtapply
@@ -1340,7 +1370,7 @@ msgid "String Grid"
 msgstr ""
 
 #: objinspstrconsts.sccssgedtload
-msgid "Load..."
+msgid "Load ..."
 msgstr ""
 
 #: objinspstrconsts.sccssgedtmoverowscols
@@ -1353,8 +1383,10 @@ msgid "Open"
 msgstr "Avaa"
 
 #: objinspstrconsts.sccssgedtsave
+#, fuzzy
+#| msgid "Save..."
 msgctxt "objinspstrconsts.sccssgedtsave"
-msgid "Save..."
+msgid "Save ..."
 msgstr "Tallenna..."
 
 #: objinspstrconsts.sccssgedtsavedialog
@@ -1363,8 +1395,10 @@ msgid "Save"
 msgstr "Tallenna"
 
 #: objinspstrconsts.sccstredt
+#, fuzzy
+#| msgid "Edit Items..."
 msgctxt "objinspstrconsts.sccstredt"
-msgid "Edit Items..."
+msgid "Edit Items ..."
 msgstr "Muokkaa kohtia"
 
 #: objinspstrconsts.sccstredtapply

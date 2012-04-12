@@ -154,8 +154,8 @@ msgstr ""
 
 #: objinspstrconsts.fesfetitle
 #, fuzzy
-#| msgid "Edit Fields"
-msgid "Edit Fields..."
+#| msgid "Edit Fields..."
+msgid "Edit Fields ..."
 msgstr "Felder bearbeiten"
 
 #: objinspstrconsts.fesfieldcantbec
@@ -336,7 +336,9 @@ msgid "Action"
 msgstr "Aktion"
 
 #: objinspstrconsts.oisactionlistcomponenteditor
-msgid "Action&List Editor..."
+#, fuzzy
+#| msgid "Action&List Editor..."
+msgid "Action&List Editor ..."
 msgstr "Action&List-Editor..."
 
 #: objinspstrconsts.oisactionlisteditor
@@ -527,7 +529,9 @@ msgid "&Help"
 msgstr "&Hilfe"
 
 #: objinspstrconsts.oisimagelistcomponenteditor
-msgid "I&mageList Editor..."
+#, fuzzy
+#| msgid "I&mageList Editor..."
+msgid "I&mageList Editor ..."
 msgstr "I&mageList-Editor..."
 
 #: objinspstrconsts.oisincompatibleidentifier
@@ -583,7 +587,9 @@ msgid "Load picture"
 msgstr "Bild laden"
 
 #: objinspstrconsts.oismasks
-msgid "Masks..."
+#, fuzzy
+#| msgid "Masks..."
+msgid "Masks ..."
 msgstr "Masken..."
 
 #: objinspstrconsts.oismethod
@@ -766,7 +772,9 @@ msgid "Strings Editor Dialog"
 msgstr "Zeichenketteneditor"
 
 #: objinspstrconsts.oistdactcolorselect1headline
-msgid "Select &Color..."
+#, fuzzy
+#| msgid "Select &Color..."
+msgid "Select &Color ..."
 msgstr "Fa&rbauswahl"
 
 #: objinspstrconsts.oistdactcolorselecthint
@@ -948,7 +956,9 @@ msgid "Exit"
 msgstr "Beenden"
 
 #: objinspstrconsts.oistdactfileopenheadline
-msgid "&Open..."
+#, fuzzy
+#| msgid "&Open..."
+msgid "&Open ..."
 msgstr "Ö&ffnen"
 
 #: objinspstrconsts.oistdactfileopenhint
@@ -961,7 +971,9 @@ msgid "Ctrl+O"
 msgstr "Strg+O"
 
 #: objinspstrconsts.oistdactfileopenwithheadline
-msgid "Open with..."
+#, fuzzy
+#| msgid "Open with..."
+msgid "Open with ..."
 msgstr "Öffnen mit ..."
 
 #: objinspstrconsts.oistdactfileopenwithhint
@@ -969,7 +981,9 @@ msgid "Open with"
 msgstr "Öffnen mit"
 
 #: objinspstrconsts.oistdactfilesaveasheadline
-msgid "Save &As..."
+#, fuzzy
+#| msgid "Save &As..."
+msgid "Save &As ..."
 msgstr "Sichern &als"
 
 #: objinspstrconsts.oistdactfilesaveashint
@@ -977,7 +991,9 @@ msgid "Save As"
 msgstr "Sichern als"
 
 #: objinspstrconsts.oistdactfonteditheadline
-msgid "Select &Font..."
+#, fuzzy
+#| msgid "Select &Font..."
+msgid "Select &Font ..."
 msgstr "&Schriftauswahl"
 
 #: objinspstrconsts.oistdactfontedithint
@@ -1017,7 +1033,9 @@ msgid "Find first"
 msgstr "Ersten suchen"
 
 #: objinspstrconsts.oistdactsearchfindheadline
-msgid "&Find..."
+#, fuzzy
+#| msgid "&Find..."
+msgid "&Find ..."
 msgstr "&Suchen ..."
 
 #: objinspstrconsts.oistdactsearchfindhint
@@ -1049,7 +1067,9 @@ msgid "Replace"
 msgstr "Ersetzen"
 
 #: objinspstrconsts.oistestdialog
-msgid "Test dialog..."
+#, fuzzy
+#| msgid "Test dialog..."
+msgid "Test dialog ..."
 msgstr "Prüfdialog..."
 
 #: objinspstrconsts.oistestinput
@@ -1189,7 +1209,9 @@ msgid "Sections Editor ..."
 msgstr "Sections-Editor .."
 
 #: objinspstrconsts.sccsiledtadd
-msgid "Add..."
+#, fuzzy
+#| msgid "Add..."
+msgid "Add ..."
 msgstr "Hinzufügen"
 
 #: objinspstrconsts.sccsiledtadjustment
@@ -1254,12 +1276,16 @@ msgid "Transparent Color:"
 msgstr "Transparente Farbe:"
 
 #: objinspstrconsts.sccsiledtsave
+#, fuzzy
+#| msgid "Save..."
 msgctxt "objinspstrconsts.sccsiledtsave"
-msgid "Save..."
+msgid "Save ..."
 msgstr "Sichern..."
 
 #: objinspstrconsts.sccsiledtsaveall
-msgid "Save All..."
+#, fuzzy
+#| msgid "Save All..."
+msgid "Save All ..."
 msgstr "Alle sichern..."
 
 #: objinspstrconsts.sccsiledtsavedialog
@@ -1276,9 +1302,9 @@ msgstr "Spalten bearbeiten"
 
 #: objinspstrconsts.sccslvedt
 #, fuzzy
-#| msgid "Edit ListView Items..."
+#| msgid "Edit Items..."
 msgctxt "objinspstrconsts.sccslvedt"
-msgid "Edit Items..."
+msgid "Edit Items ..."
 msgstr "Listview-Einträge bearbeiten..."
 
 #: objinspstrconsts.sccslvedtapply
@@ -1335,7 +1361,9 @@ msgid "New SubItem"
 msgstr "Neuer Untereintrag"
 
 #: objinspstrconsts.sccsmaskeditor
-msgid "Edit Mask Editor..."
+#, fuzzy
+#| msgid "Edit Mask Editor..."
+msgid "Edit Mask Editor ..."
 msgstr "Maskeneditor bearbeiten..."
 
 #: objinspstrconsts.sccssbeditpanels
@@ -1343,7 +1371,9 @@ msgid "Panels Editor ..."
 msgstr "Panel-Editor .."
 
 #: objinspstrconsts.sccssgedt
-msgid "Edit StringGrid..."
+#, fuzzy
+#| msgid "Edit StringGrid..."
+msgid "Edit StringGrid ..."
 msgstr "Stringgitter bearbeiten..."
 
 #: objinspstrconsts.sccssgedtapply
@@ -1364,7 +1394,9 @@ msgid "String Grid"
 msgstr "String-Gitter"
 
 #: objinspstrconsts.sccssgedtload
-msgid "Load..."
+#, fuzzy
+#| msgid "Load..."
+msgid "Load ..."
 msgstr "Laden..."
 
 #: objinspstrconsts.sccssgedtmoverowscols
@@ -1377,8 +1409,10 @@ msgid "Open"
 msgstr "Öffnen"
 
 #: objinspstrconsts.sccssgedtsave
+#, fuzzy
+#| msgid "Save..."
 msgctxt "objinspstrconsts.sccssgedtsave"
-msgid "Save..."
+msgid "Save ..."
 msgstr "Sichern..."
 
 #: objinspstrconsts.sccssgedtsavedialog
@@ -1388,9 +1422,9 @@ msgstr "Speichern"
 
 #: objinspstrconsts.sccstredt
 #, fuzzy
-#| msgid "Edit TreeView Items..."
+#| msgid "Edit Items..."
 msgctxt "objinspstrconsts.sccstredt"
-msgid "Edit Items..."
+msgid "Edit Items ..."
 msgstr "Treeview-Einträge bearbeiten..."
 
 #: objinspstrconsts.sccstredtapply
