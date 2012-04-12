@@ -34,8 +34,8 @@ interface
 uses
   Classes, SysUtils, AVL_Tree,
   // LCL
-  LConvEncoding, InterfaceBase, LCLProc, Dialogs, FileUtil, Laz2_XMLCfg, Forms,
-  Controls,
+  LConvEncoding, InterfaceBase, LCLProc, Dialogs, FileUtil, Laz2_XMLCfg,
+  LazUTF8, Forms, Controls,
   // codetools
   ExprEval, BasicCodeTools, CodeToolManager, DefineTemplates, CodeCache,
   FileProcs, CodeToolsCfgScript, CodeToolsStructs,
@@ -1652,8 +1652,25 @@ end;
 
 function TBuildManager.MacroFuncMakeExe(const Filename: string;
   const Data: PtrInt; var Abort: boolean): string;
+var
+  CommaPos: SizeInt;
+  CurTargetOS: String;
+  CurFilename: String;
 begin
-  Result:=MakeStandardExeFilename(GetTargetOS,Filename);
+  CurFilename:=Filename;
+  CommaPos:=System.Pos(',',CurFilename);
+  CurTargetOS:='';
+  if CommaPos>1 then begin
+    CurTargetOS:=UTF8LowerCase(LeftStr(CurFilename,CommaPos-1));
+    if IsValidIdent(CurTargetOS) then begin
+      if CurTargetOS='ide' then
+        CurTargetOS:=GetCompiledTargetOS;
+      System.Delete(CurFilename,1,CommaPos);
+    end;
+  end;
+  if CurTargetOS='' then
+    CurTargetOS:=GetTargetOS;
+  Result:=MakeStandardExeFilename(CurTargetOS,CurFilename);
   //DebugLn('TMainIDE.MacroFuncMakeExe A ',Filename,' ',Result);
 end;
 
