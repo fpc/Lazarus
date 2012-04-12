@@ -462,7 +462,7 @@ begin
   if BuildAll then
     CurProf.IdeBuildMode:=bmCleanAllBuild;
   MainBuildBoss.SetBuildTargetIDE;
-  Flags:=[];
+  Flags:=[blfReplaceExe];
 
   // try loading install packages
   PackageGraph.LoadAutoInstallPackages(BuildLazProfiles.StaticAutoInstallPackages);
@@ -481,7 +481,8 @@ begin
     CurResult:=MakeLazarus(BuildLazProfiles.Current,
                 EnvironmentOptions.ExternalTools,GlobalMacroList,
                 '',EnvironmentOptions.GetParsedCompilerFilename,
-                EnvironmentOptions.GetParsedMakeFilename, [blfDontBuild],
+                EnvironmentOptions.GetParsedMakeFilename,
+                Flags+[blfDontBuild],
                 ProfileChanged);
     if CurResult<>mrOk then begin
       DebugLn('TLazBuildApplication.BuildLazarusIDE: Clean all failed.');
@@ -508,7 +509,8 @@ begin
            PackageGraph.FirstAutoInstallDependency,InheritedOptionStrings{%H-});
 
   // save
-  CurResult:=SaveIDEMakeOptions(BuildLazProfiles.Current,GlobalMacroList,PkgOptions,Flags);
+  CurResult:=SaveIDEMakeOptions(BuildLazProfiles.Current,GlobalMacroList,
+                                PkgOptions,Flags);
   if CurResult<>mrOk then begin
     DebugLn('TLazBuildApplication.BuildLazarusIDE: failed saving idemake.cfg');
     exit;
@@ -519,7 +521,7 @@ begin
                          EnvironmentOptions.ExternalTools,GlobalMacroList,
                          PkgOptions,EnvironmentOptions.CompilerFilename,
                          EnvironmentOptions.MakeFilename,
-                         Flags+[blfUseMakeIDECfg,blfReplaceExe,blfOnlyIDE],
+                         Flags+[blfUseMakeIDECfg,blfOnlyIDE],
                          ProfileChanged);
   if CurResult<>mrOk then begin
     DebugLn('TLazBuildApplication.BuildLazarusIDE: Building IDE failed.');
