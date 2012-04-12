@@ -100,17 +100,35 @@ const
   VirtualTempDir='TEMPORARYDIRECTORY';
   
   // FPC operating systems and processor types
-  FPCOperatingSystemNames: array[1..28] of shortstring =(
+  FPCOperatingSystemNames: array[1..33] of shortstring =(
      'linux',
      'win32','win64','wince',
      'darwin','macos',
      'freebsd','netbsd','openbsd',
+     'aix',
+     'amiga',
+     'android',
+     'atari',
+     'beos',
+     'embedded',
+     'emx',
+     'gba',
      'go32v2',
+     'haiku',
+     'iphonesim',
+     'java',
+     'macos',
+     'morphos',
+     'nds',
+     'netware',
+     'netwlibc',
      'os2',
-     'beos','haiku',
-     'amiga','atari','solaris', 'qnx', 'netware','wdosx',
-     'palmos','emx','watcom','morphos','netwlibc',
-     'gba','nds','embedded','symbian'
+     'palmos',
+     'qnx',
+     'solaris',
+     'symbian',
+     'watcom',
+     'wdosx'
     );
   FPCOperatingSystemAlternativeNames: array[1..2] of shortstring =(
       'unix', 'win' // see GetDefaultSrcOSForTargetOS
