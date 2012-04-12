@@ -252,6 +252,28 @@ function MakeLazarus(Profile: TBuildLazarusProfile;
     FindCloseUTF8(FileInfo);
   end;
 
+  procedure CheckRevisionInc;
+  var
+    RevisionIncFile: String;
+    sl: TStringList;
+  begin
+    RevisionIncFile:=AppendPathDelim(EnvironmentOptions.GetParsedLazarusDirectory)+'ide'+PathDelim+'revision.inc';
+    if not FileExistsUTF8(RevisionIncFile) then begin
+      debugln(['Note: revision.inc file missing: ',RevisionIncFile]);
+      sl:=TStringList.Create;
+      sl.Add('// Created by lazbuild');
+      sl.Add('const RevisionStr = '''+LazarusVersionStr+''';');
+      try
+        sl.SaveToFile(RevisionIncFile);
+      except
+        on E: Exception do begin
+          debugln(['Note: can not write ',RevisionIncFile,': ',E.Message]);
+        end;
+      end;
+      sl.Free;
+    end;
+  end;
+
 var
   Tool: TExternalToolOptions;
   ExOptions: String;
@@ -368,8 +390,10 @@ begin
 
       if ExOptions<>'' then
         Tool.EnvironmentOverrides.Values['OPT'] := ExOptions;
-      if not UpdateRevisionInc then
+      if not UpdateRevisionInc then begin
+        CheckRevisionInc;
         Tool.EnvironmentOverrides.Values['USESVN2REVISIONINC'] := '0';
+      end;
       Tool.CmdLineParams:=Tool.CmdLineParams+CmdLineParams;
       // run
       Result:=ExternalTools.Run(Tool,Macros,false);

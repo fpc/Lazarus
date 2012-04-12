@@ -2727,6 +2727,8 @@ bigidecomponents:
 	$(MAKE) -C components bigide
 tools:
 	$(MAKE) -C tools
+revisioninc:
+	$(MAKE) -C ide revisioninc
 ide:
 	$(MAKE) -C ide ide
 idebig:

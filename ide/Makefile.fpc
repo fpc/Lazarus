@@ -155,7 +155,7 @@ else
 endif
 
 #-----------------------------------------------------------------------------
-idepkg: $(COMPILER_UNITTARGETDIR)
+idepkg: $(COMPILER_UNITTARGETDIR) revisioninc
         $(MAKE) --assume-new=lazarus.pp lazarus$(EXEEXT) OPT='$(LAZARUS_OPT) $(OPT) @$(LAZARUS_IDE_CONFIG)'
 
 #-----------------------------------------------------------------------------
