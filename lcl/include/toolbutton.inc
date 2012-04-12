@@ -67,7 +67,7 @@ procedure TToolButton.MouseDown(Button: TMouseButton; Shift: TShiftState;
 var
   NewFlags: TToolButtonFlags;
 begin
-  debugln(['TToolButton.MouseDown ',DbgSName(Self)]);
+  //debugln(['TToolButton.MouseDown ',DbgSName(Self)]);
   NewFlags := FToolButtonFlags - [tbfPressed, tbfArrowPressed];
   if (Button = mbLeft) then
   begin
