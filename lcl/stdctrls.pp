@@ -716,8 +716,8 @@ type
     class procedure WSRegisterClass; override;
     procedure CalculatePreferredSize(var PreferredWidth, PreferredHeight: integer;
                                      WithThemeSpace: Boolean); override;
-    procedure CreateWnd; override;
     procedure CreateParams(var Params: TCreateParams); override;
+    procedure InitializeWnd; override;
     procedure TextChanged; override;
     procedure Change; virtual;
     procedure DoEnter; override;
