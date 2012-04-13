@@ -3367,10 +3367,10 @@ begin
     DoRunFile;
 
   ecJumpToPrevError:
-    DoJumpToNextError(true);
+    DoJumpToNextError(false);
 
   ecJumpToNextError:
-    DoJumpToNextError(false);
+    DoJumpToNextError(true);
 
   ecFindInFiles:
     DoFindInFiles;
