@@ -61,17 +61,6 @@ begin
   end;
 end;
 
-procedure TCustomListBox.Loaded;
-begin
-  inherited Loaded;
-  if HandleAllocated then
-  begin
-    LockSelectionChange;
-    SendItemIndex;
-    UnlockSelectionChange;
-  end;
-end;
-
 procedure TCustomListBox.CreateParams(var Params: TCreateParams);
 const
   MultiSelectStyle: array[Boolean] of DWord = (LBS_MULTIPLESEL, LBS_EXTENDEDSEL);
