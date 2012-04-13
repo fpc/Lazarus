@@ -163,10 +163,11 @@ begin
     SelNode:=CategoryTree.Selected;
     if SelNode=nil then
       Node.Selected:=True
-    else
-      DebugLn('TIDEOptionsDialog.CategoryTreeChange: Selected Node=', SelNode.Text);
+    else begin
+      //DebugLn('TIDEOptionsDialog.CategoryTreeChange: Selected Node=', SelNode.Text);
+    end;
     AEditor := TAbstractIDEOptionsEditor(Node.Data);
-    DebugLn('TIDEOptionsDialog.CategoryTreeChange: Editor=', AEditor.Name);
+    //DebugLn('TIDEOptionsDialog.CategoryTreeChange: Editor=', AEditor.Name);
   end
   else
     AEditor:=nil;
