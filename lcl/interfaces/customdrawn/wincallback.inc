@@ -97,7 +97,7 @@ end;
   Windows or other applications
  ------------------------------------------------------------------------------}
 function WindowProc(Window: HWnd; Msg: UInt; WParam: Windows.WParam;
-  LParam: Windows.LParam): LResult; {$ifdef win32}stdcall{$else}cdecl{$endif};
+  LParam: Windows.LParam): LResult; {$if defined(win32) or defined(win64)}stdcall{$else}cdecl{$endif};
 Var
   LMessage: TLMessage;
   PLMsg: PLMessage;
@@ -137,7 +137,7 @@ Var
 
   NMHdr: PNMHdr absolute LParam; // used by WM_NOTIFY
   TmpSize: TSize; // used by WM_MEASUREITEM
-  {$ifndef win32}
+  {$ifdef wince}
   Info: SHRGINFO; // used by SHRecognizeGesture in WM_LBUTTONDOWN
   {$endif}
 
@@ -635,7 +635,7 @@ begin
     end;
     WM_LBUTTONDOWN, WM_MBUTTONDOWN, WM_RBUTTONDOWN:
     begin
-      {$ifndef win32}
+      {$ifdef wince}
       // Gesture recognition process to enable popup menus.
       if (lWinControl.PopupMenu <> nil) and (Msg = WM_LBUTTONDOWN) then
       begin
@@ -1288,7 +1288,7 @@ end;
  ------------------------------------------------------------------------------}
 
 procedure TimerCallBackProc(window_hwnd : hwnd; msg , idEvent: UINT; dwTime: DWORD);
- {$ifdef win32}stdcall{$else}cdecl{$endif};
+ {$if defined(win32) or defined(win64)}stdcall{$else}cdecl{$endif};
 Var
   TimerInfo: PWinCETimerInfo;
   n: Integer;
