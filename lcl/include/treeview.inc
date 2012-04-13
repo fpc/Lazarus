@@ -5611,8 +5611,7 @@ var
   ANode: TTreeNode;
 begin
   if tvoAllowMultiSelect in FOptions then begin
-    ANode := FTreeNodes.FLastMultiSelected;
-    Items.ClearMultiSelection(True);       // Now clears all multi-selections
+    Items.ClearMultiSelection(True);       // Now clears all multi-selected
   end
   else begin
     ANode := Selected;            // Clear a single selection only if not visible
