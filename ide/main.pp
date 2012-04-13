@@ -18635,6 +18635,8 @@ end;
 
 procedure TMainIDE.mnuEditSortBlockClicked(Sender: TObject);
 begin
+  // MG: sometimes the function does nothing
+  debugln(['TMainIDE.mnuEditSortBlockClicked ',DbgSName(FindOwnerControl(GetFocus))]);
   DoSourceEditorCommand(ecSelectionSort);
 end;
 
