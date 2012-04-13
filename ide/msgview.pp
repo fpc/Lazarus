@@ -1208,11 +1208,14 @@ end;
 
 procedure TMessagesView.SetSelectedLineIndex(const AValue: integer);
 begin
+  MessageTreeView.BeginUpdate;
+  MessageTreeView.ClearInvisibleSelection;
   if AValue>=0 then begin
-    MessageTreeView.Items.TopLvlItems[AValue].Selected := true;
+    MessageTreeView.Selected:=MessageTreeView.Items.TopLvlItems[AValue];
     //MessageTreeView.TopItem  := MessageTreeView.Selected;
   end else
     MessageTreeView.Selected := nil;
+  MessageTreeView.EndUpdate;
 end;
 
 procedure TMessagesView.UpdateMsgSrcPos(Line: TLazMessageLine);
