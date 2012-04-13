@@ -4024,6 +4024,12 @@ examples/openglcontrol/data/texture3.png -text svneol=unset#image/png
 examples/openglcontrol/exampleform.pp svneol=native#text/pascal
 examples/openglcontrol/openglcontrol_demo.lpi svneol=native#text/plain
 examples/openglcontrol/openglcontrol_demo.pas svneol=native#text/pascal
+examples/openurltest/mainform.lfm svneol=native#text/plain
+examples/openurltest/mainform.pas svneol=native#text/plain
+examples/openurltest/openurltest.ico -text
+examples/openurltest/openurltest.lpi svneol=native#text/plain
+examples/openurltest/openurltest.lpr svneol=native#text/plain
+examples/openurltest/openurltest.res -text
 examples/pascalstream/PascalStream1.lpi svneol=native#text/plain
 examples/pascalstream/PascalStream1.lpr svneol=native#text/plain
 examples/pascalstream/componentstreampas.pas svneol=native#text/plain
