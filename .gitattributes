@@ -1826,6 +1826,7 @@ components/lazutils/lazdbglog.pas svneol=native#text/pascal
 components/lazutils/lazfilecache.pas svneol=native#text/pascal
 components/lazutils/lazfileutils.pas svneol=native#text/pascal
 components/lazutils/lazfreetype.pas svneol=native#text/pascal
+components/lazutils/lazfreetypefontcollection.pas svneol=native#text/plain
 components/lazutils/lazlogger.pas svneol=native#text/pascal
 components/lazutils/lazloggerbase.pas svneol=native#text/pascal
 components/lazutils/lazloggerdummy.pas svneol=native#text/pascal

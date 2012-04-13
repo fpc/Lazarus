@@ -19,7 +19,7 @@
     <Description Value="Useful units for Lazarus packages."/>
     <License Value="Modified LGPL-2"/>
     <Version Major="1"/>
-    <Files Count="62">
+    <Files Count="63">
       <Item1>
         <Filename Value="laz2_dom.pas"/>
         <UnitName Value="laz2_DOM"/>
@@ -268,6 +268,10 @@
         <Filename Value="lazclasses.pas"/>
         <UnitName Value="LazClasses"/>
       </Item62>
+      <Item63>
+        <Filename Value="lazfreetypefontcollection.pas"/>
+        <UnitName Value="LazFreeTypeFontCollection"/>
+      </Item63>
     </Files>
     <LazDoc Paths="../../docs/xml/lazutils"/>
     <i18n>
