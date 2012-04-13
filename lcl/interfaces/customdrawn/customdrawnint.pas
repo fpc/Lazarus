@@ -127,13 +127,6 @@ type
     FMetrics: TNonClientMetrics;
     FMetricsFailed: Boolean;
 
-    FStockNullBrush: HBRUSH;
-    FStockBlackBrush: HBRUSH;
-    FStockLtGrayBrush: HBRUSH;
-    FStockGrayBrush: HBRUSH;
-    FStockDkGrayBrush: HBRUSH;
-    FStockWhiteBrush: HBRUSH;
-
     FStatusFont: HFONT;
     FMessageFont: HFONT;
 

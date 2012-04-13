@@ -1059,8 +1059,8 @@ begin
 
   // Drawer.DrawFocusRect alters the Pen and Brush, so we save the state here
   LazDC.SaveState();
-  GetDefaultDrawer().DrawFocusRect(LazDC, Point(Rect.Left, Rect.Top),
-    Size(Rect.Right - Rect.Left, Rect.Bottom - Rect.Top));
+  GetDefaultDrawer().DrawFocusRect(LazDC, Types.Point(Rect.Left, Rect.Top),
+    Types.Size(Rect.Right - Rect.Left, Rect.Bottom - Rect.Top));
   LazDC.RestoreState(-1);
 end;
 
@@ -2342,7 +2342,7 @@ begin
 
   // Creates temporary pen and brush to help the drawing
   lLogPen.lopnStyle := PS_SOLID;
-  lLogPen.lopnWidth := Point(1, 1);
+  lLogPen.lopnWidth := Types.Point(1, 1);
   lLogPen.lopnColor := FPColorToTColor(TFPCustomBrush(hBR).FPColor);
   lFramePen := CreatePenIndirect(lLogPen);
 

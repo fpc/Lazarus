@@ -217,14 +217,6 @@ begin
   if Application.LayoutAdjustmentPolicy = lapDefault then
     Application.LayoutAdjustmentPolicy := lapFixedLayout;
 
-  //Init stock objects;
-  FStockNullBrush := Windows.CreateSolidBrush(0);
-  FStockBlackBrush := Windows.CreateSolidBrush($000000);
-  FStockLtGrayBrush := Windows.CreateSolidBrush($C0C0C0);
-  FStockGrayBrush := Windows.CreateSolidBrush($808080);
-  FStockDkGrayBrush := Windows.CreateSolidBrush($404040);
-  FStockWhiteBrush := Windows.CreateSolidBrush($FFFFFF);
-
   // From bug 15058: DEFAULT_GUI_FONT fails in some devices and in the emulator too
   // It isn't even in the WinCE GetStockObject MSDN Docs and is strongly recommended
   // against in Win32 Docs. SYSTEM_FONT is also recommended against in Win32 Docs,
