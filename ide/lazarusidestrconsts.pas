@@ -882,8 +882,6 @@ resourcestring
   lisExePrograms = 'Programs';
   lisSelectFile = 'Select the file';
   lisClickHereToBrowseTheFileHint = 'Click here to browse the file';
-  lisProjectWizard = 'Project Wizard';
-  lisQuitLazarus = 'Quit Lazarus';
   lisOpenPackageFile = 'Open Package File';
   lisSaveSpace = 'Save ';
   lisSelectDFMFiles = 'Select Delphi form files (*.dfm)';
@@ -4834,11 +4832,13 @@ resourcestring
   lisetEditCustomScanners = 'Edit custom scanners (%s)';
   
   // ProjectWizard Dialog
-  lisPWNewProject = 'New Project';
-  lisPWOpenProject = 'Open Project';
-  lisPWOpenRecentProject = 'Open Recent Project';
-  lisPWViewExampleProjects = 'View Example Projects';
-  lisPWConvertProject = 'Convert Delphi Project';
+  lisProjectWizard = 'Project Wizard';
+  lisPWNewProject = '&New Project';
+  lisPWOpenProject = '&Open Project';
+  lisPWOpenRecentProject = 'Open &Recent Project';
+  lisPWViewExampleProjects = 'View &Example Projects';
+  lisPWConvertProject = 'Convert &Delphi Project';
+  lisQuitLazarus = '&Quit Lazarus';
   lisIsAThisCircularDependencyIsNotAllowed = '%s is a %s.%sThis circular '
     +'dependency is not allowed.';
   lisTheComponentCanNotBeDeletedBecauseItIsNotOwnedBy = 'The component %s can '

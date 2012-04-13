@@ -14,7 +14,7 @@ object ProjectWizardDialog: TProjectWizardDialog
     AnchorSideTop.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 7
-    Height = 26
+    Height = 25
     Top = 11
     Width = 368
     Anchors = [akTop, akLeft, akRight]
@@ -31,7 +31,7 @@ object ProjectWizardDialog: TProjectWizardDialog
     AnchorSideTop.Side = asrBottom
     AnchorSideRight.Side = asrBottom
     Left = 7
-    Height = 26
+    Height = 25
     Top = 126
     Width = 368
     Anchors = [akTop, akLeft, akRight]
@@ -41,15 +41,15 @@ object ProjectWizardDialog: TProjectWizardDialog
     ModalResult = 1
     NumGlyphs = 0
     OnClick = btnOpenProjectClick
-    TabOrder = 1
+    TabOrder = 2
   end
   object btnConvertProject: TBitBtn
     AnchorSideTop.Control = btnExamples
     AnchorSideTop.Side = asrBottom
     AnchorSideRight.Side = asrBottom
     Left = 7
-    Height = 26
-    Top = 200
+    Height = 25
+    Top = 198
     Width = 368
     Anchors = [akTop, akLeft, akRight]
     AutoSize = True
@@ -58,15 +58,15 @@ object ProjectWizardDialog: TProjectWizardDialog
     ModalResult = 1
     NumGlyphs = 0
     OnClick = btnConvertProjectClick
-    TabOrder = 2
+    TabOrder = 4
   end
   object btnCloseIDE: TBitBtn
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = Owner
     AnchorSideBottom.Side = asrBottom
     Left = 7
-    Height = 26
-    Top = 257
+    Height = 25
+    Top = 258
     Width = 368
     Anchors = [akLeft, akRight, akBottom]
     AutoSize = True
@@ -75,7 +75,7 @@ object ProjectWizardDialog: TProjectWizardDialog
     ModalResult = 1
     NumGlyphs = 0
     OnClick = btnCloseIDEClick
-    TabOrder = 3
+    TabOrder = 5
   end
   object gbRecent: TGroupBox
     AnchorSideTop.Control = btnNewProject
@@ -87,9 +87,9 @@ object ProjectWizardDialog: TProjectWizardDialog
     BorderSpacing.Top = 25
     BorderSpacing.Around = 17
     Caption = 'Open Recent Project'
-    ClientHeight = 40
+    ClientHeight = 38
     ClientWidth = 364
-    TabOrder = 4
+    TabOrder = 1
     object cbRecentProjects: TComboBox
       AnchorSideLeft.Control = gbRecent
       AnchorSideTop.Control = gbRecent
@@ -97,7 +97,7 @@ object ProjectWizardDialog: TProjectWizardDialog
       AnchorSideRight.Control = gbRecent
       AnchorSideRight.Side = asrBottom
       Left = 1
-      Height = 27
+      Height = 24
       Top = 10
       Width = 362
       Anchors = [akLeft, akRight]
@@ -112,8 +112,8 @@ object ProjectWizardDialog: TProjectWizardDialog
     AnchorSideTop.Side = asrBottom
     AnchorSideRight.Side = asrBottom
     Left = 8
-    Height = 26
-    Top = 163
+    Height = 25
+    Top = 162
     Width = 368
     Anchors = [akTop, akLeft, akRight]
     AutoSize = True
@@ -122,6 +122,6 @@ object ProjectWizardDialog: TProjectWizardDialog
     ModalResult = 1
     NumGlyphs = 0
     OnClick = btnExamplesClick
-    TabOrder = 5
+    TabOrder = 3
   end
 end
