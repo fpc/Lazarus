@@ -752,7 +752,10 @@ begin
   end;
 
   // gray or mono
-  if ADesc.Format = ricfGray then Exit;
+  if ADesc.Format = ricfGray then begin
+	ADesc.Depth := 1;
+	Exit;
+  end;
 
   // alpha
   case AlphaInfo of
@@ -826,14 +829,89 @@ end;
   Creates a rawimage description for a carbonbitmap
  ------------------------------------------------------------------------------}
 function TCarbonWidgetSet.RawImage_FromCarbonBitmap(out ARawImage: TRawImage; ABitmap, AMask: TCarbonBitmap; ARect: PRect = nil): Boolean;
+var	Width, Height: Integer;
+	R: TRect;
+	WorkData: PByte = nil;
+	MaskData: PByte = nil;
+	MaskDataSize, WorkDataSize: PtrUInt;
+
+	function CreateSub(ARect: TRect; ABmp: TCarbonBitMap; BitsPerPixel: Integer; var ImageDataSize: PtrUInt): PByte;
+	var	FullImageData, BytePtr: PByte;
+		SubImageBytesPerRow, DataSize: PtrUInt;
+		ShiftBits, RowCnt, RowByteCnt: Integer;
+	begin
+
+	  SubImageBytesPerRow := (((ARect.Right - ARect.Left) * BitsPerPixel)  + 7) div 8;
+	  if (BitsPerPixel > 1) then 
+		SubImageBytesPerRow := ((((Arect.Right - ARect.Left) * (BitsPerPixel div 8)) + $F) and not PtrUInt($F));
+	  DataSize := SubImageBytesPerRow * (ARect.Bottom - ARect.Top);
+	  Result := System.GetMem(DataSize);
+      if (Result = nil) then RaiseMemoryAllocationError;
+
+	  BytePtr := Result;
+	  ShiftBits := (ARect.Left * BitsPerPixel) mod 8;
+	  FullImageData := ABmp.Data + ((ARect.Left * BitsPerPixel) div 8);
+
+	  For RowCnt := 0 to ((ARect.Bottom - ARect.Top) - 1) do begin
+		For RowByteCnt := 0 to (SubImageBytesPerRow - 1) do begin
+	      BytePtr^ := (Byte((PByte(FullImageData + RowByteCnt)^ Shl ShiftBits)) or
+                       (PByte(FullImageData + RowByteCnt + 1)^ Shr (8 - ShiftBits)));
+		  Inc(BytePtr);
+        end;
+		Inc(FullImageData, ABmp.BytesPerRow);
+	  end;
+	  ImageDataSize := DataSize;
+	end;
+		
 begin
+  Result := False;
+
   FillChar(ARawImage, SizeOf(ARawImage), 0);
+  ARawImage.Init;
   RawImage_DescriptionFromCarbonBitmap(ARawImage.Description, ABitmap);
 
-  ARawImage.DataSize := ABitmap.DataSize;
+  if ARect = nil
+  then begin
+    Width := ABitmap.Width;
+	Height := ABitmap.Height;
+  end
+  else begin
+	R := ARect^;
+    Width := R.Right - R.Left;
+    Height := R.Bottom - R.Top;
+  end;
+
+  if Width > ABitmap.Width then
+	Width := ABitmap.Width;
+
+  if Height > ABitmap.Height then
+	Height := ABitmap.Height;
+
+  if (Width = ABitmap.Width) and (Height = ABitmap.Height)
+  then begin
+	WorkData := ABitmap.Data;
+	WorkDataSize := ABitmap.DataSize;
+	if AMask <> nil then begin
+	  MaskData := AMask.Data;
+	  MaskDataSize := AMask.DataSize;
+	end;
+  end
+  else begin
+	WorkData := CreateSub(R, ABitmap, ARawImage.Description.BitsPerPixel, WorkDataSize);
+    if AMask <> nil then
+      MaskData := CreateSub(R, AMask, 1, MaskDataSize);
+  end;
+
+  ARawImage.Description.Width  := Width;
+  ARawImage.Description.Height := Height;
+
+  ARawImage.DataSize := WorkDataSize;
   ReAllocMem(ARawImage.Data, ARawImage.DataSize);
   if ARawImage.DataSize > 0 then
-    System.Move(ABitmap.Data^, ARawImage.Data^, ARawImage.DataSize);
+    System.Move(WorkData^, ARawImage.Data^, ARawImage.DataSize);
+
+  if (WorkData <> ABitmap.Data) then
+	FreeMem(WorkData);
 
   Result := True;
   
@@ -849,10 +927,19 @@ begin
     Exit;
   end;
 
-  ARawImage.MaskSize := AMask.DataSize;
+  ARawImage.Description.MaskBitsPerPixel := 1;
+  ARawImage.Description.MaskShift := 0;
+  ARawImage.Description.MaskLineEnd := rileByteBoundary;
+  ARawImage.Description.MaskBitOrder := riboReversedBits;
+
+  ARawImage.MaskSize := MaskDataSize;
   ReAllocMem(ARawImage.Mask, ARawImage.MaskSize);
   if ARawImage.MaskSize > 0 then
-    System.Move(AMask.Data^, ARawImage.Mask^, ARawImage.MaskSize);
+    System.Move(MaskData^, ARawImage.Mask^, ARawImage.MaskSize);
+
+  if (MaskData <> AMask.Data) then 
+	FreeMem(MaskData);
+  
 end;
 
 function TCarbonWidgetSet.RawImage_DescriptionToBitmapType(
@@ -949,9 +1036,9 @@ begin
   imageRect.size.width := pixelsWide;
   imageRect.size.height := pixelsHigh;
 
-  // The target format is fixed in ARGB, with 32-bits depth and
+  // The target format is fixed in ARGB, DQWord alignment, with 32-bits depth and
   // 8-bits per channel, the default image format on the LCL
-  bitmapBytesPerRow   := (pixelsWide * 4);
+  bitmapBytesPerRow   := ((pixelsWide * 4) + $F) and not PtrUInt($F);
   bitmapByteCount     := (bitmapBytesPerRow * pixelsHigh);
 
   // Use the generic RGB color space.
