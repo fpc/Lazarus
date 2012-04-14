@@ -46,29 +46,29 @@ begin
     dy := 0;
 
   // rubber band is just a window without a title
-  Result := HWND(gtk_window_new(GTK_WINDOW_POPUP));
-  gtk_window_set_default_size(PGtkWindow(Result), dx, dy);
+  Result := {%H-}HWND(gtk_window_new(GTK_WINDOW_POPUP));
+  gtk_window_set_default_size({%H-}PGtkWindow(Result), dx, dy);
   gtk_widget_set_uposition(Widget, ARect.Left, ARect.Top);
   gtk_widget_set_app_paintable(Widget, True);
   gtk_widget_realize(Widget);
   gdk_window_set_decorations(Widget^.window, 0);
   gdk_window_set_functions(Widget^.window, GDK_FUNC_RESIZE or GDK_FUNC_CLOSE);
-  gtk_window_set_opacity(PGtkWindow(Result), 0.25);
+  gtk_window_set_opacity({%H-}PGtkWindow(Result), 0.25);
   if ABrush = 0 then
     SetWidgetColor(Widget, clNone, clGradientActiveCaption, [GTK_STATE_NORMAL])
   else
-  if PGDIObject(ABrush)^.GDIBrushFill = GDK_SOLID then
-    SetWidgetColor(Widget, clNone, PGDIObject(ABrush)^.GDIBrushColor.ColorRef, [GTK_STATE_NORMAL])
+  if {%H-}PGDIObject(ABrush)^.GDIBrushFill = GDK_SOLID then
+    SetWidgetColor(Widget, clNone, {%H-}PGDIObject(ABrush)^.GDIBrushColor.ColorRef, [GTK_STATE_NORMAL])
   else
   begin
     Pixmap := gdk_pixmap_new(Widget^.window, dx, dy, -1);
     gc := gdk_gc_new(Pixmap);
     AColor := AllocGDKColor(clWhite);
     gdk_gc_set_foreground(gc, @AColor);
-    gdk_gc_set_fill(gc, PGDIObject(ABrush)^.GDIBrushFill);
-    case PGDIObject(ABrush)^.GDIBrushFill of
-      GDK_TILED: gdk_gc_set_tile(gc, PGDIObject(ABrush)^.GDIBrushPixMap);
-      GDK_STIPPLED: gdk_gc_set_stipple(gc, PGDIObject(ABrush)^.GDIBrushPixMap);
+    gdk_gc_set_fill(gc, {%H-}PGDIObject(ABrush)^.GDIBrushFill);
+    case {%H-}PGDIObject(ABrush)^.GDIBrushFill of
+      GDK_TILED: gdk_gc_set_tile(gc, {%H-}PGDIObject(ABrush)^.GDIBrushPixMap);
+      GDK_STIPPLED: gdk_gc_set_stipple(gc, {%H-}PGDIObject(ABrush)^.GDIBrushPixMap);
     end;
     gdk_draw_rectangle(Pixmap, gc, -1, 0, 0, dx, dy);
     gdk_gc_unref(gc);
@@ -81,7 +81,7 @@ end;
 
 procedure TGtk2WidgetSet.DestroyRubberBand(ARubberBand: HWND);
 begin
-  gtk_widget_destroy(PGtkWidget(ARubberBand));
+  gtk_widget_destroy({%H-}PGtkWidget(ARubberBand));
 end;
 
 procedure TGtk2WidgetSet.DrawDefaultDockImage(AOldRect, ANewRect: TRect;
@@ -213,7 +213,7 @@ end;
 function TGtk2WidgetSet.FontIsMonoSpace(Font: HFont): boolean;
 begin
   Result:=IsValidGDIObject(Font)
-          and FontIsMonoSpaceFont(PGdiObject(Font)^.GDIFontObject);
+          and FontIsMonoSpaceFont({%H-}PGdiObject(Font)^.GDIFontObject);
 end;
 
 {------------------------------------------------------------------------------
@@ -240,11 +240,6 @@ end;
  ------------------------------------------------------------------------------}
 function TGtk2WidgetSet.RawImage_CreateBitmaps(const ARawImage: TRawImage;
   out ABitmap, AMask: HBitmap; ASkipMask: Boolean): boolean;
-type
-  TFourBytes = packed record
-    B0,B1,B2,B3: Byte;
-  end;
-  
 var
   GdiObject: PGDIObject absolute ABitmap;
   GdiMaskObject: PGDIObject absolute AMask;
@@ -867,12 +862,12 @@ end;
 function TGtk2WidgetSet.GetLCLOwnerObject(Handle: HWnd): TObject;
 begin
   if Handle<>0 then
-    Result:=GetNearestLCLObject(PGtkWidget(Handle))
+    Result:=GetNearestLCLObject({%H-}PGtkWidget(Handle))
   else
     Result:=nil;
 end;
 
-function PromptUserBoxClosed(Widget : PGtkWidget; Event : PGdkEvent;
+function PromptUserBoxClosed(Widget : PGtkWidget; {%H-}Event : PGdkEvent;
   data: gPointer) : GBoolean; cdecl;
 var
   ModalResult : PtrUInt;
@@ -880,7 +875,7 @@ begin
   { We were requested by window manager to close so return EscapeResult}
   if PInteger(data)^ = 0 then
   begin
-    ModalResult:= PtrUInt(gtk_object_get_data(PGtkObject(Widget), 'modal_result'));
+    ModalResult:= {%H-}PtrUInt(gtk_object_get_data(PGtkObject(Widget), 'modal_result'));
     { Don't allow to close if we don't have a default return value }
     Result:= (ModalResult = 0);
     if not Result then PInteger(data)^:= ModalResult
@@ -890,7 +885,7 @@ end;
 
 function PromptUserButtonClicked(Widget : PGtkWidget; data: gPointer) : GBoolean; cdecl;
 begin
-  PInteger(data)^ := PtrUInt(gtk_object_get_data(PGtkObject(Widget), 'modal_result'));
+  PInteger(data)^ := {%H-}PtrUInt(gtk_object_get_data(PGtkObject(Widget), 'modal_result'));
   Result := False;
 end;
 
@@ -934,7 +929,7 @@ var
     begin
       if ThemeServices.GetStockImage(AImageHint, BitmapHandle, MaskHandle) then
       begin
-        GDIObject := PGDIObject(BitmapHandle);
+        GDIObject := {%H-}PGDIObject(BitmapHandle);
         Mask := nil;
         Pixbuf := nil;
         if GDIObject^.GDIBitmapType = gbPixbuf then
@@ -1054,7 +1049,7 @@ begin
 
         X := Buttons[BtnIdx].ModalResult;
         gtk_object_set_data(PGtkObject(Btn), 'modal_result',
-          Pointer(PtrInt(X)));
+          {%H-}Pointer(PtrInt(X)));
 
         g_signal_connect(PGtkObject(Btn), 'clicked',
           TGtkSignalFunc(@PromptUserButtonClicked), @ADialogResult);
@@ -1064,7 +1059,7 @@ begin
           gtk_dialog_set_default_response(PGtkDialog(Dialog), ResponseID(BtnID));
           X := Buttons[BtnIdx].ModalResult;
           gtk_object_set_data(PGtkObject(Dialog), 'modal_result',
-            Pointer(PtrInt(X)));
+            {%H-}Pointer(PtrInt(X)));
         end;
 
         inc(BtnIdx);
@@ -1093,7 +1088,7 @@ begin
   begin
     ActiveWindow := GetActiveWindow;
     if ActiveWindow <> 0 then
-      gtk_window_set_transient_for(PGtkWindow(Dialog), PGtkWindow(ActiveWindow));
+      gtk_window_set_transient_for(PGtkWindow(Dialog), {%H-}PGtkWindow(ActiveWindow));
   end;
   gtk_dialog_run(PGtkDialog(Dialog));
   gtk_widget_destroy(Dialog);
@@ -1215,7 +1210,7 @@ begin
 
         X := Buttons[BtnIdx];
         gtk_object_set_data(PGtkObject(Btn), 'modal_result',
-          Pointer(PtrInt(X)));
+          {%H-}Pointer(PtrInt(X)));
 
         g_signal_connect(PGtkObject(Btn), 'clicked',
           TGtkSignalFunc(@PromptUserButtonClicked), @ADialogResult);
@@ -1225,7 +1220,7 @@ begin
           gtk_dialog_set_default_response(PGtkDialog(Dialog), ResponseID(Buttons[BtnIdx]));
           X := Buttons[BtnIdx];
           gtk_object_set_data(PGtkObject(Dialog), 'modal_result',
-            Pointer(PtrInt(X)));
+            {%H-}Pointer(PtrInt(X)));
         end;
 
         inc(BtnIdx);
@@ -1254,7 +1249,7 @@ begin
   begin
     ActiveWindow := GetActiveWindow;
     if ActiveWindow <> 0 then
-      gtk_window_set_transient_for(PGtkWindow(Dialog), PGtkWindow(ActiveWindow));
+      gtk_window_set_transient_for(PGtkWindow(Dialog), {%H-}PGtkWindow(ActiveWindow));
   end;
   gtk_dialog_run(PGtkDialog(Dialog));
   gtk_widget_destroy(Dialog);
@@ -1269,7 +1264,7 @@ var
   Requisition: TGtkRequisition;
 begin
   Result:=True;
-  p := GetWidgetInfo(Pointer(Handle), False)^.CoreWidget;
+  p := GetWidgetInfo({%H-}Pointer(Handle), False)^.CoreWidget;
   
   Menu := PGtkWidget(g_object_get_data(G_OBJECT(p), 'Menu'));
   if Menu<>nil then begin
@@ -1285,7 +1280,7 @@ end;
 //##apiwiz##eps##   // Do not remove, no wizard declaration after this line
 
 
-function waithandle_iocallback(source: PGIOChannel; condition: TGIOCondition;
+function waithandle_iocallback({%H-}source: PGIOChannel; condition: TGIOCondition;
   data: gpointer): gboolean; cdecl;
 var
   lEventHandler: PWaitHandleEventHandler absolute data;
@@ -1353,7 +1348,7 @@ end;
 procedure TGtk2WidgetSet.SetRubberBandRect(const ARubberBand: HWND; const ARect: TRect);
 begin
   with ARect do
-    gdk_window_move_resize(PGtkWidget(ARubberBand)^.window, Left,
+    gdk_window_move_resize({%H-}PGtkWidget(ARubberBand)^.window, Left,
       Top, Right - Left, Bottom - Top);
 end;
 
@@ -1375,7 +1370,7 @@ begin
   lPipeEventInfo^.UserData := AData;
   lPipeEventInfo^.OnEvent := AEventHandler;
   lPipeEventInfo^.Handler := AddEventHandler(AHandle, G_IO_IN or G_IO_HUP or G_IO_OUT,
-    @HandlePipeEvent, PtrUInt(lPipeEventInfo));
+    @HandlePipeEvent, {%H-}PtrUInt(lPipeEventInfo));
   Result := lPipeEventInfo;
 end;
 

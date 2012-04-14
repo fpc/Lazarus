@@ -36,12 +36,12 @@ function AddPipeEventHandler(AHandle: THandle;
 function AddProcessEventHandler(AHandle: THandle;
   AEventHandler: TChildExitEvent; AData: PtrInt): PProcessEventHandler; override;
 function AskUser(const DialogCaption, DialogMessage: string; DialogType:
-   LongInt; Buttons: TDialogButtons; HelpCtx: Longint): LongInt; override;
+   LongInt; Buttons: TDialogButtons; {%H-}HelpCtx: Longint): LongInt; override;
 
 function CreateStandardCursor(ACursor: SmallInt): hCursor; override;
 function CreateRubberBand(const ARect: TRect; const ABrush: HBrush = 0): HWND; override;
 procedure DestroyRubberBand(ARubberBand: HWND); override;
-procedure DrawDefaultDockImage(AOldRect, ANewRect: TRect; AOperation: TDockImageOperation); override;
+procedure DrawDefaultDockImage({%H-}AOldRect, ANewRect: TRect; AOperation: TDockImageOperation); override;
 procedure DrawGrid(DC: HDC; const R: TRect; DX, DY: Integer); override;
 
 function ExtUTF8Out(DC: HDC; X, Y: Integer; Options: Longint; Rect: PRect;

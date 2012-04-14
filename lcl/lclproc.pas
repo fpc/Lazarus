@@ -143,7 +143,7 @@ procedure MoveRect(var ARect: TRect; x, y: Integer);
 procedure MoveRectToFit(var ARect: TRect; const MaxRect: TRect);
 procedure MakeMinMax(var i1, i2: integer);
 procedure CalculateLeftTopWidthHeight(X1,Y1,X2,Y2: integer;
-  var Left,Top,Width,Height: integer);
+  out Left,Top,Width,Height: integer);
 
 function DeleteAmpersands(var Str : String) : Longint;
 function BreakString(const s: string; MaxLineLength, Indent: integer): string;
@@ -1031,7 +1031,7 @@ begin
 end;
 
 procedure CalculateLeftTopWidthHeight(X1, Y1, X2, Y2: integer;
-  var Left, Top, Width, Height: integer);
+  out Left, Top, Width, Height: integer);
 begin
   if X1 <= X2 then 
    begin

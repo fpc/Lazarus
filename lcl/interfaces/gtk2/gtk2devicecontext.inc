@@ -1052,7 +1052,7 @@ begin
     gdiPen:    Result := SelectPen(AGdiObject);
   else
     // we only handle bitmaps here atm
-    Result := {%H-}PGdiObject(GTK2WidgetSet.SelectObject(HDC(Self), HGDIOBJ(AGdiObject)));
+    Result := {%H-}PGdiObject(GTK2WidgetSet.SelectObject(HDC(Self), {%H-}HGDIOBJ(AGdiObject)));
   end;
 end;
 

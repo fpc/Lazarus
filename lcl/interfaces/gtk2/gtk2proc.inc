@@ -2508,7 +2508,7 @@ end;
 procedure InitKeyboardTables;
 
   procedure FindVKeyInfo(const AKeySym: Cardinal; var AVKey: Byte;
-    var AExtended, AHasMultiVK, ASecondKey: Boolean);
+    out AExtended, AHasMultiVK, ASecondKey: Boolean);
   var
     ByteKey: Byte;
   begin
@@ -9326,7 +9326,7 @@ begin
 end;
 
 {$IFDEF HasX}
-function  XGetWorkarea(var ax,ay,awidth,aheight:gint): gint;
+function  XGetWorkarea(out ax,ay,awidth,aheight:gint): gint;
 
 var
   XDisplay: PDisplay;
@@ -9353,6 +9353,11 @@ begin
     ay:=current_desktop[1];
     awidth:=current_desktop[2];
     aheight:=current_desktop[3];
+  end else begin
+    ax:=0;
+    ay:=0;
+    awidth:=0;
+    aheight:=0;
   end;
   if current_desktop <> nil then
     XFree (current_desktop);

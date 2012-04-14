@@ -46,7 +46,7 @@ end;}
 
   Handler for draw events of every item in a TGtkListStringList.
 ------------------------------------------------------------------------------}
-function gtkListItemDrawAfterCB(Widget: PGtkWidget; area: PGDKRectangle;
+function gtkListItemDrawAfterCB(Widget: PGtkWidget; {%H-}area: PGDKRectangle;
   data: gPointer): GBoolean; cdecl;
 var
   Msg: TLMDrawListItem;
@@ -96,7 +96,7 @@ begin
     Include(State,odFocused);
 
   // create message and deliver
-  FillChar(Msg,SizeOf(Msg),0);
+  FillChar(Msg{%H-},SizeOf(Msg),0);
   Msg.Msg:=LM_DrawListItem;
   New(Msg.DrawListItemStruct);
   try
@@ -104,12 +104,12 @@ begin
     with Msg.DrawListItemStruct^ do begin
       ItemID:=ItemIndex;
       Area:=AreaRect;
-      DC:=GetDC(HWnd(PtrUInt(Widget)));
+      DC:=GetDC(HWnd({%H-}PtrUInt(Widget)));
       ItemState:=State;
     end;
     //DebugLn('gtkListItemDrawAfterCB ',DbgSName(LCLList.Owner),' Widget=',DbgS(Widget));
     Result := DeliverMessage(LCLList.Owner, Msg)=0;
-    ReleaseDC(HWnd(PtrUInt(Widget)),Msg.DrawListItemStruct^.DC);
+    ReleaseDC(HWnd({%H-}PtrUInt(Widget)),Msg.DrawListItemStruct^.DC);
   finally
     Dispose(Msg.DrawListItemStruct);
   end;
@@ -157,7 +157,7 @@ begin
   // get itemindex and area
   ItemIndex:=g_list_index(GtkList^.children,Data);
   
-  if LockOnChange(PgtkObject(LCLList.Owner.Handle),0) > 0 then Exit;
+  if LockOnChange({%H-}PgtkObject(LCLList.Owner.Handle),0) > 0 then Exit;
 
   if GtkWidgetIsA(Widget,gtk_toggle_button_get_type) then begin
     gtk_object_set_data(PgtkObject(Widget), 'Grayed', nil);
@@ -224,7 +224,7 @@ begin
   // get itemindex and area
   //ItemIndex:=g_list_index(GtkList^.children,Data);
 
-  if LockOnChange(PGtkObject(LCLList.Owner.Handle),0) > 0 then Exit;
+  if LockOnChange({%H-}PGtkObject(LCLList.Owner.Handle),0) > 0 then Exit;
 
   Mess.Msg := LM_SELCHANGE;
   Mess.Result := 0;
@@ -557,7 +557,7 @@ begin
   //  Currently, there's no know bug origined from this flaw.
   inc(FUpdateCount);
   if (FUpdateCount=1) and (Owner<>nil) and (Owner.HandleAllocated) then
-    LockOnChange(PGtkObject(Owner.Handle),+1);
+    LockOnChange({%H-}PGtkObject(Owner.Handle),+1);
 end;
 
 procedure TGtkListStringList.EndUpdate;
@@ -565,7 +565,7 @@ begin
   dec(FUpdateCount);
   if (FUpdateCount=0) then begin
     if (Owner<>nil) and (Owner.HandleAllocated) then
-      LockOnChange(PGtkObject(Owner.Handle),-1);
+      LockOnChange({%H-}PGtkObject(Owner.Handle),-1);
     if (glsItemCacheNeedsUpdate in FStates) then
       UpdateItemCache;
   end;
@@ -786,7 +786,7 @@ begin
   FCachedCount:=0;
   //Update the internal Item Index cache
   if FOwner.HandleAllocated and (FOwner is TCustomComboBox) then
-    PInteger(GetWidgetInfo(Pointer(FOwner.Handle))^.UserData)^ := -1;
+    PInteger(GetWidgetInfo({%H-}Pointer(FOwner.Handle))^.UserData)^ := -1;
   EndUpdate;
   {$IFDEF CheckGtkList}
   ConsistencyCheck;
@@ -960,7 +960,7 @@ begin
     //internal index cache becomes out of sync
     if (FOwner is TCustomComboBox) and FOwner.HandleAllocated then
     begin
-      LCLIndex := PInteger(GetWidgetInfo(Pointer(FOwner.Handle))^.UserData);
+      LCLIndex := PInteger(GetWidgetInfo({%H-}Pointer(FOwner.Handle))^.UserData);
       if Index <= LCLIndex^ then
         Inc(LCLIndex^);
     end;

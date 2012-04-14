@@ -739,7 +739,7 @@ procedure FillScreenFonts(ScreenFonts: TStrings);
 {$ENDIF}
 function GetTextHeight(DCTextMetric: TDevContextTextMetric): integer;
 {$IFDEF HasX}
-function  XGetWorkarea(var ax,ay,awidth,aheight:gint): gint;
+function  XGetWorkarea(out ax,ay,awidth,aheight:gint): gint;
 {$ENDIF}
 
 

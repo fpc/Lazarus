@@ -854,7 +854,7 @@ procedure UpdateShiftState(const KeyStateList: TFPList; const ShiftState: TShift
       then KeyStateList.Add({%H-}Pointer(PtrUInt(AVKeyCode)));
     end
     else begin
-      KeyStateList.Remove(Pointer(PtrUInt(AVKeyCode)));
+      KeyStateList.Remove({%H-}Pointer(PtrUInt(AVKeyCode)));
     end;
   end;
 
@@ -3060,7 +3060,7 @@ begin
     else
       SmallPos := High(SmallPos);
 
-    ScrollBar := HWND(PtrUInt(Range));
+    ScrollBar := HWND({%H-}PtrUInt(Range));
     ScrollCode := SB_THUMBPOSITION;
   end;
   Result := DeliverMessage(AWidgetInfo^.LCLObject, Msg) <> 0;
@@ -3086,8 +3086,8 @@ var
     // Check for a toggle
     // If the remove was successfull, the key was on
     // else it was off so we should set the toggle flag
-    if KeyStateList.Remove(Pointer(PtrUInt(AVKeyCode or KEYMAP_TOGGLE))) < 0
-    then KeyStateList.Add(Pointer(PtrUInt(AVKeyCode or KEYMAP_TOGGLE)));
+    if KeyStateList.Remove({%H-}Pointer(PtrUInt(AVKeyCode or KEYMAP_TOGGLE))) < 0
+    then KeyStateList.Add({%H-}Pointer(PtrUInt(AVKeyCode or KEYMAP_TOGGLE)));
   end;
 
   procedure UpdateList(const AVKeyCode: Integer; const APressed: Boolean);
@@ -3095,11 +3095,11 @@ var
     if AVKeyCode = 0 then Exit;
     if APressed
     then begin
-      if KeyStateList.IndexOf(Pointer(PtrUInt(AVKeyCode))) < 0
-      then KeyStateList.Add(Pointer(PtrUInt(AVKeyCode)));
+      if KeyStateList.IndexOf({%H-}Pointer(PtrUInt(AVKeyCode))) < 0
+      then KeyStateList.Add({%H-}Pointer(PtrUInt(AVKeyCode)));
     end
     else begin
-      KeyStateList.Remove(Pointer(PtrUInt(AVKeyCode)));
+      KeyStateList.Remove({%H-}Pointer(PtrUInt(AVKeyCode)));
     end;
   end;
 

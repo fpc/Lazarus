@@ -741,7 +741,7 @@ begin
   //Note: Assign/Clear is called inside CreateHandle before Handle is set
   if FOwner.HandleAllocated then
   begin
-    WidgetInfo := GetWidgetInfo(Pointer(FOwner.Handle), False);
+    WidgetInfo := GetWidgetInfo({%H-}Pointer(FOwner.Handle), False);
     Inc(WidgetInfo^.ChangeLock);
 
     gtk_list_store_clear(FGtkListStore);
@@ -783,7 +783,7 @@ begin
     gtk_tree_model_iter_nth_child(FGtkListStore, @ListItem, nil, Index);
 
   //gtk_list_store_g
-  WidgetInfo := GetWidgetInfo(Pointer(FOwner.Handle));
+  WidgetInfo := GetWidgetInfo({%H-}Pointer(FOwner.Handle));
   //Lock the widget to avoid trigger events
   Inc(WidgetInfo^.ChangeLock);
   gtk_list_store_remove(FGtkListStore, @ListItem);
@@ -885,7 +885,7 @@ begin
     //internal index cache becomes out of sync
     if (FOwner is TCustomComboBox) and FOwner.HandleAllocated then
     begin
-      LCLIndex := PInteger(GetWidgetInfo(Pointer(FOwner.Handle))^.UserData);
+      LCLIndex := PInteger(GetWidgetInfo({%H-}Pointer(FOwner.Handle))^.UserData);
       if Index <= LCLIndex^ then
         Inc(LCLIndex^);
     end;
