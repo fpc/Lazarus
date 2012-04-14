@@ -1,12 +1,14 @@
-inherited ProjectMiscOptionsFrame: TProjectMiscOptionsFrame
+object ProjectMiscOptionsFrame: TProjectMiscOptionsFrame
+  Left = 0
   Height = 460
+  Top = 0
   Width = 536
   ClientHeight = 460
   ClientWidth = 536
   TabOrder = 0
   DesignLeft = 306
   DesignTop = 188
-  object Bevel1: TBevel[0]
+  object Bevel1: TBevel
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = MainUnitHasTitleStatementCheckBox
     AnchorSideTop.Side = asrBottom
@@ -14,93 +16,93 @@ inherited ProjectMiscOptionsFrame: TProjectMiscOptionsFrame
     AnchorSideRight.Side = asrBottom
     Left = 0
     Height = 3
-    Top = 112
+    Top = 108
     Width = 536
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Top = 6
   end
-  object MainUnitHasUsesSectionForAllUnitsCheckBox: TCheckBox[1]
+  object MainUnitHasUsesSectionForAllUnitsCheckBox: TCheckBox
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = MainUnitIsPascalSourceCheckBox
     AnchorSideTop.Side = asrBottom
     Left = 0
-    Height = 22
-    Top = 28
-    Width = 340
+    Height = 21
+    Top = 27
+    Width = 254
     BorderSpacing.Top = 6
     Caption = 'MainUnitHasUsesSectionForAllUnitsCheckBox'
-    TabOrder = 0
+    TabOrder = 1
   end
-  object MainUnitHasCreateFormStatementsCheckBox: TCheckBox[2]
+  object MainUnitHasCreateFormStatementsCheckBox: TCheckBox
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = MainUnitHasUsesSectionForAllUnitsCheckBox
     AnchorSideTop.Side = asrBottom
     Left = 0
-    Height = 22
-    Top = 56
-    Width = 341
+    Height = 21
+    Top = 54
+    Width = 255
     BorderSpacing.Top = 6
     Caption = 'MainUnitHasCreateFormStatementsCheckBox'
-    TabOrder = 1
+    TabOrder = 2
   end
-  object MainUnitIsPascalSourceCheckBox: TCheckBox[3]
+  object MainUnitIsPascalSourceCheckBox: TCheckBox
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = Owner
     Left = 0
-    Height = 22
+    Height = 21
     Top = 0
-    Width = 257
+    Width = 191
     Caption = 'MainUnitIsPascalSourceCheckBox'
-    TabOrder = 2
+    TabOrder = 0
   end
-  object MainUnitHasTitleStatementCheckBox: TCheckBox[4]
+  object MainUnitHasTitleStatementCheckBox: TCheckBox
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = MainUnitHasCreateFormStatementsCheckBox
     AnchorSideTop.Side = asrBottom
     Left = 0
-    Height = 22
-    Top = 84
-    Width = 283
+    Height = 21
+    Top = 81
+    Width = 213
     BorderSpacing.Top = 6
     Caption = 'MainUnitHasTitleStatementCheckBox'
     TabOrder = 3
   end
-  object RunnableCheckBox: TCheckBox[5]
+  object RunnableCheckBox: TCheckBox
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = Bevel1
     Left = 0
-    Height = 22
-    Top = 118
-    Width = 158
+    Height = 21
+    Top = 114
+    Width = 118
     BorderSpacing.Top = 6
     Caption = 'RunnableCheckBox'
     TabOrder = 4
   end
-  object AlwaysBuildCheckBox: TCheckBox[6]
+  object AlwaysBuildCheckBox: TCheckBox
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = UseDesignTimePkgsCheckBox
     AnchorSideTop.Side = asrBottom
     Left = 0
-    Height = 22
-    Top = 174
-    Width = 178
+    Height = 21
+    Top = 168
+    Width = 132
     BorderSpacing.Top = 6
     Caption = 'AlwaysBuildCheckBox'
-    TabOrder = 5
+    TabOrder = 6
   end
-  object LRSInOutputDirCheckBox: TCheckBox[7]
+  object LRSInOutputDirCheckBox: TCheckBox
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = AlwaysBuildCheckBox
     AnchorSideTop.Side = asrBottom
     Left = 0
-    Height = 22
-    Top = 202
-    Width = 202
+    Height = 21
+    Top = 195
+    Width = 152
     BorderSpacing.Top = 6
     Caption = 'LRSInOutputDirCheckBox'
-    TabOrder = 6
+    TabOrder = 7
   end
-  object ResourceGroupBox: TGroupBox[8]
+  object ResourceGroupBox: TGroupBox
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = LRSInOutputDirCheckBox
     AnchorSideTop.Side = asrBottom
@@ -108,7 +110,7 @@ inherited ProjectMiscOptionsFrame: TProjectMiscOptionsFrame
     AnchorSideRight.Side = asrBottom
     Left = 0
     Height = 81
-    Top = 230
+    Top = 222
     Width = 536
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Top = 6
@@ -121,14 +123,14 @@ inherited ProjectMiscOptionsFrame: TProjectMiscOptionsFrame
     ChildSizing.ShrinkVertical = crsScaleChilds
     ChildSizing.Layout = cclLeftToRightThenTopToBottom
     ChildSizing.ControlsPerLine = 1
-    ClientHeight = 60
-    ClientWidth = 528
-    TabOrder = 7
+    ClientHeight = 65
+    ClientWidth = 532
+    TabOrder = 8
     object UseLRSFilesRadioButton: TRadioButton
       Left = 6
-      Height = 24
+      Height = 27
       Top = 6
-      Width = 516
+      Width = 520
       Caption = 'UseLRSFilesRadioButton'
       Checked = True
       ParentShowHint = False
@@ -138,39 +140,39 @@ inherited ProjectMiscOptionsFrame: TProjectMiscOptionsFrame
     end
     object UseFPCResourcesRadioButton: TRadioButton
       Left = 6
-      Height = 24
-      Top = 30
-      Width = 516
+      Height = 26
+      Top = 33
+      Width = 520
       Caption = 'UseFPCResourcesRadioButton'
       ParentShowHint = False
       ShowHint = True
       TabOrder = 1
     end
   end
-  object UseDesignTimePkgsCheckBox: TCheckBox[9]
+  object UseDesignTimePkgsCheckBox: TCheckBox
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = RunnableCheckBox
     AnchorSideTop.Side = asrBottom
     Left = 0
-    Height = 22
-    Top = 146
-    Width = 234
+    Height = 21
+    Top = 141
+    Width = 172
     BorderSpacing.Top = 6
     Caption = 'UseDesignTimePkgsCheckBox'
-    TabOrder = 8
+    TabOrder = 5
   end
-  object PathDelimLabel: TLabel[10]
+  object PathDelimLabel: TLabel
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = PathDelimComboBox
     AnchorSideTop.Side = asrCenter
     Left = 0
-    Height = 18
-    Top = 330
-    Width = 110
+    Height = 15
+    Top = 323
+    Width = 81
     Caption = 'PathDelimLabel'
     ParentColor = False
   end
-  object Bevel2: TBevel[11]
+  object Bevel2: TBevel
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = ResourceGroupBox
     AnchorSideTop.Side = asrBottom
@@ -178,20 +180,20 @@ inherited ProjectMiscOptionsFrame: TProjectMiscOptionsFrame
     AnchorSideRight.Side = asrBottom
     Left = 0
     Height = 3
-    Top = 317
+    Top = 309
     Width = 536
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Top = 6
   end
-  object PathDelimComboBox: TComboBox[12]
+  object PathDelimComboBox: TComboBox
     AnchorSideLeft.Control = PathDelimLabel
     AnchorSideLeft.Side = asrBottom
     AnchorSideTop.Control = Bevel2
     AnchorSideTop.Side = asrBottom
     AnchorSideRight.Side = asrBottom
-    Left = 116
-    Height = 27
-    Top = 326
+    Left = 87
+    Height = 25
+    Top = 318
     Width = 259
     BorderSpacing.Left = 6
     BorderSpacing.Top = 6
