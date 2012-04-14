@@ -5080,6 +5080,12 @@ begin
   end;
 end;
 
+
+procedure TGtk2WidgetSet.SetDesigning(AComponent: TComponent);
+begin
+  // ToDo: Implement
+end;
+
 {------------------------------------------------------------------------------
   Method: TGtk2WidgetSet.SetPixel
   Params:  Sender : the lcl object which called this func via SendMessage
