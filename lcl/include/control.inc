@@ -4294,7 +4294,7 @@ end;
 ------------------------------------------------------------------------------}
 function TControl.HandleObjectShouldBeVisible: boolean;
 begin
-  Result := (not (csDestroying in ComponentState)) and IsControlVisible;
+  Result := not ((csDestroying in ComponentState) or (csDestroyingHandle in FControlState)) and IsControlVisible;
   if Result and Assigned(Parent) then
     Result := Parent.HandleObjectShouldBeVisible;
   //DebugLn(['TControl.HandleObjectShouldBeVisible ',DbgSName(Self),' ',Result]);
