@@ -527,7 +527,6 @@ end;
 constructor TCustomListBox.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
-  LockSelectionChange;
   fCompStyle := csListBox;
   BorderStyle:= bsSingle;
   FItems := TExtendedStringList.Create(GetCachedDataSize);
@@ -535,14 +534,13 @@ begin
   FClickOnSelChange:= True;
   FItemIndex:=-1;
   FExtendedSelect := true;
-  FScrollWidth := 0;
+  //FScrollWidth := 0;
   FCanvas := TControlCanvas.Create;
   TControlCanvas(FCanvas).Control := Self;
   ParentColor := false;
   TabStop := true;
   with GetControlClassDefaultSize do
     SetInitialBounds(0, 0, CX, CY);
-  UnlockSelectionChange;
 end;
 
 {------------------------------------------------------------------------------
