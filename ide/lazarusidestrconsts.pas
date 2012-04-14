@@ -2199,9 +2199,9 @@ resourcestring
   dlgPORequireAdministrator = 'require administrator (requireAdministrator)';
   dlgPOExecutionLevel = 'Execution Level';
   dlgPOIcon = 'Icon:';
-  dlgPOLoadIcon = 'Load Icon';
-  dlgPOSaveIcon = 'Save Icon';
-  dlgPOClearIcon = 'Clear Icon';
+  dlgPOLoadIcon = '&Load Icon';
+  dlgPOSaveIcon = '&Save Icon';
+  dlgPOClearIcon = '&Clear Icon';
   dlgPOIconDesc = '(size: %d:%d, bpp: %d)';
   dlgPOIconDescNone = '(none)';
 
