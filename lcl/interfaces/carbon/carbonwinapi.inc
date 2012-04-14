@@ -1606,6 +1606,8 @@ var
   APen: TCarbonPen absolute AObject;
   ALogPen: PLogPen absolute Buf;
   AExtLogPen: PExtLogPen absolute Buf;
+  AFont: TCarbonFont absolute AObject;
+  ALogFont: PLogFont absolute Buf;
 begin
   Result := 0;
 
@@ -1729,6 +1731,23 @@ begin
         ALogPen^.lopnColor := APen.ColorRef;
       end;
     end;
+  end
+  else
+  {------------------------------------------------------------------------------
+    Font
+   ------------------------------------------------------------------------------}
+  if aObject is TCarbonFont then
+  begin
+    if Buf = nil then
+      Result := SizeOf(TLogFont)
+    else
+    if BufSize >= SizeOf(TLogFont) then
+    begin
+      Result := SizeOf(TLogFont);
+
+      FillChar(ALogFont^, SizeOf(ALogFont^), 0);
+	  AFont.QueryStyle(ALogFont);
+	end;
   end
   else
     DebugLn('TCarbonWidgetSet.GetObject Font, Brush TODO');

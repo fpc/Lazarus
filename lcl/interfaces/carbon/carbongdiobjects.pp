@@ -151,6 +151,7 @@ type
     constructor Create(AGlobal: Boolean); // default system font
     constructor Create(ALogFont: TLogFont; const AFaceName: String);
     function CreateStyle(ALogFont: TLogFont; const AFaceName: String): ATSUStyle;
+    procedure QueryStyle(ALogFont: PLogFont);
     destructor Destroy; override;
     procedure SetColor(AColor: TColor);
     
@@ -1285,6 +1286,102 @@ begin
     S := SizeOf(O);
     OSError(ATSUSetAttributes(Result, 1, @Attr, @S, @A), Self, SName,
       SSetAttrs, 'kATSUStyleRenderingOptionsTag');
+  end;
+end;
+
+{------------------------------------------------------------------------------
+  Method:  TCarbonFont.QueryStyle
+  Params:  ALogFont  - Font characteristics
+ ------------------------------------------------------------------------------}
+procedure TCarbonFont.QueryStyle(ALogFont: PLogFont);
+var
+  Attr: ATSUAttributeTag;
+  M: ATSUTextMeasurement;
+  O: ATSStyleRenderingOptions;
+  B: Boolean;
+  S: ByteCount;
+  A: ATSUAttributeValuePtr;
+  ID: ATSUFontID;
+  Ascent, Leading, Descent: Integer;
+const
+  SGetAttr = 'ATSUGetAttribute';
+  SName = 'QueryStyle';
+
+begin
+
+  Attr := kATSUFontTag;
+  A := @ID;
+  S := SizeOf(ID);
+  OSError(ATSUGetAttribute(Style, Attr, S, A, nil), Self, SName,
+      SGetAttr, 'kATSUFontTag', kATSUNotSetErr);
+
+  ALogFont^.lfFaceName := CarbonFontIDTOFontName(ID);
+
+  
+  A := @M;
+  S := SizeOf(M);
+  OSError(ATSUGetAttribute(Style, kATSUAscentTag, S, A, nil), Self, SName,
+      SGetAttr, 'kATSUAscentTag', kATSUNotSetErr);
+  Ascent := (M shr 16);
+
+  OSError(ATSUGetAttribute(Style, kATSULeadingTag, S, A, nil), Self, SName,
+      SGetAttr, 'kATSULeadingTag', kATSUNotSetErr);
+  Leading := (M shr 16);
+
+  OSError(ATSUGetAttribute(Style, kATSUDescentTag, S, A, nil), Self, SName,
+      SGetAttr, 'kATSUDescentTag', kATSUNotSetErr);
+  Descent := (M shr 16);
+
+  ALogFont^.lfHeight := Ascent + Leading + Descent;
+
+  
+  Attr := kATSUQDBoldfaceTag;
+  A := @B;
+  S := SizeOf(B);
+  OSError(ATSUGetAttribute(Style, Attr, S, A, nil), Self, SName,
+      SGetAttr, 'kATSUQDBoldfaceTag', kATSUNotSetErr);
+
+  if B then ALogFont^.lfWeight := FW_BOLD else ALogFont^.lfWeight := FW_NORMAL;
+
+
+  Attr := kATSUQDItalicTag;
+  A := @B;
+  S := SizeOf(B);
+  OSError(ATSUGetAttribute(Style, Attr, S, A, nil), Self, SName, SGetAttr,
+      'kATSUQDItalicTag', kATSUNotSetErr);
+
+  if B then ALogFont^.lfItalic := 1 else ALogFont^.lfItalic := 0;
+
+
+  Attr := kATSUQDUnderlineTag;
+  A := @B;
+  S := SizeOf(B);
+  OSError(ATSUGetAttribute(Style, Attr, S, A, nil), Self, SName,
+      SGetAttr, 'kATSUQDUnderlineTag', kATSUNotSetErr);
+
+  if B then ALogFont^.lfUnderline := 1 else ALogFont^.lfUnderLine := 0;
+
+
+  Attr := kATSUStyleStrikeThroughTag;
+  A := @B;
+  S := SizeOf(B);
+  OSError(ATSUGetAttribute(Style, Attr, S, A, nil), Self, SName,
+      SGetAttr, 'kATSUStyleStrikeThroughTag', kATSUNotSetErr);
+
+  if B then ALogFont^.lfStrikeOut := 1 else ALogFont^.lfStrikeOut := 0;
+
+
+  Attr := kATSUStyleRenderingOptionsTag;
+  A := @O;
+  S := SizeOf(O);
+  OSError(ATSUGetAttribute(Style, Attr, S, A, nil), Self, SName,
+      SGetAttr, 'kATSUStyleRenderingOptionsTag', kATSUNotSetErr);
+
+  case O of
+	kATSStyleApplyAntiAliasing:	ALogFont^.lfQuality := ANTIALIASED_QUALITY;
+	kATSStyleNoAntiAliasing:	ALogFont^.lfQuality := NONANTIALIASED_QUALITY;
+  else
+	ALogFont^.lfQuality := DEFAULT_QUALITY;
   end;
 end;
 
