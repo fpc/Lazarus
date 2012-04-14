@@ -28,11 +28,11 @@ interface
 
 uses
   // Bindings
-  glib2, gdk2pixbuf, gdk2, gtk2, Pango,
+  glib2, gtk2,
   // RTL, FCL, LCL
   SysUtils, Math, Controls, LCLType, LCLProc, Spin, StdCtrls,
   // Widgetset
-  Gtk2Extra, Gtk2Def, Gtk2Int, Gtk2WSControls, Gtk2WSStdCtrls,
+  Gtk2Extra, Gtk2Def, Gtk2WSStdCtrls,
   Gtk2Proc, WSLCLClasses, WSProc, WSSpin;
 
 type
@@ -64,7 +64,7 @@ end;
 
 function GetSpinGtkEditable(const Spin: TWinControl): PGtkEntry;
 begin
-  Result:=GetGtkFloatSpinEditable(PGtkSpinButton(Spin.Handle));
+  Result:=GetGtkFloatSpinEditable({%H-}PGtkSpinButton(Spin.Handle));
 end;
 
 { TGtk2WSCustomFloatSpinEdit }
@@ -81,7 +81,7 @@ var
 begin
   if not WSCheckHandleAllocated(ACustomEdit, 'GetSelStart') then
     Exit(0);
-  Entry := @PGtkSpinButton(ACustomEdit.Handle)^.entry;
+  Entry := @{%H-}PGtkSpinButton(ACustomEdit.Handle)^.entry;
   Result := Min(Entry^.current_pos, Entry^.selection_bound)
 end;
 
@@ -105,14 +105,14 @@ begin
   if not WSCheckHandleAllocated(ACustomFloatSpinEdit, 'GetValue') then
     Exit(0);
 
-  Result := gtk_spin_button_get_value(PGtkSpinButton(ACustomFloatSpinEdit.Handle));
+  Result := gtk_spin_button_get_value({%H-}PGtkSpinButton(ACustomFloatSpinEdit.Handle));
 
   // gtk2 have different meaning of value vs text in GtkSpinBox when
   // we are dealing with real FloatSpinEdit. #18679.
   // We need this because of validator in gtk2callback.inc -> gtkchanged_spinbox()
   if ACustomFloatSpinEdit.DecimalPlaces > 0  then
   begin
-    S := StrPas(gtk_entry_get_text(PGtkEntry(ACustomFloatSpinEdit.Handle)));
+    S := StrPas(gtk_entry_get_text({%H-}PGtkEntry(ACustomFloatSpinEdit.Handle)));
     FL := 0;
     if TryStrToFloat(S, FL) then
       Result := FL;
@@ -135,7 +135,7 @@ var
 begin
   if not WSCheckHandleAllocated(ACustomEdit, 'SetSelLength') then
     Exit;
-  Entry := @PGtkSpinButton(ACustomEdit.Handle)^.entry;
+  Entry := @{%H-}PGtkSpinButton(ACustomEdit.Handle)^.entry;
   SelStart := GetSelStart(ACustomEdit);
   gtk_entry_select_region(Entry,
     SelStart,
@@ -149,7 +149,7 @@ var
 begin
   if not WSCheckHandleAllocated(ACustomEdit, 'SetReadOnly') then
     Exit;
-  Widget := PGtkWidget(ACustomEdit.Handle);
+  Widget := {%H-}PGtkWidget(ACustomEdit.Handle);
   if GTK_IS_EDITABLE(Widget) then
     gtk_editable_set_editable(PGtkEditable(Widget), not ReadOnly);
 
@@ -179,7 +179,7 @@ begin
   if not WSCheckHandleAllocated(ACustomFloatSpinEdit, 'UpdateControl') then
     Exit;
   wHandle := ACustomFloatSpinEdit.Handle;
-  SpinWidget:=GTK_SPIN_BUTTON(Pointer(wHandle));
+  SpinWidget:=GTK_SPIN_BUTTON({%H-}Pointer(wHandle));
 
   if ACustomFloatSpinEdit.MaxValue >= ACustomFloatSpinEdit.MinValue then
   begin
@@ -223,7 +223,7 @@ begin
   {$IFDEF DebugLCLComponents}
   DebugGtkWidgets.MarkCreated(Widget, dbgsName(AWinControl));
   {$ENDIF}
-  Result := TLCLIntfHandle(PtrUInt(Widget));
+  Result := TLCLIntfHandle({%H-}PtrUInt(Widget));
 
   WidgetInfo := CreateWidgetInfo(Widget, AWinControl, AParams);
   Set_RC_Name(AWinControl, Widget);

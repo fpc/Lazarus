@@ -27,7 +27,7 @@ unit Gtk2WSMenus;
 interface
 
 uses
-  glib2, gdk2pixbuf, gdk2, gtk2, Pango,
+  glib2, gdk2, gtk2,
   Gtk2Int, Gtk2Proc, Gtk2Globals, Gtk2Def, Gtk2Extra,
   Classes, InterfaceBase, Types, LCLProc, LCLType, WSMenus, WSLCLClasses,
   LMessages, Graphics, Menus, Forms, LCLIntf;
@@ -556,7 +556,7 @@ end;
 
 { TGtk2WSPopupMenu }
 
-procedure GtkWS_Popup(menu: PGtkMenu; X, Y: pgint; push_in: pgboolean;
+procedure GtkWS_Popup(menu: PGtkMenu; X, Y: pgint; {%H-}push_in: pgboolean;
   WidgetInfo: PWidgetInfo); cdecl;
 var
   Requisition: TGtkRequisition;
@@ -626,7 +626,7 @@ var
   WidgetInfo: PWidgetInfo;
 begin
   Widget := gtk_menu_new;
-  Result := HMENU(PtrUInt(Widget));
+  Result := HMENU({%H-}PtrUInt(Widget));
   {$IFDEF DebugLCLComponents}
   DebugGtkWidgets.MarkCreated(Widget, dbgsName(Sender));
   {$ENDIF}
@@ -647,7 +647,7 @@ begin
   APoint.Y := Y;
   AProc := @GtkWS_Popup;
 
-  MenuWidget := PGtkWidget(APopupMenu.Handle);
+  MenuWidget := {%H-}PGtkWidget(APopupMenu.Handle);
   WidgetInfo := GetWidgetInfo(MenuWidget);
   WidgetInfo^.UserData := @APoint;
   WidgetInfo^.DataOwner := False;

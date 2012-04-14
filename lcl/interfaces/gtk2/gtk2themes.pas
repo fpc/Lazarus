@@ -8,7 +8,7 @@ uses
   // rtl
   Types, Classes, SysUtils,
   // os
-  glib2,  gdk2, gtk2, gdk2pixbuf, Pango,
+  glib2,  gdk2, gtk2, gdk2pixbuf,
   // lcl
   LCLType, LCLProc, LCLIntf, Graphics, Themes, TmSchema, Forms,
   // widgetset
@@ -88,10 +88,10 @@ type
 
     procedure DrawIcon(DC: HDC; Details: TThemedElementDetails; const R: TRect; himl: HIMAGELIST; Index: Integer); override;
     procedure DrawText(ACanvas: TPersistent; Details: TThemedElementDetails; const S: String; R: TRect; Flags, Flags2: Cardinal); virtual; overload;
-    procedure DrawText(DC: HDC; Details: TThemedElementDetails; const S: String; R: TRect; Flags, Flags2: Cardinal); override;
+    procedure DrawText(DC: HDC; Details: TThemedElementDetails; const S: String; R: TRect; Flags, {%H-}Flags2: Cardinal); override;
 
     function ContentRect(DC: HDC; Details: TThemedElementDetails; BoundingRect: TRect): TRect; override;
-    function HasTransparentParts(Details: TThemedElementDetails): Boolean; override;
+    function HasTransparentParts({%H-}Details: TThemedElementDetails): Boolean; override;
   end;
 
 const
@@ -230,7 +230,7 @@ var
   DevCtx: TGtkDeviceContext absolute DC;
   ClientWidget: PGtkWidget;
 begin
-  FillByte(Result, SizeOf(Result), 0);
+  FillByte(Result{%H-}, SizeOf(Result), 0);
   if not Gtk2WidgetSet.IsValidDC(DC) then Exit;
 
   Result.Widget := DevCtx.Widget;
@@ -542,7 +542,7 @@ var
 begin
   if (Details.Element = teTreeView) and (Details.Part in [TVP_GLYPH, TVP_HOTGLYPH]) then
   begin
-    FillChar(AValue, SizeOf(AValue), 0);
+    FillChar(AValue{%H-}, SizeOf(AValue), 0);
     g_value_init(@AValue, G_TYPE_INT);
     gtk_widget_style_get_property(GetStyleWidget(lgsTreeView), 'expander-size', @AValue);
     Result := Size(AValue.data[0].v_int, AValue.data[0].v_int);
@@ -626,18 +626,18 @@ begin
     GDIPixbufObject := Pixbuf;
   end;
 
-  Image := HBitmap(PtrUInt(GDIObj));
+  Image := HBitmap({%H-}PtrUInt(GDIObj));
   Mask := 0;
   Result := True;
 end;
 
-procedure ButtonImagesChange(ASettings: PGtkSettings; pspec: PGParamSpec; Services: TGtk2ThemeServices); cdecl;
+procedure ButtonImagesChange({%H-}ASettings: PGtkSettings; {%H-}pspec: PGParamSpec; Services: TGtk2ThemeServices); cdecl;
 begin
   Application.IntfThemeOptionChange(Services, toShowButtonImages);
   Services.IntfDoOnThemeChange;
 end;
 
-procedure MenuImagesChange(ASettings: PGtkSettings; pspec: PGParamSpec; Services: TGtk2ThemeServices); cdecl;
+procedure MenuImagesChange({%H-}ASettings: PGtkSettings; {%H-}pspec: PGParamSpec; Services: TGtk2ThemeServices); cdecl;
 begin
   Application.IntfThemeOptionChange(Services, toShowMenuImages);
   Services.IntfDoOnThemeChange;
@@ -661,7 +661,7 @@ begin
         if g_object_get_data(PGObject(Widget), 'lcl-images-change-callback') = nil then
         begin
           Signal := g_signal_connect(ASettings, 'notify::gtk-button-images', TGCallback(@ButtonImagesChange), Self);
-          g_object_set_data(PGObject(Widget), 'lcl-images-change-callback', Pointer(PtrUInt(Signal)))
+          g_object_set_data(PGObject(Widget), 'lcl-images-change-callback', {%H-}Pointer(PtrUInt(Signal)))
         end;
       end;
     toShowMenuImages:
@@ -674,7 +674,7 @@ begin
         if g_object_get_data(PGObject(Widget), 'lcl-images-change-callback') = nil then
         begin
           Signal := g_signal_connect(ASettings, 'notify::gtk-menu-images', TGCallback(@MenuImagesChange), Self);
-          g_object_set_data(PGObject(Widget), 'lcl-images-change-callback', Pointer(PtrUInt(Signal)))
+          g_object_set_data(PGObject(Widget), 'lcl-images-change-callback', {%H-}Pointer(PtrUInt(Signal)))
         end;
       end;
   else
