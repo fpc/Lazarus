@@ -5895,7 +5895,9 @@ type
     Selection: Cardinal;
     List: PGtkTargetList;
   end;
+  {$IFDEF DEBUG_CLIPBOARD}
   PGtkTargetSelectionList = ^TGtkTargetSelectionList;
+  {$ENDIF}
 const
   gtk_selection_handler_key: PChar = 'gtk-selection-handlers';
 
@@ -6116,7 +6118,7 @@ begin
 
   // find all line starts and line ends
   repeat
-    LinesList.Add(Pointer(PtrInt(LineStart)));
+    LinesList.Add({%H-}Pointer(PtrInt(LineStart)));
     // find line end
     LineEnd:=FindLineEnd(LineStart);
     LinesList.Add(Pointer(PtrInt(LineEnd)));
@@ -6142,7 +6144,7 @@ begin
   i:=0;
   while i<LinesList.Count do begin
     // add  LineEnd - LineStart + 1 for the #0
-    LineLen:=PtrUInt(LinesList[i+1])-PtrUInt(LinesList[i])+1;
+    LineLen:={%H-}PtrUInt(LinesList[i+1])-{%H-}PtrUInt(LinesList[i])+1;
     inc(TotalSize,LineLen);
     inc(i,2);
   end;
@@ -6157,8 +6159,8 @@ begin
     // set the pointer to the start of the current line
     CurLineEntry[i shr 1]:=CurLineStart;
     // copy the line
-    LineStart:=integer(PtrUInt(LinesList[i]));
-    LineEnd:=integer(PtrUInt(LinesList[i+1]));
+    LineStart:=integer({%H-}PtrUInt(LinesList[i]));
+    LineEnd:=integer({%H-}PtrUInt(LinesList[i+1]));
     LineLen:=LineEnd-LineStart;
     if LineLen>0 then
       Move(AText[LineStart],CurLineStart^,LineLen);
@@ -6169,7 +6171,7 @@ begin
     // next line
     inc(i,2);
   end;
-  if PtrUInt(CurLineStart)-PtrUInt(Lines)<>TotalSize then
+  if {%H-}PtrUInt(CurLineStart)-{%H-}PtrUInt(Lines)<>TotalSize then
     RaiseGDBException('TGtk2WidgetSet.WordWrap Consistency Error:'
       +' Lines+TotalSize<>CurLineStart');
   CurLineEntry[i shr 1]:=nil;
