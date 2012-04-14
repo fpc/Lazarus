@@ -135,11 +135,6 @@ begin
   {$ifdef DEBUG_MEMO}
   DebugLn('[TCustomMemo.InitializeWnd] A ',FLines.ClassName);
   {$endif}
-  inherited InitializeWnd;
-  {$ifdef DEBUG_MEMO}
-  DebugLn('[TCustomMemo.InitializeWnd] B ',DbgSName(Self),' ',FLines.ClassName,' FLines.Count=',dbgs(FLines.Count));
-  {$endif}
-
   // fetch/create the interface item list
   NewStrings := TWSCustomMemoClass(WidgetSetClass).GetStrings(Self);
   // copy the items (text)
@@ -151,6 +146,7 @@ begin
   // new item list is the interface item list
   FLines:= NewStrings;
 
+  inherited InitializeWnd;
   {$ifdef DEBUG_MEMO}
   DebugLn('[TCustomMemo.InitializeWnd] END ',DbgSName(Self),' ',FLines.ClassName,' FLines.Count=',dbgs(FLines.Count));
   {$endif}
