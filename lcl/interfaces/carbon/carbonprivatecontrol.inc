@@ -798,7 +798,7 @@ begin
   // add frame to parent content area
   for I := 0 to GetFrameCount - 1 do
   begin
-    OSError(HIViewSetVisible(Frames[I], LCLObject.Visible), Self, 'AddToWidget', SViewVisible);
+    OSError(HIViewSetVisible(Frames[I], LCLObject.HandleObjectShouldBeVisible), Self, 'AddToWidget', SViewVisible);
     OSError(HIViewAddSubview(AParent.Content, Frames[I]), Self, 'AddToWidget',
       SViewAddView);
   end;
