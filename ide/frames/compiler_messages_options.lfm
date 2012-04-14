@@ -1,19 +1,21 @@
-inherited CompilerMessagesOptionsFrame: TCompilerMessagesOptionsFrame
+object CompilerMessagesOptionsFrame: TCompilerMessagesOptionsFrame
+  Left = 0
   Height = 455
+  Top = 0
   Width = 631
   ClientHeight = 455
   ClientWidth = 631
   TabOrder = 0
   DesignLeft = 239
   DesignTop = 167
-  object grpCompilerMessages: TGroupBox[0]
+  object grpCompilerMessages: TGroupBox
     Left = 0
     Height = 455
     Top = 0
     Width = 631
     Align = alClient
     Caption = 'grpCompilerMessages'
-    ClientHeight = 437
+    ClientHeight = 439
     ClientWidth = 627
     TabOrder = 0
     object chklistCompMsg: TCheckListBox
@@ -25,8 +27,8 @@ inherited CompilerMessagesOptionsFrame: TCompilerMessagesOptionsFrame
       AnchorSideBottom.Control = grpCompilerMessages
       AnchorSideBottom.Side = asrBottom
       Left = 6
-      Height = 373
-      Top = 58
+      Height = 383
+      Top = 50
       Width = 615
       Anchors = [akTop, akLeft, akRight, akBottom]
       BorderSpacing.Left = 6
@@ -35,16 +37,16 @@ inherited CompilerMessagesOptionsFrame: TCompilerMessagesOptionsFrame
       ItemHeight = 0
       OnItemClick = chklistCompMsgItemClick
       Sorted = True
-      TabOrder = 0
+      TabOrder = 4
       TopIndex = -1
     end
     object lblFilter: TLabel
       AnchorSideTop.Control = editMsgFilter
       AnchorSideTop.Side = asrCenter
       Left = 6
-      Height = 17
-      Top = 37
-      Width = 48
+      Height = 15
+      Top = 32
+      Width = 40
       Caption = 'lblFilter'
       ParentColor = False
     end
@@ -53,10 +55,10 @@ inherited CompilerMessagesOptionsFrame: TCompilerMessagesOptionsFrame
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = MsgFileEdit
       AnchorSideTop.Side = asrBottom
-      Left = 60
-      Height = 26
-      Top = 32
-      Width = 527
+      Left = 52
+      Height = 22
+      Top = 28
+      Width = 535
       OnCheckItem = CheckItem
       ButtonWidth = 23
       NumGlyphs = 0
@@ -66,7 +68,7 @@ inherited CompilerMessagesOptionsFrame: TCompilerMessagesOptionsFrame
       BorderSpacing.Right = 6
       MaxLength = 0
       ParentFont = False
-      TabOrder = 1
+      TabOrder = 3
       FilteredListbox = chklistCompMsg
     end
     object UseMsgFileCheckBox: TCheckBox
@@ -74,26 +76,26 @@ inherited CompilerMessagesOptionsFrame: TCompilerMessagesOptionsFrame
       AnchorSideTop.Control = MsgFileEdit
       AnchorSideTop.Side = asrCenter
       Left = 6
-      Height = 22
-      Top = 2
-      Width = 152
+      Height = 21
+      Top = 1
+      Width = 129
       BorderSpacing.Left = 6
       Caption = 'UseMsgFileCheckBox'
       OnChange = UseMsgFileCheckBoxChange
-      TabOrder = 2
+      TabOrder = 0
     end
     object MsgFileEdit: TEdit
       AnchorSideLeft.Control = UseMsgFileCheckBox
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = grpCompilerMessages
       AnchorSideRight.Control = MsgFileBrowseButton
-      Left = 164
-      Height = 26
+      Left = 141
+      Height = 22
       Top = 0
-      Width = 318
+      Width = 366
       Anchors = [akTop, akLeft, akRight]
       BorderSpacing.Left = 6
-      TabOrder = 3
+      TabOrder = 1
       Text = 'MsgFileEdit'
     end
     object MsgFileBrowseButton: TButton
@@ -102,15 +104,15 @@ inherited CompilerMessagesOptionsFrame: TCompilerMessagesOptionsFrame
       AnchorSideRight.Side = asrBottom
       AnchorSideBottom.Control = MsgFileEdit
       AnchorSideBottom.Side = asrBottom
-      Left = 482
-      Height = 26
+      Left = 507
+      Height = 22
       Top = 0
-      Width = 145
+      Width = 120
       Anchors = [akTop, akRight, akBottom]
       AutoSize = True
       Caption = 'MsgFileBrowseButton'
       OnClick = MsgFileBrowseButtonClick
-      TabOrder = 4
+      TabOrder = 2
     end
   end
 end

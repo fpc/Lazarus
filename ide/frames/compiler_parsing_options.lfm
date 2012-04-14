@@ -14,26 +14,26 @@ object CompilerParsingOptionsFrame: TCompilerParsingOptionsFrame
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 0
-    Height = 53
+    Height = 54
     Top = 0
     Width = 580
     Anchors = [akTop, akLeft, akRight]
     AutoSize = True
     Caption = 'grpSyntaxMode'
-    ClientHeight = 35
+    ClientHeight = 38
     ClientWidth = 576
     TabOrder = 0
     object cmbSyntaxMode: TComboBox
       AnchorSideRight.Control = grpSyntaxMode
       AnchorSideRight.Side = asrBottom
       Left = 6
-      Height = 23
+      Height = 26
       Top = 6
       Width = 564
       Align = alLeft
       Anchors = [akTop, akLeft, akRight, akBottom]
       BorderSpacing.Around = 6
-      ItemHeight = 15
+      ItemHeight = 0
       Style = csDropDownList
       TabOrder = 0
     end
@@ -45,8 +45,8 @@ object CompilerParsingOptionsFrame: TCompilerParsingOptionsFrame
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 0
-    Height = 40
-    Top = 323
+    Height = 4
+    Top = 324
     Width = 580
     Anchors = [akTop, akLeft, akRight]
     AutoFill = True
@@ -62,7 +62,7 @@ object CompilerParsingOptionsFrame: TCompilerParsingOptionsFrame
     ChildSizing.Layout = cclLeftToRightThenTopToBottom
     ChildSizing.ControlsPerLine = 3
     Columns = 3
-    TabOrder = 1
+    TabOrder = 2
   end
   object grpSyntaxOptions: TCheckGroup
     AnchorSideLeft.Control = Owner
@@ -72,7 +72,7 @@ object CompilerParsingOptionsFrame: TCompilerParsingOptionsFrame
     AnchorSideRight.Side = asrBottom
     Left = 0
     Height = 258
-    Top = 59
+    Top = 60
     Width = 580
     Anchors = [akTop, akLeft, akRight]
     AutoFill = True
@@ -86,6 +86,6 @@ object CompilerParsingOptionsFrame: TCompilerParsingOptionsFrame
     ChildSizing.ShrinkVertical = crsScaleChilds
     ChildSizing.Layout = cclLeftToRightThenTopToBottom
     ChildSizing.ControlsPerLine = 1
-    TabOrder = 2
+    TabOrder = 1
   end
 end
