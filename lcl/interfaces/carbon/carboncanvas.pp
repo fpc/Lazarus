@@ -1774,7 +1774,7 @@ begin
     Info := FBitmap.Info;
     // convert kCGImageAlphaFirst -> kCGImageAlphaNoneSkipFirst
     if (Info and kCGImageAlphaFirst > 0) then
-      Info := (Info and (not kCGImageAlphaFirst)) or kCGImageAlphaNoneSkipFirst;
+      Info := (Info and (not kCGImageAlphaFirst)) or kCGImageAlphaPremultipliedFirst;
     
     CGContext := CGBitmapContextCreate(FBitmap.Data, FBitmap.Width, FBitmap.Height,
                    FBitmap.BitsPerComponent, FBitmap.BytesPerRow, FBitmap.ColorSpace,
