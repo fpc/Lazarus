@@ -101,6 +101,7 @@ begin
   end;
   NodeRect := Node.DisplayRect(True);
   FullAbcWidth := Sender.Canvas.TextExtent(COLOR_NODE_PREFIX).cx;
+  Inc(NodeRect.Right, FullAbcWidth);
   TextY := (NodeRect.Top + NodeRect.Bottom - Sender.Canvas.TextHeight(Node.Text)) div 2;
   Sender.Canvas.FillRect(NodeRect);
   Sender.Canvas.TextOut(NodeRect.Left + FullAbcWidth, TextY, Node.Text);
