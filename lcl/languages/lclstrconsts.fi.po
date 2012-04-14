@@ -367,6 +367,10 @@ msgstr ""
 msgid "Control '%s' has no parent window"
 msgstr ""
 
+#: lclstrconsts.rscontrolisnotaparent
+msgid "'%s' is not a parent of '%s'"
+msgstr ""
+
 #: lclstrconsts.rscreamcolorcaption
 msgid "Cream"
 msgstr ""

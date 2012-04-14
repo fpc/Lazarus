@@ -372,6 +372,10 @@ msgstr "פקד של המחלקה  '%s' לא יכול לקבל פקד של מחל
 msgid "Control '%s' has no parent window"
 msgstr "לפקד s% אין חלון הורה"
 
+#: lclstrconsts.rscontrolisnotaparent
+msgid "'%s' is not a parent of '%s'"
+msgstr ""
+
 #: lclstrconsts.rscreamcolorcaption
 msgid "Cream"
 msgstr "קרמי"

@@ -1525,6 +1525,24 @@ begin
   Result.Y := APoint.Y + P.Y;
 end;
 
+function TControl.ClientToParent(const Point: TPoint; AParent: TWinControl): TPoint;
+begin
+  if not Assigned(AParent) then
+    AParent := Parent;
+  if not AParent.IsParentOf(Self) then
+    raise EInvalidOperation.CreateFmt(rsControlIsNotAParent, [AParent.Name, Name]);
+  Result := AParent.ScreenToClient(ClientToScreen(Point));
+end;
+
+function TControl.ParentToClient(const Point: TPoint; AParent: TWinControl): TPoint;
+begin
+  if not Assigned(AParent) then
+    AParent := Parent;
+  if not AParent.IsParentOf(Self) then
+    raise EInvalidOperation.CreateFmt(rsControlIsNotAParent, [AParent.Name, Name]);
+  Result := ScreenToClient(AParent.ClientToScreen(Point));
+end;
+
 {------------------------------------------------------------------------------
        TControl.DblClick
 ------------------------------------------------------------------------------}
@@ -4938,21 +4956,20 @@ end;
  ------------------------------------------------------------------------------}
 function TControl.IsParentOf(AControl: TControl): boolean;
 begin
-  Result:=false;
-  while AControl<>nil do begin
-    AControl:=AControl.Parent;
-    if Self=AControl then begin
-      Result:=true;
-      exit;
-    end;
+  Result := False;
+  while Assigned(AControl) do
+  begin
+    AControl := AControl.Parent;
+    if Self = AControl then
+      Exit(True);
   end;
 end;
 
 function TControl.GetTopParent: TControl;
 begin
-  Result:=Self;
-  while Result.Parent<>nil do
-    Result:=Result.Parent;
+  Result := Self;
+  while Assigned(Result.Parent) do
+    Result := Result.Parent;
 end;
 
 {------------------------------------------------------------------------------

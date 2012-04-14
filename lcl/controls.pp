@@ -1523,6 +1523,8 @@ type
     function  ClientToScreen(const APoint: TPoint): TPoint;
     function  ScreenToControl(const APoint: TPoint): TPoint;
     function  ControlToScreen(const APoint: TPoint): TPoint;
+    function  ClientToParent(const Point: TPoint; AParent: TWinControl = nil): TPoint;
+    function  ParentToClient(const Point: TPoint; AParent: TWinControl = nil): TPoint;
     function GetChildsRect(Scrolled: boolean): TRect; virtual;
     procedure Show;
     procedure Update; virtual;
@@ -2863,6 +2865,8 @@ begin
   if (GetKeyState(VK_MENU) and $8000) <> 0 then
     Include(Result, ssAlt);
   if ((GetKeyState(VK_LWIN) and $8000) <> 0) or ((GetKeyState(VK_RWIN) and $8000) <> 0) then
+    Include(Result, ssMeta);
+  if (GetKeyState(VK_LWIN) < 0) or (GetKeyState(VK_RWIN) < 0) then 
     Include(Result, ssMeta);
 end;
 
