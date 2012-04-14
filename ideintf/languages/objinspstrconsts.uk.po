@@ -591,6 +591,7 @@ msgid "Move field down"
 msgstr "Перемістити поле вниз"
 
 #: objinspstrconsts.oismoveup
+msgctxt "objinspstrconsts.oismoveup"
 msgid "Move &Up"
 msgstr "Перемістити Вв&ерх"
 
@@ -1191,8 +1192,8 @@ msgstr "Редактор Секцій ..."
 
 #: objinspstrconsts.sccsiledtadd
 #, fuzzy
-#| msgid "Add..."
-msgid "Add ..."
+#| msgid "Add ..."
+msgid "&Add ..."
 msgstr "Додати..."
 
 #: objinspstrconsts.sccsiledtadjustment
@@ -1200,8 +1201,10 @@ msgid "Adjustment"
 msgstr "Регулювання"
 
 #: objinspstrconsts.sccsiledtapply
+#, fuzzy
+#| msgid "Apply"
 msgctxt "objinspstrconsts.sccsiledtapply"
-msgid "Apply"
+msgid "&Apply"
 msgstr "Застосувати"
 
 #: objinspstrconsts.sccsiledtcaption
@@ -1213,8 +1216,10 @@ msgid "Center"
 msgstr "Центр"
 
 #: objinspstrconsts.sccsiledtclear
+#, fuzzy
+#| msgid "Clear"
 msgctxt "objinspstrconsts.sccsiledtclear"
-msgid "Clear"
+msgid "&Clear"
 msgstr "Очистити"
 
 #: objinspstrconsts.sccsiledtcrop
@@ -1222,8 +1227,10 @@ msgid "Crop"
 msgstr "Обрізати"
 
 #: objinspstrconsts.sccsiledtdelete
+#, fuzzy
+#| msgid "Delete"
 msgctxt "objinspstrconsts.sccsiledtdelete"
-msgid "Delete"
+msgid "&Delete"
 msgstr "Видалити"
 
 #: objinspstrconsts.sccsiledtgrplcaption
@@ -1235,13 +1242,17 @@ msgid "Selected Image"
 msgstr "Вибране Зображення"
 
 #: objinspstrconsts.sccsiledtmovedown
+#, fuzzy
+#| msgid "Move Down"
 msgctxt "objinspstrconsts.sccsiledtmovedown"
-msgid "Move Down"
+msgid "Move D&own"
 msgstr "Пересунути Вниз"
 
 #: objinspstrconsts.sccsiledtmoveup
+#, fuzzy
+#| msgid "Move Up"
 msgctxt "objinspstrconsts.sccsiledtmoveup"
-msgid "Move Up"
+msgid "Move &Up"
 msgstr "Пересунути Вверх"
 
 #: objinspstrconsts.sccsiledtnone
@@ -1258,9 +1269,9 @@ msgstr "Прозорий колір:"
 
 #: objinspstrconsts.sccsiledtsave
 #, fuzzy
-#| msgid "Save..."
+#| msgid "Save ..."
 msgctxt "objinspstrconsts.sccsiledtsave"
-msgid "Save ..."
+msgid "&Save ..."
 msgstr "Зберегти..."
 
 #: objinspstrconsts.sccsiledtsaveall

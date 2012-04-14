@@ -602,6 +602,7 @@ msgid "Move field down"
 msgstr ""
 
 #: objinspstrconsts.oismoveup
+msgctxt "objinspstrconsts.oismoveup"
 msgid "Move &Up"
 msgstr ""
 
@@ -1202,8 +1203,8 @@ msgstr "节编辑器"
 
 #: objinspstrconsts.sccsiledtadd
 #, fuzzy
-#| msgid "Add..."
-msgid "Add ..."
+#| msgid "Add ..."
+msgid "&Add ..."
 msgstr "添加..."
 
 #: objinspstrconsts.sccsiledtadjustment
@@ -1211,8 +1212,10 @@ msgid "Adjustment"
 msgstr "调整"
 
 #: objinspstrconsts.sccsiledtapply
+#, fuzzy
+#| msgid "Apply"
 msgctxt "objinspstrconsts.sccsiledtapply"
-msgid "Apply"
+msgid "&Apply"
 msgstr "应用"
 
 #: objinspstrconsts.sccsiledtcaption
@@ -1224,8 +1227,10 @@ msgid "Center"
 msgstr "中心"
 
 #: objinspstrconsts.sccsiledtclear
+#, fuzzy
+#| msgid "Clear"
 msgctxt "objinspstrconsts.sccsiledtclear"
-msgid "Clear"
+msgid "&Clear"
 msgstr "清除"
 
 #: objinspstrconsts.sccsiledtcrop
@@ -1233,8 +1238,10 @@ msgid "Crop"
 msgstr "裁剪"
 
 #: objinspstrconsts.sccsiledtdelete
+#, fuzzy
+#| msgid "Delete"
 msgctxt "objinspstrconsts.sccsiledtdelete"
-msgid "Delete"
+msgid "&Delete"
 msgstr "删除"
 
 #: objinspstrconsts.sccsiledtgrplcaption
@@ -1246,13 +1253,17 @@ msgid "Selected Image"
 msgstr "选择的图像"
 
 #: objinspstrconsts.sccsiledtmovedown
+#, fuzzy
+#| msgid "Move Down"
 msgctxt "objinspstrconsts.sccsiledtmovedown"
-msgid "Move Down"
+msgid "Move D&own"
 msgstr "下移"
 
 #: objinspstrconsts.sccsiledtmoveup
+#, fuzzy
+#| msgid "Move Up"
 msgctxt "objinspstrconsts.sccsiledtmoveup"
-msgid "Move Up"
+msgid "Move &Up"
 msgstr "上移"
 
 #: objinspstrconsts.sccsiledtnone
@@ -1269,9 +1280,9 @@ msgstr "透明的颜色"
 
 #: objinspstrconsts.sccsiledtsave
 #, fuzzy
-#| msgid "Save..."
+#| msgid "Save ..."
 msgctxt "objinspstrconsts.sccsiledtsave"
-msgid "Save ..."
+msgid "&Save ..."
 msgstr "保存..."
 
 #: objinspstrconsts.sccsiledtsaveall

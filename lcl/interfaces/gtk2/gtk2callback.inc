@@ -32,7 +32,7 @@ begin
   Result := DeliverMessage(Target, PaintMsg);
 
   if (TObject(Target) is TCustomControl) then begin
-    WidgetInfo := GetWidgetInfo(PGtkWidget(TCustomControl(Target).Handle), False);
+    WidgetInfo := GetWidgetInfo({%H-}PGtkWidget(TCustomControl(Target).Handle), False);
     if WidgetInfo <> nil then
       WidgetInfo^.UpdateRect := Rect(0,0,0,0);
   end;
@@ -140,7 +140,7 @@ begin
   TCustomTabControl(APage.Parent).DoCloseTabClicked(APage);
 end;
 
-function FilterFuc(xevent: PGdkXEvent; event: PGdkEvent; data: gpointer): TGdkFilterReturn; cdecl;
+function FilterFuc({%H-}xevent: PGdkXEvent; {%H-}event: PGdkEvent; {%H-}data: gpointer): TGdkFilterReturn; cdecl;
 {$ifdef windows}
 var
   AForm: TCustomForm absolute data;
@@ -302,7 +302,7 @@ begin
   EventTrace('show', data);
   {$ENDIF}
   if Widget=nil then ;
-  FillChar(Mess,SizeOf(Mess),0);
+  FillChar(Mess{%H-},SizeOf(Mess),0);
   Mess.Msg := LM_SHOWWINDOW;
   Mess.Show := True;
 
@@ -319,7 +319,7 @@ begin
   EventTrace('hide', data);
   {$ENDIF}
   if Widget=nil then ;
-  FillChar(Mess,SizeOf(Mess),0);
+  FillChar(Mess{%H-},SizeOf(Mess),0);
   Mess.Msg := LM_SHOWWINDOW;
   Mess.Show := False;
   Result := DeliverMessage(Data, Mess) = 0;
@@ -338,12 +338,12 @@ begin
   
   if LockOnChange(PgtkObject(Widget),0) > 0 then Exit;
 
-  FillChar(Mess, SizeOf(Mess), #0);
+  FillChar(Mess{%H-}, SizeOf(Mess), #0);
   Mess.Msg := LM_ACTIVATE;
   Mess.Active := WA_ACTIVE;
   Mess.Minimized := False;
   if GtkWidgetIsA(Widget, gtk_window_get_type) then
-    Mess.ActiveWindow := HWnd(PtrUInt(PGTKWindow(Widget)^.focus_widget))
+    Mess.ActiveWindow := HWnd({%H-}PtrUInt(PGTKWindow(Widget)^.focus_widget))
   else
     Mess.ActiveWindow := 0;
   Mess.Result := 0;
@@ -391,7 +391,7 @@ begin
   {$IFDEF EventTrace}
   EventTrace('changed', data);
   {$ENDIF}
-  FillChar(Mess, SizeOf(Mess), 0);
+  FillChar(Mess{%H-}, SizeOf(Mess), 0);
   Mess.Msg := LM_CHANGED;
   DeliverMessage(Data, Mess);
 end;
@@ -480,7 +480,7 @@ begin
 
   if NeedCursorCheck then
     LockOnChange(PgtkObject(Widget), +1);
-  FillByte(Mess,SizeOf(Mess),0);
+  FillByte(Mess{%H-},SizeOf(Mess),0);
   Mess.Msg := CM_TEXTCHANGED;
   DeliverMessage(Data, Mess);
   if NeedCursorCheck then
@@ -538,7 +538,7 @@ begin
         gtk_entry_set_text(PGtkEntry(Widget), PChar(SValue));
 
       // inform LCL about our changes to entry
-      FillByte(Mess,SizeOf(Mess),0);
+      FillByte(Mess{%H-},SizeOf(Mess),0);
       Mess.Msg := CM_TEXTCHANGED;
       DeliverMessage(Data, Mess);
     end else
@@ -716,7 +716,7 @@ begin
   ResetDefaultIMContext;
   UpdateMouseCaptureControl;
 
-  FillChar(Mess,SizeOf(Mess),#0);
+  FillChar(Mess{%H-},SizeOf(Mess),#0);
   {$IFDEF VerboseFocus}
   write('gtkfrmactivateAfter Widget=',DbgS(Widget),' Event^.theIn=',Event^._in);
   LCLObject:=TObject(data);
@@ -755,7 +755,7 @@ begin
     Mess.Active := WA_ACTIVE;
     Mess.Minimized := False;
     if GtkWidgetIsA(Widget, gtk_window_get_type) then
-      Mess.ActiveWindow := HWnd(PtrUInt(PGTKWindow(Widget)^.focus_widget))
+      Mess.ActiveWindow := HWnd({%H-}PtrUInt(PGTKWindow(Widget)^.focus_widget))
     else
       Mess.ActiveWindow := 0;
     Mess.Result := 0;
@@ -797,7 +797,7 @@ begin
   try
     if (Info<>nil) then
       Include(Info^.Flags, wwiDeactivating);
-    FillChar(Mess, SizeOf(Mess), #0);
+    FillChar(Mess{%H-}, SizeOf(Mess), #0);
     Mess.Msg := LM_ACTIVATE;
     Mess.Active := WA_INACTIVE;
     Mess.Minimized := False;
@@ -850,11 +850,11 @@ procedure UpdateShiftState(const KeyStateList: TFPList; const ShiftState: TShift
     if AVKeyCode = 0 then Exit;
     if APressed
     then begin
-      if KeyStateList.IndexOf(Pointer(PtrInt(AVKeyCode))) < 0
-      then KeyStateList.Add(Pointer(PtrInt(AVKeyCode)));
+      if KeyStateList.IndexOf({%H-}Pointer(PtrUInt(AVKeyCode))) < 0
+      then KeyStateList.Add({%H-}Pointer(PtrUInt(AVKeyCode)));
     end
     else begin
-      KeyStateList.Remove(Pointer(PtrInt(AVKeyCode)));
+      KeyStateList.Remove(Pointer(PtrUInt(AVKeyCode)));
     end;
   end;
 
@@ -965,7 +965,7 @@ begin
   UpdateMouseCaptureControl;
 
   //TODO: fill in old focus
-  FillChar(Mess, SizeOf(Mess), 0);
+  FillChar(Mess{%H-}, SizeOf(Mess), 0);
   Mess.msg := LM_SETFOCUS;
   DeliverMessage(Data,  Mess);
 
@@ -1071,7 +1071,7 @@ begin
   ResetDefaultIMContext;
   UpdateMouseCaptureControl;
 
-  FillChar(Mess,SizeOf(Mess),0);
+  FillChar(Mess{%H-},SizeOf(Mess),0);
   Mess.msg := LM_KILLFOCUS;
   // do not release the capture widget here
 
@@ -1188,7 +1188,7 @@ begin
         DeliverMessage(TheForm, SizeMsg);
         if (gtk_major_version = 2) and (gtk_minor_version <= 8) and
           (TheForm.WindowState = wsMaximized) then
-            gtk_widget_queue_draw(PGtkWidget(TheForm.Handle));
+            gtk_widget_queue_draw({%H-}PGtkWidget(TheForm.Handle));
       end;
     end;
   end;
@@ -1217,7 +1217,7 @@ begin
       FreeWidgetInfo(Widget);
       Exit;
     end else
-    if (PGtkWidget(TWinControl(Data).Handle) <> Widget) then // the TWinControl does not use this widget anymore.
+    if ({%H-}PGtkWidget(TWinControl(Data).Handle) <> Widget) then // the TWinControl does not use this widget anymore.
       Exit;
   end;
 
@@ -1225,7 +1225,7 @@ begin
   EventTrace('destroyCB', data);
   {$ENDIF}
   //DebugLn('gtkdestroyCB Data="',DbgSName(TObject(Data)),'" LCLObject="',DbgSName(Info^.LCLObject),'" ',GetWidgetDebugReport(Widget));
-  FillChar(Mess, SizeOf(Mess), 0);
+  FillChar(Mess{%H-}, SizeOf(Mess), 0);
   Mess.msg := LM_DESTROY;
   DeliverMessage(Data, Mess);
 
@@ -1237,7 +1237,7 @@ end;
 
 procedure DestroyWindowFromPointCB(Widget: PGtkWidget; data: gPointer); cdecl;
 begin
-  if PGtkWidget(LastWFPResult) <> Widget then Exit;
+  if {%H-}PGtkWidget(LastWFPResult) <> Widget then Exit;
   LastWFPResult := 0;
   LastWFPMousePos := Point(High(Integer), High(Integer));
 end;
@@ -1246,7 +1246,7 @@ function gtkdeleteCB( widget : PGtkWidget; event : PGdkEvent;
   data : gPointer) : GBoolean; cdecl;
 var Mess : TLMessage;
 begin
-  FillChar(Mess,SizeOf(Mess),0);
+  FillChar(Mess{%H-},SizeOf(Mess),0);
   if (Widget=nil) or (Event=nil) then ;
   Mess.Msg:= LM_CLOSEQUERY;
   { Message results : True - do nothing, False - destroy or hide window }
@@ -1277,7 +1277,7 @@ begin
   {$IFDEF EventTrace}
   EventTrace('month changed', data);
   {$ENDIF}
-  FillChar(Mess,SizeOf(Mess),0);
+  FillChar(Mess{%H-},SizeOf(Mess),0);
   Mess.Msg := LM_MONTHCHANGED;
   DeliverPostMessage(Data, Mess);
 
@@ -1316,8 +1316,8 @@ var
 begin
   MappedXY := TranslateGdkPointToClientArea(Event^.Window,
                                Point(TruncToInt(Event^.X), TruncToInt(Event^.Y)),
-                               PGtkWidget(AWinControl.Handle));
-  MappedXY := SubtractScoll(PGtkWidget(AWinControl.Handle), MappedXY);
+                               {%H-}PGtkWidget(AWinControl.Handle));
+  MappedXY := SubtractScoll({%H-}PGtkWidget(AWinControl.Handle), MappedXY);
 
   ShiftState := GTKEventStateToShiftState(Event^.State);
   with Msg do
@@ -1340,11 +1340,11 @@ begin
   DeliverMessage(AWinControl, Msg);
 
   // if dragmanager is started later then inform g_object issue #19914
-  if GTK_IS_NOTEBOOK(PGtkWidget(AWinControl.Handle)) and
+  if GTK_IS_NOTEBOOK({%H-}PGtkWidget(AWinControl.Handle)) and
     DragManager.IsDragging and
-    (g_object_get_data(PGObject(AWinControl.Handle),'lclnotebookdragging') = nil)
+    (g_object_get_data({%H-}PGObject(AWinControl.Handle),'lclnotebookdragging') = nil)
     then
-      g_object_set_data(PGObject(AWinControl.Handle),
+      g_object_set_data({%H-}PGObject(AWinControl.Handle),
         'lclnotebookdragging', gpointer(PtrInt(1)));
 end;
 
@@ -1375,7 +1375,7 @@ begin
     ShiftState := GTKEventStateToShiftState(Event^.State);
     if ssLeft in ShiftState then
     begin
-      Widget := PGtkWidget(TWinControl(AControl).Handle);
+      Widget := {%H-}PGtkWidget(TWinControl(AControl).Handle);
       if GTK_IS_SCROLLED_WINDOW(Widget) then
       begin
         MainView := gtk_bin_get_child(PGtkBin(Widget));
@@ -1541,8 +1541,8 @@ begin
   begin
     if g_object_get_data(PGObject(AGtkWidget),'lcl-column-resized-dblclick') <> nil then
     begin
-      AIndex := PtrInt(g_object_get_data(PGObject(AGtkWidget),'lcl-column-resized-dblclick') - 1);
-      ASizing := TGtkTreeViewColumnSizing(PtrUInt(g_object_get_data(PGObject(AGtkWidget),'lcl-column-resized-dblclick-oldsizing')) - 1);
+      AIndex := {%H-}PtrInt(g_object_get_data(PGObject(AGtkWidget),'lcl-column-resized-dblclick') - 1);
+      ASizing := TGtkTreeViewColumnSizing({%H-}PtrUInt(g_object_get_data(PGObject(AGtkWidget),'lcl-column-resized-dblclick-oldsizing')) - 1);
       g_object_set_data(PGObject(AGtkWidget),'lcl-column-resized-dblclick', nil);
       g_object_set_data(PGObject(AGtkWidget),'lcl-column-resized-dblclick-oldsizing', nil);
       if (AIndex >= 0) then
@@ -1558,7 +1558,7 @@ begin
 end;
 
 {resizes column to like autosize does when dblclicked separator. issue #18381}
-function ResizeColumnOnDblClick(ACtl: TWinControl; ScrolledWin: PGtkWidget;
+function ResizeColumnOnDblClick({%H-}ACtl: TWinControl; ScrolledWin: PGtkWidget;
   TreeView: PGtkTreeView; const AMouseCoord: TPoint): Boolean;
 var
   Adjustment: PGtkAdjustment;
@@ -1604,10 +1604,10 @@ begin
 
             ColIndex := i;
             // we are adding i + 1 since if i = 0 then ptr is null !
-            g_object_set_data(PGObject(TreeView),'lcl-column-resized-dblclick', GPointer(ColIndex + 1));
+            g_object_set_data(PGObject(TreeView),'lcl-column-resized-dblclick', {%H-}GPointer(ColIndex + 1));
             Accu := Ord(CurSizing);
             // we are adding Accu + 1 since if Accu = 0 then ptr is null !
-            g_object_set_data(PGObject(TreeView),'lcl-column-resized-dblclick-oldsizing', GPointer(Accu + 1));
+            g_object_set_data(PGObject(TreeView),'lcl-column-resized-dblclick-oldsizing', {%H-}GPointer(Accu + 1));
             Accu := g_idle_add(@ReturnColumnSizing, TreeView);
             break;
           end;
@@ -1629,7 +1629,7 @@ end;
   reacts.
 -------------------------------------------------------------------------------}
 function ControlGetsMouseDownBefore(AControl: TControl;
-  AWidget: PGtkWidget; Event : PGdkEventButton): boolean;
+  {%H-}AWidget: PGtkWidget; Event : PGdkEventButton): boolean;
 var
   Widget: PGtkWidget;
   MainView: PGtkWidget;
@@ -1646,7 +1646,7 @@ begin
     (TListView(AControl).ViewStyle = vsReport) and
     (TListView(AControl).ShowColumnHeaders) then
   begin
-    Widget := PGtkWidget(TWinControl(AControl).Handle);
+    Widget := {%H-}PGtkWidget(TWinControl(AControl).Handle);
     if GTK_IS_SCROLLED_WINDOW(Widget) then
     begin
       MainView := gtk_bin_get_child(PGtkBin(Widget));
@@ -1824,9 +1824,9 @@ begin
         if (Info <> nil) and (Info^.LCLObject <> Old) then
         begin
           Old := Info^.LCLObject;
-          FillChar(Msg, SizeOf(Msg), #0);
+          FillChar(Msg{%H-}, SizeOf(Msg), #0);
           Msg.Msg := LM_CONTEXTMENU;
-          Msg.hWnd := HWND(W);
+          Msg.hWnd := {%H-}HWND(W);
           Msg.XPos := x;
           Msg.YPos := y;
 
@@ -1846,6 +1846,7 @@ begin
       if Result and GTK_IS_TREE_VIEW(Widget) and (event^.button = 3) then
       begin
         Column := gtk_tree_view_get_column(GTK_TREE_VIEW(Widget), 0);
+        Path:=nil;
         if gtk_tree_view_get_path_at_pos(GTK_TREE_VIEW(Widget), Round(Event^.x), Round(Event^.y),
           Path, Column, @x, @y) then
         begin
@@ -2026,8 +2027,8 @@ begin
   end;
 
   MappedXY := TranslateGdkPointToClientArea(Event^.Window, EventXY,
-                                            PGtkWidget(AWinControl.Handle));
-  MappedXY := SubtractScoll(PGtkWidget(AWinControl.Handle), MappedXY);
+                                            {%H-}PGtkWidget(AWinControl.Handle));
+  MappedXY := SubtractScoll({%H-}PGtkWidget(AWinControl.Handle), MappedXY);
   //DebugLn('DeliverMouseDownMessage ',DbgSName(AWinControl),' Mapped=',dbgs(MappedXY.X),',',dbgs(MappedXY.Y),' Event=',dbgs(EventXY.X),',',dbgs(EventXY.Y));
 
   if event^.Button in [4, 5] then
@@ -2078,10 +2079,10 @@ begin
 
     // issue #19914
     if (Result = 0) and (Event^.button = 1) and
-      GTK_IS_NOTEBOOK(PGtkWidget(AWinControl.Handle)) and
+      GTK_IS_NOTEBOOK({%H-}PGtkWidget(AWinControl.Handle)) and
       DragManager.IsDragging then
     begin
-      g_object_set_data(PGObject(AWinControl.Handle),
+      g_object_set_data({%H-}PGObject(AWinControl.Handle),
         'lclnotebookdragging', gpointer(PtrInt(1)));
     end;
   end;
@@ -2159,8 +2160,8 @@ begin
   Result := False;
   MappedXY := TranslateGdkPointToClientArea(Event^.Window,
                                Point(TruncToInt(Event^.X), TruncToInt(Event^.Y)),
-                               PGtkWidget(AWinControl.Handle));
-  MappedXY := SubtractScoll(PGtkWidget(AWinControl.Handle), MappedXY);
+                               {%H-}PGtkWidget(AWinControl.Handle));
+  MappedXY := SubtractScoll({%H-}PGtkWidget(AWinControl.Handle), MappedXY);
   //DebugLn(['DeliverMouseUpMessage ',GetWidgetDebugReport(Widget),' ',dbgsName(AWinControl),' ',dbgs(MappedXY)]);
 
   case event^.Button of
@@ -2200,9 +2201,9 @@ begin
       // issue #19914
       if GTK_IS_NOTEBOOK(Widget) then
       begin
-        if g_object_get_data(PGObject(AWinControl.Handle),'lclnotebookdragging') <> nil then
+        if g_object_get_data({%H-}PGObject(AWinControl.Handle),'lclnotebookdragging') <> nil then
         begin
-          g_object_steal_data(PGObject(AWinControl.Handle),'lclnotebookdragging');
+          g_object_steal_data({%H-}PGObject(AWinControl.Handle),'lclnotebookdragging');
           exit;
         end;
       end;
@@ -2324,12 +2325,12 @@ begin
   EventXY:=Point(TruncToInt(Event^.X),TruncToInt(Event^.Y));
   ShiftState := GTKEventStateToShiftState(Event^.State);
   MappedXY:=TranslateGdkPointToClientArea(Event^.Window,EventXY,
-                                          PGtkWidget(AWinControl.Handle));
-  MappedXY := SubtractScoll(PGtkWidget(AWinControl.Handle), MappedXY);
+                                          {%H-}PGtkWidget(AWinControl.Handle));
+  MappedXY := SubtractScoll({%H-}PGtkWidget(AWinControl.Handle), MappedXY);
   //DebugLn('gtkMouseWheelCB ',DbgSName(AWinControl),' Mapped=',dbgs(MappedXY.X),',',dbgs(MappedXY.Y),' Event=',dbgs(EventXY.X),',',dbgs(EventXY.Y));
 
   // this is a mouse wheel event
-  FillChar(MessE,SizeOf(MessE),0);
+  FillChar(MessE{%H-},SizeOf(MessE),0);
   MessE.Msg := LM_MOUSEWHEEL;
   case event^.direction of
     GDK_SCROLL_UP: MessE.WheelDelta := 120;
@@ -2469,7 +2470,7 @@ begin
     if not TWinControl(Data).HandleAllocated then begin
       exit;
     end;
-    MainWidget:=PGtkWidget(TWinControl(Data).Handle);
+    MainWidget:={%H-}PGtkWidget(TWinControl(Data).Handle);
     ClientWidget:=GetFixedWidget(MainWidget);
     if GTK_WIDGET_REALIZED(ClientWidget) then begin
       // the gtk resizes bottom to top, that means the
@@ -2496,7 +2497,7 @@ begin
     This event is fired when the form is sized, moved or changes Z order.
   }
 
-  FillChar(Allocation,SizeOf(TGtkAllocation),0);
+  FillChar(Allocation{%H-},SizeOf(TGtkAllocation),0);
   with Allocation do begin
     X:= Event^.X;
     Y:= Event^.Y;
@@ -2906,7 +2907,7 @@ begin
       if Pos < High(SmallPos)
       then SmallPos := Pos
       else SmallPos := High(SmallPos);
-      ScrollBar := HWND(PtrUInt(Scroll));
+      ScrollBar := HWND({%H-}PtrUInt(Scroll));
       ScrollType := get_gtk_scroll_type(Scroll);
       ScrollCode := ScrollTypeToSbCode(False, ScrollType,
                                        gtk_range_get_update_policy(Scroll));
@@ -2934,7 +2935,7 @@ begin
       then SmallPos := Pos
       else SmallPos := High(SmallPos);
       //DebugLn('GTKVScrollCB A Adjustment^.Value=',dbgs(Adjustment^.Value),' SmallPos=',dbgs(SmallPos));
-      ScrollBar := HWND(PtrUInt(Scroll));
+      ScrollBar := HWND({%H-}PtrUInt(Scroll));
       ScrollType := get_gtk_scroll_type(Scroll);
       // GTK1 has a bug with wheel mouse. It sometimes gives the wrong direction.
       ScrollCode := ScrollTypeToSbCode(True, ScrollType,
@@ -2976,7 +2977,7 @@ begin
     else
       SmallPos := High(SmallPos);
 
-    ScrollBar := HWND(PtrUInt(ARange));
+    ScrollBar := HWND({%H-}PtrUInt(ARange));
     ScrollCode := GtkScrollTypeToScrollCode(AScrollType);
   end;
   DeliverMessage(AWidgetInfo^.LCLObject, Msg);
@@ -3085,8 +3086,8 @@ var
     // Check for a toggle
     // If the remove was successfull, the key was on
     // else it was off so we should set the toggle flag
-    if KeyStateList.Remove(Pointer(PtrInt(AVKeyCode or KEYMAP_TOGGLE))) < 0
-    then KeyStateList.Add(Pointer(PtrInt(AVKeyCode or KEYMAP_TOGGLE)));
+    if KeyStateList.Remove(Pointer(PtrUInt(AVKeyCode or KEYMAP_TOGGLE))) < 0
+    then KeyStateList.Add(Pointer(PtrUInt(AVKeyCode or KEYMAP_TOGGLE)));
   end;
 
   procedure UpdateList(const AVKeyCode: Integer; const APressed: Boolean);
@@ -3094,11 +3095,11 @@ var
     if AVKeyCode = 0 then Exit;
     if APressed
     then begin
-      if KeyStateList.IndexOf(Pointer(PtrInt(AVKeyCode))) < 0
-      then KeyStateList.Add(Pointer(PtrInt(AVKeyCode)));
+      if KeyStateList.IndexOf(Pointer(PtrUInt(AVKeyCode))) < 0
+      then KeyStateList.Add(Pointer(PtrUInt(AVKeyCode)));
     end
     else begin
-      KeyStateList.Remove(Pointer(PtrInt(AVKeyCode)));
+      KeyStateList.Remove(Pointer(PtrUInt(AVKeyCode)));
     end;
   end;
 
@@ -3552,7 +3553,7 @@ begin
   GtkList:=PGtkList(widget);
   if (GtkList^.selection = nil) or (LockOnChange(PGtkObject(widget),0) > 0) then
     Exit;
-  FillChar(Mess,SizeOf(Mess),0);
+  FillChar(Mess{%H-},SizeOf(Mess),0);
   Mess.msg := LM_SelChange;
   if gtkListGetSelectionMode(GtkList)=GTK_SELECTION_SINGLE then
     gtk_list_set_selection_mode(GtkList,GTK_SELECTION_BROWSE);
@@ -3643,7 +3644,7 @@ begin
   AComboBox.IntfGetItems;
 
   if (Widget=nil) then ;
-  FillChar(Mess,SizeOf(Mess),0);
+  FillChar(Mess{%H-},SizeOf(Mess),0);
   Mess.Msg := CN_Command;
   Mess.NotifyCode := CBN_DROPDOWN;
 
@@ -3657,7 +3658,7 @@ begin
   Result := True;
   if (Widget=nil) then ;
   EventTrace('ComboBoxHideAfter', data);
-  FillChar(Mess,SizeOf(Mess),0);
+  FillChar(Mess{%H-},SizeOf(Mess),0);
   Mess.Msg := CN_Command;
   Mess.NotifyCode := CBN_CLOSEUP;
 
@@ -3680,8 +3681,8 @@ begin
   or (not NoteBook.HandleAllocated)
   or (not Page.HandleAllocated)
   then exit;
-  NoteBookWidget := PGtkWidget(NoteBook.Handle);
-  PageWidget := PGtkWidget(Page.Handle);
+  NoteBookWidget := {%H-}PGtkWidget(NoteBook.Handle);
+  PageWidget := {%H-}PGtkWidget(Page.Handle);
 
   // get the tab container and the tab icon widget
   TabWidget := gtk_notebook_get_tab_label(PGtkNoteBook(NotebookWidget),

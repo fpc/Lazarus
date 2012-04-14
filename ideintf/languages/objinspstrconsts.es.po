@@ -597,6 +597,7 @@ msgid "Move field down"
 msgstr "Mover el campo hacia abajo"
 
 #: objinspstrconsts.oismoveup
+msgctxt "objinspstrconsts.oismoveup"
 msgid "Move &Up"
 msgstr "Mover Arriba"
 
@@ -1199,8 +1200,8 @@ msgstr "Editor de secciones..."
 
 #: objinspstrconsts.sccsiledtadd
 #, fuzzy
-#| msgid "Add..."
-msgid "Add ..."
+#| msgid "Add ..."
+msgid "&Add ..."
 msgstr "Añadir..."
 
 #: objinspstrconsts.sccsiledtadjustment
@@ -1208,8 +1209,10 @@ msgid "Adjustment"
 msgstr "Ajuste"
 
 #: objinspstrconsts.sccsiledtapply
+#, fuzzy
+#| msgid "Apply"
 msgctxt "objinspstrconsts.sccsiledtapply"
-msgid "Apply"
+msgid "&Apply"
 msgstr "Aplicar"
 
 #: objinspstrconsts.sccsiledtcaption
@@ -1221,8 +1224,10 @@ msgid "Center"
 msgstr "Centrar"
 
 #: objinspstrconsts.sccsiledtclear
+#, fuzzy
+#| msgid "Clear"
 msgctxt "objinspstrconsts.sccsiledtclear"
-msgid "Clear"
+msgid "&Clear"
 msgstr "Limpiar"
 
 #: objinspstrconsts.sccsiledtcrop
@@ -1230,8 +1235,10 @@ msgid "Crop"
 msgstr "Recortar"
 
 #: objinspstrconsts.sccsiledtdelete
+#, fuzzy
+#| msgid "Delete"
 msgctxt "objinspstrconsts.sccsiledtdelete"
-msgid "Delete"
+msgid "&Delete"
 msgstr "Suprimir"
 
 #: objinspstrconsts.sccsiledtgrplcaption
@@ -1243,13 +1250,17 @@ msgid "Selected Image"
 msgstr "Imagen seleccionada"
 
 #: objinspstrconsts.sccsiledtmovedown
+#, fuzzy
+#| msgid "Move Down"
 msgctxt "objinspstrconsts.sccsiledtmovedown"
-msgid "Move Down"
+msgid "Move D&own"
 msgstr "Mover Abajo"
 
 #: objinspstrconsts.sccsiledtmoveup
+#, fuzzy
+#| msgid "Move Up"
 msgctxt "objinspstrconsts.sccsiledtmoveup"
-msgid "Move Up"
+msgid "Move &Up"
 msgstr "Mover Arriba"
 
 #: objinspstrconsts.sccsiledtnone
@@ -1266,9 +1277,9 @@ msgstr "Color transparente:"
 
 #: objinspstrconsts.sccsiledtsave
 #, fuzzy
-#| msgid "Save..."
+#| msgid "Save ..."
 msgctxt "objinspstrconsts.sccsiledtsave"
-msgid "Save ..."
+msgid "&Save ..."
 msgstr "Guardar..."
 
 #: objinspstrconsts.sccsiledtsaveall

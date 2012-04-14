@@ -595,6 +595,7 @@ msgid "Move field down"
 msgstr ""
 
 #: objinspstrconsts.oismoveup
+msgctxt "objinspstrconsts.oismoveup"
 msgid "Move &Up"
 msgstr ""
 
@@ -1193,8 +1194,8 @@ msgstr ""
 
 #: objinspstrconsts.sccsiledtadd
 #, fuzzy
-#| msgid "Add..."
-msgid "Add ..."
+#| msgid "Add ..."
+msgid "&Add ..."
 msgstr "Tambah..."
 
 #: objinspstrconsts.sccsiledtadjustment
@@ -1203,7 +1204,7 @@ msgstr "Penyesuaian"
 
 #: objinspstrconsts.sccsiledtapply
 msgctxt "objinspstrconsts.sccsiledtapply"
-msgid "Apply"
+msgid "&Apply"
 msgstr ""
 
 #: objinspstrconsts.sccsiledtcaption
@@ -1215,8 +1216,10 @@ msgid "Center"
 msgstr "Tengah"
 
 #: objinspstrconsts.sccsiledtclear
+#, fuzzy
+#| msgid "Clear"
 msgctxt "objinspstrconsts.sccsiledtclear"
-msgid "Clear"
+msgid "&Clear"
 msgstr "Bersihkan"
 
 #: objinspstrconsts.sccsiledtcrop
@@ -1224,8 +1227,10 @@ msgid "Crop"
 msgstr "Crop"
 
 #: objinspstrconsts.sccsiledtdelete
+#, fuzzy
+#| msgid "Delete"
 msgctxt "objinspstrconsts.sccsiledtdelete"
-msgid "Delete"
+msgid "&Delete"
 msgstr "Hapus"
 
 #: objinspstrconsts.sccsiledtgrplcaption
@@ -1237,13 +1242,17 @@ msgid "Selected Image"
 msgstr "Gambar dipilih"
 
 #: objinspstrconsts.sccsiledtmovedown
+#, fuzzy
+#| msgid "Move Down"
 msgctxt "objinspstrconsts.sccsiledtmovedown"
-msgid "Move Down"
+msgid "Move D&own"
 msgstr "Turunkan"
 
 #: objinspstrconsts.sccsiledtmoveup
+#, fuzzy
+#| msgid "Move Up"
 msgctxt "objinspstrconsts.sccsiledtmoveup"
-msgid "Move Up"
+msgid "Move &Up"
 msgstr "Naikan"
 
 #: objinspstrconsts.sccsiledtnone
@@ -1260,9 +1269,9 @@ msgstr "Warna Transparan:"
 
 #: objinspstrconsts.sccsiledtsave
 #, fuzzy
-#| msgid "Save..."
+#| msgid "Save ..."
 msgctxt "objinspstrconsts.sccsiledtsave"
-msgid "Save ..."
+msgid "&Save ..."
 msgstr "Simpan..."
 
 #: objinspstrconsts.sccsiledtsaveall

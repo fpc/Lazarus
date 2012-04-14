@@ -584,6 +584,7 @@ msgid "Move field down"
 msgstr ""
 
 #: objinspstrconsts.oismoveup
+msgctxt "objinspstrconsts.oismoveup"
 msgid "Move &Up"
 msgstr ""
 
@@ -1180,8 +1181,8 @@ msgstr ""
 
 #: objinspstrconsts.sccsiledtadd
 #, fuzzy
-#| msgid "Add..."
-msgid "Add ..."
+#| msgid "Add ..."
+msgid "&Add ..."
 msgstr "Toevoegen..."
 
 #: objinspstrconsts.sccsiledtadjustment
@@ -1190,7 +1191,7 @@ msgstr "Aanpassing"
 
 #: objinspstrconsts.sccsiledtapply
 msgctxt "objinspstrconsts.sccsiledtapply"
-msgid "Apply"
+msgid "&Apply"
 msgstr ""
 
 #: objinspstrconsts.sccsiledtcaption
@@ -1202,8 +1203,10 @@ msgid "Center"
 msgstr "Midden"
 
 #: objinspstrconsts.sccsiledtclear
+#, fuzzy
+#| msgid "Clear"
 msgctxt "objinspstrconsts.sccsiledtclear"
-msgid "Clear"
+msgid "&Clear"
 msgstr "Opschonen"
 
 #: objinspstrconsts.sccsiledtcrop
@@ -1211,8 +1214,10 @@ msgid "Crop"
 msgstr "Afsnijden"
 
 #: objinspstrconsts.sccsiledtdelete
+#, fuzzy
+#| msgid "Delete"
 msgctxt "objinspstrconsts.sccsiledtdelete"
-msgid "Delete"
+msgid "&Delete"
 msgstr "Verwijderen"
 
 #: objinspstrconsts.sccsiledtgrplcaption
@@ -1224,13 +1229,17 @@ msgid "Selected Image"
 msgstr "Geselecteerde afbeelding"
 
 #: objinspstrconsts.sccsiledtmovedown
+#, fuzzy
+#| msgid "Move Down"
 msgctxt "objinspstrconsts.sccsiledtmovedown"
-msgid "Move Down"
+msgid "Move D&own"
 msgstr "Ga naar beneden"
 
 #: objinspstrconsts.sccsiledtmoveup
+#, fuzzy
+#| msgid "Move Up"
 msgctxt "objinspstrconsts.sccsiledtmoveup"
-msgid "Move Up"
+msgid "Move &Up"
 msgstr "Ga naar boven"
 
 #: objinspstrconsts.sccsiledtnone
@@ -1247,9 +1256,9 @@ msgstr "Tansparantie kleur"
 
 #: objinspstrconsts.sccsiledtsave
 #, fuzzy
-#| msgid "Save..."
+#| msgid "Save ..."
 msgctxt "objinspstrconsts.sccsiledtsave"
-msgid "Save ..."
+msgid "&Save ..."
 msgstr "Opslaan..."
 
 #: objinspstrconsts.sccsiledtsaveall

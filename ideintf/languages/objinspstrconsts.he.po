@@ -591,6 +591,7 @@ msgid "Move field down"
 msgstr "הזז שדה למטה"
 
 #: objinspstrconsts.oismoveup
+msgctxt "objinspstrconsts.oismoveup"
 msgid "Move &Up"
 msgstr "הזז למעלה"
 
@@ -1192,8 +1193,8 @@ msgstr "עורך מקטעים"
 
 #: objinspstrconsts.sccsiledtadd
 #, fuzzy
-#| msgid "Add..."
-msgid "Add ..."
+#| msgid "Add ..."
+msgid "&Add ..."
 msgstr "הוסף ..."
 
 #: objinspstrconsts.sccsiledtadjustment
@@ -1201,8 +1202,10 @@ msgid "Adjustment"
 msgstr "התאמות"
 
 #: objinspstrconsts.sccsiledtapply
+#, fuzzy
+#| msgid "Apply"
 msgctxt "objinspstrconsts.sccsiledtapply"
-msgid "Apply"
+msgid "&Apply"
 msgstr "יישם"
 
 #: objinspstrconsts.sccsiledtcaption
@@ -1214,8 +1217,10 @@ msgid "Center"
 msgstr "מרכז"
 
 #: objinspstrconsts.sccsiledtclear
+#, fuzzy
+#| msgid "Clear"
 msgctxt "objinspstrconsts.sccsiledtclear"
-msgid "Clear"
+msgid "&Clear"
 msgstr "נקה"
 
 #: objinspstrconsts.sccsiledtcrop
@@ -1223,8 +1228,10 @@ msgid "Crop"
 msgstr "Crop"
 
 #: objinspstrconsts.sccsiledtdelete
+#, fuzzy
+#| msgid "Delete"
 msgctxt "objinspstrconsts.sccsiledtdelete"
-msgid "Delete"
+msgid "&Delete"
 msgstr "מחק"
 
 #: objinspstrconsts.sccsiledtgrplcaption
@@ -1236,13 +1243,17 @@ msgid "Selected Image"
 msgstr "דמות שנבחרה"
 
 #: objinspstrconsts.sccsiledtmovedown
+#, fuzzy
+#| msgid "Move Down"
 msgctxt "objinspstrconsts.sccsiledtmovedown"
-msgid "Move Down"
+msgid "Move D&own"
 msgstr "הזז למטה"
 
 #: objinspstrconsts.sccsiledtmoveup
+#, fuzzy
+#| msgid "Move Up"
 msgctxt "objinspstrconsts.sccsiledtmoveup"
-msgid "Move Up"
+msgid "Move &Up"
 msgstr "הזז למעלה"
 
 #: objinspstrconsts.sccsiledtnone
@@ -1259,9 +1270,9 @@ msgstr "צבע שקוף:"
 
 #: objinspstrconsts.sccsiledtsave
 #, fuzzy
-#| msgid "Save..."
+#| msgid "Save ..."
 msgctxt "objinspstrconsts.sccsiledtsave"
-msgid "Save ..."
+msgid "&Save ..."
 msgstr "שמור ..."
 
 #: objinspstrconsts.sccsiledtsaveall

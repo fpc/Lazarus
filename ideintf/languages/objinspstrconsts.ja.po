@@ -599,6 +599,7 @@ msgid "Move field down"
 msgstr "フィールドを下に移動"
 
 #: objinspstrconsts.oismoveup
+msgctxt "objinspstrconsts.oismoveup"
 msgid "Move &Up"
 msgstr "上に移動(&U)"
 
@@ -1201,8 +1202,8 @@ msgstr "Sections エディタ"
 
 #: objinspstrconsts.sccsiledtadd
 #, fuzzy
-#| msgid "Add..."
-msgid "Add ..."
+#| msgid "Add ..."
+msgid "&Add ..."
 msgstr "追加..."
 
 #: objinspstrconsts.sccsiledtadjustment
@@ -1210,8 +1211,10 @@ msgid "Adjustment"
 msgstr "位置合わせ"
 
 #: objinspstrconsts.sccsiledtapply
+#, fuzzy
+#| msgid "Apply"
 msgctxt "objinspstrconsts.sccsiledtapply"
-msgid "Apply"
+msgid "&Apply"
 msgstr "適用"
 
 #: objinspstrconsts.sccsiledtcaption
@@ -1223,8 +1226,10 @@ msgid "Center"
 msgstr "中央"
 
 #: objinspstrconsts.sccsiledtclear
+#, fuzzy
+#| msgid "Clear"
 msgctxt "objinspstrconsts.sccsiledtclear"
-msgid "Clear"
+msgid "&Clear"
 msgstr "クリア(全消去)"
 
 #: objinspstrconsts.sccsiledtcrop
@@ -1232,8 +1237,10 @@ msgid "Crop"
 msgstr "トリミング"
 
 #: objinspstrconsts.sccsiledtdelete
+#, fuzzy
+#| msgid "Delete"
 msgctxt "objinspstrconsts.sccsiledtdelete"
-msgid "Delete"
+msgid "&Delete"
 msgstr "削除"
 
 #: objinspstrconsts.sccsiledtgrplcaption
@@ -1245,13 +1252,17 @@ msgid "Selected Image"
 msgstr "選択したイメージ"
 
 #: objinspstrconsts.sccsiledtmovedown
+#, fuzzy
+#| msgid "Move Down"
 msgctxt "objinspstrconsts.sccsiledtmovedown"
-msgid "Move Down"
+msgid "Move D&own"
 msgstr "下に移動"
 
 #: objinspstrconsts.sccsiledtmoveup
+#, fuzzy
+#| msgid "Move Up"
 msgctxt "objinspstrconsts.sccsiledtmoveup"
-msgid "Move Up"
+msgid "Move &Up"
 msgstr "上に移動"
 
 #: objinspstrconsts.sccsiledtnone
@@ -1268,9 +1279,9 @@ msgstr "透明色"
 
 #: objinspstrconsts.sccsiledtsave
 #, fuzzy
-#| msgid "Save..."
+#| msgid "Save ..."
 msgctxt "objinspstrconsts.sccsiledtsave"
-msgid "Save ..."
+msgid "&Save ..."
 msgstr "保存..."
 
 #: objinspstrconsts.sccsiledtsaveall

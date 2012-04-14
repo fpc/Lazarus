@@ -438,7 +438,7 @@ begin
     begin
       FontCache.Unreference(FCurrentFont^.GDIFontObject);
       FCurrentFont^.LogFont.lfHeight := AHeight;
-      TmpObj := PGdiObject(PtrUInt(GTK2WidgetSet.CreateFontIndirect(FCurrentFont^.LogFont)));
+      TmpObj := {%H-}PGdiObject(PtrUInt(GTK2WidgetSet.CreateFontIndirect(FCurrentFont^.LogFont)));
       FCurrentFont^.GDIFontObject := TmpObj^.GDIFontObject;
       TmpObj^.GDIFontObject := nil;
       GTK2WidgetSet.DisposeGDIObject(TmpObj);
@@ -687,7 +687,7 @@ begin
     begin
       if OwnedGDIObjects[g]<>nil then
       begin
-        DeleteObject(HGDIOBJ(PtrUInt(OwnedGDIObjects[g])));
+        DeleteObject(HGDIOBJ({%H-}PtrUInt(OwnedGDIObjects[g])));
       end;
 
       CurGDIObject := ASource.OwnedGDIObjects[g];
@@ -752,10 +752,10 @@ begin
 
     // Temporary hold the old brush to replace it with the given brush
     OldCurrentBrush := GetBrush;
-    if not CompareGDIBrushes(PGdiObject(ABrush), OldCurrentBrush) then
+    if not CompareGDIBrushes({%H-}PGdiObject(ABrush), OldCurrentBrush) then
     begin
       BrushChanged := True;
-      CurrentBrush := PGdiObject(ABrush);
+      CurrentBrush := {%H-}PGdiObject(ABrush);
       SelectedColors := dcscCustom;
     end;
 
@@ -1052,7 +1052,7 @@ begin
     gdiPen:    Result := SelectPen(AGdiObject);
   else
     // we only handle bitmaps here atm
-    Result := PGdiObject(GTK2WidgetSet.SelectObject(HDC(Self), HGDIOBJ(AGdiObject)));
+    Result := {%H-}PGdiObject(GTK2WidgetSet.SelectObject(HDC(Self), HGDIOBJ(AGdiObject)));
   end;
 end;
 

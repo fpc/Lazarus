@@ -478,7 +478,7 @@ begin
   if LCLObject is TWinControl then begin
     AWinControl:=TWinControl(LCLObject);
     if AWinControl.HandleAllocated then begin
-      MainWidget:=PGTKWidget(AWinControl.Handle);
+      MainWidget:={%H-}PGTKWidget(AWinControl.Handle);
       if MainWidget=Widget
       then Result:=Result+'<Is MainWidget>'
       else Result:=Result+Format('<MainWidget=%p=%s>', [Pointer(MainWidget), GetWidgetClassName(MainWidget)]);
@@ -680,7 +680,7 @@ begin
   Result:=
     (AWinControl<>nil) and (AWinControl is TWinControl)
     and (AWinControl.HandleAllocated)
-    and WidgetIsDestroyingHandle(PGtkWidget(AWinControl.Handle));
+    and WidgetIsDestroyingHandle({%H-}PGtkWidget(AWinControl.Handle));
 end;
 
 {------------------------------------------------------------------------------
@@ -711,12 +711,12 @@ end;
 procedure InvalidateLastWFPResult(AControl: TWinControl; const ABounds: TRect);
 begin
   if PtInRect(ABounds, LastWFPMousePos) and
-    GTK_IS_OBJECT(Pointer(LastWFPResult)) then
+    GTK_IS_OBJECT({%H-}Pointer(LastWFPResult)) then
   begin
     if (AControl <> nil) and (AControl.Handle = LastWFPResult) and
       AControl.Enabled and AControl.Visible then
         exit;
-    g_signal_handlers_disconnect_by_func(GPointer(LastWFPResult),
+    g_signal_handlers_disconnect_by_func({%H-}GPointer(LastWFPResult),
       TGTKSignalFunc(@DestroyWindowFromPointCB), nil);
     LastWFPResult := 0;
     LastWFPMousePos := Point(High(Integer), High(Integer));
@@ -733,7 +733,7 @@ begin
      (AForm.ParentWindow <> 0) or
      not (AForm.HandleAllocated) then Exit;
 
-  Widget := PGtkWidget(AForm.Handle);
+  Widget := {%H-}PGtkWidget(AForm.Handle);
   // if widget not yet realized then exit
   if Widget^.Window = nil then
     Exit;
@@ -764,9 +764,9 @@ end;
 procedure SetWindowFullScreen(AForm: TCustomForm; const AValue: Boolean);
 begin
   If AValue then
-    GTK_Window_FullScreen(PGTKWindow(AForm.Handle))
+    GTK_Window_FullScreen({%H-}PGTKWindow(AForm.Handle))
   else
-    GTK_Window_UnFullScreen(PGTKWindow(AForm.Handle));
+    GTK_Window_UnFullScreen({%H-}PGTKWindow(AForm.Handle));
 end;
 
 procedure GrabKeyBoardToForm(AForm: TCustomForm);
@@ -842,7 +842,7 @@ var
 begin
   Result:=0;
   if (AForm=nil) or (not AForm.HandleAllocated) then exit;
-  Widget:=PGtkWidget(AForm.Handle);
+  Widget:={%H-}PGtkWidget(AForm.Handle);
   if Widget^.window = nil then exit;
   Result := gdk_window_xwindow(Widget^.window);
 end;
@@ -873,7 +873,7 @@ var
   PS : PPaintStruct;
   Widget: PGtkWidget;
 begin
-  FillByte(Result,SizeOf(Result),0);
+  FillByte(Result{%H-},SizeOf(Result),0);
   Result.Msg := LM_PAINT;
   New(PS);
   FillChar(PS^, SizeOf(TPaintStruct), 0);
@@ -883,7 +883,7 @@ begin
   else
     PS^.rcPaint := GtkPaintMsg.Data.Rect;
 
-  Result.DC := BeginPaint(THandle(PtrUInt(Widget)), PS^);
+  Result.DC := BeginPaint(THandle({%H-}PtrUInt(Widget)), PS^);
   Result.PaintStruct := PS;
   Result.Result := 0;
   if FreeGtkPaintMsg then
@@ -899,12 +899,12 @@ begin
   begin
     if Msg^.LParam <> 0 then
     begin
-      PS := PPaintStruct(Msg^.LParam);
+      PS := {%H-}PPaintStruct(Msg^.LParam);
       if Msg^.WParam <> 0 then
         DC := TGtkDeviceContext(Msg^.WParam)
       else
         DC := TGtkDeviceContext(PS^.hdc);
-      EndPaint(THandle(PtrUInt(DC.Widget)), PS^);
+      EndPaint(THandle({%H-}PtrUInt(DC.Widget)), PS^);
       Dispose(PS);
       Msg^.LParam:=0;
       Msg^.WParam:=0;
@@ -929,12 +929,12 @@ begin
   begin
     if Msg^.LParam <> 0 then
     begin
-      PS := PPaintStruct(Msg^.LParam);
+      PS := {%H-}PPaintStruct(Msg^.LParam);
       if Msg^.WParam<>0 then
         DC := TGtkDeviceContext(Msg^.WParam)
       else
         DC := TGtkDeviceContext(PS^.hdc);
-      EndPaint(THandle(PtrUInt(DC.Widget)), PS^);
+      EndPaint(THandle({%H-}PtrUInt(DC.Widget)), PS^);
       Dispose(PS);
       Msg^.LParam:=0;
       Msg^.WParam:=0;
@@ -1227,7 +1227,7 @@ begin
     DestLeft := DestWidget^.allocation.x - Offset.x + ((WindowWidth-ImageWidth) div 2);
   if CenterVertically then
     DestTop := DestWidget^.allocation.y - Offset.y +  ((WindowHeight-ImageHeight) div 2);
-  DestDC := GetDC(HDC(PtrUInt(DestWidget)));
+  DestDC := GetDC(HDC({%H-}PtrUInt(DestWidget)));
 
   //DebugLn('DrawImageListIconOnWidget B DestXY=',DestLeft,',',DestTop,
   //  ' DestWindowSize=',WindowWidth,',',WindowWidth,
@@ -1235,7 +1235,7 @@ begin
   StretchBlt(DestDC, DestLeft, DestTop, ImageWidth, ImageHeight,
     Bitmap.Canvas.Handle, 0, 0, ImageWidth, ImageHeight,
     SRCCOPY);
-  ReleaseDC(HDC(PtrUInt(DestWidget)),DestDC);
+  ReleaseDC(HDC({%H-}PtrUInt(DestWidget)),DestDC);
   Bitmap.Free;
 end;
 
@@ -1375,7 +1375,7 @@ begin
   if Bitmap=nil then exit;
   MaxRect:=Rect(0,0,0,0);
   gdk_window_get_size(Bitmap,@MaxRect.Right,@MaxRect.Bottom);
-  IntersectRect(SourceRect,SrcRect,MaxRect);
+  IntersectRect(SourceRect{%H-},SrcRect,MaxRect);
   SrcWidth:=SourceRect.Right-SourceRect.Left;
   SrcHeight:=SourceRect.Bottom-SourceRect.Top;
   DebugLn('ExtractGdkBitmap SourceRect=',dbgs(SourceRect));
@@ -1406,7 +1406,7 @@ begin
   // on windows or bigendian servers the bits need to be swapped
   
   // align dataptr first
-  count := PtrUint(AData) and 3;
+  count := {%H-}PtrUint(AData) and 3;
   if count > ADataCount then count := ADataCount;
   Dec(ADataCount, Count);
   
@@ -1771,12 +1771,12 @@ type
 
 function GetIndexAsKey(p: pointer): pointer;
 begin
-  Result:=Pointer(PIndexRGB(p)^.Index + 1);
+  Result:={%H-}Pointer(PIndexRGB(p)^.Index + 1);
 end;
 
 function GetRGBAsKey(p: pointer): pointer;
 begin
-  Result:=Pointer(PIndexRGB(p)^.RGB + 1);
+  Result:={%H-}Pointer(PIndexRGB(p)^.RGB + 1);
 end;
 
 function PaletteIndexToIndexRGB(Pal : PGDIObject; I : longint): PIndexRGB;
@@ -1784,7 +1784,7 @@ var
   HashItem: PDynHashArrayItem;
 begin
   Result := nil;
-  HashItem:=Pal^.IndexTable.FindHashItemWithKey(Pointer(I + 1));
+  HashItem:=Pal^.IndexTable.FindHashItemWithKey({%H-}Pointer(I + 1));
   if HashItem<>nil then
     Result:=PIndexRGB(HashItem^.Item);
 end;
@@ -1794,7 +1794,7 @@ var
   HashItem: PDynHashArrayItem;
 begin
   Result := nil;
-  HashItem:=Pal^.RGBTable.FindHashItemWithKey(Pointer(RGB + 1));
+  HashItem:=Pal^.RGBTable.FindHashItemWithKey({%H-}Pointer(RGB + 1));
   if HashItem<>nil then
     Result:=PIndexRGB(HashItem^.Item);
 end;
@@ -1803,12 +1803,12 @@ end;
 
 function PaletteIndexExists(Pal : PGDIObject; I : longint): Boolean;
 begin
-  Result := Pal^.IndexTable.ContainsKey(Pointer(I + 1));
+  Result := Pal^.IndexTable.ContainsKey({%H-}Pointer(I + 1));
 end;
 
 function PaletteRGBExists(Pal : PGDIObject; RGB : longint): Boolean;
 begin
-  Result := Pal^.RGBTable.ContainsKey(Pointer(RGB + 1));
+  Result := Pal^.RGBTable.ContainsKey({%H-}Pointer(RGB + 1));
 end;
 
 function PaletteAddIndex(Pal : PGDIObject; I, RGB : Longint): Boolean;
@@ -2082,7 +2082,7 @@ var
       for i:=0 to AMenuItem.Count-1 do begin
         Item:=AMenuItem[i];
         if not Item.HandleAllocated then continue;
-        if not GTK_WIDGET_SENSITIVE(PGTKWidget(Item.Handle)) then continue;
+        if not GTK_WIDGET_SENSITIVE({%H-}PGTKWidget(Item.Handle)) then continue;
         if IsAccel(Msg.CharCode,Item.Caption) then Result:=true;
       end;
     end;
@@ -2273,7 +2273,7 @@ begin
   //DebugLn(['HandleGTKKeyUpDown TargetWidget=',GetWidgetDebugReport(TargetWidget),' ',DbgStr(EventString),' state=',AEvent^.state,' keyval=',AEvent^.keyval]);
   FillChar(Msg, SizeOf(Msg), 0);
 
-  gdk_event_key_get_string(AEvent, EventString);
+  gdk_event_key_get_string(AEvent, EventString{%H-});
   //DebugLn(['HandleGTKKeyUpDown TargetWidget=',GetWidgetDebugReport(TargetWidget),' ',DbgStr(EventString),' state=',AEvent^.state,' keyval=',AEvent^.keyval]);
   CheckDeadKey;
   Flags := 0;
@@ -3202,7 +3202,7 @@ begin
   if XDisplay = nil then Exit;
 
   FillByte(MKeyStateMap, SizeOF(MKeyStateMap), 0);
-  SetupModifiers(XDisplay, ModMap);
+  SetupModifiers(XDisplay, ModMap{%H-});
 {$endif}
 
   LoKey := 0;
@@ -3215,7 +3215,7 @@ begin
   for KeyCode := LoKey to HiKey do
   begin
 
-    if not gdk_keymap_get_entries_for_keycode(nil, KeyCode, KeymapKeys, KeyVals, @KeySymCount) then Continue;
+    if not gdk_keymap_get_entries_for_keycode(nil, KeyCode, KeymapKeys{%H-}, KeyVals, @KeySymCount) then Continue;
     SetLength(KeySyms, KeySymCount);
     Move(KeyVals^, KeySyms[0], SizeOf(KeySyms[0]) * KeySymCount);
     g_free(KeymapKeys); // unused but we cannot pass a nil as param
@@ -3247,7 +3247,7 @@ begin
     for m := 0 to KeySymCount - 1 do
     begin
       if KeySyms[m] = 0 then Continue;
-      FindVKeyInfo(KeySyms[m], VKey, Extended, HasMultiVK, SecondKey);
+      FindVKeyInfo(KeySyms[m], VKey, Extended{%H-}, HasMultiVK,{%H-} SecondKey);
     {$ifdef Windows}
       // on windows, the keycode is perdef the VK,
       // we only enter this loop to set the correct flags
@@ -3293,7 +3293,7 @@ begin
         // In that case we have to FIndKeyInfo for every keysym
         if m = 1
         then begin
-          FindVKeyInfo(KeySyms[m], VKey, Extended, DummyBool, DummyBool);
+          FindVKeyInfo(KeySyms[m], VKey, Extended, DummyBool, DummyBool{%H-});
           MKeyCodeInfo[KeyCode].VKey2 := VKey;
         end;
       end;
@@ -3301,7 +3301,7 @@ begin
 
       MKeyCodeInfo[KeyCode].Flags := MKeyCodeInfo[KeyCode].Flags or KEYFLAGS[m];
 
-      FillByte(KeySymChars, SizeOf(KeySymChars), 0);
+      FillByte(KeySymChars{%H-}, SizeOf(KeySymChars), 0);
 
       UniChar := gdk_keyval_to_unicode(KeySyms[m]);
       if UniChar = 0 then Continue;
@@ -3429,7 +3429,7 @@ procedure StoreCommonDialogSetup(ADialog: TCommonDialog);
 var DlgWindow: PGtkWidget;
 begin
   if (ADialog=nil) or (ADialog.Handle=0) then exit;
-  DlgWindow:=PGtkWidget(ADialog.Handle);
+  DlgWindow:={%H-}PGtkWidget(ADialog.Handle);
   if DlgWindow^.Allocation.Width>0 then
     ADialog.Width:=DlgWindow^.Allocation.Width;
   if DlgWindow^.Allocation.Height>0 then
@@ -3453,7 +3453,7 @@ var
   LCLHistoryMenu: PGTKWidget;
 begin
   if (ADialog=nil) or (not ADialog.HandleAllocated) then exit;
-  DlgWindow:=PGtkWidget(ADialog.Handle);
+  DlgWindow:={%H-}PGtkWidget(ADialog.Handle);
   {$IFDEF VerboseTransient}
   DebugLn('DestroyCommonDialogAddOns ',ADialog.Name,':',ADialog.ClassName);
   {$ENDIF}
@@ -3632,7 +3632,7 @@ begin
   else begin
     //DebugLn(Format('Trace:  [ObjectToGtkObject] Message received with unhandled class-type <%s>', [AnObject.ClassName]));
   end;
-  Result := PGTKObject(handle);
+  Result := {%H-}PGTKObject(handle);
   if handle = 0 then
     Assert (false, 'Trace:  [ObjectToGtkObject]****** Warning: handle = 0 *******');
 end;
@@ -3823,7 +3823,7 @@ begin
   if (LCLParent=nil) or (not (LCLParent is TWinControl))
   or (not TWinControl(LCLParent).HandleAllocated)
   then exit;
-  Result:=PGtkWidget(TWinControl(LCLParent).Handle);
+  Result:={%H-}PGtkWidget(TWinControl(LCLParent).Handle);
 end;
 
 function GetWinControlFixedWidget(Child: PGtkWidget): PGtkWidget;
@@ -3967,7 +3967,7 @@ begin
   Result^.CoreWidget := AWidget;
   Result^.Style := AParams.Style;
   Result^.ExStyle := AParams.ExStyle;
-  Result^.WndProc := PtrUInt(AParams.WindowClass.lpfnWndProc);
+  Result^.WndProc := {%H-}PtrUInt(AParams.WindowClass.lpfnWndProc);
 end;
 
 function GetWidgetInfo(const AWidget: Pointer {; const Create: Boolean = False}): PWidgetInfo;
@@ -4050,9 +4050,9 @@ begin
     if (Info^.LCLObject is TWinControl) then begin
       AWinControl:=TWinControl(Info^.LCLObject);
       if AWinControl.HandleAllocated
-      and (PGtkWidget(AWinControl.Handle)=Widget) then begin
+      and ({%H-}PGtkWidget(AWinControl.Handle)=Widget) then begin
         // send the LM_DESTROY message before destroying the widget
-        FillChar(Mess,SizeOf(Mess),0);
+        FillChar(Mess{%H-},SizeOf(Mess),0);
         Mess.msg := LM_DESTROY;
         DeliverMessage(Info^.LCLObject, Mess);
       end;
@@ -4113,7 +4113,7 @@ var
   NoteBookWidget: PGtkNotebook;
 begin
   if not TCustomTabControl(ANoteBook).HandleAllocated then exit;
-  NoteBookWidget := PGtkNotebook(TCustomTabControl(ANoteBook).Handle);
+  NoteBookWidget := {%H-}PGtkNotebook(TCustomTabControl(ANoteBook).Handle);
   ClientWidget := nil;
   SetFixedWidget(NoteBookWidget, ClientWidget);
 end;
@@ -4325,8 +4325,8 @@ begin
     TheNoteBook:=TCustomTabControl(ThePage.Parent);
     if TheNoteBook=nil then exit;
   end;
-  NoteBookWidget:=PGtkWidget(TWinControl(TheNoteBook).Handle);
-  PageWidget:=PGtkWidget(TWinControl(ThePage).Handle);
+  NoteBookWidget:={%H-}PGtkWidget(TWinControl(TheNoteBook).Handle);
+  PageWidget:={%H-}PGtkWidget(TWinControl(ThePage).Handle);
 
   // get the tab container and the tab components: pixmap, label and closebtn
   TabWidget:=gtk_notebook_get_tab_label(PGtkNoteBook(NotebookWidget),
@@ -4365,8 +4365,8 @@ var
   TabLabelWidget: PGtkWidget;
 begin
 
-  NoteBookWidget:=PGtkWidget((APage.Parent).Handle);
-  PageWidget:=PGtkWidget(APage.Handle);
+  NoteBookWidget:={%H-}PGtkWidget((APage.Parent).Handle);
+  PageWidget:={%H-}PGtkWidget(APage.Handle);
   TabWidget:=gtk_notebook_get_tab_label(PGtkNoteBook(NotebookWidget),
                                         PageWidget);
   if TabWidget<>nil then
@@ -4600,8 +4600,8 @@ begin
     MouseCaptureType:=mctGTK;
     if MouseCaptureWidget<>nil then begin
       // the MouseCaptureWidget is probably not a main widget
-      SendMessage(HWnd(PtrUInt(MouseCaptureWidget)), LM_CAPTURECHANGED, 0,
-        HWnd(PtrUInt(OldMouseCaptureWidget)));
+      SendMessage(HWnd({%H-}PtrUInt(MouseCaptureWidget)), LM_CAPTURECHANGED, 0,
+        HWnd({%H-}PtrUInt(OldMouseCaptureWidget)));
     end;
   end;
 end;
@@ -4687,16 +4687,16 @@ begin
 
   if CanCapture then
   begin
-    if GTK_IS_NOTEBOOK(PGtkWidget(TWinControl(LCLObject).Handle)) then
+    if GTK_IS_NOTEBOOK({%H-}PGtkWidget(TWinControl(LCLObject).Handle)) then
       exit;
 
     Parent := TWinControl(LCLObject).Parent;
     if Assigned(Parent) then
     begin
-      if GTK_IS_NOTEBOOK(PGtkWidget(Parent.Handle)) then
+      if GTK_IS_NOTEBOOK({%H-}PGtkWidget(Parent.Handle)) then
         exit;
     end;
-    WidgetInfo:=GetWidgetInfo(PGtkWidget(TWinControl(LCLObject).Handle),false);
+    WidgetInfo:=GetWidgetInfo({%H-}PGtkWidget(TWinControl(LCLObject).Handle),false);
     if WidgetInfo <> nil then
     begin
       {$IFDEF VerboseMouseCapture}
@@ -4847,13 +4847,13 @@ end;
 
 function GetDesignSignalMask(Widget: PGtkWidget): TDesignSignalMask;
 begin
-  Result:=TDesignSignalMask(PtrUInt(gtk_object_get_data(PGtkObject(Widget),
+  Result:=TDesignSignalMask({%H-}PtrUInt(gtk_object_get_data(PGtkObject(Widget),
                                                 'LCLDesignMask')));
 end;
 
 procedure SetDesignSignalMask(Widget: PGtkWidget; NewMask: TDesignSignalMask);
 begin
-  gtk_object_set_data(PGtkObject(Widget),'LCLDesignMask',Pointer(PtrInt(NewMask)));
+  gtk_object_set_data(PGtkObject(Widget),'LCLDesignMask',{%H-}Pointer(PtrInt(NewMask)));
 end;
 
 function GetDesignOnlySignalFlag(Widget: PGtkWidget;
@@ -4863,9 +4863,9 @@ begin
           and DesignSignalMasks[DesignSignalType])<>0;
 end;
 
-function SignalConnected(const AnObject:PGTKObject; const ASignal: PChar;
+function SignalConnected(const AnObject:PGTKObject; const {%H-}ASignal: PChar;
   const ACallBackProc: Pointer; const ALCLObject: TObject;
-  const ASFlags: TConnectSignalFlags): boolean;
+  const {%H-}ASFlags: TConnectSignalFlags): boolean;
 begin
   Result:=g_signal_handler_find(AnObject,
     G_SIGNAL_MATCH_FUNC or G_SIGNAL_MATCH_DATA,
@@ -5175,7 +5175,7 @@ begin
     or (csDesigning in CurForm.ComponentState)
     then continue;
     
-    CurWindow:=PGtkWidget(CurForm.Handle);
+    CurWindow:={%H-}PGtkWidget(CurForm.Handle);
     CurAccelGroup:=GetAccelGroup(CurWindow,false);
     {$IFDEF VerboseAccelerator}
     DebugLn('ShareWindowAccelGroups ',TheForm.Name,':',TheForm.ClassName,
@@ -5221,7 +5221,7 @@ begin
     or (not CurForm.HandleAllocated)
     then continue;
 
-    CurWindow:=PGtkWidget(CurForm.Handle);
+    CurWindow:={%H-}PGtkWidget(CurForm.Handle);
     CurAccelGroup:=GetAccelGroup(CurWindow,false);
     {$IFDEF VerboseAccelerator}
     DebugLn('UnshareWindowAccelGroups ',TheForm.Name,':',TheForm.ClassName,
@@ -5259,7 +5259,7 @@ begin
     if Control is TCustomForm then begin
       Form:=TCustomForm(Control);
       if Form.HandleAllocated then begin
-        Result:=GetAccelGroup(PGtkWidget(Form.Handle),CreateIfNotExists);
+        Result:=GetAccelGroup({%H-}PGtkWidget(Form.Handle),CreateIfNotExists);
         {$IFDEF VerboseAccelerator}
         DebugLn('GetAccelGroupForComponent C ',Component.Name,':',Component.ClassName);
         {$ENDIF}
@@ -5837,7 +5837,7 @@ var
     // Check if shortcut is needed. No shortcut captions for items in menubar
     NeedShortCut := (Key <> 0) and
        not ( (LCLMenuItem.Parent <> nil) and LCLMenuItem.Parent.HandleAllocated and
-       GtkWidgetIsA(PGtkWidget(LCLMenuItem.Parent.Handle), GTK_TYPE_MENU_BAR) );
+       GtkWidgetIsA({%H-}PGtkWidget(LCLMenuItem.Parent.Handle), GTK_TYPE_MENU_BAR) );
 
     LabelWidget := PGtkLabel(gtk_object_get_data(PGtkObject(MenuItemWidget),'LCLShortCutLabel'));
     if NeedShortCut then
@@ -6041,9 +6041,9 @@ begin
   if TStatusBar(Data).Panels[ItemId].Style <> psOwnerDraw then
     exit;
 
-  FillChar(Msg, SizeOf(Msg), #0);
-  FillChar(PS, SizeOf(PS), #0);
-  FillChar(ItemStruct, SizeOf(ItemStruct), #0);
+  FillChar(Msg{%H-}, SizeOf(Msg), #0);
+  FillChar(PS{%H-}, SizeOf(PS), #0);
+  FillChar(ItemStruct{%H-}, SizeOf(ItemStruct), #0);
   New(ItemStruct);
   // we must fill up complete area otherwise gtk2 will do
   // strange paints when item is not fully exposed.
@@ -6065,7 +6065,7 @@ begin
 
   ItemStruct^.itemID := ItemID;
   PS.rcPaint := ItemStruct^.rcItem;
-  ItemStruct^._hDC := BeginPaint(THandle(PtrUInt(Widget)), PS);
+  ItemStruct^._hDC := BeginPaint(THandle({%H-}PtrUInt(Widget)), PS);
   Msg.Ctl := TStatusBar(Data).Handle;
   Msg.DrawItemStruct := ItemStruct;
   Msg.Msg := LM_DRAWITEM;
@@ -6074,7 +6074,7 @@ begin
     Result := not CallBackDefaultReturn;
   finally
     PS.hdc := ItemStruct^._hDC;
-    EndPaint(THandle(PtrUInt(TGtkDeviceContext(PS.hdc).Widget)), PS);
+    EndPaint(THandle({%H-}PtrUInt(TGtkDeviceContext(PS.hdc).Widget)), PS);
     Dispose(ItemStruct);
   end;
 end;
@@ -6345,7 +6345,7 @@ var
   Widget: PGtkWidget;
   Requisition: TGtkRequisition;
 begin
-  Widget := PGtkWidget(AWinControl.Handle);
+  Widget := {%H-}PGtkWidget(AWinControl.Handle);
   // set size to default
   //DebugLn(['GetGTKDefaultWidgetSize ',GetWidgetDebugReport(Widget)]);
   gtk_widget_set_size_request(Widget, -1, -1);
@@ -6409,7 +6409,7 @@ begin
   {$IFDEF VerboseSizeMsg}
   DebugLn('SendSizeNotificationToLCL checking ... ',DbgSName(LCLControl),' Widget=',WidgetFlagsToString(aWidget));
   {$ENDIF}
-  MainWidget:=PGtkWidget(LCLControl.Handle);
+  MainWidget:={%H-}PGtkWidget(LCLControl.Handle);
   FixedWidget:=PGtkWidget(GetFixedWidget(MainWidget));
 
   FWidgetsResized.Remove(MainWidget);
@@ -6635,7 +6635,7 @@ var
   Later: Boolean;
   IsTopLevelWidget: Boolean;
 begin
-  Widget := PGtkWidget(LCLControl.Handle);
+  Widget := {%H-}PGtkWidget(LCLControl.Handle);
   if not WidgetSizeIsEditable(Widget) then
     Exit;
   Later := true;
@@ -6691,7 +6691,7 @@ begin
   {$IFDEF VerboseSizeMsg}
   DebugLn(['SetWidgetSizeAndPosition ',DbgSName(LCLControl)]);
   {$ENDIF}
-  Widget:=PGtkWidget(LCLControl.Handle);
+  Widget:={%H-}PGtkWidget(LCLControl.Handle);
   
   LCLLeft := LCLControl.Left;
   LCLTop := LCLControl.Top;
@@ -6701,9 +6701,9 @@ begin
      ((LCLControl.Parent = nil) and (LCLControl.ParentWindow <> 0)) then
   begin
     if LCLControl.Parent <> nil then
-      ParentWidget := PGtkWidget(LCLControl.Parent.Handle)
+      ParentWidget := {%H-}PGtkWidget(LCLControl.Parent.Handle)
     else
-      ParentWidget := PGtkWidget(LCLControl.ParentWindow);
+      ParentWidget := {%H-}PGtkWidget(LCLControl.ParentWindow);
     ParentFixed := GetFixedWidget(ParentWidget);
     if GtkWidgetIsA(ParentFixed,GTK_FIXED_GET_TYPE) or
        GtkWidgetIsA(ParentFixed,GTK_LAYOUT_GET_TYPE) then
@@ -6996,7 +6996,7 @@ var
   newColor : TGDKColor;
 begin
   if Value<0 then begin
-    FillChar(Result,SizeOf(Result),0);
+    FillChar(Result{%H-},SizeOf(Result),0);
     exit;
   end;
 
@@ -7317,7 +7317,7 @@ begin
   {$IFDEF DEBUG_CLIPBOARD}
   DebugLn('[RequestSelectionData] FormatID=',dbgs(FormatID));
   {$ENDIF}
-  FillChar(Result,SizeOf(TGtkSelectionData),0);
+  FillChar(Result{%H-},SizeOf(TGtkSelectionData),0);
   if (ClipboardWidget=nil) or (FormatID=0) 
   or (ClipboardTypeAtoms[ClipboardType]=0) then exit;
 
@@ -7593,7 +7593,7 @@ begin
     Result := GetStyleWithName(LazGtkStyleNames[aStyle]);
 end;
 
-procedure tooltip_window_style_set(Widget: PGtkWidget; PreviousStyle: PGtkStyle;
+procedure tooltip_window_style_set(Widget: PGtkWidget; {%H-}PreviousStyle: PGtkStyle;
           StyleObject: PStyleObject); cdecl;
 begin
   StyleObject^.Style := gtk_widget_get_style(Widget);
@@ -7946,7 +7946,7 @@ begin
       gtk_widget_ensure_style(StyleObject^.Widget);
 
       // request default sizing
-      FillChar(Requisition,SizeOf(Requisition),0);
+      FillChar(Requisition{%H-},SizeOf(Requisition),0);
       gtk_widget_size_request(StyleObject^.Widget, @Requisition);
       
       StyleObject^.Style:=gtk_widget_get_style(StyleObject^.Widget);
@@ -8148,7 +8148,7 @@ var
   Red, Green, Blue: byte;
 begin
   // Set defaults in case something goes wrong
-  FillChar(Result, SizeOf(Result), 0);
+  FillChar(Result{%H-}, SizeOf(Result), 0);
   Style := nil;
   GC := nil;
   Pixmap := nil;
@@ -8705,7 +8705,7 @@ begin
 
   if not AWinControl.HandleAllocated then exit;
 
-  MainWidget:=PGtkWidget(AWinControl.Handle);
+  MainWidget:={%H-}PGtkWidget(AWinControl.Handle);
   FixWidget:=GetFixedWidget(MainWidget);
   if (FixWidget <> nil) and (FixWidget <> MainWidget) then
     Widget := FixWidget
@@ -9172,7 +9172,7 @@ function GDKPixel2GDIRGB(Pixel: Longint; Visual: PGDKVisual;
 var
   Color: TGDKColor;
 begin
-  FillChar(Result, SizeOf(TGDIRGB),0);
+  FillChar(Result{%H-}, SizeOf(TGDIRGB),0);
 
   If (Visual = nil) or (Colormap = nil) then begin
     Visual := GDK_Visual_Get_System;

@@ -90,7 +90,7 @@ var
   GTKAPIWidget_Type: GType = 0;
 
 // GTKCallback.inc headers
-procedure EventTrace(const TheMessage: string; data: pointer);
+procedure EventTrace(const {%H-}TheMessage: string; {%H-}data: pointer);
 function gtkNoteBookCloseBtnClicked(Widget: PGtkWidget;
   Data: Pointer): GBoolean; cdecl;
 function gtkRealizeCB(Widget: PGtkWidget; Data: Pointer): GBoolean; cdecl;
@@ -102,9 +102,9 @@ function gtkchangedCB( widget: PGtkWidget; data: gPointer): GBoolean; cdecl;
 function gtkchanged_editbox( widget: PGtkWidget; data: gPointer): GBoolean; cdecl;
 function gtkchanged_spinbox(widget: PGtkWidget; data: gPointer): GBoolean; cdecl;
 function gtkchanged_editbox_backspace( widget: PGtkWidget;
-  data: gPointer): GBoolean; cdecl;
+  {%H-}data: gPointer): GBoolean; cdecl;
 function gtkchanged_editbox_delete(widget: PGtkWidget;
-  AType: TGtkDeleteType; APos: gint; data: gPointer): GBoolean; cdecl;
+  {%H-}AType: TGtkDeleteType; {%H-}APos: gint; {%H-}data: gPointer): GBoolean; cdecl;
 function gtkdaychanged(Widget: PGtkWidget; data: gPointer): GBoolean; cdecl;
 function gtktoggledCB( widget: PGtkWidget; data: gPointer): GBoolean; cdecl;
 
@@ -130,16 +130,16 @@ function GTKKeyReleaseAfter(Widget: PGtkWidget; Event: pgdkeventkey;
 function GTKFocusCB(widget: PGtkWidget; event:PGdkEventFocus;
                     data: gPointer): GBoolean; cdecl;
 function GTKKillFocusCB(widget: PGtkWidget; event:PGdkEventFocus;
-                        data: gPointer): GBoolean; cdecl;
+                        {%H-}data: gPointer): GBoolean; cdecl;
 function GTKKillFocusCBAfter(widget: PGtkWidget; event:PGdkEventFocus;
                              data: gPointer): GBoolean; cdecl;
 function gtkdestroyCB(widget: PGtkWidget; data: gPointer): GBoolean; cdecl;
-procedure DestroyWindowFromPointCB(Widget: PGtkWidget; data: gPointer); cdecl;
+procedure DestroyWindowFromPointCB(Widget: PGtkWidget; {%H-}data: gPointer); cdecl;
 function gtkdeleteCB(widget: PGtkWidget; event: PGdkEvent;
                      data: gPointer): GBoolean; cdecl;
-function gtkresizeCB(widget: PGtkWidget; data: gPointer): GBoolean; cdecl;
+function gtkresizeCB(widget: PGtkWidget; {%H-}data: gPointer): GBoolean; cdecl;
 function gtkMonthChanged(Widget: PGtkWidget; data: gPointer): GBoolean; cdecl;
-procedure DeliverMouseMoveMessage(Widget:PGTKWidget; Event: PGDKEventMotion;
+procedure DeliverMouseMoveMessage({%H-}Widget:PGTKWidget; Event: PGDKEventMotion;
                                   AWinControl: TWinControl);
 
 function gtkMotionNotify(Widget:PGTKWidget; Event: PGDKEventMotion;
@@ -147,14 +147,14 @@ function gtkMotionNotify(Widget:PGTKWidget; Event: PGDKEventMotion;
 function GTKMotionNotifyAfter(widget:PGTKWidget; event: PGDKEventMotion;
                               data: gPointer): GBoolean; cdecl;
 
-function DeliverMouseDownMessage(widget: PGtkWidget; event: pgdkEventButton;
+function DeliverMouseDownMessage({%H-}widget: PGtkWidget; event: pgdkEventButton;
                                   AWinControl: TWinControl): PtrInt;
 
-function gtk2ScrollBarMouseBtnPress(widget: PGtkWidget; event: pgdkEventButton;
-  data: gPointer): GBoolean; cdecl;
+function gtk2ScrollBarMouseBtnPress({%H-}widget: PGtkWidget; {%H-}event: pgdkEventButton;
+  {%H-}data: gPointer): GBoolean; cdecl;
 
-function gtk2ScrollBarMouseBtnRelease(widget: PGtkWidget; event: pgdkEventButton;
-  data: gPointer): GBoolean; cdecl;
+function gtk2ScrollBarMouseBtnRelease({%H-}widget: PGtkWidget; {%H-}event: pgdkEventButton;
+  {%H-}data: gPointer): GBoolean; cdecl;
 
 
 function gtkMouseBtnPress(widget: PGtkWidget; event: pgdkEventButton;
@@ -172,7 +172,7 @@ function gtkclickedCB( widget: PGtkWidget; data: gPointer): GBoolean; cdecl;
 
 function gtkEnterCB(widget: PGtkWidget; data: gPointer): GBoolean; cdecl;
 function gtkLeaveCB(widget: PGtkWidget; data: gPointer): GBoolean; cdecl;
-function gtksize_allocateCB(widget: PGtkWidget; size :pGtkAllocation;
+function gtksize_allocateCB(widget: PGtkWidget; {%H-}size :pGtkAllocation;
   data: gPointer): GBoolean; cdecl;
 function gtksize_allocate_client(widget: PGtkWidget; size :pGtkAllocation;
   data: gPointer): GBoolean; cdecl;
@@ -191,7 +191,7 @@ function gtkKillLine( widget: PGtkWidget; data: gPointer): GBoolean; cdecl;
 function gtkCutToClip( widget: PGtkWidget; data: gPointer): GBoolean; cdecl;
 function gtkCopyToClip( widget: PGtkWidget; data: gPointer): GBoolean; cdecl;
 function gtkPasteFromClip( widget: PGtkWidget; data: gPointer): GBoolean; cdecl;
-function gtkValueChanged(widget: PGtkWidget; data: gPointer): GBoolean; cdecl;
+function gtkValueChanged({%H-}widget: PGtkWidget; data: gPointer): GBoolean; cdecl;
 function gtkTimerCB(Data: gPointer): gBoolean; cdecl;
 function gtkFocusInNotifyCB (widget: PGtkWidget; event: PGdkEvent;
   data: gpointer): GBoolean; cdecl;
@@ -207,18 +207,18 @@ function GTKVScrollCB(Adjustment: PGTKAdjustment;
 function Gtk2RangeScrollCB(ARange: PGtkRange; AScrollType: TGtkScrollType;
   AValue: gdouble; AWidgetInfo: PWidgetInfo): gboolean; cdecl;
 function Gtk2RangeScrollPressCB(Widget: PGtkWidget;
-  Event: PGdkEventButton; Data: gPointer): gboolean; cdecl;
+  {%H-}Event: PGdkEventButton; {%H-}Data: gPointer): gboolean; cdecl;
 function Gtk2RangeScrollReleaseCB(Widget: PGtkWidget;
-  Event: PGdkEventButton; Data: gPointer): gboolean; cdecl;
+  {%H-}Event: PGdkEventButton; {%H-}Data: gPointer): gboolean; cdecl;
 function Gtk2ScrolledWindowScrollCB(AScrollWindow: PGtkScrolledWindow;
   AEvent: PGdkEventScroll; AWidgetInfo: PWidgetInfo): gboolean; cdecl;
 function GTKCheckMenuToggeledCB(AMenuItem: PGTKCheckMenuItem;
                                 AData: gPointer): GBoolean; cdecl;
-function GTKKeySnooper(Widget: PGtkWidget; Event: PGdkEventKey;
+function GTKKeySnooper({%H-}Widget: PGtkWidget; Event: PGdkEventKey;
   FuncData: gPointer): gInt; cdecl;
 function gtkYearChanged(Widget: PGtkWidget; data: gPointer): GBoolean; cdecl;
-procedure GtkDragDataReceived(widget:PGtkWidget; context:PGdkDragContext;
-  x:gint; y:gint; selection_data:PGtkSelectionData; info:guint; time:guint; Data: gPointer);cdecl;
+procedure GtkDragDataReceived({%H-}widget:PGtkWidget; context:PGdkDragContext;
+  {%H-}x:gint; {%H-}y:gint; selection_data:PGtkSelectionData; {%H-}info:guint; time:guint; Data: gPointer);cdecl;
 
 
 // clipboard
@@ -358,9 +358,9 @@ procedure SetFormShowInTaskbar(AForm: TCustomForm;
 procedure SetGtkWindowShowInTaskbar(AGtkWindow: PGtkWindow; Value: boolean);
 procedure SetWindowFullScreen(AForm: TCustomForm; const AValue: Boolean);
 procedure GrabKeyBoardToForm(AForm: TCustomForm);
-procedure ReleaseKeyBoardFromForm(AForm: TCustomForm);
+procedure ReleaseKeyBoardFromForm({%H-}AForm: TCustomForm);
 procedure GrabMouseToForm(AForm: TCustomForm);
-procedure ReleaseMouseFromForm(AForm: TCustomForm);
+procedure ReleaseMouseFromForm({%H-}AForm: TCustomForm);
 procedure GtkWindowShowModal(AForm: TCustomForm; GtkWindow: PGtkWindow);
 
 // label
@@ -381,7 +381,7 @@ function GDKRegionAsString(RGN: PGDKRegion): string;
 
 // color
 procedure FreeGDIColor(GDIColor: PGDIColor);
-procedure AllocGDIColor(DC: hDC; GDIColor: PGDIColor);
+procedure AllocGDIColor({%H-}DC: hDC; GDIColor: PGDIColor);
 procedure BuildColorRefFromGDKColor(var GDIColor: TGDIColor);
 procedure SetGDIColorRef(var GDIColor: TGDIColor; NewColorRef: TColorRef);
 procedure EnsureGCColor(DC: hDC; ColorType: TDevContextsColorType;
@@ -395,7 +395,7 @@ function IsBackgroundColor(Color: TColor): boolean;
 
 procedure RealizeGDKColor(ColorMap: PGdkColormap; Color: PGDKColor);
 procedure RealizeGtkStyleColor(Style: PGTKStyle; Color: PGDKColor);
-function GetSysGCValues(Color: TColorRef; ThemeWidget: PGtkWidget): TGDKGCValues;
+function GetSysGCValues(Color: TColorRef; {%H-}ThemeWidget: PGtkWidget): TGDKGCValues;
 
 function GDKPixel2GDIRGB(Pixel: Longint; Visual: PGDKVisual;
   Colormap: PGDKColormap): TGDIRGB;
@@ -622,7 +622,7 @@ procedure MergeClipping(DestinationDC: TGtkDeviceContext; DestinationGC: PGDKGC;
   var NewClipMask: PGdkBitmap);
 function CreatePixbufFromImageAndMask(ASrc: PGdkDrawable; ASrcX, ASrcY, ASrcWidth,
   ASrcHeight: integer; ASrcColorMap: PGdkColormap; ASrcMask: PGdkBitmap): PGdkPixbuf;
-function ScalePixmapAndMask(AScaleGC: PGDKGC; AScaleMethod: TGdkInterpType;
+function ScalePixmapAndMask({%H-}AScaleGC: PGDKGC; AScaleMethod: TGdkInterpType;
   ASrc: PGdkPixmap; ASrcX, ASrcY, ASrcWidth, ASrcHeight: integer;
   ASrcColorMap: PGdkColormap; ASrcMask: PGdkBitmap;
   ADstWidth, ADstHeight: Integer; FlipHorz, FlipVert: Boolean;
@@ -646,7 +646,7 @@ procedure UpdateInnerMenuItem(LCLMenuItem: TMenuItem; MenuItemWidget: PGtkWidget
                               NewShortCut, ShortCutKey2: TShortCut);
 
 // statusbar
-function CreateStatusBarPanel(StatusBar: TObject; Index: integer): PGtkWidget;
+function CreateStatusBarPanel({%H-}StatusBar: TObject; {%H-}Index: integer): PGtkWidget;
 procedure UpdateStatusBarPanels(StatusBar: TObject;
                                 StatusBarWidget: PGtkWidget);
 procedure UpdateStatusBarPanel(StatusBar: TObject; Index: integer;
@@ -686,7 +686,7 @@ procedure FreeClipboardTargetEntries(ClipboardType: TClipboardType);
 function GdkAtomToStr(const Atom: TGdkAtom): string;
 
 // forms
-function CreateFormContents(AForm: TCustomForm;
+function CreateFormContents({%H-}AForm: TCustomForm;
   var FormWidget: Pointer; AWidgetInfo: PWidgetInfo = nil): Pointer;
 
 // styles
@@ -791,7 +791,7 @@ function GTKWindowStateEventCB(widget: PGtkWidget;
                                state: PGdkEventWindowState;
                                data: gpointer): gboolean; cdecl;
 
-function gtkMouseWheelCB(widget: PGtkWidget; event: PGdkEventScroll;
+function gtkMouseWheelCB({%H-}widget: PGtkWidget; event: PGdkEventScroll;
                          data: gPointer): GBoolean; cdecl;
 procedure GTKStyleChangedAfter(Widget: PGtkWidget; previous_style : PGTKStyle;
   Data: Pointer); cdecl;
@@ -804,14 +804,14 @@ uses
 
 const
   KCINFO_FLAG_SHIFT         = $01;
-  KCINFO_FLAG_CTRL          = $02;
+  //KCINFO_FLAG_CTRL          = $02;
   KCINFO_FLAG_ALTGR         = $04;
-  KCINFO_FLAG_KEY_MASK      = $07;
+  //KCINFO_FLAG_KEY_MASK      = $07;
   KCINFO_FLAG_EXT           = $10; // extended key
-  KCINFO_FLAG_TOGGLE        = $20; // toggle key
+  //KCINFO_FLAG_TOGGLE        = $20; // toggle key
 
   KCINFO_FLAG_SHIFT_XOR_NUM = $40; // second vkey should be used when numlock <>shift
-  KCINFO_FLAG_MULTI_MASK    = $C0; // key has more than one VK
+  //KCINFO_FLAG_MULTI_MASK    = $C0; // key has more than one VK
 
 
 type

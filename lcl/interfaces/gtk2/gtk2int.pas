@@ -34,7 +34,6 @@ interface
 {$I gtk2defines.inc}
 
 uses
-  ctypes{%H-},
   {$ifdef Unix}
   BaseUnix, Unix,
   {$endif}
@@ -381,25 +380,22 @@ procedure FreeListOfFileSelFilterEntry(ListOfFileSelFilterEntry: TFPList);
 implementation
 
 uses
+  {%H-}Gtk2WSFactory{%H-},
 {$ifdef Windows}
   Gtk2Windows,
 {$endif}
-  Gtk2WSFactory{%H-},
   Gtk2WSStdCtrls,
   Gtk2WSControls,
   Gtk2WSCheckLst,
   Gtk2WSPrivate,
   Gtk2Themes,
 ////////////////////////////////////////////////////
-  Gtk2Debug{%H-};
+  {%H-}Gtk2Debug{%H-};
 
 {$include gtk2widgetset.inc}
 {$include gtk2winapi.inc}
 {$include gtk2lclintf.inc}
 
-const
-  GtkListStoreItemGtkListTag = 'GtkList';
-  GtkListStoreItemLCLListTag = 'LCLList';
 
 {*************************************************************}
 {                      TGtkListStoreStringList methods             }
