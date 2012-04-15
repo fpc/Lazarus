@@ -143,7 +143,7 @@ type
     {$ifdef Unix}
     procedure InitSynchronizeSupport;
     procedure ProcessChildSignal;
-    procedure PrepareSynchronize(AObject: TObject);
+    procedure PrepareSynchronize({%H-}AObject: TObject);
     {$endif}
 
     procedure HandlePipeEvent(AData: PtrInt; AFlags: dword);

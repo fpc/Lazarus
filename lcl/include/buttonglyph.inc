@@ -90,7 +90,7 @@ begin
 end;
 
 procedure TButtonGlyph.GetImageIndexAndEffect(State: TButtonState;
-  var AIndex: Integer; var AEffect: TGraphicsDrawEffect);
+  out AIndex: Integer; out AEffect: TGraphicsDrawEffect);
 var
   AStoredState: TButtonState;
 begin

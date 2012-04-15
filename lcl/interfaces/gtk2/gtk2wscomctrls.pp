@@ -173,7 +173,7 @@ type
     class procedure ItemSetText(const ALV: TCustomListView; const AIndex: Integer; const AItem: TListItem; const ASubIndex: Integer; const AText: String); override;
     class procedure ItemShow(const ALV: TCustomListView; const AIndex: Integer; const AItem: TListItem; const PartialOK: Boolean); override;
     class function  ItemGetPosition(const ALV: TCustomListView; const AIndex: Integer): TPoint; override;
-    class procedure ItemUpdate(const ALV: TCustomListView; const {%H-}AIndex: Integer; const AItem: TListItem); override;
+    class procedure ItemUpdate(const ALV: TCustomListView; const {%H-}AIndex: Integer; const {%H-}AItem: TListItem); override;
 
     // lv
     class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): HWND; override;
