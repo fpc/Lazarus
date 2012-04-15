@@ -2406,9 +2406,10 @@ var
 begin
   for i:=0 to Screen.CustomFormCount-1 do begin
     AForm:=Screen.CustomForms[i];
-    if AForm<>MainIDEBar then begin
-      if not AForm.CloseQuery then exit(false);
-    end;
+    if AForm=MainIDEBar then continue;
+    if AForm.Designer<>nil then continue;
+    if AForm.Parent<>nil then continue;
+    if not AForm.CloseQuery then exit(false);
   end;
   Result:=true;
 end;
