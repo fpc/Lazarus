@@ -2688,7 +2688,7 @@ end;
  ------------------------------------------------------------------------------}
 function TGtk2WidgetSet.InternalGetDIBits(DC: HDC; Bitmap: HBitmap;
   StartScan, NumScans: UINT; BitSize : Longint; Bits: Pointer;
-  var BitInfo: BitmapInfo; Usage: UINT; DIB : Boolean): Integer;
+  out BitInfo: BitmapInfo; Usage: UINT; DIB : Boolean): Integer;
 const
   PadLine : array[0..12] of Byte = (0,0,0,0,0,0,0,0,0,0,1,0,0);
   TempBuffer : array[0..2] of Byte = (0,0,0);
@@ -2780,6 +2780,8 @@ begin
   //DebugLn('trace:[TGtk2WidgetSet.InternalGetDIBits]');
 
   Result := 0;
+  FillByte(BitInfo,SizeOf(BitInfo),0);
+
   if (DC=0) or (Usage=0) then ;
 
   if not IsValidGDIObject(Bitmap)
@@ -2797,7 +2799,6 @@ begin
 
   FillChar(FDIB{%H-}, SizeOf(FDIB), 0);
   GetObject(Bitmap, SizeOf(FDIB), @FDIB);
-  BitInfo.bmiHeader := FDIB.dsBmih;
 
   with GdiObject^, BitInfo.bmiHeader do
   begin

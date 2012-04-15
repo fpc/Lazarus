@@ -1,4 +1,3 @@
-{ $Id$ }
 {
  /***************************************************************************
                        gtk2int.pas  -  GTK2 Interface Object
@@ -196,7 +195,7 @@ type
     procedure LoadPixbufFromLazResource(const ResourceName: string;
       var Pixbuf: PGdkPixbuf);
     function InternalGetDIBits(DC: HDC; Bitmap: HBitmap; StartScan, NumScans: UINT;
-      BitSize : Longint; Bits: Pointer; var BitInfo: BitmapInfo; Usage: UINT; DIB : Boolean): Integer;
+      BitSize : Longint; Bits: Pointer; out BitInfo: BitmapInfo; Usage: UINT; DIB : Boolean): Integer;
     function RawImage_DescriptionFromDrawable(out ADesc: TRawImageDescription; ADrawable: PGdkDrawable; ACustomAlpha: Boolean): boolean;
     function RawImage_DescriptionFromPixbuf(out ADesc: TRawImageDescription; APixbuf: PGdkPixbuf): boolean;
     function RawImage_FromDrawable(out ARawImage: TRawImage; ADrawable, AAlpha: PGdkDrawable; ARect: PRect = nil): boolean;

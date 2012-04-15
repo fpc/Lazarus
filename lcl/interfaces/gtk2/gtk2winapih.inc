@@ -111,7 +111,7 @@ function GetBkColor(DC: HDC): TColorRef; override;
 function GetCapture: HWND; override;
 function GetCaretPos(var lpPoint: TPoint): Boolean; override;
 function GetCaretRespondToFocus(handle: HWND; var ShowHideOnFocus: boolean): Boolean; override;
-function GetCharABCWidths(DC: HDC; p2, p3: UINT; const ABCStructs): Boolean; override;
+function GetCharABCWidths({%H-}DC: HDC; {%H-}p2, {%H-}p3: UINT; const {%H-}ABCStructs): Boolean; override;
 function GetClientBounds(handle : HWND; var ARect : TRect) : Boolean; override;
 function GetClientRect(handle : HWND; var ARect : TRect) : Boolean; override;
 function GetClipBox(DC : hDC; lpRect : PRect) : Longint; override;

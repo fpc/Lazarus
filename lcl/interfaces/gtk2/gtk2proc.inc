@@ -3174,8 +3174,8 @@ const
 
 var
   KeySyms: array of guint;
-  KeyVals: Pguint;
-  KeymapKeys: PGdkKeymapKey;
+  KeyVals: Pguint = nil;
+  KeymapKeys: PGdkKeymapKey = nil;
   UniChar: gunichar;
 
   KeySymCount: Integer;
@@ -3215,7 +3215,7 @@ begin
   for KeyCode := LoKey to HiKey do
   begin
 
-    if not gdk_keymap_get_entries_for_keycode(nil, KeyCode, KeymapKeys{%H-}, KeyVals, @KeySymCount) then Continue;
+    if not gdk_keymap_get_entries_for_keycode(nil, KeyCode, KeymapKeys, KeyVals, @KeySymCount) then Continue;
     SetLength(KeySyms, KeySymCount);
     Move(KeyVals^, KeySyms[0], SizeOf(KeySyms[0]) * KeySymCount);
     g_free(KeymapKeys); // unused but we cannot pass a nil as param

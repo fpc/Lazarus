@@ -4266,8 +4266,6 @@ end;
   Params:  Don't care yet
   Returns: False so that the font cache in the newest mwEdit will use
            TextMetrics info which is working already
-
-
  ------------------------------------------------------------------------------}
 function TGtk2WidgetSet.GetCharABCWidths(DC: HDC; p2, p3: UINT;
   const ABCStructs): Boolean;
@@ -4968,7 +4966,7 @@ begin
   end;
   
   {$IFDEF Use_KeyStateList}
-  Result := KEYSTATE[FKeyStateList_.IndexOf(Pointer(PtrUInt(nVirtKey))) >=0];
+  Result := KEYSTATE[FKeyStateList_.IndexOf({%H-}Pointer(PtrUInt(nVirtKey))) >=0];
   {$ELSE}
   Implement this
   {$ENDIF}
@@ -4977,7 +4975,7 @@ begin
   if Result = 0
   then begin
     {$IFDEF Use_KeyStateList}
-    Result := KEYSTATE[FKeyStateList_.IndexOf(Pointer(PtrUInt(nVirtKey or KEYMAP_EXTENDED))) >=0];
+    Result := KEYSTATE[FKeyStateList_.IndexOf({%H-}Pointer(PtrUInt(nVirtKey or KEYMAP_EXTENDED))) >=0];
     {$ELSE}
     Implement this
     {$ENDIF}
@@ -4985,7 +4983,7 @@ begin
 
   {$IFDEF Use_KeyStateList}
   // add toggle
-  Result := Result or TOGGLESTATE[FKeyStateList_.IndexOf(Pointer(
+  Result := Result or TOGGLESTATE[FKeyStateList_.IndexOf({%H-}Pointer(
                                   PtrUInt(nVirtKey or KEYMAP_TOGGLE))) >=0];
   // If there are tons of new keyboard errors this is probably the cause
   GdkModMask := gtk_accelerator_get_default_mod_mask;
