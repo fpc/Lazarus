@@ -42,12 +42,12 @@ Known Issues:
 -------------------------------------------------------------------------------}
 
 unit SynEdit;
-{$IFDEF Windows}
+{$IFDEF Windows} {$IFnDEF WINCE}
   {$IFnDEF WithoutWinIME}
     {$DEFINE WinIME}
     {$DEFINE WinIMEFull}
   {$ENDIF}
-{$ENDIF}
+{$ENDIF} {$ENDIF}
 
 {$I synedit.inc}
 
