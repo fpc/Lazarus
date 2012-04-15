@@ -2809,6 +2809,10 @@ var a,x,y:integer;
 begin
   if FAOwner<>nil then
     TSourceNotebook(FAOwner).UpdateStatusBar;
+
+  CenterCursor(True);
+  CenterCursorHoriz(hcmSoftKeepEOL);
+
   AText:=Format(lisUEReplaceThisOccurrenceOfWith, ['"', ASearch, '"', #13, '"',
     AReplace, '"']);
 
