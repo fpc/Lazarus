@@ -580,10 +580,7 @@ begin
   if FImageIndex = Value then exit;
   FImageIndex := Value;
   if IsControlVisible and Assigned(FToolBar) then
-  begin
-    RefreshControl;
     Invalidate;
-  end;
 end;
 
 procedure TToolButton.SetMarked(Value: Boolean);
