@@ -41,7 +41,9 @@ type
     vfPostScript, vfEncapsulatedPostScript,
     { GCode formats }
     vfGCodeAvisoCNCPrototipoV5, vfGCodeAvisoCNCPrototipoV6,
-    { Other formats }
+    { Formula formats }
+    vfMathML,
+    { Raster Image formats }
     vfRAW
     );
 
