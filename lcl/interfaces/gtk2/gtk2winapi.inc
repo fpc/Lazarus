@@ -194,12 +194,7 @@ end;
 function TGtk2WidgetSet.CallNextHookEx(hhk : HHOOK; ncode : Integer; wParam: WParam; lParam : LParam) : Integer;
 begin
   Result := 0;
-  //TODO: Does anything need to be done here?
-  //DebugLn('Trace:!!!!!!!!!!!!!!!!!!');
-  //DebugLn('Trace:!!!!!!!!!!!!!!!!!!');
-  //DebugLn('Trace:TODO: CALLNEXTHOOKEX in gtkwinapi.inc');
-  //DebugLn('Trace:!!!!!!!!!!!!!!!!!!');
-  //DebugLn('Trace:!!!!!!!!!!!!!!!!!!');
+  // TODO: TGtk2WidgetSet.CallNextHookEx: Does anything need to be done here?
 end;
 
 {------------------------------------------------------------------------------

@@ -154,7 +154,6 @@ type
 
     // create and destroy
     function CreateAPIWidget(AWinControl: TWinControl): PGtkWidget;
-    function OldCreateStatusBarPanel(StatusBar: TObject; Index: integer): PGtkWidget;
     function CreateSimpleClientAreaWidget(Sender: TObject;
       NotOnParentsClientArea: boolean): PGtkWidget;
     procedure DestroyEmptySubmenu(Sender: TObject);
@@ -218,7 +217,7 @@ type
     // misc
     function GetCaption(Sender : TObject) : String;
     procedure WordWrap(DC: HDC; AText: PChar; MaxWidthInPixel: integer;
-      var Lines: PPChar; var LineCount: integer);
+      out Lines: PPChar; out LineCount: integer);
 
     procedure ResizeChild(Sender : TObject; Left,Top,Width,Height : Integer);
     procedure RemoveCallbacks(Widget: PGtkWidget);

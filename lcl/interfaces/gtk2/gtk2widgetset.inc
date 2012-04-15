@@ -4663,20 +4663,6 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  function TGtk2WidgetSet.CreateStatusBarPanel(StatusBar: TObject; Index: integer
-    ): PGtkWidget;
-
-  Creates a new statusbar panel widget.
- ------------------------------------------------------------------------------}
-function TGtk2WidgetSet.OldCreateStatusBarPanel(StatusBar: TObject; Index: integer
-  ): PGtkWidget;
-begin
-  Result:=gtk_statusbar_new;
-  gtk_widget_show(Result);
-  // other properties are set in UpdateStatusBarPanels
-end;
-
-{------------------------------------------------------------------------------
   function TGtk2WidgetSet.CreateSimpleClientAreaWidget(Sender: TObject;
     NotOnParentsClientArea: boolean): PGtkWidget;
 
@@ -6007,7 +5993,7 @@ end;
   with FreeMem(Lines).
 ------------------------------------------------------------------------------}
 procedure TGtk2WidgetSet.WordWrap(DC: HDC; AText: PChar;
-  MaxWidthInPixel: integer; var Lines: PPChar; var LineCount: integer);
+  MaxWidthInPixel: integer; out Lines: PPChar; out LineCount: integer);
 var
   UseFont: TGtkIntfFont;
 
@@ -6097,7 +6083,11 @@ var
   CurLineEntry: PPChar;
   CurLineStart: PChar;
 begin
-  if IsEmptyText then exit;
+  if IsEmptyText then begin
+    Lines:=nil;
+    LineCount:=0;
+    exit;
+  end;
   InitFont;
   LinesList:=TFPList.Create;
   LineStart:=0;
