@@ -37,8 +37,7 @@ Gtk2, GLib2, Gtk2Def,
 ////////////////////////////////////////////////////
   CheckLst, StdCtrls, Controls, LCLType, SysUtils, Classes, LMessages, LCLProc,
 ////////////////////////////////////////////////////
-  WSCheckLst, WSLCLClasses,
-  Gtk2WSStdCtrls;
+  WSCheckLst, WSLCLClasses;
 
 type
 
@@ -74,8 +73,8 @@ const
 
 { TGtk2WSCheckListBox }
 
-procedure Gtk2WS_CheckListBoxDataFunc(tree_column: PGtkTreeViewColumn;
-  cell: PGtkCellRenderer; tree_model: PGtkTreeModel; iter: PGtkTreeIter; data: Pointer); cdecl;
+procedure Gtk2WS_CheckListBoxDataFunc({%H-}tree_column: PGtkTreeViewColumn;
+  cell: PGtkCellRenderer; tree_model: PGtkTreeModel; iter: PGtkTreeIter; {%H-}data: Pointer); cdecl;
 var
   b: byte;
   ADisabled: gboolean;
@@ -91,7 +90,7 @@ begin
   g_object_set(cell, 'activatable', [gboolean(not ADisabled), nil]);
 end;
 
-procedure Gtk2WS_CheckListBoxToggle(cellrenderertoggle : PGtkCellRendererToggle;
+procedure Gtk2WS_CheckListBoxToggle({%H-}cellrenderertoggle : PGtkCellRendererToggle;
   arg1 : PGChar; WidgetInfo: PWidgetInfo); cdecl;
 var
   Mess: TLMessage;
@@ -128,7 +127,7 @@ begin
     gtk_tree_path_free(Path);
   end;
 
-  FillChar(Mess, SizeOf(Mess), #0);
+  FillChar(Mess{%H-}, SizeOf(Mess), #0);
   Mess.Msg := LM_CHANGED;
 
   Mess.Result := 0;
@@ -160,7 +159,7 @@ var
   WidgetInfo: PWidgetInfo;
 begin
   Result := TGtk2WSBaseScrollingWinControl.CreateHandle(AWinControl,AParams);
-  p := PGtkWidget(Result);
+  p := {%H-}PGtkWidget(Result);
 
   if Result = 0 then exit;
 
@@ -231,7 +230,7 @@ var
   Disabled: gboolean;
 begin
   Result := True;
-  WidgetInfo := GetWidgetInfo(PGtkWidget(ACheckListBox.Handle));
+  WidgetInfo := GetWidgetInfo({%H-}PGtkWidget(ACheckListBox.Handle));
 
   TreeView := PGtkTreeView(WidgetInfo^.CoreWidget);
   ListStore := gtk_tree_view_get_model(TreeView);
@@ -253,7 +252,7 @@ var
   b: byte;
 begin
   Result := cbUnchecked;
-  WidgetInfo := GetWidgetInfo(PGtkWidget(ACheckListBox.Handle));
+  WidgetInfo := GetWidgetInfo({%H-}PGtkWidget(ACheckListBox.Handle));
 
   TreeView := PGtkTreeView(WidgetInfo^.CoreWidget);
   ListStore := gtk_tree_view_get_model(TreeView);
@@ -274,7 +273,7 @@ var
   ListStore: PGtkTreeModel;
   Disabled: gboolean;
 begin
-  WidgetInfo := GetWidgetInfo(PGtkWidget(ACheckListBox.Handle));
+  WidgetInfo := GetWidgetInfo({%H-}PGtkWidget(ACheckListBox.Handle));
 
   TreeView := PGtkTreeView(WidgetInfo^.CoreWidget);
   ListStore := gtk_tree_view_get_model(TreeView);
@@ -293,7 +292,7 @@ var
   WidgetInfo: PWidgetInfo;
   ListStore: PGtkTreeModel;
 begin
-  WidgetInfo := GetWidgetInfo(PGtkWidget(ACheckListBox.Handle));
+  WidgetInfo := GetWidgetInfo({%H-}PGtkWidget(ACheckListBox.Handle));
 
   TreeView := PGtkTreeView(WidgetInfo^.CoreWidget);
   ListStore := gtk_tree_view_get_model(TreeView);

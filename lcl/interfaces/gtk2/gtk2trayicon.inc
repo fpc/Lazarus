@@ -54,8 +54,8 @@ type
 
 const
   SYSTEM_TRAY_REQUEST_DOCK   = 0;
-  SYSTEM_TRAY_BEGIN_MESSAGE  = 1;
-  SYSTEM_TRAY_CANCEL_MESSAGE = 2;
+  //SYSTEM_TRAY_BEGIN_MESSAGE  = 1;
+  //SYSTEM_TRAY_CANCEL_MESSAGE = 2;
 
 {$ifdef HasGdk2X}
 var
@@ -70,7 +70,7 @@ var
 *  RETURNS:        ?
 *
 *******************************************************************}
-function TempX11ErrorHandler(Display:PDisplay; ErrorEv:PXErrorEvent):longint;cdecl;
+function TempX11ErrorHandler({%H-}Display:PDisplay; ErrorEv:PXErrorEvent):longint;cdecl;
 begin
   XError := ErrorEv^.error_code;
   WriteLn('Error: ' + IntToStr(XError));
@@ -91,7 +91,7 @@ function TGtk2TrayIconHandle.SendMessage(window: TWindow; msg: Integer; data1, d
 var
   Ev: TXEvent;
 begin
-  FillChar(Ev, SizeOf(TXEvent), 0);
+  FillChar(Ev{%H-}, SizeOf(TXEvent), 0);
 
   ev.xclient._type := ClientMessage;
   ev.xclient.window := window;
@@ -161,7 +161,7 @@ end;
 *  RETURNS:        Nothing
 *
 *******************************************************************}
-procedure realize_cb(widget: PGtkWidget; user_data: gpointer); cdecl;
+procedure realize_cb({%H-}widget: PGtkWidget; user_data: gpointer); cdecl;
 var
   wsTrayIcon: TCustomTrayIcon absolute user_data;
 begin
@@ -193,7 +193,7 @@ end;
 *  RETURNS:        Nothing
 *
 *******************************************************************}
-function button_release_cb(widget: PGtkWidget; event: PGdkEventButton;
+function button_release_cb({%H-}widget: PGtkWidget; event: PGdkEventButton;
  user_data: gpointer): gboolean; cdecl;
 var
   vwsTrayIcon: TCustomTrayIcon absolute user_data;
@@ -231,7 +231,7 @@ end;
 *  RETURNS:        Nothing
 *
 *******************************************************************}
-function button_press_cb(widget: PGtkWidget; event: PGdkEventButton;
+function button_press_cb({%H-}widget: PGtkWidget; event: PGdkEventButton;
  user_data: gpointer): gboolean; cdecl;
 var
   vwsTrayIcon: TCustomTrayIcon absolute user_data;
@@ -265,7 +265,7 @@ end;
 *  RETURNS:        Nothing
 *
 *******************************************************************}
-function popup_cb(widget: PGtkWidget; user_data: gpointer): Boolean; cdecl;
+function popup_cb({%H-}widget: PGtkWidget; user_data: gpointer): Boolean; cdecl;
 var
   vwsTrayIcon: TCustomTrayIcon absolute user_data;
 begin
@@ -285,7 +285,7 @@ end;
 *  RETURNS:        Nothing
 *
 *******************************************************************}
-function motion_cb(widget: PGtkWidget; event: PGdkEventMotion; user_data: gpointer): Boolean; cdecl;
+function motion_cb({%H-}widget: PGtkWidget; event: PGdkEventMotion; user_data: gpointer): Boolean; cdecl;
 var
   vwsTrayIcon: TCustomTrayIcon absolute user_data;
 begin
@@ -296,7 +296,7 @@ begin
 end;
 
 {$ifdef UseStatusIcon}
-procedure activate_cb_statusicon(status_icon: PGtkStatusIcon; user_data: gpointer); cdecl;
+procedure activate_cb_statusicon({%H-}status_icon: PGtkStatusIcon; user_data: gpointer); cdecl;
 var
   vwsTrayIcon: TCustomTrayIcon absolute user_data;
 begin
@@ -305,8 +305,8 @@ begin
       vwsTrayIcon.OnMouseDown(vwsTrayIcon, mbLeft, [], X, Y);
 end;
 
-procedure popup_cb_statusicon(status_icon: PGtkStatusIcon; button: guint;
-                activate_time: guint; user_data: gpointer); cdecl;
+procedure popup_cb_statusicon({%H-}status_icon: PGtkStatusIcon; {%H-}button: guint;
+                {%H-}activate_time: guint; user_data: gpointer); cdecl;
 var
   vwsTrayIcon: TCustomTrayIcon absolute user_data;
 begin
@@ -314,7 +314,7 @@ begin
     vwsTrayIcon.PopUpMenu.PopUp(Mouse.CursorPos.X, Mouse.CursorPos.Y);
 end;
 
-function button_press_cb_statusicon(status_icon: PGtkStatusIcon;
+function button_press_cb_statusicon({%H-}status_icon: PGtkStatusIcon;
   event: PGdkEvent; user_data: gpointer): gboolean; cdecl;
 var
   vwsTrayIcon: TCustomTrayIcon absolute user_data;
@@ -338,7 +338,7 @@ begin
   end;
 end;
 
-function button_release_cb_statusicon(status_icon: PGtkStatusIcon;
+function button_release_cb_statusicon({%H-}status_icon: PGtkStatusIcon;
   event: PGdkEvent; user_data: gpointer): gboolean; cdecl;
 var
   vwsTrayIcon: TCustomTrayIcon absolute user_data;
@@ -376,7 +376,7 @@ begin
   if Available_GtkStatusIcon_2_10 then
   begin
     FStatusIcon := gtk_status_icon_new();
-    gtk_status_icon_set_from_pixbuf(FStatusIcon, PGdkPixbuf(FTrayIcon.Icon.Handle));
+    gtk_status_icon_set_from_pixbuf(FStatusIcon, {%H-}PGdkPixbuf(FTrayIcon.Icon.Handle));
     gtk_status_icon_set_tooltip(FStatusIcon, PChar(FTrayIcon.Hint));
     fEmbedded := gtk_status_icon_is_embedded(FStatusIcon);
 
@@ -406,7 +406,7 @@ begin
     //  Draws the icon
     with wsTrayIcon do
     begin
-      DrawingArea := gtk_image_new_from_pixbuf(PGdkPixbuf(Icon.Handle));
+      DrawingArea := gtk_image_new_from_pixbuf({%H-}PGdkPixbuf(Icon.Handle));
       gtk_widget_show(DrawingArea);
       gtk_container_add(GTK_CONTAINER(plug), DrawingArea);
     end;
@@ -558,7 +558,7 @@ end;
 class procedure TGtk2WSCustomTrayIcon.InternalUpdate(const ATrayIcon: TCustomTrayIcon);
 begin
   if ATrayIcon.Handle <> 0 then
-    TGtk2TrayIconHandle(ATrayIcon.Handle).Update(PGdkPixbuf(ATrayIcon.Icon.Handle), ATrayIcon.Hint);
+    TGtk2TrayIconHandle(ATrayIcon.Handle).Update({%H-}PGdkPixbuf(ATrayIcon.Icon.Handle), ATrayIcon.Hint);
 end;
 
 {*******************************************************************

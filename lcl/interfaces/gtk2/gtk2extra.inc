@@ -39,7 +39,7 @@ function gtk_cell_view_get_model(cell_view: PGtkCellView): PGtkTreeModel;
 var
   Value: TGvalue;
 begin
-  FillByte(Value,SizeOf(Value),0);
+  FillByte(Value{%H-},SizeOf(Value),0);
   g_value_init(@Value,GTK_TYPE_TREE_MODEL);
   g_object_get_property(PGObject(Cell_View),'model',@Value);
   Result:=PGtkTreeModel(g_value_get_object(@Value));

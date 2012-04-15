@@ -48,9 +48,9 @@ type
     class procedure SetVisible(const AMenuItem: TMenuItem; const Visible: boolean); override;
     class function SetCheck(const AMenuItem: TMenuItem; const Checked: boolean): boolean; override;
     class function SetEnable(const AMenuItem: TMenuItem; const Enabled: boolean): boolean; override;
-    class function SetRadioItem(const AMenuItem: TMenuItem; const RadioItem: boolean): boolean; override;
+    class function SetRadioItem(const AMenuItem: TMenuItem; const {%H-}RadioItem: boolean): boolean; override;
     class function SetRightJustify(const AMenuItem: TMenuItem; const Justified: boolean): boolean; override;
-    class procedure UpdateMenuIcon(const AMenuItem: TMenuItem; const HasIcon: Boolean; const AIcon: TBitmap); override;
+    class procedure UpdateMenuIcon(const AMenuItem: TMenuItem; const HasIcon: Boolean; const {%H-}AIcon: TBitmap); override;
   end;
 
   { TGtk2WSMenu }
@@ -58,7 +58,7 @@ type
   TGtk2WSMenu = class(TWSMenu)
   published
     class function CreateHandle(const AMenu: TMenu): HMENU; override;
-    class procedure SetBiDiMode(const AMenu: TMenu; UseRightToLeftAlign, UseRightToLeftReading : Boolean); override;
+    class procedure SetBiDiMode(const AMenu: TMenu; UseRightToLeftAlign, {%H-}UseRightToLeftReading : Boolean); override;
   end;
 
   { TGtk2WSMainMenu }
@@ -86,7 +86,7 @@ var
   MenuWidget: PGtkWidget = nil;
 
 function Gtk2MenuItemButtonPress(widget: PGtkWidget; event: PGdkEventButton;
- user_data: gpointer): gboolean; cdecl;
+ {%H-} user_data: gpointer): gboolean; cdecl;
 var
   Parent: PGtkWidget;
   WidgetInfo: PWidgetInfo;
@@ -129,7 +129,7 @@ begin
   and GtkWidgetIsA(PGtkWidget(Widget), GTK_TYPE_CHECK_MENU_ITEM)
   and (not gtk_check_menu_item_get_active(PGTKCheckMenuItem(Widget))) then Exit;
 
-  FillChar(Mess, SizeOf(Mess), #0);
+  FillChar(Mess{%H-}, SizeOf(Mess), #0);
   Mess.Msg := LM_ACTIVATE;
   Mess.Active := WA_ACTIVE;
   Mess.Minimized := False;
@@ -179,13 +179,13 @@ begin
   if b and (w <> nil) and (w <> PGtkWidget(AMenuItem)) then
   begin
     WidgetInfo := GetWidgetInfo(w);
-    FillChar(Mess,SizeOf(Mess),#0);
+    FillChar(Mess{%H-},SizeOf(Mess),#0);
     Mess.Msg := LM_ACTIVATE;
     WidgetInfo^.LCLObject.Dispatch(Mess);
   end;
 end;
 
-function Gtk2MenuItemSelect(item: PGtkMenuItem; AMenuItem: gPointer): GBoolean; cdecl;
+function Gtk2MenuItemSelect({%H-}item: PGtkMenuItem; AMenuItem: gPointer): GBoolean; cdecl;
 begin
   TMenuItem(AMenuItem).IntfDoSelect;
   Result := CallBackDefaultReturn;
@@ -221,7 +221,7 @@ begin
     requisition^.height := IconHeight;
 end;
 
-function Gtk2MenuItemDeselect(item: Pointer; AMenuItem: TMenuItem): GBoolean; cdecl;
+function Gtk2MenuItemDeselect({%H-}item: Pointer; {%H-}AMenuItem: TMenuItem): GBoolean; cdecl;
 begin
   Application.Hint := '';
   Result := CallBackDefaultReturn;
@@ -255,10 +255,10 @@ var
 begin
   with AMenuItem do
   begin
-    MenuItem := PGtkWidget(Handle);
+    MenuItem := {%H-}PGtkWidget(Handle);
     if MenuItem=nil then
       RaiseGDBException('TGtkWidgetSet.AttachMenu Handle=0');
-    ParentMenuWidget := PGtkWidget(Parent.Handle);
+    ParentMenuWidget := {%H-}PGtkWidget(Parent.Handle);
     if ParentMenuWidget=nil then
       RaiseGDBException('TGtkWidgetSet.AttachMenu ParentMenuWidget=nil');
 
@@ -281,7 +281,7 @@ begin
       begin
         if (GetParentMenu is TPopupMenu) and (Parent.Parent=nil) then
         begin
-          ContainerMenu := PGtkWidget(GetParentMenu.Handle);
+          ContainerMenu := {%H-}PGtkWidget(GetParentMenu.Handle);
           gtk_object_set_data(PGtkObject(ContainerMenu), 'ContainerMenu',
                               ContainerMenu);
         end else
@@ -296,7 +296,7 @@ begin
     end;
 
     if GtkWidgetIsA(MenuItem, GTK_TYPE_RADIO_MENU_ITEM) then
-      TGtk2WidgetSet(WidgetSet).RegroupMenuItem(HMENU(PtrUInt(MenuItem)), GroupIndex);
+      TGtk2WidgetSet(WidgetSet).RegroupMenuItem(HMENU({%H-}PtrUInt(MenuItem)), GroupIndex);
   end;
 end;
 
@@ -349,7 +349,7 @@ begin
   {$IFDEF DebugLCLComponents}
   DebugGtkWidgets.MarkCreated(Widget, dbgsName(AMenuItem));
   {$ENDIF}
-  Result := HMENU(PtrUInt(Widget));
+  Result := HMENU({%H-}PtrUInt(Widget));
 end;
 
 class procedure TGtk2WSMenuItem.DestroyHandle(const AMenuItem: TMenuItem);
@@ -365,9 +365,9 @@ var
 begin
   if not WSCheckMenuItem(AMenuItem, 'SetCaption') then
     Exit;
-  MenuItemWidget:=PGtkWidget(AMenuItem.Handle);
+  MenuItemWidget:={%H-}PGtkWidget(AMenuItem.Handle);
   UpdateInnerMenuItem(AMenuItem,MenuItemWidget);
-  gtk_widget_set_sensitive(PGtkWidget(AMenuItem.Handle),
+  gtk_widget_set_sensitive({%H-}PGtkWidget(AMenuItem.Handle),
                            AMenuItem.Enabled and (ACaption <> cLineCaption));
 end;
 
@@ -382,7 +382,7 @@ begin
   if not WSCheckMenuItem(AMenuItem, 'SetShortCut') then  Exit;
   
   // Temporary: At least it writes the names of the shortcuts
-  UpdateInnerMenuItem(AMenuItem, PGTKWidget(AMenuItem.Handle), ShortCutK1, ShortCutK2);
+  UpdateInnerMenuItem(AMenuItem, {%H-}PGTKWidget(AMenuItem.Handle), ShortCutK1, ShortCutK2);
 
 {  // Gets the inner widgets. They should already be created by now
   MenuWidget := PGtkMenuItem(AMenuItem.Handle);
@@ -401,7 +401,7 @@ var
 begin
   if not WSCheckMenuItem(AMenuItem, 'SetVisible') then
     Exit;
-  MenuItemWidget := PGtkWidget(AMenuItem.Handle);
+  MenuItemWidget := {%H-}PGtkWidget(AMenuItem.Handle);
   if gtk_widget_visible(MenuItemWidget) = Visible then
     Exit;
   if Visible then
@@ -420,7 +420,7 @@ begin
   Result:=false;
   if not WSCheckMenuItem(AMenuItem, 'SetCheck') then
     Exit;
-  Item := Pointer(AMenuItem.Handle);
+  Item := {%H-}Pointer(AMenuItem.Handle);
   IsRadio := gtk_is_radio_menu_item(Item);
   if IsRadio or gtk_is_check_menu_item(Item)
   then begin
@@ -448,7 +448,7 @@ begin
   Result := False;
   if not WSCheckMenuItem(AMenuItem, 'SetEnable') then
     Exit;
-  gtk_widget_set_sensitive(PGtkWidget(AMenuItem.Handle),
+  gtk_widget_set_sensitive({%H-}PGtkWidget(AMenuItem.Handle),
                            Enabled and (AMenuItem.Caption <> cLineCaption));
   Result := True;
 end;
@@ -468,7 +468,7 @@ begin
   Result := False;
   if not WSCheckMenuItem(AMenuItem, 'SetRightJustify') then
     Exit;
-  MenuItemWidget := PGtkMenuItem(AMenuItem.Handle);
+  MenuItemWidget := {%H-}PGtkMenuItem(AMenuItem.Handle);
   gtk_menu_item_set_right_justified(MenuItemWidget, Justified);
   gtk_widget_queue_resize(GTK_WIDGET(MenuItemWidget));
   Result := True;
@@ -479,7 +479,7 @@ class procedure TGtk2WSMenuItem.UpdateMenuIcon(const AMenuItem: TMenuItem;
 begin
   if not WSCheckMenuItem(AMenuItem, 'UpdateMenuIcon') then
     Exit;
-  if gtk_is_check_menu_item(Pointer(AMenuItem.Handle)) <> HasIcon then
+  if gtk_is_check_menu_item({%H-}Pointer(AMenuItem.Handle)) <> HasIcon then
     AMenuItem.RecreateHandle;
 end;
 
@@ -505,7 +505,7 @@ begin
     RaiseGDBException('Form already has a MainMenu');
   if ParentForm.HandleAllocated then
   begin
-    Box := PGTKBin(ParentForm.Handle)^.Child;
+    Box := {%H-}PGTKBin(ParentForm.Handle)^.Child;
     gtk_box_pack_start(Box, Widget, False, False, 0);
   end;
 
@@ -515,7 +515,7 @@ begin
   {$IFDEF DebugLCLComponents}
   DebugGtkWidgets.MarkCreated(Widget, dbgsName(AMenu));
   {$ENDIF}
-  Result := THandle(PtrUInt(Widget));
+  Result := THandle({%H-}PtrUInt(Widget));
   WidgetInfo := CreateWidgetInfo(Widget);
   WidgetInfo^.LCLObject := AMenu;
   // no callbacks for main menu
@@ -538,8 +538,8 @@ const
     if Flip then
     begin
       if AMenuItem.HandleAllocated then begin
-        gtk_widget_set_direction(PGtkWidget(AMenuItem.Handle), WidgetDirection[UseRightToLeftAlign]);
-        UpdateInnerMenuItem(AMenuItem, PGtkWidget(AMenuItem.Handle));
+        gtk_widget_set_direction({%H-}PGtkWidget(AMenuItem.Handle), WidgetDirection[UseRightToLeftAlign]);
+        UpdateInnerMenuItem(AMenuItem, {%H-}PGtkWidget(AMenuItem.Handle));
       end;
     end;
     for i := 0 to AMenuItem.Count -1 do
@@ -547,8 +547,8 @@ const
   end;
 begin
   {$ifdef GTK_2_8}
-    gtk_menu_bar_set_pack_direction(PGtkMenuBar(AMenu.Handle), MenuDirection[UseRightToLeftAlign]);
-    gtk_menu_bar_set_child_pack_direction(PGtkMenuBar(AMenu.Handle), MenuDirection[UseRightToLeftAlign]);
+    gtk_menu_bar_set_pack_direction({%H-}PGtkMenuBar(AMenu.Handle), MenuDirection[UseRightToLeftAlign]);
+    gtk_menu_bar_set_child_pack_direction({%H-}PGtkMenuBar(AMenu.Handle), MenuDirection[UseRightToLeftAlign]);
   {$endif}
   //gtk_widget_set_direction(PGtkWidget(AMenu.Handle), WidgetDirection[UseRightToLeftAlign]);
   Switch(AMenu.Items, False);

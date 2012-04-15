@@ -33,7 +33,7 @@ uses
   SysUtils, Classes, Graphics, Controls, Dialogs, ExtDlgs, LCLType,
   FileUtil, LCLStrConsts, LCLProc, InterfaceBase,
   // Widgetset
-  Gtk2Int, Gtk2WSControls, Gtk2Globals, Gtk2Def, Gtk2Proc,
+  Gtk2Int, Gtk2Globals, Gtk2Def, Gtk2Proc,
   WSDialogs;
   
 type
@@ -130,7 +130,7 @@ var
   Widget: PGtkWidget;
 begin
   //DebugLn(['UpdateDetailView ']);
-  Widget := PGtkWidget(OpenDialog.Handle);
+  Widget := {%H-}PGtkWidget(OpenDialog.Handle);
   FileName := gtk_file_chooser_get_filename(PGtkFileChooser(Widget));
 
   OldFilename := OpenDialog.Filename;
@@ -143,7 +143,7 @@ begin
      (ExtractFilePath(Filename) <> ExtractFilePath(OldFilename)) then
     OpenDialog.DoFolderChange;
   // show some information
-  FileDetailLabel := gtk_object_get_data(PGtkObject(OpenDialog.Handle), 'FileDetailLabel');
+  FileDetailLabel := gtk_object_get_data({%H-}PGtkObject(OpenDialog.Handle), 'FileDetailLabel');
   if FileDetailLabel = nil then
     Exit;
   if FileExistsUTF8(Filename) then
@@ -316,7 +316,7 @@ begin
     // only process the callback if there is event data. If there isn't any
     // event data that means it was called due to a direct function call of the
     // widget and not an actual mouse click on the widget.
-    FileSelWidget:=PGtkFileSelection(theDialog.Handle);
+    FileSelWidget:={%H-}PGtkFileSelection(theDialog.Handle);
     if (bevent <> nil) and (gdk_event_get_type(bevent) = GDK_2BUTTON_PRESS)
     and (FileSelWidget^.dir_list = widget) then begin
       MenuWidget := gtk_object_get_data(PGtkObject(FileSelWidget),
@@ -401,7 +401,7 @@ begin
   and (fdApplyButton in TFontDialog(theDialog).Options)
   and (Assigned(TFontDialog(theDialog).OnApplyClicked)) then begin
     FontName := gtk_font_selection_dialog_get_font_name(
-                                    pgtkfontselectiondialog(theDialog.Handle));
+                                    {%H-}pgtkfontselectiondialog(theDialog.Handle));
     if IsFontNameXLogicalFontDesc(FontName) then begin
       // extract basic font attributes from the font name in XLFD format
       ALogFont:=XLFDNameToLogFont(FontName);
@@ -484,7 +484,7 @@ begin
   Result := True;
   if (Widget=nil) then ;
   theDialog := TCommonDialog(data);
-  FPointer := Pointer(theDialog.Handle);
+  FPointer := {%H-}Pointer(theDialog.Handle);
 
   if theDialog is TFileDialog then
   begin
@@ -754,7 +754,7 @@ var
                                       'LCLIsFilterMenuItem'));
     if (AFilterEntry<>nil) and (AFilterEntry.Mask<>nil) then
     begin
-      PopulateFileAndDirectoryLists(PGtkFileSelection(theDialog.Handle),
+      PopulateFileAndDirectoryLists({%H-}PGtkFileSelection(theDialog.Handle),
                                     AFilterEntry.Mask);
       TFileDialog(TheDialog).IntfFileTypeChanged(AFilterEntry.FilterIndex + 1);
       UpdateDetailView(TOpenDialog(theDialog));
@@ -774,7 +774,7 @@ begin
     if (AHistoryEntry<>nil) and (AHistoryEntry^.Filename<>nil) then begin
       // user has choosen a history file
       // -> select it in the filedialog
-      gtk_file_chooser_set_current_folder(PGtkFileChooser(theDialog.Handle),AHistoryEntry^.Filename);
+      gtk_file_chooser_set_current_folder({%H-}PGtkFileChooser(theDialog.Handle),AHistoryEntry^.Filename);
 
       UpdateDetailView(TOpenDialog(theDialog));
     end;
@@ -919,7 +919,7 @@ begin
 
   FileChooser := PGtkFileChooser(SelWidget);
 
-  PreviewWidget := PGtkWidget(AControl.Handle);
+  PreviewWidget := {%H-}PGtkWidget(AControl.Handle);
 
   gtk_object_set_data(PGtkObject(PreviewWidget),'LCLPreviewFixed',
                       PreviewWidget);
@@ -953,7 +953,7 @@ var
   //FileDetailLabel: PGtkWidget;
 begin
   Result := TGtk2WSFileDialog.CreateHandle(ACommonDialog);
-  FileSelWidget := PGtkFileChooser(Result);
+  FileSelWidget := {%H-}PGtkFileChooser(Result);
 
   if OpenDialog.InheritsFrom(TSaveDialog) then
   begin
@@ -1090,7 +1090,7 @@ begin
   then
     gtk_file_chooser_set_current_name(Widget, Pgchar(FileDialog.FileName));
 
-  Result := THandle(PtrUInt(Widget));
+  Result := THandle({%H-}PtrUInt(Widget));
   WidgetInfo := CreateWidgetInfo(Widget);
   WidgetInfo^.LCLObject := ACommonDialog;
   TGtk2WSCommonDialog.SetSizes(Widget, WidgetInfo);
@@ -1208,7 +1208,7 @@ var
   GtkWindow: PGtkWindow;
 begin
   ReleaseMouseCapture;
-  GtkWindow:=PGtkWindow(ACommonDialog.Handle);
+  GtkWindow:={%H-}PGtkWindow(ACommonDialog.Handle);
   gtk_window_set_title(GtkWindow,PChar(ACommonDialog.Title));
   if ACommonDialog is TColorDialog then
   begin
@@ -1249,7 +1249,7 @@ var
 begin
   Widget := gtk_color_selection_dialog_new(PChar(ACommonDialog.Title));
 
-  Result := THandle(PtrUInt(Widget));
+  Result := THandle({%H-}PtrUInt(Widget));
   WidgetInfo := CreateWidgetInfo(Widget);
   WidgetInfo^.LCLObject := ACommonDialog;
   TGtk2WSCommonDialog.SetSizes(Widget, WidgetInfo);
@@ -1324,7 +1324,7 @@ begin
   { This functionality does not seem to be available in GTK2 }
   // Honor selected TFontDialogOption flags
 
-  Result := THandle(PtrUInt(Widget));
+  Result := THandle({%H-}PtrUInt(Widget));
   WidgetInfo := CreateWidgetInfo(Widget);
   WidgetInfo^.LCLObject := ACommonDialog;
   TGtk2WSCommonDialog.SetSizes(Widget, WidgetInfo);

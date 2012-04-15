@@ -20,9 +20,9 @@ interface
 
 uses
   SysUtils, Classes, InterfaceBase,
-  Pango, glib2, gdk2pixbuf, gdk2, gtk2,
+  Pango, glib2, gdk2, gtk2,
   LMessages, LCLProc, Controls, ComCtrls, Forms, LCLIntf, LCLType,
-  DynHashArray, Maps;
+  DynHashArray;
 
 {$I dragicons.inc}
 

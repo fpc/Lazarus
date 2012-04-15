@@ -19,8 +19,8 @@ unit Gtk2FontCache;
 interface
 
 uses
-  Classes, SysUtils, FPCAdds, LCLProc, LCLType, AvgLvlTree, Gtk2Def,
-  glib2, gdk2, pango,
+  Classes, SysUtils, LCLProc, LCLType, AvgLvlTree, Gtk2Def,
+  glib2, pango,
   LCLResCache;
   
 type
@@ -66,8 +66,8 @@ type
     procedure RemoveItem(Item: TResourceCacheItem); override;
   public
     constructor Create;
-    function CompareItems(Tree: TAvgLvlTree; Item1, Item2: Pointer): integer; override;
-    function CompareDescriptors(Tree: TAvgLvlTree; Desc1, Desc2: Pointer): integer; override;
+    function CompareItems({%H-}Tree: TAvgLvlTree; Item1, Item2: Pointer): integer; override;
+    function CompareDescriptors({%H-}Tree: TAvgLvlTree; Desc1, Desc2: Pointer): integer; override;
     function FindGtkFont(TheGtkFont: TGtkIntfFont): TGtkFontCacheItem;
     function FindGtkFontDesc(const LogFont: TLogFont;
                            const LongFontName: string): TGtkFontCacheDescriptor;
@@ -263,8 +263,8 @@ var
   LogFont: TLogFont;
   LongFontName: string;
 begin
-  FillChar(LogFont,SizeOf(LogFont),0);
-  LongFontName:=dbghex(PtrUInt(TheGtkFont));
+  FillChar(LogFont{%H-},SizeOf(LogFont),0);
+  LongFontName:=dbghex({%H-}PtrUInt(TheGtkFont));
   Result:=Add(TheGtkFont,LogFont,LongFontName);
 end;
 

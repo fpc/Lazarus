@@ -32,12 +32,13 @@ interface
 
 uses
   // libs
-  Math, GLib2, Gtk2, Gdk2, Gdk2Pixbuf, Gtk2Int, Gtk2Def, {$ifdef UseStatusIcon}Gtk2Ext, {$endif}
+  GLib2, Gtk2, Gdk2, Gdk2Pixbuf, Gtk2Int, Gtk2Def,
+  {$ifdef UseStatusIcon}Gtk2Ext, {$endif}
   // LCL
-  LCLProc, ExtCtrls, Classes, Controls, SysUtils, Graphics, LCLType, LMessages,
+  LCLProc, ExtCtrls, Classes, Controls, SysUtils, Graphics, LCLType,
   // widgetset
-  WSExtCtrls, WSLCLClasses, WSProc,
-  Gtk2WSControls, Gtk2WSPrivate, Gtk2Proc, Gtk2Globals;
+  WSExtCtrls, WSLCLClasses,
+  Gtk2WSControls, Gtk2Proc, Gtk2Globals;
 
 type
 
@@ -169,7 +170,7 @@ implementation
 
 uses
 {$ifdef HasX}
-  x, xlib, xutil,
+  x, xlib,
 {$endif}
 //  gtk2, gdk2, glib2, gtk2def, gtk2proc,
 {$ifdef HasGdk2X}
@@ -224,7 +225,7 @@ begin
   WidgetInfo^.LCLObject := AWinControl;
   WidgetInfo^.Style := AParams.Style;
   WidgetInfo^.ExStyle := AParams.ExStyle;
-  WidgetInfo^.WndProc := PtrUInt(AParams.WindowClass.lpfnWndProc);
+  WidgetInfo^.WndProc := {%H-}PtrUInt(AParams.WindowClass.lpfnWndProc);
 
   g_object_set_data(PGObject(WidgetClient), 'widgetinfo', WidgetInfo);
 
@@ -239,7 +240,7 @@ begin
   Set_RC_Name(AWinControl, Frame);
   SetCallbacks(Frame, WidgetInfo);
 
-  Result := TLCLIntfHandle(PtrUInt(Frame));
+  Result := TLCLIntfHandle({%H-}PtrUInt(Frame));
 end;
 
 class procedure TGtk2WSCustomPanel.SetColor(const AWinControl: TWinControl);
@@ -247,7 +248,7 @@ var
   MainWidget: PGtkWidget;
 begin
   if not AWinControl.HandleAllocated then exit;
-  MainWidget:=GetFixedWidget(pGtkWidget(AWinControl.handle));
+  MainWidget:=GetFixedWidget({%H-}pGtkWidget(AWinControl.handle));
   if MainWidget<>nil then
   Gtk2WidgetSet.SetWidgetColor(MainWidget,
                               AWinControl.Font.Color, AWinControl.Color,
