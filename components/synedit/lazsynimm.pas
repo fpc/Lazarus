@@ -11,6 +11,11 @@ uses
   Graphics, SynEditMiscClasses, SynTextDrawer, SynEditPointClasses, SynEditMarkupSelection,
   SynEditMarkup, SynEditTypes, SynEditKeyCmds, LazSynEditText;
 
+{$IFDEF WINCE} {$IF (FPC_FULLVERSION < 20700)}
+function ImmSetCompositionFontA(_himc:HIMC; lplf:LPLOGFONT):BOOL; external ImmDLL name 'ImmSetCompositionFontA';
+const
+  WM_IME_REQUEST = $0288;
+{$ENDIF}{$ENDIF}
 type
 
   { LazSynIme }
