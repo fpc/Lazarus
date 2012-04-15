@@ -1296,8 +1296,8 @@ var
   threadsync_giochannel: pgiochannel;
   childsig_pending: boolean;
 
-procedure ChildEventHandler(sig: longint; siginfo: psiginfo;
-  sigcontext: psigcontext); cdecl;
+procedure ChildEventHandler({%H-}sig: longint; {%H-}siginfo: psiginfo;
+  {%H-}sigcontext: psigcontext); cdecl;
 begin
   childsig_pending := true;
   WakeMainThread(nil);
@@ -1746,6 +1746,8 @@ procedure TGtk2WidgetSet.PrepareSynchronize(AObject: TObject);
 var
   thrash: char;
 begin
+  // ToDo: TGtk2WidgetSet.PrepareSynchronize what is AObject?
+
   // wake up GUI thread by sending a byte through the threadsync pipe
   thrash:='l';
   fpwrite(threadsync_pipeout, thrash, 1);
@@ -1760,6 +1762,7 @@ var
   handler: PChildSignalEventHandler;
 begin
   repeat
+    status:=0;
     pid := fpwaitpid(-1, status, WNOHANG);
     if pid <= 0 then break;
     if wifexited(status) then
@@ -1793,7 +1796,7 @@ var
   thrashspace: array[1..1024] of byte;
 begin
   // read the sent bytes
-  fpread(threadsync_pipein, thrashspace[1], 1);
+  fpread(threadsync_pipein, {%H-}thrashspace[1], 1);
 
   Result := true;
   // one of children signaled ?
@@ -2610,7 +2613,7 @@ end;
 -------------------------------------------------------------------------------}
 procedure TGtk2WidgetSet.AppSetTitle(const ATitle: string);
 begin
-
+  // ToDo: TGtk2WidgetSet.AppSetTitle: has a gtk2 application such a thing?
 end;
 
 {------------------------------------------------------------------------------
@@ -2780,7 +2783,7 @@ begin
   //DebugLn('trace:[TGtk2WidgetSet.InternalGetDIBits]');
 
   Result := 0;
-  FillByte(BitInfo,SizeOf(BitInfo),0);
+  FillByte(BitInfo{%H-},SizeOf(BitInfo),0);
 
   if (DC=0) or (Usage=0) then ;
   if not IsValidGDIObject(Bitmap)

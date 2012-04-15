@@ -219,7 +219,7 @@ type
     procedure WordWrap(DC: HDC; AText: PChar; MaxWidthInPixel: integer;
       out Lines: PPChar; out LineCount: integer);
 
-    procedure ResizeChild(Sender : TObject; Left,Top,Width,Height : Integer);
+    procedure ResizeChild(Sender : TObject; {%H-}Left,{%H-}Top,{%H-}Width,{%H-}Height : Integer);
     procedure RemoveCallbacks(Widget: PGtkWidget);
 
     // for gtk specific components:
@@ -281,7 +281,7 @@ type
     procedure AppProcessMessages; override;
     procedure AppWaitMessage; override;
     procedure AppTerminate; override;
-    procedure AppSetTitle(const ATitle: string); override;
+    procedure AppSetTitle(const {%H-}ATitle: string); override;
 
     // copied from GtkInt
     procedure _SetCallbackEx(const AMsg: LongInt; const AGTKObject: PGTKObject; const ALCLObject: TObject; Direct: Boolean);

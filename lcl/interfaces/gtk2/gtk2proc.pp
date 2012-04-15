@@ -619,7 +619,7 @@ procedure SetGCRasterOperation(TheGC: PGDKGC; Rop: Cardinal);
 procedure MergeClipping(DestinationDC: TGtkDeviceContext; DestinationGC: PGDKGC;
   X,Y,Width,Height: integer; ClipMergeMask: PGdkBitmap;
   ClipMergeMaskX, ClipMergeMaskY: integer;
-  var NewClipMask: PGdkBitmap);
+  out NewClipMask: PGdkBitmap);
 function CreatePixbufFromImageAndMask(ASrc: PGdkDrawable; ASrcX, ASrcY, ASrcWidth,
   ASrcHeight: integer; ASrcColorMap: PGdkColormap; ASrcMask: PGdkBitmap): PGdkPixbuf;
 function ScalePixmapAndMask({%H-}AScaleGC: PGDKGC; AScaleMethod: TGdkInterpType;
