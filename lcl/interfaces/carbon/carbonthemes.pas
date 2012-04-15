@@ -74,23 +74,16 @@ function TCarbonThemeServices.GetDrawState(Details: TThemedElementDetails): Them
 
 }
 begin
-  if Details.Element = teComboBox then
-    if Details.State = 0 then Result := kThemeStateActive
-    else if Details.State = 1 then Result := kThemeStateRollover
-    else if Details.State = 2 then Result := kThemeStatePressed
-    else if Details.State = 3 then Result := kThemeStateInactive
-    else Result := kThemeStateActive
+  if IsDisabled(Details) then
+    Result := kThemeStateInactive
   else
-    if IsDisabled(Details) then
-      Result := kThemeStateInactive
-    else
-    if IsPushed(Details) then
-      Result := kThemeStatePressed
-    else
-    if IsHot(Details) then
-      Result := kThemeStateRollover
-    else
-      Result := kThemeStateActive;
+  if IsPushed(Details) then
+    Result := kThemeStatePressed
+  else
+  if IsHot(Details) then
+    Result := kThemeStateRollover
+  else
+    Result := kThemeStateActive;
 end;
 
 {------------------------------------------------------------------------------
