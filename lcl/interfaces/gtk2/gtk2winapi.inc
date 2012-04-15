@@ -1,5 +1,4 @@
 {%MainUnit gtk2int.pas}
-{ $Id$ }
 
 {******************************************************************************
                          All GTK Winapi implementations.
@@ -416,15 +415,19 @@ begin
         // the lcl expects the return format as simple text
         // transform if necessary
         if FormatAtom=gdk_atom_intern('COMPOUND_TEXT',GdkTrue) then begin
+          CompoundTextList:=nil;
           CompoundTextCount:=gdk_text_property_to_text_list(SelData._Type,
             SelData.Format,SelData.Data,SelData.Length,CompoundTextList);
-          {$IfDef DEBUG_CLIPBOARD}
-          DebugLn('[TGtk2WidgetSet.ClipboardGetData] D  CompoundTextCount=',dbgs(CompoundTextCount),' Now=',dbgs(Now));
-          {$EndIf}
-          for i:=0 to CompoundTextCount-1 do
-            if (CompoundTextList[i]<>nil) then
-              Stream.Write(CompoundTextList[i]^,StrLen(CompoundTextList[i]));
-          gdk_free_text_list(CompoundTextList);
+          try
+            {$IfDef DEBUG_CLIPBOARD}
+            DebugLn('[TGtk2WidgetSet.ClipboardGetData] D  CompoundTextCount=',dbgs(CompoundTextCount),' Now=',dbgs(Now));
+            {$EndIf}
+            for i:=0 to CompoundTextCount-1 do
+              if (CompoundTextList[i]<>nil) then
+                Stream.Write(CompoundTextList[i]^,StrLen(CompoundTextList[i]));
+          finally
+            gdk_free_text_list(CompoundTextList);
+          end;
         end else
           Stream.Write(SelData.Data^,SelData.Length);
       end else begin
@@ -1207,8 +1210,6 @@ end;
   Function: CreateCompatibleDC
   Params:  none
   Returns: Nothing
-
-
  ------------------------------------------------------------------------------}
 function TGtk2WidgetSet.CreateCompatibleDC(DC: HDC): HDC;
 var
@@ -1216,6 +1217,8 @@ var
 begin
   Result := 0;
   pNewDC := NewDC;
+
+  // ToDo: TGtk2WidgetSet.CreateCompatibleDC: when is a DC compatible?
 
   // do not copy
   // In a compatible DC you have to select a bitmap into it
@@ -2639,7 +2642,7 @@ var
     LeftPos: Longint;
   begin
     if LeftOffset <> DT_LEFT then
-      GetTextExtentPoint(DC, theLine, LineLength, Points[0]);
+      GetTextExtentPoint(DC, theLine, LineLength, {%H-}Points[0]);
 
     if TempBrush = HBRUSH(-1) then
       TempBrush := SelectObject(DC, GetStockObject(NULL_BRUSH));
@@ -2844,7 +2847,7 @@ end;
  ------------------------------------------------------------------------------}
 function TGtk2WidgetSet.EnableScrollBar(Wnd: HWND; wSBflags, wArrows: Cardinal): Boolean;
 begin
-  //TODO: Implement this;
+  // TODO: implement TGtk2WidgetSet.EnableScrollBar
   Result := False;
 end;
 
@@ -5664,7 +5667,7 @@ begin
         P := GetStyleWidget(lgsHorizontalScrollbar);
         if P <> nil then
         begin
-          FillChar(AValue, SizeOf(AValue), 0);
+          FillChar(AValue{%H-}, SizeOf(AValue), 0);
           g_value_init(@AValue, G_TYPE_INT);
           gtk_widget_style_get_property(P, 'slider-width', @AValue);
           Result := AValue.data[0].v_int;

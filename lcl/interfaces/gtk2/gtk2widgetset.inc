@@ -2783,7 +2783,6 @@ begin
   FillByte(BitInfo,SizeOf(BitInfo),0);
 
   if (DC=0) or (Usage=0) then ;
-
   if not IsValidGDIObject(Bitmap)
   then begin
     DebugLn('WARNING: [TGtk2WidgetSet.InternalGetDIBits] invalid Bitmap!');

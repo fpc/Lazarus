@@ -85,7 +85,7 @@ function DrawEdge(DC: HDC; var ARect: TRect; Edge: Cardinal; grfFlags: Cardinal)
 function DrawText(DC: HDC; Str: PChar; Count: Integer; var Rect: TRect; Flags: Cardinal): Integer; override;
 
 function Ellipse(DC: HDC; x1,y1,x2,y2: Integer): Boolean; override;
-function EnableScrollBar(Wnd: HWND; wSBflags, wArrows: Cardinal): Boolean; override;
+function EnableScrollBar({%H-}Wnd: HWND; {%H-}wSBflags, {%H-}wArrows: Cardinal): Boolean; override;
 function EnableWindow(hWnd: HWND; bEnable: Boolean): Boolean; override;
 function EndPaint(Handle : hwnd; var PS : TPaintStruct): Integer; override;
 procedure EnterCriticalSection(var CritSection: TCriticalSection); override;
