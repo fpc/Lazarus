@@ -2321,7 +2321,8 @@ end;
 
 procedure TDebugManager.DoSendConsoleInput(AText: String);
 begin
-  FDebugger.SendConsoleInput(AText);
+  if FDebugger <> nil then
+    FDebugger.SendConsoleInput(AText);
 end;
 
 procedure TDebugManager.ProcessCommand(Command: word; var Handled: boolean);
