@@ -5676,6 +5676,7 @@ lcl/interfaces/customdrawn/customdrawnwsforms_win.inc svneol=native#text/pascal
 lcl/interfaces/customdrawn/customdrawnwsforms_x11.inc svneol=native#text/pascal
 lcl/interfaces/customdrawn/customdrawnwslazdeviceapis.pas svneol=native#text/pascal
 lcl/interfaces/customdrawn/customdrawnwsmenus.pas svneol=native#text/pascal
+lcl/interfaces/customdrawn/customdrawnwsmenus_cocoa.inc svneol=native#text/pascal
 lcl/interfaces/customdrawn/customdrawnwsspin.pas svneol=native#text/pascal
 lcl/interfaces/customdrawn/customdrawnwsstdctrls.pas svneol=native#text/pascal
 lcl/interfaces/customdrawn/interfaces.pas svneol=native#text/pascal

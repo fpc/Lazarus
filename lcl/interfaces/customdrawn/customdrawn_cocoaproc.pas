@@ -123,6 +123,20 @@ type
     function accessibilityArrayAttributeValues_index_maxCount(attribute: NSString; index: NSUInteger; maxCount: NSUInteger): NSArray; message 'accessibilityArrayAttributeValues:index:maxCount:';}
   end;
 
+  { TCocoaMenu }
+
+  TCocoaMenu = objcclass(NSMenu)
+  public
+    procedure lclItemSelected(sender: id); message 'lclItemSelected:';
+  end;
+
+  { TCocoaMenuItem }
+
+  TCocoaMenuItem = objcclass(NSMenuItem)
+  public
+    procedure lclItemSelected(sender: id); message 'lclItemSelected:';
+  end;
+
 procedure SetViewDefaults(AView: NSView);
 
 function Cocoa_RawImage_CreateBitmaps(const ARawImage: TRawImage; out ABitmap, AMask: HBitmap; ASkipMask: Boolean): Boolean;
@@ -1202,6 +1216,20 @@ end;
 function TCocoaAccessibleObject.accessibilityFocusedUIElement: id;
 begin
   Result := inherited accessibilityFocusedUIElement;
+end;
+
+{ TCocoaMenu }
+
+procedure TCocoaMenu.lclItemSelected(sender: id);
+begin
+
+end;
+
+{ TCocoaMenuItem }
+
+procedure TCocoaMenuItem.lclItemSelected(sender: id);
+begin
+
 end;
 
 procedure SetViewDefaults(AView:NSView);

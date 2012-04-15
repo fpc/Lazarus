@@ -35,7 +35,9 @@ unit lazcanvas;
 {$mode objfpc}{$H+}
 { $define lazcanvas_debug}
 { $define lazcanvas_profiling}
-{$define lazcanvas_new_fast_copy}
+{$ifndef Darwin}// Strangely the new fast copy crashes in Mac OS X in apps with sub-controls
+  {$define lazcanvas_new_fast_copy}
+{$endif}
 
 interface
 
@@ -659,6 +661,7 @@ begin
 
       lScanlineSrc := TLazIntfImage(ASource.Image).GetDataLineStart(CurSrcY);
       lScanlineDest := TLazIntfImage(Image).GetDataLineStart(CurDestY);
+      if (lScanlineSrc = nil) or (lScanlineDest = nil) then Break;
       Inc(lScanlineSrc, (ASourceX)*lBytesPerPixel);
       Inc(lScanlineDest, (ADestX + FWindowOrg.X)*lBytesPerPixel);
 
