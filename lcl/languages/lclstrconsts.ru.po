@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2012-03-31 03:30+0400\n"
+"PO-Revision-Date: 2012-04-15 19:51+0400\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -376,7 +376,7 @@ msgstr "Элемент управления '%s' не имеет родител�
 
 #: lclstrconsts.rscontrolisnotaparent
 msgid "'%s' is not a parent of '%s'"
-msgstr ""
+msgstr "'%s' не является родителем '%s'"
 
 #: lclstrconsts.rscreamcolorcaption
 msgid "Cream"

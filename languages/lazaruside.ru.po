@@ -5,9 +5,10 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2012-04-11 01:58+0400\n"
+"PO-Revision-Date: 2012-04-15 20:02+0400\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
+"X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
 
 #: lazarusidestrconsts.dbgbreakgroupdlgcaptiondisable
 msgctxt "lazarusidestrconsts.dbgbreakgroupdlgcaptiondisable"
@@ -2698,8 +2699,9 @@ msgid "as invoker (asInvoker)"
 msgstr "вызывающий процесс (asInvoker)"
 
 #: lazarusidestrconsts.dlgpoclearicon
-msgid "Clear Icon"
-msgstr "Очистить значок"
+#| msgid "Clear Icon"
+msgid "&Clear Icon"
+msgstr "О&чистить значок"
 
 #: lazarusidestrconsts.dlgpocreateappbundle
 msgid "Create Application Bundle"
@@ -2740,8 +2742,9 @@ msgid "(none)"
 msgstr "(нет)"
 
 #: lazarusidestrconsts.dlgpoloadicon
-msgid "Load Icon"
-msgstr "Загрузить значок"
+#| msgid "Load Icon"
+msgid "&Load Icon"
+msgstr "&Загрузить значок"
 
 #: lazarusidestrconsts.dlgpomisc
 msgctxt "lazarusidestrconsts.dlgpomisc"
@@ -2758,8 +2761,9 @@ msgid "require administrator (requireAdministrator)"
 msgstr "с правами администратора (requireAdministrator)"
 
 #: lazarusidestrconsts.dlgposaveicon
-msgid "Save Icon"
-msgstr "Сохранить значок"
+#| msgid "Save Icon"
+msgid "&Save Icon"
+msgstr "Сох&ранить значок"
 
 #: lazarusidestrconsts.dlgposavesession
 msgid "Session"
@@ -14157,26 +14161,30 @@ msgid "Unitname and Filename do not match.%sExample: unit1.pas and Unit1"
 msgstr "Имена модуля и файла не совпадают.%sПример: unit1.pas и Unit1"
 
 #: lazarusidestrconsts.lispwconvertproject
-msgid "Convert Delphi Project"
-msgstr "Преобразовать проект Delphi"
+#| msgid "Convert Delphi Project"
+msgid "Convert &Delphi Project"
+msgstr "Преобразовать &проект Delphi"
 
 #: lazarusidestrconsts.lispwnewproject
-msgid "New Project"
-msgstr "Новый проект"
+#| msgid "New Project"
+msgid "&New Project"
+msgstr "Новый &проект"
 
 #: lazarusidestrconsts.lispwopenproject
-msgid "Open Project"
-msgstr "Открыть проект"
+#| msgid "Open Project"
+msgid "&Open Project"
+msgstr "&Открыть проект"
 
 #: lazarusidestrconsts.lispwopenrecentproject
-#| msgid "Open Recent"
+#| msgid "Open Recent Project"
 msgctxt "lazarusidestrconsts.lispwopenrecentproject"
-msgid "Open Recent Project"
-msgstr "Открыть недавний проект"
+msgid "Open &Recent Project"
+msgstr "Открыть &недавний проект"
 
 #: lazarusidestrconsts.lispwviewexampleprojects
-msgid "View Example Projects"
-msgstr "Просмотреть примеры проектов"
+#| msgid "View Example Projects"
+msgid "View &Example Projects"
+msgstr "Просмотреть пр&имеры проектов"
 
 #: lazarusidestrconsts.lisquickfixcreatelocalvariable
 msgid "Create local variable"
@@ -14200,8 +14208,9 @@ msgid "Quit"
 msgstr "Выход"
 
 #: lazarusidestrconsts.lisquitlazarus
-msgid "Quit Lazarus"
-msgstr "Выход из Lazarus"
+#| msgid "Quit Lazarus"
+msgid "&Quit Lazarus"
+msgstr "В&ыход из Lazarus"
 
 #: lazarusidestrconsts.lisreaderror
 msgid "Read Error"

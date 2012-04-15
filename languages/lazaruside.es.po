@@ -2738,7 +2738,9 @@ msgid "as invoker (asInvoker)"
 msgstr ""
 
 #: lazarusidestrconsts.dlgpoclearicon
-msgid "Clear Icon"
+#, fuzzy
+#| msgid "Clear Icon"
+msgid "&Clear Icon"
 msgstr "Quitar Icono"
 
 #: lazarusidestrconsts.dlgpocreateappbundle
@@ -2781,7 +2783,9 @@ msgid "(none)"
 msgstr "(ninguno)"
 
 #: lazarusidestrconsts.dlgpoloadicon
-msgid "Load Icon"
+#, fuzzy
+#| msgid "Load Icon"
+msgid "&Load Icon"
 msgstr "Cargar Icono"
 
 #: lazarusidestrconsts.dlgpomisc
@@ -2800,7 +2804,9 @@ msgid "require administrator (requireAdministrator)"
 msgstr ""
 
 #: lazarusidestrconsts.dlgposaveicon
-msgid "Save Icon"
+#, fuzzy
+#| msgid "Save Icon"
+msgid "&Save Icon"
 msgstr "Guardar Icono"
 
 #: lazarusidestrconsts.dlgposavesession
@@ -14432,25 +14438,32 @@ msgid "Unitname and Filename do not match.%sExample: unit1.pas and Unit1"
 msgstr "El nombre de la unidad y el nombre del archivo no coinciden.%sEjemplo: unit1.pas y Unit1"
 
 #: lazarusidestrconsts.lispwconvertproject
-msgid "Convert Delphi Project"
+#, fuzzy
+#| msgid "Convert Delphi Project"
+msgid "Convert &Delphi Project"
 msgstr "Convertir proyecto Delphi"
 
 #: lazarusidestrconsts.lispwnewproject
-msgid "New Project"
+#, fuzzy
+#| msgid "New Project"
+msgid "&New Project"
 msgstr "Nuevo Proyecto"
 
 #: lazarusidestrconsts.lispwopenproject
-msgid "Open Project"
+#, fuzzy
+#| msgid "Open Project"
+msgid "&Open Project"
 msgstr "Abrir Proyecto"
 
 #: lazarusidestrconsts.lispwopenrecentproject
-#| msgid "Open Recent"
+#, fuzzy
+#| msgid "Open Recent Project"
 msgctxt "lazarusidestrconsts.lispwopenrecentproject"
-msgid "Open Recent Project"
+msgid "Open &Recent Project"
 msgstr "Abrir Proyecto Reciente"
 
 #: lazarusidestrconsts.lispwviewexampleprojects
-msgid "View Example Projects"
+msgid "View &Example Projects"
 msgstr ""
 
 #: lazarusidestrconsts.lisquickfixcreatelocalvariable
@@ -14475,7 +14488,9 @@ msgid "Quit"
 msgstr "Salir"
 
 #: lazarusidestrconsts.lisquitlazarus
-msgid "Quit Lazarus"
+#, fuzzy
+#| msgid "Quit Lazarus"
+msgid "&Quit Lazarus"
 msgstr "Salir de Lazarus"
 
 #: lazarusidestrconsts.lisreaderror
