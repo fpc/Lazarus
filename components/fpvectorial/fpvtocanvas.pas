@@ -124,6 +124,8 @@ begin
   ADest.Pen.Style := CurPath.Pen.Style;
   ADest.Pen.Width := Round(CurPath.Pen.Width * AMulX);
   if ADest.Pen.Width < 1 then ADest.Pen.Width := 1;
+  if (CurPath.Pen.Width <= 2) and (ADest.Pen.Width > 2) then ADest.Pen.Width := 2;
+  if (CurPath.Pen.Width <= 5) and (ADest.Pen.Width > 5) then ADest.Pen.Width := 5;
   ADest.Pen.FPColor := CurPath.Pen.Color;
   ADest.Brush.FPColor := CurPath.Brush.Color;
 
