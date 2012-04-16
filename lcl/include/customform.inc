@@ -262,6 +262,8 @@ begin
           {$ENDIF}
           FActiveControl := nil;
         end;
+        if AComponent = FActiveDefaultControl then
+          FActiveDefaultControl := nil;
         if AComponent = FDefaultControl then
           FDefaultControl := nil;
         if AComponent = FCancelControl then
@@ -269,7 +271,7 @@ begin
         if AComponent = FLastFocusedControl then
           FLastFocusedControl := nil;
         // then do stuff which can trigger things
-        if (FActionLists <> nil) and (AComponent is TCustomActionList) then
+        if Assigned(FActionLists) and (AComponent is TCustomActionList) then
           DoRemoveActionList(TCustomActionList(AComponent))
         else
         if AComponent = Menu then
@@ -1840,11 +1842,14 @@ begin
   lPrevControl := FActiveDefaultControl;
   FActiveDefaultControl := AControl;
 
+  if Assigned(FActiveDefaultControl) then
+    FActiveDefaultControl.FreeNotification(Self);
+
   // notify previous active default control that he has lost "default-ness"
-  if lPrevControl <> nil then
+  if Assigned(lPrevControl) then
     lPrevControl.ActiveDefaultControlChanged(AControl);
   // notify default control that it may become/lost active default again
-  if (FDefaultControl <> nil) and (FDefaultControl <> lPrevControl) then
+  if Assigned(FDefaultControl) and (FDefaultControl <> lPrevControl) then
     FDefaultControl.ActiveDefaultControlChanged(AControl);
 end;
 
@@ -1927,9 +1932,9 @@ end;
 
 procedure TCustomForm.SetLastFocusedControl(AControl: TWinControl);
 begin
-  if FLastFocusedControl=AControl then exit;
-  FLastFocusedControl:=AControl;
-  if FLastFocusedControl<>nil then
+  if FLastFocusedControl = AControl then exit;
+  FLastFocusedControl := AControl;
+  if Assigned(FLastFocusedControl) then
     FLastFocusedControl.FreeNotification(Self);
 end;
 
@@ -2560,10 +2565,8 @@ end;
 
 procedure TCustomForm.DestroyWnd;
 begin
-  if FMenu <> nil then
-  begin
+  if Assigned(FMenu) then
     FMenu.DestroyHandle;
-  end;
   inherited DestroyWnd;
 end;
 
