@@ -1351,7 +1351,7 @@ end;
 {-------------------------------------------------------------------------------
   function ControlGetsMouseMoveBefore(AControl: TControl): boolean;
 
-  Returns true, if mouse move event should be sent before the widget istelf
+  Returns true, if mouse move event should be sent before the widget itself
   reacts.
 -------------------------------------------------------------------------------}
 function ControlGetsMouseMoveBefore(AControl: TControl;
@@ -1362,13 +1362,13 @@ var
   MainView: PGtkWidget;
 begin
   if (AControl=nil) then ;
-  // currently there are no controls, that need after events.
   Result := True;
+  // currently there are no controls, that need after events.
+  if not ABefore then exit;
 
   // gtk2 column resizing ... issue #21354
   if (Event <> nil) and not (csDesigning in AControl.ComponentState) and
-    (AControl is TWinControl) and
-    (TWinControl(AControl).FCompStyle = csListView) and
+    (AControl is TListView) and
     (TListView(AControl).ViewStyle = vsReport) and
     (TListView(AControl).ShowColumnHeaders) then
   begin
@@ -1390,7 +1390,6 @@ begin
       end;
     end;
   end;
-
 end;
 
 procedure GTKGetDevicePointer(win: PGdkWindow; dev: PGdkDevice;
