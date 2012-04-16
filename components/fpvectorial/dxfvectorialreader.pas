@@ -148,9 +148,11 @@ const
   DXF_ENTITIES_VISIBILITY = 60; // default=0 = Visible, 1 = Invisible
 
   // Obtained from http://www.generalcadd.com/pdf/LivingWithAutoCAD_v4.pdf
+  // and from http://sub-atomic.com/~moses/acadcolors.html
   // Valid for DXF up to AutoCad 2004, after that RGB is available
-  AUTOCAD_COLOR_PALETTE: array[0..15] of TFPColor =
+  AUTOCAD_COLOR_PALETTE: array[0..255] of TFPColor =
   (
+    { QBASIC palette
     (Red: $0000; Green: $0000; Blue: $0000; Alpha: alphaOpaque), // 0 - Black
     (Red: $0000; Green: $0000; Blue: $8080; Alpha: alphaOpaque), // 1 - Dark blue
     (Red: $0000; Green: $8080; Blue: $0000; Alpha: alphaOpaque), // 2 - Dark green
@@ -166,7 +168,283 @@ const
     (Red: $ffff; Green: $0000; Blue: $0000; Alpha: alphaOpaque), // 12 - Light red
     (Red: $ffff; Green: $0000; Blue: $ffff; Alpha: alphaOpaque), // 13 - Light Magenta
     (Red: $ffff; Green: $ffff; Blue: $0000; Alpha: alphaOpaque), // 14 - Light Yellow
-    (Red: $ffff; Green: $ffff; Blue: $ffff; Alpha: alphaOpaque)  // 15 - White
+    (Red: $ffff; Green: $ffff; Blue: $ffff; Alpha: alphaOpaque),  // 15 - White }
+    // AutoCAD for DOS initial palette from http://www.generalcadd.com/pdf/LivingWithAutoCAD_v4.pdf
+    {(Red: $0000; Green: $0000; Blue: $0000; Alpha: alphaOpaque), // 0 - Black
+    (Red: $ffff; Green: $0000; Blue: $0000; Alpha: alphaOpaque), // 1 - Light red
+    (Red: $ffff; Green: $ffff; Blue: $0000; Alpha: alphaOpaque), // 2 - Light Yellow
+    (Red: $0000; Green: $ffff; Blue: $0000; Alpha: alphaOpaque), // 3 - Light green
+    (Red: $0000; Green: $ffff; Blue: $ffff; Alpha: alphaOpaque), // 4 - Light cyan
+    (Red: $0000; Green: $0000; Blue: $ffff; Alpha: alphaOpaque), // 5 - Light blue
+    (Red: $ffff; Green: $0000; Blue: $ffff; Alpha: alphaOpaque), // 6 - Light Magenta
+    (Red: $ffff; Green: $ffff; Blue: $ffff; Alpha: alphaOpaque), // 7 - White
+    (Red: $8080; Green: $8080; Blue: $8080; Alpha: alphaOpaque), // 8 - Medium Gray
+    (Red: $8080; Green: $0000; Blue: $0000; Alpha: alphaOpaque), // 9 - Dark red
+    (Red: $8080; Green: $8080; Blue: $0000; Alpha: alphaOpaque), // 10 - Dark Yellow
+    (Red: $0000; Green: $8080; Blue: $0000; Alpha: alphaOpaque), // 11 - Dark green
+    (Red: $0000; Green: $8080; Blue: $8080; Alpha: alphaOpaque), // 12 - Dark cyan
+    (Red: $0000; Green: $0000; Blue: $8080; Alpha: alphaOpaque), // 13 - Dark blue
+    (Red: $8080; Green: $0000; Blue: $8080; Alpha: alphaOpaque), // 14 - Dark Magenta
+    (Red: $c0c0; Green: $c0c0; Blue: $c0c0; Alpha: alphaOpaque), // 15 - Light Gray}
+    // Initial palette from http://sub-atomic.com/~moses/acadcolors.html
+    // Agrees with http://gallery.proficad.eu/tools/AutoCAD-Viewer.aspx
+    (Red: $0000; Green: $0000; Blue: $0000; Alpha: alphaOpaque), // 0 - Black
+    (Red: $ffff; Green: $0000; Blue: $0000; Alpha: alphaOpaque), // 1 - Light red
+    (Red: $ffff; Green: $ffff; Blue: $0000; Alpha: alphaOpaque), // 2 - Light Yellow
+    (Red: $0000; Green: $ffff; Blue: $0000; Alpha: alphaOpaque), // 3 - Light green
+    (Red: $0000; Green: $ffff; Blue: $ffff; Alpha: alphaOpaque), // 4 - Light cyan
+    (Red: $0000; Green: $0000; Blue: $ffff; Alpha: alphaOpaque), // 5 - Light blue
+    (Red: $ffff; Green: $0000; Blue: $ffff; Alpha: alphaOpaque), // 6 - Light Magenta
+    (Red: $ffff; Green: $ffff; Blue: $ffff; Alpha: alphaOpaque), // 7 - White
+    (Red: $4141; Green: $4141; Blue: $4141; Alpha: alphaOpaque), // 8 - Dark Gray
+    (Red: $8080; Green: $8080; Blue: $8080; Alpha: alphaOpaque), // 9 - Gray
+    (Red: $ffff; Green: $0000; Blue: $0000; Alpha: alphaOpaque), // 10 - Light red
+    (Red: $ffff; Green: $AAAA; Blue: $AAAA; Alpha: alphaOpaque), // 11
+    (Red: $BDBD; Green: $0000; Blue: $0000; Alpha: alphaOpaque), // 12
+    (Red: $BDBD; Green: $7E7E; Blue: $7E7E; Alpha: alphaOpaque), // 13
+    (Red: $8181; Green: $0000; Blue: $0000; Alpha: alphaOpaque), // 14
+    (Red: $8181; Green: $5656; Blue: $5656; Alpha: alphaOpaque), // 15
+    // expanded palette from http://sub-atomic.com/~moses/acadcolors.html
+    (Red: $6868; Green: $0000; Blue: $0000; Alpha: alphaOpaque), // 16
+    (Red: $6868; Green: $4545; Blue: $4545; Alpha: alphaOpaque), // 17
+    (Red: $0000; Green: $0000; Blue: $0000; Alpha: alphaOpaque), // 18
+    (Red: $0000; Green: $0000; Blue: $0000; Alpha: alphaOpaque), // 19
+    (Red: $0000; Green: $0000; Blue: $0000; Alpha: alphaOpaque), // 20
+    (Red: $0000; Green: $0000; Blue: $0000; Alpha: alphaOpaque), // 21
+    (Red: $0000; Green: $0000; Blue: $0000; Alpha: alphaOpaque), // 22
+    (Red: $0000; Green: $0000; Blue: $0000; Alpha: alphaOpaque), // 23
+    (Red: $0000; Green: $0000; Blue: $0000; Alpha: alphaOpaque), // 24
+    (Red: $0000; Green: $0000; Blue: $0000; Alpha: alphaOpaque), // 25
+    (Red: $0000; Green: $0000; Blue: $0000; Alpha: alphaOpaque), // 26
+    (Red: $0000; Green: $0000; Blue: $0000; Alpha: alphaOpaque), // 27
+    (Red: $0000; Green: $0000; Blue: $0000; Alpha: alphaOpaque), // 28
+    (Red: $0000; Green: $0000; Blue: $0000; Alpha: alphaOpaque), // 29
+    (Red: $0000; Green: $0000; Blue: $0000; Alpha: alphaOpaque), // 30
+    (Red: $0000; Green: $0000; Blue: $0000; Alpha: alphaOpaque), // 31
+    (Red: $0000; Green: $0000; Blue: $0000; Alpha: alphaOpaque), // 32
+    (Red: $0000; Green: $0000; Blue: $0000; Alpha: alphaOpaque), // 33
+    (Red: $0000; Green: $0000; Blue: $0000; Alpha: alphaOpaque), // 34
+    (Red: $0000; Green: $0000; Blue: $0000; Alpha: alphaOpaque), // 35
+    (Red: $0000; Green: $0000; Blue: $0000; Alpha: alphaOpaque), // 36
+    (Red: $0000; Green: $0000; Blue: $0000; Alpha: alphaOpaque), // 37
+    (Red: $0000; Green: $0000; Blue: $0000; Alpha: alphaOpaque), // 38
+    (Red: $0000; Green: $0000; Blue: $0000; Alpha: alphaOpaque), // 39
+    (Red: $0000; Green: $0000; Blue: $0000; Alpha: alphaOpaque), // 40
+    (Red: $0000; Green: $0000; Blue: $0000; Alpha: alphaOpaque), // 41
+    (Red: $0000; Green: $0000; Blue: $0000; Alpha: alphaOpaque), // 42
+    (Red: $0000; Green: $0000; Blue: $0000; Alpha: alphaOpaque), // 43
+    (Red: $0000; Green: $0000; Blue: $0000; Alpha: alphaOpaque), // 44
+    (Red: $0000; Green: $0000; Blue: $0000; Alpha: alphaOpaque), // 45
+    (Red: $0000; Green: $0000; Blue: $0000; Alpha: alphaOpaque), // 46
+    (Red: $0000; Green: $0000; Blue: $0000; Alpha: alphaOpaque), // 47
+    (Red: $0000; Green: $0000; Blue: $0000; Alpha: alphaOpaque), // 48
+    (Red: $0000; Green: $0000; Blue: $0000; Alpha: alphaOpaque), // 49
+    (Red: $0000; Green: $0000; Blue: $0000; Alpha: alphaOpaque), // 50
+    (Red: $0000; Green: $0000; Blue: $0000; Alpha: alphaOpaque), // 51
+    (Red: $0000; Green: $0000; Blue: $0000; Alpha: alphaOpaque), // 52
+    (Red: $0000; Green: $0000; Blue: $0000; Alpha: alphaOpaque), // 53
+    (Red: $0000; Green: $0000; Blue: $0000; Alpha: alphaOpaque), // 54
+    (Red: $0000; Green: $0000; Blue: $0000; Alpha: alphaOpaque), // 55
+    (Red: $0000; Green: $0000; Blue: $0000; Alpha: alphaOpaque), // 56
+    (Red: $0000; Green: $0000; Blue: $0000; Alpha: alphaOpaque), // 57
+    (Red: $0000; Green: $0000; Blue: $0000; Alpha: alphaOpaque), // 58
+    (Red: $0000; Green: $0000; Blue: $0000; Alpha: alphaOpaque), // 59
+    (Red: $0000; Green: $0000; Blue: $0000; Alpha: alphaOpaque), // 60
+    (Red: $0000; Green: $0000; Blue: $0000; Alpha: alphaOpaque), // 61
+    (Red: $0000; Green: $0000; Blue: $0000; Alpha: alphaOpaque), // 62
+    (Red: $0000; Green: $0000; Blue: $0000; Alpha: alphaOpaque), // 63
+    (Red: $0000; Green: $0000; Blue: $0000; Alpha: alphaOpaque), // 64
+    (Red: $0000; Green: $0000; Blue: $0000; Alpha: alphaOpaque), // 65
+    (Red: $0000; Green: $0000; Blue: $0000; Alpha: alphaOpaque), // 66
+    (Red: $0000; Green: $0000; Blue: $0000; Alpha: alphaOpaque), // 67
+    (Red: $0000; Green: $0000; Blue: $0000; Alpha: alphaOpaque), // 68
+    (Red: $0000; Green: $0000; Blue: $0000; Alpha: alphaOpaque), // 69
+    (Red: $0000; Green: $0000; Blue: $0000; Alpha: alphaOpaque), // 70
+    (Red: $0000; Green: $0000; Blue: $0000; Alpha: alphaOpaque), // 71
+    (Red: $0000; Green: $0000; Blue: $0000; Alpha: alphaOpaque), // 72
+    (Red: $0000; Green: $0000; Blue: $0000; Alpha: alphaOpaque), // 73
+    (Red: $0000; Green: $0000; Blue: $0000; Alpha: alphaOpaque), // 74
+    (Red: $0000; Green: $0000; Blue: $0000; Alpha: alphaOpaque), // 75
+    (Red: $0000; Green: $0000; Blue: $0000; Alpha: alphaOpaque), // 76
+    (Red: $0000; Green: $0000; Blue: $0000; Alpha: alphaOpaque), // 77
+    (Red: $0000; Green: $0000; Blue: $0000; Alpha: alphaOpaque), // 78
+    (Red: $0000; Green: $0000; Blue: $0000; Alpha: alphaOpaque), // 79
+    (Red: $0000; Green: $0000; Blue: $0000; Alpha: alphaOpaque), // 80
+    (Red: $0000; Green: $0000; Blue: $0000; Alpha: alphaOpaque), // 81
+    (Red: $0000; Green: $0000; Blue: $0000; Alpha: alphaOpaque), // 82
+    (Red: $0000; Green: $0000; Blue: $0000; Alpha: alphaOpaque), // 83
+    (Red: $0000; Green: $0000; Blue: $0000; Alpha: alphaOpaque), // 84
+    (Red: $0000; Green: $0000; Blue: $0000; Alpha: alphaOpaque), // 85
+    (Red: $0000; Green: $0000; Blue: $0000; Alpha: alphaOpaque), // 86
+    (Red: $0000; Green: $0000; Blue: $0000; Alpha: alphaOpaque), // 87
+    (Red: $0000; Green: $0000; Blue: $0000; Alpha: alphaOpaque), // 88
+    (Red: $0000; Green: $0000; Blue: $0000; Alpha: alphaOpaque), // 89
+    (Red: $0000; Green: $0000; Blue: $0000; Alpha: alphaOpaque), // 90
+    (Red: $0000; Green: $0000; Blue: $0000; Alpha: alphaOpaque), // 91
+    (Red: $0000; Green: $0000; Blue: $0000; Alpha: alphaOpaque), // 92
+    (Red: $0000; Green: $0000; Blue: $0000; Alpha: alphaOpaque), // 93
+    (Red: $0000; Green: $0000; Blue: $0000; Alpha: alphaOpaque), // 94
+    (Red: $0000; Green: $0000; Blue: $0000; Alpha: alphaOpaque), // 95
+    (Red: $0000; Green: $0000; Blue: $0000; Alpha: alphaOpaque), // 96
+    (Red: $0000; Green: $0000; Blue: $0000; Alpha: alphaOpaque), // 97
+    (Red: $0000; Green: $0000; Blue: $0000; Alpha: alphaOpaque), // 98
+    (Red: $0000; Green: $0000; Blue: $0000; Alpha: alphaOpaque), // 99
+    (Red: $0000; Green: $0000; Blue: $0000; Alpha: alphaOpaque), // 100
+    (Red: $0000; Green: $0000; Blue: $0000; Alpha: alphaOpaque), // 101
+    (Red: $0000; Green: $0000; Blue: $0000; Alpha: alphaOpaque), // 102
+    (Red: $0000; Green: $0000; Blue: $0000; Alpha: alphaOpaque), // 103
+    (Red: $0000; Green: $0000; Blue: $0000; Alpha: alphaOpaque), // 104
+    (Red: $0000; Green: $0000; Blue: $0000; Alpha: alphaOpaque), // 105
+    (Red: $0000; Green: $0000; Blue: $0000; Alpha: alphaOpaque), // 106
+    (Red: $0000; Green: $0000; Blue: $0000; Alpha: alphaOpaque), // 107
+    (Red: $0000; Green: $0000; Blue: $0000; Alpha: alphaOpaque), // 108
+    (Red: $0000; Green: $0000; Blue: $0000; Alpha: alphaOpaque), // 109
+    (Red: $0000; Green: $0000; Blue: $0000; Alpha: alphaOpaque), // 110
+    (Red: $0000; Green: $0000; Blue: $0000; Alpha: alphaOpaque), // 111
+    (Red: $0000; Green: $0000; Blue: $0000; Alpha: alphaOpaque), // 112
+    (Red: $0000; Green: $0000; Blue: $0000; Alpha: alphaOpaque), // 113
+    (Red: $0000; Green: $0000; Blue: $0000; Alpha: alphaOpaque), // 114
+    (Red: $0000; Green: $0000; Blue: $0000; Alpha: alphaOpaque), // 115
+    (Red: $0000; Green: $0000; Blue: $0000; Alpha: alphaOpaque), // 116
+    (Red: $0000; Green: $0000; Blue: $0000; Alpha: alphaOpaque), // 117
+    (Red: $0000; Green: $0000; Blue: $0000; Alpha: alphaOpaque), // 118
+    (Red: $0000; Green: $0000; Blue: $0000; Alpha: alphaOpaque), // 119
+    (Red: $0000; Green: $0000; Blue: $0000; Alpha: alphaOpaque), // 120
+    (Red: $0000; Green: $0000; Blue: $0000; Alpha: alphaOpaque), // 121
+    (Red: $0000; Green: $0000; Blue: $0000; Alpha: alphaOpaque), // 122
+    (Red: $0000; Green: $0000; Blue: $0000; Alpha: alphaOpaque), // 123
+    (Red: $0000; Green: $0000; Blue: $0000; Alpha: alphaOpaque), // 124
+    (Red: $0000; Green: $0000; Blue: $0000; Alpha: alphaOpaque), // 125
+    (Red: $0000; Green: $0000; Blue: $0000; Alpha: alphaOpaque), // 126
+    (Red: $0000; Green: $0000; Blue: $0000; Alpha: alphaOpaque), // 127
+    (Red: $0000; Green: $0000; Blue: $0000; Alpha: alphaOpaque), // 128
+    (Red: $0000; Green: $0000; Blue: $0000; Alpha: alphaOpaque), // 129
+    (Red: $0000; Green: $0000; Blue: $0000; Alpha: alphaOpaque), // 130
+    (Red: $0000; Green: $0000; Blue: $0000; Alpha: alphaOpaque), // 131
+    (Red: $0000; Green: $0000; Blue: $0000; Alpha: alphaOpaque), // 132
+    (Red: $0000; Green: $0000; Blue: $0000; Alpha: alphaOpaque), // 133
+    (Red: $0000; Green: $0000; Blue: $0000; Alpha: alphaOpaque), // 134
+    (Red: $0000; Green: $0000; Blue: $0000; Alpha: alphaOpaque), // 135
+    (Red: $0000; Green: $0000; Blue: $0000; Alpha: alphaOpaque), // 136
+    (Red: $0000; Green: $0000; Blue: $0000; Alpha: alphaOpaque), // 137
+    (Red: $0000; Green: $0000; Blue: $0000; Alpha: alphaOpaque), // 138
+    (Red: $0000; Green: $0000; Blue: $0000; Alpha: alphaOpaque), // 139
+    (Red: $0000; Green: $0000; Blue: $0000; Alpha: alphaOpaque), // 140
+    (Red: $0000; Green: $0000; Blue: $0000; Alpha: alphaOpaque), // 141
+    (Red: $0000; Green: $0000; Blue: $0000; Alpha: alphaOpaque), // 142
+    (Red: $0000; Green: $0000; Blue: $0000; Alpha: alphaOpaque), // 143
+    (Red: $0000; Green: $0000; Blue: $0000; Alpha: alphaOpaque), // 144
+    (Red: $0000; Green: $0000; Blue: $0000; Alpha: alphaOpaque), // 145
+    (Red: $0000; Green: $0000; Blue: $0000; Alpha: alphaOpaque), // 146
+    (Red: $0000; Green: $0000; Blue: $0000; Alpha: alphaOpaque), // 147
+    (Red: $0000; Green: $0000; Blue: $0000; Alpha: alphaOpaque), // 148
+    (Red: $0000; Green: $0000; Blue: $0000; Alpha: alphaOpaque), // 149
+    (Red: $0000; Green: $0000; Blue: $0000; Alpha: alphaOpaque), // 150
+    (Red: $0000; Green: $0000; Blue: $0000; Alpha: alphaOpaque), // 151
+    (Red: $0000; Green: $0000; Blue: $0000; Alpha: alphaOpaque), // 152
+    (Red: $0000; Green: $0000; Blue: $0000; Alpha: alphaOpaque), // 153
+    (Red: $0000; Green: $0000; Blue: $0000; Alpha: alphaOpaque), // 154
+    (Red: $0000; Green: $0000; Blue: $0000; Alpha: alphaOpaque), // 155
+    (Red: $0000; Green: $0000; Blue: $0000; Alpha: alphaOpaque), // 156
+    (Red: $0000; Green: $0000; Blue: $0000; Alpha: alphaOpaque), // 157
+    (Red: $0000; Green: $0000; Blue: $0000; Alpha: alphaOpaque), // 158
+    (Red: $0000; Green: $0000; Blue: $0000; Alpha: alphaOpaque), // 159
+    (Red: $0000; Green: $0000; Blue: $0000; Alpha: alphaOpaque), // 160
+    (Red: $0000; Green: $0000; Blue: $0000; Alpha: alphaOpaque), // 161
+    (Red: $0000; Green: $0000; Blue: $0000; Alpha: alphaOpaque), // 162
+    (Red: $0000; Green: $0000; Blue: $0000; Alpha: alphaOpaque), // 163
+    (Red: $0000; Green: $0000; Blue: $0000; Alpha: alphaOpaque), // 164
+    (Red: $0000; Green: $0000; Blue: $0000; Alpha: alphaOpaque), // 165
+    (Red: $0000; Green: $0000; Blue: $0000; Alpha: alphaOpaque), // 166
+    (Red: $0000; Green: $0000; Blue: $0000; Alpha: alphaOpaque), // 167
+    (Red: $0000; Green: $0000; Blue: $0000; Alpha: alphaOpaque), // 168
+    (Red: $0000; Green: $0000; Blue: $0000; Alpha: alphaOpaque), // 169
+    (Red: $0000; Green: $0000; Blue: $0000; Alpha: alphaOpaque), // 170
+    (Red: $0000; Green: $0000; Blue: $0000; Alpha: alphaOpaque), // 171
+    (Red: $0000; Green: $0000; Blue: $0000; Alpha: alphaOpaque), // 172
+    (Red: $0000; Green: $0000; Blue: $0000; Alpha: alphaOpaque), // 173
+    (Red: $0000; Green: $0000; Blue: $0000; Alpha: alphaOpaque), // 174
+    (Red: $0000; Green: $0000; Blue: $0000; Alpha: alphaOpaque), // 175
+    (Red: $0000; Green: $0000; Blue: $0000; Alpha: alphaOpaque), // 176
+    (Red: $0000; Green: $0000; Blue: $0000; Alpha: alphaOpaque), // 177
+    (Red: $0000; Green: $0000; Blue: $0000; Alpha: alphaOpaque), // 178
+    (Red: $3535; Green: $3535; Blue: $4F4F; Alpha: alphaOpaque), // 179
+    (Red: $0000; Green: $0000; Blue: $0000; Alpha: alphaOpaque), // 180
+    (Red: $0000; Green: $0000; Blue: $0000; Alpha: alphaOpaque), // 181
+    (Red: $0000; Green: $0000; Blue: $0000; Alpha: alphaOpaque), // 182
+    (Red: $0000; Green: $0000; Blue: $0000; Alpha: alphaOpaque), // 183
+    (Red: $0000; Green: $0000; Blue: $0000; Alpha: alphaOpaque), // 184
+    (Red: $0000; Green: $0000; Blue: $0000; Alpha: alphaOpaque), // 185
+    (Red: $0000; Green: $0000; Blue: $0000; Alpha: alphaOpaque), // 186
+    (Red: $0000; Green: $0000; Blue: $0000; Alpha: alphaOpaque), // 187
+    (Red: $0000; Green: $0000; Blue: $0000; Alpha: alphaOpaque), // 188
+    (Red: $0000; Green: $0000; Blue: $0000; Alpha: alphaOpaque), // 189
+    (Red: $0000; Green: $0000; Blue: $0000; Alpha: alphaOpaque), // 190
+    (Red: $0000; Green: $0000; Blue: $0000; Alpha: alphaOpaque), // 191
+    (Red: $0000; Green: $0000; Blue: $0000; Alpha: alphaOpaque), // 192
+    (Red: $0000; Green: $0000; Blue: $0000; Alpha: alphaOpaque), // 193
+    (Red: $0000; Green: $0000; Blue: $0000; Alpha: alphaOpaque), // 194
+    (Red: $0000; Green: $0000; Blue: $0000; Alpha: alphaOpaque), // 195
+    (Red: $0000; Green: $0000; Blue: $0000; Alpha: alphaOpaque), // 196
+    (Red: $0000; Green: $0000; Blue: $0000; Alpha: alphaOpaque), // 197
+    (Red: $0000; Green: $0000; Blue: $0000; Alpha: alphaOpaque), // 198
+    (Red: $0000; Green: $0000; Blue: $0000; Alpha: alphaOpaque), // 199
+    (Red: $0000; Green: $0000; Blue: $0000; Alpha: alphaOpaque), // 200
+    (Red: $0000; Green: $0000; Blue: $0000; Alpha: alphaOpaque), // 201
+    (Red: $0000; Green: $0000; Blue: $0000; Alpha: alphaOpaque), // 202
+    (Red: $0000; Green: $0000; Blue: $0000; Alpha: alphaOpaque), // 203
+    (Red: $0000; Green: $0000; Blue: $0000; Alpha: alphaOpaque), // 204
+    (Red: $0000; Green: $0000; Blue: $0000; Alpha: alphaOpaque), // 205
+    (Red: $0000; Green: $0000; Blue: $0000; Alpha: alphaOpaque), // 206
+    (Red: $0000; Green: $0000; Blue: $0000; Alpha: alphaOpaque), // 207
+    (Red: $0000; Green: $0000; Blue: $0000; Alpha: alphaOpaque), // 208
+    (Red: $0000; Green: $0000; Blue: $0000; Alpha: alphaOpaque), // 209
+    (Red: $0000; Green: $0000; Blue: $0000; Alpha: alphaOpaque), // 210
+    (Red: $0000; Green: $0000; Blue: $0000; Alpha: alphaOpaque), // 211
+    (Red: $0000; Green: $0000; Blue: $0000; Alpha: alphaOpaque), // 212
+    (Red: $0000; Green: $0000; Blue: $0000; Alpha: alphaOpaque), // 213
+    (Red: $0000; Green: $0000; Blue: $0000; Alpha: alphaOpaque), // 214
+    (Red: $0000; Green: $0000; Blue: $0000; Alpha: alphaOpaque), // 215
+    (Red: $0000; Green: $0000; Blue: $0000; Alpha: alphaOpaque), // 216
+    (Red: $0000; Green: $0000; Blue: $0000; Alpha: alphaOpaque), // 217
+    (Red: $0000; Green: $0000; Blue: $0000; Alpha: alphaOpaque), // 218
+    (Red: $0000; Green: $0000; Blue: $0000; Alpha: alphaOpaque), // 219
+    (Red: $0000; Green: $0000; Blue: $0000; Alpha: alphaOpaque), // 220
+    (Red: $0000; Green: $0000; Blue: $0000; Alpha: alphaOpaque), // 221
+    (Red: $0000; Green: $0000; Blue: $0000; Alpha: alphaOpaque), // 222
+    (Red: $0000; Green: $0000; Blue: $0000; Alpha: alphaOpaque), // 223
+    (Red: $0000; Green: $0000; Blue: $0000; Alpha: alphaOpaque), // 224
+    (Red: $0000; Green: $0000; Blue: $0000; Alpha: alphaOpaque), // 225
+    (Red: $0000; Green: $0000; Blue: $0000; Alpha: alphaOpaque), // 226
+    (Red: $0000; Green: $0000; Blue: $0000; Alpha: alphaOpaque), // 227
+    (Red: $0000; Green: $0000; Blue: $0000; Alpha: alphaOpaque), // 228
+    (Red: $0000; Green: $0000; Blue: $0000; Alpha: alphaOpaque), // 229
+    (Red: $0000; Green: $0000; Blue: $0000; Alpha: alphaOpaque), // 230
+    (Red: $0000; Green: $0000; Blue: $0000; Alpha: alphaOpaque), // 231
+    (Red: $0000; Green: $0000; Blue: $0000; Alpha: alphaOpaque), // 232
+    (Red: $0000; Green: $0000; Blue: $0000; Alpha: alphaOpaque), // 233
+    (Red: $0000; Green: $0000; Blue: $0000; Alpha: alphaOpaque), // 234
+    (Red: $0000; Green: $0000; Blue: $0000; Alpha: alphaOpaque), // 235
+    (Red: $0000; Green: $0000; Blue: $0000; Alpha: alphaOpaque), // 236
+    (Red: $0000; Green: $0000; Blue: $0000; Alpha: alphaOpaque), // 237
+    (Red: $0000; Green: $0000; Blue: $0000; Alpha: alphaOpaque), // 238
+    (Red: $0000; Green: $0000; Blue: $0000; Alpha: alphaOpaque), // 239
+    (Red: $0000; Green: $0000; Blue: $0000; Alpha: alphaOpaque), // 240
+    (Red: $0000; Green: $0000; Blue: $0000; Alpha: alphaOpaque), // 241
+    (Red: $0000; Green: $0000; Blue: $0000; Alpha: alphaOpaque), // 242
+    (Red: $0000; Green: $0000; Blue: $0000; Alpha: alphaOpaque), // 243
+    (Red: $0000; Green: $0000; Blue: $0000; Alpha: alphaOpaque), // 244
+    (Red: $0000; Green: $0000; Blue: $0000; Alpha: alphaOpaque), // 245
+    (Red: $0000; Green: $0000; Blue: $0000; Alpha: alphaOpaque), // 246
+    (Red: $0000; Green: $0000; Blue: $0000; Alpha: alphaOpaque), // 247
+    (Red: $0000; Green: $0000; Blue: $0000; Alpha: alphaOpaque), // 248
+    (Red: $0000; Green: $0000; Blue: $0000; Alpha: alphaOpaque), // 249
+    (Red: $0000; Green: $0000; Blue: $0000; Alpha: alphaOpaque), // 250
+    (Red: $0000; Green: $0000; Blue: $0000; Alpha: alphaOpaque), // 251
+    (Red: $0000; Green: $0000; Blue: $0000; Alpha: alphaOpaque), // 252
+    (Red: $0000; Green: $0000; Blue: $0000; Alpha: alphaOpaque), // 253
+    (Red: $0000; Green: $0000; Blue: $0000; Alpha: alphaOpaque), // 254
+    (Red: $0000; Green: $0000; Blue: $0000; Alpha: alphaOpaque)  // 255
   );
 
 { TDXFToken }
@@ -1217,7 +1495,7 @@ end;
 
 function TvDXFVectorialReader.DXFColorIndexToFPColor(AColorIndex: Integer): TFPColor;
 begin
-  if (AColorIndex >= 0) and (AColorIndex <= 15) then
+  if (AColorIndex >= 0) and (AColorIndex <= 255) then
     Result := AUTOCAD_COLOR_PALETTE[AColorIndex]
   else
     raise Exception.Create(Format('[TvDXFVectorialReader.DXFColorIndexToFPVColor] Invalid DXF Color Index: %d', [AColorIndex]));
