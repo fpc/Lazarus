@@ -169,7 +169,7 @@ function FileIsTextCached(const AFilename: string): boolean; inline;
 function FileAgeCached(const AFileName: string): Longint; inline;
 function GetFilenameOnDisk(const AFilename: string): string; inline; deprecated; // use FindDiskFilename
 
-function CompareAnsiStringFilenames(Data1, data2: Pointer): integer;
+function CompareAnsiStringFilenames(Data1, Data2: Pointer): integer;
 function CompareFilenameOnly(Filename: PChar; FilenameLen: integer;
    NameOnly: PChar; NameOnlyLen: integer; CaseSensitive: boolean): integer;
 
@@ -921,18 +921,9 @@ begin
   Result:=FindDiskFilename(AFilename);
 end;
 
-function CompareAnsiStringFilenames(Data1, data2: Pointer): integer;
-var
-  s1: String;
-  s2: String;
+function CompareAnsiStringFilenames(Data1, Data2: Pointer): integer;
 begin
-  s1:='';
-  s2:='';
-  Pointer(s1):=Data1;
-  Pointer(s2):=Data2;
-  Result:=CompareFilenames(s1,s2);
-  Pointer(s1):=nil;
-  Pointer(s2):=nil;
+  Result:=CompareFilenames(AnsiString(Data1),AnsiString(Data2));
 end;
 
 function CompareFilenameOnly(Filename: PChar; FilenameLen: integer;
