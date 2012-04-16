@@ -70,7 +70,7 @@ type
     function UseThemes: Boolean; override;
     function ThemedControlsEnabled: Boolean; override;
 
-    procedure InternalDrawParentBackground(Window: HWND; Target: HDC; Bounds: PRect); override;
+    procedure InternalDrawParentBackground({%H-}Window: HWND; {%H-}Target: HDC; {%H-}Bounds: PRect); override;
     function GetBaseDetailsSize(Details: TThemedElementDetails): TSize;
 
     function GetParamsCount(Details: TThemedElementDetails): Integer; virtual;
@@ -86,9 +86,8 @@ type
     procedure DrawElement(DC: HDC; Details: TThemedElementDetails;
        const R: TRect; ClipRect: PRect); override;
 
-    procedure DrawIcon(DC: HDC; Details: TThemedElementDetails; const R: TRect; himl: HIMAGELIST; Index: Integer); override;
-    procedure DrawText(ACanvas: TPersistent; Details: TThemedElementDetails; const S: String; R: TRect; Flags, Flags2: Cardinal); virtual; overload;
     procedure DrawText(DC: HDC; Details: TThemedElementDetails; const S: String; R: TRect; Flags, {%H-}Flags2: Cardinal); override;
+    procedure DrawText(ACanvas: TPersistent; Details: TThemedElementDetails; const S: String; R: TRect; Flags, Flags2: Cardinal); virtual; overload; reintroduce;
 
     function ContentRect(DC: HDC; Details: TThemedElementDetails; BoundingRect: TRect): TRect; override;
     function HasTransparentParts({%H-}Details: TThemedElementDetails): Boolean; override;
@@ -863,12 +862,6 @@ begin
   end
   else
     GtkDrawElement(DC, Details, R, ClipRect);
-end;
-
-procedure TGtk2ThemeServices.DrawIcon(DC: HDC; Details: TThemedElementDetails;
-  const R: TRect; himl: HIMAGELIST; Index: Integer);
-begin
-  //
 end;
 
 procedure TGtk2ThemeServices.DrawText(ACanvas: TPersistent;
