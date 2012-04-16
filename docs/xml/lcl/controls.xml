@@ -11143,9 +11143,8 @@ End;
       <!-- function Visibility: public -->
       <element name="TWinControl.CanFocus">
         <short>Is this control allowed to receive the focus?</short>
-        <descr>A control can get the focus only when all of its Parents
-          are Visible and Enabled.
-        </descr>
+        <descr>A control can get the focus only when all of its Parents except the form are Visible and Enabled.
+While CanFocus checks all control parents it does not check whether a form control is placed on can have focus.</descr>
         <errors/>
         <seealso/>
       </element>
