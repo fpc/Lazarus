@@ -115,6 +115,15 @@ begin
   inherited Destroy;
 end;
 
+function TBrush.EqualsBrush(ABrush: TBrush): boolean;
+begin
+  Result := Assigned(ABrush) and
+    (Color = ABrush.Color) and
+    (FPColor = ABrush.FPColor) and
+    (Style = ABrush.Style) and
+    (Bitmap = ABrush.Bitmap);
+end;
+
 {------------------------------------------------------------------------------
   Method: TBrush.Assign
   Params: Source: Another brush
@@ -126,11 +135,15 @@ procedure TBrush.Assign(Source: TPersistent);
 begin
   if Source is TBrush then
   begin
-    FColor := TBrush(Source).Color;
-    inherited SetFPColor(TFPCanvasHelper(Source).FPColor);
-    inherited SetStyle(TBrush(Source).Style);
-    FBitmap := TBrush(Source).Bitmap;
-    Changed;
+    if not EqualsBrush(TBrush(Source)) then
+    begin
+      FreeReference;
+      FColor := TBrush(Source).Color;
+      inherited SetFPColor(TFPCanvasHelper(Source).FPColor);
+      inherited SetStyle(TBrush(Source).Style);
+      FBitmap := TBrush(Source).Bitmap;
+      Changed;
+    end;
   end
   else
     inherited Assign(Source);

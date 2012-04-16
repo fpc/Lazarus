@@ -266,9 +266,9 @@ begin
   with TheMessage.DrawListItemStruct^ do
   begin
     FCanvas.Handle := DC;
-    if Font <> nil then
+    if Assigned(Font) then
       FCanvas.Font := Font;
-    if Brush <> nil then
+    if Assigned(Brush) then
       FCanvas.Brush := Brush;
     if (ItemID <> UINT(-1)) and (odSelected in ItemState) then
     begin

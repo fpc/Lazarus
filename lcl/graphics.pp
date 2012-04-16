@@ -695,6 +695,7 @@ type
     procedure Assign(Source: TPersistent); override;
     constructor Create; override;
     destructor Destroy; override;
+    function EqualsBrush(ABrush: TBrush): boolean;
     property Bitmap: TCustomBitmap read FBitmap write SetBitmap;
     property Handle: HBRUSH read GetHandle write SetHandle; deprecated; // use instead Reference.Handle
     property Reference: TWSBrushReference read GetReference;
