@@ -798,10 +798,6 @@ msgstr "Tarkista paketit lomaketta luotaessa"
 msgid "Choose code template file (*.dci)"
 msgstr "Valitse koodilyhennetiedosto (*.dci)"
 
-#: lazarusidestrconsts.dlgclassinsertpolicy
-msgid "Class part insert policy"
-msgstr "Luokan osan lisäyskäytäntö"
-
 #: lazarusidestrconsts.dlgclosebuttonsnotebook
 msgid "Show close buttons in notebook"
 msgstr "Näytä sulje-painike välilehdellä"
@@ -1893,6 +1889,10 @@ msgstr "Metodien edellä"
 msgid "Constructor name must be 'init' (destructor must be 'done')"
 msgstr ""
 
+#: lazarusidestrconsts.dlginsertclassparts
+msgid "Insert class parts"
+msgstr ""
+
 #: lazarusidestrconsts.dlginsertimplementation
 msgid "Implementation"
 msgstr "Toteutus"
@@ -1900,6 +1900,10 @@ msgstr "Toteutus"
 #: lazarusidestrconsts.dlginsertinterface
 msgid "Interface"
 msgstr "Rajapinta"
+
+#: lazarusidestrconsts.dlginsertmethods
+msgid "Insert methods"
+msgstr ""
 
 #: lazarusidestrconsts.dlginsertsection
 msgid "Insert into Uses section of"
@@ -2066,10 +2070,6 @@ msgstr "Tallessa pidettävien viimeksi käytettyjen tiedostojen määrä"
 #: lazarusidestrconsts.dlgmaxrecentprojs
 msgid "Max recent project files"
 msgstr "Tallessa pidettävien viimeksi käytettyjen projektien määrä"
-
-#: lazarusidestrconsts.dlgmethodinspolicy
-msgid "Method insert policy"
-msgstr "Metodien lisäyskäytäntö"
 
 #: lazarusidestrconsts.dlgmixmethodsandproperties
 msgid "Mix methods and properties"
@@ -11190,6 +11190,10 @@ msgstr "Käännösyksiköt ..."
 msgid "Watches"
 msgstr "Vahdit"
 
+#: lazarusidestrconsts.lismenuwhatneedsbuilding
+msgid "What Needs Building"
+msgstr ""
+
 #: lazarusidestrconsts.lismenuwindow
 msgid "&Window"
 msgstr "Ikkunat"
@@ -13441,6 +13445,10 @@ msgstr "Lisää projektiin"
 msgid "Unit name already exists"
 msgstr "Käännösyksikön nimi on jo olemassa"
 
+#: lazarusidestrconsts.lisproject
+msgid "Project %s"
+msgstr ""
+
 #: lazarusidestrconsts.lisprojectchanged
 msgid "Project changed"
 msgstr "Projekti on muuttunut"
@@ -14624,6 +14632,10 @@ msgstr ""
 
 #: lazarusidestrconsts.listakesnapshot
 msgid "Take a Snapshot"
+msgstr ""
+
+#: lazarusidestrconsts.listarget
+msgid "Target:"
 msgstr ""
 
 #: lazarusidestrconsts.listargetcpu
@@ -16078,6 +16090,10 @@ msgstr "Tervetuloa lazarus IDE:en %s"
 
 #: lazarusidestrconsts.liswelcometolazarusthereisalreadyaconfigurationfromve
 msgid "Welcome to Lazarus %s%s%sThere is already a configuration from version %s in%s%s%s"
+msgstr ""
+
+#: lazarusidestrconsts.liswhatneedsrebuilding
+msgid "What needs rebuilding"
 msgstr ""
 
 #: lazarusidestrconsts.liswhenaunitisrenamedupdatereferences

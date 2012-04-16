@@ -842,10 +842,6 @@ msgstr ""
 msgid "Choose code template file (*.dci)"
 msgstr "Wybierz szablon źródła (*.dci)"
 
-#: lazarusidestrconsts.dlgclassinsertpolicy
-msgid "Class part insert policy"
-msgstr "Zasady wstawiania części klas"
-
 #: lazarusidestrconsts.dlgclosebuttonsnotebook
 msgid "Show close buttons in notebook"
 msgstr "Pokaż przyciski zamykania w zakładkach"
@@ -2027,12 +2023,20 @@ msgstr "Przed metodami"
 msgid "Constructor name must be 'init' (destructor must be 'done')"
 msgstr "Konstruktor musi nazywać się 'init' (destruktor - 'done')"
 
+#: lazarusidestrconsts.dlginsertclassparts
+msgid "Insert class parts"
+msgstr ""
+
 #: lazarusidestrconsts.dlginsertimplementation
 msgid "Implementation"
 msgstr ""
 
 #: lazarusidestrconsts.dlginsertinterface
 msgid "Interface"
+msgstr ""
+
+#: lazarusidestrconsts.dlginsertmethods
+msgid "Insert methods"
 msgstr ""
 
 #: lazarusidestrconsts.dlginsertsection
@@ -2222,10 +2226,6 @@ msgstr "Liczba niedawno otwartych plików"
 #: lazarusidestrconsts.dlgmaxrecentprojs
 msgid "Max recent project files"
 msgstr "Liczba niedawno otwartych projektów"
-
-#: lazarusidestrconsts.dlgmethodinspolicy
-msgid "Method insert policy"
-msgstr "Zasady wstawiania metod"
 
 #: lazarusidestrconsts.dlgmixmethodsandproperties
 msgid "Mix methods and properties"
@@ -11705,6 +11705,10 @@ msgstr "Lista modułów"
 msgid "Watches"
 msgstr "Czujki"
 
+#: lazarusidestrconsts.lismenuwhatneedsbuilding
+msgid "What Needs Building"
+msgstr ""
+
 #: lazarusidestrconsts.lismenuwindow
 msgid "&Window"
 msgstr "&Okno"
@@ -14007,6 +14011,10 @@ msgstr "Dodaj do projektu"
 msgid "Unit name already exists"
 msgstr "Moduł o tej nazwie już istnieje"
 
+#: lazarusidestrconsts.lisproject
+msgid "Project %s"
+msgstr ""
+
 #: lazarusidestrconsts.lisprojectchanged
 msgid "Project changed"
 msgstr "Projekt zmieniony"
@@ -15208,6 +15216,10 @@ msgstr ""
 
 #: lazarusidestrconsts.listakesnapshot
 msgid "Take a Snapshot"
+msgstr ""
+
+#: lazarusidestrconsts.listarget
+msgid "Target:"
 msgstr ""
 
 #: lazarusidestrconsts.listargetcpu
@@ -16668,6 +16680,10 @@ msgstr ""
 
 #: lazarusidestrconsts.liswelcometolazarusthereisalreadyaconfigurationfromve
 msgid "Welcome to Lazarus %s%s%sThere is already a configuration from version %s in%s%s%s"
+msgstr ""
+
+#: lazarusidestrconsts.liswhatneedsrebuilding
+msgid "What needs rebuilding"
 msgstr ""
 
 #: lazarusidestrconsts.liswhenaunitisrenamedupdatereferences

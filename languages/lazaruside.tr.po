@@ -813,10 +813,6 @@ msgstr ""
 msgid "Choose code template file (*.dci)"
 msgstr ""
 
-#: lazarusidestrconsts.dlgclassinsertpolicy
-msgid "Class part insert policy"
-msgstr ""
-
 #: lazarusidestrconsts.dlgclosebuttonsnotebook
 msgid "Show close buttons in notebook"
 msgstr ""
@@ -1915,12 +1911,20 @@ msgstr ""
 msgid "Constructor name must be 'init' (destructor must be 'done')"
 msgstr ""
 
+#: lazarusidestrconsts.dlginsertclassparts
+msgid "Insert class parts"
+msgstr ""
+
 #: lazarusidestrconsts.dlginsertimplementation
 msgid "Implementation"
 msgstr ""
 
 #: lazarusidestrconsts.dlginsertinterface
 msgid "Interface"
+msgstr ""
+
+#: lazarusidestrconsts.dlginsertmethods
+msgid "Insert methods"
 msgstr ""
 
 #: lazarusidestrconsts.dlginsertsection
@@ -2087,10 +2091,6 @@ msgstr ""
 
 #: lazarusidestrconsts.dlgmaxrecentprojs
 msgid "Max recent project files"
-msgstr ""
-
-#: lazarusidestrconsts.dlgmethodinspolicy
-msgid "Method insert policy"
 msgstr ""
 
 #: lazarusidestrconsts.dlgmixmethodsandproperties
@@ -11460,6 +11460,10 @@ msgstr "Birimler..."
 msgid "Watches"
 msgstr "İzlenenler"
 
+#: lazarusidestrconsts.lismenuwhatneedsbuilding
+msgid "What Needs Building"
+msgstr ""
+
 #: lazarusidestrconsts.lismenuwindow
 msgid "&Window"
 msgstr "Pencere"
@@ -13716,6 +13720,10 @@ msgstr "Projeye ekle"
 msgid "Unit name already exists"
 msgstr ""
 
+#: lazarusidestrconsts.lisproject
+msgid "Project %s"
+msgstr ""
+
 #: lazarusidestrconsts.lisprojectchanged
 msgid "Project changed"
 msgstr "Proje değiştirilmiş"
@@ -14915,6 +14923,10 @@ msgstr ""
 
 #: lazarusidestrconsts.listakesnapshot
 msgid "Take a Snapshot"
+msgstr ""
+
+#: lazarusidestrconsts.listarget
+msgid "Target:"
 msgstr ""
 
 #: lazarusidestrconsts.listargetcpu
@@ -16377,6 +16389,10 @@ msgstr ""
 
 #: lazarusidestrconsts.liswelcometolazarusthereisalreadyaconfigurationfromve
 msgid "Welcome to Lazarus %s%s%sThere is already a configuration from version %s in%s%s%s"
+msgstr ""
+
+#: lazarusidestrconsts.liswhatneedsrebuilding
+msgid "What needs rebuilding"
 msgstr ""
 
 #: lazarusidestrconsts.liswhenaunitisrenamedupdatereferences

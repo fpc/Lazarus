@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2012-04-07 01:36+0400\n"
+"PO-Revision-Date: 2012-04-07 16:52+0400\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -778,7 +778,7 @@ msgstr "используется файл настройки %s"
 
 #: lazarusidestrconsts.dlgcdtclassorder
 msgid "Class order"
-msgstr "В порядке классов"
+msgstr "В порядке следования классов"
 
 #: lazarusidestrconsts.dlgcdtlast
 msgid "Last"
@@ -833,10 +833,6 @@ msgstr "Проверять пакеты при создании формы"
 #: lazarusidestrconsts.dlgchscodetempl
 msgid "Choose code template file (*.dci)"
 msgstr "Выберите файл шаблонов кода (*.dci)"
-
-#: lazarusidestrconsts.dlgclassinsertpolicy
-msgid "Class part insert policy"
-msgstr "Политика вставки частей класса"
 
 #: lazarusidestrconsts.dlgclosebuttonsnotebook
 msgid "Show close buttons in notebook"
@@ -1986,6 +1982,10 @@ msgstr "Перед методами"
 msgid "Constructor name must be 'init' (destructor must be 'done')"
 msgstr "Конструктор должен называться 'init' (деструктор - 'done')"
 
+#: lazarusidestrconsts.dlginsertclassparts
+msgid "Insert class parts"
+msgstr "Вставлять элементы класса"
+
 #: lazarusidestrconsts.dlginsertimplementation
 msgid "Implementation"
 msgstr "Implementation"
@@ -1993,6 +1993,10 @@ msgstr "Implementation"
 #: lazarusidestrconsts.dlginsertinterface
 msgid "Interface"
 msgstr "Interface"
+
+#: lazarusidestrconsts.dlginsertmethods
+msgid "Insert methods"
+msgstr "Вставлять методы"
 
 #: lazarusidestrconsts.dlginsertsection
 msgid "Insert into Uses section of"
@@ -2172,10 +2176,6 @@ msgstr "Максимальное количество недавних файл�
 #: lazarusidestrconsts.dlgmaxrecentprojs
 msgid "Max recent project files"
 msgstr "Максимальное количество недавних проектов"
-
-#: lazarusidestrconsts.dlgmethodinspolicy
-msgid "Method insert policy"
-msgstr "Политика вставки методов"
 
 #: lazarusidestrconsts.dlgmixmethodsandproperties
 msgid "Mix methods and properties"
@@ -11587,6 +11587,10 @@ msgstr "Модули ..."
 msgid "Watches"
 msgstr "Окно наблюдений"
 
+#: lazarusidestrconsts.lismenuwhatneedsbuilding
+msgid "What Needs Building"
+msgstr "Что требует сборки"
+
 #: lazarusidestrconsts.lismenuwindow
 msgid "&Window"
 msgstr "Ок&но"
@@ -13877,6 +13881,10 @@ msgstr "Добавить к проекту"
 msgid "Unit name already exists"
 msgstr "Имя модуля уже существует"
 
+#: lazarusidestrconsts.lisproject
+msgid "Project %s"
+msgstr "Проект %s"
+
 #: lazarusidestrconsts.lisprojectchanged
 msgid "Project changed"
 msgstr "Проект изменен"
@@ -15079,6 +15087,10 @@ msgstr "Вкладки %s"
 #: lazarusidestrconsts.listakesnapshot
 msgid "Take a Snapshot"
 msgstr "Сделать снимок"
+
+#: lazarusidestrconsts.listarget
+msgid "Target:"
+msgstr "Цель:"
 
 #: lazarusidestrconsts.listargetcpu
 msgid "Target CPU"
@@ -16558,6 +16570,10 @@ msgstr "Добро пожаловать в Lazarus версии %s"
 #: lazarusidestrconsts.liswelcometolazarusthereisalreadyaconfigurationfromve
 msgid "Welcome to Lazarus %s%s%sThere is already a configuration from version %s in%s%s%s"
 msgstr "Добро пожаловать в Lazarus %s%s%sОбнаружен каталог настройки версии %s в%s%s%s"
+
+#: lazarusidestrconsts.liswhatneedsrebuilding
+msgid "What needs rebuilding"
+msgstr "Что требует пересборки"
 
 #: lazarusidestrconsts.liswhenaunitisrenamedupdatereferences
 #| msgid "When a unit is renamed, update references ..."
