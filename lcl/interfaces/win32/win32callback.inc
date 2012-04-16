@@ -2334,19 +2334,7 @@ begin
             ' OldClientSize='+dbgs(lWinControl.CachedClientWidth)+','+dbgs(lWinControl.CachedClientHeight)+
             ' NewClientSize='+dbgs(R.Right)+','+dbgs(R.Bottom));
           {$ENDIF}
-          if (lWinControl.Width <> Width) or
-             (lWinControl.Height <> Height) or
-             lWinControl.ClientRectNeedsInterfaceUpdate then
-            lWinControl.DoAdjustClientRectChange
-          else
-          // If we get form size message then we probably changed it state
-          // (minimized/maximized -> normal). Form adjust its clientrect in the
-          // second WM_SIZE but WM_MOVE also updates clientrect without adjustment
-          // thus we need to call DoAdjustClientRectChange. It is safe since this
-          // methods checks whether it need to adjust something really.
-          if (lWinControl is TCustomForm) and (lWinControl.Parent = nil) and
-             (WParam = Size_Restored) then
-            lWinControl.DoAdjustClientRectChange(False);
+          lWinControl.InvalidateClientRectCache(false);
         end;
         OverlayWindow := GetWin32WindowInfo(Window)^.Overlay;
         if OverlayWindow <> 0 then
