@@ -302,6 +302,8 @@ begin
   FBitmap := nil;
   FColor := NewColor;
   inherited SetFPColor(NewFPColor);
+  if Style = bsClear then
+    inherited SetStyle(bsSolid);
   Changed;
 end;
 
