@@ -2879,7 +2879,7 @@ type
     function GetNodeDrawAreaHeight: integer;
     function GetNodeDrawAreaWidth: integer;
     function IsCustomDrawn(Target: TCustomDrawTarget;
-      Stage: TCustomDrawStage): Boolean;
+      Stage: TCustomDrawStage): Boolean; virtual;
     function IsNodeVisible(ANode: TTreeNode): Boolean;
     function IsNodeHeightFullVisible(ANode: TTreeNode): Boolean;
     function IsInsertMarkVisible: boolean; virtual;

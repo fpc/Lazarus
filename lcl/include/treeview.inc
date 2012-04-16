@@ -4412,7 +4412,7 @@ begin
     UpdateScrollbars;
     with Canvas do
     begin
-      if Assigned(FOnCustomDraw) or Assigned(FOnAdvancedCustomDraw) then
+      if IsCustomDrawn(dtControl, cdPrePaint) then
       begin
         DrawRect := ClientRect;
         if not CustomDraw(DrawRect, cdPrePaint) then exit;
@@ -4474,7 +4474,7 @@ begin
         LineTo((ClientWidth - ScrollBarWidth) - 1 - a, (ClientHeight - ScrollBarWidth) - 1 - a);
         LineTo(a, (ClientHeight-ScrollBarWidth) - 1 - a);
       end;
-      if Assigned(FOnCustomDraw) or Assigned(FOnAdvancedCustomDraw) then
+      if IsCustomDrawn(dtControl, cdPostPaint) then
       begin
         DrawRect := ClientRect;
         if not CustomDraw(DrawRect, cdPostPaint) then exit;
@@ -4838,7 +4838,7 @@ begin
     Exit;
   NodeSelected := (Node.Selected) or (Node.MultiSelected);
   Canvas.Font.Color := Font.Color;
-  if Assigned(OnCustomDrawItem) or Assigned(FOnAdvancedCustomDrawItem) then
+  if IsCustomDrawn(dtItem, cdPrePaint) then
   begin
     DrawState := [];
     if NodeSelected then
@@ -4922,7 +4922,7 @@ begin
     // draw insert mark
     DrawInsertMark;
   end;
-  if Assigned(OnCustomDrawItem) or Assigned(FOnAdvancedCustomDrawItem) then
+  if IsCustomDrawn(dtItem, cdPostPaint) then
   begin
     DrawState:=[];
     if Node.Selected then
