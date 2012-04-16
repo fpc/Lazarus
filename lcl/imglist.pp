@@ -103,6 +103,7 @@ type
 
   TDrawingStyle = (dsFocus, dsSelected, dsNormal, dsTransparent);
   TImageType = (itImage, itMask);
+  TOverlay = 0..14; // windows limitation
 
   TCustomImageList = class(TLCLReferenceComponent)
   private
@@ -123,6 +124,7 @@ type
     FBkColor: TColor;
     FChanged: boolean;
     FUpdateCount: integer;
+    FOverlays: array[TOverlay] of Integer;
 
     procedure AllocData(ACount: Integer);
     function  GetReference: TWSCustomImageListReference;
@@ -146,6 +148,7 @@ type
     procedure Initialize; virtual;
     procedure DefineProperties(Filer: TFiler); override;
     procedure SetWidthHeight(NewWidth, NewHeight: integer); virtual;
+    procedure ClearOverlays;
 
     class procedure WSRegisterClass; override;
     function WSCreateReference(AParams: TCreateParams): PWSReference; override;
@@ -177,6 +180,10 @@ type
       AEnabled: Boolean = True); overload;
     procedure Draw(ACanvas: TCanvas; AX, AY, AIndex: Integer; ADrawingStyle: TDrawingStyle; AImageType: TImageType;
       ADrawEffect: TGraphicsDrawEffect); overload; virtual;
+    procedure DrawOverlay(ACanvas: TCanvas; AX, AY, AIndex: Integer; AOverlay: TOverlay; AEnabled: Boolean = True);
+    procedure DrawOverlay(ACanvas: TCanvas; AX, AY, AIndex: Integer; AOverlay: TOverlay; ADrawEffect: TGraphicsDrawEffect);
+    procedure DrawOverlay(ACanvas: TCanvas; AX, AY, AIndex: Integer; AOverlay: TOverlay; ADrawingStyle:
+      TDrawingStyle; AImageType: TImageType; ADrawEffect: TGraphicsDrawEffect); virtual;
     procedure FillDescription(out ADesc: TRawImageDescription);
 
     procedure GetBitmap(Index: Integer; Image: TCustomBitmap); overload;
@@ -193,6 +200,7 @@ type
     procedure InsertIcon(AIndex: Integer; AIcon: TCustomIcon);
     procedure InsertMasked(Index: Integer; AImage: TCustomBitmap; MaskColor: TColor);
     procedure Move(ACurIndex, ANewIndex: Integer);
+    procedure Overlay(AIndex: Integer; Overlay: TOverlay);
     procedure Replace(AIndex: Integer; AImage, AMask: TCustomBitmap);
     procedure ReplaceMasked(Index: Integer; NewImage: TCustomBitmap; MaskColor: TColor);
     procedure RegisterChanges(Value: TChangeLink);

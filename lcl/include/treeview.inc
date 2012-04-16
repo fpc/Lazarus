@@ -4884,8 +4884,12 @@ begin
         ImgIndex := Node.SelectedIndex;
       end;
       if (ImgIndex >= 0) and (ImgIndex < Images.Count) then
-        Images.Draw(Canvas, x + 1, (NodeRect.Top + NodeRect.Bottom - Images.Height) div 2,
-            ImgIndex, Node.FNodeEffect);
+      	if Node.OverlayIndex < 0 then
+          Images.Draw(Canvas, x + 1, (NodeRect.Top + NodeRect.Bottom - Images.Height) div 2,
+             ImgIndex, Node.FNodeEffect)
+      	else
+          Images.DrawOverlay(Canvas, x + 1, (NodeRect.Top + NodeRect.Bottom - Images.Height) div 2,
+             ImgIndex, Node.OverlayIndex, Node.FNodeEffect);
       inc(x, Images.Width + 2);
     end;
 

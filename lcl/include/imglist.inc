@@ -376,6 +376,7 @@ begin
   then TWSCustomImageListClass(WidgetSetClass).Clear(Self);
   SetLength(FData, 0);
   FAllocCount := 0;
+  ClearOverlays;
 
   FCount := 0;
   Change;
@@ -518,6 +519,38 @@ begin
   TWSCustomImageListClass(WidgetSetClass).Draw(Self, AIndex, ACanvas, Rect(AX, AY, FWidth, FHeight),
                           BkColor, BlendColor, ADrawEffect, ADrawingStyle, AImageType);
 end;
+
+procedure TCustomImageList.DrawOverlay(ACanvas: TCanvas; AX, AY, AIndex: Integer;
+  AOverlay: TOverlay; AEnabled: Boolean = True);
+begin
+  DrawOverlay(ACanvas, AX, AY, AIndex, AOverlay, EffectMap[AEnabled]);
+end;
+
+procedure TCustomImageList.DrawOverlay(ACanvas: TCanvas; AX, AY, AIndex: Integer;
+  AOverlay: TOverlay; ADrawEffect: TGraphicsDrawEffect);
+begin
+  DrawOverlay(ACanvas, AX, AY, AIndex, AOverlay, DrawingStyle, ImageType, ADrawEffect);
+end;
+
+procedure TCustomImageList.DrawOverlay(ACanvas: TCanvas; AX, AY, AIndex: Integer;
+  AOverlay: TOverlay; ADrawingStyle: TDrawingStyle; AImageType: TImageType;
+  ADrawEffect: TGraphicsDrawEffect);
+var
+  OverlayIndex: Integer;
+begin
+  if (AIndex < 0) or (AIndex >= FCount) then Exit;
+
+  ReferenceNeeded;
+  TWSCustomImageListClass(WidgetSetClass).Draw(Self, AIndex, ACanvas, Rect(AX, AY, FWidth, FHeight),
+                          BkColor, BlendColor, ADrawEffect, ADrawingStyle, AImageType);
+
+  OverlayIndex := FOverlays[AOverlay];
+  if (OverlayIndex < 0) or (OverlayIndex >= FCount) then Exit;
+
+  TWSCustomImageListClass(WidgetSetClass).Draw(Self, OverlayIndex, ACanvas, Rect(AX, AY, FWidth, FHeight),
+                          clNone, BlendColor, ADrawEffect, ADrawingStyle, AImageType);
+end;
+
 
 {------------------------------------------------------------------------------
   Method:  TCustomImageList.EndUpdate
@@ -738,6 +771,7 @@ begin
   FBlendColor := clNone;
   FBkColor := clNone;
   FDrawingStyle := dsNormal;
+  ClearOverlays;
 
   if (Height < 1) or (Height > 32768) or (Width < 1) 
   then raise EInvalidOperation.Create(SInvalidImageSize);
@@ -749,6 +783,14 @@ begin
   FHeight := NewHeight;
   FWidth := NewWidth;
   Clear;
+end;
+
+procedure TCustomImageList.ClearOverlays;
+var
+  I: TOverlay;
+begin
+  for I := Low(TOverlay) to High(TOverlay) do
+    FOverlays[I] := -1;
 end;
 
 class procedure TCustomImageList.WSRegisterClass;
@@ -1319,6 +1361,11 @@ begin
     {$ELSE}
     Result:=false;
     {$ENDIF}
+end;
+
+procedure TCustomImageList.Overlay(AIndex: Integer; Overlay: TOverlay);
+begin
+  FOverlays[Overlay] := AIndex;
 end;
 
 {------------------------------------------------------------------------------
