@@ -41,8 +41,7 @@ end;
  ------------------------------------------------------------------------------}
 procedure TBrush.SetColor(Value: TColor);
 begin
-  if FColor <> Value then
-    SetColor(Value, TColorToFPColor(Value));
+  SetColor(Value, TColorToFPColor(Value));
 end;
 
 {------------------------------------------------------------------------------
@@ -296,7 +295,7 @@ end;
 
 procedure TBrush.SetColor(const NewColor: TColor; const NewFPColor: TFPColor);
 begin
-  if (NewColor = Color) and (NewFPColor = FPColor) then Exit;
+  if (NewColor = Color) and (NewFPColor = FPColor) and (Style <> bsClear) then Exit;
   FreeReference;
   // reset bitmap
   FBitmap := nil;
