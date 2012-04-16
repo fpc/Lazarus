@@ -174,7 +174,7 @@ resourcestring
   SHTMLInvScroll = 'Invalid scrolling specified';
   SHTMLDefSubmitCaption = 'Submit';
   SHTMLDefResetCaption = 'Reset';
-  SHTMLDefBrowseCaption = 'Browse...';
+  SHTMLDefBrowseCaption = 'Browse ...';
   SHTMLInvPicture = 'Invalid picture returned';                {!!.02}
   SHTMLNoGraphic = 'Picture object contains no graphic object';{!!.02}
   SHTMLInvGraphic = 'Invalid graphic returned';                {!!.02}

@@ -650,6 +650,41 @@ begin
   Image.Data := PByte(FData);
 end;
 
+procedure TCustomImageList.GetIcon(Index: Integer; Image: TIcon; AEffect: TGraphicsDrawEffect);
+var
+  RawImg: TRawImage;
+  ListImg, DeviceImg: TLazIntfImage;
+  IconInfo: TIconInfo;
+begin
+  if (FCount = 0) or (Image = nil) then Exit;
+
+  GetRawImage(Index, RawImg);
+  RawImg.PerformEffect(AEffect, True);
+
+  IconInfo.fIcon := True;
+  IconInfo.hbmMask := 0;
+  if not CreateCompatibleBitmaps(RawImg, IconInfo.hbmColor, IconInfo.hbmMask, True)
+  then begin
+    // bummer, the widgetset doesn't support our 32bit format, try device
+    ListImg := TLazIntfImage.Create(RawImg, False);
+    DeviceImg := TLazIntfImage.Create(0,0,[]);
+    DeviceImg.DataDescription := GetDescriptionFromDevice(0, FWidth, FHeight);
+    DeviceImg.CopyPixels(ListImg);
+    DeviceImg.GetRawImage(RawImg);
+    RawImage_CreateBitmaps(RawImg, IconInfo.hbmColor, IconInfo.hbmMask);
+    DeviceImg.Free;
+    ListImg.Free;
+  end;
+  Image.Handle := CreateIconIndirect(@IconInfo);
+
+  RawImg.FreeData;
+end;
+
+procedure TCustomImageList.GetIcon(Index: Integer; Image: TIcon);
+begin
+  GetIcon(Index, Image, gdeNormal);
+end;
+
 procedure TCustomImageList.GetRawImage(Index: Integer; out Image: TRawImage);
 begin
   Image.Init;
@@ -657,7 +692,8 @@ begin
   if (FCount = 0) then Exit;
   CheckIndex(Index);
   FillDescription(Image.Description);
-  if Index >= 0 then begin
+  if Index >= 0 then
+  begin
     Image.DataSize := FWidth * FHeight * SizeOf(FData[0]);
     Image.Data := @FData[Index * FWidth * FHeight];
   end;

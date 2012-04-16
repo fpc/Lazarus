@@ -44,7 +44,7 @@ resourcestring
  // reglazdatadict
  SMenuDataDict          = 'Data dictionary';
  SWrongSelection        = 'Wrong selection count : %d';
- SMenuConfProjDataDict  = 'Set...';
+ SMenuConfProjDataDict  = 'Set ...';
  SMenuOpenDataDict      = 'Open';
  SMenuConfDataDict      = 'Configuration';
  SMenuDatadesktop       = 'Database Desktop';

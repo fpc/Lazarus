@@ -284,7 +284,7 @@ begin
     Exit;
   end;
 
-  WriteLN('Terminating...');
+  WriteLN('Terminating ...');
   TerminateProcess(GMainProcess.Handle, 0);
   if GState = dsPause
   then DebugLoop; // continue runnig so we can terminate
@@ -421,7 +421,7 @@ end;
 
 procedure HandleQuit(AParams: String);
 begin
-  WriteLN('Quitting...');
+  WriteLN('Quitting ...');
   GState := dsQuit;
 end;
 

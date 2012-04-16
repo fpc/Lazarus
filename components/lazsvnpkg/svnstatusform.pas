@@ -99,7 +99,7 @@ end;
 
 procedure TSVNStatusFrm.FormShow(Sender: TObject);
 begin
-  Caption := Format('%s - %s...', [RepositoryPath, rsLazarusSVNCommit]);
+  Caption := Format('%s - %s ...', [RepositoryPath, rsLazarusSVNCommit]);
   CommitMsgHistoryLabel.Caption:=rsCommitMsgHistory;
   CommitMsgLabel.Caption:=rsCommitMsg;
   Application.QueueAsyncCall(@Initialize, 0);

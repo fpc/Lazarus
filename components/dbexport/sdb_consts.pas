@@ -25,7 +25,7 @@ interface
 resourcestring
 
   // RegDBExport
-  SExecute = 'Execute...';
+  SExecute = 'Execute ...';
   SErrNoDatasetAssigned = 'DataExporter has no Dataset assigned.';
   SErrOpeningDataset = 'Could not open dataset for exporting: %s';
 

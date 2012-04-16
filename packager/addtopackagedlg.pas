@@ -781,7 +781,7 @@ begin
   for i:=0 to FilesListView.Items.Count-1 do begin
     Filename:=FilesListView.Items[i].Caption;
     if SwitchToAbsolute then
-      Filename:=CreateAbsoluteSearchPath(Filename,LazPackage.Directory)
+      Filename:=CreateAbsolutePath(Filename,LazPackage.Directory)
     else
       Filename:=CreateRelativePath(Filename,LazPackage.Directory);
     FilesListView.Items[i].Caption:=Filename;

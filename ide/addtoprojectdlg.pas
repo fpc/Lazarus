@@ -422,14 +422,13 @@ var
   ADirectory: String;
 begin
   if FilesListView.Items.Count=0 then exit;
-  if (TheProject=nil)
-  or (not FilenameIsAbsolute(TheProject.ProjectDirectory)) then exit;
+  if (TheProject=nil) or (not FilenameIsAbsolute(TheProject.ProjectDirectory)) then exit;
   ADirectory:=TheProject.ProjectDirectory;
   SwitchToAbsolute:=not FilenameIsAbsolute(FilesListView.Items[0].Caption);
   for i:=0 to FilesListView.Items.Count-1 do begin
     Filename:=FilesListView.Items[i].Caption;
     if SwitchToAbsolute then
-      Filename:=CreateAbsoluteSearchPath(Filename,ADirectory)
+      Filename:=CreateAbsolutePath(Filename,ADirectory)
     else
       Filename:=CreateRelativePath(Filename,ADirectory);
     FilesListView.Items[i].Caption:=Filename;

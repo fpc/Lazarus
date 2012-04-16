@@ -440,8 +440,8 @@ end;
 procedure TChmContentProvider.QueueFillToc(AChm: TChmReader);
 begin
   fContentsTree.Visible := False;
-  fContentsPanel.Caption := 'Table of Contents Loading. Please Wait...';
-  fStatusBar.SimpleText:= 'Table of Contents Loading...';
+  fContentsPanel.Caption := 'Table of Contents Loading. Please Wait ...';
+  fStatusBar.SimpleText:= 'Table of Contents Loading ...';
   Application.ProcessMessages;
   Application.QueueAsyncCall(@FillToc, PtrInt(AChm));
 end;
@@ -519,7 +519,7 @@ begin
       end;
       {$ENDIF}
       if SM <> nil then begin
-        fStatusBar.SimpleText:= 'Index Loading...';
+        fStatusBar.SimpleText:= 'Index Loading ...';
         Application.ProcessMessages;
         with TContentsFiller.Create(fIndexView, SM, @fStopTimer, fChm) do begin
           DoFill(nil);

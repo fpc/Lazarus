@@ -31,7 +31,7 @@ resourcestring
   lisTodolistRefresh='Refresh todo items';
   lisTodoListGotoLine='Goto selected source line';
   lisTodoListPrintList='Print todo items';
-  lisToDoListOptions='ToDo options...';
+  lisToDoListOptions='ToDo options ...';
   lisCTInsertMacro = 'Insert Macro';
   lisToDoLDone = 'Done';
   lisToDoLDescription = 'Description';

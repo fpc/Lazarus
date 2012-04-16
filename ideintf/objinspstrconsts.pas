@@ -95,7 +95,7 @@ resourcestring
   
   // TreeView Items Editor
   sccsTrEdtCaption         = 'TreeView Items Editor';
-  sccsTrEdt                = 'Edit Items...';
+  sccsTrEdt                = 'Edit Items ...';
   sccsTrEdtGrpLCaption     = 'Items';
   sccsTrEdtGrpRCaption     = 'Item Properties';
   sccsTrEdtNewItem         = 'New Item';
@@ -114,7 +114,7 @@ resourcestring
 
   // ListView Items Editor
   sccsLvEdtCaption         = 'ListView Items Editor';
-  sccsLvEdt                = 'Edit Items...';
+  sccsLvEdt                = 'Edit Items ...';
   sccsLvColEdt             = 'Edit Columns ...';
   sccsLvEdtGrpLCaption     = 'Items';
   sccsLvEdtGrpRCaption     = 'Item Properties';
@@ -128,18 +128,18 @@ resourcestring
   sccsLvEdtItem            = 'Item';
 
   // Image editor strings
-  oisImageListComponentEditor = 'I&mageList Editor...';
+  oisImageListComponentEditor = 'I&mageList Editor ...';
   sccsILEdtCaption     = 'ImageList Editor';
   sccsILEdtGrpLCaption = 'Images';
   sccsILEdtGrpRCaption = 'Selected Image';
-  sccsILEdtAdd         = 'Add...';
+  sccsILEdtAdd         = 'Add ...';
   sccsILEdtDelete      = 'Delete';
   sccsILEdtApply       = 'Apply';
   sccsILEdtClear       = 'Clear';
   sccsILEdtMoveUp      = 'Move Up';
   sccsILEdtMoveDown    = 'Move Down';
-  sccsILEdtSave        = 'Save...';
-  sccsILEdtSaveAll     = 'Save All...';
+  sccsILEdtSave        = 'Save ...';
+  sccsILEdtSaveAll     = 'Save All ...';
   sccsILEdtransparentColor = 'Transparent Color:';
   sccsILEdtAdjustment  = 'Adjustment';
   sccsILEdtNone        = 'None';
@@ -160,13 +160,13 @@ resourcestring
   sccsILEdtSaveDialog  = 'Save Image';
   
   // StringGrid Editor
-  sccsSGEdt           = 'Edit StringGrid...';
+  sccsSGEdt           = 'Edit StringGrid ...';
   sccsSGEdtCaption    = 'StringGrid Editor';
   sccsSGEdtGrp        = 'String Grid';
   sccsSGEdtApply      = 'Apply';
   sccsSGEdtClean      = 'Clean';
-  sccsSGEdtLoad       = 'Load...';
-  sccsSGEdtSave       = 'Save...';
+  sccsSGEdtLoad       = 'Load ...';
+  sccsSGEdtSave       = 'Save ...';
   sccsSGEdtOpenDialog = 'Open';
   sccsSGEdtSaveDialog = 'Save';
   sccsSGEdtMoveRowsCols = 'Move Rows/Cols';
@@ -229,8 +229,8 @@ resourcestring
   oisAction = 'Action';
 
   // Mask Editor
-  sccsMaskEditor = 'Edit Mask Editor...';
-  oisMasks = 'Masks...';
+  sccsMaskEditor = 'Edit Mask Editor ...';
+  oisMasks = 'Masks ...';
   oisSaveLiteralCharacters = 'Save Literal Characters';
   oisInputMask = 'Input Mask:';
   oisSampleMasks = 'Sample Masks:';
@@ -241,7 +241,7 @@ resourcestring
   cActionListEditorFileCategory = 'File';
   cActionListEditorDatabaseCategory = 'Database';
   
-  oisActionListComponentEditor = 'Action&List Editor...';
+  oisActionListComponentEditor = 'Action&List Editor ...';
   oisActionListEditor = 'ActionList Editor';
   oisErrorDeletingAction = 'Error deleting action';
   oisErrorWhileDeletingAction = 'Error while deleting action:%s%s';
@@ -261,19 +261,19 @@ resourcestring
   oiStdActEditSelectAllHeadLine = 'Select &All';
   oiStdActEditUndoHeadLine = '&Undo';
   oiStdActEditDeleteHeadLine = '&Delete';
-  oiStdActSearchFindHeadLine = '&Find...';
+  oiStdActSearchFindHeadLine = '&Find ...';
   oiStdActSearchFindFirstHeadLine = 'F&ind First';
   oiStdActSearchFindNextHeadLine = 'Find &Next';
   oiStdActSearchReplaceHeadLine = '&Replace';
   oiStdActHelpContentsHeadLine = '&Contents';
   oiStdActHelpTopicSearchHeadLine = '&Topic Search';
   oiStdActHelpHelpHelpHeadLine = '&Help on Help';
-  oiStdActFileOpenHeadLine = '&Open...';
-  oiStdActFileOpenWithHeadLine = 'Open with...';
-  oiStdActFileSaveAsHeadLine = 'Save &As...';
+  oiStdActFileOpenHeadLine = '&Open ...';
+  oiStdActFileOpenWithHeadLine = 'Open with ...';
+  oiStdActFileSaveAsHeadLine = 'Save &As ...';
   oiStdActFileExitHeadLine = 'E&xit';
-  oiStdActColorSelect1HeadLine = 'Select &Color...';
-  oiStdActFontEditHeadLine = 'Select &Font...';
+  oiStdActColorSelect1HeadLine = 'Select &Color ...';
+  oiStdActFontEditHeadLine = 'Select &Font ...';
 
   oiStdActDataSetFirstHeadLine = '&First';
   oiStdActDataSetPriorHeadLine = '&Prior';
@@ -336,7 +336,7 @@ resourcestring
   oisAllFiles = 'All files';
   
   // TCommonDialogComponentEditor
-  oisTestDialog = 'Test dialog...';
+  oisTestDialog = 'Test dialog ...';
 
   // property editors
   oisSort = 'Sort';
@@ -380,7 +380,7 @@ resourcestring
   s_SplitImage = 'Split image';
   
   // Fields Editor
-  fesFeTitle = 'Edit Fields...';
+  fesFeTitle = 'Edit Fields ...';
   oisAddFields = '&Add fields';
   oisAddFieldsFromFieldDefs = 'Add fields from FieldDefs';
   fesNoFields = 'It was not possible to get the dataset field''s list';

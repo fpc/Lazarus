@@ -99,12 +99,12 @@ resourcestring
   sHilightFormHilitAttr = 'Highlight attributes';
   sHilightFormCond = 'Condition';
   sHilightFormFont = 'Font';
-  sHilightFormColor = 'C&olor...';
+  sHilightFormColor = 'C&olor ...';
   sHilightFormBold = '&Bold';
   sHilightFormItalic = '&Italic';
   sHilightFormUnder = '&Underline';
   sHilightFormBack = 'Background';
-  sHilightFormColor2 = 'Co&lor...';
+  sHilightFormColor2 = 'Co&lor ...';
   sHilightFormTransp = '&Transparent';
   sHilightFormOther = 'Ot&her';
 
@@ -137,7 +137,7 @@ resourcestring
   sEvFormExp = '&Expression';
   sEvFormCopy = 'Copy variables';
   sEvFormPaste = 'Paste variables';
-  sEvFormVars = 'Va&riables...';
+  sEvFormVars = 'Va&riables ...';
 
 //--- VaredForm resources -----------------------------------------------------
   sVaredFormCapt = 'Variables list';
@@ -151,7 +151,7 @@ resourcestring
 //--- GEditorForm resources ---------------------------------------------------
   sGEditorFormCapt = 'Picture';
   sGEditorFormStretch = '&Stretch';
-  sGEditorFormLoad = '&Load...';
+  sGEditorFormLoad = '&Load ...';
   sGEditorFormClear = '&Clear';
   sGEditorFormMemo = '&Memo';
 
@@ -203,8 +203,8 @@ resourcestring
   sRemovePg = 'Remove this page?';
   sConfirm = 'Confirm';
   sStretched = 'Stretched';
-  sVarFormat = 'Variable format...';
-  sFont = 'Font...';
+  sVarFormat = 'Variable format ...';
+  sFont = 'Font ...';
   sWordWrap = 'Word wrap';
   sWordBreak = 'Word break';
   sAutoSize = 'Auto size';
@@ -229,7 +229,7 @@ resourcestring
   sSubReportOnPage = 'SubReport on page';
   sPicture = '[Picture]';
   sTransparent = 'Transparent';
-  sOther = 'Other...';
+  sOther = 'Other ...';
   sOnFirstPage = 'On first page';
   sOnLastPage = 'On last page';
   sRepeatHeader = 'Show on all pages';
@@ -508,14 +508,14 @@ resourcestring
   sFRDesignerForm_Paste = '&Paste';
   sFRDesignerForm_Delete = '&Delete';
   sFRDesignerForm_SelectAll = 'Select &all';
-  sFRDesignerForm_Edit = '&Edit...';
+  sFRDesignerForm_Edit = '&Edit ...';
   sFRDesignerForm_File = '&File';
-  sFRDesignerForm_New = '&New...';
-  sFRDesignerForm_Open = '&Open...';
+  sFRDesignerForm_New = '&New ...';
+  sFRDesignerForm_Open = '&Open ...';
   sFRDesignerForm_Save = '&Save';
-  sFRDesignerForm_Var = 'Variables &list...';
-  sFRDesignerForm_RptOpt = '&Report options...';
-  sFRDesignerForm_PgOpt = '&Page options...';
+  sFRDesignerForm_Var = 'Variables &list ...';
+  sFRDesignerForm_RptOpt = '&Report options ...';
+  sFRDesignerForm_PgOpt = '&Page options ...';
   sFRDesignerForm_preview = 'Pre&view';
   sFRDesignerForm_Exit = 'E&xit';
   sFRDesignerForm_Edit2 = '&Edit';
@@ -526,7 +526,7 @@ resourcestring
   //sFRDesignerForm_Paste = '&Paste';
   //sFRDesignerForm_Delete = '&Delete';
   //sFRDesignerForm_SelectAll = '&Select all';
-  sFRDesignerForm_Editp = '&Edit...';
+  sFRDesignerForm_Editp = '&Edit ...';
   sFRDesignerForm_AddPg = '&Add page';
   sFRDesignerForm_RemovePg = '&Remove page';
   sFRDesignerForm_Bring = 'Bring to &front';
@@ -534,7 +534,7 @@ resourcestring
   sFRDesignerForm_Tools = '&Tools';
   sFRDesignerForm_ToolBars = '&Toolbars';
   sFRDesignerForm_Tools2 = 'Too&ls';
-  sFRDesignerForm_Opts = '&Options...';
+  sFRDesignerForm_Opts = '&Options ...';
   sFRDesignerForm_Rect = '&Rectangle';
   sFRDesignerForm_Std = '&Standard';
   sFRDesignerForm_Text = '&Text';
@@ -542,8 +542,8 @@ resourcestring
   sFRDesignerForm_Insp = 'Object &Inspector';
   sFRDesignerForm_AlignPalette = '&Alignment palette';
   sFRDesignerForm_Tools3 = 'Too&ls';
-  sFRDesignerForm_About = '&About...';
-  sFRDesignerForm_SaveAs = 'Save &as...';
+  sFRDesignerForm_About = '&About ...';
+  sFRDesignerForm_SaveAs = 'Save &as ...';
   sFRDesignerForm_Help1 = '&Help contents';
   sFRDesignerForm_Help2 = 'Help &tool';
   sFRDesignerForm_Line = 'Line style';

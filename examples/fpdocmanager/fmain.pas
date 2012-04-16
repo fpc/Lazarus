@@ -223,7 +223,7 @@ begin
   LogFile.Free;
   LogFile := TFileStream.Create(LogName, fmCreate); //fmWrite
   Manager.OnLog := @LogToFile;
-  StatusBar1.SimpleText := 'Starting...';
+  StatusBar1.SimpleText := 'Starting ...';
 end;
 
 procedure TMain.LogDone;
