@@ -57,6 +57,8 @@ begin
   if Style <> Value then
   begin
     FreeReference;
+    // reset bitmap
+    FBitmap := nil;
     inherited SetStyle(Value);
     Changed;
   end;
@@ -75,6 +77,10 @@ begin
   begin
     FreeReference;
     FBitmap := Value;
+    // reset style and color
+    inherited SetStyle(bsSolid);
+    FColor := clWhite;
+    inherited SetFPColor(TColorToFPColor(FColor));
     Changed;
   end;
 end;
@@ -121,9 +127,11 @@ procedure TBrush.Assign(Source: TPersistent);
 begin
   if Source is TBrush then
   begin
-    Bitmap := TBrush(Source).Bitmap;
-    SetColor(TBrush(Source).Color, TFPCanvasHelper(Source).FPColor);
-    Style := TBrush(Source).Style;
+    FColor := TBrush(Source).Color;
+    inherited SetFPColor(TFPCanvasHelper(Source).FPColor);
+    inherited SetStyle(TBrush(Source).Style);
+    FBitmap := TBrush(Source).Bitmap;
+    Changed;
   end
   else
     inherited Assign(Source);
@@ -290,6 +298,8 @@ procedure TBrush.SetColor(const NewColor: TColor; const NewFPColor: TFPColor);
 begin
   if (NewColor = Color) and (NewFPColor = FPColor) then Exit;
   FreeReference;
+  // reset bitmap
+  FBitmap := nil;
   FColor := NewColor;
   inherited SetFPColor(NewFPColor);
   Changed;
