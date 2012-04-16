@@ -25,7 +25,8 @@
 
 constructor TCustomButton.Create(TheOwner: TComponent);
 begin
-  Inherited Create(TheOwner);
+  inherited Create(TheOwner);
+  FRolesUpdateLocked := False;
   // set the component style to csButton
   fCompStyle := csButton;
   ControlStyle := ControlStyle - [csClickEvents] + [csHasDefaultAction, csHasCancelAction];
@@ -78,16 +79,16 @@ var
   AForm: TCustomForm;
   NewRoles: TControlRolesForForm;
 begin
-  AForm:=GetParentForm(Self);
-  if AForm=nil then begin
-    // not on a form => keep settings
-    exit;
-  end else begin
-    // on a form => use settings of parent form
-    NewRoles:=AForm.GetRolesForControl(Self);
-    Default := crffDefault in NewRoles;
-    Cancel := crffCancel in NewRoles;
-  end;
+  if FRolesUpdateLocked then
+    Exit;
+  AForm := GetParentForm(Self);
+  if not Assigned(AForm) then
+    Exit; // not on a form => keep settings
+
+  // on a form => use settings of parent form
+  NewRoles := AForm.GetRolesForControl(Self);
+  Default := crffDefault in NewRoles;
+  Cancel := crffCancel in NewRoles;
 end;
 
 {------------------------------------------------------------------------------
@@ -102,7 +103,7 @@ begin
   if FCancel = NewCancel then Exit;
   FCancel := NewCancel;
   Form := GetParentForm(Self);
-  if Form <> nil then
+  if Assigned(Form) then
   begin
     if NewCancel then
       Form.CancelControl := Self
@@ -123,7 +124,7 @@ begin
   if FDefault = Value then Exit;
   FDefault := Value;
   Form := GetParentForm(Self);
-  if Form <> nil then
+  if Assigned(Form) then
   begin
     if Value then
     begin
@@ -301,7 +302,7 @@ end;
 procedure TCustomButton.TextChanged;
 begin
   InvalidatePreferredSize;
-  if (Parent<>nil) and Parent.AutoSize then
+  if Assigned(Parent) and Parent.AutoSize then
     Parent.AdjustSize;
   AdjustSize;
   inherited TextChanged;
@@ -319,12 +320,17 @@ var
   Form: TCustomForm;
 begin
   Form := GetParentForm(Self);
-  if Form <> nil then
+  if Assigned(Form) then
   begin
-    if FDefault then
-      Form.DefaultControl := Self;
-    if FCancel then
-      Form.CancelControl := Self;
+    FRolesUpdateLocked := True;
+    try
+      if FDefault then
+        Form.DefaultControl := Self;
+      if FCancel then
+        Form.CancelControl := Self;
+    finally
+      FRolesUpdateLocked := False;
+    end;
   end;
   WSSetDefault;
 end;

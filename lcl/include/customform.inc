@@ -306,13 +306,14 @@ var
 begin
   if NewControl <> FCancelControl then
   begin
-    OldCancelControl:=FCancelControl;
+    OldCancelControl := FCancelControl;
     FCancelControl := NewControl;
     // notify old control
-    if OldCancelControl<>nil then
+    if Assigned(OldCancelControl) then
       OldCancelControl.UpdateRolesForForm;
     // notify new control
-    if FCancelControl<>nil then begin
+    if Assigned(FCancelControl) then 
+    begin
       FreeNotification(FCancelControl);
       FCancelControl.UpdateRolesForForm;
     end;
@@ -328,20 +329,20 @@ begin
     OldDefaultControl := FDefaultControl;
     FDefaultControl := NewControl;
     // notify old control
-    if OldDefaultControl <> nil then
+    if Assigned(OldDefaultControl) then
       OldDefaultControl.UpdateRolesForForm;
     // notify new control
-    if FDefaultControl <> nil then
+    if Assigned(FDefaultControl) then
     begin
       FDefaultControl.FreeNotification(Self);
       FDefaultControl.UpdateRolesForForm;
     end;
     // maybe active default control changed
-    if FActiveDefaultControl = nil then
+    if not Assigned(FActiveDefaultControl) then
     begin
-      if OldDefaultControl <> nil then
+      if Assigned(OldDefaultControl) then
         OldDefaultControl.ActiveDefaultControlChanged(nil);
-      if FDefaultControl <> nil then
+      if Assigned(FDefaultControl) then
         FDefaultControl.ActiveDefaultControlChanged(nil);
     end;
   end;
