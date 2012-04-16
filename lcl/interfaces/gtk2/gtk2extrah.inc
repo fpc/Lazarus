@@ -21,6 +21,9 @@ uses
   xlib, x,
   {$endif}
   glib2, gdk2, gtk2, gtk2ext,
+  {$IF FPC_FULLVERSION<20600}
+  gdk2pixbuf,
+  {$ENDIF}
   {$ifdef HasGdk2X}
   gdk2x,
   {$endif}
@@ -258,3 +261,4 @@ var
   // since 2.10
   gtk_tree_view_set_grid_lines: procedure(tree_view: PGtkTreeView; grid_lines: TGtkTreeViewGridLines); cdecl;
   gtk_tree_view_get_grid_lines: function(tree_view: PGtkTreeView): TGtkTreeViewGridLines; cdecl;
+
