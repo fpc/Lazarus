@@ -30,7 +30,8 @@ interface
 
 uses
   Classes, SysUtils, Math,
-  fpvectorial, fpimage, fpvutils;
+  fpvectorial, fpimage, fpvutils,
+  lconvencoding;
 
 type
   TDXFToken = class;
@@ -83,6 +84,7 @@ type
     INSBASE, EXTMIN, EXTMAX, LIMMIN, LIMMAX: T3DPoint;
     // Calculated HEADER data
     DOC_OFFSET: T3DPoint; // The DOC_OFFSET compensates for documents with huge coordinates
+    ENCODING: string; // In the format utilized by lazutils.lconvencoding
     // For building the POLYLINE objects which is composed of multiple records
     IsReadingPolyline: Boolean;
     Polyline: array of TPolylineElement;
@@ -103,6 +105,7 @@ type
     procedure ReadENTITIES_MTEXT(ATokens: TDXFTokens; AData: TvVectorialPage; ADoc: TvVectorialDocument);
     procedure ReadENTITIES_POINT(ATokens: TDXFTokens; AData: TvVectorialPage; ADoc: TvVectorialDocument);
     function  GetCoordinateValue(AStr: shortstring): Double;
+    function  ConvertDXFStringToUTF8(AStr: string): string;
     //
     function DXFColorIndexToFPColor(AColorIndex: Integer): TFPColor;
   public
@@ -347,6 +350,7 @@ procedure TvDXFVectorialReader.ReadHEADER(ATokens: TDXFTokens;
   AData: TvVectorialPage; ADoc: TvVectorialDocument);
 var
   i, j: Integer;
+  lStr: string;
   CurToken: TDXFToken;
   CurField: P3DPoint;
 begin
@@ -394,6 +398,13 @@ begin
         end;
         end;
       end;
+    end
+    else if CurToken.StrValue = '$DWGCODEPAGE' then
+    begin
+      CurToken := TDXFToken(ATokens.Items[i+1]);
+      lStr := CurToken.StrValue;
+      if lStr = 'ANSI_1252' then ENCODING := 'CP1252';
+      Inc(i);
     end;
 
     Inc(i);
@@ -914,6 +925,9 @@ begin
   PosX := PosX - DOC_OFFSET.X;
   PosY := PosY - DOC_OFFSET.Y;
 
+  // Convert the string if necessary
+  Str := ConvertDXFStringToUTF8(Str);
+
   //
   AData.AddText(PosX, PosY, 0, '', Round(FontSize), Str);
 end;
@@ -1190,6 +1204,17 @@ begin
   Result := StrToFloat(Copy(AStr, 2, Length(AStr) - 1));}
 end;
 
+function TvDXFVectorialReader.ConvertDXFStringToUTF8(AStr: string): string;
+begin
+  if ENCODING = 'UTF-8' then
+  begin
+    Result := AStr;
+    Exit;
+  end;
+
+  Result := ConvertEncoding(AStr, ENCODING, 'UTF-8');
+end;
+
 function TvDXFVectorialReader.DXFColorIndexToFPColor(AColorIndex: Integer): TFPColor;
 begin
   if (AColorIndex >= 0) and (AColorIndex <= 15) then
@@ -1231,6 +1256,9 @@ var
   CurToken, CurTokenFirstChild: TDXFToken;
   lPage: TvVectorialPage;
 begin
+  // Start with default header values
+  ENCODING := 'UTF-8';
+
   Tokenizer.ReadFromStrings(AStrings);
 
   lPage := AData.AddPage();
