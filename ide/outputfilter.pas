@@ -148,6 +148,7 @@ type
     procedure DoAddFilteredLine(const s: string; OriginalIndex: integer = -1);
     procedure DoAddLastLinkerMessages(SkipLastLine: boolean);
     procedure DoAddLastAssemblerMessages;
+    procedure DoAddLastCompilingResourceMessages;
     function GetCurrentMessageParts: TStrings;
     function GetScanners(Index: integer): TIDEMsgScanner;
     function GetScannerCount: integer;
@@ -691,6 +692,7 @@ function TOutputFilter.ReadFPCompilerLine(const s: string): boolean;
 }
 const
   AsmError = 'Error while assembling';
+  CompResError = 'Error while compiling resources';
 var i, j, FilenameEndPos: integer;
   MsgTypeName, Filename, Msg: string;
   MsgType: TFPCErrorType;
@@ -1177,6 +1179,9 @@ begin
           end
           else if copy(s,j+2,length(AsmError))=AsmError then begin
             DoAddLastAssemblerMessages;
+          end else if copy(s,MessageStartPos,length(CompResError))=CompResError
+          then begin
+            DoAddLastCompilingResourceMessages;
           end;
         end;
 
@@ -1357,6 +1362,22 @@ begin
   while (i<fOutput.Count-1) do begin
     if (fOutput[i].Msg<>'') then
       DoAddFilteredLine(fOutput[i].Msg,i);
+    inc(i);
+  end;
+end;
+
+procedure TOutputFilter.DoAddLastCompilingResourceMessages;
+const CompResMsg = 'Compiling resource ';
+var i: integer;
+begin
+  // read back to 'Compiling resource ' message
+  i:=fOutput.Count-1;
+  while (i>=0) and (LeftStr(fOutput[i].Msg,length(CompResMsg))<>CompResMsg) do
+    dec(i);
+  if i<0 then exit;
+  while (i<fOutput.Count-1) and (LeftStr(fOutput[i].Msg,length(CompResMsg))=CompResMsg)
+  do begin
+    DoAddFilteredLine(fOutput[i].Msg,i);
     inc(i);
   end;
 end;
