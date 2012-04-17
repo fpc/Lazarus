@@ -7847,7 +7847,7 @@ var
   ANodeExt: TCodeTreeNodeExtension;
   ANode: TCodeTreeNode;
 begin
-  Result:=GatherProcNodes(GetFirstClassIdentifier(ClassNode),
+  Result:=GatherProcNodes(ClassNode.FirstChild,
              [phpInUpperCase,phpAddClassName],ExtractClassName(ClassNode,true));
   if RemoveAbstracts then begin
     AnAVLNode:=Result.FindLowest;
@@ -8140,6 +8140,9 @@ begin
   {$ENDIF}
   if CodeCompleteClassNode.Desc in AllClassInterfaces then begin
     // interfaces have no implementations
+    {$IFDEF CTDEBUG}
+    debugln(['TCodeCompletionCodeTool.CreateMissingProcBodies interface ',CodeCompleteClassNode.DescAsString]);
+    {$ENDIF}
     exit(true);
   end;
   
@@ -8149,7 +8152,9 @@ begin
   ClassProcs:=nil;
   ProcBodyNodes:=nil;
   try
+    //debugln(['TCodeCompletionCodeTool.CreateMissingProcBodies get class procs of ',CodeCompleteClassNode.DescAsString]);
     ClassProcs:=GatherClassProcDefinitions(CodeCompleteClassNode,true);
+    //debugln(['TCodeCompletionCodeTool.CreateMissingProcBodies get bodies of ',CodeCompleteClassNode.DescAsString]);
     ProcBodyNodes:=GatherClassProcBodies(CodeCompleteClassNode);
 
     {AnAVLNode:=ClassProcs.FindLowest;
