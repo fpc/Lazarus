@@ -4717,7 +4717,18 @@ begin
           Result := WidgetInfo^.ClientWidget
         else
           Result := WidgetInfo^.CoreWidget;
+      {$IFDEF GTK2_USE_OLD_CAPTURE}
       end;
+      {$ELSE}
+      end else
+      if GTK_IS_SCROLLED_WINDOW(Widget) and (GTK_IS_BIN(Widget)) then
+      begin
+        {$IFDEF VerboseMouseCapture}
+        writeln('GetDefaultMouseCaptureWidget: **',TWinControl(LCLObject).ClassName,' grabbing viewport ...');
+        {$ENDIF}
+        Result := gtk_bin_get_child(PGtkBin(Widget));
+      end;
+      {$ENDIF}
     end;
   end;
 end;

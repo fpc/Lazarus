@@ -151,6 +151,12 @@ tools:
 	$(MAKE) -C tools
 
 #-----------------------------------------------------------------------------
+# create/update ide/revision.inc
+# requires tools
+revisioninc:
+	$(MAKE) -C ide revisioninc
+
+#-----------------------------------------------------------------------------
 # build lazarus exe with minimum of packages for the LCL_PLATFORM
 # requires basecomponents and tools
 ide:

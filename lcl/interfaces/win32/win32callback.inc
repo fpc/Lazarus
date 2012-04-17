@@ -129,8 +129,8 @@ begin
     P.Y := 0;
     Windows.MapWindowPoints(Window, Parent, P, 1);
     Windows.OffsetViewportOrgEx(ControlDC, -P.X, -P.Y, P);
-    Windows.SendMessage(Parent, WM_ERASEBKGND, ControlDC, 0);
-    Windows.SendMessage(Parent, WM_PRINTCLIENT, ControlDC, PRF_CLIENT);
+    Windows.SendMessage(Parent, WM_ERASEBKGND, WParam(ControlDC), 0);
+    Windows.SendMessage(Parent, WM_PRINTCLIENT, WParam(ControlDC), PRF_CLIENT);
     Windows.SetViewportExtEx(ControlDC, P.X, P.Y, nil);
   end;
 end;

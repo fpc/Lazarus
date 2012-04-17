@@ -4841,26 +4841,28 @@ begin
         DS := Bnd.DataSet
       else
         DS := VCDataSet;
-
-      BM:=DS.GetBookMark;
-      DS.DisableControls;
-      try
-        DS.First;
-        while not DS.Eof do
-        begin
-          ddx := 0;
-          CurReport.DoPrintColumn(Parent.ColPos, ddx);
-          CalculatedHeight := SubDoCalcHeight(True);
-          if CalculatedHeight > Result then
-            Result := CalculatedHeight;
-          Inc(Parent.ColPos);
-          DS.Next;
-          if MasterReport.Terminated then break;
+      if DS <> nil then
+      begin
+        BM:=DS.GetBookMark;
+        DS.DisableControls;
+        try
+          DS.First;
+          while not DS.Eof do
+          begin
+            ddx := 0;
+            CurReport.DoPrintColumn(Parent.ColPos, ddx);
+            CalculatedHeight := SubDoCalcHeight(True);
+            if CalculatedHeight > Result then
+              Result := CalculatedHeight;
+            Inc(Parent.ColPos);
+            DS.Next;
+            if MasterReport.Terminated then break;
+          end;
+        finally
+          DS.GotoBookMark(BM);
+          DS.FreeBookMark(BM);
+          DS.EnableControls;
         end;
-      finally
-        DS.GotoBookMark(BM);
-        DS.FreeBookMark(BM);
-        DS.EnableControls;
       end;
     end;
   end
