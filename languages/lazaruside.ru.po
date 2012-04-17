@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2012-04-10 04:43+0400\n"
+"PO-Revision-Date: 2012-04-11 01:58+0400\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -2693,6 +2693,10 @@ msgstr "Группа пакетов"
 msgid "Application"
 msgstr "Приложение"
 
+#: lazarusidestrconsts.dlgpoasinvoker
+msgid "as invoker (asInvoker)"
+msgstr "вызывающий процесс (asInvoker)"
+
 #: lazarusidestrconsts.dlgpoclearicon
 msgid "Clear Icon"
 msgstr "Очистить значок"
@@ -2713,6 +2717,10 @@ msgstr "Уровень исполнения"
 #: lazarusidestrconsts.dlgpofroms
 msgid "Forms"
 msgstr "Формы"
+
+#: lazarusidestrconsts.dlgpohighestavailable
+msgid "highest available (highestAvailable)"
+msgstr "наивысший доступный (highestAvailable)"
 
 #: lazarusidestrconsts.dlgpoi18n
 msgid "i18n"
@@ -2745,6 +2753,10 @@ msgstr "Разное"
 msgid "Output settings"
 msgstr "Параметры вывода"
 
+#: lazarusidestrconsts.dlgporequireadministrator
+msgid "require administrator (requireAdministrator)"
+msgstr "с правами администратора (requireAdministrator)"
+
 #: lazarusidestrconsts.dlgposaveicon
 msgid "Save Icon"
 msgstr "Сохранить значок"
@@ -2760,6 +2772,10 @@ msgstr "Имя исполнимого файла:"
 #: lazarusidestrconsts.dlgpotitle
 msgid "Title:"
 msgstr "Заголовок:"
+
+#: lazarusidestrconsts.dlgpouiaccess
+msgid "UI Access (uiAccess)"
+msgstr "Доступ к интерфейсу пользователя (uiAccess)"
 
 #: lazarusidestrconsts.dlgpouseappbundle
 #| msgid "Use Application Bundle for running and debugging (darwin only)"

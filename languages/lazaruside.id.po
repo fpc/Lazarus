@@ -2691,6 +2691,10 @@ msgstr ""
 msgid "Application"
 msgstr "Aplikasi"
 
+#: lazarusidestrconsts.dlgpoasinvoker
+msgid "as invoker (asInvoker)"
+msgstr ""
+
 #: lazarusidestrconsts.dlgpoclearicon
 msgid "Clear Icon"
 msgstr ""
@@ -2710,6 +2714,10 @@ msgstr ""
 #: lazarusidestrconsts.dlgpofroms
 msgid "Forms"
 msgstr "Forms"
+
+#: lazarusidestrconsts.dlgpohighestavailable
+msgid "highest available (highestAvailable)"
+msgstr ""
 
 #: lazarusidestrconsts.dlgpoi18n
 msgid "i18n"
@@ -2743,6 +2751,10 @@ msgstr "Lain-lain"
 msgid "Output settings"
 msgstr "Seting Output"
 
+#: lazarusidestrconsts.dlgporequireadministrator
+msgid "require administrator (requireAdministrator)"
+msgstr ""
+
 #: lazarusidestrconsts.dlgposaveicon
 msgid "Save Icon"
 msgstr ""
@@ -2758,6 +2770,10 @@ msgstr "Nama file target:"
 #: lazarusidestrconsts.dlgpotitle
 msgid "Title:"
 msgstr "Judul:"
+
+#: lazarusidestrconsts.dlgpouiaccess
+msgid "UI Access (uiAccess)"
+msgstr ""
 
 #: lazarusidestrconsts.dlgpouseappbundle
 #, fuzzy

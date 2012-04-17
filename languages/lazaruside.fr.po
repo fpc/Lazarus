@@ -2675,6 +2675,10 @@ msgstr "Groupe de paquets"
 msgid "Application"
 msgstr "Application"
 
+#: lazarusidestrconsts.dlgpoasinvoker
+msgid "as invoker (asInvoker)"
+msgstr ""
+
 #: lazarusidestrconsts.dlgpoclearicon
 msgid "Clear Icon"
 msgstr "Effacer l'icônes"
@@ -2694,6 +2698,10 @@ msgstr ""
 #: lazarusidestrconsts.dlgpofroms
 msgid "Forms"
 msgstr "Fiches"
+
+#: lazarusidestrconsts.dlgpohighestavailable
+msgid "highest available (highestAvailable)"
+msgstr ""
 
 #: lazarusidestrconsts.dlgpoi18n
 msgid "i18n"
@@ -2726,6 +2734,10 @@ msgstr "Divers"
 msgid "Output settings"
 msgstr "Réglages de sortie"
 
+#: lazarusidestrconsts.dlgporequireadministrator
+msgid "require administrator (requireAdministrator)"
+msgstr ""
+
 #: lazarusidestrconsts.dlgposaveicon
 msgid "Save Icon"
 msgstr "Enregistrer l'icône"
@@ -2741,6 +2753,10 @@ msgstr "Fichier de destination:"
 #: lazarusidestrconsts.dlgpotitle
 msgid "Title:"
 msgstr "Titre:"
+
+#: lazarusidestrconsts.dlgpouiaccess
+msgid "UI Access (uiAccess)"
+msgstr ""
 
 #: lazarusidestrconsts.dlgpouseappbundle
 #| msgid "Use Application Bundle for running and debugging (darwin only)"

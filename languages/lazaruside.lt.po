@@ -2733,6 +2733,10 @@ msgstr "Paketų grupė"
 msgid "Application"
 msgstr "Taikomoji programa"
 
+#: lazarusidestrconsts.dlgpoasinvoker
+msgid "as invoker (asInvoker)"
+msgstr ""
+
 #: lazarusidestrconsts.dlgpoclearicon
 msgid "Clear Icon"
 msgstr "Išvalyti piktogramą"
@@ -2752,6 +2756,10 @@ msgstr ""
 #: lazarusidestrconsts.dlgpofroms
 msgid "Forms"
 msgstr "Formos"
+
+#: lazarusidestrconsts.dlgpohighestavailable
+msgid "highest available (highestAvailable)"
+msgstr ""
 
 #: lazarusidestrconsts.dlgpoi18n
 msgid "i18n"
@@ -2785,6 +2793,10 @@ msgstr "Įvairūs"
 msgid "Output settings"
 msgstr "Išvesties nuostatos"
 
+#: lazarusidestrconsts.dlgporequireadministrator
+msgid "require administrator (requireAdministrator)"
+msgstr ""
+
 #: lazarusidestrconsts.dlgposaveicon
 msgid "Save Icon"
 msgstr "Įrašyti piktogramą"
@@ -2800,6 +2812,10 @@ msgstr "Būsimo failo pavadinimas:"
 #: lazarusidestrconsts.dlgpotitle
 msgid "Title:"
 msgstr "Antraštė:"
+
+#: lazarusidestrconsts.dlgpouiaccess
+msgid "UI Access (uiAccess)"
+msgstr ""
 
 #: lazarusidestrconsts.dlgpouseappbundle
 #, fuzzy

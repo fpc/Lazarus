@@ -2733,6 +2733,10 @@ msgstr "Grupo del Paquete"
 msgid "Application"
 msgstr "Aplicación"
 
+#: lazarusidestrconsts.dlgpoasinvoker
+msgid "as invoker (asInvoker)"
+msgstr ""
+
 #: lazarusidestrconsts.dlgpoclearicon
 msgid "Clear Icon"
 msgstr "Quitar Icono"
@@ -2754,6 +2758,10 @@ msgstr ""
 #: lazarusidestrconsts.dlgpofroms
 msgid "Forms"
 msgstr "Formulario"
+
+#: lazarusidestrconsts.dlgpohighestavailable
+msgid "highest available (highestAvailable)"
+msgstr ""
 
 #: lazarusidestrconsts.dlgpoi18n
 msgid "i18n"
@@ -2787,6 +2795,10 @@ msgstr "Miscelánea"
 msgid "Output settings"
 msgstr "Configuraciones de Salida"
 
+#: lazarusidestrconsts.dlgporequireadministrator
+msgid "require administrator (requireAdministrator)"
+msgstr ""
+
 #: lazarusidestrconsts.dlgposaveicon
 msgid "Save Icon"
 msgstr "Guardar Icono"
@@ -2802,6 +2814,10 @@ msgstr "Especificar nombre de archivo:"
 #: lazarusidestrconsts.dlgpotitle
 msgid "Title:"
 msgstr "Título:"
+
+#: lazarusidestrconsts.dlgpouiaccess
+msgid "UI Access (uiAccess)"
+msgstr ""
 
 #: lazarusidestrconsts.dlgpouseappbundle
 #, fuzzy

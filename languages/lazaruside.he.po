@@ -2734,6 +2734,10 @@ msgstr "קבצות החבילות"
 msgid "Application"
 msgstr "יישום"
 
+#: lazarusidestrconsts.dlgpoasinvoker
+msgid "as invoker (asInvoker)"
+msgstr ""
+
 #: lazarusidestrconsts.dlgpoclearicon
 msgid "Clear Icon"
 msgstr "נקה סמל"
@@ -2755,6 +2759,10 @@ msgstr ""
 #: lazarusidestrconsts.dlgpofroms
 msgid "Forms"
 msgstr "טפסים"
+
+#: lazarusidestrconsts.dlgpohighestavailable
+msgid "highest available (highestAvailable)"
+msgstr ""
 
 #: lazarusidestrconsts.dlgpoi18n
 msgid "i18n"
@@ -2788,6 +2796,10 @@ msgstr "שונות"
 msgid "Output settings"
 msgstr "הוצא הגדרות"
 
+#: lazarusidestrconsts.dlgporequireadministrator
+msgid "require administrator (requireAdministrator)"
+msgstr ""
+
 #: lazarusidestrconsts.dlgposaveicon
 msgid "Save Icon"
 msgstr "שמור סמל"
@@ -2803,6 +2815,10 @@ msgstr "שם קובץ המטרה:"
 #: lazarusidestrconsts.dlgpotitle
 msgid "Title:"
 msgstr "כותרת:"
+
+#: lazarusidestrconsts.dlgpouiaccess
+msgid "UI Access (uiAccess)"
+msgstr ""
 
 #: lazarusidestrconsts.dlgpouseappbundle
 #, fuzzy

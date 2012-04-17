@@ -2723,6 +2723,10 @@ msgstr "Група пакунку"
 msgid "Application"
 msgstr "Програма"
 
+#: lazarusidestrconsts.dlgpoasinvoker
+msgid "as invoker (asInvoker)"
+msgstr ""
+
 #: lazarusidestrconsts.dlgpoclearicon
 msgid "Clear Icon"
 msgstr "Очистити Іконку"
@@ -2744,6 +2748,10 @@ msgstr ""
 #: lazarusidestrconsts.dlgpofroms
 msgid "Forms"
 msgstr "Форми"
+
+#: lazarusidestrconsts.dlgpohighestavailable
+msgid "highest available (highestAvailable)"
+msgstr ""
 
 #: lazarusidestrconsts.dlgpoi18n
 msgid "i18n"
@@ -2777,6 +2785,10 @@ msgstr "Різне"
 msgid "Output settings"
 msgstr "Вихідні налаштування"
 
+#: lazarusidestrconsts.dlgporequireadministrator
+msgid "require administrator (requireAdministrator)"
+msgstr ""
+
 #: lazarusidestrconsts.dlgposaveicon
 msgid "Save Icon"
 msgstr "Зберегти Значок"
@@ -2792,6 +2804,10 @@ msgstr "Назва виконуваного файлу:"
 #: lazarusidestrconsts.dlgpotitle
 msgid "Title:"
 msgstr "Заголовок:"
+
+#: lazarusidestrconsts.dlgpouiaccess
+msgid "UI Access (uiAccess)"
+msgstr ""
 
 #: lazarusidestrconsts.dlgpouseappbundle
 #, fuzzy
