@@ -1147,7 +1147,6 @@ type
     procedure SetAccessibleValue(AValue: TCaption);
     procedure SetAccessibleRole(AValue: TLazAccessibilityRole);
     procedure SetAnchorSide(Kind: TAnchorKind; AValue: TAnchorSide);
-    procedure SetAnchorSide(AIndex: Integer; AValue: TAnchorSide);
     procedure SetBorderSpacing(const AValue: TControlBorderSpacing);
     procedure SetBoundsRect(const ARect: TRect);
     procedure SetBoundsRectForNewParent(const AValue: TRect);
