@@ -4,7 +4,7 @@ unit Gtk2WSFactory;
 
 interface
 uses
-  Classes, Controls, ComCtrls, ImgList, Calendar, StdCtrls, Arrow, Spin,
+  Classes, Controls, ComCtrls, Calendar, StdCtrls, Arrow, Spin,
   Dialogs, ExtCtrls, ExtDlgs, Buttons, CheckLst, Forms, Grids, Menus,
   PairSplitter, WSLCLClasses;
 
@@ -113,7 +113,7 @@ uses
   Gtk2WSExtDlgs,
   Gtk2WSForms,
   Gtk2WSGrids,
-  Gtk2WSImgList,
+  {%H-}Gtk2WSImgList,
   Gtk2WSMenus,
   Gtk2WSSpin,
   Gtk2WSStdCtrls,

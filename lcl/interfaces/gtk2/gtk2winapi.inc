@@ -129,7 +129,7 @@ var
   Control: TWinControl;
 
 begin
-  Widget:=PGtkWidget(Handle);
+  Widget:={%H-}PGtkWidget(Handle);
   Info:=GetWidgetInfo(Widget,false);
   if Info<>nil then
     Inc(Info^.PaintDepth);
@@ -140,12 +140,12 @@ begin
   Result := PS.hDC;
   
   if Handle <> 0
-  then Control := TWinControl(GetLCLObject(Pointer(Handle)))
+  then Control := TWinControl(GetLCLObject({%H-}Pointer(Handle)))
   else Control := nil;
 
   if (Control <> nil)
   and Control.DoubleBuffered
-  and not GTK_WIDGET_DOUBLE_BUFFERED(PGTKWidget(Handle))
+  and not GTK_WIDGET_DOUBLE_BUFFERED({%H-}PGTKWidget(Handle))
   then begin
     //DebugLn(['TGtk2WidgetSet.BeginPaint ',DbgSName(Control)]);
     paintrect.x := PS.rcPaint.Left;
@@ -224,7 +224,7 @@ begin
   if Handle = 0 then Exit;
   Result := -1;
   P := nil;
-  P := gtk_object_get_data(pgtkobject(Handle),'WNDPROC');
+  P := gtk_object_get_data({%H-}pgtkobject(Handle),'WNDPROC');
   if P <> nil then
     Proc := TWndMethod(P^)
   else
@@ -253,7 +253,7 @@ Begin
     Position.Y := 0;
   end
   else begin
-    Position:=GetWidgetClientOrigin(PGtkWidget(Handle));
+    Position:=GetWidgetClientOrigin({%H-}PGtkWidget(Handle));
   end;
 
   Inc(P.X, Position.X);
@@ -771,7 +771,7 @@ var
 
   procedure FillBitmapInfo(out Header: TBitmapHeader);
   begin
-    FillChar(Header, SizeOf(Header), 0);
+    FillChar(Header{%H-}, SizeOf(Header), 0);
     
     Header.InfoHeader.biSize := SizeOf(Header.InfoHeader);
     Header.InfoHeader.biWidth := Width;
@@ -962,7 +962,7 @@ begin
     end;
   end;
 
-  Result := HBITMAP(PtrUInt(GdiObject));
+  Result := HBITMAP({%H-}PtrUInt(GdiObject));
 
   //DebugLn(Format('Trace:< [TGtk2WidgetSet.CreateBitmap] --> 0x%x', [Integer(Result)]));
 end;
@@ -1047,24 +1047,24 @@ begin
         BS_PATTERN8X8:     // Same as BS_PATTERN.
           begin
             GObject^.GDIBrushPixmap := nil;
-            if IsValidGDIObject(lbHatch) and (PGdiObject(lbHatch)^.GDIType = gdiBitmap) then
+            if IsValidGDIObject(lbHatch) and ({%H-}PGdiObject(lbHatch)^.GDIType = gdiBitmap) then
             begin
-              case PGdiObject(lbHatch)^.GDIBitmapType of
+              case {%H-}PGdiObject(lbHatch)^.GDIBitmapType of
                 gbBitmap:
                 begin
-                  GObject^.GDIBrushPixmap := PGdiObject(lbHatch)^.GDIBitmapObject;
+                  GObject^.GDIBrushPixmap := {%H-}PGdiObject(lbHatch)^.GDIBitmapObject;
                   GObject^.GDIBrushFill := GDK_STIPPLED;
                 end;
                 gbPixmap:
                 begin
-                  GObject^.GDIBrushPixmap := PGdiObject(lbHatch)^.GDIPixmapObject.Image;
+                  GObject^.GDIBrushPixmap := {%H-}PGdiObject(lbHatch)^.GDIPixmapObject.Image;
                   GObject^.GDIBrushFill := GDK_TILED;
                 end;
                 gbPixbuf:
                 begin
                   GObject^.GDIBrushPixmap := nil;
                   TmpMask := nil;
-                  gdk_pixbuf_render_pixmap_and_mask(PGdiObject(lbHatch)^.GDIPixbufObject,
+                  gdk_pixbuf_render_pixmap_and_mask({%H-}PGdiObject(lbHatch)^.GDIPixbufObject,
                     GObject^.GDIBrushPixmap, TmpMask, $80);
                   gdk_pixmap_unref(TmpMask);
                 end;
@@ -1090,7 +1090,7 @@ begin
       if not GObject^.IsNullBrush then
         SetGDIColorRef(GObject^.GDIBrushColor, lbColor);
     end;
-    Result := HBRUSH(PtrUInt(GObject));
+    Result := HBRUSH({%H-}PtrUInt(GObject));
   except
     Result:=0;
     DisposeGDIObject(GObject);
@@ -1114,14 +1114,14 @@ var
 begin
   //DebugLn('Trace:TODO: [TGtk2WidgetSet.CreateCaret] Finish');
 
-  GTKObject := PGTKObject(Handle);
+  GTKObject := {%H-}PGTKObject(Handle);
   Result := GTKObject <> nil;
 
   if Result then begin
     if gtk_type_is_a(gtk_object_type(GTKObject), GTKAPIWidget_GetType)
     then begin
       if IsValidGDIObjectType(Bitmap, gdiBitmap) then
-        BMP := PGdiObject(Bitmap)^.GDIBitmapObject
+        BMP := {%H-}PGdiObject(Bitmap)^.GDIBitmapObject
       else
         BMP := nil;
       GTKAPIWidget_CreateCaret(PGTKAPIWidget(GTKObject), Width, Height, BMP);
@@ -1198,7 +1198,7 @@ begin
 
   GdiObject^.Colormap := gdk_colormap_new(GdiObject^.Visual, GdkTrue);
 
-  Result := HBITMAP(PtrUInt(GdiObject));
+  Result := HBITMAP({%H-}PtrUInt(GdiObject));
 
   //DebugLn(Format('Trace:< [TGtk2WidgetSet.CreateCompatibleBitmap] DC: 0x%x --> 0x%x', [DC, Result]));
 end;
@@ -1248,22 +1248,22 @@ function TGtk2WidgetSet.DestroyCursor(Handle: hCursor): Boolean;
 begin
   Result := Handle <> 0;
   if Result then
-    gdk_cursor_destroy(PGdkCursor(Handle));
+    gdk_cursor_destroy({%H-}PGdkCursor(Handle));
 end;
 
 function TGtk2WidgetSet.DestroyIcon(Handle: HICON): Boolean;
 begin
   Result := (Handle <> 0) and
             (
-              GDK_IS_PIXBUF(Pointer(Handle)) or
+              GDK_IS_PIXBUF({%H-}Pointer(Handle)) or
               // todo: replace with GDK_IS_CURSOR when fpc will have it
-              G_TYPE_CHECK_INSTANCE_TYPE(Pointer(Handle),GDK_TYPE_CURSOR)
+              G_TYPE_CHECK_INSTANCE_TYPE({%H-}Pointer(Handle),GDK_TYPE_CURSOR)
             );
   if Result then
-    if GDK_IS_PIXBUF(Pointer(Handle)) then
-      gdk_pixbuf_unref(PGdkPixbuf(Handle))
+    if GDK_IS_PIXBUF({%H-}Pointer(Handle)) then
+      gdk_pixbuf_unref({%H-}PGdkPixbuf(Handle))
     else
-      gdk_cursor_unref(PGdkCursor(Handle));
+      gdk_cursor_unref({%H-}PGdkCursor(Handle));
 end;
 
 function TGtk2WidgetSet.DPtoLP(DC: HDC; var Points; Count: Integer): BOOL;
@@ -1326,7 +1326,7 @@ begin
   RegionObj := gdk2.gdk_region_polygon(@points[0], n_points, GDK_WINDING_RULE);
   GObject^.GDIRegionObject := RegionObj;
 
-  Result := HRGN(PtrUInt(GObject));
+  Result := HRGN({%H-}PtrUInt(GObject));
 
   // Free the allocated array
   SetLength(points, 0);
@@ -1556,7 +1556,7 @@ begin
       end else begin
         // return the new font
         GdiObject^.LogFont:=LogFont;
-        Result := HFONT(PtrUInt(GdiObject));
+        Result := HFONT({%H-}PtrUInt(GdiObject));
       end;
     end else begin
       {$IFDEF VerboseFonts}
@@ -1580,13 +1580,13 @@ begin
   Result := 0;
   if not IsValidGDIObject(IconInfo^.hbmColor) then Exit;
 
-  if PGDIObject(IconInfo^.hbmColor)^.GDIBitmapType = gbPixbuf then
+  if {%H-}PGDIObject(IconInfo^.hbmColor)^.GDIBitmapType = gbPixbuf then
   begin
-    pixbuf := gdk_pixbuf_copy(PGDIObject(IconInfo^.hbmColor)^.GDIPixbufObject);
+    pixbuf := gdk_pixbuf_copy({%H-}PGDIObject(IconInfo^.hbmColor)^.GDIPixbufObject);
   end
   else
   begin
-    pixmap := PGDIObject(IconInfo^.hbmColor)^.GDIPixmapObject.Image;
+    pixmap := {%H-}PGDIObject(IconInfo^.hbmColor)^.GDIPixmapObject.Image;
     //DbgDumpPixmap(pixmap, '');
 
     gdk_drawable_get_size(pixmap, @Width, @Height);
@@ -1608,12 +1608,12 @@ begin
 
   if IconInfo^.fIcon then
   begin
-    Result := HICON(PtrUInt(pixbuf));
+    Result := HICON({%H-}PtrUInt(pixbuf));
   end
   else
   begin
     // create cursor from pixbuf
-    Result := HCURSOR(PtrUInt(gdk_cursor_new_from_pixbuf(gdk_display_get_default,
+    Result := HCURSOR({%H-}PtrUInt(gdk_cursor_new_from_pixbuf(gdk_display_get_default,
       pixbuf, IconInfo^.xHotSpot, IconInfo^.yHotSpot)));
     if pixbuf <> nil then
       gdk_pixbuf_unref(pixbuf);
@@ -1661,7 +1661,7 @@ begin
   GObject^.IndexTable.OnGetKeyForHashItem:=@GetIndexAsKey;
   InitializePalette(GObject, LogPalette.palPalEntry, LogPalette.palNumEntries);
 
-  Result := HPALETTE(PtrUInt(GObject));
+  Result := HPALETTE({%H-}PtrUInt(GObject));
 end;
 
 {------------------------------------------------------------------------------
@@ -1689,7 +1689,7 @@ begin
     SetGDIColorRef(GObject^.GDIPenColor,lopnColor);
   end;
 
-  Result := HPEN(PtrUInt(GObject));
+  Result := HPEN({%H-}PtrUInt(GObject));
 end;
 
 {------------------------------------------------------------------------------
@@ -2673,7 +2673,7 @@ var
     if TempBrush = HBRUSH(-1) then
       TempBrush := SelectObject(DC, GetStockObject(NULL_BRUSH));
 
-    FillByte(Points[0],SizeOf(Points[0])*2,0);
+    FillByte({%H-}Points[0],SizeOf(Points[0])*2,0);
     if LeftOffset <> DT_Left then
       GetTextExtentPoint(DC, theLine, LineLength, Points[0]);
 

@@ -253,7 +253,6 @@ type
     procedure AddDummyNoteBookPage(NoteBookWidget: PGtkNoteBook);
 
 
-    procedure SetDesigning(AComponent: TComponent); override;
     function  DCGetPixel(CanvasHandle: HDC; X, Y: integer): TGraphicsColor; override;
     procedure DCSetPixel(CanvasHandle: HDC; X, Y: integer; AColor: TGraphicsColor); override;
     procedure DCRedraw(CanvasHandle: HDC); override;
@@ -293,7 +292,7 @@ type
     procedure SetCommonCallbacks(const AGTKObject: PGTKObject; const ALCLObject: TObject);
     procedure SetLabelCaption(const ALabel: PGtkLabel; const ACaption: String);
     procedure SetSelectionMode(Sender: TObject; Widget: PGtkWidget;
-      MultiSelect, ExtendedSelect: Boolean);
+      MultiSelect, {%H-}ExtendedSelect: Boolean);
     function ForceLineBreaks(DC : hDC; Src: PChar; MaxWidthInPixels : Longint;
                              ConvertAmpersandsToUnderScores: Boolean) : PChar;
     procedure SetWidgetFont(const AWidget: PGtkWidget; const AFont: TFont);
