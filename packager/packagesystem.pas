@@ -2768,6 +2768,8 @@ var
   Filename: String;
   UnitToSrcTree: TStringToStringTree;
   CurUnitName: String;
+  PkgOutDirs: TFilenameToStringTree;
+  i: Integer;
 begin
   Result:=false;
   if TheOwner=nil then exit;
@@ -2792,24 +2794,38 @@ begin
   if CfgCache=nil then exit;
   if CfgCache.Units=nil then exit;
   UnitToSrcTree:=Cache.GetUnitToSourceTree(false);
-  Node:=CfgCache.Units.Tree.FindLowest;
-  while Node<>nil do begin
-    Item:=PStringToStringTreeItem(Node.Data);
-    Node:=CfgCache.Units.Tree.FindSuccessor(Node);
-    CurUnitName:=Item^.Name;
-    if not UnitToSrcTree.Contains(CurUnitName) then begin
-      // this unit has no source in the FPC source directory
-      // probably an user unit reachable through a unit path in fpc.cfg
-      continue;
+  PkgOutDirs:=TFilenameToStringTree.Create(false);
+  try
+    for i:=0 to Count-1 do
+      PkgOutDirs[AppendPathDelim(Packages[i].CompilerOptions.GetUnitOutPath(false))]:='1';
+
+    Node:=CfgCache.Units.Tree.FindLowest;
+    while Node<>nil do begin
+      Item:=PStringToStringTreeItem(Node.Data);
+      Node:=CfgCache.Units.Tree.FindSuccessor(Node);
+      Filename:=Item^.Value;
+      if PkgOutDirs.Contains(ExtractFilePath(Filename)) then begin
+        // a package output directory is in the global search path
+        // => ignore
+        continue;
+      end;
+      CurUnitName:=Item^.Name;
+      if (UnitToSrcTree<>nil) and (UnitToSrcTree.Count>0)
+      and (not UnitToSrcTree.Contains(CurUnitName)) then begin
+        // this unit has no source in the FPC source directory
+        // probably an user unit reachable through a unit path in fpc.cfg
+        continue;
+      end;
+      if FileAgeCached(Filename)>StateFileAge then begin
+        debugln(['TLazPackageGraph.CheckCompileNeedDueToFPCUnits global unit "',Filename,'" is newer than state file of ',ID]);
+        Note+='Global unit "'+Filename+'" is newer than state file of '+ID+':'+LineEnding
+          +'  Unit age='+FileAgeToStr(FileAgeCached(Filename))+LineEnding
+          +'  State file age='+FileAgeToStr(StateFileAge)+LineEnding;
+        exit(true);
+      end;
     end;
-    Filename:=Item^.Value;
-    if FileAgeCached(Filename)>StateFileAge then begin
-      debugln(['TLazPackageGraph.CheckCompileNeedDueToFPCUnits FPC unit "',Filename,'" is newer than state file of ',ID]);
-      Note+='FPC unit "'+Filename+'" is newer than state file of '+ID+':'+LineEnding
-        +'  unit age='+FileAgeToStr(FileAgeCached(Filename))+LineEnding
-        +'  state file age='+FileAgeToStr(StateFileAge)+LineEnding;
-      exit(true);
-    end;
+  finally
+    PkgOutDirs.Free;
   end;
 end;
 
