@@ -775,13 +775,16 @@ begin
 
   if (crCompile in Project1.CompilerOptions.CompileReasons) then begin
     // compile
+    // write state file to avoid building clean every time
+    if Project1.SaveStateFile(CompilerFilename,CompilerParams,false)<>mrOk then
+      Error(ErrorBuildFailed,'failed saving statefile of project '+AFilename);
     if TheCompiler.Compile(Project1,
                             WorkingDir,CompilerFilename,CompilerParams,
                             BuildAll,false,false)<>mrOk
     then
       Error(ErrorBuildFailed,'failed compiling of project '+AFilename);
     // compilation succeded -> write state file
-    if Project1.SaveStateFile(CompilerFilename,CompilerParams)<>mrOk then
+    if Project1.SaveStateFile(CompilerFilename,CompilerParams,true)<>mrOk then
       Error(ErrorBuildFailed,'failed saving statefile of project '+AFilename);
   end;
 

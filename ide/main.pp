@@ -11933,7 +11933,7 @@ begin
     if (AReason in Project1.CompilerOptions.CompileReasons) then begin
       Note:='';
       Result:=MainBuildBoss.DoCheckIfProjectNeedsCompilation(Project1,
-                                               NeedBuildAllFlag,Note);
+                                                         NeedBuildAllFlag,Note);
       if  (pbfOnlyIfNeeded in Flags)
       and (not (pfAlwaysBuild in Project1.Flags)) then begin
         if Result=mrNo then begin
@@ -12029,6 +12029,13 @@ begin
         CompilerParams :=
           Project1.CompilerOptions.MakeOptionsString(SrcFilename,[ccloAbsolutePaths])
                  + ' ' + PrepareCmdLineOption(SrcFilename);
+        // write state file, to avoid building clean every time
+        Result:=Project1.SaveStateFile(CompilerFilename,CompilerParams,false);
+        if Result<>mrOk then begin
+          CompileProgress.Ready(lisInfoBuildError);
+          exit;
+        end;
+
         Result:=TheCompiler.Compile(Project1,
                                 WorkingDir,CompilerFilename,CompilerParams,
                                 (pbfCleanCompile in Flags) or NeedBuildAllFlag,
@@ -12044,7 +12051,7 @@ begin
           exit;
         end;
         // compilation succeded -> write state file
-        Result:=Project1.SaveStateFile(CompilerFilename,CompilerParams);
+        Result:=Project1.SaveStateFile(CompilerFilename,CompilerParams,true);
         if Result<>mrOk then begin
           CompileProgress.Ready(lisInfoBuildError);
           exit;

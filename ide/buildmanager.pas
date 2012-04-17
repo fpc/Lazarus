@@ -951,73 +951,87 @@ begin
            + ' ' + PrepareCmdLineOption(SrcFilename);
   //DebugLn('TBuildManager.DoCheckIfProjectNeedsCompilation WorkingDir="',WorkingDir,'" SrcFilename="',SrcFilename,'" CompilerFilename="',CompilerFilename,'" CompilerParams="',CompilerParams,'"');
 
+  // check state file
+  StateFilename:=AProject.GetStateFilename;
+  Result:=AProject.LoadStateFile(false);
+  if Result<>mrOk then exit; // read error and user aborted
+  if not (lpsfStateFileLoaded in AProject.StateFlags) then begin
+    DebugLn('TBuildManager.CheckIfPackageNeedsCompilation  No state file for ',AProject.IDAsString);
+    Note+='State file "'+StateFilename+'" of '+AProject.IDAsString+' is missing.'+LineEnding;
+    NeedBuildAllFlag:=true;
+    exit(mrYes);
+  end;
+
+  // check if build all (-B) is needed
   if (AProject.LastCompilerFilename<>CompilerFilename)
-  or (AProject.LastCompilerParams<>CompilerParams)
+  or (ExtractFPCParamsForBuildAll(AProject.LastCompilerParams)
+     <>ExtractFPCParamsForBuildAll(CompilerParams))
   or ((AProject.LastCompilerFileDate>0)
       and FileExistsCached(CompilerFilename)
       and (FileAgeCached(CompilerFilename)<>AProject.LastCompilerFileDate))
   then
     NeedBuildAllFlag:=true;
 
-  // check state file
-  StateFilename:=AProject.GetStateFilename;
-  Result:=AProject.LoadStateFile(false);
-  if Result<>mrOk then exit;
-  if not (lpsfStateFileLoaded in AProject.StateFlags) then begin
-    DebugLn('TMainIDE.CheckIfPackageNeedsCompilation  No state file for ',AProject.IDAsString);
-    Note+='State file "'+StateFilename+'" of '+AProject.IDAsString+' is missing.'+LineEnding;
-    exit(mrYes);
-  end;
-
   StateFileAge:=FileAgeCached(StateFilename);
 
   // check main source file
   if FileExistsCached(SrcFilename) and (StateFileAge<FileAgeCached(SrcFilename)) then
   begin
-    DebugLn('TMainIDE.CheckIfProjectNeedsCompilation  SrcFile outdated ',AProject.IDAsString);
+    DebugLn('TBuildManager.CheckIfProjectNeedsCompilation  SrcFile outdated ',AProject.IDAsString);
     Note+='Source file "'+SrcFilename+'" of '+AProject.IDAsString+' outdated:'+LineEnding
-      +'  source age='+FileAgeToStr(FileAgeCached(SrcFilename))+LineEnding
-      +'  state file age='+FileAgeToStr(StateFileAge)+LineEnding;
+      +'  Source age='+FileAgeToStr(FileAgeCached(SrcFilename))+LineEnding
+      +'  State file age='+FileAgeToStr(StateFileAge)+LineEnding
+      +'  State file='+StateFilename+LineEnding;
     exit(mrYes);
   end;
 
   // check compiler and params
   if CompilerFilename<>AProject.LastCompilerFilename then begin
-    DebugLn('TMainIDE.CheckIfProjectNeedsCompilation  Compiler filename changed for ',AProject.IDAsString);
+    DebugLn('TBuildManager.CheckIfProjectNeedsCompilation  Compiler filename changed for ',AProject.IDAsString);
     DebugLn('  Old="',AProject.LastCompilerFilename,'"');
     DebugLn('  Now="',CompilerFilename,'"');
     Note+='Compiler filename changed for '+AProject.IDAsString+':'+LineEnding
       +'  Old="'+AProject.LastCompilerFilename+'"'+LineEnding
-      +'  Now="'+CompilerFilename+'"'+LineEnding;
+      +'  Now="'+CompilerFilename+'"'+LineEnding
+      +'  State file='+StateFilename+LineEnding;
     exit(mrYes);
   end;
   if not FileExistsCached(CompilerFilename) then begin
-    DebugLn('TMainIDE.CheckIfProjectNeedsCompilation  Compiler file not found for ',AProject.IDAsString);
+    DebugLn('TBuildManager.CheckIfProjectNeedsCompilation  Compiler file not found for ',AProject.IDAsString);
     DebugLn('  File="',CompilerFilename,'"');
     Note+='Compiler file "'+CompilerFilename+'" not found for '+AProject.IDAsString+'.'+LineEnding;
     exit(mrYes);
   end;
   if FileAgeCached(CompilerFilename)<>AProject.LastCompilerFileDate then begin
-    DebugLn('TMainIDE.CheckIfProjectNeedsCompilation  Compiler file changed for ',AProject.IDAsString);
+    DebugLn('TBuildManager.CheckIfProjectNeedsCompilation  Compiler file changed for ',AProject.IDAsString);
     DebugLn('  File="',CompilerFilename,'"');
     Note+='Compiler file "'+CompilerFilename+'" for '+AProject.IDAsString+' changed:'+LineEnding
       +'  Old="'+FileAgeToStr(AProject.LastCompilerFileDate)+'"'+LineEnding
-      +'  Now="'+FileAgeToStr(FileAgeCached(CompilerFilename))+'"'+LineEnding;
+      +'  Now="'+FileAgeToStr(FileAgeCached(CompilerFilename))+'"'+LineEnding
+      +'  State file='+StateFilename+LineEnding;
     exit(mrYes);
   end;
   if CompilerParams<>AProject.LastCompilerParams then begin
-    DebugLn('TMainIDE.CheckIfProjectNeedsCompilation  Compiler params changed for ',AProject.IDAsString);
+    DebugLn('TBuildManager.CheckIfProjectNeedsCompilation  Compiler params changed for ',AProject.IDAsString);
     DebugLn('  Old="',AProject.LastCompilerParams,'"');
     DebugLn('  Now="',CompilerParams,'"');
     Note+='Compiler params changed for '+AProject.IDAsString+':'+LineEnding
       +'  Old="'+AProject.LastCompilerParams+'"'+LineEnding
-      +'  Now="'+CompilerParams+'"'+LineEnding;
+      +'  Now="'+CompilerParams+'"'+LineEnding
+      +'  State file='+StateFilename+LineEnding;
     exit(mrYes);
   end;
 
   // compiler and parameters are the same
   // quick compile is possible
   NeedBuildAllFlag:=false;
+
+  if not AProject.LastCompileComplete then begin
+    DebugLn('TBuildManager.CheckIfProjectNeedsCompilation  Compile was incomplete for ',AProject.IDAsString);
+    Note+='Last compile was incomplete.'+LineEnding
+      +'  State file='+StateFilename+LineEnding;
+    exit(mrYes);
+  end;
 
   // check all required packages
   Result:=PackageGraph.CheckCompileNeedDueToDependencies(AProject,
@@ -1034,8 +1048,9 @@ begin
       if (StateFileAge<FileAgeCached(AnUnitInfo.Filename)) then begin
         DebugLn('TMainIDE.CheckIfProjectNeedsCompilation  Src has changed ',AProject.IDAsString,' ',AnUnitInfo.Filename);
         Note+='File "'+AnUnitInfo.Filename+'" of '+AProject.IDAsString+' is newer than state file:'+LineEnding
-          +'  file age="'+FileAgeToStr(FileAgeCached(AnUnitInfo.Filename))+'"'+LineEnding
-          +'  state file age="'+FileAgeToStr(StateFileAge)+'"'+LineEnding;
+          +'  File age="'+FileAgeToStr(FileAgeCached(AnUnitInfo.Filename))+'"'+LineEnding
+          +'  State file age="'+FileAgeToStr(StateFileAge)+'"'+LineEnding
+          +'  State file='+StateFilename+LineEnding;
         exit(mrYes);
       end;
       if AnUnitInfo.ComponentName<>'' then begin
@@ -1044,8 +1059,9 @@ begin
         and (StateFileAge<FileAgeCached(LFMFilename)) then begin
           DebugLn('TMainIDE.CheckIfProjectNeedsCompilation  LFM has changed ',AProject.IDAsString,' ',LFMFilename);
           Note+='File "'+LFMFilename+'" of '+AProject.IDAsString+' is newer than state file:'+LineEnding
-            +'  file age="'+FileAgeToStr(FileAgeCached(LFMFilename))+'"'+LineEnding
-            +'  state file age="'+FileAgeToStr(StateFileAge)+'"'+LineEnding;
+            +'  File age="'+FileAgeToStr(FileAgeCached(LFMFilename))+'"'+LineEnding
+            +'  State file age="'+FileAgeToStr(StateFileAge)+'"'+LineEnding
+            +'  State file='+StateFilename+LineEnding;
           exit(mrYes);
         end;
       end;
@@ -1062,8 +1078,9 @@ begin
     and (StateFileAge<FileAgeCached(AnUnitInfo.Filename)) then begin
       DebugLn('TMainIDE.CheckIfProjectNeedsCompilation  Editor Src has changed ',AProject.IDAsString,' ',AnUnitInfo.Filename);
       Note+='Editor file "'+AnUnitInfo.Filename+'" is newer than state file:'+LineEnding
-        +'  file age="'+FileAgeToStr(FileAgeCached(AnUnitInfo.Filename))+'"'+LineEnding
-        +'  state file age="'+FileAgeToStr(StateFileAge)+'"'+LineEnding;
+        +'  File age="'+FileAgeToStr(FileAgeCached(AnUnitInfo.Filename))+'"'+LineEnding
+        +'  State file age="'+FileAgeToStr(StateFileAge)+'"'+LineEnding
+        +'  State file='+StateFilename+LineEnding;
       exit(mrYes);
     end;
     AnUnitInfo:=AnUnitInfo.NextUnitWithEditorIndex;
