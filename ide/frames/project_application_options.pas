@@ -58,6 +58,13 @@ implementation
 
 {$R *.lfm}
 
+const
+  ExecutionLevelToCaption: array[TXPManifestExecutionLevel] of PString =  (
+  { xmelAsInvoker            } @dlgPOAsInvoker,
+  { xmelHighestAvailable     } @dlgPOHighestAvailable,
+  { xmelRequireAdministrator } @dlgPORequireAdministrator
+  );
+
 function CreateProjectApplicationBundle(AProject: TProject): string;
 // returns target file name
 var
@@ -202,8 +209,8 @@ begin
   DpiAwareCheckBox.Caption := dlgPODpiAware;
   ExecutionLevelLabel.Caption := dlgPOExecutionLevel;
   for ExecutionLevel := Low(TXPManifestExecutionLevel) to High(TXPManifestExecutionLevel) do
-    ExecutionLevelComboBox.Items.Add(ExecutionLevelToStr[ExecutionLevel]);
-  UIAccessCheckBox.Caption := 'UIAccess';
+    ExecutionLevelComboBox.Items.Add(ExecutionLevelToCaption[ExecutionLevel]^);
+  UIAccessCheckBox.Caption := dlgPOUIAccess;
 
   CreateAppBundleButton.Caption := dlgPOCreateAppBundle;
   CreateAppBundleButton.LoadGlyphFromLazarusResource('pkg_compile');

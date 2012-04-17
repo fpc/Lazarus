@@ -216,7 +216,7 @@ object ProjectApplicationOptionsFrame: TProjectApplicationOptionsFrame
       Left = 125
       Height = 23
       Top = 284
-      Width = 160
+      Width = 223
       BorderSpacing.Around = 6
       ItemHeight = 15
       Style = csDropDownList

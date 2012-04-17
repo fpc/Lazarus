@@ -2194,6 +2194,10 @@ resourcestring
   dlgPOCreateAppBundle = 'Create Application Bundle';
   dlgPOUseManifest = 'Use manifest file to enable themes (Windows only)';
   dlgPODpiAware = 'Enabled DPI Awareness (for Vista+)';
+  dlgPOUIAccess = 'UI Access (uiAccess)';
+  dlgPOAsInvoker = 'as invoker (asInvoker)';
+  dlgPOHighestAvailable = 'highest available (highestAvailable)';
+  dlgPORequireAdministrator = 'require administrator (requireAdministrator)';
   dlgPOExecutionLevel = 'Execution Level';
   dlgPOIcon = 'Icon:';
   dlgPOLoadIcon = 'Load Icon';
