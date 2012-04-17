@@ -1,6 +1,5 @@
 {%MainUnit gtk2wscomctrls.pp}
-{ $Id$
-
+{
  *****************************************************************************
  *                                                                           *
  *  This file is part of the Lazarus Component Library (LCL)                 *

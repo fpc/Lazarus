@@ -114,7 +114,7 @@ type
   public
     constructor Create;
     destructor Destroy; override;
-    procedure GetImageIndexAndEffect(State: TButtonState; var AIndex: Integer; var AEffect: TGraphicsDrawEffect);
+    procedure GetImageIndexAndEffect(State: TButtonState; out AIndex: Integer; out AEffect: TGraphicsDrawEffect);
     function Draw(Canvas: TCanvas; const Client: TRect; const Offset: TPoint;
                   State: TButtonState; Transparent: Boolean;
                   BiDiFlags: Longint): TRect;

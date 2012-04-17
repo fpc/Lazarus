@@ -265,7 +265,7 @@ end;
 class procedure TGtk2WSCustomMemo.SetCharCase(const ACustomEdit: TCustomEdit;
   NewCase: TEditCharCase);
 begin
-  // TODO: implement me!
+  // TODO: TGtk2WSCustomMemo.SetCharCase: implement me!
 end;
 
 class procedure TGtk2WSCustomMemo.SetScrollbars(const ACustomMemo: TCustomMemo;

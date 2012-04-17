@@ -124,8 +124,8 @@ type
     class function GetMaxLength(const ACustomComboBox: TCustomComboBox): integer; override;
     class function GetText(const AWinControl: TWinControl; var AText: String): Boolean; override;
 
-    class procedure SetArrowKeysTraverseList(const ACustomComboBox: TCustomComboBox;
-                                             NewTraverseList: boolean); override;
+    class procedure SetArrowKeysTraverseList(const {%H-}ACustomComboBox: TCustomComboBox;
+                                             {%H-}NewTraverseList: boolean); override;
     class procedure SetDroppedDown(const ACustomComboBox: TCustomComboBox; ADroppedDown: Boolean); override;
     class procedure SetSelStart(const ACustomComboBox: TCustomComboBox; NewStart: integer); override;
     class procedure SetSelLength(const ACustomComboBox: TCustomComboBox; NewLength: integer); override;
@@ -199,7 +199,7 @@ type
     class function GetSelLength(const ACustomEdit: TCustomEdit): integer; override;
 
     class procedure SetCaretPos(const ACustomEdit: TCustomEdit; const NewPos: TPoint); override;
-    class procedure SetCharCase(const ACustomEdit: TCustomEdit; NewCase: TEditCharCase); override;
+    class procedure SetCharCase(const {%H-}ACustomEdit: TCustomEdit; {%H-}NewCase: TEditCharCase); override;
     class procedure SetEchoMode(const ACustomEdit: TCustomEdit; NewMode: TEchoMode); override;
     class procedure SetMaxLength(const ACustomEdit: TCustomEdit; NewLength: integer); override;
     class procedure SetPasswordChar(const ACustomEdit: TCustomEdit; {%H-}NewChar: char); override;
@@ -239,11 +239,11 @@ type
     class procedure SetSelStart(const ACustomEdit: TCustomEdit; NewStart: integer); override;
     class procedure SetSelLength(const ACustomEdit: TCustomEdit; NewLength: integer); override;
     class procedure SetWantTabs(const ACustomMemo: TCustomMemo; const NewWantTabs: boolean); override;
-    class procedure SetEchoMode(const ACustomEdit: TCustomEdit; NewMode: TEchoMode); override;
-    class procedure SetPasswordChar(const ACustomEdit: TCustomEdit; NewChar: char); override;
+    class procedure SetEchoMode(const {%H-}ACustomEdit: TCustomEdit; {%H-}NewMode: TEchoMode); override;
+    class procedure SetPasswordChar(const {%H-}ACustomEdit: TCustomEdit; {%H-}NewChar: char); override;
     class procedure SetWordWrap(const ACustomMemo: TCustomMemo; const NewWordWrap: boolean); override;
 
-    class procedure SetCharCase(const ACustomEdit: TCustomEdit; NewCase: TEditCharCase); override;
+    class procedure SetCharCase(const {%H-}ACustomEdit: TCustomEdit; {%H-}NewCase: TEditCharCase); override;
     class procedure SetMaxLength(const ACustomEdit: TCustomEdit; NewLength: integer); override;
     class procedure SetReadOnly(const ACustomEdit: TCustomEdit; NewReadOnly: boolean); override;
     class procedure SetText(const AWinControl: TWinControl; const AText: string); override;
@@ -437,6 +437,8 @@ begin
   Widget := GetWidgetInfo({%H-}Pointer(ACustomListBox.Handle), True)^.CoreWidget;
   if GtkWidgetIsA(Widget, gtk_tree_view_get_type) then
   begin
+    Path:=nil;
+    Column:=nil;
     gtk_tree_view_get_cursor(PGtkTreeView(Widget), Path, column);
 
     if Path <> nil then
@@ -778,6 +780,8 @@ begin
       aTreeView :=
         GTK_TREE_VIEW(GetWidgetInfo({%H-}Pointer(ACustomListBox.Handle), True)^.CoreWidget);
 
+      aTreePath:=nil;
+      aTreeColumn:=nil;
       if gtk_tree_view_get_path_at_pos(aTreeView, 0, Y, aTreePath, aTreeColumn,
         nil, nil)
       then begin
@@ -1076,7 +1080,7 @@ end;
 class procedure TGtk2WSCustomEdit.SetCharCase(const ACustomEdit: TCustomEdit;
   NewCase: TEditCharCase);
 begin
-  // TODO: implement me!
+  // TODO: TGtk2WSCustomEdit.SetCharCase: implement me!
 end;
 
 class procedure TGtk2WSCustomEdit.SetMaxLength(const ACustomEdit: TCustomEdit;
@@ -1827,7 +1831,7 @@ end;
 class procedure TGtk2WSCustomComboBox.SetArrowKeysTraverseList(
   const ACustomComboBox: TCustomComboBox; NewTraverseList: boolean);
 begin
-  // TODO
+  // TODO: TGtk2WSCustomComboBox.SetArrowKeysTraverseList: not supported
   // This is not an option that is available for this widget
   // we will have to eat the keystrokes to set this to false
 end;
