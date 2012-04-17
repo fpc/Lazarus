@@ -4,7 +4,7 @@
 
 [package]
 name=lazarus-apiwizz
-version=0.7a
+version=1.0
 
 [target]
 programs=apiwizz
@@ -31,14 +31,10 @@ ifndef LCL_PLATFORM
 ifneq ($(findstring $(OS_TARGET),win32 win64),)
 LCL_PLATFORM=win32
 else
-ifeq ($(OS_TARGET),wince)
-LCL_PLATFORM=wince
-else
 ifeq ($(OS_TARGET),darwin)
 LCL_PLATFORM=carbon
 else
 LCL_PLATFORM=gtk2
-endif
 endif
 endif
 endif

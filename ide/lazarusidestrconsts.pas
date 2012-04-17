@@ -2929,6 +2929,7 @@ resourcestring
    
   // Build lazarus dialog
   lisConfirmLazarusRebuild = 'Do you want to rebuild Lazarus with profile: %s ?';
+  lisConfirmation = 'Confirmation';
   lisConfirmBuildAllProfiles = 'Lazarus will be rebuilt with the following profiles:%sContinue?';
   lisNoBuildProfilesSelected = 'No profiles are selected to be built.';
   lisCleanLazarusSource = 'Clean Lazarus Source';

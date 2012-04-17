@@ -60,7 +60,7 @@ uses
   LazarusIDEStrConsts, CompilerOptions,
   TransferMacros, EditorOptions, IDEProcs, RunParamsOpts, ProjectDefs,
   FileReferenceList, EditDefineTree, PackageDefs, PackageSystem, IDEOptionsIntf,
-  SrcEditorIntf, SynEdit;
+  SrcEditorIntf, IDEDialogs, SynEdit;
 
 type
   TUnitInfo = class;
@@ -2834,10 +2834,10 @@ begin
       except
         on E: Exception do begin
           DebugLn('Error: ', E.Message);
-          MessageDlg(lisCodeToolsDefsWriteError,
+          IDEMessageDialog(lisCodeToolsDefsWriteError,
             Format(lisUnableToWriteTheProjectInfoFileError, [#13, '"',
               ProjectInfoFile, '"', #13, E.Message])
-            ,mtError,[mbOk],0);
+            ,mtError,[mbOk]);
           Result:=mrCancel;
           exit;
         end;
@@ -2920,9 +2920,9 @@ begin
         Result:=mrOk;
       except
         on E: Exception do begin
-          Result:=MessageDlg(lisCodeToolsDefsWriteError, Format(
+          Result:=IDEMessageDialog(lisCodeToolsDefsWriteError, Format(
             lisUnableToWriteToFile, ['"', CfgFilename, '"']),
-            mtError,[mbRetry,mbAbort],0);
+            mtError,[mbRetry,mbAbort]);
         end;
       end;
       if CompareFilenames(ProjectInfoFile,xmlconfig.Filename)=0 then begin
@@ -2959,10 +2959,10 @@ begin
       except
         on E: Exception do begin
           DebugLn('ERROR: ',E.Message);
-          MessageDlg(lisCodeToolsDefsWriteError,
+          IDEMessageDialog(lisCodeToolsDefsWriteError,
             Format(lisUnableToWriteTheProjectSessionFileError, [#13,
               ProjectSessionFile, #13, E.Message])
-            ,mtError,[mbOk],0);
+            ,mtError,[mbOk]);
           Result:=mrCancel;
           exit;
         end;
@@ -2993,9 +2993,9 @@ begin
         SessionSaveResult:=mrOk;
       except
         on E: Exception do begin
-          SessionSaveResult:=MessageDlg(lisCodeToolsDefsWriteError,
+          SessionSaveResult:=IDEMessageDialog(lisCodeToolsDefsWriteError,
             Format(lisUnableToWriteToFile2, [CurSessionFilename]),
-            mtError,[mbRetry,mbAbort],0);
+            mtError,[mbRetry,mbAbort]);
         end;
       end;
       try
@@ -3346,10 +3346,10 @@ begin
         xmlconfig := TCodeBufXMLConfig.CreateWithCache(NewProjectInfoFile,true)
       except
         on E: Exception do begin
-          MessageDlg(lisUnableToReadLpi,
+          IDEMessageDialog(lisUnableToReadLpi,
                Format(lisUnableToReadTheProjectInfoFile, [#13, '"',NewProjectInfoFile, '"'])+#13
                +E.Message
-              ,mtError,[mbOk],0);
+              ,mtError,[mbOk]);
           Result:=mrCancel;
           exit;
         end;
@@ -3373,10 +3373,10 @@ begin
         {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TProject.ReadProject B done lpi');{$ENDIF}
       except
         on E: Exception do begin
-          MessageDlg(lisUnableToReadLpi,
+          IDEMessageDialog(lisUnableToReadLpi,
                Format(lisUnableToReadTheProjectInfoFile, [#13, '"',ProjectInfoFile, '"'])+#13
                +E.Message
-              ,mtError,[mbOk],0);
+              ,mtError,[mbOk]);
           Result:=mrCancel;
           exit;
         end;
@@ -3399,9 +3399,9 @@ begin
       if (Fileversion=0) and (not LoadParts)
       and (xmlconfig.GetValue(Path+'Units/Count',0)=0) then
       begin
-        if MessageDlg(lisStrangeLpiFile,
+        if IDEMessageDialog(lisStrangeLpiFile,
           Format(lisTheFileDoesNotLookLikeALpiFile, [ProjectInfoFile]),
-          mtConfirmation,[mbIgnore,mbAbort],0)<>mrIgnore then exit;
+          mtConfirmation,[mbIgnore,mbAbort])<>mrIgnore then exit;
       end;
 
       if not LoadParts then begin
@@ -3526,9 +3526,10 @@ begin
             OnLoadProjectInfo(Self,XMLConfig,true);
           end;
         except
-          MessageDlg(Format(lisUnableToReadTheProjectInfoFile2, [#13, '"',
+          IDEMessageDialog(lisCCOErrorCaption, Format(
+            lisUnableToReadTheProjectInfoFile2, [#13, '"',
             ProjectInfoFile, '"'])
-              ,mtError,[mbOk],0);
+              ,mtError,[mbOk]);
           Result:=mrCancel;
           exit;
         end;
@@ -5000,10 +5001,10 @@ begin
         if IgnoreErrors then begin
           Result:=mrOk;
         end else begin
-          Result:=MessageDlg(lisPkgMangErrorReadingFile,
+          Result:=IDEMessageDialog(lisPkgMangErrorReadingFile,
             Format(lisProjMangUnableToReadStateFileOfProjectError, [StateFile,
               IDAsString, #13, E.Message]),
-            mtError,[mbAbort],0);
+            mtError,[mbAbort]);
         end;
         exit;
       end;
@@ -5042,10 +5043,10 @@ begin
     StateFlags:=StateFlags+[lpsfStateFileLoaded];
   except
     on E: Exception do begin
-      Result:=MessageDlg(lisPkgMangErrorWritingFile,
+      Result:=IDEMessageDialog(lisPkgMangErrorWritingFile,
         Format(lisProjMangUnableToWriteStateFileForProjectError, [IDAsString,
           #13, E.Message]),
-        mtError,[mbAbort,mbCancel],0);
+        mtError,[mbAbort,mbCancel]);
       exit;
     end;
   end;

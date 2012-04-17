@@ -525,8 +525,8 @@ begin
     Result:=mrOk;
   except
     on E: Exception do begin
-      MessageDlg(lisFileLinkError,
-        E.Message,mtError,[mbCancel],0);
+      IDEMessageDialog(lisFileLinkError,
+        E.Message,mtError,[mbCancel]);
     end;
   end;
 end;

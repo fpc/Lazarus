@@ -31,7 +31,7 @@ uses
   Classes, SysUtils, Math, Forms, Controls, Dialogs, Buttons, StdCtrls,
   FileUtil, LResources,
   // IDE
-  LazarusIDEStrConsts, TransferMacros, InputHistory, IDEProcs;
+  LazarusIDEStrConsts, TransferMacros, InputHistory, IDEProcs, IDEDialogs;
 
 type
   TInputFileFlag = (iftDirectory, iftFilename, iftCmdLine,
@@ -134,10 +134,10 @@ begin
     CurEdit:=GetInputEdit(i);
     CurEdit.Text:=CurEdit.Text;
     if not FilenameIsValidForFileIndex(CurEdit.Text,i) then begin
-      if MessageDlg(lisA2PInvalidFile,
+      if IDEMessageDialog(lisA2PInvalidFile,
         Format(lisCodeToolsDefsValueIsInvalid, [GetGroupBox(i).Caption, #13,
           CurEdit.Text]), mtInformation,
-        [mbCancel,mbAbort],0)=mrAbort
+        [mbCancel,mbAbort])=mrAbort
       then
         ModalResult:=mrCancel
       else

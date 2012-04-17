@@ -348,9 +348,9 @@ begin
   Result := TCompilerList.Create;
   if FileExists(ConfDir + 'fpclist.txt') then
     Result.LoadFromFile(ConfDir + 'fpclist.txt');
-  if (Result.Count = 0) and (EnvironmentOptions.CompilerFilename <> '') then begin
-    Result.Add('fpc from conf', EnvironmentOptions.CompilerFilename);
-    Result.Add('fpc from conf -Xe', EnvironmentOptions.CompilerFilename, '-Xe');
+  if (Result.Count = 0) and (EnvironmentOptions.GetParsedCompilerFilename <> '') then begin
+    Result.Add('fpc from conf', EnvironmentOptions.GetParsedCompilerFilename);
+    Result.Add('fpc from conf -Xe', EnvironmentOptions.GetParsedCompilerFilename, '-Xe');
   end;
   Compilers := Result;
 end;
@@ -362,8 +362,8 @@ begin
   Result := TDebuggerList.Create;
   if FileExists(ConfDir + 'gdblist.txt') then
     Result.LoadFromFile(ConfDir + 'gdblist.txt');
-  if (Result.Count = 0) and (EnvironmentOptions.DebuggerFilename <> '') then
-    Result.Add('gdb from conf', EnvironmentOptions.DebuggerFilename);
+  if (Result.Count = 0) and (EnvironmentOptions.GetParsedDebuggerFilename <> '') then
+    Result.Add('gdb from conf', EnvironmentOptions.GetParsedDebuggerFilename);
   Debuggers := Result;
 end;
 
