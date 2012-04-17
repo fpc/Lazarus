@@ -1491,19 +1491,16 @@ class procedure TGtk2WSCustomListView.ItemShow(const ALV: TCustomListView;
 var
   Widgets: PTVWidgets;
   Path: PGtkTreePath;
-  StrIndex: String;
 begin
   if not WSCheckHandleAllocated(ALV, 'ItemShow')
   then Exit;
 
   // TODO: TGtk2WSCustomListView.ItemShow check for partial visiblity. currently scrolls to the Item to make it fully visible
-  StrIndex := IntToStr(AItem.Index);
-
   GetCommonTreeViewWidgets({%H-}PGtkWidget(ALV.Handle), Widgets);
 
   with Widgets^ do
   begin
-    Path := gtk_tree_path_new_from_string(PChar(StrIndex));
+    Path := gtk_tree_path_new_from_indices(AIndex, -1);
     if GTK_IS_TREE_VIEW(MainView) then
       gtk_tree_view_scroll_to_cell(PGtkTreeView(MainView), Path, nil, False, 0, 0)
     else

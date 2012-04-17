@@ -234,7 +234,7 @@ begin
   BitBtnInfo := WidgetInfo^.UserData;
   BuildNeeded := UpdateGlyph(ABitBtn, BitBtnInfo, AValue, GtkStateToButtonState[GTK_WIDGET_STATE(MainWidget)]);
   // at initialization widget will be built in SetLayout
-  if not (wcfInitializing in TWinControlAccess(ABitBtn).FWinControlFlags) and BuildNeeded then
+  if not (wcfInitializing in {%H-}TWinControlAccess(ABitBtn).FWinControlFlags) and BuildNeeded then
     BuildWidget(ABitBtn, MainWidget, BitBtnInfo, ABitBtn.Caption);
 end;
 
