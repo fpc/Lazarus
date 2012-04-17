@@ -151,10 +151,10 @@ begin
     Bdelta := (cMax - B);
 
     if R = cMax
-    then H := HUE_000 + integer((Bdelta - Gdelta) * HUE_060) div diff
+    then H := HUE_000 + integer(Bdelta - Gdelta) * HUE_060 div diff
     else if G = cMax
-    then H := HUE_120 + integer((Rdelta - Bdelta) * HUE_060) div diff
-    else H := HUE_240 + integer((Gdelta - Rdelta) * HUE_060) div diff;
+    then H := HUE_120 + integer(Rdelta - Bdelta) * HUE_060 div diff
+    else H := HUE_240 + integer(Gdelta - Rdelta) * HUE_060 div diff;
   end;
 end;
 
