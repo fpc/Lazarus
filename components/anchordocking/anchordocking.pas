@@ -1063,7 +1063,7 @@ begin
   i:=ControlCount-1;
   while i>=0 do begin
     AControl:=Controls[i];
-    if GetParentForm(AControl).IsVisible
+    if AControl.IsVisible
     and (Tree.Root.FindChildNode(AControl.Name,true)=nil)
     and (Application.MainForm<>AControl) then begin
       DisableControlAutoSizing(AControl);
@@ -2273,6 +2273,7 @@ begin
     raise Exception.Create('TAnchorDockMaster.CreateRestoreLayout: not a site '+DbgSName(AControl));
   AForm:=GetParentForm(AControl);
   Result:=TAnchorDockRestoreLayout.Create(TAnchorDockLayoutTree.Create);
+  if AForm=nil then exit;
   SaveSiteLayoutToTree(AForm,Result.Layout);
   AddControlNames(AControl,Result);
 end;
