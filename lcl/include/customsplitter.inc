@@ -525,8 +525,10 @@ begin
   else
     Cursor := crVSplit;
   if not (csLoading in ComponentState) then
+  begin
     Align := alNone;
-  Invalidate;
+    Invalidate;
+  end;
 end;
 
 procedure TCustomSplitter.SetResizeControl(const AValue: TControl);
@@ -959,34 +961,39 @@ var
   OldWidth: LongInt;
   OldHeight: LongInt;
 begin
-  OldWidth := Self.Width;
-  OldHeight := Self.Height;
-  OldResizeAnchor := FResizeAnchor;
-  Align := alNone;
-  FResizeAnchor := Kind;
+  DisableAutoSizing;
+  try
+    OldWidth := Width;
+    OldHeight := Height;
+    OldResizeAnchor := FResizeAnchor;
+    Align := alNone;
+    FResizeAnchor := Kind;
 
-  if ResizeAnchor in [akLeft,akRight] then
-    Cursor := crHSplit
-  else
-    Cursor := crVSplit;
-
-  case FResizeAnchor of
-    akLeft:   AnchorSplitterSides(akLeft, akRight, akTop, akBottom);
-    akRight:  AnchorSplitterSides(akRight, akLeft, akTop, akBottom);
-    akTop:    AnchorSplitterSides(akTop, akBottom, akLeft, akRight);
-    akBottom: AnchorSplitterSides(akBottom, akTop, akLeft, akRight);
-  end;
-  
-  if (OldResizeAnchor in [akLeft, akRight]) = (ResizeAnchor in [akLeft, akRight]) then
-  begin
-    // keep width and height
-    SetBounds(Left, Top, OldWidth, OldHeight);
-  end else begin
-    // resize
-    if FResizeAnchor in [akLeft, akRight] then
-      Width := OldHeight
+    if ResizeAnchor in [akLeft,akRight] then
+      Cursor := crHSplit
     else
-      Height := OldWidth;
+      Cursor := crVSplit;
+
+    case FResizeAnchor of
+      akLeft:   AnchorSplitterSides(akLeft, akRight, akTop, akBottom);
+      akRight:  AnchorSplitterSides(akRight, akLeft, akTop, akBottom);
+      akTop:    AnchorSplitterSides(akTop, akBottom, akLeft, akRight);
+      akBottom: AnchorSplitterSides(akBottom, akTop, akLeft, akRight);
+    end;
+
+    if (OldResizeAnchor in [akLeft, akRight]) = (ResizeAnchor in [akLeft, akRight]) then
+    begin
+      // keep width and height
+      SetBounds(Left, Top, OldWidth, OldHeight);
+    end else begin
+      // resize
+      if FResizeAnchor in [akLeft, akRight] then
+        Width := OldHeight
+      else
+        Height := OldWidth;
+    end;
+  finally
+    EnableAutoSizing;
   end;
 end;
 
