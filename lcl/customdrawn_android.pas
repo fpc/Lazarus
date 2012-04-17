@@ -169,13 +169,13 @@ var
   Str: string;
 begin
   // Button shape -> This crashes in Gtk2
-{  TmpB.Canvas.Brush.Color := CDButton.Color;
+(*  TmpB.Canvas.Brush.Color := CDButton.Color;
   TmpB.Canvas.Brush.Style := bsSolid;
   TmpB.Canvas.RoundRect(0, 0, TmpB.Width, TmpB.Height, 8, 8);
   CDButton.SetShape(TmpB);
   ADest.Draw(0, 0, TmpB);
   TmpB.Free;
-  }
+  *)
 
   ADest.Brush.Color := CDButton.Parent.Color;
   ADest.Brush.Style := bsSolid;

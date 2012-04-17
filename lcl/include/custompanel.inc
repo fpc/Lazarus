@@ -100,13 +100,13 @@ begin
   ARect := GetClientRect;
 
   // if BevelOuter is set then draw a frame with BevelWidth
-  if (BevelOuter <> bvNone) and (BevelWidth > 0) then
+  if (BevelOuter <> bvNone) then
     Canvas.Frame3d(ARect, BevelWidth, BevelOuter); // Note: Frame3D inflates ARect
 
   InflateRect(ARect, -BorderWidth, -BorderWidth);
 
   // if BevelInner is set then skip the BorderWidth and draw a frame with BevelWidth
-  if (BevelInner <> bvNone) and (BevelWidth > 0) then
+  if (BevelInner <> bvNone) then
     Canvas.Frame3d(ARect, BevelWidth, BevelInner); // Note: Frame3D inflates ARect
 
   if Caption <> '' then

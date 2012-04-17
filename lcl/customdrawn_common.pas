@@ -1256,7 +1256,7 @@ begin
   // The outter frame
 
   // if BevelOuter is set then draw a frame with BevelWidth
-  if (AStateEx.BevelOuter <> bvNone) and (AStateEx.BevelWidth > 0) then
+  if (AStateEx.BevelOuter <> bvNone) then
   begin
     NextRectFactor := AStateEx.BevelWidth;
     DrawFrame3d(ADest, Point(0, 0), ASize, AStateEx.BevelWidth, AStateEx.BevelOuter); // Note: Frame3D inflates ARect
@@ -1266,7 +1266,7 @@ begin
   ASize.cy := ASize.cy - NextRectFactor*2;
 
   // if BevelInner is set then skip the BorderWidth and draw a frame with BevelWidth
-  if (AStateEx.BevelInner <> bvNone) and (AStateEx.BevelWidth > 0) then
+  if (AStateEx.BevelInner <> bvNone) then
     DrawFrame3d(ADest, Point(NextRectFactor, NextRectFactor), ASize, AStateEx.BevelWidth, AStateEx.BevelInner); // Note: Frame3D inflates ARect
 
   {if Caption <> '' then
