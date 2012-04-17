@@ -3750,7 +3750,7 @@ begin
   for a:=Low(TAnchorKind) to high(TAnchorKind) do
     if (a in NewAnchors) and (AnchorSide[a].Side=asrCenter) then
       AnchorSide[a].FixCenterAnchoring;
-  UpdateAnchorRules;
+  // UpdateAnchorRules; ToDo: check
   AdjustSize;
 end;
 
