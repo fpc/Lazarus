@@ -605,6 +605,8 @@ begin
   FPitch := DefFontData.Pitch;
   FCharSet := DefFontData.CharSet;
   FQuality := DefFontData.Quality;
+  FHeight := DefFontData.Height;
+  inherited SetSize(-MulDiv(FHeight, 72, FPixelsPerInch));
   DelayAllocate := True;
   inherited SetName(DefFontData.Name);
   inherited SetFPColor(colBlack);
