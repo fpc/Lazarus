@@ -786,17 +786,12 @@ var CurProcName: string;
   NewNodeExt: TCodeTreeNodeExtension;
   cmp: boolean;
   CurClassName: String;
-  LastNode: TCodeTreeNode;
 begin
   //debugln(['TMethodJumpingCodeTool.GatherProcNodes START']);
   Result:=TAVLTree.Create(@CompareCodeTreeNodeExt);
   if (StartNode=nil) or (StartNode.Parent=nil) then exit;
   ANode:=StartNode;
-  LastNode:=ANode.Parent;
-  while LastNode.Desc in AllClassSections do
-    LastNode:=LastNode.Parent;
-  LastNode:=LastNode.NextSkipChilds;
-  while (ANode<>LastNode) do begin
+  while (ANode<>nil) do begin
     //debugln(['TMethodJumpingCodeTool.GatherProcNodes ',ANode.DescAsString]);
     if ANode.Desc=ctnProcedure then begin
       if (not ((phpIgnoreForwards in Attr)
@@ -836,10 +831,19 @@ begin
       end;
     end;
     // next node
-    if ANode.Desc in AllClassSections then
-      ANode:=ANode.Next
-    else
-      ANode:=ANode.NextSkipChilds;
+    if (ANode.FirstChild<>nil)
+    and (ANode.Desc in (AllClassSections+[ctnImplementation])) then
+      ANode:=ANode.FirstChild
+    else begin
+      while ANode.NextBrother=nil do begin
+        ANode:=ANode.Parent;
+        if ANode=nil then break;
+        if not (ANode.Desc in (AllClassSections+[ctnImplementation])) then
+          break;
+      end;
+      if ANode=nil then break;
+      ANode:=ANode.NextBrother;
+    end;
   end;
   //debugln(['TMethodJumpingCodeTool.GatherProcNodes END']);
 end;

@@ -992,7 +992,7 @@ var i, j, FilenameEndPos: integer;
     Result:=true;
     DoAddFilteredLine(copy(s,OldStart,length(s)));
   end;
-  
+
   { example:
     Recompiling GtkInt, checksum changed for gdk2x
   }
