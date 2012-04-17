@@ -12,26 +12,26 @@ object ImageListEditorDlg: TImageListEditorDlg
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   Position = poScreenCenter
-  LCLVersion = '0.9.29'
+  LCLVersion = '1.1'
   object GroupBoxR: TGroupBox
     AnchorSideTop.Control = Owner
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = BtnPanel
-    Left = 375
-    Height = 335
+    Left = 376
+    Height = 328
     Top = 6
-    Width = 235
+    Width = 234
     Anchors = [akTop, akLeft, akRight, akBottom]
     BorderSpacing.Around = 6
     Caption = 'Selected Image'
-    ClientHeight = 317
-    ClientWidth = 231
+    ClientHeight = 310
+    ClientWidth = 230
     TabOrder = 1
     object LabelTransparent: TLabel
       Left = 110
-      Height = 14
-      Top = 211
+      Height = 15
+      Top = 203
       Width = 92
       Anchors = [akLeft, akBottom]
       BorderSpacing.Around = 6
@@ -40,16 +40,18 @@ object ImageListEditorDlg: TImageListEditorDlg
     end
     object LabelSize: TLabel
       Left = 6
-      Height = 14
+      Height = 1
       Top = 6
       Width = 1
       ParentColor = False
     end
     object Preview: TScrollBox
       Left = 6
-      Height = 169
+      Height = 162
       Top = 32
-      Width = 218
+      Width = 217
+      HorzScrollBar.Page = 213
+      VertScrollBar.Page = 158
       Anchors = [akTop, akLeft, akRight, akBottom]
       BorderSpacing.Around = 6
       Color = clGrayText
@@ -58,9 +60,9 @@ object ImageListEditorDlg: TImageListEditorDlg
       OnPaint = PreviewPaint
     end
     object RadioGroup: TRadioGroup
-      Left = 6
+      Left = 7
       Height = 105
-      Top = 207
+      Top = 200
       Width = 96
       Anchors = [akLeft, akBottom]
       AutoFill = True
@@ -91,8 +93,8 @@ object ImageListEditorDlg: TImageListEditorDlg
       AnchorSideTop.Control = LabelTransparent
       AnchorSideTop.Side = asrBottom
       Left = 110
-      Height = 22
-      Top = 231
+      Height = 24
+      Top = 224
       Width = 96
       Selected = clFuchsia
       Style = [cbStandardColors, cbExtendedColors, cbIncludeDefault, cbCustomColor, cbPrettyNames]
@@ -107,20 +109,20 @@ object ImageListEditorDlg: TImageListEditorDlg
     AnchorSideTop.Control = Owner
     AnchorSideBottom.Control = BtnPanel
     Left = 6
-    Height = 335
+    Height = 328
     Top = 6
     Width = 364
     Anchors = [akTop, akLeft, akBottom]
     BorderSpacing.Around = 6
     Caption = 'Images'
-    ClientHeight = 317
+    ClientHeight = 310
     ClientWidth = 360
     TabOrder = 0
     object TreeView: TTreeView
       AnchorSideLeft.Control = GroupBoxL
       AnchorSideTop.Control = GroupBoxL
       Left = 6
-      Height = 306
+      Height = 299
       Top = 6
       Width = 186
       Anchors = [akTop, akLeft, akRight, akBottom]
@@ -170,7 +172,7 @@ object ImageListEditorDlg: TImageListEditorDlg
       BorderSpacing.Around = 6
       Caption = 'Clear'
       OnClick = BtnClearClick
-      TabOrder = 2
+      TabOrder = 3
     end
     object BtnDelete: TButton
       AnchorSideLeft.Control = TreeView
@@ -187,7 +189,7 @@ object ImageListEditorDlg: TImageListEditorDlg
       BorderSpacing.Around = 6
       Caption = '&Delete'
       OnClick = BtnDeleteClick
-      TabOrder = 3
+      TabOrder = 2
     end
     object BtnMoveUp: TButton
       Tag = -1
@@ -260,9 +262,17 @@ object ImageListEditorDlg: TImageListEditorDlg
   end
   object BtnPanel: TButtonPanel
     Left = 6
-    Height = 26
-    Top = 347
+    Height = 33
+    Top = 340
     Width = 604
+    OKButton.Name = 'OKButton'
+    OKButton.DefaultCaption = True
+    HelpButton.Name = 'HelpButton'
+    HelpButton.DefaultCaption = True
+    CloseButton.Name = 'CloseButton'
+    CloseButton.DefaultCaption = True
+    CancelButton.Name = 'CancelButton'
+    CancelButton.DefaultCaption = True
     TabOrder = 2
     ShowBevel = False
   end
@@ -277,7 +287,6 @@ object ImageListEditorDlg: TImageListEditorDlg
     top = 209
   end
   object SaveDialog: TSavePictureDialog
-    Title = 'Save file as'
     FilterIndex = 0
     Options = [ofEnableSizing, ofViewDetail, ofAutoPreview]
     left = 252

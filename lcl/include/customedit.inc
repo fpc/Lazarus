@@ -26,20 +26,6 @@ begin
   PreferredWidth:=0;
 end;
 
-procedure TCustomEdit.CreateWnd;
-begin
-  inherited CreateWnd;
-  TWSCustomEditClass(WidgetSetClass).SetCharCase(Self, FCharCase);
-  TWSCustomEditClass(WidgetSetClass).SetEchoMode(Self, FEchoMode);
-  TWSCustomEditClass(WidgetSetClass).SetMaxLength(Self, FMaxLength);
-  TWSCustomEditClass(WidgetSetClass).SetPasswordChar(Self, FPasswordChar);
-  TWSCustomEditClass(WidgetSetClass).SetReadOnly(Self, FReadOnly);
-  TWSCustomEditClass(WidgetSetClass).SetAlignment(Self, FAlignment);
-  TWSCustomEditClass(WidgetSetClass).SetCaretPos(Self, fCaretPos);
-  TWSCustomEditClass(WidgetSetClass).SetSelStart(Self, FSelStart);
-  TWSCustomEditClass(WidgetSetClass).SetSelLength(Self, FSelLength);
-end;
-
 procedure TCustomEdit.CreateParams(var Params: TCreateParams);
 const
   AlignmentStyle: array[TAlignment] of DWord = (
@@ -54,6 +40,20 @@ begin
     Params.Style := Params.Style or ES_READONLY;
   if not HideSelection then
     Params.Style := Params.Style or ES_NOHIDESEL;
+end;
+
+procedure TCustomEdit.InitializeWnd;
+begin
+  inherited InitializeWnd;
+  TWSCustomEditClass(WidgetSetClass).SetCharCase(Self, FCharCase);
+  TWSCustomEditClass(WidgetSetClass).SetEchoMode(Self, FEchoMode);
+  TWSCustomEditClass(WidgetSetClass).SetMaxLength(Self, FMaxLength);
+  TWSCustomEditClass(WidgetSetClass).SetPasswordChar(Self, FPasswordChar);
+  TWSCustomEditClass(WidgetSetClass).SetReadOnly(Self, FReadOnly);
+  TWSCustomEditClass(WidgetSetClass).SetAlignment(Self, FAlignment);
+  TWSCustomEditClass(WidgetSetClass).SetCaretPos(Self, fCaretPos);
+  TWSCustomEditClass(WidgetSetClass).SetSelStart(Self, FSelStart);
+  TWSCustomEditClass(WidgetSetClass).SetSelLength(Self, FSelLength);
 end;
 
 {------------------------------------------------------------------------------

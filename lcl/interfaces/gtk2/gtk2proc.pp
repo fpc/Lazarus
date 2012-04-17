@@ -38,7 +38,8 @@ uses
   {$ENDIF}
   SysUtils, Classes,
   {$IFDEF HasX}
-    XAtom, X, XLib, XUtil, //Font retrieval and Keyboard handling
+    XAtom, // clipboard
+    X, XLib, // Font retrieval and Keyboard handling
   {$ENDIF}
   InterfaceBase,
   // gtk2
@@ -51,7 +52,7 @@ uses
   LMessages, LCLProc, LCLIntf, LCLType, DynHashArray, Masks,
   GraphType, Graphics, LResources, Controls, Forms,
   Buttons, Menus, StdCtrls, ComCtrls, ExtCtrls, Dialogs, ExtDlgs,
-  FileUtil, ImgList, Gtk2FontCache, Gtk2Globals, Gtk2Def, Gtk2Extra, Gtk2Debug{%H-},
+  FileUtil, ImgList, Gtk2FontCache, Gtk2Globals, Gtk2Def, Gtk2Extra, {%H-}Gtk2Debug,
   LCLMessageGlue;
 
 const
@@ -799,7 +800,7 @@ implementation
 
 uses
   {$IFDEF StaticXinerama} Xinerama, {$ENDIF}
-  dynlibs{%H-}, Gtk2WSPrivate, URIParser, Gtk2Int, Gtk2WinApiWindow;
+  Gtk2WSPrivate, URIParser, Gtk2Int, Gtk2WinApiWindow;
 
 const
   KCINFO_FLAG_SHIFT         = $01;
