@@ -64,7 +64,9 @@ msgid "Goto selected source line"
 msgstr "Jít na zdrojový řádek"
 
 #: todoliststrconsts.listodolistoptions
-msgid "ToDo options..."
+#, fuzzy
+#| msgid "ToDo options..."
+msgid "ToDo options ..."
 msgstr "Volby úkolů..."
 
 #: todoliststrconsts.listodolistprintlist

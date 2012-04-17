@@ -64,7 +64,9 @@ msgid "Goto selected source line"
 msgstr "Перейти до вибраного рядка поч. коду"
 
 #: todoliststrconsts.listodolistoptions
-msgid "ToDo options..."
+#, fuzzy
+#| msgid "ToDo options..."
+msgid "ToDo options ..."
 msgstr "Параметри ToDo..."
 
 #: todoliststrconsts.listodolistprintlist

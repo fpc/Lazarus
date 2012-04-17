@@ -602,7 +602,7 @@ msgid "&Variable"
 msgstr ""
 
 #: lr_const.sevformvars
-msgid "Va&riables..."
+msgid "Va&riables ..."
 msgstr ""
 
 #: lr_const.sexportfilterindexerror
@@ -683,7 +683,7 @@ msgid "Variable format"
 msgstr ""
 
 #: lr_const.sfont
-msgid "Font..."
+msgid "Font ..."
 msgstr ""
 
 #: lr_const.sformat11
@@ -1066,7 +1066,7 @@ msgid "Width align"
 msgstr ""
 
 #: lr_const.sfrdesignerform_about
-msgid "&About..."
+msgid "&About ..."
 msgstr ""
 
 #: lr_const.sfrdesignerform_addpg
@@ -1099,7 +1099,7 @@ msgstr ""
 
 #: lr_const.sfrdesignerform_edit
 msgctxt "lr_const.sfrdesignerform_edit"
-msgid "&Edit..."
+msgid "&Edit ..."
 msgstr ""
 
 #: lr_const.sfrdesignerform_edit2
@@ -1108,7 +1108,7 @@ msgstr ""
 
 #: lr_const.sfrdesignerform_editp
 msgctxt "lr_const.sfrdesignerform_editp"
-msgid "&Edit..."
+msgid "&Edit ..."
 msgstr ""
 
 #: lr_const.sfrdesignerform_exit
@@ -1136,7 +1136,7 @@ msgid "Line style"
 msgstr ""
 
 #: lr_const.sfrdesignerform_new
-msgid "&New..."
+msgid "&New ..."
 msgstr ""
 
 #: lr_const.sfrdesignerform_obj
@@ -1144,11 +1144,11 @@ msgid "&Objects"
 msgstr ""
 
 #: lr_const.sfrdesignerform_open
-msgid "&Open..."
+msgid "&Open ..."
 msgstr ""
 
 #: lr_const.sfrdesignerform_opts
-msgid "&Options..."
+msgid "&Options ..."
 msgstr ""
 
 #: lr_const.sfrdesignerform_paste
@@ -1156,7 +1156,7 @@ msgid "&Paste"
 msgstr ""
 
 #: lr_const.sfrdesignerform_pgopt
-msgid "&Page options..."
+msgid "&Page options ..."
 msgstr ""
 
 #: lr_const.sfrdesignerform_preview
@@ -1176,7 +1176,7 @@ msgid "&Remove page"
 msgstr ""
 
 #: lr_const.sfrdesignerform_rptopt
-msgid "&Report options..."
+msgid "&Report options ..."
 msgstr ""
 
 #: lr_const.sfrdesignerform_save
@@ -1184,7 +1184,7 @@ msgid "&Save"
 msgstr ""
 
 #: lr_const.sfrdesignerform_saveas
-msgid "Save &as..."
+msgid "Save &as ..."
 msgstr ""
 
 #: lr_const.sfrdesignerform_selectall
@@ -1222,7 +1222,7 @@ msgid "&Undo"
 msgstr ""
 
 #: lr_const.sfrdesignerform_var
-msgid "Variables &list..."
+msgid "Variables &list ..."
 msgstr ""
 
 #: lr_const.sfrferror
@@ -1246,7 +1246,7 @@ msgid "&Clear"
 msgstr ""
 
 #: lr_const.sgeditorformload
-msgid "&Load..."
+msgid "&Load ..."
 msgstr ""
 
 #: lr_const.sgeditorformmemo
@@ -1281,11 +1281,11 @@ msgid "&Bold"
 msgstr ""
 
 #: lr_const.shilightformcolor
-msgid "C&olor..."
+msgid "C&olor ..."
 msgstr ""
 
 #: lr_const.shilightformcolor2
-msgid "Co&lor..."
+msgid "Co&lor ..."
 msgstr ""
 
 #: lr_const.shilightformcond
@@ -1428,7 +1428,7 @@ msgid "On last page"
 msgstr ""
 
 #: lr_const.sother
-msgid "Other..."
+msgid "Other ..."
 msgstr ""
 
 #: lr_const.sothercategory
@@ -2359,7 +2359,7 @@ msgid "&Categories and variables"
 msgstr ""
 
 #: lr_const.svarformat
-msgid "Variable format..."
+msgid "Variable format ..."
 msgstr ""
 
 #: lr_const.svarformcapt

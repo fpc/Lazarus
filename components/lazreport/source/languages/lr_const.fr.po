@@ -616,7 +616,9 @@ msgid "&Variable"
 msgstr "&Variable"
 
 #: lr_const.sevformvars
-msgid "Va&riables..."
+#, fuzzy
+#| msgid "Va&riables..."
+msgid "Va&riables ..."
 msgstr "Va&riables..."
 
 #: lr_const.sexportfilterindexerror
@@ -697,7 +699,9 @@ msgid "Variable format"
 msgstr "Format de variable"
 
 #: lr_const.sfont
-msgid "Font..."
+#, fuzzy
+#| msgid "Font..."
+msgid "Font ..."
 msgstr "Police..."
 
 #: lr_const.sformat11
@@ -1080,7 +1084,9 @@ msgid "Width align"
 msgstr "Aligner en largeur"
 
 #: lr_const.sfrdesignerform_about
-msgid "&About..."
+#, fuzzy
+#| msgid "&About..."
+msgid "&About ..."
 msgstr "&A propos..."
 
 #: lr_const.sfrdesignerform_addpg
@@ -1112,8 +1118,10 @@ msgid "&Delete"
 msgstr "&Supprimer"
 
 #: lr_const.sfrdesignerform_edit
+#, fuzzy
+#| msgid "&Edit..."
 msgctxt "lr_const.sfrdesignerform_edit"
-msgid "&Edit..."
+msgid "&Edit ..."
 msgstr "&Editer..."
 
 #: lr_const.sfrdesignerform_edit2
@@ -1121,8 +1129,10 @@ msgid "&Edit"
 msgstr "&Edition"
 
 #: lr_const.sfrdesignerform_editp
+#, fuzzy
+#| msgid "&Edit..."
 msgctxt "lr_const.sfrdesignerform_editp"
-msgid "&Edit..."
+msgid "&Edit ..."
 msgstr "&Editer..."
 
 #: lr_const.sfrdesignerform_exit
@@ -1150,7 +1160,9 @@ msgid "Line style"
 msgstr "Style de ligne"
 
 #: lr_const.sfrdesignerform_new
-msgid "&New..."
+#, fuzzy
+#| msgid "&New..."
+msgid "&New ..."
 msgstr "&Nouveau..."
 
 #: lr_const.sfrdesignerform_obj
@@ -1158,11 +1170,15 @@ msgid "&Objects"
 msgstr "&Objets"
 
 #: lr_const.sfrdesignerform_open
-msgid "&Open..."
+#, fuzzy
+#| msgid "&Open..."
+msgid "&Open ..."
 msgstr "&Ouvrir..."
 
 #: lr_const.sfrdesignerform_opts
-msgid "&Options..."
+#, fuzzy
+#| msgid "&Options..."
+msgid "&Options ..."
 msgstr "&Options..."
 
 #: lr_const.sfrdesignerform_paste
@@ -1170,7 +1186,9 @@ msgid "&Paste"
 msgstr "&Coller"
 
 #: lr_const.sfrdesignerform_pgopt
-msgid "&Page options..."
+#, fuzzy
+#| msgid "&Page options..."
+msgid "&Page options ..."
 msgstr "&Options de page…"
 
 #: lr_const.sfrdesignerform_preview
@@ -1190,7 +1208,9 @@ msgid "&Remove page"
 msgstr "&Enlever la page"
 
 #: lr_const.sfrdesignerform_rptopt
-msgid "&Report options..."
+#, fuzzy
+#| msgid "&Report options..."
+msgid "&Report options ..."
 msgstr "Options du &Rapport"
 
 #: lr_const.sfrdesignerform_save
@@ -1198,7 +1218,9 @@ msgid "&Save"
 msgstr "&Enregistrer"
 
 #: lr_const.sfrdesignerform_saveas
-msgid "Save &as..."
+#, fuzzy
+#| msgid "Save &as..."
+msgid "Save &as ..."
 msgstr "Enregistrer &sous..."
 
 #: lr_const.sfrdesignerform_selectall
@@ -1236,7 +1258,9 @@ msgid "&Undo"
 msgstr "&Défaire"
 
 #: lr_const.sfrdesignerform_var
-msgid "Variables &list..."
+#, fuzzy
+#| msgid "Variables &list..."
+msgid "Variables &list ..."
 msgstr "&Liste de variables..."
 
 #: lr_const.sfrferror
@@ -1260,7 +1284,9 @@ msgid "&Clear"
 msgstr "&Effacer"
 
 #: lr_const.sgeditorformload
-msgid "&Load..."
+#, fuzzy
+#| msgid "&Load..."
+msgid "&Load ..."
 msgstr "&Charger..."
 
 #: lr_const.sgeditorformmemo
@@ -1295,11 +1321,15 @@ msgid "&Bold"
 msgstr "&Gras"
 
 #: lr_const.shilightformcolor
-msgid "C&olor..."
+#, fuzzy
+#| msgid "C&olor..."
+msgid "C&olor ..."
 msgstr "C&ouleur..."
 
 #: lr_const.shilightformcolor2
-msgid "Co&lor..."
+#, fuzzy
+#| msgid "Co&lor..."
+msgid "Co&lor ..."
 msgstr "Cou&leur..."
 
 #: lr_const.shilightformcond
@@ -1442,7 +1472,9 @@ msgid "On last page"
 msgstr "Sur la dernière page"
 
 #: lr_const.sother
-msgid "Other..."
+#, fuzzy
+#| msgid "Other..."
+msgid "Other ..."
 msgstr "Autre..."
 
 #: lr_const.sothercategory
@@ -2373,7 +2405,9 @@ msgid "&Categories and variables"
 msgstr "&Catégories et variables"
 
 #: lr_const.svarformat
-msgid "Variable format..."
+#, fuzzy
+#| msgid "Variable format..."
+msgid "Variable format ..."
 msgstr "Format de variable..."
 
 #: lr_const.svarformcapt

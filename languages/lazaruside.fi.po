@@ -6010,6 +6010,10 @@ msgstr "Konfiguroi Lazarus IDE"
 msgid "Confirm"
 msgstr "Varmista"
 
+#: lazarusidestrconsts.lisconfirmation
+msgid "Confirmation"
+msgstr ""
+
 #: lazarusidestrconsts.lisconfirmbuildallprofiles
 msgid "Lazarus will be rebuilt with the following profiles:%sContinue?"
 msgstr "Lazarus käännetään uudelleen käyttäen profiilia:%sJatketaanko?"
@@ -8489,7 +8493,7 @@ msgid "BreakpointGroup name must be a valid Pascal identifier name."
 msgstr ""
 
 #: lazarusidestrconsts.lisgroupsetnew
-msgid "Set new group..."
+msgid "Set new group ..."
 msgstr ""
 
 #: lazarusidestrconsts.lisgroupsetnone
@@ -16092,8 +16096,8 @@ msgstr "Tervetuloa lazarus IDE:en %s"
 msgid "Welcome to Lazarus %s%s%sThere is already a configuration from version %s in%s%s%s"
 msgstr ""
 
-#: lazarusidestrconsts.liswhatneedsrebuilding
-msgid "What needs rebuilding"
+#: lazarusidestrconsts.liswhatneedsbuilding
+msgid "What needs building"
 msgstr ""
 
 #: lazarusidestrconsts.liswhenaunitisrenamedupdatereferences

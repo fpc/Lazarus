@@ -158,7 +158,7 @@ msgid "Configuration"
 msgstr ""
 
 #: ldd_consts.smenuconfprojdatadict
-msgid "Set..."
+msgid "Set ..."
 msgstr ""
 
 #: ldd_consts.smenudatadesktop

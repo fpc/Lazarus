@@ -6026,6 +6026,10 @@ msgstr "Nastavit Lazarus IDE"
 msgid "Confirm"
 msgstr "Potvrdit"
 
+#: lazarusidestrconsts.lisconfirmation
+msgid "Confirmation"
+msgstr ""
+
 #: lazarusidestrconsts.lisconfirmbuildallprofiles
 msgid "Lazarus will be rebuilt with the following profiles:%sContinue?"
 msgstr "Lazarus se znovu sestaví s těmito profily:%sPokračovat?"
@@ -8509,7 +8513,9 @@ msgid "BreakpointGroup name must be a valid Pascal identifier name."
 msgstr "Jméno skupiny bodu přerušení musí být platný identifikátor Pascalu."
 
 #: lazarusidestrconsts.lisgroupsetnew
-msgid "Set new group..."
+#, fuzzy
+#| msgid "Set new group..."
+msgid "Set new group ..."
 msgstr "Nastavit novou skupinu..."
 
 #: lazarusidestrconsts.lisgroupsetnone
@@ -16138,8 +16144,8 @@ msgstr "Vítejte v Lazarus IDE %s"
 msgid "Welcome to Lazarus %s%s%sThere is already a configuration from version %s in%s%s%s"
 msgstr ""
 
-#: lazarusidestrconsts.liswhatneedsrebuilding
-msgid "What needs rebuilding"
+#: lazarusidestrconsts.liswhatneedsbuilding
+msgid "What needs building"
 msgstr ""
 
 #: lazarusidestrconsts.liswhenaunitisrenamedupdatereferences

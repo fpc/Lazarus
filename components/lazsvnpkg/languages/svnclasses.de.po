@@ -94,15 +94,21 @@ msgid "LazarusSVN Commit"
 msgstr "LazarusSVN Übertragung"
 
 #: svnclasses.rslazarussvndiff
-msgid "%s - LazarusSVN Diff..."
+#, fuzzy
+#| msgid "%s - LazarusSVN Diff..."
+msgid "%s - LazarusSVN Diff ..."
 msgstr "%s - LazarusSVN Vergleich..."
 
 #: svnclasses.rslazarussvnlog
-msgid "%s - LazarusSVN Log..."
+#, fuzzy
+#| msgid "%s - LazarusSVN Log..."
+msgid "%s - LazarusSVN Log ..."
 msgstr "%s - LazarusSVN Protokoll..."
 
 #: svnclasses.rslazarussvnupdate
-msgid "%s - LazarusSVN Update..."
+#, fuzzy
+#| msgid "%s - LazarusSVN Update..."
+msgid "%s - LazarusSVN Update ..."
 msgstr "%s - LazarusSVN Aktualisierung..."
 
 #: svnclasses.rsmerged

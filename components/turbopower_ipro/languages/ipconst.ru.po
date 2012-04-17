@@ -5,7 +5,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2011-04-29 02:39+0300\n"
+"PO-Revision-Date: 2012-04-10 04:25+0400\n"
 "Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
 "Language-Team: \n"
 
@@ -289,10 +289,9 @@ msgid "- expected"
 msgstr "- ожидается"
 
 #: ipconst.shtmldefbrowsecaption
-#, fuzzy
 #| msgid "Browse..."
 msgid "Browse ..."
-msgstr "Обзор..."
+msgstr "Обзор ..."
 
 #: ipconst.shtmldefresetcaption
 msgid "Reset"

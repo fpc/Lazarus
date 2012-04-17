@@ -331,7 +331,9 @@ msgid "Create a new table"
 msgstr "Erzeuge eine neue Tabelle"
 
 #: lazdatadeskstr.sld_actionopen
-msgid "&Open..."
+#, fuzzy
+#| msgid "&Open..."
+msgid "&Open ..."
 msgstr "Öffnen..."
 
 #: lazdatadeskstr.sld_actionopenconnection

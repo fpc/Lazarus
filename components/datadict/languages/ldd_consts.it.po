@@ -1,4 +1,4 @@
-# Massimo Soricetti <notturno@quipo.it>, 2011.
+ Massimo Soricetti <notturno@quipo.it>, 2011.
 msgid ""
 msgstr ""
 "PO-Revision-Date: 2011-04-18 11:12+0200\n"
@@ -168,7 +168,9 @@ msgid "Configuration"
 msgstr "Configurazione"
 
 #: ldd_consts.smenuconfprojdatadict
-msgid "Set..."
+#, fuzzy
+#| msgid "Set..."
+msgid "Set ..."
 msgstr "Imposta..."
 
 #: ldd_consts.smenudatadesktop

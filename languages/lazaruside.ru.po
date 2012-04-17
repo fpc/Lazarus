@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2012-04-07 16:52+0400\n"
+"PO-Revision-Date: 2012-04-10 04:43+0400\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -6205,6 +6205,10 @@ msgstr "Настройка Lazarus"
 msgid "Confirm"
 msgstr "Подтверждение"
 
+#: lazarusidestrconsts.lisconfirmation
+msgid "Confirmation"
+msgstr "Подтверждение"
+
 #: lazarusidestrconsts.lisconfirmbuildallprofiles
 msgid "Lazarus will be rebuilt with the following profiles:%sContinue?"
 msgstr "Lazarus будет пересобран по следующим профилям:%sПродолжить?"
@@ -8723,7 +8727,8 @@ msgid "BreakpointGroup name must be a valid Pascal identifier name."
 msgstr "Имя группы точек останова должно являться корректным идентификатором Паскаля."
 
 #: lazarusidestrconsts.lisgroupsetnew
-msgid "Set new group..."
+#| msgid "Set new group..."
+msgid "Set new group ..."
 msgstr "Назначить группу ..."
 
 #: lazarusidestrconsts.lisgroupsetnone
@@ -16571,9 +16576,9 @@ msgstr "Добро пожаловать в Lazarus версии %s"
 msgid "Welcome to Lazarus %s%s%sThere is already a configuration from version %s in%s%s%s"
 msgstr "Добро пожаловать в Lazarus %s%s%sОбнаружен каталог настройки версии %s в%s%s%s"
 
-#: lazarusidestrconsts.liswhatneedsrebuilding
-msgid "What needs rebuilding"
-msgstr "Что требует пересборки"
+#: lazarusidestrconsts.liswhatneedsbuilding
+msgid "What needs building"
+msgstr "Что требует сборки"
 
 #: lazarusidestrconsts.liswhenaunitisrenamedupdatereferences
 #| msgid "When a unit is renamed, update references ..."

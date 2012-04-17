@@ -1,4 +1,3 @@
- Massimo Soricetti <notturno@quipo.it>, 2011.
 msgid ""
 msgstr ""
 "PO-Revision-Date: 2011-04-19 01:57+0200\n"
@@ -96,15 +95,21 @@ msgid "LazarusSVN Commit"
 msgstr "Commit di LazarusSVN"
 
 #: svnclasses.rslazarussvndiff
-msgid "%s - LazarusSVN Diff..."
+#, fuzzy
+#| msgid "%s - LazarusSVN Diff..."
+msgid "%s - LazarusSVN Diff ..."
 msgstr "%s - Diff di LazarusSVN..."
 
 #: svnclasses.rslazarussvnlog
-msgid "%s - LazarusSVN Log..."
+#, fuzzy
+#| msgid "%s - LazarusSVN Log..."
+msgid "%s - LazarusSVN Log ..."
 msgstr "%s - Log di LazarusSVN..."
 
 #: svnclasses.rslazarussvnupdate
-msgid "%s - LazarusSVN Update..."
+#, fuzzy
+#| msgid "%s - LazarusSVN Update..."
+msgid "%s - LazarusSVN Update ..."
 msgstr "%s - Aggiornamento di LazarusSVN..."
 
 #: svnclasses.rsmerged
