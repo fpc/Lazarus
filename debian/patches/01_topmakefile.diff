@@ -40,8 +40,8 @@ Index: lazarus/Makefile.fpc
 +	@$(ECHO) "   ide          build IDE with a minimal set of packages"
  	@$(ECHO) "   lazbuild     build lazbuild and lcl with nogui widgetset"
  	@$(ECHO) "   starter      build startlazarus"
- 	@$(ECHO) "   bigide       build IDE with a standard set of packages"
-@@ -107,8 +108,8 @@
+ 	@$(ECHO) "   bigide       build IDE with some stable extra packages"
+@@ -106,8 +107,8 @@
  
  #-----------------------------------------------------------------------------
  # build lazarus and packages with user's settings
@@ -52,7 +52,7 @@ Index: lazarus/Makefile.fpc
  
  #-----------------------------------------------------------------------------
  # build lazarus,lcl,startlazarus with bigide packages
-@@ -139,12 +140,9 @@
+@@ -135,12 +136,9 @@
  	$(MAKE) -C tools
  	
  #-----------------------------------------------------------------------------
