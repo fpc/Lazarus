@@ -4,7 +4,6 @@ object AbstractMethodsDialog: TAbstractMethodsDialog
   Top = 291
   Width = 581
   ActiveControl = MethodsCheckListBox
-  BorderStyle = bsDialog
   Caption = 'AbstractMethodsDialog'
   ClientHeight = 344
   ClientWidth = 581

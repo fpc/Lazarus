@@ -4,7 +4,6 @@ object UnusedUnitsDialog: TUnusedUnitsDialog
   Top = 236
   Width = 503
   ActiveControl = UnitsTreeView
-  BorderStyle = bsDialog
   Caption = 'UnusedUnitsDialog'
   ClientHeight = 343
   ClientWidth = 503

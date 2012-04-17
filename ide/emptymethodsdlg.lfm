@@ -4,7 +4,6 @@ object EmptyMethodsDialog: TEmptyMethodsDialog
   Top = 202
   Width = 387
   ActiveControl = PrivateCheckBox
-  BorderStyle = bsDialog
   Caption = 'EmptyMethodsDialog'
   ClientHeight = 421
   ClientWidth = 387

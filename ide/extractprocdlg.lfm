@@ -5,7 +5,6 @@ object ExtractProcDialog: TExtractProcDialog
   Width = 425
   ActiveControl = CreateFunctionCheckBox
   BorderIcons = [biSystemMenu]
-  BorderStyle = bsDialog
   Caption = 'ExtractProcDialog'
   ClientHeight = 355
   ClientWidth = 425
