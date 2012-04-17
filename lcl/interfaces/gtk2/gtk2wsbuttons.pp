@@ -27,12 +27,12 @@ unit Gtk2WSButtons;
 interface
 
 uses
-  glib2, gtk2, gdk2, gdk2pixbuf, Gtk2WSPrivate,
+  glib2, gtk2, gdk2, gdk2pixbuf,
 ////////////////////////////////////////////////////
   LCLType, Controls, Buttons, Graphics, GraphType,
 ////////////////////////////////////////////////////
   WSButtons, WSLCLClasses, WSProc,
-  Gtk2Def, Gtk2Debug;
+  Gtk2Def;
 
 type
   PBitBtnWidgetInfo = ^TBitBtnWidgetInfo;
@@ -58,7 +58,7 @@ type
   published
     class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
     class procedure SetGlyph(const ABitBtn: TCustomBitBtn; const AValue: TButtonGlyph); override;
-    class procedure SetLayout(const ABitBtn: TCustomBitBtn; const AValue: TButtonLayout); override;
+    class procedure SetLayout(const ABitBtn: TCustomBitBtn; const {%H-}AValue: TButtonLayout); override;
     class procedure SetMargin(const ABitBtn: TCustomBitBtn; const AValue: Integer); override;
     class procedure SetSpacing(const ABitBtn: TCustomBitBtn; const AValue: Integer); override;
     class procedure SetText(const AWinControl: TWinControl; const AText: String); override;
@@ -99,7 +99,7 @@ type
   TWinControlAccess = class(TWinControl)
   end;
 
-procedure GtkWSBitBtn_StateChanged(AWidget: PGtkWidget; AState: TGtkStateType; AInfo: PWidgetInfo); cdecl;
+procedure GtkWSBitBtn_StateChanged(AWidget: PGtkWidget; {%H-}AState: TGtkStateType; AInfo: PWidgetInfo); cdecl;
 var
   BitBtn: TCustomBitBtnAccess;
 begin
@@ -195,29 +195,29 @@ var
   BitBtnInfo: PBitBtnWidgetInfo;
   Allocation: TGTKAllocation;
 begin
-  Result := TLCLIntfHandle(PtrUInt(gtk_button_new));
+  Result := TLCLIntfHandle({%H-}PtrUInt(gtk_button_new));
   if Result = 0 then Exit;
   {$IFDEF DebugLCLComponents}
   DebugGtkWidgets.MarkCreated(Pointer(Result),dbgsName(AWinControl));
   {$ENDIF}
 
-  WidgetInfo := CreateWidgetInfo(Pointer(Result), BitBtn, AParams);
+  WidgetInfo := CreateWidgetInfo({%H-}Pointer(Result), BitBtn, AParams);
 
   New(BitBtnInfo);
   FillChar(BitBtnInfo^, SizeOf(BitBtnInfo^), 0);
   WidgetInfo^.UserData := BitBtnInfo;
   WidgetInfo^.DataOwner := True;
 
-  gtk_widget_show(PGtkWidget(Result));
+  gtk_widget_show({%H-}PGtkWidget(Result));
 
   Allocation.X := AParams.X;
   Allocation.Y := AParams.Y;
   Allocation.Width := AParams.Width;
   Allocation.Height := AParams.Height;
-  gtk_widget_size_allocate(PGtkWidget(Result), @Allocation);
+  gtk_widget_size_allocate({%H-}PGtkWidget(Result), @Allocation);
 
-  Set_RC_Name(AWinControl, PGtkWidget(Result));
-  SetCallbacks(PGtkWidget(Result), WidgetInfo);
+  Set_RC_Name(AWinControl, {%H-}PGtkWidget(Result));
+  SetCallbacks({%H-}PGtkWidget(Result), WidgetInfo);
 end;
 
 class procedure TGtk2WSBitBtn.SetGlyph(const ABitBtn: TCustomBitBtn;
@@ -230,7 +230,7 @@ var
 begin
   if not WSCheckHandleAllocated(ABitBtn, 'SetGlyph') then
     Exit;
-  MainWidget := PGtkWidget(ABitBtn.Handle);
+  MainWidget := {%H-}PGtkWidget(ABitBtn.Handle);
   WidgetInfo := GetWidgetInfo(MainWidget);
   BitBtnInfo := WidgetInfo^.UserData;
   BuildNeeded := UpdateGlyph(ABitBtn, BitBtnInfo, AValue, GtkStateToButtonState[GTK_WIDGET_STATE(MainWidget)]);
@@ -248,7 +248,7 @@ var
 begin
   if not WSCheckHandleAllocated(ABitBtn, 'SetLayout') then
     Exit;
-  MainWidget := Pointer(ABitBtn.Handle);
+  MainWidget := {%H-}Pointer(ABitBtn.Handle);
   WidgetInfo := GetWidgetInfo(MainWidget);
   BitBtnInfo := WidgetInfo^.UserData;
   BuildWidget(ABitBtn, MainWidget, BitBtnInfo, ABitBtn.Caption);
@@ -262,7 +262,7 @@ var
 begin
   if not WSCheckHandleAllocated(ABitBtn, 'SetMargin') then
     Exit;
-  MainWidget := PGtkWidget(ABitBtn.Handle);
+  MainWidget := {%H-}PGtkWidget(ABitBtn.Handle);
   AlignWidget := PGtkAlignment(gtk_bin_get_child(PGtkBin(MainWidget)));
   if GTK_IS_ALIGNMENT(AlignWidget) then
     UpdateMargin(ABitBtn, AlignWidget, AValue);
@@ -276,7 +276,7 @@ var
 begin
   if not WSCheckHandleAllocated(ABitBtn, 'SetSpacing') then
     Exit;
-  MainWidget := Pointer(ABitBtn.Handle);
+  MainWidget := {%H-}Pointer(ABitBtn.Handle);
   ChildWidget := gtk_bin_get_child(PGtkBin(MainWidget));
   if GTK_IS_ALIGNMENT(ChildWidget) then
   begin
@@ -299,7 +299,7 @@ begin
   if (wcfInitializing in TWinControlAccess(AWinControl).FWinControlFlags)
     or not WSCheckHandleAllocated(AWincontrol, 'SetText') then
     Exit;
-  MainWidget := Pointer(AWinControl.Handle);
+  MainWidget := {%H-}Pointer(AWinControl.Handle);
   WidgetInfo := GetWidgetInfo(MainWidget);
   BitBtnInfo := WidgetInfo^.UserData;
   LabelWidget := BitBtnInfo^.LabelWidget;
@@ -318,7 +318,7 @@ var
   Widget: PGTKWidget;
 begin
   if not AWinControl.HandleAllocated then exit;
-  Widget:= PGtkWidget(AWinControl.Handle);
+  Widget:= {%H-}PGtkWidget(AWinControl.Handle);
   Gtk2WidgetSet.SetWidgetColor(Widget, clNone, AWinControl.color,
      [GTK_STATE_NORMAL,GTK_STATE_ACTIVE,GTK_STATE_PRELIGHT,GTK_STATE_SELECTED]);
 end;
@@ -332,7 +332,7 @@ var
 begin
   if not AWinControl.HandleAllocated then exit;
 
-  WidgetInfo := GetWidgetInfo(PGtkWidget(AWinControl.Handle));
+  WidgetInfo := GetWidgetInfo({%H-}PGtkWidget(AWinControl.Handle));
   BitBtnInfo := WidgetInfo^.UserData;
   LabelWidget := BitBtnInfo^.LabelWidget;
   if LabelWidget <> nil then
@@ -428,7 +428,7 @@ var
   Pixbuf: PGdkPixbuf;
   Mask: PGdkBitmap;
 begin
-  GDIObject := PGDIObject(Bitmap.Handle);
+  GDIObject := {%H-}PGDIObject(Bitmap.Handle);
   Mask := nil;
   Pixbuf := nil;
   if GDIObject^.GDIBitmapType = gbPixbuf then

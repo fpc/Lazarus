@@ -95,7 +95,7 @@ begin
   Result := LCLObject as TWinControl;
 end;
 
-function GetItemIndex(cell: PLCLIntfCellRenderer; widget: PGtkWidget): Integer;
+function GetItemIndex(cell: PLCLIntfCellRenderer; {%H-}widget: PGtkWidget): Integer;
 begin
   Result:=cell^.Index;
 end;
@@ -201,7 +201,7 @@ begin
 
     if SkipDefaultPaint then
     begin
-      GTK2WidgetSet.ReleaseDC(HWnd(PtrUInt(Widget)),TmpDC1);
+      GTK2WidgetSet.ReleaseDC(HWnd({%H-}PtrUInt(Widget)),TmpDC1);
       TCustomListViewAccess(AWinControl).Canvas.Handle := TmpDC2;
       Exit;
     end;
@@ -260,7 +260,7 @@ begin
     TCustomListViewAccess(AWinControl).IntfCustomDraw(LVTarget, LVStage, ItemIndex, LVSubItem, LVState, @AreaRect);
 
     TCustomListViewAccess(AWinControl).Canvas.Handle := TmpDC2;
-    GTK2WidgetSet.ReleaseDC(HWnd(PtrUInt(Widget)),TmpDC1);
+    GTK2WidgetSet.ReleaseDC(HWnd({%H-}PtrUInt(Widget)),TmpDC1);
     Exit;
   end;
 
@@ -286,7 +286,7 @@ begin
       ItemState:=State;
     end;
     DeliverMessage(AWinControl, Msg);
-    GTK2WidgetSet.ReleaseDC(HWnd(PtrUInt(Widget)),Msg.DrawListItemStruct^.DC);
+    GTK2WidgetSet.ReleaseDC(HWnd({%H-}PtrUInt(Widget)),Msg.DrawListItemStruct^.DC);
   finally
     Dispose(Msg.DrawListItemStruct);
   end;
@@ -309,8 +309,8 @@ begin
   RendererClass^.render := @LCLIntfCellRenderer_Render;
 end;
 
-procedure LCLIntfCellRenderer_Init(Instance:PGTypeInstance;
-  theClass: Pointer); cdecl;
+procedure LCLIntfCellRenderer_Init({%H-}Instance:PGTypeInstance;
+  {%H-}theClass: Pointer); cdecl;
 // Instance: PLCLIntfCellRenderer;
 // theClass: PLCLIntfCellRendererClass
 begin

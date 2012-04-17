@@ -102,17 +102,17 @@ begin
   gtk_container_add(PGtkContainer(EventBox), ArrowWidget);
   gtk_widget_show_all(EventBox);
 
-  Result := TLCLIntfHandle(PtrUInt(EventBox));
+  Result := TLCLIntfHandle({%H-}PtrUInt(EventBox));
   {$IFDEF DebugLCLComponents}
   DebugGtkWidgets.MarkCreated(EventBox, dbgsName(AWinControl));
   {$ENDIF}
-  WidgetInfo := CreateWidgetInfo(Pointer(Result), AWinControl, AParams);
+  WidgetInfo := CreateWidgetInfo({%H-}Pointer(Result), AWinControl, AParams);
 
   Allocation.X := AParams.X;
   Allocation.Y := AParams.Y;
   Allocation.Width := AParams.Width;
   Allocation.Height := AParams.Height;
-  gtk_widget_size_allocate(PGtkWidget(Result), @Allocation);
+  gtk_widget_size_allocate({%H-}PGtkWidget(Result), @Allocation);
 
   Set_RC_Name(AWinControl, EventBox);
   SetCallBacks(EventBox, WidgetInfo);
@@ -123,7 +123,7 @@ class procedure TGtk2WSArrow.SetType(const AArrow: TArrow; const AArrowType: TAr
 var
   ArrowWidget: PGtkWidget;
 begin
-  ArrowWidget := PGtkBin(AArrow.Handle)^.child;
+  ArrowWidget := {%H-}PGtkBin(AArrow.Handle)^.child;
 
   gtk_arrow_set(PGtkArrow(ArrowWidget),
     LCLToGTKArrowTypeMap[AArrowType],

@@ -28,7 +28,7 @@ interface
 
 uses
   // Bindings
-  glib2, gdk2pixbuf, gdk2, gtk2, Pango,
+  glib2, gdk2, gtk2,
   // RTL, FCL, LCL
   SysUtils, Types, Classes, Controls, Calendar, LCLType, LMessages,
   InterfaceBase, LCLProc,
@@ -110,7 +110,7 @@ end;
 
 class function TGtk2WSCustomCalendar.GetCalendar(const ACalendar: TCustomCalendar): PGtkCalendar; //inline;
 begin
-  Result := PGtkCalendar(GetWidgetInfo(PGtkWidget(ACalendar.Handle))^.CoreWidget);
+  Result := PGtkCalendar(GetWidgetInfo({%H-}PGtkWidget(ACalendar.Handle))^.CoreWidget);
 end;
 
 class function TGtk2WSCustomCalendar.CreateHandle(
@@ -129,7 +129,7 @@ begin
   // if we don't request it - we have a SIGFPE sometimes
   gtk_widget_size_request(CalendarWidget, @Requisition);
 
-  Result := TLCLIntfHandle(PtrUInt(FrameWidget));
+  Result := TLCLIntfHandle({%H-}PtrUInt(FrameWidget));
   {$IFDEF DebugLCLComponents}
   DebugGtkWidgets.MarkCreated(FrameWidget, dbgsName(AWinControl));
   {$ENDIF}
@@ -142,7 +142,7 @@ begin
   Allocation.Y := AParams.Y;
   Allocation.Width := AParams.Width;
   Allocation.Height := AParams.Height;
-  gtk_widget_size_allocate(PGtkWidget(Result), @Allocation);
+  gtk_widget_size_allocate({%H-}PGtkWidget(Result), @Allocation);
 
   Set_RC_Name(AWinControl, FrameWidget);
   SetCallBacks(FrameWidget, WidgetInfo);
@@ -181,7 +181,7 @@ begin
     Exit;
 
   GtkCalendar := GetCalendar(ACalendar);
-  Style := gtk_widget_get_style(PGtkWidget(ACalendar.Handle));
+  Style := gtk_widget_get_style({%H-}PGtkWidget(ACalendar.Handle));
   FrameW := gtk_widget_get_xthickness(Style);
   FrameH := gtk_widget_get_Ythickness(Style);
 

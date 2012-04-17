@@ -31,7 +31,7 @@ unit Gtk2Debug;
 interface 
 
 uses
-  glib2, gdk2pixbuf, gdk2, gtk2,
+  gdk2pixbuf, gdk2, gtk2,
   sysutils;
 
 procedure DbgDumpBitmap(ABitmap: PGdkBitmap; ATitle: String = ''; AWidth: Integer = -1; AHeight: Integer = -1);
@@ -55,7 +55,7 @@ type
       ddtImage: (Image: PGdkImage);
   end;
                     
-procedure OnDbgWindowDestroy(widget: PGtkWidget; Data: Pointer); cdecl;
+procedure OnDbgWindowDestroy({%H-}widget: PGtkWidget; Data: Pointer); cdecl;
 var
   Info: PDbgDumpInfo absolute Data;
 begin
@@ -68,7 +68,7 @@ begin
   Dispose(Info);
 end;
                     
-procedure OnDbgDrawAreaExpose(widget: PGtkWidget; event: PGdkEventExpose; Data: Pointer); cdecl;
+procedure OnDbgDrawAreaExpose(widget: PGtkWidget; {%H-}event: PGdkEventExpose; Data: Pointer); cdecl;
 var
   Info: PDbgDumpInfo absolute Data;
   gc: Pointer;

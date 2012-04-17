@@ -145,7 +145,7 @@ type
   private
   protected
   public
-    class procedure SetCallbacks(const AGtkWidget: PGtkWidget; const AWidgetInfo: PWidgetInfo); virtual;
+    class procedure SetCallbacks(const {%H-}AGtkWidget: PGtkWidget; const {%H-}AWidgetInfo: PWidgetInfo); virtual;
   end;
 
   { TGtkPrivateNotebook }
@@ -283,7 +283,7 @@ begin
   if not WSCheckHandleAllocated(AWincontrol, 'SetZPosition')
   then Exit;
 
-  ScrollWidget := Pointer(AWinControl.Handle);
+  ScrollWidget := {%H-}Pointer(AWinControl.Handle);
 //  WidgetInfo := GetWidgetInfo(ScrollWidget);
   // Some controls have viewports, so we get the first window.
   Widget := GetWidgetWithWindow(AWinControl.Handle);
@@ -325,7 +325,7 @@ begin
   //      code can be removed and a call to TGtkWSBaseScrollingWinControl.SetZPosition
   //      can be made. This is not possible now since we have a frame around us
 
-  Widget := Pointer(AWinControl.Handle);
+  Widget := {%H-}Pointer(AWinControl.Handle);
   //  WidgetInfo := GetWidgetInfo(Widget);
 
   // Only do the scrollbars, leave the core to the default (we might have a viewport)
@@ -416,7 +416,7 @@ begin
   begin
     if Assigned(gdk_window_get_cursor)
     then OldCursor := gdk_window_get_cursor(AWindow)
-    else OldCursor := PGdkCursor(Info^.ControlCursor);
+    else OldCursor := {%H-}PGdkCursor(Info^.ControlCursor);
     // As OldCursor can be nil, use a separate key to indicate whether it
     // is stored.
     if ASetDefault or (g_object_get_data(PGObject(AWindow), 'havesavedcursor') = nil) then
@@ -469,7 +469,7 @@ var
     g_list_free(ChildWindows);
   end;
 begin
-  Cursor := PGdkCursor(ACursor);
+  Cursor := {%H-}PGdkCursor(ACursor);
   if ARecursive
   then SetCursorRecursive(AWindow)
   else SetWindowCursor(AWindow, Cursor, ASetDefault);
@@ -481,7 +481,7 @@ function GetWidgetWithWindow(const AHandle: THandle): PGtkWidget;
 var
   Children: PGList;
 begin
-  Result := PGTKWidget(PtrUInt(AHandle));
+  Result := {%H-}PGTKWidget(PtrUInt(AHandle));
   while (Result <> nil) and GTK_WIDGET_NO_WINDOW(Result)
   and GtkWidgetIsA(Result,gtk_container_get_type) do
   begin
@@ -523,7 +523,7 @@ var
   end;
 begin
   if AInfo = nil then Exit;
-  Cursor := PGdkCursor(AInfo^.ControlCursor);
+  Cursor := {%H-}PGdkCursor(AInfo^.ControlCursor);
   SetCursorRecursive(AWindow);
 end;
 

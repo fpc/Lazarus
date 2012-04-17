@@ -20,7 +20,7 @@ uses
   {$ifdef HasX}
   xlib, x,
   {$endif}
-  glib2, gdk2pixbuf, gdk2, gtk2, gtk2ext,
+  glib2, gdk2, gtk2, gtk2ext,
   {$ifdef HasGdk2X}
   gdk2x,
   {$endif}

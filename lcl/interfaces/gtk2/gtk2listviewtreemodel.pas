@@ -41,25 +41,25 @@ type
     qdata : PGData;
     {%ENDREGION}
     {%REGION Interface methods in order!}
-    procedure row_changed(path:PGtkTreePath; iter:PGtkTreeIter); cdecl;
-    procedure row_inserted(path:PGtkTreePath; iter:PGtkTreeIter); cdecl;
-    procedure row_has_child_toggled(path:PGtkTreePath; iter:PGtkTreeIter); cdecl;
-    procedure row_deleted(path:PGtkTreePath); cdecl;
-    procedure rows_reordered(path:PGtkTreePath; iter:PGtkTreeIter; new_order:Pgint); cdecl;
+    procedure row_changed({%H-}path:PGtkTreePath; {%H-}iter:PGtkTreeIter); cdecl;
+    procedure row_inserted({%H-}path:PGtkTreePath; {%H-}iter:PGtkTreeIter); cdecl;
+    procedure row_has_child_toggled({%H-}path:PGtkTreePath; {%H-}iter:PGtkTreeIter); cdecl;
+    procedure row_deleted({%H-}path:PGtkTreePath); cdecl;
+    procedure rows_reordered({%H-}path:PGtkTreePath; {%H-}iter:PGtkTreeIter; {%H-}new_order:Pgint); cdecl;
     function  get_flags():TGtkTreeModelFlags; cdecl;
     function  get_n_columns():gint; cdecl;
-    function  get_column_type(index:gint):GType; cdecl;
+    function  get_column_type({%H-}index:gint):GType; cdecl;
     function  get_iter(iter:PGtkTreeIter; path:PGtkTreePath):gboolean; cdecl;
     function  get_path(iter:PGtkTreeIter):PGtkTreePath; cdecl;
-    procedure get_value(iter:PGtkTreeIter; column:gint; value:PGValue); cdecl;
+    procedure get_value(iter:PGtkTreeIter; {%H-}column:gint; value:PGValue); cdecl;
     function  iter_next(iter:PGtkTreeIter):gboolean; cdecl;
-    function  iter_children(iter:PGtkTreeIter; parent:PGtkTreeIter):gboolean; cdecl;
-    function  iter_has_child(iter:PGtkTreeIter):gboolean; cdecl;
+    function  iter_children({%H-}iter:PGtkTreeIter; {%H-}parent:PGtkTreeIter):gboolean; cdecl;
+    function  iter_has_child({%H-}iter:PGtkTreeIter):gboolean; cdecl;
     function  iter_n_children(iter:PGtkTreeIter):gint; cdecl;
     function  iter_nth_child(iter:PGtkTreeIter; parent:PGtkTreeIter; n:gint):gboolean; cdecl;
-    function  iter_parent(iter:PGtkTreeIter; child:PGtkTreeIter):gboolean; cdecl;
-    procedure ref_node(iter:PGtkTreeIter); cdecl;
-    procedure unref_node(iter:PGtkTreeIter); cdecl;
+    function  iter_parent({%H-}iter:PGtkTreeIter; {%H-}child:PGtkTreeIter):gboolean; cdecl;
+    procedure ref_node({%H-}iter:PGtkTreeIter); cdecl;
+    procedure unref_node({%H-}iter:PGtkTreeIter); cdecl;
     {%ENDREGION}
     procedure NotifyRowInserted(AIndex: PtrUInt);
     procedure NotifyRowDeleted(AIndex: PtrUInt);
@@ -80,9 +80,9 @@ function LCLListViewModelNew(AListView: TCustomListView): PLCLListViewModel;
 function LCLLISTVIEW_MODEL_TYPE: GType;
 
 
-procedure LCLListViewModelClassInit(g_class:gpointer; class_data:gpointer); cdecl;
-procedure LCLListViewModelInit(instance:PGTypeInstance; g_class:gpointer); cdecl;
-procedure LCLListViewModelInterfaceInit(g_iface:PGtkTreeModelIface; iface_data:gpointer); cdecl;
+procedure LCLListViewModelClassInit({%H-}g_class:gpointer; {%H-}class_data:gpointer); cdecl;
+procedure LCLListViewModelInit({%H-}instance:PGTypeInstance; {%H-}g_class:gpointer); cdecl;
+procedure LCLListViewModelInterfaceInit(g_iface:PGtkTreeModelIface; {%H-}iface_data:gpointer); cdecl;
 
 
 implementation
@@ -213,7 +213,7 @@ begin
   Index := gtk_tree_path_get_indices(path)[0];
   if Index < ListView.Items.Count then
   begin
-    iter^.user_data:= Pointer(Index);
+    iter^.user_data:= {%H-}Pointer(Index);
     Exit(True);
   end;
 end;
@@ -225,7 +225,7 @@ begin
   Result := nil;
   if iter = nil then
     Exit;
-  Index := PtrUint(Iter^.user_data);
+  Index := {%H-}PtrUint(Iter^.user_data);
   Result := gtk_tree_path_new_from_indices(Index, -1);
 end;
 
@@ -237,7 +237,7 @@ var
   //ValueType: GType;
   //SubIndex: Integer;
 begin
-  Index := PtrUint(Iter^.user_data);
+  Index := {%H-}PtrUint(Iter^.user_data);
   Item := TLVItemHack(ListView.Items.Item[Index]);
 
   g_value_init(value, G_TYPE_POINTER);
@@ -293,8 +293,8 @@ begin
   Result := False;
   if ListView = nil then
     Exit;
-  Inc(PtrUInt(Iter^.user_data));
-  Result := PtrUint(Iter^.user_data) < ListView.items.Count;
+  Inc({%H-}PtrUInt(Iter^.user_data));
+  Result := {%H-}PtrUint(Iter^.user_data) < ListView.items.Count;
 end;
 
 function TLCLListViewModel.iter_children(iter: PGtkTreeIter; parent: PGtkTreeIter): gboolean; cdecl;
@@ -322,7 +322,7 @@ begin
     Exit;
   if (Iter <> nil) and (n < ListView.Items.Count) then
   begin
-    PtrUint(Iter^.user_data) := n;
+    {%H-}PtrUint(Iter^.user_data) := n;
     Result := True;
   end;
 end;
@@ -334,10 +334,12 @@ end;
 
 procedure TLCLListViewModel.ref_node(iter: PGtkTreeIter); cdecl;
 begin
+
 end;
 
 procedure TLCLListViewModel.unref_node(iter: PGtkTreeIter); cdecl;
 begin
+
 end;
 
 procedure TLCLListViewModel.NotifyRowInserted(AIndex: PtrUInt);
@@ -345,7 +347,7 @@ var
   Path: PGtkTreePath;
   Iter: TGtkTreeIter;
 begin
-  Iter.user_data := Pointer(AIndex);
+  Iter.user_data := {%H-}Pointer(AIndex);
   path := gtk_tree_path_new_from_indices(AIndex, -1);
   //emits a signal
   gtk_tree_model_row_inserted(TreeModel, path, @iter);

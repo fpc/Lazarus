@@ -82,11 +82,11 @@ type
     class procedure SetFormBorderStyle(const AForm: TCustomForm;
                              const AFormBorderStyle: TFormBorderStyle); override;
     class procedure SetFormStyle(const AForm: TCustomform; const AFormStyle,
-                       AOldFormStyle: TFormStyle); override;
+                       {%H-}AOldFormStyle: TFormStyle); override;
     class procedure SetAllowDropFiles(const AForm: TCustomForm; AValue: Boolean); override;
     class procedure SetShowInTaskbar(const AForm: TCustomForm; const AValue: TShowInTaskbar); override;
     class procedure ShowHide(const AWinControl: TWinControl); override;
-    class procedure ShowModal(const AForm: TCustomForm); override;
+    class procedure ShowModal(const {%H-}AForm: TCustomForm); override;
     class procedure SetBorderIcons(const AForm: TCustomForm;
                                    const ABorderIcons: TBorderIcons); override;
     class procedure SetColor(const AWinControl: TWinControl); override;
@@ -132,12 +132,12 @@ var
   AEvent: TGdkEventWindowState;
 begin
   Result := False;
-  AEvent := GetWidgetInfo(PGtkWidget(AnForm.Handle))^.FormWindowState;
-  GTKWindowStateEventCB(PGtkWidget(AnForm.Handle), @AEvent, Data);
+  AEvent := GetWidgetInfo({%H-}PGtkWidget(AnForm.Handle))^.FormWindowState;
+  GTKWindowStateEventCB({%H-}PGtkWidget(AnForm.Handle), @AEvent, Data);
   // remove idle handler, because in fast switching hide/show there could
   // be dozen of added idle handlers, only one should be here.
   // also reset our internal flag on send_event.
-  GetWidgetInfo(PGtkWidget(AnForm.Handle))^.FormWindowState.send_event := 0;
+  GetWidgetInfo({%H-}PGtkWidget(AnForm.Handle))^.FormWindowState.send_event := 0;
   g_idle_remove_by_data(Data);
 end;
 
@@ -161,7 +161,7 @@ begin
         {fixes multiple resize events. See comments on
         http://bugs.freepascal.org/view.php?id=17015}
         ACtl := TWinControl(Data);
-        GetWidgetRelativePosition(PGtkWidget(ACtl.Handle), X, Y);
+        GetWidgetRelativePosition({%H-}PGtkWidget(ACtl.Handle), X, Y);
         Result := (event^.configure.send_event = 1) and
           not ((X <> ACtl.Left) or (Y <> ACtl.Top));
 
@@ -209,7 +209,7 @@ begin
       end;
     GDK_ENTER_NOTIFY:
       begin
-        FillChar(Mess, SizeOf(Mess), #0);
+        FillChar(Mess{%H-}, SizeOf(Mess), #0);
         Mess.msg := LM_MOUSEENTER;
         DeliverMessage(Data, Mess);
       end;
@@ -234,7 +234,7 @@ begin
           {$ENDIF}
           with Gtk2WidgetSet do
           begin
-            LastFocusOut := PGtkWidget(ACtl.Handle);
+            LastFocusOut := {%H-}PGtkWidget(ACtl.Handle);
             if LastFocusOut = LastFocusIn then
               StartFocusTimer;
           end;
@@ -242,18 +242,18 @@ begin
         begin
           with Gtk2WidgetSet do
           begin
-            LastFocusIn := PGtkWidget(ACtl.Handle);
+            LastFocusIn := {%H-}PGtkWidget(ACtl.Handle);
             if not AppActive then
               AppActive := True;
           end;
         end;
         if GTK_IS_WINDOW(Widget) and
-          (g_object_get_data(PGObject(ACtl.Handle),'lcl_nonmodal_over_modal') <> nil) then
+          (g_object_get_data({%H-}PGObject(ACtl.Handle),'lcl_nonmodal_over_modal') <> nil) then
         begin
           if PGdkEventFocus(event)^._in = 0 then
-            gtk_window_set_modal(PGtkWindow(ACtl.Handle), False)
+            gtk_window_set_modal({%H-}PGtkWindow(ACtl.Handle), False)
           else
-            gtk_window_set_modal(PGtkWindow(ACtl.Handle), True);
+            gtk_window_set_modal({%H-}PGtkWindow(ACtl.Handle), True);
         end;
       end;
   end;
@@ -292,7 +292,7 @@ var
 begin
   if AWinControl.HandleAllocated then
   begin
-    Widget := PGtkWidget(AWinControl.Handle);
+    Widget := {%H-}PGtkWidget(AWinControl.Handle);
     Result := GTK_WIDGET_VISIBLE(Widget) and GTK_WIDGET_SENSITIVE(Widget);
   end else
     Result := False;
@@ -353,7 +353,7 @@ begin
     gtk_window_set_title(PGtkWindow(P), AParams.Caption);
 
     if (AParams.WndParent <> 0) then
-      gtk_window_set_transient_for(PGtkWindow(P), PGtkWindow(AParams.WndParent))
+      gtk_window_set_transient_for(PGtkWindow(P), {%H-}PGtkWindow(AParams.WndParent))
     else
     if not (csDesigning in ACustomForm.ComponentState) and
       (ACustomForm.FormStyle in fsAllStayOnTop) then
@@ -386,7 +386,7 @@ begin
 
   // main menu
   if (ACustomForm.Menu <> nil) and (ACustomForm.Menu.HandleAllocated) then
-    gtk_box_pack_start(Box, PGtkWidget(ACustomForm.Menu.Handle), False, False,0);
+    gtk_box_pack_start(Box, {%H-}PGtkWidget(ACustomForm.Menu.Handle), False, False,0);
 
   // End of the old CreateForm method
 
@@ -401,7 +401,7 @@ begin
   {$IFDEF DebugLCLComponents}
   DebugGtkWidgets.MarkCreated(P, dbgsName(AWinControl));
   {$ENDIF}
-  Result := TLCLIntfHandle(PtrUInt(P));
+  Result := TLCLIntfHandle({%H-}PtrUInt(P));
   Set_RC_Name(AWinControl, P);
   SetCallbacks(P, WidgetInfo);
 end;
@@ -422,7 +422,7 @@ var
   NewPos: Double;
 begin
   if not AWinControl.HandleAllocated then exit;
-  WidgetInfo := GetWidgetInfo(PGtkWidget(AWinControl.Handle));
+  WidgetInfo := GetWidgetInfo({%H-}PGtkWidget(AWinControl.Handle));
   Layout := PGtkLayout(WidgetInfo^.ClientWidget);
   Adjustment := gtk_layout_get_hadjustment(Layout);
   if Adjustment <> nil then
@@ -470,10 +470,10 @@ begin
 
   List := nil;
   if Small <> 0 then
-    List := g_list_append(List, PGdkPixbuf(Small));
+    List := g_list_append(List, {%H-}PGdkPixbuf(Small));
   if Big <> 0 then
-    List := g_list_append(List, PGdkPixbuf(Big));
-  gtk_window_set_icon_list(PGtkWindow(AForm.Handle), List);
+    List := g_list_append(List, {%H-}PGdkPixbuf(Big));
+  gtk_window_set_icon_list({%H-}PGtkWindow(AForm.Handle), List);
   if List <> nil
   then  g_list_free(List);
 end;
@@ -483,11 +483,11 @@ class procedure TGtk2WSCustomForm.SetAlphaBlend(const ACustomForm: TCustomForm;
 begin
   if not WSCheckHandleAllocated(ACustomForm, 'SetAlphaBlend') then
     Exit;
-  if Assigned(gtk_window_set_opacity) and GTK_IS_WINDOW(PGtkWidget(ACustomForm.Handle)) then
+  if Assigned(gtk_window_set_opacity) and GTK_IS_WINDOW({%H-}PGtkWidget(ACustomForm.Handle)) then
     if AlphaBlend then
-      gtk_window_set_opacity(PGtkWindow(ACustomForm.Handle), Alpha / 255)
+      gtk_window_set_opacity({%H-}PGtkWindow(ACustomForm.Handle), Alpha / 255)
     else
-      gtk_window_set_opacity(PGtkWindow(ACustomForm.Handle), 1);
+      gtk_window_set_opacity({%H-}PGtkWindow(ACustomForm.Handle), 1);
 end;
 
 class procedure TGtk2WSCustomForm.SetFormBorderStyle(const AForm: TCustomForm;
@@ -503,7 +503,7 @@ begin
   if (csDesigning in AForm.ComponentState) then
     exit;
 
-  Widget := PGtkWidget(AForm.Handle);
+  Widget := {%H-}PGtkWidget(AForm.Handle);
   WidgetInfo := GetWidgetInfo(Widget);
 
   if (WidgetInfo^.FormBorderStyle <> Ord(AFormBorderStyle)) then
@@ -535,8 +535,8 @@ begin
     exit;
   if (csDesigning in AForm.ComponentState) then
     exit;
-  if GTK_IS_WINDOW(PGtkWindow(AForm.Handle)) then
-    gtk_window_set_keep_above(PGtkWindow(AForm.Handle),
+  if GTK_IS_WINDOW({%H-}PGtkWindow(AForm.Handle)) then
+    gtk_window_set_keep_above({%H-}PGtkWindow(AForm.Handle),
       GBoolean(AFormStyle in fsAllStayOnTop));
 end;
 
@@ -544,10 +544,10 @@ class procedure TGtk2WSCustomForm.SetAllowDropFiles(const AForm: TCustomForm;
   AValue: Boolean);
 begin
   if AValue then
-    gtk_drag_dest_set(PGtkWidget(AForm.Handle), GTK_DEST_DEFAULT_ALL,
+    gtk_drag_dest_set({%H-}PGtkWidget(AForm.Handle), GTK_DEST_DEFAULT_ALL,
       @FileDragTarget, 1, GDK_ACTION_COPY or GDK_ACTION_MOVE)
   else
-    gtk_drag_dest_unset(PGtkWidget(AForm.Handle));
+    gtk_drag_dest_unset({%H-}PGtkWidget(AForm.Handle));
 end;
 
 class procedure TGtk2WSCustomForm.SetShowInTaskbar(const AForm: TCustomForm;
@@ -582,7 +582,7 @@ var
       (AForm.BorderStyle in [bsDialog, bsSingle, bsSizeable]) and
       (AForm.PopupParent = nil) and (AForm.PopupMode = pmNone) then
     begin
-      AWindow := PGtkWindow(AForm.Handle);
+      AWindow := {%H-}PGtkWindow(AForm.Handle);
       gtk_window_set_modal(AWindow, True);
       // lcl_nonmodal_over_modal is needed to track nonmodal form
       // created and shown when we have active modal forms
@@ -595,16 +595,16 @@ begin
   if not (csDesigning in AForm.ComponentState) then
   begin
     if AForm.HandleObjectShouldBeVisible and
-      GTK_IS_WINDOW(PGtkWindow(AForm.Handle)) then
-        gtk_window_set_keep_above(PGtkWindow(AForm.Handle),
+      GTK_IS_WINDOW({%H-}PGtkWindow(AForm.Handle)) then
+        gtk_window_set_keep_above({%H-}PGtkWindow(AForm.Handle),
           GBoolean(AForm.FormStyle in fsAllStayOnTop))
     else
     if (AForm.FormStyle in fsAllStayOnTop) and
       not (csDestroying in AWinControl.ComponentState) then
-        gtk_window_set_keep_above(PGtkWindow(AForm.Handle), GBoolean(False));
+        gtk_window_set_keep_above({%H-}PGtkWindow(AForm.Handle), GBoolean(False));
   end;
 
-  GtkWindow := PGtkWindow(AForm.Handle);
+  GtkWindow := {%H-}PGtkWindow(AForm.Handle);
   if (fsModal in AForm.FormState) and AForm.HandleObjectShouldBeVisible then
   begin
     gtk_window_set_default_size(GtkWindow, Max(1,AForm.Width), Max(1,AForm.Height));
@@ -694,9 +694,9 @@ begin
       PopupParent := APopupParent;
   end;
   if PopupParent <> nil then
-    gtk_window_set_transient_for(PGtkWindow(ACustomForm.Handle), PGtkWindow(PopupParent.Handle))
+    gtk_window_set_transient_for({%H-}PGtkWindow(ACustomForm.Handle), {%H-}PGtkWindow(PopupParent.Handle))
   else
-    gtk_window_set_transient_for(PGtkWindow(ACustomForm.Handle), nil);
+    gtk_window_set_transient_for({%H-}PGtkWindow(ACustomForm.Handle), nil);
 end;
 
 
@@ -760,7 +760,7 @@ begin
   SetFixedWidget(Scrolled, Layout);
   SetMainWidget(Scrolled, Layout);
 
-  Result := TLCLIntfHandle(PtrUInt(Scrolled));
+  Result := TLCLIntfHandle({%H-}PtrUInt(Scrolled));
 
   Set_RC_Name(AWinControl, PGtkWidget(Scrolled));
   SetCallBacks(PGtkWidget(Scrolled), WidgetInfo);
@@ -790,7 +790,7 @@ begin
   if not WSCheckHandleAllocated(AWinControl, 'SetColor')
   then Exit;
 
-  Gtk2WidgetSet.SetWidgetColor(PGtkBin(AWinControl.Handle)^.child,
+  Gtk2WidgetSet.SetWidgetColor({%H-}PGtkBin(AWinControl.Handle)^.child,
                                clNone, AWinControl.Color,
                                [GTK_STATE_NORMAL, GTK_STATE_ACTIVE,
                                 GTK_STATE_PRELIGHT, GTK_STATE_SELECTED]);
@@ -805,7 +805,7 @@ var
   NewPos: Double;
 begin
   if not AWinControl.HandleAllocated then exit;
-  Scrolled := GTK_SCROLLED_WINDOW(Pointer(AWinControl.Handle));
+  Scrolled := GTK_SCROLLED_WINDOW({%H-}Pointer(AWinControl.Handle));
   if not GTK_IS_SCROLLED_WINDOW(Scrolled) then
     exit;
   Adjustment := gtk_scrolled_window_get_hadjustment(Scrolled);
@@ -893,7 +893,7 @@ begin
   {$IFDEF DebugLCLComponents}
   DebugGtkWidgets.MarkCreated(P,dbgsName(AWinControl));
   {$ENDIF}
-  Result := TLCLIntfHandle(PtrUInt(P));
+  Result := TLCLIntfHandle({%H-}PtrUInt(P));
   Set_RC_Name(AWinControl, P);
   SetCallbacks(P, WidgetInfo);
 end;

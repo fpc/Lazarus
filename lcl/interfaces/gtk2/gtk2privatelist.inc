@@ -22,16 +22,14 @@ class procedure TGtkPrivateList.SetCallbacks(const AGtkWidget: PGtkWidget; const
 begin
 end;
 
-
-
-procedure Gtk2WS_ListBoxChange(Selection: PGtkTreeSelection; WidgetInfo: PWidgetInfo); cdecl;
+procedure Gtk2WS_ListBoxChange({%H-}Selection: PGtkTreeSelection; WidgetInfo: PWidgetInfo); cdecl;
 var
   Mess: TLMessage;
 begin
   {$IFDEF EventTrace}
   EventTrace('Gtk2WS_ListBoxChange', WidgetInfo^.LCLObject);
   {$ENDIF}
-  FillChar(Mess, SizeOf(Mess), 0);
+  FillChar(Mess{%H-}, SizeOf(Mess), 0);
   Mess.msg := LM_SELCHANGE;
   DeliverMessage(WidgetInfo^.LCLObject, Mess);
 end;

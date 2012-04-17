@@ -237,7 +237,7 @@ procedure TGtk2MemoStrings.SetTextStr(const Value: string);
 begin
   if (Value <> Text) then
   begin
-    LockOnChange(PGtkObject(Owner.Handle), 1);
+    LockOnChange({%H-}PGtkObject(Owner.Handle), 1);
     gtk_text_buffer_set_text(FGtkBuf, PChar(Value), -1);
   end;
 end;

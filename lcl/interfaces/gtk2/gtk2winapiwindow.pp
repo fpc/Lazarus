@@ -36,7 +36,7 @@ interface
 
 uses
   SysUtils, LCLProc,
-  Gtk2Extra, glib2, gdk2pixbuf, gdk2, gtk2,
+  Gtk2Extra, glib2, gdk2, gtk2,
   Controls, Gtk2Proc, Gtk2Def;
 
 { $Define VerboseCaret}
@@ -141,7 +141,7 @@ begin
   MainWidget:=ChildWidget;
   LCLObject:=GetNearestLCLObject(ChildWidget);
   if (LCLObject is TWinControl) then
-    MainWidget:=PGtkWidget(TWinControl(LCLObject).Handle);
+    MainWidget:={%H-}PGtkWidget(TWinControl(LCLObject).Handle);
   IsAPIWidget:=GtkWidgetIsA(MainWidget,GTKAPIWidget_GetType);
   CaretWasVisible:=false;
   if IsAPIWidget then
@@ -174,12 +174,12 @@ procedure GTKAPIWidgetClient_SizeAllocate (AWidget: PGTKWidget; AAllocation: PGt
 
 function GTKAPIWidgetClient_KeyPress(Widget: PGTKWidget; 
   Event: PGDKEventKey): GTKEventResult; cdecl; forward;
-function GTKAPIWidgetClient_ButtonPress(Widget: PGTKWidget;
+function GTKAPIWidgetClient_ButtonPress({%H-}Widget: PGTKWidget;
   Event: PGDKEventButton): GTKEventResult; cdecl; forward;
 function GTKAPIWidgetClient_FocusIn(AWidget: PGTKWidget;
-  Event: PGdkEventFocus): GTKEventResult; cdecl; forward;
+  {%H-}Event: PGdkEventFocus): GTKEventResult; cdecl; forward;
 function GTKAPIWidgetClient_FocusOut(AWidget: PGTKWidget;
-  Event: PGdkEventFocus): GTKEventResult; cdecl; forward;
+  {%H-}Event: PGdkEventFocus): GTKEventResult; cdecl; forward;
 
 procedure GTKAPIWidgetClient_ClassInit(theClass: Pointer);cdecl; forward;
 procedure GTKAPIWidgetClient_Init(Client:PGTypeInstance; theClass: Pointer); cdecl; forward;
@@ -187,9 +187,9 @@ function GTKAPIWidgetClient_GetType: GType; forward;
 function GTKAPIWidgetClient_New: PGTKWidget; forward;
 
 procedure GTKAPIWidgetClient_HideCaret(Client: PGTKAPIWidgetClient;
-                                       var OldVisible: boolean); forward;
+                                       out OldVisible: boolean); forward;
 procedure GTKAPIWidgetClient_ShowCaret(Client: PGTKAPIWidgetClient); forward;
-procedure GTKAPIWidgetClient_DrawCaret(Client: PGTKAPIWidgetClient; CalledByTimer: boolean); forward;
+procedure GTKAPIWidgetClient_DrawCaret(Client: PGTKAPIWidgetClient; {%H-}CalledByTimer: boolean); forward;
 procedure GTKAPIWidgetClient_CreateCaret(Client: PGTKAPIWidgetClient;
   AWidth, AHeight: Integer; ABitmap: PGDKPixmap); forward;
 procedure GTKAPIWidgetClient_DestroyCaret(Client: PGTKAPIWidgetClient); forward;
@@ -459,10 +459,11 @@ begin
 end;
 
 procedure GTKAPIWidgetClient_HideCaret(Client: PGTKAPIWidgetClient;
-  var OldVisible: boolean);
+  out OldVisible: boolean);
 begin
   if Client = nil
   then begin
+    OldVisible:=false;
     DebugLn('WARNING: [GTKAPIWidgetClient_HideCaret] Got nil client');
     Exit;
   end;
@@ -569,7 +570,7 @@ var
     ForeGroundGC: PGdkGC;
   begin
     // set draw function to xor
-    ForeGroundGC := WidgetStyle^.fg_gc[GC_STATE[PtrUInt(Pixmap) <> 1]];
+    ForeGroundGC := WidgetStyle^.fg_gc[GC_STATE[{%H-}PtrUInt(Pixmap) <> 1]];
     //gdk_gc_get_values(ForeGroundGC,@ForeGroundGCValues);
     //OldGdkFunction:=ForeGroundGCValues.thefunction;
     {$IFDEF VerboseCaret}
@@ -949,7 +950,7 @@ end;
 //---------------------------------------------------------------------------
 
 function GTKAPIWidget_FocusIn(Widget: PGTKWidget;
-  Event: PGdkEventFocus): GTKEventResult; cdecl;
+  {%H-}Event: PGdkEventFocus): GTKEventResult; cdecl;
 var
   TopLevel: PGTKWidget;
 begin
@@ -960,8 +961,8 @@ begin
   Result := gtk_True;
 end;
 
-function GTKAPIWidget_FocusOut(Widget: PGTKWidget;
-  Event: PGdkEventFocus): GTKEventResult; cdecl;
+function GTKAPIWidget_FocusOut({%H-}Widget: PGTKWidget;
+  {%H-}Event: PGdkEventFocus): GTKEventResult; cdecl;
 begin
   Result := gtk_True;
 end;

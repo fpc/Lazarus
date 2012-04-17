@@ -109,3 +109,8 @@ procedure TWidgetSet.DCSetAntialiasing(CanvasHandle: HDC; AEnabled: Boolean);
 begin
 end;
 
+procedure TWidgetSet.SetDesigning(AComponent: TComponent);
+begin
+
+end;
+

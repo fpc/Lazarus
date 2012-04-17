@@ -31,7 +31,7 @@ uses
   // libs
   GLib2, Gtk2, Gdk2, Gdk2pixbuf,
   // RTL, FCL, LCL
-  ComCtrls, Classes, FPCAdds, LCLType, LMessages, Controls, Graphics,
+  ComCtrls, Classes, LCLType, LMessages, Controls, Graphics,
   StdCtrls, Forms, LCLProc, ImgList, Math, Sysutils, InterfaceBase,
   // widgetset
   WSComCtrls, WSLCLClasses, WSControls, WSProc,
@@ -67,11 +67,11 @@ type
     class function  CreateHandle(const AWinControl: TWinControl;
       const AParams: TCreateParams): TLCLIntfHandle; override;
     class procedure UpdateProperties(const ACustomPage: TCustomPage); override;
-    class procedure SetBounds(const AWinControl: TWinControl; const ALeft, ATop, AWidth, AHeight: Integer); override;
+    class procedure SetBounds(const {%H-}AWinControl: TWinControl; const {%H-}ALeft, {%H-}ATop, {%H-}AWidth, {%H-}AHeight: Integer); override;
     class procedure SetFont(const AWinControl: TWinControl; const AFont: TFont); override;
     class procedure ShowHide(const AWinControl: TWinControl); override;
     class function GetDefaultClientRect(const AWinControl: TWinControl;
-             const aLeft, aTop, aWidth, aHeight: integer; var aClientRect: TRect
+             const {%H-}aLeft, {%H-}aTop, {%H-}aWidth, {%H-}aHeight: integer; var aClientRect: TRect
              ): boolean; override;
   end;
 
@@ -87,7 +87,7 @@ type
     class function CreateHandle(const AWinControl: TWinControl;
                                 const AParams: TCreateParams): HWND; override;
     class function GetDefaultClientRect(const AWinControl: TWinControl;
-             const aLeft, aTop, aWidth, aHeight: integer; var aClientRect: TRect
+             const {%H-}aLeft, {%H-}aTop, aWidth, aHeight: integer; var aClientRect: TRect
              ): boolean; override;
     class procedure AddPage(const ATabControl: TCustomTabControl;
       const AChild: TCustomPage; const AIndex: integer); override;
@@ -115,11 +115,11 @@ type
     class procedure PanelUpdate(const AStatusBar: TStatusBar; PanelIndex: integer); override;
     class procedure SetPanelText(const AStatusBar: TStatusBar; PanelIndex: integer); override;
     class procedure Update(const AStatusBar: TStatusBar); override;
-    class procedure GetPreferredSize(const AWinControl: TWinControl;
-                        var PreferredWidth, PreferredHeight: integer;
-                        WithThemeSpace: Boolean); override;
+    class procedure GetPreferredSize(const {%H-}AWinControl: TWinControl;
+                        var {%H-}PreferredWidth, PreferredHeight: integer;
+                        {%H-}WithThemeSpace: Boolean); override;
 
-    class procedure SetSizeGrip(const AStatusBar: TStatusBar; SizeGrip: Boolean); override;
+    class procedure SetSizeGrip(const AStatusBar: TStatusBar; {%H-}SizeGrip: Boolean); override;
   end;
 
   { TGtk2WSTabSheet }
@@ -147,29 +147,29 @@ type
   published
     // columns
     class procedure ColumnDelete(const ALV: TCustomListView; const AIndex: Integer); override;
-    class function  ColumnGetWidth(const ALV: TCustomListView; const AIndex: Integer; const AColumn: TListColumn): Integer; override;
+    class function  ColumnGetWidth(const ALV: TCustomListView; const {%H-}AIndex: Integer; const AColumn: TListColumn): Integer; override;
     class procedure ColumnInsert(const ALV: TCustomListView; const AIndex: Integer; const AColumn: TListColumn); override;
-    class procedure ColumnMove(const ALV: TCustomListView; const AOldIndex, ANewIndex: Integer; const AColumn: TListColumn); override;
-    class procedure ColumnSetAlignment(const ALV: TCustomListView; const AIndex: Integer; const AColumn: TListColumn; const AAlignment: TAlignment); override;
-    class procedure ColumnSetAutoSize(const ALV: TCustomListView; const AIndex: Integer; const AColumn: TListColumn; const AAutoSize: Boolean); override;
-    class procedure ColumnSetCaption(const ALV: TCustomListView; const AIndex: Integer; const AColumn: TListColumn; const ACaption: String); override;
+    class procedure ColumnMove(const ALV: TCustomListView; const AOldIndex, ANewIndex: Integer; const {%H-}AColumn: TListColumn); override;
+    class procedure ColumnSetAlignment(const ALV: TCustomListView; const AIndex: Integer; const {%H-}AColumn: TListColumn; const AAlignment: TAlignment); override;
+    class procedure ColumnSetAutoSize(const ALV: TCustomListView; const AIndex: Integer; const {%H-}AColumn: TListColumn; const AAutoSize: Boolean); override;
+    class procedure ColumnSetCaption(const ALV: TCustomListView; const AIndex: Integer; const {%H-}AColumn: TListColumn; const ACaption: String); override;
     class procedure ColumnSetImage(const ALV: TCustomListView; const AIndex: Integer; const AColumn: TListColumn; const AImageIndex: Integer); override;
-    class procedure ColumnSetMaxWidth(const ALV: TCustomListView; const AIndex: Integer; const AColumn: TListColumn; const AMaxWidth: Integer); override;
+    class procedure ColumnSetMaxWidth(const ALV: TCustomListView; const AIndex: Integer; const {%H-}AColumn: TListColumn; const AMaxWidth: Integer); override;
     class procedure ColumnSetMinWidth(const ALV: TCustomListView; const AIndex: Integer; const AColumn: TListColumn; const AMinWidth: integer); override;
-    class procedure ColumnSetWidth(const ALV: TCustomListView; const AIndex: Integer; const AColumn: TListColumn; const AWidth: Integer); override;
-    class procedure ColumnSetVisible(const ALV: TCustomListView; const AIndex: Integer; const AColumn: TListColumn; const AVisible: Boolean); override;
+    class procedure ColumnSetWidth(const ALV: TCustomListView; const AIndex: Integer; const {%H-}AColumn: TListColumn; const AWidth: Integer); override;
+    class procedure ColumnSetVisible(const ALV: TCustomListView; const AIndex: Integer; const {%H-}AColumn: TListColumn; const AVisible: Boolean); override;
 
     // items
     class procedure ItemDelete(const ALV: TCustomListView; const AIndex: Integer); override;
-    class function  ItemDisplayRect(const ALV: TCustomListView; const AIndex, ASubItem: Integer; ACode: TDisplayCode): TRect; override;
-    class procedure ItemExchange(const ALV: TCustomListView; AItem: TListItem; const AIndex1, AIndex2: Integer); override;
-    class procedure ItemMove(const ALV: TCustomListView; AItem: TListItem; const AFromIndex, AToIndex: Integer); override;
-    class function  ItemGetChecked(const ALV: TCustomListView; const AIndex: Integer; const AItem: TListItem): Boolean; override;
-    class function  ItemGetState(const ALV: TCustomListView; const AIndex: Integer; const AItem: TListItem; const AState: TListItemState; out AIsSet: Boolean): Boolean; override; // returns True if supported
-    class procedure ItemInsert(const ALV: TCustomListView; const AIndex: Integer; const AItem: TListItem); override;
+    class function  ItemDisplayRect(const ALV: TCustomListView; const AIndex, ASubItem: Integer; {%H-}ACode: TDisplayCode): TRect; override;
+    class procedure ItemExchange(const ALV: TCustomListView; {%H-}AItem: TListItem; const AIndex1, AIndex2: Integer); override;
+    class procedure ItemMove(const ALV: TCustomListView; {%H-}AItem: TListItem; const AFromIndex, AToIndex: Integer); override;
+    class function  ItemGetChecked(const {%H-}ALV: TCustomListView; const {%H-}AIndex: Integer; const AItem: TListItem): Boolean; override;
+    class function  ItemGetState(const ALV: TCustomListView; const AIndex: Integer; const {%H-}AItem: TListItem; const AState: TListItemState; out AIsSet: Boolean): Boolean; override; // returns True if supported
+    class procedure ItemInsert(const ALV: TCustomListView; const AIndex: Integer; const {%H-}AItem: TListItem); override;
     class procedure ItemSetChecked(const ALV: TCustomListView; const AIndex: Integer; const AItem: TListItem; const AChecked: Boolean); override;
-    class procedure ItemSetImage(const ALV: TCustomListView; const AIndex: Integer; const AItem: TListItem; const ASubIndex, AImageIndex: Integer); override;
-    class procedure ItemSetState(const ALV: TCustomListView; const AIndex: Integer; const AItem: TListItem; const AState: TListItemState; const AIsSet: Boolean); override;
+    class procedure ItemSetImage(const ALV: TCustomListView; const AIndex: Integer; const {%H-}AItem: TListItem; const {%H-}ASubIndex, AImageIndex: Integer); override;
+    class procedure ItemSetState(const ALV: TCustomListView; const AIndex: Integer; const {%H-}AItem: TListItem; const AState: TListItemState; const AIsSet: Boolean); override;
     class procedure ItemSetText(const ALV: TCustomListView; const AIndex: Integer; const AItem: TListItem; const ASubIndex: Integer; const AText: String); override;
     class procedure ItemShow(const ALV: TCustomListView; const AIndex: Integer; const AItem: TListItem; const PartialOK: Boolean); override;
     class function  ItemGetPosition(const ALV: TCustomListView; const AIndex: Integer): TPoint; override;
@@ -193,20 +193,20 @@ type
     class function GetViewOrigin(const ALV: TCustomListView): TPoint; override;
     class function GetVisibleRowCount(const ALV: TCustomListView): Integer; override;
 
-    class procedure SetAllocBy(const ALV: TCustomListView; const AValue: Integer); override;
+    class procedure SetAllocBy(const ALV: TCustomListView; const {%H-}AValue: Integer); override;
     class procedure SetColor(const AWinControl: TWinControl); override;
-    class procedure SetDefaultItemHeight(const ALV: TCustomListView; const AValue: Integer); override;
+    class procedure SetDefaultItemHeight(const ALV: TCustomListView; const {%H-}AValue: Integer); override;
     class procedure SetFont(const AWinControl: TWinControl; const AFont: TFont); override;
-    class procedure SetHotTrackStyles(const ALV: TCustomListView; const AValue: TListHotTrackStyles); override;
-    class procedure SetHoverTime(const ALV: TCustomListView; const AValue: Integer); override;
+    class procedure SetHotTrackStyles(const ALV: TCustomListView; const {%H-}AValue: TListHotTrackStyles); override;
+    class procedure SetHoverTime(const ALV: TCustomListView; const {%H-}AValue: Integer); override;
 //    class procedure SetIconOptions(const ALV: TCustomListView; const AValue: TIconOptions); override;
     class procedure SetImageList(const ALV: TCustomListView; const AList: TListViewImageList; const AValue: TCustomImageList); override;
-    class procedure SetItemsCount(const ALV: TCustomListView; const Avalue: Integer); override;
+    class procedure SetItemsCount(const ALV: TCustomListView; const {%H-}Avalue: Integer); override;
     class procedure SetProperty(const ALV: TCustomListView; const AProp: TListViewProperty; const AIsSet: Boolean); override;
     class procedure SetProperties(const ALV: TCustomListView; const AProps: TListViewProperties); override;
     class procedure SetScrollBars(const ALV: TCustomListView; const AValue: TScrollStyle); override;
-    class procedure SetSort(const ALV: TCustomListView; const AType: TSortType; const AColumn: Integer;
-      const ASortDirection: TSortDirection); override;
+    class procedure SetSort(const ALV: TCustomListView; const {%H-}AType: TSortType; const {%H-}AColumn: Integer;
+      const {%H-}ASortDirection: TSortDirection); override;
     class procedure SetViewOrigin(const ALV: TCustomListView; const AValue: TPoint); override;
     class procedure SetViewStyle(const ALV: TCustomListView; const AValue: TViewStyle); override;
   end;
@@ -267,7 +267,7 @@ type
     class procedure ApplyChanges(const ATrackBar: TCustomTrackBar); override;
     class function  GetPosition(const ATrackBar: TCustomTrackBar): integer; override;
     class procedure SetPosition(const ATrackBar: TCustomTrackBar; const NewPosition: integer); override;
-    class procedure SetOrientation(const ATrackBar: TCustomTrackBar; const AOrientation: TTrackBarOrientation); override;
+    class procedure SetOrientation(const ATrackBar: TCustomTrackBar; const {%H-}AOrientation: TTrackBarOrientation); override;
   end;
 
   { TGtk2WSCustomTreeView }
@@ -291,7 +291,7 @@ uses Gtk2CellRenderer, Gtk2Extra{$IFNDEF USEORIGTREEMODEL}, Gtk2ListViewTreeMode
 
 // Will be used commonly for ListViews and TreeViews
 procedure GetCommonTreeViewWidgets(ATreeViewHandle: PGtkWidget;
-  var TVWidgets: PTVWidgets);
+  out TVWidgets: PTVWidgets);
 var
   WidgetInfo: PWidgetInfo;
 begin
@@ -301,7 +301,7 @@ end;
 
 {$I gtk2wscustomlistview.inc}
 
-procedure GtkWSTrackBar_Changed(AWidget: PGtkWidget; AInfo: PWidgetInfo); cdecl;
+procedure GtkWSTrackBar_Changed({%H-}AWidget: PGtkWidget; AInfo: PWidgetInfo); cdecl;
 var
   Msg: TLMessage;
 begin
@@ -338,11 +338,11 @@ begin
     gtk_range_set_inverted(PGtkRange(Widget), Reversed);
     gtk_scale_set_digits(PGtkScale(Widget), 0);
   end;
-  Result := TLCLIntfHandle(PtrUInt(Widget));
+  Result := TLCLIntfHandle({%H-}PtrUInt(Widget));
   {$IFDEF DebugLCLComponents}
   DebugGtkWidgets.MarkCreated(Widget, dbgsName(AWinControl));
   {$ENDIF}
-  WidgetInfo := CreateWidgetInfo(Pointer(Result), AWinControl, AParams);
+  WidgetInfo := CreateWidgetInfo({%H-}Pointer(Result), AWinControl, AParams);
   Set_RC_Name(AWinControl, Widget);
   SetCallbacks(Widget, WidgetInfo);
 end;
@@ -366,21 +366,21 @@ begin
   with ATrackBar do
   begin
     wHandle := Handle;
-    if gtk_range_get_inverted(PGtkRange(wHandle)) <> Reversed then
-      gtk_range_set_inverted(PGtkRange(wHandle), Reversed);
+    if gtk_range_get_inverted({%H-}PGtkRange(wHandle)) <> Reversed then
+      gtk_range_set_inverted({%H-}PGtkRange(wHandle), Reversed);
 
-    Adjustment := gtk_range_get_adjustment(GTK_RANGE(Pointer(wHandle)));
+    Adjustment := gtk_range_get_adjustment(GTK_RANGE({%H-}Pointer(wHandle)));
     // min >= max causes crash
     Adjustment^.lower := Min;
     if Min < Max then
     begin
       Adjustment^.upper := Max;
-      gtk_widget_set_sensitive(PgtkWidget(wHandle), ATrackBar.Enabled);
+      gtk_widget_set_sensitive({%H-}PgtkWidget(wHandle), ATrackBar.Enabled);
     end
     else
     begin
       Adjustment^.upper := Min + 1;
-      gtk_widget_set_sensitive(PgtkWidget(wHandle), False);
+      gtk_widget_set_sensitive({%H-}PgtkWidget(wHandle), False);
     end;
     Adjustment^.step_increment := LineSize;
     Adjustment^.page_increment := PageSize;
@@ -388,12 +388,12 @@ begin
     { now do some of the more sophisticated features }
     { Hint: For some unknown reason we have to disable the draw_value first,
       otherwise it's set always to true }
-    gtk_scale_set_draw_value (GTK_SCALE (Pointer(wHandle)), false);
+    gtk_scale_set_draw_value (GTK_SCALE ({%H-}Pointer(wHandle)), false);
 
     if (TickStyle <> tsNone) then
     begin
-      gtk_scale_set_draw_value (GTK_SCALE (Pointer(wHandle)), true);
-      gtk_scale_set_value_pos (GTK_SCALE (Pointer(wHandle)), ValuePositionMap[ScalePos]);
+      gtk_scale_set_draw_value (GTK_SCALE ({%H-}Pointer(wHandle)), true);
+      gtk_scale_set_value_pos (GTK_SCALE ({%H-}Pointer(wHandle)), ValuePositionMap[ScalePos]);
     end;
     //Not here (Delphi compatibility):  gtk_signal_emit_by_name (GTK_Object (Adjustment), 'value_changed');
   end;
@@ -408,7 +408,7 @@ begin
   if not WSCheckHandleAllocated(ATrackBar, 'GetPosition') then
     Exit;
 
-  Range := PGtkRange(ATrackBar.Handle);
+  Range := {%H-}PGtkRange(ATrackBar.Handle);
   Result := Trunc(gtk_range_get_value(Range));
 end;
 
@@ -420,7 +420,7 @@ var
 begin
   if not WSCheckHandleAllocated(ATrackBar, 'SetPosition') then
     Exit;
-  Range := PGtkRange(ATrackBar.Handle);
+  Range := {%H-}PGtkRange(ATrackBar.Handle);
   WidgetInfo := GetWidgetInfo(Range);
   // lock Range, so that no OnChange event is not fired
   Inc(WidgetInfo^.ChangeLock);
@@ -458,9 +458,9 @@ begin
     if BarShowText then
     begin
        wText := Format('%d from [%d-%d] (%%p%%%%)', [Position, Min, Max]);
-       gtk_progress_set_format_string(PGtkProgress(Handle), PChar(wText));
+       gtk_progress_set_format_string({%H-}PGtkProgress(Handle), PChar(wText));
     end;
-    gtk_progress_set_show_text(PGtkProgress(Handle), BarShowText);
+    gtk_progress_set_show_text({%H-}PGtkProgress(Handle), BarShowText);
   end;
 end;
 
@@ -468,24 +468,24 @@ function ProgressPulseTimeout(data: gpointer): gboolean; cdecl;
 var
   AProgressBar: PGtkProgressBar absolute data;
 begin
-  Result := PtrUInt(g_object_get_data(data, 'ProgressStyle')) = 1;
+  Result := {%H-}PtrUInt(g_object_get_data(data, 'ProgressStyle')) = 1;
   if Result then
     gtk_progress_bar_pulse(AProgressBar);
 end;
 
 procedure ProgressDestroy(data: gpointer); cdecl;
 begin
-  g_source_remove(PtrUInt(data));
+  g_source_remove({%H-}PtrUInt(data));
 end;
 
 class procedure TGtk2WSProgressBar.InternalSetStyle(
   AProgressBar: PGtkProgressBar; AStyle: TProgressBarStyle);
 begin
-  g_object_set_data(PGObject(AProgressBar), 'ProgressStyle', Pointer(PtrUInt(Ord(AStyle))));
+  g_object_set_data(PGObject(AProgressBar), 'ProgressStyle', {%H-}Pointer(PtrUInt(Ord(AStyle))));
   if AStyle = pbstMarquee then
   begin
     g_object_set_data_full(PGObject(AProgressBar), 'timeout',
-      Pointer(PtrUInt(g_timeout_add(100, @ProgressPulseTimeout, AProgressBar))), @ProgressDestroy);
+      {%H-}Pointer(PtrUInt(g_timeout_add(100, @ProgressPulseTimeout, AProgressBar))), @ProgressDestroy);
     gtk_progress_bar_pulse(AProgressBar);
   end;
 end;
@@ -497,8 +497,8 @@ var
   WidgetInfo: PWidgetInfo;
 begin
   Widget := gtk_progress_bar_new;
-  Result := TLCLIntfHandle(PtrUInt(Widget));
-  WidgetInfo := CreateWidgetInfo(Pointer(Result), AWinControl, AParams);
+  Result := TLCLIntfHandle({%H-}PtrUInt(Widget));
+  WidgetInfo := CreateWidgetInfo({%H-}Pointer(Result), AWinControl, AParams);
   Set_RC_Name(AWinControl, Widget);
 
   InternalSetStyle(PGtkProgressBar(Widget), TCustomProgressBar(AWinControl).Style);
@@ -527,7 +527,7 @@ var
 begin
   if not WSCheckHandleAllocated(AProgressBar, 'TGtk2WSProgressBar.ApplyChanges') then
     Exit;
-  Progress := PGtkProgressBar(AProgressBar.Handle);
+  Progress := {%H-}PGtkProgressBar(AProgressBar.Handle);
 
   with AProgressBar do
   begin
@@ -556,7 +556,7 @@ begin
   else
     fraction:=0;
 
-  gtk_progress_bar_set_fraction(PGtkProgressBar(AProgressBar.Handle), fraction);
+  gtk_progress_bar_set_fraction({%H-}PGtkProgressBar(AProgressBar.Handle), fraction);
 
   UpdateProgressBarText(AProgressBar);
 end;
@@ -566,7 +566,7 @@ class procedure TGtk2WSProgressBar.SetStyle(
 begin
   if not WSCheckHandleAllocated(AProgressBar, 'SetStyle') then
     Exit;
-  InternalSetStyle(PGtkProgressBar(AProgressBar.Handle), NewStyle);
+  InternalSetStyle({%H-}PGtkProgressBar(AProgressBar.Handle), NewStyle);
   if NewStyle = pbstNormal then
     SetPosition(AProgressBar, AProgressBar.Position);
 end;
@@ -590,11 +590,11 @@ begin
   gtk_container_add(PGtkContainer(EventBox), HBox);
   gtk_widget_show(HBox);
   UpdateStatusBarPanels(AWinControl, HBox);
-  Result := TLCLIntfHandle(PtrUInt(EventBox));
+  Result := TLCLIntfHandle({%H-}PtrUInt(EventBox));
   {$IFDEF DebugLCLComponents}
   DebugGtkWidgets.MarkCreated(EventBox, dbgsName(AWinControl));
   {$ENDIF}
-  WidgetInfo := CreateWidgetInfo(Pointer(Result), AWinControl, AParams);
+  WidgetInfo := CreateWidgetInfo({%H-}Pointer(Result), AWinControl, AParams);
   Set_RC_Name(AWinControl, EventBox);
   SetCallbacks(EventBox, WidgetInfo);
 end;
@@ -607,7 +607,7 @@ var
   BoxChild: PGtkBoxChild;
 begin
   //DebugLn('TGtkWidgetSet.StatusBarPanelUpdate ',DbgS(AStatusBar),' PanelIndex=',dbgs(PanelIndex));
-  HBox := PGtkBin(AStatusBar.Handle)^.child;
+  HBox := {%H-}PGtkBin(AStatusBar.Handle)^.child;
   if PanelIndex >= 0 then
   begin
     // update one
@@ -632,7 +632,7 @@ end;
 class procedure TGtk2WSStatusBar.Update(const AStatusBar: TStatusBar);
 begin
   //DebugLn('TGtkWidgetSet.StatusBarUpdate ',DbgS(AStatusBar));
-  UpdateStatusBarPanels(AStatusBar, PGtkBin(AStatusBar.Handle)^.child);
+  UpdateStatusBarPanels(AStatusBar, {%H-}PGtkBin(AStatusBar.Handle)^.child);
 end;
 
 class procedure TGtk2WSStatusBar.GetPreferredSize(
@@ -658,7 +658,7 @@ var
 begin
   if not WSCheckHandleAllocated(AStatusBar, 'SetSizeGrip') then
     Exit;
-  HBox := PGtkBin(AStatusBar.Handle)^.child;
+  HBox := {%H-}PGtkBin(AStatusBar.Handle)^.child;
   LastWidget := PGtkBoxChild(g_list_last(PGtkBox(HBox)^.children)^.data)^.widget;
   gtk_statusbar_set_has_resize_grip(PGtkStatusBar(LastWidget), AStatusBar.SizeGrip and AStatusBar.SizeGripEnabled);
 end;
@@ -682,7 +682,7 @@ begin
   ClientWidget := CreateFixedClientWidget;
   gtk_container_add(GTK_CONTAINER(Widget), ClientWidget);
 
-  Result := TLCLIntfHandle(PtrUInt(Widget));
+  Result := TLCLIntfHandle({%H-}PtrUInt(Widget));
   WidgetInfo := CreateWidgetInfo(Widget, AWinControl, AParams);
 
   {$IFDEF DebugLCLComponents}
