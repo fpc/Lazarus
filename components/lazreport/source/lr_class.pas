@@ -79,7 +79,7 @@ type
   TfrFrameBorders = set of TfrFrameBorder;
   TfrFrameStyle = (frsSolid,frsDash, frsDot, frsDashDot, frsDashDotDot,frsDouble);
   TfrPageType = (ptReport, ptDialog);
-  TfrReportOption = (roIgnoreFieldNotFound);
+  TfrReportOption = (roIgnoreFieldNotFound, roIgnoreSymbolNotFound);
   TfrReportOptions = set of TfrReportOption;
 
   TfrView = class;
@@ -8205,7 +8205,13 @@ begin
             aValue:= frParser.Calc(s);
             SubValue := '';
           end
-          else raise(EParserError.Create('Undefined symbol: ' + SubValue));
+          else
+          begin
+            if roIgnoreSymbolNotFound in FReportOptions then
+              aValue := Null
+            else
+              raise(EParserError.Create('Undefined symbol: ' + SubValue));
+          end;
         end;
       end;
     end;
