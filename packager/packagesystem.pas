@@ -2750,6 +2750,8 @@ var
   Node: TAVLTreeNode;
   Item: PStringToStringTreeItem;
   Filename: String;
+  UnitToSrcTree: TStringToStringTree;
+  CurUnitName: String;
 begin
   Result:=false;
   if TheOwner=nil then exit;
@@ -2773,9 +2775,17 @@ begin
   CfgCache:=Cache.GetConfigCache(false);
   if CfgCache=nil then exit;
   if CfgCache.Units=nil then exit;
+  UnitToSrcTree:=Cache.GetUnitToSourceTree(false);
   Node:=CfgCache.Units.Tree.FindLowest;
   while Node<>nil do begin
     Item:=PStringToStringTreeItem(Node.Data);
+    Node:=CfgCache.Units.Tree.FindSuccessor(Node);
+    CurUnitName:=Item^.Name;
+    if not UnitToSrcTree.Contains(CurUnitName) then begin
+      // this unit has no source in the FPC source directory
+      // probably an user unit reachable through a unit path in fpc.cfg
+      continue;
+    end;
     Filename:=Item^.Value;
     if FileAgeCached(Filename)>StateFileAge then begin
       debugln(['TLazPackageGraph.CheckCompileNeedDueToFPCUnits FPC unit "',Filename,'" is newer than state file of ',ID]);
@@ -2784,7 +2794,6 @@ begin
         +'  state file age='+FileAgeToStr(StateFileAge)+LineEnding;
       exit(true);
     end;
-    Node:=CfgCache.Units.Tree.FindSuccessor(Node);
   end;
 end;
 

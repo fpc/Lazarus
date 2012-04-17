@@ -17,7 +17,8 @@
  *   Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.        *
  *                                                                         *
  ***************************************************************************
-
+}
+(*
   Author: Mattias Gaertner
 
   Abstract:
@@ -30,8 +31,16 @@
       3. option: add a virtual method to the ancestor
     - complete function implementations with missing parameters
     - private variable not used => remove
+    - Hint: Local variable "Path" does not seem to be initialized
+         auto add begin+end
+         Pointer:=nil
+         integer:=0
+         string:=''
+         record: FillByte(p{%H-},SizeOf(p),0)
+         set:=[]
+         enum:=low(enum);
 
-}
+*)
 unit MsgQuickFixes;
 
 {$mode objfpc}{$H+}
@@ -323,20 +332,21 @@ procedure TQuickFixUnitNotFoundPosition.Execute(const Msg: TIDEMessageLine;
     end;
   end;
 
-  procedure CheckUnitUsedByIDE(MissingUnitname: string;
-    var PPUFilename, PkgName: string);
+  procedure FindPPU(MissingUnitname: string;
+    var PPUFilename, PkgName: string; OnlyInstalled: boolean);
   var
-    i, j: Integer;
+    i: Integer;
     Pkg: TIDEPackage;
-    PkgFile: TLazPackageFile;
     DirCache: TCTDirectoryCache;
     UnitOutDir: String;
+    Dir: String;
+    SrcPath: String;
   begin
-    // search ppu in installed packages
+    // search ppu in packages
     if PPUFilename='' then begin
       for i:=0 to PackageEditingInterface.GetPackageCount-1 do begin
         Pkg:=PackageEditingInterface.GetPackages(i);
-        if Pkg.AutoInstall=pitNope then continue;
+        if OnlyInstalled and (Pkg.AutoInstall=pitNope) then continue;
         UnitOutDir:=Pkg.LazCompilerOptions.GetUnitOutputDirectory(false);
         //debugln(['TQuickFixUnitNotFoundPosition.Execute ',Pkg.Name,' UnitOutDir=',UnitOutDir]);
         if FilenameIsAbsolute(UnitOutDir) then begin
@@ -351,11 +361,46 @@ procedure TQuickFixUnitNotFoundPosition.Execute(const Msg: TIDEMessageLine;
         end;
       end;
     end;
+    if (PkgName='') and (PPUFilename<>'') then begin
+      Dir:=ExtractFilePath(PPUFilename);
+      if Dir='' then exit;
+      // check output directories of packages
+      for i:=0 to PackageEditingInterface.GetPackageCount-1 do begin
+        Pkg:=PackageEditingInterface.GetPackages(i);
+        UnitOutDir:=Pkg.LazCompilerOptions.GetUnitOutputDirectory(false);
+        if FilenameIsAbsolute(UnitOutDir)
+        and (CompareFilenames(AppendPathDelim(UnitOutDir),Dir)=0) then begin
+          PkgName:=Pkg.Name;
+          exit;
+        end;
+      end;
+      // check source directories of packages
+      for i:=0 to PackageEditingInterface.GetPackageCount-1 do begin
+        Pkg:=PackageEditingInterface.GetPackages(i);
+        if Pkg.IsVirtual then continue;
+        SrcPath:=Pkg.LazCompilerOptions.GetSrcPath(false);
+        if SrcPath='' then continue;
+        if FindPathInSearchPath(PChar(Dir),length(Dir),PChar(SrcPath),length(SrcPath))=nil
+        then continue;
+        PkgName:=Pkg.Name;
+        exit;
+      end;
+    end;
+  end;
+
+  procedure FindPackage(MissingUnitname: string; var PkgName: string;
+    OnlyInstalled: boolean);
+  var
+    i: Integer;
+    Pkg: TIDEPackage;
+    j: Integer;
+    PkgFile: TLazPackageFile;
+  begin
     if PkgName='' then begin
       // search unit in installed packages
       for i:=0 to PackageEditingInterface.GetPackageCount-1 do begin
         Pkg:=PackageEditingInterface.GetPackages(i);
-        if Pkg.AutoInstall=pitNope then continue;
+        if OnlyInstalled and (Pkg.AutoInstall=pitNope) then continue;
         if CompareTextCT(Pkg.Name,MissingUnitname)=0 then begin
           PkgName:=Pkg.Name;
           break;
@@ -384,6 +429,7 @@ var
   Line: integer;
   Col: integer;
   PkgName: String;
+  OnlyInstalled: Boolean;
 begin
   if Step<>imqfoImproveMessage then exit;
   //DebugLn('QuickFixUnitNotFoundPosition ');
@@ -453,11 +499,11 @@ begin
   if FilenameIsAbsolute(Dir) then begin
     PPUFilename:=CodeToolBoss.DirectoryCachePool.FindCompiledUnitInCompletePath(
                                                            Dir,MissingUnitname);
-    //debugln(['TQuickFixUnitNotFoundPosition.Execute AAA1 PPUFilename=',PPUFilename,' IsFileInIDESrcDir=',IsFileInIDESrcDir(Dir+'test')]);
+    //debugln(['TQuickFixUnitNotFoundPosition.Execute PPUFilename=',PPUFilename,' IsFileInIDESrcDir=',IsFileInIDESrcDir(Dir+'test')]);
     PkgName:='';
-    if IsFileInIDESrcDir(Dir+'test') then begin
-      CheckUnitUsedByIDE(MissingUnitname,PPUFilename,PkgName);
-    end;
+    OnlyInstalled:=IsFileInIDESrcDir(Dir+'test');
+    FindPPU(MissingUnitname,PPUFilename,PkgName,OnlyInstalled);
+    FindPackage(MissingUnitname,PkgName,OnlyInstalled);
 
     if PPUFilename<>'' then begin
       // there is a ppu file, but the compiler didn't like it
