@@ -665,6 +665,7 @@ end;
 
 class function TCarbonWSCustomListView.GetBoundingRect(const ALV: TCustomListView): TRect;
 begin
+  Result := Rect(0, 0, 0, 0);
   if not CheckHandle(ALV, Self, 'GetBoundingRect') then Exit;
 
   Result := TCarbonListView(ALV.Handle).GetItemsRect;
@@ -697,7 +698,7 @@ end;
 
 class function TCarbonWSCustomListView.GetTopItem(const ALV: TCustomListView): Integer;
 begin
-  Result := 0;
+  Result := -1;
   if not CheckHandle(ALV, Self, 'GetTopItem') then Exit;
 
   Result := TCarbonListView(ALV.Handle).GetTopItem;
@@ -705,6 +706,7 @@ end;
 
 class function TCarbonWSCustomListView.GetViewOrigin(const ALV: TCustomListView): TPoint;
 begin
+  Result := Point(0, 0);
   if not CheckHandle(ALV, Self, 'GetViewOrigin') then Exit;
 
   Result := TCarbonListView(ALV.Handle).GetViewOrigin;

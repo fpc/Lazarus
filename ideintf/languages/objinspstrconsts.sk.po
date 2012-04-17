@@ -601,6 +601,7 @@ msgid "Move field down"
 msgstr ""
 
 #: objinspstrconsts.oismoveup
+msgctxt "objinspstrconsts.oismoveup"
 msgid "Move &Up"
 msgstr ""
 
@@ -1203,8 +1204,8 @@ msgstr "Editor sekcií .."
 
 #: objinspstrconsts.sccsiledtadd
 #, fuzzy
-#| msgid "Add..."
-msgid "Add ..."
+#| msgid "Add ..."
+msgid "&Add ..."
 msgstr "Pridať..."
 
 #: objinspstrconsts.sccsiledtadjustment
@@ -1212,8 +1213,10 @@ msgid "Adjustment"
 msgstr "Doladenie"
 
 #: objinspstrconsts.sccsiledtapply
+#, fuzzy
+#| msgid "Apply"
 msgctxt "objinspstrconsts.sccsiledtapply"
-msgid "Apply"
+msgid "&Apply"
 msgstr "Použiť"
 
 #: objinspstrconsts.sccsiledtcaption
@@ -1225,8 +1228,10 @@ msgid "Center"
 msgstr "Vystredniť"
 
 #: objinspstrconsts.sccsiledtclear
+#, fuzzy
+#| msgid "Clear"
 msgctxt "objinspstrconsts.sccsiledtclear"
-msgid "Clear"
+msgid "&Clear"
 msgstr "Zmazať"
 
 #: objinspstrconsts.sccsiledtcrop
@@ -1234,8 +1239,10 @@ msgid "Crop"
 msgstr "Orezať"
 
 #: objinspstrconsts.sccsiledtdelete
+#, fuzzy
+#| msgid "Delete"
 msgctxt "objinspstrconsts.sccsiledtdelete"
-msgid "Delete"
+msgid "&Delete"
 msgstr "Zmazať"
 
 #: objinspstrconsts.sccsiledtgrplcaption
@@ -1247,13 +1254,17 @@ msgid "Selected Image"
 msgstr "Vybraný obrázok"
 
 #: objinspstrconsts.sccsiledtmovedown
+#, fuzzy
+#| msgid "Move Down"
 msgctxt "objinspstrconsts.sccsiledtmovedown"
-msgid "Move Down"
+msgid "Move D&own"
 msgstr "Presunúť nižšie"
 
 #: objinspstrconsts.sccsiledtmoveup
+#, fuzzy
+#| msgid "Move Up"
 msgctxt "objinspstrconsts.sccsiledtmoveup"
-msgid "Move Up"
+msgid "Move &Up"
 msgstr "Presunúť vyššie"
 
 #: objinspstrconsts.sccsiledtnone
@@ -1270,9 +1281,9 @@ msgstr "Transparentná farba:"
 
 #: objinspstrconsts.sccsiledtsave
 #, fuzzy
-#| msgid "Save..."
+#| msgid "Save ..."
 msgctxt "objinspstrconsts.sccsiledtsave"
-msgid "Save ..."
+msgid "&Save ..."
 msgstr "Uložiť..."
 
 #: objinspstrconsts.sccsiledtsaveall

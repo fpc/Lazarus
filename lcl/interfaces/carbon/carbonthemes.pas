@@ -34,6 +34,7 @@ type
 
     function GetDrawState(Details: TThemedElementDetails): ThemeDrawState;
     function DrawButtonElement(DC: TCarbonDeviceContext; Details: TThemedElementDetails; R: TRect; ClipRect: PRect): TRect;
+    function DrawComboBoxElement(DC: TCarbonDeviceContext; Details: TThemedElementDetails; R: TRect; ClipRect: PRect): TRect;
     function DrawHeaderElement(DC: TCarbonDeviceContext; Details: TThemedElementDetails; R: TRect; ClipRect: PRect): TRect;
     function DrawRebarElement(DC: TCarbonDeviceContext; Details: TThemedElementDetails; R: TRect; ClipRect: PRect): TRect;
     function DrawToolBarElement(DC: TCarbonDeviceContext; Details: TThemedElementDetails; R: TRect; ClipRect: PRect): TRect;
@@ -73,16 +74,72 @@ function TCarbonThemeServices.GetDrawState(Details: TThemedElementDetails): Them
 
 }
 begin
-  if IsDisabled(Details) then
-    Result := kThemeStateInactive
+  if Details.Element = teComboBox then
+    if Details.State = 0 then Result := kThemeStateActive
+    else if Details.State = 1 then Result := kThemeStateRollover
+    else if Details.State = 2 then Result := kThemeStatePressed
+    else if Details.State = 3 then Result := kThemeStateInactive
+    else Result := kThemeStateActive
   else
-  if IsPushed(Details) then
-    Result := kThemeStatePressed
-  else
-  if IsHot(Details) then
-    Result := kThemeStateRollover
-  else
-    Result := kThemeStateActive;
+    if IsDisabled(Details) then
+      Result := kThemeStateInactive
+    else
+    if IsPushed(Details) then
+      Result := kThemeStatePressed
+    else
+    if IsHot(Details) then
+      Result := kThemeStateRollover
+    else
+      Result := kThemeStateActive;
+end;
+
+{------------------------------------------------------------------------------
+  Method:  TCarbonThemeServices.DrawComboBoxElement
+  Params:  DC       - Carbon device context
+           Details  - Details for themed element
+           R        - Bounding rectangle
+           ClipRect - Clipping rectangle
+  Returns: ClientRect
+
+  Draws a ComboBox element with native Carbon look
+ ------------------------------------------------------------------------------}
+function TCarbonThemeServices.DrawComboBoxElement(DC: TCarbonDeviceContext;
+  Details: TThemedElementDetails; R: TRect; ClipRect: PRect): TRect;
+var
+  ButtonDrawInfo: HIThemeButtonDrawInfo;
+  BoundsRect: HIRect;
+  NewHeight: Integer;
+  BtnWidth: Integer;
+begin
+  ButtonDrawInfo.version := 0;
+  ButtonDrawInfo.State := GetDrawState(Details);
+  ButtonDrawInfo.value := kThemeButtonOn;
+  ButtonDrawInfo.adornment := kThemeAdornmentNone;
+
+  BoundsRect := RectToCGRect(R);
+
+  NewHeight := GetCarbonThemeMetric(kThemeMetricPopupButtonHeight);
+  BtnWidth := GetCarbonThemeMetric(kThemeMetricComboBoxLargeDisclosureWidth);
+  ButtonDrawInfo.kind := kThemeComboBox;
+  if BoundsRect.size.height < NewHeight then begin
+    NewHeight := GetCarbonThemeMetric(kThemeMetricSmallPopupButtonHeight);
+    BtnWidth := GetCarbonThemeMetric(kThemeMetricComboBoxSmallDisclosureWidth);
+    ButtonDrawInfo.kind := kThemeComboBoxSmall;
+    end;
+  if BoundsRect.size.height < NewHeight then begin
+    NewHeight := GetCarbonThemeMetric(kThemeMetricMiniPopupButtonHeight);
+    BtnWidth := GetCarbonThemeMetric(kThemeMetricComboBoxMiniDisclosureWidth);
+    ButtonDrawInfo.kind := kThemeComboBoxMini;
+    end;
+
+  OSError(
+    HIThemeDrawButton(BoundsRect, ButtonDrawInfo, DC.CGContext,
+      kHIThemeOrientationNormal, nil),
+    Self, 'DrawComboBoxElement', 'HIThemeDrawButton');
+
+  BoundsRect.size.height := NewHeight + 1;
+  BoundsRect.size.width := BoundsRect.size.width - BtnWidth;
+  Result := CGRectToRect(BoundsRect);
 end;
 
 {------------------------------------------------------------------------------
@@ -100,11 +157,11 @@ function TCarbonThemeServices.DrawButtonElement(DC: TCarbonDeviceContext;
 const
   ButtonMap: array[BP_PUSHBUTTON..BP_USERBUTTON] of ThemeButtonKind =
   (
-{BP_PUSHBUTTON } kThemeBevelButtonSmall,
+{BP_PUSHBUTTON } kThemeRoundedBevelButton,
 {BP_RADIOBUTTON} kThemeRadioButton,
 {BP_CHECKBOX   } kThemeCheckBox,
 {BP_GROUPBOX   } kHIThemeGroupBoxKindPrimary, // ??
-{BP_USERBUTTON } kThemeBevelButtonSmall
+{BP_USERBUTTON } kThemeRoundedBevelButton
   );
 var
   ButtonDrawInfo: HIThemeButtonDrawInfo;
@@ -285,7 +342,14 @@ begin
     TVP_TREEITEM:
     begin
       b:=TCarbonBrush.Create(False);
-      b.SetColor( ColorToRGB(clHighlight), True);
+      case Details.State of
+        TREIS_NORMAL: b.SetColor( ColorToRGB(clWindow), True);
+        TREIS_HOT: b.SetColor( ColorToRGB(clHotLight), True);
+        TREIS_SELECTED: b.SetColor( ColorToRGB(clHighlight), True);
+        TREIS_DISABLED: b.SetColor( ColorToRGB(clWindow), True);
+        TREIS_SELECTEDNOTFOCUS: b.SetColor( ColorToRGB(clBtnFace), True);
+        TREIS_HOTSELECTED: b.SetColor( ColorToRGB(clHighlight), True);
+      end;
       DC.FillRect(R, b);
       b.Free;
     end;
@@ -350,6 +414,7 @@ function TCarbonThemeServices.ContentRect(DC: HDC;
   Details: TThemedElementDetails; BoundingRect: TRect): TRect;
 begin
   case Details.Element of
+    teComboBox: Result := DrawComboBoxElement(DefaultContext, Details, BoundingRect, nil);
     teHeader: Result := DrawHeaderElement(DefaultContext, Details, BoundingRect, nil);
     teButton: Result := DrawButtonElement(DefaultContext, Details, BoundingRect, nil);
     teRebar: Result := DrawRebarElement(DefaultContext, Details, BoundingRect, nil);
@@ -391,6 +456,7 @@ begin
   if CheckDC(DC, 'TCarbonThemeServices.DrawElement') then
   begin
     case Details.Element of
+      teComboBox: DrawComboBoxElement(Context, Details, R, ClipRect);
       teButton: DrawButtonElement(Context, Details, R, ClipRect);
       teHeader: DrawHeaderElement(Context, Details, R, ClipRect);
       teRebar: DrawRebarElement(Context, Details, R, ClipRect);

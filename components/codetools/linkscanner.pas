@@ -3682,11 +3682,14 @@ begin
       #0:
         begin
           SrcPos:=p-PChar(Src)+1;
-          if (SrcPos>SrcLen) and not ReturnFromIncludeFile then begin
-            CommentStartPos:=0;
-            break;
-          end;
-          inc(p);
+          if (SrcPos>SrcLen) then begin
+            if not ReturnFromIncludeFile then begin
+              CommentStartPos:=0;
+              break;
+            end;
+            p:=@Src[SrcPos];
+          end else
+            inc(p);
         end;
       else
         inc(p);

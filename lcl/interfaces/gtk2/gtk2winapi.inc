@@ -1732,7 +1732,7 @@ begin
 
   FreeMem(PointArray);
 
-  Result := HRGN(PtrUInt(GObject));
+  Result := HRGN({%H-}PtrUInt(GObject));
 end;
 
 {------------------------------------------------------------------------------
@@ -1770,7 +1770,7 @@ begin
   GObject^.GDIRegionObject := RegionObj;
   gdk_region_destroy(RRGN);
 
-  Result := HRGN(PtrUInt(GObject));
+  Result := HRGN({%H-}PtrUInt(GObject));
   //DebugLn('TGtk2WidgetSet.CreateRectRgn A ',GDKRegionAsString(RegionObj));
 end;
 
@@ -1836,7 +1836,7 @@ begin
   RegionObj := gdk2.gdk_region_polygon(@points[0], n_points, GDK_WINDING_RULE);
   GObject^.GDIRegionObject := RegionObj;
 
-  Result := HRGN(PtrUInt(GObject));
+  Result := HRGN({%H-}PtrUInt(GObject));
   //DebugLn('TGtk2WidgetSet.CreateRectRgn A ',GDKRegionAsString(RegionObj));
 end;
 
@@ -1878,9 +1878,9 @@ var
   DObj, S1Obj, S2Obj : PGDIObject;
 begin
   Result := SIMPLEREGION;
-  DObj := PGdiObject(Dest);
-  S1Obj := PGdiObject(Src1);
-  S2Obj := PGdiObject(Src2);
+  DObj := {%H-}PGdiObject(Dest);
+  S1Obj := {%H-}PGdiObject(Src1);
+  S2Obj := {%H-}PGdiObject(Src2);
   Continue := IsValidGDIObject(Dest) and IsValidGDIObject(Src1)
               and IsValidGDIObject(Src2);
   if not Continue then begin
@@ -1973,21 +1973,21 @@ begin
   {$ENDIF}
 
   // Find out if we want to release internal GDI object
-  GDIObjectExists := FGDIObjects.Contains(PGdiObject(GDIObject));
+  GDIObjectExists := FGDIObjects.Contains({%H-}PGdiObject(GDIObject));
   Result := GDIObjectExists;
   if not GDIObjectExists then
   begin
     RaiseInvalidGDIObject;
   end;
 
-  Result := ReleaseGDIObject(PGdiObject(GDIObject));
+  Result := ReleaseGDIObject({%H-}PGdiObject(GDIObject));
 end;
 
 function TGtk2WidgetSet.DestroyCaret(Handle: HWND): Boolean;
 var
   GTKObject: PGTKObject;
 begin
-  GTKObject := PGTKObject(Handle);
+  GTKObject := {%H-}PGTKObject(Handle);
   Result := true;
 
   if GTKObject<>nil then begin
@@ -2515,7 +2515,7 @@ var
     if (Flags and DT_SINGLELINE) > 0 then
     begin
       // ignore word and line breaks
-      TextExtentPoint(PChar(AStr), length(AStr), AP);
+      TextExtentPoint(PChar(AStr), length(AStr), AP{%H-});
       theRect.Bottom := theRect.Top + TM.tmHeight;
       if (Flags and DT_CALCRECT)<>0 then
         theRect.Right := theRect.Left +  AP.cX
@@ -2673,6 +2673,7 @@ var
     if TempBrush = HBRUSH(-1) then
       TempBrush := SelectObject(DC, GetStockObject(NULL_BRUSH));
 
+    FillByte(Points[0],SizeOf(Points[0])*2,0);
     if LeftOffset <> DT_Left then
       GetTextExtentPoint(DC, theLine, LineLength, Points[0]);
 
@@ -2770,7 +2771,7 @@ begin
     else
       pIndex := -1;
 
-    GetTextMetrics(DC, TM);
+    GetTextMetrics(DC, TM{%H-});
     DoCalcRect;
     Result := theRect.Bottom - theRect.Top;
     if (Flags and DT_CALCRECT) = DT_CALCRECT
@@ -2860,9 +2861,9 @@ begin
   Result := False;
   if hWnd <> 0 then
   begin
-    Result := not GTK_WIDGET_SENSITIVE(PGtkWidget(HWND));
-    gtk_widget_set_sensitive(PGtkWidget(hWnd), bEnable);
-    InvalidateLastWFPResult(nil, RectFromGdkRect(PGtkWidget(HWND)^.allocation));
+    Result := not GTK_WIDGET_SENSITIVE({%H-}PGtkWidget(HWND));
+    gtk_widget_set_sensitive({%H-}PGtkWidget(hWnd), bEnable);
+    InvalidateLastWFPResult(nil, RectFromGdkRect({%H-}PGtkWidget(HWND)^.allocation));
   end;
 end;
 
@@ -2883,16 +2884,16 @@ begin
   if PS.HDC = 0 then Exit;
 
   if Handle <> 0 
-  then Control := TWinControl(GetLCLObject(Pointer(Handle)))
+  then Control := TWinControl(GetLCLObject({%H-}Pointer(Handle)))
   else Control := nil;
 
-  If (Control <> nil) and (not GTK_WIDGET_DOUBLE_BUFFERED((PGTKWidget(Handle)))) and (Control.DoubleBuffered) then
+  If (Control <> nil) and (not GTK_WIDGET_DOUBLE_BUFFERED(({%H-}PGTKWidget(Handle)))) and (Control.DoubleBuffered) then
   begin
     gdk_window_thaw_updates(TGtkDeviceContext(PS.HDC).Drawable);
     gdk_window_end_paint (TGtkDeviceContext(PS.HDC).Drawable);
   end;
 
-  Widget := PGtkWidget(Handle);
+  Widget := {%H-}PGtkWidget(Handle);
   Info:=GetWidgetInfo(Widget,false);
   if Info<>nil then
     dec(Info^.PaintDepth);
@@ -3413,7 +3414,7 @@ var
   function Gtk2GetFontFamilies(var List: TStringList;
     const APitch: Byte;
     const AFamilyName: String;
-    const AWritingSystem: Byte): Integer;
+    const {%H-}AWritingSystem: Byte): Integer;
   var
     StrLst: TStringList;
     NewList: TStringList;
@@ -3481,7 +3482,7 @@ var
   end;
 
   function FillLogFontA(const AIndex: Integer; var ALogFontA: TLogFontA;
-    var AMetric: TNewTextMetricEx; var AFontType: Integer;
+    var {%H-}AMetric: TNewTextMetricEx; var {%H-}AFontType: Integer;
     out AStyle: String): Integer;
   var
     Font: PPangoFontDescription;
@@ -3565,8 +3566,8 @@ begin
     CharsetList := TFPList.Create;
     for i := 0 to CharsetEncodingList.Count - 1 do
     begin
-      if CharsetList.IndexOf(Pointer(PtrUInt(TCharSetEncodingRec(CharsetEncodingList.Items[i]^).CharSet))) = -1 then
-        CharsetList.Add(Pointer(PtrUInt(TCharSetEncodingRec(CharsetEncodingList.Items[i]^).CharSet)));
+      if CharsetList.IndexOf({%H-}Pointer(PtrUInt(TCharSetEncodingRec(CharsetEncodingList.Items[i]^).CharSet))) = -1 then
+        CharsetList.Add({%H-}Pointer(PtrUInt(TCharSetEncodingRec(CharsetEncodingList.Items[i]^).CharSet)));
     end;
     try
       if Gtk2GetFontFamilies(FontList, lpLogFont^.lfPitchAndFamily,
@@ -3583,7 +3584,7 @@ begin
           EnumLogFont.elfStyle := AStyle;
 
           if CharSetList.Count > 0 then
-            EnumLogFont.elfLogFont.lfCharSet := PtrUInt(CharsetList.Items[0]);
+            EnumLogFont.elfLogFont.lfCharSet := {%H-}PtrUInt(CharsetList.Items[0]);
 
           Result := Callback(EnumLogFont, Metric, FontType, LParam);
           for y := 1 to StylesCount - 1 do
@@ -3594,7 +3595,7 @@ begin
           end;
           for y := 1 to CharSetList.Count - 1 do
           begin
-            EnumLogFont.elfLogFont.lfCharSet := PtrUInt(CharsetList.Items[y]);
+            EnumLogFont.elfLogFont.lfCharSet := {%H-}PtrUInt(CharsetList.Items[y]);
             Result := Callback(EnumLogFont, Metric, FontType, LParam);
           end;
         end;
@@ -3713,7 +3714,7 @@ begin
       GObject^.GDIPenDashes[i] := lpStyle[i];
   end;
 
-  Result := HPEN(PtrUInt(GObject));
+  Result := HPEN({%H-}PtrUInt(GObject));
 end;
 
 {------------------------------------------------------------------------------
@@ -3764,7 +3765,7 @@ begin
       case Mode of
         RGN_COPY:
           begin
-            Result := RegionType(PGdiObject(RGN)^.GDIRegionObject);
+            Result := RegionType({%H-}PGdiObject(RGN)^.GDIRegionObject);
             If Result <> ERROR then
               Result := SelectClipRGN(DC, RGN);
           end;
@@ -3945,7 +3946,7 @@ begin
   Result := IsValidDC(DC) and IsValidGDIObject(Brush);
   if not Result or IsRectEmpty(Rect) then
     Exit;
-  if (PGdiObject(Brush)^.GDIBrushFill <> GDK_SOLID) and (TGtkDeviceContext(DC).BkMode = OPAQUE) then
+  if ({%H-}PGdiObject(Brush)^.GDIBrushFill <> GDK_SOLID) and (TGtkDeviceContext(DC).BkMode = OPAQUE) then
   begin
     // fill a rectangle with a solid back color first
     TempBr := CreateSolidBrush(TGtkDeviceContext(DC).CurrentBackColor.ColorRef);
@@ -4063,7 +4064,7 @@ begin
 
   // Draw outline
   Result := 1;
-  if PGdiObject(hBr)^.IsNullBrush then Exit;
+  if {%H-}PGdiObject(hBr)^.IsNullBrush then Exit;
 
   DevCtx.SelectedColors:= dcscCustom;
   EnsureGCColor(DC, dccGDIBrushColor, True, False);//Brush Color
@@ -4115,7 +4116,7 @@ begin
         if (Widget <> nil) and gtk_widget_has_focus(Widget) then
         begin
           // return the window
-          Result := HWND(PtrUInt(GetMainWidget(PGtkWidget(Window))));
+          Result := HWND({%H-}PtrUInt(GetMainWidget(PGtkWidget(Window))));
           //DebugLn('TGtk2WidgetSet.GetActiveWindow Result=',GetWidgetDebugReport(PgtkWidget(Result)));
           Break;
         end;
@@ -4147,7 +4148,7 @@ begin
   Result := 0;
   if IsValidGDIObject(Bitmap)
   then begin
-    case PGDIObject(Bitmap)^.GDIType of
+    case {%H-}PGDIObject(Bitmap)^.GDIType of
       gdiBitmap:
         Result := InternalGetDIBits(DC, Bitmap, StartScan, NumScans, -1, Bits,
                                       BitInfo, Usage, True);
@@ -4172,7 +4173,7 @@ begin
   Result := 0;
   if IsValidGDIObject(Bitmap)
   then begin
-    case PGDIObject(Bitmap)^.GDIType of
+    case {%H-}PGDIObject(Bitmap)^.GDIType of
       gdiBitmap:
         Result := InternalGetDIBits(0, Bitmap, 0, 0, Count, Bits, BitInfo, 0, False);
       else
@@ -4215,7 +4216,7 @@ begin
         Widget:=nil;
     end;
   end;
-  Result := HWnd(PtrUInt(Widget));
+  Result := HWnd({%H-}PtrUInt(Widget));
 end;
 
 {------------------------------------------------------------------------------
@@ -4247,9 +4248,9 @@ function TGtk2WidgetSet.GetCaretRespondToFocus(handle: HWND;
   var ShowHideOnFocus: boolean): Boolean;
 begin
   if handle<>0 then begin
-    if gtk_type_is_a(gtk_object_type(PGTKObject(handle)), GTKAPIWidget_GetType)
+    if gtk_type_is_a(gtk_object_type({%H-}PGTKObject(handle)), GTKAPIWidget_GetType)
     then begin
-      GTKAPIWidget_GetCaretRespondToFocus(PGTKAPIWidget(handle),
+      GTKAPIWidget_GetCaretRespondToFocus({%H-}PGTKAPIWidget(handle),
         ShowHideOnFocus);
       Result:=true;
     end
@@ -4293,7 +4294,7 @@ var
 begin
   Result := False;
   if Handle = 0 then Exit;
-  Widget := pgtkwidget(Handle);
+  Widget := {%H-}pgtkwidget(Handle);
   ClientWidget := GetFixedWidget(Widget);
   if (ClientWidget <> Widget) then begin
     ClientWindow:=GetControlWindow(ClientWidget);
@@ -4393,7 +4394,7 @@ begin
   if Handle = 0 then Exit;
   ARect.Left := 0;
   ARect.Top := 0;
-  Widget := PGtkWidget(Handle);
+  Widget := {%H-}PGtkWidget(Handle);
   ClientWidget := GetFixedWidget(Widget);
   if (ClientWidget <> nil) then
     Widget := ClientWidget;
@@ -4512,9 +4513,9 @@ begin
   If Not IsValidGDIObject(RGN) then
     Result := ERROR
   else begin
-    Result := RegionType(PGDIObject(RGN)^.GDIRegionObject);
+    Result := RegionType({%H-}PGDIObject(RGN)^.GDIRegionObject);
     If lpRect <> nil then begin
-      gdk_region_get_clipbox(PGDIObject(RGN)^.GDIRegionObject,
+      gdk_region_get_clipbox({%H-}PGDIObject(RGN)^.GDIRegionObject,
         @CRect);
       With lpRect^,CRect do begin
         Left   := X;
@@ -4560,7 +4561,7 @@ begin
     DebugLn('WARNING: [TGtk2WidgetSet.GetClipRGN] Invalid HRGN');
   end
   else if (TGtkDeviceContext(DC).ClipRegion<>nil)
-  and (not IsValidGDIObject(HGDIOBJ(PtrUInt(TGtkDeviceContext(DC).ClipRegion)))) then
+  and (not IsValidGDIObject(HGDIOBJ({%H-}PtrUInt(TGtkDeviceContext(DC).ClipRegion)))) then
     Result := ERROR
   else with TGtkDeviceContext(DC) do
   begin
@@ -4583,10 +4584,10 @@ begin
       ClipRegionWithDCOffset:=CreateRectGDKRegion(ARect);
     end;
     // free the old region in RGN
-    if PGdiObject(RGN)^.GDIRegionObject<>nil then
-      gdk_region_destroy(PGdiObject(RGN)^.GDIRegionObject);
+    if {%H-}PGdiObject(RGN)^.GDIRegionObject<>nil then
+      gdk_region_destroy({%H-}PGdiObject(RGN)^.GDIRegionObject);
     // set the new region in RGN
-    PGdiObject(RGN)^.GDIRegionObject := ClipRegionWithDCOffset;
+    {%H-}PGdiObject(RGN)^.GDIRegionObject := ClipRegionWithDCOffset;
 
     Result := RegionType(ClipRegionWithDCOffset);
     //DebugLn('TGtk2WidgetSet.GetClipRGN B DC=',DbgS(DC),
@@ -4647,10 +4648,10 @@ begin
   if not GTK2WidgetSet.IsValidDC(DC) then
     Exit;
   case uObjectType of
-    OBJ_BITMAP: Result := HGDIOBJ(Gtk2DC.CurrentBitmap);
-    OBJ_BRUSH: Result := HGDIOBJ(Gtk2DC.CurrentBrush);
-    OBJ_FONT: Result := HGDIOBJ(Gtk2DC.CurrentFont);
-    OBJ_PEN: Result := HGDIOBJ(Gtk2DC.CurrentPen);
+    OBJ_BITMAP: Result := {%H-}HGDIOBJ(Gtk2DC.CurrentBitmap);
+    OBJ_BRUSH: Result := {%H-}HGDIOBJ(Gtk2DC.CurrentBrush);
+    OBJ_FONT: Result := {%H-}HGDIOBJ(Gtk2DC.CurrentFont);
+    OBJ_PEN: Result := {%H-}HGDIOBJ(Gtk2DC.CurrentPen);
   end;
 end;
 
@@ -4678,7 +4679,7 @@ end;
  ------------------------------------------------------------------------------}
 function TGtk2WidgetSet.GetDC(hWnd: HWND): HDC;
 begin
-  Result:=CreateDCForWidget(PGtkWidget(hWnd),nil,false);
+  Result:=CreateDCForWidget({%H-}PGtkWidget(hWnd),nil,false);
 end;
 
 {------------------------------------------------------------------------------
@@ -4831,9 +4832,9 @@ begin
   inc(DCScreenOrigin.X, DCOrigin.X);
   inc(DCScreenOrigin.Y, DCOrigin.Y);
 
-  Widget := GetFixedWidget(PGtkWidget(WindowHandle));
+  Widget := GetFixedWidget({%H-}PGtkWidget(WindowHandle));
   if Widget = nil
-  then Widget := PGtkWidget(WindowHandle);
+  then Widget := {%H-}PGtkWidget(WindowHandle);
   
   gdk_window_get_origin(PGdkWindow(Widget^.window), @(WindowScreenOrigin.X), @(WindowScreenOrigin.Y));
 
@@ -4854,7 +4855,7 @@ end;
 function TGtk2WidgetSet.GetDesignerDC(WindowHandle: HWND): HDC;
 begin
   //DebugLn('TGtk2WidgetSet.GetDesignerDC A');
-  Result:=CreateDCForWidget(PGtkWidget(WindowHandle),nil,true);
+  Result:=CreateDCForWidget({%H-}PGtkWidget(WindowHandle),nil,true);
 end;
 
 {------------------------------------------------------------------------------
@@ -4900,7 +4901,7 @@ begin
         then begin
           Info:=GetWidgetInfo(PGtkWidget(Window),false);
           if (Info=nil) or (not (wwiDeactivating in Info^.Flags)) then
-            Result := HWND(PtrUInt(GetMainWidget(Widget)));
+            Result := HWND({%H-}PtrUInt(GetMainWidget(Widget)));
           Break;
         end;
       end;
@@ -4967,7 +4968,7 @@ begin
   end;
   
   {$IFDEF Use_KeyStateList}
-  Result := KEYSTATE[FKeyStateList_.IndexOf(Pointer(PtrInt(nVirtKey))) >=0];
+  Result := KEYSTATE[FKeyStateList_.IndexOf(Pointer(PtrUInt(nVirtKey))) >=0];
   {$ELSE}
   Implement this
   {$ENDIF}
@@ -4976,7 +4977,7 @@ begin
   if Result = 0
   then begin
     {$IFDEF Use_KeyStateList}
-    Result := KEYSTATE[FKeyStateList_.IndexOf(Pointer(PtrInt(nVirtKey or KEYMAP_EXTENDED))) >=0];
+    Result := KEYSTATE[FKeyStateList_.IndexOf(Pointer(PtrUInt(nVirtKey or KEYMAP_EXTENDED))) >=0];
     {$ELSE}
     Implement this
     {$ENDIF}
@@ -4985,7 +4986,7 @@ begin
   {$IFDEF Use_KeyStateList}
   // add toggle
   Result := Result or TOGGLESTATE[FKeyStateList_.IndexOf(Pointer(
-                                  PtrInt(nVirtKey or KEYMAP_TOGGLE))) >=0];
+                                  PtrUInt(nVirtKey or KEYMAP_TOGGLE))) >=0];
   // If there are tons of new keyboard errors this is probably the cause
   GdkModMask := gtk_accelerator_get_default_mod_mask;
   if (Result and StateDown) <> 0 then
@@ -5063,8 +5064,8 @@ function TGtk2WidgetSet.GetObject(GDIObj: HGDIOBJ; BufSize: Integer; Buf: Pointe
 
     Result := 0;
 
-    FillChar(BitmapSection, SizeOf(TDIBSECTION), 0);
-    with PGDIObject(GDIObj)^, BitmapSection,
+    FillChar(BitmapSection{%H-}, SizeOf(TDIBSECTION), 0);
+    with {%H-}PGDIObject(GDIObj)^, BitmapSection,
       BitmapSection.dsBm, BitmapSection.dsBmih
     do begin
       {dsBM - BITMAP}
@@ -5277,7 +5278,7 @@ end;
 function TGtk2WidgetSet.GetParent(Handle : HWND): HWND;
 begin
   if Handle <> 0 then
-    Result := HWnd(PGtkWidget(Handle)^.Parent)
+    Result := {%H-}HWnd(PGtkWidget(Handle)^.Parent)
   else
     Result := 0;
 end;
@@ -5291,7 +5292,7 @@ end;
  ------------------------------------------------------------------------------}
 function TGtk2WidgetSet.GetProp(Handle : hwnd; Str : PChar): Pointer;
 Begin
-  Result := gtk_object_get_data(pgtkobject(Handle),Str);
+  Result := gtk_object_get_data({%H-}pgtkobject(Handle),Str);
 end;
 
 {------------------------------------------------------------------------------
@@ -5304,7 +5305,7 @@ var
   Widget, ScrollWidget, BarWidget: PGtkWidget;
 begin
   Result:=0;
-  Widget:=PGtkWidget(Handle);
+  Widget:={%H-}PGtkWidget(Handle);
   if GtkWidgetIsA(Widget,GTK_TYPE_SCROLLED_WINDOW) then begin
     ScrollWidget:=Widget;
   end else begin
@@ -5333,7 +5334,7 @@ var
 begin
   Result:=false;
   if Handle=0 then exit;
-  Widget:=PGtkWidget(Handle);
+  Widget:={%H-}PGtkWidget(Handle);
   if GtkWidgetIsA(Widget,GTK_TYPE_SCROLLED_WINDOW) then begin
     ScrollWidget:=Widget;
   end else begin
@@ -5367,13 +5368,13 @@ begin
   if (Handle = 0) then exit;
 
 
-  Scroll := gtk_object_get_data(PGTKObject(Handle), odnScrollArea);
+  Scroll := gtk_object_get_data({%H-}PGTKObject(Handle), odnScrollArea);
   if GtkWidgetIsA(Scroll, gtk_scrolled_window_get_type)
   then begin
     IsScrollWindow := True;
   end
   else begin
-    Scroll := PGTKWidget(Handle);
+    Scroll := {%H-}PGTKWidget(Handle);
     IsScrollWindow := GtkWidgetIsA(Scroll, gtk_scrolled_window_get_type);
   end;
 
@@ -5519,7 +5520,7 @@ begin
         end;}
 
         If FStockSystemFont = 0 then
-          FStockSystemFont := HFont(PtrUInt(CreateDefaultFont));
+          FStockSystemFont := HFont({%H-}PtrUInt(CreateDefaultFont));
         Result := FStockSystemFont;
       end;
 (*    SYSTEM_FIXED_FONT:   // Fixed-pitch (monospace) system font used in Windows versions earlier than 3.0. This stock object is provided for compatibility with earlier versions of Windows.
@@ -5694,10 +5695,10 @@ begin
     SM_CYMAXIMIZED:
       begin
         {$IFDEF HasX}
-         if XGetWorkarea(ax,ay,aw,ah)>=0 then
-           Result := ah
-         else
-           Result := getSystemMetrics(SM_CYSCREEN);
+        if XGetWorkarea(ax,ay,aw,ah)>=0 then
+          Result := ah
+        else
+          Result := getSystemMetrics(SM_CYSCREEN);
         {$ENDIF}
       end;
     SM_CXMAXTRACK:
@@ -6036,7 +6037,7 @@ function TGtk2WidgetSet.GetWindowLong(Handle: HWND; int: Integer): PtrInt;
 
   function GetObjectData(Name: PChar): PtrInt;
   begin
-    Result := PtrInt(PtrUInt(gtk_object_get_data(pgtkobject(Handle),Name)));
+    Result := PtrInt({%H-}PtrUInt(gtk_object_get_data(pgtkobject(Handle),Name)));
   end;
 var
   WidgetInfo: PWidgetInfo;
@@ -6046,7 +6047,7 @@ begin
   case int of
     GWL_WNDPROC :
       begin
-        WidgetInfo := GetWidgetInfo(Pointer(Handle));
+        WidgetInfo := GetWidgetInfo({%H-}Pointer(Handle));
         if WidgetInfo <> nil then
           Result := WidgetInfo^.WndProc
         else
@@ -6079,7 +6080,7 @@ begin
  }
     GWL_STYLE :
       begin
-        WidgetInfo := GetWidgetInfo(Pointer(Handle));
+        WidgetInfo := GetWidgetInfo({%H-}Pointer(Handle));
         if WidgetInfo <> nil then
           Result := WidgetInfo^.Style
         else
@@ -6087,7 +6088,7 @@ begin
       end;
     GWL_EXSTYLE :
       begin
-        WidgetInfo := GetWidgetInfo(Pointer(Handle));
+        WidgetInfo := GetWidgetInfo({%H-}Pointer(Handle));
         if WidgetInfo <> nil then
           Result := WidgetInfo^.ExStyle
         else
@@ -6144,7 +6145,7 @@ begin
   Result := 0; //default
   if Handle <> 0 then
   begin
-    Widget := PGtkWidget(Handle);
+    Widget := {%H-}PGtkWidget(Handle);
 
     if GTK_IS_WINDOW(Widget) and Assigned(Widget^.window) then
     begin
@@ -6175,7 +6176,7 @@ function TGtk2WidgetSet.GetWindowRelativePosition(Handle : hwnd;
 var
   aWidget: PGtkWidget;
 begin
-  aWidget := PGtkWidget(Handle);
+  aWidget := {%H-}PGtkWidget(Handle);
   if GtkWidgetIsA(aWidget, GTK_TYPE_WIDGET) then
   begin
     Result := true;
@@ -6194,10 +6195,10 @@ end;
 function TGtk2WidgetSet.GetWindowSize(Handle : hwnd;
   var Width, Height: integer): boolean;
 begin
-  if GtkWidgetIsA(PGtkWidget(Handle),GTK_TYPE_WIDGET) then begin
+  if GtkWidgetIsA({%H-}PGtkWidget(Handle),GTK_TYPE_WIDGET) then begin
     Result:=true;
-    Width:=Max(0,PGtkWidget(Handle)^.Allocation.Width);
-    Height:=Max(0,PGtkWidget(Handle)^.Allocation.Height);
+    Width:=Max(0,{%H-}PGtkWidget(Handle)^.Allocation.Width);
+    Height:=Max(0,{%H-}PGtkWidget(Handle)^.Allocation.Height);
     //DebugLn(['TGtk2WidgetSet.GetWindowSize ',DbgSName(GetLCLOwnerObject(Handle)),' Allocation=',Width,'x',Height]);
   end else
     Result:=false;
@@ -6259,7 +6260,7 @@ function TGtk2WidgetSet.GradientFill(DC: HDC; Vertices: PTriVertex;
     GradientBrush := LCLIntf.CreateBrushIndirect(NewBrush);
   end;
 
-  function FillTriMesh(Mesh : tagGradientTriangle) : Boolean;
+  function FillTriMesh({%H-}Mesh : tagGradientTriangle) : Boolean;
   {var
     V1, V2, V3 : tagTRIVERTEX;
     C1, C2, C3 : TColorRef;
@@ -6297,8 +6298,7 @@ function TGtk2WidgetSet.GradientFill(DC: HDC; Vertices: PTriVertex;
   begin
     with Mesh do
     begin
-      Result := (UpperLeft < NumVertices) and (UpperLeft >= 0) and
-        (LowerRight < NumVertices) and (LowerRight >= 0);
+      Result := (UpperLeft < NumVertices) and (LowerRight < NumVertices);
       if (LowerRight = UpperLeft) or not Result then
         exit;
       TL := Vertices[UpperLeft];
@@ -6409,13 +6409,14 @@ var
   GTKObject: PGTKObject;
   WasVisible: boolean;
 begin
-  GTKObject := PGTKObject(HWND);
+  GTKObject := {%H-}PGTKObject(HWND);
   Result := GTKObject <> nil;
 
   if Result
   then begin
     if gtk_type_is_a(gtk_object_type(GTKObject), GTKAPIWidget_GetType)
     then begin
+      WasVisible:=false;
       GTKAPIWidget_HideCaret(PGTKAPIWidget(GTKObject),WasVisible);
     end
 //    else if // TODO: other widgettypes
@@ -6480,7 +6481,7 @@ var
   Pt: TPoint;
 begin
   //  DebugLn(format('Rect = %d,%d,%d,%d',[rect^.left,rect^.top,rect^.Right,rect^.Bottom]));
-  Widget:=PGtkWidget(aHandle);
+  Widget:={%H-}PGtkWidget(aHandle);
   LCLObject:=GetLCLObject(Widget);
   if (LCLObject<>nil) then
   begin
@@ -6572,7 +6573,7 @@ begin
   if Handle = 0 then
     Exit(False);
 
-  Result := GtkWidgetIsA(PGtkWidget(Handle), GTK_TYPE_WIDGET);
+  Result := GtkWidgetIsA({%H-}PGtkWidget(Handle), GTK_TYPE_WIDGET);
 end;
 
 {------------------------------------------------------------------------------
@@ -6586,10 +6587,10 @@ var
   AForm: TCustomForm;
   //i: Integer;
 begin
-  Widget:=PGtkWidget(handle);
+  Widget:={%H-}PGtkWidget(handle);
   Result:=(Widget<>nil) and GTK_WIDGET_SENSITIVE(Widget)
           and GTK_WIDGET_PARENT_SENSITIVE(Widget) and GTK_WIDGET_VISIBLE(Widget);
-  LCLObject:=GetLCLObject(PGtkWidget(Handle));
+  LCLObject:=GetLCLObject({%H-}PGtkWidget(Handle));
   //debugln('TGtk2WidgetSet.IsWindowEnabled A ',DbgSName(LCLObject),' Result=',dbgs(Result),
   //  ' SENSITIVE=',dbgs(GTK_WIDGET_SENSITIVE(Widget)),
   //  ' PARENT_SENSITIVE=',dbgs(GTK_WIDGET_PARENT_SENSITIVE(Widget)),
@@ -6615,7 +6616,7 @@ end;
  ------------------------------------------------------------------------------}
 function TGtk2WidgetSet.IsWindowVisible(handle: HWND): boolean;
 begin
-  Result := (handle <> 0) and GTK_WIDGET_VISIBLE(PGtkWidget(handle));
+  Result := (handle <> 0) and GTK_WIDGET_VISIBLE({%H-}PGtkWidget(handle));
 end;
 
 function TGtk2WidgetSet.IsZoomed(handle: HWND): boolean;
@@ -6708,17 +6709,17 @@ function MessageButtonClicked(Widget : PGtkWidget; data: gPointer) : GBoolean; c
 begin
   //DebugLn('[MessageButtonClicked] ',dbgs(data),' ',dbgs(gtk_object_get_data(PGtkObject(Widget), 'modal_result')));
   if PInteger(data)^ = 0 then
-    PInteger(data)^:=PtrUInt(gtk_object_get_data(PGtkObject(Widget), 'modal_result'));
+    PInteger(data)^:={%H-}PtrUInt(gtk_object_get_data(PGtkObject(Widget), 'modal_result'));
   Result:=false;
 end;
 
-function MessageBoxClosed(Widget : PGtkWidget; Event : PGdkEvent;
+function MessageBoxClosed(Widget : PGtkWidget; {%H-}Event : PGdkEvent;
   data: gPointer) : GBoolean; cdecl;
 var ModalResult : PtrUInt;
 begin
   { We were requested by window manager to close }
   if PInteger(data)^ = 0 then begin
-    ModalResult:= PtrUInt(gtk_object_get_data(PGtkObject(Widget), 'modal_result'));
+    ModalResult:= {%H-}PtrUInt(gtk_object_get_data(PGtkObject(Widget), 'modal_result'));
     { Don't allow to close if we don't have a default return value }
     Result:= (ModalResult = 0);
     if not Result then PInteger(data)^:= ModalResult
@@ -6745,7 +6746,7 @@ var Dialog, ALabel : PGtkWidget;
         gtk_object_set_data(PGtkObject(Dialog), 'modal_result', Pointer(IDCANCEL));
       end;
       gtk_object_set_data(PGtkObject(AButton), 'modal_result',
-                          Pointer(PtrInt(RetValue)));
+                          {%H-}Pointer(PtrInt(RetValue)));
       g_signal_connect(PGtkObject(AButton), 'clicked',
                        TGtkSignalFunc(@MessageButtonClicked), @ADialogResult);
       gtk_container_add (PGtkContainer(PGtkDialog(Dialog)^.action_area), AButton);
@@ -6873,7 +6874,7 @@ begin
   if not IsValidGDIObject(RGN) then
     Exit(Error);
 
-  GdkRGN := PGdiObject(RGN)^.GDIRegionObject;
+  GdkRGN := {%H-}PGdiObject(RGN)^.GDIRegionObject;
   gdk_region_offset(GdkRGN, nXOffset, nYOffset);
   Result := RegionType(GdkRGN);
 end;
@@ -7019,7 +7020,7 @@ begin
         DevCtx.TransfNormalize(ClipRect.Top, ClipRect.Bottom);
       end;
       // draw polygon area
-      DevCtx.FillRect(ClipRect, HBrush(PtrUInt(DevCtx.GetBrush)), False);
+      DevCtx.FillRect(ClipRect, HBrush({%H-}PtrUInt(DevCtx.GetBrush)), False);
       // restore old clipping
       SelectClipRGN(DC, Tmp);
       DeleteObject(Tmp);
@@ -7103,7 +7104,7 @@ function TGtk2WidgetSet.PostMessage(Handle: HWND; Msg: Cardinal; wParam: WParam;
     ParentHandle: hWnd;
   begin
     Result:=false;
-    Target:=TControl(GetLCLObject(Pointer(Handle)));
+    Target:=TControl(GetLCLObject({%H-}Pointer(Handle)));
     if not (Target is TControl) then exit;
     Parent:=Target.Parent;
     if (Target is TControl) then begin
@@ -7371,15 +7372,15 @@ const
     parent : PGTKWidget;
   begin
     Result := nil;
-    parent := gtk_widget_get_parent(Pointer(hndMenu));
+    parent := gtk_widget_get_parent({%H-}Pointer(hndMenu));
     if parent = nil then Exit;
 
     Item := gtk_container_children(PGTKContainer(parent));
     while Item <> nil do
     begin
-      if (Item^.Data <> Pointer(hndMenu)) // exclude ourself
+      if (Item^.Data <> {%H-}Pointer(hndMenu)) // exclude ourself
       and gtk_is_radio_menu_item(Item^.Data)
-      and (GroupIndex = Integer(PtrUInt(gtk_object_get_data(Item^.Data, GROUPIDX_DATANAME))))
+      and (GroupIndex = Integer({%H-}PtrUInt(gtk_object_get_data(Item^.Data, GROUPIDX_DATANAME))))
       then begin
         Result := gtk_radio_menu_item_get_group (PGtkRadioMenuItem(Item^.Data));
         Exit;
@@ -7394,13 +7395,13 @@ var
 begin
   Result := False;
 
-  if not gtk_is_radio_menu_item(Pointer(hndMenu))
+  if not gtk_is_radio_menu_item({%H-}Pointer(hndMenu))
   then begin
     DebugLn('WARNING: TGtk2WidgetSet.RegroupMenuItem: handle is not a GTK_RADIO_MENU_ITEM');
     Exit;
   end;
 
-  CurrentGroupIndex := integer(PtrUInt(gtk_object_get_data(Pointer(hndMenu), GROUPIDX_DATANAME)));
+  CurrentGroupIndex := integer({%H-}PtrUInt(gtk_object_get_data(Pointer(hndMenu), GROUPIDX_DATANAME)));
 
   // Update needed ?
   if GroupIndex = CurrentGroupIndex
@@ -7410,8 +7411,8 @@ begin
   end;
 
   // Remove current group
-  gtk_radio_menu_item_set_group(PGtkRadioMenuItem(hndMenu), nil);
-  gtk_object_set_data(Pointer(hndMenu), GROUPIDX_DATANAME, nil);
+  gtk_radio_menu_item_set_group({%H-}PGtkRadioMenuItem(hndMenu), nil);
+  gtk_object_set_data({%H-}Pointer(hndMenu), GROUPIDX_DATANAME, nil);
 
   // Check remove only
   if GroupIndex = 0
@@ -7424,19 +7425,19 @@ begin
   RadioGroup := GetGroup;
 
   // Set new group
-  gtk_object_set_data(Pointer(hndMenu), GROUPIDX_DATANAME, Pointer(PtrInt(GroupIndex)));
+  gtk_object_set_data({%H-}Pointer(hndMenu), GROUPIDX_DATANAME, {%H-}Pointer(PtrInt(GroupIndex)));
   if RadioGroup = nil
   then begin
     // We're the only member, get a group
-    RadioGroup := gtk_radio_menu_item_group(PGtkRadioMenuItem(hndMenu))
+    RadioGroup := gtk_radio_menu_item_group({%H-}PGtkRadioMenuItem(hndMenu))
   end
   else begin
-    gtk_radio_menu_item_set_group(PGtkRadioMenuItem(hndMenu), RadioGroup);
+    gtk_radio_menu_item_set_group({%H-}PGtkRadioMenuItem(hndMenu), RadioGroup);
   end;
                                                                     //radiogroup^.data
                                                                     //radiogroup^.next
   // Refetch newgroup list
-  RadioGroup := gtk_radio_menu_item_group(PGtkRadioMenuItem(hndMenu));
+  RadioGroup := gtk_radio_menu_item_group({%H-}PGtkRadioMenuItem(hndMenu));
   // Update checks
   UpdateRadioGroupChecks(RadioGroup);
   Result := True;
@@ -7468,7 +7469,7 @@ begin
 
   if (DC <> 0)
   then begin
-    if FDeviceContexts.Contains(Pointer(DC))
+    if FDeviceContexts.Contains({%H-}Pointer(DC))
     then begin
       aDC := TGtkDeviceContext(DC);
 
@@ -7494,7 +7495,7 @@ begin
         if CurGDIObject<>nil then begin
           if CurGDIObject^.Owner<>aDC then
             RaiseGDBException('');
-          DeleteObject(HGDIOBJ(PtrUInt(CurGDIObject)));
+          DeleteObject(HGDIOBJ({%H-}PtrUInt(CurGDIObject)));
           if aDC.OwnedGDIObjects[g]<>nil then
             RaiseGDBException('');
         end;
@@ -7535,7 +7536,7 @@ end;
  ------------------------------------------------------------------------------}
 function TGtk2WidgetSet.RemoveProp(Handle: hwnd; Str: PChar): THandle;
 begin
-  gtk_object_remove_data(pGTKObject(handle), Str);
+  gtk_object_remove_data({%H-}pGTKObject(handle), Str);
   Result := 1;
 end;
 
@@ -7636,9 +7637,9 @@ Begin
     Y := 0;
   end else
   begin
-    Widget := GetFixedWidget(pgtkwidget(Handle));
+    Widget := GetFixedWidget({%H-}pgtkwidget(Handle));
     if Widget = nil then
-      Widget := pgtkwidget(Handle);
+      Widget := {%H-}pgtkwidget(Handle);
     if Widget = nil then
     begin
       X := 0;
@@ -7712,7 +7713,7 @@ begin
     exit;
   // or (prcScroll <> nil) or (prcClip <> nil) then Exit;
 
-  Widget := pgtkwidget(hWnd);
+  Widget := {%H-}pgtkwidget(hWnd);
   Widget := GetFixedWidget(Widget);
   if Widget = nil then exit;
   Window:=GetControlWindow(Widget);
@@ -7912,7 +7913,7 @@ begin
     OldClipRegion := DevCtx.ClipRegion;
     DevCtx.ClipRegion := nil;// decrease DCCount
     if OldClipRegion = DevCtx.OwnedGDIObjects[gdiRegion]
-    then DeleteObject(HGDIOBJ(PtrUInt(OldClipRegion)));
+    then DeleteObject(HGDIOBJ({%H-}PtrUInt(OldClipRegion)));
   end;
 
   if RGN = 0
@@ -7923,7 +7924,7 @@ begin
 
   if IsValidGDIObject(RGN)
   then begin
-    DevCtx.ClipRegion := PGdiObject(CreateRegionCopy(RGN));
+    DevCtx.ClipRegion := {%H-}PGdiObject(CreateRegionCopy(RGN));
     DevCtx.OwnedGDIObjects[gdiRegion] := DevCtx.ClipRegion;
     RegObj := DevCtx.ClipRegion^.GDIRegionObject;
     DCOrigin := DevCtx.Offset;
@@ -7961,7 +7962,7 @@ var
 
   procedure RaiseInvalidGDIType;
   begin
-    RaiseGDBException('TGtk2WidgetSet.SelectObject Invalid GDIType '+IntToStr(ord(PGdiObject(GDIObj)^.GDIType)));
+    RaiseGDBException('TGtk2WidgetSet.SelectObject Invalid GDIType '+IntToStr(ord({%H-}PGdiObject(GDIObj)^.GDIType)));
   end;
   
   {$ifdef DebugLCLComponents}
@@ -8072,7 +8073,7 @@ function TGtk2WidgetSet.SendMessage(HandleWnd: HWND; Msg: Cardinal; wParam: WPar
 var
   OldMsg: Cardinal;
 
-  procedure PreparePaintMessage(TargetObject: TObject; var AMessage: TLMessage);
+  procedure PreparePaintMessage({%H-}TargetObject: TObject; var AMessage: TLMessage);
   var
     GtkPaintData: TLMGtkPaintData;
     OldGtkPaintMsg: TLMGtkPaint;
@@ -8138,7 +8139,7 @@ var
     end;
   end;
 
-  procedure DisposePaintMessage(TargetObject: TObject; var AMessage: TLMessage);
+  procedure DisposePaintMessage({%H-}TargetObject: TObject; var AMessage: TLMessage);
   begin
     if OldMsg = LM_GTKPAINT then
     begin
@@ -8164,7 +8165,7 @@ begin
   AMessage.LParam := LParam;
   AMessage.Result := 0;
 
-  Target := GetLCLObject(Pointer(HandleWnd));
+  Target := GetLCLObject({%H-}Pointer(HandleWnd));
 
   if Target <> nil then
   begin
@@ -8190,10 +8191,10 @@ function TGtk2WidgetSet.SetActiveWindow(Handle: HWND): HWND;
 begin
   // ToDo
   Result := GetActiveWindow;
-  if (Handle <> 0) and GtkWidgetIsA(PGtkWidget(Handle),GTK_TYPE_WINDOW) then
+  if (Handle <> 0) and GtkWidgetIsA({%H-}PGtkWidget(Handle),GTK_TYPE_WINDOW) then
   begin
-    if GTK_WIDGET_VISIBLE(PGtkWidget(Handle)) then
-      gtk_window_present(PGtkWindow(Handle));
+    if GTK_WIDGET_VISIBLE({%H-}PGtkWidget(Handle)) then
+      gtk_window_present({%H-}PGtkWindow(Handle));
   end else
     Result := 0; // if not active window return error
 end;
@@ -8249,7 +8250,7 @@ var
   CaptureWidget: PGtkWidget;
   {$ENDIF}
 begin
-  Widget := PGtkWidget(AHandle);
+  Widget := {%H-}PGtkWidget(AHandle);
   {$IfDef VerboseMouseCapture}
   DebugLn('TGtk2WidgetSet.SetCapture NewValue=[',GetWidgetDebugReport(Widget),']');
   {$EndIf}
@@ -8276,7 +8277,7 @@ begin
   gtk_grab_add(CaptureWidget);
   MouseCaptureWidget := CaptureWidget;
   if MouseCaptureWidget<>nil then
-    SendMessage(HWnd(PtrUInt(MouseCaptureWidget)), LM_CAPTURECHANGED, 0, Result);
+    SendMessage(HWnd({%H-}PtrUInt(MouseCaptureWidget)), LM_CAPTURECHANGED, 0, Result);
   {$ENDIF}
 end;
 
@@ -8290,8 +8291,8 @@ function TGtk2WidgetSet.SetCaretPos(X, Y: Integer): Boolean;
 var
   FocusObject: PGTKObject;
 begin
-  FocusObject := PGTKObject(GetFocus);
-  Result:=SetCaretPosEx(PtrUInt(FocusObject),X,Y);
+  FocusObject := {%H-}PGTKObject(GetFocus);
+  Result:=SetCaretPosEx({%H-}PtrUInt(FocusObject),X,Y);
 end;
 
 {------------------------------------------------------------------------------
@@ -8304,7 +8305,7 @@ function TGtk2WidgetSet.SetCaretPosEx(Handle: HWNd; X, Y: Integer): Boolean;
 var
   GtkObject: PGTKObject;
 begin
-  GtkObject := PGTKObject(Handle);
+  GtkObject := {%H-}PGTKObject(Handle);
   Result := GtkObject <> nil;
 
   if Result then begin
@@ -8330,9 +8331,9 @@ function TGtk2WidgetSet.SetCaretRespondToFocus(handle: HWND;
   ShowHideOnFocus: boolean): Boolean;
 begin
   if handle<>0 then begin
-    if gtk_type_is_a(gtk_object_type(PGTKObject(handle)), GTKAPIWidget_GetType)
+    if gtk_type_is_a(gtk_object_type({%H-}PGTKObject(handle)), GTKAPIWidget_GetType)
     then begin
-      GTKAPIWidget_SetCaretRespondToFocus(PGTKAPIWidget(handle),
+      GTKAPIWidget_SetCaretRespondToFocus({%H-}PGTKAPIWidget(handle),
         ShowHideOnFocus);
       Result:=true;
     end
@@ -8423,7 +8424,7 @@ begin
     Result:=0;
     exit;
   end;
-  Widget:=PGtkWidget(hWnd);
+  Widget:={%H-}PGtkWidget(hWnd);
   {$IfDef VerboseFocus}
   DebugLn('');
   debugln('[TGtk2WidgetSet.SetFocus] A hWnd=',GetWidgetDebugReport(Widget));
@@ -8566,10 +8567,10 @@ begin
   else
     DebugLn(' LCLObject=nil');
   {$ENDIF}
-  Result := GtkWidgetIsA(PGtkWidget(hWnd),GTK_TYPE_WINDOW);
+  Result := GtkWidgetIsA({%H-}PGtkWidget(hWnd),GTK_TYPE_WINDOW);
   if Result then
   begin
-    GdkWindow := GetControlWindow(PgtkWidget(hwnd));
+    GdkWindow := GetControlWindow({%H-}PgtkWidget(hwnd));
     if GdkWindow <> nil then
     begin
       if not gdk_window_is_visible(GdkWindow) then
@@ -8577,7 +8578,7 @@ begin
         Result := False;
         Exit;
       end;
-      AForm := TCustomForm(GetLCLObject(PgtkWidget(hwnd)));
+      AForm := TCustomForm(GetLCLObject({%H-}PgtkWidget(hwnd)));
       if (AForm <> nil) and (AForm is TCustomForm) and (AForm.Parent=nil) then
       begin
         if Screen.CustomFormZIndex(AForm) < Screen.GetCurrentModalFormZIndex then
@@ -8601,7 +8602,7 @@ begin
       EndGDKErrorTrap;
       {$ENDIF}
       // this currently will bring the window to the current desktop and focus it
-      gtk_window_present(PGtkWindow(hWnd));
+      gtk_window_present({%H-}PGtkWindow(hWnd));
     end;
   end;
 end;
@@ -8627,9 +8628,9 @@ begin
     Exit;
 
   // for window we need to move it content to HBox
-  if GTK_IS_WINDOW(PGtkWidget(hWndChild)) then
+  if GTK_IS_WINDOW({%H-}PGtkWidget(hWndChild)) then
   begin
-    LCLObject := GetLCLObject(PGtkWidget(hWndChild));
+    LCLObject := GetLCLObject({%H-}PGtkWidget(hWndChild));
     if LCLObject <> nil then
       Controls.RecreateWnd(TWinControl(LCLObject));
     Exit;
@@ -8638,24 +8639,24 @@ begin
   if Result <> 0 then
   begin
     // unparent first
-    gtk_widget_ref(PGtkWidget(hWndChild));
-    if GTK_IS_CONTAINER(Pointer(Result)) then
-      gtk_container_remove(PGtkContainer(Result), PGtkWidget(hWndChild))
+    gtk_widget_ref({%H-}PGtkWidget(hWndChild));
+    if GTK_IS_CONTAINER({%H-}Pointer(Result)) then
+      gtk_container_remove({%H-}PGtkContainer(Result), {%H-}PGtkWidget(hWndChild))
     else
-      gtk_widget_unparent(PGtkWidget(hWndChild));
+      gtk_widget_unparent({%H-}PGtkWidget(hWndChild));
   end;
 
-  Fixed := GetFixedWidget(PGtkWidget(hWndParent));
+  Fixed := GetFixedWidget({%H-}PGtkWidget(hWndParent));
   if Fixed <> nil then
   begin
-    FixedPutControl(Fixed, PGtkWidget(hWndChild), PGtkWidget(hWndChild)^.allocation.x, PGtkWidget(hWndChild)^.allocation.y);
-    RegroupAccelerator(PGtkWidget(hWndChild));
+    FixedPutControl(Fixed, {%H-}PGtkWidget(hWndChild), {%H-}PGtkWidget(hWndChild)^.allocation.x, {%H-}PGtkWidget(hWndChild)^.allocation.y);
+    RegroupAccelerator({%H-}PGtkWidget(hWndChild));
   end
   else
-    gtk_widget_set_parent(PGtkWidget(hWndChild), PGtkWidget(hWndParent));
+    gtk_widget_set_parent({%H-}PGtkWidget(hWndChild), {%H-}PGtkWidget(hWndParent));
 
   if Result <> 0 then
-    gtk_widget_unref(PGtkWidget(hWndChild));
+    gtk_widget_unref({%H-}PGtkWidget(hWndChild));
 end;
 
 {------------------------------------------------------------------------------
@@ -8664,7 +8665,7 @@ end;
  ------------------------------------------------------------------------------}
 function TGtk2WidgetSet.SetProp(Handle: hwnd; Str : PChar; Data : Pointer) : Boolean;
 begin
-  gtk_object_set_data(pGTKObject(handle),Str,data);
+  gtk_object_set_data({%H-}pGTKObject(handle),Str,data);
   Result:=true;
 end;
 
@@ -8741,19 +8742,19 @@ begin
       ',nTrackPos=',ScrollInfo.nTrackPos,
       ']']);}
 
-  Scroll := gtk_object_get_data(PGTKObject(Handle), odnScrollArea);
+  Scroll := gtk_object_get_data({%H-}PGTKObject(Handle), odnScrollArea);
   if GtkWidgetIsA(Scroll, gtk_scrolled_window_get_type)
   then begin
     IsScrollWindow := True;
   end
   else begin
-    Scroll := PGTKWidget(Handle);
+    Scroll := {%H-}PGTKWidget(Handle);
     IsScrollWindow := GtkWidgetIsA(Scroll, gtk_scrolled_window_get_type);
   end;
 
   if IsScrollWindow
   then begin
-    Layout := GetFixedWidget(PGTKObject(Handle));
+    Layout := GetFixedWidget({%H-}PGTKObject(Handle));
     if not GtkWidgetIsA(PGtkWidget(Layout), gtk_layout_get_type)
     then Layout := nil;
   end
@@ -9075,42 +9076,42 @@ var
 begin
   //TODO: Finish this;
   Result:=0;
-  Data := Pointer(NewLong);
+  Data := {%H-}Pointer(NewLong);
 
   case idx of
     GWL_WNDPROC :
       begin
-        WidgetInfo := GetWidgetInfo(Pointer(Handle));
+        WidgetInfo := GetWidgetInfo({%H-}Pointer(Handle));
         if WidgetInfo <> nil then
           WidgetInfo^.WndProc := NewLong;
       end;
     GWL_HINSTANCE :
       begin
-        gtk_object_set_data(pgtkobject(Handle),'HINSTANCE',Data);
+        gtk_object_set_data({%H-}pgtkobject(Handle),'HINSTANCE',Data);
       end;
     GWL_HWNDPARENT :
       begin
-        gtk_object_set_data(pgtkobject(Handle),'HWNDPARENT',Data);
+        gtk_object_set_data({%H-}pgtkobject(Handle),'HWNDPARENT',Data);
       end;
     GWL_STYLE :
       begin
-        WidgetInfo := GetWidgetInfo(Pointer(Handle));
+        WidgetInfo := GetWidgetInfo({%H-}Pointer(Handle));
         if WidgetInfo <> nil then
           WidgetInfo^.Style := NewLong;
       end;
     GWL_EXSTYLE :
       begin
-        WidgetInfo := GetWidgetInfo(Pointer(Handle));
+        WidgetInfo := GetWidgetInfo({%H-}Pointer(Handle));
         if WidgetInfo <> nil then
           WidgetInfo^.ExStyle := NewLong;
       end;
     GWL_USERDATA :
       begin
-        gtk_object_set_data(pgtkobject(Handle),'Userdata',Data);
+        gtk_object_set_data({%H-}pgtkobject(Handle),'Userdata',Data);
       end;
     GWL_ID :
       begin
-        gtk_object_set_data(pgtkobject(Handle),'ID',Data);
+        gtk_object_set_data({%H-}pgtkobject(Handle),'ID',Data);
       end;
   end; //case
 end;
@@ -9178,7 +9179,7 @@ function TGtk2WidgetSet.SetWindowPos(hWnd: HWND; hWndInsertAfter: HWND;
       exit;
     end else begin
       // hWndInsertAfter
-      AfterWidget:=PGtkWidget(hWndInsertAfter);
+      AfterWidget:={%H-}PGtkWidget(hWndInsertAfter);
       AfterListItem:=FindFixedChildListItem(PGtkFixed(FixedWidget),AfterWidget);
       //debugln('AfterWidget=',GetWidgetDebugReport(AfterWidget));
     end;
@@ -9217,7 +9218,7 @@ function TGtk2WidgetSet.SetWindowPos(hWnd: HWND; hWndInsertAfter: HWND;
     {$ENDIF}
   end;
 
-  procedure SetZOrderOnLayoutWidget(Widget, LayoutWidget: PGtkWidget);
+  procedure SetZOrderOnLayoutWidget({%H-}Widget, {%H-}LayoutWidget: PGtkWidget);
   begin
     //DebugLn('TGtk2WidgetSet.SetWindowPos.SetZOrderOnLayoutWidget Not implemented: ZOrdering .. on ',GetWidgetDebugReport(LayoutWidget));
   end;
@@ -9228,7 +9229,7 @@ var
   Allocation: TGTKAllocation;
 begin
   Result:=false;
-  Widget:=PGtkWidget(hWnd);
+  Widget:={%H-}PGtkWidget(hWnd);
   {DebugLn('[TGtk2WidgetSet.SetWindowPos] ',GetWidgetDebugReport(Widget),
     ' Top=',hWndInsertAfter=HWND_TOP,
     ' SWP_NOZORDER=',(SWP_NOZORDER and uFlags)<>0,
@@ -9310,16 +9311,16 @@ var
 begin
   // For normal widgets we should use GetFixedWidget,
   // but for TForm we should apply the region in the raw hWnd
-  LCLObject := GetLCLObject(PGtkWidget(hWnd));
+  LCLObject := GetLCLObject({%H-}PGtkWidget(hWnd));
   if (LCLObject <> nil) and (LCLObject is TCustomForm) then
   begin
-    Widget := PGtkWidget(hWnd);
+    Widget := {%H-}PGtkWidget(hWnd);
   end
   else
   begin
-    Widget := GetFixedWidget(PGtkWidget(hWnd));
+    Widget := GetFixedWidget({%H-}PGtkWidget(hWnd));
     if Widget = nil then
-      Widget := PGtkWidget(hWnd);
+      Widget := {%H-}PGtkWidget(hWnd);
   end;
   if Widget = nil then
     Exit(0);
@@ -9329,7 +9330,7 @@ begin
   if hRgn = 0 then
     ShapeRegion := nil
   else
-    ShapeRegion := PGDIObject(hRgn)^.GDIRegionObject;
+    ShapeRegion := {%H-}PGDIObject(hRgn)^.GDIRegionObject;
   gdk_window_shape_combine_region(Window, ShapeRegion, 0, 0);
   if bRedraw then
     gdk_window_invalidate_region(Window, ShapeRegion, True);
@@ -9347,7 +9348,7 @@ function TGtk2WidgetSet.ShowCaret(hWnd: HWND): Boolean;
 var
   GTKObject: PGTKObject;
 begin
-  GTKObject := PGTKObject(HWND);
+  GTKObject := {%H-}PGTKObject(HWND);
   Result := GTKObject <> nil;
 
   if Result
@@ -9380,13 +9381,13 @@ begin
   Result := (Handle <> 0);
   if not Result then exit;
   
-  Scroll := PGtkWidget(gtk_object_get_data(PGTKObject(Handle), odnScrollArea));
+  Scroll := PGtkWidget(gtk_object_get_data({%H-}PGTKObject(Handle), odnScrollArea));
   if GtkWidgetIsA(Scroll, gtk_scrolled_window_get_type)
   then begin
     IsScrollWindow := True;
   end
   else begin
-    Scroll := PGTKWidget(Handle);
+    Scroll := {%H-}PGTKWidget(Handle);
     IsScrollWindow := GtkWidgetIsA(Scroll, gtk_scrolled_window_get_type);
   end;
 
@@ -9410,7 +9411,7 @@ begin
   end
   else begin
     if (wBar = SB_CTL)
-    and gtk_type_is_a(gtk_object_type(PGTKObject(Handle)),gtk_widget_get_type)
+    and gtk_type_is_a(gtk_object_type({%H-}PGTKObject(Handle)),gtk_widget_get_type)
     then begin
       if bShow
       then gtk_widget_show(Scroll)
@@ -9433,13 +9434,13 @@ var
 begin
   Result := False;
 
-  Widget := PGtkWidget(HWND);
+  Widget := {%H-}PGtkWidget(HWND);
 
   if Widget = nil then
     RaiseGDBException('TGtk2WidgetSet.ShowWindow  hWnd is nil');
 
   if GTK_IS_WINDOW(Widget) then
-    GtkWindow := PGtkWindow(hWnd)
+    GtkWindow := {%H-}PGtkWindow(hWnd)
   else
   begin
     // we are pure gtkwidget so only SW_SHOW AND SW_HIDE CAN GO
@@ -9627,7 +9628,7 @@ function TGtk2WidgetSet.UpdateWindow(Handle: HWND): Boolean;
 var
   CurWidget: PGtkWidget;
 begin
-  CurWidget:=PGTKWidget(Handle);
+  CurWidget:={%H-}PGTKWidget(Handle);
   //DebugLn(['TGtk2WidgetSet.UpdateWindow ',GetWidgetDebugReport(CurWidget)]);
   if GTK_WIDGET_DRAWABLE(CurWidget) then begin
     //DebugLn(['TGtk2WidgetSet.UpdateWindow DRAWING']);
@@ -9655,9 +9656,9 @@ var
   WidgetInfo: PWidgetInfo;
 begin
   // return cached value to prevent heavy gdk_display_get_window_at_pointer call
-  if (APoint = LastWFPMousePos) and GTK_IS_OBJECT(Pointer(LastWFPResult)) and
-    GTK_WIDGET_VISIBLE(PGtkWidget(LastWFPResult)) and
-    GTK_WIDGET_IS_SENSITIVE(PGtkWidget(LastWFPResult)) then
+  if (APoint = LastWFPMousePos) and GTK_IS_OBJECT({%H-}Pointer(LastWFPResult)) and
+    GTK_WIDGET_VISIBLE({%H-}PGtkWidget(LastWFPResult)) and
+    GTK_WIDGET_IS_SENSITIVE({%H-}PGtkWidget(LastWFPResult)) then
     Exit(LastWFPResult);
   Result := 0;
 
@@ -9670,10 +9671,10 @@ begin
     @p.x, @p.y);
   if window <> nil then
   begin
-    FillChar(ev, SizeOf(ev), 0);
+    FillChar(ev{%H-}, SizeOf(ev), 0);
     ev.any.window := Window;
     Widget := gtk_get_event_widget(@ev);
-    Result := PtrUInt(Widget);
+    Result := {%H-}PtrUInt(Widget);
     if Result <> 0 then
     begin
       WidgetInfo := GetWidgetInfo(Widget);
@@ -9682,14 +9683,14 @@ begin
         // complex controls eg. ScrollBar of TTreeView
         WidgetInfo := GetWidgetInfo(Widget^.parent);
         if WidgetInfo <> nil then
-          Result := PtrUInt(Widget^.parent);
+          Result := {%H-}PtrUInt(Widget^.parent);
       end;
     end;
   end;
   // disconnect old handler
-  if GTK_IS_OBJECT(Pointer(LastWFPResult)) then
+  if GTK_IS_OBJECT({%H-}Pointer(LastWFPResult)) then
   begin
-    g_signal_handlers_disconnect_by_func(GPointer(LastWFPResult),
+    g_signal_handlers_disconnect_by_func({%H-}GPointer(LastWFPResult),
       TGTKSignalFunc(@DestroyWindowFromPointCB), nil);
   end;
 
@@ -9701,8 +9702,8 @@ begin
   // now we must check if we are visible and enabled
   if Result <> 0 then
   begin
-    if not GTK_WIDGET_VISIBLE(PGtkWidget(Result)) or
-      not GTK_WIDGET_IS_SENSITIVE(PGtkWidget(Result)) then
+    if not GTK_WIDGET_VISIBLE({%H-}PGtkWidget(Result)) or
+      not GTK_WIDGET_IS_SENSITIVE({%H-}PGtkWidget(Result)) then
         Result := 0;
   end;
 
@@ -9711,7 +9712,7 @@ begin
   // connect handler
   if LastWFPResult <> 0 then
   begin
-    g_signal_connect(GPointer(LastWFPResult), 'destroy',
+    g_signal_connect({%H-}GPointer(LastWFPResult), 'destroy',
       TGTKSignalFunc(@DestroyWindowFromPointCB), nil);
   end;
 end;
@@ -9769,7 +9770,7 @@ var
 begin
   New(ACritSec);
   System.InitCriticalSection(ACritSec^);
-  CritSection:=TCriticalSection(ACritSec);
+  CritSection:={%H-}TCriticalSection(ACritSec);
 end;
 {var
   Crit : ppthread_mutex_t;
@@ -9798,7 +9799,7 @@ procedure TGtk2WidgetSet.EnterCriticalSection(var CritSection: TCriticalSection)
 var
   ACritSec: System.PRTLCriticalSection;
 begin
-  ACritSec:=System.PRTLCriticalSection(CritSection);
+  ACritSec:={%H-}System.PRTLCriticalSection(CritSection);
   System.EnterCriticalsection(ACritSec^);
 end;
 {$Else}
@@ -9811,7 +9812,7 @@ procedure TGtk2WidgetSet.LeaveCriticalSection(var CritSection: TCriticalSection)
 var
   ACritSec: System.PRTLCriticalSection;
 begin
-  ACritSec:=System.PRTLCriticalSection(CritSection);
+  ACritSec:={%H-}System.PRTLCriticalSection(CritSection);
   System.LeaveCriticalsection(ACritSec^);
 end;
 {$Else}
@@ -9824,7 +9825,7 @@ procedure TGtk2WidgetSet.DeleteCriticalSection(var CritSection: TCriticalSection
 var
   ACritSec: System.PRTLCriticalSection;
 begin
-  ACritSec:=System.PRTLCriticalSection(CritSection);
+  ACritSec:={%H-}System.PRTLCriticalSection(CritSection);
   System.DoneCriticalsection(ACritSec^);
   Dispose(ACritSec);
   CritSection:=0;

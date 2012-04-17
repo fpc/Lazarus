@@ -50,13 +50,13 @@ type
 
   TGtk2WSDragImageList = class(TWSDragImageList)
   published
-    class function BeginDrag(const ADragImageList: TDragImageList; Window: HWND; AIndex, X, Y: Integer): Boolean; override;
-    class function DragMove(const ADragImageList: TDragImageList; X, Y: Integer): Boolean; override;
-    class procedure EndDrag(const ADragImageList: TDragImageList); override;
-    class function HideDragImage(const ADragImageList: TDragImageList;
-      ALockedWindow: HWND; DoUnLock: Boolean): Boolean; override;
-    class function ShowDragImage(const ADragImageList: TDragImageList;
-      ALockedWindow: HWND; X, Y: Integer; DoLock: Boolean): Boolean; override;
+    class function BeginDrag(const ADragImageList: TDragImageList; {%H-}Window: HWND; AIndex, X, Y: Integer): Boolean; override;
+    class function DragMove(const {%H-}ADragImageList: TDragImageList; X, Y: Integer): Boolean; override;
+    class procedure EndDrag(const {%H-}ADragImageList: TDragImageList); override;
+    class function HideDragImage(const {%H-}ADragImageList: TDragImageList;
+      {%H-}ALockedWindow: HWND; {%H-}DoUnLock: Boolean): Boolean; override;
+    class function ShowDragImage(const {%H-}ADragImageList: TDragImageList;
+      {%H-}ALockedWindow: HWND; X, Y: Integer; {%H-}DoLock: Boolean): Boolean; override;
   end;
 
   { TGtkWSControl }
@@ -87,7 +87,7 @@ type
 
     class procedure SetBorderStyle(const AWinControl: TWinControl; const ABorderStyle: TBorderStyle); override;
     class procedure SetBounds(const AWinControl: TWinControl; const ALeft, ATop, AWidth, AHeight: Integer); override;
-    class procedure SetChildZPosition(const AWinControl, AChild: TWinControl; const AOldPos, ANewPos: Integer; const AChildren: TFPList); override;
+    class procedure SetChildZPosition(const AWinControl, AChild: TWinControl; const {%H-}AOldPos, ANewPos: Integer; const AChildren: TFPList); override;
     class procedure SetColor(const AWinControl: TWinControl); override;
     class procedure SetCursor(const AWinControl: TWinControl; const ACursor: HCursor); override;
     class procedure SetFont(const AWinControl: TWinControl; const AFont: TFont); override;
@@ -99,7 +99,7 @@ type
 
     class procedure ShowHide(const AWinControl: TWinControl); override;
 
-    class procedure SetBiDiMode(const AWinControl: TWinControl; UseRightToLeftAlign, UseRightToLeftReading, UseRightToLeftScrollBar : Boolean); override;
+    class procedure SetBiDiMode(const AWinControl: TWinControl; UseRightToLeftAlign, {%H-}UseRightToLeftReading, {%H-}UseRightToLeftScrollBar : Boolean); override;
   end;
 
   { TGtk2WSGraphicControl }
@@ -150,7 +150,7 @@ function GetWidgetVAdjustment(AWidget: PGTKWidget): PGTKAdjustment;
 implementation
 
 uses
-  Gtk2Int, LMessages, Math, Gtk2WSPrivate, Forms;
+  Gtk2Int, LMessages, Gtk2WSPrivate, Forms;
 
 { TGtk2WSWinControl }
 
@@ -167,13 +167,13 @@ begin
   DebugGtkWidgets.MarkCreated(Widget, dbgsName(AWinControl));
   {$ENDIF}
 
-  Result := THandle(PtrUInt(Widget));
+  Result := THandle({%H-}PtrUInt(Widget));
   if Result = 0 then Exit;
 
   WidgetInfo := GetWidgetInfo(Widget); // Widget info already created in CreateAPIWidget
   WidgetInfo^.Style := AParams.Style;
   WidgetInfo^.ExStyle := AParams.ExStyle;
-  WidgetInfo^.WndProc := PtrUInt(AParams.WindowClass.lpfnWndProc);
+  WidgetInfo^.WndProc := {%H-}PtrUInt(AParams.WindowClass.lpfnWndProc);
 
   // set allocation
   Allocation.X := AParams.X;
@@ -212,9 +212,9 @@ var
 begin
   if not WSCheckHandleAllocated(AWinControl, 'SetBiDiMode') then
     Exit;
-  gtk_widget_set_direction(PGtkWidget(AWinControl.Handle),
+  gtk_widget_set_direction({%H-}PGtkWidget(AWinControl.Handle),
     WidgetDirection[UseRightToLeftAlign]);
-  Info := GetWidgetInfo(PGtkWidget(AWinControl.Handle));
+  Info := GetWidgetInfo({%H-}PGtkWidget(AWinControl.Handle));
   if Info <> nil then
   begin
     if Info^.CoreWidget <> nil then
@@ -240,17 +240,17 @@ begin
   case AWinControl.fCompStyle of
     csComboBox:
       begin
-        AText := StrPas(gtk_entry_get_text(PGtkEntry(PGtkCombo(Handle)^.entry)));
+        AText := StrPas(gtk_entry_get_text(PGtkEntry({%H-}PGtkCombo(Handle)^.entry)));
       end;
 
-    csEdit: AText:= StrPas(gtk_entry_get_text(PgtkEntry(Handle)));
-    csSpinEdit: AText:= StrPas(gtk_entry_get_text(@PGtkSpinButton(Handle)^.entry));
+    csEdit: AText:= StrPas(gtk_entry_get_text({%H-}PgtkEntry(Handle)));
+    csSpinEdit: AText:= StrPas(gtk_entry_get_text(@{%H-}PGtkSpinButton(Handle)^.entry));
 
 
     csMemo:
       begin
         CS := gtk_editable_get_chars(PGtkEditable(
-          GetWidgetInfo(Pointer(Handle), True)^.CoreWidget), 0, -1);
+          GetWidgetInfo({%H-}Pointer(Handle), True)^.CoreWidget), 0, -1);
         AText := StrPas(CS);
         g_free(CS);
       end;
@@ -274,7 +274,7 @@ begin
   case AWinControl.fCompStyle of
     csMemo:
       begin
-        TextBuf := gtk_text_view_get_buffer(PGtkTextView(GetWidgetInfo(Pointer(Handle), True)^.CoreWidget));
+        TextBuf := gtk_text_view_get_buffer(PGtkTextView(GetWidgetInfo({%H-}Pointer(Handle), True)^.CoreWidget));
         gtk_text_buffer_get_start_iter(TextBuf, @StartIter);
         gtk_text_buffer_get_end_iter(TextBuf, @EndIter);
         CS := gtk_text_buffer_get_text(TextBuf, @StartIter, @EndIter, False);
@@ -294,7 +294,7 @@ begin
   if not WSCheckHandleAllocated(AWinControl, 'SetBorderStyle')
   then Exit;
 
-  Widget := PGtkWidget(AWinControl.Handle);
+  Widget := {%H-}PGtkWidget(AWinControl.Handle);
   if GtkWidgetIsA(Widget, GTKAPIWidget_GetType) then
     GTKAPIWidget_SetShadowType(PGTKAPIWidget(Widget), BorderStyleShadowMap[ABorderStyle])
   else
@@ -313,7 +313,7 @@ begin
   if not WSCheckHandleAllocated(AWinControl, 'SetBorderStyle')
   then Exit;
   
-  Widget := PGtkWidget(AWinControl.Handle);
+  Widget := {%H-}PGtkWidget(AWinControl.Handle);
   if GTK_IS_SCROLLED_WINDOW(Widget) then
     gtk_scrolled_window_set_shadow_type(PGtkScrolledWindow(Widget), BorderStyleShadowMap[ABorderStyle])
   else
@@ -363,7 +363,7 @@ begin
     Exit;
   end;
 
-  GDIObject := PGDIObject(ABitmap.Handle);
+  GDIObject := {%H-}PGDIObject(ABitmap.Handle);
 
   Pixmap := nil;
   Mask := nil;
@@ -481,7 +481,7 @@ begin
   begin
     // DebugLn(Format('Trace:  [TGtkWSWinControl.AddControl] %s --> Calling Add Child: %s', [AParent.ClassName, AControl.ClassName]));
 
-    ParentWidget := PGtkwidget(AParent.Handle);
+    ParentWidget := {%H-}PGtkwidget(AParent.Handle);
     pFixed := GetFixedWidget(ParentWidget);
 
     // gtk2 is pretty tricky about adding editor into control
@@ -489,7 +489,7 @@ begin
       (TWinControl(AControl).FCompStyle = csEdit) and
       GTK_IS_TREE_VIEW(gtk_bin_get_child(PGtkBin(PFixed))) then
     begin
-      ChildWidget := PGtkWidget(TWinControl(AControl).Handle);
+      ChildWidget := {%H-}PGtkWidget(TWinControl(AControl).Handle);
       ParentWidget := gtk_bin_get_child(PGtkBin(PFixed)); // treeview
       // MUST allocate some size before adding it to container !
       gtk_widget_set_size_request(ChildWidget, 80, 25);
@@ -502,7 +502,7 @@ begin
       if pFixed <> ParentWidget then
       begin
         // parent changed for child
-        ChildWidget := PGtkWidget(TWinControl(AControl).Handle);
+        ChildWidget := {%H-}PGtkWidget(TWinControl(AControl).Handle);
         FixedPutControl(pFixed, ChildWidget, AControl.Left, AControl.Top);
         RegroupAccelerator(ChildWidget);
       end;
@@ -516,7 +516,7 @@ var
 begin
   if AWinControl.HandleAllocated then
   begin
-    Widget := PGtkWidget(AWinControl.Handle);
+    Widget := {%H-}PGtkWidget(AWinControl.Handle);
     FocusWidget := FindFocusWidget(Widget);
     Result := (FocusWidget <> nil) and GTK_WIDGET_CAN_FOCUS(FocusWidget);
   end else
@@ -528,7 +528,7 @@ var
   Widget: PGtkWidget;
   Geometry: TGdkGeometry;
 begin
-  Widget := PGtkWidget(AWinControl.Handle);
+  Widget := {%H-}PGtkWidget(AWinControl.Handle);
   if (Widget <> nil) and (GtkWidgetIsA(Widget, gtk_window_get_type)) then
   begin
     with Geometry, AWinControl do
@@ -576,7 +576,7 @@ begin
   then Exit;
 
   //DebugLn('Trace:Trying to invalidate window... !!!');
-  gtk_widget_queue_draw(PGtkWidget(AWinControl.Handle));
+  gtk_widget_queue_draw({%H-}PGtkWidget(AWinControl.Handle));
 end;
 
 class procedure TGtk2WSWinControl.ShowHide(const AWinControl: TWinControl);
@@ -650,7 +650,7 @@ begin
     NewCursor := ACursor
   else
     NewCursor := 0;
-  WidgetInfo := GetWidgetInfo(Pointer(AWinControl.Handle));
+  WidgetInfo := GetWidgetInfo({%H-}Pointer(AWinControl.Handle));
   if WidgetInfo^.ControlCursor <> NewCursor then
   begin
     WidgetInfo^.ControlCursor := NewCursor;
@@ -666,7 +666,7 @@ begin
   if not WSCheckHandleAllocated(AWinControl, 'SetFont')
   then Exit;
 
-  Widget := PGtkWidget(AWinControl.Handle);
+  Widget := {%H-}PGtkWidget(AWinControl.Handle);
   if GtkWidgetIsA(Widget, GTKAPIWidget_GetType) then
     exit;
 
@@ -690,7 +690,7 @@ begin
   DebugLn(['TGtk2WSWinControl.SetPos ',DbgSName(AWinControl),' ',ALeft,',',ATop]);
   {$ENDIF}
 
-  Widget := PGtkWidget(AWinControl.Handle);
+  Widget := {%H-}PGtkWidget(AWinControl.Handle);
   Allocation.X := gint16(ALeft);
   Allocation.Y := gint16(ATop);
   Allocation.Width := guint16(Widget^.Allocation.Width);
@@ -710,7 +710,7 @@ begin
   DebugLn(['TGtk2WSWinControl.SetSize ',DbgSName(AWinControl),' ',AWidth,',',AHeight]);
   {$ENDIF}
 
-  Widget := PGtkWidget(AWinControl.Handle);
+  Widget := {%H-}PGtkWidget(AWinControl.Handle);
   Allocation.X := Widget^.Allocation.X;
   Allocation.Y := Widget^.Allocation.Y;
   Allocation.Width := guint16(AWidth);
@@ -724,11 +724,11 @@ begin
   then Exit;
 
   if ((csOpaque in AWinControl.ControlStyle) and
-      GtkWidgetIsA(pGtkWidget(AWinControl.handle),GTKAPIWidget_GetType)) then
+      GtkWidgetIsA({%H-}pGtkWidget(AWinControl.handle),GTKAPIWidget_GetType)) then
     Exit;
 
   //DebugLn('TGtk2WSWinControl.SetColor ',DbgSName(AWinControl));
-  Gtk2WidgetSet.SetWidgetColor(PGtkWidget(AWinControl.Handle),
+  Gtk2WidgetSet.SetWidgetColor({%H-}PGtkWidget(AWinControl.Handle),
                               AWinControl.Font.Color, AWinControl.Color,
                               [GTK_STATE_NORMAL, GTK_STATE_ACTIVE,
                                GTK_STATE_PRELIGHT, GTK_STATE_SELECTED]);
@@ -752,8 +752,8 @@ class procedure TGtk2WSWinControl.SetText(const AWinControl: TWinControl;
     NewText: PChar;
   begin
     // dig through the hierachy to get the labels
-    NoteBookWidget:=PGtkWidget((AWinControl.Parent).Handle);
-    PageWidget:=PGtkWidget(AWinControl.Handle);
+    NoteBookWidget:={%H-}PGtkWidget((AWinControl.Parent).Handle);
+    PageWidget:={%H-}PGtkWidget(AWinControl.Handle);
     TabWidget:=gtk_notebook_get_tab_label(PGtkNoteBook(NotebookWidget),
                                           PageWidget);
     if TabWidget<>nil then
@@ -783,7 +783,7 @@ begin
 
   //TODO: create classprocedures for this in the corresponding classes
 
-  P := Pointer(AWinControl.Handle);
+  P := {%H-}Pointer(AWinControl.Handle);
   Assert(p <> nil, 'Trace:WARNING: [TGtkWidgetSet.SetLabel] --> got nil pointer');
   //DebugLn('Trace:Setting Str1 in SetLabel');
   pLabel := pchar(AText);
@@ -889,13 +889,13 @@ begin
   if not WSCheckHandleAllocated(AWinControl, 'SetShape') then
     Exit;
 
-  GtkWidget := PGtkWidget(AWinControl.Handle);
+  GtkWidget := {%H-}PGtkWidget(AWinControl.Handle);
   FixedWidget := GetFixedWidget(GtkWidget);
 
   if AShape <> 0 then
   begin
     if Gtk2Widgetset.IsValidGDIObjectType(AShape, gdiBitmap) then
-      GdkBitmap := PGdiObject(AShape)^.GDIBitmapObject
+      GdkBitmap := {%H-}PGdiObject(AShape)^.GDIBitmapObject
     else
       GdkBitmap := nil;
   end
@@ -928,7 +928,7 @@ var
 
     if Assigned(TCustomForm(AWinControl).Menu) then
     begin
-      AMenuBar := PGtkWidget(TCustomForm(AWinControl).Menu.Handle);
+      AMenuBar := {%H-}PGtkWidget(TCustomForm(AWinControl).Menu.Handle);
       if GTK_IS_MENU_BAR(AMenuBar) and GTK_WIDGET_VISIBLE(AMenuBar) then
       begin
         OffsetY := AMenuBar^.allocation.height;
@@ -992,7 +992,7 @@ var
 begin
   if not WSCheckHandleAllocated(AWinControl, 'PaintTo') then
     Exit;
-  PaintWidget(GetFixedWidget(PGtkWidget(AWinControl.Handle)));
+  PaintWidget(GetFixedWidget({%H-}PGtkWidget(AWinControl.Handle)));
 end;
 
 { TGtk2WSBaseScrollingWinControl }
@@ -1054,7 +1054,7 @@ begin
   if V < High(Msg.SmallPos)
   then Msg.SmallPos := V
   else Msg.SmallPos := High(Msg.SmallPos);
-  Msg.ScrollBar := HWND(PtrUInt(ScrollingData^.HScroll));
+  Msg.ScrollBar := HWND({%H-}PtrUInt(ScrollingData^.HScroll));
 
   Result := (DeliverMessage(AInfo^.LCLObject, Msg) <> 0) xor CallBackDefaultReturn;
 end;
@@ -1116,7 +1116,7 @@ begin
   if V < High(Msg.SmallPos)
   then Msg.SmallPos := V
   else Msg.SmallPos := High(Msg.SmallPos);
-  Msg.ScrollBar := HWND(PtrUInt(ScrollingData^.HScroll));
+  Msg.ScrollBar := HWND({%H-}PtrUInt(ScrollingData^.HScroll));
 
   Result := (DeliverMessage(AInfo^.LCLObject, Msg) <> 0) xor CallBackDefaultReturn;
 end;
@@ -1134,7 +1134,7 @@ begin
   DebugGtkWidgets.MarkCreated(Widget,dbgsName(AWinControl));
   {$ENDIF}
 
-  Result := THandle(PtrUInt(Widget));
+  Result := THandle({%H-}PtrUInt(Widget));
   if Result = 0 then Exit;
 
   gtk_widget_show(Widget);

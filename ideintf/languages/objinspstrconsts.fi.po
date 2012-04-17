@@ -590,6 +590,7 @@ msgid "Move field down"
 msgstr "Siirrä kenttä alas"
 
 #: objinspstrconsts.oismoveup
+msgctxt "objinspstrconsts.oismoveup"
 msgid "Move &Up"
 msgstr "Siirrä ylös"
 
@@ -1190,8 +1191,8 @@ msgstr "Lohkojen muokkain ..."
 
 #: objinspstrconsts.sccsiledtadd
 #, fuzzy
-#| msgid "Add..."
-msgid "Add ..."
+#| msgid "Add ..."
+msgid "&Add ..."
 msgstr "Lisää ..."
 
 #: objinspstrconsts.sccsiledtadjustment
@@ -1199,8 +1200,10 @@ msgid "Adjustment"
 msgstr ""
 
 #: objinspstrconsts.sccsiledtapply
+#, fuzzy
+#| msgid "Apply"
 msgctxt "objinspstrconsts.sccsiledtapply"
-msgid "Apply"
+msgid "&Apply"
 msgstr "Käytä"
 
 #: objinspstrconsts.sccsiledtcaption
@@ -1212,8 +1215,10 @@ msgid "Center"
 msgstr "Keskitä"
 
 #: objinspstrconsts.sccsiledtclear
+#, fuzzy
+#| msgid "Clear"
 msgctxt "objinspstrconsts.sccsiledtclear"
-msgid "Clear"
+msgid "&Clear"
 msgstr "Tyhjennä"
 
 #: objinspstrconsts.sccsiledtcrop
@@ -1221,8 +1226,10 @@ msgid "Crop"
 msgstr ""
 
 #: objinspstrconsts.sccsiledtdelete
+#, fuzzy
+#| msgid "Delete"
 msgctxt "objinspstrconsts.sccsiledtdelete"
-msgid "Delete"
+msgid "&Delete"
 msgstr "Poista"
 
 #: objinspstrconsts.sccsiledtgrplcaption
@@ -1234,13 +1241,17 @@ msgid "Selected Image"
 msgstr "Valittu kuva"
 
 #: objinspstrconsts.sccsiledtmovedown
+#, fuzzy
+#| msgid "Move Down"
 msgctxt "objinspstrconsts.sccsiledtmovedown"
-msgid "Move Down"
+msgid "Move D&own"
 msgstr "Siirrä alaspäin"
 
 #: objinspstrconsts.sccsiledtmoveup
+#, fuzzy
+#| msgid "Move Up"
 msgctxt "objinspstrconsts.sccsiledtmoveup"
-msgid "Move Up"
+msgid "Move &Up"
 msgstr "Siirrä ylöspäin"
 
 #: objinspstrconsts.sccsiledtnone
@@ -1257,9 +1268,9 @@ msgstr "Läpinäkyvä väri:"
 
 #: objinspstrconsts.sccsiledtsave
 #, fuzzy
-#| msgid "Save..."
+#| msgid "Save ..."
 msgctxt "objinspstrconsts.sccsiledtsave"
-msgid "Save ..."
+msgid "&Save ..."
 msgstr "Tallenna..."
 
 #: objinspstrconsts.sccsiledtsaveall

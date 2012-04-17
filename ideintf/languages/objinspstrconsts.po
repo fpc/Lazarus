@@ -566,6 +566,7 @@ msgid "Move field down"
 msgstr ""
 
 #: objinspstrconsts.oismoveup
+msgctxt "objinspstrconsts.oismoveup"
 msgid "Move &Up"
 msgstr ""
 
@@ -1151,7 +1152,7 @@ msgid "Sections Editor ..."
 msgstr ""
 
 #: objinspstrconsts.sccsiledtadd
-msgid "Add ..."
+msgid "&Add ..."
 msgstr ""
 
 #: objinspstrconsts.sccsiledtadjustment
@@ -1160,7 +1161,7 @@ msgstr ""
 
 #: objinspstrconsts.sccsiledtapply
 msgctxt "objinspstrconsts.sccsiledtapply"
-msgid "Apply"
+msgid "&Apply"
 msgstr ""
 
 #: objinspstrconsts.sccsiledtcaption
@@ -1173,7 +1174,7 @@ msgstr ""
 
 #: objinspstrconsts.sccsiledtclear
 msgctxt "objinspstrconsts.sccsiledtclear"
-msgid "Clear"
+msgid "&Clear"
 msgstr ""
 
 #: objinspstrconsts.sccsiledtcrop
@@ -1182,7 +1183,7 @@ msgstr ""
 
 #: objinspstrconsts.sccsiledtdelete
 msgctxt "objinspstrconsts.sccsiledtdelete"
-msgid "Delete"
+msgid "&Delete"
 msgstr ""
 
 #: objinspstrconsts.sccsiledtgrplcaption
@@ -1195,12 +1196,12 @@ msgstr ""
 
 #: objinspstrconsts.sccsiledtmovedown
 msgctxt "objinspstrconsts.sccsiledtmovedown"
-msgid "Move Down"
+msgid "Move D&own"
 msgstr ""
 
 #: objinspstrconsts.sccsiledtmoveup
 msgctxt "objinspstrconsts.sccsiledtmoveup"
-msgid "Move Up"
+msgid "Move &Up"
 msgstr ""
 
 #: objinspstrconsts.sccsiledtnone
@@ -1217,7 +1218,7 @@ msgstr ""
 
 #: objinspstrconsts.sccsiledtsave
 msgctxt "objinspstrconsts.sccsiledtsave"
-msgid "Save ..."
+msgid "&Save ..."
 msgstr ""
 
 #: objinspstrconsts.sccsiledtsaveall
