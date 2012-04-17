@@ -462,7 +462,7 @@ begin
   if BuildAll then
     CurProf.IdeBuildMode:=bmCleanAllBuild;
   MainBuildBoss.SetBuildTargetIDE;
-  Flags:=[blfReplaceExe];
+  Flags:=[];
 
   // try loading install packages
   PackageGraph.LoadAutoInstallPackages(BuildLazProfiles.StaticAutoInstallPackages);
@@ -510,7 +510,7 @@ begin
 
   // save
   CurResult:=SaveIDEMakeOptions(BuildLazProfiles.Current,GlobalMacroList,
-                                PkgOptions,Flags);
+                                PkgOptions,Flags+[blfBackupOldExe]);
   if CurResult<>mrOk then begin
     DebugLn('TLazBuildApplication.BuildLazarusIDE: failed saving idemake.cfg');
     exit;

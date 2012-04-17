@@ -31,11 +31,11 @@ unit BuildProfileManager;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, Laz2_XMLCfg, LazLogger, LResources, Forms,
-  Controls, Graphics, Dialogs, ExtCtrls, Buttons, StdCtrls, ComCtrls, Contnrs,
-  ButtonPanel, DefineTemplates, IDEImagesIntf, IDEMsgIntf, IDEHelpIntf,
+  Classes, SysUtils, FileUtil, Laz2_XMLCfg, LazLogger, LazFileUtils, LResources,
+  Forms, Controls, Graphics, Dialogs, ExtCtrls, Buttons, StdCtrls, ComCtrls,
+  Contnrs, ButtonPanel, DefineTemplates, IDEImagesIntf, IDEMsgIntf, IDEHelpIntf,
   IDEDialogs, LazarusIDEStrConsts, LazConf, InterfaceBase, IDEProcs,
-  TransferMacros, CompilerOptions;
+  TransferMacros, CompilerOptions, EnvironmentOpts;
 
 type
 
@@ -280,7 +280,7 @@ begin
     Result:='';
     exit;
   end;
-  Result:=CleanAndExpandDirectory(Result);
+  Result:=TrimAndExpandDirectory(Result,EnvironmentOptions.GetParsedLazarusDirectory);
 end;
 
 function TBuildLazarusProfile.GetExtraOptions: string;
