@@ -3976,9 +3976,8 @@ begin
   begin
     // in case asrCenter, both sides are controlled by one anchor
     // -> disable opposite anchor and aligning
-    if FOwner.Align in [alLeft,alTop,alRight,alBottom,alClient] then begin
+    if not (FOwner.Align in [alNone,alCustom]) then
       FOwner.Align:=alNone;
-    end;
     FOwner.Anchors:=FOwner.Anchors-[OppositeAnchor[Kind]];
   end;
 end;
