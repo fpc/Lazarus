@@ -13,7 +13,7 @@ object ProjectSaveOptionsFrame: TProjectSaveOptionsFrame
     AnchorSideTop.Control = Owner
     AnchorSideRight.Control = Owner
     Left = 0
-    Height = 19
+    Height = 21
     Top = 0
     Width = 320
     Align = alTop
@@ -27,8 +27,8 @@ object ProjectSaveOptionsFrame: TProjectSaveOptionsFrame
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 0
-    Height = 19
-    Top = 25
+    Height = 21
+    Top = 27
     Width = 320
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Top = 6
@@ -42,8 +42,8 @@ object ProjectSaveOptionsFrame: TProjectSaveOptionsFrame
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 0
-    Height = 21
-    Top = 100
+    Height = 4
+    Top = 108
     Width = 320
     Anchors = [akTop, akLeft, akRight]
     AutoFill = True
@@ -59,7 +59,7 @@ object ProjectSaveOptionsFrame: TProjectSaveOptionsFrame
     ChildSizing.Layout = cclLeftToRightThenTopToBottom
     ChildSizing.ControlsPerLine = 1
     OnClick = SaveSessionLocationRadioGroupClick
-    TabOrder = 2
+    TabOrder = 4
   end
   object SaveJumpHistory: TCheckBox
     AnchorSideLeft.Control = Owner
@@ -68,13 +68,13 @@ object ProjectSaveOptionsFrame: TProjectSaveOptionsFrame
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 0
-    Height = 19
-    Top = 50
+    Height = 21
+    Top = 54
     Width = 320
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Top = 6
     Caption = 'SaveJumpHistory'
-    TabOrder = 3
+    TabOrder = 2
   end
   object SaveFoldState: TCheckBox
     AnchorSideLeft.Control = Owner
@@ -83,12 +83,12 @@ object ProjectSaveOptionsFrame: TProjectSaveOptionsFrame
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 0
-    Height = 19
-    Top = 75
+    Height = 21
+    Top = 81
     Width = 320
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Top = 6
     Caption = 'SaveFoldState'
-    TabOrder = 4
+    TabOrder = 3
   end
 end

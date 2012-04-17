@@ -708,8 +708,7 @@ begin
   BuildModeMoveDownSpeedButton.LoadGlyphFromLazarusResource('arrow_down');
   BuildModeDiffSpeedButton.LoadGlyphFromLazarusResource('menu_tool_diff');
 
-  BuildMacroValuesGroupBox.Caption:=
-    lisIDEMacroValuesForFPCMacrosUseCustomOptions;
+  BuildMacroValuesGroupBox.Caption:=lisIDEMacroValuesForFPCMacrosUseCustomOptions;
   Grid:=BuildMacroValuesStringGrid;
   Grid.Columns.Add;
   Grid.Columns[0].Title.Caption:=lisMacroName;

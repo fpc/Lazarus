@@ -1,12 +1,14 @@
-inherited BuildModesEditorFrame: TBuildModesEditorFrame
+object BuildModesEditorFrame: TBuildModesEditorFrame
+  Left = 0
   Height = 421
+  Top = 0
   Width = 550
   ClientHeight = 421
   ClientWidth = 550
   TabOrder = 0
   DesignLeft = 460
   DesignTop = 269
-  object BuildMacroValuesGroupBox: TGroupBox[0]
+  object BuildMacroValuesGroupBox: TGroupBox
     Left = 6
     Height = 234
     Top = 181
@@ -14,14 +16,14 @@ inherited BuildModesEditorFrame: TBuildModesEditorFrame
     Align = alClient
     BorderSpacing.Around = 6
     Caption = 'BuildMacroValuesGroupBox'
-    ClientHeight = 212
-    ClientWidth = 530
-    TabOrder = 0
+    ClientHeight = 218
+    ClientWidth = 534
+    TabOrder = 2
     object BuildMacroValuesStringGrid: TStringGrid
       Left = 0
-      Height = 212
+      Height = 218
       Top = 0
-      Width = 530
+      Width = 534
       Align = alClient
       AutoFillColumns = True
       ColCount = 2
@@ -39,7 +41,7 @@ inherited BuildModesEditorFrame: TBuildModesEditorFrame
       )
     end
   end
-  object BuildModesGroupBox: TGroupBox[1]
+  object BuildModesGroupBox: TGroupBox
     Left = 6
     Height = 158
     Top = 6
@@ -47,16 +49,16 @@ inherited BuildModesEditorFrame: TBuildModesEditorFrame
     Align = alTop
     BorderSpacing.Around = 6
     Caption = 'BuildModesGroupBox'
-    ClientHeight = 136
-    ClientWidth = 530
-    TabOrder = 1
+    ClientHeight = 142
+    ClientWidth = 534
+    TabOrder = 0
     object BuildModesStringGrid: TStringGrid
       AnchorSideTop.Control = BuildModeAddSpeedButton
       AnchorSideTop.Side = asrBottom
       Left = 0
-      Height = 114
+      Height = 120
       Top = 22
-      Width = 530
+      Width = 534
       Align = alBottom
       Anchors = [akTop, akLeft, akRight, akBottom]
       AutoFillColumns = True
@@ -100,7 +102,6 @@ inherited BuildModesEditorFrame: TBuildModesEditorFrame
       Height = 22
       Top = 0
       Width = 23
-      Color = clBtnFace
       NumGlyphs = 0
       OnClick = BuildModeAddSpeedButtonClick
       ShowHint = True
@@ -114,7 +115,6 @@ inherited BuildModesEditorFrame: TBuildModesEditorFrame
       Height = 22
       Top = 0
       Width = 23
-      Color = clBtnFace
       NumGlyphs = 0
       OnClick = BuildModeDeleteSpeedButtonClick
       ShowHint = True
@@ -128,7 +128,6 @@ inherited BuildModesEditorFrame: TBuildModesEditorFrame
       Height = 22
       Top = 0
       Width = 23
-      Color = clBtnFace
       NumGlyphs = 0
       OnClick = BuildModeMoveUpSpeedButtonClick
       ShowHint = True
@@ -142,7 +141,6 @@ inherited BuildModesEditorFrame: TBuildModesEditorFrame
       Height = 22
       Top = 0
       Width = 23
-      Color = clBtnFace
       NumGlyphs = 0
       OnClick = BuildModeMoveDownSpeedButtonClick
       ShowHint = True
@@ -157,14 +155,13 @@ inherited BuildModesEditorFrame: TBuildModesEditorFrame
       Top = 0
       Width = 23
       BorderSpacing.Left = 10
-      Color = clBtnFace
       NumGlyphs = 0
       OnClick = BuildModeDiffSpeedButtonClick
       ShowHint = True
       ParentShowHint = False
     end
   end
-  object Splitter1: TSplitter[2]
+  object Splitter1: TSplitter
     Cursor = crVSplit
     Left = 0
     Height = 5
@@ -173,7 +170,7 @@ inherited BuildModesEditorFrame: TBuildModesEditorFrame
     Align = alTop
     ResizeAnchor = akTop
   end
-  object BuildModesPopupMenu: TPopupMenu[3]
+  object BuildModesPopupMenu: TPopupMenu
     left = 180
     top = 60
   end
