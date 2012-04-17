@@ -777,7 +777,7 @@ begin
     else
       Cursor := crVSplit;
 
-    CheckAlignment;
+    Anchors:=AdaptAnchors(Anchors);
 
     // lfm contains correct size already
     if not (csLoading in ComponentState) then
@@ -802,19 +802,22 @@ begin
 end;
 
 procedure TCustomSplitter.SetAnchors(const AValue: TAnchors);
+var
+  NewValue: TAnchors;
 begin
-  if AValue = Anchors then exit;
-  inherited SetAnchors(AValue);
-  CheckAlignment;
+  NewValue:=AdaptAnchors(AValue);
+  if NewValue = Anchors then exit;
+  inherited SetAnchors(NewValue);
 end;
 
-procedure TCustomSplitter.CheckAlignment;
+function TCustomSplitter.AdaptAnchors(const a: TAnchors): TAnchors;
 begin
+  Result:=a;
   case Align of
-    alLeft:   Anchors := Anchors - [akRight] + [akLeft];
-    alTop:    Anchors := Anchors - [akBottom] + [akTop];
-    alRight:  Anchors := Anchors + [akRight] - [akLeft];
-    alBottom: Anchors := Anchors + [akBottom] - [akTop];
+    alLeft:   Result := Result - [akRight] + [akLeft];
+    alTop:    Result := Result - [akBottom] + [akTop];
+    alRight:  Result := Result + [akRight] - [akLeft];
+    alBottom: Result := Result + [akBottom] - [akTop];
   end;
 end;
 

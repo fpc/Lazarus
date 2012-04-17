@@ -339,7 +339,7 @@ type
     procedure SetMinSize(const AValue: integer);
   protected
     class procedure WSRegisterClass; override;
-    procedure CheckAlignment;
+    function AdaptAnchors(const a: TAnchors): TAnchors;
     function CheckNewSize(var NewSize: Integer): Boolean; virtual;
     function CheckOffset(var NewOffset: Integer): Boolean; virtual;
 
