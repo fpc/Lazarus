@@ -374,6 +374,10 @@ msgstr "Элемент управления класса '%s' не может и
 msgid "Control '%s' has no parent window"
 msgstr "Элемент управления '%s' не имеет родительского окна"
 
+#: lclstrconsts.rscontrolisnotaparent
+msgid "'%s' is not a parent of '%s'"
+msgstr ""
+
 #: lclstrconsts.rscreamcolorcaption
 msgid "Cream"
 msgstr "Кремовый"

@@ -253,6 +253,7 @@ resourceString
   rsCreatingGdbCatchableError = 'Creating gdb catchable error:';
   rsAControlCanNotHaveItselfAsParent = 'A control can''t have itself as a parent';
   rsControlHasNoParentWindow = 'Control ''%s'' has no parent window';
+  rsControlIsNotAParent = '''%s'' is not a parent of ''%s''';
   rsControlClassCantContainChildClass = 'Control of class ''%s'' can''t have control of class ''%s'' as a child';
   lisLCLResourceSNotFound = 'Resource %s not found';
   rsFormResourceSNotFoundForResourcelessFormsCreateNew = 'Form resource %s '

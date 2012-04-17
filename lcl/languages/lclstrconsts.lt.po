@@ -375,6 +375,10 @@ msgstr "„%s“ klasės valdiklis negali būti „%s“ klasės valdiklio tėva
 msgid "Control '%s' has no parent window"
 msgstr "„%s“ valdiklis neturi tėvinio lango"
 
+#: lclstrconsts.rscontrolisnotaparent
+msgid "'%s' is not a parent of '%s'"
+msgstr ""
+
 #: lclstrconsts.rscreamcolorcaption
 msgid "Cream"
 msgstr "Kreminė"

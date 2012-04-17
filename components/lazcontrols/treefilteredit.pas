@@ -438,8 +438,10 @@ procedure TTreeFilterEdit.ApplyFilterCore;
 var
   i: Integer;
 begin
+  if fFilteredTreeview = nil then
+    exit;
   fFilteredTreeview.BeginUpdate;
-  if Assigned(fBranches) then begin      // Apply filter for the brances
+  if Assigned(fBranches) then begin      // Apply filter for the branches
     for i:=0 to fBranches.Count-1 do
       fBranches[i].ApplyFilter;
   end
@@ -459,6 +461,8 @@ var
   ANode: TTreeNode;
 begin
   fSelectionList.Clear;
+  if fFilteredTreeview = nil then
+    exit;
   ANode:=fFilteredTreeview.Selected;
   while ANode<>nil do begin
     fSelectionList.Insert(0,ANode.Text);

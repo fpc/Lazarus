@@ -173,6 +173,8 @@ var
   s: string;
   clb: TCustomCheckListBox;
 begin
+  if fFilteredListbox = nil then
+    exit;
   clb:=Nil;
   if fFilteredListbox is TCustomCheckListBox then
     clb:=TCustomCheckListBox(fFilteredListbox);
@@ -197,6 +199,8 @@ procedure TListFilterEdit.StoreSelection;
 var
   i: Integer;
 begin
+  if fFilteredListbox = nil then
+    exit;
   fSelectionList.Clear;
   if fFilteredListbox.SelCount > 0 then
     for i := 0 to fFilteredListbox.Count-1 do

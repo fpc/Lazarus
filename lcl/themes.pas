@@ -2238,7 +2238,7 @@ begin
   // teHeader should not be here, it has no disabled state
 
   Result := False;
-  if (Details.Element in [teButton, teToolBar]) or
+  if (Details.Element in [teButton, teToolBar, teComboBox]) or
      ((Details.Element = teRebar) and (Details.Part >= RP_BAND)) or
      ((Details.Element = teWindow) and (Details.Part >= WP_SYSBUTTON) and
      (Details.Part <= WP_MDIHELPBUTTON)) then
@@ -2248,7 +2248,7 @@ end;
 function TThemeServices.IsPushed(Details: TThemedElementDetails): Boolean;
 begin
   Result := False;
-  if (Details.Element in [teButton, teToolBar, teHeader]) or
+  if (Details.Element in [teButton, teToolBar, teHeader, teComboBox]) or
      ((Details.Element = teRebar) and (Details.Part >= RP_BAND)) or
      ((Details.Element = teWindow) and (Details.Part >= WP_SYSBUTTON) and
      (Details.Part <= WP_MDIHELPBUTTON)) then
@@ -2258,7 +2258,7 @@ end;
 function TThemeServices.IsHot(Details: TThemedElementDetails): Boolean;
 begin
   Result := False;
-  if (Details.Element in [teButton, teToolBar, teHeader]) or
+  if (Details.Element in [teButton, teToolBar, teHeader, teComboBox]) or
      ((Details.Element = teRebar) and (Details.Part >= RP_BAND)) or
      ((Details.Element = teWindow) and (Details.Part >= WP_SYSBUTTON) and
      (Details.Part <= WP_MDIHELPBUTTON)) then

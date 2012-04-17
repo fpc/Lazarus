@@ -376,6 +376,10 @@ msgstr "Control of klasse '%s' kan control of klasse '%s' niet als kind hebben"
 msgid "Control '%s' has no parent window"
 msgstr "Control '%s' heeft geen venster als ouder"
 
+#: lclstrconsts.rscontrolisnotaparent
+msgid "'%s' is not a parent of '%s'"
+msgstr ""
+
 #: lclstrconsts.rscreamcolorcaption
 msgid "Cream"
 msgstr "Cream"
