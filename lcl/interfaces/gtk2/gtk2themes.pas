@@ -215,7 +215,7 @@ end;
 procedure TGtk2ThemeServices.InternalDrawParentBackground(Window: HWND;
   Target: HDC; Bounds: PRect);
 begin
-  // ?
+  // ToDo: TGtk2ThemeServices.InternalDrawParentBackground: What to do?
 end;
 
 function TGtk2ThemeServices.GetBaseDetailsSize(Details: TThemedElementDetails): TSize;

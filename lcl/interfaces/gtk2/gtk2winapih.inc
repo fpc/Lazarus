@@ -1,5 +1,4 @@
 {%MainUnit gtk2int.pas}
-{ $Id$ }
 
 // included by gtk2int.pp
 
@@ -40,7 +39,7 @@ function AngleChord(DC: HDC; x1 ,y1, x2, y2, angle1, angle2: Integer): Boolean; 
 function BeginPaint(Handle: hWnd; Var PS : TPaintStruct) : hdc; override;
 function BitBlt(DestDC: HDC; X, Y, Width, Height: Integer; SrcDC: HDC; XSrc, YSrc: Integer; Rop: DWORD): Boolean; override;
 
-function CallNextHookEx(hHk: HHOOK; ncode : Integer; wParam: WParam; lParam : LParam) : Integer; override;
+function CallNextHookEx({%H-}hHk: HHOOK; {%H-}ncode : Integer; {%H-}wParam: WParam; {%H-}lParam : LParam) : Integer; override;
 function CallWindowProc({%H-}lpPrevWndFunc : TFarProc; Handle : HWND; Msg : UINT; wParam: WParam; lParam : lParam) : Integer; override;
 function ClientToScreen(Handle : HWND; var P : TPoint) : Boolean;override;
 
@@ -61,7 +60,7 @@ function CreateBitmap(Width, Height: Integer; Planes, BitCount: Longint; BitmapB
 function CreateBrushIndirect(const LogBrush: TLogBrush): HBRUSH; override;
 function CreateCaret(Handle : HWND; Bitmap : hBitmap; width, Height : Integer) : Boolean; override;
 function CreateCompatibleBitmap(DC: HDC; Width, Height: Integer): HBITMAP; override;
-function CreateCompatibleDC(DC: HDC): HDC; override;
+function CreateCompatibleDC({%H-}DC: HDC): HDC; override;
 function CreateEllipticRgn(X1, Y1, X2, Y2: Integer): HRGN; override;
 function CreateFontIndirect(const LogFont: TLogFont): HFONT; override;
 function CreateFontIndirectEx(const LogFont: TLogFont; const LongFontName: string): HFONT; override;
@@ -85,7 +84,7 @@ function DrawEdge(DC: HDC; var ARect: TRect; Edge: Cardinal; grfFlags: Cardinal)
 function DrawText(DC: HDC; Str: PChar; Count: Integer; var Rect: TRect; Flags: Cardinal): Integer; override;
 
 function Ellipse(DC: HDC; x1,y1,x2,y2: Integer): Boolean; override;
-function EnableScrollBar(Wnd: HWND; wSBflags, wArrows: Cardinal): Boolean; override;
+function EnableScrollBar({%H-}Wnd: HWND; {%H-}wSBflags, {%H-}wArrows: Cardinal): Boolean; override;
 function EnableWindow(hWnd: HWND; bEnable: Boolean): Boolean; override;
 function EndPaint(Handle : hwnd; var PS : TPaintStruct): Integer; override;
 procedure EnterCriticalSection(var CritSection: TCriticalSection); override;
@@ -111,7 +110,7 @@ function GetBkColor(DC: HDC): TColorRef; override;
 function GetCapture: HWND; override;
 function GetCaretPos(var lpPoint: TPoint): Boolean; override;
 function GetCaretRespondToFocus(handle: HWND; var ShowHideOnFocus: boolean): Boolean; override;
-function GetCharABCWidths(DC: HDC; p2, p3: UINT; const ABCStructs): Boolean; override;
+function GetCharABCWidths({%H-}DC: HDC; {%H-}p2, {%H-}p3: UINT; const {%H-}ABCStructs): Boolean; override;
 function GetClientBounds(handle : HWND; var ARect : TRect) : Boolean; override;
 function GetClientRect(handle : HWND; var ARect : TRect) : Boolean; override;
 function GetClipBox(DC : hDC; lpRect : PRect) : Longint; override;

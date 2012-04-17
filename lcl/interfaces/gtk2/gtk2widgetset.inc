@@ -1296,8 +1296,8 @@ var
   threadsync_giochannel: pgiochannel;
   childsig_pending: boolean;
 
-procedure ChildEventHandler(sig: longint; siginfo: psiginfo;
-  sigcontext: psigcontext); cdecl;
+procedure ChildEventHandler({%H-}sig: longint; {%H-}siginfo: psiginfo;
+  {%H-}sigcontext: psigcontext); cdecl;
 begin
   childsig_pending := true;
   WakeMainThread(nil);
@@ -1746,6 +1746,8 @@ procedure TGtk2WidgetSet.PrepareSynchronize(AObject: TObject);
 var
   thrash: char;
 begin
+  // ToDo: TGtk2WidgetSet.PrepareSynchronize what is AObject?
+
   // wake up GUI thread by sending a byte through the threadsync pipe
   thrash:='l';
   fpwrite(threadsync_pipeout, thrash, 1);
@@ -1760,6 +1762,7 @@ var
   handler: PChildSignalEventHandler;
 begin
   repeat
+    status:=0;
     pid := fpwaitpid(-1, status, WNOHANG);
     if pid <= 0 then break;
     if wifexited(status) then
@@ -1793,7 +1796,7 @@ var
   thrashspace: array[1..1024] of byte;
 begin
   // read the sent bytes
-  fpread(threadsync_pipein, thrashspace[1], 1);
+  fpread(threadsync_pipein, {%H-}thrashspace[1], 1);
 
   Result := true;
   // one of children signaled ?
@@ -2610,7 +2613,7 @@ end;
 -------------------------------------------------------------------------------}
 procedure TGtk2WidgetSet.AppSetTitle(const ATitle: string);
 begin
-
+  // ToDo: TGtk2WidgetSet.AppSetTitle: has a gtk2 application such a thing?
 end;
 
 {------------------------------------------------------------------------------
@@ -2688,7 +2691,7 @@ end;
  ------------------------------------------------------------------------------}
 function TGtk2WidgetSet.InternalGetDIBits(DC: HDC; Bitmap: HBitmap;
   StartScan, NumScans: UINT; BitSize : Longint; Bits: Pointer;
-  var BitInfo: BitmapInfo; Usage: UINT; DIB : Boolean): Integer;
+  out BitInfo: BitmapInfo; Usage: UINT; DIB : Boolean): Integer;
 const
   PadLine : array[0..12] of Byte = (0,0,0,0,0,0,0,0,0,0,1,0,0);
   TempBuffer : array[0..2] of Byte = (0,0,0);
@@ -2780,8 +2783,9 @@ begin
   //DebugLn('trace:[TGtk2WidgetSet.InternalGetDIBits]');
 
   Result := 0;
-  if (DC=0) or (Usage=0) then ;
+  FillByte(BitInfo{%H-},SizeOf(BitInfo),0);
 
+  if (DC=0) or (Usage=0) then ;
   if not IsValidGDIObject(Bitmap)
   then begin
     DebugLn('WARNING: [TGtk2WidgetSet.InternalGetDIBits] invalid Bitmap!');
@@ -2797,7 +2801,6 @@ begin
 
   FillChar(FDIB{%H-}, SizeOf(FDIB), 0);
   GetObject(Bitmap, SizeOf(FDIB), @FDIB);
-  BitInfo.bmiHeader := FDIB.dsBmih;
 
   with GdiObject^, BitInfo.bmiHeader do
   begin
@@ -4663,20 +4666,6 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  function TGtk2WidgetSet.CreateStatusBarPanel(StatusBar: TObject; Index: integer
-    ): PGtkWidget;
-
-  Creates a new statusbar panel widget.
- ------------------------------------------------------------------------------}
-function TGtk2WidgetSet.OldCreateStatusBarPanel(StatusBar: TObject; Index: integer
-  ): PGtkWidget;
-begin
-  Result:=gtk_statusbar_new;
-  gtk_widget_show(Result);
-  // other properties are set in UpdateStatusBarPanels
-end;
-
-{------------------------------------------------------------------------------
   function TGtk2WidgetSet.CreateSimpleClientAreaWidget(Sender: TObject;
     NotOnParentsClientArea: boolean): PGtkWidget;
 
@@ -6007,7 +5996,7 @@ end;
   with FreeMem(Lines).
 ------------------------------------------------------------------------------}
 procedure TGtk2WidgetSet.WordWrap(DC: HDC; AText: PChar;
-  MaxWidthInPixel: integer; var Lines: PPChar; var LineCount: integer);
+  MaxWidthInPixel: integer; out Lines: PPChar; out LineCount: integer);
 var
   UseFont: TGtkIntfFont;
 
@@ -6097,7 +6086,11 @@ var
   CurLineEntry: PPChar;
   CurLineStart: PChar;
 begin
-  if IsEmptyText then exit;
+  if IsEmptyText then begin
+    Lines:=nil;
+    LineCount:=0;
+    exit;
+  end;
   InitFont;
   LinesList:=TFPList.Create;
   LineStart:=0;

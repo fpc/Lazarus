@@ -1,5 +1,4 @@
 {%MainUnit gtk2int.pas}
-{ $Id$ }
 
 {******************************************************************************
                          All GTK Winapi implementations.
@@ -195,12 +194,7 @@ end;
 function TGtk2WidgetSet.CallNextHookEx(hhk : HHOOK; ncode : Integer; wParam: WParam; lParam : LParam) : Integer;
 begin
   Result := 0;
-  //TODO: Does anything need to be done here?
-  //DebugLn('Trace:!!!!!!!!!!!!!!!!!!');
-  //DebugLn('Trace:!!!!!!!!!!!!!!!!!!');
-  //DebugLn('Trace:TODO: CALLNEXTHOOKEX in gtkwinapi.inc');
-  //DebugLn('Trace:!!!!!!!!!!!!!!!!!!');
-  //DebugLn('Trace:!!!!!!!!!!!!!!!!!!');
+  // TODO: TGtk2WidgetSet.CallNextHookEx: Does anything need to be done here?
 end;
 
 {------------------------------------------------------------------------------
@@ -416,15 +410,19 @@ begin
         // the lcl expects the return format as simple text
         // transform if necessary
         if FormatAtom=gdk_atom_intern('COMPOUND_TEXT',GdkTrue) then begin
+          CompoundTextList:=nil;
           CompoundTextCount:=gdk_text_property_to_text_list(SelData._Type,
             SelData.Format,SelData.Data,SelData.Length,CompoundTextList);
-          {$IfDef DEBUG_CLIPBOARD}
-          DebugLn('[TGtk2WidgetSet.ClipboardGetData] D  CompoundTextCount=',dbgs(CompoundTextCount),' Now=',dbgs(Now));
-          {$EndIf}
-          for i:=0 to CompoundTextCount-1 do
-            if (CompoundTextList[i]<>nil) then
-              Stream.Write(CompoundTextList[i]^,StrLen(CompoundTextList[i]));
-          gdk_free_text_list(CompoundTextList);
+          try
+            {$IfDef DEBUG_CLIPBOARD}
+            DebugLn('[TGtk2WidgetSet.ClipboardGetData] D  CompoundTextCount=',dbgs(CompoundTextCount),' Now=',dbgs(Now));
+            {$EndIf}
+            for i:=0 to CompoundTextCount-1 do
+              if (CompoundTextList[i]<>nil) then
+                Stream.Write(CompoundTextList[i]^,StrLen(CompoundTextList[i]));
+          finally
+            gdk_free_text_list(CompoundTextList);
+          end;
         end else
           Stream.Write(SelData.Data^,SelData.Length);
       end else begin
@@ -1207,8 +1205,6 @@ end;
   Function: CreateCompatibleDC
   Params:  none
   Returns: Nothing
-
-
  ------------------------------------------------------------------------------}
 function TGtk2WidgetSet.CreateCompatibleDC(DC: HDC): HDC;
 var
@@ -1216,6 +1212,8 @@ var
 begin
   Result := 0;
   pNewDC := NewDC;
+
+  // ToDo: TGtk2WidgetSet.CreateCompatibleDC: when is a DC compatible?
 
   // do not copy
   // In a compatible DC you have to select a bitmap into it
@@ -2639,7 +2637,7 @@ var
     LeftPos: Longint;
   begin
     if LeftOffset <> DT_LEFT then
-      GetTextExtentPoint(DC, theLine, LineLength, Points[0]);
+      GetTextExtentPoint(DC, theLine, LineLength, {%H-}Points[0]);
 
     if TempBrush = HBRUSH(-1) then
       TempBrush := SelectObject(DC, GetStockObject(NULL_BRUSH));
@@ -2844,7 +2842,7 @@ end;
  ------------------------------------------------------------------------------}
 function TGtk2WidgetSet.EnableScrollBar(Wnd: HWND; wSBflags, wArrows: Cardinal): Boolean;
 begin
-  //TODO: Implement this;
+  // TODO: implement TGtk2WidgetSet.EnableScrollBar
   Result := False;
 end;
 
@@ -4266,8 +4264,6 @@ end;
   Params:  Don't care yet
   Returns: False so that the font cache in the newest mwEdit will use
            TextMetrics info which is working already
-
-
  ------------------------------------------------------------------------------}
 function TGtk2WidgetSet.GetCharABCWidths(DC: HDC; p2, p3: UINT;
   const ABCStructs): Boolean;
@@ -4968,7 +4964,7 @@ begin
   end;
   
   {$IFDEF Use_KeyStateList}
-  Result := KEYSTATE[FKeyStateList_.IndexOf(Pointer(PtrUInt(nVirtKey))) >=0];
+  Result := KEYSTATE[FKeyStateList_.IndexOf({%H-}Pointer(PtrUInt(nVirtKey))) >=0];
   {$ELSE}
   Implement this
   {$ENDIF}
@@ -4977,7 +4973,7 @@ begin
   if Result = 0
   then begin
     {$IFDEF Use_KeyStateList}
-    Result := KEYSTATE[FKeyStateList_.IndexOf(Pointer(PtrUInt(nVirtKey or KEYMAP_EXTENDED))) >=0];
+    Result := KEYSTATE[FKeyStateList_.IndexOf({%H-}Pointer(PtrUInt(nVirtKey or KEYMAP_EXTENDED))) >=0];
     {$ELSE}
     Implement this
     {$ENDIF}
@@ -4985,7 +4981,7 @@ begin
 
   {$IFDEF Use_KeyStateList}
   // add toggle
-  Result := Result or TOGGLESTATE[FKeyStateList_.IndexOf(Pointer(
+  Result := Result or TOGGLESTATE[FKeyStateList_.IndexOf({%H-}Pointer(
                                   PtrUInt(nVirtKey or KEYMAP_TOGGLE))) >=0];
   // If there are tons of new keyboard errors this is probably the cause
   GdkModMask := gtk_accelerator_get_default_mod_mask;
@@ -5666,7 +5662,7 @@ begin
         P := GetStyleWidget(lgsHorizontalScrollbar);
         if P <> nil then
         begin
-          FillChar(AValue, SizeOf(AValue), 0);
+          FillChar(AValue{%H-}, SizeOf(AValue), 0);
           g_value_init(@AValue, G_TYPE_INT);
           gtk_widget_style_get_property(P, 'slider-width', @AValue);
           Result := AValue.data[0].v_int;

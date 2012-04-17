@@ -69,11 +69,17 @@ var
 begin
   // DebugLn('Gtk2_ItemFocusChanged');
   // the defocus of the oldrow isn't send
-  if GTK_IS_TREE_VIEW(Widget) then
-    gtk_tree_view_get_cursor(PGtkTreeView(Widget), path, column)
+  if GTK_IS_TREE_VIEW(Widget) then begin
+    path:=nil;
+    column:=nil;
+    gtk_tree_view_get_cursor(PGtkTreeView(Widget), path, column);
+  end
   else
-  if GTK_IS_ICON_VIEW(Widget) then
-    gtk_icon_view_get_cursor(PGtkIconView(Widget), path, cell)
+  if GTK_IS_ICON_VIEW(Widget) then begin
+    path:=nil;
+    cell:=nil;
+    gtk_icon_view_get_cursor(PGtkIconView(Widget), path, cell);
+  end
   else
     path := nil;
 
@@ -920,6 +926,7 @@ begin
   if not WSCheckHandleAllocated(ALV, 'ColumnSetImage')
   then Exit;
 
+  // ToDo: TGtk2WSCustomListView.ColumnSetImage
   //DebugLn('TODO: Gtk2. TGtk2WSCustomListView.ColumnSetImage');
 end;
 
@@ -1178,8 +1185,11 @@ begin
 
       lisFocused:
       begin
-        if GTK_IS_TREE_VIEW(MainView) then
+        if GTK_IS_TREE_VIEW(MainView) then begin
+          Path:=nil;
+          Column:=nil;
           gtk_tree_view_get_cursor(PGtkTreeView(MainView), Path, Column)
+        end
         else
         if GTK_IS_ICON_VIEW(MainView) then
           gtk_icon_view_get_cursor(PGtkIconView(MainView), Path, Cell{%H-})
@@ -1245,7 +1255,7 @@ class procedure TGtk2WSCustomListView.ItemSetChecked(
 begin
   if not WSCheckHandleAllocated(ALV, 'ItemSetChecked')
   then Exit;
-  // nothing neede here
+  // nothing needed here
 end;
 
 class procedure TGtk2WSCustomListView.ItemSetImage(const ALV: TCustomListView;
@@ -1452,6 +1462,8 @@ var
   Path: PGtkTreePath;
   ItemRect: TGdkRectangle;
 begin
+  // ToDo: TGtk2WSCustomListView.ItemSetText: this function queues a draw. Is this correct?
+
   if not WSCheckHandleAllocated(ALV, 'ItemSetText')
   then Exit;
 
@@ -1485,7 +1497,7 @@ begin
   if not WSCheckHandleAllocated(ALV, 'ItemShow')
   then Exit;
 
-  //TODO check for partial visiblity. currently scrolls to the Item to make it fully visible
+  // TODO: TGtk2WSCustomListView.ItemShow check for partial visiblity. currently scrolls to the Item to make it fully visible
   StrIndex := IntToStr(AItem.Index);
 
   GetCommonTreeViewWidgets({%H-}PGtkWidget(ALV.Handle), Widgets);
@@ -1722,13 +1734,19 @@ begin
 
   with Widgets^ do
   begin
-    if GTK_IS_TREE_VIEW(MainView) then
-      gtk_tree_view_get_cursor(PGtkTreeView(MainView), Path, Column)
-    else
-    if GTK_IS_ICON_VIEW(MainView) then
-      gtk_icon_view_get_cursor(PGtkIconView(MainView), Path, Cell)
-    else
-      Path := nil;
+    if GTK_IS_TREE_VIEW(MainView) then begin
+      Path:=nil;
+      Column:=nil;
+      gtk_tree_view_get_cursor(PGtkTreeView(MainView), Path, Column);
+    end
+    else begin
+      if GTK_IS_ICON_VIEW(MainView) then begin
+        Cell:=nil;
+        gtk_icon_view_get_cursor(PGtkIconView(MainView), Path, Cell);
+      end
+      else
+        Path := nil;
+    end;
     if Path <> nil then
     begin
       Result := StrToInt(PChar(Path));
@@ -1785,6 +1803,8 @@ begin
         y := y - cy;
       end;
     end;
+    ItemPath:=nil;
+    Column:=nil;
     if gtk_tree_view_get_path_at_pos(PGtkTreeView(Widgets^.MainView), x, y, ItemPath, Column, nil, nil) then
     begin
       if ItemPath <> nil then

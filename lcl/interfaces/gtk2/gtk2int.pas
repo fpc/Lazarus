@@ -1,4 +1,3 @@
-{ $Id$ }
 {
  /***************************************************************************
                        gtk2int.pas  -  GTK2 Interface Object
@@ -155,7 +154,6 @@ type
 
     // create and destroy
     function CreateAPIWidget(AWinControl: TWinControl): PGtkWidget;
-    function OldCreateStatusBarPanel(StatusBar: TObject; Index: integer): PGtkWidget;
     function CreateSimpleClientAreaWidget(Sender: TObject;
       NotOnParentsClientArea: boolean): PGtkWidget;
     procedure DestroyEmptySubmenu(Sender: TObject);
@@ -196,7 +194,7 @@ type
     procedure LoadPixbufFromLazResource(const ResourceName: string;
       var Pixbuf: PGdkPixbuf);
     function InternalGetDIBits(DC: HDC; Bitmap: HBitmap; StartScan, NumScans: UINT;
-      BitSize : Longint; Bits: Pointer; var BitInfo: BitmapInfo; Usage: UINT; DIB : Boolean): Integer;
+      BitSize : Longint; Bits: Pointer; out BitInfo: BitmapInfo; Usage: UINT; DIB : Boolean): Integer;
     function RawImage_DescriptionFromDrawable(out ADesc: TRawImageDescription; ADrawable: PGdkDrawable; ACustomAlpha: Boolean): boolean;
     function RawImage_DescriptionFromPixbuf(out ADesc: TRawImageDescription; APixbuf: PGdkPixbuf): boolean;
     function RawImage_FromDrawable(out ARawImage: TRawImage; ADrawable, AAlpha: PGdkDrawable; ARect: PRect = nil): boolean;
@@ -219,9 +217,9 @@ type
     // misc
     function GetCaption(Sender : TObject) : String;
     procedure WordWrap(DC: HDC; AText: PChar; MaxWidthInPixel: integer;
-      var Lines: PPChar; var LineCount: integer);
+      out Lines: PPChar; out LineCount: integer);
 
-    procedure ResizeChild(Sender : TObject; Left,Top,Width,Height : Integer);
+    procedure ResizeChild(Sender : TObject; {%H-}Left,{%H-}Top,{%H-}Width,{%H-}Height : Integer);
     procedure RemoveCallbacks(Widget: PGtkWidget);
 
     // for gtk specific components:
@@ -283,7 +281,7 @@ type
     procedure AppProcessMessages; override;
     procedure AppWaitMessage; override;
     procedure AppTerminate; override;
-    procedure AppSetTitle(const ATitle: string); override;
+    procedure AppSetTitle(const {%H-}ATitle: string); override;
 
     // copied from GtkInt
     procedure _SetCallbackEx(const AMsg: LongInt; const AGTKObject: PGTKObject; const ALCLObject: TObject; Direct: Boolean);
