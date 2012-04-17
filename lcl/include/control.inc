@@ -3750,6 +3750,7 @@ begin
   for a:=Low(TAnchorKind) to high(TAnchorKind) do
     if (a in NewAnchors) and (AnchorSide[a].Side=asrCenter) then
       AnchorSide[a].FixCenterAnchoring;
+  UpdateAnchorRules;
   AdjustSize;
 end;
 
@@ -3787,23 +3788,26 @@ begin
       NewBaseParentClientSize:=Size(0,0);
   end else
     NewBaseParentClientSize:=FBaseParentClientSize;
-  if CompareRect(@NewBaseBounds,@FBaseBounds)
-  and (NewBaseParentClientSize.cx=FBaseParentClientSize.cx)
-  and (NewBaseParentClientSize.cy=FBaseParentClientSize.cy)
-  then exit;
-  //if csDesigning in ComponentState then
-  {$IFDEF CHECK_POSITION}
-  if CheckPosition(Self) then
-    DebugLn(['TControl.UpdateBaseBounds '+DbgSName(Self),
-    ' OldBounds='+dbgs(FBaseBounds),
-    ' OldParentClientSize='+dbgs(FBaseParentClientSize),
-    ' NewBounds='+dbgs(NewBaseBounds),
-    ' NewParentClientSize='+dbgs(NewBaseParentClientSize),
-    '']);
-  {$ENDIF}
-  FBaseBounds:=NewBaseBounds;
+
+  if (not CompareRect(@NewBaseBounds,@FBaseBounds))
+  or (NewBaseParentClientSize.cx<>FBaseParentClientSize.cx)
+  or (NewBaseParentClientSize.cy<>FBaseParentClientSize.cy)
+  then begin
+    //if csDesigning in ComponentState then
+    {$IFDEF CHECK_POSITION}
+    if CheckPosition(Self) then
+      DebugLn(['TControl.UpdateBaseBounds '+DbgSName(Self),
+      ' OldBounds='+dbgs(FBaseBounds),
+      ' OldParentClientSize='+dbgs(FBaseParentClientSize),
+      ' NewBounds='+dbgs(NewBaseBounds),
+      ' NewParentClientSize='+dbgs(NewBaseParentClientSize),
+      '']);
+    {$ENDIF}
+
+    FBaseBounds:=NewBaseBounds;
+    FBaseParentClientSize:=NewBaseParentClientSize;
+  end;
   Include(FControlFlags,cfBaseBoundsValid);
-  FBaseParentClientSize:=NewBaseParentClientSize;
 end;
 
 procedure TControl.WriteLayoutDebugReport(const Prefix: string);
