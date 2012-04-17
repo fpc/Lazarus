@@ -2104,7 +2104,7 @@ begin
               is sent immediately.
 
               Further Note:
-                Under winapi a  LM_LBUTTONDOWN ends the drag immediate.
+                Under winapi a LM_LBUTTONDOWN ends the drag immediate.
               For example: If we exit here, then mouse down on TTreeView does
                 not work any longer under gtk.
             }

@@ -5214,9 +5214,18 @@ begin
         Form := GetParentForm(Self);
         if Assigned(Form) and not (csDestroyingHandle in ControlState) and not (csDestroying in ComponentState) then
         begin
-          if not Form.SetFocusedControl(Self) then Exit;
+          if not Form.SetFocusedControl(Self) then
+          begin
+            {$IFDEF VerboseFocus}
+            DebugLn('TWinControl.WndProc LM_SetFocus ',DbgSName(Self),' form=',DbgSName(Form),' Form.SetFocusedControl FAILED');
+            {$ENDIF}
+            Exit;
+          end;
           Message.Result := 0;
         end;
+        {$IFDEF VerboseFocus}
+        DebugLn('TWinControl.WndProc AFTER form LM_SetFocus ',DbgSName(Self));
+        {$ENDIF}
       end;
 
     LM_KILLFOCUS:
@@ -6554,7 +6563,9 @@ end;
  ------------------------------------------------------------------------------}
 procedure TWinControl.WMSetFocus(var Message: TLMSetFocus);
 begin
-  //DebugLn('TWinControl.WMSetFocus A ',Name,':',ClassName);
+  {$IFDEF VerboseFocus}
+  DebugLn('TWinControl.WMSetFocus A ',Name,':',ClassName);
+  {$ENDIF}
 end;
 
 {------------------------------------------------------------------------------
