@@ -30,7 +30,7 @@
     <License Value="modified LGPL-2
 "/>
     <Version Major="1" Release="1"/>
-    <Files Count="288">
+    <Files Count="292">
       <Item1>
         <Filename Value="barchart.pp"/>
         <UnitName Value="BarChart"/>
@@ -1188,6 +1188,22 @@
         <Filename Value="customdrawn_android.pas"/>
         <UnitName Value="customdrawn_android"/>
       </Item288>
+      <Item289>
+        <Filename Value="include/sysenvapis_win.inc"/>
+        <Type Value="Include"/>
+      </Item289>
+      <Item290>
+        <Filename Value="include/sysenvapis.inc"/>
+        <Type Value="Include"/>
+      </Item290>
+      <Item291>
+        <Filename Value="include/sysenvapis_mac.inc"/>
+        <Type Value="Include"/>
+      </Item291>
+      <Item292>
+        <Filename Value="include/sysenvapis_unix.inc"/>
+        <Type Value="Include"/>
+      </Item292>
     </Files>
     <LazDoc Paths="../docs/xml/lcl"/>
     <i18n>
