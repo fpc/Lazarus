@@ -332,8 +332,8 @@ var
 begin
   Result:=false;
   
-  Init;
-  
+  if not Init then exit;
+
   APackage:=LoadPackage(AFilename);
   if APackage=nil then
     Error(ErrorLoadPackageFailed, 'unable to load package "'+AFilename+'"');
@@ -413,7 +413,7 @@ var
   ProfileChanged: boolean;
 begin
   Result:=false;
-  Init;
+  if not Init then exit;
 
   LoadMiscellaneousOptions;
   BuildLazProfiles:=MiscellaneousOptions.BuildLazProfiles;
@@ -659,7 +659,7 @@ begin
   Result:=false;
   CloseProject(Project1);
 
-  Init;
+  if not Init then exit;
 
   Project1:=LoadProject(AFilename);
   
@@ -864,6 +864,7 @@ begin
   MainBuildBoss.HasGUI:=false;
   SetupMacros;
   LoadEnvironmentOptions;
+  if Terminated then exit(false);
   LoadMiscellaneousOptions;
   SetupLazarusDirectory;
   SetupCodetools;
@@ -880,9 +881,12 @@ begin
   MainBuildBoss.SetBuildTarget(OSOverride,CPUOverride,WidgetSetOverride,bmsfsSkip,true);
 
   fInitResult:=true;
+  Result:=fInitResult;
 end;
 
 procedure TLazBuildApplication.LoadEnvironmentOptions;
+var
+  Note: string;
 begin
   with EnvironmentOptions do begin
     CreateConfig;
@@ -891,7 +895,7 @@ begin
     fLazarusDirInCfg:=LazarusDirectory;
 
     if Application.HasOption('language') then begin
-      debugln('TLazBuildApplication.Init overriding language with command line: ',
+      debugln('Note: overriding language with command line: ',
         Application.GetOptionValue('language'));
       EnvironmentOptions.LanguageID:=Application.GetOptionValue('language');
     end;
@@ -904,6 +908,13 @@ begin
     //debugln(['TLazBuildApplication.LoadEnvironmentOptions LazarusDirectory="',LazarusDirectory,'"']);
     if LazarusDirOverride<>'' then
       LazarusDirectory:=CleanAndExpandDirectory(LazarusDirOverride);
+  end;
+  if not FileExistsUTF8(EnvironmentOptions.GetParsedLazarusDirectory
+    +SetDirSeparators('packager/registration/fcl.lpk'))
+  then begin
+    CheckLazarusDirectoryQuality(EnvironmentOptions.GetParsedLazarusDirectory,Note);
+    debugln(['Error: invalid Lazarus directory "'+EnvironmentOptions.LazarusDirectory+'": '+Note]);
+    Terminate;
   end;
 end;
 
