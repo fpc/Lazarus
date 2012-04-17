@@ -1328,6 +1328,8 @@ procedure TControl.DoConstrainedResize(var NewLeft, NewTop,
 var
   MinWidth, MinHeight, MaxWidth, MaxHeight : TConstraintSize;
 begin
+  if NewWidth<0 then NewWidth:=0;
+  if NewHeight<0 then NewHeight:=0;
   MinWidth := Constraints.EffectiveMinWidth;
   MinHeight := Constraints.EffectiveMinHeight;
   MaxWidth := Constraints.EffectiveMaxWidth;
