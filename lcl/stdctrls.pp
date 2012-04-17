@@ -1089,6 +1089,7 @@ type
     FCancel: Boolean;
     FDefault: Boolean;
     FActive: boolean;
+    FRolesUpdateLocked: Boolean;
     procedure SetCancel(NewCancel: boolean);
     procedure SetDefault(Value: Boolean);
     procedure SetModalResult(const AValue: TModalResult);

@@ -121,7 +121,7 @@ begin
   FSortDirection := sdAscending;
   FIconOptions := TIconOptions.Create(Self);
   FColumns := TListColumns.Create(Self);
-  FListItems := TListItems.Create(Self);
+  FListItems := CreateListItems;
   BorderStyle := bsSingle;
   FScrollBars := ssBoth;
   FCompStyle := csListView;
@@ -980,6 +980,21 @@ begin
   BeginDrag(False);
 end;
 
+function TCustomListView.CreateListItem: TListItem;
+var
+  AItemClass: TListItemClass;
+begin
+  AItemClass := TListItem;
+  if Assigned(OnCreateItemClass) then
+    OnCreateItemClass(Self, AItemClass);
+  Result := AItemClass.Create(Items);
+end;
+
+function TCustomListView.CreateListItems: TListItems;
+begin
+  Result := TListItems.Create(Self);
+end;
+
 {------------------------------------------------------------------------------
    TCustomListView BeginUpdate
    Params: None
@@ -1416,10 +1431,11 @@ begin
   Items.Free;
   if AValue then
   begin
-    FSelectedIdx:=-1;
-    FListItems:=TOwnerDataListItems.Create(Self);
-  end else
-    FListItems:=TListItems.Create(Self);
+    FSelectedIdx := -1;
+    FListItems := TOwnerDataListItems.Create(Self);
+  end
+  else
+    CreateListItems;
 
   if HandleAllocated then 
     TWSCustomListViewClass(WidgetSetClass).SetOwnerData(Self, AValue);

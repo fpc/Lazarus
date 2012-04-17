@@ -939,7 +939,7 @@ type
   public
     procedure Assign(ASource: TPersistent); override;
 
-    constructor Create(AOwner: TListItems);
+    constructor Create(AOwner: TListItems); virtual;
     destructor Destroy; override;
     procedure Delete;
     procedure MakeVisible(PartialOK: Boolean);
@@ -965,7 +965,7 @@ type
     property SubItemImages[const AIndex: Integer]: Integer read GetSubItemImages write SetSubItemImages;
     property Top: Integer read GetTop write SetTop;
   end;
-
+  TListItemClass = class of TListItem;
 
   { TOwnerDataListItem }
 
@@ -1204,6 +1204,7 @@ type
   TLVAdvancedCustomDrawSubItemEvent=procedure(Sender: TCustomListView; Item: TListItem; 
                                  SubItem: Integer; State: TCustomDrawState;
                                  Stage: TCustomDrawStage; var DefaultDraw: Boolean) of object;
+  TLVCreateItemClassEvent = procedure(Sender: TCustomListView; var ItemClass: TListItemClass) of object;
 
   TListViewProperty = (
     lvpAutoArrange,
@@ -1352,6 +1353,7 @@ type
     procedure CNNotify(var AMessage: TLMNotify); message CN_NOTIFY;
     procedure InvalidateSelected;
   private
+    FOnCreateItemClass: TLVCreateItemClassEvent;
     procedure HideEditor;
     procedure ShowEditor;
     procedure WMHScroll(var message : TLMHScroll); message LM_HSCROLL;
@@ -1366,9 +1368,11 @@ type
     class function GetControlClassDefaultSize: TSize; override;
     procedure InitializeWnd; override;
     procedure FinalizeWnd; override;
-
     procedure DestroyWnd; override;
     procedure BeginAutoDrag; override;
+
+    function CreateListItem: TListItem; virtual;
+    function CreateListItems: TListItems; virtual;
     function CanEdit(Item: TListItem): Boolean; virtual;
     procedure Change(AItem: TListItem; AChange: Integer); virtual;
     procedure ColClick(AColumn: TListColumn); virtual;
@@ -1425,11 +1429,11 @@ type
     property OnChange: TLVChangeEvent read FOnChange write FOnChange;
     property OnColumnClick: TLVColumnClickEvent read FOnColumnClick write FOnColumnClick;
     property OnCompare: TLVCompareEvent read FOnCompare write FOnCompare;
+    property OnCreateItemClass: TLVCreateItemClassEvent read FOnCreateItemClass write FOnCreateItemClass;
     property OnData: TLVDataEvent read FOnData write FOnData;
     property OnDataFind: TLVDataFindEvent read FOnDataFind write FOnDataFind;
     property OnDataHint: TLVDataHintEvent read FOnDataHint write FOnDataHint;
     property OnDataStateChange: TLVDataStateChangeEvent read FOnDataStateChange write FOnDataStateChange;
-
     property OnDeletion: TLVDeletedEvent read FOnDeletion write FOnDeletion;
     property OnEdited: TLVEditedEvent read FOnEdited write FOnEdited;
     property OnEditing: TLVEditingEvent read FOnEditing write FOnEditing;
@@ -1553,6 +1557,7 @@ type
     property OnColumnClick;
     property OnCompare;
     property OnContextPopup;
+    property OnCreateItemClass;
     property OnCustomDraw;
     property OnCustomDrawItem;
     property OnCustomDrawSubItem;

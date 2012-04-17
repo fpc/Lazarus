@@ -97,7 +97,10 @@ end;
 {------------------------------------------------------------------------------}
 function TListItems.Add: TListItem;
 begin
-  Result := TListItem.Create(self);
+  if Assigned(Owner) then
+    Result := Owner.CreateListItem
+  else
+    Result := TListItem.Create(Self);
   AddItem(Result);
 end;
 
@@ -332,7 +335,10 @@ end;
 ------------------------------------------------------------------------------}
 function TListItems.Insert(const AIndex: Integer): TListItem;
 begin
-  Result := TListItem.Create(self);
+  if Assigned(Owner) then
+    Result := Owner.CreateListItem
+  else
+    Result := TListItem.Create(Self);
   InsertItem(Result, AIndex);
 end;
 
