@@ -332,58 +332,29 @@ procedure TQuickFixUnitNotFoundPosition.Execute(const Msg: TIDEMessageLine;
     end;
   end;
 
-  procedure FindPPU(MissingUnitname: string;
-    var PPUFilename, PkgName: string; OnlyInstalled: boolean);
+  procedure FindPPUInInstalledPkgs(MissingUnitname: string;
+    var PPUFilename, PkgName: string);
   var
     i: Integer;
     Pkg: TIDEPackage;
     DirCache: TCTDirectoryCache;
     UnitOutDir: String;
-    Dir: String;
-    SrcPath: String;
   begin
-    // search ppu in packages
-    if PPUFilename='' then begin
-      for i:=0 to PackageEditingInterface.GetPackageCount-1 do begin
-        Pkg:=PackageEditingInterface.GetPackages(i);
-        if OnlyInstalled and (Pkg.AutoInstall=pitNope) then continue;
-        UnitOutDir:=Pkg.LazCompilerOptions.GetUnitOutputDirectory(false);
-        //debugln(['TQuickFixUnitNotFoundPosition.Execute ',Pkg.Name,' UnitOutDir=',UnitOutDir]);
-        if FilenameIsAbsolute(UnitOutDir) then begin
-          DirCache:=CodeToolBoss.DirectoryCachePool.GetCache(UnitOutDir,true,false);
-          PPUFilename:=DirCache.FindFile(MissingUnitname+'.ppu',ctsfcLoUpCase);
-          //debugln(['TQuickFixUnitNotFoundPosition.Execute ShortPPU=',PPUFilename]);
-          if PPUFilename<>'' then begin
-            PkgName:=Pkg.Name;
-            PPUFilename:=AppendPathDelim(DirCache.Directory)+PPUFilename;
-            break;
-          end;
-        end;
-      end;
-    end;
-    if (PkgName='') and (PPUFilename<>'') then begin
-      Dir:=ExtractFilePath(PPUFilename);
-      if Dir='' then exit;
-      // check output directories of packages
-      for i:=0 to PackageEditingInterface.GetPackageCount-1 do begin
-        Pkg:=PackageEditingInterface.GetPackages(i);
-        UnitOutDir:=Pkg.LazCompilerOptions.GetUnitOutputDirectory(false);
-        if FilenameIsAbsolute(UnitOutDir)
-        and (CompareFilenames(AppendPathDelim(UnitOutDir),Dir)=0) then begin
+    // search ppu in installed packages
+    for i:=0 to PackageEditingInterface.GetPackageCount-1 do begin
+      Pkg:=PackageEditingInterface.GetPackages(i);
+      if Pkg.AutoInstall=pitNope then continue;
+      UnitOutDir:=Pkg.LazCompilerOptions.GetUnitOutputDirectory(false);
+      //debugln(['TQuickFixUnitNotFoundPosition.Execute ',Pkg.Name,' UnitOutDir=',UnitOutDir]);
+      if FilenameIsAbsolute(UnitOutDir) then begin
+        DirCache:=CodeToolBoss.DirectoryCachePool.GetCache(UnitOutDir,true,false);
+        PPUFilename:=DirCache.FindFile(MissingUnitname+'.ppu',ctsfcLoUpCase);
+        //debugln(['TQuickFixUnitNotFoundPosition.Execute ShortPPU=',PPUFilename]);
+        if PPUFilename<>'' then begin
           PkgName:=Pkg.Name;
-          exit;
+          PPUFilename:=AppendPathDelim(DirCache.Directory)+PPUFilename;
+          break;
         end;
-      end;
-      // check source directories of packages
-      for i:=0 to PackageEditingInterface.GetPackageCount-1 do begin
-        Pkg:=PackageEditingInterface.GetPackages(i);
-        if Pkg.IsVirtual then continue;
-        SrcPath:=Pkg.LazCompilerOptions.GetSrcPath(false);
-        if SrcPath='' then continue;
-        if FindPathInSearchPath(PChar(Dir),length(Dir),PChar(SrcPath),length(SrcPath))=nil
-        then continue;
-        PkgName:=Pkg.Name;
-        exit;
       end;
     end;
   end;
@@ -430,6 +401,8 @@ var
   Col: integer;
   PkgName: String;
   OnlyInstalled: Boolean;
+  Owners: TFPList;
+  UsedByOwner: TObject;
 begin
   if Step<>imqfoImproveMessage then exit;
   //DebugLn('QuickFixUnitNotFoundPosition ');
@@ -490,39 +463,65 @@ begin
   end;
 
   // fix line and column
-  if CodeBuf<>nil then begin
-    FixSourcePos(CodeBuf,MissingUnitname,NewFilename,Dir);
-  end;
-
-  // if the ppu is there then improve the message
-  //debugln(['TQuickFixUnitNotFoundPosition.Execute Dir=',Dir]);
-  if FilenameIsAbsolute(Dir) then begin
-    PPUFilename:=CodeToolBoss.DirectoryCachePool.FindCompiledUnitInCompletePath(
-                                                           Dir,MissingUnitname);
-    //debugln(['TQuickFixUnitNotFoundPosition.Execute PPUFilename=',PPUFilename,' IsFileInIDESrcDir=',IsFileInIDESrcDir(Dir+'test')]);
-    PkgName:='';
-    OnlyInstalled:=IsFileInIDESrcDir(Dir+'test');
-    FindPPU(MissingUnitname,PPUFilename,PkgName,OnlyInstalled);
-    FindPackage(MissingUnitname,PkgName,OnlyInstalled);
-
-    if PPUFilename<>'' then begin
-      // there is a ppu file, but the compiler didn't like it
-      // => change message
-      s:='Fatal: Rebuild needed of unit '+MissingUnitname;
-      if UsedByUnit<>'' then
-        s+=' used by '+UsedByUnit;
-      s+=', ppu='+CreateRelativePath(PPUFilename,Dir);
-      if PkgName<>'' then
-        s+=', package '+PkgName;
-      Msg.Msg:=s;
-    end else if PkgName<>'' then begin
-      // ppu is missing, but the package is known
-      // => change message
-      s:='Fatal: Can''t find ppu of unit '+MissingUnitname;
-      if UsedByUnit<>'' then
-        s+=' used by '+UsedByUnit;
-      s+='. Maybe package '+PkgName+' needs a clean rebuild.';
+  Owners:=nil;
+  UsedByOwner:=nil;
+  try
+    if CodeBuf<>nil then begin
+      FixSourcePos(CodeBuf,MissingUnitname,NewFilename,Dir);
+      Owners:=PackageEditingInterface.GetOwnersOfUnit(NewFilename);
+      if (Owners<>nil) and (Owners.Count>0) then
+        UsedByOwner:=TObject(Owners[0]);
     end;
+
+    // if the ppu is there then improve the message
+    //debugln(['TQuickFixUnitNotFoundPosition.Execute Dir=',Dir]);
+    if FilenameIsAbsolute(Dir) then begin
+      PPUFilename:=CodeToolBoss.DirectoryCachePool.FindCompiledUnitInCompletePath(
+                                                             Dir,MissingUnitname);
+      //debugln(['TQuickFixUnitNotFoundPosition.Execute PPUFilename=',PPUFilename,' IsFileInIDESrcDir=',IsFileInIDESrcDir(Dir+'test')]);
+      PkgName:='';
+      OnlyInstalled:=IsFileInIDESrcDir(Dir+'test');
+      if OnlyInstalled and (PPUFilename='') then begin
+        FindPPUInInstalledPkgs(MissingUnitname,PPUFilename,PkgName);
+      end;
+
+      FindPackage(MissingUnitname,PkgName,OnlyInstalled);
+      if PPUFilename<>'' then begin
+        // there is a ppu file in the unit path
+        if PPUFilename<>'' then begin
+          // there is a ppu file, but the compiler didn't like it
+          // => change message
+          s:='Fatal: Can not find '+MissingUnitname;
+          if UsedByUnit<>'' then
+            s+=' used by '+UsedByUnit;
+          s+=', ppu='+CreateRelativePath(PPUFilename,Dir);
+          if PkgName<>'' then
+            s+=', package '+PkgName;
+        end else if PkgName<>'' then begin
+          // ppu is missing, but the package is known
+          // => change message
+          s:='Fatal: Can''t find ppu of unit '+MissingUnitname;
+          if UsedByUnit<>'' then
+            s+=' used by '+UsedByUnit;
+          s+='. Maybe package '+PkgName+' needs a clean rebuild.';
+        end;
+      end else begin
+        // there is no ppu file in the unit path
+        s:='Fatal: Can not find unit '+MissingUnitname;
+        if UsedByUnit<>'' then
+          s+=' used by '+UsedByUnit;
+        if PkgName<>'' then
+          s+='. Check if package '+PkgName+' is in the dependencies';
+        if UsedByOwner is TLazProject then
+          s+=' of the project inspector'
+        else if UsedByOwner is TIDEPackage then
+          s+=' of package '+TIDEPackage(UsedByOwner).Name;
+        s+='.';
+      end;
+      Msg.Msg:=s;
+    end;
+  finally
+    Owners.Free;
   end;
 end;
 
