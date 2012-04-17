@@ -47,8 +47,10 @@ type
     FList: PStringHashItemList;
     FCount: Integer;
     fCaseSensitive: Boolean;
+    function BinarySearch(HashValue: Cardinal): Integer;
     function CompareString(const Value1, Value2: String): Boolean;
     function CompareValue(const Value1, Value2: Cardinal): Integer;
+    procedure FindHashBoundaries(HashValue: Cardinal; StartFrom: Integer; out First, Last: Integer);
     function GetData(const S: String): Pointer;
     procedure SetCaseSensitive(const Value: Boolean);
     procedure Delete(Index: Integer);
@@ -63,7 +65,9 @@ type
     function Add(const S: String; ItemData: Pointer): Integer;
     procedure Clear;
     function Find(const S: String): Integer;
+    function Find(const S: String; Data: Pointer): Integer;
     function Remove(const S: String): Integer;
+    function Remove(const S: String; Data: Pointer): Integer;
     property CaseSensitive: Boolean read fCaseSensitive write SetCaseSensitive;
     property Count: Integer read FCount;
     property Data[const S: String]: Pointer read GetData write SetData; default;
@@ -123,6 +127,24 @@ begin
   end else
     Result:=0;
   Insert(Result,Item);
+end;
+
+function TStringHashList.BinarySearch(HashValue: Cardinal): Integer;
+var
+  First, Last, Temp: Integer;
+begin
+  Result:= -1;
+  First:= 0;
+  Last:= Count -1;
+  while First <= Last do
+  begin
+    Temp:= (First + Last) div 2;
+    case CompareValue(HashValue, FList[Temp]^.HashValue) of
+      1: First:= Temp + 1;
+      0: exit(Temp);
+     -1: Last:= Temp-1;
+    end;
+  end;
 end;
 
 procedure TStringHashList.Clear;
@@ -216,43 +238,14 @@ end;
 function TStringHashList.Find(const S: String): Integer;
 var
   Value: Cardinal;
-  First, Last, Temp, I: Integer;
+  First, Last, I: Integer;
 begin
   Value:= HashOf(s);
-  Result:= -1;
-  First:= 0;
-  Last:= Count -1;
-  while First <= Last do
+  Result:= BinarySearch(Value);
+  if (Result <> -1) and not CompareString(S, FList[Result]^.Key) then
   begin
-    Temp:= (First + Last) div 2;
-    case CompareValue(Value, FList[Temp]^.HashValue) of
-     1: First:= Temp + 1;
-     0:
-       begin
-         Result:= Temp;
-         if CompareString(S, FList[Temp]^.Key) then
-           exit
-         else
-           break;
-       end;
-     -1: Last:= Temp-1;
-    end;
-  end;
-  if Result <> -1 then
-  begin
+    FindHashBoundaries(Value, Result, First, Last);
     Result:= -1;
-    First:= Temp -1;
-    //Find first matching hash index
-    while (First >= 0) and (CompareValue(Value, FList[First]^.HashValue) = 0) do
-      dec(First);
-    if (First < 0) or ((CompareValue(Value, FList[First]^.HashValue) <> 0)) then
-      inc(First);
-    //Find the last matching hash index
-    Last:= Temp +1;
-    while (Last <= (FCount - 1)) and (CompareValue(Value, FList[Last]^.HashValue) = 0) do
-      inc(Last);
-    if (Last > (FCount - 1)) or (CompareValue(Value, FList[Last]^.HashValue) <> 0) then
-      dec(Last);
     for I := First to Last do
       if CompareString(S, FList[I]^.Key) then
       begin
@@ -260,6 +253,43 @@ begin
         Exit;
       end;
   end;
+end;
+
+function TStringHashList.Find(const S: String; Data: Pointer): Integer;
+var
+  Value: Cardinal;
+  First, Last, I: Integer;
+begin
+  Value:= HashOf(s);
+  Result:= BinarySearch(Value);
+  if (Result <> -1) and
+     not (CompareString(S, FList[Result]^.Key) and (FList[Result]^.Data = Data)) then
+  begin
+    FindHashBoundaries(Value, Result, First, Last);
+    Result:= -1;
+    for I := First to Last do
+      if CompareString(S, FList[I]^.Key) and (FList[I]^.Data = Data) then
+      begin
+        Result:= I;
+        Exit;
+      end;
+  end;
+end;
+
+procedure TStringHashList.FindHashBoundaries(HashValue: Cardinal; StartFrom: Integer; out First, Last: Integer);
+begin
+  First:= StartFrom -1;
+  //Find first matching hash index
+  while (First >= 0) and (CompareValue(HashValue, FList[First]^.HashValue) = 0) do
+    dec(First);
+  if (First < 0) or ((CompareValue(HashValue, FList[First]^.HashValue) <> 0)) then
+    inc(First);
+  //Find the last matching hash index
+  Last:= StartFrom +1;
+  while (Last <= (FCount - 1)) and (CompareValue(HashValue, FList[Last]^.HashValue) = 0) do
+    inc(Last);
+  if (Last > (FCount - 1)) or (CompareValue(HashValue, FList[Last]^.HashValue) <> 0) then
+    dec(Last);
 end;
 
 function TStringHashList.HashOf(const Key: string): Cardinal;
@@ -305,6 +335,16 @@ end;
 function TStringHashList.Remove(const S: String): Integer;
 begin
   Result:= Find(S);
+  if Result > -1 then
+  begin
+    Dispose(fList[Result]);
+    Delete(Result);
+  end;
+end;
+
+function TStringHashList.Remove(const S: String; Data: Pointer): Integer;
+begin
+  Result:= Find(S, Data);
   if Result > -1 then
   begin
     Dispose(fList[Result]);

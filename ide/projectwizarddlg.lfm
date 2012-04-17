@@ -5,17 +5,16 @@ object ProjectWizardDialog: TProjectWizardDialog
   Width = 382
   ActiveControl = btnNewProject
   BorderIcons = [biSystemMenu]
-  BorderStyle = bsDialog
   Caption = 'Project Wizard '
   ClientHeight = 294
   ClientWidth = 382
   Position = poScreenCenter
-  LCLVersion = '0.9.31'
+  LCLVersion = '1.1'
   object btnNewProject: TBitBtn
     AnchorSideTop.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 7
-    Height = 25
+    Height = 26
     Top = 11
     Width = 368
     Anchors = [akTop, akLeft, akRight]
@@ -32,7 +31,7 @@ object ProjectWizardDialog: TProjectWizardDialog
     AnchorSideTop.Side = asrBottom
     AnchorSideRight.Side = asrBottom
     Left = 7
-    Height = 25
+    Height = 26
     Top = 126
     Width = 368
     Anchors = [akTop, akLeft, akRight]
@@ -49,8 +48,8 @@ object ProjectWizardDialog: TProjectWizardDialog
     AnchorSideTop.Side = asrBottom
     AnchorSideRight.Side = asrBottom
     Left = 7
-    Height = 25
-    Top = 198
+    Height = 26
+    Top = 200
     Width = 368
     Anchors = [akTop, akLeft, akRight]
     AutoSize = True
@@ -66,8 +65,8 @@ object ProjectWizardDialog: TProjectWizardDialog
     AnchorSideBottom.Control = Owner
     AnchorSideBottom.Side = asrBottom
     Left = 7
-    Height = 25
-    Top = 258
+    Height = 26
+    Top = 257
     Width = 368
     Anchors = [akLeft, akRight, akBottom]
     AutoSize = True
@@ -88,7 +87,7 @@ object ProjectWizardDialog: TProjectWizardDialog
     BorderSpacing.Top = 25
     BorderSpacing.Around = 17
     Caption = 'Open Recent Project'
-    ClientHeight = 39
+    ClientHeight = 40
     ClientWidth = 364
     TabOrder = 4
     object cbRecentProjects: TComboBox
@@ -98,8 +97,8 @@ object ProjectWizardDialog: TProjectWizardDialog
       AnchorSideRight.Control = gbRecent
       AnchorSideRight.Side = asrBottom
       Left = 1
-      Height = 23
-      Top = 11
+      Height = 27
+      Top = 10
       Width = 362
       Anchors = [akLeft, akRight]
       BorderSpacing.Around = 1
@@ -113,8 +112,8 @@ object ProjectWizardDialog: TProjectWizardDialog
     AnchorSideTop.Side = asrBottom
     AnchorSideRight.Side = asrBottom
     Left = 8
-    Height = 25
-    Top = 162
+    Height = 26
+    Top = 163
     Width = 368
     Anchors = [akTop, akLeft, akRight]
     AutoSize = True

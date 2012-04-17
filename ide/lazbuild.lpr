@@ -903,7 +903,7 @@ begin
       CompilerFilename:=CompilerOverride;
     //debugln(['TLazBuildApplication.LoadEnvironmentOptions LazarusDirectory="',LazarusDirectory,'"']);
     if LazarusDirOverride<>'' then
-      LazarusDirectory:=LazarusDirOverride;
+      LazarusDirectory:=CleanAndExpandDirectory(LazarusDirOverride);
   end;
 end;
 
