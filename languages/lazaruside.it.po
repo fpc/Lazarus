@@ -2742,7 +2742,9 @@ msgid "as invoker (asInvoker)"
 msgstr ""
 
 #: lazarusidestrconsts.dlgpoclearicon
-msgid "Clear Icon"
+#, fuzzy
+#| msgid "Clear Icon"
+msgid "&Clear Icon"
 msgstr "Cancella l'icona"
 
 #: lazarusidestrconsts.dlgpocreateappbundle
@@ -2785,7 +2787,9 @@ msgid "(none)"
 msgstr "(nessuna)"
 
 #: lazarusidestrconsts.dlgpoloadicon
-msgid "Load Icon"
+#, fuzzy
+#| msgid "Load Icon"
+msgid "&Load Icon"
 msgstr "Carica Icona"
 
 #: lazarusidestrconsts.dlgpomisc
@@ -2804,7 +2808,9 @@ msgid "require administrator (requireAdministrator)"
 msgstr ""
 
 #: lazarusidestrconsts.dlgposaveicon
-msgid "Save Icon"
+#, fuzzy
+#| msgid "Save Icon"
+msgid "&Save Icon"
 msgstr "Salva Icona"
 
 #: lazarusidestrconsts.dlgposavesession
@@ -14463,26 +14469,32 @@ msgid "Unitname and Filename do not match.%sExample: unit1.pas and Unit1"
 msgstr "Il nome della Unit e del file non corrispondono.%sEsempio: unit1.pas e Unit1"
 
 #: lazarusidestrconsts.lispwconvertproject
-msgid "Convert Delphi Project"
+#, fuzzy
+#| msgid "Convert Delphi Project"
+msgid "Convert &Delphi Project"
 msgstr "Convertire un progetto Delphi"
 
 #: lazarusidestrconsts.lispwnewproject
-msgid "New Project"
+#, fuzzy
+#| msgid "New Project"
+msgid "&New Project"
 msgstr "Nuovo Progetto"
 
 #: lazarusidestrconsts.lispwopenproject
-msgid "Open Project"
+#, fuzzy
+#| msgid "Open Project"
+msgid "&Open Project"
 msgstr "Apri progetto"
 
 #: lazarusidestrconsts.lispwopenrecentproject
 #, fuzzy
-#| msgid "Open Recent"
+#| msgid "Open Recent Project"
 msgctxt "lazarusidestrconsts.lispwopenrecentproject"
-msgid "Open Recent Project"
+msgid "Open &Recent Project"
 msgstr "Apri recenti"
 
 #: lazarusidestrconsts.lispwviewexampleprojects
-msgid "View Example Projects"
+msgid "View &Example Projects"
 msgstr ""
 
 #: lazarusidestrconsts.lisquickfixcreatelocalvariable
@@ -14507,7 +14519,9 @@ msgid "Quit"
 msgstr "Esci"
 
 #: lazarusidestrconsts.lisquitlazarus
-msgid "Quit Lazarus"
+#, fuzzy
+#| msgid "Quit Lazarus"
+msgid "&Quit Lazarus"
 msgstr "Esci da Lazarus"
 
 #: lazarusidestrconsts.lisreaderror

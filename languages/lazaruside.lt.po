@@ -2738,7 +2738,9 @@ msgid "as invoker (asInvoker)"
 msgstr ""
 
 #: lazarusidestrconsts.dlgpoclearicon
-msgid "Clear Icon"
+#, fuzzy
+#| msgid "Clear Icon"
+msgid "&Clear Icon"
 msgstr "Išvalyti piktogramą"
 
 #: lazarusidestrconsts.dlgpocreateappbundle
@@ -2779,7 +2781,9 @@ msgid "(none)"
 msgstr "(joks)"
 
 #: lazarusidestrconsts.dlgpoloadicon
-msgid "Load Icon"
+#, fuzzy
+#| msgid "Load Icon"
+msgid "&Load Icon"
 msgstr "Įkelti piktogramą"
 
 #: lazarusidestrconsts.dlgpomisc
@@ -2798,7 +2802,9 @@ msgid "require administrator (requireAdministrator)"
 msgstr ""
 
 #: lazarusidestrconsts.dlgposaveicon
-msgid "Save Icon"
+#, fuzzy
+#| msgid "Save Icon"
+msgid "&Save Icon"
 msgstr "Įrašyti piktogramą"
 
 #: lazarusidestrconsts.dlgposavesession
@@ -14404,25 +14410,32 @@ msgid "Unitname and Filename do not match.%sExample: unit1.pas and Unit1"
 msgstr "Modulio ir failo pavadinimai nesutampa.%sPavyzdžiui: jei modulis yra „Unit1“, tada failas - „unit1.pas“."
 
 #: lazarusidestrconsts.lispwconvertproject
-msgid "Convert Delphi Project"
+#, fuzzy
+#| msgid "Convert Delphi Project"
+msgid "Convert &Delphi Project"
 msgstr "Konvertuoti Delphi projektą"
 
 #: lazarusidestrconsts.lispwnewproject
-msgid "New Project"
+#, fuzzy
+#| msgid "New Project"
+msgid "&New Project"
 msgstr "Naujas projektas"
 
 #: lazarusidestrconsts.lispwopenproject
-msgid "Open Project"
+#, fuzzy
+#| msgid "Open Project"
+msgid "&Open Project"
 msgstr "Atverti projektą"
 
 #: lazarusidestrconsts.lispwopenrecentproject
-#| msgid "Open Recent"
+#, fuzzy
+#| msgid "Open Recent Project"
 msgctxt "lazarusidestrconsts.lispwopenrecentproject"
-msgid "Open Recent Project"
+msgid "Open &Recent Project"
 msgstr "Atverti paskiausiąjį projektą"
 
 #: lazarusidestrconsts.lispwviewexampleprojects
-msgid "View Example Projects"
+msgid "View &Example Projects"
 msgstr ""
 
 #: lazarusidestrconsts.lisquickfixcreatelocalvariable
@@ -14447,7 +14460,9 @@ msgid "Quit"
 msgstr "Baigti darbą"
 
 #: lazarusidestrconsts.lisquitlazarus
-msgid "Quit Lazarus"
+#, fuzzy
+#| msgid "Quit Lazarus"
+msgid "&Quit Lazarus"
 msgstr "Baigti Lazarus darbą"
 
 #: lazarusidestrconsts.lisreaderror

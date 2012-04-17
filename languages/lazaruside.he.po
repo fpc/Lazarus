@@ -2739,7 +2739,9 @@ msgid "as invoker (asInvoker)"
 msgstr ""
 
 #: lazarusidestrconsts.dlgpoclearicon
-msgid "Clear Icon"
+#, fuzzy
+#| msgid "Clear Icon"
+msgid "&Clear Icon"
 msgstr "נקה סמל"
 
 #: lazarusidestrconsts.dlgpocreateappbundle
@@ -2782,7 +2784,9 @@ msgid "(none)"
 msgstr "(ללא)"
 
 #: lazarusidestrconsts.dlgpoloadicon
-msgid "Load Icon"
+#, fuzzy
+#| msgid "Load Icon"
+msgid "&Load Icon"
 msgstr "טען סמל"
 
 #: lazarusidestrconsts.dlgpomisc
@@ -2801,7 +2805,9 @@ msgid "require administrator (requireAdministrator)"
 msgstr ""
 
 #: lazarusidestrconsts.dlgposaveicon
-msgid "Save Icon"
+#, fuzzy
+#| msgid "Save Icon"
+msgid "&Save Icon"
 msgstr "שמור סמל"
 
 #: lazarusidestrconsts.dlgposavesession
@@ -14450,25 +14456,32 @@ msgid "Unitname and Filename do not match.%sExample: unit1.pas and Unit1"
 msgstr "שם היחידה ושם הקובץ לא מתאימים. לדוגמה: unit1.pas ו  Unit1 "
 
 #: lazarusidestrconsts.lispwconvertproject
-msgid "Convert Delphi Project"
+#, fuzzy
+#| msgid "Convert Delphi Project"
+msgid "Convert &Delphi Project"
 msgstr "המר פרוייקט דלפי"
 
 #: lazarusidestrconsts.lispwnewproject
-msgid "New Project"
+#, fuzzy
+#| msgid "New Project"
+msgid "&New Project"
 msgstr "פרויקט חדש"
 
 #: lazarusidestrconsts.lispwopenproject
-msgid "Open Project"
+#, fuzzy
+#| msgid "Open Project"
+msgid "&Open Project"
 msgstr "פתח פרויקט"
 
 #: lazarusidestrconsts.lispwopenrecentproject
-#| msgid "Open Recent"
+#, fuzzy
+#| msgid "Open Recent Project"
 msgctxt "lazarusidestrconsts.lispwopenrecentproject"
-msgid "Open Recent Project"
+msgid "Open &Recent Project"
 msgstr "פתח פרוייקט אחרון"
 
 #: lazarusidestrconsts.lispwviewexampleprojects
-msgid "View Example Projects"
+msgid "View &Example Projects"
 msgstr ""
 
 #: lazarusidestrconsts.lisquickfixcreatelocalvariable
@@ -14493,7 +14506,9 @@ msgid "Quit"
 msgstr "יציאה"
 
 #: lazarusidestrconsts.lisquitlazarus
-msgid "Quit Lazarus"
+#, fuzzy
+#| msgid "Quit Lazarus"
+msgid "&Quit Lazarus"
 msgstr "צא מלזרוס"
 
 #: lazarusidestrconsts.lisreaderror

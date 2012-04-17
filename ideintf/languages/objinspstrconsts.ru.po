@@ -5,7 +5,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2012-04-10 04:25+0400\n"
+"PO-Revision-Date: 2012-04-15 19:52+0400\n"
 "Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
 "Language-Team: \n"
 
@@ -1186,21 +1186,19 @@ msgid "Sections Editor ..."
 msgstr "Редактор секций..."
 
 #: objinspstrconsts.sccsiledtadd
-#, fuzzy
 #| msgid "Add ..."
 msgid "&Add ..."
-msgstr "Добавить ..."
+msgstr "&Добавить ..."
 
 #: objinspstrconsts.sccsiledtadjustment
 msgid "Adjustment"
 msgstr "Выравнивание"
 
 #: objinspstrconsts.sccsiledtapply
-#, fuzzy
 #| msgid "Apply"
 msgctxt "objinspstrconsts.sccsiledtapply"
 msgid "&Apply"
-msgstr "Применить"
+msgstr "&Применить"
 
 #: objinspstrconsts.sccsiledtcaption
 msgid "ImageList Editor"
@@ -1211,22 +1209,20 @@ msgid "Center"
 msgstr "По центру"
 
 #: objinspstrconsts.sccsiledtclear
-#, fuzzy
 #| msgid "Clear"
 msgctxt "objinspstrconsts.sccsiledtclear"
 msgid "&Clear"
-msgstr "Очистить"
+msgstr "&Очистить"
 
 #: objinspstrconsts.sccsiledtcrop
 msgid "Crop"
 msgstr "Обрезать"
 
 #: objinspstrconsts.sccsiledtdelete
-#, fuzzy
 #| msgid "Delete"
 msgctxt "objinspstrconsts.sccsiledtdelete"
 msgid "&Delete"
-msgstr "Удалить"
+msgstr "&Удалить"
 
 #: objinspstrconsts.sccsiledtgrplcaption
 msgid "Images"
@@ -1237,18 +1233,16 @@ msgid "Selected Image"
 msgstr "Выбранное изображение"
 
 #: objinspstrconsts.sccsiledtmovedown
-#, fuzzy
 #| msgid "Move Down"
 msgctxt "objinspstrconsts.sccsiledtmovedown"
 msgid "Move D&own"
-msgstr "Переместить вниз"
+msgstr "Переместить &вниз"
 
 #: objinspstrconsts.sccsiledtmoveup
-#, fuzzy
 #| msgid "Move Up"
 msgctxt "objinspstrconsts.sccsiledtmoveup"
 msgid "Move &Up"
-msgstr "Переместить вверх"
+msgstr "Переместить вв&ерх"
 
 #: objinspstrconsts.sccsiledtnone
 msgid "None"
@@ -1263,11 +1257,10 @@ msgid "Transparent Color:"
 msgstr "Прозрачный цвет:"
 
 #: objinspstrconsts.sccsiledtsave
-#, fuzzy
 #| msgid "Save ..."
 msgctxt "objinspstrconsts.sccsiledtsave"
 msgid "&Save ..."
-msgstr "Сохранить ..."
+msgstr "&Сохранить ..."
 
 #: objinspstrconsts.sccsiledtsaveall
 #| msgid "Save All..."

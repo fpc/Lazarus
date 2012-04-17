@@ -2719,7 +2719,9 @@ msgid "as invoker (asInvoker)"
 msgstr ""
 
 #: lazarusidestrconsts.dlgpoclearicon
-msgid "Clear Icon"
+#, fuzzy
+#| msgid "Clear Icon"
+msgid "&Clear Icon"
 msgstr "清除图标"
 
 #: lazarusidestrconsts.dlgpocreateappbundle
@@ -2760,7 +2762,9 @@ msgid "(none)"
 msgstr "(无)"
 
 #: lazarusidestrconsts.dlgpoloadicon
-msgid "Load Icon"
+#, fuzzy
+#| msgid "Load Icon"
+msgid "&Load Icon"
 msgstr "载入图标"
 
 #: lazarusidestrconsts.dlgpomisc
@@ -2779,7 +2783,9 @@ msgid "require administrator (requireAdministrator)"
 msgstr ""
 
 #: lazarusidestrconsts.dlgposaveicon
-msgid "Save Icon"
+#, fuzzy
+#| msgid "Save Icon"
+msgid "&Save Icon"
 msgstr "保存图标"
 
 #: lazarusidestrconsts.dlgposavesession
@@ -14368,26 +14374,32 @@ msgid "Unitname and Filename do not match.%sExample: unit1.pas and Unit1"
 msgstr "单元名和文件名不匹配.%s例如: Unit1.pas 和 Unit1"
 
 #: lazarusidestrconsts.lispwconvertproject
-msgid "Convert Delphi Project"
+#, fuzzy
+#| msgid "Convert Delphi Project"
+msgid "Convert &Delphi Project"
 msgstr "转换Delphi工程"
 
 #: lazarusidestrconsts.lispwnewproject
-msgid "New Project"
+#, fuzzy
+#| msgid "New Project"
+msgid "&New Project"
 msgstr "新建工程"
 
 #: lazarusidestrconsts.lispwopenproject
-msgid "Open Project"
+#, fuzzy
+#| msgid "Open Project"
+msgid "&Open Project"
 msgstr "打开工程"
 
 #: lazarusidestrconsts.lispwopenrecentproject
 #, fuzzy
-#| msgid "Open Recent"
+#| msgid "Open Recent Project"
 msgctxt "lazarusidestrconsts.lispwopenrecentproject"
-msgid "Open Recent Project"
+msgid "Open &Recent Project"
 msgstr "打开最近的文件"
 
 #: lazarusidestrconsts.lispwviewexampleprojects
-msgid "View Example Projects"
+msgid "View &Example Projects"
 msgstr ""
 
 #: lazarusidestrconsts.lisquickfixcreatelocalvariable
@@ -14412,7 +14424,9 @@ msgid "Quit"
 msgstr ""
 
 #: lazarusidestrconsts.lisquitlazarus
-msgid "Quit Lazarus"
+#, fuzzy
+#| msgid "Quit Lazarus"
+msgid "&Quit Lazarus"
 msgstr "退出 Lazarus"
 
 #: lazarusidestrconsts.lisreaderror
