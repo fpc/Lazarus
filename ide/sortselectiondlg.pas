@@ -45,7 +45,10 @@ uses
   LazarusIDEStrConsts, EditorOptions, MiscOptions, SynEditHighlighter;
   
 type
-  TSortSelDlgState = (ssdPreviewNeedsUpdate, ssdSortedTextNeedsUpdate);
+  TSortSelDlgState = (
+    ssdPreviewNeedsUpdate,
+    ssdSortedTextNeedsUpdate
+    );
   TSortSelDlgStates = set of TSortSelDlgState;
   
   { TSortSelectionDialog }
@@ -365,6 +368,7 @@ begin
 
   with DirectionRadioGroup do begin
     Caption:=dlgDirection;
+    ChildSizing.EnlargeHorizontal:=crsAnchorAligning;
     with Items do begin
       BeginUpdate;
       Add(lisSortSelAscending);
@@ -379,6 +383,7 @@ begin
 
   with DomainRadioGroup do begin
     Caption:=lisSortSelDomain;
+    ChildSizing.EnlargeHorizontal:=crsAnchorAligning;
     with Items do begin
       BeginUpdate;
       Add(lisSortSelLines);
@@ -395,6 +400,7 @@ begin
 
   with OptionsCheckGroup do begin
     Caption:=lisSortSelOptions;
+    ChildSizing.EnlargeHorizontal:=crsAnchorAligning;
     with Items do begin
       BeginUpdate;
       Add(lisSortSelCaseSensitive);
