@@ -161,6 +161,8 @@ var
   Widget: PGtkWidget;
   WidgetInfo: PWidgetInfo;
   Allocation: TGTKAllocation;
+  ScrollBar: PGtkWidget;
+  Adjustment: PGtkAdjustment;
 begin
   Widget := GTK2WidgetSet.CreateAPIWidget(AWinControl);
   {$IFDEF DebugLCLComponents}
@@ -186,16 +188,36 @@ begin
 
   TGtk2WSWinControl.SetCallbacks(GTK_OBJECT(Widget), AWinControl);
 
+  // scrollbars
   if (GetWidgetClassName(GTK_SCROLLED_WINDOW(Widget)^.vscrollbar)='OsScrollbar')
   or (GetWidgetClassName(GTK_SCROLLED_WINDOW(Widget)^.hscrollbar)='OsScrollbar')
   then begin
     // ubuntu liboverlay scrollbar is active
     debugln(['WARNING: liboverlay_scrollbar is active for control=',AWinControl,'. Set environment option LIBOVERLAY_SCROLLBAR=0 before starting this application, otherwise scrollbars will not work properly.']);
   end;
-  g_signal_connect_after(GTK_SCROLLED_WINDOW(Widget)^.hscrollbar, 'change-value',
-    TGCallback(@Gtk2RangeScrollCB), WidgetInfo);
-  g_signal_connect_after(GTK_SCROLLED_WINDOW(Widget)^.vscrollbar, 'change-value',
-    TGCallback(@Gtk2RangeScrollCB), WidgetInfo);
+
+  ScrollBar:=GTK_SCROLLED_WINDOW(Widget)^.hscrollbar;
+  if (GetWidgetClassName(ScrollBar)='OsScrollbar')
+  then begin
+    // the ubuntu scroll bar eats the change-value signal => use value-changed
+    Adjustment:=gtk_scrolled_window_get_hadjustment(GTK_SCROLLED_WINDOW(Widget));
+    g_signal_connect_after(Adjustment, 'value-changed',TGCallback(@Gtk2RangeUbuntuScrollCB), WidgetInfo);
+  end else begin
+    g_signal_connect_after(ScrollBar, 'change-value',
+      TGCallback(@Gtk2RangeScrollCB), WidgetInfo);
+  end;
+
+  ScrollBar:=GTK_SCROLLED_WINDOW(Widget)^.vscrollbar;
+  if (GetWidgetClassName(ScrollBar)='OsScrollbar')
+  then begin
+    // the ubuntu scroll bar eats the change-value signal => use value-changed
+    Adjustment:=gtk_scrolled_window_get_vadjustment(GTK_SCROLLED_WINDOW(Widget));
+    g_signal_connect_after(Adjustment, 'value-changed',TGCallback(@Gtk2RangeUbuntuScrollCB), WidgetInfo);
+  end else begin
+    g_signal_connect_after(ScrollBar, 'change-value',
+      TGCallback(@Gtk2RangeScrollCB), WidgetInfo);
+  end;
+
   g_signal_connect(GTK_SCROLLED_WINDOW(Widget)^.hscrollbar, 'button-press-event',
     TGCallback(@Gtk2RangeScrollPressCB), WidgetInfo);
   g_signal_connect(GTK_SCROLLED_WINDOW(Widget)^.hscrollbar, 'button-release-event',

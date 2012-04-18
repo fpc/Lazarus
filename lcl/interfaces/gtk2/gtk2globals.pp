@@ -382,6 +382,7 @@ const
                                  // used by TCustomForm and TScrollbox
   odnScrollBar = 'ScrollBar'; // Gives the scrollbar the tgtkrange is belonging to
                               // Used by TScrollbar, TScrollbox and TWinApiWidget
+  odnScrollBarLastPos = 'ScrollBarLastPos';
 
 const
   CallBackDefaultReturn = false;
