@@ -2924,7 +2924,9 @@ begin
   //TODO: implement SB_THUMBPOSITION message after track is finished
 
   Result := CallBackDefaultReturn;
-  //DebugLn(Format('Trace:[GTKVScrollCB] Value: %d', [RoundToInt(Adjustment^.Value)]));
+  {$IFDEF SYNSCROLLDEBUG}
+  DebugLn(Format('Trace:[GTKVScrollCB] Value: %d', [RoundToInt(Adjustment^.Value)]));
+  {$ENDIF}
   Scroll := PgtkRange(gtk_object_get_data(PGTKObject(Adjustment), odnScrollBar));
   if Scroll<>nil then begin
     Msg.Msg := LM_VSCROLL;
@@ -2955,7 +2957,9 @@ begin
   Result := CallBackDefaultReturn;
 
   Widget:=PGTKWidget(ARange);
-  //DebugLn(Format('Trace:[Gtk2RangeScrollCB] Value: %d', [RoundToInt(AValue)]));
+  {$IFDEF SYNSCROLLDEBUG}
+  DebugLn(Format('Trace:[Gtk2RangeScrollCB] Value: %d', [RoundToInt(AValue)]));
+  {$ENDIF}
   if G_OBJECT_TYPE(ARange) = gtk_hscrollbar_get_type then
     Msg.Msg := LM_HSCROLL
   else
@@ -3027,6 +3031,9 @@ var
   AValue: Double;
   Range: PGtkRange;
 begin
+  {$IFDEF SYNSCROLLDEBUG}
+  debugln(['Gtk2ScrolledWindowScrollCB ']);
+  {$ENDIF}
   case AEvent^.direction of
     GDK_SCROLL_UP,
     GDK_SCROLL_DOWN: Msg.Msg := LM_VSCROLL;

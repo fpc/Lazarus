@@ -186,6 +186,12 @@ begin
 
   TGtk2WSWinControl.SetCallbacks(GTK_OBJECT(Widget), AWinControl);
 
+  if (GetWidgetClassName(GTK_SCROLLED_WINDOW(Widget)^.vscrollbar)='OsScrollbar')
+  or (GetWidgetClassName(GTK_SCROLLED_WINDOW(Widget)^.hscrollbar)='OsScrollbar')
+  then begin
+    // ubuntu liboverlay scrollbar is active
+    debugln(['WARNING: liboverlay_scrollbar is active for control=',AWinControl,'. Set environment option LIBOVERLAY_SCROLLBAR=0 before starting this application, otherwise scrollbars will not work properly.']);
+  end;
   g_signal_connect_after(GTK_SCROLLED_WINDOW(Widget)^.hscrollbar, 'change-value',
     TGCallback(@Gtk2RangeScrollCB), WidgetInfo);
   g_signal_connect_after(GTK_SCROLLED_WINDOW(Widget)^.vscrollbar, 'change-value',
