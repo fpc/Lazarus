@@ -82,7 +82,7 @@ uses
 {$ENDIF}
   Classes, SysUtils, Process, UTF8Process,
   LCLProc, FileProcs, FileUtil, Forms, Controls, Dialogs,
-  IDECmdLine, LazConf, Splash, IDEDialogs;
+  IDECmdLine, LazConf, Splash;
   
 type
   TLazarusProcess = class
@@ -289,7 +289,7 @@ begin
             FLazarusPath:=CustomExe;
           end else begin
             // the custom exe is older => let user choose
-            MsgResult:=IDEQuestionDialog('Multiple lazarus found',
+            MsgResult:=QuestionDlg('Multiple lazarus found',
               'Which Lazarus should be started?'#13
               +#13
               +'The system default executable'#13
@@ -300,7 +300,7 @@ begin
               +CustomExe+#13
               +'(date: '+DateTimeToStr(FileDateToDateTimeDef(FileAgeUTF8(CustomExe)))+')'#13
               ,mtConfirmation,
-              [mrYes,'Start system default',mrNo,'Start my custom',mrAbort]);
+              [mrYes,'Start system default',mrNo,'Start my custom',mrAbort],'');
             case MsgResult of
             mrYes: FLazarusPath:=DefaultExe;
             mrNo: FLazarusPath:=CustomExe;
