@@ -110,7 +110,8 @@ $SVN export $LAZSOURCEDIR $LAZBUILDDIR
 
 cd $LAZBUILDDIR
 if [ ! -e tools/svn2revisioninc ]; then
-  make lazutils PP=$COMPILER OPT="$MACOSX104LINKEROPTS"
+  make registration lazutils PP=$COMPILER OPT="$MACOSX104LINKEROPTS"
+  make lcl LCL_PLATFORM=nogui PP=$COMPILER OPT="$MACOSX104LINKEROPTS"
   make tools PP=$COMPILER OPT="$MACOSX104LINKEROPTS"
 fi
 ./tools/svn2revisioninc $LAZSOURCEDIR ide/revision.inc
@@ -123,8 +124,8 @@ make LCL_PLATFORM=gtk2 OPT="-dUseX" PP=$COMPILER lcl
 
 # cross compile units?
 if [ -n "$CROSSCOMPILER" ]; then
-  make -C packager/registration CPU_TARGET=powerpc PP=$CROSSCOMPILER
-  make -C components/lazutils CPU_TARGET=powerpc PP=$CROSSCOMPILER
+  make registration CPU_TARGET=powerpc PP=$CROSSCOMPILER
+  make lazutils CPU_TARGET=powerpc PP=$CROSSCOMPILER
   make lcl CPU_TARGET=powerpc PP=$CROSSCOMPILER
   make lcl CPU_TARGET=powerpc LCL_PLATFORM=gtk PP=$CROSSCOMPILER
   make lcl CPU_TARGET=powerpc LCL_PLATFORM=gtk2 OPT="-dUseX" PP=$CROSSCOMPILER
