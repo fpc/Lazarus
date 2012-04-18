@@ -82,6 +82,15 @@ type
     procedure Execute(const Msg: TIDEMessageLine; Step: TIMQuickFixStep); override;
   end;
 
+  { TQuickFixErrorWhileCompilingResources_Hint - improve message }
+
+  TQuickFixErrorWhileCompilingResources_Hint = class(TIDEMsgQuickFixItem)
+  public
+    constructor Create;
+    function IsApplicable(Line: TIDEMessageLine): boolean; override;
+    procedure Execute(const Msg: TIDEMessageLine; Step: TIMQuickFixStep); override;
+  end;
+
   { TQuickFixJumpToLinkerUndefinedReference }
 
   TQuickFixJumpToLinkerUndefinedReference = class(TIDEMsgQuickFixItem)
@@ -271,6 +280,7 @@ begin
   RegisterIDEMsgQuickFix(TQuickFixUnitNotFoundPosition.Create);
   RegisterIDEMsgQuickFix(TQuickFixUnitNotFound_Remove.Create);
   RegisterIDEMsgQuickFix(TQuickFixJumpToLinkerUndefinedReference.Create);
+  RegisterIDEMsgQuickFix(TQuickFixErrorWhileCompilingResources_Hint.Create);
   RegisterIDEMsgQuickFix(TQuickFixClassWithAbstractMethods.Create);
   RegisterIDEMsgQuickFix(TQuickFixIdentifierNotFoundAddLocal.Create);
   RegisterIDEMsgQuickFix(TQuickFixLocalVariableNotUsed_Remove.Create);
@@ -280,6 +290,42 @@ end;
 procedure FreeStandardIDEQuickFixItems;
 begin
   FreeThenNil(IDEMsgQuickFixes);
+end;
+
+{ TQuickFixErrorWhileCompilingResources_Hint }
+
+constructor TQuickFixErrorWhileCompilingResources_Hint.Create;
+begin
+  Name:='Improve error message: Error while compiling resources';
+  Steps:=[imqfoImproveMessage];
+end;
+
+function TQuickFixErrorWhileCompilingResources_Hint.IsApplicable(
+  Line: TIDEMessageLine): boolean;
+const
+  SearchStr = 'Error while compiling resources';
+var
+  Msg: String;
+  p: integer;
+begin
+  Result:=false;
+  if (Line.Parts=nil) then exit;
+  Msg:=Line.Msg;
+  p:=System.Pos(SearchStr,Msg);
+  if p<1 then exit;
+  Result:=true;
+end;
+
+procedure TQuickFixErrorWhileCompilingResources_Hint.Execute(
+  const Msg: TIDEMessageLine; Step: TIMQuickFixStep);
+var
+  s: String;
+begin
+  if Step<>imqfoImproveMessage then exit;
+  s:=Msg.Msg;
+  if s[length(s)]<>'.' then s+='.';
+  s+=' Compile with -vd for more details. Check for duplicates.';
+  Msg.Msg:=s;
 end;
 
 { TQuickFixUnitNotFoundPosition }
