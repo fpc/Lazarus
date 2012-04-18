@@ -479,7 +479,6 @@ type
   protected
     class procedure WSRegisterClass; override;
     procedure PictureChanged(Sender : TObject); virtual;
-    function DestRect: TRect; virtual;
     procedure CalculatePreferredSize(var PreferredWidth,
                                      PreferredHeight: integer;
                                      WithThemeSpace: Boolean); override;
@@ -489,6 +488,7 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     property Canvas: TCanvas read GetCanvas;
+    function DestRect: TRect; virtual;
   public
     property Align;
     property AutoSize;
