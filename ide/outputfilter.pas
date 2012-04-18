@@ -727,55 +727,98 @@ var i, j, FilenameEndPos: integer;
     ColonPos:=Position+length(FErrorNames[et]);
     Result:=(ColonPos<=length(s)) and (s[ColonPos]=':');
   end;
-  
+
+  function CheckForNumber(const Str: string; var p: integer): boolean;
+  var
+    OldP: Integer;
+  begin
+    OldP:=p;
+    while (p<=length(Str)) and (Str[p] in ['0'..'9']) do inc(p);
+    Result:=OldP<>p;
+  end;
+
+  function CheckForChar(const Str: string; var p: integer; c: char): boolean;
+  begin
+    Result:=(p<=length(Str)) and (Str[p]=c);
+    if Result then inc(p);
+  end;
+
+  function CheckForString(const Str: string; var p: integer;
+    const Find: string): boolean;
+  begin
+    Result:=CompStr(Find,Str,p);
+    if Result then inc(p,length(Find));
+  end;
+
+  function CheckForCallingResourceCompiler(p: integer): boolean;
+  begin
+    Result:=false;
+    if not CompStr('Calling resource compiler',s,p) then exit;
+    Result:=true;
+    fLastMessageType:=omtFPC;
+    fLastErrorType:=etNone;
+    CurrentMessageParts.Values['Stage']:='FPC';
+    CurrentMessageParts.Values['Type']:=FPCErrorTypeNames[fLastErrorType];
+    DoAddFilteredLine(s);
+  end;
+
   function CheckForCompilingState(p: integer): boolean;
   var
     AFilename: string;
   begin
     Result:=false;
-    if CompStr('Compiling ',s,p) then begin
-      // for example 'Compiling ./subdir/unit1.pas'
-      fLastMessageType:=omtFPC;
-      fLastErrorType:=etNone;
-      // add path to history
-      if fCompilingHistory=nil then fCompilingHistory:=TStringList.Create;
-      inc(p,length('Compiling '));
-      if (length(s)>=p+1) and (s[p]='.') and (s[p+1] in ['/','\']) then
-        inc(p,2);
-      AFilename:=TrimFilename(SetDirSeparators(copy(s,p,length(s))));
-      fCompilingHistory.Add(AFilename);
-      CurrentMessageParts.Values['Stage']:='FPC';
-      CurrentMessageParts.Values['Type']:='Compiling';
-      CurrentMessageParts.Values['Filename']:=AFilename;
-      Result:=true;
-    end;
+    if not CompStr('Compiling ',s,p) then exit;
+    Result:=true;
+    // for example 'Compiling ./subdir/unit1.pas'
+    fLastMessageType:=omtFPC;
+    fLastErrorType:=etNone;
+    // add path to history
+    if fCompilingHistory=nil then fCompilingHistory:=TStringList.Create;
+    inc(p,length('Compiling '));
+    if (length(s)>=p+1) and (s[p]='.') and (s[p+1] in ['/','\']) then
+      inc(p,2);
+    AFilename:=TrimFilename(SetDirSeparators(copy(s,p,length(s))));
+    fCompilingHistory.Add(AFilename);
+    CurrentMessageParts.Values['Stage']:='FPC';
+    CurrentMessageParts.Values['Type']:='Compiling';
+    CurrentMessageParts.Values['Filename']:=AFilename;
   end;
   
   function CheckForAssemblingState(p: integer): boolean;
   begin
     Result:=false;
-    if CompStr('Assembling ',s,p) then begin
-      fLastMessageType:=omtFPC;
-      fLastErrorType:=etNone;
-      CurrentMessageParts.Values['Stage']:='FPC';
-      CurrentMessageParts.Values['Type']:='Assembling';
-      Result:=true;
-    end;
+    if not CompStr('Assembling ',s,p) then exit;
+    Result:=true;
+    fLastMessageType:=omtFPC;
+    fLastErrorType:=etNone;
+    CurrentMessageParts.Values['Stage']:='FPC';
+    CurrentMessageParts.Values['Type']:='Assembling';
   end;
   
+  function CheckForDebug(p: integer): boolean;
+  begin
+    Result:=false;
+    if not CompStr('Debug: ',s,p) then exit;
+    Result:=true;
+    fLastMessageType:=omtFPC;
+    fLastErrorType:=etNone;
+    CurrentMessageParts.Values['Stage']:='FPC';
+    CurrentMessageParts.Values['Type']:='Debug';
+    DoAddFilteredLine(s);
+  end;
+
   function CheckForPPULoading(p: integer): boolean;
   begin
     Result:=false;
-    if CompStr('PPU ',s,p) then begin
-      fLastMessageType:=omtFPC;
-      fLastErrorType:=etNone;
-      if CompStr('PPU Invalid Version',s,p) then
-        fLastErrorType:=etFatal;
-      CurrentMessageParts.Values['Stage']:='FPC';
-      CurrentMessageParts.Values['Type']:=FPCErrorTypeNames[fLastErrorType];
-      DoAddFilteredLine(s);
-      Result:=true;
-    end;
+    if not CompStr('PPU ',s,p) then exit;
+    Result:=true;
+    fLastMessageType:=omtFPC;
+    fLastErrorType:=etNone;
+    if CompStr('PPU Invalid Version',s,p) then
+      fLastErrorType:=etFatal;
+    CurrentMessageParts.Values['Stage']:='FPC';
+    CurrentMessageParts.Values['Type']:=FPCErrorTypeNames[fLastErrorType];
+    DoAddFilteredLine(s);
   end;
 
   function CheckForUrgentMessages(p: integer): boolean;
@@ -842,7 +885,6 @@ var i, j, FilenameEndPos: integer;
       if (ofoExceptionOnError in Options) then
         RaiseOutputFilterError(NewLine);
       Result:=true;
-      exit;
     end;
   end;
   
@@ -850,35 +892,12 @@ var i, j, FilenameEndPos: integer;
   begin
     Result:=false;
     if CompStr('Note: ',s,p) or CompErrorStr(etNote, s, p) then begin
-      DoAddFilteredLine(copy(s,p,length(s)));
+      Result:=true;
       fLastErrorType:=etNote;
       CurrentMessageParts.Values['Stage']:='FPC';
       CurrentMessageParts.Values['Type']:=FPCErrorTypeNames[fLastErrorType];
-      Result:=true;
-      exit;
+      DoAddFilteredLine(copy(s,p,length(s)));
     end;
-  end;
-
-  function CheckForNumber(const Str: string; var p: integer): boolean;
-  var
-    OldP: Integer;
-  begin
-    OldP:=p;
-    while (p<=length(Str)) and (Str[p] in ['0'..'9']) do inc(p);
-    Result:=OldP<>p;
-  end;
-  
-  function CheckForChar(const Str: string; var p: integer; c: char): boolean;
-  begin
-    Result:=(p<=length(Str)) and (Str[p]=c);
-    if Result then inc(p);
-  end;
-
-  function CheckForString(const Str: string; var p: integer;
-    const Find: string): boolean;
-  begin
-    Result:=CompStr(Find,Str,p);
-    if Result then inc(p,length(Find));
   end;
 
   function CheckForLineProgress(p: integer): boolean;
@@ -891,7 +910,7 @@ var i, j, FilenameEndPos: integer;
     if not CheckForNumber(s,p) then exit;
     if not CheckForChar(s,p,' ') then exit;
     Result:=true;
-    // I don't think it should be shown in filtered lines: DoAddFilteredLine(s);
+    // progress lines are shown and then hidden
   end;
   
   function CheckForLinesCompiled(p: integer): boolean;
@@ -1058,11 +1077,17 @@ begin
     exit(true);
   end;
   
+  // check for 'Calling resource compiler ...'
+  Result:=CheckForCallingResourceCompiler(i);
+  if Result then exit;
   // check for 'Compiling <filename>'
   Result:=CheckForCompilingState(i);
   if Result then exit;
   // check for 'Assembling <filename>'
   Result:=CheckForAssemblingState(i);
+  if Result then exit;
+  // check for 'Debug: '
+  Result:=CheckForDebug(i);
   if Result then exit;
   // check for 'PPU Loading <filename>' and 'PPU Invalid Version <number>'
   Result:=CheckForPPULoading(i);
