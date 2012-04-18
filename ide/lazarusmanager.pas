@@ -289,7 +289,8 @@ begin
             FLazarusPath:=CustomExe;
           end else begin
             // the custom exe is older => let user choose
-            MsgResult:=QuestionDlg('Multiple lazarus found',
+            MsgResult:=QuestionDlg{NOTE: Do not use IDEQuestionDialog!!!}(
+              'Multiple lazarus found',
               'Which Lazarus should be started?'#13
               +#13
               +'The system default executable'#13
