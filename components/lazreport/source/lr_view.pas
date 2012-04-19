@@ -899,8 +899,8 @@ begin
   p := VScrollBar.Position;
   ofy := -p;
   {$IFDEF WIN32}
-  OldV := p;
   pp := OldV - p;
+  OldV := p;
   r := Rect(0, 0, PBox.Width, PBox.Height);
   ScrollWindowEx(PBox.Handle, 0, pp, @r, @r, 0, nil, SW_INVALIDATE);
   UpdateWindow(Pbox.Handle);
