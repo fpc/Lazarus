@@ -311,8 +311,11 @@ var
 begin
   Result:=false;
   //DebugLn(['TGtk2WSCustomTabControl.GetDefaultClientRect ',DbgSName(AWinControl),' ',aWidth,'x',aHeight]);
-  if AWinControl.HandleAllocated then begin
-
+  if AWinControl.HandleAllocated
+  and (gtk_notebook_get_nth_page({%H-}PGtkNotebook(AWinControl.Handle),0)<>nil) then
+  begin
+    // handle allocated and has one page
+    // => normal GetClientRect will retrieve the right ClientRect
   end else begin
     FrameBorders:=GetStyleNotebookFrameBorders;
     aClientRect:=Rect(0,0,
