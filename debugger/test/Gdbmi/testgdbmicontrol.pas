@@ -86,6 +86,8 @@ begin
   CheckListBox1.Checked[j] := True;
   j := CheckListBox1.Items.Add('    TTestBreakPoint.BadInterrupt.All');
   CheckListBox1.Checked[j] := False;
+  j := CheckListBox1.Items.Add('TTestEnvironment');
+  CheckListBox1.Checked[j] := True;
 
   d := GetDebuggers;
   for i := 0 to d.Count - 1 do begin
