@@ -271,7 +271,7 @@ begin
     BorderSpacing.Around := 6;
     Visible := True;
     Align := alClient;
-    PrefferedSplitterX := 200;
+    PreferredSplitterX := 200;
     SplitterX := 200;
     Layout := oilHorizontal;
   end;

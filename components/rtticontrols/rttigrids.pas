@@ -71,7 +71,7 @@ type
     property OnMouseUp;
     property OnResize;
     property PopupMenu;
-    property PrefferedSplitterX;
+    property PreferredSplitterX;
     property SplitterX;
     property Tabstop;
     property TIObject;

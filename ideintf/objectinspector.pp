@@ -485,7 +485,7 @@ type
     property OnOIKeyDown: TKeyEvent read FOnOIKeyDown write FOnOIKeyDown;
     property OnSelectionChange: TNotifyEvent read FOnSelectionChange write FOnSelectionChange;
     property OnPropertyHint: TOIPropertyHint read FOnPropertyHint write FOnPropertyHint;
-    property PrefferedSplitterX: integer read FPreferredSplitterX
+    property PreferredSplitterX: integer read FPreferredSplitterX
                                          write FPreferredSplitterX default 100;
     property PropertyEditorHook: TPropertyEditorHook read FPropertyEditorHook
                                                     write SetPropertyEditorHook;
@@ -533,7 +533,7 @@ type
     property OnResize;
     property OnSelectionChange;
     property PopupMenu;
-    property PrefferedSplitterX;
+    property PreferredSplitterX;
     property SplitterX;
     property Tabstop;
     property ValueFont;
@@ -3742,7 +3742,7 @@ begin
   FHeight:=AnObjInspector.Height;
   for Page:=Low(TObjectInspectorPage) to High(TObjectInspectorPage) do
     if AnObjInspector.GridControl[Page]<>nil then
-      FGridSplitterX[Page]:=AnObjInspector.GridControl[Page].PrefferedSplitterX;
+      FGridSplitterX[Page]:=AnObjInspector.GridControl[Page].PreferredSplitterX;
   FDefaultItemHeight:=AnObjInspector.DefaultItemHeight;
   FShowComponentTree:=AnObjInspector.ShowComponentTree;
   FComponentTreeHeight:=AnObjInspector.ComponentTreeHeight;
@@ -3784,7 +3784,7 @@ begin
     Grid := AnObjInspector.GridControl[Page];
     if Grid = nil then
       Continue;
-    Grid.PrefferedSplitterX := FGridSplitterX[Page];
+    Grid.PreferredSplitterX := FGridSplitterX[Page];
     Grid.SplitterX := FGridSplitterX[Page];
     AssignTo(Grid);
   end;
