@@ -24,10 +24,6 @@
     A dialog to create a variable declaration.
     It uses the identifier in the source editor to guess the name and type, so
     that the user only needs to choose where to create the var.
-
-  ToDo:
-    - guess parameter
-    - guess j:=<i>
 }
 unit DeclareVarDlg;
 
