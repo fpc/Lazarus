@@ -184,10 +184,10 @@ function TrySetOrdProp(Instance: TPersistent; const PropName: string;
                        Value: integer): boolean;
 function TryGetOrdProp(Instance: TPersistent; const PropName: string;
                        out Value: integer): boolean;
-function LeftFromDesignInfo(ADesignInfo: LongInt): SmallInt;
-function TopFromDesignInfo(ADesignInfo: LongInt): SmallInt;
-function LeftTopToDesignInfo(const ALeft, ATop: SmallInt): LongInt;
-procedure DesignInfoToLeftTop(ADesignInfo: LongInt; out ALeft, ATop: SmallInt);
+function LeftFromDesignInfo(ADesignInfo: LongInt): SmallInt; inline;
+function TopFromDesignInfo(ADesignInfo: LongInt): SmallInt; inline;
+function LeftTopToDesignInfo(const ALeft, ATop: SmallInt): LongInt; inline;
+procedure DesignInfoToLeftTop(ADesignInfo: LongInt; out ALeft, ATop: SmallInt); inline;
 
 
 implementation
@@ -242,45 +242,25 @@ begin
 end;
 
 function LeftFromDesignInfo(ADesignInfo: LongInt): SmallInt;
-var
-  DesignInfoRec: packed record
-    Left: SmallInt;
-    Top: SmallInt;
-  end absolute ADesignInfo;
 begin
-  Result := DesignInfoRec.Left;
+  Result := LongRec(ADesignInfo).Lo;
 end;
 
 function TopFromDesignInfo(ADesignInfo: LongInt): SmallInt;
-var
-  DesignInfoRec: packed record
-    Left: SmallInt;
-    Top: SmallInt;
-  end absolute ADesignInfo;
 begin
-  Result := DesignInfoRec.Top;
+  Result := LongRec(ADesignInfo).Hi;
 end;
 
 function LeftTopToDesignInfo(const ALeft, ATop: SmallInt): LongInt;
-var
-  ResultRec: packed record
-    Left: SmallInt;
-    Top: SmallInt;
-  end absolute Result;
 begin
-  ResultRec.Left := ALeft;
-  ResultRec.Top := ATop;
+  LongRec(Result).Lo:=ALeft;
+  LongRec(Result).Hi:=ATop;
 end;
 
 procedure DesignInfoToLeftTop(ADesignInfo: LongInt; out ALeft, ATop: SmallInt);
-var
-  DesignInfoRec: packed record
-    Left: SmallInt;
-    Top: SmallInt;
-  end absolute ADesignInfo;
 begin
-  ALeft := DesignInfoRec.Left;
-  ATop := DesignInfoRec.Top;
+  ALeft := LongRec(ADesignInfo).Lo;
+  ATop := LongRec(ADesignInfo).Hi;
 end;
 
 { TDesignerMediator }
