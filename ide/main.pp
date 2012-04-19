@@ -8599,13 +8599,26 @@ begin
 end;
 
 function TMainIDE.AskSaveProject(const ContinueText, ContinueBtn: string): TModalResult;
+var
+  DataModified: Boolean;
+  SrcModified: Boolean;
 begin
   if Project1=nil then exit(mrOk);
   //debugln(['TMainIDE.AskSaveProject SomethingOfProjectIsModified=',SomethingOfProjectIsModified,' Project1.SomeDataModified(false)=',Project1.SomeDataModified(false)]);
   if not SomethingOfProjectIsModified then exit(mrOk);
 
+  DataModified:=Project1.SomeDataModified(false);
+  SrcModified:=SourceEditorManager.SomethingModified(false);
+
+  if Project1.IsVirtual
+  and (not DataModified)
+  and (not SrcModified) then begin
+    // only session changed of a new project => ignore
+    exit(mrOk)
+  end;
+
   if (Project1.SessionStorage=pssInProjectInfo)
-  or Project1.SomeDataModified(false)
+  or DataModified
   then begin
     // lpi file will change => ask
     Result:=IDEQuestionDialog(lisProjectChanged,
@@ -8614,7 +8627,7 @@ begin
     if Result=mrNoToAll then exit(mrOk);
     if Result<>mrYes then exit(mrCancel);
   end
-  else if SourceEditorManager.SomethingModified(false) then
+  else if SrcModified then
   begin
     // some non project files were changes in the source editor
     Result:=IDEQuestionDialog(lisSaveChangedFiles,lisSaveChangedFiles,
@@ -8628,6 +8641,7 @@ begin
       // session is not saved => skip
       exit(mrOk)
     else if not SomethingOfProjectIsModified then
+      // no change
       exit(mrOk)
     else begin
       // session is saved separately
