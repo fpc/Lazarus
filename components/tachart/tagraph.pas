@@ -300,6 +300,7 @@ type
     procedure PaintOnAuxCanvas(ACanvas: TCanvas; ARect: TRect);
     procedure PaintOnCanvas(ACanvas: TCanvas; ARect: TRect);
     procedure Prepare;
+    procedure RemoveSeries(ASeries: TBasicChartSeries); inline;
     procedure SaveToBitmapFile(const AFileName: String); inline;
     procedure SaveToFile(AClass: TRasterImageClass; AFileName: String);
     function SaveToImage(AClass: TRasterImageClass): TRasterImage;
@@ -1216,6 +1217,11 @@ begin
     FreeAndNil(Result.FItems);
     raise;
   end;
+end;
+
+procedure TChart.RemoveSeries(ASeries: TBasicChartSeries);
+begin
+  DeleteSeries(ASeries);
 end;
 
 procedure TChart.SaveToBitmapFile(const AFileName: String);
