@@ -25,7 +25,7 @@ interface
 uses
   Classes, SysUtils,
   TAGraph, TAChartAxis, TAChartAxisUtils, TAChartUtils, TACustomSeries,
-  TASeries;
+  TASeries, TATransformations;
 
 type
   TChartTeeChart = class helper for TChart
@@ -54,7 +54,8 @@ type
   public
     // Swap X and Y as TeeChart does.
     function AddXY(
-      AX, AY: Double; AXLabel: String = ''; AColor: TChartColor = clTAColor): Integer; overload; inline;
+      AX, AY: Double; AXLabel: String = '';
+      AColor: TChartColor = clTAColor): Integer; overload; inline;
   published
     property AxisIndexX default 0;
     property AxisIndexY default 1;
@@ -73,7 +74,91 @@ type
     property Style: TChartSeriesStyle read GetStyle write SetStyle default [];
   end;
 
+  TChartAxisTeeChart = class helper for TChartAxis
+  strict private
+    function GetLogarithmic: Boolean;
+    procedure SetLogarithmic(AValue: Boolean);
+  published
+    property Logarithmic: Boolean
+      read GetLogarithmic write SetLogarithmic default false;
+  end;
+
 implementation
+
+uses
+  Math;
+
+type
+  TLogTransformEnumerator = class(TAxisTransformEnumerator)
+    function GetCurrent: TLogarithmAxisTransform;
+    function MoveNext: Boolean;
+    property Current: TLogarithmAxisTransform read GetCurrent;
+    function GetEnumerator: TLogTransformEnumerator;
+  end;
+
+var
+  VLogTransforms: array of TChartAxisTransformations;
+
+function AddLogTransforms: TChartAxisTransformations;
+begin
+  Result := TChartAxisTransformations.Create(nil);
+  TLogarithmAxisTransform.Create(nil).Transformations := Result;
+  SetLength(VLogTransforms, Length(VLogTransforms) + 1);
+  VLogTransforms[High(VLogTransforms)] := Result;
+end;
+
+procedure FreeLogTransforms;
+var
+  t: TChartAxisTransformations;
+begin
+  for t in VLogTransforms do
+    t.Free;
+  VLogTransforms := nil;
+end;
+
+{ TLogTransformEnumerator }
+
+function TLogTransformEnumerator.GetCurrent: TLogarithmAxisTransform;
+begin
+  Result := inherited GetCurrent as TLogarithmAxisTransform;
+end;
+
+function TLogTransformEnumerator.GetEnumerator: TLogTransformEnumerator;
+begin
+  Result := Self;
+end;
+
+function TLogTransformEnumerator.MoveNext: Boolean;
+begin
+  repeat
+    Result := inherited MoveNext;
+  until Result and (inherited GetCurrent is TLogarithmAxisTransform);
+end;
+
+{ TChartAxisTeeChart }
+
+function TChartAxisTeeChart.GetLogarithmic: Boolean;
+var
+  t: TLogarithmAxisTransform;
+begin
+  if Transformations <> nil then
+    for t in TLogTransformEnumerator.Create(Transformations.List) do
+      if t.Enabled then
+        exit(true);
+  Result := false;
+end;
+
+procedure TChartAxisTeeChart.SetLogarithmic(AValue: Boolean);
+var
+  t: TLogarithmAxisTransform;
+begin
+  Intervals.Tolerance := IfThen(AValue, 2, 0);
+  if Transformations <> nil then
+    for t in TLogTransformEnumerator.Create(Transformations.List) do
+      t.Enabled := AValue
+  else if AValue then
+    Transformations := AddLogTransforms;
+end;
 
 { TCustomChartSeriesTeeChart }
 
@@ -119,8 +204,10 @@ begin
 end;
 
 initialization
-
   Dummy;
+
+finalization
+  FreeLogTransforms;
 
 end.
 
