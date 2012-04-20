@@ -309,8 +309,9 @@ constructor TCustomChartSeries.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FActive := true;
+  FAxisIndexX := DEF_AXIS_INDEX;
+  FAxisIndexY := DEF_AXIS_INDEX;
   FLegend := TChartSeriesLegend.Create(FChart);
-  SetPropDefaults(Self, ['AxisIndexX', 'AxisIndexY']);
 end;
 
 destructor TCustomChartSeries.Destroy;

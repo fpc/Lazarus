@@ -56,6 +56,7 @@ type
     function AddXY(
       AX, AY: Double; AXLabel: String = '';
       AColor: TChartColor = clTAColor): Integer; overload; inline;
+    constructor Create(AOwner: TComponent); override;
   published
     property AxisIndexX default 0;
     property AxisIndexY default 1;
@@ -178,6 +179,12 @@ function THorizBarSeries.AddXY(
   AX, AY: Double; AXLabel: String; AColor: TChartColor): Integer;
 begin
   Result := inherited AddXY(AY, AX, AXLabel, AColor);
+end;
+
+constructor THorizBarSeries.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  SetPropDefaults(Self, ['AxisIndexX', 'AxisIndexY']);
 end;
 
 { TChartTeeChart }
