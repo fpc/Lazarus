@@ -365,10 +365,11 @@ type
         0: (FRect: TRect;);
         1: (FCoords: TRectArray;);
       end;
-    function GetValue(AIndex: Integer): integer;
-    procedure SetValue(AIndex: integer; AValue: TChartDistance);
   public
     constructor Create(AOwner: TCustomChart);
+
+    function GetValue(AIndex: Integer): Integer;
+    procedure SetValue(AIndex: Integer; AValue: TChartDistance);
   public
     procedure Assign(Source: TPersistent); override;
     property Data: TRect read FData.FRect;
@@ -1164,12 +1165,12 @@ begin
   FData.FRect := Rect(DEF_MARGIN, DEF_MARGIN, DEF_MARGIN, DEF_MARGIN);
 end;
 
-function TChartMargins.GetValue(AIndex: Integer): integer;
+function TChartMargins.GetValue(AIndex: Integer): Integer;
 begin
   Result := FData.FCoords[AIndex];
 end;
 
-procedure TChartMargins.SetValue(AIndex: integer; AValue: TChartDistance);
+procedure TChartMargins.SetValue(AIndex: Integer; AValue: TChartDistance);
 begin
   if FData.FCoords[AIndex] = AValue then exit;
   FData.FCoords[AIndex] := AValue;
