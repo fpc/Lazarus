@@ -4,7 +4,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
 "PO-Revision-Date: \n"
-"Last-Translator: Marcelo Borges de Paula\n"
+"Last-Translator: Marcelo B Paula\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -31,11 +31,11 @@ msgstr "Enviar"
 
 #: svnclasses.rscommitmsg
 msgid "Commit Message"
-msgstr ""
+msgstr "Enviar mensagem"
 
 #: svnclasses.rscommitmsghistory
 msgid "Commit Message History"
-msgstr ""
+msgstr "Enviar histórico de mensagem"
 
 #: svnclasses.rscommitrevision
 msgid "Commit revision"
@@ -94,22 +94,19 @@ msgid "LazarusSVN Commit"
 msgstr "Enviar LazarusSVN"
 
 #: svnclasses.rslazarussvndiff
-#, fuzzy
 #| msgid "%s - LazarusSVN Diff..."
 msgid "%s - LazarusSVN Diff ..."
-msgstr "%s - LazarusSVN Diff..."
+msgstr "%s - LazarusSVN Diff ..."
 
 #: svnclasses.rslazarussvnlog
-#, fuzzy
 #| msgid "%s - LazarusSVN Log..."
 msgid "%s - LazarusSVN Log ..."
-msgstr "%s - LazarusSVN Log..."
+msgstr "%s - LazarusSVN Log ..."
 
 #: svnclasses.rslazarussvnupdate
-#, fuzzy
 #| msgid "%s - LazarusSVN Update..."
 msgid "%s - LazarusSVN Update ..."
-msgstr "%s - LazarusSVN Atualizar..."
+msgstr "%s - LazarusSVN Atualizar ..."
 
 #: svnclasses.rsmerged
 msgid "Merged"
@@ -196,25 +193,21 @@ msgid "Show diff"
 msgstr "Exibir diferenças"
 
 #: svnclasses.rsshowdiffbase
-#, fuzzy
 #| msgid "Show diff of local changes"
 msgid "Show Diff of Local Changes"
 msgstr "Exibir diferenças das alterações locais"
 
 #: svnclasses.rsshowdiffcountrev
-#, fuzzy
 #| msgid "Show last X commits"
 msgid "Show Last X Commits"
 msgstr "Exibir últimos X envios"
 
 #: svnclasses.rsshowdiffhead
-#, fuzzy
 #| msgid "Show diff against HEAD"
 msgid "Show Diff Against HEAD"
 msgstr "Exibir diferenças contra HEAD"
 
 #: svnclasses.rsshowdiffprev
-#, fuzzy
 #| msgid "Show diff against previous version"
 msgid "Show Diff Against Previous Version"
 msgstr "Exibir diferenças contra versão prévia"

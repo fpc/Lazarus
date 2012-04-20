@@ -1218,7 +1218,7 @@ msgstr "Azul Celeste"
 
 #: lclstrconsts.rstcustomtabcontrolaccessibilitydescription
 msgid "A control with tabs"
-msgstr ""
+msgstr "Um controle com tabulações"
 
 #: lclstrconsts.rstealcolorcaption
 msgid "Teal"
@@ -1235,17 +1235,17 @@ msgstr "Formato Arquivo Imagem \"Tagged\""
 #: lclstrconsts.rstpanelaccessibilitydescription
 msgctxt "lclstrconsts.rstpanelaccessibilitydescription"
 msgid "Panel"
-msgstr ""
+msgstr "Painel"
 
 #: lclstrconsts.rstsplitteraccessibilitydescription
 msgctxt "lclstrconsts.rstsplitteraccessibilitydescription"
 msgid "A grip to control how much size to give two parts of an area"
-msgstr ""
+msgstr "Um pegador para controlar quanto tamanho dar a duas partes de uma área"
 
 #: lclstrconsts.rsttreeviewaccessibilitydescription
 msgctxt "lclstrconsts.rsttreeviewaccessibilitydescription"
 msgid "A tree of items"
-msgstr ""
+msgstr "Uma árvore de itens"
 
 #: lclstrconsts.rsunabletoloaddefaultfont
 msgid "Unable to load default font"
