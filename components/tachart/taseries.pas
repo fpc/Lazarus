@@ -358,9 +358,8 @@ begin
 
   FLinePen := TPen.Create;
   FLinePen.OnChange := @StyleChanged;
-  FLineType := ltFromPrevious;
   FPointer := TSeriesPointer.Create(FChart);
-  FUseReticule := true;
+  SetPropDefaults(Self, ['LineType', 'ShowPoints', 'UseReticule']);
 end;
 
 destructor TLineSeries.Destroy;
