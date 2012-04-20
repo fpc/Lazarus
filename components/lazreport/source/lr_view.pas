@@ -93,11 +93,15 @@ type
   { TfrPreviewForm }
 
   TfrPreviewForm = class(TForm)
+    BtZoomOut: TBitBtn;
+    BtZoomIn: TBitBtn;
     frTBSeparator1: TPanel;
     frTBSeparator2: TPanel;
     frTBSeparator3: TPanel;
     LbPanel: TPanel;
     PanTop: TPanel;
+    PgDown: TSpeedButton;
+    PgUp: TSpeedButton;
     ProcMenu: TPopupMenu;
     N2001: TMenuItem;
     N1501: TMenuItem;
@@ -111,7 +115,6 @@ type
     N3: TMenuItem;
     OpenDialog: TOpenDialog;
     SaveDialog: TSaveDialog;
-    Bevel2: TBevel;
     N4: TMenuItem;
     N5: TMenuItem;
     N6: TMenuItem;
@@ -119,8 +122,8 @@ type
     PreviewPanel: TPanel;
     ScrollBox1: TScrollBox;
     RPanel: TPanel;
-    PgUp: TSpeedButton;
-    PgDown: TSpeedButton;
+    BtPgFirst: TSpeedButton;
+    BtPgLast: TSpeedButton;
     VScrollBar: TScrollBar;
     BPanel: TPanel;
     HScrollBar: TScrollBar;
@@ -129,10 +132,12 @@ type
     LoadBtn: TBitBtn;
     SaveBtn: TBitBtn;
     PrintBtn: TBitBtn;
-    FindBtn: TBitBtn;
-    HelpBtn: TBitBtn;
     ExitBtn: TBitBtn;
+    procedure BtZoomInClick(Sender: TObject);
+    procedure BtZoomOutClick(Sender: TObject);
     procedure FormResize(Sender: TObject);
+    procedure BtPgFirstClick(Sender: TObject);
+    procedure BtPgLastClick(Sender: TObject);
     procedure VScrollBarChange(Sender: TObject);
     procedure HScrollBarChange(Sender: TObject);
     procedure PgUpClick(Sender: TObject);
@@ -518,21 +523,9 @@ begin
   LoadBtn.Hint := sPreviewFormOpen;
   SaveBtn.Hint := sPreviewFormSave;
   PrintBtn.Hint := sPreviewFormPrint;
-  FindBtn.Hint := sPreviewFormFind;
-  HelpBtn.Hint := sPreviewFormHelp;
   ExitBtn.Hint := sPreviewFormClose;
-  
-  // adjust scrollbars widths
-  
-  W := PgUp.Glyph.Width + 2;
-  VScrollbar.Width := W;
-  PgUp.Width := W;
-  PgDown. Width := W;
-  PgUp.Height := PgUp.Glyph.Height + 2;
-  PgDown.Height := PgDown.Glyph.Height + 2;
-  
-  BPanel.Height := RPanel.Width;
-  HScrollbar.Height := W;
+
+  // TODO:  ADD hints to new buttons
 end;
 
 procedure TfrPreviewForm.FormDestroy(Sender: TObject);
@@ -569,12 +562,9 @@ begin
     LoadBtn.Visible := pbLoad in TfrReport(Doc).PreviewButtons;
     SaveBtn.Visible := pbSave in TfrReport(Doc).PreviewButtons;
     PrintBtn.Visible := pbPrint in TfrReport(Doc).PreviewButtons;
-    FindBtn.Visible := pbFind in TfrReport(Doc).PreviewButtons;
-    HelpBtn.Visible := pbHelp in TfrReport(Doc).PreviewButtons;
     ExitBtn.Visible := pbExit in TfrReport(Doc).PreviewButtons;
     if not ZoomBtn.Visible then
       frTBSeparator1.Hide;
-    frTBSeparator3.Visible := FindBtn.Visible or HelpBtn.Visible;
   end;
 
   PrintBtn.Enabled := Printer.Printers.Count > 0;
@@ -850,10 +840,11 @@ begin
     Inc(y, maxdy + 10);
     Inc(i, nx);
   end;
-  
-  VScrollBar.Height := RPanel.Height - PgUp.height - PgDown.height;
-  if RPanel.Visible then
-    HScrollbar.Width := BPanel.Width - HScrollbar.Left - RPanel.Width;
+
+  // REMOVE: scrolls size hacks
+  //VScrollBar.Height := RPanel.Height - PgUp.height - PgDown.height;
+  //if RPanel.Visible then
+  //  HScrollbar.Width := BPanel.Width - HScrollbar.Left - RPanel.Width;
 
   if maxx < 0 then maxx := 0 else Inc(maxx, 10);
   if maxy < 0 then maxy := 0 else Inc(maxy, 10);
@@ -867,6 +858,56 @@ begin
   
   SetToCurPage;
   PaintAllowed := True;
+end;
+
+procedure TfrPreviewForm.BtZoomOutClick(Sender: TObject);
+begin
+  if EMFPages = nil then Exit;
+  ofx := 0;
+  if LastScale > 0.1 then
+  begin
+    mode := mdNone;
+    per := (LastScale - 0.1);
+    HScrollBar.Position := 0;
+    FormResize(nil);
+    LastScale := per;
+    LastScaleMode := mode;
+    PBox.Repaint;
+  end;
+end;
+
+procedure TfrPreviewForm.BtZoomInClick(Sender: TObject);
+begin
+    if EMFPages = nil then Exit;
+  ofx := 0;
+  if LastScale < 100 then
+  begin
+    mode := mdNone;
+    per := (LastScale + 0.1);
+    HScrollBar.Position := 0;
+    FormResize(nil);
+    LastScale := per;
+    LastScaleMode := mode;
+    PBox.Repaint;
+  end;
+end;
+
+procedure TfrPreviewForm.BtPgFirstClick(Sender: TObject);
+begin
+  if EMFPages = nil then Exit;
+  if CurPage > 1 then
+    CurPage := 1;
+  ShowPageNum;
+  SetToCurPage;
+end;
+
+procedure TfrPreviewForm.BtPgLastClick(Sender: TObject);
+begin
+  if EMFPages = nil then Exit;
+  if CurPage < TfrEMFPages(EMFPages).Count then
+    CurPage := TfrEMFPages(EMFPages).Count;
+  ShowPageNum;
+  SetToCurPage;
 end;
 
 procedure TfrPreviewForm.SetToCurPage;
@@ -1009,6 +1050,7 @@ end;
 
 procedure TfrPreviewForm.PgUpClick(Sender: TObject);
 begin
+  if EMFPages = nil then Exit;
   if CurPage > 1 then Dec(CurPage);
   ShowPageNum;
   SetToCurPage;
@@ -1274,25 +1316,16 @@ begin
   RedrawAll;
 end;
 
-//type THackBtn = class(TBitBtn);
-
 procedure TfrPreviewForm.HelpBtnClick(Sender: TObject);
 begin
   Screen.Cursor := crHelp;
   SetCapture(Handle);
-//**  THackBtn(HelpBtn).FMouseInControl := False;
-  HelpBtn.Invalidate;
 end;
 
 procedure TfrPreviewForm.FormMouseDown(Sender: TObject;
   Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 begin
-//  HelpBtn.Down := False;
   Screen.Cursor := crDefault;
-(*  c := frControlAtPos(Self, Point(X, Y));
-  if (c <> nil) and (c <> HelpBtn) then
-    Application.HelpCommand(HELP_CONTEXTPOPUP, c.Tag);
-*)
 end;
 
 end.
