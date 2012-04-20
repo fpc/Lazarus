@@ -8723,12 +8723,13 @@ end;
 
 function TQtTabWidget.EventFilter(Sender: QObjectH; Event: QEventH): Boolean;
   cdecl;
-{$IFDEF QT_ENABLE_LCL_PAINT_TABS}
 var
+{$IFDEF QT_ENABLE_LCL_PAINT_TABS}
   R: TRect;
   TabGeom: TRect;
   Pt: TPoint;
 {$ENDIF}
+  ALCLEvent: QLCLMessageEventH;
 begin
 
   Result := False;
@@ -8743,13 +8744,11 @@ begin
       ' LCLObject=', dbgsName(LCLObject),
       ' Event=', EventTypeToStr(Event),' inUpdate=',inUpdate);
     {$endif}
-    case QEvent_type(Event) of
-      QEventResize:
-        if LCLObject.ClientRectNeedsInterfaceUpdate then
-          LCLObject.InvalidateClientRectCache(False);
-      // layoutRequest from stacked widget is very important !
-      QEventLayoutRequest: LCLObject.DoAdjustClientRectChange(False);
-    end;
+    {
+      we don't use QEventResize and QEventLayoutRequest of StackedWidget anymore.
+      see commited revision for issue #21805.
+      We are leaving this part for debugging purposes.
+    }
     exit;
   end;
 
@@ -8771,6 +8770,25 @@ begin
           QEvent_ignore(Event);
       end;
     {$ENDIF}
+    LCLQt_DelayLayoutRequest:
+    begin
+      if LCLObject.ClientRectNeedsInterfaceUpdate then
+      begin
+        {$IFDEF VerboseQtEvents}
+        DebugLn('<*><*> TQtTabWidget calling DoAdjustClientRectChange() from LCLQt_DelayLayoutRequest ...');
+        {$ENDIF}
+        LCLObject.DoAdjustClientRectChange(True);
+      end;
+      Result := True;
+    end;
+    QEventLayoutRequest:
+    begin
+      //behaviour is changed because of issue #21805.
+      //we send delayed event so LCL can read clientRect at the right time.
+      ALCLEvent := QLCLMessageEvent_create(LCLQt_DelayLayoutRequest, 0,
+        0, 0, 0);
+      QCoreApplication_postEvent(Sender, ALCLEvent);
+    end;
     QEventKeyPress,
     QEventKeyRelease: QEvent_ignore(Event);
     QEventWheel:
@@ -8829,7 +8847,7 @@ end;
 
 function TQtTabWidget.getClientBounds: TRect;
 begin
-  QWidget_contentsRect(StackWidget, @Result)
+  QWidget_contentsRect(StackWidget, @Result);
 end;
 
 function TQtTabWidget.getCurrentIndex: Integer;
@@ -15285,10 +15303,21 @@ end;
 
 function TQtPage.EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl;
 begin
-  if (QEvent_type(Event) = QEventResize) and
-    LCLObject.Parent.ClientRectNeedsInterfaceUpdate  then
-      LCLObject.Parent.InvalidateClientRectCache(False);
-  Result:=inherited EventFilter(Sender, Event);
+  if (QEvent_type(Event) = QEventResize) then
+  begin
+    //behaviour is changed because of issue #21805.
+    if LCLObject.ClientRectNeedsInterfaceUpdate then
+    begin
+      {$IFDEF VerboseQtEvents}
+      DebugLn('<*><*> TQtPage resize event invalidating clientrect cache !!!');
+      {$ENDIF}
+      LCLObject.InvalidateClientRectCache(False);
+
+      if FChildOfComplexWidget = ccwTabWidget then
+        exit(False);
+    end;
+  end;
+  Result := inherited EventFilter(Sender, Event);
 end;
 
 function TQtPage.getIcon: QIconH;

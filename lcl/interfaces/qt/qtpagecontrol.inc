@@ -137,7 +137,55 @@ begin
     QtTabWidget.AttachEvents;
     Result := TLCLIntfHandle(QtTabWidget);
   end;
+end;
 
+class function TQtWSCustomTabControl.GetDefaultClientRect(
+  const AWinControl: TWinControl; const aLeft, aTop, aWidth, aHeight: integer;
+  var aClientRect: TRect): boolean;
+var
+  dx, dy: integer;
+  ATabWidget: TQtTabWidget;
+begin
+  Result := False;
+  if AWinControl.HandleAllocated then
+  begin
+    if TQtWidget(AWinControl.Handle).ChildOfComplexWidget <> ccwTTabControl then
+    begin
+      ATabWidget := TQtTabWidget(AWinControl.Handle);
+      if ATabWidget.testAttribute(QtWA_PendingResizeEvent) then
+      begin
+        // we must recalculate aclientrect since we have pending resize event
+        // and clientrect won't be accurate.issue #21805
+        Result := True;
+        dx := GetPixelMetric(QStylePM_DefaultFrameWidth, nil, nil);
+
+        if ATabWidget.getTabPosition in [QTabWidgetNorth, QTabWidgetSouth] then
+        begin
+          if ATabWidget.TabBar.getVisible then
+            dy := ATabWidget.TabBar.getHeight
+          else
+            dy := 0;
+          aClientRect := Rect(0, 0,
+               Max(0, aWidth - (dx * 2)),
+               Max(0, aHeight - dx  - dy));
+        end else
+        begin
+          if ATabWidget.TabBar.getVisible then
+            dy := ATabWidget.TabBar.getWidth
+          else
+            dy := 0;
+          aClientRect := Rect(0,0,
+               Max(0, aWidth - dx  - dy),
+               Max(0, aHeight - (dx * 2)));
+        end;
+      end;
+    end;
+  end else
+  begin
+    dx := GetPixelMetric(QStylePM_TabBarBaseHeight, nil, nil);
+    aClientRect := Rect(0,0, Max(0, aWidth - (dx * 2)), Max(0, aHeight - (dx * 2)));
+    Result := True;
+  end;
 end;
 
 class procedure TQtWSCustomTabControl.AddPage(const ATabControl: TCustomTabControl;
