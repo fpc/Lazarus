@@ -310,22 +310,28 @@ var
   FrameBorders: TRect;
 begin
   Result:=false;
-  //DebugLn(['TGtk2WSCustomTabControl.GetDefaultClientRect ',DbgSName(AWinControl),' ',aWidth,'x',aHeight]);
-  if AWinControl.HandleAllocated
-  and (gtk_notebook_get_nth_page({%H-}PGtkNotebook(AWinControl.Handle),0)<>nil) then
+  if (AWinControl is TTabControl) then
   begin
-    // handle allocated and has one page
-    // => normal GetClientRect will retrieve the right ClientRect
+    // use normal ClientRect
   end else begin
-    FrameBorders:=GetStyleNotebookFrameBorders;
-    aClientRect:=Rect(0,0,
-                 Max(0,aWidth-FrameBorders.Left-FrameBorders.Right),
-                 Max(0,aHeight-FrameBorders.Top-FrameBorders.Bottom));
-    Result:=true;
+    // handle is a gtknotebook
+    //DebugLn(['TGtk2WSCustomTabControl.GetDefaultClientRect ',DbgSName(AWinControl),' ',aWidth,'x',aHeight]);
+    if AWinControl.HandleAllocated
+    and (gtk_notebook_get_nth_page({%H-}PGtkNotebook(AWinControl.Handle),0)<>nil)
+    then begin
+      // notebook handle allocated and has one page
+      // => normal GetClientRect will retrieve the right ClientRect
+    end else begin
+      FrameBorders:=GetStyleNotebookFrameBorders;
+      aClientRect:=Rect(0,0,
+                   Max(0,aWidth-FrameBorders.Left-FrameBorders.Right),
+                   Max(0,aHeight-FrameBorders.Top-FrameBorders.Bottom));
+      Result:=true;
+      {$IFDEF VerboseSizeMsg}
+      DebugLn(['TGtk2WSCustomTabControl.GetDefaultClientRect END FrameBorders=',dbgs(FrameBorders),' aClientRect=',dbgs(aClientRect)]);
+      {$ENDIF}
+    end;
   end;
-  {$IFDEF VerboseSizeMsg}
-  if Result then DebugLn(['TGtk2WSCustomTabControl.GetDefaultClientRect END FrameBorders=',dbgs(FrameBorders),' aClientRect=',dbgs(aClientRect)]);
-  {$ENDIF}
 end;
 
 class procedure TGtk2WSCustomTabControl.AddPage(const ATabControl: TCustomTabControl;
