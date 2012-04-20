@@ -24,7 +24,7 @@ interface
 
 uses
   Classes, SysUtils,
-  TAGraph, TAChartAxis, TAChartAxisUtils, TAChartUtils;
+  TAGraph, TAChartAxis, TAChartAxisUtils, TAChartUtils, TASeries;
 
 type
   TChartTeeChart = class helper for TChart
@@ -41,6 +41,12 @@ type
     property MarginLeft: TChartDistance index 1 read GetMargin write SetMargin;
     property MarginRight: TChartDistance index 3 read GetMargin write SetMargin;
     property MarginTop: TChartDistance index 2 read GetMargin write SetMargin;
+  end;
+
+  TPointerSeries = class(TLineSeries)
+  published
+    property LineType default ltNone;
+    property ShowPoints default true;
   end;
 
 implementation
