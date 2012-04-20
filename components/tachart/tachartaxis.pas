@@ -203,16 +203,16 @@ type
   public
     function Add: TChartAxis; inline;
     procedure Draw(ACurrentZ: Integer; var AIndex: Integer);
-    function GetAxis(AIndex: Integer): TChartAxis;
+    function GetAxisByAlign(AAlign: TChartAxisAlignment): TChartAxis;
     function GetEnumerator: TChartAxisEnumerator;
     function Measure(const AExtent: TDoubleRect): TChartAxisMargins;
     procedure Prepare(ARect: TRect);
     procedure PrepareGroups;
-    procedure SetAxis(AIndex: Integer; AValue: TChartAxis);
+    procedure SetAxisByAlign(AAlign: TChartAxisAlignment; AValue: TChartAxis);
 
     property Axes[AIndex: Integer]: TChartAxis read GetAxes; default;
-    property BottomAxis: TChartAxis index 1 read GetAxis write SetAxis;
-    property LeftAxis: TChartAxis index 2 read GetAxis write SetAxis;
+    property BottomAxis: TChartAxis index calBottom read GetAxisByAlign write SetAxisByAlign;
+    property LeftAxis: TChartAxis index calLeft read GetAxisByAlign write SetAxisByAlign;
     property OnVisitSources: TChartOnVisitSources
       read FOnVisitSources write FOnVisitSources;
   end;
@@ -829,9 +829,6 @@ begin
   Marks.SourceDef.ValuesInRange(p, FMarkValues);
 end;
 
-const
-  AXIS_INDEX: array [1..2] of TChartAxisAlignment = (calBottom, calLeft);
-
 { TChartAxisList }
 
 function TChartAxisList.Add: TChartAxis; inline;
@@ -875,10 +872,10 @@ begin
   Result := TChartAxis(Items[AIndex]);
 end;
 
-function TChartAxisList.GetAxis(AIndex: Integer): TChartAxis;
+function TChartAxisList.GetAxisByAlign(AAlign: TChartAxisAlignment): TChartAxis;
 begin
   for Result in Self do
-    if Result.Alignment = AXIS_INDEX[AIndex] then exit;
+    if Result.Alignment = AAlign then exit;
   Result := nil;
 end;
 
@@ -993,15 +990,16 @@ begin
   SetLength(FGroups, groupCount);
 end;
 
-procedure TChartAxisList.SetAxis(AIndex: Integer; AValue: TChartAxis);
+procedure TChartAxisList.SetAxisByAlign(
+  AAlign: TChartAxisAlignment; AValue: TChartAxis);
 var
   a: TChartAxis;
 begin
-  a := GetAxis(AIndex);
+  a := GetAxisByAlign(AAlign);
   if a = nil then
     a := Add;
   a.Assign(AValue);
-  a.Alignment := AXIS_INDEX[AIndex];
+  a.Alignment := AAlign;
 end;
 
 procedure TChartAxisList.Update(AItem: TCollectionItem);

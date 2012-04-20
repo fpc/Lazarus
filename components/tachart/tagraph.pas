@@ -208,7 +208,6 @@ type
     procedure DrawReticule(ADrawer: IChartDrawer);
     procedure FindComponentClass(
       AReader: TReader; const AClassName: String; var AClass: TComponentClass);
-    function GetAxis(AIndex: Integer): TChartAxis;
     function GetChartHeight: Integer;
     function GetChartWidth: Integer;
     function GetMargins(ADrawer: IChartDrawer): TRect;
@@ -218,7 +217,6 @@ type
     procedure HideReticule;
 
     procedure SetAntialiasingMode(AValue: TChartAntialiasingMode);
-    procedure SetAxis(AIndex: Integer; AValue: TChartAxis);
     procedure SetAxisList(AValue: TChartAxisList);
     procedure SetAxisVisible(Value: Boolean);
     procedure SetBackColor(AValue: TColor);
@@ -256,6 +254,9 @@ type
     procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
     procedure MouseUp(
       AButton: TMouseButton; AShift: TShiftState; AX, AY: Integer); override;
+  protected
+    function GetAxisByAlign(AAlign: TChartAxisAlignment): TChartAxis;
+    procedure SetAxisByAlign(AAlign: TChartAxisAlignment; AValue: TChartAxis); inline;
   protected
     procedure Clear(ADrawer: IChartDrawer; const ARect: TRect);
     procedure DisplaySeries(ADrawer: IChartDrawer);
@@ -343,7 +344,7 @@ type
     property AxisList: TChartAxisList read FAxisList write SetAxisList;
     property AxisVisible: Boolean read FAxisVisible write SetAxisVisible default true;
     property BackColor: TColor read FBackColor write SetBackColor default clBtnFace;
-    property BottomAxis: TChartAxis index 1 read GetAxis write SetAxis stored false;
+    property BottomAxis: TChartAxis index calBottom read GetAxisByAlign write SetAxisByAlign stored false;
     property Depth: TChartDistance read FDepth write SetDepth default 0;
     property ExpandPercentage: Integer
       read FExpandPercentage write SetExpandPercentage default 0;
@@ -352,7 +353,7 @@ type
     property Foot: TChartTitle read FFoot write SetFoot;
     property Frame: TChartPen read FFrame write SetFrame;
     property GraphBrush: TBrush read FGraphBrush write SetGraphBrush;
-    property LeftAxis: TChartAxis index 2 read GetAxis write SetAxis stored false;
+    property LeftAxis: TChartAxis index calLeft read GetAxisByAlign write SetAxisByAlign stored false;
     property Legend: TChartLegend read FLegend write SetLegend;
     property Margins: TChartMargins read FMargins write SetMargins;
     property MarginsExternal: TChartMargins
@@ -873,9 +874,9 @@ begin
   AClass := nil;
 end;
 
-function TChart.GetAxis(AIndex: Integer): TChartAxis;
+function TChart.GetAxisByAlign(AAlign: TChartAxisAlignment): TChartAxis;
 begin
-  Result := FAxisList.GetAxis(AIndex);
+  Result := FAxisList.GetAxisByAlign(AAlign);
 end;
 
 function TChart.GetChartHeight: Integer;
@@ -1259,9 +1260,9 @@ begin
   StyleChanged(Self);
 end;
 
-procedure TChart.SetAxis(AIndex: Integer; AValue: TChartAxis);
+procedure TChart.SetAxisByAlign(AAlign: TChartAxisAlignment; AValue: TChartAxis);
 begin
-  FAxisList.SetAxis(AIndex, AValue);
+  FAxisList.SetAxisByAlign(AAlign, AValue);
   StyleChanged(AValue);
 end;
 
