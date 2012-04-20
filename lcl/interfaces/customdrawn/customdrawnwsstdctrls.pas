@@ -397,8 +397,18 @@ begin
 end;
 
 class procedure TCDWSCustomMemo.ShowHide(const AWinControl: TWinControl);
+var
+  lCDWinControl: TCDWinControl;
 begin
-  inherited ShowHide(AWinControl);
+  lCDWinControl := TCDWinControl(AWinControl.Handle);
+
+  TCDWSWinControl.ShowHide(AWinControl);
+
+  if not lCDWinControl.CDControlInjected then
+  begin
+    InjectCDControl(AWinControl, lCDWinControl.CDControl);
+    lCDWinControl.CDControlInjected := True;
+  end;
 end;
 
 { TCDWSScrollBar }
