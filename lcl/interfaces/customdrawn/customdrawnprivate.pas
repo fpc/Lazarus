@@ -50,7 +50,7 @@ type
 
   // Additional Tab
 
-  TCDIntfStaticText = class(TCDProgressBar)
+  TCDIntfStaticText = class(TCDStaticText)
   public
     LCLControl: TStaticText;
   end;
