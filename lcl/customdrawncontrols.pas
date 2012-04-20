@@ -1778,6 +1778,27 @@ begin
   VK_RETURN:
   begin
     if not MultiLine then Exit;
+    // Selection delete
+    if IsSomethingSelected() then
+      DoDeleteSelection();
+    // If the are no contents at the moment, add two lines, because the first one always exists for the user
+    if FLines.Count = 0 then
+    begin
+      FLines.Add('');
+      FLines.Add('');
+      FEditState.CaretPos := Point(0, 1);
+    end
+    else
+    begin
+      // Get the two halves of the text separated by the cursor
+      lLeftText := UTF8Copy(lOldText, 1, FEditState.CaretPos.X);
+      lRightText := UTF8Copy(lOldText, FEditState.CaretPos.X+1, lOldTextLength);
+      // Move the right part to a new line
+      SetCurrentLine(lLeftText);
+      FLines.Insert(FEditState.CaretPos.Y+1, lRightText);
+      FEditState.CaretPos := Point(0, FEditState.CaretPos.Y+1);
+    end;
+    Invalidate;
   end;
 
   else
