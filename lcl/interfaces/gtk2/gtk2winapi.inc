@@ -3812,7 +3812,7 @@ var
   TopY, LineLen, LineHeight: Integer;
   TxtPt: TPoint;
   DCOrigin: TPoint;
-  Foreground: PGDKColor;
+  Foreground, BackgroundColor: PGDKColor;
   CurDx: PInteger;
   CurStr: PChar;
 
@@ -3827,7 +3827,7 @@ var
       while CurCount > 0 do
       begin
         CharLen := UTF8CharacterLength(CurStr);
-        DevCtx.DrawTextWithColors(CurStr, CharLen, CurScreenX, Y, Foreground, nil);
+        DevCtx.DrawTextWithColors(CurStr, CharLen, CurScreenX, Y, Foreground, BackgroundColor);
         inc(CurScreenX, CurDx^);
         inc(CurDx);
         inc(CurStr, CharLen);
@@ -3835,7 +3835,7 @@ var
       end;
     end
     else
-      DevCtx.DrawTextWithColors(Str, Count, X, Y, Foreground, nil);
+      DevCtx.DrawTextWithColors(Str, Count, X, Y, Foreground, BackgroundColor);
   end;
 
 begin
@@ -3853,6 +3853,8 @@ begin
     Result := False;
     exit;
   end;
+
+  BackgroundColor := nil;
 
   // to reduce flickering calculate first and then paint
 
@@ -3890,6 +3892,16 @@ begin
     gdk_draw_rectangle(DevCtx.Drawable, DevCtx.GC, 1,
                        Rect^.Left+DCOrigin.X, Rect^.Top+DCOrigin.Y,
                        Width, Height);
+  end;
+
+
+  if (DevCtx.GDIObjects[gdiBrush] <> nil) and
+   ((Options and ETO_OPAQUE) = 0) and (DevCtx.BkMode = OPAQUE) then
+  //  (Rect = nil) then TODO: see if Rect<> nil is needed
+  begin
+    //writeln('<*> Brush ? ',DevCtx.GDIObjects[gdiBrush]^.GDIBrushFill,' MODE ',DevCtx.BkMode,
+    // ' ClipRect ',dbgs(RectFromGdkRect(DevCtx.ClipRect)));
+    BackGroundColor := @DevCtx.GDIObjects[gdiBrush]^.GDIBrushColor.Color;
   end;
 
   EnsureGCColor(DC, dccCurrentTextColor, True, False);
