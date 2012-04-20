@@ -6,7 +6,7 @@ interface
 
 uses
   // RTL / FCL
-  Classes, windows, SysUtils, Types, Math, fpcanvas, fpimage,
+  Classes, SysUtils, Types, Math, fpcanvas, fpimage,
   // LazUtils
   lazutf8,
   // LCL -> Use only TForm, TWinControl, TCanvas and TLazIntfImage
