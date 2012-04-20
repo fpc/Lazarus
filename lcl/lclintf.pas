@@ -79,6 +79,7 @@ function GetTickStep: DWord;
 {$ENDIF}
 
 function FindDefaultBrowser(out ABrowser, AParams: String): Boolean;
+// Spaces in URLs need to be encoded as %20 Read http://www.ietf.org/rfc/rfc1738.txt
 function OpenURL(AURL: String): Boolean;
 function OpenDocument(APath: String): Boolean;
 
