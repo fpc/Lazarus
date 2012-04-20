@@ -266,8 +266,8 @@ end;
 procedure TOpenGLDrawer.SetBrushParams(
   AStyle: TFPBrushStyle; AColor: TChartColor);
 begin
-  Unused(AStyle);
   SetBrushColor(AColor);
+  Unused(AStyle);
 end;
 
 procedure TOpenGLDrawer.SetFont(AFont: TFPCustomFont);

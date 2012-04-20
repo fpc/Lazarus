@@ -242,8 +242,8 @@ end;
 procedure TCanvasDrawer.SetBrushParams(
   AStyle: TFPBrushStyle; AColor: TChartColor);
 begin
-  FCanvas.Brush.Style := AStyle;
   FCanvas.Brush.Color := AColor;
+  FCanvas.Brush.Style := AStyle;
 end;
 
 procedure TCanvasDrawer.SetFont(AFont: TFPCustomFont);

@@ -205,8 +205,8 @@ end;
 procedure TBGRABitmapDrawer.SetBrushParams(
   AStyle: TFPBrushStyle; AColor: TChartColor);
 begin
-  Canvas.Brush.Color := AColor;
   Canvas.Brush.Style := AStyle;
+  Canvas.Brush.Color := AColor;
 end;
 
 procedure TBGRABitmapDrawer.SetFont(AFont: TFPCustomFont);
