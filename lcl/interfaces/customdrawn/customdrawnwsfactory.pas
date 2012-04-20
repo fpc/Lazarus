@@ -297,8 +297,8 @@ end;
 
 function RegisterCustomMemo: Boolean; alias : 'WSRegisterCustomMemo';
 begin
-//  RegisterWSComponent(TCustomMemo, TWinCEWSCustomMemo);
-  Result := False;
+  RegisterWSComponent(TCustomMemo, TCDWSCustomMemo);
+  Result := True;
 end;
 
 function RegisterButtonControl: Boolean; alias : 'WSRegisterButtonControl';

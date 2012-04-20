@@ -794,7 +794,8 @@ var
 begin
   if not AStateEx.CaretIsVisible then Exit;
 
-  lControlText := AStateEx.Lines.Strings[AStateEx.CaretPos.Y];
+  if AStateEx.Lines.Count = 0 then lControlText := ''
+  else lControlText := AStateEx.Lines.Strings[AStateEx.CaretPos.Y];
   lCaptionHeight := GetMeasuresEx(ADest, TCDCONTROL_CAPTION_HEIGHT, AState, AStateEx);
   lTextBottomSpacing := GetMeasures(TCDEDIT_BOTTOM_TEXT_SPACING);
   lTextTopSpacing := GetMeasures(TCDEDIT_TOP_TEXT_SPACING);

@@ -1496,6 +1496,7 @@ begin
   // Impose limits in the caret too
   FEditState.CaretPos.X := Min(FEditState.CaretPos.X, UTF8Length(lLineText));
   FEditState.CaretPos.Y := Min(FEditState.CaretPos.Y, FEditState.Lines.Count-1);
+  FEditState.CaretPos.Y := Max(FEditState.CaretPos.Y, 0);
 end;
 
 // Result.X -> returns a zero-based position of the caret
@@ -1516,6 +1517,7 @@ begin
   if Result.Y < 0 then
   begin
     Result.X := 1;
+    Result.Y := 0;
     Exit;
   end;
 
@@ -1903,12 +1905,22 @@ end;
 
 function TCDEdit.GetCurrentLine: string;
 begin
-  Result := FLines.Strings[FEditState.CaretPos.Y];
+  if (FEditState.Lines.Count = 0) or (FEditState.CaretPos.Y >= FEditState.Lines.Count) then
+    Result := ''
+  else Result := FLines.Strings[FEditState.CaretPos.Y];
 end;
 
 procedure TCDEdit.SetCurrentLine(AStr: string);
 begin
-  FLines.Strings[FEditState.CaretPos.Y] := AStr;
+  if (FEditState.Lines.Count = 0) or (FEditState.CaretPos.Y >= FEditState.Lines.Count) then
+  begin
+    FEditState.Lines.Text := AStr;
+    FEditState.VisibleTextStart.X := 1;
+    FEditState.VisibleTextStart.Y := 0;
+    FEditState.CaretPos.X := 0;
+    FEditState.CaretPos.Y := 0;
+  end
+  else FLines.Strings[FEditState.CaretPos.Y] := AStr;
 end;
 
 { TCDCheckBox }

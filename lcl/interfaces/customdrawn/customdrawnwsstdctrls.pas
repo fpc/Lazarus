@@ -212,16 +212,23 @@ type
   { TCDWSCustomMemo }
 
   TCDWSCustomMemo = class(TWSCustomMemo)
+  public
+    class procedure InjectCDControl(const AWinControl: TWinControl; var ACDControlField: TCDControl);
   published
-{    class function CreateHandle(const AWinControl: TWinControl;
+    // TWSWinControl
+    class function CreateHandle(const AWinControl: TWinControl;
           const AParams: TCreateParams): HWND; override;
+    class procedure DestroyHandle(const AWinControl: TWinControl); override;
+
     class procedure AppendText(const ACustomMemo: TCustomMemo; const AText: string); override;
     class function GetStrings(const ACustomMemo: TCustomMemo): TStrings; override;
-    class procedure SetAlignment(const ACustomEdit: TCustomEdit; const AAlignment: TAlignment); override;
+    class procedure FreeStrings(var AStrings: TStrings); override;
+{    class procedure SetAlignment(const ACustomEdit: TCustomEdit; const AAlignment: TAlignment); override;
     class procedure SetScrollbars(const ACustomMemo: TCustomMemo; const NewScrollbars: TScrollStyle); override;
     class procedure SetWantReturns(const ACustomMemo: TCustomMemo; const NewWantReturns: boolean); override;
     class procedure SetWantTabs(const ACustomMemo: TCustomMemo; const NewWantTabs: boolean); override;
     class procedure SetWordWrap(const ACustomMemo: TCustomMemo; const NewWordWrap: boolean); override;}
+    class procedure ShowHide(const AWinControl: TWinControl); override;
   end;
 
   { TCDWSEdit }
@@ -337,6 +344,62 @@ type
 
 
 implementation
+
+{ TCDWSCustomMemo }
+
+class procedure TCDWSCustomMemo.InjectCDControl(const AWinControl: TWinControl;
+  var ACDControlField: TCDControl);
+begin
+  TCDIntfEdit(ACDControlField).LCLControl := TCustomEdit(AWinControl);
+  TCDIntfEdit(ACDControlField).MultiLine := True;
+  ACDControlField.Caption := AWinControl.Caption;
+  ACDControlField.Parent := AWinControl;
+  ACDControlField.Align := alClient;
+end;
+
+class function TCDWSCustomMemo.CreateHandle(const AWinControl: TWinControl;
+  const AParams: TCreateParams): HWND;
+var
+  lCDWinControl: TCDWinControl;
+begin
+  Result := TCDWSWinControl.CreateHandle(AWinControl, AParams);
+  lCDWinControl := TCDWinControl(Result);
+  lCDWinControl.CDControl := TCDIntfEdit.Create(AWinControl);
+end;
+
+class procedure TCDWSCustomMemo.DestroyHandle(const AWinControl: TWinControl);
+var
+  lCDWinControl: TCDWinControl;
+begin
+  lCDWinControl := TCDWinControl(AWinControl.Handle);
+  lCDWinControl.CDControl.Free;
+  lCDWinControl.Free;
+end;
+
+class procedure TCDWSCustomMemo.AppendText(const ACustomMemo: TCustomMemo;
+  const AText: string);
+begin
+
+end;
+
+class function TCDWSCustomMemo.GetStrings(const ACustomMemo: TCustomMemo): TStrings;
+var
+  lCDWinControl: TCDWinControl;
+begin
+  lCDWinControl := TCDWinControl(ACustomMemo.Handle);
+  if lCDWinControl.CDControl = nil then Exit;
+  Result := TCDIntfEdit(lCDWinControl.CDControl).Lines;
+end;
+
+class procedure TCDWSCustomMemo.FreeStrings(var AStrings: TStrings);
+begin
+  // Don't free it in the WS!
+end;
+
+class procedure TCDWSCustomMemo.ShowHide(const AWinControl: TWinControl);
+begin
+  inherited ShowHide(AWinControl);
+end;
 
 { TCDWSScrollBar }
 
@@ -1263,7 +1326,7 @@ begin
   Result := False;
   lCDWinControl := TCDWinControl(AWinControl.Handle);
   if lCDWinControl.CDControl = nil then Exit;
-  AText := TCDIntfEdit(lCDWinControl.CDControl).Text;
+  AText := TCDIntfEdit(lCDWinControl.CDControl).Lines.Text;
   //DebugLn('[TCDWSCustomEdit.GetText] AWinControl=' + AWinControl.Name + ' AText='+AText);
   Result := True;
 end;
@@ -1275,7 +1338,7 @@ var
 begin
   lCDWinControl := TCDWinControl(AWinControl.Handle);
   if lCDWinControl.CDControl = nil then Exit;
-  TCDIntfEdit(lCDWinControl.CDControl).Text := AText;
+  TCDIntfEdit(lCDWinControl.CDControl).Lines.Text := AText;
 end;
 
 class procedure TCDWSCustomEdit.ShowHide(const AWinControl: TWinControl);
