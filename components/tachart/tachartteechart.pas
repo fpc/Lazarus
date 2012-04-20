@@ -43,13 +43,31 @@ type
     property MarginTop: TChartDistance index 2 read GetMargin write SetMargin;
   end;
 
-  TPointerSeries = class(TLineSeries)
+  TPointSeries = class(TLineSeries)
   published
     property LineType default ltNone;
     property ShowPoints default true;
   end;
 
+  THorizBarSeries = class(TBarSeries)
+  public
+    // Swap X and Y as TeeChart does.
+    function AddXY(
+      AX, AY: Double; AXLabel: String = ''; AColor: TChartColor = clTAColor): Integer; overload; inline;
+  published
+    property AxisIndexX default 0;
+    property AxisIndexY default 1;
+  end;
+
 implementation
+
+{ THorizBarSeries }
+
+function THorizBarSeries.AddXY(
+  AX, AY: Double; AXLabel: String; AColor: TChartColor): Integer;
+begin
+  Result := inherited AddXY(AY, AX, AXLabel, AColor);
+end;
 
 { TChartTeeChart }
 
