@@ -188,17 +188,19 @@ type
   private
     DragDropStarted: boolean;
     FCaretTimer: TTimer;
+    FLines: TStrings;
     FOnChange: TNotifyEvent;
     function GetLeftTextMargin: Integer;
+    function GetMultiLine: Boolean;
     function GetRightTextMargin: Integer;
     procedure HandleCaretTimer(Sender: TObject);
     procedure DoDeleteSelection;
     procedure DoClearSelection;
     procedure DoManageVisibleTextStart;
-    function GetText: string;
     procedure SetLeftTextMargin(AValue: Integer);
+    procedure SetLines(AValue: TStrings);
+    procedure SetMultiLine(AValue: Boolean);
     procedure SetRightTextMargin(AValue: Integer);
-    procedure SetText(AValue: string);
     function MousePosToCaretPos(X, Y: Integer): TPoint;
     function IsSomethingSelected: Boolean;
   protected
@@ -223,6 +225,8 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+    function GetCurrentLine(): string;
+    procedure SetCurrentLine(AStr: string);
     property LeftTextMargin: Integer read GetLeftTextMargin write SetLeftTextMargin;
     property RightTextMargin: Integer read GetRightTextMargin write SetRightTextMargin;
   published
@@ -232,8 +236,9 @@ type
     property Color;
     property DrawStyle;
     property Enabled;
+    property Lines: TStrings read FLines write SetLines;
+    property MultiLine: Boolean read GetMultiLine write SetMultiLine default False;
     property TabStop default True;
-    property Text: string read GetText write SetText;
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
   end;
 
@@ -1354,15 +1359,23 @@ end;
 
 { TCDEdit }
 
-function TCDEdit.GetText: string;
-begin
-  Result := Caption;
-end;
-
 procedure TCDEdit.SetLeftTextMargin(AValue: Integer);
 begin
   if FEditState.LeftTextMargin = AValue then Exit;
   FEditState.LeftTextMargin := AValue;
+  Invalidate;
+end;
+
+procedure TCDEdit.SetLines(AValue: TStrings);
+begin
+  if FLines=AValue then Exit;
+  FLines.Assign(AValue);
+end;
+
+procedure TCDEdit.SetMultiLine(AValue: Boolean);
+begin
+  if FEditState.MultiLine=AValue then Exit;
+  FEditState.MultiLine := AValue;
   Invalidate;
 end;
 
@@ -1406,6 +1419,11 @@ begin
   Result := FEditState.LeftTextMargin;
 end;
 
+function TCDEdit.GetMultiLine: Boolean;
+begin
+  Result := FEditState.MultiLine;
+end;
+
 function TCDEdit.GetRightTextMargin: Integer;
 begin
   Result := FEditState.RightTextMargin;
@@ -1424,7 +1442,7 @@ begin
     if FEditState.SelLength > 0 then lSelRightPos := lSelRightPos + FEditState.SelLength;
     lSelLength := FEditState.SelLength;
     if lSelLength < 0 then lSelLength := lSelLength * -1;
-    lControlText := Text;
+    lControlText := GetCurrentLine();
 
     // Text left of the selection
     lTextLeft := UTF8Copy(lControlText, FEditState.VisibleTextStart.X, lSelLeftPos-FEditState.VisibleTextStart.X+1);
@@ -1433,7 +1451,7 @@ begin
     lTextRight := UTF8Copy(lControlText, lSelLeftPos+lSelLength+1, Length(lControlText));
 
     // Execute the deletion
-    Text := lTextLeft + lTextRight;
+    SetCurrentLine(lTextLeft + lTextRight);
 
     // Correct the caret position
     FEditState.CaretPos.X := Length(lTextLeft);
@@ -1445,12 +1463,15 @@ end;
 procedure TCDEdit.DoClearSelection;
 begin
   FEditState.SelStart.X := 1;
+  FEditState.SelStart.Y := 0;
   FEditState.SelLength := 0;
 end;
 
+// Imposes sanity limits to the visible text start
+// and also imposes sanity limits on the caret
 procedure TCDEdit.DoManageVisibleTextStart;
 var
-  lText: String;
+  lVisibleText, lLineText: String;
   lVisibleTextCharCount: Integer;
   lAvailableWidth: Integer;
 begin
@@ -1458,22 +1479,23 @@ begin
   FEditState.VisibleTextStart.X := Min(FEditState.CaretPos.X+1, FEditState.VisibleTextStart.X);
 
   // Moved to the right and we need to adjust the text start
-  lText := UTF8Copy(Text, FEditState.VisibleTextStart.X, Length(Text));
+  lLineText := GetCurrentLine();
+  lVisibleText := UTF8Copy(lLineText, FEditState.VisibleTextStart.X, Length(lLineText));
   lAvailableWidth := Width
    - FDrawer.GetMeasures(TCDEDIT_LEFT_TEXT_SPACING)
    - FDrawer.GetMeasures(TCDEDIT_RIGHT_TEXT_SPACING);
-  lVisibleTextCharCount := Canvas.TextFitInfo(lText, lAvailableWidth);
+  lVisibleTextCharCount := Canvas.TextFitInfo(lVisibleText, lAvailableWidth);
   FEditState.VisibleTextStart.X := Max(FEditState.CaretPos.X-lVisibleTextCharCount+1, FEditState.VisibleTextStart.X);
-end;
 
-procedure TCDEdit.SetText(AValue: string);
-var
-  OldCaption: TCaption;
-begin
-  OldCaption := Caption;
-  Caption := AValue;
-  if (AValue <> OldCaption) then DoChange;
-  Invalidate;
+  // Moved upwards and we need to adjust the text start
+  FEditState.VisibleTextStart.Y := Min(FEditState.CaretPos.Y, FEditState.VisibleTextStart.Y);
+
+  // Moved downwards and we need to adjust the text start
+  FEditState.VisibleTextStart.Y := Max(FEditState.CaretPos.Y-FEditState.FullyVisibleLinesCount, FEditState.VisibleTextStart.Y);
+
+  // Impose limits in the caret too
+  FEditState.CaretPos.X := Min(FEditState.CaretPos.X, UTF8Length(lLineText));
+  FEditState.CaretPos.Y := Min(FEditState.CaretPos.Y, FEditState.Lines.Count-1);
 end;
 
 // Result.X -> returns a zero-based position of the caret
@@ -1486,8 +1508,21 @@ var
   lLastDiff: Cardinal = $FFFFFFFF;
   lCurDiff, lBestMatch: Integer;
 begin
+  // Find the best Y position
+  lPos := Y - FDrawer.GetMeasures(TCDEDIT_TOP_TEXT_SPACING);
+  Result.Y := lPos div FEditState.LineHeight;
+  Result.Y := Min(Result.Y, FEditState.FullyVisibleLinesCount);
+  Result.Y := Min(Result.Y, FEditState.Lines.Count-1);
+  if Result.Y < 0 then
+  begin
+    Result.X := 1;
+    Exit;
+  end;
+
+  // Find the best X position
   Canvas.Font := Font;
-  lVisibleStr := UTF8Copy(Text, FEditState.VisibleTextStart.X, Length(Text));
+  lVisibleStr := FLines.Strings[Result.Y];
+  lVisibleStr := UTF8Copy(lVisibleStr, FEditState.VisibleTextStart.X, Length(lVisibleStr));
   lStrLen := UTF8Length(lVisibleStr);
   lPos := FDrawer.GetMeasures(TCDEDIT_LEFT_TEXT_SPACING);
   for i := 0 to lStrLen do
@@ -1514,6 +1549,7 @@ begin
   end;
 
   Result.X := lBestMatch+(FEditState.VisibleTextStart.X-1);
+  Result.X := Min(Result.X, FEditState.VisibleTextStart.X+lStrLen-1);
 end;
 
 function TCDEdit.IsSomethingSelected: Boolean;
@@ -1544,8 +1580,9 @@ var
 begin
   inherited KeyDown(Key, Shift);
 
-  lOldText := Text;
-  lOldTextLength := UTF8Length(Text);
+  lOldText := GetCurrentLine();
+  lOldTextLength := UTF8Length(lOldText);
+  FEditState.SelStart.Y := FEditState.CaretPos.Y;//ToDo: Change this when proper multi-line selection is implemented
 
   case Key of
   // Backspace
@@ -1559,7 +1596,7 @@ begin
     begin
       lLeftText := UTF8Copy(lOldText, 1, FEditState.CaretPos.X-1);
       lRightText := UTF8Copy(lOldText, FEditState.CaretPos.X+1, lOldTextLength);
-      Text := lLeftText + lRightText;
+      SetCurrentLine(lLeftText + lRightText);
       Dec(FEditState.CaretPos.X);
       DoManageVisibleTextStart();
       Invalidate;
@@ -1576,7 +1613,7 @@ begin
     begin
       lLeftText := UTF8Copy(lOldText, 1, FEditState.CaretPos.X);
       lRightText := UTF8Copy(lOldText, FEditState.CaretPos.X+2, lOldTextLength);
-      Text := lLeftText + lRightText;
+      SetCurrentLine(lLeftText + lRightText);
       Invalidate;
     end;
   end;
@@ -1686,6 +1723,60 @@ begin
       Invalidate;
     end;
   end;
+  VK_UP:
+  begin
+    if (FEditState.CaretPos.Y > 0) then
+    begin
+      // Selecting downwards
+      {if [ssShift] = Shift then
+      begin
+        if FEditState.SelLength = 0 then FEditState.SelStart.X := FEditState.CaretPos.X;
+        Dec(FEditState.SelLength);
+      end
+      // Normal move downwards
+      else} FEditState.SelLength := 0;
+
+      Dec(FEditState.CaretPos.Y);
+      DoManageVisibleTextStart();
+      FEditState.CaretIsVisible := True;
+      Invalidate;
+    end
+    // if we are not moving, at least deselect
+    else if ([ssShift] <> Shift) then
+    begin
+      FEditState.SelLength := 0;
+      Invalidate;
+    end;
+  end;
+  VK_DOWN:
+  begin
+    if FEditState.CaretPos.Y < FLines.Count-1 then
+    begin
+      {// Selecting to the right
+      if [ssShift] = Shift then
+      begin
+        if FEditState.SelLength = 0 then FEditState.SelStart.X := FEditState.CaretPos.X;
+        Inc(FEditState.SelLength);
+      end
+      // Normal move to the right
+      else} FEditState.SelLength := 0;
+
+      Inc(FEditState.CaretPos.Y);
+      DoManageVisibleTextStart();
+      FEditState.CaretIsVisible := True;
+      Invalidate;
+    end
+    // if we are not moving, at least deselect
+    else if ([ssShift] <> Shift) then
+    begin
+      FEditState.SelLength := 0;
+      Invalidate;
+    end;
+  end;
+  VK_RETURN:
+  begin
+    if not MultiLine then Exit;
+  end;
 
   else
     lKeyWasProcessed := False;
@@ -1724,10 +1815,10 @@ begin
   DoDeleteSelection;
 
   // Normal characters
-  lOldText := Text;
+  lOldText := GetCurrentLine();
   lLeftText := UTF8Copy(lOldText, 1, FEditState.CaretPos.X);
   lRightText := UTF8Copy(lOldText, FEditState.CaretPos.X+1, UTF8Length(lOldText));
-  Text := lLeftText + UTF8Key + lRightText;
+  SetCurrentLine(lLeftText + UTF8Key + lRightText);
   Inc(FEditState.CaretPos.X);
   DoManageVisibleTextStart();
   FEditState.EventArrived := True;
@@ -1745,6 +1836,7 @@ begin
   FEditState.CaretPos := MousePosToCaretPos(X, Y);
   FEditState.SelLength := 0;
   FEditState.SelStart.X := FEditState.CaretPos.X;
+  FEditState.SelStart.Y := FEditState.CaretPos.Y;
   FEditState.EventArrived := True;
   FEditState.CaretIsVisible := True;
   Invalidate;
@@ -1791,7 +1883,9 @@ begin
   ControlStyle := ControlStyle - [csAcceptsControls] + [csRequiresKeyboardInput];
 
   // State information
-  FEditState.VisibleTextStart := Point(1, 1);
+  FLines := TStringList.Create;
+  FEditState.VisibleTextStart := Point(1, 0);
+  FEditState.Lines := FLines;
 
   // Caret code
   FCaretTimer := TTimer.Create(Self);
@@ -1803,6 +1897,18 @@ end;
 destructor TCDEdit.Destroy;
 begin
   inherited Destroy;
+  FLines.Free;
+  //FCaretTimer.Free; Don't free here because it is assigned with a owner
+end;
+
+function TCDEdit.GetCurrentLine: string;
+begin
+  Result := FLines.Strings[FEditState.CaretPos.Y];
+end;
+
+procedure TCDEdit.SetCurrentLine(AStr: string);
+begin
+  FLines.Strings[FEditState.CaretPos.Y] := AStr;
 end;
 
 { TCDCheckBox }

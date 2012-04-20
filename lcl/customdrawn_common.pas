@@ -6,7 +6,7 @@ interface
 
 uses
   // RTL / FCL
-  Classes, SysUtils, Types, Math, fpcanvas, fpimage,
+  Classes, windows, SysUtils, Types, Math, fpcanvas, fpimage,
   // LazUtils
   lazutf8,
   // LCL -> Use only TForm, TWinControl, TCanvas and TLazIntfImage
@@ -217,7 +217,7 @@ begin
 
   case AMeasureID of
   TCDCONTROL_CAPTION_WIDTH:  Result := ADest.TextWidth(AStateEx.Caption);
-  TCDCONTROL_CAPTION_HEIGHT: Result := ADest.TextHeight(cddTestStr)+3;
+  TCDCONTROL_CAPTION_HEIGHT: Result := ADest.TextHeight(cddTestStr);
   TCDCTABCONTROL_TAB_HEIGHT: Result := ADest.TextHeight(cddTestStr)+10;
   TCDCTABCONTROL_TAB_WIDTH:
   begin
@@ -277,7 +277,7 @@ begin
 
   case AControlId of
   // In the LCL TEdit AutoSizes only its Height, so follow this here
-  cidEdit: PreferredHeight := GetMeasuresEx(ADest, TCDCONTROL_CAPTION_HEIGHT, AState, AStateEx)+5;
+  cidEdit: PreferredHeight := GetMeasuresEx(ADest, TCDCONTROL_CAPTION_HEIGHT, AState, AStateEx)+8;
   cidCheckBox, cidRadioButton:
     begin
       if AStateEx.AutoSize then begin
@@ -788,22 +788,26 @@ end;
 procedure TCDDrawerCommon.DrawCaret(ADest: TCanvas; ADestPos: TPoint;
   ASize: TSize; AState: TCDControlState; AStateEx: TCDEditStateEx);
 var
-  lTextTopSpacing, lCaptionHeight: Integer;
+  lTextTopSpacing, lCaptionHeight, lLineHeight, lLineTop: Integer;
   lControlText, lTmpText: string;
-  lCaretPixelPos: Integer;
+  lTextBottomSpacing, lCaretPixelPos: Integer;
 begin
   if not AStateEx.CaretIsVisible then Exit;
 
-  lControlText := AStateEx.Caption;
+  lControlText := AStateEx.Lines.Strings[AStateEx.CaretPos.Y];
   lCaptionHeight := GetMeasuresEx(ADest, TCDCONTROL_CAPTION_HEIGHT, AState, AStateEx);
+  lTextBottomSpacing := GetMeasures(TCDEDIT_BOTTOM_TEXT_SPACING);
   lTextTopSpacing := GetMeasures(TCDEDIT_TOP_TEXT_SPACING);
+  lLineHeight := ADest.TextHeight(cddTestStr)+2;
+  lLineHeight := Min(ASize.cy-lTextBottomSpacing, lLineHeight);
+  lLineTop := lTextTopSpacing + AStateEx.CaretPos.Y * lLineHeight;
 
   lTmpText := UTF8Copy(lControlText, AStateEx.VisibleTextStart.X, AStateEx.CaretPos.X-AStateEx.VisibleTextStart.X+1);
   lCaretPixelPos := ADest.TextWidth(lTmpText) + GetMeasures(TCDEDIT_LEFT_TEXT_SPACING)
     + AStateEx.LeftTextMargin;
   ADest.Pen.Color := clBlack;
   ADest.Pen.Style := psSolid;
-  ADest.Line(lCaretPixelPos, lTextTopSpacing, lCaretPixelPos, lTextTopSpacing+lCaptionHeight);
+  ADest.Line(lCaretPixelPos, lLineTop, lCaretPixelPos, lLineTop+lCaptionHeight);
 end;
 
 procedure TCDDrawerCommon.DrawEdit(ADest: TCanvas;
@@ -811,22 +815,22 @@ procedure TCDDrawerCommon.DrawEdit(ADest: TCanvas;
 var
   lVisibleText, lControlText: TCaption;
   lSelLeftPos, lSelLeftPixelPos, lSelLength, lSelRightPos: Integer;
-  lTextWidth: Integer;
+  lTextWidth, lLineHeight, lLineTop: Integer;
   lControlTextLen: PtrInt;
   lTextLeftSpacing, lTextRightSpacing, lTextTopSpacing, lTextBottomSpacing: Integer;
   lTextColor: TColor;
+  i, lVisibleLinesCount: Integer;
 begin
+  // Background
+  DrawEditBackground(ADest, Point(0, 0), ASize, AState, AStateEx);
+
+  // General text configurations which apply to all lines
   // Configure the text color
   if csfEnabled in AState then
     lTextColor := AStateEx.Font.Color
   else
     lTextColor := WIN2000_DISABLED_TEXT;
 
-  // Background
-  DrawEditBackground(ADest, Point(0, 0), ASize, AState, AStateEx);
-
-  lControlText := AStateEx.Caption;
-  lControlTextLen := UTF8Length(AStateEx.Caption);
   ADest.Brush.Style := bsClear;
   ADest.Font.Assign(AStateEx.Font);
   ADest.Font.Color := lTextColor;
@@ -835,52 +839,74 @@ begin
   lTextTopSpacing := GetMeasures(TCDEDIT_TOP_TEXT_SPACING);
   lTextBottomSpacing := GetMeasures(TCDEDIT_BOTTOM_TEXT_SPACING);
 
-  // The text
-  ADest.Pen.Style := psClear;
-  ADest.Brush.Style := bsClear;
-  if AStateEx.SelLength = 0 then
-  begin
-    lVisibleText := UTF8Copy(lControlText, AStateEx.VisibleTextStart.X, lControlTextLen);
-    ADest.TextOut(lTextLeftSpacing, lTextTopSpacing, lVisibleText);
-  end
-  // Text and Selection
+  lLineHeight := ADest.TextHeight(cddTestStr)+2;
+  lLineHeight := Min(ASize.cy-lTextBottomSpacing, lLineHeight);
+
+  // Fill this to be used in other parts
+  AStateEx.LineHeight := lLineHeight;
+  AStateEx.FullyVisibleLinesCount := ASize.cy - lTextTopSpacing - lTextBottomSpacing;
+  AStateEx.FullyVisibleLinesCount := AStateEx.FullyVisibleLinesCount div lLineHeight;
+  AStateEx.FullyVisibleLinesCount := Min(AStateEx.FullyVisibleLinesCount, AStateEx.Lines.Count);
+
+  // Calculate how many lines to draw
+  if AStateEx.Multiline then
+    lVisibleLinesCount := AStateEx.FullyVisibleLinesCount + 1
   else
+    lVisibleLinesCount := 1;
+  lVisibleLinesCount := Min(lVisibleLinesCount, AStateEx.Lines.Count);
+
+  // Now draw each line
+  for i := 0 to lVisibleLinesCount - 1 do
   begin
-    lSelLeftPos := AStateEx.SelStart.X;
-    if AStateEx.SelLength < 0 then lSelLeftPos := lSelLeftPos + AStateEx.SelLength;
-    lSelLeftPos := lSelLeftPos + AStateEx.VisibleTextStart.X-1;
+    lControlText := AStateEx.Lines.Strings[AStateEx.VisibleTextStart.Y+i];
+    lControlTextLen := UTF8Length(lControlText);
+    lLineTop := lTextTopSpacing + i * lLineHeight;
 
-    lSelRightPos := AStateEx.SelStart.X;
-    if AStateEx.SelLength > 0 then lSelRightPos := lSelRightPos + AStateEx.SelLength;
-    lSelRightPos := lSelRightPos + AStateEx.VisibleTextStart.X-1;
-
-    lSelLength := AStateEx.SelLength;
-    if lSelLength < 0 then lSelLength := lSelLength * -1;
-    lSelLength := lSelLength - (AStateEx.VisibleTextStart.X-1);
-
-    // Text left of the selection
-    lVisibleText := UTF8Copy(lControlText, AStateEx.VisibleTextStart.X, lSelLeftPos-AStateEx.VisibleTextStart.X+1);
-    ADest.TextOut(lTextLeftSpacing, lTextTopSpacing, lVisibleText);
-    lSelLeftPixelPos := ADest.TextWidth(lVisibleText)+lTextLeftSpacing;
-
-    // The selection background
-    lVisibleText := UTF8Copy(lControlText, lSelLeftPos+1, lSelLength);
-    lTextWidth := ADest.TextWidth(lVisibleText);
-    ADest.Brush.Color := WIN2000_SELECTION_BACKGROUND;
-    ADest.Brush.Style := bsSolid;
-    ADest.Rectangle(lSelLeftPixelPos, lTextTopSpacing, lSelLeftPixelPos+lTextWidth, ASize.cy-lTextBottomSpacing);
+    // The text
+    ADest.Pen.Style := psClear;
     ADest.Brush.Style := bsClear;
+    // ToDo: Implement multi-line selection
+    if (AStateEx.SelLength = 0) or (AStateEx.SelStart.Y <> AStateEx.VisibleTextStart.Y+i) then
+    begin
+      lVisibleText := UTF8Copy(lControlText, AStateEx.VisibleTextStart.X, lControlTextLen);
+      ADest.TextOut(lTextLeftSpacing, lLineTop, lVisibleText);
+    end
+    // Text and Selection
+    else
+    begin
+      lSelLeftPos := AStateEx.SelStart.X;
+      if AStateEx.SelLength < 0 then lSelLeftPos := lSelLeftPos + AStateEx.SelLength;
 
-    // The selection text
-    ADest.Font.Color := clWhite;
-    ADest.TextOut(lSelLeftPixelPos, lTextTopSpacing, lVisibleText);
-    lSelLeftPixelPos := lSelLeftPixelPos + lTextWidth;
+      lSelRightPos := AStateEx.SelStart.X;
+      if AStateEx.SelLength > 0 then lSelRightPos := lSelRightPos + AStateEx.SelLength;
 
-    // Text right of the selection
-    ADest.Brush.Color := clWhite;
-    ADest.Font.Color := lTextColor;
-    lVisibleText := UTF8Copy(lControlText, lSelLeftPos+lSelLength+1, lControlTextLen);
-    ADest.TextOut(lSelLeftPixelPos, lTextTopSpacing, lVisibleText);
+      lSelLength := AStateEx.SelLength;
+      if lSelLength < 0 then lSelLength := lSelLength * -1;
+
+      // Text left of the selection
+      lVisibleText := UTF8Copy(lControlText, AStateEx.VisibleTextStart.X, lSelLeftPos-AStateEx.VisibleTextStart.X+1);
+      ADest.TextOut(lTextLeftSpacing, lLineTop, lVisibleText);
+      lSelLeftPixelPos := ADest.TextWidth(lVisibleText)+lTextLeftSpacing;
+
+      // The selection background
+      lVisibleText := UTF8Copy(lControlText, lSelLeftPos+1, lSelLength);
+      lTextWidth := ADest.TextWidth(lVisibleText);
+      ADest.Brush.Color := WIN2000_SELECTION_BACKGROUND;
+      ADest.Brush.Style := bsSolid;
+      ADest.Rectangle(Bounds(lSelLeftPixelPos, lLineTop, lTextWidth, lLineHeight));
+      ADest.Brush.Style := bsClear;
+
+      // The selection text
+      ADest.Font.Color := clWhite;
+      ADest.TextOut(lSelLeftPixelPos, lLineTop, lVisibleText);
+      lSelLeftPixelPos := lSelLeftPixelPos + lTextWidth;
+
+      // Text right of the selection
+      ADest.Brush.Color := clWhite;
+      ADest.Font.Color := lTextColor;
+      lVisibleText := UTF8Copy(lControlText, lSelLeftPos+lSelLength+1, lControlTextLen);
+      ADest.TextOut(lSelLeftPixelPos, lLineTop, lVisibleText);
+    end;
   end;
 
   // And the caret

@@ -35,6 +35,7 @@ type
     CDCheckBox6: TCDCheckBox;
     CDCheckBox7: TCDCheckBox;
     CDCheckBox8: TCDCheckBox;
+    CDEdit2: TCDEdit;
     CDRadioButton4: TCDRadioButton;
     CDRadioButton5: TCDRadioButton;
     CDRadioButton6: TCDRadioButton;

@@ -6,7 +6,7 @@ interface
 
 uses
   // RTL
-  Classes, SysUtils, Types,
+  Classes, SysUtils, Types, Math,
   fpimage, fpcanvas,
   // LazUtils
   lazutf8,
@@ -137,22 +137,27 @@ end;
 procedure TCDDrawerWinCE.DrawCaret(ADest: TCanvas; ADestPos: TPoint;
   ASize: TSize; AState: TCDControlState; AStateEx: TCDEditStateEx);
 var
-  lTextTopSpacing, lCaptionHeight: Integer;
+  lTextTopSpacing, lCaptionHeight, lLineHeight, lLineTop: Integer;
   lControlText, lTmpText: string;
-  lCaretPixelPos: Integer;
+  lTextBottomSpacing, lCaretPixelPos: Integer;
 begin
   if not AStateEx.CaretIsVisible then Exit;
 
-  lControlText := AStateEx.Caption;
+  lControlText := AStateEx.Lines.Strings[AStateEx.CaretPos.Y];
   lCaptionHeight := GetMeasuresEx(ADest, TCDCONTROL_CAPTION_HEIGHT, AState, AStateEx);
+  lTextBottomSpacing := GetMeasures(TCDEDIT_BOTTOM_TEXT_SPACING);
   lTextTopSpacing := GetMeasures(TCDEDIT_TOP_TEXT_SPACING);
+  lLineHeight := ADest.TextHeight(cddTestStr)+2;
+  lLineHeight := Min(ASize.cy-lTextBottomSpacing, lLineHeight);
+  lLineTop := lTextTopSpacing + AStateEx.CaretPos.Y * lLineHeight;
 
-  lTmpText := UTF8Copy(lControlText, 1, AStateEx.CaretPos.X-AStateEx.VisibleTextStart.X+1);
-  lCaretPixelPos := ADest.TextWidth(lTmpText) + 3;
+  lTmpText := UTF8Copy(lControlText, AStateEx.VisibleTextStart.X, AStateEx.CaretPos.X-AStateEx.VisibleTextStart.X+1);
+  lCaretPixelPos := ADest.TextWidth(lTmpText) + GetMeasures(TCDEDIT_LEFT_TEXT_SPACING)
+    + AStateEx.LeftTextMargin;
   ADest.Pen.Color := clBlack;
   ADest.Pen.Style := psSolid;
-  ADest.Line(lCaretPixelPos, lTextTopSpacing, lCaretPixelPos, lTextTopSpacing+lCaptionHeight);
-  ADest.Line(lCaretPixelPos+1, lTextTopSpacing, lCaretPixelPos+1, lTextTopSpacing+lCaptionHeight);
+  ADest.Line(lCaretPixelPos, lLineTop, lCaretPixelPos, lLineTop+lCaptionHeight);
+  ADest.Line(lCaretPixelPos+1, lLineTop, lCaretPixelPos+1, lLineTop+lCaptionHeight);
 end;
 
 procedure TCDDrawerWinCE.DrawCheckBoxSquare(ADest: TCanvas; ADestPos: TPoint;

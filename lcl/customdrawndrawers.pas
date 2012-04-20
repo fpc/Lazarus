@@ -145,11 +145,14 @@ type
   TCDEditStateEx = class(TCDControlStateEx)
   public
     CaretIsVisible: Boolean;
-    CaretPos: TPoint; // X is a zero-based position
-    SelStart: TPoint; // X is a zero-based position
+    CaretPos: TPoint; // X and Y are zero-based positions
+    SelStart: TPoint; // X and Y are zero-based positions
     SelLength: Integer; // zero means no selection. Negative numbers selection to the left from the start and positive ones to the right
-    VisibleTextStart: TPoint; // X is 1-based
+    VisibleTextStart: TPoint; // X is 1-based, Y is 0-based
     EventArrived: Boolean; // Added by event handlers and used by the caret so that it stops blinking while events are incoming
+    MultiLine: Boolean;
+    Lines: TStrings; // Just a reference, never Free
+    FullyVisibleLinesCount, LineHeight: Integer; // Filled on drawing to be used in customdrawncontrols.pas
     // customizable extra margins, zero is the base value
     LeftTextMargin, RightTextMargin: Integer;
     // For the combo box for example
