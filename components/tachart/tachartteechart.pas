@@ -24,7 +24,8 @@ interface
 
 uses
   Classes, SysUtils,
-  TAGraph, TAChartAxis, TAChartAxisUtils, TAChartUtils, TASeries;
+  TAGraph, TAChartAxis, TAChartAxisUtils, TAChartUtils, TACustomSeries,
+  TASeries;
 
 type
   TChartTeeChart = class helper for TChart
@@ -59,7 +60,32 @@ type
     property AxisIndexY default 1;
   end;
 
+  TChartSeriesStyle = set of (
+    tssIsTemplate, tssDenyChangeType, tssDenyDelete, tssDenyClone,
+    tssIsPersistent, tssHideDataSource);
+
+  TCustomChartSeriesTeeChart = class helper for TCustomChartSeries
+  strict private
+    function GetStyle: TChartSeriesStyle; inline;
+    procedure SetStyle(AValue: TChartSeriesStyle); inline;
+  published
+    // Does not do anything, just avoid IFDEFs in client code.
+    property Style: TChartSeriesStyle read GetStyle write SetStyle default [];
+  end;
+
 implementation
+
+{ TCustomChartSeriesTeeChart }
+
+function TCustomChartSeriesTeeChart.GetStyle: TChartSeriesStyle;
+begin
+  Result := [];
+end;
+
+procedure TCustomChartSeriesTeeChart.SetStyle(AValue: TChartSeriesStyle);
+begin
+  Unused(AValue);
+end;
 
 { THorizBarSeries }
 
