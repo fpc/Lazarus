@@ -24,25 +24,43 @@ interface
 
 uses
   Classes, SysUtils,
-  TAGraph, TAChartAxis, TAChartAxisUtils;
+  TAGraph, TAChartAxis, TAChartAxisUtils, TAChartUtils;
 
 type
   TChartTeeChart = class helper for TChart
-  private
+  strict private
     // Workaround for issue #21809.
-    function GetAxisByAlign(AIndex: TChartAxisAlignment): TChartAxis;
+    function GetAxisByAlign1(AIndex: TChartAxisAlignment): TChartAxis; inline;
+    function GetMargin(AIndex: Integer): Integer; inline;
+    procedure SetMargin(AIndex: Integer; AValue: TChartDistance); inline;
   public
-    property RightAxis: TChartAxis index calRight read GetAxisByAlign;
-    property TopAxis: TChartAxis index calTop read GetAxisByAlign;
+    property RightAxis: TChartAxis index calRight read GetAxisByAlign1;
+    property TopAxis: TChartAxis index calTop read GetAxisByAlign1;
+  public
+    property MarginBottom: TChartDistance index 4 read GetMargin write SetMargin;
+    property MarginLeft: TChartDistance index 1 read GetMargin write SetMargin;
+    property MarginRight: TChartDistance index 3 read GetMargin write SetMargin;
+    property MarginTop: TChartDistance index 2 read GetMargin write SetMargin;
   end;
 
 implementation
 
 { TChartTeeChart }
 
-function TChartTeeChart.GetAxisByAlign(AIndex: TChartAxisAlignment): TChartAxis;
+function TChartTeeChart.GetAxisByAlign1(AIndex: TChartAxisAlignment): TChartAxis;
 begin
-  Result := inherited GetAxisByAlign(AIndex);
+  // Using "inherited" here results in a crash, probably due to FPC bug.
+  Result := GetAxisByAlign(AIndex);
+end;
+
+function TChartTeeChart.GetMargin(AIndex: Integer): Integer;
+begin
+  Result := Margins.GetValue(AIndex);
+end;
+
+procedure TChartTeeChart.SetMargin(AIndex: Integer; AValue: TChartDistance);
+begin
+  Margins.SetValue(AIndex, AValue);
 end;
 
 procedure Dummy;
