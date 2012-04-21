@@ -260,6 +260,8 @@ const
 
    // needed by itemviews (TQtListWidget, TQtTreeWidget)
    LCLQt_ItemViewAfterMouseRelease = QEventType(Ord(QEventUser) + $1008);
+   // used by TQtTabWidget
+   LCLQt_DelayLayoutRequest = QEventType(Ord(QEventUser) + $1009);
 
 var
   QtWidgetSet: TQtWidgetSet;
