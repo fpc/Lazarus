@@ -787,20 +787,23 @@ var CurProcName: string;
   cmp: boolean;
   CurClassName: String;
 begin
+  //debugln(['TMethodJumpingCodeTool.GatherProcNodes START']);
   Result:=TAVLTree.Create(@CompareCodeTreeNodeExt);
+  if (StartNode=nil) or (StartNode.Parent=nil) then exit;
   ANode:=StartNode;
   while (ANode<>nil) do begin
+    //debugln(['TMethodJumpingCodeTool.GatherProcNodes ',ANode.DescAsString]);
     if ANode.Desc=ctnProcedure then begin
       if (not ((phpIgnoreForwards in Attr)
            and ((ANode.SubDesc and ctnsForwardDeclaration)>0)))
       and (not ((phpIgnoreProcsWithBody in Attr)
             and (FindProcBody(ANode)<>nil))) then
       begin
-        //DebugLn('[TMethodJumpingCodeTool.GatherProcNodes] B');
+        //DebugLn('[TMethodJumpingCodeTool.GatherProcNodes] Proc found');
         cmp:=true;
         if (phpOnlyWithClassname in Attr) then begin
           CurClassName:=ExtractClassNameOfProcNode(ANode,true);
-          //DebugLn('[TMethodJumpingCodeTool.GatherProcNodes] B2 "',CurClassName,'" =? ',FilterClassName);
+          //DebugLn('[TMethodJumpingCodeTool.GatherProcNodes] Proc Class="',CurClassName,'" =? ',FilterClassName,'=Filter');
 
           if CompareText(FilterClassName,CurClassName)<>0 then
             cmp:=false;
@@ -813,9 +816,9 @@ begin
             cmp:=false;
         end;
         if cmp then begin
-          //DebugLn('[TMethodJumpingCodeTool.GatherProcNodes] C');
+          //DebugLn('[TMethodJumpingCodeTool.GatherProcNodes] Proc with right class');
           CurProcName:=ExtractProcHead(ANode,Attr);
-          //DebugLn(['[TMethodJumpingCodeTool.GatherProcNodes] D "',CurProcName,'" ',phpInUpperCase in Attr]);
+          //DebugLn(['[TMethodJumpingCodeTool.GatherProcNodes] Proc with right class, name="',CurProcName,'" phpInUpperCase=',phpInUpperCase in Attr]);
           if (CurProcName<>'') then begin
             NewNodeExt:=TCodeTreeNodeExtension.Create;
             with NewNodeExt do begin
@@ -828,8 +831,21 @@ begin
       end;
     end;
     // next node
-    ANode:=FindNextNodeOnSameLvl(ANode);
+    if (ANode.FirstChild<>nil)
+    and (ANode.Desc in (AllClassSections+[ctnImplementation])) then
+      ANode:=ANode.FirstChild
+    else begin
+      while ANode.NextBrother=nil do begin
+        ANode:=ANode.Parent;
+        if ANode=nil then break;
+        if not (ANode.Desc in (AllClassSections+[ctnImplementation])) then
+          break;
+      end;
+      if ANode=nil then break;
+      ANode:=ANode.NextBrother;
+    end;
   end;
+  //debugln(['TMethodJumpingCodeTool.GatherProcNodes END']);
 end;
 
 function TMethodJumpingCodeTool.FindFirstDifferenceNode(

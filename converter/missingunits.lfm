@@ -9,12 +9,12 @@ object MissingUnitsDialog: TMissingUnitsDialog
   ClientHeight = 323
   ClientWidth = 711
   Position = poScreenCenter
-  LCLVersion = '0.9.31'
+  LCLVersion = '1.1'
   object MissingUnitsInfoLabel: TLabel
     Left = 16
-    Height = 16
+    Height = 14
     Top = 16
-    Width = 107
+    Width = 85
     Caption = 'Missing Units Info'
     ParentColor = False
   end
@@ -45,16 +45,16 @@ object MissingUnitsDialog: TMissingUnitsDialog
     Top = 274
     Width = 152
     Anchors = [akRight, akBottom]
-    Caption = 'Abort'
+    DefaultCaption = True
     Kind = bkAbort
     ModalResult = 3
     TabOrder = 2
   end
   object ChoicesLabel: TLabel
     Left = 224
-    Height = 16
+    Height = 14
     Top = 40
-    Width = 53
+    Width = 42
     BorderSpacing.Top = 23
     Caption = 'Choices:'
     ParentColor = False
@@ -62,9 +62,9 @@ object MissingUnitsDialog: TMissingUnitsDialog
   object Info1Label: TLabel
     AnchorSideTop.Control = ChoicesLabel
     Left = 224
-    Height = 16
+    Height = 14
     Top = 63
-    Width = 31
+    Width = 27
     BorderSpacing.Top = 23
     Caption = 'Info1'
     ParentColor = False
@@ -72,9 +72,9 @@ object MissingUnitsDialog: TMissingUnitsDialog
   object Info2Label: TLabel
     AnchorSideTop.Control = Info1Label
     Left = 224
-    Height = 16
+    Height = 14
     Top = 86
-    Width = 31
+    Width = 27
     BorderSpacing.Top = 23
     Caption = 'Info2'
     ParentColor = False
@@ -82,9 +82,9 @@ object MissingUnitsDialog: TMissingUnitsDialog
   object Info3Label: TLabel
     AnchorSideTop.Control = Info2Label
     Left = 224
-    Height = 16
+    Height = 14
     Top = 109
-    Width = 31
+    Width = 27
     BorderSpacing.Top = 23
     Caption = 'Info3'
     ParentColor = False
