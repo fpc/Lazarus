@@ -2234,11 +2234,6 @@ begin
   GetAnchorSide(Kind).Assign(AValue);
 end;
 
-procedure TControl.SetAnchorSide(AIndex: Integer; AValue: TAnchorSide);
-begin
-
-end;
-
 procedure TControl.SetBorderSpacing(const AValue: TControlBorderSpacing);
 begin
   if FBorderSpacing=AValue then exit;
@@ -3752,7 +3747,6 @@ begin
   for a:=Low(TAnchorKind) to high(TAnchorKind) do
     if (a in NewAnchors) and (AnchorSide[a].Side=asrCenter) then
       AnchorSide[a].FixCenterAnchoring;
-  // UpdateAnchorRules; ToDo: check
   AdjustSize;
 end;
 
