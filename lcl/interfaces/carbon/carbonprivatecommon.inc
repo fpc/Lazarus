@@ -97,7 +97,9 @@ begin
     AWidget.Context.Reset;
 
     // let carbon draw/update
-    Result := CallNextEventHandler(ANextHandler, AEvent);
+    if not AWidget.HasPaint then
+      Result := CallNextEventHandler(ANextHandler, AEvent)
+    else Result := 0;
 
     if (AWidget is TCarbonControl) and
       (cceDraw in (AWidget as TCarbonControl).GetValidEvents) then

@@ -67,6 +67,7 @@ type
     FProperties: TStringList;
     FCursor: HCURSOR;
     FHasCaret: Boolean;
+    FHasPaint: Boolean;
     FResizing: Boolean;
     FBoundsReported: Boolean;
     function GetPainting: Boolean;
@@ -148,6 +149,7 @@ type
     property Cursor: HCURSOR read FCursor;
     property ScrollOffset: TPoint read GetScrollOffset write SetScrollOffset; // scrolled offset of  ScrollingWinControl
     property HasCaret: Boolean read FHasCaret write FHasCaret;
+    property HasPaint: Boolean read FHasPaint write FHasPaint;
     property Painting: Boolean read GetPainting;
     property Properties[AIndex: String]: Pointer read GetProperty write SetProperty;
     property Resizing: Boolean read FResizing write FResizing;
@@ -709,6 +711,7 @@ begin
   Widget := nil;
   Context := nil;
   FHasCaret := False;
+  FHasPaint := False;
   FResizing := False;
   FBoundsReported := False;
   
