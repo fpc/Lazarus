@@ -4407,6 +4407,10 @@ begin
   if [tvsUpdating,tvsPainting] * FStates <> [] then Exit;
   Include(FStates, tvsPainting);
   try
+    if Focused then
+      Include(FStates,tvoFocusedPainting)
+    else
+      Exclude(FStates,tvoFocusedPainting);
     if (tvoAutoItemHeight in fOptions) then
       UpdateDefaultItemHeight;
     UpdateScrollbars;
@@ -4771,7 +4775,7 @@ var
     if (tvoRowSelect in Options) and IsSelected then
       if tvoThemedDraw in Options then
       begin
-        if Focused then
+        if tvoFocusedPainting in FStates then
           Details := ThemeServices.GetElementDetails(ttItemSelected)
         else
           Details := ThemeServices.GetElementDetails(ttItemSelectedNotFocus);
@@ -4800,7 +4804,7 @@ var
   begin
     if IsSelected then
     begin
-      if Focused then
+      if tvoFocusedPainting in FStates then
         Details := ThemeServices.GetElementDetails(ttItemSelected)
       else
         Details := ThemeServices.GetElementDetails(ttItemSelectedNotFocus);
