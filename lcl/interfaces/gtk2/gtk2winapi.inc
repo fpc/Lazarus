@@ -4381,7 +4381,7 @@ var
       ARect:=Rect(0,0,
          Max(0,AWidth-FrameBorders.Left-FrameBorders.Right),
          Max(0,aHeight-FrameBorders.Top-FrameBorders.Bottom));
-      //DebugLn(['GetNoteBookClientRect using defaults: ',GetWidgetDebugReport(Widget),' ARect=',dbgs(aRect)]);
+      //DebugLn(['GetNoteBookClientRect using defaults: ',GetWidgetDebugReport(Widget),' ARect=',dbgs(aRect),' Frame=',dbgs(FrameBorders)]);
     end;
   end;
 

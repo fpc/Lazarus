@@ -302,6 +302,7 @@ type
     procedure setUpdatesEnabled(const AEnabled: Boolean);
     procedure setWindowState(AState: QtWindowStates);
     procedure sizeHint(size: PSize);
+    function testAttribute(const AAttribute: QtWidgetAttribute): boolean;
     function windowFlags: QtWindowFlags;
     function windowModality: QtWindowModality;
     property ChildOfComplexWidget: TChildOfComplexWidget read FChildOfComplexWidget write FChildOfComplexWidget;
@@ -4447,6 +4448,11 @@ end;
 procedure TQtWidget.sizeHint(size: PSize);
 begin
   QWidget_sizeHint(Widget, size);
+end;
+
+function TQtWidget.testAttribute(const AAttribute: QtWidgetAttribute): boolean;
+begin
+  Result := QWidget_testAttribute(Widget, AAttribute);
 end;
 
 {------------------------------------------------------------------------------

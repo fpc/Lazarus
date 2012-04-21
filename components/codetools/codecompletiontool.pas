@@ -1122,7 +1122,8 @@ begin
   //DebugLn('TCodeCompletionCodeTool.AddLocalVariable E ',InsertTxt,' ');
   SourceChangeCache.Replace(gtNewLine,gtNewLine,InsertPos,InsertPos,InsertTxt);
 
-  if (VariableTypeUnitName<>'') then begin
+  if (VariableTypeUnitName<>'')
+  and (not IsHiddenUsedUnit(PChar(VariableTypeUnitName))) then begin
     if not AddUnitToMainUsesSection(VariableTypeUnitName,'',SourceChangeCache)
     then begin
       debugln(['TCodeCompletionCodeTool.AddLocalVariable AddUnitToMainUsesSection failed']);
@@ -6004,6 +6005,7 @@ begin
         if not InsertAllNewClassParts then
           RaiseException(ctsErrorDuringInsertingNewClassParts);
         if (NewUnitName<>'')
+        and (not IsHiddenUsedUnit(PChar(NewUnitName)))
         and (not AddUnitToMainUsesSection(NewUnitName,'',SourceChangeCache)) then
         begin
           debugln(['TCodeCompletionCodeTool.DeclareVariableNearBy AddUnitToMainUsesSection for new class memeber failed']);

@@ -2903,20 +2903,6 @@ begin
             if ModalResult<>0 then break;
           end;
 
-          // When modal form is hidden via TCustomForm.Hide then
-          // really hide it and keep it alive. issue #15390
-          if not Application.Terminated and
-            (ModalResult = 0) and not Visible then
-          begin
-            DebugLn('NOTICE: TCustomForm.ShowModal() modal form invisible in loop ',dbgsName(Self));
-            ModalResult := mrCancel;
-            // CloseModal; do not process CloseModal stuff,
-            // it can trigger OnCloseQuery and that's not our intention
-            // since we are here because programmer called Hide of modal form.
-            Application.Idle(HasVisibleForms);
-            break;
-          end;
-
           Application.Idle(true);
         until False;
 
