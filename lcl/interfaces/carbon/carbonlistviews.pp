@@ -50,6 +50,7 @@ type
     FWidth: Integer;
     FIndex: Integer; // index of TListColumn
     fTextWithIcon: Boolean;
+    FAutoSize: Boolean;
 
     procedure UpdateHeader;
     function GetHeaderWidth: UInt16;
@@ -72,13 +73,14 @@ type
   public
     function GetWidth: Integer;
     procedure SetAlignment(AAlignment: TAlignment);
-    // TODO: SetAutoSize
+    procedure SetAutoSize(AValue: Boolean);
     procedure SetCaption(const ACaption: String);
     procedure SetImageIndex(AImageIndex: Integer);
     procedure SetMinWidth(AMinWidth: Integer);
     procedure SetMaxWidth(AMaxWidth: Integer);
     procedure SetVisible(AVisible: Boolean);
-    procedure SetWidth(AWidth: Integer; AAutoSize: Boolean);
+    procedure SetWidth(AWidth: Integer);
+    property AutoSize: Boolean read FAutoSize write SetAutoSize;
     property TextWithIcon: Boolean read fTextWithIcon write fTextWithIcon;
   end;
 
@@ -186,6 +188,7 @@ type
     procedure MoveColumn(AOldIndex, ANewIndex: Integer; const AColumn: TListColumn);
     procedure UpdateColumnIndex;
     procedure UpdateColumnView; virtual;
+    procedure AutoSizeColumns;
 
     procedure ClearItems;
     procedure DeleteItem(AIndex: Integer);
@@ -543,6 +546,11 @@ begin
   if FVisible then UpdateHeader;
 end;
 
+procedure TCarbonListColumn.SetAutoSize(AValue: Boolean);
+begin
+  FAutoSize := AValue;
+end;
+
 procedure TCarbonListColumn.SetCaption(const ACaption: String);
 begin
   FreeCFString(FDesc.headerBtnDesc.titleString);
@@ -583,21 +591,11 @@ begin
   else Remove;
 end;
 
-procedure TCarbonListColumn.SetWidth(AWidth: Integer; AAutoSize: Boolean);
+procedure TCarbonListColumn.SetWidth(AWidth: Integer);
 var
   lBmp: TBitmap;
 begin
-  // Implements Column Autosizing
-  if AAutoSize then
-  begin
-    lBmp := TBitmap.Create;
-    // The standard Mac listview font is quite bigger then the standard TCanvas font
-    // plus, we also need an extra spacing
-    FWidth := lBmp.Canvas.TextWidth(FListColumn.Caption) * 2;
-    lBmp.Free;
-  end
-  else
-    FWidth := AWidth;
+  FWidth := AWidth;
 
   if FVisible then SetHeaderWidth(FWidth);
 end;
@@ -1494,6 +1492,29 @@ end;
 procedure TCarbonDataBrowser.UpdateColumnView;
 begin
 
+end;
+
+procedure TCarbonDataBrowser.AutoSizeColumns;
+var cnt, aCnt, tCnt: Integer;
+    sWidth, aWidth: Integer;
+    cRect: TRect;
+begin
+  GetClientRect(cRect);
+  sWidth := 0;
+  aCnt := 0;
+  tCnt := 0;
+  while GetColumn(tCnt) <> nil do begin
+      if GetColumn(tCnt).AutoSize then Inc(aCnt)
+      else Inc(sWidth, GetColumn(tCnt).GetWidth);
+      Inc(tCnt);
+  end;
+
+  if aCnt > 0 then begin
+  	 aWidth := ((cRect.Right - cRect.Left) - sWidth) div aCnt;
+  	 for cnt := 0 to tCnt - 1 do
+       if GetColumn(cnt).AutoSize then
+         GetColumn(cnt).SetWidth(aWidth);
+  end;
 end;
 
 procedure TCarbonDataBrowser.DeleteItem(AIndex: Integer);
