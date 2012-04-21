@@ -2924,7 +2924,9 @@ begin
   //TODO: implement SB_THUMBPOSITION message after track is finished
 
   Result := CallBackDefaultReturn;
-  //DebugLn(Format('Trace:[GTKVScrollCB] Value: %d', [RoundToInt(Adjustment^.Value)]));
+  {$IFDEF SYNSCROLLDEBUG}
+  DebugLn(Format('Trace:[GTKVScrollCB] Value: %d', [RoundToInt(Adjustment^.Value)]));
+  {$ENDIF}
   Scroll := PgtkRange(gtk_object_get_data(PGTKObject(Adjustment), odnScrollBar));
   if Scroll<>nil then begin
     Msg.Msg := LM_VSCROLL;
@@ -2955,18 +2957,20 @@ begin
   Result := CallBackDefaultReturn;
 
   Widget:=PGTKWidget(ARange);
-  //DebugLn(Format('Trace:[Gtk2RangeScrollCB] Value: %d', [RoundToInt(AValue)]));
+  {$IFDEF SYNSCROLLDEBUG}
+  DebugLn(Format('Trace:[Gtk2RangeScrollCB] Value: %d', [RoundToInt(AValue)]));
+  {$ENDIF}
   if G_OBJECT_TYPE(ARange) = gtk_hscrollbar_get_type then
     Msg.Msg := LM_HSCROLL
   else
     Msg.Msg := LM_VSCROLL;
 
-    if ARange^.adjustment^.page_size > 0 then
-      MaxValue := ARange^.adjustment^.upper - ARange^.adjustment^.page_size
-    else
-      MaxValue := ARange^.adjustment^.upper;
-    if (AValue > MaxValue) or (AValue < ARange^.adjustment^.lower) then
-      AValue := MaxValue;
+  if ARange^.adjustment^.page_size > 0 then
+    MaxValue := ARange^.adjustment^.upper - ARange^.adjustment^.page_size
+  else
+    MaxValue := ARange^.adjustment^.upper;
+  if (AValue > MaxValue) or (AValue < ARange^.adjustment^.lower) then
+    AValue := MaxValue;
 
   with Msg do
   begin
@@ -3021,12 +3025,59 @@ begin
   Result := CallBackDefaultReturn;
 end;
 
+function Gtk2RangeUbuntuScrollCB(Adjustment: PGTKAdjustment; data: GPointer): GBoolean; cdecl;
+var
+  Msg: TLMVScroll;
+  AWidgetInfo: PWidgetInfo;
+  Scroll: PGtkRange;
+  ScrollType: TGtkScrollType;
+  LastPos: PtrInt;
+begin
+  Result := CallBackDefaultReturn;
+  AWidgetInfo:=PWidgetInfo(Data);
+
+  //debugln(['Gtk2RangeUbuntuScrollCB ',DbgSName(AWidgetInfo^.LCLObject)]);
+  Scroll := PgtkRange(gtk_object_get_data(PGTKObject(Adjustment), odnScrollBar));
+  if Scroll<>nil then begin
+    FillByte(Msg{%H-},SizeOf(Msg),0);
+    if Scroll^.orientation=GTK_ORIENTATION_VERTICAL then
+      Msg.Msg := LM_VSCROLL
+    else
+      Msg.Msg := LM_HSCROLL;
+    with Msg do begin
+      Pos := Round(Adjustment^.Value);
+      if Pos < High(SmallPos)
+      then SmallPos := Pos
+      else SmallPos := High(SmallPos);
+
+      LastPos:={%H-}PtrInt(gtk_object_get_data(PGTKObject(Adjustment), odnScrollBarLastPos));
+      if LastPos=Pos then begin
+        //debugln(['Gtk2RangeUbuntuScrollCB duplicate message => skip']);
+        exit;
+      end;
+      gtk_object_set_data(PGTKObject(Adjustment), odnScrollBarLastPos, {%H-}gpointer(Pos));
+
+      //DebugLn('Gtk2RangeUbuntuScrollCB A Adjustment^.Value=',dbgs(Adjustment^.Value),' SmallPos=',dbgs(SmallPos));
+      ScrollBar := HWND({%H-}PtrUInt(Scroll));
+      ScrollType := get_gtk_scroll_type(Scroll);
+      ScrollCode := ScrollTypeToSbCode(True, ScrollType,
+                                       gtk_range_get_update_policy(Scroll));
+      //DebugLn('Gtk2RangeUbuntuScrollCB B Adjustment^.Value=',dbgs(Adjustment^.Value),' ScrollCode=',dbgs(ScrollCode),' ScrollType=',dbgs(ScrollType));
+    end;
+    DeliverMessage(AWidgetInfo^.LCLObject, Msg);
+    Result:=true;
+  end;
+end;
+
 function Gtk2ScrolledWindowScrollCB(AScrollWindow: PGtkScrolledWindow; AEvent: PGdkEventScroll; AWidgetInfo: PWidgetInfo): gboolean; cdecl;
 var
   Msg: TLMVScroll;
   AValue: Double;
   Range: PGtkRange;
 begin
+  {$IFDEF SYNSCROLLDEBUG}
+  debugln(['Gtk2ScrolledWindowScrollCB ']);
+  {$ENDIF}
   case AEvent^.direction of
     GDK_SCROLL_UP,
     GDK_SCROLL_DOWN: Msg.Msg := LM_VSCROLL;
