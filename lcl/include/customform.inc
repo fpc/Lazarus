@@ -2319,6 +2319,14 @@ function TCustomForm.SetFocusedControl(Control: TWinControl): Boolean;
     // cm_enter must be sent from the control we stoped up to control
     // if during this loop something happens with focus (another control or form has aquired it) we need to stop it
 
+    if (FLastFocusedControl<>nil) and (not ContainsControl(FLastFocusedControl)) then
+      FLastFocusedControl:=nil; // e.g. FLastFocusedControl was removed from this form
+    if FLastFocusedControl=nil then
+      FLastFocusedControl:=Self;
+
+    {$IFDEF VerboseFocus}
+    debugln(['Sending CM_EXIT,CM_ENTER Form=',Self,' from FLastFocusedControl=',FLastFocusedControl,' to ',Control,' ...']);
+    {$ENDIF}
     while not FLastFocusedControl.ContainsControl(Control) do
     begin
       LastState := SaveFocusState;
@@ -2329,8 +2337,18 @@ function TCustomForm.SetFocusedControl(Control: TWinControl): Boolean;
       SetLastFocusedControl(Tmp.Parent);
       Tmp.Perform(CM_EXIT, 0, 0);
       if SaveFocusState <> LastState then
+      begin
+        {$IFDEF VerboseFocus}
+        debugln(['SendEnterExitLoop Form=',Self,' Control=',Control,' sending CM_EXIT to ',Tmp,' changed focus => FAILED']);
+        {$ENDIF}
         Exit(False);
-      if FLastFocusedControl=nil then exit(false);
+      end;
+      if FLastFocusedControl=nil then begin
+        {$IFDEF VerboseFocus}
+        debugln(['SendEnterExitLoop Form=',Self,' Control=',Control,' sending CM_EXIT to ',Tmp,' FAILED because path missing from last to control']);
+        {$ENDIF}
+        exit(false);
+      end;
     end;
 
     while FLastFocusedControl <> Control do
@@ -2340,7 +2358,12 @@ function TCustomForm.SetFocusedControl(Control: TWinControl): Boolean;
       LastState := SaveFocusState;
       FLastFocusedControl.Perform(CM_ENTER, 0, 0);
       if SaveFocusState <> LastState then
+      begin
+        {$IFDEF VerboseFocus}
+        debugln(['SendEnterExitLoop Form=',Self,' Control=',Control,' sending CM_ENTER to ',Tmp,' changed focus => FAILED']);
+        {$ENDIF}
         Exit(False);
+      end;
     end;
     Result := True;
   end;
@@ -2368,13 +2391,15 @@ begin
   begin
     if Control <> Self then
     begin
-      {$IFDEF VerboseFocus}
       if FActiveControl<>Control then
+      begin
+        {$IFDEF VerboseFocus}
         debugln(['TCustomForm.SetFocusedControl ',DbgSName(Self),' OldActiveControl=',DbgSName(FActiveControl),' New=',DbgSName(Control)]);
-      {$ENDIF}
-      FActiveControl := Control;
-      if Assigned(FActiveControl) then
-        FreeNotification(FActiveControl);
+        {$ENDIF}
+        FActiveControl := Control;
+        if Assigned(FActiveControl) then
+          FreeNotification(FActiveControl);
+      end;
     end
     else
     begin
@@ -2402,7 +2427,7 @@ begin
   {$IFDEF VerboseFocus}
   DbgOut('TCustomForm.SetFocusedControl Self=',DbgSName(Self));
   if Control<>nil then
-    DbgOut(' Control=',DbgSName(Control),' Control.HandleAllocated=',dbgs(Control.HandleAllocated));
+    DbgOut([' Control=',Control,' Control.HandleAllocated=',Control.HandleAllocated,' csFocusing=',(csFocusing in Control.ControlState)]);
   DebugLn();
   {$ENDIF}
 
@@ -2411,7 +2436,12 @@ begin
     Control.ControlState := Control.ControlState + [csFocusing];
     try
       if not Screen.SetFocusedForm(Self) then
+      begin
+        {$IFDEF VerboseFocus}
+        debugln(['TCustomForm.SetFocusedControl Form=',DbgSName(Self),' Control=',DbgSName(Control),' Screen.SetFocusedForm FAILED']);
+        {$ENDIF}
         Exit;
+      end;
       Result := SendEnterExitLoop;
     finally
       Control.ControlState := Control.ControlState - [csFocusing];

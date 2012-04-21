@@ -1801,6 +1801,7 @@ begin
   if FClipExtraPixel = AValue then Exit;
   {$IFDeF SynCaretDebug}
   debugln(['SynEditCaret ClipRect for HandleOwner=',FHandleOwner, ' ExtraPixel=', dbgs(AValue)]);
+  debugln(['TSynEditScreenCaret.SetClipExtraPixel ',FHandleOwner,' Focus=',FindControl(GetFocus)]);
   {$ENDIF}
   FClipExtraPixel := AValue;
   CalcExtraLineChars;
