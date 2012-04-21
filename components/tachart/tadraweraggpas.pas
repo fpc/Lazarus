@@ -200,8 +200,8 @@ end;
 procedure TAggPasDrawer.SetBrushParams(
   AStyle: TFPBrushStyle; AColor: TChartColor);
 begin
-  FCanvas.Brush.Style := AStyle;
   FCanvas.Brush.Color := AColor;
+  FCanvas.Brush.Style := AStyle;
 end;
 
 procedure TAggPasDrawer.SetFont(AFont: TFPCustomFont);

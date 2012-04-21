@@ -252,8 +252,8 @@ end;
 procedure TFPVectorialDrawer.SetBrushParams(
   AStyle: TFPBrushStyle; AColor: TChartColor);
 begin
-  FBrushStyle := AStyle;
   SetBrushColor(AColor);
+  FBrushStyle := AStyle;
 end;
 
 procedure TFPVectorialDrawer.SetFont(AFont: TFPCustomFont);
