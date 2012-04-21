@@ -3707,10 +3707,12 @@ procedure TControl.SetAlign(Value: TAlign);
 var
   OldAlign: TAlign;
   a: TAnchorKind;
+  OldBaseBounds: TRect;
 begin
   if FAlign = Value then exit;
   //DebugLn(['TControl.SetAlign ',DbgSName(Self),' Old=',DbgS(FAlign),' New=',DbgS(Value),' ',Anchors<>AnchorAlign[FAlign]]);
   DisableAutoSizing{$IFDEF DebugDisableAutoSizing}('TControl.setalign'){$ENDIF};
+  OldBaseBounds:=BaseBounds;
   OldAlign := FAlign;
   FAlign := Value;
   if (not (csLoading in ComponentState))
@@ -3731,7 +3733,7 @@ begin
   if (Anchors = AnchorAlign[OldAlign]) and (Anchors <> AnchorAlign[FAlign]) then
     Anchors := AnchorAlign[FAlign];
   if not (csLoading in ComponentState) then
-    BoundsRect:=BaseBounds;
+    BoundsRect:=OldBaseBounds;
   //DebugLn(['TControl.SetAlign ',DbgSName(Self),' Cur=',DbgS(FAlign),' New=',DbgS(Value),' ',Anchors<>AnchorAlign[FAlign],' Anchors=',dbgs(Anchors)]);
   EnableAutoSizing{$IFDEF DebugDisableAutoSizing}('TControl.setalign'){$ENDIF};
 end;
