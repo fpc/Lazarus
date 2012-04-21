@@ -2675,7 +2675,6 @@ type
     tvsManualNotify,
     tvsUpdating,
     tvsPainting,
-    tvoFocusedPainting,
     tvsDblClicked,
     tvsTripleClicked,
     tvsQuadClicked,
@@ -3066,7 +3065,6 @@ type
     property DragCursor;
     property DragMode;
     property Enabled;
-    property ExpandSignColor;
     property ExpandSignType;
     property Font;
     property HideSelection;
@@ -3142,6 +3140,7 @@ type
     property Items;
     property TreeLineColor;
     property TreeLinePenStyle;
+    property ExpandSignColor;
   end;
 
 

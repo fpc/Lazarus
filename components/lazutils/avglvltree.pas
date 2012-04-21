@@ -175,8 +175,6 @@ type
     procedure SwitchPositionWithSuccessor(aNode, aSuccessor: TAvgLvlTreeNode); override;
   public
     function GetNodeAtIndex(Index: integer): TIndexedAVLTreeNode;
-    function NodeToIndex(Node: TAvgLvlTreeNode): SizeInt;
-    function IndexOf(Data: Pointer): SizeInt;
     property Items[Index: SizeInt]: Pointer read GetItems; default;
     procedure ConsistencyCheck; override;
     function NodeToReportStr(aNode: TAvgLvlTreeNode): string; override;
@@ -1961,39 +1959,6 @@ begin
   until false;
 end;
 
-function TIndexedAVLTree.NodeToIndex(Node: TAvgLvlTreeNode): SizeInt;
-var
-  CurNode: TIndexedAVLTreeNode;
-  CurParent: TIndexedAVLTreeNode;
-begin
-  if Node=nil then exit(-1);
-
-  if fLastNode=Node then
-    exit(fLastIndex);
-
-  CurNode:=TIndexedAVLTreeNode(Node);
-  Result:=CurNode.LeftCount;
-  repeat
-    CurParent:=TIndexedAVLTreeNode(CurNode.Parent);
-    if CurParent=nil then break;
-    if CurParent.Right=CurNode then
-      inc(Result,CurParent.LeftCount+1);
-    CurNode:=CurParent;
-  until false;
-
-  fLastNode:=TIndexedAVLTreeNode(Node);
-  fLastIndex:=Result;
-end;
-
-function TIndexedAVLTree.IndexOf(Data: Pointer): SizeInt;
-var
-  Node: TAvgLvlTreeNode;
-begin
-  Node:=FindPointer(Data);
-  if Node=nil then exit(-1);
-  Result:=NodeToIndex(Node);
-end;
-
 procedure TIndexedAVLTree.ConsistencyCheck;
 
   procedure E(Msg: string);
@@ -2015,19 +1980,8 @@ begin
       LeftCount:=0;
     if TIndexedAVLTreeNode(Node).LeftCount<>LeftCount then
       E(Format('Node.LeftCount=%d<>%d',[TIndexedAVLTreeNode(Node).LeftCount,LeftCount]));
-
     if GetNodeAtIndex(i)<>Node then
       E(Format('GetNodeAtIndex(%d)<>%P',[i,Node]));
-    fLastNode:=nil;
-    if GetNodeAtIndex(i)<>Node then
-      E(Format('GetNodeAtIndex(%d)<>%P',[i,Node]));
-
-    if NodeToIndex(Node)<>i then
-      E(Format('NodeToIndex(%P)<>%d',[Node,i]));
-    fLastNode:=nil;
-    if NodeToIndex(Node)<>i then
-      E(Format('NodeToIndex(%P)<>%d',[Node,i]));
-
     inc(i);
   end;
 end;
