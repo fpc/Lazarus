@@ -1151,8 +1151,7 @@ begin
   CreateCFString(AParams.Caption, CFString);
   try
     if OSError(
-      CreateEditUniCodeTextControl(GetTopParentWindow,
-        HIRectToCarbonRect(GetEditBounds(ParamsToHIRect(AParams))),
+      CreateEditUniCodeTextControl(GetTopParentWindow, ParamsToCarbonRect(AParams),
         CFString, False, nil, Widget),
       Self, SCreateWidget, 'CreateEditUniCodeTextControl') then RaiseCreateWidgetError(LCLObject);
   finally
@@ -1179,6 +1178,7 @@ begin
     
   inherited;
   
+  SetBounds(ParamsToRect(AParams));
   UpdateControl;
 end;
 
