@@ -3747,6 +3747,13 @@ begin
   for a:=Low(TAnchorKind) to high(TAnchorKind) do
     if (a in NewAnchors) and (AnchorSide[a].Side=asrCenter) then
       AnchorSide[a].FixCenterAnchoring;
+
+  // Delphi Anchors depend on the current bounds of Self and Parent.ClientRect
+  // => fetch current BaseBounds
+  // for example:
+  // during disabled autosizing:  Width:=100; Anchors:=Anchors+[akRight];
+  UpdateAnchorRules;
+
   AdjustSize;
 end;
 
