@@ -126,6 +126,7 @@ type
     procedure SetCursor(ACursor: HCURSOR); virtual;
     
     procedure ScrollBy(DX, DY: Integer); virtual;
+    procedure ScrollRect(DX, DY: Integer; ARect: TRect); virtual;
     procedure SetFocus; virtual; abstract;
     procedure SetColor(const AColor: TColor); virtual; abstract;
     function SetScrollInfo(SBStyle: Integer; const ScrollInfo: TScrollInfo): Integer; virtual;
@@ -979,6 +980,23 @@ begin
     X := X + DX;
     Y := Y + DY;
   end;
+end;
+
+{------------------------------------------------------------------------------
+  Method:  TCarbonWidget.ScrollRect
+  Params:  DX, DY
+
+  Scrolls the content delimited by a bounding Rect
+ ------------------------------------------------------------------------------}
+procedure TCarbonWidget.ScrollRect(DX, DY: Integer; ARect: TRect);
+var
+  R: CGRect;
+const
+  SName = 'ScrollRect';
+begin
+  R := RectToCGRect(ARect);
+  OSError(HIViewScrollRect(Content, @R, DX, DY),
+	Self, SName, 'HIViewScrollRect');
 end;
 
 {------------------------------------------------------------------------------
