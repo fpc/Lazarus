@@ -435,8 +435,7 @@ begin
   
   if not EqualRect(FOldRect, R) then FWidget.Invalidate(@FOldRect);
   FWidget.Invalidate(@R);
-  FWidget.Update;
-    
+
   FOldRect := R;
 end;
 
