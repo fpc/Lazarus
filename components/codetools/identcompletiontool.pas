@@ -1666,6 +1666,11 @@ begin
       Add('procedure');
       Add('function');
       Add('property');
+      if Node.Desc=ctnLibrary then begin
+        Add('initialization');
+        Add('finalization');
+        Add('begin');
+      end;
     end;
 
   ctnProperty:
