@@ -13436,7 +13436,7 @@ While CanFocus checks all control parents it does not check whether a form contr
       </element>
       <!-- variable Visibility: default -->
       <element name="THintInfo.HideTimeout">
-        <short/>
+        <short>Duration in ms how long the hint is shown</short>
         <descr/>
         <seealso/>
       </element>
