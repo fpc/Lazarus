@@ -2259,7 +2259,7 @@ begin
               else
                 LastPos:=Node.StartPos;
               if p>LastPos then begin
-                Msg:='behind code (parser stopped at '+CleanPosToStr(LastPos)+')';
+                Msg:='behind code (last token at '+CleanPosToStr(LastPos)+')';
               end else begin
                 Msg:='inconsistency: the position is in code, but caller thinks it is not.'
               end;
@@ -2623,7 +2623,7 @@ function TCustomCodeTool.FindDeepestNodeAtPos(StartNode: TCodeTreeNode;
     else
       LastPos:=Node.StartPos;
     if p>LastPos then begin
-      Msg:='Behind code (The parser stopped at '+CleanPosToStr(LastPos)+')';
+      Msg:='Behind code (last token at '+CleanPosToStr(LastPos)+')';
       RaiseException(Msg);
     end;
 
