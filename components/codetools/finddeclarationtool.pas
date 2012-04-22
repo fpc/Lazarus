@@ -1538,6 +1538,7 @@ begin
           Include(Params.Flags,fdfIgnoreCurContextNode);
           if SearchForward then
             Include(Params.Flags,fdfSearchForward);
+          //debugln(['TFindDeclarationTool.FindDeclaration Flags=',dbgs(Params.Flags),' FindIdentifierInContext ...']);
           Result:=FindIdentifierInContext(Params);
         end;
         if Result then begin
