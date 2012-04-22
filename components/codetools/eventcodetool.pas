@@ -483,32 +483,36 @@ begin
   if (AMethodName='') or (AClassName='') then exit;
   if BuildTreeBefore then BuildTree(lsrEnd);
   // find implementation node
-  SectionNode:=FindImplementationNode;
-  if SectionNode=nil then exit;
-  ANode:=SectionNode.FirstChild;
-  {$IFDEF CTDEBUG}
-  DebugLn('[TEventsCodeTool.FindMethodNodeInImplementation] A AMethodName=',AClassName,'.',AMethodName);
-  {$ENDIF}
-  while (ANode<>nil) do begin
-    if (ANode.Desc=ctnProcedure) and (ANode.FirstChild<>nil)
-    and CompareSrcIdentifiers(ANode.FirstChild.StartPos,@AClassName[1])
-    then begin
-      MoveCursorToNodeStart(ANode.FirstChild);
-      ReadNextAtom; // read class name
-      ReadNextAtom; // read '.'
-      if AtomIsChar('.') then begin
-        ReadNextAtom;
-        if CompareSrcIdentifiers(CurPos.StartPos,@AMethodName[1]) then
-        begin
-          {$IFDEF CTDEBUG}
-          DebugLn('[TEventsCodeTool.FindMethodNodeInImplementation] B  body found');
-          {$ENDIF}
-          Result:=ANode;
-          exit;
+  SectionNode:=Tree.Root;
+  while SectionNode<>nil do begin
+    if SectionNode.Desc in [ctnProgram,ctnImplementation] then begin
+      ANode:=SectionNode.FirstChild;
+      {$IFDEF CTDEBUG}
+      DebugLn('[TEventsCodeTool.FindMethodNodeInImplementation] A AMethodName=',AClassName,'.',AMethodName);
+      {$ENDIF}
+      while (ANode<>nil) do begin
+        if (ANode.Desc=ctnProcedure) and (ANode.FirstChild<>nil)
+        and CompareSrcIdentifiers(ANode.FirstChild.StartPos,@AClassName[1])
+        then begin
+          MoveCursorToNodeStart(ANode.FirstChild);
+          ReadNextAtom; // read class name
+          ReadNextAtom; // read '.'
+          if AtomIsChar('.') then begin
+            ReadNextAtom;
+            if CompareSrcIdentifiers(CurPos.StartPos,@AMethodName[1]) then
+            begin
+              {$IFDEF CTDEBUG}
+              DebugLn('[TEventsCodeTool.FindMethodNodeInImplementation] B  body found');
+              {$ENDIF}
+              Result:=ANode;
+              exit;
+            end;
+          end;
         end;
+        ANode:=ANode.NextBrother;
       end;
     end;
-    ANode:=ANode.NextBrother;
+    SectionNode:=SectionNode.NextBrother;
   end;
 end;
 
