@@ -3246,7 +3246,13 @@ begin
               ContextNode:=ContextNode.FirstChild; // the ctnParameterList
           end;
 
-        ctnProgram, ctnPackage, ctnLibrary, ctnUnit:
+        ctnProgram, ctnLibrary:
+          begin
+            if SearchInSourceName then exit;
+            MoveContextNodeToChildren;
+          end;
+
+        ctnUnit, ctnPackage:
           if SearchInSourceName then exit;
 
         ctnProperty:
