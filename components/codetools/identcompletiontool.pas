@@ -1522,10 +1522,10 @@ var
   NodeBehind: TCodeTreeNode;
 begin
   Node:=Context.Node;
-  //debugln(['TIdentCompletionTool.GatherContextKeywords ',Node.DescAsString]);
+  debugln(['TIdentCompletionTool.GatherContextKeywords ',Node.DescAsString]);
 
   ReadPriorAtomSafe(CleanPos);
-  //debugln(['TIdentCompletionTool.GatherContextKeywords prioratom=',CleanPosToStr(CurPos.StartPos),'=',GetAtom(CurPos)]);
+  debugln(['TIdentCompletionTool.GatherContextKeywords prioratom=',CleanPosToStr(CurPos.StartPos),'=',GetAtom(CurPos)]);
   NodeInFront:=nil;
   if CurPos.StartPos>0 then
     NodeInFront:=FindDeepestNodeAtPos(CurPos.StartPos,false);
@@ -1533,11 +1533,11 @@ begin
   NodeBehind:=nil;
   MoveCursorToCleanPos(CleanPos);
   ReadNextAtom;
-  //debugln(['TIdentCompletionTool.GatherContextKeywords nextatom=',CleanPosToStr(CurPos.StartPos),'=',GetAtom(CurPos)]);
+  debugln(['TIdentCompletionTool.GatherContextKeywords nextatom=',CleanPosToStr(CurPos.StartPos),'=',GetAtom(CurPos)]);
   if CurPos.StartPos>CleanPos then
     NodeBehind:=FindDeepestNodeAtPos(CurPos.StartPos,false);
 
-  //debugln(['TIdentCompletionTool.GatherContextKeywords Node=',Node.DescAsString,' NodeInFront=',NodeInFront.DescAsString,' NodeBehind=',NodeBehind.DescAsString]);
+  debugln(['TIdentCompletionTool.GatherContextKeywords Node=',Node.DescAsString,' NodeInFront=',NodeInFront.DescAsString,' NodeBehind=',NodeBehind.DescAsString]);
 
   case Node.Desc of
   ctnClass,ctnObject,ctnRecordType,ctnObjCCategory,ctnObjCClass,
@@ -1656,13 +1656,13 @@ begin
       end;
     end;
 
-  ctnTypeSection,ctnVarSection,ctnConstSection,ctnLabelSection,ctnResStrSection:
-    if (Node.FirstChild<>nil)
-      and (Node.FirstChild.StartPos<CleanPos)
-    then begin
+  ctnTypeSection,ctnVarSection,ctnConstSection,ctnLabelSection,ctnResStrSection,
+  ctnLibrary,ctnProgram:
+    begin
       Add('type');
       Add('const');
       Add('var');
+      Add('resourcestring');
       Add('procedure');
       Add('function');
       Add('property');
@@ -2201,7 +2201,8 @@ begin
         CurrentIdentifierList.ContextFlags:=
           CurrentIdentifierList.ContextFlags+[ilcfNeedsEndComma];
       end;
-    end else if CursorNode.Desc in AllSourceTypes then begin
+    end else if (CursorNode.Desc in AllSourceTypes)
+    and (PositionsInSameLine(Src,CursorNode.StartPos,IdentStartPos)) then begin
       GatherSourceNames(GatherContext);
     end else begin
       FindCollectionContext(Params,IdentStartPos,CursorNode,
