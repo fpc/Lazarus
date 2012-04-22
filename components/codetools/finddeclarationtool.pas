@@ -2885,23 +2885,17 @@ var
     end;
   end;
 
-  function SearchDefault: boolean;
-  begin
-    Result:=false;
-    if (not (fdfIgnoreUsedUnits in Params.Flags))
-    and FindIdentifierInHiddenUsedUnits(Params) then begin
-      Result:=CheckResult(true,false);
-    end;
-  end;
-
   function SearchInSourceName: boolean;
   // returns: true if ok to exit
   //          false if search should continue
+  var
+    SrcNode: TCodeTreeNode;
   begin
     Result:=false;
-    MoveCursorToNodeStart(ContextNode);
+    SrcNode:=Tree.Root;
+    MoveCursorToNodeStart(SrcNode);
     ReadNextAtom; // read keyword
-    if (ContextNode.Desc=ctnProgram) and (not UpAtomIs('PROGRAM')) then exit;
+    if (SrcNode.Desc=ctnProgram) and (not UpAtomIs('PROGRAM')) then exit;
     ReadNextAtom; // read name
     if (fdfCollect in Params.Flags)
     or CompareSrcIdentifiers(CurPos.StartPos,Params.Identifier) then
@@ -2910,13 +2904,24 @@ var
       {$IFDEF ShowTriedIdentifiers}
       DebugLn('  Source Name Identifier found="',GetIdentifier(Params.Identifier),'"');
       {$ENDIF}
-      Params.SetResult(Self,ContextNode,CurPos.StartPos);
+      Params.SetResult(Self,SrcNode,CurPos.StartPos);
       Result:=CheckResult(true,true);
       if not (fdfCollect in Params.Flags) then
         exit;
     end;
   end;
   
+  function SearchDefault: boolean;
+  begin
+    Result:=false;
+    if SearchInSourceName then
+      exit(true);
+    if (not (fdfIgnoreUsedUnits in Params.Flags))
+    and FindIdentifierInHiddenUsedUnits(Params) then begin
+      Result:=CheckResult(true,false);
+    end;
+  end;
+
   function SearchInProperty: boolean;
   // returns: true if ok to exit
   //          false if search should continue
@@ -2987,8 +2992,7 @@ var
         // after search in the generic, search in the generic parameter names
         if SearchInGenericParams(ContextNode.Parent) then begin
           FindIdentifierInContext:=true;
-          Result:=false;
-          exit;
+          exit(false);
         end;
       end;
 
@@ -3004,8 +3008,7 @@ var
         Params.Flags:=OldParamFlags;
         if Result then begin
           FindIdentifierInContext:=true;
-          Result:=false;
-          exit;
+          exit(false);
         end;
       end;
 
@@ -3013,7 +3016,7 @@ var
       and (not (fdfSearchInParentNodes in Params.Flags)) then begin
         // startcontext completed => not searching in parents or ancestors
         ContextNode:=nil;
-        break;
+        exit(false);
       end;
 
       if ((not (fdfSearchForward in Params.Flags))
@@ -3198,6 +3201,7 @@ begin
         ctnTypeSection, ctnVarSection, ctnConstSection, ctnResStrSection,
         ctnLabelSection, ctnPropertySection,
         ctnInterface, ctnImplementation,
+        ctnProgram, ctnLibrary,
         ctnClassPublic, ctnClassPrivate, ctnClassProtected, ctnClassPublished,
         ctnClassClassVar,
         ctnClass, ctnClassInterface, ctnDispinterface, ctnObject,
@@ -3246,15 +3250,6 @@ begin
               ContextNode:=ContextNode.FirstChild; // the ctnParameterList
           end;
 
-        ctnProgram, ctnLibrary:
-          begin
-            if SearchInSourceName then exit;
-            MoveContextNodeToChildren;
-          end;
-
-        ctnUnit, ctnPackage:
-          if SearchInSourceName then exit;
-
         ctnProperty:
           if SearchInProperty then exit;
           
@@ -3297,16 +3292,16 @@ begin
         DebugLn('[TFindDeclarationTool.FindIdentifierInContext] IgnoreCurContext ');
         {$ENDIF}
       end;
-      if LastContextNode=Tree.Root then begin
-        if SearchDefault then exit;
-      end;
       if LastContextNode=ContextNode then begin
-        // same context -> search in prior context
+        // no special context switch => search next node
         if not LeavingContextIsPermitted then break;
         if not SearchNextNode then exit;
       end;
     until ContextNode=nil;
-    
+    if LastSearchedNode=Tree.Root then begin
+      if SearchDefault then exit;
+    end;
+
   {except
     // unexpected exception
     on E: Exception do begin
@@ -6092,7 +6087,6 @@ begin
   if not BuildInterfaceIdentifierCache(true) then exit(false);
   if (AskingTool<>Self) and (AskingTool<>nil) then
     AskingTool.AddToolDependency(Self);
-
   // search identifier in cache
   if fdfCollect in Params.Flags then begin
     AVLNode:=FInterfaceIdentifierCache.Items.FindLowest;
