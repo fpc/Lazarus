@@ -1522,10 +1522,10 @@ var
   NodeBehind: TCodeTreeNode;
 begin
   Node:=Context.Node;
-  debugln(['TIdentCompletionTool.GatherContextKeywords ',Node.DescAsString]);
+  //debugln(['TIdentCompletionTool.GatherContextKeywords ',Node.DescAsString]);
 
   ReadPriorAtomSafe(CleanPos);
-  debugln(['TIdentCompletionTool.GatherContextKeywords prioratom=',CleanPosToStr(CurPos.StartPos),'=',GetAtom(CurPos)]);
+  //debugln(['TIdentCompletionTool.GatherContextKeywords prioratom=',CleanPosToStr(CurPos.StartPos),'=',GetAtom(CurPos)]);
   NodeInFront:=nil;
   if CurPos.StartPos>0 then
     NodeInFront:=FindDeepestNodeAtPos(CurPos.StartPos,false);
@@ -1533,11 +1533,11 @@ begin
   NodeBehind:=nil;
   MoveCursorToCleanPos(CleanPos);
   ReadNextAtom;
-  debugln(['TIdentCompletionTool.GatherContextKeywords nextatom=',CleanPosToStr(CurPos.StartPos),'=',GetAtom(CurPos)]);
+  //debugln(['TIdentCompletionTool.GatherContextKeywords nextatom=',CleanPosToStr(CurPos.StartPos),'=',GetAtom(CurPos)]);
   if CurPos.StartPos>CleanPos then
     NodeBehind:=FindDeepestNodeAtPos(CurPos.StartPos,false);
 
-  debugln(['TIdentCompletionTool.GatherContextKeywords Node=',Node.DescAsString,' NodeInFront=',NodeInFront.DescAsString,' NodeBehind=',NodeBehind.DescAsString]);
+  //debugln(['TIdentCompletionTool.GatherContextKeywords Node=',Node.DescAsString,' NodeInFront=',NodeInFront.DescAsString,' NodeBehind=',NodeBehind.DescAsString]);
 
   case Node.Desc of
   ctnClass,ctnObject,ctnRecordType,ctnObjCCategory,ctnObjCClass,
