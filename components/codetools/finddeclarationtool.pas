@@ -2517,7 +2517,6 @@ var
   LastContextNode, StartContextNode, FirstSearchedNode, LastSearchedNode,
   ContextNode: TCodeTreeNode;
   IsForward: boolean;
-  OldParamFlags: TFindDeclarationFlags;
   IdentifierFoundResult: TIdentifierFoundResult;
   LastNodeCache: TCodeTreeNodeCache;
   LastCacheEntry: PCodeTreeNodeCacheEntry;
@@ -2614,6 +2613,10 @@ var
     if fdfCollect in Params.Flags then
       raise Exception.Create('fdfCollect must never return true');
     {$ENDIF}
+    {$IFDEF ShowFoundIdentifier}
+    debugln(['CacheResult FOUND ',GetIdentifier(Params.Identifier)]);
+    Params.WriteDebugReport;
+    {$ENDIF}
     if (FirstSearchedNode=nil) then exit;
     if ([fdfDoNotCache,fdfCollect,fdfExtractOperand]*Params.Flags<>[]) then exit;
     if ([fodDoNotCache]*Params.NewFlags<>[]) then exit;
@@ -2668,6 +2671,11 @@ var
     {$ENDIF}
     if NewResult then begin
       // identifier found
+      {$IFDEF ShowFoundIdentifier}
+      debugln(['CheckResult FOUND ',GetIdentifier(Params.Identifier)]);
+      Params.WriteDebugReport;
+      {$ENDIF}
+
       if fdfExtractOperand in Params.Flags then
         case Params.NewNode.Desc of
           ctnVarDefinition, ctnConstDefinition:
@@ -2731,7 +2739,7 @@ var
       {$ENDIF}
       Params.SetResult(Params.FoundProc^.Context.Tool,
                        Params.FoundProc^.Context.Node);
-      {$IFDEF ShowProcSearch}
+      {$IF defined(ShowProcSearch) or defined(ShowFoundIdentifier)}
       DebugLn('[TFindDeclarationTool.FindIdentifierInContext] PROC Search ended with only one proc (normal when searching every used unit):');
       Params.WriteDebugReport;
       {$ENDIF}
@@ -2986,6 +2994,11 @@ var
   end;
   
   function SearchNextNode: boolean;
+  const
+    AbortNoCacheResult = false;
+    Proceed = true;
+  var
+    OldInput: TFindDeclarationInput;
   begin
     repeat
       // search for prior node
@@ -3003,7 +3016,7 @@ var
           if fdfCollect in Params.Flags then
             raise Exception.Create('fdfCollect must never return true');
           {$ENDIF}
-          exit(false);
+          exit(AbortNoCacheResult);
         end;
       end;
 
@@ -3012,18 +3025,17 @@ var
         // after searching in a class definition, search in its ancestors
 
         // ToDo: check for cycles in ancestors
-        
-        OldParamFlags:=Params.Flags;
+        Params.Save(OldInput);
         Exclude(Params.Flags,fdfExceptionOnNotFound);
         Result:=FindIdentifierInAncestors(ContextNode,Params);
-        Params.Flags:=OldParamFlags;
+        Params.Load(OldInput,true);
         if Result then begin
           FindIdentifierInContext:=true;
           {$IFDEF ShowCollect}
           if fdfCollect in Params.Flags then
             raise Exception.Create('fdfCollect must never return true');
           {$ENDIF}
-          exit(false);
+          exit(AbortNoCacheResult);
         end;
       end;
 
@@ -3031,7 +3043,7 @@ var
       and (not (fdfSearchInParentNodes in Params.Flags)) then begin
         // startcontext completed => not searching in parents or ancestors
         ContextNode:=nil;
-        exit(false);
+        exit(Proceed);
       end;
 
       if ((not (fdfSearchForward in Params.Flags))
@@ -3134,7 +3146,7 @@ var
               if fdfCollect in Params.Flags then
                 raise Exception.Create('fdfCollect must never return true');
               {$ENDIF}
-              exit(false);
+              exit(AbortNoCacheResult);
             end;
           end;
 
@@ -3146,7 +3158,7 @@ var
         break;
       end;
     until false;
-    Result:=true;
+    Result:=Proceed;
   end;
   
 begin
@@ -8290,7 +8302,7 @@ begin
   DebugLn('[TFindDeclarationTool.CheckSrcIdentifier]',
   ' Ident=',GetIdentifier(Params.Identifier),
   ' FoundContext=',FoundContext.Node.DescAsString,
-  ' Flags=[',FindDeclarationFlagsAsString(Params.Flags),']'
+  ' Flags=[',dbgs(Params.Flags),']'
   );
   {$ENDIF}
   if FoundContext.Node.Desc=ctnProcedure then begin
@@ -10834,12 +10846,13 @@ begin
   else
     DebugLn(' NewNode=nil');
   DebugLn(' NewCleanPos=',dbgs(NewCleanPos));
-  if NewCodeTool<>nil then
-    DebugLn(' NewCodeTool=',NewCodeTool.MainFilename)
-  else
-    DebugLn(' NewCodeTool=nil');
+  if NewCodeTool<>nil then begin
+    DebugLn(' NewCodeTool=',NewCodeTool.MainFilename,' at ',NewCodeTool.CleanPosToStr(NewCleanPos,false))
+  end else begin
+    DebugLn([' NewCodeTool=nil NewCleanPos=',NewCleanPos]);
+  end;
   if NewPos.Code<>nil then
-    DebugLn(' NewPos=',NewPos.Code.Filename,' x=',dbgs(NewPos.X),' y=',dbgs(NewPos.Y),' topline=',dbgs(NewTopLine))
+    DebugLn([' NewPos=',NewPos.Code.Filename,' x=',NewPos.X,' y=',NewPos.Y,' topline=',NewTopLine])
   else
     DebugLn(' NewPos=nil');
   DebugLn(' NewFlags=',dbgs(NewFlags));

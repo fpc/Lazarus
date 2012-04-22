@@ -1607,8 +1607,10 @@ begin
   ctnInitialization:
     if (NodeBehind=nil)
     or (NodeBehind.Desc in [ctnInitialization,ctnFinalization,ctnEndPoint,ctnBeginBlock])
-    then
+    then begin
       Add('finalization');
+      Add('begin');
+    end;
 
   ctnProcedure:
     begin
@@ -1652,6 +1654,18 @@ begin
       if (Node.Desc=ctnRecordType) or (Node.Parent.Desc=ctnRecordType) then begin
         Add('case');
       end;
+    end;
+
+  ctnTypeSection,ctnVarSection,ctnConstSection,ctnLabelSection,ctnResStrSection:
+    if (Node.FirstChild<>nil)
+      and (Node.FirstChild.StartPos<CleanPos)
+    then begin
+      Add('type');
+      Add('const');
+      Add('var');
+      Add('procedure');
+      Add('function');
+      Add('property');
     end;
 
   ctnProperty:
