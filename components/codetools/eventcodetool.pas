@@ -87,7 +87,8 @@ type
         ): boolean;
     function JumpToPublishedMethodBody(const AClassName,
         AMethodName: string;
-        out NewPos: TCodeXYPosition; out NewTopLine: integer): boolean;
+        out NewPos: TCodeXYPosition; out NewTopLine: integer;
+        ErrorOnNotFound: boolean = false): boolean;
     function RenamePublishedMethod(const AClassName, AOldMethodName,
         NewMethodName: string; SourceChangeCache: TSourceChangeCache): boolean;
     function RenamePublishedMethod(ClassNode: TCodeTreeNode;
@@ -668,8 +669,8 @@ begin
 end;
 
 function TEventsCodeTool.JumpToPublishedMethodBody(const AClassName,
-  AMethodName: string;
-  out NewPos: TCodeXYPosition; out NewTopLine: integer): boolean;
+  AMethodName: string; out NewPos: TCodeXYPosition; out NewTopLine: integer;
+  ErrorOnNotFound: boolean): boolean;
 var
   ANode: TCodeTreeNode;
   ClassNode: TCodeTreeNode;
@@ -681,8 +682,12 @@ begin
   ActivateGlobalWriteLock;
   try
     BuildTree(lsrEnd);
-    ClassNode:=FindClassNodeInInterface(AClassName,true,false,true);
-    AFindContext:=FindPublishedMethodNodeInClass(ClassNode,AMethodName,true);
+    ClassNode:=FindClassNodeInInterface(AClassName,true,false,ErrorOnNotFound);
+    if ClassNode=nil then begin
+      DebugLn(['TEventsCodeTool.JumpToPublishedMethodBody class not found: ',AClassName]);
+      exit;
+    end;
+    AFindContext:=FindPublishedMethodNodeInClass(ClassNode,AMethodName,ErrorOnNotFound);
     if AFindContext.Node=nil then begin
       DebugLn(['TEventsCodeTool.JumpToPublishedMethodBody method not found: ',AClassName,'.',AMethodName]);
       exit;
@@ -690,13 +695,17 @@ begin
     SrcTool:=TEventsCodeTool(AFindContext.Tool);
     ClassNode:=AFindContext.Node.Parent.Parent;
     if ClassNode.Desc<>ctnClass then begin
-      DebugLn(['TEventsCodeTool.JumpToPublishedMethodBody method found in non class',AClassName,'.',AMethodName,' in ',SrcTool.MainFilename,' Node=',ClassNode.DescAsString]);
+      if ErrorOnNotFound then
+        RaiseExceptionFmt('method "%s" not found in class "%s" (%s) in %s', [AClassName,AMethodName,ClassNode.DescAsString,SrcTool.MainFilename]);
+      DebugLn(['TEventsCodeTool.JumpToPublishedMethodBody method found in non class: ',AClassName,'.',AMethodName,' in ',SrcTool.MainFilename,' Node=',ClassNode.DescAsString]);
       exit;
     end;
     SrcClassName:=SrcTool.ExtractClassName(ClassNode,true);
     ANode:=SrcTool.FindMethodNodeInImplementation(
-                                             SrcClassName,AMethodName,true);
+                                             SrcClassName,AMethodName,false);
     if ANode=nil then begin
+      if ErrorOnNotFound then
+        RaiseExceptionFmt('implementation of method "%s.%s" in %s', [AClassName,AMethodName,SrcTool.MainFilename]);
       DebugLn(['TEventsCodeTool.JumpToPublishedMethodBody method not found ',SrcClassName,'.',AMethodName,' in ',SrcTool.MainFilename]);
       exit;
     end;

@@ -3566,7 +3566,7 @@ begin
   if not Result then exit;
   try
     Result:=FCurCodeTool.JumpToPublishedMethodBody(AClassName,
-              AMethodName,NewPos,NewTopLine);
+              AMethodName,NewPos,NewTopLine,true);
     if Result then begin
       NewCode:=NewPos.Code;
       NewX:=NewPos.X;

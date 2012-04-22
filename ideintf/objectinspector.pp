@@ -1077,14 +1077,17 @@ end;
 
 procedure TOICustomPropertyGrid.WMMouseWheel(var Message: TLMMouseEvent);
 begin
-  // -1 : scroll by page
-  if Mouse.WheelScrollLines=-1
-    then TopY := TopY -
-              (Message.WheelDelta * (ClientHeight - DefaultItemHeight)) div 120
+  if Mouse.WheelScrollLines=-1 then
+  begin
+    // -1 : scroll by page
+    TopY := TopY -
+              (Message.WheelDelta * (ClientHeight - DefaultItemHeight)) div 120;
+  end else begin
     // scrolling one line -> scroll half an item, see SB_LINEDOWN and SB_LINEUP
     // handler in WMVScroll
-    else TopY := TopY -
-              (Message.WheelDelta * Mouse.WheelScrollLines*DefaultItemHeight) div 240;
+    TopY := TopY -
+        (Message.WheelDelta * Mouse.WheelScrollLines*DefaultItemHeight) div 240;
+  end;
   Message.Result := 1;
 end;
 
