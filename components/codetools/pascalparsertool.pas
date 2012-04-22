@@ -2411,7 +2411,6 @@ begin
     // start implementation section node
     CreateChildNode;
     CurNode.Desc:=ctnImplementation;
-    CurNode.EndPos:=CurPos.EndPos;
     CurSection:=ctnImplementation;
 
     ScannedRange:=lsrImplementationStart;
@@ -2457,7 +2456,6 @@ begin
       CurNode.Desc:=ctnFinalization;
       ScannedRange:=lsrFinalizationStart;
     end;
-    CurNode.EndPos:=CurPos.EndPos;
     CurSection:=CurNode.Desc;
     if ord(ScanTill)<=ord(ScannedRange) then exit;
 

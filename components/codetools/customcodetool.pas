@@ -3082,11 +3082,13 @@ begin
   p:=CurPos.StartPos;
   if p>SrcLen then p:=SrcLen+1;
   while CurNode<>nil do begin
+    //debugln(['TCustomCodeTool.CloseUnfinishedNodes BEFORE ',CurNode.DescAsString,' CurNode.EndPos=',CurNode.EndPos]);
     if CurNode.EndPos<1 then begin
       if CurNode.StartPos>p then p:=CurNode.StartPos;
       CurNode.EndPos:=p;
     end else if p<CurNode.EndPos then
       p:=CurNode.EndPos;
+    //debugln(['TCustomCodeTool.CloseUnfinishedNodes AFTER ',CurNode.DescAsString,' CurNode.EndPos=',CleanPosToStr(CurNode.EndPos)]);
     CurNode:=CurNode.Parent;
   end;
 end;
