@@ -3078,7 +3078,7 @@ var
 
         ctnTypeSection, ctnVarSection, ctnConstSection, ctnResStrSection,
         ctnLabelSection, ctnPropertySection,
-        ctnInterface, ctnImplementation,
+        ctnInterface, ctnImplementation, ctnProgram, ctnLibrary,
         ctnClassPublished,ctnClassPublic,ctnClassProtected,ctnClassPrivate,
         ctnClassClassVar,
         ctnRecordVariant,
