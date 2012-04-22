@@ -30,7 +30,6 @@
     - high type expression evaluation
       (i.e. at the moment: integer+integer=longint
                    wanted: integer+integer=integer)
-    - multi pass find declaration (i.e. searching with timeout)
     - make @Proc context sensitive (started, but not complete)
     - operator overloading
     - ppu, dcu files
@@ -2611,6 +2610,10 @@ var
   begin
     if not Found then exit;
     FindIdentifierInContext:=true;
+    {$IFDEF ShowCollect}
+    if fdfCollect in Params.Flags then
+      raise Exception.Create('fdfCollect must never return true');
+    {$ENDIF}
     if (FirstSearchedNode=nil) then exit;
     if ([fdfDoNotCache,fdfCollect,fdfExtractOperand]*Params.Flags<>[]) then exit;
     if ([fodDoNotCache]*Params.NewFlags<>[]) then exit;
@@ -2652,13 +2655,13 @@ var
   var IdentFoundResult: TIdentifierFoundResult;
   begin
     Result:=true;
-    FindIdentifierInContext:=NewResult;
+    FindIdentifierInContext:=NewResult and (not (fdfCollect in Params.Flags));
     {$IFDEF ShowCollect}
     if fdfCollect in Params.Flags then begin
       DebugLn('[TFindDeclarationTool.FindIdentifierInContext.CheckResult] COLLECT CheckResult Ident=',
       '"',GetIdentifier(Params.Identifier),'"',
       ' File="',ExtractFilename(MainFilename)+'"',
-      ' Flags=[',FindDeclarationFlagsAsString(Params.Flags)+']',
+      ' Flags=[',dbgs(Params.Flags)+']',
       ' NewResult=',DbgS(NewResult),
       ' CallOnIdentifierFound=',DbgS(CallOnIdentifierFound));
     end;
@@ -2722,6 +2725,10 @@ var
         Result:=true;
       end;
       FindIdentifierInContext:=true;
+      {$IFDEF ShowCollect}
+      if fdfCollect in Params.Flags then
+        raise Exception.Create('fdfCollect must never return true');
+      {$ENDIF}
       Params.SetResult(Params.FoundProc^.Context.Tool,
                        Params.FoundProc^.Context.Node);
       {$IFDEF ShowProcSearch}
@@ -2992,15 +2999,19 @@ var
         // after search in the generic, search in the generic parameter names
         if SearchInGenericParams(ContextNode.Parent) then begin
           FindIdentifierInContext:=true;
+          {$IFDEF ShowCollect}
+          if fdfCollect in Params.Flags then
+            raise Exception.Create('fdfCollect must never return true');
+          {$ENDIF}
           exit(false);
         end;
       end;
 
       if (ContextNode.Desc in AllClasses)
       and (fdfSearchInAncestors in Params.Flags) then begin
-        // after searching in a class definiton, search in its ancestors
+        // after searching in a class definition, search in its ancestors
 
-        // ToDo: check for circles in ancestors
+        // ToDo: check for cycles in ancestors
         
         OldParamFlags:=Params.Flags;
         Exclude(Params.Flags,fdfExceptionOnNotFound);
@@ -3008,6 +3019,10 @@ var
         Params.Flags:=OldParamFlags;
         if Result then begin
           FindIdentifierInContext:=true;
+          {$IFDEF ShowCollect}
+          if fdfCollect in Params.Flags then
+            raise Exception.Create('fdfCollect must never return true');
+          {$ENDIF}
           exit(false);
         end;
       end;
@@ -3115,8 +3130,11 @@ var
             Result:=FindIdentifierInClassOfMethod(ContextNode,Params);
             if Result then begin
               FindIdentifierInContext:=true;
-              Result:=false;
-              exit;
+              {$IFDEF ShowCollect}
+              if fdfCollect in Params.Flags then
+                raise Exception.Create('fdfCollect must never return true');
+              {$ENDIF}
+              exit(false);
             end;
           end;
 
@@ -5852,7 +5870,7 @@ function TFindDeclarationTool.FindIdentifierInUsesSection(
 { this function is internally used by FindIdentifierInContext
 
    search backwards through the uses section
-   compare first the all unit names, then load the units and search there
+   compare first all unit names, then load the units and search there
 }
 var
   NewCodeTool: TFindDeclarationTool;
@@ -6295,7 +6313,7 @@ end;
 
 function TFindDeclarationTool.FindIdentifierInUsedUnit(
   const AnUnitName: string; Params: TFindDeclarationParams): boolean;
-{ this function is internally used by FindIdentifierInHiddenUsedUnits
+{ Note: this function is internally used by FindIdentifierInHiddenUsedUnits
   for hidden used units, like the system unit or the objpas unit
 }
 var
