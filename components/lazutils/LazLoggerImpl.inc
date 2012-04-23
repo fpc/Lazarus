@@ -416,7 +416,7 @@ begin
   if s1 <> '' then
     Result := s1 + ',' + s2
   else
-    Result := s1 + s2;
+    Result := s2;
   {$ELSE}
   Result := '';
   {$ENDIF}
