@@ -198,6 +198,7 @@ type
   private
     FContext: TFindContext;
     FContextFlags: TIdentifierListContextFlags;
+    FStartAtom: TAtomPosition;
     FStartAtomBehind: TAtomPosition;
     FStartAtomInFront: TAtomPosition;
     FStartBracketLvl: integer;
@@ -240,6 +241,7 @@ type
                                                           read GetFilteredItems;
     property History: TIdentifierHistoryList read FHistory write SetHistory;
     property Prefix: string read FPrefix write SetPrefix;
+    property StartAtom: TAtomPosition read FStartAtom write FStartAtom;
     property StartAtomInFront: TAtomPosition
                                  read FStartAtomInFront write FStartAtomInFront;
     property StartAtomBehind: TAtomPosition
@@ -887,12 +889,15 @@ begin
   if FoundContext.Tool=Self then begin
     // identifier is in the same unit
     //DebugLn('::: COLLECT IDENT in SELF ',FoundContext.Node.DescAsString,
-    //  ' "',StringToPascalConst(copy(FoundContext.Tool.Src,FoundContext.Node.StartPos,50)),'"'
+    //  ' "',dbgstr(FoundContext.Tool.Src,FoundContext.Node.StartPos,50),'"'
     //  ,' fdfIgnoreUsedUnits='+dbgs(fdfIgnoreUsedUnits in Params.Flags));
-    if FoundContext.Node=CurrentIdentifierList.StartContext.Node then begin
+    if (FoundContext.Node=CurrentIdentifierList.StartContext.Node)
+    or (FoundContext.Node=CurrentIdentifierList.Context.Node)
+    or (FoundContext.Node.StartPos=CurrentIdentifierList.StartAtom.StartPos)
+    then begin
       // found identifier is in cursor node
-      // => show it at the end
-      Lvl:=1000;
+      // => do not show it
+      exit;
     end;
   end else begin
     // identifier is in another unit
@@ -940,6 +945,9 @@ begin
         // generic
         if Node=nil then exit;
         Ident:=@FoundContext.Tool.Src[Node.StartPos];
+      end;
+      if Node=nil then begin
+        // type without definition
       end;
       if (Node<>nil)
       and (Node.Desc in AllClasses)
@@ -2188,6 +2196,11 @@ begin
     ParseSourceTillCollectionStart(IdentStartXY,CleanCursorPos,CursorNode,
                                    IdentStartPos,IdentEndPos);
     if CleanCursorPos=0 then ;
+    if IdentStartPos>0 then begin
+      MoveCursorToCleanPos(IdentStartPos);
+      ReadNextAtom;
+      CurrentIdentifierList.StartAtom:=CurPos;
+    end;
 
     // find context
     {$IFDEF CTDEBUG}
