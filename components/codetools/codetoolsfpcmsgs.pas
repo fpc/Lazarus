@@ -69,7 +69,7 @@ type
     Comment: string; // multi line
 
     Index: integer; // index in list
-    function GetName(WithID: boolean = true): string;
+    function GetName(WithID: boolean = true): string; // part_typ_txtidentifier=id
     function PatternFits(aMsg: string): integer; // >=0 fits
     function GetTrimmedComment(NoLineBreaks, NoLatex: boolean): string;
   end;
@@ -251,6 +251,7 @@ end;
 { TFPCMsgItem }
 
 function TFPCMsgItem.GetName(WithID: boolean): string;
+// part_typ_txtidentifier=id
 begin
   Result:=Part+'_';
   if Typ<>'' then Result:=Result+Typ+'_';
