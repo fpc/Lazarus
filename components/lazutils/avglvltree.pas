@@ -108,8 +108,8 @@ type
     procedure Add(ANode: TAvgLvlTreeNode);
     function Add(Data: Pointer): TAvgLvlTreeNode;
     procedure Delete(ANode: TAvgLvlTreeNode);
-    procedure Remove(Data: Pointer);
-    procedure RemovePointer(Data: Pointer);
+    function Remove(Data: Pointer): boolean;
+    function RemovePointer(Data: Pointer): boolean;
     procedure MoveDataLeftMost(var ANode: TAvgLvlTreeNode);
     procedure MoveDataRightMost(var ANode: TAvgLvlTreeNode);
     procedure Clear;
@@ -1162,21 +1162,27 @@ begin
   ANode.Free;
 end;
 
-procedure TAvgLvlTree.Remove(Data: Pointer);
+function TAvgLvlTree.Remove(Data: Pointer): boolean;
 var ANode: TAvgLvlTreeNode;
 begin
   ANode:=Find(Data);
-  if ANode<>nil then
+  if ANode<>nil then begin
     Delete(ANode);
+    Result:=true;
+  end else
+    Result:=false;
 end;
 
-procedure TAvgLvlTree.RemovePointer(Data: Pointer);
+function TAvgLvlTree.RemovePointer(Data: Pointer): boolean;
 var
   ANode: TAvgLvlTreeNode;
 begin
   ANode:=FindPointer(Data);
-  if ANode<>nil then
+  if ANode<>nil then begin
     Delete(ANode);
+    Result:=true;
+  end else
+    Result:=false;
 end;
 
 destructor TAvgLvlTree.Destroy;
