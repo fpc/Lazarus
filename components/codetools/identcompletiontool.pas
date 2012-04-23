@@ -188,6 +188,7 @@ type
     ilcfNeedsEndSemicolon, // after context a semicolon is needed. e.g. 'A| end'
     ilcfNoEndSemicolon,    // no semicolon after. E.g. 'A| else'
     ilcfNeedsEndComma,     // after context a comma is needed. e.g. 'uses sysutil| classes'
+    ilcfNeedsDo,           // after context a 'do' is needed. e.g. 'with Form1| do'
     ilcfIsExpression,      // is expression part of statement. e.g. 'if expr'
     ilcfCanProcDeclaration,// context allows to declare a procedure/method
     ilcfEndOfLine          // atom at end of line
@@ -243,9 +244,9 @@ type
     property Prefix: string read FPrefix write SetPrefix;
     property StartAtom: TAtomPosition read FStartAtom write FStartAtom;
     property StartAtomInFront: TAtomPosition
-                                 read FStartAtomInFront write FStartAtomInFront;
+                                 read FStartAtomInFront write FStartAtomInFront; // in front of variable, not only of identifier
     property StartAtomBehind: TAtomPosition
-                                   read FStartAtomBehind write FStartAtomBehind;
+                                   read FStartAtomBehind write FStartAtomBehind; // directly behind
     property StartBracketLvl: integer
                                    read FStartBracketLvl write FStartBracketLvl;
     property StartContext: TFindContext read FStartContext write FStartContext;
@@ -2365,6 +2366,11 @@ begin
             end;
           end;
         end;
+        if CurrentIdentifierList.StartUpAtomInFrontIs('WITH')
+        and (CurrentIdentifierList.StartAtomBehind.Flag<>cafComma)
+        and (not CurrentIdentifierList.StartUpAtomBehindIs('DO')) then
+          CurrentIdentifierList.ContextFlags:=
+            CurrentIdentifierList.ContextFlags+[ilcfNeedsDo];
       end else begin
         // end of source
         CurrentIdentifierList.ContextFlags:=
