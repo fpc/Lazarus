@@ -2367,8 +2367,12 @@ begin
           end;
         end;
         if CurrentIdentifierList.StartUpAtomInFrontIs('WITH')
-        and (CurrentIdentifierList.StartAtomBehind.Flag<>cafComma)
-        and (not CurrentIdentifierList.StartUpAtomBehindIs('DO')) then
+        and (not CurrentIdentifierList.StartUpAtomBehindIs('DO'))
+        and (CurrentIdentifierList.StartBracketLvl=0)
+        and (not (CurrentIdentifierList.StartAtomBehind.Flag in
+               [cafComma,cafPoint,cafRoundBracketOpen,cafEdgedBracketOpen]))
+        and (not CurrentIdentifierList.StartUpAtomBehindIs('^'))
+        then
           CurrentIdentifierList.ContextFlags:=
             CurrentIdentifierList.ContextFlags+[ilcfNeedsDo];
       end else begin
