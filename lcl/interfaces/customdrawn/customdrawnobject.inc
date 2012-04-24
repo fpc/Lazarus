@@ -127,6 +127,9 @@ begin
   FTerminating := False;
   DefaultFontSize := 10;
 
+  FClipBoardFormats := TStringList.Create;
+  FClipBoardFormats.Add('foo'); // 0 is reserved
+
   // To be resistent against backend issues
   CDWidgetset.ScreenFormat := clfARGB32;
 
@@ -156,6 +159,8 @@ begin
   FFontPaths.Free;
   FFontList.Free;
   {$endif}
+
+  FClipBoardFormats.Free;
 
   CDWidgetSet := nil;
   inherited Destroy;

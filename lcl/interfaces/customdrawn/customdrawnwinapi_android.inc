@@ -166,40 +166,54 @@ begin
     end;
     P := Point(APoint.x, APoint.y);
   end;
-end;
+end;*)
 
-
-function TQtWidgetSet.ClipboardFormatToMimeType(FormatID: TClipboardFormat): string;
-begin
-  Result := Clipboard.FormatToMimeType(FormatID);
-end;
-
-function TQtWidgetSet.ClipboardGetData(ClipboardType: TClipboardType;
+{------------------------------------------------------------------------------
+  Method:  ClipboardGetData
+  Params:  ClipboardType - clipboard type
+           FormatID      - a registered format identifier (0 is invalid)
+           Stream        - If format is available, it will be appended to this
+                           stream
+  Returns: true on success
+ ------------------------------------------------------------------------------}
+function TCDWidgetSet.ClipboardGetData(ClipboardType: TClipboardType;
   FormatID: TClipboardFormat; Stream: TStream): boolean;
 begin
-  Result := Clipboard.Getdata(ClipboardType, FormatID, Stream);
+  {$ifdef VerboseCDClipboard}
+  DebugLn('[TCDWidgetSet.ClipboardGetData]');
+  {$endif}
+  Result := False;
 end;
 
-function TQtWidgetSet.ClipboardGetFormats(ClipboardType: TClipboardType;
-  var Count: integer; var List: PClipboardFormat): boolean;
-begin
-  Result := Clipboard.GetFormats(ClipboardType, Count, List);
-end;
+{------------------------------------------------------------------------------
+  Method:  ClipboardGetOwnerShip
+  Params:  ClipboardType - Type of clipboard, the win32 interface only handles
+                           ctClipBoard
+           OnRequestProc - TClipboardRequestEvent is defined in LCLType.pp
+                           If OnRequestProc is nil the onwership will end.
+           FormatCount - number of formats
+           Formats - array of TClipboardFormat. The supported formats the owner
+                      provides.
 
-function TQtWidgetSet.ClipboardGetOwnerShip(ClipboardType: TClipboardType;
+  Returns: true on success
+
+  Sets the supported formats and requests ownership for the clipboard.
+  The OnRequestProc is used to get the data from the LCL and to put it on the
+  clipboard.
+  If someone else requests the ownership, the OnRequestProc will be executed
+  with the invalid FormatID 0 to notify the old owner of the lost of ownership.
+ ------------------------------------------------------------------------------}
+function TCDWidgetSet.ClipboardGetOwnerShip(ClipboardType: TClipboardType;
   OnRequestProc: TClipboardRequestEvent;  FormatCount: integer;
   Formats: PClipboardFormat): boolean;
 begin
-  Result := Clipboard.GetOwnerShip(ClipboardType, OnRequestProc, FormatCount, Formats);
+  {$ifdef VerboseCDClipboard}
+  DebugLn('[TCDWidgetSet.ClipboardGetOwnerShip]');
+  {$endif}
+  Result := True;
 end;
 
-function TQtWidgetSet.ClipboardRegisterFormat(const AMimeType: string): TClipboardFormat;
-begin
-  Result := Clipboard.RegisterFormat(AMimeType);
-end;
-
-
-{------------------------------------------------------------------------------
+(*{------------------------------------------------------------------------------
   Function: CombineRgn
   Params:  Dest, Src1, Src2, fnCombineMode
   Returns: longint

@@ -166,38 +166,20 @@ begin
     end;
     P := Point(APoint.x, APoint.y);
   end;
-end;
+end;*)
 
-
-function TQtWidgetSet.ClipboardFormatToMimeType(FormatID: TClipboardFormat): string;
-begin
-  Result := Clipboard.FormatToMimeType(FormatID);
-end;
-
-function TQtWidgetSet.ClipboardGetData(ClipboardType: TClipboardType;
+function TCDWidgetSet.ClipboardGetData(ClipboardType: TClipboardType;
   FormatID: TClipboardFormat; Stream: TStream): boolean;
 begin
-  Result := Clipboard.Getdata(ClipboardType, FormatID, Stream);
+  Result := False;
 end;
 
-function TQtWidgetSet.ClipboardGetFormats(ClipboardType: TClipboardType;
-  var Count: integer; var List: PClipboardFormat): boolean;
-begin
-  Result := Clipboard.GetFormats(ClipboardType, Count, List);
-end;
-
-function TQtWidgetSet.ClipboardGetOwnerShip(ClipboardType: TClipboardType;
+function TCDWidgetSet.ClipboardGetOwnerShip(ClipboardType: TClipboardType;
   OnRequestProc: TClipboardRequestEvent;  FormatCount: integer;
   Formats: PClipboardFormat): boolean;
 begin
-  Result := Clipboard.GetOwnerShip(ClipboardType, OnRequestProc, FormatCount, Formats);
+  Result := False;
 end;
-
-function TQtWidgetSet.ClipboardRegisterFormat(const AMimeType: string): TClipboardFormat;
-begin
-  Result := Clipboard.RegisterFormat(AMimeType);
-end;
-
 
 {------------------------------------------------------------------------------
   Function: CombineRgn

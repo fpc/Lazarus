@@ -41,7 +41,7 @@ function BitBlt(DestDC: HDC; X, Y, Width, Height: Integer; SrcDC: HDC; XSrc, YSr
 
 (*function CallNextHookEx(hHk: HHOOK; ncode : Integer; wParam: WParam; lParam : LParam) : Integer; override;
 function CallWindowProc(lpPrevWndFunc : TFarProc; Handle : HWND; Msg : UINT; wParam: WParam; lParam : lParam) : Integer; override;
-function ClientToScreen(Handle: HWND; var P: TPoint) : Boolean; override;
+function ClientToScreen(Handle: HWND; var P: TPoint) : Boolean; override;*)
 
 function ClipboardFormatToMimeType(FormatID: TClipboardFormat): string; override;
 function ClipboardGetData(ClipboardType: TClipboardType;
@@ -52,7 +52,7 @@ function ClipboardGetFormats(ClipboardType: TClipboardType;
 function ClipboardGetOwnerShip(ClipboardType: TClipboardType;
   OnRequestProc: TClipboardRequestEvent;  FormatCount: integer;
   Formats: PClipboardFormat): boolean; override;
-function ClipboardRegisterFormat(const AMimeType: string): TClipboardFormat; override;*)
+function ClipboardRegisterFormat(const AMimeType: string): TClipboardFormat; override;
 
 function CombineRgn(Dest, Src1, Src2: HRGN; fnCombineMode: Longint): Longint;  override;
 function CreateBitmap(Width, Height: Integer; Planes, BitCount: Longint; BitmapBits: Pointer): HBITMAP; override;

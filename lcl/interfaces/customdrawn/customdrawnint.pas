@@ -116,6 +116,9 @@ type
   private
     FTerminating: Boolean;
 
+    // Clipboard support
+    FClipBoardFormats: TStringList;
+
     {$ifdef CD_WINDOWS}
     // In win32 it is: The parent of all windows, represents the button of the taskbar
     // In wince it is just an invisible window, but retains the following functions:

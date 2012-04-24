@@ -20,6 +20,19 @@
  *****************************************************************************
 }
 
+function TCDWidgetSet.ClipboardGetData(ClipboardType: TClipboardType;
+  FormatID: TClipboardFormat; Stream: TStream): boolean;
+begin
+  Result := False;
+end;
+
+function TCDWidgetSet.ClipboardGetOwnerShip(ClipboardType: TClipboardType;
+  OnRequestProc: TClipboardRequestEvent;  FormatCount: integer;
+  Formats: PClipboardFormat): boolean;
+begin
+  Result := False;
+end;
+
 //##apiwiz##sps##   // Do not remove, no wizard declaration before this line
 (*
 procedure ColorToRGBFloat(cl: TColorRef; var r,g,b: Single); inline;

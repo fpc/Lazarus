@@ -164,38 +164,67 @@ begin
     end;
     P := Point(APoint.x, APoint.y);
   end;
-end;
-
-
-function TQtWidgetSet.ClipboardFormatToMimeType(FormatID: TClipboardFormat): string;
-begin
-  Result := Clipboard.FormatToMimeType(FormatID);
-end;
-
-function TQtWidgetSet.ClipboardGetData(ClipboardType: TClipboardType;
-  FormatID: TClipboardFormat; Stream: TStream): boolean;
-begin
-  Result := Clipboard.Getdata(ClipboardType, FormatID, Stream);
-end;
-
-function TQtWidgetSet.ClipboardGetFormats(ClipboardType: TClipboardType;
-  var Count: integer; var List: PClipboardFormat): boolean;
-begin
-  Result := Clipboard.GetFormats(ClipboardType, Count, List);
-end;
-
-function TQtWidgetSet.ClipboardGetOwnerShip(ClipboardType: TClipboardType;
-  OnRequestProc: TClipboardRequestEvent;  FormatCount: integer;
-  Formats: PClipboardFormat): boolean;
-begin
-  Result := Clipboard.GetOwnerShip(ClipboardType, OnRequestProc, FormatCount, Formats);
-end;
-
-function TQtWidgetSet.ClipboardRegisterFormat(const AMimeType: string): TClipboardFormat;
-begin
-  Result := Clipboard.RegisterFormat(AMimeType);
 end;*)
 
+{------------------------------------------------------------------------------
+  Method:  ClipboardFormatToMimeType
+  Params:  FormatID - a registered format identifier (can't be a predefined format)
+  Returns: the corresponding mime type as string
+ ------------------------------------------------------------------------------}
+function TCDWidgetSet.ClipboardFormatToMimeType(FormatID: TClipboardFormat): string;
+begin
+  {$ifdef VerboseCDClipboard}
+  DebugLn('[TCDWidgetSet.ClipboardFormatToMimeType]');
+  {$endif}
+  if FClipBoardFormats.Count > Integer(FormatID) then
+    Result := FClipBoardFormats[FormatID]
+  else
+    Result := '';
+end;
+
+function TCDWidgetSet.ClipboardGetFormats(ClipboardType: TClipboardType;
+  var Count: integer; var List: PClipboardFormat): boolean;
+var
+  i: Integer;
+  Str: string;
+begin
+  {$ifdef VerboseCDClipboard}
+  DebugLn('[TCDWidgetSet.GenericClipboardGetFormats]');
+  {$endif}
+  Result := False;
+  Count := 0;
+  List := nil;
+
+  Count := FClipBoardFormats.Count;
+  GetMem(List, Count * SizeOf(TClipboardFormat));
+
+  for i := 0 to Count - 1 do
+  begin
+    Str := FClipBoardFormats.Strings[i];
+    List[i] := ClipboardRegisterFormat(Str);
+  end;
+
+  Result := True;
+end;
+
+{------------------------------------------------------------------------------
+  Method:  ClipboardRegisterFormat
+  Params:  AMimeType - a string (usually a MIME type) identifying a new format
+                       type to register
+  Returns: the registered Format identifier (TClipboardFormat)
+ ------------------------------------------------------------------------------}
+function TCDWidgetSet.ClipboardRegisterFormat(const AMimeType: string): TClipboardFormat;
+var
+  Index: Integer;
+begin
+  {$ifdef VerboseCDClipboard}
+  DebugLn('[TCDWidgetSet.ClipboardRegisterFormat]');
+  {$endif}
+  Index := FClipBoardFormats.IndexOf(AMimeType);
+  if Index < 0 then
+    Index := FClipBoardFormats.Add(AMimeType);
+  Result := Index;
+end;
 
 {------------------------------------------------------------------------------
   Function: CombineRgn

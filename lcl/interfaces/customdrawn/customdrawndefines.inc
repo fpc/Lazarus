@@ -76,4 +76,5 @@
 {.$define VerboseCDX11WinAPI}
 {.$define VerboseCDEvents}
 {.$define VerboseCDAccessibility}
+{.$define VerboseCDClipboard}
 
