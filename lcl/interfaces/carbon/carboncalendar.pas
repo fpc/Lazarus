@@ -62,7 +62,7 @@ var
   y, m, d : Word;
 begin
   DecodeDate(aDate, y,m,d);
-  FillChar(date, sizeof(date), 0);
+  FillChar(date{%H-}, sizeof(date), 0);
   date.day := d;
   date.month := m;
   date.year := y;
@@ -73,7 +73,7 @@ function TCarbonCalendar.GetDateTime: TDateTime;
 var
   date    : CFGregorianDate;
 begin
-  CalendarGetDate(Widget, date);
+  CalendarGetDate(Widget, date{%H-});
   Result := EncodeDate(date.year, date.month, date.day);
 end;
 

@@ -32,13 +32,10 @@ interface
 uses
   // Libs
   MacOSAll,
-  CarbonUtils,
   // LCL
-  Controls, Forms, Menus, Graphics, LCLType, LMessages, LCLProc, Classes,
+  Controls, Forms, Menus, Graphics, LCLType, LCLProc, Classes,
   // Widgetset
-  WSMenus, WSLCLClasses,
-  // LCL Carbon
-  CarbonDef, CarbonMenus, CarbonWSControls;
+  WSMenus, WSLCLClasses, CarbonMenus;
 
 type
 
@@ -54,13 +51,13 @@ type
     class function  CreateHandle(const AMenuItem: TMenuItem): HMENU; override;
     class procedure DestroyHandle(const AMenuItem: TMenuItem); override;
     class procedure SetCaption(const AMenuItem: TMenuItem; const ACaption: string); override;
-    class procedure SetShortCut(const AMenuItem: TMenuItem; const ShortCutK1, ShortCutK2: TShortCut); override;
+    class procedure SetShortCut(const AMenuItem: TMenuItem; const ShortCutK1, {%H-}ShortCutK2: TShortCut); override;
     class procedure SetVisible(const AMenuItem: TMenuItem; const Visible: boolean); override;
     class function SetCheck(const AMenuItem: TMenuItem; const Checked: boolean): boolean; override;
     class function SetEnable(const AMenuItem: TMenuItem; const Enabled: boolean): boolean; override;
-    class function SetRadioItem(const AMenuItem: TMenuItem; const RadioItem: boolean): boolean; override;
+    class function SetRadioItem(const AMenuItem: TMenuItem; const {%H-}RadioItem: boolean): boolean; override;
     //class function SetRightJustify(const AMenuItem: TMenuItem; const Justified: boolean): boolean; override;
-    class procedure UpdateMenuIcon(const AMenuItem: TMenuItem; const HasIcon: Boolean; const AIcon: TBitmap); override;
+    class procedure UpdateMenuIcon(const AMenuItem: TMenuItem; const {%H-}HasIcon: Boolean; const {%H-}AIcon: TBitmap); override;
   end;
 
   { TCarbonWSMenu }

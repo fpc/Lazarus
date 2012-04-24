@@ -186,7 +186,7 @@ begin
     end
   else
   	if (inData.hilitePart > 0) and (inData.hilitePart = inPart) then begin
-      GetThemeBrushAsColor( kThemeBrushPrimaryHighlightColor, 32, true, color );
+      GetThemeBrushAsColor( kThemeBrushPrimaryHighlightColor, 32, true, color {%H-});
       CGContextSetRGBFillColor( inData.context, color.red / 65536, color.green / 65536, color.blue / 65536, 1 );
       CGContextFillRect(inData.context, inPartRect );
     end;
@@ -357,7 +357,7 @@ end;
 //	CalendarViewDestruct
 // -----------------------------------------------------------------------------
 //
-function CalendarViewDestruct(inEvent : EventRef; var inData : CalendarViewDataPtr): OSStatus;
+function CalendarViewDestruct({%H-}inEvent : EventRef; var inData : CalendarViewDataPtr): OSStatus;
 begin
   //#pragma unused( inEvent )
 	// Clean up any allocated data
@@ -395,7 +395,7 @@ begin
             nil, sizeof( CGContextRef ), nil, @drawData.context );
   if Result <> noErr then Exit;  
 
-	Result := HIViewGetBounds( inData.view, bounds );
+	Result := HIViewGetBounds( inData.view, bounds {%H-});
 
   // highlighting only selected day
 	//drawData.hilitePart := GetControlHilite( inData.view );
@@ -600,7 +600,7 @@ begin
 			nil, sizeof( HIPoint ), nil, @where );
   if Result <> noErr then Exit;
 
-	HIViewGetBounds( inData.view, bounds );
+	HIViewGetBounds( inData.view, bounds {%H-});
 
 	part := FindPart(bounds, where, inData );
 
@@ -629,7 +629,7 @@ begin
 			niL, sizeof( HIPoint ), nil, @where );
   if Result <> noErr then Exit;
 
-	Result := HIViewGetBounds( inData.view, bounds );
+	Result := HIViewGetBounds( inData.view, bounds {%H-});
 	
 	startHilite := GetControlHilite( inData.view );
 	
@@ -647,7 +647,7 @@ begin
 		lastPart := part;
 
     //TODO!!!!!!
-		Result := TrackMouseLocation( GrafPtr(-1), qdPt, mouseResult );
+		Result := TrackMouseLocation( GrafPtr(-1), qdPt{%H-}, mouseResult {%H-});
 
 		// Need to convert from global
 		QDGlobalToLocalPoint( GetWindowPort( GetControlOwner( inData.view ) ), qdPt );
@@ -670,7 +670,7 @@ begin
 
 	if ( lastPart >= kCalendarPreviousYearPart) and (lastPart <= kCalendarNextYearPart ) then
   begin
-    FillChar(dateChange, sizeof(dateChange), 0);		
+    FillChar(dateChange{%H-}, sizeof(dateChange), 0);
 
 		tempTime := CFGregorianDateGetAbsoluteTime( inData.date, inData.timeZone );
 
@@ -699,7 +699,7 @@ end;
 //	CalendarViewChanged
 // -----------------------------------------------------------------------------
 //
-function CalendarViewChanged(inEvent :EventRef; const inData: CalendarViewData): OSStatus;
+function CalendarViewChanged({%H-}inEvent :EventRef; const inData: CalendarViewData): OSStatus;
 begin
   //#pragma unused( inEvent )
 	//Status			err = noErr;
@@ -890,7 +890,7 @@ begin
 	Result := GetEventParameter( inEvent, kEventParamControlPart, typeControlPartCode, nil, sizeof( ControlPartCode ), nil, @part );
 	if Result <> noErr then Exit;
 
-  HIViewGetBounds(inData.view, bounds);
+  HIViewGetBounds(inData.view, bounds{%H-});
   outShape:=HIShapeCreateWithRect(bounds);
   Result := SetEventParameter(inEvent, kEventParamShape, typeHIShapeRef, sizeof(HIShapeRef), @outShape);
   CFRelease(outShape);
@@ -998,7 +998,7 @@ begin
   if Result <> noErr then Exit;
 
   // Make the initialization event
-  Result := CreateEvent(nil, kEventClassHIObject, kEventHIObjectInitialize, GetCurrentEventTime(), 0, event );
+  Result := CreateEvent(nil, kEventClassHIObject, kEventHIObjectInitialize, GetCurrentEventTime(), 0, event {%H-});
   if Result <> noErr then Exit;
   try
     // Set the bounds into the event
@@ -1009,7 +1009,7 @@ begin
     if Result <> noErr then Exit;
 
     // Get the content root
-    Result := GetRootControl( inWindow, root );
+    Result := GetRootControl( inWindow, root {%H-});
     if Result <> noErr then Exit;
 
     // - added -

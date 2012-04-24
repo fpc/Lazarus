@@ -49,8 +49,8 @@ type
     class function GetDateTime(const ACalendar: TCustomCalendar): TDateTime; override;
     class procedure SetDateTime(const ACalendar: TCustomCalendar; const ADateTime: TDateTime); override;
     class function HitTest(const ACalendar: TCustomCalendar; const APoint: TPoint): TCalendarPart; override;
-    class procedure SetDisplaySettings(const ACalendar: TCustomCalendar;
-      const ADisplaySettings: TDisplaySettings); override;
+    class procedure SetDisplaySettings(const {%H-}ACalendar: TCustomCalendar;
+      const {%H-}ADisplaySettings: TDisplaySettings); override;
   end;
 
 

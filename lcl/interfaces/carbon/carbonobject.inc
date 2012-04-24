@@ -1,6 +1,5 @@
 {%MainUnit carbonint.pas}
 
-{ $Id$ }
 {******************************************************************************
   All utility method implementations of the TCarbonWidgetSet class are here.
 

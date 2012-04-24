@@ -36,7 +36,7 @@ uses
 // To get as little as posible circles,
 // uncomment only when needed for registration
 ////////////////////////////////////////////////////
-  Controls, Spin, StdCtrls, LCLType,
+  Controls, Spin, LCLType,
 ////////////////////////////////////////////////////
   WSSpin, WSLCLClasses;
 
@@ -54,7 +54,7 @@ type
 implementation
 
 uses
-  CarbonEdits, CarbonDef, CarbonDbgConsts;
+  CarbonEdits, CarbonDef;
 
 { TCarbonWSCustomFloatSpinEdit }
 

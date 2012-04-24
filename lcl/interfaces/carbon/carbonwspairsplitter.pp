@@ -33,7 +33,7 @@ uses
 // To get as little as posible circles,
 // uncomment only when needed for registration
 ////////////////////////////////////////////////////
-  Controls, LCLType, PairSplitter,
+  Controls, LCLType,
 ////////////////////////////////////////////////////
   WSPairSplitter, WSLCLClasses;
 

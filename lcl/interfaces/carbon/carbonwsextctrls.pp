@@ -37,12 +37,12 @@ uses
   appkit, foundation, lobjc,
   {$endif CarbonUseCocoa}
   // LCL
-  Classes, Controls, ExtCtrls, LCLType, LCLProc, Graphics, Math, SysUtils,
-  Menus, ComCtrls,
+  Classes, Controls, ExtCtrls, LCLType, LCLProc, Graphics, SysUtils,
+  Menus,
   // widgetset
-  WSExtCtrls, WSLCLClasses, WSControls, WSProc, WSComCtrls,
+  WSExtCtrls, WSLCLClasses,
   // LCL Carbon
-  carbongdiobjects, CarbonWSControls;
+  carbongdiobjects;
 
 type
 
@@ -157,8 +157,8 @@ type
     class function Hide(const ATrayIcon: TCustomTrayIcon): Boolean; override;
     class function Show(const ATrayIcon: TCustomTrayIcon): Boolean; override;
     class procedure InternalUpdate(const ATrayIcon: TCustomTrayIcon); override;
-    class function ShowBalloonHint(const ATrayIcon: TCustomTrayIcon): Boolean; override;
-    class function GetPosition(const ATrayIcon: TCustomTrayIcon): TPoint; override;
+    class function ShowBalloonHint(const {%H-}ATrayIcon: TCustomTrayIcon): Boolean; override;
+    class function GetPosition(const {%H-}ATrayIcon: TCustomTrayIcon): TPoint; override;
     class function IsTrayIconMenuVisible(const ATrayIcon: TCustomTrayIcon): Boolean;
     {$endif CarbonUseCocoa}
   end;
@@ -166,7 +166,7 @@ type
 implementation
 
 uses
-  CarbonProc, CarbonDef, CarbonCanvas;
+  CarbonProc;
 
 { TCarbonWSCustomPanel }
 

@@ -32,13 +32,12 @@ interface
 uses
   // Libs
   MacOSAll,
-  CarbonUtils,
   // LCL
-  Controls, Forms, Graphics, LCLType, LMessages, LCLProc, Classes,
+  Controls, Forms, Graphics, LCLType, LCLProc, Classes,
   // Widgetset
-  WSForms, WSLCLClasses, WSProc,
+  WSForms, WSLCLClasses,
   // LCL Carbon
-  CarbonDef, CarbonPrivate, CarbonWSControls;
+  CarbonDef, CarbonPrivate;
 
 type
 
@@ -83,10 +82,10 @@ type
     class procedure SetFormBorderStyle(const AForm: TCustomForm; const AFormBorderStyle: TFormBorderStyle); override;
 
     class procedure SetAlphaBlend(const ACustomForm: TCustomForm; const AlphaBlend: Boolean; const Alpha: Byte); override;
-    class procedure SetFormStyle(const ACustomForm: TCustomForm; const ANewFormStyle, AOldFormStyle: TFormStyle); override;
+    class procedure SetFormStyle(const ACustomForm: TCustomForm; const ANewFormStyle, {%H-}AOldFormStyle: TFormStyle); override;
 
     class procedure SetPopupParent(const ACustomForm: TCustomForm;
-      const APopupMode: TPopupMode; const APopupParent: TCustomForm); override;
+      const {%H-}APopupMode: TPopupMode; const APopupParent: TCustomForm); override;
   end;
 
   { TCarbonWSForm }
@@ -210,8 +209,6 @@ var
   nCmdShow : Integer;
   ModalForm: TCustomForm;
   ACurrentWindowClass: WindowClass;
-  AWinToDestroy: WindowRef;
-
   function HaveModalForms: Boolean;
   var
     i: Integer;
@@ -233,8 +230,6 @@ var
   function ShowNonModalOverModal(const AShowSheet: Boolean): Boolean;
   var
     AForm: TCustomForm;
-    OutOwner: WindowRef;
-    B: Boolean;
   begin
     Result := False;
     AForm := TCustomForm(AWinControl);
@@ -262,7 +257,7 @@ var
 begin
   if not CheckHandle(AWinControl, Self, 'ShowHide') then Exit;
 
-  OSError(GetWindowClass(TCarbonWindow(AWinControl.Handle).Window, ACurrentWindowClass),
+  OSError(GetWindowClass(TCarbonWindow(AWinControl.Handle).Window, ACurrentWindowClass{%H-}),
     Self,'ShowHide','GetWindowClass');
 
   if AWinControl.HandleObjectShouldBeVisible then
