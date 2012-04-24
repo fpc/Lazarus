@@ -469,11 +469,15 @@ type
     fPicture: TPicture;
     FSharedName: string;
     
+    function GetCentered: boolean;
+    function GetKeepAspect: boolean;
     procedure P1Click(Sender: TObject);
     procedure P2Click(Sender: TObject);
     function GetPictureType: byte;
     function PictureTypeToGraphic(b: Byte): TGraphic;
     function ExtensionToGraphic(const Ext: string): TGraphic;
+    procedure SetCentered(AValue: boolean);
+    procedure SetKeepAspect(AValue: boolean);
     function StreamToGraphic(M: TMemoryStream): TGraphic;
     procedure SetPicture(const AValue: TPicture);
   protected
@@ -492,6 +496,8 @@ type
   published
     property Picture : TPicture read fPicture write SetPicture;
 
+    property KeepAspect:boolean read GetKeepAspect write SetKeepAspect;
+    property Centered: boolean read GetCentered write SetCentered;
     property Memo;
     property Script;
     property Frames;
@@ -4507,7 +4513,7 @@ begin
   m := TMenuItem.Create(Popup);
   m.Caption := sPictureCenter;
   m.OnClick := @P1Click;
-  m.Checked := (Flags and flPictCenter) <> 0;
+  m.Checked := Centered;
   Popup.Items.Add(m);
 
   m := TMenuItem.Create(Popup);
@@ -4515,7 +4521,7 @@ begin
   m.OnClick := @P2Click;
   m.Enabled := Stretched;
   if m.Enabled then
-    m.Checked := (Flags and flPictRatio) <> 0;
+    m.Checked := KeepAspect;
   Popup.Items.Add(m);
 end;
 
@@ -4532,10 +4538,20 @@ begin
     begin
       t := TfrView(frDesigner.Page.Objects[i]);
       if t.Selected then
-        t.Flags := (t.Flags and not flPictCenter) + Word(Checked) * flPictCenter;
+        SetBit(t.Flags, Checked, flPictCenter);
     end;
   end;
   frDesigner.AfterChange;
+end;
+
+function TfrPictureView.GetKeepAspect: boolean;
+begin
+  Result:=((Flags and flPictRatio)<>0);
+end;
+
+function TfrPictureView.GetCentered: boolean;
+begin
+  Result:=((Flags and flPictCenter)<>0);
 end;
 
 procedure TfrPictureView.P2Click(Sender: TObject);
@@ -4551,7 +4567,7 @@ begin
     begin
       t :=TfrView(frDesigner.Page.Objects[i]);
       if t.Selected then
-        t.Flags := (t.Flags and not flPictRatio) + Word(Checked) * flPictRatio;
+        SetBit(t.Flags, Checked, flPictRatio);
     end;
   end;
   frDesigner.AfterChange;
@@ -4584,6 +4600,26 @@ begin
     result := AGraphicClass.Create
   else
     result := nil;
+end;
+
+procedure TfrPictureView.SetCentered(AValue: boolean);
+begin
+  if Centered<>AValue then
+  begin
+    BeforeChange;
+    SetBit(Flags, AValue, flPictCenter);
+    AfterChange;
+  end;
+end;
+
+procedure TfrPictureView.SetKeepAspect(AValue: boolean);
+begin
+  if KeepAspect<>AValue then
+  begin
+    BeforeChange;
+    SetBit(Flags, AValue, flPictRatio);
+    AfterChange;
+  end;
 end;
 
 function TfrPictureView.StreamToGraphic(M: TMemoryStream): TGraphic;
