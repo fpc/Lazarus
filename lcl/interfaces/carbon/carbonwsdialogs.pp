@@ -35,9 +35,9 @@ uses
   // LCL
   Classes, SysUtils, FileUtil, Controls, Dialogs, LCLType, LCLProc, Masks, Graphics,
   // widgetset
-  WSLCLClasses, WSProc, WSDialogs,
+  WSLCLClasses, WSDialogs,
   // LCL Carbon
-  CarbonDef, CarbonPrivate;
+  CarbonDef;
   
 type
 
@@ -105,7 +105,7 @@ var
   FilterIndex: Integer;
 
 function FilterCallback(var theItem: AEDesc; info: NavFileOrFolderInfoPtr;
- callbackUD: UnivPtr; filterMode: NavFilterModes): Boolean; mwpascal;
+ callbackUD: UnivPtr; {%H-}filterMode: NavFilterModes): Boolean; mwpascal;
  {Custom filter callback function. Pointer to this function is passed as
    inFilterProc to NavCreateGetFileDialog and NavCreateChooseFolderDialog.
   If theItem file should be highlighted in file dialog, return True;
@@ -198,8 +198,8 @@ begin
         end;
 
         if DirURL <> nil then
-          if CFURLGetFSRef(DirURL, DirRef) then
-            if not OSError(AECreateDesc(typeFSRef, @DirRef, SizeOf(FSRef), Dir),
+          if CFURLGetFSRef(DirURL, DirRef{%H-}) then
+            if not OSError(AECreateDesc(typeFSRef, @DirRef, SizeOf(FSRef), Dir{%H-}),
               SName, 'AECreateDesc') then
               OSError(NavCustomControl(CallBackParms^.context, kNavCtlSetLocation, @Dir),
                 SName, 'NavCustomControl', 'InitialDir');
@@ -257,7 +257,7 @@ begin
   FileDialog := ACommonDialog as TFileDialog;
 
   // Initialize record to default values
-  if OSError(NavGetDefaultDialogCreationOptions(CreationOptions),
+  if OSError(NavGetDefaultDialogCreationOptions(CreationOptions{%H-}),
     Self, SShowModal, 'NavGetDefaultDialogCreationOptions') then Exit;
 
   if FileDialog.Title <> '' then  // Override dialog's default title?
@@ -311,7 +311,7 @@ begin
       // Create Save dialog
       if OSError(
         NavCreatePutFileDialog(@CreationOptions, 0, 0, NavDialogUPP,
-           UnivPtr(FileDialog), DialogRef),
+           UnivPtr(FileDialog), DialogRef{%H-}),
          Self, SShowModal, 'NavCreatePutFileDialog') then Exit;
     end
     else
@@ -345,17 +345,17 @@ begin
       
       if NavDialogGetUserAction(DialogRef) <> kNavUserActionCancel then // User OK?
       begin
-        if OSError(NavDialogGetReply(DialogRef, DialogReply), Self, SShowModal,
+        if OSError(NavDialogGetReply(DialogRef, DialogReply{%H-}), Self, SShowModal,
           'NavDialogGetReply') then Exit;  // Get user's selection
           
-        if OSError(AECountItems(DialogReply.Selection, FileCount), Self,
+        if OSError(AECountItems(DialogReply.Selection, FileCount{%H-}), Self,
           SShowModal, 'AECountItems') then Exit;
           
         FileDialog.Files.Clear;
         for FileIdx := 1 to FileCount do
         begin
           if OSError(AEGetNthDesc(DialogReply.Selection, FileIdx, typeFSRef,
-            @Keyword, FileDesc), Self, SShowModal, 'AEGetNthDesc') then Exit;
+            @Keyword, FileDesc{%H-}), Self, SShowModal, 'AEGetNthDesc') then Exit;
           // Get file reference
           if OSError(AEGetDescData(FileDesc, @FileRef, SizeOf(FSRef)), Self,
             SShowModal, 'AEGetDescData') then Exit;
@@ -433,8 +433,8 @@ begin
   ACommonDialog.UserChoice := mrCancel;
   ColorDialog := ACommonDialog as TColorDialog;
   
-  CMGetDefaultProfileBySpace(cmRGBData, Profile);
-  FillChar(ColorInfo, SizeOf(ColorPickerInfo), 0);
+  CMGetDefaultProfileBySpace(cmRGBData, Profile{%H-});
+  FillChar(ColorInfo{%H-}, SizeOf(ColorPickerInfo), 0);
   ColorInfo.theColor.color.rgb := CMRGBColor(ColorToRGBColor(ColorDialog.Color));
   ColorInfo.theColor.profile := Profile;
   ColorInfo.dstProfile := Profile;
@@ -462,14 +462,12 @@ var
 
 function CarbonFontDialog_Selection(ANextHandler: EventHandlerCallRef;
   AEvent: EventRef;
-  AWidget: TCarbonWidget): OSStatus; {$IFDEF darwin}mwpascal;{$ENDIF}
+  {%H-}AWidget: TCarbonWidget): OSStatus; {$IFDEF darwin}mwpascal;{$ENDIF}
 var
   ID: ATSUFontID;
   Size: Fixed;
   Color: RGBColor;
   Style: FMFontStyle;
-const
-  SName = 'CarbonFontDialog_Selection';
 begin
   {$IFDEF VerboseWSClass}
     DebugLn('CarbonFontDialog_Selection: ', DbgSName(FontDialog));
@@ -520,7 +518,7 @@ end;
 
 function CarbonFontDialog_Close(ANextHandler: EventHandlerCallRef;
   AEvent: EventRef;
-  AWidget: TCarbonWidget): OSStatus; {$IFDEF darwin}mwpascal;{$ENDIF}
+  {%H-}AWidget: TCarbonWidget): OSStatus; {$IFDEF darwin}mwpascal;{$ENDIF}
 begin
   {$IFDEF VerboseWSClass}
     DebugLn('CarbonFontDialog_Close: ', DbgSName(FontDialog));
@@ -563,7 +561,7 @@ begin
 
   if OSError(
     CreateNewWindow(kModalWindowClass,
-      kWindowCompositingAttribute or kWindowStandardHandlerAttribute, GetCarbonRect(0, 0, 0, 0), Dialog),
+      kWindowCompositingAttribute or kWindowStandardHandlerAttribute, GetCarbonRect(0, 0, 0, 0), Dialog{%H-}),
     Self, SShowModal, 'CreateNewWindow') then Exit;
     
   try
@@ -578,7 +576,7 @@ begin
       1, @TmpSpec, nil, nil);
 
 
-    OSError(ATSUCreateAndCopyStyle(TCarbonFont(AFontDialog.Font.Reference.Handle).Style, Style),
+    OSError(ATSUCreateAndCopyStyle(TCarbonFont(AFontDialog.Font.Reference.Handle).Style, Style{%H-}),
       Self, SShowModal, 'ATSUCreateAndCopyStyle');
       
     // force set font ID

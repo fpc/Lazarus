@@ -35,9 +35,9 @@ uses
   // LCL
   Classes, Controls, Buttons, LCLType, LCLProc, Graphics,
   // widgetset
-  WSButtons, WSLCLClasses, WSProc,
+  WSButtons, WSLCLClasses,
   // LCL Carbon
-  CarbonDef, CarbonPrivate, CarbonButtons, CarbonWSControls, CarbonGDIObjects;
+  CarbonDef, CarbonButtons, CarbonGDIObjects;
 
 type
 
@@ -60,7 +60,7 @@ type
 implementation
 
 uses
-  CarbonProc, CarbonDbgConsts, CarbonCanvas;
+  CarbonProc;
 
 { TCarbonWSBitBtn }
 

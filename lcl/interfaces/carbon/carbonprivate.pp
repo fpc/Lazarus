@@ -1,5 +1,4 @@
-{ $Id: $
-                  --------------------------------------------
+{                 --------------------------------------------
                   carbonprivate.pp  -  Carbon internal classes
                   --------------------------------------------
 
@@ -30,14 +29,14 @@ interface
 
 uses
   // rtl+ftl
-  Types, Classes, SysUtils, Math, Contnrs,
+  Types, Classes, SysUtils,
   // carbon bindings
   MacOSAll,
   {$ifdef CarbonUseCocoaAll}
   CocoaAll,
   {$endif}
- // widgetset
-  WSControls, WSLCLClasses, WSProc,
+  // widgetset
+  WSLCLClasses,
  // LCL Carbon
   CarbonDef, CarbonGDIObjects, CarbonMenus,
  // LCL
@@ -337,8 +336,7 @@ const
 
 implementation
 
-uses InterfaceBase, CarbonInt, CarbonProc, CarbonDbgConsts, CarbonUtils,
-  CarbonWSStdCtrls, CarbonCanvas, CarbonCaret;
+uses InterfaceBase, CarbonInt, CarbonProc, CarbonDbgConsts, CarbonUtils, CarbonCanvas, CarbonCaret;
 
 var
   // recursive number of draw events called by OSX
@@ -1683,7 +1681,7 @@ begin
 
   if OSError(
     CreateStaticTextControl(GetTopParentWindow, ParamsToCarbonRect(AParams),
-      nil, @FontStyle, Control),
+      nil, @FontStyle, Control{%H-}),
     Self, SCreateWidget, 'CreateStaticTextControl') then RaiseCreateWidgetError(LCLObject);
 
   Widget := Control;

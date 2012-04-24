@@ -1,4 +1,3 @@
-{ $Id$}
 {
  *****************************************************************************
  *                              CarbonWSExtCtrls.pp                          *
@@ -140,7 +139,7 @@ type
 
   TCarbonWSCustomPanel = class(TWSCustomPanel)
   published
-    class procedure GetPreferredSize(const AWinControl: TWinControl; var PreferredWidth, PreferredHeight: integer; WithThemeSpace: Boolean); override;
+    class procedure GetPreferredSize(const {%H-}AWinControl: TWinControl; var PreferredWidth, PreferredHeight: integer; {%H-}WithThemeSpace: Boolean); override;
   end;
 
   { TCarbonWSPanel }

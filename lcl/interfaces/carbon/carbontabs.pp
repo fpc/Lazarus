@@ -27,11 +27,9 @@ interface
 
 uses
  // rtl+ftl
-  Types, Classes, SysUtils, Math, Contnrs,
+  Types, Classes, SysUtils, Contnrs,
  // carbon bindings
-  MacOSAll,
- // widgetset
-  WSControls, WSLCLClasses, WSProc,
+  MacOSAll, WSLCLClasses,
  // LCL Carbon
   CarbonDef, CarbonPrivate, CarbonProc, CarbonDbgConsts, CarbonUtils, CarbonCanvas, CarbonGDIObjects,
  // LCL
@@ -95,7 +93,7 @@ type
     procedure DisableChangeEvent;
     procedure EnableChangeEvent;
   public
-    function SetText(const S: String): Boolean; override;
+    function SetText(const {%H-}S: String): Boolean; override;
     function GetClientRect(var ARect: TRect): Boolean; override;
     function SetBounds(const ARect: TRect): Boolean; override;
 
@@ -259,7 +257,7 @@ const
  ------------------------------------------------------------------------------}
 function CarbonTabsPrevArrow_Reverse(ANextHandler: EventHandlerCallRef;
   AEvent: EventRef;
-  AWidget: TCarbonWidget): OSStatus; {$IFDEF darwin}mwpascal;{$ENDIF}
+  {%H-}AWidget: TCarbonWidget): OSStatus; {$IFDEF darwin}mwpascal;{$ENDIF}
 var
   Context : CGContextRef;
   layer   : CGLayerRef;
@@ -362,10 +360,10 @@ begin
 
   if FShowTabBar then
   begin
-    FillChar(TabEntry, SizeOf(TabEntry), 0);
+    FillChar(TabEntry{%H-}, SizeOf(TabEntry), 0);
     if OSError(
       CreateTabsControl(GetTopParentWindow, ParamsToCarbonRect(AParams),
-        kControlTabSizeLarge, Direction, 0, TabEntry, Control),
+        kControlTabSizeLarge, Direction, 0, TabEntry, Control{%H-}),
       Self, SCreateWidget, 'CreateTabsControl') then RaiseCreateWidgetError(LCLObject);
   end
   else
@@ -381,7 +379,7 @@ begin
 
   Widget := Control;
 
-  if not GetClientRect(R) then
+  if not GetClientRect(R{%H-}) then
   begin
     DebugLn('TCarbonTabsControl.CreateWidget Error - no content region!');
     Exit;
@@ -419,7 +417,7 @@ begin
       RegisterEventHandler(@CarbonTabsNextArrow_Track),
       1, @TmpSpec, Pointer(Self), nil);
 
-    Err:=Gestalt(gestaltSystemVersion, Ver);
+    Err:=Gestalt(gestaltSystemVersion, Ver{%H-});
     if (Err <> 0) or (Ver >= $1040) then begin
       TmpSpec := MakeEventSpec(kEventClassControl, kEventControlDraw);
       InstallControlEventHandler(FPrevArrow,
@@ -493,7 +491,7 @@ begin
   begin
     if I = FTabIndex then // update tab bounds
     begin
-      GetClientRect(R);
+      GetClientRect(R{%H-});
       OffsetRect(R, -R.Left, -R.Top);
       TCarbonTab(FTabs[I]).SetBounds(R);
     end;
@@ -542,7 +540,7 @@ begin
       begin
         S := TCarbonTab(FTabs[I]).FText;
         DeleteAmpersands(S);
-        if DefaultContext.GetTextExtentPoint(PChar(S), Length(S), Size) then
+        if DefaultContext.GetTextExtentPoint(PChar(S), Length(S), Size{%H-}) then
           TabSizes[I] := Size.cx + 24
         else
           TabSizes[I] := 24;
@@ -769,10 +767,10 @@ begin
   end;
 
   // send changing
-  FillChar(Msg, SizeOf(TLMNotify), 0);
+  FillChar(Msg{%H-}, SizeOf(TLMNotify), 0);
   Msg.Msg := LM_NOTIFY;
 
-  FillChar(NMHdr, SizeOf(TNMHdr), 0);
+  FillChar(NMHdr{%H-}, SizeOf(TNMHdr), 0);
   NMHdr.code := TCN_SELCHANGING;
   NMHdr.hwndFrom := LCLObject.Handle;
   NMHdr.idFrom := PIndex;
@@ -866,7 +864,7 @@ begin
   begin
     UpdateContentBounds;
     
-    GetClientRect(R);
+    GetClientRect(R{%H-});
 
     if FShowTabBar then
     begin
@@ -887,7 +885,7 @@ var
   tabno  : ControlPartCode;
 begin
   Result := -1;
-  if not CarbonHitTest(Widget, AClientPos.X, AClientPos.Y, tabno) then Exit;
+  if not CarbonHitTest(Widget, AClientPos.X, AClientPos.Y, tabno{%H-}) then Exit;
 
   if tabno = kControlNoPart then
   begin
@@ -908,7 +906,7 @@ function TCarbonTabsControl.IsDesignInteractive(const P: TPoint): Boolean;
 var
   R: TRect;
 begin
-  GetClientRect(R);
+  GetClientRect(R{%H-});
   Offsetrect(R, -R.Left, -R.Top);
   
   case FTabPosition of
