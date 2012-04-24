@@ -991,13 +991,13 @@ end;
  ------------------------------------------------------------------------------}
 function CopyFile(const SrcFilename, DestFilename: String; PreserveTime: Boolean): Boolean;
 var
-  SrcFS: TFileStream;
-  DestFS: TFileStream;
+  SrcFS: TFileStreamUTF8;
+  DestFS: TFileStreamUTF8;
 begin
   try
-    SrcFS := TFileStream.Create(UTF8ToSys(SrcFilename), fmOpenRead or fmShareDenyWrite);
+    SrcFS := TFileStreamUTF8.Create(SrcFilename, fmOpenRead or fmShareDenyWrite);
     try
-      DestFS := TFileStream.Create(UTF8ToSys(DestFilename), fmCreate);
+      DestFS := TFileStreamUTF8.Create(DestFilename, fmCreate);
       try
         DestFS.CopyFrom(SrcFS, SrcFS.Size);
       finally
