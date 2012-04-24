@@ -9,6 +9,7 @@
      ./runtests --format=plain --suite=TestCompleteBlockCase
      ./runtests --format=plain --suite=TestCompleteBlockTry
      ./runtests --format=plain --suite=TestCompleteBlockAsm
+     ./runtests --format=plain --suite=TestCompleteBlockIf
 }
 unit TestCompleteBlock;
 
@@ -36,6 +37,7 @@ type
     procedure TestCompleteBlockCase;
     procedure TestCompleteBlockTry;
     procedure TestCompleteBlockAsm;
+    procedure TestCompleteBlockIf;
   end;
 
 implementation
@@ -141,16 +143,6 @@ end;
 
 procedure TTestCodetoolsCompleteBlock.TestCompleteBlockClassStart;
 begin
-  { Not implemented yet:
-  CompleteBlock('procedure a;'+LineEnding
-               +'begin|'+LineEnding
-               +'begin'+LineEnding
-               +'end.',
-                'procedure a;'+LineEnding
-               +'begin|'+LineEnding
-               +'end;'+LineEnding
-               +'begin'+LineEnding
-               +'end.');}
   CompleteBlock('type'+LineEnding
                +'  TTestClass = class(TObject)|',
                 'type'+LineEnding
@@ -190,6 +182,34 @@ begin
                +'  while do begin|'+LineEnding
                +'  end;'+LineEnding
                +'end.');
+  CompleteBlock('begin'+LineEnding
+               +'  begin|'+LineEnding
+               +'    writeln;'+LineEnding
+               +'end.',
+                'begin'+LineEnding
+               +'  begin|'+LineEnding
+               +'    writeln;'+LineEnding
+               +'  end;'+LineEnding
+               +'end.');
+  CompleteBlock('begin'+LineEnding
+               +'  begin|'+LineEnding
+               +'  writeln;'+LineEnding
+               +'end.',
+                'begin'+LineEnding
+               +'  begin|'+LineEnding
+               +'  end;'+LineEnding
+               +'  writeln;'+LineEnding
+               +'end.');
+  { Not implemented yet:
+  CompleteBlock('procedure a;'+LineEnding
+               +'begin|'+LineEnding
+               +'begin'+LineEnding
+               +'end.',
+                'procedure a;'+LineEnding
+               +'begin|'+LineEnding
+               +'end;'+LineEnding
+               +'begin'+LineEnding
+               +'end.');}
 end;
 
 procedure TTestCodetoolsCompleteBlock.TestCompleteBlockRepeat;
@@ -231,6 +251,24 @@ begin
                +'  finally'+LineEnding
                +'  end;'+LineEnding
                +'end.');
+  CompleteBlock('begin'+LineEnding
+               +'  try'+LineEnding
+               +'  finally|'+LineEnding
+               +'end.',
+                'begin'+LineEnding
+               +'  try'+LineEnding
+               +'  finally|'+LineEnding
+               +'  end;'+LineEnding
+               +'end.');
+  CompleteBlock('begin'+LineEnding
+               +'  try'+LineEnding
+               +'  except|'+LineEnding
+               +'end.',
+                'begin'+LineEnding
+               +'  try'+LineEnding
+               +'  except|'+LineEnding
+               +'  end;'+LineEnding
+               +'end.');
 end;
 
 procedure TTestCodetoolsCompleteBlock.TestCompleteBlockAsm;
@@ -241,6 +279,26 @@ begin
                 'begin'+LineEnding
                +'  asm|'+LineEnding
                +'  end;'+LineEnding
+               +'end.');
+end;
+
+procedure TTestCodetoolsCompleteBlock.TestCompleteBlockIf;
+begin
+  CompleteBlock('begin'+LineEnding
+               +'  if then begin|'+LineEnding
+               +'end.',
+                'begin'+LineEnding
+               +'  if then begin|'+LineEnding
+               +'  end;'+LineEnding
+               +'end.');
+  CompleteBlock('begin'+LineEnding
+               +'  if then begin|'+LineEnding
+               +'  else'+LineEnding
+               +'end.',
+                'begin'+LineEnding
+               +'  if then begin|'+LineEnding
+               +'  end'+LineEnding
+               +'  else'+LineEnding
                +'end.');
 end;
 
