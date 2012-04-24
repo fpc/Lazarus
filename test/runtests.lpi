@@ -78,7 +78,7 @@
       <Unit7>
         <Filename Value="lcltests\testpreferredsize.pas"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="testpreferredsize"/>
+        <UnitName Value="TestPreferredSize"/>
       </Unit7>
       <Unit8>
         <Filename Value="codetoolstests\testbasiccodetools.pas"/>
@@ -121,7 +121,7 @@
     <Version Value="11"/>
     <PathDelim Value="\"/>
     <SearchPaths>
-      <OtherUnitFiles Value="bugs;lcltests;codetoolstests"/>
+      <OtherUnitFiles Value="bugs;lcltests;codetoolstests;lazutils"/>
     </SearchPaths>
     <Conditionals Value="if defined(EnableCTRange) then
   CustomOptions += '-dEnableCTRange';"/>
