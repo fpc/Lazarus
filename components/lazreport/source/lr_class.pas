@@ -245,6 +245,8 @@ type
     procedure AfterChange;
     procedure ResetLastValue; virtual;
     function GetFrames: TfrFrameBorders; virtual;
+    procedure ModifyFlag(aFlag: Word; aValue:Boolean);
+    procedure MenuItemCheckFlag(Sender:TObject; aFlag: Word);
   public
     Parent: TfrBand;
     ID: Integer;
@@ -328,6 +330,7 @@ type
     function GetHideDuplicates: Boolean;
     function GetIsLastValueSet: boolean;
     function GetLayout: TTextLayout;
+    function GetWordBreak: Boolean;
     function GetWordWrap: Boolean;
     procedure P1Click(Sender: TObject);
     procedure P2Click(Sender: TObject);
@@ -341,6 +344,7 @@ type
     procedure SetHideDuplicates(const AValue: Boolean);
     procedure SetIsLastValueSet(const AValue: boolean);
     procedure SetLayout(const AValue: TTextLayout);
+    procedure SetWordBreak(AValue: Boolean);
     procedure SetWordWrap(const AValue: Boolean);
   protected
     Streaming: Boolean;
@@ -387,6 +391,7 @@ type
     property Alignment : TAlignment read GetAlignment write SetAlignment;
     property Layout    : TTextLayout read GetLayout write SetLayout;
     property Angle     : Byte read GetAngle write SetAngle;
+    property WordBreak : Boolean read GetWordBreak write SetWordBreak;
     property WordWrap  : Boolean read GetWordWrap write SetWordWrap;
     property AutoSize  : Boolean read GetAutoSize write SetAutoSize;
     property HideDuplicates: Boolean read GetHideDuplicates write SetHideDuplicates;
@@ -2243,22 +2248,8 @@ begin
 end;
 
 procedure TfrView.P1Click(Sender: TObject);
-var
-  i: Integer;
-  t: TfrView;
 begin
-  frDesigner.BeforeChange;
-  with Sender as TMenuItem do
-  begin
-    Checked := not Checked;
-    for i := 0 to frDesigner.Page.Objects.Count-1 do
-    begin
-      t := TfrView(frDesigner.Page.Objects[i]);
-      if t.Selected then
-        SetBit(t.Flags, Checked, flStretched);
-    end;
-  end;
-  frDesigner.AfterChange;
+  MenuItemCheckFlag(Sender, flStretched);
 end;
 
 function TfrView.GetLeft: Double;
@@ -2285,6 +2276,32 @@ end;
 function TfrView.GetFrames: TfrFrameBorders;
 begin
   result :=  fFrames;
+end;
+
+procedure TfrView.ModifyFlag(aFlag: Word; aValue: Boolean);
+begin
+  BeforeChange;
+  SetBit(Flags, AValue, AFlag);
+  AfterChange;
+end;
+
+procedure TfrView.MenuItemCheckFlag(Sender:TObject; aFlag: Word);
+var
+  i: Integer;
+  t: TfrView;
+begin
+  frDesigner.BeforeChange;
+  with Sender as TMenuItem do
+  begin
+    Checked := not Checked;
+    for i := 0 to frDesigner.Page.Objects.Count - 1 do
+    begin
+      t := TfrView(frDesigner.Page.Objects[i]);
+      if t.Selected then
+        SetBit(t.Flags, Checked, aFlag);
+    end;
+  end;
+  frDesigner.AfterChange;
 end;
 
 function TfrView.GetTop: Double;
@@ -2396,11 +2413,7 @@ end;
 procedure TfrView.SetStretched(const AValue: Boolean);
 begin
   if Stretched<>AValue then
-  begin
-    BeforeChange;
-    SetBit(Flags, AValue, flStretched);
-    AfterChange;
-  end;
+    ModifyFlag(flStretched, AValue);
 end;
 
 procedure TfrView.SetTop(const AValue: Double);
@@ -2461,11 +2474,7 @@ end;
 procedure TfrMemoView.SetHideDuplicates(const AValue: Boolean);
 begin
   if HideDuplicates<>AValue then
-  begin
-    BeforeChange;
-    SetBit(Flags, AValue, flHideDuplicates);
-    AfterChange;
-  end;
+    ModifyFlag(flHideDuplicates, AValue);
 end;
 
 procedure TfrMemoView.SetIsLastValueSet(const AValue: boolean);
@@ -2491,14 +2500,16 @@ begin
   end;
 end;
 
+procedure TfrMemoView.SetWordBreak(AValue: Boolean);
+begin
+  if WordBreak<>AValue then
+    ModifyFlag(flWordBreak, AValue);
+end;
+
 procedure TfrMemoView.SetWordWrap(const AValue: Boolean);
 begin
   if WordWrap<>AValue then
-  begin
-    BeforeChange;
-    SetBit(Flags, AValue, flWordWrap);
-    AfterChange;
-  end;
+    ModifyFlag(flWordWrap, AValue);
 end;
 
 procedure TfrMemoView.Assign(From: TfrView);
@@ -3496,7 +3507,7 @@ begin
   m.OnClick := @P3Click;
   m.Enabled := WordWrap;
   if m.Enabled then
-     m.Checked := (Flags and flWordBreak) <> 0;
+     m.Checked := WordBreak;
   Popup.Items.Add(m);
 
   m := TMenuItem.Create(Popup);
@@ -3562,6 +3573,11 @@ begin
   result := TTextLayout((adjust shr 3) and %11);
 end;
 
+function TfrMemoView.GetWordBreak: Boolean;
+begin
+  Result := ((Flags and flWordBreak)<>0);
+end;
+
 function TfrMemoView.GetAlignment: TAlignment;
 begin
   Result:=Classes.TAlignment(Adjust and %11);
@@ -3581,41 +3597,13 @@ begin
 end;
 
 procedure TfrMemoView.P2Click(Sender: TObject);
-var
-  i: Integer;
-  t: TfrView;
 begin
-  frDesigner.BeforeChange;
-  with Sender as TMenuItem do
-  begin
-    Checked := not Checked;
-    for i := 0 to frDesigner.Page.Objects.Count - 1 do
-    begin
-      t :=TfrView(frDesigner.Page.Objects[i]);
-      if t.Selected then
-        SetBit(t.Flags, Checked, flWordWrap);
-    end;
-  end;
-  frDesigner.AfterChange;
+  MenuItemCheckFlag(Sender, flWordWrap);
 end;
 
 procedure TfrMemoView.P3Click(Sender: TObject);
-var
-  i: Integer;
-  t: TfrView;
 begin
-  frDesigner.BeforeChange;
-  with Sender as TMenuItem do
-  begin
-    Checked := not Checked;
-    for i := 0 to frDesigner.Page.Objects.Count - 1 do
-    begin
-      t :=TfrView(frDesigner.Page.Objects[i]);
-      if t.Selected then
-        t.Flags := (t.Flags and not flWordBreak) + Word(Checked) * flWordBreak;
-    end;
-  end;
-  frDesigner.AfterChange;
+  MenuItemCheckFlag(Sender, flWordBreak);
 end;
 
 procedure TfrMemoView.P4Click(Sender: TObject);
@@ -3653,22 +3641,8 @@ begin
 end;
 
 procedure TfrMemoView.P5Click(Sender: TObject);
-var
-  i: Integer;
-  t: TfrView;
 begin
-  frDesigner.BeforeChange;
-  with Sender as TMenuItem do
-  begin
-    Checked := not Checked;
-    for i := 0 to frDesigner.Page.Objects.Count - 1 do
-    begin
-      t :=TfrView(frDesigner.Page.Objects[i]);
-      if t.Selected then
-        t.Flags := (t.Flags and not flAutoSize) + Word(Checked) * flAutoSize;
-    end;
-  end;
-  frDesigner.AfterChange;
+  MenuItemCheckFlag(Sender, flAutoSize);
 end;
 
 procedure TfrMemoView.SetAlignment(const AValue: TAlignment);
@@ -3697,11 +3671,7 @@ end;
 procedure TfrMemoView.SetAutoSize(const AValue: Boolean);
 begin
   if AutoSize<>AValue then
-  begin
-    BeforeChange;
-    SetBit(Flags, AValue, flAutoSize);
-    AfterChange;
-  end;
+    ModifyFlag(flAutoSize, AValue);
 end;
 
 {----------------------------------------------------------------------------}
@@ -4526,22 +4496,8 @@ begin
 end;
 
 procedure TfrPictureView.P1Click(Sender: TObject);
-var
-  i: Integer;
-  t: TfrView;
 begin
-  frDesigner.BeforeChange;
-  with Sender as TMenuItem do
-  begin
-    Checked := not Checked;
-    for i := 0 to frDesigner.Page.Objects.Count - 1 do
-    begin
-      t := TfrView(frDesigner.Page.Objects[i]);
-      if t.Selected then
-        SetBit(t.Flags, Checked, flPictCenter);
-    end;
-  end;
-  frDesigner.AfterChange;
+  MenuItemCheckFlag(Sender, flPictCenter);
 end;
 
 function TfrPictureView.GetKeepAspect: boolean;
@@ -4555,22 +4511,8 @@ begin
 end;
 
 procedure TfrPictureView.P2Click(Sender: TObject);
-var
-  i: Integer;
-  t: TfrView;
 begin
-  frDesigner.BeforeChange;
-  with Sender as TMenuItem do
-  begin
-    Checked := not Checked;
-    for i := 0 to frDesigner.Page.Objects.Count - 1 do
-    begin
-      t :=TfrView(frDesigner.Page.Objects[i]);
-      if t.Selected then
-        SetBit(t.Flags, Checked, flPictRatio);
-    end;
-  end;
-  frDesigner.AfterChange;
+  MenuItemCheckFlag(Sender, flPictRatio);
 end;
 
 function TfrPictureView.GetPictureType: byte;
@@ -4605,21 +4547,13 @@ end;
 procedure TfrPictureView.SetCentered(AValue: boolean);
 begin
   if Centered<>AValue then
-  begin
-    BeforeChange;
-    SetBit(Flags, AValue, flPictCenter);
-    AfterChange;
-  end;
+    ModifyFlag(flPictCenter, AValue);
 end;
 
 procedure TfrPictureView.SetKeepAspect(AValue: boolean);
 begin
   if KeepAspect<>AValue then
-  begin
-    BeforeChange;
-    SetBit(Flags, AValue, flPictRatio);
-    AfterChange;
-  end;
+    ModifyFlag(flPictRatio, AValue);
 end;
 
 function TfrPictureView.StreamToGraphic(M: TMemoryStream): TGraphic;
