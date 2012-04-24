@@ -26,7 +26,7 @@ interface
 
 uses
  // rtl+ftl
-  Types, Classes, SysUtils, Math, Contnrs,
+  Classes, SysUtils,
  // carbon bindings
   MacOSAll,
  // LCL
@@ -117,7 +117,7 @@ type
     procedure PasteFromClip; virtual;
     procedure UndoClip; virtual;
     procedure SetPasswordChar(AChar: Char); virtual; abstract;
-    function FilterKeyPress(SysKey: Boolean; const Char: TUTF8Char): Boolean; override;
+    function FilterKeyPress({%H-}SysKey: Boolean; const Char: TUTF8Char): Boolean; override;
     function GetCaretPos: TPoint; virtual;
   end;
   
@@ -146,7 +146,7 @@ type
     procedure TextDidChange; override;
     procedure DoAction(AControlPart: ControlPartCode); override;
     function SetBounds(const ARect: TRect): Boolean; override;
-    procedure SetPasswordChar(AChar: Char); override;
+    procedure SetPasswordChar({%H-}AChar: Char); override;
     function SetText(const S: String): Boolean; override;
   public
     procedure UpdateControl;
@@ -191,7 +191,7 @@ type
     FBorder: HIViewRef;
     procedure SetScrollBars(const AValue: TScrollStyle);
   protected
-    function GetFrame(Index: Integer): ControlRef; override;
+    function GetFrame({%H-}Index: Integer): ControlRef; override;
     procedure CreateWidget(const AParams: TCreateParams); override;
     procedure DestroyWidget; override;
     procedure GetLineOffset(AIndex: Integer; out AStart, AEnd: TXNOffset);
@@ -202,10 +202,10 @@ type
   public
     procedure Invalidate(Rect: PRect = nil); override;
     procedure BoundsChanged; override;
-    procedure AllowMenuProcess(MenuHotKey: AnsiChar; State: TShiftState; var AllowMenu: Boolean); override;
+    procedure AllowMenuProcess({%H-}MenuHotKey: AnsiChar; {%H-}State: TShiftState; var AllowMenu: Boolean); override;
     procedure TextDidChange; override;
     function GetTextObject: TXNObject;
-    function FilterKeyPress(SysKey: Boolean; const Char: TUTF8Char): Boolean; override;
+    function FilterKeyPress({%H-}SysKey: Boolean; const {%H-}Char: TUTF8Char): Boolean; override;
     procedure ProcessKeyEvent(const msg: TLMKey); override;
     
     function SetTXNControl(Tag: TXNControlTag; const Data: TXNControlData): Boolean;
@@ -281,10 +281,10 @@ var
 begin
   if MaxLength > 0 then
   begin
-    if GetText(S) then
+    if GetText(S{%H-}) then
       if UTF8Length(S) > MaxLength then
       begin
-        R := GetSelStart(SelStart);
+        R := GetSelStart(SelStart{%H-});
         S := UTF8Copy(S, 1, MaxLength);
         if SetText(S) then
           if R then SetSelStart(SelStart);
@@ -358,7 +358,7 @@ begin
   // set char case TODO
   AdaptCharCase;
 
-  FillChar(Msg, SizeOf(Msg), 0);
+  FillChar(Msg{%H-}, SizeOf(Msg), 0);
   Msg.Msg := CM_TEXTCHANGED;
   DeliverMessage(LCLObject, Msg);
 end;
@@ -1075,7 +1075,7 @@ var
   x  : Integer;
 begin
   Result.Y := 0;
-  if not GetSelStart(x) then x := 0;
+  if not GetSelStart(x{%H-}) then x := 0;
   Result.X := x;
 end;
 
@@ -1365,7 +1365,7 @@ begin
   try
     if OSError(
       CreateEditUniCodeTextControl(GetTopParentWindow, ParamsToCarbonRect(AParams),
-        CFString, (Edit.PasswordChar <> #0), nil, Control),
+        CFString, (Edit.PasswordChar <> #0), nil, Control{%H-}),
       Self, SCreateWidget, 'CreateEditUniCodeTextControl') then RaiseCreateWidgetError(LCLObject);
 
     Widget := Control;
@@ -1546,7 +1546,7 @@ var
   R: HIRect;
 begin
   R := ParamsToHIRect(AParams);
-  if OSError(HITextViewCreate(@R, 0, GetCreationOptions, Control),
+  if OSError(HITextViewCreate(@R, 0, GetCreationOptions, Control{%H-}),
     Self, SCreateWidget, 'HITextViewCreate') then RaiseCreateWidgetError(LCLObject);
 
   Widget := Control;
@@ -1608,8 +1608,8 @@ begin
   O := HITextViewGetTXNObject(ControlRef(Widget));
   if TXNDataSize(O) = 0 then Exit;
 
-  if OSError(TXNGetLineMetrics(O, AIndex, W, H), Self, SName, 'TXNGetLineMetrics') then Exit;
-  if OSError(TXNOffsetToHIPoint(O, 0, P), Self, SName, 'TXNOffsetToHIPoint') then Exit;
+  if OSError(TXNGetLineMetrics(O, AIndex, W{%H-}, H{%H-}), Self, SName, 'TXNGetLineMetrics') then Exit;
+  if OSError(TXNOffsetToHIPoint(O, 0, P{%H-}), Self, SName, 'TXNOffsetToHIPoint') then Exit;
   LineTop := P.y + AIndex * Fix2X(H);
   LineBottom := LineTop + Fix2X(H);
 
@@ -1670,7 +1670,7 @@ begin
 
   AdaptCharCase;
 
-  FillChar(Msg, SizeOf(Msg), 0);
+  FillChar(Msg{%H-}, SizeOf(Msg), 0);
   Msg.Msg := CM_TEXTCHANGED;
   DeliverMessage(LCLObject, Msg);
 end;
@@ -1704,7 +1704,7 @@ function TCarbonMemo.GetTXNSelection(var iStart, iEnd: Integer): Boolean;
 var
   ist, ien : TXNOffset;
 begin
-  TXNGetSelection(HITextViewGetTXNObject(ControlRef(Widget)), ist, ien);
+  TXNGetSelection(HITextViewGetTXNObject(ControlRef(Widget)), ist{%H-}, ien{%H-});
   iStart := Integer(ist);
   iEnd  := Integer(ien);
   Result := true;
@@ -1722,7 +1722,7 @@ var
   r : CGRect;
 begin
   inherited BoundsChanged;
-  HIViewGetFrame(FBorder, r);
+  HIViewGetFrame(FBorder, r{%H-});
   if FDrawBorder then
   begin
     //todo: use themed metrics for TextFrame, instead of hard-coded values!
@@ -1767,7 +1767,7 @@ begin
         SizeOf(CGContextRef), nil, @ctx),
       'CarbonMemoBorder_Draw', SGetEvent, 'kEventParamCGContextRef') then Exit;
     if not Assigned(ctx) then Exit;
-    HIViewGetBounds(TCarbonMemo(AWidget).FBorder, cg);
+    HIViewGetBounds(TCarbonMemo(AWidget).FBorder, cg{%H-});
     cg.origin.x:=0.5;
     cg.origin.y:=0.5;
     cg.size.width:=cg.size.width-2;
@@ -1786,7 +1786,7 @@ begin
         clips[1].size.height:=ScrollSz+1;
         CGContextClipToRects(ctx, @clips, 2);
       end;
-      FillChar(frm, sizeof(frm), 0);
+      FillChar(frm{%H-}, sizeof(frm), 0);
       frm.kind:=kHIThemeFrameTextFieldSquare;
       frm.state:=kThemeStateActive;
       HIThemeDrawFrame( cg, frm, ctx, 0);
@@ -1808,32 +1808,16 @@ var
   lInputAccessibleObject: TLazAccessibleObject;
   lInputPasStr: string;
   lInputMutableArray: CFMutableArrayRef;
-  lInputHIPoint: HIPoint;
-  lInputPoint: TPoint;
   // Outputs
   lOutputStr: CFStringRef;
-  lOutputBool: Boolean;
   lOutputInt: SInt64;
   lOutputNum: CFNumberRef;
-  lOutputValue: AXValueRef;
-  lOutputPoint: CGPoint;
-  lOutputSize: CGSize;
   //
   lLazControl: TControl;
   lLazMemo: TCustomMemo = nil;
-  lLazAXRole: TLazAccessibilityRole;
-  lCurAccessibleObject: TLazAccessibleObject;
-  Command: HICommandExtended;
+  {%H-}lLazAXRole: TLazAccessibilityRole;
   EventKind: UInt32;
   // array
-  lArray: CFMutableArrayRef;
-  lElement, lElement2: AXUIElementRef;
-  lCount: Integer;
-  i: Integer;
-  lAccessibleObj: TLazAccessibleObject;
-  lHandle: PtrInt;
-  lSelection: TLazAccessibleObject;
-const SName = 'CarbonMemoBorder_Accessibility';
 begin
   {$IF defined(VerboseControlEvent) or defined(VerboseAccessibilityEvent)}
     DebugLn('CarbonMemoBorder_Accessibility LCLObject=', DbgSName(AWidget.LCLObject));
@@ -1850,9 +1834,9 @@ begin
     typeCFTypeRef, nil, SizeOf(AXUIElementRef), nil, @lInputAXObject);
 
   // Check if this is an event to a child accessible object
-  AXUIElementGetIdentifier(lInputAXObject, lInputID64);
+  AXUIElementGetIdentifier(lInputAXObject, lInputID64{%H-});
   lInputAccessibleObject := lLazControl.GetAccessibleObject();
-  lInputMemoAXObject := AXUIElementRef(lInputAccessibleObject.Handle);
+  lInputMemoAXObject := {%H-}AXUIElementRef(lInputAccessibleObject.Handle);
   lLazAXRole := lInputAccessibleObject.AccessibleRole;
 
   EventKind := GetEventKind(AEvent);
@@ -2032,7 +2016,7 @@ var
 begin
   if Rect = nil then
   begin
-    GetClientRect(R);
+    GetClientRect(R{%H-});
     Rect := @R;
   end;
   inherited Invalidate(Rect);
@@ -2047,14 +2031,14 @@ function TCarbonMemo.GetSelStart(var ASelStart: Integer): Boolean;
 var
   iEnd    : Integer;
 begin
-  Result := GetTXNSelection(ASelStart, iEnd);
+  Result := GetTXNSelection(ASelStart, iEnd{%H-});
 end;
 
 function TCarbonMemo.GetSelLength(var ASelLength: Integer): Boolean;
 var
   iStart : integer;
 begin
-  Result := GetTXNSelection(iStart, ASelLength);
+  Result := GetTXNSelection(iStart{%H-}, ASelLength);
   dec(ASelLength, iStart);
 end;
 
@@ -2063,7 +2047,7 @@ var
   iStart : integer;
   iEnd   : integer;
 begin
-  Result := GetTXNSelection(iStart, iEnd);
+  Result := GetTXNSelection(iStart{%H-}, iEnd{%H-});
   if not Result then
   begin
     iStart := 0;
@@ -2078,7 +2062,7 @@ var
   iStart : integer;
   iEnd   : integer;
 begin
-  Result := GetTXNSelection(iStart, iEnd);
+  Result := GetTXNSelection(iStart{%H-},{%H-} iEnd);
   if not Result then
   begin
     iStart := 0;
@@ -2161,7 +2145,7 @@ begin
   Attrs[2].size := kTXNQDFontSizeAttributeSize;
   Attrs[2].data.dataValue := AFont.Size;
 
-  ATSUCreateAndCopyStyle(TCarbonFont(AFont.Reference.Handle).Style, SavedStyle);
+  ATSUCreateAndCopyStyle(TCarbonFont(AFont.Reference.Handle).Style, SavedStyle{%H-});
   try
     // set font color
     if AFont.Color = clDefault then
@@ -2261,7 +2245,7 @@ var
 begin
   Result:=inherited SetBounds(ARect);
   BoundsChanged;
-  GetBounds(r);
+  GetBounds(r{%H-});
 end;
 
 {------------------------------------------------------------------------------
@@ -2276,7 +2260,7 @@ var
 begin
   Result := 0;
   O := HITextViewGetTXNObject(ControlRef(Widget));
-  if not OSError(TXNGetLineCount(O, C),
+  if not OSError(TXNGetLineCount(O, C{%H-}),
       Self, 'GetLineCount', 'TXNGetLineCount') then
   begin
     Result := C;
@@ -2298,7 +2282,7 @@ begin
   Result := '';
 
   GetLineOffset(AIndex, AStart, AEnd);
-  if OSError(TXNGetData(HITextViewGetTXNObject(ControlRef(Widget)), AStart, AEnd, Data), Self, 'GetLine', 'TXNGetData') then Exit;
+  if OSError(TXNGetData(HITextViewGetTXNObject(ControlRef(Widget)), AStart, AEnd, Data{%H-}), Self, 'GetLine', 'TXNGetData') then Exit;
   
   W := PWideChar(Data^);
 
@@ -2380,17 +2364,17 @@ begin
   if not Assigned(obj) then Exit;
 
   {looking for the Y-pos}
-  TXNGetHIRect(obj, kTXNTextRectKey, r);
-  TXNGetSelection(obj, ofs, ofs2);
-  TXNOffsetToHIPoint(obj, ofs, crtpnt);
+  TXNGetHIRect(obj, kTXNTextRectKey, r{%H-});
+  TXNGetSelection(obj, ofs{%H-}, ofs2{%H-});
+  TXNOffsetToHIPoint(obj, ofs, crtpnt{%H-});
   yofs := Round(crtpnt.y);
 
-  TXNGetLineCount(obj, cnt);
+  TXNGetLineCount(obj, cnt{%H-});
   i := 0;
   ly := Round(r.origin.y);
-  while (i < cnt) and (ly < yofs) do
+  while (i{%H-}<cnt) and (ly < yofs) do
   begin
-    TXNGetLineMetrics(obj, i, fw, fh);
+    TXNGetLineMetrics(obj, i, fw{%H-}, fh{%H-});
     inc(i);
     inc(ly, Fix2Long(fh));
   end;

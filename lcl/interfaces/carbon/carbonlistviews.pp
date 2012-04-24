@@ -916,7 +916,7 @@ begin
   ShowVert := (FScrollBars in [ssVertical, ssBoth]) or
     ((FScrollBars in [ssAutoVertical, ssAutoBoth]) and Vert);
 
-  OSError(GetDataBrowserScrollPosition(Widget, SY{%H-{%H-}}, SX), // !!! top, left
+  OSError(GetDataBrowserScrollPosition(Widget, SY{%H-}, SX{%H-}), // !!! top, left
     Self, SName, 'GetDataBrowserScrollPosition');
 
   OSError(SetDataBrowserHasScrollBars(Widget, ShowHorz, ShowVert),

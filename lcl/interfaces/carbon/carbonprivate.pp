@@ -56,12 +56,12 @@ type
     FCarbonWidgetFlag: TCarbonWidgetFlag;
   protected
     procedure RegisterEvents; override;
-    procedure CreateWidget(const AParams: TCreateParams); override;
+    procedure CreateWidget(const {%H-}AParams: TCreateParams); override;
     procedure DestroyWidget; override;
     procedure AddControlPart(const AControl: ControlRef);
     function GetContent: ControlRef; override;
     function GetControlContentRect(var ARect: TRect): Boolean;
-    function GetFrame(Index: Integer): ControlRef; virtual;
+    function GetFrame({%H-}Index: Integer): ControlRef; virtual;
     function GetFrameBounds(var ARect: TRect): Boolean; virtual;
     function GetForceEmbedInScrollView: Boolean; virtual;
     function UpdateContentBounds: Boolean;
@@ -71,13 +71,13 @@ type
   public
     class function GetFrameCount: Integer; virtual;
     class function GetValidEvents: TCarbonControlEvents; virtual;
-    procedure Hit(AControlPart: ControlPartCode); virtual;
+    procedure Hit({%H-}AControlPart: ControlPartCode); virtual;
     procedure Draw; virtual;
     procedure ValueChanged; virtual;
     procedure IndicatorMoved; virtual;
-    procedure DoAction(AControlPart: ControlPartCode); virtual;
+    procedure DoAction({%H-}AControlPart: ControlPartCode); virtual;
   public
-    procedure AllowMenuProcess(MenuHotKey: AnsiChar; State: TShiftState; var AllowCommandProcess: Boolean); virtual;
+    procedure AllowMenuProcess({%H-}MenuHotKey: AnsiChar; {%H-}State: TShiftState; var AllowCommandProcess: Boolean); virtual;
   public
     procedure AddToWidget(AParent: TCarbonWidget); override;
     function GetTopParentWindow: WindowRef; override;
@@ -100,7 +100,7 @@ type
     procedure SetZOrder(AOrder: HIViewZOrderOp; ARefWidget: TCarbonWidget); override;
     procedure ShowHide(AVisible: Boolean); override;
     
-    function GetText(var S: String): Boolean; override;
+    function GetText(var {%H-}S: String): Boolean; override;
     function SetText(const S: String): Boolean; override;
     
     function Update: Boolean; override;
@@ -140,7 +140,7 @@ type
     procedure RegisterEvents; override;
     procedure CreateWidget(const AParams: TCreateParams); override;
     procedure DestroyWidget; override;
-    function GetFrame(Index: Integer): ControlRef; override;
+    function GetFrame({%H-}Index: Integer): ControlRef; override;
     function GetForceEmbedInScrollView: Boolean; override;
     procedure SendScrollUpdate;
     procedure UpdateLCLClientRect; override;
@@ -152,8 +152,8 @@ type
     procedure Invalidate(Rect:PRect=nil);override;
   public
     procedure AddToWidget(AParent: TCarbonWidget); override;
-    procedure SetColor(const AColor: TColor); override;
-    procedure SetFont(const AFont: TFont); override;
+    procedure SetColor(const {%H-}AColor: TColor); override;
+    procedure SetFont(const {%H-}AFont: TFont); override;
     procedure GetScrollInfo(SBStyle: Integer; var ScrollInfo: TScrollInfo); override;
     function GetScrollbarVisible(SBStyle: Integer): Boolean; override;
     function SetScrollInfo(SBStyle: Integer; const ScrollInfo: TScrollInfo): Integer; override;
@@ -223,11 +223,11 @@ type
     procedure SetZOrder(AOrder: HIViewZOrderOp; ARefWidget: TCarbonWidget); override;
     procedure ShowHide(AVisible: Boolean); override;
 
-    function GetText(var S: String): Boolean; override;
+    function GetText(var {%H-}S: String): Boolean; override;
     function SetText(const S: String): Boolean; override;
 
     function Update: Boolean; override;
-    function WidgetAtPos(const P: TPoint): ControlRef; override;
+    function WidgetAtPos(const {%H-}P: TPoint): ControlRef; override;
   public
     function Activate: Boolean; virtual;
 
@@ -310,9 +310,9 @@ type
     procedure Draw; override;
   public
     function GetPreferredSize: TPoint; override;
-    procedure SetColor(const AColor: TColor); override;
-    procedure SetFont(const AFont: TFont); override;
-    procedure UpdatePanel(AIndex: Integer = -1);
+    procedure SetColor(const {%H-}AColor: TColor); override;
+    procedure SetFont(const {%H-}AFont: TFont); override;
+    procedure UpdatePanel({%H-}AIndex: Integer = -1);
   end;
 
   { TCarbonStaticText }
@@ -431,7 +431,7 @@ begin
     CreateNewWindow(kHelpWindowClass,
       kWindowCompositingAttribute or
       kWindowHideOnSuspendAttribute or kWindowStandardHandlerAttribute,
-      ParamsToCarbonRect(AParams), AWindow),
+      ParamsToCarbonRect(AParams), AWindow{%H-}),
     Self, SCreateWidget, 'CreateNewWindow') then RaiseCreateWidgetError(LCLObject);
 
   fWindowRef := AWindow;
@@ -558,7 +558,7 @@ begin
   inherited;
   
   // create custom view above all others
-  GetClientRect(R);
+  GetClientRect(R{%H-});
   OffsetRect(R, -R.Left, -R.Top);
   FDesignControl := CreateCustomHIView(RectToCGRect(R));
   
@@ -608,7 +608,7 @@ var
 begin
   inherited;
 
-  GetClientRect(R);
+  GetClientRect(R{%H-});
   OffsetRect(R, -R.Left, -R.Top);
   OSError(HIViewSetFrame(FDesignControl, RectToCGRect(R)),
     Self, SSetBounds, SViewFrame);
@@ -659,7 +659,7 @@ end;
   Name: CarbonScrollable_GetInfo
   Handles scrollable get info
  ------------------------------------------------------------------------------}
-function CarbonScrollable_GetInfo(ANextHandler: EventHandlerCallRef;
+function CarbonScrollable_GetInfo({%H-}ANextHandler: EventHandlerCallRef;
   AEvent: EventRef;
   AWidget: TCarbonWidget): OSStatus; {$IFDEF darwin}mwpascal;{$ENDIF}
 var
@@ -690,7 +690,7 @@ end;
   Name: CarbonScrollable_ScrollTo
   Handles scrollable get info
  ------------------------------------------------------------------------------}
-function CarbonScrollable_ScrollTo(ANextHandler: EventHandlerCallRef;
+function CarbonScrollable_ScrollTo({%H-}ANextHandler: EventHandlerCallRef;
   AEvent: EventRef;
   AWidget: TCarbonWidget): OSStatus; {$IFDEF darwin}mwpascal;{$ENDIF}
 var
@@ -921,7 +921,7 @@ begin
     FScrollOrigin.Y := Round(ANewOrigin.Y / FMulY);
   
   // send vertical scroll
-  FillChar(ScrollMsg, SizeOf(TLMScroll), 0);
+  FillChar(ScrollMsg{%H-}, SizeOf(TLMScroll), 0);
   with ScrollMsg do
   begin
     Msg := LM_VSCROLL;
@@ -1007,8 +1007,6 @@ end;
  ------------------------------------------------------------------------------}
 function TCarbonCustomControl.SetScrollInfo(SBStyle: Integer;
   const ScrollInfo: TScrollInfo): Integer;
-const
-  SName = 'SetScrollInfo';
 begin
   {$IFDEF VerboseScroll}
     DebugLn('TCarbonCustomControl.SetScrollInfo ' + LCLObject.Name +
@@ -1065,8 +1063,6 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCarbonCustomControl.GetScrollInfo(SBStyle: Integer;
   var ScrollInfo: TScrollInfo);
-const
-  SName = 'GetScrollInfo';
 var
   AImageSize, AViewSize, ALineSize: HISize;
   AOrigin: HIPoint;
@@ -1207,7 +1203,7 @@ begin
       if Assigned(Context) then
       begin
         c := ColorToRGB(ABox.FBoxColor);
-        ABox.GetBounds(b);
+        ABox.GetBounds(b{%H-});
         CGContextSaveGState(Context);
         CGContextSetRGBFillColor(Context, (c and $FF) * rgbkoef, ((c shr 8) and $FF)*rgbkoef,
           ((c shr 16) and $FF)*rgbkoef, 1);
@@ -1251,12 +1247,12 @@ var
 begin
   if OSError(
     CreateGroupBoxControl(GetTopParentWindow, ParamsToCarbonRect(AParams),
-      nil, not (LCLObject.Parent is TCustomGroupBox), Control),
+      nil, not (LCLObject.Parent is TCustomGroupBox), Control{%H-}),
     Self, SCreateWidget, 'CreateGroupBoxControl') then RaiseCreateWidgetError(LCLObject);
 
   Widget := Control;
   
-  if not GetClientRect(R) then
+  if not GetClientRect(R{%H-}) then
   begin
     DebugLn('TCarbonGroupBox.CreateWidget Error - no content region!');
     Exit;
@@ -1305,7 +1301,7 @@ var
   BoundsRect: TRect;
 begin
   Result := inherited;
-  if GetBounds(BoundsRect) and
+  if GetBounds(BoundsRect{%H-}) and
      ((BoundsRect.Right - BoundsRect.Left) = Result.X) and
      ((BoundsRect.Bottom - BoundsRect.Top) = Result.Y) then
   begin
@@ -1314,7 +1310,7 @@ begin
     Result.Y := DefaultHeight;
   end
   else
-  if GetClientRect(ContentRect) then
+  if GetClientRect(ContentRect{%H-}) then
   begin
     Dec(Result.X, ContentRect.Right - ContentRect.Left);
     Dec(Result.Y, ContentRect.Bottom - ContentRect.Top);
@@ -1385,7 +1381,7 @@ const
     (kHIThemeTextHorizontalFlushLeft,kHIThemeTextHorizontalFlushRight,kHIThemeTextHorizontalFlushCenter);
 begin
   cr:=RectToCGRect(r);
-  FillChar(info, sizeof(info), 0);
+  FillChar(info{%H-}, sizeof(info), 0);
   info.kind:=kThemeListHeaderButton;
   info.state:=kThemeStateActive;
   HIThemeDrawButton( cr, info, ctx, 0, nil);
@@ -1398,7 +1394,7 @@ begin
     CreateCFString(data.Text, cf);
     if Assigned(cf) then
     begin
-      FillChar(txtinfo, sizeof(txtinfo), 0);
+      FillChar(txtinfo{%H-}, sizeof(txtinfo), 0);
       txtinfo.version:=1;
       //txtinfo.fontID:=kThemeMiniSystemFont;
       txtinfo.horizontalFlushness:=txtHorzFlush[data.align];
@@ -1522,7 +1518,7 @@ begin
   end;
   {$else}
   StatusBar := LCLObject as TStatusBar;
-  GetClientRect(r);
+  GetClientRect(r{%H-});
   if StatusBar.SimplePanel then
   begin
     SetLength(items, 1);
