@@ -1018,7 +1018,7 @@ end;
   
   This function throws exceptions in case of errors and may return a nil pointer.
  ------------------------------------------------------------------------------}
-function TCarbonWidgetSet.GetImagePixelData(AImage: CGImageRef; var bitmapByteCount: PtrUInt): Pointer;
+function TCarbonWidgetSet.GetImagePixelData(AImage: CGImageRef; out bitmapByteCount: PtrUInt): Pointer;
 var
   bitmapData: Pointer;
   context: CGContextRef = nil;

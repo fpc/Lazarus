@@ -107,7 +107,7 @@ type
     function GetTopParentWindow: WindowRef; virtual; abstract;
     procedure Invalidate(Rect: PRect = nil); virtual; abstract;
     procedure InvalidateRgn(AShape: HISHapeRef);
-    function IsDesignInteractive(const P: TPoint): Boolean; virtual;
+    function IsDesignInteractive(const {%H-}P: TPoint): Boolean; virtual;
     function IsEnabled: Boolean; virtual; abstract;
     function IsVisible: Boolean; virtual; abstract;
     function Enable(AEnable: Boolean): Boolean; virtual; abstract;

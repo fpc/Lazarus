@@ -37,7 +37,7 @@ interface
 
 uses
   // rtl+ftl
-  Types, Classes, SysUtils, Math, FPCAdds,
+  Types, Classes, SysUtils, Math,
   // carbon bindings
   MacOSAll,
   // Cocoa bindings
@@ -51,9 +51,7 @@ uses
   {$ifdef DebugBitmaps}
     CarbonDebug,
   {$endif}
-  glgrab, agl,
-  // LCL
-  LCLStrConsts, LMessages, LCLMessageGlue, LCLProc, LCLIntf, LCLType, IntfGraphics,
+  glgrab, LMessages, LCLMessageGlue, LCLProc, LCLIntf, LCLType, IntfGraphics,
   GraphType, GraphMath, Graphics, Controls, Forms, Dialogs, Menus, Maps, Themes;
 
 type
@@ -126,7 +124,7 @@ type
     function RawImage_DescriptionFromCarbonBitmap(out ADesc: TRawImageDescription; ABitmap: TCarbonBitmap): Boolean;
     function RawImage_FromCarbonBitmap(out ARawImage: TRawImage; ABitmap, AMask: TCarbonBitmap; ARect: PRect = nil): Boolean;
     function RawImage_DescriptionToBitmapType(ADesc: TRawImageDescription; out bmpType: TCarbonBitmapType): Boolean;
-    function GetImagePixelData(AImage: CGImageRef; var bitmapByteCount: PtrUInt): Pointer;
+    function GetImagePixelData(AImage: CGImageRef; out bitmapByteCount: PtrUInt): Pointer;
 
     // the winapi compatibility methods
     {$I carbonwinapih.inc}
@@ -156,15 +154,14 @@ var
 implementation
 
 uses
-  CarbonWSFactory,
+  {%H-}CarbonWSFactory,
   { these can/should go up }
-  CarbonDef, CarbonPrivate, CarbonMenus, CarbonButtons, CarbonBars, CarbonEdits,
-  CarbonListViews, CarbonTabs,
-  CarbonThemes, CarbonCanvas, CarbonStrings, CarbonClipboard, CarbonCaret,
+  CarbonDef, CarbonPrivate, CarbonMenus, {%H-}CarbonButtons, {%H-}CarbonBars, {%H-}CarbonEdits,
+  CarbonListViews, {%H-}CarbonTabs,
+  CarbonThemes, CarbonCanvas, {%H-}CarbonStrings, CarbonClipboard, CarbonCaret,
   CarbonProc, CarbonDbgConsts, CarbonUtils,
   
-  Buttons, StdCtrls, PairSplitter, ComCtrls, Calendar, Arrow,
-  Spin, ExtCtrls, FileCtrl, LResources;
+  Buttons, ExtCtrls, LResources;
 
 var
   FirstAppEventLock: MPEventID = nil;

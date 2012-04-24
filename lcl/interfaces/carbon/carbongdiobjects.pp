@@ -975,7 +975,7 @@ begin
 end;
 
 
-function ATSUCallback(iCurrentOperation: ATSULayoutOperationSelector; iLineRef: ATSULineRef; iRefCon: UInt32; iOperationCallbackParameterPtr: UnivPtr;
+function ATSUCallback({%H-}iCurrentOperation: ATSULayoutOperationSelector; iLineRef: ATSULineRef; iRefCon: UInt32; {%H-}iOperationCallbackParameterPtr: UnivPtr;
   var oCallbackStatus: ATSULayoutOperationCallbackStatus ): OSStatus; {$ifdef DARWIN}mwpascal;{$endif}
 var
   Buffer  : TCarbonTextLayoutBuffer;
@@ -985,8 +985,10 @@ begin
   Buffer := TCarbonTextLayoutBuffer(iRefCon);
   oCallbackStatus:=kATSULayoutOperationCallbackStatusHandled;
 
-  if Assigned(Buffer) then
+  if Assigned(Buffer) then begin
+    Handled:=false;
     Buffer.DoJustify(iLineRef, Handled);
+  end;
 end;
 
 procedure TCarbonTextLayoutBuffer.DoJustify(iLineRef: ATSULineRef; var Handled: Boolean);
@@ -1213,6 +1215,7 @@ const
 begin
   inherited Create(False);
 
+  Result:=nil;
   OSError(ATSUCreateStyle(Result), Self, SName, SCreateStyle);
 
   ID := FindCarbonFontID(AFaceName);
@@ -1602,7 +1605,7 @@ var
 begin
   if AHatch in [HS_HORIZONTAL..HS_DIAGCROSS] then
   begin
-    FillChar(ACallBacks, SizeOf(ACallBacks), 0);
+    FillChar(ACallBacks{%H-}, SizeOf(ACallBacks), 0);
     ACallBacks.drawPattern := @DrawBitmapPattern;
     FBitmap := TCarbonBitmap.Create(8, 8, 1, 1, cbaByte, cbtMask, @HATCH_DATA[AHatch]);
     FColored := False;
@@ -1619,7 +1622,7 @@ var
 begin
   AWidth := ABitmap.Width;
   AHeight := ABitmap.Height;
-  FillChar(ACallBacks, SizeOf(ACallBacks), 0);
+  FillChar(ACallBacks{%H-}, SizeOf(ACallBacks), 0);
   ACallBacks.drawPattern := @DrawBitmapPattern;
   FBitmap := TCarbonBitmap.Create(ABitmap);
   FColored := True;
@@ -2414,7 +2417,7 @@ begin
   Create;
   FDefault := ADefault;
   FThemeCursor := AThemeCursor;
-  if (AThemeCursor >= Low(kThemeCursorTypeMap)) and
+  if (AThemeCursor {%H-}>= Low(kThemeCursorTypeMap)) and
      (AThemeCursor <= High(kThemeCursorTypeMap)) then
     FCursorType := kThemeCursorTypeMap[FThemeCursor] else
     FCursorType := cctTheme;
@@ -2568,7 +2571,7 @@ begin
   a:=255;
 end;
 
-procedure SetRGBA24(Bitmap: TCarbonBitmap; X,Y: Integer; r,g,b,a: Byte; const pos: TColorPos);
+procedure SetRGBA24(Bitmap: TCarbonBitmap; X,Y: Integer; r,g,b,{%H-}a: Byte; const pos: TColorPos);
 var
   line  : PByteArray;
 begin
