@@ -137,7 +137,7 @@ procedure UpdateControlLazImageAndCanvas(var AImage: TLazIntfImage;
   var ACanvas: TLazCanvas; AWidth, AHeight: Integer; AFormat: TLazCanvasImageFormat;
   AData: Pointer = nil; AForceUpdate: Boolean = False;
   AFreeImageOnUpdate: Boolean = True; ADataOwner: Boolean = True);
-procedure DrawFormBackground(var AImage: TLazIntfImage; var ACanvas: TLazCanvas);
+procedure DrawFormBackground(var AImage: TLazIntfImage; var ACanvas: TLazCanvas; AForm: TCustomForm);
 procedure RenderChildWinControls(var AImage: TLazIntfImage;
   var ACanvas: TLazCanvas; ACDControlsList: TFPList; ACDForm: TCDForm);
 function RenderWinControl(var AImage: TLazIntfImage;
@@ -414,12 +414,19 @@ begin
   {$ENDIF}
 end;
 
-procedure DrawFormBackground(var AImage: TLazIntfImage; var ACanvas: TLazCanvas);
+procedure DrawFormBackground(var AImage: TLazIntfImage; var ACanvas: TLazCanvas; AForm: TCustomForm);
+var
+  lColor: TColor;
 begin
   ACanvas.SaveState;
   ACanvas.ResetCanvasState;
-  ACanvas.Brush.FPColor := TColorToFPColor(ColorToRGB(clForm));
-  ACanvas.Pen.FPColor := TColorToFPColor(ColorToRGB(clForm));
+  lColor := AForm.Color;
+  if (lColor <> clForm) and (lColor <> clDefault) then
+    lColor := ColorToRGB(lColor)
+  else
+    lColor := ColorToRGB(clForm);
+  ACanvas.Brush.FPColor := TColorToFPColor(lColor);
+  ACanvas.Pen.FPColor := TColorToFPColor(lColor);
   ACanvas.Rectangle(0, 0, AImage.Width, AImage.Height);
   ACanvas.RestoreState(-1);
 end;
@@ -589,10 +596,10 @@ begin
   begin
     if not CDWidgetset.DisableFormBackgroundDrawingProc(AForm) then
       if lDrawControl then
-        DrawFormBackground(AImage, ACanvas);
+        DrawFormBackground(AImage, ACanvas, AForm);
   end
   else if lDrawControl then
-    DrawFormBackground(AImage, ACanvas);
+    DrawFormBackground(AImage, ACanvas, AForm);
 
   // Consider the form scrolling
   // ToDo: Figure out why this "div 2" factor is necessary for drawing non-windows controls and remove this factor
