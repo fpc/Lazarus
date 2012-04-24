@@ -1,4 +1,3 @@
-{ $Id$}
 {
  *****************************************************************************
  *                              CarbonWSCheckLst.pp                          * 
@@ -35,7 +34,7 @@ uses
   //widgetset
   WSCheckLst, WSLCLClasses,
   //LCL Carbon
-  CarbonDef, CarbonListViews, CarbonStrings;
+  CarbonDef, CarbonListViews;
 
 type
 

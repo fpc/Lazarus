@@ -1,5 +1,4 @@
-{ $Id$
-                  --------------------------------------------
+{                 --------------------------------------------
                   carbonedits.pp  -  Carbon edit-like controls
                   --------------------------------------------
 
@@ -34,7 +33,7 @@ uses
   LMessages, LCLMessageGlue, LCLProc, LCLType, Graphics, Controls, StdCtrls, ExtCtrls,
   Spin,
  // widgetset
-  WSControls, WSLCLClasses, WSProc,
+  WSLCLClasses,
  // LCL Carbon
   CarbonDef, CarbonPrivate, CarbonGDIObjects,
   CarbonProc, CarbonDbgConsts, CarbonUtils;

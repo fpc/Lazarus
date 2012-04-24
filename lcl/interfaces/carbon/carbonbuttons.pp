@@ -1,5 +1,4 @@
-{ $Id$
-                  -------------------------------------------
+{                 -------------------------------------------
                   CarbonButtons.pp  -  Carbon buttons classes
                   -------------------------------------------
 
@@ -27,12 +26,12 @@ interface
 
 uses
  // rtl+ftl
-  Types, Classes, SysUtils, Math, Contnrs,
+  Classes, SysUtils,
  // carbon bindings
   MacOSAll,
  // LCL Carbon
-  CarbonDef, CarbonPrivate, CarbonInt, CarbonProc,
-  CarbonDbgConsts, CarbonUtils, CarbonStrings, CarbonCanvas, CarbonGDIObjects,
+  CarbonPrivate, CarbonProc,
+  CarbonDbgConsts,
  // LCL
   LCLMessageGlue, LCLType, Graphics;
 
@@ -49,7 +48,7 @@ type
   public
     UpdateValue: TUpdateValueEvent;
     class function GetValidEvents: TCarbonControlEvents; override;
-    procedure Hit(AControlPart: ControlPartCode); override;
+    procedure Hit({%H-}AControlPart: ControlPartCode); override;
     procedure ValueChanged; override;
     function RetrieveState: Integer; virtual;
     procedure SetState(AState: Integer; NotifyChangeState: Boolean); virtual;
@@ -86,7 +85,7 @@ type
   TCarbonCustomButton = class(TCarbonControl)
   public
     class function GetValidEvents: TCarbonControlEvents; override;
-    procedure Hit(AControlPart: ControlPartCode); override;
+    procedure Hit({%H-}AControlPart: ControlPartCode); override;
   public
     procedure SetDefault(ADefault: Boolean); virtual;
   end;
@@ -115,7 +114,7 @@ type
     procedure SetFont(const AFont: TFont); override;
     procedure SetGlyph(Glyph: CGImageRef); virtual;
     procedure SetLayout(APlacement: ControlButtonTextPlacement; ATextAlign: ControlButtonTextAlignment); virtual;
-    procedure SetDefault(ADefault: Boolean); override;
+    procedure SetDefault({%H-}ADefault: Boolean); override;
     function GetBounds(var ARect:TRect):Boolean;override;
     function SetBounds(const ARect: TRect): Boolean; override;
   end;
@@ -209,7 +208,7 @@ begin
 
   if OSError(
     CreateCheckBoxControl(GetTopParentWindow, ParamsToCarbonRect(AParams),
-      nil, Value, True, Control),
+      nil, Value, True, Control{%H-}),
     Self, SCreateWidget, 'CreateCheckBoxControl') then RaiseCreateWidgetError(LCLObject);
 
   Widget := Control;
@@ -248,7 +247,7 @@ begin
   if OSError(
     CreateBevelButtonControl(GetTopParentWindow, ParamsToCarbonRect(AParams),
       nil, kControlBevelButtonNormalBevel,
-      kControlBehaviorToggles, nil, 0, 0, 0, Control),
+      kControlBehaviorToggles, nil, 0, 0, 0, Control{%H-}),
     Self, SCreateWidget, SCreateBevelButton) then RaiseCreateWidgetError(LCLObject);
 
   Widget := Control;
@@ -275,7 +274,7 @@ begin
   Value := 0;
   if OSError(
     CreateRadioButtonControl(GetTopParentWindow, ParamsToCarbonRect(AParams),
-      nil, Value, True, Control),
+      nil, Value, True, Control{%H-}),
     Self, SCreateWidget, 'CreateRadioButtonControl') then RaiseCreateWidgetError(LCLObject);
 
   Widget := Control;
@@ -380,7 +379,7 @@ begin
   // create the button at bounds
   if OSError(
     CreatePushButtonControl(GetTopParentWindow, ParamsToCarbonRect(AParams),
-      nil, Control),
+      nil, Control{%H-}),
     Self, SCreateWidget, 'CreatePushButtonControl') then RaiseCreateWidgetError(LCLObject);
 
   Widget := Control;
@@ -459,7 +458,7 @@ begin
   if OSError(
     CreateBevelButtonControl(GetTopParentWindow, ParamsToCarbonRect(AParams),
       nil, kControlBevelButtonLargeBevel, kControlBehaviorPushbutton,
-      nil, 0, 0, 0, Control),
+      nil, 0, 0, 0, Control{%H-}),
     Self, SCreateWidget, SCreateBevelButton) then RaiseCreateWidgetError(LCLObject);
 
   Widget := Control;
@@ -478,12 +477,12 @@ var
   FontStyle   : ControlFontStyleRec;
   themeid     : ThemeFontID;
 begin
-  GetBounds(bnds);
-  GetBevelButtonStyle(bnds, ButtonKind, themeid);
+  GetBounds(bnds{%H-});
+  GetBevelButtonStyle(bnds, ButtonKind{%H-}, themeid{%H-});
 
   if not CustomFont then
   begin
-    FillChar(FontStyle, sizeof(FontStyle), 0);
+    FillChar(FontStyle{%H-}, sizeof(FontStyle), 0);
     FontStyle.font := themeid;
     FontStyle.flags := kControlUseThemeFontIDMask;
     OSError(SetControlFontStyle(ControlRef(Widget), FontStyle),

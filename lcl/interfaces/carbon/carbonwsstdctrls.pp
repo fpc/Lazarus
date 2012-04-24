@@ -33,12 +33,12 @@ uses
   // libs
   MacOSAll,
   // LCL
-  Classes, Controls, StdCtrls, LCLType, LCLProc, Graphics, Math,
+  Classes, Controls, StdCtrls, LCLType, LCLProc, Graphics,
   // widgetset
-  WSStdCtrls, WSLCLClasses, WSControls, WSProc,
+  WSStdCtrls, WSLCLClasses,
   // LCL Carbon
   CarbonDef, CarbonPrivate, CarbonBars, CarbonButtons, CarbonEdits,
-  CarbonListViews, CarbonWSControls;
+  CarbonListViews;
   
 type
 
@@ -77,7 +77,7 @@ type
     class procedure SetSelLength(const ACustomComboBox: TCustomComboBox; NewLength: integer); override;
     class procedure SetItemIndex(const ACustomComboBox: TCustomComboBox; NewIndex: integer); override;
     class procedure SetMaxLength(const ACustomComboBox: TCustomComboBox; NewLength: integer); override;
-    class procedure SetStyle(const ACustomComboBox: TCustomComboBox; NewStyle: TComboBoxStyle); override;
+    class procedure SetStyle(const ACustomComboBox: TCustomComboBox; {%H-}NewStyle: TComboBoxStyle); override;
     class procedure SetReadOnly(const ACustomComboBox: TCustomComboBox; NewReadOnly: boolean); override;
 
     class function  GetItems(const ACustomComboBox: TCustomComboBox): TStrings; override;
@@ -131,8 +131,8 @@ type
     class function  GetSelStart(const ACustomEdit: TCustomEdit): integer; override;
     class function  GetSelLength(const ACustomEdit: TCustomEdit): integer; override;
 
-    class procedure SetCharCase(const ACustomEdit: TCustomEdit; NewCase: TEditCharCase); override;
-    class procedure SetEchoMode(const ACustomEdit: TCustomEdit; NewMode: TEchoMode); override;
+    class procedure SetCharCase(const {%H-}ACustomEdit: TCustomEdit; {%H-}NewCase: TEditCharCase); override;
+    class procedure SetEchoMode(const {%H-}ACustomEdit: TCustomEdit; {%H-}NewMode: TEchoMode); override;
     class procedure SetMaxLength(const ACustomEdit: TCustomEdit; NewLength: integer); override;
     class procedure SetPasswordChar(const ACustomEdit: TCustomEdit; NewChar: char); override;
     class procedure SetReadOnly(const ACustomEdit: TCustomEdit; NewReadOnly: boolean); override;
@@ -196,7 +196,7 @@ type
   TCarbonWSButton = class(TWSButton)
   published
     class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
-    class procedure SetDefault(const AButton: TCustomButton; ADefault: Boolean); override;
+    class procedure SetDefault(const AButton: TCustomButton; {%H-}ADefault: Boolean); override;
   end;
 
   { TCarbonWSCustomCheckBox }
@@ -248,11 +248,7 @@ type
 implementation
 
 uses
-  CarbonProc, CarbonStrings, CarbonDbgConsts;
-
-//It looks like there is no way to know the clientrect of a databrowser.
-//border width (when active) should be 3 pixels
-const DataBrowserBorderWidth = 3;
+  CarbonProc, CarbonStrings;
 
 { TCarbonWSScrollBar }
 
@@ -998,7 +994,7 @@ begin
 
   if Length(AText) > 0 then
   begin
-    if TCarbonMemo(ACustomMemo.Handle).GetText(S) then
+    if TCarbonMemo(ACustomMemo.Handle).GetText(S{%H-}) then
       TCarbonMemo(ACustomMemo.Handle).SetText(S + AText);
   end;
 end;

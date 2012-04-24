@@ -27,14 +27,14 @@ interface
 
 uses
  // rtl+ftl
-  Types, Classes, SysUtils, Math, Contnrs,
+  Types, Classes, SysUtils, Contnrs,
  // carbon bindings
   MacOSAll,
  // LCL
   LMessages, LCLMessageGlue, LCLType, LCLProc, Controls, StdCtrls, ComCtrls,
   ImgList, Graphics,
  // LCL Carbon
-  CarbonDef, CarbonPrivate, CarbonGDIObjects;
+  CarbonPrivate, CarbonGDIObjects;
 
 type
   TCarbonDataBrowser = class;
@@ -75,7 +75,7 @@ type
     procedure SetAlignment(AAlignment: TAlignment);
     procedure SetAutoSize(AValue: Boolean);
     procedure SetCaption(const ACaption: String);
-    procedure SetImageIndex(AImageIndex: Integer);
+    procedure SetImageIndex({%H-}AImageIndex: Integer);
     procedure SetMinWidth(AMinWidth: Integer);
     procedure SetMaxWidth(AMaxWidth: Integer);
     procedure SetVisible(AVisible: Boolean);
@@ -131,7 +131,7 @@ type
     procedure RegisterEvents; override;
   protected
     function GetItemCaption(AIndex, ASubIndex: Integer): String; virtual; abstract;
-    function GetItemIcon(AIndex, ASubIndex: Integer): IconRef; virtual;
+    function GetItemIcon({%H-}AIndex, {%H-}ASubIndex: Integer): IconRef; virtual;
     function GetReadOnly: Boolean; virtual; abstract;
     function MultiSelect: Boolean; virtual; abstract;
     function IsOwnerDrawn: Boolean; virtual; abstract;
@@ -156,10 +156,10 @@ type
     function GetItemsRect: TRect;
     function GetItemsCount: Integer;
     function GetItemRect(AIndex: Integer): TRect;
-    function GetItemRect(AIndex, ASubIndex: Integer; ACode: TDisplayCode): TRect;
+    function GetItemRect(AIndex, {%H-}ASubIndex: Integer; {%H-}ACode: TDisplayCode): TRect;
     function GetItemSelected(AIndex: Integer): Boolean;
     function GetItemState(AIndex: Integer; AState: TListItemState; out AIsSet: Boolean): Boolean;
-    function GetItemAt(X, Y: Integer): Integer;
+    function GetItemAt({%H-}X, Y: Integer): Integer;
     function GetTopItem: Integer;
     function GetSelCount: UInt32;
     function GetViewOrigin: TPoint;
@@ -171,7 +171,7 @@ type
     procedure SetItemIndex(AItemIndex: Integer);
     procedure SetItemState(AIndex: Integer; AState: TListItemState; AIsSet: Boolean);
     procedure SetItemsHeight(AHeight: Integer);
-    procedure SetOwnerDraw(AOwnerDraw: Boolean);
+    procedure SetOwnerDraw({%H-}AOwnerDraw: Boolean);
     procedure SetRowSelect(ARowSelect: Boolean);
     procedure SetScrollBars(AScrollBars: TScrollStyle);
     procedure SetSelectionMode(AExtendedSelect, AMultiSelect: Boolean);
@@ -179,13 +179,13 @@ type
     procedure SetViewOrigin(const AOrigin: TPoint);
     procedure ShowAsList(AShow: Boolean);
     procedure ShowCheckboxes(AShow: Boolean);
-    procedure ShowItem(AIndex: Integer; Partial: Boolean);
+    procedure ShowItem(AIndex: Integer; {%H-}Partial: Boolean);
     procedure ShowColumnHeaders(AShow: Boolean);
     
     function GetColumn(AIndex: Integer): TCarbonListColumn;
     procedure DeleteColumn(AIndex: Integer);
-    procedure InsertColumn(AIndex: Integer; const AColumn: TListColumn);
-    procedure MoveColumn(AOldIndex, ANewIndex: Integer; const AColumn: TListColumn);
+    procedure InsertColumn({%H-}AIndex: Integer; const AColumn: TListColumn);
+    procedure MoveColumn({%H-}AOldIndex, {%H-}ANewIndex: Integer; const {%H-}AColumn: TListColumn);
     procedure UpdateColumnIndex;
     procedure UpdateColumnView; virtual;
     procedure AutoSizeColumns;
@@ -215,7 +215,7 @@ type
   TReportViewMode = class(TViewMode)
   protected
     class procedure Apply(View: TCarbonListView); override;
-    class procedure Resized(View: TCarbonListView); override;
+    class procedure Resized({%H-}View: TCarbonListView); override;
     class function DataCallBack(View: TCarbonListView; ID: DataBrowserItemId; 
       PropID: DataBrowserPropertyID; Data: DataBrowserItemDataRef; 
       ASetValue: Boolean): OSStatus; override;
@@ -245,7 +245,7 @@ type
     constructor Create(const AObject: TWinControl; const AParams: TCreateParams);
     destructor Destroy; override;
 
-    procedure DrawItem(AIndex: Integer; AState: DataBrowserItemState); override;
+    procedure DrawItem({%H-}AIndex: Integer; {%H-}AState: DataBrowserItemState); override;
     procedure SelectionChanged(AIndex: Integer; ASelect: Boolean); override;
     procedure FocusedChanged(AIndex: Integer); override;
 
@@ -257,7 +257,7 @@ type
 
     procedure CheckChanged(AIndex: Integer; AChecked: Boolean); override;
 
-    procedure DoColumnClicked(MouseX,MouseY: Integer);
+    procedure DoColumnClicked(MouseX,{%H-}MouseY: Integer);
     procedure SetItemsCount(ACount: Integer); 
     function NeedDeliverMouseEvent(Msg: Integer; const AMessage): Boolean; override;
     property OwnerData: Boolean read FOwnerData write FOwnerData;
@@ -269,14 +269,14 @@ type
   protected
     procedure CreateWidget(const AParams: TCreateParams); override;
   protected
-    function GetItemCaption(AIndex, ASubIndex: Integer): String; override;
+    function GetItemCaption(AIndex, {%H-}ASubIndex: Integer): String; override;
     function GetReadOnly: Boolean; override;
     function MultiSelect: Boolean; override;
     function IsOwnerDrawn: Boolean; override;
   public
     procedure DrawItem(AIndex: Integer; AState: DataBrowserItemState); override;
     procedure SelectionChanged(AIndex: Integer; ASelect: Boolean); override;
-    procedure FocusedChanged(AIndex: Integer); override;
+    procedure FocusedChanged({%H-}AIndex: Integer); override;
   end;
   
   { TCarbonCheckListBox }
@@ -294,8 +294,7 @@ const
 
 implementation
 
-uses InterfaceBase, CarbonProc, CarbonDbgConsts, CarbonUtils, CarbonStrings,
-     CarbonCanvas;
+uses InterfaceBase, CarbonProc, CarbonDbgConsts;
      
 var CarbonItemDataCallBackUPP        : DataBrowserItemDataUPP;
     CarbonItemNotificationCallBackUPP: DataBrowserItemNotificationUPP;
@@ -365,7 +364,7 @@ begin
   iconHnd^^.resourceType := kIconFamilyType;
   iconHnd^^.resourceSize := sizeof(OSType) + sizeof(Size);
 
-  if PtrToHand(@data[0], tmpHnd, length(data)) = noErr then
+  if PtrToHand(@data[0], tmpHnd{%H-}, length(data)) = noErr then
   begin
     OSError(
        SetIconFamilyData(iconHnd, dataType, tmpHnd),
@@ -427,7 +426,7 @@ end;
 
 function TCarbonListColumn.GetHeaderWidth: UInt16;
 begin
-  OSError(GetDataBrowserTableViewNamedColumnWidth(FOwner.Widget, PropertyID, Result),
+  OSError(GetDataBrowserTableViewNamedColumnWidth(FOwner.Widget, PropertyID, Result{%H-}),
     Self, 'GetHeaderWidth', 'GetDataBrowserTableViewNamedColumnWidth');
 end;
 
@@ -592,8 +591,6 @@ begin
 end;
 
 procedure TCarbonListColumn.SetWidth(AWidth: Integer);
-var
-  lBmp: TBitmap;
 begin
   FWidth := AWidth;
 
@@ -711,9 +708,9 @@ end;
   Handles draw requests from DataBrowser when in ownerdrawn style
  ------------------------------------------------------------------------------}
 procedure CarbonDrawItemCallBack(AControl: ControlRef;
-  ID: DataBrowserItemID; PropID: DataBrowserPropertyID;
-  State: DataBrowserItemState; const R: Rect; Depth: SInt16;
-  ColorDevice: Boolean); {$IFDEF darwin} mwpascal;{$ENDIF}
+  ID: DataBrowserItemID; {%H-}PropID: DataBrowserPropertyID;
+  State: DataBrowserItemState; const {%H-}R: Rect; {%H-}Depth: SInt16;
+  {%H-}ColorDevice: Boolean); {$IFDEF darwin} mwpascal;{$ENDIF}
 var
   ACarbonDataBrowser: TCarbonDataBrowser;
 begin
@@ -737,13 +734,13 @@ end;
 
 function TCarbonDataBrowser.GetHeaderHeight: UInt16;
 begin
-  OSError(GetDataBrowserListViewHeaderBtnHeight(Widget, Result),
+  OSError(GetDataBrowserListViewHeaderBtnHeight(Widget, Result{%H-}),
     Self, 'GetHeaderHeight', 'GetDataBrowserListViewHeaderBtnHeight');
 end;
 
 function TCarbonDataBrowser.GetItemsHeight: UInt16;
 begin
-  OSError(GetDataBrowserTableViewRowHeight(Widget, Result),
+  OSError(GetDataBrowserTableViewRowHeight(Widget, Result{%H-}),
       Self, 'GetItemsHeight', 'GetDataBrowserTableViewRowHeight');
 end;
 
@@ -909,7 +906,7 @@ const
 begin
   if FDestroying then
     exit;
-  GetClientRect(C);
+  GetClientRect(C{%H-});
   R := GetItemsRect;
   
   Horz := (C.Right - C.Left) < (R.Right - R.Left);
@@ -919,7 +916,7 @@ begin
   ShowVert := (FScrollBars in [ssVertical, ssBoth]) or
     ((FScrollBars in [ssAutoVertical, ssAutoBoth]) and Vert);
 
-  OSError(GetDataBrowserScrollPosition(Widget, SY, SX), // !!! top, left
+  OSError(GetDataBrowserScrollPosition(Widget, SY{%H-{%H-}}, SX), // !!! top, left
     Self, SName, 'GetDataBrowserScrollPosition');
 
   OSError(SetDataBrowserHasScrollBars(Widget, ShowHorz, ShowVert),
@@ -941,8 +938,6 @@ begin
 end;
 
 procedure TCarbonDataBrowser.UpdateItems;
-var
-  i : Integer;
 begin
   if GetItemsCount > 0 then
     OSError(UpdateDataBrowserItems(Widget, kDataBrowserNoItem, GetItemsCount, nil,
@@ -998,7 +993,7 @@ begin
   
   if FCaptionListColumn <> nil then
   begin
-    GetClientRect(R);
+    GetClientRect(R{%H-});
     Result.Right := R.Right - R.Left;
   end
   else
@@ -1035,7 +1030,7 @@ var
   R: TRect;
 begin
   P := GetViewOrigin;
-  GetClientRect(R);
+  GetClientRect(R{%H-});
   
   // TODO: ASubIndex, ACode
   
@@ -1056,7 +1051,7 @@ var
   S: DataBrowserItemState;
 begin
   Result := False;
-  OSError(GetDataBrowserItemState(Widget, AIndex + 1, S),
+  OSError(GetDataBrowserItemState(Widget, AIndex + 1, S{%H-}),
     Self, 'GetItemState', 'GetDataBrowserItemState');
     
   Result := True;
@@ -1077,7 +1072,7 @@ begin
   Result := 0;
     
   P := GetViewOrigin;
-  GetClientRect(R);
+  GetClientRect(R{%H-});
   
   Result := (Y - R.Top - GetHeaderHeight + P.Y) div GetItemsHeight;
   if (Result < 0) or (Result >= GetitemsCount) then Result := -1;
@@ -1108,7 +1103,7 @@ begin
   begin
     if PropID = CheckPropertyID then // check has changed
     begin
-      Result := GetDataBrowserItemDataButtonValue(Data, CheckboxValue);
+      Result := GetDataBrowserItemDataButtonValue(Data, CheckboxValue{%H-});
       if Result <> noErr then Exit;
 
       CheckChanged(ID - 1, CheckboxValue = kThemeButtonOn);
@@ -1213,7 +1208,7 @@ begin
   Result.X := 0;
   Result.Y := 0;
   
-  if OSError(GetDataBrowserScrollPosition(Widget, Top, Left),
+  if OSError(GetDataBrowserScrollPosition(Widget, Top{%H-},{%H-} Left),
       Self, 'GetViewOrigin', 'GetDataBrowserScrollPosition') then Exit;
 
   Result.X := Left;
@@ -1224,7 +1219,7 @@ function TCarbonDataBrowser.GetVisibleRowCount: Integer;
 var
   R: TRect;
 begin
-  GetClientRect(R);
+  GetClientRect(R{%H-});
   Result := (R.Bottom - R.Top - GetHeaderHeight) div GetItemsHeight;
   if Result < 0 then Result := 0;
 end;
@@ -1266,7 +1261,7 @@ procedure TCarbonDataBrowser.SetItemChecked(AIndex: Integer; AChecked: Boolean);
 begin
   if (AIndex >= 0) and (AIndex < GetItemsCount) then
   begin
-    FItemsCheck[AIndex] := Pointer(Integer(AChecked));
+    FItemsCheck[AIndex] := {%H-}Pointer(Integer(AChecked));
     UpdateItem(AIndex);
   end;
 end;
@@ -1499,7 +1494,7 @@ var cnt, aCnt, tCnt: Integer;
     sWidth, aWidth: Integer;
     cRect: TRect;
 begin
-  GetClientRect(cRect);
+  GetClientRect(cRect{%H-});
   sWidth := 0;
   aCnt := 0;
   tCnt := 0;
@@ -1660,8 +1655,8 @@ begin
   if FDestroying then Exit;
   //DebugLn('TCarbonListView.SelectionChanged Index: ' + DbgS(AIndex) + ' Select: ' +  DbgS(ASelect));
   
-  FillChar(Msg, SizeOf(Msg), #0);
-  FillChar(NMLV, SizeOf(NMLV), #0);
+  FillChar(Msg{%H-}, SizeOf(Msg), #0);
+  FillChar(NMLV{%H-}, SizeOf(NMLV), #0);
 
   Msg.Msg := CN_NOTIFY;
 
@@ -1689,8 +1684,8 @@ var
   NMLV: TNMListView;
 begin
   if FDestroying then Exit;
-  FillChar(Msg, SizeOf(Msg), #0);
-  FillChar(NMLV, SizeOf(NMLV), #0);
+  FillChar(Msg{%H-}, SizeOf(Msg), #0);
+  FillChar(NMLV{%H-}, SizeOf(NMLV), #0);
 
   Msg.Msg := CN_NOTIFY;
 
@@ -1790,8 +1785,8 @@ begin
   inherited CheckChanged(AIndex, AChecked);
 
   if FDestroying then Exit;
-  FillChar(Msg, SizeOf(Msg), #0);
-  FillChar(NMLV, SizeOf(NMLV), #0);
+  FillChar(Msg{%H-}, SizeOf(Msg), #0);
+  FillChar(NMLV{%H-}, SizeOf(NMLV), #0);
 
   Msg.Msg := CN_NOTIFY;
 
@@ -1826,8 +1821,8 @@ begin
   SetLength(order, FColumns.Count);
   for i := 0 to FColumns.Count - 1 do
   begin
-    if GetDataBrowserTableViewColumnPosition(Content, GetColumn(i).PropertyID, ci) = noErr then
-      if (ci >= 0) and (ci<FColumns.Count) then
+    if GetDataBrowserTableViewColumnPosition(Content, GetColumn(i).PropertyID, ci{%H-}) = noErr then
+      if (ci {%H-}>= 0) and (ci{%H-}<FColumns.Count) then
       begin
         order[ci].Index := i;
         order[ci].Width := GetColumn(i).GetWidth;
@@ -1849,7 +1844,7 @@ begin
   if (cl>=0) and (cl < FColumns.Count) then
   begin
     msg.Msg := CN_NOTIFY;
-    FillChar(NM, SizeOf(NM), 0);
+    FillChar(NM{%H-}, SizeOf(NM), 0);
     NM.hdr.hwndfrom := PtrUInt(Self);
     NM.hdr.code := LVN_COLUMNCLICK;
     NM.iItem := -1;
@@ -1911,13 +1906,13 @@ begin
       Exit;
     end;
 
-    GetDataBrowserListViewHeaderBtnHeight(Content, h);
+    GetDataBrowserListViewHeaderBtnHeight(Content, h{%H-});
     inc(y, OfsY);
     Result := y > h;
 
     if not Result and (Msg = LM_LBUTTONUP) then
     begin
-      GetDataBrowserScrollPosition(Content, scrolltop, scrollleft );
+      GetDataBrowserScrollPosition(Content, scrolltop{%H-}, scrollleft{%H-} );
       inc(x, Integer(scrollleft) + OfsX);
 
       DoColumnClicked(x,y);
@@ -2059,7 +2054,7 @@ begin
     then ItemsCnt := TListView(View.LCLObject).Items.Count+1
     else ItemsCnt := GetItemsCount + 1;
 
-    if (ID < 1) or (ID > ItemsCnt) then
+    if (ID < 1) or (ID {%H-}> ItemsCnt) then
     begin
       Result := errDataBrowserItemNotFound;
       Exit;
@@ -2069,7 +2064,7 @@ begin
     begin
       if PropID = CheckPropertyID then // check has changed
       begin
-        Result := GetDataBrowserItemDataButtonValue(Data, CheckboxValue);
+        Result := GetDataBrowserItemDataButtonValue(Data, CheckboxValue{%H-});
         if Result <> noErr then Exit;
   
         CheckChanged(ID - 1, CheckboxValue = kThemeButtonOn);
