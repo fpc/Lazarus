@@ -2046,8 +2046,8 @@ begin
 
   // Get the bitmap with the text
   lJavaBitmap := javaEnvRef^^.GetObjectField(javaEnvRef, javaActivityObject, javaField_lclbitmap);
-  lWidth := javaEnvRef^^.GetLongField(javaEnvRef, javaActivityObject, javaField_lclwidth);
-  lHeight := javaEnvRef^^.GetLongField(javaEnvRef, javaActivityObject, javaField_lclheight);
+  lWidth := javaEnvRef^^.GetIntField(javaEnvRef, javaActivityObject, javaField_lclwidth);
+  lHeight := javaEnvRef^^.GetIntField(javaEnvRef, javaActivityObject, javaField_lclheight);
 
   {$ifdef VerboseCDText}
     DebugLn(Format(':[WinAPI ExtTextOut] lWidth=%d lHeight=%d DestCanvasSize=%d, %d lFontSize=%d',
@@ -2691,12 +2691,12 @@ begin
     LOGPIXELSX:
     begin
       if javaEnvRef = nil then Exit;
-      Result := javaEnvRef^^.GetLongField(javaEnvRef, javaActivityObject, javaField_lclxdpi);
+      Result := javaEnvRef^^.GetIntField(javaEnvRef, javaActivityObject, javaField_lclxdpi);
     end;
     LOGPIXELSY:
     begin
       if javaEnvRef = nil then Exit;
-      Result := javaEnvRef^^.GetLongField(javaEnvRef, javaActivityObject, javaField_lclydpi);
+      Result := javaEnvRef^^.GetIntField(javaEnvRef, javaActivityObject, javaField_lclydpi);
     end;
 //    VERTRES:
 //      Result := QPaintDevice_height(PaintDevice);
@@ -3752,14 +3752,14 @@ begin
     begin
       Result := 100; // avoid errors if this is called too early
       if javaEnvRef = nil then Exit;
-      Result := javaEnvRef^^.GetLongField(javaEnvRef, javaActivityObject, javaField_lclscreenwidth);
+      Result := javaEnvRef^^.GetIntField(javaEnvRef, javaActivityObject, javaField_lclscreenwidth);
       if Result = 0 then Result := 100;
     end;
     SM_CYSCREEN:
     begin
       Result := 100; // avoid errors if this is called too early
       if javaEnvRef = nil then Exit;
-      Result := javaEnvRef^^.GetLongField(javaEnvRef, javaActivityObject, javaField_lclscreenheight);
+      Result := javaEnvRef^^.GetIntField(javaEnvRef, javaActivityObject, javaField_lclscreenheight);
       if Result = 0 then Result := 100;
     end;
     SM_CXSIZE:
@@ -3791,12 +3791,12 @@ begin
     SM_CXVIRTUALSCREEN:
     begin
       if javaEnvRef = nil then Exit;
-      Result := javaEnvRef^^.GetLongField(javaEnvRef, javaActivityObject, javaField_lclscreenwidth);
+      Result := javaEnvRef^^.GetIntField(javaEnvRef, javaActivityObject, javaField_lclscreenwidth);
     end;
     SM_CYVIRTUALSCREEN:
     begin
       if javaEnvRef = nil then Exit;
-      Result := javaEnvRef^^.GetLongField(javaEnvRef, javaActivityObject, javaField_lclscreenheight);
+      Result := javaEnvRef^^.GetIntField(javaEnvRef, javaActivityObject, javaField_lclscreenheight);
     end;
     SM_CXVSCROLL,
     SM_CYVSCROLL,
