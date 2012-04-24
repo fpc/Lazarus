@@ -2231,7 +2231,7 @@ begin
   {$ENDIF}
   
   if not CheckWidget(Handle, 'GetWindowRelativePosition') then Exit;
-  Result := TCarbonWidget(Handle).GetBounds(ARect);
+  Result := TCarbonWidget(Handle).GetBounds(ARect{%H-});
   
   if not Result then Exit;
   Left := ARect.Left;
@@ -2264,7 +2264,7 @@ begin
   {$ENDIF}
   
   if not CheckWidget(Handle, 'GetWindowSize') then Exit;
-  Result := TCarbonWidget(Handle).GetBounds(ARect);
+  Result := TCarbonWidget(Handle).GetBounds(ARect{%H-});
     
   if not Result then Exit;
   Width := ARect.Right - ARect.Left;
@@ -2316,7 +2316,7 @@ begin
   New(ACritSec);
   
   System.InitCriticalSection(ACritSec^);
-  CritSection := TCriticalSection(ACritSec);
+  CritSection := {%H-}TCriticalSection(ACritSec);
   
   {$IFDEF VerboseWinAPI}
     DebugLn('TCarbonWidgetSet.InitializeCriticalSection Section: ' + DbgS(CritSection));
@@ -2490,7 +2490,7 @@ begin
     DebugLn('TCarbonWidgetSet.LeaveCriticalSection Section: ' + DbgS(CritSection));
   {$ENDIF}
   
-  ACritSec := System.PRTLCriticalSection(CritSection);
+  ACritSec := {%H-}System.PRTLCriticalSection(CritSection);
   System.LeaveCriticalsection(ACritSec^);
 end;
 
@@ -2805,7 +2805,7 @@ begin
   // therefore we can only test bounding box of the clipping path.
   
   ClipBox := CGContextGetClipBoundingBox(TCarbonContext(DC).CGContext);
-  Result := IntersectRect(R, ARect, CGRectToRect(ClipBox));
+  Result := IntersectRect(R{%H-}, ARect, CGRectToRect(ClipBox));
   
   {$IFDEF VerboseWinAPI}
     DebugLn('TCarbonWidgetSet.RectVisible Result: ' + DbgS(Result) + ' Clip: ' + DbgS(CGRectToRect(ClipBox)));
@@ -2885,7 +2885,7 @@ begin
   
   if not CheckWidget(Handle, 'RemoveProp') then Exit;
 
-  Result := THandle(TCarbonWidget(Handle).Properties[Str]);
+  Result := {%H-}THandle(TCarbonWidget(Handle).Properties[Str]);
   TCarbonWidget(Handle).Properties[Str] := nil;
 end;
 
@@ -3094,9 +3094,10 @@ begin
       begin
         R := RectToCGRect(prcScroll^);
         // TODO: create CGRect
-        OSError(HIViewGetBounds(ACtl.Content, R1),
+        OSError(HIViewGetBounds(ACtl.Content, R1{%H-}),
           Self, SName, 'HIViewGetBounds');
         RR := CGRectToRect(R1);
+        {$NOTE: check why RR is not used}
         OSError(HIViewScrollRect(ACtl.Content, HiRectPtr(@R), CGFloat(dx), CGFloat(dy)),
           ACtl, SName, 'HIViewScrollRect');
         Result := True;
@@ -3122,8 +3123,6 @@ end;
 {$ENDIF}
 
 function TCarbonWidgetSet.SelectClipRGN(DC: hDC; RGN: HRGN): Longint;
-const
-  SName = 'TCarbonWidgetSet.SelectClipRGN';
 begin
   {$IFDEF VerboseWinAPI}
     DebugLn('TCarbonWidgetSet.SelectClipRGN DC: ' + DbgS(DC) + ' RGN: ' +
@@ -3891,11 +3890,11 @@ begin
 
   P.h := Point.X;
   P.v := Point.Y;
-  if FindWindowOfClass(P, kAllWindowClasses, Window, @WindowPart) <> noErr then Exit;
+  if FindWindowOfClass(P, kAllWindowClasses, Window{%H-}, @WindowPart) <> noErr then Exit;
   if Window = nil then Exit;
   if WindowPart <> inContent then Exit;
   
-  if OSError(GetWindowBounds(Window, kWindowContentRgn, R), Self,
+  if OSError(GetWindowBounds(Window, kWindowContentRgn, R{%H-}), Self,
     'WindowFromPoint', SGetWindowBounds) then Exit;
     
   Dec(P.h, R.left);

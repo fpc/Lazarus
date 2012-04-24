@@ -1,5 +1,4 @@
-{ $Id$
-                  ------------------------------------------
+{                 ------------------------------------------
                   carbongdiobjects.pp  -  Carbon GDI objects
                   ------------------------------------------
 
@@ -762,7 +761,7 @@ function TCarbonRegion.GetBounds: TRect;
 var
   R: HIRect;
 begin
-  if HIShapeGetBounds(FShape, R) = nil then
+  if HIShapeGetBounds(FShape, R{%H-}) = nil then
   begin
     DebugLn('TCarbonRegion.GetBounds Error!');
     Exit;

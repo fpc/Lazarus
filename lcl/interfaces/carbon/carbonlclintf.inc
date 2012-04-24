@@ -321,10 +321,10 @@ begin
   end;
 
   try
-    if OSError(CreateStandardAlert(AlertCode, CaptionStr, MessageStr, @ParamRec, AlertRef),
+    if OSError(CreateStandardAlert(AlertCode, CaptionStr, MessageStr, @ParamRec, AlertRef{%H-}),
       Self, SName, 'CreateStandardAlert') then Exit;
       
-    if OSError(RunStandardAlert(AlertRef, nil, AlertBtnIdx), Self, SName,
+    if OSError(RunStandardAlert(AlertRef, nil, AlertBtnIdx{%H-}), Self, SName,
       'RunStandardAlert') then Exit;
 
     {Convert Carbon result to LCL "id" dialog result}
@@ -464,7 +464,6 @@ end;
 function TCarbonWidgetSet.RawImage_FromDevice(out ARawImage: TRawImage; ADC: HDC; const ARect: TRect): Boolean;
 var
   CBC: TCarbonBitmapContext absolute ADC;
-  Desc: TRawImageDescription absolute ARawImage.Description;
   displayID: CGDirectDisplayID;
   ScreenImage: CGImageRef;
 begin
