@@ -102,7 +102,7 @@ end;
 
 function NSPanel.isFloatingPanel: LongBool;
 begin
-  Result := LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSPanel_isFloatingPanel)), []));
+  Result := {%H-}LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSPanel_isFloatingPanel)), []));
 end;
 
 procedure NSPanel.setFloatingPanel(_flag: LongBool);
@@ -117,7 +117,7 @@ end;
 
 function NSPanel.becomesKeyOnlyIfNeeded: LongBool;
 begin
-  Result := LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSPanel_becomesKeyOnlyIfNeeded)), []));
+  Result := {%H-}LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSPanel_becomesKeyOnlyIfNeeded)), []));
 end;
 
 procedure NSPanel.setBecomesKeyOnlyIfNeeded(_flag: LongBool);
@@ -132,7 +132,7 @@ end;
 
 function NSPanel.worksWhenModal: LongBool;
 begin
-  Result := LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSPanel_worksWhenModal)), []));
+  Result := {%H-}LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSPanel_worksWhenModal)), []));
 end;
 
 procedure NSPanel.setWorksWhenModal(_flag: LongBool);

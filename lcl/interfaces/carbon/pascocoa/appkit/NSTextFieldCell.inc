@@ -118,7 +118,7 @@ end;
 
 function NSTextFieldCell.drawsBackground: LongBool;
 begin
-  Result := LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSTextFieldCell_drawsBackground)), []));
+  Result := {%H-}LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSTextFieldCell_drawsBackground)), []));
 end;
 
 procedure NSTextFieldCell.setTextColor(_color: lobjc.id {NSColor});

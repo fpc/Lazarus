@@ -269,7 +269,7 @@ end;
 
 function NSToolbarItem.tag: Integer;
 begin
-  Result := Integer(objc_msgSend(Handle, sel_registerName(PChar(StrNSToolbarItem_tag)), []));
+  Result := {%H-}Integer(objc_msgSend(Handle, sel_registerName(PChar(StrNSToolbarItem_tag)), []));
 end;
 
 procedure NSToolbarItem.setTarget(_target: lobjc.id);
@@ -314,7 +314,7 @@ end;
 
 function NSToolbarItem.isEnabled: LongBool;
 begin
-  Result := LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSToolbarItem_isEnabled)), []));
+  Result := {%H-}LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSToolbarItem_isEnabled)), []));
 end;
 
 procedure NSToolbarItem.setImage(_image: lobjc.id {NSImage});
@@ -390,7 +390,7 @@ end;
 
 function NSToolbarItem.visibilityPriority: Integer;
 begin
-  Result := Integer(objc_msgSend(Handle, sel_registerName(PChar(StrNSToolbarItem_visibilityPriority)), []));
+  Result := {%H-}Integer(objc_msgSend(Handle, sel_registerName(PChar(StrNSToolbarItem_visibilityPriority)), []));
 end;
 
 {.$endif}
@@ -412,13 +412,13 @@ end;
 
 function NSToolbarItem.autovalidates: LongBool;
 begin
-  Result := LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSToolbarItem_autovalidates)), []));
+  Result := {%H-}LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSToolbarItem_autovalidates)), []));
 end;
 
 {.$endif}
 function NSToolbarItem.allowsDuplicatesInToolbar: LongBool;
 begin
-  Result := LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSToolbarItem_allowsDuplicatesInToolbar)), []));
+  Result := {%H-}LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSToolbarItem_allowsDuplicatesInToolbar)), []));
 end;
 
 {$endif}

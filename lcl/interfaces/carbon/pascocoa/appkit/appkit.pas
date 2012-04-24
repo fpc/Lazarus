@@ -15,7 +15,7 @@ unit appkit;
 
 interface
 
-uses ctypes, MacOSAll, lobjc, foundation;
+uses MacOSAll, lobjc, foundation;
 
 {$define HEADER}
 {$include AppKit.inc}

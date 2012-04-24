@@ -1,5 +1,4 @@
-{ $Id: $
-                  ----------------------------------------
+{                 ----------------------------------------
                   carbonmenus.pp  -  Carbon internal menus
                   ----------------------------------------
 
@@ -27,15 +26,15 @@ interface
 
 uses
  // rtl+ftl
-  Types, Classes, SysUtils, Math, Contnrs,
+  Classes, SysUtils, Contnrs,
  // carbon bindings
   MacOSAll,
   CarbonUtils,
  // widgetset
-  WSControls, WSLCLClasses, WSProc,
+  WSLCLClasses,
  // LCL
-  LMessages, LCLMessageGlue, LCLProc, LCLType, Graphics, Controls, Forms,
-  Dialogs, StdCtrls, ComCtrls, Menus,
+  LMessages, LCLProc, LCLType, Graphics, Controls, Forms,
+  Dialogs, Menus,
  // LCL Carbon
   CarbonDef, CarbonGDIObjects, CarbonProc, CarbonDbgConsts;
   
@@ -67,7 +66,7 @@ type
     procedure Attach(AParentMenu: TCarbonMenu);
     procedure AttachToMenuBar;
 
-    procedure SetCaption(const ACaption: String);
+    procedure SetCaption(const {%H-}ACaption: String);
     procedure SetVisible(AVisible: Boolean);
     procedure SetEnable(AEnabled: Boolean);
     procedure SetBitmap(const ABitmap: TBitmap);
@@ -283,7 +282,7 @@ begin
   // menu item has sub menu - call click when opening
   if LCLMenuItem.IsInMenuBar or (LCLMenuItem.Count > 0) then
   begin
-    FillChar(Msg, SizeOf(Msg), 0);
+    FillChar(Msg{%H-}, SizeOf(Msg), 0);
     Msg.msg := LM_ACTIVATE;
     LCLMenuItem.Dispatch(Msg);
   end;
@@ -762,7 +761,7 @@ function TCarbonMenu.GetShortCutKey: AnsiChar;
 var
   KeyValue: UInt16;
 begin
-  if GetMenuItemCommandKey(FParentMenu.Menu, GetIndex + 1, False, KeyValue)<>noErr then
+  if GetMenuItemCommandKey(FParentMenu.Menu, GetIndex + 1, False, KeyValue{%H-})<>noErr then
     Result:=#0
   else
     Result:=AnsiChar(KeyValue);

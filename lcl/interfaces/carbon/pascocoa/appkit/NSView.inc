@@ -518,12 +518,12 @@ end;
 
 function NSView.isHidden: LongBool;
 begin
-  Result := LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSView_isHidden)), []));
+  Result := {%H-}LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSView_isHidden)), []));
 end;
 
 function NSView.isHiddenOrHasHiddenAncestor: LongBool;
 begin
-  Result := LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSView_isHiddenOrHasHiddenAncestor)), []));
+  Result := {%H-}LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSView_isHiddenOrHasHiddenAncestor)), []));
 end;
 
 procedure NSView.getRectsBeingDrawn_count(_rects: NSRect; _count: Integer);
@@ -548,7 +548,7 @@ end;
 
 function NSView.wantsDefaultClipping: LongBool;
 begin
-  Result := LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSView_wantsDefaultClipping)), []));
+  Result := {%H-}LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSView_wantsDefaultClipping)), []));
 end;
 
 {.$endif}
@@ -664,7 +664,7 @@ end;
 
 function NSView.postsFrameChangedNotifications: LongBool;
 begin
-  Result := LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSView_postsFrameChangedNotifications)), []));
+  Result := {%H-}LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSView_postsFrameChangedNotifications)), []));
 end;
 
 procedure NSView.resizeSubviewsWithOldSize(_oldSize: NSSize);
@@ -699,7 +699,7 @@ end;
 
 function NSView.autoresizesSubviews: LongBool;
 begin
-  Result := LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSView_autoresizesSubviews)), []));
+  Result := {%H-}LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSView_autoresizesSubviews)), []));
 end;
 
 procedure NSView.setAutoresizingMask(_mask: LongWord);
@@ -714,7 +714,7 @@ end;
 
 function NSView.autoresizingMask: LongWord;
 begin
-  Result := LongWord(objc_msgSend(Handle, sel_registerName(PChar(StrNSView_autoresizingMask)), []));
+  Result := {%H-}LongWord(objc_msgSend(Handle, sel_registerName(PChar(StrNSView_autoresizingMask)), []));
 end;
 
 procedure NSView.setFrameOrigin(_newOrigin: NSPoint);
@@ -849,22 +849,22 @@ end;
 
 function NSView.isFlipped: LongBool;
 begin
-  Result := LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSView_isFlipped)), []));
+  Result := {%H-}LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSView_isFlipped)), []));
 end;
 
 function NSView.isRotatedFromBase: LongBool;
 begin
-  Result := LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSView_isRotatedFromBase)), []));
+  Result := {%H-}LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSView_isRotatedFromBase)), []));
 end;
 
 function NSView.isRotatedOrScaledFromBase: LongBool;
 begin
-  Result := LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSView_isRotatedOrScaledFromBase)), []));
+  Result := {%H-}LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSView_isRotatedOrScaledFromBase)), []));
 end;
 
 function NSView.isOpaque: LongBool;
 begin
-  Result := LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSView_isOpaque)), []));
+  Result := {%H-}LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSView_isOpaque)), []));
 end;
 
 function NSView.convertPoint_fromView(_aPoint: NSPoint; _aView: lobjc.id {NSView}): NSPoint;
@@ -939,7 +939,7 @@ end;
 
 function NSView.canDraw: LongBool;
 begin
-  Result := LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSView_canDraw)), []));
+  Result := {%H-}LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSView_canDraw)), []));
 end;
 
 procedure NSView.setNeedsDisplay(_flag: LongBool);
@@ -964,7 +964,7 @@ end;
 
 function NSView.needsDisplay: LongBool;
 begin
-  Result := LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSView_needsDisplay)), []));
+  Result := {%H-}LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSView_needsDisplay)), []));
 end;
 
 procedure NSView.lockFocus;
@@ -979,7 +979,7 @@ end;
 
 function NSView.lockFocusIfCanDraw: LongBool;
 begin
-  Result := LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSView_lockFocusIfCanDraw)), []));
+  Result := {%H-}LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSView_lockFocusIfCanDraw)), []));
 end;
 
 {.$ifdef  MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_4}
@@ -1109,7 +1109,7 @@ end;
 {.$endif}
 function NSView.gState: Integer;
 begin
-  Result := Integer(objc_msgSend(Handle, sel_registerName(PChar(StrNSView_gState)), []));
+  Result := {%H-}Integer(objc_msgSend(Handle, sel_registerName(PChar(StrNSView_gState)), []));
 end;
 
 procedure NSView.allocateGState;
@@ -1214,7 +1214,7 @@ end;
 
 function NSView.tag: Integer;
 begin
-  Result := Integer(objc_msgSend(Handle, sel_registerName(PChar(StrNSView_tag)), []));
+  Result := {%H-}Integer(objc_msgSend(Handle, sel_registerName(PChar(StrNSView_tag)), []));
 end;
 
 function NSView.performKeyEquivalent(_theEvent: lobjc.id {NSEvent}): LongBool;
@@ -1249,13 +1249,13 @@ end;
 
 function NSView.needsPanelToBecomeKey: LongBool;
 begin
-  Result := LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSView_needsPanelToBecomeKey)), []));
+  Result := {%H-}LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSView_needsPanelToBecomeKey)), []));
 end;
 
 {.$ifdef  MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_2}
 function NSView.mouseDownCanMoveWindow: LongBool;
 begin
-  Result := LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSView_mouseDownCanMoveWindow)), []));
+  Result := {%H-}LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSView_mouseDownCanMoveWindow)), []));
 end;
 
 {.$endif}
@@ -1311,7 +1311,7 @@ end;
 
 function NSView.shouldDrawColor: LongBool;
 begin
-  Result := LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSView_shouldDrawColor)), []));
+  Result := {%H-}LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSView_shouldDrawColor)), []));
 end;
 
 procedure NSView.setPostsBoundsChangedNotifications(_flag: LongBool);
@@ -1326,7 +1326,7 @@ end;
 
 function NSView.postsBoundsChangedNotifications: LongBool;
 begin
-  Result := LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSView_postsBoundsChangedNotifications)), []));
+  Result := {%H-}LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSView_postsBoundsChangedNotifications)), []));
 end;
 
 function NSView.enclosingScrollView: lobjc.id;
@@ -1401,13 +1401,13 @@ end;
 
 function NSView.inLiveResize: LongBool;
 begin
-  Result := LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSView_inLiveResize)), []));
+  Result := {%H-}LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSView_inLiveResize)), []));
 end;
 
 {.$ifdef  MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_4}
 function NSView.preservesContentDuringLiveResize: LongBool;
 begin
-  Result := LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSView_preservesContentDuringLiveResize)), []));
+  Result := {%H-}LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSView_preservesContentDuringLiveResize)), []));
 end;
 
 function NSView.rectPreservedDuringLiveResize: NSRect;
@@ -1464,7 +1464,7 @@ end;
 {.$ifdef  MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_3}
 function NSView.canBecomeKeyView: LongBool;
 begin
-  Result := LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSView_canBecomeKeyView)), []));
+  Result := {%H-}LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSView_canBecomeKeyView)), []));
 end;
 
 {.$endif}

@@ -958,7 +958,7 @@ end;
 
 function NSTextView.shouldDrawInsertionPoint: LongBool;
 begin
-  Result := LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSTextView_shouldDrawInsertionPoint)), []));
+  Result := {%H-}LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSTextView_shouldDrawInsertionPoint)), []));
 end;
 
 procedure NSTextView.drawInsertionPointInRect_color_turnedOn(_rect: NSRect; _color: lobjc.id {NSColor}; _flag: LongBool);
@@ -1208,7 +1208,7 @@ end;
 
 function NSTextView.acceptsGlyphInfo: LongBool;
 begin
-  Result := LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSTextView_acceptsGlyphInfo)), []));
+  Result := {%H-}LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSTextView_acceptsGlyphInfo)), []));
 end;
 
 procedure NSTextView.setAcceptsGlyphInfo(_flag: LongBool);
@@ -1358,7 +1358,7 @@ end;
 
 function NSTextView.usesRuler: LongBool;
 begin
-  Result := LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSTextView_usesRuler)), []));
+  Result := {%H-}LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSTextView_usesRuler)), []));
 end;
 
 procedure NSTextView.setUsesRuler(_flag: LongBool);
@@ -1383,7 +1383,7 @@ end;
 
 function NSTextView.isContinuousSpellCheckingEnabled: LongBool;
 begin
-  Result := LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSTextView_isContinuousSpellCheckingEnabled)), []));
+  Result := {%H-}LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSTextView_isContinuousSpellCheckingEnabled)), []));
 end;
 
 procedure NSTextView.toggleContinuousSpellChecking(_sender: lobjc.id);
@@ -1398,7 +1398,7 @@ end;
 
 function NSTextView.spellCheckerDocumentTag: Integer;
 begin
-  Result := Integer(objc_msgSend(Handle, sel_registerName(PChar(StrNSTextView_spellCheckerDocumentTag)), []));
+  Result := {%H-}Integer(objc_msgSend(Handle, sel_registerName(PChar(StrNSTextView_spellCheckerDocumentTag)), []));
 end;
 
 function NSTextView.typingAttributes: CFDictionaryRef;
@@ -1483,7 +1483,7 @@ end;
 
 function NSTextView.usesFindPanel: LongBool;
 begin
-  Result := LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSTextView_usesFindPanel)), []));
+  Result := {%H-}LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSTextView_usesFindPanel)), []));
 end;
 
 procedure NSTextView.setAllowsDocumentBackgroundColorChange(_flag: LongBool);
@@ -1498,7 +1498,7 @@ end;
 
 function NSTextView.allowsDocumentBackgroundColorChange: LongBool;
 begin
-  Result := LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSTextView_allowsDocumentBackgroundColorChange)), []));
+  Result := {%H-}LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSTextView_allowsDocumentBackgroundColorChange)), []));
 end;
 
 procedure NSTextView.setDefaultParagraphStyle(_paragraphStyle: lobjc.id {NSParagraphStyle});
@@ -1524,7 +1524,7 @@ end;
 
 function NSTextView.isSelectable: LongBool;
 begin
-  Result := LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSTextView_isSelectable)), []));
+  Result := {%H-}LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSTextView_isSelectable)), []));
 end;
 
 procedure NSTextView.setSelectable(_flag: LongBool);
@@ -1539,7 +1539,7 @@ end;
 
 function NSTextView.isEditable: LongBool;
 begin
-  Result := LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSTextView_isEditable)), []));
+  Result := {%H-}LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSTextView_isEditable)), []));
 end;
 
 procedure NSTextView.setEditable(_flag: LongBool);
@@ -1554,7 +1554,7 @@ end;
 
 function NSTextView.isRichText: LongBool;
 begin
-  Result := LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSTextView_isRichText)), []));
+  Result := {%H-}LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSTextView_isRichText)), []));
 end;
 
 procedure NSTextView.setRichText(_flag: LongBool);
@@ -1569,7 +1569,7 @@ end;
 
 function NSTextView.importsGraphics: LongBool;
 begin
-  Result := LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSTextView_importsGraphics)), []));
+  Result := {%H-}LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSTextView_importsGraphics)), []));
 end;
 
 procedure NSTextView.setImportsGraphics(_flag: LongBool);
@@ -1599,7 +1599,7 @@ end;
 
 function NSTextView.isFieldEditor: LongBool;
 begin
-  Result := LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSTextView_isFieldEditor)), []));
+  Result := {%H-}LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSTextView_isFieldEditor)), []));
 end;
 
 procedure NSTextView.setFieldEditor(_flag: LongBool);
@@ -1614,7 +1614,7 @@ end;
 
 function NSTextView.usesFontPanel: LongBool;
 begin
-  Result := LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSTextView_usesFontPanel)), []));
+  Result := {%H-}LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSTextView_usesFontPanel)), []));
 end;
 
 procedure NSTextView.setUsesFontPanel(_flag: LongBool);
@@ -1629,7 +1629,7 @@ end;
 
 function NSTextView.isRulerVisible: LongBool;
 begin
-  Result := LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSTextView_isRulerVisible)), []));
+  Result := {%H-}LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSTextView_isRulerVisible)), []));
 end;
 
 procedure NSTextView.setBackgroundColor(_color: lobjc.id {NSColor});
@@ -1659,7 +1659,7 @@ end;
 
 function NSTextView.drawsBackground: LongBool;
 begin
-  Result := LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSTextView_drawsBackground)), []));
+  Result := {%H-}LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSTextView_drawsBackground)), []));
 end;
 
 procedure NSTextView.setSelectedRange(_charRange: NSRange);
@@ -1674,7 +1674,7 @@ end;
 
 function NSTextView.allowsUndo: LongBool;
 begin
-  Result := LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSTextView_allowsUndo)), []));
+  Result := {%H-}LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSTextView_allowsUndo)), []));
 end;
 
 procedure NSTextView.setAllowsUndo(_flag: LongBool);
@@ -1689,17 +1689,17 @@ end;
 
 function NSTextView.resignFirstResponder: LongBool;
 begin
-  Result := LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSTextView_resignFirstResponder)), []));
+  Result := {%H-}LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSTextView_resignFirstResponder)), []));
 end;
 
 function NSTextView.becomeFirstResponder: LongBool;
 begin
-  Result := LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSTextView_becomeFirstResponder)), []));
+  Result := {%H-}LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSTextView_becomeFirstResponder)), []));
 end;
 
 function NSTextView.smartInsertDeleteEnabled: LongBool;
 begin
-  Result := LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSTextView_smartInsertDeleteEnabled)), []));
+  Result := {%H-}LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSTextView_smartInsertDeleteEnabled)), []));
 end;
 
 procedure NSTextView.setSmartInsertDeleteEnabled(_flag: LongBool);

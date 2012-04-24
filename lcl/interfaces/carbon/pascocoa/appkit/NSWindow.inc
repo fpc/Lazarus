@@ -666,7 +666,7 @@ end;
 
 class function NSWindow.defaultDepthLimit: NSWindowDepth;
 begin
-  Result := NSWindowDepth(objc_msgSend(getClass, sel_registerName(PChar(StrNSWindow_defaultDepthLimit)), []));
+  Result := {%H-}NSWindowDepth(objc_msgSend(getClass, sel_registerName(PChar(StrNSWindow_defaultDepthLimit)), []));
 end;
 
 {.$ifdef  MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_3}
@@ -767,7 +767,7 @@ end;
 
 function NSWindow.isExcludedFromWindowsMenu: LongBool;
 begin
-  Result := LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSWindow_isExcludedFromWindowsMenu)), []));
+  Result := {%H-}LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSWindow_isExcludedFromWindowsMenu)), []));
 end;
 
 procedure NSWindow.setContentView(_aView: lobjc.id {NSView});
@@ -802,12 +802,12 @@ end;
 
 function NSWindow.windowNumber: Integer;
 begin
-  Result := Integer(objc_msgSend(Handle, sel_registerName(PChar(StrNSWindow_windowNumber)), []));
+  Result := {%H-}Integer(objc_msgSend(Handle, sel_registerName(PChar(StrNSWindow_windowNumber)), []));
 end;
 
 function NSWindow.styleMask: LongWord;
 begin
-  Result := LongWord(objc_msgSend(Handle, sel_registerName(PChar(StrNSWindow_styleMask)), []));
+  Result := {%H-}LongWord(objc_msgSend(Handle, sel_registerName(PChar(StrNSWindow_styleMask)), []));
 end;
 
 function NSWindow.fieldEditor_forObject(_createFlag: LongBool; _anObject: lobjc.id): lobjc.id;
@@ -927,7 +927,7 @@ end;
 
 function NSWindow.showsResizeIndicator: LongBool;
 begin
-  Result := LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSWindow_showsResizeIndicator)), []));
+  Result := {%H-}LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSWindow_showsResizeIndicator)), []));
 end;
 
 procedure NSWindow.setResizeIncrements(_increments: NSSize);
@@ -1014,7 +1014,7 @@ end;
 
 function NSWindow.isFlushWindowDisabled: LongBool;
 begin
-  Result := LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSWindow_isFlushWindowDisabled)), []));
+  Result := {%H-}LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSWindow_isFlushWindowDisabled)), []));
 end;
 
 procedure NSWindow.flushWindow;
@@ -1039,7 +1039,7 @@ end;
 
 function NSWindow.viewsNeedDisplay: LongBool;
 begin
-  Result := LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSWindow_viewsNeedDisplay)), []));
+  Result := {%H-}LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSWindow_viewsNeedDisplay)), []));
 end;
 
 procedure NSWindow.displayIfNeeded;
@@ -1064,13 +1064,13 @@ end;
 
 function NSWindow.isAutodisplay: LongBool;
 begin
-  Result := LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSWindow_isAutodisplay)), []));
+  Result := {%H-}LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSWindow_isAutodisplay)), []));
 end;
 
 {.$ifdef  MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_4}
 function NSWindow.preservesContentDuringLiveResize: LongBool;
 begin
-  Result := LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSWindow_preservesContentDuringLiveResize)), []));
+  Result := {%H-}LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSWindow_preservesContentDuringLiveResize)), []));
 end;
 
 procedure NSWindow.setPreservesContentDuringLiveResize(_flag: LongBool);
@@ -1106,7 +1106,7 @@ end;
 
 function NSWindow.resizeFlags: Integer;
 begin
-  Result := Integer(objc_msgSend(Handle, sel_registerName(PChar(StrNSWindow_resizeFlags)), []));
+  Result := {%H-}Integer(objc_msgSend(Handle, sel_registerName(PChar(StrNSWindow_resizeFlags)), []));
 end;
 
 procedure NSWindow.keyDown(_theEvent: lobjc.id {NSEvent});
@@ -1136,7 +1136,7 @@ end;
 
 function NSWindow.isReleasedWhenClosed: LongBool;
 begin
-  Result := LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSWindow_isReleasedWhenClosed)), []));
+  Result := {%H-}LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSWindow_isReleasedWhenClosed)), []));
 end;
 
 procedure NSWindow.miniaturize(_sender: lobjc.id);
@@ -1161,7 +1161,7 @@ end;
 
 function NSWindow.isZoomed: LongBool;
 begin
-  Result := LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSWindow_isZoomed)), []));
+  Result := {%H-}LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSWindow_isZoomed)), []));
 end;
 
 procedure NSWindow.zoom(_sender: lobjc.id);
@@ -1176,7 +1176,7 @@ end;
 
 function NSWindow.isMiniaturized: LongBool;
 begin
-  Result := LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSWindow_isMiniaturized)), []));
+  Result := {%H-}LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSWindow_isMiniaturized)), []));
 end;
 
 function NSWindow.tryToPerform_with(_anAction: SEL; _anObject: lobjc.id): LongBool;
@@ -1227,7 +1227,7 @@ end;
 
 function NSWindow.isMovableByWindowBackground: LongBool;
 begin
-  Result := LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSWindow_isMovableByWindowBackground)), []));
+  Result := {%H-}LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSWindow_isMovableByWindowBackground)), []));
 end;
 
 {.$endif}
@@ -1243,7 +1243,7 @@ end;
 
 function NSWindow.hidesOnDeactivate: LongBool;
 begin
-  Result := LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSWindow_hidesOnDeactivate)), []));
+  Result := {%H-}LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSWindow_hidesOnDeactivate)), []));
 end;
 
 procedure NSWindow.setCanHide(_flag: LongBool);
@@ -1258,7 +1258,7 @@ end;
 
 function NSWindow.canHide: LongBool;
 begin
-  Result := LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSWindow_canHide)), []));
+  Result := {%H-}LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSWindow_canHide)), []));
 end;
 
 procedure NSWindow.center;
@@ -1363,32 +1363,32 @@ end;
 
 function NSWindow.isDocumentEdited: LongBool;
 begin
-  Result := LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSWindow_isDocumentEdited)), []));
+  Result := {%H-}LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSWindow_isDocumentEdited)), []));
 end;
 
 function NSWindow.isVisible: LongBool;
 begin
-  Result := LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSWindow_isVisible)), []));
+  Result := {%H-}LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSWindow_isVisible)), []));
 end;
 
 function NSWindow.isKeyWindow: LongBool;
 begin
-  Result := LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSWindow_isKeyWindow)), []));
+  Result := {%H-}LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSWindow_isKeyWindow)), []));
 end;
 
 function NSWindow.isMainWindow: LongBool;
 begin
-  Result := LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSWindow_isMainWindow)), []));
+  Result := {%H-}LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSWindow_isMainWindow)), []));
 end;
 
 function NSWindow.canBecomeKeyWindow: LongBool;
 begin
-  Result := LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSWindow_canBecomeKeyWindow)), []));
+  Result := {%H-}LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSWindow_canBecomeKeyWindow)), []));
 end;
 
 function NSWindow.canBecomeMainWindow: LongBool;
 begin
-  Result := LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSWindow_canBecomeMainWindow)), []));
+  Result := {%H-}LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSWindow_canBecomeMainWindow)), []));
 end;
 
 procedure NSWindow.makeKeyWindow;
@@ -1423,7 +1423,7 @@ end;
 
 function NSWindow.worksWhenModal: LongBool;
 begin
-  Result := LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSWindow_worksWhenModal)), []));
+  Result := {%H-}LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSWindow_worksWhenModal)), []));
 end;
 
 function NSWindow.convertBaseToScreen(_aPoint: NSPoint): NSPoint;
@@ -1478,7 +1478,7 @@ end;
 
 function NSWindow.gState: Integer;
 begin
-  Result := Integer(objc_msgSend(Handle, sel_registerName(PChar(StrNSWindow_gState)), []));
+  Result := {%H-}Integer(objc_msgSend(Handle, sel_registerName(PChar(StrNSWindow_gState)), []));
 end;
 
 procedure NSWindow.setOneShot(_flag: LongBool);
@@ -1493,7 +1493,7 @@ end;
 
 function NSWindow.isOneShot: LongBool;
 begin
-  Result := LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSWindow_isOneShot)), []));
+  Result := {%H-}LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSWindow_isOneShot)), []));
 end;
 
 function NSWindow.dataWithEPSInsideRect(_rect: NSRect): CFDataRef;
@@ -1543,7 +1543,7 @@ end;
 
 function NSWindow.areCursorRectsEnabled: LongBool;
 begin
-  Result := LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSWindow_areCursorRectsEnabled)), []));
+  Result := {%H-}LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSWindow_areCursorRectsEnabled)), []));
 end;
 
 procedure NSWindow.invalidateCursorRectsForView(_aView: lobjc.id {NSView});
@@ -1574,7 +1574,7 @@ end;
 
 function NSWindow.allowsToolTipsWhenApplicationIsInactive: LongBool;
 begin
-  Result := LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSWindow_allowsToolTipsWhenApplicationIsInactive)), []));
+  Result := {%H-}LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSWindow_allowsToolTipsWhenApplicationIsInactive)), []));
 end;
 
 {.$endif}
@@ -1605,7 +1605,7 @@ end;
 
 function NSWindow.level: Integer;
 begin
-  Result := Integer(objc_msgSend(Handle, sel_registerName(PChar(StrNSWindow_level)), []));
+  Result := {%H-}Integer(objc_msgSend(Handle, sel_registerName(PChar(StrNSWindow_level)), []));
 end;
 
 procedure NSWindow.setDepthLimit(_limit: NSWindowDepth);
@@ -1620,7 +1620,7 @@ end;
 
 function NSWindow.depthLimit: NSWindowDepth;
 begin
-  Result := NSWindowDepth(objc_msgSend(Handle, sel_registerName(PChar(StrNSWindow_depthLimit)), []));
+  Result := {%H-}NSWindowDepth(objc_msgSend(Handle, sel_registerName(PChar(StrNSWindow_depthLimit)), []));
 end;
 
 procedure NSWindow.setDynamicDepthLimit(_flag: LongBool);
@@ -1635,7 +1635,7 @@ end;
 
 function NSWindow.hasDynamicDepthLimit: LongBool;
 begin
-  Result := LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSWindow_hasDynamicDepthLimit)), []));
+  Result := {%H-}LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSWindow_hasDynamicDepthLimit)), []));
 end;
 
 function NSWindow.screen: lobjc.id;
@@ -1650,7 +1650,7 @@ end;
 
 function NSWindow.canStoreColor: LongBool;
 begin
-  Result := LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSWindow_canStoreColor)), []));
+  Result := {%H-}LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSWindow_canStoreColor)), []));
 end;
 
 procedure NSWindow.setHasShadow(_hasShadow: LongBool);
@@ -1665,7 +1665,7 @@ end;
 
 function NSWindow.hasShadow: LongBool;
 begin
-  Result := LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSWindow_hasShadow)), []));
+  Result := {%H-}LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSWindow_hasShadow)), []));
 end;
 
 {.$ifdef  MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_2}
@@ -1702,13 +1702,13 @@ end;
 
 function NSWindow.isOpaque: LongBool;
 begin
-  Result := LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSWindow_isOpaque)), []));
+  Result := {%H-}LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSWindow_isOpaque)), []));
 end;
 
 {.$ifdef  MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_4}
 function NSWindow.displaysWhenScreenProfileChanges: LongBool;
 begin
-  Result := LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSWindow_displaysWhenScreenProfileChanges)), []));
+  Result := {%H-}LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSWindow_displaysWhenScreenProfileChanges)), []));
 end;
 
 procedure NSWindow.setDisplaysWhenScreenProfileChanges(_flag: LongBool);
@@ -1936,7 +1936,7 @@ end;
 
 function NSWindow.acceptsMouseMovedEvents: LongBool;
 begin
-  Result := LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSWindow_acceptsMouseMovedEvents)), []));
+  Result := {%H-}LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSWindow_acceptsMouseMovedEvents)), []));
 end;
 
 {.$ifdef  MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_2}
@@ -1952,7 +1952,7 @@ end;
 
 function NSWindow.ignoresMouseEvents: LongBool;
 begin
-  Result := LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSWindow_ignoresMouseEvents)), []));
+  Result := {%H-}LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSWindow_ignoresMouseEvents)), []));
 end;
 
 {.$endif}
@@ -2003,7 +2003,7 @@ end;
 
 function NSWindow.isSheet: LongBool;
 begin
-  Result := LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSWindow_isSheet)), []));
+  Result := {%H-}LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSWindow_isSheet)), []));
 end;
 
 function NSWindow.attachedSheet: lobjc.id;
@@ -2185,7 +2185,7 @@ end;
 
 function NSWindow.autorecalculatesKeyViewLoop: LongBool;
 begin
-  Result := LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSWindow_autorecalculatesKeyViewLoop)), []));
+  Result := {%H-}LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSWindow_autorecalculatesKeyViewLoop)), []));
 end;
 
 procedure NSWindow.recalculateKeyViewLoop;
@@ -2242,7 +2242,7 @@ end;
 
 function NSWindow.showsToolbarButton: LongBool;
 begin
-  Result := LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSWindow_showsToolbarButton)), []));
+  Result := {%H-}LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSWindow_showsToolbarButton)), []));
 end;
 
 {.$endif}

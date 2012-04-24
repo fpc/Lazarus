@@ -239,9 +239,9 @@ const
   StrNSFont_isFixedPitch = 'isFixedPitch';
   StrNSFont_boundingRectForGlyph = 'boundingRectForGlyph:';
   StrNSFont_advancementForGlyph = 'advancementForGlyph:';
-  StrNSFont_getBoundingRects_forGlyphs_count = 'getBoundingRects:forGlyphs:count:';
-  StrNSFont_getAdvancements_forGlyphs_count = 'getAdvancements:forGlyphs:count:';
-  StrNSFont_getAdvancements_forPackedGlyphs_length = 'getAdvancements:forPackedGlyphs:length:';
+  {%H-}StrNSFont_getBoundingRects_forGlyphs_count = 'getBoundingRects:forGlyphs:count:';
+  {%H-}StrNSFont_getAdvancements_forGlyphs_count = 'getAdvancements:forGlyphs:count:';
+  {%H-}StrNSFont_getAdvancements_forPackedGlyphs_length = 'getAdvancements:forPackedGlyphs:length:';
   StrNSFont_set = 'set';
   StrNSFont_setInContext = 'setInContext:';
   StrNSFont_printerFont = 'printerFont';
@@ -264,7 +264,7 @@ const
   StrNSFont_positionOfGlyph_struckOverGlyph_metricsExist = 'positionOfGlyph:struckOverGlyph:metricsExist:';
   StrNSFont_positionOfGlyph_struckOverRect_metricsExist = 'positionOfGlyph:struckOverRect:metricsExist:';
   StrNSFont_positionOfGlyph_forCharacter_struckOverRect = 'positionOfGlyph:forCharacter:struckOverRect:';
-  StrNSFont_positionOfGlyph_withRelation_toBaseGlyph_totalAdvancement_metricsExist = 'positionOfGlyph:withRelation:toBaseGlyph:totalAdvancement:metricsExist:';
+  {%H-}StrNSFont_positionOfGlyph_withRelation_toBaseGlyph_totalAdvancement_metricsExist = 'positionOfGlyph:withRelation:toBaseGlyph:totalAdvancement:metricsExist:';
 
 { NSFont }
 
@@ -532,12 +532,12 @@ end;
 
 function NSFont.numberOfGlyphs: LongWord;
 begin
-  Result := LongWord(objc_msgSend(Handle, sel_registerName(PChar(StrNSFont_numberOfGlyphs)), []));
+  Result := {%H-}LongWord(objc_msgSend(Handle, sel_registerName(PChar(StrNSFont_numberOfGlyphs)), []));
 end;
 
 function NSFont.mostCompatibleStringEncoding: NSStringEncoding;
 begin
-  Result := NSStringEncoding(objc_msgSend(Handle, sel_registerName(PChar(StrNSFont_mostCompatibleStringEncoding)), []));
+  Result := {%H-}NSStringEncoding(objc_msgSend(Handle, sel_registerName(PChar(StrNSFont_mostCompatibleStringEncoding)), []));
 end;
 
 function NSFont.glyphWithName(_aName: CFStringRef): NSGlyph;
@@ -607,7 +607,7 @@ end;
 
 function NSFont.isFixedPitch: LongBool;
 begin
-  Result := LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSFont_isFixedPitch)), []));
+  Result := {%H-}LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSFont_isFixedPitch)), []));
 end;
 
 function NSFont.boundingRectForGlyph(_aGlyph: NSGlyph): NSRect;
@@ -722,7 +722,7 @@ end;
 
 function NSFont.isBaseFont: LongBool;
 begin
-  Result := LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSFont_isBaseFont)), []));
+  Result := {%H-}LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSFont_isBaseFont)), []));
 end;
 
 function NSFont.afmDictionary: CFDictionaryRef;

@@ -348,7 +348,7 @@ end;
 
 function NSText.isEditable: LongBool;
 begin
-  Result := LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSText_isEditable)), []));
+  Result := {%H-}LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSText_isEditable)), []));
 end;
 
 procedure NSText.setEditable(_flag: LongBool);
@@ -363,7 +363,7 @@ end;
 
 function NSText.isSelectable: LongBool;
 begin
-  Result := LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSText_isSelectable)), []));
+  Result := {%H-}LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSText_isSelectable)), []));
 end;
 
 procedure NSText.setSelectable(_flag: LongBool);
@@ -378,7 +378,7 @@ end;
 
 function NSText.isRichText: LongBool;
 begin
-  Result := LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSText_isRichText)), []));
+  Result := {%H-}LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSText_isRichText)), []));
 end;
 
 procedure NSText.setRichText(_flag: LongBool);
@@ -393,7 +393,7 @@ end;
 
 function NSText.importsGraphics: LongBool;
 begin
-  Result := LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSText_importsGraphics)), []));
+  Result := {%H-}LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSText_importsGraphics)), []));
 end;
 
 procedure NSText.setImportsGraphics(_flag: LongBool);
@@ -433,7 +433,7 @@ end;
 
 function NSText.drawsBackground: LongBool;
 begin
-  Result := LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSText_drawsBackground)), []));
+  Result := {%H-}LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSText_drawsBackground)), []));
 end;
 
 procedure NSText.setFont(_obj: lobjc.id {NSFont});
@@ -510,7 +510,7 @@ end;
 
 function NSText.isFieldEditor: LongBool;
 begin
-  Result := LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSText_isFieldEditor)), []));
+  Result := {%H-}LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSText_isFieldEditor)), []));
 end;
 
 procedure NSText.setTextColor_range(_color: lobjc.id {NSColor}; _range: NSRange);
@@ -535,7 +535,7 @@ end;
 
 function NSText.usesFontPanel: LongBool;
 begin
-  Result := LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSText_usesFontPanel)), []));
+  Result := {%H-}LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSText_usesFontPanel)), []));
 end;
 
 procedure NSText.setUsesFontPanel(_flag: LongBool);
@@ -580,7 +580,7 @@ end;
 
 function NSText.isHorizontallyResizable: LongBool;
 begin
-  Result := LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSText_isHorizontallyResizable)), []));
+  Result := {%H-}LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSText_isHorizontallyResizable)), []));
 end;
 
 procedure NSText.setHorizontallyResizable(_flag: LongBool);
@@ -595,7 +595,7 @@ end;
 
 function NSText.isVerticallyResizable: LongBool;
 begin
-  Result := LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSText_isVerticallyResizable)), []));
+  Result := {%H-}{%H-}LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSText_isVerticallyResizable)), []));
 end;
 
 procedure NSText.setVerticallyResizable(_flag: LongBool);
@@ -815,7 +815,7 @@ end;
 
 function NSText.isRulerVisible: LongBool;
 begin
-  Result := LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSText_isRulerVisible)), []));
+  Result := {%H-}LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSText_isRulerVisible)), []));
 end;
 
 function NSText.selectedRange: NSRange;

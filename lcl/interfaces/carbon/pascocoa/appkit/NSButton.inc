@@ -220,7 +220,7 @@ end;
 
 function NSButton.state: Integer;
 begin
-  Result := Integer(objc_msgSend(Handle, sel_registerName(PChar(StrNSButton_state)), []));
+  Result := {%H-}Integer(objc_msgSend(Handle, sel_registerName(PChar(StrNSButton_state)), []));
 end;
 
 procedure NSButton.setState(_value: Integer);
@@ -235,7 +235,7 @@ end;
 
 function NSButton.isBordered: LongBool;
 begin
-  Result := LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSButton_isBordered)), []));
+  Result := {%H-}LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSButton_isBordered)), []));
 end;
 
 procedure NSButton.setBordered(_flag: LongBool);
@@ -250,7 +250,7 @@ end;
 
 function NSButton.isTransparent: LongBool;
 begin
-  Result := LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSButton_isTransparent)), []));
+  Result := {%H-}LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSButton_isTransparent)), []));
 end;
 
 procedure NSButton.setTransparent(_flag: LongBool);
@@ -300,7 +300,7 @@ end;
 
 function NSButton.keyEquivalentModifierMask: LongWord;
 begin
-  Result := LongWord(objc_msgSend(Handle, sel_registerName(PChar(StrNSButton_keyEquivalentModifierMask)), []));
+  Result := {%H-}LongWord(objc_msgSend(Handle, sel_registerName(PChar(StrNSButton_keyEquivalentModifierMask)), []));
 end;
 
 procedure NSButton.setKeyEquivalentModifierMask(_mask: LongWord);
@@ -400,7 +400,7 @@ end;
 
 function NSButton.allowsMixedState: LongBool;
 begin
-  Result := LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSButton_allowsMixedState)), []));
+  Result := {%H-}LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSButton_allowsMixedState)), []));
 end;
 
 procedure NSButton.setNextState;
@@ -420,7 +420,7 @@ end;
 
 function NSButton.showsBorderOnlyWhileMouseInside: LongBool;
 begin
-  Result := LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSButton_showsBorderOnlyWhileMouseInside)), []));
+  Result := {%H-}LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSButton_showsBorderOnlyWhileMouseInside)), []));
 end;
 
 procedure NSButton.setSound(_aSound: lobjc.id {NSSound});

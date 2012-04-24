@@ -270,7 +270,7 @@ end;
 
 function NSControl.tag: Integer;
 begin
-  Result := Integer(objc_msgSend(Handle, sel_registerName(PChar(StrNSControl_tag)), []));
+  Result := {%H-}Integer(objc_msgSend(Handle, sel_registerName(PChar(StrNSControl_tag)), []));
 end;
 
 procedure NSControl.setTag(_anInt: Integer);
@@ -285,7 +285,7 @@ end;
 
 function NSControl.selectedTag: Integer;
 begin
-  Result := Integer(objc_msgSend(Handle, sel_registerName(PChar(StrNSControl_selectedTag)), []));
+  Result := {%H-}Integer(objc_msgSend(Handle, sel_registerName(PChar(StrNSControl_selectedTag)), []));
 end;
 
 procedure NSControl.setIgnoresMultiClick(_flag: LongBool);
@@ -300,7 +300,7 @@ end;
 
 function NSControl.ignoresMultiClick: LongBool;
 begin
-  Result := LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSControl_ignoresMultiClick)), []));
+  Result := {%H-}LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSControl_ignoresMultiClick)), []));
 end;
 
 function NSControl.sendActionOn(_mask: Integer): Integer;
@@ -315,7 +315,7 @@ end;
 
 function NSControl.isContinuous: LongBool;
 begin
-  Result := LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSControl_isContinuous)), []));
+  Result := {%H-}LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSControl_isContinuous)), []));
 end;
 
 procedure NSControl.setContinuous(_flag: LongBool);
@@ -330,7 +330,7 @@ end;
 
 function NSControl.isEnabled: LongBool;
 begin
-  Result := LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSControl_isEnabled)), []));
+  Result := {%H-}LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSControl_isEnabled)), []));
 end;
 
 procedure NSControl.setEnabled(_flag: LongBool);
@@ -460,7 +460,7 @@ end;
 
 function NSControl.intValue: Integer;
 begin
-  Result := Integer(objc_msgSend(Handle, sel_registerName(PChar(StrNSControl_intValue)), []));
+  Result := {%H-}Integer(objc_msgSend(Handle, sel_registerName(PChar(StrNSControl_intValue)), []));
 end;
 
 function NSControl.floatValue: Single;
@@ -595,7 +595,7 @@ end;
 
 function NSControl.abortEditing: LongBool;
 begin
-  Result := LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSControl_abortEditing)), []));
+  Result := {%H-}LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSControl_abortEditing)), []));
 end;
 
 procedure NSControl.validateEditing;
@@ -647,7 +647,7 @@ end;
 
 function NSControl.refusesFirstResponder: LongBool;
 begin
-  Result := LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSControl_refusesFirstResponder)), []));
+  Result := {%H-}LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSControl_refusesFirstResponder)), []));
 end;
 
 function NSControl.attributedStringValue: lobjc.id;

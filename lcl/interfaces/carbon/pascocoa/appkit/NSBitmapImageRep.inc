@@ -298,32 +298,32 @@ end;
 
 function NSBitmapImageRep.isPlanar: LongBool;
 begin
-  Result := LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSBitmapImageRep_isPlanar)), []));
+  Result := {%H-}LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSBitmapImageRep_isPlanar)), []));
 end;
 
 function NSBitmapImageRep.samplesPerPixel: Integer;
 begin
-  Result := Integer(objc_msgSend(Handle, sel_registerName(PChar(StrNSBitmapImageRep_samplesPerPixel)), []));
+  Result := {%H-}Integer(objc_msgSend(Handle, sel_registerName(PChar(StrNSBitmapImageRep_samplesPerPixel)), []));
 end;
 
 function NSBitmapImageRep.bitsPerPixel: Integer;
 begin
-  Result := Integer(objc_msgSend(Handle, sel_registerName(PChar(StrNSBitmapImageRep_bitsPerPixel)), []));
+  Result := {%H-}Integer(objc_msgSend(Handle, sel_registerName(PChar(StrNSBitmapImageRep_bitsPerPixel)), []));
 end;
 
 function NSBitmapImageRep.bytesPerRow: Integer;
 begin
-  Result := Integer(objc_msgSend(Handle, sel_registerName(PChar(StrNSBitmapImageRep_bytesPerRow)), []));
+  Result := {%H-}Integer(objc_msgSend(Handle, sel_registerName(PChar(StrNSBitmapImageRep_bytesPerRow)), []));
 end;
 
 function NSBitmapImageRep.bytesPerPlane: Integer;
 begin
-  Result := Integer(objc_msgSend(Handle, sel_registerName(PChar(StrNSBitmapImageRep_bytesPerPlane)), []));
+  Result := {%H-}Integer(objc_msgSend(Handle, sel_registerName(PChar(StrNSBitmapImageRep_bytesPerPlane)), []));
 end;
 
 function NSBitmapImageRep.numberOfPlanes: Integer;
 begin
-  Result := Integer(objc_msgSend(Handle, sel_registerName(PChar(StrNSBitmapImageRep_numberOfPlanes)), []));
+  Result := {%H-}Integer(objc_msgSend(Handle, sel_registerName(PChar(StrNSBitmapImageRep_numberOfPlanes)), []));
 end;
 
 {.$ifdef  MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_4}

@@ -1,5 +1,4 @@
-{ $Id$
-                  -----------------------------------------
+{                 -----------------------------------------
                   carboncanvas.pp  -  Carbon device context
                   -----------------------------------------
 
@@ -127,7 +126,7 @@ type
     procedure Frame3D(var ARect: TRect; const FrameWidth: integer; const Style: TBevelCut);
     function GetClipRect: TRect;
     function GetLineLastPixelPos(PrevPos, NewPos: TPoint): TPoint;
-    function GetPixel(X, Y: Integer): TGraphicsColor; virtual;
+    function GetPixel({%H-}X, {%H-}Y: Integer): TGraphicsColor; virtual;
     function GetTextExtentPoint(Str: PChar; Count: Integer; var Size: TSize): Boolean;
     function GetTextMetrics(var TM: TTextMetric): Boolean;
     procedure InvertRectangle(X1, Y1, X2, Y2: Integer);
@@ -139,7 +138,7 @@ type
     procedure SetPixel(X, Y: Integer; AColor: TGraphicsColor);
     function StretchDraw(X, Y, Width, Height: Integer; SrcDC: TCarbonBitmapContext;
       XSrc, YSrc, SrcWidth, SrcHeight: Integer; Msk: TCarbonBitmap; XMsk,
-      YMsk: Integer; Rop: DWORD): Boolean;
+      YMsk: Integer; {%H-}Rop: DWORD): Boolean;
     function SetClipRegion(AClipRegion: TCarbonRegion; Mode: Integer): Integer;
     function CopyClipRegion(ADstRegion: TCarbonRegion): Integer;
 
@@ -790,7 +789,7 @@ var
 begin
   // LCL thinks that focus cannot be drawn outside focus rects, but carbon do that
   // => correct rect
-  OSError(GetThemeMetric(kThemeMetricFocusRectOutset, AOutSet),
+  OSError(GetThemeMetric(kThemeMetricFocusRectOutset, AOutSet{%H-}),
     Self, 'DrawFocusRect', 'GetThemeMetric');
   InflateRect(ARect, -AOutSet, -AOutSet);
   OSError(
@@ -1495,8 +1494,8 @@ begin
 
 
   UseLayer:=Assigned(MskImage)
-            or (CGImageGetWidth(Image)<>SrcWidth)
-            or (CGImageGetHeight(Image)<>SrcHeight);
+            or (CGImageGetWidth(Image){%H-}<>SrcWidth)
+            or (CGImageGetHeight(Image){%H-}<>SrcHeight);
 
   try
     if not UseLayer then
@@ -1512,7 +1511,7 @@ begin
       Layer := CGLayerCreateWithContext(SrcDC.CGContext, LayRect.size, nil);
 
       // the sub-image is out of edges
-      if (CGImageGetWidth(Image)<>SrcWidth) or (CGImageGetHeight(Image)<>SrcHeight) then
+      if (CGImageGetWidth(Image){%H-}<>SrcWidth) or (CGImageGetHeight(Image){%H-}<>SrcHeight) then
       begin
         with ImgRect do
           if XSrc<0 then origin.x:=SrcWidth-CGImageGetWidth(Image) else origin.x:=0;
@@ -1599,7 +1598,7 @@ var
   dx, dy: Integer;
 begin
   if isSamePoint(AWindowOfs, fWindowOfs) and isSamePoint(AViewOfs, fViewPortOfs) then Exit;
-  GetWindowViewTranslate(fWindowOfs, fViewPortOfs, dx, dy);
+  GetWindowViewTranslate(fWindowOfs, fViewPortOfs, dx{%H-}, dy{%H-});
   CGContextTranslateCTM(CGContext, -dx, -dy);
 
   fWindowOfs:=AWindowOfs;
@@ -1651,7 +1650,7 @@ function TCarbonControlContext.GetSize: TPoint;
 var
   R: TRect;
 begin
-  FOwner.GetClientRect(R);
+  FOwner.GetClientRect(R{%H-});
   Result.X := (R.Right - R.Left);
   Result.Y := (R.Bottom - R.Top);
 end;

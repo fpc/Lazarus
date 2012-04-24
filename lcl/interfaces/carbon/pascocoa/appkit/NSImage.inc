@@ -353,7 +353,7 @@ end;
 
 function NSImage.scalesWhenResized: LongBool;
 begin
-  Result := LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSImage_scalesWhenResized)), []));
+  Result := {%H-}LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSImage_scalesWhenResized)), []));
 end;
 
 procedure NSImage.setDataRetained(_flag: LongBool);
@@ -368,7 +368,7 @@ end;
 
 function NSImage.isDataRetained: LongBool;
 begin
-  Result := LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSImage_isDataRetained)), []));
+  Result := {%H-}LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSImage_isDataRetained)), []));
 end;
 
 procedure NSImage.setCachedSeparately(_flag: LongBool);
@@ -383,7 +383,7 @@ end;
 
 function NSImage.isCachedSeparately: LongBool;
 begin
-  Result := LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSImage_isCachedSeparately)), []));
+  Result := {%H-}LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSImage_isCachedSeparately)), []));
 end;
 
 procedure NSImage.setCacheDepthMatchesImageDepth(_flag: LongBool);
@@ -398,7 +398,7 @@ end;
 
 function NSImage.cacheDepthMatchesImageDepth: LongBool;
 begin
-  Result := LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSImage_cacheDepthMatchesImageDepth)), []));
+  Result := {%H-}LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSImage_cacheDepthMatchesImageDepth)), []));
 end;
 
 procedure NSImage.setBackgroundColor(_aColor: lobjc.id {NSColor});
@@ -428,7 +428,7 @@ end;
 
 function NSImage.usesEPSOnResolutionMismatch: LongBool;
 begin
-  Result := LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSImage_usesEPSOnResolutionMismatch)), []));
+  Result := {%H-}LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSImage_usesEPSOnResolutionMismatch)), []));
 end;
 
 procedure NSImage.setPrefersColorMatch(_flag: LongBool);
@@ -443,7 +443,7 @@ end;
 
 function NSImage.prefersColorMatch: LongBool;
 begin
-  Result := LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSImage_prefersColorMatch)), []));
+  Result := {%H-}LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSImage_prefersColorMatch)), []));
 end;
 
 procedure NSImage.setMatchesOnMultipleResolution(_flag: LongBool);
@@ -458,7 +458,7 @@ end;
 
 function NSImage.matchesOnMultipleResolution: LongBool;
 begin
-  Result := LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSImage_matchesOnMultipleResolution)), []));
+  Result := {%H-}LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSImage_matchesOnMultipleResolution)), []));
 end;
 
 procedure NSImage.dissolveToPoint_fraction(_point: NSPoint; _aFloat: Single);
@@ -608,7 +608,7 @@ end;
 
 function NSImage.isValid: LongBool;
 begin
-  Result := LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSImage_isValid)), []));
+  Result := {%H-}LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSImage_isValid)), []));
 end;
 
 procedure NSImage.lockFocus;
@@ -698,7 +698,7 @@ end;
 
 function NSImage.isFlipped: LongBool;
 begin
-  Result := LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSImage_isFlipped)), []));
+  Result := {%H-}LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSImage_isFlipped)), []));
 end;
 
 {.$ifdef  MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_2}

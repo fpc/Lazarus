@@ -35,7 +35,7 @@ interface
 
 uses
   MacOSAll,
-  Classes, SysUtils, Types, LCLType, LCLProc, LCLClasses, LMessages,
+  Classes, SysUtils, Types, LCLType, LCLProc,
   Controls, Forms, Graphics, Math, GraphType;
 
 function OSError(AResult: OSStatus; const AMethodName, ACallName: String;
@@ -648,7 +648,7 @@ end;
  ------------------------------------------------------------------------------}
 function GetCarbonThemeMetric(Metric: ThemeMetric; DefaultValue: Integer): Integer;
 begin
-  if OSError(GetThemeMetric(Metric, Result),
+  if OSError(GetThemeMetric(Metric, Result{%H-}),
     'GetCarbonThemeMetric', 'GetThemeMetric') then Result := DefaultValue;
 end;
 
@@ -701,7 +701,7 @@ var
   Data: Word;
   ControlSize: Integer;
 begin
-  FillChar(R, SizeOf(R), 0);
+  FillChar(R{%H-}, SizeOf(R), 0);
   GetControlBounds(Control, R);
   if ControlHeight then ControlSize := R.Bottom - R.Top
   else ControlSize := R.Right - R.Left;
@@ -731,7 +731,7 @@ var
   mp    : MacOSAll.point;
 begin
   Result := false;
-  if CreateEvent(kCFAllocatorDefault, kEventClassControl, kEventControlHitTest, 0, 0, event) <> noErr then
+  if CreateEvent(kCFAllocatorDefault, kEventClassControl, kEventControlHitTest, 0, 0, event{%H-}) <> noErr then
     Exit;
   mp.h := X;
   mp.v := Y;
@@ -814,7 +814,7 @@ begin
     StrRange.length := CFStringGetLength(AString);
     
     CFStringGetBytes(AString, StrRange, Encoding,
-      Ord('?'), False, nil, 0, StrSize);
+      Ord('?'), False, nil, 0, StrSize{%H-});
     SetLength(Result, StrSize);
 
     if StrSize > 0 then
@@ -1294,7 +1294,7 @@ end;
  ------------------------------------------------------------------------------}
 function CustomControlHandler(ANextHandler: EventHandlerCallRef;
   AEvent: EventRef;
-  AData: Pointer): OSStatus; {$IFDEF darwin}mwpascal;{$ENDIF}
+  {%H-}AData: Pointer): OSStatus; {$IFDEF darwin}mwpascal;{$ENDIF}
 var
   EventClass, EventKind: LongWord;
   Part: ControlPartCode;
@@ -1340,7 +1340,7 @@ var
   sz  : SInt16;
 begin
   //Note: the GetThemeFont is deprecated in 10.5. CoreText functions should be used!
-  MacOSAll.GetThemeFont(kThemeSystemFont, GetApplicationScript, @s, sz, st);
+  MacOSAll.GetThemeFont(kThemeSystemFont, GetApplicationScript, @s, sz{%H-{%H-}}, st);
   CarbonDefaultFont := s;
   CarbonDefaultFontSize := sz;
 end;

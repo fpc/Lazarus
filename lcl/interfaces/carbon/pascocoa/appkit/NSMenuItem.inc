@@ -240,7 +240,7 @@ end;
 
 class function NSMenuItem.usesUserKeyEquivalents: LongBool;
 begin
-  Result := LongBool(objc_msgSend(getClass, sel_registerName(PChar(StrNSMenuItem_usesUserKeyEquivalents)), []));
+  Result := {%H-}LongBool(objc_msgSend(getClass, sel_registerName(PChar(StrNSMenuItem_usesUserKeyEquivalents)), []));
 end;
 
 constructor NSMenuItem.separatorItem;
@@ -283,7 +283,7 @@ end;
 
 function NSMenuItem.hasSubmenu: LongBool;
 begin
-  Result := LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSMenuItem_hasSubmenu)), []));
+  Result := {%H-}LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSMenuItem_hasSubmenu)), []));
 end;
 
 procedure NSMenuItem.setSubmenu(_submenu: lobjc.id {NSMenu});
@@ -335,7 +335,7 @@ end;
 {.$endif}
 function NSMenuItem.isSeparatorItem: LongBool;
 begin
-  Result := LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSMenuItem_isSeparatorItem)), []));
+  Result := {%H-}LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSMenuItem_isSeparatorItem)), []));
 end;
 
 procedure NSMenuItem.setKeyEquivalent(_aKeyEquivalent: CFStringRef);
@@ -365,7 +365,7 @@ end;
 
 function NSMenuItem.keyEquivalentModifierMask: LongWord;
 begin
-  Result := LongWord(objc_msgSend(Handle, sel_registerName(PChar(StrNSMenuItem_keyEquivalentModifierMask)), []));
+  Result := {%H-}LongWord(objc_msgSend(Handle, sel_registerName(PChar(StrNSMenuItem_keyEquivalentModifierMask)), []));
 end;
 
 function NSMenuItem.userKeyEquivalent: CFStringRef;
@@ -385,7 +385,7 @@ end;
 
 function NSMenuItem.mnemonicLocation: LongWord;
 begin
-  Result := LongWord(objc_msgSend(Handle, sel_registerName(PChar(StrNSMenuItem_mnemonicLocation)), []));
+  Result := {%H-}LongWord(objc_msgSend(Handle, sel_registerName(PChar(StrNSMenuItem_mnemonicLocation)), []));
 end;
 
 function NSMenuItem.mnemonic: CFStringRef;
@@ -430,7 +430,7 @@ end;
 
 function NSMenuItem.state: NSCellStateValue;
 begin
-  Result := NSCellStateValue(Integer(objc_msgSend(Handle, sel_registerName(PChar(StrNSMenuItem_state)), [])));
+  Result := NSCellStateValue({%H-}{%H-}Integer(objc_msgSend(Handle, sel_registerName(PChar(StrNSMenuItem_state)), [])));
 end;
 
 procedure NSMenuItem.setOnStateImage(_image: lobjc.id {NSImage});
@@ -490,7 +490,7 @@ end;
 
 function NSMenuItem.isEnabled: LongBool;
 begin
-  Result := LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSMenuItem_isEnabled)), []));
+  Result := {%H-}LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSMenuItem_isEnabled)), []));
 end;
 
 {.$ifdef  MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_3}
@@ -506,7 +506,7 @@ end;
 
 function NSMenuItem.isAlternate: LongBool;
 begin
-  Result := LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSMenuItem_isAlternate)), []));
+  Result := {%H-}LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSMenuItem_isAlternate)), []));
 end;
 
 procedure NSMenuItem.setIndentationLevel(_indentationLevel: Integer);
@@ -521,7 +521,7 @@ end;
 
 function NSMenuItem.indentationLevel: Integer;
 begin
-  Result := Integer(objc_msgSend(Handle, sel_registerName(PChar(StrNSMenuItem_indentationLevel)), []));
+  Result := {%H-}Integer(objc_msgSend(Handle, sel_registerName(PChar(StrNSMenuItem_indentationLevel)), []));
 end;
 
 {.$endif}
@@ -567,7 +567,7 @@ end;
 
 function NSMenuItem.tag: PtrInt;
 begin
-  Result := Integer(objc_msgSend(Handle, sel_registerName(PChar(StrNSMenuItem_tag)), []));
+  Result := {%H-}Integer(objc_msgSend(Handle, sel_registerName(PChar(StrNSMenuItem_tag)), []));
 end;
 
 procedure NSMenuItem.setRepresentedObject(_anObject: lobjc.id);

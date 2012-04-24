@@ -229,7 +229,7 @@ end;
 
 function NSFontManager.isMultiple: LongBool;
 begin
-  Result := LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSFontManager_isMultiple)), []));
+  Result := {%H-}LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSFontManager_isMultiple)), []));
 end;
 
 function NSFontManager.selectedFont: lobjc.id;
@@ -399,7 +399,7 @@ end;
 
 function NSFontManager.isEnabled: LongBool;
 begin
-  Result := LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSFontManager_isEnabled)), []));
+  Result := {%H-}LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSFontManager_isEnabled)), []));
 end;
 
 procedure NSFontManager.setEnabled_(_flag: LongBool);
@@ -429,7 +429,7 @@ end;
 
 function NSFontManager.sendAction: LongBool;
 begin
-  Result := LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSFontManager_sendAction)), []));
+  Result := {%H-}LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSFontManager_sendAction)), []));
 end;
 
 procedure NSFontManager.setDelegate_(_anObject: lobjc.id);
