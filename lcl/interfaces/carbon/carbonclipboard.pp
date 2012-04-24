@@ -27,7 +27,7 @@ interface
 
 uses
  // rtl+ftl
-  Types, Classes, SysUtils, Math, Contnrs,
+  Classes, SysUtils,
  // carbon bindings
   MacOSAll,
  // LCL
@@ -90,7 +90,7 @@ begin
   end;
 end;
 
-procedure FinishStreamData( info: UnivPtr ); mwpascal;
+procedure FinishStreamData( {%H-}info: UnivPtr ); mwpascal;
 begin
   //do nothing;
 end;
@@ -128,7 +128,7 @@ var
   data  : CGImageRef;
   prov  : CGImageSourceRef;
 begin
-  PasteboardCopyItemFlavorData(PasteBoard, ID, UTI, Data);
+  PasteboardCopyItemFlavorData(PasteBoard, ID, UTI, Data{%H-});
   prov := CGImageSourceCreateWithData(Data, nil);
   Result:=CGImageSourceCreateImageAtIndex(prov, 0, nil);
   CFRelease(prov);
@@ -348,15 +348,15 @@ begin
   Pasteboard := FPasteboards[ClipboardType];
 
   PasteboardSynchronize(Pasteboard);
-  if OSError(PasteboardGetItemCount(Pasteboard, Count), Self, SName,
+  if OSError(PasteboardGetItemCount(Pasteboard, Count{%H-}), Self, SName,
     'PasteboardGetItemCount') then Exit;
   if Count < 1 then Exit;
   
   for I := 1 to Count do
   begin
-    if OSError(PasteboardGetItemIdentifier(Pasteboard, I, ID), Self, SName,
+    if OSError(PasteboardGetItemIdentifier(Pasteboard, I, ID{%H-}), Self, SName,
       'PasteboardGetItemIdentifier') then Continue;
-    if OSError(PasteboardCopyItemFlavors(Pasteboard, ID, Flavors), Self, SName,
+    if OSError(PasteboardCopyItemFlavors(Pasteboard, ID, Flavors{%H-}), Self, SName,
       'PasteboardCopyItemFlavors') then Continue;
       
     UTI := FFormats[FormatID];
@@ -381,7 +381,7 @@ begin
 
     //DebugLn('TCarbonClipboard.GetData Paste FlavorType: ' + CFStringToStr(UTI));
 
-    if OSError(PasteboardCopyItemFlavorData(Pasteboard, ID, UTI, FlavorData),
+    if OSError(PasteboardCopyItemFlavorData(Pasteboard, ID, UTI, FlavorData{%H-}),
       Self, SGetData, 'PasteboardCopyItemFlavorData') then Continue;
     try
       if CFDataGetLength(FlavorData) = 0 then
@@ -457,7 +457,7 @@ begin
   Pasteboard := FPasteboards[ClipboardType];
 
   PasteboardSynchronize(Pasteboard);
-  if OSError(PasteboardGetItemCount(Pasteboard, C), Self, SName,
+  if OSError(PasteboardGetItemCount(Pasteboard, C{%H-}), Self, SName,
     'PasteboardGetItemCount') then Exit;
   if C < 1 then Exit;
 
@@ -466,9 +466,9 @@ begin
   try
     for I := 1 to C do
     begin
-      if OSError(PasteboardGetItemIdentifier(Pasteboard, I, ID), Self, SName,
+      if OSError(PasteboardGetItemIdentifier(Pasteboard, I, ID{%H-}), Self, SName,
         'PasteboardGetItemIdentifier') then Continue;
-      if OSError(PasteboardCopyItemFlavors(Pasteboard, ID, Flavors), Self, SName,
+      if OSError(PasteboardCopyItemFlavors(Pasteboard, ID, Flavors{%H-}), Self, SName,
         'PasteboardCopyItemFlavors') then Continue;
 
       FlavorCount := CFArrayGetCount(Flavors);
@@ -485,11 +485,11 @@ begin
           // reserved text format!
           if FormatID < 4 then FormatID:=1;
 
-        if Formats.IndexOf(Pointer(FormatID)) = -1 then
+        if Formats.IndexOf({%H-}Pointer(FormatID)) = -1 then
         begin
           //DebugLn('TCarbonClipboard.GetFormats ' + FormatToMimeType(FormatID) +
           //  ' ' + CFStringToStr(UTI));
-          Formats.Add(Pointer(FormatID));
+          Formats.Add({%H-}Pointer(FormatID));
         end;
       end;
     end;
@@ -500,14 +500,14 @@ begin
       // to Bitmap. Since most of the delphi software is using CF_Bitmap as
       // a common format, it's necessary to "emulate" bitmap presence!
       FormatID:=FindFormat(kUTTypeBMP);
-      if (FormatID>0) and (Formats.IndexOf(Pointer(FormatID))=-1) then
-        Formats.Add(Pointer(FormatID));
+      if (FormatID>0) and (Formats.IndexOf({%H-}Pointer(FormatID))=-1) then
+        Formats.Add({%H-}Pointer(FormatID));
     end;
 
 
     Count := Formats.Count;
     GetMem(List, Count * SizeOf(TClipboardFormat));
-    for I := 0 to Count - 1 do List[i] := TClipboardFormat(Formats[I]);
+    for I := 0 to Count - 1 do List[i] := {%H-}TClipboardFormat(Formats[I]);
   finally
     Formats.Free;
   end;

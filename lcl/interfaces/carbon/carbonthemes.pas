@@ -13,7 +13,7 @@ interface
 
 uses
   // rtl
-  Types, Classes, SysUtils, Math,
+  Types, Classes, SysUtils,
   // carbon bindings
   MacOSAll,
   // lcl

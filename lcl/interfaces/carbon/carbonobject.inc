@@ -32,7 +32,7 @@
 }
 function AppAccessibilityEventHandler(inHandlerCallRef: EventHandlerCallRef;
                           inEvent: EventRef;
-                          inUserData: Pointer): OSStatus; {$IFDEF darwin}mwpascal;{$ENDIF}
+                          {%H-}inUserData: Pointer): OSStatus; {$IFDEF darwin}mwpascal;{$ENDIF}
 var
   lAXRole, lInputStr: CFStringRef;
   lInputAXObject: AXUIElementRef;
@@ -62,11 +62,11 @@ begin
         GetEventParameter(inEvent, kEventParamAccessibleAttributeValue,
           typeCFTypeRef, nil, SizeOf(AXUIElementRef), nil, @lElement);
 
-        AXUIElementCopyAttributeValue(lElement, CFSTR('AXRoleDescription'), lAXRole);
+        AXUIElementCopyAttributeValue(lElement, CFSTR('AXRoleDescription'), lAXRole{%H-});
         lInputPasStr := CFStringToStr(lAXRole);
         if lInputPasStr = 'memoborder' then
         begin
-          AXUIElementCopyAttributeValue(lElement, CFSTR('AXChildren'), lAXArray);
+          AXUIElementCopyAttributeValue(lElement, CFSTR('AXChildren'), lAXArray{%H-});
           lElement2 := CFArrayGetValueAtIndex(lAXArray, 0);
           SetEventParameter(inEvent, kEventParamAccessibleAttributeValue, typeCFTypeRef,
             SizeOf(AXUIElementRef), @lElement2);
@@ -102,7 +102,7 @@ Q&A 1061 in Developer Documentation Technical Q&As.
 
 function QuitEventHandler(inHandlerCallRef: EventHandlerCallRef;
                           inEvent: EventRef;
-                          inUserData: Pointer): OSStatus; {$IFDEF darwin}mwpascal;{$ENDIF}
+                          {%H-}inUserData: Pointer): OSStatus; {$IFDEF darwin}mwpascal;{$ENDIF}
   // This event handler is used to override the kEventClassApplication
   // kEventAppQuit event while inside our event loop (EventLoopEventHandler).
   // It simply calls through to the next handler and, if that handler returns
@@ -122,8 +122,8 @@ begin
 end;
 
 
-function EventLoopEventHandler(inHandlerCallRef: EventHandlerCallRef;
-                               inEvent: EventRef;
+function EventLoopEventHandler({%H-}inHandlerCallRef: EventHandlerCallRef;
+                               {%H-}inEvent: EventRef;
                                inUserData: Pointer): OSStatus; {$IFDEF darwin}mwpascal;{$ENDIF}
   // This code contains the standard Carbon event dispatch loop,
   // as per "Inside Macintosh: Handling Carbon Events", Listing 3-10,
@@ -210,7 +210,7 @@ end;
  ------------------------------------------------------------------------------}
 function CarbonApp_CommandProcess(ANextHandler: EventHandlerCallRef;
   AEvent: EventRef;
-  AWidget: TCarbonWidget): OSStatus; {$IFDEF darwin}mwpascal;{$ENDIF}
+  {%H-}AWidget: TCarbonWidget): OSStatus; {$IFDEF darwin}mwpascal;{$ENDIF}
 var
   Command: HICommandExtended;
   CarbonMenu: TCarbonMenu;
@@ -242,7 +242,7 @@ begin
       (Command.menuRef <> nil) then
     begin
       if not OSError(GetMenuItemProperty(Command.menuRef, Command.menuItemIndex,
-          LAZARUS_FOURCC, WIDGETINFO_FOURCC, SizeOf(TCarbonMenu), S, @CarbonMenu),
+          LAZARUS_FOURCC, WIDGETINFO_FOURCC, SizeOf(TCarbonMenu), S{%H-}, @CarbonMenu),
         SName, 'GetMenuItemProperty') then
       begin
         {$IFDEF VerboseMenu}
@@ -276,7 +276,7 @@ begin
           end;
 
           if CarbonMenu.Parent.Dismissed=kHIMenuDismissedBySelection then begin
-            FillChar(Msg, SizeOf(Msg), 0);
+            FillChar(Msg{%H-}, SizeOf(Msg), 0);
             Msg.msg := LM_ACTIVATE;
             CarbonMenu.LCLMenuItem.Dispatch(Msg);
             if assigned(CarbonMenu.Parent) then  // if parent not closed
@@ -300,7 +300,7 @@ end;
  ------------------------------------------------------------------------------}
 function CarbonApp_Shown(ANextHandler: EventHandlerCallRef;
   AEvent: EventRef;
-  AWidget: TCarbonWidget): OSStatus; {$IFDEF darwin}mwpascal;{$ENDIF}
+  {%H-}AWidget: TCarbonWidget): OSStatus; {$IFDEF darwin}mwpascal;{$ENDIF}
 begin
   {$IFDEF VerboseAppEvent}
     DebugLn('CarbonApp_Shown');
@@ -317,7 +317,7 @@ end;
  ------------------------------------------------------------------------------}
 function CarbonApp_Hidden(ANextHandler: EventHandlerCallRef;
   AEvent: EventRef;
-  AWidget: TCarbonWidget): OSStatus; {$IFDEF darwin}mwpascal;{$ENDIF}
+  {%H-}AWidget: TCarbonWidget): OSStatus; {$IFDEF darwin}mwpascal;{$ENDIF}
 begin
   {$IFDEF VerboseAppEvent}
     DebugLn('CarbonApp_Hidden');
@@ -334,7 +334,7 @@ end;
  ------------------------------------------------------------------------------}
 function CarbonApp_Deactivated(ANextHandler: EventHandlerCallRef;
   AEvent: EventRef;
-  AWidget: TCarbonWidget): OSStatus; {$IFDEF darwin}mwpascal;{$ENDIF}
+  {%H-}AWidget: TCarbonWidget): OSStatus; {$IFDEF darwin}mwpascal;{$ENDIF}
 begin
   {$IFDEF VerboseAppEvent}
     DebugLn('CarbonApp_Deactivate');
@@ -351,7 +351,7 @@ end;
  ------------------------------------------------------------------------------}
 function CarbonApp_Activated(ANextHandler: EventHandlerCallRef;
   AEvent: EventRef;
-  AWidget: TCarbonWidget): OSStatus; {$IFDEF darwin}mwpascal;{$ENDIF}
+  {%H-}AWidget: TCarbonWidget): OSStatus; {$IFDEF darwin}mwpascal;{$ENDIF}
 begin
   {$IFDEF VerboseAppEvent}
     DebugLn('CarbonApp_Activate');
@@ -368,8 +368,8 @@ end;
   Name:  CarbonApp_Open
   Handles application open
  ------------------------------------------------------------------------------}
-function CarbonApp_Open(var AEvent: AppleEvent; var Reply: AppleEvent;
-  Data: SInt32): OSErr; {$IFDEF darwin}mwpascal;{$ENDIF}
+function CarbonApp_Open(var AEvent: AppleEvent; var {%H-}Reply: AppleEvent;
+  {%H-}Data: SInt32): OSErr; {$IFDEF darwin}mwpascal;{$ENDIF}
 var
   DocList: AEDescList;
   FileCount: Integer;
@@ -387,18 +387,18 @@ begin
     DebugLn('CarbonApp_Open');
   {$ENDIF}
   
-  if OSError(AEGetParamDesc(AEvent, keyDirectObject, typeAEList, DocList),
+  if OSError(AEGetParamDesc(AEvent, keyDirectObject, typeAEList, DocList{%H-}),
     SName, 'AEGetParamDesc') then Exit;
 
   try
-    if OSError(AECountItems(DocList, FileCount), SName, 'AECountItems') then Exit;
+    if OSError(AECountItems(DocList, FileCount{%H-}), SName, 'AECountItems') then Exit;
 
 
     SetLength(Files, 0);
     
     for FileIdx := 1 to FileCount do
     begin
-      if OSError(AEGetNthDesc(DocList, FileIdx, typeFSRef, @Keyword, FileDesc),
+      if OSError(AEGetNthDesc(DocList, FileIdx, typeFSRef, @Keyword, FileDesc{%H-}),
         SName, 'AEGetNthDesc') then Continue;
 
       if OSError(AEGetDescData(FileDesc, @FileRef, SizeOf(FSRef)),
@@ -439,8 +439,8 @@ end;
   Name:  CarbonApp_Quit
   Handles application quit
  ------------------------------------------------------------------------------}
-function CarbonApp_Quit(var AEvent: AppleEvent; var Reply: AppleEvent;
-  Data: SInt32): OSErr; {$IFDEF darwin}mwpascal;{$ENDIF}
+function CarbonApp_Quit(var {%H-}AEvent: AppleEvent; var {%H-}Reply: AppleEvent;
+  {%H-}Data: SInt32): OSErr; {$IFDEF darwin}mwpascal;{$ENDIF}
 begin
   {$IFDEF VerboseAppEvent}
     DebugLn('CarbonApp_Quit');
@@ -599,7 +599,7 @@ begin
   repeat
     FreePendingWidgets;
     if ReceiveNextEvent(0, nil, kEventDurationNoWait, True,
-      Event) <> noErr then Break;
+      Event{%H-}) <> noErr then Break;
       
     CurEventClass.Int := GetEventClass(Event);
     CurEventKind.Int := GetEventKind(Event);
@@ -646,7 +646,7 @@ begin
   
   // Simply wait forever for the next event.
   // Don't pull it, so we can handle it later.
-  OSError(ReceiveNextEvent(0, nil, kEventDurationForever, False, Event),
+  OSError(ReceiveNextEvent(0, nil, kEventDurationForever, False, Event{%H-}),
     Self, 'AppWaitMessage', 'ReceiveNextEvent');
 end;
 
@@ -844,7 +844,7 @@ var	Width, Height: Integer;
 	  SubImageBytesPerRow := (((ARect.Right - ARect.Left) * BitsPerPixel)  + 7) div 8;
 	  if (BitsPerPixel > 1) then 
 		SubImageBytesPerRow := ((((Arect.Right - ARect.Left) * (BitsPerPixel div 8)) + $F) and not PtrUInt($F));
-	  DataSize := SubImageBytesPerRow * (ARect.Bottom - ARect.Top);
+	  DataSize := SubImageBytesPerRow {%H-}* (ARect.Bottom - ARect.Top);
 	  Result := System.GetMem(DataSize);
       if (Result = nil) then RaiseMemoryAllocationError;
 
@@ -866,7 +866,7 @@ var	Width, Height: Integer;
 begin
   Result := False;
 
-  FillChar(ARawImage, SizeOf(ARawImage), 0);
+  FillChar(ARawImage{%H-}, SizeOf(ARawImage), 0);
   ARawImage.Init;
   RawImage_DescriptionFromCarbonBitmap(ARawImage.Description, ABitmap);
 
@@ -1242,7 +1242,7 @@ begin
   {$ENDIF}
   
   // hide process
-  if OSError(GetCurrentProcess(Proc), Self, SName, SGetCurrentProc) then Exit;
+  if OSError(GetCurrentProcess(Proc{%H-}), Self, SName, SGetCurrentProc) then Exit;
     OSError(ShowHideProcess(Proc, False), Self, SName, SShowHideProc);
 end;
 
@@ -1262,7 +1262,7 @@ begin
   {$ENDIF}
 
   // show process
-  if OSError(GetCurrentProcess(Proc), Self, SName, SGetCurrentProc) then Exit;
+  if OSError(GetCurrentProcess(Proc{%H-}), Self, SName, SGetCurrentProc) then Exit;
   OSError(ShowHideProcess(Proc, True), Self, SName, SShowHideProc);
 end;
 
@@ -1285,7 +1285,7 @@ begin
     34. How do I bring all my windows to the front?
   *)
 
-  if OSError(GetCurrentProcess(Proc), Self, SName, SGetCurrentProc) then Exit;
+  if OSError(GetCurrentProcess(Proc{%H-}), Self, SName, SGetCurrentProc) then Exit;
   OSError(SetFrontProcess(Proc), Self, SName, 'SetFrontProcess');
 end;
 
@@ -1428,7 +1428,7 @@ end;
 
   Calls the timer function associated with specified timer
  ------------------------------------------------------------------------------}
-procedure TimerCallback(inTimer: EventLoopTimerRef; inUserData: UnivPtr);
+procedure TimerCallback(inTimer: EventLoopTimerRef; {%H-}inUserData: UnivPtr);
 var
   TimerFunc: TWSTimerProc;
 begin
@@ -1468,11 +1468,11 @@ begin
   begin
     if OSError(InstallEventLoopTimer(GetMainEventLoop,
       Interval / 1000, Interval / 1000, // converts msec -> sec
-      EventLoopTimerUPP(@TimerCallback), nil, Timer), Self,
+      EventLoopTimerUPP(@TimerCallback), nil, Timer{%H-}), Self,
       'CreateTimer', 'InstallEventLoopTimer') then Exit;
       
     FTimerMap.Add(Timer, TimerFunc);
-    Result := THandle(Timer)
+    Result := {%H-}THandle(Timer)
   end;
   
   {$IFDEF VerboseTimer}
@@ -1496,7 +1496,7 @@ begin
   Result := FTimerMap.Delete(TimerHandle);
   
   if Result then // valid timer
-    OSError(RemoveEventLoopTimer(EventLoopTimerRef(TimerHandle)), Self,
+    OSError(RemoveEventLoopTimer({%H-}EventLoopTimerRef(TimerHandle)), Self,
       'DestroyTimer', 'RemoveEventLoopTimer');
 end;
 

@@ -98,7 +98,7 @@ begin
   {$ENDIF}
   
   if not CheckWidget(Handle, 'ClientToScreen') then Exit;
-  Result := TCarbonWidget(Handle).GetScreenBounds(R);
+  Result := TCarbonWidget(Handle).GetScreenBounds(R{%H-});
   
   if Result then
   begin
@@ -407,6 +407,8 @@ begin
   H := Desc.Height;
   if H < 1 then H := 1;
 
+  {$Note: check if DevDesc is the right parameter for QueryDescription}
+  FillByte(DevDesc{%H-},SizeOf(DevDesc),0);
   QueryDescription(DevDesc, [riqfRGB, riqfAlpha], W, H);
 
   if DevDesc.IsEqual(Desc)
@@ -542,7 +544,7 @@ begin
     DebugLn('TCarbonWidgetSet.DeleteCriticalSection Section: ' + DbgS(CritSection));
   {$ENDIF}
   
-  ACritSec := System.PRTLCriticalSection(CritSection);
+  ACritSec := {%H-}System.PRTLCriticalSection(CritSection);
 
   System.DoneCriticalsection(ACritSec^);
   Dispose(ACritSec);
@@ -775,7 +777,7 @@ begin
     DebugLn('TCarbonWidgetSet.EnterCriticalSection Section: ' + DbgS(CritSection));
   {$ENDIF}
   
-  ACritSec:=System.PRTLCriticalSection(CritSection);
+  ACritSec:={%H-}System.PRTLCriticalSection(CritSection);
   System.EnterCriticalsection(ACritSec^);
 end;
 
@@ -786,7 +788,7 @@ var
   activeDspys: array[0..1024] of CGDirectDisplayID;
   i: integer;
 begin
-  if OSError(CGGetActiveDisplayList(1024, activeDspys, Count),
+  if OSError(CGGetActiveDisplayList(1024, activeDspys, Count{%H-}),
     'TCarbonWidgetSet.EnumDisplayMonitors', 'CGGetActiveDisplayList') then Exit(False);
   Result := True;
   for i := 0 to Count - 1 do
@@ -840,7 +842,7 @@ begin
   if (lpLogFont^.lfCharSet = DEFAULT_CHARSET) and (lpLogFont^.lfFaceName = '') then
   begin
     // all system fonts
-    if OSError(ATSUFontCount(FamilyCount), SName, 'ATSUFontCount') then Exit;
+    if OSError(ATSUFontCount(FamilyCount{%H-}), SName, 'ATSUFontCount') then Exit;
     
     GetMem(FamilyListPtr, SizeOf(ATSUFontID) * FamilyCount);
     try
@@ -856,8 +858,8 @@ begin
         FontName := CarbonFontIDToFontName(PFamily^);
         if FontName <> '' then // execute callback
         begin
-          FillChar(EnumLogFont, SizeOf(EnumLogFont), #0);
-          FillChar(Metric, SizeOf(Metric), #0);
+          FillChar(EnumLogFont{%H-}, SizeOf(EnumLogFont), #0);
+          FillChar(Metric{%H-}, SizeOf(Metric), #0);
           FontType := 0;
           EnumLogFont.elfLogFont.lfFaceName := FontName;
           // TODO: get all attributes
@@ -1323,7 +1325,7 @@ var
 begin
   Result := False;
   
-  GetGlobalMouse(Pt);
+  GetGlobalMouse(Pt{%H-});
   
   lpPoint.X := Pt.h;
   lpPoint.Y := Pt.v;
@@ -1393,7 +1395,7 @@ begin
   begin
     DC := TCarbonDeviceContext(PaintDC);
     affine := CGContextGetCTM(DC.CGContext);
-    TCarbonWidget(WindowHandle).GetBounds(r);
+    TCarbonWidget(WindowHandle).GetBounds(r{%H-});
     OriginDiff.x := Round(affine.tx);
     OriginDiff.y := Round((r.Bottom - r.Top) - affine.ty);
     Result := true;
@@ -1524,9 +1526,9 @@ begin
   if DisplayID = CGMainDisplayID then
   begin
     lpmi^.dwFlags := MONITORINFOF_PRIMARY;
-    if OSError(DMGetGDeviceByDisplayID(DisplayIDType(DisplayID), DeviceHandle, True),
+    if OSError(DMGetGDeviceByDisplayID(DisplayIDType(DisplayID), DeviceHandle{%H-}, True),
       'TCarbonWidgetSet.GetMonitorInfo', 'DMGetGDeviceByDisplayID') then Exit;
-    if OSError(GetAvailableWindowPositioningBounds(DeviceHandle, availRect),
+    if OSError(GetAvailableWindowPositioningBounds(DeviceHandle, availRect{%H-}),
       'TCarbonWidgetSet.GetMonitorInfo', 'GetAvailableWindowPositioningBounds') then Exit;
     with availRect do
       lpmi^.rcWork := Types.Rect(left, top, right, bottom);
@@ -1547,7 +1549,7 @@ end;
 function TCarbonWidgetSet.GetKeyState(nVirtKey: Integer): Smallint;
 const
   StateDown    = SmallInt($FF80);
-  StateToggled = SmallInt($0001);
+  //StateToggled = SmallInt($0001);
 begin
   Result := 0;
 
@@ -1629,7 +1631,7 @@ begin
     Width := TCarbonBitmap(AObject).Width;
     Height := TCarbonBitmap(AObject).Height;
 
-    FillChar(DIB, SizeOf(TDIBSection), 0);
+    FillChar(DIB{%H-}, SizeOf(TDIBSection), 0);
 
     {dsBM - BITMAP}
     DIB.dsBm.bmType := $4D42;
@@ -1944,7 +1946,7 @@ begin
   //COLOR_GRADIENTACTIVECAPTION, COLOR_ACTIVECAPTION:
   //COLOR_GRADIENTINACTIVECAPTION, COLOR_INACTIVECAPTION:
   COLOR_MENU:
-    R := GetThemeBrushAsColor(kThemeBrushMenuBackground, Depth, True, C);
+    R := GetThemeBrushAsColor(kThemeBrushMenuBackground, Depth, True, C{%H-});
   COLOR_MENUTEXT:
     R := GetThemeTextColor(kThemeTextColorMenuItemActive, Depth, True, C);
   COLOR_WINDOWFRAME, COLOR_ACTIVEBORDER, COLOR_INACTIVEBORDER,

@@ -101,8 +101,8 @@ type
     procedure AppMinimize; override;
     procedure AppRestore; override;
     procedure AppBringToFront; override;
-    procedure AppSetIcon(const Small, Big: HICON); override;
-    procedure AppSetTitle(const ATitle: string); override;
+    procedure AppSetIcon(const {%H-}Small, Big: HICON); override;
+    procedure AppSetTitle(const {%H-}ATitle: string); override;
 
     function  GetLCLCapability(ACapability: TLCLCapability): PtrUInt; override;
     
@@ -111,9 +111,9 @@ type
     procedure DCRedraw(CanvasHandle: HDC); override;
     procedure DCSetAntialiasing(CanvasHandle: HDC; AEnabled: Boolean); override;
 
-    procedure SetDesigning(AComponent: TComponent); override;
+    procedure SetDesigning({%H-}AComponent: TComponent); override;
 
-    function  IsHelpKey(Key: Word; Shift: TShiftState): Boolean; override;
+    function  IsHelpKey({%H-}Key: Word; {%H-}Shift: TShiftState): Boolean; override;
 
     // create and destroy
     function CreateTimer(Interval: integer; TimerFunc: TWSTimerProc) : THandle; override;

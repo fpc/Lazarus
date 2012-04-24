@@ -1,6 +1,5 @@
 {%MainUnit carbonint.pas}
 
-{ $Id$ }
 {******************************************************************************
   All Carbon interface communication implementations.
   This are the implementation of the overrides of the Carbon Interface for the
