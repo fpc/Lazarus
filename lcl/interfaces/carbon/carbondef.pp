@@ -37,9 +37,7 @@ uses
   // libs
   MacOSAll,
   // wdgetset
-  WSLCLClasses, LCLClasses,
-  // LCL + RTL
-  Types, Classes, SysUtils, Controls, LCLType, LCLProc, Graphics, Math, Contnrs,
+  WSLCLClasses, Classes, SysUtils, Controls, LCLType, LCLProc, Graphics, Contnrs,
   AVL_Tree, LMessages, LCLMessageGlue;
 
 var
@@ -116,8 +114,8 @@ type
     function Enable(AEnable: Boolean): Boolean; virtual; abstract;
     
     function GetNextFocus(Start: TCarbonWidget; Next: Boolean): ControlRef;
-    procedure GetScrollInfo(SBStyle: Integer; var ScrollInfo: TScrollInfo); virtual;
-    function GetScrollbarVisible(SBStyle: Integer): Boolean; virtual;
+    procedure GetScrollInfo({%H-}SBStyle: Integer; var {%H-}ScrollInfo: TScrollInfo); virtual;
+    function GetScrollbarVisible({%H-}SBStyle: Integer): Boolean; virtual;
     function GetBounds(var ARect: TRect): Boolean; virtual; abstract;
     function GetScreenBounds(var ARect: TRect): Boolean; virtual; abstract;
     function SetBounds(const ARect: TRect): Boolean; virtual; abstract;
@@ -129,7 +127,7 @@ type
     procedure ScrollRect(DX, DY: Integer; ARect: TRect); virtual;
     procedure SetFocus; virtual; abstract;
     procedure SetColor(const AColor: TColor); virtual; abstract;
-    function SetScrollInfo(SBStyle: Integer; const ScrollInfo: TScrollInfo): Integer; virtual;
+    function SetScrollInfo({%H-}SBStyle: Integer; const {%H-}ScrollInfo: TScrollInfo): Integer; virtual;
     procedure SetFont(const AFont: TFont); virtual; abstract;
     procedure ShowHide(AVisible: Boolean); virtual; abstract;
     
@@ -775,7 +773,7 @@ const
 begin
   GetGlobalMouse(P);
 
-  OSError(GetWindowBounds(GetTopParentWindow, kWindowStructureRgn, R),
+  OSError(GetWindowBounds(GetTopParentWindow, kWindowStructureRgn, R{%H-}),
     Self, SName, SGetWindowBounds);
   Result:=GetWindowRelativePos(P.h - R.left, P.v - R.top);
 end;
@@ -886,12 +884,14 @@ end;
 procedure TCarbonWidget.GetScrollInfo(SBStyle: Integer;
   var ScrollInfo: TScrollInfo);
 begin
+  // ToDo: TCarbonWidget.GetScrollInfo
   DebugLn(ClassName + '.GetScrollInfo unsupported or not implemented!');
 end;
 
 function TCarbonWidget.GetScrollbarVisible(SBStyle: Integer): Boolean;
 begin
   Result := False;
+  // ToDo TCarbonWidget.GetScrollbarVisible
   DebugLn(ClassName + '.GetScrollbarVisible unsupported or not implemented!');
 end;
 
@@ -971,7 +971,7 @@ var
 const
   SName = 'ScrollBy';
 begin
-  OSError(HIViewGetBounds(Content, R),
+  OSError(HIViewGetBounds(Content, R{%H-}),
     Self, SName, 'HIViewGetBounds');
   OSError(HIViewSetBoundsOrigin(Content, R.origin.x - DX, R.origin.y - DY),
     Self, SName, 'HIViewSetBoundsOrigin');
@@ -1011,6 +1011,7 @@ function TCarbonWidget.SetScrollInfo(SBStyle: Integer;
   const ScrollInfo: TScrollInfo): Integer;
 begin
   Result := 0;
+  // ToDo: TCarbonWidget.SetScrollInfo
   DebugLn(ClassName + '.SetScrollInfo unsupported or not implemented!');
 end;
 
