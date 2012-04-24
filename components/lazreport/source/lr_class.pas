@@ -4690,11 +4690,18 @@ end;
 function TfrLineView.PointInView(aX, aY: Integer): Boolean;
 var
   bx, by, bx1, by1, w1: Integer;
+  tmp: Double;
 begin
-  if FrameStyle=frsDouble then
-    w1 := Round(FrameWidth * 1.5)
+
+  if FrameWidth<1.0 then
+    tmp := 1.0
   else
-    w1 := Round(FrameWidth);
+    tmp := FrameWidth;
+
+  if FrameStyle=frsDouble then
+    w1 := Round(tmp * 1.5)
+  else
+    w1 := Round(tmp);
 
   bx:=x-w1;
   by:=y-w1;
