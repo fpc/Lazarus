@@ -145,7 +145,7 @@ type
 
   TGridFlagsOption = (gfEditorUpdateLock, gfNeedsSelectActive, gfEditorTab,
     gfRevEditorTab, gfVisualChange, gfDefRowHeightChanged, gfColumnsLocked,
-    gfEditingDone, gfSizingStarted, gfPainting);
+    gfEditingDone, gfSizingStarted, gfPainting, gfUpdatingSize);
   TGridFlags = set of TGridFlagsOption;
 
   TSortOrder = (soAscending, soDescending);
@@ -4473,6 +4473,14 @@ begin
     LM_HSCROLL, LM_VSCROLL:
       if csDesigning in ComponentState then
         exit;
+    {$IFDEF MSWINDOWS}
+    // Ignore LM_SIZE while another sizing is being processed.
+    // Windows sends WM_SIZE when showing/hiding scrollbars.
+    // Scrollbars can be shown/hidden when processing DoOnChangeBounds.
+    LM_SIZE:
+      if gfUpdatingSize in FGridFlags then
+        exit;
+    {$ENDIF}
   end;
   inherited WndProc(TheMessage);
 end;
@@ -6301,6 +6309,8 @@ var
 begin
   inherited DoOnChangeBounds;
 
+  FGridFlags := FGridFlags + [gfUpdatingSize];
+
   AVailSpace.x := ClientWidth - FGCache.MaxClientXY.x;
   AVailSpace.y := ClientHeight - FGCache.MaxClientXY.y;
   NewTopLeft := FTopLeft;
@@ -6329,6 +6339,8 @@ begin
     DoTopLeftChange(True);
   end else
     VisualChange;
+
+  FGridFlags := FGridFlags - [gfUpdatingSize];
 end;
 
 procedure TCustomGrid.DoPasteFromClipboard;
