@@ -388,7 +388,7 @@ function CheckGDIObject(const GDIObject: HGDIOBJ; const AMethodName: String; APa
 function CheckBitmap(const Bitmap: HBITMAP; const AMethodName: String; AParamName: String = ''): Boolean;
 function CheckCursor(const Cursor: HCURSOR; const AMethodName: String; AParamName: String = ''): Boolean;
 
-function FloodFillBitmap(const Bitmap: TCarbonBitmap; X,Y: Integer; ABorderColor, FillColor: TColor; isBorderColor: Boolean): Boolean;
+function FloodFillBitmap(const Bitmap: TCarbonBitmap; X,Y: Integer; {%H-}ABorderColor, FillColor: TColor; {%H-}isBorderColor: Boolean): Boolean;
 
 var
   StockSystemFont: TCarbonFont;
@@ -506,9 +506,9 @@ type
 const
 // missed error codes
   kQDNoColorHWCursorSupport = -3951;
-  kQDCursorAlreadyRegistered = -3952;
-  kQDCursorNotRegistered = -3953;
-  kQDCorruptPICTDataErr = -3954;
+  {%H-}kQDCursorAlreadyRegistered = -3952;
+  {%H-}kQDCursorNotRegistered = -3953;
+  {%H-}kQDCorruptPICTDataErr = -3954;
   
   kThemeCursorAnimationDelay = 70;
   LazarusCursorInfix = '_lazarus_';
@@ -2553,7 +2553,7 @@ type
     ai  : Byte;
   end;
 
-procedure GetRGBA24(Bitmap: TCarbonBitmap; X,Y: Integer; var r,g,b,a: Byte; const pos: TColorPos);
+procedure GetRGBA24(Bitmap: TCarbonBitmap; X,Y: Integer; out r,g,b,a: Byte; const pos: TColorPos);
 var
   line  : PByteArray;
 begin
@@ -2579,7 +2579,7 @@ begin
   line^[x*3+pos.bi]:=b;
 end;
 
-procedure GetRGBA32(Bitmap: TCarbonBitmap; X,Y: Integer; var r,g,b,a: Byte; const pos: TColorPos);
+procedure GetRGBA32(Bitmap: TCarbonBitmap; X,Y: Integer; out r,g,b,a: Byte; const pos: TColorPos);
 var
   line  : PByteArray;
 begin
@@ -2626,7 +2626,7 @@ const
   dx : array [0..3] of Integer = (-1,1,0,0);
   dy : array [0..3] of Integer = (0,0,-1,1);
 var
-  GetRGBA: procedure (Bitmap: TCarbonBitmap; X,Y: Integer; var r,g,b,a: Byte; const pos: TColorPos);
+  GetRGBA: procedure (Bitmap: TCarbonBitmap; X,Y: Integer; out r,g,b,a: Byte; const pos: TColorPos);
   SetRGBA: procedure (Bitmap: TCarbonBitmap; X,Y: Integer; r,g,b,a: Byte; const pos: TColorPos);
 begin
   FillColorRef:=ColorToRGB(FillColor);

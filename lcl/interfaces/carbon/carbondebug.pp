@@ -1,4 +1,3 @@
-{ $Id$ }
 {
                      -------------------------------------
                      carbondebug.pp  -  graphic dump utils 

@@ -1,5 +1,4 @@
-{ $Id$
-                    -----------------------------------------
+{                   -----------------------------------------
                     carbondef.pp  -  Type & Const definitions
                     -----------------------------------------
 
@@ -94,9 +93,9 @@ type
     procedure FocusKilled; virtual;
     procedure BoundsChanged; virtual;
     procedure ControlAdded; virtual;
-    function FilterKeyPress(SysKey: Boolean; const Char: TUTF8Char): Boolean; virtual;
-    procedure ProcessKeyEvent(const msg: TLMKey); virtual;
-    function NeedDeliverMouseEvent(Msg: Integer; const AMessage): Boolean; virtual;
+    function FilterKeyPress({%H-}SysKey: Boolean; const {%H-}Char: TUTF8Char): Boolean; virtual;
+    procedure ProcessKeyEvent(const {%H-}msg: TLMKey); virtual;
+    function NeedDeliverMouseEvent({%H-}Msg: Integer; const {%H-}AMessage): Boolean; virtual;
   public
     constructor Create(const AObject: TWinControl; const AParams: TCreateParams);
     destructor Destroy; override;
@@ -484,8 +483,8 @@ var
   ClientChanged: Boolean;
 begin
   if not Resizing then begin
-    GetBounds(R);
-    GetClientRect(ClientR);
+    GetBounds(R{%H-});
+    GetClientRect(ClientR{%H-});
     LCLR:=LCLObject.BoundsRect;
     LCLClientR:=LCLObject.ClientRect;
     RChanged:=not CompareRect(@R,@LCLR);
@@ -570,7 +569,7 @@ begin
     DebugLn('TCarbonWidget.BoundsChanged ' + LCLObject.Name);
   {$ENDIF}
 
-  GetBounds(WidgetBounds);
+  GetBounds(WidgetBounds{%H-});
   OldBounds := LCLObject.BoundsRect;
   
   {$IFDEF VerboseBounds}
@@ -771,7 +770,7 @@ var
 const
   SName = 'GetMousePos';
 begin
-  GetGlobalMouse(P);
+  GetGlobalMouse(P{%H-});
 
   OSError(GetWindowBounds(GetTopParentWindow, kWindowStructureRgn, R{%H-}),
     Self, SName, SGetWindowBounds);
