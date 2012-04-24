@@ -32,6 +32,7 @@ type
   public
     procedure CompleteBlock(Src, ExpectedSrc: string;
                 OnlyIfCursorBlockIndented: boolean = false);
+    procedure CompleteBlock(Src: string; OnlyIfCursorBlockIndented: boolean = false);
     procedure CompleteBlockFail(Src: string;
                 OnlyIfCursorBlockIndented: boolean = false);
   published
@@ -147,6 +148,12 @@ begin
   finally
     ExpectedCode.Free;
   end;
+end;
+
+procedure TTestCodetoolsCompleteBlock.CompleteBlock(Src: string;
+  OnlyIfCursorBlockIndented: boolean);
+begin
+  CompleteBlock(Src,Src,OnlyIfCursorBlockIndented);
 end;
 
 procedure TTestCodetoolsCompleteBlock.CompleteBlockFail(Src: string;
@@ -269,6 +276,23 @@ begin
                +'  repeat|'+LineEnding
                +'  until ;'+LineEnding
                +'end.');
+  CompleteBlock(
+     'begin'+LineEnding
+    +'  if FindFirstUTF8(Dir+FileMask,faAnyFile,FileInfo)=0 then begin'+LineEnding
+    +'    repeat'+LineEnding
+    +'      // check if special file'+LineEnding
+    +'      if (FileInfo.Name=''.'') or (FileInfo.Name=''..'') or (FileInfo.Name='''')'+LineEnding
+    +'      then'+LineEnding
+    +'        continue;'+LineEnding
+    +'      |'+LineEnding
+    +'      if FilenameIsPascalUnit(FileInfo.Name,false) then begin'+LineEnding
+    +'        List.Add(Dir+FileInfo.Name);'+LineEnding
+    +'      end else if (FileInfo.Attr and faDirectory)>0 then begin'+LineEnding
+    +'        CollectUnits(Dir+);'+LineEnding
+    +'      end;'+LineEnding
+    +'    until FindNextUTF8(FileInfo)<>0;'+LineEnding
+    +'  end;'+LineEnding
+    +'  FindCloseUTF8(FileInfo);'+LineEnding);
 end;
 
 procedure TTestCodetoolsCompleteBlock.TestCompleteBlockCase;
