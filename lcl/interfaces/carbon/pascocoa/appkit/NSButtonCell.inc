@@ -28,7 +28,7 @@ type
     { These constants were accidentally reversed so that NSMomentaryPushButton lit and
        NSMomentaryLight pushed. These names are now deprecated }
 
-    NSMomentaryPushButton		= 0,
+    NSMomentaryPushButton		= 0{%H-},
     NSMomentaryLight			= 7
 
   );
@@ -60,7 +60,7 @@ type
 
     NSSmallIconButtonBezelStyle  = 2
 
-  );
+  {%H-});
 
   _BCFlags = record
 {$ifdef __BIG_ENDIAN__}

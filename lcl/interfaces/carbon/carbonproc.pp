@@ -1340,7 +1340,7 @@ var
   sz  : SInt16;
 begin
   //Note: the GetThemeFont is deprecated in 10.5. CoreText functions should be used!
-  MacOSAll.GetThemeFont(kThemeSystemFont, GetApplicationScript, @s, sz{%H-{%H-}}, st);
+  MacOSAll.GetThemeFont(kThemeSystemFont, GetApplicationScript, @s, sz{%H-}, st{%H-});
   CarbonDefaultFont := s;
   CarbonDefaultFontSize := sz;
 end;

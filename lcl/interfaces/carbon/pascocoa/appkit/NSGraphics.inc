@@ -50,7 +50,7 @@ type
 type
   NSWindowOrderingMode = (
     NSWindowAbove = 1, 
-    NSWindowBelow = 1, 
+    NSWindowBelow = 1{%H-},
     NSWindowOut = 0
   );
 

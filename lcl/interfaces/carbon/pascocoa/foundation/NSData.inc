@@ -161,7 +161,7 @@ end;
 
 function NSData.length: LongWord;
 begin
-  Result := LongWord(objc_msgSend(Handle, sel_registerName(PChar(StrNSData_length)), []));
+  Result := {%H-}LongWord(objc_msgSend(Handle, sel_registerName(PChar(StrNSData_length)), []));
 end;
 
 function NSData.bytes: Pointer;

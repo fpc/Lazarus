@@ -229,7 +229,7 @@ end;
 
 class function NSGraphicsContext.currentContextDrawingToScreen: LongBool;
 begin
-  Result := LongBool(objc_msgSend(getClass, sel_registerName(PChar(StrNSGraphicsContext_currentContextDrawingToScreen)), []));
+  Result := {%H-}LongBool(objc_msgSend(getClass, sel_registerName(PChar(StrNSGraphicsContext_currentContextDrawingToScreen)), []));
 end;
 
 class procedure NSGraphicsContext.saveGraphicsState_;
@@ -259,7 +259,7 @@ end;
 
 function NSGraphicsContext.isDrawingToScreen: LongBool;
 begin
-  Result := LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSGraphicsContext_isDrawingToScreen)), []));
+  Result := {%H-}LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSGraphicsContext_isDrawingToScreen)), []));
 end;
 
 procedure NSGraphicsContext.saveGraphicsState;
@@ -300,7 +300,7 @@ end;
 {.$ifdef  MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_4}
 function NSGraphicsContext.isFlipped: LongBool;
 begin
-  Result := LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSGraphicsContext_isFlipped)), []));
+  Result := {%H-}LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSGraphicsContext_isFlipped)), []));
 end;
 
 {.$endif}
@@ -316,7 +316,7 @@ end;
 
 function NSGraphicsContext.shouldAntialias: LongBool;
 begin
-  Result := LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSGraphicsContext_shouldAntialias)), []));
+  Result := {%H-}LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSGraphicsContext_shouldAntialias)), []));
 end;
 
 procedure NSGraphicsContext.setImageInterpolation(_interpolation: NSImageInterpolation);

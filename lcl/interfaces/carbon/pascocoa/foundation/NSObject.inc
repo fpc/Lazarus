@@ -297,7 +297,7 @@ end;
 
 function NSObject.version: PtrInt;
 begin
-  Result := PtrInt(objc_msgSend(Handle, sel_registerName(PChar(Str_version)), []));
+  Result := {%H-}PtrInt(objc_msgSend(Handle, sel_registerName(PChar(Str_version)), []));
 end;
 
 procedure NSObject.setVersion(aVersion: PtrInt);

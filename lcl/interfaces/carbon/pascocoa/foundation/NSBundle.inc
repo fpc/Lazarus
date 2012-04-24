@@ -207,13 +207,13 @@ end;
 
 function NSBundle.load: LongBool;
 begin
-  Result := LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSBundle_load)), []));
+  Result := {%H-}LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSBundle_load)), []));
 end;
 
 {.$ifdef  MAC_OS_X_VERSION_10_2 <= MAC_OS_X_VERSION_MAX_ALLOWED}
 function NSBundle.isLoaded: LongBool;
 begin
-  Result := LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSBundle_isLoaded)), []));
+  Result := {%H-}LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSBundle_isLoaded)), []));
 end;
 
 {.$endif}

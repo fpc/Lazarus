@@ -39,7 +39,7 @@ type
 type
   NSWritingDirection = (
     NSWritingDirectionNatural = 1, 
-    NSWritingDirectionLeftToRight = 0, 
+    NSWritingDirectionLeftToRight = 0{%H-},
     NSWritingDirectionRightToLeft
   );
 
