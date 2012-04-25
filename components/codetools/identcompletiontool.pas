@@ -2366,6 +2366,7 @@ begin
             end;
           end;
         end;
+        // check missing 'do' after 'with'
         if CurrentIdentifierList.StartUpAtomInFrontIs('WITH')
         and (not CurrentIdentifierList.StartUpAtomBehindIs('DO'))
         and (CurrentIdentifierList.StartBracketLvl=0)

@@ -952,7 +952,7 @@ begin
     // open failed
     if not FileExistsUTF8(AFilename) then begin
       // file does not exist -> delete it from recent file list
-      RemoveFromRecentList(AFilename,EnvironmentOptions.RecentPackageFiles);
+      RemoveFromRecentList(AFilename,EnvironmentOptions.RecentPackageFiles,rltFile);
       UpdateEnvironment;
     end;
   end;
@@ -1188,7 +1188,7 @@ begin
     then begin
       if DeleteFileUTF8(OldPkgFilename) then begin
         RemoveFromRecentList(OldPkgFilename,
-                             EnvironmentOptions.RecentPackageFiles);
+                             EnvironmentOptions.RecentPackageFiles,rltFile);
       end else begin
         IDEMessageDialog(lisPkgMangDeleteFailed,
           Format(lisPkgMangUnableToDeleteFile, ['"', OldPkgFilename, '"']),
@@ -1626,7 +1626,7 @@ end;
 procedure TPkgManager.AddFileToRecentPackages(const Filename: string);
 begin
   AddToRecentList(Filename,EnvironmentOptions.RecentPackageFiles,
-                  EnvironmentOptions.MaxRecentPackageFiles);
+                  EnvironmentOptions.MaxRecentPackageFiles,rltFile);
   SetRecentPackagesMenu;
   MainIDE.SaveEnvironment;
 end;
@@ -2119,7 +2119,7 @@ begin
     AFilename:=APackage.Filename;
     if FileExistsCached(AFilename) then begin
       AddToRecentList(AFilename,EnvironmentOptions.RecentPackageFiles,
-                      EnvironmentOptions.MaxRecentPackageFiles);
+                      EnvironmentOptions.MaxRecentPackageFiles,rltFile);
       SetRecentPackagesMenu;
     end;
   end;
@@ -2180,7 +2180,7 @@ begin
   and (not (pofRevert in Flags)) then begin
     DoQuestionDlg(lisPkgMangInvalidFileExtension,
       Format(lisPkgMangTheFileIsNotALazarusPackage, ['"', AFilename, '"']));
-    RemoveFromRecentList(AFilename,EnvironmentOptions.RecentPackageFiles);
+    RemoveFromRecentList(AFilename,EnvironmentOptions.RecentPackageFiles,rltFile);
     SetRecentPackagesMenu;
     exit;
   end;
@@ -2193,7 +2193,7 @@ begin
     DoQuestionDlg(lisPkgMangInvalidPackageFilename,
       Format(lisPkgMangThePackageFileNameInIsNotAValidLazarusPackageName, ['"',
         AlternativePkgName, '"', #13, '"', AFilename, '"']));
-    RemoveFromRecentList(AFilename,EnvironmentOptions.RecentPackageFiles);
+    RemoveFromRecentList(AFilename,EnvironmentOptions.RecentPackageFiles,rltFile);
     SetRecentPackagesMenu;
     exit;
   end;
@@ -2201,7 +2201,7 @@ begin
   // add to recent packages
   if pofAddToRecent in Flags then begin
     AddToRecentList(AFilename,EnvironmentOptions.RecentPackageFiles,
-                    EnvironmentOptions.MaxRecentPackageFiles);
+                    EnvironmentOptions.MaxRecentPackageFiles,rltFile);
     SetRecentPackagesMenu;
   end;
 
@@ -2220,7 +2220,7 @@ begin
       IDEMessageDialog(lisFileNotFound,
         Format(lisPkgMangFileNotFound, ['"', AFilename, '"']),
         mtError,[mbCancel]);
-      RemoveFromRecentList(AFilename,EnvironmentOptions.RecentPackageFiles);
+      RemoveFromRecentList(AFilename,EnvironmentOptions.RecentPackageFiles,rltFile);
       SetRecentPackagesMenu;
       Result:=mrCancel;
       exit;

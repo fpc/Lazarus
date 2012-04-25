@@ -968,7 +968,7 @@ var
     aProjPath:=SwitchPathDelims(aProjPath, True);
     WholeFilePath:=ExtractFilePath(Application.ExeName) + aProjPath + aProjFile;
     if FileIsWritable(aProjPath) and FileIsWritable(WholeFilePath) then
-      AddToRecentList(WholeFilePath, FRecentProjectFiles, FMaxRecentProjectFiles);
+      AddToRecentList(WholeFilePath,FRecentProjectFiles,FMaxRecentProjectFiles,rltFile);
   end;
 
   procedure LoadBackupInfo(var BackupInfo: TBackupInfo; const Path:string);
@@ -1132,39 +1132,39 @@ begin
         // files
         LazarusDirectory:=XMLConfig.GetValue(Path+'LazarusDirectory/Value',LazarusDirectory);
         LoadRecentList(XMLConfig,FLazarusDirHistory,
-           Path+'LazarusDirectory/History/');
+           Path+'LazarusDirectory/History/',rltFile);
         if FLazarusDirHistory.Count=0 then
           FLazarusDirHistory.Add(ProgramDirectory(true));
         CompilerFilename:=TrimFilename(XMLConfig.GetValue(
                               Path+'CompilerFilename/Value',CompilerFilename));
         LoadRecentList(XMLConfig,FCompilerFileHistory,
-           Path+'CompilerFilename/History/');
+           Path+'CompilerFilename/History/',rltFile);
         if FCompilerFileHistory.Count=0 then
           GetDefaultCompilerFilenames(FCompilerFileHistory);
         FPCSourceDirectory:=XMLConfig.GetValue(
            Path+'FPCSourceDirectory/Value',FPCSourceDirectory);
         LoadRecentList(XMLConfig,FFPCSourceDirHistory,
-           Path+'FPCSourceDirectory/History/');
+           Path+'FPCSourceDirectory/History/',rltFile);
         if FFPCSourceDirHistory.Count=0 then begin
 
         end;
         MakeFilename:=TrimFilename(XMLConfig.GetValue(
            Path+'MakeFilename/Value',MakeFilename));
         LoadRecentList(XMLConfig,FMakeFileHistory,
-           Path+'MakeFilename/History/');
+           Path+'MakeFilename/History/',rltFile);
         if FMakeFileHistory.Count=0 then
           GetDefaultMakeFilenames(FMakeFileHistory);
 
         TestBuildDirectory:=XMLConfig.GetValue(
            Path+'TestBuildDirectory/Value',TestBuildDirectory);
         LoadRecentList(XMLConfig,FTestBuildDirHistory,
-           Path+'TestBuildDirectory/History/');
+           Path+'TestBuildDirectory/History/',rltFile);
         if FTestBuildDirHistory.Count=0 then
           GetDefaultTestBuildDirs(FTestBuildDirHistory);
         CompilerMessagesFilename:=XMLConfig.GetValue(
            Path+'CompilerMessagesFilename/Value',CompilerMessagesFilename);
         LoadRecentList(XMLConfig, FCompilerMessagesFileHistory,
-           Path+'CompilerMessagesFilename/History/');
+           Path+'CompilerMessagesFilename/History/',rltFile);
 
         // backup
         LoadBackupInfo(FBackupInfoProjectFiles
@@ -1177,7 +1177,7 @@ begin
         DebuggerFilename:=XMLConfig.GetValue(
            Path+'DebuggerFilename/Value','');
         LoadRecentList(XMLConfig,FDebuggerFileHistory,
-           Path+'DebuggerFilename/History/');
+           Path+'DebuggerFilename/History/',rltFile);
         DebuggerSearchPath:=XMLConfig.GetValue(
            Path+'DebuggerSearchPath/Value','');
         // Debugger General Options
@@ -1244,15 +1244,15 @@ begin
       FMaxRecentOpenFiles:=XMLConfig.GetValue(
         Path+'Recent/OpenFiles/Max',FMaxRecentOpenFiles);
       LoadRecentList(XMLConfig,FRecentOpenFiles,
-        Path+'Recent/OpenFiles/');
+        Path+'Recent/OpenFiles/',rltFile);
       FMaxRecentProjectFiles:=XMLConfig.GetValue(
         Path+'Recent/ProjectFiles/Max',FMaxRecentProjectFiles);
       LoadRecentList(XMLConfig,FRecentProjectFiles,
-        Path+'Recent/ProjectFiles/');
+        Path+'Recent/ProjectFiles/',rltFile);
       FMaxRecentPackageFiles:=XMLConfig.GetValue(
         Path+'Recent/PackageFiles/Max',FMaxRecentOpenFiles);
       LoadRecentList(XMLConfig,FRecentPackageFiles,
-        Path+'Recent/PackageFiles/');
+        Path+'Recent/PackageFiles/',rltFile);
 
       // Add example projects to an empty project list if examples have write access
       if FRecentProjectFiles.count=0 then begin
@@ -1654,17 +1654,17 @@ end;
 
 procedure TEnvironmentOptions.AddToRecentOpenFiles(const AFilename: string);
 begin
-  AddToRecentList(AFilename,FRecentOpenFiles,FMaxRecentOpenFiles);
+  AddToRecentList(AFilename,FRecentOpenFiles,FMaxRecentOpenFiles,rltFile);
 end;
 
 procedure TEnvironmentOptions.RemoveFromRecentOpenFiles(const AFilename: string);
 begin
-  RemoveFromRecentList(AFilename,FRecentOpenFiles);
+  RemoveFromRecentList(AFilename,FRecentOpenFiles,rltFile);
 end;
 
 procedure TEnvironmentOptions.AddToRecentProjectFiles(const AFilename: string);
 begin
-  AddToRecentList(AFilename,FRecentProjectFiles,FMaxRecentProjectFiles);
+  AddToRecentList(AFilename,FRecentProjectFiles,FMaxRecentProjectFiles,rltFile);
   {$ifdef Windows}
   SHAddToRecentDocs(SHARD_PATHW, PWideChar(UTF8ToUTF16(AFileName)));
   {$endif}
@@ -1673,7 +1673,7 @@ end;
 procedure TEnvironmentOptions.RemoveFromRecentProjectFiles(
   const AFilename: string);
 begin
-  RemoveFromRecentList(AFilename,FRecentProjectFiles);
+  RemoveFromRecentList(AFilename,FRecentProjectFiles,rltFile);
 end;
 
 procedure InitLayoutHelper(const FormID: string);

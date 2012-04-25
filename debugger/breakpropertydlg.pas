@@ -5,10 +5,9 @@ unit BreakPropertyDlg;
 interface
 
 uses
-  Classes, SysUtils, Forms, Controls, Graphics, Dialogs,
-  ExtCtrls, StdCtrls, ButtonPanel, EditBtn, Spin,
-  IDEHelpIntf, BreakPropertyDlgGroups,
-  DebuggerDlg, Debugger, BaseDebugManager, LazarusIDEStrConsts, InputHistory;
+  Classes, SysUtils, Forms, Controls, Graphics, Dialogs, ExtCtrls, StdCtrls,
+  ButtonPanel, EditBtn, Spin, IDEHelpIntf, BreakPropertyDlgGroups, DebuggerDlg,
+  Debugger, BaseDebugManager, LazarusIDEStrConsts, InputHistory, IDEProcs;
 
 type
 
@@ -277,7 +276,8 @@ begin
     FBreakpoint.LogMessage := edtLogMessage.Text;
     FBreakpoint.LogCallStackLimit := edtLogCallStack.Value;
 
-    InputHistories.HistoryLists.GetList('BreakPointExpression', True).Add(edtCondition.Text);
+    InputHistories.HistoryLists.GetList('BreakPointExpression', True,
+      rltCaseSensitive).Add(edtCondition.Text);
   finally
     EnableGroupList.Free;
     DisableGroupList.Free;
@@ -417,7 +417,8 @@ begin
   chkLogCallStack.Caption := lisLogCallStack;
   lblLogCallStackLimit.Caption := lisLogCallStackLimit;
   chkTakeSnap.Caption := lisTakeSnapshot;
-  edtCondition.Items.Assign(InputHistories.HistoryLists.GetList('BreakPointExpression', True));
+  edtCondition.Items.Assign(InputHistories.HistoryLists.GetList(
+    'BreakPointExpression', True,rltCaseSensitive));
 
   FBreakpoint := ABreakPoint;
   FBreakpointsNotification := TIDEBreakPointsNotification.Create;

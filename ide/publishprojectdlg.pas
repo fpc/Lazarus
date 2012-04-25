@@ -41,7 +41,7 @@ uses
   StdCtrls, Dialogs, LCLType,
   IDEWindowIntf, IDEHelpIntf,
   ProjectDefs, PackageDefs, PublishModule, IDEOptionDefs, InputHistory,
-  LazarusIDEStrConsts, ExtCtrls, ButtonPanel;
+  LazarusIDEStrConsts, IDEProcs, ExtCtrls, ButtonPanel;
 
 type
   { TPublishProjectDialog }
@@ -209,14 +209,14 @@ var
   List: THistoryList;
 begin
   // destination directories
-  List:=InputHistories.HistoryLists.GetList(hlPublishProjectDestDirs,true);
+  List:=InputHistories.HistoryLists.GetList(hlPublishProjectDestDirs,true,rltFile);
   List.AppendEntry(SetDirSeparators('$(TestDir)/publishedproject/'));
   List.AppendEntry(SetDirSeparators('$(TestDir)/publishedpackage/'));
   List.AppendEntry(SetDirSeparators('$(ProjPath)/published/'));
   DestDirComboBox.Items.Assign(List);
   
   // command after
-  List:=InputHistories.HistoryLists.GetList(hlPublishProjectCommandsAfter,true);
+  List:=InputHistories.HistoryLists.GetList(hlPublishProjectCommandsAfter,true,rltCaseSensitive);
   List.AppendEntry(SetDirSeparators(
                  'tar czf $MakeFile($(ProjPublishDir)).tgz $(ProjPublishDir)'));
   List.AppendEntry(SetDirSeparators(
@@ -227,14 +227,14 @@ begin
 
   // file filter
   List:=InputHistories.HistoryLists.GetList(hlPublishProjectIncludeFileFilter,
-                                            true);
+                                            true,rltFile);
   if List.Count=0 then begin
     List.Add(DefPublProjIncFilter);
   end;
   IncludeFilterCombobox.Items.Assign(List);
 
   List:=InputHistories.HistoryLists.GetList(hlPublishProjectExcludeFileFilter,
-                                            true);
+                                            true,rltFile);
   if List.Count=0 then begin
     List.Add(DefPublProjExcFilter);
   end;
@@ -245,21 +245,21 @@ procedure TPublishProjectDialog.SaveHistoryLists;
 begin
   // destination directories
   SetComboBox(DestDirComboBox,DestDirComboBox.Text,20);
-  InputHistories.HistoryLists.GetList(hlPublishProjectDestDirs,true).Assign(
+  InputHistories.HistoryLists.GetList(hlPublishProjectDestDirs,true,rltFile).Assign(
     DestDirComboBox.Items);
     
   // command after
   SetComboBox(CommandAfterCombobox,CommandAfterCombobox.Text,20);
-  InputHistories.HistoryLists.GetList(hlPublishProjectCommandsAfter,true).Assign(
-    CommandAfterCombobox.Items);
+  InputHistories.HistoryLists.GetList(hlPublishProjectCommandsAfter,true,
+    rltCaseSensitive).Assign(CommandAfterCombobox.Items);
 
   // file filter
   SetComboBox(IncludeFilterCombobox,IncludeFilterCombobox.Text,20);
-  InputHistories.HistoryLists.GetList(hlPublishProjectIncludeFileFilter,true).Assign(
-    IncludeFilterCombobox.Items);
+  InputHistories.HistoryLists.GetList(hlPublishProjectIncludeFileFilter,true,
+    rltFile).Assign(IncludeFilterCombobox.Items);
   SetComboBox(ExcludeFilterCombobox,ExcludeFilterCombobox.Text,20);
-  InputHistories.HistoryLists.GetList(hlPublishProjectExcludeFileFilter,true).Assign(
-    ExcludeFilterCombobox.Items);
+  InputHistories.HistoryLists.GetList(hlPublishProjectExcludeFileFilter,true,
+    rltFile).Assign(ExcludeFilterCombobox.Items);
 end;
 
 procedure TPublishProjectDialog.SetOptions(const AValue: TPublishModuleOptions);
