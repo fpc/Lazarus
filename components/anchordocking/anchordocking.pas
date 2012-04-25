@@ -77,6 +77,19 @@
     - simple way to make designer forms dockable at designtime without any code
     - on show again (hide form, show form): restore layout
     - close button for pages
+
+    - http://bugs.freepascal.org/view.php?id=18538 keep size of mainbar
+    - http://bugs.freepascal.org/view.php?id=18298 default layout sometimes wrong main bar
+    - http://bugs.freepascal.org/view.php?id=19735 main bar on different screen size
+    - http://bugs.freepascal.org/view.php?id=20845 restore/load tabs
+    - http://bugs.freepascal.org/view.php?id=21076 views
+    - http://bugs.freepascal.org/view.php?id=20010 F12 sometimes need twice to get form
+    - http://bugs.freepascal.org/view.php?id=19967 disable not always saved
+    - http://bugs.freepascal.org/view.php?id=19810 multi monitor
+    - http://bugs.freepascal.org/view.php?id=17026 grabber design
+    - http://bugs.freepascal.org/view.php?id=19200 minimize+restore resize
+    - http://bugs.freepascal.org/view.php?id=19132 docking already docked
+    - http://bugs.freepascal.org/view.php?id=18553 dock designer windows
 }
 unit AnchorDocking;
 
@@ -87,7 +100,7 @@ interface
 uses
   Math, Classes, SysUtils, LResources, types, LCLType, LCLIntf, LCLProc,
   Controls, Forms, ExtCtrls, ComCtrls, Graphics, Themes, Menus, Buttons,
-  LazConfigStorage, AnchorDockStr, AnchorDockStorage;
+  LazConfigStorage, AnchorDockStr, AnchorDockStorage, LazFileCache;
 
 type
   TAnchorDockHostSite = class;
@@ -371,21 +384,53 @@ type
   { TAnchorDockSettings }
 
   TAnchorDockSettings = class
+  private
+    FAllowDragging: boolean;
+    FChangeStamp: integer;
+    FDockOutsideMargin: integer;
+    FDockParentMargin: integer;
+    FDragTreshold: integer;
+    FHeaderAlignLeft: integer;
+    FHeaderAlignTop: integer;
+    FHeaderButtonSize: integer;
+    FHeaderHint: string;
+    FHideHeaderCaptionFloatingControl: boolean;
+    FPageAreaInPercent: integer;
+    FScaleOnResize: boolean;
+    FShowHeader: boolean;
+    FShowHeaderCaption: boolean;
+    FSplitterWidth: integer;
+    procedure SetAllowDragging(AValue: boolean);
+    procedure SetDockOutsideMargin(AValue: integer);
+    procedure SetDockParentMargin(AValue: integer);
+    procedure SetDragTreshold(AValue: integer);
+    procedure SetHeaderAlignLeft(AValue: integer);
+    procedure SetHeaderAlignTop(AValue: integer);
+    procedure SetHeaderButtonSize(AValue: integer);
+    procedure SetHeaderHint(AValue: string);
+    procedure SetHideHeaderCaptionFloatingControl(AValue: boolean);
+    procedure SetPageAreaInPercent(AValue: integer);
+    procedure SetScaleOnResize(AValue: boolean);
+    procedure SetShowHeader(AValue: boolean);
+    procedure SetShowHeaderCaption(AValue: boolean);
+    procedure SetSplitterWidth(AValue: integer);
   public
-    DragTreshold: integer;
-    DockOutsideMargin: integer;
-    DockParentMargin: integer;
-    PageAreaInPercent: integer;
-    HeaderAlignTop: integer;
-    HeaderAlignLeft: integer;
-    HeaderHint: string;
-    SplitterWidth: integer;
-    ScaleOnResize: boolean;
-    ShowHeader: boolean;
-    ShowHeaderCaption: boolean;
-    HideHeaderCaptionFloatingControl: boolean;
-    AllowDragging: boolean;
-    HeaderButtonSize: integer;
+    property DragTreshold: integer read FDragTreshold write SetDragTreshold;
+    property DockOutsideMargin: integer read FDockOutsideMargin write SetDockOutsideMargin;
+    property DockParentMargin: integer read FDockParentMargin write SetDockParentMargin;
+    property PageAreaInPercent: integer read FPageAreaInPercent write SetPageAreaInPercent;
+    property HeaderAlignTop: integer read FHeaderAlignTop write SetHeaderAlignTop;
+    property HeaderAlignLeft: integer read FHeaderAlignLeft write SetHeaderAlignLeft;
+    property HeaderHint: string read FHeaderHint write SetHeaderHint;
+    property SplitterWidth: integer read FSplitterWidth write SetSplitterWidth;
+    property ScaleOnResize: boolean read FScaleOnResize write SetScaleOnResize;
+    property ShowHeader: boolean read FShowHeader write SetShowHeader;
+    property ShowHeaderCaption: boolean read FShowHeaderCaption write SetShowHeaderCaption;
+    property HideHeaderCaptionFloatingControl: boolean read FHideHeaderCaptionFloatingControl write SetHideHeaderCaptionFloatingControl;
+    property AllowDragging: boolean read FAllowDragging write SetAllowDragging;
+    property HeaderButtonSize: integer read FHeaderButtonSize write SetHeaderButtonSize;
+    procedure IncreaseChangeStamp; inline;
+    property ChangeStamp: integer read FChangeStamp;
     procedure LoadFromConfig(Config: TConfigStorage);
     procedure SaveToConfig(Config: TConfigStorage);
     function IsEqual(Settings: TAnchorDockSettings): boolean; reintroduce;
@@ -417,7 +462,9 @@ type
     FIdleConnected: Boolean;
     FManagerClass: TAnchorDockManagerClass;
     FOnCreateControl: TADCreateControlEvent;
+    FOnOptionsChanged: TNotifyEvent;
     FOnShowOptions: TADShowDockMasterOptionsEvent;
+    FOptionsChangeStamp: int64;
     FPageAreaInPercent: integer;
     FPageClass: TAnchorDockPageClass;
     FPageControlClass: TAnchorDockPageControlClass;
@@ -449,11 +496,20 @@ type
     procedure ClearLayoutProperties(AControl: TControl);
     procedure PopupMenuPopup(Sender: TObject);
     procedure ChangeLockButtonClick(Sender: TObject);
+    procedure SetAllowDragging(AValue: boolean);
+    procedure SetDockOutsideMargin(AValue: integer);
+    procedure SetDockParentMargin(AValue: integer);
+    procedure SetDragTreshold(AValue: integer);
+    procedure SetHeaderHint(AValue: string);
+    procedure SetPageAreaInPercent(AValue: integer);
+    procedure SetScaleOnResize(AValue: boolean);
+    procedure SetShowMenuItemShowHeader(AValue: boolean);
     procedure ShowHeadersButtonClick(Sender: TObject);
     procedure OptionsClick(Sender: TObject);
     procedure SetIdleConnected(const AValue: Boolean);
     procedure SetQueueSimplify(const AValue: Boolean);
     procedure SetRestoring(const AValue: boolean);
+    procedure OptionsChanged;
   protected
     fCloseBtnReferenceCount: integer;
     fCloseBtnBitmap: TBitmap;
@@ -541,25 +597,29 @@ type
     function CreateSplitter(NamePrefix: string = ''): TAnchorDockSplitter;
     property QueueSimplify: Boolean read FQueueSimplify write SetQueueSimplify;
 
+    property OnCreateControl: TADCreateControlEvent read FOnCreateControl write FOnCreateControl;
+
     // options
     property OnShowOptions: TADShowDockMasterOptionsEvent read FOnShowOptions write FOnShowOptions;
-    property DragTreshold: integer read FDragTreshold write FDragTreshold default 4;
-    property DockOutsideMargin: integer read FDockOutsideMargin write FDockOutsideMargin default 10; // max distance for outside mouse snapping
-    property DockParentMargin: integer read FDockParentMargin write FDockParentMargin default 10; // max distance for snap to parent
-    property PageAreaInPercent: integer read FPageAreaInPercent write FPageAreaInPercent default 40; // size of inner mouse snapping area for page docking
+    property OnOptionsChanged: TNotifyEvent read FOnOptionsChanged write FOnOptionsChanged;
+    property DragTreshold: integer read FDragTreshold write SetDragTreshold default 4;
+    property DockOutsideMargin: integer read FDockOutsideMargin write SetDockOutsideMargin default 10; // max distance for outside mouse snapping
+    property DockParentMargin: integer read FDockParentMargin write SetDockParentMargin default 10; // max distance for snap to parent
+    property PageAreaInPercent: integer read FPageAreaInPercent write SetPageAreaInPercent default 40; // size of inner mouse snapping area for page docking
     property HeaderAlignTop: integer read FHeaderAlignTop write SetHeaderAlignTop default 80; // move header to top, when (width/height)*100<=HeaderAlignTop
     property HeaderAlignLeft: integer read FHeaderAlignLeft write SetHeaderAlignLeft default 120; // move header to left, when (width/height)*100>=HeaderAlignLeft
-    property HeaderHint: string read FHeaderHint write FHeaderHint;
+    property HeaderHint: string read FHeaderHint write SetHeaderHint;
     property SplitterWidth: integer read FSplitterWidth write SetSplitterWidth default 4;
-    property ScaleOnResize: boolean read FScaleOnResize write FScaleOnResize default true; // scale children when resizing a site
+    property ScaleOnResize: boolean read FScaleOnResize write SetScaleOnResize default true; // scale children when resizing a site
     property ShowHeader: boolean read FShowHeader write SetShowHeader default true; // set to false to hide all headers
-    property ShowMenuItemShowHeader: boolean read FShowMenuItemShowHeader write FShowMenuItemShowHeader default false;
+    property ShowMenuItemShowHeader: boolean read FShowMenuItemShowHeader write SetShowMenuItemShowHeader default false;
     property ShowHeaderCaption: boolean read FShowHeaderCaption write SetShowHeaderCaption default true; // set to false to remove the text in the headers
     property HideHeaderCaptionFloatingControl: boolean read FHideHeaderCaptionFloatingControl
                           write SetHideHeaderCaptionFloatingControl default true;
-    property OnCreateControl: TADCreateControlEvent read FOnCreateControl write FOnCreateControl;
-    property AllowDragging: boolean read FAllowDragging write FAllowDragging default true;
+    property AllowDragging: boolean read FAllowDragging write SetAllowDragging default true;
     property HeaderButtonSize: integer read FHeaderButtonSize write SetHeaderButtonSize default 10;
+    property OptionsChangeStamp: int64 read FOptionsChangeStamp;
+    procedure IncreaseOptionsChangeStamp; inline;
 
     // for descendants
     property SplitterClass: TAnchorDockSplitterClass read FSplitterClass write FSplitterClass;
@@ -977,6 +1037,110 @@ end;
 
 { TAnchorDockSettings }
 
+procedure TAnchorDockSettings.SetAllowDragging(AValue: boolean);
+begin
+  if FAllowDragging=AValue then Exit;
+  FAllowDragging:=AValue;
+  IncreaseChangeStamp;
+end;
+
+procedure TAnchorDockSettings.SetDockOutsideMargin(AValue: integer);
+begin
+  if FDockOutsideMargin=AValue then Exit;
+  FDockOutsideMargin:=AValue;
+  IncreaseChangeStamp;
+end;
+
+procedure TAnchorDockSettings.SetDockParentMargin(AValue: integer);
+begin
+  if FDockParentMargin=AValue then Exit;
+  FDockParentMargin:=AValue;
+  IncreaseChangeStamp;
+end;
+
+procedure TAnchorDockSettings.SetDragTreshold(AValue: integer);
+begin
+  if FDragTreshold=AValue then Exit;
+  FDragTreshold:=AValue;
+  IncreaseChangeStamp;
+end;
+
+procedure TAnchorDockSettings.SetHeaderAlignLeft(AValue: integer);
+begin
+  if FHeaderAlignLeft=AValue then Exit;
+  FHeaderAlignLeft:=AValue;
+  IncreaseChangeStamp;
+end;
+
+procedure TAnchorDockSettings.SetHeaderAlignTop(AValue: integer);
+begin
+  if FHeaderAlignTop=AValue then Exit;
+  FHeaderAlignTop:=AValue;
+  IncreaseChangeStamp;
+end;
+
+procedure TAnchorDockSettings.SetHeaderButtonSize(AValue: integer);
+begin
+  if FHeaderButtonSize=AValue then Exit;
+  FHeaderButtonSize:=AValue;
+  IncreaseChangeStamp;
+end;
+
+procedure TAnchorDockSettings.SetHeaderHint(AValue: string);
+begin
+  if FHeaderHint=AValue then Exit;
+  FHeaderHint:=AValue;
+  IncreaseChangeStamp;
+end;
+
+procedure TAnchorDockSettings.SetHideHeaderCaptionFloatingControl(
+  AValue: boolean);
+begin
+  if FHideHeaderCaptionFloatingControl=AValue then Exit;
+  FHideHeaderCaptionFloatingControl:=AValue;
+  IncreaseChangeStamp;
+end;
+
+procedure TAnchorDockSettings.SetPageAreaInPercent(AValue: integer);
+begin
+  if FPageAreaInPercent=AValue then Exit;
+  FPageAreaInPercent:=AValue;
+  IncreaseChangeStamp;
+end;
+
+procedure TAnchorDockSettings.SetScaleOnResize(AValue: boolean);
+begin
+  if FScaleOnResize=AValue then Exit;
+  FScaleOnResize:=AValue;
+  IncreaseChangeStamp;
+end;
+
+procedure TAnchorDockSettings.SetShowHeader(AValue: boolean);
+begin
+  if FShowHeader=AValue then Exit;
+  FShowHeader:=AValue;
+  IncreaseChangeStamp;
+end;
+
+procedure TAnchorDockSettings.SetShowHeaderCaption(AValue: boolean);
+begin
+  if FShowHeaderCaption=AValue then Exit;
+  FShowHeaderCaption:=AValue;
+  IncreaseChangeStamp;
+end;
+
+procedure TAnchorDockSettings.SetSplitterWidth(AValue: integer);
+begin
+  if FSplitterWidth=AValue then Exit;
+  FSplitterWidth:=AValue;
+  IncreaseChangeStamp;
+end;
+
+procedure TAnchorDockSettings.IncreaseChangeStamp;
+begin
+  LUIncreaseChangeStamp(fChangeStamp);
+end;
+
 procedure TAnchorDockSettings.LoadFromConfig(Config: TConfigStorage);
 begin
   Config.AppendBasePath('Settings/');
@@ -1045,6 +1209,7 @@ begin
   if FHeaderAlignLeft=AValue then exit;
   FHeaderAlignLeft:=AValue;
   FHeaderAlignTop:=Min(FHeaderAlignLeft-1,FHeaderAlignTop);
+  OptionsChanged;
 end;
 
 procedure TAnchorDockMaster.SetHeaderAlignTop(const AValue: integer);
@@ -1052,6 +1217,7 @@ begin
   if FHeaderAlignTop=AValue then exit;
   FHeaderAlignTop:=AValue;
   FHeaderAlignLeft:=Max(FHeaderAlignTop+1,FHeaderAlignLeft);
+  OptionsChanged;
 end;
 
 function TAnchorDockMaster.CloseUnneededControls(Tree: TAnchorDockLayoutTree
@@ -1637,6 +1803,7 @@ begin
     if not (Site is TAnchorDockHostSite) then continue;
     Site.UpdateDockCaption;
   end;
+  OptionsChanged;
 end;
 
 procedure TAnchorDockMaster.SetSplitterWidth(const AValue: integer);
@@ -1654,6 +1821,7 @@ begin
     else
       Splitter.Height:=SplitterWidth;
   end;
+  OptionsChanged;
 end;
 
 procedure TAnchorDockMaster.OnIdle(Sender: TObject; var Done: Boolean);
@@ -1672,6 +1840,62 @@ end;
 procedure TAnchorDockMaster.ChangeLockButtonClick(Sender: TObject);
 begin
   AllowDragging:=not AllowDragging;
+end;
+
+procedure TAnchorDockMaster.SetAllowDragging(AValue: boolean);
+begin
+  if FAllowDragging=AValue then Exit;
+  FAllowDragging:=AValue;
+  OptionsChanged;
+end;
+
+procedure TAnchorDockMaster.SetDockOutsideMargin(AValue: integer);
+begin
+  if FDockOutsideMargin=AValue then Exit;
+  FDockOutsideMargin:=AValue;
+  OptionsChanged;
+end;
+
+procedure TAnchorDockMaster.SetDockParentMargin(AValue: integer);
+begin
+  if FDockParentMargin=AValue then Exit;
+  FDockParentMargin:=AValue;
+  OptionsChanged;
+end;
+
+procedure TAnchorDockMaster.SetDragTreshold(AValue: integer);
+begin
+  if FDragTreshold=AValue then Exit;
+  FDragTreshold:=AValue;
+  OptionsChanged;
+end;
+
+procedure TAnchorDockMaster.SetHeaderHint(AValue: string);
+begin
+  if FHeaderHint=AValue then Exit;
+  FHeaderHint:=AValue;
+  OptionsChanged;
+end;
+
+procedure TAnchorDockMaster.SetPageAreaInPercent(AValue: integer);
+begin
+  if FPageAreaInPercent=AValue then Exit;
+  FPageAreaInPercent:=AValue;
+  OptionsChanged;
+end;
+
+procedure TAnchorDockMaster.SetScaleOnResize(AValue: boolean);
+begin
+  if FScaleOnResize=AValue then Exit;
+  FScaleOnResize:=AValue;
+  OptionsChanged;
+end;
+
+procedure TAnchorDockMaster.SetShowMenuItemShowHeader(AValue: boolean);
+begin
+  if FShowMenuItemShowHeader=AValue then Exit;
+  FShowMenuItemShowHeader:=AValue;
+  OptionsChanged;
 end;
 
 procedure TAnchorDockMaster.ShowHeadersButtonClick(Sender: TObject);
@@ -1724,12 +1948,20 @@ begin
   end;
 end;
 
+procedure TAnchorDockMaster.OptionsChanged;
+begin
+  IncreaseOptionsChangeStamp;
+  if Assigned(OnOptionsChanged) then
+    OnOptionsChanged(Self);
+end;
+
 procedure TAnchorDockMaster.SetHeaderButtonSize(const AValue: integer);
 begin
   if FHeaderButtonSize=AValue then exit;
   FHeaderButtonSize:=Max(1,AValue);
   FreeCloseButtonBitmap;
   AutoSizeAllHeaders(true);
+  OptionsChanged;
 end;
 
 procedure TAnchorDockMaster.SetShowHeader(AValue: boolean);
@@ -1748,6 +1980,7 @@ begin
     end;
   end;
   EnableAllAutoSizing;
+  OptionsChanged;
 end;
 
 procedure TAnchorDockMaster.SetShowHeaderCaption(const AValue: boolean);
@@ -1762,6 +1995,7 @@ begin
     if not (Site is TAnchorDockHostSite) then continue;
     Site.UpdateDockCaption;
   end;
+  OptionsChanged;
 end;
 
 procedure TAnchorDockMaster.Notification(AComponent: TComponent;
@@ -2728,6 +2962,11 @@ begin
     NewName:=NamePrefix+AnchorDockSplitterName+IntToStr(i);
   until FindComponent(NewName)=nil;
   Result.Name:=NewName;
+end;
+
+procedure TAnchorDockMaster.IncreaseOptionsChangeStamp;
+begin
+  LUIncreaseChangeStamp64(FOptionsChangeStamp);
 end;
 
 { TAnchorDockHostSite }
