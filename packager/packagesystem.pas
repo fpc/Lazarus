@@ -3959,7 +3959,7 @@ begin
   // use the default output directory, if it is relative
   // (this way the fallback creates the same amount of target directories)
   Dir:=APackage.CompilerOptions.ParsedOpts.Values[pcosOutputDir].UnparsedValue;
-  Dir:=SetDirSeparators(APackage.SubstitutePkgMacros(Dir,false));
+  Dir:=APackage.SubstitutePkgMacros(Dir,false);
   if FilenameIsAbsolute(Dir) then begin
     // it is not relative => create a default one
     Dir:='$(TargetOS)-$(TargetCPU)';

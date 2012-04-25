@@ -5045,7 +5045,7 @@ begin
       XMLConfig.SetValue('Compiler/Date',CompilerFileDate);
       XMLConfig.SetValue('Params/Value',CompilerParams);
       XMLConfig.SetDeleteValue('Complete/Value',Complete,true);
-      InvalidateFileStateCache;
+      InvalidateFileStateCache(StateFile);
       XMLConfig.Flush;
     finally
       XMLConfig.Free;
