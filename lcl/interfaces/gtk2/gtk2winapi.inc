@@ -9650,7 +9650,8 @@ begin
   EnsureGCColor(DC, dccCurrentTextColor, True, False);
 
   BackGroundColor := nil;
-  if (DevCtx.GDIObjects[gdiBrush] <> nil) and (DevCtx.BkMode = OPAQUE) then
+  if (DevCtx.GDIObjects[gdiBrush] <> nil) and (DevCtx.BkMode = OPAQUE) and
+    (DevCtx.CurrentBackColor.Colormap <> nil) then
   begin
     EnsureGCColor(DC, dccCurrentBackColor, DevCtx.GDIObjects[gdiBrush]^.GDIBrushFill = GDK_SOLID, True);
     BackGroundColor := @DevCtx.CurrentBackColor.Color;
