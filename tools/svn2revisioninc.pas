@@ -204,17 +204,21 @@ var
     EntriesDoc: TXMLDocument;
     EntryNode: TDomNode;
   begin
-    Result:=false;
+    Result := False;
     EntriesFileName:=AppendPathDelim(SourceDirectory)+'.svn'+PathDelim+'entries';
-    if FileExistsUTF8(EntriesFileName) then begin
+    if FileExistsUTF8(EntriesFileName) then
+    begin
        try
-         ReadXMLFile(EntriesDoc, EntriesFileName);
+         EntriesDoc := nil;
          try
+           ReadXMLFile(EntriesDoc, EntriesFileName);
            EntryNode := EntriesDoc.FirstChild.FirstChild;
-           while not Result and (EntryNode<>nil) do begin
-             if EntryNode.Attributes.GetNamedItem('name').NodeValue='' then begin
+           while not Result and Assigned(EntryNode) do
+           begin
+             if EntryNode.Attributes.GetNamedItem('name').NodeValue='' then
+             begin
                RevisionStr:=EntryNode.Attributes.GetNamedItem('revision').NodeValue;
-               Result:=true;
+               Result := True;
              end;
              EntryNode := EntryNode.NextSibling;
            end;
@@ -438,8 +442,8 @@ var
 begin
   Result := false;
   p := TProcessUTF8.Create(nil);
+  sl := TStringList.Create;
   try
-    sl := TStringList.Create;
     p.CommandLine := 'git branch';
     p.Options := [poUsePipes, poWaitOnExit];
     p.Execute;
