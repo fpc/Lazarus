@@ -4703,7 +4703,11 @@ begin
     lControlHandle.IncInvalidateCount();
     lControl := lControlHandle.WinControl;
     lControl := Forms.GetParentForm(lControl);
-    Result := BackendInvalidateRect(lControl.Handle, Rect, BErase);
+    // Don't use Rect in BackendInvalidateRect unless we really make the full
+    // conversion of coordinates to window coordinates. Better invalidate everything
+    // then too few. And anyway on each draw we send everything.
+    // This fixes changing the selection in TCustomGrid
+    Result := BackendInvalidateRect(lControl.Handle, nil, BErase);
   end
   // Invalidate on a form
   else
