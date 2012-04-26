@@ -30,9 +30,10 @@ unit registersqldb;
 {$DEFINE HASSQLPARSER}
 {$ENDIF}
 
-{$IF FPC_FULLVERSION>= 20700}
-{$IF DEFINED(BEOS) OR DEFINED(HAIKU) OR DEFINED(LINUX) OR DEFINED(FREEBSD) OR DEFINED (NETBSD) OR DEFINED(OPENBSD) OR DEFINED(WIN32) }
-// MS SQL Server and Sybase ASE connectors were introduced in the FPC 2.7 development branch.
+{$IF FPC_FULLVERSION>= 20601}
+{$IF DEFINED(BEOS) OR DEFINED(HAIKU) OR DEFINED(LINUX) OR DEFINED(FREEBSD) OR DEFINED (NETBSD) OR DEFINED(OPENBSD) OR DEFINED(WIN32) OR DEFINED(WIN64)}
+// MS SQL Server and Sybase ASE connectors were introduced in the FPC 2.7 development branch, and
+// backported to 2.6.1
 // Operating systems should match FPC packages\fcl-db\fpmake.pp
 {$DEFINE HASMSSQLCONNECTION}
 {$DEFINE HASSYBASECONNECTION}
