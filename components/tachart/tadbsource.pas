@@ -68,7 +68,7 @@ procedure Register;
 implementation
 
 uses
-  Math, SysUtils;
+  Math, SysUtils, TAMath;
 
 type
 
@@ -196,7 +196,12 @@ begin
   end;
   while (ds.RecNo < AIndex) and not ds.EOF do
     ds.Next;
-  if ds.RecNo <> AIndex then exit;
+  if ds.RecNo <> AIndex then begin
+    // Either the requested item is out of range, or the dataset is filtered.
+    FCurItem.X := SafeNaN;
+    FCurItem.Y := SafeNaN;
+    exit;
+  end;
   if FieldX <> '' then
     FCurItem.X := ds.FieldByName(FieldX).AsFloat
   else
@@ -214,8 +219,8 @@ end;
 
 procedure TDbChartSource.Reset;
 begin
-  if VLockedDatasets.IndexOf(FDataLink.DataSet) >= 0 then exit;
   InvalidateCaches;
+  if VLockedDatasets.IndexOf(FDataLink.DataSet) >= 0 then exit;
   Notify;
 end;
 
