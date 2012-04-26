@@ -4105,6 +4105,11 @@ begin
   if not IsValidDC(DC) then Exit;
 
   ftFont := TFreeTypeFont(LazDC.ExtraFontData);
+  if ftFont = nil then
+  begin
+    DebugLn('[TCDWidgetSet.GetTextExtentPoint] Error: ExtraFontData not yet created');
+    Exit;
+  end;
   Size.cx := Round(ftFont.TextWidth(Str));
   Size.cy := Round(ftFont.TextHeight(Str));
   if Size.cy = 0 then Size.cy := LazDC.AssignedFont.Size; // crude aproximation
@@ -4136,17 +4141,15 @@ begin
 
   if not IsValidDC(DC) then Exit;
 
+  FillChar(TM, SizeOf(TM), 0);
+
   lFont := LazDC.Font;
   lFTFont := TFreeTypeFont(LazDC.ExtraFontData);
-  if lFTFont = nil then raise Exception.Create('ExtraFontData not yet created');
-{  begin
-    lFTFont := TFreeTypeFont.Create;
-    lFTFont.Name := BackendGetFontPath(LazDC.Font.Name, '');
-    lFTFont.Hinted := true;
-    lFTFont.ClearType := true;
-    lFTFont.Quality := grqHighQuality;
-    FreeFTFont := True;
-  end;}
+  if lFTFont = nil then
+  begin
+    DebugLn('[TCDWidgetSet.GetTextMetrics] Error: ExtraFontData not yet created');
+    Exit;
+  end;
 
   //QtFontMetrics := QtDC.Metrics;
   TM.tmHeight := Round(lFTFont.TextHeight('ŹÇ'));
