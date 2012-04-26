@@ -1077,7 +1077,6 @@ begin
   gtk_handler_quark := g_quark_from_static_string('gtk-signal-handlers');
 
   MouseCaptureWidget := nil;
-  MouseCaptureType := mctGTK;
 
   LastLeft:=EmptyLastMouseClick;
   LastMiddle:=EmptyLastMouseClick;

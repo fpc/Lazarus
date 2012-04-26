@@ -8279,14 +8279,18 @@ var
 begin
   Widget := {%H-}PGtkWidget(AHandle);
   {$IfDef VerboseMouseCapture}
-  DebugLn('TGtk2WidgetSet.SetCapture NewValue=[',GetWidgetDebugReport(Widget),']');
+  DebugLn('TGtk2WidgetSet.SetCapture Widget=[',GetWidgetDebugReport(Widget),'] gtk=[',GetWidgetDebugReport(gtk_grab_get_current),'] MouseCaptureWidget=[',GetWidgetDebugReport(MouseCaptureWidget),']');
   {$EndIf}
 
   // return old capture handle
   Result := GetCapture;
 
-  if Result <> 0 then
+  if Result <> 0 then begin
+    {$IfDef VerboseMouseCapture}
+    DebugLn('TGtk2WidgetSet.SetCapture gtk_grab_remove=[',GetWidgetDebugReport(gtk_grab_get_current),']');
+    {$EndIf}
     gtk_grab_remove(gtk_grab_get_current);
+  end;
 
   MouseCaptureWidget := nil;
 
@@ -8296,7 +8300,14 @@ begin
   CaptureWidget := GetDefaultMouseCaptureWidget(Widget);
   if CaptureWidget = nil then exit;
 
+  {$IfDef VerboseMouseCapture}
+  DebugLn('TGtk2WidgetSet.SetCapture gtk_grab_add=[',GetWidgetDebugReport(CaptureWidget),']');
+  {$EndIf}
   gtk_grab_add(CaptureWidget);
+  {$IfDef VerboseMouseCapture}
+  DebugLn('TGtk2WidgetSet.SetCapture gtk=[',GetWidgetDebugReport(gtk_grab_get_current),']');
+  {$EndIf}
+
   MouseCaptureWidget := CaptureWidget;
   if MouseCaptureWidget<>nil then
     SendMessage(HWnd({%H-}PtrUInt(MouseCaptureWidget)), LM_CAPTURECHANGED, 0, Result);
