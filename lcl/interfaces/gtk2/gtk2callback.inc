@@ -714,7 +714,6 @@ begin
   if (Widget=nil) or (Event=nil) then ;
 
   ResetDefaultIMContext;
-  UpdateMouseCaptureControl;
 
   FillChar(Mess{%H-},SizeOf(Mess),#0);
   {$IFDEF VerboseFocus}
@@ -791,7 +790,6 @@ begin
     DebugLn(' LCLObject=nil');
   {$ENDIF}
   ResetDefaultIMContext;
-  UpdateMouseCaptureControl;
 
   Info := GetWidgetInfo(Widget,false);
   try
@@ -962,7 +960,6 @@ begin
   end;
 
   ResetDefaultIMContext;
-  UpdateMouseCaptureControl;
 
   //TODO: fill in old focus
   FillChar(Mess{%H-}, SizeOf(Mess), 0);
@@ -1069,7 +1066,6 @@ begin
   {$ENDIF}
 
   ResetDefaultIMContext;
-  UpdateMouseCaptureControl;
 
   FillChar(Mess{%H-},SizeOf(Mess),0);
   Mess.msg := LM_KILLFOCUS;
@@ -1445,8 +1441,6 @@ begin
     );
   {$ENDIF}
 
-  UpdateMouseCaptureControl;
-  
   ShiftState := GTKEventStateToShiftState(Event^.State);
 
   if (ShiftState*[ssShift, ssCtrl, ssAlt, ssSuper] <> LastModifierKeys) or NeedShiftUpdateAfternFocus
@@ -1517,8 +1511,6 @@ begin
 
   // stop the signal, so that it is not sent to the parent widgets
   g_signal_stop_emission_by_name(PGTKObject(Widget),'motion-notify-event');
-
-  UpdateMouseCaptureControl;
 
   if (csDesigning in TComponent(Data).ComponentState) then exit;
   if ControlGetsMouseMoveBefore(TControl(Data), True, Event) then exit;
@@ -1782,7 +1774,6 @@ begin
   {$ENDIF}
 
   ResetDefaultIMContext;
-  UpdateMouseCaptureControl;
 
   //debugln('[gtkMouseBtnPress] calling DeliverMouseDownMessage Result=',dbgs(Result));
   {$IFDEF Gtk2CallMouseDownBeforeContext}
@@ -2108,7 +2099,6 @@ begin
   {$ENDIF}
 
   ResetDefaultIMContext;
-  UpdateMouseCaptureControl;
 
   // stop the signal, so that it is not sent to the parent widgets
   g_signal_stop_emission_by_name(PGTKObject(Widget), 'button-press-event');
@@ -2242,7 +2232,6 @@ begin
   //' GDK_BUTTON_RELEASE_MASK=',DbgS(GDK_BUTTON_RELEASE_MASK));
 
   ResetDefaultIMContext;
-  UpdateMouseCaptureControl;
 
   if not (csDesigning in TComponent(Data).ComponentState) then
   begin
@@ -2301,7 +2290,6 @@ begin
   g_signal_stop_emission_by_name(PGTKObject(Widget),'button-release-event');
 
   ResetDefaultIMContext;
-  UpdateMouseCaptureControl;
 
   if (csDesigning in TComponent(Data).ComponentState) then exit;
   if ControlGetsMouseUpBefore(TControl(Data)) then exit;
