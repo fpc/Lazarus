@@ -4122,9 +4122,11 @@ end;
 function TCDWidgetSet.GetTextMetrics(DC: HDC; var TM: TTextMetric): Boolean;
 var
   LazDC: TLazCanvas absolute DC;
-{  QtFontMetrics: TQtFontMetrics;
-  FontFamily: WideString;
-  FontWeight: Integer;   }
+  lTestText: string;
+  lTestSize: Types.TSize;
+  lFont: TFPCustomFont;
+  lFTFont: TFreeTypeFont;
+  FreeFTFont: Boolean = False;
 begin
   {$ifdef VerboseCDWinAPI}
     DebugLn('[WinAPI GetTextMetrics]');
@@ -4134,25 +4136,30 @@ begin
 
   if not IsValidDC(DC) then Exit;
 
-  //QtFontMetrics := QtDC.Metrics;
-  TM.tmHeight := 0;//QtFontMetrics.height;
-  TM.tmAscent := 0;//QtFontMetrics.ascent;
-  TM.tmDescent := 0;//QtFontMetrics.descent;
-  TM.tmInternalLeading := 0;
-{  TM.tmExternalLeading := QtFontMetrics.leading;
-  TM.tmAveCharWidth := QtFontMetrics.charWidth('x',0);
-
-  TM.tmMaxCharWidth := QtFontMetrics.maxWidth;
-  FontWeight := QtDC.font.getWeight;
-  case FontWeight of
-    25: TM.tmWeight := FW_LIGHT;
-    50: TM.tmWeight := FW_NORMAL;
-    63: TM.tmWeight := FW_SEMIBOLD;
-    75: TM.tmWeight := FW_BOLD;
-    87: TM.tmWeight := FW_HEAVY;
-    else
-      TM.tmWeight := Round(FontWeight * 9.5);
+  lFont := LazDC.Font;
+  lFTFont := TFreeTypeFont(LazDC.ExtraFontData);
+  if lFTFont = nil then raise Exception.Create('ExtraFontData not yet created');
+{  begin
+    lFTFont := TFreeTypeFont.Create;
+    lFTFont.Name := BackendGetFontPath(LazDC.Font.Name, '');
+    lFTFont.Hinted := true;
+    lFTFont.ClearType := true;
+    lFTFont.Quality := grqHighQuality;
+    FreeFTFont := True;
   end;}
+
+  //QtFontMetrics := QtDC.Metrics;
+  TM.tmHeight := Round(lFTFont.TextHeight('ŹÇ'));
+  TM.tmAscent := Round(lFTFont.Ascent);
+  TM.tmDescent := Round(lFTFont.Descent);
+  TM.tmInternalLeading := 0;
+  TM.tmExternalLeading := 0;// ToDo
+  TM.tmAveCharWidth := Round(lFTFont.TextWidth('x'));
+  TM.tmMaxCharWidth := Round(lFTFont.TextWidth('M'));
+
+  if lFont.Bold then TM.tmWeight := FW_BOLD
+  else TM.tmWeight := FW_NORMAL;
+
   TM.tmOverhang := 0;
   TM.tmDigitizedAspectX := 0;
   TM.tmDigitizedAspectY := 0;
@@ -4160,11 +4167,9 @@ begin
   TM.tmLastChar := 'z';
   TM.tmDefaultChar := 'x';
   TM.tmBreakChar := '?';
-{  TM.tmItalic := Ord(QtDC.Font.getItalic);
-  TM.tmUnderlined := Ord(QtDC.Font.getUnderline);
-  TM.tmStruckOut := Ord(QtDC.Font.getStrikeOut);}
-
-//  QtDC.font.family(@FontFamily);
+  TM.tmItalic := Ord(lFont.Italic);
+  TM.tmUnderlined := Ord(lFont.Underline);
+  TM.tmStruckOut := Ord(lFont.StrikeTrough);
 
   { Defaults to a TrueType font.
     Note that the meaning of the FIXED_PITCH constant is the opposite of
@@ -4178,6 +4183,8 @@ begin
   TM.tmCharSet := DEFAULT_CHARSET;
 
   Result := True;
+
+  if FreeFTFont then lFTFont.Free;
 end;
 {$endif}
 
