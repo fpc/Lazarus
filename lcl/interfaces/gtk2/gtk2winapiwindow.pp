@@ -1016,9 +1016,6 @@ function GTKAPIWidget_new: PGTKWidget;
 var
   APIWidget: PGTKAPIWidget;
 begin
-  // MWE: IMO the arguments can't work since we supply the adjustments as nil
-  //      for gtk2 newv doesn't exist so the decision is easy
-  //      TODO: check if we still need to pass the args in gtk1
   Result := gtk_widget_new(GTKAPIWidget_GetType, nil, []);
 
   APIWidget := PGTKAPIWidget(Result);

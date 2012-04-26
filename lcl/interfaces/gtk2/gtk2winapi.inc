@@ -8298,7 +8298,27 @@ begin
     exit;
 
   CaptureWidget := GetDefaultMouseCaptureWidget(Widget);
-  if CaptureWidget = nil then exit;
+  if CaptureWidget = nil then begin
+    {$IfDef VerboseMouseCapture}
+    DebugLn('TGtk2WidgetSet.SetCapture GetDefaultMouseCaptureWidget failed for widget=[',GetWidgetDebugReport(Widget),']');
+    {$EndIf}
+    exit;
+  end;
+  {$IfDef VerboseMouseCapture}
+  // ubuntu liboverlay intercepts gtk_grab_add for LCLWinapiClient
+  // ToDo: find out how to grab LCLWinapiClient with ubuntu liboverlay
+  if GtkWidgetIsA(Widget,GTK_TYPE_SCROLLED_WINDOW) then
+  begin
+    debugln(['TGtk2WidgetSet.SetCapture AAA1 is api widget ',
+      ' widget=',GetWidgetClassName(Widget),
+      ' container.container.focus_child=',GetWidgetClassName(PGtkScrolledWindow(Widget)^.container.container.focus_child),
+      ' container.child=',GetWidgetClassName(PGtkScrolledWindow(Widget)^.container.child),
+      '']);
+    debugln(['TGtk2WidgetSet.SetCapture gtk_widget_is_sensitive=',gtk_widget_is_sensitive(CaptureWidget)]);
+    debugln(['TGtk2WidgetSet.SetCapture gtk_widget_has_grab=',gtk_widget_has_grab (CaptureWidget)]);
+    //CaptureWidget:=PGtkScrolledWindow(Widget)^.container;
+  end;
+  {$EndIf}
 
   {$IfDef VerboseMouseCapture}
   DebugLn('TGtk2WidgetSet.SetCapture gtk_grab_add=[',GetWidgetDebugReport(CaptureWidget),']');
