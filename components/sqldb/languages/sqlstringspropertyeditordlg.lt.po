@@ -10,27 +10,9 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
-#: sqlstringspropertyeditordlg.sqlsyntaxok
-msgid "No syntax errors in SQL statement."
-msgstr ""
-
 #: sqlstringspropertyeditordlg.sresulttabcaption
 msgid "Results"
 msgstr "Rezultatai"
-
-#: sqlstringspropertyeditordlg.ssqlerror
-msgid "SQL Error"
-msgstr ""
-
-#: sqlstringspropertyeditordlg.ssqlok
-msgid "SQL OK"
-msgstr ""
-
-#: sqlstringspropertyeditordlg.ssqlsyntaxerror
-msgid ""
-"Syntax error in SQL statement:\n"
-"%s\n"
-msgstr ""
 
 #: sqlstringspropertyeditordlg.ssqltabcaption
 msgid "SQL Code"

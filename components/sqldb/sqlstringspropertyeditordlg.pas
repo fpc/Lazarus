@@ -1,6 +1,8 @@
 unit SQLStringsPropertyEditorDlg;
 
+{$IFDEF VER2_5_1}
 {$DEFINE HASSQLPARSER}
+{$ENDIF}
 
 {$mode objfpc}{$H+}
 

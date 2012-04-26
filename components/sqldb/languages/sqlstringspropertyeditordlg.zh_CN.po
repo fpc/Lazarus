@@ -12,27 +12,9 @@ msgstr ""
 "X-Poedit-Country: CHINA\n"
 "X-Poedit-SourceCharset: utf-8\n"
 
-#: sqlstringspropertyeditordlg.sqlsyntaxok
-msgid "No syntax errors in SQL statement."
-msgstr ""
-
 #: sqlstringspropertyeditordlg.sresulttabcaption
 msgid "Results"
 msgstr "返回值"
-
-#: sqlstringspropertyeditordlg.ssqlerror
-msgid "SQL Error"
-msgstr ""
-
-#: sqlstringspropertyeditordlg.ssqlok
-msgid "SQL OK"
-msgstr ""
-
-#: sqlstringspropertyeditordlg.ssqlsyntaxerror
-msgid ""
-"Syntax error in SQL statement:\n"
-"%s\n"
-msgstr ""
 
 #: sqlstringspropertyeditordlg.ssqltabcaption
 msgid "SQL Code"
