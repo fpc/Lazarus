@@ -3899,8 +3899,7 @@ begin
    ((Options and ETO_OPAQUE) = 0) and (DevCtx.BkMode = OPAQUE) then
   //  (Rect = nil) then TODO: see if Rect<> nil is needed
   begin
-    //writeln('<*> Brush ? ',DevCtx.GDIObjects[gdiBrush]^.GDIBrushFill,' MODE ',DevCtx.BkMode,
-    // ' ClipRect ',dbgs(RectFromGdkRect(DevCtx.ClipRect)));
+    EnsureGCColor(DC, dccGDIBrushColor, DevCtx.GDIObjects[gdiBrush]^.GDIBrushFill = GDK_SOLID, True);
     BackGroundColor := @DevCtx.GDIObjects[gdiBrush]^.GDIBrushColor.Color;
   end;
 
@@ -9629,6 +9628,7 @@ var
   DevCtx: TGtk2DeviceContext absolute DC;
   DCOrigin: TPoint;
   yOffset: integer;
+  BackGroundColor: PGdkColor;
 begin
   Result := IsValidDC(DC);
   if not Result then Exit;
@@ -9649,9 +9649,16 @@ begin
   DevCtx.SelectedColors := dcscCustom;
   EnsureGCColor(DC, dccCurrentTextColor, True, False);
 
+  BackGroundColor := nil;
+  if (DevCtx.GDIObjects[gdiBrush] <> nil) and (DevCtx.BkMode = OPAQUE) then
+  begin
+    EnsureGCColor(DC, dccCurrentBackColor, DevCtx.GDIObjects[gdiBrush]^.GDIBrushFill = GDK_SOLID, True);
+    BackGroundColor := @DevCtx.CurrentBackColor.Color;
+  end;
+
   DevCtx.DrawTextWithColors(Str, Count,
     X + DCOrigin.X, Y + DCOrigin.Y + yOffset,
-    nil, nil);
+    nil, BackGroundColor);
 end;
 
 function TGtk2WidgetSet.UpdateWindow(Handle: HWND): Boolean;
