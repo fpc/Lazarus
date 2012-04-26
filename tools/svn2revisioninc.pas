@@ -260,14 +260,18 @@ function TSvn2RevisionApplication.IsValidRevisionInc: boolean;
 var
   Lines: TStringList;
 begin
-  Result:=false;
-  if FileExistsUTF8(RevisionIncFileName) then begin
+  Result := FileExistsUTF8(RevisionIncFileName);
+  if Result then 
+  begin
     Lines := TStringList.Create;
-    Lines.LoadFromFile(UTF8ToSys(RevisionIncFileName));
-    if (Lines.Count=2) and
-      (Lines[0]=RevisionIncComment) and
-      (copy(Lines[1], 1, length(ConstStart))=ConstStart) then
-      Result:=true;
+    try
+      Lines.LoadFromFile(UTF8ToSys(RevisionIncFileName));
+      Result := (Lines.Count = 2) and
+        (Lines[0] = RevisionIncComment) and
+        (Copy(Lines[1], 1, Length(ConstStart)) = ConstStart);
+    finally
+      Lines.Free;
+    end;
   end;
 end;
 
