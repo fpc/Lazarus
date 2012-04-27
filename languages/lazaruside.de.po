@@ -3971,6 +3971,10 @@ msgstr "Dateien im Verzeichnis hinzufügen"
 msgid "Additional compiler options inherited from packages"
 msgstr "Von anderen Packages übernommene zusätzliche Compilereinstellungen"
 
+#: lazarusidestrconsts.lisaddkeyworddo
+msgid "Add keyword \"do\""
+msgstr ""
+
 #: lazarusidestrconsts.lisaddnewbuildmodecopyingsettingsfrom
 msgid "Add new build mode, copying settings from \"%s\""
 msgstr "Fügt neuen Erstellmodus hinzu, Einstellungen kopiert von \"%s\""

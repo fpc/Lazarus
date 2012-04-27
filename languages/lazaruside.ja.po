@@ -233,7 +233,6 @@ msgctxt "lazarusidestrconsts.dlfmousesimpletextsectlquadlabel"
 msgid "Quad"
 msgstr "Quad"
 
-
 #: lazarusidestrconsts.dlfmousesimpletextsectltriplelabel
 msgctxt "lazarusidestrconsts.dlfmousesimpletextsectltriplelabel"
 msgid "Triple"
@@ -501,7 +500,6 @@ msgstr "他のセル"
 msgctxt "lazarusidestrconsts.dlgaddhiattrsyncroeditsync"
 msgid "Syncronized Cells"
 msgstr "同期されたセル"
-
 
 #: lazarusidestrconsts.dlgaddhiattrtemplateeditcur
 msgctxt "lazarusidestrconsts.dlgaddhiattrtemplateeditcur"
@@ -2711,7 +2709,6 @@ msgstr "リンカにオプションを渡して下さい（区切り記号はス
 msgid "Highlight \"String\" keyword(s)"
 msgstr "Stringキーワードを強調"
 
-
 #: lazarusidestrconsts.dlgpasstringkeywordsoptdefault
 msgctxt "lazarusidestrconsts.dlgpasstringkeywordsoptdefault"
 msgid "Default"
@@ -4053,6 +4050,10 @@ msgstr "ディレクトリにファイルを追加"
 #: lazarusidestrconsts.lisadditionalcompileroptionsinheritedfrompackages
 msgid "Additional compiler options inherited from packages"
 msgstr "パッケージから継承されたその他のコンパイラオプション"
+
+#: lazarusidestrconsts.lisaddkeyworddo
+msgid "Add keyword \"do\""
+msgstr ""
 
 #: lazarusidestrconsts.lisaddnewbuildmodecopyingsettingsfrom
 msgid "Add new build mode, copying settings from \"%s\""
@@ -11999,14 +12000,12 @@ msgid "Skip this Unit"
 msgstr "このユニットをスキップ"
 
 #: lazarusidestrconsts.lismodifiedlgplnotice
-msgid "<description>%sCopyright (C) <year> <name of author> <contact>%sThis library is free software; you can redistribute it and/or modify it under the terms of the GNU Library General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version with the following modification:%sAs a special exception, the copyright holders of this library give you permission to link this library with independent modules to produce an executable, regardless of the license terms of these independent modules,and to copy and distribute the resulting executable under terms of your choice, provided that you also meet, for each linked independent module, the terms and conditions of the license of that module. An independent module is a module which is not derived from or based on this library. If you modify this library, you may extend this exception to your version of the library, but you are not obligated to do so. If you do!
-  not wish to do so, delete this exception statement from your version.%sThis program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Library General Public License for more details. %sYou should have received a copy of the GNU Library General Public License along with this library; if not, write to the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA."
-msgstr "<説明>%s著作権(C)<年><作者名><連絡先>%sこのライブラリはフリーソフトです。あなたは、Free Software Foundationが公表したGNU一般公有使用許諾の「バージョン2」或いはそれ以降の各バージョンの中からいずれかを選択し、そのバージョンが定める条項に従って本プログラムを再頒布または変更することができます。特殊な例外として、それぞれのリンクされた独立モジュールについて、そのモジュールのライセンスの条項と条件をあなたもまた満たしている場合には、このライブラリの著作権保有者は、あなたがこれらの独立したモジュールのライセンスに関わりなく、実行ファイルを作成するためにこのライブラリに独立したモジュールをリンクし、作成された実行ファイルをコピーしてあなたが選択したライセンス条項の下で供与することの許可をあなたに与えます。!
- 独立したモジュールとはこのライブラリに基づくか、派生したものではないモジュールのことです。もしあなたがこのライブラリを修正したならば、この例外をそのライブラリのあなたのバージョンに拡張することができますが、それが義務というわけではありません。もしあなたがそうしたくないのであれば、この例外文をあなたのバージョンから除外してください。%s本プログラムは有用とは思いますが、頒布にあたっては、市場性及び特定目的適合性についての暗黙の保証を含めて、いかなる保証も行ないません。%s詳細についてはGNU一般公衆使用許諾書をお読みください。%sGNU一般公衆使用許諾書はこのライブラリとともに配布されているはずですが、もしなければ、次の住所に手紙でリクエストすることによって入手できます：Free Software Foundation Inc., 59 Temple Place - Suite 330, Boston, MA"
+msgid "<description>%sCopyright (C) <year> <name of author> <contact>%sThis library is free software; you can redistribute it and/or modify it under the terms of the GNU Library General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version with the following modification:%sAs a special exception, the copyright holders of this library give you permission to link this library with independent modules to produce an executable, regardless of the license terms of these independent modules,and to copy and distribute the resulting executable under terms of your choice, provided that you also meet, for each linked independent module, the terms and conditions of the license of that module. An independent module is a module which is not derived from or based on this library. If you modify this library, you may extend this exception to your version of the library, but you are not obligated to do so. If you do not wish to do so, delete this exception statement from your version.%sThis program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Library General Public License for more details. %sYou should have received a copy of the GNU Library General Public License along with this library; if not, write to the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA."
+msgstr ""
 
 #: lazarusidestrconsts.lismodify
 msgid "&Modify"
-msgstr "修正 (&M)"
+msgstr "<説明>%s著作権(C)<年><作者名><連絡先>%sこのライブラリはフリーソフトです。あなたは、Free Software Foundationが公表したGNU一般公有使用許諾の「バージョン2」或いはそれ以降の各バージョンの中からいずれかを選択し、そのバージョンが定める条項に従って本プログラムを再頒布または変更することができます。特殊な例外として、それぞれのリンクされた独立モジュールについて、そのモジュールのライセンスの条項と条件をあなたもまた満たしている場合には、このライブラリの著作権保有者は、あなたがこれらの独立したモジュールのライセンスに関わりなく、実行ファイルを作成するためにこのライブラリに独立したモジュールをリンクし、作成された実行ファイルをコピーしてあなたが選択したライセンス条項の下で供与することの許可をあなたに与えます。修正 (&M)"
 
 #: lazarusidestrconsts.lismore
 msgctxt "lazarusidestrconsts.lismore"
@@ -15514,14 +15513,12 @@ msgid "Editable Cell"
 msgstr "編集可能なセル"
 
 #: lazarusidestrconsts.listemplateeditparamcellhelp
-msgid "Inserts an editable Cell. Cells can be navigated using the tab key.%0:sThe \"param\" macro takes a list of comma separated arguments.%0:sThe first argument is the default value.%0:sThe 2nd argument (optional) can be used to link the cell to another cell (syncro edit)%0:s%0:s  while param(\"foo\") do param(foo);%0:sInserts 2 independent cells, both with the default text \"foo\"%0:sThe quotes are optional%0:s%0:s  if param(\"foo\") > 0 and param(\"foo\",sync=1) < 99 then%0:sInserts 2 linked cells, editing either one, will change the other one too%0:sThe value \"1\" refers to the position of the other \"param()\", so if there are more params:%0:s  if param(\"bar\") and param(foo) > 0 and param(foo,sync=2) < 99 then%0:sThe 2nd and third are linked. (the 3rd refers to \"2\") %0:s%0:s\"sync can be shortened to \"s\":%0:s  if param(\"foo\") > 0 and param(\"foo\",s=1) < 99 then%0:s%0:s  if param(\"bar\") and param(\"foo\") > 0 and param(\"foo\",sync) < 99 then%0:sThe 2nd and !
- third are linked.%0:sNote: \"Sync has no position and no \"=\", so it syncs to the previous cell with the same default (in this case \"foo\")"
-msgstr "編集可能なセルを挿入します。セル間はタブキーを使って移動できます。%0:s\"param\"マクロはコンマ区切りの引数のリストを取ります。最初の引数はその既定値です。%0:s2番目の引数（選択可能）はセルを他のセルにリンクするのに使えます（同期編集）。%0:s%0:s例えば、 while param(\"foo\") do param(foo);は %0:s デフォルトのテキスト\"foo\を持つ２つの独立したセルを挿入します。%0:s引用符は省略可能です。%0:sまた、例えば、 if param(\"foo\") > 0 and param(\"foo\",sync=1) < 99 thenは片方を編集するともう片方も変更される２つのリンクされたセルを挿入します。%0:s値\"1\"は他の\"param()\"の位置を指していますので、より多くのparamsがある場合、例えば、%0:s if param(\"bar\") and param(foo) > 0 and param(foo,sync=2) < 99 then ２つ目と３つ目はリンクされます（３番!
- 目が\"2\"です）。 \"sync \"は \"s\"と短縮できます。%0:s%0:s また、例えば、if param(\"foo\") > 0 and param(\"foo\",s=1) < 99 then%0:s%0:s  if param(\"bar\") and param(\"foo\") > 0 and param(\"foo\",sync) < 99 then%0:sとすれば、２つ目と３つ目がリンクされます。%0:s注意：\"sync \"は位置を持たず、\"=\"を持たないので、以前のセルを同じ既定値 (この場合 \"foo\")に同期します。"
+msgid "Inserts an editable Cell. Cells can be navigated using the tab key.%0:sThe \"param\" macro takes a list of comma separated arguments.%0:sThe first argument is the default value.%0:sThe 2nd argument (optional) can be used to link the cell to another cell (syncro edit)%0:s%0:s  while param(\"foo\") do param(foo);%0:sInserts 2 independent cells, both with the default text \"foo\"%0:sThe quotes are optional%0:s%0:s  if param(\"foo\") > 0 and param(\"foo\",sync=1) < 99 then%0:sInserts 2 linked cells, editing either one, will change the other one too%0:sThe value \"1\" refers to the position of the other \"param()\", so if there are more params:%0:s  if param(\"bar\") and param(foo) > 0 and param(foo,sync=2) < 99 then%0:sThe 2nd and third are linked. (the 3rd refers to \"2\") %0:s%0:s\"sync can be shortened to \"s\":%0:s  if param(\"foo\") > 0 and param(\"foo\",s=1) < 99 then%0:s%0:s  if param(\"bar\") and param(\"foo\") > 0 and param(\"foo\",sync) < 99 then%0:sThe 2nd and third are linked.%0:sNote: \"Sync has no position and no \"=\", so it syncs to the previous cell with the same default (in this case \"foo\")"
+msgstr ""
 
 #: lazarusidestrconsts.listestdirectory
 msgid "Test directory"
-msgstr "テストディレクトリ"
+msgstr "編集可能なセルを挿入します。セル間はタブキーを使って移動できます。%0:s\"param\"マクロはコンマ区切りの引数のリストを取ります。最初の引数はその既定値です。%0:s2番目の引数（選択可能）はセルを他のセルにリンクするのに使えます（同期編集）。%0:s%0:s例えば、 while param(\"foo\") do param(foo);は %0:s デフォルトのテキスト\"fooを持つ２つの独立したセルを挿入します。%0:s引用符は省略可能です。%0:sまた、例えば、 if param(\"foo\") > 0 and param(\"foo\",sync=1) < 99 thenは片方を編集するともう片方も変更される２つのリンクされたセルを挿入します。%0:s値\"1\"は他の\"param()\"の位置を指していますので、より多くのparamsがある場合、例えば、%0:s if param(\"bar\") and param(foo) > 0 and param(foo,sync=2) < 99 then ２つ目と３つ目はリンクされます（３番テストディレクトリ"
 
 #: lazarusidestrconsts.listheapplicationbundlewascreatedfor
 msgid "The Application Bundle was created for \"%s\""
@@ -16699,7 +16696,6 @@ msgid "Unit Output directory"
 msgstr "ユニット出力ディレクトリ"
 
 #: lazarusidestrconsts.lisunitpath
-
 msgid "unit path"
 msgstr "ユニットパス"
 

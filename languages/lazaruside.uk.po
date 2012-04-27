@@ -1,4 +1,4 @@
-# Igor Paliychuk <mansonigor@gmail.com>, 2012.
+ Igor Paliychuk <mansonigor@gmail.com>, 2012.
 msgid ""
 msgstr ""
 "Project-Id-Version: lazaruside\n"
@@ -3898,6 +3898,10 @@ msgstr "Додати Файли в Теку"
 #: lazarusidestrconsts.lisadditionalcompileroptionsinheritedfrompackages
 msgid "Additional compiler options inherited from packages"
 msgstr "Додаткові параметри компілятора, наслідувані від пакунків"
+
+#: lazarusidestrconsts.lisaddkeyworddo
+msgid "Add keyword \"do\""
+msgstr ""
 
 #: lazarusidestrconsts.lisaddnewbuildmodecopyingsettingsfrom
 msgid "Add new build mode, copying settings from \"%s\""

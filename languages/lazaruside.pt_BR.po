@@ -3946,6 +3946,10 @@ msgstr "Adicionar arquivos no diretório"
 msgid "Additional compiler options inherited from packages"
 msgstr "Opções adicionais do compilador herdadas dos pacotes"
 
+#: lazarusidestrconsts.lisaddkeyworddo
+msgid "Add keyword \"do\""
+msgstr ""
+
 #: lazarusidestrconsts.lisaddnewbuildmodecopyingsettingsfrom
 msgid "Add new build mode, copying settings from \"%s\""
 msgstr "Adiciona novo modo de construção, copiando configuração de \"%s\""

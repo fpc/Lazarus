@@ -4019,6 +4019,10 @@ msgstr ""
 msgid "Additional compiler options inherited from packages"
 msgstr "从包继承附加的编译选项"
 
+#: lazarusidestrconsts.lisaddkeyworddo
+msgid "Add keyword \"do\""
+msgstr ""
+
 #: lazarusidestrconsts.lisaddnewbuildmodecopyingsettingsfrom
 msgid "Add new build mode, copying settings from \"%s\""
 msgstr ""

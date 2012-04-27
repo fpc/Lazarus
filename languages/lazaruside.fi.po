@@ -3793,6 +3793,10 @@ msgstr ""
 msgid "Additional compiler options inherited from packages"
 msgstr "Paketeilta perittyjä kääntäjän lisä-asetuksia"
 
+#: lazarusidestrconsts.lisaddkeyworddo
+msgid "Add keyword \"do\""
+msgstr ""
+
 #: lazarusidestrconsts.lisaddnewbuildmodecopyingsettingsfrom
 msgid "Add new build mode, copying settings from \"%s\""
 msgstr "Lisä uusi koontamoodi, kopioi asetukset täältä: \"%s\""
