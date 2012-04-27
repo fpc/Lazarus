@@ -91,9 +91,9 @@ function EndPaint(Handle: hwnd; var PS: TPaintStruct): Integer; override;*)
 procedure EnterCriticalSection(var CritSection: TCriticalSection); override;
 //function EnumDisplayMonitors(hdc: HDC; lprcClip: PRect; lpfnEnum: MonitorEnumProc; dwData: LPARAM): LongBool; override;
 function EnumFontFamiliesEx(DC: HDC; lpLogFont: PLogFont; Callback: FontEnumExProc; Lparam: LParam; Flags: dword): longint; override;
-(*function ExcludeClipRect(dc: hdc; Left, Top, Right, Bottom : Integer) : Integer; override;
+//function ExcludeClipRect(dc: hdc; Left, Top, Right, Bottom : Integer) : Integer; override;
 function ExtCreatePen(dwPenStyle, dwWidth: DWord; const lplb: TLogBrush; dwStyleCount: DWord; lpStyle: PDWord): HPEN; override;
-function ExtSelectClipRGN(dc: hdc; rgn : hrgn; Mode : Longint) : Integer;  override;*)
+//function ExtSelectClipRGN(dc: hdc; rgn : hrgn; Mode : Longint) : Integer;  override;
 function ExtTextOut(DC: HDC; X, Y: Integer; Options: Longint; Rect: PRect; Str: PChar; Count: Longint; Dx: PInteger): Boolean; override;
 
 function FillRect(DC: HDC; const Rect: TRect; Brush: HBRUSH): Boolean; override;
@@ -111,9 +111,9 @@ function GetClientBounds(handle : HWND; var ARect : TRect) : Boolean; override;
 function BackendGetClientBounds(handle : HWND; var ARect : TRect) : Boolean;
 function GetClientRect(handle : HWND; var ARect : TRect) : Boolean; override;
 function GetClipBox(DC : hDC; lpRect : PRect) : Longint; override;
-(*function GetClipRGN(DC: hDC; RGN: hRGN): Longint; override;
-function GetCmdLineParamDescForInterface: string; override;
-function GetCurrentObject(DC: HDC; uObjectType: UINT): HGDIOBJ; override;*)
+function GetClipRGN(DC: hDC; RGN: hRGN): Longint; override;
+//function GetCmdLineParamDescForInterface: string; override;
+function GetCurrentObject(DC: HDC; uObjectType: UINT): HGDIOBJ; override;
 function GetCursorPos(var lpPoint: TPoint ): Boolean; override;
 function GetDC(hWnd: HWND): HDC; override;
 //function GetDCOriginRelativeToWindow(PaintDC: HDC; WindowHandle: HWND; var OriginDiff: TPoint): boolean; override;
@@ -161,12 +161,12 @@ function InvalidateRect(aHandle : HWND; Rect : pRect; bErase : Boolean) : Boolea
 function BackendInvalidateRect(aHandle : HWND; Rect : pRect; bErase : Boolean) : Boolean;
 function InvalidateRgn(aHandle: HWND; Rgn: HRGN; Erase: Boolean): Boolean; override;
 procedure InitializeCriticalSection(var CritSection: TCriticalSection); override;
-(*function IntersectClipRect(dc: hdc; Left, Top, Right, Bottom: Integer): Integer; override;
-function IsIconic(Handle: HWND): boolean; override;
+//function IntersectClipRect(dc: hdc; Left, Top, Right, Bottom: Integer): Integer; override;
+//function IsIconic(Handle: HWND): boolean; override;
 function IsWindow(handle: HWND): boolean; override;
 function IsWindowEnabled(Handle: HWND): boolean; override;
 function IsWindowVisible(Handle: HWND): boolean; override;
-function IsZoomed(Handle: HWND): boolean; override;*)
+//function IsZoomed(Handle: HWND): boolean; override;
 
 procedure LeaveCriticalSection(var CritSection: TCriticalSection); override;
 function LineTo(DC: HDC; X, Y: Integer): Boolean; override;

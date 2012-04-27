@@ -116,7 +116,8 @@ type
     HasNoImage: Boolean;
     NativeDC: PtrInt; // Utilized by LCL-CustomDrawn
     ExtraFontData: TObject; // Utilized by LCL-CustomDrawn
-    ImageFormat: TLazCanvasImageFormat;
+    ImageFormat: TLazCanvasImageFormat; // Utilized by LCL-CustomDrawn for speeding up drawing
+    SelectedBitmap: TObject; // Utilized by LCL-CustomDrawn, type TCDBitmap
     constructor create (AnImage : TFPCustomImage);
     destructor destroy; override;
     procedure SetLazClipRegion(ARegion: TLazRegion);

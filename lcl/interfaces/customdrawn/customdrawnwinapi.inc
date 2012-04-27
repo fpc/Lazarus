@@ -1979,33 +1979,41 @@ begin
     QRegion_destroy(Region);
     QRegion_destroy(ExRegion);
   end;
-end;
+end;*)
 
-function TQtWidgetSet.ExtCreatePen(dwPenStyle, dwWidth: DWord;
+function TCDWidgetSet.ExtCreatePen(dwPenStyle, dwWidth: DWord;
   const lplb: TLogBrush; dwStyleCount: DWord; lpStyle: PDWord): HPEN;
 var
-  QtPen: TQtPen;
-  color: TQColor;
+  lPen: TFPCustomPen;
 begin
-  Result := 0;
-  QtPen := TQtPen.Create(True);
-  QtPen.IsExtPen := True;
+  lPen := TFPCustomPen.Create;
+  Result := HBRUSH(lPen);
+//  QtPen.IsExtPen := True;
+
+//  {$ifdef VerboseCDDrawing}
+//    DebugLn(Format(':>[TCDWidgetSet.ExtCreatePen]  Style: %d, Color: %8x Result:"%x',
+//      [LogPen.lopnStyle, LogPen.lopnColor, Result]));
+//  {$endif}
 
   case dwPenStyle and PS_STYLE_MASK of
-    PS_SOLID: QtPen.setStyle(QtSolidLine);
-    PS_DASH: QtPen.setStyle(QtDashLine);
-    PS_DOT: QtPen.setStyle(QtDotLine);
-    PS_DASHDOT: QtPen.setStyle(QtDashDotLine);
-    PS_DASHDOTDOT: QtPen.setStyle(QtDashDotDotLine);
-    PS_USERSTYLE: QtPen.setStyle(QtCustomDashLine);
-    PS_NULL: QtPen.setStyle(QtNoPen);
+    PS_SOLID:     lPen.Style := psSolid;
+    PS_DASH:      lPen.Style := psDash;
+    PS_DOT:       lPen.Style := psDot;
+    PS_DASHDOT:   lPen.Style := psDashDot;
+    PS_DASHDOTDOT:lPen.Style := psDashDotDot;
+//    PS_USERSTYLE: QtPen.setStyle(QtCustomDashLine);
+    PS_NULL:      lPen.Style := psClear;
+  else
+    lPen.Style := psSolid;
   end;
 
-  QtPen.setCosmetic((dwPenStyle and PS_TYPE_MASK) = PS_COSMETIC);
-  if (dwPenStyle and PS_TYPE_MASK) = PS_GEOMETRIC then
+  lPen.Width := 1;
+  if (dwPenStyle and PS_TYPE_MASK) = PS_COSMETIC then
+    lPen.Width := 1
+  else if (dwPenStyle and PS_TYPE_MASK) = PS_GEOMETRIC then
   begin
-    QtPen.setWidth(dwWidth);
-    case dwPenStyle and PS_JOIN_MASK of
+    lPen.Width := dwWidth;
+    {case dwPenStyle and PS_JOIN_MASK of
       PS_JOIN_ROUND: QtPen.setJoinStyle(QtRoundJoin);
       PS_JOIN_BEVEL: QtPen.setJoinStyle(QtBevelJoin);
       PS_JOIN_MITER: QtPen.setJoinStyle(QtMiterJoin);
@@ -2015,20 +2023,18 @@ begin
       PS_ENDCAP_ROUND: QtPen.setCapStyle(QtRoundCap);
       PS_ENDCAP_SQUARE: QtPen.setCapStyle(QtSquareCap);
       PS_ENDCAP_FLAT: QtPen.setCapStyle(QtFlatCap);
-    end;
+    end;}
   end;
 
-  if (dwPenStyle and PS_STYLE_MASK) = PS_USERSTYLE then
-    QtPen.setDashPattern(lpStyle, dwStyleCount);
+{  if (dwPenStyle and PS_STYLE_MASK) = PS_USERSTYLE then
+    QtPen.setDashPattern(lpStyle, dwStyleCount);}
 
-  QPen_Color(QtPen.FHandle, @Color);
-  ColorRefToTQColor(ColorToRGB(TColor(lplb.lbColor)), Color);
-  QPen_setColor(QtPen.FHandle, @Color);
+  lPen.FPColor := TColorToFPColor(ColorToRGB(lplb.lbColor));
 
-  Result := HPEN(QtPen);
+  Result := HPEN(lPen);
 end;
 
-function TQtWidgetSet.ExtSelectClipRGN(dc: hdc; rgn : hrgn; Mode : Longint) : Integer;
+(*function TQtWidgetSet.ExtSelectClipRGN(dc: hdc; rgn : hrgn; Mode : Longint) : Integer;
 var
   Clip: HRGN = 0;
   Tmp : hRGN;
@@ -2630,53 +2636,44 @@ begin
   end;
 end;
 
-(*{------------------------------------------------------------------------------
+{------------------------------------------------------------------------------
   Function: GetClipRGN
   Params: dc, rgn
   Returns: Integer
 
-  Returns a copy of the current Clipping Region.
+  This routine assumes that RGN has been created previously
+  and it copies the current Clipping Region to RGN
 
   The result can be one of the following constants
      0 = no clipping set
      1 = ok
     -1 = error
  ------------------------------------------------------------------------------}
-function TQtWidgetSet.GetClipRGN(DC : hDC; RGN : hRGN): Longint;
+function TCDWidgetSet.GetClipRGN(DC : hDC; RGN : hRGN): Longint;
+var
+  LazDC: TLazCanvas absolute DC;
+  lDestRegion: TLazRegion absolute RGN;
+  lDCRegion: TLazRegion;
 begin
-  {$ifdef VerboseQtWinAPI}
-    Writeln('Trace: [WinAPI GetClipRgn]',
-     ' DC: ', dbghex(DC),
-     ' RGN: ', dbghex(Rgn));
-    if RGN<>0 then
-      WriteLn(' QRegionH=', PtrInt(TQtRegion(Rgn).Widget))
-    else
-      WriteLn(' Rgn=0');
+  {$ifdef VerboseCDWinAPI}
+    DebugLn('[WinAPI GetClipRGN] DC ' + dbghex(DC));
   {$endif}
-  // it assumes that clipregion object has been created some other place
+
   Result := -1;
-  if not IsValidDC(DC) then
-    exit;
-  if Rgn = 0 then
-    exit;
-  if not TQtDeviceContext(DC).getClipping then
+  if not IsValidDC(DC) then exit;
+  if Rgn = 0 then Exit;
+
+  lDCRegion := TLazRegion(LazDC.ClipRegion);
+  if lDCRegion = nil then
     Result := 0
   else
   begin
-    // if our TQtRegion contains widget then
-    // first destroy it because QPainter creates
-    // new reference.
-    if TQtRegion(Rgn).FHandle <> nil then
-    begin
-      QRegion_destroy(TQtRegion(Rgn).FHandle);
-      TQtRegion(Rgn).FHandle := QRegion_create;
-    end;
-    QPainter_clipRegion(TQtDeviceContext(DC).Widget, TQtRegion(Rgn).FHandle);
+    lDestRegion.Assign(lDCRegion);
     Result := 1;
   end;
 end;
 
-function TQtWidgetSet.GetCmdLineParamDescForInterface: string;
+(*function TQtWidgetSet.GetCmdLineParamDescForInterface: string;
   function b(const s: string): string;
   begin
     Result:=BreakString(s,75,22)+LineEnding+LineEnding;
@@ -2708,7 +2705,7 @@ begin
     +b(rsqtOptionX11InputStyle)
     {$ENDIF}
     ;
-end;
+end;*)
 
 {------------------------------------------------------------------------------
   Method: GetCurrentObject
@@ -2718,23 +2715,27 @@ end;
   Returns: If the function succeeds, the return value is a handle to the specified object.
     If the function fails, the return value is NULL.
  ------------------------------------------------------------------------------}
-
-function TQtWidgetSet.GetCurrentObject(DC: HDC; uObjectType: UINT): HGDIOBJ;
+function TCDWidgetSet.GetCurrentObject(DC: HDC; uObjectType: UINT): HGDIOBJ;
 var
-  QtDC: TQtDeviceContext absolute DC;
+  LazDC: TLazCanvas;
 begin
+  {$ifdef VerboseCDWinAPI}
+    DebugLn(Format('[TCDWidgetSet.GetCurrentObject uObjectType=%d', [uObjectType]));
+  {$endif}
+
   Result := 0;
-  if not QtWidgetSet.IsValidDC(DC) then
-    Exit;
+  if not IsValidDC(DC) then exit;
+  LazDC := TLazCanvas(DC);
+
   case uObjectType of
-    OBJ_BITMAP: Result := HGDIOBJ(QtDC.vImage);
-    OBJ_BRUSH: Result := HGDIOBJ(QtDC.vBrush);
-    OBJ_FONT: Result := HGDIOBJ(QtDC.vFont);
-    OBJ_PEN: Result := HGDIOBJ(QtDC.vPen);
+    OBJ_BITMAP: Result := HGDIOBJ(LazDC.SelectedBitmap);
+    OBJ_BRUSH: Result := HGDIOBJ(LazDC.AssignedBrush);
+    OBJ_FONT: Result := HGDIOBJ(LazDC.AssignedFont);
+    OBJ_PEN: Result := HGDIOBJ(LazDC.AssignedPen);
   end;
 end;
 
-{------------------------------------------------------------------------------
+(*{------------------------------------------------------------------------------
   Function: GetCursorPos
   Params:  lpPoint: The cursorposition
   Returns: True if succesful
@@ -4648,29 +4649,29 @@ begin
   finally
     QRegion_destroy(IntersectRgn);
   end;
-end;
+end;*)
 
-function TQtWidgetSet.IsIconic(Handle: HWND): boolean;
+(*function TCDWidgetSet.IsIconic(Handle: HWND): boolean;
 begin
-  Result := TQtWidget(Handle).isMinimized;
-end;
+  Result := TCDForm(Handle).LCLForm.FormState = fsMinimized;
+end;*)
 
-function TQtWidgetSet.IsWindow(handle: HWND): boolean;
+function TCDWidgetSet.IsWindow(handle: HWND): boolean;
 begin
-  Result := IsValidHandle(Handle);
+  Result := TObject(Handle) is TCDForm;
 end;
 
-function TQtWidgetSet.IsWindowEnabled(Handle: HWND): boolean;
+function TCDWidgetSet.IsWindowEnabled(Handle: HWND): boolean;
 begin
-  Result := TQtWidget(Handle).getEnabled;
+  Result := TCDForm(Handle).LCLForm.Enabled;
 end;
 
-function TQtWidgetSet.IsWindowVisible(Handle: HWND): boolean;
+function TCDWidgetSet.IsWindowVisible(Handle: HWND): boolean;
 begin
-  Result := TQtWidget(Handle).getVisible;
+  Result := TCDForm(Handle).LCLForm.Visible;
 end;
 
-function TQtWidgetSet.IsZoomed(Handle: HWND): boolean;
+(*function TQtWidgetSet.IsZoomed(Handle: HWND): boolean;
 begin
   Result := TQtWidget(Handle).isMaximized;
 end;*)
@@ -5381,6 +5382,7 @@ begin
     Result := HGDIOBJ(TLazCanvas(DC).Image);
 
     TLazCanvas(DC).Image := TCDBitmap(aObject).Image;
+    TLazCanvas(DC).SelectedBitmap := aObject;
   end; (*else
   if AObject is TQtRegion then
   begin
