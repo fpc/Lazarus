@@ -161,9 +161,38 @@ end;
 
 procedure TCDDrawerCommon.LoadFallbackPaletteColors;
 begin
-  Palette.BtnFace := WIN2000_BTNFACE;
-  Palette.Form := WIN2000_FORM;
+{  Palette.ScrollBar
+  Palette.Background
+  Palette.ActiveCaption
+  Palette.InactiveCaption
+  Palette.Menu }
   Palette.Window := clWhite; // The inside of a Edit control, for example
+{  Palette.WindowFrame
+  Palette.MenuText
+  Palette.WindowText
+  Palette.CaptionText
+  Palette.ActiveBorder
+  Palette.InactiveBorder
+  Palette.AppWorkspace
+  Palette.Highlight
+  Palette.HighlightText}
+  Palette.BtnFace := WIN2000_BTNFACE;
+{  Palette.BtnShadow
+  Palette.GrayText
+  Palette.BtnText
+  Palette.InactiveCaptionText
+  Palette.BtnHighlight
+  Palette.color3DDkShadow
+  Palette.color3DLight
+  Palette.InfoText
+  Palette.InfoBk
+    //
+  Palette.HotLight
+  Palette.GradientActiveCaption
+  Palette.GradientInactiveCaption,
+  Palette.MenuHighlight
+  Palette.MenuBar}
+  Palette.Form := WIN2000_FORM;
 end;
 
 function TCDDrawerCommon.GetMeasures(AMeasureID: Integer): Integer;
