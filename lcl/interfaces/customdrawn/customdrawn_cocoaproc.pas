@@ -740,7 +740,7 @@ begin
     // Prepare the non-native image and canvas
     UpdateControlLazImageAndCanvas(WindowHandle.Image,
       WindowHandle.Canvas, lWidth, lHeight, clfRGB24UpsideDown);
-    DrawFormBackground(WindowHandle.Image, WindowHandle.Canvas);
+    DrawFormBackground(WindowHandle.Image, WindowHandle.Canvas, WindowHandle.LCLForm);
     WindowHandle.Canvas.NativeDC := PtrInt(Context);
 
     // Draw the form
