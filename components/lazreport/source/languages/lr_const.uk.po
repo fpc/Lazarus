@@ -1,13 +1,18 @@
+# Igor Paliychuk <mansonigor@gmail.com>, 2012.
 msgid ""
 msgstr ""
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: 2012-04-23 10:24+0300\n"
+"Last-Translator: Igor Paliychuk <mansonigor@gmail.com>\n"
+"Language-Team: \n"
+"Language: uk\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Project-Id-Version: \n"
-"POT-Creation-Date: \n"
-"PO-Revision-Date: 2011-06-11 23:01+0200\n"
-"Last-Translator: Igor Paliychuk <mansonigor@gmail.com>\n"
-"Language-Team: \n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%"
+"10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"X-Generator: Virtaal 0.7.1\n"
 
 #: lr_const.saboutformcapt
 msgid "About FastReport"
@@ -607,10 +612,9 @@ msgid "&Variable"
 msgstr "&Змінна"
 
 #: lr_const.sevformvars
-#, fuzzy
 #| msgid "Va&riables..."
 msgid "Va&riables ..."
-msgstr "З&мінні..."
+msgstr "З&мінні ..."
 
 #: lr_const.sexportfilterindexerror
 msgid "Export filter index out of range"
@@ -690,10 +694,9 @@ msgid "Variable format"
 msgstr "Формат змінної"
 
 #: lr_const.sfont
-#, fuzzy
 #| msgid "Font..."
 msgid "Font ..."
-msgstr "Шрифт..."
+msgstr "Шрифт ..."
 
 #: lr_const.sformat11
 msgctxt "lr_const.sformat11"
@@ -1023,7 +1026,7 @@ msgstr "Вибрати все"
 
 #: lr_const.sfrdesignerformselectsameclass
 msgid "Select same class objects"
-msgstr ""
+msgstr "Вибрати об'єкти того ж класу"
 
 #: lr_const.sfrdesignerformselobj
 msgid "Select object"
@@ -1075,10 +1078,9 @@ msgid "Width align"
 msgstr "Вирівнювання по ширині"
 
 #: lr_const.sfrdesignerform_about
-#, fuzzy
 #| msgid "&About..."
 msgid "&About ..."
-msgstr "&Про програму..."
+msgstr "&Про програму ..."
 
 #: lr_const.sfrdesignerform_addpg
 msgid "&Add page"
@@ -1109,22 +1111,20 @@ msgid "&Delete"
 msgstr "Ви&далити"
 
 #: lr_const.sfrdesignerform_edit
-#, fuzzy
 #| msgid "&Edit..."
 msgctxt "lr_const.sfrdesignerform_edit"
 msgid "&Edit ..."
-msgstr "&Редагувати..."
+msgstr "&Редагувати ..."
 
 #: lr_const.sfrdesignerform_edit2
 msgid "&Edit"
 msgstr "&Редагувати"
 
 #: lr_const.sfrdesignerform_editp
-#, fuzzy
 #| msgid "&Edit..."
 msgctxt "lr_const.sfrdesignerform_editp"
 msgid "&Edit ..."
-msgstr "&Редагувати..."
+msgstr "&Редагувати ..."
 
 #: lr_const.sfrdesignerform_exit
 msgid "E&xit"
@@ -1151,36 +1151,32 @@ msgid "Line style"
 msgstr "Стиль лінії"
 
 #: lr_const.sfrdesignerform_new
-#, fuzzy
 #| msgid "&New..."
 msgid "&New ..."
-msgstr "&Створити..."
+msgstr "&Створити ..."
 
 #: lr_const.sfrdesignerform_obj
 msgid "&Objects"
 msgstr "&Об'єкти"
 
 #: lr_const.sfrdesignerform_open
-#, fuzzy
 #| msgid "&Open..."
 msgid "&Open ..."
-msgstr "В&ідкрити..."
+msgstr "В&ідкрити ..."
 
 #: lr_const.sfrdesignerform_opts
-#, fuzzy
 #| msgid "&Options..."
 msgid "&Options ..."
-msgstr "&Параметри..."
+msgstr "&Параметри ..."
 
 #: lr_const.sfrdesignerform_paste
 msgid "&Paste"
 msgstr "Вс&тавити"
 
 #: lr_const.sfrdesignerform_pgopt
-#, fuzzy
 #| msgid "&Page options..."
 msgid "&Page options ..."
-msgstr "Параметри с&торінки..."
+msgstr "Параметри с&торінки ..."
 
 #: lr_const.sfrdesignerform_preview
 msgid "Pre&view"
@@ -1199,20 +1195,18 @@ msgid "&Remove page"
 msgstr "Ви&далити сторінку"
 
 #: lr_const.sfrdesignerform_rptopt
-#, fuzzy
 #| msgid "&Report options..."
 msgid "&Report options ..."
-msgstr "Параметри &звіту..."
+msgstr "Параметри &звіту ..."
 
 #: lr_const.sfrdesignerform_save
 msgid "&Save"
 msgstr "&Зберегти"
 
 #: lr_const.sfrdesignerform_saveas
-#, fuzzy
 #| msgid "Save &as..."
 msgid "Save &as ..."
-msgstr "Зберегти &як..."
+msgstr "Зберегти &як ..."
 
 #: lr_const.sfrdesignerform_selectall
 msgid "Select &all"
@@ -1249,10 +1243,9 @@ msgid "&Undo"
 msgstr "&Повернути"
 
 #: lr_const.sfrdesignerform_var
-#, fuzzy
 #| msgid "Variables &list..."
 msgid "Variables &list ..."
-msgstr "Список &змінних..."
+msgstr "Список &змінних ..."
 
 #: lr_const.sfrferror
 msgid "Unsupported FRF format"
@@ -1275,10 +1268,9 @@ msgid "&Clear"
 msgstr "&Очистити"
 
 #: lr_const.sgeditorformload
-#, fuzzy
 #| msgid "&Load..."
 msgid "&Load ..."
-msgstr "&Завантажити..."
+msgstr "&Завантажити ..."
 
 #: lr_const.sgeditorformmemo
 msgctxt "lr_const.sgeditorformmemo"
@@ -1312,16 +1304,14 @@ msgid "&Bold"
 msgstr "&Жирний"
 
 #: lr_const.shilightformcolor
-#, fuzzy
 #| msgid "C&olor..."
 msgid "C&olor ..."
-msgstr "К&олір..."
+msgstr "К&олір ..."
 
 #: lr_const.shilightformcolor2
-#, fuzzy
 #| msgid "Co&lor..."
 msgid "Co&lor ..."
-msgstr "Ко&лір..."
+msgstr "Ко&лір ..."
 
 #: lr_const.shilightformcond
 msgctxt "lr_const.shilightformcond"
@@ -1463,10 +1453,9 @@ msgid "On last page"
 msgstr "На останній сторінці"
 
 #: lr_const.sother
-#, fuzzy
 #| msgid "Other..."
 msgid "Other ..."
-msgstr "Інші..."
+msgstr "Інші ..."
 
 #: lr_const.sothercategory
 msgctxt "lr_const.sothercategory"
@@ -2244,7 +2233,7 @@ msgstr "Змінні ..."
 
 #: lr_const.sroundrectsqrcorners
 msgid "Squared corners"
-msgstr ""
+msgstr "Прямі кути"
 
 #: lr_const.srtffile
 msgid "Rich Text file"
@@ -2396,10 +2385,9 @@ msgid "&Categories and variables"
 msgstr "&Категорії та змінні"
 
 #: lr_const.svarformat
-#, fuzzy
 #| msgid "Variable format..."
 msgid "Variable format ..."
-msgstr "Формат змінної..."
+msgstr "Формат змінної ..."
 
 #: lr_const.svarformcapt
 msgid "Variables"
@@ -2442,4 +2430,3 @@ msgstr "Перенесення слів"
 #: lr_const.syes
 msgid "Yes"
 msgstr "Так"
-

@@ -1,13 +1,18 @@
+# Igor Paliychuk <mansonigor@gmail.com>, 2012.
 msgid ""
 msgstr ""
-"Last-Translator: Igor Paliychuk <mansonigor@gmail.com>\n"
 "Project-Id-Version: lazaruside\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2011-08-18 19:08+0200\n"
+"PO-Revision-Date: 2012-04-23 09:49+0300\n"
+"Last-Translator: Igor Paliychuk <mansonigor@gmail.com>\n"
 "Language-Team: \n"
+"Language: uk\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%"
+"10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"X-Generator: Virtaal 0.7.1\n"
 
 #: lclstrconsts.hhshelpbrowsernotexecutable
 msgid "Browser %s%s%s not executable."
@@ -72,7 +77,7 @@ msgstr "Очистити"
 
 #: lclstrconsts.ifsvk_cmd
 msgid "Cmd"
-msgstr ""
+msgstr "Cmd"
 
 #: lclstrconsts.ifsvk_control
 msgid "Control"
@@ -159,7 +164,7 @@ msgstr "Меню"
 
 #: lclstrconsts.ifsvk_meta
 msgid "Meta"
-msgstr ""
+msgstr "Мета"
 
 #: lclstrconsts.ifsvk_modechange
 msgid "Mode Change"
@@ -234,7 +239,7 @@ msgstr "Пробіл"
 
 #: lclstrconsts.ifsvk_super
 msgid "Super"
-msgstr ""
+msgstr "Super"
 
 #: lclstrconsts.ifsvk_tab
 msgctxt "lclstrconsts.ifsvk_tab"
@@ -255,10 +260,9 @@ msgid "can not execute %s"
 msgstr "неможливо виконати %s"
 
 #: lclstrconsts.liscefilter
-#, fuzzy
 #| msgid "(Filter)"
 msgid "(filter)"
-msgstr "(Фільтр)"
+msgstr "(фільтр)"
 
 #: lclstrconsts.lislclresourcesnotfound
 msgctxt "lclstrconsts.lislclresourcesnotfound"
@@ -376,7 +380,7 @@ msgstr "Елемент управління '%s' не має батьківсь�
 
 #: lclstrconsts.rscontrolisnotaparent
 msgid "'%s' is not a parent of '%s'"
-msgstr ""
+msgstr "'%s' не є предком '%s'"
 
 #: lclstrconsts.rscreamcolorcaption
 msgid "Cream"
@@ -1054,7 +1058,7 @@ msgstr "Попередній"
 
 #: lclstrconsts.rspromptonreplace
 msgid "Prompt on replace"
-msgstr ""
+msgstr "Запитувати при заміні"
 
 #: lclstrconsts.rspropertydoesnotexist
 msgid "Property %s does not exist"
@@ -1215,7 +1219,7 @@ msgstr "Небесно-синій"
 
 #: lclstrconsts.rstcustomtabcontrolaccessibilitydescription
 msgid "A control with tabs"
-msgstr ""
+msgstr "Управління з вкладками"
 
 #: lclstrconsts.rstealcolorcaption
 msgid "Teal"
@@ -1232,17 +1236,17 @@ msgstr "Тегований формат файлу зображення"
 #: lclstrconsts.rstpanelaccessibilitydescription
 msgctxt "lclstrconsts.rstpanelaccessibilitydescription"
 msgid "Panel"
-msgstr ""
+msgstr "Панель"
 
 #: lclstrconsts.rstsplitteraccessibilitydescription
 msgctxt "lclstrconsts.rstsplitteraccessibilitydescription"
 msgid "A grip to control how much size to give two parts of an area"
-msgstr ""
+msgstr "Ручка для контролю розмірів двох частин області"
 
 #: lclstrconsts.rsttreeviewaccessibilitydescription
 msgctxt "lclstrconsts.rsttreeviewaccessibilitydescription"
 msgid "A tree of items"
-msgstr ""
+msgstr "Дерево елементів"
 
 #: lclstrconsts.rsunabletoloaddefaultfont
 msgid "Unable to load default font"
@@ -1358,7 +1362,7 @@ msgstr "Невірний індекс ImageList"
 
 #: lclstrconsts.smaskeditnomatch
 msgid "The current text does not match the specified mask."
-msgstr ""
+msgstr "Поточний текст не відповідає заданій масці."
 
 #: lclstrconsts.smenuindexerror
 msgid "Menu index out of range"
@@ -1495,4 +1499,3 @@ msgstr "Невірний символ маркера: очікувався %s, �
 #: lclstrconsts.sparwrongtokentype
 msgid "Wrong token type: %s expected but %s found"
 msgstr "Невірний тип маркера: очікувався %s, але знайдений %s"
-

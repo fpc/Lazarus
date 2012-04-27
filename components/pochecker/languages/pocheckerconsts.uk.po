@@ -1,0 +1,203 @@
+# Igor Paliychuk <mansonigor@gmail.com>, 2012.
+msgid ""
+msgstr ""
+"PO-Revision-Date: 2012-04-23 11:40+0300\n"
+"Last-Translator: Igor Paliychuk <mansonigor@gmail.com>\n"
+"Language: uk\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%"
+"10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"X-Generator: Virtaal 0.7.1\n"
+
+#: pocheckerconsts.rspochecker
+msgid "PO File Checker"
+msgstr "Перевірка PO Файлів"
+
+#: pocheckerconsts.scannotfindmaster
+msgid ""
+"Cannot find master po file:\n"
+"%s\n"
+"for selected file\n"
+"%s\n"
+msgstr ""
+"Не можу знайти основний po файл:\n"
+"%s\n"
+"для вибраного файлу\n"
+"%s"
+
+#: pocheckerconsts.scheckforduplicateuntranslatedvalues
+msgid "Check for duplicate untranslated values"
+msgstr "Перевірити на повторні неперекладені записи"
+
+#: pocheckerconsts.scheckforincompatibleformatarguments
+msgid "Check for incompatible format arguments"
+msgstr "Перевірити на несумісні аргументи формату"
+
+#: pocheckerconsts.scheckformismatchesinuntranslatedstrings
+msgid "Check for mismatches in untranslated strings"
+msgstr "Перевірити на неузгодженості в неперекладених рядках"
+
+#: pocheckerconsts.scheckmissingidentifiers
+msgid "Check missing identifiers"
+msgstr "Перевірити відсутні ідентифікатори"
+
+#: pocheckerconsts.schecknumberofitems
+msgid "Check number of items"
+msgstr "Перевірити кількість елементів"
+
+#: pocheckerconsts.scopycaption
+msgid "Copy to clipboard"
+msgstr "Копіювати в буфер"
+
+#: pocheckerconsts.scurrentpofile
+msgid "Current po-file:"
+msgstr "Поточний po-файл:"
+
+#: pocheckerconsts.scurrenttest
+msgid "Current Test:"
+msgstr "Поточний тест:"
+
+#: pocheckerconsts.sduplicatelinenrwithvalue
+msgid "[Line %d] %s"
+msgstr "[Рядок %d] %s"
+
+#: pocheckerconsts.sduplicateoriginals
+msgid "The (untranslated) value \"%s\" is used for more than 1 entry:"
+msgstr "(Неперекладене) значення \"%s\" використовується більше як для 1 запису:"
+
+#: pocheckerconsts.serroroncleanup
+msgid ""
+"An unrecoverable error occurred\n"
+"%s\n"
+"Please close the program\n"
+msgstr ""
+"Виникла критична помилка\n"
+"%s\n"
+"Закрийте програму\n"
+
+#: pocheckerconsts.serroroncreate
+msgid ""
+"Error creating an instance of TPoFamily:\n"
+"%s\n"
+msgstr ""
+"Помилка створення екземпляру TPoFamily:\n"
+"%s\n"
+
+#: pocheckerconsts.serrorsbytest
+msgid "Errors / warnings reported by %s for:"
+msgstr "Помилки / попередження звітовані %s для:"
+
+#: pocheckerconsts.sfindalltranslatedpofiles
+msgid "Find all translated po-files"
+msgstr "Знайти всі перекладені po-файли"
+
+#: pocheckerconsts.sguipofilecheckingtool
+msgid "GUI Po-file checking tool"
+msgstr "GUI інструмент перевірки po-файлів"
+
+#: pocheckerconsts.sidentifiernotfoundin
+msgid "Identifier [%s] not found in %s"
+msgstr "Ідентифікатор [%s] не знайдений в %s"
+
+#: pocheckerconsts.sincompatibleformatargs
+msgid "[Line: %d] Incompatible format() arguments for:"
+msgstr "[Рядок: %d] Несумісні аргументи format() для:"
+
+#: pocheckerconsts.slineinfilename
+msgid "[Line %d] in %s:"
+msgstr "[Рядок %d] в %s:"
+
+#: pocheckerconsts.slinenr
+msgid "[Line: %d]"
+msgstr "[Рядок: %d]"
+
+#: pocheckerconsts.smissingmasteridentifier
+msgid "Identifier [%s] found in %s, but it does not exist in %s"
+msgstr "Ідентифікатор [%s] знайдений в %s, але він не існує в %s"
+
+#: pocheckerconsts.snoerrorsfound
+msgid "No errors found"
+msgstr "Помилки не знайдені"
+
+#: pocheckerconsts.snotaproperfilename
+msgid ""
+"Selected filename\n"
+"%s\n"
+"does not seem to be a proper name for a po-file\n"
+msgstr ""
+"Вибраний файл\n"
+"%s\n"
+"схоже не є вірним іменем для po-файлу\n"
+
+#: pocheckerconsts.snotestselected
+msgid "There are no tests selected."
+msgstr "Не вибрано жодного тесту."
+
+#: pocheckerconsts.snrerrorsfound
+msgid "Found %d errors."
+msgstr "Знайдено %d помилок."
+
+#: pocheckerconsts.snrofitemsmismatch
+msgid "Mismatch in number of items for master and child"
+msgstr "Невідповідність кількості елементів для господаря і дитини"
+
+#: pocheckerconsts.snrofitemsmismatchd
+msgid "%s: %d items"
+msgstr "%s: %d ел-тів"
+
+#: pocheckerconsts.snrwarningsfound
+msgid "Found %d warnings."
+msgstr "Виявлено %d попереджень."
+
+#: pocheckerconsts.sopenapofile
+msgid "&Open a po-file"
+msgstr "&Відкрити po-файл"
+
+#: pocheckerconsts.soriginal
+msgid "Original"
+msgstr "Оригінал"
+
+#: pocheckerconsts.sresults
+msgid "Results"
+msgstr "Результати"
+
+#: pocheckerconsts.srunselectedtests
+msgid "&Run Selected Tests"
+msgstr "&Запустити Вибрані Тести"
+
+#: pocheckerconsts.ssavecaption
+msgid "Save to file"
+msgstr "Зберегти в файл"
+
+#: pocheckerconsts.ssaveerror
+msgid ""
+"Error saving file:\n"
+"%s\n"
+msgstr ""
+"Помилка збереження файлу:\n"
+"%s\n"
+
+#: pocheckerconsts.sselectalltests
+msgid "Select all tests"
+msgstr "Вибрати всі тести"
+
+#: pocheckerconsts.sselecttesttypes
+msgid "Select test types"
+msgstr "Вибрати типи тестів"
+
+#: pocheckerconsts.stotalerrors
+msgid "Total errors / warnings found: %d"
+msgstr "Знайдено всього помилок / попереджень: %d"
+
+#: pocheckerconsts.stotalwarnings
+msgid "Total warnings found: %d"
+msgstr "Знайдено всього попереджень: %d"
+
+#: pocheckerconsts.stranslation
+msgid "Translation"
+msgstr "Переклад"
+
+#: pocheckerconsts.sunselectalltests
+msgid "Unselect all tests"
+msgstr "Зняти вибір з всіх тестів"

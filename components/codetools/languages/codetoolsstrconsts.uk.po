@@ -1,13 +1,18 @@
+# Igor Paliychuk <mansonigor@gmail.com>, 2012.
 msgid ""
 msgstr ""
-"Last-Translator: Igor Paliychuk <mansonigor@gmail.com>\n"
 "Project-Id-Version: lazaruside\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2011-08-20 21:47+0200\n"
+"PO-Revision-Date: 2012-04-23 10:08+0300\n"
+"Last-Translator: Igor Paliychuk <mansonigor@gmail.com>\n"
 "Language-Team: \n"
+"Language: uk\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%"
+"10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"X-Generator: Virtaal 0.7.1\n"
 
 #: codetoolsstrconsts.crsbracketnotfound
 msgid "bracket ) not found"
@@ -155,7 +160,7 @@ msgstr "Тека налагоджувача"
 
 #: codetoolsstrconsts.ctsdefaultancestornotfound
 msgid "default ancestor %s not found"
-msgstr ""
+msgstr "типовий предок %s не знайдено"
 
 #: codetoolsstrconsts.ctsdefaultclassancestortobjectnotfound
 msgid "default class ancestor TObject not found"
@@ -163,7 +168,7 @@ msgstr "не знайдений клас-предок за замовчуван�
 
 #: codetoolsstrconsts.ctsdefaultdispinterfaceancestoridispatchnotfound
 msgid "default dispinterface ancestor IDispatch not found"
-msgstr ""
+msgstr "не знайдений типовий диспінтерфейс-предок IDispatch"
 
 #: codetoolsstrconsts.ctsdefaultfpcsource2operatingsystem
 msgid "Default fpc source Operating System 2"
@@ -191,7 +196,7 @@ msgstr "не знайдений інтерфейс-предок за замов�
 
 #: codetoolsstrconsts.ctsdefaultjavaclassancestorjlobjectnotfound
 msgid "default java class ancestor JLObject not found"
-msgstr ""
+msgstr "не знайдений типовий клас-предок java JLObject"
 
 #: codetoolsstrconsts.ctsdefaultparameterexpectedbutatomfound
 msgid "default parameter expected, but %s found"
@@ -694,7 +699,7 @@ msgstr "очікується оператор, але знайдено %s"
 
 #: codetoolsstrconsts.ctsoperatorexpectedbuteoffound
 msgid "unexpected end of file (operator expected)"
-msgstr ""
+msgstr "неочікуваний кінець файла (очікується оператор)"
 
 #: codetoolsstrconsts.ctsoperatorexpectedbutfound
 msgid "operator expected but %s found"
@@ -948,4 +953,3 @@ msgstr "Тека елементів інтерфейсу"
 #: codetoolsstrconsts.ctswordnotfound
 msgid "\"%s\" not found"
 msgstr "\"%s\" не знайдене"
-

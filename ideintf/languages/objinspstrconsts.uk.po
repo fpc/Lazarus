@@ -1,13 +1,18 @@
+# Igor Paliychuk <mansonigor@gmail.com>, 2012.
 msgid ""
 msgstr ""
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: 2012-04-23 09:55+0300\n"
+"Last-Translator: Igor Paliychuk <mansonigor@gmail.com>\n"
+"Language-Team: \n"
+"Language: uk\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Project-Id-Version: \n"
-"POT-Creation-Date: \n"
-"PO-Revision-Date: 2011-08-18 19:09+0200\n"
-"Last-Translator: Igor Paliychuk <mansonigor@gmail.com>\n"
-"Language-Team: \n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%"
+"10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"X-Generator: Virtaal 0.7.1\n"
 
 #: objinspstrconsts.cactionlisteditorallcategory
 msgid "(All)"
@@ -151,10 +156,9 @@ msgid "&Dataset:"
 msgstr "На&бір даних:"
 
 #: objinspstrconsts.fesfetitle
-#, fuzzy
 #| msgid "Edit Fields..."
 msgid "Edit Fields ..."
-msgstr "Змінити Поля..."
+msgstr "Змінити Поля ..."
 
 #: objinspstrconsts.fesfieldcantbec
 msgid "Field %s cannot be created!"
@@ -260,40 +264,34 @@ msgid "Set value"
 msgstr "Вказати значення"
 
 #: objinspstrconsts.nbcesaddpage
-#, fuzzy
 #| msgid "Add page"
 msgid "Add Page"
 msgstr "Нова сторінка"
 
 #: objinspstrconsts.nbcesdeletepage
-#, fuzzy
 #| msgid "Delete page"
 msgid "Delete Page"
 msgstr "Видалити сторінку"
 
 #: objinspstrconsts.nbcesinsertpage
-#, fuzzy
 #| msgid "Insert page"
 msgid "Insert Page"
 msgstr "Вставити сторінку"
 
 #: objinspstrconsts.nbcesmovepageleft
-#, fuzzy
 #| msgid "Move page left"
 msgid "Move Page Left"
 msgstr "Пересунути сторінку вліво"
 
 #: objinspstrconsts.nbcesmovepageright
-#, fuzzy
 #| msgid "Move page right"
 msgid "Move Page Right"
 msgstr "Пересунути сторінку вправо"
 
 #: objinspstrconsts.nbcesshowpage
-#, fuzzy
 #| msgid "Show page ..."
 msgid "Show Page"
-msgstr "Показати 'сторінку'..."
+msgstr "Показати сторінку"
 
 #: objinspstrconsts.oicoleditadd
 msgctxt "objinspstrconsts.oicoleditadd"
@@ -332,10 +330,9 @@ msgid "Action"
 msgstr "Дія"
 
 #: objinspstrconsts.oisactionlistcomponenteditor
-#, fuzzy
 #| msgid "Action&List Editor..."
 msgid "Action&List Editor ..."
-msgstr "Редактор Action&List..."
+msgstr "Редактор Action&List ..."
 
 #: objinspstrconsts.oisactionlisteditor
 msgid "ActionList Editor"
@@ -515,10 +512,9 @@ msgid "&Help"
 msgstr "&Довідка"
 
 #: objinspstrconsts.oisimagelistcomponenteditor
-#, fuzzy
 #| msgid "I&mageList Editor..."
 msgid "I&mageList Editor ..."
-msgstr "Редактор I&mageList..."
+msgstr "Редактор I&mageList ..."
 
 #: objinspstrconsts.oisincompatibleidentifier
 msgid "Incompatible Identifier"
@@ -573,10 +569,9 @@ msgid "Load picture"
 msgstr "Завантажити зображення"
 
 #: objinspstrconsts.oismasks
-#, fuzzy
 #| msgid "Masks..."
 msgid "Masks ..."
-msgstr "Маски..."
+msgstr "Маски ..."
 
 #: objinspstrconsts.oismethod
 msgid "Method"
@@ -757,10 +752,9 @@ msgid "Strings Editor Dialog"
 msgstr "Редактор рядків"
 
 #: objinspstrconsts.oistdactcolorselect1headline
-#, fuzzy
 #| msgid "Select &Color..."
 msgid "Select &Color ..."
-msgstr "&Обрати Колір"
+msgstr "&Обрати Колір ..."
 
 #: objinspstrconsts.oistdactcolorselecthint
 msgid "Color Select"
@@ -941,10 +935,9 @@ msgid "Exit"
 msgstr "Вихід"
 
 #: objinspstrconsts.oistdactfileopenheadline
-#, fuzzy
 #| msgid "&Open..."
 msgid "&Open ..."
-msgstr "&Відкрити..."
+msgstr "&Відкрити ..."
 
 #: objinspstrconsts.oistdactfileopenhint
 msgctxt "objinspstrconsts.oistdactfileopenhint"
@@ -956,17 +949,15 @@ msgid "Ctrl+O"
 msgstr "Ctrl+O"
 
 #: objinspstrconsts.oistdactfileopenwithheadline
-#, fuzzy
 #| msgid "Open with..."
 msgid "Open with ..."
-msgstr "Відкрити з допомогою..."
+msgstr "Відкрити з допомогою ..."
 
 #: objinspstrconsts.oistdactfileopenwithhint
 msgid "Open with"
 msgstr "Відкрити з допомогою"
 
 #: objinspstrconsts.oistdactfilesaveasheadline
-#, fuzzy
 #| msgid "Save &As..."
 msgid "Save &As ..."
 msgstr "&Зберегти як ..."
@@ -976,10 +967,9 @@ msgid "Save As"
 msgstr "Зберегти як"
 
 #: objinspstrconsts.oistdactfonteditheadline
-#, fuzzy
 #| msgid "Select &Font..."
 msgid "Select &Font ..."
-msgstr "&Обрати Шрифт"
+msgstr "&Обрати Шрифт ..."
 
 #: objinspstrconsts.oistdactfontedithint
 msgid "Font Select"
@@ -1018,10 +1008,9 @@ msgid "Find first"
 msgstr "Знайти перше"
 
 #: objinspstrconsts.oistdactsearchfindheadline
-#, fuzzy
 #| msgid "&Find..."
 msgid "&Find ..."
-msgstr "&Знайти..."
+msgstr "&Знайти ..."
 
 #: objinspstrconsts.oistdactsearchfindhint
 msgid "Find"
@@ -1052,10 +1041,9 @@ msgid "Replace"
 msgstr "Замінити"
 
 #: objinspstrconsts.oistestdialog
-#, fuzzy
 #| msgid "Test dialog..."
 msgid "Test dialog ..."
-msgstr "Тестувати діалог..."
+msgstr "Тестувати діалог ..."
 
 #: objinspstrconsts.oistestinput
 msgid "Test Input"
@@ -1191,21 +1179,19 @@ msgid "Sections Editor ..."
 msgstr "Редактор Секцій ..."
 
 #: objinspstrconsts.sccsiledtadd
-#, fuzzy
 #| msgid "Add ..."
 msgid "&Add ..."
-msgstr "Додати..."
+msgstr "&Додати ..."
 
 #: objinspstrconsts.sccsiledtadjustment
 msgid "Adjustment"
 msgstr "Регулювання"
 
 #: objinspstrconsts.sccsiledtapply
-#, fuzzy
 #| msgid "Apply"
 msgctxt "objinspstrconsts.sccsiledtapply"
 msgid "&Apply"
-msgstr "Застосувати"
+msgstr "&Застосувати"
 
 #: objinspstrconsts.sccsiledtcaption
 msgid "ImageList Editor"
@@ -1216,22 +1202,20 @@ msgid "Center"
 msgstr "Центр"
 
 #: objinspstrconsts.sccsiledtclear
-#, fuzzy
 #| msgid "Clear"
 msgctxt "objinspstrconsts.sccsiledtclear"
 msgid "&Clear"
-msgstr "Очистити"
+msgstr "&Очистити"
 
 #: objinspstrconsts.sccsiledtcrop
 msgid "Crop"
 msgstr "Обрізати"
 
 #: objinspstrconsts.sccsiledtdelete
-#, fuzzy
 #| msgid "Delete"
 msgctxt "objinspstrconsts.sccsiledtdelete"
 msgid "&Delete"
-msgstr "Видалити"
+msgstr "Ви&далити"
 
 #: objinspstrconsts.sccsiledtgrplcaption
 msgid "Images"
@@ -1242,18 +1226,16 @@ msgid "Selected Image"
 msgstr "Вибране Зображення"
 
 #: objinspstrconsts.sccsiledtmovedown
-#, fuzzy
 #| msgid "Move Down"
 msgctxt "objinspstrconsts.sccsiledtmovedown"
 msgid "Move D&own"
-msgstr "Пересунути Вниз"
+msgstr "Перемістити В&низ"
 
 #: objinspstrconsts.sccsiledtmoveup
-#, fuzzy
 #| msgid "Move Up"
 msgctxt "objinspstrconsts.sccsiledtmoveup"
 msgid "Move &Up"
-msgstr "Пересунути Вверх"
+msgstr "Перемістити В&гору"
 
 #: objinspstrconsts.sccsiledtnone
 msgid "None"
@@ -1268,17 +1250,15 @@ msgid "Transparent Color:"
 msgstr "Прозорий колір:"
 
 #: objinspstrconsts.sccsiledtsave
-#, fuzzy
 #| msgid "Save ..."
 msgctxt "objinspstrconsts.sccsiledtsave"
 msgid "&Save ..."
-msgstr "Зберегти..."
+msgstr "&Зберегти ..."
 
 #: objinspstrconsts.sccsiledtsaveall
-#, fuzzy
 #| msgid "Save All..."
 msgid "Save All ..."
-msgstr "Зберегти Все..."
+msgstr "Зберегти Все ..."
 
 #: objinspstrconsts.sccsiledtsavedialog
 msgid "Save Image"
@@ -1293,11 +1273,10 @@ msgid "Edit Columns ..."
 msgstr "Редагувати Колонки ..."
 
 #: objinspstrconsts.sccslvedt
-#, fuzzy
 #| msgid "Edit Items..."
 msgctxt "objinspstrconsts.sccslvedt"
 msgid "Edit Items ..."
-msgstr "Редагувати Елементи..."
+msgstr "Редагувати Елементи ..."
 
 #: objinspstrconsts.sccslvedtapply
 msgctxt "objinspstrconsts.sccslvedtapply"
@@ -1353,20 +1332,18 @@ msgid "New SubItem"
 msgstr "Новий Піделемент"
 
 #: objinspstrconsts.sccsmaskeditor
-#, fuzzy
 #| msgid "Edit Mask Editor..."
 msgid "Edit Mask Editor ..."
-msgstr "Змінити Редактор Маски..."
+msgstr "Змінити Редактор Маски ..."
 
 #: objinspstrconsts.sccssbeditpanels
 msgid "Panels Editor ..."
 msgstr "Редактор Панелей ..."
 
 #: objinspstrconsts.sccssgedt
-#, fuzzy
 #| msgid "Edit StringGrid..."
 msgid "Edit StringGrid ..."
-msgstr "Змінити StringGrid..."
+msgstr "Змінити StringGrid ..."
 
 #: objinspstrconsts.sccssgedtapply
 msgctxt "objinspstrconsts.sccssgedtapply"
@@ -1386,10 +1363,9 @@ msgid "String Grid"
 msgstr "String Grid"
 
 #: objinspstrconsts.sccssgedtload
-#, fuzzy
 #| msgid "Load..."
 msgid "Load ..."
-msgstr "Завантажити..."
+msgstr "Завантажити ..."
 
 #: objinspstrconsts.sccssgedtmoverowscols
 msgid "Move Rows/Cols"
@@ -1401,11 +1377,10 @@ msgid "Open"
 msgstr "Відкрити"
 
 #: objinspstrconsts.sccssgedtsave
-#, fuzzy
 #| msgid "Save..."
 msgctxt "objinspstrconsts.sccssgedtsave"
 msgid "Save ..."
-msgstr "Зберегти..."
+msgstr "Зберегти ..."
 
 #: objinspstrconsts.sccssgedtsavedialog
 msgctxt "objinspstrconsts.sccssgedtsavedialog"
@@ -1413,11 +1388,10 @@ msgid "Save"
 msgstr "Зберегти"
 
 #: objinspstrconsts.sccstredt
-#, fuzzy
 #| msgid "Edit Items..."
 msgctxt "objinspstrconsts.sccstredt"
 msgid "Edit Items ..."
-msgstr "Редагувати Поля..."
+msgstr "Редагувати Поля ..."
 
 #: objinspstrconsts.sccstredtapply
 msgctxt "objinspstrconsts.sccstredtapply"
@@ -1546,4 +1520,3 @@ msgstr "Перемістити вкладку вліво"
 #: objinspstrconsts.tccesmovetabright
 msgid "Move tab right"
 msgstr "Перемістити вкладку вправо"
-
