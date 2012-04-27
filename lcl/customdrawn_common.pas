@@ -161,37 +161,37 @@ end;
 
 procedure TCDDrawerCommon.LoadFallbackPaletteColors;
 begin
-{  Palette.ScrollBar
-  Palette.Background
-  Palette.ActiveCaption
-  Palette.InactiveCaption
-  Palette.Menu }
+  Palette.ScrollBar := $C8D0D4;
+  Palette.Background := $984E00;
+  Palette.ActiveCaption := $E35400;
+  Palette.InactiveCaption := $DF967A;
+  Palette.Menu := $FFFFFF;
   Palette.Window := clWhite; // The inside of a Edit control, for example
-{  Palette.WindowFrame
-  Palette.MenuText
-  Palette.WindowText
-  Palette.CaptionText
-  Palette.ActiveBorder
-  Palette.InactiveBorder
-  Palette.AppWorkspace
-  Palette.Highlight
-  Palette.HighlightText}
+  Palette.WindowFrame := $0;
+  Palette.MenuText := $0;
+  Palette.WindowText := $0;
+  Palette.CaptionText := $FFFFFF;
+  Palette.ActiveBorder := $C8D0D4;
+  Palette.InactiveBorder := $C8D0D4;
+  Palette.AppWorkspace := $808080;
+  Palette.Highlight := $C56A31;
+  Palette.HighlightText := $FFFFFF;
   Palette.BtnFace := WIN2000_BTNFACE;
-{  Palette.BtnShadow
-  Palette.GrayText
-  Palette.BtnText
-  Palette.InactiveCaptionText
-  Palette.BtnHighlight
-  Palette.color3DDkShadow
-  Palette.color3DLight
-  Palette.InfoText
-  Palette.InfoBk
+  Palette.BtnShadow := $99A8AC;
+  Palette.GrayText := $99A8AC;
+  Palette.BtnText := $0;
+  Palette.InactiveCaptionText := $F8E4D8;
+  Palette.BtnHighlight := $FFFFFF;
+  Palette.color3DDkShadow := $646F71;
+  Palette.color3DLight := $E2EFF1;
+  Palette.InfoText := $0;
+  Palette.InfoBk := $E1FFFF;
     //
-  Palette.HotLight
-  Palette.GradientActiveCaption
-  Palette.GradientInactiveCaption,
-  Palette.MenuHighlight
-  Palette.MenuBar}
+  Palette.HotLight := $800000;
+  Palette.GradientActiveCaption := $FF953D;
+  Palette.GradientInactiveCaption := $EBB99D;
+  Palette.MenuHighlight := $C56A31;
+  Palette.MenuBar := $D8E9EC;
   Palette.Form := WIN2000_FORM;
 end;
 
