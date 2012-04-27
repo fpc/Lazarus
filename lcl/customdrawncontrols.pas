@@ -888,7 +888,7 @@ procedure TCDControl.MouseDown(Button: TMouseButton; Shift: TShiftState; X,
   Y: integer);
 begin
   inherited MouseDown(Button, Shift, X, Y);
-  SetFocus();
+  if CanFocus() then SetFocus(); // Checking CanFocus fixes a crash
 end;
 
 constructor TCDControl.Create(AOwner: TComponent);

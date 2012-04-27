@@ -263,6 +263,7 @@ begin
    DebugLn(Format('CallbackKeyChar FocusedControl=%s:%s', [lTarget.Name, lTarget.ClassName]));
   {$endif}
 
+  if lTarget = nil then Exit; // Fixes a crash
   if Length(AChar) = 1 then lCharCode := Word(AChar[1]);
 
 //  if lCharCode <> 0 then LCLSendCharEvent(lTarget, lCharCode, AKeyData, True, False, True);
