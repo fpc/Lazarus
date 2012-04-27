@@ -53,6 +53,7 @@ type
     function AdjustCoordinatesForScrolling(AX, AY: Integer): TPoint;
     procedure UpdateImageAndCanvas; virtual;
     function IsControlBackgroundVisible: Boolean; virtual;
+    function GetWinControl: TWinControl; virtual;
     property Props[AnIndex:String]:pointer read GetProps write SetProps;
   end;
 
@@ -66,6 +67,7 @@ type
     CDControlInjected: Boolean;
     procedure UpdateImageAndCanvas; override;
     function IsControlBackgroundVisible: Boolean; override;
+    function GetWinControl: TWinControl; override;
   end;
 
   { TCDForm }
@@ -90,6 +92,7 @@ type
     procedure SanityCheckScrollPos();
     procedure UpdateImageAndCanvas; override;
     function IsControlBackgroundVisible: Boolean; override;
+    function GetWinControl: TWinControl; override;
   end;
 
   TCDNonNativeForm = class(TCDForm)
@@ -974,6 +977,11 @@ begin
   Result:=inherited IsControlBackgroundVisible;
 end;
 
+function TCDWinControl.GetWinControl: TWinControl;
+begin
+  Result := WinControl;
+end;
+
 { TCDBitmap }
 
 destructor TCDBitmap.Destroy;
@@ -995,6 +1003,11 @@ begin
     exit;
   end;
   result := nil;
+end;
+
+function TCDBaseControl.GetWinControl: TWinControl;
+begin
+  Result := FWinControl;
 end;
 
 procedure TCDBaseControl.SetProps(AnIndex: String; AValue: pointer);
@@ -1128,6 +1141,11 @@ function TCDForm.IsControlBackgroundVisible: Boolean;
 begin
   FWinControl := LCLForm;
   Result:=inherited IsControlBackgroundVisible;
+end;
+
+function TCDForm.GetWinControl: TWinControl;
+begin
+  Result := LCLForm;
 end;
 
 end.

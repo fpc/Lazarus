@@ -3148,7 +3148,7 @@ begin
   Result := False;
   Windows.SetCursorPos(X, Y);
   Result := True;
-end;
+end;*)
 
 {------------------------------------------------------------------------------
   Method:  SetFocus
@@ -3157,19 +3157,22 @@ end;
 
   The SetFocus function sets the keyboard focus to the specified window
  ------------------------------------------------------------------------------}
-function TWin32WidgetSet.SetFocus(HWnd: HWND): HWND;
+function TCDWidgetSet.BackendSetFocus(HWnd: HWND): HWND;
+var
+  lWindowInfo: TWindowInfo;
+  lHandle: HWND;
 begin
-{
-  if Windows.GetFocus <> HWnd then
+  if HWND = 0 then
   begin
-    DebugLn(['TWin32WidgetSet.SetFocus ', ' Wnd = ', WndClassName(HWnd), ' LCLObject = ', dbgsName(GetLCLOwnerObject(HWnd))]);
-    DumpStack;
+    Result := GetFocus();
+    Exit;
   end;
-}
-  Result := Windows.SetFocus(HWnd);
+  lWindowInfo := TWindowInfo(HWnd);
+  lHandle := lWindowInfo.NativeHandle;
+  Result := Windows.SetFocus(lHandle);
 end;
 
-{------------------------------------------------------------------------------
+(*{------------------------------------------------------------------------------
   Method:  SetForegroundWindow
   Params:  HWnd - The handle of the window
   Returns: True if succesful

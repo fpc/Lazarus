@@ -206,9 +206,10 @@ function SetCaretPos(X, Y: Integer): Boolean; override;
 function SetCaretPosEx(Handle: HWnd; X, Y: Integer): Boolean; override;
 function SetCaretRespondToFocus(handle: HWND; ShowHideOnFocus: boolean): Boolean; override;
 function SetCursor(ACursor: HCURSOR): HCURSOR; override;
-function SetCursorPos(X, Y: Integer): Boolean; override;
+function SetCursorPos(X, Y: Integer): Boolean; override;*)
 function SetFocus(hWnd: HWND): HWND; override;
-function SetForegroundWindow(HWnd: HWND): boolean; override;
+function BackendSetFocus(hWnd: HWND): HWND;
+(*function SetForegroundWindow(HWnd: HWND): boolean; override;
 function SetMapMode(DC: HDC; fnMapMode : Integer): Integer; override;
 function SetMenu(AWindowHandle: HWND; AMenuHandle: HMENU): Boolean; override;
 function SetParent(hWndChild: HWND; hWndParent: HWND): HWND; override;*)

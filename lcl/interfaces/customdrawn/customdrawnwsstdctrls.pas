@@ -253,7 +253,7 @@ type
 
   TCDWSButton = class(TWSButton)
   public
-    class procedure CreateCDControl(const AWinControl: TWinControl; var ACDControlField: TCDControl);
+    class procedure InjectCDControl(const AWinControl: TWinControl; var ACDControlField: TCDControl);
   published
     class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
     class procedure DestroyHandle(const AWinControl: TWinControl); override;
@@ -268,7 +268,7 @@ type
 
   TCDWSCustomCheckBox = class(TWSCustomCheckBox)
   public
-    class procedure CreateCDControl(const AWinControl: TWinControl; var ACDControlField: TCDControl);
+    class procedure InjectCDControl(const AWinControl: TWinControl; var ACDControlField: TCDControl);
   published
     class function  CreateHandle(const AWinControl: TWinControl;
       const AParams: TCreateParams): TLCLIntfHandle; override;
@@ -307,7 +307,7 @@ type
   // Make sure to override all methods from TCDWSCustomCheckBox which call CreateCDControl
   TCDWSRadioButton = class(TWSRadioButton)
   public
-    class procedure CreateCDControl(const AWinControl: TWinControl; var ACDControlField: TCDControl);
+    class procedure InjectCDControl(const AWinControl: TWinControl; var ACDControlField: TCDControl);
   published
     class function  CreateHandle(const AWinControl: TWinControl;
       const AParams: TCreateParams): TLCLIntfHandle; override;
@@ -325,7 +325,7 @@ type
 
   TCDWSCustomStaticText = class(TWSCustomStaticText)
   public
-    class procedure CreateCDControl(const AWinControl: TWinControl; var ACDControlField: TCDControl);
+    class procedure InjectCDControl(const AWinControl: TWinControl; var ACDControlField: TCDControl);
   published
     class function  CreateHandle(const AWinControl: TWinControl;
       const AParams: TCreateParams): TLCLIntfHandle; override;
@@ -1580,7 +1580,7 @@ end;*)
 
 { TCDWSStaticText }
 
-class procedure TCDWSCustomStaticText.CreateCDControl(
+class procedure TCDWSCustomStaticText.InjectCDControl(
   const AWinControl: TWinControl; var ACDControlField: TCDControl);
 begin
   ACDControlField := TCDIntfStaticText.Create(AWinControl);
@@ -1622,8 +1622,11 @@ begin
 
   TCDWSWinControl.ShowHide(AWinControl);
 
-  if lCDWinControl.CDControl = nil then
-    CreateCDControl(AWinControl, lCDWinControl.CDControl);
+  if not lCDWinControl.CDControlInjected then
+  begin
+    InjectCDControl(AWinControl, lCDWinControl.CDControl);
+    lCDWinControl.CDControlInjected := True;
+  end;
 end;
 
 (*{------------------------------------------------------------------------------
@@ -1647,7 +1650,7 @@ end;*)
 
 { TCDWSButton }
 
-class procedure TCDWSButton.CreateCDControl(const AWinControl: TWinControl; var ACDControlField: TCDControl);
+class procedure TCDWSButton.InjectCDControl(const AWinControl: TWinControl; var ACDControlField: TCDControl);
 begin
   ACDControlField := TCDIntfButton.Create(AWinControl);
   TCDIntfButton(ACDControlField).LCLControl := TButton(AWinControl);
@@ -1689,8 +1692,11 @@ begin
 
   TCDWSWinControl.ShowHide(AWinControl);
 
-  if lCDWinControl.CDControl = nil then
-    CreateCDControl(AWinControl, lCDWinControl.CDControl);
+  if not lCDWinControl.CDControlInjected then
+  begin
+    InjectCDControl(AWinControl, lCDWinControl.CDControl);
+    lCDWinControl.CDControlInjected := True;
+  end;
 end;
 
 class function TCDWSButton.GetText(const AWinControl: TWinControl;
@@ -1733,7 +1739,7 @@ end;*)
 
 { TCDWSCustomCheckBox }
 
-class procedure TCDWSCustomCheckBox.CreateCDControl(const AWinControl: TWinControl; var ACDControlField: TCDControl);
+class procedure TCDWSCustomCheckBox.InjectCDControl(const AWinControl: TWinControl; var ACDControlField: TCDControl);
 begin
   ACDControlField := TCDIntfCheckBox.Create(AWinControl);
   TCDIntfCheckBox(ACDControlField).LCLControl := TCustomCheckBox(AWinControl);
@@ -1774,8 +1780,11 @@ begin
 
   TCDWSWinControl.ShowHide(AWinControl);
 
-  if lCDWinControl.CDControl = nil then
-    CreateCDControl(AWinControl, lCDWinControl.CDControl);
+  if not lCDWinControl.CDControlInjected then
+  begin
+    InjectCDControl(AWinControl, lCDWinControl.CDControl);
+    lCDWinControl.CDControlInjected := True;
+  end;
 end;
 
 class procedure TCDWSCustomCheckBox.GetPreferredSize(
@@ -1786,8 +1795,11 @@ var
 begin
   lCDWinControl := TCDWinControl(AWinControl.Handle);
 
-  if lCDWinControl.CDControl = nil then
-    CreateCDControl(AWinControl, lCDWinControl.CDControl);
+  if not lCDWinControl.CDControlInjected then
+  begin
+    InjectCDControl(AWinControl, lCDWinControl.CDControl);
+    lCDWinControl.CDControlInjected := True;
+  end;
 
   lCDWinControl.CDControl.LCLWSCalculatePreferredSize(
     PreferredWidth, PreferredHeight, WithThemeSpace, AWinControl.AutoSize);
@@ -1796,7 +1808,7 @@ end;
 
 { TCDWSRadioButton }
 
-class procedure TCDWSRadioButton.CreateCDControl(
+class procedure TCDWSRadioButton.InjectCDControl(
   const AWinControl: TWinControl; var ACDControlField: TCDControl);
 begin
   ACDControlField := TCDIntfRadioButton.Create(AWinControl);
@@ -1840,8 +1852,11 @@ begin
 
   TCDWSWinControl.ShowHide(AWinControl);
 
-  if lCDWinControl.CDControl = nil then
-    CreateCDControl(AWinControl, lCDWinControl.CDControl);
+  if not lCDWinControl.CDControlInjected then
+  begin
+    InjectCDControl(AWinControl, lCDWinControl.CDControl);
+    lCDWinControl.CDControlInjected := True;
+  end;
 end;
 
 class procedure TCDWSRadioButton.GetPreferredSize(
@@ -1852,8 +1867,11 @@ var
 begin
   lCDWinControl := TCDWinControl(AWinControl.Handle);
 
-  if lCDWinControl.CDControl = nil then
-    CreateCDControl(AWinControl, lCDWinControl.CDControl);
+  if not lCDWinControl.CDControlInjected then
+  begin
+    InjectCDControl(AWinControl, lCDWinControl.CDControl);
+    lCDWinControl.CDControlInjected := True;
+  end;
 
   lCDWinControl.CDControl.LCLWSCalculatePreferredSize(
     PreferredWidth, PreferredHeight, WithThemeSpace, AWinControl.AutoSize);

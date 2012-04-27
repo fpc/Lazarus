@@ -77,4 +77,5 @@
 {.$define VerboseCDEvents}
 {.$define VerboseCDAccessibility}
 {.$define VerboseCDClipboard}
+{.$define VerboseCDFocus}
 

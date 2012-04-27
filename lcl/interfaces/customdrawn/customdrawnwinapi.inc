@@ -4701,6 +4701,8 @@ begin
   begin
     lControlHandle := TCDWinControl(lHandle);
     lControlHandle.IncInvalidateCount();
+    if lControlHandle.CDControlInjected and (lControlHandle.CDControl <> nil) then
+      TCDWinControl(lControlHandle.CDControl.Handle).IncInvalidateCount();
     lControl := lControlHandle.WinControl;
     lControl := Forms.GetParentForm(lControl);
     // Don't use Rect in BackendInvalidateRect unless we really make the full
@@ -5556,7 +5558,7 @@ begin
   QCursor_setPos(X, Y);
 
   Result := True;
-end;
+end;*)
 
 {------------------------------------------------------------------------------
   Function: SetFocus
@@ -5564,29 +5566,67 @@ end;
   Returns:
 
  ------------------------------------------------------------------------------}
-function TQtWidgetSet.SetFocus(hWnd: HWND): HWND;
+function TCDWidgetSet.SetFocus(hWnd: HWND): HWND;
 var
-  W: TQtWidget;
+  lObject, lOldObject: TCDBaseControl;
+  lOldControl: TWinControl;
+  lHandle: TCDWinControl;
 begin
+  {$ifdef VerboseCDFocus}
+  DebugLn(Format('[TCDWidgetSet.SetFocus] Handle=%x', [hWnd]));
+  {$endif}
   Result := 0;
-  if hwnd<>0 then
+  if hwnd = 0 then
   begin
-    {$ifdef VerboseFocus}
-    WriteLn('*********  TQtWidgetSet.SetFocus INIT focusing ', TQtWidget(hwnd).lclobject.name);
+    Result := GetFocus();
+    Exit;
+  end;
+  lObject := TCDBaseControl(hWnd);
+
+  // SetFocus on a child control
+  if lObject is TCDWinControl then
+  begin
+    lHandle := TCDWinControl(lObject);
+    // If the control is injected, really set focus in the injected one
+    if lHandle.CDControlInjected and (lHandle.CDControl <> nil) then
+    begin
+      Result := SetFocus(LCLType.HWND(lHandle.CDControl.Handle));
+      Exit;
+    end;
+
+    // Handling for controls without injected controls
+    Result := GetFocus();
+    lOldObject := TCDBaseControl(Result);
+    if lOldObject = nil then
+      lOldControl := nil
+    else
+      lOldControl := lOldObject.GetWinControl();
+
+    if lOldControl <> nil then
+      LCLSendKillFocusMsg(lOldControl);
+    LCLSendSetFocusMsg(lHandle.WinControl);
+    FocusedControl := lHandle.WinControl;
+    FocusedIntfControl := lHandle.CDControl;
+    {$ifdef VerboseCDFocus}
+    DebugLn(Format(':[TCDWidgetSet.SetFocus] NewFocusedControl=%s NewFocusedIntfControl=%x', [FocusedControl.Name, PtrUInt(FocusedIntfControl)]));
     {$endif}
-    Result := GetFocus;
-    W := TQtWidget(HWND).getWindow;
-    if (W <> nil) and W.getVisible and not W.IsActiveWindow and
-      not TQtMainWindow(W).Blocked then
-        W.Activate;
-    TQtWidget(hWnd).setFocus;
-    {$ifdef VerboseFocus}
-    DebugLn('********* TQtWidgetSet.SetFocus END was %x now is %x',[result,hwnd]);
-    {$endif}
+
+    // Set focus in the parent window
+    //Result := BackendSetFocus(hWnd);
+
+    // Invalidate to redraw the new control
+    InvalidateRect(LCLType.HWND(lHandle), nil, True);
+    if lOldObject <> nil then
+      InvalidateRect(LCLType.HWND(lOldObject), nil, True);
+  end
+  // SetFocus on a form
+  else
+  begin
+    Result := BackendSetFocus(hWnd);
   end;
 end;
 
-function TQtWidgetSet.GetForegroundWindow: HWND;
+(*function TQtWidgetSet.GetForegroundWindow: HWND;
 var
   W: QWidgetH;
 begin

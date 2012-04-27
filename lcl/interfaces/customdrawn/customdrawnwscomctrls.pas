@@ -51,7 +51,7 @@ type
 
   TCDWSCustomTabControl = class(TWSCustomTabControl)
   public
-    class procedure CreateCDControl(const AWinControl: TWinControl; var ACDControlField: TCDControl);
+    class procedure InjectCDControl(const AWinControl: TWinControl; var ACDControlField: TCDControl);
   published
     class function  CreateHandle(const AWinControl: TWinControl;
           const AParams: TCreateParams): TLCLIntfHandle; override;
@@ -196,7 +196,7 @@ type
 
   TCDWSProgressBar = class(TWSProgressBar)
   public
-    class procedure CreateCDControl(const AWinControl: TWinControl; var ACDControlField: TCDControl);
+    class procedure InjectCDControl(const AWinControl: TWinControl; var ACDControlField: TCDControl);
   published
     class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
     class procedure ShowHide(const AWinControl: TWinControl); override;
@@ -234,7 +234,7 @@ type
 
   TCDWSTrackBar = class(TWSTrackBar)
   public
-    class procedure CreateCDControl(const AWinControl: TWinControl; var ACDControlField: TCDControl);
+    class procedure InjectCDControl(const AWinControl: TWinControl; var ACDControlField: TCDControl);
   published
     class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
     class procedure ShowHide(const AWinControl: TWinControl); override;
@@ -261,7 +261,7 @@ implementation
 
 { TCDWSCustomTabControl }
 
-class procedure TCDWSCustomTabControl.CreateCDControl(
+class procedure TCDWSCustomTabControl.InjectCDControl(
   const AWinControl: TWinControl; var ACDControlField: TCDControl);
 begin
   ACDControlField := TCDIntfPageControl.Create(AWinControl);
@@ -287,8 +287,11 @@ begin
 
   TCDWSWinControl.ShowHide(AWinControl);
 
-  if lCDWinControl.CDControl = nil then
-    CreateCDControl(AWinControl, lCDWinControl.CDControl);
+  if not lCDWinControl.CDControlInjected then
+  begin
+    InjectCDControl(AWinControl, lCDWinControl.CDControl);
+    lCDWinControl.CDControlInjected := True;
+  end;
 end;
 
 class procedure TCDWSCustomTabControl.AddPage(
@@ -299,8 +302,11 @@ var
 begin
   lCDWinControl := TCDWinControl(ATabControl.Handle);
 
-  if lCDWinControl.CDControl = nil then
-    CreateCDControl(ATabControl, lCDWinControl.CDControl);
+  if not lCDWinControl.CDControlInjected then
+  begin
+    InjectCDControl(ATabControl, lCDWinControl.CDControl);
+    lCDWinControl.CDControlInjected := True;
+  end;
 
   TCDPageControl(lCDWinControl.CDControl).InsertPage(AIndex, AChild.Caption);
 end;
@@ -392,7 +398,7 @@ end;*)
 
 { TCDWSTrackBar }
 
-class procedure TCDWSTrackBar.CreateCDControl(const AWinControl: TWinControl; var ACDControlField: TCDControl);
+class procedure TCDWSTrackBar.InjectCDControl(const AWinControl: TWinControl; var ACDControlField: TCDControl);
 begin
   ACDControlField := TCDIntfTrackBar.Create(AWinControl);
   TCDIntfTrackBar(ACDControlField).LCLControl := TCustomTrackBar(AWinControl);
@@ -416,8 +422,11 @@ begin
 
   TCDWSWinControl.ShowHide(AWinControl);
 
-  if lCDWinControl.CDControl = nil then
-    CreateCDControl(AWinControl, lCDWinControl.CDControl);
+  if not lCDWinControl.CDControlInjected then
+  begin
+    InjectCDControl(AWinControl, lCDWinControl.CDControl);
+    lCDWinControl.CDControlInjected := True;
+  end;
 end;
 
 class procedure TCDWSTrackBar.ApplyChanges(const ATrackBar: TCustomTrackBar);
@@ -426,8 +435,11 @@ var
 begin
   lCDWinControl := TCDWinControl(ATrackBar.Handle);
 
-  if lCDWinControl.CDControl = nil then
-    CreateCDControl(ATrackBar, lCDWinControl.CDControl);
+  if not lCDWinControl.CDControlInjected then
+  begin
+    InjectCDControl(ATrackBar, lCDWinControl.CDControl);
+    lCDWinControl.CDControlInjected := True;
+  end;
 
   TCDTrackBar(lCDWinControl.CDControl).Position := ATrackBar.Position;
 
@@ -472,8 +484,11 @@ var
 begin
   lCDWinControl := TCDWinControl(ATrackBar.Handle);
 
-  if lCDWinControl.CDControl = nil then
-    CreateCDControl(ATrackBar, lCDWinControl.CDControl);
+  if not lCDWinControl.CDControlInjected then
+  begin
+    InjectCDControl(ATrackBar, lCDWinControl.CDControl);
+    lCDWinControl.CDControlInjected := True;
+  end;
 
   Result := TCDTrackBar(lCDWinControl.CDControl).Position;
 end;
@@ -484,8 +499,11 @@ var
 begin
   lCDWinControl := TCDWinControl(ATrackBar.Handle);
 
-  if lCDWinControl.CDControl = nil then
-    CreateCDControl(ATrackBar, lCDWinControl.CDControl);
+  if not lCDWinControl.CDControlInjected then
+  begin
+    InjectCDControl(ATrackBar, lCDWinControl.CDControl);
+    lCDWinControl.CDControlInjected := True;
+  end;
 
   TCDTrackBar(lCDWinControl.CDControl).Position := NewPosition;
 end;
@@ -519,7 +537,7 @@ end;
 
 { TCDWSProgressBar }
 
-class procedure TCDWSProgressBar.CreateCDControl(const AWinControl: TWinControl; var ACDControlField: TCDControl);
+class procedure TCDWSProgressBar.InjectCDControl(const AWinControl: TWinControl; var ACDControlField: TCDControl);
 begin
   ACDControlField := TCDIntfProgressBar.Create(AWinControl);
   TCDIntfProgressBar(ACDControlField).LCLControl := TCustomProgressBar(AWinControl);
@@ -543,8 +561,11 @@ begin
 
   TCDWSWinControl.ShowHide(AWinControl);
 
-  if lCDWinControl.CDControl = nil then
-    CreateCDControl(AWinControl, lCDWinControl.CDControl);
+  if not lCDWinControl.CDControlInjected then
+  begin
+    InjectCDControl(AWinControl, lCDWinControl.CDControl);
+    lCDWinControl.CDControlInjected := True;
+  end;
 end;
 
 class procedure TCDWSProgressBar.ApplyChanges(const AProgressBar: TCustomProgressBar);
@@ -553,8 +574,11 @@ var
 begin
   lCDWinControl := TCDWinControl(AProgressBar.Handle);
 
-  if lCDWinControl.CDControl = nil then
-    CreateCDControl(AProgressBar, lCDWinControl.CDControl);
+  if not lCDWinControl.CDControlInjected then
+  begin
+    InjectCDControl(AProgressBar, lCDWinControl.CDControl);
+    lCDWinControl.CDControlInjected := True;
+  end;
 
   TCDProgressBar(lCDWinControl.CDControl).Position := AProgressBar.Position;
 
@@ -600,8 +624,11 @@ var
 begin
   lCDWinControl := TCDWinControl(AProgressBar.Handle);
 
-  if lCDWinControl.CDControl = nil then
-    CreateCDControl(AProgressBar, lCDWinControl.CDControl);
+  if not lCDWinControl.CDControlInjected then
+  begin
+    InjectCDControl(AProgressBar, lCDWinControl.CDControl);
+    lCDWinControl.CDControlInjected := True;
+  end;
 
   TCDProgressBar(lCDWinControl.CDControl).Position := NewPosition;
 end;

@@ -5510,7 +5510,7 @@ begin
   QCursor_setPos(X, Y);
 
   Result := True;
-end;
+end;*)
 
 {------------------------------------------------------------------------------
   Function: SetFocus
@@ -5518,29 +5518,12 @@ end;
   Returns:
 
  ------------------------------------------------------------------------------}
-function TQtWidgetSet.SetFocus(hWnd: HWND): HWND;
-var
-  W: TQtWidget;
+function TCDWidgetSet.BackendSetFocus(hWnd: HWND): HWND;
 begin
   Result := 0;
-  if hwnd<>0 then
-  begin
-    {$ifdef VerboseFocus}
-    WriteLn('*********  TQtWidgetSet.SetFocus INIT focusing ', TQtWidget(hwnd).lclobject.name);
-    {$endif}
-    Result := GetFocus;
-    W := TQtWidget(HWND).getWindow;
-    if (W <> nil) and W.getVisible and not W.IsActiveWindow and
-      not TQtMainWindow(W).Blocked then
-        W.Activate;
-    TQtWidget(hWnd).setFocus;
-    {$ifdef VerboseFocus}
-    DebugLn('********* TQtWidgetSet.SetFocus END was %x now is %x',[result,hwnd]);
-    {$endif}
-  end;
 end;
 
-function TQtWidgetSet.GetForegroundWindow: HWND;
+(*function TQtWidgetSet.GetForegroundWindow: HWND;
 var
   W: QWidgetH;
 begin

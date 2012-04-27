@@ -846,9 +846,20 @@ begin
   {$IFDEF VerboseWinAPI}
     DebugLn(Format('TCocoaWidgetSet.SelectObject Result: %x', [Result]));
   {$ENDIF}
-end;
+end;*)
 
 {------------------------------------------------------------------------------
+  Function: SetFocus
+  Params: hWnd   - Window handle to be focused
+  Returns:
+
+ ------------------------------------------------------------------------------}
+function TCDWidgetSet.BackendSetFocus(hWnd: HWND): HWND;
+begin
+  Result := 0;
+end;
+
+(*{------------------------------------------------------------------------------
   function ShowWindow(hWnd: HWND; nCmdShow: Integer): Boolean;
 
   nCmdShow:
