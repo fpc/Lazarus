@@ -645,7 +645,7 @@ end;
     OnlyChilds: boolean): boolean;
  ------------------------------------------------------------------------------}
 function DeleteDirectory(const DirectoryName: string;
-  OnlyChilds: boolean): boolean;
+  OnlyChildren: boolean): boolean;
 var
   FileInfo: TSearchRec;
   CurSrcDir: String;
@@ -667,7 +667,7 @@ begin
     until FindNextUTF8(FileInfo)<>0;
   end;
   FindCloseUTF8(FileInfo);
-  if (not OnlyChilds) and (not RemoveDirUTF8(DirectoryName)) then exit;
+  if (not OnlyChildren) and (not RemoveDirUTF8(DirectoryName)) then exit;
   Result:=true;
 end;
 
