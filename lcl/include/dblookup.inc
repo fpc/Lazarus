@@ -175,9 +175,8 @@ end;
 procedure TDBLookup.Notification(AComponent: TComponent; Operation: TOperation);
 begin
   inherited Notification(AComponent, Operation);
-  if (Operation=opRemove) then
-    if (AComponent = FListSource) then
-      FListSource:= nil;
+  if (Operation=opRemove) and (AComponent = FListSource) then
+    FListSource := nil;
 end;
 
 procedure TDBLookup.LinkGetBookMark;
