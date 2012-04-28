@@ -231,7 +231,6 @@ end;
 procedure TDBLookup.Initialize(AControlDataLink: TFieldDataLink; AControlItems: TStrings);
 var
   ListFields: TList;
-  S: string;
 begin
   FDataFields.Clear;
   FKeyFields.Clear;
@@ -243,13 +242,6 @@ begin
   if Assigned(FControlLink) and Assigned(FControlLink.DataSet)
     and FControlLink.DataSet.Active then
   begin
-    if not Assigned(FControlLink.Field) then
-    // should be but (sometimes) not (bug?)
-    begin
-      S:= FControlLink.FieldName;
-      FControlLink.FieldName:= '';
-      FControlLink.FieldName:= S;
-    end;
     if Assigned(FControlLink.Field) then
     begin
       FHasLookUpField := (FControlLink.Field.FieldKind = fkLookup);
