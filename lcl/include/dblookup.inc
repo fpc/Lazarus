@@ -266,6 +266,7 @@ begin
         FKeyFieldNames := FControlLink.Field.LookupKeyFields;
       end else
         FDataFieldNames := FControlLink.Field.FieldName;
+      FDataFields.Clear;
       FControlLink.DataSet.GetFieldList(FDataFields, FDataFieldNames);
     end;
   end;
@@ -289,6 +290,7 @@ begin
     try
       if FListLink.DataSet.Active then
       begin
+        FKeyFields.Clear;
         FListLink.DataSet.GetFieldList(ListFields, FListFieldName);
         FListLink.DataSet.GetFieldList(FKeyFields, FKeyFieldNames);
         if FHasLookUpField then
