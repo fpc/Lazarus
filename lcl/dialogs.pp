@@ -562,10 +562,11 @@ const
   cBitmapY  = 10;      // y-position for bitmap in messagedialog
   cLabelSpacing = 10;   // distance between icon & label
 
-  DialogResult : Array[mrNone..mrYesToAll] of Longint = (
+  DialogResult : Array[mrNone..mrLast] of Longint = (
     -1, idButtonOK, idButtonCancel, idButtonAbort, idButtonRetry,
     idButtonIgnore, idButtonYes,idButtonNo, idButtonAll, idButtonNoToAll,
-    idButtonYesToAll);
+    idButtonYesToAll,idButtonClose);
+
 
   DialogButtonKind : Array[idButtonOK..idButtonNoToAll] of TBitBtnKind = (
     bkOk, bkCancel, bkHelp, bkYes, bkNo, bkClose, bkAbort, bkRetry,

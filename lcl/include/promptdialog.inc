@@ -20,8 +20,8 @@ type
   { TPromptDialog }
 
   TPromptDialog = class(TForm)
-    procedure PromptDialogKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
   private
+    FCancelKind: TBitBtnKind;
     function CreateButtons(AVerticalLayout: Boolean; ASpacing: Integer): Integer;
   public
     IsSmallDevice: Boolean;
@@ -44,11 +44,6 @@ type
     destructor Destroy; override;
   end;
 
-procedure TPromptDialog.PromptDialogKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
-begin
-  if (Key = VK_Escape) then
-    ModalResult := -1;
-end;
 
 function TPromptDialog.CreateButtons(AVerticalLayout: Boolean;
  ASpacing: Integer): Integer;
@@ -75,9 +70,9 @@ begin
       begin
         Parent:= Self;
         Layout  := blGlyphLeft;
-        OnKeyDown := @PromptDialogKeyDown;
 
         Kind := DialogButtonKind[Buttons[curBtn]];
+        if Kind = FCancelKind then Cancel := True;
 
         if Height < Glyph.Height + 5 then
           Height := Glyph.Height + 5;
@@ -123,13 +118,15 @@ end;
 
 constructor TPromptDialog.CreateMessageDialog(const ACaption, aMsg: string;
   DialogType : longint; TheButtons: PLongint; ButtonCount, DefaultIndex : Longint);
+var
+  curBtn: Integer;
+  curKind: TBitBtnKind;
 begin
   inherited CreateNew(nil, 1);
 
   IsSmallDevice := (Screen.Width <= 300);
 
   AutoScroll := False;
-  OnKeyDown := @PromptDialogKeyDown;
   //debugln('TPromptDialog.CreateMessageDialog A ButtonCount=',dbgs(ButtonCount));
 
   ControlStyle:= ControlStyle-[csSetCaption];
@@ -169,6 +166,25 @@ begin
     TheDefaultIndex := 0
   else
     TheDefaultIndex := DefaultIndex;
+
+  //Find which button should respond to cancel (if any)
+  FCancelKind := bkCustom;
+  for curBtn := 0 to NumButtons - 1 do
+  begin
+    if (Buttons[curBtn] >= Low(DialogButtonKind)) and
+       (Buttons[curBtn] <= High(DialogButtonKind)) then
+    begin
+      curKind := DialogButtonKind[Buttons[curBtn]];
+      case curKind of
+        bkCancel: FCancelKind := bkCancel;
+        bkNo: if (FCancelKind <> bkCancel) then FCancelKind := bkNo;
+        bkOk: if not (FCancelKind in [bkCancel, bkNo]) then FCancelkind := bkOk;
+      end;
+    end;
+  end;
+  if FCancelKind = bkCustom then FCancelKind := bkCancel; //default value if no mbCancel, mbNo or mbOk
+
+
 
   // Assures a minimum text size
   if MSG = '' then MSG := '   ';
@@ -261,8 +277,8 @@ begin
       begin
         Parent:= Self;
         Layout  := blGlyphLeft;
-        OnKeyDown := @PromptDialogKeyDown;
         Kind := DialogButtonKind[Buttons[curBtn]];
+        if Kind = FCancelKind then Cancel := True;
         if Height < Glyph.Height + 5 then
           Height := Glyph.Height + 5;
 

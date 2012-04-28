@@ -32,36 +32,6 @@
 }
 function ModalEscapeValue(Buttons: TMsgDlgButtons): TModalResult;
 begin
-  If mbCancel in Buttons then
-    Result := mrCancel
-  else
-    If mbNo in Buttons then
-      Result := mrNo
-  else
-    If mbAbort in Buttons then
-      Result := mrAbort
-  else
-    If mbIgnore in Buttons then
-      Result := mrIgnore
-  else
-    If mbNoToAll in Buttons then
-      Result := mrNoToAll
-  else
-    If mbYes in Buttons then
-      Result := mrYes
-  else
-    If mbOk in Buttons then
-      Result := mrOk
-  else
-    If mbRetry in Buttons then
-      Result := mrRetry
-  else
-    If mbAll in Buttons then
-      Result := mrAll
-  else
-    If mbYesToAll in Buttons then
-      Result := mrYesToAll
-  else
     Result := mrCancel;
 end;
 
@@ -132,7 +102,11 @@ var
 begin
  if (Buttons = []) or (Buttons = [mbHelp]) then
     Buttons := Buttons + [mbOk];
-  CancelValue := ButtonResults[ModalEscapeValue(Buttons)];
+  //Native PromptUser() dialog should return mrCancel on Escape or [X]-bordericon
+  //TPromptDialog.CreatMessageDialog responds to Escape in "old Delhpi" style,
+  //it will return mrCancel, mrNo, or mrOK if one of these buttons is present, else it will not respons to Escape key,
+  //TPromptDialog.CreatMessageDialog does not use the CancelValue variable
+  CancelValue := idButtonCancel;
   if UseDefButton then
     DefaultButton := DefButton
   else
