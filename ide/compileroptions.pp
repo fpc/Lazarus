@@ -4968,7 +4968,7 @@ var
   ObjList: TCompilerMessagesList absolute Obj;
   i: integer;
 begin
-  Result := {$ifdef ver2_4_0}false{$else}inherited Equals(Obj){$endif};
+  Result := inherited Equals(Obj);
   if not Result and (Obj is TCompilerMessagesList) then
   begin
     Result := ObjList.Count = Count;
