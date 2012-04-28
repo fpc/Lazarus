@@ -181,57 +181,63 @@ begin
 end;
 
 procedure TDBLookup.LinkGetBookMark;
+var
+  ListLinkDataSet: TDataSet;
 begin
-  FListLinkTmpSetActive := not FListLink.DataSet.Active;
+  ListLinkDataSet := FListLink.DataSet;
+  FListLinkTmpSetActive := not ListLinkDataSet.Active;
   if FListLinkTmpSetActive then
-    FListLink.DataSet.Active := True
+    ListLinkDataSet.Active := True
   else
   begin
-    FLinkBookMark := FListLink.DataSet.GetBookmark;
-    FListLink.DataSet.DisableControls;
+    FLinkBookMark := ListLinkDataSet.GetBookmark;
+    ListLinkDataSet.DisableControls;
   end;
 end;
 
 procedure TDBLookup.LinkGotoBookMark;
+var
+  ListLinkDataSet: TDataSet;
 begin
+  ListLinkDataSet := FListLink.DataSet;
   if FListLinkTmpSetActive then
   begin
-    FListLink.DataSet.Active := False;
+    ListLinkDataSet.Active := False;
     FListLinkTmpSetActive := False;
   end
   else
   try
-    FListLink.DataSet.GotoBookmark(FLinkBookMark);
-    FListLink.DataSet.FreeBookmark(FLinkBookMark);
+    ListLinkDataSet.GotoBookmark(FLinkBookMark);
+    ListLinkDataSet.FreeBookmark(FLinkBookMark);
   finally
-    FListLink.DataSet.EnableControls;
+    ListLinkDataSet.EnableControls;
   end;
 end;
 
 procedure TDBLookup.FetchLookupData;
 var
-  s: String;
   i: Integer;
+  ListLinkDataSet: TDataSet;
 begin
   if not Assigned(FControlItems) then
     Exit;
   FControlItems.Clear;
-  if not (Assigned(FListLink.DataSet) and Assigned(FListField)) then
+  ListLinkDataSet := FListLink.DataSet;
+  if not (Assigned(ListLinkDataSet) and Assigned(FListField)) then
     Exit;
   LinkGetBookMark;
   try
     //needed to handle sqldb.TSQLQuery that does not has a reliable recordcount after Open
-    FListLink.DataSet.Last;
-    FListLink.DataSet.First;
-    SetLength(FListKeys, FListLink.DataSet.RecordCount);
+    ListLinkDataSet.Last;
+    ListLinkDataSet.First;
+    SetLength(FListKeys, ListLinkDataSet.RecordCount);
     i := 0;
-    while not FListLink.DataSet.EOF do
+    while not ListLinkDataSet.EOF do
     begin
-      s := FListField.DisplayText;
-      FListKeys[i] := FListLink.DataSet.FieldValues[FKeyFieldNames];
+      FListKeys[i] := ListLinkDataSet.FieldValues[FKeyFieldNames];
       Inc(i);
-      FControlItems.Add(s);
-      FListLink.DataSet.Next;
+      FControlItems.Add(FListField.DisplayText);
+      ListLinkDataSet.Next;
     end;
   finally
     LinkGotoBookMark;
