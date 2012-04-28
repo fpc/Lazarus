@@ -174,10 +174,10 @@ type
 
 type
   //PGLXPixmap = ^GLXPixmap;
-  GLXPixmap = TXID;
+  GLXPixmap = {%H-}TXID;
 
   //PGLXDrawable = ^GLXDrawable;
-  GLXDrawable = TXID;
+  GLXDrawable = {%H-}TXID;
 
 {$IFNDEF UseFPGLX}
 { GLX 1.0 functions. }
@@ -448,14 +448,20 @@ begin
       if GLX_version_1_3(dpy) then begin
         { use approach recommended since glX 1.3 }
         FBConfigsCount:=0;
-        FBConfigs:=glXChooseFBConfig(dpy, DefaultScreen(dpy), AttrFB, FBConfigsCount);
-        if FBConfigsCount = 0 then
-          raise Exception.Create('Could not find FB config');
+        FBConfigs:=nil;
+        try
+          FBConfigs:=glXChooseFBConfig(dpy, DefaultScreen(dpy), AttrFB, FBConfigsCount);
+          if FBConfigsCount = 0 then
+            raise Exception.Create('Could not find FB config');
 
-        { just choose the first FB config from the FBConfigs list.
-          More involved selection possible. }
-        FBConfig := FBConfigs^;
-        vi:=glXGetVisualFromFBConfig(dpy, FBConfig);
+          { just choose the first FB config from the FBConfigs list.
+            More involved selection possible. }
+          FBConfig := FBConfigs^;
+          vi:=glXGetVisualFromFBConfig(dpy, FBConfig);
+        finally
+         if FBConfigs<>nil then
+           XFree(FBConfigs);
+        end;
       end else begin
         vi:=glXChooseVisual(dpy, DefaultScreen(dpy), @attrList[0]);
       end;
