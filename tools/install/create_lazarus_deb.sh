@@ -96,21 +96,18 @@ MAKEOPTS="-Fl/opt/gnome/lib"
 if [ -n "$FPCCfg" ]; then
   MAKEOPTS="$MAKEOPTS -n @$FPCCfg"
 fi
-# build for default platform
-make lazutils lcl ideintf bigidecomponents PP=$ppcbin OPT="$MAKEOPTS"
-# build IDE
+# build
 export LCL_PLATFORM=$LCLWidgetset
-make bigide PP=$ppcbin USESVN2REVISIONINC=0 OPT="$MAKEOPTS"
-make lazbuild PP=$ppcbin OPT="$MAKEOPTS"
-make tools PP=$ppcbin OPT="$MAKEOPTS"
+make bigide PP=$ppcbin OPT="$MAKEOPTS"
 export LCL_PLATFORM=
 
 strip lazarus
 strip startlazarus
 strip lazbuild
-strip tools/apiwizz/apiwizz
 strip tools/lazres
 strip tools/updatepofiles
+strip tools/lrstolfm
+strip tools/svn2revisioninc
 cd -
 
 # create control file
@@ -144,9 +141,9 @@ ln -s $LazDestDirInstalled/lazbuild $LazBuildDir/usr/bin/lazbuild
 
 # docs
 mkdir -p $LazBuildDir/usr/share/man/man1
-cat $LazDestDir/install/man/man1/lazbuild.1 | gzip > $LazBuildDir/usr/share/man/man1/lazbuild.1.gz
-cat $LazDestDir/install/man/man1/lazarus-ide.1 | gzip > $LazBuildDir/usr/share/man/man1/lazarus-ide.1.gz
-cat $LazDestDir/install/man/man1/startlazarus.1 | gzip > $LazBuildDir/usr/share/man/man1/startlazarus.1.gz
+for exe in lazbuild lazarus-ide startlazarus lazres svn2revisioninc updatepofiles; do
+cat $LazDestDir/install/man/man1/$exe.1 | gzip > $LazBuildDir/usr/share/man/man1/$exe.1.gz
+done
 
 # default configs
 mkdir -p $LazBuildDir/etc/lazarus
