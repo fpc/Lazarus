@@ -939,19 +939,8 @@ begin
           and (CompareFilenames(ExpDir,LeftStr(ExpFile,p))=0);
 end;
 
-{------------------------------------------------------------------------------
-  function CopyFile(const SrcFilename, DestFilename: string): boolean;
- ------------------------------------------------------------------------------}
-function CopyFile(const SrcFilename, DestFilename: string): boolean;
-begin
-  Result := CopyFile(SrcFilename, DestFilename, false);
-end;
-
-{------------------------------------------------------------------------------
-  function CopyFile(const SrcFilename, DestFilename: string PreserveTime:
-    boolean): boolean;
- ------------------------------------------------------------------------------}
-function CopyFile(const SrcFilename, DestFilename: String; PreserveTime: Boolean): Boolean;
+function CopyFile(const SrcFilename, DestFilename: String;
+                  Flags: TCopyFileFlags=[cffOverwriteFile]): Boolean;
 var
   SrcFS: TFileStreamUTF8;
   DestFS: TFileStreamUTF8;
@@ -959,13 +948,19 @@ begin
   try
     SrcFS := TFileStreamUTF8.Create(SrcFilename, fmOpenRead or fmShareDenyWrite);
     try
+      if (not (cffOverwriteFile in Flags)) and FileExistsUTF8(DestFileName) then
+        exit(False);
+      if (cffCreateDestDirectory in Flags)
+      and (not DirectoryExistsUTF8(ExtractFilePath(DestFileName)))
+      and (not ForceDirectoriesUTF8(ExtractFilePath(DestFileName))) then
+        exit(False);
       DestFS := TFileStreamUTF8.Create(DestFilename, fmCreate);
       try
         DestFS.CopyFrom(SrcFS, SrcFS.Size);
       finally
         DestFS.Free;
       end;
-      if PreserveTime then
+      if (cffPreserveTime in Flags) then
         FileSetDateUTF8(DestFilename, FileGetDate(SrcFS.Handle));
     finally
       SrcFS.Free;
@@ -974,6 +969,18 @@ begin
   except
     Result := False;
   end;
+end; 
+
+function CopyFile(const SrcFilename, DestFilename: string; PreserveTime: Boolean): boolean;
+// Deparecated because Flags parameter can used for the same thing.
+var
+  Flags: TCopyFileFlags;
+begin
+  if PreserveTime then
+    Flags:=[cffPreserveTime]
+  else
+    Flags:=[];
+  Result := CopyFile(SrcFilename, DestFilename, Flags);
 end;
 
 function GetTempFilename(const Directory, Prefix: string): string;
