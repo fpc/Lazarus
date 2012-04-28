@@ -88,6 +88,16 @@ begin
     Initialize(FControlLink, FControlItems);
 end;
 
+procedure TDBLookup.ChangeListLinkDataSource(NewDataSource: TDataSource);
+begin
+  if NewDataSource <> FListLink.DataSource then
+  begin
+    FListLink.OnActiveChange := nil;
+    FListLink.DataSource := NewDataSource;
+    FListLink.OnActiveChange := @ActiveChange;
+  end;
+end;
+
 procedure TDBLookup.EditingChange(Sender: TObject);
 begin
   if FListLink.Active and not (FListLink.Editing) then
@@ -252,21 +262,16 @@ begin
           FLookupSource := TDataSource.Create(Self);
         if (FLookupSource.DataSet <> FControlLink.Field.LookupDataSet) then
           FLookupSource.DataSet:= FControlLink.Field.LookupDataSet;
-        if FListLink.DataSource <> FLookupSource then
-          FListLink.DataSource := FLookupSource;
+        ChangeListLinkDataSource(FLookupSource);
         FDataFieldNames := FControlLink.Field.KeyFields;
         FKeyFieldNames := FControlLink.Field.LookupKeyFields;
       end else
         FDataFieldNames := FControlLink.Field.FieldName;
-      FDataFields.Clear;
       FControlLink.DataSet.GetFieldList(FDataFields, FDataFieldNames);
     end;
   end;
   if not FHasLookUpField then
-  begin
-    if FListLink.DataSource <> FListSource then
-      FListLink.DataSource := FListSource;
-  end;
+    ChangeListLinkDataSource(FListSource);
 
   if (FKeyFieldNames > '') and Assigned(FListLink.Dataset) then
   begin
@@ -282,7 +287,6 @@ begin
     try
       if FListLink.DataSet.Active then
       begin
-        FKeyFields.Clear;
         FListLink.DataSet.GetFieldList(ListFields, FListFieldName);
         FListLink.DataSet.GetFieldList(FKeyFields, FKeyFieldNames);
         if FHasLookUpField then
