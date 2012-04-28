@@ -48,7 +48,9 @@ procedure TCustomBitBtn.Click;
 var
   Form : TCustomForm;
 begin
-  if FKind = bkClose then begin
+  //Contrary to other buttons with ModalResult = mrNone
+  //a TBitBtn must close ParentForm if Kind = bkClose
+  if (FKind = bkClose) and (ModalResult = mrNone) then begin
     Form := GetParentForm(Self);
     if Form <> nil then begin
       Form.Close;
