@@ -392,9 +392,9 @@ type
     FPixelToColorTree: TArrayNodesTree;
     FContinue: Boolean;
     FUpdateDescription: Boolean; // If set, update rawimagedescription
+  public
     function  GetUpdateDescription: Boolean;
     procedure SetUpdateDescription(AValue: Boolean);
-  protected
 {$IFDEF FPC_HAS_CONSTREF}
     function QueryInterface(constref iid: TGuid; out obj): LongInt; {$IFDEF WINDOWS}stdcall{$ELSE}cdecl{$ENDIF};
     function _AddRef: LongInt; {$IFDEF WINDOWS}stdcall{$ELSE}cdecl{$ENDIF};
@@ -494,10 +494,9 @@ type
     function RGBToFPColor(const AColor: TColorRGB): TFPcolor;
     function RGBToFPColor(const AColor: Word): TFPcolor;
 
-
+  public
     function  GetUpdateDescription: Boolean;
     procedure SetUpdateDescription(AValue: Boolean);
-  protected
 {$IFDEF FPC_HAS_CONSTREF}
     function QueryInterface(constref iid: TGuid; out obj): LongInt; {$IFDEF WINDOWS}stdcall{$ELSE}cdecl{$ENDIF};
     function _AddRef: LongInt; {$IFDEF WINDOWS}stdcall{$ELSE}cdecl{$ENDIF};
@@ -544,8 +543,7 @@ type
   { TLazWriterBMP }
 
   TLazWriterBMP = class(TFPWriterBMP, ILazImageWriter)
-  private
-  protected
+  public
 {$IFDEF FPC_HAS_CONSTREF}
     function QueryInterface(constref iid: TGuid; out obj): LongInt; {$IFDEF WINDOWS}stdcall{$ELSE}cdecl{$ENDIF};
     function _AddRef: LongInt; {$IFDEF WINDOWS}stdcall{$ELSE}cdecl{$ENDIF};
@@ -576,9 +574,9 @@ type
   private
     FAlphaPalette: Boolean;
     FUpdateDescription: Boolean;
+  public
     function  GetUpdateDescription: Boolean;
     procedure SetUpdateDescription(AValue: Boolean);
-  protected
 {$IFDEF FPC_HAS_CONSTREF}
     function QueryInterface(constref iid: TGuid; out obj): LongInt; {$IFDEF WINDOWS}stdcall{$ELSE}cdecl{$ENDIF};
     function _AddRef: LongInt; {$IFDEF WINDOWS}stdcall{$ELSE}cdecl{$ENDIF};
@@ -599,8 +597,7 @@ type
   { TLazWriterPNG }
 
   TLazWriterPNG = class(TFPWriterPNG, ILazImageWriter)
-  private
-  protected
+  public
 {$IFDEF FPC_HAS_CONSTREF}
     function QueryInterface(constref iid: TGuid; out obj): LongInt; {$IFDEF WINDOWS}stdcall{$ELSE}cdecl{$ENDIF};
     function _AddRef: LongInt; {$IFDEF WINDOWS}stdcall{$ELSE}cdecl{$ENDIF};
@@ -631,10 +628,10 @@ type
     // the OnCreateImage event is "abused" to update the description after the
     // format and before the image is read
     FOrgEvent: TTiffCreateCompatibleImgEvent;
+    procedure CreateImageHook(Sender: TFPReaderTiff; var NewImage: TFPCustomImage);
+  public
     function  GetUpdateDescription: Boolean;
     procedure SetUpdateDescription(AValue: Boolean);
-    procedure CreateImageHook(Sender: TFPReaderTiff; var NewImage: TFPCustomImage);
-  protected
 {$IFDEF FPC_HAS_CONSTREF}
     function QueryInterface(constref iid: TGuid; out obj): LongInt; {$IFDEF WINDOWS}stdcall{$ELSE}cdecl{$ENDIF};
     function _AddRef: LongInt; {$IFDEF WINDOWS}stdcall{$ELSE}cdecl{$ENDIF};
@@ -653,8 +650,7 @@ type
   { TLazWriterTiff }
 
   TLazWriterTiff = class(TFPWriterTiff, ILazImageWriter)
-  private
-  protected
+  public
 {$IFDEF FPC_HAS_CONSTREF}
     function QueryInterface(constref iid: TGuid; out obj): LongInt; {$IFDEF WINDOWS}stdcall{$ELSE}cdecl{$ENDIF};
     function _AddRef: LongInt; {$IFDEF WINDOWS}stdcall{$ELSE}cdecl{$ENDIF};
@@ -687,6 +683,15 @@ type
   protected
     function  InternalCheck(Str:TStream): boolean; override;
     procedure InternalRead(Stream: TStream; Img: TFPCustomImage); override;
+    procedure SetupRead(AWidth, AHeight, ADepth: Integer; IsMask: Boolean);
+    function Create256ColorPalette: TFPPalette;
+    procedure DoReadRaw;
+    procedure DoReadRLE;
+    procedure DoReadJpeg2000;
+    procedure DoReadMask;
+  public
+    function GetUpdateDescription: Boolean;
+    procedure SetUpdateDescription(AValue: Boolean);
 {$IFDEF FPC_HAS_CONSTREF}
     function QueryInterface(constref iid: TGuid; out obj): LongInt; {$IFDEF WINDOWS}stdcall{$ELSE}cdecl{$ENDIF};
     function _AddRef: LongInt; {$IFDEF WINDOWS}stdcall{$ELSE}cdecl{$ENDIF};
@@ -696,14 +701,6 @@ type
     function _AddRef: LongInt; stdcall;
     function _Release: LongInt; stdcall;
 {$ENDIF}
-    function GetUpdateDescription: Boolean;
-    procedure SetUpdateDescription(AValue: Boolean);
-    procedure SetupRead(AWidth, AHeight, ADepth: Integer; IsMask: Boolean);
-    function Create256ColorPalette: TFPPalette;
-    procedure DoReadRaw;
-    procedure DoReadRLE;
-    procedure DoReadJpeg2000;
-    procedure DoReadMask;
   public
     constructor Create; override;
     destructor Destroy; override;
