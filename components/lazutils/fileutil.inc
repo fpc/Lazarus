@@ -135,9 +135,6 @@ begin
   Result:=SysToUTF8(SysUtils.SysErrorMessage(ErrorCode));
 end;
 
-{------------------------------------------------------------------------------
-  DirPathExists
- ------------------------------------------------------------------------------}
 function DirPathExists(const FileName: String): Boolean;
 var
   F: Longint;
@@ -152,9 +149,6 @@ begin
   Result := dirExist;
 end;
 
-{------------------------------------------------------------------------------
-  function CompareFilenames(const Filename1, Filename2: string): integer;
- ------------------------------------------------------------------------------}
 function CompareFilenames(const Filename1, Filename2: string): integer;
 {$IFDEF darwin}
 var
@@ -181,8 +175,7 @@ begin
   {$ENDIF}
 end;
 
-function CompareFilenamesIgnoreCase(const Filename1, Filename2: string
-  ): integer;
+function CompareFilenamesIgnoreCase(const Filename1, Filename2: string): integer;
 {$IFDEF darwin}
 var
   F1: CFStringRef;
@@ -201,10 +194,6 @@ begin
   {$ENDIF}
 end;
 
-{------------------------------------------------------------------------------
-  function CompareFilenames(const Filename1, Filename2: string;
-    ResolveLinks: boolean): integer;
- ------------------------------------------------------------------------------}
 function CompareFilenames(const Filename1, Filename2: string;
   ResolveLinks: boolean): integer;
 var
@@ -275,9 +264,6 @@ begin
   Result:=(TheFilename<>'') and (TheFilename[1]='/');
 end;
 
-{------------------------------------------------------------------------------
-  function FilenameIsPascalUnit(const Filename: string): boolean;
- ------------------------------------------------------------------------------}
 function FilenameIsPascalUnit(const Filename: string): boolean;
 var
   i: Integer;
@@ -288,9 +274,6 @@ begin
   Result:=false;
 end;
 
-{------------------------------------------------------------------------------
-  function AppendPathDelim(const Path: string): string;
- ------------------------------------------------------------------------------}
 function AppendPathDelim(const Path: string): string;
 begin
   if (Path<>'') and (Path[length(Path)]<>PathDelim) then
@@ -299,9 +282,6 @@ begin
     Result:=Path;
 end;
 
-{------------------------------------------------------------------------------
-  function TrimFilename(const AFilename: string): string;
- ------------------------------------------------------------------------------}
 function TrimFilename(const AFilename: string): string;
 // trim double path delims, heading and trailing spaces
 // and special dirs . and ..
@@ -490,14 +470,8 @@ begin
   end;
 end;
 
-{------------------------------------------------------------------------------
-  function CompareFileExt(const Filename, Ext: string;
-    CaseSensitive: boolean): integer;
-    
-  Ext can contain a point or not
- ------------------------------------------------------------------------------}
-function CompareFileExt(const Filename, Ext: string;
-  CaseSensitive: boolean): integer;
+function CompareFileExt(const Filename, Ext: string; CaseSensitive: boolean): integer;
+// Ext can contain a point or not
 var
   n, e : AnsiString;
   FileLen, FilePos, ExtLen, ExtPos: integer;
@@ -532,9 +506,6 @@ begin
   Result:=CompareFileExt(Filename,Ext,false);
 end;
 
-{------------------------------------------------------------------------------
-  function ChompPathDelim(const Path: string): string;
- ------------------------------------------------------------------------------}
 function ChompPathDelim(const Path: string): string;
 begin
   if (Path<>'') and (Path[length(Path)]=PathDelim) then
@@ -543,9 +514,6 @@ begin
     Result:=Path;
 end;
 
-{------------------------------------------------------------------------------
-  function FileIsText(const AFilename: string): boolean;
- ------------------------------------------------------------------------------}
 function FileIsText(const AFilename: string): boolean;
 var
   FileReadable: Boolean;
@@ -940,9 +908,6 @@ begin
   Result:=TrimFilename(Result);
 end;
 
-{------------------------------------------------------------------------------
-  function FileIsInPath(const Filename, Path: string): boolean;
- ------------------------------------------------------------------------------}
 function FileIsInPath(const Filename, Path: string): boolean;
 var
   ExpFile: String;
@@ -956,9 +921,6 @@ begin
           and (CompareFilenames(ExpPath,LeftStr(ExpFile,l))=0);
 end;
 
-{------------------------------------------------------------------------------
-  function FileIsInPath(const Filename, Path: string): boolean;
- ------------------------------------------------------------------------------}
 function FileIsInDirectory(const Filename, Directory: string): boolean;
 var
   ExpFile: String;
@@ -1014,9 +976,6 @@ begin
   end;
 end;
 
-{------------------------------------------------------------------------------
-  function GetTempFilename(const Directory, Prefix: string): string;
- ------------------------------------------------------------------------------}
 function GetTempFilename(const Directory, Prefix: string): string;
 var
   i: Integer;
@@ -1031,10 +990,6 @@ begin
   until false;
 end;
 
-{------------------------------------------------------------------------------
-  function SearchFileInPath(const Filename, BasePath, SearchPath,
-    Delimiter: string; Flags: TSearchFileInPathFlags): string;
- ------------------------------------------------------------------------------}
 function SearchFileInPath(const Filename, BasePath, SearchPath,
   Delimiter: string; Flags: TSearchFileInPathFlags): string;
 var

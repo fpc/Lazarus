@@ -68,8 +68,7 @@ function TryReadAllLinks(const Filename: string): string; // if a link is broken
 // directories
 function DirPathExists(const FileName: String): Boolean;
 function ForceDirectory(DirectoryName: string): boolean;
-function DeleteDirectory(const DirectoryName: string;
-  OnlyChilds: boolean): boolean;
+function DeleteDirectory(const DirectoryName: string; OnlyChildren: boolean): boolean;
 function ProgramDirectory: string;
 function DirectoryIsWritable(const DirectoryName: string): boolean;
 
@@ -79,8 +78,7 @@ const
 
 function ExtractFileNameOnly(const AFilename: string): string;
 function ExtractFileNameWithoutExt(const AFilename: string): string;
-function CompareFileExt(const Filename, Ext: string;
-                        CaseSensitive: boolean): integer; overload;
+function CompareFileExt(const Filename, Ext: string; CaseSensitive: boolean): integer; overload;
 function CompareFileExt(const Filename, Ext: string): integer; overload;
 function FilenameIsPascalUnit(const Filename: string): boolean;
 function AppendPathDelim(const Path: string): string;
