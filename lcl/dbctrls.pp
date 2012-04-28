@@ -119,6 +119,7 @@ Type
     FControlItems: TStrings;
     FListLink: TFieldDataLink;
     FListSource: TDataSource;
+    FLookupSource: TDataSource;
     FDataFieldNames: string;
     FKeyFieldNames: string;
     FListFieldName: string;
