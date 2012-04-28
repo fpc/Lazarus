@@ -2917,7 +2917,8 @@ var
     begin
       // identifier found
       {$IFDEF ShowTriedIdentifiers}
-      DebugLn('  Source Name Identifier found="',GetIdentifier(Params.Identifier),'"');
+      if not (fdfCollect in Params.Flags) then
+        DebugLn('  Source Name Identifier found="',GetIdentifier(Params.Identifier),'"');
       {$ENDIF}
       Params.SetResult(Self,SrcNode,CurPos.StartPos);
       Result:=CheckResult(true,true);
