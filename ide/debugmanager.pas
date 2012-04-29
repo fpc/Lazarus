@@ -2659,13 +2659,12 @@ function TDebugManager.GetDebugger: TDebugger;
 begin
   Result := FDebugger;
 end;
+{$ENDIF}
 
 function TDebugManager.GetCurrentDebuggerClass: TDebuggerClass;
 begin
   Result := GetDebuggerClass;
 end;
-
-{$ENDIF}
 
 function TDebugManager.ShowBreakPointProperties(const ABreakpoint: TIDEBreakPoint): TModalresult;
 begin
