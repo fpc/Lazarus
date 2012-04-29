@@ -993,6 +993,7 @@ type
     FCopyFailedCount:Integer;
   protected
     procedure DoFileFound; override;
+    procedure DoDirectoryFound; override;
   end;
 
 procedure TCopyDirTree.DoFileFound;
@@ -1003,6 +1004,11 @@ begin
   NewLoc:=StringReplace(FileName, FSourceDir, FTargetDir, []);
   if not CopyFile(FileName, NewLoc, FFlags) then
     Inc(FCopyFailedCount);
+end;
+
+procedure TCopyDirTree.DoDirectoryFound;
+begin
+  // ToDo: create destination path here instead of calling CopyFile with cffCreateDestDirectory.
 end;
 
 function CopyDirTree(const SourceDir, TargetDir: string;
