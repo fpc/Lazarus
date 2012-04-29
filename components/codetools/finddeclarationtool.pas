@@ -2271,7 +2271,7 @@ begin
               Result += ExtractNode(TypeNode, [phpCommentsToSpace]);
             end;
           ctnClass, ctnClassInterface, ctnDispinterface,
-          ctnObject, ctnRecordType,
+          ctnObject, ctnRecordType, ctnRangedArrayType, ctnOpenArrayType,
           ctnObjCClass, ctnObjCCategory, ctnObjCProtocol, ctnCPPClass:
             begin
               MoveCursorToNodeStart(TypeNode);
