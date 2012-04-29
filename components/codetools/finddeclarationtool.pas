@@ -2283,6 +2283,8 @@ begin
               NodeStr:=ExtractNode(TypeNode,[phpCommentsToSpace]);
               Result+=copy(NodeStr,1,50);
             end;
+          ctnEnumerationType:
+            Result += 'enum';
           end;
         end else begin
           case Node.Desc of
