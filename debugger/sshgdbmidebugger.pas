@@ -48,6 +48,7 @@ type
   private
   protected
     function ParseInitialization: Boolean; override;
+    function CreateDebugProcess(const AOptions: String): Boolean; override;
   public
     class function CreateProperties: TDebuggerProperties; override;  // Creates debuggerproperties
     class function Caption: String; override;
@@ -56,11 +57,22 @@ type
     class function RequiresLocalExecutable: Boolean; override;
   end;
 
+  { TSSHGDBMIDebuggerProperties }
+
   TSSHGDBMIDebuggerProperties = class(TGDBMIDebuggerProperties)
   private
+    FAppendGDBtoSSHopt: Boolean;
     FNote: String; //dummy
+    FRemoteGDBExe: String;
+    FSSHStartupOptions: String;
+  public
+    constructor Create; override;
+    procedure Assign(Source: TPersistent); override;
   published
     property Note: String read FNote write FNote;
+    property SSH_Startup_Options: String read FSSHStartupOptions write FSSHStartupOptions;
+    property Remote_GDB_Exe: String read FRemoteGDBExe write FRemoteGDBExe;
+    property Append_GDB_to_SSH_opt: Boolean read FAppendGDBtoSSHopt write FAppendGDBtoSSHopt;
   end;
 
 implementation
@@ -82,6 +94,24 @@ type
                   AState: TPropEditDrawState); override;
   end;
 
+{ TSSHGDBMIDebuggerProperties }
+
+constructor TSSHGDBMIDebuggerProperties.Create;
+begin
+  inherited Create;
+  FRemoteGDBExe := 'gdb';
+  FSSHStartupOptions := '';
+  FAppendGDBtoSSHopt := False;
+end;
+
+procedure TSSHGDBMIDebuggerProperties.Assign(Source: TPersistent);
+begin
+  inherited Assign(Source);
+  FRemoteGDBExe := TSSHGDBMIDebuggerProperties(Source).FRemoteGDBExe;
+  FSSHStartupOptions := TSSHGDBMIDebuggerProperties(Source).FSSHStartupOptions;
+  FAppendGDBtoSSHopt := TSSHGDBMIDebuggerProperties(Source).FAppendGDBtoSSHopt;
+end;
+
 { TSSHGDBMINotePropertyEditor }
 
 function TSSHGDBMINotePropertyEditor.GetAttributes: TPropertyAttributes;
@@ -91,8 +121,7 @@ end;
 
 function TSSHGDBMINotePropertyEditor.GetValue: ansistring;
 begin
-  Result := Format(lisTheGNUDebuggerThroughSshAllowsToRemoteDebugViaASsh, ['"',
-    '"', '"', '"']);
+  Result := Format(lisNewTheGNUDebuggerThroughSshAllowsToRemoteDebugViaASsh, []);
 end;
 
 procedure TSSHGDBMINotePropertyEditor.PropMeasureHeight(const NewValue: ansistring; ACanvas: TCanvas; var AHeight: Integer);
@@ -216,6 +245,23 @@ begin
       mtInformation, [mbOK], 0);
     Exit;
 //    DebugProcess.Terminate(0);
+  end;
+end;
+
+function TSSHGDBMIDebugger.CreateDebugProcess(const AOptions: String): Boolean;
+var
+  p: TSSHGDBMIDebuggerProperties;
+  SshOpt: String;
+begin
+  p := TSSHGDBMIDebuggerProperties(GetProperties);
+  SshOpt := p.FSSHStartupOptions;
+  if p.FAppendGDBtoSSHopt then begin
+    Result := inherited CreateDebugProcess(SshOpt + ' ' + p.FRemoteGDBExe + ' ' + AOptions);
+  end
+  else begin
+    Result := inherited CreateDebugProcess(SshOpt);
+    if Result then
+      SendCmdLn(p.FRemoteGDBExe + ' ' + AOptions);
   end;
 end;
 

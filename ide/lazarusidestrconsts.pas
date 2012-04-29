@@ -5181,13 +5181,13 @@ resourcestring
 
   //Jump History dialog
   lisJHJumpHistory = 'Jump History';
-  lisTheGNUDebuggerThroughSshAllowsToRemoteDebugViaASsh =
+  lisNewTheGNUDebuggerThroughSshAllowsToRemoteDebugViaASsh =
       'The GNU debugger '
     +'through ssh allows to remote debug via a ssh connection. See docs/'
-    +'RemoteDebugging.txt for details. The path must contain the ssh client '
-    +'filename, the hostname with an optional username and the filename of '
-    +'gdb on the remote computer. For example: %s/usr/bin/ssh username@'
-    +'hostname gdb%s or: %s/usr/bin/setsid /usr/bin/ssh username@hostname gdb%s';
+    +'RemoteDebugging.txt for details. The path must contain the ssh client.'
+    +'Use SSH_Startup_Options for the hostname and optional username.'
+    +'And Remote_GDB_Exe for the filename of gdb on the remote computer.'
+    +'';
   lisRemoveUnitFromUsesSection = 'Remove unit from uses section';
   lisRemoveLocalVariable = 'Remove local variable %s';
   lisHideMessageViaDirective = 'Hide message via directive';
