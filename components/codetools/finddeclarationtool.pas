@@ -2253,13 +2253,21 @@ begin
         Result:=Result+ExtractDefinitionName(Node);
         TypeNode:=FindTypeNodeOfDefinition(Node);
         if TypeNode<>nil then begin
+          case Node.Desc of
+            ctnTypeDefinition, ctnGenericType:
+              Result+=' = ';
+            ctnConstDefinition:
+              if TypeNode.Desc = ctnConstant then
+                Result += ' = '
+              else
+                Result += ': ';
+            ctnEnumIdentifier: ;
+            else
+              Result += ': ';
+          end;
           case TypeNode.Desc of
           ctnIdentifier, ctnSpecialize, ctnSpecializeType:
             begin
-              if Node.Desc = ctnTypeDefinition then
-                Result+=' = '
-              else
-                Result+=': ';
               Result += ExtractNode(TypeNode, [phpCommentsToSpace]);
             end;
           ctnClass, ctnClassInterface, ctnDispinterface,
@@ -2268,11 +2276,11 @@ begin
             begin
               MoveCursorToNodeStart(TypeNode);
               ReadNextAtom;
-              Result+=': '+GetAtom;
+              Result+=GetAtom;
             end;
           ctnConstant:
             begin
-              NodeStr:=' = '+ExtractNode(TypeNode,[phpCommentsToSpace]);
+              NodeStr:=ExtractNode(TypeNode,[phpCommentsToSpace]);
               Result+=copy(NodeStr,1,50);
             end;
           end;
