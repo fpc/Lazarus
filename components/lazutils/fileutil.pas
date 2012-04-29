@@ -171,7 +171,7 @@ function FindAllFiles(const SearchPath: String; SearchMask: String = '';
 function FindAllDirectories(const SearchPath: string;
   SearchSubDirs: Boolean = True): TStringList;
 
-// file copy
+// flags for copy
 type
   TCopyFileFlag = (
     cffOverwriteFile,
@@ -180,13 +180,16 @@ type
     );
   TCopyFileFlags = set of TCopyFileFlag;
 
-// file actions
-function ReadFileToString(const Filename: string): string;
+// Copy a file and a whole directory tree
 function CopyFile(const SrcFilename, DestFilename: string;
                   Flags: TCopyFileFlags=[cffOverwriteFile]): boolean;
 function CopyFile(const SrcFilename, DestFilename: string; PreserveTime: boolean): boolean;
   deprecated {$IFDEF VER2_5}'use cffPreserveTime in Flags parameter instead'{$ENDIF};
+function CopyDirTree(const SourceDir, TargetDir: string;
+                     PreserveTime: boolean = False): boolean;
 
+// file actions
+function ReadFileToString(const Filename: string): string;
 function GetTempFilename(const Directory, Prefix: string): string;
 
 // basic functions similar to the RTL but working with UTF-8 instead of the

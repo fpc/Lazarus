@@ -983,6 +983,50 @@ begin
   Result := CopyFile(SrcFilename, DestFilename, Flags);
 end;
 
+{ TCopyDirTree for CopyDirTree function }
+type
+  TCopyDirTree = class(TFileSearcher)
+  private
+    FSourceDir: string;
+    FTargetDir: string;
+    FFlags: TCopyFileFlags;
+    FCopyFailedCount:Integer;
+  protected
+    procedure DoFileFound; override;
+  end;
+
+procedure TCopyDirTree.DoFileFound;
+var
+  NewLoc: string;
+begin
+  // ToDo: make sure StringReplace works in all situations !
+  NewLoc:=StringReplace(FileName, FSourceDir, FTargetDir, []);
+  if not CopyFile(FileName, NewLoc, FFlags) then
+    Inc(FCopyFailedCount);
+end;
+
+function CopyDirTree(const SourceDir, TargetDir: string;
+                     PreserveTime: boolean = False): Boolean;
+var
+  Searcher: TCopyDirTree;
+begin
+  Result:=False;
+  Searcher:=TCopyDirTree.Create;
+  try
+    Searcher.FFlags:=[cffCreateDestDirectory];
+    if PreserveTime then
+      Searcher.FFlags:=Searcher.FFlags+[cffPreserveTime];
+    Searcher.FCopyFailedCount:=0;
+    Searcher.FSourceDir:=SourceDir;
+    Searcher.FTargetDir:=TargetDir;
+    Searcher.Search(SourceDir, GetAllFilesMask, True);
+    Result:=True;
+  finally
+    Result:=Searcher.FCopyFailedCount=0;
+    Searcher.Free;
+  end;
+end;
+
 function GetTempFilename(const Directory, Prefix: string): string;
 var
   i: Integer;
