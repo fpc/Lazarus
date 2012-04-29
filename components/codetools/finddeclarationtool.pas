@@ -2209,13 +2209,13 @@ begin
         if ANode.Desc in AllClassSections then begin
           case ANode.Desc of
           ctnClassPrivate:
-            Result:=Result+'private ';
+            Result+='private ';
           ctnClassProtected:
-            Result:=Result+'protected ';
+            Result+='protected ';
           ctnClassPublic:
-            Result:=Result+'public ';
+            Result+='public ';
           ctnClassPublished:
-            Result:=Result+'published ';
+            Result+='published ';
           else
             break;
           end;
@@ -2225,7 +2225,10 @@ begin
       end;
     end;
 
-    if Node.Desc = ctnGenericName then Node := Node.Parent;
+    if Node.Parent.Desc = ctnClassClassVar then
+      Result += 'class ';
+    if Node.Desc = ctnGenericName then
+      Node := Node.Parent;
     case Node.Desc of
     ctnIdentifier:
       if Assigned(Node.Parent) and (Node.Parent.Desc = ctnProcedureHead) then
@@ -2236,16 +2239,16 @@ begin
     ctnEnumIdentifier, ctnGenericType:
       begin
         case Node.Desc of
-        ctnVarDefinition: Result:=Result+'var ';
-        ctnTypeDefinition: Result:=Result+'type ';
-        ctnConstDefinition: Result:=Result+'const ';
-        ctnEnumIdentifier: Result:=Result+'enum ';
-        ctnGenericType: Result:=Result+'generic type ';
+        ctnVarDefinition: Result+='var ';
+        ctnTypeDefinition: Result+='type ';
+        ctnConstDefinition: Result+='const ';
+        ctnEnumIdentifier: Result+='enum ';
+        ctnGenericType: Result+='generic type ';
         end;
 
         // add class name
         ClassStr := ExtractClassName(Node.Parent, False, true);
-        if ClassStr <> '' then Result := Result + ClassStr + '.';
+        if ClassStr <> '' then Result += ClassStr + '.';
 
         Result:=Result+ExtractDefinitionName(Node);
         TypeNode:=FindTypeNodeOfDefinition(Node);
@@ -2254,10 +2257,10 @@ begin
           ctnIdentifier, ctnSpecialize, ctnSpecializeType:
             begin
               if Node.Desc = ctnTypeDefinition then
-                Result:=Result+' = '
+                Result+=' = '
               else
-                Result:=Result+': ';
-              Result := Result + ExtractNode(TypeNode, [phpCommentsToSpace]);
+                Result+=': ';
+              Result += ExtractNode(TypeNode, [phpCommentsToSpace]);
             end;
           ctnClass, ctnClassInterface, ctnDispinterface,
           ctnObject, ctnRecordType,
@@ -2265,12 +2268,12 @@ begin
             begin
               MoveCursorToNodeStart(TypeNode);
               ReadNextAtom;
-              Result:=Result+': '+GetAtom;
+              Result+=': '+GetAtom;
             end;
           ctnConstant:
             begin
               NodeStr:=' = '+ExtractNode(TypeNode,[phpCommentsToSpace]);
-              Result:=Result+copy(NodeStr,1,50);
+              Result+=copy(NodeStr,1,50);
             end;
           end;
         end else begin
@@ -2281,7 +2284,7 @@ begin
               NodeStr:=ExtractCode(Node.StartPos
                                  +GetIdentLen(@Src[Node.StartPos]),
                                  Node.EndPos,[phpCommentsToSpace]);
-              Result:=Result+copy(NodeStr,1,50);
+              Result+=copy(NodeStr,1,50);
             end;
           end;
         end;
@@ -2292,7 +2295,7 @@ begin
 
         // ToDo: ppu, dcu files
 
-        Result:=Result+ExtractProcHead(Node,
+        Result+=ExtractProcHead(Node,
           [phpAddClassName,phpWithStart,phpWithVarModifiers,phpWithParameterNames,
            phpWithDefaultValues,phpWithResultType,phpWithOfObject,phpCommentsToSpace]);
       end;
@@ -2310,15 +2313,15 @@ begin
           // program without source name
           Result:='program '+ExtractFileNameOnly(MainFilename)+' ';
         end else begin
-          Result:=Result+GetAtom+' ';
+          Result+=GetAtom+' ';
 
           if Node.Desc = ctnProperty then begin // add class name
             ClassStr := ExtractClassName(Node, False, True);
-            if ClassStr <> '' then Result := Result + ClassStr + '.';
+            if ClassStr <> '' then Result += ClassStr + '.';
           end;
 
           ReadNextAtom;
-          Result:=Result+GetAtom+' ';
+          Result+=GetAtom+' ';
         end;
       end;
 
@@ -2329,9 +2332,9 @@ begin
         // ToDo: ppu, dcu files
 
         MoveCursorToNodeStart(IdentNode);
-        Result:=Result+'property ';
+        Result+='property ';
         ReadNextAtom;
-        Result:=Result+GetAtom+' ';
+        Result+=GetAtom+' ';
       end;
 
     else
@@ -2343,14 +2346,14 @@ begin
     if Result<>'' then Result:=Result+LineEnding;
     if XYPos.Code=nil then
       CleanPosToCaret(Node.StartPos,XYPos);
-    Result:=Result+XYPos.Code.Filename;
+    Result+=XYPos.Code.Filename;
     // file position
     if XYPos.Y>=1 then begin
-      Result:=Result+'('+IntToStr(XYPos.Y);
+      Result+='('+IntToStr(XYPos.Y);
       if XYPos.X>=1 then begin
-        Result:=Result+','+IntToStr(XYPos.X);
+        Result+=','+IntToStr(XYPos.X);
       end;
-      Result:=Result+')';
+      Result+=')';
     end;
   end;
 end;
