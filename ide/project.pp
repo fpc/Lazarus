@@ -512,7 +512,6 @@ type
     procedure SetUnitPaths(const AValue: string); override;
     procedure SetUnitOutputDir(const AValue: string); override;
     procedure SetConditionals(const AValue: string); override;
-    procedure SetLCLWidgetType(const AValue: string); override;
     function SubstituteProjectMacros(const s: string;
                                      PlatformIndependent: boolean): string;
   public
@@ -533,7 +532,6 @@ type
     function CreateDiff(CompOpts: TBaseCompilerOptions;
                         Tool: TCompilerDiffTool = nil): boolean; override; // true if differ
     procedure InvalidateOptions;
-    function GetEffectiveLCLWidgetType: string; override;
     procedure SetAlternativeCompile(const Command: string; ScanFPCMsgs: boolean
       ); override;
   public
@@ -5851,9 +5849,24 @@ end;
 
 procedure TProjectCompilerOptions.LoadFromXMLConfig(AXMLConfig: TXMLConfig;
   const Path: string);
+var
+  FileVersion: Integer;
+  s: String;
 begin
   inherited LoadFromXMLConfig(AXMLConfig,Path);
   
+  FileVersion:=aXMLConfig.GetValue(Path+'Version/Value', 0);
+
+  if FileVersion<10 then
+  begin
+    if LazProject.ActiveBuildMode<>nil then begin
+      // LCLWidgetType was not a macro but a property of its own
+      s := aXMLConfig.GetValue(Path+'LCLWidgetType/Value', '');
+      if (s<>'') and (SysUtils.CompareText(s,'default')<>0) then
+        LazProject.ActiveBuildMode.MacroValues.Values['LCLWidgetType']:=s;
+    end;
+  end;
+
   // old compatability
   if AXMLConfig.GetValue(Path+'SkipCompiler/Value',false)
   then FCompileReasons := []
@@ -5870,6 +5883,11 @@ begin
   
   SaveXMLCompileReasons(AXMLConfig, Path+'CompileReasons/', FCompileReasons,
                         crAll);
+  // write the LCLWidgetType value to let older IDEs read the value
+  if LazProject.ActiveBuildMode<>nil then
+    aXMLConfig.SetDeleteValue(Path+'LCLWidgetType/Value',
+             LazProject.ActiveBuildMode.MacroValues.Values['LCLWidgetType'],'');
+
   //debugln(['TProjectCompilerOptions.SaveToXMLConfig ',Path+'CompileReasons/ ',crCompile in FCompileReasons]);
 end;
 
@@ -5953,22 +5971,6 @@ begin
   inherited SetConditionals(NewValue);
 end;
 
-procedure TProjectCompilerOptions.SetLCLWidgetType(const AValue: string);
-var
-  NewValue: String;
-begin
-  NewValue:=AValue;
-  if NewValue='default' then NewValue:='';
-  //debugln(['TProjectCompilerOptions.SetLCLWidgetType OldMacro=',LazProject.ActiveBuildMode.MacroValues.Values['LCLWidgetType'],' Prop=',LCLWidgetType,' New=',NewValue]);
-  if LazProject.ActiveBuildMode<>nil then begin
-    LazProject.ActiveBuildMode.MacroValues.Values['LCLWidgetType']:=NewValue;
-    inherited SetLCLWidgetType('');
-  end
-  else
-    inherited SetLCLWidgetType(AValue);
-  //debugln(['TProjectCompilerOptions.SetLCLWidgetType END Macro=',LazProject.ActiveBuildMode.MacroValues.Values['LCLWidgetType'],' Prop=',LCLWidgetType]);
-end;
-
 function TProjectCompilerOptions.SubstituteProjectMacros(const s: string;
   PlatformIndependent: boolean): string;
 begin
@@ -6020,18 +6022,6 @@ end;
 procedure TProjectCompilerOptions.InvalidateOptions;
 begin
   if (LazProject=nil) then exit;
-end;
-
-function TProjectCompilerOptions.GetEffectiveLCLWidgetType: string;
-begin
-  if (LazProject.ActiveBuildMode<>nil) then
-    Result:=LazProject.ActiveBuildMode.MacroValues.Values['LCLWidgetType']
-  else if LazProject.Requires(PackageGraph.LCLPackage,true) then
-    Result:=inherited GetEffectiveLCLWidgetType
-  else
-    Result:=LCLPlatformDirNames[lpNoGUI];
-  if (Result='') or (SysUtils.CompareText(Result,'default')=0) then
-    Result:= LCLPlatformDirNames[GetDefaultLCLWidgetType];
 end;
 
 procedure TProjectCompilerOptions.SetAlternativeCompile(const Command: string;

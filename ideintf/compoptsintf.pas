@@ -181,7 +181,6 @@ type
     // conditionals / build modes
     FConditionals: string;
     fBuildMacros: TLazBuildMacros;
-    fLCLWidgetType: string;
 
     // Parsing:
     // assembler style
@@ -287,7 +286,6 @@ type
     procedure SetTargetProc(const AValue: string); virtual; abstract;
     procedure SetUnitOutputDir(const AValue: string); virtual; abstract;
     procedure SetUnitPaths(const AValue: String); virtual; abstract;
-    procedure SetLCLWidgetType(const AValue: string); virtual;
   public
     constructor Create(const TheOwner: TObject); virtual;
     destructor Destroy; override;
@@ -307,6 +305,7 @@ type
   public
     function GetEffectiveTargetOS: string; virtual; abstract;
     function GetEffectiveTargetCPU: string; virtual; abstract;
+    function GetEffectiveLCLWidgetType: string; virtual; abstract;
     function GetUnitPath(RelativeToBaseDir: boolean;
                          Parsed: TCompilerOptionsParseType = coptParsed;
                          WithBaseDir: boolean = true): string; virtual; abstract;
@@ -338,8 +337,6 @@ type
     // conditional / build modes
     property Conditionals: string read FConditionals write SetConditionals;
     property BuildMacros: TLazBuildMacros read fBuildMacros;
-    // Beware: eventually LCLWidgetType will be replaced by a more generic solution
-    property LCLWidgetType: string read fLCLWidgetType write SetLCLWidgetType;
 
     // target:
     property TargetFilename: String read fTargetFilename write SetTargetFilename;
@@ -446,13 +443,6 @@ begin
 end;
 
 { TLazCompilerOptions }
-
-procedure TLazCompilerOptions.SetLCLWidgetType(const AValue: string);
-begin
-  if AValue=LCLWidgetType then exit;
-  fLCLWidgetType:=AValue;
-  IncreaseChangeStamp;
-end;
 
 procedure TLazCompilerOptions.SetLinkSmart(const AValue: Boolean);
 begin

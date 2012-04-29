@@ -2136,7 +2136,7 @@ begin
     end else
       exit;
 
-    // set overrides
+    // set overrides (e.g. command line parameters)
     Overrides:=GetBuildMacroOverrides;
     try
       for i:=0 to Overrides.Count-1 do
@@ -2150,6 +2150,7 @@ begin
 
     // add the defaults
     // Note: see also ide/frames/compiler_buildmacro_options.pas procedure TCompOptBuildMacrosFrame.BuildMacrosTreeViewEdited
+    // TargetOS
     if not Result.IsDefined('TargetOS') then begin
       s:='';
       if Project1<>nil then
@@ -2158,14 +2159,17 @@ begin
         s:=GetDefaultTargetOS;
       Result.Values['TargetOS']:=s;
     end;
+    // SrcOS
     if not Result.IsDefined('SrcOS') then begin
       s:=GetDefaultSrcOSForTargetOS(Result.Values['TargetOS']);
       Result.Values['SrcOS']:=s;
     end;
+    // SrcOS2
     if not Result.IsDefined('SrcOS2') then begin
       s:=GetDefaultSrcOS2ForTargetOS(Result.Values['TargetOS']);
       Result.Values['SrcOS2']:=s;
     end;
+    // TargetCPU
     if not Result.IsDefined('TargetCPU') then begin
       s:='';
       if Project1<>nil then
@@ -2173,14 +2177,6 @@ begin
       if s='' then
         s:=GetDefaultTargetCPU;
       Result.Values['TargetCPU']:=s;
-    end;
-    if Result.Values['LCLWidgetType']='' then begin
-      s:='';
-      if Project1<>nil then
-        s:=Project1.CompilerOptions.GetEffectiveLCLWidgetType;
-      if s='' then
-        s:=LCLPlatformDirNames[GetDefaultLCLWidgetType];
-      Result.Values['LCLWidgetType']:=s;
     end;
 
     {$IFDEF VerboseBuildMacros}
@@ -2267,6 +2263,21 @@ end;
 
 procedure TBuildManager.SetBuildTarget(const TargetOS, TargetCPU,
   LCLWidgetType: string; ScanFPCSrc: TScanModeFPCSources; Quiet: boolean);
+
+  function GetEffectiveLCLWidgetType: string;
+  begin
+    if OverrideLCLWidgetType<>'' then
+      Result:=OverrideLCLWidgetType
+    else if Project1<>nil then begin
+      Result:=Project1.CompilerOptions.GetEffectiveLCLWidgetType
+    end
+    else
+      Result:='';
+    if (Result='') or (SysUtils.CompareText(Result,'default')=0) then
+      Result:=LCLPlatformDirNames[GetDefaultLCLWidgetType];
+    Result:=lowercase(Result);
+  end;
+
 var
   OldTargetOS: String;
   OldTargetCPU: String;
@@ -2274,7 +2285,7 @@ var
   FPCTargetChanged: Boolean;
   LCLTargetChanged: Boolean;
 begin
-  debugln(['TBuildManager.SetBuildTarget TargetOS="',TargetOS,'" TargetCPU="',TargetCPU,'" LCLWidgetType="',LCLWidgetType,'"']);
+  //debugln(['TBuildManager.SetBuildTarget TargetOS="',TargetOS,'" TargetCPU="',TargetCPU,'" LCLWidgetType="',LCLWidgetType,'"']);
   OldTargetOS:=fTargetOS;
   OldTargetCPU:=fTargetCPU;
   OldLCLWidgetType:=fLCLWidgetType;
@@ -2304,27 +2315,19 @@ begin
     fTargetCPU:=GetDefaultTargetCPU;
   fTargetCPU:=GetFPCTargetCPU(fTargetCPU);
 
-  // compute new LCLWidgetType
-  if OverrideLCLWidgetType<>'' then
-    fLCLWidgetType:=OverrideLCLWidgetType
-  else if Project1<>nil then
-    fLCLWidgetType:=Project1.CompilerOptions.GetEffectiveLCLWidgetType
-  else
-    fLCLWidgetType:='';
-  if (fLCLWidgetType='') or (SysUtils.CompareText(fLCLWidgetType,'default')=0) then
-    fLCLWidgetType:=LCLPlatformDirNames[GetDefaultLCLWidgetType];
-  fLCLWidgetType:=lowercase(fLCLWidgetType);
-
   FPCTargetChanged:=(OldTargetOS<>fTargetOS)
                     or (OldTargetCPU<>fTargetCPU)
                     or (CodeToolBoss.DefineTree.FindDefineTemplateByName(
                          StdDefTemplLazarusSrcDir,true)=nil);
+  if FPCTargetChanged then
+    IncreaseBuildMacroChangeStamp;
+
+  // compute new LCLWidgetType
+  fLCLWidgetType:=GetEffectiveLCLWidgetType;
   LCLTargetChanged:=(OldLCLWidgetType<>fLCLWidgetType);
 
   if FPCTargetChanged or LCLTargetChanged then begin
-    //DebugLn('TMainIDE.SetBuildTarget Old=',OldTargetCPU,'-',OldTargetOS,'-',OldLCLWidgetType,
-    //  ' New=',fTargetCPU,'-',fTargetOS,'-',fLCLWidgetType,' FPC=',dbgs(FPCTargetChanged),' LCL=',dbgs(LCLTargetChanged));
-    IncreaseBuildMacroChangeStamp;
+    //DebugLn(['TMainIDE.SetBuildTarget Old=',OldTargetCPU,'-',OldTargetOS,'-',OldLCLWidgetType,' New=',fTargetCPU,'-',fTargetOS,'-',fLCLWidgetType,' FPC=',FPCTargetChanged,' LCL=',LCLTargetChanged]);
   end;
   if LCLTargetChanged then
     CodeToolBoss.SetGlobalValue(ExternalMacroStart+'LCLWidgetType',fLCLWidgetType);
