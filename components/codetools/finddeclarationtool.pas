@@ -2385,6 +2385,15 @@ begin
         end;
       end;
 
+    ctnUseUnit:
+      begin
+        // hint for unit in "uses" section
+        Result += 'unit ';
+        MoveCursorToNodeStart(Node);
+        ReadNextAtom;
+        Result+=GetAtom;
+      end
+
     else
       DebugLn('ToDo: TFindDeclarationTool.FindSmartHint ',Node.DescAsString);
     end;
