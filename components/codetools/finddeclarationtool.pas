@@ -2193,6 +2193,8 @@ var
   IdentNode, TypeNode, ANode: TCodeTreeNode;
   ClassStr: String;
   NodeStr: String;
+  Params: TFindDeclarationParams;
+  Tool: TFindDeclarationTool;
 begin
   Result:='';
 
@@ -2313,7 +2315,52 @@ begin
            phpWithDefaultValues,phpWithResultType,phpWithOfObject,phpCommentsToSpace]);
       end;
 
-    ctnProperty,
+    ctnProperty,ctnGlobalProperty:
+      begin
+        IdentNode:=Node;
+
+        // ToDo: ppu, dcu files
+
+        Result+='property ';
+        MoveCursorToNodeStart(IdentNode);
+        ReadNextAtom;
+        if Node.Desc = ctnProperty then begin
+          // e.g. property Caption: string;
+          // skip keyword
+          ReadNextAtom;
+          // add class name
+          ClassStr := ExtractClassName(Node, False, True);
+          if ClassStr <> '' then Result += ClassStr + '.';
+        end else begin
+          // global property starts with identifier
+        end;
+        // add name
+        Result+=GetAtom;
+
+        Tool:=Self;
+        while (Node.Desc=ctnProperty)
+        and not Tool.MoveCursorToPropType(Node) do begin
+          // property without type
+          // -> search ancestor property
+          if not Tool.MoveCursorToPropName(Node) then break;
+          Params:=TFindDeclarationParams.Create;
+          try
+            Params.SetIdentifier(Tool,@Tool.Src[Tool.CurPos.StartPos],nil);
+            Params.Flags:=[fdfSearchInAncestors];
+            if not FindIdentifierInAncestors(Node.Parent.Parent,Params) then break;
+            Tool:=Params.NewCodeTool;
+            Node:=Params.NewNode;
+          finally
+            Params.Free;
+          end;
+        end;
+        if (Node<>nil)
+        and (Node.Desc in [ctnProperty,ctnGlobalProperty]) then begin
+          Result += Tool.ExtractProperty(Node,
+              [phpWithoutName,phpWithParameterNames,phpWithResultType]);
+        end;
+      end;
+
     ctnProgram,ctnUnit,ctnPackage,ctnLibrary:
       begin
         IdentNode:=Node;
@@ -2336,18 +2383,6 @@ begin
           ReadNextAtom;
           Result+=GetAtom+' ';
         end;
-      end;
-
-    ctnGlobalProperty:
-      begin
-        IdentNode:=Node;
-
-        // ToDo: ppu, dcu files
-
-        MoveCursorToNodeStart(IdentNode);
-        Result+='property ';
-        ReadNextAtom;
-        Result+=GetAtom+' ';
       end;
 
     else
