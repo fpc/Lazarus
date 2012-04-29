@@ -3081,7 +3081,7 @@ var
         end;
       end;
 
-      if (ContextNode.Desc in AllClasses)
+      if (ContextNode.Desc in (AllClasses-[ctnRecordType]))
       and (fdfSearchInAncestors in Params.Flags) then begin
         // after searching in a class definition, search in its ancestors
 
