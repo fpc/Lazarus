@@ -12185,7 +12185,8 @@ begin
   // Check project build
   ProgramFilename := MainBuildBoss.GetProjectTargetFilename(Project1);
   DebugLn(['TMainIDE.DoInitProjectRun ProgramFilename=',ProgramFilename]);
-  if not FileExistsUTF8(ProgramFilename)
+  if ((DebugBoss.DebuggerClass = nil) or DebugBoss.DebuggerClass.RequiresLocalExecutable)
+     and not FileExistsUTF8(ProgramFilename)
   then begin
     IDEMessageDialog(lisFileNotFound,
       Format(lisNoProgramFileSFound, ['"', ProgramFilename, '"']),

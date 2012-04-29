@@ -156,6 +156,7 @@ type
     {$IFDEF DBG_WITH_DEBUGGER_DEBUG}
     function GetDebugger: TDebugger; override;
     {$ENDIF}
+    function GetCurrentDebuggerClass: TDebuggerClass; override;    (* TODO: workaround for http://bugs.freepascal.org/view.php?id=21834   *)
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
@@ -2003,7 +2004,7 @@ function TDebugManager.InitDebugger: Boolean;
 var
   LaunchingCmdLine, LaunchingApplication, LaunchingParams: String;
   NewWorkingDir: String;
-  DebuggerClass: TDebuggerClass;
+  NewDebuggerClass: TDebuggerClass;
 begin
 {$ifdef VerboseDebugger}
   DebugLn('[TDebugManager.DoInitDebugger] A');
@@ -2019,55 +2020,62 @@ begin
   FUnitInfoProvider.Clear;
   FIsInitializingDebugger:= True;
   try
-    DebuggerClass := GetDebuggerClass;
+    NewDebuggerClass := GetDebuggerClass;
     LaunchingCmdLine := BuildBoss.GetRunCommandLine;
 
     SplitCmdLine(LaunchingCmdLine, LaunchingApplication, LaunchingParams);
 
-    if BuildBoss.GetProjectUsesAppBundle then
-    begin
-      // it is Application Bundle (darwin only)
+    (* TODO: workaround for http://bugs.freepascal.org/view.php?id=21834
+       Se Debugger.RequiresLocalExecutable
+    *)
+    if NewDebuggerClass.RequiresLocalExecutable then begin
 
-      if not DirectoryExistsUTF8(LaunchingApplication) then
+      if BuildBoss.GetProjectUsesAppBundle then
       begin
-        if MessageDlg(lisLaunchingApplicationInvalid,
-          Format(lisTheLaunchingApplicationBundleDoesNotExists,
-            [LaunchingCmdLine, #13, #13, #13, #13]),
-          mtError, [mbYes, mbNo, mbCancel], 0) = mrYes then
-        begin
-          if not BuildBoss.CreateProjectApplicationBundle then Exit;
-        end
-        else
-          Exit;
-      end;
+        // it is Application Bundle (darwin only)
 
-      if DebuggerClass = TProcessDebugger then
-      begin // use executable path inside Application Bundle (darwin only)
-        LaunchingApplication := LaunchingApplication + '/Contents/MacOS/' +
-          ExtractFileNameOnly(LaunchingApplication);
-        LaunchingParams := LaunchingParams;
-      end;
-    end
-    else
-      if not FileIsExecutable(LaunchingApplication)
+        if not DirectoryExistsUTF8(LaunchingApplication) then
+        begin
+          if MessageDlg(lisLaunchingApplicationInvalid,
+            Format(lisTheLaunchingApplicationBundleDoesNotExists,
+              [LaunchingCmdLine, #13, #13, #13, #13]),
+            mtError, [mbYes, mbNo, mbCancel], 0) = mrYes then
+          begin
+            if not BuildBoss.CreateProjectApplicationBundle then Exit;
+          end
+          else
+            Exit;
+        end;
+
+        if NewDebuggerClass = TProcessDebugger then
+        begin // use executable path inside Application Bundle (darwin only)
+          LaunchingApplication := LaunchingApplication + '/Contents/MacOS/' +
+            ExtractFileNameOnly(LaunchingApplication);
+          LaunchingParams := LaunchingParams;
+        end;
+      end
+      else
+        if not FileIsExecutable(LaunchingApplication)
+        then begin
+          MessageDlg(lisLaunchingApplicationInvalid,
+            Format(lisTheLaunchingApplicationDoesNotExistsOrIsNotExecuta, ['"',
+              LaunchingCmdLine, '"', #13, #13, #13]),
+            mtError, [mbOK],0);
+          Exit;
+        end;
+
+      //todo: this check depends on the debugger class
+      if (NewDebuggerClass <> TProcessDebugger)
+      and not FileIsExecutable(EnvironmentOptions.GetParsedDebuggerFilename)
       then begin
-        MessageDlg(lisLaunchingApplicationInvalid,
-          Format(lisTheLaunchingApplicationDoesNotExistsOrIsNotExecuta, ['"',
-            LaunchingCmdLine, '"', #13, #13, #13]),
-          mtError, [mbOK],0);
+        MessageDlg(lisDebuggerInvalid,
+          Format(lisTheDebuggerDoesNotExistsOrIsNotExecutableSeeEnviro, ['"',
+            EnvironmentOptions.DebuggerFilename, '"', #13, #13, #13]),
+          mtError,[mbOK],0);
         Exit;
       end;
 
-    //todo: this check depends on the debugger class
-    if (DebuggerClass <> TProcessDebugger)
-    and not FileIsExecutable(EnvironmentOptions.GetParsedDebuggerFilename)
-    then begin
-      MessageDlg(lisDebuggerInvalid,
-        Format(lisTheDebuggerDoesNotExistsOrIsNotExecutableSeeEnviro, ['"',
-          EnvironmentOptions.DebuggerFilename, '"', #13, #13, #13]),
-        mtError,[mbOK],0);
-      Exit;
-    end;
+    end; // if NewDebuggerClass.RequiresLocalExecutable then
 
     if (dmsDebuggerObjectBroken in FManagerStates)
     then begin
@@ -2077,7 +2085,7 @@ begin
 
     // check if debugger is already created with the right type
     if (FDebugger <> nil)
-    and (not (FDebugger is DebuggerClass)
+    and (not (FDebugger is NewDebuggerClass)
           or (FDebugger.ExternalDebugger <> EnvironmentOptions.GetParsedDebuggerFilename)
         )
     then begin
@@ -2088,7 +2096,7 @@ begin
 
     // create debugger object
     if FDebugger = nil
-    then SetDebugger(DebuggerClass.Create(EnvironmentOptions.GetParsedDebuggerFilename));
+    then SetDebugger(NewDebuggerClass.Create(EnvironmentOptions.GetParsedDebuggerFilename));
 
     if FDebugger = nil
     then begin
@@ -2096,7 +2104,7 @@ begin
       Exit;
     end;
 
-    EnvironmentOptions.LoadDebuggerProperties(DebuggerClass.ClassName, FDebugger.GetProperties);
+    EnvironmentOptions.LoadDebuggerProperties(NewDebuggerClass.ClassName, FDebugger.GetProperties);
 
     ClearDebugOutputLog;
     if EnvironmentOptions.DebuggerEventLogClearOnRun then
@@ -2131,7 +2139,9 @@ begin
     Project1.RunParameterOptions.AssignEnvironmentTo(FDebugger.Environment);
     NewWorkingDir:=Project1.RunParameterOptions.WorkingDirectory;
     GlobalMacroList.SubstituteStr(NewWorkingDir);
-    if (NewWorkingDir<>'') and (not DirectoryExistsUTF8(NewWorkingDir)) then begin
+    if NewDebuggerClass.RequiresLocalExecutable  and     (* TODO: workaround for http://bugs.freepascal.org/view.php?id=21834   *)
+       (NewWorkingDir<>'') and (not DirectoryExistsUTF8(NewWorkingDir))
+    then begin
       MessageDlg(lisUnableToRun,
         Format(lisTheWorkingDirectoryDoesNotExistPleaseCheckTheWorki, ['"',
           NewWorkingDir, '"', #13]),
@@ -2140,7 +2150,9 @@ begin
     end;
     if NewWorkingDir='' then begin
       NewWorkingDir:=ExtractFilePath(BuildBoss.GetProjectTargetFilename(Project1));
-      if (NewWorkingDir<>'') and (not DirectoryExistsUTF8(NewWorkingDir)) then begin
+      if NewDebuggerClass.RequiresLocalExecutable  and     (* TODO: workaround for http://bugs.freepascal.org/view.php?id=21834   *)
+         (NewWorkingDir<>'') and (not DirectoryExistsUTF8(NewWorkingDir))
+      then begin
         MessageDlg(lisUnableToRun,
           Format(lisTheDestinationDirectoryDoesNotExistPleaseCheckTheP, ['"',
             NewWorkingDir, '"', #13]),
@@ -2647,6 +2659,12 @@ function TDebugManager.GetDebugger: TDebugger;
 begin
   Result := FDebugger;
 end;
+
+function TDebugManager.GetCurrentDebuggerClass: TDebuggerClass;
+begin
+  Result := GetDebuggerClass;
+end;
+
 {$ENDIF}
 
 function TDebugManager.ShowBreakPointProperties(const ABreakpoint: TIDEBreakPoint): TModalresult;

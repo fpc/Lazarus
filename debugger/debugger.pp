@@ -2813,6 +2813,14 @@ type
     class function GetProperties: TDebuggerProperties;                     // Get the current properties
     class procedure SetProperties(const AProperties: TDebuggerProperties); // Set the current properties
 
+    (* TODO:
+       This method is a workaround for http://bugs.freepascal.org/view.php?id=21834
+       See main.pp 12188 function TMainIDE.DoInitProjectRun: TModalResult;
+       See debugmanager function TDebugManager.InitDebugger: Boolean;
+       Checks could be performed in SetFileName, invalidating debuggerstate
+       Errors should also be reported by debugger
+    *)
+    class function  RequiresLocalExecutable: Boolean; virtual;
   public
     constructor Create(const AExternalDebugger: String); virtual;
     destructor Destroy; override;
@@ -6419,6 +6427,11 @@ begin
 
   if Props = nil then Exit; // they weren't created ?
   Props.Assign(AProperties);
+end;
+
+class function TDebugger.RequiresLocalExecutable: Boolean;
+begin
+  Result := True;
 end;
 
 procedure TDebugger.SetState(const AValue: TDBGState);

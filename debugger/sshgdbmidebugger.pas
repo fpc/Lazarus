@@ -41,6 +41,9 @@ uses
   BaseDebugManager, Debugger, PropEdits, Graphics, LCLProc, LazarusIDEStrConsts;
   
 type
+
+  { TSSHGDBMIDebugger }
+
   TSSHGDBMIDebugger = class(TGDBMIDebugger)
   private
   protected
@@ -49,6 +52,8 @@ type
     class function CreateProperties: TDebuggerProperties; override;  // Creates debuggerproperties
     class function Caption: String; override;
     class function ExePaths: String; override;
+    (* TODO: workaround for http://bugs.freepascal.org/view.php?id=21834   *)
+    class function RequiresLocalExecutable: Boolean; override;
   end;
 
   TSSHGDBMIDebuggerProperties = class(TGDBMIDebuggerProperties)
@@ -136,6 +141,11 @@ end;
 class function TSSHGDBMIDebugger.ExePaths: String;
 begin
   Result := '/usr/bin/ssh user@remote /usr/bin/gdb';
+end;
+
+class function TSSHGDBMIDebugger.RequiresLocalExecutable: Boolean;
+begin
+  Result := False;
 end;
 
 function TSSHGDBMIDebugger.ParseInitialization: Boolean;

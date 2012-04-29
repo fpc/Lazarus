@@ -124,6 +124,7 @@ type
     {$IFDEF DBG_WITH_DEBUGGER_DEBUG}
     function GetDebugger: TDebugger; virtual; abstract;
     {$ENDIF}
+    function GetCurrentDebuggerClass: TDebuggerClass; virtual; abstract;    (* TODO: workaround for http://bugs.freepascal.org/view.php?id=21834   *)
   public
     procedure Reset; virtual; abstract;
 
@@ -219,6 +220,8 @@ type
     property Watches: TWatchesMonitor read FWatches;
     property Threads: TThreadsMonitor read FThreads;
     property Snapshots: TSnapshotManager read FSnapshots;
+    (* TODO: workaround for http://bugs.freepascal.org/view.php?id=21834   *)
+    property DebuggerClass: TDebuggerClass read GetCurrentDebuggerClass;
     {$IFDEF DBG_WITH_DEBUGGER_DEBUG}
     property Debugger: TDebugger read GetDebugger;
     {$ENDIF}
