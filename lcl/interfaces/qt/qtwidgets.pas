@@ -16635,7 +16635,29 @@ begin
   Result := False;
   QEvent_accept(Event);
   if LCLObject <> nil then
-    Result := inherited EventFilter(Sender, Event);
+    Result := inherited EventFilter(Sender, Event)
+  else
+  begin
+    case QEvent_type(Event) of
+      QEventKeyPress:
+      begin
+        if (QKeyEvent_key(QKeyEventH(Event)) = QtKey_Escape) and
+          (QMessageBox_escapeButton(QMessageBoxH(Sender)) = nil) then
+        begin
+          QDialog_done(QDialogH(Sender), Ord(QDialogRejected));
+          Result := True;
+        end;
+      end;
+      QEventClose:
+      begin
+        if QMessageBox_escapeButton(QMessageBoxH(Sender)) = nil then
+        begin
+          QDialog_done(QDialogH(Sender), Ord(QDialogRejected));
+          Result := True;
+        end;
+      end;
+    end;
+  end;
 end;
 
 procedure TQtMessageBox.SetButtonProps(ABtn: QPushButtonH; AResult: Int64; const ADefaultBtn: Boolean; const AEscapeBtn: Boolean);
@@ -16684,7 +16706,7 @@ var
   ok: Boolean;
   QResult: Int64;
 begin
-  Result := QMessageBoxNoButton;
+  Result := mrCancel;
   {$IFDEF QTDIALOGS_USES_QT_LOOP}
   QDialog_exec(QMessageBoxH(Widget));
   {$ELSE}
