@@ -2277,6 +2277,9 @@ begin
               MoveCursorToNodeStart(TypeNode);
               ReadNextAtom;
               Result+=GetAtom;
+              if (TypeNode.FirstChild<>nil)
+              and (TypeNode.FirstChild.Desc = ctnClassInheritance) then
+                Result += ExtractNode(TypeNode.FirstChild, []);
             end;
           ctnConstant:
             begin
