@@ -40,8 +40,8 @@ function BeginPaint(Handle: hWnd; Var PS : TPaintStruct) : hdc; override;
 function BitBlt(DestDC: HDC; X, Y, Width, Height: Integer; SrcDC: HDC; XSrc, YSrc: Integer; Rop: DWORD): Boolean; override;
 
 (*function CallNextHookEx(hHk: HHOOK; ncode : Integer; wParam: WParam; lParam : LParam) : Integer; override;
-function CallWindowProc(lpPrevWndFunc : TFarProc; Handle : HWND; Msg : UINT; wParam: WParam; lParam : lParam) : Integer; override;
-function ClientToScreen(Handle: HWND; var P: TPoint) : Boolean; override;*)
+function CallWindowProc(lpPrevWndFunc : TFarProc; Handle : HWND; Msg : UINT; wParam: WParam; lParam : lParam) : Integer; override;*)
+function ClientToScreen(Handle: HWND; var P: TPoint) : Boolean; override;
 
 function ClipboardFormatToMimeType(FormatID: TClipboardFormat): string; override;
 function ClipboardGetData(ClipboardType: TClipboardType;
@@ -93,11 +93,11 @@ procedure EnterCriticalSection(var CritSection: TCriticalSection); override;
 function EnumFontFamiliesEx(DC: HDC; lpLogFont: PLogFont; Callback: FontEnumExProc; Lparam: LParam; Flags: dword): longint; override;
 //function ExcludeClipRect(dc: hdc; Left, Top, Right, Bottom : Integer) : Integer; override;
 function ExtCreatePen(dwPenStyle, dwWidth: DWord; const lplb: TLogBrush; dwStyleCount: DWord; lpStyle: PDWord): HPEN; override;
-//function ExtSelectClipRGN(dc: hdc; rgn : hrgn; Mode : Longint) : Integer;  override;
+function ExtSelectClipRGN(dc: hdc; rgn : hrgn; Mode : Longint) : Integer;  override;
 function ExtTextOut(DC: HDC; X, Y: Integer; Options: Longint; Rect: PRect; Str: PChar; Count: Longint; Dx: PInteger): Boolean; override;
 
 function FillRect(DC: HDC; const Rect: TRect; Brush: HBRUSH): Boolean; override;
-//function FillRgn(DC: HDC; RegionHnd: HRGN; hbr: HBRUSH): Bool; override;
+function FillRgn(DC: HDC; RegionHnd: HRGN; hbr: HBRUSH): Bool; override;
 function Frame3d(DC: HDC; var ARect: TRect; const FrameWidth : integer; const Style : TBevelCut): Boolean; override;
 function FrameRect(DC: HDC; const ARect: TRect; hBr: HBRUSH): Integer; override;
 
@@ -126,8 +126,8 @@ function GetFocus: HWND; override;
 function GetKeyState(nVirtKey: Integer): Smallint; override;
 (*function GetMapMode(DC: HDC): Integer; override;
 function GetMonitorInfo(Monitor: HMONITOR; lpmi: PMonitorInfo): Boolean; override;
-function GetObject(GDIObj: HGDIOBJ; BufSize: Integer; Buf: Pointer): Integer; override;
-function GetParent(Handle : HWND): HWND; override;*)
+function GetObject(GDIObj: HGDIOBJ; BufSize: Integer; Buf: Pointer): Integer; override;*)
+function GetParent(Handle : HWND): HWND; override;
 function GetProp(Handle : hwnd; Str : PChar): Pointer; override;
 function GetRgnBox(RGN : HRGN; lpRect : PRect) : Longint; override;
 (*function GetROP2(DC: HDC): Integer; override;
@@ -193,9 +193,9 @@ function RestoreDC(DC: HDC; SavedDC: Integer): Boolean; override;
 //function RoundRect(DC : hDC; X1, Y1, X2, Y2: Integer; RX,RY : Integer): Boolean; override;
 
 function SaveDC(DC: HDC): Integer; override;
-//function ScreenToClient(Handle : HWND; var P : TPoint) : Integer; override;
+function ScreenToClient(Handle : HWND; var P : TPoint) : Integer; override;
 //function ScrollWindowEx(HWnd: HWND; DX, DY: Integer; PRcScroll, PRcClip: PRect; HRgnUpdate: HRGN; PRcUpdate: PRect; Flags: UINT): Boolean; override;
-//function SelectClipRGN(DC : hDC; RGN : HRGN) : Longint; override;
+function SelectClipRGN(DC : hDC; RGN : HRGN) : Longint; override;
 function SelectObject(DC: HDC; GDIObj: HGDIOBJ): HGDIOBJ; override;
 (*function SendMessage(HandleWnd: HWND; Msg: Cardinal; WParam: WParam; LParam: LParam): LResult; override;
 function SetActiveWindow(Handle: HWND): HWND; override;

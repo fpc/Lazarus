@@ -140,33 +140,17 @@ begin
   	WriteLn('***** [WinAPI TQtWidgetSet.CallWindowProc] missing implementation ');
   {$endif}
   Result := -1;
-end;
+end;*)
 
 {------------------------------------------------------------------------------
   Method:  ClientToScreen
   Params:  Handle    -
   Returns:
  ------------------------------------------------------------------------------}
-function TQtWidgetSet.ClientToScreen(Handle: HWND; var P: TPoint) : Boolean;
-var
-  APoint: TQtPoint;
-  Pt: TPoint;
+function TCDWidgetSet.ClientToScreen(Handle: HWND; var P: TPoint) : Boolean;
 begin
-  Result := IsValidHandle(Handle);
-  if Result then
-  begin
-    APoint := QtPoint(P.X, P.Y);
-
-    QWidget_mapToGlobal(TQtWidget(Handle).GetContainerWidget, @APoint, @APoint);
-    if TQtWidget(Handle).ChildOfComplexWidget = ccwScrollingWinControl then
-    begin
-      Pt := TQtCustomControl(Handle).viewport.ScrolledOffset;
-      dec(APoint.X, Pt.X);
-      dec(APoint.Y, Pt.Y);
-    end;
-    P := Point(APoint.x, APoint.y);
-  end;
-end;*)
+  Result := False;
+end;
 
 function TCDWidgetSet.ClipboardGetData(ClipboardType: TClipboardType;
   FormatID: TClipboardFormat; Stream: TStream): boolean;
@@ -5130,28 +5114,19 @@ begin
   {$ifdef VerboseQTWinAPI}
   WriteLn('Trace:< [WinAPI SaveDC] result=', Result);
   {$Endif}
-end;
+end;*)
 
 {------------------------------------------------------------------------------
   Function: ScreenToClient
   Params:  Handle: HWND; var P: TPoint
   Returns:
 -------------------------------------------------------------------------------}
-function TQtWidgetSet.ScreenToClient(Handle : HWND; var P : TPoint) : Integer;
-var
-  APoint: TQtPoint;
+function TCDWidgetSet.ScreenToClient(Handle : HWND; var P : TPoint) : Integer;
 begin
   Result := 0;
-  if IsValidHandle(Handle) then
-  begin
-    APoint := QtPoint(P.X, P.Y);
-    QWidget_mapFromGlobal(TQtWidget(Handle).GetContainerWidget, @APoint, @APoint);
-    P := Point(APoint.x, APoint.y);
-    Result := 1;
-  end;
 end;
 
-{------------------------------------------------------------------------------
+(*{------------------------------------------------------------------------------
   Method:  ScrollWindowEx
   Params:  HWnd       - handle of window to scroll
            DX         - horizontal amount to scroll

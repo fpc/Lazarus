@@ -20,6 +20,37 @@
  *****************************************************************************
 }
 
+function TCDWidgetSet.ClientToScreen(Handle: HWND; var P: TPoint) : Boolean;
+var
+  ControlHandle: TCDBaseControl;
+  lControl: TWinControl;
+  winhandle: TCocoaWindow absolute Handle;
+  lPoint: NSPoint;
+begin
+  Result := False;
+  if Handle = 0 then Exit;
+
+  // Go throught the non-native controls
+  ControlHandle := TCDBaseControl(Handle);
+  while not (ControlHandle is TCDForm) do
+  begin
+    lControl := ControlHandle.GetWinControl();
+    lControl := lControl.Parent;
+    if lControl = nil then Exit;
+    ControlHandle := TCDBaseControl(lControl.Handle);
+    P.X := P.X - lControl.Left;
+    P.Y := P.Y - lControl.Top;
+  end;
+
+  // Now actually do the convertion
+  lPoint.x := P.X;
+  lPoint.Y := P.Y;
+  lPoint := winhandle.CocoaForm.convertBaseToScreen(lPoint);
+  P.x := Round(lPoint.X);
+  P.Y := Round(lPoint.Y);
+  Result := True;
+end;
+
 function TCDWidgetSet.ClipboardGetData(ClipboardType: TClipboardType;
   FormatID: TClipboardFormat; Stream: TStream): boolean;
 begin
@@ -994,5 +1025,21 @@ begin
     dec(ctx.Stack, cnt);
   end;
 end;*)
+
+{------------------------------------------------------------------------------
+  Method:  ScreenToClient
+  Params: Handle - window handle for source coordinates
+          P      - record containing coordinates
+  Returns: if the function succeeds, the return value is nonzero; if the
+           function fails, the return value is zero
+
+  Converts the screen coordinates of a specified point on the screen to client
+  coordinates.
+ ------------------------------------------------------------------------------}
+function TCDWidgetSet.ScreenToClient(Handle: HWND; Var P: TPoint): Integer;
+begin
+  Result := 0;
+  //Result := Integer(Windows.ScreenToClient(Handle, @P));
+end;
 
 //##apiwiz##eps##   // Do not remove, no wizard declaration after this line

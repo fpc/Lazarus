@@ -2034,108 +2034,44 @@ begin
   Result := HPEN(lPen);
 end;
 
-(*function TQtWidgetSet.ExtSelectClipRGN(dc: hdc; rgn : hrgn; Mode : Longint) : Integer;
+function TCDWidgetSet.ExtSelectClipRGN(dc: hdc; rgn: hrgn; Mode: Longint) : Integer;
 var
-  Clip: HRGN = 0;
-  Tmp : hRGN;
-  DCOrigin: TPoint;
-  QtWidget: TQtWidget = nil;
-  QtDC: TQtDeviceContext;
-  QtRgn: TQtRegion;
-  R: TRect;
+  LazDC: TLazCanvas absolute DC;
+  lRegion: TLazRegion absolute rgn;
 begin
-  {$ifdef VerboseQtWinAPI}
-    WriteLn('[WinAPI TQtWidgetSet.ExtSelectClipRGN]');
+  {$ifdef VerboseCDWinAPI}
+    DebugLn('[TCDWidgetSet.SelectClipRGN] DC=', dbgs(DC),' RGN=', dbghex(RGN));
   {$endif}
-  if not IsValidDC(DC) then
+
+  Result := ERROR;
+
+  // Activating this code break the drawing of TStringGrid. ToDo: Find out why
+{  if not IsValidDC(DC) then exit;
+
+  // RGN=0 indicates that the clipping region should be removed
+  if (RGN = 0) then
   begin
-    Result := ERROR;
-    exit;
-  end else
-    Result := SIMPLEREGION;
+    TLazCanvas(LazDC.ClipRegion).Clear;
+    LazDC.Clipping := False;
+    Result := NullRegion;
+    Exit;
+  end;
 
-  QtDC := TQtDeviceContext(DC);
+  if LazDC.ClipRegion = nil then
+    LazDC.ClipRegion := TLazRegion.Create;
 
-  if Assigned(QtDC.Parent) then
-    QtWidget := QtObjectFromWidgetH(QtDC.Parent);
-
-  if Assigned(QtWidget) or
-    (not Assigned(QtWidget) and Assigned(QtDC.vImage)) then
-  begin
-    // there is no clipping region in the DC
-    case Mode of
-      RGN_COPY: Result := SelectClipRGN(DC, RGN);
-      RGN_OR,
-      RGN_XOR,
-      RGN_AND:
-        begin
-          // as MSDN says only RGN_COPY allows NULL RGN param.
-          if not IsValidGDIObject(RGN) then
-          begin
-            Result := ERROR;
-            exit;
-          end;
-          // get existing clip
-          QtRgn := QtDC.getClipRegion;
-
-          if (QtRgn = nil) or (QtRgn.GetRegionType = NULLREGION) then
-          begin
-            Result := SelectClipRGN(DC, RGN);
-            exit;
-          end;
-
-          // get transformation
-          GetWindowOrgEx(DC, @DCOrigin);
-          R := QtRgn.getBoundingRect;
-          Clip := CreateRectRGN(0, 0, R.Right - R.Left, R.Bottom - R.Top);
-          TQtRegion(Clip).translate(DCOrigin.X, DCOrigin.Y);
-
-          // create target clip
-          Tmp := CreateEmptyRegion;
-          // combine
-          Result := CombineRGN(Tmp, Clip, RGN, Mode);
-          // commit
-          SelectClipRGN(DC, Tmp);
-          // clean up
-          DeleteObject(Clip);
-          DeleteObject(Tmp);
-        end;
-      RGN_DIFF:
-      begin
-        // when substracting we must have active clipregion
-        // with all of its rects.
-        QtRgn := QtDC.getClipRegion;
-        if (QtRgn = nil) or (QtRgn.GetRegionType = NULLREGION) then
-        begin
-          Result := SelectClipRGN(DC, RGN);
-          exit;
-        end;
-
-        Tmp := CreateEmptyRegion;
-        Result := CombineRGN(Tmp, HRGN(QtRgn), RGN, MODE);
-
-        // X11 paintEngine comment only !
-        // we'll NOT reset num of rects here (performance problem) like we do
-        // in ExcludeClipRect, because this function must be correct,
-        // if someone want accurate ExcludeClipRect with X11 then
-        // use code from intfbasewinapi.inc TWidgetSet.ExcludeClipRect()
-        // which calls this function and then combineRgn.
-        SelectClipRGN(DC, Tmp);
-        DeleteObject(Tmp);
-      end;
-    end;
-  end
-  else
-    Result := inherited ExtSelectClipRGN(DC, RGN, Mode);
-end;*)
+  // Never use LazDC.ClipRegion := RGN because we really need to make a copy of it
+  // The original handle might be freed afterwards
+  CombineRgn(HRGN(LazDC.ClipRegion), HRGN(LazDC.ClipRegion), RGN, Mode);
+  LazDC.Clipping := True;
+  Result := TLazRegion(RGN).GetRegionKind();}
+end;
 
 {$ifndef CD_UseNativeText}
 {------------------------------------------------------------------------------
   Function: ExtTextOut
   Params:  none
   Returns: Nothing
-
-
  ------------------------------------------------------------------------------}
 function TCDWidgetSet.ExtTextOut(DC: HDC; X, Y: Integer; Options: Longint;
   Rect: PRect; Str: PChar; Count: Longint; Dx: PInteger): Boolean;
@@ -2257,70 +2193,43 @@ begin
   Result := True;
 end;
 
-(*{------------------------------------------------------------------------------
+{------------------------------------------------------------------------------
   Function: FillRgn
   Params:  DC: HDC; RegionHnd: HRGN; hbr: HBRUSH
   Returns: Boolean
-
  ------------------------------------------------------------------------------}
-function TQtWidgetSet.FillRgn(DC: HDC; RegionHnd: HRGN; hbr: HBRUSH): Bool;
+function TCDWidgetSet.FillRgn(DC: HDC; RegionHnd: HRGN; hbr: HBRUSH): Bool;
 var
-  OldRgn: TQtRegion;
-  R: TRect;
-  hasClipping: Boolean;
-  QtDC: TQtDeviceContext;
+  LazDC: TLazCanvas absolute DC;
+  lRegion: TLazRegion absolute RegionHnd;
+  lRegionRect: TRect;
+  lOldBrush: HGDIOBJ;
+  lOldRegion: TLazRegion;
 begin
-  {$ifdef VerboseQtWinAPI}
-    DebugLn('[WinAPI FillRgn Rgn=', dbgs(RegionHnd),' Brush=', dbghex(hbr));
+  {$ifdef VerboseCDWinAPI}
+    DebugLn('[TCDWidgetSet.FillRgn] Rgn=', dbgs(RegionHnd),' Brush=', dbghex(hbr));
   {$endif}
 
   Result := False;
 
   if not IsValidDC(DC) then exit;
+  if hbr = 0 then Exit;
+  if RegionHnd = 0 then Exit;
 
-  QtDC := TQtDeviceContext(DC);
-
-  HasClipping := QtDC.getClipping;
-  QtDC.save;
-  if HasClipping then
-    OldRgn := TQtRegion.Create(True);
+  lOldBrush := SelectObject(DC, hbr);
   try
-    if HasClipping then
-      QPainter_clipRegion(QtDC.Widget, OldRgn.FHandle);
-    if SelectClipRgn(DC, RegionHnd) <> ERROR then
-    begin
-      R := TQtRegion(RegionHnd).getBoundingRect;
-      QtDC.fillRect(@R, TQtBrush(hbr).FHandle);
-      if HasClipping then
-        SelectClipRgn(DC, HRGN(OldRgn));
-      Result := True;
-    end;
+    lOldRegion := TLazRegion.Create;
+    lOldRegion.Assign(TLazRegion(LazDC.ClipRegion));
+    lRegionRect := lRegion.GetBoundingRect();
+    LazDC.Rectangle(lRegionRect);
   finally
-    if HasClipping then
-      OldRgn.Free;
-    QtDC.restore;
+    TLazRegion(LazDC.ClipRegion).Assign(lOldRegion);
+    lOldRegion.Free;
+    SelectObject(DC, lOldBrush);
   end;
 
+  Result := True;
 end;
-
-{------------------------------------------------------------------------------
-  Function: Frame
-  Params:  none
-  Returns: Nothing
-
-  Draws the border of a rectangle.
- ------------------------------------------------------------------------------}
-function TQtWidgetSet.Frame(DC: HDC; const ARect: TRect): Integer;
-begin
-  Result := 0;
-
-  if not IsValidDC(DC) then Exit;
-
-  TQtDeviceContext(DC).drawRect(ARect.Left, ARect.Top,
-   ARect.Right - ARect.Left, ARect.Bottom - ARect.Top);
-
-  Result := 1;
-end;*)
 
 {------------------------------------------------------------------------------
   Function: Frame3D
@@ -3303,27 +3212,29 @@ begin
   {$ifdef VerboseQtWinAPI}
     WriteLn('Trace:< [WinAPI GetObject] Result=', dbgs(Result), ' ObjectType=', ObjType);
   {$endif}
-end;
-
-function TQtWidgetSet.GetParent(Handle : HWND): HWND;
-var
-  QtWidget: TQtWidget;
-begin
-  {$ifdef VerboseQtWinAPI}
-  writeln('Trace:> [WinAPI GetParent] Handle: ' + dbghex(Handle));
-  {$endif}
-  Result := 0;
-  if Handle = 0 then
-    exit;
-
-  QtWidget := TQtWidget(Handle);
-
-  Result := HwndFromWidgetH(QtWidget.GetParent);
-
-  {$ifdef VerboseQtWinAPI}
-  writeln('Trace:< [WinAPI GetParent] : ' + dbghex(Result));
-  {$endif}
 end;*)
+
+function TCDWidgetSet.GetParent(Handle : HWND): HWND;
+var
+  lHandle: TCDWinControl absolute Handle;
+  lWinControl: TWinControl;
+begin
+  {$ifdef VerboseCDDrawing}
+    DebugLn(Format('[TCDWidgetSet.GetParent] Handle: ', [Handle]));
+  {$endif}
+
+  Result := 0;
+
+  // Invalid DC
+  if Handle = 0 then Exit;
+  if not IsValidDC(Handle) then Exit;
+
+  lWinControl := lHandle.GetWinControl();
+  if lWinControl = nil then Exit;
+  lWinControl := lWinControl.Parent;
+  if lWinControl = nil then Exit;
+  Result := lWinControl.Handle;
+end;
 
 function TCDWidgetSet.GetProp(Handle: hwnd; Str: PChar): Pointer;
 begin
@@ -5255,7 +5166,7 @@ begin
   end;
 
   Result := True;
-end;
+end;*)
 
 {------------------------------------------------------------------------------
   Function: SelectClipRGN
@@ -5270,38 +5181,11 @@ end;
       NullRegion
       SimpleRegion
       ComplexRegion
-
  ------------------------------------------------------------------------------}
-function TQtWidgetSet.SelectClipRGN(DC: hDC; RGN: HRGN): Longint;
-var
-  QtDC: TQtDeviceContext;
-  EmptyRegion: QRegionH;
-  P: TPoint;
+function TCDWidgetSet.SelectClipRGN(DC: hDC; RGN: HRGN): Longint;
 begin
-  Result := ERROR;
-  if IsValidDC(DC) then
-  begin
-    QtDC := TQtDeviceContext(DC);
-    if IsValidGDIObject(RGN) then
-    begin
-      Result := TQtRegion(Rgn).GetRegionType;
-      // RGN is in Device coordinates. Qt expects logical coordinates
-      // so we need to convert RGN coords.
-      GetWindowOrgEx(DC, @P);
-      TQtRegion(Rgn).translate(P.X, P.Y);
-      QtDC.setClipRegion(TQtRegion(Rgn).FHandle);
-    end else
-    begin
-      EmptyRegion := QRegion_create;
-      try
-        QtDC.setClipRegion(EmptyRegion, QtNoClip);
-      finally
-        QRegion_destroy(EmptyRegion);
-      end;
-      Result := NULLREGION;
-    end;
-  end;
-end;*)
+  Result := ExtSelectClipRgn(DC, RGN, RGN_COPY);
+end;
 
 {------------------------------------------------------------------------------
   Function: SelectObject

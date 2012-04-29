@@ -270,7 +270,7 @@ function TWin32WidgetSet.CallWindowProc(LPPrevWndFunc: TFarProc; Handle: HWND;
     Msg: UINT; WParam: WParam; LParam: LParam): Integer;
 begin
   Result := Windows.CallWindowProc(WNDPROC(LPPrevWndFunc), Handle, Msg, Windows.WPARAM(WParam), Windows.LPARAM(LParam));
-end;
+end;*)
 
 {------------------------------------------------------------------------------
   Method:  ClientToScreen
@@ -280,17 +280,16 @@ end;
 
   Converts client coordinates to screen coordinates
  ------------------------------------------------------------------------------}
-function TWin32WidgetSet.ClientToScreen(Handle: HWND; var P: TPoint): Boolean;
-var
-  ORect: TRect;
+function TCDWidgetSet.ClientToScreen(Handle: HWND; var P: TPoint): Boolean;
 begin
-  Result := Boolean(Windows.ClientToScreen(Handle, @P));
+  Result := False;
+{  Result := Boolean(Windows.ClientToScreen(Handle, @P));
   if not Result then exit;
   Result := GetLCLClientBoundsOffset(Handle, ORect);
   if not Result then exit;
   inc(P.X, ORect.Left);
-  inc(P.Y, ORect.Top);
-end;*)
+  inc(P.Y, ORect.Top);}
+end;
 
 {------------------------------------------------------------------------------
   Method:  ClipboardGetData
@@ -2938,7 +2937,7 @@ end;
 function TWin32WidgetSet.SaveDC(DC: HDC): Integer;
 begin
   Result := Windows.SaveDC(DC);
-end;
+end;*)
 
 {------------------------------------------------------------------------------
   Method:  ScreenToClient
@@ -2950,12 +2949,13 @@ end;
   Converts the screen coordinates of a specified point on the screen to client
   coordinates.
  ------------------------------------------------------------------------------}
-function TWin32WidgetSet.ScreenToClient(Handle: HWND; Var P: TPoint): Integer;
+function TCDWidgetSet.ScreenToClient(Handle: HWND; Var P: TPoint): Integer;
 begin
-  Result := Integer(Windows.ScreenToClient(Handle, @P));
+  Result := 0;
+  //Result := Integer(Windows.ScreenToClient(Handle, @P));
 end;
 
-{------------------------------------------------------------------------------
+(*{------------------------------------------------------------------------------
   Method:  ScrollWindowEx
   Params:  HWnd       - handle of window to scroll
            DX         - horizontal amount to scroll
