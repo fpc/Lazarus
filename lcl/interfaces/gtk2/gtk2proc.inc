@@ -6269,20 +6269,12 @@ begin
   gtk_widget_size_request(Widget,@Requisition);
   PreferredWidth:=Requisition.width;
   PreferredHeight:=Requisition.height;
-  if WithThemeSpace then begin
-
-  end else begin
-    //debugLn('GetGTKDefaultWidgetSize ',DbgSName(AWinControl),' ',dbgs(gtk_widget_get_xthickness(Widget)),' ythickness=',dbgs(gtk_widget_get_ythickness(Widget)));
-    //debugLn(['GetGTKDefaultWidgetSize ',GetWidgetDebugReport(Widget)]);
-    //dec(PreferredWidth,gtk_widget_get_xthickness(Widget));
-    //if gtk_class_get_type(gtk_object_get_class(Widget))=GTK_TYPE_BUTTON then
-    //  dec(PreferredHeight,2*gtk_widget_get_ythickness(Widget));
-  end;
   {DebugLn(['GetGTKDefaultWidgetSize Allocation=',Widget^.allocation.x,',',Widget^.allocation.y,',',Widget^.allocation.width,',',Widget^.allocation.height,
    ' requisition=',Widget^.requisition.width,',',Widget^.requisition.height,
    ' PreferredWidth=',PreferredWidth,' PreferredHeight=',PreferredHeight,
    ' WithThemeSpace=',WithThemeSpace]);}
-  // set new size
+
+  // restore size
   gtk_widget_set_size_request(Widget, AWinControl.Width, AWinControl.Height);
   //debugln('GetGTKDefaultSize PreferredWidth=',dbgs(PreferredWidth),' PreferredHeight=',dbgs(PreferredHeight));
 end;
