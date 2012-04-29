@@ -36,7 +36,7 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, Buttons,
-  StdCtrls, LazarusIDEStrConsts, CompilerOptions;
+  StdCtrls, LazarusIDEStrConsts, CompilerOptions, TransferMacros, LazIDEIntf;
 
 type
 
@@ -70,6 +70,7 @@ var
   ShowCompilerOptionsDlg: TShowCompilerOptionsDlg;
 begin
   Result:=mrOk;
+  LazarusIDE.PrepareBuildTarget(false,smsfsBackground);
   ShowCompilerOptionsDlg:=TShowCompilerOptionsDlg.Create(Owner);
   ShowCompilerOptionsDlg.CompilerOpts:=CompilerOpts;
   ShowCompilerOptionsDlg.ShowModal;

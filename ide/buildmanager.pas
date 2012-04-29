@@ -50,12 +50,6 @@ uses
   BaseBuildManager, ApplicationBundle;
   
 type
-  TBMScanFPCSources = (
-    bmsfsSkip,
-    bmsfsWaitTillDone, // scan now and wait till finished
-    bmsfsBackground    // start in background
-    );
-
   { TBuildManager }
 
   TBuildManager = class(TBaseBuildManager)
@@ -205,9 +199,9 @@ type
 
     // methods for building IDE (will be changed when project groups are there)
     procedure SetBuildTarget(const TargetOS, TargetCPU, LCLWidgetType: string;
-                             ScanFPCSrc: TBMScanFPCSources; Quiet: boolean);
+                             ScanFPCSrc: TScanModeFPCSources; Quiet: boolean);
     procedure SetBuildTargetProject1(Quiet: boolean;
-                               ScanFPCSrc: TBMScanFPCSources = bmsfsBackground);
+                               ScanFPCSrc: TScanModeFPCSources = smsfsBackground);
     procedure SetBuildTargetIDE;
     function BuildTargetIDEIsDefault: boolean;
 
@@ -720,7 +714,7 @@ begin
     CodeToolBoss.FPCDefinesCache.SourceCaches.Clear;
   end;
   if ResetBuildTarget then
-    SetBuildTarget('','','',bmsfsSkip,true);
+    SetBuildTarget('','','',smsfsSkip,true);
   
   // start the compiler and ask for his settings
   // provide an english message file
@@ -2272,7 +2266,7 @@ begin
 end;
 
 procedure TBuildManager.SetBuildTarget(const TargetOS, TargetCPU,
-  LCLWidgetType: string; ScanFPCSrc: TBMScanFPCSources; Quiet: boolean);
+  LCLWidgetType: string; ScanFPCSrc: TScanModeFPCSources; Quiet: boolean);
 var
   OldTargetOS: String;
   OldTargetCPU: String;
@@ -2280,6 +2274,7 @@ var
   FPCTargetChanged: Boolean;
   LCLTargetChanged: Boolean;
 begin
+  debugln(['TBuildManager.SetBuildTarget TargetOS="',TargetOS,'" TargetCPU="',TargetCPU,'" LCLWidgetType="',LCLWidgetType,'"']);
   OldTargetOS:=fTargetOS;
   OldTargetCPU:=fTargetCPU;
   OldLCLWidgetType:=fLCLWidgetType;
@@ -2333,13 +2328,13 @@ begin
   end;
   if LCLTargetChanged then
     CodeToolBoss.SetGlobalValue(ExternalMacroStart+'LCLWidgetType',fLCLWidgetType);
-  if FPCTargetChanged and (ScanFPCSrc<>bmsfsSkip) then
-    RescanCompilerDefines(false,false,ScanFPCSrc=bmsfsWaitTillDone,Quiet);
+  if FPCTargetChanged and (ScanFPCSrc<>smsfsSkip) then
+    RescanCompilerDefines(false,false,ScanFPCSrc=smsfsWaitTillDone,Quiet);
   //if (PackageGraph<>nil) and (PackageGraph.CodeToolsPackage<>nil) then debugln(['TBuildManager.SetBuildTarget CODETOOLS OUTDIR=',PackageGraph.CodeToolsPackage.CompilerOptions.GetUnitOutPath(true,coptParsed),' ',PackageGraph.CodeToolsPackage.CompilerOptions.ParsedOpts.ParsedStamp[pcosOutputDir],' ',CompilerParseStamp]);
 end;
 
 procedure TBuildManager.SetBuildTargetProject1(Quiet: boolean;
-  ScanFPCSrc: TBMScanFPCSources);
+  ScanFPCSrc: TScanModeFPCSources);
 begin
   SetBuildTarget('','','',ScanFPCSrc,Quiet);
 end;
@@ -2360,7 +2355,7 @@ begin
   if (NewTargetCPU='') or (NewTargetCPU='default') then
     NewTargetCPU:=GetDefaultTargetCPU;
   debugln(['TBuildManager.SetBuildTargetIDE OS=',NewTargetOS,' CPU=',NewTargetCPU,' WS=',NewLCLWidgetSet]);
-  SetBuildTarget(NewTargetOS,NewTargetCPU,NewLCLWidgetSet,bmsfsBackground,false);
+  SetBuildTarget(NewTargetOS,NewTargetCPU,NewLCLWidgetSet,smsfsBackground,false);
 end;
 
 function TBuildManager.BuildTargetIDEIsDefault: boolean;
