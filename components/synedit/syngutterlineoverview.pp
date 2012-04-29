@@ -1223,11 +1223,12 @@ begin
   FWinControl.Parent := SynEdit;
   FWinControl.DoubleBuffered := SynEdit.DoubleBuffered;
   FWinControl.OnPaint := {$IFDEF FPC}@{$ENDIF}PaintWinControl;
-  DoResize(Self);
 
   FLineMarks := TSynGutterLOvLineMarksList.Create;
   FProviders := TSynGutterLineOverviewProviderList.Create(Self);
   MarkupInfo.Background := $E0E0E0;
+
+  DoResize(Self);
   LineCountchanged(nil, 0, 0);
 end;
 
