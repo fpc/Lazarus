@@ -398,7 +398,7 @@ function TCmdLineDebugger.ReadLine(const APeek: Boolean; ATimeOut: Integer = -1)
 
 var   
   WaitSet: Integer;
-  LineEndMatch: String;
+  {%H-}LineEndMatch: String;
   LineEndIdx, LineEndLen, PeekCount: Integer;
 begin
 //  WriteLN('[TCmdLineDebugger.GetOutput] Enter');
