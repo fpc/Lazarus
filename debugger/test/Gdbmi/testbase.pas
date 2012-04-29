@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, fpcunit, testutils, testregistry,
-  EnvironmentOpts, LCLProc, LazLogger, CompileHelpers, Dialogs, ExtToolDialog,
+  EnvironmentOpts, TransferMacros, LCLProc, LazLogger, CompileHelpers, Dialogs, ExtToolDialog,
   Debugger, GDBMIDebugger;
 
 (*
@@ -1251,6 +1251,7 @@ initialization
     CreateConfig;
     Load(false);
   end;
+  GlobalMacroList:=TTransferMacroList.Create;
 
   BuildTestSuites;
 
