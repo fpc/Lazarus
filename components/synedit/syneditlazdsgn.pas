@@ -266,7 +266,9 @@ begin
   RegisterGutterPartClass(TSynGutterChanges, syndsChangeMarker);
   RegisterGutterPartClass(TSynGutterMarks, syndsBookmarks);
   RegisterGutterPartClass(TSynGutterSeparator, syndsSeparator);
+  {$IFDEF DesignSynGutterLineOverview}
   RegisterGutterPartClass(TSynGutterLineOverview, syndsLineOverview);
+  {$ENDIF}
 end;
 
 initialization
