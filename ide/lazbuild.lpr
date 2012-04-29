@@ -33,7 +33,8 @@ uses
   // codetools
   CodeCache, CodeToolManager, DefineTemplates, Laz2_XMLCfg,
   // IDEIntf
-  MacroIntf, PackageIntf, IDEDialogs, ProjectIntf, IDEExternToolIntf, CompOptsIntf,
+  MacroIntf, PackageIntf, IDEDialogs, ProjectIntf, IDEExternToolIntf,
+  CompOptsIntf, LazIDEIntf,
   // IDE
   IDEProcs, InitialSetupDlgs, OutputFilter, CompilerOptions, ApplicationBundle,
   TransferMacros, EnvironmentOpts, IDETranslations, LazarusIDEStrConsts,
@@ -352,8 +353,6 @@ begin
     APackage.CompilerOptions.TargetOS:=OSOverride;
   if (Length(CPUOverride) <> 0) then
     APackage.CompilerOptions.TargetCPU:=CPUOverride;
-  if (Length(WidgetSetOverride) <> 0) then
-    APackage.CompilerOptions.LCLWidgetType:=WidgetSetOverride;
 
   if CreateMakefile then
     DoCreateMakefile(APackage)
@@ -698,9 +697,9 @@ begin
   if (CPUOverride<>'') then
     Project1.CompilerOptions.TargetCPU:=CPUOverride;
   if (WidgetSetOverride<>'') then
-    Project1.CompilerOptions.LCLWidgetType:=WidgetSetOverride;
+    Project1.ActiveBuildMode.MacroValues.Values['LCLWidgetType']:=WidgetSetOverride;
   // apply options
-  MainBuildBoss.SetBuildTargetProject1(true,bmsfsSkip);
+  MainBuildBoss.SetBuildTargetProject1(true,smsfsSkip);
 
   if not SkipDependencies then begin
     // compile required packages
@@ -878,7 +877,7 @@ begin
   // load static base packages
   PackageGraph.LoadStaticBasePackages;
 
-  MainBuildBoss.SetBuildTarget(OSOverride,CPUOverride,WidgetSetOverride,bmsfsSkip,true);
+  MainBuildBoss.SetBuildTarget(OSOverride,CPUOverride,WidgetSetOverride,smsfsSkip,true);
 
   fInitResult:=true;
   Result:=fInitResult;
