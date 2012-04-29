@@ -3493,6 +3493,7 @@ var
     TestContext: TFindContext;
     IdentStart: LongInt;
     SubParams: TFindDeclarationParams;
+    aNode: TCodeTreeNode;
   begin
     IsPredefined:=false;
     SubParams:=TFindDeclarationParams.Create;
@@ -3546,7 +3547,20 @@ var
         AtomIsIdentifier(true);
         SubParams.SetIdentifier(Self,@Src[IdentStart],nil);
         SubParams.Flags:=[fdfExceptionOnNotFound];
-        TypeFound:=SubParams.NewCodeTool.FindIdentifierInInterface(Self,SubParams);
+        if SubParams.NewCodeTool=Self then begin
+          // search in whole unit/program
+          aNode:=Tree.Root;
+          if aNode.Desc=ctnUnit then begin
+            aNode:=FindImplementationNode;
+            if aNode=nil then
+              aNode:=FindInterfaceNode;
+          end;
+          SubParams.ContextNode:=aNode;
+          TypeFound:=FindIdentifierInContext(SubParams);
+        end else begin
+          // search in interface
+          TypeFound:=SubParams.NewCodeTool.FindIdentifierInInterface(Self,SubParams);
+        end;
       end;
       if TypeFound and (SubParams.NewNode.Desc=ctnGenericParameter) then begin
         TypeFound:=SubParams.FindGenericParamType;
@@ -7062,24 +7076,13 @@ var
     NewNode: TCodeTreeNode;
   begin
     aTool:=ExprType.Context.Tool;
-    if aTool=Self then begin
-      NewCodeTool:=Self;
-      NewNode:=Tree.Root.LastChild;
-      while (NewNode<>nil)
-      and (NewNode.Desc in [ctnInitialization,ctnFinalization,ctnEndPoint]) do
-        NewNode:=NewNode.PriorBrother;
-      {$IFDEF ShowExprEval}
-      debugln(['  FindExpressionTypeOfTerm ResolveChildren self unit -> ',NewNode.DescAsString]);
-      {$ENDIF}
-    end else begin
-      {$IFDEF ShowExprEval}
-      debugln(['  FindExpressionTypeOfTerm ResolveChildren used unit -> interface node ',dbgstr(ExprType.Context.Tool.ExtractNode(ExprType.Context.Node,[]))]);
-      {$ENDIF}
-      AnUnitName:=aTool.ExtractUsedUnitName(ExprType.Context.Node,@InFilename);
-      NewCodeTool:=aTool.FindCodeToolForUsedUnit(AnUnitName,InFilename,true);
-      NewCodeTool.BuildInterfaceIdentifierCache(true);
-      NewNode:=NewCodeTool.FindInterfaceNode;
-    end;
+    {$IFDEF ShowExprEval}
+    debugln(['  FindExpressionTypeOfTerm ResolveChildren used unit -> interface node ',dbgstr(ExprType.Context.Tool.ExtractNode(ExprType.Context.Node,[]))]);
+    {$ENDIF}
+    AnUnitName:=aTool.ExtractUsedUnitName(ExprType.Context.Node,@InFilename);
+    NewCodeTool:=aTool.FindCodeToolForUsedUnit(AnUnitName,InFilename,true);
+    NewCodeTool.BuildInterfaceIdentifierCache(true);
+    NewNode:=NewCodeTool.FindInterfaceNode;
     ExprType.Context.Tool:=NewCodeTool;
     ExprType.Context.Node:=NewNode;
   end;
