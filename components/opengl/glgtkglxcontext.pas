@@ -445,23 +445,18 @@ begin
   {$IFDEF lclgtk2}
     if visual=nil then ;
     {$IFDEF UseFPGLX}
+      FBConfigs:=nil;
       if GLX_version_1_3(dpy) then begin
         { use approach recommended since glX 1.3 }
         FBConfigsCount:=0;
-        FBConfigs:=nil;
-        try
-          FBConfigs:=glXChooseFBConfig(dpy, DefaultScreen(dpy), AttrFB, FBConfigsCount);
-          if FBConfigsCount = 0 then
-            raise Exception.Create('Could not find FB config');
+        FBConfigs:=glXChooseFBConfig(dpy, DefaultScreen(dpy), AttrFB, FBConfigsCount);
+        if FBConfigsCount = 0 then
+          raise Exception.Create('Could not find FB config');
 
-          { just choose the first FB config from the FBConfigs list.
-            More involved selection possible. }
-          FBConfig := FBConfigs^;
-          vi:=glXGetVisualFromFBConfig(dpy, FBConfig);
-        finally
-         if FBConfigs<>nil then
-           XFree(FBConfigs);
-        end;
+        { just choose the first FB config from the FBConfigs list.
+          More involved selection possible. }
+        FBConfig := FBConfigs^;
+        vi:=glXGetVisualFromFBConfig(dpy, FBConfig);
       end else begin
         vi:=glXChooseVisual(dpy, DefaultScreen(dpy), @attrList[0]);
       end;
@@ -485,6 +480,8 @@ begin
                                           PrivateShareList^.glxcontext, true)
       else
         glxcontext := glXCreateNewContext(dpy, FBConfig, GLX_RGBA_TYPE, nil, true);
+      if FBConfigs<>nil then
+        XFree(FBConfigs);
     end else begin
       if (sharelist<>nil) then
         glxcontext := glXCreateContext(dpy, vi, PrivateShareList^.glxcontext,
