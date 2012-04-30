@@ -1458,7 +1458,7 @@ var
   lProgWidth, i: Integer;
 begin
   // Inside area, there is no background because the control occupies the entire area
-  ADest.Brush.Color := AStateEx.RGBColor;//WIN2000_FRAME_LIGHT_GRAY;
+  ADest.Brush.Color := WIN2000_BTNFACE;
   ADest.Brush.Style := bsSolid;
   ADest.Pen.Style := psClear;
   ADest.Rectangle(0, 0, ASize.cx, ASize.cy);
