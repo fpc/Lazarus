@@ -1578,10 +1578,12 @@ function ForceDirectoriesUTF8(const Dir: string): Boolean;
         APath := ExtractFilePath(ADir);
         //this can happen on Windows if user specifies Dir like \user\name/test/
         //and would, if not checked for, cause an infinite recusrsion and a stack overflow
-        if (APath = ADir) then Result := False
-          else Result:=DoForceDirectories(APath);
-      If Result then
-        Result := CreateDirUTF8(ADir);
+        if (APath = ADir) then
+          Result := False
+        else
+          Result:=DoForceDirectories(APath);
+        if Result then
+          Result := CreateDirUTF8(ADir);
       end;
   end;
 
