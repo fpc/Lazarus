@@ -2218,6 +2218,8 @@ begin
             Result+='public ';
           ctnClassPublished:
             Result+='published ';
+          ctnClassClassVar:
+            Result+='class ';
           else
             break;
           end;
@@ -2227,8 +2229,6 @@ begin
       end;
     end;
 
-    if Node.Parent.Desc = ctnClassClassVar then
-      Result += 'class ';
     if Node.Desc = ctnGenericName then
       Node := Node.Parent;
     case Node.Desc of
