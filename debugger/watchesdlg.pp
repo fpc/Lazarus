@@ -63,12 +63,16 @@ type
     actAddWatchPoint: TAction;
     actCopyName: TAction;
     actCopyValue: TAction;
+    actInspect: TAction;
+    actEvaluate: TAction;
     actToggleCurrentEnable: TAction;
     actPower: TAction;
     ActionList1: TActionList;
     actProperties: TAction;
     lvWatches: TListView;
     MenuItem1: TMenuItem;
+    popInspect: TMenuItem;
+    popEvaluate: TMenuItem;
     popCopyName: TMenuItem;
     popCopyValue: TMenuItem;
     N3: TMenuItem;
@@ -101,6 +105,8 @@ type
     procedure actCopyValueExecute(Sender: TObject);
     procedure actDisableSelectedExecute(Sender: TObject);
     procedure actEnableSelectedExecute(Sender: TObject);
+    procedure actEvaluateExecute(Sender: TObject);
+    procedure actInspectExecute(Sender: TObject);
     procedure actPowerExecute(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure FormShow(Sender: TObject);
@@ -239,6 +245,9 @@ begin
   actCopyName.Caption := lisLocalsDlgCopyName;
   actCopyValue.Caption := lisLocalsDlgCopyValue;
 
+  actInspect.Caption := lisInspect;
+  actEvaluate.Caption := lisEvaluateModify;
+
   Caption:=liswlWatchList;
 
   lvWatches.Columns[0].Caption:=liswlExpression;
@@ -328,6 +337,8 @@ begin
     actAddWatch.Enabled := False;
     actPower.Enabled := False;
     actAddWatchPoint.Enabled := False;
+    actEvaluate.Enabled := False;
+    actInspect.Enabled := False;
     exit;
   end;
 
@@ -359,6 +370,8 @@ begin
   actDeleteSelected.Enabled := ItemSelected;
 
   actAddWatchPoint.Enabled := ItemSelected;
+  actEvaluate.Enabled := ItemSelected;
+  actInspect.Enabled := ItemSelected;
 
   actEnableAll.Enabled := AllCanEnable;
   actDisableAll.Enabled := AllCanDisable;
@@ -427,6 +440,16 @@ begin
   finally
     lvWatchesSelectItem(nil, nil, False);
   end;
+end;
+
+procedure TWatchesDlg.actEvaluateExecute(Sender: TObject);
+begin
+  DebugBoss.EvaluateModify(lvWatches.Selected.Caption);
+end;
+
+procedure TWatchesDlg.actInspectExecute(Sender: TObject);
+begin
+  DebugBoss.Inspect(lvWatches.Selected.Caption);
 end;
 
 procedure TWatchesDlg.actDisableSelectedExecute(Sender: TObject);

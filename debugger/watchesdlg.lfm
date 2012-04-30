@@ -148,6 +148,12 @@ inherited WatchesDlg: TWatchesDlg
     object N3: TMenuItem
       Caption = '-'
     end
+    object popInspect: TMenuItem
+      Action = actInspect
+    end
+    object popEvaluate: TMenuItem
+      Action = actEvaluate
+    end
     object popAddWatchPoint: TMenuItem
       Action = actAddWatchPoint
     end
@@ -217,10 +223,6 @@ inherited WatchesDlg: TWatchesDlg
       )
       ShortCut = 16453
     end
-    object actAddWatchPoint: TAction
-      Caption = 'actAddWatchPoint'
-      OnExecute = actAddWatchPointExecute
-    end
     object actCopyName: TAction
       Category = 'copy'
       Caption = 'actCopyName'
@@ -230,6 +232,18 @@ inherited WatchesDlg: TWatchesDlg
       Category = 'copy'
       Caption = 'actCopyValue'
       OnExecute = actCopyValueExecute
+    end
+    object actAddWatchPoint: TAction
+      Caption = 'actAddWatchPoint'
+      OnExecute = actAddWatchPointExecute
+    end
+    object actInspect: TAction
+      Caption = 'actInspect'
+      OnExecute = actInspectExecute
+    end
+    object actEvaluate: TAction
+      Caption = 'actEvaluate'
+      OnExecute = actEvaluateExecute
     end
   end
 end
