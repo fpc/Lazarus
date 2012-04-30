@@ -2339,6 +2339,7 @@ type
     FRequestsDone: TSnapshotManagerRequestedFlags;
     FCurrentSnapshot: TSnapshot; // snapshot for current pause. Not yet in list
     procedure SetActive(const AValue: Boolean);
+    procedure SetDebugger(AValue: TDebugger);
   protected
     FHistoryCapacity: Integer;
     FHistoryIndex: Integer;
@@ -2403,7 +2404,7 @@ type
     property Watches: TWatchesMonitor read FWatches write FWatches;
     property CallStack: TCallStackMonitor read FCallStack write SetCallStack;
     property Threads: TThreadsMonitor read FThreads write FThreads;
-    property Debugger: TDebugger read FDebugger write FDebugger;
+    property Debugger: TDebugger read FDebugger write SetDebugger;
     property UnitInfoProvider: TDebuggerUnitInfoProvider read FUnitInfoProvider write FUnitInfoProvider;
   end;
 {%endregion   ^^^^^  Snapshots  ^^^^^   }
@@ -3665,6 +3666,13 @@ begin
   then DoDebuggerIdle;
 end;
 
+procedure TSnapshotManager.SetDebugger(AValue: TDebugger);
+begin
+  if FDebugger = AValue then Exit;
+  FDebugger := AValue;
+  FCurrentState := dsNone;
+end;
+
 procedure TSnapshotManager.DoCallStackChanged(Sender: TObject);
 begin
   if FForcedIdle then
@@ -4060,7 +4068,9 @@ begin
     if not(smrThreads in FRequestsDone) then begin
       include(FRequestsDone, smrThreads);
       FThreads.CurrentThreads.Count;
-      if (not Debugger.IsIdle) and (not AForce) then exit;
+      if (not(FCurrentState in [dsPause, dsInternalPause])) or
+         (Debugger = nil) or ( (not Debugger.IsIdle) and (not AForce) )
+      then exit;
       if CurSnap <> FCurrentSnapshot then exit; // Debugger did "run" in between
     end;
 
@@ -4074,7 +4084,9 @@ begin
         include(FRequestsDone, smrCallStack);
         if k > 0
         then FCallStack.CurrentCallStackList.EntriesForThreads[i].PrepareRange(0, Min(5, k));
-        if (not Debugger.IsIdle) and (not AForce) then exit;
+        if (not(FCurrentState in [dsPause, dsInternalPause])) or
+           (Debugger = nil) or ( (not Debugger.IsIdle) and (not AForce) )
+        then exit;
         if CurSnap <> FCurrentSnapshot then exit; // Debugger did "run" in between
       end
       else
@@ -4086,7 +4098,9 @@ begin
       include(FRequestsDone, smrCallStackCnt);
       i := FThreads.CurrentThreads.CurrentThreadId;
       FCallStack.CurrentCallStackList.EntriesForThreads[i].Count;
-      if (not Debugger.IsIdle) and (not AForce) then exit;
+      if (not(FCurrentState in [dsPause, dsInternalPause])) or
+         (Debugger = nil) or ( (not Debugger.IsIdle) and (not AForce) )
+      then exit;
       if CurSnap <> FCurrentSnapshot then exit; // Debugger did "run" in between
     end;
 
@@ -4095,7 +4109,9 @@ begin
       i := FThreads.CurrentThreads.CurrentThreadId;
       j := FCallStack.CurrentCallStackList.EntriesForThreads[i].CurrentIndex;
       FLocals.CurrentLocalsList.Entries[i, j].Count;
-      if (not Debugger.IsIdle) and (not AForce) then exit;
+      if (not(FCurrentState in [dsPause, dsInternalPause])) or
+         (Debugger = nil) or ( (not Debugger.IsIdle) and (not AForce) )
+      then exit;
       if CurSnap <> FCurrentSnapshot then exit; // Debugger did "run" in between
     end;
 
@@ -4105,7 +4121,9 @@ begin
       j := FCallStack.CurrentCallStackList.EntriesForThreads[i].CurrentIndex;
       w := FWatches.CurrentWatches;
       for k := 0 to w.Count - 1 do w[k].Values[i, j].Value;
-      if (not Debugger.IsIdle) and (not AForce) then exit;
+      if (not(FCurrentState in [dsPause, dsInternalPause])) or
+         (Debugger = nil) or ( (not Debugger.IsIdle) and (not AForce) )
+      then exit;
       if CurSnap <> FCurrentSnapshot then exit; // Debugger did "run" in between
     end;
   finally
