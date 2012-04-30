@@ -9851,7 +9851,7 @@ var
   min, max, avg, sum, count, d, v: Double;
   dk: (dkNone, dkSum, dkMin, dkMax, dkAvg, dkCount);
   vv, v2, v1: Variant;
-  BM : Pointer;
+  BM : TBookMark;
   {$IFDEF DebugLR}
   function FNoStr: string;
   begin

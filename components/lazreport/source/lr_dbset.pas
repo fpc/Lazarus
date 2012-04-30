@@ -137,7 +137,7 @@ begin
   Result:=inherited GetBookMark;
   ds := DataSet;
   if Assigned(ds) then
-    Result:=ds.GetBookmark;
+    TBookMark(Result):=ds.GetBookmark; //increases refcount of bookmark
 end;
 
 procedure TfrDBDataSet.GotoBookMark(BM: Pointer);
@@ -146,13 +146,16 @@ var
 begin
   ds := DataSet;
   if Assigned(ds) then
-    ds.GotoBookmark(BM);
+    ds.GotoBookmark(TBookMark(BM));
 end;
 
 procedure TfrDBDataSet.FreeBookMark(BM: Pointer);
 var
   ds: TDataset;
 begin
+  {$IFNDEF noautomatedbookmark}
+  SetLength(TBookMark(BM),0);  //decreases refcount of bookmark
+  {$ENDIF noautomatedbookmark}
   ds := DataSet;
   if Assigned(ds) and Assigned(BM) then
     ds.FreeBookmark(BM);
