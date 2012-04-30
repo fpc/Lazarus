@@ -23,11 +23,11 @@ inherited RegistersDlg: TRegistersDlg
         Caption = 'Value'
       end>
     MultiSelect = True
+    PopupMenu = PopupMenu1
     RowSelect = True
     SmallImages = ImageList1
     TabOrder = 0
     ViewStyle = vsReport
-    OnMouseUp = lvRegistersMouseUp
     OnSelectItem = lvRegistersSelectItem
   end
   object ToolBar1: TToolBar[1]
@@ -89,6 +89,16 @@ inherited RegistersDlg: TRegistersDlg
     object actPower: TAction
       OnExecute = actPowerExecute
     end
+    object actCopyName: TAction
+      Category = 'copy'
+      Caption = 'actCopyName'
+      OnExecute = actCopyNameExecute
+    end
+    object actCopyValue: TAction
+      Category = 'copy'
+      Caption = 'actCopyValue'
+      OnExecute = actCopyValueExecute
+    end
   end
   object PopupDispType: TPopupMenu[4]
     left = 200
@@ -116,6 +126,46 @@ inherited RegistersDlg: TRegistersDlg
     object DispRaw: TMenuItem
       Caption = 'New Item6'
       OnClick = DispDefaultClick
+    end
+  end
+  object PopupMenu1: TPopupMenu[5]
+    left = 95
+    top = 178
+    object popFormat: TMenuItem
+      Caption = 'New Item1'
+      object PopDispDefault: TMenuItem
+        Caption = 'New Item1'
+        OnClick = DispDefaultClick
+      end
+      object PopDispHex: TMenuItem
+        Caption = 'New Item2'
+        OnClick = DispDefaultClick
+      end
+      object PopDispBin: TMenuItem
+        Caption = 'New Item3'
+        OnClick = DispDefaultClick
+      end
+      object PopDispOct: TMenuItem
+        Caption = 'New Item4'
+        OnClick = DispDefaultClick
+      end
+      object PopDispDec: TMenuItem
+        Caption = 'New Item5'
+        OnClick = DispDefaultClick
+      end
+      object PopDispRaw: TMenuItem
+        Caption = 'New Item6'
+        OnClick = DispDefaultClick
+      end
+    end
+    object popL1: TMenuItem
+      Caption = '-'
+    end
+    object popCopyName: TMenuItem
+      Action = actCopyName
+    end
+    object popCopyValue: TMenuItem
+      Action = actCopyValue
     end
   end
 end
