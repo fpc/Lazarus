@@ -945,31 +945,28 @@ var
   SrcFS: TFileStreamUTF8;
   DestFS: TFileStreamUTF8;
 begin
+  Result := False;
+  SrcFS := TFileStreamUTF8.Create(SrcFilename, fmOpenRead or fmShareDenyWrite);
   try
-    SrcFS := TFileStreamUTF8.Create(SrcFilename, fmOpenRead or fmShareDenyWrite);
+    if (not (cffOverwriteFile in Flags)) and FileExistsUTF8(DestFileName) then
+      exit;
+    if (cffCreateDestDirectory in Flags)
+    and (not DirectoryExistsUTF8(ExtractFilePath(DestFileName)))
+    and (not ForceDirectoriesUTF8(ExtractFilePath(DestFileName))) then
+      exit;
+    DestFS := TFileStreamUTF8.Create(DestFilename, fmCreate);
     try
-      if (not (cffOverwriteFile in Flags)) and FileExistsUTF8(DestFileName) then
-        exit(False);
-      if (cffCreateDestDirectory in Flags)
-      and (not DirectoryExistsUTF8(ExtractFilePath(DestFileName)))
-      and (not ForceDirectoriesUTF8(ExtractFilePath(DestFileName))) then
-        exit(False);
-      DestFS := TFileStreamUTF8.Create(DestFilename, fmCreate);
-      try
-        DestFS.CopyFrom(SrcFS, SrcFS.Size);
-      finally
-        DestFS.Free;
-      end;
-      if (cffPreserveTime in Flags) then
-        FileSetDateUTF8(DestFilename, FileGetDate(SrcFS.Handle));
+      DestFS.CopyFrom(SrcFS, SrcFS.Size);
     finally
-      SrcFS.Free;
+      DestFS.Free;
     end;
+    if (cffPreserveTime in Flags) then
+      FileSetDateUTF8(DestFilename, FileGetDate(SrcFS.Handle));
     Result := True;
-  except
-    Result := False;
+  finally
+    SrcFS.Free;
   end;
-end; 
+end;
 
 function CopyFile(const SrcFilename, DestFilename: string; PreserveTime: Boolean): boolean;
 // Deparecated because Flags parameter can used for the same thing.
