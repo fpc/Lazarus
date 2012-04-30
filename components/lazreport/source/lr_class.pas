@@ -3824,7 +3824,6 @@ end;
 function TfrBandView.GetClipRgn(rt: TfrRgnType): HRGN;
 var
   R,R1,R2: HRGN;
-  RR : LongInt;
 begin
   if not ShowBandTitles then
   begin
@@ -3842,7 +3841,7 @@ begin
 
   R2:=CreateRectRgn(0,0,0,0);
 
-  RR:=CombineRgn(R2, R, R1, RGN_OR);
+  CombineRgn(R2, R, R1, RGN_OR);
   Result:=R2;
 
   

@@ -495,8 +495,6 @@ end;
 
 {----------------------------------------------------------------------------}
 procedure TfrPreviewForm.FormCreate(Sender: TObject);
-var
-  W: Integer;
 begin
   PBox := TfrPBox.Create(Self);
   with PBox do
