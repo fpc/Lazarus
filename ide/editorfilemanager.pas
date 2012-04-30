@@ -62,7 +62,7 @@ type
     property SortAlphabetically: boolean read FSortAlphabetically write SetSortAlphabetically;
   end;
 
-  procedure ShowEditorFileManagerForm;
+procedure ShowEditorFileManagerForm;
 
 implementation
 

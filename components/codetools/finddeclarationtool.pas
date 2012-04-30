@@ -687,7 +687,8 @@ type
     function FindContextNodeAtCursor(
       Params: TFindDeclarationParams): TFindContext;
     function FindClassOfMethod(ProcNode: TCodeTreeNode;
-      Params: TFindDeclarationParams; FindClassContext: boolean): boolean;
+      FindClassContext, ExceptionOnNotFound: boolean): TCodeTreeNode;
+    function FindClassMember(aClassNode: TCodeTreeNode; Identifier: PChar): TCodeTreeNode;
     function FindForwardIdentifier(Params: TFindDeclarationParams;
       var IsForward: boolean): boolean;
     function FindNonForwardClass(Params: TFindDeclarationParams): boolean;
@@ -5259,8 +5260,8 @@ function TFindDeclarationTool.FindIdentifierInClassOfMethod(
 var
   ClassNameAtom: TAtomPosition;
   OldInput: TFindDeclarationInput;
-  ClassContext: TFindContext;
   IdentFoundResult: TIdentifierFoundResult;
+  CurClassNode: TCodeTreeNode;
 begin
   {$IFDEF CheckNodeTool}CheckNodeTool(ProcContextNode);{$ENDIF}
   Result:=false;
@@ -5282,34 +5283,17 @@ begin
     end else begin
       // search the identifier in the class first
       // 1. search the class in the same unit
-      Params.Save(OldInput);
-      Params.Flags:=[fdfIgnoreCurContextNode,fdfSearchInParentNodes]
-                    +(fdfGlobals*Params.Flags)
-                    +[fdfExceptionOnNotFound,fdfIgnoreUsedUnits,fdfFindChildren]
-                    -[fdfTopLvlResolving];
-      Params.ContextNode:=ProcContextNode;
-      Params.SetIdentifier(Self,@Src[ClassNameAtom.StartPos],nil);
-      {$IFDEF ShowTriedContexts}
-      DebugLn('[TFindDeclarationTool.FindIdentifierInClassOfMethod]  Proc="',copy(src,ProcContextNode.StartPos,30),'" searching class of method   class="',ExtractIdentifier(ClassNameAtom.StartPos),'"');
-      {$ENDIF}
-      FindIdentifierInContext(Params);
-      ClassContext:=Params.NewCodeTool.FindBaseTypeOfNode(Params,Params.NewNode);
-      if (ClassContext.Node=nil)
-      or (not (ClassContext.Node.Desc in AllClasses)) then begin
-        MoveCursorToCleanPos(ClassNameAtom.StartPos);
-        RaiseException(ctsClassIdentifierExpected);
-      end;
-      // class context found
+      CurClassNode:=FindClassOfMethod(ProcContextNode,true,true);
       // 2. -> search identifier in class
-      Params.Load(OldInput,false);
+      Params.Save(OldInput);
       Params.Flags:=[fdfSearchInAncestors]
                     +(fdfGlobalsSameIdent*Params.Flags)
                     -[fdfExceptionOnNotFound];
-      Params.ContextNode:=ClassContext.Node;
+      Params.ContextNode:=CurClassNode;
       {$IFDEF ShowTriedContexts}
       DebugLn('[TFindDeclarationTool.FindIdentifierInClassOfMethod]  searching identifier in class of method Identifier=',GetIdentifier(Params.Identifier));
       {$ENDIF}
-      Result:=ClassContext.Tool.FindIdentifierInContext(Params);
+      Result:=FindIdentifierInContext(Params);
       Params.Load(OldInput,true);
       if Result and Params.IsFoundProcFinal then exit;
     end;
@@ -5334,31 +5318,44 @@ begin
 end;
 
 function TFindDeclarationTool.FindClassOfMethod(ProcNode: TCodeTreeNode;
-  Params: TFindDeclarationParams; FindClassContext: boolean): boolean;
+  FindClassContext, ExceptionOnNotFound: boolean): TCodeTreeNode;
 var
   ClassNameAtom: TAtomPosition;
-  OldInput: TFindDeclarationInput;
-  ClassContext: TFindContext;
+  Node: TCodeTreeNode;
+  TypeNode: TCodeTreeNode;
+  NextNameAtom: TAtomPosition;
+  CurClassName: PChar;
   CurClassNode: TCodeTreeNode;
+
+  procedure RaiseClassNotFound;
+  begin
+    MoveCursorToAtomPos(ClassNameAtom);
+    RaiseExceptionFmt('Class %s not found',[GetAtom]);
+  end;
+
+  procedure RaiseNotAClass;
+  begin
+    MoveCursorToAtomPos(ClassNameAtom);
+    RaiseExceptionFmt('Class expected, but %s found',[GetAtom]);
+  end;
+
 begin
   {$IFDEF CheckNodeTool}CheckNodeTool(ProcNode);{$ENDIF}
   {$IFDEF ShowTriedContexts}
   DebugLn('[TFindDeclarationTool.FindClassOfMethod] A ');
   {$ENDIF}
-  Result:=false;
+  Result:=nil;
   if ProcNode.Desc=ctnProcedureHead then
     ProcNode:=ProcNode.Parent;
   if ProcNode.Parent.Desc in AllClassSections then begin
     CurClassNode:=ProcNode.Parent.Parent;
     if FindClassContext then begin
       // return the class node
-      Params.SetResult(Self,CurClassNode);
+      exit(CurClassNode);
     end else begin
       // return the type identifier node
-      Params.SetResult(Self,CurClassNode.Parent);
+      exit(CurClassNode.Parent);
     end;
-    Result:=true;
-    exit;
   end;
   
   MoveCursorToNodeStart(ProcNode);
@@ -5366,40 +5363,151 @@ begin
   if UpAtomIs('CLASS') then ReadNextAtom;
   ReadNextAtom; // read classname
   ClassNameAtom:=CurPos;
+  if CurPos.Flag<>cafWord then begin
+    if not ExceptionOnNotFound then exit;
+    RaiseNotAClass;
+  end;
+  CurClassName:=@Src[ClassNameAtom.StartPos];
   ReadNextAtom;
-  if AtomIsChar('.') then begin
-    // proc is a method
-    // -> search the class
-    Params.Save(OldInput);
-    Params.Flags:=[fdfIgnoreCurContextNode,fdfSearchInParentNodes,
-                   fdfExceptionOnNotFound,fdfIgnoreUsedUnits]
-                  +(fdfGlobals*Params.Flags)
-                  -[fdfTopLvlResolving];
-    Params.ContextNode:=ProcNode;
-    Params.SetIdentifier(Self,@Src[ClassNameAtom.StartPos],nil);
-    {$IFDEF ShowTriedContexts}
-    DebugLn('[TFindDeclarationTool.FindClassOfMethod]  searching class of method   class="',ExtractIdentifier(ClassNameAtom.StartPos),'"');
-    {$ENDIF}
-    FindIdentifierInContext(Params);
-    if FindClassContext then begin
-      // parse class and return class node
-      Params.Flags:=Params.Flags+[fdfFindChildren];
-      ClassContext:=FindBaseTypeOfNode(Params,Params.NewNode);
-      if (ClassContext.Node=nil)
-      or (not (ClassContext.Node.Desc in AllClasses)) then begin
-        MoveCursorToCleanPos(ClassNameAtom.StartPos);
-        RaiseException(ctsClassIdentifierExpected);
+  if CurPos.Flag<>cafPoint then begin
+    // not a method
+    if not ExceptionOnNotFound then exit;
+    RaiseNotAClass;
+  end;
+  ReadNextAtom;
+  NextNameAtom:=CurPos;
+
+  //debugln(['TFindDeclarationTool.FindClassOfMethod ClassName="',GetAtom(ClassNameAtom),'"']);
+
+  // proc is a method
+  // -> search the class
+  Node:=ProcNode;
+  repeat
+    if Node.Desc=ctnTypeSection then begin
+      TypeNode:=Node.LastChild;
+      while TypeNode<>nil do begin
+        {$IFDEF ShowTriedIdentifiers}
+        debugln(['TFindDeclarationTool.FindClassOfMethod ',TypeNode.DescAsString,' ',dbgstr(ExtractNode(TypeNode,[]),1,40)]);
+        {$ENDIF}
+        if ((TypeNode.Desc=ctnTypeDefinition)
+        and (CompareIdentifierPtrs(CurClassName,@Src[TypeNode.StartPos])=0))
+        or ((TypeNode.Desc=ctnGenericType)
+        and (TypeNode.FirstChild<>nil)
+        and (CompareIdentifierPtrs(CurClassName,@Src[TypeNode.FirstChild.StartPos])=0))
+        then begin
+          repeat
+            // type with same name found
+            //debugln(['TFindDeclarationTool.FindClassOfMethod type found ',ExtractDefinitionName(TypeNode)]);
+            CurClassNode:=FindTypeNodeOfDefinition(TypeNode);
+            if (CurClassNode=nil) then begin
+              if not ExceptionOnNotFound then exit;
+              RaiseClassNotFound;
+            end;
+            if (not (CurClassNode.Desc in AllClassObjects))
+            or ((ctnsForwardDeclaration and Node.SubDesc)<>0)
+            then begin
+              if not ExceptionOnNotFound then exit;
+              RaiseNotAClass;
+            end;
+            //debugln(['TFindDeclarationTool.FindClassOfMethod class found, NextNameAtom=',GetAtom(NextNameAtom)]);
+            // class found
+            if NextNameAtom.Flag=cafWord then begin
+              MoveCursorToAtomPos(NextNameAtom);
+              ReadNextAtom;
+              if CurPos.Flag<>cafPoint then begin
+                if FindClassContext then begin
+                  // return the class node
+                  exit(CurClassNode);
+                end else begin
+                  // return the type identifier node
+                  exit(TypeNode);
+                end;
+              end;
+              ReadNextAtom;
+              ClassNameAtom:=NextNameAtom;
+              NextNameAtom:=CurPos;
+              CurClassName:=@Src[ClassNameAtom.StartPos];
+            end else begin
+              // operator or missing sub identifier
+              if FindClassContext then begin
+                // return the class node
+                exit(CurClassNode);
+              end else begin
+                // return the type identifier node
+                exit(TypeNode);
+              end;
+            end;
+            // search sub class
+            //debugln(['TFindDeclarationTool.FindClassOfMethod searching sub class "',GetIdentifier(CurClassName),'"']);
+            Node:=FindClassMember(CurClassNode,CurClassName);
+            if Node=nil then begin
+              if not ExceptionOnNotFound then exit;
+              RaiseClassNotFound;
+            end;
+            if not (Node.Desc in [ctnTypeDefinition,ctnGenericType]) then begin
+              if not ExceptionOnNotFound then exit;
+              RaiseNotAClass;
+            end;
+            TypeNode:=Node;
+          until false;
+        end;
+        TypeNode:=TypeNode.PriorBrother;
       end;
-      // class of method found
-      Params.SetResult(ClassContext);
-
-      // ToDo: do no JIT parsing for PPU, DCU files
-
     end;
-    Result:=true;
-    Params.Load(OldInput,true);
-  end else begin
-    // proc is not a method
+    // next
+    if Node.PriorBrother<>nil then
+      Node:=Node.PriorBrother
+    else begin
+      Node:=Node.Parent;
+      if (Node=nil) or (Node.Desc<>ctnImplementation) then break;
+      Node:=Node.PriorBrother;
+      if (Node=nil) or (Node.Desc<>ctnInterface) then break;
+      Node:=Node.LastChild;
+      if Node=nil then break;
+    end;
+  until false;
+  if ExceptionOnNotFound then
+    RaiseClassNotFound;
+end;
+
+function TFindDeclarationTool.FindClassMember(aClassNode: TCodeTreeNode;
+  Identifier: PChar): TCodeTreeNode;
+var
+  Node: TCodeTreeNode;
+  CurIdentifier: PChar;
+begin
+  Result:=nil;
+  if GetIdentLen(Identifier)=0 then exit;
+  if aClassNode=nil then exit;
+  Node:=aClassNode.LastChild;
+  while Node<>nil do begin
+    if (Node.Desc in AllClassSections)
+    and (Node.FirstChild<>nil) then begin
+      Node:=Node.LastChild;
+      continue;
+    end
+    else if Node.Desc in AllSimpleIdentifierDefinitions then begin
+      if CompareIdentifierPtrs(@Src[Node.StartPos],Identifier)=0 then
+        exit(Node);
+    end else if Node.Desc=ctnProperty then begin
+      CurIdentifier:=GetPropertyNameIdentifier(Node);
+      if CompareIdentifierPtrs(CurIdentifier,Identifier)=0 then
+        exit(Node);
+    end else if Node.Desc=ctnProcedure then begin
+      CurIdentifier:=GetProcNameIdentifier(Node);
+      if CompareIdentifierPtrs(CurIdentifier,Identifier)=0 then
+        exit(Node);
+    end;
+    // next
+    if Node.PriorBrother<>nil then
+      Node:=Node.PriorBrother
+    else begin
+      repeat
+        Node:=Node.Parent;
+        if Node=aClassNode then exit;
+      until Node.PriorBrother<>nil;
+      Node:=Node.PriorBrother;
+    end;
   end;
 end;
 
@@ -6990,15 +7098,16 @@ var
           ProcNode:=StartNode;
           while (ProcNode<>nil) do begin
             if (ProcNode.Desc=ctnProcedure) and NodeIsMethodBody(ProcNode) then
+            begin
+              ResultNode:=FindClassOfMethod(ProcNode,not IsEnd,
+                fdfExceptionOnNotFound in Params.Flags);
+              ExprType.Desc:=xtContext;
+              ExprType.Context.Tool:=Self;
+              ExprType.Context.Node:=ResultNode;
+              IdentFound:=ResultNode<>nil;
               break;
+            end;
             ProcNode:=ProcNode.Parent;
-          end;
-          if (ProcNode<>nil)
-          and FindClassOfMethod(ProcNode,Params,not IsEnd)
-          then begin
-            ExprType.Desc:=xtContext;
-            ExprType.Context:=CreateFindContext(Params);
-            IdentFound:=true;
           end;
         end else if (cmsResult in FLastCompilerModeSwitches)
         and CompareSrcIdentifiers(CurAtom.StartPos,'RESULT') then begin
@@ -7518,11 +7627,7 @@ var
     {$ENDIF}
 
     // find class of method
-    Params.Save(OldInput);
-    Params.Flags:=[fdfExceptionOnNotFound]
-                  +fdfGlobals*Params.Flags;
-    FindClassOfMethod(ProcNode,Params,true);
-    ClassNodeOfMethod:=Params.NewNode;
+    ClassNodeOfMethod:=FindClassOfMethod(ProcNode,true,true);
 
     // find class ancestor
     Params.Flags:=[fdfSearchInParentNodes,fdfExceptionOnNotFound]
