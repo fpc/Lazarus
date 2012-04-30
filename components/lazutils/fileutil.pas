@@ -185,8 +185,7 @@ function CopyFile(const SrcFilename, DestFilename: string;
                   Flags: TCopyFileFlags=[cffOverwriteFile]): boolean;
 function CopyFile(const SrcFilename, DestFilename: string; PreserveTime: boolean): boolean;
   deprecated {$IFDEF VER2_5}'use cffPreserveTime in Flags parameter instead'{$ENDIF};
-function CopyDirTree(const SourceDir, TargetDir: string;
-                     PreserveTime: boolean = False): boolean;
+function CopyDirTree(const SourceDir, TargetDir: string; Flags: TCopyFileFlags=[]): Boolean;
 
 // file actions
 function ReadFileToString(const Filename: string): string;

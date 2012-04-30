@@ -1007,21 +1007,25 @@ begin
 end;
 
 procedure TCopyDirTree.DoDirectoryFound;
+var
+  NewPath:String;
 begin
-  // ToDo: create destination path here instead of calling CopyFile with cffCreateDestDirectory.
+  NewPath:=StringReplace(FileName, FSourceDir, FTargetDir, []);
+  if not DirectoryExistsUTF8(NewPath) then
+    if not ForceDirectoriesUTF8(NewPath) then
+      Inc(FCopyFailedCount);
 end;
 
-function CopyDirTree(const SourceDir, TargetDir: string;
-                     PreserveTime: boolean = False): Boolean;
+function CopyDirTree(const SourceDir, TargetDir: string; Flags: TCopyFileFlags=[]): Boolean;
 var
   Searcher: TCopyDirTree;
 begin
   Result:=False;
   Searcher:=TCopyDirTree.Create;
   try
-    Searcher.FFlags:=[cffCreateDestDirectory];
-    if PreserveTime then
-      Searcher.FFlags:=Searcher.FFlags+[cffPreserveTime];
+    // Destination directories are always created. User setting has no effect!
+    Flags:=Flags-[cffCreateDestDirectory];
+    Searcher.FFlags:=Flags;
     Searcher.FCopyFailedCount:=0;
     Searcher.FSourceDir:=SourceDir;
     Searcher.FTargetDir:=TargetDir;
