@@ -312,7 +312,7 @@ public class LCLActivity extends Activity implements SensorEventListener, Locati
   // -------------------------------------------
   public native int LCLDrawToBitmap(int width, int height, Bitmap bitmap);
   public native int LCLOnTouch(float x, float y, int action);
-  public native int LCLOnCreate(LCLActivity lclactivity);
+  public native int LCLOnCreate(Activity lclactivity);
   public native int LCLOnMessageBoxFinished(int Result, int DialogType);
   public native int LCLOnKey(int kind, int keyCode, KeyEvent event, int AChar);
   public native int LCLOnTimer(Runnable timerid);

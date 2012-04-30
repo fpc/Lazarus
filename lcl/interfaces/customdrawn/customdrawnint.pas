@@ -268,6 +268,7 @@ type
 
     // Android Activity callbacks
     ActivityOnCreate: TProcedure;
+    ActivityClassName: string;
 
     constructor Create; override;
     destructor Destroy; override;

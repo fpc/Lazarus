@@ -313,7 +313,7 @@ begin
   {$endif}
 
   // Very strangely in the emulator it crashes if we don't refresh the Activity class here
-  javaActivityClass := javaEnvRef^^.FindClass(javaEnvRef,'com/pascal/lcltest/LCLActivity');
+  javaActivityClass := javaEnvRef^^.FindClass(javaEnvRef, PChar(CDWidgetset.ActivityClassName));
 
   // ad.setSingleChoiceItems( adapter, -1, MyOnClickListener);
   // DialogInterface.OnClickListener lclselectitemcallback;

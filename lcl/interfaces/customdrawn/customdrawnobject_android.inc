@@ -350,7 +350,7 @@ begin
   Result := 0;
 
   // Very strangely in the emulator it crashes if we don't refresh the Activity class here
-  javaActivityClass := javaEnvRef^^.FindClass(javaEnvRef,'com/pascal/lcltest/LCLActivity');
+  javaActivityClass := javaEnvRef^^.FindClass(javaEnvRef, PChar(CDWidgetset.ActivityClassName));
 
   //{$ifdef VerboseCDEvents}
   DebugLn(Format('LCLOnMenuAction called kind=%d itemIndex=%d', [kind, itemIndex]));
@@ -441,7 +441,7 @@ const NativeMethods: array[0..8] of JNINativeMethod=
     signature:'(FFI)I';
     fnPtr:@Java_com_pascal_lclproject_LCLActivity_LCLOnTouch;),
    (name:'LCLOnCreate';
-    signature:'(Lcom/pascal/lcltest/LCLActivity;)I'; //android/app/Activity;
+    signature:'(Landroid/app/Activity;)I'; // Don't use a name which includes the package name like com/pascal/lcltest/LCLActivity;
     fnPtr:@Java_com_pascal_lclproject_LCLActivity_LCLOnCreate;),
    (name:'LCLOnMessageBoxFinished';
     signature:'(II)I';
@@ -484,7 +484,7 @@ begin
 
   // Find our activity class
   __android_log_write(ANDROID_LOG_INFO,'lclapp','Reading our Activity Class');
-  javaActivityClass := javaEnvRef^^.FindClass(javaEnvRef,'com/pascal/lcltest/LCLActivity');
+  javaActivityClass := javaEnvRef^^.FindClass(javaEnvRef, PChar(CDWidgetset.ActivityClassName));
   if not assigned(javaActivityClass) then
   begin
     __android_log_write(ANDROID_LOG_FATAL, 'lclapp', 'javaEnvRef^.FindClass failed');

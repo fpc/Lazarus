@@ -31,6 +31,7 @@ begin
 end;
 
 begin
+  CDWidgetset.ActivityClassName := 'com/pascal/lcltest/LCLActivity';
   CDWidgetset.ActivityOnCreate := @MyActivityOnCreate;
 end.
 

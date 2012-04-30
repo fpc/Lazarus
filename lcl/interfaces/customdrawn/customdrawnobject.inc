@@ -127,6 +127,8 @@ begin
   FTerminating := False;
   DefaultFontSize := 10;
 
+  ActivityClassName := 'com/pascal/lcltest/LCLActivity';
+
   FClipBoardFormats := TStringList.Create;
   FClipBoardFormats.Add('foo'); // 0 is reserved
 
