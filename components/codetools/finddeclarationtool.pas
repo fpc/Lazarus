@@ -2209,23 +2209,20 @@ begin
     if Node.Parent<>nil then begin
       ANode:=Node.Parent;
       while ANode<>nil do begin
-        if ANode.Desc in AllClassSections then begin
-          case ANode.Desc of
-          ctnClassPrivate:
-            Result+='private ';
-          ctnClassProtected:
-            Result+='protected ';
-          ctnClassPublic:
-            Result+='public ';
-          ctnClassPublished:
-            Result+='published ';
-          ctnClassClassVar:
-            Result+='class ';
-          else
-            break;
-          end;
-        end else if ANode.Desc in ([ctnParameterList]+AllClasses) then
+        case ANode.Desc of
+        ctnClassPrivate:
+          Result+='private ';
+        ctnClassProtected:
+          Result+='protected ';
+        ctnClassPublic:
+          Result+='public ';
+        ctnClassPublished:
+          Result+='published ';
+        ctnClassClassVar:
+          Result+='class ';
+        else
           break;
+        end;
         ANode:=ANode.Parent;
       end;
     end;
@@ -2250,7 +2247,7 @@ begin
         end;
 
         // add class name
-        ClassStr := ExtractClassName(Node.Parent, False, true);
+        ClassStr := ExtractClassPath(Node.Parent);
         if ClassStr <> '' then Result += ClassStr + '.';
 
         Result:=Result+ExtractDefinitionName(Node);
@@ -2296,7 +2293,7 @@ begin
           case Node.Desc of
           ctnConstDefinition:
             begin
-              DebugLn('TFindDeclarationTool.FindSmartHint const without subnode "',ExtractNode(Node,[]),'"');
+              DebugLn('TFindDeclarationTool.GetSmartHint const without subnode "',ExtractNode(Node,[]),'"');
               NodeStr:=ExtractCode(Node.StartPos
                                  +GetIdentLen(@Src[Node.StartPos]),
                                  Node.EndPos,[phpCommentsToSpace]);
@@ -2396,7 +2393,7 @@ begin
       end
 
     else
-      DebugLn('ToDo: TFindDeclarationTool.FindSmartHint ',Node.DescAsString);
+      DebugLn('ToDo: TFindDeclarationTool.GetSmartHint ',Node.DescAsString);
     end;
   end;
   if WithPosition then begin

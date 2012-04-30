@@ -141,8 +141,9 @@ type
     function NodeIsResultType(Node: TCodeTreeNode): boolean;
 
     // classes
-    function ExtractClassName(ClassNode: TCodeTreeNode;
+    function ExtractClassName(Node: TCodeTreeNode;
         InUpperCase: boolean; WithParents: boolean = true): string;
+    function ExtractClassPath(Node: TCodeTreeNode): string;
     function ExtractClassInheritance(ClassNode: TCodeTreeNode;
         Attr: TProcHeadAttributes): string;
     function FindClassNode(StartNode: TCodeTreeNode;
@@ -586,28 +587,72 @@ begin
     Result:=Result+';';
 end;
 
-function TPascalReaderTool.ExtractClassName(ClassNode: TCodeTreeNode;
+function TPascalReaderTool.ExtractClassName(Node: TCodeTreeNode;
   InUpperCase: boolean; WithParents: boolean): string;
+var
+  InArray: Boolean;
 begin
   Result:='';
-  while ClassNode<>nil do begin
-    if ClassNode.Desc in [ctnTypeDefinition,ctnGenericType] then begin
-      if Result<>'' then Result:='.'+Result;
-      if ClassNode.Desc=ctnTypeDefinition then
-        Result:=GetIdentifier(@Src[ClassNode.StartPos])+Result
-      else if ClassNode.FirstChild<>nil then
+  while Node<>nil do begin
+    case Node.Desc of
+    ctnTypeDefinition,ctnGenericType:
       begin
-        if (Scanner.CompilerMode = cmDELPHI) and (ClassNode.Desc = ctnGenericType) then
-          Result := Result + ExtractNode(ClassNode.FirstChild.NextBrother, []);
-        Result:=GetIdentifier(@Src[ClassNode.FirstChild.StartPos])+Result;
+        if Result<>'' then Result:='.'+Result;
+        if Node.Desc=ctnTypeDefinition then
+          Result:=GetIdentifier(@Src[Node.StartPos])+Result
+        else if Node.FirstChild<>nil then
+        begin
+          if (Scanner.CompilerMode = cmDELPHI) and (Node.Desc = ctnGenericType) then
+            Result := Result + ExtractNode(Node.FirstChild.NextBrother, []);
+          Result:=GetIdentifier(@Src[Node.FirstChild.StartPos])+Result;
+        end;
+        if not WithParents then break;
       end;
-      if not WithParents then break;
+    ctnParameterList:
+      break;
     end;
-    ClassNode:=ClassNode.Parent;
+    Node:=Node.Parent;
   end;
 
   if InUpperCase then
     Result:=UpperCaseStr(Result);
+end;
+
+function TPascalReaderTool.ExtractClassPath(Node: TCodeTreeNode): string;
+var
+  InArray: Boolean;
+begin
+  Result:='';
+  InArray:=false;
+  while Node<>nil do begin
+    case Node.Desc of
+    ctnTypeDefinition,ctnGenericType:
+      begin
+        if Result<>'' then Result:='.'+Result;
+        if Node.Desc=ctnTypeDefinition then
+          Result:=GetIdentifier(@Src[Node.StartPos])+Result
+        else if Node.FirstChild<>nil then
+        begin
+          if (Scanner.CompilerMode = cmDELPHI) and (Node.Desc = ctnGenericType) then
+            Result := Result + ExtractNode(Node.FirstChild.NextBrother, []);
+          Result:=GetIdentifier(@Src[Node.FirstChild.StartPos])+Result;
+        end;
+      end;
+    ctnParameterList:
+      break;
+    ctnRangedArrayType, ctnOpenArrayType:
+       begin
+         InArray := True;
+         Result := '[]' + Result;
+       end;
+    ctnVarDefinition:
+       if InArray then begin
+         Result := GetIdentifier(@Src[Node.StartPos]) + Result;
+         InArray := False;
+       end;
+    end;
+    Node:=Node.Parent;
+  end;
 end;
 
 function TPascalReaderTool.ExtractClassInheritance(
