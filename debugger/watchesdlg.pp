@@ -38,7 +38,7 @@ unit WatchesDlg;
 interface
 
 uses
-  Classes, Forms, Controls, math, sysutils, LazLoggerBase,
+  Classes, Forms, Controls, math, sysutils, LazLoggerBase, Clipbrd,
   IDEWindowIntf, Menus, ComCtrls, ActnList, IDEImagesIntf, LazarusIDEStrConsts, DebuggerStrConst,
   Debugger, DebuggerDlg, BaseDebugManager;
 
@@ -61,11 +61,16 @@ type
     actEnableSelected: TAction;
     actAddWatch: TAction;
     actAddWatchPoint: TAction;
+    actCopyName: TAction;
+    actCopyValue: TAction;
     actToggleCurrentEnable: TAction;
     actPower: TAction;
     ActionList1: TActionList;
     actProperties: TAction;
     lvWatches: TListView;
+    MenuItem1: TMenuItem;
+    popCopyName: TMenuItem;
+    popCopyValue: TMenuItem;
     N3: TMenuItem;
     popAddWatchPoint: TMenuItem;
     mnuPopup: TPopupMenu;
@@ -92,6 +97,8 @@ type
     ToolButtonDisableAll: TToolButton;
     ToolButtonTrashAll: TToolButton;
     procedure actAddWatchPointExecute(Sender: TObject);
+    procedure actCopyNameExecute(Sender: TObject);
+    procedure actCopyValueExecute(Sender: TObject);
     procedure actDisableSelectedExecute(Sender: TObject);
     procedure actEnableSelectedExecute(Sender: TObject);
     procedure actPowerExecute(Sender: TObject);
@@ -229,6 +236,9 @@ begin
 
   actAddWatchPoint.Caption := lisWatchToWatchPoint;
 
+  actCopyName.Caption := lisLocalsDlgCopyName;
+  actCopyValue.Caption := lisLocalsDlgCopyValue;
+
   Caption:=liswlWatchList;
 
   lvWatches.Columns[0].Caption:=liswlExpression;
@@ -354,6 +364,9 @@ begin
   actDisableAll.Enabled := AllCanDisable;
   actDeleteAll.Enabled := lvWatches.Items.Count > 0;
 
+  actCopyName.Enabled := ItemSelected;
+  actCopyValue.Enabled := ItemSelected;
+
   actProperties.Enabled := ItemSelected;
   actAddWatch.Enabled := True;
   actPower.Enabled := True;
@@ -444,6 +457,20 @@ begin
   NewBreakpoint := BreakPoints.Add(Watch.Expression, wpsGlobal, wpkWrite);
   if DebugBoss.ShowBreakPointProperties(NewBreakpoint) <> mrOk then
     ReleaseRefAndNil(NewBreakpoint);
+end;
+
+procedure TWatchesDlg.actCopyNameExecute(Sender: TObject);
+begin
+  Clipboard.Open;
+  Clipboard.AsText := lvWatches.Selected.Caption;
+  Clipboard.Close;
+end;
+
+procedure TWatchesDlg.actCopyValueExecute(Sender: TObject);
+begin
+  Clipboard.Open;
+  Clipboard.AsText := lvWatches.Selected.SubItems[0];
+  Clipboard.Close;
 end;
 
 procedure TWatchesDlg.popAddClick(Sender: TObject);

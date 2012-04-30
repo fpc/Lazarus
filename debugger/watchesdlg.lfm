@@ -151,6 +151,15 @@ inherited WatchesDlg: TWatchesDlg
     object popAddWatchPoint: TMenuItem
       Action = actAddWatchPoint
     end
+    object MenuItem1: TMenuItem
+      Caption = '-'
+    end
+    object popCopyName: TMenuItem
+      Action = actCopyName
+    end
+    object popCopyValue: TMenuItem
+      Action = actCopyValue
+    end
   end
   object ActionList1: TActionList[3]
     left = 184
@@ -211,6 +220,16 @@ inherited WatchesDlg: TWatchesDlg
     object actAddWatchPoint: TAction
       Caption = 'actAddWatchPoint'
       OnExecute = actAddWatchPointExecute
+    end
+    object actCopyName: TAction
+      Category = 'copy'
+      Caption = 'actCopyName'
+      OnExecute = actCopyNameExecute
+    end
+    object actCopyValue: TAction
+      Category = 'copy'
+      Caption = 'actCopyValue'
+      OnExecute = actCopyValueExecute
     end
   end
 end
