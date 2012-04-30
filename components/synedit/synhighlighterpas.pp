@@ -2819,9 +2819,11 @@ begin
   inc(Run);
   fTokenID := tkSymbol;
   PasCodeFoldRange.DecBracketNestLevel;
-  fRange := fRange + [rsAtClosingBracket];
-  if (PasCodeFoldRange.BracketNestLevel = 0) then
+  if (PasCodeFoldRange.BracketNestLevel = 0) then begin
+    if (fRange * [rsAfterClass] <> []) then
+      fRange := fRange + [rsAtClosingBracket];
     Exclude(fRange, rsInProcHeader);
+  end;
 end;
 
 procedure TSynPasSyn.SquareOpenProc;
