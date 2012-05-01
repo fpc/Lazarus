@@ -2112,6 +2112,40 @@ begin
         end else if Directive='modeswitch' then begin
           for ms:=low(TCompilerModeSwitch) to high(TCompilerModeSwitch) do
             Key(lowercase(CompilerModeSwitchNames[ms]));
+        end else if Directive='warn' then begin
+          Key('constructing_abstract');
+          Key('implicit_variants');
+          Key('no_retval');
+          Key('symbol_deprecated');
+          Key('symbol_experimental');
+          Key('symbol_library');
+          Key('symbol_platform');
+          Key('symbol_unimplemented');
+          Key('unit_deprecated');
+          Key('unit_experimental');
+          Key('unit_library');
+          Key('unit_platform');
+          Key('unit_unimplemented');
+          Key('zero_nil_compat');
+          Key('implicit_string_cast');
+          Key('implicit_variants');
+          Key('no_retval');
+          Key('symbol_deprecated');
+          Key('symbol_experimental');
+          Key('symbol_library');
+          Key('symbol_platform');
+          Key('symbol_unimplemented');
+          Key('unit_deprecated');
+          Key('unit_experimental');
+          Key('unit_library');
+          Key('unit_platform');
+          Key('unit_unimplemented');
+          Key('zero_nil_compat');
+          Key('implicit_string_cast');
+          Key('implicit_string_cast_loss');
+          Key('explicit_string_cast');
+          Key('explicit_string_cast_loss');
+          Key('cvt_narrowing_string_lost');
         end;
       end;
       exit;
