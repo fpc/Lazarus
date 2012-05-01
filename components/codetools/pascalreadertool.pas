@@ -589,8 +589,6 @@ end;
 
 function TPascalReaderTool.ExtractClassName(Node: TCodeTreeNode;
   InUpperCase: boolean; WithParents: boolean): string;
-var
-  InArray: Boolean;
 begin
   Result:='';
   while Node<>nil do begin
