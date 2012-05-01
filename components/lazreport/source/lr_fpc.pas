@@ -25,7 +25,6 @@ uses
   Classes, SysUtils,Graphics,LCLType,LCLIntf;
 
 function CopyPalette(Source: hPalette): hPalette;
-procedure Frame3D(Canvas: TCanvas; var Rect: TRect; TopColor, BottomColor: TColor; Width: Integer);
 
 implementation
 
@@ -51,10 +50,6 @@ begin
   finally
     FreeMem(LP, Sizeof(TLogPalette) + 256*Sizeof(TPaletteEntry));
   end;
-end;
-
-procedure Frame3D(Canvas: TCanvas; var Rect: TRect; TopColor, BottomColor: TColor; Width: Integer);
-begin
 end;
 
 end.
