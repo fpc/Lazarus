@@ -2163,7 +2163,9 @@ begin
 
     // The following commands may call ProcessMessages, and FDebugger can be nil after each
 
-    if FDebugger <> nil
+    if (FDebugger <> nil) and not NewDebuggerClass.RequiresLocalExecutable
+    then FDebugger.WorkingDir:=NewWorkingDir;
+    if (FDebugger <> nil) and NewDebuggerClass.RequiresLocalExecutable
     then FDebugger.WorkingDir:=CleanAndExpandDirectory(NewWorkingDir);
     // set filename after workingdir
     if FDebugger <> nil
