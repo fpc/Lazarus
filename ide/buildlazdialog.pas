@@ -162,15 +162,16 @@ function MakeLazarus(Profile: TBuildLazarusProfile;
 
 function CreateIDEMakeOptions(Profile: TBuildLazarusProfile;
   Macros: TTransferMacroList; const PackageOptions: string;
-  Flags: TBuildLazarusFlags; var AExOptions: string;
-  out UpdateRevisionInc: boolean; out OutputDirRedirected: boolean): TModalResult;
+  Flags: TBuildLazarusFlags; var ExtraOptions: string;
+  out UpdateRevisionInc: boolean; out OutputDirRedirected: boolean;
+  out TargetFilename: string): TModalResult;
 
 function SaveIDEMakeOptions(Profile: TBuildLazarusProfile;
   Macros: TTransferMacroList;
   const PackageOptions: string; Flags: TBuildLazarusFlags): TModalResult;
 
 function GetMakeIDEConfigFilename: string;
-
+function GetBackupExeFilename(Filename: string): string;
 
 implementation
 
@@ -274,14 +275,33 @@ function MakeLazarus(Profile: TBuildLazarusProfile;
     end;
   end;
 
+  procedure RestoreBackup(LazExeFilename: string);
+  var
+    BackupFilename: String;
+  begin
+    if FileExistsUTF8(LazExeFilename) then begin
+      if not DeleteFileUTF8(LazExeFilename) then begin
+        debugln(['Building IDE failed. Can not delete "',LazExeFilename,'"']);
+        exit;
+      end;
+    end;
+    BackupFilename:=GetBackupExeFilename(LazExeFilename);
+    if FileExistsUTF8(BackupFilename) then begin
+      if not RenameFileUTF8(BackupFilename,LazExeFilename) then begin
+        debugln(['Building IDE failed. Can not restore backup file "',BackupFilename,'" to "',LazExeFilename,'"']);
+      end;
+    end;
+  end;
+
 var
   Tool: TExternalToolOptions;
-  ExOptions: String;
+  ExtraOptions: String;
   WorkingDirectory: String;
   OutputDirRedirected, UpdateRevisionInc: boolean;
   IdeBuildMode: TIdeBuildMode;
   CmdLineParams: String;
   Dir: String;
+  LazExeFilename: string;
 begin
   Result:=mrCancel;
 
@@ -379,17 +399,18 @@ begin
       else
         Tool.CmdLineParams:='cleanide ide';
       // append extra Profile
-      ExOptions:='';
+      ExtraOptions:='';
       Result:=CreateIDEMakeOptions(Profile,Macros,PackageOptions,Flags,
-                               ExOptions,UpdateRevisionInc,OutputDirRedirected);
+                               ExtraOptions,UpdateRevisionInc,OutputDirRedirected,
+                               LazExeFilename);
       if Result<>mrOk then exit;
 
       if (not OutputDirRedirected)
       and (not CheckDirectoryWritable(WorkingDirectory)) then
         exit(mrCancel);
 
-      if ExOptions<>'' then
-        Tool.EnvironmentOverrides.Values['OPT'] := ExOptions;
+      if ExtraOptions<>'' then
+        Tool.EnvironmentOverrides.Values['OPT'] := ExtraOptions;
       if not UpdateRevisionInc then begin
         CheckRevisionInc;
         Tool.EnvironmentOverrides.Values['USESVN2REVISIONINC'] := '0';
@@ -401,6 +422,8 @@ begin
       // before a clean build is needed.
       ApplyCleanOnce;
       if Result<>mrOk then begin
+        // build failed: restore backup of lazarus.exe
+        RestoreBackup(LazExeFilename);
         exit;
       end;
     end;
@@ -414,8 +437,9 @@ end;
 
 function CreateIDEMakeOptions(Profile: TBuildLazarusProfile;
   Macros: TTransferMacroList; const PackageOptions: string;
-  Flags: TBuildLazarusFlags; var AExOptions: string;
-  out UpdateRevisionInc: boolean; out OutputDirRedirected: boolean): TModalResult;
+  Flags: TBuildLazarusFlags; var ExtraOptions: string;
+  out UpdateRevisionInc: boolean; out OutputDirRedirected: boolean;
+  out TargetFilename: string): TModalResult;
 
   procedure BackupExe(var ExeFilename: string);
   var
@@ -439,7 +463,7 @@ function CreateIDEMakeOptions(Profile: TBuildLazarusProfile;
       end;
 
       // try to rename the old exe
-      BackupFilename:=LeftStr(ExeFilename,length(ExeFilename)-length(Ext))+'.old'+Ext;
+      BackupFilename:=GetBackupExeFilename(ExeFilename);
       if FileExistsUTF8(BackupFilename) then
         if DeleteFileUTF8(BackupFilename) then begin
           debugln(['Note: deleted backup "',BackupFilename,'"']);
@@ -476,13 +500,13 @@ function CreateIDEMakeOptions(Profile: TBuildLazarusProfile;
   procedure AppendExtraOption(const AddOption: string; EncloseIfSpace: boolean);
   begin
     if AddOption='' then exit;
-    if AExOptions<>'' then
-      AExOptions:=AExOptions+' ';
+    if ExtraOptions<>'' then
+      ExtraOptions:=ExtraOptions+' ';
     if EncloseIfSpace and (Pos(' ',AddOption)>0) then
-      AExOptions:=AExOptions+'"'+AddOption+'"'
+      ExtraOptions:=ExtraOptions+'"'+AddOption+'"'
     else
-      AExOptions:=AExOptions+AddOption;
-    //DebugLn(['AppendExtraOption ',AExOptions]);
+      ExtraOptions:=ExtraOptions+AddOption;
+    //DebugLn(['AppendExtraOption ',ExtraOptions]);
   end;
 
   procedure AppendExtraOption(const AddOption: string);
@@ -491,19 +515,18 @@ function CreateIDEMakeOptions(Profile: TBuildLazarusProfile;
   end;
 
 var
-  MakeIDECfgFilename: String;
-  NewTargetFilename: String;
-  NewTargetDirectory: String;
-  NewUnitDirectory: String;
+  MakeIDECfgFilename: string;
+  TargetDirectory: string;
+  UnitOutDir: string;
   DefaultTargetOS: string;
   DefaultTargetCPU: string;
-  NewTargetOS: String;
-  NewTargetCPU: String;
+  TargetOS: string;
+  TargetCPU: string;
   CrossCompiling: Boolean;
-  CurTargetFilename: String;
-  BundleDir: String;
+  CurTargetFilename: string;
+  BundleDir: string;
   NewTargetDirectoryIsDefault: Boolean;
-  DefaultTargetFilename: String;
+  DefaultTargetFilename: string;
   NewTargetFilenameIsDefault: Boolean;
 begin
   Result:=mrOk;
@@ -511,7 +534,7 @@ begin
   UpdateRevisionInc:=Profile.UpdateRevisionInc;
 
   // create extra Profile
-  AExOptions:=Profile.ExtraOptions;
+  ExtraOptions:=Profile.ExtraOptions;
 
   // check for special IDE config file
   if (blfUseMakeIDECfg in Flags) then begin
@@ -547,30 +570,30 @@ begin
   //    The target directory is writable, the lazarus.o file can be created.
   // Otherwise: Don't touch the target filename.
 
-  NewTargetFilename:='';
-  NewUnitDirectory:='';
-  NewTargetDirectory:='';
+  TargetFilename:='';
+  UnitOutDir:='';
+  TargetDirectory:='';
   DefaultTargetOS:=GetDefaultTargetOS;
   DefaultTargetCPU:=GetDefaultTargetCPU;
-  NewTargetOS:=Profile.FPCTargetOS;
-  NewTargetCPU:=Profile.FPCTargetCPU;
-  if NewTargetOS='' then NewTargetOS:=DefaultTargetOS;
-  if NewTargetCPU='' then NewTargetCPU:=DefaultTargetCPU;
-  DefaultTargetFilename:='lazarus'+GetExecutableExt(NewTargetOS);
-  CrossCompiling:=(CompareText(NewTargetOS,DefaultTargetOS)<>0) or (CompareText(NewTargetCPU,DefaultTargetCPU)<>0);
+  TargetOS:=Profile.FPCTargetOS;
+  TargetCPU:=Profile.FPCTargetCPU;
+  if TargetOS='' then TargetOS:=DefaultTargetOS;
+  if TargetCPU='' then TargetCPU:=DefaultTargetCPU;
+  DefaultTargetFilename:='lazarus'+GetExecutableExt(TargetOS);
+  CrossCompiling:=(CompareText(TargetOS,DefaultTargetOS)<>0) or (CompareText(TargetCPU,DefaultTargetCPU)<>0);
 
-  //DebugLn(['CreateBuildLazarusOptions NewTargetOS=',NewTargetOS,' NewTargetCPU=',NewTargetCPU]);
+  //DebugLn(['CreateBuildLazarusOptions NewTargetOS=',TargetOS,' NewTargetCPU=',TargetCPU]);
   if (Profile.TargetDirectory<>'') then begin
     // Case 1. the user has set a target directory
-    NewTargetDirectory:=Profile.GetParsedTargetDirectory(Macros);
-    if NewTargetDirectory='' then begin
+    TargetDirectory:=Profile.GetParsedTargetDirectory(Macros);
+    if TargetDirectory='' then begin
       debugln('CreateBuildLazarusOptions macro aborted Options.TargetDirectory=',Profile.TargetDirectory);
       Result:=mrAbort;
       exit;
     end;
-    NewUnitDirectory:=AppendPathDelim(NewTargetDirectory)+'units';
-    debugln('CreateBuildLazarusOptions TargetDirectory=',NewTargetDirectory);
-    debugln('CreateBuildLazarusOptions UnitsTargetDirectory=',NewUnitDirectory);
+    UnitOutDir:=AppendPathDelim(TargetDirectory)+'units';
+    debugln('CreateBuildLazarusOptions TargetDirectory=',TargetDirectory);
+    debugln('CreateBuildLazarusOptions UnitsTargetDirectory=',UnitOutDir);
   end else begin
     // no user defined target directory
     // => find it automatically
@@ -579,78 +602,78 @@ begin
     begin
       // Case 2. crosscompiling the IDE
       // create directory <primary config dir>/bin/<TargetCPU>-<TargetOS>
-      NewTargetDirectory:=AppendPathDelim(GetPrimaryConfigPath)+'bin'
-                          +PathDelim+NewTargetCPU+'-'+NewTargetOS;
-      NewUnitDirectory:=AppendPathDelim(GetPrimaryConfigPath)+'units'
-                      +PathDelim+NewTargetCPU+'-'+NewTargetOS;
+      TargetDirectory:=AppendPathDelim(GetPrimaryConfigPath)+'bin'
+                          +PathDelim+TargetCPU+'-'+TargetOS;
+      UnitOutDir:=AppendPathDelim(GetPrimaryConfigPath)+'units'
+                      +PathDelim+TargetCPU+'-'+TargetOS;
       debugln('CreateBuildLazarusOptions Options.TargetOS=',Profile.FPCTargetOS,' Options.TargetCPU=',
               Profile.FPCTargetCPU,' DefaultOS=',DefaultTargetOS,' DefaultCPU=',DefaultTargetCPU);
     end else begin
       // -> normal compile for this platform
 
       // get lazarus directory
-      NewTargetDirectory:=EnvironmentOptions.GetParsedLazarusDirectory;
-      if (NewTargetDirectory<>'') and DirPathExists(NewTargetDirectory) then
+      TargetDirectory:=EnvironmentOptions.GetParsedLazarusDirectory;
+      if (TargetDirectory<>'') and DirPathExists(TargetDirectory) then
       begin
-        if not DirectoryIsWritableCached(NewTargetDirectory) then begin
+        if not DirectoryIsWritableCached(TargetDirectory) then begin
           // Case 3. the lazarus directory is not writable
           // create directory <primary config dir>/bin/
           UpdateRevisionInc:=false;
-          NewTargetDirectory:=AppendPathDelim(GetPrimaryConfigPath)+'bin';
-          debugln('CreateBuildLazarusOptions LazDir readonly NewTargetDirectory=',NewTargetDirectory);
-          NewUnitDirectory:=AppendPathDelim(GetPrimaryConfigPath)+'units'
-                          +PathDelim+NewTargetCPU+'-'+NewTargetOS;
+          TargetDirectory:=AppendPathDelim(GetPrimaryConfigPath)+'bin';
+          debugln('CreateBuildLazarusOptions LazDir readonly NewTargetDirectory=',TargetDirectory);
+          UnitOutDir:=AppendPathDelim(GetPrimaryConfigPath)+'units'
+                          +PathDelim+TargetCPU+'-'+TargetOS;
         end else begin
           // Case 4. the lazarus directory is writable
         end;
       end else begin
         // lazarus dir is not valid (probably someone is experimenting)
         // -> just compile to current directory
-        NewTargetDirectory:='';
+        TargetDirectory:='';
       end;
     end;
   end;
 
   // compute targetfilename
-  if not FilenameIsAbsolute(NewTargetDirectory) then
-    NewTargetDirectory:=
-      TrimFilename(AppendPathDelim(EnvironmentOptions.GetParsedLazarusDirectory)+NewTargetDirectory);
-  if NewTargetFilename='' then
-    NewTargetFilename:='lazarus'+GetExecutableExt(NewTargetOS);
-  if not FilenameIsAbsolute(NewTargetFilename) then
-    NewTargetFilename:=TrimFilename(AppendPathDelim(NewTargetDirectory)+NewTargetFilename);
+  if not FilenameIsAbsolute(TargetDirectory) then
+    TargetDirectory:=
+      TrimFilename(AppendPathDelim(EnvironmentOptions.GetParsedLazarusDirectory)+TargetDirectory);
+  if TargetFilename='' then
+    TargetFilename:='lazarus'+GetExecutableExt(TargetOS);
+  if not FilenameIsAbsolute(TargetFilename) then
+    TargetFilename:=TrimFilename(AppendPathDelim(TargetDirectory)+TargetFilename);
 
   // backup old exe
-  BackupExe(NewTargetFilename);
+  BackupExe(TargetFilename);
 
   // check if target file is default
   NewTargetDirectoryIsDefault:=
     CompareFilenames(ChompPathDelim(EnvironmentOptions.GetParsedLazarusDirectory),
-                     ChompPathDelim(NewTargetDirectory))=0;
+                     ChompPathDelim(TargetDirectory))=0;
   NewTargetFilenameIsDefault:=NewTargetDirectoryIsDefault;
   if NewTargetFilenameIsDefault then begin
-    CurTargetFilename:=CreateRelativePath(NewTargetFilename,NewTargetDirectory);
+    CurTargetFilename:=CreateRelativePath(TargetFilename,TargetDirectory);
     NewTargetFilenameIsDefault:=CurTargetFilename=DefaultTargetFilename;
   end;
 
   // create output directories
   if not NewTargetDirectoryIsDefault then begin
-    Result:=ForceDirectoryInteractive(NewTargetDirectory,[]);
+    Result:=ForceDirectoryInteractive(TargetDirectory,[]);
     if Result<>mrOk then exit;
   end;
-  if NewUnitDirectory<>'' then begin
-    Result:=ForceDirectoryInteractive(NewUnitDirectory,[]);
+  if UnitOutDir<>'' then begin
+    Result:=ForceDirectoryInteractive(UnitOutDir,[]);
     if Result<>mrOk then exit;
   end;
 
-  OutputDirRedirected:=NewTargetDirectory<>'';
+  OutputDirRedirected:=TargetDirectory<>'';
 
   // create apple bundle if needed
-  //debugln(['CreateBuildLazarusOptions NewTargetDirectory=',NewTargetDirectory]);
+  //debugln(['CreateBuildLazarusOptions NewTargetDirectory=',TargetDirectory]);
   if (Profile.TargetPlatform in [lpCarbon,lpCocoa])
   and (not NewTargetDirectoryIsDefault)
-  and (DirectoryIsWritableCached(NewTargetDirectory)) then begin
-    CurTargetFilename:=NewTargetFilename;
+  and (DirectoryIsWritableCached(TargetDirectory)) then begin
+    CurTargetFilename:=TargetFilename;
     BundleDir:=ChangeFileExt(CurTargetFilename,'.app');
     //debugln(['CreateBuildLazarusOptions checking bundle ',BundleDir]);
     if not FileExistsCached(BundleDir) then begin
@@ -659,42 +682,42 @@ begin
       if not (Result in [mrOk,mrIgnore]) then begin
         debugln(['CreateBuildLazarusOptions CreateApplicationBundle failed']);
         if IDEMessagesWindow<>nil then
-          IDEMessagesWindow.AddMsg('Error: failed to create application bundle '+BundleDir,NewTargetDirectory,-1);
+          IDEMessagesWindow.AddMsg('Error: failed to create application bundle '+BundleDir,TargetDirectory,-1);
         exit;
       end;
       Result:=CreateAppBundleSymbolicLink(CurTargetFilename);
       if not (Result in [mrOk,mrIgnore]) then begin
         debugln(['CreateBuildLazarusOptions CreateAppBundleSymbolicLink failed']);
         if IDEMessagesWindow<>nil then
-          IDEMessagesWindow.AddMsg('Error: failed to create application bundle symlink to '+CurTargetFilename,NewTargetDirectory,-1);
+          IDEMessagesWindow.AddMsg('Error: failed to create application bundle symlink to '+CurTargetFilename,TargetDirectory,-1);
         exit;
       end;
     end;
   end;
 
-  if NewUnitDirectory<>'' then
+  if UnitOutDir<>'' then
     // FPC interpretes '\ ' as an escape for a space in a path,
     // so make sure the directory doesn't end with the path delimeter.
-    AppendExtraOption('-FU'+ChompPathDelim(NewUnitDirectory));
+    AppendExtraOption('-FU'+ChompPathDelim(UnitOutDir));
 
   if not NewTargetDirectoryIsDefault then
     // FPC interpretes '\ ' as an escape for a space in a path,
     // so make sure the directory doesn't end with the path delimeter.
-    AppendExtraOption('-FE'+ChompPathDelim(NewTargetDirectory));
+    AppendExtraOption('-FE'+ChompPathDelim(TargetDirectory));
 
   if not NewTargetFilenameIsDefault then begin
     // FPC automatically changes the last extension (append or replace)
     // For example under linux, where executables don't need any extension
     // fpc removes the last extension of the -o option.
     // Trick fpc:
-    AppendExtraOption('-o'+NewTargetFilename);
+    AppendExtraOption('-o'+TargetFilename);
   end;
 
   // add package Profile for IDE
-  //DebugLn(['CreateBuildLazarusOptions blfUseMakeIDECfg=',blfUseMakeIDECfg in FLags,' ExtraOptions="',AExOptions,'" ',PackageOptions]);
+  //DebugLn(['CreateBuildLazarusOptions blfUseMakeIDECfg=',blfUseMakeIDECfg in FLags,' ExtraOptions="',ExtraOptions,'" ',PackageOptions]);
   if not (blfUseMakeIDECfg in Flags) then
     AppendExtraOption(PackageOptions,false);
-  //DebugLn(['CreateBuildLazarusOptions ',MMDef.Name,' ',AExOptions]);
+  //DebugLn(['CreateBuildLazarusOptions ',MMDef.Name,' ',ExtraOptions]);
 end;
 
 function SaveIDEMakeOptions(Profile: TBuildLazarusProfile;
@@ -756,10 +779,11 @@ var
   OptionsAsText: String;
   UpdateRevisionInc: boolean;
   OutputDirRedirected: boolean;
+  LazExeFilename: string;
 begin
   ExOptions:='';
   Result:=CreateIDEMakeOptions(Profile, Macros, PackageOptions,
-      Flags, ExOptions, UpdateRevisionInc, OutputDirRedirected);
+      Flags, ExOptions, UpdateRevisionInc, OutputDirRedirected, LazExeFilename);
   if Result<>mrOk then exit;
   Filename:=GetMakeIDEConfigFilename;
   try
@@ -788,6 +812,14 @@ end;
 function GetMakeIDEConfigFilename: string;
 begin
   Result:=AppendPathDelim(GetPrimaryConfigPath)+DefaultIDEMakeOptionFilename;
+end;
+
+function GetBackupExeFilename(Filename: string): string;
+var
+  Ext: String;
+begin
+  Ext:=ExtractFileExt(Filename);
+  Result:=LeftStr(Filename,length(Filename)-length(Ext))+'.old'+Ext;
 end;
 
 { TConfigureBuildLazarusDlg }
