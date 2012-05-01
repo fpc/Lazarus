@@ -152,7 +152,7 @@ begin
     piFrame:    i := IDEImages.LoadImage(16, 'tpanel');
   else i:=IDEImages.LoadImage(16, 'item_unit');
   end;
-  ShowViewUnitsDlg(Entries,AllowMultiSelect,CheckMultiSelect,aCaption,i);
+  Result:=ShowViewUnitsDlg(Entries,AllowMultiSelect,CheckMultiSelect,aCaption,i);
 end;
 
 { TViewUnitsEntry }
