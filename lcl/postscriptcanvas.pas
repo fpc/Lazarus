@@ -2258,10 +2258,21 @@ end;
 
 procedure TPostScriptPrinterCanvas.TextRect(ARect: TRect; X, Y: integer;
   const Text: string; const Style: TTextStyle);
+var
+  OldClip: TRect;
 begin
   {$IFDEF VerboseLCLTodos}{$WARNING TPostScriptPrinterCanvas.TextRect is not yet fully implemented!}{$ENDIF}
-  //TODO: clipping, layout, etc.
+  //TODO: layout, etc.
+
+  if Style.Clipping then begin
+    OldClip := GetClipRect;
+    SetClipRect(ARect);
+  end;
+
   TextOut(X,Y, Text);
+
+  if Style.Clipping then
+    SetClipRect(OldClip);
 end;
 
 function IsMaxClip(ARect:TRect):boolean;
