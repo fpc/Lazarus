@@ -774,16 +774,23 @@ type
     property BorderSpacing;
     property Caption;
     property ChildSizing;
+    property ClientHeight;
+    property ClientWidth;
     property Color;
     property ColumnLayout;
     property Columns;
     property Constraints;
+    property DragCursor;
+    property DragMode;
     property Enabled;
     property Font;
     property Items;
     property OnChangeBounds;
     property OnClick;
     property OnDblClick;
+    property OnDragDrop;
+    property OnDragOver;
+    property OnEndDrag;
     property OnEnter;
     property OnExit;
     property OnItemClick;
@@ -796,6 +803,7 @@ type
     property OnMouseMove;
     property OnMouseUp;
     property OnResize;
+    property OnStartDrag;
     property OnUTF8KeyPress;
     property ParentBiDiMode;
     property ParentFont;
@@ -804,6 +812,7 @@ type
     property PopupMenu;
     property ShowHint;
     property TabOrder;
+    property TabStop;
     property Visible;
   end;
 
