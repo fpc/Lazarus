@@ -397,8 +397,12 @@ begin
       Tool.CmdLineParams:=Tool.CmdLineParams+CmdLineParams;
       // run
       Result:=ExternalTools.Run(Tool,Macros,false);
-      if Result<>mrOk then exit;
+      // clean only once. If building failed the user must first fix the error
+      // before a clean build is needed.
       ApplyCleanOnce;
+      if Result<>mrOk then begin
+        exit;
+      end;
     end;
     Result:=mrOk;
   finally
