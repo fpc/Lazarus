@@ -60,16 +60,16 @@ uses
 {$ENDIF}
   // fpc packages
   Math, Classes, SysUtils, Process, AsyncProcess, TypInfo, types, AVL_Tree,
+  // lazutils
+  LazUTF8, Laz2_XMLCfg, AvgLvlTree,
   // lcl
   LCLProc, LCLMemManager, LCLType, LCLIntf, LConvEncoding, LMessages, ComCtrls,
   FileUtil, LResources, StdCtrls, Forms, Buttons, Menus, Controls, GraphType,
   HelpIntfs, Graphics, ExtCtrls, Dialogs, InterfaceBase, UTF8Process, LazLogger,
-  //
-  LazUTF8, Laz2_XMLCfg,
   // codetools
   FileProcs, CodeBeautifier, FindDeclarationTool, LinkScanner, BasicCodeTools,
   CodeToolsStructs, CodeToolManager, CodeCache, DefineTemplates,
-  KeywordFuncLists,
+  KeywordFuncLists, CodeTree,
   // synedit
   AllSynEdit, SynEditKeyCmds, SynBeautifier, SynEditMarks,
   // IDE interface
@@ -122,9 +122,8 @@ uses
   codeexplorer_update_options, codeexplorer_categories_options,
   codeobserver_options,
   help_general_options,
-  // project option frames
   env_file_filters,
-  // project options
+  // project option frames
   project_application_options, project_forms_options, project_lazdoc_options,
   project_save_options, project_versioninfo_options, project_i18n_options,
   project_misc_options,
@@ -156,13 +155,6 @@ uses
   MainBar, MainIntf, MainBase;
 
 type
-  TIDEProjectItem =
-  (
-    piUnit,
-    piComponent,
-    piFrame
-  );
-
   TIDECodetoolsDefines = (
     ctdReady,
     ctdNeedUpdate,
@@ -1055,6 +1047,9 @@ type
                                 ItemType: TIDEProjectItem;
                                 MultiSelect: boolean;
                                 var MultiSelectCheckedState: Boolean): TModalResult;
+    function SelectUnitComponents(DlgCaption: string; ItemType: TIDEProjectItem;
+      Files: TStringList;
+      MultiSelect: boolean; var MultiSelectCheckedState: Boolean): TModalResult;
 
     // tools
     function DoMakeResourceString: TModalResult;
@@ -9945,17 +9940,18 @@ begin
       end else if FilenameIsAbsolute(CurUnitInfo.Filename)
       and FilenameIsPascalSource(CurUnitInfo.Filename)
       and FileExistsCached(CurUnitInfo.Filename) then begin
+        // this unit has a lfm, but the lpi does not know a ComponentName
+        // => maybe this component was added without the IDE
         LFMFilename:=ChangeFileExt(CurUnitInfo.Filename,'.lfm');
-        if FileExistsCached(LFMFilename) then begin
-          if ReadLFMHeaderFromFile(LFMFilename,LFMType,LFMComponentName,LFMClassName)
-          then begin
-            anUnitName:=CurUnitInfo.Unit_Name;
-            if anUnitName='' then
-              anUnitName:=ExtractFileNameOnly(LFMFilename);
-            ItemList.AddObject(anUnitName,
-              TViewUnitsEntry.Create(LFMComponentName, i,
-                                     CurUnitInfo = ActiveUnitInfo));
-          end;
+        if FileExistsCached(LFMFilename)
+        and ReadLFMHeaderFromFile(LFMFilename,LFMType,LFMComponentName,LFMClassName)
+        then begin
+          anUnitName:=CurUnitInfo.Unit_Name;
+          if anUnitName='' then
+            anUnitName:=ExtractFileNameOnly(LFMFilename);
+          ItemList.AddObject(anUnitName,
+            TViewUnitsEntry.Create(LFMComponentName, i,
+                                   CurUnitInfo = ActiveUnitInfo));
         end;
       end;
     end else
@@ -9985,78 +9981,244 @@ begin
     end;
   end;
   case ItemType of
-    piUnit: begin
-      DlgCaption := dlgMainViewUnits;
-      i := IDEImages.LoadImage(16, 'item_unit');
-    end;
-    piComponent: begin
-      DlgCaption := dlgMainViewForms;
-      i := IDEImages.LoadImage(16, 'item_form');
-    end;
-    piFrame: begin
-      DlgCaption := dlgMainViewFrames;
-      i := IDEImages.LoadImage(16, 'tpanel');
+    piUnit:      DlgCaption := dlgMainViewUnits;
+    piComponent: DlgCaption := dlgMainViewForms;
+    piFrame:     DlgCaption := dlgMainViewFrames;
+  end;
+  Result := ShowViewUnitsDlg(ItemList, MultiSelect, MultiSelectCheckedState, DlgCaption, ItemType);
+end;
+
+function TMainIDE.SelectUnitComponents(DlgCaption: string;
+  ItemType: TIDEProjectItem; Files: TStringList; MultiSelect: boolean;
+  var MultiSelectCheckedState: Boolean): TModalResult;
+var
+  ActiveSourceEditor: TSourceEditor;
+  ActiveUnitInfo: TUnitInfo;
+  UnitToFilename: TStringToStringTree;
+  UnitPath: String;
+
+  function ResourceFits(ResourceBaseClass: TPFComponentBaseClass): boolean;
+  begin
+    case ItemType of
+    piUnit: Result:=true;
+    piComponent: Result:=ResourceBaseClass<>pfcbcNone;
+    piFrame: Result:=ResourceBaseClass=pfcbcFrame;
+    else Result:=false;
     end;
   end;
-  Result := ShowViewUnitsDlg(ItemList, MultiSelect, MultiSelectCheckedState, DlgCaption, i);
+
+  function CheckLFMBaseClass(aFilename: string): TPFComponentBaseClass;
+  var
+    LFMFilename: String;
+    LFMType: String;
+    LFMComponentName: String;
+    LFMClassName: String;
+    Code: TCodeBuffer;
+    Tool: TCodeTool;
+    ClassNode: TCodeTreeNode;
+    ListOfPFindContext: TFPList;
+    i: Integer;
+    Context: PFindContext;
+    AClassName: String;
+  begin
+    Result:=pfcbcNone;
+    if not FilenameIsPascalUnit(aFilename) then exit;
+    if not FilenameIsAbsolute(aFilename) then exit;
+    LFMFilename:=ChangeFileExt(aFilename,'.lfm');
+    if not FileExistsCached(LFMFilename) then exit;
+    if not FileExistsCached(aFilename) then exit;
+    if not ReadLFMHeaderFromFile(LFMFilename,LFMType,LFMComponentName,LFMClassName)
+    then exit;
+    Code:=CodeToolBoss.LoadFile(aFilename,true,false);
+    if Code=nil then exit;
+    if not CodeToolBoss.Explore(Code,Tool,false,true) then exit;
+    try
+      ClassNode:=Tool.FindClassNodeInInterface(LFMClassName,true,false,false);
+      if ClassNode=nil then exit;
+      ListOfPFindContext:=nil;
+      try
+        Tool.FindClassAndAncestors(ClassNode,ListOfPFindContext,false);
+        if ListOfPFindContext=nil then exit;
+        for i:=0 to ListOfPFindContext.Count-1 do begin
+          Context:=PFindContext(ListOfPFindContext[i]);
+          AClassName:=Context^.Tool.ExtractClassName(Context^.Node,false);
+          //debugln(['CheckLFMBaseClass ',AClassName]);
+          if CompareText(AClassName,'TFrame')=0 then
+            exit(pfcbcFrame)
+          else if CompareText(AClassName,'TForm')=0 then
+            exit(pfcbcForm)
+          else if CompareText(AClassName,'TDataModule')=0 then
+            exit(pfcbcDataModule);
+        end;
+      finally
+        FreeListOfPFindContext(ListOfPFindContext);
+      end;
+    except
+    end;
+  end;
+
+  procedure AddUnit(AnUnitName,AFilename: string);
+  var
+    LFMFilename: String;
+  begin
+    if not FilenameIsPascalUnit(AFilename) then exit;
+    if CompareFilenames(AFilename,ActiveUnitInfo.Filename)=0 then exit;
+    if (AnUnitName='') then
+      AnUnitName:=ExtractFileNameOnly(AFilename);
+    if (not FilenameIsAbsolute(AFilename)) then begin
+      if (not ActiveUnitInfo.IsVirtual) then
+        exit; // virtual UnitToFilename can not be accessed from disk UnitToFilename
+    end else begin
+      if SearchDirectoryInSearchPath(UnitPath,ExtractFilePath(AFilename))<1 then
+        exit; // not reachable
+    end;
+    if UnitToFilename.Contains(AnUnitName) then exit; // duplicate unit
+    if not FileExistsCached(AFilename) then exit;
+    LFMFilename:=ChangeFileExt(aFilename,'.lfm');
+    if not FileExistsCached(LFMFilename) then exit;
+    UnitToFilename[AnUnitName]:=AFilename;
+  end;
+
+  procedure AddPackage(Pkg: TLazPackage);
+  var
+    i: Integer;
+    PkgFile: TPkgFile;
+  begin
+    //debugln(['AddPackage ',pkg.Name]);
+    for i:=0 to Pkg.FileCount-1 do begin
+      PkgFile:=TPkgFile(Pkg.Files[i]);
+      if not (PkgFile.FileType in PkgFileRealUnitTypes) then continue;
+      if not FilenameIsAbsolute(PkgFile.Filename) then continue;
+      if not ResourceFits(PkgFile.ResourceBaseClass) then begin
+        if PkgFile.ResourceBaseClass<>pfcbcNone then continue;
+        // unknown resource class => check file
+        PkgFile.ResourceBaseClass:=CheckLFMBaseClass(PkgFile.Filename);
+        if not ResourceFits(PkgFile.ResourceBaseClass) then continue;
+      end;
+      AddUnit(PkgFile.Unit_Name,PkgFile.Filename);
+    end;
+  end;
+
+var
+  Owners: TFPList;
+  APackage: TLazPackage;
+  AProject: TProject;
+  AnUnitInfo: TUnitInfo;
+  FirstDependency: TPkgDependency;
+  PkgList: TFPList;
+  i: Integer;
+  S2SItem: PStringToStringTreeItem;
+  AnUnitName: String;
+  AFilename: String;
+  UnitList: TStringList;
+begin
+  Result:=mrCancel;
+  GetCurrentUnit(ActiveSourceEditor, ActiveUnitInfo);
+  if ActiveUnitInfo=nil then exit;
+  Owners:=PkgBoss.GetPossibleOwnersOfUnit(ActiveUnitInfo.Filename,[]);
+  UnitPath:=CodeToolBoss.GetUnitPathForDirectory(ExtractFilePath(ActiveUnitInfo.Filename));
+  PkgList:=nil;
+  UnitToFilename:=TStringToStringTree.Create(false);
+  UnitList:=TStringList.Create;
+  try
+    // fetch owner of active unit
+    AProject:=nil;
+    APackage:=nil;
+    if (Owners<>nil) then begin
+      for i:=0 to Owners.Count-1 do begin
+        if TObject(Owners[i]) is TProject then begin
+          AProject:=TProject(Owners[i]);
+          break;
+        end else if TObject(Owners[i]) is TLazPackage then begin
+          APackage:=TLazPackage(Owners[i]);
+        end;
+      end;
+    end;
+    if AProject<>nil then begin
+      // add project units
+      //debugln(['TMainIDE.SelectUnitComponents Project=',AProject.ProjectInfoFile]);
+      FirstDependency:=AProject.FirstRequiredDependency;
+      for i:=0 to AProject.UnitCount-1 do begin
+        AnUnitInfo:=AProject.Units[i];
+        if (not AnUnitInfo.IsPartOfProject)
+        or (AnUnitInfo.ComponentName='')
+        then continue;
+        if not ResourceFits(AnUnitInfo.ResourceBaseClass) then begin
+          if AnUnitInfo.ResourceBaseClass<>pfcbcNone then continue;
+          // unknown resource class => check file
+          AnUnitInfo.ResourceBaseClass:=CheckLFMBaseClass(AnUnitInfo.Filename);
+          if not ResourceFits(AnUnitInfo.ResourceBaseClass) then continue;
+        end;
+        AddUnit(AnUnitInfo.Unit_Name,AnUnitInfo.Filename);
+      end;
+    end else if APackage<>nil then begin
+      // add package units
+      FirstDependency:=APackage.FirstRequiredDependency;
+      AddPackage(APackage);
+    end;
+    // add all units of all used packages
+    PackageGraph.GetAllRequiredPackages(FirstDependency,PkgList);
+    if PkgList<>nil then
+      for i:=0 to PkgList.Count-1 do
+        AddPackage(TLazPackage(PkgList[i]));
+
+    // create Files
+    i:=0;
+    for S2SItem in UnitToFilename do begin
+      AnUnitName:=S2SItem^.Name;
+      UnitList.AddObject(AnUnitName,TViewUnitsEntry.Create(AnUnitName,i,false));
+      inc(i);
+    end;
+    // show dialog
+    Result := ShowViewUnitsDlg(UnitList, MultiSelect, MultiSelectCheckedState, DlgCaption, ItemType);
+
+    // create list of selected files
+    i:=0;
+    for S2SItem in UnitToFilename do begin
+      AFilename:=S2SItem^.Value;
+      if TViewUnitsEntry(UnitList.Objects[i]).Selected then
+        Files.Add(AFilename);
+      inc(i);
+    end;
+
+  finally
+    for i := 0 to UnitList.Count-1 do
+      TViewUnitsEntry(UnitList.Objects[i]).Free;
+    UnitList.Free;
+    PkgList.Free;
+    Owners.Free;
+    UnitToFilename.Free;
+  end;
 end;
 
 function TMainIDE.DoSelectFrame: TComponentClass;
 var
   UnitList: TStringList;
-  i: integer;
-  AnUnitInfo: TUnitInfo;
-  LFMCode: TCodeBuffer;
-  LFMFilename: String;
-  TheModalResult: TModalResult;
   dummy: Boolean;
+  i: Integer;
+  aFilename: String;
+  AComponent: TComponent;
 begin
   Result := nil;
   UnitList := TStringList.Create;
-  UnitList.Sorted := True;
   try
     dummy := false;
-    if SelectProjectItems(UnitList, piFrame, false, dummy) = mrOk then
-    begin
-      { This is where we check what the user selected. }
-      AnUnitInfo := nil;
-      for i := 0 to UnitList.Count-1 do
-      begin
-        if TViewUnitsEntry(UnitList.Objects[i]).Selected then
-        begin
-          AnUnitInfo := Project1.Units[TViewUnitsEntry(UnitList.Objects[i]).ID];
-          if (AnUnitInfo.Component=nil) then begin
-            // load the frame
-            LFMFilename:=ChangeFileExt(AnUnitInfo.Filename,'.lfm');
-            if not FileExistsUTF8(LFMFilename) then begin
-              DebugLn(['TMainIDE.DoSelectFrame file not found: ',LFMFilename]);
-              exit;
-            end;
-            // load the lfm file
-            TheModalResult:=LoadCodeBuffer(LFMCode,LFMFilename,[lbfCheckIfText],false);
-            if TheModalResult<>mrOk then begin
-              debugln('TMainIDE.DoSelectFrame Failed loading ',LFMFilename);
-              exit;
-            end;
-            TheModalResult:=DoLoadLFM(AnUnitInfo,LFMCode,
-                              [ofQuiet,ofOnlyIfExists,ofLoadHiddenResource],[]);
-            if TheModalResult<>mrOk then begin
-              debugln('TMainIDE.DoSelectFrame Failed streaming ',LFMFilename);
-              exit;
-            end;
-          end;
-          if (AnUnitInfo.Component<>nil) then
-          begin
-            Result := TComponentClass(AnUnitInfo.Component.ClassType);
-            //DebugLn(AnUnitInfo.ComponentName + ' has been selected');
-            break;
-          end;
-        end;
-      end;  { for }
-    end;  { if ShowViewUnitDlg... }
-  finally
+    if SelectUnitComponents('Select Frame',piFrame,UnitList, false, dummy) <> mrOk
+    then
+      exit;
     for i := 0 to UnitList.Count-1 do
-      TViewUnitsEntry(UnitList.Objects[i]).Free;
+    begin
+      aFilename:=UnitList[i];
+      if not FileExistsUTF8(aFilename) then continue;
+      debugln(['TMainIDE.DoSelectFrame Filename="',aFilename,'"']);
+      if DoOpenComponent(aFilename,
+        [ofOnlyIfExists,ofLoadHiddenResource,ofUseCache],[],AComponent)<>mrOk
+      then exit;
+      debugln(['TMainIDE.DoSelectFrame AncestorComponent=',DbgSName(AComponent)]);
+      Result := TComponentClass(AComponent.ClassType);
+      exit;
+    end;
+  finally
     UnitList.Free;
   end;
 end;

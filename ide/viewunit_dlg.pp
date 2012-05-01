@@ -44,6 +44,12 @@ uses
   IDEWindowIntf, IDEHelpIntf, IDEImagesIntf, ListFilterEdit;
 
 type
+  TIDEProjectItem = (
+    piUnit,
+    piComponent,
+    piFrame
+  );
+
   TViewUnitsEntry = class
   public
     Name: string;
@@ -85,6 +91,8 @@ type
 // Entries is a list of TViewUnitsEntry(s)
 function ShowViewUnitsDlg(Entries: TStringList; AllowMultiSelect: boolean;
   var CheckMultiSelect: Boolean; const aCaption: string; aImageIndex: Integer): TModalResult;
+function ShowViewUnitsDlg(Entries: TStringList; AllowMultiSelect: boolean;
+  var CheckMultiSelect: Boolean; const aCaption: string; ItemType: TIDEProjectItem): TModalResult;
 
 implementation
 
@@ -131,6 +139,20 @@ begin
   finally
     Free;
   end;
+end;
+
+function ShowViewUnitsDlg(Entries: TStringList; AllowMultiSelect: boolean;
+  var CheckMultiSelect: Boolean; const aCaption: string;
+  ItemType: TIDEProjectItem): TModalResult;
+var
+  i: Integer;
+begin
+  case ItemType of
+    piComponent: i := IDEImages.LoadImage(16, 'item_form');
+    piFrame:    i := IDEImages.LoadImage(16, 'tpanel');
+  else i:=IDEImages.LoadImage(16, 'item_unit');
+  end;
+  ShowViewUnitsDlg(Entries,AllowMultiSelect,CheckMultiSelect,aCaption,i);
 end;
 
 { TViewUnitsEntry }
