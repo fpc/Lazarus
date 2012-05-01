@@ -675,7 +675,6 @@ type
     function GetCompletionBoxPosition: integer; override;
         deprecated {$IFDEF VER2_5}'use SourceEditorManager'{$ENDIF};       // deprecated in 0.9.29 March 2010
 
-    procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
     procedure EditorMouseMove(Sender: TObject; Shift: TShiftstate;
                               X,Y: Integer);
     procedure EditorMouseDown(Sender: TObject; Button: TMouseButton;
@@ -760,6 +759,7 @@ type
     procedure ActivateHint(const ScreenPos: TPoint;
                            const BaseURL, TheHint: string);
     procedure HideHint;
+    procedure MaybeHideHint;
     procedure StartShowCodeContext(JumpToError: boolean);
 
     // paste and copy
@@ -6725,6 +6725,55 @@ begin
   end;
 end;
 
+procedure TSourceNotebook.MaybeHideHint;
+const
+  MaxJitter = 3;
+var
+  Cur: TPoint;
+  OkX, OkY: Boolean;
+begin
+  if (FHintWindow <> nil) and (FHintWindow.Visible) then begin
+    Cur := Mouse.CursorPos; // Desktop coordinates
+    OkX := ( (FHintMousePos.x <= FHintWindow.Left) and
+             (Cur.x > FHintMousePos.x) and (Cur.x <= FHintWindow.Left + FHintWindow.Width)
+           ) or
+           ( (FHintMousePos.x >= FHintWindow.Left + FHintWindow.Width) and
+             (Cur.x < FHintMousePos.x) and (Cur.x >= FHintWindow.Left)
+           ) or
+           ( (Cur.x >= FHintWindow.Left) and (Cur.x <= FHintWindow.Left + FHintWindow.Width) );
+    OkY := ( (FHintMousePos.y <= FHintWindow.Top) and
+             (Cur.y > FHintMousePos.y) and (Cur.y <= FHintWindow.Top + FHintWindow.Height)
+           ) or
+           ( (FHintMousePos.y >= FHintWindow.Top + FHintWindow.Height) and
+             (Cur.y < FHintMousePos.y) and (Cur.y >= FHintWindow.Top)
+           ) or
+           ( (Cur.y >= FHintWindow.Top) and (Cur.y <= FHintWindow.Top + FHintWindow.Height) );
+
+    if OkX then FHintMousePos.x := Cur.x;
+    if OkY then FHintMousePos.y := Cur.y;
+
+
+    OkX := OkX or
+           ( (FHintMousePos.x <= FHintWindow.Left + MaxJitter) and
+             (Cur.x > FHintMousePos.x - MaxJitter) and (Cur.x <= FHintWindow.Left + FHintWindow.Width + MaxJitter)
+           ) or
+           ( (FHintMousePos.x >= FHintWindow.Left + FHintWindow.Width - MaxJitter) and
+             (Cur.x < FHintMousePos.x + MaxJitter) and (Cur.x >= FHintWindow.Left - MaxJitter)
+           );
+    OkY := OkY or
+           ( (FHintMousePos.y <= FHintWindow.Top + MaxJitter) and
+             (Cur.y > FHintMousePos.y - MaxJitter) and (Cur.y <= FHintWindow.Top + FHintWindow.Height + MaxJitter)
+           ) or
+           ( (FHintMousePos.y >= FHintWindow.Top + FHintWindow.Height - MaxJitter) and
+             (Cur.y < FHintMousePos.y + MaxJitter) and (Cur.y >= FHintWindow.Top - MaxJitter)
+           );
+
+    if (OkX and OkY) then
+      exit;
+  end;
+  HideHint;
+end;
+
 procedure TSourceNotebook.StartShowCodeContext(JumpToError: boolean);
 var
   Abort: boolean;
@@ -7597,60 +7646,10 @@ begin
   dec(fAutoFocusLock);
 end;
 
-procedure TSourceNotebook.MouseMove(Shift: TShiftState; X, Y: Integer);
-begin
-  inherited MouseMove(Shift, X, Y);
-  EditorMouseMove(Self, Shift, x, y);
-end;
-
 Procedure TSourceNotebook.EditorMouseMove(Sender: TObject; Shift: TShiftstate;
   X,Y: Integer);
-const
-  MaxJitter = 3;
-var
-  Cur: TPoint;
-  OkX, OkY: Boolean;
 begin
-  if (FHintWindow <> nil) and (FHintWindow.Visible) then begin
-    Cur := Mouse.CursorPos; // Desktop coordinates
-    OkX := ( (FHintMousePos.x <= FHintWindow.Left) and
-             (Cur.x > FHintMousePos.x) and (Cur.x <= FHintWindow.Left + FHintWindow.Width)
-           ) or
-           ( (FHintMousePos.x >= FHintWindow.Left + FHintWindow.Width) and
-             (Cur.x < FHintMousePos.x) and (Cur.x >= FHintWindow.Left)
-           ) or
-           ( (Cur.x >= FHintWindow.Left) and (Cur.x <= FHintWindow.Left + FHintWindow.Width) );
-    OkY := ( (FHintMousePos.y <= FHintWindow.Top) and
-             (Cur.y > FHintMousePos.y) and (Cur.y <= FHintWindow.Top + FHintWindow.Height)
-           ) or
-           ( (FHintMousePos.y >= FHintWindow.Top + FHintWindow.Height) and
-             (Cur.y < FHintMousePos.y) and (Cur.y >= FHintWindow.Top)
-           ) or
-           ( (Cur.y >= FHintWindow.Top) and (Cur.y <= FHintWindow.Top + FHintWindow.Height) );
-
-    if OkX then FHintMousePos.x := Cur.x;
-    if OkY then FHintMousePos.y := Cur.y;
-
-
-    OkX := OkX or
-           ( (FHintMousePos.x <= FHintWindow.Left + MaxJitter) and
-             (Cur.x > FHintMousePos.x - MaxJitter) and (Cur.x <= FHintWindow.Left + FHintWindow.Width + MaxJitter)
-           ) or
-           ( (FHintMousePos.x >= FHintWindow.Left + FHintWindow.Width - MaxJitter) and
-             (Cur.x < FHintMousePos.x + MaxJitter) and (Cur.x >= FHintWindow.Left - MaxJitter)
-           );
-    OkY := OkY or
-           ( (FHintMousePos.y <= FHintWindow.Top + MaxJitter) and
-             (Cur.y > FHintMousePos.y - MaxJitter) and (Cur.y <= FHintWindow.Top + FHintWindow.Height + MaxJitter)
-           ) or
-           ( (FHintMousePos.y >= FHintWindow.Top + FHintWindow.Height - MaxJitter) and
-             (Cur.y < FHintMousePos.y + MaxJitter) and (Cur.y >= FHintWindow.Top - MaxJitter)
-           );
-
-    if (OkX and OkY) then
-      exit;
-  end;
-  HideHint;
+  MaybeHideHint;
 
   if not Visible then exit;
   if (MainIDEInterface.ToolStatus=itDebugger) then
@@ -7753,7 +7752,7 @@ procedure TSourceNotebook.OnApplicationUserInput(Sender: TObject; Msg: Cardinal)
   var
     I: Integer;
   begin
-    if not Assigned(Control) then
+    if not(Assigned(Control) and Control.Visible) then
       Exit(False);
     Result := Control = Sender;
     if Result then
@@ -7773,12 +7772,18 @@ procedure TSourceNotebook.OnApplicationUserInput(Sender: TObject; Msg: Cardinal)
   end;
 
 begin
-  if (Msg = WM_MOUSEMOVE) and (FHintWindow <> nil) and FHintWindow.Visible and
-     (FHintWindow.ControlCount > 0) and not(FHintWindow.Controls[0] is TSimpleHTMLControl) and
-     ( PtInRect(ClientRect, ScreenToClient(Mouse.CursorPos)) or
-       PtInRect(FHintWindow.ClientRect, FHintWindow.ScreenToClient(Mouse.CursorPos)) )
-  then
-    exit;
+  if (FHintWindow <> nil) and FHintWindow.Visible and
+     // TODO: introduce property, to indicate if hint is interactive
+     (FHintWindow.ControlCount > 0) and not(FHintWindow.Controls[0] is TSimpleHTMLControl)
+  then begin
+    if PtInRect(FHintWindow.BoundsRect, Mouse.CursorPos) then // ignore any action over Hint
+      exit;
+    if (Msg = WM_MOUSEMOVE) or (Msg = WM_NCMOUSEMOVE) then begin
+      MaybeHideHint;
+      exit;
+    end;
+  end;
+
   //debugln('TSourceNotebook.OnApplicationUserInput');
   // don't hide hint if Sender is a hint window or child control
   if not Assigned(Sender) or not IsHintControl(FHintWindow) then
