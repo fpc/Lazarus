@@ -7778,7 +7778,7 @@ begin
   then begin
     if PtInRect(FHintWindow.BoundsRect, Mouse.CursorPos) then // ignore any action over Hint
       exit;
-    if (Msg = WM_MOUSEMOVE) or (Msg = WM_NCMOUSEMOVE) then begin
+    if (Msg = WM_MOUSEMOVE) {$IFDEF WINDOWS}or (Msg = WM_NCMOUSEMOVE){$ENDIF} then begin
       MaybeHideHint;
       exit;
     end;
