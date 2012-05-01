@@ -659,7 +659,7 @@ procedure SaveClientSizeNotification(FixWidget: PGtkWidget);
 procedure SendSizeNotificationToLCL(aWidget: PGtkWidget);
 function CreateTopologicalSortedWidgets(HashArray: TDynHashArray): TFPList;
 procedure GetGTKDefaultWidgetSize(AWinControl: TWinControl;
-  var PreferredWidth, PreferredHeight: integer; WithThemeSpace: Boolean);
+  var PreferredWidth, PreferredHeight: integer; {%H-}WithThemeSpace: Boolean);
 procedure SendCachedGtkResizeNotifications;
 procedure ResizeHandle(LCLControl: TWinControl);
 procedure SetWidgetSizeAndPosition(LCLControl: TWinControl);// for child controls
