@@ -10061,6 +10061,7 @@ var
   var
     LFMFilename: String;
   begin
+    //debugln(['AddUnit ',AFilename]);
     if not FilenameIsPascalUnit(AFilename) then exit;
     if CompareFilenames(AFilename,ActiveUnitInfo.Filename)=0 then exit;
     if (AnUnitName='') then
@@ -10069,6 +10070,7 @@ var
       if (not ActiveUnitInfo.IsVirtual) then
         exit; // virtual UnitToFilename can not be accessed from disk UnitToFilename
     end else begin
+      //debugln(['AddUnit unitpath=',UnitPath]);
       if SearchDirectoryInSearchPath(UnitPath,ExtractFilePath(AFilename))<1 then
         exit; // not reachable
     end;
@@ -10116,7 +10118,7 @@ begin
   GetCurrentUnit(ActiveSourceEditor, ActiveUnitInfo);
   if ActiveUnitInfo=nil then exit;
   Owners:=PkgBoss.GetPossibleOwnersOfUnit(ActiveUnitInfo.Filename,[]);
-  UnitPath:=CodeToolBoss.GetUnitPathForDirectory(ExtractFilePath(ActiveUnitInfo.Filename));
+  UnitPath:=CodeToolBoss.GetCompleteSrcPathForDirectory(ExtractFilePath(ActiveUnitInfo.Filename));
   PkgList:=nil;
   UnitToFilename:=TStringToStringTree.Create(false);
   UnitList:=TStringList.Create;
