@@ -156,6 +156,10 @@ msgstr "&Fechar"
 msgid "Close other package and open new"
 msgstr "Fechar outro pacote e abrir um novo"
 
+#: codystrconsts.crscodebuffers
+msgid "CodeBuffers"
+msgstr ""
+
 #: codystrconsts.crscodenodeinformation
 msgid "Code Node Information"
 msgstr "Informação Nó de Código"

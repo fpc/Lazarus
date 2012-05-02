@@ -7,11 +7,11 @@ object CodyNodeInfoDialog: TCodyNodeInfoDialog
   ClientHeight = 467
   ClientWidth = 581
   OnCreate = FormCreate
-  LCLVersion = '0.9.31'
+  LCLVersion = '1.1'
   object ButtonPanel1: TButtonPanel
     Left = 6
-    Height = 30
-    Top = 431
+    Height = 42
+    Top = 419
     Width = 569
     OKButton.Name = 'OKButton'
     OKButton.DefaultCaption = True
@@ -26,20 +26,20 @@ object CodyNodeInfoDialog: TCodyNodeInfoDialog
   end
   object PageControl1: TPageControl
     Left = 0
-    Height = 425
+    Height = 413
     Top = 0
     Width = 581
-    ActivePage = ReportTabSheet
+    ActivePage = CodeBuffersTabSheet
     Align = alClient
-    TabIndex = 0
+    TabIndex = 1
     TabOrder = 1
     object ReportTabSheet: TTabSheet
       Caption = 'ReportTabSheet'
-      ClientHeight = 386
+      ClientHeight = 381
       ClientWidth = 575
       object ReportMemo: TMemo
         Left = 0
-        Height = 386
+        Height = 381
         Top = 0
         Width = 575
         Align = alClient
@@ -49,6 +49,34 @@ object CodyNodeInfoDialog: TCodyNodeInfoDialog
         ReadOnly = True
         ScrollBars = ssAutoBoth
         TabOrder = 0
+      end
+    end
+    object CodeBuffersTabSheet: TTabSheet
+      Caption = 'CodeBuffersTabSheet'
+      ClientHeight = 381
+      ClientWidth = 575
+      object CodeBuffersComboBox: TComboBox
+        Left = 0
+        Height = 27
+        Top = 0
+        Width = 575
+        Align = alTop
+        ItemHeight = 0
+        OnSelect = CodeBuffersComboBoxSelect
+        TabOrder = 0
+        Text = 'CodeBuffersComboBox'
+      end
+      object CodeBufferMemo: TMemo
+        Left = 0
+        Height = 354
+        Top = 27
+        Width = 575
+        Align = alClient
+        Lines.Strings = (
+          'CodeBufferMemo'
+        )
+        ScrollBars = ssBoth
+        TabOrder = 1
       end
     end
   end

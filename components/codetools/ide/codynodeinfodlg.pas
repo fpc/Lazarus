@@ -30,13 +30,13 @@ unit CodyNodeInfoDlg;
 interface
 
 uses
-  Classes, SysUtils, FileProcs, Forms, Controls, Graphics, Dialogs, ButtonPanel,
-  ComCtrls, StdCtrls,
+  Classes, SysUtils, AVL_Tree, FileProcs, Forms, Controls, Graphics, Dialogs,
+  ButtonPanel, ComCtrls, StdCtrls,
   // IDEIntf
   SrcEditorIntf,
   // CodeTools
   CodeToolManager, CodeTree, FindDeclarationCache, PascalParserTool,
-  LinkScanner, CodeCache, BasicCodeTools, FindDeclarationTool,
+  LinkScanner, CodeCache, BasicCodeTools, FindDeclarationTool, SourceLog,
   CodyUtils, CodyStrConsts;
 
 type
@@ -45,15 +45,20 @@ type
 
   TCodyNodeInfoDialog = class(TForm)
     ButtonPanel1: TButtonPanel;
+    CodeBufferMemo: TMemo;
+    CodeBuffersComboBox: TComboBox;
     PageControl1: TPageControl;
     ReportMemo: TMemo;
     ReportTabSheet: TTabSheet;
+    CodeBuffersTabSheet: TTabSheet;
+    procedure CodeBuffersComboBoxSelect(Sender: TObject);
     procedure FormCreate(Sender: TObject);
   private
     procedure ReportBaseTypeCache(Report: TStringList;
       Tool: TFindDeclarationTool; Node: TCodeTreeNode);
     procedure ReportAllNodes(Report: TStringList;
       Tool: TFindDeclarationTool);
+    procedure ShowCodeBuffer(Filename: string);
   public
     procedure UpdateReport;
   end;
@@ -80,9 +85,15 @@ procedure TCodyNodeInfoDialog.FormCreate(Sender: TObject);
 begin
   Caption:=crsCodeNodeInformation;
   ReportTabSheet.Caption:=crsReport;
+  CodeBuffersTabSheet.Caption:=crsCodeBuffers;
   ButtonPanel1.CloseButton.Caption:=crsClose;
-
+  PageControl1.PageIndex:=0;
   UpdateReport;
+end;
+
+procedure TCodyNodeInfoDialog.CodeBuffersComboBoxSelect(Sender: TObject);
+begin
+  ShowCodeBuffer(CodeBuffersComboBox.Text);
 end;
 
 procedure TCodyNodeInfoDialog.ReportBaseTypeCache(Report: TStringList;
@@ -175,6 +186,23 @@ begin
   end;
 end;
 
+procedure TCodyNodeInfoDialog.ShowCodeBuffer(Filename: string);
+var
+  Code: TCodeBuffer;
+  i: Integer;
+  sl: TStringList;
+begin
+  Code:=CodeToolBoss.LoadFile(Filename,false,false);
+  sl:=TStringList.Create;
+  if Code<>nil then begin
+    for i:=0 to Code.LineCount-1 do begin
+      sl.Add('Line='+dbgs(i+1)+' Start='+dbgs(Code.GetLineStart(i))+' ="'+dbgstr(Code.GetLine(i))+'"');
+    end;
+  end;
+  CodeBufferMemo.Lines.Assign(sl);
+  sl.Free;
+end;
+
 procedure TCodyNodeInfoDialog.UpdateReport;
 var
   SrcEdit: TSourceEditorInterface;
@@ -183,7 +211,12 @@ var
   Tool: TCodeTool;
   CleanPos: integer;
   Node: TCodeTreeNode;
-  s: String;
+  SrcCode: TSourceLog;
+  i: Integer;
+  UsedCodeBuffers: TAVLTree;
+  AVLNode: TAVLTreeNode;
+  Filenames: TStringList;
+  CodeBuf: TCodeBuffer;
 begin
   sl:=TStringList.Create;
   try
@@ -224,13 +257,36 @@ begin
         sl.Add('Node.SubDesc=%'+binStr(Node.SubDesc,16));
         sl.Add('Node.StartPos='+dbgs(Node.StartPos)+'='+Tool.CleanPosToStr(Node.StartPos));
         sl.Add('Node.EndPos='+dbgs(Node.EndPos)+'='+Tool.CleanPosToStr(Node.EndPos));
-        s:=dbgstr(Tool.Src,Node.StartPos,Node.EndPos-Node.StartPos);
-        if length(s)>100 then
-          s:=copy(s,1,48)+'...'+copy(s,length(s)-47,48);
-        sl.Add('Node Src="'+s+'"');
+        sl.Add('Node Src>>>>>>>>>>>>>>>>>>');
+        SrcCode:=TSourceLog.Create(copy(Tool.Src,Node.StartPos,Node.EndPos-Node.StartPos));
+        for i:=0 to SrcCode.LineCount-1 do begin
+          sl.Add('Line='+dbgs(i)+',CleanPos='+dbgs(Node.StartPos+SrcCode.GetLineStart(i)-1)+'="'+dbgstr(SrcCode.GetLine(i))+'"');
+        end;
+        SrcCode.Free;
+        sl.Add('Node Src<<<<<<<<<<<<<<<<<<');
 
         ReportBaseTypeCache(sl,Tool,Node);
         ReportAllNodes(sl,Tool);
+      end;
+
+      Filenames:=TStringList.Create;
+      if Tool.Scanner<>nil then begin
+        UsedCodeBuffers:=Tool.Scanner.CreateTreeOfSourceCodes;
+        AVLNode:=UsedCodeBuffers.FindLowest;
+        while AVLNode<>nil do begin
+          CodeBuf:=TCodeBuffer(AVLNode.Data);
+          Filenames.Add(CodeBuf.Filename);
+          AVLNode:=UsedCodeBuffers.FindSuccessor(AVLNode);
+        end;
+        UsedCodeBuffers.Free;
+      end;
+      CodeBuffersComboBox.Items.Assign(Filenames);
+      Filenames.Free;
+      if CodeBuffersComboBox.Items.Count>0 then begin
+        CodeBuffersComboBox.Text:=CodeBuffersComboBox.Items[0];
+        ShowCodeBuffer(CodeBuffersComboBox.Text);
+      end else begin
+        CodeBuffersComboBox.Text:='';
       end;
     except
       on e: Exception do CodeToolBoss.HandleException(e);

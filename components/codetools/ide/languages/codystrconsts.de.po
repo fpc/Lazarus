@@ -153,6 +153,10 @@ msgstr ""
 msgid "Close other package and open new"
 msgstr "Anderes Package schließen und neues öffnen"
 
+#: codystrconsts.crscodebuffers
+msgid "CodeBuffers"
+msgstr ""
+
 #: codystrconsts.crscodenodeinformation
 msgid "Code Node Information"
 msgstr ""
