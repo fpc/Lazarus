@@ -7627,9 +7627,11 @@ var
     ClassNodeOfMethod:=FindClassOfMethod(ProcNode,true,true);
 
     // find class ancestor
+    OldInput.Flags:=Params.Flags;
     Params.Flags:=[fdfSearchInParentNodes,fdfExceptionOnNotFound]
                   +fdfGlobals*Params.Flags;
     FindAncestorOfClass(ClassNodeOfMethod,Params,true);
+    Params.Flags:=OldInput.Flags;
 
     ExprType.Desc:=xtContext;
     ExprType.Context:=CreateFindContext(Params);
@@ -7652,7 +7654,7 @@ var
       MoveCursorToCleanPos(CurAtom.StartPos);
 
     // search identifier only in class ancestor
-    Params.Load(OldInput,false);
+    Params.Save(OldInput);
     Params.SetIdentifier(Self,@Src[CurPos.StartPos],@CheckSrcIdentifier);
     Params.ContextNode:=ExprType.Context.Node;
     Params.Flags:=Params.Flags-[fdfSearchInParentNodes]
