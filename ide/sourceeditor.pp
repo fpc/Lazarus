@@ -7779,8 +7779,8 @@ begin
     if PtInRect(FHintWindow.BoundsRect, Mouse.CursorPos) then begin // ignore any action over Hint
       if FHintWindow.Active then
         exit;
-      if (Msg = WM_MOUSEMOVE) {$IFDEF WINDOWS} or (Msg = WM_NCMOUSEMOVE){$ENDIF} or
-         ((Msg >= WM_MOUSEFIRST) and (Msg <= WM_MOUSELAST))
+      if (Msg = WM_MOUSEMOVE) {$IFDEF WINDOWS} or (Msg = WM_NCMOUSEMOVE)or
+         ((Msg >= WM_MOUSEFIRST) and (Msg <= WM_MOUSELAST)) {$ENDIF}
       then
         exit;
     end;
