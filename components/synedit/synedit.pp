@@ -1045,7 +1045,6 @@ type
     property PaintLock: Integer read fPaintLock;
 
     property UseUTF8: boolean read FUseUTF8;
-    procedure Update; override;
     procedure Invalidate; override;
     property ChangeStamp: int64 read GetChangeStamp;
     procedure ShareTextBufferFrom(AShareEditor: TCustomSynEdit);
@@ -3785,11 +3784,6 @@ end;
 procedure TCustomSynEdit.EraseBackground(DC: HDC);
 begin
   // we are painting everything ourselves, so not need to erase background
-end;
-
-procedure TCustomSynEdit.Update;
-begin
-  Invalidate;
 end;
 
 procedure TCustomSynEdit.Invalidate;
