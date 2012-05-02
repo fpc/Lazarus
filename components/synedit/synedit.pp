@@ -2062,6 +2062,7 @@ begin
   UpdateOptions;
   UpdateOptions2;
   UpdateMouseOptions;
+  UpdateCaret;
   fScrollTimer := TTimer.Create(Self);
   fScrollTimer.Enabled := False;
   fScrollTimer.Interval := 100;
@@ -2745,6 +2746,7 @@ end;
 procedure TCustomSynEdit.Loaded;
 begin
   inherited Loaded;
+  UpdateCaret;
 end;
 
 procedure TCustomSynEdit.UTF8KeyPress(var Key: TUTF8Char);
@@ -3490,7 +3492,7 @@ begin
     {$IFDEF EnableDoubleBuf}
     EndPaintBuffer(rcClip);
     {$ENDIF}
-    UpdateCaret;
+    UpdateCaret; // Todo: only ShowCaret() / do not create caret here / Issue 0021924
     Exclude(fStateFlags,sfPainting);
   end;
 end;
@@ -7334,6 +7336,7 @@ begin
   //                              ClientWidth - TextRightPixelOffset - ScrollBarWidth + 1,
   //                              ClientHeight - ScrollBarWidth);
   FScreenCaret.ClipExtraPixel := FTextArea.Bounds.Right - FTextArea.Bounds.Left - CharsInWindow * CharWidth;
+  UpdateCaret;
   FScreenCaret.UnLock;
 
   if CheckCaret then begin
