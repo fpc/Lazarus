@@ -7776,9 +7776,15 @@ begin
      // TODO: introduce property, to indicate if hint is interactive
      (FHintWindow.ControlCount > 0) and not(FHintWindow.Controls[0] is TSimpleHTMLControl)
   then begin
-    if PtInRect(FHintWindow.BoundsRect, Mouse.CursorPos) then // ignore any action over Hint
-      exit;
-    if (Msg = WM_MOUSEMOVE) {$IFDEF WINDOWS}or (Msg = WM_NCMOUSEMOVE){$ENDIF} then begin
+    if PtInRect(FHintWindow.BoundsRect, Mouse.CursorPos) then begin // ignore any action over Hint
+      if FHintWindow.Active then
+        exit;
+      if (Msg = WM_MOUSEMOVE) {$IFDEF WINDOWS} or (Msg = WM_NCMOUSEMOVE){$ENDIF} or
+         ((Msg >= WM_MOUSEFIRST) and (Msg <= WM_MOUSELAST))
+      then
+        exit;
+    end;
+    if (Msg = WM_MOUSEMOVE) {$IFDEF WINDOWS} or (Msg = WM_NCMOUSEMOVE){$ENDIF} then begin
       MaybeHideHint;
       exit;
     end;
