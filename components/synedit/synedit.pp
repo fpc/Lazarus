@@ -6396,14 +6396,12 @@ begin
           LeftChar := LeftChar - 1;
           if CaretX > LeftChar + CharsInWindow then
             CaretX := LeftChar + CharsInWindow;
-          Update;
         end;
       ecScrollRight:
         begin
           LeftChar := LeftChar + 1;
           if CaretX < LeftChar then
             CaretX := LeftChar;
-          Update;
         end;
       ecInsertMode:
         begin
