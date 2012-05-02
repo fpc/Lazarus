@@ -22,7 +22,7 @@ unit IPIDEHTMLControl;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, Forms, Graphics, Controls, Dialogs, ExtCtrls,
+  Classes, SysUtils, LCLProc, Forms, Graphics, Controls, Dialogs, ExtCtrls, Menus,
   IpMsg, Ipfilebroker, IpHtml, IDEHelpIntf, LazHelpIntf, LazIDEIntf;
 
 type
@@ -71,6 +71,20 @@ type
     property IPHTMLPanel: TIpHtmlPanel read FIPHTMLPanel;
   end;
 
+  { TLazIPHtmlControlClipboardPopup }
+
+  TLazIPHtmlControlClipboardPopup = class(TPopupMenu)
+  private
+    FCopy, FSelectAll: TMenuItem;
+    FPanel: TLazIPHtmlControl;
+    procedure DoCopy(Sender: TObject);
+    procedure DoSelectAll(Sender: TObject);
+  protected
+    procedure DoPopup(Sender: TObject); override;
+  public
+    constructor Create(AOwner: TComponent; APanel: TLazIPHtmlControl);
+  end;
+
 function IPCreateLazIDEHTMLControl(Owner: TComponent;
   var Provider: TAbstractIDEHTMLProvider;
   {%H-}Flags: TIDEHTMLControlFlags = []): TControl;
@@ -78,6 +92,10 @@ function IPCreateLazIDEHTMLControl(Owner: TComponent;
 procedure Register;
 
 implementation
+
+resourcestring
+  ipdCopy = '&Copy';
+  ipdSelectAll = 'Select &all';
 
 procedure Register;
 begin
@@ -97,6 +115,52 @@ begin
     Provider:=CreateIDEHTMLProvider(HTMLControl);
   //debugln(['IPCreateLazIDEHTMLControl Provider=',DbgSName(Provider)]);
   HTMLControl.IDEProvider:=Provider;
+
+  if ihcWithClipboardMenu in Flags then
+    TLazIPHtmlControlClipboardPopup.Create(Owner, HTMLControl);
+end;
+
+{ TLazIPHtmlControlClipboardPopup }
+
+procedure TLazIPHtmlControlClipboardPopup.DoCopy(Sender: TObject);
+begin
+  if FPanel.IPHTMLPanel <> nil then
+    FPanel.IPHTMLPanel.CopyToClipboard;
+end;
+
+procedure TLazIPHtmlControlClipboardPopup.DoSelectAll(Sender: TObject);
+begin
+  if FPanel.IPHTMLPanel <> nil then
+    FPanel.IPHTMLPanel.SelectAll;
+end;
+
+procedure TLazIPHtmlControlClipboardPopup.DoPopup(Sender: TObject);
+begin
+  if FPanel.IPHTMLPanel <> nil then
+    FCopy.Enabled := FPanel.IPHTMLPanel.HaveSelection;
+  inherited DoPopup(Sender);
+end;
+
+constructor TLazIPHtmlControlClipboardPopup.Create(AOwner: TComponent;
+  APanel: TLazIPHtmlControl);
+begin
+  inherited Create(AOwner);
+  FPanel := APanel;
+  AutoPopup := True;
+
+  FCopy := TMenuItem.Create(Owner);
+  FCopy.Caption := ipdCopy;
+  FCopy.ShortCut := ShortCut(ord('C'), [ssCtrl]);
+  FCopy.OnClick  := @DoCopy;
+  Items.Add(FCopy);
+
+  FSelectAll := TMenuItem.Create(Owner);
+  FSelectAll.Caption := ipdSelectAll;
+  FSelectAll.ShortCut := ShortCut(ord('A'), [ssCtrl]);
+  FSelectAll.OnClick   := @DoSelectAll;
+  Items.Add(FSelectAll);
+
+  TControl(Owner).PopupMenu := Self;
 end;
 
 { TLazIpHtmlDataProvider }

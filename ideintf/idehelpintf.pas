@@ -136,7 +136,8 @@ type
   end;
 
   TIDEHTMLControlFlag = (
-    ihcScrollable
+    ihcScrollable,
+    ihcWithClipboardMenu
   );
 
   TIDEHTMLControlFlags = set of TIDEHTMLControlFlag;
