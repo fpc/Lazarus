@@ -447,6 +447,8 @@ type
     //procedure WMMouseWheel(var Msg: TMessage); message WM_MOUSEWHEEL;
     procedure WMSetFocus(var Msg: TLMSetFocus); message WM_SETFOCUS;
     procedure WMVScroll(var Msg: {$IFDEF SYN_LAZARUS}TLMScroll{$ELSE}TWMScroll{$ENDIF}); message WM_VSCROLL;
+  protected
+    procedure CMWantSpecialKey(var Message: TLMessage); message CM_WANTSPECIALKEY;
   private
     FBlockIndent: integer;
     FBlockTabIndent: integer;
@@ -1114,7 +1116,7 @@ type
     property BracketHighlightStyle: TSynEditBracketHighlightStyle
       read GetBracketHighlightStyle write SetBracketHighlightStyle;
     property TabWidth: integer read fTabWidth write SetTabWidth default 8;
-    property WantTabs: boolean read fWantTabs write SetWantTabs default FALSE;
+    property WantTabs: boolean read fWantTabs write SetWantTabs default True;
 
     // Events
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
@@ -2046,7 +2048,7 @@ begin
   FMouseActionSearchHandlerList := TSynEditMouseActionSearchList.Create;
   FMouseActionExecHandlerList  := TSynEditMouseActionExecList.Create;
 
-  fWantTabs := False;
+  fWantTabs := True;
   fTabWidth := 8;
   FOldTopView := 1;
   FFoldedLinesView.TopLine := 1;
@@ -2629,6 +2631,11 @@ begin
   {$IFDEF VerboseKeys}
   DebugLn('[TCustomSynEdit.KeyDown] ',dbgs(Key),' ',dbgs(Shift));
   {$ENDIF}
+
+  if (not WantTabs) and (Key = VK_TAB) and ((Shift - [ssShift]) = []) then begin
+    inherited KeyDown(Key, Shift);
+    exit;
+  end;
 
   // Run even before OnKeyDown
   if FKeyDownEventList <> nil then
@@ -4561,6 +4568,18 @@ begin
           ActivateHint(Rect(0, 0, 0, 0), '');
         end;
   end;
+end;
+
+procedure TCustomSynEdit.CMWantSpecialKey(var Message: TLMessage);
+begin
+  if (Message.wParam = VK_TAB) then begin
+    if WantTabs then
+      Message.Result := 1
+    else
+      Message.Result := 0;
+  end
+  else
+    inherited CMWantSpecialKey(Message);
 end;
 
 procedure TCustomSynEdit.ScanRanges(ATextChanged: Boolean = True);
