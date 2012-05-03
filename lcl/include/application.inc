@@ -1671,7 +1671,8 @@ begin
     // handle navigation key
     DoTabKey(AControl, Key, Shift);
     DoArrowKey(AControl, Key, Shift);
-  end else
+  end
+  else
     FLastKeyDownSender := nil;
   //DebugLn(['TApplication.ControlKeyDown Sender=',DbgSName(Sender),' Key=',Key,' Shift=',dbgs(Shift)]);
   FLastKeyDownKey := Key;
@@ -1683,21 +1684,23 @@ procedure TApplication.ControlKeyUp(Sender: TObject; var Key: Word;
 var
   AControl: TWinControl;
 begin
-  if Key=VK_UNKNOWN then exit;
+  if Key = VK_UNKNOWN then exit;
 
-  if Sender is TWinControl then begin
-    AControl:=TWinControl(Sender);
+  if Sender is TWinControl then
+  begin
+    AControl := TWinControl(Sender);
     //debugln('TApplication.ControlKeyUp A ',DbgSName(AControl),' Key=',dbgs(Key),' Shift=',dbgs(Shift));
-    if FLastKeyDownKey=VK_UNKNOWN then begin
+    if FLastKeyDownKey = VK_UNKNOWN then
+    begin
       // key was already handled in key down
       //debugln('TApplication.ControlKeyUp key was handled in key down');
-      exit;
+      Exit;
     end;
-    if (Key<>FLastKeyDownKey) or (Shift<>FLastKeyDownShift)
-    or (AControl<>FLastKeyDownSender) then begin
+    if (Key <> FLastKeyDownKey) or (Shift <> FLastKeyDownShift) or (AControl <> FLastKeyDownSender) then
+    begin
       // a key up, without key down
       //debugln('TApplication.ControlKeyUp key was handled in key down or in key up');
-      exit;
+      Exit;
     end;
 
     // handle special navigation keys
@@ -2021,9 +2024,10 @@ procedure TApplication.DoArrowKey(AControl: TWinControl; var Key: Word;
   Shift: TShiftState);
 begin
   if (Key in [VK_LEFT, VK_RIGHT, VK_UP, VK_DOWN]) and (Shift = []) and
+     (AControl.Perform(CM_WANTSPECIALKEY, Key, 0) = 0) and
+     (AControl.Perform(LM_GETDLGCODE, 0, 0) and DLGC_WANTARROWS = 0) and
      (anoArrowToSelectNextInParent in Navigation) and AControl.Focused and
-     (AControl.Parent <> nil) and
-     (AControl.Perform(CM_WANTSPECIALKEY, Key, 0) = 0) then
+     Assigned(AControl.Parent)  then
   begin
     // traverse controls inside parent
     AControl.Parent.SelectNext(AControl, Key in [VK_RIGHT, VK_DOWN], False);
@@ -2079,17 +2083,17 @@ procedure TApplication.DoEscapeKey(AControl: TWinControl; var Key: Word;
 var
   Form: TCustomForm;
 begin
-  if (Shift = []) and (Key = VK_ESCAPE) then begin
+  if (Shift = []) and (Key = VK_ESCAPE) and
+     (AControl.Perform(CM_WANTSPECIALKEY, Key, 0) = 0) and
+     (AControl.Perform(LM_GETDLGCODE, 0, 0) and DLGC_WANTALLKEYS = 0) and
+     (anoEscapeForCancelControl in Navigation) then
+  begin
     Form := GetParentForm(AControl);
-    if Form<>nil then begin
-      if (anoEscapeForCancelControl in Navigation) then begin
-        if (Form.CancelControl <> nil) then
-        begin
-          //debugln('TApplication.ControlKeyUp VK_ESCAPE ', Acontrol.Name);
-          Form.CancelControl.ExecuteCancelAction;
-          Key := VK_UNKNOWN;
-        end;
-      end;
+    if Assigned(Form) and Assigned(Form.CancelControl) then
+    begin
+      //debugln('TApplication.ControlKeyUp VK_ESCAPE ', Acontrol.Name);
+      Form.CancelControl.ExecuteCancelAction;
+      Key := VK_UNKNOWN;
     end;
   end;
 end;
@@ -2100,23 +2104,25 @@ var
   Form: TCustomForm;
   lDefaultControl: TControl;
 begin
-  if (Shift = []) and (Key = VK_RETURN) then begin
+  if (Shift = []) and (Key = VK_RETURN) and
+     (AControl.Perform(CM_WANTSPECIALKEY, Key, 0) = 0) and
+     (AControl.Perform(LM_GETDLGCODE, 0, 0) and DLGC_WANTALLKEYS = 0) and
+     (anoReturnForDefaultControl in Navigation) then
+  begin
     //DebugLn(['TApplication.DoReturnKey ',DbgSName(AControl)]);
     Form := GetParentForm(AControl);
-    if Form<>nil then begin
-      if anoReturnForDefaultControl in Navigation then
+    if Assigned(Form) then
+    begin
+      lDefaultControl := Form.ActiveDefaultControl;
+      if lDefaultControl = nil then
+        lDefaultControl := Form.DefaultControl;
+      if Assigned(lDefaultControl)
+        and ((lDefaultControl.Parent = nil) or (lDefaultControl.Parent.CanFocus))
+        and lDefaultControl.Enabled and lDefaultControl.Visible then
       begin
-        lDefaultControl := Form.ActiveDefaultControl;
-        if lDefaultControl = nil then
-          lDefaultControl := Form.DefaultControl;
-        if (lDefaultControl <> nil)
-          and ((lDefaultControl.Parent = nil) or (lDefaultControl.Parent.CanFocus))
-          and lDefaultControl.Enabled and lDefaultControl.Visible then
-        begin
-          //debugln('TApplication.ControlKeyUp VK_RETURN ', Acontrol.Name);
-          lDefaultControl.ExecuteDefaultAction;
-          Key := VK_UNKNOWN;
-        end;
+        //debugln('TApplication.ControlKeyUp VK_RETURN ', Acontrol.Name);
+        lDefaultControl.ExecuteDefaultAction;
+        Key := VK_UNKNOWN;
       end;
     end;
   end;
@@ -2126,8 +2132,9 @@ procedure TApplication.DoTabKey(AControl: TWinControl; var Key: Word;
   Shift: TShiftState);
 begin
   if (Key = VK_TAB) and ((Shift - [ssShift]) = []) and
-     (anoTabToSelectNext in Navigation) and AControl.Focused and
-     (AControl.Perform(CM_WANTSPECIALKEY, Key, 0) = 0) then
+     (AControl.Perform(CM_WANTSPECIALKEY, Key, 0) = 0) and
+     (AControl.Perform(LM_GETDLGCODE, 0, 0) and DLGC_WANTTAB = 0) and
+     (anoTabToSelectNext in Navigation) and AControl.Focused then
   begin
     // traverse tabstop controls inside form
     AControl.PerformTab(not (ssShift in Shift));

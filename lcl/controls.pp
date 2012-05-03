@@ -1889,7 +1889,6 @@ type
     procedure SetTabStop(NewTabStop: Boolean);
     procedure SetUseDockManager(const AValue: Boolean);
     procedure UpdateTabOrder(NewTabOrder: TTabOrder);
-    function  WantsKeyBeforeInterface(Key: word; Shift: TShiftState): boolean;
     procedure Insert(AControl: TControl);
     procedure Insert(AControl: TControl; Index: integer);
     procedure Remove(AControl: TControl);
