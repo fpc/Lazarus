@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2012-04-28 00:56+0400\n"
+"PO-Revision-Date: 2012-05-04 00:47+0400\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -11859,6 +11859,10 @@ msgstr "(новый проект)"
 msgid "New setting"
 msgstr "Новый параметр"
 
+#: lazarusidestrconsts.lisnewthegnudebuggerthroughsshallowstoremotedebugviaassh
+msgid "The GNU debugger through ssh allows to remote debug via a ssh connection. See docs/RemoteDebugging.txt for details. The path must contain the ssh client.Use SSH_Startup_Options for the hostname and optional username.And Remote_GDB_Exe for the filename of gdb on the remote computer."
+msgstr "Отладчик GNU через SSH позволяет проводить удалённую отладку через соединение SSH. Обратитесь к файлу docs/RemoteDebugging.txt за подробностями. Клиент SSH должен присутствовать в пути. Используйте SSH_Startup_Options для задания имени удалённой машины и, при необходимости, имени пользователя. Параметром Remote_GDB_Exe задаётся имя файла GDB на удалённой машине."
+
 #: lazarusidestrconsts.lisnewunitsareaddedtousessections
 #| msgid "New units are added to uses sections:"
 msgid "New units are added to uses sections"
@@ -15373,10 +15377,6 @@ msgstr "Компилятор Free Pascal (имя файла: %s) не найде
 msgid "The Free Pascal source directory was not found.%sSome code functions will not work.%sIt is recommended that you install it and set the path%sTools -> Options -> Files"
 msgstr "Каталог исходного кода Free Pascal не найден.%sОтдельные действия с кодом не будут работать.%sРекомендуется установить его и установить путь%sСервис -> Параметры -> Файлы"
 
-#: lazarusidestrconsts.listhegnudebuggerthroughsshallowstoremotedebugviaassh
-msgid "The GNU debugger through ssh allows to remote debug via a ssh connection. See docs/RemoteDebugging.txt for details. The path must contain the ssh client filename, the hostname with an optional username and the filename of gdb on the remote computer. For example: %s/usr/bin/ssh username@hostname gdb%s or: %s/usr/bin/setsid /usr/bin/ssh username@hostname gdb%s"
-msgstr "Отладчик GNU через SSH позволяет проводить отладку удалённо через соединение SSH. Обратитесь к файлу docs/RemoteDebugging.txt за подробностями. Путь должен содержать имя файла клиента SSH, имя удалённой машины с (необязательным) именем пользователя и имя файла GDB на удалённой машине. Например: %s/usr/bin/ssh username@hostname gdb%s или: %s/usr/bin/setsid /usr/bin/ssh username@hostname gdb%s"
-
 #: lazarusidestrconsts.listheidentifierisaunitpleaseusethefilesaveasfunction
 msgid "The identifier is a unit. Please use the File - Save as function to rename a unit."
 msgstr "Идентификатор является модулем. Для его переименования используйте функцию Файл -> Сохранить как."
@@ -16090,9 +16090,9 @@ msgstr "Невозможно найти метод."
 msgid "Unable to find pascal unit (.pas,.pp) for .lfm file%s%s%s%s"
 msgstr "Невозможно найти модуль Паскаля (.pas,.pp) для файла .lfm%s%s%s%s"
 
-#: lazarusidestrconsts.lisunabletofindthelfmfileofcomponentclassneededbyunit
-msgid "Unable to find the lfm file of component class \"%s\".%sNeeded by unit:%s%s"
-msgstr "Невозможно найти файл LFM класса компонента \"%s\".%sТребуется для модуля:%s%s"
+#: lazarusidestrconsts.lisunabletofindthecomponentclassitisnotregisteredviar
+msgid "Unable to find the component class \"%s\".%sIt is not registered via RegisterClass and no lfm was found.%sIt is needed by unit:%s%s"
+msgstr "Невозможно найти класс компонента \"%s\".%sОн не зарегистрирован посредством RegisterClass, а соответствующий файл LFM отсутствует.%sТребуется для модуля:%s%s"
 
 #: lazarusidestrconsts.lisunabletogathereditorchanges
 msgid "Unable to gather editor changes."
@@ -16746,6 +16746,10 @@ msgstr "Десятичное"
 #: lazarusidestrconsts.regdlgdisplaytypeforselectedregisters
 msgid "Display type for selected Registers"
 msgstr "Метод отображения значений выбранных регистров"
+
+#: lazarusidestrconsts.regdlgformat
+msgid "Format"
+msgstr "Формат"
 
 #: lazarusidestrconsts.regdlghex
 msgid "Hex"

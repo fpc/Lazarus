@@ -12120,6 +12120,10 @@ msgstr "פרוייקט חדש - s%"
 msgid "New setting"
 msgstr "הגדרות חדשות"
 
+#: lazarusidestrconsts.lisnewthegnudebuggerthroughsshallowstoremotedebugviaassh
+msgid "The GNU debugger through ssh allows to remote debug via a ssh connection. See docs/RemoteDebugging.txt for details. The path must contain the ssh client.Use SSH_Startup_Options for the hostname and optional username.And Remote_GDB_Exe for the filename of gdb on the remote computer."
+msgstr ""
+
 #: lazarusidestrconsts.lisnewunitsareaddedtousessections
 #, fuzzy
 #| msgid "New units are added to uses sections:"
@@ -15693,10 +15697,6 @@ msgstr "המהדר של Free Pascal (שם קובץ\" s%) לא נמצא. מומל
 msgid "The Free Pascal source directory was not found.%sSome code functions will not work.%sIt is recommended that you install it and set the path%sTools -> Options -> Files"
 msgstr "תיקיית הקוד של Free Pascal לא נמצאה. חלק מאפשרויות הקוד לא יעבדו. מומלץ שתתקין ותגדיר את הנתיב Environment -> Environment Options -> Files"
 
-#: lazarusidestrconsts.listhegnudebuggerthroughsshallowstoremotedebugviaassh
-msgid "The GNU debugger through ssh allows to remote debug via a ssh connection. See docs/RemoteDebugging.txt for details. The path must contain the ssh client filename, the hostname with an optional username and the filename of gdb on the remote computer. For example: %s/usr/bin/ssh username@hostname gdb%s or: %s/usr/bin/setsid /usr/bin/ssh username@hostname gdb%s"
-msgstr "מנפה השגיאות של GNU דרך ssh מאפשר ניםוי מרחוק דרך חיבור ssh. לפרטים ראה docs/RemoteDebugging.txt. הנתיב חייב להכיל את שם לקוח ה ssh,שם המארח עם אפשרות לשם משתמש ושם קובץ ה gdb במחשב המרוחק. לדוגמה: usr/bin/ssh username@hostname gdb/או usr/bin/setsid /usr/bin/ssh username@hostname gdb/"
-
 #: lazarusidestrconsts.listheidentifierisaunitpleaseusethefilesaveasfunction
 msgid "The identifier is a unit. Please use the File - Save as function to rename a unit."
 msgstr "המזהה הוא יחידה. השתמש ב File - Save כאמצעי לשינוי שם היחידה."
@@ -16412,8 +16412,8 @@ msgstr "לא יכול למצוא מתודה."
 msgid "Unable to find pascal unit (.pas,.pp) for .lfm file%s%s%s%s"
 msgstr "לא יכול למצוא יחידת פסקל (pas,.pp.) עבור קובץ lfm%s%s%s%s"
 
-#: lazarusidestrconsts.lisunabletofindthelfmfileofcomponentclassneededbyunit
-msgid "Unable to find the lfm file of component class \"%s\".%sNeeded by unit:%s%s"
+#: lazarusidestrconsts.lisunabletofindthecomponentclassitisnotregisteredviar
+msgid "Unable to find the component class \"%s\".%sIt is not registered via RegisterClass and no lfm was found.%sIt is needed by unit:%s%s"
 msgstr ""
 
 #: lazarusidestrconsts.lisunabletogathereditorchanges
@@ -17074,6 +17074,10 @@ msgstr "עשרוני"
 
 #: lazarusidestrconsts.regdlgdisplaytypeforselectedregisters
 msgid "Display type for selected Registers"
+msgstr ""
+
+#: lazarusidestrconsts.regdlgformat
+msgid "Format"
 msgstr ""
 
 #: lazarusidestrconsts.regdlghex
