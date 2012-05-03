@@ -28,6 +28,7 @@ type
     { General reading methods }
     constructor Create; override;
     Destructor Destroy; override;
+    procedure ReadFormulaFromNode(ACurNode: TDOMNode; APage: TvVectorialPage; var AFormula: TvFormula);
     procedure ReadFromStream(AStream: TStream; AData: TvVectorialDocument); override;
   end;
 
@@ -54,12 +55,19 @@ begin
   inherited Destroy;
 end;
 
+procedure TvMathMLVectorialReader.ReadFormulaFromNode(ACurNode: TDOMNode;
+  APage: TvVectorialPage; var AFormula: TvFormula);
+begin
+
+end;
+
 procedure TvMathMLVectorialReader.ReadFromStream(AStream: TStream;
   AData: TvVectorialDocument);
 var
   Doc: TXMLDocument;
   lFirstLayer, lCurNode: TDOMNode;
   lPage: TvVectorialPage;
+  lFormula: TvFormula;
 begin
   try
     // Read in xml file from the stream
@@ -77,7 +85,13 @@ begin
     lPage.Height := AData.Height;
     while Assigned(lCurNode) do
     begin
-      //ReadFormulaFromNode(lCurNode, lPage, AData);
+      if lCurNode.ToString = 'row' then
+      begin
+        lFormula := TvFormula.Create;
+        ReadFormulaFromNode(lCurNode, lPage, lFormula);
+        lPage.AddEntity(lFormula);
+      end;
+
       lCurNode := lCurNode.NextSibling;
     end;
   finally

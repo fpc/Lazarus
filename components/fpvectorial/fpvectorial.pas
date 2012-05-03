@@ -22,8 +22,9 @@ interface
 uses
   Classes, SysUtils, Math,
   // FCL-Image
-  fpcanvas, fpimage
+  fpcanvas, fpimage,
   // LCL
+  lazutf8
   {$ifdef USE_LCL_CANVAS}
   , Graphics, LCLIntf, LCLType
   {$endif}
@@ -175,8 +176,10 @@ type
   public
     X, Y, Z: Double;
     constructor Create; virtual;
-    procedure CalculateBoundingBox(var ALeft, ATop, ARight, ABottom: Double); virtual;
-    procedure ExpandBoundingBox(var ALeft, ATop, ARight, ABottom: Double);
+    // in CalculateBoundingBox always remember to treat correctly the case of ADest=nil!!!
+    // This cased is utilized to guess the size of a document even before getting a canvas to draw at
+    procedure CalculateBoundingBox(ADest: TFPCustomCanvas; var ALeft, ATop, ARight, ABottom: Double); virtual;
+    procedure ExpandBoundingBox(ADest: TFPCustomCanvas; var ALeft, ATop, ARight, ABottom: Double); // helper to help CalculateBoundingBox
     {@@ ASubpart is only valid if this routine returns vfrSubpartFound }
     function TryToSelect(APos: TPoint; var ASubpart: Cardinal): TvFindEntityResult; virtual;
     procedure Move(ADeltaX, ADeltaY: Integer); virtual;
@@ -219,12 +222,15 @@ type
     procedure Assign(ASource: TPath);
     procedure PrepareForSequentialReading;
     function Next(): TPathSegment;
-    procedure CalculateBoundingBox(var ALeft, ATop, ARight, ABottom: Double); override;
+    procedure CalculateBoundingBox(ADest: TFPCustomCanvas; var ALeft, ATop, ARight, ABottom: Double); override;
     procedure AppendSegment(ASegment: TPathSegment);
   end;
 
   {@@
     TvText represents a text entity.
+
+    The text starts in X, Y and grows downwards, towards a smaller Y,
+    just like the text in the LCL TCanvas
   }
 
   { TvText }
@@ -266,14 +272,12 @@ type
     VertHalfAxis: Double; // This half-axis is the vertical one when Angle=0
     {@@ The Angle is measured in degrees in relation to the positive X axis }
     Angle: Double;
-    procedure CalculateBoundingBox(var ALeft, ATop, ARight, ABottom: Double); override;
+    procedure CalculateBoundingBox(ADest: TFPCustomCanvas; var ALeft, ATop, ARight, ABottom: Double); override;
     procedure Render(ADest: TFPCustomCanvas; ADestX: Integer = 0;
       ADestY: Integer = 0; AMulX: Double = 1.0; AMulY: Double = 1.0); override;
   end;
 
   {@@
-   The brush has no effect in this class
-
    DimensionLeft ---text--- DimensionRight
                  |        |
                  |        | BaseRight
@@ -283,7 +287,7 @@ type
 
   { TvAlignedDimension }
 
-  TvAlignedDimension = class(TvEntityWithPenAndBrush)
+  TvAlignedDimension = class(TvEntityWithPen)
   public
     // Mandatory fields
     BaseLeft, BaseRight, DimensionLeft, DimensionRight: T3DPoint;
@@ -314,6 +318,73 @@ type
 
   TvPoint = class(TvEntityWithPen)
   public
+  end;
+
+  {@@
+    The elements bellow describe a formula
+
+    The main element of a formula is TvFormula which contains a horizontal list of
+    the elements of the formula. Those can then have sub-elements
+
+    The formula starts in X, Y and grows downwards, towards a smaller Y
+  }
+
+  TvFormula = class;
+
+  TvFormulaElementKind = (
+    fekVariable,  // Text is the text of the variable
+    fekEqual,     // = symbol
+    fekSubtraction, // - symbol
+    fekMultiplication, // either a point . or a small x
+    fekSum,       // + symbol
+    fekPlusMinus, // The +/- symbol
+    fekFraction,  // a division with Formula on the top and BottomFormula in the bottom
+    fekRoot,      // A root. For example sqrt(something). Number gives the root, usually 2, and inside it goes a Formula
+    fekNumberWithPower, // A number elevated to a given power, example: 2^5
+    fekVariableWithPower, // A variable elevated to a given power, example: X^5
+    fekParenteses,// This is utilized to group elements. Inside it goes a Formula
+    fekParentesesWithPower, // The same as parenteses, but elevated to the power of "Number"
+    fekSomatory   // Sum of a variable given by Text from Number to AdjacentNumber
+    );
+
+  { TvFormulaElement }
+
+  TvFormulaElement = class
+  public
+    Kind: TvFormulaElementKind;
+    Text: string;
+    Number: Double;
+    AdjacentNumber: Double;
+    Formula: TvFormula;
+    BottomFormula: TvFormula;
+    function CalculateHeight: Single; // 1.0 = the normal text height, will return for example 2.2 for 2,2 times the text height
+    function CalculateWidth(ADest: TFPCustomCanvas): Integer; // in pixels
+    function AsText: string;
+  end;
+
+  { TvFormula }
+
+  TvFormula = class(TvEntityWithPenAndBrush)
+  private
+    FCurIndex: Integer;
+    SpacingBetweenElementsX: Integer;
+    procedure CallbackDeleteElement(data,arg:pointer);
+  protected
+    FElements: TFPList; // of TvFormulaElement
+  public
+    constructor Create; override;
+    destructor Destroy; override;
+    //
+    function GetFirstElement: TvFormulaElement;
+    function GetNextElement: TvFormulaElement;
+    procedure AddElement(AElement: TvFormulaElement);
+    procedure Clear;
+    //
+    function CalculateHeight: Single; // 1.0 = the normal text height, will return for example 2.2 for 2,2 times the text height
+    function CalculateWidth(ADest: TFPCustomCanvas): Integer;
+    procedure CalculateBoundingBox(ADest: TFPCustomCanvas; var ALeft, ATop, ARight, ABottom: Double); override;
+    procedure Render(ADest: TFPCustomCanvas; ADestX: Integer = 0;
+      ADestY: Integer = 0; AMulX: Double = 1.0; AMulY: Double = 1.0); override;
   end;
 
   TvProgressEvent = procedure (APercentage: Byte) of object;
@@ -574,6 +645,24 @@ begin
   Result.Z := 0;
 end;
 
+{ TvEntityWithPen }
+
+constructor TvEntityWithPen.Create;
+begin
+  inherited Create;
+  Pen.Style := psSolid;
+  Pen.Color := colBlack;
+end;
+
+{ TvEntityWithPenAndBrush }
+
+constructor TvEntityWithPenAndBrush.Create;
+begin
+  inherited Create;
+  Brush.Style := bsClear;
+  Brush.Color := colBlue;
+end;
+
 { TvRasterImage }
 
 procedure TvRasterImage.InitializeWithConvertionOf3DPointsToHeightMap(APage: TvVectorialPage; AWidth, AHeight: Integer);
@@ -621,20 +710,157 @@ begin
   end;
 end;
 
-constructor TvEntityWithPen.Create;
+{ TvFormulaElement }
+
+function TvFormulaElement.CalculateHeight: Single;
 begin
-  inherited Create;
-  Pen.Style := psSolid;
-  Pen.Color := colBlack;
+  case Kind of
+    //fekVariable,  // Text is the text of the variable
+    //fekEqual,     // = symbol
+    //fekSubtraction, // - symbol
+    //fekMultiplication, // either a point . or a small x
+    //fekSum,       // + symbol
+    //fekPlusMinus, // The +/- symbol
+    fekFraction: Result := 2.3;
+    fekRoot: Result := Formula.CalculateHeight();
+    fekNumberWithPower,
+    fekVariableWithPower: Result := 1.1;
+    //fekParenteses: Result,// This is utilized to group elements. Inside it goes a Formula
+    fekParentesesWithPower: Result := 1.1;
+    fekSomatory: Result := 1.5;
+  else
+    Result := 1.0;
+  end;
 end;
 
-{ TvEntityWithPenAndBrush }
+function TvFormulaElement.CalculateWidth(ADest: TFPCustomCanvas): Integer;
+var
+  lText: String;
+begin
+  Result := 0;
 
-constructor TvEntityWithPenAndBrush.Create;
+  lText := AsText;
+  if lText <> '' then
+  begin
+    if ADest = nil then Result := 10 * UTF8Length(lText)
+    else Result := TCanvas(ADest).TextWidth(lText);
+    Exit;
+  end;
+
+{  case Kind of
+    fekFraction: Result := 2.3;
+    fekRoot: Result := Formula.CalculateHeight();
+    fekNumberWithPower,
+    fekVariableWithPower: Result := 1.1;
+    //fekParenteses: Result,// This is utilized to group elements. Inside it goes a Formula
+    fekParentesesWithPower: Result := 1.1;
+    fekSomatory: Result := 1.5;
+  else
+    Result := 1.0;
+  end;}
+end;
+
+function TvFormulaElement.AsText: string;
+begin
+  case Kind of
+    fekVariable: Result := Text;
+    fekEqual:    Result := '=';
+    fekSubtraction: Result := '-';
+    fekMultiplication: Result := 'x';
+    fekSum: Result := '+';
+    fekPlusMinus: Result := '+/-';
+  else
+    Result := '';
+  end;
+end;
+
+{ TvFormula }
+
+procedure TvFormula.CallbackDeleteElement(data, arg: pointer);
+begin
+  TvFormulaElement(data).Free;
+end;
+
+constructor TvFormula.Create;
 begin
   inherited Create;
-  Brush.Style := bsClear;
-  Brush.Color := colBlue;
+  FElements := TFPList.Create;
+  SpacingBetweenElementsX := 10;
+end;
+
+destructor TvFormula.Destroy;
+begin
+  FElements.Free;
+  inherited Destroy;
+end;
+
+function TvFormula.GetFirstElement: TvFormulaElement;
+begin
+  if FElements.Count = 0 then Exit(nil);
+  Result := FElements.Items[0];
+  FCurIndex := 1;
+end;
+
+function TvFormula.GetNextElement: TvFormulaElement;
+begin
+  if FElements.Count < FCurIndex then Exit(nil);
+  Result := FElements.Items[FCurIndex];
+  Inc(FCurIndex);
+end;
+
+procedure TvFormula.AddElement(AElement: TvFormulaElement);
+begin
+  FElements.Add(AElement);
+end;
+
+procedure TvFormula.Clear;
+begin
+  FElements.ForEachCall(CallbackDeleteElement, nil);
+  FElements.Clear;
+end;
+
+function TvFormula.CalculateHeight: Single;
+var
+  lElement: TvFormulaElement;
+begin
+  Result := 1.0;
+  lElement := GetFirstElement();
+  while lElement <> nil do
+  begin
+    Result := Max(Result, lElement.CalculateHeight());
+    lElement := GetNextElement;
+  end;
+end;
+
+function TvFormula.CalculateWidth(ADest: TFPCustomCanvas): Integer;
+var
+  lElement: TvFormulaElement;
+begin
+  Result := 0;
+  lElement := GetFirstElement();
+  while lElement <> nil do
+  begin
+    Result := Result + lElement.CalculateWidth(ADest) + SpacingBetweenElementsX;
+    lElement := GetNextElement;
+  end;
+end;
+
+procedure TvFormula.CalculateBoundingBox(ADest: TFPCustomCanvas; var ALeft, ATop, ARight,
+  ABottom: Double);
+begin
+  ALeft := X;
+  ATop := Y;
+  ARight := CalculateWidth(ADest);
+  if ADest = nil then ABottom := CalculateHeight() * 15
+  else ABottom := CalculateHeight() * TCanvas(ADest).TextHeight('Źç');
+  ARight := X + ARight;
+  ABottom := Y + ABottom;
+end;
+
+procedure TvFormula.Render(ADest: TFPCustomCanvas; ADestX: Integer;
+  ADestY: Integer; AMulX: Double; AMulY: Double);
+begin
+
 end;
 
 { TvVectorialPage }
@@ -1089,19 +1315,19 @@ constructor TvEntity.Create;
 begin
 end;
 
-procedure TvEntity.CalculateBoundingBox(var ALeft, ATop, ARight, ABottom: Double);
+procedure TvEntity.CalculateBoundingBox(ADest: TFPCustomCanvas; var ALeft, ATop, ARight, ABottom: Double);
 begin
-  ALeft := 0;
-  ATop := 0;
-  ARight := 0;
-  ABottom := 0;
+  ALeft := X;
+  ATop := Y;
+  ARight := X+1;
+  ABottom := Y+1;
 end;
 
-procedure TvEntity.ExpandBoundingBox(var ALeft, ATop, ARight, ABottom: Double);
+procedure TvEntity.ExpandBoundingBox(ADest: TFPCustomCanvas; var ALeft, ATop, ARight, ABottom: Double);
 var
   lLeft, lTop, lRight, lBottom: Double;
 begin
-  CalculateBoundingBox(lLeft, lTop, lRight, lBottom);
+  CalculateBoundingBox(ADest, lLeft, lTop, lRight, lBottom);
   if lLeft < ALeft then ALeft := lLeft;
   if lTop < ATop then ATop := lTop;
   if lRight > ARight then ARight := lRight;
@@ -1141,7 +1367,7 @@ end;
 
 { TvEllipse }
 
-procedure TvEllipse.CalculateBoundingBox(var ALeft, ATop, ARight, ABottom: Double);
+procedure TvEllipse.CalculateBoundingBox(ADest: TFPCustomCanvas; var ALeft, ATop, ARight, ABottom: Double);
 var
   t, tmp: Double;
 begin
@@ -1201,7 +1427,7 @@ var
   ALCLDest: TCanvas absolute ADest;
   {$endif}
 begin
-  CalculateBoundingBox(fx1, fy1, fx2, fy2);
+  CalculateBoundingBox(ADest, fx1, fy1, fx2, fy2);
   x1 := CoordToCanvasX(fx1);
   x2 := CoordToCanvasX(fx2);
   y1 := CoordToCanvasY(fy1);
@@ -1485,7 +1711,7 @@ begin
     for i := 0 to CurPage.GetEntitiesCount() - 1 do
     begin
       lEntity := CurPage.GetEntity(I);
-      lEntity.ExpandBoundingBox(lLeft, lTop, lRight, lBottom);
+      lEntity.ExpandBoundingBox(nil, lLeft, lTop, lRight, lBottom);
     end;
   end;
 
@@ -1668,13 +1894,13 @@ begin
   CurPoint := Result;
 end;
 
-procedure TPath.CalculateBoundingBox(var ALeft, ATop, ARight, ABottom: Double);
+procedure TPath.CalculateBoundingBox(ADest: TFPCustomCanvas; var ALeft, ATop, ARight, ABottom: Double);
 var
   lSegment: TPathSegment;
   l2DSegment: T2DSegment;
   lFirstValue: Boolean = True;
 begin
-  inherited CalculateBoundingBox(ALeft, ATop, ARight, ABottom);
+  inherited CalculateBoundingBox(ADest, ALeft, ATop, ARight, ABottom);
 
   PrepareForSequentialReading();
   lSegment := Next();
