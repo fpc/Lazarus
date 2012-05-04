@@ -53,6 +53,9 @@ Type
   TpsPoint=record
     fx,fy:single;
   end;
+  TpsBounds=record
+    fx,fy,fwidth,fheight:single;
+  end;
 
   TPsCanvasState = ( pcsPosValid, pcsClipping, pcsClipSaved );
   TPsCanvasStatus = set of TPsCanvasState;
@@ -87,6 +90,7 @@ Type
     procedure WriteBoundingBox(UseHeader: boolean);
     
     function TranslateCoord(cnvX,cnvY : Integer):TpsPoint;
+    function TxRectToBounds(aRect: TRect): TpsBounds;
     procedure SetPosition(X,Y : Integer);
     
     procedure UpdateLineWidth;
@@ -766,6 +770,18 @@ begin
     Result.Fx, Result.Fy);
 end;
 
+function TPostScriptPrinterCanvas.TxRectToBounds(aRect: TRect): TpsBounds;
+var
+  p1,p2: TPsPoint;
+begin
+  p1 := TranslateCoord(aRect.Left, aRect.Top);
+  p2 := TranslateCoord(aRect.Right, aRect.Bottom);
+  Result.fx := p1.fx;
+  Result.fy := p2.fy;
+  Result.fwidth := p2.fx-p1.fx;
+  Result.fheight := p1.fy-p2.fy;
+end;
+
 //Save the last position
 procedure TPostScriptPrinterCanvas.SetPosition(X, Y: Integer);
 begin
@@ -1090,12 +1106,14 @@ begin
 end;
 
 procedure TPostScriptPrinterCanvas.SaveClip;
+var
+  B: TpsBounds;
 begin
   Self.WriteComment('Pushing and Setting current clip rect');
   Self.Write('clipsave');
-  psDrawRect(FLazClipRect);
-  Write(FBuffer);
-  Self.Write('clip');
+  B := TxRectToBounds(FLazClipRect);
+  with B do
+    Self.Write(Format('%f %f %f %f rectclip',[fx, fy, fwidth, fheight],FFs));
   Include(FStatus, pcsClipSaved);
 end;
 
