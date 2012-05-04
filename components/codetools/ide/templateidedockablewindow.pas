@@ -73,21 +73,26 @@ procedure Register;
 var
   CmdCatViewMenu: TIDECommandCategory;
   ViewTemplateNameCommand: TIDECommand;
+  MenuItemCaption: String;
 begin
   // register shortcut and menu item
+  MenuItemCaption:='Caption of TemplateName'; // <- this caption should be replaced by a resourcestring
   // search shortcut category
   CmdCatViewMenu:=IDECommandList.FindCategoryByName(CommandCategoryViewName);
   // register shortcut
-  ViewTemplateNameCommand:=RegisterIDECommand(CmdCatViewMenu, 'ViewTemplateName',
-    'TemplateMenuCaption',
+  ViewTemplateNameCommand:=RegisterIDECommand(CmdCatViewMenu,
+    'ViewTemplateName',
+    MenuItemCaption,
     IDEShortCut(VK_UNKNOWN,[]), // <- set here your default shortcut
     CleanIDEShortCut,nil,@ShowTemplateName);
   // register menu item in View menu
-  RegisterIDEMenuCommand(itmViewMainWindows, 'ViewTemplateName',
-    'TemplateMenuCaption', nil, nil, ViewTemplateNameCommand);
+  RegisterIDEMenuCommand(itmViewMainWindows,
+    'ViewTemplateName',
+    MenuItemCaption, nil, nil, ViewTemplateNameCommand);
 
   // register dockable Window
-  TemplateNameCreator:=IDEWindowCreators.Add('TemplateName',
+  TemplateNameCreator:=IDEWindowCreators.Add(
+    'TemplateName',
     @CreateTemplateName,nil,
     '100','100','300','300'  // default place at left=100, top=100, width=300, height=300
      // you can also define percentage values of screen or relative positions, see wiki

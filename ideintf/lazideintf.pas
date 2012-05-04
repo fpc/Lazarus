@@ -200,7 +200,7 @@ type
                              NewFilename: string; const NewSource: string;
                              NewFlags: TNewFlags): TModalResult;
     function DoNewFile(NewFileDescriptor: TProjectFileDescriptor;
-                       var NewFilename: string; const NewSource: string;
+                       var NewFilename: string; NewSource: string;
                        NewFlags: TNewFlags; NewOwner: TObject): TModalResult; virtual; abstract;
     function DoSaveEditorFile(PageIndex:integer;
                               Flags: TSaveFlags): TModalResult; virtual; abstract;

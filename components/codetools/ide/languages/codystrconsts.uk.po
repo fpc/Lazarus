@@ -25,6 +25,11 @@ msgstr "Додати метод Assign ..."
 msgid "Add a \"With\" Block"
 msgstr ""
 
+#: codystrconsts.crsaddunittoimplementationusessection
+msgctxt "codystrconsts.crsaddunittoimplementationusessection"
+msgid "Add unit to implementation uses section"
+msgstr ""
+
 #: codystrconsts.crsaddwithblock
 msgid "Add \"With\" Block"
 msgstr ""
@@ -39,6 +44,10 @@ msgstr "Вже визначений в %s"
 
 #: codystrconsts.crsandmoreidentifiers
 msgid "... and %s more identifiers"
+msgstr ""
+
+#: codystrconsts.crsawindowforthelazarusideitcanbedockedlikethecodeexp
+msgid "A window for the Lazarus IDE. It can be docked like the Code Explorer or the FPDoc Editor. This also creates a menu item in the View menu and a short cut."
 msgstr ""
 
 #: codystrconsts.crsbtncancel
@@ -149,6 +158,10 @@ msgstr "?видимість?"
 msgid "%s, written by property %s"
 msgstr "%s, записаний властивістю %s"
 
+#: codystrconsts.crscheetaheditor
+msgid "Cheetah Editor"
+msgstr ""
+
 #: codystrconsts.crsclose
 msgid "&Close"
 msgstr "&Закрити"
@@ -169,8 +182,21 @@ msgstr "Інформація про Вузол Коду"
 msgid "Identifier Dictionary"
 msgstr ""
 
+#: codystrconsts.crscogeneral
+msgctxt "codystrconsts.crscogeneral"
+msgid "General"
+msgstr "Загальні"
+
+#: codystrconsts.crsconfigurenewidewindow
+msgid "Configure new IDE window"
+msgstr ""
+
 #: codystrconsts.crscontains
 msgid "Contains"
+msgstr ""
+
+#: codystrconsts.crscontinue
+msgid "Continue"
 msgstr ""
 
 #: codystrconsts.crscopydeclarationtoclipboard
@@ -182,6 +208,11 @@ msgstr "Копіювати оголошення в буфер"
 #: codystrconsts.crscount
 msgid "Count"
 msgstr ""
+
+#: codystrconsts.crscousespath
+msgctxt "codystrconsts.crscousespath"
+msgid "Uses path"
+msgstr "Шлях Uses"
 
 #: codystrconsts.crscuallfiles
 msgid "%s|All files (%s)|%s"
@@ -315,6 +346,15 @@ msgstr ""
 msgid "Identifier \"%s\" not found in unit \"%s\". Maybe the identifier does not exist for this platform or maybe the identifier was deleted/renamed."
 msgstr ""
 
+#: codystrconsts.crsidewindowdockable
+msgid "IDE window, dockable"
+msgstr ""
+
+#: codystrconsts.crsifidentifierisaddedtotheimplementationsectionandne
+msgctxt "codystrconsts.crsifidentifierisaddedtotheimplementationsectionandne"
+msgid "If identifier is added to the implementation section and needed unit needs to be added, add to the uses section of the implementation"
+msgstr ""
+
 #: codystrconsts.crsimpossibledependency
 msgid "Impossible dependency"
 msgstr ""
@@ -369,6 +409,10 @@ msgstr "МБ"
 msgid "%s member of %s %s"
 msgstr "%s членів %s %s"
 
+#: codystrconsts.crsmenuitemcaption
+msgid "Menu item caption:"
+msgstr ""
+
 #: codystrconsts.crsminutes
 msgid "%s minutes"
 msgstr ""
@@ -384,6 +428,10 @@ msgstr ""
 #: codystrconsts.crsnoproject
 msgid "No project"
 msgstr "Немає проекту"
+
+#: codystrconsts.crsnotethenameoftheformmustbeavalidpascalidentifieran
+msgid "Note: The name of the form must be a valid pascal identifier and unique across the whole IDE, which includes all packages. Prepend the name with an abbreviation of your package. The prefixes \"IDE\", \"Laz\", \"Pkg\" are already used by the IDE itself."
+msgstr ""
 
 #: codystrconsts.crsnounitselected
 msgid "No unit selected"
@@ -668,20 +716,4 @@ msgstr "Віртуальний модуль"
 #: codystrconsts.crswhere
 msgid "Where"
 msgstr "Розміщення"
-
-#: codystrconsts.lisaddunittoimplementationusessection
-msgid "Add unit to implementation uses section"
-msgstr ""
-
-#: codystrconsts.liscogeneral
-msgid "General"
-msgstr "Загальні"
-
-#: codystrconsts.liscousespath
-msgid "Uses path"
-msgstr "Шлях Uses"
-
-#: codystrconsts.lisifidentifierisaddedtotheimplementationsectionandne
-msgid "If identifier is added to the implementation section and needed unit needs to be added, add to the uses section of the implementation"
-msgstr ""
 

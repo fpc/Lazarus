@@ -34,9 +34,9 @@ resourcestring
   crsPleaseOpenAProjectFirst = 'Please open a project first.';
   crsPPUFilesOfProject = 'PPU files of project "%s"';
   crsUses = 'Uses';
-  lisCOGeneral = 'General';
+  crsCOGeneral = 'General';
   crsUsedBy = 'Used by';
-  lisCOUsesPath = 'Uses path';
+  crsCOUsesPath = 'Uses path';
   crsProjectHasNoMainSourceFile = 'Project has no main source file.';
   crsMainSourceFile = 'Main source file: %s';
   crsSizeOfPpuFile = 'Size of .ppu file';
@@ -166,9 +166,9 @@ resourcestring
   crsRefresh = 'Refresh';
   crsFilter = '(Filter)';
   crsHideUnitsOfOtherProjects = 'Hide units of other projects';
-  lisAddUnitToImplementationUsesSection = 'Add unit to implementation uses '
+  crsAddUnitToImplementationUsesSection = 'Add unit to implementation uses '
     +'section';
-  lisIfIdentifierIsAddedToTheImplementationSectionAndNe = 'If identifier is '
+  crsIfIdentifierIsAddedToTheImplementationSectionAndNe = 'If identifier is '
     +'added to the implementation section and needed unit needs to be added, '
     +'add to the uses section of the implementation';
   crsJumpTo = '&Jump to';
@@ -227,6 +227,19 @@ resourcestring
   crsTheDictionaryIsSavedInIntervals = 'The dictionary is saved in intervals';
   crsSaveDictionaryNow = 'Save dictionary now';
   crsSaveToFile = 'Save to file %s';
+  crsConfigureNewIDEWindow = 'Configure new IDE window';
+  crsNoteTheNameOfTheFormMustBeAValidPascalIdentifierAn = 'Note: The name of '
+    +'the form must be a valid pascal identifier and unique across the whole '
+    +'IDE, which includes all packages. Prepend the name with an abbreviation '
+    +'of your package. The prefixes "IDE", "Laz", "Pkg" are already used by '
+    +'the IDE itself.';
+  crsMenuItemCaption = 'Menu item caption:';
+  crsCheetahEditor = 'Cheetah Editor';
+  crsContinue = 'Continue';
+  crsIDEWindowDockable = 'IDE window, dockable';
+  crsAWindowForTheLazarusIDEItCanBeDockedLikeTheCodeExp = 'A window for the '
+    +'Lazarus IDE. It can be docked like the Code Explorer or the FPDoc Editor'
+    +'. This also creates a menu item in the View menu and a short cut.';
 
 implementation
 

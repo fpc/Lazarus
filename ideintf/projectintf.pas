@@ -127,6 +127,8 @@ type
     function CreateSource(const Filename, SourceName,
                           ResourceName: string): string; virtual;
     procedure UpdateDefaultPascalFileExtension(const DefPasExt: string); virtual;
+    function Init(var NewFilename: string; NewOwner: TObject;
+                  var NewSource: string; Quiet: boolean): TModalResult; virtual;
   public
     property Owner: TObject read FOwner write SetOwner; // project, package or nil
     property Name: string read FName write SetName;
@@ -800,6 +802,12 @@ begin
     DefaultFileExt:=DefPasExt;
   if FilenameIsPascalUnit(DefaultFilename) then
     DefaultFilename:=ChangeFileExt(DefaultFilename,DefPasExt);
+end;
+
+function TProjectFileDescriptor.Init(var NewFilename: string;
+  NewOwner: TObject; var NewSource: string; Quiet: boolean): TModalResult;
+begin
+  Result:=mrOk;
 end;
 
 { TFileDescPascalUnit }

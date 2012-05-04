@@ -804,7 +804,7 @@ type
 
     // files/units
     function DoNewFile(NewFileDescriptor: TProjectFileDescriptor;
-        var NewFilename: string; const NewSource: string;
+        var NewFilename: string; NewSource: string;
         NewFlags: TNewFlags; NewOwner: TObject): TModalResult; override;
     function DoNewOther: TModalResult;
     procedure CreateFileDialogFilterForSourceEditorFiles(Filter: string;
@@ -8819,7 +8819,7 @@ begin
 end;
 
 function TMainIDE.DoNewFile(NewFileDescriptor: TProjectFileDescriptor;
-  var NewFilename: string; const NewSource: string;
+  var NewFilename: string; NewSource: string;
   NewFlags: TNewFlags; NewOwner: TObject): TModalResult;
 
   function BeautifySrc(const s: string): string;
@@ -8860,6 +8860,9 @@ begin
       exit;
     end;
   end;
+
+  Result:=NewFileDescriptor.Init(NewFilename,NewOwner,NewSource,nfQuiet in NewFlags);
+  if Result<>mrOk then exit;
 
   if FilenameIsAbsolute(NewFilename) and DirectoryExistsUTF8(NewFilename) then
   begin
@@ -9113,19 +9116,21 @@ end;
 function TMainIDE.DoNewOther: TModalResult;
 var
   NewIDEItem: TNewIDEItemTemplate;
+  NewFile: TNewItemProjectFile;
 begin
   Result:=ShowNewIDEItemDialog(NewIDEItem);
   if Result<>mrOk then exit;
   if NewIDEItem is TNewItemProjectFile then begin
     // file
-    if TNewItemProjectFile(NewIDEItem).Descriptor<>nil then
-      TNewItemProjectFile(NewIDEItem).Descriptor.Owner:=Project1;
+    NewFile:=TNewItemProjectFile(NewIDEItem);
+    if NewFile.Descriptor<>nil then
+      NewFile.Descriptor.Owner:=Project1;
     try
-      Result:=DoNewEditorFile(TNewItemProjectFile(NewIDEItem).Descriptor,
+      Result:=DoNewEditorFile(NewFile.Descriptor,
                                      '','',[nfOpenInEditor,nfCreateDefaultSrc]);
     finally
-      if TNewItemProjectFile(NewIDEItem).Descriptor<>nil then
-        TNewItemProjectFile(NewIDEItem).Descriptor.Owner:=nil;
+      if NewFile.Descriptor<>nil then
+        NewFile.Descriptor.Owner:=nil;
     end;
   end else if NewIDEItem is TNewItemProject then begin
     // project

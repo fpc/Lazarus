@@ -21,6 +21,11 @@ msgstr ""
 msgid "Add a \"With\" Block"
 msgstr ""
 
+#: codystrconsts.crsaddunittoimplementationusessection
+msgctxt "codystrconsts.crsaddunittoimplementationusessection"
+msgid "Add unit to implementation uses section"
+msgstr ""
+
 #: codystrconsts.crsaddwithblock
 msgid "Add \"With\" Block"
 msgstr ""
@@ -35,6 +40,10 @@ msgstr ""
 
 #: codystrconsts.crsandmoreidentifiers
 msgid "... and %s more identifiers"
+msgstr ""
+
+#: codystrconsts.crsawindowforthelazarusideitcanbedockedlikethecodeexp
+msgid "A window for the Lazarus IDE. It can be docked like the Code Explorer or the FPDoc Editor. This also creates a menu item in the View menu and a short cut."
 msgstr ""
 
 #: codystrconsts.crsbtncancel
@@ -145,6 +154,10 @@ msgstr ""
 msgid "%s, written by property %s"
 msgstr ""
 
+#: codystrconsts.crscheetaheditor
+msgid "Cheetah Editor"
+msgstr ""
+
 #: codystrconsts.crsclose
 msgid "&Close"
 msgstr ""
@@ -165,8 +178,21 @@ msgstr ""
 msgid "Identifier Dictionary"
 msgstr ""
 
+#: codystrconsts.crscogeneral
+msgctxt "codystrconsts.crscogeneral"
+msgid "General"
+msgstr ""
+
+#: codystrconsts.crsconfigurenewidewindow
+msgid "Configure new IDE window"
+msgstr ""
+
 #: codystrconsts.crscontains
 msgid "Contains"
+msgstr ""
+
+#: codystrconsts.crscontinue
+msgid "Continue"
 msgstr ""
 
 #: codystrconsts.crscopydeclarationtoclipboard
@@ -175,6 +201,11 @@ msgstr "Deklaration in Zwischenablage kopieren"
 
 #: codystrconsts.crscount
 msgid "Count"
+msgstr ""
+
+#: codystrconsts.crscousespath
+msgctxt "codystrconsts.crscousespath"
+msgid "Uses path"
 msgstr ""
 
 #: codystrconsts.crscuallfiles
@@ -305,6 +336,15 @@ msgstr "Bezeichner nicht gefunden"
 msgid "Identifier \"%s\" not found in unit \"%s\". Maybe the identifier does not exist for this platform or maybe the identifier was deleted/renamed."
 msgstr ""
 
+#: codystrconsts.crsidewindowdockable
+msgid "IDE window, dockable"
+msgstr ""
+
+#: codystrconsts.crsifidentifierisaddedtotheimplementationsectionandne
+msgctxt "codystrconsts.crsifidentifierisaddedtotheimplementationsectionandne"
+msgid "If identifier is added to the implementation section and needed unit needs to be added, add to the uses section of the implementation"
+msgstr ""
+
 #: codystrconsts.crsimpossibledependency
 msgid "Impossible dependency"
 msgstr "Unmögliche Abhängigkeit"
@@ -357,6 +397,10 @@ msgstr ""
 msgid "%s member of %s %s"
 msgstr ""
 
+#: codystrconsts.crsmenuitemcaption
+msgid "Menu item caption:"
+msgstr ""
+
 #: codystrconsts.crsminutes
 msgid "%s minutes"
 msgstr ""
@@ -372,6 +416,10 @@ msgstr ""
 #: codystrconsts.crsnoproject
 msgid "No project"
 msgstr "Kein Projekt"
+
+#: codystrconsts.crsnotethenameoftheformmustbeavalidpascalidentifieran
+msgid "Note: The name of the form must be a valid pascal identifier and unique across the whole IDE, which includes all packages. Prepend the name with an abbreviation of your package. The prefixes \"IDE\", \"Laz\", \"Pkg\" are already used by the IDE itself."
+msgstr ""
 
 #: codystrconsts.crsnounitselected
 msgid "No unit selected"
@@ -647,21 +695,5 @@ msgstr ""
 
 #: codystrconsts.crswhere
 msgid "Where"
-msgstr ""
-
-#: codystrconsts.lisaddunittoimplementationusessection
-msgid "Add unit to implementation uses section"
-msgstr ""
-
-#: codystrconsts.liscogeneral
-msgid "General"
-msgstr ""
-
-#: codystrconsts.liscousespath
-msgid "Uses path"
-msgstr ""
-
-#: codystrconsts.lisifidentifierisaddedtotheimplementationsectionandne
-msgid "If identifier is added to the implementation section and needed unit needs to be added, add to the uses section of the implementation"
 msgstr ""
 

@@ -799,9 +799,9 @@ begin
   HideOtherProjectsCheckBox.Checked:=true;
   HideOtherProjectsCheckBox.Caption:=crsHideUnitsOfOtherProjects;
   AddToImplementationUsesCheckBox.Caption:=
-    lisAddUnitToImplementationUsesSection;
+    crsAddUnitToImplementationUsesSection;
   AddToImplementationUsesCheckBox.Hint:=
-    lisIfIdentifierIsAddedToTheImplementationSectionAndNe;
+    crsIfIdentifierIsAddedToTheImplementationSectionAndNe;
 
   FJumpButton:=AddButton;
   FJumpButton.Name:='JumpButton';

@@ -274,7 +274,7 @@ begin
   UnitsStringGrid.Columns[4].Title.Caption:=crsUsedBy;
   UnitsStringGrid.Columns[5].Title.Caption:=crsPackage;
 
-  InfoTabSheet.Caption:=lisCOGeneral;
+  InfoTabSheet.Caption:=crsCOGeneral;
 
   UsesTabSheet.Caption:=crsUses;
   UsesStringGrid.Columns[0].Title.Caption:=crsUnit;
@@ -282,7 +282,7 @@ begin
   UsedByTabSheet.Caption:=crsUsedBy;
   UsedByStringGrid.Columns[0].Title.Caption:=crsUnit;
 
-  UsesPathTabSheet.Caption:=lisCOUsesPath;
+  UsesPathTabSheet.Caption:=crsCOUsesPath;
   UsesPathStringGrid.Columns[0].Title.Caption:=crsUnit;
 
   UnitLinkedFilesTabSheet.Caption:=crsLinkedFiles;

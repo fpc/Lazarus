@@ -24,6 +24,11 @@ msgstr "Adicionar método \"Assign\" ..."
 msgid "Add a \"With\" Block"
 msgstr "Adicionar um bloco \"With\""
 
+#: codystrconsts.crsaddunittoimplementationusessection
+msgctxt "codystrconsts.crsaddunittoimplementationusessection"
+msgid "Add unit to implementation uses section"
+msgstr "Adicionar unidade à seção \"uses\" da implementação"
+
 #: codystrconsts.crsaddwithblock
 msgid "Add \"With\" Block"
 msgstr "Adicionar bloco \"With\""
@@ -39,6 +44,10 @@ msgstr "Já definido em %s"
 #: codystrconsts.crsandmoreidentifiers
 msgid "... and %s more identifiers"
 msgstr "... e mais %s identificadores"
+
+#: codystrconsts.crsawindowforthelazarusideitcanbedockedlikethecodeexp
+msgid "A window for the Lazarus IDE. It can be docked like the Code Explorer or the FPDoc Editor. This also creates a menu item in the View menu and a short cut."
+msgstr ""
 
 #: codystrconsts.crsbtncancel
 msgid "Cancel"
@@ -148,6 +157,10 @@ msgstr "?visibilidade?"
 msgid "%s, written by property %s"
 msgstr "%s, escrito pela propriedade %s"
 
+#: codystrconsts.crscheetaheditor
+msgid "Cheetah Editor"
+msgstr ""
+
 #: codystrconsts.crsclose
 msgid "&Close"
 msgstr "&Fechar"
@@ -169,9 +182,22 @@ msgstr "Informação Nó de Código"
 msgid "Identifier Dictionary"
 msgstr "Dicionário de identificadores"
 
+#: codystrconsts.crscogeneral
+msgctxt "codystrconsts.crscogeneral"
+msgid "General"
+msgstr "Geral"
+
+#: codystrconsts.crsconfigurenewidewindow
+msgid "Configure new IDE window"
+msgstr ""
+
 #: codystrconsts.crscontains
 msgid "Contains"
 msgstr "Contém"
+
+#: codystrconsts.crscontinue
+msgid "Continue"
+msgstr ""
 
 #: codystrconsts.crscopydeclarationtoclipboard
 #| msgid "Copy declaration to clipboard"
@@ -181,6 +207,11 @@ msgstr "Copiar declaração para área de transferência"
 #: codystrconsts.crscount
 msgid "Count"
 msgstr "Conta"
+
+#: codystrconsts.crscousespath
+msgctxt "codystrconsts.crscousespath"
+msgid "Uses path"
+msgstr "Caminho \"uses\""
 
 #: codystrconsts.crscuallfiles
 msgid "%s|All files (%s)|%s"
@@ -312,6 +343,15 @@ msgstr "Identificador não encontrado"
 msgid "Identifier \"%s\" not found in unit \"%s\". Maybe the identifier does not exist for this platform or maybe the identifier was deleted/renamed."
 msgstr "Identificador \"%s\" não encontrado na unidade \"%s\". Talvez o identificador não exista para esta plataforma ou talvez tenha sido excluído/renomeado."
 
+#: codystrconsts.crsidewindowdockable
+msgid "IDE window, dockable"
+msgstr ""
+
+#: codystrconsts.crsifidentifierisaddedtotheimplementationsectionandne
+msgctxt "codystrconsts.crsifidentifierisaddedtotheimplementationsectionandne"
+msgid "If identifier is added to the implementation section and needed unit needs to be added, add to the uses section of the implementation"
+msgstr "Se o identificador for adicionado à seção de implementação e a unidade necessária precisar ser adicionada, adicionar à seção \"uses\" da implementação"
+
 #: codystrconsts.crsimpossibledependency
 msgid "Impossible dependency"
 msgstr "Dependência impossível"
@@ -366,6 +406,10 @@ msgstr "Mbytes"
 msgid "%s member of %s %s"
 msgstr "%s membro de %s %s"
 
+#: codystrconsts.crsmenuitemcaption
+msgid "Menu item caption:"
+msgstr ""
+
 #: codystrconsts.crsminutes
 msgid "%s minutes"
 msgstr "%s minutos"
@@ -381,6 +425,10 @@ msgstr "nada selecionado"
 #: codystrconsts.crsnoproject
 msgid "No project"
 msgstr "Nenhum projeto"
+
+#: codystrconsts.crsnotethenameoftheformmustbeavalidpascalidentifieran
+msgid "Note: The name of the form must be a valid pascal identifier and unique across the whole IDE, which includes all packages. Prepend the name with an abbreviation of your package. The prefixes \"IDE\", \"Laz\", \"Pkg\" are already used by the IDE itself."
+msgstr ""
 
 #: codystrconsts.crsnounitselected
 msgid "No unit selected"
@@ -663,20 +711,4 @@ msgstr "Unidade Virtual"
 #: codystrconsts.crswhere
 msgid "Where"
 msgstr "Where"
-
-#: codystrconsts.lisaddunittoimplementationusessection
-msgid "Add unit to implementation uses section"
-msgstr "Adicionar unidade à seção \"uses\" da implementação"
-
-#: codystrconsts.liscogeneral
-msgid "General"
-msgstr "Geral"
-
-#: codystrconsts.liscousespath
-msgid "Uses path"
-msgstr "Caminho \"uses\""
-
-#: codystrconsts.lisifidentifierisaddedtotheimplementationsectionandne
-msgid "If identifier is added to the implementation section and needed unit needs to be added, add to the uses section of the implementation"
-msgstr "Se o identificador for adicionado à seção de implementação e a unidade necessária precisar ser adicionada, adicionar à seção \"uses\" da implementação"
 
