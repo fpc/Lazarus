@@ -3099,7 +3099,18 @@ function InitLazResourceComponent(Instance: TComponent;
   end;
 
 begin
-  Result := InitComponent(Instance.ClassType);
+  if Instance.ComponentState * [csLoading, csInline] <> []
+  then begin
+    // global loading not needed
+    Result := InitComponent(Instance.ClassType);
+  end
+  else try
+    BeginGlobalLoading;
+    Result := InitComponent(Instance.ClassType);
+    NotifyGlobalLoading;
+  finally
+    EndGlobalLoading;
+  end;
 end;
 
 function CreateLRSReader(s: TStream; var DestroyDriver: boolean): TReader;
