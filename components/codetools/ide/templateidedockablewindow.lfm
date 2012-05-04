@@ -1,0 +1,8 @@
+object TemplateName: TTemplateName
+  Left = 249
+  Height = 240
+  Top = 225
+  Width = 320
+  Caption = 'TemplateName'
+  LCLVersion = '1.1'
+end

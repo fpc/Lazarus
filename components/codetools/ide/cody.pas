@@ -2,7 +2,7 @@
   This source is only used to compile and install the package.
  }
 
-unit Cody; 
+unit Cody;
 
 interface
 
@@ -10,15 +10,15 @@ uses
   PPUListDlg, CodyStrConsts, AddAssignMethodDlg, CodyCtrls, CodyFrm, 
   CodyRegistration, DeclareVarDlg, CodyUtils, CodyNodeInfoDlg, 
   CodyCopyDeclaration, AddWithBlockDlg, CodyIdentifiersDlg, CodyMiscOptsFrame, 
-  CodyOpts, LazarusPackageIntf;
+  CodyOpts, TemplateIDEDockableWindow, LazarusPackageIntf;
 
 implementation
 
-procedure Register; 
+procedure Register;
 begin
-  RegisterUnit('CodyRegistration', @CodyRegistration.Register); 
-end; 
+  RegisterUnit('CodyRegistration', @CodyRegistration.Register);
+end;
 
 initialization
-  RegisterPackage('Cody', @Register); 
+  RegisterPackage('Cody', @Register);
 end.

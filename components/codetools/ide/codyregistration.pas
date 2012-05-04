@@ -30,11 +30,40 @@ unit CodyRegistration;
 interface
 
 uses
-  Classes, SysUtils, LResources, LCLProc, Controls,
-  IDECommands, MenuIntf, IDEWindowIntf, SrcEditorIntf, IDEOptionsIntf,
-  CodyStrConsts, CodyCtrls, PPUListDlg, AddAssignMethodDlg, AddWithBlockDlg,
-  CodyUtils, CodyNodeInfoDlg, CodyFrm, DeclareVarDlg, CodyCopyDeclaration,
-  CodyIdentifiersDlg, CodyMiscOptsFrame, CodyOpts;
+  Classes, SysUtils, LResources, LCLProc, Controls, Forms, IDECommands,
+  MenuIntf, IDEWindowIntf, SrcEditorIntf, IDEOptionsIntf, ProjectIntf,
+  MacroIntf, CodyStrConsts, CodyCtrls, PPUListDlg,
+  AddAssignMethodDlg, AddWithBlockDlg, CodyUtils, CodyNodeInfoDlg, CodyFrm,
+  DeclareVarDlg, CodyCopyDeclaration, CodyIdentifiersDlg, CodyMiscOptsFrame,
+  CodyOpts, CodeToolManager, CodeCache, LazFileUtils, LazUTF8;
+
+type
+
+  { TFileDescIDEDockableWindow }
+
+  TFileDescIDEDockableWindow = class(TFileDescPascalUnit)
+  private
+    FTemplateImplementation: string;
+    FTemplateInterface: string;
+    FTemplateLFM: string;
+    FTemplateUsesSection: string;
+    FTemplateLoaded: boolean;
+    function ExtractTemplate(Src, StartMarker, EndMarker: string): string;
+    procedure LoadTemplate;
+  public
+    constructor Create; override;
+    function GetLocalizedName: string; override;
+    function GetLocalizedDescription: string; override;
+    function GetInterfaceUsesSection: string; override;
+    function GetInterfaceSource(const {%H-}Filename, {%H-}SourceName,
+                                ResourceName: string): string; override;
+    function GetImplementationSource(const {%H-}Filename, {%H-}SourceName,
+                                     ResourceName: string): string; override;
+    property TemplateUsesSection: string read FTemplateUsesSection write FTemplateUsesSection;
+    property TemplateInterface: string read FTemplateInterface write FTemplateInterface;
+    property TemplateImplementation: string read FTemplateImplementation write FTemplateImplementation;
+    property TemplateLFM: string read FTemplateLFM write FTemplateLFM;
+  end;
 
 procedure Register;
 
@@ -205,13 +234,129 @@ begin
   CodyWindowCreator:=IDEWindowCreators.Add(CodyWindowName,@CreateCodyWindow,nil,
     '80%','50%','+18%','+25%','CodeExplorer',alBottom);
 
-  // Options - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+  // File types - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+  RegisterProjectFileDescriptor(TFileDescIDEDockableWindow.Create);
+
+  // Options Frame - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   CodyMiscOptionID:=RegisterIDEOptionsEditor(GroupCodetools,
       TCodyMiscOptionsFrame,CodyMiscOptionID)^.Index;
   CodyOptions.Apply;
 
   // Global handlers - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   SourceEditorManagerIntf.RegisterCopyPasteEvent(@Cody.SrcEditCopyPaste);
+end;
+
+{ TFileDescIDEDockableWindow }
+
+function TFileDescIDEDockableWindow.ExtractTemplate(Src, StartMarker,
+  EndMarker: string): string;
+var
+  StartPos: SizeInt;
+  EndPos: SizeInt;
+begin
+  StartPos:=system.Pos(StartMarker,Src);
+  EndPos:=system.Pos(EndMarker,Src);
+  if StartPos<1 then begin
+    debugln(['ERROR: TFileDescIDEDockableWindow.ExtractTemplate marker "'+StartMarker+'" not found']);
+    debugln('Source: ==================================================');
+    debugln(Src);
+    debugln('==========================================================');
+    exit;
+  end;
+  if EndPos<1 then begin
+    debugln(['ERROR: TFileDescIDEDockableWindow.ExtractTemplate marker "'+EndMarker+'" not found']);
+    exit;
+  end;
+  inc(StartPos,length(StartMarker));
+  Result:=UTF8Trim(copy(Src,StartPos,EndPos-StartPos));
+end;
+
+procedure TFileDescIDEDockableWindow.LoadTemplate;
+var
+  BaseDir: String;
+  Filename: String;
+  Code: TCodeBuffer;
+begin
+  if FTemplateLoaded then exit;
+
+  BaseDir:='$PkgDir(Cody)';
+  IDEMacros.SubstituteMacros(BaseDir);
+  if (BaseDir='') or (not DirectoryExistsUTF8(BaseDir)) then begin
+    debugln(['ERROR: TFileDescIDEDockableWindow.Create cody directory not found']);
+    exit;
+  end;
+
+  // load unit source
+  Filename:=AppendPathDelim(BaseDir)+'templateidedockablewindow.pas';
+  if not FileExistsUTF8(Filename) then begin
+    debugln(['ERROR: TFileDescIDEDockableWindow.Create template file not found: '+Filename]);
+    exit;
+  end;
+  Code:=CodeToolBoss.LoadFile(Filename,true,false);
+  if Code=nil then begin
+    debugln(['ERROR: TFileDescIDEDockableWindow.Create unable to read file ',Filename]);
+    exit;
+  end;
+
+  TemplateUsesSection:=ExtractTemplate(Code.Source,'// UsesStart','// UsesEnd');
+  TemplateInterface:=ExtractTemplate(Code.Source,'// InterfaceStart','// InterfaceEnd');
+  TemplateImplementation:=ExtractTemplate(Code.Source,'// ImplementationStart','// ImplementationEnd');
+
+  // load lfm
+  Filename:=AppendPathDelim(BaseDir)+'templateidedockablewindow.lfm';
+  if not FileExistsUTF8(Filename) then begin
+    debugln(['ERROR: TFileDescIDEDockableWindow.Create template file not found: '+Filename]);
+    exit;
+  end;
+  Code:=CodeToolBoss.LoadFile(Filename,true,false);
+  if Code=nil then begin
+    debugln(['ERROR: TFileDescIDEDockableWindow.Create unable to read file ',Filename]);
+    exit;
+  end;
+
+  TemplateLFM:=Code.Source;
+end;
+
+constructor TFileDescIDEDockableWindow.Create;
+begin
+  inherited Create;
+  Name:='IDE window, dockable';
+  ResourceClass:=TForm;
+  UseCreateFormStatements:=false;
+  RequiredPackages:='IDEIntf';
+  AddToProject:=false;
+  TemplateInterface:='failed loading template';
+end;
+
+function TFileDescIDEDockableWindow.GetLocalizedName: string;
+begin
+  Result:='IDE window, dockable';
+end;
+
+function TFileDescIDEDockableWindow.GetLocalizedDescription: string;
+begin
+  Result:='A window for the Lazarus IDE. It can be docked like the Code Explorer or the FPDoc Editor. This also creates a menu item in the View menu and a short cut.';
+end;
+
+function TFileDescIDEDockableWindow.GetInterfaceUsesSection: string;
+begin
+  LoadTemplate;
+  Result:=TemplateUsesSection;
+end;
+
+function TFileDescIDEDockableWindow.GetInterfaceSource(const Filename,
+  SourceName, ResourceName: string): string;
+begin
+  LoadTemplate;
+  Result:=StringReplace(TemplateInterface,'TemplateName',ResourceName,[rfReplaceAll]);
+end;
+
+function TFileDescIDEDockableWindow.GetImplementationSource(const Filename,
+  SourceName, ResourceName: string): string;
+begin
+  LoadTemplate;
+  Result:=StringReplace(TemplateImplementation,'TemplateName',ResourceName,[rfReplaceAll])
+          +LineEnding+LineEnding;
 end;
 
 end.
