@@ -171,14 +171,18 @@ procedure TDBLookupComboBox.UpdateLookup;
 var
   i: Integer;
 begin
-  if ([csLoading, csDestroying] * ComponentState) = [] then
-  begin
+  if ([csLoading, csDestroying] * ComponentState) <> [] then Exit;
+
+  if FDataLink.Active then
+  begin;
     FLookup.Initialize(FDataLink, Items);
     i := FLookup.GetKeyIndex;
-    ItemIndex := i;
-    if i = -1 then
-      Text := '';
-  end;
+  end
+  else i := -1;
+
+  ItemIndex := i;
+  if i = -1 then
+    Text := '';
 end;
 
 procedure TDBLookupComboBox.CloseUp;
