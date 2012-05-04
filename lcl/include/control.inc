@@ -1114,15 +1114,6 @@ begin
   TextChanged;
 end;
 
-procedure TControl.CMWantSpecialKey(var Message: TLMessage);
-begin
-  // by default control does not want to handle VK_TAB itself
-  if Message.wParam = VK_TAB then
-    Message.Result := 0
-  else
-    Message.Result := 1;
-end;
-
 procedure TControl.CMCursorChanged(var Message: TLMessage);
 begin
   if not (csDesigning in ComponentState) then

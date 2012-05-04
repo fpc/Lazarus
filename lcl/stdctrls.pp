@@ -1056,7 +1056,6 @@ type
     procedure SetChecked(Value: Boolean); virtual;
     procedure DoOnChange; virtual;
     procedure Click; override;
-    procedure CMWantSpecialKey(var Message: TLMessage); message CM_WANTSPECIALKEY;
   protected
     property Checked: Boolean read GetChecked write SetChecked stored IsCheckedStored default False;
     property ClicksDisabled: Boolean read FClicksDisabled write FClicksDisabled;

@@ -50,12 +50,6 @@ begin
   if Assigned(OnChange) then OnChange(Self);
 end;
 
-procedure TButtonControl.CMWantSpecialKey(var Message: TLMessage);
-begin
-  // button controls do not want any special keys
-  Message.Result := 0;
-end;
-
 procedure TButtonControl.Click;
 begin
   DoOnChange;

@@ -4575,7 +4575,7 @@ begin
       Message.Result := 0;
   end
   else
-    inherited CMWantSpecialKey(Message);
+    inherited;
 end;
 
 procedure TCustomSynEdit.ScanRanges(ATextChanged: Boolean = True);
