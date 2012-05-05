@@ -715,7 +715,17 @@ begin
   //DebugLn('[TCocoaCustomControl.accessibilityAttributeValue] attribute='+lStrAttr);
   {$endif}
 
-  if attribute.isEqualToString(NSAccessibilityChildrenAttribute) then
+// Cocoa by default merges the window and it's main subcontrol into 1 things
+// And Finder and other Cocoa apps follow this, so let's do it like that too
+//
+// If we want to put all items inside a sub-window in the window then we could
+// activate the code bellow, but then we have to solve parent missmatch errors which we get
+//
+// Curiously, even while not being in the list of elements,
+// TCocoaCustomControl.accessibilityAttributeValue is executed
+// as if it spoke for the window and not for itself, this adding the sub-window
+// duplicates all out accessibility entries (appear once for the window and once for the sub-window)
+(*  if attribute.isEqualToString(NSAccessibilityChildrenAttribute) then
   begin
     // Strangely Cocoa doesn't add automatically the client area to the array
     {$ifdef VerboseCDAccessibility}
@@ -725,7 +735,7 @@ begin
     lMAResult := lAResult.mutableCopy();
     lMAResult.addObject(WindowHandle.ClientArea);
     Result := lMAResult;
-  end;
+  end;  *)
 end;
 
 { TCocoaCustomControl }
@@ -1093,9 +1103,9 @@ begin
       // if the parent is a form, pass to the custom control
       if lParent is TCustomForm then
       begin
-        Result := TCocoaWindow(lParent.Handle).ClientArea;
+        Result := TCocoaWindow(lParent.Handle).CocoaForm;//ClientArea;
         {$ifdef VerboseCDAccessibility}
-        DebugLn(':[TCocoaAccessibleObject.accessibilityAttributeValue] Parent is TCustomForm, so redirecting to ClientArea');
+        DebugLn(':<[TCocoaAccessibleObject.accessibilityAttributeValue] Parent is TCustomForm');
         {$endif}
       end
       else
