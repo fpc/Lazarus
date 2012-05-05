@@ -118,6 +118,7 @@ type
     property Date;
     property DateTime;
     property DisplaySettings;
+    property Hint;
     property OnChange;
     property OnChangeBounds;
     property OnClick;
@@ -139,6 +140,7 @@ type
     property OnYearChanged;
     property PopupMenu;
     property ShowHint;
+    property TabOrder;
     property TabStop;
     property Visible;
   end;
