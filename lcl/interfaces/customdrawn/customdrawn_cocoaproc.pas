@@ -710,8 +710,10 @@ var
 begin
   Result := inherited accessibilityAttributeValue(attribute);
 
+  {$ifdef VerboseCDAccessibility}
   //lStrAttr := NSStringToString(attribute);
   //DebugLn('[TCocoaCustomControl.accessibilityAttributeValue] attribute='+lStrAttr);
+  {$endif}
 
   if attribute.isEqualToString(NSAccessibilityChildrenAttribute) then
   begin
@@ -958,7 +960,7 @@ begin
     lStrAttr := '[TCocoaCustomControl.accessibilityAttributeValue] NSAccessibilityChildrenAttribute';
     {$endif}
     lAResult := NSArray(Result);
-    lMAResult := lAResult.mutableCopy();
+    lMAResult := NSMutableArray.arrayWithCapacity(0); //lAResult.mutableCopy();
     lForm := WindowHandle.LCLForm;
     lFormAcc := lForm.GetAccessibleObject();
     lChildAcc := lFormAcc.GetFirstChildAccessibleObject();
@@ -1090,7 +1092,12 @@ begin
       {$endif}
       // if the parent is a form, pass to the custom control
       if lParent is TCustomForm then
-        Result := TCocoaWindow(lParent.Handle).ClientArea
+      begin
+        Result := TCocoaWindow(lParent.Handle).ClientArea;
+        {$ifdef VerboseCDAccessibility}
+        DebugLn(':[TCocoaAccessibleObject.accessibilityAttributeValue] Parent is TCustomForm, so redirecting to ClientArea');
+        {$endif}
+      end
       else
         Result := TCocoaAccessibleObject(lParent.GetAccessibleObject().Handle);
     end

@@ -275,7 +275,8 @@ begin
   begin
     FLastSearchIndex := 1;
     FLastSearchInSubcontrols := True;
-    Result := TWinControl(OwnerControl).Controls[0].GetAccessibleObject();
+    if (TWinControl(OwnerControl).ControlCount > 0) then
+      Result := TWinControl(OwnerControl).Controls[0].GetAccessibleObject();
   end;
 end;
 
@@ -295,7 +296,7 @@ begin
   end
   else
   begin
-    if TWinControl(OwnerControl).ControlCount < FLastSearchIndex then
+    if TWinControl(OwnerControl).ControlCount > FLastSearchIndex then
     begin
       Result := TWinControl(OwnerControl).Controls[FLastSearchIndex].GetAccessibleObject();
       Inc(FLastSearchIndex);
