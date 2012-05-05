@@ -5504,7 +5504,7 @@ var
   i: Integer;
 begin
   if IdentifierIsOk(Prefix) then
-    exit(Result);
+    exit(Prefix);
   while (Prefix<>'') and (Prefix[length(Prefix)] in ['0'..'9']) do
     System.Delete(Prefix,length(Prefix),1);
   if (Prefix='') or (not IsValidIdent(Prefix)) then
