@@ -4190,6 +4190,7 @@ begin
         debugln(['ScrollAfterTopLineChanged did scroll Delta=',Delta]);
         {$ENDIF}
         include(fStateFlags, sfHasScrolled);
+        FScreenCaret.InvalidatePos; // Wine (Win emulator) may have changed the pos with the scroll
       end else begin
         Invalidate;    // scrollwindow failed, invalidate all
         {$IFDEF SYNSCROLLDEBUG}
