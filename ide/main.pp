@@ -5490,9 +5490,21 @@ function TMainIDE.NewUniqueComponentName(Prefix: string): string;
     Result:=false;
   end;
 
+  function IdentifierIsOk(Identifier: string): boolean;
+  begin
+    Result:=false;
+    if (Identifier='') or not IsValidIdent(Identifier) then exit;
+    if AllKeyWords.DoIdentifier(PChar(Identifier)) then exit;
+    if IdentifierExists(Identifier) then exit;
+    if IdentifierExists('T'+Identifier) then exit;
+    Result:=true;
+  end;
+
 var
   i: Integer;
 begin
+  if IdentifierIsOk(Prefix) then
+    exit(Result);
   while (Prefix<>'') and (Prefix[length(Prefix)] in ['0'..'9']) do
     System.Delete(Prefix,length(Prefix),1);
   if (Prefix='') or (not IsValidIdent(Prefix)) then
@@ -5501,7 +5513,7 @@ begin
   repeat
     inc(i);
     Result:=Prefix+IntToStr(i);
-  until (not IdentifierExists(Result)) and (not IdentifierExists('T'+Result));
+  until IdentifierIsOk(Result);
 end;
 
 function TMainIDE.DoLoadResourceFile(AnUnitInfo: TUnitInfo;
