@@ -429,7 +429,9 @@ var
 begin
   //inherited keyDown(theEvent); Don't call inherited or else Cocoa will think you didn't handle the event and beep on key input
   lKey := MacKeyCodeToLCLKey(theEvent, lSendKey, lSendChar, lUTF8Char);
-  //DebugLn('[TCocoaForm] KeyDown='+IntToHex(theEvent.keyCode(), 4));
+  {$ifdef VerboseCDKeyInput}
+  DebugLn(Format('[TCocoaForm] KeyDown CocoaKeyCode=%x UTF8Char=%s', [theEvent.keyCode(), lUTF8Char]));
+  {$endif}
   if lSendKey then CallbackKeyDown(WindowHandle, lKey);
   if lSendChar then CallbackKeyChar(WindowHandle, 0, lUTF8Char);
 end;
@@ -565,17 +567,34 @@ begin
   if Length(charactersIgnoringModifiers) = 1 then
   begin
     case charactersIgnoringModifiers[1] of
-      'a'..'z': Result:=VK_A+ord(charactersIgnoringModifiers[1])-ord('a');
-      'A'..'Z': Result:=ord(charactersIgnoringModifiers[1]);
+      'a'..'z':
+      begin
+        Result:=VK_A+ord(charactersIgnoringModifiers[1])-ord('a');
+        AUTF8Char := charactersIgnoringModifiers;
+      end;
+      'A'..'Z':
+      begin
+        Result:=ord(charactersIgnoringModifiers[1]);
+        AUTF8Char := charactersIgnoringModifiers;
+      end;
       #27     : Result:=VK_ESCAPE;
       #8      : Result:=VK_BACK;
-      ' '     : Result:=VK_SPACE;
+      ' '     :
+      begin
+        Result:=VK_SPACE;
+        AUTF8Char := charactersIgnoringModifiers;
+      end;
       #13     : Result:=VK_RETURN;
-      '0'..'9': Result:=VK_0+ord(charactersIgnoringModifiers[1])-ord('0');
+      '0'..'9':
+      begin
+        Result:=VK_0+ord(charactersIgnoringModifiers[1])-ord('0');
+        AUTF8Char := charactersIgnoringModifiers;
+      end;
     end;
   end;
 
   if Result<>VK_UNKNOWN then SendKeyUpDown:=true;
+  if AUTF8Char <> '' then SendChar := True;
 
   if Length(characters) > 1 then
   begin
