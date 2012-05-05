@@ -1355,7 +1355,7 @@ var
   CodeBuffer: TCodeBuffer;
 begin
   Result:=mrCancel;
-  ExpFilename:=CleanAndExpandFilename(AFilename);
+  ExpFilename:=TrimAndExpandFilename(AFilename);
   // create default values
   TheUnitName:='';
   HasRegisterProc:=false;
