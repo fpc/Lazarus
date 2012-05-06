@@ -537,7 +537,7 @@ begin
         if PPUFilename<>'' then begin
           // there is a ppu file, but the compiler didn't like it
           // => change message
-          s:='Fatal: Can not find '+MissingUnitname;
+          s:='Can not find '+MissingUnitname;
           if UsedByUnit<>'' then
             s+=' used by '+UsedByUnit;
           s+=', ppu='+CreateRelativePath(PPUFilename,Dir);
@@ -546,14 +546,14 @@ begin
         end else if PkgName<>'' then begin
           // ppu is missing, but the package is known
           // => change message
-          s:='Fatal: Can''t find ppu of unit '+MissingUnitname;
+          s:='Can''t find ppu of unit '+MissingUnitname;
           if UsedByUnit<>'' then
             s+=' used by '+UsedByUnit;
           s+='. Maybe package '+PkgName+' needs a clean rebuild.';
         end;
       end else begin
         // there is no ppu file in the unit path
-        s:='Fatal: Can not find unit '+MissingUnitname;
+        s:='Can not find unit '+MissingUnitname;
         if UsedByUnit<>'' then
           s+=' used by '+UsedByUnit;
         if PkgName<>'' then
@@ -564,7 +564,9 @@ begin
           s+=' of package '+TIDEPackage(UsedByOwner).Name;
         s+='.';
       end;
-      Msg.Msg:=s;
+      Msg.GetSourcePosition(Filename,Line,Col);
+      Msg.Msg:=CreateRelativePath(Filename,Msg.Directory)
+          +'('+IntToStr(Line)+','+IntToStr(Col)+') Fatal: '+s;
     end;
   finally
     Owners.Free;

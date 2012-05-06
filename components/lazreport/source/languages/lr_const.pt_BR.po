@@ -607,10 +607,9 @@ msgid "&Variable"
 msgstr "&Variável"
 
 #: lr_const.sevformvars
-#, fuzzy
 #| msgid "Va&riables..."
 msgid "Va&riables ..."
-msgstr "Va&riáveis..."
+msgstr "Va&riáveis ..."
 
 #: lr_const.sexportfilterindexerror
 msgid "Export filter index out of range"
@@ -690,10 +689,9 @@ msgid "Variable format"
 msgstr "Formato variável"
 
 #: lr_const.sfont
-#, fuzzy
 #| msgid "Font..."
 msgid "Font ..."
-msgstr "Fonte..."
+msgstr "Fonte ..."
 
 #: lr_const.sformat11
 msgctxt "lr_const.sformat11"
@@ -1023,7 +1021,7 @@ msgstr "Selecionar tudo"
 
 #: lr_const.sfrdesignerformselectsameclass
 msgid "Select same class objects"
-msgstr ""
+msgstr "Selecionar objetos da mesma classe"
 
 #: lr_const.sfrdesignerformselobj
 msgid "Select object"
@@ -1075,10 +1073,9 @@ msgid "Width align"
 msgstr "Justificar"
 
 #: lr_const.sfrdesignerform_about
-#, fuzzy
 #| msgid "&About..."
 msgid "&About ..."
-msgstr "&Sobre"
+msgstr "&Sobre ..."
 
 #: lr_const.sfrdesignerform_addpg
 msgid "&Add page"
@@ -1109,22 +1106,20 @@ msgid "&Delete"
 msgstr "&Apagar"
 
 #: lr_const.sfrdesignerform_edit
-#, fuzzy
 #| msgid "&Edit..."
 msgctxt "lr_const.sfrdesignerform_edit"
 msgid "&Edit ..."
-msgstr "&Editar..."
+msgstr "&Editar ..."
 
 #: lr_const.sfrdesignerform_edit2
 msgid "&Edit"
 msgstr "&Editar"
 
 #: lr_const.sfrdesignerform_editp
-#, fuzzy
 #| msgid "&Edit..."
 msgctxt "lr_const.sfrdesignerform_editp"
 msgid "&Edit ..."
-msgstr "&Editar..."
+msgstr "&Editar ..."
 
 #: lr_const.sfrdesignerform_exit
 msgid "E&xit"
@@ -1151,36 +1146,32 @@ msgid "Line style"
 msgstr "Estilo Linha"
 
 #: lr_const.sfrdesignerform_new
-#, fuzzy
 #| msgid "&New..."
 msgid "&New ..."
-msgstr "&Novo..."
+msgstr "&Novo ..."
 
 #: lr_const.sfrdesignerform_obj
 msgid "&Objects"
 msgstr "&Objetos"
 
 #: lr_const.sfrdesignerform_open
-#, fuzzy
 #| msgid "&Open..."
 msgid "&Open ..."
-msgstr "&Abrir..."
+msgstr "&Abrir ..."
 
 #: lr_const.sfrdesignerform_opts
-#, fuzzy
 #| msgid "&Options..."
 msgid "&Options ..."
-msgstr "&Opções..."
+msgstr "&Opções ..."
 
 #: lr_const.sfrdesignerform_paste
 msgid "&Paste"
 msgstr "&Colar"
 
 #: lr_const.sfrdesignerform_pgopt
-#, fuzzy
 #| msgid "&Page options..."
 msgid "&Page options ..."
-msgstr "Opções &página"
+msgstr "Opções &página ..."
 
 #: lr_const.sfrdesignerform_preview
 msgid "Pre&view"
@@ -1199,20 +1190,18 @@ msgid "&Remove page"
 msgstr "&Remover página"
 
 #: lr_const.sfrdesignerform_rptopt
-#, fuzzy
 #| msgid "&Report options..."
 msgid "&Report options ..."
-msgstr "Opções &Relatório"
+msgstr "Opções &Relatório ..."
 
 #: lr_const.sfrdesignerform_save
 msgid "&Save"
 msgstr "&Salvar"
 
 #: lr_const.sfrdesignerform_saveas
-#, fuzzy
 #| msgid "Save &as..."
 msgid "Save &as ..."
-msgstr "Salvar &como"
+msgstr "Salvar &como ..."
 
 #: lr_const.sfrdesignerform_selectall
 msgid "Select &all"
@@ -1249,10 +1238,9 @@ msgid "&Undo"
 msgstr "&Desfazer"
 
 #: lr_const.sfrdesignerform_var
-#, fuzzy
 #| msgid "Variables &list..."
 msgid "Variables &list ..."
-msgstr "&Lista variáveis"
+msgstr "&Lista variáveis ..."
 
 #: lr_const.sfrferror
 msgid "Unsupported FRF format"
@@ -1275,10 +1263,9 @@ msgid "&Clear"
 msgstr "&Limpar"
 
 #: lr_const.sgeditorformload
-#, fuzzy
 #| msgid "&Load..."
 msgid "&Load ..."
-msgstr "&Carregar..."
+msgstr "&Carregar ..."
 
 #: lr_const.sgeditorformmemo
 msgctxt "lr_const.sgeditorformmemo"
@@ -1312,16 +1299,14 @@ msgid "&Bold"
 msgstr "&Negrito"
 
 #: lr_const.shilightformcolor
-#, fuzzy
 #| msgid "C&olor..."
 msgid "C&olor ..."
-msgstr "C&or..."
+msgstr "C&or ..."
 
 #: lr_const.shilightformcolor2
-#, fuzzy
 #| msgid "Co&lor..."
 msgid "Co&lor ..."
-msgstr "Co&r..."
+msgstr "C&or ..."
 
 #: lr_const.shilightformcond
 msgctxt "lr_const.shilightformcond"
@@ -1463,10 +1448,9 @@ msgid "On last page"
 msgstr "Na última página"
 
 #: lr_const.sother
-#, fuzzy
 #| msgid "Other..."
 msgid "Other ..."
-msgstr "Outros..."
+msgstr "Outros ..."
 
 #: lr_const.sothercategory
 msgctxt "lr_const.sothercategory"
@@ -2396,10 +2380,9 @@ msgid "&Categories and variables"
 msgstr "&Categorias e variáveis"
 
 #: lr_const.svarformat
-#, fuzzy
 #| msgid "Variable format..."
 msgid "Variable format ..."
-msgstr "Formato variável..."
+msgstr "Formato variável ..."
 
 #: lr_const.svarformcapt
 msgid "Variables"

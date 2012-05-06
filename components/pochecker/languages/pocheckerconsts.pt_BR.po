@@ -1,0 +1,194 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Marcelo B Paula\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: pocheckerconsts.rspochecker
+msgid "PO File Checker"
+msgstr "Verificador de arquivos PO"
+
+#: pocheckerconsts.scannotfindmaster
+msgid ""
+"Cannot find master po file:\n"
+"%s\n"
+"for selected file\n"
+"%s\n"
+msgstr "Impossível localizar o arquivo po mestre:\n"
+
+#: pocheckerconsts.scheckforduplicateuntranslatedvalues
+msgid "Check for duplicate untranslated values"
+msgstr "Verificar valores não traduzidos duplicados"
+
+#: pocheckerconsts.scheckforincompatibleformatarguments
+msgid "Check for incompatible format arguments"
+msgstr "Verificar formato de argumentos incompatíveis"
+
+#: pocheckerconsts.scheckformismatchesinuntranslatedstrings
+msgid "Check for mismatches in untranslated strings"
+msgstr "Verificar inconsistências em strings não traduzidas"
+
+#: pocheckerconsts.scheckmissingidentifiers
+msgid "Check missing identifiers"
+msgstr "Verificar identificadores perdidos"
+
+#: pocheckerconsts.schecknumberofitems
+msgid "Check number of items"
+msgstr "Verificar número de itens"
+
+#: pocheckerconsts.scopycaption
+msgid "Copy to clipboard"
+msgstr "Copiar para área de transferência"
+
+#: pocheckerconsts.scurrentpofile
+msgid "Current po-file:"
+msgstr "Arquivo po atual:"
+
+#: pocheckerconsts.scurrenttest
+msgid "Current Test:"
+msgstr "Teste atual:"
+
+#: pocheckerconsts.sduplicatelinenrwithvalue
+msgid "[Line %d] %s"
+msgstr "[Linha %d] %s"
+
+#: pocheckerconsts.sduplicateoriginals
+msgid "The (untranslated) value \"%s\" is used for more than 1 entry:"
+msgstr "O valor (não traduzido) \"%s\" é usado em mais de 1 entrada:"
+
+#: pocheckerconsts.serroroncleanup
+msgid ""
+"An unrecoverable error occurred\n"
+"%s\n"
+"Please close the program\n"
+msgstr "Ocorreu um erro irrecuperável\n"
+
+#: pocheckerconsts.serroroncreate
+msgid ""
+"Error creating an instance of TPoFamily:\n"
+"%s\n"
+msgstr "Erro ao criar uma instância de TPoFamily:\n"
+
+#: pocheckerconsts.serrorsbytest
+msgid "Errors / warnings reported by %s for:"
+msgstr "Erros / avisos reportados por %s para:"
+
+#: pocheckerconsts.sfindalltranslatedpofiles
+msgid "Find all translated po-files"
+msgstr "Localizar todos os arquivos po traduzidos"
+
+#: pocheckerconsts.sguipofilecheckingtool
+msgid "GUI Po-file checking tool"
+msgstr "Ferramenta GUI de verificação de arquivos PO"
+
+#: pocheckerconsts.sidentifiernotfoundin
+msgid "Identifier [%s] not found in %s"
+msgstr "Identificador [%s] não encontrado em %s"
+
+#: pocheckerconsts.sincompatibleformatargs
+msgid "[Line: %d] Incompatible format() arguments for:"
+msgstr "[Linha: %d] formato() incompatível de argumentos para:"
+
+#: pocheckerconsts.slineinfilename
+msgid "[Line %d] in %s:"
+msgstr "[Linha %d] em %s:"
+
+#: pocheckerconsts.slinenr
+msgid "[Line: %d]"
+msgstr "[Linha: %d]"
+
+#: pocheckerconsts.smissingmasteridentifier
+msgid "Identifier [%s] found in %s, but it does not exist in %s"
+msgstr "Identificador [%s] encontrado em %s, mas inexistente em %s"
+
+#: pocheckerconsts.snoerrorsfound
+msgid "No errors found"
+msgstr "Nenhum erro encontrado"
+
+#: pocheckerconsts.snotaproperfilename
+msgid ""
+"Selected filename\n"
+"%s\n"
+"does not seem to be a proper name for a po-file\n"
+msgstr ""
+"Nome de arquivo selecionado\n"
+"%s\n"
+"parece não ser um nome apropriado para um arquivo PO\n"
+
+#: pocheckerconsts.snotestselected
+msgid "There are no tests selected."
+msgstr "Nenhum teste selecionado."
+
+#: pocheckerconsts.snrerrorsfound
+msgid "Found %d errors."
+msgstr "Encontrados %d erros."
+
+#: pocheckerconsts.snrofitemsmismatch
+msgid "Mismatch in number of items for master and child"
+msgstr "Inconsistência no número de itens entre mestre e filho"
+
+#: pocheckerconsts.snrofitemsmismatchd
+msgid "%s: %d items"
+msgstr "%s: %d itens"
+
+#: pocheckerconsts.snrwarningsfound
+msgid "Found %d warnings."
+msgstr "Encontrados %d avisos."
+
+#: pocheckerconsts.sopenapofile
+msgid "&Open a po-file"
+msgstr "&Abrir um arquivo PO"
+
+#: pocheckerconsts.soriginal
+msgid "Original"
+msgstr "Original"
+
+#: pocheckerconsts.sresults
+msgid "Results"
+msgstr "Resultados"
+
+#: pocheckerconsts.srunselectedtests
+msgid "&Run Selected Tests"
+msgstr "&Executar testes selecionados"
+
+#: pocheckerconsts.ssavecaption
+msgid "Save to file"
+msgstr "Salvar para aquivo"
+
+#: pocheckerconsts.ssaveerror
+msgid ""
+"Error saving file:\n"
+"%s\n"
+msgstr ""
+"Erro ao salvar arquivo:\n"
+"%s\n"
+
+#: pocheckerconsts.sselectalltests
+msgid "Select all tests"
+msgstr "Selecionar todos os testes"
+
+#: pocheckerconsts.sselecttesttypes
+msgid "Select test types"
+msgstr "Selecionar tipos de teste"
+
+#: pocheckerconsts.stotalerrors
+msgid "Total errors / warnings found: %d"
+msgstr "Total de erros / avisos encontrados: %d"
+
+#: pocheckerconsts.stotalwarnings
+msgid "Total warnings found: %d"
+msgstr "Total de avisos encontrados: %d"
+
+#: pocheckerconsts.stranslation
+msgid "Translation"
+msgstr "Tradução"
+
+#: pocheckerconsts.sunselectalltests
+msgid "Unselect all tests"
+msgstr "Desmarcar todos os testes"
+

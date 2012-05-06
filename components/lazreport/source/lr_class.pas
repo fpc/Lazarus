@@ -2841,7 +2841,11 @@ var
       n, nw, w, curx: Integer;
       Ts: TTextStyle;
     begin
-      if not Streaming and (cury + th < DR.Bottom) then
+      {$IFDEF DebugLR}
+      DebugLn('OutLine Cury=%d + th=%d = %d < dr.bottom=%d == %s',[cury,th,cury+th,dr.bottom,dbgs(cury+th<dr.bottom)]);
+      {$ENDIF}
+      // TODO: needs to check that th is calculated precisely
+      if not Streaming {and (cury + th <= DR.Bottom)} then
       begin
         n := Length(St);
         w := Ord(St[n - 1]) * 256 + Ord(St[n]);
@@ -7326,7 +7330,7 @@ begin
           t.IsPrinting := IsPrinting;
           t.Draw(Canvas);
         end;
-      end;
+      end
     end
     else
     begin

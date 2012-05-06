@@ -16,19 +16,19 @@ msgstr "O depurador encontrou um erro ao tentar executar/passo a passo a aplica�
 
 #: gdbmidebugger.gdbmicommandstartmainbreakerror
 msgid "The debugger could not set a breakpoint on the application's entry point.%0:sThis may be caused by missing debug info."
-msgstr ""
+msgstr "O depurador não pode ajustar um ponto-de-parada no ponto de entrada da aplicação.%0:sIsto pode ter sido causado por falta de informações de depuração."
 
 #: gdbmidebugger.gdbmicommandstartmainrunerror
 msgid "The debugger could not run the application.%0:sThis may be caused by missing debug info."
-msgstr ""
+msgstr "O depurador não pode rodar a aplicação.%0:sIsto pode ter sido causado por falta de informações de depuração."
 
 #: gdbmidebugger.gdbmicommandstartmainrunnopiderror
 msgid "The debugger failed to get the application's PID.%0:sThis may be caused by missing debug info."
-msgstr ""
+msgstr "O depurador falhou ao obter o PID da aplicação.%0:sIsto pode ter sido causado por falta de informações de depuração."
 
 #: gdbmidebugger.gdbmicommandstartmainruntostoperror
 msgid "The debugger was unable to initalize itself.%0:sThe application did run (and terminated) before the debugger could set any breakpoints. %0:sThis may be caused by missing debug info."
-msgstr ""
+msgstr "O depurador foi incapaz de se inicializar.%0:sA aplicação rodou (e terminou) antes que o depurador pudesse ajustar qualquer ponto-de-parada. %0:sIsto pode ter sido causado por falta de informações de depuração."
 
 #: gdbmidebugger.gdbmierroronruncommand
 #| msgid "The debugger encountered an error when trying to run/step the application:%0:s%0:s%1:s%0:s%0:sPress \"Ok\" to continue debugging (paused), and correct the problem, or choose an alternative run command%0:sPress \"Stop\" to end the debug session"
