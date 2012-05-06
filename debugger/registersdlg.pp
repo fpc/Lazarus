@@ -36,7 +36,7 @@ unit RegistersDlg;
 interface
 
 uses
-  SysUtils, Classes, Controls, Forms,
+  SysUtils, Classes, Controls, Forms, Clipbrd,
   BaseDebugManager, IDEWindowIntf, DebuggerStrConst,
   ComCtrls, ActnList, Menus, Debugger, DebuggerDlg,
   LazarusIDEStrConsts, IDEImagesIntf;
@@ -46,6 +46,8 @@ type
   { TRegistersDlg }
 
   TRegistersDlg = class(TDebuggerDlg)
+    actCopyName: TAction;
+    actCopyValue: TAction;
     actPower: TAction;
     ActionList1: TActionList;
     ImageList1: TImageList;
@@ -56,15 +58,26 @@ type
     DispOct: TMenuItem;
     DispDec: TMenuItem;
     DispRaw: TMenuItem;
+    PopDispDefault: TMenuItem;
+    PopDispHex: TMenuItem;
+    PopDispBin: TMenuItem;
+    PopDispOct: TMenuItem;
+    PopDispDec: TMenuItem;
+    PopDispRaw: TMenuItem;
+    popCopyValue: TMenuItem;
+    popCopyName: TMenuItem;
+    popFormat: TMenuItem;
+    popL1: TMenuItem;
     PopupDispType: TPopupMenu;
+    PopupMenu1: TPopupMenu;
     ToolBar1: TToolBar;
     ToolButton1: TToolButton;
     ToolButtonDispType: TToolButton;
     ToolButtonPower: TToolButton;
+    procedure actCopyNameExecute(Sender: TObject);
+    procedure actCopyValueExecute(Sender: TObject);
     procedure actPowerExecute(Sender: TObject);
     procedure DispDefaultClick(Sender: TObject);
-    procedure lvRegistersMouseUp(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X,
-      Y: Integer);
     procedure lvRegistersSelectItem(Sender: TObject; Item: TListItem; Selected: Boolean);
     procedure ToolButtonDispTypeClick(Sender: TObject);
   private
@@ -135,20 +148,41 @@ begin
   //actPower.Caption := lisDbgWinPower;
   actPower.Hint := lisDbgWinPowerHint;
 
+  actCopyName.Caption := lisLocalsDlgCopyName;
+  actCopyValue.Caption := lisLocalsDlgCopyValue;
+
   ToolButtonDispType.Hint := regdlgDisplayTypeForSelectedRegisters;
+
   DispDefault.Caption := dlgPasStringKeywordsOptDefault;
   DispHex.Caption := regdlgHex;
   DispBin.Caption := regdlgBinary;
   DispOct.Caption := regdlgOctal;
   DispDec.Caption := regdlgDecimal;
   DispRaw.Caption := regdlgRaw;
-
   DispDefault.Tag := ord(rdDefault);
   DispHex.Tag := ord(rdHex);
   DispBin.Tag := ord(rdBinary);
   DispOct.Tag := ord(rdOctal);
   DispDec.Tag := ord(rdDecimal);
   DispRaw.Tag := ord(rdRaw);
+
+  PopDispDefault.Caption := dlgPasStringKeywordsOptDefault;
+  PopDispHex.Caption := regdlgHex;
+  PopDispBin.Caption := regdlgBinary;
+  PopDispOct.Caption := regdlgOctal;
+  PopDispDec.Caption := regdlgDecimal;
+  PopDispRaw.Caption := regdlgRaw;
+  PopDispDefault.Tag := ord(rdDefault);
+  PopDispHex.Tag := ord(rdHex);
+  PopDispBin.Tag := ord(rdBinary);
+  PopDispOct.Tag := ord(rdOctal);
+  PopDispDec.Tag := ord(rdDecimal);
+  PopDispRaw.Tag := ord(rdRaw);
+
+  popFormat.Caption := regdlgFormat;
+
+  actCopyName.Caption := lisLocalsDlgCopyName;
+  actCopyValue.Caption := lisLocalsDlgCopyValue;
 
   for i := low(COL_WIDTHS) to high(COL_WIDTHS) do
     lvRegisters.Column[i].Width := COL_WIDTHS[i];
@@ -176,6 +210,20 @@ begin
   end;
 end;
 
+procedure TRegistersDlg.actCopyNameExecute(Sender: TObject);
+begin
+  Clipboard.Open;
+  Clipboard.AsText := lvRegisters.Selected.Caption;
+  Clipboard.Close;
+end;
+
+procedure TRegistersDlg.actCopyValueExecute(Sender: TObject);
+begin
+  Clipboard.Open;
+  Clipboard.AsText := lvRegisters.Selected.SubItems[0];
+  Clipboard.Close;
+end;
+
 procedure TRegistersDlg.DispDefaultClick(Sender: TObject);
 var
   n, i: Integer;
@@ -197,13 +245,6 @@ begin
     FRegisters.EndUpdate;
   end;
   lvRegistersSelectItem(nil, nil, True);
-end;
-
-procedure TRegistersDlg.lvRegistersMouseUp(Sender: TObject; Button: TMouseButton;
-  Shift: TShiftState; X, Y: Integer);
-begin
-  if Button = mbRight then
-    PopupDispType.PopUp;
 end;
 
 procedure TRegistersDlg.lvRegistersSelectItem(Sender: TObject; Item: TListItem;
@@ -233,16 +274,44 @@ begin
     end;
   end;
   ToolButtonDispType.Enabled := j > 0;
+  popFormat.Enabled := j > 0;
+  actCopyName.Enabled := j > 0;
+  actCopyValue.Enabled := j > 0;
+
+  PopDispDefault.Checked := False;
+  PopDispHex.Checked := False;
+  PopDispBin.Checked := False;
+  PopDispOct.Checked := False;
+  PopDispDec.Checked := False;
+  PopDispRaw.Checked := False;
   if MultiFormat
   then ToolButtonDispType.Caption := '...'
   else begin
     case SelFormat of
-      rdDefault: ToolButtonDispType.Caption := DispDefault.Caption;
-      rdHex:     ToolButtonDispType.Caption := DispHex.Caption;
-      rdBinary:  ToolButtonDispType.Caption := DispBin.Caption;
-      rdOctal:   ToolButtonDispType.Caption := DispOct.Caption;
-      rdDecimal: ToolButtonDispType.Caption := DispDec.Caption;
-      rdRaw:     ToolButtonDispType.Caption := DispRaw.Caption;
+      rdDefault: begin
+          ToolButtonDispType.Caption := DispDefault.Caption;
+          PopDispDefault.Checked := True;
+        end;
+      rdHex:     begin
+          ToolButtonDispType.Caption := DispHex.Caption;
+          PopDispHex.Checked := True;
+        end;
+      rdBinary:  begin
+          ToolButtonDispType.Caption := DispBin.Caption;
+          PopDispBin.Checked := True;
+        end;
+      rdOctal:   begin
+          ToolButtonDispType.Caption := DispOct.Caption;
+          PopDispOct.Checked := True;
+        end;
+      rdDecimal: begin
+          ToolButtonDispType.Caption := DispDec.Caption;
+          PopDispDec.Checked := True;
+        end;
+      rdRaw:     begin
+          ToolButtonDispType.Caption := DispRaw.Caption;
+          PopDispRaw.Checked := True;
+        end;
     end;
   end;
 end;

@@ -5435,6 +5435,7 @@ resourcestring
 
   //Registers dialog
   regdlgDisplayTypeForSelectedRegisters = 'Display type for selected Registers';
+  regdlgFormat = 'Format';
   regdlgHex = 'Hex';
   regdlgDecimal = 'Decimal';
   regdlgOctal = 'Octal';

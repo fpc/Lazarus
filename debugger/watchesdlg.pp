@@ -38,7 +38,7 @@ unit WatchesDlg;
 interface
 
 uses
-  Classes, Forms, Controls, math, sysutils, LazLoggerBase,
+  Classes, Forms, Controls, math, sysutils, LazLoggerBase, Clipbrd,
   IDEWindowIntf, Menus, ComCtrls, ActnList, IDEImagesIntf, LazarusIDEStrConsts, DebuggerStrConst,
   Debugger, DebuggerDlg, BaseDebugManager;
 
@@ -61,11 +61,20 @@ type
     actEnableSelected: TAction;
     actAddWatch: TAction;
     actAddWatchPoint: TAction;
+    actCopyName: TAction;
+    actCopyValue: TAction;
+    actInspect: TAction;
+    actEvaluate: TAction;
     actToggleCurrentEnable: TAction;
     actPower: TAction;
     ActionList1: TActionList;
     actProperties: TAction;
     lvWatches: TListView;
+    MenuItem1: TMenuItem;
+    popInspect: TMenuItem;
+    popEvaluate: TMenuItem;
+    popCopyName: TMenuItem;
+    popCopyValue: TMenuItem;
     N3: TMenuItem;
     popAddWatchPoint: TMenuItem;
     mnuPopup: TPopupMenu;
@@ -92,8 +101,12 @@ type
     ToolButtonDisableAll: TToolButton;
     ToolButtonTrashAll: TToolButton;
     procedure actAddWatchPointExecute(Sender: TObject);
+    procedure actCopyNameExecute(Sender: TObject);
+    procedure actCopyValueExecute(Sender: TObject);
     procedure actDisableSelectedExecute(Sender: TObject);
     procedure actEnableSelectedExecute(Sender: TObject);
+    procedure actEvaluateExecute(Sender: TObject);
+    procedure actInspectExecute(Sender: TObject);
     procedure actPowerExecute(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure FormShow(Sender: TObject);
@@ -229,6 +242,12 @@ begin
 
   actAddWatchPoint.Caption := lisWatchToWatchPoint;
 
+  actCopyName.Caption := lisLocalsDlgCopyName;
+  actCopyValue.Caption := lisLocalsDlgCopyValue;
+
+  actInspect.Caption := lisInspect;
+  actEvaluate.Caption := lisEvaluateModify;
+
   Caption:=liswlWatchList;
 
   lvWatches.Columns[0].Caption:=liswlExpression;
@@ -318,6 +337,8 @@ begin
     actAddWatch.Enabled := False;
     actPower.Enabled := False;
     actAddWatchPoint.Enabled := False;
+    actEvaluate.Enabled := False;
+    actInspect.Enabled := False;
     exit;
   end;
 
@@ -349,10 +370,15 @@ begin
   actDeleteSelected.Enabled := ItemSelected;
 
   actAddWatchPoint.Enabled := ItemSelected;
+  actEvaluate.Enabled := ItemSelected;
+  actInspect.Enabled := ItemSelected;
 
   actEnableAll.Enabled := AllCanEnable;
   actDisableAll.Enabled := AllCanDisable;
   actDeleteAll.Enabled := lvWatches.Items.Count > 0;
+
+  actCopyName.Enabled := ItemSelected;
+  actCopyValue.Enabled := ItemSelected;
 
   actProperties.Enabled := ItemSelected;
   actAddWatch.Enabled := True;
@@ -416,6 +442,16 @@ begin
   end;
 end;
 
+procedure TWatchesDlg.actEvaluateExecute(Sender: TObject);
+begin
+  DebugBoss.EvaluateModify(lvWatches.Selected.Caption);
+end;
+
+procedure TWatchesDlg.actInspectExecute(Sender: TObject);
+begin
+  DebugBoss.Inspect(lvWatches.Selected.Caption);
+end;
+
 procedure TWatchesDlg.actDisableSelectedExecute(Sender: TObject);
 var
   n: Integer;
@@ -444,6 +480,20 @@ begin
   NewBreakpoint := BreakPoints.Add(Watch.Expression, wpsGlobal, wpkWrite);
   if DebugBoss.ShowBreakPointProperties(NewBreakpoint) <> mrOk then
     ReleaseRefAndNil(NewBreakpoint);
+end;
+
+procedure TWatchesDlg.actCopyNameExecute(Sender: TObject);
+begin
+  Clipboard.Open;
+  Clipboard.AsText := lvWatches.Selected.Caption;
+  Clipboard.Close;
+end;
+
+procedure TWatchesDlg.actCopyValueExecute(Sender: TObject);
+begin
+  Clipboard.Open;
+  Clipboard.AsText := lvWatches.Selected.SubItems[0];
+  Clipboard.Close;
 end;
 
 procedure TWatchesDlg.popAddClick(Sender: TObject);
