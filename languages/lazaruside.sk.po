@@ -3995,6 +3995,10 @@ msgstr ""
 msgid "Additional compiler options inherited from packages"
 msgstr "Ďalšie voľby prekladača, zdedené z balíčkov"
 
+#: lazarusidestrconsts.lisaddkeyworddo
+msgid "Add keyword \"do\""
+msgstr ""
+
 #: lazarusidestrconsts.lisaddnewbuildmodecopyingsettingsfrom
 msgid "Add new build mode, copying settings from \"%s\""
 msgstr ""

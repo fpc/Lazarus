@@ -3958,6 +3958,10 @@ msgstr ""
 msgid "Additional compiler options inherited from packages"
 msgstr "Opcions addicionals del compilador heretades dels paquets"
 
+#: lazarusidestrconsts.lisaddkeyworddo
+msgid "Add keyword \"do\""
+msgstr ""
+
 #: lazarusidestrconsts.lisaddnewbuildmodecopyingsettingsfrom
 msgid "Add new build mode, copying settings from \"%s\""
 msgstr ""

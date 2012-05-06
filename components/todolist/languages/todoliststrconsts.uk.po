@@ -1,13 +1,18 @@
+# Igor Paliychuk <mansonigor@gmail.com>, 2012.
 msgid ""
 msgstr ""
-"Content-Type: text/plain; charset=UTF-8\n"
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: \n"
+"PO-Revision-Date: 2012-04-23 10:42+0300\n"
 "Last-Translator: Igor Paliychuk <mansonigor@gmail.com>\n"
 "Language-Team: \n"
+"Language: uk\n"
 "MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%"
+"10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"X-Generator: Virtaal 0.7.1\n"
 
 #: todoliststrconsts.dlgfropts
 msgid "Options"
@@ -54,7 +59,6 @@ msgid "Module"
 msgstr "Модуль"
 
 #: todoliststrconsts.listodolist
-#, fuzzy
 #| msgid "ToDo list"
 msgid "ToDo List"
 msgstr "Список ToDo"
@@ -64,10 +68,9 @@ msgid "Goto selected source line"
 msgstr "Перейти до вибраного рядка поч. коду"
 
 #: todoliststrconsts.listodolistoptions
-#, fuzzy
 #| msgid "ToDo options..."
 msgid "ToDo options ..."
-msgstr "Параметри ToDo..."
+msgstr "Параметри ToDo ..."
 
 #: todoliststrconsts.listodolistprintlist
 msgid "Print todo items"
@@ -94,8 +97,6 @@ msgid "Category"
 msgstr "Категорія"
 
 #: todoliststrconsts.lisviewtodolist
-#, fuzzy
 #| msgid "View ToDo list"
 msgid "View ToDo List"
 msgstr "Перегляд списку ToDo"
-

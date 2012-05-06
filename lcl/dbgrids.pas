@@ -42,6 +42,10 @@ uses
   LCLStrConsts, LCLIntf, LCLProc, LCLType, LMessages, LResources,
   Controls, StdCtrls, Graphics, Grids, Dialogs, Themes, Variants;
 
+{$if FPC_FULLVERSION<20701}
+  {$DEFINE noautomatedbookmark}
+{$endif}
+
 type
   TCustomDbGrid = class;
   TColumn = class;
@@ -128,7 +132,7 @@ type
 
   TBookmarkList = class
   private
-    FList: TFPList;
+    FList: TFPList; // list of TBookmark
     FGrid: TCustomDbGrid;
     FDataset: TDataset;
     function GetCount: integer;
@@ -3841,7 +3845,7 @@ end;
 
 function TBookmarkList.GetItem(AIndex: Integer): TBookmark;
 begin
-  Result := FList[AIndex];
+  Result := TBookmark(FList[AIndex]);
 end;
 
 procedure TBookmarkList.SetCurrentRowSelected(const AValue: boolean);
@@ -3860,13 +3864,13 @@ begin
   if Find(Bookmark, Index) then begin
     FDataset.FreeBookmark(Bookmark);
     if not AValue then begin
-      FDataset.FreeBookmark(Items[Index]);
+      FDataset.FreeBookmark(Pointer(Items[Index]));
       FList.Delete(Index);
       FGrid.Invalidate;
     end;
   end else begin
     if AValue then begin
-      FList.Insert(Index, Bookmark);
+      FList.Insert(Index, Pointer(Bookmark));
       FGrid.Invalidate;
     end;
   end;
@@ -3888,7 +3892,7 @@ end;
 destructor TBookmarkList.Destroy;
 begin
   Clear;
-  FList.Free;
+  FreeAndNil(FList);
   inherited Destroy;
 end;
 
@@ -3918,7 +3922,10 @@ type
   end;
 
 function MyCompareBookmarks(ds:Tdataset; b1,b2:TBookmark): Integer;
+var
+  i: Integer;
 begin
+  {$IFDEF noautomatedbookmark}
   if b1=b2 then
     result := 0
   else
@@ -3930,9 +3937,21 @@ begin
   else begin
     result := CompareMemRange(b1,b2,Tds(ds).bookmarksize);
   end;
+  {$ELSE}
+  if b1=b2 then
+    exit(0)
+  else if length(b1)<length(b2) then
+    exit(-1)
+  else if length(b1)>length(b2) then
+    exit(1)
+  else if length(b1)=0 then
+    exit(0)
+  else
+    result:=CompareMemRange(@b1[0],@b2[0],length(b1));
+  {$ENDIF}
 end;
 
-  function TBookmarkList.Find(const Item: TBookmark; var AIndex: Integer): boolean;
+function TBookmarkList.Find(const Item: TBookmark; var AIndex: Integer): boolean;
 var
   L, R, I: Integer;
   CompareRes: PtrInt;
@@ -3959,7 +3978,6 @@ begin
     end;
   end;
   AIndex := L;
-
 end;
 
 function TBookmarkList.IndexOf(const Item: TBookmark): Integer;
