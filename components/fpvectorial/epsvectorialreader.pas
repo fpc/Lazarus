@@ -58,7 +58,8 @@ type
     destructor Destroy; override;
   end;
 
-  TETType = (ettNamedElement, ettOperand, ettOperator, ettDictionary);
+  TETType = (ettNamedElement, ettOperand, ettOperator, ettDictionary,
+    ettVirtualMemorySnapshot);
 
   { TExpressionToken }
 
@@ -131,6 +132,10 @@ type
     function  ExecuteDeviceSetupAndOutputOperator(AToken: TExpressionToken; AData: TvVectorialPage; ADoc: TvVectorialDocument): Boolean;
     function  ExecuteArrayOperator(AToken: TExpressionToken; AData: TvVectorialPage; ADoc: TvVectorialDocument): Boolean;
     function  ExecuteStringOperator(AToken: TExpressionToken; AData: TvVectorialPage; ADoc: TvVectorialDocument): Boolean;
+    function  ExecuteFileOperator(AToken: TExpressionToken; AData: TvVectorialPage; ADoc: TvVectorialDocument): Boolean;
+    function  ExecuteResourceOperator(AToken: TExpressionToken; AData: TvVectorialPage; ADoc: TvVectorialDocument): Boolean;
+    function  ExecuteVirtualMemoryOperator(AToken: TExpressionToken; AData: TvVectorialPage; ADoc: TvVectorialDocument): Boolean;
+    function  ExecuteErrorOperator(AToken: TExpressionToken; AData: TvVectorialPage; ADoc: TvVectorialDocument): Boolean;
     //
     procedure PostScriptCoordsToFPVectorialCoords(AParam1, AParam2: TPSToken; var APosX, APosY: Double);
     function DictionarySubstituteOperator(ADictionary: TStringList; var ACurToken: TPSToken): Boolean;
@@ -625,120 +630,17 @@ begin
 
   if ExecuteStringOperator(AToken, AData, ADoc) then Exit;
 
+  if ExecuteFileOperator(AToken, AData, ADoc) then Exit;
+
+  if ExecuteResourceOperator(AToken, AData, ADoc) then Exit;
+
+  if ExecuteVirtualMemoryOperator(AToken, AData, ADoc) then Exit;
+
+  if ExecuteErrorOperator(AToken, AData, ADoc) then Exit;
+
   // If we got here, there the command not yet implemented
   raise Exception.Create(Format('[TvEPSVectorialReader.ProcessExpressionToken] Unknown PostScript Command "%s" in Line %d',
     [AToken.StrValue, AToken.Line]));
-
-{  File Operators
-
-  filename access file file Open named file with specified access
-  datasrc|datatgt dict
-  param1 … paramn filtername filter file Establish filtered file
-  file closefile – Close file
-  file read int true Read one character from file
-  or false
-  file int write – Write one character to file
-  file string readhexstring substring bool Read hexadecimal numbers from file into
-  string
-  file string writehexstring – Write string to file as hexadecimal
-  file string readstring substring bool Read string from file
-  file string writestring – Write string to file
-  file string readline substring bool Read line from file into string
-  file token any true Read token from file
-  or false
-  file bytesavailable int Return number of bytes available to read
-  – flush – Send buffered data to standard output file
-  file flushfile – Send buffered data or read to EOF
-  file resetfile – Discard buffered characters
-  file status bool Return status of file (true = valid)
-  filename status pages bytes referenced created true
-  or false Return information about named file
-  filename run – Execute contents of named file
-  – currentfile file Return file currently being executed
-  filename deletefile – Delete named file
-  filename1 filename2 renamefile – Rename file filename1 to filename2
-  template proc scratch filenameforall – Execute proc for each file name matching
-  template
-  file position setfileposition – Set file to specified position
-  file fileposition position Return current position in file
-  string print – Write string to standard output file
-  any = – Write text representation of any to standard
-  output file
-  any == – Write syntactic representation of any to
-  standard output file
-  any1 … anyn stack any1 … anyn Print stack nondestructively using =
-  any1 … anyn pstack any1 … anyn Print stack nondestructively using ==
-  obj tag printobject – Write binary object to standard output file,
-  using tag
-  file obj tag writeobject – Write binary object to file, using tag
-  int setobjectformat – Set binary object format (0 = disable,
-  1 = IEEE high, 2 = IEEE low, 3 = native
-  high, 4 = native low)
-  – currentobjectformat int Return binary object format
-}
-{ Resource Operators
-
-  key instance category defineresource instance Register named resource instance in category
-  key category undefineresource – Remove resource registration
-  key category findresource instance Return resource instance identified by key in
-  category
-  renderingintent findcolorrendering name bool Select CIE-based color rendering dictionary
-  by rendering intent
-  key category resourcestatus status size true Return status of resource instance
-  or false
-  template proc scratch category resourceforall – Enumerate resource instances in category
-}
-{ Virtual Memory Operators
-
-  – save save Create VM snapshot
-  save restore – Restore VM snapshot
-  bool setglobal – Set VM allocation mode (false = local,
-  true = global)
-  – currentglobal bool Return current VM allocation mode
-  any gcheck bool Return true if any is simple or in global VM,
-  false if in local VM
-  bool1 password startjob bool2 Start new job that will alter initial VM if
-  bool1 is true
-  index any defineuserobject – Define user object associated with index
-  index execuserobject – Execute user object associated with index
-  index undefineuserobject – Remove user object associated with index
-  – UserObjects array Return current UserObjects array defined in
-  userdict
-}
-{ Errors
-
-  configurationerror setpagedevice or setdevparams request
-  cannot be satisfied
-  dictfull No more room in dictionary
-  dictstackoverflow Too many begin operators
-  dictstackunderflow Too many end operators
-  execstackoverflow Executive stack nesting too deep
-  handleerror Called to report error information
-  interrupt External interrupt request (for example,
-  Control-C)
-  invalidaccess Attempt to violate access attribute
-  invalidexit exit not in loop
-  invalidfileaccess Unacceptable access string
-  invalidfont Invalid Font resource name or font or
-  CIDFont dictionary
-  invalidrestore Improper restore
-  ioerror Input/output error
-  limitcheck Implementation limit exceeded
-  nocurrentpoint Current point undefined
-  rangecheck Operand out of bounds
-  stackoverflow Operand stack overflow
-  stackunderflow Operand stack underflow
-  syntaxerror PostScript language syntax error
-  timeout Time limit exceeded
-  typecheck Operand of wrong type
-  undefined Name not known
-  undefinedfilename File not found
-  undefinedresource Resource instance not found
-  undefinedresult Overflow, underflow, or meaningless result
-  unmatchedmark Expected mark not on stack
-  unregistered Internal error
-  VMerror Virtual memory exhausted
-}
 end;
 
 { Operand Stack Manipulation Operators
@@ -765,6 +667,7 @@ function TvEPSVectorialReader.ExecuteStackManipulationOperator(
   AToken: TExpressionToken; AData: TvVectorialPage; ADoc: TvVectorialDocument): Boolean;
 var
   Param1, Param2, NewToken: TPSToken;
+  NewExprToken: TExpressionToken;
   lIndexN, lIndexJ: Integer;
   lTokens: array of TPSToken;
   i: Integer;
@@ -793,6 +696,17 @@ begin
     NewToken := Param1.Duplicate();
     Stack.Push(Param1);
     Stack.Push(NewToken);
+    Exit(True);
+  end;
+  // any1 … anyn count any1 … anyn n
+  // Count elements on stack
+  if AToken.StrValue = 'count' then
+  begin
+    NewExprToken := TExpressionToken.Create;
+    NewExprToken.ETType := ettOperand;
+    NewExprToken.FloatValue := Stack.Count;
+    NewExprToken.StrValue := IntToStr(Stack.Count);
+    Stack.Push(NewExprToken);
     Exit(True);
   end;
   // anyn … any0 n index anyn … any0 anyn
@@ -1218,6 +1132,12 @@ end;
   pattern setpattern – Install pattern as current color
   comp1 … compn pattern setpattern – Install pattern as current color
   form execform – Paint form
+
+  Other painting operators:
+
+  x y width height rectclip –
+    numarray rectclip –
+    numstring rectclip –
 }
 function TvEPSVectorialReader.ExecutePaintingOperator(AToken: TExpressionToken;
   AData: TvVectorialPage; ADoc: TvVectorialDocument): Boolean;
@@ -1251,6 +1171,19 @@ begin
     AData.SetPenWidth(CurrentGraphicState.PenWidth);
     AData.EndPath();
 
+    Exit(True);
+  end;
+  //x y width height rectclip –
+  //  numarray rectclip –
+  //  numstring rectclip –
+  if AToken.StrValue = 'rectclip' then
+  begin
+    // ToDo: Check for numarray and numstring
+    // Todo: Implement properly
+    Param1 := TPSToken(Stack.Pop);
+    Param1 := TPSToken(Stack.Pop);
+    Param1 := TPSToken(Stack.Pop);
+    Param1 := TPSToken(Stack.Pop);
     Exit(True);
   end;
 end;
@@ -1464,6 +1397,163 @@ begin
 
     Exit(True);
   end;
+end;
+
+{  File Operators
+
+  filename access file file Open named file with specified access
+  datasrc|datatgt dict
+  param1 … paramn filtername filter file Establish filtered file
+  file closefile – Close file
+  file read int true Read one character from file
+  or false
+  file int write – Write one character to file
+  file string readhexstring substring bool Read hexadecimal numbers from file into
+  string
+  file string writehexstring – Write string to file as hexadecimal
+  file string readstring substring bool Read string from file
+  file string writestring – Write string to file
+  file string readline substring bool Read line from file into string
+  file token any true Read token from file
+  or false
+  file bytesavailable int Return number of bytes available to read
+  – flush – Send buffered data to standard output file
+  file flushfile – Send buffered data or read to EOF
+  file resetfile – Discard buffered characters
+  file status bool Return status of file (true = valid)
+  filename status pages bytes referenced created true
+  or false Return information about named file
+  filename run – Execute contents of named file
+  – currentfile file Return file currently being executed
+  filename deletefile – Delete named file
+  filename1 filename2 renamefile – Rename file filename1 to filename2
+  template proc scratch filenameforall – Execute proc for each file name matching
+  template
+  file position setfileposition – Set file to specified position
+  file fileposition position Return current position in file
+  string print – Write string to standard output file
+  any = – Write text representation of any to standard
+  output file
+  any == – Write syntactic representation of any to
+  standard output file
+  any1 … anyn stack any1 … anyn Print stack nondestructively using =
+  any1 … anyn pstack any1 … anyn Print stack nondestructively using ==
+  obj tag printobject – Write binary object to standard output file,
+  using tag
+  file obj tag writeobject – Write binary object to file, using tag
+  int setobjectformat – Set binary object format (0 = disable,
+  1 = IEEE high, 2 = IEEE low, 3 = native
+  high, 4 = native low)
+  – currentobjectformat int Return binary object format
+}
+function TvEPSVectorialReader.ExecuteFileOperator(AToken: TExpressionToken;
+  AData: TvVectorialPage; ADoc: TvVectorialDocument): Boolean;
+begin
+  Result := False;
+
+end;
+
+{ Resource Operators
+
+  key instance category defineresource instance Register named resource instance in category
+  key category undefineresource – Remove resource registration
+  key category findresource instance Return resource instance identified by key in
+  category
+  renderingintent findcolorrendering name bool Select CIE-based color rendering dictionary
+  by rendering intent
+  key category resourcestatus status size true Return status of resource instance
+  or false
+  template proc scratch category resourceforall – Enumerate resource instances in category
+}
+function TvEPSVectorialReader.ExecuteResourceOperator(AToken: TExpressionToken;
+  AData: TvVectorialPage; ADoc: TvVectorialDocument): Boolean;
+begin
+  Result := False;
+
+end;
+
+{ Virtual Memory Operators
+
+  – save save Create VM snapshot
+  save restore – Restore VM snapshot
+  bool setglobal – Set VM allocation mode (false = local,
+  true = global)
+  – currentglobal bool Return current VM allocation mode
+  any gcheck bool Return true if any is simple or in global VM,
+  false if in local VM
+  bool1 password startjob bool2 Start new job that will alter initial VM if
+  bool1 is true
+  index any defineuserobject – Define user object associated with index
+  index execuserobject – Execute user object associated with index
+  index undefineuserobject – Remove user object associated with index
+  – UserObjects array Return current UserObjects array defined in
+  userdict
+}
+function TvEPSVectorialReader.ExecuteVirtualMemoryOperator(
+  AToken: TExpressionToken; AData: TvVectorialPage; ADoc: TvVectorialDocument
+  ): Boolean;
+var
+  Param1, Param2: TPSToken;
+  NewToken: TExpressionToken;
+begin
+  Result := False;
+
+  //– save save Create save snapshot
+  if AToken.StrValue = 'save' then
+  begin
+    NewToken := TExpressionToken.Create;
+    NewToken.ETType := ettVirtualMemorySnapshot;
+    Stack.Push(NewToken);
+    Exit(True);
+  end;
+  //save restore – Restore VM snapshot
+  if AToken.StrValue = 'restore' then
+  begin
+    Param1 := TPSToken(Stack.Pop);
+    Param1.Free;
+    Exit(True);
+  end;
+end;
+
+{ Errors
+
+  configurationerror setpagedevice or setdevparams request
+  cannot be satisfied
+  dictfull No more room in dictionary
+  dictstackoverflow Too many begin operators
+  dictstackunderflow Too many end operators
+  execstackoverflow Executive stack nesting too deep
+  handleerror Called to report error information
+  interrupt External interrupt request (for example,
+  Control-C)
+  invalidaccess Attempt to violate access attribute
+  invalidexit exit not in loop
+  invalidfileaccess Unacceptable access string
+  invalidfont Invalid Font resource name or font or
+  CIDFont dictionary
+  invalidrestore Improper restore
+  ioerror Input/output error
+  limitcheck Implementation limit exceeded
+  nocurrentpoint Current point undefined
+  rangecheck Operand out of bounds
+  stackoverflow Operand stack overflow
+  stackunderflow Operand stack underflow
+  syntaxerror PostScript language syntax error
+  timeout Time limit exceeded
+  typecheck Operand of wrong type
+  undefined Name not known
+  undefinedfilename File not found
+  undefinedresource Resource instance not found
+  undefinedresult Overflow, underflow, or meaningless result
+  unmatchedmark Expected mark not on stack
+  unregistered Internal error
+  VMerror Virtual memory exhausted
+}
+function TvEPSVectorialReader.ExecuteErrorOperator(AToken: TExpressionToken;
+  AData: TvVectorialPage; ADoc: TvVectorialDocument): Boolean;
+begin
+  Result := False;
+
 end;
 
 {  Arithmetic and Math Operators
@@ -2104,6 +2194,27 @@ var
 begin
   Result := False;
 
+  // int dict dict Create dictionary with capacity for int
+  // elements
+  if AToken.StrValue = 'dict' then
+  begin
+    Param1 := TPSToken(Stack.Pop);
+    NewToken := TExpressionToken.Create;
+    NewToken.ETType := ettDictionary;
+    Stack.Push(NewToken);
+    Exit(True);
+  end;
+  // dict begin –          Push dict on dictionary stack
+  if AToken.StrValue = 'begin' then
+  begin
+    Param1 := TPSToken(Stack.Pop);
+    Exit(True);
+  end;
+  // – end –               Pop current dictionary off dictionary stack
+  if AToken.StrValue = 'end' then
+  begin
+    Exit(True);
+  end;
   // Adds a dictionary definition
   // key value def –       Associate key and value in current dictionary
   if AToken.StrValue = 'def' then
@@ -2169,6 +2280,38 @@ begin
       {$endif}
     end;
 
+    Exit(True);
+  end;
+  // - userdict dict
+  // pushes the dictionary object userdict on the operand stack
+  // (see Section 3.7.5, “Standard and User-Defined Dictionaries”).
+  // userdict is not an operator; it is a name in systemdict associated with the dictionary object.
+  if AToken.StrValue = 'userdict' then
+  begin
+    Param1 := TPSToken(Stack.Pop);
+    NewToken := TExpressionToken.Create;
+    NewToken.ETType := ettDictionary;
+    Stack.Push(NewToken);
+    Exit(True);
+  end;
+  // – globaldict dict Return writeable dictionary in global VM
+  if AToken.StrValue = 'globaldict' then
+  begin
+    Param1 := TPSToken(Stack.Pop);
+    NewToken := TExpressionToken.Create;
+    NewToken.ETType := ettDictionary;
+    Stack.Push(NewToken);
+    Exit(True);
+  end;
+  // – countdictstack int Count elements on dictionary stack
+  // countdictstack ==> int
+  if AToken.StrValue = 'countdictstack' then
+  begin
+    NewToken := TExpressionToken.Create;
+    NewToken.ETType := ettOperand;
+    NewToken.FloatValue := Dictionary.Count;
+    NewToken.StrValue := IntToStr(Dictionary.Count);
+    Stack.Push(NewToken);
     Exit(True);
   end;
 end;
