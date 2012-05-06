@@ -4566,46 +4566,6 @@ begin
   end;
 end;
 
-{------------------------------------------------------------------------------
-  Function: UpdateMouseCaptureControl
-  Params: none
-  Returns:  none
-
-  Sets MouseCaptureWidget to the current capturing widget.
- ------------------------------------------------------------------------------}
-procedure UpdateMouseCaptureControl;
-var
-  OldMouseCaptureWidget,
-  CurMouseCaptureWidget: PGtkWidget;
-begin
-  {$IFNDEF GTK2_USE_OLD_CAPTURE}
-  exit;
-  {$ENDIF}
-  OldMouseCaptureWidget:=MouseCaptureWidget;
-  CurMouseCaptureWidget:=gtk_grab_get_current;
-
-  if OldMouseCaptureWidget<>CurMouseCaptureWidget then begin
-    // the mouse grab changed
-    // -> this means the gtk itself has changed the mouse grab
-    {$IFDEF VerboseMouseCapture}
-    DebugLn('UpdateMouseCaptureControl Capture changed from ',
-      '[',GetWidgetDebugReport(OldMouseCaptureWidget),' type=',MouseCaptureTypeNames[MouseCaptureType],']',
-      ' to [',GetWidgetDebugReport(CurMouseCaptureWidget),' type=GTK]');
-    if CurMouseCaptureWidget<>nil then
-    DebugLn('parent ',    GetWidgetDebugReport(CurMouseCaptureWidget^.Parent));
-    {$ENDIF}
-
-    // notify the new capture control
-    MouseCaptureWidget:=CurMouseCaptureWidget;
-    MouseCaptureType:=mctGTK;
-    if MouseCaptureWidget<>nil then begin
-      // the MouseCaptureWidget is probably not a main widget
-      SendMessage(HWnd({%H-}PtrUInt(MouseCaptureWidget)), LM_CAPTURECHANGED, 0,
-        HWnd({%H-}PtrUInt(OldMouseCaptureWidget)));
-    end;
-  end;
-end;
-
 procedure IncreaseMouseCaptureIndex;
 begin
   if MouseCaptureIndex<$ffffffff then
@@ -4613,49 +4573,6 @@ begin
   else
     MouseCaptureIndex:=0;
 end;
-
-{$IFDEF GTK2_USE_OLD_CAPTURE}
-procedure CaptureMouseForWidget(Widget: PGtkWidget; Owner: TMouseCaptureType);
-var
-  CaptureWidget: PGtkWidget;
-  NowIndex: Cardinal;
-begin
-  {$IFDEF VerboseMouseCapture}
-  DebugLn('CaptureMouseForWidget START ',GetWidgetDebugReport(Widget));
-  {$ENDIF}
-  if not (Owner in [mctGTKIntf,mctLCL]) then exit;
-  // not every widget can capture the mouse
-  CaptureWidget := GetDefaultMouseCaptureWidget(Widget);
-  if CaptureWidget=nil then exit;
-
-  UpdateMouseCaptureControl;
-  if (MouseCaptureType<>mctGTK) then begin
-    // we are capturing
-    if (MouseCaptureWidget=CaptureWidget) then begin
-      // we are already capturing this widget
-      exit;
-    end;
-    // release old capture
-    ReleaseMouseCapture;
-  end;
-
-  {$IFDEF VerboseMouseCapture}
-  DebugLn('CaptureMouseForWidget Start Capturing for ',GetWidgetDebugReport(CaptureWidget));
-  {$ENDIF}
-  IncreaseMouseCaptureIndex;
-  NowIndex:=MouseCaptureIndex;
-  if not gtk_widget_has_focus(CaptureWidget) then
-    gtk_widget_grab_focus(CaptureWidget);
-  if NowIndex=MouseCaptureIndex then begin
-    {$IFDEF VerboseMouseCapture}
-    DebugLn('CaptureMouseForWidget Commit Capturing for ',GetWidgetDebugReport(CaptureWidget));
-    {$ENDIF}
-    MouseCaptureWidget:=CaptureWidget;
-    MouseCaptureType:=Owner;
-    gtk_grab_add(CaptureWidget);
-  end;
-end;
-{$ENDIF}
 
 function GetDefaultMouseCaptureWidget(Widget: PGtkWidget
   ): PGtkWidget;
@@ -4701,14 +4618,15 @@ begin
     begin
       {$IFDEF VerboseMouseCapture}
       CurrentGrab := gtk_grab_get_current;
-      writeln('GetDefaultMouseCaptureWidget: ',TWinControl(LCLObject).ClassName,' core ',
-        dbghex(PtrUInt(WidgetInfo^.CoreWidget)),' client ',dbghex(PtrUInt(WidgetInfo^.ClientWidget)),
-        ' currentgrab ', dbghex(PtrUInt(CurrentGrab)));
+      debugln(['GetDefaultMouseCaptureWidget: ',TWinControl(LCLObject).ClassName,
+        ' core ',dbghex({%H-}PtrUInt(WidgetInfo^.CoreWidget)),
+        ' client ',dbghex({%H-}PtrUInt(WidgetInfo^.ClientWidget)),
+        ' currentgrab ', dbghex({%H-}PtrUInt(CurrentGrab))]);
       if CurrentGrab <> nil then
       begin
         GrabInfo := GetWidgetInfo(CurrentGrab);
         if GrabInfo <> nil then
-          writeln('GetDefaultMouseCaptureWidget: CURRENT GRAB ',GrabInfo^.LCLObject.ClassName);
+          debugln('GetDefaultMouseCaptureWidget: CURRENT GRAB ',GrabInfo^.LCLObject.ClassName);
       end;
       {$ENDIF}
       if WidgetInfo^.ClientWidget <> nil then
@@ -4717,18 +4635,14 @@ begin
           Result := WidgetInfo^.ClientWidget
         else
           Result := WidgetInfo^.CoreWidget;
-      {$IFDEF GTK2_USE_OLD_CAPTURE}
-      end;
-      {$ELSE}
       end else
       if GTK_IS_SCROLLED_WINDOW(Widget) and (GTK_IS_BIN(Widget)) then
       begin
         {$IFDEF VerboseMouseCapture}
-        writeln('GetDefaultMouseCaptureWidget: **',TWinControl(LCLObject).ClassName,' grabbing viewport ...');
+        debugln('GetDefaultMouseCaptureWidget: **',TWinControl(LCLObject).ClassName,' grabbing viewport ...');
         {$ENDIF}
         Result := gtk_bin_get_child(PGtkBin(Widget));
       end;
-      {$ENDIF}
     end;
   end;
 end;
@@ -4745,32 +4659,34 @@ var
   OldMouseCaptureWidget: PGtkWidget;
   Info: PWidgetInfo;
 begin
+  OldMouseCaptureWidget := gtk_grab_get_current;
+  if (OldMouseCaptureWidget=nil) and (MouseCaptureWidget=nil) then exit;
   {$IFDEF VerboseMouseCapture}
-  DebugLn('ReleaseMouseCapture ',dbgs(ord(MouseCaptureType)),' MouseCaptureWidget=[',GetWidgetDebugReport(MouseCaptureWidget),']');
+  DebugLn('ReleaseMouseCapture gtk_grab=[',GetWidgetDebugReport(OldMouseCaptureWidget),'] MouseCaptureWidget=[',GetWidgetDebugReport(MouseCaptureWidget),']');
   {$ENDIF}
-  if MouseCaptureType=mctGTK then
+  Info := GetWidgetInfo(OldMouseCaptureWidget, false);
+  if (Info <> nil) and (Info^.CoreWidget <> nil) then
   begin
-    Info := GetWidgetInfo(gtk_grab_get_current, false);
-    if (Info <> nil) and (Info^.CoreWidget <> nil) then
+    if GtkWidgetIsA(Info^.CoreWidget, gtk_list_get_type) then
     begin
-      if GtkWidgetIsA(Info^.CoreWidget, gtk_list_get_type) then
-      begin
-        // Paul Ishenin:
-        // listbox grabs pointer and other control for itself, when we click on listbox item
-        // also it changes its state to drag_selection
-        // this is not expected in LCL and as result cause bugs, such as 7892
-        // so we need end drag selection manually
-        OldMouseCaptureWidget := Info^.CoreWidget;
-        gtk_list_end_drag_selection(PGtkList(OldMouseCaptureWidget));
-      end;
+      // Paul Ishenin:
+      // listbox grabs pointer and other control for itself, when we click on listbox item
+      // also it changes its state to drag_selection
+      // this is not expected in LCL and as result cause bugs, such as 7892
+      // so we need end drag selection manually
+      OldMouseCaptureWidget := Info^.CoreWidget;
+      gtk_list_end_drag_selection(PGtkList(OldMouseCaptureWidget));
+      exit;
     end;
-    exit;
   end;
-  OldMouseCaptureWidget:=MouseCaptureWidget;
-  MouseCaptureWidget:=nil;
-  MouseCaptureType:=mctGTK;
-  if OldMouseCaptureWidget<>nil then
+  if MouseCaptureWidget<>nil then begin
+    {$IfDef VerboseMouseCapture}
+    DebugLn('TGtk2WidgetSet.ReleaseMouseCapture gtk_grab_remove=[',GetWidgetDebugReport(OldMouseCaptureWidget),']');
+    {$EndIf}
+    OldMouseCaptureWidget:=MouseCaptureWidget;
+    MouseCaptureWidget:=nil;
     gtk_grab_remove(OldMouseCaptureWidget);
+  end;
   // tell the LCL
   SetCaptureControl(nil);
 end;

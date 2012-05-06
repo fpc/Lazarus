@@ -35,18 +35,6 @@ var
   UpdatingTransientWindows: boolean;
 
   // mouse --------------------------------------------------------------------
-type
-  TMouseCaptureType = (
-    mctGTK,     // gtk is handling capturing
-    mctGTKIntf, // gtk interface has captured the mouse
-    mctLCL      // a LCL control has captured the mouse
-    );
-    
-const
-  MouseCaptureTypeNames: array[TMouseCaptureType] of string = (
-    'GTK','GTKintf','LCL'
-    );
-  
 var
   //drag icons
   //TrashCan_Open : PgdkPixmap;
@@ -59,7 +47,6 @@ var
   //Dragging : Boolean;
 
   MouseCaptureWidget: PGtkWidget;
-  MouseCaptureType: TMouseCaptureType;
   MouseCaptureIndex: cardinal;
   MousePosition: TPoint;
   MousePositionTime: TDateTime;

@@ -3899,8 +3899,7 @@ begin
    ((Options and ETO_OPAQUE) = 0) and (DevCtx.BkMode = OPAQUE) then
   //  (Rect = nil) then TODO: see if Rect<> nil is needed
   begin
-    //writeln('<*> Brush ? ',DevCtx.GDIObjects[gdiBrush]^.GDIBrushFill,' MODE ',DevCtx.BkMode,
-    // ' ClipRect ',dbgs(RectFromGdkRect(DevCtx.ClipRect)));
+    EnsureGCColor(DC, dccGDIBrushColor, DevCtx.GDIObjects[gdiBrush]^.GDIBrushFill = GDK_SOLID, True);
     BackGroundColor := @DevCtx.GDIObjects[gdiBrush]^.GDIBrushColor.Color;
   end;
 
@@ -8276,25 +8275,22 @@ end;
 function TGtk2WidgetSet.SetCapture(AHandle: HWND): HWND;
 var
   Widget: PGtkWidget;
-  {$IFNDEF GTK2_USE_OLD_CAPTURE}
   CaptureWidget: PGtkWidget;
-  {$ENDIF}
 begin
   Widget := {%H-}PGtkWidget(AHandle);
   {$IfDef VerboseMouseCapture}
-  DebugLn('TGtk2WidgetSet.SetCapture NewValue=[',GetWidgetDebugReport(Widget),']');
+  DebugLn('TGtk2WidgetSet.SetCapture Widget=[',GetWidgetDebugReport(Widget),'] gtk=[',GetWidgetDebugReport(gtk_grab_get_current),'] MouseCaptureWidget=[',GetWidgetDebugReport(MouseCaptureWidget),']');
   {$EndIf}
 
   // return old capture handle
   Result := GetCapture;
 
-  {$IFDEF GTK2_USE_OLD_CAPTURE}
-  // capture
-  CaptureMouseForWidget(Widget, mctLCL);
-  {$ELSE}
-
-  if Result <> 0 then
+  if Result <> 0 then begin
+    {$IfDef VerboseMouseCapture}
+    DebugLn('TGtk2WidgetSet.SetCapture gtk_grab_remove=[',GetWidgetDebugReport(gtk_grab_get_current),']');
+    {$EndIf}
     gtk_grab_remove(gtk_grab_get_current);
+  end;
 
   MouseCaptureWidget := nil;
 
@@ -8302,13 +8298,39 @@ begin
     exit;
 
   CaptureWidget := GetDefaultMouseCaptureWidget(Widget);
-  if CaptureWidget = nil then exit;
+  if CaptureWidget = nil then begin
+    {$IfDef VerboseMouseCapture}
+    DebugLn('TGtk2WidgetSet.SetCapture GetDefaultMouseCaptureWidget failed for widget=[',GetWidgetDebugReport(Widget),']');
+    {$EndIf}
+    exit;
+  end;
+  {$IfDef VerboseMouseCapture}
+  // ubuntu liboverlay intercepts gtk_grab_add for LCLWinapiClient
+  // ToDo: find out how to grab LCLWinapiClient with ubuntu liboverlay
+  if GtkWidgetIsA(Widget,GTK_TYPE_SCROLLED_WINDOW) then
+  begin
+    debugln(['TGtk2WidgetSet.SetCapture AAA1 is api widget ',
+      ' widget=',GetWidgetClassName(Widget),
+      ' container.container.focus_child=',GetWidgetClassName(PGtkScrolledWindow(Widget)^.container.container.focus_child),
+      ' container.child=',GetWidgetClassName(PGtkScrolledWindow(Widget)^.container.child),
+      '']);
+    debugln(['TGtk2WidgetSet.SetCapture gtk_widget_is_sensitive=',gtk_widget_is_sensitive(CaptureWidget)]);
+    debugln(['TGtk2WidgetSet.SetCapture gtk_widget_has_grab=',gtk_widget_has_grab (CaptureWidget)]);
+    //CaptureWidget:=PGtkScrolledWindow(Widget)^.container;
+  end;
+  {$EndIf}
 
+  {$IfDef VerboseMouseCapture}
+  DebugLn('TGtk2WidgetSet.SetCapture gtk_grab_add=[',GetWidgetDebugReport(CaptureWidget),']');
+  {$EndIf}
   gtk_grab_add(CaptureWidget);
+  {$IfDef VerboseMouseCapture}
+  DebugLn('TGtk2WidgetSet.SetCapture gtk=[',GetWidgetDebugReport(gtk_grab_get_current),']');
+  {$EndIf}
+
   MouseCaptureWidget := CaptureWidget;
   if MouseCaptureWidget<>nil then
     SendMessage(HWnd({%H-}PtrUInt(MouseCaptureWidget)), LM_CAPTURECHANGED, 0, Result);
-  {$ENDIF}
 end;
 
 {------------------------------------------------------------------------------
@@ -9629,6 +9651,7 @@ var
   DevCtx: TGtk2DeviceContext absolute DC;
   DCOrigin: TPoint;
   yOffset: integer;
+  BackGroundColor: PGdkColor;
 begin
   Result := IsValidDC(DC);
   if not Result then Exit;
@@ -9649,9 +9672,17 @@ begin
   DevCtx.SelectedColors := dcscCustom;
   EnsureGCColor(DC, dccCurrentTextColor, True, False);
 
+  BackGroundColor := nil;
+  if (DevCtx.GDIObjects[gdiBrush] <> nil) and (DevCtx.BkMode = OPAQUE) and
+    (DevCtx.CurrentBackColor.Colormap <> nil) then
+  begin
+    EnsureGCColor(DC, dccCurrentBackColor, DevCtx.GDIObjects[gdiBrush]^.GDIBrushFill = GDK_SOLID, True);
+    BackGroundColor := @DevCtx.CurrentBackColor.Color;
+  end;
+
   DevCtx.DrawTextWithColors(Str, Count,
     X + DCOrigin.X, Y + DCOrigin.Y + yOffset,
-    nil, nil);
+    nil, BackGroundColor);
 end;
 
 function TGtk2WidgetSet.UpdateWindow(Handle: HWND): Boolean;
