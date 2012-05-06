@@ -309,7 +309,7 @@ procedure TCarbonTrackBar.BoundsChanged;
 begin
   inherited BoundsChanged;
   SetControlViewStyle(Widget, StdTrackBarTinySize, StdTrackBarSmallSize, StdTrackBarNormalSize,
-    LCLObject.Height > LCLObject.Width);
+    LCLObject.Width > LCLObject.Height);
 end;
 
 {------------------------------------------------------------------------------
@@ -450,7 +450,8 @@ const
 procedure TCarbonScrollBar.BoundsChanged;
 begin
   inherited BoundsChanged;
-  SetControlViewStyle(Widget, StdScrollBarTinySize, StdScrollBarSmallSize, StdScrollBarNormalSize, LCLObject.Height > LCLObject.Width);
+  SetControlViewStyle(Widget, StdScrollBarTinySize, StdScrollBarSmallSize,
+    StdScrollBarNormalSize, LCLObject.Width > LCLObject.Height);
 end;
 
 function TCarbonScrollBar.SetScrollInfo(SBStyle: Integer;

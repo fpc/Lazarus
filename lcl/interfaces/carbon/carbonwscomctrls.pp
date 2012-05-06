@@ -103,7 +103,7 @@ type
     class procedure ColumnInsert(const ALV: TCustomListView; const AIndex: Integer; const AColumn: TListColumn); override;
     class procedure ColumnMove(const ALV: TCustomListView; const AOldIndex, ANewIndex: Integer; const AColumn: TListColumn); override;
     class procedure ColumnSetAlignment(const ALV: TCustomListView; const AIndex: Integer; const AColumn: TListColumn; const AAlignment: TAlignment); override;
-    //class procedure ColumnSetAutoSize(const ALV: TCustomListView; const AIndex: Integer; const AColumn: TListColumn; const AAutoSize: Boolean); override;
+    class procedure ColumnSetAutoSize(const ALV: TCustomListView; const AIndex: Integer; const AColumn: TListColumn; const AAutoSize: Boolean); override;
     class procedure ColumnSetCaption(const ALV: TCustomListView; const AIndex: Integer; const AColumn: TListColumn; const ACaption: String); override;
     class procedure ColumnSetImage(const ALV: TCustomListView; const AIndex: Integer; const AColumn: TListColumn; const AImageIndex: Integer); override;
     class procedure ColumnSetMaxWidth(const ALV: TCustomListView; const AIndex: Integer; const AColumn: TListColumn; const AMaxWidth: Integer); override;
@@ -519,6 +519,15 @@ begin
   TCarbonListView(ALV.Handle).GetColumn(AIndex).SetAlignment(AAlignment);
 end;
 
+class procedure TCarbonWSCustomListView.ColumnSetAutoSize(const ALV: TCustomListView;
+  const AIndex: Integer; const AColumn: TListColumn; const AAutoSize: Boolean);
+begin
+  if not CheckHandle(ALV, Self, 'ColumnSetAutoSize') then Exit;
+
+  TCarbonListView(ALV.Handle).GetColumn(AIndex).SetAutoSize(AAutoSize);
+  TCarbonListView(ALV.Handle).AutoSizeColumns;
+end;
+
 class procedure TCarbonWSCustomListView.ColumnSetCaption(const ALV: TCustomListView;
   const AIndex: Integer; const AColumn: TListColumn; const ACaption: String);
 begin
@@ -559,7 +568,8 @@ begin
   if not CheckHandle(ALV, Self, 'ColumnSetWidth') then Exit;
 
   Column := TCarbonListView(ALV.Handle).GetColumn(AIndex);
-  if Column <> nil then Column.SetWidth(AWidth, AColumn.AutoSize); // Avoids crash
+  if Column <> nil then Column.SetWidth(AWidth); // Avoids crash
+  TCarbonListView(ALV.Handle).AutoSizeColumns;
 end;
 
 class procedure TCarbonWSCustomListView.ColumnSetVisible(const ALV: TCustomListView;

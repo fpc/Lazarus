@@ -1016,7 +1016,7 @@ begin
       begin
         Debugln(['TCarbonTabsControl.SetPageIndex unknown pageindex: ',AIndex]);
       end;}
-      ATabIndex := -1;
+      FTabIndex := -1;
       SetControl32BitValue(ControlRef(Widget), 0);
       ShowTab;
       Exit;
