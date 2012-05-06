@@ -45,7 +45,7 @@ uses
   CodeToolManager, CodeAtom, CodeToolsStructs, CodeCache,
   IDEHelpIntf,
   LazarusIDEStrConsts,
-  EditorOptions, InputHistory, MiscOptions;
+  EditorOptions, InputHistory, MiscOptions, IDEProcs;
 
 type
 
@@ -353,7 +353,8 @@ var
 begin
   // get the Prefixes history list
   HistoryList:=
-         InputHistories.HistoryLists.GetList(hlMakeResourceStringPrefixes,true);
+         InputHistories.HistoryLists.GetList(hlMakeResourceStringPrefixes,true,
+                                             rltCaseSensitive);
   IdentPrefixComboBox.Items.Assign(HistoryList);
   if IdentPrefixComboBox.Items.Count>0 then
     IdentPrefixComboBox.Text:=IdentPrefixComboBox.Items[0]
@@ -367,7 +368,8 @@ var
 begin
   // get the Length history list
   HistoryList:=
-    InputHistories.HistoryLists.GetList(hlMakeResourceStringLengths,true);
+    InputHistories.HistoryLists.GetList(hlMakeResourceStringLengths,true,
+                                        rltCaseSensitive);
   IdentLengthComboBox.Items.Assign(HistoryList);
   if IdentLengthComboBox.Items.Count>0 then
     IdentLengthComboBox.Text:=IdentLengthComboBox.Items[0]
@@ -610,7 +612,7 @@ begin
   or (IdentPrefixComboBox.Text='') then
     exit;
   HistoryList:=
-    InputHistories.HistoryLists.GetList(hlMakeResourceStringPrefixes,true);
+    InputHistories.HistoryLists.GetList(hlMakeResourceStringPrefixes,true,rltCaseSensitive);
   if HistoryList.Count=0 then
     HistoryList.Assign(IdentPrefixComboBox.Items);
   HistoryList.Push(IdentPrefixComboBox.Text);
@@ -624,7 +626,7 @@ begin
   or (IdentLengthComboBox.Text='') then
     exit;
   HistoryList:=
-    InputHistories.HistoryLists.GetList(hlMakeResourceStringLengths,true);
+    InputHistories.HistoryLists.GetList(hlMakeResourceStringLengths,true,rltCaseSensitive);
   if HistoryList.Count=0 then
     HistoryList.Assign(IdentLengthComboBox.Items);
   HistoryList.Push(IdentLengthComboBox.Text);

@@ -290,7 +290,7 @@ end;
 procedure TImExportCompOptsDlg.LoadRecentList;
 begin
   RecentListbox.Items.Assign(
-    InputHistories.HistoryLists.GetList(hlCompilerOptsImExport,true));
+    InputHistories.HistoryLists.GetList(hlCompilerOptsImExport,true,rltFile));
   if RecentListbox.Items.Count>0 then
     RecentListbox.ItemIndex:=0;
   UpdateRecentButtons;
@@ -298,7 +298,7 @@ end;
 
 procedure TImExportCompOptsDlg.SaveRecentList;
 begin
-  InputHistories.HistoryLists.GetList(hlCompilerOptsImExport,true).Assign(
+  InputHistories.HistoryLists.GetList(hlCompilerOptsImExport,true,rltFile).Assign(
     RecentListbox.Items);
   InputHistories.Save;
 end;
@@ -316,7 +316,7 @@ procedure TImExportCompOptsDlg.SetFilename(const AValue: string);
 begin
   if FFilename=AValue then exit;
   FFilename:=AValue;
-  InputHistories.HistoryLists.GetList(hlCompilerOptsImExport,true).
+  InputHistories.HistoryLists.GetList(hlCompilerOptsImExport,true,rltFile).
     AppendEntry(FFilename);
   LoadRecentList;
 end;

@@ -61,7 +61,7 @@ type
     FImplUsedUnits: TStrings;
     FProjUnits, FOtherUnits: TStringList;
     procedure AddImplUsedUnits;
-    procedure GetProjUnits(SrcEdit: TSourceEditor);
+    function GetProjUnits(SrcEdit: TSourceEditor): Boolean;
     procedure CreateOtherUnitsList;
     function SelectedUnit: string;
     function InterfaceSelected: Boolean;
@@ -90,7 +90,7 @@ begin
   SrcEdit:=SourceEditorManager.ActiveEditor;
   UseUnitDlg:=TUseUnitDialog.Create(nil);
   try
-    UseUnitDlg.GetProjUnits(SrcEdit);
+    if not UseUnitDlg.GetProjUnits(SrcEdit) then Exit(mrCancel);
     UseUnitDlg.FillAvailableUnitsList;
     // there is only main uses section in program/library/package
     if SrcEdit.GetProjectFile=Project1.MainUnitInfo then
@@ -276,11 +276,12 @@ begin
   end;
 end;
 
-procedure TUseUnitDialog.GetProjUnits(SrcEdit: TSourceEditor);
+function TUseUnitDialog.GetProjUnits(SrcEdit: TSourceEditor): Boolean;
 var
   ProjFile: TUnitInfo;
   CurrentUnitName, s: String;
 begin
+  Result := False;
   FMainUsedUnits := nil;
   FImplUsedUnits := nil;
   if SrcEdit = nil then Exit;
@@ -292,6 +293,7 @@ begin
     LazarusIDE.DoJumpToCodeToolBossError;
     Exit;
   end;
+  Result := True;
   TStringList(FMainUsedUnits).CaseSensitive := False;
   TStringList(FImplUsedUnits).CaseSensitive := False;
   if SrcEdit.GetProjectFile is TUnitInfo then

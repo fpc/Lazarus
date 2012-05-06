@@ -555,10 +555,11 @@ end;
 
 procedure TRunParamsOptsDlg.SaveToOptions;
 
-  procedure SaveComboHistory(AComboBox: TComboBox; const History: string);
+  procedure SaveComboHistory(AComboBox: TComboBox; const History: string;
+    ListType: TRecentListType);
   begin
     AComboBox.AddHistoryItem(AComboBox.Text,20,true,false);
-    InputHistories.HistoryLists.GetList(History,true).Assign(AComboBox.Items);
+    InputHistories.HistoryLists.GetList(History,true,ListType).Assign(AComboBox.Items);
   end;
 
 begin
@@ -573,13 +574,13 @@ begin
   fOptions.Display    := Trim(DisplayEdit.Text);
   
   // history list: WorkingDirectoryComboBox
-  SaveComboHistory(WorkingDirectoryComboBox,hlWorkingDirectory);
+  SaveComboHistory(WorkingDirectoryComboBox,hlWorkingDirectory,rltFile);
 
   // history list: UseLaunchingApplicationComboBox
-  SaveComboHistory(UseLaunchingApplicationComboBox,hlLaunchingApplication);
+  SaveComboHistory(UseLaunchingApplicationComboBox,hlLaunchingApplication,rltFile);
 
   // history list: CmdLineParametersComboBox
-  SaveComboHistory(CmdLineParametersComboBox,hlCmdLineParameters);
+  SaveComboHistory(CmdLineParametersComboBox,hlCmdLineParameters,rltCaseSensitive);
 
   // environment
   SaveUserOverrides;
@@ -624,14 +625,14 @@ begin
   HostApplicationEdit.Text   := fOptions.HostApplicationFilename;
 
   // WorkingDirectoryComboBox
-  List:=InputHistories.HistoryLists.GetList(hlWorkingDirectory,true);
+  List:=InputHistories.HistoryLists.GetList(hlWorkingDirectory,true,rltFile);
   List.AppendEntry(fOptions.WorkingDirectory);
   WorkingDirectoryComboBox.Items.Assign(List);
   WorkingDirectoryComboBox.Text := fOptions.WorkingDirectory;
 
   // UseLaunchingApplicationComboBox
   UseLaunchingApplicationCheckBox.Checked := fOptions.UseLaunchingApplication;
-  List := InputHistories.HistoryLists.GetList(hlLaunchingApplication,true);
+  List := InputHistories.HistoryLists.GetList(hlLaunchingApplication,true,rltFile);
   List.AppendEntry(fOptions.LaunchingApplicationPathPlusParams);
   S := FindTerminalInPath;
   if S <> '' then
@@ -648,7 +649,7 @@ begin
   UseLaunchingApplicationComboBox.Text:=fOptions.LaunchingApplicationPathPlusParams;
 
   // CmdLineParametersComboBox
-  List:=InputHistories.HistoryLists.GetList(hlCmdLineParameters,true);
+  List:=InputHistories.HistoryLists.GetList(hlCmdLineParameters,true,rltCaseSensitive);
   List.AppendEntry(fOptions.CmdLineParams);
   CmdLineParametersComboBox.Items.Assign(List);
   CmdLineParametersComboBox.Text := fOptions.CmdLineParams;

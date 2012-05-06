@@ -36,7 +36,7 @@ uses
   IDEDialogs, IDEImagesIntf,
   // IDE
   PackageDefs, PackageSystem, InputHistory, LazarusIDEStrConsts, Project,
-  DialogProcs;
+  DialogProcs, IDEProcs;
 
 type
   TBuildProjectDialogItem = class
@@ -168,7 +168,8 @@ begin
   StoreCombo(ProjSrcMaskComboBox);
   StoreCombo(PkgOutMaskComboBox);
   StoreCombo(PkgSrcMaskComboBox);
-  InputHistories.HistoryLists.GetList(hlCleanBuildFileMask,true).Assign(ProjOutMaskComboBox.Items);
+  InputHistories.HistoryLists.GetList(hlCleanBuildFileMask,true,
+    rltFile).Assign(ProjOutMaskComboBox.Items);
 end;
 
 procedure TCleanBuildProjectDialog.ButtonPanel1OKButtonClick(Sender: TObject);
@@ -567,7 +568,7 @@ procedure TCleanBuildProjectDialog.Init(AProject: TProject);
 var
   List: THistoryList;
 begin
-  List:=InputHistories.HistoryLists.GetList(hlCleanBuildFileMask,true);
+  List:=InputHistories.HistoryLists.GetList(hlCleanBuildFileMask,true,rltFile);
   ProjOutMaskComboBox.Items.Assign(List);
   ProjOutMaskComboBox.Text:=AProject.CleanOutputFileMask;
   ProjSrcMaskComboBox.Items.Assign(List);

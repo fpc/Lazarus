@@ -72,20 +72,23 @@ type
   
   THistoryList = class(TStringList)
   private
+    FListType: TRecentListType;
     FMaxCount: integer;
     FName: string;
     procedure SetMaxCount(const AValue: integer);
     procedure SetName(const AValue: string);
   public
-    constructor Create;
+    constructor Create(TheListType: TRecentListType);
     destructor Destroy;  override;
     function Push(const Entry: string): integer;
     procedure LoadFromXMLConfig(XMLConfig: TXMLConfig; const Path: string);
     procedure SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string);
     procedure AppendEntry(const Entry: string);
+    function IndexOf(const S: string): Integer; override;
   public
     property Name: string read FName write SetName;
     property MaxCount: integer read FMaxCount write SetMaxCount;
+    property ListType: TRecentListType read FListType;
   end;
   
   
@@ -105,8 +108,8 @@ type
     procedure SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string);
     function IndexOfName(const Name: string): integer;
     function GetList(const Name: string;
-      CreateIfNotExists: boolean): THistoryList;
-    procedure Add(const ListName, Entry: string);
+      CreateIfNotExists: boolean; ListType: TRecentListType): THistoryList;
+    procedure Add(const ListName, Entry: string; ListType: TRecentListType);
     property Items[Index: integer]: THistoryList read GetItems;
   end;
   
@@ -218,7 +221,7 @@ type
     FMaxFindHistory: Integer;
     
     // Unit dependencies
-    FUnitDependenciesHistory: TStringList;
+    FUnitDependenciesHistory: TStringList; // root files
     FMaxUnitDependenciesHistory: integer;
     
     // FPC config cache
@@ -496,12 +499,12 @@ begin
   // Find- and replace-history
   FMaxFindHistory:=XMLConfig.GetValue(Path+'Find/History/Max',FMaxFindHistory);
   FFindAutoComplete:=XMLConfig.GetValue(Path+'Find/AutoComplete/Value',FFindAutoComplete);
-  LoadRecentList(XMLConfig,FFindHistory,Path+'Find/History/Find/');
-  LoadRecentList(XMLConfig,FReplaceHistory,Path+'Find/History/Replace/');
+  LoadRecentList(XMLConfig,FFindHistory,Path+'Find/History/Find/',rltCaseSensitive);
+  LoadRecentList(XMLConfig,FReplaceHistory,Path+'Find/History/Replace/',rltCaseSensitive);
   LoadRecentList(XMLConfig,FFindInFilesPathHistory,Path+
-                                            'FindInFiles/History/Paths/');
+                                          'FindInFiles/History/Paths/',rltFile);
   LoadRecentList(XMLConfig,FFindInFilesMaskHistory,Path+
-                                            'FindInFiles/History/Masks/');
+                                          'FindInFiles/History/Masks/',rltFile);
   FFindInFilesSearchOptions:=[];
   for FIFOption:=Low(TLazFindInFileSearchOption) to
     High(TLazFindInFileSearchOption)
@@ -524,7 +527,7 @@ begin
   end;
 
   // unit dependencies
-  LoadRecentList(XMLConfig,FUnitDependenciesHistory,Path+'UnitDependencies/History/');
+  LoadRecentList(XMLConfig,FUnitDependenciesHistory,Path+'UnitDependencies/History/',rltFile);
   // fpc config cache
   FFPCConfigCache.LoadFromXMLConfig(XMLConfig,'FPCConfigCache/');
   // file dialog
@@ -533,7 +536,7 @@ begin
     Height:=XMLConfig.GetValue(Path+'FileDialog/Height',0);
     InitialDir:=XMLConfig.GetValue(Path+'FileDialog/InitialDir','');
     MaxHistory:=XMLConfig.GetValue(Path+'FileDialog/MaxHistory',20);
-    LoadRecentList(XMLConfig,HistoryList,Path+'FileDialog/HistoryList/');
+    LoadRecentList(XMLConfig,HistoryList,Path+'FileDialog/HistoryList/',rltFile);
   end;
   FCleanOutputFileMask:=XMLConfig.GetValue(Path+'Clean/OutputFilemask',
                                            DefaultProjectCleanOutputFileMask);
@@ -697,27 +700,28 @@ end;
 
 function TInputHistories.AddToFindHistory(const AFindStr: string): boolean;
 begin
-  Result:=AddToRecentList(AFindStr,FFindHistory,FMaxFindHistory);
+  Result:=AddToRecentList(AFindStr,FFindHistory,FMaxFindHistory,rltCaseSensitive);
 end;
 
 function TInputHistories.AddToReplaceHistory(const AReplaceStr: String): boolean;
 begin
-  Result:=AddToRecentList(AReplaceStr,FReplaceHistory,FMaxFindHistory);
+  Result:=AddToRecentList(AReplaceStr,FReplaceHistory,FMaxFindHistory,rltCaseSensitive);
 end;
 
 function TInputHistories.AddToFindInFilesPathHistory(const APathStr: String): boolean;
 begin
-  Result:= AddToRecentList(APathStr,FFindInFilesPathHistory,FMaxFindHistory);
+  Result:= AddToRecentList(APathStr,FFindInFilesPathHistory,FMaxFindHistory,rltFile);
 end;
 
 function TInputHistories.AddToFindInFilesMaskHistory(const AMaskStr: String): boolean;
 begin
-  Result:= AddToRecentList(AMaskStr,FFindInFilesMaskHistory,FMaxFindHistory);
+  Result:= AddToRecentList(AMaskStr,FFindInFilesMaskHistory,FMaxFindHistory,rltFile);
 end;
 
 function TInputHistories.AddToUnitDependenciesHistory(const ARootFilename: String): boolean;
 begin
-  Result:=AddToRecentList(ARootFilename,FUnitDependenciesHistory,FMaxUnitDependenciesHistory);
+  Result:=AddToRecentList(ARootFilename,FUnitDependenciesHistory,
+    FMaxUnitDependenciesHistory,rltFile);
 end;
 
 function TInputHistories.LastFPCUnitLinksValid: boolean;
@@ -755,7 +759,8 @@ begin
   FFileDialogSettings.Height:=SourceDialog.Height;
   s:=ExtractFilePath(FFileDialogSettings.InitialDir);
   if s<>'' then
-    AddToRecentList(s,FFileDialogSettings.HistoryList,FFileDialogSettings.MaxHistory);
+    AddToRecentList(s,FFileDialogSettings.HistoryList,
+                    FFileDialogSettings.MaxHistory,rltFile);
 end;
 
 procedure TInputHistories.SetFileDialogSettingsInitialDir(const InitialDir: string);
@@ -801,8 +806,9 @@ begin
   FName:=AValue;
 end;
 
-constructor THistoryList.Create;
+constructor THistoryList.Create(TheListType: TRecentListType);
 begin
+  FListType:=TheListType;
   FMaxCount:=20;
 end;
 
@@ -813,7 +819,7 @@ end;
 
 function THistoryList.Push(const Entry: string): integer;
 begin
-  AddToRecentList(Entry,Self,MaxCount);
+  AddToRecentList(Entry,Self,MaxCount,ListType);
   Result:=-1;
 end;
 
@@ -823,12 +829,15 @@ begin
   if FName='' then
     FName:=XMLConfig.GetValue(Path+'Name','');
   FMaxCount:=XMLConfig.GetValue(Path+'MaxCount',MaxCount);
-  LoadRecentList(XMLConfig,Self,Path);
+  FListType:=StrToRecentListType(XMLConfig.GetValue(Path+'Type',''));
+  LoadRecentList(XMLConfig,Self,Path,ListType);
 end;
 
 procedure THistoryList.SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string);
 begin
   XMLConfig.SetDeleteValue(Path+'Name',Name,'');
+  XMLConfig.SetDeleteValue(Path+'Type',RecentListTypeNames[ListType],
+                           RecentListTypeNames[rltCaseSensitive]);
   XMLConfig.SetDeleteValue(Path+'MaxCount',MaxCount,20);
   SaveRecentList(XMLConfig,Self,Path);
 end;
@@ -837,6 +846,16 @@ procedure THistoryList.AppendEntry(const Entry: string);
 begin
   if (Count<MaxCount) and (IndexOf(Entry)<0) then
     Add(Entry);
+end;
+
+function THistoryList.IndexOf(const S: string): Integer;
+var
+  i: Integer;
+begin
+  for i:=0 to Count-1 do
+    if CompareRecentListItem(S,Strings[i],ListType) then
+      exit(i);
+  Result:=-1;
 end;
 
 { THistoryLists }
@@ -881,13 +900,15 @@ var
   MergeCount, i: integer;
   CurList: THistoryList;
   ListName, ListPath: string;
+  ListType: TRecentListType;
 begin
   MergeCount:=XMLConfig.GetValue(Path+'Count',0);
   for i:=0 to MergeCount-1 do begin
     ListPath:=GetXMLListPath(Path,i);
     ListName:=XMLConfig.GetValue(ListPath+'Name','');
     if ListName='' then continue;
-    CurList:=GetList(ListName,true);
+    ListType:=StrToRecentListType(XMLConfig.GetValue(ListPath+'Type',''));
+    CurList:=GetList(ListName,true,ListType);
     CurList.LoadFromXMLConfig(XMLConfig,ListPath);
   end;
 end;
@@ -913,8 +934,8 @@ begin
     dec(Result);
 end;
 
-function THistoryLists.GetList(const Name: string;
-  CreateIfNotExists: boolean): THistoryList;
+function THistoryLists.GetList(const Name: string; CreateIfNotExists: boolean;
+  ListType: TRecentListType): THistoryList;
 var
   i: integer;
 begin
@@ -922,16 +943,17 @@ begin
   if i>=0 then
     Result:=Items[i]
   else if CreateIfNotExists then begin
-    Result:=THistoryList.Create;
+    Result:=THistoryList.Create(ListType);
     Result.Name:=Name;
     FItems.Add(Result);
   end else
     Result:=nil;
 end;
 
-procedure THistoryLists.Add(const ListName, Entry: string);
+procedure THistoryLists.Add(const ListName, Entry: string;
+  ListType: TRecentListType);
 begin
-  GetList(ListName,true).Push(Entry);
+  GetList(ListName,true,ListType).Push(Entry);
 end;
 
 { TFPCConfigCache }

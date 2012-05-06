@@ -36,7 +36,7 @@ uses
   SynEdit, DefineTemplates, ExprEval,
   IDEWindowIntf, IDEHelpIntf,
   EditorOptions, LazarusIDEStrConsts, InputHistory, CodeToolsOptions,
-  IDEContextHelpEdit;
+  IDEContextHelpEdit, IDEProcs;
 
 type
   TCodeToolsDefinesNodeValues = class
@@ -452,7 +452,7 @@ begin
   DirectoryGroupbox.Caption:=lisCodeToolsDefsInsertBehindDirectory;
   ButtonPanel.HelpButton.OnClick := @HelpButtonClick;
   DirectoryCombobox.Items.Assign(
-    InputHistories.HistoryLists.GetList(hlCodeToolsDirectories,true));
+    InputHistories.HistoryLists.GetList(hlCodeToolsDirectories,true,rltFile));
   if DirectoryCombobox.Items.Count>0 then
     DirectoryCombobox.ItemIndex:=0
   else
@@ -477,7 +477,7 @@ procedure TCodeToolsDefinesDialog.CodeToolsDefinesDialogCLOSE(Sender: TObject;
   var CloseAction: TCloseAction);
 begin
   IDEDialogLayoutList.SaveLayout(Self);
-  InputHistories.HistoryLists.GetList(hlCodeToolsDirectories,true).Assign(
+  InputHistories.HistoryLists.GetList(hlCodeToolsDirectories,true,rltFile).Assign(
     DirectoryCombobox.Items);
   CodeToolsOpts.DefinesPreviewMainSplitterPos:=MainSplitter.GetSplitterPosition;
   CodeToolsOpts.DefinesPreviewTemplSplitterPos:=TemplatesSplitter.GetSplitterPosition;

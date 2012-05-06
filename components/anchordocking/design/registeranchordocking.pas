@@ -43,11 +43,11 @@ unit RegisterAnchorDocking;
 interface
 
 uses
-  Math, Classes, SysUtils, LCLProc, Forms, Controls, FileUtil, Dialogs,
-  LazConfigStorage, XMLConf, XMLPropStorage, StdCtrls, LCLIntf,
+  Math, Classes, SysUtils, LCLProc, Forms, Controls, FileUtil, LazFileCache,
+  Dialogs, LazConfigStorage, XMLConf, XMLPropStorage, StdCtrls, LCLIntf,
   BaseIDEIntf, ProjectIntf, MacroIntf, IDEDialogs, MenuIntf, LazIDEIntf,
-  IDEWindowIntf, IDEOptionsIntf,
-  AnchorDockStr, AnchorDocking, AnchorDockOptionsDlg;
+  IDEWindowIntf, IDEOptionsIntf, AnchorDockStr, AnchorDocking,
+  AnchorDockOptionsDlg;
 
 const
   DefaultConfigFileName = 'anchordocklayout.xml';
@@ -66,12 +66,14 @@ type
   private
     FChangeStamp: int64;
     FEnabled: boolean;
-    FModified: boolean;
+    FSavedChangeStamp: int64;
+    FSavedDMChangeStamp: int64;
     FUserLayoutLoaded: boolean;
     procedure DockMasterCreateControl(Sender: TObject; aName: string;
       var AControl: TControl; DoDisableAutoSizing: boolean);
     procedure GetDefaultBounds(AForm: TCustomForm; out Creator: TIDEWindowCreator;
       out NewBounds: TRect; out DockSiblingName: string; out DockAlign: TAlign);
+    function GetModified: boolean;
     procedure SetEnabled(const AValue: boolean);
     procedure SetModified(const AValue: boolean);
     procedure SetUserLayoutLoaded(const AValue: boolean);
@@ -97,9 +99,9 @@ type
     procedure SaveLayoutAsDefaultClicked(Sender: TObject);
     property UserLayoutLoaded: boolean read FUserLayoutLoaded write SetUserLayoutLoaded;
     property Enabled: boolean read FEnabled write SetEnabled;
-    procedure IncreaseChangeStamp;
+    procedure IncreaseChangeStamp; inline;
     property ChangeStamp: int64 read FChangeStamp;
-    property Modified: boolean read FModified write SetModified;
+    property Modified: boolean read GetModified write SetModified;
   end;
 
   { TAnchorDockIDEFrame }
@@ -198,6 +200,14 @@ begin
   NewBounds.Bottom:=Max(NewBounds.Top+100,NewBounds.Bottom);
 end;
 
+function TIDEAnchorDockMaster.GetModified: boolean;
+begin
+  Result:=true;
+  if FChangeStamp=FSavedChangeStamp then exit;
+  if DockMaster.OptionsChangeStamp=FSavedDMChangeStamp then exit;
+  Result:=false;
+end;
+
 procedure TIDEAnchorDockMaster.SetEnabled(const AValue: boolean);
 begin
   if FEnabled=AValue then exit;
@@ -207,8 +217,12 @@ end;
 
 procedure TIDEAnchorDockMaster.SetModified(const AValue: boolean);
 begin
-  if FModified=AValue then exit;
-  FModified:=AValue;
+  if AValue then
+    IncreaseChangeStamp
+  else begin
+    FSavedChangeStamp:=FChangeStamp;
+    FSavedDMChangeStamp:=DockMaster.OptionsChangeStamp;
+  end;
 end;
 
 procedure TIDEAnchorDockMaster.SetUserLayoutLoaded(const AValue: boolean);
@@ -283,6 +297,7 @@ begin
     if FileExistsUTF8(Filename) then
       LoadLayoutFromFile(Filename);
   end;
+  Modified:=false;
 end;
 
 procedure TIDEAnchorDockMaster.LoadUserLayout;
@@ -313,6 +328,7 @@ begin
       DebugLn(['TIDEAnchorDockMaster.LoadUserLayout loading ',Filename,' failed: ',E.Message]);
     end;
   end;
+  Modified:=false;
 end;
 
 procedure TIDEAnchorDockMaster.SaveUserLayout;
@@ -335,6 +351,7 @@ begin
       DebugLn(['TIDEAnchorDockMaster.SaveDefaultLayout saving ',Filename,' failed: ',E.Message]);
     end;
   end;
+  Modified:=false;
 end;
 
 procedure TIDEAnchorDockMaster.LoadLayoutFromFile(Filename: string);
@@ -560,10 +577,7 @@ end;
 
 procedure TIDEAnchorDockMaster.IncreaseChangeStamp;
 begin
-  if FChangeStamp<High(FChangeStamp) then
-    inc(FChangeStamp)
-  else
-   FChangeStamp:=low(FChangeStamp);
+  LUIncreaseChangeStamp64(FChangeStamp);
 end;
 
 { TAnchorDockIDEFrame }

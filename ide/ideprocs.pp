@@ -160,11 +160,30 @@ function SearchDirectoryInSearchPath(SearchPath: TStrings;
                     const Directory: string; DirStartPos: integer = 0): integer;
 
 // XMLConfig
-procedure LoadRecentList(XMLConfig: TXMLConfig; List: TStrings; const Path: string);
+type
+  TRecentListType = (
+    rltCaseSensitive,
+    rltCaseInsensitive,
+    rltFile
+    );
+const
+  RecentListTypeNames: array[TRecentListType] of string = (
+    'CaseSensitive',
+    'CaseInsensitive',
+    'File'
+    );
+function StrToRecentListType(s: string): TRecentListType;
+function CompareRecentListItem(s1, s2: string; ListType: TRecentListType): boolean;
+procedure LoadRecentList(XMLConfig: TXMLConfig; List: TStrings; const Path: string;
+                         ListType: TRecentListType);
 procedure SaveRecentList(XMLConfig: TXMLConfig; List: TStrings; const Path: string);
-function AddToRecentList(const s: string; RecentList: TStrings; Max: integer): boolean;
-function AddComboTextToRecentList(cb: TCombobox; Max: integer): boolean;
-procedure RemoveFromRecentList(const s: string; RecentList: TStrings);
+function AddToRecentList(const s: string; RecentList: TStrings; Max: integer;
+                         ListType: TRecentListType): boolean;
+function AddComboTextToRecentList(cb: TCombobox; Max: integer;
+                                  ListType: TRecentListType): boolean;
+procedure RemoveFromRecentList(const s: string; RecentList: TStrings;
+                               ListType: TRecentListType);
+procedure CleanUpRecentList(List: TStrings; ListType: TRecentListType);
 procedure LoadRect(XMLConfig: TXMLConfig; const Path:string;
                    var ARect:TRect);
 procedure LoadRect(XMLConfig: TXMLConfig; const Path:string;
@@ -282,31 +301,31 @@ uses
   Unix, BaseUnix;
 {$EndIf}
 
-function AddToRecentList(const s: string; RecentList: TStrings; Max: integer): boolean;
+function AddToRecentList(const s: string; RecentList: TStrings; Max: integer;
+  ListType: TRecentListType): boolean;
 begin
-  if (RecentList.Count>0) and (RecentList[0]=s) then
-    exit(false)
-  else
-    Result:=true;
-  RemoveFromRecentList(s,RecentList);
+  if (RecentList.Count>0) and CompareRecentListItem(RecentList[0],s,ListType) then
+    exit(false);
+  Result:=true;
+  RemoveFromRecentList(s,RecentList,ListType);
   RecentList.Insert(0,s);
   if Max>0 then
     while RecentList.Count>Max do
       RecentList.Delete(RecentList.Count-1);
 end;
 
-function AddComboTextToRecentList(cb: TCombobox; Max: integer): boolean;
+function AddComboTextToRecentList(cb: TCombobox; Max: integer;
+  ListType: TRecentListType): boolean;
 var
   List: TStringList;
 begin
   List := TStringList.Create;
   try
     List.Assign(cb.Items);
-    if (List.Count>0) and (List[0]=cb.Text) then
-      exit(false)
-    else
-      Result:=true;
-    RemoveFromRecentList(cb.Text,List);
+    if (List.Count>0) and CompareRecentListItem(List[0],cb.Text,ListType) then
+      exit(false);
+    Result:=true;
+    RemoveFromRecentList(cb.Text,List,ListType);
     List.Insert(0,cb.Text);
     if Max>0 then
       while List.Count>Max do
@@ -318,14 +337,14 @@ begin
   end;
 end;
 
-procedure RemoveFromRecentList(const s: string; RecentList: TStrings);
-var i: integer;
+procedure RemoveFromRecentList(const s: string; RecentList: TStrings;
+  ListType: TRecentListType);
+var
+  i: integer;
 begin
-  i:=RecentList.Count-1;
-  while i>=0 do begin
-    if RecentList[i]=s then RecentList.Delete(i);
-    dec(i);
-  end;
+  for i:=RecentList.Count-1 downto 0 do
+    if CompareRecentListItem(RecentList[i],s,ListType) then
+      RecentList.Delete(i);
 end;
 
 procedure SaveRecentList(XMLConfig: TXMLConfig; List: TStrings; const Path: string);
@@ -957,10 +976,28 @@ begin
   FindCloseUTF8(FileInfo);
 end;
 
+function StrToRecentListType(s: string): TRecentListType;
+begin
+  for Result:=Low(TRecentListType) to high(TRecentListType)  do
+    if SysUtils.CompareText(s,RecentListTypeNames[Result])=0 then exit;
+  Result:=rltCaseSensitive;
+end;
+
+function CompareRecentListItem(s1, s2: string; ListType: TRecentListType
+  ): boolean;
+begin
+  case ListType of
+  rltCaseInsensitive: Result:=UTF8LowerCase(s1)=UTF8LowerCase(s2);
+  rltFile: Result:=CompareFilenames(ChompPathDelim(s1),ChompPathDelim(s2))=0;
+  else Result:=s1=s2;
+  end;
+end;
+
 procedure LoadRecentList(XMLConfig: TXMLConfig; List: TStrings;
-  const Path: string);
+  const Path: string; ListType: TRecentListType);
 begin
   LoadStringList(XMLConfig,List,Path);
+  CleanUpRecentList(List,ListType);
 end;
 
 procedure LoadPoint(XMLConfig: TXMLConfig; const Path: string;
@@ -1068,6 +1105,15 @@ begin
       debugln(['LoadXMLConfigViaCodeBuffer Filename="',Filename,'": ',E.Message]);
     end;
   end;
+end;
+
+procedure CleanUpRecentList(List: TStrings; ListType: TRecentListType);
+var
+  i: Integer;
+begin
+  for i:=List.Count-1 downto 1 do
+    if CompareRecentListItem(List[i],List[i-1],ListType) then
+      List.Delete(i);
 end;
 
 procedure LoadRect(XMLConfig: TXMLConfig; const Path: string;

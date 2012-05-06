@@ -64,6 +64,7 @@ type
     function  CreateDebugProcess(const AOptions: String): Boolean; virtual;
     procedure Flush;                                   // Flushes output buffer
     function  GetWaiting: Boolean; override;
+    function  LineEndPos(const s: string; out LineEndLen: integer): integer; virtual;
     function  ReadLine(ATimeOut: Integer = -1): String; overload;
     function  ReadLine(const APeek: Boolean; ATimeOut: Integer = -1): String; virtual; overload;
     procedure SendCmdLn(const ACommand: String); virtual; overload;
@@ -358,6 +359,23 @@ begin
   Result := FReading;
 end;
 
+function TCmdLineDebugger.LineEndPos(const s: string; out LineEndLen: integer): integer;
+var
+  n, idx: Integer;
+begin
+  Result := 0;
+  LineEndLen := 0;
+  for n := Low(FLineEnds) to High(FLineEnds) do
+  begin
+    idx := Pos(FLineEnds[n], FOutputBuf);
+    if (idx > 0) and ( (idx < Result) or (Result = 0) )
+    then begin
+      Result := idx;
+      LineEndLen := length(FLineEnds[n]);
+    end;
+  end;
+end;
+
 function TCmdLineDebugger.ReadLine(ATimeOut: Integer = -1): String;
 begin
   Result := ReadLine(False, ATimeOut);
@@ -381,7 +399,7 @@ function TCmdLineDebugger.ReadLine(const APeek: Boolean; ATimeOut: Integer = -1)
 var   
   WaitSet: Integer;
   LineEndMatch: String;
-  n, Idx, MinIdx, PeekCount: Integer;
+  LineEndIdx, LineEndLen, PeekCount: Integer;
 begin
 //  WriteLN('[TCmdLineDebugger.GetOutput] Enter');
 
@@ -397,21 +415,12 @@ begin
   repeat                       
     if FOutputBuf <> ''
     then begin
-      MinIdx := MaxInt;
-      for n := Low(FLineEnds) to High(FLineEnds) do
-      begin
-        idx := Pos(FLineEnds[n], FOutputBuf);
-        if (idx > 0) and (idx < MinIdx) 
-        then begin
-          MinIdx := idx;
-          LineEndMatch := FLineEnds[n];
-        end;
-      end;
-    
-      if MinIdx < MaxInt 
+      LineEndIdx := LineEndPos(FOutputBuf, LineEndLen);
+
+      if LineEndIdx > 0
       then begin
-        Dec(MinIdx);
-        Result := Copy(FOutputBuf, 1, MinIdx);
+        Dec(LineEndIdx);
+        Result := Copy(FOutputBuf, 1, LineEndIdx);
         if APeek 
         then begin
           if PeekCount = FPeekOffset
@@ -421,7 +430,7 @@ begin
             Continue;
           end;
         end
-        else Delete(FOutputBuf, 1, MinIdx + Length(LineEndMatch));
+        else Delete(FOutputBuf, 1, LineEndIdx + LineEndLen);
       
         DoDbgOutput(Result);
         Break;

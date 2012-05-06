@@ -88,7 +88,7 @@ begin
   CleanDirectoryDialog:=TCleanDirectoryDialog.Create(nil);
   CleanDirectoryDialog.Macros:=Macros;
   CleanDirectoryDialog.LoadSettings;
-  AddToRecentList(DefaultDirectory,CleanDirectoryDialog.DirCombobox.Items,20);
+  AddToRecentList(DefaultDirectory,CleanDirectoryDialog.DirCombobox.Items,20,rltFile);
   CleanDirectoryDialog.DirComboBox.ItemIndex:=0;
   Result:=CleanDirectoryDialog.ShowModal;
   CleanDirectoryDialog.Free;
@@ -162,12 +162,13 @@ procedure TCleanDirectoryDialog.LoadSettings;
 var
   XMLConfig: TXMLConfig;
 
-  procedure LoadComboList(AComboBox: TComboBox; const Path: string);
+  procedure LoadComboList(AComboBox: TComboBox; const Path: string;
+    ListType: TRecentListType);
   var
     List: TStringList;
   begin
     List:=TStringList.Create;
-    LoadRecentList(XMLConfig,List,Path);
+    LoadRecentList(XMLConfig,List,Path,ListType);
     AComboBox.Items.Assign(List);
     if AComboBox.Items.Count > 0 then
       AComboBox.ItemIndex := 0;
@@ -199,11 +200,11 @@ begin
       
       SubDirsCheckbox.Checked:=XMLConfig.GetValue(
                                              Path+'SubDirectories/Value',false);
-      LoadComboList(DirCombobox,Path+'Directories');
-      LoadComboList(RemoveCombobox,Path+'RemoveFilters');
+      LoadComboList(DirCombobox,Path+'Directories',rltFile);
+      LoadComboList(RemoveCombobox,Path+'RemoveFilters',rltFile);
       SimpleSyntaxRemoveCheckbox.Checked:=XMLConfig.GetValue(
                                          Path+'RemoveFilter/SimpleSyntax',true);
-      LoadComboList(KeepCombobox,Path+'KeepFilters');
+      LoadComboList(KeepCombobox,Path+'KeepFilters',rltFile);
       SimpleSyntaxKeepCheckbox.Checked:=XMLConfig.GetValue(
                                            Path+'KeepFilter/SimpleSyntax',true);
       KeepTextFilesCheckbox.Checked:=XMLConfig.GetValue(
@@ -233,9 +234,9 @@ var
   Filename: String;
   Path: String;
 begin
-  AddComboTextToRecentList(DirCombobox, 20);
-  AddComboTextToRecentList(RemoveCombobox, 20);
-  AddComboTextToRecentList(KeepCombobox, 20);
+  AddComboTextToRecentList(DirCombobox, 20,rltFile);
+  AddComboTextToRecentList(RemoveCombobox, 20,rltFile);
+  AddComboTextToRecentList(KeepCombobox, 20,rltFile);
   try
     InvalidateFileStateCache;
     Filename:=GetConfigFilename;

@@ -40,7 +40,7 @@ uses
   Classes, SysUtils, LCLType, Forms,
   IDEWindowIntf, IDEImagesIntf, LazarusIDEStrConsts,
   ComCtrls, StdCtrls, DebuggerDlg, BaseDebugManager,
-  InputHistory, Debugger, DebuggerStrConst;
+  InputHistory, IDEProcs, Debugger, DebuggerStrConst;
 
 type
 
@@ -96,7 +96,8 @@ begin
   inherited Create(TheOwner);
 
   Caption := lisKMEvaluateModify;
-  cmbExpression.Items.Assign(InputHistories.HistoryLists.GetList(ClassName, True));
+  cmbExpression.Items.Assign(InputHistories.HistoryLists.
+    GetList(ClassName,True,rltCaseSensitive));
 
   tbEvaluate.Caption := lisEvaluate;
   tbModify.Caption := lisModify;
@@ -122,7 +123,7 @@ var
   Opts: TDBGEvaluateFlags;
 begin
   S := cmbExpression.Text;
-  InputHistories.HistoryLists.Add(ClassName, S);
+  InputHistories.HistoryLists.Add(ClassName, S,rltCaseSensitive);
   DBGType:=nil;
   Opts := [];
   if chkTypeCast.Checked then

@@ -812,8 +812,9 @@ var
   function ProtectedNodeIsInAllowedClass: boolean;
   var
     CurClassNode: TCodeTreeNode;
-    p: TFindContext;
+    FoundClassContext: TFindContext;
   begin
+    Result:=false;
     if FICTClassAndAncestors<>nil then begin
       // start of the identifier completion is in a method or class
       // => all protected ancestor classes are allowed as well.
@@ -822,16 +823,14 @@ var
       and (not (CurClassNode.Desc in AllClasses)) do
         CurClassNode:=CurClassNode.Parent;
       if CurClassNode=nil then exit;
-      p:=CreateFindContext(Params.NewCodeTool,CurClassNode);
-      if IndexOfFindContext(FICTClassAndAncestors,@p)>=0 then begin
+      FoundClassContext:=CreateFindContext(Params.NewCodeTool,CurClassNode);
+      if IndexOfFindContext(FICTClassAndAncestors,@FoundClassContext)>=0 then begin
         // this class node is the class or one of the ancestors of the class
         // of the start context of the identifier completion
         exit(true);
       end;
     end;
     //DebugLn(['ProtectedNodeIsInAllowedClass hidden: ',FindContextToString(FoundContext)]);
-
-    Result:=false;
   end;
   
   function PropertyIsOverridenPublicPublish: boolean;
@@ -2366,6 +2365,7 @@ begin
             end;
           end;
         end;
+        // check missing 'do' after 'with'
         if CurrentIdentifierList.StartUpAtomInFrontIs('WITH')
         and (not CurrentIdentifierList.StartUpAtomBehindIs('DO'))
         and (CurrentIdentifierList.StartBracketLvl=0)
