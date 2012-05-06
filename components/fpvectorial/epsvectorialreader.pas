@@ -237,7 +237,8 @@ begin
   Result.ClipPath := ClipPath;
   Result.ClipMode := ClipMode;
   Result.OverPrint := OverPrint;
-  Result.CTM := TArrayToken(CTM.Duplicate());
+  if CTM <> nil then
+    Result.CTM := TArrayToken(CTM.Duplicate());
   Result.PenWidth := PenWidth;
 end;
 
@@ -656,6 +657,14 @@ begin
         Continue;
       end;
 
+      // If we got an array after the substitution, don't run it, just put it in the stack
+      if CurToken is TArrayToken then
+      begin
+        Stack.Push(CurToken);
+        Continue;
+      end;
+
+      // If we got a procedure from the substitution, run it!
       if CurToken is TProcedureToken then ExecuteProcedureToken(TProcedureToken(CurToken), AData, ADoc)
       else ExecuteOperatorToken(TExpressionToken(CurToken), AData, ADoc);
 
@@ -2679,11 +2688,14 @@ begin
       ACurToken.StrValue := SubstituteToken.StrValue;
       ACurToken.FloatValue := SubstituteToken.FloatValue;
     end
-    else if SubstituteToken is TProcedureToken then
+    else if (SubstituteToken is TProcedureToken) or
+      (SubstituteToken is TArrayToken) then
     begin
       ACurToken := SubstituteToken;
     end;
-    if ACurToken.StrValue = '' then raise Exception.Create('[TvEPSVectorialReader.DictionarySubstituteOperator] The Dictionary substitution resulted in an empty value');
+
+    if (not (SubstituteToken is TArrayToken)) and (ACurToken.StrValue = '') then
+      raise Exception.Create('[TvEPSVectorialReader.DictionarySubstituteOperator] The Dictionary substitution resulted in an empty value');
   end;
 end;
 
