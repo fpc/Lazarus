@@ -2890,12 +2890,14 @@ procedure TCustomGrid.Sort(ColSorting: Boolean; index, IndxFrom, IndxTo: Integer
     until I>=R;
   end;
 begin
-  CheckIndex(ColSorting, Index);
-  CheckIndex(not ColSorting, IndxFrom);
-  CheckIndex(not ColSorting, IndxTo);
-  BeginUpdate;
-  QuickSort(IndxFrom, IndxTo);
-  EndUpdate;
+  if RowCount>FixedRows then begin
+    CheckIndex(ColSorting, Index);
+    CheckIndex(not ColSorting, IndxFrom);
+    CheckIndex(not ColSorting, IndxTo);
+    BeginUpdate;
+    QuickSort(IndxFrom, IndxTo);
+    EndUpdate;
+  end;
 end;
 
 procedure TCustomGrid.doTopleftChange(dimChg: Boolean);
