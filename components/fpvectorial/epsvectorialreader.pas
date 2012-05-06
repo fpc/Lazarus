@@ -996,6 +996,7 @@ var
   Param1, Param2, Param3, Param4, CounterToken: TPSToken;
   NewToken: TExpressionToken;
   FloatCounter: Double;
+  i, lRepeatCount: Integer;
 begin
   Result := False;
 
@@ -1026,6 +1027,28 @@ begin
 
     if Param3.BoolValue then ExecuteProcedureToken(TProcedureToken(Param2), AData, ADoc)
     else ExecuteProcedureToken(TProcedureToken(Param1), AData, ADoc);
+
+    Exit(True);
+  end;
+  // int proc repeat –   Execute proc int times
+  if AToken.StrValue = 'repeat' then
+  begin
+    Param1 := TPSToken(Stack.Pop); // proc
+    Param2 := TPSToken(Stack.Pop); // num
+
+    if not (Param1 is TProcedureToken) then
+      raise Exception.Create(Format('[TvEPSVectorialReader.ExecuteControlOperator] The operator repeat requires a procedure. Error at line %d', [AToken.Line]));
+
+    lRepeatCount := Round(Param2.FloatValue);
+    for i := 0 to lRepeatCount - 1 do
+    begin
+      ExecuteProcedureToken(TProcedureToken(Param1), AData, ADoc);
+      if ExitCalled then
+      begin
+        ExitCalled := False;
+        Break;
+      end;
+    end;
 
     Exit(True);
   end;
