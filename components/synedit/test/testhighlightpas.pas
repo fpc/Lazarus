@@ -45,6 +45,7 @@ type
     procedure TestContextForProcedure;
     procedure TestContextForDeprecated;
     procedure TestContextForClassModifier; // Sealed abstract
+    procedure TestContextForClassHelper;
     procedure TestContextForStatic;
     procedure TestFoldNodeInfo;
   end;
@@ -741,8 +742,115 @@ begin
   CheckTokensForLine('class declaration"',  2,
     [ tkIdentifier, tkSpace, tkSymbol, tkSpace,
       tkKey {class}, tkSpace,
+      tkKey {sealed}, tkSpace, tkKey {abstract}
+    ]);
+  CheckTokensForLine('var in class "',  3,
+    [ tkIdentifier, tkSymbol, tkSpace,  tkIdentifier, tkSymbol, tkSpace,  tkIdentifier, tkSymbol,
+      tkSpace, tkIdentifier, tkSymbol
+    ]);
+  CheckTokensForLine('procedure in class "',  4,
+    [ tkKey, tkSpace, tkIdentifier,  tkSymbol, tkSpace, tkKey,  tkSymbol ]);
+
+
+
+  ReCreateEdit;
+  SetLines
+    ([ 'Unit A; interface',
+       'type',
+       'TFoo = class {} sealed abstract',
+         'a, sealed, abstract: Integer;',
+         'procedure Foo; abstract;',
+        'end;',
+       ''
+    ]);
+
+  CheckTokensForLine('class declaration"',  2,
+    [ tkIdentifier, tkSpace, tkSymbol, tkSpace,
+      tkKey {class}, tkSpace, tkComment, tkSpace,
+      tkKey {sealed}, tkSpace, tkKey {abstract}
+    ]);
+  CheckTokensForLine('var in class "',  3,
+    [ tkIdentifier, tkSymbol, tkSpace,  tkIdentifier, tkSymbol, tkSpace,  tkIdentifier, tkSymbol,
+      tkSpace, tkIdentifier, tkSymbol
+    ]);
+  CheckTokensForLine('procedure in class "',  4,
+    [ tkKey, tkSpace, tkIdentifier,  tkSymbol, tkSpace, tkKey,  tkSymbol ]);
+
+
+
+  ReCreateEdit;
+  SetLines
+    ([ 'Unit A; interface',
+       'type',
+       'TFoo = class {}',
+       ' sealed abstract',
+         'a, sealed, abstract: Integer;',
+         'procedure Foo; abstract;',
+        'end;',
+       ''
+    ]);
+
+  CheckTokensForLine('class declaration"',  2,
+    [ tkIdentifier, tkSpace, tkSymbol, tkSpace,
+      tkKey {class}, tkSpace, tkComment
+    ]);
+  CheckTokensForLine('class declaration"',  3,
+    [ tkSpace, tkKey {sealed}, tkSpace, tkKey {abstract}
+    ]);
+  CheckTokensForLine('var in class "',  4,
+    [ tkIdentifier, tkSymbol, tkSpace,  tkIdentifier, tkSymbol, tkSpace,  tkIdentifier, tkSymbol,
+      tkSpace, tkIdentifier, tkSymbol
+    ]);
+  CheckTokensForLine('procedure in class "',  5,
+    [ tkKey, tkSpace, tkIdentifier,  tkSymbol, tkSpace, tkKey,  tkSymbol ]);
+
+
+
+
+  ReCreateEdit;
+  SetLines
+    ([ 'Unit A; interface',
+       'type',
+       'TFoo = class(sealed) sealed abstract',
+         'helper, sealed, abstract: Integer;',
+         'procedure Foo; abstract;',
+        'end;',
+       ''
+    ]);
+
+  CheckTokensForLine('class declaration"',  2,
+    [ tkIdentifier, tkSpace, tkSymbol, tkSpace,
+      tkKey {class}, tkSymbol, tkIdentifier, tkSymbol, tkSpace,
       tkKey {sealed}, tkSpace,
       tkKey {abstract}
+    ]);
+  CheckTokensForLine('var in class "',  3,
+    [ tkIdentifier, tkSymbol, tkSpace,  tkIdentifier, tkSymbol, tkSpace,  tkIdentifier, tkSymbol,
+      tkSpace, tkIdentifier, tkSymbol
+    ]);
+  CheckTokensForLine('procedure in class "',  4,
+    [ tkKey, tkSpace, tkIdentifier,  tkSymbol, tkSpace, tkKey,  tkSymbol ]);
+
+
+end;
+
+procedure TTestHighlighterPas.TestContextForClassHelper;
+begin
+  ReCreateEdit;
+  SetLines
+    ([ 'Unit A; interface',
+       'type',
+       'TFoo = class helper for TBar',
+         'helper, sealed, abstract: Integer;',
+         'procedure Foo; abstract;',
+        'end;',
+       ''
+    ]);
+
+  CheckTokensForLine('class declaration"',  2,
+    [ tkIdentifier, tkSpace, tkSymbol, tkSpace,
+      tkKey {class}, tkSpace, tkKey {helper}, tkSpace, tkKey {for},
+      tkSpace, tkIdentifier
     ]);
   CheckTokensForLine('var in class "',  3,
     [ tkIdentifier, tkSymbol, tkSpace,  tkIdentifier, tkSymbol, tkSpace,  tkIdentifier, tkSymbol,

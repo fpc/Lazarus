@@ -969,7 +969,8 @@ function TSynPasSyn.Func21: TtkTokenKind;
 begin
   if KeyComp('Of') then begin
     Result := tkKey;
-    if (rsAfterClass in fRange) and (TopPascalCodeFoldBlockType = cfbtClass)
+    if (rsAfterClass in fRange) and (TopPascalCodeFoldBlockType = cfbtClass) and
+       (PasCodeFoldRange.BracketNestLevel = 0)
     then begin
       // Accidental start of block // End at next semicolon (usually same line)
       CodeFoldRange.Pop(false); // avoid minlevel
@@ -1212,6 +1213,7 @@ end;
 function TSynPasSyn.Func46: TtkTokenKind;
 begin
   if (rsAfterClass in fRange) and KeyComp('Sealed') and
+     (PasCodeFoldRange.BracketNestLevel = 0) and
      (TopPascalCodeFoldBlockType in [cfbtClass])
   then begin
     Result := tkKey;
@@ -1359,6 +1361,13 @@ begin
       StartPascalCodeFoldBlock(cfbtUses);
     end;
     Result := tkKey;
+  end
+  else if KeyComp('helper') then begin
+    if (rsAtClass in fRange) and (PasCodeFoldRange.BracketNestLevel = 0)
+    then
+      Result := tkKey
+    else
+      Result := tkIdentifier;
   end
   else Result := tkIdentifier;
 end;
@@ -1543,7 +1552,7 @@ begin
   if KeyComp('Abstract') and (TopPascalCodeFoldBlockType in [cfbtClass, cfbtClassSection])
   then begin
     Result := tkKey;
-    if (rsAfterClass in fRange) then
+    if (rsAfterClass in fRange) and (PasCodeFoldRange.BracketNestLevel = 0) then
       fRange := fRange + [rsAtClass] // forward, in case of further class modifiers  end
     else
     if not (rsAfterClassMembers in fRange) then
@@ -2980,8 +2989,7 @@ begin
         //if rsAtEqual in fRange then
         //  fRange := fRange + [rsAfterEqualOrColon] - [rsAtEqual]
         //else
-        if rsAtClass in fRange then
-          fRange := fRange + [rsAfterClass] - [rsAtClass];
+
         IsAtCaseLabel := rsAtCaseLabel in fRange;
 
         fProcTable[fLine[Run]];
@@ -3003,9 +3011,18 @@ begin
           fRange := fRange - [rsAtClosingBracket];
           if rsAfterClassField in OldRange then
             fRange := fRange - [rsAfterClassField];
+          if rsAtClass in fRange then begin
+            if OldRange * [rsAtClass, rsAfterClass] <> [] then
+              fRange := fRange + [rsAfterClass] - [rsAtClass]
+            else
+              fRange := fRange + [rsAfterClass];
+          end
         end
-        else
+        else begin
           fRange := fRange - [rsAtClosingBracket];
+          if rsAtClass in fRange then
+            fRange := fRange + [rsAfterClass];
+        end;
       end
   end;
   if FAtLineStart and not(FTokenID in [tkSpace, tkComment, tkIDEDirective]) then
