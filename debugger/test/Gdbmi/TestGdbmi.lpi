@@ -31,7 +31,7 @@
     <RequiredPackages Count="5">
       <Item1>
         <PackageName Value="LCLBase"/>
-        <MinVersion Major="1" Valid="True" Release="1"/>
+        <MinVersion Major="1" Release="1" Valid="True"/>
       </Item1>
       <Item2>
         <PackageName Value="ide"/>
@@ -46,7 +46,7 @@
         <PackageName Value="FCL"/>
       </Item5>
     </RequiredPackages>
-    <Units Count="10">
+    <Units Count="11">
       <Unit0>
         <Filename Value="TestGdbmi.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -97,10 +97,15 @@
         <IsPartOfProject Value="True"/>
         <UnitName Value="TestDisAss"/>
       </Unit9>
+      <Unit10>
+        <Filename Value="testenvironment.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="TestEnvironment"/>
+      </Unit10>
     </Units>
   </ProjectOptions>
   <CompilerOptions>
-    <Version Value="10"/>
+    <Version Value="11"/>
     <PathDelim Value="\"/>
     <SearchPaths>
       <IncludeFiles Value="$(ProjOutDir)"/>
@@ -116,8 +121,7 @@
     </CodeGeneration>
     <Linking>
       <Debugging>
-        <GenerateDebugInfo Value="True"/>
-        <DebugInfoType Value="dsDwarf2"/>
+        <DebugInfoType Value="dsDwarf2Set"/>
         <UseHeaptrc Value="True"/>
       </Debugging>
     </Linking>
