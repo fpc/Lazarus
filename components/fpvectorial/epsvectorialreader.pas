@@ -37,24 +37,42 @@ type
   TPSTokens = TFPList;// TPSToken;
 
   TPSToken = class
+  public
     StrValue: string;
     FloatValue: double;
     IntValue: Integer;
     BoolValue: Boolean;
     Line: Integer; // To help debugging
+    constructor Create; virtual;
     function Duplicate: TPSToken; virtual;
   end;
 
   TCommentToken = class(TPSToken)
+  public
+  end;
+
+  { TArrayToken }
+
+  TArrayToken = class(TPSToken)
+  public
+    CurElementStr: string;
+    ArrayData: TPSTokens;
+    constructor Create; override;
+    destructor Destroy; override;
+    function Duplicate: TPSToken; override;
+    procedure FreeToken(AToken, AData: Pointer);
+    procedure AddNumber(ANumber: Double);
+    procedure AddIdentityMatrix;
   end;
 
   { TProcedureToken }
 
   TProcedureToken = class(TPSToken)
+  public
     Levels: Integer; // Used to count groups inside groups and find the end of a top-level group
     Childs: TPSTokens;
     Parsed: Boolean;
-    constructor Create;
+    constructor Create; override;
     destructor Destroy; override;
   end;
 
@@ -71,7 +89,8 @@ type
     function Duplicate: TPSToken; override;
   end;
 
-  TPostScriptScannerState = (ssSearchingToken, ssInComment, ssInDefinition, ssInGroup, ssInExpressionElement);
+  TPostScriptScannerState = (ssSearchingToken, ssInComment, ssInDefinition,
+    ssInGroup, ssInExpressionElement, ssInArray);
 
   { TGraphicState }
 
@@ -83,10 +102,13 @@ type
     ClipPath: TPath;
     ClipMode: TvClipMode;
     OverPrint: Boolean; // not used currently
+    // Current Transformation Matrix
+    CTM: TArrayToken;
     //
     PenWidth: Integer;
     //
     function Duplicate: TGraphicState;
+    procedure CTMNeeded;
   end;
 
   { TPSTokenizer }
@@ -156,6 +178,51 @@ type
 var
   FPointSeparator: TFormatSettings;
 
+{ TArrayToken }
+
+constructor TArrayToken.Create;
+begin
+  inherited Create;
+  ArrayData := TPSTokens.Create;
+end;
+
+destructor TArrayToken.Destroy;
+begin
+  ArrayData.ForEachCall(@FreeToken, nil);
+  ArrayData.Free;
+  inherited Destroy;
+end;
+
+function TArrayToken.Duplicate: TPSToken;
+begin
+  Result := inherited Duplicate;
+end;
+
+procedure TArrayToken.FreeToken(AToken, AData: Pointer);
+begin
+  if AToken = nil then Exit;
+  TPSToken(AToken).Free;
+end;
+
+procedure TArrayToken.AddNumber(ANumber: Double);
+var
+  lToken: TPSToken;
+begin
+  lToken := TPSToken.Create;
+  lToken.FloatValue := ANumber;
+  ArrayData.Add(lToken);
+end;
+
+procedure TArrayToken.AddIdentityMatrix;
+begin
+  AddNumber(1);
+  AddNumber(0);
+  AddNumber(0);
+  AddNumber(1);
+  AddNumber(0);
+  AddNumber(0);
+end;
+
 { TGraphicState }
 
 function TGraphicState.Duplicate: TGraphicState;
@@ -169,10 +236,24 @@ begin
   Result.ClipPath := ClipPath;
   Result.ClipMode := ClipMode;
   Result.OverPrint := OverPrint;
+  Result.CTM := TArrayToken(CTM.Duplicate());
   Result.PenWidth := PenWidth;
 end;
 
+procedure TGraphicState.CTMNeeded;
+begin
+  if CTM <> nil then Exit;
+
+  CTM := TArrayToken.Create;
+  CTM.AddIdentityMatrix();
+end;
+
 { TPSToken }
+
+constructor TPSToken.Create;
+begin
+  inherited Create;
+end;
 
 function TPSToken.Duplicate: TPSToken;
 begin
@@ -255,6 +336,7 @@ var
   CommentToken: TCommentToken;
   ProcedureToken: TProcedureToken;
   ExpressionToken: TExpressionToken;
+  ArrayToken: TArrayToken;
   Len: Integer;
   lIsEndOfLine: Boolean;
 begin
@@ -291,6 +373,11 @@ begin
           ProcedureToken.Levels := 1;
           ProcedureToken.Line := CurLine;
           State := ssInGroup;
+        end
+        else if CurChar = '[' then
+        begin
+          ArrayToken := TArrayToken.Create;
+          State := ssInArray;
         end
         else if CurChar in ['a'..'z','A'..'Z','0'..'9','-','/'] then
         begin
@@ -330,6 +417,27 @@ begin
         end;
       end; // ssInComment
 
+      // Starts at [ and ends in ]
+      ssInArray:
+      begin
+        if (CurChar = ']') then
+        begin
+          Tokens.Add(ArrayToken);
+          State := ssSearchingToken;
+        end
+        else if (CurChar = ' ') then
+        begin
+          //ArrayToken.ArrayData.Add();
+          //CurElementStr: string;
+          //ArrayData: TPSTokens;
+        end
+        else
+        begin;
+          //CurElementStr: string;
+          //ArrayData: TPSTokens;
+        end;
+      end;
+
       // Starts at { and ends in }, passing over nested groups
       ssInGroup:
       begin
@@ -353,15 +461,16 @@ begin
         end;
       end;
 
-      // Goes until a space comes, or {
+      // Goes until a space comes, or { or [
       ssInExpressionElement:
       begin
-        if IsPostScriptSpace(Byte(CurChar)) or (CurChar = '{') then
+        if IsPostScriptSpace(Byte(CurChar)) or (CurChar = '{') or (CurChar = '[') then
         begin
           ExpressionToken.PrepareFloatValue();
           Tokens.Add(ExpressionToken);
           State := ssSearchingToken;
-          if (CurChar = '{') then AStream.Seek(-1, soFromCurrent);
+          if (CurChar = '{') then AStream.Seek(-1, soFromCurrent)
+          else if (CurChar = '[') then AStream.Seek(-1, soFromCurrent);
         end
         else
           ExpressionToken.StrValue := ExpressionToken.StrValue + CurChar;
@@ -1635,6 +1744,78 @@ begin
     Stack.Push(NewToken);
     Exit(True);
   end;
+  //num1 abs num2            Return absolute value of num1
+  if AToken.StrValue = 'abs' then
+  begin
+    NewToken := TExpressionToken.Create;
+    NewToken.ETType := ettOperand;
+    Param1 := TPSToken(Stack.Pop); // num1
+    NewToken.FloatValue := Abs(Param1.FloatValue);
+    NewToken.StrValue := FloatToStr(NewToken.FloatValue);
+    Stack.Push(NewToken);
+    Param1.Free;
+    Exit(True);
+  end;
+  //num1 neg num2            Return negative of num1
+  if AToken.StrValue = 'neg' then
+  begin
+    NewToken := TExpressionToken.Create;
+    NewToken.ETType := ettOperand;
+    Param1 := TPSToken(Stack.Pop); // num1
+    NewToken.FloatValue := -1 * Param1.FloatValue;
+    NewToken.StrValue := FloatToStr(NewToken.FloatValue);
+    Stack.Push(NewToken);
+    Param1.Free;
+    Exit(True);
+  end;
+  //num1 ceiling num2        Return ceiling of num1
+  if AToken.StrValue = 'ceiling' then
+  begin
+    NewToken := TExpressionToken.Create;
+    NewToken.ETType := ettOperand;
+    Param1 := TPSToken(Stack.Pop); // num1
+    NewToken.FloatValue := Ceil(Param1.FloatValue);
+    NewToken.StrValue := FloatToStr(NewToken.FloatValue);
+    Stack.Push(NewToken);
+    Param1.Free;
+    Exit(True);
+  end;
+  //num1 floor num2          Return floor of num1
+  if AToken.StrValue = 'floor' then
+  begin
+    NewToken := TExpressionToken.Create;
+    NewToken.ETType := ettOperand;
+    Param1 := TPSToken(Stack.Pop); // num1
+    NewToken.FloatValue := Trunc(Param1.FloatValue);
+    NewToken.StrValue := FloatToStr(NewToken.FloatValue);
+    Stack.Push(NewToken);
+    Param1.Free;
+    Exit(True);
+  end;
+  //num1 round num2          Round num1 to nearest integer
+  if AToken.StrValue = 'round' then
+  begin
+    NewToken := TExpressionToken.Create;
+    NewToken.ETType := ettOperand;
+    Param1 := TPSToken(Stack.Pop); // num1
+    NewToken.FloatValue := Round(Param1.FloatValue);
+    NewToken.StrValue := FloatToStr(NewToken.FloatValue);
+    Stack.Push(NewToken);
+    Param1.Free;
+    Exit(True);
+  end;
+  //num1 truncate num2       Remove fractional part of num1
+  if AToken.StrValue = 'truncate' then
+  begin
+    NewToken := TExpressionToken.Create;
+    NewToken.ETType := ettOperand;
+    Param1 := TPSToken(Stack.Pop); // num1
+    NewToken.FloatValue := Trunc(Param1.FloatValue);
+    NewToken.StrValue := FloatToStr(NewToken.FloatValue);
+    Stack.Push(NewToken);
+    Param1.Free;
+    Exit(True);
+  end;
 end;
 
 { Path Construction Operators
@@ -1968,6 +2149,36 @@ begin
     Param1 := TPSToken(Stack.Pop);
     Exit(True);
   end;
+  // num setmiterlimit – Set miter length limit
+  if AToken.StrValue = 'setmiterlimit' then
+  begin
+    Param1 := TPSToken(Stack.Pop);
+    Exit(True);
+  end;
+  // array offset setdash – Set dash pattern for stroking
+  if AToken.StrValue = 'setdash' then
+  begin
+    Param1 := TPSToken(Stack.Pop);
+    Param2 := TPSToken(Stack.Pop);
+    Exit(True);
+  end;
+  // num setgray – Set color space to DeviceGray and color to
+  // specified gray value (0 = black, 1 = white)
+  if AToken.StrValue = 'setgray' then
+  begin
+    Param1 := TPSToken(Stack.Pop);
+
+    lRed := EnsureRange(Param1.FloatValue, 0, 1);
+
+    CurrentGraphicState.Color.Red := Round(lRed * $FFFF);
+    CurrentGraphicState.Color.Green := Round(lRed * $FFFF);
+    CurrentGraphicState.Color.Blue := Round(lRed * $FFFF);
+    CurrentGraphicState.Color.alpha := alphaOpaque;
+
+    AData.SetPenColor(CurrentGraphicState.Color);
+
+    Exit(True);
+  end;
   // red green blue setrgbcolor –
   // sets the current color space in the graphics state to DeviceRGB and the current color
   // to the component values specified by red, green, and blue. Each component
@@ -2075,6 +2286,7 @@ function TvEPSVectorialReader.ExecuteGraphicStateOperatorsDD(
   AToken: TExpressionToken; AData: TvVectorialPage; ADoc: TvVectorialDocument): Boolean;
 var
   Param1, Param2: TPSToken;
+  ArrayToken: TArrayToken;
 begin
   Result := False;
 
@@ -2084,6 +2296,35 @@ begin
     Param1 := TPSToken(Stack.Pop);
 
     CurrentGraphicState.OverPrint := Param1.BoolValue;
+
+    Exit(True);
+  end;
+  //– matrix matrix Create identity matrix
+  if AToken.StrValue = 'matrix' then
+  begin
+    ArrayToken := TArrayToken.Create;
+    ArrayToken.AddIdentityMatrix();
+
+    Stack.Push(ArrayToken);
+
+    Exit(True);
+  end;
+  //– initmatrix – Set CTM to device default
+
+  //matrix identmatrix matrix Fill matrix with identity transform
+
+  //matrix defaultmatrix matrix Fill matrix with device default matrix
+
+  //matrix currentmatrix matrix Fill matrix with CTM
+  if AToken.StrValue = 'currentmatrix' then
+  begin
+    Param1 := TPSToken(Stack.Pop);
+    Param1.Free;
+
+    CurrentGraphicState.CTMNeeded();
+    ArrayToken := TArrayToken(CurrentGraphicState.CTM.Duplicate());
+
+    Stack.Push(ArrayToken);
 
     Exit(True);
   end;
