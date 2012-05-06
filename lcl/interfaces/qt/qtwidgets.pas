@@ -1703,6 +1703,7 @@ type
   private
     FMouseDoubleClicked: Boolean;
     FCalViewportEventHook: QObject_hookH;
+    FCalViewAreaEventHook: QObject_hookH;
     FClickedHook: QCalendarWidget_hookH;
     FActivatedHook: QCalendarWidget_hookH;
     FSelectionChangedHook: QCalendarWidget_hookH;
@@ -1716,6 +1717,8 @@ type
     AYear, AMonth, ADay: Word;
     procedure AttachEvents; override;
     procedure DetachEvents; override;
+    function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl; override;
+    function AreaViewEventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl;
     function calViewportEventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl;
     function HitTest(const APoint: TPoint): byte;
     procedure SetDisplaySettings(
@@ -14909,14 +14912,21 @@ begin
         QWidget_setMouseTracking(WP, True);
         FCalViewportEventHook := QObject_hook_create(WP);
         QObject_hook_hook_events(FCalViewportEventHook, @calViewportEventFilter);
+        setProperty(QWidgetH(AnObject), 'lclwidget', Int64(PtrUInt(Self)));
+        FCalViewAreaEventHook := QObject_hook_create(QWidgetH(AnObject));
+        QObject_hook_hook_events(FCalViewAreaEventHook, @AreaViewEventFilter);
       end;
     end;
   end;
-
 end;
 
 procedure TQtCalendar.DetachEvents;
 begin
+  if FCalViewAreaEventHook <> nil then
+  begin
+    QObject_hook_destroy(FCalViewAreaEventHook);
+    FCalViewAreaEventHook := nil;
+  end;
   if FCalViewportEventHook <> nil then
   begin
     QObject_hook_destroy(FCalViewportEventHook);
@@ -14943,6 +14953,31 @@ begin
     FCurrentPageChangedHook := nil;
   end;
   inherited DetachEvents;
+end;
+
+function TQtCalendar.EventFilter(Sender: QObjectH; Event: QEventH): Boolean;
+  cdecl;
+begin
+  Result := False;
+  if (QEvent_Type(Event) = QEventKeyPress) or (QEvent_Type(Event) = QEventKeyRelease) then
+    exit;
+  Result := inherited EventFilter(Sender, Event);
+end;
+
+function TQtCalendar.AreaViewEventFilter(Sender: QObjectH; Event: QEventH
+  ): Boolean; cdecl;
+var
+  AKey: PtrInt;
+begin
+  Result := False;
+  if (LCLObject <> nil) and ((QEvent_type(Event) = QEventKeyPress) or
+    (QEvent_type(Event) = QEventKeyRelease)) then
+  begin
+    AKey := QKeyEvent_key(QKeyEventH(Event));
+    if (AKey <> QtKey_Up) and (AKey <> QtKey_Left) and (AKey <> QtKey_Right) and
+      (AKey <> QtKey_Down) then
+    Result := SlotKey(Widget, Event);
+  end;
 end;
 
 function TQtCalendar.calViewportEventFilter(Sender: QObjectH; Event: QEventH
