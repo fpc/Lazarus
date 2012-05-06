@@ -23,29 +23,36 @@
 function TCDWidgetSet.ClientToScreen(Handle: HWND; var P: TPoint) : Boolean;
 var
   ControlHandle: TCDBaseControl;
-  lControl: TWinControl;
-  winhandle: TCocoaWindow absolute Handle;
+  lOriginalControl, lControl: TWinControl;
   lPoint: NSPoint;
+  lCocoaForm: TCocoaForm; // NSWindow
+  lClientFrame: NSRect;
 begin
   Result := False;
   if Handle = 0 then Exit;
 
   // Go throught the non-native controls
   ControlHandle := TCDBaseControl(Handle);
-  while not (ControlHandle is TCDForm) do
+  lOriginalControl := ControlHandle.GetWinControl();
+  while not (ControlHandle is TCocoaWindow) do
   begin
     lControl := ControlHandle.GetWinControl();
+    if lControl = nil then Exit;
+    P.X := P.X + lControl.Left;
+    P.Y := P.Y + lControl.Top;
+
     lControl := lControl.Parent;
     if lControl = nil then Exit;
     ControlHandle := TCDBaseControl(lControl.Handle);
-    P.X := P.X - lControl.Left;
-    P.Y := P.Y - lControl.Top;
   end;
 
   // Now actually do the convertion
-  lPoint.x := P.X;
-  lPoint.Y := P.Y;
-  lPoint := winhandle.CocoaForm.convertBaseToScreen(lPoint);
+  lClientFrame := TCocoaWindow(ControlHandle).ClientArea.frame;
+  lPoint.x := lClientFrame.origin.X + P.X;
+  lPoint.Y := lClientFrame.origin.Y + lClientFrame.size.height - P.Y - lOriginalControl.Height;
+  lCocoaForm := TCocoaWindow(ControlHandle).CocoaForm;
+  if lCocoaForm = nil then Exit;
+  lPoint := lCocoaForm.convertBaseToScreen(lPoint);
   P.x := Round(lPoint.X);
   P.Y := Round(lPoint.Y);
   Result := True;

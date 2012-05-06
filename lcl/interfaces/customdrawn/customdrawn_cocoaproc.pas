@@ -96,6 +96,7 @@ type
     // Accessibility
     class function LazRoleToCocoaRole(ALazRole: TLazAccessibilityRole): NSString; message 'LazRoleToCocoaRole:';
     function accessibilityAttributeValue(attribute: NSString): id; override;
+    function accessibilityFocusedUIElement: id; override;
   end;
 
   { TCocoaAccessibleObject }
@@ -993,6 +994,22 @@ begin
   end;
 end;
 
+function TCocoaCustomControl.accessibilityFocusedUIElement: id;
+var
+  lForm: TCustomForm;
+//  lFormAcc: TLazAccessibleObject;
+  lActiveControl: TWinControl;
+begin
+  Result := inherited accessibilityFocusedUIElement();
+
+  lForm := WindowHandle.LCLForm;
+//  lFormAcc := lForm.GetAccessibleObject();
+  lActiveControl := lForm.ActiveControl;
+  if lActiveControl = nil then lActiveControl := lForm;
+
+  Result := id(lActiveControl.GetAccessibleObject().Handle);
+end;
+
 { TCocoaAccessibleObject }
 
 function TCocoaAccessibleObject.accessibilityAttributeNames: NSArray;
@@ -1009,19 +1026,21 @@ begin
   if lCocoaRole.isEqualToString(NSAccessibilityButtonRole) then
   begin
     lResult.addObject(NSAccessibilityDescriptionAttribute);
+    lResult.addObject(NSAccessibilityEnabledAttribute);
     lResult.addObject(NSAccessibilityFocusedAttribute);
     lResult.addObject(NSAccessibilityParentAttribute);
     lResult.addObject(NSAccessibilityPositionAttribute);
     lResult.addObject(NSAccessibilityRoleAttribute);
+    lResult.addObject(NSAccessibilityRoleDescriptionAttribute);
     lResult.addObject(NSAccessibilitySizeAttribute);
     lResult.addObject(NSAccessibilityTitleAttribute);
     lResult.addObject(NSAccessibilityTopLevelUIElementAttribute);
     lResult.addObject(NSAccessibilityWindowAttribute);
-    lResult.addObject(NSAccessibilityTitleAttribute);
   end
   else
   begin
     lResult.addObject(NSAccessibilityDescriptionAttribute);
+    lResult.addObject(NSAccessibilityEnabledAttribute);
     lResult.addObject(NSAccessibilityFocusedAttribute);
     lResult.addObject(NSAccessibilityParentAttribute);
     lResult.addObject(NSAccessibilityPositionAttribute);
@@ -1030,7 +1049,6 @@ begin
     lResult.addObject(NSAccessibilityTitleAttribute);
     lResult.addObject(NSAccessibilityTopLevelUIElementAttribute);
     lResult.addObject(NSAccessibilityWindowAttribute);
-    lResult.addObject(NSAccessibilityTitleAttribute);
   end;
 
   // This one we use to put LCL object and class names to help debugging =)
@@ -1073,11 +1091,11 @@ begin
   end
   else if attribute.isEqualToString(NSAccessibilityRoleDescriptionAttribute) then
   begin
-
+    Result := NSStringUtf8(LCLControl.Caption);
   end
   else if attribute.isEqualToString(NSAccessibilityValueAttribute) then
   begin
-
+    //Result := NSStringUtf8(LCLControl.Caption);
   end
   {else if attribute = NSAccessibilityMinValueAttribute: NSString; cvar; external;
   NSAccessibilityMaxValueAttribute: NSString; cvar; external;}
@@ -1091,7 +1109,8 @@ begin
       Result := NSNumber.numberWithBool(TWinControl(LCLControl).Focused)
     else Result := NSNumber.numberWithBool(False);
   end
-  else if attribute.isEqualToString(NSAccessibilityParentAttribute) then
+  else if attribute.isEqualToString(NSAccessibilityParentAttribute) or
+    attribute.isEqualToString(NSAccessibilityTopLevelUIElementAttribute) then
   begin
     lParent := LCLControl.Parent;
     if lParent <> nil then
@@ -1137,19 +1156,18 @@ begin
   else if attribute.isEqualToString(NSAccessibilityWindowAttribute) then
   begin
     lForm := Forms.GetParentForm(LCLControl);
-    Result := TCocoaAccessibleObject(lForm.GetAccessibleObject().Handle);
-  end
-  else if attribute.isEqualToString(NSAccessibilityTopLevelUIElementAttribute) then
-  begin
-
+    //Result := TCocoaAccessibleObject(lForm.GetAccessibleObject().Handle);
+    Result := TCocoaWindow(lForm.Handle).CocoaForm;//ClientArea;
   end
   else if attribute.isEqualToString(NSAccessibilitySelectedChildrenAttribute) then
   begin
 
   end
+  // Position is in screen coordinates!
   else if attribute.isEqualToString(NSAccessibilityPositionAttribute) then
   begin
-    lPoint := LCLAcc.Position;
+    //lPoint := LCLAcc.Position;
+    lPoint := LCLControl.ClientToScreen(Types.Point(0, 0));
     lNSPoint.x := lPoint.X;
     lNSPoint.y := lPoint.Y;
     Result := NSValue.valueWithPoint(lNSPoint);

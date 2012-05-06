@@ -163,6 +163,15 @@ class function TCDWSLazAccessibleObject.CreateHandle(
 begin
   Result := 0;
   if AObject = nil then Exit;
+
+  // If this is a top-level window, then use the window Handle
+  if AObject.OwnerControl is TCustomForm then
+  begin
+    Result := HWND(TCocoaWindow(TCustomForm(AObject.OwnerControl).Handle).CocoaForm);
+    Exit;
+  end;
+
+  // Otherwise create a new handle
   Result := HWND(TCocoaAccessibleObject.alloc.init);
   TCocoaAccessibleObject(Result).LCLAcc := AObject;
   TCocoaAccessibleObject(Result).LCLControl := AObject.OwnerControl;
@@ -173,6 +182,9 @@ class procedure TCDWSLazAccessibleObject.DestroyHandle(
 var
   lAccessibleHandle: TCocoaAccessibleObject;
 begin
+  if AObject.OwnerControl is TCustomForm then
+    Exit;
+
   lAccessibleHandle := TCocoaAccessibleObject(AObject.Handle);
   lAccessibleHandle.release;
 end;
