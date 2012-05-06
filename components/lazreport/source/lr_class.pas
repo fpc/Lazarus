@@ -3848,7 +3848,6 @@ end;
 function TfrBandView.GetClipRgn(rt: TfrRgnType): HRGN;
 var
   R,R1,R2: HRGN;
-  RR : LongInt;
 begin
   if not ShowBandTitles then
   begin
@@ -3866,7 +3865,7 @@ begin
 
   R2:=CreateRectRgn(0,0,0,0);
 
-  RR:=CombineRgn(R2, R, R1, RGN_OR);
+  CombineRgn(R2, R, R1, RGN_OR);
   Result:=R2;
 
   
@@ -9874,7 +9873,7 @@ var
   min, max, avg, sum, count, d, v: Double;
   dk: (dkNone, dkSum, dkMin, dkMax, dkAvg, dkCount);
   vv, v2, v1: Variant;
-  BM : Pointer;
+  BM : TBookMark;
   {$IFDEF DebugLR}
   function FNoStr: string;
   begin
