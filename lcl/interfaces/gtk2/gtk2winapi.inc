@@ -5194,6 +5194,9 @@ var
   GDIObject: PGDIObject absolute GDIObj;
   ALogPen: PLogPen absolute Buf;
   AExtLogPen: PExtLogPen absolute Buf;
+  AFont: PPangoLayout;
+  AFontName: String;
+  PangoDesc: PPangoFontDescription;
   i, RequiredSize: Integer;
 begin
   Result := 0;
@@ -5213,13 +5216,32 @@ begin
           Result := SizeOf(GDIObject^.LogFont);
           Exit;
         end;
-        if BufSize >= SizeOf(GDIObject^.LogFont)
-        then begin
+        if BufSize >= SizeOf(GDIObject^.LogFont) then
+        begin
           PLogfont(Buf)^ := GDIObject^.LogFont;
           Result:= SizeOf(TLogFont);
-        end
-        else if BufSize > 0
-        then begin
+          if GDIObject^.LogFont.lfFaceName = 'default' then
+          begin
+            AFontName := GetDefaultFontName;
+
+            if (AFontName = '') or (AFontName = 'default') then
+            begin
+              AFont := GetDefaultGtkFont(False);
+              if PANGO_IS_LAYOUT(AFont) then
+              begin
+                PangoDesc := pango_layout_get_font_description(AFont);
+                if PangoDesc = nil then
+                  PangoDesc := pango_context_get_font_description(pango_layout_get_context(AFont));
+                AFontName := StrPas(pango_font_description_get_family(PangoDesc));
+              end;
+            end;
+
+            if AFontName <> '' then
+              PLogfont(Buf)^.lfFaceName := AFontName;
+          end;
+        end else
+        if BufSize > 0 then
+        begin
           Move(GDIObject^.LogFont,Buf^,BufSize);
           Result:=BufSize;
         end;
