@@ -4616,6 +4616,7 @@ resourcestring
   rsAddInverse = 'Add Inverse';
   lisAutomaticallyOnLineBreak = 'line break';
   lisAutomaticallyOnSpace = 'space';
+  lisAutomaticallyOnTab = 'tab';
   lisAutomaticallyOnWordEnd = 'word end';
   lisAutomaticallyIgnoreForSelection = 'do not complete selection';
   lisAutomaticallyRemoveCharacter = 'do not add character';

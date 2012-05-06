@@ -49,7 +49,9 @@ type
   TAutoCompleteOption = (
     acoLineBreak,
     acoSpace,
+    acoTab,
     acoWordEnd,
+    acoIgnoreForSelection,
     acoRemoveChar
     );
 
@@ -57,7 +59,9 @@ const
   AutoCompleteOptionNames: array[TAutoCompleteOption] of shortstring = (
     'AutoOnLineBreak',
     'AutoOnSpace',
+    'AutoOnTab',
     'AutoOnWordEnd',
+    'IgnoreForSelection',
     'RemoveChar' // do not add the typed character
   );
 
@@ -948,7 +952,9 @@ begin
   AutoOnOptionsCheckGroup.Caption:=lisCodeTemplAutoCompleteOn;
   AutoOnOptionsCheckGroup.Items.Add(lisAutomaticallyOnLineBreak);
   AutoOnOptionsCheckGroup.Items.Add(lisAutomaticallyOnSpace);
+  AutoOnOptionsCheckGroup.Items.Add(lisAutomaticallyOnTab);
   AutoOnOptionsCheckGroup.Items.Add(lisAutomaticallyOnWordEnd);
+  AutoOnOptionsCheckGroup.Items.Add(lisAutomaticallyIgnoreForSelection);
   AutoOnOptionsCheckGroup.Items.Add(lisAutomaticallyRemoveCharacter);
 
   FilenameEdit.Text:=EditorOpts.CodeTemplateFileName;
