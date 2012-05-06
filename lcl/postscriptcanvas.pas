@@ -1504,6 +1504,9 @@ begin
   WriteHeader('');
   WriteHeader('%%Page: 1 1');
   WritePageTransform;
+
+  if assigned(printer) then
+    FLazClipRect:=printer.PaperSize.PaperRect.WorkRect;
 end;
 
 procedure TPostScriptPrinterCanvas.EndDoc;
