@@ -551,6 +551,7 @@ var
   Line: string;
   Indent: LongInt;
   StartContextPos: TCodeXYPosition;
+  s: String;
 begin
   Result:='';
   CursorToLeft:=0;
@@ -608,7 +609,7 @@ begin
       and (not IdentList.StartUpAtomBehindIs('('))
       and (not IdentList.StartUpAtomInFrontIs('@'))
       and (IdentItem.ParamNameList<>'') then begin
-        Result:=Result+'()';
+        Result+='()';
         inc(CursorToLeft);
         CursorAtEnd:=false;
       end;
@@ -619,7 +620,7 @@ begin
       and CodeToolsOpts.IdentComplAddParameterBrackets
       and (ilcfStartInStatement in IdentList.ContextFlags)
       and (not IdentList.StartUpAtomBehindIs('[')) then begin
-        Result:=Result+'[]';
+        Result+='[]';
         inc(CursorToLeft);
         CursorAtEnd:=false;
       end;
@@ -691,24 +692,33 @@ begin
   and CodeToolsOpts.IdentComplAddAssignOperator then begin
     if (atIdentifier in CodeToolsOpts.DoInsertSpaceAfter)
     or (atSymbol in CodeToolsOpts.DoInsertSpaceInFront) then
-      Result:=Result+' ';
-    Result:=Result+':=';
+      Result+=' ';
+    Result+=':=';
     if (atSymbol in CodeToolsOpts.DoInsertSpaceAfter) then
-      Result:=Result+' ';
+      Result+=' ';
   end;
 
   // add last typed character (that ended the identifier completion and starts a new token)
   if AddChar<>'' then
-    Result:=Result+AddChar;
+    Result+=AddChar;
 
   if CanAddComma
   and (ilcfNeedsEndComma in IdentList.ContextFlags) then
   begin
-    Result:=Result+',';
+    Result+=',';
   end;
 
   if (IdentItem.GetDesc=ctnUseUnit) and (AddChar<>'.') then begin
-    Result:=Result+'.';
+    // ToDo: check if there is already a point
+    Result+='.';
+  end;
+
+  // add 'do'
+  if CodeToolsOpts.IdentComplAddDo and (AddChar='')
+  and (ilcfNeedsDo in IdentList.ContextFlags) then begin
+    s:=' '+CodeToolBoss.SourceChangeCache.BeautifyCodeOptions.BeautifyKeyWord('do');
+    Result+=s;
+    inc(CursorToLeft,length(s));
   end;
 
   // add semicolon for statement ends
@@ -720,7 +730,7 @@ begin
     or ((ilcfStartInStatement in IdentList.ContextFlags)
         and (IdentItem.GetDesc=ctnProcedure))
     then begin
-      Result:=Result+';';
+      Result+=';';
       if (CursorToLeft=0) and (IdentItem.GetDesc=ctnProcedure)
       and (not IdentItem.IsFunction) then begin
         // a procedure call without parameters

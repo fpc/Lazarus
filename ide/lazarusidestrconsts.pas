@@ -1830,6 +1830,7 @@ resourcestring
   dlgWRDPreview = 'Preview';
   dlgAddSemicolon = 'Add semicolon';
   dlgAddAssignmentOperator = 'Add assignment operator :=';
+  lisAddKeywordDo = 'Add keyword "do"';
 
   dlgUserSchemeError = 'Failed to load user-scheme file %s';
 

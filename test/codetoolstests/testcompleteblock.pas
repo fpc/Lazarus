@@ -4,6 +4,12 @@
 
  Test specific with:
      ./runtests --format=plain --suite=TestCompleteBlockClassStart
+     ./runtests --format=plain --suite=TestCompleteBlockBegin
+     ./runtests --format=plain --suite=TestCompleteBlockRepeat
+     ./runtests --format=plain --suite=TestCompleteBlockCase
+     ./runtests --format=plain --suite=TestCompleteBlockTry
+     ./runtests --format=plain --suite=TestCompleteBlockAsm
+     ./runtests --format=plain --suite=TestCompleteBlockIf
 }
 unit TestCompleteBlock;
 
@@ -20,12 +26,23 @@ type
   { TTestCodetoolsCompleteBlock }
 
   TTestCodetoolsCompleteBlock = class(TTestCase)
-  public
+  private
+    function CreateFullSrc(Src: string; out Cursor: integer): string;
     procedure TestCompleteBlocks;
+  public
     procedure CompleteBlock(Src, ExpectedSrc: string;
+                OnlyIfCursorBlockIndented: boolean = false);
+    procedure CompleteBlock(Src: string; OnlyIfCursorBlockIndented: boolean = false);
+    procedure CompleteBlockFail(Src: string;
                 OnlyIfCursorBlockIndented: boolean = false);
   published
     procedure TestCompleteBlockClassStart;
+    procedure TestCompleteBlockBegin;
+    procedure TestCompleteBlockRepeat;
+    procedure TestCompleteBlockCase;
+    procedure TestCompleteBlockTry;
+    procedure TestCompleteBlockAsm;
+    procedure TestCompleteBlockIf;
   end;
 
 implementation
@@ -58,21 +75,21 @@ begin
   CompareComplete('tryif1.inc','4 6 tryif fpcunit', 'tryif1_result.inc');
 end;
 
+function TTestCodetoolsCompleteBlock.CreateFullSrc(Src: string;
+  out Cursor: integer): string;
+begin
+  Result:=Src;
+  {Result:='unit testcompleteblock;'+LineEnding
+         +'interface'+LineEnding
+         +Src;}
+  if not (Result[length(Result)] in [#10,#13]) then
+    Result:=Result+LineEnding;
+  Cursor:=System.Pos('|',Result);
+  System.Delete(Result,Cursor,1);
+end;
+
 procedure TTestCodetoolsCompleteBlock.CompleteBlock(Src, ExpectedSrc: string;
   OnlyIfCursorBlockIndented: boolean);
-
-  function CreateFullSrc(Src: string; out Cursor: integer): string;
-  begin
-    Result:=Src;
-    {Result:='unit testcompleteblock;'+LineEnding
-           +'interface'+LineEnding
-           +Src;}
-    if not (Result[length(Result)] in [#10,#13]) then
-      Result:=Result+LineEnding;
-    Cursor:=System.Pos('|',Result);
-    System.Delete(Result,Cursor,1);
-  end;
-
 var
   Code: TCodeBuffer;
   p: integer;
@@ -88,6 +105,8 @@ var
   eX: integer;
   FullSrc: String;
   FullExpectedSrc: String;
+  TrimExpected: String;
+  TrimResult: String;
 begin
   AssertEquals('Src is empty',Trim(Src)<>'',true);
   AssertEquals('ExpectedSrc is empty',Trim(ExpectedSrc)<>'',true);
@@ -112,35 +131,64 @@ begin
     if not CodeToolBoss.CompleteBlock(Code,X,Y,OnlyIfCursorBlockIndented,
       NewCode,NewX,NewY,NewTopLine)
     then begin
-      AssertEquals('completing block failed src="'+dbgstr(Src)+'"',true,false);
+      AssertEquals('CodeToolBoss.CompleteBlock returned false for src="'+dbgstr(Src)+'"',true,false);
       exit;
     end;
-    if Trim(FullExpectedSrc)<>Trim(Code.Source) then begin
+    TrimExpected:=dbgstr(Trim(FullExpectedSrc));
+    TrimResult:=dbgstr(Trim(Code.Source));
+    if TrimExpected<>TrimResult then begin
       debugln(['TTestCodetoolsCompleteBlock.CompleteBlock FAILED Expected:']);
       debugln(FullExpectedSrc);
       debugln(['TTestCodetoolsCompleteBlock.CompleteBlock FAILED Found:']);
       debugln(Code.Source);
       debugln(['TTestCodetoolsCompleteBlock.CompleteBlock FAILED end']);
     end;
-    AssertEquals('CompleteBlock did no or the wrong completion: ',dbgstr(Trim(FullExpectedSrc)),dbgstr(Trim(Code.Source)));
+    AssertEquals('CompleteBlock did no or the wrong completion: ',TrimExpected,TrimResult);
 
   finally
     ExpectedCode.Free;
   end;
 end;
 
+procedure TTestCodetoolsCompleteBlock.CompleteBlock(Src: string;
+  OnlyIfCursorBlockIndented: boolean);
+begin
+  CompleteBlock(Src,Src,OnlyIfCursorBlockIndented);
+end;
+
+procedure TTestCodetoolsCompleteBlock.CompleteBlockFail(Src: string;
+  OnlyIfCursorBlockIndented: boolean);
+var
+  Code: TCodeBuffer;
+  p: integer;
+  FullSrc: String;
+  Y: integer;
+  X: integer;
+  NewCode: TCodeBuffer;
+  NewX: integer;
+  NewY: integer;
+  NewTopLine: integer;
+begin
+  AssertEquals('Src is empty',Trim(Src)<>'',true);
+
+  // replace cursor | marker in Src
+  Code:=CodeToolBoss.CreateFile('TestCompleteBlock.pas');
+  FullSrc:=CreateFullSrc(Src,p);
+  if p<1 then
+    AssertEquals('missing cursor | in test source: "'+dbgstr(Src)+'"',true,false);
+  Code.Source:=FullSrc;
+  Code.AbsoluteToLineCol(p,Y,X);
+
+  if CodeToolBoss.CompleteBlock(Code,X,Y,OnlyIfCursorBlockIndented,
+    NewCode,NewX,NewY,NewTopLine)
+  then begin
+    debugln(['TTestCodetoolsCompleteBlock.CompleteBlockFail completion: ',dbgstr(Code.Source)]);
+    AssertEquals('CodeToolBoss.CompleteBlock returned true for incompletable src="'+dbgstr(Src)+'"',true,false);
+  end;
+end;
+
 procedure TTestCodetoolsCompleteBlock.TestCompleteBlockClassStart;
 begin
-  { Not implemented yet:
-  CompleteBlock('procedure a;'+LineEnding
-               +'begin|'+LineEnding
-               +'begin'+LineEnding
-               +'end.',
-                'procedure a;'+LineEnding
-               +'begin|'+LineEnding
-               +'end;'+LineEnding
-               +'begin'+LineEnding
-               +'end.');}
   CompleteBlock('type'+LineEnding
                +'  TTestClass = class(TObject)|',
                 'type'+LineEnding
@@ -162,6 +210,17 @@ begin
                +'  |end;'+LineEnding
                +LineEnding
                +'implementation');
+end;
+
+procedure TTestCodetoolsCompleteBlock.TestCompleteBlockBegin;
+begin
+  CompleteBlock('begin'+LineEnding
+               +'  begin|'+LineEnding
+               +'end.',
+                'begin'+LineEnding
+               +'  begin|'+LineEnding
+               +'  end;'+LineEnding
+               +'end.');
   CompleteBlock('begin'+LineEnding
                +'  while do begin|'+LineEnding
                +'end.',
@@ -170,12 +229,92 @@ begin
                +'  end;'+LineEnding
                +'end.');
   CompleteBlock('begin'+LineEnding
+               +'  while do'+LineEnding
+               +'    begin|'+LineEnding
+               +'end.',
+                'begin'+LineEnding
+               +'  while do'+LineEnding
+               +'    begin|'+LineEnding
+               +'    end;'+LineEnding
+               +'end.');
+  CompleteBlock('begin'+LineEnding
+               +'  begin|'+LineEnding
+               +'    writeln;'+LineEnding
+               +'end.',
+                'begin'+LineEnding
+               +'  begin|'+LineEnding
+               +'    writeln;'+LineEnding
+               +'  end;'+LineEnding
+               +'end.');
+  CompleteBlock('begin'+LineEnding
+               +'  begin|'+LineEnding
+               +'  writeln;'+LineEnding
+               +'end.',
+                'begin'+LineEnding
+               +'  begin|'+LineEnding
+               +'  end;'+LineEnding
+               +'  writeln;'+LineEnding
+               +'end.');
+  { Not implemented yet:
+  CompleteBlock('procedure a;'+LineEnding
+               +'begin|'+LineEnding
+               +'begin'+LineEnding
+               +'end.',
+                'procedure a;'+LineEnding
+               +'begin|'+LineEnding
+               +'end;'+LineEnding
+               +'begin'+LineEnding
+               +'end.');}
+end;
+
+procedure TTestCodetoolsCompleteBlock.TestCompleteBlockRepeat;
+begin
+  CompleteBlock('begin'+LineEnding
                +'  repeat|'+LineEnding
                +'end.',
                 'begin'+LineEnding
                +'  repeat|'+LineEnding
                +'  until ;'+LineEnding
                +'end.');
+  CompleteBlock(
+     'begin'+LineEnding
+    +'  if FindFirstUTF8(Dir+FileMask,faAnyFile,FileInfo)=0 then begin'+LineEnding
+    +'    repeat'+LineEnding
+    +'      // check if special file'+LineEnding
+    +'      if (FileInfo.Name=''.'') or (FileInfo.Name=''..'') or (FileInfo.Name='''')'+LineEnding
+    +'      then'+LineEnding
+    +'        continue;'+LineEnding
+    +'      |'+LineEnding
+    +'      if FilenameIsPascalUnit(FileInfo.Name,false) then begin'+LineEnding
+    +'        List.Add(Dir+FileInfo.Name);'+LineEnding
+    +'      end else if (FileInfo.Attr and faDirectory)>0 then begin'+LineEnding
+    +'        CollectUnits(Dir+);'+LineEnding
+    +'      end;'+LineEnding
+    +'    until FindNextUTF8(FileInfo)<>0;'+LineEnding
+    +'  end;'+LineEnding
+    +'  FindCloseUTF8(FileInfo);'+LineEnding);
+end;
+
+procedure TTestCodetoolsCompleteBlock.TestCompleteBlockCase;
+begin
+  CompleteBlock('begin'+LineEnding
+               +'  case of|'+LineEnding
+               +'end.',
+                'begin'+LineEnding
+                +'  case of|'+LineEnding
+                +'  end;'+LineEnding
+               +'end.');
+  CompleteBlock('begin'+LineEnding
+               +'  case of|'+LineEnding
+               +'end.',
+                'begin'+LineEnding
+                +'  case of|'+LineEnding
+                +'  end;'+LineEnding
+               +'end.');
+end;
+
+procedure TTestCodetoolsCompleteBlock.TestCompleteBlockTry;
+begin
   CompleteBlock('begin'+LineEnding
                +'  try|'+LineEnding
                +'end.',
@@ -185,19 +324,60 @@ begin
                +'  end;'+LineEnding
                +'end.');
   CompleteBlock('begin'+LineEnding
-               +'  case of|'+LineEnding
+               +'  try'+LineEnding
+               +'  finally|'+LineEnding
                +'end.',
                 'begin'+LineEnding
-                +'  case of|'+LineEnding
-                +'  end;'+LineEnding
+               +'  try'+LineEnding
+               +'  finally|'+LineEnding
+               +'  end;'+LineEnding
                +'end.');
   CompleteBlock('begin'+LineEnding
-               +'  case of|'+LineEnding
+               +'  try'+LineEnding
+               +'  except|'+LineEnding
                +'end.',
                 'begin'+LineEnding
-                +'  case of|'+LineEnding
-                +'  end;'+LineEnding
+               +'  try'+LineEnding
+               +'  except|'+LineEnding
+               +'  end;'+LineEnding
                +'end.');
+end;
+
+procedure TTestCodetoolsCompleteBlock.TestCompleteBlockAsm;
+begin
+  CompleteBlock('begin'+LineEnding
+               +'  asm|'+LineEnding
+               +'end.',
+                'begin'+LineEnding
+               +'  asm|'+LineEnding
+               +'  end;'+LineEnding
+               +'end.');
+end;
+
+procedure TTestCodetoolsCompleteBlock.TestCompleteBlockIf;
+begin
+  CompleteBlock('begin'+LineEnding
+               +'  if then begin|'+LineEnding
+               +'end.',
+                'begin'+LineEnding
+               +'  if then begin|'+LineEnding
+               +'  end;'+LineEnding
+               +'end.');
+  CompleteBlock('begin'+LineEnding
+               +'  if then begin|'+LineEnding
+               +'  else'+LineEnding
+               +'end.',
+                'begin'+LineEnding
+               +'  if then begin|'+LineEnding
+               +'  end'+LineEnding
+               +'  else'+LineEnding
+               +'end.');
+  CompleteBlockFail('begin'+LineEnding
+                   +'  try'+LineEnding
+                   +'    if|'+LineEnding
+                   +'  finally'+LineEnding
+                   +'  end;'+LineEnding
+                   +'end.');
 end;
 
 initialization
