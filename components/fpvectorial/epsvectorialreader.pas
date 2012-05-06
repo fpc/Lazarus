@@ -109,6 +109,7 @@ type
     //
     function Duplicate: TGraphicState;
     procedure CTMNeeded;
+    procedure SetCTM(ANewCTM: TArrayToken);
   end;
 
   { TPSTokenizer }
@@ -188,7 +189,7 @@ end;
 
 destructor TArrayToken.Destroy;
 begin
-  ArrayData.ForEachCall(@FreeToken, nil);
+  //ArrayData.ForEachCall(@FreeToken, nil);
   ArrayData.Free;
   inherited Destroy;
 end;
@@ -246,6 +247,12 @@ begin
 
   CTM := TArrayToken.Create;
   CTM.AddIdentityMatrix();
+end;
+
+procedure TGraphicState.SetCTM(ANewCTM: TArrayToken);
+begin
+  if CTM <> nil then CTM.Free;
+  CTM := ANewCTM;
 end;
 
 { TPSToken }
@@ -1932,6 +1939,21 @@ begin
     AData.AddLineToPath(PosX2, PosY2);
     Exit(True);
   end;
+  // x1 y1 x2 y2 x3 y3 curveto – Append Bézier cubic section
+  if AToken.StrValue = 'curveto' then
+  begin
+    Param1 := TPSToken(Stack.Pop); // y3
+    Param2 := TPSToken(Stack.Pop); // x3
+    Param3 := TPSToken(Stack.Pop); // y2
+    Param4 := TPSToken(Stack.Pop); // x2
+    Param5 := TPSToken(Stack.Pop); // y1
+    Param6 := TPSToken(Stack.Pop); // x1
+    PostScriptCoordsToFPVectorialCoords(Param5, Param6, PosX, PosY);
+    PostScriptCoordsToFPVectorialCoords(Param3, Param4, PosX2, PosY2);
+    PostScriptCoordsToFPVectorialCoords(Param1, Param2, PosX3, PosY3);
+    AData.AddBezierToPath(PosX, PosY, PosX2, PosY2, PosX3, PosY3);
+    Exit(True);
+  end;
   // dx1 dy1 dx2 dy2 dx3 dy3 rcurveto –
   // (relative curveto) appends a section of a cubic Bézier curve to the current path in
   // the same manner as curveto. However, the operands are interpreted as relative
@@ -2325,6 +2347,15 @@ begin
     ArrayToken := TArrayToken(CurrentGraphicState.CTM.Duplicate());
 
     Stack.Push(ArrayToken);
+
+    Exit(True);
+  end;
+  // matrix setmatrix –       Replace CTM by matrix
+  if AToken.StrValue = 'setmatrix' then
+  begin
+    Param1 := TPSToken(Stack.Pop);
+
+    CurrentGraphicState.SetCTM(TArrayToken(Param1));
 
     Exit(True);
   end;
