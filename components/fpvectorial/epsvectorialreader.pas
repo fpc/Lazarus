@@ -279,6 +279,7 @@ begin
         begin
           CommentToken := TCommentToken.Create;
           CommentToken.Line := CurLine;
+          CommentToken.StrValue := '%';
           State := ssInComment;
 //          {$ifdef FPVECTORIALDEBUG}
 //          WriteLn(Format('Starting Comment at Line %d', [CurLine]));
@@ -500,6 +501,10 @@ begin
       WriteLn(Format('[TvEPSVectorialReader.RunPostScript] Type: TCommentToken Token: %s', [CurToken.StrValue]));
       {$endif}
 //      ProcessCommentToken(CurToken as TCommentToken, AData);
+
+      // Give up in the trailer to avoid errors in the very end of files
+      if (CurToken.StrValue = '%%Trailer') or (CurToken.StrValue = '%%Trailer'#10) then Exit;
+
       Continue;
     end;
 
