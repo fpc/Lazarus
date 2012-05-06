@@ -1816,9 +1816,8 @@ function TPascalReaderTool.FindClassNodeInInterface(
 begin
   Result:=Tree.Root;
   if Result<>nil then begin
-    if Result.Desc=ctnUnit then begin
+    if Result.Desc=ctnUnit then
       Result:=Result.NextBrother;
-    end;
     if Result<>nil then begin
       Result:=FindClassNode(Result.FirstChild,AClassName,
                             IgnoreForwards, IgnoreNonForwards);

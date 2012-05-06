@@ -2259,7 +2259,7 @@ begin
               else
                 LastPos:=Node.StartPos;
               if p>LastPos then begin
-                Msg:='behind code (parser stopped at '+CleanPosToStr(LastPos)+')';
+                Msg:='behind code (last token at '+CleanPosToStr(LastPos)+')';
               end else begin
                 Msg:='inconsistency: the position is in code, but caller thinks it is not.'
               end;
@@ -2623,7 +2623,7 @@ function TCustomCodeTool.FindDeepestNodeAtPos(StartNode: TCodeTreeNode;
     else
       LastPos:=Node.StartPos;
     if p>LastPos then begin
-      Msg:='Behind code (The parser stopped at '+CleanPosToStr(LastPos)+')';
+      Msg:='Behind code (last token at '+CleanPosToStr(LastPos)+')';
       RaiseException(Msg);
     end;
 
@@ -3082,11 +3082,13 @@ begin
   p:=CurPos.StartPos;
   if p>SrcLen then p:=SrcLen+1;
   while CurNode<>nil do begin
+    //debugln(['TCustomCodeTool.CloseUnfinishedNodes BEFORE ',CurNode.DescAsString,' CurNode.EndPos=',CurNode.EndPos]);
     if CurNode.EndPos<1 then begin
       if CurNode.StartPos>p then p:=CurNode.StartPos;
       CurNode.EndPos:=p;
     end else if p<CurNode.EndPos then
       p:=CurNode.EndPos;
+    //debugln(['TCustomCodeTool.CloseUnfinishedNodes AFTER ',CurNode.DescAsString,' CurNode.EndPos=',CleanPosToStr(CurNode.EndPos)]);
     CurNode:=CurNode.Parent;
   end;
 end;

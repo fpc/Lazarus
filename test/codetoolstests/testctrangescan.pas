@@ -9,12 +9,13 @@
      ./runtests --format=plain --suite=TestCTScanRangeProcModified
      ./runtests --format=plain --suite=TestCTScanRangeImplementationToEnd
      ./runtests --format=plain --suite=TestCTScanRangeInitializationModified
+     ./runtests --format=plain --suite=TestCTScanRangeLibraryInitializationModified
 }
 unit TestCTRangeScan;
 
-{$mode objfpc}{$H+}
+{$mode objfpc}{$H+}{$coperators on}
 
-{$DEFINE VerboseTestCTRangeScan}
+{off $DEFINE VerboseTestCTRangeScan}
 
 interface
 
@@ -30,7 +31,8 @@ type
     crsfWithInitialization,
     crsfWithInitializationStatement1,
     crsfWithInitializationStatement2,
-    crsfWithFinalization
+    crsfWithFinalization,
+    crsLibrary
     );
   TCTRgSrcFlags = set of TCTRgSrcFlag;
 
@@ -39,6 +41,7 @@ type
   TTestCodetoolsRangeScan = class(TTestCase)
   protected
     function GetSource(Flags: TCTRgSrcFlags): string;
+    procedure CheckTree(Tool: TCodeTool);
   published
     procedure TestCTScanRange;
     procedure TestCTScanRangeAscending;
@@ -46,6 +49,7 @@ type
     procedure TestCTScanRangeProcModified;
     procedure TestCTScanRangeImplementationToEnd;
     procedure TestCTScanRangeInitializationModified;
+    procedure TestCTScanRangeLibraryInitializationModified;
   end;
 
 implementation
@@ -53,39 +57,68 @@ implementation
 { TTestCodetoolsRangeScan }
 
 function TTestCodetoolsRangeScan.GetSource(Flags: TCTRgSrcFlags): string;
+var
+  IsUnit: Boolean;
 begin
-  Result:=
-  'unit TestRangeScan;'+LineEnding
-  +'interface'+LineEnding
-  +'uses'+LineEnding
-  +'  Classes;'+LineEnding
-  +'var i: integer;'+LineEnding
-  +'implementation'+LineEnding
-  +'uses'+LineEnding
-  +'  Math;'+LineEnding
-  +'const c = 3;'+LineEnding;
+  IsUnit:=true;
+  Result:='unit';
+  if crsLibrary in Flags then begin
+    Result:='library';
+    IsUnit:=false;
+  end;
+  Result+=' TestRangeScan;'+LineEnding;
+  if IsUnit then
+    Result+='interface'+LineEnding;
+  Result+='uses'+LineEnding
+    +'  Classes;'+LineEnding
+    +'var i: integer;'+LineEnding;
+  if IsUnit then begin
+    Result+='implementation'+LineEnding
+      +'uses'+LineEnding
+      +'  Math;'+LineEnding;
+  end;
+  Result+='const c = 3;'+LineEnding;
   if crsfWithProc1 in Flags then
-    Result:=Result+'procedure Proc1;'+LineEnding
+    Result+='procedure Proc1;'+LineEnding
       +'begin'+LineEnding
       +'end;'+LineEnding;
   if crsfWithProc1Modified in Flags then
-    Result:=Result+'procedure Proc1;'+LineEnding
+    Result+='procedure Proc1;'+LineEnding
       +'begin'+LineEnding
       +'  // comment'+LineEnding
       +'end;'+LineEnding;
   if crsfWithInitialization in Flags then begin
-    Result:=Result+'initialization'+LineEnding;
+    Result+='initialization'+LineEnding;
     if crsfWithInitializationStatement1 in Flags then
-      Result:=Result+'i:=3;'+LineEnding;
+      Result+='i:=3;'+LineEnding;
     if crsfWithInitializationStatement2 in Flags then
-      Result:=Result+'i:=5;'+LineEnding;
+      Result+='i:=5;'+LineEnding;
   end;
   if crsfWithFinalization in Flags then
-    Result:=Result+'finalization'+LineEnding;
-  Result:=Result+'end.';
+    Result+='finalization'+LineEnding;
+  Result+='end.';
   if crsfWithCommentAtEnd in Flags then
-    Result:=Result+LineEnding
+    Result+=LineEnding
       +'// end comment';
+end;
+
+procedure TTestCodetoolsRangeScan.CheckTree(Tool: TCodeTool);
+var
+  Node: TCodeTreeNode;
+  LastSection: TCodeTreeNode;
+begin
+  if Tool=nil then exit;
+  if Tool.Tree=nil then exit;
+  Node:=Tool.Tree.Root;
+  LastSection:=nil;
+  while Node<>nil do begin
+    if Node.Desc in AllCodeSections then begin
+      if (LastSection<>nil) and (LastSection.Desc=Node.Desc) then
+        AssertEquals('duplicate section '+Node.DescAsString+'.',false,true);
+      LastSection:=Node;
+    end;
+    Node:=Node.Next;
+  end;
 end;
 
 procedure TTestCodetoolsRangeScan.TestCTScanRange;
@@ -235,6 +268,8 @@ begin
   Tool.BuildTree(lsrEnd);
   //Tool.WriteDebugTreeReport;
   AssertEquals('step2: end. found',true,Tool.Tree.FindRootNode(ctnEndPoint)<>nil);
+
+  CheckTree(Tool);
 end;
 
 procedure TTestCodetoolsRangeScan.TestCTScanRangeImplementationToEnd;
@@ -257,6 +292,8 @@ begin
   Tool.BuildTree(lsrEnd);
   //Tool.WriteDebugTreeReport;
   AssertEquals('step2: end. found',true,Tool.Tree.FindRootNode(ctnEndPoint)<>nil);
+
+  CheckTree(Tool);
 end;
 
 procedure TTestCodetoolsRangeScan.TestCTScanRangeInitializationModified;
@@ -276,6 +313,30 @@ begin
   Code.Source:=GetSource([crsfWithInitialization,crsfWithInitializationStatement2]);
   Tool.BuildTree(lsrEnd);
   AssertEquals('step2: end found',true,Tool.Tree.FindRootNode(ctnEndPoint)<>nil);
+
+  CheckTree(Tool);
+  //Tool.WriteDebugTreeReport;
+end;
+
+procedure TTestCodetoolsRangeScan.TestCTScanRangeLibraryInitializationModified;
+var
+  Code: TCodeBuffer;
+  Tool: TCodeTool;
+begin
+  Code:=CodeToolBoss.CreateFile('TestRangeScan.pas');
+  Tool:=CodeToolBoss.GetCodeToolForSource(Code,false,true) as TCodeTool;
+
+  // scan source with initialization
+  Code.Source:=GetSource([crsLibrary,crsfWithInitialization,crsfWithInitializationStatement1]);
+  Tool.BuildTree(lsrEnd);
+  AssertEquals('step1: end found',true,Tool.Tree.FindRootNode(ctnEndPoint)<>nil);
+
+  // scan source with a modified initialization
+  Code.Source:=GetSource([crsLibrary,crsfWithInitialization,crsfWithInitializationStatement2]);
+  Tool.BuildTree(lsrEnd);
+  AssertEquals('step2: end found',true,Tool.Tree.FindRootNode(ctnEndPoint)<>nil);
+
+  CheckTree(Tool);
   //Tool.WriteDebugTreeReport;
 end;
 

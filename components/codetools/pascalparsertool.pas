@@ -677,6 +677,8 @@ begin
         case Node.Desc of
         ctnInterface: ScannedRange:=lsrInterfaceStart;
         ctnImplementation: ScannedRange:=lsrImplementationStart;
+        ctnInitialization: ScannedRange:=lsrInitializationStart;
+        ctnFinalization: ScannedRange:=lsrFinalizationStart;
         end;
         if ord(Range)<=ord(ScannedRange) then exit;
 
@@ -2409,7 +2411,6 @@ begin
     // start implementation section node
     CreateChildNode;
     CurNode.Desc:=ctnImplementation;
-    CurNode.EndPos:=CurPos.EndPos;
     CurSection:=ctnImplementation;
 
     ScannedRange:=lsrImplementationStart;
@@ -2455,7 +2456,6 @@ begin
       CurNode.Desc:=ctnFinalization;
       ScannedRange:=lsrFinalizationStart;
     end;
-    CurNode.EndPos:=CurPos.EndPos;
     CurSection:=CurNode.Desc;
     if ord(ScanTill)<=ord(ScannedRange) then exit;
 
@@ -4895,19 +4895,26 @@ begin
             end else begin
               // some nodes can be kept
               // find first node to delete
-              DeleteNode:=Node.LastChild;
-              if DeleteNode<>nil then begin
-                while (DeleteNode.PriorBrother<>nil)
-                and (DeleteNode.StartPos>=DiffPos) do
-                  DeleteNode:=DeleteNode.PriorBrother;
-                if (DeleteNode.Desc=ctnUsesSection)
-                and (DiffPos>=DeleteNode.StartPos+length('uses')) then begin
-                  // keep uses section, just delete the used units nodes
-                  DeleteNode.EndPos:=-1;
-                  DeleteNode:=DeleteNode.Next;
-                end;
-              end else
-                DeleteNode:=Node.NextBrother;
+              if Node.Desc in [ctnInitialization,ctnFinalization,ctnBeginBlock]
+              then begin
+                // statement nodes are always parsed completely
+                DeleteNode:=Node;
+                Node:=Node.PriorBrother;
+              end else begin
+                DeleteNode:=Node.LastChild;
+                if DeleteNode<>nil then begin
+                  while (DeleteNode.PriorBrother<>nil)
+                  and (DeleteNode.StartPos>=DiffPos) do
+                    DeleteNode:=DeleteNode.PriorBrother;
+                  if (DeleteNode.Desc=ctnUsesSection)
+                  and (DiffPos>=DeleteNode.StartPos+length('uses')) then begin
+                    // keep uses section, just delete the used units nodes
+                    DeleteNode.EndPos:=-1;
+                    DeleteNode:=DeleteNode.Next;
+                  end;
+                end else
+                  DeleteNode:=Node.NextBrother;
+              end;
               if DeleteNode<>nil then begin
                 {$IFDEF VerboseUpdateNeeded}
                 debugln(['TPascalParserTool.FetchScannerSource keep parts, last kept section=',Node.DescAsString,' FirstDeleteNode=',DeleteNode.DescAsString,' ',MainFilename]);

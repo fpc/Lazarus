@@ -1607,8 +1607,10 @@ begin
   ctnInitialization:
     if (NodeBehind=nil)
     or (NodeBehind.Desc in [ctnInitialization,ctnFinalization,ctnEndPoint,ctnBeginBlock])
-    then
+    then begin
       Add('finalization');
+      Add('begin');
+    end;
 
   ctnProcedure:
     begin
@@ -1651,6 +1653,23 @@ begin
       end;
       if (Node.Desc=ctnRecordType) or (Node.Parent.Desc=ctnRecordType) then begin
         Add('case');
+      end;
+    end;
+
+  ctnTypeSection,ctnVarSection,ctnConstSection,ctnLabelSection,ctnResStrSection,
+  ctnLibrary,ctnProgram:
+    begin
+      Add('type');
+      Add('const');
+      Add('var');
+      Add('resourcestring');
+      Add('procedure');
+      Add('function');
+      Add('property');
+      if Node.Desc=ctnLibrary then begin
+        Add('initialization');
+        Add('finalization');
+        Add('begin');
       end;
     end;
 
@@ -2187,7 +2206,8 @@ begin
         CurrentIdentifierList.ContextFlags:=
           CurrentIdentifierList.ContextFlags+[ilcfNeedsEndComma];
       end;
-    end else if CursorNode.Desc in AllSourceTypes then begin
+    end else if (CursorNode.Desc in AllSourceTypes)
+    and (PositionsInSameLine(Src,CursorNode.StartPos,IdentStartPos)) then begin
       GatherSourceNames(GatherContext);
     end else begin
       FindCollectionContext(Params,IdentStartPos,CursorNode,
