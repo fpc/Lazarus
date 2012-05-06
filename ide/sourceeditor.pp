@@ -745,7 +745,6 @@ type
 
     // editor page history
     procedure HistorySetMostRecent(APage: TTabSheet);
-    procedure HistoryAdd(APage: TTabSheet);
     procedure HistoryRemove(APage: TTabSheet);
     function  HistoryGetTopPageIndex: Integer;
 
@@ -6312,7 +6311,6 @@ begin
     FNotebook.Visible := True;
     NotebookPages[Index] := S;
   end;
-  HistoryAdd(FNotebook.Pages[Index]);
   UpdateTabsAndPageTitle;
 end;
 
@@ -7119,11 +7117,6 @@ begin
    if Index <> -1 then
      FHistoryList.Delete(Index);
    FHistoryList.Insert(0, APage);
-end;
-
-procedure TSourceNotebook.HistoryAdd(APage: TTabSheet);
-begin
-  FHistoryList.Add(APage);
 end;
 
 procedure TSourceNotebook.HistoryRemove(APage: TTabSheet);
