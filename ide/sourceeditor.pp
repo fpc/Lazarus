@@ -744,7 +744,6 @@ type
 
     // editor page history
     procedure HistorySetMostRecent(APage: TTabSheet);
-    procedure HistoryAdd(APage: TTabSheet);
     procedure HistoryRemove(APage: TTabSheet);
     function  HistoryGetTopPageIndex: Integer;
 
@@ -5552,9 +5551,8 @@ begin
       // add recent tabs. skip 0 since that is the active tab
       for i := 1 to Min(10, FHistoryList.Count-1) do
       begin
-        //HistoryGetTopPageIndex;
-        EditorCur := FindSourceEditorWithPageIndex(TTabSheet(FHistoryList[i]).PageIndex);
-        if not EditorCur.FEditor.HandleAllocated then continue; // show only if it was visited
+        EditorCur := FindSourceEditorWithPageIndex(FNotebook.IndexOf(TCustomPage(FHistoryList[i])));
+        if (EditorCur = nil) or (not EditorCur.FEditor.HandleAllocated) then continue; // show only if it was visited
         AddEditorToMenuSection(EditorCur, RecMenu, i);
         RecMenu.Visible := True;
       end;
@@ -6309,18 +6307,17 @@ begin
     FNotebook.Visible := True;
     NotebookPages[Index] := S;
   end;
-  HistoryAdd(FNotebook.Pages[Index]);
   UpdateTabsAndPageTitle;
 end;
 
 procedure TSourceNotebook.NoteBookDeletePage(APageIndex: Integer);
 begin
+  HistoryRemove(FNotebook.Pages[APageIndex]);
   if PageCount > 1 then begin
     // make sure to select another page in the NoteBook, otherwise the
     // widgetset will choose one and will send a message
     // if this is the current page, switch to right APageIndex (if possible)
     //todo: determine whether we can use SetPageIndex instead
-    HistoryRemove(FNotebook.Pages[APageIndex]);
     if PageIndex = APageIndex then begin
       if EditorOpts.UseTabHistory then
         FPageIndex := HistoryGetTopPageIndex
@@ -7066,11 +7063,6 @@ begin
    if Index <> -1 then
      FHistoryList.Delete(Index);
    FHistoryList.Insert(0, APage);
-end;
-
-procedure TSourceNotebook.HistoryAdd(APage: TTabSheet);
-begin
-  FHistoryList.Add(APage);
 end;
 
 procedure TSourceNotebook.HistoryRemove(APage: TTabSheet);
