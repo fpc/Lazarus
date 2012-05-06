@@ -3850,12 +3850,13 @@ end;
 
 procedure TBookmarkList.SetCurrentRowSelected(const AValue: boolean);
 var
-  Bookmark: TBookmark;
+  Bookmark: pointer;
   Index: Integer;
 begin
   CheckActive;
 
-  Bookmark := FGrid.Datasource.Dataset.GetBookmark;
+  Bookmark := nil;
+  TBookmark(Bookmark) := FGrid.Datasource.Dataset.GetBookmark; // fetch and increase reference count
   if Bookmark = nil then
     Exit;
 
@@ -3863,14 +3864,22 @@ begin
 
   if Find(Bookmark, Index) then begin
     FDataset.FreeBookmark(Bookmark);
+    {$IFNDEF noautomatedbookmark}
+    SetLength(TBookmark(Bookmark),0); // decrease reference count
+    {$ENDIF noautomatedbookmark}
     if not AValue then begin
       FDataset.FreeBookmark(Pointer(Items[Index]));
+      {$IFNDEF noautomatedbookmark}
+      SetLength(TBookmark(FList[Index]),0); // decrease reference count
+      {$ENDIF noautomatedbookmark}
       FList.Delete(Index);
       FGrid.Invalidate;
     end;
   end else begin
     if AValue then begin
-      FList.Insert(Index, Pointer(Bookmark));
+      // the reference count of Bookmark was increased above, so it is save to
+      // store it here as pointer
+      FList.Insert(Index, Bookmark);
       FGrid.Invalidate;
     end;
   end;
@@ -3901,7 +3910,12 @@ var
   i: Integer;
 begin
   for i:=0 to FList.Count-1 do
+  begin
     FDataset.FreeBookmark(Items[i]);
+    {$IFNDEF noautomatedbookmark}
+    SetLength(TBookmark(FList[i]),0); // decrease reference count
+    {$ENDIF noautomatedbookmark}
+  end;
   FList.Clear;
   FGrid.Invalidate;
 end;
@@ -3913,6 +3927,9 @@ begin
   for i := 0 to FList.Count - 1 do begin
     FDataset.GotoBookmark(Items[i]);
     FDataset.Delete;
+    {$IFNDEF noautomatedbookmark}
+    SetLength(TBookmark(FList[i]),0); // decrease reference count
+    {$ENDIF noautomatedbookmark}
     FList.Delete(i);
   end;
 end;
@@ -3921,11 +3938,10 @@ type
   TDs=class(TDataset)
   end;
 
-function MyCompareBookmarks(ds:Tdataset; b1,b2:TBookmark): Integer;
+function MyCompareBookmarks(ds:Tdataset; b1,b2:pointer): Integer;
 var
   i: Integer;
 begin
-  {$IFDEF noautomatedbookmark}
   if b1=b2 then
     result := 0
   else
@@ -3935,20 +3951,9 @@ begin
   if b2=nil then
     result := 1
   else begin
+    // Note: Tds(ds).bookmarksize is set at creation of TDataSet and does not change
     result := CompareMemRange(b1,b2,Tds(ds).bookmarksize);
   end;
-  {$ELSE}
-  if b1=b2 then
-    exit(0)
-  else if length(b1)<length(b2) then
-    exit(-1)
-  else if length(b1)>length(b2) then
-    exit(1)
-  else if length(b1)=0 then
-    exit(0)
-  else
-    result:=CompareMemRange(@b1[0],@b2[0],length(b1));
-  {$ENDIF}
 end;
 
 function TBookmarkList.Find(const Item: TBookmark; var AIndex: Integer): boolean;
@@ -3963,7 +3968,7 @@ begin
   while (L <= R) do
   begin
     I := L + (R - L) div 2;
-    CompareRes := MyCompareBookmarks(FDataset, Item, TBookmark(FList[I]));
+    CompareRes := MyCompareBookmarks(FDataset, pointer(Item), FList[I]);
     //CompareRes := FDataset.CompareBookmarks(Item, TBookmark(FList[I]));
     if (CompareRes > 0) then
       L := I + 1
