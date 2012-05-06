@@ -865,6 +865,7 @@ var
   Node: TCodeTreeNode;
   ProtectedForeignClass: Boolean;
   Lvl: LongInt;
+  NamePos: TAtomPosition;
 begin
   // proceed searching ...
   Result:=ifrProceedSearch;
@@ -1003,6 +1004,12 @@ begin
     if (FoundContext.Tool=Self) then begin
       Ident:=@Src[FoundContext.Node.StartPos];
     end;
+
+  ctnUnit,ctnProgram,ctnLibrary,ctnPackage:
+    if (FoundContext.Tool=Self)
+    and GetSourceNamePos(NamePos) then
+      Ident:=@Src[NamePos.StartPos];
+
   end;
   if Ident=nil then exit;
 
@@ -1021,6 +1028,7 @@ begin
   end;
 
   {$IFDEF ShowFoundIdents}
+  if FoundContext.Tool=Self then
   DebugLn('  IDENT COLLECTED: ',NewItem.AsString);
   {$ENDIF}
   

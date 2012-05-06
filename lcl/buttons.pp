@@ -91,7 +91,7 @@ type
     procedure SetNumGlyphs(Value: TNumGlyphs);
     procedure SetShowMode(const AValue: TGlyphShowMode);
     procedure ClearImages;
-  protected
+  public
     // IUnknown
 {$IFDEF FPC_HAS_CONSTREF}
     function QueryInterface(constref iid: TGuid; out obj): LongInt; {$IFDEF WINDOWS}stdcall{$ELSE}cdecl{$ENDIF};
@@ -102,11 +102,10 @@ type
     function _AddRef: LongInt; stdcall;
     function _Release: LongInt; stdcall;
 {$ENDIF}
-
     // IImageCacheListener
     procedure CacheSetImageList(AImageList: TCustomImageList);
     procedure CacheSetImageIndex(AIndex, AImageIndex: Integer);
-
+  protected
     procedure GlyphChanged(Sender: TObject);
     procedure SetTransparentMode(AValue: TGlyphTransparencyMode);
     
