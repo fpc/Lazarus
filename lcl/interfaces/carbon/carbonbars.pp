@@ -1,5 +1,4 @@
-{ $Id$
-                  -------------------------------------
+{                 -------------------------------------
                   CarbonBars.pp  -  Carbon bars classes
                   -------------------------------------
 
@@ -27,13 +26,9 @@ interface
 
 uses
  // rtl+ftl
-  Types, Classes, SysUtils, Math, Contnrs,
+  Classes, SysUtils, Math,
  // carbon bindings
-  MacOSAll,
- // widgetset
-  WSControls, WSLCLClasses, WSProc,
- // LCL Carbon
-  CarbonDef, CarbonPrivate,
+  MacOSAll, WSLCLClasses, CarbonPrivate,
  // LCL
   LMessages, LCLMessageGlue, LCLProc, LCLType, Graphics, Controls, Forms,
   Dialogs, StdCtrls, Buttons, ComCtrls, ExtCtrls, Menus;
@@ -48,8 +43,8 @@ type
     function GetPosition: Integer; virtual;
     procedure SetPosition(APosition: Integer); virtual;
 
-    procedure SetColor(const AColor: TColor); override;
-    procedure SetFont(const AFont: TFont); override;
+    procedure SetColor(const {%H-}AColor: TColor); override;
+    procedure SetFont(const {%H-}AFont: TFont); override;
 
     procedure SetIndetermine(AValue: Boolean);
     function GetIndetermine: Boolean;
@@ -100,14 +95,13 @@ type
     procedure DoAction(AControlPart: ControlPartCode); override;
     procedure SetParams; virtual;
     procedure BoundsChanged; override;
-    function SetScrollInfo(SBStyle: Integer; const ScrollInfo: TScrollInfo): Integer; override;
-    procedure GetScrollInfo(SBStyle: Integer; var ScrollInfo: TScrollInfo); override;
+    function SetScrollInfo({%H-}SBStyle: Integer; const ScrollInfo: TScrollInfo): Integer; override;
+    procedure GetScrollInfo({%H-}SBStyle: Integer; var ScrollInfo: TScrollInfo); override;
   end;
 
 implementation
 
-uses InterfaceBase, CarbonInt, CarbonProc, CarbonDbgConsts, CarbonUtils,
-  CarbonWSStdCtrls, CarbonStrings, CarbonCanvas, CarbonGDIObjects;
+uses InterfaceBase, CarbonProc, CarbonDbgConsts;
   
 { TCarbonCustomBar }
 
@@ -182,7 +176,7 @@ begin
   // create determinate progress bar
   if OSError(
     CreateProgressBarControl(GetTopParentWindow, ParamsToCarbonRect(AParams),
-      ProgressBar.Position, ProgressBar.Min, ProgressBar.Max, False, Control),
+      ProgressBar.Position, ProgressBar.Min, ProgressBar.Max, False, Control{%H-}),
     Self, SCreateWidget, 'CreateProgressBarControl') then RaiseCreateWidgetError(LCLObject);
 
   Widget := Control;
@@ -291,7 +285,7 @@ begin
   if OSError(
     CreateSliderControl(GetTopParentWindow, ParamsToCarbonRect(AParams),
       TrackBar.Position, TrackBar.Min, TrackBar.Max,
-      kControlSliderPointsDownOrRight, FTicks, True, nil, Control),
+      kControlSliderPointsDownOrRight, FTicks, True, nil, Control{%H-}),
     Self, SCreateWidget, 'CreateSliderControl') then RaiseCreateWidgetError(LCLObject);
 
   Widget := Control;
@@ -351,7 +345,7 @@ begin
   if OSError(
     CreateScrollBarControl(GetTopParentWindow, ParamsToCarbonRect(AParams),
       ScrollBar.Position, ScrollBar.Min, ScrollBar.Max, ScrollBar.PageSize, True,
-      nil, Control),
+      nil, Control{%H-}),
     Self, SCreateWidget, 'CreateScrollBarControl') then RaiseCreateWidgetError(LCLObject);
 
   Widget := Control;
@@ -377,12 +371,12 @@ procedure TCarbonScrollBar.IndicatorMoved;
 var
   ScrollMsg: TLMScroll;
 begin
-  FillChar(ScrollMsg, SizeOf(TLMScroll), 0);
+  FillChar(ScrollMsg{%H-}, SizeOf(TLMScroll), 0);
 
   ScrollMsg.Msg := LM_HSCROLL;
   ScrollMsg.ScrollCode := SB_THUMBTRACK;
   ScrollMsg.Pos := GetControl32BitValue(ControlRef(Widget));
-  ScrollMsg.ScrollBar := HWND(Widget);
+  ScrollMsg.ScrollBar := {%H-}HWND(Widget);
   
   ValueChanged;
   DeliverMessage(LCLObject, ScrollMsg);
@@ -413,12 +407,12 @@ begin
 
   if ScrollCode >= 0 then
   begin
-    FillChar(ScrollMsg, SizeOf(TLMScroll), 0);
+    FillChar(ScrollMsg{%H-}, SizeOf(TLMScroll), 0);
 
     ScrollMsg.Msg := LM_HSCROLL;
     ScrollMsg.ScrollCode := ScrollCode;
     ScrollMsg.Pos := GetControl32BitValue(ControlRef(Widget));
-    ScrollMsg.ScrollBar := HWND(Widget);
+    ScrollMsg.ScrollBar := {%H-}HWND(Widget);
 
     DeliverMessage(LCLObject, ScrollMsg);
   end;

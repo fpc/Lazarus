@@ -374,9 +374,9 @@ const
   StrNSString_initWithUTF8String = 'initWithUTF8String:';
   StrNSString_initWithString = 'initWithString:';
   StrNSString_initWithFormat = 'initWithFormat:';
-  StrNSString_initWithFormat_arguments = 'initWithFormat:arguments:';
+  {%H-}StrNSString_initWithFormat_arguments = 'initWithFormat:arguments:';
   StrNSString_initWithFormat_locale = 'initWithFormat:locale:';
-  StrNSString_initWithFormat_locale_arguments = 'initWithFormat:locale:arguments:';
+  {%H-}StrNSString_initWithFormat_locale_arguments = 'initWithFormat:locale:arguments:';
   StrNSString_initWithData_encoding = 'initWithData:encoding:';
   StrNSString_initWithBytes_length_encoding = 'initWithBytes:length:encoding:';
   StrNSString_initWithBytesNoCopy_length_encoding_freeWhenDone = 'initWithBytesNoCopy:length:encoding:freeWhenDone:';
@@ -445,7 +445,7 @@ end;
 
 function NSString.length: LongWord;
 begin
-  Result := LongWord(objc_msgSend(Handle, sel_registerName(PChar(StrNSString_length)), []));
+  Result := {%H-}LongWord(objc_msgSend(Handle, sel_registerName(PChar(StrNSString_length)), []));
 end;
 
 function NSString.characterAtIndex(__index: LongWord): unichar;
@@ -710,7 +710,7 @@ end;
 
 function NSString.intValue: Integer;
 begin
-  Result := Integer(objc_msgSend(Handle, sel_registerName(PChar(StrNSString_intValue)), []));
+  Result := {%H-}Integer(objc_msgSend(Handle, sel_registerName(PChar(StrNSString_intValue)), []));
 end;
 
 function NSString.componentsSeparatedByString(_separator: CFStringRef): CFArrayRef;
@@ -819,17 +819,17 @@ end;
 
 function NSString.hash: LongWord;
 begin
-  Result := LongWord(objc_msgSend(Handle, sel_registerName(PChar(StrNSString_hash)), []));
+  Result := {%H-}LongWord(objc_msgSend(Handle, sel_registerName(PChar(StrNSString_hash)), []));
 end;
 
 function NSString.fastestEncoding: NSStringEncoding;
 begin
-  Result := NSStringEncoding(objc_msgSend(Handle, sel_registerName(PChar(StrNSString_fastestEncoding)), []));
+  Result := {%H-}NSStringEncoding(objc_msgSend(Handle, sel_registerName(PChar(StrNSString_fastestEncoding)), []));
 end;
 
 function NSString.smallestEncoding: NSStringEncoding;
 begin
-  Result := NSStringEncoding(objc_msgSend(Handle, sel_registerName(PChar(StrNSString_smallestEncoding)), []));
+  Result := {%H-}NSStringEncoding(objc_msgSend(Handle, sel_registerName(PChar(StrNSString_smallestEncoding)), []));
 end;
 
 function NSString.dataUsingEncoding_allowLossyConversion(_encoding: NSStringEncoding; _lossy: LongBool): CFDataRef;
@@ -933,12 +933,12 @@ end;
 
 class function NSString.defaultCStringEncoding: NSStringEncoding;
 begin
-  Result := NSStringEncoding(objc_msgSend(getClass, sel_registerName(PChar(StrNSString_defaultCStringEncoding)), []));
+  Result := {%H-}NSStringEncoding(objc_msgSend(getClass, sel_registerName(PChar(StrNSString_defaultCStringEncoding)), []));
 end;
 
 class function NSString.availableStringEncodings: NSStringEncoding;
 begin
-  Result := NSStringEncoding(objc_msgSend(getClass, sel_registerName(PChar(StrNSString_availableStringEncodings)), []));
+  Result := {%H-}NSStringEncoding(objc_msgSend(getClass, sel_registerName(PChar(StrNSString_availableStringEncodings)), []));
 end;
 
 constructor NSString.localizedNameOfStringEncoding(_encoding: NSStringEncoding);
@@ -1323,7 +1323,7 @@ end;
 
 function NSString.cStringLength: LongWord;
 begin
-  Result := LongWord(objc_msgSend(Handle, sel_registerName(PChar(StrNSString_cStringLength)), []));
+  Result := {%H-}LongWord(objc_msgSend(Handle, sel_registerName(PChar(StrNSString_cStringLength)), []));
 end;
 
 procedure NSString.getCString(_bytes: PChar);

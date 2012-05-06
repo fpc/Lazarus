@@ -1,5 +1,4 @@
 {%MainUnit carbonprivate.pp}
-{ $Id: $}
 {
  *****************************************************************************
  *                                                                           *
@@ -27,9 +26,9 @@ var
   S : ByteCount;
 begin
   if GetMenuItemProperty(AMenu, MenuIdx, LAZARUS_FOURCC,
-       WIDGETINFO_FOURCC, SizeOf(TCarbonMenu), S, @CarbonMenu) = noErr then
+       WIDGETINFO_FOURCC, SizeOf(TCarbonMenu), S{%H-}, @CarbonMenu) = noErr then
   begin
-    FillChar(Msg, SizeOf(Msg), 0);
+    FillChar(Msg{%H-}, SizeOf(Msg), 0);
     Msg.msg := LM_ACTIVATE;
     CarbonMenu.LCLMenuItem.Dispatch(Msg);
   end;
@@ -51,7 +50,7 @@ begin
   {$ENDIF}
   // Do canclose query, if false then exit
 
-  FillChar(Msg, SizeOf(Msg),0);
+  FillChar(Msg{%H-}, SizeOf(Msg),0);
   Msg.msg := LM_CLOSEQUERY;
 
   // Message results : 0 - do nothing, 1 - destroy window
@@ -137,7 +136,7 @@ const
       CCtl := TCarbonCustomControl(Widget);
       if CCtl.GetScrollbarVisible(SB_VERT) then
       begin
-        FillChar(ScrollInfo, SizeOf(ScrollInfo), #0);
+        FillChar(ScrollInfo{%H-}, SizeOf(ScrollInfo), #0);
         ScrollInfo.fMask := SIF_TRACKPOS;
         ScrollInfo.cbSize := SizeOf(ScrollInfo);
         CCtl.GetScrollInfo(SB_VERT, ScrollInfo);
@@ -240,7 +239,7 @@ const
     Msg^.Keys := GetCarbonMsgKeyState;
   end;
 
-  procedure HandleMouseDraggedEvent(var AMsg);
+  procedure HandleMouseDraggedEvent(var {%H-}AMsg);
   begin
     {$IFDEF VerboseMouse}
       DebugLn('-- mouse dragged --');
@@ -313,7 +312,7 @@ begin
   end;
   if Widget = nil then Exit;
 
-  FillChar(Msg, SizeOf(Msg), 0);
+  FillChar(Msg{%H-}, SizeOf(Msg), 0);
   
   EventKind := GetEventKind(AEvent);
   case EventKind of
@@ -543,8 +542,8 @@ const
     end;
 
     // get untranslated key (key without modifiers)
-    OSError(KLGetCurrentKeyboardLayout(KeyboardLayout), SName, 'KLGetCurrentKeyboardLayout');
-    OSError(KLGetKeyboardLayoutProperty(KeyboardLayout, kKLuchrData, Layout), SName, 'KLGetKeyboardLayoutProperty');
+    OSError(KLGetCurrentKeyboardLayout(KeyboardLayout{%H-}), SName, 'KLGetCurrentKeyboardLayout');
+    OSError(KLGetKeyboardLayoutProperty(KeyboardLayout, kKLuchrData, Layout{%H-}), SName, 'KLGetKeyboardLayoutProperty');
     {$IFDEF VerboseKeyboard}
     DebugLn('[Keyboard layout] UCHR layout = ', DbgS(Layout));
     {$ENDIF}
@@ -712,7 +711,7 @@ const
   begin
     if AUTF8Char='' then Exit;
     // only one character should be used
-    WideBuf:=UTF8Encode(UTF8Copy(AUTF8Char, 1,1));
+    WideBuf:={%H-}UTF8Encode(UTF8Copy(AUTF8Char, 1,1));
     Result:=(length(WideBuf)>0) and
       (not OSError(SetEventParameter(AEvent, kEventParamKeyUnicodes, typeUnicodeText,
         length(WideBuf)*2, @WideBuf[1]), SName, ASetEvent, 'kEventParamKeyUnicodes'));
@@ -734,7 +733,7 @@ const
     {$ENDIF}
 
     // create the CN_KEYDOWN message
-    FillChar(KeyMsg, SizeOf(KeyMsg), 0);
+    FillChar(KeyMsg{%H-}, SizeOf(KeyMsg), 0);
     if IsSysKey then KeyMsg.Msg := CN_SYSKEYDOWN
     else KeyMsg.Msg := CN_KEYDOWN;
     KeyMsg.KeyData := KeyData;
@@ -804,7 +803,7 @@ const
         LCLCharToMacEvent(UTF8Character);
 
       // create the CN_CHAR / CN_SYSCHAR message
-      FillChar(CharMsg, SizeOf(CharMsg), 0);
+      FillChar(CharMsg{%H-}, SizeOf(CharMsg), 0);
       if IsSysKey then CharMsg.Msg := CN_SYSCHAR
       else CharMsg.Msg := CN_CHAR;
       CharMsg.KeyData := KeyData;
@@ -870,7 +869,7 @@ const
     {$ENDIF}
 
     // create the CN_KEYUP message
-    FillChar(KeyMsg, SizeOf(KeyMsg), 0);
+    FillChar(KeyMsg{%H-}, SizeOf(KeyMsg), 0);
     if IsSysKey then KeyMsg.Msg := CN_SYSKEYUP
     else KeyMsg.Msg := CN_KEYUP;
     KeyMsg.KeyData := KeyData;
@@ -1062,7 +1061,7 @@ begin
   
   if Kind >= 0 then
   begin
-    AWidget.GetBounds(WidgetBounds);
+    AWidget.GetBounds(WidgetBounds{%H-});
     LCLSendSizeMsg(AWidget.LCLObject, WidgetBounds.Right - WidgetBounds.Left,
       WidgetBounds.Bottom - WidgetBounds.Top, Size_SourceIsInterface or Kind);
   end;
@@ -1173,7 +1172,7 @@ begin
     1, @TmpSpec, Pointer(Self), nil);
 
   // paint content message
-  if (HIViewFindByID( HIViewGetRoot(fWindowRef), kHIViewWindowContentID, WinContent) = noErr) then
+  if (HIViewFindByID( HIViewGetRoot(fWindowRef), kHIViewWindowContentID, WinContent{%H-}) = noErr) then
   begin
     TmpSpec := MakeEventSpec(kEventClassControl, kEventControlDraw);
     InstallControlEventHandler(WinContent,
@@ -1241,7 +1240,7 @@ begin
 
   if OSError(
     CreateNewWindow(NewWindowClass,
-      Attributes, GetCarbonRect(0, 0, 0, 0), AWindow),
+      Attributes, GetCarbonRect(0, 0, 0, 0), AWindow{%H-}),
     Self, SCreateWidget, 'CreateNewWindow') then
   begin
     DebugLn('Unable to create a window with selected class '+IntToStr(NewWindowClass)+ ', and attributes,'+IntToStr(Attributes)+', fallback to kDocumentWindowClass');
@@ -1298,7 +1297,7 @@ procedure SetClientAlign(Child, Parent: HIViewRef; FullAlign: Boolean);
 var
   Layout: HILayoutInfo;
 begin
-  HIViewGetLayoutInfo(Child, Layout);
+  HIViewGetLayoutInfo(Child, Layout{%H-});
   if FullAlign then
   begin
     Layout.binding.left.kind  := kHILayoutBindLeft;
@@ -1406,9 +1405,9 @@ var
 begin
   if Assigned(fWindowRef) then
   begin
-    OSError(GetWindowBounds(fWindowRef, kWindowStructureRgn, G),
+    OSError(GetWindowBounds(fWindowRef, kWindowStructureRgn, G{%H-}),
       Self, 'GetMousePos', SGetWindowBounds);
-    OSError(GetWindowBounds(fWindowRef, kWindowContentRgn, R),
+    OSError(GetWindowBounds(fWindowRef, kWindowContentRgn, R{%H-}),
       Self, 'GetMousePos', SGetWindowBounds);
     Result.X := winX - (R.left-G.Left);
     Result.Y := winY - (R.Top-G.Top);
@@ -1445,10 +1444,10 @@ begin
   if Assigned(fWindowRef) then begin
     Result := False;
     if OSError(
-      GetWindowBounds(fWindowRef, kWindowStructureRgn, AWndRect), Self,
+      GetWindowBounds(fWindowRef, kWindowStructureRgn, AWndRect{%H-}), Self,
       SName, SGetWindowBounds, 'kWindowStructureRgn') then Exit;
     if OSError(
-      GetWindowBounds(fWindowRef, kWindowContentRgn, AClientRect), Self,
+      GetWindowBounds(fWindowRef, kWindowContentRgn, AClientRect{%H-}), Self,
       SName, SGetWindowBounds, 'kWindowContentRgn') then Exit;
 
     ARect.Left := AClientRect.Left - AWndRect.Left;
@@ -1558,10 +1557,10 @@ begin
     Result := False;
 
     if OSError(
-      MacOSAll.GetWindowBounds(fWindowRef, kWindowStructureRgn, AWndRect),
+      MacOSAll.GetWindowBounds(fWindowRef, kWindowStructureRgn, AWndRect{%H-}),
       Self, SName, SGetWindowBounds, 'kWindowStructureRgn') then Exit;
     if OSError(
-      MacOSAll.GetWindowBounds(fWindowRef, kWindowContentRgn, AClientRect),
+      MacOSAll.GetWindowBounds(fWindowRef, kWindowContentRgn, AClientRect{%H-}),
       Self, SName, SGetWindowBounds, 'kWindowContentRgn') then Exit;
 
     ARect.Left := AWndRect.Left;
@@ -1911,7 +1910,7 @@ begin
     if FullScreen then
     begin
       SetSystemUIMode(kuiModeNormal, 0);
-      if OSError(ZoomWindowIdeal(fWindowRef, inZoomIn, P),
+      if OSError(ZoomWindowIdeal(fWindowRef, inZoomIn, P{%H-}),
         Self, SName, SZoomIdeal, 'inZoomIn') then Exit;
       exit(True);
     end;

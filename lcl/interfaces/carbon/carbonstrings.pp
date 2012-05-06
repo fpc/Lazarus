@@ -1,5 +1,4 @@
-{ $Id$
-                  -----------------------------------
+{                 -----------------------------------
                   carbonstrings.pp  -  Carbon strings
                   -----------------------------------
 
@@ -26,14 +25,12 @@ interface
 {$I carbondefines.inc}
 
 uses
- // carbon bindings
-  MacOSAll,
  // rtl+ftl
-  Types, Classes, SysUtils, Math,
+  Classes, SysUtils,
  // LCL
   LCLProc, LCLType, Graphics, Controls, StdCtrls,
  // LCL Carbon
-  CarbonDef, CarbonEdits, CarbonListViews;
+  CarbonEdits, CarbonListViews;
 
 type
   { TCarbonComboBoxStrings }
@@ -350,7 +347,7 @@ end;
  ------------------------------------------------------------------------------}
 function TCarbonMemoStrings.GetTextStr: string;
 begin
-  FOwner.GetText(Result);
+  FOwner.GetText(Result{%H-});
 end;
 
 {------------------------------------------------------------------------------

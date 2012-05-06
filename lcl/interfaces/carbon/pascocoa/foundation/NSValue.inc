@@ -284,22 +284,22 @@ end;
 
 function NSNumber.intValue: Integer;
 begin
-  Result := Integer(objc_msgSend(Handle, sel_registerName(PChar(StrNSNumber_intValue)), []));
+  Result := {%H-}Integer(objc_msgSend(Handle, sel_registerName(PChar(StrNSNumber_intValue)), []));
 end;
 
 function NSNumber.unsignedIntValue: LongWord;
 begin
-  Result := LongWord(objc_msgSend(Handle, sel_registerName(PChar(StrNSNumber_unsignedIntValue)), []));
+  Result := {%H-}LongWord(objc_msgSend(Handle, sel_registerName(PChar(StrNSNumber_unsignedIntValue)), []));
 end;
 
 function NSNumber.longValue: Integer;
 begin
-  Result := Integer(objc_msgSend(Handle, sel_registerName(PChar(StrNSNumber_longValue)), []));
+  Result := {%H-}Integer(objc_msgSend(Handle, sel_registerName(PChar(StrNSNumber_longValue)), []));
 end;
 
 function NSNumber.unsignedLongValue: LongWord;
 begin
-  Result := LongWord(objc_msgSend(Handle, sel_registerName(PChar(StrNSNumber_unsignedLongValue)), []));
+  Result := {%H-}LongWord(objc_msgSend(Handle, sel_registerName(PChar(StrNSNumber_unsignedLongValue)), []));
 end;
 
 function NSNumber.longLongValue: Int64;
@@ -324,7 +324,7 @@ end;
 
 function NSNumber.boolValue: LongBool;
 begin
-  Result := LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSNumber_boolValue)), []));
+  Result := {%H-}LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSNumber_boolValue)), []));
 end;
 
 function NSNumber.stringValue: CFStringRef;

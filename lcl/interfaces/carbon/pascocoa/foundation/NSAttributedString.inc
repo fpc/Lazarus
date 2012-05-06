@@ -127,7 +127,7 @@ end;
 
 function NSAttributedString.length: LongWord;
 begin
-  Result := LongWord(objc_msgSend(Handle, sel_registerName(PChar(StrNSAttributedString_length)), []));
+  Result := {%H-}LongWord(objc_msgSend(Handle, sel_registerName(PChar(StrNSAttributedString_length)), []));
 end;
 
 function NSAttributedString.attribute_atIndex_effectiveRange(_attrName: CFStringRef; _location: LongWord; _range: NSRangePointer): lobjc.id;

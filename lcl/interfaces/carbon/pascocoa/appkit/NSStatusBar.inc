@@ -91,7 +91,7 @@ end;
 
 function NSStatusBar.isVertical: LongBool;
 begin
-  Result := LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSStatusBar_isVertical)), []));
+  Result := {%H-}LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSStatusBar_isVertical)), []));
 end;
 
 function NSStatusBar.thickness: Single;

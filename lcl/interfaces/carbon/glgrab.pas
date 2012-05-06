@@ -60,8 +60,8 @@ begin
 
   while ( top < bottom ) do
   begin
-        topP := Pointer((top * rowBytes) + PtrInt(base));
-        bottomP := Pointer((bottom * rowBytes) + PtrInt(base));
+        topP := {%H-}Pointer((top * rowBytes) + {%H-}PtrInt(base));
+        bottomP := {%H-}Pointer((bottom * rowBytes) + {%H-}PtrInt(base));
 
         {
          * Save and swap scanlines.
@@ -103,7 +103,6 @@ var
   data: Pointer;
   bytewidth: Longint;
   width, height: GLint;
-  bytes: Longint;
   cSpace: CGColorSpaceRef;
 
   glContextObj: CGLContextObj;
@@ -147,7 +146,7 @@ begin
 
     bytewidth := width * 4; // Assume 4 bytes/pixel for now
     bytewidth := (bytewidth + 3) and (not 3); // Align to 4 bytes
-    bytes := bytewidth * height; // width * height
+    //bytes := bytewidth * height; // width * height
 
     { Build bitmap context }
     data := System.GetMem(height * bytewidth);

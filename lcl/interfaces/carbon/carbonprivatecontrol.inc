@@ -1,5 +1,4 @@
 {%MainUnit carbonprivate.pp}
-{ $Id$}
 {
  *****************************************************************************
  *                                                                           *
@@ -185,7 +184,6 @@ var
   lInputAccessibleObject: TLazAccessibleObject;
   lInputPasStr: string;
   lInputMutableArray: CFMutableArrayRef;
-  lInputArray: CFArrayRef;
   lInputHIPoint: HIPoint;
   lInputPoint: TPoint;
   // Outputs
@@ -200,7 +198,6 @@ var
   lLazControl: TControl;
   lLazAXRole: TLazAccessibilityRole;
   lCurAccessibleObject: TLazAccessibleObject;
-  Command: HICommandExtended;
   EventKind: UInt32;
   // array
   lArray: CFMutableArrayRef;
@@ -226,7 +223,7 @@ begin
     typeCFTypeRef, nil, SizeOf(AXUIElementRef), nil, @lInputAXObject);
 
   // Check if this is an event to a child accessible object
-  AXUIElementGetIdentifier(lInputAXObject, lInputID64);
+  AXUIElementGetIdentifier(lInputAXObject, lInputID64{%H-});
   if (lLazControl is TCustomControl) and (lInputID64 <> 0) then
     lInputAccessibleObject := TLazAccessibleObject(PtrInt(lInputID64))
   else
@@ -559,7 +556,7 @@ begin
           else
           begin
             lArray := CFArrayCreateMutable(kCFAllocatorDefault, 1, @kCFTypeArrayCallBacks);
-            lElement := AXUIElementRef(lSelection.Handle);
+            lElement := {%H-}AXUIElementRef(lSelection.Handle);
             if lElement <> nil then
               CFArrayAppendValue(lArray, lElement);
           end;
@@ -577,7 +574,7 @@ begin
           // Add non-control children
           for lCurAccessibleObject in lInputAccessibleObject do
           begin
-            lElement := AXUIElementRef(lCurAccessibleObject.Handle);
+            lElement := {%H-}AXUIElementRef(lCurAccessibleObject.Handle);
             if lElement <> nil then
               CFArrayAppendValue(lArray, lElement);
           end;
@@ -588,7 +585,7 @@ begin
           begin
             //DebugLn('2');
             lChildControl := TWinControl(lLazControl).Controls[i];
-            lElement := AXUIElementRef(lChildControl.GetAccessibleObject().Handle);
+            lElement := {%H-}AXUIElementRef(lChildControl.GetAccessibleObject().Handle);
             if lElement <> nil then
               CFArrayAppendValue(lArray, lElement);
           end;
@@ -617,7 +614,7 @@ begin
         if lLazControl is TCustomForm then Exit;
         if lInputID64 = 0 then Exit;
         if lInputAccessibleObject.Parent = nil then Exit;
-        lElement := AXUIElementRef(lInputAccessibleObject.Parent.Handle);
+        lElement := {%H-}AXUIElementRef(lInputAccessibleObject.Parent.Handle);
         SetEventParameter(AEvent, kEventParamAccessibleAttributeValue, typeCFTypeRef,
           SizeOf(AXUIElementRef), @lElement);
         Result := noErr;
@@ -641,8 +638,8 @@ begin
         if lInputID64 = 0 then Exit;
         // Just copy from our parent the AXWindow
         if lInputAccessibleObject.Parent = nil then Exit;
-        lElement := AXUIElementRef(lInputAccessibleObject.Parent.Handle);
-        AXUIElementCopyAttributeValue(lElement, CFSTR('AXWindow'), lElement2);
+        lElement := {%H-}AXUIElementRef(lInputAccessibleObject.Parent.Handle);
+        AXUIElementCopyAttributeValue(lElement, CFSTR('AXWindow'), lElement2{%H-});
         if lElement2 = nil then Exit;
         SetEventParameter(AEvent, kEventParamAccessibleAttributeValue, typeCFTypeRef,
           SizeOf(AXUIElementRef), @lElement2);
@@ -990,7 +987,7 @@ begin
     if OSError(GetControlRegion(ControlRef(Widget), kControlContentMetaPart, ClientRegion),
       Self, 'GetControlContentRect', 'GetControlRegion') then Exit;
 
-     Result := GetRegionBounds(ClientRegion, AClientRect) <> nil;
+     Result := GetRegionBounds(ClientRegion, AClientRect{%H-}) <> nil;
      if Result then ARect := CarbonRectToRect(AClientRect);
   finally
     MacOSAll.DisposeRgn(ClientRegion);
@@ -1041,7 +1038,7 @@ var
 begin
   Result := False;
   
-  if not GetClientRect(R) then
+  if not GetClientRect(R{%H-}) then
   begin
     DebugLn('TCarbonControl.UpdateContentBounds Error - unable to get client area!');
     Exit;
@@ -1116,17 +1113,17 @@ begin
     'HIScrollViewCreate') then Exit;
     
   // set scroll view bounds
-  OSError(HIViewGetFrame(Widget, Bounds), Self, SName, 'HIViewGetFrame');
+  OSError(HIViewGetFrame(Widget, Bounds{%H-}), Self, SName, 'HIViewGetFrame');
   OSError(HIViewSetFrame(Result, Bounds), Self, SName, SViewFrame);
 
   OSError(HIScrollViewSetScrollBarAutoHide(Result,
       AScrollBars in [ssNone, ssAutoVertical, ssAutoHorizontal, ssAutoBoth]),
     Self, SName, SViewSetScrollBarAutoHide);
     
-  HIViewGetFrame(Widget, s);
+  HIViewGetFrame(Widget, s{%H-});
   HIViewRemoveFromSuperview(Widget);
   OSError(HIViewAddSubview(Result, Widget), Self, SName, SViewAddView);
-  HIViewGetFrame(Widget, d);
+  HIViewGetFrame(Widget, d{%H-});
 
   // hack: for some reason, sometimes HIViewAddSubview, changes the size
   // of the widget by scrollsize width/height (15 pixels). #19425
@@ -1192,13 +1189,13 @@ const
 begin
   if OSError(
     CreateEvent(nil, kEventClassScrollable, kEventScrollableInfoChanged, 0,
-      kEventAttributeUserEvent, Event),
+      kEventAttributeUserEvent, Event{%H-}),
     Self, SName, 'CreateEvent') then Exit;
   try
-    GetClientRect(before);
+    GetClientRect(before{%H-});
     OSError(SendEventToEventTarget(Event, GetControlEventTarget(FScrollView)),
       Self, SName, 'SendEventToEventTarget');
-    GetClientRect(after);
+    GetClientRect(after{%H-});
     if not CompareRect(@before, @after) then
       UpdateLCLClientRect;
   finally
@@ -1217,8 +1214,8 @@ var
 begin
   if not Resizing then
   begin
-    GetBounds(R);
-    GetClientRect(ClientR);
+    GetBounds(R{%H-});
+    GetClientRect(ClientR{%H-});
     LCLR:=LCLObject.BoundsRect;
     LCLClientR:=LCLObject.ClientRect;
     RChanged:=not CompareRect(@R,@LCLR);
@@ -1375,7 +1372,7 @@ var
 begin
   Result := False;
 
-  if GetControlBounds(Frames[0], BoundsRect) = nil then
+  if GetControlBounds(Frames[0], BoundsRect{%H-}) = nil then
   begin
     DebugLn('TCarbonControl.GetFrameBounds failed!');
     Exit;
@@ -1422,7 +1419,7 @@ begin
     'HIViewConvertRect') then Exit;
   
   if OSError(GetWindowBounds(GetTopParentWindow, kWindowStructureRgn,
-      WindowRect), Self, SName, SGetWindowBounds) then Exit;
+      WindowRect{%H-}), Self, SName, SGetWindowBounds) then Exit;
     
   ARect := CGRectToRect(BoundsRect);
   OffsetRect(ARect, WindowRect.left, WindowRect.top);
@@ -1444,7 +1441,7 @@ var
 begin
   Result := False;
 
-  if (IsDrawEvent > 0) then HIViewGetBounds(Frames[0], B);
+  if (IsDrawEvent > 0) then HIViewGetBounds(Frames[0], B{%H-});
 
   if OSError(HIViewSetFrame(Frames[0], RectToCGRect(ARect)),
     Self, SSetBounds, SViewFrame) then Exit;
@@ -1472,7 +1469,7 @@ begin
   OSError(
     SetUserFocusWindow(Window), Self, SSetFocus, SSetUserFocusWindow);
 
-  OSError(GetKeyboardFocus(Window, Control), Self, SSetFocus, SGetKeyboardFocus);
+  OSError(GetKeyboardFocus(Window, Control{%H-}), Self, SSetFocus, SGetKeyboardFocus);
 
   if Control <> ControlRef(Widget) then
     OSError(SetKeyboardFocus(Window, ControlRef(Widget), kControlFocusNextPart),
@@ -1526,7 +1523,7 @@ begin
       kControlFontStyleTag, SizeOf(FontStyle), @FontStyle, nil), Self, SName,
     SGetData, SControlFont);
 
-  if not FindQDFontFamilyID(AFont.Name, ID) then ID:=0;
+  if not FindQDFontFamilyID(AFont.Name, ID{%H-}) then ID:=0;
 
   FontStyle.flags := FontStyle.flags or kControlUseFontMask or kControlUseSizeMask or
     kControlUseFaceMask or kControlUseForeColorMask;
@@ -1741,7 +1738,7 @@ begin
   Result := False;
 
   // controls without content area have clientrect = boundsrect
-  if OSError(HIViewGetFrame(Content, R),
+  if OSError(HIViewGetFrame(Content, R{%H-}),
     Self, 'GetClientRect', 'HIViewGetFrame') then Exit;
 
   ARect := CGrectToRect(R);
@@ -1768,7 +1765,7 @@ begin
     
   R := GetCarbonRect(0, 0, 0, 0);
   
-  if OSError(GetBestControlRect(ControlRef(Widget), R, S), Self,
+  if OSError(GetBestControlRect(ControlRef(Widget), R, S{%H-}), Self,
     'GetPreferredSize', 'GetBestControlRect') then Exit;
 
   Result.X := R.right - R.left;

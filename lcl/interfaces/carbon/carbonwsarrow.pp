@@ -43,8 +43,8 @@ type
 
   TCarbonWSArrow = class(TWSArrow)
   published
-    class procedure SetType(const AArrow: TArrow; const AArrowType: TArrowType;
-      const AShadowType: TShadowType); override;
+    class procedure SetType(const {%H-}AArrow: TArrow; const {%H-}AArrowType: TArrowType;
+      const {%H-}AShadowType: TShadowType); override;
   end;
 
 

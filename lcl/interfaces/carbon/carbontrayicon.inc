@@ -2,8 +2,6 @@
 
 {$ifdef CarbonUseCocoa}
 
-{$STATIC ON}
-
 type
 
   { TPrivateCocoaCarbonTrayIcon }
@@ -34,7 +32,7 @@ type
     function TrimAllChar(const S: string; const ch: Char): string;
     function CreateMenu(APopUpMenu: TPopUpMenu): NSMenu;
     function RecursiveCreateMenuItems(AMenuItem: TMenuItem;
-      ACallbackName: string; ACallbackClass: NSObject): NSMenuItem;
+      {%H-}ACallbackName: string; {%H-}ACallbackClass: NSObject): NSMenuItem;
     function CreateMenuItem(AMenuItem: TMenuItem;
       ACallbackName: string; ACallbackClass: NSObject): NSMenuItem;
     procedure ReleaseMenu();
@@ -43,13 +41,13 @@ type
     function ConvertTBitmapToNSImage(ABitmap: TBitmap): NSImage;
     function IsMenuVisible: Boolean;
     { Objective-C compatible methods }
-    class procedure HandleMenuItemClick(_self: lobjc.id; _cmd: SEL; sender: lobjc.id); cdecl; //static;
-    class procedure HandleMenuWillOpen(_self: lobjc.id; _cmd: SEL; sender: lobjc.id); cdecl; //static;
-    class procedure HandleMenuDidClose(_self: lobjc.id; _cmd: SEL; sender: lobjc.id); cdecl; //static;
+    class procedure HandleMenuItemClick({%H-}_self: lobjc.id; _cmd: SEL; {%H-}sender: lobjc.id); cdecl; //static;
+    class procedure HandleMenuWillOpen({%H-}_self: lobjc.id; {%H-}_cmd: SEL; sender: lobjc.id); cdecl; //static;
+    class procedure HandleMenuDidClose({%H-}_self: lobjc.id; {%H-}_cmd: SEL; sender: lobjc.id); cdecl; //static;
   end;
 
 const
-  Str_TPrivateCocoaCarbonTrayIcon = 'TTrayIcon';
+  {%H-}Str_TPrivateCocoaCarbonTrayIcon = 'TTrayIcon';
 
   Str_HandleMenuItemClick = 'HandleMenuItemClick';
   Str_HandleMenuWillOpen = 'menuWillOpen:';
@@ -445,11 +443,8 @@ end;
 
 class procedure TPrivateCocoaCarbonTrayIcon.HandleMenuDidClose(_self: lobjc.id;
   _cmd: SEL; sender: lobjc.id); cdecl; //static;
-var
-  AMenu: NSMenu;
-  //LCLMenu: TPopUpMenu;
 begin
-  AMenu := NSMenu.CreateWithHandle(sender);
+  NSMenu.CreateWithHandle(sender);
 //  LCLMenu := TPopUpMenu(PtrInt(AMenu.menuRepresentation()));
 //  if (LCLMenu <> nil) and Assigned(LCLMenu.OnClose) then LCLMenu.OnClose(LCLMenu);
 end;

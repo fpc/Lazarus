@@ -1,5 +1,4 @@
 {%MainUnit carbonprivate.pp}
-{ $Id: $}
 {
  *****************************************************************************
  *                                                                           *
@@ -37,7 +36,7 @@ end;
  ------------------------------------------------------------------------------}
 function CarbonWindow_ContentDraw(ANextHandler: EventHandlerCallRef;
   AEvent: EventRef;
-  AWidget: TCarbonWidget): OSStatus; {$IFDEF darwin}mwpascal;{$ENDIF}
+  {%H-}AWidget: TCarbonWidget): OSStatus; {$IFDEF darwin}mwpascal;{$ENDIF}
 begin
   if not isRepaint then
     Result := CallNextEventHandler(ANextHandler, AEvent)
@@ -85,7 +84,7 @@ begin
     if GetEventParameter(AEvent, kEventParamRgnHandle, typeQDRgnHandle, nil,
       SizeOf(Hnd), nil, @Hnd)=noErr then
     begin
-      GetRegionBounds(RgnHandle(Hnd), mr);
+      GetRegionBounds(RgnHandle(Hnd), mr{%H-});
       invr.Left:=mr.left;
       invr.Top:=mr.top;
       invr.Right:=mr.right;
@@ -135,7 +134,7 @@ begin
       begin
         IsRepaint := true;
         Win:=HIViewGetWindow(AWidget.Widget);
-        HIViewFindByID( HIViewGetRoot(Win), kHIViewWindowContentID, Content);
+        HIViewFindByID( HIViewGetRoot(Win), kHIViewWindowContentID, Content{%H-});
         //HIViewSetNeedsDisplay(Content, true);
         HIViewRender(HIViewGetRoot(Win));
         IsRepaint:=false;
@@ -192,7 +191,7 @@ begin
     if (LastMousePos.X = P.X) and (LastMousePos.Y = P.Y) then Exit;
     LastMousePos := P;
 
-    FillChar(Msg, SizeOf(TLMMouseMove), 0);
+    FillChar(Msg{%H-}, SizeOf(TLMMouseMove), 0);
     Msg.Msg := LM_MOUSEMOVE;
     Msg.XPos := P.X;
     Msg.YPos := P.Y;
@@ -269,9 +268,9 @@ begin
 
   // if button state has not changed, then there's no need to emulate mouse up
   // because the button has not yet been released!
-  if MouseButton=GetCurrentEventButtonState then Exit;
+  if MouseButton{%H-}=GetCurrentEventButtonState then Exit;
 
-  FillChar(Msg, SizeOf(Msg), 0);
+  FillChar(Msg{%H-}, SizeOf(Msg), 0);
 
   if  (MouseButton >= Low(MSGKIND)) and (MouseButton <= High(MSGKIND)) then
     Msg.Msg := MSGKIND[MouseButton];
@@ -381,9 +380,9 @@ begin
     DebugLn('CarbonCommon_ContextualMenuClick: ', DbgSName(AWidget.LCLObject));
   {$ENDIF}
 
-  GetGlobalMouse(P);
+  GetGlobalMouse(P{%H-});
 
-  FillChar(Msg, SizeOf(TLMContextMenu), 0);
+  FillChar(Msg{%H-}, SizeOf(TLMContextMenu), 0);
   Msg.Msg := LM_CONTEXTMENU;
   Msg.hWnd := HWND(AWidget);
   Msg.Pos.X := P.h;
@@ -518,7 +517,7 @@ begin
   Result := noErr; // cursor was setted
 end;
 
-function CarbonCommon_User(ANextHandler: EventHandlerCallRef;
+function CarbonCommon_User({%H-}ANextHandler: EventHandlerCallRef;
   AEvent: EventRef;
   AWidget: TCarbonWidget): OSStatus; {$IFDEF darwin}mwpascal;{$ENDIF}
 var

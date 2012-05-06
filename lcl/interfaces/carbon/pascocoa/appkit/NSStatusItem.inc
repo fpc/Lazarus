@@ -264,7 +264,7 @@ end;
 
 function NSStatusItem.isEnabled: LongBool;
 begin
-  Result := LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSStatusItem_isEnabled)), []));
+  Result := {%H-}LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSStatusItem_isEnabled)), []));
 end;
 
 procedure NSStatusItem.setEnabled(_enabled: LongBool);
@@ -304,7 +304,7 @@ end;
 
 function NSStatusItem.highlightMode: LongBool;
 begin
-  Result := LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSStatusItem_highlightMode)), []));
+  Result := {%H-}LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSStatusItem_highlightMode)), []));
 end;
 
 procedure NSStatusItem.sendActionOn(_mask: Integer);

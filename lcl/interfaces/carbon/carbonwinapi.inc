@@ -98,7 +98,7 @@ begin
   {$ENDIF}
   
   if not CheckWidget(Handle, 'ClientToScreen') then Exit;
-  Result := TCarbonWidget(Handle).GetScreenBounds(R);
+  Result := TCarbonWidget(Handle).GetScreenBounds(R{%H-});
   
   if Result then
   begin
@@ -407,6 +407,8 @@ begin
   H := Desc.Height;
   if H < 1 then H := 1;
 
+  {$Note: check if DevDesc is the right parameter for QueryDescription}
+  FillByte(DevDesc{%H-},SizeOf(DevDesc),0);
   QueryDescription(DevDesc, [riqfRGB, riqfAlpha], W, H);
 
   if DevDesc.IsEqual(Desc)
@@ -542,7 +544,7 @@ begin
     DebugLn('TCarbonWidgetSet.DeleteCriticalSection Section: ' + DbgS(CritSection));
   {$ENDIF}
   
-  ACritSec := System.PRTLCriticalSection(CritSection);
+  ACritSec := {%H-}System.PRTLCriticalSection(CritSection);
 
   System.DoneCriticalsection(ACritSec^);
   Dispose(ACritSec);
@@ -775,7 +777,7 @@ begin
     DebugLn('TCarbonWidgetSet.EnterCriticalSection Section: ' + DbgS(CritSection));
   {$ENDIF}
   
-  ACritSec:=System.PRTLCriticalSection(CritSection);
+  ACritSec:={%H-}System.PRTLCriticalSection(CritSection);
   System.EnterCriticalsection(ACritSec^);
 end;
 
@@ -786,7 +788,7 @@ var
   activeDspys: array[0..1024] of CGDirectDisplayID;
   i: integer;
 begin
-  if OSError(CGGetActiveDisplayList(1024, activeDspys, Count),
+  if OSError(CGGetActiveDisplayList(1024, activeDspys, Count{%H-}),
     'TCarbonWidgetSet.EnumDisplayMonitors', 'CGGetActiveDisplayList') then Exit(False);
   Result := True;
   for i := 0 to Count - 1 do
@@ -840,7 +842,7 @@ begin
   if (lpLogFont^.lfCharSet = DEFAULT_CHARSET) and (lpLogFont^.lfFaceName = '') then
   begin
     // all system fonts
-    if OSError(ATSUFontCount(FamilyCount), SName, 'ATSUFontCount') then Exit;
+    if OSError(ATSUFontCount(FamilyCount{%H-}), SName, 'ATSUFontCount') then Exit;
     
     GetMem(FamilyListPtr, SizeOf(ATSUFontID) * FamilyCount);
     try
@@ -856,8 +858,8 @@ begin
         FontName := CarbonFontIDToFontName(PFamily^);
         if FontName <> '' then // execute callback
         begin
-          FillChar(EnumLogFont, SizeOf(EnumLogFont), #0);
-          FillChar(Metric, SizeOf(Metric), #0);
+          FillChar(EnumLogFont{%H-}, SizeOf(EnumLogFont), #0);
+          FillChar(Metric{%H-}, SizeOf(Metric), #0);
           FontType := 0;
           EnumLogFont.elfLogFont.lfFaceName := FontName;
           // TODO: get all attributes
@@ -1323,7 +1325,7 @@ var
 begin
   Result := False;
   
-  GetGlobalMouse(Pt);
+  GetGlobalMouse(Pt{%H-});
   
   lpPoint.X := Pt.h;
   lpPoint.Y := Pt.v;
@@ -1393,7 +1395,7 @@ begin
   begin
     DC := TCarbonDeviceContext(PaintDC);
     affine := CGContextGetCTM(DC.CGContext);
-    TCarbonWidget(WindowHandle).GetBounds(r);
+    TCarbonWidget(WindowHandle).GetBounds(r{%H-});
     OriginDiff.x := Round(affine.tx);
     OriginDiff.y := Round((r.Bottom - r.Top) - affine.ty);
     Result := true;
@@ -1524,9 +1526,9 @@ begin
   if DisplayID = CGMainDisplayID then
   begin
     lpmi^.dwFlags := MONITORINFOF_PRIMARY;
-    if OSError(DMGetGDeviceByDisplayID(DisplayIDType(DisplayID), DeviceHandle, True),
+    if OSError(DMGetGDeviceByDisplayID(DisplayIDType(DisplayID), DeviceHandle{%H-}, True),
       'TCarbonWidgetSet.GetMonitorInfo', 'DMGetGDeviceByDisplayID') then Exit;
-    if OSError(GetAvailableWindowPositioningBounds(DeviceHandle, availRect),
+    if OSError(GetAvailableWindowPositioningBounds(DeviceHandle, availRect{%H-}),
       'TCarbonWidgetSet.GetMonitorInfo', 'GetAvailableWindowPositioningBounds') then Exit;
     with availRect do
       lpmi^.rcWork := Types.Rect(left, top, right, bottom);
@@ -1547,7 +1549,7 @@ end;
 function TCarbonWidgetSet.GetKeyState(nVirtKey: Integer): Smallint;
 const
   StateDown    = SmallInt($FF80);
-  StateToggled = SmallInt($0001);
+  //StateToggled = SmallInt($0001);
 begin
   Result := 0;
 
@@ -1629,7 +1631,7 @@ begin
     Width := TCarbonBitmap(AObject).Width;
     Height := TCarbonBitmap(AObject).Height;
 
-    FillChar(DIB, SizeOf(TDIBSection), 0);
+    FillChar(DIB{%H-}, SizeOf(TDIBSection), 0);
 
     {dsBM - BITMAP}
     DIB.dsBm.bmType := $4D42;
@@ -1944,7 +1946,7 @@ begin
   //COLOR_GRADIENTACTIVECAPTION, COLOR_ACTIVECAPTION:
   //COLOR_GRADIENTINACTIVECAPTION, COLOR_INACTIVECAPTION:
   COLOR_MENU:
-    R := GetThemeBrushAsColor(kThemeBrushMenuBackground, Depth, True, C);
+    R := GetThemeBrushAsColor(kThemeBrushMenuBackground, Depth, True, C{%H-});
   COLOR_MENUTEXT:
     R := GetThemeTextColor(kThemeTextColorMenuItemActive, Depth, True, C);
   COLOR_WINDOWFRAME, COLOR_ACTIVEBORDER, COLOR_INACTIVEBORDER,
@@ -2231,7 +2233,7 @@ begin
   {$ENDIF}
   
   if not CheckWidget(Handle, 'GetWindowRelativePosition') then Exit;
-  Result := TCarbonWidget(Handle).GetBounds(ARect);
+  Result := TCarbonWidget(Handle).GetBounds(ARect{%H-});
   
   if not Result then Exit;
   Left := ARect.Left;
@@ -2264,7 +2266,7 @@ begin
   {$ENDIF}
   
   if not CheckWidget(Handle, 'GetWindowSize') then Exit;
-  Result := TCarbonWidget(Handle).GetBounds(ARect);
+  Result := TCarbonWidget(Handle).GetBounds(ARect{%H-});
     
   if not Result then Exit;
   Width := ARect.Right - ARect.Left;
@@ -2316,7 +2318,7 @@ begin
   New(ACritSec);
   
   System.InitCriticalSection(ACritSec^);
-  CritSection := TCriticalSection(ACritSec);
+  CritSection := {%H-}TCriticalSection(ACritSec);
   
   {$IFDEF VerboseWinAPI}
     DebugLn('TCarbonWidgetSet.InitializeCriticalSection Section: ' + DbgS(CritSection));
@@ -2490,7 +2492,7 @@ begin
     DebugLn('TCarbonWidgetSet.LeaveCriticalSection Section: ' + DbgS(CritSection));
   {$ENDIF}
   
-  ACritSec := System.PRTLCriticalSection(CritSection);
+  ACritSec := {%H-}System.PRTLCriticalSection(CritSection);
   System.LeaveCriticalsection(ACritSec^);
 end;
 
@@ -2805,7 +2807,7 @@ begin
   // therefore we can only test bounding box of the clipping path.
   
   ClipBox := CGContextGetClipBoundingBox(TCarbonContext(DC).CGContext);
-  Result := IntersectRect(R, ARect, CGRectToRect(ClipBox));
+  Result := IntersectRect(R{%H-}, ARect, CGRectToRect(ClipBox));
   
   {$IFDEF VerboseWinAPI}
     DebugLn('TCarbonWidgetSet.RectVisible Result: ' + DbgS(Result) + ' Clip: ' + DbgS(CGRectToRect(ClipBox)));
@@ -2885,7 +2887,7 @@ begin
   
   if not CheckWidget(Handle, 'RemoveProp') then Exit;
 
-  Result := THandle(TCarbonWidget(Handle).Properties[Str]);
+  Result := {%H-}THandle(TCarbonWidget(Handle).Properties[Str]);
   TCarbonWidget(Handle).Properties[Str] := nil;
 end;
 
@@ -3094,9 +3096,10 @@ begin
       begin
         R := RectToCGRect(prcScroll^);
         // TODO: create CGRect
-        OSError(HIViewGetBounds(ACtl.Content, R1),
+        OSError(HIViewGetBounds(ACtl.Content, R1{%H-}),
           Self, SName, 'HIViewGetBounds');
         RR := CGRectToRect(R1);
+        {$NOTE: check why RR is not used}
         OSError(HIViewScrollRect(ACtl.Content, HiRectPtr(@R), CGFloat(dx), CGFloat(dy)),
           ACtl, SName, 'HIViewScrollRect');
         Result := True;
@@ -3122,8 +3125,6 @@ end;
 {$ENDIF}
 
 function TCarbonWidgetSet.SelectClipRGN(DC: hDC; RGN: HRGN): Longint;
-const
-  SName = 'TCarbonWidgetSet.SelectClipRGN';
 begin
   {$IFDEF VerboseWinAPI}
     DebugLn('TCarbonWidgetSet.SelectClipRGN DC: ' + DbgS(DC) + ' RGN: ' +
@@ -3891,11 +3892,11 @@ begin
 
   P.h := Point.X;
   P.v := Point.Y;
-  if FindWindowOfClass(P, kAllWindowClasses, Window, @WindowPart) <> noErr then Exit;
+  if FindWindowOfClass(P, kAllWindowClasses, Window{%H-}, @WindowPart) <> noErr then Exit;
   if Window = nil then Exit;
   if WindowPart <> inContent then Exit;
   
-  if OSError(GetWindowBounds(Window, kWindowContentRgn, R), Self,
+  if OSError(GetWindowBounds(Window, kWindowContentRgn, R{%H-}), Self,
     'WindowFromPoint', SGetWindowBounds) then Exit;
     
   Dec(P.h, R.left);

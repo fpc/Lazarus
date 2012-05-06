@@ -33,7 +33,7 @@ procedure DrawGrid(DC: HDC; const R: TRect; DX, DY: Integer); override;
 function ExtUTF8Out(DC: HDC; X, Y: Integer; Options: Longint; Rect: PRect;
   Str: PChar; Count: Longint; Dx: PInteger): Boolean; override;
 
-function FontCanUTF8(Font: HFont): boolean; override;
+function FontCanUTF8({%H-}Font: HFont): boolean; override;
 
 function GetAcceleratorString(const AVKey: Byte; const AShiftState: TShiftState): String; override;
 function GetControlConstraints(Constraints: TObject): boolean; override;
@@ -63,7 +63,7 @@ function RawImage_FromDevice(out ARawImage: TRawImage; ADC: HDC; const ARect: TR
 // override only when queried formats are different from screen description
 //function RawImage_QueryDescription(AFlags: TRawImageQueryFlags; var ADesc: TRawImageDescription): Boolean; override;
 
-function ReleaseDesignerDC(Window: HWND; DC: HDC): Integer; override;
+function ReleaseDesignerDC(Window: HWND; {%H-}DC: HDC): Integer; override;
 
 //##apiwiz##eps##   // Do not remove, no wizard declaration after this line
 

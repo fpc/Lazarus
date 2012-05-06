@@ -19,7 +19,7 @@ unit lobjc;
 
 interface
 
-uses ctypes, unix;
+uses unix;
 
 {$include lobjc-api.inc}
 {$include lobjc.inc}

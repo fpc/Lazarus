@@ -1,5 +1,4 @@
-{ $Id$
-                  ------------------------------------------
+{                 ------------------------------------------
                   carbongdiobjects.pp  -  Carbon GDI objects
                   ------------------------------------------
 
@@ -388,7 +387,7 @@ function CheckGDIObject(const GDIObject: HGDIOBJ; const AMethodName: String; APa
 function CheckBitmap(const Bitmap: HBITMAP; const AMethodName: String; AParamName: String = ''): Boolean;
 function CheckCursor(const Cursor: HCURSOR; const AMethodName: String; AParamName: String = ''): Boolean;
 
-function FloodFillBitmap(const Bitmap: TCarbonBitmap; X,Y: Integer; ABorderColor, FillColor: TColor; isBorderColor: Boolean): Boolean;
+function FloodFillBitmap(const Bitmap: TCarbonBitmap; X,Y: Integer; {%H-}ABorderColor, FillColor: TColor; {%H-}isBorderColor: Boolean): Boolean;
 
 var
   StockSystemFont: TCarbonFont;
@@ -506,9 +505,9 @@ type
 const
 // missed error codes
   kQDNoColorHWCursorSupport = -3951;
-  kQDCursorAlreadyRegistered = -3952;
-  kQDCursorNotRegistered = -3953;
-  kQDCorruptPICTDataErr = -3954;
+  {%H-}kQDCursorAlreadyRegistered = -3952;
+  {%H-}kQDCursorNotRegistered = -3953;
+  {%H-}kQDCorruptPICTDataErr = -3954;
   
   kThemeCursorAnimationDelay = 70;
   LazarusCursorInfix = '_lazarus_';
@@ -762,7 +761,7 @@ function TCarbonRegion.GetBounds: TRect;
 var
   R: HIRect;
 begin
-  if HIShapeGetBounds(FShape, R) = nil then
+  if HIShapeGetBounds(FShape, R{%H-}) = nil then
   begin
     DebugLn('TCarbonRegion.GetBounds Error!');
     Exit;
@@ -975,7 +974,7 @@ begin
 end;
 
 
-function ATSUCallback(iCurrentOperation: ATSULayoutOperationSelector; iLineRef: ATSULineRef; iRefCon: UInt32; iOperationCallbackParameterPtr: UnivPtr;
+function ATSUCallback({%H-}iCurrentOperation: ATSULayoutOperationSelector; iLineRef: ATSULineRef; iRefCon: UInt32; {%H-}iOperationCallbackParameterPtr: UnivPtr;
   var oCallbackStatus: ATSULayoutOperationCallbackStatus ): OSStatus; {$ifdef DARWIN}mwpascal;{$endif}
 var
   Buffer  : TCarbonTextLayoutBuffer;
@@ -985,8 +984,10 @@ begin
   Buffer := TCarbonTextLayoutBuffer(iRefCon);
   oCallbackStatus:=kATSULayoutOperationCallbackStatusHandled;
 
-  if Assigned(Buffer) then
+  if Assigned(Buffer) then begin
+    Handled:=false;
     Buffer.DoJustify(iLineRef, Handled);
+  end;
 end;
 
 procedure TCarbonTextLayoutBuffer.DoJustify(iLineRef: ATSULineRef; var Handled: Boolean);
@@ -1213,6 +1214,7 @@ const
 begin
   inherited Create(False);
 
+  Result:=nil;
   OSError(ATSUCreateStyle(Result), Self, SName, SCreateStyle);
 
   ID := FindCarbonFontID(AFaceName);
@@ -1602,7 +1604,7 @@ var
 begin
   if AHatch in [HS_HORIZONTAL..HS_DIAGCROSS] then
   begin
-    FillChar(ACallBacks, SizeOf(ACallBacks), 0);
+    FillChar(ACallBacks{%H-}, SizeOf(ACallBacks), 0);
     ACallBacks.drawPattern := @DrawBitmapPattern;
     FBitmap := TCarbonBitmap.Create(8, 8, 1, 1, cbaByte, cbtMask, @HATCH_DATA[AHatch]);
     FColored := False;
@@ -1619,7 +1621,7 @@ var
 begin
   AWidth := ABitmap.Width;
   AHeight := ABitmap.Height;
-  FillChar(ACallBacks, SizeOf(ACallBacks), 0);
+  FillChar(ACallBacks{%H-}, SizeOf(ACallBacks), 0);
   ACallBacks.drawPattern := @DrawBitmapPattern;
   FBitmap := TCarbonBitmap.Create(ABitmap);
   FColored := True;
@@ -2414,7 +2416,7 @@ begin
   Create;
   FDefault := ADefault;
   FThemeCursor := AThemeCursor;
-  if (AThemeCursor >= Low(kThemeCursorTypeMap)) and
+  if (AThemeCursor {%H-}>= Low(kThemeCursorTypeMap)) and
      (AThemeCursor <= High(kThemeCursorTypeMap)) then
     FCursorType := kThemeCursorTypeMap[FThemeCursor] else
     FCursorType := cctTheme;
@@ -2553,7 +2555,7 @@ type
     ai  : Byte;
   end;
 
-procedure GetRGBA24(Bitmap: TCarbonBitmap; X,Y: Integer; var r,g,b,a: Byte; const pos: TColorPos);
+procedure GetRGBA24(Bitmap: TCarbonBitmap; X,Y: Integer; out r,g,b,a: Byte; const pos: TColorPos);
 var
   line  : PByteArray;
 begin
@@ -2568,7 +2570,7 @@ begin
   a:=255;
 end;
 
-procedure SetRGBA24(Bitmap: TCarbonBitmap; X,Y: Integer; r,g,b,a: Byte; const pos: TColorPos);
+procedure SetRGBA24(Bitmap: TCarbonBitmap; X,Y: Integer; r,g,b,{%H-}a: Byte; const pos: TColorPos);
 var
   line  : PByteArray;
 begin
@@ -2579,7 +2581,7 @@ begin
   line^[x*3+pos.bi]:=b;
 end;
 
-procedure GetRGBA32(Bitmap: TCarbonBitmap; X,Y: Integer; var r,g,b,a: Byte; const pos: TColorPos);
+procedure GetRGBA32(Bitmap: TCarbonBitmap; X,Y: Integer; out r,g,b,a: Byte; const pos: TColorPos);
 var
   line  : PByteArray;
 begin
@@ -2626,7 +2628,7 @@ const
   dx : array [0..3] of Integer = (-1,1,0,0);
   dy : array [0..3] of Integer = (0,0,-1,1);
 var
-  GetRGBA: procedure (Bitmap: TCarbonBitmap; X,Y: Integer; var r,g,b,a: Byte; const pos: TColorPos);
+  GetRGBA: procedure (Bitmap: TCarbonBitmap; X,Y: Integer; out r,g,b,a: Byte; const pos: TColorPos);
   SetRGBA: procedure (Bitmap: TCarbonBitmap; X,Y: Integer; r,g,b,a: Byte; const pos: TColorPos);
 begin
   FillColorRef:=ColorToRGB(FillColor);

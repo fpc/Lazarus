@@ -220,7 +220,7 @@ end;
 
 function NSSavePanel.allowsOtherFileTypes: LongBool;
 begin
-  Result := LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSSavePanel_allowsOtherFileTypes)), []));
+  Result := {%H-}LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSSavePanel_allowsOtherFileTypes)), []));
 end;
 
 procedure NSSavePanel.setAllowsOtherFileTypes(_flag: LongBool);
@@ -268,13 +268,13 @@ end;
 
 function NSSavePanel.isExpanded: LongBool;
 begin
-  Result := LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSSavePanel_isExpanded)), []));
+  Result := {%H-}LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSSavePanel_isExpanded)), []));
 end;
 
 {.$ifdef  MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_3}
 function NSSavePanel.canCreateDirectories: LongBool;
 begin
-  Result := LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSSavePanel_canCreateDirectories)), []));
+  Result := {%H-}LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSSavePanel_canCreateDirectories)), []));
 end;
 
 procedure NSSavePanel.setCanCreateDirectories(_flag: LongBool);
@@ -291,7 +291,7 @@ end;
 {.$ifdef  MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_3}
 function NSSavePanel.canSelectHiddenExtension: LongBool;
 begin
-  Result := LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSSavePanel_canSelectHiddenExtension)), []));
+  Result := {%H-}LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSSavePanel_canSelectHiddenExtension)), []));
 end;
 
 {.$endif}
@@ -307,7 +307,7 @@ end;
 
 function NSSavePanel.isExtensionHidden: LongBool;
 begin
-  Result := LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSSavePanel_isExtensionHidden)), []));
+  Result := {%H-}LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSSavePanel_isExtensionHidden)), []));
 end;
 
 procedure NSSavePanel.setExtensionHidden(_flag: LongBool);
@@ -322,7 +322,7 @@ end;
 
 function NSSavePanel.treatsFilePackagesAsDirectories: LongBool;
 begin
-  Result := LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSSavePanel_treatsFilePackagesAsDirectories)), []));
+  Result := {%H-}LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSSavePanel_treatsFilePackagesAsDirectories)), []));
 end;
 
 procedure NSSavePanel.setTreatsFilePackagesAsDirectories(_flag: LongBool);
@@ -456,7 +456,7 @@ end;
 
 function NSSavePanel.runModal: Integer;
 begin
-  Result := Integer(objc_msgSend(Handle, sel_registerName(PChar(StrNSSavePanel_runModal)), []));
+  Result := {%H-}Integer(objc_msgSend(Handle, sel_registerName(PChar(StrNSSavePanel_runModal)), []));
 end;
 
 {$endif}

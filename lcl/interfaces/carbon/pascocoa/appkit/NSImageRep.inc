@@ -151,7 +151,7 @@ end;
 
 function NSImageRep.draw: LongBool;
 begin
-  Result := LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSImageRep_draw)), []));
+  Result := {%H-}LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSImageRep_draw)), []));
 end;
 
 function NSImageRep.drawAtPoint(_point: NSPoint): LongBool;
@@ -201,7 +201,7 @@ end;
 
 function NSImageRep.hasAlpha: LongBool;
 begin
-  Result := LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSImageRep_hasAlpha)), []));
+  Result := {%H-}LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSImageRep_hasAlpha)), []));
 end;
 
 procedure NSImageRep.setOpaque(_flag: LongBool);
@@ -216,7 +216,7 @@ end;
 
 function NSImageRep.isOpaque: LongBool;
 begin
-  Result := LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSImageRep_isOpaque)), []));
+  Result := {%H-}LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSImageRep_isOpaque)), []));
 end;
 
 procedure NSImageRep.setColorSpaceName(__string: CFStringRef);
@@ -246,7 +246,7 @@ end;
 
 function NSImageRep.bitsPerSample: Integer;
 begin
-  Result := Integer(objc_msgSend(Handle, sel_registerName(PChar(StrNSImageRep_bitsPerSample)), []));
+  Result := {%H-}Integer(objc_msgSend(Handle, sel_registerName(PChar(StrNSImageRep_bitsPerSample)), []));
 end;
 
 procedure NSImageRep.setPixelsWide(_anInt: Integer);
@@ -261,7 +261,7 @@ end;
 
 function NSImageRep.pixelsWide: Integer;
 begin
-  Result := Integer(objc_msgSend(Handle, sel_registerName(PChar(StrNSImageRep_pixelsWide)), []));
+  Result := {%H-}Integer(objc_msgSend(Handle, sel_registerName(PChar(StrNSImageRep_pixelsWide)), []));
 end;
 
 procedure NSImageRep.setPixelsHigh(_anInt: Integer);
@@ -276,7 +276,7 @@ end;
 
 function NSImageRep.pixelsHigh: Integer;
 begin
-  Result := Integer(objc_msgSend(Handle, sel_registerName(PChar(StrNSImageRep_pixelsHigh)), []));
+  Result := {%H-}Integer(objc_msgSend(Handle, sel_registerName(PChar(StrNSImageRep_pixelsHigh)), []));
 end;
 
 class procedure NSImageRep.registerImageRepClass(_imageRepClass: _Class);

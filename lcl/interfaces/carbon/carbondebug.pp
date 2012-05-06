@@ -1,4 +1,3 @@
-{ $Id$ }
 {
                      -------------------------------------
                      carbondebug.pp  -  graphic dump utils 
@@ -59,15 +58,14 @@ function DbgWindowDraw(ANextHandler: EventHandlerCallRef;
 var
   bounds, R: CGRect;
   context: CGContextRef;
-  status: Integer;
-  affine: CGAffineTransform;
-  l: Single;
+  status: OSStatus;
 begin
   Result := CallNextEventHandler(ANextHandler, AEvent);
 
-  HIViewGetBounds(AInfo^.Control, bounds);
+  HIViewGetBounds(AInfo^.Control, bounds{%H-});
 
   status := GetEventParameter(AEvent, kEventParamCGContextRef, typeCGContextRef, nil, SizeOf(context), nil, @Context);
+  if status = 0 then ;
 
   CGContextSetRGBFillColor(context, 0, 1, 0, 0.3);
   CGContextFillRect(context, bounds);

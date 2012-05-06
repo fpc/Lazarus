@@ -69,7 +69,7 @@ type
     NSPrintingSuccess = 1, 
     NSPrintingFailure = 3, 
     NSPrintingReplyLater = 2
-  );
+  {%H-});
 
 
 { An Application's startup function }
@@ -461,17 +461,17 @@ end;
 
 function NSApplication.isActive: LongBool;
 begin
-  Result := LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSApplication_isActive)), []));
+  Result := {%H-}LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSApplication_isActive)), []));
 end;
 
 function NSApplication.isHidden: LongBool;
 begin
-  Result := LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSApplication_isHidden)), []));
+  Result := {%H-}LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSApplication_isHidden)), []));
 end;
 
 function NSApplication.isRunning: LongBool;
 begin
-  Result := LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSApplication_isRunning)), []));
+  Result := {%H-}LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSApplication_isRunning)), []));
 end;
 
 procedure NSApplication.deactivate;

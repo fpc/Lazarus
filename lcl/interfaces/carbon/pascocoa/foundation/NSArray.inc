@@ -211,7 +211,7 @@ end;
 
 function NSArray.count: LongWord;
 begin
-  Result := LongWord(objc_msgSend(Handle, sel_registerName(PChar(StrNSArray_count)), []));
+  Result := {%H-}LongWord(objc_msgSend(Handle, sel_registerName(PChar(StrNSArray_count)), []));
 end;
 
 function NSArray.objectAtIndex(__index: LongWord): lobjc.id;

@@ -141,7 +141,7 @@ end;
 
 function NSTextField.drawsBackground: LongBool;
 begin
-  Result := LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSTextField_drawsBackground)), []));
+  Result := {%H-}LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSTextField_drawsBackground)), []));
 end;
 
 procedure NSTextField.setTextColor(_color: lobjc.id {NSColor});
@@ -161,7 +161,7 @@ end;
 
 function NSTextField.isBordered: LongBool;
 begin
-  Result := LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSTextField_isBordered)), []));
+  Result := {%H-}LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSTextField_isBordered)), []));
 end;
 
 procedure NSTextField.setBordered(_flag: LongBool);
@@ -176,7 +176,7 @@ end;
 
 function NSTextField.isBezeled: LongBool;
 begin
-  Result := LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSTextField_isBezeled)), []));
+  Result := {%H-}LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSTextField_isBezeled)), []));
 end;
 
 procedure NSTextField.setBezeled(_flag: LongBool);
@@ -191,7 +191,7 @@ end;
 
 function NSTextField.isEditable: LongBool;
 begin
-  Result := LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSTextField_isEditable)), []));
+  Result := {%H-}LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSTextField_isEditable)), []));
 end;
 
 procedure NSTextField.setEditable(_flag: LongBool);
@@ -206,7 +206,7 @@ end;
 
 function NSTextField.isSelectable: LongBool;
 begin
-  Result := LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSTextField_isSelectable)), []));
+  Result := {%H-}LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSTextField_isSelectable)), []));
 end;
 
 procedure NSTextField.setSelectable(_flag: LongBool);
@@ -296,7 +296,7 @@ end;
 
 function NSTextField.acceptsFirstResponder: LongBool;
 begin
-  Result := LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSTextField_acceptsFirstResponder)), []));
+  Result := {%H-}LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSTextField_acceptsFirstResponder)), []));
 end;
 
 {.$ifdef  MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_2}
@@ -328,7 +328,7 @@ end;
 
 function NSTextField.allowsEditingTextAttributes: LongBool;
 begin
-  Result := LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSTextField_allowsEditingTextAttributes)), []));
+  Result := {%H-}LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSTextField_allowsEditingTextAttributes)), []));
 end;
 
 procedure NSTextField.setAllowsEditingTextAttributes(_flag: LongBool);
@@ -343,7 +343,7 @@ end;
 
 function NSTextField.importsGraphics: LongBool;
 begin
-  Result := LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSTextField_importsGraphics)), []));
+  Result := {%H-}LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSTextField_importsGraphics)), []));
 end;
 
 procedure NSTextField.setImportsGraphics(_flag: LongBool);

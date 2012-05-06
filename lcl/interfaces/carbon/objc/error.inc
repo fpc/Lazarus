@@ -112,7 +112,7 @@ procedure _NXRaiseError(code: cint; const data1, data2: Pointer); cdecl; externa
 #endif}
 
 
-procedure NX_RAISE(code: cint; const data1, data2: Pointer);
+procedure NX_RAISE({%H-}code: cint; const {%H-}data1, {%H-}data2: Pointer);
 
 procedure NX_RERAISE();
 

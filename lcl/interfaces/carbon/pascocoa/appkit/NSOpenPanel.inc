@@ -103,7 +103,7 @@ end;
 
 function NSOpenPanel.resolvesAliases: LongBool;
 begin
-  Result := LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSOpenPanel_resolvesAliases)), []));
+  Result := {%H-}LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSOpenPanel_resolvesAliases)), []));
 end;
 
 procedure NSOpenPanel.setResolvesAliases(_flag: LongBool);
@@ -118,7 +118,7 @@ end;
 
 function NSOpenPanel.canChooseDirectories: LongBool;
 begin
-  Result := LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSOpenPanel_canChooseDirectories)), []));
+  Result := {%H-}LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSOpenPanel_canChooseDirectories)), []));
 end;
 
 procedure NSOpenPanel.setCanChooseDirectories(_flag: LongBool);
@@ -133,7 +133,7 @@ end;
 
 function NSOpenPanel.allowsMultipleSelection: LongBool;
 begin
-  Result := LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSOpenPanel_allowsMultipleSelection)), []));
+  Result := {%H-}LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSOpenPanel_allowsMultipleSelection)), []));
 end;
 
 procedure NSOpenPanel.setAllowsMultipleSelection(_flag: LongBool);
@@ -148,7 +148,7 @@ end;
 
 function NSOpenPanel.canChooseFiles: LongBool;
 begin
-  Result := LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSOpenPanel_canChooseFiles)), []));
+  Result := {%H-}LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSOpenPanel_canChooseFiles)), []));
 end;
 
 procedure NSOpenPanel.setCanChooseFiles(_flag: LongBool);

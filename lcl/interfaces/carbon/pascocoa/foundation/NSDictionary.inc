@@ -141,7 +141,7 @@ end;
 
 function NSDictionary.count: LongWord;
 begin
-  Result := LongWord(objc_msgSend(Handle, sel_registerName(PChar(StrNSDictionary_count)), []));
+  Result := {%H-}LongWord(objc_msgSend(Handle, sel_registerName(PChar(StrNSDictionary_count)), []));
 end;
 
 function NSDictionary.keyEnumerator: lobjc.id;

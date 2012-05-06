@@ -1,4 +1,3 @@
-{ $Id$}
 {
  *****************************************************************************
  *                            CarbonWSControls.pp                            *
@@ -31,12 +30,11 @@ interface
 
 uses
   // libs
-  MacOSAll,
-  CarbonUtils, Classes, SysUtils,
+  MacOSAll, Classes, SysUtils,
   // LCL
-  Forms, Controls, Graphics, LCLType, LMessages, LCLProc,
+  Forms, Controls, Graphics, LCLType, LCLProc,
   // widgetset
-  WSControls, WSLCLClasses, WSProc,
+  WSControls, WSLCLClasses,
   // LCL Carbon
   CarbonDef, CarbonPrivate, CarbonEdits, CarbonListViews;
 
@@ -56,9 +54,9 @@ type
   public
     class function CreateHandle(const AObject: TLazAccessibleObject): HWND; override;
     class procedure DestroyHandle(const AObject: TLazAccessibleObject); override;
-    class procedure SetAccessibleDescription(const AObject: TLazAccessibleObject; const ADescription: string); override;
+    class procedure SetAccessibleDescription(const {%H-}AObject: TLazAccessibleObject; const {%H-}ADescription: string); override;
     class procedure SetAccessibleValue(const AObject: TLazAccessibleObject; const AValue: string); override;
-    class procedure SetAccessibleRole(const AObject: TLazAccessibleObject; const ARole: TLazAccessibilityRole); override;
+    class procedure SetAccessibleRole(const {%H-}AObject: TLazAccessibleObject; const {%H-}ARole: TLazAccessibilityRole); override;
   end;
 
   { TCarbonWSControl }
@@ -81,7 +79,7 @@ type
     class function  GetClientBounds(const AWincontrol: TWinControl; var ARect: TRect): Boolean; override;
     class function  GetClientRect(const AWincontrol: TWinControl; var ARect: TRect): Boolean; override;
     class function  GetDesignInteractive(const AWinControl: TWinControl; AClientPos: TPoint): Boolean; override;
-    class procedure GetPreferredSize(const AWinControl: TWinControl; var PreferredWidth, PreferredHeight: integer; WithThemeSpace: Boolean); override;
+    class procedure GetPreferredSize(const AWinControl: TWinControl; var PreferredWidth, PreferredHeight: integer; {%H-}WithThemeSpace: Boolean); override;
     class function  GetText(const AWinControl: TWinControl; var AText: String): Boolean; override;
     class procedure SetBounds(const AWinControl: TWinControl; const ALeft, ATop, AWidth, AHeight: Integer); override;
     class procedure SetChildZPosition(const AWinControl, AChild: TWinControl;
@@ -165,7 +163,7 @@ begin
   if lHIObject = nil then Exit;
 
   lElement := AXUIElementCreateWithHIObjectAndIdentifier(lHIObject, lID64);
-  Result := HWND(lElement);
+  Result := {%H-}HWND(lElement);
 end;
 
 class procedure TCarbonWSLazAccessibleObject.DestroyHandle(
@@ -174,7 +172,7 @@ var
   lElement: AXUIElementRef;
 begin
   if AObject.Handle = 0 then Exit;
-  lElement := AXUIElementRef(AObject.Handle);
+  lElement := {%H-}AXUIElementRef(AObject.Handle);
   CFRelease(lElement);
 end;
 
@@ -185,7 +183,6 @@ end;
 
 class procedure TCarbonWSLazAccessibleObject.SetAccessibleValue(const AObject: TLazAccessibleObject; const AValue: string);
 var
-  lElement: AXUIElementRef;
   lHIObject: HIObjectRef;
   lID64: UInt64;
   lValueStr, lNotification: CFStringRef;
@@ -418,7 +415,7 @@ begin
   if not CheckHandle(AWincontrol, Self, 'CanFocus') then Exit;
 
   Bit := CFPreferencesGetAppIntegerValue(CFSTR('AppleKeyboardUIMode'),
-    kCFPreferencesCurrentApplication, Valid);
+    kCFPreferencesCurrentApplication, Valid{%H-});
 
   if Valid then
   begin

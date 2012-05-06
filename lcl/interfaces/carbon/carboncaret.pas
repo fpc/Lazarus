@@ -32,12 +32,10 @@ interface
 {$I carbondefines.inc}
 
 uses
-  // Bindings
-  MacOSAll,
   // Free Pascal
   Classes, SysUtils, Types,
   // Widgetset
-  CarbonDef, CarbonGDIObjects, CarbonInt,
+  CarbonDef, CarbonGDIObjects,
   // LCL
   LCLType, LCLIntf, LCLProc, Graphics, ExtCtrls, Forms;
 
@@ -59,7 +57,7 @@ type
     FCaretCS: System.PRTLCriticalSection;
     FWidgetSetReleased: Boolean;
     procedure SetPos(const Value: TPoint);
-    procedure UpdateCall(Data: PtrInt);
+    procedure UpdateCall({%H-}Data: PtrInt);
   protected
     procedure DoTimer(Sender: TObject);
     procedure DrawCaret; virtual;
@@ -86,7 +84,7 @@ type
   end;
 
 function CreateCaret(Widget: TCarbonWidget; Bitmap: PtrUInt; Width, Height: Integer): Boolean; overload;
-function HideCaret(Widget: TCarbonWidget): Boolean;
+function HideCaret({%H-}Widget: TCarbonWidget): Boolean;
 function ShowCaret(Widget: TCarbonWidget): Boolean;
 function SetCaretPos(X, Y: Integer): Boolean;
 function GetCaretPos(var P: TPoint): Boolean;

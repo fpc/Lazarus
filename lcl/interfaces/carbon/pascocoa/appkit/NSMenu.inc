@@ -230,7 +230,7 @@ end;
 
 class function NSMenu.menuBarVisible: LongBool;
 begin
-  Result := LongBool(objc_msgSend(getClass, sel_registerName(PChar(StrNSMenu_menuBarVisible)), []));
+  Result := {%H-}LongBool(objc_msgSend(getClass, sel_registerName(PChar(StrNSMenu_menuBarVisible)), []));
 end;
 
 {.$endif}
@@ -353,7 +353,7 @@ end;
 
 function NSMenu.numberOfItems: Integer;
 begin
-  Result := Integer(objc_msgSend(Handle, sel_registerName(PChar(StrNSMenu_numberOfItems)), []));
+  Result := {%H-}Integer(objc_msgSend(Handle, sel_registerName(PChar(StrNSMenu_numberOfItems)), []));
 end;
 
 function NSMenu.indexOfItem(__index: lobjc.id): Integer;
@@ -458,7 +458,7 @@ end;
 
 function NSMenu.autoenablesItems: LongBool;
 begin
-  Result := LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSMenu_autoenablesItems)), []));
+  Result := {%H-}LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSMenu_autoenablesItems)), []));
 end;
 
 function NSMenu.performKeyEquivalent(_theEvent: lobjc.id {NSEvent}): LongBool;
@@ -488,7 +488,7 @@ end;
 
 function NSMenu.menuChangedMessagesEnabled: LongBool;
 begin
-  Result := LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSMenu_menuChangedMessagesEnabled)), []));
+  Result := {%H-}LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSMenu_menuChangedMessagesEnabled)), []));
 end;
 
 procedure NSMenu.itemChanged(_item: lobjc.id);
@@ -558,7 +558,7 @@ end;
 
 function NSMenu.isTornOff: LongBool;
 begin
-  Result := LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSMenu_isTornOff)), []));
+  Result := {%H-}LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSMenu_isTornOff)), []));
 end;
 
 function NSMenu.attachedMenu: lobjc.id;
@@ -568,7 +568,7 @@ end;
 
 function NSMenu.isAttached: LongBool;
 begin
-  Result := LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSMenu_isAttached)), []));
+  Result := {%H-}LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSMenu_isAttached)), []));
 end;
 
 procedure NSMenu.sizeToFit;

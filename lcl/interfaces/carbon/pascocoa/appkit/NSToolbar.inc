@@ -219,7 +219,7 @@ end;
 
 function NSToolbar.isVisible: LongBool;
 begin
-  Result := LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSToolbar_isVisible)), []));
+  Result := {%H-}LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSToolbar_isVisible)), []));
 end;
 
 procedure NSToolbar.runCustomizationPalette(_sender: lobjc.id);
@@ -234,7 +234,7 @@ end;
 
 function NSToolbar.customizationPaletteIsRunning: LongBool;
 begin
-  Result := LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSToolbar_customizationPaletteIsRunning)), []));
+  Result := {%H-}LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSToolbar_customizationPaletteIsRunning)), []));
 end;
 
 procedure NSToolbar.setDisplayMode(_displayMode: NSToolbarDisplayMode);
@@ -299,7 +299,7 @@ end;
 
 function NSToolbar.showsBaselineSeparator: LongBool;
 begin
-  Result := LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSToolbar_showsBaselineSeparator)), []));
+  Result := {%H-}LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSToolbar_showsBaselineSeparator)), []));
 end;
 
 {.$endif}
@@ -315,7 +315,7 @@ end;
 
 function NSToolbar.allowsUserCustomization: LongBool;
 begin
-  Result := LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSToolbar_allowsUserCustomization)), []));
+  Result := {%H-}LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSToolbar_allowsUserCustomization)), []));
 end;
 
 function NSToolbar.identifier: CFStringRef;
@@ -345,7 +345,7 @@ end;
 
 function NSToolbar.autosavesConfiguration: LongBool;
 begin
-  Result := LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSToolbar_autosavesConfiguration)), []));
+  Result := {%H-}LongBool(objc_msgSend(Handle, sel_registerName(PChar(StrNSToolbar_autosavesConfiguration)), []));
 end;
 
 procedure NSToolbar.setConfigurationFromDictionary(_configDict: CFDictionaryRef);

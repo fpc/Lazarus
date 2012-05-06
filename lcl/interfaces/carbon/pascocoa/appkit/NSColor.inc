@@ -1188,7 +1188,7 @@ end;
 
 function NSColor.numberOfComponents: Integer;
 begin
-  Result := Integer(objc_msgSend(Handle, sel_registerName(PChar(StrNSColor_numberOfComponents)), []));
+  Result := {%H-}Integer(objc_msgSend(Handle, sel_registerName(PChar(StrNSColor_numberOfComponents)), []));
 end;
 
 procedure NSColor.getComponents(_components: Single);
@@ -1265,7 +1265,7 @@ end;
 
 class function NSColor.ignoresAlpha: LongBool;
 begin
-  Result := LongBool(objc_msgSend(getClass, sel_registerName(PChar(StrNSColor_ignoresAlpha)), []));
+  Result := {%H-}LongBool(objc_msgSend(getClass, sel_registerName(PChar(StrNSColor_ignoresAlpha)), []));
 end;
 
 constructor NSColor.colorWithCIColor(_color: lobjc.id {CIColor});
