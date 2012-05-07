@@ -27,6 +27,7 @@ var
   lPoint: NSPoint;
   lCocoaForm: TCocoaForm; // NSWindow
   lClientFrame: NSRect;
+  lOriginalControlHeight: Integer = 0;
 begin
   Result := False;
   if Handle = 0 then Exit;
@@ -34,6 +35,10 @@ begin
   // Go throught the non-native controls
   ControlHandle := TCDBaseControl(Handle);
   lOriginalControl := ControlHandle.GetWinControl();
+  // If we are doing an operation in the form itself, don't correct with the control height
+  if not (ControlHandle is TCocoaWindow) then
+    lOriginalControlHeight := lOriginalControl.Height;
+
   while not (ControlHandle is TCocoaWindow) do
   begin
     lControl := ControlHandle.GetWinControl();
@@ -49,12 +54,12 @@ begin
   // Now actually do the convertion
   lClientFrame := TCocoaWindow(ControlHandle).ClientArea.frame;
   lPoint.x := lClientFrame.origin.X + P.X;
-  lPoint.Y := lClientFrame.origin.Y + lClientFrame.size.height - P.Y - lOriginalControl.Height;
+  lPoint.Y := lClientFrame.origin.Y + lClientFrame.size.height - P.Y - lOriginalControlHeight;
   lCocoaForm := TCocoaWindow(ControlHandle).CocoaForm;
   if lCocoaForm = nil then Exit;
   lPoint := lCocoaForm.convertBaseToScreen(lPoint);
   P.x := Round(lPoint.X);
-  P.Y := Round(lPoint.Y);
+  P.Y := Screen.Height - Round(lPoint.Y);
   Result := True;
 end;
 

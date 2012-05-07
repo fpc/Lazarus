@@ -1166,10 +1166,9 @@ begin
   // Position is in screen coordinates!
   else if attribute.isEqualToString(NSAccessibilityPositionAttribute) then
   begin
-    //lPoint := LCLAcc.Position;
     lPoint := LCLControl.ClientToScreen(Types.Point(0, 0));
     lNSPoint.x := lPoint.X;
-    lNSPoint.y := lPoint.Y;
+    lNSPoint.y := Screen.Height - lPoint.Y;
     Result := NSValue.valueWithPoint(lNSPoint);
     {$ifdef VerboseCDAccessibility}
     DebugLn(Format(':<[TCocoaAccessibleObject.accessibilityAttributeValue] NSAccessibilityPositionAttribute Result=%d,%d', [lPoint.X, lPoint.Y]));
