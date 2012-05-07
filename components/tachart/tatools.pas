@@ -1442,6 +1442,7 @@ end;
 
 procedure TDataPointHintTool.KeyUp(APoint: TPoint);
 begin
+  Unused(APoint);
   HideHint;
 end;
 
@@ -1502,6 +1503,7 @@ end;
 
 procedure TDataPointHintTool.MouseUp(APoint: TPoint);
 begin
+  Unused(APoint);
   HideHint;
 end;
 
