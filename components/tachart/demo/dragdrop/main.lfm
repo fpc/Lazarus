@@ -3,12 +3,13 @@ object Form1: TForm1
   Height = 481
   Top = 180
   Width = 483
+  ActiveControl = Chart1
   Caption = 'Form1'
   ClientHeight = 481
   ClientWidth = 483
   OnCreate = FormCreate
   Position = poScreenCenter
-  LCLVersion = '0.9.31'
+  LCLVersion = '1.1'
   object Chart1: TChart
     Left = 0
     Height = 447
@@ -25,11 +26,16 @@ object Form1: TForm1
       end>
     Foot.Brush.Color = clBtnFace
     Foot.Font.Color = clBlue
+    Margins.Left = 8
+    Margins.Top = 8
+    Margins.Right = 8
+    Margins.Bottom = 8
     Title.Brush.Color = clBtnFace
     Title.Font.Color = clBlue
     Title.Text.Strings = (
       'Drag data points while holding Shift key'
       'Change point color by right-click'
+      'Show hint while holding ctrl key'
     )
     Title.Visible = True
     Toolset = ChartToolset1
@@ -82,7 +88,7 @@ object Form1: TForm1
       OnPointClick = ChartToolset1DataPointClickTool1PointClick
     end
     object ChartToolset1DataPointHintTool1: TDataPointHintTool
-      Shift = []
+      Shift = [ssCtrl]
       GrabRadius = 10
       ActiveCursor = crHandPoint
       OnHint = ChartToolset1DataPointHintTool1Hint

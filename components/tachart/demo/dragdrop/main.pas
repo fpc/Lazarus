@@ -46,6 +46,7 @@ uses
 procedure TForm1.cbSortedChange(Sender: TObject);
 begin
   Chart1LineSeries1.ListSource.Sorted := cbSorted.Checked;
+  Chart1.SetFocus;
 end;
 
 procedure TForm1.Chart1LineSeries1GetMark(
