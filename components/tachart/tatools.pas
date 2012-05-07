@@ -22,7 +22,7 @@ interface
 {$H+}
 
 uses
-  Classes, Controls, CustomTimer, Types,
+  Classes, Controls, CustomTimer, Forms, Types,
   TAChartUtils, TADrawUtils, TAGraph, TATypes;
 
 type
@@ -403,16 +403,27 @@ type
 
   TDataPointHintTool = class(TDataPointTool)
   strict private
+    FHintWindow: THintWindow;
     FOnHint: TChartToolHintEvent;
     FPrevPointIndex: Integer;
     FPrevSeries: TBasicChartSeries;
+    FUseApplicationHint: Boolean;
     FUseDefaultHintText: Boolean;
+    procedure HideHint;
+    procedure SetUseApplicationHint(AValue: Boolean);
   public
     constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
+    procedure KeyDown(APoint: TPoint); override;
+    procedure KeyUp(APoint: TPoint); override;
+    procedure MouseDown(APoint: TPoint); override;
     procedure MouseMove(APoint: TPoint); override;
+    procedure MouseUp(APoint: TPoint); override;
   published
     property ActiveCursor;
     property OnHint: TChartToolHintEvent read FOnHint write FOnHint;
+    property UseApplicationHint: Boolean
+      read FUseApplicationHint write SetUseApplicationHint default false;
     property UseDefaultHintText: Boolean
       read FUseDefaultHintText write FUseDefaultHintText default true;
   end;
@@ -469,7 +480,7 @@ var
 implementation
 
 uses
-  Forms, GraphMath, InterfaceBase, Math, SysUtils,
+  GraphMath, InterfaceBase, Math, SysUtils,
   TACustomSeries, TADrawerCanvas, TAEnumerators, TAGeometry, TAMath;
 
 function InitBuitlinTools(AChart: TChart): TBasicChartToolset;
@@ -1406,6 +1417,39 @@ begin
   FUseDefaultHintText := true;
 end;
 
+destructor TDataPointHintTool.Destroy;
+begin
+  FreeAndNil(FHintWindow);
+  inherited;
+end;
+
+procedure TDataPointHintTool.HideHint;
+begin
+  if UseApplicationHint then begin
+    FChart.ShowHint := false;
+    Application.CancelHint;
+  end
+  else
+    FreeAndNil(FHintWindow);
+  RestoreCursor;
+  FPrevSeries := nil;
+end;
+
+procedure TDataPointHintTool.KeyDown(APoint: TPoint);
+begin
+  MouseMove(APoint);
+end;
+
+procedure TDataPointHintTool.KeyUp(APoint: TPoint);
+begin
+  HideHint;
+end;
+
+procedure TDataPointHintTool.MouseDown(APoint: TPoint);
+begin
+  MouseMove(APoint);
+end;
+
 procedure TDataPointHintTool.MouseMove(APoint: TPoint);
 
   function GetHintText: String;
@@ -1421,14 +1465,14 @@ procedure TDataPointHintTool.MouseMove(APoint: TPoint);
       OnHint(Self, APoint, Result);
   end;
 
+var
+  r: TRect;
+  h: String;
 begin
   FSeries := nil;
   FindNearestPoint(APoint);
   if Series = nil then begin
-    FChart.ShowHint := false;
-    Application.CancelHint;
-    RestoreCursor;
-    FPrevSeries := nil;
+    HideHint;
     exit;
   end;
   if (FPrevSeries = Series) and (FPrevPointIndex = PointIndex) then
@@ -1437,11 +1481,34 @@ begin
     SetCursor;
   FPrevSeries := Series;
   FPrevPointIndex := PointIndex;
-  FChart.Hint := GetHintText;
-  FChart.ShowHint := FChart.Hint <> '';
-  if not FChart.ShowHint then exit;
-  Application.HintPause := 0;
-  Application.ActivateHint(FChart.ClientToScreen(APoint));
+  APoint := FChart.ClientToScreen(APoint);
+
+  if UseApplicationHint then begin
+    FChart.Hint := GetHintText;
+    FChart.ShowHint := FChart.Hint <> '';
+    if not FChart.ShowHint then exit;
+    Application.HintPause := 0;
+    Application.ActivateHint(APoint);
+  end
+  else begin
+    if FHintWindow = nil then
+      FHintWindow := THintWindow.Create(nil);
+    h := GetHintText;
+    r := FHintWindow.CalcHintRect(FChart.Width, h, nil);
+    OffsetRect(r, APoint.X, APoint.Y);
+    FHintWindow.ActivateHint(r, h);
+  end;
+end;
+
+procedure TDataPointHintTool.MouseUp(APoint: TPoint);
+begin
+  HideHint;
+end;
+
+procedure TDataPointHintTool.SetUseApplicationHint(AValue: Boolean);
+begin
+  if FUseApplicationHint = AValue then exit;
+  FUseApplicationHint := AValue;
 end;
 
 { TDataPointCrosshairTool }
