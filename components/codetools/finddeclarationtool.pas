@@ -2266,7 +2266,8 @@ begin
               Result += ': ';
           end;
           case TypeNode.Desc of
-          ctnIdentifier, ctnSpecialize, ctnSpecializeType:
+          ctnIdentifier, ctnSpecialize, ctnSpecializeType,
+          ctnPointertype, ctnRangeType, ctnFileType, ctnclassOfType:
             begin
               Result += ExtractNode(TypeNode, [phpCommentsToSpace]);
             end;
