@@ -258,7 +258,7 @@ begin
   Result:=false;
   if CleanPos>SrcLen then exit;
   if CleanCodePosInFront>CleanPos then
-    SaveRaiseException(
+    RaiseException(
       'TPascalReaderTool.CleanPosIsInComment CleanCodePosInFront>CleanPos');
   MoveCursorToCleanPos(CleanCodePosInFront);
   repeat
@@ -908,7 +908,7 @@ begin
   if (ProcNode<>nil) and (ProcNode.Desc in [ctnProcedureType,ctnProcedure]) then
     ProcNode:=ProcNode.FirstChild;
   if (ProcNode=nil) or (ProcNode.Desc<>ctnProcedureHead) then begin
-    SaveRaiseException('Internal Error in'
+    RaiseException('Internal Error in'
       +' TPascalParserTool.MoveCursorFirstProcSpecifier: '
       +' (ProcNode=nil) or (ProcNode.Desc<>ctnProcedure)');
   end;

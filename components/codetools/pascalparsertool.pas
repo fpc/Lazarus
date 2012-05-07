@@ -1143,7 +1143,7 @@ begin
   end else if not (CurNode.Desc in (AllClassBaseSections+AllClassInterfaces))
   then begin
     //debugln(['TPascalParserTool.KeyWordFuncClassMethod ',CurNode.Parent.DescAsString,' ',CurNode.DescAsString]);
-    RaiseIdentExpectedButAtomFound;
+    SaveRaiseIdentExpectedButAtomFound;
   end;
 
   HasForwardModifier:=false;
@@ -1287,7 +1287,7 @@ begin
         // MacPas '...' VarArgs parameter
         if (Scanner.CompilerMode<>cmMacPas) then begin
           if ExceptionOnError then
-            RaiseIdentExpectedButAtomFound
+            SaveRaiseIdentExpectedButAtomFound
           else
             exit;
         end;
@@ -2163,7 +2163,7 @@ begin
   else if CurPos.Flag=cafEdgedBracketOpen then
     Push(siEdgedBracketOpen)
   else
-    RaiseBracketOpenExpectedButAtomFound;
+    SaveRaiseBracketOpenExpectedButAtomFound;
   try
     repeat
       ReadNextAtom;
@@ -2327,7 +2327,7 @@ begin
     CurNode.EndPos:=CurPos.StartPos;
     EndChildNode;
   end else if not (CurNode.Desc in (AllClassBaseSections+AllClassInterfaces)) then
-    RaiseIdentExpectedButAtomFound;
+    SaveRaiseIdentExpectedButAtomFound;
   // create class method node
   CreateChildNode;
   CurNode.Desc:=ctnProperty;

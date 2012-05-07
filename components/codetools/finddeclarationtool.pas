@@ -9161,9 +9161,9 @@ function TFindDeclarationTool.CheckParameterSyntax(CursorNode: TCodeTreeNode;
   procedure RaiseBracketNotOpened;
   begin
     if CurPos.Flag=cafRoundBracketClose then
-      SaveRaiseExceptionFmt(ctsBracketNotFound,['('])
+      RaiseExceptionFmt(ctsBracketNotFound,['('])
     else
-      SaveRaiseExceptionFmt(ctsBracketNotFound,['[']);
+      RaiseExceptionFmt(ctsBracketNotFound,['[']);
   end;
 
   function CheckIdentifierAndParameterList: boolean; forward;

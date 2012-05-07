@@ -152,9 +152,9 @@ type
     procedure SetScanner(NewScanner: TLinkScanner); virtual;
     procedure DoDeleteNodes(StartNode: TCodeTreeNode); virtual;
     procedure CloseUnfinishedNodes;
-    procedure RaiseIdentExpectedButAtomFound;
-    procedure RaiseBracketOpenExpectedButAtomFound;
-    procedure RaiseBracketCloseExpectedButAtomFound;
+    procedure SaveRaiseIdentExpectedButAtomFound;
+    procedure SaveRaiseBracketOpenExpectedButAtomFound;
+    procedure SaveRaiseBracketCloseExpectedButAtomFound;
     procedure RaiseUndoImpossible;
     procedure SetIgnoreErrorAfter(const AValue: TCodePosition); virtual;
     procedure IncreaseTreeChangeStep(NodesDeleting: boolean);
@@ -866,7 +866,7 @@ end;
 
 procedure TCustomCodeTool.AtomIsIdentifierSaveE;
 
-  procedure RaiseIdentExpectedButEOFFound;
+  procedure SaveRaiseIdentExpectedButEOFFound;
   begin
     SaveRaiseExceptionFmt(ctsIdentExpectedButEOFFound,[GetAtom],true);
   end;
@@ -874,9 +874,9 @@ procedure TCustomCodeTool.AtomIsIdentifierSaveE;
 begin
   if InternalAtomIsIdentifier then exit;
   if CurPos.StartPos>SrcLen then
-    RaiseIdentExpectedButEOFFound
+    SaveRaiseIdentExpectedButEOFFound
   else
-    RaiseIdentExpectedButAtomFound;
+    SaveRaiseIdentExpectedButAtomFound;
 end;
 
 function TCustomCodeTool.AtomIsCustomOperator(AllowIdentifier,
@@ -885,9 +885,9 @@ function TCustomCodeTool.AtomIsCustomOperator(AllowIdentifier,
   procedure RaiseOperatorExpected;
   begin
     if CurPos.StartPos>SrcLen then
-      SaveRaiseExceptionFmt(ctsOperatorExpectedButEOFFound,[GetAtom],true)
+      RaiseExceptionFmt(ctsOperatorExpectedButEOFFound,[GetAtom],true)
     else
-      SaveRaiseExceptionFmt(ctsOperatorExpectedButAtomFound,[GetAtom],true)
+      RaiseExceptionFmt(ctsOperatorExpectedButAtomFound,[GetAtom],true)
   end;
 
 begin
@@ -1929,7 +1929,7 @@ begin
     AntiCloseBracket:=cafRoundBracketClose;
   end else begin
     if ExceptionOnNotFound then
-      RaiseBracketOpenExpectedButAtomFound;
+      SaveRaiseBracketOpenExpectedButAtomFound;
     exit;
   end;
   Start:=CurPos;
@@ -1976,7 +1976,7 @@ begin
     AntiOpenBracket:=cafRoundBracketOpen;
   end else begin
     if ExceptionOnNotFound then
-      RaiseBracketCloseExpectedButAtomFound;
+      SaveRaiseBracketCloseExpectedButAtomFound;
     exit;
   end;
   Start:=CurPos;
@@ -3139,17 +3139,17 @@ begin
   end;
 end;
 
-procedure TCustomCodeTool.RaiseIdentExpectedButAtomFound;
+procedure TCustomCodeTool.SaveRaiseIdentExpectedButAtomFound;
 begin
   SaveRaiseExceptionFmt(ctsIdentExpectedButAtomFound,[GetAtom],true);
 end;
 
-procedure TCustomCodeTool.RaiseBracketOpenExpectedButAtomFound;
+procedure TCustomCodeTool.SaveRaiseBracketOpenExpectedButAtomFound;
 begin
   SaveRaiseExceptionFmt(ctsBracketOpenExpectedButAtomFound,[GetAtom],true);
 end;
 
-procedure TCustomCodeTool.RaiseBracketCloseExpectedButAtomFound;
+procedure TCustomCodeTool.SaveRaiseBracketCloseExpectedButAtomFound;
 begin
   if CurPos.StartPos<SrcLen then
     SaveRaiseExceptionFmt(ctsBracketCloseExpectedButAtomFound,[GetAtom],true)
