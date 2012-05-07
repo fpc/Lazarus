@@ -172,6 +172,7 @@ type
     // dirty/dead source
     procedure LoadDirtySource(const CursorPos: TCodeXYPosition);
     procedure FetchScannerSource(Range: TLinkScannerRange); virtual;
+    function InternalAtomIsIdentifier: boolean; inline;
   public
     Tree: TCodeTree;
 
@@ -273,7 +274,6 @@ type
     function AtomIs(const AnAtom: shortstring): boolean;
     function UpAtomIs(const AnAtom: shortstring): boolean;
     function UpAtomIs(const AtomPos: TAtomPosition; const AnAtom: shortstring): boolean; overload;
-    function AtomIsIdentifier(Identifier: PChar): boolean;
     function ReadNextAtomIs(const AnAtom: shortstring): boolean; {$IFDEF UseInline}inline;{$ENDIF}
     function ReadNextAtomIsIdentifier(Identifier: PChar): boolean; {$IFDEF UseInline}inline;{$ENDIF}
     function ReadNextUpAtomIs(const AnAtom: shortstring): boolean; {$IFDEF UseInline}inline;{$ENDIF}
@@ -285,7 +285,11 @@ type
     function AtomIsStringConstant: boolean; {$IFDEF UseInline}inline;{$ENDIF}
     function AtomIsCharConstant: boolean;
     function AtomIsEmptyStringConstant: boolean;
-    function AtomIsIdentifier(ExceptionOnNotFound: boolean): boolean;
+    function AtomIsIdentifier(Identifier: PChar): boolean;
+    function AtomIsIdentifier: boolean;
+    procedure AtomIsIdentifierE; overload;
+    function AtomIsIdentifierE(ExceptionOnNotFound: boolean): boolean; overload;
+    procedure AtomIsIdentifierSaveE;
     function AtomIsCustomOperator(AllowIdentifier, ExceptionOnNotFound: boolean): boolean;
     function LastAtomIs(BackIndex: integer;
         const AnAtom: shortstring): boolean; // 0=current, 1=prior current, ...
@@ -595,6 +599,22 @@ begin
     DoDeleteNodes(Tree.Root);
 end;
 
+function TCustomCodeTool.InternalAtomIsIdentifier: boolean;
+var
+  p: PChar;
+begin
+  if (CurPos.StartPos<=SrcLen) then begin
+    p:=@Src[CurPos.StartPos];
+    if IsIdentStartChar[p^] then begin
+      if not WordIsKeyWordFuncList.DoIdentifier(p) then
+        exit(true);
+    end else if (p^='&') and (IsIdentChar[p[1]]) then begin
+      exit(true);
+    end;
+  end;
+  Result:=false;
+end;
+
 procedure TCustomCodeTool.RaiseUndoImpossible;
 begin
   RaiseException('TCustomCodeTool.UndoReadNextAtom impossible',true);
@@ -810,7 +830,41 @@ begin
              CurPos.EndPos-CurPos.StartPos));
 end;
 
-function TCustomCodeTool.AtomIsIdentifier(ExceptionOnNotFound: boolean):boolean;
+function TCustomCodeTool.AtomIsIdentifier:boolean;
+begin
+  Result:=InternalAtomIsIdentifier;
+end;
+
+procedure TCustomCodeTool.AtomIsIdentifierE;
+
+  procedure RaiseEOFFound;
+  begin
+    RaiseExceptionFmt(ctsIdentExpectedButEOFFound,[GetAtom],true);
+  end;
+
+  procedure RaiseAtomFound;
+  begin
+    RaiseExceptionFmt(ctsIdentExpectedButAtomFound,[GetAtom],true);
+  end;
+
+begin
+  if InternalAtomIsIdentifier then exit;
+  if CurPos.StartPos>SrcLen then
+    RaiseEOFFound
+  else
+    RaiseAtomFound;
+end;
+
+function TCustomCodeTool.AtomIsIdentifierE(ExceptionOnNotFound: boolean
+  ): boolean;
+begin
+  if InternalAtomIsIdentifier then exit(true);
+  Result:=false;
+  if not ExceptionOnNotFound then exit;
+  AtomIsIdentifierE();
+end;
+
+procedure TCustomCodeTool.AtomIsIdentifierSaveE;
 
   procedure RaiseIdentExpectedButEOFFound;
   begin
@@ -818,15 +872,7 @@ function TCustomCodeTool.AtomIsIdentifier(ExceptionOnNotFound: boolean):boolean;
   end;
 
 begin
-  if (CurPos.StartPos<=SrcLen)
-  and ((IsIdentStartChar[Src[CurPos.StartPos]]
-        and not WordIsKeyWordFuncList.DoItCaseInsensitive(Src,CurPos.StartPos,
-                                                 CurPos.EndPos-CurPos.StartPos))
-  or (Src[CurPos.StartPos]='&') and IsIdentChar[Src[CurPos.StartPos+1]])
-  then
-    exit(true);
-  if not ExceptionOnNotFound then
-    exit(false);
+  if InternalAtomIsIdentifier then exit;
   if CurPos.StartPos>SrcLen then
     RaiseIdentExpectedButEOFFound
   else
@@ -848,7 +894,7 @@ begin
   if (CurPos.StartPos<=SrcLen) then begin
     if WordIsCustomOperator.DoItCaseInsensitive(
       Src,CurPos.StartPos,CurPos.EndPos-CurPos.StartPos)
-    or AllowIdentifier and AtomIsIdentifier(false) then
+    or AllowIdentifier and AtomIsIdentifier then
       exit(true);
   end;
   if not ExceptionOnNotFound then

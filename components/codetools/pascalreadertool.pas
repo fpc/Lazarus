@@ -352,7 +352,7 @@ begin
     if (not UpAtomIs('PROPERTY')) then exit;
     ReadNextAtom;
   end;
-  AtomIsIdentifier(true);
+  AtomIsIdentifierE;
   ReadNextAtom;
   if CurPos.Flag=cafEdgedBracketOpen then begin
     if EmptyIfIndexed then exit;
@@ -363,7 +363,7 @@ begin
   if not (CurPos.Flag=cafColon) then
     RaiseExceptionFmt(ctsStrExpectedButAtomFound,[':',GetAtom]);
   ReadNextAtom;
-  AtomIsIdentifier(true);
+  AtomIsIdentifierE;
   if InUpperCase then
     Result:=GetUpAtom
   else
@@ -389,7 +389,7 @@ begin
   MoveCursorToNodeStart(ProcHeadNode);
   repeat
     ReadNextAtom;
-    if not AtomIsIdentifier(false) then exit;
+    if not AtomIsIdentifier then exit;
     if phpInUpperCase in Attr then
       Part:=GetUpAtom
     else
@@ -461,7 +461,7 @@ begin
     // read name
     if ((not IsOperator)
     or (not WordIsCustomOperator.DoItCaseInsensitive(Src,CurPos.StartPos,CurPos.EndPos-CurPos.StartPos)))
-    and (not AtomIsIdentifier(false)) then exit;
+    and (not AtomIsIdentifier) then exit;
 
     if TheClassName<>'' then begin
       s:=TheClassName+'.';
@@ -488,7 +488,7 @@ begin
         ExtractNextAtom(true,Attr);
         if ((not IsOperator)
         or (not WordIsCustomOperator.DoItCaseInsensitive(Src,CurPos.StartPos,CurPos.EndPos-CurPos.StartPos)))
-        and (not AtomIsIdentifier(false)) then exit;
+        and (not AtomIsIdentifier) then exit;
       until false;
     end else begin
       // read only part of name
@@ -509,7 +509,7 @@ begin
           ExtractNextAtom(not (phpWithoutClassName in Attr),Attr);
           if ((not IsOperator)
           or (not WordIsCustomOperator.DoItCaseInsensitive(Src,CurPos.StartPos,CurPos.EndPos-CurPos.StartPos)))
-          and (not AtomIsIdentifier(false)) then exit;
+          and (not AtomIsIdentifier) then exit;
         end else begin
           // read name
           ExtractNextAtom(not (phpWithoutName in Attr),Attr);
@@ -531,11 +531,11 @@ begin
   // read result type
   if (CurPos.Flag=cafColon) then begin
     ExtractNextAtom(phpWithResultType in Attr,Attr);
-    if not AtomIsIdentifier(false) then exit;
+    if not AtomIsIdentifier then exit;
     ExtractNextAtom(phpWithResultType in Attr,Attr);
     if CurPos.Flag=cafPoint then begin
       ExtractNextAtom(phpWithResultType in Attr,Attr);
-      if not AtomIsIdentifier(false) then exit;
+      if not AtomIsIdentifier then exit;
       ExtractNextAtom(phpWithResultType in Attr,Attr);
     end;
     ExtractProcHeadPos:=phepResultType;
@@ -668,13 +668,13 @@ begin
   ReadNextAtom; // '('
   if CurPos.Flag<>cafRoundBracketOpen then exit;
   ReadNextAtom;
-  if not AtomIsIdentifier(false) then exit;
+  if not AtomIsIdentifier then exit;
   MoveCursorToCleanPos(CurPos.StartPos);
   ExtractProcHeadPos:=phepNone;
   InitExtraction;
   while (CurPos.StartPos<=SrcLen) do begin
     ExtractNextAtom(true,Attr); // read ancestor/interface
-    if not AtomIsIdentifier(false) then break;
+    if not AtomIsIdentifier then break;
     ExtractNextAtom(true,Attr); // read ','
     if not AtomIsChar(',') then break;
   end;
@@ -694,7 +694,7 @@ begin
   MoveCursorToNodeStart(ProcNode);
   repeat
     ReadNextAtom;
-    if not AtomIsIdentifier(false) then break;
+    if not AtomIsIdentifier then break;
     Part:=GetAtom;
     ReadNextAtom;
     if (Scanner.CompilerMode = cmDELPHI) and AtomIsChar('<') then
@@ -945,11 +945,11 @@ begin
   if (CurPos.Flag=cafColon) then begin
     // read function result type
     ReadNextAtom;
-    if AtomIsIdentifier(false) then begin
+    if AtomIsIdentifier then begin
       ReadNextAtom;
       while CurPos.Flag=cafPoint do begin
         ReadNextAtom;
-        if not AtomIsIdentifier(false) then break;
+        if not AtomIsIdentifier then break;
         ReadNextAtom;
       end;
     end;
@@ -1016,7 +1016,7 @@ begin
       break;
     end;
     ReadNextAtom;
-  until not AtomIsIdentifier(false);
+  until not AtomIsIdentifier;
 end;
 
 procedure TPascalReaderTool.MoveCursorBehindProcName(ProcNode: TCodeTreeNode);
@@ -1026,11 +1026,11 @@ begin
     ProcNode:=ProcNode.FirstChild;
   MoveCursorToNodeStart(ProcNode);
   ReadNextAtom;
-  if AtomIsIdentifier(false) then begin
+  if AtomIsIdentifier then begin
     ReadNextAtom;
     while CurPos.Flag=cafPoint do begin
       ReadNextAtom;
-      if not AtomIsIdentifier(false) then exit;
+      if not AtomIsIdentifier then exit;
       ReadNextAtom;
     end;
   end else if CurPos.Flag in [cafRoundBracketOpen,cafEdgedBracketOpen,cafColon]
@@ -1106,7 +1106,7 @@ begin
   end else begin
     MoveCursorToNodeStart(ProcNode);
     ReadNextAtom;
-    while AtomIsIdentifier(false) do begin
+    while AtomIsIdentifier do begin
       ReadNextAtom;
       if (CurPos.Flag<>cafPoint) then break;
       ReadNextAtom;
@@ -1117,7 +1117,7 @@ begin
   if CurPos.StartPos>CleanPos then exit;
   // read optional result variable (e.g. operator can have them)
   ReadNextAtom;
-  if AtomIsIdentifier(false) then ReadNextAtom;
+  if AtomIsIdentifier then ReadNextAtom;
   if CurPos.Flag<>cafColon then exit;
   Result:=CleanPos<=CurPos.StartPos;
 end;
@@ -1135,7 +1135,7 @@ begin
     if (not UpAtomIs('PROPERTY')) then exit;
     ReadNextAtom;
   end;
-  if not AtomIsIdentifier(false) then exit;
+  if not AtomIsIdentifier then exit;
   ReadNextAtom;
   if CurPos.Flag=cafEdgedBracketOpen then begin
     ReadTilBracketClose(true);
@@ -1175,7 +1175,7 @@ begin
     if (not UpAtomIs('PROPERTY')) then exit;
     ReadNextAtom;
   end;
-  if not AtomIsIdentifier(false) then exit;
+  if not AtomIsIdentifier then exit;
   ReadNextAtom;
 end;
 
@@ -1207,7 +1207,7 @@ begin
   MoveCursorToNodeStart(ProcNode);
   repeat
     ReadNextAtom;
-    if not AtomIsIdentifier(false) then exit(nil);
+    if not AtomIsIdentifier then exit(nil);
     Result:=@Src[CurPos.StartPos];
     ReadNextAtom;
   until CurPos.Flag<>cafPoint;
@@ -1328,12 +1328,12 @@ begin
   // read result type
   if (CurPos.Flag=cafColon) then begin
     ExtractNextAtom(phpWithResultType in Attr,Attr);
-    if not AtomIsIdentifier(false) then exit;
+    if not AtomIsIdentifier then exit;
     ExtractNextAtom(phpWithResultType in Attr,Attr);
     if CurPos.Flag=cafPoint then begin
       // unit.type
       ExtractNextAtom(phpWithResultType in Attr,Attr);
-      if not AtomIsIdentifier(false) then exit;
+      if not AtomIsIdentifier then exit;
       ExtractNextAtom(phpWithResultType in Attr,Attr);
     end;
     ExtractProcHeadPos:=phepResultType;
@@ -1962,13 +1962,13 @@ begin
   ReadNextAtom; // read source type 'program', 'unit' ...
   if (Tree.Root.Desc=ctnProgram) and (not UpAtomIs('PROGRAM')) then exit;
   ReadNextAtom; // read name
-  if not AtomIsIdentifier(false) then exit;
+  if not AtomIsIdentifier then exit;
   NamePos:=CurPos;
   Result:=true;
   ReadNextAtom;
   while CurPos.Flag=cafPoint do begin
     ReadNextAtom;
-    if not AtomIsIdentifier(false) then exit;
+    if not AtomIsIdentifier then exit;
     NamePos.EndPos:=CurPos.EndPos;
     ReadNextAtom;
   end;
@@ -1991,12 +1991,12 @@ begin
     ReadNextAtom; // read source type 'program', 'unit' ...
     if (Tree.Root.Desc<>ctnProgram) or UpAtomIs('PROGRAM') then begin
       ReadNextAtom; // read name
-      if AtomIsIdentifier(false) then begin
+      if AtomIsIdentifier then begin
         Result:=copy(Src,CurPos.StartPos,CurPos.EndPos-CurPos.StartPos);
         ReadNextAtom;
         while CurPos.Flag=cafPoint do begin
           ReadNextAtom;
-          if not AtomIsIdentifier(false) then exit;
+          if not AtomIsIdentifier then exit;
           Result:=Result+'.'+copy(Src,CurPos.StartPos,CurPos.EndPos-CurPos.StartPos);
           ReadNextAtom;
         end;
@@ -2035,7 +2035,7 @@ begin
 
     MoveCursorToNodeStart(ProcNode.FirstChild); // ctnProcedureHead
     ReadNextAtom;
-    if not AtomIsIdentifier(false) then exit;
+    if not AtomIsIdentifier then exit;
     ReadNextAtom;
     if (CurPos.Flag<>cafPoint) then exit;
     Result:=true;
@@ -2475,7 +2475,7 @@ begin
 
   Result:=false;
   if not MoveCursorToPropName(PropNode) then exit;
-  if not AtomIsIdentifier(ExceptionOnNotFound) then exit;
+  if not AtomIsIdentifierE(ExceptionOnNotFound) then exit;
   ReadNextAtom;
   if CurPos.Flag=cafEdgedBracketOpen then begin
     if not ReadTilBracketClose(ExceptionOnNotFound) then exit;
@@ -2484,11 +2484,11 @@ begin
   if CurPos.Flag=cafColon then begin
     // read type
     ReadNextAtom;
-    if not AtomIsIdentifier(ExceptionOnNotFound) then exit;
+    if not AtomIsIdentifierE(ExceptionOnNotFound) then exit;
     ReadNextAtom;
     if CurPos.Flag=cafPoint then begin
       ReadNextAtom;
-      if not AtomIsIdentifier(ExceptionOnNotFound) then exit;
+      if not AtomIsIdentifierE(ExceptionOnNotFound) then exit;
       ReadNextAtom;
     end;
   end;
@@ -2512,7 +2512,7 @@ begin
     end else if UpAtomIs('ENUMERATOR') then begin
       if CompareIdentifierPtrs(@Src[CurPos.StartPos],Pointer(s))=0 then exit(true);
       ReadNextAtom;
-      if not AtomIsIdentifier(false) then exit;
+      if not AtomIsIdentifier then exit;
     end else
       exit;
     ReadNextAtom;
@@ -2602,13 +2602,13 @@ function TPascalReaderTool.ReadNextUsedUnit(out UnitNameRange,
 // after reading CurPos is on atom behind, i.e. comma or semicolon
 begin
   Result:=false;
-  if not AtomIsIdentifier(SyntaxExceptions) then exit;
+  if not AtomIsIdentifierE(SyntaxExceptions) then exit;
   UnitNameRange:=CurPos;
   repeat
     ReadNextAtom;
     if CurPos.Flag<>cafPoint then break;
     ReadNextAtom;
-    if not AtomIsIdentifier(SyntaxExceptions) then exit;
+    if not AtomIsIdentifierE(SyntaxExceptions) then exit;
     UnitNameRange.EndPos:=CurPos.EndPos;
   until false;
   if UpAtomIs('IN') then begin
@@ -2637,13 +2637,13 @@ begin
   end else begin
     InAtom:=CleanAtomPosition;
   end;
-  AtomIsIdentifier(true);
+  AtomIsIdentifierE;
   UnitNameRange:=CurPos;
   repeat
     ReadPriorAtom;
     if CurPos.Flag<>cafPoint then break;
     ReadPriorAtom;
-    AtomIsIdentifier(true);
+    AtomIsIdentifierE;
     UnitNameRange.StartPos:=CurPos.StartPos;
   until false;
 end;
@@ -2693,7 +2693,7 @@ begin
   else
     p:=nil;
   repeat
-    if not AtomIsIdentifier(false) then exit;
+    if not AtomIsIdentifier then exit;
     if (p<>nil) then begin
       if CompareIdentifiers(p,@Src[CurPos.StartPos])=0 then
         inc(p,CurPos.EndPos-CurPos.StartPos)

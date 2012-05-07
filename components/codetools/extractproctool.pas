@@ -422,7 +422,7 @@ var
             DeleteStartPos:=VarNode.StartPos;
           MoveCursorToNodeStart(VarNode);
           ReadNextAtom;
-          AtomIsIdentifier(true);
+          AtomIsIdentifierE;
           ReadNextAtom;
           if CurPos.Flag=cafComma then begin
             // there is a next variable in the same var definition
@@ -1361,7 +1361,7 @@ begin
     repeat
       LastAtom:=CurPos;
       ReadNextAtom;
-      if AtomIsIdentifier(false) and (LastAtom.Flag<>cafPoint) then begin
+      if AtomIsIdentifier and (LastAtom.Flag<>cafPoint) then begin
         LastAtom:=CurPos;
         CheckIdentifierAtCursor;
         // restore cursor
@@ -1451,7 +1451,7 @@ var
             RaiseCharExpectedButAtomFound(']');
         end;
       end;
-      if AtomIsIdentifier(false) then begin
+      if AtomIsIdentifier then begin
         LastPos:=LastAtoms.GetValueAt(0);
         if not ((LastPos.Flag in [cafPoint]) or LastAtomIs(0,'^')
           or LastUpAtomIs(0,'INHERITED'))
@@ -1471,7 +1471,7 @@ var
               Identifier:=Identifier+GetAtom;
             end else if AtomIsChar('^') then begin
               Identifier:=Identifier+GetAtom;
-            end else if AtomIsIdentifier(false) and (LastAtomIs(0,'.')) then
+            end else if AtomIsIdentifier and (LastAtomIs(0,'.')) then
             begin
               Identifier:=Identifier+GetAtom;
             end else begin
@@ -1735,7 +1735,7 @@ var
     while CurPos.StartPos<CleanEndPos do begin
       LastAtomType:=CurPos.Flag;
       ReadNextAtom;
-      if AtomIsIdentifier(false) and (LastAtomType<>cafPoint) then begin
+      if AtomIsIdentifier and (LastAtomType<>cafPoint) then begin
         // this could be the start of a variable -> check
         {$IFDEF CTDebug}
         DebugLn('ScanSourceForVariables B Identifier=',GetAtom);

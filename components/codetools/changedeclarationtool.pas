@@ -358,7 +358,7 @@ begin
       ReadPrefixModifier;
       // read parameter name(s)
       repeat
-        AtomIsIdentifier(true);
+        AtomIsIdentifierE;
         CurParam.Name:=CurPos;
         ReadNextAtom;
         if CurPos.Flag<>cafComma then
