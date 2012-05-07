@@ -1008,6 +1008,7 @@ var
   NewPath:String;
 begin
   NewPath:=StringReplace(FileName, FSourceDir, FTargetDir, []);
+  // ToDo: make directories also respect cffPreserveTime flag.
   if not DirectoryExistsUTF8(NewPath) then
     if not ForceDirectoriesUTF8(NewPath) then
       Inc(FCopyFailedCount);
