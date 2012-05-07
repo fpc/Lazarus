@@ -31,7 +31,7 @@
     <RequiredPackages Count="4">
       <Item1>
         <PackageName Value="LCLBase"/>
-        <MinVersion Major="1" Valid="True" Release="1"/>
+        <MinVersion Major="1" Release="1" Valid="True"/>
       </Item1>
       <Item2>
         <PackageName Value="TAChartLazarusPkg"/>
