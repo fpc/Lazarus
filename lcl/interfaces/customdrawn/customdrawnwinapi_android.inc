@@ -218,9 +218,11 @@ begin
   begin
     lChar := lNativeString[i];
     Stream.WriteByte(Byte(lChar));
+    {$ifdef VerboseCDClipboard}
+    DebugLn(Format(':[TCDWidgetSet.ClipboardGetData] Writing char %d="%s"', [Byte(lChar), string(lChar)]));
+    {$endif}
     Inc(i);
   end;
-  Stream.WriteByte(0);
   javaEnvRef^^.ReleaseStringUTFChars(javaEnvRef, lJavaString, lNativeString);
   {$ifdef VerboseCDClipboard}
   DebugLn(Format(':<[TCDWidgetSet.ClipboardGetData] lNativeString=%s lJavaString=%x', [StrPas(lNativeString), PtrInt(lJavaString)]));
@@ -246,31 +248,66 @@ end;
   with the invalid FormatID 0 to notify the old owner of the lost of ownership.
  ------------------------------------------------------------------------------}
 function TCDWidgetSet.ClipboardGetOwnerShip(ClipboardType: TClipboardType;
-  OnRequestProc: TClipboardRequestEvent;  FormatCount: integer;
+  OnRequestProc: TClipboardRequestEvent; FormatCount: integer;
   Formats: PClipboardFormat): boolean;
 var
+  // Java IDs
+  javaAndroidTextClipboardManagerClass: JClass;
+  javaMethod_ClipboardManager_setText: jmethodid = nil;
+  // Java Object instances
   lJavaString: jstring;
+  lClipboardManagerObject: JObject;
+  javaString_CLIPBOARD_SERVICE: JString;
+  // array for the parameters
   lParams: array[0..0] of JValue;
+  //
+  lStringStream: TStringStream;
+  lTextFormatIndex: TClipboardFormat;
+  lTextFormatFound: Boolean = False;
+  i: Integer;
+const
+  javaConstant_CLIPBOARD_SERVICE = 'clipboard';
 begin
   {$ifdef VerboseCDClipboard}
-  DebugLn('[TCDWidgetSet.ClipboardGetOwnerShip]');
+  DebugLn(Format('[TCDWidgetSet.ClipboardGetOwnerShip] OnRequestProc=%x', [PtrInt(OnRequestProc)]));
   {$endif}
-  Result := True;
+  Result := True; // Result always true, so that we can at least use internally the clipboard
 
-  // abstract void 	setText(CharSequence text)
+  if (javaEnvRef = nil) then Exit;
+  if OnRequestProc = nil then Exit;
 
-  {// Prepare the input
-  lJavaString :=javaEnvRef^^.NewStringUTF(javaEnvRef, Str);
-  javaEnvRef^^.SetObjectField(javaEnvRef, javaActivityObject, JavaField_lcltext, lJavaString);
-  javaEnvRef^^.DeleteLocalRef(javaEnvRef, lJavaString);
-  javaEnvRef^^.SetIntField(javaEnvRef, javaActivityObject, javaField_lcltextsize, lFontSize);
+  // Check if there is text in the list. If there isn't, give up
+  lTextFormatIndex := Self.ClipboardRegisterFormat('text/plain');
+  for i := 0 to FormatCount-1 do
+  begin
+    if Formats[i] = lTextFormatIndex then
+    begin
+      lTextFormatFound := True;
+      Break;
+    end;
+  end;
+  // With API level 8 we can only have text support
+  if not lTextFormatFound then
+  begin
+    Exit;
+    DebugLn(':<[TCDWidgetSet.ClipboardGetOwnerShip] Exiting because non-textual formats are not supported');
+  end;
 
-  // Call the method to measure the text
-  javaEnvRef^^.CallObjectMethod(javaEnvRef, javaActivityObject, javaMethod_LCLDoGetTextBounds);
-  }
-  {// Call the method to draw the text
-  lParams[0].i := FPColorToAndroidColor(lDestCanvas.Font.FPColor);
-  javaEnvRef^^.CallVoidMethodA(javaEnvRef, javaActivityObject, javaMethod_LCLDoDrawText, @lParams[0]);}
+  // First IDs
+  javaAndroidTextClipboardManagerClass := javaEnvRef^^.FindClass(javaEnvRef,'android/text/ClipboardManager');
+  javaMethod_ClipboardManager_setText := javaEnvRef^^.GetMethodID(javaEnvRef, javaAndroidTextClipboardManagerClass, 'setText', '(Ljava/lang/CharSequence;)V');
+
+  // Gets a handle to the Clipboard Manager
+  //ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+  javaString_CLIPBOARD_SERVICE := javaEnvRef^^.NewStringUTF(javaEnvRef, pchar(javaConstant_CLIPBOARD_SERVICE));
+  lParams[0].l := javaString_CLIPBOARD_SERVICE;
+  lClipboardManagerObject := javaEnvRef^^.CallObjectMethodA(javaEnvRef, javaActivityObject, javaMethod_getSystemService, @lParams[0]);
+
+  // clipboard.setText
+  OnRequestProc(lTextFormatIndex, lStringStream);
+  lJavaString := javaEnvRef^^.NewStringUTF(javaEnvRef, PChar(lStringStream.DataString));
+  lParams[0].l := lJavaString;
+  javaEnvRef^^.CallVoidMethodA(javaEnvRef, lClipboardManagerObject, javaMethod_ClipboardManager_setText, @lParams[0]);
 end;
 
 (*{------------------------------------------------------------------------------

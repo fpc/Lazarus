@@ -934,6 +934,7 @@ end;
 procedure TCDComboBox.SetItemIndex(AValue: Integer);
 var
   lValue: Integer;
+  lText: String;
 begin
   lValue := AValue;
 
@@ -941,9 +942,14 @@ begin
   if lValue > FItems.Count then lValue := FItems.Count;
   if lValue < -1 then lValue := -1;
 
-  if FItemIndex=lValue then Exit;
+  // Check if the text changed too, because it might differ from the choosen item
   FItemIndex:=lValue;
-  if lValue >= 0 then Text := FItems.Strings[lValue];
+  if lValue >= 0 then
+  begin
+    lText := FItems.Strings[lValue];
+    if Lines.Text = lText then Exit;
+    Text := lText;
+  end;
   Invalidate;
 end;
 
