@@ -1273,10 +1273,11 @@ begin
       ExtractNextAtom(not (phpWithoutBrackets in Attr),Attr);
       if (CurPos.Flag in [cafRoundBracketClose,cafEdgedBracketClose])
       and (Src[CurPos.StartPos] = CloseBracket)
-      then begin                               // skip parenthesis
+      then begin
+        // chomp empty brackets
         ExtractMemStream.Position := ExtractMemStream.Position - 1;
         ReadNextAtom;
-        Exit(True);
+        exit(true);
       end;
     end;
   end else
@@ -1503,7 +1504,7 @@ begin
       if not Extract then ReadNextAtom else ExtractNextAtom(copying,Attr);
       while CurPos.Flag=cafPoint do begin
         if not Extract then ReadNextAtom else ExtractNextAtom(copying,Attr);
-        if AtomIsIdentifier then begin
+        if not AtomIsIdentifier then begin
           if ExceptionOnError then
             AtomIsIdentifierSaveE;
           exit;
@@ -1593,7 +1594,6 @@ begin
       Include(Attr,phpCreateNodes);
     ReadParamList(true,false,Attr);
   end;
-
   if (pphIsOperator in ParseAttr) and (CurPos.Flag<>cafColon) then begin
     // read operator result identifier
     AtomIsIdentifierSaveE;
