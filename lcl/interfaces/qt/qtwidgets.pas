@@ -2712,6 +2712,7 @@ var
   AChar: Char;
   AKeyEvent: QKeyEventH;
   GlobalAction: Integer;
+  QtEdit: IQtEdit;
   {$IFDEF VerboseQtKeys}
   s: String;
   s1: String;
@@ -2730,6 +2731,18 @@ var
       ((AQtKey >= QtKey_F1) and (AQtKey <= QtKey_Direction_L)) or
       (AQtKey = QtKey_Direction_R);
   end;
+
+  function EatArrowKeys: Boolean;
+  var
+    AQtKey: Cardinal;
+  begin
+    AQtKey := QKeyEvent_key(QKeyEventH(Event));
+    Result := ((AQtKey = QtKey_Left) or (AQtKey = QtKey_Right)
+      or (AQtKey = QtKey_Up) or (AQtKey = QtKey_Down));
+      // and
+      // Supports(Self, IQtEdit, QtEdit);
+  end;
+
 begin
   {$ifdef VerboseQt}
     DebugLn('TQtWidget.SlotKey ', dbgsname(LCLObject));
@@ -2968,7 +2981,7 @@ begin
   end;
 
   {$ifdef VerboseQt}
-    WriteLn(' message: ', KeyMsg.Msg);
+  WriteLn(' message CN_Keys: ', KeyMsg.Msg);
   {$endif}
   if KeyMsg.CharCode <> VK_UNKNOWN then
   begin
@@ -2976,30 +2989,32 @@ begin
     if (DeliverMessage(KeyMsg, True) <> 0) or (KeyMsg.CharCode=VK_UNKNOWN) then
     begin
   {$ifdef VerboseQt}
-      WriteLn('handled!');
+      WriteLn('handled CN_Keys');
   {$endif}
       Exit;
     end;
 
     // here we should let widgetset to handle key
     //...
-
     case QEvent_type(Event) of
       QEventKeyPress: KeyMsg.Msg := LM_KeyDownMsgs[IsSysKey];
       QEventKeyRelease: KeyMsg.Msg := LM_KeyUpMsgs[IsSysKey];
     end;
-  {$ifdef VerboseQt}
-    WriteLn(' message: ', KeyMsg.Msg);
-  {$endif}
-    NotifyApplicationUserInput(LCLObject, KeyMsg.Msg);
-    if (DeliverMessage(KeyMsg, True) <> 0) or (KeyMsg.CharCode=VK_UNKNOWN) then
+    {$ifdef VerboseQt}
+    WriteLn(' message LM_Keys: ', KeyMsg.Msg);
+    {$endif}
+    if not EatArrowKeys then
     begin
-      // the LCL handled the key
-  {$ifdef VerboseQt}
-      WriteLn('handled!');
-  {$endif}
-      Result := KeyMsg.CharCode=VK_UNKNOWN;
-      Exit;
+      NotifyApplicationUserInput(LCLObject, KeyMsg.Msg);
+      if (DeliverMessage(KeyMsg, True) <> 0) or (KeyMsg.CharCode=VK_UNKNOWN) then
+      begin
+        // the LCL handled the key
+        {$ifdef VerboseQt}
+        WriteLn('handled LM_Keys');
+        {$endif}
+        Result := KeyMsg.CharCode=VK_UNKNOWN;
+        Exit;
+      end;
     end;
   end;
 
