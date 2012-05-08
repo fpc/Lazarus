@@ -38,11 +38,14 @@ Known Issues:
 unit SynCompletion;
 
 {$I SynEdit.inc}
+
+{$DEFINE HintClickWorkaround} // Workaround for issue 21952
+
 interface
 
 uses
   LCLProc, LCLIntf, LCLType, LMessages, Classes, Graphics, Forms,
-  Controls, StdCtrls, ExtCtrls, Menus, SysUtils,
+  Controls, StdCtrls, ExtCtrls, Menus, SysUtils, types,
   SynEditMiscProcs, SynEditKeyCmds, SynEdit, SynEditTypes, SynEditPlugins;
 
 type
@@ -155,6 +158,10 @@ type
     procedure SetItemList(const Value: TStrings);
     procedure SetPosition(const Value: Integer);
     procedure SetNbLinesInWindow(const Value: Integer);
+    {$IFDEF HintClickWorkaround}
+    procedure HintWindowMouseDown(Sender: TObject; Button: TMouseButton;
+      Shift: TShiftState; X, Y: Integer);
+    {$ENDIF}
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState;
       X, Y: Integer); override;
     procedure MouseMove(Shift: TShiftState; X,Y: Integer); override;
@@ -560,7 +567,10 @@ begin
   Color:=clNone;
   FBackgroundColor:=clWhite;
   FHint := TSynBaseCompletionHint.Create(Self);
-  FHint.FormStyle := fsSystemStayOnTop;;
+  FHint.FormStyle := fsSystemStayOnTop;
+  {$IFDEF HintClickWorkaround}
+  FHint.OnMouseDown :=@HintWindowMouseDown;
+  {$ENDIF}
   FHintTimer := TTimer.Create(nil);
   FHintTimer.OnTimer := {$IFDEF FPC}@{$ENDIF}OnHintTimer;
   FHintTimer.Interval := 0;
@@ -768,6 +778,17 @@ begin
   Invalidate;
   //debugln('TSynBaseCompletionForm.KeyPress END Key="',DbgStr(Key),'"');
 end;
+
+{$IFDEF HintClickWorkaround}
+procedure TSynBaseCompletionForm.HintWindowMouseDown(Sender: TObject;
+  Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+var
+  p: TPoint;
+begin
+  p := ScreenToClient(FHint.ClientToScreen(Point(X, Y)));
+  MouseDown(Button, Shift, p.X, p.Y);
+end;
+{$ENDIF}
 
 procedure TSynBaseCompletionForm.MouseDown(Button: TMouseButton;
   Shift: TShiftState; X, Y: Integer);
