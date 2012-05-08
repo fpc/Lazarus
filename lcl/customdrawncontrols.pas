@@ -944,6 +944,7 @@ begin
   if FItemIndex=lValue then Exit;
   FItemIndex:=lValue;
   if lValue >= 0 then Text := FItems.Strings[lValue];
+  Invalidate;
 end;
 
 procedure TCDComboBox.SetKeyboardInputBehavior(AValue: TKeyboardInputBehavior);
