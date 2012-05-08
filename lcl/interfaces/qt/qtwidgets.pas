@@ -165,6 +165,7 @@ type
     function CreateWidget(const Params: TCreateParams):QWidgetH; virtual;
     procedure DestroyWidget; virtual;
     procedure SetHasCaret(const AValue: Boolean);
+    function ProcessArrowKeys: Boolean; virtual;
     
     class procedure removeProperty(AObject: QObjectH; APropName: PAnsiChar);
     class procedure setProperty(AObject: QObjectH; APropName: PAnsiChar; APropValue: Int64);
@@ -498,6 +499,8 @@ type
   { TQtAbstractButton }
 
   TQtAbstractButton = class(TQtWidget)
+  protected
+    function ProcessArrowKeys: Boolean; override;
   public
     function CanPaintBackground: Boolean; override;
     function getIconSize: TSize; virtual;
@@ -2737,7 +2740,7 @@ var
     AQtKey: Cardinal;
   begin
     AQtKey := QKeyEvent_key(QKeyEventH(Event));
-    Result := ((AQtKey = QtKey_Left) or (AQtKey = QtKey_Right)
+    Result := not ProcessArrowKeys and ((AQtKey = QtKey_Left) or (AQtKey = QtKey_Right)
       or (AQtKey = QtKey_Up) or (AQtKey = QtKey_Down));
       // and
       // Supports(Self, IQtEdit, QtEdit);
@@ -4602,6 +4605,11 @@ begin
   FHasCaret := AValue;
 end;
 
+function TQtWidget.ProcessArrowKeys: Boolean;
+begin
+  Result := False;
+end;
+
 class procedure TQtWidget.removeProperty(AObject: QObjectH; APropName: PAnsiChar);
 var
   AVariant: QVariantH;
@@ -5112,6 +5120,11 @@ end;
 procedure TQtAbstractButton.SetText(const W: WideString);
 begin
   QAbstractButton_setText(QAbstractButtonH(Widget), @W);
+end;
+
+function TQtAbstractButton.ProcessArrowKeys: Boolean;
+begin
+  Result := True;
 end;
 
 function TQtAbstractButton.CanPaintBackground: Boolean;
