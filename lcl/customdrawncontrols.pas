@@ -207,6 +207,7 @@ type
     FEditState: TCDEditStateEx; // Points to the same object as FStateEx, so don't Free!
     function GetControlId: TCDControlID; override;
     procedure CreateControlStateEx; override;
+    procedure RealSetText(const Value: TCaption); override; // to update on caption changes, don't change this as it might break descendents
     // for descendents to override
     procedure DoChange; virtual;
     // keyboard
@@ -1370,6 +1371,7 @@ procedure TCDEdit.SetLines(AValue: TStrings);
 begin
   if FLines=AValue then Exit;
   FLines.Assign(AValue);
+  Invalidate;
 end;
 
 procedure TCDEdit.SetMultiLine(AValue: Boolean);
@@ -1395,6 +1397,13 @@ procedure TCDEdit.CreateControlStateEx;
 begin
   FEditState := TCDEditStateEx.Create;
   FStateEx := FEditState;
+end;
+
+procedure TCDEdit.RealSetText(const Value: TCaption);
+begin
+  inherited RealSetText(Value);
+  Lines.Text := Value;
+  Invalidate;
 end;
 
 procedure TCDEdit.DoChange;

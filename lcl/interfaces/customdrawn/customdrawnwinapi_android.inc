@@ -162,11 +162,69 @@ end;
  ------------------------------------------------------------------------------}
 function TCDWidgetSet.ClipboardGetData(ClipboardType: TClipboardType;
   FormatID: TClipboardFormat; Stream: TStream): boolean;
+var
+  // Java IDs
+  javaAndroidTextClipboardManagerClass: JClass;
+  javaMethod_ClipboardManager_getText: jmethodid = nil;
+  javaMethod_ClipboardManager_hasText: jmethodid = nil;
+  // Java Object instances
+  lJavaString: jstring;
+  lClipboardManagerObject: JObject;
+  javaString_CLIPBOARD_SERVICE: JString;
+  //
+  lNativeString: PChar;
+  lChar: Char;
+  i: Integer;
+  // array for the parameters
+  lParams: array[0..0] of JValue;
+const
+  javaConstant_CLIPBOARD_SERVICE = 'clipboard';
 begin
   {$ifdef VerboseCDClipboard}
-  DebugLn('[TCDWidgetSet.ClipboardGetData]');
+  DebugLn(Format('[TCDWidgetSet.ClipboardGetData] FormatId=%d', [FormatId]));
   {$endif}
   Result := False;
+
+  if (javaEnvRef = nil) then Exit;
+  if Stream = nil then Exit;
+
+  // First IDs
+  javaAndroidTextClipboardManagerClass := javaEnvRef^^.FindClass(javaEnvRef,'android/text/ClipboardManager');
+  javaMethod_ClipboardManager_getText := javaEnvRef^^.GetMethodID(javaEnvRef, javaAndroidTextClipboardManagerClass, 'getText', '()Ljava/lang/CharSequence;');
+  javaMethod_ClipboardManager_hasText := javaEnvRef^^.GetMethodID(javaEnvRef, javaAndroidTextClipboardManagerClass, 'hasText', '()Z');
+
+  // Gets a handle to the Clipboard Manager
+  //ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+  javaString_CLIPBOARD_SERVICE := javaEnvRef^^.NewStringUTF(javaEnvRef, pchar(javaConstant_CLIPBOARD_SERVICE));
+  lParams[0].l := javaString_CLIPBOARD_SERVICE;
+  lClipboardManagerObject := javaEnvRef^^.CallObjectMethodA(javaEnvRef, javaActivityObject, javaMethod_getSystemService, @lParams[0]);
+
+  // clipboard.hasText
+  Result := javaEnvRef^^.CallBooleanMethod(javaEnvRef, lClipboardManagerObject, javaMethod_ClipboardManager_hasText) <> 0;
+  if not Result then
+  begin
+    {$ifdef VerboseCDClipboard}
+    DebugLn(':<[TCDWidgetSet.ClipboardGetData] Result=False');
+    {$endif}
+    Exit;
+  end;
+
+  // clipboard.getText
+  lJavaString := javaEnvRef^^.CallObjectMethod(javaEnvRef, lClipboardManagerObject, javaMethod_ClipboardManager_getText);
+  lNativeString := javaEnvRef^^.GetStringUTFChars(javaEnvRef, lJavaString, nil);
+  lChar := #1;
+  i := 0;
+  while lChar <> #0 do
+  begin
+    lChar := lNativeString[i];
+    Stream.WriteByte(Byte(lChar));
+    Inc(i);
+  end;
+  Stream.WriteByte(0);
+  javaEnvRef^^.ReleaseStringUTFChars(javaEnvRef, lJavaString, lNativeString);
+  {$ifdef VerboseCDClipboard}
+  DebugLn(Format(':<[TCDWidgetSet.ClipboardGetData] lNativeString=%s lJavaString=%x', [StrPas(lNativeString), PtrInt(lJavaString)]));
+  {$endif}
 end;
 
 {------------------------------------------------------------------------------
@@ -190,11 +248,29 @@ end;
 function TCDWidgetSet.ClipboardGetOwnerShip(ClipboardType: TClipboardType;
   OnRequestProc: TClipboardRequestEvent;  FormatCount: integer;
   Formats: PClipboardFormat): boolean;
+var
+  lJavaString: jstring;
+  lParams: array[0..0] of JValue;
 begin
   {$ifdef VerboseCDClipboard}
   DebugLn('[TCDWidgetSet.ClipboardGetOwnerShip]');
   {$endif}
   Result := True;
+
+  // abstract void 	setText(CharSequence text)
+
+  {// Prepare the input
+  lJavaString :=javaEnvRef^^.NewStringUTF(javaEnvRef, Str);
+  javaEnvRef^^.SetObjectField(javaEnvRef, javaActivityObject, JavaField_lcltext, lJavaString);
+  javaEnvRef^^.DeleteLocalRef(javaEnvRef, lJavaString);
+  javaEnvRef^^.SetIntField(javaEnvRef, javaActivityObject, javaField_lcltextsize, lFontSize);
+
+  // Call the method to measure the text
+  javaEnvRef^^.CallObjectMethod(javaEnvRef, javaActivityObject, javaMethod_LCLDoGetTextBounds);
+  }
+  {// Call the method to draw the text
+  lParams[0].i := FPColorToAndroidColor(lDestCanvas.Font.FPColor);
+  javaEnvRef^^.CallVoidMethodA(javaEnvRef, javaActivityObject, javaMethod_LCLDoDrawText, @lParams[0]);}
 end;
 
 (*{------------------------------------------------------------------------------

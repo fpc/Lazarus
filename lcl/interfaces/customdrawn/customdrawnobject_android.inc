@@ -113,7 +113,8 @@ end;
 function Java_com_pascal_lclproject_LCLActivity_LCLOnMessageBoxFinished(
     env:PJNIEnv; this:jobject; AResult, ADialogType: jint): jint; cdecl;
 begin
-  __android_log_write(ANDROID_LOG_INFO, 'lclapp', 'LCLOnMessageBoxFinished called');
+  __android_log_write(ANDROID_LOG_INFO, 'lclapp', PChar(Format('LCLOnMessageBoxFinished called AResult=%d ADialogType=%d',
+    [AResult, ADialogType])));
   Result := 0;
   case ADialogType of
   0: if Assigned(Application.OnMessageDialogFinished) then

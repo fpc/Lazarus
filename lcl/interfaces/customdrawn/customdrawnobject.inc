@@ -131,6 +131,7 @@ begin
 
   FClipBoardFormats := TStringList.Create;
   FClipBoardFormats.Add('foo'); // 0 is reserved
+  FClipBoardFormats.Add('text/plain'); // 1 - text/plain should always be supported
 
   // To be resistent against backend issues
   CDWidgetset.ScreenFormat := clfARGB32;

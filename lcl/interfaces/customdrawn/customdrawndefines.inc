@@ -45,6 +45,11 @@
 // ==================
 
 // ==================
+// Android options
+// ==================
+{$define VerboseCDShowSelectItemDialog}
+
+// ==================
 // X11 options
 // ==================
 {$define CD_X11_NewNativePaint}
@@ -76,7 +81,7 @@
 {.$define VerboseCDX11WinAPI}
 {.$define VerboseCDEvents}
 {.$define VerboseCDAccessibility}
-{.$define VerboseCDClipboard}
+{$define VerboseCDClipboard}
 {.$define VerboseCDFocus}
 {.$define VerboseCDKeyInput}
 

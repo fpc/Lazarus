@@ -174,7 +174,7 @@ end;*)
 function TCDWidgetSet.ClipboardFormatToMimeType(FormatID: TClipboardFormat): string;
 begin
   {$ifdef VerboseCDClipboard}
-  DebugLn('[TCDWidgetSet.ClipboardFormatToMimeType]');
+  DebugLn(Format('[TCDWidgetSet.ClipboardFormatToMimeType] FormatID=%d', [FormatID]));
   {$endif}
   if FClipBoardFormats.Count > Integer(FormatID) then
     Result := FClipBoardFormats[FormatID]
@@ -217,13 +217,13 @@ function TCDWidgetSet.ClipboardRegisterFormat(const AMimeType: string): TClipboa
 var
   Index: Integer;
 begin
-  {$ifdef VerboseCDClipboard}
-  DebugLn('[TCDWidgetSet.ClipboardRegisterFormat]');
-  {$endif}
   Index := FClipBoardFormats.IndexOf(AMimeType);
   if Index < 0 then
     Index := FClipBoardFormats.Add(AMimeType);
   Result := Index;
+  {$ifdef VerboseCDClipboard}
+  DebugLn(Format('[TCDWidgetSet.ClipboardRegisterFormat] AMimeType=%s Result=%d', [AMimeType, Index]));
+  {$endif}
 end;
 
 {------------------------------------------------------------------------------
@@ -5462,7 +5462,9 @@ begin
   DebugLn(Format('[TCDWidgetSet.SetFocus] Handle=%x', [hWnd]));
   {$endif}
   Result := 0;
-  if hwnd = 0 then
+  // Strangly this breaks the Android Virtual Keyboard =(
+  // Uncomment only when we can guarantee that this doesn't break Android Virtual Keyboard
+(*  if hwnd = 0 then
   begin
     Result := GetFocus();
     Exit;
@@ -5473,43 +5475,22 @@ begin
   if lObject is TCDWinControl then
   begin
     lHandle := TCDWinControl(lObject);
-    // If the control is injected, really set focus in the injected one
-    if lHandle.CDControlInjected and (lHandle.CDControl <> nil) then
-    begin
-      Result := SetFocus(LCLType.HWND(lHandle.CDControl.Handle));
-      Exit;
-    end;
-
-    // Handling for controls without injected controls
-    Result := GetFocus();
-    lOldObject := TCDBaseControl(Result);
-    if lOldObject = nil then
-      lOldControl := nil
-    else
-      lOldControl := lOldObject.GetWinControl();
-
-    if lOldControl <> nil then
-      LCLSendKillFocusMsg(lOldControl);
-    LCLSendSetFocusMsg(lHandle.WinControl);
-    FocusedControl := lHandle.WinControl;
-    FocusedIntfControl := lHandle.CDControl;
-    {$ifdef VerboseCDFocus}
-    DebugLn(Format(':[TCDWidgetSet.SetFocus] NewFocusedControl=%s NewFocusedIntfControl=%x', [FocusedControl.Name, PtrUInt(FocusedIntfControl)]));
-    {$endif}
 
     // Set focus in the parent window
     //Result := BackendSetFocus(hWnd);
 
-    // Invalidate to redraw the new control
-    InvalidateRect(LCLType.HWND(lHandle), nil, True);
-    if lOldObject <> nil then
-      InvalidateRect(LCLType.HWND(lOldObject), nil, True);
+    if lHandle.WinControl = nil then Exit;
+    CDSetFocusToControl(lHandle.WinControl, lHandle.CDControl);
+
+    {$ifdef VerboseCDFocus}
+    DebugLn(Format(':[TCDWidgetSet.SetFocus] NewFocusedControl=%s NewFocusedIntfControl=%x', [FocusedControl.Name, PtrUInt(FocusedIntfControl)]));
+    {$endif}
   end
   // SetFocus on a form
   else
   begin
     Result := BackendSetFocus(hWnd);
-  end;
+  end;*)
 end;
 
 (*function TQtWidgetSet.GetForegroundWindow: HWND;
