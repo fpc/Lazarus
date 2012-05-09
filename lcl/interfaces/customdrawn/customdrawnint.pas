@@ -197,7 +197,8 @@ type
     function AndroidKeyCodeToLCLKeyCode(AAndroidKeyCode: Integer): Word;
     function DoOpenURLWidgetsetImplementation(AURL: string): Boolean;
     function DoOpenDocumentWidgetsetImplementation(APath: string): Boolean;
-    function DoOpenAndroidURI(AURI: JObject): Boolean;
+    function DoOpenAndroidURI(AURI: JObject; AMimeType: string): Boolean;
+    function GetMimeTypeFromFileName(AFileName: string): string;
     {$endif}
     {$ifdef CD_Cocoa}
     pool      : NSAutoreleasePool;

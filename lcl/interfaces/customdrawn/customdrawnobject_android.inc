@@ -875,15 +875,15 @@ begin
   DebugLn(Format('[DoOpenDocumentWidgetsetImplementation] APath=%s', [APath]));
   lJavaString := javaEnvRef^^.NewStringUTF(javaEnvRef, 'file');
   lParams[0].l := lJavaString;
-  lJavaString2 := javaEnvRef^^.NewStringUTF(javaEnvRef, PChar(APath));
+  lJavaString2 := javaEnvRef^^.NewStringUTF(javaEnvRef, PChar('//' + APath));
   lParams[1].l := lJavaString2;
   lParams[2].l := nil;
   lJavaURIObject := javaEnvRef^^.CallStaticObjectMethodA(javaEnvRef, javaAndroidNetUriClass, javaMethod_Uri_fromParts, @lParams[0]);
 
-  Result := DoOpenAndroidURI(lJavaURIObject);
+  Result := DoOpenAndroidURI(lJavaURIObject, GetMimeTypeFromFileName(APath));
 end;
 
-function TCDWidgetSet.DoOpenAndroidURI(AURI: JObject): Boolean;
+function TCDWidgetSet.DoOpenAndroidURI(AURI: JObject; AMimeType: string): Boolean;
 var
   // Java IDs
   javaAndroidContentContextClass: JClass;
@@ -892,7 +892,7 @@ var
   javaAndroidAppActivityClass: JClass;
   javaMethod_Intent_new: jmethodid = nil;
   javaMethod_Intent_setDataAndType: jmethodid = nil;
-//  javaMethod_Context_getPackageManager: jmethodid = nil;
+  javaMethod_Context_getPackageManager: jmethodid = nil;
 //  javaMethod_PmPackageManager_queryIntentActivities: jmethodid = nil;
   javaMethod_Activity_startActivity: jmethodid = nil;
   // Java Object instances
@@ -908,7 +908,7 @@ begin
   if (javaEnvRef = nil) then Exit;
 
   // First IDs
-  DebugLn(Format('[DoOpenAndroidURI] AURI=%x', [PtrInt(AURI)]));
+  DebugLn(Format(':>[DoOpenAndroidURI] AURI=%x', [PtrInt(AURI)]));
   javaAndroidContentContextClass := javaEnvRef^^.FindClass(javaEnvRef,'android/content/Context');
   javaAndroidContentIntentClass := javaEnvRef^^.FindClass(javaEnvRef,'android/content/Intent');
   javaAndroidContentPmPackageManagerClass := javaEnvRef^^.FindClass(javaEnvRef,'android/content/pm/PackageManager');
@@ -920,15 +920,13 @@ begin
   javaMethod_Activity_startActivity := javaEnvRef^^.GetMethodID(javaEnvRef, javaAndroidAppActivityClass, 'startActivity', '(Landroid/content/Intent;)V');
 
   // Intent viewDoc = new Intent(Intent.ACTION_VIEW);
-  DebugLn('BB');
   lJavaString := javaEnvRef^^.NewStringUTF(javaEnvRef, javaConstant_Intent_ACTION_VIEW);
   lParams[0].l := lJavaString;
   javaViewDocObject := javaEnvRef^^.NewObjectA(javaEnvRef, javaAndroidContentIntentClass, javaMethod_Intent_new, @lParams[0]);
 
   // viewDoc.setDataAndType(uri, "application/pdf");
-  DebugLn('CC');
   lParams[0].l := AURI;
-  lJavaString := javaEnvRef^^.NewStringUTF(javaEnvRef, 'text/plain');
+  lJavaString := javaEnvRef^^.NewStringUTF(javaEnvRef, PChar(AMimeType));
   lParams[1].l := lJavaString;
   javaEnvRef^^.CallObjectMethodA(javaEnvRef, javaViewDocObject, javaMethod_Intent_setDataAndType, @lParams[0]);
 
@@ -937,9 +935,24 @@ begin
 
   // List<ResolveInfo> apps = pm.queryIntentActivities(viewDoc, PackageManager.MATCH_DEFAULT_ONLY);
 
-  // if (apps.size() > 0) this.startActivity(viewDoc);
-  lParams[0].l := AURI;
+  // int lSize = apps.size()
+
+  // if (lSize > 0) this.startActivity(viewDoc);
+  lParams[0].l := javaViewDocObject;
   javaEnvRef^^.CallVoidMethodA(javaEnvRef, javaActivityObject, javaMethod_Activity_startActivity, @lParams[0]);
+
+  Result := True;
+  DebugLn(':<[DoOpenAndroidURI]');
+end;
+
+function TCDWidgetSet.GetMimeTypeFromFileName(AFileName: string): string;
+var
+  lExt: String;
+begin
+  lExt := SysUtils.ExtractFileExt(AFileName);
+  if lExt = '.png' then Result := 'image/png'
+  else if lExt = '.txt' then Result := 'text/plain'
+  else if lExt = '.jpg' then Result := 'image/jpeg';
 end;
 
 function TCDWidgetSet.GetAppHandle: THandle;
