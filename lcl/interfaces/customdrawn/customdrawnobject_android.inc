@@ -37,6 +37,8 @@ const
   javaConstant_CLIPBOARD_SERVICE = 'clipboard';
   javaConstant_Intent_ACTION_VIEW = 'android.intent.action.VIEW';
 
+  javaConstant_PackageManager_MATCH_DEFAULT_ONLY = $00010000;
+
 function Java_com_pascal_lclproject_LCLActivity_LCLOnTouch(env:PJNIEnv;this:jobject; x, y: single; action: jint): jint; cdecl;
 var
   lCurForm: TCDNonNativeForm;
@@ -917,16 +919,20 @@ var
   javaAndroidContentIntentClass: JClass;
   javaAndroidContentPmPackageManagerClass: JClass;
   javaAndroidAppActivityClass: JClass;
+  javaJavaUtilListClass: JClass;
   javaMethod_Intent_new: jmethodid = nil;
   javaMethod_Intent_setDataAndType: jmethodid = nil;
   javaMethod_Context_getPackageManager: jmethodid = nil;
   javaMethod_PmPackageManager_queryIntentActivities: jmethodid = nil;
   javaMethod_Activity_startActivity: jmethodid = nil;
+  javaMethod_List_size: JMethodID = nil;
   // Java Object instances
   lJavaString: jstring;
   javaViewDocObject: JObject;
   lJavaPackageManagerObject: JObject;
+  lJavaListObject: JObject;
   lJavaArray: JArray;
+  lJavaInt: JInt;
   // array for the parameters
   lParams: array[0..1] of JValue;
   //
@@ -941,12 +947,14 @@ begin
   javaAndroidContentIntentClass := javaEnvRef^^.FindClass(javaEnvRef,'android/content/Intent');
   javaAndroidContentPmPackageManagerClass := javaEnvRef^^.FindClass(javaEnvRef,'android/content/pm/PackageManager');
   javaAndroidAppActivityClass := javaEnvRef^^.FindClass(javaEnvRef,'android/app/Activity');
+  javaJavaUtilListClass := javaEnvRef^^.FindClass(javaEnvRef,'java/util/List');
 
   javaMethod_Intent_new := javaEnvRef^^.GetMethodID(javaEnvRef, javaAndroidContentIntentClass, '<init>', '(Ljava/lang/String;)V');
   javaMethod_Intent_setDataAndType := javaEnvRef^^.GetMethodID(javaEnvRef, javaAndroidContentIntentClass, 'setDataAndType', '(Landroid/net/Uri;Ljava/lang/String;)Landroid/content/Intent;');
   javaMethod_Context_getPackageManager := javaEnvRef^^.GetMethodID(javaEnvRef, javaAndroidContentContextClass, 'getPackageManager', '()Landroid/content/pm/PackageManager;');
   javaMethod_PmPackageManager_queryIntentActivities := javaEnvRef^^.GetMethodID(javaEnvRef, javaAndroidContentPmPackageManagerClass, 'queryIntentActivities', '(Landroid/content/Intent;I)Ljava/util/List;');
   javaMethod_Activity_startActivity := javaEnvRef^^.GetMethodID(javaEnvRef, javaAndroidAppActivityClass, 'startActivity', '(Landroid/content/Intent;)V');
+  javaMethod_List_size := javaEnvRef^^.GetMethodID(javaEnvRef, javaJavaUtilListClass, 'size', '()I');
 
   // Intent viewDoc = new Intent(Intent.ACTION_VIEW);
   lJavaString := javaEnvRef^^.NewStringUTF(javaEnvRef, javaConstant_Intent_ACTION_VIEW);
@@ -963,15 +971,23 @@ begin
   lJavaPackageManagerObject := javaEnvRef^^.CallObjectMethod(javaEnvRef, javaActivityObject, javaMethod_Context_getPackageManager);
 
   // List<ResolveInfo> apps = pm.queryIntentActivities(viewDoc, PackageManager.MATCH_DEFAULT_ONLY);
+  lParams[0].l := javaViewDocObject;
+  lParams[1].i := javaConstant_PackageManager_MATCH_DEFAULT_ONLY;
+  lJavaListObject := javaEnvRef^^.CallObjectMethodA(javaEnvRef, lJavaPackageManagerObject, javaMethod_PmPackageManager_queryIntentActivities, @lParams[0]);
 
   // int lSize = apps.size()
+  lJavaInt := javaEnvRef^^.CallIntMethod(javaEnvRef, lJavaListObject, javaMethod_List_size);
 
   // if (lSize > 0) this.startActivity(viewDoc);
-  lParams[0].l := javaViewDocObject;
-  javaEnvRef^^.CallVoidMethodA(javaEnvRef, javaActivityObject, javaMethod_Activity_startActivity, @lParams[0]);
-
-  Result := True;
-  DebugLn(':<[DoOpenAndroidURI]');
+  if lJavaInt > 0 then
+  begin
+    lParams[0].l := javaViewDocObject;
+    javaEnvRef^^.CallVoidMethodA(javaEnvRef, javaActivityObject, javaMethod_Activity_startActivity, @lParams[0]);
+    Result := True;
+    DebugLn(':<[DoOpenAndroidURI] Success');
+  end
+  else
+    DebugLn(':<[DoOpenAndroidURI] There are no activities registered for the mimetype ' + AMimeType);
 end;
 
 function TCDWidgetSet.GetMimeTypeFromFileName(AFileName: string): string;
