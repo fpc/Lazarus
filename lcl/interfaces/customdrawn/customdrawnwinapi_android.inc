@@ -304,10 +304,15 @@ begin
   lClipboardManagerObject := javaEnvRef^^.CallObjectMethodA(javaEnvRef, javaActivityObject, javaMethod_getSystemService, @lParams[0]);
 
   // clipboard.setText
-  OnRequestProc(lTextFormatIndex, lStringStream);
-  lJavaString := javaEnvRef^^.NewStringUTF(javaEnvRef, PChar(lStringStream.DataString));
-  lParams[0].l := lJavaString;
-  javaEnvRef^^.CallVoidMethodA(javaEnvRef, lClipboardManagerObject, javaMethod_ClipboardManager_setText, @lParams[0]);
+  lStringStream := TStringStream.Create('');
+  try
+    OnRequestProc(lTextFormatIndex, lStringStream);
+    lJavaString := javaEnvRef^^.NewStringUTF(javaEnvRef, PChar(lStringStream.DataString));
+    lParams[0].l := lJavaString;
+    javaEnvRef^^.CallVoidMethodA(javaEnvRef, lClipboardManagerObject, javaMethod_ClipboardManager_setText, @lParams[0]);
+  finally
+    lStringStream.Free;
+  end;
 end;
 
 (*{------------------------------------------------------------------------------
