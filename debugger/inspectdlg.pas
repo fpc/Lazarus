@@ -269,9 +269,9 @@ begin
       BorderStyle:=bsNone;
       BorderWidth:=0;
       DefaultColWidth:=100;
-      Options:=[goColSizing,goDblClickAutoSize,goDrawFocusSelected,
+      Options:=[goColSizing,goDblClickAutoSize,goDrawFocusSelected, goThumbTracking,
                           goVertLine,goHorzLine,goFixedHorzLine,goSmoothScroll,
-                          goTabs,goScrollKeepVisible,goRowSelect];
+                          goTabs,goRowSelect];
       Align:=alClient;
       TitleFont.Style:=[fsBold];
       ExtendedSelect:=false;
@@ -298,9 +298,9 @@ begin
       BorderStyle:=bsNone;
       BorderWidth:=0;
       DefaultColWidth:=100;
-      Options:=[goColSizing,goDblClickAutoSize,goDrawFocusSelected,
+      Options:=[goColSizing,goDblClickAutoSize,goDrawFocusSelected, goThumbTracking,
                           goVertLine,goHorzLine,goFixedHorzLine,goSmoothScroll,
-                          goTabs,goScrollKeepVisible,goRowSelect];
+                          goTabs,goRowSelect];
       Align:=alClient;
       TitleFont.Style:=[fsBold];
       ExtendedSelect:=false;
