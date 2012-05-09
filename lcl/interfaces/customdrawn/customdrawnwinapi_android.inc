@@ -165,11 +165,14 @@ function TCDWidgetSet.ClipboardGetData(ClipboardType: TClipboardType;
 var
   // Java IDs
   javaAndroidTextClipboardManagerClass: JClass;
+  javaJavaLangCharSequenceClass: JClass;
   javaMethod_ClipboardManager_getText: jmethodid = nil;
   javaMethod_ClipboardManager_hasText: jmethodid = nil;
+  javaMethod_CharSequence_toString: jmethodid = nil;
   // Java Object instances
   lJavaString: jstring;
   lClipboardManagerObject: JObject;
+  lJavaCharSequence: JObject;
   javaString_CLIPBOARD_SERVICE: JString;
   //
   lNativeString: PChar;
@@ -188,8 +191,11 @@ begin
 
   // First IDs
   javaAndroidTextClipboardManagerClass := javaEnvRef^^.FindClass(javaEnvRef,'android/text/ClipboardManager');
+  javaJavaLangCharSequenceClass := javaEnvRef^^.FindClass(javaEnvRef,'java/lang/CharSequence');
+
   javaMethod_ClipboardManager_getText := javaEnvRef^^.GetMethodID(javaEnvRef, javaAndroidTextClipboardManagerClass, 'getText', '()Ljava/lang/CharSequence;');
   javaMethod_ClipboardManager_hasText := javaEnvRef^^.GetMethodID(javaEnvRef, javaAndroidTextClipboardManagerClass, 'hasText', '()Z');
+  javaMethod_CharSequence_toString := javaEnvRef^^.GetMethodID(javaEnvRef, javaJavaLangCharSequenceClass, 'toString', '()Ljava/lang/String;');
 
   // Gets a handle to the Clipboard Manager
   //ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
@@ -207,8 +213,11 @@ begin
     Exit;
   end;
 
-  // clipboard.getText
-  lJavaString := javaEnvRef^^.CallObjectMethod(javaEnvRef, lClipboardManagerObject, javaMethod_ClipboardManager_getText);
+  // lCharSequence = clipboard.getText();
+  lJavaCharSequence := javaEnvRef^^.CallObjectMethod(javaEnvRef, lClipboardManagerObject, javaMethod_ClipboardManager_getText);
+
+  // lString = lCharSequence.toString();
+  lJavaString := javaEnvRef^^.CallObjectMethod(javaEnvRef, lJavaCharSequence, javaMethod_CharSequence_toString);
   lNativeString := javaEnvRef^^.GetStringUTFChars(javaEnvRef, lJavaString, nil);
   lChar := #1;
   i := 0;
