@@ -5775,7 +5775,8 @@ begin
       writeln('TQtMDIArea.SubWindowActivated: fallback - ask TCustomForm.ActiveControl ',
         dbgsName(TCustomForm(ActiveChild.LCLObject).ActiveControl));
       {$ENDIF}
-      if Assigned(TCustomForm(ActiveChild.LCLObject).ActiveControl) and
+      if Assigned(ActiveChild.LCLObject) and
+        Assigned(TCustomForm(ActiveChild.LCLObject).ActiveControl) and
         TCustomForm(ActiveChild.LCLObject).ActiveControl.HandleAllocated then
       begin
         WW := TQtWidget(TCustomForm(ActiveChild.LCLObject).ActiveControl.Handle);
