@@ -829,8 +829,44 @@ begin
 end;
 
 function TCDWidgetSet.DoOpenURLWidgetsetImplementation(AURL: string): Boolean;
+var
+  // Java IDs
+  javaAndroidContentContextClass: JClass;
+  javaAndroidNetUriClass: JClass;
+  javaMethod_Uri_fromParts: jmethodid = nil;
+  // Java Object instances
+  lJavaString, lJavaString2: jstring;
+  lJavaFileObject: JObject;
+  lJavaURIObject: JObject;
+  // array for the parameters
+  lParams: array[0..2] of JValue;
+  //
+  lURLProtocol, lURLAfterDoublePoint: string;
+  lDoublePointPos: SizeInt;
 begin
   Result := True;
+
+  lDoublePointPos := Pos(':', AURL);
+  lURLProtocol := Copy(AURL, 1, lDoublePointPos-1);
+  lURLAfterDoublePoint := Copy(AURL, lDoublePointPos+1, Length(AURL));
+  DebugLn(Format('[DoOpenURLWidgetsetImplementation] AURL=%s lURLProtocol=%s lURLAfterDoublePoint=%s',
+    [AURL, lURLProtocol, lURLAfterDoublePoint]));
+
+  // First IDs
+  javaAndroidContentContextClass := javaEnvRef^^.FindClass(javaEnvRef,'android/content/Context');
+  javaAndroidNetUriClass := javaEnvRef^^.FindClass(javaEnvRef,'android/net/Uri');
+
+  javaMethod_Uri_fromParts := javaEnvRef^^.GetStaticMethodID(javaEnvRef, javaAndroidNetUriClass, 'fromParts', '(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Landroid/net/Uri;');
+
+  // Uri uri = Uri.fromParts("file", "dest", null);
+  lJavaString := javaEnvRef^^.NewStringUTF(javaEnvRef, PChar(lURLProtocol));
+  lParams[0].l := lJavaString;
+  lJavaString2 := javaEnvRef^^.NewStringUTF(javaEnvRef, PChar(lURLAfterDoublePoint));
+  lParams[1].l := lJavaString2;
+  lParams[2].l := nil;
+  lJavaURIObject := javaEnvRef^^.CallStaticObjectMethodA(javaEnvRef, javaAndroidNetUriClass, javaMethod_Uri_fromParts, @lParams[0]);
+
+  Result := DoOpenAndroidURI(lJavaURIObject, 'text/html');
 end;
 
 function TCDWidgetSet.DoOpenDocumentWidgetsetImplementation(APath: string): Boolean;
@@ -838,11 +874,11 @@ var
   // Java IDs
   javaAndroidContentContextClass: JClass;
   javaAndroidNetUriClass: JClass;
-  javaMethod_Context_getFileStreamPath: jmethodid = nil;
+  javaJavaIoFileClass: JClass;
   javaMethod_Uri_fromFile: jmethodid = nil;
-  javaMethod_Uri_fromParts: jmethodid = nil;
+  javaMethod_File_new: jmethodid = nil;
   // Java Object instances
-  lJavaString, lJavaString2: jstring;
+  lJavaString: jstring;
   lJavaFileObject: JObject;
   lJavaURIObject: JObject;
   // array for the parameters
@@ -856,29 +892,20 @@ begin
   // First IDs
   javaAndroidContentContextClass := javaEnvRef^^.FindClass(javaEnvRef,'android/content/Context');
   javaAndroidNetUriClass := javaEnvRef^^.FindClass(javaEnvRef,'android/net/Uri');
+  javaJavaIoFileClass := javaEnvRef^^.FindClass(javaEnvRef,'java/io/File');
 
-  javaMethod_Context_getFileStreamPath := javaEnvRef^^.GetMethodID(javaEnvRef, javaAndroidContentContextClass, 'getFileStreamPath', '(Ljava/lang/String;)Ljava/io/File;');
   javaMethod_Uri_fromFile := javaEnvRef^^.GetStaticMethodID(javaEnvRef, javaAndroidNetUriClass, 'fromFile', '(Ljava/io/File;)Landroid/net/Uri;');
-  javaMethod_Uri_fromParts := javaEnvRef^^.GetStaticMethodID(javaEnvRef, javaAndroidNetUriClass, 'fromParts', '(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Landroid/net/Uri;');
+  javaMethod_File_new := javaEnvRef^^.GetMethodID(javaEnvRef, javaJavaIoFileClass, '<init>', '(Ljava/lang/String;)V');
 
-{  // File file = this.getFileStreamPath("test.pdf")
+  // File file = new File("/sdcard/test.mp4");
   lJavaString := javaEnvRef^^.NewStringUTF(javaEnvRef, PChar(APath));
   lParams[0].l := lJavaString;
-  lJavaFileObject := javaEnvRef^^.CallObjectMethodA(javaEnvRef, javaActivityObject, javaMethod_Context_getFileStreamPath, @lParams[0]);
+  lJavaFileObject := javaEnvRef^^.NewObjectA(javaEnvRef, javaJavaIoFileClass, javaMethod_File_new, @lParams[0]);
 
-  // Uri uri = Uri.fromFile(file)
-  DebugLn(Format('B APath=%s lJavaFileObject=%x', [APath, PtrInt(lJavaFileObject)]));
+  // Uri uri = Uri.fromFile(file);
+  DebugLn(Format('[DoOpenDocumentWidgetsetImplementation] APath=%s lJavaFileObject=%x', [APath, PtrInt(lJavaFileObject)]));
   lParams[0].l := lJavaFileObject;
-  lJavaURIObject := javaEnvRef^^.CallStaticObjectMethodA(javaEnvRef, javaAndroidNetUriClass, javaMethod_Uri_fromFile, @lParams[0]);}
-
-  // Uri uri = Uri.fromFile(file)
-  DebugLn(Format('[DoOpenDocumentWidgetsetImplementation] APath=%s', [APath]));
-  lJavaString := javaEnvRef^^.NewStringUTF(javaEnvRef, 'file');
-  lParams[0].l := lJavaString;
-  lJavaString2 := javaEnvRef^^.NewStringUTF(javaEnvRef, PChar('//' + APath));
-  lParams[1].l := lJavaString2;
-  lParams[2].l := nil;
-  lJavaURIObject := javaEnvRef^^.CallStaticObjectMethodA(javaEnvRef, javaAndroidNetUriClass, javaMethod_Uri_fromParts, @lParams[0]);
+  lJavaURIObject := javaEnvRef^^.CallStaticObjectMethodA(javaEnvRef, javaAndroidNetUriClass, javaMethod_Uri_fromFile, @lParams[0]);
 
   Result := DoOpenAndroidURI(lJavaURIObject, GetMimeTypeFromFileName(APath));
 end;
@@ -893,12 +920,13 @@ var
   javaMethod_Intent_new: jmethodid = nil;
   javaMethod_Intent_setDataAndType: jmethodid = nil;
   javaMethod_Context_getPackageManager: jmethodid = nil;
-//  javaMethod_PmPackageManager_queryIntentActivities: jmethodid = nil;
+  javaMethod_PmPackageManager_queryIntentActivities: jmethodid = nil;
   javaMethod_Activity_startActivity: jmethodid = nil;
   // Java Object instances
   lJavaString: jstring;
   javaViewDocObject: JObject;
   lJavaPackageManagerObject: JObject;
+  lJavaArray: JArray;
   // array for the parameters
   lParams: array[0..1] of JValue;
   //
@@ -916,7 +944,8 @@ begin
 
   javaMethod_Intent_new := javaEnvRef^^.GetMethodID(javaEnvRef, javaAndroidContentIntentClass, '<init>', '(Ljava/lang/String;)V');
   javaMethod_Intent_setDataAndType := javaEnvRef^^.GetMethodID(javaEnvRef, javaAndroidContentIntentClass, 'setDataAndType', '(Landroid/net/Uri;Ljava/lang/String;)Landroid/content/Intent;');
-//  javaMethod_Context_getPackageManager := javaEnvRef^^.GetMethodID(javaEnvRef, javaAndroidContentContextClass, 'getPackageManager', '()Landroid.content.pm.PackageManager;');
+  javaMethod_Context_getPackageManager := javaEnvRef^^.GetMethodID(javaEnvRef, javaAndroidContentContextClass, 'getPackageManager', '()Landroid/content/pm/PackageManager;');
+  javaMethod_PmPackageManager_queryIntentActivities := javaEnvRef^^.GetMethodID(javaEnvRef, javaAndroidContentPmPackageManagerClass, 'queryIntentActivities', '(Landroid/content/Intent;I)Ljava/util/List;');
   javaMethod_Activity_startActivity := javaEnvRef^^.GetMethodID(javaEnvRef, javaAndroidAppActivityClass, 'startActivity', '(Landroid/content/Intent;)V');
 
   // Intent viewDoc = new Intent(Intent.ACTION_VIEW);
@@ -931,7 +960,7 @@ begin
   javaEnvRef^^.CallObjectMethodA(javaEnvRef, javaViewDocObject, javaMethod_Intent_setDataAndType, @lParams[0]);
 
   // PackageManager pm = this.getPackageManager();
-  //lJavaPackageManagerObject := javaEnvRef^^.CallObjectMethod(javaEnvRef, javaActivityObject, javaMethod_Context_getPackageManager);
+  lJavaPackageManagerObject := javaEnvRef^^.CallObjectMethod(javaEnvRef, javaActivityObject, javaMethod_Context_getPackageManager);
 
   // List<ResolveInfo> apps = pm.queryIntentActivities(viewDoc, PackageManager.MATCH_DEFAULT_ONLY);
 
