@@ -5824,7 +5824,8 @@ begin
     // try to make the current selection visible as well
     MinX:=PhysCaretXY.X;
     MaxX:=PhysCaretXY.X;
-    if SelAvail then begin
+    // sfMouseSelecting: ignore block while selecting by mouse
+    if SelAvail and not(sfMouseSelecting in fStateFlags) then begin
       PhysBlockBeginXY:=LogicalToPhysicalPos(BlockBegin);
       PhysBlockEndXY:=LogicalToPhysicalPos(BlockEnd);
       if (PhysBlockBeginXY.X<>PhysBlockEndXY.X)
