@@ -195,6 +195,9 @@ type
     procedure AndroidDebugLn(AStr: string);
     {$ENDIF}
     function AndroidKeyCodeToLCLKeyCode(AAndroidKeyCode: Integer): Word;
+    function DoOpenURLWidgetsetImplementation(AURL: string): Boolean;
+    function DoOpenDocumentWidgetsetImplementation(APath: string): Boolean;
+    function DoOpenAndroidURI(AURI: JObject): Boolean;
     {$endif}
     {$ifdef CD_Cocoa}
     pool      : NSAutoreleasePool;

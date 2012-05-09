@@ -5,6 +5,13 @@ function OpenURL(AURL: String): Boolean;
 var
   ABrowser, AParams: String;
 begin
+  // Android uses this
+  if Assigned(OpenURLWidgetsetImplementation) then
+  begin
+    Result := OpenURLWidgetsetImplementation(AURL);
+    Exit;
+  end;
+
   Result := FindDefaultBrowser(ABrowser, AParams) and FileExistsUTF8(ABrowser) and FileIsExecutable(ABrowser);
   if not Result then
     Exit;
@@ -16,6 +23,13 @@ function OpenDocument(APath: String): Boolean;
 var
   lApp: string;
 begin
+  // Android uses this
+  if Assigned(OpenDocumentWidgetsetImplementation) then
+  begin
+    Result := OpenDocumentWidgetsetImplementation(APath);
+    Exit;
+  end;
+
   Result := True;
   if not FileExistsUTF8(APath) then exit(false);
 

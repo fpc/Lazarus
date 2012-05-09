@@ -33,6 +33,10 @@ const
   // from android.view.KeyCharacterMap
   COMBINING_ACCENT = $80000000;
 
+const
+  javaConstant_CLIPBOARD_SERVICE = 'clipboard';
+  javaConstant_Intent_ACTION_VIEW = 'android.intent.action.VIEW';
+
 function Java_com_pascal_lclproject_LCLActivity_LCLOnTouch(env:PJNIEnv;this:jobject; x, y: single; action: jint): jint; cdecl;
 var
   lCurForm: TCDNonNativeForm;
@@ -824,6 +828,120 @@ begin
   end;
 end;
 
+function TCDWidgetSet.DoOpenURLWidgetsetImplementation(AURL: string): Boolean;
+begin
+  Result := True;
+end;
+
+function TCDWidgetSet.DoOpenDocumentWidgetsetImplementation(APath: string): Boolean;
+var
+  // Java IDs
+  javaAndroidContentContextClass: JClass;
+  javaAndroidNetUriClass: JClass;
+  javaMethod_Context_getFileStreamPath: jmethodid = nil;
+  javaMethod_Uri_fromFile: jmethodid = nil;
+  javaMethod_Uri_fromParts: jmethodid = nil;
+  // Java Object instances
+  lJavaString, lJavaString2: jstring;
+  lJavaFileObject: JObject;
+  lJavaURIObject: JObject;
+  // array for the parameters
+  lParams: array[0..2] of JValue;
+  //
+begin
+  Result := False;
+
+  if (javaEnvRef = nil) then Exit;
+
+  // First IDs
+  javaAndroidContentContextClass := javaEnvRef^^.FindClass(javaEnvRef,'android/content/Context');
+  javaAndroidNetUriClass := javaEnvRef^^.FindClass(javaEnvRef,'android/net/Uri');
+
+  javaMethod_Context_getFileStreamPath := javaEnvRef^^.GetMethodID(javaEnvRef, javaAndroidContentContextClass, 'getFileStreamPath', '(Ljava/lang/String;)Ljava/io/File;');
+  javaMethod_Uri_fromFile := javaEnvRef^^.GetStaticMethodID(javaEnvRef, javaAndroidNetUriClass, 'fromFile', '(Ljava/io/File;)Landroid/net/Uri;');
+  javaMethod_Uri_fromParts := javaEnvRef^^.GetStaticMethodID(javaEnvRef, javaAndroidNetUriClass, 'fromParts', '(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Landroid/net/Uri;');
+
+{  // File file = this.getFileStreamPath("test.pdf")
+  lJavaString := javaEnvRef^^.NewStringUTF(javaEnvRef, PChar(APath));
+  lParams[0].l := lJavaString;
+  lJavaFileObject := javaEnvRef^^.CallObjectMethodA(javaEnvRef, javaActivityObject, javaMethod_Context_getFileStreamPath, @lParams[0]);
+
+  // Uri uri = Uri.fromFile(file)
+  DebugLn(Format('B APath=%s lJavaFileObject=%x', [APath, PtrInt(lJavaFileObject)]));
+  lParams[0].l := lJavaFileObject;
+  lJavaURIObject := javaEnvRef^^.CallStaticObjectMethodA(javaEnvRef, javaAndroidNetUriClass, javaMethod_Uri_fromFile, @lParams[0]);}
+
+  // Uri uri = Uri.fromFile(file)
+  DebugLn(Format('[DoOpenDocumentWidgetsetImplementation] APath=%s', [APath]));
+  lJavaString := javaEnvRef^^.NewStringUTF(javaEnvRef, 'file');
+  lParams[0].l := lJavaString;
+  lJavaString2 := javaEnvRef^^.NewStringUTF(javaEnvRef, PChar(APath));
+  lParams[1].l := lJavaString2;
+  lParams[2].l := nil;
+  lJavaURIObject := javaEnvRef^^.CallStaticObjectMethodA(javaEnvRef, javaAndroidNetUriClass, javaMethod_Uri_fromParts, @lParams[0]);
+
+  Result := DoOpenAndroidURI(lJavaURIObject);
+end;
+
+function TCDWidgetSet.DoOpenAndroidURI(AURI: JObject): Boolean;
+var
+  // Java IDs
+  javaAndroidContentContextClass: JClass;
+  javaAndroidContentIntentClass: JClass;
+  javaAndroidContentPmPackageManagerClass: JClass;
+  javaAndroidAppActivityClass: JClass;
+  javaMethod_Intent_new: jmethodid = nil;
+  javaMethod_Intent_setDataAndType: jmethodid = nil;
+//  javaMethod_Context_getPackageManager: jmethodid = nil;
+//  javaMethod_PmPackageManager_queryIntentActivities: jmethodid = nil;
+  javaMethod_Activity_startActivity: jmethodid = nil;
+  // Java Object instances
+  lJavaString: jstring;
+  javaViewDocObject: JObject;
+  lJavaPackageManagerObject: JObject;
+  // array for the parameters
+  lParams: array[0..1] of JValue;
+  //
+begin
+  Result := False;
+
+  if (javaEnvRef = nil) then Exit;
+
+  // First IDs
+  DebugLn(Format('[DoOpenAndroidURI] AURI=%x', [PtrInt(AURI)]));
+  javaAndroidContentContextClass := javaEnvRef^^.FindClass(javaEnvRef,'android/content/Context');
+  javaAndroidContentIntentClass := javaEnvRef^^.FindClass(javaEnvRef,'android/content/Intent');
+  javaAndroidContentPmPackageManagerClass := javaEnvRef^^.FindClass(javaEnvRef,'android/content/pm/PackageManager');
+  javaAndroidAppActivityClass := javaEnvRef^^.FindClass(javaEnvRef,'android/app/Activity');
+
+  javaMethod_Intent_new := javaEnvRef^^.GetMethodID(javaEnvRef, javaAndroidContentIntentClass, '<init>', '(Ljava/lang/String;)V');
+  javaMethod_Intent_setDataAndType := javaEnvRef^^.GetMethodID(javaEnvRef, javaAndroidContentIntentClass, 'setDataAndType', '(Landroid/net/Uri;Ljava/lang/String;)Landroid/content/Intent;');
+//  javaMethod_Context_getPackageManager := javaEnvRef^^.GetMethodID(javaEnvRef, javaAndroidContentContextClass, 'getPackageManager', '()Landroid.content.pm.PackageManager;');
+  javaMethod_Activity_startActivity := javaEnvRef^^.GetMethodID(javaEnvRef, javaAndroidAppActivityClass, 'startActivity', '(Landroid/content/Intent;)V');
+
+  // Intent viewDoc = new Intent(Intent.ACTION_VIEW);
+  DebugLn('BB');
+  lJavaString := javaEnvRef^^.NewStringUTF(javaEnvRef, javaConstant_Intent_ACTION_VIEW);
+  lParams[0].l := lJavaString;
+  javaViewDocObject := javaEnvRef^^.NewObjectA(javaEnvRef, javaAndroidContentIntentClass, javaMethod_Intent_new, @lParams[0]);
+
+  // viewDoc.setDataAndType(uri, "application/pdf");
+  DebugLn('CC');
+  lParams[0].l := AURI;
+  lJavaString := javaEnvRef^^.NewStringUTF(javaEnvRef, 'text/plain');
+  lParams[1].l := lJavaString;
+  javaEnvRef^^.CallObjectMethodA(javaEnvRef, javaViewDocObject, javaMethod_Intent_setDataAndType, @lParams[0]);
+
+  // PackageManager pm = this.getPackageManager();
+  //lJavaPackageManagerObject := javaEnvRef^^.CallObjectMethod(javaEnvRef, javaActivityObject, javaMethod_Context_getPackageManager);
+
+  // List<ResolveInfo> apps = pm.queryIntentActivities(viewDoc, PackageManager.MATCH_DEFAULT_ONLY);
+
+  // if (apps.size() > 0) this.startActivity(viewDoc);
+  lParams[0].l := AURI;
+  javaEnvRef^^.CallVoidMethodA(javaEnvRef, javaActivityObject, javaMethod_Activity_startActivity, @lParams[0]);
+end;
+
 function TCDWidgetSet.GetAppHandle: THandle;
 begin
   Result := 0;
@@ -860,6 +978,10 @@ begin
 
   DefaultFontAndroidSize := 16;
   {$endif}
+
+  // Android support for OpenURL and OpenDocument
+  LCLIntf.OpenURLWidgetsetImplementation := @DoOpenURLWidgetsetImplementation;
+  LCLIntf.OpenDocumentWidgetsetImplementation := @DoOpenDocumentWidgetsetImplementation;
 end;
 
 {------------------------------------------------------------------------------

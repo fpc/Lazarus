@@ -83,8 +83,14 @@ function FindDefaultBrowser(out ABrowser, AParams: String): Boolean;
 function OpenURL(AURL: String): Boolean;
 function OpenDocument(APath: String): Boolean;
 
+type
+  TOpenParamStringProc = function (AString: string): Boolean of object;
+
 var
-  OnShowSelectItemDialogResult: TOnShowSelectItemDialogResult;
+  OnShowSelectItemDialogResult: TOnShowSelectItemDialogResult = nil;
+
+  OpenURLWidgetsetImplementation: TOpenParamStringProc = nil;
+  OpenDocumentWidgetsetImplementation: TOpenParamStringProc = nil;
 
 implementation
 

@@ -177,8 +177,6 @@ var
   i: Integer;
   // array for the parameters
   lParams: array[0..0] of JValue;
-const
-  javaConstant_CLIPBOARD_SERVICE = 'clipboard';
 begin
   {$ifdef VerboseCDClipboard}
   DebugLn(Format('[TCDWidgetSet.ClipboardGetData] FormatId=%d', [FormatId]));
@@ -265,8 +263,6 @@ var
   lTextFormatIndex: TClipboardFormat;
   lTextFormatFound: Boolean = False;
   i: Integer;
-const
-  javaConstant_CLIPBOARD_SERVICE = 'clipboard';
 begin
   {$ifdef VerboseCDClipboard}
   DebugLn(Format('[TCDWidgetSet.ClipboardGetOwnerShip] OnRequestProc=%x', [PtrInt(OnRequestProc)]));
