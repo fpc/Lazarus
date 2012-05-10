@@ -406,7 +406,7 @@ begin
       lJavaString := javaEnvRef^^.NewStringUTF(javaEnvRef, Str);
       DebugLn(Format('LCLOnMenuAction lJavaString=%x Str=%s javaObject_lclmenu_captions=%x', [PtrUInt(lJavaString), StrPas, PtrUInt(javaObject_lclmenu_captions)]));
       javaEnvRef^^.SetObjectArrayElement(javaEnvRef, javaObject_lclmenu_captions, CurIndex, lJavaString);
-      javaEnvRef^^.DeleteLocalRef(javaEnvRef, javaObject_lclmenu_captions);
+      javaEnvRef^^.DeleteLocalRef(javaEnvRef, lJavaString);
 
       Inc(CurIndex);
 
@@ -414,6 +414,7 @@ begin
     end;
 
     javaEnvRef^^.SetObjectField(javaEnvRef, javaActivityObject, javaField_lclmenu_captions, javaObject_lclmenu_captions);
+    javaEnvRef^^.DeleteLocalRef(javaEnvRef, javaObject_lclmenu_captions);
   end
   // kind=1 means a button click event
   else
@@ -1366,6 +1367,7 @@ end;
 function TCDWidgetSet.CreateTimer(Interval: integer; TimerFunc: TWSTimerProc) : THandle;
 var
   lTimer: TCDTimer;
+  lTimerObject, lGlobalTimerObject: JObject;
 begin
   lTimer := TCDTimer.Create;
 
@@ -1381,7 +1383,9 @@ begin
   javaEnvRef^^.CallVoidMethod(javaEnvRef, javaActivityObject, javaMethod_LCLDoCreateTimer);
 
   // Read the output
-  lTimer.NativeHandle := PtrInt(javaEnvRef^^.GetObjectField(javaEnvRef, javaActivityObject, javaField_lcltimerid));
+  lTimerObject := javaEnvRef^^.GetObjectField(javaEnvRef, javaActivityObject, javaField_lcltimerid);
+  lGlobalTimerObject := javaEnvRef^^.NewGlobalRef(javaEnvRef, lTimerObject);
+  lTimer.NativeHandle := PtrInt(lGlobalTimerObject);
 
   // Add it to our list
   AddTimer(lTimer);
@@ -1409,6 +1413,7 @@ begin
 
   // Call the method
   javaEnvRef^^.CallVoidMethod(javaEnvRef, javaActivityObject, javaMethod_LCLDoDestroyTimer);
+  javaEnvRef^^.DeleteGlobalRef(javaEnvRef, JObject(lTimer.NativeHandle));
 
   // Remove from the list
   RemoveTimer(lTimer);
