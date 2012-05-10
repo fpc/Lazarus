@@ -1445,9 +1445,11 @@ var
   i, curPoint: Integer;
   lValueX, lValueY: Double;
   lArrow: TvArrow;
+  LElementColor: TFPColor;
 begin
   lArrow := TvArrow.Create;
   curPoint := 0;
+  LElementColor := colBlack;
 
   for i := 0 to ATokens.Count - 1 do
   begin
@@ -1455,7 +1457,7 @@ begin
     CurToken := TDXFToken(ATokens.Items[i]);
 
     // Avoid an exception by previously checking if the conversion can be made
-    if CurToken.GroupCode in [10, 20, 30, 11, 21, 31] then
+    if CurToken.GroupCode in [10, 20, 30, 11, 21, 31, 62] then
     begin
       CurToken.FloatValue :=  StrToFloat(Trim(CurToken.StrValue), FPointSeparator);
     end;
@@ -1486,6 +1488,7 @@ begin
         3: lArrow.ExtraLineBase.Y := lValueY;
         end;
       end;
+      62: LElementColor := DXFColorIndexToFPColor(Trunc(CurToken.FloatValue));
     end;
   end;
 
@@ -1495,7 +1498,9 @@ begin
 
   // And now write it
   lArrow.HasExtraLine := True;
+  lArrow.Pen.Color := LElementColor;
   lArrow.Brush.Style := bsSolid;
+  lArrow.Brush.Color := LElementColor;
   AData.AddEntity(lArrow);
 end;
 
