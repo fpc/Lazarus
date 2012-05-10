@@ -449,6 +449,7 @@ type
     FViewPortWidget: TQtViewPort;
   protected
     function CreateWidget(const AParams: TCreateParams):QWidgetH; override;
+    function ProcessArrowKeys: Boolean; override;
   public
     destructor Destroy; override;
     function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl; override;
@@ -14609,6 +14610,11 @@ begin
     QWidget_setAutoFillBackground(Result, False);
 
   QWidget_setAttribute(Result, QtWA_InputMethodEnabled);
+end;
+
+function TQtCustomControl.ProcessArrowKeys: Boolean;
+begin
+  Result := True;
 end;
 
 {------------------------------------------------------------------------------
