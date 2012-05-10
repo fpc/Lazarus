@@ -46,7 +46,8 @@ end;
 
 procedure TDBLookupComboBox.ActiveChange(Sender: TObject);
 begin
-  UpdateLookup;
+  if FDataLink.Active then
+    UpdateLookup;
 end;
 
 procedure TDBLookupComboBox.DataChange(Sender: TObject);
@@ -171,18 +172,14 @@ procedure TDBLookupComboBox.UpdateLookup;
 var
   i: Integer;
 begin
-  if ([csLoading, csDestroying] * ComponentState) <> [] then Exit;
-
-  if FDataLink.Active then
-  begin;
+  if ([csLoading, csDestroying] * ComponentState) = [] then
+  begin
     FLookup.Initialize(FDataLink, Items);
     i := FLookup.GetKeyIndex;
-  end
-  else i := -1;
-
-  ItemIndex := i;
-  if i = -1 then
-    Text := '';
+    ItemIndex := i;
+    if i = -1 then
+      Text := '';
+  end;
 end;
 
 procedure TDBLookupComboBox.CloseUp;
