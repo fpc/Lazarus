@@ -1556,6 +1556,8 @@ var
   ALCLDest: TCanvas absolute ADest;
   {$endif}
 begin
+  ApplyPenToCanvas(ADest);
+
   CalculateBoundingBox(ADest, fx1, fy1, fx2, fy2);
   x1 := CoordToCanvasX(fx1);
   x2 := CoordToCanvasX(fx2);
@@ -1586,8 +1588,6 @@ begin
   else
   {$endif}
   begin
-    ADest.Pen.Style := psSolid;
-    ADest.Pen.FPColor := colBlack;
     ADest.Ellipse(x1, y1, x2, y2);
   end;
 end;
