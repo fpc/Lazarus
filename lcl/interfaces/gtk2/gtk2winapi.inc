@@ -8276,6 +8276,9 @@ function TGtk2WidgetSet.SetCapture(AHandle: HWND): HWND;
 var
   Widget: PGtkWidget;
   CaptureWidget: PGtkWidget;
+  {$IfDef VerboseMouseCapture}
+  toplevel: PGtkWidget;
+  {$EndIf}
 begin
   Widget := {%H-}PGtkWidget(AHandle);
   {$IfDef VerboseMouseCapture}
@@ -8321,11 +8324,22 @@ begin
   {$EndIf}
 
   {$IfDef VerboseMouseCapture}
-  DebugLn('TGtk2WidgetSet.SetCapture gtk_grab_add=[',GetWidgetDebugReport(CaptureWidget),']');
+  DebugLn(['TGtk2WidgetSet.SetCapture gtk_grab_add=[',GetWidgetDebugReport(CaptureWidget),'] has_grab=',gtk_widget_has_grab(CaptureWidget),' is_sensitive=',gtk_widget_is_sensitive(CaptureWidget)]);
+  toplevel := gtk_widget_get_toplevel(CaptureWidget);
+  if (toplevel<>nil)
+  and (ord(gdk_window_get_window_type (toplevel^.window)) = GDK_WINDOW_OFFSCREEN_lcl)
+  then begin
+    debugln(['WARNING: TGtk2WidgetSet.SetCapture capturewidget is offscreen']);
+  end;
+  // Note: liboverlay: gtk_grab_add sets gtk_widget_has_grab, but gtk_grab_get_current returns nil
+  // ToDo: check window group
   {$EndIf}
   gtk_grab_add(CaptureWidget);
   {$IfDef VerboseMouseCapture}
-  DebugLn('TGtk2WidgetSet.SetCapture gtk=[',GetWidgetDebugReport(gtk_grab_get_current),']');
+  if gtk_grab_get_current=CaptureWidget then
+    DebugLn('TGtk2WidgetSet.SetCapture success gtk_grab_get_current=[',GetWidgetDebugReport(gtk_grab_get_current),']')
+  else
+    DebugLn('WARNING: TGtk2WidgetSet.SetCapture failed gtk_grab_get_current=[',GetWidgetDebugReport(gtk_grab_get_current),']');
   {$EndIf}
 
   MouseCaptureWidget := CaptureWidget;

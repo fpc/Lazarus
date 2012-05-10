@@ -240,6 +240,8 @@ function gtk_icon_view_get_visible_range(tree_view: PGtkTreeView; out start_path
 procedure gtk_tree_view_column_queue_resize(tree_column: PGtkTreeViewColumn); cdecl; external gtklib;
 
 {$endif}
+const
+  GDK_WINDOW_OFFSCREEN_lcl = 6; // ToDo: move to fpc
 {$ifdef GTK_2_10}
 function gdk_screen_is_composited(screen: PGdkScreen): gboolean; cdecl; external gdklib;
 {$endif}
