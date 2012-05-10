@@ -1204,7 +1204,7 @@ begin
 
   // Position fixing for documents with negative coordinates
   PosX := PosX - DOC_OFFSET.X;
-  PosY := PosY + FontSize - DOC_OFFSET.Y;
+  PosY := PosY - DOC_OFFSET.Y;
 
   // Convert the string if necessary
   Str := ConvertDXFStringToUTF8(Str);

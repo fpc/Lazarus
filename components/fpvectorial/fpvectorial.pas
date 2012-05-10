@@ -231,8 +231,9 @@ type
   {@@
     TvText represents a text entity.
 
-    The text starts in X, Y and grows downwards, towards a smaller Y,
-    just like the text in the LCL TCanvas
+    The text starts in X, Y and grows upwards, towards a bigger Y (fpvectorial coordinates)
+    or smaller Y (LCL coordinates).
+    It has the opposite direction of text in the LCL TCanvas.
   }
 
   { TvText }
@@ -244,22 +245,34 @@ type
     constructor Create; override;
     destructor Destroy; override;
     function TryToSelect(APos: TPoint; var ASubpart: Cardinal): TvFindEntityResult; override;
+    procedure Render(ADest: TFPCustomCanvas; ADestX: Integer = 0;
+      ADestY: Integer = 0; AMulX: Double = 1.0; AMulY: Double = 1.0); override;
   end;
 
   {@@
   }
+
+  { TvCircle }
+
   TvCircle = class(TvEntityWithPenAndBrush)
   public
     Radius: Double;
+    procedure Render(ADest: TFPCustomCanvas; ADestX: Integer = 0;
+      ADestY: Integer = 0; AMulX: Double = 1.0; AMulY: Double = 1.0); override;
   end;
 
   {@@
   }
+
+  { TvCircularArc }
+
   TvCircularArc = class(TvEntityWithPenAndBrush)
   public
     Radius: Double;
     {@@ The Angle is measured in degrees in relation to the positive X axis }
     StartAngle, EndAngle: Double;
+    procedure Render(ADest: TFPCustomCanvas; ADestX: Integer = 0;
+      ADestY: Integer = 0; AMulX: Double = 1.0; AMulY: Double = 1.0); override;
   end;
 
   {@@
@@ -293,6 +306,8 @@ type
   public
     // Mandatory fields
     BaseLeft, BaseRight, DimensionLeft, DimensionRight: T3DPoint;
+    procedure Render(ADest: TFPCustomCanvas; ADestX: Integer = 0;
+      ADestY: Integer = 0; AMulX: Double = 1.0; AMulY: Double = 1.0); override;
   end;
 
   {@@
@@ -672,6 +687,62 @@ begin
   Result.Z := 0;
 end;
 
+{ TvEntity }
+
+constructor TvEntity.Create;
+begin
+end;
+
+procedure TvEntity.CalculateBoundingBox(ADest: TFPCustomCanvas; var ALeft, ATop, ARight, ABottom: Double);
+begin
+  ALeft := X;
+  ATop := Y;
+  ARight := X+1;
+  ABottom := Y+1;
+end;
+
+procedure TvEntity.ExpandBoundingBox(ADest: TFPCustomCanvas; var ALeft, ATop, ARight, ABottom: Double);
+var
+  lLeft, lTop, lRight, lBottom: Double;
+begin
+  CalculateBoundingBox(ADest, lLeft, lTop, lRight, lBottom);
+  if lLeft < ALeft then ALeft := lLeft;
+  if lTop < ATop then ATop := lTop;
+  if lRight > ARight then ARight := lRight;
+  if lBottom > ABottom then ABottom := lBottom;
+end;
+
+function TvEntity.TryToSelect(APos: TPoint; var ASubpart: Cardinal): TvFindEntityResult;
+begin
+  Result := vfrNotFound;
+end;
+
+procedure TvEntity.Move(ADeltaX, ADeltaY: Integer);
+begin
+  X := X + ADeltaX;
+  Y := Y + ADeltaY;
+end;
+
+procedure TvEntity.MoveSubpart(ADeltaX, ADeltaY: Integer;
+  ASubpart: Cardinal);
+begin
+
+end;
+
+procedure TvEntity.Render(ADest: TFPCustomCanvas; ADestX: Integer;
+  ADestY: Integer; AMulX: Double; AMulY: Double);
+begin
+
+end;
+
+function TvEntity.GetNormalizedPos(APage: TvVectorialPage; ANewMin,
+  ANewMax: Double): T3DPoint;
+begin
+  Result.X := (X - APage.MinX) * (ANewMax - ANewMin) / (APage.MaxX - APage.MinX) + ANewMin;
+  Result.Y := (Y - APage.MinY) * (ANewMax - ANewMin) / (APage.MaxY - APage.MinY) + ANewMin;
+  Result.Z := (Z - APage.MinZ) * (ANewMax - ANewMin) / (APage.MaxZ - APage.MinZ) + ANewMin;
+end;
+
 { TvEntityWithPen }
 
 constructor TvEntityWithPen.Create;
@@ -679,12 +750,13 @@ begin
   inherited Create;
   Pen.Style := psSolid;
   Pen.Color := colBlack;
+  Pen.Width := 1;
 end;
 
 procedure TvEntityWithPen.ApplyPenToCanvas(ADest: TFPCustomCanvas);
 begin
   ADest.Pen.FPColor := Pen.Color;
-  ADest.Pen.Width := Pen.Width;
+  ADest.Pen.Width := 1;//Pen.Width;
   ADest.Pen.Style := Pen.Style;
 end;
 
@@ -701,6 +773,474 @@ procedure TvEntityWithPenAndBrush.ApplyBrushToCanvas(ADest: TFPCustomCanvas);
 begin
   ADest.Brush.FPColor := Brush.Color;
   ADest.Brush.Style := Brush.Style;
+end;
+
+{ TPath }
+
+procedure TPath.Assign(ASource: TPath);
+begin
+  Len := ASource.Len;
+  Points := ASource.Points;
+  PointsEnd := ASource.PointsEnd;
+  CurPoint := ASource.CurPoint;
+  Pen := ASource.Pen;
+  Brush := ASource.Brush;
+  ClipPath := ASource.ClipPath;
+  ClipMode := ASource.ClipMode;
+end;
+
+procedure TPath.PrepareForSequentialReading;
+begin
+  CurPoint := nil;
+end;
+
+function TPath.Next(): TPathSegment;
+begin
+  if CurPoint = nil then Result := Points
+  else Result := CurPoint.Next;
+
+  CurPoint := Result;
+end;
+
+procedure TPath.CalculateBoundingBox(ADest: TFPCustomCanvas; var ALeft, ATop, ARight, ABottom: Double);
+var
+  lSegment: TPathSegment;
+  l2DSegment: T2DSegment;
+  lFirstValue: Boolean = True;
+begin
+  inherited CalculateBoundingBox(ADest, ALeft, ATop, ARight, ABottom);
+
+  PrepareForSequentialReading();
+  lSegment := Next();
+  while lSegment <> nil do
+  begin
+    if lSegment is T2DSegment then
+    begin
+      l2DSegment := T2DSegment(lSegment);
+      if lFirstValue then
+      begin
+        ALeft := l2DSegment.X;
+        ATop := l2DSegment.Y;
+        ARight := l2DSegment.X;
+        ABottom := l2DSegment.Y;
+        lFirstValue := False;
+      end
+      else
+      begin
+        if l2DSegment.X < ALeft then ALeft := l2DSegment.X;
+        if l2DSegment.Y < ATop then ATop := l2DSegment.Y;
+        if l2DSegment.X > ARight then ARight := l2DSegment.X;
+        if l2DSegment.Y > ABottom then ABottom := l2DSegment.Y;
+      end;
+    end;
+
+    lSegment := Next();
+  end;
+end;
+
+procedure TPath.AppendSegment(ASegment: TPathSegment);
+var
+  L: Integer;
+begin
+  // Check if we are the first segment in the tmp path
+  if PointsEnd = nil then
+  begin
+    if Len <> 0 then
+      Exception.Create('[TPath.AppendSegment] Assertion failed Len <> 0 with PointsEnd = nil');
+
+    Points := ASegment;
+    PointsEnd := ASegment;
+    Len := 1;
+    Exit;
+  end;
+
+  L := Len;
+  Inc(Len);
+
+  // Adds the element to the end of the list
+  PointsEnd.Next := ASegment;
+  ASegment.Previous := PointsEnd;
+  PointsEnd := ASegment;
+end;
+
+{ TvText }
+
+constructor TvText.Create;
+begin
+  inherited Create;
+  Value := TStringList.Create;
+end;
+
+destructor TvText.Destroy;
+begin
+  Value.Free;
+  inherited Destroy;
+end;
+
+function TvText.TryToSelect(APos: TPoint; var ASubpart: Cardinal): TvFindEntityResult;
+var
+  lProximityFactor: Integer;
+begin
+  lProximityFactor := 5;
+  if (APos.X > X - lProximityFactor) and (APos.X < X + lProximityFactor)
+    and (APos.Y > Y - lProximityFactor) and (APos.Y < Y + lProximityFactor) then
+    Result := vfrFound
+  else Result := vfrNotFound;
+end;
+
+procedure TvText.Render(ADest: TFPCustomCanvas; ADestX: Integer;
+  ADestY: Integer; AMulX: Double; AMulY: Double);
+
+  function CoordToCanvasX(ACoord: Double): Integer;
+  begin
+    Result := Round(ADestX + AmulX * ACoord);
+  end;
+
+  function CoordToCanvasY(ACoord: Double): Integer;
+  begin
+    Result := Round(ADestY + AmulY * ACoord);
+  end;
+
+var
+  i: Integer;
+  {$ifdef USE_LCL_CANVAS}
+  ALCLDest: TCanvas absolute ADest;
+  {$endif}
+  //
+  LowerDim: T3DPoint;
+begin
+  ADest.Font.Size := Round(AmulX * Font.Size);
+  ADest.Pen.Style := psSolid;
+  ADest.Pen.FPColor := colBlack;
+  ADest.Brush.Style := bsClear;
+  {$ifdef USE_LCL_CANVAS}
+  ALCLDest.Font.Orientation := Round(Font.Orientation * 16);
+  {$endif}
+
+  // TvText supports multiple lines
+  for i := 0 to Value.Count - 1 do
+  begin
+    if Font.Size = 0 then
+      LowerDim.Y := CoordToCanvasY(Y) + 12 * (i - Value.Count)
+    else
+    begin
+      LowerDim.Y := Y + Font.Size * 1.2 * (Value.Count - i);
+      LowerDim.Y := CoordToCanvasY(LowerDim.Y);
+    end;
+
+    ADest.TextOut(CoordToCanvasX(X), Round(LowerDim.Y), Value.Strings[i]);
+  end;
+end;
+
+{ TvCircle }
+
+procedure TvCircle.Render(ADest: TFPCustomCanvas; ADestX: Integer;
+  ADestY: Integer; AMulX: Double; AMulY: Double);
+
+  function CoordToCanvasX(ACoord: Double): Integer;
+  begin
+    Result := Round(ADestX + AmulX * ACoord);
+  end;
+
+  function CoordToCanvasY(ACoord: Double): Integer;
+  begin
+    Result := Round(ADestY + AmulY * ACoord);
+  end;
+
+begin
+  ADest.Ellipse(
+    CoordToCanvasX(X - Radius),
+    CoordToCanvasY(Y - Radius),
+    CoordToCanvasX(X + Radius),
+    CoordToCanvasY(Y + Radius)
+    );
+end;
+
+{ TvCircularArc }
+
+procedure TvCircularArc.Render(ADest: TFPCustomCanvas; ADestX: Integer;
+  ADestY: Integer; AMulX: Double; AMulY: Double);
+
+  function CoordToCanvasX(ACoord: Double): Integer;
+  begin
+    Result := Round(ADestX + AmulX * ACoord);
+  end;
+
+  function CoordToCanvasY(ACoord: Double): Integer;
+  begin
+    Result := Round(ADestY + AmulY * ACoord);
+  end;
+
+var
+  FinalStartAngle, FinalEndAngle: double;
+  BoundsLeft, BoundsTop, BoundsRight, BoundsBottom,
+   IntStartAngle, IntAngleLength, IntTmp: Integer;
+  {$ifdef USE_LCL_CANVAS}
+  ALCLDest: TCanvas absolute ADest;
+  {$endif}
+begin
+  {$ifdef USE_LCL_CANVAS}
+  // ToDo: Consider a X axis inversion
+  // If the Y axis is inverted, then we need to mirror our angles as well
+  BoundsLeft := CoordToCanvasX(X - Radius);
+  BoundsTop := CoordToCanvasY(Y - Radius);
+  BoundsRight := CoordToCanvasX(X + Radius);
+  BoundsBottom := CoordToCanvasY(Y + Radius);
+  {if AMulY > 0 then
+  begin}
+    FinalStartAngle := StartAngle;
+    FinalEndAngle := EndAngle;
+  {end
+  else // AMulY is negative
+  begin
+    // Inverting the angles generates the correct result for Y axis inversion
+    if CurArc.EndAngle = 0 then FinalStartAngle := 0
+    else FinalStartAngle := 360 - 1* CurArc.EndAngle;
+    if CurArc.StartAngle = 0 then FinalEndAngle := 0
+    else FinalEndAngle := 360 - 1* CurArc.StartAngle;
+  end;}
+  IntStartAngle := Round(16*FinalStartAngle);
+  IntAngleLength := Round(16*(FinalEndAngle - FinalStartAngle));
+  // On Gtk2 and Carbon, the Left really needs to be to the Left of the Right position
+  // The same for the Top and Bottom
+  // On Windows it works fine either way
+  // On Gtk2 if the positions are inverted then the arcs are screwed up
+  // In Carbon if the positions are inverted, then the arc is inverted
+  if BoundsLeft > BoundsRight then
+  begin
+    IntTmp := BoundsLeft;
+    BoundsLeft := BoundsRight;
+    BoundsRight := IntTmp;
+  end;
+  if BoundsTop > BoundsBottom then
+  begin
+    IntTmp := BoundsTop;
+    BoundsTop := BoundsBottom;
+    BoundsBottom := IntTmp;
+  end;
+  // Arc(ALeft, ATop, ARight, ABottom, Angle16Deg, Angle16DegLength: Integer);
+  {$ifdef FPVECTORIAL_TOCANVAS_DEBUG}
+//    WriteLn(Format('Drawing Arc Center=%f,%f Radius=%f StartAngle=%f AngleLength=%f',
+//      [CurArc.CenterX, CurArc.CenterY, CurArc.Radius, IntStartAngle/16, IntAngleLength/16]));
+  {$endif}
+  ADest.Pen.FPColor := Pen.Color;
+  ALCLDest.Arc(
+    BoundsLeft, BoundsTop, BoundsRight, BoundsBottom,
+    IntStartAngle, IntAngleLength
+    );
+  ADest.Pen.FPColor := colBlack;
+  // Debug info
+//      {$define FPVECTORIALDEBUG}
+//      {$ifdef FPVECTORIALDEBUG}
+//      WriteLn(Format('Drawing Arc x1y1=%d,%d x2y2=%d,%d start=%d end=%d',
+//        [BoundsLeft, BoundsTop, BoundsRight, BoundsBottom, IntStartAngle, IntAngleLength]));
+//      {$endif}
+{      ADest.TextOut(CoordToCanvasX(CurArc.CenterX), CoordToCanvasY(CurArc.CenterY),
+    Format('R=%d S=%d L=%d', [Round(CurArc.Radius*AMulX), Round(FinalStartAngle),
+    Abs(Round((FinalEndAngle - FinalStartAngle)))]));
+  ADest.Pen.Color := TColor($DDDDDD);
+  ADest.Rectangle(
+    BoundsLeft, BoundsTop, BoundsRight, BoundsBottom);
+  ADest.Pen.Color := clBlack;}
+  {$endif}
+end;
+
+{ TvEllipse }
+
+procedure TvEllipse.CalculateBoundingBox(ADest: TFPCustomCanvas; var ALeft, ATop, ARight, ABottom: Double);
+var
+  t, tmp: Double;
+begin
+  // First do the trivial
+  ALeft := X - HorzHalfAxis;
+  ARight := X + HorzHalfAxis;
+  ATop := Y - VertHalfAxis;
+  ABottom := Y + VertHalfAxis;
+  {
+    To calculate the bounding rectangle we can do this:
+
+    Ellipse equations:You could try using the parametrized equations for an ellipse rotated at an arbitrary angle:
+
+    x = CenterX + MajorHalfAxis*cos(t)*cos(Angle) - MinorHalfAxis*sin(t)*sin(Angle)
+    y = CenterY + MinorHalfAxis*sin(t)*cos(Angle) + MajorHalfAxis*cos(t)*sin(Angle)
+
+    You can then differentiate and solve for gradient = 0:
+    0 = dx/dt = -MajorHalfAxis*sin(t)*cos(Angle) - MinorHalfAxis*cos(t)*sin(Angle)
+    =>
+    tan(t) = -MinorHalfAxis*tan(Angle)/MajorHalfAxis
+    =>
+    t = cotang(-MinorHalfAxis*tan(Angle)/MajorHalfAxis)
+
+    On the other axis:
+
+    0 = dy/dt = b*cos(t)*cos(phi) - a*sin(t)*sin(phi)
+    =>
+    tan(t) = b*cot(phi)/a
+  }
+  if Angle <> 0.0 then
+  begin
+    t := cotan(-VertHalfAxis*tan(Angle)/HorzHalfAxis);
+    tmp := X + HorzHalfAxis*cos(t)*cos(Angle) - VertHalfAxis*sin(t)*sin(Angle);
+    ARight := Round(tmp);
+  end;
+end;
+
+procedure TvEllipse.Render(ADest: TFPCustomCanvas; ADestX: Integer;
+  ADestY: Integer; AMulX: Double; AMulY: Double);
+
+  function CoordToCanvasX(ACoord: Double): Integer;
+  begin
+    Result := Round(ADestX + AmulX * ACoord);
+  end;
+
+  function CoordToCanvasY(ACoord: Double): Integer;
+  begin
+    Result := Round(ADestY + AmulY * ACoord);
+  end;
+
+var
+  PointList: array[0..6] of TPoint;
+  f: TPoint;
+  dk, x1, x2, y1, y2: Integer;
+  fx1, fy1, fx2, fy2: Double;
+  {$ifdef USE_LCL_CANVAS}
+  ALCLDest: TCanvas absolute ADest;
+  {$endif}
+begin
+  ApplyPenToCanvas(ADest);
+
+  CalculateBoundingBox(ADest, fx1, fy1, fx2, fy2);
+  x1 := CoordToCanvasX(fx1);
+  x2 := CoordToCanvasX(fx2);
+  y1 := CoordToCanvasY(fy1);
+  y2 := CoordToCanvasY(fy2);
+
+  {$ifdef USE_LCL_CANVAS}
+  if Angle <> 0 then
+  begin
+    dk := Round(0.654 * Abs(y2-y1));
+    f.x := Round(X);
+    f.y := Round(Y - 1);
+    PointList[0] := Rotate2DPoint(Point(x1, f.y), f, Angle) ;  // Startpoint
+    PointList[1] := Rotate2DPoint(Point(x1,  f.y - dk), f, Angle);
+    //Controlpoint of Startpoint first part
+    PointList[2] := Rotate2DPoint(Point(x2- 1,  f.y - dk), f, Angle);
+    //Controlpoint of secondpoint first part
+    PointList[3] := Rotate2DPoint(Point(x2 -1 , f.y), f, Angle);
+    // Firstpoint of secondpart
+    PointList[4] := Rotate2DPoint(Point(x2-1 , f.y + dk), f, Angle);
+    // Controllpoint of secondpart firstpoint
+    PointList[5] := Rotate2DPoint(Point(x1, f.y +  dk), f, Angle);
+    // Conrollpoint of secondpart endpoint
+    PointList[6] := PointList[0];   // Endpoint of
+     // Back to the startpoint
+    ALCLDest.PolyBezier(Pointlist[0]);
+  end
+  else
+  {$endif}
+  begin
+    ADest.Ellipse(x1, y1, x2, y2);
+  end;
+end;
+
+{ TvAlignedDimension }
+
+procedure TvAlignedDimension.Render(ADest: TFPCustomCanvas; ADestX: Integer;
+  ADestY: Integer; AMulX: Double; AMulY: Double);
+
+  function CoordToCanvasX(ACoord: Double): Integer;
+  begin
+    Result := Round(ADestX + AmulX * ACoord);
+  end;
+
+  function CoordToCanvasY(ACoord: Double): Integer;
+  begin
+    Result := Round(ADestY + AmulY * ACoord);
+  end;
+
+var
+  Points: array of TPoint;
+  UpperDim, LowerDim: T3DPoint;
+  {$ifdef USE_LCL_CANVAS}
+  ALCLDest: TCanvas absolute ADest;
+  {$endif}
+begin
+  //
+  // Draws this shape:
+  // vertical     horizontal
+  // ___
+  // | |     or   ---| X cm
+  //   |           --|
+  // Which marks the dimension
+  ADest.MoveTo(CoordToCanvasX(BaseRight.X), CoordToCanvasY(BaseRight.Y));
+  ADest.LineTo(CoordToCanvasX(DimensionRight.X), CoordToCanvasY(DimensionRight.Y));
+  ADest.LineTo(CoordToCanvasX(DimensionLeft.X), CoordToCanvasY(DimensionLeft.Y));
+  ADest.LineTo(CoordToCanvasX(BaseLeft.X), CoordToCanvasY(BaseLeft.Y));
+  // Now the arrows
+  // horizontal
+  SetLength(Points, 3);
+  if DimensionRight.Y = DimensionLeft.Y then
+  begin
+    ADest.Brush.FPColor := colBlack;
+    ADest.Brush.Style := bsSolid;
+    // Left arrow
+    Points[0] := Point(CoordToCanvasX(DimensionLeft.X), CoordToCanvasY(DimensionLeft.Y));
+    Points[1] := Point(Points[0].X + 7, Points[0].Y - 3);
+    Points[2] := Point(Points[0].X + 7, Points[0].Y + 3);
+    ADest.Polygon(Points);
+    // Right arrow
+    Points[0] := Point(CoordToCanvasX(DimensionRight.X), CoordToCanvasY(DimensionRight.Y));
+    Points[1] := Point(Points[0].X - 7, Points[0].Y - 3);
+    Points[2] := Point(Points[0].X - 7, Points[0].Y + 3);
+    ADest.Polygon(Points);
+    ADest.Brush.Style := bsClear;
+    // Dimension text
+    Points[0].X := CoordToCanvasX((DimensionLeft.X+DimensionRight.X)/2);
+    Points[0].Y := CoordToCanvasY(DimensionLeft.Y);
+    LowerDim.X := DimensionRight.X-DimensionLeft.X;
+    ADest.Font.Size := 10;
+    ADest.TextOut(Points[0].X, Points[0].Y, Format('%.1f', [LowerDim.X]));
+  end
+  else
+  begin
+    ADest.Brush.FPColor := colBlack;
+    ADest.Brush.Style := bsSolid;
+    // There is no upper/lower preference for DimensionLeft/Right, so we need to check
+    if DimensionLeft.Y > DimensionRight.Y then
+    begin
+      UpperDim := DimensionLeft;
+      LowerDim := DimensionRight;
+    end
+    else
+    begin
+      UpperDim := DimensionRight;
+      LowerDim := DimensionLeft;
+    end;
+    // Upper arrow
+    Points[0] := Point(CoordToCanvasX(UpperDim.X), CoordToCanvasY(UpperDim.Y));
+    Points[1] := Point(Points[0].X + Round(AMulX), Points[0].Y - Round(AMulY*3));
+    Points[2] := Point(Points[0].X - Round(AMulX), Points[0].Y - Round(AMulY*3));
+    ADest.Polygon(Points);
+    // Lower arrow
+    Points[0] := Point(CoordToCanvasX(LowerDim.X), CoordToCanvasY(LowerDim.Y));
+    Points[1] := Point(Points[0].X + Round(AMulX), Points[0].Y + Round(AMulY*3));
+    Points[2] := Point(Points[0].X - Round(AMulX), Points[0].Y + Round(AMulY*3));
+    ADest.Polygon(Points);
+    ADest.Brush.Style := bsClear;
+    // Dimension text
+    Points[0].X := CoordToCanvasX(DimensionLeft.X);
+    Points[0].Y := CoordToCanvasY((DimensionLeft.Y+DimensionRight.Y)/2);
+    LowerDim.Y := DimensionRight.Y-DimensionLeft.Y;
+    if LowerDim.Y < 0 then LowerDim.Y := -1 * LowerDim.Y;
+    ADest.Font.Size := 10;
+    ADest.TextOut(Points[0].X, Points[0].Y, Format('%.1f', [LowerDim.Y]));
+  end;
+  SetLength(Points, 0);
+{      // Debug info
+  ADest.TextOut(CoordToCanvasX(CurDim.BaseRight.X), CoordToCanvasY(CurDim.BaseRight.Y), 'BR');
+  ADest.TextOut(CoordToCanvasX(CurDim.DimensionRight.X), CoordToCanvasY(CurDim.DimensionRight.Y), 'DR');
+  ADest.TextOut(CoordToCanvasX(CurDim.DimensionLeft.X), CoordToCanvasY(CurDim.DimensionLeft.Y), 'DL');
+  ADest.TextOut(CoordToCanvasX(CurDim.BaseLeft.X), CoordToCanvasY(CurDim.BaseLeft.Y), 'BL');}
 end;
 
 { TvRasterImage }
@@ -1413,185 +1953,6 @@ begin
   Result := lPoint;
 end;
 
-{ TvText }
-
-constructor TvText.Create;
-begin
-  inherited Create;
-  Value := TStringList.Create;
-end;
-
-destructor TvText.Destroy;
-begin
-  Value.Free;
-  inherited Destroy;
-end;
-
-function TvText.TryToSelect(APos: TPoint; var ASubpart: Cardinal): TvFindEntityResult;
-var
-  lProximityFactor: Integer;
-begin
-  lProximityFactor := 5;
-  if (APos.X > X - lProximityFactor) and (APos.X < X + lProximityFactor)
-    and (APos.Y > Y - lProximityFactor) and (APos.Y < Y + lProximityFactor) then
-    Result := vfrFound
-  else Result := vfrNotFound;
-end;
-
-{ TvEntity }
-
-constructor TvEntity.Create;
-begin
-end;
-
-procedure TvEntity.CalculateBoundingBox(ADest: TFPCustomCanvas; var ALeft, ATop, ARight, ABottom: Double);
-begin
-  ALeft := X;
-  ATop := Y;
-  ARight := X+1;
-  ABottom := Y+1;
-end;
-
-procedure TvEntity.ExpandBoundingBox(ADest: TFPCustomCanvas; var ALeft, ATop, ARight, ABottom: Double);
-var
-  lLeft, lTop, lRight, lBottom: Double;
-begin
-  CalculateBoundingBox(ADest, lLeft, lTop, lRight, lBottom);
-  if lLeft < ALeft then ALeft := lLeft;
-  if lTop < ATop then ATop := lTop;
-  if lRight > ARight then ARight := lRight;
-  if lBottom > ABottom then ABottom := lBottom;
-end;
-
-function TvEntity.TryToSelect(APos: TPoint; var ASubpart: Cardinal): TvFindEntityResult;
-begin
-  Result := vfrNotFound;
-end;
-
-procedure TvEntity.Move(ADeltaX, ADeltaY: Integer);
-begin
-  X := X + ADeltaX;
-  Y := Y + ADeltaY;
-end;
-
-procedure TvEntity.MoveSubpart(ADeltaX, ADeltaY: Integer;
-  ASubpart: Cardinal);
-begin
-
-end;
-
-procedure TvEntity.Render(ADest: TFPCustomCanvas; ADestX: Integer;
-  ADestY: Integer; AMulX: Double; AMulY: Double);
-begin
-
-end;
-
-function TvEntity.GetNormalizedPos(APage: TvVectorialPage; ANewMin,
-  ANewMax: Double): T3DPoint;
-begin
-  Result.X := (X - APage.MinX) * (ANewMax - ANewMin) / (APage.MaxX - APage.MinX) + ANewMin;
-  Result.Y := (Y - APage.MinY) * (ANewMax - ANewMin) / (APage.MaxY - APage.MinY) + ANewMin;
-  Result.Z := (Z - APage.MinZ) * (ANewMax - ANewMin) / (APage.MaxZ - APage.MinZ) + ANewMin;
-end;
-
-{ TvEllipse }
-
-procedure TvEllipse.CalculateBoundingBox(ADest: TFPCustomCanvas; var ALeft, ATop, ARight, ABottom: Double);
-var
-  t, tmp: Double;
-begin
-  // First do the trivial
-  ALeft := X - HorzHalfAxis;
-  ARight := X + HorzHalfAxis;
-  ATop := Y - VertHalfAxis;
-  ABottom := Y + VertHalfAxis;
-  {
-    To calculate the bounding rectangle we can do this:
-
-    Ellipse equations:You could try using the parametrized equations for an ellipse rotated at an arbitrary angle:
-
-    x = CenterX + MajorHalfAxis*cos(t)*cos(Angle) - MinorHalfAxis*sin(t)*sin(Angle)
-    y = CenterY + MinorHalfAxis*sin(t)*cos(Angle) + MajorHalfAxis*cos(t)*sin(Angle)
-
-    You can then differentiate and solve for gradient = 0:
-    0 = dx/dt = -MajorHalfAxis*sin(t)*cos(Angle) - MinorHalfAxis*cos(t)*sin(Angle)
-    =>
-    tan(t) = -MinorHalfAxis*tan(Angle)/MajorHalfAxis
-    =>
-    t = cotang(-MinorHalfAxis*tan(Angle)/MajorHalfAxis)
-
-    On the other axis:
-
-    0 = dy/dt = b*cos(t)*cos(phi) - a*sin(t)*sin(phi)
-    =>
-    tan(t) = b*cot(phi)/a
-  }
-  if Angle <> 0.0 then
-  begin
-    t := cotan(-VertHalfAxis*tan(Angle)/HorzHalfAxis);
-    tmp := X + HorzHalfAxis*cos(t)*cos(Angle) - VertHalfAxis*sin(t)*sin(Angle);
-    ARight := Round(tmp);
-  end;
-end;
-
-procedure TvEllipse.Render(ADest: TFPCustomCanvas; ADestX: Integer;
-  ADestY: Integer; AMulX: Double; AMulY: Double);
-
-  function CoordToCanvasX(ACoord: Double): Integer;
-  begin
-    Result := Round(ADestX + AmulX * ACoord);
-  end;
-
-  function CoordToCanvasY(ACoord: Double): Integer;
-  begin
-    Result := Round(ADestY + AmulY * ACoord);
-  end;
-
-var
-  PointList: array[0..6] of TPoint;
-  f: TPoint;
-  dk, x1, x2, y1, y2: Integer;
-  fx1, fy1, fx2, fy2: Double;
-  {$ifdef USE_LCL_CANVAS}
-  ALCLDest: TCanvas absolute ADest;
-  {$endif}
-begin
-  ApplyPenToCanvas(ADest);
-
-  CalculateBoundingBox(ADest, fx1, fy1, fx2, fy2);
-  x1 := CoordToCanvasX(fx1);
-  x2 := CoordToCanvasX(fx2);
-  y1 := CoordToCanvasY(fy1);
-  y2 := CoordToCanvasY(fy2);
-
-  {$ifdef USE_LCL_CANVAS}
-  if Angle <> 0 then
-  begin
-    dk := Round(0.654 * Abs(y2-y1));
-    f.x := Round(X);
-    f.y := Round(Y - 1);
-    PointList[0] := Rotate2DPoint(Point(x1, f.y), f, Angle) ;  // Startpoint
-    PointList[1] := Rotate2DPoint(Point(x1,  f.y - dk), f, Angle);
-    //Controlpoint of Startpoint first part
-    PointList[2] := Rotate2DPoint(Point(x2- 1,  f.y - dk), f, Angle);
-    //Controlpoint of secondpoint first part
-    PointList[3] := Rotate2DPoint(Point(x2 -1 , f.y), f, Angle);
-    // Firstpoint of secondpart
-    PointList[4] := Rotate2DPoint(Point(x2-1 , f.y + dk), f, Angle);
-    // Controllpoint of secondpart firstpoint
-    PointList[5] := Rotate2DPoint(Point(x1, f.y +  dk), f, Angle);
-    // Conrollpoint of secondpart endpoint
-    PointList[6] := PointList[0];   // Endpoint of
-     // Back to the startpoint
-    ALCLDest.PolyBezier(Pointlist[0]);
-  end
-  else
-  {$endif}
-  begin
-    ADest.Ellipse(x1, y1, x2, y2);
-  end;
-end;
-
 { TsWorksheet }
 
 {@@
@@ -1994,94 +2355,6 @@ procedure TvCustomVectorialWriter.WriteToStrings(AStrings: TStrings;
   AData: TvVectorialDocument);
 begin
 
-end;
-
-{ TPath }
-
-procedure TPath.Assign(ASource: TPath);
-begin
-  Len := ASource.Len;
-  Points := ASource.Points;
-  PointsEnd := ASource.PointsEnd;
-  CurPoint := ASource.CurPoint;
-  Pen := ASource.Pen;
-  Brush := ASource.Brush;
-  ClipPath := ASource.ClipPath;
-  ClipMode := ASource.ClipMode;
-end;
-
-procedure TPath.PrepareForSequentialReading;
-begin
-  CurPoint := nil;
-end;
-
-function TPath.Next(): TPathSegment;
-begin
-  if CurPoint = nil then Result := Points
-  else Result := CurPoint.Next;
-
-  CurPoint := Result;
-end;
-
-procedure TPath.CalculateBoundingBox(ADest: TFPCustomCanvas; var ALeft, ATop, ARight, ABottom: Double);
-var
-  lSegment: TPathSegment;
-  l2DSegment: T2DSegment;
-  lFirstValue: Boolean = True;
-begin
-  inherited CalculateBoundingBox(ADest, ALeft, ATop, ARight, ABottom);
-
-  PrepareForSequentialReading();
-  lSegment := Next();
-  while lSegment <> nil do
-  begin
-    if lSegment is T2DSegment then
-    begin
-      l2DSegment := T2DSegment(lSegment);
-      if lFirstValue then
-      begin
-        ALeft := l2DSegment.X;
-        ATop := l2DSegment.Y;
-        ARight := l2DSegment.X;
-        ABottom := l2DSegment.Y;
-        lFirstValue := False;
-      end
-      else
-      begin
-        if l2DSegment.X < ALeft then ALeft := l2DSegment.X;
-        if l2DSegment.Y < ATop then ATop := l2DSegment.Y;
-        if l2DSegment.X > ARight then ARight := l2DSegment.X;
-        if l2DSegment.Y > ABottom then ABottom := l2DSegment.Y;
-      end;
-    end;
-
-    lSegment := Next();
-  end;
-end;
-
-procedure TPath.AppendSegment(ASegment: TPathSegment);
-var
-  L: Integer;
-begin
-  // Check if we are the first segment in the tmp path
-  if PointsEnd = nil then
-  begin
-    if Len <> 0 then
-      Exception.Create('[TPath.AppendSegment] Assertion failed Len <> 0 with PointsEnd = nil');
-
-    Points := ASegment;
-    PointsEnd := ASegment;
-    Len := 1;
-    Exit;
-  end;
-
-  L := Len;
-  Inc(Len);
-
-  // Adds the element to the end of the list
-  PointsEnd.Next := ASegment;
-  ASegment.Previous := PointsEnd;
-  PointsEnd := ASegment;
 end;
 
 finalization
