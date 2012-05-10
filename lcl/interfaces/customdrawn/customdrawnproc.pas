@@ -111,6 +111,7 @@ type
   TCDTimer = class
   public
     NativeHandle: PtrInt; // The X11 timer uses this to store the current time which is summed up to the next interval
+    NativeGlobalReference: PtrInt; // Utilized in Android to store the global JNI reference
     Interval: integer;
     TimerFunc: TWSTimerProc;
   end;

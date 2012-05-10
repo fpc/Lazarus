@@ -227,7 +227,7 @@ begin
 end;
 
 function Java_com_pascal_lclproject_LCLActivity_LCLOnTimer(
-    env:PJNIEnv; this:jobject; ATimer: jobject): jint; cdecl;
+    env:PJNIEnv; this:jobject; ATimer: jobject; ATimerIDIndex: jint): jint; cdecl;
 var
   lTimer: TCDTimer;
 begin
@@ -458,7 +458,7 @@ const NativeMethods: array[0..8] of JNINativeMethod=
     signature:'(IILandroid/view/KeyEvent;I)I';
     fnPtr:@Java_com_pascal_lclproject_LCLActivity_LCLOnKey;),
    (name:'LCLOnTimer';
-    signature:'(Ljava/lang/Runnable;)I';
+    signature:'(Ljava/lang/Runnable;I)I';
     fnPtr:@Java_com_pascal_lclproject_LCLActivity_LCLOnTimer;),
    (name:'LCLOnConfigurationChanged';
     signature:'(II)I';
@@ -1385,7 +1385,8 @@ begin
   // Read the output
   lTimerObject := javaEnvRef^^.GetObjectField(javaEnvRef, javaActivityObject, javaField_lcltimerid);
   lGlobalTimerObject := javaEnvRef^^.NewGlobalRef(javaEnvRef, lTimerObject);
-  lTimer.NativeHandle := PtrInt(lGlobalTimerObject);
+  lTimer.NativeHandle := PtrInt(lTimerObject);
+  lTimer.NativeGlobalReference := PtrInt(lGlobalTimerObject);
 
   // Add it to our list
   AddTimer(lTimer);
@@ -1401,19 +1402,20 @@ function TCDWidgetSet.DestroyTimer(TimerHandle: THandle) : boolean;
 var
   lTimer: TCDTimer;
 begin
-  DebugLn(Format('[TCDWidgetSet.DestroyTimer] TimerHandle=%x', [PtrInt(TimerHandle)]));
-  Result := False;
-
   lTimer := TCDTimer(TimerHandle);
+
+  DebugLn(Format('[TCDWidgetSet.DestroyTimer] TimerHandle=%x lTimer.NativeHandle=%x lTimer.NativeGlobalReference=%x',
+    [PtrInt(TimerHandle), PtrInt(lTimer.NativeHandle), PtrInt(lTimer.NativeGlobalReference)]));
+  Result := False;
 
   if lTimer = nil then Exit;
 
   // Prepare the input
-  javaEnvRef^^.SetObjectField(javaEnvRef, javaActivityObject, javaField_lcltimerid, jobject(lTimer.NativeHandle));
+  javaEnvRef^^.SetObjectField(javaEnvRef, javaActivityObject, javaField_lcltimerid, jobject(lTimer.NativeGlobalReference));
 
   // Call the method
   javaEnvRef^^.CallVoidMethod(javaEnvRef, javaActivityObject, javaMethod_LCLDoDestroyTimer);
-  javaEnvRef^^.DeleteGlobalRef(javaEnvRef, JObject(lTimer.NativeHandle));
+  javaEnvRef^^.DeleteGlobalRef(javaEnvRef, JObject(lTimer.NativeGlobalReference));
 
   // Remove from the list
   RemoveTimer(lTimer);

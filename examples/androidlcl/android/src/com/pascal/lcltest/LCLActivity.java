@@ -315,7 +315,7 @@ public class LCLActivity extends Activity implements SensorEventListener, Locati
   public native int LCLOnCreate(Activity lclactivity);
   public native int LCLOnMessageBoxFinished(int Result, int DialogType);
   public native int LCLOnKey(int kind, int keyCode, KeyEvent event, int AChar);
-  public native int LCLOnTimer(Runnable timerid);
+  public native int LCLOnTimer(Runnable timerid, int timeridindex);
   public native int LCLOnConfigurationChanged(int ANewDPI, int ANewWidth);
   public native int LCLOnSensorChanged(int ASensorKind, double[] AValues);
   public native int LCLOnMenuAction(int kind, int itemIndex);
@@ -447,7 +447,8 @@ public class LCLActivity extends Activity implements SensorEventListener, Locati
 
     public void run()
     {
-      int eventResult = LCLOnTimer(this);
+      int lcltimeridindex = lcltimerids.indexOf(this);
+      int eventResult = LCLOnTimer(this, lcltimeridindex);
       ProcessEventResult(eventResult);
       if (this.Destroyed == false) LocalHandler.postDelayed(this, lcltimerinterval);
     }
@@ -461,6 +462,8 @@ public class LCLActivity extends Activity implements SensorEventListener, Locati
 
     LocalHandler.removeCallbacks(lcltimerid);
     LocalHandler.postDelayed(lcltimerid, lcltimerinterval);
+
+    lcltimerids.add(lcltimerid);
   };
 
   // input: Runnable lcltimerid
@@ -468,6 +471,7 @@ public class LCLActivity extends Activity implements SensorEventListener, Locati
   {
     LocalHandler.removeCallbacks(lcltimerid);
     ((LCLRunnable) lcltimerid).Destroyed = true;
+    lcltimerids.remove(lcltimerids.indexOf(lcltimerid));
   };
 
   public void LCLDoHideVirtualKeyboard()
@@ -679,6 +683,7 @@ public class LCLActivity extends Activity implements SensorEventListener, Locati
   //
   public int lcltimerinterval;
   public Runnable lcltimerid;
+  public List lcltimerids = new ArrayList(); // To keep the references alive, avoids a wrong GC
   //
   public int lclxdpi;
   public int lclydpi;
