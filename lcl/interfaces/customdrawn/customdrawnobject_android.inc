@@ -995,9 +995,73 @@ var
   lExt: String;
 begin
   lExt := SysUtils.ExtractFileExt(AFileName);
-  if lExt = '.png' then Result := 'image/png'
-  else if lExt = '.txt' then Result := 'text/plain'
-  else if lExt = '.jpg' then Result := 'image/jpeg';
+  // First the most common formats
+  if AnsiCompareText(lExt, '.png') = 0 then Result := 'image/png'
+  else if AnsiCompareText(lExt, '.txt') = 0 then Result := 'text/plain'
+  else if AnsiCompareText(lExt, '.jpg') = 0 then Result := 'image/jpeg'
+  else if AnsiCompareText(lExt, '.jpeg') = 0 then Result := 'image/jpeg'
+  else if AnsiCompareText(lExt, '.pdf') = 0 then Result := 'application/pdf'
+  else if AnsiCompareText(lExt, '.xml') = 0 then Result := 'application/xml'
+  else if AnsiCompareText(lExt, '.svg') = 0 then Result := 'image/svg+xml'
+  else if AnsiCompareText(lExt, '.swf') = 0 then Result := 'application/x-shockwave-flash'
+  else if AnsiCompareText(lExt, '.htm') = 0 then Result := 'text/html'
+  else if AnsiCompareText(lExt, '.html') = 0 then Result := 'text/html'
+  // Now all images
+  else if AnsiCompareText(lExt, '.xpm') = 0 then Result := 'image/x-xpixmap'
+  else if AnsiCompareText(lExt, '.gif') = 0 then Result := 'image/gif'
+  else if AnsiCompareText(lExt, '.tiff') = 0 then Result := 'image/tiff'
+  else if AnsiCompareText(lExt, '.tif') = 0 then Result := 'image/tiff'
+  else if AnsiCompareText(lExt, '.ico') = 0 then Result := 'image/x-icon'
+  else if AnsiCompareText(lExt, '.icns') = 0 then Result := 'image/icns'
+  else if AnsiCompareText(lExt, '.ppm') = 0 then Result := 'image/x-portable-pixmap'
+  else if AnsiCompareText(lExt, '.bmp') = 0 then Result := 'image/bmp'
+  // Now all textual formats
+  else if AnsiCompareText(lExt, '.pas') = 0 then Result := 'text/plain'
+  else if AnsiCompareText(lExt, '.pp') = 0 then Result := 'text/plain'
+  else if AnsiCompareText(lExt, '.inc') = 0 then Result := 'text/plain'
+  else if AnsiCompareText(lExt, '.c') = 0 then Result := 'text/plain'
+  else if AnsiCompareText(lExt, '.cpp') = 0 then Result := 'text/plain'
+  else if AnsiCompareText(lExt, '.java') = 0 then Result := 'text/plain'
+  else if AnsiCompareText(lExt, '.log') = 0 then Result := 'text/plain'
+  // Now all videos
+  else if AnsiCompareText(lExt, '.mp4') = 0 then Result := 'video/*'
+  else if AnsiCompareText(lExt, '.avi') = 0 then Result := 'video/vnd.avi' // also possible video/x-msvideo
+  else if AnsiCompareText(lExt, '.mpeg') = 0 then Result := 'video/MPEG'
+  else if AnsiCompareText(lExt, '.mpg') = 0 then Result := 'video/MPEG'
+  else if AnsiCompareText(lExt, '.mov') = 0 then Result := 'video/quicktime'
+  // Now all sounds
+  else if AnsiCompareText(lExt, '.mp3') = 0 then Result := 'audio/mpeg'
+  else if AnsiCompareText(lExt, '.ogg') = 0 then Result := 'audio/ogg'
+  else if AnsiCompareText(lExt, '.wav') = 0 then Result := 'audio/x-wav'
+  else if AnsiCompareText(lExt, '.mid') = 0 then Result := 'audio/midi'
+  else if AnsiCompareText(lExt, '.midi') = 0 then Result := 'audio/midi'
+  else if AnsiCompareText(lExt, '.au') = 0 then Result := 'audio/basic'
+  else if AnsiCompareText(lExt, '.snd') = 0 then Result := 'audio/basic'
+  // Now all documents
+  else if AnsiCompareText(lExt, '.rtf') = 0 then Result := 'text/rtf'
+  else if AnsiCompareText(lExt, '.eps') = 0 then Result := 'application/Postscript'
+  else if AnsiCompareText(lExt, '.ps') = 0 then Result := 'application/Postscript'
+  //
+  else if AnsiCompareText(lExt, '.xls') = 0 then Result := 'application/vnd.ms-excel'
+  else if AnsiCompareText(lExt, '.doc') = 0 then Result := 'application/msword'
+  else if AnsiCompareText(lExt, '.ppt') = 0 then Result := 'application/vnd.ms-powerpoint'
+  //
+  else if AnsiCompareText(lExt, '.odt') = 0 then Result := 'application/vnd.oasis.opendocument.text'
+  else if AnsiCompareText(lExt, '.ods') = 0 then Result := 'application/vnd.oasis.opendocument.spreadsheet'
+  else if AnsiCompareText(lExt, '.odp') = 0 then Result := 'application/vnd.oasis.opendocument.presentation'
+  else if AnsiCompareText(lExt, '.odg') = 0 then Result := 'application/vnd.oasis.opendocument.graphics'
+  else if AnsiCompareText(lExt, '.odc') = 0 then Result := 'application/vnd.oasis.opendocument.chart'
+  else if AnsiCompareText(lExt, '.odf') = 0 then Result := 'application/vnd.oasis.opendocument.formula'
+  else if AnsiCompareText(lExt, '.odi') = 0 then Result := 'application/vnd.oasis.opendocument.image'
+  //
+  else if AnsiCompareText(lExt, '.xlsx') = 0 then Result := 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+  else if AnsiCompareText(lExt, '.pptx') = 0 then Result := 'application/vnd.openxmlformats-officedocument.presentationml.presentation'
+  else if AnsiCompareText(lExt, '.docx') = 0 then Result := 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+  // Now compressed archives
+  else if AnsiCompareText(lExt, '.zip') = 0 then Result := 'application/zip'
+  else if AnsiCompareText(lExt, '.tar') = 0 then Result := 'application/x-tar'
+  // If we can't auto-detect just suppose it is text!
+  else Result := 'text/plain';
 end;
 
 function TCDWidgetSet.GetAppHandle: THandle;
