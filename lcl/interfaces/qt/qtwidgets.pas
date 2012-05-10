@@ -2989,6 +2989,10 @@ begin
   if KeyMsg.CharCode <> VK_UNKNOWN then
   begin
     NotifyApplicationUserInput(LCLObject, KeyMsg.Msg);
+
+    if not CanSendLCLMessage or (Sender = nil) then
+      exit(False);
+
     if (DeliverMessage(KeyMsg, True) <> 0) or (KeyMsg.CharCode=VK_UNKNOWN) then
     begin
   {$ifdef VerboseQt}
@@ -2996,6 +3000,9 @@ begin
   {$endif}
       Exit;
     end;
+
+    if not CanSendLCLMessage or (Sender = nil) then
+      exit(False);
 
     // here we should let widgetset to handle key
     //...
@@ -3009,6 +3016,10 @@ begin
     if not EatArrowKeys then
     begin
       NotifyApplicationUserInput(LCLObject, KeyMsg.Msg);
+
+      if not CanSendLCLMessage or (Sender = nil) then
+        exit(False);
+
       if (DeliverMessage(KeyMsg, True) <> 0) or (KeyMsg.CharCode=VK_UNKNOWN) then
       begin
         // the LCL handled the key
@@ -3023,8 +3034,8 @@ begin
 
   { if our LCLObject dissappeared in the meantime just exit, otherwise
     we'll run into problems.}
-  if (LCLObject = nil) then
-    Exit(False);
+  if not CanSendLCLMessage or (Sender = nil) then
+    exit(False);
 
 
   { Also sends a utf-8 key event for key down }
@@ -3044,6 +3055,9 @@ begin
       Exit;
     end;
 
+    if not CanSendLCLMessage or (Sender = nil) then
+      exit(False);
+
     // create the CN_CHAR / CN_SYSCHAR message
     FillChar(CharMsg, SizeOf(CharMsg), 0);
     CharMsg.Msg := CN_CharMsg[IsSysKey];
@@ -3056,6 +3070,10 @@ begin
     WriteLn(' message: ', CharMsg.Msg);
   {$endif}
     NotifyApplicationUserInput(LCLObject, CharMsg.Msg);
+
+    if not CanSendLCLMessage or (Sender = nil) then
+      exit(False);
+
     if (DeliverMessage(CharMsg, True) <> 0) or (CharMsg.CharCode = VK_UNKNOWN) then
     begin
       // the LCL has handled the key
@@ -3074,14 +3092,23 @@ begin
   {$ifdef VerboseQt}
     WriteLn(' message: ', CharMsg.Msg);
   {$endif}
+    if not CanSendLCLMessage or (Sender = nil) then
+      exit(False);
+
     NotifyApplicationUserInput(LCLObject, CharMsg.Msg);
+
+    if not CanSendLCLMessage or (Sender = nil) then
+      exit(False);
+
     DeliverMessage(CharMsg, True);
-    if (LCLObject = nil) then
-      Exit(False);
+    if not CanSendLCLMessage or (Sender = nil) then
+      exit(False);
   end;
   
   // check if data was changed during key handling
-  if (KeyMsg.CharCode <> ACharCode) or (UTF8Char <> UTF8Text) or (Word(AChar) <> CharMsg.CharCode) then
+  if CanSendLCLMessage and (Sender <> nil) and
+    ((KeyMsg.CharCode <> ACharCode) or (UTF8Char <> UTF8Text) or
+      (Word(AChar) <> CharMsg.CharCode)) then
   begin
     // data was changed
     if UTF8Char <> UTF8Text then
@@ -3233,6 +3260,10 @@ begin
         QtMidButton: Msg.Msg := CheckMouseButtonDown(2);
       end;
       NotifyApplicationUserInput(LCLObject, Msg.Msg);
+
+      if not CanSendLCLMessage or (Sender = nil) then
+        exit;
+
       DeliverMessage(Msg, True);
       // Check if our objects exists since LCL can destroy object during
       // mouse events...
@@ -3254,6 +3285,10 @@ begin
       end;
 
       NotifyApplicationUserInput(LCLObject, Msg.Msg);
+
+      if not CanSendLCLMessage or (Sender = nil) then
+        exit;
+
       DeliverMessage(Msg, True);
 
       // Check if our objects exists since LCL can destroy object during
@@ -3264,7 +3299,8 @@ begin
       { Clicking on buttons operates differently, because QEventMouseButtonRelease
         is sent if you click a control, drag the mouse out of it and release, but
         buttons should not be clicked on this case. }
-      if (LCLObject <> nil) and not (LCLObject is TCustomButton) then
+      if CanSendLCLMessage and (Sender <> nil) and
+        not (LCLObject is TCustomButton) then
       begin
         Msg.Msg := LM_CLICKED;
         DeliverMessage(Msg, True);
