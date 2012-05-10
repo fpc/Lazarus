@@ -16,6 +16,11 @@ unit fpvectorial;
 {$endif}
 
 {$define USE_LCL_CANVAS}
+{$ifdef USE_LCL_CANVAS}
+  {$define USE_CANVAS_CLIP_REGION}
+  {.$define DEBUG_CANVAS_CLIP_REGION}
+{$endif}
+{.$define FPVECTORIAL_TOCANVAS_DEBUG}
 
 interface
 
@@ -60,6 +65,7 @@ const
   STR_ENCAPSULATEDPOSTSCRIPT_EXTENSION = '.eps';
   STR_LAS_EXTENSION = '.las';
   STR_RAW_EXTENSION = '.raw';
+  STR_MATHML_EXTENSION = '.mathml';
 
 type
   TvCustomVectorialWriter = class;
@@ -226,6 +232,8 @@ type
     function Next(): TPathSegment;
     procedure CalculateBoundingBox(ADest: TFPCustomCanvas; var ALeft, ATop, ARight, ABottom: Double); override;
     procedure AppendSegment(ASegment: TPathSegment);
+    procedure Render(ADest: TFPCustomCanvas; ADestX: Integer = 0;
+      ADestY: Integer = 0; AMulX: Double = 1.0; AMulY: Double = 1.0); override;
   end;
 
   {@@
@@ -861,6 +869,214 @@ begin
   PointsEnd.Next := ASegment;
   ASegment.Previous := PointsEnd;
   PointsEnd := ASegment;
+end;
+
+procedure TPath.Render(ADest: TFPCustomCanvas; ADestX: Integer;
+  ADestY: Integer; AMulX: Double; AMulY: Double);
+
+  function CoordToCanvasX(ACoord: Double): Integer;
+  begin
+    Result := Round(ADestX + AmulX * ACoord);
+  end;
+
+  function CoordToCanvasY(ACoord: Double): Integer;
+  begin
+    Result := Round(ADestY + AmulY * ACoord);
+  end;
+
+var
+  j, k: Integer;
+  PosX, PosY: Double; // Not modified by ADestX, etc
+  CoordX, CoordY: Integer;
+  CurSegment: TPathSegment;
+  Cur2DSegment: T2DSegment absolute CurSegment;
+  Cur2DBSegment: T2DBezierSegment absolute CurSegment;
+  // For bezier
+  CurX, CurY: Integer; // Not modified by ADestX, etc
+  CoordX2, CoordY2, CoordX3, CoordY3, CoordX4, CoordY4: Integer;
+  CurveLength: Integer;
+  t: Double;
+  // For polygons
+  Points: array of TPoint;
+  // Clipping Region
+  {$ifdef USE_LCL_CANVAS}
+  ClipRegion, OldClipRegion: HRGN;
+  ACanvas: TCanvas absolute ADest;
+  {$endif}
+begin
+  PosX := 0;
+  PosY := 0;
+  ADest.Brush.Style := bsClear;
+
+  ADest.MoveTo(ADestX, ADestY);
+
+  // Set the path Pen and Brush options
+  ADest.Pen.Style := Pen.Style;
+  ADest.Pen.Width := Round(Pen.Width * AMulX);
+  if ADest.Pen.Width < 1 then ADest.Pen.Width := 1;
+  if (Pen.Width <= 2) and (ADest.Pen.Width > 2) then ADest.Pen.Width := 2;
+  if (Pen.Width <= 5) and (ADest.Pen.Width > 5) then ADest.Pen.Width := 5;
+  ADest.Pen.FPColor := Pen.Color;
+  ADest.Brush.FPColor := Brush.Color;
+
+  // Prepare the Clipping Region, if any
+  {$ifdef USE_CANVAS_CLIP_REGION}
+  if ClipPath <> nil then
+  begin
+    OldClipRegion := LCLIntf.CreateEmptyRegion();
+    GetClipRgn(ACanvas.Handle, OldClipRegion);
+    ClipRegion := ConvertPathToRegion(ClipPath, ADestX, ADestY, AMulX, AMulY);
+    SelectClipRgn(ACanvas.Handle, ClipRegion);
+    DeleteObject(ClipRegion);
+    // debug info
+    {$ifdef DEBUG_CANVAS_CLIP_REGION}
+    ConvertPathToPoints(CurPath.ClipPath, ADestX, ADestY, AMulX, AMulY, Points);
+    ACanvas.Polygon(Points);
+    {$endif}
+  end;
+  {$endif}
+
+  //
+  // For solid paths, draw a polygon for the main internal area
+  //
+  if Brush.Style <> bsClear then
+  begin
+    PrepareForSequentialReading;
+
+    {$ifdef FPVECTORIAL_TOCANVAS_DEBUG}
+    Write(' Solid Path Internal Area');
+    {$endif}
+    ADest.Brush.Style := Brush.Style;
+
+    SetLength(Points, Len);
+
+    for j := 0 to Len - 1 do
+    begin
+      //WriteLn('j = ', j);
+      CurSegment := TPathSegment(Next());
+
+      CoordX := CoordToCanvasX(Cur2DSegment.X);
+      CoordY := CoordToCanvasY(Cur2DSegment.Y);
+
+      Points[j].X := CoordX;
+      Points[j].Y := CoordY;
+
+      {$ifdef FPVECTORIAL_TOCANVAS_DEBUG}
+      Write(Format(' P%d,%d', [CoordY, CoordY]));
+      {$endif}
+    end;
+
+    ADest.Polygon(Points);
+
+    {$ifdef FPVECTORIAL_TOCANVAS_DEBUG}
+    Write(' Now the details ');
+    {$endif}
+  end;
+
+  //
+  // For other paths, draw more carefully
+  //
+  PrepareForSequentialReading;
+
+  for j := 0 to Len - 1 do
+  begin
+    //WriteLn('j = ', j);
+    CurSegment := TPathSegment(Next());
+
+    case CurSegment.SegmentType of
+    stMoveTo:
+    begin
+      CoordX := CoordToCanvasX(Cur2DSegment.X);
+      CoordY := CoordToCanvasY(Cur2DSegment.Y);
+      ADest.MoveTo(CoordX, CoordY);
+      PosX := Cur2DSegment.X;
+      PosY := Cur2DSegment.Y;
+      {$ifdef FPVECTORIAL_TOCANVAS_DEBUG}
+      Write(Format(' M%d,%d', [CoordY, CoordY]));
+      {$endif}
+    end;
+    // This element can override temporarely the Pen
+    st2DLineWithPen:
+    begin
+      ADest.Pen.FPColor := T2DSegmentWithPen(Cur2DSegment).Pen.Color;
+
+      CoordX := CoordToCanvasX(PosX);
+      CoordY := CoordToCanvasY(PosY);
+      CoordX2 := CoordToCanvasX(Cur2DSegment.X);
+      CoordY2 := CoordToCanvasY(Cur2DSegment.Y);
+      ADest.Line(CoordX, CoordY, CoordX2, CoordY2);
+
+      PosX := Cur2DSegment.X;
+      PosY := Cur2DSegment.Y;
+
+      ADest.Pen.FPColor := Pen.Color;
+
+      {$ifdef FPVECTORIAL_TOCANVAS_DEBUG}
+      Write(Format(' L%d,%d', [CoordToCanvasX(Cur2DSegment.X), CoordToCanvasY(Cur2DSegment.Y)]));
+      {$endif}
+    end;
+    st2DLine, st3DLine:
+    begin
+      CoordX := CoordToCanvasX(PosX);
+      CoordY := CoordToCanvasY(PosY);
+      CoordX2 := CoordToCanvasX(Cur2DSegment.X);
+      CoordY2 := CoordToCanvasY(Cur2DSegment.Y);
+      ADest.Line(CoordX, CoordY, CoordX2, CoordY2);
+      PosX := Cur2DSegment.X;
+      PosY := Cur2DSegment.Y;
+      {$ifdef FPVECTORIAL_TOCANVAS_DEBUG}
+      Write(Format(' L%d,%d', [CoordX, CoordY]));
+      {$endif}
+    end;
+    { To draw a bezier we need to divide the interval in parts and make
+      lines between this parts }
+    st2DBezier, st3DBezier:
+    begin
+      CoordX := CoordToCanvasX(PosX);
+      CoordY := CoordToCanvasY(PosY);
+      CoordX2 := CoordToCanvasX(Cur2DBSegment.X2);
+      CoordY2 := CoordToCanvasY(Cur2DBSegment.Y2);
+      CoordX3 := CoordToCanvasX(Cur2DBSegment.X3);
+      CoordY3 := CoordToCanvasY(Cur2DBSegment.Y3);
+      CoordX4 := CoordToCanvasX(Cur2DBSegment.X);
+      CoordY4 := CoordToCanvasY(Cur2DBSegment.Y);
+      SetLength(Points, 0);
+      AddBezierToPoints(
+        Make2DPoint(CoordX, CoordY),
+        Make2DPoint(CoordX2, CoordY2),
+        Make2DPoint(CoordX3, CoordY3),
+        Make2DPoint(CoordX4, CoordY4),
+        Points
+      );
+
+      ADest.Brush.Style := Brush.Style;
+      if Length(Points) >= 3 then
+        ADest.Polygon(Points);
+
+      PosX := Cur2DSegment.X;
+      PosY := Cur2DSegment.Y;
+
+      {$ifdef FPVECTORIAL_TOCANVAS_DEBUG}
+      Write(Format(' ***C%d,%d %d,%d %d,%d %d,%d',
+        [CoordToCanvasX(PosX), CoordToCanvasY(PosY),
+         CoordToCanvasX(Cur2DBSegment.X2), CoordToCanvasY(Cur2DBSegment.Y2),
+         CoordToCanvasX(Cur2DBSegment.X3), CoordToCanvasY(Cur2DBSegment.Y3),
+         CoordToCanvasX(Cur2DBSegment.X), CoordToCanvasY(Cur2DBSegment.Y)]));
+      {$endif}
+    end;
+    end;
+  end;
+  {$ifdef FPVECTORIAL_TOCANVAS_DEBUG}
+  WriteLn('');
+  {$endif}
+
+  // Restores the previous Clip Region
+  {$ifdef USE_CANVAS_CLIP_REGION}
+  if ClipPath <> nil then
+  begin
+    SelectClipRgn(ACanvas.Handle, OldClipRegion); //Using OldClipRegion crashes in Qt
+  end;
+  {$endif}
 end;
 
 { TvText }
@@ -2174,6 +2390,7 @@ begin
   else if AnsiCompareText(lExt, STR_ENCAPSULATEDPOSTSCRIPT_EXTENSION) = 0 then Result := vfEncapsulatedPostScript
   else if AnsiCompareText(lExt, STR_LAS_EXTENSION) = 0 then Result := vfLAS
   else if AnsiCompareText(lExt, STR_RAW_EXTENSION) = 0 then Result := vfRAW
+  else if AnsiCompareText(lExt, STR_MATHML_EXTENSION) = 0 then Result := vfMathML
   else
     raise Exception.Create('TvVectorialDocument.GetFormatFromExtension: The extension (' + lExt + ') doesn''t match any supported formats.');
 end;
