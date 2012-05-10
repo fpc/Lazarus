@@ -30,7 +30,8 @@ interface
 
 uses
   Classes, SysUtils, Math,
-  fpvectorial, fpimage, fpvutils,
+  fpcanvas, fpimage,
+  fpvectorial, fpvutils,
   lconvencoding;
 
 type
@@ -103,6 +104,7 @@ type
     procedure ReadENTITIES_VERTEX(ATokens: TDXFTokens; AData: TvVectorialPage; ADoc: TvVectorialDocument);
     procedure ReadENTITIES_SEQEND(ATokens: TDXFTokens; AData: TvVectorialPage; ADoc: TvVectorialDocument);
     procedure ReadENTITIES_MTEXT(ATokens: TDXFTokens; AData: TvVectorialPage; ADoc: TvVectorialDocument);
+    procedure ReadENTITIES_LEADER(ATokens: TDXFTokens; AData: TvVectorialPage; ADoc: TvVectorialDocument);
     procedure ReadENTITIES_POINT(ATokens: TDXFTokens; AData: TvVectorialPage; ADoc: TvVectorialDocument);
     function  GetCoordinateValue(AStr: shortstring): Double;
     function  ConvertDXFStringToUTF8(AStr: string): string;
@@ -741,6 +743,7 @@ begin
     else if CurToken.StrValue = 'SPLINE' then ReadENTITIES_SPLINE(CurToken.Childs, AData, ADoc)
     else if CurToken.StrValue = 'POINT' then ReadENTITIES_POINT(CurToken.Childs, AData, ADoc)
     else if CurToken.StrValue = 'MTEXT' then ReadENTITIES_MTEXT(CurToken.Childs, AData, ADoc)
+    else if CurToken.StrValue = 'LEADER' then ReadENTITIES_LEADER(CurToken.Childs, AData, ADoc)
     // A Polyline can have multiple child objects
     else if CurToken.StrValue = 'POLYLINE' then
     begin
@@ -1201,7 +1204,7 @@ begin
 
   // Position fixing for documents with negative coordinates
   PosX := PosX - DOC_OFFSET.X;
-  PosY := PosY - DOC_OFFSET.Y;
+  PosY := PosY + FontSize - DOC_OFFSET.Y;
 
   // Convert the string if necessary
   Str := ConvertDXFStringToUTF8(Str);
@@ -1429,10 +1432,71 @@ begin
 
   // Position fixing for documents with negative coordinates
   PosX := PosX - DOC_OFFSET.X;
-  PosY := PosY - DOC_OFFSET.Y;
+  PosY := PosY + FontSize - DOC_OFFSET.Y;
 
   //
   AData.AddText(PosX, PosY, 0, '', Round(FontSize), Str);
+end;
+
+procedure TvDXFVectorialReader.ReadENTITIES_LEADER(ATokens: TDXFTokens;
+  AData: TvVectorialPage; ADoc: TvVectorialDocument);
+var
+  CurToken: TDXFToken;
+  i, curPoint: Integer;
+  lValueX, lValueY: Double;
+  lArrow: TvArrow;
+begin
+  lArrow := TvArrow.Create;
+  curPoint := 0;
+
+  for i := 0 to ATokens.Count - 1 do
+  begin
+    // Now read and process the item name
+    CurToken := TDXFToken(ATokens.Items[i]);
+
+    // Avoid an exception by previously checking if the conversion can be made
+    if CurToken.GroupCode in [10, 20, 30, 11, 21, 31] then
+    begin
+      CurToken.FloatValue :=  StrToFloat(Trim(CurToken.StrValue), FPointSeparator);
+    end;
+
+    // Loads the coordinates
+    // With Position fixing for documents with negative coordinates
+    case CurToken.GroupCode of
+      10:
+      begin
+        // Starting a new point
+        Inc(curPoint);
+
+        lValueX := CurToken.FloatValue - DOC_OFFSET.X;
+
+        case curPoint of
+        1: lArrow.X := lValueX;
+        2: lArrow.Base.X := lValueX;
+        3: lArrow.ExtraLineBase.X := lValueX;
+        end;
+      end;
+      20:
+      begin
+        lValueY := CurToken.FloatValue - DOC_OFFSET.Y;
+
+        case curPoint of
+        1: lArrow.Y := lValueY;
+        2: lArrow.Base.Y := lValueY;
+        3: lArrow.ExtraLineBase.Y := lValueY;
+        end;
+      end;
+    end;
+  end;
+
+  // Give a % of the line length to the arrow head
+  lArrow.ArrowLength := 0.2 * sqrt(sqr(lArrow.Base.Y - lArrow.Y) + sqr(lArrow.Base.X - lArrow.X));
+  lArrow.ArrowBaseLength := lArrow.ArrowLength / 2;
+
+  // And now write it
+  lArrow.HasExtraLine := True;
+  lArrow.Brush.Style := bsSolid;
+  AData.AddEntity(lArrow);
 end;
 
 procedure TvDXFVectorialReader.ReadENTITIES_POINT(ATokens: TDXFTokens;

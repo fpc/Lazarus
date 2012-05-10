@@ -197,6 +197,7 @@ type
         elements might be able to override this setting. }
     Pen: TvPen;
     constructor Create; override;
+    procedure ApplyPenToCanvas(ADest: TFPCustomCanvas);
   end;
 
   { TvEntityWithPenAndBrush }
@@ -207,6 +208,7 @@ type
         elements might be able to override this setting. }
     Brush: TvBrush;
     constructor Create; override;
+    procedure ApplyBrushToCanvas(ADest: TFPCustomCanvas);
   end;
 
   TvClipMode = (vcmNonzeroWindingRule, vcmEvenOddRule);
@@ -318,6 +320,31 @@ type
 
   TvPoint = class(TvEntityWithPen)
   public
+  end;
+
+  { TvArrow }
+
+  //
+  // The arrow look like this:
+  //
+  // A<------|B
+  //         |
+  //         |C
+  //
+  // A -> X,Y,Z
+  // B -> Base
+  // C -> ExtraLineBase, which exists if HasExtraLine=True
+
+  TvArrow = class(TvEntityWithPenAndBrush)
+  public
+    Base: T3DPoint;
+    HasExtraLine: Boolean;
+    ExtraLineBase: T3DPoint;
+    ArrowLength: Double;
+    ArrowBaseLength: Double;
+    procedure CalculateBoundingBox(ADest: TFPCustomCanvas; var ALeft, ATop, ARight, ABottom: Double); override;
+    procedure Render(ADest: TFPCustomCanvas; ADestX: Integer = 0;
+      ADestY: Integer = 0; AMulX: Double = 1.0; AMulY: Double = 1.0); override;
   end;
 
   {@@
@@ -654,6 +681,13 @@ begin
   Pen.Color := colBlack;
 end;
 
+procedure TvEntityWithPen.ApplyPenToCanvas(ADest: TFPCustomCanvas);
+begin
+  ADest.Pen.FPColor := Pen.Color;
+  ADest.Pen.Width := Pen.Width;
+  ADest.Pen.Style := Pen.Style;
+end;
+
 { TvEntityWithPenAndBrush }
 
 constructor TvEntityWithPenAndBrush.Create;
@@ -661,6 +695,12 @@ begin
   inherited Create;
   Brush.Style := bsClear;
   Brush.Color := colBlue;
+end;
+
+procedure TvEntityWithPenAndBrush.ApplyBrushToCanvas(ADest: TFPCustomCanvas);
+begin
+  ADest.Brush.FPColor := Brush.Color;
+  ADest.Brush.Style := Brush.Style;
 end;
 
 { TvRasterImage }
@@ -708,6 +748,95 @@ begin
       RasterImage.Colors[lPos.X, lPos.Y] := lValue;
     end;
   end;
+end;
+
+{ TvArrow }
+
+procedure TvArrow.CalculateBoundingBox(ADest: TFPCustomCanvas; var ALeft, ATop,
+  ARight, ABottom: Double);
+begin
+
+end;
+
+procedure TvArrow.Render(ADest: TFPCustomCanvas; ADestX: Integer;
+  ADestY: Integer; AMulX: Double; AMulY: Double);
+
+  function CoordToCanvasX(ACoord: Double): Integer;
+  begin
+    Result := Round(ADestX + AmulX * ACoord);
+  end;
+
+  function CoordToCanvasY(ACoord: Double): Integer;
+  begin
+    Result := Round(ADestY + AmulY * ACoord);
+  end;
+
+var
+  lArrow, lBase, lExtraBase: TPoint;
+  lPointD, lPointE, lPointF: T3DPoint;
+  lPoints: array[0..2] of TPoint;
+  AlfaAngle: Double;
+begin
+  ApplyPenToCanvas(ADest);
+  ApplyBrushToCanvas(ADest);
+
+  lArrow.X := CoordToCanvasX(X);
+  lArrow.Y := CoordToCanvasY(Y);
+  lBase.X := CoordToCanvasX(Base.X);
+  lBase.Y := CoordToCanvasY(Base.Y);
+  lExtraBase.X := CoordToCanvasX(ExtraLineBase.X);
+  lExtraBase.Y := CoordToCanvasY(ExtraLineBase.Y);
+
+  // Start with the lines
+
+  ADest.Line(lArrow, lBase);
+
+  if HasExtraLine then
+    ADest.Line(lBase, lExtraBase);
+
+  // Now draw the arrow head
+  lPoints[0].X := CoordToCanvasX(X);
+  lPoints[0].Y := CoordToCanvasY(Y);
+  //
+  // Here a lot of trigonometry comes to play, it is hard to explain in text, but in essence
+  //
+  // A line L is formed by the points A (Arrow head) and B (Base)
+  // Our smaller triangle starts at a point D in this line which has length ArrowLength counting from A
+  // This forms a rectangle triangle with a line paralel to the X axis
+  // Alfa is the angle between A and the line parallel to the X axis
+  //
+  // This brings this equations:
+  // AlfaAngle := arctg((B.Y - A.Y) / (B.X - A.X));
+  // Sin(Alfa) := (D.Y - A.Y) / ArrowLength
+  // Cos(Alfa) := (D.X - A.X) / ArrowLength
+  //
+  // Then at this point D we start a line perpendicular to the line L
+  // And with this line we progress a length of ArrowBaseLength/2
+  // This line, the D point and a line parallel to the Y axis for another
+  // rectangle triangle with the same Alfa angle at the point D
+  // The point at the end of the hipotenuse of this triangle is our point E
+  // So we have more equations:
+  //
+  // Sin(Alfa) := (E.x - D.X) / (ArrowBaseLength/2)
+  // Cos(Alfa) := (E.Y - D.Y) / (ArrowBaseLength/2)
+  //
+  // And the same in the opposite direction for our point F:
+  //
+  // Sin(Alfa) := (D.X - F.X) / (ArrowBaseLength/2)
+  // Cos(Alfa) := (D.Y - F.Y) / (ArrowBaseLength/2)
+  //
+  AlfaAngle := ArcTan((Base.Y - Y) / (Base.X - X));
+  lPointD.Y := Sin(AlfaAngle) * ArrowLength + Y;
+  lPointD.X := Cos(AlfaAngle) * ArrowLength + X;
+  lPointE.X := Sin(AlfaAngle) * (ArrowBaseLength/2) + lPointD.X;
+  lPointE.Y := Cos(AlfaAngle) * (ArrowBaseLength/2) + lPointD.Y;
+  lPointF.X := - Sin(AlfaAngle) * (ArrowBaseLength/2) + lPointD.X;
+  lPointF.Y := - Cos(AlfaAngle) * (ArrowBaseLength/2) + lPointD.Y;
+  lPoints[1].X := CoordToCanvasX(lPointE.X);
+  lPoints[1].Y := CoordToCanvasY(lPointE.Y);
+  lPoints[2].X := CoordToCanvasX(lPointF.X);
+  lPoints[2].Y := CoordToCanvasY(lPointF.Y);
+  ADest.Polygon(lPoints);
 end;
 
 { TvFormulaElement }
