@@ -88,6 +88,7 @@ begin
     Initialize(FControlLink, FControlItems);
 end;
 
+//todo: remove this method as soon fpc rev 21158 lands in the last supported compiler
 procedure TDBLookup.ChangeListLinkDataSource(NewDataSource: TDataSource);
 begin
   if NewDataSource <> FListLink.DataSource then
