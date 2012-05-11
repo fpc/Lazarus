@@ -30,7 +30,7 @@ interface
 uses
   Classes, SysUtils, Forms, Controls, Graphics,
   IDEWindowIntf, DebuggerStrConst, ComCtrls, ObjectInspector, PropEdits, Debugger, DebuggerDlg, BaseDebugManager,
-  LazarusIDEStrConsts, LCLType, Grids, StdCtrls, Menus;
+  LazarusIDEStrConsts, LCLType, Grids, StdCtrls, Menus, InputHistory, IDEProcs;
 
 type
 
@@ -46,7 +46,7 @@ type
   { TIDEInspectDlg }
 
   TIDEInspectDlg = class(TDebuggerDlg)
-    EditInspected: TEdit;
+    EdInspect: TComboBox;
     menuClassType: TMenuItem;
     PageControl: TPageControl;
     PopupMenu1: TPopupMenu;
@@ -54,6 +54,8 @@ type
     DataPage: TTabSheet;
     PropertiesPage: TTabSheet;
     MethodsPage: TTabSheet;
+    procedure EdInspectEditingDone(Sender: TObject);
+    procedure EdInspectKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure menuClassTypeClick(Sender: TObject);
@@ -128,6 +130,20 @@ begin
   IDEDialogLayoutList.SaveLayout(Self);
 end;
 
+procedure TIDEInspectDlg.EdInspectKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+begin
+  if (Key = VK_RETURN) then begin
+    FExpression := EdInspect.Text;
+    UpdateData;
+  end;
+end;
+
+procedure TIDEInspectDlg.EdInspectEditingDone(Sender: TObject);
+begin
+  FExpression := EdInspect.Text;
+  UpdateData;
+end;
+
 procedure TIDEInspectDlg.FormKeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
@@ -158,7 +174,7 @@ begin
 
   if not Assigned(FDBGInfo) then exit;
   if not Assigned(FDBGInfo.Fields) then exit;
-  EditInspected.Text:=FExpression+' : Class '+FDBGInfo.TypeName+' inherits from '+FDBGInfo.Ancestor;
+  StatusBar1.SimpleText:=FExpression+' : Class '+FDBGInfo.TypeName+' inherits from '+FDBGInfo.Ancestor;
   GridDataSetup;
   ShowDataFields;
   //FGridData.AutoSizeColumn(1);
@@ -175,7 +191,7 @@ begin
   PropertiesPage.TabVisible:=false;
   MethodsPage.TabVisible:=false;
   if not Assigned(FDBGInfo) then exit;
-  EditInspected.Text:=FExpression+' : Variant';
+  StatusBar1.SimpleText:=FExpression+' : Variant';
   GridDataSetup;
   FGridData.Cells[0,1]:=FExpression;
   FGridData.Cells[1,1]:='Variant';
@@ -191,7 +207,7 @@ begin
 
   if not Assigned(FDBGInfo) then exit;
   if not Assigned(FDBGInfo.Fields) then exit;
-  EditInspected.Text:=FExpression+' : '+FDBGInfo.TypeName;
+  StatusBar1.SimpleText:=FExpression+' : '+FDBGInfo.TypeName;
   GridDataSetup;
   ShowDataFields;
   //FGridData.AutoSizeColumn(2);
@@ -203,7 +219,7 @@ begin
   PropertiesPage.TabVisible:=false;
   MethodsPage.TabVisible:=false;
   if not Assigned(FDBGInfo) then exit;
-  EditInspected.Text:=FExpression+' : '+FDBGInfo.TypeName + ' = ' + FDBGInfo.Value.AsString;
+  StatusBar1.SimpleText:=FExpression+' : '+FDBGInfo.TypeName + ' = ' + FDBGInfo.Value.AsString;
   GridDataSetup;
   FGridData.Cells[0,1]:=FExpression;
   FGridData.Cells[1,1]:=FDBGInfo.TypeName;
@@ -217,7 +233,7 @@ begin
   PropertiesPage.TabVisible:=false;
   MethodsPage.TabVisible:=false;
   if not Assigned(FDBGInfo) then exit;
-  EditInspected.Text:=FExpression+' : '+FDBGInfo.TypeName + ' = ' + FDBGInfo.Value.AsString;
+  StatusBar1.SimpleText:=FExpression+' : '+FDBGInfo.TypeName + ' = ' + FDBGInfo.Value.AsString;
   GridDataSetup;
   FGridData.Cells[0,1]:=FExpression;
   FGridData.Cells[1,1]:=FDBGInfo.TypeName;
@@ -234,7 +250,7 @@ begin
   PropertiesPage.TabVisible:=false;
   MethodsPage.TabVisible:=false;
   if not Assigned(FDBGInfo) then exit;
-  EditInspected.Text:=FExpression+' : '+FDBGInfo.TypeName + ' = ' + FDBGInfo.Value.AsString;
+  StatusBar1.SimpleText:=FExpression+' : '+FDBGInfo.TypeName + ' = ' + FDBGInfo.Value.AsString;
   GridDataSetup;
   FGridData.Cells[0,1]:=FExpression;
   FGridData.Cells[1,1]:=FDBGInfo.TypeName;
@@ -251,7 +267,7 @@ begin
   PropertiesPage.TabVisible:=false;
   MethodsPage.TabVisible:=false;
   if not Assigned(FDBGInfo) then exit;
-  EditInspected.Text:=FExpression+' : '+FDBGInfo.TypeName + ' = ' + FDBGInfo.Value.AsString;
+  StatusBar1.SimpleText:=FExpression+' : '+FDBGInfo.TypeName + ' = ' + FDBGInfo.Value.AsString;
   GridDataSetup;
   FGridData.Cells[0,1]:=FExpression;
   if (FDBGInfo.TypeName <> '') and (FDBGInfo.TypeName[1] = '^')
@@ -439,7 +455,7 @@ begin
   GridDataSetup;
   FGridData.Visible := False;
   FreeAndNil(FDBGInfo);
-  EditInspected.Text:='';
+  StatusBar1.SimpleText:='';
 end;
 
 function TIDEInspectDlg.ColSizeGetter(AColId: Integer; var ASize: Integer): Boolean;
@@ -505,6 +521,9 @@ begin
   MethodsPage.InsertControl(FGridMethods);
   GridMethodsSetup(True);
 
+  EdInspect.Items.Assign(InputHistories.HistoryLists.
+    GetList(ClassName,True,rltCaseSensitive));
+
   Clear;
 end;
 
@@ -520,6 +539,7 @@ end;
 procedure TIDEInspectDlg.Execute(const AExpression: ansistring);
 begin
   FExpression:=AExpression;
+  EdInspect.Text := FExpression;
   UpdateData;
 end;
 
@@ -531,6 +551,10 @@ begin
   if FExpression = ''
   then exit;
 
+  InputHistories.HistoryLists.Add(ClassName, FExpression,rltCaseSensitive);
+  if EdInspect.Items.IndexOf(FExpression) = -1
+  then EdInspect.Items.Insert(0, FExpression);
+
   Opts := [defFullTypeInfo];
   if menuClassType.Checked then
     include(Opts, defClassAutoCast);
@@ -539,7 +563,7 @@ begin
   begin
     FreeAndNil(FDBGInfo);
     Clear;
-    EditInspected.Text:=FExpression + ' : unavailable';
+    StatusBar1.SimpleText:=FExpression + ' : unavailable';
     Exit;
   end;
   case FDBGInfo.Kind of
