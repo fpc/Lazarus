@@ -143,7 +143,7 @@ var
   lForm: TCDNonNativeForm;
 begin
   lChar := Cardinal(AChar);
-  {$ifdef VerboseCDEvents}
+  {$ifdef VerboseCDKeyInput}
   __android_log_write(ANDROID_LOG_INFO,'lclapp',PChar(
     Format('[LCLOnKey] called AKind=%d AKeyCode=%x AChar=%s', [AKind, AKeyCode, UnicodeToUTF8(lChar)])));
   {$endif}
@@ -153,12 +153,41 @@ begin
   lKey := CDWidgetset.AndroidKeyCodeToLCLKeyCode(AKeyCode);
 
   case AKind of
-    ACTION_DOWN: CallbackKeyDown(lCurForm, lKey);
-    -1: // This indicates a key char event
+    ACTION_DOWN:
+    begin
+      CallbackKeyDown(lCurForm, lKey);
+
+      // Galaxy Nexus S with Android 4.0 sends numbers only as key down/up events,
+      // it doesn't send them to commit text
+      //
+      // Wildfire with Android 2.2 sends the numbers only to commit text
+      //
+      // So if we get any numbers here, generate KeyPress too
+      case lKey of
+        VK_0..VK_9:
+        begin
+          AUTF8Char := VK2Char(lKey);
+          CallbackKeyChar(lCurForm, lKey, AUTF8Char);
+        end;
+      end;
+    end;
+    // This indicates a key char event, created with commitText
+    // We don't get KeyDown/KeyUp when we get this, so generate them
+    -1:
     begin
       AUTF8Text := UnicodeToUTF8(lChar);
       AUTF8Char := AUTF8Text;
+
+      if Length(AUTF8Text) = 1 then
+      begin
+        lKey := Char2VK(AUTF8Text[1]);
+        CallbackKeyDown(lCurForm, lKey);
+      end;
+
       CallbackKeyChar(lCurForm, lKey, AUTF8Char);
+
+      if Length(AUTF8Text) = 1 then
+        CallbackKeyUp(lCurForm, lKey);
     end;
     ACTION_UP:
     begin

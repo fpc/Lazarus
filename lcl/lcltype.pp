@@ -2962,6 +2962,7 @@ function CS_To_String(CompStyle: Integer): String;
 function HiWord(i: integer): word;
 function LoWord(i: integer): word;
 function Char2VK(C : Char) : Word;
+function VK2Char(AVK: Word): Char;
 function MathRound(AValue: ValReal): Int64;
 function MulDiv(nNumber, nNumerator, nDenominator: Integer): Integer;
 function KeyToShortCut(const Key: Word; const Shift: TShiftState): TShortCut;
@@ -2990,6 +2991,16 @@ begin
     'A'..'Z' :Result := VK_A + Ord(C) - Ord('A');
   else
     Result:=0;
+  end;
+end;
+
+function VK2Char(AVK: Word): Char;
+begin
+  case AVK of
+    VK_0..VK_9: Result := chr(ord('0')+AVK-VK_0);
+    VK_A..VK_Z: Result := chr(ord('a')+AVK-VK_A);
+  else
+    Result:='?';
   end;
 end;
 
