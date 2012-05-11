@@ -106,6 +106,10 @@ type
     // Accessibility
     LCLControl: TControl;
     LCLAcc: TLazAccessibleObject;
+    //
+    LCLInjectedControl: TCustomControl;
+    LCLBaseControl: TCDBaseControl;
+    procedure ReadInjectedAndBaseControl; message 'ReadInjectedAndBaseControl';
     //NSAccessibilityCategory = objccategory external (NSObject)
     function accessibilityAttributeNames: NSArray; override;
     function accessibilityAttributeValue(attribute: NSString): id; override;
@@ -144,6 +148,8 @@ function Cocoa_RawImage_CreateBitmaps(const ARawImage: TRawImage; out ABitmap, A
 function RawImage_DescriptionToBitmapType(ADesc: TRawImageDescription; out bmpType: TCocoaBitmapType): Boolean;
 
 function CalcNSWindowStyle(const AWinControl: TWinControl; const AParams: TCreateParams): NSUInteger;
+function LCLCoordToCocoa(AControl: TControl; ACoord: TPoint): NSPoint;
+function CocoaCoordToLCL(AControl: TControl; ACoord: NSPoint): TPoint;
 
 implementation
 
@@ -344,6 +350,18 @@ begin
   end;
 
   if biMinimize in lForm.BorderIcons then Result := Result or NSMiniaturizableWindowMask;
+end;
+
+function LCLCoordToCocoa(AControl: TControl; ACoord: TPoint): NSPoint;
+begin
+  Result.x := ACoord.X;
+  Result.y := Screen.Height - ACoord.Y;
+  if AControl <> nil then Result.y := Result.y - AControl.Height;
+end;
+
+function CocoaCoordToLCL(AControl: TControl; ACoord: NSPoint): TPoint;
+begin
+
 end;
 
 { TCocoaForm }
@@ -1012,6 +1030,23 @@ end;
 
 { TCocoaAccessibleObject }
 
+procedure TCocoaAccessibleObject.ReadInjectedAndBaseControl;
+var
+  lHandle: TCDWinControl;
+begin
+  if not (LCLControl is TWinControl) then Exit;
+
+  if LCLBaseControl = nil then
+  begin
+    lHandle := TCDWinControl(TWinControl(LCLControl).Handle);
+    LCLBaseControl := lHandle;
+  end;
+  if LCLBaseControl = nil then Exit;
+
+  if LCLInjectedControl = nil then
+    LCLInjectedControl := lHandle.CDControl;
+end;
+
 function TCocoaAccessibleObject.accessibilityAttributeNames: NSArray;
 var
   lResult: NSMutableArray;
@@ -1057,6 +1092,8 @@ begin
   Result := lResult;
 end;
 
+// Note that if there is an injected control we will send information about it instead
+// of about the host control
 function TCocoaAccessibleObject.accessibilityAttributeValue(attribute: NSString): id;
 var
   lStrAttr: String;
@@ -1075,6 +1112,7 @@ var
 begin
   //Result := inherited accessibilityAttributeValue(attribute); -> This raises errors, so don't
   Result := nil;
+  ReadInjectedAndBaseControl();
 
   lStrAttr := NSStringToString(attribute);
   {$ifdef VerboseCDAccessibility}
@@ -1082,6 +1120,9 @@ begin
     [PtrUInt(Self), PtrUInt(LCLControl)]));
   {$endif}
 
+  //
+  // Role
+  //
   if attribute.isEqualToString(NSAccessibilityRoleAttribute) then
   begin
     {$ifdef VerboseCDAccessibility}
@@ -1089,26 +1130,46 @@ begin
     {$endif}
     Result := TCocoaCustomControl.LazRoleToCocoaRole(LCLAcc.AccessibleRole);
   end
+  //
+  // RoleDescription
+  //
   else if attribute.isEqualToString(NSAccessibilityRoleDescriptionAttribute) then
   begin
     Result := NSStringUtf8(LCLControl.Caption);
   end
+  //
+  // Value
+  //
   else if attribute.isEqualToString(NSAccessibilityValueAttribute) then
   begin
     //Result := NSStringUtf8(LCLControl.Caption);
   end
   {else if attribute = NSAccessibilityMinValueAttribute: NSString; cvar; external;
   NSAccessibilityMaxValueAttribute: NSString; cvar; external;}
+  //
+  // Enabled
+  //
   else if attribute.isEqualToString(NSAccessibilityEnabledAttribute) then
   begin
     Result := NSNumber.numberWithBool(LCLControl.Enabled);
   end
+  //
+  // Focused
+  //
   else if attribute.isEqualToString(NSAccessibilityFocusedAttribute) then
   begin
     if LCLControl is TWinControl then
-      Result := NSNumber.numberWithBool(TWinControl(LCLControl).Focused)
+    begin
+      if LCLInjectedControl <> nil then
+        Result := NSNumber.numberWithBool(LCLInjectedControl.Focused)
+      else
+        Result := NSNumber.numberWithBool(TWinControl(LCLControl).Focused)
+    end
     else Result := NSNumber.numberWithBool(False);
   end
+  //
+  // Parent
+  //
   else if attribute.isEqualToString(NSAccessibilityParentAttribute) or
     attribute.isEqualToString(NSAccessibilityTopLevelUIElementAttribute) then
   begin
@@ -1138,6 +1199,9 @@ begin
       Result := nil;
     end;
   end
+  //
+  // Children
+  //
   else if attribute.isEqualToString(NSAccessibilityChildrenAttribute)
     or attribute.isEqualToString(NSAccessibilityVisibleChildrenAttribute) then
   begin
@@ -1146,6 +1210,7 @@ begin
     {$endif}
     lAResult := NSArray(Result);
     lMAResult := lAResult.mutableCopy();
+    //if Self.LCLInjectedControl = nil then
     for i := 0 to LCLAcc.GetChildAccessibleObjectsCount() - 1 do
     begin
       lChildAcc := LCLAcc.GetChildAccessibleObject(i);
@@ -1153,6 +1218,9 @@ begin
     end;
     Result := lMAResult;
   end
+  //
+  // Window
+  //
   else if attribute.isEqualToString(NSAccessibilityWindowAttribute) then
   begin
     lForm := Forms.GetParentForm(LCLControl);
@@ -1163,17 +1231,21 @@ begin
   begin
 
   end
+  //
   // Position is in screen coordinates!
+  //
   else if attribute.isEqualToString(NSAccessibilityPositionAttribute) then
   begin
     lPoint := LCLControl.ClientToScreen(Types.Point(0, 0));
-    lNSPoint.x := lPoint.X;
-    lNSPoint.y := Screen.Height - lPoint.Y;
+    lNSPoint := LCLCoordToCocoa(LCLControl, lPoint);
     Result := NSValue.valueWithPoint(lNSPoint);
     {$ifdef VerboseCDAccessibility}
     DebugLn(Format(':<[TCocoaAccessibleObject.accessibilityAttributeValue] NSAccessibilityPositionAttribute Result=%d,%d', [lPoint.X, lPoint.Y]));
     {$endif}
   end
+  //
+  // Size
+  //
   else if attribute.isEqualToString(NSAccessibilitySizeAttribute) then
   begin
     lSize := LCLAcc.Size;
@@ -1184,7 +1256,9 @@ begin
     DebugLn(Format(':<[TCocoaAccessibleObject.accessibilityAttributeValue] NSAccessibilitySizeAttribute Result=%d,%d', [lSize.CX, lSize.CY]));
     {$endif}
   end
+  //
   // This one we use to put LCL object and class names to help debugging =)
+  //
   else if attribute.isEqualToString(NSAccessibilityUnitDescriptionAttribute) then
   begin
     Result := NSStringUtf8(LCLControl.Name+':'+LCLControl.ClassName);

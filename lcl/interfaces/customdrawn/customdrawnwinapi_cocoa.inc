@@ -23,21 +23,16 @@
 function TCDWidgetSet.ClientToScreen(Handle: HWND; var P: TPoint) : Boolean;
 var
   ControlHandle: TCDBaseControl;
-  lOriginalControl, lControl: TWinControl;
+  lControl: TWinControl;
   lPoint: NSPoint;
   lCocoaForm: TCocoaForm; // NSWindow
   lClientFrame: NSRect;
-  lOriginalControlHeight: Integer = 0;
 begin
   Result := False;
   if Handle = 0 then Exit;
 
   // Go throught the non-native controls
   ControlHandle := TCDBaseControl(Handle);
-  lOriginalControl := ControlHandle.GetWinControl();
-  // If we are doing an operation in the form itself, don't correct with the control height
-  if not (ControlHandle is TCocoaWindow) then
-    lOriginalControlHeight := lOriginalControl.Height;
 
   while not (ControlHandle is TCocoaWindow) do
   begin
@@ -54,7 +49,7 @@ begin
   // Now actually do the convertion
   lClientFrame := TCocoaWindow(ControlHandle).ClientArea.frame;
   lPoint.x := lClientFrame.origin.X + P.X;
-  lPoint.Y := lClientFrame.origin.Y + lClientFrame.size.height - P.Y - lOriginalControlHeight;
+  lPoint.Y := lClientFrame.origin.Y + lClientFrame.size.height - P.Y;
   lCocoaForm := TCocoaWindow(ControlHandle).CocoaForm;
   if lCocoaForm = nil then Exit;
   lPoint := lCocoaForm.convertBaseToScreen(lPoint);
