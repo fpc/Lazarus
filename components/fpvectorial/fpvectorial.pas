@@ -227,6 +227,7 @@ type
     CurPoint: TPathSegment; // Used in PrepareForSequentialReading and Next
     ClipPath: TPath;
     ClipMode: TvClipMode;
+    destructor Destroy; override;
     procedure Assign(ASource: TPath);
     procedure PrepareForSequentialReading;
     function Next(): TPathSegment;
@@ -784,6 +785,38 @@ begin
 end;
 
 { TPath }
+
+//GM: Follow the path to cleanly release the chained list!
+destructor TPath.Destroy;
+var
+  p, pp, np: TPathSegment;
+begin
+  p:=PointsEnd;
+  if (p<>nil) then
+  begin
+    np:=p.Next;
+    while (p<>nil) do
+    begin
+      pp:=p.Previous;
+      p.Next:=nil;
+      p.Previous:=nil;
+      FreeAndNil(p);
+      p:=pp;
+    end;
+    p:=np;
+    while (p<>nil) do
+    begin
+      np:=p.Next;
+      p.Next:=nil;
+      p.Previous:=nil;
+      FreeAndNil(p);
+      p:=np;
+    end;
+  end;
+  PointsEnd:=nil;
+  Points:=nil;
+  inherited Destroy;
+end;
 
 procedure TPath.Assign(ASource: TPath);
 begin
@@ -1789,6 +1822,7 @@ begin
   Clear;
 
   FEntities.Free;
+  FEntities := nil;
 
   inherited Destroy;
 end;
@@ -1843,6 +1877,11 @@ procedure TvVectorialPage.Clear;
 begin
   FEntities.ForEachCall(CallbackDeleteEntity, nil);
   FEntities.Clear();
+  if FTmpPath <> nil then
+  begin
+    FTmpPath.Free;
+    FTmpPath := nil;
+  end;
 end;
 
 {@@
@@ -2190,6 +2229,7 @@ begin
   Clear;
 
   FPages.Free;
+  FPages := nil;
 
   inherited Destroy;
 end;
@@ -2464,8 +2504,20 @@ end;
 {@@
   Clears all data in the document
 }
+// GM: Release memory for each page
 procedure TvVectorialDocument.Clear;
+var
+  i: integer;
+  p: TvVectorialPage;
 begin
+  for i:=FPages.Count-1 downto 0 do
+  begin
+    p := TvVectorialPage(FPages[i]);
+    p.Clear;
+    FreeAndNil(p);
+  end;
+  FPages.Clear;
+  FCurrentPageIndex:=-1;
 end;
 
 { TvCustomVectorialReader }
