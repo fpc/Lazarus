@@ -255,7 +255,7 @@ begin
   TextBox := Rect(0, 0, Screen.Width div 2, Screen.Height - 100);
   SelectObject(Canvas.Handle, Screen.SystemFont.Reference.Handle);
   DrawText(Canvas.Handle, PChar(MSG), Length(MSG),
-    TextBox, DT_WORDBREAK or DT_CALCRECT);
+    TextBox, DT_WORDBREAK or DT_CALCRECT or DT_NOPREFIX);
 
   // calculate the width we need to display the buttons
   MinBtnWidth:=Max(25,MinimumDialogButtonWidth);
