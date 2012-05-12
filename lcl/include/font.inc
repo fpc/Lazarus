@@ -503,22 +503,11 @@ begin
   Result:=(MinusCnt=14);
 end;
 
-// split a given fontName into Pango Font description components
-// font name is supposed to follow this layout:
-// [FAMILY-LIST][STYLE-LIST][SIZE]
-// where:
-// [FAMILY-LIST]  is a comma separated list of families optionally
-//                ended by a comma
-// [STYLE-LIST]   is white space separated list of words where each word
-//                describe one of style, variant, slant, weight or stretch
-// [SIZE]         is a decimal number (size in points) (... and points in PANGO_UNITS)
-// any of these options may be absent.
-procedure FontNameToPangoFontDescStr(const LongFontName: string;
+// If font name is in X Logical Font Description format then split it into
+// string components from which Pango Font description can be created.
+procedure XLFDNameToPangoFontDescStr(const LongFontName: string;
   out aFamily,aStyle: string; out aSize: Integer);
 
-var
-  ParsePos: Integer;
-  
   procedure addStyle(const s: string);
   begin
     if (s<>'') and (s<>'*') and (s<>'r') then begin
@@ -530,62 +519,16 @@ var
     end;
   end;
 
-  function GetSize: string;
-  var
-    c: char;
-    validblank: boolean;
-    
-    function IsBlank: boolean;
-    begin
-      result := c in [#0..' '];
-    end;
-    
-    function IsDigit: boolean;
-    begin
-      result := c in ['0'..'9'];
-    end;
-    
-  begin
-    Result := '';
-    validblank := true;
-    ParsePos := Length(LongFontname);
-    while ParsePos>0 do begin
-      c := longFontName[ParsePos];
-      if IsBlank then
-        if ValidBlank then begin
-          dec(ParsePos);
-          continue
-        end else
-          break;
-      ValidBlank := false;
-      if IsDigit then begin
-        Result := C + Result;
-        dec(ParsePos);
-      end else
-        break;
-    end;
-  end;
-  
 begin
   aStyle := '';
-  aFamily := '';
-  aSize := 0;
-  if IsFontNameXLogicalFontDesc(LongFontName) then begin
-    aFamily := ExtractXLFDItem(LongFontName, XLFD_FAMILY);
-    if aFamily='*' then
-      aFamily:='';
-    aSize := StrToIntDef(ExtractXLFDItem(LongFontName, XLFD_POINTSIZE),0) div 10;
-    addStyle( ExtractXLFDItem(LongFontName, XLFD_STYLENAME ));
-    addStyle( ExtractXLFDItem(LongFontname, XLFD_WEIGHTNAME));
-    addStyle( ExtractXLFDItem(LongFontname, XLFD_SLANT));
-    addStyle( ExtractXLFDItem(LongFontname, XLFD_WidthName));
-  end else begin
-    // this could go through, but we want to know at least the pointSize from
-    // the fontname
-    aSize := StrToIntDef(GetSize,0);
-    aFamily := Copy(LongFontName, 1, ParsePos);
-    // todo: parse aFamily to separate Family and Style
-  end;
+  aFamily := ExtractXLFDItem(LongFontName, XLFD_FAMILY);
+  if aFamily='*' then
+    aFamily:='';
+  aSize := StrToIntDef(ExtractXLFDItem(LongFontName, XLFD_POINTSIZE),0) div 10;
+  addStyle( ExtractXLFDItem(LongFontName, XLFD_STYLENAME ));
+  addStyle( ExtractXLFDItem(LongFontname, XLFD_WEIGHTNAME));
+  addStyle( ExtractXLFDItem(LongFontname, XLFD_SLANT));
+  addStyle( ExtractXLFDItem(LongFontname, XLFD_WidthName));
 end;
 
 { TFont }

@@ -1412,73 +1412,79 @@ begin
         exit;
       end;
 
-      FontNameToPangoFontDescStr(ALongFontname, aFamily, aStyle, aSize);
+      if IsFontNameXLogicalFontDesc(ALongFontName) then
+      begin
+        XLFDNameToPangoFontDescStr(ALongFontname, aFamily, aStyle, aSize);
+
+        if aSize > 0 then
+          FullString := IntToStr(aSize)
+        else
+          FullString := '';
+
+        FullString := AFamily + ',' + aStyle + ' ' + FullString;
+        PangoDesc := pango_font_description_from_string(PChar(FullString));
+      end
+      else
+      begin
+        aSize := 0;
+        aFamily := ALongFontName;
+
+        if aFamily = 'default' then
+        begin
+          CurFont := GetDefaultGtkFont(False);
+          if PANGO_IS_LAYOUT(CurFont) then
+          begin
+            PangoDesc := pango_layout_get_font_description(CurFont);
+            if PangoDesc = nil then
+              PangoDesc := pango_context_get_font_description(pango_layout_get_context(CurFont));
+            aFamily := StrPas(pango_font_description_get_family(PangoDesc));
+            if lfHeight = 0 then
+            begin
+              aSize := pango_font_description_get_size(PangoDesc);
+              if not pango_font_description_get_size_is_absolute(PangoDesc) then
+                aSize := aSize div PANGO_SCALE;
+            end;
+          end;
+        end;
+
+        PangoDesc := pango_font_description_new;
+        pango_font_description_set_family(PangoDesc, PChar(aFamily));
+        if aSize <> 0 then
+          pango_font_description_set_size(PangoDesc, aSize);
+      end;
 
       // if font specified size, prefer this instead of 'possibly' inaccurate
       // lfHeight note that lfHeight may actually have a most accurate value
       // but there is no way to know this at this point.
-      
+
       // setting the size, this could be done in two ways
       // method 1: fontdesc using fontname like "helvetica 12"
       // method 2: fontdesc using fontname like "helvetica" and later modify size
-      
+
       // to obtain consistent font sizes method 2 should be used
       // for method 1 converting lfheight to fontsize can lead to rounding errors
       //   for example, font size=12, lfheight=-12 (75dpi), at 75 dpi aSize=11
       //   so we would get a font "helvetica 11" instead of "helvetica 12"
       // size information, and later modify font size
-      
+
       // using method 2
 
-      if aFamily = 'default' then
+      if (aSize = 0) and (lfHeight <> 0) then
       begin
-        CurFont := GetDefaultGtkFont(False);
-        if PANGO_IS_LAYOUT(CurFont) then
-        begin
-          PangoDesc := pango_layout_get_font_description(CurFont);
-          if PangoDesc = nil then
-            PangoDesc := pango_context_get_font_description(pango_layout_get_context(CurFont));
-          aFamily := StrPas(pango_font_description_get_family(PangoDesc));
-          if (aSize = 0) and (lfHeight = 0) then
-          begin
-            aSize := pango_font_description_get_size(PangoDesc);
-            if not pango_font_description_get_size_is_absolute(PangoDesc) then
-              aSize := aSize div PANGO_SCALE;
-          end;
-        end;
+        // a size is not specified, try to calculate one based on lfHeight
+        // NOTE: in gtk2.8 is possible to use pango_font_description_set_absolute_size
+        // which would be great with the given lfheight value, but older gtk2 version
+        // doesn't have this function
+        aSize := abs(lfHeight) * PANGO_SCALE;
+        pango_font_description_set_absolute_size(PangoDesc, aSize);
       end;
-
-      if (aSize = 0) and (lfHeight = 0) then
-        FullString := '10' // use some default: TODO: find out the default size of the widget
-      else
-      if aSize > 0 then
-        FullString := IntToStr(aSize)
-      else
-        FullString := '';
-
-      FullString := AFamily + ' ' + aStyle + ' ' + FullString;
-      PangoDesc := pango_font_description_from_string(PChar(FullString));
-
+      
       if lfWeight <> FW_DONTCARE then
         pango_font_description_set_weight(PangoDesc, lfWeight);
 
       if lfItalic <> 0 then
         pango_font_description_set_style(PangoDesc, PANGO_STYLE_ITALIC);
 
-      if (aSize=0) and (lfHeight<>0) then
-      begin
-        // a size is not specified, try to calculate one based on lfHeight
-        // and use this value not in the font name but set this value appart
-        // NOTE: in gtk2.8 is possible to use pango_font_description_set_absolute_size
-        // which would be great with the given lfheight value, but older gtk2 version
-        // doesn't have this function
-        if lfHeight < 0 then
-          aSize := -lfHeight * PANGO_SCALE
-        else
-          aSize := lfHeight * PANGO_SCALE;
-        pango_font_description_set_absolute_size(PangoDesc, aSize);
-      end;
-      
       // create font
       // TODO: use context widget (CreateFontIndirectEx needs a parameter for this: Context: HWnd)
       GdiObject := NewGdiObject(gdiFont);
