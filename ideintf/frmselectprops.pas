@@ -155,7 +155,7 @@ begin
     L.Delimiter:=';';
     L.DelimitedText:=AValue;
     For I:=0 to L.Count-1 do
-      L[i]:=Trim(L[i]);
+      L[I]:=Trim(L[I]);
     L.Sort;
     LBSelected.Items.Assign(L);
   Finally
@@ -255,10 +255,10 @@ begin
         LBSelected.Items.BeginUpdate;
         //writeln('TSelectPropertiesForm.AddSelectedProperties B');
         For I:=Items.Count-1 downto 0 do
-          If Selected[i] then
+          If Selected[I] then
             begin
             //writeln('TSelectPropertiesForm.AddSelectedProperties C ',i);
-            N:=Items[i];
+            N:=Items[I];
             If (FSelectedComponent<>FPropComponent) then
               N:=FSelectedComponent.Name+'.'+N;
             LBSelected.Items.Add(N);
@@ -279,7 +279,7 @@ begin
     try
       Items.BeginUpdate;
       For I:=Items.Count-1 downto 0 do
-        If Selected[i] then
+        If Selected[I] then
           Items.Delete(I);
     Finally
       Items.EndUpdate;
