@@ -79,7 +79,7 @@ uses
   {$IFDEF USE_UTF8BIDI_LCL}
   FreeBIDI, utf8bidi,
   {$ENDIF}
-  Types, LCLIntf, LCLType, LMessages, LazUTF8, LCLProc,
+  Types, LCLIntf, LCLType, LMessages, LazUTF8, LCLProc, LazMethodList, LazLogger,
   SysUtils, Classes, Messages, Controls, Graphics, Forms, StdCtrls, ExtCtrls, Menus,
   SynEditTypes, SynEditSearch, SynEditKeyCmds, SynEditMouseCmds, SynEditMiscProcs,
   SynEditPointClasses, SynBeautifier, SynEditMarks,
@@ -1259,6 +1259,9 @@ procedure Register;
 
 implementation
 
+var
+  LOG_SynMouseEvents: PLazLoggerLogGroup;
+
 const
   GutterTextDist = 2; //Pixel
 
@@ -1562,6 +1565,22 @@ function THookedCommandHandlerEntry.Equals(AEvent: THookedCommandEvent): boolean
 begin
   with TMethod(fEvent) do
     Result := (Code = TMethod(AEvent).Code) and (Data = TMethod(AEvent).Data);
+end;
+
+function dbgs(aStateFlag: TSynStateFlag): string; overload;
+begin
+  WriteStr(Result, aStateFlag)
+end;
+function dbgs(aStateFlags: TSynStateFlags): string; overload;
+var i: TSynStateFlag;
+begin
+  Result := '';
+  for i := low(TSynStateFlags) to high(TSynStateFlags) do
+    if i in aStateFlags then begin
+      if Result <> '' then Result := Result + ',';
+      Result := Result + dbgs(i);
+    end;
+  if Result <> '' then Result := '[' + Result + ']';
 end;
 
 procedure InitSynDefaultFont;
@@ -3151,7 +3170,7 @@ procedure TCustomSynEdit.MouseDown(Button: TMouseButton; Shift: TShiftState;
 var
   CType: TSynMAClickCount;
 begin
-  //DebugLn(['TCustomSynEdit.MouseDown START Mouse=',X,',',Y,' Caret=',CaretX,',',CaretY,', BlockBegin=',BlockBegin.X,',',BlockBegin.Y,' BlockEnd=',BlockEnd.X,',',BlockEnd.Y]);
+  DebugLnEnter(LOG_SynMouseEvents, ['>> TCustomSynEdit.MouseDown Mouse=',X,',',Y, ' Shift=',dbgs(Shift), ' Caret=',dbgs(CaretXY),', BlockBegin=',dbgs(BlockBegin),' BlockEnd=',dbgs(BlockEnd), ' StateFlags=',dbgs(fStateFlags)]);
   Exclude(FStateFlags, sfHideCursor);
   FInMouseClickEvent := True;
 
@@ -3161,6 +3180,7 @@ begin
   if (X>=ClientWidth-ScrollBarWidth) or (Y>=ClientHeight-ScrollBarWidth) then
   begin
     inherited MouseDown(Button, Shift, X, Y);
+    DebugLnExit(LOG_SynMouseEvents, ['<< TCustomSynEdit.MouseDown outside client']);
     exit;
   end;
 
@@ -3213,7 +3233,7 @@ begin
   LCLIntf.SetFocus(Handle);
   UpdateCaret;
   SelAvailChange(nil);
-  //debugln('TCustomSynEdit.MouseDown END sfWaitForDragging=',dbgs(sfWaitForDragging in fStateFlags),' ');
+  DebugLnExit(LOG_SynMouseEvents, ['<< TCustomSynEdit.MouseDown  StateFlags=',dbgs(fStateFlags)]);
 end;
 
 procedure TCustomSynEdit.MouseMove(Shift: TShiftState; X, Y: Integer);
@@ -3377,8 +3397,8 @@ var
   wasDragging, wasSelecting, ignoreUp : Boolean;
   CType: TSynMAClickCount;
 begin
+  DebugLn(LOG_SynMouseEvents, ['>> TCustomSynEdit.MouseUp Mouse=',X,',',Y, ' Shift=',dbgs(Shift), ' Caret=',dbgs(CaretXY),', BlockBegin=',dbgs(BlockBegin),' BlockEnd=',dbgs(BlockEnd), ' StateFlags=',dbgs(fStateFlags)]);
   Exclude(FStateFlags, sfHideCursor);
-//DebugLn('TCustomSynEdit.MouseUp Mouse=',X,',',Y,' Caret=',CaretX,',',CaretY,', BlockBegin=',BlockBegin.X,',',BlockBegin.Y,' BlockEnd=',BlockEnd.X,',',BlockEnd.Y);
   FInMouseClickEvent := True;
   wasDragging := (sfIsDragging in fStateFlags);
   wasSelecting := (sfMouseDoneSelecting in fStateFlags);
@@ -4032,6 +4052,7 @@ end;
 
 procedure TCustomSynEdit.SetLeftChar(Value: Integer);
 begin
+  //{BUG21996} DebugLn(['TCustomSynEdit.SetLeftChar=',Value,'  Caret=',dbgs(CaretXY),', BlockBegin=',dbgs(BlockBegin),' BlockEnd=',dbgs(BlockEnd), ' StateFlags=',dbgs(fStateFlags), ' paintlock', FPaintLock]);
   Value := Min(Value, CurrentMaxLeftChar);
   Value := Max(Value, 1);
   if Value <> FTextArea.LeftChar then begin
@@ -5815,6 +5836,7 @@ begin
     exit;
   end;
 
+  //{BUG21996} DebugLnEnter(['TCustomSynEdit.EnsureCursorPosVisible Caret=',dbgs(CaretXY),', BlockBegin=',dbgs(BlockBegin),' BlockEnd=',dbgs(BlockEnd), ' StateFlags=',dbgs(fStateFlags), ' paintlock', FPaintLock]);
   exclude(fStateFlags, sfEnsureCursorPos);
   DoIncPaintLock(Self); // No editing is taking place
   try
@@ -5863,6 +5885,7 @@ begin
       TopView := TopView;                                                       //mh 2000-10-19
   finally
     DoDecPaintLock(Self);
+    //{BUG21996} DebugLnExit(['TCustomSynEdit.EnsureCursorPosVisible Caret=',dbgs(CaretXY),', BlockBegin=',dbgs(BlockBegin),' BlockEnd=',dbgs(BlockEnd), ' StateFlags=',dbgs(fStateFlags), ' paintlock', FPaintLock]);
   end;
 end;
 
@@ -8941,5 +8964,7 @@ end;
 initialization
   InitSynDefaultFont;
   Register;
+
+  LOG_SynMouseEvents := DebugLogger.RegisterLogGroup('SynMouseEvents' {$IFDEF SynMouseEvents} , True {$ENDIF} );
 
 end.
