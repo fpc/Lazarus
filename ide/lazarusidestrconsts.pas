@@ -1252,6 +1252,7 @@ resourcestring
   liswlDIsableAll = 'D&isable All';
   liswlENableAll = 'E&nable All';
   liswlDeLeteAll = 'De&lete All';
+  liswlInspectPane = 'Inspect pane';
 
   dlgOIMiscellaneous = 'Miscellaneous';
   dlgOISpeedSettings = 'Speed settings';

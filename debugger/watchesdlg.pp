@@ -39,8 +39,9 @@ interface
 
 uses
   Classes, Forms, Controls, math, sysutils, LazLoggerBase, Clipbrd,
-  IDEWindowIntf, Menus, ComCtrls, ActnList, IDEImagesIntf, LazarusIDEStrConsts, DebuggerStrConst,
-  Debugger, DebuggerDlg, BaseDebugManager;
+  IDEWindowIntf, Menus, ComCtrls, ActnList, ExtCtrls, StdCtrls, IDEImagesIntf,
+  LazarusIDEStrConsts, DebuggerStrConst, Debugger, DebuggerDlg,
+  BaseDebugManager;
 
 type
 
@@ -65,12 +66,17 @@ type
     actCopyValue: TAction;
     actInspect: TAction;
     actEvaluate: TAction;
+    actToggleInspectSite: TAction;
     actToggleCurrentEnable: TAction;
     actPower: TAction;
     ActionList1: TActionList;
     actProperties: TAction;
+    InspectLabel: TLabel;
     lvWatches: TListView;
+    InspectMemo: TMemo;
     MenuItem1: TMenuItem;
+    nbInspect: TNotebook;
+    Page1: TPage;
     popInspect: TMenuItem;
     popEvaluate: TMenuItem;
     popCopyName: TMenuItem;
@@ -87,7 +93,9 @@ type
     popDisableAll: TMenuItem;
     popEnableAll: TMenuItem;
     popDeleteAll: TMenuItem;
+    InspectSplitter: TSplitter;
     ToolBar1: TToolBar;
+    ToolButtonInspectView: TToolButton;
     ToolButtonProperties: TToolButton;
     ToolButtonAdd: TToolButton;
     ToolButtonPower: TToolButton;
@@ -108,6 +116,7 @@ type
     procedure actEvaluateExecute(Sender: TObject);
     procedure actInspectExecute(Sender: TObject);
     procedure actPowerExecute(Sender: TObject);
+    procedure actToggleInspectSiteExecute(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure lvWatchesDblClick(Sender: TObject);
@@ -136,6 +145,7 @@ type
     procedure WatchUpdate(const ASender: TWatches; const AWatch: TWatch);
     procedure WatchRemove(const ASender: TWatches; const AWatch: TWatch);
 
+    procedure UpdateInspectPane;
     procedure UpdateItem(const AItem: TListItem; const AWatch: TWatch);
     procedure UpdateAll;
     procedure DisableAllActions;
@@ -166,7 +176,8 @@ var
 const
   COL_WATCH_EXPR  = 1;
   COL_WATCH_VALUE = 2;
-  COL_WIDTHS: Array[0..1] of integer = ( 100,  200);
+  COL_SPLITTER_INSPECT = 3;
+  COL_WIDTHS: Array[0..2] of integer = ( 100,  200, 200);
 
 function WatchesDlgColSizeGetter(AForm: TCustomForm; AColId: Integer; var ASize: Integer): Boolean;
 begin
@@ -184,12 +195,11 @@ end;
 { TWatchesDlg }
 
 constructor TWatchesDlg.Create(AOwner: TComponent);
-var
-  i: Integer;
 begin
   inherited Create(AOwner);
   FWatchesInView := nil;
   FStateFlags := [];
+  nbInspect.Visible := False;
 
   WatchesNotification.OnAdd       := @WatchAdd;
   WatchesNotification.OnUpdate    := @WatchUpdate;
@@ -240,6 +250,9 @@ begin
   actProperties.Caption:= liswlProperties;
   actProperties.ImageIndex := IDEImages.LoadImage(16, 'menu_environment_options');
 
+  actToggleInspectSite.Caption:= liswlInspectPane;
+  actToggleInspectSite.ImageIndex := IDEImages.LoadImage(16, 'debugger_inspect');
+
   actAddWatchPoint.Caption := lisWatchToWatchPoint;
 
   actCopyName.Caption := lisLocalsDlgCopyName;
@@ -253,8 +266,8 @@ begin
   lvWatches.Columns[0].Caption:=liswlExpression;
   lvWatches.Columns[1].Caption:=dlgValueColor;
 
-  for i := low(COL_WIDTHS) to high(COL_WIDTHS) do
-    lvWatches.Column[i].Width := COL_WIDTHS[i];
+  lvWatches.Column[0].Width := COL_WIDTHS[COL_WATCH_EXPR];
+  lvWatches.Column[1].Width := COL_WIDTHS[COL_WATCH_VALUE];
 end;
 
 function TWatchesDlg.GetSelected: TCurrentWatch;
@@ -383,6 +396,8 @@ begin
   actProperties.Enabled := ItemSelected;
   actAddWatch.Enabled := True;
   actPower.Enabled := True;
+
+  UpdateInspectPane;
 end;
 
 procedure TWatchesDlg.lvWatchesDblClick(Sender: TObject);
@@ -416,6 +431,15 @@ begin
     actPower.ImageIndex := FPowerImgIdxGrey;
     ToolButtonPower.ImageIndex := FPowerImgIdxGrey;
   end;
+end;
+
+procedure TWatchesDlg.actToggleInspectSiteExecute(Sender: TObject);
+begin
+  InspectSplitter.Visible := ToolButtonInspectView.Down;
+  nbInspect.Visible := ToolButtonInspectView.Down;
+  InspectSplitter.Left :=  nbInspect.Left - 1;
+  if ToolButtonInspectView.Down then
+    UpdateInspectPane;
 end;
 
 procedure TWatchesDlg.ContextChanged(Sender: TObject);
@@ -569,6 +593,11 @@ end;
 
 function TWatchesDlg.ColSizeGetter(AColId: Integer; var ASize: Integer): Boolean;
 begin
+  if AColId = COL_SPLITTER_INSPECT then begin
+    ASize := nbInspect.Width;
+    Result := ASize <> COL_WIDTHS[AColId - 1];
+  end
+  else
   if (AColId - 1 >= 0) and (AColId - 1 < lvWatches.ColumnCount) then begin
     ASize := lvWatches.Column[AColId - 1].Width;
     Result := ASize <> COL_WIDTHS[AColId - 1];
@@ -582,6 +611,7 @@ begin
   case AColId of
     COL_WATCH_EXPR:  lvWatches.Column[0].Width := ASize;
     COL_WATCH_VALUE: lvWatches.Column[1].Width := ASize;
+    COL_SPLITTER_INSPECT: nbInspect.Width := ASize;
   end;
 end;
 
@@ -663,6 +693,60 @@ begin
   finally
     lvWatchesSelectItem(nil, nil, False);
   end;
+end;
+
+procedure TWatchesDlg.UpdateInspectPane;
+var
+  Watch: TCurrentWatch;
+  i: integer;
+  d: TWatchValue;
+  t: TDBGType;
+begin
+  if not nbInspect.Visible then exit;
+
+  InspectMemo.Clear;
+  InspectLabel.Caption := '...';
+  if (lvWatches.Selected = nil) then begin
+    exit;
+  end;
+
+  Watch:=TCurrentWatch(lvWatches.Selected.Data);
+  d := Watch.Values[GetThreadId, GetStackframe];
+  t := d.TypeInfo;
+
+  InspectLabel.Caption := Watch.Expression;
+
+  if (t <> nil) and (t.Fields <> nil) and (t.Fields.Count > 0) and
+     (d.DisplayFormat in [wdfDefault, wdfStructure])
+  then begin
+    InspectMemo.WordWrap := False;
+    InspectMemo.Lines.BeginUpdate;
+    try
+      for i := 0 to t.Fields.Count - 1 do
+        case t.Fields[i].DBGType.Kind of
+          skSimple:
+            begin
+              if t.Fields[i].DBGType.Value.AsString='$0' then begin
+                if t.Fields[i].DBGType.TypeName='ANSISTRING' then
+                  InspectMemo.Append(t.Fields[i].Name + ': ''''')
+                else
+                  InspectMemo.Append(t.Fields[i].Name + ': nil');
+              end
+              else
+                InspectMemo.Append(t.Fields[i].Name + ': ' + t.Fields[i].DBGType.Value.AsString);
+            end;
+          skProcedure, skFunction: ;
+          else
+            InspectMemo.Append(t.Fields[i].Name + ': ' + t.Fields[i].DBGType.Value.AsString);
+        end;
+    finally
+      InspectMemo.Lines.EndUpdate;
+    end;
+    exit;
+  end;
+
+  InspectMemo.WordWrap := True;
+  InspectMemo.Text := d.Value;
 end;
 
 procedure TWatchesDlg.UpdateItem(const AItem: TListItem; const AWatch: TWatch);
@@ -829,6 +913,7 @@ initialization
   WatchWindowCreator.OnGetDividerSize := @WatchesDlgColSizeGetter;
   WatchWindowCreator.DividerTemplate.Add('ColumnWatchExpr',  COL_WATCH_EXPR,  @drsColWidthExpression);
   WatchWindowCreator.DividerTemplate.Add('ColumnWatchValue', COL_WATCH_VALUE, @drsColWidthValue);
+  WatchWindowCreator.DividerTemplate.Add('SplitterWatchInspect', COL_SPLITTER_INSPECT, @drsWatchSplitterInspect);
   WatchWindowCreator.CreateSimpleLayout;
 
   DBG_DATA_MONITORS := DebugLogger.FindOrRegisterLogGroup('DBG_DATA_MONITORS' {$IFDEF DBG_DATA_MONITORS} , True {$ENDIF} );

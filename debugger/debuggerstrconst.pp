@@ -48,6 +48,8 @@ resourcestring
   drsColWidthFunc        = 'Function name column';
   drsColWidthBrkPointImg = 'Break indication column';
 
+  drsWatchSplitterInspect = 'Inspect pane';
+
   drsBreakPointColWidthFile      = 'File/address column';
   drsBreakPointColWidthLine      = 'Line column';
   drsBreakPointColWidthCondition = 'Condition column';
