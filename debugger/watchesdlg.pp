@@ -397,6 +397,8 @@ begin
   actAddWatch.Enabled := True;
   actPower.Enabled := True;
 
+  actToggleInspectSite.Enabled := True;
+
   UpdateInspectPane;
 end;
 
