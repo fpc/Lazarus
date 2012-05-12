@@ -428,11 +428,14 @@ begin
   MapReplacement('TControlBar',       'TToolBar');
   MapReplacement('TCoolBar',          'TToolBar');
   MapReplacement('TComboBoxEx',       'TComboBox');
-//  MapReplacement('TValueListEditor',  'TStringGrid');
   MapReplacement('TRichEdit',         'TMemo'); // or TRichMemo from CRC.
   MapReplacement('TDBRichEdit',       'TDBMemo');
   MapReplacement('TApplicationEvents','TApplicationProperties');
   MapReplacement('TPNGObject',        'TPortableNetworkGraphic');
+  MapReplacement('TTabbedNotebook',   'TPageControl');
+  MapReplacement('TTabPage',          'ts$autoinc:TTabSheet');
+  MapReplacement('TQuery',            'TSQLQuery');
+  MapReplacement('TADOQuery',         'TSQLQuery');
   // DevExpress components.
   MapReplacement('TCxEdit',           'TEdit');
   // Tnt* third party components.
