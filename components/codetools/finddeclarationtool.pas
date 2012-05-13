@@ -2001,10 +2001,6 @@ begin
       ReadNextAtom;
       AUnitName:=ExtractUsedUnitNameAtCursor(@UnitInFilename);
       NewPos.Code:=FindUnitSource(AUnitName,UnitInFilename,true);
-      if NewPos.Code=nil then
-        RaiseExceptionInstance(
-          ECodeToolUnitNotFound.Create(Self,Format(ctsUnitNotFound,[AUnitName]),
-            AUnitName));
       NewPos.X:=1;
       NewPos.Y:=1;
       NewTopLine:=1;
@@ -2131,7 +2127,7 @@ begin
       // nothing found
       RaiseExceptionInstance(
         ECodeToolUnitNotFound.Create(Self,Format(ctsUnitNotFound,[AnUnitName]),
-          AnUnitName));
+          AnUnitInFilename));
     end;
   end;
 end;
@@ -6180,6 +6176,7 @@ function TFindDeclarationTool.FindUnitSourceWithUnitIdentifier(
 
   procedure RaiseUnitNotFound;
   begin
+    CurPos.StartPos:=-1;
     RaiseExceptionInstance(
       ECodeToolUnitNotFound.Create(Self,Format(ctsUnitNotFound,[AnUnitIdentifier]),
         AnUnitIdentifier));
@@ -6225,8 +6222,6 @@ begin
       end else
         UnitInFilename:='';
       Result:=FindUnitSource(AnUnitIdentifier,UnitInFilename,true);
-      if (Result=nil) and ExceptionOnNotFound then
-        RaiseUnitNotFound;
       exit;
     end;
     if AtomIsChar(';') then break;
@@ -6255,10 +6250,10 @@ begin
     Result:=FOnGetCodeToolForBuffer(Self,NewCode,false)
   else if NewCode=TCodeBuffer(Scanner.MainCode) then
     Result:=Self;
-  if (Result=nil) and ExceptionOnNotFound then
-    RaiseExceptionInstance(
-      ECodeToolUnitNotFound.Create(Self,Format(ctsUnitNotFound,[AnUnitIdentifier]),
-        AnUnitIdentifier));
+  if (Result=nil) and ExceptionOnNotFound then begin
+    CurPos.StartPos:=-1;
+    RaiseException(Format('Unable to create codetool for "%s"',[NewCode.Filename]));
+  end;
 end;
 
 function TFindDeclarationTool.FindIdentifierInInterface(
@@ -6531,9 +6526,7 @@ begin
       NewCodeTool:=FOnGetCodeToolForBuffer(Self,NewCode,false);
       if NewCodeTool=nil then begin
         CurPos.StartPos:=-1;
-        RaiseExceptionInstance(
-          ECodeToolUnitNotFound.Create(Self,Format(ctsUnitNotFound,[AnUnitName]),
-            AnUnitName));
+        RaiseException(Format('Unable to create codetool for "%s"',[NewCode.Filename]));
       end;
     end else if NewCode=TCodeBuffer(Scanner.MainCode) then begin
       NewCodeTool:=Self;
