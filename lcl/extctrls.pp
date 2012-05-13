@@ -627,7 +627,6 @@ type
     procedure UpdateTabStops;
   protected
     class procedure WSRegisterClass; override;
-    procedure Loaded; override;
     procedure InitializeWnd; override;
     procedure UpdateRadioButtonStates; virtual;
     procedure ReadState(Reader: TReader); override;
