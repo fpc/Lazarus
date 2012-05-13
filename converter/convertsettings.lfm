@@ -12,12 +12,12 @@ object ConvertSettingsForm: TConvertSettingsForm
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   Position = poScreenCenter
-  LCLVersion = '0.9.31'
+  LCLVersion = '1.1'
   object ProjectPathEdit: TLabeledEdit
     AnchorSideLeft.Control = Owner
     AnchorSideRight.Control = UnitReplaceDivider
     Left = 9
-    Height = 19
+    Height = 20
     Hint = 'Directory where project''s main file must be'
     Top = 32
     Width = 295
@@ -27,14 +27,14 @@ object ConvertSettingsForm: TConvertSettingsForm
     BorderStyle = bsNone
     Color = clBtnFace
     EditLabel.AnchorSideLeft.Control = ProjectPathEdit
-    EditLabel.AnchorSideTop.Control = ProjectPathEdit
     EditLabel.AnchorSideTop.Side = asrCenter
     EditLabel.AnchorSideRight.Control = ProjectPathEdit
+    EditLabel.AnchorSideRight.Side = asrBottom
     EditLabel.AnchorSideBottom.Control = ProjectPathEdit
     EditLabel.Left = 9
-    EditLabel.Height = 16
-    EditLabel.Top = 9
-    EditLabel.Width = 81
+    EditLabel.Height = 15
+    EditLabel.Top = 10
+    EditLabel.Width = 295
     EditLabel.Caption = 'Project Path:'
     EditLabel.ParentColor = False
     LabelSpacing = 7
@@ -48,10 +48,10 @@ object ConvertSettingsForm: TConvertSettingsForm
     AnchorSideTop.Control = TargetGroupBox
     AnchorSideTop.Side = asrBottom
     Left = 12
-    Height = 26
+    Height = 20
     Hint = 'Creates a Backup directory under project directory'
-    Top = 193
-    Width = 215
+    Top = 194
+    Width = 170
     BorderSpacing.Left = 3
     BorderSpacing.Top = 9
     Caption = 'Make backup of changed files'
@@ -63,14 +63,18 @@ object ConvertSettingsForm: TConvertSettingsForm
   end
   object ButtonPanel1: TButtonPanel
     Left = 6
-    Height = 34
-    Top = 301
+    Height = 41
+    Top = 294
     Width = 552
     OKButton.Name = 'OKButton'
+    OKButton.DefaultCaption = True
     HelpButton.Name = 'HelpButton'
+    HelpButton.DefaultCaption = True
     CloseButton.Name = 'CloseButton'
+    CloseButton.DefaultCaption = True
     CloseButton.Enabled = False
     CancelButton.Name = 'CancelButton'
+    CancelButton.DefaultCaption = True
     TabOrder = 2
     ShowButtons = [pbOK, pbCancel, pbHelp]
   end
@@ -79,10 +83,10 @@ object ConvertSettingsForm: TConvertSettingsForm
     AnchorSideTop.Control = BackupCheckBox
     AnchorSideTop.Side = asrBottom
     Left = 12
-    Height = 26
+    Height = 20
     Hint = 'Separate form files allow different properties'
-    Top = 224
-    Width = 246
+    Top = 219
+    Width = 197
     BorderSpacing.Top = 5
     Caption = 'Keep converted files open in editor'
     ParentShowHint = False
@@ -254,11 +258,11 @@ object ConvertSettingsForm: TConvertSettingsForm
     Left = 9
     Height = 122
     Hint = 'xxx'
-    Top = 62
+    Top = 63
     Width = 255
     BorderSpacing.Top = 11
     Caption = 'Target'
-    ClientHeight = 105
+    ClientHeight = 104
     ClientWidth = 251
     ParentShowHint = False
     ShowHint = True
@@ -268,9 +272,9 @@ object ConvertSettingsForm: TConvertSettingsForm
       AnchorSideTop.Control = MultiPlatformCheckBox
       AnchorSideTop.Side = asrBottom
       Left = 10
-      Height = 26
-      Top = 35
-      Width = 121
+      Height = 20
+      Top = 29
+      Width = 98
       BorderSpacing.Top = 5
       Caption = 'Support Delphi'
       OnChange = SupportDelphiCheckBoxChange
@@ -283,9 +287,9 @@ object ConvertSettingsForm: TConvertSettingsForm
       AnchorSideTop.Control = SupportDelphiCheckBox
       AnchorSideTop.Side = asrBottom
       Left = 10
-      Height = 26
-      Top = 66
-      Width = 199
+      Height = 20
+      Top = 54
+      Width = 163
       BorderSpacing.Top = 5
       Caption = 'Use the same DFM form file'
       OnChange = SameDfmCheckBoxChange
@@ -296,9 +300,9 @@ object ConvertSettingsForm: TConvertSettingsForm
     object MultiPlatformCheckBox: TCheckBox
       AnchorSideTop.Control = TargetGroupBox
       Left = 10
-      Height = 26
+      Height = 20
       Top = 4
-      Width = 113
+      Width = 99
       BorderSpacing.Top = 4
       Caption = 'Multi-Platform'
       ParentShowHint = False
@@ -312,7 +316,7 @@ object ConvertSettingsForm: TConvertSettingsForm
     AnchorSideTop.Control = UnitReplaceButton
     AnchorSideTop.Side = asrCenter
     Left = 412
-    Height = 25
+    Height = 24
     Top = 27
     Width = 136
     BorderSpacing.Left = 23
@@ -325,7 +329,7 @@ object ConvertSettingsForm: TConvertSettingsForm
     AnchorSideTop.Control = UnknownPropsDivider
     AnchorSideTop.Side = asrBottom
     Left = 412
-    Height = 25
+    Height = 24
     Top = 84
     Width = 136
     BorderSpacing.Top = 2
@@ -339,7 +343,7 @@ object ConvertSettingsForm: TConvertSettingsForm
     AnchorSideTop.Control = FuncReplaceButton
     AnchorSideTop.Side = asrCenter
     Left = 412
-    Height = 25
+    Height = 24
     Top = 195
     Width = 136
     BorderSpacing.Left = 23
@@ -353,7 +357,7 @@ object ConvertSettingsForm: TConvertSettingsForm
     AnchorSideTop.Control = CoordOffsButton
     AnchorSideTop.Side = asrCenter
     Left = 412
-    Height = 25
+    Height = 24
     Top = 251
     Width = 136
     BorderSpacing.Left = 23
@@ -367,7 +371,7 @@ object ConvertSettingsForm: TConvertSettingsForm
     AnchorSideTop.Control = TypeReplaceButton
     AnchorSideTop.Side = asrCenter
     Left = 412
-    Height = 25
+    Height = 24
     Top = 139
     Width = 136
     BorderSpacing.Left = 23

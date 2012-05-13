@@ -401,6 +401,21 @@ begin
   MapReplacement('TabNotBk',            'ComCtrls');
   MapReplacement('OpenGL',              'GL, GLu');
   MapReplacement('dglOpenGL',           'GL, GLu, GLut');  // ?
+  // Database components
+  MapReplacement('SqlExpr',             'sqldb');
+  MapReplacement('DBLocalS',            'sqldb');
+  MapReplacement('DBLocalB',            'sqldb');
+  MapReplacement('DBTables',            'sqldb');
+  MapReplacement('ADODB',               'sqldb');
+  MapReplacement('IBTable',             'sqldb');
+  MapReplacement('IBQuery',             'sqldb');
+  MapReplacement('IBStoredProc',        'sqldb');
+  MapReplacement('IBDatabase',          'sqldb');
+  MapReplacement('IBUpdateSQL',         'sqldb');
+  MapReplacement('IBCustomDataSet',     'sqldb');
+  MapReplacement('IBSQL',               'sqldb');
+  MapReplacement('DBLocalI',            'IBConnection');
+  // Remove these
   MapReplacement('ShellApi',            '');
   MapReplacement('pngImage',            '');
   MapReplacement('Jpeg',                '');
