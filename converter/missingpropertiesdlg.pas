@@ -261,6 +261,20 @@ function TLFMFixer.ReplaceAndRemoveAll: TModalResult;
 // Returns mrRetry if some types were changed and a new scan is needed,
 //         mrOK if no types were changed, and mrCancel if there was an error.
 var
+  AutoInc: integer;
+
+  function SolveAutoInc(AIdent: string): string;
+  begin
+    if Pos('$autoinc', AIdent)>0 then begin
+      Inc(AutoInc);
+      Result:=StringReplace(AIdent, '$autoinc', IntToStr(AutoInc), [rfReplaceAll]);
+//      IDEMessagesWindow.AddMsg(Format('-- New Ident = "%s" --', [AIdent]),'',-1);
+    end
+    else
+      Result:=AIdent;
+  end;
+
+var
   CurError: TLFMError;
   TheNode: TLFMTreeNode;
   ObjNode: TLFMObjectNode;
@@ -273,6 +287,7 @@ var
   StartPos, EndPos: integer;
 begin
   Result:=mrOK;
+  AutoInc:=0;
   ChgEntryRepl:=TObjectList.Create;
   PropReplacements:=TStringToStringTree.Create(false);
   TypeReplacements:=TStringToStringTree.Create(false);
@@ -289,7 +304,7 @@ begin
           // Object type
           ObjNode:=CurError.Node as TLFMObjectNode;
           OldIdent:=ObjNode.TypeName;
-          NewIdent:=TypeReplacements[OldIdent];
+          NewIdent:=SolveAutoInc(TypeReplacements[OldIdent]);
           // Keep the old class name if no replacement.
           if NewIdent<>'' then begin
             StartPos:=ObjNode.TypeNamePosition;
@@ -310,7 +325,7 @@ begin
           TheNode.FindIdentifier(StartPos,EndPos);
           if StartPos>0 then begin
             OldIdent:=copy(fLFMBuffer.Source,StartPos,EndPos-StartPos);
-            NewIdent:=PropReplacements[OldIdent];
+            NewIdent:=SolveAutoInc(PropReplacements[OldIdent]);
             // Delete the whole property line if no replacement.
             if NewIdent='' then begin
               FindNiceNodeBounds(TheNode,StartPos,EndPos);
@@ -326,10 +341,8 @@ begin
       CurError:=CurError.PrevError;
     end;
     // Apply replacements to LFM.
-    if not ApplyReplacements(ChgEntryRepl) then begin
-      Result:=mrCancel;
-      exit;
-    end;
+    if not ApplyReplacements(ChgEntryRepl) then
+      exit(mrCancel);
     // Apply replacement types also to pascal source.
     if TypeReplacements.Tree.Count>0 then
       if not CodeToolBoss.RetypeClassVariables(fPascalBuffer,

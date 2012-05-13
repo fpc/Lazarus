@@ -433,7 +433,7 @@ begin
   MapReplacement('TApplicationEvents','TApplicationProperties');
   MapReplacement('TPNGObject',        'TPortableNetworkGraphic');
   MapReplacement('TTabbedNotebook',   'TPageControl');
-  MapReplacement('TTabPage',          'ts$autoinc:TTabSheet');
+  MapReplacement('TTabPage',          'ts$autoinc: TTabSheet');
   MapReplacement('TQuery',            'TSQLQuery');
   MapReplacement('TADOQuery',         'TSQLQuery');
   // DevExpress components.
