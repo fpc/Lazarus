@@ -340,6 +340,7 @@ function ReadTilPascalBracketClose(const Source: string;
 function GetAtomLength(p: PChar; NestedComments: boolean): integer;
 function GetAtomString(p: PChar; NestedComments: boolean): string;
 function FindStartOfAtom(const Source: string; Position: integer): integer;
+function FindEndOfAtom(const Source: string; Position: integer): integer;
 
 //-----------------------------------------------------------------------------
 
@@ -2233,9 +2234,10 @@ begin
   else
     inc(p);
     c2:=p^;
-    // test for double char operators :=, +=, -=, /=, *=, <>, <=, >=, **
+    // test for double char operators :=, +=, -=, /=, *=, <>, <=, >=, **, .., ><
     if ((c2='=') and  (IsEqualOperatorStartChar[c1]))
     or ((c1='<') and (c2='>'))
+    or ((c1='>') and (c2='<'))
     or ((c1='.') and (c2='.'))
     or ((c1='*') and (c2='*'))
     then
@@ -2344,6 +2346,9 @@ begin
               dec(Result,2);
           '$':
             // hex number
+            dec(Result);
+          '&':
+            // &keyword
             dec(Result);
           end;
           break;
@@ -2455,7 +2460,7 @@ begin
   else
     if Result>1 then begin
       c2:=Source[Result-1];
-      // test for double char operators :=, +=, -=, /=, *=, <>, <=, >=, **, ><
+      // test for double char operators :=, +=, -=, /=, *=, <>, <=, >=, **, ><, ..
       if ((c2='=') and  (IsEqualOperatorStartChar[c]))
       or ((c='<') and (c2='>'))
       or ((c='>') and (c2='<'))
@@ -2466,6 +2471,23 @@ begin
         dec(Result);
       end;
     end;
+  end;
+end;
+
+function FindEndOfAtom(const Source: string; Position: integer): integer;
+var
+  p: PChar;
+begin
+  Result:=FindStartOfAtom(Source,Position);
+  if (Result>=1) and (Result<=length(Source)) then begin
+    p:=@Source[Result];
+    case p^ of
+    #0..#31,' ': exit;
+    '{': exit;
+    '/': if p[1]='/' then exit;
+    '(': if p[1]='*' then exit;
+    end;
+    inc(Result,GetAtomLength(p,false));
   end;
 end;
 

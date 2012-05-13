@@ -7265,15 +7265,22 @@ function TFPCTargetConfigCache.FindRealCompilerInPath(aTargetCPU: string;
 
   function Search(const ShortFileName: string): string;
   begin
-    if ShortFileName='' then Result:='';
-    // try in PATH
+    // fpc.exe first searches in -XP
+    // Maybe: extact -XP from extra options
+
+    // then fpc.exe searches in its own directory
+    if Compiler<>'' then begin
+      Result:=ExtractFilePath(Compiler);
+      if FilenameIsAbsolute(Result) then begin
+        Result+=ShortFileName;
+        if FileExistsCached(Result) then
+          exit;
+      end;
+    end;
+    // finally fpc.exe searches in PATH
     Result:=SearchFileInPath(ShortFileName,GetCurrentDirUTF8,
       GetEnvironmentVariableUTF8('PATH'),PathSeparator,ctsfcDefault);
     if (Result<>'') or (Compiler='') then exit;
-    // try in directory of compiler
-    Result:=ExtractFilePath(Compiler)+ShortFileName;
-    if not FileExistsCached(Result) then
-      Result:='';
   end;
 
 var
