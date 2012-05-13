@@ -38,19 +38,13 @@
     </Units>
   </ProjectOptions>
   <CompilerOptions>
-    <Version Value="10"/>
+    <Version Value="11"/>
     <PathDelim Value="\"/>
     <Parsing>
       <SyntaxOptions>
         <UseAnsiStrings Value="False"/>
       </SyntaxOptions>
     </Parsing>
-    <Linking>
-      <Debugging>
-        <GenerateDebugInfo Value="True"/>
-        <DebugInfoType Value="dsAuto"/>
-      </Debugging>
-    </Linking>
     <Other>
       <CompilerPath Value="$(CompPath)"/>
     </Other>
