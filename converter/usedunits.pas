@@ -406,7 +406,6 @@ begin
     if not fCTLink.SrcCache.Replace(gtNewLine,gtNone,InsPos,InsPos,s) then exit;
     Result:=fCTLink.SrcCache.Apply;
   finally
-//    RenameList.Free;
     LclOnlyUnits.Free;
     DelphiOnlyUnits.Free;
   end;
