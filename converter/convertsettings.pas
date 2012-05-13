@@ -435,15 +435,43 @@ begin
   MapReplacement('TPNGObject',        'TPortableNetworkGraphic');
   MapReplacement('TTabbedNotebook',   'TPageControl');
   MapReplacement('TTabPage',          'ts$autoinc: TTabSheet');
+  // Database components
+  MapReplacement('TSQLConnection',    'TSQLConnector');
+  MapReplacement('TSQLClientDataSet', 'TSQLConnector');
+  MapReplacement('TSQLDataset',       'TSQLQuery');
+  MapReplacement('TSQLTable',         'TSQLQuery');
+  MapReplacement('TSQLStoredProc',    'TSQLQuery');
+  // BDE
+  MapReplacement('TDatabase',         'TSQLConnector');
+  MapReplacement('TBDEClientDataSet', 'TSQLConnector');
+  MapReplacement('TTable',            'TSQLQuery');
   MapReplacement('TQuery',            'TSQLQuery');
+  MapReplacement('TUpdateSQL',        'TSQLQuery');
+  MapReplacement('TStoredProc',       'TSQLQuery');
+  // ADO
+  MapReplacement('TADOConnection',    'TSQLConnector');
+  MapReplacement('TADODataSet',       'TSQLQuery');
+  MapReplacement('TADOTable',         'TSQLQuery');
   MapReplacement('TADOQuery',         'TSQLQuery');
-  // DevExpress components.
+  MapReplacement('TADOCommand',       'TSQLQuery');
+  MapReplacement('TADOStoredProc',    'TSQLQuery');
+  // Interbase
+  MapReplacement('TIBDatabase',       'TIBConnection');
+  MapReplacement('TIBClientDataSet',  'TIBConnection');
+  MapReplacement('TIBDataSet',        'TSQLQuery');
+  MapReplacement('TIBTable',          'TSQLQuery');
+  MapReplacement('TIBQuery',          'TSQLQuery');
+  MapReplacement('TIBUpdateSQL',      'TSQLQuery');
+  MapReplacement('TIBSQL',            'TSQLQuery');
+  MapReplacement('TIBStoredProc',     'TSQLQuery');
+  MapReplacement('TIBTransaction',    'TSQLTransaction');
+  // DevExpress components
   MapReplacement('TCxEdit',           'TEdit');
-  // Tnt* third party components.
+  // Tnt* third party components
   MapReplacement('^TTnt(.+)LX$',      'T$1');
   MapReplacement('^TTnt(.+[^L][^X])$','T$1');
 
-  // Coordinate offsets for some visual containers.
+  // Coordinate offsets for some visual containers
   with fCoordOffsets do begin
     AddVisualOffset('TGroupBox' , 14,2);
     AddVisualOffset('TPanel',      2,2);
@@ -451,7 +479,7 @@ begin
     AddVisualOffset('CheckGroup', 14,2);
   end;
 
-  // Map Delphi function names to FCL/LCL functions.
+  // Map Delphi function names to FCL/LCL functions
   with fReplaceFuncs do begin
     // File name encoding.
     Categ:='UTF8Names';
@@ -477,7 +505,7 @@ begin
     AddFunc(Categ,'CreateDir',           'CreateDirUTF8($1)',           'LCL','FileUtil');
     AddFunc(Categ,'RemoveDir',           'RemoveDirUTF8($1)',           'LCL','FileUtil');
     AddFunc(Categ,'ForceDirectories',    'ForceDirectoriesUTF8($1)',    'LCL','FileUtil');
-    // File functions using a handle.
+    // File functions using a handle
     Categ:='FileHandle';
     AddDefaultCategory(Categ);
     AddFunc(Categ, 'CreateFile', 'FileCreate($1)','','SysUtils');
