@@ -9,10 +9,10 @@ object FixLFMDialog: TFixLFMDialog
   ClientWidth = 756
   OnCreate = CheckLFMDialogCreate
   Position = poScreenCenter
-  LCLVersion = '0.9.31'
+  LCLVersion = '1.1'
   object NoteLabel: TLabel
     Left = 0
-    Height = 16
+    Height = 15
     Top = 0
     Width = 756
     Align = alTop
@@ -23,16 +23,16 @@ object FixLFMDialog: TFixLFMDialog
   object LFMGroupBox: TGroupBox
     Left = 0
     Height = 468
-    Top = 16
+    Top = 15
     Width = 408
     Align = alLeft
     Caption = 'LFM file'
-    ClientHeight = 449
+    ClientHeight = 450
     ClientWidth = 404
     TabOrder = 0
     inline LFMSynEdit: TSynEdit
       Left = 0
-      Height = 449
+      Height = 450
       Top = 0
       Width = 404
       Align = alClient
@@ -46,50 +46,24 @@ object FixLFMDialog: TFixLFMDialog
       Gutter.Width = 59
       Gutter.MouseActions = <      
         item
-          Shift = []
-          ShiftMask = []
-          Button = mbLeft
           ClickCount = ccAny
           ClickDir = cdDown
-          Command = 13
-          MoveCaret = False
-          Option = 0
-          Priority = 0
+          Command = emcOnMainGutterClick
         end      
         item
-          Shift = []
-          ShiftMask = []
           Button = mbRight
-          ClickCount = ccSingle
-          ClickDir = cdUp
-          Command = 12
-          MoveCaret = False
-          Option = 0
-          Priority = 0
+          Command = emcContextMenu
         end>
       RightGutter.Width = 0
       RightGutter.MouseActions = <      
         item
-          Shift = []
-          ShiftMask = []
-          Button = mbLeft
           ClickCount = ccAny
           ClickDir = cdDown
-          Command = 13
-          MoveCaret = False
-          Option = 0
-          Priority = 0
+          Command = emcOnMainGutterClick
         end      
         item
-          Shift = []
-          ShiftMask = []
           Button = mbRight
-          ClickCount = ccSingle
-          ClickDir = cdUp
-          Command = 12
-          MoveCaret = False
-          Option = 0
-          Priority = 0
+          Command = emcContextMenu
         end>
       Highlighter = SynLFMSyn1
       Keystrokes = <      
@@ -415,136 +389,93 @@ object FixLFMDialog: TFixLFMDialog
         end>
       MouseActions = <      
         item
-          Shift = []
           ShiftMask = [ssShift, ssAlt]
-          Button = mbLeft
-          ClickCount = ccSingle
           ClickDir = cdDown
-          Command = 1
+          Command = emcStartSelections
           MoveCaret = True
-          Option = 0
-          Priority = 0
         end      
         item
           Shift = [ssShift]
           ShiftMask = [ssShift, ssAlt]
-          Button = mbLeft
-          ClickCount = ccSingle
           ClickDir = cdDown
-          Command = 1
+          Command = emcStartSelections
           MoveCaret = True
           Option = 1
-          Priority = 0
         end      
         item
           Shift = [ssAlt]
           ShiftMask = [ssShift, ssAlt]
-          Button = mbLeft
-          ClickCount = ccSingle
           ClickDir = cdDown
-          Command = 3
+          Command = emcStartColumnSelections
           MoveCaret = True
-          Option = 0
-          Priority = 0
         end      
         item
           Shift = [ssShift, ssAlt]
           ShiftMask = [ssShift, ssAlt]
-          Button = mbLeft
-          ClickCount = ccSingle
           ClickDir = cdDown
-          Command = 3
+          Command = emcStartColumnSelections
           MoveCaret = True
           Option = 1
-          Priority = 0
         end      
         item
-          Shift = []
-          ShiftMask = []
           Button = mbRight
-          ClickCount = ccSingle
-          ClickDir = cdUp
-          Command = 12
-          MoveCaret = False
-          Option = 0
-          Priority = 0
+          Command = emcContextMenu
         end      
         item
-          Shift = []
-          ShiftMask = []
-          Button = mbLeft
           ClickCount = ccDouble
           ClickDir = cdDown
-          Command = 6
+          Command = emcSelectWord
           MoveCaret = True
-          Option = 0
-          Priority = 0
         end      
         item
-          Shift = []
-          ShiftMask = []
-          Button = mbLeft
           ClickCount = ccTriple
           ClickDir = cdDown
-          Command = 7
+          Command = emcSelectLine
           MoveCaret = True
-          Option = 0
-          Priority = 0
         end      
         item
-          Shift = []
-          ShiftMask = []
-          Button = mbLeft
           ClickCount = ccQuad
           ClickDir = cdDown
-          Command = 8
+          Command = emcSelectPara
           MoveCaret = True
-          Option = 0
-          Priority = 0
         end      
         item
-          Shift = []
-          ShiftMask = []
           Button = mbMiddle
-          ClickCount = ccSingle
           ClickDir = cdDown
-          Command = 10
+          Command = emcPasteSelection
           MoveCaret = True
-          Option = 0
-          Priority = 0
         end      
         item
           Shift = [ssCtrl]
           ShiftMask = [ssShift, ssAlt, ssCtrl]
-          Button = mbLeft
-          ClickCount = ccSingle
-          ClickDir = cdUp
-          Command = 11
-          MoveCaret = False
-          Option = 0
-          Priority = 0
+          Command = emcMouseLink
         end>
       MouseSelActions = <      
         item
-          Shift = []
-          ShiftMask = []
-          Button = mbLeft
-          ClickCount = ccSingle
           ClickDir = cdDown
-          Command = 9
-          MoveCaret = False
-          Option = 0
-          Priority = 0
+          Command = emcStartDragMove
         end>
       Lines.Strings = (
         'LFMSynEdit'
       )
+      VisibleSpecialChars = [vscSpace, vscTabAtLast]
       ReadOnly = True
       BracketHighlightStyle = sbhsBoth
+      BracketMatchColor.Background = clNone
+      BracketMatchColor.Foreground = clNone
+      BracketMatchColor.Style = [fsBold]
+      FoldedCodeColor.Background = clNone
+      FoldedCodeColor.Foreground = clGray
+      FoldedCodeColor.FrameColor = clGray
+      MouseLinkColor.Background = clNone
+      MouseLinkColor.Foreground = clBlue
+      LineHighlightColor.Background = clNone
+      LineHighlightColor.Foreground = clNone
       OnSpecialLineMarkup = LFMSynEditSpecialLineMarkup
       inline TSynGutterPartList
         object TSynGutterMarks
           Width = 24
+          MouseActions = <>
         end
         object TSynGutterLineNumber
           Width = 19
@@ -558,35 +489,26 @@ object FixLFMDialog: TFixLFMDialog
         end
         object TSynGutterChanges
           Width = 4
+          MouseActions = <>
           ModifiedColor = 59900
           SavedColor = clGreen
         end
         object TSynGutterSeparator
           Width = 2
+          MouseActions = <>
         end
         object TSynGutterCodeFolding
           MouseActions = <          
             item
-              Shift = []
-              ShiftMask = []
               Button = mbRight
-              ClickCount = ccSingle
-              ClickDir = cdUp
-              Command = 16
-              MoveCaret = False
-              Option = 0
-              Priority = 0
+              Command = emcCodeFoldContextMenu
             end          
             item
-              Shift = []
               ShiftMask = [ssShift]
               Button = mbMiddle
               ClickCount = ccAny
               ClickDir = cdDown
-              Command = 14
-              MoveCaret = False
-              Option = 0
-              Priority = 0
+              Command = emcCodeFoldCollaps
             end          
             item
               Shift = [ssShift]
@@ -594,58 +516,36 @@ object FixLFMDialog: TFixLFMDialog
               Button = mbMiddle
               ClickCount = ccAny
               ClickDir = cdDown
-              Command = 14
-              MoveCaret = False
+              Command = emcCodeFoldCollaps
               Option = 1
-              Priority = 0
             end          
             item
-              Shift = []
-              ShiftMask = []
-              Button = mbLeft
               ClickCount = ccAny
               ClickDir = cdDown
-              Command = 0
-              MoveCaret = False
-              Option = 0
-              Priority = 0
+              Command = emcNone
             end>
           MarkupInfo.Background = clNone
           MarkupInfo.Foreground = clGray
           MouseActionsExpanded = <          
             item
-              Shift = []
-              ShiftMask = []
-              Button = mbLeft
               ClickCount = ccAny
               ClickDir = cdDown
-              Command = 14
-              MoveCaret = False
-              Option = 0
-              Priority = 0
+              Command = emcCodeFoldCollaps
             end>
           MouseActionsCollapsed = <          
             item
               Shift = [ssCtrl]
               ShiftMask = [ssCtrl]
-              Button = mbLeft
               ClickCount = ccAny
               ClickDir = cdDown
-              Command = 15
-              MoveCaret = False
-              Option = 0
-              Priority = 0
+              Command = emcCodeFoldExpand
             end          
             item
-              Shift = []
               ShiftMask = [ssCtrl]
-              Button = mbLeft
               ClickCount = ccAny
               ClickDir = cdDown
-              Command = 15
-              MoveCaret = False
+              Command = emcCodeFoldExpand
               Option = 1
-              Priority = 0
             end>
         end
       end
@@ -654,16 +554,16 @@ object FixLFMDialog: TFixLFMDialog
   object ErrorsGroupBox: TGroupBox
     Left = 0
     Height = 104
-    Top = 489
+    Top = 488
     Width = 756
     Align = alBottom
     Caption = 'Errors'
-    ClientHeight = 85
+    ClientHeight = 86
     ClientWidth = 752
     TabOrder = 1
     object ErrorsListBox: TListBox
       Left = 0
-      Height = 85
+      Height = 86
       Top = 0
       Width = 752
       Align = alClient
@@ -674,20 +574,20 @@ object FixLFMDialog: TFixLFMDialog
   end
   object BtnPanel: TPanel
     Left = 0
-    Height = 44
-    Top = 593
+    Height = 45
+    Top = 592
     Width = 756
     Align = alBottom
     AutoSize = True
     BevelOuter = bvNone
-    ClientHeight = 44
+    ClientHeight = 45
     ClientWidth = 756
     TabOrder = 2
     object CancelButton: TBitBtn
-      Left = 673
-      Height = 32
+      Left = 668
+      Height = 33
       Top = 6
-      Width = 77
+      Width = 82
       Align = alRight
       AutoSize = True
       BorderSpacing.Around = 6
@@ -702,7 +602,7 @@ object FixLFMDialog: TFixLFMDialog
       Left = 6
       Height = 25
       Top = 6
-      Width = 218
+      Width = 182
       AutoSize = True
       BorderSpacing.Around = 6
       Caption = 'Fix unknown properties and types'
@@ -714,11 +614,11 @@ object FixLFMDialog: TFixLFMDialog
   object PropertyReplaceGroupBox: TGroupBox
     Left = 413
     Height = 468
-    Top = 16
+    Top = 15
     Width = 343
     Align = alClient
     Caption = 'Replacements'
-    ClientHeight = 449
+    ClientHeight = 450
     ClientWidth = 339
     TabOrder = 3
     object PropReplaceGrid: TStringGrid
@@ -769,7 +669,7 @@ object FixLFMDialog: TFixLFMDialog
     end
     object TypeReplaceGrid: TStringGrid
       Left = 0
-      Height = 223
+      Height = 224
       Top = 226
       Width = 339
       Align = alClient
@@ -808,14 +708,14 @@ object FixLFMDialog: TFixLFMDialog
   object Splitter1: TSplitter
     Left = 408
     Height = 468
-    Top = 16
+    Top = 15
     Width = 5
   end
   object Splitter2: TSplitter
     Cursor = crVSplit
     Left = 0
     Height = 5
-    Top = 484
+    Top = 483
     Width = 756
     Align = alBottom
     ResizeAnchor = akBottom

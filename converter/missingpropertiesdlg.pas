@@ -268,7 +268,6 @@ var
     if Pos('$autoinc', AIdent)>0 then begin
       Inc(AutoInc);
       Result:=StringReplace(AIdent, '$autoinc', IntToStr(AutoInc), [rfReplaceAll]);
-//      IDEMessagesWindow.AddMsg(Format('-- New Ident = "%s" --', [AIdent]),'',-1);
     end
     else
       Result:=AIdent;
@@ -495,8 +494,9 @@ begin
   end;
   LoopCount:=0;
   repeat
-    if CodeToolBoss.CheckLFM(fPascalBuffer,fLFMBuffer,fLFMTree,
-        fRootMustBeClassInUnit,fRootMustBeClassInIntf,fObjectsMustExist) then
+    if not fLFMTree.ParseIfNeeded then exit;
+    if CodeToolBoss.CheckLFM(fPascalBuffer, fLFMBuffer, fLFMTree,
+        fRootMustBeClassInUnit, fRootMustBeClassInIntf, fObjectsMustExist) then
       Result:=mrOk
     else                     // Rename/remove properties and types interactively.
       Result:=ShowRepairLFMWizard;  // Can return mrRetry.

@@ -5519,10 +5519,8 @@ var
   InheritanceNode: TCodeTreeNode;
 begin
   {$IFDEF CheckNodeTool}CheckNodeTool(ClassNode);{$ENDIF}
-  if (ClassNode=nil) or (not (ClassNode.Desc in AllClasses))
-  then
-    RaiseException('[TFindDeclarationTool.FindAncestorOfClass] '
-      +' invalid classnode');
+  if (ClassNode=nil) or (not (ClassNode.Desc in AllClasses)) then
+    RaiseException('[TFindDeclarationTool.FindAncestorOfClass]  invalid classnode');
   Result:=false;
   
   // ToDo: ppu, dcu
@@ -5580,8 +5578,7 @@ begin
   end;
   if (ClassIdentNode<>nil)
   and (ClassIdentNode.Desc=ctnTypeDefinition)
-  and (CompareIdentifiers(@Src[AncestorStartPos],
-    @Src[ClassIdentNode.StartPos])=0)
+  and (CompareIdentifiers(@Src[AncestorStartPos],@Src[ClassIdentNode.StartPos])=0)
   then begin
     MoveCursorToCleanPos(AncestorStartPos);
     RaiseException('ancestor has same name as class');
@@ -5614,8 +5611,7 @@ begin
   if FindClassContext then begin
     AncestorNode:=Params.NewNode;
     Params.Flags:=Params.Flags+[fdfFindChildren];
-    AncestorContext:=Params.NewCodeTool.FindBaseTypeOfNode(Params,
-                                                           AncestorNode);
+    AncestorContext:=Params.NewCodeTool.FindBaseTypeOfNode(Params,AncestorNode);
     Params.SetResult(AncestorContext);
 
     // check result

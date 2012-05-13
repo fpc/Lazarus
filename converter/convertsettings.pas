@@ -398,6 +398,7 @@ begin
   TheMap:=fReplaceUnits;
   MapReplacement('Windows',             'LCLIntf, LCLType, LMessages');
   MapReplacement('Mask',                'MaskEdit');
+  MapReplacement('TabNotBk',            'ComCtrls');
   MapReplacement('OpenGL',              'GL, GLu');
   MapReplacement('dglOpenGL',           'GL, GLu, GLut');  // ?
   MapReplacement('ShellApi',            '');

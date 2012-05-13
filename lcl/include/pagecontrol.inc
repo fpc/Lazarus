@@ -65,6 +65,8 @@ class procedure TPageControl.WSRegisterClass;
 begin
   inherited WSRegisterClass;
   RegisterPageControl;
+  RegisterPropertyToSkip(TPageControl, 'PageIndex', 'Needed when converting from VCL TabbedNotebook to TPageControl', '');
+  RegisterPropertyToSkip(TPageControl, 'TabFont', 'Needed when converting from VCL TabbedNotebook to TPageControl', '');
 end;
 
 procedure TPageControl.DoAddDockClient(Client: TControl; const ARect: TRect);
