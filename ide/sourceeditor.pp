@@ -6998,35 +6998,40 @@ begin
   {$IFDEF IDE_DEBUG}
   debugln(['TSourceNotebook.CloseFile A  APageIndex=',APageIndex]);
   {$ENDIF}
-  TempEditor:=FindSourceEditorWithPageIndex(APageIndex);
-  if TempEditor=nil then exit;
-  WasSelected:=PageIndex=APageIndex;
-  //debugln(['TSourceNotebook.CloseFile ',TempEditor.FileName,' ',TempEditor.APageIndex]);
-  EndIncrementalFind;
-  TempEditor.Close;
-  NoteBookDeletePage(APageIndex); // delete page before sending notification senEditorDestroyed
-  TempEditor.Free;
-  TempEditor:=nil;
-  // delete the page
-  //debugln('TSourceNotebook.CloseFile B  APageIndex=',APageIndex,' PageCount=',PageCount,' NoteBook.APageIndex=',Notebook.APageIndex);
-  //debugln('TSourceNotebook.CloseFile C  APageIndex=',APageIndex,' PageCount=',PageCount,' NoteBook.APageIndex=',Notebook.APageIndex);
-  UpdateProjectFiles;
-  UpdatePageNames;
-  if WasSelected then
-    UpdateStatusBar;
-  // set focus to new editor
-  if (PageCount = 0) and (Parent=nil) then begin
-    {$IFnDEF SingleSrcWindow}
-    Manager.RemoveWindow(self);
-    FManager := nil;
-    {$ENDIF}
-    if not FIsClosing then
-      Close;
+  DebugBoss.LockCommandProcessing;
+  try
+    TempEditor:=FindSourceEditorWithPageIndex(APageIndex);
+    if TempEditor=nil then exit;
+    WasSelected:=PageIndex=APageIndex;
+    //debugln(['TSourceNotebook.CloseFile ',TempEditor.FileName,' ',TempEditor.APageIndex]);
+    EndIncrementalFind;
+    TempEditor.Close;
+    NoteBookDeletePage(APageIndex); // delete page before sending notification senEditorDestroyed
+    TempEditor.Free;
+    TempEditor:=nil;
+    // delete the page
+    //debugln('TSourceNotebook.CloseFile B  APageIndex=',APageIndex,' PageCount=',PageCount,' NoteBook.APageIndex=',Notebook.APageIndex);
+    //debugln('TSourceNotebook.CloseFile C  APageIndex=',APageIndex,' PageCount=',PageCount,' NoteBook.APageIndex=',Notebook.APageIndex);
+    UpdateProjectFiles;
+    UpdatePageNames;
+    if WasSelected then
+      UpdateStatusBar;
+    // set focus to new editor
+    if (PageCount = 0) and (Parent=nil) then begin
+      {$IFnDEF SingleSrcWindow}
+      Manager.RemoveWindow(self);
+      FManager := nil;
+      {$ENDIF}
+      if not FIsClosing then
+        Close;
+    end;
+    // Move focus from Notebook-tabs to editor
+    TempEditor:=FindSourceEditorWithPageIndex(PageIndex);
+    if IsVisible and (TempEditor <> nil) and (FUpdateLock = 0) then
+      TempEditor.EditorComponent.SetFocus;
+  finally
+    DebugBoss.UnLockCommandProcessing;
   end;
-  // Move focus from Notebook-tabs to editor
-  TempEditor:=FindSourceEditorWithPageIndex(PageIndex);
-  if IsVisible and (TempEditor <> nil) and (FUpdateLock = 0) then
-    TempEditor.EditorComponent.SetFocus;
   {$IFDEF IDE_DEBUG}
   debugln('TSourceNotebook.CloseFile END');
   {$ENDIF}
@@ -7433,7 +7438,7 @@ Begin
         TempEditor.EditorComponent.Name,' ',
         NoteBookPages[FindPageWithEditor(TempEditor)]);
       {$ENDIF}
-      TempEditor.FocusEditor;
+      TempEditor.FocusEditor; // recursively calls NotebookPageChanged, via EditorEnter
       {$IFDEF VerboseFocus}
       debugln('TSourceNotebook.NotebookPageChanged AFTER SetFocus ',
         TempEditor.EditorComponent.Name,' ',
