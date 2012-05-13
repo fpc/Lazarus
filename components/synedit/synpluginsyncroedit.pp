@@ -287,8 +287,12 @@ const
   ecSynPSyncroEdCellEnd            = ecPluginFirst +  6;
   ecSynPSyncroEdCellSelect         = ecPluginFirst +  7;
   ecSynPSyncroEdEscape             = ecPluginFirst +  8;
+  ecSynPSyncroEdNextFirstCell      = ecPluginFirst +  9;
+  ecSynPSyncroEdNextFirstCellSel   = ecPluginFirst + 10;
+  ecSynPSyncroEdPrevFirstCell      = ecPluginFirst + 11;
+  ecSynPSyncroEdPrevFirstCellSel   = ecPluginFirst + 12;
 
-  ecSynPSyncroEdCount              = 9;
+  ecSynPSyncroEdCount              = 13;
 
 implementation
 
@@ -1023,6 +1027,7 @@ var
   Line: String;
   x2, g: Integer;
   entry: PSynPluginSyncroEditWordsHashEntry;
+  f: Boolean;
 begin
   if FCallQueued then begin
     FEditModeQueued := True;
@@ -1064,16 +1069,19 @@ begin
     x2 :=  WordBreaker.NextWordEnd(Line, Pos.x, True);
     if (Pos.y < EndPos.y) or (x2 <= EndPos.x) then begin
       entry := FWordIndex.GetWordP(@Line[Pos.x], x2-Pos.x);
+      f := False;
       if (entry <> nil) and (entry^.Count > 1) then begin;
         if (entry^.GrpId = 0) and (g <= MAX_SYNC_ED_WORDS) then begin
           entry^.GrpId := g;
           inc(g);
+          f := True;
         end;
         if (entry^.GrpId > 0) then
           with Cells.AddNew do begin
             LogStart := Pos;
             LogEnd := Point(x2, Pos.y);
             Group := entry^.GrpId;
+            FirstInGroup := f;
           end;
       end;
 
@@ -1393,6 +1401,10 @@ begin
       ecSynPSyncroEdNextCellSel:       NextCell(True, True);
       ecSynPSyncroEdPrevCell:          PreviousCell(False, True);
       ecSynPSyncroEdPrevCellSel:       PreviousCell(True, True);
+      ecSynPSyncroEdNextFirstCell:     NextCell(False, True, True);
+      ecSynPSyncroEdNextFirstCellSel:  NextCell(True, True, True);
+      ecSynPSyncroEdPrevFirstCell:     PreviousCell(False, True, True);
+      ecSynPSyncroEdPrevFirstCellSel:  PreviousCell(True, True, True);
       ecSynPSyncroEdCellHome:          CellCaretHome;
       ecSynPSyncroEdCellEnd:           CellCaretEnd;
       ecSynPSyncroEdCellSelect:        SelectCurrentCell;
@@ -1542,16 +1554,20 @@ begin
 end;
 
 const
-  EditorSyncroCommandStrs: array[0..8] of TIdentMapEntry = (
-    (Value: ecSynPSyncroEdStart;       Name: 'ecSynPSyncroEdStart'),
-    (Value: ecSynPSyncroEdNextCell;    Name: 'ecSynPSyncroEdNextCell'),
-    (Value: ecSynPSyncroEdNextCellSel; Name: 'ecSynPSyncroEdNextCellSel'),
-    (Value: ecSynPSyncroEdPrevCell;    Name: 'ecSynPSyncroEdPrevCell'),
-    (Value: ecSynPSyncroEdPrevCellSel; Name: 'ecSynPSyncroEdPrevCellSel'),
-    (Value: ecSynPSyncroEdCellHome;    Name: 'ecSynPSyncroEdCellHome'),
-    (Value: ecSynPSyncroEdCellEnd;     Name: 'ecSynPSyncroEdCellEnd'),
-    (Value: ecSynPSyncroEdCellSelect;  Name: 'ecSynPSyncroEdCellSelect'),
-    (Value: ecSynPSyncroEdEscape;      Name: 'ecSynPSyncroEdEscape')
+  EditorSyncroCommandStrs: array[0..12] of TIdentMapEntry = (
+    (Value: ecSynPSyncroEdStart;            Name: 'ecSynPSyncroEdStart'),
+    (Value: ecSynPSyncroEdNextCell;         Name: 'ecSynPSyncroEdNextCell'),
+    (Value: ecSynPSyncroEdNextCellSel;      Name: 'ecSynPSyncroEdNextCellSel'),
+    (Value: ecSynPSyncroEdPrevCell;         Name: 'ecSynPSyncroEdPrevCell'),
+    (Value: ecSynPSyncroEdPrevCellSel;      Name: 'ecSynPSyncroEdPrevCellSel'),
+    (Value: ecSynPSyncroEdCellHome;         Name: 'ecSynPSyncroEdCellHome'),
+    (Value: ecSynPSyncroEdCellEnd;          Name: 'ecSynPSyncroEdCellEnd'),
+    (Value: ecSynPSyncroEdCellSelect;       Name: 'ecSynPSyncroEdCellSelect'),
+    (Value: ecSynPSyncroEdEscape;           Name: 'ecSynPSyncroEdEscape'),
+    (Value: ecSynPSyncroEdNextFirstCell;    Name: 'ecSynPSyncroEdNextFirstCell'),
+    (Value: ecSynPSyncroEdNextFirstCellSel; Name: 'ecSynPSyncroEdNextFirstCellSel'),
+    (Value: ecSynPSyncroEdPrevFirstCell;    Name: 'ecSynPSyncroEdPrevFirstCell'),
+    (Value: ecSynPSyncroEdPrevFirstCellSel; Name: 'ecSynPSyncroEdPrevFirstCellSel')
   );
 
 function IdentToSyncroCommand(const Ident: string; var Cmd: longint): boolean;

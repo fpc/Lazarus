@@ -693,8 +693,10 @@ begin
   with TLazSynPluginSyncronizedEditCell(p.EditCellList.AddNew) do begin
     LogStart := Point(p.DestPosX, p.DestPosY);
     LogEnd := Point(p.DestPosX + length(Value), p.DestPosY);
-    if g < 0 then
-      Group := p.EditCellList.Count
+    if g < 0 then begin
+      Group := p.EditCellList.Count;
+      FirstInGroup := True;
+    end
     else
       Group := g;
     CellValue := Value;

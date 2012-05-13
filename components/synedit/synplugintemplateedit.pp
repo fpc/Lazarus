@@ -66,7 +66,7 @@ type
               var Handled: boolean; var Command: TSynEditorCommand;
               var AChar: TUTF8Char; Data: pointer; HandlerData: pointer);
 
-    procedure NextCellOrFinal(SetSelect: Boolean = True);
+    procedure NextCellOrFinal(SetSelect: Boolean = True; FirstsOnly: Boolean = False);
     procedure SetFinalCaret;
   public
     constructor Create(AOwner: TComponent); override;
@@ -97,8 +97,14 @@ const
   ecSynPTmplEdCellSelect         = ecPluginFirst +  8;
   ecSynPTmplEdFinish             = ecPluginFirst +  9;
   ecSynPTmplEdEscape             = ecPluginFirst + 10;
+  ecSynPTmplEdNextFirstCell           = ecPluginFirst + 11;
+  ecSynPTmplEdNextFirstCellSel        = ecPluginFirst + 12;
+  ecSynPTmplEdNextFirstCellRotate     = ecPluginFirst + 13;
+  ecSynPTmplEdNextFirstCellSelRotate  = ecPluginFirst + 14;
+  ecSynPTmplEdPrevFirstCell           = ecPluginFirst + 15;
+  ecSynPTmplEdPrevFirstCellSel        = ecPluginFirst + 16;
 
-  ecSynPTmplEdCount               = 10;
+  ecSynPTmplEdCount               = 17;
 
 implementation
 
@@ -222,6 +228,12 @@ begin
     ecSynPTmplEdNextCellSelRotate: NextCell(True);
     ecSynPTmplEdPrevCell:          PreviousCell(False);
     ecSynPTmplEdPrevCellSel:       PreviousCell(True);
+    ecSynPTmplEdNextFirstCell:          NextCellOrFinal(False, True);
+    ecSynPTmplEdNextFirstCellSel:       NextCellOrFinal(True, True);
+    ecSynPTmplEdNextFirstCellRotate:    NextCell(False, False, True);
+    ecSynPTmplEdNextFirstCellSelRotate: NextCell(True, False, True);
+    ecSynPTmplEdPrevFirstCell:          PreviousCell(False, False, True);
+    ecSynPTmplEdPrevFirstCellSel:       PreviousCell(True, False, True);
     ecSynPTmplEdCellHome:          CellCaretHome;
     ecSynPTmplEdCellEnd:           CellCaretEnd;
     ecSynPTmplEdCellSelect:        SelectCurrentCell;
@@ -236,7 +248,7 @@ begin
   end;
 end;
 
-procedure TSynPluginTemplateEdit.NextCellOrFinal(SetSelect: Boolean);
+procedure TSynPluginTemplateEdit.NextCellOrFinal(SetSelect: Boolean; FirstsOnly: Boolean);
 var
   Pos: TPoint;
   i: Integer;
@@ -257,7 +269,8 @@ begin
       SetFinalCaret;
       exit;
     end;
-  until (Cells[i].Group >= 0);
+  until (Cells[i].Group >= 0) and
+        ((not FirstsOnly) or (Cells[i].FirstInGroup));
   CurrentCell := i;
   if CurrentCell < 0 then
     exit;
@@ -332,6 +345,7 @@ begin
                   LogStart := CellStart;
                   LogEnd := Point(k +XOffs, CellStart.y);
                   Group := grp;
+                  FirstInGroup := True;
                 end;
                 inc(grp);
                 CellStart.x := -1;

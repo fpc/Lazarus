@@ -2769,6 +2769,12 @@ resourcestring
   srkmecSynPTmplEdNextCellSelRotate  = 'Next Cell (rotate / all selected)';
   srkmecSynPTmplEdPrevCell           = 'Previous Cell';
   srkmecSynPTmplEdPrevCellSel        = 'Previous Cell (all selected)';
+  srkmecSynPTmplEdNextFirstCell           = 'Next Cell (firsts only)';
+  srkmecSynPTmplEdNextFirstCellSel        = 'Next Cell (all selected / firsts only)';
+  srkmecSynPTmplEdNextFirstCellRotate     = 'Next Cell (rotate / firsts only)';
+  srkmecSynPTmplEdNextFirstCellSelRotate  = 'Next Cell (rotate / all selected / firsts only)';
+  srkmecSynPTmplEdPrevFirstCell           = 'Previous Cell (firsts only)';
+  srkmecSynPTmplEdPrevFirstCellSel        = 'Previous Cell (all selected / firsts only)';
   srkmecSynPTmplEdCellHome           = 'Goto first pos in cell';
   srkmecSynPTmplEdCellEnd            = 'Goto last pos in cell';
   srkmecSynPTmplEdCellSelect         = 'Select cell';
@@ -2776,15 +2782,19 @@ resourcestring
   srkmecSynPTmplEdEscape             = 'Escape';
 
   // Plugin Syncro Edit
-  srkmecSynPSyncroEdNextCell    = 'Next Cell';
-  srkmecSynPSyncroEdNextCellSel = 'Next Cell (all selected)';
-  srkmecSynPSyncroEdPrevCell    = 'Previous Cell';
-  srkmecSynPSyncroEdPrevCellSel = 'Previous Cell (all selected)';
-  srkmecSynPSyncroEdCellHome    = 'Goto first pos in cell';
-  srkmecSynPSyncroEdCellEnd     = 'Goto last pos in cell';
-  srkmecSynPSyncroEdCellSelect  = 'Select Cell';
-  srkmecSynPSyncroEdEscape      = 'Escape';
-  srkmecSynPSyncroEdStart       = 'Start Syncro edit';
+  srkmecSynPSyncroEdNextCell         = 'Next Cell';
+  srkmecSynPSyncroEdNextCellSel      = 'Next Cell (all selected)';
+  srkmecSynPSyncroEdPrevCell         = 'Previous Cell';
+  srkmecSynPSyncroEdPrevCellSel      = 'Previous Cell (all selected)';
+  srkmecSynPSyncroEdNextFirstCell    = 'Next Cell (firsts only)';
+  srkmecSynPSyncroEdNextFirstCellSel = 'Next Cell (all selected / firsts only)';
+  srkmecSynPSyncroEdPrevFirstCell    = 'Previous Cell (firsts only)';
+  srkmecSynPSyncroEdPrevFirstCellSel = 'Previous Cell (all selected / firsts only)';
+  srkmecSynPSyncroEdCellHome         = 'Goto first pos in cell';
+  srkmecSynPSyncroEdCellEnd          = 'Goto last pos in cell';
+  srkmecSynPSyncroEdCellSelect       = 'Select Cell';
+  srkmecSynPSyncroEdEscape           = 'Escape';
+  srkmecSynPSyncroEdStart            = 'Start Syncro edit';
 
   // run menu
   srkmecCompile                   = 'compile program/project';

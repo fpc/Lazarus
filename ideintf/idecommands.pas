@@ -354,6 +354,12 @@ const
   ecIdePTmplEdCellSelect         = ecFirstPlugin +  8;
   ecIdePTmplEdFinish             = ecFirstPlugin +  9;
   ecIdePTmplEdEscape             = ecFirstPlugin + 10;
+  ecIdePTmplEdNextFirstCell           = ecFirstPlugin + 11;
+  ecIdePTmplEdNextFirstCellSel        = ecFirstPlugin + 12;
+  ecIdePTmplEdNextFirstCellRotate     = ecFirstPlugin + 13;
+  ecIdePTmplEdNextFirstCellSelRotate  = ecFirstPlugin + 14;
+  ecIdePTmplEdPrevFirstCell           = ecFirstPlugin + 15;
+  ecIdePTmplEdPrevFirstCellSel        = ecFirstPlugin + 16;
 
   // TSynPluginTemplateEdit - Out off Cell
   ecIdePTmplEdOutNextCell           = ecFirstPlugin +  20;
@@ -367,6 +373,12 @@ const
   ecIdePTmplEdOutCellSelect         = ecFirstPlugin +  28;
   ecIdePTmplEdOutFinish             = ecFirstPlugin +  29;
   ecIdePTmplEdOutEscape             = ecFirstPlugin +  30;
+  ecIdePTmplEdOutNextFirstCell           = ecFirstPlugin + 31;
+  ecIdePTmplEdOutNextFirstCellSel        = ecFirstPlugin + 32;
+  ecIdePTmplEdOutNextFirstCellRotate     = ecFirstPlugin + 33;
+  ecIdePTmplEdOutNextFirstCellSelRotate  = ecFirstPlugin + 34;
+  ecIdePTmplEdOutPrevFirstCell           = ecFirstPlugin + 35;
+  ecIdePTmplEdOutPrevFirstCellSel        = ecFirstPlugin + 36;
 
   // TSynPluginSyncroEdit - in celll
   ecIdePSyncroEdNextCell           = ecFirstPlugin +  50;
@@ -377,6 +389,10 @@ const
   ecIdePSyncroEdCellEnd            = ecFirstPlugin +  55;
   ecIdePSyncroEdCellSelect         = ecFirstPlugin +  56;
   ecIdePSyncroEdEscape             = ecFirstPlugin +  57;
+  ecIdePSyncroEdNextFirstCell      = ecFirstPlugin +  58;
+  ecIdePSyncroEdNextFirstCellSel   = ecFirstPlugin +  59;
+  ecIdePSyncroEdPrevFirstCell      = ecFirstPlugin +  60;
+  ecIdePSyncroEdPrevFirstCellSel   = ecFirstPlugin +  61;
 
   // TSynPluginSyncroEdit - Out off cell
   ecIdePSyncroEdOutNextCell           = ecFirstPlugin +  70;
@@ -387,6 +403,10 @@ const
   ecIdePSyncroEdOutCellEnd            = ecFirstPlugin +  75;
   ecIdePSyncroEdOutCellSelect         = ecFirstPlugin +  76;
   ecIdePSyncroEdOutEscape             = ecFirstPlugin +  77;
+  ecIdePSyncroEdOutNextFirstCell      = ecFirstPlugin +  78;
+  ecIdePSyncroEdOutNextFirstCellSel   = ecFirstPlugin +  79;
+  ecIdePSyncroEdOutPrevFirstCell      = ecFirstPlugin +  80;
+  ecIdePSyncroEdOutPrevFirstCellSel   = ecFirstPlugin +  81;
 
   // TSynPluginSyncroEdit - selecting
   ecIdePSyncroEdSelStart              = ecFirstPlugin +  90;

@@ -36,14 +36,17 @@ type
 
   TSynPluginSyncronizedEditCell = class
   private
+    FFirstInGroup: Boolean;
     FLogStart, FLogEnd: TPoint;
     FGroup: Integer;
   public
+    constructor Create;
     procedure Assign(Src: TSynPluginSyncronizedEditCell); reintroduce;
 
     property LogStart: TPoint read FLogStart write FLogStart;
     property LogEnd: TPoint read FLogEnd write FLogEnd;
     property Group: Integer read FGroup write FGroup;
+    property FirstInGroup: Boolean read FFirstInGroup write FFirstInGroup;
   end;
 
   TSynPluginSyncronizedEditCellChangedEvent = procedure(aIndex: Integer;
@@ -265,8 +268,8 @@ type
     property LastCell: Integer read FLastCell;
   protected
     procedure SelectCurrentCell(Reverse: Boolean = False);
-    procedure PreviousCell(SetSelect: Boolean = True; SkipSameIndex: Boolean = False);
-    procedure NextCell(SetSelect: Boolean = True; SkipSameIndex: Boolean = False);
+    procedure PreviousCell(SetSelect: Boolean = True; SkipSameIndex: Boolean = False; FirstsOnly: Boolean = False);
+    procedure NextCell(SetSelect: Boolean = True; SkipSameIndex: Boolean = False; FirstsOnly: Boolean = False);
     procedure CellCaretHome;
     procedure CellCaretEnd;
   public
@@ -1136,12 +1139,18 @@ end;
 
 { TSynPluginSyncronizedEditCell }
 
+constructor TSynPluginSyncronizedEditCell.Create;
+begin
+  FFirstInGroup := False;
+end;
+
 procedure TSynPluginSyncronizedEditCell.Assign(Src: TSynPluginSyncronizedEditCell);
 begin
   if Src = nil then exit;
   FLogStart := Src.FLogStart;
   FLogEnd := Src.FLogEnd;
   FGroup := Src.FGroup;
+  FFirstInGroup := Src.FFirstInGroup;
 end;
 
 { TSynPluginCustomSyncroEdit }
@@ -1301,7 +1310,8 @@ begin
   end;
 end;
 
-procedure TSynPluginCustomSyncroEdit.PreviousCell(SetSelect: Boolean; SkipSameIndex: Boolean = False);
+procedure TSynPluginCustomSyncroEdit.PreviousCell(SetSelect: Boolean; SkipSameIndex: Boolean;
+  FirstsOnly: Boolean);
 var
   i, j, x: Integer;
   Pos: TPoint;
@@ -1326,8 +1336,10 @@ begin
     if i < 0 then
       i := Cells.Count - 1;
   until (j > Cells.Count) or
-        ((Cells[i].Group >= 0) and
-         ((not SkipSameIndex) or (Cells[i].Group <> x)) );
+        ( (Cells[i].Group >= 0) and
+          ((not SkipSameIndex) or (Cells[i].Group <> x)) and
+          ((not FirstsOnly) or (Cells[i].FirstInGroup))
+        );
   CurrentCell := i;
 
   if CurrentCell < 0 then
@@ -1339,7 +1351,8 @@ begin
     Editor.BlockBegin := Cells[CurrentCell].LogEnd;
 end;
 
-procedure TSynPluginCustomSyncroEdit.NextCell(SetSelect: Boolean; SkipSameIndex: Boolean = False);
+procedure TSynPluginCustomSyncroEdit.NextCell(SetSelect: Boolean; SkipSameIndex: Boolean;
+  FirstsOnly: Boolean);
 var
   Pos: TPoint;
   i, j, x: Integer;
@@ -1365,8 +1378,10 @@ begin
     if i >= Cells.Count then
       i := 0
   until (j > Cells.Count) or
-        ((Cells[i].Group >= 0) and
-         ((not SkipSameIndex) or (Cells[i].Group <> x)) );
+        ( (Cells[i].Group >= 0) and
+          ((not SkipSameIndex) or (Cells[i].Group <> x)) and
+          ((not FirstsOnly) or (Cells[i].FirstInGroup))
+        );
   CurrentCell := i;
   if CurrentCell < 0 then
     exit;
