@@ -4104,11 +4104,9 @@ function TGDBMIDebuggerCommandStartDebugging.DoExecute: Boolean;
             if TrySetMainBrk(mtAddZero,   msNone) then exit;
           end;
         msDefault: begin
+            (* Force mtMain before + 0: gdb 7.4 will pretend to have +0, but fail it later. *)
+            TrySetMainBrk(mtMain,      msNone); // include name
             TrySetMainBrk(mtAddZero,   msNone); // always include +0
-            if  (FTheDebugger.FMainAddrBreak.LineOffsFunction <> 'main')
-            //and (FTheDebugger.FMainAddrBreak.LineOffsFunction <> '_FPC_MAINCRTSTARTUP')
-            then
-              TrySetMainBrk(mtMain,      msNone); // include name
             if TrySetMainBrk(mtEntry,     msTryNameZero) then exit;
             if TrySetMainBrk(mtMainAddr,  msTryZero) then exit;
           end;
