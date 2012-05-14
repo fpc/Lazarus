@@ -1064,7 +1064,10 @@ const
     if ASection.Count > Index then
       Result := ASection.Items[Index]
     else
+    begin
       Result := RegisterIDEMenuCommand(ASection.GetPath,'Window'+IntToStr(Index)+ASection.Name,'');
+      Result.CreateMenuItem;
+    end;
   end;
 
   procedure ClearMenuItem(ARemainCount: Integer; ASection: TIDEMenuSection); inline;
