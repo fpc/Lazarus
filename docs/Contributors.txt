@@ -78,6 +78,7 @@ Hwang Weng Sun
 Ido Kanner
 Igor Paliychuk
 James Chandler Jr.
+Jan Adamec
 Jan Foster
 Jarto Tarpio
 Jason King
@@ -129,6 +130,7 @@ Mazen Neifer
 Michael A. Hess
 Micha Nelissen
 Michal Bukovjan
+Michalis Kamburelis
 Nikolay Ermolov
 Olivier Guilbaud
 Patrick Chevalley
