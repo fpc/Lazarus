@@ -53,38 +53,35 @@ type
 const
   GLXTrue = 1;
   GLXFalse = 0;
+  
+  { Constants below are the same as in FPC GLX unit. }
+
+  // GLX 1.3 and later:
+  GLX_X_RENDERABLE                = $8012;
+  
+  // Tokens for glXChooseVisual and glXGetConfig.
+  GLX_USE_GL                            = 1;
+  GLX_BUFFER_SIZE                       = 2;
+  GLX_LEVEL                             = 3;
+  GLX_RGBA                              = 4;
+  GLX_DOUBLEBUFFER                      = 5;
+  GLX_STEREO                            = 6;
+  GLX_AUX_BUFFERS                       = 7;
+  GLX_RED_SIZE                          = 8;
+  GLX_GREEN_SIZE                        = 9;
+  GLX_BLUE_SIZE                         = 10;
+  GLX_ALPHA_SIZE                        = 11;
+  GLX_DEPTH_SIZE                        = 12;
+  GLX_STENCIL_SIZE                      = 13;
+  GLX_ACCUM_RED_SIZE                    = 14;
+  GLX_ACCUM_GREEN_SIZE                  = 15;
+  GLX_ACCUM_BLUE_SIZE                   = 16;
+  GLX_ACCUM_ALPHA_SIZE                  = 17;
+
+  // GLX_ARB_multisample
+  GLX_SAMPLE_BUFFERS_ARB             = 100000;
+  GLX_SAMPLES_ARB                    = 100001;
 {$ENDIF}
-// gdkgl
-const
-// enum _GDK_GL_CONFIGS
-  GDK_GL_NONE                           = 0;
-  GDK_GL_USE_GL                         = 1;
-  GDK_GL_BUFFER_SIZE                    = 2;
-  GDK_GL_LEVEL                          = 3;
-  GDK_GL_RGBA                           = 4;
-  GDK_GL_DOUBLEBUFFER                   = 5;
-  GDK_GL_STEREO                         = 6;
-  GDK_GL_AUX_BUFFERS                    = 7;
-  GDK_GL_RED_SIZE                       = 8;
-  GDK_GL_GREEN_SIZE                     = 9;
-  GDK_GL_BLUE_SIZE                      = 10;
-  GDK_GL_ALPHA_SIZE                     = 11;
-  GDK_GL_DEPTH_SIZE                     = 12;
-  GDK_GL_STENCIL_SIZE                   = 13;
-  GDK_GL_ACCUM_RED_SIZE                 = 14;
-  GDK_GL_ACCUM_GREEN_SIZE               = 15;
-  GDK_GL_ACCUM_BLUE_SIZE                = 16;
-  GDK_GL_ACCUM_ALPHA_SIZE               = 17;
-
-  // GLX_EXT_visual_info extension
-  GDK_GL_X_VISUAL_TYPE_EXT              = $22;
-  GDK_GL_TRANSPARENT_TYPE_EXT           = $23;
-  GDK_GL_TRANSPARENT_INDEX_VALUE_EXT    = $24;
-  GDK_GL_TRANSPARENT_RED_VALUE_EXT      = $25;
-  GDK_GL_TRANSPARENT_GREEN_VALUE_EXT    = $26;
-  GDK_GL_TRANSPARENT_BLUE_VALUE_EXT     = $27;
-  GDK_GL_TRANSPARENT_ALPHA_VALUE_EXT    = $28;
-
 
 type
   TGdkGLContext = record end;
@@ -151,11 +148,15 @@ procedure LOpenGLSwapBuffers(Handle: HWND);
 function LOpenGLMakeCurrent(Handle: HWND): boolean;
 function LOpenGLCreateContext(AWinControl: TWinControl;
              WSPrivate: TWSPrivateClass; SharedControl: TWinControl;
-             DoubleBuffered, RGBA: boolean;
+             DoubleBuffered, RGBA: boolean; MultiSampling: Cardinal;
              const AParams: TCreateParams): HWND;
 procedure LOpenGLDestroyContextInfo(AWinControl: TWinControl);
+
+{ Create GLX attributes list suitable for glXChooseVisual or glXChooseFBConfig.
+  Note that if MultiSampling is > 1, it is expected that caller 
+  already checked that GLX_ARB_multisample is available. }
 function CreateOpenGLContextAttrList(DoubleBuffered: boolean;
-                                     RGBA: boolean): PInteger;
+  RGBA: boolean; MultiSampling: Cardinal): PInteger;
 
 implementation
 
@@ -425,16 +426,6 @@ var
   FBConfig: TGLXFBConfig;
   FBConfigs: PGLXFBConfig;
   FBConfigsCount: Integer;
-
-  { Attributes to choose context with glXChooseFBConfig.
-    Similar to Attr, but not exactly compatible. }
-  AttrFB: Array[0..10] of integer = (
-    GLX_X_RENDERABLE, 1 { true },
-    GLX_RED_SIZE, 1,
-    GLX_GREEN_SIZE, 1,
-    GLX_BLUE_SIZE, 1,
-    GLX_DOUBLEBUFFER, 1 { true },
-    none);
 {$ENDIF}
 
 begin
@@ -449,7 +440,7 @@ begin
       if GLX_version_1_3(dpy) then begin
         { use approach recommended since glX 1.3 }
         FBConfigsCount:=0;
-        FBConfigs:=glXChooseFBConfig(dpy, DefaultScreen(dpy), AttrFB, FBConfigsCount);
+        FBConfigs:=glXChooseFBConfig(dpy, DefaultScreen(dpy), @attrList[0], FBConfigsCount);
         if FBConfigsCount = 0 then
           raise Exception.Create('Could not find FB config');
 
@@ -681,7 +672,7 @@ var
   Size: Integer;
 begin
   Count:=0;
-  while (attrList[Count]<>GDK_GL_NONE) do inc(Count);
+  while (attrList[Count]<>0) do inc(Count);
   inc(Count);
   Size:=SizeOf(Integer)*Count;
   CopyAttrList:=nil;
@@ -834,9 +825,9 @@ begin
 end;
 {$ENDIF}
 
-function LOpenGLCreateContext(AWinControl: TWinControl;
+function LOpenGLCreateContextCore(AWinControl: TWinControl;
   WSPrivate: TWSPrivateClass; SharedControl: TWinControl;
-  DoubleBuffered, RGBA: boolean;
+  DoubleBuffered, RGBA: boolean; MultiSampling: Cardinal;
   const AParams: TCreateParams): HWND;
 var
   NewWidget: PGtkWidget;
@@ -844,7 +835,7 @@ var
   AttrList: PInteger;
 begin
   if WSPrivate=nil then ;
-  AttrList:=CreateOpenGLContextAttrList(DoubleBuffered,RGBA);
+  AttrList:=CreateOpenGLContextAttrList(DoubleBuffered,RGBA,MultiSampling);
   try
     if SharedControl<>nil then begin
       SharedArea:={%H-}PGtkGLArea(PtrUInt(SharedControl.Handle));
@@ -868,16 +859,44 @@ begin
   end;
 end;
 
+function LOpenGLCreateContext(AWinControl: TWinControl;
+  WSPrivate: TWSPrivateClass; SharedControl: TWinControl;
+  DoubleBuffered, RGBA: boolean; MultiSampling: Cardinal;
+  const AParams: TCreateParams): HWND;
+begin
+  if (MultiSampling > 1) and
+     {$IFDEF UseFPGLX}
+     GLX_ARB_multisample(GetDefaultXDisplay, DefaultScreen(GetDefaultXDisplay))
+     {$ELSE}
+     false { no GLX_ARB_multisample support when UseFPGLX undefined,
+             it would be too convoluted to replicate GLX unit extension querying
+             functionality here }
+     {$ENDIF} then
+  try
+    Result := LOpenGLCreateContextCore(AWinControl, WSPrivate, SharedControl, 
+      DoubleBuffered, RGBA, MultiSampling, AParams);
+  except
+    { retry without MultiSampling }
+    Result := LOpenGLCreateContextCore(AWinControl, WSPrivate, SharedControl, 
+      DoubleBuffered, RGBA, 1, AParams);
+  end else
+    { no multi-sampling requested (or GLX_ARB_multisample not available),
+      just pass to LOpenGLCreateContextCore }
+    Result := LOpenGLCreateContextCore(AWinControl, WSPrivate, SharedControl, 
+      DoubleBuffered, RGBA, MultiSampling, AParams);
+end;
+
 procedure LOpenGLDestroyContextInfo(AWinControl: TWinControl);
 begin
   if not AWinControl.HandleAllocated then exit;
   // nothing to do
 end;
 
-function CreateOpenGLContextAttrList(DoubleBuffered: boolean; RGBA: boolean
-  ): PInteger;
+function CreateOpenGLContextAttrList(DoubleBuffered: boolean; RGBA: boolean;
+  MultiSampling: Cardinal): PInteger;
 var
   p: integer;
+  UseFBConfig: boolean;
   
   procedure Add(i: integer);
   begin
@@ -888,19 +907,35 @@ var
   
   procedure CreateList;
   begin
+    if UseFBConfig then begin Add(GLX_X_RENDERABLE); Add(1); end;
     if DoubleBuffered then
-      Add(GDK_GL_DOUBLEBUFFER);
+    begin
+      if UseFBConfig then 
+        begin Add(GLX_DOUBLEBUFFER); Add(1); end else
+        Add(GLX_DOUBLEBUFFER);
+    end;
     if RGBA then
-      Add(GDK_GL_RGBA);
-    Add(GDK_GL_RED_SIZE);  Add(1);
-    Add(GDK_GL_GREEN_SIZE);  Add(1);
-    Add(GDK_GL_BLUE_SIZE);  Add(1);
-    Add(GDK_GL_DEPTH_SIZE);  Add(1);
-    Add(GDK_GL_STENCIL_SIZE); Add(1);
-    Add(GDK_GL_None);
+    begin
+      if not UseFBConfig then Add(GLX_RGBA);
+      { For UseFBConfig, glXChooseFBConfig already defaults to RGBA }
+    end;
+    Add(GLX_RED_SIZE);  Add(1);
+    Add(GLX_GREEN_SIZE);  Add(1);
+    Add(GLX_BLUE_SIZE);  Add(1);
+    Add(GLX_DEPTH_SIZE);  Add(1);
+    Add(GLX_STENCIL_SIZE); Add(1);
+    
+    if MultiSampling > 1 then
+    begin
+      Add(GLX_SAMPLE_BUFFERS_ARB); Add(1);
+      Add(GLX_SAMPLES_ARB); Add(MultiSampling);
+    end;
+    
+    Add(0); { 0 = X.None (be careful: GLX_NONE is something different) }
   end;
   
 begin
+  UseFBConfig := {$IFDEF UseFPGLX} GLX_version_1_3(GetDefaultXDisplay) {$else} false {$endif};
   Result:=nil;
   p:=0;
   CreateList;

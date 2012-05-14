@@ -28,7 +28,7 @@ procedure LOpenGLSwapBuffers(Handle: HWND);
 function LOpenGLMakeCurrent(Handle: HWND): boolean;
 function LOpenGLCreateContext(AWinControl: TWinControl;
                     WSPrivate: TWSPrivateClass; SharedControl: TWinControl;
-                    DoubleBuffered, RGBA: boolean;
+                    DoubleBuffered, RGBA: boolean; MultiSampling: Cardinal;
                     const AParams: TCreateParams): HWND;
 procedure LOpenGLDestroyContextInfo(AWinControl: TWinControl);
 
@@ -276,13 +276,138 @@ begin
   end;
 end;
 
+var
+  Temp_h_GLRc: HGLRC;
+  Temp_h_Dc: HDC;
+  Temp_h_Wnd: HWND;
+
+procedure LGlMsDestroyTemporaryWindow; forward;
+
+procedure LGlMsCreateTemporaryWindow;
+var
+  PixelFormat: LongInt;
+  pfd: PIXELFORMATDESCRIPTOR;
+begin
+  Temp_h_Wnd := 0;
+  Temp_h_Dc := 0;
+  Temp_h_GLRc := 0;
+
+  try
+    { create Temp_H_wnd }
+    Temp_H_wnd := CreateWindowEx(WS_EX_APPWINDOW or WS_EX_WINDOWEDGE,
+      PChar('STATIC'),
+      PChar('temporary window for wgl'),
+      WS_OVERLAPPEDWINDOW or WS_CLIPSIBLINGS or WS_CLIPCHILDREN,
+      0, 0, 100, 100,
+      0 { no parent window }, 0 { no menu }, hInstance,
+      nil);
+
+    { create Temp_h_Dc }
+    Temp_h_Dc := GetDC(Temp_h_Wnd);
+
+    { create and set PixelFormat (must support OpenGL to be able to
+      later do wglCreateContext) }
+    FillChar(pfd, SizeOf(pfd), 0);
+    with pfd do
+    begin
+      nSize := SizeOf(PIXELFORMATDESCRIPTOR);
+      nVersion := 1;
+      dwFlags := PFD_DRAW_TO_WINDOW or PFD_SUPPORT_OPENGL;
+      iPixelType := PFD_TYPE_RGBA;
+      iLayerType := PFD_MAIN_PLANE;
+    end;
+    PixelFormat := ChoosePixelFormat(Temp_h_Dc, @pfd);
+    SetPixelFormat(Temp_h_Dc, PixelFormat, @pfd);
+
+    { create and make current Temp_h_GLRc }
+    Temp_h_GLRc := wglCreateContext(Temp_h_Dc);
+    wglMakeCurrent(Temp_h_Dc, Temp_h_GLRc);
+  except
+    { make sure to finalize all partially initialized window parts }
+    LGlMsDestroyTemporaryWindow;
+    raise;
+  end;
+end;
+
+procedure LGlMsDestroyTemporaryWindow;
+begin
+  if Temp_h_GLRc <> 0 then
+  begin
+    wglMakeCurrent(Temp_h_Dc, 0);
+    wglDeleteContext(Temp_h_GLRc);
+    Temp_h_GLRc := 0;
+  end;
+
+  if Temp_h_Dc <> 0 then
+  begin
+    ReleaseDC(Temp_h_Wnd, Temp_h_Dc);
+    Temp_h_Dc := 0;
+  end;
+
+  if Temp_h_Wnd <> 0 then
+  begin
+    DestroyWindow(Temp_h_Wnd);
+    Temp_h_Wnd := 0;
+  end;
+end;
+
+function LGlMsCreateOpenGLContextAttrList(DoubleBuffered: boolean; RGBA: boolean; MultiSample: integer
+  ): PInteger;
+var
+  p: integer;
+
+  procedure Add(i: integer);
+  begin
+    if Result<>nil then
+      Result[p]:=i;
+    inc(p);
+  end;
+
+  procedure CreateList;
+  begin
+    Add(WGL_DRAW_TO_WINDOW_ARB); Add(GL_TRUE);
+    Add(WGL_SUPPORT_OPENGL_ARB); Add(GL_TRUE);
+    Add(WGL_ACCELERATION_ARB); Add(WGL_FULL_ACCELERATION_ARB);
+    if DoubleBuffered then
+      begin Add(WGL_DOUBLE_BUFFER_ARB); Add(GL_TRUE); end;
+    Add(WGL_PIXEL_TYPE_ARB);
+    if RGBA then
+      Add(WGL_TYPE_RGBA_ARB)
+    else
+      Add(WGL_TYPE_COLORINDEX_ARB);
+
+    Add(WGL_COLOR_BITS_ARB);  Add(24);
+    Add(WGL_DEPTH_BITS_ARB);  Add(16);
+    if MultiSample > 0 then
+    begin
+      Add(WGL_SAMPLE_BUFFERS_ARB); Add(1);
+      Add(WGL_SAMPLES_ARB);        Add(MultiSample);
+    end;
+    Add(0); Add(0);
+  end;
+
+begin
+  Result:=nil;
+  p:=0;
+  CreateList;
+  GetMem(Result,SizeOf(integer)*p);
+  p:=0;
+  CreateList;
+end;
+
 function LOpenGLCreateContext(AWinControl: TWinControl;
   WSPrivate: TWSPrivateClass; SharedControl: TWinControl;
-  DoubleBuffered, RGBA: boolean; const AParams: TCreateParams): HWND;
+  DoubleBuffered, RGBA: boolean; MultiSampling: Cardinal;
+  const AParams: TCreateParams): HWND;
 var
   Params: TCreateWindowExParams;
   pfd: PIXELFORMATDESCRIPTOR;
   Info: PWGLControlInfo;
+
+  ReturnedFormats: UINT;
+  VisualAttrList: PInteger;
+  VisualAttrFloat: array [0..1] of Single;
+  MsInitSuccess: WINBOOL;
 begin
   InitWGL;
   //InitOpenGLContextGLWindowClass;
@@ -323,14 +448,34 @@ begin
     cDepthBits:=16; // Z-Buffer
     iLayerType:=PFD_MAIN_PLANE;
   end;
-  
-  Info^.PixelFormat:=ChoosePixelFormat(Info^.DC,@pfd);
-  if Info^.PixelFormat=0 then
-    raise Exception.Create('LOpenGLCreateContext ChoosePixelFormat failed');
 
-  // set pixel format in device context
-  if not SetPixelFormat(Info^.DC,Info^.PixelFormat,@pfd) then
-    raise Exception.Create('LOpenGLCreateContext SetPixelFormat failed');
+  MsInitSuccess := false;
+  if (MultiSampling > 1) and WGL_ARB_multisample and WGL_ARB_pixel_format
+    and Assigned(wglChoosePixelFormatARB) then
+  begin
+    VisualAttrList := LGlMsCreateOpenGLContextAttrList(DoubleBuffered, RGBA, MultiSampling);
+    try
+      FillChar(VisualAttrFloat, SizeOf(VisualAttrFloat), 0);
+      MsInitSuccess := wglChoosePixelFormatARB(Info^.DC, PGLint(VisualAttrList),
+                         @VisualAttrFloat[0], 1, @Info^.PixelFormat, @ReturnedFormats);
+    finally FreeMem(VisualAttrList) end;
+
+    if MsInitSuccess and (ReturnedFormats >= 1) then
+       SetPixelFormat(Info^.DC, Info^.PixelFormat, nil)
+    else
+       MsInitSuccess := false;
+  end;
+
+  if not MsInitSuccess then
+  begin
+    Info^.PixelFormat:=ChoosePixelFormat(Info^.DC,@pfd);
+    if Info^.PixelFormat=0 then
+      raise Exception.Create('LOpenGLCreateContext ChoosePixelFormat failed');
+
+    // set pixel format in device context
+    if not SetPixelFormat(Info^.DC,Info^.PixelFormat,@pfd) then
+      raise Exception.Create('LOpenGLCreateContext SetPixelFormat failed');
+  end;
 
   // create WGL context
   Info^.WGLContext:=wglCreateContext(Info^.DC);
@@ -370,6 +515,11 @@ begin
   WGLInitialized:=true;
 
   try
+    { to successfully use wglGetExtensionsStringARB (to query e.g. ARB_multisample,
+      needed for MultiSampling), you need to have OpenGL context 
+      already initialized. We create a temporary window for this purpose. }
+    LGlMsCreateTemporaryWindow;
+
     // ARB wgl extensions
     Pointer(wglGetExtensionsStringARB) := GLGetProcAddress('wglGetExtensionsStringARB');
     Pointer(wglGetPixelFormatAttribivARB) := GLGetProcAddress('wglGetPixelFormatAttribivARB');
@@ -393,8 +543,10 @@ begin
 
     // ARB wgl extensions
     if Assigned(wglGetExtensionsStringARB) then
-      Buffer:=wglGetExtensionsStringARB(wglGetCurrentDC)
-    else
+    begin
+      Buffer:=wglGetExtensionsStringARB(Temp_h_Dc);
+      { Writeln('WGL extensions supported: ', Buffer); }
+    end else
       Buffer:='';
     WGL_ARB_multisample:=CheckExtension('WGL_ARB_multisample');
     WGL_EXT_swap_control:=CheckExtension('WGL_EXT_swap_control');
@@ -408,6 +560,7 @@ begin
       DebugLn('InitWGL ',E.Message);
     end;
   end;
+  LGlMsDestroyTemporaryWindow;
 end;
 
 procedure InitOpenGLContextGLWindowClass;

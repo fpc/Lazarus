@@ -109,12 +109,14 @@ type
     FCurrentFrameTime: integer; // in msec
     FLastFrameTime: integer; // in msec
     FRGBA: boolean;
+    FMultiSampling: Cardinal;
     FSharedOpenGLControl: TCustomOpenGLControl;
     FSharingOpenGlControls: TList;
     function GetSharingControls(Index: integer): TCustomOpenGLControl;
     procedure SetAutoResizeViewport(const AValue: boolean);
     procedure SetDoubleBuffered(const AValue: boolean);
     procedure SetRGBA(const AValue: boolean);
+    procedure SetMultiSampling(const AMultiSampling: Cardinal);
     procedure SetSharedControl(const AValue: TCustomOpenGLControl);
   protected
     procedure WMPaint(var Message: TLMPaint); message LM_PAINT;
@@ -145,6 +147,19 @@ type
                                          write SetAutoResizeViewport default false;
     property DoubleBuffered: boolean read FDoubleBuffered write SetDoubleBuffered default true;
     property RGBA: boolean read FRGBA write SetRGBA default true;
+
+    { Number of samples per pixel, for OpenGL multi-sampling (anti-aliasing).
+
+      Value <= 1 means that we use 1 sample per pixel, which means no anti-aliasing.
+      Higher values mean anti-aliasing. Exactly which values are supported
+      depends on GPU, common modern GPUs support values like 2 and 4.
+      
+      If this is > 1, and we will not be able to create OpenGL
+      with multi-sampling, we will fallback to normal non-multi-sampled context.
+      You can query OpenGL values GL_SAMPLE_BUFFERS_ARB and GL_SAMPLES_ARB 
+      (see ARB_multisample extension) to see how many samples have been 
+      actually allocated for your context. }
+    property MultiSampling: Cardinal read FMultiSampling write SetMultiSampling default 1;
   end;
 
   { TOpenGLControl }
@@ -156,6 +171,7 @@ type
     property AutoResizeViewport;
     property BorderSpacing;
     property Enabled;
+    property MultiSampling;
     property OnChangeBounds;
     property OnClick;
     property OnConstrainedResize;
@@ -238,6 +254,13 @@ procedure TCustomOpenGLControl.SetRGBA(const AValue: boolean);
 begin
   if FRGBA=AValue then exit;
   FRGBA:=AValue;
+  OpenGLAttributesChanged;
+end;
+
+procedure TCustomOpenGLControl.SetMultiSampling(const AMultiSampling: Cardinal);
+begin
+  if FMultiSampling=AMultiSampling then exit;
+  FMultiSampling:=AMultiSampling;
   OpenGLAttributesChanged;
 end;
 
@@ -329,6 +352,7 @@ begin
   inherited Create(TheOwner);
   FDoubleBuffered:=true;
   FRGBA:=true;
+  FMultiSampling:=1;
   ControlStyle:=ControlStyle-[csSetCaption];
   if (csDesigning in ComponentState) then begin
     FCanvas := TControlCanvas.Create;
@@ -470,6 +494,7 @@ begin
     Result:=LOpenGLCreateContext(OpenGlControl,WSPrivate,
                                  OpenGlControl.SharedControl,
                                  AttrControl.DoubleBuffered,AttrControl.RGBA,
+                                 AttrControl.MultiSampling,
                                  AParams);
   end;
 end;
