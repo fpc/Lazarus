@@ -5938,54 +5938,59 @@ procedure TCustomSynEdit.CommandProcessor(Command: TSynEditorCommand;
 var
   InitialCmd: TSynEditorCommand;
 begin
-  {$IFDEF VerboseKeys}
-  DebugLn(['[TCustomSynEdit.CommandProcessor] ',Command
-    ,' AChar=',AChar,' Data=',DbgS(Data)]);
-  {$ENDIF}
-  // first the program event handler gets a chance to process the command
-  InitialCmd := Command;
-  NotifyHookedCommandHandlers(Command, AChar, Data, hcfInit);
-  DoOnProcessCommand(Command, AChar, Data);
-  if Command <> ecNone then begin
-    try
-      InternalBeginUndoBlock;
-      FBeautifyStartLineIdx := -1;
-      FBeautifyEndLineIdx := -1;
-      if assigned(FBeautifier) then begin
-        FBeautifier.AutoIndent := (eoAutoIndent in FOptions);
-        FBeautifier.BeforeCommand(self, FTheLinesView, FCaret, Command, InitialCmd);
-      end;
-      // notify hooked command handlers before the command is executed inside of
-      // the class
-      if Command <> ecNone then
-        NotifyHookedCommandHandlers(Command, AChar, Data, hcfPreExec);
-      // internal command handler
-      if (Command <> ecNone) and (Command < ecUserFirst) then
-        ExecuteCommand(Command, AChar, Data);
-      // notify hooked command handlers after the command was executed inside of
-      // the class
-      if Command <> ecNone then
-        NotifyHookedCommandHandlers(Command, AChar, Data, hcfPostExec);
-      if Command <> ecNone then
-        DoOnCommandProcessed(Command, AChar, Data);
+  IncLCLRefCount;
+  try
+    {$IFDEF VerboseKeys}
+    DebugLn(['[TCustomSynEdit.CommandProcessor] ',Command
+      ,' AChar=',AChar,' Data=',DbgS(Data)]);
+    {$ENDIF}
+    // first the program event handler gets a chance to process the command
+    InitialCmd := Command;
+    NotifyHookedCommandHandlers(Command, AChar, Data, hcfInit);
+    DoOnProcessCommand(Command, AChar, Data);
+    if Command <> ecNone then begin
+      try
+        InternalBeginUndoBlock;
+        FBeautifyStartLineIdx := -1;
+        FBeautifyEndLineIdx := -1;
+        if assigned(FBeautifier) then begin
+          FBeautifier.AutoIndent := (eoAutoIndent in FOptions);
+          FBeautifier.BeforeCommand(self, FTheLinesView, FCaret, Command, InitialCmd);
+        end;
+        // notify hooked command handlers before the command is executed inside of
+        // the class
+        if Command <> ecNone then
+          NotifyHookedCommandHandlers(Command, AChar, Data, hcfPreExec);
+        // internal command handler
+        if (Command <> ecNone) and (Command < ecUserFirst) then
+          ExecuteCommand(Command, AChar, Data);
+        // notify hooked command handlers after the command was executed inside of
+        // the class
+        if Command <> ecNone then
+          NotifyHookedCommandHandlers(Command, AChar, Data, hcfPostExec);
+        if Command <> ecNone then
+          DoOnCommandProcessed(Command, AChar, Data);
 
-      if assigned(FBeautifier) then begin
-        tsyneditstringlist(FLines).FlushNotificationCache;
-        FBeautifier.AutoIndent := (eoAutoIndent in FOptions);
-        FBeautifier.AfterCommand(self, FTheLinesView, FCaret, Command, InitialCmd,
-                                 FBeautifyStartLineIdx+1, FBeautifyEndLineIdx+1);
+        if assigned(FBeautifier) then begin
+          tsyneditstringlist(FLines).FlushNotificationCache;
+          FBeautifier.AutoIndent := (eoAutoIndent in FOptions);
+          FBeautifier.AfterCommand(self, FTheLinesView, FCaret, Command, InitialCmd,
+                                   FBeautifyStartLineIdx+1, FBeautifyEndLineIdx+1);
+        end;
+      finally
+        InternalEndUndoBlock;
+        {$IFDEF SynCheckPaintLock}
+        if (FPaintLock > 0) and (FInvalidateRect.Bottom > FInvalidateRect.Top) then begin
+          debugln(['TCustomSynEdit.CommandProcessor: Paint called while locked  InitialCmd=', InitialCmd, ' Command=', Command]);
+          DumpStack;
+        end;
+        {$ENDIF}
       end;
-    finally
-      InternalEndUndoBlock;
-      {$IFDEF SynCheckPaintLock}
-      if (FPaintLock > 0) and (FInvalidateRect.Bottom > FInvalidateRect.Top) then begin
-        debugln(['TCustomSynEdit.CommandProcessor: Paint called while locked  InitialCmd=', InitialCmd, ' Command=', Command]);
-        DumpStack;
-      end;
-      {$ENDIF}
     end;
+    NotifyHookedCommandHandlers(Command, AChar, Data, hcfFinish);
+  finally
+    DecLCLRefCount;
   end;
-  NotifyHookedCommandHandlers(Command, AChar, Data, hcfFinish);
 end;
 
 procedure TCustomSynEdit.ExecuteCommand(Command: TSynEditorCommand;
@@ -6009,6 +6014,7 @@ var
 
 begin
   IncPaintLock;
+  IncLCLRefCount;
   try
     fUndoList.CurrentReason := Command;
 
@@ -6525,6 +6531,7 @@ begin
     end;
   finally
     DecPaintLock;
+    DecLCLRefCount;
   end;
 end;
 
