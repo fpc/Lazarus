@@ -182,6 +182,7 @@ type
   public
     X, Y, Z: Double;
     constructor Create; virtual;
+    procedure Clear; virtual;
     // in CalculateBoundingBox always remember to treat correctly the case of ADest=nil!!!
     // This cased is utilized to guess the size of a document even before getting a canvas to draw at
     procedure CalculateBoundingBox(ADest: TFPCustomCanvas; var ALeft, ATop, ARight, ABottom: Double); virtual;
@@ -228,6 +229,7 @@ type
     ClipPath: TPath;
     ClipMode: TvClipMode;
     destructor Destroy; override;
+    procedure Clear; override;
     procedure Assign(ASource: TPath);
     procedure PrepareForSequentialReading;
     function Next(): TPathSegment;
@@ -702,6 +704,13 @@ constructor TvEntity.Create;
 begin
 end;
 
+procedure TvEntity.Clear;
+begin
+  X := 0.0;
+  Y := 0.0;
+  Z := 0.0;
+end;
+
 procedure TvEntity.CalculateBoundingBox(ADest: TFPCustomCanvas; var ALeft, ATop, ARight, ABottom: Double);
 begin
   ALeft := X;
@@ -788,6 +797,12 @@ end;
 
 //GM: Follow the path to cleanly release the chained list!
 destructor TPath.Destroy;
+begin
+  Clear;
+  inherited Destroy;
+end;
+
+procedure TPath.Clear;
 var
   p, pp, np: TPathSegment;
 begin
@@ -815,7 +830,8 @@ begin
   end;
   PointsEnd:=nil;
   Points:=nil;
-  inherited Destroy;
+
+  inherited Clear;
 end;
 
 procedure TPath.Assign(ASource: TPath);
@@ -1821,6 +1837,12 @@ destructor TvVectorialPage.Destroy;
 begin
   Clear;
 
+  if FTmpPath <> nil then
+  begin
+    FTmpPath.Free;
+    FTmpPath := nil;
+  end;
+
   FEntities.Free;
   FEntities := nil;
 
@@ -1877,11 +1899,7 @@ procedure TvVectorialPage.Clear;
 begin
   FEntities.ForEachCall(CallbackDeleteEntity, nil);
   FEntities.Clear();
-  if FTmpPath <> nil then
-  begin
-    FTmpPath.Free;
-    FTmpPath := nil;
-  end;
+  ClearTmpPath();
 end;
 
 {@@
