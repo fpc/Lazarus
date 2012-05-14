@@ -9546,6 +9546,10 @@ var
   item: PIpHtmlRectListEntry;
 {$ENDIF}
 begin
+  {$IFDEF IP_LAZARUS}
+  if AllSelected then
+    InvalidateRect(Body.PageRect);
+  {$ENDIF}
   AllSelected := False;
   if EndPoint.y > StartPoint.y then begin
     FStartSel := StartPoint;
@@ -10185,7 +10189,7 @@ begin
           {$IFDEF IP_LAZARUS}
           //if (LastOwner <> CurWord.Owner) then LastPoint := P;
           saveCanvasProperties;
-          if CurWord.IsSelected  then begin
+          if CurWord.IsSelected or Owner.AllSelected then begin
             aCanvas.Font.color := clHighlightText;
             aCanvas.brush.Style := bsSolid;
             aCanvas.brush.color := clHighLight;

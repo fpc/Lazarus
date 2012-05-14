@@ -446,6 +446,8 @@ type
     //procedure WMMouseWheel(var Msg: TMessage); message WM_MOUSEWHEEL;
     procedure WMSetFocus(var Msg: TLMSetFocus); message WM_SETFOCUS;
     procedure WMVScroll(var Msg: {$IFDEF SYN_LAZARUS}TLMScroll{$ELSE}TWMScroll{$ENDIF}); message WM_VSCROLL;
+  protected
+    procedure CMWantSpecialKey(var Message: TLMessage); message CM_WANTSPECIALKEY;
   private
     FBlockIndent: integer;
     FBlockTabIndent: integer;
@@ -1042,7 +1044,6 @@ type
     property PaintLock: Integer read fPaintLock;
 
     property UseUTF8: boolean read FUseUTF8;
-    procedure Update; override;
     procedure Invalidate; override;
     property ChangeStamp: int64 read GetChangeStamp;
     procedure ShareTextBufferFrom(AShareEditor: TCustomSynEdit);
@@ -1113,7 +1114,7 @@ type
     property BracketHighlightStyle: TSynEditBracketHighlightStyle
       read GetBracketHighlightStyle write SetBracketHighlightStyle;
     property TabWidth: integer read fTabWidth write SetTabWidth default 8;
-    property WantTabs: boolean read fWantTabs write SetWantTabs default FALSE;
+    property WantTabs: boolean read fWantTabs write SetWantTabs default True;
 
     // Events
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
@@ -2045,7 +2046,7 @@ begin
   FMouseActionSearchHandlerList := TSynEditMouseActionSearchList.Create;
   FMouseActionExecHandlerList  := TSynEditMouseActionExecList.Create;
 
-  fWantTabs := False;
+  fWantTabs := True;
   fTabWidth := 8;
   FOldTopView := 1;
   FFoldedLinesView.TopLine := 1;
@@ -2060,6 +2061,7 @@ begin
   UpdateOptions;
   UpdateOptions2;
   UpdateMouseOptions;
+  UpdateCaret;
   fScrollTimer := TTimer.Create(Self);
   fScrollTimer.Enabled := False;
   fScrollTimer.Interval := 100;
@@ -2629,6 +2631,11 @@ begin
   DebugLn('[TCustomSynEdit.KeyDown] ',dbgs(Key),' ',dbgs(Shift));
   {$ENDIF}
 
+  if (not WantTabs) and (Key = VK_TAB) and ((Shift - [ssShift]) = []) then begin
+    inherited KeyDown(Key, Shift);
+    exit;
+  end;
+
   // Run even before OnKeyDown
   if FKeyDownEventList <> nil then
     FKeyDownEventList.CallKeyDownHandlers(Self, Key, Shift);
@@ -2738,6 +2745,7 @@ end;
 procedure TCustomSynEdit.Loaded;
 begin
   inherited Loaded;
+  UpdateCaret;
 end;
 
 procedure TCustomSynEdit.UTF8KeyPress(var Key: TUTF8Char);
@@ -3483,7 +3491,7 @@ begin
     {$IFDEF EnableDoubleBuf}
     EndPaintBuffer(rcClip);
     {$ENDIF}
-    UpdateCaret;
+    UpdateCaret; // Todo: only ShowCaret() / do not create caret here / Issue 0021924
     Exclude(fStateFlags,sfPainting);
   end;
 end;
@@ -3777,11 +3785,6 @@ end;
 procedure TCustomSynEdit.EraseBackground(DC: HDC);
 begin
   // we are painting everything ourselves, so not need to erase background
-end;
-
-procedure TCustomSynEdit.Update;
-begin
-  Invalidate;
 end;
 
 procedure TCustomSynEdit.Invalidate;
@@ -4186,6 +4189,7 @@ begin
         debugln(['ScrollAfterTopLineChanged did scroll Delta=',Delta]);
         {$ENDIF}
         include(fStateFlags, sfHasScrolled);
+        FScreenCaret.InvalidatePos; // Wine (Win emulator) may have changed the pos with the scroll
       end else begin
         Invalidate;    // scrollwindow failed, invalidate all
         {$IFDEF SYNSCROLLDEBUG}
@@ -4560,6 +4564,18 @@ begin
           ActivateHint(Rect(0, 0, 0, 0), '');
         end;
   end;
+end;
+
+procedure TCustomSynEdit.CMWantSpecialKey(var Message: TLMessage);
+begin
+  if (Message.wParam = VK_TAB) then begin
+    if WantTabs then
+      Message.Result := 1
+    else
+      Message.Result := 0;
+  end
+  else
+    inherited CMWantSpecialKey(Message);
 end;
 
 procedure TCustomSynEdit.ScanRanges(ATextChanged: Boolean = True);
@@ -6376,14 +6392,12 @@ begin
           LeftChar := LeftChar - 1;
           if CaretX > LeftChar + CharsInWindow then
             CaretX := LeftChar + CharsInWindow;
-          Update;
         end;
       ecScrollRight:
         begin
           LeftChar := LeftChar + 1;
           if CaretX < LeftChar then
             CaretX := LeftChar;
-          Update;
         end;
       ecInsertMode:
         begin
@@ -7323,6 +7337,7 @@ begin
   //                              ClientWidth - TextRightPixelOffset - ScrollBarWidth + 1,
   //                              ClientHeight - ScrollBarWidth);
   FScreenCaret.ClipExtraPixel := FTextArea.Bounds.Right - FTextArea.Bounds.Left - CharsInWindow * CharWidth;
+  UpdateCaret;
   FScreenCaret.UnLock;
 
   if CheckCaret then begin

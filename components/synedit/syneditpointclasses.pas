@@ -308,6 +308,7 @@ type
     procedure  DestroyCaret(SkipHide: boolean = False);
     procedure  Lock;
     procedure  UnLock;
+    procedure InvalidatePos;
     property HandleOwner: TWinControl read FHandleOwner;
     property CharWidth:   Integer read FCharWidth write SetCharWidth;
     property CharHeight:  Integer read FCharHeight write SetCharHeight;
@@ -1685,6 +1686,12 @@ begin
     if (sclfUpdateDisplayType in FLockFlags) then UpdateDisplayType;
     if (sclfUpdateDisplay in FLockFlags)     then UpdateDisplay;
   end;
+end;
+
+procedure TSynEditScreenCaret.InvalidatePos;
+begin
+  FCurrentPosY := -1;
+  FCurrentPosX := -1;
 end;
 
 procedure TSynEditScreenCaret.SetClipRight(const AValue: Integer);
