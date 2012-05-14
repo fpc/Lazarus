@@ -102,6 +102,7 @@ begin
     segment := TPathSegment(APath.Next());
 
     if (segment.SegmentType <> st2DLine)
+      and (segment.SegmentType <> st2DLineWithPen)
       and (segment.SegmentType <> stMoveTo)
       and (segment.SegmentType <> st2DBezier)
       then Break; // unsupported line type
@@ -118,7 +119,8 @@ begin
         + FloatToStr(PtX, FPointSeparator) + ','
         + FloatToStr(PtY, FPointSeparator) + ' ';
     end
-    else if (segment.SegmentType = st2DLine) then
+    else if (segment.SegmentType = st2DLine) or
+            (segment.SegmentType = st2DLineWithPen) then
     begin
       PathStr := PathStr + 'l '
         + FloatToStr(PtX, FPointSeparator) + ','
