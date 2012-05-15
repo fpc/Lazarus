@@ -498,6 +498,7 @@ type
     procedure ClearTmpPath();
     procedure AppendSegmentToTmpPath(ASegment: TPathSegment);
     procedure CallbackDeleteEntity(data,arg:pointer);
+    function GetEntityByIndex(AIndex: integer): TvEntity;
   public
     // Document size for page-based documents
     Width, Height: Double; // in millimeters
@@ -511,6 +512,7 @@ type
     { Data reading methods }
     function  GetEntity(ANum: Cardinal): TvEntity;
     function  GetEntitiesCount: Integer;
+    function  GetLastEntity(): TvEntity;
     function  FindAndSelectEntity(Pos: TPoint): TvFindEntityResult;
     { Data removing methods }
     procedure Clear; virtual;
@@ -545,6 +547,8 @@ type
     procedure AddAlignedDimension(BaseLeft, BaseRight, DimLeft, DimRight: T3DPoint);
     //
     function AddPoint(AX, AY, AZ: Double): TvPoint;
+    //
+    property Entities[AIndex: integer]: TvEntity read GetEntityByIndex;
   end;
 
   {@@ TvVectorialReader class reference type }
@@ -1824,6 +1828,11 @@ begin
     TvEntity(data).Free;
 end;
 
+function TvVectorialPage.GetEntityByIndex(AIndex: integer): TvEntity;
+begin
+  Result:=TvEntity(FEntities.Items[AIndex]);
+end;
+
 constructor TvVectorialPage.Create(AOwner: TvVectorialDocument);
 begin
   inherited Create;
@@ -1871,6 +1880,11 @@ end;
 function TvVectorialPage.GetEntitiesCount: Integer;
 begin
   Result := FEntities.Count;
+end;
+
+function TvVectorialPage.GetLastEntity(): TvEntity;
+begin
+  Result:=TvEntity(FEntities.Last);
 end;
 
 function TvVectorialPage.FindAndSelectEntity(Pos: TPoint): TvFindEntityResult;

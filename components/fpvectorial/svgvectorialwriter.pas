@@ -25,6 +25,7 @@ type
     procedure WriteDocumentName(AStrings: TStrings; AData: TvVectorialDocument);
     procedure WritePath(AIndex: Integer; APath: TPath; AStrings: TStrings; AData: TvVectorialPage; ADoc: TvVectorialDocument);
     procedure WriteText(AStrings: TStrings; lText: TvText; AData: TvVectorialPage; ADoc: TvVectorialDocument);
+    procedure WriteCircle(circle: TvCircle; AStrings: TStrings; AData: TvVectorialPage);
     procedure WriteEntities(AStrings: TStrings; AData: TvVectorialPage; ADoc: TvVectorialDocument);
     procedure ConvertFPVCoordinatesToSVGCoordinates(
       const AData: TvVectorialPage;
@@ -254,6 +255,35 @@ begin
   AStrings.Add(TextStr + '</tspan></text>');
 end;
 
+procedure TvSVGVectorialWriter.WriteCircle(circle: TvCircle;
+  AStrings: TStrings; AData: TvVectorialPage);
+var
+  cx, cy, cr, dtmp: double;
+  CircleStr: string;
+begin
+  ConvertFPVCoordinatesToSVGCoordinates(
+        AData, circle.X, circle.Y, cx, cy);
+  ConvertFPVCoordinatesToSVGCoordinates(
+        AData, circle.Radius, 0, cr, dtmp);
+  CircleStr:='<circle cx="'+FloatToStr(cx,FPointSeparator)+'" cy="'+
+              FloatToStr(cy,FPointSeparator)+'" r="'+
+              FloatToStr(cr,FPointSeparator)+'"';
+  if circle.Pen.Style=psClear then
+    CircleStr:=CircleStr+' stroke="none"'
+  else
+    CircleStr:=CircleStr+' stroke="'+
+              '#' + FPColorToRGBHexString(circle.Pen.Color)+'"';
+  CircleStr:=CircleStr+' stroke-width="'+
+              IntToStr(circle.Pen.Width)+'"';
+  if circle.Brush.Style=bsClear then
+    CircleStr:=CircleStr+' fill="none"'
+  else
+    CircleStr:=CircleStr+' fill="'+
+              '#' + FPColorToRGBHexString(circle.Brush.Color)+'"';
+  CircleStr:=CircleStr+'/>';
+  AStrings.Add(CircleStr);
+end;
+
 procedure TvSVGVectorialWriter.WriteEntities(AStrings: TStrings;
   AData: TvVectorialPage; ADoc: TvVectorialDocument);
 var
@@ -265,7 +295,8 @@ begin
     lEntity := AData.GetEntity(i);
 
     if lEntity is TPath then WritePath(i, TPath(lEntity), AStrings, AData, ADoc)
-    else if lEntity is TvText then WriteText(AStrings, TvText(lEntity), AData, ADoc);
+    else if lEntity is TvText then WriteText(AStrings, TvText(lEntity), AData, ADoc)
+    else if lEntity is TvCircle then WriteCircle(TvCircle(lEntity), AStrings,AData);
   end;
 end;
 
