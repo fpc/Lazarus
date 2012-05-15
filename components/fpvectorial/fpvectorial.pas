@@ -498,7 +498,6 @@ type
     procedure ClearTmpPath();
     procedure AppendSegmentToTmpPath(ASegment: TPathSegment);
     procedure CallbackDeleteEntity(data,arg:pointer);
-    function GetEntityByIndex(AIndex: integer): TvEntity;
   public
     // Document size for page-based documents
     Width, Height: Double; // in millimeters
@@ -548,7 +547,7 @@ type
     //
     function AddPoint(AX, AY, AZ: Double): TvPoint;
     //
-    property Entities[AIndex: integer]: TvEntity read GetEntityByIndex;
+    property Entities[AIndex: Cardinal]: TvEntity read GetEntity;
   end;
 
   {@@ TvVectorialReader class reference type }
@@ -1826,11 +1825,6 @@ procedure TvVectorialPage.CallbackDeleteEntity(data, arg: pointer);
 begin
   if (data <> nil) then
     TvEntity(data).Free;
-end;
-
-function TvVectorialPage.GetEntityByIndex(AIndex: integer): TvEntity;
-begin
-  Result:=TvEntity(FEntities.Items[AIndex]);
 end;
 
 constructor TvVectorialPage.Create(AOwner: TvVectorialDocument);
