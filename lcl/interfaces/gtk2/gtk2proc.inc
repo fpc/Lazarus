@@ -4703,6 +4703,21 @@ begin
   ReleaseMouseCapture;
 end;
 
+function GetGtkWindowGroup(Widget: PGtkWidget): PGtkWindowGroup;
+var
+  toplevel: PGtkWidget;
+begin
+  if Widget<>nil then
+    toplevel:=gtk_widget_get_toplevel(Widget)
+  else
+    toplevel:=nil;
+
+  if GTK_IS_WINDOW (toplevel) then
+    Result:=gtk_window_get_group(GTK_WINDOW(toplevel))
+  else
+    Result:=gtk_window_get_group(nil);
+end;
+
 {-------------------------------------------------------------------------------
   procedure: SignalConnect
   Params:  AWidget: PGTKWidget

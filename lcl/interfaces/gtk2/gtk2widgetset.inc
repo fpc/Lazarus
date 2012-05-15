@@ -149,24 +149,28 @@ begin
 end;
 
 function gtk2GrabNotify(widget: PGtkWidget; grabbed: GBoolean; {%H-}data: GPointer): GBoolean; cdecl;
+// called for all widgets on every gtk_grab_add and gtk_grab_remove
+// grabbed = true if called by gtk_grab_remove
+// grabbed = false if called by gtk_grab_add
 var
-  W: PGtkWidget;
-  WidgetInfo: PWidgetInfo;
+  CurCaptureWidget: PGtkWidget;
 begin
+  {$IFDEF VerboseMouseCapture}
+  //debugln(['gtk2GrabNotify ',GetWidgetDebugReport(widget),' grabbed=',grabbed,' MouseCaptureWidget=',dbgs(MouseCaptureWidget)]);
+  {$ENDIF}
   Result := CallBackDefaultReturn;
   if Grabbed then
   begin
-    w := gtk_grab_get_current;
-    if MouseCaptureWidget <> nil then
-      WidgetInfo := GetWidgetInfo(MouseCaptureWidget)
-    else
-      WidgetInfo := nil;
-
-    if (WidgetInfo <> nil) and (W = MouseCaptureWidget) and (W <> Widget)
-    and (WidgetInfo^.ClientWidget = nil) then
+    // grab release
+    CurCaptureWidget := gtk_grab_get_current;
+    if (MouseCaptureWidget<>nil)
+    and ((CurCaptureWidget=nil) or (CurCaptureWidget = MouseCaptureWidget)) then
     begin
-      Result := True;
-      ReleaseCaptureWidget(W);
+      {$IFDEF VerboseMouseCapture}
+      debugln(['gtk2GrabNotify ungrab ',GetWidgetDebugReport(widget),' grabbed=',grabbed,' MouseCaptureWidget=',dbgs(MouseCaptureWidget)]);
+      {$ENDIF}
+      //Result := True;
+      ReleaseCaptureWidget(MouseCaptureWidget);
     end;
   end;
 end;

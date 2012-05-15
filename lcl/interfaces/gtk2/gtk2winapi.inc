@@ -8278,6 +8278,8 @@ var
   CaptureWidget: PGtkWidget;
   {$IfDef VerboseMouseCapture}
   toplevel: PGtkWidget;
+  WndGroup: PGtkWindowGroup;
+  DefWndGroup: PGtkWindowGroup;
   {$EndIf}
 begin
   Widget := {%H-}PGtkWidget(AHandle);
@@ -8288,11 +8290,19 @@ begin
   // return old capture handle
   Result := GetCapture;
 
-  if Result <> 0 then begin
+  if (Result <> 0) then begin
     {$IfDef VerboseMouseCapture}
     DebugLn('TGtk2WidgetSet.SetCapture gtk_grab_remove=[',GetWidgetDebugReport(gtk_grab_get_current),']');
     {$EndIf}
     gtk_grab_remove(gtk_grab_get_current);
+  end;
+  if (MouseCaptureWidget<>nil) and (gtk_grab_get_current=nil)
+  and (GTK_WIDGET_HAS_GRAB(MouseCaptureWidget))
+  then begin
+    {$IfDef VerboseMouseCapture}
+    DebugLn('TGtk2WidgetSet.SetCapture gtk_grab_get_current=nil, but GTK_WIDGET_HAS_GRAB(MouseCaptureWidget)=true =>  gtk_grab_remove=[',GetWidgetDebugReport(MouseCaptureWidget),']');
+    {$EndIf}
+    gtk_grab_remove(MouseCaptureWidget);
   end;
 
   MouseCaptureWidget := nil;
@@ -8312,13 +8322,11 @@ begin
   // ToDo: find out how to grab LCLWinapiClient with ubuntu liboverlay
   if GtkWidgetIsA(Widget,GTK_TYPE_SCROLLED_WINDOW) then
   begin
-    debugln(['TGtk2WidgetSet.SetCapture AAA1 is api widget ',
+    debugln(['TGtk2WidgetSet.SetCapture is api widget ',
       ' widget=',GetWidgetClassName(Widget),
       ' container.container.focus_child=',GetWidgetClassName(PGtkScrolledWindow(Widget)^.container.container.focus_child),
       ' container.child=',GetWidgetClassName(PGtkScrolledWindow(Widget)^.container.child),
       '']);
-    debugln(['TGtk2WidgetSet.SetCapture gtk_widget_is_sensitive=',gtk_widget_is_sensitive(CaptureWidget)]);
-    debugln(['TGtk2WidgetSet.SetCapture gtk_widget_has_grab=',gtk_widget_has_grab (CaptureWidget)]);
     //CaptureWidget:=PGtkScrolledWindow(Widget)^.container;
   end;
   {$EndIf}
@@ -8331,18 +8339,29 @@ begin
   then begin
     debugln(['WARNING: TGtk2WidgetSet.SetCapture capturewidget is offscreen']);
   end;
+  WndGroup := GetGtkWindowGroup(CaptureWidget);
+  DefWndGroup:=GetGtkWindowGroup(CaptureWidget);
+  debugln(['TGtk2WidgetSet.SetCapture WndGroup=',dbgs(WndGroup),' DefWndGroup=',dbgs(DefWndGroup),' same=',WndGroup=DefWndGroup]);
   // Note: liboverlay: gtk_grab_add sets gtk_widget_has_grab, but gtk_grab_get_current returns nil
   // ToDo: check window group
   {$EndIf}
-  gtk_grab_add(CaptureWidget);
-  {$IfDef VerboseMouseCapture}
-  if gtk_grab_get_current=CaptureWidget then
-    DebugLn('TGtk2WidgetSet.SetCapture success gtk_grab_get_current=[',GetWidgetDebugReport(gtk_grab_get_current),']')
-  else
-    DebugLn('WARNING: TGtk2WidgetSet.SetCapture failed gtk_grab_get_current=[',GetWidgetDebugReport(gtk_grab_get_current),']');
-  {$EndIf}
-
   MouseCaptureWidget := CaptureWidget;
+  gtk_grab_add(CaptureWidget);
+  if gtk_grab_get_current=CaptureWidget then
+  begin
+    {$IfDef VerboseMouseCapture}
+    DebugLn('TGtk2WidgetSet.SetCapture gtk_grab_add success: gtk_grab_get_current=[',GetWidgetDebugReport(gtk_grab_get_current),']')
+    {$EndIf}
+  end
+  else begin
+    {$IfDef VerboseMouseCapture}
+    if gtk_widget_has_grab(CaptureWidget) then
+      DebugLn('WARNING: TGtk2WidgetSet.SetCapture gtk_grab_add failed (partial success): gtk_grab_get_current=[',GetWidgetDebugReport(gtk_grab_get_current),'] has_grab=true')
+    else
+      DebugLn('WARNING: TGtk2WidgetSet.SetCapture gtk_grab_add failed (complete): gtk_grab_get_current=[',GetWidgetDebugReport(gtk_grab_get_current),'] has_grab=false');
+    {$EndIf}
+  end;
+
   if MouseCaptureWidget<>nil then
     SendMessage(HWnd({%H-}PtrUInt(MouseCaptureWidget)), LM_CAPTURECHANGED, 0, Result);
 end;

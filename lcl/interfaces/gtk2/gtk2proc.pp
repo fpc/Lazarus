@@ -474,6 +474,8 @@ function GetDefaultMouseCaptureWidget(Widget: PGtkWidget): PGtkWidget;
 procedure ReleaseMouseCapture;
 procedure ReleaseCaptureWidget(Widget : PGtkWidget);
 
+// window group
+function GetGtkWindowGroup(Widget: PGtkWidget): PGtkWindowGroup;
 
 const
   // for now return the same value, in the future we may want to return an
