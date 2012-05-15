@@ -35,6 +35,7 @@ type
     procedure CheckListBox1KeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
     procedure CheckListBox1KeyPress(Sender: TObject; var Key: char);
+    procedure CloseButtonClick(Sender: TObject);
     procedure DoEditorsChanged(Sender: TObject);
     procedure MoveDownBtnClick(Sender: TObject);
     procedure MoveUpBtnClick(Sender: TObject);
@@ -238,6 +239,11 @@ procedure TEditorFileManagerForm.CheckListBox1KeyPress(Sender: TObject; var Key:
 begin
   if Key = char(VK_RETURN) then
     ActivateButtonClick(nil);
+end;
+
+procedure TEditorFileManagerForm.CloseButtonClick(Sender: TObject);
+begin
+  Close;
 end;
 
 procedure TEditorFileManagerForm.DoEditorsChanged(Sender: TObject);
