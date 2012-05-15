@@ -19,7 +19,15 @@ end;
 
 // Open a document with the default application associated with it in the system
 function OpenDocument(APath: String): Boolean;
+var
+  ResultingPath: string;
 begin
   Result := True;
-  RunCmdFromPath('open',APath);
+  if not FileExistsUTF8(APath) then exit(false);
+  // Paths with spaces need to be quoted, see bug 21651
+  if (APath<>'') and (APath[1]<>'''') then
+    ResultingPath:=QuotedStr(APath)
+  else
+    ResultingPath:=APath;
+  RunCmdFromPath('open',ResultingPath);
 end;
