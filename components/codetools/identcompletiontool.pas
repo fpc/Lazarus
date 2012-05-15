@@ -2000,6 +2000,7 @@ var
   InnerStart: Integer;
   Directive: String;
   ms: TCompilerModeSwitch;
+  cm: TCompilerMode;
 begin
   Result:=false;
   Line:=CursorPos.Code.GetLine(CursorPos.Y-1);
@@ -2112,6 +2113,9 @@ begin
         end else if Directive='modeswitch' then begin
           for ms:=low(TCompilerModeSwitch) to high(TCompilerModeSwitch) do
             Key(lowercase(CompilerModeSwitchNames[ms]));
+        end else if Directive='mode' then begin
+          for cm:=low(TCompilerMode) to high(TCompilerMode) do
+            Key(lowercase(CompilerModeNames[cm]));
         end else if Directive='warn' then begin
           Key('constructing_abstract');
           Key('implicit_variants');
