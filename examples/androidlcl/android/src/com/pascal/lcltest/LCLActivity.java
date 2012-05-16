@@ -330,11 +330,15 @@ public class LCLActivity extends Activity implements SensorEventListener, Locati
   {
     Paint localpaint = new Paint();
     Rect localbounds = new Rect();
+    String lcltext_hack = "M" + lcltext + "M";
     localpaint.setTextSize(lcltextsize);
-    localpaint.getTextBounds(lcltext, 0, lcltext.length(), localbounds);
-    lclwidth = localbounds.width();
-    // Painter.getTextBounds consistently gives us a too small size, so work around that
-    lclwidth = lclwidth + (3 * lcltextsize) / 16;
+    // Paint.getTextBounds has multiple problems:
+    // 1->It consistently gives us a too small size
+    // 2->It ignores spaces in the end and has issues with some characters, see http://code.google.com/p/android/issues/detail?id=7527
+    // so we use measureText instead, but it also has problem 2, so we need to add a character to the start and end of text and then subtract it =(
+    lclwidth = (int) (localpaint.measureText(lcltext_hack) - localpaint.measureText("MM"));
+    // Painter.getTextBounds consistently gives us a too small size so work around that
+//    lclwidth = lclwidth + (3 * lcltextsize) / 16;
     // Don't use just localbounds.height() from the source text
     // because it will calculate the minimum necessary height,
     // but we can't easily use that to draw text because it draws relative to the baseline
