@@ -1267,7 +1267,7 @@ begin
     Result := tkKey;
     if (rsAfterEqualOrColon in fRange) and (PasCodeFoldRange.BracketNestLevel = 0)
     then begin
-      fRange := fRange + [rsAtClass];
+      fRange := fRange + [rsAtClass] - [rsVarTypeInSpecification];
       StartPascalCodeFoldBlock(cfbtClass);
     end;
   end
@@ -1336,6 +1336,9 @@ begin
   end
   else if KeyComp('Record') then begin
     StartPascalCodeFoldBlock(cfbtRecord);
+    fRange := fRange - [rsVarTypeInSpecification];
+    if CompilerMode = pcmDelphi then
+      fRange := fRange + [rsAtClass]; // highlight helper
     Result := tkKey;
   end
   else if KeyComp('Array') then Result := tkKey
