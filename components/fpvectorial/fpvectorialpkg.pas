@@ -11,7 +11,7 @@ uses
   dxfvectorialreader, cdrvectorialreader, avisozlib, avisocncgcodewriter, 
   avisocncgcodereader, svgvectorialreader, epsvectorialreader, fpvutils, 
   lasvectorialreader, rawvectorialreadwrite, mathmlvectorialreader, 
-  LazarusPackageIntf;
+  lazvectorialreader, LazarusPackageIntf;
 
 implementation
 

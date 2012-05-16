@@ -42,7 +42,7 @@ type
     { CAD formats }
     vfDXF,
     { Geospatial formats }
-    vfLAS,
+    vfLAS, vfLAZ,
     { Printing formats }
     vfPostScript, vfEncapsulatedPostScript,
     { GCode formats }
@@ -64,6 +64,7 @@ const
   STR_AUTOCAD_EXCHANGE_EXTENSION = '.dxf';
   STR_ENCAPSULATEDPOSTSCRIPT_EXTENSION = '.eps';
   STR_LAS_EXTENSION = '.las';
+  STR_LAZ_EXTENSION = '.laz';
   STR_RAW_EXTENSION = '.raw';
   STR_MATHML_EXTENSION = '.mathml';
 
@@ -2455,6 +2456,7 @@ begin
   else if AnsiCompareText(lExt, STR_AUTOCAD_EXCHANGE_EXTENSION) = 0 then Result := vfDXF
   else if AnsiCompareText(lExt, STR_ENCAPSULATEDPOSTSCRIPT_EXTENSION) = 0 then Result := vfEncapsulatedPostScript
   else if AnsiCompareText(lExt, STR_LAS_EXTENSION) = 0 then Result := vfLAS
+  else if AnsiCompareText(lExt, STR_LAZ_EXTENSION) = 0 then Result := vfLAZ
   else if AnsiCompareText(lExt, STR_RAW_EXTENSION) = 0 then Result := vfRAW
   else if AnsiCompareText(lExt, STR_MATHML_EXTENSION) = 0 then Result := vfMathML
   else

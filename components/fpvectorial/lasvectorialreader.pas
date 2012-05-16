@@ -94,6 +94,11 @@ type
     Description: array[0..31] of laschar;
   end;
 
+  // Points are split in the following atoms for compression:
+  // POINT10, GPSTIME10, RGB12, WAVEPACKET13, and BYTE
+  // for the LAZ format
+
+  // Contains POINT10
   TLASPointDataRecordFormat0 = packed record
     X: laslong;
     Y: laslong;
@@ -106,6 +111,7 @@ type
     UserBitField: lasushort;
   end;
 
+  // Contains POINT10 + GPSTIME10
   TLASPointDataRecordFormat1 = packed record
     X: laslong;
     Y: laslong;
@@ -122,7 +128,7 @@ type
   { TvLASVectorialReader }
 
   TvLASVectorialReader = class(TvCustomVectorialReader)
-  private
+  protected
     // Stream position information
     InitialPos, PositionAfterPublicHeader: Int64;
     {$ifdef FPVECTORIALDEBUG_LAS}
