@@ -5630,6 +5630,17 @@ begin
     else
       AdjustEditorBounds(FCol, ColRow);
   end;
+
+  // adjust sort column
+  if IsColumn and (FSortColumn>=0) then begin
+    if Between(FSortColumn, Index, WithIndex) then begin
+      if FSortColumn=Index then
+        FSortColumn := WithIndex
+      else
+      if FSortColumn=WithIndex then
+        FSortColumn := Index;
+    end;
+  end;
 end;
 
 procedure TCustomGrid.DoOPInsertColRow(IsColumn: boolean; index: integer);
@@ -5673,7 +5684,11 @@ begin
     if Index<=NewRow then
       Inc(NewRow);
   end;
-  AdjustEditorBounds(NewCol, NewRow)
+  AdjustEditorBounds(NewCol, NewRow);
+
+  // adjust sorted column
+  if IsColumn and (FSortColumn>=Index) then
+    Inc(FSortColumn);
 end;
 
 procedure TCustomGrid.doOPMoveColRow(IsColumn: Boolean; FromIndex, ToIndex: Integer);
@@ -5723,6 +5738,17 @@ begin
       AdjustEditorBounds(FCol, ColRow);
   end;
 
+  // adjust sorted column
+  if IsColumn and (FSortColumn>=0) then
+    if Between(FSortColumn, FromIndex, ToIndex) then begin
+      if FSortColumn=FromIndex then
+        FSortColumn := ToIndex
+      else
+      if FromIndex<FSortColumn then
+        Dec(FSortColumn)
+      else
+        Inc(FSortColumn);
+    end;
 end;
 
 procedure TCustomGrid.DoOPDeleteColRow(IsColumn: Boolean; index: Integer);
@@ -5773,8 +5799,14 @@ procedure TCustomGrid.DoOPDeleteColRow(IsColumn: Boolean; index: Integer);
   end;
 begin
   CheckIndex(IsColumn,Index);
-  if IsColumn then
-    doDeleteColumn
+  if IsColumn then begin
+    doDeleteColumn;
+    if FSortColumn=Index then
+      FSortColumn :=-1
+    else
+    if FSortColumn>Index then
+      Dec(FSortColumn);
+  end
   else
     doDeleteRow;
 end;
