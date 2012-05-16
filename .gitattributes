@@ -973,6 +973,8 @@ components/fpvectorial/avisocncgcodewriter.pas svneol=native#text/plain
 components/fpvectorial/avisozlib.pas svneol=native#text/plain
 components/fpvectorial/cdrspecification.txt svneol=native#text/plain
 components/fpvectorial/cdrvectorialreader.pas svneol=native#text/plain
+components/fpvectorial/docs/fpvectorial.jpg -text svneol=unset#image/jpeg
+components/fpvectorial/docs/fpvectorial.uml svneol=native#text/plain
 components/fpvectorial/docs/lcl_vs_fpvectorial_coords.odg -text
 components/fpvectorial/dxfvectorialreader.pas svneol=native#text/plain
 components/fpvectorial/epsvectorialreader.pas svneol=native#text/plain
