@@ -584,8 +584,8 @@ procedure TActiveXContainer.Attach;
 var
   size:TPOINT;
 begin
-  SetWindowLong(Handle,GWLP_USERDATA, ptruint(Self));
-  FPrevWndProc:=Windows.WNDPROC(SetWindowLong(Handle,GWL_WNDPROC,PtrInt(@WndCallback)));
+  SetWindowLongPtr(Handle,GWLP_USERDATA, PtrInt(Self));
+  FPrevWndProc:=Windows.WNDPROC(SetWindowLongPtr(Handle,GWL_WNDPROC,PtrInt(@WndCallback)));
   FAttached:=true;
   olecheck((FOleObject as IOleObject).SetClientSite(Self as IOleClientSite));
   olecheck((FOleObject as IOleObject).SetHostNames(PWideChar(name),PWideChar(name)));
@@ -601,8 +601,8 @@ const
 begin
   if FAttached then
     begin
-    SetWindowLong(Handle,GWL_WNDPROC,PtrUInt(@FPrevWndProc));
-    SetWindowLong(Handle,GWLP_USERDATA, 0);
+    SetWindowLongPtr(Handle,GWL_WNDPROC,PtrInt(@FPrevWndProc));
+    SetWindowLongPtr(Handle,GWLP_USERDATA, 0);
     end;
   if assigned(FOleObject) then
     begin
