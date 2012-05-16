@@ -5036,10 +5036,13 @@ end;
 
 function TQtWidget.DeliverMessage(var Msg;
   const AIsInputEvent: Boolean = False): LRESULT;
+var
+  AEvent: Cardinal;
 begin
   Result := LRESULT(AIsInputEvent);
   if LCLObject = nil then
     Exit;
+  AEvent := TLMessage(Msg).Msg;
   try
     if LCLObject.HandleAllocated then
     begin
@@ -5050,10 +5053,11 @@ begin
     if AIsInputEvent and (LCLObject = nil) and (PtrUInt(Widget) = 0) and
       QtWidgetSet.IsValidHandle(HWND(Self)) then
     begin
-      raise Exception.CreateFmt('%s.DeliverMessage(): error in input event %d ',
-        [ClassName, TLMessage(Msg).Msg]);
+      DebugLn(Format('WARNING: %s has been destroyed while processing input event %u result %u',
+        [ClassName, AEvent, Result]));
     end else
-      Application.HandleException(nil);
+      raise Exception.CreateFmt('%s.DeliverMessage(): error in event %u result %u',
+        [ClassName, AEvent, Result]);
   end;
 end;
 
