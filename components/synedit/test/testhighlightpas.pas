@@ -46,6 +46,7 @@ type
     procedure TestContextForDeprecated;
     procedure TestContextForClassModifier; // Sealed abstract
     procedure TestContextForClassHelper;
+    procedure TestContextForRecordHelper;
     procedure TestContextForStatic;
     procedure TestFoldNodeInfo;
   end;
@@ -616,6 +617,76 @@ end;
 
 procedure TTestHighlighterPas.TestContextForDeprecated;
   procedure SubTest(s: String);
+
+    procedure SubTest2(struct: String);
+    begin
+      SetLines
+        ([  'Unit A; interface',
+            'type',
+            'TFoo='+struct,
+               s+': '+s+' '+s+';',  // nameDEPRECATED: typeDEPRECATED deprecated;
+              'foo, '+s+', bar: Integer '+s+';',
+              'procedure '+s+'('+s+': '+s+'); '+s+';',
+            'end',
+            ''
+        ]);
+
+      CheckTokensForLine('member in class', 3,
+        [tkIdentifier, tkSymbol, tkSpace, tkIdentifier, tkSpace, tkKey {the one and only}, tkSymbol]);
+      CheckTokensForLine('multi member in class', 4,
+        [tkIdentifier, tkSymbol,   tkSpace, tkIdentifier, tkSymbol,   tkSpace,tkIdentifier, tkSymbol, // ... ":"
+        tkSpace, tkIdentifier, tkSpace, tkKey {the one and only}, tkSymbol]);
+      CheckTokensForLine('procedure in class', 5,
+        [tkKey, tkSpace, tkIdentifier, tkSymbol { ( }, tkIdentifier, tkSymbol { : },
+         tkSpace, tkIdentifier, tkSymbol { ) }, tkSymbol, tkSpace, tkKey {the one and only}, tkSymbol
+        ]);
+
+
+      if struct = 'record' then
+        exit;
+
+      SetLines
+        ([  'Unit A; interface',
+            'type',
+            'TFoo='+struct,
+               s+': '+s+' '+s+';',  // nameDEPRECATED: typeDEPRECATED deprecated;
+              'foo, '+s+', bar: Integer '+s+';',
+              'procedure '+s+'('+s+': '+s+'); '+s+';',
+            'private',
+               s+': '+s+' '+s+';',  // nameDEPRECATED: typeDEPRECATED deprecated;
+              'foo, '+s+', bar: Integer '+s+';',
+              'property '+s+': '+s+' read '+s+'; '+s+';',
+              'procedure '+s+'('+s+': '+s+'); '+s+';',
+            'end',
+            ''
+        ]);
+
+      CheckTokensForLine('member in class', 3,
+        [tkIdentifier, tkSymbol, tkSpace, tkIdentifier, tkSpace, tkKey {the one and only}, tkSymbol]);
+      CheckTokensForLine('multi member in class', 4,
+        [tkIdentifier, tkSymbol,   tkSpace, tkIdentifier, tkSymbol,   tkSpace,tkIdentifier, tkSymbol, // ... ":"
+        tkSpace, tkIdentifier, tkSpace, tkKey {the one and only}, tkSymbol]);
+      CheckTokensForLine('procedure in class', 5,
+        [tkKey, tkSpace, tkIdentifier, tkSymbol { ( }, tkIdentifier, tkSymbol { : },
+         tkSpace, tkIdentifier, tkSymbol { ) }, tkSymbol, tkSpace, tkKey {the one and only}, tkSymbol
+        ]);
+
+      CheckTokensForLine('member in class-sect', 7,
+        [tkIdentifier, tkSymbol, tkSpace, tkIdentifier, tkSpace, tkKey {the one and only}, tkSymbol]);
+      CheckTokensForLine('multi member in class-sect', 8,
+        [tkIdentifier, tkSymbol,   tkSpace, tkIdentifier, tkSymbol,   tkSpace,tkIdentifier, tkSymbol, // ... ":"
+        tkSpace, tkIdentifier, tkSpace, tkKey {the one and only}, tkSymbol]);
+      CheckTokensForLine('property in class-sect', 9,
+        [tkKey, tkSpace, tkIdentifier, tkSymbol { : }, tkSpace, tkIdentifier, tkSpace,
+         tkKey { read }, tkSpace, tkIdentifier, tkSymbol { ; }, tkSpace, tkKey {the one and only}, tkSymbol
+        ]);
+      CheckTokensForLine('procedure in class-sect', 10,
+        [tkKey, tkSpace, tkIdentifier, tkSymbol { ( }, tkIdentifier, tkSymbol { : },
+         tkSpace, tkIdentifier, tkSymbol { ) }, tkSymbol, tkSpace, tkKey {the one and only}, tkSymbol
+        ]);
+
+    end;
+
   begin
     PushBaseName('test for '+s);
     ReCreateEdit;
@@ -642,45 +713,13 @@ procedure TTestHighlighterPas.TestContextForDeprecated;
       ]);
 
 
-    SetLines
-      ([  'Unit A; interface',
-          'type',
-          'TFoo=class',
-             s+': '+s+' '+s+';',  // nameDEPRECATED: typeDEPRECATED deprecated;
-            'foo, '+s+', bar: Integer '+s+';',
-            'procedure '+s+'('+s+': '+s+'); '+s+';',
-          'private',
-             s+': '+s+' '+s+';',  // nameDEPRECATED: typeDEPRECATED deprecated;
-            'foo, '+s+', bar: Integer '+s+';',
-            'property '+s+': '+s+' read '+s+'; '+s+';',
-            'procedure '+s+'('+s+': '+s+'); '+s+';',
-          'end',
-          ''
-      ]);
-
-    CheckTokensForLine('member in class', 3,
-      [tkIdentifier, tkSymbol, tkSpace, tkIdentifier, tkSpace, tkKey {the one and only}, tkSymbol]);
-    CheckTokensForLine('multi member in class', 4,
-      [tkIdentifier, tkSymbol,   tkSpace, tkIdentifier, tkSymbol,   tkSpace,tkIdentifier, tkSymbol, // ... ":"
-      tkSpace, tkIdentifier, tkSpace, tkKey {the one and only}, tkSymbol]);
-    CheckTokensForLine('procedure in class', 5,
-      [tkKey, tkSpace, tkIdentifier, tkSymbol { ( }, tkIdentifier, tkSymbol { : },
-       tkSpace, tkIdentifier, tkSymbol { ) }, tkSymbol, tkSpace, tkKey {the one and only}, tkSymbol
-      ]);
-
-    CheckTokensForLine('member in class-sect', 7,
-      [tkIdentifier, tkSymbol, tkSpace, tkIdentifier, tkSpace, tkKey {the one and only}, tkSymbol]);
-    CheckTokensForLine('multi member in class-sect', 8,
-      [tkIdentifier, tkSymbol,   tkSpace, tkIdentifier, tkSymbol,   tkSpace,tkIdentifier, tkSymbol, // ... ":"
-      tkSpace, tkIdentifier, tkSpace, tkKey {the one and only}, tkSymbol]);
-    CheckTokensForLine('property in class-sect', 9,
-      [tkKey, tkSpace, tkIdentifier, tkSymbol { : }, tkSpace, tkIdentifier, tkSpace,
-       tkKey { read }, tkSpace, tkIdentifier, tkSymbol { ; }, tkSpace, tkKey {the one and only}, tkSymbol
-      ]);
-    CheckTokensForLine('procedure in class-sect', 10,
-      [tkKey, tkSpace, tkIdentifier, tkSymbol { ( }, tkIdentifier, tkSymbol { : },
-       tkSpace, tkIdentifier, tkSymbol { ) }, tkSymbol, tkSpace, tkKey {the one and only}, tkSymbol
-      ]);
+    PushBaseName('class');
+    SubTest2('class');
+    PopPushBaseName('object');
+    SubTest2('object');
+    PopPushBaseName('record');
+    SubTest2('record');
+    PopBaseName;
 
 
     SetLines
@@ -846,7 +885,6 @@ begin
         'end;',
        ''
     ]);
-
   CheckTokensForLine('class declaration"',  2,
     [ tkIdentifier, tkSpace, tkSymbol, tkSpace,
       tkKey {class}, tkSpace, tkKey {helper}, tkSpace, tkKey {for},
@@ -858,6 +896,74 @@ begin
     ]);
   CheckTokensForLine('procedure in class "',  4,
     [ tkKey, tkSpace, tkIdentifier,  tkSymbol, tkSpace, tkKey,  tkSymbol ]);
+
+
+  ReCreateEdit;
+  SetLines
+    ([ 'Unit A; interface',
+       'type',
+       'TFoo = class helper(helper) for helper',
+         'helper, sealed, abstract: Integer;',
+         'procedure Foo; abstract;',
+        'end;',
+       ''
+    ]);
+  CheckTokensForLine('class declaration"',  2,
+    [ tkIdentifier, tkSpace, tkSymbol, tkSpace,
+      tkKey {class}, tkSpace, tkKey {helper}, tkSymbol, tkIdentifier, tkSymbol,
+      tkSpace, tkKey {for},
+      tkSpace, tkIdentifier
+    ]);
+  CheckTokensForLine('var in class "',  3,
+    [ tkIdentifier, tkSymbol, tkSpace,  tkIdentifier, tkSymbol, tkSpace,  tkIdentifier, tkSymbol,
+      tkSpace, tkIdentifier, tkSymbol
+    ]);
+  CheckTokensForLine('procedure in class "',  4,
+    [ tkKey, tkSpace, tkIdentifier,  tkSymbol, tkSpace, tkKey,  tkSymbol ]);
+
+end;
+
+procedure TTestHighlighterPas.TestContextForRecordHelper;
+begin
+  ReCreateEdit;
+  SetLines
+    ([ 'Unit A; interface {$mode delphi}',
+       'type',
+       'TFoo = record helper for TBar',
+         'helper, sealed, abstract: Integer;',
+        'end;',
+       ''
+    ]);
+  CheckTokensForLine('record declaration"',  2,
+    [ tkIdentifier, tkSpace, tkSymbol, tkSpace,
+      tkKey {class}, tkSpace, tkKey {helper}, tkSpace, tkKey {for},
+      tkSpace, tkIdentifier
+    ]);
+  CheckTokensForLine('var in class "',  3,
+    [ tkIdentifier, tkSymbol, tkSpace,  tkIdentifier, tkSymbol, tkSpace,  tkIdentifier, tkSymbol,
+      tkSpace, tkIdentifier, tkSymbol
+    ]);
+
+
+  ReCreateEdit;
+  SetLines
+    ([ 'Unit A; interface  {$mode delphi}',
+       'type',
+       'TFoo = record helper(helper) for helper',
+         'helper, sealed, abstract: Integer;',
+        'end;',
+       ''
+    ]);
+  CheckTokensForLine('record declaration"',  2,
+    [ tkIdentifier, tkSpace, tkSymbol, tkSpace,
+      tkKey {class}, tkSpace, tkKey {helper}, tkSymbol, tkIdentifier, tkSymbol,
+      tkSpace, tkKey {for},
+      tkSpace, tkIdentifier
+    ]);
+  CheckTokensForLine('var in class "',  3,
+    [ tkIdentifier, tkSymbol, tkSpace,  tkIdentifier, tkSymbol, tkSpace,  tkIdentifier, tkSymbol,
+      tkSpace, tkIdentifier, tkSymbol
+    ]);
 
 end;
 
