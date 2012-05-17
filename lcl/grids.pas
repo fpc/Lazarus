@@ -5992,10 +5992,8 @@ begin
   HeadersMouseMove(X,Y);
 
   case FGridState of
-
     gsHeaderClicking, gsButtonColumnClicking:
       ;
-
     gsSelecting:
       if not FixedGrid and (not EditingAllowed(-1) or
         (ExtendedSelect and not EditorAlwaysShown)) then begin
@@ -6004,11 +6002,9 @@ begin
           SelectActive := (P.x<>FPivot.x)or(P.y<>FPivot.y);
         MoveExtend(False, P.x, P.y);
       end;
-
     gsColMoving:
       if goColMoving in Options then
         doColMoving(X,Y);
-
     gsRowMoving:
       if goRowMoving in Options then
         doRowMoving(X,Y);
@@ -6175,6 +6171,7 @@ begin
 end;
 
 procedure TCustomGrid.DefineProperties(Filer: TFiler);
+
   function SonRowsIguales(aGrid: TCustomGrid): boolean;
   var
     i: Integer;
@@ -6187,6 +6184,7 @@ procedure TCustomGrid.DefineProperties(Filer: TFiler);
           break;
         end;
   end;
+
   function SonColsIguales(aGrid: TCustomGrid): boolean;
   var
     i: Integer;
@@ -6199,6 +6197,7 @@ procedure TCustomGrid.DefineProperties(Filer: TFiler);
           break;
         end;
   end;
+
   function SonDefault(IsColumn: Boolean; L1: TList): boolean;
   var
     i: Integer;
@@ -6214,6 +6213,7 @@ procedure TCustomGrid.DefineProperties(Filer: TFiler);
         break;
     end;
   end;
+
   function NeedWidths: boolean;
   begin
     if Filer.Ancestor is TCustomGrid then
@@ -6222,6 +6222,7 @@ procedure TCustomGrid.DefineProperties(Filer: TFiler);
       Result := not SonDefault(True, FCols);
     //result := Result and not AutoFillColumns;
   end;
+
   function NeedHeights: boolean;
   begin
     if Filer.Ancestor is TCustomGrid then
@@ -6229,6 +6230,7 @@ procedure TCustomGrid.DefineProperties(Filer: TFiler);
     else
       Result := not SonDefault(false, FRows);
   end;
+
   function HasColumns: boolean;
   var
     C: TGridColumns;
@@ -6242,6 +6244,7 @@ procedure TCustomGrid.DefineProperties(Filer: TFiler);
     else
       result := false;
   end;
+
 begin
   inherited DefineProperties(Filer);
   with Filer do begin
