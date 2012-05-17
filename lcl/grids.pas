@@ -6540,10 +6540,10 @@ begin
   Relaxed := not (goRowSelect in Options) or (goRelaxedRowSelect in Options);
 
   case Key of
-    // Ignore solo Shift or Control keys. Why they come here?
+    // Ignore solo Shift or Control keys. Why they come here anyway?
     VK_SHIFT, VK_CONTROL,           // VK_F2 is used later for editing the cell.
     VK_F1, VK_F3, VK_F4, VK_F5, VK_F6, VK_F7, VK_F8, VK_F9, VK_F10, VK_F11, VK_F12,
-    VK_MENU, VK_HELP, VK_LWIN, VK_RWIN:
+    VK_MENU, VK_HELP, VK_LWIN, VK_RWIN, VK_PRINT, VK_INSERT :
       Key := 0;
     VK_TAB:
       if goTabs in Options then begin
