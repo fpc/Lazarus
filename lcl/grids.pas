@@ -6680,7 +6680,7 @@ begin
   end;
 end;
 
-{ Convert a fisical Mouse coordinate into a logical cell coordinate }
+{ Convert a physical Mouse coordinate into a logical cell coordinate }
 function TCustomGrid.MouseToLogcell(Mouse: TPoint): TPoint;
 var
   gz: TGridZone;
