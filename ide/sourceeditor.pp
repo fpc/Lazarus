@@ -45,7 +45,7 @@ uses
   SynEditMouseCmds,
   Classes, SysUtils, Math, Controls, ExtendedNotebook, LCLProc, LCLType, LResources,
   LCLIntf, FileUtil, Forms, ComCtrls, Dialogs, StdCtrls, Graphics, Translations,
-  ClipBrd, types, Extctrls, Menus, HelpIntfs, LConvEncoding, Messages,
+  ClipBrd, types, Extctrls, Menus, HelpIntfs, LConvEncoding, Messages, LazLoggerBase,
   // codetools
   BasicCodeTools, CodeBeautifier, CodeToolManager, CodeCache, SourceLog,
   // synedit
@@ -551,6 +551,12 @@ type
     );
   TSourceNotebookStates = set of TSourceNotebookState;
 
+  TSourceNotebookUpdateFlag = (
+    ufPageNames, ufTabsAndPage, ufStatusBar, ufProjectFiles,
+    ufFocusEditor, ufActiveEditorChanged
+  );
+  TSourceNotebookUpdateFlags = set of TSourceNotebookUpdateFlag;
+
   { TSourceNotebook }
 
   TSourceNotebook = class(TSourceEditorWindowInterface)
@@ -598,7 +604,7 @@ type
   private
     FManager: TSourceEditorManager;
     FUpdateLock, FFocusLock: Integer;
-    FUpdateFlags: set of (ufPageNames, ufTabsAndPage, ufStatusBar, ufProjectFiles, ufFocusEditor, ufActiveEditorChanged);
+    FUpdateFlags: TSourceNotebookUpdateFlags;
     FPageIndex: Integer;
     fAutoFocusLock: integer;
     FIncrementalSearchPos: TPoint; // last set position
@@ -1244,6 +1250,9 @@ implementation
 
 {$R *.lfm}
 
+var
+  SRCED_LOCK, SRCED_OPEN, SRCED_CLOSE, SRCED_PAGES: PLazLoggerLogGroup;
+
 const
   (* SoftCenter are th visible Lines in the Editor where the caret can be locateted,
      without CenterCursor adjusting the topline.
@@ -1258,6 +1267,21 @@ var
   SourceCompletionTimer: TIdleTimer = nil;
   SourceCompletionCaretXY: TPoint;
   AWordCompletion: TWordCompletion = nil;
+
+function dbgs(AFlag: TSourceNotebookUpdateFlag): string; overload;
+begin
+  WriteStr(Result, AFlag);
+end;
+function dbgs(AFlags: TSourceNotebookUpdateFlags): string; overload;
+var i: TSourceNotebookUpdateFlag;
+begin
+  for i := low(TSourceNotebookUpdateFlags) to high(TSourceNotebookUpdateFlags) do
+    if i in AFlags then begin
+      if Result <> '' then Result := Result + ',';
+      Result := Result + dbgs(i);
+    end;
+  Result := '['+ Result + ']';
+end;
 
 function SourceEditorManager: TSourceEditorManager;
 begin
@@ -2525,6 +2549,7 @@ end;
 
 destructor TSourceEditor.Destroy;
 begin
+  DebugLnEnter(SRCED_CLOSE, ['TSourceEditor.Destroy ']);
   if FInEditorChangedUpdating then begin
     debugln(['***** TSourceEditor.Destroy: FInEditorChangedUpdating was true']);
     DebugBoss.UnLockCommandProcessing;
@@ -2548,6 +2573,7 @@ begin
   FSharedValues.RemoveSharedEditor(Self);
   if FSharedValues.SharedEditorCount = 0 then
     FreeAndNil(FSharedValues);
+  DebugLnExit(SRCED_CLOSE, ['TSourceEditor.Destroy ']);
 end;
 
 {------------------------------G O T O   L I N E  -----------------------------}
@@ -2834,22 +2860,16 @@ end;
 
 Procedure TSourceEditor.FocusEditor;
 Begin
-  {$IFDEF VerboseFocus}
-  debugln('TSourceEditor.FocusEditor A ',PageName,' ',FEditor.Name);
-  {$ENDIF}
+  DebugLnEnter(SRCED_PAGES, ['>> TSourceEditor.FocusEditor A ',PageName,' ',FEditor.Name]);
   IDEWindowCreators.ShowForm(SourceNotebook,true);
   if FEditor.IsVisible then begin
     FEditor.SetFocus; // TODO: will cal EditorEnter, which does self.Activate  => maybe lock, and do here?
     FSharedValues.SetActiveSharedEditor(Self);
   end else begin
-    {$IFDEF VerboseFocus}
-    debugln('TSourceEditor.FocusEditor not IsVisible: ',PageName,' ',FEditor.Name);
-    {$ENDIF}
+    debugln(SRCED_PAGES, ['TSourceEditor.FocusEditor not IsVisible: ',PageName,' ',FEditor.Name]);
   end;
   //DebugLn('TSourceEditor.FocusEditor ',dbgsName(FindOwnerControl(GetFocus)),' ',dbgs(GetFocus));
-  {$IFDEF VerboseFocus}
-  debugln('TSourceEditor.FocusEditor END ',PageName,' ',FEditor.Name);
-  {$ENDIF}
+  DebugLnExit(SRCED_PAGES, ['<< TSourceEditor.FocusEditor END ',PageName,' ',FEditor.Name]);
 end;
 
 Function TSourceEditor.GetReadOnly: Boolean;
@@ -4376,6 +4396,7 @@ end;
 
 Function TSourceEditor.Close: Boolean;
 Begin
+  DebugLnEnter(SRCED_CLOSE, ['TSourceEditor.Close ShareCount=', FSharedValues.SharedEditorCount]);
   Result := True;
   Visible := False;
   Manager.EditorRemoved(Self);
@@ -4383,6 +4404,7 @@ Begin
   FEditor.Parent:=nil;
   if FSharedValues.SharedEditorCount = 1 then
     CodeBuffer := nil;
+  DebugLnExit(SRCED_CLOSE, ['TSourceEditor.Close ']);
 end;
 
 procedure TSourceEditor.BeginUndoBlock{$IFDEF SynUndoDebugBeginEnd}(ACaller: String = ''){$ENDIF};
@@ -4527,6 +4549,7 @@ procedure TSourceEditor.EditorEnter(Sender: TObject);
 var
   SrcEdit: TSourceEditor;
 begin
+  debugln(SRCED_PAGES, ['TSourceEditor.EditorEnter ']);
   if (FSourceNoteBook.FUpdateLock <> 0) or
      (FSourceNoteBook.FFocusLock <> 0)
   then exit;
@@ -5189,6 +5212,7 @@ destructor TSourceNotebook.Destroy;
 var
   i: integer;
 begin
+  DebugLnEnter(SRCED_CLOSE, ['TSourceNotebook.Destroy ']);
   if assigned(Manager) then
     Manager.RemoveWindow(Self);
   DisableAutoSizing{$IFDEF DebugDisableAutoSizing}('TSourceNotebook.Destroy'){$ENDIF};
@@ -5208,6 +5232,7 @@ begin
   FreeAndNil(FNotebook);
 
   inherited Destroy;
+  DebugLnExit(SRCED_CLOSE, ['TSourceNotebook.Destroy ']);
 end;
 
 procedure TSourceNotebook.DeactivateCompletionForm;
@@ -5852,6 +5877,7 @@ end;
 
 procedure TSourceNotebook.SetPageIndex(const AValue: Integer);
 begin
+  DebugLnEnter(SRCED_PAGES, ['>> TSourceNotebook.SetPageIndex Cur-PgIdx=', PageIndex, ' FPageIndex=', FPageIndex, ' Value=', AValue, ' FUpdateLock=', FUpdateLock]);
   FPageIndex := AValue;
   if FUpdateLock = 0 then begin
     FPageIndex := Max(0, Min(FPageIndex, FNotebook.PageCount-1));
@@ -5864,6 +5890,7 @@ begin
       NotebookPageChanged(nil);
     HistorySetMostRecent(FNotebook.Pages[FPageIndex]);
   end;
+  DebugLnExit(SRCED_PAGES, ['<< TSourceNotebook.SetPageIndex ']);
 end;
 
 function TSourceNotebook.GetCompletionBoxPosition: integer;
@@ -6069,7 +6096,7 @@ procedure TSourceNotebook.DoClose(var CloseAction: TCloseAction);
 var
   Layout: TSimpleWindowLayout;
 begin
-  //debugln(['TSourceNotebook.DoClose ',DbgSName(Self)]);
+  DebugLnEnter(SRCED_CLOSE, ['TSourceNotebook.DoClose ', DbgSName(self)]);
   inherited DoClose(CloseAction);
   CloseAction := caHide;
   {$IFnDEF SingleSrcWindow}
@@ -6092,6 +6119,7 @@ begin
     end;
   end;
   {$ENDIF}
+  DebugLnExit(SRCED_CLOSE, ['TSourceNotebook.DoClose ']);
 end;
 
 procedure TSourceNotebook.DoShow;
@@ -6268,6 +6296,7 @@ procedure TSourceNotebook.IncUpdateLockInternal;
 begin
   if FUpdateLock = 0 then begin
     FUpdateFlags := [];
+    DebugLn(SRCED_LOCK, ['TSourceNotebook.IncUpdateLockInternal']);
   end;
   inc(FUpdateLock);
 end;
@@ -6276,6 +6305,7 @@ procedure TSourceNotebook.DecUpdateLockInternal;
 begin
   dec(FUpdateLock);
   if FUpdateLock = 0 then begin
+    DebugLnEnter(SRCED_LOCK, ['>> TSourceNotebook.DecUpdateLockInternal UpdateFlags=', dbgs(FUpdateFlags), ' PageIndex=', FPageIndex]);
     PageIndex := FPageIndex;
     if (ufPageNames in FUpdateFlags)    then UpdatePageNames;
     if (ufTabsAndPage in FUpdateFlags)  then UpdateTabsAndPageTitle;
@@ -6284,6 +6314,7 @@ begin
     if (ufFocusEditor in FUpdateFlags)  then FocusEditor;
     if (ufActiveEditorChanged in FUpdateFlags) then DoActiveEditorChanged;
     FUpdateFlags := [];
+    DebugLnExit(SRCED_LOCK, ['<< TSourceNotebook.DecUpdateLockInternal']);
   end;
 end;
 
@@ -6316,6 +6347,7 @@ end;
 
 procedure TSourceNotebook.NoteBookDeletePage(APageIndex: Integer);
 begin
+  DebugLnEnter(SRCED_PAGES, ['TSourceNotebook.NoteBookDeletePage ', APageIndex]);
   HistoryRemove(FNotebook.Pages[APageIndex]);
   if PageCount > 1 then begin
     // make sure to select another page in the NoteBook, otherwise the
@@ -6339,6 +6371,7 @@ begin
   end else
     FNotebook.Visible := False;
   UpdateTabsAndPageTitle;
+  DebugLnExit(SRCED_PAGES, ['TSourceNotebook.NoteBookDeletePage ']);
 end;
 
 procedure TSourceNotebook.UpdateTabsAndPageTitle;
@@ -6387,11 +6420,14 @@ end;
 procedure TSourceNotebook.DoActiveEditorChanged;
 begin
   if FUpdateLock > 0 then begin
+    DebugLn(SRCED_PAGES, ['TSourceNotebook.DoActiveEditorChanged LOCKED']);
     include(FUpdateFlags, ufActiveEditorChanged);
     exit;
   end;
   exclude(FUpdateFlags, ufActiveEditorChanged);
+  DebugLnEnter(SRCED_PAGES, ['>> TSourceNotebook.DoActiveEditorChanged ']);
   Manager.DoActiveEditorChanged;
+  DebugLnExit(SRCED_PAGES, ['<< TSourceNotebook.DoActiveEditorChanged ']);
 end;
 
 procedure TSourceNotebook.BeginIncrementalFind;
@@ -6952,9 +6988,7 @@ var
   s: String;
 Begin
   //create a new page
-  {$IFDEF IDE_DEBUG}
-  debugln('[TSourceNotebook.NewFile] A ');
-  {$ENDIF}
+  debugln(SRCED_OPEN, '[TSourceNotebook.NewFile] A ');
   // Debugger cause ProcessMessages, which could lead to entering methods in unexpected order
   DebugBoss.LockCommandProcessing;
   try
@@ -6963,13 +6997,9 @@ Begin
       IDEWindowCreators.ShowForm(Self,false);
       s := Manager.FindUniquePageName(NewShortName, AShareEditor);
       Result := NewSE(-1, -1, AShareEditor, s);
-      {$IFDEF IDE_DEBUG}
-      debugln('[TSourceNotebook.NewFile] B ');
-      {$ENDIF}
+      debugln(SRCED_OPEN, '[TSourceNotebook.NewFile] B ');
       Result.CodeBuffer:=ASource;
-      {$IFDEF IDE_DEBUG}
-      debugln('[TSourceNotebook.NewFile] D ');
-      {$ENDIF}
+      debugln(SRCED_OPEN, '[TSourceNotebook.NewFile] D ');
       //debugln(['TSourceNotebook.NewFile ',NewShortName,' ',ASource.Filename]);
       Result.PageName:= s;
       UpdatePageNames;
@@ -6983,9 +7013,7 @@ Begin
   finally
     DebugBoss.UnLockCommandProcessing;
   end;
-  {$IFDEF IDE_DEBUG}
-  debugln('[TSourceNotebook.NewFile] end');
-  {$ENDIF}
+  debugln(SRCED_OPEN, '[TSourceNotebook.NewFile] end');
   CheckFont;
 end;
 
@@ -6995,23 +7023,20 @@ var
   WasSelected: Boolean;
 begin
   (* Do not use DisableAutoSizing in here, if a new Editor is focused it needs immediate autosize (during handle creation) *)
-  {$IFDEF IDE_DEBUG}
-  debugln(['TSourceNotebook.CloseFile A  APageIndex=',APageIndex]);
-  {$ENDIF}
+  // Inc/DecUpdateLockInternal does currently noth work, since a tab will be removed
+  DebugLnEnter(SRCED_CLOSE, ['>> TSourceNotebook.CloseFile A  APageIndex=',APageIndex, ' Cur-Page=', PageIndex]);
   DebugBoss.LockCommandProcessing;
   try
     TempEditor:=FindSourceEditorWithPageIndex(APageIndex);
     if TempEditor=nil then exit;
     WasSelected:=PageIndex=APageIndex;
-    //debugln(['TSourceNotebook.CloseFile ',TempEditor.FileName,' ',TempEditor.APageIndex]);
+    debugln(SRCED_CLOSE, ['TSourceNotebook.CloseFile ', DbgSName(TempEditor), ' ', TempEditor.FileName]);
     EndIncrementalFind;
     TempEditor.Close;
     NoteBookDeletePage(APageIndex); // delete page before sending notification senEditorDestroyed
-    TempEditor.Free;
+    TempEditor.Free;    // sends semEditorDestroy
     TempEditor:=nil;
     // delete the page
-    //debugln('TSourceNotebook.CloseFile B  APageIndex=',APageIndex,' PageCount=',PageCount,' NoteBook.APageIndex=',Notebook.APageIndex);
-    //debugln('TSourceNotebook.CloseFile C  APageIndex=',APageIndex,' PageCount=',PageCount,' NoteBook.APageIndex=',Notebook.APageIndex);
     UpdateProjectFiles;
     UpdatePageNames;
     if WasSelected then
@@ -7030,11 +7055,10 @@ begin
     if IsVisible and (TempEditor <> nil) and (FUpdateLock = 0) then
       TempEditor.EditorComponent.SetFocus;
   finally
+    debugln(SRCED_CLOSE, ['TSourceNotebook.CloseFile UnLock']);
     DebugBoss.UnLockCommandProcessing;
+    DebugLnExit(SRCED_CLOSE, ['<< TSourceNotebook.CloseFile']);
   end;
-  {$IFDEF IDE_DEBUG}
-  debugln('TSourceNotebook.CloseFile END');
-  {$ENDIF}
 end;
 
 procedure TSourceNotebook.FocusEditor;
@@ -7409,12 +7433,14 @@ Begin
     Include(States, snNotbookPageChangedNeeded);
     exit;
   end;
+  DebugLnEnter(SRCED_PAGES, ['>> TSourceNotebook.NotebookPageChanged PageIndex=', PageIndex, ' AutoFocusLock=', fAutoFocusLock]);
+
   Exclude(States, snNotbookPageChangedNeeded);
   TempEditor:=GetActiveSE;
   if (FHintWindow <> nil) and FHintWindow.Visible then
     HideHint;
 
-  //debugln('TSourceNotebook.NotebookPageChanged ',Pageindex,' ',TempEditor <> nil,' fAutoFocusLock=',fAutoFocusLock);
+  DebugLn(SRCED_PAGES, ['TSourceNotebook.NotebookPageChanged TempEdit=', DbgSName(TempEditor)]);
   if TempEditor <> nil then
   begin
     if not TempEditor.Visible then begin
@@ -7433,17 +7459,9 @@ Begin
        not(Manager.HasAutoFocusLock)
     then
     begin
-      {$IFDEF VerboseFocus}
-      debugln('TSourceNotebook.NotebookPageChanged BEFORE SetFocus ',
-        TempEditor.EditorComponent.Name,' ',
-        NoteBookPages[FindPageWithEditor(TempEditor)]);
-      {$ENDIF}
+      DebugLnEnter(SRCED_PAGES, ['TSourceNotebook.NotebookPageChanged BEFORE SetFocus ', DbgSName(TempEditor.EditorComponent),' Page=',   FindPageWithEditor(TempEditor), ' ', TempEditor.FileName]);
       TempEditor.FocusEditor; // recursively calls NotebookPageChanged, via EditorEnter
-      {$IFDEF VerboseFocus}
-      debugln('TSourceNotebook.NotebookPageChanged AFTER SetFocus ',
-        TempEditor.EditorComponent.Name,' ',
-        NotebookPages[FindPageWithEditor(TempEditor)]);
-      {$ENDIF}
+      DebugLnExit(SRCED_PAGES, ['TSourceNotebook.NotebookPageChanged AFTER SetFocus ', DbgSName(TempEditor.EditorComponent),' Page=',   FindPageWithEditor(TempEditor)]);
     end;
     UpdateStatusBar;
     UpdateActiveEditColors(TempEditor.EditorComponent);
@@ -7455,6 +7473,7 @@ Begin
   end;
 
   CheckCurrentCodeBufferChanged;
+  DebugLnExit(SRCED_PAGES, ['<< TSourceNotebook.NotebookPageChanged ']);
 end;
 
 Procedure TSourceNotebook.ProcessParentCommand(Sender: TObject;
@@ -9696,6 +9715,11 @@ begin
 end;
 
 initialization
+  SRCED_LOCK  := DebugLogger.RegisterLogGroup('SRCED_LOCK' {$IFDEF SRCED_LOCK} , True {$ENDIF} );
+  SRCED_OPEN  := DebugLogger.RegisterLogGroup('SRCED_OPEN' {$IFDEF SRCED_OPEN} , True {$ENDIF} );
+  SRCED_CLOSE := DebugLogger.RegisterLogGroup('SRCED_CLOSE' {$IFDEF SRCED_CLOSE} , True {$ENDIF} );
+  SRCED_PAGES := DebugLogger.RegisterLogGroup('SRCED_PAGES' {$IFDEF SRCED_PAGES} , True {$ENDIF} );
+
   InternalInit;
   {$I ../images/bookmark.lrs}
 
