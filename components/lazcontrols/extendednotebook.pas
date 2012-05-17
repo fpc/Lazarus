@@ -74,6 +74,9 @@ type
              Y: Integer); override;
     procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
     procedure CNNotify(var Message: TLMNotify); message CN_NOTIFY;
+    procedure RemovePage(Index: Integer); override;
+    procedure InsertPage(APage: TCustomPage; Index: Integer); override;
+    procedure CaptureChanged; override;
     procedure DoStartDrag(var DragObject: TDragObject); override;
     procedure DoEndDrag(Target: TObject; X,Y: Integer); override;
     procedure DragOver(Source: TObject; X, Y: Integer; State: TDragState;
@@ -116,6 +119,7 @@ Begin
   FMouseWaitForDrag := False;
   DragCursor := crDrag;
   FDragOverIndex := -1;
+  FDraggingTabIndex := -1;
   FDragOverTabRect   := Rect(0, 0, 0, 0);
   FDragNextToTabRect := Rect(0, 0, 0, 0);
 end;
@@ -167,8 +171,8 @@ Begin
     FMouseDownY := Y;
     FTriggerDragX := GetSystemMetrics(SM_CXDRAG);
     FTriggerDragY := GetSystemMetrics(SM_CYDRAG);
+    MouseCapture := True;
   end;
-  MouseCapture := True;
 end;
 
 procedure TExtendedNotebook.MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
@@ -194,12 +198,41 @@ end;
 
 procedure TExtendedNotebook.CNNotify(var Message: TLMNotify);
 Begin
+  if (Dragging or (FDraggingTabIndex >= 0)) and
+     ( (Message.NMHdr^.code = TCN_SELCHANGING) or
+       (Message.NMHdr^.code = TCN_SELCHANGE) )
+  then
+    CancelDrag
+  else
   if Message.NMHdr^.code = TCN_SELCHANGING then Begin
     if (fTabDragMode = dmAutomatic) and (not FMouseWaitForDrag) then
       FMouseDownIndex := TabIndexAtClientPos(ScreenToClient(Mouse.CursorPos));
     {$IFDEF ExtNBookDebug}debugln(['TExtendedNotebook.CNNotify: FMouseWaitForDrag=', FMouseWaitForDrag, ' Idx=',FMouseDownIndex]);{$ENDIF}
   end;
   inherited CNNotify(Message);
+end;
+
+procedure TExtendedNotebook.RemovePage(Index: Integer);
+begin
+  CancelDrag;
+  FMouseDownIndex := -1;
+  FMouseWaitForDrag := False;
+  inherited RemovePage(Index);
+end;
+
+procedure TExtendedNotebook.InsertPage(APage: TCustomPage; Index: Integer);
+begin
+  CancelDrag;
+  FMouseDownIndex := -1;
+  FMouseWaitForDrag := False;
+  inherited InsertPage(APage, Index);
+end;
+
+procedure TExtendedNotebook.CaptureChanged;
+begin
+  FMouseDownIndex := -1;
+  FMouseWaitForDrag := False;
+  inherited CaptureChanged;
 end;
 
 procedure TExtendedNotebook.DoStartDrag(var DragObject: TDragObject);
