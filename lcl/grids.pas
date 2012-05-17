@@ -6529,7 +6529,7 @@ var
   end;
 
 const
-  cBidiMove:array[Boolean] of Integer = (1, -1);
+  cBidiMove: array[Boolean] of Integer = (1, -1);
 begin
   {$ifdef dbgGrid}DebugLn('Grid.KeyDown INIT Key=',IntToStr(Key));{$endif}
   inherited KeyDown(Key, Shift);
@@ -6540,6 +6540,11 @@ begin
   Relaxed := not (goRowSelect in Options) or (goRelaxedRowSelect in Options);
 
   case Key of
+    // Ignore solo Shift or Control keys. Why they come here?
+    VK_SHIFT, VK_CONTROL,           // VK_F2 is used later for editing the cell.
+    VK_F1, VK_F3, VK_F4, VK_F5, VK_F6, VK_F7, VK_F8, VK_F9, VK_F10, VK_F11, VK_F12,
+    VK_MENU, VK_HELP, VK_LWIN, VK_RWIN:
+      Key := 0;
     VK_TAB:
       if goTabs in Options then begin
         if GetDeltaMoveNext(Sh, DeltaCol,DeltaRow) then begin
@@ -6581,19 +6586,18 @@ begin
         MoveSel(True, 0, R.Bottom-R.Top);
       end;
     VK_HOME:
-      begin
-        if ssCtrl in Shift then MoveSel(False, FCol, FFixedRows)
-        else
-          if Relaxed then MoveSel(False, FFixedCols, FRow)
-          else            MoveSel(False, FCol, FFixedRows);
-      end;
+      if ssCtrl in Shift then MoveSel(False, FCol, FFixedRows)
+      else
+        if Relaxed then MoveSel(False, FFixedCols, FRow)
+        else            MoveSel(False, FCol, FFixedRows);
     VK_END:
-      begin
-        if ssCtrl in Shift then MoveSel(False, FCol, RowCount-1)
-        else
-          if Relaxed then MoveSel(False, ColCount-1, FRow)
-          else            MoveSel(False, FCol, RowCount-1);
-      end;
+      if ssCtrl in Shift then MoveSel(False, FCol, RowCount-1)
+      else
+        if Relaxed then MoveSel(False, ColCount-1, FRow)
+        else            MoveSel(False, FCol, RowCount-1);
+    VK_APPS:
+      if not FEditorKey and EditingAllowed(FCol) then
+        EditorShow(False);               // Will show popup menu in the editor.
     VK_F2:
       if not FEditorKey and EditingAllowed(FCol) then begin
         EditorShow(False);
@@ -6634,7 +6638,6 @@ begin
     FRowAutoInserted:=False;
   {$ifdef dbgGrid}DebugLn('Grid.KeyDown END Key=',IntToStr(Key));{$endif}
 end;
-
 
 procedure TCustomGrid.KeyUp(var Key: Word; Shift: TShiftState);
 begin
