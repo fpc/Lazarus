@@ -2114,7 +2114,7 @@ end;
  ------------------------------------------------------------------------------}
 function TQtWidget.CanSendLCLMessage: Boolean;
 begin
-  Result := (LCLObject <> nil) and getVisible and
+  Result := (LCLObject <> nil) and (Widget <> nil) and getVisible and
     not ((csDestroying in LCLObject.ComponentState) or
          (csDestroyingHandle in LCLObject.ControlState));
 end;
@@ -2992,7 +2992,7 @@ begin
     NotifyApplicationUserInput(LCLObject, KeyMsg.Msg);
 
     if not CanSendLCLMessage or (Sender = nil) then
-      exit(False);
+      exit;
 
     if (DeliverMessage(KeyMsg, True) <> 0) or (KeyMsg.CharCode=VK_UNKNOWN) then
     begin
@@ -3003,7 +3003,7 @@ begin
     end;
 
     if not CanSendLCLMessage or (Sender = nil) then
-      exit(False);
+      exit;
 
     // here we should let widgetset to handle key
     //...
@@ -3019,7 +3019,7 @@ begin
       NotifyApplicationUserInput(LCLObject, KeyMsg.Msg);
 
       if not CanSendLCLMessage or (Sender = nil) then
-        exit(False);
+        exit;
 
       if (DeliverMessage(KeyMsg, True) <> 0) or (KeyMsg.CharCode=VK_UNKNOWN) then
       begin
@@ -3036,7 +3036,7 @@ begin
   { if our LCLObject dissappeared in the meantime just exit, otherwise
     we'll run into problems.}
   if not CanSendLCLMessage or (Sender = nil) then
-    exit(False);
+    exit;
 
 
   { Also sends a utf-8 key event for key down }
@@ -3057,7 +3057,7 @@ begin
     end;
 
     if not CanSendLCLMessage or (Sender = nil) then
-      exit(False);
+      exit;
 
     // create the CN_CHAR / CN_SYSCHAR message
     FillChar(CharMsg, SizeOf(CharMsg), 0);
@@ -3073,7 +3073,7 @@ begin
     NotifyApplicationUserInput(LCLObject, CharMsg.Msg);
 
     if not CanSendLCLMessage or (Sender = nil) then
-      exit(False);
+      exit;
 
     if (DeliverMessage(CharMsg, True) <> 0) or (CharMsg.CharCode = VK_UNKNOWN) then
     begin
@@ -3094,16 +3094,16 @@ begin
     WriteLn(' message: ', CharMsg.Msg);
   {$endif}
     if not CanSendLCLMessage or (Sender = nil) then
-      exit(False);
+      exit;
 
     NotifyApplicationUserInput(LCLObject, CharMsg.Msg);
 
     if not CanSendLCLMessage or (Sender = nil) then
-      exit(False);
+      exit;
 
     DeliverMessage(CharMsg, True);
     if not CanSendLCLMessage or (Sender = nil) then
-      exit(False);
+      exit;
   end;
   
   // check if data was changed during key handling
@@ -3230,7 +3230,7 @@ begin
   Result := False; // allow qt to handle message
 
   if not CanSendLCLMessage then
-    exit;
+    exit(True);
 
   if (LCLObject <> nil) and
     (not (csDesigning in LCLObject.ComponentState) and not getEnabled) then
@@ -3263,13 +3263,15 @@ begin
       NotifyApplicationUserInput(LCLObject, Msg.Msg);
 
       if not CanSendLCLMessage or (Sender = nil) then
-        exit;
+        exit(True);
 
       DeliverMessage(Msg, True);
       // Check if our objects exists since LCL can destroy object during
       // mouse events...
       if CanSendLCLMessage and (Sender <> nil) then
-        SetNoMousePropagation(QWidgetH(Sender), True);
+        SetNoMousePropagation(QWidgetH(Sender), True)
+      else
+        exit(True);
     end;
     QEventMouseButtonRelease:
     begin
@@ -3288,14 +3290,16 @@ begin
       NotifyApplicationUserInput(LCLObject, Msg.Msg);
 
       if not CanSendLCLMessage or (Sender = nil) then
-        exit;
+        exit(True);
 
       DeliverMessage(Msg, True);
 
       // Check if our objects exists since LCL can destroy object during
       // mouse events...
       if CanSendLCLMessage and (Sender <> nil) then
-        SetNoMousePropagation(QWidgetH(Sender), True);
+        SetNoMousePropagation(QWidgetH(Sender), True)
+      else
+        exit(True);
 
       { Clicking on buttons operates differently, because QEventMouseButtonRelease
         is sent if you click a control, drag the mouse out of it and release, but
@@ -3411,7 +3415,7 @@ var
 begin
   Result := False;
   if not CanSendLCLMessage then
-    Exit;
+    Exit(True);
 
   if not (csCaptureMouse in LCLObject.ControlStyle) and
     not QWidget_isWindow(Widget) and
@@ -3504,7 +3508,7 @@ var
   {$ENDIF}
 begin
   Result := False;
-  if not CanSendLCLMessage or (LCLObject = nil) then
+  if not CanSendLCLMessage then
     exit;
 
   FillChar(Msg, SizeOf(Msg), #0);
@@ -5050,6 +5054,7 @@ begin
       Result := TLMessage(Msg).Result;
     end;
   except
+    Result := 1;
     if AIsInputEvent and (LCLObject = nil) and (PtrUInt(Widget) = 0) and
       QtWidgetSet.IsValidHandle(HWND(Self)) then
     begin
