@@ -7547,32 +7547,12 @@ begin
   {$ifdef dbgGrid}DebugLn('Grid.EditorKeyDown Key=',dbgs(Key),' INIT');{$endif}
   FEditorKey:=True; // Just a flag to see from where the event comes
   KeyDown(Key, shift);
-  case Key of
-    VK_LEFT, VK_RIGHT, VK_UP, VK_DOWN,
-    VK_PRIOR, VK_NEXT:
-    begin
-      if ssShift in Shift then begin
-        FeditorKey:=False;
-        exit;
-      end;
-    end;
-    {
-    VK_TAB:
-      begin
-        if GoTabs in Options then begin
-          MoveNextAuto;
-          Key := 0;
-        end;
-      end;
-    }
-    VK_RETURN:
-      begin
-        Key := 0;
-        Include(FGridFlags, gfEditingDone);
-        if not MoveNextAuto(ssShift in Shift) then
-          ResetEditor;
-        Exclude(FGridFlags, gfEditingDone);
-      end;
+  if Key = VK_RETURN then begin
+    Key := 0;
+    Include(FGridFlags, gfEditingDone);
+    if not MoveNextAuto(ssShift in Shift) then
+      ResetEditor;
+    Exclude(FGridFlags, gfEditingDone);
   end;
   FEditorKey:=False;
   {$ifdef dbgGrid}DebugLn('Grid.EditorKeyDown Key=',dbgs(Key),' END');{$endif}
