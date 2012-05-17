@@ -1,39 +1,48 @@
+# Arabic translation of Free Pascal Lazarus Project.
+# Copyright (C) 2012 Lazarus Project
+# This file is distributed under the same license as the Lazarus package.
+# Abou Al Montacir <abou.almontacir@sfr.fr>, 2007.
+# Khaled Shagrouni <shagrouni@gmail.com>, 2012.
 msgid ""
 msgstr ""
-"Last-Translator: Mazen NEIFER <mazen.neifer@supaero.org>\n"
-"PO-Revision-Date: 2007-11-26 23:43+0100\n"
-"Language-Team: Arabic <ar@li.org>\n"
+"Project-Id-Version: Free Pascal Lazarus Project.\n"
+"Report-Msgid-Bugs-To: Abou Al Montacir <abou.almontacir@sfr.fr\n"
+"POT-Creation-Date: yyyy-mm-dd hh:mm+0000\n"
+"PO-Revision-Date: 2012-05-10 10:25+0100\n"
+"Last-Translator: Khaled Shagrouni <shagrouni@gmail.com>\n"
+"Language-Team: Arabic\n"
+"Language: arabic\n"
+"MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: KBabel 1.11.4\n"
-"Project-Id-Version: lazaruside\n"
-"MIME-Version: 1.0\n"
+"Plural-Forms: nplurals=1; plural=0\n"
+"X-Generator: Easy Po 0.9.2\n"
 
 #: lazarusidestrconsts.dbgbreakgroupdlgcaptiondisable
 msgctxt "lazarusidestrconsts.dbgbreakgroupdlgcaptiondisable"
 msgid "Select Groups"
-msgstr ""
+msgstr "إختر المجموعات"
 
 #: lazarusidestrconsts.dbgbreakgroupdlgcaptionenable
 msgctxt "lazarusidestrconsts.dbgbreakgroupdlgcaptionenable"
 msgid "Select Groups"
-msgstr ""
+msgstr "إختر المجموعات"
 
 #: lazarusidestrconsts.dbgbreakgroupdlgheaderdisable
 msgid "Select groups to disable when breakpoint is hit"
-msgstr ""
+msgstr "اختر المجموعات الّتي تتعطّل عند نقطة ايقاف"
 
 #: lazarusidestrconsts.dbgbreakgroupdlgheaderenable
 msgid "Select groups to enable when breakpoint is hit"
-msgstr ""
+msgstr "اختر المجموعات الّتي تفعّل عند نقطة ايقاف"
 
 #: lazarusidestrconsts.dbgbreakpropertygroupnotfound
 msgid "Some groups in the Enable/Disable list do not exist.%0:sCreate them?%0:s%0:s%1:s"
-msgstr ""
+msgstr "بعض المجموعات في قائمة تفعيل/تعطيل غير موجودة.%0:sعل يتم إنشاؤها؟%0:s%0:s%1:s"
 
 #: lazarusidestrconsts.dlfmousepredefinedscheme
 msgid "Use predefined scheme"
-msgstr ""
+msgstr "إستخدم المخطط المحدد سلفا"
 
 #: lazarusidestrconsts.dlfmouseresetall
 msgid "Reset all settings"
@@ -99,15 +108,15 @@ msgstr ""
 
 #: lazarusidestrconsts.dlfmousesimplebuttonselect
 msgid "Select text"
-msgstr ""
+msgstr "عيّن نصّا"
 
 #: lazarusidestrconsts.dlfmousesimplebuttonselectcolumn
 msgid "Select text (Columns)"
-msgstr ""
+msgstr "عيّن نصّا عموديّا"
 
 #: lazarusidestrconsts.dlfmousesimplebuttonselectline
 msgid "Select text (Lines)"
-msgstr ""
+msgstr "عيّن نصّا أفقيّا"
 
 #: lazarusidestrconsts.dlfmousesimplebuttonsetfreebookmark
 msgid "Set free bookmark"
@@ -115,19 +124,19 @@ msgstr ""
 
 #: lazarusidestrconsts.dlfmousesimplebuttonsetlinefull
 msgid "Select current Line (Full)"
-msgstr ""
+msgstr "عيّن السّطر الحاليّ كاملا"
 
 #: lazarusidestrconsts.dlfmousesimplebuttonsetlinesmart
 msgid "Select current Line (Text)"
-msgstr ""
+msgstr "ّعيّن النّصّ قي السّطر الحالي"
 
 #: lazarusidestrconsts.dlfmousesimplebuttonsetpara
 msgid "Select current Paragraph"
-msgstr ""
+msgstr "عيّن الفقرة الحاليّة"
 
 #: lazarusidestrconsts.dlfmousesimplebuttonsetword
 msgid "Select current Word"
-msgstr ""
+msgstr "عيّن الكلمة الحاليّة"
 
 #: lazarusidestrconsts.dlfmousesimplebuttonzoomreset
 msgid "Reset zoom"
@@ -194,7 +203,7 @@ msgstr ""
 
 #: lazarusidestrconsts.dlfmousesimpletextsectdrag
 msgid "Drag selection (copy/paste)"
-msgstr ""
+msgstr "جرّ المعيّن (نسخ ولصق("
 
 #: lazarusidestrconsts.dlfmousesimpletextsectextra1label
 msgid "Extra-1 Button"
@@ -215,7 +224,7 @@ msgstr ""
 #: lazarusidestrconsts.dlfmousesimpletextsectldoublelabel
 msgctxt "lazarusidestrconsts.dlfmousesimpletextsectldoublelabel"
 msgid "Double"
-msgstr ""
+msgstr "مضاعف"
 
 #: lazarusidestrconsts.dlfmousesimpletextsectldoubleshiftlabel
 msgid "Shift Double"
@@ -224,16 +233,16 @@ msgstr ""
 #: lazarusidestrconsts.dlfmousesimpletextsectlquadlabel
 msgctxt "lazarusidestrconsts.dlfmousesimpletextsectlquadlabel"
 msgid "Quad"
-msgstr ""
+msgstr "رباعي"
 
 #: lazarusidestrconsts.dlfmousesimpletextsectltriplelabel
 msgctxt "lazarusidestrconsts.dlfmousesimpletextsectltriplelabel"
 msgid "Triple"
-msgstr ""
+msgstr "ثلاثي"
 
 #: lazarusidestrconsts.dlfmousesimpletextsectmidlabel
 msgid "Middle Button"
-msgstr ""
+msgstr "الزّر الأوسط"
 
 #: lazarusidestrconsts.dlfmousesimpletextsectpagebtn
 msgctxt "lazarusidestrconsts.dlfmousesimpletextsectpagebtn"
@@ -266,11 +275,11 @@ msgstr ""
 #: lazarusidestrconsts.dlfmousesimpletextsectpagewheel
 msgctxt "lazarusidestrconsts.dlfmousesimpletextsectpagewheel"
 msgid "Wheel"
-msgstr ""
+msgstr "العجلة"
 
 #: lazarusidestrconsts.dlfmousesimpletextsectrightlabel
 msgid "Right Button"
-msgstr ""
+msgstr "الزّر الأيمن"
 
 #: lazarusidestrconsts.dlfmousesimpletextsectshiftaltctrllabel
 msgid "Shift-Alt-Ctrl Button"
@@ -303,7 +312,7 @@ msgstr ""
 #: lazarusidestrconsts.dlfmousesimpletextsectwheellabel
 msgctxt "lazarusidestrconsts.dlfmousesimpletextsectwheellabel"
 msgid "Wheel"
-msgstr ""
+msgstr "العجلة"
 
 #: lazarusidestrconsts.dlfmousesimpletextshiftsectwheellabel
 msgid "Shift Wheel"
@@ -360,7 +369,7 @@ msgstr ""
 
 #: lazarusidestrconsts.dlfmousesimplewheelzoom
 msgid "Zoom"
-msgstr ""
+msgstr "تضخيم"
 
 #: lazarusidestrconsts.dlfnopredefinedscheme
 msgid "< None >"
@@ -437,7 +446,7 @@ msgstr ""
 #: lazarusidestrconsts.dlgaddhiattrgrouptext
 msgctxt "lazarusidestrconsts.dlgaddhiattrgrouptext"
 msgid "Text"
-msgstr ""
+msgstr "نصّ"
 
 #: lazarusidestrconsts.dlgaddhiattrgutterseparator
 msgid "Gutter Separator"
@@ -687,7 +696,7 @@ msgstr ""
 
 #: lazarusidestrconsts.dlgbutapply
 msgid "Apply"
-msgstr ""
+msgstr "نفّذ"
 
 #: lazarusidestrconsts.dlgcasesensitive
 msgctxt "lazarusidestrconsts.dlgcasesensitive"
@@ -890,20 +899,20 @@ msgstr ""
 
 #: lazarusidestrconsts.dlgcodefoldenableboth
 msgid "Both"
-msgstr ""
+msgstr "كلاهما"
 
 #: lazarusidestrconsts.dlgcodefoldenablefold
 msgid "Fold"
-msgstr ""
+msgstr "إطو"
 
 #: lazarusidestrconsts.dlgcodefoldenablehide
 msgid "Hide"
-msgstr ""
+msgstr "إخف"
 
 #: lazarusidestrconsts.dlgcodefoldingmouse
 msgctxt "lazarusidestrconsts.dlgcodefoldingmouse"
 msgid "Mouse"
-msgstr ""
+msgstr "الفأرة"
 
 #: lazarusidestrconsts.dlgcodefoldpopuporder
 msgid "Reverse fold-order in Popup"
@@ -956,12 +965,12 @@ msgstr ""
 
 #: lazarusidestrconsts.dlgcolor
 msgid "Color"
-msgstr ""
+msgstr "اللّون"
 
 #: lazarusidestrconsts.dlgcolorexportbutton
 msgctxt "lazarusidestrconsts.dlgcolorexportbutton"
 msgid "Export"
-msgstr ""
+msgstr "صدّر"
 
 #: lazarusidestrconsts.dlgcolorlink
 msgid "(Edit Color)"
@@ -1300,7 +1309,7 @@ msgstr ""
 #, fuzzy
 #| msgid "Edit..."
 msgid "Edit ..."
-msgstr "غير"
+msgstr "غيّر"
 
 #: lazarusidestrconsts.dlgedfiles
 msgid "Editor Files"
