@@ -48,13 +48,23 @@ procedure TCustomBitBtn.Click;
 var
   Form : TCustomForm;
 begin
-  //Contrary to other buttons with ModalResult = mrNone
-  //a TBitBtn must close ParentForm if Kind = bkClose
-  if (FKind = bkClose) and (ModalResult = mrNone) then begin
+  { A TBitBtn with Kind = bkClose should
+    - Close the ParentForm if ModalResult = mrNone.
+      It should not set ParentForm.ModalResult in this case
+    - Close a non-modal ParentForm if ModalResult in [mrNone, mrClose]
+    - In all other cases it should behave like any other TBitBtn
+  }
+  if (FKind = bkClose) then
+  begin
     Form := GetParentForm(Self);
-    if Form <> nil then begin
-      Form.Close;
-      exit;
+    if (Form <> nil) then
+    begin
+      if (ModalResult = mrNone) or
+         ((ModalResult = mrClose) and not (fsModal in Form.FormState)) then
+      begin
+        Form.Close;
+        Exit;
+      end;
     end;
   end;
   inherited Click;
