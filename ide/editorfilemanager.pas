@@ -7,7 +7,7 @@ interface
 uses
   Classes, sysutils, Forms, Controls, CheckLst, ButtonPanel, StdCtrls,
   Buttons, ExtCtrls, Menus, LCLProc, LCLType, IDEImagesIntf, LazIDEIntf,
-  SrcEditorIntf, SourceEditor, LazarusIDEStrConsts, ListFilterEdit;
+  IDEHelpIntf, SrcEditorIntf, SourceEditor, LazarusIDEStrConsts, ListFilterEdit;
 
 type
 
@@ -37,6 +37,7 @@ type
     procedure CheckListBox1KeyPress(Sender: TObject; var Key: char);
     procedure CloseButtonClick(Sender: TObject);
     procedure DoEditorsChanged(Sender: TObject);
+    procedure HelpButtonClick(Sender: TObject);
     procedure MoveDownBtnClick(Sender: TObject);
     procedure MoveUpBtnClick(Sender: TObject);
     procedure CheckListBox1Click(Sender: TObject);
@@ -249,6 +250,11 @@ end;
 procedure TEditorFileManagerForm.DoEditorsChanged(Sender: TObject);
 begin
   PopulateList;
+end;
+
+procedure TEditorFileManagerForm.HelpButtonClick(Sender: TObject);
+begin
+  LazarusHelp.ShowHelpForIDEControl(Self);
 end;
 
 procedure TEditorFileManagerForm.MoveDownBtnClick(Sender: TObject);
