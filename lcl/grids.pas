@@ -6647,6 +6647,16 @@ begin
           doCutToClipboard;
         end;
       end;
+    VK_DELETE:
+      if not FEditorKey and EditingAllowed(FCol)
+      and (Editor is TCustomEdit) and not (csDesigning in ComponentState)
+      then begin
+        EditorShow(True);
+        TCustomEdit(Editor).Text:='';
+        ResetEditor;
+        InvalidateCell(FCol,FRow,True);
+        SelectCell(FCol,FRow);      // This does not really select the cell. Why?
+      end;
   end;
   if FEditorKey then
     FRowAutoInserted:=False;
