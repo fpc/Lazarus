@@ -22,9 +22,9 @@ type
     Port: TLabeledEdit;
     procedure ConnectButtonClick(Sender: TObject);
   private
-    { private declarations }
+
   public
-    { public declarations }
+
   end;
 
 var

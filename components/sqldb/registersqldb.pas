@@ -44,6 +44,11 @@ unit registersqldb;
 {$ENDIF}
 {$ENDIF}
 
+{$IF FPC_FULLVERSION>= 20700}
+// FBAdmin component introduced in FPC 2.7
+{$DEFINE HASFBADMIN}
+{$ENDIF}
+
 interface
 
 uses
@@ -73,6 +78,9 @@ uses
 {$ENDIF}
 {$IFDEF HASSQLITE3CONNECTION}
   sqlite3conn,
+{$ENDIF}
+{$IFDEF HASFBADMIN}
+  fbadmin,
 {$ENDIF}
   propedits,
   sqlstringspropertyeditordlg,
@@ -172,7 +180,11 @@ begin
 {$IFDEF HASSQLITE3CONNECTION}
                               TSQLite3Connection,
 {$ENDIF}
-                              TIBConnection]);
+                              TIBConnection
+{$IFDEF HASFBADMIN}
+                              ,TFBAdmin
+{$ENDIF}
+                              ]);
 end;
 
 
