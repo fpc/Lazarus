@@ -6541,45 +6541,35 @@ begin
 
   case Key of
     VK_TAB:
-      begin
-        if goTabs in Options then begin
-          if GetDeltaMoveNext(Sh, DeltaCol,DeltaRow) then begin
-            Sh := False;
-            MoveSel(True, DeltaCol, DeltaRow);
-            Key:=0;
-          end else
-          if (AutoAdvance=aaNone) or
-             ((AutoAdvance=aaDown) and (Row>=GetLastVisibleRow)) or
-             (sh and (Col<=GetFirstVisibleColumn)) or
-             ((not sh) and (Col>=GetLastVisibleColumn)) then
-            TabCheckEditorKey
-          else
-            Key := 0;
+      if goTabs in Options then begin
+        if GetDeltaMoveNext(Sh, DeltaCol,DeltaRow) then begin
+          Sh := False;
+          MoveSel(True, DeltaCol, DeltaRow);
+          Key:=0;
         end else
-          TabCheckEditorKey;
-      end;
+        if (AutoAdvance=aaNone) or
+           ((AutoAdvance=aaDown) and (Row>=GetLastVisibleRow)) or
+           (sh and (Col<=GetFirstVisibleColumn)) or
+           ((not sh) and (Col>=GetLastVisibleColumn)) then
+          TabCheckEditorKey
+        else
+          Key := 0;
+      end else
+        TabCheckEditorKey;
     VK_LEFT:
-      begin
-        if Relaxed then
-          MoveSel(True, -cBidiMove[UseRightToLeftAlignment], 0)
-        else
-          MoveSel(True, 0,-1);
-      end;
+      if Relaxed then
+        MoveSel(True, -cBidiMove[UseRightToLeftAlignment], 0)
+      else
+        MoveSel(True, 0,-1);
     VK_RIGHT:
-      begin
-        if Relaxed then
-          MoveSel(True, cBidiMove[UseRightToLeftAlignment], 0)
-        else
-          MoveSel(True, 0, 1);
-      end;
-    VK_UP:
-      begin
-        MoveSel(True, 0, -1);
-      end;
-    VK_DOWN:
-      begin
+      if Relaxed then
+        MoveSel(True, cBidiMove[UseRightToLeftAlignment], 0)
+      else
         MoveSel(True, 0, 1);
-      end;
+    VK_UP:
+        MoveSel(True, 0, -1);
+    VK_DOWN:
+        MoveSel(True, 0, 1);
     VK_PRIOR:
       begin
         R:=FGCache.FullVisiblegrid;
@@ -6605,48 +6595,30 @@ begin
           else            MoveSel(False, FCol, RowCount-1);
       end;
     VK_F2:
-      begin
-        if not FEditorKey and EditingAllowed(FCol) then begin
-          EditorShow(False);
-          Key:=0;
-        end ;
-      end;
+      if not FEditorKey and EditingAllowed(FCol) then begin
+        EditorShow(False);
+        Key:=0;
+      end ;
     VK_RETURN:
-      begin
-        if not FEditorKey and EditingAllowed(FCol) then begin
-          EditorShow(True);
-          Key := 0;
-        end;
+      if not FEditorKey and EditingAllowed(FCol) then begin
+        EditorShow(True);
+        Key := 0;
       end;
     VK_BACK:
-      begin
-        // Workaround: LM_CHAR doesnt trigger with BACKSPACE
-        if not FEditorKey and EditingAllowed(FCol) then begin
-          EditorShowChar(^H);
-          key:=0;
-        end;
+      // Workaround: LM_CHAR doesnt trigger with BACKSPACE
+      if not FEditorKey and EditingAllowed(FCol) then begin
+        EditorShowChar(^H);
+        key:=0;
       end;
     VK_C:
-      if not FEditorKey then begin
-        if ssCtrl in Shift then begin
-//          Key := 0;
-          doCopyToClipboard;
-        end;
-      end;
+      if not FEditorKey and (ssCtrl in Shift) then
+        doCopyToClipboard;
     VK_V:
-      if not FEditorKey then begin
-        if ssCtrl in Shift then begin
-//          Key := 0;
-          doPasteFromClipboard;
-        end;
-      end;
+      if not FEditorKey and (ssCtrl in Shift) then
+        doPasteFromClipboard;
     VK_X:
-      if not FEditorKey then begin
-        if ssCtrl in Shift then begin
-//          Key := 0;
-          doCutToClipboard;
-        end;
-      end;
+      if not FEditorKey and (ssCtrl in Shift) then
+        doCutToClipboard;
     VK_DELETE:
       if not FEditorKey and EditingAllowed(FCol)
       and (Editor is TCustomEdit) and not (csDesigning in ComponentState)
