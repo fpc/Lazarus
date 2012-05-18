@@ -14,12 +14,14 @@ type
 
   TForm1 = class(TForm)
     Button1: TButton;
+    Button2: TButton;
     frBarCodeObject1: TfrBarCodeObject;
     frShapeObject1: TfrShapeObject;
     frTNPDFExport1: TfrTNPDFExport;
     Image1: TImage;
     Report: TlrCodeReport;
     procedure Button1Click(Sender: TObject);
+    procedure Button2Click(Sender: TObject);
     procedure ReportBeginReport(Sender: TObject);
   private
     { private declarations }
@@ -38,7 +40,23 @@ implementation
 
 procedure TForm1.Button1Click(Sender: TObject);
 begin
-  report.RunReport;
+  //report.RunReport;
+  if Report.PageCount = 0 then
+  begin
+    ReportBeginReport(report);
+  end;
+  Report.Report.ShowReport;
+end;
+
+procedure TForm1.Button2Click(Sender: TObject);
+begin
+  //direct export to PDF.  Set the desired destination file.
+  if Report.PageCount = 0 then
+  begin
+    ReportBeginReport(report);
+    Report.Report.PrepareReport;
+  end;
+  Report.Report.ExportTo(TfrTNPDFExportFilter, '/tmp/generated-pdf.pdf');
 end;
 
 procedure TForm1.ReportBeginReport(Sender: TObject);
@@ -51,6 +69,10 @@ begin
   begin
     // Set paper...  1=Letter 9=A4....
     //SetPaper(1, poLandscape);    // try uncomment this line to test another paper size
+
+    // Important. Before drawing, add a page
+    NewPage;
+
     // Set up a custom style
     BoxText := GetDefaultTextRectStyle;
     BoxText.FontName := 'Times';

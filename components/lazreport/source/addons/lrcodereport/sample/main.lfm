@@ -1,15 +1,15 @@
 object Form1: TForm1
   Left = 296
-  Height = 358
+  Height = 397
   Top = 163
   Width = 458
   Caption = 'Form1'
-  ClientHeight = 358
+  ClientHeight = 397
   ClientWidth = 458
   LCLVersion = '1.1'
   object Image1: TImage
     Left = 8
-    Height = 301
+    Height = 300
     Top = 8
     Width = 443
     Anchors = [akTop, akLeft, akRight, akBottom]
@@ -2900,6 +2900,16 @@ object Form1: TForm1
     Caption = 'Execute Report'
     OnClick = Button1Click
     TabOrder = 0
+  end
+  object Button2: TButton
+    Left = 8
+    Height = 25
+    Top = 360
+    Width = 443
+    Anchors = [akLeft, akRight, akBottom]
+    Caption = 'Export to PDF'
+    OnClick = Button2Click
+    TabOrder = 1
   end
   object frTNPDFExport1: TfrTNPDFExport
     left = 184

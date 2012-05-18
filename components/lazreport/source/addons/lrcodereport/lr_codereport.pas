@@ -70,7 +70,6 @@ type
     FrameColor: TColor;
     BorderLines: TfrFrameBorders;
     FrameWidth: double;
-    CodeFormat: string;
   end;
 
   { TlrCodeReport }
@@ -81,7 +80,6 @@ type
     XRatio, YRatio: double;
     PaperSize, PaperWidth, PaperHeight: integer;
     PaperOrientation: TPrinterOrientation;
-    //PaperSize: TPaperSize
     FReport, FOwnedReport: TfrReport;
     ABitMap: TBitMap;
     SavedLineStyle: TlrLineStyle;
@@ -122,7 +120,6 @@ type
     function GetPageWidthMM: double;
     function GetPageHeightMM: double;
     function GetActivePage: integer;
-
 
     {* Styles *}
     procedure ResetLineStyle;
@@ -182,6 +179,7 @@ type
 
     {* Drawring BarCode *}
     procedure DrawBarCode(X, Y, W, H: double; Code: string; Style: TlrBarCodeStyle);
+
   published
     property OnBeginReport: TNotifyEvent read FOnBeginReport write FOnBeginReport;
     property Report: TfrReport read GetReport write SetReport;
@@ -226,7 +224,7 @@ begin
   PageMargin.Top := 0;
   ABitMap := TBitMap.Create; // for canvas stuff
   // Set default paper
-  PaperSize := 9;  // A4   check LR_Prntr for a list
+  PaperSize := 9;  // A4   check LR_Prntr unit for a list
   PaperWidth := 0;
   PaperHeight := 0;
   PaperOrientation := poPortrait;
@@ -260,7 +258,6 @@ end;
 
 procedure TlrCodeReport.RunReport;
 begin
-  NewPage;  // Create the first page
   if Assigned(OnBeginReport) then
     OnBeginReport(Self);
   Report.ShowReport;
@@ -475,7 +472,6 @@ begin
   Result.FrameColor := clBlack;
   Result.BorderLines := [];
   Result.FrameWidth := 1;
-  Result.CodeFormat := 'BARCODE';
 end;
 
 function TlrCodeReport.PageCount: integer;
@@ -555,7 +551,6 @@ procedure TlrCodeReport.DrawText(X, Y, W, H: double; Text: string;
   Style: TlrTextRectStyle);
 var
   AText: TfrMemoview;
-  ARect: TRect;
 begin
   AText := TfrMemoView.Create;
   AText.CreateUniqueName;
@@ -586,8 +581,6 @@ begin
 
   AText.Memo.Add(Text);
   AText.CalcGaps;
-  ARect := AText.DRect;
-  //AText.Font.Name:= Style.FontName;
   Report.Pages[ActivePage].Objects.Add(AText);
   // Update Cursor
   Cursor.YTop := AText.Top / YRatio; // adjust to ratio used
@@ -780,7 +773,6 @@ begin
   ABarCode.FrameColor := Style.FrameColor;
   ABarCode.Frames := Style.BorderLines;
   ABarCode.FrameWidth := Style.FrameWidth;
-  ABarCode.FormatStr := Style.CodeFormat;
   Report.Pages[ActivePage].Objects.Add(ABarCode);
 end;
 
