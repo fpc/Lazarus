@@ -9,6 +9,26 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Transfer-Encoding: 8bit\n"
 
+#: sqlstringspropertyeditordlg.smetacolumns
+msgid "Columns"
+msgstr ""
+
+#: sqlstringspropertyeditordlg.smetaprocedures
+msgid "Procedures"
+msgstr ""
+
+#: sqlstringspropertyeditordlg.smetasystables
+msgid "SysTables"
+msgstr ""
+
+#: sqlstringspropertyeditordlg.smetatabcaption
+msgid "Metadata"
+msgstr ""
+
+#: sqlstringspropertyeditordlg.smetatables
+msgid "Tables"
+msgstr ""
+
 #: sqlstringspropertyeditordlg.sresulttabcaption
 msgid "Results"
 msgstr "Ergebnisse"

@@ -11,7 +11,7 @@ interface
 uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs,
   SynEdit, ButtonPanel, SynHighlighterSQL, ComCtrls, SQLDb, db, DBGrids, Menus,
-  SrcEditorIntf,clipbrd;
+  SrcEditorIntf,clipbrd, StdCtrls;
 
 type
 
@@ -19,44 +19,62 @@ type
 
   TSQLStringsPropertyEditorDlg = class(TForm)
     ButtonsPanel: TButtonPanel;
+    CbxMetaData: TComboBox;
+    MIPaste: TMenuItem;
+    MetaDBGrid: TDBGrid;
+    EdtObject: TEdit;
     ImageList: TImageList;
+    Label1: TLabel;
+    MIMeta: TMenuItem;
+    MIMetaColumns: TMenuItem;
     MICheck: TMenuItem;
     MICreateConstant: TMenuItem;
     MICleanup: TMenuItem;
     PMSQL: TPopupMenu;
+    PMMeta: TPopupMenu;
     ResultDBGrid: TDBGrid;
     SQLDataSource: TDatasource;
     OpenDialog: TOpenDialog;
     PageControl: TPageControl;
     SaveDialog: TSaveDialog;
+    SQLDataSource1: TDatasource;
     SQLEditor: TSynEdit;
     SQLHighlighter: TSynSQLSyn;
     EditorTabSheet: TTabSheet;
     ResultTabSheet: TTabSheet;
     SQLQuery: TSQLQuery;
+    MetaTabSheet: TTabSheet;
+    SQLMeta: TSQLQuery;
     ToolBar: TToolBar;
     OpenToolButton: TToolButton;
     SaveToolButton: TToolButton;
     DividerToolButton: TToolButton;
     ExecuteToolButton: TToolButton;
     TBCheck: TToolButton;
+    procedure MetaDBGridDblClick(Sender: TObject);
     procedure ExecuteToolButtonClick(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure MICleanupClick(Sender: TObject);
     procedure MICreateConstantClick(Sender: TObject);
+    procedure MIMetaColumnsClick(Sender: TObject);
+    procedure MIPasteClick(Sender: TObject);
     procedure OpenToolButtonClick(Sender: TObject);
     procedure SaveToolButtonClick(Sender: TObject);
+    procedure SQLEditorMouseDown(Sender: TObject; Button: TMouseButton;
+      Shift: TShiftState; X, Y: Integer);
     procedure TBCheckClick(Sender: TObject);
   private
     { private declarations }
+    FMetaFromSynedit: Boolean;
     FConnection:TSQLConnection;
     FISSQLScript: Boolean;
     FTransaction:TSQLTransaction;
-
+    FWordUnderCursor:string;
     function CheckConnection:boolean;
     procedure CheckSQLSyntax({%H-}SQL: TStrings);
     procedure CleanupDelphiCode;
     procedure CreateConstant;
+    procedure ShowMetaData;
   public
     { public declarations }
     constructor Create(AOwner:TComponent);override;
@@ -79,6 +97,11 @@ uses
 resourcestring
   SResultTabCaption = 'Results';
   SSQLTabCaption    = 'SQL Code';
+  SMetaTabCaption   = 'Metadata';
+  SMetaTables       = 'Tables';
+  SMetaColumns      = 'Columns';
+  SMetaProcedures   = 'Procedures';
+  SMetaSysTables    = 'SysTables';
   {$IFDEF HASSQLPARSER}
   SSQLOK            = 'SQL OK';
   SQLSyntaxOK       = 'No syntax errors in SQL statement.';
@@ -96,6 +119,11 @@ begin
   SourceEditorManagerIntf.GetHighlighterSettings(SQLHighlighter);
   EditorTabSheet.Caption := SSQLTabCaption;
   ResultTabSheet.Caption := SResultTabCaption;
+  MetaTabSheet.Caption := SMetaTabCaption;
+  CbxMetaData.Items.Add(SMetaTables);
+  CbxMetaData.Items.Add(SMetaSysTables);
+  CbxMetaData.Items.Add(SMetaColumns);
+  CbxMetaData.Items.Add(SMetaProcedures);
 end;
 
 //----------------------------------------------------------//
@@ -115,15 +143,30 @@ end;
 //---------------------------------------------------------------------------//
 procedure TSQLStringsPropertyEditorDlg.ExecuteToolButtonClick(Sender: TObject);
 begin
-  try
-    SQLQuery.Close;
-    SQLQuery.SQL.Text := SQLEditor.Text;
-    SQLQuery.Open;
-    PageControl.ActivePage := ResultTabSheet;
-  except
-    on e:Exception do
-      MessageDlg(e.Message, mtError, [mbOK], 0);
-  end;
+  FMetaFromSynedit:=Sender.ClassNameIs('TMenuItem');
+  if PageControl.ActivePage=MetaTabSheet then
+    ShowMetaData
+  else
+    try
+      SQLQuery.Close;
+      SQLQuery.SQL.Text := SQLEditor.Text;
+      SQLQuery.Open;
+      PageControl.ActivePage := ResultTabSheet;
+    except
+      on e:Exception do
+        MessageDlg(e.Message, mtError, [mbOK], 0);
+    end;
+end;
+
+procedure TSQLStringsPropertyEditorDlg.MetaDBGridDblClick(Sender: TObject);
+begin
+  if assigned(MetaDBGrid.SelectedField) and (MetaDBGrid.SelectedField.Value <> NULL) then
+    if FMetaFromSynedit then
+      begin
+      MIPasteClick(Sender);
+      end
+    else
+      EdtObject.Text:=MetaDBGrid.SelectedField.AsString;
 end;
 
 //-------------------------------------------------------------//
@@ -154,17 +197,22 @@ begin
     begin
     SQLQuery.DataBase    := FConnection;
     SQLQuery.Transaction := FTransaction;
+    SQLMeta.DataBase    := FConnection;
+    SQLMeta.Transaction := FTransaction;
     ResultTabSheet.TabVisible    := True;
+    MetaTabSheet.TabVisible    := True;
     ExecuteToolButton.Visible := True;
     FConnection.GetTableNames(SQLHighLighter.TableNames);
     end
   else
     begin
     ResultTabSheet.TabVisible    := False;
+    MetaTabSheet.TabVisible    := False;
     ExecuteToolButton.Visible := False;
     end;
   SQLHighlighter.SQLDIalect:=D;
   SQLHighlighter.Enabled:=True;
+  CbxMetaData.ItemIndex:=0;
 {$ifdef unix}
   // keep this only because of gtk1
   {$ifdef LCLGtk}
@@ -217,6 +265,28 @@ begin
   CreateConstant;
 end;
 
+procedure TSQLStringsPropertyEditorDlg.MIMetaColumnsClick(Sender: TObject);
+begin
+  if FWordUnderCursor<>'' then
+    begin
+    CbxMetaData.ItemIndex:=2; //stColumns
+    EdtObject.Text:=FWordUnderCursor;
+    PageControl.ActivePage:=MetaTabSheet;
+    ExecuteToolButtonClick(Sender);
+    end;
+end;
+
+procedure TSQLStringsPropertyEditorDlg.MIPasteClick(Sender: TObject);
+
+begin
+  if assigned(MetaDBGrid.SelectedField) and (MetaDBGrid.SelectedField.Value <> NULL) then
+    begin
+    SQLEditor.InsertTextAtCaret(' '+TSQLConnection(SQLMeta.DataBase).FieldNameQuoteChars[0]+
+      trim(MetaDBGrid.SelectedField.AsString)+TSQLConnection(SQLMeta.DataBase).FieldNameQuoteChars[1]);
+    PageControl.ActivePage:=EditorTabSheet;
+    end;
+end;
+
 procedure TSQLStringsPropertyEditorDlg.CreateConstant;
 
 Var
@@ -236,11 +306,57 @@ begin
   Clipboard.AsText:=C;
 end;
 
+procedure TSQLStringsPropertyEditorDlg.ShowMetaData;
+var
+  SchemaType:TSchemaType;
+begin
+  case CbxMetaData.ItemIndex of
+    0:SchemaType:=stTables;
+    2:begin
+        SchemaType:=stColumns;
+        if EdtObject.Text='' then
+          begin
+          ShowMessage('Please specify a table in the object field.');
+          exit;
+          end;
+      end;
+    3:SchemaType:=stProcedures;
+    1:SchemaType:=stSysTables;
+    else
+      SchemaType:=stNoSchema;
+  end;
+  if SchemaType<>stNoSchema then
+    try
+      SQLMeta.Close;
+      SQLMeta.SetSchemaInfo(SchemaType,EdtObject.Text,'');
+      SQLMeta.Open;
+    except
+      on e:Exception do
+        MessageDlg(e.Message, mtError, [mbOK], 0);
+    end;
+end;
+
 //------------------------------------------------------------------------//
 procedure TSQLStringsPropertyEditorDlg.SaveToolButtonClick(Sender: TObject);
 begin
   if(SaveDialog.Execute)then
     SQLEditor.Lines.SaveToFile(UTF8ToSys(SaveDialog.FileName));
+end;
+
+procedure TSQLStringsPropertyEditorDlg.SQLEditorMouseDown(Sender: TObject;
+  Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+var
+  MPos,Caret:tpoint;
+
+begin
+  If Button=mbRight then // save word under cursor
+    begin
+    FWordUnderCursor:='';
+    MPos.x:=x;
+    MPos.y:=y;
+    Caret:=SQLEditor.PhysicalToLogicalPos(SQLEditor.PixelsToLogicalPos(MPos));
+    FWordUnderCursor:=SQLEditor.GetWordAtRowCol(Caret);
+    end;
 end;
 
 procedure TSQLStringsPropertyEditorDlg.TBCheckClick(Sender: TObject);

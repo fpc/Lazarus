@@ -10,6 +10,26 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
+#: sqlstringspropertyeditordlg.smetacolumns
+msgid "Columns"
+msgstr ""
+
+#: sqlstringspropertyeditordlg.smetaprocedures
+msgid "Procedures"
+msgstr ""
+
+#: sqlstringspropertyeditordlg.smetasystables
+msgid "SysTables"
+msgstr ""
+
+#: sqlstringspropertyeditordlg.smetatabcaption
+msgid "Metadata"
+msgstr ""
+
+#: sqlstringspropertyeditordlg.smetatables
+msgid "Tables"
+msgstr ""
+
 #: sqlstringspropertyeditordlg.sresulttabcaption
 msgid "Results"
 msgstr "Rezultatai"

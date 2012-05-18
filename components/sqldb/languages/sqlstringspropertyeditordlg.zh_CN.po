@@ -12,6 +12,26 @@ msgstr ""
 "X-Poedit-Country: CHINA\n"
 "X-Poedit-SourceCharset: utf-8\n"
 
+#: sqlstringspropertyeditordlg.smetacolumns
+msgid "Columns"
+msgstr ""
+
+#: sqlstringspropertyeditordlg.smetaprocedures
+msgid "Procedures"
+msgstr ""
+
+#: sqlstringspropertyeditordlg.smetasystables
+msgid "SysTables"
+msgstr ""
+
+#: sqlstringspropertyeditordlg.smetatabcaption
+msgid "Metadata"
+msgstr ""
+
+#: sqlstringspropertyeditordlg.smetatables
+msgid "Tables"
+msgstr ""
+
 #: sqlstringspropertyeditordlg.sresulttabcaption
 msgid "Results"
 msgstr "返回值"
