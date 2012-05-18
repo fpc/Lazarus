@@ -69,8 +69,8 @@ end;
 
 function ProcessorToCaption(const Processor: string): string;
 begin
-  if SysUtils.CompareText(Processor, '386') = 0 then
-    Result := '386/486' + ' (-Op386)'
+  if SysUtils.CompareText(Processor, '80386') = 0 then
+    Result := '386/486 (-Op80386)'
   else if SysUtils.CompareText(Processor, 'pentium') = 0 then
     Result := 'Pentium/Pentium MMX (-OpPENTIUM)'
   else if SysUtils.CompareText(Processor, 'pentium2') = 0 then
@@ -87,8 +87,8 @@ end;
 
 function CaptionToProcessor(const Caption: string): string;
 begin
-  if System.Pos('-Op386', Caption) > 0 then
-    Result := '386'
+  if System.Pos('-Op80386', Caption) > 0 then
+    Result := '80386'
   else if System.Pos('-OpPENTIUMM', Caption) > 0 then
     Result := 'pentiumm'
   else if System.Pos('-OpPENTIUM4', Caption) > 0 then
@@ -202,7 +202,7 @@ begin
     begin
       Clear;
       Add(ProcessorToCaption(''));
-      Add(ProcessorToCaption('386'));
+      Add(ProcessorToCaption('80386'));
       Add(ProcessorToCaption('Pentium'));
       Add(ProcessorToCaption('Pentium2'));
       Add(ProcessorToCaption('Pentium3'));
