@@ -11,23 +11,27 @@ msgstr ""
 
 #: sqlstringspropertyeditordlg.smetacolumns
 msgid "Columns"
-msgstr ""
+msgstr "Столбцы"
+
+#: sqlstringspropertyeditordlg.smetapleasespecifyatableintheobjectfield
+msgid "Please specify a table in the object field."
+msgstr "Следует указать таблицу в поле объекта."
 
 #: sqlstringspropertyeditordlg.smetaprocedures
 msgid "Procedures"
-msgstr ""
+msgstr "Процедуры"
 
 #: sqlstringspropertyeditordlg.smetasystables
 msgid "SysTables"
-msgstr ""
+msgstr "Системные таблицы"
 
 #: sqlstringspropertyeditordlg.smetatabcaption
 msgid "Metadata"
-msgstr ""
+msgstr "Метаданные"
 
 #: sqlstringspropertyeditordlg.smetatables
 msgid "Tables"
-msgstr ""
+msgstr "Таблицы"
 
 #: sqlstringspropertyeditordlg.sresulttabcaption
 msgid "Results"

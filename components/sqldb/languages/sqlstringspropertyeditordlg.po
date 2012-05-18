@@ -5,6 +5,10 @@ msgstr "Content-Type: text/plain; charset=UTF-8"
 msgid "Columns"
 msgstr ""
 
+#: sqlstringspropertyeditordlg.smetapleasespecifyatableintheobjectfield
+msgid "Please specify a table in the object field."
+msgstr ""
+
 #: sqlstringspropertyeditordlg.smetaprocedures
 msgid "Procedures"
 msgstr ""
