@@ -1,8 +1,3 @@
-# Arabic translation of Free Pascal Lazarus Project.
-# Copyright (C) 2012 Lazarus Project
-# This file is distributed under the same license as the Lazarus package.
-# Abou Al Montacir <abou.almontacir@sfr.fr>, 2007.
-# Khaled Shagrouni <shagrouni@gmail.com>, 2012.
 msgid ""
 msgstr ""
 "Project-Id-Version: Free Pascal Lazarus Project.\n"
@@ -2172,17 +2167,17 @@ msgstr ""
 #: lazarusidestrconsts.dlgmouseoptbtn2
 msgctxt "lazarusidestrconsts.dlgmouseoptbtn2"
 msgid "Double"
-msgstr ""
+msgstr "مضاعف"
 
 #: lazarusidestrconsts.dlgmouseoptbtn3
 msgctxt "lazarusidestrconsts.dlgmouseoptbtn3"
 msgid "Triple"
-msgstr ""
+msgstr "ثلاثي"
 
 #: lazarusidestrconsts.dlgmouseoptbtn4
 msgctxt "lazarusidestrconsts.dlgmouseoptbtn4"
 msgid "Quad"
-msgstr ""
+msgstr "رباعي"
 
 #: lazarusidestrconsts.dlgmouseoptbtnany
 msgid "Any"
@@ -2191,7 +2186,7 @@ msgstr ""
 #: lazarusidestrconsts.dlgmouseoptbtnexport
 msgctxt "lazarusidestrconsts.dlgmouseoptbtnexport"
 msgid "Export"
-msgstr ""
+msgstr "صدّر"
 
 #: lazarusidestrconsts.dlgmouseoptbtnextra1
 msgctxt "lazarusidestrconsts.dlgmouseoptbtnextra1"
@@ -2328,7 +2323,7 @@ msgstr ""
 #: lazarusidestrconsts.dlgmouseoptions
 msgctxt "lazarusidestrconsts.dlgmouseoptions"
 msgid "Mouse"
-msgstr ""
+msgstr "الفأرة"
 
 #: lazarusidestrconsts.dlgmouseoptionsadv
 msgid "Advanced"
@@ -2400,7 +2395,7 @@ msgstr ""
 #: lazarusidestrconsts.dlgmouseoptnodemain
 msgctxt "lazarusidestrconsts.dlgmouseoptnodemain"
 msgid "Text"
-msgstr ""
+msgstr "نصّ"
 
 #: lazarusidestrconsts.dlgmouseoptnodeselect
 msgctxt "lazarusidestrconsts.dlgmouseoptnodeselect"
@@ -3380,7 +3375,7 @@ msgstr ""
 #: lazarusidestrconsts.histdlgbtnexport
 msgctxt "lazarusidestrconsts.histdlgbtnexport"
 msgid "Export"
-msgstr ""
+msgstr "صدّر"
 
 #: lazarusidestrconsts.histdlgbtnimport
 msgctxt "lazarusidestrconsts.histdlgbtnimport"
@@ -12654,7 +12649,7 @@ msgstr ""
 #: lazarusidestrconsts.lispkgfiletypetext
 msgctxt "lazarusidestrconsts.lispkgfiletypetext"
 msgid "Text"
-msgstr ""
+msgstr "نصّ"
 
 #: lazarusidestrconsts.lispkgfiletypeunit
 msgctxt "lazarusidestrconsts.lispkgfiletypeunit"
@@ -16188,6 +16183,10 @@ msgstr ""
 msgid "Expression"
 msgstr ""
 
+#: lazarusidestrconsts.liswlinspectpane
+msgid "Inspect pane"
+msgstr ""
+
 #: lazarusidestrconsts.liswlproperties
 msgid "&Properties"
 msgstr "خصائص"
@@ -17497,6 +17496,16 @@ msgctxt "lazarusidestrconsts.srkmecsynpsyncroednextcellsel"
 msgid "Next Cell (all selected)"
 msgstr ""
 
+#: lazarusidestrconsts.srkmecsynpsyncroednextfirstcell
+msgctxt "lazarusidestrconsts.srkmecsynpsyncroednextfirstcell"
+msgid "Next Cell (firsts only)"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecsynpsyncroednextfirstcellsel
+msgctxt "lazarusidestrconsts.srkmecsynpsyncroednextfirstcellsel"
+msgid "Next Cell (all selected / firsts only)"
+msgstr ""
+
 #: lazarusidestrconsts.srkmecsynpsyncroedprevcell
 msgctxt "lazarusidestrconsts.srkmecsynpsyncroedprevcell"
 msgid "Previous Cell"
@@ -17505,6 +17514,16 @@ msgstr ""
 #: lazarusidestrconsts.srkmecsynpsyncroedprevcellsel
 msgctxt "lazarusidestrconsts.srkmecsynpsyncroedprevcellsel"
 msgid "Previous Cell (all selected)"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecsynpsyncroedprevfirstcell
+msgctxt "lazarusidestrconsts.srkmecsynpsyncroedprevfirstcell"
+msgid "Previous Cell (firsts only)"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecsynpsyncroedprevfirstcellsel
+msgctxt "lazarusidestrconsts.srkmecsynpsyncroedprevfirstcellsel"
+msgid "Previous Cell (all selected / firsts only)"
 msgstr ""
 
 #: lazarusidestrconsts.srkmecsynpsyncroedstart
@@ -17552,6 +17571,24 @@ msgstr ""
 msgid "Next Cell (rotate / all selected)"
 msgstr ""
 
+#: lazarusidestrconsts.srkmecsynptmplednextfirstcell
+msgctxt "lazarusidestrconsts.srkmecsynptmplednextfirstcell"
+msgid "Next Cell (firsts only)"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecsynptmplednextfirstcellrotate
+msgid "Next Cell (rotate / firsts only)"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecsynptmplednextfirstcellsel
+msgctxt "lazarusidestrconsts.srkmecsynptmplednextfirstcellsel"
+msgid "Next Cell (all selected / firsts only)"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecsynptmplednextfirstcellselrotate
+msgid "Next Cell (rotate / all selected / firsts only)"
+msgstr ""
+
 #: lazarusidestrconsts.srkmecsynptmpledprevcell
 msgctxt "lazarusidestrconsts.srkmecsynptmpledprevcell"
 msgid "Previous Cell"
@@ -17560,6 +17597,16 @@ msgstr ""
 #: lazarusidestrconsts.srkmecsynptmpledprevcellsel
 msgctxt "lazarusidestrconsts.srkmecsynptmpledprevcellsel"
 msgid "Previous Cell (all selected)"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecsynptmpledprevfirstcell
+msgctxt "lazarusidestrconsts.srkmecsynptmpledprevfirstcell"
+msgid "Previous Cell (firsts only)"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecsynptmpledprevfirstcellsel
+msgctxt "lazarusidestrconsts.srkmecsynptmpledprevfirstcellsel"
+msgid "Previous Cell (all selected / firsts only)"
 msgstr ""
 
 #: lazarusidestrconsts.srkmecsyntaxcheck
