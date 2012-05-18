@@ -5061,8 +5061,7 @@ begin
       DebugLn(Format('WARNING: %s has been destroyed while processing input event %u result %u',
         [ClassName, AEvent, Result]));
     end else
-      raise Exception.CreateFmt('%s.DeliverMessage(): error in event %u result %u',
-        [ClassName, AEvent, Result]);
+      Application.HandleException(nil);
   end;
 end;
 
