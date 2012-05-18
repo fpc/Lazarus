@@ -10229,7 +10229,8 @@ procedure TCustomStringGrid.LoadFromCSVFile(AFilename: string;
   ADelimiter:Char=','; WithHeader:boolean=true);
 var
   L,SubL: TStringList;
-  i,j,StartRow: Integer;
+  i,j,x,StartRow: Integer;
+  S: String;
 begin
   L := TStringList.Create;
   SubL := TStringList.Create;
@@ -10245,7 +10246,17 @@ begin
     if L.Count>0 then begin
 
       SubL.Delimiter:=ADelimiter;
+      //do not allow #32 as separator in csv files
+      SubL.StrictDelimiter := True;
       SubL.DelimitedText:=L[0];
+      //using StrictDelimiter means we have to handle quoted strings ourselfs
+      for x := 0 to SubL.Count - 1 do
+      begin
+        S := SubL.Strings[x];
+        if (Length(S) > 1) and (S[1] = '"')
+          and (S[Length(S)] = '"') then
+            SubL.Strings[x] := AnsiDeQuotedStr(S,'"');
+      end;
 
       if Columns.Enabled then begin
         while Columns.VisibleCount<>SubL.Count do
@@ -10277,7 +10288,17 @@ begin
 
       for i:=StartRow to RowCount-1 do begin
         Rows[i].Delimiter := ADelimiter;
+        //do not allow #32 as separator in csv files
+        Rows[i].StrictDelimiter := True;
         Rows[i].DelimitedText:=L[i-StartRow+j];
+        //using StrictDelimiter means we have to handle quoted strings ourselfs
+        for x := 0 to Rows[i].Count - 1 do
+        begin
+          S := Rows[i].Strings[x];
+          if (Length(S) > 1) and (S[1] = '"')
+            and (S[Length(S)] = '"') then
+              Rows[i].Strings[x] := AnsiDeQuotedStr(S,'"');
+        end;
       end;
     end;
   finally
