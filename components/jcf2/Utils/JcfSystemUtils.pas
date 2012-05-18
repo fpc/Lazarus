@@ -148,7 +148,7 @@ begin
     ShellApi.ShellExecute(0, 'open', PChar(FileName), PChar(Parameters), nil, SW_SHOW);
   {$endif}
   {$ifdef unix}
-    Shell(format('%s %s',[FileName, Parameters]));
+    fpsystem(format('%s %s',[FileName, Parameters]));
   {$endif}
 end;
 
