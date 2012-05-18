@@ -1634,7 +1634,6 @@ components/lazreport/source/addons/lrcodereport/sample/main.pas svneol=native#te
 components/lazreport/source/addons/lrcodereport/sample/testlrcodereport.ico -text
 components/lazreport/source/addons/lrcodereport/sample/testlrcodereport.lpi svneol=native#text/plain
 components/lazreport/source/addons/lrcodereport/sample/testlrcodereport.lpr svneol=native#text/pascal
-components/lazreport/source/addons/lrcodereport/sample/testlrcodereport.lps svneol=native#text/xml
 components/lazreport/source/addons/lrcodereport/sample/testlrcodereport.res -text
 components/lazreport/source/addons/lrcodereport/tlrcodereport.png -text
 components/lazreport/source/addons/pdfexport/lazreportpdfexport.lpk svneol=native#text/plain
