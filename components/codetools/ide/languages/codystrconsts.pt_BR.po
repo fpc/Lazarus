@@ -47,7 +47,7 @@ msgstr "... e mais %s identificadores"
 
 #: codystrconsts.crsawindowforthelazarusideitcanbedockedlikethecodeexp
 msgid "A window for the Lazarus IDE. It can be docked like the Code Explorer or the FPDoc Editor. This also creates a menu item in the View menu and a short cut."
-msgstr ""
+msgstr "Uma janela para a IDE Lazarus. Ela pode ser ancorada como o Explorador de Código ou o Editor FPDoc. Isto também cria um item de menu no menu Exibir e um atalho."
 
 #: codystrconsts.crsbtncancel
 msgid "Cancel"
@@ -159,7 +159,7 @@ msgstr "%s, escrito pela propriedade %s"
 
 #: codystrconsts.crscheetaheditor
 msgid "Cheetah Editor"
-msgstr ""
+msgstr "Editor Guepardo"
 
 #: codystrconsts.crsclose
 msgid "&Close"
@@ -171,7 +171,7 @@ msgstr "Fechar outro pacote e abrir um novo"
 
 #: codystrconsts.crscodebuffers
 msgid "CodeBuffers"
-msgstr ""
+msgstr "CodeBuffers"
 
 #: codystrconsts.crscodenodeinformation
 msgid "Code Node Information"
@@ -189,7 +189,7 @@ msgstr "Geral"
 
 #: codystrconsts.crsconfigurenewidewindow
 msgid "Configure new IDE window"
-msgstr ""
+msgstr "Configurar nova janela IDE"
 
 #: codystrconsts.crscontains
 msgid "Contains"
@@ -197,7 +197,7 @@ msgstr "Contém"
 
 #: codystrconsts.crscontinue
 msgid "Continue"
-msgstr ""
+msgstr "Continuar"
 
 #: codystrconsts.crscopydeclarationtoclipboard
 #| msgid "Copy declaration to clipboard"
@@ -345,7 +345,7 @@ msgstr "Identificador \"%s\" não encontrado na unidade \"%s\". Talvez o identif
 
 #: codystrconsts.crsidewindowdockable
 msgid "IDE window, dockable"
-msgstr ""
+msgstr "Janela IDE, ancorável"
 
 #: codystrconsts.crsifidentifierisaddedtotheimplementationsectionandne
 msgctxt "codystrconsts.crsifidentifierisaddedtotheimplementationsectionandne"
@@ -408,7 +408,7 @@ msgstr "%s membro de %s %s"
 
 #: codystrconsts.crsmenuitemcaption
 msgid "Menu item caption:"
-msgstr ""
+msgstr "Cabeçalho do item de menu:"
 
 #: codystrconsts.crsminutes
 msgid "%s minutes"
@@ -428,7 +428,7 @@ msgstr "Nenhum projeto"
 
 #: codystrconsts.crsnotethenameoftheformmustbeavalidpascalidentifieran
 msgid "Note: The name of the form must be a valid pascal identifier and unique across the whole IDE, which includes all packages. Prepend the name with an abbreviation of your package. The prefixes \"IDE\", \"Laz\", \"Pkg\" are already used by the IDE itself."
-msgstr ""
+msgstr "Nota: O nome do formulário deve ser um identificador pascal válido e único em toda a IDE, incluindo todos os pacotes. Prefixe o nome com uma abreviação do seu pacote. Os prefixos \"IDE\",\"Laz\",\"Pkg\" já são usados pela própria IDE."
 
 #: codystrconsts.crsnounitselected
 msgid "No unit selected"
