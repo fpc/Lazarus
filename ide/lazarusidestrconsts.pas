@@ -3213,9 +3213,10 @@ resourcestring
   lisCodeTemplComment = 'Comment:';
   lisCodeTemplATokenAlreadyExists = ' A token %s%s%s already exists! ';
   lisCodeTemplError = 'Error';
+  lisUnableToFindTheComponentClassItIsNotRegisteredViaR = 'Unable to find the '
+    +'component class "%s".%sIt is not registered via RegisterClass and no lfm'
+    +' was found.%sIt is needed by unit:%s%s';
   lisNoTemplateSelected = 'no template selected';
-  lisUnableToFindTheLfmFileOfComponentClassNeededByUnit = 'Unable to find the '
-    +'lfm file of component class "%s".%sNeeded by unit:%s%s';
   lisUnableToOpenDesignerTheClassDoesNotDescendFromADes = 'Unable to open '
     +'designer.%sThe class %s does not descend from a designable class like '
     +'TForm or TDataModule.';

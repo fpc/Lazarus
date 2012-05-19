@@ -11895,6 +11895,10 @@ msgstr "(nieuw project)"
 msgid "New setting"
 msgstr ""
 
+#: lazarusidestrconsts.lisnewthegnudebuggerthroughsshallowstoremotedebugviaassh
+msgid "The GNU debugger through ssh allows to remote debug via a ssh connection. See docs/RemoteDebugging.txt for details. The path must contain the ssh client.Use SSH_Startup_Options for the hostname and optional username.And Remote_GDB_Exe for the filename of gdb on the remote computer."
+msgstr ""
+
 #: lazarusidestrconsts.lisnewunitsareaddedtousessections
 msgid "New units are added to uses sections"
 msgstr ""
@@ -15429,10 +15433,6 @@ msgstr "De Free Pascal compiler (bestandsnaam: %s) niet gevonden.%sHet is raadza
 msgid "The Free Pascal source directory was not found.%sSome code functions will not work.%sIt is recommended that you install it and set the path%sTools -> Options -> Files"
 msgstr "The Free Pascal-broncodedirectory is niet gevonden.%sSommige code functies zullen niet werken.%sAan te raden is dit te installeren en het pad in te stellen%sInstellingen -> Omgeving opties -> Bestanden"
 
-#: lazarusidestrconsts.listhegnudebuggerthroughsshallowstoremotedebugviaassh
-msgid "The GNU debugger through ssh allows to remote debug via a ssh connection. See docs/RemoteDebugging.txt for details. The path must contain the ssh client filename, the hostname with an optional username and the filename of gdb on the remote computer. For example: %s/usr/bin/ssh username@hostname gdb%s or: %s/usr/bin/setsid /usr/bin/ssh username@hostname gdb%s"
-msgstr ""
-
 #: lazarusidestrconsts.listheidentifierisaunitpleaseusethefilesaveasfunction
 msgid "The identifier is a unit. Please use the File - Save as function to rename a unit."
 msgstr ""
@@ -16144,8 +16144,8 @@ msgstr ""
 msgid "Unable to find pascal unit (.pas,.pp) for .lfm file%s%s%s%s"
 msgstr ""
 
-#: lazarusidestrconsts.lisunabletofindthelfmfileofcomponentclassneededbyunit
-msgid "Unable to find the lfm file of component class \"%s\".%sNeeded by unit:%s%s"
+#: lazarusidestrconsts.lisunabletofindthecomponentclassitisnotregisteredviar
+msgid "Unable to find the component class \"%s\".%sIt is not registered via RegisterClass and no lfm was found.%sIt is needed by unit:%s%s"
 msgstr ""
 
 #: lazarusidestrconsts.lisunabletogathereditorchanges
@@ -16794,6 +16794,10 @@ msgstr ""
 
 #: lazarusidestrconsts.regdlgdisplaytypeforselectedregisters
 msgid "Display type for selected Registers"
+msgstr ""
+
+#: lazarusidestrconsts.regdlgformat
+msgid "Format"
 msgstr ""
 
 #: lazarusidestrconsts.regdlghex

@@ -7720,8 +7720,8 @@ begin
 
     // not found => tell the user
     Result:=IDEQuestionDialog(lisCodeTemplError,
-      Format(lisUnableToFindTheLfmFileOfComponentClassNeededByUnit, [
-        AComponentClassName, #13, #13, AnUnitInfo.Filename]),
+      Format(lisUnableToFindTheComponentClassItIsNotRegisteredViaR, [
+        AComponentClassName, #13, #13, #13, AnUnitInfo.Filename]),
       mtError, [mrCancel, lisCancelLoadingThisComponent,
                mrAbort, lisAbortWholeLoading,
                mrIgnore, lisIgnoreUseTFormAsAncestor]);

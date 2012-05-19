@@ -1,4 +1,3 @@
- Igor Paliychuk <mansonigor@gmail.com>, 2012.
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"

@@ -699,8 +699,7 @@ begin
   if not GetHook(PropertyEditorHook) then exit;
   NewLookupRoot:=GetLookupRootForComponent(Component);
   if not (NewLookupRoot is TComponent) then exit;
-  if NewLookupRoot<>PropertyEditorHook.LookupRoot then
-    GetDesigner.SelectOnlyThisComponent(Component);
+  GetDesigner.SelectOnlyThisComponent(Component);
   FContinue := True;
   FFirst := nil;
   FBest := nil;

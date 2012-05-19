@@ -12107,6 +12107,10 @@ msgstr "(nuevo proyecto)"
 msgid "New setting"
 msgstr "Nueva configuración"
 
+#: lazarusidestrconsts.lisnewthegnudebuggerthroughsshallowstoremotedebugviaassh
+msgid "The GNU debugger through ssh allows to remote debug via a ssh connection. See docs/RemoteDebugging.txt for details. The path must contain the ssh client.Use SSH_Startup_Options for the hostname and optional username.And Remote_GDB_Exe for the filename of gdb on the remote computer."
+msgstr ""
+
 #: lazarusidestrconsts.lisnewunitsareaddedtousessections
 #, fuzzy
 #| msgid "New units are added to uses sections:"
@@ -15674,10 +15678,6 @@ msgstr "El compilador Free Pascal (nombre de archivo: %s) no ha sido encontrado.
 msgid "The Free Pascal source directory was not found.%sSome code functions will not work.%sIt is recommended that you install it and set the path%sTools -> Options -> Files"
 msgstr "El directorio de fuentes de Free Pascal no ha sido encontrado.%sAlgunas funciones de código no funcionarán.%sEs recomendable que lo instale e incluya la ruta%sEntorno -> Opciones del entorno -> Archivos"
 
-#: lazarusidestrconsts.listhegnudebuggerthroughsshallowstoremotedebugviaassh
-msgid "The GNU debugger through ssh allows to remote debug via a ssh connection. See docs/RemoteDebugging.txt for details. The path must contain the ssh client filename, the hostname with an optional username and the filename of gdb on the remote computer. For example: %s/usr/bin/ssh username@hostname gdb%s or: %s/usr/bin/setsid /usr/bin/ssh username@hostname gdb%s"
-msgstr "El depurador GNU a través de ssh permite depurar remotamente mediante una conexión ssh. Vea docs/RemoteDebugging.txt para más detalles. La ruta debe contener el nombre del cliente ssh, el nombre del host con un nombre de usuario opcional y el nombre del archivo gdb en el equipo remoto. Por ejemplo: %s/usr/bin/ssh username@hostname gdb%s o: %s/usr/bin/setsid /usr/bin/ssh username@hostname gdb%s"
-
 #: lazarusidestrconsts.listheidentifierisaunitpleaseusethefilesaveasfunction
 msgid "The identifier is a unit. Please use the File - Save as function to rename a unit."
 msgstr "El identificador es una Unidad. Favor de usar la función Archivo -> Guardar Como para renombrar una Unidad."
@@ -16394,8 +16394,8 @@ msgstr "No se puede encontrar método."
 msgid "Unable to find pascal unit (.pas,.pp) for .lfm file%s%s%s%s"
 msgstr "No fue posible encontrar la Unidad pascal (.pas,.pp) para el archivo .lfm %s%s%s%s"
 
-#: lazarusidestrconsts.lisunabletofindthelfmfileofcomponentclassneededbyunit
-msgid "Unable to find the lfm file of component class \"%s\".%sNeeded by unit:%s%s"
+#: lazarusidestrconsts.lisunabletofindthecomponentclassitisnotregisteredviar
+msgid "Unable to find the component class \"%s\".%sIt is not registered via RegisterClass and no lfm was found.%sIt is needed by unit:%s%s"
 msgstr ""
 
 #: lazarusidestrconsts.lisunabletogathereditorchanges
@@ -17054,6 +17054,10 @@ msgstr "Decimal"
 
 #: lazarusidestrconsts.regdlgdisplaytypeforselectedregisters
 msgid "Display type for selected Registers"
+msgstr ""
+
+#: lazarusidestrconsts.regdlgformat
+msgid "Format"
 msgstr ""
 
 #: lazarusidestrconsts.regdlghex

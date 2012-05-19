@@ -1238,6 +1238,7 @@ type
     procedure GetSelection(const ASelection: TPersistentSelectionList);
     procedure SetSelection(const ASelection: TPersistentSelectionList);
     procedure Unselect(const APersistent: TPersistent);
+    function IsSelected(const APersistent: TPersistent): boolean;
     procedure SelectOnlyThis(const APersistent: TPersistent);
     // persistent objects
     function GetObject(const Name: ShortString): TPersistent;
@@ -5402,6 +5403,20 @@ begin
       Selection.Remove(APersistent);
       SetSelection(Selection);
     end;
+  finally
+    Selection.Free;
+  end;
+end;
+
+function TPropertyEditorHook.IsSelected(const APersistent: TPersistent
+  ): boolean;
+var
+  Selection: TPersistentSelectionList;
+begin
+  Selection := TPersistentSelectionList.Create;
+  try
+    GetSelection(Selection);
+    Result:=Selection.IndexOf(APersistent)>=0;
   finally
     Selection.Free;
   end;

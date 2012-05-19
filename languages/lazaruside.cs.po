@@ -11490,6 +11490,10 @@ msgstr "(nový projekt)"
 msgid "New setting"
 msgstr "Nové nastavení"
 
+#: lazarusidestrconsts.lisnewthegnudebuggerthroughsshallowstoremotedebugviaassh
+msgid "The GNU debugger through ssh allows to remote debug via a ssh connection. See docs/RemoteDebugging.txt for details. The path must contain the ssh client.Use SSH_Startup_Options for the hostname and optional username.And Remote_GDB_Exe for the filename of gdb on the remote computer."
+msgstr ""
+
 #: lazarusidestrconsts.lisnewunitsareaddedtousessections
 msgid "New units are added to uses sections"
 msgstr "Nové jednotky jsou přidány do sekcí uses"
@@ -14962,10 +14966,6 @@ msgstr "Překladač Free Pascal (jméno souboru: %s) nebyl nalezen.%sDoporučuje
 msgid "The Free Pascal source directory was not found.%sSome code functions will not work.%sIt is recommended that you install it and set the path%sTools -> Options -> Files"
 msgstr "Adresář zdrojových kódů Free Pascalu nebyl nalezen.%sNěkteré funkce kódu nebudou fungovat.%sDoporučujeme jej nainstalovat a nastavit cestu v %sNástroje -> Nastavení -> Soubory"
 
-#: lazarusidestrconsts.listhegnudebuggerthroughsshallowstoremotedebugviaassh
-msgid "The GNU debugger through ssh allows to remote debug via a ssh connection. See docs/RemoteDebugging.txt for details. The path must contain the ssh client filename, the hostname with an optional username and the filename of gdb on the remote computer. For example: %s/usr/bin/ssh username@hostname gdb%s or: %s/usr/bin/setsid /usr/bin/ssh username@hostname gdb%s"
-msgstr "GNU debugger(ladič) přes ssh umožňuje vzdálené ladění přes ssh spojení. Viz docs/RemoteDebugging.txt pro více detailů. Cesta musí obsahovat jméno souboru ssh klienta, jméno hostujícího stroje s volitelným uživatelským jménem a jméno souboru gdb na vzdáleném počítači. Například: %s/usr/bin/ssh uzivatelskejmeno@jmenohostujicihostroje gdb%s nebo: %s/usr/bin/setsid /usr/bin/ssh uzivatelskejmeno@jmenohostujicihostroje gdb%s"
-
 #: lazarusidestrconsts.listheidentifierisaunitpleaseusethefilesaveasfunction
 msgid "The identifier is a unit. Please use the File - Save as function to rename a unit."
 msgstr "Identifikátor je jednotkou. Použijte funkci Soubor->Uložit jako k přejmenování jednotky."
@@ -15673,9 +15673,9 @@ msgstr "Nelze najít metodu."
 msgid "Unable to find pascal unit (.pas,.pp) for .lfm file%s%s%s%s"
 msgstr "Nelze najít pascalovskou jednotku (.pas,.pp) pro soubor .lfm%s%%s%s"
 
-#: lazarusidestrconsts.lisunabletofindthelfmfileofcomponentclassneededbyunit
-msgid "Unable to find the lfm file of component class \"%s\".%sNeeded by unit:%s%s"
-msgstr "Nelze najít soubor lfm komponenty třídy \"%s\".%sVyžadováno jednotkou:%s%s"
+#: lazarusidestrconsts.lisunabletofindthecomponentclassitisnotregisteredviar
+msgid "Unable to find the component class \"%s\".%sIt is not registered via RegisterClass and no lfm was found.%sIt is needed by unit:%s%s"
+msgstr ""
 
 #: lazarusidestrconsts.lisunabletogathereditorchanges
 msgid "Unable to gather editor changes."
@@ -16320,6 +16320,10 @@ msgstr "Číselný"
 #: lazarusidestrconsts.regdlgdisplaytypeforselectedregisters
 msgid "Display type for selected Registers"
 msgstr "Zobraz typ vybraných registrů"
+
+#: lazarusidestrconsts.regdlgformat
+msgid "Format"
+msgstr ""
 
 #: lazarusidestrconsts.regdlghex
 msgid "Hex"
