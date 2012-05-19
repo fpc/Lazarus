@@ -1550,8 +1550,6 @@ begin
   DeleteSelected;
 end;
 
-
-
 function TCustomMaskEdit.EditCanModify: Boolean;
 begin
   Result := True;

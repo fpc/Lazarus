@@ -974,15 +974,20 @@ end;
 
 procedure TCustomControlFilterEdit.DoEnter;
 begin
-  if Text=lisCEFilter then
+//  inherited;
+  if Text=lisCEFilter then begin
     Text:='';
-  inherited;
+    DebugLn('TCustomControlFilterEdit.DoEnter: Text = default "(filter)"');
+  end
+  else
+    DebugLn('TCustomControlFilterEdit.DoEnter: Text = "' + Text + '"');
 end;
 
 procedure TCustomControlFilterEdit.DoExit;
 begin
   Filter:=Text;
-  inherited;
+  DebugLn('TCustomControlFilterEdit.DoExit: Text = "' + Text + '"');
+//  inherited;
 end;
 
 procedure TCustomControlFilterEdit.DoButtonClick(Sender: TObject);
