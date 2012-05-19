@@ -95,13 +95,9 @@ begin
   if FCreatingWnd then RaiseGDBException('TCustomRadioGroup.InitializeWnd');
   FCreatingWnd := true;
   //DebugLn('[TCustomRadioGroup.InitializeWnd] A ',Name,':',ClassName,' FItems.Count=',FItems.Count,' HandleAllocated=',HandleAllocated,' ItemIndex=',ItemIndex);
-  
+  UpdateItems;
   inherited InitializeWnd;
-  
-  if (FHiddenButton<>nil) and (FHiddenButton.Parent=Self) then
-    FHiddenButton.HandleNeeded;
   RealizeItemIndex;
-
   FCreatingWnd := false;
 end;
 
@@ -190,13 +186,9 @@ begin
         ARadioButton.Caption := FItems[i];
         ARadioButton.Parent := Self;
       end;
-      with FHiddenButton do
-      begin
-        FHiddenButton.Visible:=false;
-        Parent:=Self;
-        if HandleAllocated then
-          FHiddenButton.HandleNeeded;
-      end;
+      FHiddenButton.Parent:=Self;
+      if HandleAllocated then
+        FHiddenButton.HandleNeeded;
 
       // the checked and unchecked states can be applied only after all other
       for i := 0 to FItems.Count-1 do
@@ -223,12 +215,6 @@ begin
     NewControlsPerLine:=Max(1,Rows);
   ChildSizing.ControlsPerLine:=NewControlsPerLine;
   //DebugLn('TCustomRadioGroup.UpdateControlsPerLine ',dbgs(ChildSizing.ControlsPerLine),' ',dbgs(NewControlsPerLine),' FColumns=',dbgs(FColumns),' FItems.Count=',dbgs(FItems.Count),' ',dbgs(ChildSizing.Layout=cclLeftToRightThenTopToBottom));
-end;
-
-procedure TCustomRadioGroup.Loaded;
-begin
-  inherited Loaded;
-  UpdateItems;
 end;
 
 procedure TCustomRadioGroup.ItemKeyDown(Sender: TObject; var Key: Word;
