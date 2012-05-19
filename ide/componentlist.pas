@@ -59,6 +59,7 @@ type
     PalletteTree: TTreeView;
     TreeFilterEd: TTreeFilterEdit;
     procedure ButtonPanelOKButtonClick(Sender: TObject);
+    procedure CloseButtonClick(Sender: TObject);
     procedure ComponentsListboxDblClick(Sender: TObject);
     procedure ComponentsListboxDrawItem(Control: TWinControl; Index: Integer;
       ARect: TRect; State: TOwnerDrawState);
@@ -319,6 +320,11 @@ begin
     IDEComponentPalette.Selected:=AComponent;
     Close;
   end;
+end;
+
+procedure TComponentListForm.CloseButtonClick(Sender: TObject);
+begin
+  Close;
 end;
 
 procedure TComponentListForm.ComponentsListboxDrawItem(Control: TWinControl;

@@ -20,7 +20,7 @@
  ***************************************************************************
 
   Abstract:
-    Example, how to setup the codetools, load a pascal unit and list of classes
+    Example, how to setup the codetools, load a pascal unit and list all classes
     defined in the interface.
 }
 program ListInterfaceClasses;

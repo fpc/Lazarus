@@ -11,7 +11,7 @@ object ComponentListForm: TComponentListForm
   OnClose = FormClose
   OnKeyDown = FormKeyDown
   Position = poScreenCenter
-  LCLVersion = '0.9.31'
+  LCLVersion = '1.1'
   object PageControl: TPageControl
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = Panel3
@@ -193,6 +193,7 @@ object ComponentListForm: TComponentListForm
     HelpButton.DefaultCaption = True
     CloseButton.Name = 'CloseButton'
     CloseButton.DefaultCaption = True
+    CloseButton.OnClick = CloseButtonClick
     CancelButton.Name = 'CancelButton'
     CancelButton.DefaultCaption = True
     TabOrder = 2
