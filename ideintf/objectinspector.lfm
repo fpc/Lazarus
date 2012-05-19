@@ -1,19 +1,19 @@
 object ObjectInspectorDlg: TObjectInspectorDlg
-  Left = 292
+  Left = 338
   Height = 669
-  Top = 175
-  Width = 275
+  Top = 162
+  Width = 300
   BorderStyle = bsSizeToolWin
   Caption = 'ObjectInspectorDlg'
   ClientHeight = 669
-  ClientWidth = 275
+  ClientWidth = 300
   KeyPreview = True
-  LCLVersion = '0.9.31'
+  LCLVersion = '1.1'
   object StatusBar: TStatusBar
     Left = 0
-    Height = 23
-    Top = 646
-    Width = 275
+    Height = 22
+    Top = 647
+    Width = 300
     Panels = <    
       item
         Width = 100
@@ -25,18 +25,51 @@ object ObjectInspectorDlg: TObjectInspectorDlg
   end
   object AvailPersistentComboBox: TComboBox
     Left = 0
-    Height = 23
+    Height = 24
     Top = 0
-    Width = 275
+    Width = 300
     Align = alTop
-    ItemHeight = 15
+    ItemHeight = 0
     OnCloseUp = AvailComboBoxCloseUp
     Style = csDropDownList
     TabOrder = 0
   end
+  object ComponentPanel: TPanel
+    Left = 0
+    Height = 184
+    Top = 24
+    Width = 300
+    Align = alTop
+    ClientHeight = 184
+    ClientWidth = 300
+    TabOrder = 2
+    object CompFilterEdit: TTreeFilterEdit
+      AnchorSideLeft.Control = FilterLabel
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = FilterLabel
+      AnchorSideTop.Side = asrCenter
+      Left = 71
+      Height = 24
+      Top = 2
+      Width = 128
+      ButtonWidth = 23
+      NumGlyphs = 0
+      BorderSpacing.Left = 5
+      MaxLength = 0
+      TabOrder = 0
+    end
+    object FilterLabel: TLabel
+      Left = 3
+      Height = 15
+      Top = 7
+      Width = 63
+      Caption = 'Components'
+      ParentColor = False
+    end
+  end
   object MainPopupMenu: TPopupMenu
     OnPopup = OnMainPopupMenuPopup
-    left = 8
-    top = 11
+    left = 32
+    top = 64
   end
 end
