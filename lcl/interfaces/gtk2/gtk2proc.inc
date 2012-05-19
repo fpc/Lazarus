@@ -4707,6 +4707,9 @@ function GetGtkWindowGroup(Widget: PGtkWidget): PGtkWindowGroup;
 var
   toplevel: PGtkWidget;
 begin
+  Result := nil;
+  if gtk_window_get_group = nil then
+    exit;
   if Widget<>nil then
     toplevel:=gtk_widget_get_toplevel(Widget)
   else

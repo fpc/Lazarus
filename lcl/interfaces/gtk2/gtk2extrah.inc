@@ -245,7 +245,6 @@ const
 {$ifdef GTK_2_10}
 function gdk_screen_is_composited(screen: PGdkScreen): gboolean; cdecl; external gdklib;
 {$endif}
-function gtk_window_get_group(window:PGtkWindow):PGtkWindowGroup; cdecl; external gtklib;
 
 type
   TGtkTreeViewGridLines = cardinal;
@@ -264,4 +263,5 @@ var
   // since 2.10
   gtk_tree_view_set_grid_lines: procedure(tree_view: PGtkTreeView; grid_lines: TGtkTreeViewGridLines); cdecl;
   gtk_tree_view_get_grid_lines: function(tree_view: PGtkTreeView): TGtkTreeViewGridLines; cdecl;
+  gtk_window_get_group: function(window:PGtkWindow): PGtkWindowGroup; cdecl;
 
