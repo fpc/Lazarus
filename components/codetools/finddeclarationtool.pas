@@ -2193,6 +2193,8 @@ var
   IdentNode, TypeNode, ANode: TCodeTreeNode;
   ClassStr: String;
   NodeStr: String;
+  Params: TFindDeclarationParams;
+  Tool: TFindDeclarationTool;
 begin
   Result:='';
 
@@ -2209,13 +2211,15 @@ begin
         if ANode.Desc in AllClassSections then begin
           case ANode.Desc of
           ctnClassPrivate:
-            Result:=Result+'private ';
+            Result+='private ';
           ctnClassProtected:
-            Result:=Result+'protected ';
+            Result+='protected ';
           ctnClassPublic:
-            Result:=Result+'public ';
+            Result+='public ';
           ctnClassPublished:
-            Result:=Result+'published ';
+            Result+='published ';
+          ctnClassClassVar:
+            Result+='class ';
           else
             break;
           end;
@@ -2225,7 +2229,8 @@ begin
       end;
     end;
 
-    if Node.Desc = ctnGenericName then Node := Node.Parent;
+    if Node.Desc = ctnGenericName then
+      Node := Node.Parent;
     case Node.Desc of
     ctnIdentifier:
       if Assigned(Node.Parent) and (Node.Parent.Desc = ctnProcedureHead) then
@@ -2236,42 +2241,55 @@ begin
     ctnEnumIdentifier, ctnGenericType:
       begin
         case Node.Desc of
-        ctnVarDefinition: Result:=Result+'var ';
-        ctnTypeDefinition: Result:=Result+'type ';
-        ctnConstDefinition: Result:=Result+'const ';
-        ctnEnumIdentifier: Result:=Result+'enum ';
-        ctnGenericType: Result:=Result+'generic type ';
+        ctnVarDefinition: Result+='var ';
+        ctnTypeDefinition: Result+='type ';
+        ctnConstDefinition: Result+='const ';
+        ctnEnumIdentifier: Result+='enum ';
+        ctnGenericType: Result+='generic type ';
         end;
 
         // add class name
         ClassStr := ExtractClassName(Node.Parent, False, true);
-        if ClassStr <> '' then Result := Result + ClassStr + '.';
+        if ClassStr <> '' then Result += ClassStr + '.';
 
         Result:=Result+ExtractDefinitionName(Node);
         TypeNode:=FindTypeNodeOfDefinition(Node);
         if TypeNode<>nil then begin
+          case Node.Desc of
+            ctnTypeDefinition, ctnGenericType:
+              Result+=' = ';
+            ctnConstDefinition:
+              if TypeNode.Desc = ctnConstant then
+                Result += ' = '
+              else
+                Result += ': ';
+            ctnEnumIdentifier: ;
+            else
+              Result += ': ';
+          end;
           case TypeNode.Desc of
           ctnIdentifier, ctnSpecialize, ctnSpecializeType:
             begin
-              if Node.Desc = ctnTypeDefinition then
-                Result:=Result+' = '
-              else
-                Result:=Result+': ';
-              Result := Result + ExtractNode(TypeNode, [phpCommentsToSpace]);
+              Result += ExtractNode(TypeNode, [phpCommentsToSpace]);
             end;
           ctnClass, ctnClassInterface, ctnDispinterface,
-          ctnObject, ctnRecordType,
+          ctnObject, ctnRecordType, ctnRangedArrayType, ctnOpenArrayType,
           ctnObjCClass, ctnObjCCategory, ctnObjCProtocol, ctnCPPClass:
             begin
               MoveCursorToNodeStart(TypeNode);
               ReadNextAtom;
-              Result:=Result+': '+GetAtom;
+              Result+=GetAtom;
+              if (TypeNode.FirstChild<>nil)
+              and (TypeNode.FirstChild.Desc = ctnClassInheritance) then
+                Result += ExtractNode(TypeNode.FirstChild, []);
             end;
           ctnConstant:
             begin
-              NodeStr:=' = '+ExtractNode(TypeNode,[phpCommentsToSpace]);
-              Result:=Result+copy(NodeStr,1,50);
+              NodeStr:=ExtractNode(TypeNode,[phpCommentsToSpace]);
+              Result+=copy(NodeStr,1,50);
             end;
+          ctnEnumerationType:
+            Result += 'enum';
           end;
         end else begin
           case Node.Desc of
@@ -2281,7 +2299,7 @@ begin
               NodeStr:=ExtractCode(Node.StartPos
                                  +GetIdentLen(@Src[Node.StartPos]),
                                  Node.EndPos,[phpCommentsToSpace]);
-              Result:=Result+copy(NodeStr,1,50);
+              Result+=copy(NodeStr,1,50);
             end;
           end;
         end;
@@ -2292,12 +2310,57 @@ begin
 
         // ToDo: ppu, dcu files
 
-        Result:=Result+ExtractProcHead(Node,
+        Result+=ExtractProcHead(Node,
           [phpAddClassName,phpWithStart,phpWithVarModifiers,phpWithParameterNames,
            phpWithDefaultValues,phpWithResultType,phpWithOfObject,phpCommentsToSpace]);
       end;
 
-    ctnProperty,
+    ctnProperty,ctnGlobalProperty:
+      begin
+        IdentNode:=Node;
+
+        // ToDo: ppu, dcu files
+
+        Result+='property ';
+        MoveCursorToNodeStart(IdentNode);
+        ReadNextAtom;
+        if Node.Desc = ctnProperty then begin
+          // e.g. property Caption: string;
+          // skip keyword
+          ReadNextAtom;
+          // add class name
+          ClassStr := ExtractClassName(Node, False, True);
+          if ClassStr <> '' then Result += ClassStr + '.';
+        end else begin
+          // global property starts with identifier
+        end;
+        // add name
+        Result+=GetAtom;
+
+        Tool:=Self;
+        while (Node.Desc=ctnProperty)
+        and not Tool.MoveCursorToPropType(Node) do begin
+          // property without type
+          // -> search ancestor property
+          if not Tool.MoveCursorToPropName(Node) then break;
+          Params:=TFindDeclarationParams.Create;
+          try
+            Params.SetIdentifier(Tool,@Tool.Src[Tool.CurPos.StartPos],nil);
+            Params.Flags:=[fdfSearchInAncestors];
+            if not FindIdentifierInAncestors(Node.Parent.Parent,Params) then break;
+            Tool:=Params.NewCodeTool;
+            Node:=Params.NewNode;
+          finally
+            Params.Free;
+          end;
+        end;
+        if (Node<>nil)
+        and (Node.Desc in [ctnProperty,ctnGlobalProperty]) then begin
+          Result += Tool.ExtractProperty(Node,
+              [phpWithoutName,phpWithParameterNames,phpWithResultType]);
+        end;
+      end;
+
     ctnProgram,ctnUnit,ctnPackage,ctnLibrary:
       begin
         IdentNode:=Node;
@@ -2310,29 +2373,26 @@ begin
           // program without source name
           Result:='program '+ExtractFileNameOnly(MainFilename)+' ';
         end else begin
-          Result:=Result+GetAtom+' ';
+          Result+=GetAtom+' ';
 
           if Node.Desc = ctnProperty then begin // add class name
             ClassStr := ExtractClassName(Node, False, True);
-            if ClassStr <> '' then Result := Result + ClassStr + '.';
+            if ClassStr <> '' then Result += ClassStr + '.';
           end;
 
           ReadNextAtom;
-          Result:=Result+GetAtom+' ';
+          Result+=GetAtom+' ';
         end;
       end;
 
-    ctnGlobalProperty:
+    ctnUseUnit:
       begin
-        IdentNode:=Node;
-
-        // ToDo: ppu, dcu files
-
-        MoveCursorToNodeStart(IdentNode);
-        Result:=Result+'property ';
+        // hint for unit in "uses" section
+        Result += 'unit ';
+        MoveCursorToNodeStart(Node);
         ReadNextAtom;
-        Result:=Result+GetAtom+' ';
-      end;
+        Result+=GetAtom;
+      end
 
     else
       DebugLn('ToDo: TFindDeclarationTool.FindSmartHint ',Node.DescAsString);
@@ -2343,14 +2403,14 @@ begin
     if Result<>'' then Result:=Result+LineEnding;
     if XYPos.Code=nil then
       CleanPosToCaret(Node.StartPos,XYPos);
-    Result:=Result+XYPos.Code.Filename;
+    Result+=XYPos.Code.Filename;
     // file position
     if XYPos.Y>=1 then begin
-      Result:=Result+'('+IntToStr(XYPos.Y);
+      Result+='('+IntToStr(XYPos.Y);
       if XYPos.X>=1 then begin
-        Result:=Result+','+IntToStr(XYPos.X);
+        Result+=','+IntToStr(XYPos.X);
       end;
-      Result:=Result+')';
+      Result+=')';
     end;
   end;
 end;
@@ -3021,7 +3081,7 @@ var
         end;
       end;
 
-      if (ContextNode.Desc in AllClasses)
+      if (ContextNode.Desc in (AllClasses-[ctnRecordType]))
       and (fdfSearchInAncestors in Params.Flags) then begin
         // after searching in a class definition, search in its ancestors
 
@@ -3493,6 +3553,7 @@ var
     TestContext: TFindContext;
     IdentStart: LongInt;
     SubParams: TFindDeclarationParams;
+    aNode: TCodeTreeNode;
   begin
     IsPredefined:=false;
     SubParams:=TFindDeclarationParams.Create;
@@ -3546,7 +3607,20 @@ var
         AtomIsIdentifier(true);
         SubParams.SetIdentifier(Self,@Src[IdentStart],nil);
         SubParams.Flags:=[fdfExceptionOnNotFound];
-        TypeFound:=SubParams.NewCodeTool.FindIdentifierInInterface(Self,SubParams);
+        if SubParams.NewCodeTool=Self then begin
+          // search in whole unit/program
+          aNode:=Tree.Root;
+          if aNode.Desc=ctnUnit then begin
+            aNode:=FindImplementationNode;
+            if aNode=nil then
+              aNode:=FindInterfaceNode;
+          end;
+          SubParams.ContextNode:=aNode;
+          TypeFound:=FindIdentifierInContext(SubParams);
+        end else begin
+          // search in interface
+          TypeFound:=SubParams.NewCodeTool.FindIdentifierInInterface(Self,SubParams);
+        end;
       end;
       if TypeFound and (SubParams.NewNode.Desc=ctnGenericParameter) then begin
         TypeFound:=SubParams.FindGenericParamType;
@@ -7061,10 +7135,10 @@ var
     NewCodeTool: TFindDeclarationTool;
     NewNode: TCodeTreeNode;
   begin
+    aTool:=ExprType.Context.Tool;
     {$IFDEF ShowExprEval}
     debugln(['  FindExpressionTypeOfTerm ResolveChildren used unit -> interface node ',dbgstr(ExprType.Context.Tool.ExtractNode(ExprType.Context.Node,[]))]);
     {$ENDIF}
-    aTool:=ExprType.Context.Tool;
     AnUnitName:=aTool.ExtractUsedUnitName(ExprType.Context.Node,@InFilename);
     NewCodeTool:=aTool.FindCodeToolForUsedUnit(AnUnitName,InFilename,true);
     NewCodeTool.BuildInterfaceIdentifierCache(true);
@@ -7074,6 +7148,8 @@ var
   end;
 
   procedure ResolveChildren;
+  var
+    NewNode: TCodeTreeNode;
   begin
     if (ExprType.Context.Node=nil) then exit;
     {$IFDEF ShowExprEval}
@@ -7082,11 +7158,26 @@ var
     ResolveBaseTypeOfIdentifier;
     if (ExprType.Context.Node=nil) then exit;
     if (ExprType.Context.Node.Desc in AllUsableSourceTypes) then begin
-      // unit name => interface
-      {$IFDEF ShowExprEval}
-      debugln(['  FindExpressionTypeOfTerm ResolveChildren unit -> interface node']);
-      {$ENDIF}
-      ExprType.Context.Node:=ExprType.Context.Tool.GetInterfaceNode;
+      if ExprType.Context.Tool=Self then begin
+        // this unit name => implementation
+        // Note: allowed for programs too
+        NewNode:=Tree.Root;
+        if NewNode.Desc=ctnUnit then begin
+          NewNode:=FindImplementationNode;
+          if NewNode=nil then
+            NewNode:=FindInterfaceNode;
+        end;
+        {$IFDEF ShowExprEval}
+        debugln(['  FindExpressionTypeOfTerm ResolveChildren this unit -> ',NewNode.DescAsString]);
+        {$ENDIF}
+        ExprType.Context.Node:=NewNode;
+      end else begin
+        // unit name => interface
+        {$IFDEF ShowExprEval}
+        debugln(['  FindExpressionTypeOfTerm ResolveChildren unit -> interface node']);
+        {$ENDIF}
+        ExprType.Context.Node:=ExprType.Context.Tool.GetInterfaceNode;
+      end;
     end
     else if (ExprType.Context.Node.Desc=ctnUseUnit) then begin
       // uses unit name => interface of used unit

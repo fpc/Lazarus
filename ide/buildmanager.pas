@@ -50,12 +50,6 @@ uses
   BaseBuildManager, ApplicationBundle;
   
 type
-  TBMScanFPCSources = (
-    bmsfsSkip,
-    bmsfsWaitTillDone, // scan now and wait till finished
-    bmsfsBackground    // start in background
-    );
-
   { TBuildManager }
 
   TBuildManager = class(TBaseBuildManager)
@@ -205,9 +199,9 @@ type
 
     // methods for building IDE (will be changed when project groups are there)
     procedure SetBuildTarget(const TargetOS, TargetCPU, LCLWidgetType: string;
-                             ScanFPCSrc: TBMScanFPCSources; Quiet: boolean);
+                             ScanFPCSrc: TScanModeFPCSources; Quiet: boolean);
     procedure SetBuildTargetProject1(Quiet: boolean;
-                               ScanFPCSrc: TBMScanFPCSources = bmsfsBackground);
+                               ScanFPCSrc: TScanModeFPCSources = smsfsBackground);
     procedure SetBuildTargetIDE;
     function BuildTargetIDEIsDefault: boolean;
 
@@ -720,7 +714,7 @@ begin
     CodeToolBoss.FPCDefinesCache.SourceCaches.Clear;
   end;
   if ResetBuildTarget then
-    SetBuildTarget('','','',bmsfsSkip,true);
+    SetBuildTarget('','','',smsfsSkip,true);
   
   // start the compiler and ask for his settings
   // provide an english message file
@@ -2125,7 +2119,7 @@ begin
     end else
       exit;
 
-    // set overrides
+    // set overrides (e.g. command line parameters)
     Overrides:=GetBuildMacroOverrides;
     try
       for i:=0 to Overrides.Count-1 do
@@ -2139,6 +2133,7 @@ begin
 
     // add the defaults
     // Note: see also ide/frames/compiler_buildmacro_options.pas procedure TCompOptBuildMacrosFrame.BuildMacrosTreeViewEdited
+    // TargetOS
     if not Result.IsDefined('TargetOS') then begin
       s:='';
       if Project1<>nil then
@@ -2147,14 +2142,17 @@ begin
         s:=GetDefaultTargetOS;
       Result.Values['TargetOS']:=s;
     end;
+    // SrcOS
     if not Result.IsDefined('SrcOS') then begin
       s:=GetDefaultSrcOSForTargetOS(Result.Values['TargetOS']);
       Result.Values['SrcOS']:=s;
     end;
+    // SrcOS2
     if not Result.IsDefined('SrcOS2') then begin
       s:=GetDefaultSrcOS2ForTargetOS(Result.Values['TargetOS']);
       Result.Values['SrcOS2']:=s;
     end;
+    // TargetCPU
     if not Result.IsDefined('TargetCPU') then begin
       s:='';
       if Project1<>nil then
@@ -2162,14 +2160,6 @@ begin
       if s='' then
         s:=GetDefaultTargetCPU;
       Result.Values['TargetCPU']:=s;
-    end;
-    if Result.Values['LCLWidgetType']='' then begin
-      s:='';
-      if Project1<>nil then
-        s:=Project1.CompilerOptions.GetEffectiveLCLWidgetType;
-      if s='' then
-        s:=LCLPlatformDirNames[GetDefaultLCLWidgetType];
-      Result.Values['LCLWidgetType']:=s;
     end;
 
     {$IFDEF VerboseBuildMacros}
@@ -2255,7 +2245,22 @@ begin
 end;
 
 procedure TBuildManager.SetBuildTarget(const TargetOS, TargetCPU,
-  LCLWidgetType: string; ScanFPCSrc: TBMScanFPCSources; Quiet: boolean);
+  LCLWidgetType: string; ScanFPCSrc: TScanModeFPCSources; Quiet: boolean);
+
+  function GetEffectiveLCLWidgetType: string;
+  begin
+    if OverrideLCLWidgetType<>'' then
+      Result:=OverrideLCLWidgetType
+    else if Project1<>nil then begin
+      Result:=Project1.CompilerOptions.GetEffectiveLCLWidgetType
+    end
+    else
+      Result:='';
+    if (Result='') or (SysUtils.CompareText(Result,'default')=0) then
+      Result:=LCLPlatformDirNames[GetDefaultLCLWidgetType];
+    Result:=lowercase(Result);
+  end;
+
 var
   OldTargetOS: String;
   OldTargetCPU: String;
@@ -2263,6 +2268,7 @@ var
   FPCTargetChanged: Boolean;
   LCLTargetChanged: Boolean;
 begin
+  //debugln(['TBuildManager.SetBuildTarget TargetOS="',TargetOS,'" TargetCPU="',TargetCPU,'" LCLWidgetType="',LCLWidgetType,'"']);
   OldTargetOS:=fTargetOS;
   OldTargetCPU:=fTargetCPU;
   OldLCLWidgetType:=fLCLWidgetType;
@@ -2292,37 +2298,29 @@ begin
     fTargetCPU:=GetDefaultTargetCPU;
   fTargetCPU:=GetFPCTargetCPU(fTargetCPU);
 
-  // compute new LCLWidgetType
-  if OverrideLCLWidgetType<>'' then
-    fLCLWidgetType:=OverrideLCLWidgetType
-  else if Project1<>nil then
-    fLCLWidgetType:=Project1.CompilerOptions.GetEffectiveLCLWidgetType
-  else
-    fLCLWidgetType:='';
-  if (fLCLWidgetType='') or (SysUtils.CompareText(fLCLWidgetType,'default')=0) then
-    fLCLWidgetType:=LCLPlatformDirNames[GetDefaultLCLWidgetType];
-  fLCLWidgetType:=lowercase(fLCLWidgetType);
-
   FPCTargetChanged:=(OldTargetOS<>fTargetOS)
                     or (OldTargetCPU<>fTargetCPU)
                     or (CodeToolBoss.DefineTree.FindDefineTemplateByName(
                          StdDefTemplLazarusSrcDir,true)=nil);
+  if FPCTargetChanged then
+    IncreaseBuildMacroChangeStamp;
+
+  // compute new LCLWidgetType
+  fLCLWidgetType:=GetEffectiveLCLWidgetType;
   LCLTargetChanged:=(OldLCLWidgetType<>fLCLWidgetType);
 
   if FPCTargetChanged or LCLTargetChanged then begin
-    //DebugLn('TMainIDE.SetBuildTarget Old=',OldTargetCPU,'-',OldTargetOS,'-',OldLCLWidgetType,
-    //  ' New=',fTargetCPU,'-',fTargetOS,'-',fLCLWidgetType,' FPC=',dbgs(FPCTargetChanged),' LCL=',dbgs(LCLTargetChanged));
-    IncreaseBuildMacroChangeStamp;
+    //DebugLn(['TMainIDE.SetBuildTarget Old=',OldTargetCPU,'-',OldTargetOS,'-',OldLCLWidgetType,' New=',fTargetCPU,'-',fTargetOS,'-',fLCLWidgetType,' FPC=',FPCTargetChanged,' LCL=',LCLTargetChanged]);
   end;
   if LCLTargetChanged then
     CodeToolBoss.SetGlobalValue(ExternalMacroStart+'LCLWidgetType',fLCLWidgetType);
-  if FPCTargetChanged and (ScanFPCSrc<>bmsfsSkip) then
-    RescanCompilerDefines(false,false,ScanFPCSrc=bmsfsWaitTillDone,Quiet);
+  if FPCTargetChanged and (ScanFPCSrc<>smsfsSkip) then
+    RescanCompilerDefines(false,false,ScanFPCSrc=smsfsWaitTillDone,Quiet);
   //if (PackageGraph<>nil) and (PackageGraph.CodeToolsPackage<>nil) then debugln(['TBuildManager.SetBuildTarget CODETOOLS OUTDIR=',PackageGraph.CodeToolsPackage.CompilerOptions.GetUnitOutPath(true,coptParsed),' ',PackageGraph.CodeToolsPackage.CompilerOptions.ParsedOpts.ParsedStamp[pcosOutputDir],' ',CompilerParseStamp]);
 end;
 
 procedure TBuildManager.SetBuildTargetProject1(Quiet: boolean;
-  ScanFPCSrc: TBMScanFPCSources);
+  ScanFPCSrc: TScanModeFPCSources);
 begin
   SetBuildTarget('','','',ScanFPCSrc,Quiet);
 end;
@@ -2343,7 +2341,7 @@ begin
   if (NewTargetCPU='') or (NewTargetCPU='default') then
     NewTargetCPU:=GetDefaultTargetCPU;
   debugln(['TBuildManager.SetBuildTargetIDE OS=',NewTargetOS,' CPU=',NewTargetCPU,' WS=',NewLCLWidgetSet]);
-  SetBuildTarget(NewTargetOS,NewTargetCPU,NewLCLWidgetSet,bmsfsBackground,false);
+  SetBuildTarget(NewTargetOS,NewTargetCPU,NewLCLWidgetSet,smsfsBackground,false);
 end;
 
 function TBuildManager.BuildTargetIDEIsDefault: boolean;

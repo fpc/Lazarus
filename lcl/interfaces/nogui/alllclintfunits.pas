@@ -3,7 +3,7 @@ unit AllLCLIntfUnits;
 interface
 uses
   interfaces,
-  noguiint{%H-},
-  noguiwsfactory{%H-};
+  {%H-}noguiint{%H-},
+  {%H-}noguiwsfactory{%H-};
 implementation
 end.

@@ -103,6 +103,12 @@ type
     );
   TProjectBuildFlags = set of TProjectBuildFlag;
   
+  TScanModeFPCSources = (
+    smsfsSkip,
+    smsfsWaitTillDone, // scan now and wait till finished
+    smsfsBackground    // start in background
+    );
+
   // new filename flags
   TSearchIDEFileFlag = (
     siffDoNotCheckAllPackages, // do not search filename in unrelated packages (e.g. installed but not used by project)
@@ -287,6 +293,8 @@ type
     procedure DoJumpToNextError(DirectionDown: boolean); virtual; abstract;
     procedure DoShowMessagesView(BringToFront: boolean = true); virtual; abstract;
     function DoCheckFilesOnDisk(Instantaneous: boolean = false): TModalResult; virtual; abstract;
+    procedure PrepareBuildTarget(Quiet: boolean;
+                     ScanFPCSrc: TScanModeFPCSources = smsfsBackground); virtual; abstract; // call this after changing TargetOS/TargetCPU of the ActiveProject
     procedure AbortBuild; virtual; abstract;
 
     // search results

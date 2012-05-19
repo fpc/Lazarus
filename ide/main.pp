@@ -423,6 +423,11 @@ type
     procedure DoCodeExplorerOptionsAfterWrite(Sender: TObject; Restore: boolean);
     procedure DoProjectOptionsBeforeRead(Sender: TObject);
     procedure DoProjectOptionsAfterWrite(Sender: TObject; Restore: boolean);
+    procedure OnCompilerOptionsDialogTest(Sender: TObject);
+    function DoTestCompilerSettings(
+                            TheCompilerOptions: TCompilerOptions): TModalResult;
+    function OnCheckCompOptsAndMainSrcForNewUnit(CompOpts: TLazCompilerOptions
+        ): TModalResult;
 
     // ComponentPalette events
     procedure ComponentPaletteClassSelected(Sender: TObject);
@@ -569,11 +574,6 @@ type
         AllowAddingDependencies: boolean; out DependencyAdded: boolean);
     procedure CheckDirIsInIncludeSearchPath(UnitInfo: TUnitInfo;
         AllowAddingDependencies: boolean; out DependencyAdded: boolean);
-
-    // compiler options dialog events
-    procedure OnCompilerOptionsDialogTest(Sender: TObject);
-    function OnCheckCompOptsAndMainSrcForNewUnit(CompOpts: TLazCompilerOptions
-        ): TModalResult;
 
     // unit dependencies events
     procedure UnitDependenciesViewAccessingSources(Sender: TObject);
@@ -916,8 +916,6 @@ type
     function DoCreateProjectForProgram(ProgramBuf: TCodeBuffer): TModalResult;
     function DoSaveProjectIfChanged: TModalResult;
     function DoSaveProjectToTestDirectory(Flags: TSaveFlags): TModalResult;
-    function DoTestCompilerSettings(
-                            TheCompilerOptions: TCompilerOptions): TModalResult;
     function CheckMainSrcLCLInterfaces(Silent: boolean): TModalResult;
     function QuitIDE: boolean;
 
@@ -987,6 +985,8 @@ type
     function DoPublishModule(Options: TPublishModuleOptions;
                              const SrcDirectory, DestDirectory: string
                              ): TModalResult; override;
+    procedure PrepareBuildTarget(Quiet: boolean;
+                               ScanFPCSrc: TScanModeFPCSources = smsfsBackground); override;
     procedure AbortBuild; override;
 
     // useful frontend methods
@@ -13593,6 +13593,12 @@ begin
       exit;
     end;
   end;
+end;
+
+procedure TMainIDE.PrepareBuildTarget(Quiet: boolean;
+  ScanFPCSrc: TScanModeFPCSources);
+begin
+  MainBuildBoss.SetBuildTargetProject1(Quiet,ScanFPCSrc);
 end;
 
 procedure TMainIDE.AbortBuild;

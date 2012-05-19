@@ -473,7 +473,6 @@ type
     procedure SetTargetProc(const AValue: string); override;
     procedure SetTargetOS(const AValue: string); override;
     procedure SetTargetFilename(const AValue: String); override;
-    procedure SetLCLWidgetType(const AValue: string); override;
     procedure SetUseMsgFile(AValue: Boolean);
     procedure SetMsgFileName(AValue: String);
     procedure SetModified(const AValue: boolean); override;
@@ -522,6 +521,7 @@ type
     function NeedsLinkerOpts: boolean;
     function GetEffectiveTargetOS: string; override;
     function GetEffectiveTargetCPU: string; override;
+    function GetEffectiveLCLWidgetType: string; override;
     function GetUnitPath(RelativeToBaseDir: boolean;
                          Parsed: TCompilerOptionsParseType = coptParsed;
                          WithBaseDir: boolean = true): string; override;
@@ -563,7 +563,6 @@ type
     function GetCustomOptions(Parsed: TCompilerOptionsParseType): string;
     function TrimCustomOptions(o: string): string; override;
     function GetOptionsForCTDefines: string;
-    function GetEffectiveLCLWidgetType: string; virtual;
     function GetParsedMsgFilename: string;
 
     procedure RenameMacro(const OldName, NewName: string;
@@ -1151,14 +1150,6 @@ begin
   IncreaseChangeStamp;
 end;
 
-procedure TBaseCompilerOptions.SetLCLWidgetType(const AValue: string);
-begin
-  if LCLWidgetType=AValue then exit;
-  inherited SetLCLWidgetType(AValue);
-  if ParsedOpts.InvalidateParseOnChange then
-    IncreaseBuildMacroChangeStamp;
-end;
-
 procedure TBaseCompilerOptions.SetUseMsgFile(AValue: Boolean);
 begin
   if fUseMsgFile=AValue then Exit;
@@ -1309,7 +1300,6 @@ var
   b, PathDelimChange: boolean;
   FileVersion: Integer;
   i: LongInt;
-  s: String;
   dit: TCompilerDbgSymbolType;
 
   function f(const Filename: string): string;
@@ -1375,13 +1365,6 @@ begin
   FConditionals:=aXMLConfig.GetValue(Path+'Conditionals/Value','');
   TIDEBuildMacros(fBuildMacros).LoadFromXMLConfig(aXMLConfig,
                                        Path+'BuildMacros/',PathDelimChange);
-  if FileVersion<10 then
-  begin
-    // LCLWidgetType was not a macro but a property of its own
-    s := aXMLConfig.GetValue(p+'LCLWidgetType/Value', '');
-    if s<>'' then
-      LCLWidgetType:=s;
-  end;
 
   { Parsing }
   p:=Path+'Parsing/';
@@ -1620,8 +1603,6 @@ begin
   aXMLConfig.SetDeleteValue(Path+'Conditionals/Value',Conditionals,'');
   TIDEBuildMacros(fBuildMacros).SaveToXMLConfig(aXMLConfig,
                                               Path+'BuildMacros/',UsePathDelim);
-  // write the LCLWidgetType value to let older IDEs read the value
-  aXMLConfig.SetDeleteValue(p+'LCLWidgetType/Value', LCLWidgetType,'');
 
   { Parsing }
   p:=Path+'Parsing/';
@@ -1996,6 +1977,16 @@ begin
     Result:=GetCompiledTargetCPU;
 end;
 
+function TBaseCompilerOptions.GetEffectiveLCLWidgetType: string;
+var
+  Vars: TCTCfgScriptVariables;
+begin
+  Result:='';
+  Vars:=GetBuildMacroValues(Self,true);
+  if Vars<>nil then
+    Result:=Vars.Values['LCLWidgetType'];
+end;
+
 function TBaseCompilerOptions.GetUnitPath(RelativeToBaseDir: boolean;
   Parsed: TCompilerOptionsParseType; WithBaseDir: boolean): string;
 begin
@@ -2255,13 +2246,6 @@ function TBaseCompilerOptions.GetOptionsForCTDefines: string;
 begin
   Result:=GetCustomOptions(coptParsed);
   Add(GetSyntaxOptionsString);
-end;
-
-function TBaseCompilerOptions.GetEffectiveLCLWidgetType: string;
-begin
-  Result:=LCLWidgetType;
-  if (Result='') or (Result='default') then
-    Result:= LCLPlatformDirNames[GetDefaultLCLWidgetType];
 end;
 
 function TBaseCompilerOptions.GetParsedMsgFilename: string;
@@ -3097,8 +3081,7 @@ begin
   ObjectPath:='';
   SrcPath:='';
   DebugPath:='';
-  fLCLWidgetType := '';
-  
+
   // parsing
   FSyntaxMode:='ObjFPC';
   fAssemblerStyle := 0;
@@ -3212,7 +3195,6 @@ begin
   // conditionals
   Conditionals:=CompOpts.Conditionals;
   TIDEBuildMacros(BuildMacros).Assign(CompOpts.BuildMacros);
-  fLCLWidgetType := CompOpts.fLCLWidgetType;
 
   // Parsing
   FSyntaxMode := CompOpts.FSyntaxMode;
@@ -3359,7 +3341,6 @@ begin
   if Done(Tool.AddPathsDiff('Conditionals',FConditionals,CompOpts.FConditionals)) then exit;
   if Tool<>nil then Tool.Path:='BuildModes';
   if Done(TIDEBuildMacros(fBuildMacros).CreateDiff(CompOpts.BuildMacros,Tool)) then exit;
-  if Done(Tool.AddDiff('LCLWidgetType',fLCLWidgetType,CompOpts.fLCLWidgetType)) then exit;
 
   // parsing
   if Tool<>nil then Tool.Path:='Parsing';
