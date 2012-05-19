@@ -157,6 +157,7 @@ object ComponentListForm: TComponentListForm
       Height = 27
       Top = 10
       Width = 169
+      UseFormActivate = True
       ButtonWidth = 23
       NumGlyphs = 0
       BorderSpacing.Left = 5

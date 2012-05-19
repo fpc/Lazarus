@@ -52,6 +52,7 @@ object ObjectInspectorDlg: TObjectInspectorDlg
       Height = 24
       Top = 2
       Width = 128
+      UseFormActivate = True
       ButtonWidth = 23
       NumGlyphs = 0
       BorderSpacing.Left = 5

@@ -86,6 +86,7 @@ inherited IDEOptionsDialog: TIDEOptionsDialog
       Top = 8
       Width = 179
       OnFilterItem = FilterEditFilterItem
+      UseFormActivate = True
       ButtonWidth = 23
       NumGlyphs = 0
       Anchors = [akTop, akLeft, akRight]

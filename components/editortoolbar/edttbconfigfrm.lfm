@@ -8,7 +8,7 @@ object EdtTbConfigForm: TEdtTbConfigForm
   ClientHeight = 437
   ClientWidth = 651
   OnCreate = FormCreate
-  LCLVersion = '0.9.31'
+  LCLVersion = '1.1'
   object lblMenuTree: TLabel
     Left = 16
     Height = 15
@@ -206,6 +206,7 @@ object EdtTbConfigForm: TEdtTbConfigForm
     Height = 20
     Top = 31
     Width = 192
+    UseFormActivate = True
     ButtonWidth = 23
     NumGlyphs = 0
     BorderSpacing.Top = 6

@@ -13,7 +13,7 @@ object InstallPkgSetDialog: TInstallPkgSetDialog
   OnDestroy = InstallPkgSetDialogDestroy
   OnResize = InstallPkgSetDialogResize
   Position = poScreenCenter
-  LCLVersion = '0.9.31'
+  LCLVersion = '1.1'
   object InstallPkgGroupBox: TGroupBox
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = NoteLabel
@@ -62,7 +62,7 @@ object InstallPkgSetDialog: TInstallPkgSetDialog
       Width = 268
       Align = alClient
       BorderSpacing.Around = 6
-      DefaultItemHeight = 15
+      DefaultItemHeight = 16
       MultiSelect = True
       ReadOnly = True
       ShowButtons = False
@@ -142,6 +142,7 @@ object InstallPkgSetDialog: TInstallPkgSetDialog
       Height = 20
       Top = 7
       Width = 247
+      UseFormActivate = True
       ButtonWidth = 23
       NumGlyphs = 0
       Anchors = [akTop, akLeft, akRight]

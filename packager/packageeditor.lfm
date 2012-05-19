@@ -244,6 +244,7 @@ inherited PackageEditorForm: TPackageEditorForm
       Height = 24
       Top = 2
       Width = 278
+      UseFormActivate = True
       ButtonWidth = 23
       NumGlyphs = 0
       Anchors = [akTop, akLeft, akRight]
