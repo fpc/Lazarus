@@ -170,9 +170,16 @@ type
     fFilter: string;
     fIdleConnected: Boolean;
     fSortData: Boolean;             // Data needs to be sorted.
+    fUseFormActivate: Boolean;
+    fIsFirstSetFormActivate: Boolean;
+    fJustActivated: Boolean;
+    fParentForm: TForm;
     procedure SetFilter(const AValue: string);
     procedure SetIdleConnected(const AValue: Boolean);
     procedure OnIdle(Sender: TObject; var Done: Boolean);
+    procedure SetUseFormActivate(AValue: Boolean);
+    procedure FormActivate(Sender: TObject); // Connects to owning form.
+    procedure FormDeactivate(Sender: TObject);
   protected
     fNeedUpdate: Boolean;
     fIsFirstUpdate: Boolean;
@@ -205,6 +212,7 @@ type
   published
     property OnFilterItem: TFilterItemEvent read fOnFilterItem write fOnFilterItem;
     property OnCheckItem: TCheckItemEvent read fOnCheckItem write fOnCheckItem;
+    property UseFormActivate: Boolean read fUseFormActivate write SetUseFormActivate default False;
     // TEditButton properties.
     property ButtonWidth;
     property DirectInput;
@@ -902,7 +910,8 @@ begin
   inherited Create(AOwner);
   CharCase:=ecLowerCase;
   Button.Enabled:=False;
-  fIsFirstUpdate := True;
+  fIsFirstUpdate:=True;
+  fIsFirstSetFormActivate:=True;
 end;
 
 destructor TCustomControlFilterEdit.Destroy;
@@ -917,6 +926,52 @@ begin
   IdleConnected:=false;
 end;
 
+procedure TCustomControlFilterEdit.SetUseFormActivate(AValue: Boolean);
+var
+  c: TWinControl;
+begin
+  if fUseFormActivate=AValue then Exit;
+  fUseFormActivate:=AValue;
+  c:=Parent;
+  // Find the parent form
+  while Assigned(c) and not (c is TForm) do
+    c:=c.Parent;
+  // Found: set or remove Activate and Deactivate handlers
+  if c is TForm then begin
+    fParentForm:=TForm(c);
+    DebugLn('TCustomControlFilterEdit.SetUseFormActivate: found parent '+fParentForm.Name);
+    if AValue then begin          // Set handlers
+      if fIsFirstSetFormActivate then begin
+        if Assigned(fParentForm.OnActivate) or Assigned(fParentForm.OnDeactivate) then
+          raise Exception.Create('TCustomControlFilterEdit.SetUseFormActivate:'+
+                                 ' OnActivate handler already set in parent form');
+        fIsFirstSetFormActivate:=False;
+      end;
+      fParentForm.OnActivate:=@FormActivate;
+      fParentForm.OnDeactivate:=@FormDeactivate;
+    end
+    else begin                    // Remove handlers
+      fParentForm.OnActivate:=nil;
+      fParentForm.OnDeactivate:=nil;
+    end;
+  end
+  else
+    raise Exception.Create('TCustomControlFilterEdit.SetUseFormActivate: This control'+
+              ' has no TForm in the parent chain. You should disable UseFormActivate.');
+end;
+
+procedure TCustomControlFilterEdit.FormActivate(Sender: TObject);
+begin
+  fJustActivated:=fParentForm.ActiveControl=Self;
+  if fParentForm.ActiveControl=Self then
+    Filter:=Text;
+end;
+
+procedure TCustomControlFilterEdit.FormDeactivate(Sender: TObject);
+begin
+  fJustActivated:=False;
+end;
+
 procedure TCustomControlFilterEdit.SetFilter(const AValue: string);
 var
   NewValue: String;
@@ -926,7 +981,7 @@ begin
   else
     NewValue:=AValue;
   Button.Enabled:=NewValue<>'';
-  if (NewValue='') and not Focused then begin
+  if (NewValue='') and not (Focused or fJustActivated) then begin
     Text:=lisCEFilter;
     Font.Color:=clBtnShadow;
   end
@@ -975,23 +1030,21 @@ end;
 procedure TCustomControlFilterEdit.DoEnter;
 begin
 //  inherited;
-  if Text=lisCEFilter then begin
+  fJustActivated:=False;
+  if Text=lisCEFilter then
     Text:='';
-    DebugLn('TCustomControlFilterEdit.DoEnter: Text = default "(filter)"');
-  end
-  else
-    DebugLn('TCustomControlFilterEdit.DoEnter: Text = "' + Text + '"');
 end;
 
 procedure TCustomControlFilterEdit.DoExit;
 begin
+  fJustActivated:=False;
   Filter:=Text;
-  DebugLn('TCustomControlFilterEdit.DoExit: Text = "' + Text + '"');
 //  inherited;
 end;
 
 procedure TCustomControlFilterEdit.DoButtonClick(Sender: TObject);
 begin
+  fJustActivated:=False;
   Filter:='';
 end;
 
