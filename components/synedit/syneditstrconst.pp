@@ -54,6 +54,7 @@ resourcestring
   SYNS_Untitled                 =  'Untitled';
   // names for highlighter attributes
   SYNS_AttrASP                  =  'Asp';
+  SYNS_AttrCDATA                =  'CDATA';
   SYNS_AttrAssembler            =  'Assembler';
   SYNS_AttrAttributeName        =  'Attribute Name';
   SYNS_AttrAttributeValue       =  'Attribute Value';
@@ -166,6 +167,7 @@ const
   (* Stored Attribute Names *)
   SYNS_XML_Untitled                 =  'Untitled';
   SYNS_XML_AttrASP                  =  'Asp';
+  SYNS_XML_AttrCDATA                =  'CDATA';
   SYNS_XML_AttrAssembler            =  'Assembler';
   SYNS_XML_AttrAttributeName        =  'Attribute Name';
   SYNS_XML_AttrAttributeValue       =  'Attribute Value';

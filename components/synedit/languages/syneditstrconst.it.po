@@ -1,4 +1,4 @@
-# Massimo Soricetti <notturno@quipo.it>, 2011.
+ Massimo Soricetti <notturno@quipo.it>, 2011.
 msgid ""
 msgstr ""
 "Project-Id-Version: 0.9.3\n"
@@ -39,6 +39,10 @@ msgstr "Parentesi"
 #: syneditstrconst.syns_attrcaselabel
 msgid "Case label"
 msgstr "Label case"
+
+#: syneditstrconst.syns_attrcdata
+msgid "CDATA"
+msgstr ""
 
 #: syneditstrconst.syns_attrcdatasection
 msgid "CDATA Section"

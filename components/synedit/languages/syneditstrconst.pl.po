@@ -41,6 +41,10 @@ msgstr "Nawiasy"
 msgid "Case label"
 msgstr ""
 
+#: syneditstrconst.syns_attrcdata
+msgid "CDATA"
+msgstr ""
+
 #: syneditstrconst.syns_attrcdatasection
 msgid "CDATA Section"
 msgstr ""

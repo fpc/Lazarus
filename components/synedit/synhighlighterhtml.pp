@@ -52,7 +52,7 @@ uses
   SynEditHighlighterXMLBase, SynEditHighlighterFoldBase;
 
 const
-  MAX_ESCAPEAMPS = 151;
+  MAX_ESCAPEAMPS = 159;
 
   EscapeAmps: array[0..MAX_ESCAPEAMPS - 1] of PChar = (
     ('&amp;'),               {   &   }
@@ -206,21 +206,29 @@ const
     ('&#189;'),              {   ½   }
     ('&#190;'),              {   ¾   }
     ('&#191;'),              {   ¿   }
-    ('&#215;')               {   Ô   }
-  );
+    ('&#215;'),              {   Ô   }
+    ('&permil;'),
+    ('&bdquo;'),
+    ('&rdquo;'),
+    ('&lsquo;'),
+    ('&rsquo;'),
+    ('&ndash;'),
+    ('&mdash;'),
+    ('&bull;'));
 
 
 type
-  TtkTokenKind = (tkAmpersand, tkASP, tkComment, tkIdentifier, tkKey, tkNull,
+  TtkTokenKind = (tkAmpersand, tkASP, tkCDATA, tkComment, tkIdentifier, tkKey, tkNull,
     tkSpace, tkString, tkSymbol, tkText, tkUndefKey, tkValue);
 
-  TRangeState = (rsAmpersand, rsASP, rsComment, rsKey, rsParam, rsText,
+  TRangeState = (rsAmpersand, rsASP, rsCDATA, rsComment, rsKey, rsParam, rsText,
     rsUnKnown, rsValue);
 
  THtmlCodeFoldBlockType = (
     cfbtHtmlNode,     // <foo>...</node>
     cfbtHtmlComment,  // <!-- -->
     cfbtHtmlAsp,  // <% asp  %>
+    cfbtHtmlCDATA, // <![CDATA[ data ]]>
     // internal types / not configurable
     cfbtHtmlNone
   );
@@ -249,6 +257,7 @@ type
     fTokenID: TtkTokenKind;
     fAndAttri: TSynHighlighterAttributes;
     fASPAttri: TSynHighlighterAttributes;
+    fCDATAAttri: TSynHighlighterAttributes;
     fCommentAttri: TSynHighlighterAttributes;
     fIdentifierAttri: TSynHighlighterAttributes;
     fKeyAttri: TSynHighlighterAttributes;
@@ -270,6 +279,7 @@ type
     function Func12: TtkTokenKind;
     function Func13: TtkTokenKind;
     function Func14: TtkTokenKind;
+    function Func15: TtkTokenKind;
     function Func16: TtkTokenKind;
     function Func17: TtkTokenKind;
     function Func18: TtkTokenKind;
@@ -287,6 +297,7 @@ type
     function Func31: TtkTokenKind;
     function Func32: TtkTokenKind;
     function Func33: TtkTokenKind;
+    function Func34: TtkTokenKind;
     function Func35: TtkTokenKind;
     function Func37: TtkTokenKind;
     function Func38: TtkTokenKind;
@@ -306,21 +317,26 @@ type
     function Func56: TtkTokenKind;
     function Func57: TtkTokenKind;
     function Func58: TtkTokenKind;
+    function Func60: TtkTokenKind;
     function Func61: TtkTokenKind;
     function Func62: TtkTokenKind;
+    function Func63: TtkTokenKind;
     function Func64: TtkTokenKind;
     function Func65: TtkTokenKind;
     function Func66: TtkTokenKind;
     function Func67: TtkTokenKind;
+    function Func68: TtkTokenKind;
     function Func70: TtkTokenKind;
     function Func76: TtkTokenKind;
     function Func78: TtkTokenKind;
+    function Func79: TtkTokenKind;
     function Func80: TtkTokenKind;
     function Func81: TtkTokenKind;
     function Func82: TtkTokenKind;
     function Func83: TtkTokenKind;
     function Func84: TtkTokenKind;
     function Func85: TtkTokenKind;
+    function Func86: TtkTokenKind;
     function Func87: TtkTokenKind;
     function Func89: TtkTokenKind;
     function Func90: TtkTokenKind;
@@ -328,9 +344,13 @@ type
     function Func92: TtkTokenKind;
     function Func93: TtkTokenKind;
     function Func94: TtkTokenKind;
+    function Func100: TtkTokenKind;
     function Func105: TtkTokenKind;
     function Func107: TtkTokenKind;
+    function Func110: TtkTokenKind;
+    function Func113: TtkTokenKind;
     function Func114: TtkTokenKind;
+    function Func117: TtkTokenKind;
     function Func121: TtkTokenKind;
     function Func123: TtkTokenKind;
     function Func124: TtkTokenKind;
@@ -342,6 +362,7 @@ type
     function Func134: TtkTokenKind;
     function Func135: TtkTokenKind;
     function Func136: TtkTokenKind;
+    function Func137: TtkTokenKind;
     function Func138: TtkTokenKind;
     function Func139: TtkTokenKind;
     function Func140: TtkTokenKind;
@@ -351,11 +372,11 @@ type
     function Func146: TtkTokenKind;
     function Func149: TtkTokenKind;
     function Func150: TtkTokenKind;
-    function Func151: TtkTokenKind;
     function Func152: TtkTokenKind;
     function Func153: TtkTokenKind;
     function Func154: TtkTokenKind;
     function Func155: TtkTokenKind;
+    function Func156: TtkTokenKind;
     function Func157: TtkTokenKind;
     function Func159: TtkTokenKind;
     function Func160: TtkTokenKind;
@@ -363,6 +384,7 @@ type
     function Func162: TtkTokenKind;
     function Func163: TtkTokenKind;
     function Func164: TtkTokenKind;
+    function Func165: TtkTokenKind;
     function Func168: TtkTokenKind;
     function Func169: TtkTokenKind;
     function Func170: TtkTokenKind;
@@ -374,18 +396,23 @@ type
     function Func178: TtkTokenKind;
     function Func179: TtkTokenKind;
     function Func180: TtkTokenKind;
+    function Func182: TtkTokenKind;
     function Func183: TtkTokenKind;
+    function Func185: TtkTokenKind;
     function Func186: TtkTokenKind;
     function Func187: TtkTokenKind;
     function Func188: TtkTokenKind;
+    function Func190: TtkTokenKind;
     function Func192: TtkTokenKind;
     function Func198: TtkTokenKind;
     function Func200: TtkTokenKind;
+    function Func201: TtkTokenKind;
     function Func202: TtkTokenKind;
     function Func203: TtkTokenKind;
     function Func204: TtkTokenKind;
     function Func205: TtkTokenKind;
     function Func207: TtkTokenKind;
+    function Func208: TtkTokenKind;
     function Func209: TtkTokenKind;
     function Func211: TtkTokenKind;
     function Func212: TtkTokenKind;
@@ -393,9 +420,13 @@ type
     function Func214: TtkTokenKind;
     function Func215: TtkTokenKind;
     function Func216: TtkTokenKind;
+    function Func222: TtkTokenKind;
     function Func227: TtkTokenKind;
     function Func229: TtkTokenKind;
+    function Func232: TtkTokenKind;
+    function Func235: TtkTokenKind;
     function Func236: TtkTokenKind;
+    function Func239: TtkTokenKind;
     function Func243: TtkTokenKind;
     function Func250: TtkTokenKind;
     function AltFunc: TtkTokenKind;
@@ -403,6 +434,7 @@ type
     procedure InitIdent;
     procedure MakeMethodTables;
     procedure ASPProc;
+    procedure CDATAProc;
     procedure SetMode(const AValue: TSynHTMLSynMode);
     procedure TextProc;
     procedure CommentProc;
@@ -432,7 +464,8 @@ type
     function GetFoldConfigCount: Integer; override;
     function GetFoldConfigInternalCount: Integer; override;
   public
-    class function GetLanguageName: string; override;
+    {$IFNDEF SYN_CPPB_1} class {$ENDIF}                                         //mh 2000-07-14
+    function GetLanguageName: string; override;
   public
     constructor Create(AOwner: TComponent); override;
     function GetDefaultAttribute(Index: integer): TSynHighlighterAttributes;
@@ -455,6 +488,7 @@ type
   published
     property AndAttri: TSynHighlighterAttributes read fAndAttri write fAndAttri;
     property ASPAttri: TSynHighlighterAttributes read fASPAttri write fASPAttri;
+    property CDATAAttri: TSynHighlighterAttributes read fCDATAAttri write fCDATAAttri;
     property CommentAttri: TSynHighlighterAttributes read fCommentAttri
       write fCommentAttri;
     property IdentifierAttri: TSynHighlighterAttributes read fIdentifierAttri
@@ -513,6 +547,7 @@ begin
       12:  fIdentFuncTable[i] := {$IFDEF FPC}@{$ENDIF}Func12;
       13:  fIdentFuncTable[i] := {$IFDEF FPC}@{$ENDIF}Func13;
       14:  fIdentFuncTable[i] := {$IFDEF FPC}@{$ENDIF}Func14;
+      15:  fIdentFuncTable[i] := {$IFDEF FPC}@{$ENDIF}Func15;
       16:  fIdentFuncTable[i] := {$IFDEF FPC}@{$ENDIF}Func16;
       17:  fIdentFuncTable[i] := {$IFDEF FPC}@{$ENDIF}Func17;
       18:  fIdentFuncTable[i] := {$IFDEF FPC}@{$ENDIF}Func18;
@@ -530,6 +565,7 @@ begin
       31:  fIdentFuncTable[i] := {$IFDEF FPC}@{$ENDIF}Func31;
       32:  fIdentFuncTable[i] := {$IFDEF FPC}@{$ENDIF}Func32;
       33:  fIdentFuncTable[i] := {$IFDEF FPC}@{$ENDIF}Func33;
+      34:  fIdentFuncTable[i] := {$IFDEF FPC}@{$ENDIF}Func34;
       35:  fIdentFuncTable[i] := {$IFDEF FPC}@{$ENDIF}Func35;
       37:  fIdentFuncTable[i] := {$IFDEF FPC}@{$ENDIF}Func37;
       38:  fIdentFuncTable[i] := {$IFDEF FPC}@{$ENDIF}Func38;
@@ -549,21 +585,26 @@ begin
       56:  fIdentFuncTable[i] := {$IFDEF FPC}@{$ENDIF}Func56;
       57:  fIdentFuncTable[i] := {$IFDEF FPC}@{$ENDIF}Func57;
       58:  fIdentFuncTable[i] := {$IFDEF FPC}@{$ENDIF}Func58;
+      60:  fIdentFuncTable[i] := {$IFDEF FPC}@{$ENDIF}Func60;
       61:  fIdentFuncTable[i] := {$IFDEF FPC}@{$ENDIF}Func61;
       62:  fIdentFuncTable[i] := {$IFDEF FPC}@{$ENDIF}Func62;
+      63:  fIdentFuncTable[i] := {$IFDEF FPC}@{$ENDIF}Func63;
       64:  fIdentFuncTable[i] := {$IFDEF FPC}@{$ENDIF}Func64;
       65:  fIdentFuncTable[i] := {$IFDEF FPC}@{$ENDIF}Func65;
       66:  fIdentFuncTable[i] := {$IFDEF FPC}@{$ENDIF}Func66;
       67:  fIdentFuncTable[i] := {$IFDEF FPC}@{$ENDIF}Func67;
+      68:  fIdentFuncTable[i] := {$IFDEF FPC}@{$ENDIF}Func68;
       70:  fIdentFuncTable[i] := {$IFDEF FPC}@{$ENDIF}Func70;
       76:  fIdentFuncTable[i] := {$IFDEF FPC}@{$ENDIF}Func76;
       78:  fIdentFuncTable[i] := {$IFDEF FPC}@{$ENDIF}Func78;
+      79:  fIdentFuncTable[i] := {$IFDEF FPC}@{$ENDIF}Func79;
       80:  fIdentFuncTable[i] := {$IFDEF FPC}@{$ENDIF}Func80;
       81:  fIdentFuncTable[i] := {$IFDEF FPC}@{$ENDIF}Func81;
       82:  fIdentFuncTable[i] := {$IFDEF FPC}@{$ENDIF}Func82;
       83:  fIdentFuncTable[i] := {$IFDEF FPC}@{$ENDIF}Func83;
       84:  fIdentFuncTable[i] := {$IFDEF FPC}@{$ENDIF}Func84;
       85:  fIdentFuncTable[i] := {$IFDEF FPC}@{$ENDIF}Func85;
+      86:  fIdentFuncTable[i] := {$IFDEF FPC}@{$ENDIF}Func86;
       87:  fIdentFuncTable[i] := {$IFDEF FPC}@{$ENDIF}Func87;
       89:  fIdentFuncTable[i] := {$IFDEF FPC}@{$ENDIF}Func89;
       90:  fIdentFuncTable[i] := {$IFDEF FPC}@{$ENDIF}Func90;
@@ -571,9 +612,13 @@ begin
       92:  fIdentFuncTable[i] := {$IFDEF FPC}@{$ENDIF}Func92;
       93:  fIdentFuncTable[i] := {$IFDEF FPC}@{$ENDIF}Func93;
       94:  fIdentFuncTable[i] := {$IFDEF FPC}@{$ENDIF}Func94;
+      100: fIdentFuncTable[i] := {$IFDEF FPC}@{$ENDIF}Func100;
       105: fIdentFuncTable[i] := {$IFDEF FPC}@{$ENDIF}Func105;
       107: fIdentFuncTable[i] := {$IFDEF FPC}@{$ENDIF}Func107;
+      110: fIdentFuncTable[i] := {$IFDEF FPC}@{$ENDIF}Func110;
+      113: fIdentFuncTable[i] := {$IFDEF FPC}@{$ENDIF}Func113;
       114: fIdentFuncTable[i] := {$IFDEF FPC}@{$ENDIF}Func114;
+      117: fIdentFuncTable[i] := {$IFDEF FPC}@{$ENDIF}Func117;
       121: fIdentFuncTable[i] := {$IFDEF FPC}@{$ENDIF}Func121;
       123: fIdentFuncTable[i] := {$IFDEF FPC}@{$ENDIF}Func123;
       124: fIdentFuncTable[i] := {$IFDEF FPC}@{$ENDIF}Func124;
@@ -585,6 +630,7 @@ begin
       134: fIdentFuncTable[i] := {$IFDEF FPC}@{$ENDIF}Func134;
       135: fIdentFuncTable[i] := {$IFDEF FPC}@{$ENDIF}Func135;
       136: fIdentFuncTable[i] := {$IFDEF FPC}@{$ENDIF}Func136;
+      137: fIdentFuncTable[i] := {$IFDEF FPC}@{$ENDIF}Func137;
       138: fIdentFuncTable[i] := {$IFDEF FPC}@{$ENDIF}Func138;
       139: fIdentFuncTable[i] := {$IFDEF FPC}@{$ENDIF}Func139;
       140: fIdentFuncTable[i] := {$IFDEF FPC}@{$ENDIF}Func140;
@@ -594,11 +640,11 @@ begin
       146: fIdentFuncTable[i] := {$IFDEF FPC}@{$ENDIF}Func146;
       149: fIdentFuncTable[i] := {$IFDEF FPC}@{$ENDIF}Func149;
       150: fIdentFuncTable[i] := {$IFDEF FPC}@{$ENDIF}Func150;
-      151: fIdentFuncTable[i] := {$IFDEF FPC}@{$ENDIF}Func151;
       152: fIdentFuncTable[i] := {$IFDEF FPC}@{$ENDIF}Func152;
       153: fIdentFuncTable[i] := {$IFDEF FPC}@{$ENDIF}Func153;
       154: fIdentFuncTable[i] := {$IFDEF FPC}@{$ENDIF}Func154;
       155: fIdentFuncTable[i] := {$IFDEF FPC}@{$ENDIF}Func155;
+      156: fIdentFuncTable[i] := {$IFDEF FPC}@{$ENDIF}Func156;
       157: fIdentFuncTable[i] := {$IFDEF FPC}@{$ENDIF}Func157;
       159: fIdentFuncTable[i] := {$IFDEF FPC}@{$ENDIF}Func159;
       160: fIdentFuncTable[i] := {$IFDEF FPC}@{$ENDIF}Func160;
@@ -606,6 +652,7 @@ begin
       162: fIdentFuncTable[i] := {$IFDEF FPC}@{$ENDIF}Func162;
       163: fIdentFuncTable[i] := {$IFDEF FPC}@{$ENDIF}Func163;
       164: fIdentFuncTable[i] := {$IFDEF FPC}@{$ENDIF}Func164;
+      165: fIdentFuncTable[i] := {$IFDEF FPC}@{$ENDIF}Func165;
       168: fIdentFuncTable[i] := {$IFDEF FPC}@{$ENDIF}Func168;
       169: fIdentFuncTable[i] := {$IFDEF FPC}@{$ENDIF}Func169;
       170: fIdentFuncTable[i] := {$IFDEF FPC}@{$ENDIF}Func170;
@@ -617,18 +664,23 @@ begin
       178: fIdentFuncTable[i] := {$IFDEF FPC}@{$ENDIF}Func178;
       179: fIdentFuncTable[i] := {$IFDEF FPC}@{$ENDIF}Func179;
       180: fIdentFuncTable[i] := {$IFDEF FPC}@{$ENDIF}Func180;
+      182: fIdentFuncTable[i] := {$IFDEF FPC}@{$ENDIF}Func182;
       183: fIdentFuncTable[i] := {$IFDEF FPC}@{$ENDIF}Func183;
+      185: fIdentFuncTable[i] := {$IFDEF FPC}@{$ENDIF}Func185;
       186: fIdentFuncTable[i] := {$IFDEF FPC}@{$ENDIF}Func186;
       187: fIdentFuncTable[i] := {$IFDEF FPC}@{$ENDIF}Func187;
       188: fIdentFuncTable[i] := {$IFDEF FPC}@{$ENDIF}Func188;
+      190: fIdentFuncTable[i] := {$IFDEF FPC}@{$ENDIF}Func190;
       192: fIdentFuncTable[i] := {$IFDEF FPC}@{$ENDIF}Func192;
       198: fIdentFuncTable[i] := {$IFDEF FPC}@{$ENDIF}Func198;
       200: fIdentFuncTable[i] := {$IFDEF FPC}@{$ENDIF}Func200;
+      201: fIdentFuncTable[i] := {$IFDEF FPC}@{$ENDIF}Func201;
       202: fIdentFuncTable[i] := {$IFDEF FPC}@{$ENDIF}Func202;
       203: fIdentFuncTable[i] := {$IFDEF FPC}@{$ENDIF}Func203;
       204: fIdentFuncTable[i] := {$IFDEF FPC}@{$ENDIF}Func204;
       205: fIdentFuncTable[i] := {$IFDEF FPC}@{$ENDIF}Func205;
       207: fIdentFuncTable[i] := {$IFDEF FPC}@{$ENDIF}Func207;
+      208: fIdentFuncTable[i] := {$IFDEF FPC}@{$ENDIF}Func208;
       209: fIdentFuncTable[i] := {$IFDEF FPC}@{$ENDIF}Func209;
       211: fIdentFuncTable[i] := {$IFDEF FPC}@{$ENDIF}Func211;
       212: fIdentFuncTable[i] := {$IFDEF FPC}@{$ENDIF}Func212;
@@ -636,9 +688,13 @@ begin
       214: fIdentFuncTable[i] := {$IFDEF FPC}@{$ENDIF}Func214;
       215: fIdentFuncTable[i] := {$IFDEF FPC}@{$ENDIF}Func215;
       216: fIdentFuncTable[i] := {$IFDEF FPC}@{$ENDIF}Func216;
+      222: fIdentFuncTable[i] := {$IFDEF FPC}@{$ENDIF}Func222;
       227: fIdentFuncTable[i] := {$IFDEF FPC}@{$ENDIF}Func227;
       229: fIdentFuncTable[i] := {$IFDEF FPC}@{$ENDIF}Func229;
+      232: fIdentFuncTable[i] := {$IFDEF FPC}@{$ENDIF}Func232;
+      235: fIdentFuncTable[i] := {$IFDEF FPC}@{$ENDIF}Func235;
       236: fIdentFuncTable[i] := {$IFDEF FPC}@{$ENDIF}Func236;
+      239: fIdentFuncTable[i] := {$IFDEF FPC}@{$ENDIF}Func239;
       243: fIdentFuncTable[i] := {$IFDEF FPC}@{$ENDIF}Func243;
       250: fIdentFuncTable[i] := {$IFDEF FPC}@{$ENDIF}Func250;
       else fIdentFuncTable[i] := {$IFDEF FPC}@{$ENDIF}AltFunc;
@@ -753,6 +809,16 @@ end;
 function TSynHTMLSyn.Func14: TtkTokenKind;
 begin
   if KeyComp('H6') then begin
+    Result := tkKey;
+  end else begin
+    Result := tkUndefKey;
+  end;
+end;
+
+
+function TSynHTMLSyn.Func15: TtkTokenKind;
+begin
+  if KeyComp('BDI') then begin
     Result := tkKey;
   end else begin
     Result := tkUndefKey;
@@ -875,9 +941,7 @@ end;
 
 function TSynHTMLSyn.Func29: TtkTokenKind;
 begin
-  if KeyComp('EMBED') then begin
-    Result := tkKey
-  end else if KeyComp('IMG') then begin
+  if KeyComp('IMG') or KeyComp('EMBED') then begin
     Result := tkKey;
     fSimpleTag := True;
   end else begin
@@ -924,6 +988,16 @@ begin
   end;
 end;
 
+
+function TSynHTMLSyn.Func34: TtkTokenKind;
+begin
+  if KeyComp('RP') then begin
+    Result := tkKey;
+  end else begin
+    Result := tkUndefKey;
+  end;
+end;
+
 function TSynHTMLSyn.Func35: TtkTokenKind;
 begin
   if KeyComp('DIV') then begin
@@ -935,7 +1009,7 @@ end;
 
 function TSynHTMLSyn.Func37: TtkTokenKind;
 begin
-  if KeyComp('CITE') then begin
+  if KeyComp('CITE') Or KeyComp('NAV') then begin
     Result := tkKey;
   end else begin
     Result := tkUndefKey;
@@ -944,7 +1018,7 @@ end;
 
 function TSynHTMLSyn.Func38: TtkTokenKind;
 begin
-  if KeyComp('THEAD') Or KeyComp('TR') then begin
+  if KeyComp('THEAD') Or KeyComp('TR') Or KeyComp('ASIDE') Or KeyComp('RT') then begin
     Result := tkKey;
   end else begin
     Result := tkUndefKey;
@@ -974,7 +1048,7 @@ end;
 
 function TSynHTMLSyn.Func41: TtkTokenKind;
 begin
-  if KeyComp('var') then begin
+  if KeyComp('VAR') Or KeyComp('HEADER') then begin
     Result := tkKey;
   end else begin
     Result := tkUndefKey;
@@ -996,7 +1070,7 @@ begin
     Result := tkKey;
     fSimpleTag := True;
   end
-  else if KeyComp('WBR') then begin
+  else if KeyComp('WBR') Or KeyComp('MARK') then begin
     Result := tkKey;
   end else begin
     Result := tkUndefKey;
@@ -1017,7 +1091,7 @@ end;
 
 function TSynHTMLSyn.Func47: TtkTokenKind;
 begin
-  if KeyComp('LEGend') then begin
+  if KeyComp('LEGEND') Or KeyComp('TIME') then begin
     Result := tkKey;
   end else begin
     Result := tkUndefKey;
@@ -1047,7 +1121,7 @@ end;
 
 function TSynHTMLSyn.Func50: TtkTokenKind;
 begin
-  if KeyComp('SPAN') then begin
+  if KeyComp('SPAN') Or KeyComp('AUDIO') then begin
     Result := tkKey;
   end else begin
     Result := tkUndefKey;
@@ -1065,6 +1139,10 @@ end;
 
 function TSynHTMLSyn.Func53: TtkTokenKind;
 begin
+  if KeyComp('TRACK') then begin
+    Result := tkKey;
+    fSimpleTag := True;
+  end else
   if KeyComp('HTML') Or KeyComp('MENU') Or KeyComp('XMP') then begin
     Result := tkKey;
   end else begin
@@ -1074,7 +1152,7 @@ end;
 
 function TSynHTMLSyn.Func55: TtkTokenKind;
 begin
-  if KeyComp('FONT') Or KeyComp('object') then begin
+  if KeyComp('FONT') Or KeyComp('OBJECT') Or KeyComp('VIDEO') then begin
     Result := tkKey;
   end else begin
     Result := tkUndefKey;
@@ -1108,9 +1186,18 @@ begin
   end;
 end;
 
+function TSynHTMLSyn.Func60: TtkTokenKind;
+begin
+  if KeyComp('CANVAS') then begin
+    Result := tkKey;
+  end else begin
+    Result := tkUndefKey;
+  end;
+end;
+
 function TSynHTMLSyn.Func61: TtkTokenKind;
 begin
-  if KeyComp('LAYER') then begin
+  if KeyComp('LAYER') Or KeyComp('METER') then begin
     Result := tkKey;
   end else begin
     Result := tkUndefKey;
@@ -1120,6 +1207,16 @@ end;
 function TSynHTMLSyn.Func62: TtkTokenKind;
 begin
   if KeyComp('SPACER') then begin
+    Result := tkKey;
+  end else begin
+    Result := tkUndefKey;
+  end;
+end;
+
+
+function TSynHTMLSyn.Func63: TtkTokenKind;
+begin
+  if KeyComp('COMMAND') then begin
     Result := tkKey;
   end else begin
     Result := tkUndefKey;
@@ -1146,7 +1243,7 @@ end;
 
 function TSynHTMLSyn.Func66: TtkTokenKind;
 begin
-  if KeyComp('TBODY') Or KeyComp('TITLE') then begin
+  if KeyComp('TBODY') Or KeyComp('TITLE') Or KeyComp('FIGURE') Or KeyComp('RUBY') then begin
     Result := tkKey;
   end else begin
     Result := tkUndefKey;
@@ -1162,9 +1259,19 @@ begin
   end;
 end;
 
+
+function TSynHTMLSyn.Func68: TtkTokenKind;
+begin
+  if KeyComp('ARTICLE') then begin
+    Result := tkKey;
+  end else begin
+    Result := tkUndefKey;
+  end;
+end;
+
 function TSynHTMLSyn.Func70: TtkTokenKind;
 begin
-  if KeyComp('ADDRESS') Or KeyComp('APPLET') Or KeyComp('ILAYER') then begin
+  if KeyComp('ADDRESS') Or KeyComp('APPLET') Or KeyComp('ILAYER') Or KeyComp('DETAILS')then begin
     Result := tkKey;
   end else begin
     Result := tkUndefKey;
@@ -1189,6 +1296,16 @@ begin
   end;
 end;
 
+function TSynHTMLSyn.Func79: TtkTokenKind;
+begin
+  if KeyComp('FOOTER') then begin
+    Result := tkKey;
+  end else begin
+    Result := tkUndefKey;
+  end;
+end;
+
+
 function TSynHTMLSyn.Func80: TtkTokenKind;
 begin
   if KeyComp('INPUT') then  begin
@@ -1202,7 +1319,11 @@ end;
 
 function TSynHTMLSyn.Func81: TtkTokenKind;
 begin
-  if KeyComp('STYLE') then begin
+  if KeyComp('SOURCE') then begin
+    Result := tkKey;
+    fSimpleTag := True;
+  end else
+  if KeyComp('STYLE')  then begin
     Result := tkKey;
   end else begin
     Result := tkUndefKey;
@@ -1242,7 +1363,16 @@ end;
 
 function TSynHTMLSyn.Func85: TtkTokenKind;
 begin
-  if KeyComp('SCRIPT') then begin
+  if KeyComp('SCRIPT') Or KeyComp('HGROUP') Or KeyComp('SECTION')then begin
+    Result := tkKey;
+  end else begin
+    Result := tkUndefKey;
+  end;
+end;
+
+function TSynHTMLSyn.Func86: TtkTokenKind;
+begin
+  if KeyComp('DATALIST') then begin
     Result := tkKey;
   end else begin
     Result := tkUndefKey;
@@ -1312,6 +1442,15 @@ begin
   end;
 end;
 
+function TSynHTMLSyn.Func100: TtkTokenKind;
+begin
+  if KeyComp('FIGCAPTION') then begin
+    Result := tkKey;
+  end else begin
+    Result := tkUndefKey;
+  end;
+end;
+
 function TSynHTMLSyn.Func105: TtkTokenKind;
 begin
   if KeyComp('MULTICOL') then begin
@@ -1330,9 +1469,38 @@ begin
   end;
 end;
 
+function TSynHTMLSyn.Func110: TtkTokenKind;
+begin
+  if KeyComp('SUMMARY') then begin
+    Result := tkKey;
+  end else begin
+    Result := tkUndefKey;
+  end;
+end;
+
+
+function TSynHTMLSyn.Func113: TtkTokenKind;
+begin
+  if KeyComp('OUTPUT') then begin
+    Result := tkKey;
+  end else begin
+    Result := tkUndefKey;
+  end;
+end;
+
+
 function TSynHTMLSyn.Func114: TtkTokenKind;
 begin
   if KeyComp('NOSCRIPT') then begin
+    Result := tkKey;
+  end else begin
+    Result := tkUndefKey;
+  end;
+end;
+
+function TSynHTMLSyn.Func117: TtkTokenKind;
+begin
+  if KeyComp('PROGRESS') then begin
     Result := tkKey;
   end else begin
     Result := tkUndefKey;
@@ -1438,6 +1606,16 @@ begin
   end;
 end;
 
+
+function TSynHTMLSyn.Func137: TtkTokenKind;
+begin
+  if KeyComp('/BDI') then begin
+    Result := tkKey;
+  end else begin
+    Result := tkUndefKey;
+  end;
+end;
+
 function TSynHTMLSyn.Func138: TtkTokenKind;
 begin
   if KeyComp('/DL') Or KeyComp('/P') then begin
@@ -1519,14 +1697,6 @@ begin
   end;
 end;
 
-function TSynHTMLSyn.Func151: TtkTokenKind;
-begin
-  if KeyComp('/EMBED') then begin
-    Result := tkKey;
-  end else begin
-    Result := tkUndefKey;
-  end;
-end;
 
 function TSynHTMLSyn.Func152: TtkTokenKind;
 begin
@@ -1564,6 +1734,15 @@ begin
   end;
 end;
 
+function TSynHTMLSyn.Func156: TtkTokenKind;
+begin
+  if KeyComp('/RP') then begin
+    Result := tkKey;
+  end else begin
+    Result := tkUndefKey;
+  end;
+end;
+
 function TSynHTMLSyn.Func157: TtkTokenKind;
 begin
   if KeyComp('/DIV') then begin
@@ -1575,7 +1754,7 @@ end;
 
 function TSynHTMLSyn.Func159: TtkTokenKind;
 begin
-  if KeyComp('/CITE') then begin
+  if KeyComp('/CITE') Or KeyComp('/NAV') then begin
     Result := tkKey;
   end else begin
     Result := tkUndefKey;
@@ -1584,7 +1763,7 @@ end;
 
 function TSynHTMLSyn.Func160: TtkTokenKind;
 begin
-  if KeyComp('/THEAD') Or KeyComp('/TR') then begin
+  if KeyComp('/THEAD') Or KeyComp('/TR') Or KeyComp('/ASIDE')Or KeyComp('/RT')then begin
     Result := tkKey;
   end else begin
     Result := tkUndefKey;
@@ -1611,7 +1790,7 @@ end;
 
 function TSynHTMLSyn.Func163: TtkTokenKind;
 begin
-  if KeyComp('/var') then begin
+  if KeyComp('/VAR') Or KeyComp('/HEADER') then begin
     Result := tkKey;
   end else begin
     Result := tkUndefKey;
@@ -1621,6 +1800,15 @@ end;
 function TSynHTMLSyn.Func164: TtkTokenKind;
 begin
   if KeyComp('/INS') Or KeyComp('/SUB') then begin
+    Result := tkKey;
+  end else begin
+    Result := tkUndefKey;
+  end;
+end;
+
+function TSynHTMLSyn.Func165: TtkTokenKind;
+begin
+  if KeyComp('/MARK') then begin
     Result := tkKey;
   end else begin
     Result := tkUndefKey;
@@ -1638,7 +1826,7 @@ end;
 
 function TSynHTMLSyn.Func169: TtkTokenKind;
 begin
-  if KeyComp('/LEGend') then begin
+  if KeyComp('/LEGEND')Or KeyComp('/TIME') then begin
     Result := tkKey;
   end else begin
     Result := tkUndefKey;
@@ -1665,7 +1853,7 @@ end;
 
 function TSynHTMLSyn.Func172: TtkTokenKind;
 begin
-  if KeyComp('/SPAN') then begin
+  if KeyComp('/SPAN') Or KeyComp('/AUDIO')then begin
     Result := tkKey;
   end else begin
     Result := tkUndefKey;
@@ -1683,6 +1871,10 @@ end;
 
 function TSynHTMLSyn.Func175: TtkTokenKind;
 begin
+  if KeyComp('/TRACK') then begin
+    Result := tkKey;
+    fSimpleTag := True;
+  end else
   if KeyComp('/HTML') Or KeyComp('/MENU') Or KeyComp('/XMP') then begin
     Result := tkKey;
   end else begin
@@ -1692,7 +1884,7 @@ end;
 
 function TSynHTMLSyn.Func177: TtkTokenKind;
 begin
-  if KeyComp('/FONT') Or KeyComp('/object') then begin
+  if KeyComp('/FONT') Or KeyComp('/OBJECT') Or KeyComp('/VIDEO')then begin
     Result := tkKey;
   end else begin
     Result := tkUndefKey;
@@ -1726,9 +1918,29 @@ begin
   end;
 end;
 
+
+function TSynHTMLSyn.Func182: TtkTokenKind;
+begin
+  if KeyComp('/CANVAS') then begin
+    Result := tkKey;
+  end else begin
+    Result := tkUndefKey;
+  end;
+end;
+
 function TSynHTMLSyn.Func183: TtkTokenKind;
 begin
-  if KeyComp('/LAYER') then begin
+  if KeyComp('/LAYER') Or KeyComp('/METER') then begin
+    Result := tkKey;
+  end else begin
+    Result := tkUndefKey;
+  end;
+end;
+
+
+function TSynHTMLSyn.Func185: TtkTokenKind;
+begin
+  if KeyComp('/COMMAND') then begin
     Result := tkKey;
   end else begin
     Result := tkUndefKey;
@@ -1755,16 +1967,26 @@ end;
 
 function TSynHTMLSyn.Func188: TtkTokenKind;
 begin
-  if KeyComp('/TBODY') Or KeyComp('/TITLE') then begin
+  if KeyComp('/TBODY') Or KeyComp('/TITLE') Or KeyComp('/FIGURE')Or KeyComp('/RUBY')then begin
     Result := tkKey;
   end else begin
     Result := tkUndefKey;
   end;
 end;
 
+function TSynHTMLSyn.Func190: TtkTokenKind;
+begin
+  if KeyComp('/ARTICLE') then begin
+    Result := tkKey;
+  end else begin
+    Result := tkUndefKey;
+  end;
+end;
+
+
 function TSynHTMLSyn.Func192: TtkTokenKind;
 begin
-  if KeyComp('/ADDRESS') Or KeyComp('/APPLET') Or KeyComp('/ILAYER') then begin
+  if KeyComp('/ADDRESS') Or KeyComp('/APPLET') Or KeyComp('/ILAYER') Or KeyComp('/DETAILS')then begin
     Result := tkKey;
   end else begin
     Result := tkUndefKey;
@@ -1789,6 +2011,15 @@ begin
   end;
 end;
 
+function TSynHTMLSyn.Func201: TtkTokenKind;
+begin
+  if KeyComp('/FOOTER') then begin
+    Result := tkKey;
+  end else begin
+    Result := tkUndefKey;
+  end;
+end;
+
 function TSynHTMLSyn.Func202: TtkTokenKind;
 begin
   if KeyComp('/FIELDSET') Or KeyComp('/MARQUEE') then begin
@@ -1800,6 +2031,10 @@ end;
 
 function TSynHTMLSyn.Func203: TtkTokenKind;
 begin
+  if KeyComp('/SOURCE') then begin
+    Result := tkKey;
+    fSimpleTag := True;
+  end else
   if KeyComp('/STYLE') then begin
     Result := tkKey;
   end else begin
@@ -1827,7 +2062,16 @@ end;
 
 function TSynHTMLSyn.Func207: TtkTokenKind;
 begin
-  if KeyComp('/SCRIPT') then begin
+  if KeyComp('/SCRIPT') Or KeyComp('/HGROUP') Or KeyComp('/SECTION')then begin
+    Result := tkKey;
+  end else begin
+    Result := tkUndefKey;
+  end;
+end;
+
+function TSynHTMLSyn.Func208: TtkTokenKind;
+begin
+  if KeyComp('/DATALIST') then begin
     Result := tkKey;
   end else begin
     Result := tkUndefKey;
@@ -1897,6 +2141,15 @@ begin
   end;
 end;
 
+function TSynHTMLSyn.Func222: TtkTokenKind;
+begin
+  if KeyComp('/FIGCAPTION') then begin
+    Result := tkKey;
+  end else begin
+    Result := tkUndefKey;
+  end;
+end;
+
 function TSynHTMLSyn.Func227: TtkTokenKind;
 begin
   if KeyComp('/MULTICOL') then begin
@@ -1915,9 +2168,37 @@ begin
   end;
 end;
 
+function TSynHTMLSyn.Func232: TtkTokenKind;
+begin
+  if KeyComp('/SUMMARY') then begin
+    Result := tkKey;
+  end else begin
+    Result := tkUndefKey;
+  end;
+end;
+
+function TSynHTMLSyn.Func235: TtkTokenKind;
+begin
+  if KeyComp('/OUTPUT') then begin
+    Result := tkKey;
+  end else begin
+    Result := tkUndefKey;
+  end;
+end;
+
+
 function TSynHTMLSyn.Func236: TtkTokenKind;
 begin
   if KeyComp('/NOSCRIPT') then begin
+    Result := tkKey;
+  end else begin
+    Result := tkUndefKey;
+  end;
+end;
+
+function TSynHTMLSyn.Func239: TtkTokenKind;
+begin
+  if KeyComp('/PROGRESS') then begin
     Result := tkKey;
   end else begin
     Result := tkUndefKey;
@@ -2005,6 +2286,11 @@ begin
   fASPAttri.Background := clYellow;
   AddAttribute(fASPAttri);
 
+  fCDATAAttri := TSynHighlighterAttributes.Create(SYNS_AttrCDATA, SYNS_XML_AttrCDATA);
+  fCDATAAttri.Foreground := clBlack;
+  fCDATAAttri.Background := clAqua;
+  AddAttribute(fCDATAAttri);
+
   fCommentAttri := TSynHighlighterAttributes.Create(SYNS_AttrComment, SYNS_XML_AttrComment);
   AddAttribute(fCommentAttri);
 
@@ -2078,6 +2364,29 @@ begin
   end;
 end;
 
+procedure TSynHTMLSyn.CDATAProc;
+begin
+  fTokenID := tkCDATA;
+  if (fLine[Run] In [#0, #10, #13]) then begin
+    fProcTable[fLine[Run]];
+    Exit;
+  end;
+
+  while not (fLine[Run] in [#0, #10, #13]) do begin
+    if (fLine[Run] = '>') and (fLine[Run - 1] = ']') and (fLine[Run - 2] = ']')
+    then begin
+      fRange := rsText;
+      Inc(Run);
+      if TopHtmlCodeFoldBlockType = cfbtHtmlCDATA then
+        EndHtmlNodeCodeFoldBlock;
+      break;
+    end;
+    Inc(Run);
+  end;
+end;
+
+
+
 procedure TSynHTMLSyn.SetMode(const AValue: TSynHTMLSynMode);
 begin
   if FMode = AValue then exit;
@@ -2129,6 +2438,14 @@ begin
     fTokenID := tkComment;
     StartHtmlCodeFoldBlock(cfbtHtmlComment);
     Inc(Run, 3);
+  end
+  else if (Run <= length(fLine)-7) and (fLine[Run] = '!') and (fLine[Run + 1] = '[')
+  and (fLine[Run + 2] = 'C') and (fLine[Run + 3] = 'D') and (fLine[Run + 4] = 'A')
+  and (fLine[Run + 5] = 'T') and (fLine[Run + 6] = 'A') and (fLine[Run + 7] = '[') then begin
+    fRange := rsCDATA;
+    fTokenID := tkCDATA;
+    StartHtmlCodeFoldBlock(cfbtHtmlCDATA);
+    Inc(Run);
   end
   else if fLine[Run]= '%' then begin
     fRange := rsASP;
@@ -2293,6 +2610,10 @@ begin
     begin
       ASPProc;
     end;
+  rsCDATA:
+    begin
+      CDATAProc;
+    end;
   else
     fProcTable[fLine[Run]];
   end;
@@ -2342,6 +2663,7 @@ begin
   case fTokenID of
     tkAmpersand: Result := fAndAttri;
     tkASP: Result := fASPAttri;
+    tkCDATA: Result := fCDATAAttri;
     tkComment: Result := fCommentAttri;
     tkIdentifier: Result := fIdentifierAttri;
     tkKey: Result := fKeyAttri;
@@ -2435,14 +2757,16 @@ begin
   Result := ord(high(THtmlCodeFoldBlockType)) - ord(low(THtmlCodeFoldBlockType)) + 1;
 end;
 
-class function TSynHTMLSyn.GetLanguageName: string;
+{$IFNDEF SYN_CPPB_1} class {$ENDIF}                                             //mh 2000-07-14
+function TSynHTMLSyn.GetLanguageName: string;
 begin
   Result := SYNS_LangHTML;
 end;
 
 initialization
   MakeIdentTable;
+{$IFNDEF SYN_CPPB_1}                                                            //mh 2000-07-14
   RegisterPlaceableHighlighter(TSynHTMLSyn);
-
+{$ENDIF}
 end.
 

@@ -37,6 +37,10 @@ msgstr "סוגריים"
 msgid "Case label"
 msgstr "תוית ראשיות"
 
+#: syneditstrconst.syns_attrcdata
+msgid "CDATA"
+msgstr ""
+
 #: syneditstrconst.syns_attrcdatasection
 msgid "CDATA Section"
 msgstr "סעיף CDATA"

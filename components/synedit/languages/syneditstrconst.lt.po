@@ -1,4 +1,4 @@
-# Valdas Jankūnas <zmuogs@gmail.com>, 2009, 2010.
+ Valdas Jankūnas <zmuogs@gmail.com>, 2009, 2010.
 msgid ""
 msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -38,6 +38,10 @@ msgstr "Skliaustai"
 #: syneditstrconst.syns_attrcaselabel
 msgid "Case label"
 msgstr "„Case“ vertė"
+
+#: syneditstrconst.syns_attrcdata
+msgid "CDATA"
+msgstr ""
 
 #: syneditstrconst.syns_attrcdatasection
 msgid "CDATA Section"

@@ -37,6 +37,10 @@ msgstr "Скобки"
 msgid "Case label"
 msgstr "Метка Case"
 
+#: syneditstrconst.syns_attrcdata
+msgid "CDATA"
+msgstr ""
+
 #: syneditstrconst.syns_attrcdatasection
 msgid "CDATA Section"
 msgstr "Секция CDATA"
