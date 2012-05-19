@@ -236,7 +236,7 @@ begin
       if WarningsCount >= 0 then
         WriteLn('Warning! No corresponding xml file for unit ' + FileList[I])
       else
-      Dec(WarningsCount);
+        Dec(WarningsCount);
     end;
   end;
   FileList.Free;
@@ -263,13 +263,23 @@ begin
     Halt(1);
   end;
   Process := TProcess.Create(nil);
-  Process.Options := Process.Options + [poWaitOnExit];
-  Process.CurrentDirectory := GetCurrentDir+PathDelim+PackageName;
-  Process.CommandLine := CmdLine;
-  Process.Execute;
-  if WarningsCount < -1 then
-    WriteLn(abs(WarningsCount+1), ' Warnings hidden. Use --warnings to see them all.') ;
-  Process.Free;
+  try
+    Process.Options := Process.Options + [poWaitOnExit];
+    Process.CurrentDirectory := GetCurrentDir+PathDelim+PackageName;
+    Process.CommandLine := CmdLine;
+    try
+      Process.Execute;
+    except
+      if WarningsCount >= 0 then
+        WriteLn('Error running fpdoc, command line: '+CmdLine)
+      else
+        Dec(WarningsCount);
+    end;
+    if WarningsCount < -1 then
+      WriteLn(abs(WarningsCount+1), ' Warnings hidden. Use --warnings to see them all.');
+  finally
+    Process.Free;
+  end;
 end;
 
 begin
