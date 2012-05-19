@@ -12,7 +12,7 @@ object SearchResultsView: TSearchResultsView
   OnCreate = Form1Create
   OnKeyDown = FormKeyDown
   Position = poDefault
-  LCLVersion = '0.9.31'
+  LCLVersion = '1.1'
   object ResultsNoteBook: TPageControl
     AnchorSideTop.Control = ToolBar
     AnchorSideTop.Side = asrBottom
@@ -68,10 +68,12 @@ object SearchResultsView: TSearchResultsView
     Height = 20
     Top = 2
     Width = 296
+    UseFormActivate = True
     ButtonWidth = 23
     NumGlyphs = 0
     BorderSpacing.Left = 6
     MaxLength = 0
+    ParentFont = False
     TabOrder = 0
     OnChange = SearchInListChange
   end
