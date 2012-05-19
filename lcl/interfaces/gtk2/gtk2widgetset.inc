@@ -148,7 +148,7 @@ begin
   Result := True;
 end;
 
-function gtk2GrabNotify(widget: PGtkWidget; grabbed: GBoolean; {%H-}data: GPointer): GBoolean; cdecl;
+function gtk2GrabNotify({%H-}widget: PGtkWidget; grabbed: GBoolean; {%H-}data: GPointer): GBoolean; cdecl;
 // called for all widgets on every gtk_grab_add and gtk_grab_remove
 // grabbed = true if called by gtk_grab_remove
 // grabbed = false if called by gtk_grab_add
