@@ -41,16 +41,16 @@ type
     procedure FreeNodeData;
   end;
 
+procedure FreeTVNodeData(TV: TCustomTreeView);
+
 implementation
 
-{ TCodyTreeView }
-
-procedure TCodyTreeView.FreeNodeData;
+procedure FreeTVNodeData(TV: TCustomTreeView);
 var
   Node: TTreeNode;
 begin
-  BeginUpdate;
-  Node:=Items.GetFirstNode;
+  TV.BeginUpdate;
+  Node:=TV.Items.GetFirstNode;
   while Node<>nil do begin
     if Node.Data<>nil then begin
       TObject(Node.Data).Free;
@@ -58,7 +58,14 @@ begin
     end;
     Node:=Node.GetNext;
   end;
-  EndUpdate;
+  TV.EndUpdate;
+end;
+
+{ TCodyTreeView }
+
+procedure TCodyTreeView.FreeNodeData;
+begin
+  FreeTVNodeData(Self);
 end;
 
 end.
