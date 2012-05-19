@@ -4123,6 +4123,7 @@ begin
   for Page:=Low(TObjectInspectorPage) to High(TObjectInspectorPage) do
     if GridControl[Page]<>nil then
       GridControl[Page].PropEditLookupRootChange;
+  CompFilterEdit.Filter:='';
   FillPersistentComboBox;
 end;
 
@@ -4138,7 +4139,6 @@ begin
   FUpdatingAvailComboBox:=true;
   Assert(Assigned(ComponentTree), 'TObjectInspectorDlg.FillPersistentComboBox: ComponentTree=nil');
   ComponentTree.RebuildComponentNodes;  // if ComponentTree<>nil then
-  CompFilterEdit.InvalidateFilter;
   NewList:=TStringList.Create;
   try
     if (FPropertyEditorHook<>nil)
@@ -4239,6 +4239,8 @@ begin
     exit; // nothing changed
   FInSelection := True;
   try
+    // ToDo: Clear filter only if a selected node is hidden (Visible=False)
+    CompFilterEdit.Filter:='';
     FSelection.Assign(ASelection);
     SetAvailComboBoxText;
     RefreshSelection;
