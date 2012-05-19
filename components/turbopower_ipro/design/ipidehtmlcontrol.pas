@@ -82,7 +82,7 @@ type
   protected
     procedure DoPopup(Sender: TObject); override;
   public
-    constructor Create(AOwner: TComponent; APanel: TLazIPHtmlControl);
+    constructor Create(AOwner: TComponent; APanel: TLazIPHtmlControl); reintroduce;
   end;
 
 function IPCreateLazIDEHTMLControl(Owner: TComponent;
