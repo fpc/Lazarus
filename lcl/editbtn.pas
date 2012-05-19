@@ -61,6 +61,7 @@ type
     function GetMinHeight: Integer;
     procedure WMSetFocus(var Message: TLMSetFocus); message LM_SETFOCUS;
     procedure WMKillFocus(var Message: TLMKillFocus); message LM_KILLFOCUS;
+    function IsCustomGlyph : Boolean;
   protected
     procedure CheckButtonVisible;
     function CalcButtonVisible: boolean; virtual;
@@ -80,7 +81,7 @@ type
     // New properties.
     property ButtonWidth : Integer read GetButtonWidth write SetButtonWidth;
     property DirectInput : Boolean read GetDirectInput write SetDirectInput default True;
-    property Glyph : TBitmap read GetGlyph write SetGlyph;
+    property Glyph : TBitmap read GetGlyph write SetGlyph stored IsCustomGlyph;
     property NumGlyphs : Integer read GetNumGlyphs write SetNumGlyphs;
     property OnButtonClick : TNotifyEvent read FOnButtonClick write FOnButtonClick;
     property Button: TSpeedButton read FButton;
@@ -794,6 +795,59 @@ procedure TCustomEditButton.WMKillFocus(var Message: TLMKillFocus);
 begin
   CheckButtonVisible;
   inherited;
+end;
+
+function TCustomEditButton.IsCustomGlyph : Boolean;
+
+  function _LoadRes: TBitmap;
+  var
+    ResName: String;
+    C : TCustomBitmap;
+  begin
+    ResName := GetDefaultGlyphName;
+    if ResName = '' then
+      Exit(nil);
+    Result := TBitmap.Create;
+    try
+      try
+        C := CreateBitmapFromLazarusResource(ResName);
+        Result.Assign(C); // the "Equals" did not work with ClassType different
+        // maybe it should compare the "RawImage" because it is independent of ClassType
+      finally
+        C.Free;
+      end;
+    except
+      Result.Free;
+      raise;
+    end;
+  end;
+
+var
+  B, GlypRes, GlypActual: TBitmap;
+begin
+  GlypActual := nil;
+  GlypRes := nil;
+  try
+    B := GetDefaultGlyph;
+    if B = nil then                // if Default Glyph is nil, use the resource
+    begin
+      GlypRes := _LoadRes;
+      B := GlypRes;
+    end;
+    if B = nil then
+      Result := Glyph <> nil
+    else if Glyph = nil then
+      Result := True
+    else
+    begin
+      GlypActual := TBitmap.Create; // the "Equals" did not work with ClassType different.
+      GlypActual.Assign(Glyph);
+      Result := not GlypActual.Equals(B);
+    end;
+  finally
+    GlypRes.Free;
+    GlypActual.Free;
+  end;
 end;
 
 function TCustomEditButton.GetReadOnly: Boolean;
