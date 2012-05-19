@@ -274,12 +274,12 @@ end;
 procedure TPkgGraphExplorerDlg.SetupComponents;
 begin
   PkgTreeView.Images := IDEImages.Images_16;
-  ImgIndexPackage := IDEImages.LoadImage(16, 'item_package');
+  ImgIndexPackage          := IDEImages.LoadImage(16, 'item_package');
   ImgIndexInstalledPackage := IDEImages.LoadImage(16, 'pkg_installed');
-  ImgIndexInstallPackage := IDEImages.LoadImage(16, 'pkg_package_autoinstall');
+  ImgIndexInstallPackage   := IDEImages.LoadImage(16, 'pkg_package_autoinstall');
   ImgIndexUninstallPackage := IDEImages.LoadImage(16, 'pkg_package_uninstall');
-  ImgIndexCyclePackage := IDEImages.LoadImage(16, 'pkg_package_circle');
-  ImgIndexMissingPackage := IDEImages.LoadImage(16, 'pkg_conflict');
+  ImgIndexCyclePackage     := IDEImages.LoadImage(16, 'pkg_package_circle');
+  ImgIndexMissingPackage   := IDEImages.LoadImage(16, 'pkg_conflict');
 
   PkgTreeLabel.Caption:=lisPckExplLoadedPackages;
   PkgListLabel.Caption:=lisPckExplIsRequiredBy;
