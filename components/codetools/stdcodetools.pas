@@ -1056,7 +1056,7 @@ begin
   ReadNextAtom; // read 'uses'
   repeat
     ReadNextAtom; // read name
-    if not AtomIsIdentifier(false) then exit;
+    if not AtomIsIdentifier then exit;
     if ReadAndCompareUsedUnit(AnUnitName) then begin
       // unit found
       exit(true);
@@ -1084,7 +1084,7 @@ begin
   repeat
     EndPos:=CurPos.StartPos;
     ReadNextAtom; // read name
-    if not AtomIsIdentifier(false) then exit;
+    if not AtomIsIdentifier then exit;
     inc(UnitPos);
     StartPos:=CurPos.StartPos;
     Found:=ReadAndCompareUsedUnit(AnUnitName);
@@ -3094,7 +3094,7 @@ begin
   ReadNextAtom;
   if AtomIsChar('(') then begin
     ReadNextAtom;
-    if AtomIsIdentifier(false) then
+    if AtomIsIdentifier then
       AncestorClassName:=GetAtom;
   end;
   if AncestorClassName='' then
@@ -3222,7 +3222,7 @@ begin
   MoveCursorToCleanPos(1);
   repeat
     ReadNextAtom;
-    if AtomIsIdentifier(false) then begin
+    if AtomIsIdentifier then begin
       CurIdentNode:=
         IdentTree.FindKey(@Src[CurPos.StartPos],
                           TListSortCompare(@CompareIdentifiers));
@@ -3283,7 +3283,7 @@ type
       Result:=scatStrConst
     else if AtomIsChar('+') then
       Result:=scatPlus
-    else if AtomIsIdentifier(false) then
+    else if AtomIsIdentifier then
       Result:=scatIdent
     else if UpAtomIs('INHERITED') then
       Result:=scatInherited
@@ -3601,7 +3601,7 @@ begin
         ConvertStringConstant;
       end else if AtomIsChar('+') then begin
         // simply ignore
-      end else if (CurPos.Flag=cafRoundBracketOpen) or AtomIsIdentifier(false)
+      end else if (CurPos.Flag=cafRoundBracketOpen) or AtomIsIdentifier
       then begin
         // add as parameter
         ConvertOther;
@@ -4107,7 +4107,7 @@ function TStandardCodeTool.GatherResourceStringsWithValue(
   begin
     MoveCursorToNodeStart(ANode);
     ReadNextAtom; // read identifier
-    if not AtomIsIdentifier(false) then exit;
+    if not AtomIsIdentifier then exit;
     ReadNextAtom; // read =
     if CurPos.Flag<>cafEqual then exit;
     ReadNextAtom; // read start of string constant
@@ -4811,14 +4811,14 @@ begin
       //   var X, i: integer;     ->  var [X, ]i: integer;
       MoveCursorToCleanPos(Node.StartPos);
       ReadNextAtom;
-      AtomIsIdentifier(true);
+      AtomIsIdentifierE;
       if not ReadNextAtomIsChar(',') then RaiseCharExpectedButAtomFound(',');
       DeleteEndPos:=CurPos.EndPos;
     end else if PrevSibling<>nil then begin
       // var i, X: integer;     ->  var i[, X]: integer;
       MoveCursorToCleanPos(PrevSibling.StartPos);
       ReadNextAtom;
-      AtomIsIdentifier(true);
+      AtomIsIdentifierE;
       if not ReadNextAtomIsChar(',') then RaiseCharExpectedButAtomFound(',');
       DeleteStartPos:=CurPos.StartPos;
     end else begin
@@ -5912,7 +5912,7 @@ var
       }
       NeedCompletion:=CleanCursorPos;
     end else if CurPos.Flag=cafWord then begin
-      if AtomIsIdentifier(false) then begin
+      if AtomIsIdentifier then begin
         ReadNextAtom;
         if CurPos.Flag=cafEqual then begin
           { For example:
@@ -6538,11 +6538,11 @@ begin
               if CurPos.Flag=cafRoundBracketOpen then begin
                 repeat
                   ReadNextAtom;
-                  if AtomIsIdentifier(false) then begin
+                  if AtomIsIdentifier then begin
                     ReadNextAtom;
                     if CurPos.Flag=cafPoint then begin
                       ReadNextAtom;
-                      AtomIsIdentifier(true);
+                      AtomIsIdentifierE;
                     end;
                   end;
                   if CurPos.Flag=cafRoundBracketClose then break;

@@ -1326,7 +1326,7 @@ begin
     repeat
       ReadNextAtom;
       if (CurPos.StartPos>EndPos) or (CurPos.Flag=cafNone) then exit;
-      if AtomIsIdentifier(false) then begin
+      if AtomIsIdentifier then begin
         //DebugLn(['AddNeededUnitsForRange ',GetAtom]);
         // save cursor
         OldCursor:=CurPos;
@@ -1658,7 +1658,7 @@ var
     AssignmentOperator:=CurPos.StartPos;
     ReadPriorAtom;
     // check event name
-    if not AtomIsIdentifier(false) then exit;
+    if not AtomIsIdentifier then exit;
     PropVarAtom:=CurPos;
 
     // check for semicolon at end of statement
@@ -2532,7 +2532,7 @@ var
     MoveCursorToCleanPos(ExprStartPos);
     repeat
       ReadNextAtom;
-      if AtomIsIdentifier(false) then
+      if AtomIsIdentifier then
         Result:=GetAtom
       else
         Result:='';
@@ -2651,7 +2651,7 @@ const
     // read procname
     MoveCursorToCleanPos(CleanCursorPos);
     ReadNextAtom;
-    if not AtomIsIdentifier(false) then exit;
+    if not AtomIsIdentifier then exit;
     ProcNameAtom:=CurPos;
     // read bracket
     ReadNextAtom;
@@ -3641,7 +3641,7 @@ var
     if CurPos.Flag<>cafColon then exit;
     // read result type
     ReadNextAtom;
-    if not AtomIsIdentifier(false) then exit;
+    if not AtomIsIdentifier then exit;
 
     // check if there is a public definition of the procedure
     NodeText:=GetRedefinitionNodeText(ProcNode);
@@ -3689,7 +3689,7 @@ var
       if (CurPos.Flag in [cafSemicolon,cafEnd]) then
         break;
       // check if all identifiers can be used in a constant expression
-      if AtomIsIdentifier(false)
+      if AtomIsIdentifier
       and not CheckExprIdentifier(@Src[CurPos.StartPos]) then
         exit;
       ExprEnd:=CurPos.EndPos;
@@ -4683,7 +4683,7 @@ function TCodeCompletionCodeTool.FixForwardDefinitions(
             FromPos:=Node.StartPos;
             MoveCursorToNodeStart(Node);
             ReadNextAtom;// read identifier
-            AtomIsIdentifier(true);
+            AtomIsIdentifierE;
             ToPos:=FindLineEndOrCodeAfterPosition(CurPos.EndPos,true);
           end else begin
             // this is for example: var a,b: integer
@@ -4691,12 +4691,12 @@ function TCodeCompletionCodeTool.FixForwardDefinitions(
             // => remove ,b plus the space behind
             MoveCursorToNodeStart(Node.PriorBrother);
             ReadNextAtom;// read identifier
-            AtomIsIdentifier(true);
+            AtomIsIdentifierE;
             ReadNextAtom;// read comma
             if not AtomIsChar(',') then RaiseCharExpectedButAtomFound(',');
             FromPos:=CurPos.StartPos;
             ReadNextAtom;// read identifier
-            AtomIsIdentifier(true);
+            AtomIsIdentifierE;
             ReadNextAtom;//read colon
             if not AtomIsChar(':') then RaiseCharExpectedButAtomFound(':');
             ToPos:=CurPos.StartPos;
@@ -4713,7 +4713,7 @@ function TCodeCompletionCodeTool.FixForwardDefinitions(
             FromPos:=FindLineEndOrCodeInFrontOfPosition(Node.StartPos);
             MoveCursorToNodeStart(Node);
             ReadNextAtom;// read identifier
-            AtomIsIdentifier(true);
+            AtomIsIdentifierE;
             ReadNextAtom;// read comma
             if not AtomIsChar(',') then RaiseCharExpectedButAtomFound(',');
             ToPos:=CurPos.StartPos;
@@ -4809,7 +4809,7 @@ function TCodeCompletionCodeTool.FixForwardDefinitions(
         NewTxt:=GetIdentifier(@Src[Node.StartPos]);
         MoveCursorToNodeStart(GetLastVarDefSequenceNode(Node));
         ReadNextAtom;
-        AtomIsIdentifier(true);
+        AtomIsIdentifierE;
         ReadNextAtom;
         if not AtomIsChar(':') then RaiseCharExpectedButAtomFound(':');
         FromPos:=CurPos.StartPos;
@@ -5093,7 +5093,7 @@ function TCodeCompletionCodeTool.BuildUnitDefinitionGraph(out
     repeat
       ReadNextAtom;
       if (CurPos.StartPos>=ToPos) or (CurPos.StartPos>SrcLen) then break;
-      if AtomIsIdentifier(false) then begin
+      if AtomIsIdentifier then begin
         Identifier:=@Src[CurPos.StartPos];
         NodeExt:=FindCodeTreeNodeExtWithIdentifier(
                                      DefinitionsTreeOfCodeTreeNodeExt,
@@ -5602,7 +5602,7 @@ function TCodeCompletionCodeTool.FindAssignMethod(CursorPos: TCodeXYPosition;
       if NodeExt.Node.Desc=ctnProperty then begin
         if PropertyHasSpecifier(NodeExt.Node,'write') then begin
           ReadNextAtom;
-          if AtomIsIdentifier(false) then begin
+          if AtomIsIdentifier then begin
             WrittenNodeExt:=FindCodeTreeNodeExtWithIdentifier(MemberNodeExts,
                                       @Src[CurPos.StartPos]);
             if WrittenNodeExt<>nil then
@@ -6267,7 +6267,7 @@ var
     Parts[SpecWord]:=CurPos;
     ReadNextAtom;
     if AtomIsChar(';') then exit;
-    AtomIsIdentifier(true);
+    AtomIsIdentifierE;
     if WordIsPropertySpecifier.DoItCaseInsensitive(Src,CurPos.StartPos,
       CurPos.EndPos-CurPos.StartPos)
     then
@@ -6276,7 +6276,7 @@ var
     ReadNextAtom;
     while CurPos.Flag=cafPoint do begin
       ReadNextAtom;
-      AtomIsIdentifier(true);
+      AtomIsIdentifierE;
       ReadNextAtom;
       PartIsAtom[SpecParam]:=false;
       Parts[SpecParam].EndPos:=CurPos.EndPos;
@@ -6343,7 +6343,7 @@ var AccessParam, AccessParamPrefix, CleanAccessFunc, AccessFunc,
     procedure CheckIdentifier;
     begin
       if (CurPos.StartPos>PropNode.EndPos)
-      or UpAtomIs('END') or AtomIsChar(';') or (not AtomIsIdentifier(false))
+      or UpAtomIs('END') or AtomIsChar(';') or (not AtomIsIdentifier)
       or AtomIsKeyWord then begin
         // no type name found -> ignore this property
         RaiseExceptionFmt(ctsPropertTypeExpectedButAtomFound,[GetAtom]);
@@ -6436,7 +6436,7 @@ var AccessParam, AccessParamPrefix, CleanAccessFunc, AccessFunc,
         ReadSimpleSpec(ppImplementsWord,ppImplements);
         while CurPos.Flag=cafComma do begin
           ReadNextAtom;
-          AtomIsIdentifier(true);
+          AtomIsIdentifierE;
           if WordIsPropertySpecifier.DoItCaseInsensitive(Src,CurPos.StartPos,
             CurPos.EndPos-CurPos.StartPos) then
             RaiseExceptionFmt(ctsIndexParameterExpectedButAtomFound,[GetAtom]);

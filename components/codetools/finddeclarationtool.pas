@@ -1351,7 +1351,7 @@ var CleanCursorPos: integer;
         MoveCursorToNodeStart(CursorNode);
         ReadNextAtom;
         IsMethod:=false;
-        if AtomIsIdentifier(false) then begin
+        if AtomIsIdentifier then begin
           ReadNextAtom;
           if AtomIsChar('.') then begin
             ReadNextAtom;
@@ -2266,7 +2266,8 @@ begin
               Result += ': ';
           end;
           case TypeNode.Desc of
-          ctnIdentifier, ctnSpecialize, ctnSpecializeType:
+          ctnIdentifier, ctnSpecialize, ctnSpecializeType,
+          ctnPointertype, ctnRangeType, ctnFileType, ctnclassOfType:
             begin
               Result += ExtractNode(TypeNode, [phpCommentsToSpace]);
             end;
@@ -3602,7 +3603,7 @@ var
         {$IFDEF ShowTriedBaseContexts}
         debugln(['TFindDeclarationTool.FindBaseTypeOfNode.SearchIdentifier searching identifier "',GetIdentifier(@Src[IdentStart]),'" in unit ...']);
         {$ENDIF}
-        AtomIsIdentifier(true);
+        AtomIsIdentifierE;
         SubParams.SetIdentifier(Self,@Src[IdentStart],nil);
         SubParams.Flags:=[fdfExceptionOnNotFound];
         if SubParams.NewCodeTool=Self then begin
@@ -4900,7 +4901,7 @@ var
       ReadNextAtom;  // read name
       if CurPos.StartPos>SrcLen then break;
       if AtomIsChar(';') then break;
-      AtomIsIdentifier(true);
+      AtomIsIdentifierE;
       //DebugLn(['CheckUsesSection ',GetAtom,' ',AUnitName]);
       if UpAtomIs(UpperUnitName) then begin // compare case insensitive
         if CleanPosToCaret(CurPos.StartPos,ReferencePos) then begin
@@ -5227,7 +5228,7 @@ begin
     exit(ifrProceedSearch);
   MoveCursorToNodeStart(ProcContextNode.FirstChild);
   ReadNextAtom; // read name
-  if not AtomIsIdentifier(false) then exit; // ignore operator procs
+  if not AtomIsIdentifier then exit; // ignore operator procs
   NameAtom:=CurPos;
   ReadNextAtom;
   if AtomIsChar('.') then begin
@@ -5566,11 +5567,11 @@ begin
     MoveCursorToCleanPos(IdentifierNode.StartPos);
   AncestorStartPos:=CurPos.StartPos;
   ReadNextAtom;
-  AtomIsIdentifier(true);
+  AtomIsIdentifierE;
   ReadNextAtom;
   if CurPos.Flag=cafPoint then begin
     ReadNextAtom;
-    AtomIsIdentifier(true);
+    AtomIsIdentifierE;
     AncestorStartPos:=CurPos.StartPos;
   end;
   if (ClassIdentNode<>nil)
@@ -6204,7 +6205,7 @@ begin
   repeat
     ReadNextAtom;  // read name
     if AtomIsChar(';') then break;
-    AtomIsIdentifier(true);
+    AtomIsIdentifierE;
     UnitNamePos:=CurPos;
     ReadNextAtom;
     if UpAtomIs('IN') then begin
@@ -6672,10 +6673,10 @@ var
     if UpAtomIs('INHERITED') then
       ReadNextAtom;
     FirstIdentifier:=true;
-    if (CurPos.Flag in AllCommonAtomWords) and AtomIsIdentifier(true) then begin
-      FirstIdentifier:=false;
-      ReadNextAtom;
-    end;
+    if not (CurPos.Flag in AllCommonAtomWords) then exit;
+    AtomIsIdentifierE;
+    FirstIdentifier:=false;
+    ReadNextAtom;
   end;
 
 begin
@@ -6694,7 +6695,7 @@ begin
         if FirstIdentifier and ExceptionIfNoVariableStart then
           RaiseIdentNotFound;
         ReadNextAtom;
-        AtomIsIdentifier(true);
+        AtomIsIdentifierE;
       end;
 
     cafEdgedBracketOpen:
@@ -7812,7 +7813,7 @@ begin
       Tool.MoveCursorToNodeStart(Node);
 
       Tool.ReadNextAtom;
-      if not Tool.AtomIsIdentifier(false) then exit;
+      if not Tool.AtomIsIdentifier then exit;
       Tool.ReadNextAtom;
       if not (CurPos.Flag in [cafEqual,cafColon]) then exit;
       Tool.ReadNextAtom;
@@ -7923,7 +7924,7 @@ begin
   DebugLn('[TFindDeclarationTool.ReadOperandTypeAtCursor] A Atom=',GetAtom);
   debugln(['TFindDeclarationTool.ReadOperandTypeAtCursor StartContext=',Params.ContextNode.DescAsString,'="',dbgstr(Src,Params.ContextNode.StartPos,15),'"']);
   {$ENDIF}
-  if (AtomIsIdentifier(false))
+  if (AtomIsIdentifier)
   or (CurPos.Flag=cafRoundBracketOpen)
   or UpAtomIs('INHERITED') then begin
     // read variable
@@ -9161,9 +9162,9 @@ function TFindDeclarationTool.CheckParameterSyntax(CursorNode: TCodeTreeNode;
   procedure RaiseBracketNotOpened;
   begin
     if CurPos.Flag=cafRoundBracketClose then
-      SaveRaiseExceptionFmt(ctsBracketNotFound,['('])
+      RaiseExceptionFmt(ctsBracketNotFound,['('])
     else
-      SaveRaiseExceptionFmt(ctsBracketNotFound,['[']);
+      RaiseExceptionFmt(ctsBracketNotFound,['[']);
   end;
 
   function CheckIdentifierAndParameterList: boolean; forward;
@@ -10365,7 +10366,7 @@ begin
   end;
   if not UpAtomIs('OF') then exit;
   ReadNextAtom;
-  if not AtomIsIdentifier(false) then exit;
+  if not AtomIsIdentifier then exit;
   Params:=TFindDeclarationParams.Create;
   try
     Params.Flags:=fdfDefaultForExpressions;
@@ -10597,7 +10598,7 @@ var
    ReadNextAtom; // read ^
    if not AtomIsChar('^') then exit;
    ReadNextAtom; // read identifier
-   if not AtomIsIdentifier(false) then exit;
+   if not AtomIsIdentifier then exit;
    Result:=CompareSrcIdentifiers(CurPos.StartPos,p);
  end;
 
