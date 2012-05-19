@@ -17031,6 +17031,10 @@ msgstr "全てを有効化(&n)"
 msgid "Expression"
 msgstr "式"
 
+#: lazarusidestrconsts.liswlinspectpane
+msgid "Inspect pane"
+msgstr ""
+
 #: lazarusidestrconsts.liswlproperties
 msgid "&Properties"
 msgstr "プロパティ(&P)"
@@ -18392,6 +18396,16 @@ msgctxt "lazarusidestrconsts.srkmecsynpsyncroednextcellsel"
 msgid "Next Cell (all selected)"
 msgstr "次のセル（すべて選択）"
 
+#: lazarusidestrconsts.srkmecsynpsyncroednextfirstcell
+msgctxt "lazarusidestrconsts.srkmecsynpsyncroednextfirstcell"
+msgid "Next Cell (firsts only)"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecsynpsyncroednextfirstcellsel
+msgctxt "lazarusidestrconsts.srkmecsynpsyncroednextfirstcellsel"
+msgid "Next Cell (all selected / firsts only)"
+msgstr ""
+
 #: lazarusidestrconsts.srkmecsynpsyncroedprevcell
 msgctxt "lazarusidestrconsts.srkmecsynpsyncroedprevcell"
 msgid "Previous Cell"
@@ -18401,6 +18415,16 @@ msgstr "前のセル"
 msgctxt "lazarusidestrconsts.srkmecsynpsyncroedprevcellsel"
 msgid "Previous Cell (all selected)"
 msgstr "前のセル（すべて選択）"
+
+#: lazarusidestrconsts.srkmecsynpsyncroedprevfirstcell
+msgctxt "lazarusidestrconsts.srkmecsynpsyncroedprevfirstcell"
+msgid "Previous Cell (firsts only)"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecsynpsyncroedprevfirstcellsel
+msgctxt "lazarusidestrconsts.srkmecsynpsyncroedprevfirstcellsel"
+msgid "Previous Cell (all selected / firsts only)"
+msgstr ""
 
 #: lazarusidestrconsts.srkmecsynpsyncroedstart
 msgid "Start Syncro edit"
@@ -18447,6 +18471,24 @@ msgstr "次のセル（すべて選択）"
 msgid "Next Cell (rotate / all selected)"
 msgstr "次のセル（回転/すべて選択）"
 
+#: lazarusidestrconsts.srkmecsynptmplednextfirstcell
+msgctxt "lazarusidestrconsts.srkmecsynptmplednextfirstcell"
+msgid "Next Cell (firsts only)"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecsynptmplednextfirstcellrotate
+msgid "Next Cell (rotate / firsts only)"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecsynptmplednextfirstcellsel
+msgctxt "lazarusidestrconsts.srkmecsynptmplednextfirstcellsel"
+msgid "Next Cell (all selected / firsts only)"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecsynptmplednextfirstcellselrotate
+msgid "Next Cell (rotate / all selected / firsts only)"
+msgstr ""
+
 #: lazarusidestrconsts.srkmecsynptmpledprevcell
 msgctxt "lazarusidestrconsts.srkmecsynptmpledprevcell"
 msgid "Previous Cell"
@@ -18456,6 +18498,16 @@ msgstr "前のセル"
 msgctxt "lazarusidestrconsts.srkmecsynptmpledprevcellsel"
 msgid "Previous Cell (all selected)"
 msgstr "前のセル（すべて選択）"
+
+#: lazarusidestrconsts.srkmecsynptmpledprevfirstcell
+msgctxt "lazarusidestrconsts.srkmecsynptmpledprevfirstcell"
+msgid "Previous Cell (firsts only)"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecsynptmpledprevfirstcellsel
+msgctxt "lazarusidestrconsts.srkmecsynptmpledprevfirstcellsel"
+msgid "Previous Cell (all selected / firsts only)"
+msgstr ""
 
 #: lazarusidestrconsts.srkmecsyntaxcheck
 #, fuzzy

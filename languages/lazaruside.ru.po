@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2012-05-04 00:47+0400\n"
+"PO-Revision-Date: 2012-05-19 03:08+0400\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -16662,6 +16662,10 @@ msgstr "В&ключить все"
 msgid "Expression"
 msgstr "Выражение"
 
+#: lazarusidestrconsts.liswlinspectpane
+msgid "Inspect pane"
+msgstr "Панель просмотра"
+
 #: lazarusidestrconsts.liswlproperties
 msgid "&Properties"
 msgstr "&Свойства"
@@ -17999,6 +18003,16 @@ msgctxt "lazarusidestrconsts.srkmecsynpsyncroednextcellsel"
 msgid "Next Cell (all selected)"
 msgstr "Следующее поле (все выбранные)"
 
+#: lazarusidestrconsts.srkmecsynpsyncroednextfirstcell
+msgctxt "lazarusidestrconsts.srkmecsynpsyncroednextfirstcell"
+msgid "Next Cell (firsts only)"
+msgstr "Следующее поле (первое вхождение)"
+
+#: lazarusidestrconsts.srkmecsynpsyncroednextfirstcellsel
+msgctxt "lazarusidestrconsts.srkmecsynpsyncroednextfirstcellsel"
+msgid "Next Cell (all selected / firsts only)"
+msgstr "Следующее поле (все выбранные / первое вхождение)"
+
 #: lazarusidestrconsts.srkmecsynpsyncroedprevcell
 msgctxt "lazarusidestrconsts.srkmecsynpsyncroedprevcell"
 msgid "Previous Cell"
@@ -18008,6 +18022,16 @@ msgstr "Предыдущее поле"
 msgctxt "lazarusidestrconsts.srkmecsynpsyncroedprevcellsel"
 msgid "Previous Cell (all selected)"
 msgstr "Предыдущее поле (все выбранные)"
+
+#: lazarusidestrconsts.srkmecsynpsyncroedprevfirstcell
+msgctxt "lazarusidestrconsts.srkmecsynpsyncroedprevfirstcell"
+msgid "Previous Cell (firsts only)"
+msgstr "Предыдущее поле (первое вхождение)"
+
+#: lazarusidestrconsts.srkmecsynpsyncroedprevfirstcellsel
+msgctxt "lazarusidestrconsts.srkmecsynpsyncroedprevfirstcellsel"
+msgid "Previous Cell (all selected / firsts only)"
+msgstr "Предыдущее поле (все выбранные / первое вхождение)"
 
 #: lazarusidestrconsts.srkmecsynpsyncroedstart
 msgid "Start Syncro edit"
@@ -18054,6 +18078,24 @@ msgstr "Следующее поле (все выбранные)"
 msgid "Next Cell (rotate / all selected)"
 msgstr "Следующее поле (по кругу / все выбранные)"
 
+#: lazarusidestrconsts.srkmecsynptmplednextfirstcell
+msgctxt "lazarusidestrconsts.srkmecsynptmplednextfirstcell"
+msgid "Next Cell (firsts only)"
+msgstr "Следующее поле (первое вхождение)"
+
+#: lazarusidestrconsts.srkmecsynptmplednextfirstcellrotate
+msgid "Next Cell (rotate / firsts only)"
+msgstr "Следующее поле (по кругу / первое вхождение)"
+
+#: lazarusidestrconsts.srkmecsynptmplednextfirstcellsel
+msgctxt "lazarusidestrconsts.srkmecsynptmplednextfirstcellsel"
+msgid "Next Cell (all selected / firsts only)"
+msgstr "Следующее поле (все выбранные / первое вхождение)"
+
+#: lazarusidestrconsts.srkmecsynptmplednextfirstcellselrotate
+msgid "Next Cell (rotate / all selected / firsts only)"
+msgstr "Следующее поле (по кругу / все выбранные / первое вхождение)"
+
 #: lazarusidestrconsts.srkmecsynptmpledprevcell
 msgctxt "lazarusidestrconsts.srkmecsynptmpledprevcell"
 msgid "Previous Cell"
@@ -18063,6 +18105,16 @@ msgstr "Предыдущее поле"
 msgctxt "lazarusidestrconsts.srkmecsynptmpledprevcellsel"
 msgid "Previous Cell (all selected)"
 msgstr "Предыдущее поле (все выбранные)"
+
+#: lazarusidestrconsts.srkmecsynptmpledprevfirstcell
+msgctxt "lazarusidestrconsts.srkmecsynptmpledprevfirstcell"
+msgid "Previous Cell (firsts only)"
+msgstr "Предыдущее поле (первое вхождение)"
+
+#: lazarusidestrconsts.srkmecsynptmpledprevfirstcellsel
+msgctxt "lazarusidestrconsts.srkmecsynptmpledprevfirstcellsel"
+msgid "Previous Cell (all selected / firsts only)"
+msgstr "Предыдущее поле (все выбранные / первое вхождение)"
 
 #: lazarusidestrconsts.srkmecsyntaxcheck
 #| msgid "Syntax check"

@@ -119,3 +119,7 @@ msgstr "Длина=%d: "
 msgid "Use Instance class type"
 msgstr "Использовать тип экземпляра класса"
 
+#: debuggerstrconst.drswatchsplitterinspect
+msgid "Inspect pane"
+msgstr "Панель просмотра"
+

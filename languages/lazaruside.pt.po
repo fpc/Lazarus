@@ -16998,6 +16998,10 @@ msgstr "H&abillitar tudo"
 msgid "Expression"
 msgstr "Expressão"
 
+#: lazarusidestrconsts.liswlinspectpane
+msgid "Inspect pane"
+msgstr ""
+
 #: lazarusidestrconsts.liswlproperties
 msgid "&Properties"
 msgstr "&Propriedades"
@@ -18358,6 +18362,16 @@ msgctxt "lazarusidestrconsts.srkmecsynpsyncroednextcellsel"
 msgid "Next Cell (all selected)"
 msgstr "Próxima Célula (tudo selecionado)"
 
+#: lazarusidestrconsts.srkmecsynpsyncroednextfirstcell
+msgctxt "lazarusidestrconsts.srkmecsynpsyncroednextfirstcell"
+msgid "Next Cell (firsts only)"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecsynpsyncroednextfirstcellsel
+msgctxt "lazarusidestrconsts.srkmecsynpsyncroednextfirstcellsel"
+msgid "Next Cell (all selected / firsts only)"
+msgstr ""
+
 #: lazarusidestrconsts.srkmecsynpsyncroedprevcell
 msgctxt "lazarusidestrconsts.srkmecsynpsyncroedprevcell"
 msgid "Previous Cell"
@@ -18367,6 +18381,16 @@ msgstr "Célula Anterior"
 msgctxt "lazarusidestrconsts.srkmecsynpsyncroedprevcellsel"
 msgid "Previous Cell (all selected)"
 msgstr "Célula Anterior (tudo selecionado)"
+
+#: lazarusidestrconsts.srkmecsynpsyncroedprevfirstcell
+msgctxt "lazarusidestrconsts.srkmecsynpsyncroedprevfirstcell"
+msgid "Previous Cell (firsts only)"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecsynpsyncroedprevfirstcellsel
+msgctxt "lazarusidestrconsts.srkmecsynpsyncroedprevfirstcellsel"
+msgid "Previous Cell (all selected / firsts only)"
+msgstr ""
 
 #: lazarusidestrconsts.srkmecsynpsyncroedstart
 msgid "Start Syncro edit"
@@ -18413,6 +18437,24 @@ msgstr "Próxima Célula (tudo selecionado)"
 msgid "Next Cell (rotate / all selected)"
 msgstr "Próxima Célula (rotacionar / tudo selecionado)"
 
+#: lazarusidestrconsts.srkmecsynptmplednextfirstcell
+msgctxt "lazarusidestrconsts.srkmecsynptmplednextfirstcell"
+msgid "Next Cell (firsts only)"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecsynptmplednextfirstcellrotate
+msgid "Next Cell (rotate / firsts only)"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecsynptmplednextfirstcellsel
+msgctxt "lazarusidestrconsts.srkmecsynptmplednextfirstcellsel"
+msgid "Next Cell (all selected / firsts only)"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecsynptmplednextfirstcellselrotate
+msgid "Next Cell (rotate / all selected / firsts only)"
+msgstr ""
+
 #: lazarusidestrconsts.srkmecsynptmpledprevcell
 msgctxt "lazarusidestrconsts.srkmecsynptmpledprevcell"
 msgid "Previous Cell"
@@ -18422,6 +18464,16 @@ msgstr "Célula Anterior"
 msgctxt "lazarusidestrconsts.srkmecsynptmpledprevcellsel"
 msgid "Previous Cell (all selected)"
 msgstr "Célula Anterior (tudo selecionado)"
+
+#: lazarusidestrconsts.srkmecsynptmpledprevfirstcell
+msgctxt "lazarusidestrconsts.srkmecsynptmpledprevfirstcell"
+msgid "Previous Cell (firsts only)"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecsynptmpledprevfirstcellsel
+msgctxt "lazarusidestrconsts.srkmecsynptmpledprevfirstcellsel"
+msgid "Previous Cell (all selected / firsts only)"
+msgstr ""
 
 #: lazarusidestrconsts.srkmecsyntaxcheck
 #, fuzzy
