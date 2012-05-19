@@ -1275,6 +1275,7 @@ end;
 function dbgs(AFlags: TSourceNotebookUpdateFlags): string; overload;
 var i: TSourceNotebookUpdateFlag;
 begin
+  Result := '';
   for i := low(TSourceNotebookUpdateFlags) to high(TSourceNotebookUpdateFlags) do
     if i in AFlags then begin
       if Result <> '' then Result := Result + ',';
