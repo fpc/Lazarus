@@ -9,7 +9,7 @@ object EditorFileManagerForm: TEditorFileManagerForm
   ClientWidth = 722
   OnCreate = FormCreate
   Position = poScreenCenter
-  LCLVersion = '0.9.31'
+  LCLVersion = '1.1'
   object CheckListBox1: TCheckListBox
     AnchorSideTop.Control = FilterPanel
     AnchorSideTop.Side = asrBottom
@@ -41,6 +41,7 @@ object EditorFileManagerForm: TEditorFileManagerForm
     HelpButton.DefaultCaption = True
     CloseButton.Name = 'CloseButton'
     CloseButton.DefaultCaption = True
+    CloseButton.OnClick = CloseButtonClick
     CancelButton.Name = 'CancelButton'
     CancelButton.DefaultCaption = True
     TabOrder = 1
