@@ -155,6 +155,14 @@ const
     ('&times;'),             {   ×   }
     ('&divide'),             {   ÷   }
     ('&euro;'),              {      }
+    ('&permil;'),
+    ('&bdquo;'),
+    ('&rdquo;'),
+    ('&lsquo;'),
+    ('&rsquo;'),
+    ('&ndash;'),
+    ('&mdash;'),
+    ('&bull;'),
     //used by very old HTML editors
     ('&#9;'),                {  TAB  }
     ('&#127;'),              {      }
@@ -206,16 +214,7 @@ const
     ('&#189;'),              {   ½   }
     ('&#190;'),              {   ¾   }
     ('&#191;'),              {   ¿   }
-    ('&#215;'),              {   Ô   }
-    ('&permil;'),
-    ('&bdquo;'),
-    ('&rdquo;'),
-    ('&lsquo;'),
-    ('&rsquo;'),
-    ('&ndash;'),
-    ('&mdash;'),
-    ('&bull;'));
-
+    ('&#215;'));             {   Ô   }
 
 type
   TtkTokenKind = (tkAmpersand, tkASP, tkCDATA, tkComment, tkIdentifier, tkKey, tkNull,
@@ -464,8 +463,7 @@ type
     function GetFoldConfigCount: Integer; override;
     function GetFoldConfigInternalCount: Integer; override;
   public
-    {$IFNDEF SYN_CPPB_1} class {$ENDIF}                                         //mh 2000-07-14
-    function GetLanguageName: string; override;
+    class function GetLanguageName: string; override;
   public
     constructor Create(AOwner: TComponent); override;
     function GetDefaultAttribute(Index: integer): TSynHighlighterAttributes;
@@ -815,7 +813,6 @@ begin
   end;
 end;
 
-
 function TSynHTMLSyn.Func15: TtkTokenKind;
 begin
   if KeyComp('BDI') then begin
@@ -988,7 +985,6 @@ begin
   end;
 end;
 
-
 function TSynHTMLSyn.Func34: TtkTokenKind;
 begin
   if KeyComp('RP') then begin
@@ -1070,9 +1066,14 @@ begin
     Result := tkKey;
     fSimpleTag := True;
   end
-  else if KeyComp('WBR') Or KeyComp('MARK') then begin
+  else if KeyComp('WBR') then begin
     Result := tkKey;
-  end else begin
+    fSimpleTag := True;
+  end
+  else if KeyComp('MARK') then begin
+    Result := tkKey;
+  end
+  else begin
     Result := tkUndefKey;
   end;
 end;
@@ -1208,11 +1209,11 @@ function TSynHTMLSyn.Func62: TtkTokenKind;
 begin
   if KeyComp('SPACER') then begin
     Result := tkKey;
+    fSimpleTag := True;
   end else begin
     Result := tkUndefKey;
   end;
 end;
-
 
 function TSynHTMLSyn.Func63: TtkTokenKind;
 begin
@@ -1254,11 +1255,11 @@ function TSynHTMLSyn.Func67: TtkTokenKind;
 begin
   if KeyComp('KEYGEN') then begin
     Result := tkKey;
+    fSimpleTag := True;
   end else begin
     Result := tkUndefKey;
   end;
 end;
-
 
 function TSynHTMLSyn.Func68: TtkTokenKind;
 begin
@@ -1271,7 +1272,7 @@ end;
 
 function TSynHTMLSyn.Func70: TtkTokenKind;
 begin
-  if KeyComp('ADDRESS') Or KeyComp('APPLET') Or KeyComp('ILAYER') Or KeyComp('DETAILS')then begin
+  if KeyComp('ADDRESS') Or KeyComp('APPLET') Or KeyComp('ILAYER') Or KeyComp('DETAILS') then begin
     Result := tkKey;
   end else begin
     Result := tkUndefKey;
@@ -1280,9 +1281,14 @@ end;
 
 function TSynHTMLSyn.Func76: TtkTokenKind;
 begin
-  if KeyComp('NEXTID') Or KeyComp('TFOOT') then begin
+  if KeyComp('NEXTID') then begin
     Result := tkKey;
-  end else begin
+    fSimpleTag := True;
+  end else
+  if KeyComp('TFOOT') then begin
+    Result := tkKey;
+  end
+  else begin
     Result := tkUndefKey;
   end;
 end;
@@ -1304,7 +1310,6 @@ begin
     Result := tkUndefKey;
   end;
 end;
-
 
 function TSynHTMLSyn.Func80: TtkTokenKind;
 begin
@@ -1332,10 +1337,10 @@ end;
 
 function TSynHTMLSyn.Func82: TtkTokenKind;
 begin
-  if KeyComp('BASEFONT') then begin
+  if KeyComp('BASEFONT') Or KeyComp('BGSOUND') then begin
     Result := tkKey;
     fSimpleTag := True;
-  end else if KeyComp('BGSOUND') Or KeyComp('STRIKE') then begin
+  end else if KeyComp('STRIKE') then begin
     Result := tkKey;
   end else begin
     Result := tkUndefKey;
@@ -1363,7 +1368,7 @@ end;
 
 function TSynHTMLSyn.Func85: TtkTokenKind;
 begin
-  if KeyComp('SCRIPT') Or KeyComp('HGROUP') Or KeyComp('SECTION')then begin
+  if KeyComp('SCRIPT') Or KeyComp('HGROUP') Or KeyComp('SECTION') then begin
     Result := tkKey;
   end else begin
     Result := tkUndefKey;
@@ -1478,7 +1483,6 @@ begin
   end;
 end;
 
-
 function TSynHTMLSyn.Func113: TtkTokenKind;
 begin
   if KeyComp('OUTPUT') then begin
@@ -1487,7 +1491,6 @@ begin
     Result := tkUndefKey;
   end;
 end;
-
 
 function TSynHTMLSyn.Func114: TtkTokenKind;
 begin
@@ -1509,7 +1512,11 @@ end;
 
 function TSynHTMLSyn.Func121: TtkTokenKind;
 begin
-  if KeyComp('BLOCKQUOTE') Or KeyComp('PLAINTEXT') then begin
+  if KeyComp('PLAINTEXT') then begin
+    Result := tkKey;
+    fSimpleTag := True;
+  end else
+  if KeyComp('BLOCKQUOTE') then begin
     Result := tkKey;
   end else begin
     Result := tkUndefKey;
@@ -1606,7 +1613,6 @@ begin
   end;
 end;
 
-
 function TSynHTMLSyn.Func137: TtkTokenKind;
 begin
   if KeyComp('/BDI') then begin
@@ -1697,7 +1703,6 @@ begin
   end;
 end;
 
-
 function TSynHTMLSyn.Func152: TtkTokenKind;
 begin
   if KeyComp('/MAP') then begin
@@ -1763,7 +1768,7 @@ end;
 
 function TSynHTMLSyn.Func160: TtkTokenKind;
 begin
-  if KeyComp('/THEAD') Or KeyComp('/TR') Or KeyComp('/ASIDE')Or KeyComp('/RT')then begin
+  if KeyComp('/THEAD') Or KeyComp('/TR') Or KeyComp('/ASIDE')Or KeyComp('/RT') then begin
     Result := tkKey;
   end else begin
     Result := tkUndefKey;
@@ -1853,7 +1858,7 @@ end;
 
 function TSynHTMLSyn.Func172: TtkTokenKind;
 begin
-  if KeyComp('/SPAN') Or KeyComp('/AUDIO')then begin
+  if KeyComp('/SPAN') Or KeyComp('/AUDIO') then begin
     Result := tkKey;
   end else begin
     Result := tkUndefKey;
@@ -1884,7 +1889,7 @@ end;
 
 function TSynHTMLSyn.Func177: TtkTokenKind;
 begin
-  if KeyComp('/FONT') Or KeyComp('/OBJECT') Or KeyComp('/VIDEO')then begin
+  if KeyComp('/FONT') Or KeyComp('/OBJECT') Or KeyComp('/VIDEO') then begin
     Result := tkKey;
   end else begin
     Result := tkUndefKey;
@@ -1918,7 +1923,6 @@ begin
   end;
 end;
 
-
 function TSynHTMLSyn.Func182: TtkTokenKind;
 begin
   if KeyComp('/CANVAS') then begin
@@ -1936,7 +1940,6 @@ begin
     Result := tkUndefKey;
   end;
 end;
-
 
 function TSynHTMLSyn.Func185: TtkTokenKind;
 begin
@@ -1967,7 +1970,7 @@ end;
 
 function TSynHTMLSyn.Func188: TtkTokenKind;
 begin
-  if KeyComp('/TBODY') Or KeyComp('/TITLE') Or KeyComp('/FIGURE')Or KeyComp('/RUBY')then begin
+  if KeyComp('/TBODY') Or KeyComp('/TITLE') Or KeyComp('/FIGURE')Or KeyComp('/RUBY') then begin
     Result := tkKey;
   end else begin
     Result := tkUndefKey;
@@ -1983,10 +1986,9 @@ begin
   end;
 end;
 
-
 function TSynHTMLSyn.Func192: TtkTokenKind;
 begin
-  if KeyComp('/ADDRESS') Or KeyComp('/APPLET') Or KeyComp('/ILAYER') Or KeyComp('/DETAILS')then begin
+  if KeyComp('/ADDRESS') Or KeyComp('/APPLET') Or KeyComp('/ILAYER') Or KeyComp('/DETAILS') then begin
     Result := tkKey;
   end else begin
     Result := tkUndefKey;
@@ -2062,7 +2064,7 @@ end;
 
 function TSynHTMLSyn.Func207: TtkTokenKind;
 begin
-  if KeyComp('/SCRIPT') Or KeyComp('/HGROUP') Or KeyComp('/SECTION')then begin
+  if KeyComp('/SCRIPT') Or KeyComp('/HGROUP') Or KeyComp('/SECTION') then begin
     Result := tkKey;
   end else begin
     Result := tkUndefKey;
@@ -2186,7 +2188,6 @@ begin
   end;
 end;
 
-
 function TSynHTMLSyn.Func236: TtkTokenKind;
 begin
   if KeyComp('/NOSCRIPT') then begin
@@ -2287,8 +2288,7 @@ begin
   AddAttribute(fASPAttri);
 
   fCDATAAttri := TSynHighlighterAttributes.Create(SYNS_AttrCDATA, SYNS_XML_AttrCDATA);
-  fCDATAAttri.Foreground := clBlack;
-  fCDATAAttri.Background := clAqua;
+  fCDATAAttri.Foreground := clGreen;
   AddAttribute(fCDATAAttri);
 
   fCommentAttri := TSynHighlighterAttributes.Create(SYNS_AttrComment, SYNS_XML_AttrComment);
@@ -2384,8 +2384,6 @@ begin
     Inc(Run);
   end;
 end;
-
-
 
 procedure TSynHTMLSyn.SetMode(const AValue: TSynHTMLSynMode);
 begin
@@ -2757,16 +2755,13 @@ begin
   Result := ord(high(THtmlCodeFoldBlockType)) - ord(low(THtmlCodeFoldBlockType)) + 1;
 end;
 
-{$IFNDEF SYN_CPPB_1} class {$ENDIF}                                             //mh 2000-07-14
-function TSynHTMLSyn.GetLanguageName: string;
+class function TSynHTMLSyn.GetLanguageName: string;
 begin
   Result := SYNS_LangHTML;
 end;
 
 initialization
   MakeIdentTable;
-{$IFNDEF SYN_CPPB_1}                                                            //mh 2000-07-14
   RegisterPlaceableHighlighter(TSynHTMLSyn);
-{$ENDIF}
-end.
 
+end.
