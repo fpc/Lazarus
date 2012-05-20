@@ -19,7 +19,7 @@ msgstr ""
 
 #: eduoptions.ersaddanidemenuitemtocreateanewprogram
 msgid "Add an IDE menu item to create a new program"
-msgstr ""
+msgstr "Einen IDE-Menüeintrag zum Erzeugen eines neuen Programms hinzufügen"
 
 #: eduoptions.ersaddaspeedbuttontotheidetoolbartocreateanewprogram
 msgid "Add a speed button to the IDE toolbar to create a new program"
@@ -39,7 +39,7 @@ msgstr "Zum %sNeu ...%s Dialog hinzufügen"
 
 #: eduoptions.ersasimpleprogramonlyonefileiscreatedandaddedtothecur
 msgid "A simple program. Only one file is created and added to the current project."
-msgstr ""
+msgstr "Ein einfaches Programm. Nur eine Datei wird erzeugt und zum aktuellen Projekt hinzugefügt."
 
 #: eduoptions.erseducomppalettetitle
 msgid "Component palette"
@@ -76,27 +76,27 @@ msgstr ""
 
 #: eduoptions.ersgrpboxeventsext
 msgid "Events: Extended Configuration"
-msgstr ""
+msgstr "Ereignisse: Erweiterte Konfiguration"
 
 #: eduoptions.ersgrpboxeventsfull
 msgid "Events: Full Configuration"
-msgstr ""
+msgstr "Ereignisse: Vollständige Konfiguration"
 
 #: eduoptions.ersgrpboxeventsmin
 msgid "Events: Minimal Configuration"
-msgstr ""
+msgstr "Ereignisse: Minimale Konfiguration"
 
 #: eduoptions.ersgrpboxpropsext
 msgid "Properties: Extended Configuration"
-msgstr ""
+msgstr "Eigenschaften: Erweiterte Konfiguration"
 
 #: eduoptions.ersgrpboxpropsfull
 msgid "Properties: Full Configuration"
-msgstr ""
+msgstr "Eigenschaften: Vollständige Konfiguration"
 
 #: eduoptions.ersgrpboxpropsmin
 msgid "Properties: Minimal Configuration"
-msgstr ""
+msgstr "Eigenschaften: Minimale Konfiguration"
 
 #: eduoptions.ershideall
 msgid "Hide all"
