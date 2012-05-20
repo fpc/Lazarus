@@ -8545,11 +8545,6 @@ msgstr "ошибка fpcmake"
 msgid "FPC message file"
 msgstr "Файл сообщений FPC"
 
-#: lazarusidestrconsts.lisfpcomponents
-msgctxt "lazarusidestrconsts.lisfpcomponents"
-msgid "Components"
-msgstr "Компоненты"
-
 #: lazarusidestrconsts.lisfpcresources
 msgid "FPC resources"
 msgstr "Ресурсы FPC"
@@ -8598,10 +8593,6 @@ msgstr "Имя пакета FPDoc. По умолчанию использует�
 #: lazarusidestrconsts.lisfpdocthereisasyntaxerrorinthefpdocelement
 msgid "There is a syntax error in the fpdoc element \"%s\":%s%s"
 msgstr "В элементе FPDoc \"%s\" имеется синтаксическая ошибка:%s%s"
-
-#: lazarusidestrconsts.lisfpfindpalettecomponent
-msgid "Find palette component"
-msgstr "Найти компонент на палитре"
 
 #: lazarusidestrconsts.lisframe
 msgid "Frame"

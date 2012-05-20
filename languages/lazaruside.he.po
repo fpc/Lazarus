@@ -8665,11 +8665,6 @@ msgstr "fpcmake נכשל"
 msgid "FPC message file"
 msgstr ""
 
-#: lazarusidestrconsts.lisfpcomponents
-msgctxt "lazarusidestrconsts.lisfpcomponents"
-msgid "Components"
-msgstr "רכיבים"
-
 #: lazarusidestrconsts.lisfpcresources
 msgid "FPC resources"
 msgstr " משאבי  FPC"
@@ -8718,10 +8713,6 @@ msgstr ""
 #: lazarusidestrconsts.lisfpdocthereisasyntaxerrorinthefpdocelement
 msgid "There is a syntax error in the fpdoc element \"%s\":%s%s"
 msgstr "יש שגיאת תחביר באלמנט של  fpdoc"
-
-#: lazarusidestrconsts.lisfpfindpalettecomponent
-msgid "Find palette component"
-msgstr "מצא רכיב לוח"
 
 #: lazarusidestrconsts.lisframe
 msgid "Frame"

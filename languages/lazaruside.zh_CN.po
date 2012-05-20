@@ -8627,11 +8627,6 @@ msgstr "fpcmake 失败"
 msgid "FPC message file"
 msgstr ""
 
-#: lazarusidestrconsts.lisfpcomponents
-msgctxt "lazarusidestrconsts.lisfpcomponents"
-msgid "Components"
-msgstr "组件"
-
 #: lazarusidestrconsts.lisfpcresources
 msgid "FPC resources"
 msgstr ""
@@ -8680,10 +8675,6 @@ msgstr ""
 #: lazarusidestrconsts.lisfpdocthereisasyntaxerrorinthefpdocelement
 msgid "There is a syntax error in the fpdoc element \"%s\":%s%s"
 msgstr ""
-
-#: lazarusidestrconsts.lisfpfindpalettecomponent
-msgid "Find palette component"
-msgstr "查找组件面板"
 
 #: lazarusidestrconsts.lisframe
 msgid "Frame"

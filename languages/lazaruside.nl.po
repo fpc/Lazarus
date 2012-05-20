@@ -8546,11 +8546,6 @@ msgstr ""
 msgid "FPC message file"
 msgstr ""
 
-#: lazarusidestrconsts.lisfpcomponents
-msgctxt "lazarusidestrconsts.lisfpcomponents"
-msgid "Components"
-msgstr "Componenten"
-
 #: lazarusidestrconsts.lisfpcresources
 msgid "FPC resources"
 msgstr ""
@@ -8599,10 +8594,6 @@ msgstr ""
 #: lazarusidestrconsts.lisfpdocthereisasyntaxerrorinthefpdocelement
 msgid "There is a syntax error in the fpdoc element \"%s\":%s%s"
 msgstr ""
-
-#: lazarusidestrconsts.lisfpfindpalettecomponent
-msgid "Find palette component"
-msgstr "Vind palette component"
 
 #: lazarusidestrconsts.lisframe
 msgid "Frame"
