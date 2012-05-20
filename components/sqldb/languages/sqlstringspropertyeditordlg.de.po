@@ -11,27 +11,27 @@ msgstr ""
 
 #: sqlstringspropertyeditordlg.smetacolumns
 msgid "Columns"
-msgstr ""
+msgstr "Spalten"
 
 #: sqlstringspropertyeditordlg.smetapleasespecifyatableintheobjectfield
 msgid "Please specify a table in the object field."
-msgstr ""
+msgstr "Bitte bestimmen Sie eine Tabelle im Objektfeld."
 
 #: sqlstringspropertyeditordlg.smetaprocedures
 msgid "Procedures"
-msgstr ""
+msgstr "Prozeduren"
 
 #: sqlstringspropertyeditordlg.smetasystables
 msgid "SysTables"
-msgstr ""
+msgstr "Systemtabellen"
 
 #: sqlstringspropertyeditordlg.smetatabcaption
 msgid "Metadata"
-msgstr ""
+msgstr "Metadaten"
 
 #: sqlstringspropertyeditordlg.smetatables
 msgid "Tables"
-msgstr ""
+msgstr "Tabellen"
 
 #: sqlstringspropertyeditordlg.sresulttabcaption
 msgid "Results"
