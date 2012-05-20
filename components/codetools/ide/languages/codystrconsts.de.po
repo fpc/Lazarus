@@ -36,11 +36,11 @@ msgstr "Bereits definiert"
 
 #: codystrconsts.crsalreadydefinedat
 msgid "Already defined at %s"
-msgstr ""
+msgstr "Bereits definiert bei %s"
 
 #: codystrconsts.crsandmoreidentifiers
 msgid "... and %s more identifiers"
-msgstr ""
+msgstr "... und %s weitere Bezeichner"
 
 #: codystrconsts.crsawindowforthelazarusideitcanbedockedlikethecodeexp
 msgid "A window for the Lazarus IDE. It can be docked like the Code Explorer or the FPDoc Editor. This also creates a menu item in the View menu and a short cut."
@@ -72,7 +72,7 @@ msgstr ""
 
 #: codystrconsts.crscamcursorisnotinapascalclassdeclaration
 msgid "cursor is not in a pascal class declaration"
-msgstr ""
+msgstr "Cursor befindet sich nicht in einer Pascal-Klassendeklaration"
 
 #: codystrconsts.crscamexistsalready
 msgid "exists already"
@@ -176,16 +176,16 @@ msgstr ""
 
 #: codystrconsts.crscodyidentifierdictionary
 msgid "Identifier Dictionary"
-msgstr ""
+msgstr "Bezeichnerwörterbuch"
 
 #: codystrconsts.crscogeneral
 msgctxt "codystrconsts.crscogeneral"
 msgid "General"
-msgstr ""
+msgstr "Allgemein"
 
 #: codystrconsts.crsconfigurenewidewindow
 msgid "Configure new IDE window"
-msgstr ""
+msgstr "Neues IDE-Fenster konfigurieren"
 
 #: codystrconsts.crscontains
 msgid "Contains"
@@ -193,7 +193,7 @@ msgstr ""
 
 #: codystrconsts.crscontinue
 msgid "Continue"
-msgstr ""
+msgstr "Fortsetzen"
 
 #: codystrconsts.crscopydeclarationtoclipboard
 msgid "Copy declaration to Clipboard"
@@ -278,7 +278,7 @@ msgstr "Ausdruck"
 
 #: codystrconsts.crsextendunitpath
 msgid "Extend unit path"
-msgstr ""
+msgstr "Erweiterter Unitpfad"
 
 #: codystrconsts.crsfile
 msgid "File"
@@ -334,11 +334,11 @@ msgstr "Bezeichner nicht gefunden"
 
 #: codystrconsts.crsidentifiernotfoundinunit
 msgid "Identifier \"%s\" not found in unit \"%s\". Maybe the identifier does not exist for this platform or maybe the identifier was deleted/renamed."
-msgstr ""
+msgstr "Bezeichner \"%s\" nicht gefunden in Unit \"%s\". Evtl. existiert der Bezeichner nicht für diese Plattform oder er wurde gelöscht/umbenannt."
 
 #: codystrconsts.crsidewindowdockable
 msgid "IDE window, dockable"
-msgstr ""
+msgstr "IDE-Fenster, andockbar"
 
 #: codystrconsts.crsifidentifierisaddedtotheimplementationsectionandne
 msgctxt "codystrconsts.crsifidentifierisaddedtotheimplementationsectionandne"
@@ -367,7 +367,7 @@ msgstr ""
 
 #: codystrconsts.crsjumpto
 msgid "&Jump to"
-msgstr ""
+msgstr "Springe zu"
 
 #: codystrconsts.crskbytes
 msgid "kbytes"
@@ -379,7 +379,7 @@ msgstr ""
 
 #: codystrconsts.crsloaddictionaryafter
 msgid "Load dictionary after %s"
-msgstr ""
+msgstr "Lade Wörterbuch nach %s"
 
 #: codystrconsts.crslocalvariableof
 msgid "Local variable of %s"
@@ -403,7 +403,7 @@ msgstr ""
 
 #: codystrconsts.crsminutes
 msgid "%s minutes"
-msgstr ""
+msgstr "%s Minuten"
 
 #: codystrconsts.crsmissing
 msgid "missing ..."
@@ -431,7 +431,7 @@ msgstr ""
 
 #: codystrconsts.crsoptions
 msgid "Options"
-msgstr ""
+msgstr "Einstellungen"
 
 #: codystrconsts.crsotherobjectfiles
 msgid "Other object files"
@@ -459,11 +459,11 @@ msgstr "Package nicht gefunden"
 
 #: codystrconsts.crspackagenotfounditshouldbein
 msgid "Package \"%s\" not found. It should be in \"%s\"."
-msgstr ""
+msgstr "Package \"%s\" nicht gefunden. Es sollte in \"%s\" sein."
 
 #: codystrconsts.crspackagesunitsidentifiersfile
 msgid "Packages: %s, Units: %s, Identifiers: %s%sDatabase: %s"
-msgstr ""
+msgstr "Packages: %s, Units: %s, Bezeichner: %s%sDatenbank: %s"
 
 #: codystrconsts.crspackagewithsamename
 msgid "Package with same name"
@@ -511,11 +511,11 @@ msgstr ""
 
 #: codystrconsts.crsprojecthasnomainsourcefile
 msgid "Project has no main source file."
-msgstr ""
+msgstr "Projekt hat keine Haupt-Quelldatei."
 
 #: codystrconsts.crsprojectoutput
 msgid "Project Output"
-msgstr ""
+msgstr "Projektausgabe"
 
 #: codystrconsts.crsprotected
 msgid "Protected"
@@ -539,11 +539,11 @@ msgstr "Bericht"
 
 #: codystrconsts.crssavedictionaryevery
 msgid "Save dictionary every %s"
-msgstr ""
+msgstr "Speichere Wörterbuch alle %s"
 
 #: codystrconsts.crssavedictionarynow
 msgid "Save dictionary now"
-msgstr ""
+msgstr "Speichere Wörterbuch jetzt"
 
 #: codystrconsts.crssavetofile
 msgid "Save to file %s"
@@ -555,7 +555,7 @@ msgstr ""
 
 #: codystrconsts.crsseconds
 msgid "%s seconds"
-msgstr ""
+msgstr "%s Sekunden"
 
 #: codystrconsts.crsselectexpression
 msgid "Select expression"
@@ -575,7 +575,7 @@ msgstr ""
 
 #: codystrconsts.crsshowunitidentifierdictionary
 msgid "Show Unit / Identifier Dictionary ..."
-msgstr ""
+msgstr "Zeige Unit- / Bezeichnerwörterbuch ..."
 
 #: codystrconsts.crsshowusedppufiles
 msgid "Show Used .ppu Files ..."
@@ -635,7 +635,7 @@ msgstr "Typ"
 
 #: codystrconsts.crsunabletodelete
 msgid "Unable to delete \"%s\""
-msgstr ""
+msgstr "Kann \"%s\" nicht löschen"
 
 #: codystrconsts.crsunabletoreadfile
 msgid "Unable to read file \"%s\"."
@@ -655,7 +655,7 @@ msgstr "Unit: %s"
 
 #: codystrconsts.crsunitidentifierdictionary
 msgid "Unit / Identifier Dictionary"
-msgstr ""
+msgstr "Unit- / Bezeichnerwörterbuch"
 
 #: codystrconsts.crsunitnameclash
 msgid "Unit name clash"
@@ -683,7 +683,7 @@ msgstr "Verwendet von"
 
 #: codystrconsts.crsuseidentifier
 msgid "&Use identifier"
-msgstr ""
+msgstr "Verwende Bezeichner"
 
 #: codystrconsts.crsuses
 msgid "Uses"
