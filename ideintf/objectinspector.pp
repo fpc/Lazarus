@@ -3890,6 +3890,8 @@ begin
   Caption := oisObjectInspector;
   StatusBar.SimpleText := oisAll;
 
+  FilterLabel.Caption := oisComponents;
+
   MainPopupMenu.Images := IDEImages.Images_16;
 
   AddPopupMenuItem(SetDefaultPopupmenuItem,nil,'SetDefaultPopupMenuItem',
