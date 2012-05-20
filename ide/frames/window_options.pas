@@ -423,7 +423,7 @@ begin
   if Fits('PseudoTerminal', lisMenuViewPseudoTerminal) then exit;
   if Fits('Threads', lisMenuViewThreads) then exit;
   if Fits('DbgHistory', lisMenuViewHistory) then exit;
-  if Fits('ComponentList', lisFPComponents) then exit;
+  if Fits('ComponentList', lisCmpLstComponents) then exit;
   Result:=ALayout.FormCaption;
 end;
 

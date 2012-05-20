@@ -4223,10 +4223,6 @@ resourcestring
   lisProjInspRemovedRequiredPackages = 'Removed required packages';
   lisProjInspProjectInspector = 'Project Inspector - %s';
   
-  // Find palette component dialog
-  lisFPFindPaletteComponent = 'Find palette component';
-  lisFPComponents = 'Components';
-  
   // components list form
   lisCmpLstComponents = 'Components';
   lisCmpLstList = 'List';
