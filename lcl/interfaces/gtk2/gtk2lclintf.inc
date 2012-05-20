@@ -961,11 +961,12 @@ var
       idButtonYes      : Result := GTK_RESPONSE_YES;
       idButtonNo       : Result := GTK_RESPONSE_NO;
       idButtonClose    : Result := GTK_RESPONSE_CLOSE;
-      idButtonAbort    : Result := GTK_RESPONSE_CANCEL;
-      idButtonRetry    : Result := GTK_RESPONSE_ACCEPT;
-      idButtonIgnore   : Result := GTK_RESPONSE_CANCEL;
-      idButtonNoToAll  : Result := GTK_RESPONSE_APPLY;
-      idButtonYesToAll : Result := GTK_RESPONSE_REJECT;
+      idButtonAbort    : Result := GTK_RESPONSE_REJECT;
+      idButtonRetry    : Result := GTK_RESPONSE_LCL_RETRY;
+      idButtonIgnore   : Result := GTK_RESPONSE_LCL_IGNORE;
+      idButtonAll      : Result := GTK_RESPONSE_LCL_ALL;
+      idButtonNoToAll  : Result := GTK_RESPONSE_LCL_NOTOALL;
+      idButtonYesToAll : Result := GTK_RESPONSE_LCL_YESTOALL;
     end;
   end;
 begin
@@ -1022,10 +1023,11 @@ begin
             idButtonNo       : CreateButton(Caption, GTK_RESPONSE_NO, BtnID);
             idButtonClose    : CreateButton(Caption, GTK_RESPONSE_CLOSE, BtnID);
             idButtonAbort    : CreateButton(Caption, GTK_RESPONSE_REJECT, BtnID);
-            idButtonRetry    : CreateButton(Caption, GTK_RESPONSE_ACCEPT, BtnID);
-            idButtonIgnore   : CreateButton(Caption, GTK_RESPONSE_CLOSE, BtnID);
-            idButtonNoToAll  : CreateButton(Caption, GTK_RESPONSE_REJECT, BtnID);
-            idButtonYesToAll : CreateButton(Caption, GTK_RESPONSE_APPLY, BtnID);
+            idButtonRetry    : CreateButton(Caption, GTK_RESPONSE_LCL_RETRY, BtnID);
+            idButtonIgnore   : CreateButton(Caption, GTK_RESPONSE_LCL_IGNORE, BtnID);
+            idButtonAll      : CreateButton(Caption, GTK_RESPONSE_LCL_ALL, BtnID);
+            idButtonNoToAll  : CreateButton(Caption, GTK_RESPONSE_LCL_NOTOALL, BtnID);
+            idButtonYesToAll : CreateButton(Caption, GTK_RESPONSE_LCL_YESTOALL, BtnID);
           end;
         end;
     end;
@@ -1130,11 +1132,12 @@ var
       idButtonYes      : Result := GTK_RESPONSE_YES;
       idButtonNo       : Result := GTK_RESPONSE_NO;
       idButtonClose    : Result := GTK_RESPONSE_CLOSE;
-      idButtonAbort    : Result := GTK_RESPONSE_CANCEL;
-      idButtonRetry    : Result := GTK_RESPONSE_ACCEPT;
-      idButtonIgnore   : Result := GTK_RESPONSE_CANCEL;
-      idButtonNoToAll  : Result := GTK_RESPONSE_APPLY;
-      idButtonYesToAll : Result := GTK_RESPONSE_REJECT;
+      idButtonAbort    : Result := GTK_RESPONSE_REJECT;
+      idButtonRetry    : Result := GTK_RESPONSE_LCL_RETRY;
+      idButtonIgnore   : Result := GTK_RESPONSE_LCL_IGNORE;
+      idButtonAll      : Result := GTK_RESPONSE_LCL_ALL;
+      idButtonNoToAll  : Result := GTK_RESPONSE_LCL_NOTOALL;
+      idButtonYesToAll : Result := GTK_RESPONSE_LCL_YESTOALL;
     end;
   end;
 
@@ -1185,10 +1188,11 @@ begin
         idButtonNo       : CreateButton('gtk-no', GTK_RESPONSE_NO);
         idButtonClose    : CreateButton('gtk-close', GTK_RESPONSE_CLOSE);
         idButtonAbort    : CreateButton(rsMBAbort, GTK_RESPONSE_REJECT);
-        idButtonRetry    : CreateButton(rsMBRetry, GTK_RESPONSE_ACCEPT);
-        idButtonIgnore   : CreateButton(rsMBIgnore, GTK_RESPONSE_CLOSE);
-        idButtonNoToAll  : CreateButton(rsMBNoToAll, GTK_RESPONSE_REJECT);
-        idButtonYesToAll : CreateButton(rsMBYesToAll, GTK_RESPONSE_APPLY);
+        idButtonRetry    : CreateButton(rsMBRetry, GTK_RESPONSE_LCL_RETRY);
+        idButtonIgnore   : CreateButton(rsMBIgnore, GTK_RESPONSE_LCL_IGNORE);
+        idButtonAll      : CreateButton(rsMbAll, GTK_RESPONSE_LCL_ALL);
+        idButtonNoToAll  : CreateButton(rsMBNoToAll, GTK_RESPONSE_LCL_NOTOALL);
+        idButtonYesToAll : CreateButton(rsMBYesToAll, GTK_RESPONSE_LCL_YESTOALL);
       end;
     end;
   end;
@@ -1273,8 +1277,6 @@ begin
     gtk_widget_size_request(Menu, @Requisition);
   end;
 end;
-
-
 
 
 //##apiwiz##eps##   // Do not remove, no wizard declaration after this line
