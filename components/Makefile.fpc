@@ -24,9 +24,9 @@ files=$(wildcard ./units/*$(OEXT)) \
 help:
 	@$(ECHO)
 	@$(ECHO) " Targets"
-	@$(ECHO) "   all         build base and bigide components"
-	@$(ECHO) "   clean       deletes files that 'all' creates"
-	@$(ECHO) "   base        build synedit and lazcontrols"
+	@$(ECHO) "   all         same as bigide"
+	@$(ECHO) "               lazutils, codetools, lazcontrols, synedit are build separately"
+	@$(ECHO) "   clean       deletes output files of base and bigide components"
 	@$(ECHO) "   bigide      build the extra packages for the bigide"
 
 #-----------------------------------------------------------------------------
@@ -62,9 +62,9 @@ bigide:
 	$(MAKE) -C tdbf
 	$(MAKE) -C sqldb
 
-all: base bigide
+all: bigide
 
-cleanall:
+clean:
 	$(MAKE) -C lazutils clean
 	$(MAKE) -C codetools clean
 	$(MAKE) -C synedit clean
@@ -90,5 +90,5 @@ cleanall:
 	$(MAKE) -C tdbf clean
 	$(MAKE) -C sqldb clean
 
-clean: cleanall
+cleanall: clean
 

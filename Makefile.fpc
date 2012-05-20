@@ -44,7 +44,7 @@ endif
 
 #-----------------------------------------------------------------------------
 [rules]
-.PHONY: help registration lazutils codetools tools lcl ideintf basecomponents bigidecomponents lazbuild ide idepkg idebig cleanide bigide useride starter all clean purge install
+.PHONY: help registration lazutils codetools tools lcl basecomponents bigidecomponents lazbuild ide idepkg idebig cleanide bigide useride starter all clean purge install
 
 #-----------------------------------------------------------------------------
 help:
@@ -65,8 +65,7 @@ help:
 	@$(ECHO) "   codetools      build package CodeTools, requires lazutils"
 	@$(ECHO) "   lcl            build package LCL, requires lazutils"
 	@$(ECHO) "   tools          build lazres, svn2revisioninc, updatepofiles, lrstolfm, requires LCL with nogui widgetset"
-	@$(ECHO) "   ideintf        build package IDEIntf, requires lcl"
-	@$(ECHO) "   basecomponents build synedit and lazcontrols for the LCL_PLATFORM, requires ideintf"
+	@$(ECHO) "   basecomponents build lazcontrols, ideintf, synedit for the LCL_PLATFORM, requires lcl"
 	@$(ECHO) "   bigidecomponents build many extra packages for the LCL_PLATFORM, requires basecomponents"
 	@$(ECHO) "   starter        build startlazarus, requires basecomponents"
 	@$(ECHO) "   examples       build basic examples, requires basecomponents"
@@ -126,17 +125,13 @@ lcl:
 	$(MAKE) -C lcl
 
 #-----------------------------------------------------------------------------
-# build package IDEIntf for LCL_PLATFORM
-# requires lcl
-ideintf:
-	$(MAKE) -C ideintf
-
-#-----------------------------------------------------------------------------
-# build synedit and lazcontrols for the LCL_PLATFORM
+# build lazcontrols, ideintf, synedit for the LCL_PLATFORM
 # (Note: lazutils and codetools are shared on all LCL platforms)
-# requires ideintf
+# requires lcl
 basecomponents:
-	$(MAKE) -C components base
+	$(MAKE) -C components/lazcontrols
+	$(MAKE) -C ideintf
+	$(MAKE) -C components/synedit
 
 #-----------------------------------------------------------------------------
 # build a lot of extra packages for the LCL_PLATFORM
@@ -191,8 +186,9 @@ starter:
 lazbuild: registration lazutils codetools
 	$(MAKE) -C lcl LCL_PLATFORM=nogui
 	$(MAKE) -C tools
+	$(MAKE) -C components/lazcontrols LCL_PLATFORM=nogui
 	$(MAKE) -C ideintf LCL_PLATFORM=nogui
-	$(MAKE) -C components base LCL_PLATFORM=nogui
+	$(MAKE) -C components/synedit LCL_PLATFORM=nogui
 	$(MAKE) -C ide lazbuilder LCL_PLATFORM=nogui
 
 #-----------------------------------------------------------------------------
@@ -203,11 +199,11 @@ examples:
 
 #-----------------------------------------------------------------------------
 # build lazarus,lcl,lazbuild,startlazarus with base packages for the LCL_PLATFORM
-all: lazbuild lcl ideintf basecomponents ide starter
+all: lazbuild lcl basecomponents ide starter
 
 #-----------------------------------------------------------------------------
 # build lazarus,lcl,lazbuild,startlazarus with bigide packages for the LCL_PLATFORM
-bigide: lazbuild lcl ideintf basecomponents bigidecomponents idebig starter
+bigide: lazbuild lcl basecomponents bigidecomponents idebig starter
 
 #-----------------------------------------------------------------------------
 cleanide:
