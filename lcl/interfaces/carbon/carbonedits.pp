@@ -810,7 +810,6 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCarbonComboBox.ValueChanged;
 begin
-  writeln('crb: ', LCLObject.Name,' value changed!');
   if FReadOnly then ListItemSelected(GetValue - 1);
 end;
 
