@@ -8332,7 +8332,6 @@ begin
       if UpdateModified and MainUnitSrcEdit.Modified
       then begin
         MainUnitSrcEdit.UpdateCodeBuffer;
-        MainUnitInfo.Modified:=true;
       end;
     end;
   end else
@@ -15397,7 +15396,6 @@ function TMainIDE.SaveSourceEditorChangesToCodeCache(AEditor: TSourceEditorInter
         SaveSourceEditorChangesToCodeCache:=true;
         SaveEditor.UpdateCodeBuffer;
         //debugln(['TMainIDE.SaveSourceEditorChangesToCodeCache.SaveChanges ',AnUnitInfo.Filename,' Step=',TCodeBuffer(SaveEditor.CodeToolsBuffer).ChangeStep]);
-        AnUnitInfo.Modified:=true;
       end;
     end;
   end;
