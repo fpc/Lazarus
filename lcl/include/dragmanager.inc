@@ -266,12 +266,8 @@ procedure TDragPerformer.Notification(AComponent: TComponent;
 begin
   if Operation = opRemove then
   begin
-    if Assigned(FDragObject) then
-      if (AComponent = FDragObject.Control) then
-        DragStop(False)
-      else
-      if (AComponent = FDragObject.DragTarget) then
-        DragMove(FDragObject.DragPos);
+    if Assigned(FDragObject) and (AComponent = FDragObject.DragTarget) then
+      DragMove(FDragObject.DragPos);
   end;
 end;
 
@@ -782,6 +778,8 @@ begin
       if FDockSites.Count = 0 then
         FreeAndNil(FDockSites);
     end;
+    if (AComponent is TControl) and Dragging(TControl(AComponent)) then
+      DragStop(False);
   end;
 end;
 
