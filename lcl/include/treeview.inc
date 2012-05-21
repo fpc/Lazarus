@@ -4271,7 +4271,7 @@ end;
 
 function TCustomTreeView.GetDragImages: TDragImageList;
 begin
-  if FDragImage.Count > 0 then
+  if Assigned(FDragImage) and (FDragImage.Count > 0) then
     Result := FDragImage
   else
     Result := nil;

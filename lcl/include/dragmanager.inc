@@ -35,6 +35,7 @@ type
     procedure DragStarted(APosition: TPoint); virtual;abstract;
     procedure DragMove(APosition: TPoint); virtual;abstract;
     procedure DragStop(ADropped: Boolean); virtual;abstract;
+    procedure Notification(AComponent: TComponent; Operation: TOperation); virtual; abstract;
   public
     constructor Create(AManager: TDragManagerDefault; AControl: TControl); virtual;
   end;
@@ -49,6 +50,7 @@ type
     procedure DragStarted(APosition: TPoint); override;
     procedure DragMove(APosition: TPoint); override;
     procedure DragStop(ADropped: Boolean); override;
+    procedure Notification(AComponent: TComponent; Operation: TOperation); override;
   public
     constructor Create(AManager: TDragManagerDefault; AControl: TControl); override;
     destructor Destroy; override;
@@ -64,6 +66,7 @@ type
     procedure DragStarted(APosition: TPoint); override;
     procedure DragMove(APosition: TPoint); override;
     procedure DragStop(ADropped: Boolean); override;
+    procedure Notification(AComponent: TComponent; Operation: TOperation); override;
   public
     constructor Create(AManager: TDragManagerDefault; AControl: TControl); override;
     destructor Destroy; override;
@@ -255,6 +258,20 @@ begin
     //erase global variables (dragging stopped)
     if ADragObjectCopy.AutoFree then
       ADragObjectCopy.Free;
+  end;
+end;
+
+procedure TDragPerformer.Notification(AComponent: TComponent;
+  Operation: TOperation);
+begin
+  if Operation = opRemove then
+  begin
+    if Assigned(FDragObject) then
+      if (AComponent = FDragObject.Control) then
+        DragStop(False)
+      else
+      if (AComponent = FDragObject.DragTarget) then
+        DragMove(FDragObject.DragPos);
   end;
 end;
 
@@ -607,6 +624,12 @@ begin
   end;
 end;
 
+procedure TDockPerformer.Notification(AComponent: TComponent;
+  Operation: TOperation);
+begin
+
+end;
+
 
 { TDragManagerDefault }
 
@@ -619,7 +642,7 @@ end;
 function TDragManagerDefault.IsDragging: boolean;
 //Is something being dragged
 begin
-  Result := (FPerformer <> nil) and not FInDragStop;
+  Result := Assigned(FPerformer) and not FInDragStop;
 end;
 
 function TDragManagerDefault.Dragging(AControl: TControl): boolean;
@@ -682,7 +705,7 @@ end;
 procedure TDragManagerDefault.DragStop(ADropped : Boolean);
 //End the drag operation
 begin
-  if (FPerformer <> nil) and not FInDragStop then
+  if Assigned(FPerformer) and not FInDragStop then
   begin
     FInDragStop := True;
     try
@@ -696,17 +719,19 @@ end;
 
 procedure TDragManagerDefault.RegisterDockSite(Site: TWinControl; DoRegister: Boolean);
 begin
-  if (Site <> nil) then
+  if Assigned(Site) then
   begin
     if FDockSites = nil then
       FDockSites := TFPList.Create;
     if (FDockSites.IndexOf(Site)>=0)=DoRegister then exit;
 
     //debugln(['TDragManagerDefault.RegisterDockSite Changed ',DbgSName(Site),' DoRegister=',DoRegister]);
-    if DoRegister then begin
+    if DoRegister then
+    begin
       FDockSites.Add(Site);
       Site.FreeNotification(Self);
-    end else begin
+    end else
+    begin
       FDockSites.Remove(Site);
       Site.RemoveFreeNotification(Self);
     end;
@@ -744,11 +769,17 @@ procedure TDragManagerDefault.Notification(AComponent: TComponent;
   Operation: TOperation);
 begin
   inherited Notification(AComponent, Operation);
-  if Operation=opRemove then begin
-    if FDockSites<>nil then begin
+  // clear performer references
+  if Assigned(FPerformer) then
+    FPerformer.Notification(AComponent, Operation);
+  if Operation = opRemove then
+  begin
+    // remove from dock sites
+    if Assigned(FDockSites) then
+    begin
       //if FDockSites.IndexOf(AComponent)>=0 then debugln(['TDragManagerDefault.Notification DockSite: ',DbgSName(AComponent)]);
       FDockSites.Remove(AComponent);
-      if FDockSites.Count=0 then
+      if FDockSites.Count = 0 then
         FreeAndNil(FDockSites);
     end;
   end;

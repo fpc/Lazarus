@@ -4801,6 +4801,8 @@ begin
   //DebugLn('[TControl.Destroy] A ',Name,':',ClassName);
   // make sure the capture is released
   MouseCapture := False;
+  // explicit notification about component destruction. this can be a drag target
+  DragManager.Notification(Self, opRemove);
   Application.ControlDestroyed(Self);
   if (FHostDockSite <> nil) and not (csDestroying in FHostDockSite.ComponentState) then
   begin
@@ -4808,10 +4810,12 @@ begin
     SetParent(nil);
     Dock(nil, BoundsRect);
     FHostDockSite := nil;
-  end else begin
-    if (FHostDockSite<>nil) and (FHostDockSite.FDockClients<>nil) then begin
+  end else
+  begin
+    if Assigned(FHostDockSite) and Assigned(FHostDockSite.FDockClients) then
+    begin
       FHostDockSite.FDockClients.Remove(Self);
-      FHostDockSite:=nil;
+      FHostDockSite := nil;
     end;
     SetParent(nil);
   end;
