@@ -7784,8 +7784,13 @@ begin
     exit;
   end;
 
-  if ComparePoints(FHintMousePos, Mouse.CursorPos) <> 0 then
-    MaybeHideHint;
+  if ComparePoints(FHintMousePos, Mouse.CursorPos) <> 0 then begin
+    // TODO: introduce property, to indicate if hint is interactive
+    if (FHintWindow.ControlCount > 0) and not(FHintWindow.Controls[0] is TSimpleHTMLControl) then
+      MaybeHideHint
+    else
+      HideHint;
+  end;
 end;
 
 {------------------------------------------------------------------------------
