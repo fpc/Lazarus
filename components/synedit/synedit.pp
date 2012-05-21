@@ -3063,12 +3063,12 @@ begin
           if i <> 0 then begin
             LeftChar := LeftChar + i;
             if fStateFlags * [sfMouseSelecting, sfWaitForMouseSelecting] <> [] then begin
-              FStateFlags := FStateFlags - [sfWaitForMouseSelecting] + [sfMouseSelecting];
-              MouseCapture := True;
+              FStateFlags := FStateFlags - [sfWaitForMouseSelecting] + [sfMouseSelecting, sfMouseDoneSelecting];
               ResetMouseCapture := False;
-              AnAction.MoveCaret := True;
               AnInfo.NewCaret.LineCharPos := PixelsToRowColumn(Point(AnInfo.MouseX, AnInfo.MouseY));
               FBlockSelection.AutoExtend := True;
+              MoveCaret;
+              FBlockSelection.ActiveSelectionMode := FMouseSelectionMode;
             end;
           end;
         end;
@@ -3079,12 +3079,12 @@ begin
           if i <> 0 then begin
             TopView := TopView + i;
             if fStateFlags * [sfMouseSelecting, sfWaitForMouseSelecting] <> [] then begin
-              FStateFlags := FStateFlags - [sfWaitForMouseSelecting] + [sfMouseSelecting];
-              MouseCapture := True;
+              FStateFlags := FStateFlags - [sfWaitForMouseSelecting] + [sfMouseSelecting, sfMouseDoneSelecting];
               ResetMouseCapture := False;
-              AnAction.MoveCaret := True;
               AnInfo.NewCaret.LineCharPos := PixelsToRowColumn(Point(AnInfo.MouseX, AnInfo.MouseY));
               FBlockSelection.AutoExtend := True;
+              MoveCaret;
+              FBlockSelection.ActiveSelectionMode := FMouseSelectionMode;
             end;
           end;
         end;
