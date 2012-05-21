@@ -2326,9 +2326,8 @@ end;
 
 function TUnitInfo.GetModified: boolean;
 begin
-  if (not fModified) and (Source<>nil) then
-    fModified:=Source.ChangeStep<>fSourceChangeStep;
-  Result:=fModified;
+  Result:=fModified
+    or ((Source<>nil) and (Source.ChangeStep<>fSourceChangeStep));
 end;
 
 function TUnitInfo.GetNextAutoRevertLockedUnit: TUnitInfo;
