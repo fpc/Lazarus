@@ -384,7 +384,9 @@ end;
 ------------------------------------------------------------------------------}
 procedure TControl.BeginAutoDrag;
 begin
+  {$IFDEF VerboseDrag}
   debugln(['TControl.BeginAutoDrag ',DbgSName(Self)]);
+  {$ENDIF}
   BeginDrag(DragManager.DragImmediate, DragManager.DragThreshold);
 end;
 
