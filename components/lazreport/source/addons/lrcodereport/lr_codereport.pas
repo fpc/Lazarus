@@ -281,7 +281,7 @@ end;
 
 procedure TlrCodeReport.SetActivePage(APage: integer);
 begin
-  if APage in [1 .. PageCount] then
+  if (APage >= 1) and (APage <= PageCount) then
     ActivePage := APage - 1
   else
     raise Exception.CreateFmt(sErrorOccured, [self.ClassName]);
@@ -516,7 +516,6 @@ var
   aLine: TfrLineView;
 begin
   aLine := TfrLineView.Create;
-  aLine.CreateUniqueName;
   aLine.Left := X * XRatio;
   aLine.Top := Y * YRatio;
   aLine.Width := W * XRatio;
@@ -553,7 +552,6 @@ var
   AText: TfrMemoview;
 begin
   AText := TfrMemoView.Create;
-  AText.CreateUniqueName;
   AText.Left := X * XRatio;
   AText.Top := Y * YRatio;
   AText.Width := W * XRatio;
@@ -673,7 +671,6 @@ var
   APicture: TfrPictureView;
 begin
   APicture := TfrPictureView.Create;
-  APicture.CreateUniqueName;
   APicture.Left := X * XRatio;
   APicture.Top := Y * YRatio;
   APicture.Width := W * XRatio;
@@ -691,7 +688,6 @@ var
   AShape: TfrShapeView;
 begin
   AShape := TfrShapeView.Create;
-  AShape.CreateUniqueName;
   AShape.Left := X * XRatio;
   AShape.Top := Y * YRatio;
   AShape.Width := W * XRatio;
@@ -758,7 +754,6 @@ var
   ABarCode: TfrBarCodeView;
 begin
   ABarCode := TfrBarCodeView.Create;
-  ABarCode.CreateUniqueName;
   ABarCode.Left := X * XRatio;
   ABarCode.Top := Y * YRatio;
   ABarCode.Width := W * XRatio;

@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, LR_Class, LR_Shape, LR_BarC, lr_e_pdf, Forms,
-  Controls, Graphics, Dialogs, ExtCtrls, StdCtrls, LR_CodeReport;
+  Graphics, Dialogs, ExtCtrls, StdCtrls, LR_CodeReport;
 
 type
 
@@ -15,14 +15,17 @@ type
   TForm1 = class(TForm)
     Button1: TButton;
     Button2: TButton;
+    Button3: TButton;
     frBarCodeObject1: TfrBarCodeObject;
     frShapeObject1: TfrShapeObject;
     frTNPDFExport1: TfrTNPDFExport;
     Image1: TImage;
-    Report: TlrCodeReport;
+    CodeReport1: TlrCodeReport;
+    SaveDialog1: TSaveDialog;
     procedure Button1Click(Sender: TObject);
     procedure Button2Click(Sender: TObject);
-    procedure ReportBeginReport(Sender: TObject);
+    procedure Button3Click(Sender: TObject);
+    procedure CodeReport1BeginReport(Sender: TObject);
   private
     { private declarations }
   public
@@ -40,26 +43,40 @@ implementation
 
 procedure TForm1.Button1Click(Sender: TObject);
 begin
-  //report.RunReport;
-  if Report.PageCount = 0 then
+  with CodeReport1 do
   begin
-    ReportBeginReport(report);
+    Report.Clear;   // restart the report (delete existing pages)
+    RunReport;      // execute code and show report
   end;
-  Report.Report.ShowReport;
 end;
 
 procedure TForm1.Button2Click(Sender: TObject);
 begin
-  //direct export to PDF.  Set the desired destination file.
-  if Report.PageCount = 0 then
-  begin
-    ReportBeginReport(report);
-    Report.Report.PrepareReport;
-  end;
-  Report.Report.ExportTo(TfrTNPDFExportFilter, '/tmp/generated-pdf.pdf');
+  SaveDialog1.FileName := 'mycodereport.pdf';
+  if SaveDialog1.Execute then
+    with CodeReport1 do
+    begin
+      Report.Clear;                         // reset report
+      CodeReport1BeginReport(CodeReport1);  // execute code
+      Report.PrepareReport;
+      Report.ExportTo(TfrTNPDFExportFilter, SaveDialog1.FileName);
+    end;
 end;
 
-procedure TForm1.ReportBeginReport(Sender: TObject);
+procedure TForm1.Button3Click(Sender: TObject);
+begin
+  with CodeReport1 do
+  begin
+    Report.Clear;                         // reset report
+    CodeReport1BeginReport(CodeReport1);  // execute code
+    Report.PrepareReport;
+    Report.PrintPreparedReport('', 1);    // empty string print all the pages
+    // '1-5' print pages from 1 to 5
+    // '1,3,5' print pages 1, 3 and 5
+  end;
+end;
+
+procedure TForm1.CodeReport1BeginReport(Sender: TObject);
 var
   BoxText: TlrTextRectStyle;
   n: integer;
@@ -265,8 +282,15 @@ begin
         TextOutXY(X, GetPageHeight - PageMargin.Bottom,
           Format('Page %d of %d', [GetActivePage, PageCount]), taRightJustify);
       end;
-
     end;
+
+    // For a really big report (10015 pages), try uncommenting next lines
+
+    //for n:= 1 to 10000 do
+    //begin
+    //  NewPage;
+    //  TextOut(Format('Page %d', [GetActivePage]));
+    //end;
   end;
 end;
 
