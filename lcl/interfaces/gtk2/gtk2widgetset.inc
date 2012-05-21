@@ -4963,7 +4963,7 @@ var
 begin
   if FDragImageList = nil then
   begin
-    FDragImageList := gtk_window_new(GTK_WINDOW_TOPLEVEL);
+    FDragImageList := gtk_window_new(GTK_WINDOW_POPUP);
     gdk_drawable_get_size(APixmap, @w, @h);
     gtk_window_set_default_size(PGtkWindow(FDragImageList), w, h);
     gtk_widget_realize(FDragImageList);
