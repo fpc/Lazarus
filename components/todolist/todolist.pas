@@ -549,9 +549,9 @@ begin
   end;
   
   // Remove the ending comment chars from input string
-  if (eComment<>'')
-  and (Pos(EComment, ParsingString)=Length(ParsingString)- Length(EComment)+1) then
-    ParsingString := Copy(ParsingString, 1, Length(ParsingString)-Length(eComment));
+  if (EComment <> '')
+  and (RightStr(ParsingString, Length(EComment)) = EComment) then
+    ParsingString := TextToSingleLine(Copy(ParsingString, 1, Length(ParsingString)-Length(EComment)));
   
   // Remove Todo/Done flag from input string
   if isAltNotation then
