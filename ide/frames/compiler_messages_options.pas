@@ -104,7 +104,7 @@ end;
 
 destructor TCompilerMessagesOptionsFrame.Destroy;
 begin
-  editMsgFilter.Data.Clear;
+  editMsgFilter.Items.Clear;
   chklistCompMsg.Clear;
   chklistCompMsg.Items.Clear;
   TempMessages.Free;
@@ -142,14 +142,14 @@ begin
   MsgFileBrowseButton.Enabled:=UseMsgFileCheckBox.Checked;
 
   // Copy data to filter component
-  editMsgFilter.Data.Clear;
+  editMsgFilter.Items.Clear;
   for i := 0 to TempMessages.Count - 1 do
   begin
     m := TempMessages.Msg[i];
     if m.MsgType in [etNote, etHint, etWarning] then
     begin
       s := Format('(%s) %s', [MsgTypeStr[m.MsgType], m.GetUserText([])]);
-      editMsgFilter.Data.AddObject(s, m);
+      editMsgFilter.Items.AddObject(s, m);
     end;
   end;
   editMsgFilter.InvalidateFilter;

@@ -194,7 +194,7 @@ begin
       begin
         AComponent := FComponentList[i];
         AClassName := AComponent.ComponentClass.ClassName;
-        ListFilterEd.Data.AddObject(AClassName, AComponent);
+        ListFilterEd.Items.AddObject(AClassName, AComponent);
       end;
     finally
       ComponentsListbox.Items.EndUpdate;

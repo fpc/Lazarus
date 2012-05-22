@@ -271,7 +271,7 @@ begin
       // First move the source editor tab
       SrcEdit.SourceNotebook.MoveEditor(SrcEdit.PageIndex, SrcEdit.PageIndex+1);
       // Then switch the list items
-      FilterEdit.Data.Exchange(i, i+1); //  CheckListBox1.Items.Exchange(i, i+1);
+      FilterEdit.Items.Exchange(i, i+1);
       FilterEdit.InvalidateFilter;
       UpdateMoveButtons(i+1);
     end;
@@ -291,7 +291,7 @@ begin
       // First move the source editor tab
       SrcEdit.SourceNotebook.MoveEditor(SrcEdit.PageIndex, SrcEdit.PageIndex-1);
       // Then switch the list items
-      FilterEdit.Data.Exchange(i, i-1);
+      FilterEdit.Items.Exchange(i, i-1);
       FilterEdit.InvalidateFilter;
       UpdateMoveButtons(i-1);
     end;
@@ -331,7 +331,7 @@ var
   sw: TSourceNotebook;
   Modi: String;
 begin
-  FilterEdit.Data.Clear;
+  FilterEdit.Items.Clear;
   with SourceEditorManager do
     for i:=0 to SourceWindowCount-1 do begin
       sw:=SourceWindows[i];
@@ -342,7 +342,7 @@ begin
           Modi:='* '
         else
           Modi:='';
-        FilterEdit.Data.Add(Modi+SrcEdit.FileName);
+        FilterEdit.Items.Add(Modi+SrcEdit.FileName);
       end;
     end;
   FilterEdit.InvalidateFilter;

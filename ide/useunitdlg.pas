@@ -100,11 +100,11 @@ begin
       // automatic choice of dest uses-section by cursor position
       UseUnitDlg.DetermineUsesSection(SrcEdit.CodeBuffer, SrcEdit.GetCursorTextXY);
 
-    if UseUnitDlg.FilterEdit.Data.Count = 0 then
+    if UseUnitDlg.FilterEdit.Items.Count = 0 then
       // no available units from current project => turn on "all units"
       UseUnitDlg.AllUnitsCheckBox.Checked := True;
 
-    if UseUnitDlg.FilterEdit.Data.Count = 0 then begin
+    if UseUnitDlg.FilterEdit.Items.Count = 0 then begin
       // No available units. This may not be a pascal source file.
       ShowMessage(dlgNoAvailableUnits);
       Exit(mrCancel);
@@ -168,9 +168,9 @@ begin
   if InterfaceSelected then
     AddImplUsedUnits
   else
-    for i := FilterEdit.Data.Count - 1 downto 0 do
-      if FilterEdit.Data.Objects[i] is TCodeTreeNode then
-        FilterEdit.Data.Delete(i);
+    for i := FilterEdit.Items.Count - 1 downto 0 do
+      if FilterEdit.Items.Objects[i] is TCodeTreeNode then
+        FilterEdit.Items.Delete(i);
   FilterEdit.InvalidateFilter;
   if Visible then
     FilterEdit.SetFocus;
@@ -184,12 +184,12 @@ begin
   if AllUnitsCheckBox.Checked then begin    // Add other units
     if not Assigned(FOtherUnits) then
       CreateOtherUnitsList;
-    FilterEdit.Data.AddStrings(FOtherUnits);
+    FilterEdit.Items.AddStrings(FOtherUnits);
   end
   else
-    for i := FilterEdit.Data.Count-1 downto 0 do
-      if FilterEdit.Data.Objects[i] is TIdentifierListItem then
-        FilterEdit.Data.Delete(i);
+    for i := FilterEdit.Items.Count-1 downto 0 do
+      if FilterEdit.Items.Objects[i] is TIdentifierListItem then
+        FilterEdit.Items.Delete(i);
   if Visible then
     FilterEdit.SetFocus;
   FilterEdit.InvalidateFilter;
@@ -248,7 +248,7 @@ begin
   i := 0; j := 0;
   ImplNode := FImplUsedUnits.Objects[0];
   newUnit := FImplUsedUnits[j];
-  with FilterEdit.Data do
+  with FilterEdit.Items do
   begin
     BeginUpdate;
     try
@@ -408,13 +408,13 @@ var
 begin
   if not (Assigned(FMainUsedUnits) and Assigned(FImplUsedUnits)) then Exit;
   if not Assigned(FProjUnits) then Exit;
-  FilterEdit.Data.Clear;
+  FilterEdit.Items.Clear;
   for i := 0 to FProjUnits.Count - 1 do
   begin
     curUnit := FProjUnits[i];
     if (FMainUsedUnits.IndexOf(curUnit) < 0)
     and (FImplUsedUnits.IndexOf(curUnit) < 0) then
-      FilterEdit.Data.Add(FProjUnits[i]);
+      FilterEdit.Items.Add(FProjUnits[i]);
   end;
   FilterEdit.InvalidateFilter;
 end;

@@ -55,7 +55,8 @@ type
     procedure RestoreSelection; override;
   public
     property SelectionList: TStringList read fSelectionList;
-    property Data: TStringList read fOriginalData;
+    property Items: TStringList read fOriginalData;
+    property Data: TStringList read fOriginalData; deprecated 'Use property Items instead';
   published
     property FilteredListbox: TCustomListBox read fFilteredListbox write SetFilteredListbox;
   end;

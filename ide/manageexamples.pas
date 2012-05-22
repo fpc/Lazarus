@@ -104,7 +104,7 @@ type
 
 procedure TListFileSearcher.DoFileFound;
 begin
-  fForm.ProjectFilter.Data.Add(FileName) // fForm.ProjectsListBox.Items.Add(FileName)
+  fForm.ProjectFilter.Items.Add(FileName);
 end;
 
 constructor TListFileSearcher.Create(aForm: TManageExamplesForm);
@@ -227,7 +227,7 @@ begin
   try
     Screen.Cursor:=crHourGlass;
     Application.ProcessMessages;
-    ProjectFilter.Data.Clear; //  ProjectsListBox.Items.Clear;
+    ProjectFilter.Items.Clear;
     Searcher:=TListFileSearcher.Create(Self);
     Searcher.Search(RootDirectoryEdit.Text, '*.lpi');
     ProjectFilter.InvalidateFilter;

@@ -116,7 +116,7 @@ begin
     // Data items
     for i:=0 to Entries.Count-1 do begin
       UEntry:=TViewUnitsEntry(Entries.Objects[i]);
-      FilterEdit.Data.Add(UEntry.Name);
+      FilterEdit.Items.Add(UEntry.Name);
     end;
     FilterEdit.InvalidateFilter;
     // Initial selection
