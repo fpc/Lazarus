@@ -107,7 +107,7 @@ type
     fVarImgID: LongInt;
     fValueImgID: LongInt;
     fDefValueImgID: LongInt;
-    fEngine: TCTConfigScriptEngine;
+    fEngine: TIDECfgScriptEngine;
     fSynCompletion: TSynCompletion;
     procedure SetBuildMacros(const AValue: TIDEBuildMacros);
     procedure RebuildTreeView;
@@ -808,16 +808,6 @@ procedure TCompOptBuildMacrosFrame.UpdateCompletionValues;
     Result:=false;
   end;
 
-  procedure AddVar(aName, aValue: string);
-  var
-    s: String;
-  begin
-    s:=dbgstr(aValue);
-    if length(s)>50 then s:=copy(s,1,50)+'...';
-    s:=aName+#9+aValue;
-    CompletionValues.Add(s);
-  end;
-
   procedure AddKeyword(aName: string);
   begin
     CompletionValues.Add(aName);
@@ -829,6 +819,19 @@ procedure TCompOptBuildMacrosFrame.UpdateCompletionValues;
     if aName='' then exit;
     if HasWord(aName) then exit;
     CompletionValues.Add(aName);
+  end;
+
+  procedure AddVar(aName, aValue: string);
+  var
+    s: String;
+  begin
+    aName:=dbgstr(aName);
+    if aName='' then exit;
+    if HasWord(aName) then exit;
+    s:=dbgstr(aValue);
+    if length(s)>50 then s:=copy(s,1,50)+'...';
+    s:=aName+#9+aValue;
+    CompletionValues.Add(s);
   end;
 
 var
@@ -871,6 +874,15 @@ begin
   AddKeyword('string');
   AddKeyword('true');
   AddKeyword('false');
+
+  // add IDE functions
+  AddWord('GetIDEValue(''OS'')');
+  AddWord('GetIDEValue(''CPU'')');
+  AddWord('GetIDEValue(''SrcOS'')');
+  AddWord('GetIDEValue(''SrcOS2'')');
+  AddWord('GetIDEValue(''LCLWidgetType'')');
+  AddWord('GetEnv(''USER'')');
+  AddWord('GetEnv(''HOME'')');
 
   // add result variables
   for pcov:=low(ParsedCompilerOptsVars) to high(ParsedCompilerOptsVars) do
@@ -950,7 +962,7 @@ begin
   FCompletionHistory:=TStringList.Create;
   fDefaultVariables:=TCTCfgScriptVariables.Create;
   FBuildMacros:=TIDEBuildMacros.Create(nil);
-  fEngine:=TCTConfigScriptEngine.Create;
+  fEngine:=TIDECfgScriptEngine.Create;
 
   MacrosGroupBox.Caption:=lisIDEMacros;
   BuildMacrosTreeView.Images := IDEImages.Images_24;

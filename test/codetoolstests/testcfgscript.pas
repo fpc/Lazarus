@@ -80,6 +80,12 @@ begin
   TestResult('Result:=2;','2');
   TestResult('a:=2; b:=a; Result:=b;','2');
   TestResult('Result:=1+2;','3');
+  TestResult('Result:=1=2;','0');
+  TestResult('Result:=1<>2;','1');
+  TestResult('Result:=2>1;','1');
+  TestResult('Result:=2>2;','0');
+  TestResult('Result:=2<2;','0');
+  TestResult('Result:=1<2;','1');
   TestSyntaxError('{invalid operator * }Result:=2*3;','expected ; of statement, but found *');
 end;
 
