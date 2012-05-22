@@ -1,4 +1,4 @@
-# Valdas Jankūnas <zmuogs@gmail.com>, 2009, 2010.
+ Valdas Jankūnas <zmuogs@gmail.com>, 2009, 2010.
 msgid ""
 msgstr ""
 "Project-Id-Version: calleditorwithpkg\n"
@@ -117,101 +117,101 @@ msgctxt "maincalleditor.certhumbnails"
 msgid "Thumbnails"
 msgstr "Miniatiūros"
 
-#: TFRMCUSTOMPREVIEW.FRMCUSTOMPREVIEW.CAPTION
+#: tfrmcustompreview.frmcustompreview.caption
 msgid "frmCustomPreview"
 msgstr ""
 
-#: TFRMCUSTOMPREVIEW.FRPREVIEW1.CAPTION
+#: tfrmcustompreview.frpreview1.caption
 msgctxt "TFRMCUSTOMPREVIEW.FRPREVIEW1.CAPTION"
 msgid "frPreview1"
 msgstr ""
 
-#: TFRMMAIN.ACCCLOSE.CAPTION
+#: tfrmmain.accclose.caption
 msgid "Close"
 msgstr "Užverti"
 
-#: TFRMMAIN.ACCCOMPOSITE.CAPTION
+#: tfrmmain.acccomposite.caption
 msgctxt "TFRMMAIN.ACCCOMPOSITE.CAPTION"
 msgid "Composite"
 msgstr "Mišrus"
 
-#: TFRMMAIN.ACCCUSTOMPREVIEW.CAPTION
+#: tfrmmain.acccustompreview.caption
 msgid "Custom Preview"
 msgstr ""
 
-#: TFRMMAIN.ACCEDITREPORT.CAPTION
+#: tfrmmain.acceditreport.caption
 msgctxt "TFRMMAIN.ACCEDITREPORT.CAPTION"
 msgid "Edit Report"
 msgstr "Keisti pranešimą"
 
-#: TFRMMAIN.ACCEXPORTTOCSV.CAPTION
+#: tfrmmain.accexporttocsv.caption
 msgid "Export to CSV"
 msgstr "Eksportuoti CSV formatu"
 
-#: TFRMMAIN.ACCEXPORTTODBG.CAPTION
+#: tfrmmain.accexporttodbg.caption
 msgid "Export Debug"
 msgstr "Eksportuoti derinimo informaciją"
 
-#: TFRMMAIN.ACCEXPORTTOHTML.CAPTION
+#: tfrmmain.accexporttohtml.caption
 msgid "Export to html"
 msgstr "Eksportuoti html formatu"
 
-#: TFRMMAIN.ACCEXPORTTOTEXT.CAPTION
+#: tfrmmain.accexporttotext.caption
 msgid "Export to text"
 msgstr "Eksportuoti teksto formatu"
 
-#: TFRMMAIN.ACCNEWREPORT.CAPTION
+#: tfrmmain.accnewreport.caption
 msgid "New Report"
 msgstr "Naujas pranešimas"
 
-#: TFRMMAIN.ACCOPENREPORT.CAPTION
+#: tfrmmain.accopenreport.caption
 msgid "Open Report"
 msgstr "Atverti pranešimą"
 
-#: TFRMMAIN.ACCPREVIEWREPORT.CAPTION
+#: tfrmmain.accpreviewreport.caption
 msgid "Preview Report"
 msgstr "Peržiūrėti pranešimą"
 
-#: TFRMMAIN.ACCPRINTGRID.CAPTION
+#: tfrmmain.accprintgrid.caption
 msgid "Print Grid"
 msgstr "Spausdinti lentelę"
 
-#: TFRMMAIN.ACCPRINTREPORT.CAPTION
+#: tfrmmain.accprintreport.caption
 msgid "Print Report"
 msgstr "Spausdinti pranešima"
 
-#: TFRMMAIN.ACCTHUMBNAILS.CAPTION
+#: tfrmmain.accthumbnails.caption
 msgctxt "TFRMMAIN.ACCTHUMBNAILS.CAPTION"
 msgid "Thumbnails"
 msgstr "Miniatiūros"
 
-#: TFRMMAIN.BTNMASTERDETAIL.CAPTION
+#: tfrmmain.btnmasterdetail.caption
 msgid "Master-Detail Test"
 msgstr ""
 
-#: TFRMMAIN.FRMMAIN.CAPTION
+#: tfrmmain.frmmain.caption
 msgctxt "TFRMMAIN.FRMMAIN.CAPTION"
 msgid "LazReport Test Suite"
 msgstr "LazReport testavimo paketas"
 
-#: TFRMMAIN.LBLEXPR.CAPTION
+#: tfrmmain.lblexpr.caption
 msgid "Expression"
 msgstr "Reiškinys"
 
-#: TFRMMAIN.LBLINDEX.CAPTION
+#: tfrmmain.lblindex.caption
 msgctxt "TFRMMAIN.LBLINDEX.CAPTION"
 msgid "Index"
 msgstr "Indeksas"
 
-#: TFRMMAIN.MENUITEM1.CAPTION
+#: tfrmmain.menuitem1.caption
 msgid "Files"
 msgstr "Failai"
 
-#: TFRMMAIN.MENUITEM3.CAPTION
+#: tfrmmain.menuitem3.caption
 msgid "Tests"
 msgstr "Testai"
 
-#: TFRMMAIN.MENUITEM9.CAPTION
+#: tfrmmain.menuitem9.caption
 msgid "Export"
 msgstr "Eksportas"
 

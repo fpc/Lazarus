@@ -114,101 +114,101 @@ msgctxt "maincalleditor.certhumbnails"
 msgid "Thumbnails"
 msgstr "Эскизы"
 
-#: TFRMCUSTOMPREVIEW.FRMCUSTOMPREVIEW.CAPTION
+#: tfrmcustompreview.frmcustompreview.caption
 msgid "frmCustomPreview"
 msgstr "frmCustomPreview"
 
-#: TFRMCUSTOMPREVIEW.FRPREVIEW1.CAPTION
+#: tfrmcustompreview.frpreview1.caption
 msgctxt "TFRMCUSTOMPREVIEW.FRPREVIEW1.CAPTION"
 msgid "frPreview1"
 msgstr "frPreview1"
 
-#: TFRMMAIN.ACCCLOSE.CAPTION
+#: tfrmmain.accclose.caption
 msgid "Close"
 msgstr "Закрыть"
 
-#: TFRMMAIN.ACCCOMPOSITE.CAPTION
+#: tfrmmain.acccomposite.caption
 msgctxt "TFRMMAIN.ACCCOMPOSITE.CAPTION"
 msgid "Composite"
 msgstr "Составной"
 
-#: TFRMMAIN.ACCCUSTOMPREVIEW.CAPTION
+#: tfrmmain.acccustompreview.caption
 msgid "Custom Preview"
 msgstr "Пользовательский просмотр"
 
-#: TFRMMAIN.ACCEDITREPORT.CAPTION
+#: tfrmmain.acceditreport.caption
 msgctxt "TFRMMAIN.ACCEDITREPORT.CAPTION"
 msgid "Edit Report"
 msgstr "Редактировать отчёт"
 
-#: TFRMMAIN.ACCEXPORTTOCSV.CAPTION
+#: tfrmmain.accexporttocsv.caption
 msgid "Export to CSV"
 msgstr "Экспорт в CSV"
 
-#: TFRMMAIN.ACCEXPORTTODBG.CAPTION
+#: tfrmmain.accexporttodbg.caption
 msgid "Export Debug"
 msgstr "Экспорт отладочной информации"
 
-#: TFRMMAIN.ACCEXPORTTOHTML.CAPTION
+#: tfrmmain.accexporttohtml.caption
 msgid "Export to html"
 msgstr "Экспорт в HTML"
 
-#: TFRMMAIN.ACCEXPORTTOTEXT.CAPTION
+#: tfrmmain.accexporttotext.caption
 msgid "Export to text"
 msgstr "Экспорт в текст"
 
-#: TFRMMAIN.ACCNEWREPORT.CAPTION
+#: tfrmmain.accnewreport.caption
 msgid "New Report"
 msgstr "Новый отчёт"
 
-#: TFRMMAIN.ACCOPENREPORT.CAPTION
+#: tfrmmain.accopenreport.caption
 msgid "Open Report"
 msgstr "Открыть отчёт"
 
-#: TFRMMAIN.ACCPREVIEWREPORT.CAPTION
+#: tfrmmain.accpreviewreport.caption
 msgid "Preview Report"
 msgstr "Предварительный просмотр отчёта"
 
-#: TFRMMAIN.ACCPRINTGRID.CAPTION
+#: tfrmmain.accprintgrid.caption
 msgid "Print Grid"
 msgstr "Печать таблицы"
 
-#: TFRMMAIN.ACCPRINTREPORT.CAPTION
+#: tfrmmain.accprintreport.caption
 msgid "Print Report"
 msgstr "Печать отчёта"
 
-#: TFRMMAIN.ACCTHUMBNAILS.CAPTION
+#: tfrmmain.accthumbnails.caption
 msgctxt "TFRMMAIN.ACCTHUMBNAILS.CAPTION"
 msgid "Thumbnails"
 msgstr "Эскизы"
 
-#: TFRMMAIN.BTNMASTERDETAIL.CAPTION
+#: tfrmmain.btnmasterdetail.caption
 msgid "Master-Detail Test"
 msgstr "Режим 'главный-подчинённый'"
 
-#: TFRMMAIN.FRMMAIN.CAPTION
+#: tfrmmain.frmmain.caption
 msgctxt "TFRMMAIN.FRMMAIN.CAPTION"
 msgid "LazReport Test Suite"
 msgstr "Тестовая программа для LazReport"
 
-#: TFRMMAIN.LBLEXPR.CAPTION
+#: tfrmmain.lblexpr.caption
 msgid "Expression"
 msgstr "Выражение"
 
-#: TFRMMAIN.LBLINDEX.CAPTION
+#: tfrmmain.lblindex.caption
 msgctxt "TFRMMAIN.LBLINDEX.CAPTION"
 msgid "Index"
 msgstr "Индекс"
 
-#: TFRMMAIN.MENUITEM1.CAPTION
+#: tfrmmain.menuitem1.caption
 msgid "Files"
 msgstr "Файлы"
 
-#: TFRMMAIN.MENUITEM3.CAPTION
+#: tfrmmain.menuitem3.caption
 msgid "Tests"
 msgstr "Тесты"
 
-#: TFRMMAIN.MENUITEM9.CAPTION
+#: tfrmmain.menuitem9.caption
 msgid "Export"
 msgstr "Экспорт"
 

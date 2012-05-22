@@ -114,107 +114,107 @@ msgctxt "maincalleditor.certhumbnails"
 msgid "Thumbnails"
 msgstr "Vignettes"
 
-#: TFRMCUSTOMPREVIEW.FRMCUSTOMPREVIEW.CAPTION
+#: tfrmcustompreview.frmcustompreview.caption
 msgid "frmCustomPreview"
 msgstr ""
 
-#: TFRMCUSTOMPREVIEW.FRPREVIEW1.CAPTION
+#: tfrmcustompreview.frpreview1.caption
 msgctxt "TFRMCUSTOMPREVIEW.FRPREVIEW1.CAPTION"
 msgid "frPreview1"
 msgstr ""
 
-#: TFRMMAIN.ACCCLOSE.CAPTION
+#: tfrmmain.accclose.caption
 msgctxt "TFRMMAIN.ACCCLOSE.CAPTION"
 msgid "Close"
 msgstr "Quitter"
 
-#: TFRMMAIN.ACCCOMPOSITE.CAPTION
+#: tfrmmain.acccomposite.caption
 msgctxt "TFRMMAIN.ACCCOMPOSITE.CAPTION"
 msgid "Composite"
 msgstr ""
 
-#: TFRMMAIN.ACCCUSTOMPREVIEW.CAPTION
+#: tfrmmain.acccustompreview.caption
 msgid "Custom Preview"
 msgstr ""
 
-#: TFRMMAIN.ACCEDITREPORT.CAPTION
+#: tfrmmain.acceditreport.caption
 msgctxt "TFRMMAIN.ACCEDITREPORT.CAPTION"
 msgid "Edit Report"
 msgstr "Edite Rapport"
 
-#: TFRMMAIN.ACCEXPORTTOCSV.CAPTION
+#: tfrmmain.accexporttocsv.caption
 msgctxt "TFRMMAIN.ACCEXPORTTOCSV.CAPTION"
 msgid "Export to CSV"
 msgstr "Exporter vers CSV"
 
-#: TFRMMAIN.ACCEXPORTTODBG.CAPTION
+#: tfrmmain.accexporttodbg.caption
 msgid "Export Debug"
 msgstr ""
 
-#: TFRMMAIN.ACCEXPORTTOHTML.CAPTION
+#: tfrmmain.accexporttohtml.caption
 msgctxt "TFRMMAIN.ACCEXPORTTOHTML.CAPTION"
 msgid "Export to html"
 msgstr "Exporter vers html"
 
-#: TFRMMAIN.ACCEXPORTTOTEXT.CAPTION
+#: tfrmmain.accexporttotext.caption
 msgctxt "TFRMMAIN.ACCEXPORTTOTEXT.CAPTION"
 msgid "Export to text"
 msgstr "Exporter vers texte"
 
-#: TFRMMAIN.ACCNEWREPORT.CAPTION
+#: tfrmmain.accnewreport.caption
 msgid "New Report"
 msgstr "Conception Rapport"
 
-#: TFRMMAIN.ACCOPENREPORT.CAPTION
+#: tfrmmain.accopenreport.caption
 msgid "Open Report"
 msgstr "Ouvrir Rapport"
 
-#: TFRMMAIN.ACCPREVIEWREPORT.CAPTION
+#: tfrmmain.accpreviewreport.caption
 msgid "Preview Report"
 msgstr "Aperçu Rapport"
 
-#: TFRMMAIN.ACCPRINTGRID.CAPTION
+#: tfrmmain.accprintgrid.caption
 msgid "Print Grid"
 msgstr "Aperçu DBGrid"
 
-#: TFRMMAIN.ACCPRINTREPORT.CAPTION
+#: tfrmmain.accprintreport.caption
 msgid "Print Report"
 msgstr "Imprime Rapport"
 
-#: TFRMMAIN.ACCTHUMBNAILS.CAPTION
+#: tfrmmain.accthumbnails.caption
 msgctxt "TFRMMAIN.ACCTHUMBNAILS.CAPTION"
 msgid "Thumbnails"
 msgstr "Vignettes"
 
-#: TFRMMAIN.BTNMASTERDETAIL.CAPTION
+#: tfrmmain.btnmasterdetail.caption
 msgid "Master-Detail Test"
 msgstr ""
 
-#: TFRMMAIN.FRMMAIN.CAPTION
+#: tfrmmain.frmmain.caption
 msgctxt "TFRMMAIN.FRMMAIN.CAPTION"
 msgid "LazReport Test Suite"
 msgstr "Suite de tests LazReport "
 
-#: TFRMMAIN.LBLEXPR.CAPTION
+#: tfrmmain.lblexpr.caption
 msgid "Expression"
 msgstr ""
 
-#: TFRMMAIN.LBLINDEX.CAPTION
+#: tfrmmain.lblindex.caption
 msgctxt "TFRMMAIN.LBLINDEX.CAPTION"
 msgid "Index"
 msgstr "Index"
 
-#: TFRMMAIN.MENUITEM1.CAPTION
+#: tfrmmain.menuitem1.caption
 msgctxt "TFRMMAIN.MENUITEM1.CAPTION"
 msgid "Files"
 msgstr "Fichiers"
 
-#: TFRMMAIN.MENUITEM3.CAPTION
+#: tfrmmain.menuitem3.caption
 msgctxt "TFRMMAIN.MENUITEM3.CAPTION"
 msgid "Tests"
 msgstr "Tests"
 
-#: TFRMMAIN.MENUITEM9.CAPTION
+#: tfrmmain.menuitem9.caption
 msgctxt "TFRMMAIN.MENUITEM9.CAPTION"
 msgid "Export"
 msgstr "Exporter"

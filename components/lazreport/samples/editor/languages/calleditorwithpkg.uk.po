@@ -114,101 +114,101 @@ msgctxt "maincalleditor.certhumbnails"
 msgid "Thumbnails"
 msgstr "Ескізи"
 
-#: TFRMCUSTOMPREVIEW.FRMCUSTOMPREVIEW.CAPTION
+#: tfrmcustompreview.frmcustompreview.caption
 msgid "frmCustomPreview"
 msgstr "frmCustomPreview"
 
-#: TFRMCUSTOMPREVIEW.FRPREVIEW1.CAPTION
+#: tfrmcustompreview.frpreview1.caption
 msgctxt "TFRMCUSTOMPREVIEW.FRPREVIEW1.CAPTION"
 msgid "frPreview1"
 msgstr "frPreview1"
 
-#: TFRMMAIN.ACCCLOSE.CAPTION
+#: tfrmmain.accclose.caption
 msgid "Close"
 msgstr "Закрити"
 
-#: TFRMMAIN.ACCCOMPOSITE.CAPTION
+#: tfrmmain.acccomposite.caption
 msgctxt "TFRMMAIN.ACCCOMPOSITE.CAPTION"
 msgid "Composite"
 msgstr "Складений"
 
-#: TFRMMAIN.ACCCUSTOMPREVIEW.CAPTION
+#: tfrmmain.acccustompreview.caption
 msgid "Custom Preview"
 msgstr "Користувацький перегляд"
 
-#: TFRMMAIN.ACCEDITREPORT.CAPTION
+#: tfrmmain.acceditreport.caption
 msgctxt "TFRMMAIN.ACCEDITREPORT.CAPTION"
 msgid "Edit Report"
 msgstr "Редагувати звіт"
 
-#: TFRMMAIN.ACCEXPORTTOCSV.CAPTION
+#: tfrmmain.accexporttocsv.caption
 msgid "Export to CSV"
 msgstr "Експорт в CSV"
 
-#: TFRMMAIN.ACCEXPORTTODBG.CAPTION
+#: tfrmmain.accexporttodbg.caption
 msgid "Export Debug"
 msgstr "Експорт налагоджувальних даних"
 
-#: TFRMMAIN.ACCEXPORTTOHTML.CAPTION
+#: tfrmmain.accexporttohtml.caption
 msgid "Export to html"
 msgstr "Експорт в HTML"
 
-#: TFRMMAIN.ACCEXPORTTOTEXT.CAPTION
+#: tfrmmain.accexporttotext.caption
 msgid "Export to text"
 msgstr "Експорт в текст"
 
-#: TFRMMAIN.ACCNEWREPORT.CAPTION
+#: tfrmmain.accnewreport.caption
 msgid "New Report"
 msgstr "Новий Звіт"
 
-#: TFRMMAIN.ACCOPENREPORT.CAPTION
+#: tfrmmain.accopenreport.caption
 msgid "Open Report"
 msgstr "Відкрити Звіт"
 
-#: TFRMMAIN.ACCPREVIEWREPORT.CAPTION
+#: tfrmmain.accpreviewreport.caption
 msgid "Preview Report"
 msgstr "Попередній перегляд Звіту"
 
-#: TFRMMAIN.ACCPRINTGRID.CAPTION
+#: tfrmmain.accprintgrid.caption
 msgid "Print Grid"
 msgstr "Друк Сітки"
 
-#: TFRMMAIN.ACCPRINTREPORT.CAPTION
+#: tfrmmain.accprintreport.caption
 msgid "Print Report"
 msgstr "Друк Звіту"
 
-#: TFRMMAIN.ACCTHUMBNAILS.CAPTION
+#: tfrmmain.accthumbnails.caption
 msgctxt "TFRMMAIN.ACCTHUMBNAILS.CAPTION"
 msgid "Thumbnails"
 msgstr "Ескізи"
 
-#: TFRMMAIN.BTNMASTERDETAIL.CAPTION
+#: tfrmmain.btnmasterdetail.caption
 msgid "Master-Detail Test"
 msgstr "Тест 'Основний-Детальний'"
 
-#: TFRMMAIN.FRMMAIN.CAPTION
+#: tfrmmain.frmmain.caption
 msgctxt "TFRMMAIN.FRMMAIN.CAPTION"
 msgid "LazReport Test Suite"
 msgstr "Тестова програма для LazReport"
 
-#: TFRMMAIN.LBLEXPR.CAPTION
+#: tfrmmain.lblexpr.caption
 msgid "Expression"
 msgstr "Вираз"
 
-#: TFRMMAIN.LBLINDEX.CAPTION
+#: tfrmmain.lblindex.caption
 msgctxt "TFRMMAIN.LBLINDEX.CAPTION"
 msgid "Index"
 msgstr "Індекс"
 
-#: TFRMMAIN.MENUITEM1.CAPTION
+#: tfrmmain.menuitem1.caption
 msgid "Files"
 msgstr "Файли"
 
-#: TFRMMAIN.MENUITEM3.CAPTION
+#: tfrmmain.menuitem3.caption
 msgid "Tests"
 msgstr "Тести"
 
-#: TFRMMAIN.MENUITEM9.CAPTION
+#: tfrmmain.menuitem9.caption
 msgid "Export"
 msgstr "Експорт"
 
