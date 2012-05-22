@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2012-02-04 23:54+0400\n"
+"PO-Revision-Date: 2012-05-23 00:49+0400\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -356,7 +356,7 @@ msgstr "ожидается идентификатор, но найдено %s"
 
 #: codetoolsstrconsts.ctsexpectedsemicolonofstatementbutfound
 msgid "expected ; of statement, but found %s"
-msgstr ""
+msgstr "ожидается точка с запятой оператора, но найдено %s"
 
 #: codetoolsstrconsts.ctsexportsclauseonlyallowedinlibraries
 msgid "exports clause only allowed in libraries"
