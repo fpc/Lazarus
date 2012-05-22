@@ -109,6 +109,7 @@ type
       AWidth: integer = 0; AHeight: integer = 0);
     procedure SetRatio(X, Y: double);
     procedure RunReport;
+    procedure SetFont(AName: string; ASize: integer; AStyle: TFontStyles = []);
     procedure NewLine(i: word = 1);
     procedure NewPage;
     procedure SetActivePage(APage: integer);
@@ -261,6 +262,14 @@ begin
   if Assigned(OnBeginReport) then
     OnBeginReport(Self);
   Report.ShowReport;
+end;
+
+procedure TlrCodeReport.SetFont(AName: string; ASize: integer;
+  AStyle: TFontStyles);
+begin
+  TextRectStyle.FontName:= AName;
+  TextRectStyle.FontSize:= ASize;
+  TextRectStyle.FontStyle:= AStyle;
 end;
 
 procedure TlrCodeReport.NewPage;
