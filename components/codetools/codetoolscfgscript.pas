@@ -30,7 +30,7 @@
     boolean operators: not, and, or, xor
     operators: =, <>, >, <, <=, >=, +
     variables
-    constants: decimal, hex, octal, binary, string, #decimal
+    constants: decimal, $hex, &octal, %binary, 'string', #character
     functions: string(), integer(), int64(), defined(), undefined()
     procedures: undefine()
     assignments: :=, +=
@@ -1328,7 +1328,7 @@ procedure TCTConfigScriptEngine.RunStatement(Skip: boolean);
 
   procedure ErrorUnexpectedAtom;
   begin
-    AddError(Format(ctsExpectedStatementButFound, [GetAtomOrNothing]))
+    AddError(Format(ctsExpectedSemicolonOfStatementButFound, [GetAtomOrNothing]))
   end;
 
 var
@@ -1505,7 +1505,7 @@ begin
   {$IFDEF VerboseCTCfgScript}
   debugln(['TCTConfigScriptEngine.RunAssignment Operator=',GetAtom]);
   {$ENDIF}
-  // read :=
+  // read := or +=
   if AtomStart^=#0 then begin
     AddError(ctsMissing);
     exit;
@@ -1530,7 +1530,7 @@ begin
     end;
 
     {$IFDEF VerboseCTCfgScript}
-    debugln(['TCTConfigScriptEngine.RunAssignment AFTER ',GetIdentifier(VarStart),' = ',dbgs(Variable)]);
+    debugln(['TCTConfigScriptEngine.RunAssignment AFTER ',GetIdentifier(VarStart),' = ',dbgs(Variable),' Atom=',GetAtom]);
     {$ENDIF}
   end;
   // clean up stack
@@ -2296,6 +2296,12 @@ end;
 
 function TCTConfigScriptEngine.Execute(const Source: string;
   StopAfterErrors: integer): boolean;
+
+  procedure ExpectedSemicolon;
+  begin
+    AddError(Format(ctsExpectedSemicolonOfStatementButFound, [GetAtomOrNothing]))
+  end;
+
 var
   Err: TCTCfgScriptError;
 begin
@@ -2319,6 +2325,8 @@ begin
     ReadRawNextPascalAtom(Src,AtomStart);
     while Src^<>#0 do begin
       RunStatement(false);
+      if not (AtomStart^ in [#0,';']) then
+        ExpectedSemicolon;
       ReadRawNextPascalAtom(Src,AtomStart);
     end;
   except

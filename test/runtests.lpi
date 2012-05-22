@@ -120,6 +120,9 @@
   <CompilerOptions>
     <Version Value="11"/>
     <PathDelim Value="\"/>
+    <Target>
+      <Filename Value="$MakeExe(runtests)"/>
+    </Target>
     <SearchPaths>
       <OtherUnitFiles Value="bugs;lcltests;codetoolstests;lazutils"/>
       <UnitOutputDirectory Value="units\$(TargetCPU)-$(TargetOS)"/>

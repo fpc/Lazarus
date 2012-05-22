@@ -355,9 +355,9 @@ msgstr "\":=\" esperado, mas %s encontrado"
 msgid "expected identifier, but found %s"
 msgstr "identificador esperado, mas encontrado %s"
 
-#: codetoolsstrconsts.ctsexpectedstatementbutfound
-msgid "expected statement, but found %s"
-msgstr "declaração esperada, mas encontrado %s"
+#: codetoolsstrconsts.ctsexpectedsemicolonofstatementbutfound
+msgid "expected ; of statement, but found %s"
+msgstr ""
 
 #: codetoolsstrconsts.ctsexportsclauseonlyallowedinlibraries
 msgid "exports clause only allowed in libraries"

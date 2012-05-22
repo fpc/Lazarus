@@ -356,8 +356,8 @@ msgstr ""
 msgid "expected identifier, but found %s"
 msgstr ""
 
-#: codetoolsstrconsts.ctsexpectedstatementbutfound
-msgid "expected statement, but found %s"
+#: codetoolsstrconsts.ctsexpectedsemicolonofstatementbutfound
+msgid "expected ; of statement, but found %s"
 msgstr ""
 
 #: codetoolsstrconsts.ctsexportsclauseonlyallowedinlibraries

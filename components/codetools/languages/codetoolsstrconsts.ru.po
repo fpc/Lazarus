@@ -354,9 +354,9 @@ msgstr "ожидается оператор :=, но найдено %s"
 msgid "expected identifier, but found %s"
 msgstr "ожидается идентификатор, но найдено %s"
 
-#: codetoolsstrconsts.ctsexpectedstatementbutfound
-msgid "expected statement, but found %s"
-msgstr "ожидается оператор, но найдено %s"
+#: codetoolsstrconsts.ctsexpectedsemicolonofstatementbutfound
+msgid "expected ; of statement, but found %s"
+msgstr ""
 
 #: codetoolsstrconsts.ctsexportsclauseonlyallowedinlibraries
 msgid "exports clause only allowed in libraries"
