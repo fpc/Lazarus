@@ -122,6 +122,7 @@
     <PathDelim Value="\"/>
     <SearchPaths>
       <OtherUnitFiles Value="bugs;lcltests;codetoolstests;lazutils"/>
+      <UnitOutputDirectory Value="units\$(TargetCPU)-$(TargetOS)"/>
     </SearchPaths>
     <Conditionals Value="if defined(EnableCTRange) then
   CustomOptions += '-dEnableCTRange';"/>
