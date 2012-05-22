@@ -1569,6 +1569,7 @@ end;
 
 function dbgs(aStateFlag: TSynStateFlag): string; overload;
 begin
+  Result:='';
   WriteStr(Result, aStateFlag)
 end;
 function dbgs(aStateFlags: TSynStateFlags): string; overload;
