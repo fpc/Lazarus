@@ -939,7 +939,6 @@ begin
   // Found: set or remove Activate and Deactivate handlers
   if c is TForm then begin
     fParentForm:=TForm(c);
-    DebugLn('TCustomControlFilterEdit.SetUseFormActivate: found parent '+fParentForm.Name);
     if AValue then begin          // Set handlers
       if fIsFirstSetFormActivate then begin
         if Assigned(fParentForm.OnActivate) or Assigned(fParentForm.OnDeactivate) then
