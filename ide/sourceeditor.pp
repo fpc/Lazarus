@@ -5030,6 +5030,7 @@ end;
 
 function TSourceEditor.GetOperandFromCaret(const ACaretPos: TPoint): String;
 begin
+  UpdateCodeBuffer;
   if not CodeToolBoss.GetExpandedOperand(CodeBuffer, ACaretPos.X, ACaretPos.Y,
     Result, False)
   then

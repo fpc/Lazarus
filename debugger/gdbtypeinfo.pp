@@ -2590,7 +2590,7 @@ var
     FBoundHigh := -1;
     FLen := -1;
 
-    if not RequireRequests([gptrPtypeCustomEval], '^longint('+FExpression+')[-1]') then exit;
+    if not RequireRequests([gptrPtypeCustomEval], '^^longint('+FExpression+')[-1]') then exit;
     if not IsReqError(gptrPtypeCustomEval, False) then begin
       FBoundLow :=  0;
       FBoundHigh  := StrToIntDef(GetParsedFromResult(FReqResults[gptrPtypeCustomEval].Result.GdbDescription, 'value'), -1);
