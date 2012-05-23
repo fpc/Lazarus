@@ -1631,6 +1631,8 @@ begin
   FStack.Push(ctcssOperand,FunctionName);
   SetCTCSVariableValue(@Value,FStack.TopItemOperand);
 
+  ClearCTCSVariable(@Value);
+
   Result:=true;
 end;
 
