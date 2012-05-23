@@ -656,6 +656,8 @@ type
     // hintwindow stuff
     FHintWindow: THintWindow;
     FMouseHintTimer: TIdleTimer;
+    FMouseHideHintTimer: TTimer;
+    FHintMousePos: TPoint;
 
     procedure Activate; override;
     procedure CreateNotebook;
@@ -699,6 +701,7 @@ type
     procedure NotebookEndDrag(Sender, Target: TObject; X,Y: Integer);
     // hintwindow stuff
     procedure HintTimer(Sender: TObject);
+    procedure HideHintTimer(Sender: TObject);
     procedure OnApplicationUserInput(Sender: TObject; Msg: Cardinal);
     procedure ShowSynEditHint(const MousePos: TPoint);
 
@@ -5164,6 +5167,15 @@ begin
     OnTimer := @HintTimer;
   end;
 
+  // Track mouse movements outside the IDE, if hint is visible
+  FMouseHideHintTimer := TTimer.Create(Self);
+  with FMouseHideHintTimer do begin
+    Name:=Self.Name+'_MouseHintHideTimer';
+    Interval := 500;
+    Enabled := False;
+    OnTimer  := @HideHintTimer;
+  end;
+
   // HintWindow
   FHintWindow := THintWindow.Create(Self);
   with FHintWindow do begin
@@ -5202,6 +5214,7 @@ begin
 
   Application.RemoveOnUserInputHandler(@OnApplicationUserInput);
   FreeThenNil(FMouseHintTimer);
+  FreeThenNil(FMouseHideHintTimer);
   FreeThenNil(FHintWindow);
   FreeAndNil(FNotebook);
 
@@ -6691,8 +6704,10 @@ begin
   if FHintWindow=nil then
     FHintWindow:=THintWindow.Create(Self);
   AHint:=TheHint;
+  FHintMousePos := Mouse.CursorPos;
   if LazarusHelp.CreateHint(FHintWindow,ScreenPos,BaseURL,AHint,HintWinRect) then
     FHintWindow.ActivateHint(HintWinRect,aHint);
+  FMouseHideHintTimer.Enabled := True;
 end;
 
 procedure TSourceNotebook.HideHint;
@@ -6703,6 +6718,8 @@ begin
     FMouseHintTimer.AutoEnabled := false;
     FMouseHintTimer.Enabled:=false;
   end;
+  if FMouseHideHintTimer <> nil then
+    FMouseHideHintTimer.Enabled := False;
   if SourceCompletionTimer<>nil then
     SourceCompletionTimer.Enabled:=false;
   if FHintWindow<>nil then begin
@@ -7680,6 +7697,17 @@ begin
   if (AControl=nil) or (not ContainsControl(AControl)) then exit;
   if AControl is TSynEdit then
     ShowSynEditHint(MousePos);
+end;
+
+procedure TSourceNotebook.HideHintTimer(Sender: TObject);
+begin
+  if (FHintWindow = nil) or (not FHintWindow.Visible) then begin
+    FMouseHideHintTimer.Enabled := false;
+    exit;
+  end;
+
+  if ComparePoints(FHintMousePos, Mouse.CursorPos) <> 0 then
+    HideHint;
 end;
 
 {------------------------------------------------------------------------------
