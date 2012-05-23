@@ -215,32 +215,32 @@ type
     procedure SetActiveEditor(const AValue: TSourceEditorInterface); virtual; abstract;
   public
     function SourceEditorIntfWithFilename(const Filename: string): TSourceEditorInterface;
-             deprecated {$IFDEF VER2_5}'use SourceEditorManagerIntf'{$ENDIF};   // deprecated in 0.9.29 March 2010
+             deprecated 'use SourceEditorManagerIntf';   // deprecated in 0.9.29 March 2010
     property ActiveEditor: TSourceEditorInterface
              read GetActiveEditor write SetActiveEditor;
     function Count: integer; virtual; abstract;
     property Items[Index: integer]: TSourceEditorInterface read GetItems; default;
     
     function GetEditorControlSettings(EditControl: TControl): boolean; virtual; abstract;
-             deprecated {$IFDEF VER2_5}'use SourceEditorManagerIntf'{$ENDIF};   // deprecated in 0.9.29 March 2010
+             deprecated 'use SourceEditorManagerIntf';   // deprecated in 0.9.29 March 2010
     function GetHighlighterSettings(Highlighter: TObject): boolean; virtual; abstract;
-             deprecated {$IFDEF VER2_5}'use SourceEditorManagerIntf'{$ENDIF};   // deprecated in 0.9.29 March 2010
+             deprecated 'use SourceEditorManagerIntf';   // deprecated in 0.9.29 March 2010
     procedure ClearErrorLines; virtual; abstract;
-             deprecated {$IFDEF VER2_5}'use SourceEditorManagerIntf'{$ENDIF};   // deprecated in 0.9.29 March 2010
+             deprecated 'use SourceEditorManagerIntf';   // deprecated in 0.9.29 March 2010
 
     property CompletionBoxPosition: integer read GetCompletionBoxPosition;
     procedure DeactivateCompletionForm; virtual; abstract;
     property ActiveCompletionPlugin: TSourceEditorCompletionPlugin read GetActiveCompletionPlugin;
     // CompletionPlugin list moves to Manager
     function CompletionPluginCount: integer; virtual; abstract;
-             deprecated {$IFDEF VER2_5}'use SourceEditorManagerIntf'{$ENDIF};   // deprecated in 0.9.29 March 2010
+             deprecated 'use SourceEditorManagerIntf';   // deprecated in 0.9.29 March 2010
     property CompletionPlugins[Index: integer]: TSourceEditorCompletionPlugin
              read GetCompletionPlugins;
-             deprecated {$IFDEF VER2_5}'use SourceEditorManagerIntf'{$ENDIF};   // deprecated in 0.9.29 March 2010
+             deprecated 'use SourceEditorManagerIntf';   // deprecated in 0.9.29 March 2010
     procedure RegisterCompletionPlugin(Plugin: TSourceEditorCompletionPlugin); virtual; abstract;
-             deprecated {$IFDEF VER2_5}'use SourceEditorManagerIntf'{$ENDIF};   // deprecated in 0.9.29 March 2010
+             deprecated 'use SourceEditorManagerIntf';   // deprecated in 0.9.29 March 2010
     procedure UnregisterCompletionPlugin(Plugin: TSourceEditorCompletionPlugin); virtual; abstract;
-             deprecated {$IFDEF VER2_5}'use SourceEditorManagerIntf'{$ENDIF};   // deprecated in 0.9.29 March 2010
+             deprecated 'use SourceEditorManagerIntf';   // deprecated in 0.9.29 March 2010
   end;
 
   TsemChangeReason = (

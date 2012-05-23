@@ -812,13 +812,13 @@ type
 
     function DoSaveEditorFile(PageIndex:integer;
                               Flags: TSaveFlags): TModalResult; override;
-                              deprecated {$IFDEF VER2_5}'use method with EditorObject'{$ENDIF};   // deprecated in 0.9.29 March 2010
+                              deprecated 'use method with EditorObject';   // deprecated in 0.9.29 March 2010
     function DoSaveEditorFile(AEditor: TSourceEditorInterface;
                               Flags: TSaveFlags): TModalResult; override;
 
     function DoCloseEditorFile(PageIndex:integer;
                                Flags: TCloseFlags):TModalResult; override;
-                               deprecated {$IFDEF VER2_5}'use method with EditorObject'{$ENDIF};   // deprecated in 0.9.29 March 2010
+                               deprecated 'use method with EditorObject';   // deprecated in 0.9.29 March 2010
     function DoCloseEditorFile(AEditor: TSourceEditorInterface;
                                Flags: TCloseFlags):TModalResult; override;
     function DoCloseEditorFile(const Filename: string;
@@ -827,7 +827,7 @@ type
 
     function DoOpenEditorFile(AFileName: string; PageIndex: integer;
                               Flags: TOpenFlags): TModalResult; override;
-                              deprecated {$IFDEF VER2_5}'use method with WindowIndex'{$ENDIF};   // deprecated in 0.9.29 March 2010
+                              deprecated 'use method with WindowIndex';   // deprecated in 0.9.29 March 2010
     function DoOpenEditorFile(AFileName:string; PageIndex, WindowIndex: integer;
                               Flags: TOpenFlags): TModalResult; override;
     function DoOpenEditorFile(AFileName:string; PageIndex, WindowIndex: integer;
@@ -837,13 +837,13 @@ type
     function DoOpenFileAtCursor(Sender: TObject): TModalResult;
     function DoOpenFileAndJumpToIdentifier(const AFilename, AnIdentifier: string;
         PageIndex: integer; Flags: TOpenFlags): TModalResult; override;
-        deprecated {$IFDEF VER2_5}'use method with WindowIndex'{$ENDIF};   // deprecated in 0.9.29 March 2010
+        deprecated 'use method with WindowIndex';   // deprecated in 0.9.29 March 2010
     function DoOpenFileAndJumpToIdentifier(const AFilename, AnIdentifier: string;
         PageIndex, WindowIndex: integer; Flags: TOpenFlags): TModalResult; override;
     function DoOpenFileAndJumpToPos(const AFilename: string;
         const CursorPosition: TPoint; TopLine: integer;
         PageIndex: integer; Flags: TOpenFlags): TModalResult; override;
-        deprecated {$IFDEF VER2_5}'use method with WindowIndex'{$ENDIF};   // deprecated in 0.9.29 March 2010
+        deprecated 'use method with WindowIndex';   // deprecated in 0.9.29 March 2010
     function DoOpenFileAndJumpToPos(const AFilename: string;
         const CursorPosition: TPoint; TopLine: integer;
         PageIndex, WindowIndex: integer; Flags: TOpenFlags): TModalResult; override;
@@ -1013,10 +1013,10 @@ type
     procedure DoJumpToCodeToolBossError; override;
     procedure UpdateSourceNames;
     function NeedSaveSourceEditorChangesToCodeCache(PageIndex: integer): boolean; override;
-        deprecated {$IFDEF VER2_5}'use method with EditorObject'{$ENDIF};   // deprecated in 0.9.29 March 2010
+        deprecated 'use method with EditorObject';   // deprecated in 0.9.29 March 2010
     function NeedSaveSourceEditorChangesToCodeCache(AEditor: TSourceEditorInterface): boolean; override;
     function SaveSourceEditorChangesToCodeCache(PageIndex: integer): boolean; override;
-        deprecated {$IFDEF VER2_5}'use method with EditorObject'{$ENDIF};   // deprecated in 0.9.29 March 2010
+        deprecated 'use method with EditorObject';   // deprecated in 0.9.29 March 2010
     function SaveSourceEditorChangesToCodeCache(AEditor: TSourceEditorInterface): boolean; override;
     procedure ApplyCodeToolChanges;
     procedure DoJumpToOtherProcedureSection;

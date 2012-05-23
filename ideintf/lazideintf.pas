@@ -204,31 +204,31 @@ type
                        NewFlags: TNewFlags; NewOwner: TObject): TModalResult; virtual; abstract;
     function DoSaveEditorFile(PageIndex:integer;
                               Flags: TSaveFlags): TModalResult; virtual; abstract;
-                              deprecated {$IFDEF VER2_5}'use method with EditorObject'{$ENDIF};   // deprecated in 0.9.29 March 2010
+                              deprecated 'use method with EditorObject';   // deprecated in 0.9.29 March 2010
     function DoSaveEditorFile(AEditor: TSourceEditorInterface;
                               Flags: TSaveFlags): TModalResult; virtual; abstract;
     function DoSaveAll(Flags: TSaveFlags): TModalResult; virtual; abstract;
     function DoCloseEditorFile(PageIndex:integer;
                                Flags: TCloseFlags):TModalResult; virtual; abstract;
-                               deprecated {$IFDEF VER2_5}'use method with EditorObject'{$ENDIF};   // deprecated in 0.9.29 March 2010
+                               deprecated 'use method with EditorObject';   // deprecated in 0.9.29 March 2010
     function DoCloseEditorFile(AEditor: TSourceEditorInterface;
                                Flags: TCloseFlags):TModalResult; virtual; abstract;
     function DoCloseEditorFile(const Filename: string;
                                Flags: TCloseFlags): TModalResult; virtual; abstract;
     function DoOpenEditorFile(AFileName:string; PageIndex: integer;
                               Flags: TOpenFlags): TModalResult; virtual; abstract;
-                              deprecated {$IFDEF VER2_5}'use method with WindowIndex'{$ENDIF};   // deprecated in 0.9.29 March 2010
+                              deprecated 'use method with WindowIndex';   // deprecated in 0.9.29 March 2010
     function DoOpenEditorFile(AFileName:string; PageIndex, WindowIndex: integer;
                               Flags: TOpenFlags): TModalResult; virtual; abstract;
     function DoOpenFileAndJumpToIdentifier(const AFilename, AnIdentifier: string;
                        PageIndex: integer; Flags: TOpenFlags): TModalResult; virtual; abstract;
-                       deprecated {$IFDEF VER2_5}'use method with WindowIndex'{$ENDIF};   // deprecated in 0.9.29 March 2010
+                       deprecated 'use method with WindowIndex';   // deprecated in 0.9.29 March 2010
     function DoOpenFileAndJumpToIdentifier(const AFilename, AnIdentifier: string;
                        PageIndex, WindowIndex: integer; Flags: TOpenFlags): TModalResult; virtual; abstract;
     function DoOpenFileAndJumpToPos(const AFilename: string;
                        const CursorPosition: TPoint; TopLine: integer;
                        PageIndex: integer; Flags: TOpenFlags): TModalResult; virtual; abstract;
-                       deprecated {$IFDEF VER2_5}'use method with WindowIndex'{$ENDIF};   // deprecated in 0.9.29 March 2010
+                       deprecated 'use method with WindowIndex';   // deprecated in 0.9.29 March 2010
     function DoOpenFileAndJumpToPos(const AFilename: string;
                        const CursorPosition: TPoint; TopLine: integer;
                        PageIndex, WindowIndex: integer; Flags: TOpenFlags): TModalResult; virtual; abstract;
@@ -272,10 +272,10 @@ type
     procedure DoJumpToCodeToolBossError; virtual; abstract;
 
     function NeedSaveSourceEditorChangesToCodeCache(PageIndex: integer): boolean; virtual; abstract;
-        deprecated {$IFDEF VER2_5}'use method with EditorObject'{$ENDIF};   // deprecated in 0.9.29 March 2010
+        deprecated 'use method with EditorObject';   // deprecated in 0.9.29 March 2010
     function NeedSaveSourceEditorChangesToCodeCache(AEditor: TSourceEditorInterface): boolean; virtual; abstract;
     function SaveSourceEditorChangesToCodeCache(PageIndex: integer): boolean; virtual; abstract;  // true if something was saved
-        deprecated {$IFDEF VER2_5}'use method with EditorObject'{$ENDIF};   // deprecated in 0.9.29 March 2010
+        deprecated 'use method with EditorObject';   // deprecated in 0.9.29 March 2010
     function SaveSourceEditorChangesToCodeCache(AEditor: TSourceEditorInterface): boolean; virtual; abstract; // true if something was saved
 
     property OpenEditorsOnCodeToolChange: boolean read FOpenEditorsOnCodeToolChange

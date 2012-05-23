@@ -680,7 +680,7 @@ type
     function GetActiveCompletionPlugin: TSourceEditorCompletionPlugin; override;
     function GetCompletionPlugins(Index: integer): TSourceEditorCompletionPlugin; override;
     function GetCompletionBoxPosition: integer; override;
-        deprecated {$IFDEF VER2_5}'use SourceEditorManager'{$ENDIF};       // deprecated in 0.9.29 March 2010
+        deprecated 'use SourceEditorManager';       // deprecated in 0.9.29 March 2010
 
     procedure EditorMouseMove(Sender: TObject; Shift: TShiftstate;
                               X,Y: Integer);
@@ -807,19 +807,20 @@ type
     procedure FocusEditor;
 
   public
+    // These were deprecated at 0.9.29 March 2010
     function GetEditorControlSettings(EditControl: TControl): boolean; override;
-             deprecated {$IFDEF VER2_5}'use SourceEditorManager'{$ENDIF};       // deprecated in 0.9.29 March 2010
+             deprecated 'use SourceEditorManager';
     function GetHighlighterSettings(Highlighter: TObject): boolean; override;
-             deprecated {$IFDEF VER2_5}'use SourceEditorManager'{$ENDIF};       // deprecated in 0.9.29 March 2010
+             deprecated 'use SourceEditorManager';
 
     procedure DeactivateCompletionForm; override;
-             deprecated {$IFDEF VER2_5}'use SourceEditorManager'{$ENDIF};       // deprecated in 0.9.29 March 2010
+             deprecated 'use SourceEditorManager';
     function CompletionPluginCount: integer; override;
-              deprecated {$IFDEF VER2_5}'use SourceEditorManager'{$ENDIF};       // deprecated in 0.9.29 March 2010
+              deprecated 'use SourceEditorManager';
     procedure RegisterCompletionPlugin(Plugin: TSourceEditorCompletionPlugin); override;
-              deprecated {$IFDEF VER2_5}'use SourceEditorManager'{$ENDIF};       // deprecated in 0.9.29 March 2010
+              deprecated 'use SourceEditorManager';
     procedure UnregisterCompletionPlugin(Plugin: TSourceEditorCompletionPlugin); override;
-              deprecated {$IFDEF VER2_5}'use SourceEditorManager'{$ENDIF};       // deprecated in 0.9.29 March 2010
+              deprecated 'use SourceEditorManager';
 
   public
     function GetCapabilities: TCTabControlCapabilities;
