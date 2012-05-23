@@ -84,12 +84,10 @@ var
 begin
   with Sender as TlrCodeReport do
   begin
-    // Set paper...  1=Letter 9=A4....
-    //SetPaper(1, poLandscape);    // try uncomment this line to test another paper size
-
     // Important. Before drawing, add a page
     NewPage;
-
+    // Set paper...  1=Letter 9=A4....
+    //SetPaper(1, poLandscape);    // try uncomment this line to test another paper size
     // Set up a custom style
     BoxText := GetDefaultTextRectStyle;
     BoxText.FontName := 'Times';

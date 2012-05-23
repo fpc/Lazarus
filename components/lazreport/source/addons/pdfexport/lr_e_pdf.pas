@@ -76,8 +76,8 @@ type
     TPRText_ = class(TPRText);
 
 const
-    PDFEscx = 0.8;
-    PDFEscy = 0.8;
+    PDFEscx = 0.792553191;
+    PDFEscy = 0.785447761;
 
 procedure TfrTNPDFExportFilter.AddShape(Data: TShapeData; x, y, h, w: integer);
 
@@ -184,8 +184,8 @@ begin
     PPage.MarginLeft := 0;
     PPage.MarginRight := 0;
 
-    PPage.Height := trunc(CurReport.EMFPages[FPageNo - 1]^.PrnInfo.Pgh*PDFEscy);
-    PPage.Width := trunc(CurReport.EMFPages[FPageNo - 1]^.PrnInfo.Pgw*PDFEscx);
+    PPage.Height := round(CurReport.EMFPages[FPageNo - 1]^.PrnInfo.Pgh*PDFEscy);
+    PPage.Width := round(CurReport.EMFPages[FPageNo - 1]^.PrnInfo.Pgw*PDFEscx);
 
     PRPanel := TPRPanel.Create(PPage);
     PRPanel.Parent := PPage;
