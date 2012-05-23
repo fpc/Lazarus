@@ -58,6 +58,7 @@ type
     // modified
     procedure GatherModifiedProject(AProject: TProject; sl: TStrings);
     procedure GatherModifiedPackages(sl: TStrings);
+    procedure GatherModifiedSourceEditor(sl: TStrings);
     // help
     procedure GatherHelpDatabases(sl: TStrings);
     procedure GatherHelpViewers(sl: TStrings);
@@ -311,6 +312,26 @@ begin
     sl.Add('');
 end;
 
+procedure TIDEInfoDialog.GatherModifiedSourceEditor(sl: TStrings);
+var
+  HeaderWritten: Boolean;
+  i: Integer;
+  SrcEdit: TSourceEditor;
+begin
+  HeaderWritten:=false;
+  if SourceEditorManager.SomethingModified(false) then begin
+    sl.Add('Source Editor:');
+    for i:=0 to SourceEditorManager.SourceEditorCount-1 do
+    begin
+      SrcEdit:=SourceEditorManager.SourceEditors[i];
+      if not SrcEdit.Modified then continue;
+      sl.Add('  '+SrcEdit.Filename+' Component='+dbgs(SrcEdit.EditorComponent.Modified));
+    end;
+  end;
+  if HeaderWritten then
+    sl.Add('');
+end;
+
 procedure TIDEInfoDialog.GatherHelpDatabases(sl: TStrings);
 var
   i: Integer;
@@ -358,6 +379,7 @@ begin
   try
     GatherModifiedProject(Project1,sl);
     GatherModifiedPackages(sl);
+    GatherModifiedSourceEditor(sl);
     ModifiedMemo.Lines.Assign(sl);
   finally
     sl.Free;

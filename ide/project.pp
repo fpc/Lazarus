@@ -2489,7 +2489,7 @@ end;
 
 procedure TUnitInfo.SetModified(const AValue: boolean);
 begin
-  if fModified=AValue then exit;
+  if Modified=AValue then exit;
   fModified:=AValue;
   if not fModified then begin
     if Source<>nil then
