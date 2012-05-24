@@ -78,9 +78,7 @@ type
     FLazPath: String;
     MyFile: TStringList;
     procedure SetLazPath(const AValue: String);
-    { private declarations }
   public
-    { public declarations }
     property LazPath: String read FLazPath write SetLazPath;
   end; 
 
@@ -321,7 +319,6 @@ begin
     MyObj.Unit_Name := CompUnit;
     ListComps.Items.AddObject(CompName, MyObj);
   end;
-  
 
 end;
 

@@ -539,8 +539,7 @@ begin
       CreateMenuItem(itmViewIDEInternalsWindows, itmViewIDEInfo, 'itmViewIDEInfo', lisAboutIDE);
       CreateMenuItem(itmViewIDEInternalsWindows, itmViewNeedBuild, 'itmViewNeedBuild', lisMenuWhatNeedsBuilding);
       {$IFDEF EnableFPDocSearch}
-      CreateMenuItem(itmViewIDEInternalsWindows, itmSearchInFPDocFiles, 'itmSearchInFPDocFiles',
-                     'Search in FPDoc files');
+      CreateMenuItem(itmViewIDEInternalsWindows, itmSearchInFPDocFiles,'itmSearchInFPDocFiles','Search in FPDoc files');
       {$ENDIF}
     end;
   end;
@@ -1001,7 +1000,7 @@ begin
     itmRunMenuRunFile.Command:=GetCommand(ecRunFile);
     itmRunMenuConfigBuildFile.Command:=GetCommand(ecConfigBuildFile);
 
-    // components menu
+    // package menu
     itmPkgNewPackage.Command:=GetCommand(ecNewPackage);
     itmPkgOpenPackage.Command:=GetCommand(ecOpenPackage);
     itmPkgOpenPackageFile.Command:=GetCommand(ecOpenPackageFile);
