@@ -85,12 +85,22 @@ var
   CTRes: Boolean;
 begin
   Result:=mrOk;
-  if not LazarusIDE.BeginCodeTools then exit;
+  if not LazarusIDE.BeginCodeTools then begin
+    debugln(['ShowUseUnitDialog LazarusIDE.BeginCodeTools failed']);
+    exit;
+  end;
   // get cursor position
   SrcEdit:=SourceEditorManager.ActiveEditor;
+  if SrcEdit=nil then begin
+    debugln(['ShowUseUnitDialog no SrcEdit']);
+    exit;
+  end;
   UseUnitDlg:=TUseUnitDialog.Create(nil);
   try
-    if not UseUnitDlg.GetProjUnits(SrcEdit) then Exit(mrCancel);
+    if not UseUnitDlg.GetProjUnits(SrcEdit) then begin
+      debugln(['ShowUseUnitDialog UseUnitDlg.GetProjUnits(SrcEdit) failed: ',SrcEdit.FileName]);
+      Exit(mrCancel);
+    end;
     UseUnitDlg.FillAvailableUnitsList;
     // there is only main uses section in program/library/package
     if SrcEdit.GetProjectFile=Project1.MainUnitInfo then
