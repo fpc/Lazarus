@@ -2042,14 +2042,11 @@ var
 
   procedure rotate;
   begin
-    if Font.Orientation<>0 then
-    begin
-      write('gsave');
-      inc(fSaveCount);
-      Self.FPsUnicode.ResetLastFont;
-      saved:=true;
-      write(format('%.2f rotate',[Font.Orientation / 10],fFS));
-    end;
+    write('gsave');
+    inc(fSaveCount);
+    Self.FPsUnicode.ResetLastFont;
+    saved:=true;
+    write(format('%.2f rotate',[Font.Orientation / 10],fFS));
   end;
 
 begin
@@ -2061,8 +2058,11 @@ begin
   FPSUnicode.FontSize:=Abs(GetFontSize);
   FPSUnicode.FontStyle:=FontStyleToInt(Font.Style);
 
-  //The Y origin for ps text it's Left bottom corner
-  pp.fy := pp.fy - abs(GetFontSize); // in points
+  //The Y origin for ps text it's Left bottom corner (only if not rotated)
+  if Font.Orientation=0 then
+    pp.fy := pp.fy - abs(GetFontSize) // in points
+  else
+    pp.fx := pp.fx + abs(GetFontSize); // apply to X axis if rotated
 
   saved:=false;
   
@@ -2072,15 +2072,17 @@ begin
     if fsBold in Font.Style then
       PenUnder:=1.0;
     PosUnder:=(Abs(Round(GetFontSize/3))*-1)+2;
-    rotate();
     Write(format('%f %f uli',[pp.fx,pp.fy],FFs));
+    if Font.Orientation<>0 then
+      rotate();
     FPSUnicode.OutputString(Text);
     write(Format('%.3f %d ule',[PenUnder,PosUnder],FFs));
   end
   else
   begin
     write(Format('%f %f moveto',[pp.fx,pp.fy],FFs));
-    rotate();
+    if Font.Orientation<>0 then
+      rotate();
     FPSUnicode.OutputString(Text);
   end;
 

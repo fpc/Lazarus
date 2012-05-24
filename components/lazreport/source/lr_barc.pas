@@ -400,11 +400,7 @@ begin
           FillRect(Rect(R.Left + dx - fs,R.Top,R.Right, R.Bottom));
           Font.Orientation := 900;
 
-          if (WidgetSet.LCLPlatform = lpGtk2) and IsPrinting then
-            {GTK2 vertical printing correction}
-            TextOut(R.Right ,R.Bottom - fs - (dy - TextWidth(FText)) div 2, FText)
-          else
-            TextOut(R.Right - fs,R.Bottom - (dy - TextWidth(FText)) div 2, FText)
+          TextOut(R.Right - fs,R.Bottom - (dy - TextWidth(FText)) div 2, FText)
         end
         else
           if Param.cAngle = 180 then
@@ -422,10 +418,7 @@ begin
             Font.Orientation := 2700;
             FillRect(Rect(R.Left,R.Top,R.Left + fs,R.Bottom));
             if (WidgetSet.LCLPlatform = lpGtk2) and IsPrinting then
-            {GTK2 vertical printing correction}
-              TextOut(R.Left, R.Top + fs + (dy -TextWidth(FText)) div 2, FText)
-            else
-              TextOut(R.Left + fs, R.Top + (dy -TextWidth(FText)) div 2, FText)
+            TextOut(R.Left + fs, R.Top + (dy -TextWidth(FText)) div 2, FText)
           end;
     end;
   end;
