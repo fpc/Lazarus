@@ -1,23 +1,21 @@
 object OpenInstalledPackagesDlg: TOpenInstalledPackagesDlg
-  Left = 559
-  Height = 370
-  Top = 303
-  Width = 453
+  Left = 407
+  Height = 494
+  Top = 151
+  Width = 447
   ActiveControl = PkgListView
   Caption = 'OpenInstalledPackagesDlg'
-  ClientHeight = 370
-  ClientWidth = 453
+  ClientHeight = 494
+  ClientWidth = 447
   OnCreate = FormCreate
   Position = poScreenCenter
-  LCLVersion = '0.9.27'
+  LCLVersion = '1.1'
   object HintMemo: TMemo
-    AnchorSideBottom.Control = HelpButton
     Left = 0
-    Height = 87
-    Top = 235
-    Width = 453
-    Align = alTop
-    Anchors = [akTop, akLeft, akRight, akBottom]
+    Height = 133
+    Top = 308
+    Width = 447
+    Align = alBottom
     Lines.Strings = (
       'Memo1'
     )
@@ -27,119 +25,41 @@ object OpenInstalledPackagesDlg: TOpenInstalledPackagesDlg
   end
   object PkgListView: TListView
     Left = 0
-    Height = 230
+    Height = 303
     Top = 0
-    Width = 453
-    Align = alTop
+    Width = 447
+    Align = alClient
     Columns = <>
     RowSelect = True
     TabOrder = 1
     OnDblClick = PkgListViewDblClick
     OnSelectItem = PkgListViewSelectItem
   end
-  object HelpButton: TBitBtn
-    AnchorSideLeft.Control = Owner
-    AnchorSideBottom.Control = Owner
-    AnchorSideBottom.Side = asrBottom
-    Left = 6
-    Height = 36
-    Top = 328
-    Width = 75
-    Anchors = [akLeft, akBottom]
-    AutoSize = True
-    BorderSpacing.Around = 6
-    Caption = '&Help'
-    Constraints.MinWidth = 75
-    Kind = bkHelp
-    NumGlyphs = 0
-    OnClick = HelpButtonClick
-    TabOrder = 2
-  end
-  object OpenButton: TBitBtn
-    AnchorSideTop.Control = HelpButton
-    AnchorSideRight.Control = CancelButton
-    AnchorSideBottom.Control = Owner
-    AnchorSideBottom.Side = asrBottom
-    Left = 255
-    Height = 36
-    Top = 328
-    Width = 108
-    Anchors = [akTop, akRight, akBottom]
-    AutoSize = True
-    BorderSpacing.Right = 6
-    BorderSpacing.Bottom = 6
-    Caption = 'OpenButton'
-    Constraints.MinWidth = 75
-    Default = True
-    Glyph.Data = {
-      36040000424D3604000000000000360000002800000010000000100000000100
-      2000000000000004000064000000640000000000000000000000FFFFFF00FFFF
-      FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
-      FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
-      FF00FFFFFF00FFFFFF00FFFFFF00317A360A2D753207FFFFFF00FFFFFF00FFFF
-      FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
-      FF00FFFFFF00FFFFFF003985400A37833DFF317B37FB2E763307FFFFFF00FFFF
-      FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
-      FF00FFFFFF004292490A408E47FF54A35CFF4F9F57FF327C38FE2E773408FFFF
-      FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
-      FF004B9E530A499A51FF5BAC64FF77CA82FF74C87EFF51A059FF337D39FE2F78
-      3508FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF0053A9
-      5C0A51A65AFF63B56DFF7ECE89FF7BCC87FF76CA81FF76C981FF52A25AFF347E
-      3AFE30793508FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF005AB4650959B0
-      63FF6BBD76FF84D290FF7AC985FF60B26AFF63B46DFF78C983FF78CB82FF53A3
-      5CFF347F3AFD317A3608FFFFFF00FFFFFF00FFFFFF00FFFFFF005EB969465BB5
-      66E479C986FF80CE8DFF51A65AFC4DA1566F499C518B5CAD67FF7CCC86FF79CB
-      85FF54A45DFF35803BFC317B3708FFFFFF00FFFFFF00FFFFFF00FFFFFF005FBA
-      6A3C5CB666E66DC079FF55AC5F6FFFFFFF00FFFFFF004A9D52915EAE68FF7DCD
-      89FF7CCD87FF56A55FFF36813CFC327C3808FFFFFF00FFFFFF00FFFFFF00FFFF
-      FF005FBB6A435CB76765FFFFFF00FFFFFF00FFFFFF00FFFFFF004B9E53915FAF
-      69FF7FCE8AFF7ECE89FF57A660FF37823DFC337D3908FFFFFF00FFFFFF00FFFF
-      FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF004B9F
-      549160B06AFF81CF8DFF7FCF8BFF58A761FF398540FF347E3A08FFFFFF00FFFF
-      FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
-      FF004CA0559162B26CFF82D18FFF7AC885FF57A660FF38843F7BFFFFFF00FFFF
-      FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
-      FF00FFFFFF004DA1569163B36DFF5FAF69FF41914979FFFFFF00FFFFFF00FFFF
-      FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
-      FF00FFFFFF00FFFFFF004EA257914A9D527FFFFFFF00FFFFFF00FFFFFF00FFFF
-      FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
-      FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
-      FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
-      FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00
-    }
-    NumGlyphs = 0
-    OnClick = OpenButtonClick
-    TabOrder = 3
-  end
-  object CancelButton: TBitBtn
-    AnchorSideTop.Control = HelpButton
-    AnchorSideRight.Control = Owner
-    AnchorSideRight.Side = asrBottom
-    AnchorSideBottom.Control = Owner
-    AnchorSideBottom.Side = asrBottom
-    Left = 369
-    Height = 36
-    Top = 328
-    Width = 78
-    Anchors = [akTop, akRight, akBottom]
-    AutoSize = True
-    BorderSpacing.Right = 6
-    BorderSpacing.Bottom = 6
-    Cancel = True
-    Caption = 'Cancel'
-    Constraints.MinWidth = 75
-    Kind = bkCancel
-    ModalResult = 2
-    NumGlyphs = 0
-    TabOrder = 4
-  end
   object Splitter1: TSplitter
     Cursor = crVSplit
     Left = 0
     Height = 5
-    Top = 230
-    Width = 453
-    Align = alTop
-    ResizeAnchor = akTop
+    Top = 303
+    Width = 447
+    Align = alBottom
+    ResizeAnchor = akBottom
+  end
+  object ButtonPanel1: TButtonPanel
+    Left = 6
+    Height = 41
+    Top = 447
+    Width = 435
+    OKButton.Name = 'OKButton'
+    OKButton.DefaultCaption = True
+    OKButton.OnClick = OpenButtonClick
+    HelpButton.Name = 'HelpButton'
+    HelpButton.DefaultCaption = True
+    HelpButton.OnClick = HelpButtonClick
+    CloseButton.Name = 'CloseButton'
+    CloseButton.DefaultCaption = True
+    CancelButton.Name = 'CancelButton'
+    CancelButton.DefaultCaption = True
+    TabOrder = 3
+    ShowButtons = [pbOK, pbCancel, pbHelp]
   end
 end

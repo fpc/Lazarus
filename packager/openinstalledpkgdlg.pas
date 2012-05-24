@@ -40,7 +40,7 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, Buttons, ComCtrls, StdCtrls,
-  FileCtrl, Dialogs, LCLProc, ExtCtrls,
+  FileCtrl, Dialogs, LCLProc, ExtCtrls, ButtonPanel,
   IDEHelpIntf, IDEWindowIntf, PackageIntf,
   PackageDefs, LazarusIDEStrConsts, PackageSystem;
 
@@ -49,9 +49,7 @@ type
   { TOpenInstalledPackagesDlg }
 
   TOpenInstalledPackagesDlg = class(TForm)
-    HelpButton: TBitBtn;
-    CancelButton: TBitBtn;
-    OpenButton: TBitBtn;
+    ButtonPanel1: TButtonPanel;
     PkgListView: TListView;
     HintMemo: TMemo;
     Splitter1: TSplitter;
@@ -156,9 +154,9 @@ begin
     NewColumn.Width:=300;
   end;
 
-  OpenButton.Caption:=lisOpen;
-  CancelButton.Caption:=lisCancel;
-  HelpButton.Caption:=lisHelp;
+  ButtonPanel1.OKButton.Caption:=lisOpen;
+  ButtonPanel1.CancelButton.Caption:=lisCancel;
+  ButtonPanel1.HelpButton.Caption:=lisHelp;
 end;
 
 procedure TOpenInstalledPackagesDlg.HelpButtonClick(Sender: TObject);
@@ -166,8 +164,7 @@ begin
   LazarusHelp.ShowHelpForIDEControl(Self);
 end;
 
-function TOpenInstalledPackagesDlg.PkgStateToString(APackage: TLazPackage
-  ): string;
+function TOpenInstalledPackagesDlg.PkgStateToString(APackage: TLazPackage): string;
   
   procedure AddState(const s: string);
   begin
