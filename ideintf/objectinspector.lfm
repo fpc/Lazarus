@@ -51,10 +51,11 @@ object ObjectInspectorDlg: TObjectInspectorDlg
       Left = 71
       Height = 24
       Top = 2
-      Width = 128
+      Width = 200
       UseFormActivate = True
       ButtonWidth = 23
       NumGlyphs = 0
+      Anchors = [akTop, akLeft, akRight]
       BorderSpacing.Left = 5
       MaxLength = 0
       TabOrder = 0
