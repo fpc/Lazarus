@@ -2,7 +2,7 @@
   This source is only used to compile and install the package.
  }
 
-unit lazreport; 
+unit lazreport;
 
 interface
 
@@ -12,15 +12,16 @@ uses
   lr_expres, LR_Flds, LR_fmted, lr_funct_editor_unit, lr_funct_editor_unit1, 
   LR_GEdit, LR_GrpEd, LR_IFlds, LR_Pars, LR_pgopt, LR_PGrid, LR_PrDlg, 
   LR_Prntr, LR_progr, lr_propedit, LR_Register, LR_RRect, LR_Shape, LR_Utils, 
-  LR_Var, LR_Vared, LR_View, LR_Newrp, Barcode, LazarusPackageIntf;
+  LR_Var, LR_Vared, LR_View, LR_Newrp, Barcode, LR_DBRel, LR_DBComponent, 
+  LazarusPackageIntf;
 
 implementation
 
-procedure Register; 
+procedure Register;
 begin
-  RegisterUnit('LR_Register', @LR_Register.Register); 
-end; 
+  RegisterUnit('LR_Register', @LR_Register.Register);
+end;
 
 initialization
-  RegisterPackage('lazreport', @Register); 
+  RegisterPackage('lazreport', @Register);
 end.

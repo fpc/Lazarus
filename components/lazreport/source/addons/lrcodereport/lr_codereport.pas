@@ -524,7 +524,7 @@ procedure TlrCodeReport.DrawLine(X, Y, W, H: double; const Style: TlrLineStyle);
 var
   aLine: TfrLineView;
 begin
-  aLine := TfrLineView.Create;
+  aLine := TfrLineView.Create(nil);
   aLine.Left := X * XRatio;
   aLine.Top := Y * YRatio;
   aLine.Width := W * XRatio;
@@ -560,7 +560,7 @@ procedure TlrCodeReport.DrawText(X, Y, W, H: double; Text: string;
 var
   AText: TfrMemoview;
 begin
-  AText := TfrMemoView.Create;
+  AText := TfrMemoView.Create(nil);
   AText.Left := X * XRatio;
   AText.Top := Y * YRatio;
   AText.Width := W * XRatio;
@@ -679,7 +679,7 @@ procedure TlrCodeReport.DrawImage(X, Y, W, H: double; AImage: TImage;
 var
   APicture: TfrPictureView;
 begin
-  APicture := TfrPictureView.Create;
+  APicture := TfrPictureView.Create(nil);
   APicture.Left := X * XRatio;
   APicture.Top := Y * YRatio;
   APicture.Width := W * XRatio;
@@ -696,7 +696,7 @@ procedure TlrCodeReport.DrawShape(X, Y, W, H: double; Style: TlrShapeStyle);
 var
   AShape: TfrShapeView;
 begin
-  AShape := TfrShapeView.Create;
+  AShape := TfrShapeView.Create(nil);
   AShape.Left := X * XRatio;
   AShape.Top := Y * YRatio;
   AShape.Width := W * XRatio;
@@ -762,7 +762,7 @@ procedure TlrCodeReport.DrawBarCode(X, Y, W, H: double; Code: string;
 var
   ABarCode: TfrBarCodeView;
 begin
-  ABarCode := TfrBarCodeView.Create;
+  ABarCode := TfrBarCodeView.Create(nil);
   ABarCode.Left := X * XRatio;
   ABarCode.Top := Y * YRatio;
   ABarCode.Width := W * XRatio;

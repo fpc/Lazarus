@@ -6,21 +6,19 @@ interface
 
 uses
   Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, StdCtrls,
-  ExtCtrls, LR_Class, Buttons;
+  ExtCtrls, LR_Class, Buttons, ButtonPanel;
 
 type
 
   { TLR_FunctEditorForm }
 
   TLR_FunctEditorForm = class(TForm)
-    BitBtn1: TBitBtn;
-    BitBtn2: TBitBtn;
+    ButtonPanel1: TButtonPanel;
     Label1: TLabel;
     Label2: TLabel;
     ListBox1: TListBox;
     ListBox2: TListBox;
     Panel1: TPanel;
-    Panel2: TPanel;
     Splitter1: TSplitter;
     procedure FormClose(Sender: TObject; var {%H-}CloseAction: TCloseAction);
     procedure FormCreate(Sender: TObject);

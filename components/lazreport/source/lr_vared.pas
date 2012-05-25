@@ -17,14 +17,16 @@ interface
 uses
   Classes, SysUtils, LResources,
   Forms, Controls, Graphics, Dialogs,
-  Buttons, StdCtrls,
+  Buttons, StdCtrls, ButtonPanel,
 
   LR_Class,LR_Const;
 
 type
+
+  { TfrVaredForm }
+
   TfrVaredForm = class(TForm)
-    Button4: TButton;
-    Button5: TButton;
+    ButtonPanel1: TButtonPanel;
     Memo1: TMemo;
     Label1: TLabel;
     procedure FormActivate(Sender: TObject);
@@ -52,8 +54,6 @@ procedure TfrVaredForm.FormCreate(Sender: TObject);
 begin
   Caption := sVaredFormCapt;
   Label1.Caption := sVaredFormCat;
-  Button4.Caption := sOk;
-  Button5.Caption := sCancel;
 end;
 
 end.

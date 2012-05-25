@@ -19,23 +19,23 @@ inherited frEditorForm: TfrEditorForm
   ShowHint = True
   object Panel2: TPanel[0]
     Left = 0
-    Height = 49
-    Top = 387
+    Height = 47
+    Top = 389
     Width = 589
     Align = alBottom
     AutoSize = True
     BevelOuter = bvNone
-    ClientHeight = 49
+    ClientHeight = 47
     ClientWidth = 589
     FullRepaint = False
     TabOrder = 0
     object Button1: TButton
       AnchorSideTop.Control = Panel2
       AnchorSideRight.Control = Button2
-      Left = 477
-      Height = 37
+      Left = 475
+      Height = 35
       Top = 4
-      Width = 37
+      Width = 38
       HelpContext = 40
       Anchors = [akRight, akBottom]
       AutoSize = True
@@ -50,10 +50,10 @@ inherited frEditorForm: TfrEditorForm
       AnchorSideTop.Control = Panel2
       AnchorSideRight.Control = Panel2
       AnchorSideRight.Side = asrBottom
-      Left = 520
-      Height = 37
+      Left = 519
+      Height = 35
       Top = 4
-      Width = 63
+      Width = 64
       HelpContext = 50
       Anchors = [akRight, akBottom]
       AutoSize = True
@@ -68,9 +68,9 @@ inherited frEditorForm: TfrEditorForm
       AnchorSideLeft.Control = Panel2
       AnchorSideTop.Control = Panel2
       Left = 6
-      Height = 37
+      Height = 35
       Top = 4
-      Width = 71
+      Width = 73
       HelpContext = 60
       Anchors = [akLeft, akBottom]
       AutoSize = True
@@ -84,10 +84,10 @@ inherited frEditorForm: TfrEditorForm
       AnchorSideLeft.Control = Button3
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = Panel2
-      Left = 83
-      Height = 37
+      Left = 85
+      Height = 35
       Top = 4
-      Width = 69
+      Width = 71
       HelpContext = 70
       Anchors = [akLeft, akBottom]
       AutoSize = True
@@ -101,8 +101,8 @@ inherited frEditorForm: TfrEditorForm
       AnchorSideLeft.Control = Button6
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = Panel2
-      Left = 237
-      Height = 37
+      Left = 242
+      Height = 35
       Top = 4
       Width = 66
       HelpContext = 110
@@ -118,10 +118,10 @@ inherited frEditorForm: TfrEditorForm
       AnchorSideLeft.Control = Button4
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = Panel2
-      Left = 158
-      Height = 37
+      Left = 162
+      Height = 35
       Top = 4
-      Width = 73
+      Width = 74
       HelpContext = 70
       Anchors = [akLeft, akBottom]
       AutoSize = True
@@ -135,7 +135,7 @@ inherited frEditorForm: TfrEditorForm
   object ScriptPanel: TPanel[1]
     Left = 0
     Height = 152
-    Top = 235
+    Top = 237
     Width = 589
     Align = alBottom
     BevelOuter = bvNone
@@ -145,7 +145,7 @@ inherited frEditorForm: TfrEditorForm
     TabOrder = 1
     object Label2: TLabel
       Left = 4
-      Height = 18
+      Height = 16
       Top = 0
       Width = 38
       Caption = 'S&cript'
@@ -170,50 +170,24 @@ inherited frEditorForm: TfrEditorForm
       Gutter.Width = 55
       Gutter.MouseActions = <      
         item
-          Shift = []
-          ShiftMask = []
-          Button = mbLeft
           ClickCount = ccAny
           ClickDir = cdDown
-          Command = 13
-          MoveCaret = False
-          Option = 0
-          Priority = 0
+          Command = emcOnMainGutterClick
         end      
         item
-          Shift = []
-          ShiftMask = []
           Button = mbRight
-          ClickCount = ccSingle
-          ClickDir = cdUp
-          Command = 12
-          MoveCaret = False
-          Option = 0
-          Priority = 0
+          Command = emcContextMenu
         end>
       RightGutter.Width = 0
       RightGutter.MouseActions = <      
         item
-          Shift = []
-          ShiftMask = []
-          Button = mbLeft
           ClickCount = ccAny
           ClickDir = cdDown
-          Command = 13
-          MoveCaret = False
-          Option = 0
-          Priority = 0
+          Command = emcOnMainGutterClick
         end      
         item
-          Shift = []
-          ShiftMask = []
           Button = mbRight
-          ClickCount = ccSingle
-          ClickDir = cdUp
-          Command = 12
-          MoveCaret = False
-          Option = 0
-          Priority = 0
+          Command = emcContextMenu
         end>
       Highlighter = SynPasSyn1
       Keystrokes = <      
@@ -539,126 +513,71 @@ inherited frEditorForm: TfrEditorForm
         end>
       MouseActions = <      
         item
-          Shift = []
           ShiftMask = [ssShift, ssAlt]
-          Button = mbLeft
-          ClickCount = ccSingle
           ClickDir = cdDown
-          Command = 1
+          Command = emcStartSelections
           MoveCaret = True
-          Option = 0
-          Priority = 0
         end      
         item
           Shift = [ssShift]
           ShiftMask = [ssShift, ssAlt]
-          Button = mbLeft
-          ClickCount = ccSingle
           ClickDir = cdDown
-          Command = 1
+          Command = emcStartSelections
           MoveCaret = True
           Option = 1
-          Priority = 0
         end      
         item
           Shift = [ssAlt]
           ShiftMask = [ssShift, ssAlt]
-          Button = mbLeft
-          ClickCount = ccSingle
           ClickDir = cdDown
-          Command = 3
+          Command = emcStartColumnSelections
           MoveCaret = True
-          Option = 0
-          Priority = 0
         end      
         item
           Shift = [ssShift, ssAlt]
           ShiftMask = [ssShift, ssAlt]
-          Button = mbLeft
-          ClickCount = ccSingle
           ClickDir = cdDown
-          Command = 3
+          Command = emcStartColumnSelections
           MoveCaret = True
           Option = 1
-          Priority = 0
         end      
         item
-          Shift = []
-          ShiftMask = []
           Button = mbRight
-          ClickCount = ccSingle
-          ClickDir = cdUp
-          Command = 12
-          MoveCaret = False
-          Option = 0
-          Priority = 0
+          Command = emcContextMenu
         end      
         item
-          Shift = []
-          ShiftMask = []
-          Button = mbLeft
           ClickCount = ccDouble
           ClickDir = cdDown
-          Command = 6
+          Command = emcSelectWord
           MoveCaret = True
-          Option = 0
-          Priority = 0
         end      
         item
-          Shift = []
-          ShiftMask = []
-          Button = mbLeft
           ClickCount = ccTriple
           ClickDir = cdDown
-          Command = 7
+          Command = emcSelectLine
           MoveCaret = True
-          Option = 0
-          Priority = 0
         end      
         item
-          Shift = []
-          ShiftMask = []
-          Button = mbLeft
           ClickCount = ccQuad
           ClickDir = cdDown
-          Command = 8
+          Command = emcSelectPara
           MoveCaret = True
-          Option = 0
-          Priority = 0
         end      
         item
-          Shift = []
-          ShiftMask = []
           Button = mbMiddle
-          ClickCount = ccSingle
           ClickDir = cdDown
-          Command = 10
+          Command = emcPasteSelection
           MoveCaret = True
-          Option = 0
-          Priority = 0
         end      
         item
           Shift = [ssCtrl]
           ShiftMask = [ssShift, ssAlt, ssCtrl]
-          Button = mbLeft
-          ClickCount = ccSingle
-          ClickDir = cdUp
-          Command = 11
-          MoveCaret = False
-          Option = 0
-          Priority = 0
+          Command = emcMouseLink
         end>
       MouseSelActions = <      
         item
-          Shift = []
-          ShiftMask = []
-          Button = mbLeft
-          ClickCount = ccSingle
           ClickDir = cdDown
-          Command = 9
-          MoveCaret = False
-          Option = 0
-          Priority = 0
+          Command = emcStartDragMove
         end>
       Lines.Strings = (
         'Begin'
@@ -668,11 +587,23 @@ inherited frEditorForm: TfrEditorForm
         '   c:=25;'
         'End'
       )
+      VisibleSpecialChars = [vscSpace, vscTabAtLast]
       BracketHighlightStyle = sbhsBoth
+      BracketMatchColor.Background = clNone
+      BracketMatchColor.Foreground = clNone
+      BracketMatchColor.Style = [fsBold]
+      FoldedCodeColor.Background = clNone
+      FoldedCodeColor.Foreground = clGray
+      FoldedCodeColor.FrameColor = clGray
+      MouseLinkColor.Background = clNone
+      MouseLinkColor.Foreground = clBlue
+      LineHighlightColor.Background = clNone
+      LineHighlightColor.Foreground = clNone
       inline TSynGutterPartList
         object TSynGutterMarks
           AutoSize = False
           Width = 22
+          MouseActions = <>
         end
         object TSynGutterLineNumber
           Width = 17
@@ -686,35 +617,26 @@ inherited frEditorForm: TfrEditorForm
         end
         object TSynGutterChanges
           Width = 4
+          MouseActions = <>
           ModifiedColor = 59900
           SavedColor = clGreen
         end
         object TSynGutterSeparator
           Width = 2
+          MouseActions = <>
         end
         object TSynGutterCodeFolding
           MouseActions = <          
             item
-              Shift = []
-              ShiftMask = []
               Button = mbRight
-              ClickCount = ccSingle
-              ClickDir = cdUp
-              Command = 16
-              MoveCaret = False
-              Option = 0
-              Priority = 0
+              Command = emcCodeFoldContextMenu
             end          
             item
-              Shift = []
               ShiftMask = [ssShift]
               Button = mbMiddle
               ClickCount = ccAny
               ClickDir = cdDown
-              Command = 14
-              MoveCaret = False
-              Option = 0
-              Priority = 0
+              Command = emcCodeFoldCollaps
             end          
             item
               Shift = [ssShift]
@@ -722,73 +644,49 @@ inherited frEditorForm: TfrEditorForm
               Button = mbMiddle
               ClickCount = ccAny
               ClickDir = cdDown
-              Command = 14
-              MoveCaret = False
+              Command = emcCodeFoldCollaps
               Option = 1
-              Priority = 0
             end          
             item
-              Shift = []
-              ShiftMask = []
-              Button = mbLeft
               ClickCount = ccAny
               ClickDir = cdDown
-              Command = 0
-              MoveCaret = False
-              Option = 0
-              Priority = 0
+              Command = emcNone
             end>
           MarkupInfo.Background = clWhite
           MarkupInfo.Foreground = clGray
           MouseActionsExpanded = <          
             item
-              Shift = []
-              ShiftMask = []
-              Button = mbLeft
               ClickCount = ccAny
               ClickDir = cdDown
-              Command = 14
-              MoveCaret = False
-              Option = 0
-              Priority = 0
+              Command = emcCodeFoldCollaps
             end>
           MouseActionsCollapsed = <          
             item
               Shift = [ssCtrl]
               ShiftMask = [ssCtrl]
-              Button = mbLeft
               ClickCount = ccAny
               ClickDir = cdDown
-              Command = 15
-              MoveCaret = False
-              Option = 0
-              Priority = 0
+              Command = emcCodeFoldExpand
             end          
             item
-              Shift = []
               ShiftMask = [ssCtrl]
-              Button = mbLeft
               ClickCount = ccAny
               ClickDir = cdDown
-              Command = 15
-              MoveCaret = False
+              Command = emcCodeFoldExpand
               Option = 1
-              Priority = 0
             end>
         end
-      end
-      inline SynRightGutterPartList1: TSynRightGutterPartList
       end
     end
   end
   object MemoPanel: TPanel[2]
     Left = 0
-    Height = 190
+    Height = 192
     Top = 36
     Width = 589
     Align = alClient
     BevelOuter = bvNone
-    ClientHeight = 190
+    ClientHeight = 192
     ClientWidth = 589
     FullRepaint = False
     TabOrder = 2
@@ -801,8 +699,8 @@ inherited frEditorForm: TfrEditorForm
       AnchorSideBottom.Control = MemoPanel
       AnchorSideBottom.Side = asrBottom
       Left = 0
-      Height = 160
-      Top = 30
+      Height = 164
+      Top = 28
       Width = 589
       Anchors = [akTop, akLeft, akRight, akBottom]
       OnEnter = M1Enter
@@ -815,7 +713,7 @@ inherited frEditorForm: TfrEditorForm
       AnchorSideLeft.Control = MemoPanel
       AnchorSideTop.Control = MemoPanel
       Left = 6
-      Height = 18
+      Height = 16
       Top = 6
       Width = 41
       BorderSpacing.Around = 6
@@ -827,7 +725,7 @@ inherited frEditorForm: TfrEditorForm
     Cursor = crVSplit
     Left = 0
     Height = 9
-    Top = 226
+    Top = 228
     Width = 589
     Align = alBottom
     Anchors = [akLeft, akBottom]
@@ -870,7 +768,7 @@ inherited frEditorForm: TfrEditorForm
       Left = 71
       Height = 22
       Top = 7
-      Width = 73
+      Width = 75
       HelpContext = 90
       BorderSpacing.Around = 6
       Caption = '&Big font'
@@ -881,10 +779,10 @@ inherited frEditorForm: TfrEditorForm
       AnchorSideLeft.Control = CB2
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = Panel3
-      Left = 150
+      Left = 152
       Height = 22
       Top = 7
-      Width = 89
+      Width = 93
       HelpContext = 100
       BorderSpacing.Around = 6
       Caption = '&Word wrap'
@@ -896,9 +794,20 @@ inherited frEditorForm: TfrEditorForm
     DefaultFilter = '(TSynHighlighterAttributes)'
     Enabled = False
     AsmAttri.Foreground = 5812813
+    AsmAttri.FrameEdges = sfeAround
     CommentAttri.Foreground = 13461314
+    CommentAttri.FrameEdges = sfeAround
+    IDEDirectiveAttri.FrameEdges = sfeAround
+    IdentifierAttri.FrameEdges = sfeAround
+    KeyAttri.FrameEdges = sfeAround
     NumberAttri.Foreground = clRed
+    NumberAttri.FrameEdges = sfeAround
+    SpaceAttri.FrameEdges = sfeAround
     StringAttri.Foreground = 15226932
+    StringAttri.FrameEdges = sfeAround
+    SymbolAttri.FrameEdges = sfeAround
+    CaseLabelAttri.FrameEdges = sfeAround
+    DirectiveAttri.FrameEdges = sfeAround
     CompilerMode = pcmDelphi
     NestedComments = False
     left = 228

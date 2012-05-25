@@ -67,6 +67,7 @@ type
     { Private declarations }
     FActiveMemo: TMemo;
     //** procedure WMGetMinMaxInfo(var Msg: TLMGetMinMaxInfo); message LM_GETMINMAXINFO;
+    procedure InsertText(const S:string);
   public
     { Public declarations }
     function ShowEditor: TModalResult; override;
@@ -136,16 +137,8 @@ procedure TfrEditorForm.Button3Click(Sender: TObject);
 begin
   frVarForm := TfrVarForm.Create(Application);
   try
-    with frVarForm do
-    if ShowModal = mrOk then
-    begin
-      if SelectedItem <> '' then
-      begin
-        ClipBoard.Clear;
-        ClipBoard.AsText := '[' + SelectedItem + ']';
-        FActiveMemo.PasteFromClipboard;
-      end;
-    end;
+    if (frVarForm.ShowModal = mrOk) then
+      InsertText(frVarForm.SelectedItem);
   finally
     frVarForm.Free;
   end;
@@ -159,11 +152,7 @@ begin
   lrExpresionEditorForm:=TlrExpresionEditorForm.Create(Application);
   try
     if lrExpresionEditorForm.ShowModal = mrOk then
-    begin
-      ClipBoard.Clear;
-      ClipBoard.AsText := '[' + lrExpresionEditorForm.ResultExpresion + ']';
-      FActiveMemo.PasteFromClipboard;
-    end
+      InsertText(lrExpresionEditorForm.ResultExpresion);
   finally
     lrExpresionEditorForm.Free;
   end;
@@ -195,18 +184,8 @@ procedure TfrEditorForm.Button4Click(Sender: TObject);
 begin
   frFieldsForm := TfrFieldsForm.Create(Application);
   try
-    with frFieldsForm do
-    begin
-      if ShowModal = mrOk then
-      begin
-        if DBField <> '' then
-        begin
-          ClipBoard.Clear;
-          ClipBoard.AsText := '[' + DBField + ']';
-          FActiveMemo.PasteFromClipboard;
-        end;
-      end;
-    end;
+    if frFieldsForm.ShowModal = mrOk then
+      InsertText(frFieldsForm.DBField);
   finally
     frFieldsForm.Free;
   end;
@@ -224,6 +203,11 @@ begin
   Splitter.Visible:= CB1.Checked;
   if Splitter.Visible then
     Splitter.Top:=MemoPanel.Height+1;
+
+  if ScriptPanel.Visible then
+    M2.SetFocus
+  else
+    M1.SetFocus
 end;
 
 procedure TfrEditorForm.CB2Click(Sender: TObject);
@@ -284,6 +268,12 @@ begin
   ptMinTrackSize.x := Button2.Left + Button2.Width + 4 + 8;
   ptMinTrackSize.y := 200;
   }
+end;
+
+procedure TfrEditorForm.InsertText(const S: string);
+begin
+  if S<>'' then
+    FActiveMemo.SelText:='['+S+']';
 end;
 
 end.

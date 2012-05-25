@@ -80,7 +80,7 @@ type
     procedure SetShowGrad(const AValue: Boolean);
     function  GetCorners: TCornerSet;
   public
-    constructor Create; override;
+    constructor Create(AOwnerPage:TfrPage); override;
     procedure Assign(From: TfrView); override;
     procedure LoadFromStream(Stream: TStream); override;
     procedure SaveToStream(Stream: TStream); override;
@@ -539,9 +539,9 @@ begin
 end;
 
 (********************************************************)
-constructor TfrRoundRectView.Create;
+constructor TfrRoundRectView.Create(AOwnerPage: TfrPage);
 begin
-  inherited;
+  inherited Create(AOwnerPage);
   BeginUpdate;
   try
     //Initialization

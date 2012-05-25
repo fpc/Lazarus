@@ -6,18 +6,17 @@ interface
 
 uses
   Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, StdCtrls,
-  ExtCtrls, LR_Class, EditBtn, Buttons;
+  ExtCtrls, LR_Class, EditBtn, Buttons, ButtonPanel;
 
 type
 
   { TLR_FunctEditor1Form }
 
   TLR_FunctEditor1Form = class(TForm)
-    BitBtn1: TBitBtn;
-    BitBtn2: TBitBtn;
     BitBtn3: TBitBtn;
     BitBtn4: TBitBtn;
     BitBtn5: TBitBtn;
+    ButtonPanel1: TButtonPanel;
     Edit1: TEdit;
     Edit2: TEdit;
     Edit3: TEdit;
@@ -28,7 +27,6 @@ type
     Label4: TLabel;
     Label5: TLabel;
     Panel1: TPanel;
-    Panel2: TPanel;
     procedure BitBtn5Click(Sender: TObject);
   private
     FParCount:integer;

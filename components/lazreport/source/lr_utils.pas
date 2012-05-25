@@ -61,6 +61,7 @@ function UTF8Range(S:string; index,count:Integer; Desc:String):string;
 function UTF8Index(index:integer; desc:string): Integer;
 function UTF8CharIn(ch:TUTF8Char; const arrstr:array of string): boolean;
 function UTF8QuotedStr(s:string; Quote: TUTF8Char; desc:string=''): string;
+function PosLast(SubChr:char; const Source:string):integer;
 
 implementation
 
@@ -746,5 +747,18 @@ begin
     result := result + UTF8Range(S, 1 + j, i - j, desc);
   result := result + Quote;
 end ;
+
+function PosLast(SubChr: char; const Source: string): integer;
+var
+  i:integer;
+begin
+  for i:=Length(Source) downto 1 do
+    if Source[i] = SubChr then
+    begin
+      Result:=i;
+      exit;
+    end;
+  Result:=-1;
+end;
 
 end.

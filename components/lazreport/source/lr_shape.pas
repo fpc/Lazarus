@@ -42,7 +42,7 @@ type
 
     procedure DrawShape(aCanvas : TCanvas);
   public
-    constructor Create; override;
+    constructor Create(AOwnerPage:TfrPage); override;
     procedure Assign(From: TfrView); override;
     procedure Draw(aCanvas: TCanvas); override;
     procedure LoadFromStream(Stream: TStream); override;
@@ -84,9 +84,9 @@ implementation
 
 uses LR_Const;
 
-constructor TfrShapeView.Create;
+constructor TfrShapeView.Create(AOwnerPage: TfrPage);
 begin
-  inherited Create;
+  inherited Create(AOwnerPage);
   Typ := gtAddIn;
   BaseName := 'Shape';
   fShapeType := frstRectangle;

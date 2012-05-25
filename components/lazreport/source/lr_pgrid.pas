@@ -280,12 +280,13 @@ begin
         ReplaceTemplate(Page, h, '<title>', FCaption);
     end;
 
-    if FShowCaption and (b=nil) and (h=nil) then begin
-      b := TfrBandView(frCreateObject(gtBand, ''));
+    if FShowCaption and (b=nil) and (h=nil) then
+    begin
+      b := TfrBandView(frCreateObject(gtBand, '', Page));
       b.SetBounds(10, 20, 1000, 25);
       b.BandType := btReportTitle;
       Page.Objects.Add(b);
-      v := frCreateObject(gtMemo, '');
+      v := frCreateObject(gtMemo, '', Page);
       v.SetBounds(20, 20, Page.PrnInfo.PgW - 40, 25);
       TfrMemoView(v).Alignment:=taCenter;
       TfrMemoView(v).Font.Assign(FTitleFont);
@@ -298,14 +299,14 @@ begin
     // 40 pixels of free height space and 20 pixels width for cross band
     FindFreeSpace(Page, XPos, YPos);
 
-    b := TfrBandView(frCreateObject(gtBand, ''));
+    b := TfrBandView(frCreateObject(gtBand, '', Page));
     b.BandType := btMasterHeader;
     if self.fShowHdOnAllPage then
       b.Flags:=b.Flags+flBandRepeatHeader;
     b.SetBounds(XPos, YPos, 1000, 20);
     Page.Objects.Add(b);
 
-    v := frCreateObject(gtMemo, '');
+    v := frCreateObject(gtMemo, '', Page);
     v.SetBounds(XPos, YPos, 20, 20);
     TfrMemoView(v).Alignment:=taCenter;
     TfrMemoView(v).FillColor := clSilver;
@@ -317,19 +318,19 @@ begin
 
     YPos := YPos + 22;
 
-    b := TfrBandView(frCreateObject(gtBand, ''));
+    b := TfrBandView(frCreateObject(gtBand, '', Page));
     b.BandType := btMasterData;
     b.Dataset := FReportDataSet.Name;
     b.SetBounds(0, YPos, 1000, 18);
     Page.Objects.Add(b);
 
-    b := TfrBandView(frCreateObject(gtBand, ''));
+    b := TfrBandView(frCreateObject(gtBand, '', Page));
     b.BandType := btCrossData;
     b.Dataset := FColumnDataSet.Name;
     b.SetBounds(XPos, 0, 20, 1000);
     Page.Objects.Add(b);
 
-    v := frCreateObject(gtMemo, '');
+    v := frCreateObject(gtMemo, '', Page);
     v.SetBounds(XPos, YPos, 20, 18);
     v.Memo.Add('[Cell]');
     TfrMemoView(v).Font.Assign(FFont);

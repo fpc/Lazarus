@@ -160,7 +160,7 @@ type
     procedure DrawSelection(t: TfrView);
     procedure DrawShape(t: TfrView);
     
-    procedure DrawDialog;
+    procedure DrawDialog(N: Integer; AClipRgn: HRGN);
 
     procedure MDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
     procedure MUp(Sender: TObject; Button: TMouseButton; {%H-}Shift: TShiftState; {%H-}X, {%H-}Y: Integer);
@@ -546,7 +546,7 @@ type
     
     procedure WndProc(var Message: TLMessage); override;
     procedure RegisterObject(ButtonBmp: TBitmap; const ButtonHint: String;
-      ButtonTag: Integer); override;
+      ButtonTag: Integer; ObjectType:TfrObjectType); override;
     procedure RegisterTool(const MenuCaption: String; ButtonBmp: TBitmap;
       OnClickEvnt: TNotifyEvent); override;
     procedure BeforeChange; override;
@@ -930,8 +930,15 @@ begin
     DrawFocusRect(Rect(x, y, x + dx + 1, y + dy + 1));
 end;
 
-procedure TfrDesignerPage.DrawDialog;
-Var Dlg : TfrPageDialog;
+procedure TfrDesignerPage.DrawDialog(N: Integer; AClipRgn: HRGN);
+Var
+  Dlg : TfrPageDialog;
+
+  i,iy      : Integer;
+  t         : TfrView;
+  R, R1     : HRGN;
+  Objects   : TFpList;
+
 begin
   Dlg:=TfrPageDialog(FDesigner.Page);
   
@@ -948,6 +955,70 @@ begin
     
     Canvas.TextRect(Rect(0,0,FDesigner.Page.Width-1,20),1,5,Dlg.Caption);
   end;
+
+
+  Objects := FDesigner.Page.Objects;
+//  R:=CreateRectRgn(0, 0, Width, Height);
+  for i:=Objects.Count-1 downto 0 do
+  begin
+    t := TfrView(Objects[i]);
+    t.draw(Canvas);
+  end;
+
+{  begin
+    t := TfrView(Objects[i]);
+    {$IFDEF DebugLR}
+    DebugLn('Draw ',InttoStr(i),' ',t.Name);
+    {$ENDIF}
+    if i <= N then
+    begin
+      if t.selected then
+        t.draw(canvas)
+      else
+//      if ViewIsVisible(t) then
+      begin
+        R1 := CreateRectRgn(0, 0, 1, 1);
+        CombineRgn(R1, AClipRgn, R, RGN_AND);
+        SelectClipRgn(Canvas.Handle, R1);
+        DeleteObject(R1);
+
+        t.Draw(Canvas);
+
+        iy:=1;
+        //Show indicator if script it's not empty
+        if t.Script.Count>0 then
+        begin
+          FDesigner.ImgIndic.Draw(Canvas, t.x+1, t.y+iy, 0);
+          iy:=10;
+        end;
+
+      end;
+
+    end;
+    R1 := t.GetClipRgn(rtNormal);
+    CombineRgn(R, R, R1, RGN_DIFF);
+    DeleteObject(R1);
+    SelectClipRgn(Canvas.Handle, R);
+  end;
+
+  CombineRgn(R, R, AClipRgn, RGN_AND);
+
+//  DrawBackground;
+
+  DeleteObject(R);
+  DeleteObject(AClipRgn);
+  if AClipRgn=ClipRgn then
+    ClipRgn := 0;
+
+  SelectClipRgn(Canvas.Handle, 0);
+}
+//  if not Down then
+//    DrawPage(dmSelection);
+
+  {$IFDEF DebugLR}
+  DebugLnExit('TfrDesignerPage.Draw DONE');
+  {$ENDIF}
+
 end;
 
 procedure TfrDesignerPage.Draw(N: Integer; AClipRgn: HRGN);
@@ -1049,7 +1120,7 @@ begin
 
   if FDesigner.Page is TfrPageDialog then
   begin
-    DrawDialog;
+    DrawDialog(N, AClipRgn);
     Exit;
   end;
 
@@ -1411,7 +1482,7 @@ var
   
   procedure AddObject(ot: Byte);
   begin
-    Objects.Add(frCreateObject(ot, ''));
+    Objects.Add(frCreateObject(ot, '', FDesigner.Page));
     t := TfrView(Objects.Last);
     if t is TfrMemoView then
       TfrMemoView(t).MonitorFontChanges;
@@ -1426,7 +1497,7 @@ var
       ObjectInserted := frBandTypesForm.ShowModal = mrOk;
       if ObjectInserted then
       begin
-        Objects.Add(TfrBandView.Create);
+        Objects.Add(TfrBandView.Create(FDesigner.Page));
         t := TfrView(Objects.Last);
         (t as TfrBandView).BandType := frBandTypesForm.SelectedTyp;
         s := frGetBandName(frBandTypesForm.SelectedTyp);
@@ -1440,7 +1511,7 @@ var
   
   procedure CreateSubReport;
   begin
-    Objects.Add(TfrSubReportView.Create);
+    Objects.Add(TfrSubReportView.Create(FDesigner.Page));
     t := TfrView(Objects.Last);
     (t as TfrSubReportView).SubPage := CurReport.Pages.Count;
     CurReport.Pages.Add;
@@ -1477,49 +1548,79 @@ begin
     NormalizeRect(OldRect);
     RFlag := False;
     ObjectInserted := True;
-    
-    with FDesigner.Panel4 do
+
+    if FDesigner.Panel4.Visible then
     begin
-      for i := 0 to ControlCount - 1 do
+      with FDesigner.Panel4 do
       begin
-        if Controls[i] is TSpeedButton then
+        for i := 0 to ControlCount - 1 do
         begin
-          with Controls[i] as TSpeedButton do
+          if Controls[i] is TSpeedButton then
           begin
-            if Down then
+            with Controls[i] as TSpeedButton do
             begin
-              if Tag = gtBand then
+              if Down then
               begin
-                if GetUnusedBand <> btNone then
-                  CreateSection
-                else begin
-                  {$IFDEF DebugLR}
-                  DebugLnExit('Inserting a new object DONE: GetUnusedBand=btNone');
-                  DebugLnExit('TfrDesignerPage.MUp DONE: Inserting..');
-                  {$ENDIF}
-                  Exit;
+                if Tag = gtBand then
+                begin
+                  if GetUnusedBand <> btNone then
+                    CreateSection
+                  else begin
+                    {$IFDEF DebugLR}
+                    DebugLnExit('Inserting a new object DONE: GetUnusedBand=btNone');
+                    DebugLnExit('TfrDesignerPage.MUp DONE: Inserting..');
+                    {$ENDIF}
+                    Exit;
+                  end;
+                end
+                else if Tag = gtSubReport then
+                         CreateSubReport
+                else
+                begin
+                  if Tag >= gtAddIn then
+                  begin
+                    k := Tag - gtAddIn;
+                    Objects.Add(frCreateObject(gtAddIn, frAddIns[k].ClassRef.ClassName, FDesigner.Page));
+                    t := TfrView(Objects.Last);
+                  end
+                  else
+                    AddObject(Tag);
                 end;
-              end
-              else if Tag = gtSubReport then
-                       CreateSubReport
-              else
+                break;
+              end;
+            end;
+          end;
+        end;
+      end;
+    end
+    else
+    begin
+      with FDesigner.panForDlg do
+      begin
+        for i := 0 to ControlCount - 1 do
+        begin
+          if Controls[i] is TSpeedButton then
+          begin
+            with Controls[i] as TSpeedButton do
+            begin
+              if Down then
               begin
                 if Tag >= gtAddIn then
                 begin
                   k := Tag - gtAddIn;
-                  Objects.Add(frCreateObject(gtAddIn, frAddIns[k].ClassRef.ClassName));
+                  Objects.Add(frCreateObject(gtAddIn, frAddIns[k].ClassRef.ClassName, FDesigner.Page));
                   t := TfrView(Objects.Last);
                 end
                 else
                   AddObject(Tag);
+                break;
               end;
-              break;
             end;
           end;
         end;
       end;
     end;
-    
+
     if ObjectInserted then
     begin
       {$IFDEF DebugLR}
@@ -1571,12 +1672,14 @@ begin
       end;
       
       SelNum := 1;
-      if t.Typ = gtBand then begin
+      if t.Typ = gtBand then
+      begin
         {$IFDEF DebugLR}
         DebugLn('A new band was inserted');
         {$ENDIF}
         Draw(10000, t.GetClipRgn(rtExtended))
-      end else
+      end
+      else
       begin
         t.Draw(Canvas);
         DrawSelection(t);
@@ -1596,7 +1699,12 @@ begin
     end;
 
     if not ObjRepeat then
-      FDesigner.OB1.Down := True
+    begin
+      if FDesigner.panForDlg.Visible then
+        FDesigner.OB1.Down := True
+      else
+        FDesigner.OB7.Down := True
+    end
     else
       DrawFocusRect(OldRect);
 
@@ -1783,12 +1891,36 @@ begin
 
   if not Down then
   begin
+    if FDesigner.panForDlg.Visible then
+    begin
+      if FDesigner.OB7.Down then
+      begin
+        Mode := mdSelect;
+        Cursor := crDefault;
+      end
+      else
+      begin
+        Mode := mdInsert;
+        if Cursor <> crCross then
+        begin
+          RoundCoord(x, y);
+          kx := Width; ky := 40;
+//          if not FDesigner.OB3.Down then
+          FDesigner.GetDefaultSize(kx, ky);
+          OldRect := Rect(x, y, x + kx, y + ky);
+          DrawFocusRect(OldRect);
+        end;
+        Cursor := crCross;
+      end;
+    end
+    else
     if FDesigner.OB6.Down then
     begin
       Mode := mdSelect;
       Cursor := crPencil;
     end
-    else if FDesigner.OB1.Down then
+    else
+    if FDesigner.OB1.Down then
     begin
       Mode := mdSelect;
       Cursor := crDefault;
@@ -2375,7 +2507,7 @@ begin
   begin
     if Assigned(frAddIns[i].InitializeProc) then
       frAddIns[i].InitializeProc;
-    RegisterObject(ButtonBMP, ButtonHint, Integer(gtAddIn) + i);
+    RegisterObject(ButtonBMP, ButtonHint, Integer(gtAddIn) + i, ObjectType);
   end;
 
   if FirstInstance then
@@ -2760,14 +2892,13 @@ begin
 end;
 
 procedure TfrDesignerForm.RegisterObject(ButtonBmp: TBitmap;
-  const ButtonHint: String; ButtonTag: Integer);
+  const ButtonHint: String; ButtonTag: Integer; ObjectType: TfrObjectType);
 var
   b: TSpeedButton;
 begin
   b := TSpeedButton.Create(Self);
   with b do
   begin
-    Parent := Panel4;
     Glyph  := ButtonBmp;
     Hint   := ButtonHint;
     Flat   := True;
@@ -2776,7 +2907,16 @@ begin
     SetBounds(1000, 1000, 22, 22);
     Visible:=True;
     Tag := ButtonTag;
-    OnMouseDown := @OB2MouseDown;
+    if ObjectType = otlReportView then
+    begin
+      OnMouseDown := @OB2MouseDown;
+      Parent := Panel4;
+    end
+    else
+    begin
+      OnMouseDown := @OB2MouseDown;
+      Parent := panForDlg;
+    end;
   end;
 end;
 
@@ -2949,7 +3089,7 @@ begin
     t := TfrView(Objects[i]);
     if t.Selected then
     begin
-      ClipBd.Add(frCreateObject(t.Typ, t.ClassName));
+      ClipBd.Add(frCreateObject(t.Typ, t.ClassName, Page));
       TfrView(ClipBd.Last).Assign(t);
     end;
   end;
@@ -2972,7 +3112,7 @@ begin
     t := TfrView(Objects[i]);
     if t.Selected then
     begin
-      ClipBd.Add(frCreateObject(t.Typ, t.ClassName));
+      ClipBd.Add(frCreateObject(t.Typ, t.ClassName, Page));
       TfrView(ClipBd.Last).Assign(t);
     end;
   end;
@@ -3389,7 +3529,7 @@ begin
           if (fSize = 0) or (fSize > 255) then
             fSize := 6;
 
-          t := frCreateObject(gtMemo, '');
+          t := frCreateObject(gtMemo, '', Page);
           t.CreateUniqueName;
           t.x := x;
           t.y := y;
@@ -3423,7 +3563,7 @@ begin
             DataL.Add(t);
           if HeaderCB.Checked then
           begin
-            t := frCreateObject(gtMemo, '');
+            t := frCreateObject(gtMemo, '', Page);
             t.CreateUniqueName;
             t.x := x;
             t.y := y;
@@ -3483,7 +3623,7 @@ begin
         else
           t := TfrView(DataL[DataL.Count - 1]);
         dy := t.y + t.dy - Page.TopMargin;
-        b := frCreateObject(gtBand, '') as TfrBandView;
+        b := frCreateObject(gtBand, '', Page) as TfrBandView;
         b.CreateUniqueName;
         b.y := Page.TopMargin;
         b.dy := dy;
@@ -3507,7 +3647,7 @@ begin
             b.BandType := btPageHeader;
             Page.Objects.Add(b);
           end;
-          b := frCreateObject(gtBand, '') as TfrBandView;
+          b := frCreateObject(gtBand, '', Page) as TfrBandView;
           b.BandType := btMasterData;
           b.DataSet := FindDataset(DataSet);
           b.CreateUniqueName;
@@ -3733,7 +3873,7 @@ begin
   then
     exit;
 
-  t := frCreateObject(View.Typ, View.ClassName);
+  t := frCreateObject(View.Typ, View.ClassName, Page);
   TfrView(t).Assign(View);
   t.y := t.y + FDuplicateCount * FDupDeltaY;
   t.x := t.x + FDuplicateCount * FDupDeltaX;
@@ -4703,7 +4843,7 @@ begin
       acInsert: p^.ObjID := t.ID;
       acDelete, acEdit:
         begin
-          t1 := frCreateObject(t.Typ, t.ClassName);
+          t1 := frCreateObject(t.Typ, t.ClassName, Page);
           t1.Assign(t);
           t1.ID := t.ID;
           p^.ObjID := t.ID;
@@ -4914,7 +5054,7 @@ begin
       t.y := t.y - miny + ((-PageView.Top) div GridSize * GridSize) else
       t.y := t.y - miny;
     Inc(SelNum);
-    t1 := frCreateObject(t.Typ, t.ClassName);
+    t1 := frCreateObject(t.Typ, t.ClassName, Page);
     t1.Assign(t);
     if CurReport.FindObject(t1.Name) <> nil then
       t1.CreateUniqueName;

@@ -87,7 +87,7 @@ type
   public
     Param: TfrBarCode;
     
-    constructor Create; override;
+    constructor Create(AOwnerPage:TfrPage);override;
     destructor Destroy; override;
     procedure Assign(From: TfrView); override;
     function GenerateBitmap: TBitmap;
@@ -425,9 +425,9 @@ begin
 
 end;
 
-constructor TfrBarCodeView.Create;
+constructor TfrBarCodeView.Create(AOwnerPage: TfrPage);
 begin
-  inherited Create;
+  inherited Create(AOwnerPage);
 
   BarC := TBarCode.Create(nil);
   Param.cCheckSum := True;

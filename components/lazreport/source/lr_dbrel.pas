@@ -46,7 +46,14 @@ end;
 
 procedure frGetFieldNames(DataSet: TfrTDataSet; List: TStrings);
 begin
-  DataSet.GetFieldNames(List);
+  if DataSet.FieldCount > 0 then
+    DataSet.GetFieldNames(List)
+  else
+  begin
+    DataSet.Open;
+    DataSet.GetFieldNames(List);
+    DataSet.Close;
+  end;
 end;
 
 function frGetBookmark(DataSet: TfrTDataSet): TfrBookmark;

@@ -38,7 +38,7 @@ type
     
     procedure DrawCheck(ARect: TRect; aChecked: Boolean);
   public
-    constructor Create; override;
+    constructor Create(AOwnerPage:TfrPage); override;
     procedure Draw(aCanvas: TCanvas); override;
     procedure Print(Stream: TStream); override;
     procedure ExportData; override;
@@ -93,9 +93,9 @@ begin
   end;
 end;
 
-constructor TfrCheckBoxView.Create;
+constructor TfrCheckBoxView.Create(AOwnerPage: TfrPage);
 begin
-  inherited Create;
+  inherited Create(AOwnerPage);
   BeginUpdate;
   try
     Typ := gtAddIn;
@@ -199,5 +199,6 @@ initialization
   
   lrBMPCheckBox:=nil;
 finalization
-  lrBMPCheckBox.Free;
+  if Assigned(lrBMPCheckBox) then
+    FreeAndNil(lrBMPCheckBox);
 end.
