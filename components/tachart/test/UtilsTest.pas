@@ -75,6 +75,7 @@ type
   protected
     procedure SetUp; override;
   published
+    procedure TestAsBooleans;
     procedure TestAsString;
     procedure TestIsSet;
   end;
@@ -402,6 +403,43 @@ procedure TPublishedIntegerSetTest.SetUp;
 begin
   inherited SetUp;
   FISet.Init;
+end;
+
+procedure TPublishedIntegerSetTest.TestAsBooleans;
+
+  function BooleansToStr(const A: array of Boolean): String;
+  var
+    b: Boolean;
+  begin
+    Result := '';
+    for b in A do begin
+      if Result <> '' then
+        Result += ',';
+      Result += BoolToStr(b, 'true', 'false');
+    end;
+    Result := '[' + Result + ']';
+  end;
+
+  procedure AssertBooleans(const AExpected: array of Boolean; ACount: Integer);
+  var
+    actual: array of Boolean;
+    len: Integer;
+  begin
+    actual := FISet.AsBooleans(ACount);
+    len := Length(actual);
+    AssertTrue(
+      BooleansToStr(actual) + ' = ' + BooleansToStr(AExpected),
+      (len = Length(AExpected)) and
+      ((len = 0) or (CompareByte(actual[0], AExpected[0], len) = 0)));
+  end;
+
+begin
+  AssertBooleans([], 0);
+  FISet.AllSet := false;
+  FISet.IsSet[2] := true;
+  AssertBooleans([false, false, true], 3);
+  FISet.AllSet := true;
+  AssertBooleans([true, true, true, true], 4);
 end;
 
 procedure TPublishedIntegerSetTest.TestAsString;
