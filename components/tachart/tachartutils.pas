@@ -228,7 +228,7 @@ type
     constructor Init;
   public
     property AllSet: Boolean read FAllSet write SetAllSet;
-    function AsBooleans(AMax: Integer): TBooleanDynArray;
+    function AsBooleans(ACount: Integer): TBooleanDynArray;
     property AsString: String read GetAsString write SetAsString;
     property IsSet[AIndex: Integer]: Boolean read GetIsSet write SetIsSet;
   end;
@@ -773,18 +773,18 @@ end;
 
 { TPublishedIntegerSet }
 
-function TPublishedIntegerSet.AsBooleans(AMax: Integer): TBooleanDynArray;
+function TPublishedIntegerSet.AsBooleans(ACount: Integer): TBooleanDynArray;
 var
   i: Integer;
 begin
-  SetLength(Result, AMax);
-  if AllSet then begin
-    FillChar(Result[0], Length(Result), true);
-    exit;
-  end;
-  for i in FData do
-    if InRange(i, 0, High(Result)) then
-      Result[i] := true;
+  SetLength(Result, ACount);
+  if ACount = 0 then exit;
+  if AllSet then
+    FillChar(Result[0], Length(Result), true)
+  else
+    for i in FData do
+      if InRange(i, 0, High(Result)) then
+        Result[i] := true;
 end;
 
 function TPublishedIntegerSet.GetAsString: String;
