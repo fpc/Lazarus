@@ -2313,6 +2313,14 @@ msgstr "Chaîne"
 msgid "SubReport on page"
 msgstr "Ous-rapport sur la page"
 
+#: lr_const.stemplemptydesc
+msgid "New report based on empty template"
+msgstr ""
+
+#: lr_const.stemplemtpyrp
+msgid "Empty template"
+msgstr ""
+
 #: lr_const.stemplfile
 msgid "FastReport template"
 msgstr "Modèle FastReport"

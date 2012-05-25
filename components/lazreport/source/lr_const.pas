@@ -147,6 +147,8 @@ resourcestring
   sTemplFormNewRp = 'New report';
   sTemplFormDesc  = 'Description';
   sNewTemplate    = 'New template';
+  sTemplEmtpyRp   = 'Empty template';
+  sTemplEmptyDesc = 'New report based on empty template';
 
 //--- GEditorForm resources ---------------------------------------------------
   sGEditorFormCapt = 'Picture';

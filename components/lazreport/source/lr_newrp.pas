@@ -39,6 +39,7 @@ type
     { Private declarations }
   public
     { Public declarations }
+    DefaultTemplate: boolean;
     TemplName: String;
   end;
 
@@ -76,15 +77,24 @@ begin
   Memo1.Lines.Clear;
   Image1.Picture.Clear;
   ButtonPanel1.OKButton.Enabled := False;
+  LB1.Items.InsertObject(0, sTemplEmtpyRp, self);
 end;
 
 procedure TfrTemplForm.ListBox1Click(Sender: TObject);
+var
+  Index: Integer;
 begin
-  ButtonPanel1.OKButton.Enabled := LB1.ItemIndex <> -1;
+  Index := LB1.ItemIndex;
+  ButtonPanel1.OKButton.Enabled := Index <> -1;
   if ButtonPanel1.OKButton.Enabled then
   begin
-    CurReport.LoadTemplate(Path + LB1.Items[LB1.ItemIndex] + '.frt',
-      Memo1.Lines, Image1.Picture.Bitmap,False);
+    if LB1.Items.Objects[Index]=Self then
+    begin
+      Memo1.Lines.Text := sTemplEmptyDesc;
+      Image1.Picture.Clear;
+    end else
+      CurReport.LoadTemplate(Path + LB1.Items[Index] + '.frt',
+        Memo1.Lines, Image1.Picture.Bitmap,False);
   end;
 end;
 
@@ -95,8 +105,14 @@ end;
 
 procedure TfrTemplForm.FormDeactivate(Sender: TObject);
 begin
+  DefaultTemplate := false;
   if ModalResult = mrOk then
-    TemplName := Path + LB1.Items[LB1.ItemIndex] + '.frt';
+  begin
+    if LB1.Items.Objects[LB1.ItemIndex]=self then
+      DefaultTemplate := true
+    else
+      TemplName := Path + LB1.Items[LB1.ItemIndex] + '.frt';
+  end;
 end;
 
 procedure TfrTemplForm.FormCreate(Sender: TObject);

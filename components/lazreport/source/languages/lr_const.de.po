@@ -2299,6 +2299,14 @@ msgstr "String"
 msgid "SubReport on page"
 msgstr "Unterreport auf der Seite"
 
+#: lr_const.stemplemptydesc
+msgid "New report based on empty template"
+msgstr ""
+
+#: lr_const.stemplemtpyrp
+msgid "Empty template"
+msgstr ""
+
 #: lr_const.stemplfile
 msgid "FastReport template"
 msgstr "FastReport-Vorlage"

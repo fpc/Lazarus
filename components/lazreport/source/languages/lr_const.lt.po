@@ -2305,6 +2305,14 @@ msgstr "Eilutė"
 msgid "SubReport on page"
 msgstr "Vidinis pranešimas lape"
 
+#: lr_const.stemplemptydesc
+msgid "New report based on empty template"
+msgstr ""
+
+#: lr_const.stemplemtpyrp
+msgid "Empty template"
+msgstr ""
+
 #: lr_const.stemplfile
 msgid "FastReport template"
 msgstr "FastReport ruošinys"

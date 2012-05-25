@@ -459,6 +459,7 @@ type
     {$ELSE}
     ObjInsp  : TfrObjectInspector;
     {$ENDIF}
+    procedure CreateNewReport;
     procedure DuplicateSelection;
     procedure ObjInspSelect(Obj:TObject);
     procedure ObjInspRefresh;
@@ -531,6 +532,7 @@ type
     procedure DefineExtraPopupSelected(popup: TPopupMenu);
     procedure SelectSameClassClick(Sender: TObject);
     procedure SelectSameClass(View: TfrView);
+    function CheckFileModified: Integer;
   private
     FDuplicateCount: Integer;
     FDupDeltaX,FDupDeltaY: Integer;
@@ -3802,6 +3804,25 @@ begin
   end;
 end;
 
+function TfrDesignerForm.CheckFileModified: Integer;
+begin
+  result := mrNo;
+  if FileModified then
+  begin
+    result:=MessageDlg(sSaveChanges + ' ' + sTo + ' ' +
+      ExtractFileName(CurDocName) + '?',mtConfirmation,
+      [mbYes,mbNo,mbCancel],0);
+
+    if result = mrCancel then Exit;
+    if result = mrYes then
+    begin
+      FileBtn3Click(nil);
+      if not WasOk then
+        result := mrCancel;
+    end;
+  end;
+end;
+
 // if AList is specified always process the list being objects selected or not
 // if AList is not specified, all objects are processed but check Selected state
 procedure TfrDesignerForm.ViewsAction(Views: TFpList; TheAction: TViewAction;
@@ -4461,6 +4482,19 @@ begin
     Dec(FDuplicateCount);
 end;
 
+procedure TfrDesignerForm.CreateNewReport;
+begin
+  if CheckFileModified=mrCancel then
+    exit;
+  ClearUndoBuffer;
+  CurReport.Pages.Clear;
+  CurReport.Pages.Add;
+  CurPage := 0;
+  CurDocName := sUntitled;
+  FileModified := False;
+  FCurDocFileType := 3;
+end;
+
 procedure TfrDesignerForm.ObjInspRefresh;
 begin
   {$IFDEF STDOI}
@@ -5107,30 +5141,8 @@ begin
 end;
 
 procedure TfrDesignerForm.FileBtn1Click(Sender: TObject); // create new
-var
-  w: Word;
 begin
-  if FileModified then
-  begin
-    w:=MessageDlg(sSaveChanges + ' ' + sTo + ' ' +
-      ExtractFileName(CurDocName) + '?',mtConfirmation,
-      [mbYes,mbNo,mbCancel],0);
-      
-    if w = mrCancel then Exit;
-    if w = mrYes then
-    begin
-      FileBtn3Click(nil);
-      if not WasOk then Exit;
-    end;
-  end;
-  
-  ClearUndoBuffer;
-  CurReport.Pages.Clear;
-  CurReport.Pages.Add;
-  CurPage := 0;
-  CurDocName := sUntitled;
-  FileModified := False;
-  FCurDocFileType := 3;
+  CreateNewReport;
 end;
 
 procedure TfrDesignerForm.N23Click(Sender: TObject); // create new from template
@@ -5139,30 +5151,23 @@ begin
   with frTemplForm do
   if ShowModal = mrOk then
   begin
-    ClearUndoBuffer;
-    CurReport.LoadTemplate(TemplName, nil, nil, True);
-    CurDocName := sUntitled;
-    CurPage := 0; // do all
+    if DefaultTemplate then
+      CreateNewReport
+    else
+    begin
+      ClearUndoBuffer;
+      CurReport.LoadTemplate(TemplName, nil, nil, True);
+      CurDocName := sUntitled;
+      CurPage := 0; // do all
+    end;
   end;
   frTemplForm.Free;
 end;
 
 procedure TfrDesignerForm.FileBtn2Click(Sender: TObject); // open
-var
-  w: Word;
 begin
-  w := mrNo;
-  if FileModified then
-    w:=MessageDlg(sSaveChanges + ' ' + sTo + ' ' +
-          ExtractFileName(CurDocName) + '?',mtConfirmation,
-          [mbYes,mbNo,mbCancel],0);
-          
-  if w=mrCancel then Exit;
-  if w=mrYes then
-  begin
-    FileBtn3Click(nil);
-    if not WasOk then Exit;
-  end;
+  if CheckFileModified=mrCancel then
+    exit;
 
   with OpenDialog1 do
   begin

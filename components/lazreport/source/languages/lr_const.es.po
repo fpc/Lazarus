@@ -2298,6 +2298,14 @@ msgstr "Cadena"
 msgid "SubReport on page"
 msgstr "SubReporte en página"
 
+#: lr_const.stemplemptydesc
+msgid "New report based on empty template"
+msgstr ""
+
+#: lr_const.stemplemtpyrp
+msgid "Empty template"
+msgstr ""
+
 #: lr_const.stemplfile
 msgid "FastReport template"
 msgstr "Plantilla FastReport"
