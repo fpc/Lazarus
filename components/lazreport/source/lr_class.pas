@@ -5012,7 +5012,10 @@ begin
         {$IFDEF DebugLR}
         DebugLn('i=%d View=%s Antes: y=%d dy=%d',[i,ViewInfo(t), t.y,t.dy]);
         {$ENDIF}
-        t.dy := MaxHeight - t.y;
+        if t.dy=0 then
+          t.y := t.y + (MaxHeight - self.dy)
+        else
+          t.dy := MaxHeight - t.y;
         {$IFDEF DebugLR}
         DebugLn('i=%d View=%s After: y=%d dy=%d',[i,ViewInfo(t), t.y,t.dy]);
         {$ENDIF}
