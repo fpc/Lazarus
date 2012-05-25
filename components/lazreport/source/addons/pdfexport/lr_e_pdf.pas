@@ -468,6 +468,7 @@ begin
             PRTLabel.FontItalic := fsItalic in TfrMemoView_(View).Font.Style;
             PRTLabel.FontColor := TfrMemoView_(View).Font.Color;
             PRTLabel.FontUnderline := fsUnderline in TfrMemoView_(View).Font.Style;
+            PRTLabel.Angle:= (View as TfrMemoView).Angle;
         end;
 
     finally
