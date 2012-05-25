@@ -129,6 +129,7 @@ if [ -n "$CROSSCOMPILER" ]; then
   make lcl CPU_TARGET=powerpc PP=$CROSSCOMPILER
   make lcl CPU_TARGET=powerpc LCL_PLATFORM=gtk PP=$CROSSCOMPILER
   make lcl CPU_TARGET=powerpc LCL_PLATFORM=gtk2 OPT="-dUseX" PP=$CROSSCOMPILER
+  make -C components/lazcontrols CPU_TARGET=powerpc PP=$CROSSCOMPILER
   make -C ideintf CPU_TARGET=powerpc PP=$CROSSCOMPILER
   make -C components/synedit CPU_TARGET=powerpc PP=$CROSSCOMPILER
   make -C components/codetools CPU_TARGET=powerpc PP=$CROSSCOMPILER
