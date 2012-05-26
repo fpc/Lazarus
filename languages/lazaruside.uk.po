@@ -11947,10 +11947,6 @@ msgstr "відсутній"
 msgid "modified"
 msgstr "змінено"
 
-#: lazarusidestrconsts.lisoipnopackageselected
-msgid "No package selected"
-msgstr "Не вибрано пакунку"
-
 #: lazarusidestrconsts.lisoipopenloadedpackage
 #| msgid "Open loaded package"
 msgid "Open Loaded Package"
@@ -11963,10 +11959,6 @@ msgstr "Назва Пакунку"
 #: lazarusidestrconsts.lisoippleaseselectapackage
 msgid "Please select a package"
 msgstr "Виберіть пакунок"
-
-#: lazarusidestrconsts.lisoippleaseselectapackagetoopen
-msgid "Please select a package to open"
-msgstr "Виберіть пакунок, щоб відкрити"
 
 #: lazarusidestrconsts.lisoipreadonly
 msgid "readonly"

@@ -12192,10 +12192,6 @@ msgstr "tidak ada"
 msgid "modified"
 msgstr "diubah"
 
-#: lazarusidestrconsts.lisoipnopackageselected
-msgid "No package selected"
-msgstr "Tidak ada paket yang dipilih"
-
 #: lazarusidestrconsts.lisoipopenloadedpackage
 #, fuzzy
 #| msgid "Open loaded package"
@@ -12209,10 +12205,6 @@ msgstr "Nama Paket"
 #: lazarusidestrconsts.lisoippleaseselectapackage
 msgid "Please select a package"
 msgstr "Silahkan pilih paket"
-
-#: lazarusidestrconsts.lisoippleaseselectapackagetoopen
-msgid "Please select a package to open"
-msgstr "Silahkan pilih paket yang dibuka"
 
 #: lazarusidestrconsts.lisoipreadonly
 msgid "readonly"

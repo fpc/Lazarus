@@ -11677,10 +11677,6 @@ msgstr "chybějící"
 msgid "modified"
 msgstr "změněný"
 
-#: lazarusidestrconsts.lisoipnopackageselected
-msgid "No package selected"
-msgstr "Nevybrán žádný balíček"
-
 #: lazarusidestrconsts.lisoipopenloadedpackage
 msgid "Open Loaded Package"
 msgstr "Otevřít načtený balíček"
@@ -11692,10 +11688,6 @@ msgstr "Jméno balíčku"
 #: lazarusidestrconsts.lisoippleaseselectapackage
 msgid "Please select a package"
 msgstr "Prosím vyberte balíček"
-
-#: lazarusidestrconsts.lisoippleaseselectapackagetoopen
-msgid "Please select a package to open"
-msgstr "Prosím vyberte balíček k otevření"
 
 #: lazarusidestrconsts.lisoipreadonly
 msgid "readonly"

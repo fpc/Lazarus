@@ -12323,10 +12323,6 @@ msgstr "trūksta"
 msgid "modified"
 msgstr "pakeistas"
 
-#: lazarusidestrconsts.lisoipnopackageselected
-msgid "No package selected"
-msgstr "Paketas nepažymėtas"
-
 #: lazarusidestrconsts.lisoipopenloadedpackage
 #, fuzzy
 #| msgid "Open loaded package"
@@ -12340,10 +12336,6 @@ msgstr "Paketo pavadinimas"
 #: lazarusidestrconsts.lisoippleaseselectapackage
 msgid "Please select a package"
 msgstr "Pažymėkite paketą"
-
-#: lazarusidestrconsts.lisoippleaseselectapackagetoopen
-msgid "Please select a package to open"
-msgstr "Nurodykit kurį paketą atverti"
 
 #: lazarusidestrconsts.lisoipreadonly
 msgid "readonly"

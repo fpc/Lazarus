@@ -11666,10 +11666,6 @@ msgstr ""
 msgid "modified"
 msgstr ""
 
-#: lazarusidestrconsts.lisoipnopackageselected
-msgid "No package selected"
-msgstr ""
-
 #: lazarusidestrconsts.lisoipopenloadedpackage
 msgid "Open Loaded Package"
 msgstr ""
@@ -11680,10 +11676,6 @@ msgstr ""
 
 #: lazarusidestrconsts.lisoippleaseselectapackage
 msgid "Please select a package"
-msgstr ""
-
-#: lazarusidestrconsts.lisoippleaseselectapackagetoopen
-msgid "Please select a package to open"
 msgstr ""
 
 #: lazarusidestrconsts.lisoipreadonly

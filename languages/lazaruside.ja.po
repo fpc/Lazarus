@@ -12406,10 +12406,6 @@ msgstr "見つからない"
 msgid "modified"
 msgstr "修正済み"
 
-#: lazarusidestrconsts.lisoipnopackageselected
-msgid "No package selected"
-msgstr "パッケージが選択されていません。"
-
 #: lazarusidestrconsts.lisoipopenloadedpackage
 #, fuzzy
 #| msgid "Open loaded package"
@@ -12423,10 +12419,6 @@ msgstr "パッケージ名"
 #: lazarusidestrconsts.lisoippleaseselectapackage
 msgid "Please select a package"
 msgstr "パッケージを選んでください。"
-
-#: lazarusidestrconsts.lisoippleaseselectapackagetoopen
-msgid "Please select a package to open"
-msgstr "開こうとしているパッケージを選んでください。"
 
 #: lazarusidestrconsts.lisoipreadonly
 msgid "readonly"

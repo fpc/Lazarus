@@ -12132,10 +12132,6 @@ msgstr "niet aanwwezig"
 msgid "modified"
 msgstr "gewijzigd"
 
-#: lazarusidestrconsts.lisoipnopackageselected
-msgid "No package selected"
-msgstr "Geen pakket geselecteerd"
-
 #: lazarusidestrconsts.lisoipopenloadedpackage
 #, fuzzy
 #| msgid "Open loaded package"
@@ -12149,10 +12145,6 @@ msgstr "Pakketnaam"
 #: lazarusidestrconsts.lisoippleaseselectapackage
 msgid "Please select a package"
 msgstr "Selecteer een pakket"
-
-#: lazarusidestrconsts.lisoippleaseselectapackagetoopen
-msgid "Please select a package to open"
-msgstr "Selecteer een te openen pakket"
 
 #: lazarusidestrconsts.lisoipreadonly
 msgid "readonly"

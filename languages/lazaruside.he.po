@@ -12359,10 +12359,6 @@ msgstr "חסר"
 msgid "modified"
 msgstr "שהשתנה"
 
-#: lazarusidestrconsts.lisoipnopackageselected
-msgid "No package selected"
-msgstr "לא נבחרה חבילה"
-
 #: lazarusidestrconsts.lisoipopenloadedpackage
 #, fuzzy
 #| msgid "Open loaded package"
@@ -12376,10 +12372,6 @@ msgstr "שם החבילה"
 #: lazarusidestrconsts.lisoippleaseselectapackage
 msgid "Please select a package"
 msgstr "אנא בחר בחבילה"
-
-#: lazarusidestrconsts.lisoippleaseselectapackagetoopen
-msgid "Please select a package to open"
-msgstr "אנא בחר חבילה לפתוח"
 
 #: lazarusidestrconsts.lisoipreadonly
 msgid "readonly"

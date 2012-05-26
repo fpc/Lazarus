@@ -12287,10 +12287,6 @@ msgstr "缺少的"
 msgid "modified"
 msgstr "已更改"
 
-#: lazarusidestrconsts.lisoipnopackageselected
-msgid "No package selected"
-msgstr "没有选择包"
-
 #: lazarusidestrconsts.lisoipopenloadedpackage
 #, fuzzy
 #| msgid "Open loaded package"
@@ -12304,10 +12300,6 @@ msgstr "包名"
 #: lazarusidestrconsts.lisoippleaseselectapackage
 msgid "Please select a package"
 msgstr "请选择一个包"
-
-#: lazarusidestrconsts.lisoippleaseselectapackagetoopen
-msgid "Please select a package to open"
-msgstr "请选择一个要打开的包"
 
 #: lazarusidestrconsts.lisoipreadonly
 msgid "readonly"

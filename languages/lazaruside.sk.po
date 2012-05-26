@@ -12257,10 +12257,6 @@ msgstr "chýbajúci"
 msgid "modified"
 msgstr "zmenený"
 
-#: lazarusidestrconsts.lisoipnopackageselected
-msgid "No package selected"
-msgstr "Nie je vybraný balíček"
-
 #: lazarusidestrconsts.lisoipopenloadedpackage
 #, fuzzy
 #| msgid "Open loaded package"
@@ -12274,10 +12270,6 @@ msgstr "Meno balíčka"
 #: lazarusidestrconsts.lisoippleaseselectapackage
 msgid "Please select a package"
 msgstr "Prosím, vyberte balíček"
-
-#: lazarusidestrconsts.lisoippleaseselectapackagetoopen
-msgid "Please select a package to open"
-msgstr "Prosím vyberte balíček pre otvorenie"
 
 #: lazarusidestrconsts.lisoipreadonly
 msgid "readonly"

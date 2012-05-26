@@ -12217,10 +12217,6 @@ msgstr "brakujący"
 msgid "modified"
 msgstr ""
 
-#: lazarusidestrconsts.lisoipnopackageselected
-msgid "No package selected"
-msgstr "Brak wybranego pakietu"
-
 #: lazarusidestrconsts.lisoipopenloadedpackage
 #, fuzzy
 #| msgid "Open loaded package"
@@ -12234,10 +12230,6 @@ msgstr "Nazwa pakietu"
 #: lazarusidestrconsts.lisoippleaseselectapackage
 msgid "Please select a package"
 msgstr "[wybierz pakiet]"
-
-#: lazarusidestrconsts.lisoippleaseselectapackagetoopen
-msgid "Please select a package to open"
-msgstr "Wybierz pakiet który chcesz otworzyć"
 
 #: lazarusidestrconsts.lisoipreadonly
 msgid "readonly"
