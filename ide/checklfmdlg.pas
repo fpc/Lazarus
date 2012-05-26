@@ -109,6 +109,7 @@ type
     RemoveAllButton: TBitBtn;
     SynLFMSyn1: TSynLFMSyn;
     procedure ErrorsListBoxClick(Sender: TObject);
+    procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
     procedure LFMSynEditSpecialLineMarkup(Sender: TObject; Line: integer;
       var Special: boolean; AMarkup: TSynSelectedColor);
     procedure RemoveAllButtonClick(Sender: TObject);
@@ -767,6 +768,11 @@ end;
 procedure TCheckLFMDialog.ErrorsListBoxClick(Sender: TObject);
 begin
   fLfmChecker.JumpToError(fLfmChecker.FindListBoxError);
+end;
+
+procedure TCheckLFMDialog.FormClose(Sender: TObject; var CloseAction: TCloseAction);
+begin
+  IDEDialogLayoutList.SaveLayout(Self);
 end;
 
 procedure TCheckLFMDialog.LFMSynEditSpecialLineMarkup(Sender: TObject;
