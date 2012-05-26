@@ -73,6 +73,7 @@ type
 
     procedure BrowseDestDirBitBtnCLICK(Sender: TObject);
     procedure DestDirGroupBoxRESIZE(Sender: TObject);
+    procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
     procedure FormCreate(Sender: TObject);
     procedure HelpButtonClick(Sender: TObject);
     procedure OkButtonCLICK(Sender: TObject);
@@ -125,6 +126,11 @@ begin
     Left:=DestDirComboBox.Left+DestDirComboBox.Width+5;
   with CommandAfterCombobox do
     SetBounds(Left,Top,Parent.ClientWidth-2*Left,Height);
+end;
+
+procedure TPublishProjectDialog.FormClose(Sender: TObject; var CloseAction: TCloseAction);
+begin
+  IDEDialogLayoutList.SaveLayout(Self);
 end;
 
 procedure TPublishProjectDialog.BrowseDestDirBitBtnCLICK(Sender: TObject);
