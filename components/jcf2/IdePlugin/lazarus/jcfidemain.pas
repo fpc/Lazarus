@@ -113,14 +113,17 @@ begin
 end;
 
 procedure TJcfIdeMain.DoFormatCurrentIDEWindow(Sender: TObject);
+var
+  lsMsg: string;
 begin
   if (SourceEditorManagerIntf= nil) or (SourceEditorManagerIntf.ActiveEditor = nil) then
-  begin
-    LogIdeMessage('', 'No current window', mtInputError, -1, -1);
-    exit;
+    LogIdeMessage('', 'No current window', mtInputError, -1, -1)
+  else begin
+    lsMsg := 'JEDI Code Format of ' + SourceEditorManagerIntf.ActiveEditor.FileName
+            + NativeLineBreak + 'Start formatting?';
+    if MessageDlg(lsMsg, mtConfirmation, [mbYes, mbNo], 0) = mrYes then
+      ConvertEditor(SourceEditorManagerIntf.ActiveEditor);
   end;
-
-  ConvertEditor(SourceEditorManagerIntf.ActiveEditor);
 end;
 
 procedure TJcfIdeMain.ConvertEditor(const pciEditor: TSourceEditorInterface);
@@ -144,21 +147,17 @@ begin
   lazProject := GetCurrentProject;
   if lazProject = nil then
     exit;
-
   lsMsg := 'JEDI Code Format of ' + lazProject.MainFile.FileName + NativeLineBreak +
     'Are you sure that you want to format all ' + IntToStr(lazProject.FileCount) +
     ' files in the project.';
-
-  if MessageDlg(lsMsg, mtConfirmation, [mbYes, mbNo], 0) <> mrYes then
-    exit;
-
-  ClearToolMessages;
-
-  { loop through all modules in the project }
-  for liLoop := 0 to lazProject.FileCount - 1 do
-  begin
-    lazFile := lazProject.Files[liLoop];
-    FormatFile(lazFile.FileName);
+  if MessageDlg(lsMsg, mtConfirmation, [mbYes, mbNo], 0) = mrYes then begin
+    ClearToolMessages;
+    { loop through all modules in the project }
+    for liLoop := 0 to lazProject.FileCount - 1 do
+    begin
+      lazFile := lazProject.Files[liLoop];
+      FormatFile(lazFile.FileName);
+    end;
   end;
 end;
 
