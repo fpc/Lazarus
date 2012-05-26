@@ -12,6 +12,7 @@ inherited EvaluateDlg: TEvaluateDlg
   Constraints.MinWidth = 300
   KeyPreview = True
   OnClose = FormClose
+  OnCreate = FormCreate
   OnKeyDown = FormKeyDown
   object Label1: TLabel[0]
     AnchorSideLeft.Control = Owner

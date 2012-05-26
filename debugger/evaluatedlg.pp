@@ -62,6 +62,7 @@ type
     procedure cmbNewValueKeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
     procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
+    procedure FormCreate(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure FormShow(Sender: TObject);
     procedure cmbExpressionChange(Sender: TObject);
@@ -201,10 +202,14 @@ begin
   txtResult.Lines.Text := R;
 end;
 
-procedure TEvaluateDlg.FormClose(Sender: TObject;
-  var CloseAction: TCloseAction);
+procedure TEvaluateDlg.FormClose(Sender: TObject; var CloseAction: TCloseAction);
 begin
   IDEDialogLayoutList.SaveLayout(Self);
+end;
+
+procedure TEvaluateDlg.FormCreate(Sender: TObject);
+begin
+  IDEDialogLayoutList.ApplyLayout(Self,400,300);
 end;
 
 procedure TEvaluateDlg.cmbNewValueKeyDown(Sender: TObject; var Key: Word;
