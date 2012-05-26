@@ -37,7 +37,7 @@ unit Converter;
 interface
 
 uses
-  { delphi } SysUtils,
+  { delphi } SysUtils, Controls, Forms,
   { local } ConvertTypes, ParseTreeNode,
   BuildTokenList,
   BuildParseTree, BaseVisitor;
@@ -66,14 +66,17 @@ type
       This could be in  batch file on a server }
     fbGuiMessages: Boolean;
 
+    {$IFNDEF COMMAND_LINE}
+    leOldCursor: TCursor;
+    {$ENDIF}
+
     function GetOnStatusMessage: TStatusMessageProc;
     procedure SetOnStatusMessage(const Value: TStatusMessageProc);
 
     procedure SendExceptionMessage(const pe: Exception);
-
     { call this to report the current state of the proceedings }
     procedure SendStatusMessage(const psUnit, psMessage: String; const peMessageType: TStatusMessageType; const piY, piX: Integer);
-
+    procedure ShowParseTree;
     function GetRoot: TParseTreeNode;
 
     { this does the reformatting. Virtual method so can be overriden for testing }
@@ -84,11 +87,9 @@ type
     constructor Create;
     destructor Destroy; override;
 
+    procedure Clear;
     procedure Convert;
     procedure ConvertPart(const piStartIndex, piEndIndex: Integer);
-
-    procedure ShowParseTree;
-    procedure Clear;
 
     procedure CollectOutput(const pcRoot: TParseTreeNode);
 
@@ -109,15 +110,10 @@ type
 implementation
 
 uses
-  { delphi }
-  AllProcesses, Controls, Forms,
-  { local }
-  fShowParseTree, JcfRegistrySettings,
-  JcfSettings, JcfStringUtils,
-  JcfUnicode,
+  AllProcesses, fShowParseTree, JcfRegistrySettings,
+  JcfSettings, JcfStringUtils, JcfUnicode,
   ParseError, PreProcessorParseTree,
-  SourceToken,
-  SourceTokenList, TreeWalker, VisitSetNesting, VisitSetXY;
+  SourceToken, SourceTokenList, TreeWalker, VisitSetNesting, VisitSetXY;
 
 function StrInsert(const psSub, psMain: String; const piPos: Integer): String;
 begin
@@ -155,16 +151,11 @@ end;
 procedure TConverter.Convert;
 var
   lcTokenList: TSourceTokenList;
-   {$IFNDEF COMMAND_LINE}
-  leOldCursor: TCursor;
-   {$ENDIF}
 begin
   fbConvertError := False;
-
   {$IFNDEF COMMAND_LINE}
   leOldCursor := Screen.Cursor;
   try { finally normal cursor }
-     
     // this can take a long time for large files
     Screen.Cursor := crHourGlass;
   {$ENDIF}
@@ -172,7 +163,6 @@ begin
     // turn text into tokens
     fcTokeniser.SourceCode := InputCode;
     fcTokeniser.FileName   := FileName;
-
     lcTokenList := fcTokeniser.BuildTokenList;
     try   { finally free the list  }
       try { show exceptions }
@@ -192,7 +182,6 @@ begin
         begin
           fbConvertError := True;
           SendExceptionMessage(E);
-
           if GuiMessages and (GetRegSettings.ShowParseTreeOption = eShowOnError) then
             ShowParseTree;
         end;
@@ -208,13 +197,11 @@ begin
 
       // should not be any tokens left
       Assert(lcTokenList.Count = 0, 'Surplus tokens');
-
     finally
       lcTokenList.Free;
     end;
 
     try
-
       if not fbConvertError then
       begin
         if (GetRegSettings.ShowParseTreeOption = eShowAlways) then
@@ -230,9 +217,7 @@ begin
         fsOutputCode := '';
         CollectOutput(fcBuildParseTree.Root);
       end;
-
       fcBuildParseTree.Clear;
-
     except
       on E: Exception do
       begin
@@ -373,6 +358,10 @@ end;
 
 procedure TConverter.ShowParseTree;
 begin
+  {$IFNDEF COMMAND_LINE}
+  // This is always called from a Cursor:=crHourGlass block. Restore old cursor.
+  Screen.Cursor := leOldCursor;
+  {$ENDIF}
   if fcBuildParseTree.Root <> nil then
     fShowParseTree.ShowParseTree(fcBuildParseTree.Root);
 end;
