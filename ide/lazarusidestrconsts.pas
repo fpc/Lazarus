@@ -4051,8 +4051,6 @@ resourcestring
   lisOIPDescriptionDescription = '%sDescription:  %s';
   lisOIPDescription = 'Description:  ';
   lisOIPPleaseSelectAPackage = 'Please select a package';
-  lisOIPNoPackageSelected = 'No package selected';
-  lisOIPPleaseSelectAPackageToOpen = 'Please select a package to open';
   lisOIPPackageName = 'Package Name';
   lisOIPState = 'State';
   lisOIPmodified = 'modified';

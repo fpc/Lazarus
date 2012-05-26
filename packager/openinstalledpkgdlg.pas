@@ -53,6 +53,7 @@ type
     PkgListView: TListView;
     HintMemo: TMemo;
     Splitter1: TSplitter;
+    procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
     procedure FormCreate(Sender: TObject);
     procedure HelpButtonClick(Sender: TObject);
     procedure OpenButtonClick(Sender: TObject);
@@ -64,7 +65,6 @@ type
   public
     procedure UpdateSelection;
     procedure UpdatePackageList;
-    function GetSelectedPackage: TLazPackage;
   end;
   
 function ShowOpenInstalledPkgDlg(var OpenPackage: TLazPackage): TModalResult;
@@ -74,15 +74,21 @@ implementation
 {$R *.lfm}
 
 function ShowOpenInstalledPkgDlg(var OpenPackage: TLazPackage): TModalResult;
-var
-  OpenInstalledPackagesDlg: TOpenInstalledPackagesDlg;
 begin
-  OpenInstalledPackagesDlg:=TOpenInstalledPackagesDlg.Create(nil);
-  OpenInstalledPackagesDlg.UpdatePackageList;
-  OpenInstalledPackagesDlg.UpdateSelection;
-  Result:=OpenInstalledPackagesDlg.ShowModal;
-  OpenPackage:=OpenInstalledPackagesDlg.GetSelectedPackage;
-  OpenInstalledPackagesDlg.Free;
+  with TOpenInstalledPackagesDlg.Create(nil) do
+  try
+    UpdatePackageList;
+    UpdateSelection;
+    Result:=ShowModal;
+    if Result=mrOK then begin
+      Assert(Assigned(PkgListView.Selected), 'ShowOpenInstalledPkgDlg: Nothing selected');
+      OpenPackage:=TLazPackage(PkgListView.Selected.Data);
+    end
+    else
+      OpenPackage:=nil;
+  finally
+    Free;
+  end;
 end;
 
 { TOpenInstalledPackagesDlg }
@@ -105,18 +111,16 @@ var
   HintStr: String;
 begin
   LI:=PkgListView.Selected;
-  if LI<>nil then begin
+  ButtonPanel1.OKButton.Enabled:=Assigned(LI);
+  if Assigned(LI) then begin
     CurPkg:=TLazPackage(LI.Data);
-    HintStr:=
-       Format(lisOIPFilename, [CurPkg.Filename]);
+    HintStr:=Format(lisOIPFilename, [CurPkg.Filename]);
     if CurPkg.AutoCreated then
-      HintStr:=Format(lisOIPThisPackageWasAutomaticallyCreated, [HintStr+
-        LineEnding]);
+      HintStr:=Format(lisOIPThisPackageWasAutomaticallyCreated,[HintStr+LineEnding]);
     if CurPkg.Missing then
-      HintStr:=Format(lisOIPThisPackageIsInstalledButTheLpkFileWasNotFound, [
-        HintStr+LineEnding]);
+      HintStr:=Format(lisOIPThisPackageIsInstalledButTheLpkFileWasNotFound,[HintStr+LineEnding]);
     HintStr:=Format(lisOIPDescriptionDescription, [HintStr+LineEnding,
-      BreakString(CurPkg.Description, 60, length(lisOIPDescription))]);
+                 BreakString(CurPkg.Description, 60, length(lisOIPDescription))]);
     HintMemo.Text:=HintStr;
   end else begin
     HintMemo.Text:=lisOIPPleaseSelectAPackage;
@@ -125,12 +129,7 @@ end;
 
 procedure TOpenInstalledPackagesDlg.OpenButtonClick(Sender: TObject);
 begin
-  if PkgListView.Selected=nil then begin
-    MessageDlg(lisOIPNoPackageSelected,
-      lisOIPPleaseSelectAPackageToOpen,
-      mtInformation,[mbCancel],0);
-    exit;
-  end;
+  Assert(Assigned(PkgListView.Selected), 'TOpenInstalledPackagesDlg.OpenButtonClick: Nothing selected');
   ModalResult:=mrOk;
 end;
 
@@ -139,7 +138,7 @@ var
   NewColumn: TListColumn;
 begin
   Caption:=lisOIPOpenLoadedPackage;
-  IDEDialogLayoutList.ApplyLayout(Self,500,350);
+  IDEDialogLayoutList.ApplyLayout(Self,450,450);
 
   with PkgListView do begin
     ViewStyle:=vsReport;
@@ -153,10 +152,13 @@ begin
     NewColumn.Caption:=lisOIPState;
     NewColumn.Width:=300;
   end;
-
   ButtonPanel1.OKButton.Caption:=lisOpen;
-  ButtonPanel1.CancelButton.Caption:=lisCancel;
-  ButtonPanel1.HelpButton.Caption:=lisHelp;
+  ButtonPanel1.OKButton.Enabled:=False;
+end;
+
+procedure TOpenInstalledPackagesDlg.FormClose(Sender: TObject; var CloseAction: TCloseAction);
+begin
+  IDEDialogLayoutList.SaveLayout(Self);
 end;
 
 procedure TOpenInstalledPackagesDlg.HelpButtonClick(Sender: TObject);
@@ -214,16 +216,6 @@ begin
     CurListItem.Data:=CurPkg;
   end;
   PkgListView.EndUpdate;
-end;
-
-function TOpenInstalledPackagesDlg.GetSelectedPackage: TLazPackage;
-var
-  LI: TListItem;
-begin
-  Result:=nil;
-  LI:=PkgListView.Selected;
-  if LI=nil then exit;
-  Result:=TLazPackage(LI.Data);
 end;
 
 end.

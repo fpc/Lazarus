@@ -7,13 +7,14 @@ object OpenInstalledPackagesDlg: TOpenInstalledPackagesDlg
   Caption = 'OpenInstalledPackagesDlg'
   ClientHeight = 494
   ClientWidth = 447
+  OnClose = FormClose
   OnCreate = FormCreate
   Position = poScreenCenter
   LCLVersion = '1.1'
   object HintMemo: TMemo
     Left = 0
-    Height = 133
-    Top = 308
+    Height = 121
+    Top = 320
     Width = 447
     Align = alBottom
     Lines.Strings = (
@@ -25,7 +26,7 @@ object OpenInstalledPackagesDlg: TOpenInstalledPackagesDlg
   end
   object PkgListView: TListView
     Left = 0
-    Height = 303
+    Height = 315
     Top = 0
     Width = 447
     Align = alClient
@@ -39,7 +40,7 @@ object OpenInstalledPackagesDlg: TOpenInstalledPackagesDlg
     Cursor = crVSplit
     Left = 0
     Height = 5
-    Top = 303
+    Top = 315
     Width = 447
     Align = alBottom
     ResizeAnchor = akBottom
