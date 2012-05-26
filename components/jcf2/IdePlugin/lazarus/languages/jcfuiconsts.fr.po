@@ -506,6 +506,14 @@ msgstr "Options"
 msgid "JCF Format Settings"
 msgstr "Paramètres de formattage de JCF"
 
+#: jcfuiconsts.lisjedicodeformatofareyousurethatyouwanttoformatallfi
+msgid "JEDI Code Format of %sAre you sure that you want to format all %s files in the project?"
+msgstr ""
+
+#: jcfuiconsts.lisjedicodeformatofstartformatting
+msgid "JEDI Code Format of %sStart formatting?"
+msgstr ""
+
 #: jcfuiconsts.lislbbreaklinesthatarelongerthanmaxlinelength
 msgid "&Break lines that are longer than max line length"
 msgstr "Coupe les lignes qui sont plus longues que la longueur de ligne maximale"

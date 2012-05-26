@@ -310,6 +310,10 @@ resourcestring
   lisEDType = 'Type: %s%s';
   lisEDError = 'Error';
 
+  lisJEDICodeFormatOfStartFormatting = 'JEDI Code Format of %sStart formatting?';
+  lisJEDICodeFormatOfAreYouSureThatYouWantToFormatAllFi = 'JEDI Code Format of'
+    +' %sAre you sure that you want to format all %s files in the project?';
+
 implementation
 
 end.

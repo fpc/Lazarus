@@ -40,7 +40,7 @@ uses
   { lazarus design time }
   LazIDEIntf, SrcEditorIntf, IDEMsgIntf, ProjectIntf,
   { local}
-  EditorConverter, FileConverter, ConvertTypes;
+  EditorConverter, FileConverter, ConvertTypes, jcfuiconsts;
 
 type
   TJcfIdeMain = class(TObject)
@@ -119,8 +119,9 @@ begin
   if (SourceEditorManagerIntf= nil) or (SourceEditorManagerIntf.ActiveEditor = nil) then
     LogIdeMessage('', 'No current window', mtInputError, -1, -1)
   else begin
-    lsMsg := 'JEDI Code Format of ' + SourceEditorManagerIntf.ActiveEditor.FileName
-            + NativeLineBreak + 'Start formatting?';
+    lsMsg := Format(lisJEDICodeFormatOfStartFormatting, [SourceEditorManagerIntf
+      .ActiveEditor.FileName
+            + NativeLineBreak]);
     if MessageDlg(lsMsg, mtConfirmation, [mbYes, mbNo], 0) = mrYes then
       ConvertEditor(SourceEditorManagerIntf.ActiveEditor);
   end;
@@ -147,9 +148,9 @@ begin
   lazProject := GetCurrentProject;
   if lazProject = nil then
     exit;
-  lsMsg := 'JEDI Code Format of ' + lazProject.MainFile.FileName + NativeLineBreak +
-    'Are you sure that you want to format all ' + IntToStr(lazProject.FileCount) +
-    ' files in the project.';
+  lsMsg := Format(lisJEDICodeFormatOfAreYouSureThatYouWantToFormatAllFi, [
+    lazProject.MainFile.FileName + NativeLineBreak, IntToStr(lazProject.
+    FileCount)]);
   if MessageDlg(lsMsg, mtConfirmation, [mbYes, mbNo], 0) = mrYes then begin
     ClearToolMessages;
     { loop through all modules in the project }
