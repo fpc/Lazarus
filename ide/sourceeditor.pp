@@ -1297,14 +1297,16 @@ var
   ActEdit: TSourceEditor;
   r: Boolean;
 begin
-  if (SourceEditorManager = nil) or (Sender = nil) or not(Sender is TIDEMenuCommand) then
-    exit;
+  if SourceEditorManager = nil then exit;
+  if not (Sender is TIDEMenuCommand) then exit;
+  if TIDEMenuCommand(Sender).Command = nil then exit;
   ActEdit := SourceEditorManager.ActiveEditor;
-  if (ActEdit = nil) or (TIDEMenuCommand(Sender).Command = nil) then
-    exit;
-  r :=  TIDEMenuCommand(Sender).Command.OnExecuteProc = @ExecuteIdeMenuClick;
+  if ActEdit = nil then exit;
+  r := TIDEMenuCommand(Sender).Command.OnExecuteProc = @ExecuteIdeMenuClick;
   if r then
     TIDEMenuCommand(Sender).Command.OnExecuteProc := nil;
+  // Commands may not work without focusing when anchordocking is installed
+  ActEdit.FocusEditor;
   ActEdit.DoEditorExecuteCommand(TIDEMenuCommand(Sender).Command.Command);
   if r then
     TIDEMenuCommand(Sender).Command.OnExecuteProc := @ExecuteIdeMenuClick;
