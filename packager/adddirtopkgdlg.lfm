@@ -1,23 +1,26 @@
 object AddDirToPkgDialog: TAddDirToPkgDialog
   Left = 305
-  Height = 366
+  Height = 361
   Top = 261
   Width = 400
   ActiveControl = DirEdit
   Caption = 'AddDirToPkgDialog'
-  ClientHeight = 366
+  ClientHeight = 361
   ClientWidth = 400
+  OnClose = FormClose
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   Position = poScreenCenter
-  LCLVersion = '0.9.25'
+  LCLVersion = '1.1'
   object DirGroupBox: TGroupBox
-    Height = 86
+    Left = 0
+    Height = 80
+    Top = 0
     Width = 400
     Align = alTop
     AutoSize = True
     Caption = 'DirGroupBox'
-    ClientHeight = 67
+    ClientHeight = 62
     ClientWidth = 396
     TabOrder = 0
     object DirEdit: TEdit
@@ -25,11 +28,10 @@ object AddDirToPkgDialog: TAddDirToPkgDialog
       AnchorSideTop.Control = DirGroupBox
       AnchorSideRight.Control = DirButton
       Left = 6
-      Height = 27
+      Height = 24
       Top = 6
-      Width = 360
+      Width = 361
       Anchors = [akTop, akLeft, akRight]
-      AutoSize = True
       BorderSpacing.Left = 6
       BorderSpacing.Top = 6
       TabOrder = 0
@@ -40,10 +42,10 @@ object AddDirToPkgDialog: TAddDirToPkgDialog
       AnchorSideTop.Side = asrCenter
       AnchorSideRight.Control = DirGroupBox
       AnchorSideRight.Side = asrBottom
-      Left = 366
-      Height = 29
-      Top = 5
-      Width = 24
+      Left = 367
+      Height = 24
+      Top = 6
+      Width = 23
       Anchors = [akTop, akRight]
       AutoSize = True
       BorderSpacing.Top = 6
@@ -57,9 +59,9 @@ object AddDirToPkgDialog: TAddDirToPkgDialog
       AnchorSideTop.Control = DirEdit
       AnchorSideTop.Side = asrBottom
       Left = 6
-      Height = 22
-      Top = 39
-      Width = 130
+      Height = 20
+      Top = 36
+      Width = 106
       BorderSpacing.Around = 6
       Caption = 'SubDirCheckBox'
       Checked = True
@@ -68,19 +70,20 @@ object AddDirToPkgDialog: TAddDirToPkgDialog
     end
   end
   object IncludeGroupBox: TGroupBox
-    Height = 116
-    Top = 86
+    Left = 0
+    Height = 106
+    Top = 80
     Width = 400
     Align = alTop
     AutoSize = True
     Caption = 'IncludeGroupBox'
-    ClientHeight = 97
+    ClientHeight = 88
     ClientWidth = 396
     TabOrder = 1
     object IncludeRegExCheckBox: TCheckBox
       Left = 6
-      Height = 22
-      Top = 41
+      Height = 20
+      Top = 36
       Width = 384
       Align = alClient
       BorderSpacing.Around = 6
@@ -89,20 +92,19 @@ object AddDirToPkgDialog: TAddDirToPkgDialog
     end
     object IncludeFilterCombobox: TComboBox
       Left = 6
-      Height = 29
+      Height = 24
       Top = 6
       Width = 384
       Align = alTop
-      AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
       BorderSpacing.Around = 6
-      MaxLength = 0
+      ItemHeight = 0
       TabOrder = 1
       Text = 'IncludeFilterCombobox'
     end
     object OnlyTextCheckBox: TCheckBox
       Left = 6
-      Height = 22
-      Top = 69
+      Height = 20
+      Top = 62
       Width = 384
       Align = alBottom
       BorderSpacing.Around = 6
@@ -113,19 +115,20 @@ object AddDirToPkgDialog: TAddDirToPkgDialog
     end
   end
   object ExcludeGroupBox: TGroupBox
-    Height = 88
-    Top = 202
+    Left = 0
+    Height = 80
+    Top = 186
     Width = 400
     Align = alTop
     AutoSize = True
     Caption = 'ExcludeGroupBox'
-    ClientHeight = 69
+    ClientHeight = 62
     ClientWidth = 396
     TabOrder = 2
     object ExcludeRegExCheckBox: TCheckBox
       Left = 6
-      Height = 22
-      Top = 41
+      Height = 20
+      Top = 36
       Width = 384
       Align = alClient
       BorderSpacing.Around = 6
@@ -134,24 +137,29 @@ object AddDirToPkgDialog: TAddDirToPkgDialog
     end
     object ExcludeFilterCombobox: TComboBox
       Left = 6
-      Height = 29
+      Height = 24
       Top = 6
       Width = 384
       Align = alTop
-      AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
       BorderSpacing.Around = 6
-      MaxLength = 0
+      ItemHeight = 0
       TabOrder = 1
       Text = 'ExcludeFilterCombobox'
     end
   end
   object ButtonPanel1: TButtonPanel
     Left = 6
-    Height = 50
-    Top = 316
+    Height = 41
+    Top = 314
     Width = 388
-    Align = alBottom
-    AutoSize = True
+    OKButton.Name = 'OKButton'
+    OKButton.DefaultCaption = True
+    HelpButton.Name = 'HelpButton'
+    HelpButton.DefaultCaption = True
+    CloseButton.Name = 'CloseButton'
+    CloseButton.DefaultCaption = True
+    CancelButton.Name = 'CancelButton'
+    CancelButton.DefaultCaption = True
     TabOrder = 3
     ShowButtons = [pbOK, pbCancel]
   end

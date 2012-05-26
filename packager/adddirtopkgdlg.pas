@@ -52,6 +52,7 @@ type
     procedure ButtonPanel1CancelClick(Sender: TObject);
     procedure ButtonPanel1OkClick(Sender: TObject);
     procedure DirButtonClick(Sender: TObject);
+    procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
   private
@@ -69,15 +70,13 @@ type
     property Files: TStrings read FFiles write FFiles;
   end;
 
-function ShowAddDirToPkgDialog(APackage: TLazPackage;
-  out Files: TStrings): TModalResult;
+function ShowAddDirToPkgDialog(APackage: TLazPackage; out Files: TStrings): TModalResult;
 
 implementation
 
 {$R *.lfm}
 
-function ShowAddDirToPkgDialog(APackage: TLazPackage;
-  out Files: TStrings): TModalResult;
+function ShowAddDirToPkgDialog(APackage: TLazPackage; out Files: TStrings): TModalResult;
 var
   AddDirToPkgDialog: TAddDirToPkgDialog;
 begin
@@ -124,6 +123,8 @@ begin
   end;
   ExcludeFilterCombobox.ItemIndex:=0;
 
+  IDEDialogLayoutList.ApplyLayout(Self,400,350);
+
   fIncludeFilterRE:=TRegExpr.Create;
   fExcludeFilterRE:=TRegExpr.Create;
 end;
@@ -136,7 +137,6 @@ end;
 
 procedure TAddDirToPkgDialog.ButtonPanel1CancelClick(Sender: TObject);
 begin
-  IDEDialogLayoutList.SaveLayout(Self);
   ModalResult:=mrCancel;
 end;
 
@@ -146,7 +146,6 @@ begin
     OnlyTextCheckBox.Checked,
     IncludeFilterCombobox.Text,IncludeRegExCheckBox.Checked,
     ExcludeFilterCombobox.Text,ExcludeRegExCheckBox.Checked) then exit;
-  IDEDialogLayoutList.SaveLayout(Self);
   ModalResult:=mrOk;
 end;
 
@@ -166,6 +165,11 @@ begin
   finally
     SelectDirectoryDialog.Free;
   end;
+end;
+
+procedure TAddDirToPkgDialog.FormClose(Sender: TObject; var CloseAction: TCloseAction);
+begin
+  IDEDialogLayoutList.SaveLayout(Self);
 end;
 
 procedure TAddDirToPkgDialog.SetLazPackage(const AValue: TLazPackage);
