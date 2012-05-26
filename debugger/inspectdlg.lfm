@@ -11,6 +11,7 @@ inherited IDEInspectDlg: TIDEInspectDlg
   Constraints.MinWidth = 200
   KeyPreview = True
   OnClose = FormClose
+  OnCreate = FormCreate
   OnKeyDown = FormKeyDown
   PopupMenu = PopupMenu1
   object StatusBar1: TStatusBar[0]

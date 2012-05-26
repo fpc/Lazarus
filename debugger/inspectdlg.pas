@@ -57,6 +57,7 @@ type
     procedure EdInspectEditingDone(Sender: TObject);
     procedure EdInspectKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
+    procedure FormCreate(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure menuClassTypeClick(Sender: TObject);
   private
@@ -130,6 +131,11 @@ begin
   IDEDialogLayoutList.SaveLayout(Self);
 end;
 
+procedure TIDEInspectDlg.FormCreate(Sender: TObject);
+begin
+  IDEDialogLayoutList.ApplyLayout(Self,300,400);
+end;
+
 procedure TIDEInspectDlg.EdInspectKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
 begin
   if (Key = VK_RETURN) then begin
@@ -144,8 +150,7 @@ begin
   UpdateData;
 end;
 
-procedure TIDEInspectDlg.FormKeyDown(Sender: TObject; var Key: Word;
-  Shift: TShiftState);
+procedure TIDEInspectDlg.FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
 begin
   if Key = VK_ESCAPE then
     Close;
