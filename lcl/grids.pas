@@ -40,7 +40,8 @@ interface
 uses
   Types, Classes, SysUtils, Math, Maps, LCLStrConsts, LCLProc, LCLType, LCLIntf,
   FileUtil, FPCanvas, Controls, GraphType, Graphics, Forms, DynamicArray,
-  LMessages, XMLConf, StdCtrls, LResources, MaskEdit, Buttons, Clipbrd, Themes;
+  LMessages, StdCtrls, LResources, MaskEdit, Buttons, Clipbrd, Themes,
+  Laz2_XMLCfg; // <-- replaces XMLConf (part of FPC libs)
 
 const
   //GRIDFILEVERSION = 1; // Original
@@ -169,7 +170,6 @@ type
 
   TCustomGrid = class;
   TGridColumn = class;
-
 
   PCellProps= ^TCellProps;
   TCellProps=record
