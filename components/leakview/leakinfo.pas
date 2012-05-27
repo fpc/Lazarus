@@ -5,24 +5,42 @@ unit leakinfo;
 interface
 
 uses
-  Classes, SysUtils, FileUtil;
+  Classes, SysUtils, FileUtil, LazClasses;
 
 type
   { TStackLine }
 
-  TStackLine = record
+  TStackLine = class(TRefCountedObject)
     LineNum   : Integer;  // -1 is line is uknown
     FileName  : string;   // should be empty if file is unknown
     Addr      : Int64;    // -1 if address is unknown
     RawLineData: string;
+    function Equals(ALine: TStackLine): boolean; reintroduce;
+    procedure Assign(ALine: TStackLine);
+  end;
+
+  { TStackLines }
+
+  TStackLines = class(TObject)
+  private
+    FLines: TRefCntObjList;
+    function GetLine(Index: Integer): TStackLine;
+  public
+    constructor Create;
+    destructor  Destroy; override;
+    function  Count: Integer;
+    procedure Clear;
+    function  Add(ALine: TStackLine): Integer;
+    function  IndexOfAddr(AnAddr: Int64): Integer;
+    function  FindAddr(AnAddr: Int64): TStackLine;
+    procedure CopyLineInfoByAddr(AnOtherLines: TStackLines);
+    property  Lines[Index: Integer]: TStackLine read GetLine;
   end;
 
   { TStackTrace }
 
-  TStackTrace = class(TObject)
+  TStackTrace = class(TStackLines)
   public
-    Lines      : array of TStackLine;
-    LinesCount : integer;
     BlockSize  : integer;
     Addr       : Int64;
     LeakCount  : Integer;
@@ -76,6 +94,7 @@ type
     Trc       : TStringList;
     TrcIndex  : integer;
     fSummary  : string;
+    FKnownAddresses: TStackLines;
 
     fParsed   : Boolean;
 
@@ -92,6 +111,7 @@ type
     TraceInfo : THeapTraceInfo;
     constructor Create(const ATRCFile: string);
     constructor CreateFromTxt(const AText: string);
+    destructor Destroy; override;
     function GetLeakInfo(var LeakData: TLeakStatus; var Traces: TList): Boolean; override;
   end;
 
@@ -226,7 +246,24 @@ begin
   end;
 end;
 
+{ TStackLine }
 
+function TStackLine.Equals(ALine: TStackLine): boolean;
+begin
+  Result :=
+    (LineNum     = ALine.LineNum) and
+    (FileName    = ALine.FileName) and
+    (Addr        = ALine.Addr) and
+    (RawLineData = ALine.RawLineData);
+end;
+
+procedure TStackLine.Assign(ALine: TStackLine);
+begin
+  LineNum     := ALine.LineNum;
+  FileName    := ALine.FileName;
+  Addr        := ALine.Addr;
+  RawLineData := ALine.RawLineData;
+end;
 
 { THeapTrcInfo }
 
@@ -336,6 +373,7 @@ end;
 
 constructor THeapTrcInfo.Create(const ATRCFile: string);
 begin
+  FKnownAddresses := TStackLines.Create;
   fTrcFile := ATrcFile;
   fTRCText := '';
   inherited Create;
@@ -343,7 +381,14 @@ end;
 
 constructor THeapTrcInfo.CreateFromTxt(const AText: string);
 begin
+  FKnownAddresses := TStackLines.Create;
   fTRCText := AText;
+end;
+
+destructor THeapTrcInfo.Destroy;
+begin
+  FreeAndNil(FKnownAddresses);
+  inherited Destroy;
 end;
 
 procedure THeapTrcInfo.ParseStackTrace(trace: TStackTrace);
@@ -351,6 +396,7 @@ var
   i   : integer;
   err : integer;
   hex : string;
+  NewLine: TStackLine;
 begin
   i := Pos(RawTracePrefix, Trc[TrcIndex]);
   if (i <= 0) and not IsTraceLine(Trc[TrcIndex]) then begin
@@ -374,21 +420,28 @@ begin
   while (TrcIndex < Trc.Count) and (Pos(CallTracePrefix, Trc[TrcIndex]) = 0) and
         (Pos(RawTracePrefix, Trc[TrcIndex]) = 0)
   do begin
-    if trace.LinesCount = length(trace.Lines) then begin
-      if trace.LinesCount = 0 then SetLength(trace.Lines, 4)
-      else SetLength(trace.Lines, trace.LinesCount * 2);
-    end;
-    ParseTraceLine(Trc[Trcindex], trace.Lines[trace.LinesCount]);
-    trace.Lines[trace.LinesCount].RawLineData := Trc[Trcindex]; // raw stack line data
-    inc(trace.LinesCount);
+    NewLine := TStackLine.Create; // No reference
+    trace.Add(NewLine);
+    ParseTraceLine(Trc[Trcindex], NewLine);
+    NewLine.RawLineData := Trc[Trcindex]; // raw stack line data
     inc(Trcindex);
+
+    if (NewLine.FileName <> '') then begin
+      i := FKnownAddresses.IndexOfAddr(NewLine.Addr);
+      // Todo: compare addr, to detect inconsistencies
+      if i < 0 then
+        FKnownAddresses.Add(NewLine);
+    end;
   end;
 end;
 
 
 function THeapTrcInfo.GetLeakInfo(var LeakData: TLeakStatus; var Traces: TList): Boolean;
+var
+  i: Integer;
 begin
   Result := false;
+  FKnownAddresses.Clear;
   if (not FileExistsUTF8(fTRCFile)) and (fTRCText = '') then
     Exit;
   try
@@ -409,18 +462,90 @@ begin
       Trc.Free;
       Trc := nil;
     end;
+
+    for i := 0 to Traces.Count - 1 do
+      TStackTrace(Traces[i]).CopyLineInfoByAddr(FKnownAddresses);
   except
     Result := false;
   end;
 end;
 
 
+{ TStackLines }
+
+function TStackLines.GetLine(Index: Integer): TStackLine;
+begin
+  Result := TStackLine(FLines[Index]);
+end;
+
+constructor TStackLines.Create;
+begin
+  FLines := TRefCntObjList.Create;
+end;
+
+destructor TStackLines.Destroy;
+begin
+  FLines.Clear;
+  FreeAndNil(FLines);
+  inherited Destroy;
+end;
+
+function TStackLines.Count: Integer;
+begin
+  Result := FLines.Count;
+end;
+
+procedure TStackLines.Clear;
+begin
+  FLines.Clear;
+end;
+
+function TStackLines.Add(ALine: TStackLine): Integer;
+begin
+  Result := FLines.Add(ALine);
+end;
+
+function TStackLines.IndexOfAddr(AnAddr: Int64): Integer;
+begin
+  Result := Count - 1;
+  while (Result >= 0) and (Lines[Result].Addr <> AnAddr) do
+    dec(Result);
+end;
+
+function TStackLines.FindAddr(AnAddr: Int64): TStackLine;
+var
+  i: Integer;
+begin
+  i := IndexOfAddr(AnAddr);
+  if i < 0 then
+    Result := nil
+  else
+    Result := Lines[i];
+end;
+
+procedure TStackLines.CopyLineInfoByAddr(AnOtherLines: TStackLines);
+var
+  i, j: Integer;
+  CurLine: TStackLine;
+begin
+  for i := 0 to Count - 1 do begin
+    CurLine := Lines[i];
+    if (CurLine.FileName = '') then begin
+      j := AnOtherLines.IndexOfAddr(CurLine.Addr);
+      if J >= 0 then
+        CurLine.Assign(AnOtherLines.Lines[j]);
+    end;
+  end;
+end;
+
 { TStackTrace }
 
 constructor TStackTrace.Create;
 begin
   LeakCount := 1;
+  inherited Create;
 end;
+
 
 end.
 

@@ -223,10 +223,10 @@ var
   i   : integer;
   sz  : Integer;
 begin
-  sz := 16 + trace.LinesCount * 16; // 8 hex digits for Size + 8 hex digits for Size
+  sz := 16 + trace.Count * 16; // 8 hex digits for Size + 8 hex digits for Size
   SetLength(Result, sz);
   HexInt64ToStr(trace.BlockSize, Result, 1);
-  for i := 0 to trace.LinesCount - 1 do
+  for i := 0 to trace.Count - 1 do
     HexInt64ToStr(trace.lines[i].Addr, Result, 17 + i * 16);
 end;
 
@@ -260,7 +260,7 @@ begin
     for i := 0 to fItems.Count - 1 do begin
       trace := TStackTrace(fItems[i]);
       nd := trvTraceInfo.Items.AddChildObject(nil, '+', trace);
-      for j := 0 to trace.LinesCount - 1 do begin
+      for j := 0 to trace.Count - 1 do begin
         trvTraceInfo.Items.AddChildObject(nd, '-', Pointer(j));
       end;
     end;
@@ -337,7 +337,7 @@ begin
 
   idx := Integer(nd.Data);
   trace := TStackTrace(nd.Parent.Data);
-  if not Assigned(trace) or (idx >= trace.LinesCount) then Exit;
+  if not Assigned(trace) or (idx >= trace.Count) then Exit;
 
   searchFile := trace.Lines[idx].FileName;
   if searchFile = '' then Exit;
