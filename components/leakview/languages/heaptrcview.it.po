@@ -1,4 +1,4 @@
-# Massimo Soricetti <notturno@quipo.it>, 2011.
+ Massimo Soricetti <notturno@quipo.it>, 2011.
 msgid ""
 msgstr ""
 "PO-Revision-Date: 2011-04-20 17:36+0200\n"
@@ -27,6 +27,10 @@ msgstr "Vista Perdite"
 msgid "Paste Clipboard"
 msgstr "Incolla da appunti"
 
+#: heaptrcview.sbtnresolve
+msgid "Resolve"
+msgstr ""
+
 #: heaptrcview.sbtnupdate
 msgid "Update"
 msgstr "Aggiorna"
@@ -42,6 +46,10 @@ msgstr "Resta in cima"
 #: heaptrcview.sfrmcap
 msgid "LeakView - HeapTrc output viewer"
 msgstr "Visore output LeakView - HeapTrc"
+
+#: heaptrcview.sfrmselectfilewithdebuginfo
+msgid "Select File with debug info"
+msgstr ""
 
 #: heaptrcview.slbltrace
 msgid ".trc file"

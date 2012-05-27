@@ -25,6 +25,10 @@ msgstr "Перегляд витоків пам'яті"
 msgid "Paste Clipboard"
 msgstr "Вставити з буфера обміну"
 
+#: heaptrcview.sbtnresolve
+msgid "Resolve"
+msgstr ""
+
 #: heaptrcview.sbtnupdate
 msgid "Update"
 msgstr "Оновити"
@@ -40,6 +44,10 @@ msgstr "Поверх інших вікон"
 #: heaptrcview.sfrmcap
 msgid "LeakView - HeapTrc output viewer"
 msgstr "LeakView - програма перегляду виводу HeapTrc"
+
+#: heaptrcview.sfrmselectfilewithdebuginfo
+msgid "Select File with debug info"
+msgstr ""
 
 #: heaptrcview.slbltrace
 msgid ".trc file"

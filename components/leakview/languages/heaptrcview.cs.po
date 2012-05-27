@@ -25,6 +25,10 @@ msgstr "Prohlížeč úniků"
 msgid "Paste Clipboard"
 msgstr "Vložit ze schránky"
 
+#: heaptrcview.sbtnresolve
+msgid "Resolve"
+msgstr ""
+
 #: heaptrcview.sbtnupdate
 msgid "Update"
 msgstr "Aktualizovat"
@@ -40,6 +44,10 @@ msgstr "Zůstat nahoře"
 #: heaptrcview.sfrmcap
 msgid "LeakView - HeapTrc output viewer"
 msgstr "Prohlížeč úniků(LeakView) - prohlížeč výstupu HeapTrc"
+
+#: heaptrcview.sfrmselectfilewithdebuginfo
+msgid "Select File with debug info"
+msgstr ""
 
 #: heaptrcview.slbltrace
 msgid ".trc file"

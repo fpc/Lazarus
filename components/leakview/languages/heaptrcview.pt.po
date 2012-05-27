@@ -25,6 +25,10 @@ msgstr "Exibir Vazamentos de Memória"
 msgid "Paste Clipboard"
 msgstr "Colar Área Transf."
 
+#: heaptrcview.sbtnresolve
+msgid "Resolve"
+msgstr ""
+
 #: heaptrcview.sbtnupdate
 msgid "Update"
 msgstr "Atualizar"
@@ -42,6 +46,10 @@ msgstr "Permanecer no topo"
 #| msgid "HeapTrcViewForm"
 msgid "LeakView - HeapTrc output viewer"
 msgstr "Exibição Rastreamento Pilha"
+
+#: heaptrcview.sfrmselectfilewithdebuginfo
+msgid "Select File with debug info"
+msgstr ""
 
 #: heaptrcview.slbltrace
 msgid ".trc file"

@@ -17,6 +17,10 @@ msgstr ""
 msgid "Paste Clipboard"
 msgstr ""
 
+#: heaptrcview.sbtnresolve
+msgid "Resolve"
+msgstr ""
+
 #: heaptrcview.sbtnupdate
 msgid "Update"
 msgstr ""
@@ -31,6 +35,10 @@ msgstr ""
 
 #: heaptrcview.sfrmcap
 msgid "LeakView - HeapTrc output viewer"
+msgstr ""
+
+#: heaptrcview.sfrmselectfilewithdebuginfo
+msgid "Select File with debug info"
 msgstr ""
 
 #: heaptrcview.slbltrace
