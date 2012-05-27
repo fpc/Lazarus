@@ -9696,22 +9696,26 @@ begin
     Inc(BeginString);
   end;
   
-  while EndString > BeginString do 
+  while EndString >= BeginString do
   begin
     if FParsableData[EndString] <> ' ' then break;
     Dec(EndString);
   end;
-  
-  if (EndString - BeginString > 0)
+
+  Result := EndString >= BeginString;
+
+  if Result
   and (FParsableData[BeginString] = '{')
   then begin
+    Result := FParsableData[EndString] = '}';
     inc(BeginString);
     dec(EndString);
     ADecomposable := True;
   end;
-  
-  APayload := Copy(FParsableData, BeginString, EndString - BeginString + 1);
-  Result := Length(APayload) > 0;
+
+  if Result
+  then APayload := Copy(FParsableData, BeginString, EndString - BeginString + 1)
+  else APayload := '';
 end;
 
 { TGDBMIDebuggerCommand }
