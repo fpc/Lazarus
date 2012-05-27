@@ -1552,8 +1552,11 @@ type
       procedure Clean(aRect: TRect; CleanOptions: TGridZoneSet); overload;
       procedure Clean(StartCol,StartRow,EndCol,EndRow: integer; CleanOptions: TGridZoneSet); overload;
       procedure CopyToClipboard(AUseSelection: boolean = false);
-      procedure LoadFromCSVFile(AFilename: string; ADelimiter:Char=','; WithHeader:boolean=true);
-      procedure SaveToCSVFile(AFileName: string; ADelimiter:Char=','; WithHeader:boolean=true);
+      procedure LoadFromCSVStream(AStream: TStream; ADelimiter: Char=','; WithHeader: boolean=true);
+      procedure LoadFromCSVFile(AFilename: string; ADelimiter: Char=','; WithHeader: boolean=true);
+      procedure SaveToCSVStream(AStream: TStream; ADelimiter: Char=','; WithHeader: boolean=true);
+      procedure SaveToCSVFile(AFileName: string; ADelimiter: Char=','; WithHeader: boolean=true);
+
       property Cells[ACol, ARow: Integer]: string read GetCells write SetCells;
       property Cols[index: Integer]: TStrings read GetCols write SetCols;
       property DefaultTextStyle;
@@ -10219,59 +10222,54 @@ begin
     CopyCellRectToClipboard(Rect(0,0,ColCount-1,RowCount-1));
 end;
 
-procedure TCustomStringGrid.LoadFromCSVFile(AFilename: string;
-  ADelimiter:Char=','; WithHeader:boolean=true);
+procedure TCustomStringGrid.LoadFromCSVStream(AStream: TStream;
+  ADelimiter: Char=','; WithHeader: boolean=true);
 var
-  L,SubL: TStringList;
-  i,j,x,StartRow: Integer;
+  Lines, HeaderL: TStringList;
+  i, j, x, StartRow: Integer;
   S: String;
 begin
-  L := TStringList.Create;
-  SubL := TStringList.Create;
+  Lines := TStringList.Create;
+  HeaderL := TStringList.Create;
   BeginUpdate;
   try
-    L.LoadFromFile(AFilename);
-
+    Lines.LoadFromStream(AStream);
     // check for empty lines
-    for i:=L.Count-1 downto 0 do
-      if Trim(L[i])='' then
-        L.Delete(i);
-
-    if L.Count>0 then begin
-
-      SubL.Delimiter:=ADelimiter;
-      //do not allow #32 as separator in csv files
-      SubL.StrictDelimiter := True;
-      SubL.DelimitedText:=L[0];
+    for i:=Lines.Count-1 downto 0 do
+      if Trim(Lines[i])='' then
+        Lines.Delete(i);
+    if Lines.Count>0 then begin
+      HeaderL.Delimiter:=ADelimiter;
+      HeaderL.StrictDelimiter := True; // Do not allow #32 as separator in csv files
+      HeaderL.DelimitedText:=Lines[0]; // Use the first row as a header
       //using StrictDelimiter means we have to handle quoted strings ourselfs
-      for x := 0 to SubL.Count - 1 do
+      for x := 0 to HeaderL.Count - 1 do
       begin
-        S := SubL.Strings[x];
-        if (Length(S) > 1) and (S[1] = '"')
-          and (S[Length(S)] = '"') then
-            SubL.Strings[x] := AnsiDeQuotedStr(S,'"');
+        S := HeaderL[x];
+        if (Length(S) > 1) and (S[1] = '"') and (S[Length(S)] = '"') then
+          HeaderL[x] := AnsiDeQuotedStr(S,'"');
       end;
-
+      // Set Columns count based on loaded data
       if Columns.Enabled then begin
-        while Columns.VisibleCount<>SubL.Count do
-          if Columns.VisibleCount<SubL.Count then
+        while Columns.VisibleCount<>HeaderL.Count do
+          if Columns.VisibleCount<HeaderL.Count then
             Columns.Add
           else
             Columns.Delete(Columns.Count-1);
-      end else
-        ColCount := SubL.Count;
-
-      if WithHeader and (FixedRows=0) then
-        RowCount := L.Count
+      end
       else
-        RowCount := FixedRows + L.Count-1;
-
+        ColCount := HeaderL.Count;          // New column count
+      // Rest of the lines are for rows
+      if WithHeader and (FixedRows=0) then
+        RowCount := Lines.Count
+      else
+        RowCount := FixedRows + Lines.Count-1;
+      // Set column captions and set StartRow for the following rows
       if WithHeader then begin
-        // load header
         if FixedRows>0 then
           if Columns.Enabled then begin
             for i:=0 to Columns.Count-1 do
-              Columns[i].Title.Caption:=SubL[i]
+              Columns[i].Title.Caption:=HeaderL[i]
           end;
         StartRow := Max(FixedRows-1, 0);
         j := 0;
@@ -10279,57 +10277,68 @@ begin
         StartRow := FixedRows;
         j := 1;
       end;
-
+      // Store the row data
       for i:=StartRow to RowCount-1 do begin
         Rows[i].Delimiter := ADelimiter;
         //do not allow #32 as separator in csv files
         Rows[i].StrictDelimiter := True;
-        Rows[i].DelimitedText:=L[i-StartRow+j];
+        Rows[i].DelimitedText:=Lines[i-StartRow+j];
         //using StrictDelimiter means we have to handle quoted strings ourselfs
         for x := 0 to Rows[i].Count - 1 do
         begin
-          S := Rows[i].Strings[x];
-          if (Length(S) > 1) and (S[1] = '"')
-            and (S[Length(S)] = '"') then
-              Rows[i].Strings[x] := AnsiDeQuotedStr(S,'"');
+          S := Rows[i][x];
+          if (Length(S) > 1) and (S[1] = '"') and (S[Length(S)] = '"') then
+            Rows[i][x] := AnsiDeQuotedStr(S,'"');
         end;
       end;
     end;
   finally
-    SubL.Free;
-    L.Free;
+    HeaderL.Free;
+    Lines.Free;
     EndUpdate;
   end;
 end;
 
-procedure TCustomStringGrid.SaveToCSVFile(AFileName: string; ADelimiter:Char=','; WithHeader:boolean=true);
+procedure TCustomStringGrid.LoadFromCSVFile(AFilename: string;
+  ADelimiter: Char=','; WithHeader: boolean=true);
 var
-  F: TextFile;
+  TheStream: TFileStream;
+begin
+  TheStream:=TFileStream.Create(AFileName,fmOpenRead or fmShareDenyWrite);
+  try
+    LoadFromCSVStream(TheStream, ADelimiter, WithHeader);
+  finally
+    TheStream.Free;
+  end;
+end;
+
+procedure TCustomStringGrid.SaveToCSVStream(AStream: TStream; ADelimiter: Char=','; WithHeader: boolean=true);
+var
   i,StartRow: Integer;
-  L: TStringList;
+  HeaderL, Lines: TStringList;
   C: TGridColumn;
 begin
   if (RowCount=0) or (ColCount=0) then
     exit;
-  AssignFile(F, AFilename);
+  Lines := TStringList.Create;
   try
-    Rewrite(F);
     if WithHeader then begin
       if Columns.Enabled then begin
         if FixedRows>0 then begin
-          L := TStringList.Create;
+          HeaderL := TStringList.Create;
           try
+            // Collect header column names to a temporary StringList
             for i := 0 to ColCount-1 do begin
               c := ColumnFromGridColumn(i);
               if c=nil then
-                L.Add(Cells[i, 0])
+                HeaderL.Add(Cells[i, 0])
               else
-                L.Add(c.Title.Caption);
+                HeaderL.Add(c.Title.Caption);
             end;
-            L.Delimiter:=ADelimiter;
-            WriteLn(F, L.DelimitedText);
+            HeaderL.Delimiter:=ADelimiter;
+            Lines.Add(HeaderL.DelimitedText); // Add as a first row in Lines
           finally
-            L.Free;
+            HeaderL.Free;
           end;
         end;
         StartRow := FixedRows;
@@ -10342,13 +10351,25 @@ begin
       StartRow := FixedRows;
     for i:=StartRow to RowCount-1 do begin
       Rows[i].Delimiter:=ADelimiter;
-      WriteLn(F, Rows[i].DelimitedText);
+      Lines.Add(Rows[i].DelimitedText);
     end;
+    Lines.SaveToStream(AStream);
   finally
-    CloseFile(F);
+    Lines.Free;
   end;
 end;
 
+procedure TCustomStringGrid.SaveToCSVFile(AFileName: string; ADelimiter: Char=','; WithHeader: boolean=true);
+var
+  TheStream: TFileStream;
+begin
+  TheStream:=TFileStream.Create(AFileName,fmCreate);
+  try
+    SaveToCSVStream(TheStream, ADelimiter, WithHeader);
+  finally
+    TheStream.Free;
+  end;
+end;
 
 procedure Register;
 begin
