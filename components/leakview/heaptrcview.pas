@@ -17,6 +17,7 @@ type
     btnUpdate: TButton;
     btnBrowse: TButton;
     btnClipboard: TButton;
+    BtnResolve: TButton;
     chkUseRaw: TCheckBox;
     chkStayOnTop: TCheckBox;
     edtTrcFileName:TComboBox;
@@ -26,6 +27,7 @@ type
     splitter: TSplitter;
     trvTraceInfo: TTreeView;
     procedure btnClipboardClick(Sender: TObject);
+    procedure BtnResolveClick(Sender: TObject);
     procedure btnUpdateClick(Sender: TObject);
     procedure btnBrowseClick(Sender: TObject);
     procedure chkStayOnTopChange(Sender: TObject);
@@ -35,6 +37,7 @@ type
     procedure trvTraceInfoDblClick(Sender: TObject);
   private
     { private declarations }
+    Finfo  : TLeakInfo;
     fItems  : TList;
 
     procedure DoUpdateLeaks(FromClip: Boolean = False);
@@ -56,7 +59,9 @@ type
     procedure LazarusJump(Sender: TObject; const SourceFile: string; Line: Integer);
   public
     { public declarations }
+    destructor Destroy; override;
 
+  public
     OnJumpProc : TJumpProc; //= procedure (Sender: TObject; const SourceName: string; Line: integer) of object;
 
   end;
@@ -78,9 +83,11 @@ resourcestring
   slblTrace = '.trc file';
   sbtnUpdate = 'Update';
   sbtnClipBrd = 'Paste Clipboard';
+  sbtnResolve = 'Resolve';
   schkRaw = 'Raw leak data';
   schkTop = 'Stay on top';
   sfrmCap = 'LeakView - HeapTrc output viewer';
+  sfrmSelectFileWithDebugInfo = 'Select File with debug info';
 
 var
   HeapTrcViewForm: THeapTrcViewForm = nil;
@@ -117,6 +124,24 @@ end;
 procedure THeapTrcViewForm.btnClipboardClick(Sender: TObject);
 begin
   DoUpdateLeaks(True);
+end;
+
+procedure THeapTrcViewForm.BtnResolveClick(Sender: TObject);
+var
+  OpenDialog : TOpenDialog;
+begin
+  if Finfo = nil then exit;
+
+  OpenDialog := TOpenDialog.Create(nil);
+  try
+    OpenDialog.Title := sfrmSelectFileWithDebugInfo;
+    if not OpenDialog.Execute then Exit;
+
+    Finfo.ResolveLeakInfo(OpenDialog.FileName, fItems);
+    ChangeTreeText;
+  finally
+    OpenDialog.Free;
+  end;
 end;
 
 procedure THeapTrcViewForm.btnBrowseClick(Sender: TObject);
@@ -165,6 +190,7 @@ begin
   lblTrcFile.Caption:=slblTrace;
   btnUpdate.Caption:=sbtnUpdate;
   btnClipboard.Caption:=sbtnClipBrd;
+  BtnResolve.Caption:=sbtnResolve;
   chkUseRaw.Caption:=schkRaw;
   chkStayOnTop.Caption:=schkTop;
   fItems:=TList.Create;
@@ -284,10 +310,10 @@ end;
 
 procedure THeapTrcViewForm.DoUpdateLeaks(FromClip: Boolean = False);
 var
-  info  : TLeakInfo;
   data  : TLeakStatus;
   txt: String;
 begin
+  FreeAndNil(Finfo);
   trvTraceInfo.BeginUpdate;
   try
     ClearItems;
@@ -295,26 +321,22 @@ begin
     if FromClip then begin
       txt := Clipboard.AsText;
       if txt = '' then exit;
-      info := AllocHeapTraceInfoFromText(txt);
+      Finfo := AllocHeapTraceInfoFromText(txt);
     end else begin
       if (not FileExistsUTF8(edtTrcFileName.Text)) or FromClip then Exit;
-      info := AllocHeapTraceInfo(edtTrcFileName.Text);
+      Finfo := AllocHeapTraceInfo(edtTrcFileName.Text);
     end;
 
-    try
-      if info.GetLeakInfo(data, fItems) then ItemsToTree
-      else trvTraceInfo.Items.Add(nil, rsErrorParse);
+    if Finfo.GetLeakInfo(data, fItems) then ItemsToTree
+    else trvTraceInfo.Items.Add(nil, rsErrorParse);
 
-      memoSummary.Clear;
-      with memoSummary.Lines do begin
-        Add( Format(strTotalMemAlloc, [data.TotalMem]));
-        Add( Format(strLeakingMemSize, [data.LeakedMem]));
-        Add( Format(strLeakingBlocksCount, [data.LeakCount]));
-      end;
-
-    finally
-      info.Free;
+    memoSummary.Clear;
+    with memoSummary.Lines do begin
+      Add( Format(strTotalMemAlloc, [data.TotalMem]));
+      Add( Format(strLeakingMemSize, [data.LeakedMem]));
+      Add( Format(strLeakingBlocksCount, [data.LeakCount]));
     end;
+
   finally
     trvTraceInfo.EndUpdate;
   end;
@@ -390,7 +412,12 @@ function THeapTrcViewForm.GetStackLineText(const Line: TStackLine; useRaw: boole
 begin
   if useRaw then
     Result := Line.RawLineData;
-  if not useRaw or (Result = '') then
+
+  if (not useRaw) or (Result = '') or
+     ( (Pos(' ', Trim(Result)) < 1) and (Pos(':', Trim(Result)) < 1) and
+       ( (copy(Trim(Result),1,1) = '$') or (copy(Trim(Result),1,2) = '0x') )
+     ) // Rawdata may be address only
+  then
     with Line do
       if FileName <> ''
         then Result := Format(StackLineFormatWithFile, ['$'+IntToHex(Addr, sizeof(Pointer)*2), ExtractFileName(FileName), LineNum])
@@ -508,6 +535,12 @@ begin
   end else
     nm := SourceFile;
   LazarusIDE.DoOpenFileAndJumpToPos(nm, Point(1, Line), -1, -1, -1, [ofOnlyIfExists, ofRegularFile]);
+end;
+
+destructor THeapTrcViewForm.Destroy;
+begin
+  FreeAndNil(Finfo);
+  inherited Destroy;
 end;
 
 procedure IDEMenuClicked(Sender: TObject);

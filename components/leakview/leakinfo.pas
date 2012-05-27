@@ -5,7 +5,7 @@ unit leakinfo;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, LazClasses;
+  Classes, SysUtils, FileUtil, LazClasses, DbgInfoReader;
 
 type
   { TStackLine }
@@ -64,6 +64,7 @@ type
     // Fills LeakData record
     // if Traces is not nil, fill the list with TStackTrace object. User is responsible for freeing them
     function GetLeakInfo(var LeakData: TLeakStatus; var Traces: TList): Boolean; virtual; abstract;
+    function ResolveLeakInfo(AFileName: string; Traces: TList): Boolean; virtual; abstract;
   end;
 
   // this file can be (should be?) hidden in the other unit, or to the implementation section
@@ -113,6 +114,7 @@ type
     constructor CreateFromTxt(const AText: string);
     destructor Destroy; override;
     function GetLeakInfo(var LeakData: TLeakStatus; var Traces: TList): Boolean; override;
+    function ResolveLeakInfo(AFileName: string; Traces: TList): Boolean; override;
   end;
 
 function AllocHeapTraceInfo(const TrcFile: string): TLeakInfo;
@@ -467,6 +469,47 @@ begin
       TStackTrace(Traces[i]).CopyLineInfoByAddr(FKnownAddresses);
   except
     Result := false;
+  end;
+end;
+
+function THeapTrcInfo.ResolveLeakInfo(AFileName: string; Traces: TList): Boolean;
+var
+  trace: TStackTrace;
+  i, j, k: Integer;
+  CurLine: TStackLine;
+  FuncName, SrcName: shortstring;
+  SrcLine: longint;
+  BadAddresses: TStackLines;
+begin
+  if not OpenSymbolFile(AFileName) then
+    exit;
+  BadAddresses := TStackLines.Create;
+  try
+    for i := 0 to Traces.Count - 1 do begin
+      trace := TStackTrace(Traces[i]);
+      for j := 0 to trace.Count - 1 do begin
+        CurLine := trace.Lines[j];
+        if (CurLine.FileName = '') then begin
+          k := FKnownAddresses.IndexOfAddr(CurLine.Addr);
+          if k >= 0 then
+            CurLine.Assign(FKnownAddresses.Lines[k])
+          else
+          if BadAddresses.IndexOfAddr(CurLine.Addr) < 0 then begin
+            if GetLineInfo(CurLine.Addr, FuncName, SrcName, SrcLine) then begin
+              CurLine.FileName := SrcName;
+              CurLine.LineNum := SrcLine;
+              FKnownAddresses.Add(CurLine);
+            end
+            else begin
+              BadAddresses.Add(CurLine);
+            end;
+          end;
+        end;
+      end;
+    end;
+  finally
+    CloseSymbolFile;
+    FreeAndNil(BadAddresses);
   end;
 end;
 
