@@ -48,6 +48,7 @@ type
 
   TLazBuildApplication = class(TCustomApplication)
   private
+    FAddPackage: boolean;
     FBuildAll: boolean;
     FBuildIDE: boolean;
     FBuildIDEOptions: string;
@@ -81,9 +82,9 @@ type
                                             out Description: string);
     procedure GetDependencyOwnerDirectory(Dependency: TPkgDependency;
                                           out Directory: string);
-    // package graph
+    // Event procedure that adds a package graph package to (user) package links:
     procedure PackageGraphAddPackage(Pkg: TLazPackage);
-    
+
     // project
     procedure OnProjectChangeInfoFile(TheProject: TProject);
     procedure OnProjectGetTestDirectory({%H-}TheProject: TProject; out
@@ -97,10 +98,13 @@ type
                                  {%H-}DlgType: TMsgDlgType; {%H-}Buttons: array of const;
                                  const {%H-}HelpKeyword: string): Integer;
   protected
+    // Builds project or package, depending on extension. Packages can also be specified by package name if they are known to the IDE.
     function BuildFile(Filename: string): boolean;
 
     // packages
+    // Build a package identified by filename and return build result
     function BuildPackage(const AFilename: string): boolean;
+    // Load package file into loaded packages (package graph), overwriting any package with the same name
     function LoadPackage(const AFilename: string): TLazPackage;
     procedure CompilePackage(APackage: TLazPackage; Flags: TPkgCompileFlags);
     procedure DoCreateMakefile(APackage: TLazPackage);
@@ -111,6 +115,10 @@ type
     function BuildProject(const AFilename: string): boolean;
     function LoadProject(const AFilename: string): TProject;
     procedure CloseProject(var AProject: TProject);
+
+    // Adding packages to list of to-be-installed packages in the IDE.
+    // The packages can then be installed by recompiling the IDE (because we're using static packages)
+    function AddRequestedPackages(const PackageNamesOrFiles: TStringList): boolean;
 
     // IDE
     function BuildLazarusIDE: boolean;
@@ -128,6 +136,7 @@ type
     function RepairedCheckOptions(Const ShortOptions : String;
                    Const Longopts : TStrings; Opts,NonOpts : TStrings) : String;
   public
+    // Files (or package names) passed by the user to Lazbuild:
     Files: TStringList;
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
@@ -138,12 +147,13 @@ type
     procedure Error(ErrorCode: Byte; const ErrorMsg: string);
     function OnRunExternalTool(Tool: TIDEExternalToolOptions): TModalResult;
 
+    property AddPackage: boolean read FAddPackage write FAddPackage; // add package to installed pacakge in IDE (UserIDE)
     property BuildAll: boolean read FBuildAll write FBuildAll;// build all files of project/package
     property BuildRecursive: boolean read FBuildRecursive // apply BuildAll flag to dependencies
                                      write FBuildRecursive;
     property SkipDependencies: boolean read FSkipDependencies
                                             write FSkipDependencies;
-    property BuildIDE: boolean read FBuildIDE write FBuildIDE;
+    property BuildIDE: boolean read FBuildIDE write FBuildIDE; // build IDE (as opposed to a project/package etc)
     property BuildIDEOptions: string read FBuildIDEOptions write FBuildIDEOptions;
     property CreateMakefile: boolean read FCreateMakefile write FCreateMakefile;
     property WidgetSetOverride: String read fWidgetsetOverride
@@ -304,26 +314,67 @@ begin
 end;
 
 function TLazBuildApplication.BuildFile(Filename: string): boolean;
+var
+  OriginalFilename: string;
+  Package: TPackageLink;
 begin
   Result:=false;
+  OriginalFilename:=FileName;
   Filename:=CleanAndExpandFilename(Filename);
-  if not FileExists(Filename) then begin
-    Error(ErrorFileNotFound, 'File not found: '+Filename);
-    Exit;
+  case FileExists(Filename) of
+    false:
+    begin
+      // Check for packages if the specified name is a valid identifier
+      if IsValidIdent(OriginalFileName) then begin
+        // Initialize package graph with base packages etc:
+        if not Init then exit;
+        // Apparently not found, could be a known but not installed package
+        // so try and get package filename from all other known packages
+        Package:=PkgLinks.FindLinkWithPkgName(OriginalFileName);
+        if Package=nil then begin
+          // Not found after everything we tried
+          Error(ErrorFileNotFound,'package not found: '+OriginalFilename);
+        end
+        else begin
+          // We found a package link
+          if AddPackage then begin
+            // if installing packages, don't compile it here; let BuildLazarusIDE do that with suitable IDE build options.
+            Debugln('Package '+Package.Filename+' was selected for install. Not building it; please rebuild IDE to install package.');
+            Result:=true;
+          end
+          else
+            Result:=BuildPackage(Package.Filename)
+        end;
+      end
+      else begin
+        // File is not an identifier and doesn't exist.
+        Error(ErrorFileNotFound, 'package not found: '+OriginalFilename);
+        Exit;
+      end;
+    end;
+    true:
+    // File exists:
+    begin
+      if CompareFileExt(Filename,'.lpk')=0 then
+        if AddPackage then begin
+          // if installing packages, don't compile it here; let BuildLazarusIDE do that with suitable IDE build options.
+          Debugln('Package '+Filename+' was selected for install. Not building it; please rebuild IDE to install package.');
+          Result:=true;
+        end
+        else
+          Result:=BuildPackage(Filename)
+      else if CompareFileExt(Filename,'.lpi')=0 then
+          Result:=BuildProject(Filename)
+      else if CompareFileExt(Filename,'.lpr')=0 then begin
+        Filename:=ChangeFileExt(Filename,'.lpi');
+        if FileExists(Filename) then
+          Result:=BuildProject(Filename)
+        else
+          Error(ErrorFileNotFound,'file not found: '+Filename);
+      end else
+        Error(ErrorBuildFailed,'don''t know how to build: '+Filename);
+    end;
   end;
-  
-  if CompareFileExt(Filename,'.lpk')=0 then
-    Result:=BuildPackage(Filename)
-  else if CompareFileExt(Filename,'.lpi')=0 then
-    Result:=BuildProject(Filename)
-  else if CompareFileExt(Filename,'.lpr')=0 then begin
-    Filename:=ChangeFileExt(Filename,'.lpi');
-    if FileExists(Filename) then
-      Result:=BuildProject(Filename)
-    else
-      Error(ErrorFileNotFound,'file not found: '+Filename);
-  end else
-    Error(ErrorBuildFailed,'don''t know how to build: '+Filename);
 end;
 
 function TLazBuildApplication.BuildPackage(const AFilename: string): boolean;
@@ -850,6 +901,46 @@ begin
   FreeThenNil(AProject);
 end;
 
+function TLazBuildApplication.AddRequestedPackages(const PackageNamesOrFiles: TStringList): boolean;
+var
+  i: integer;
+  Package: TLazPackage;
+  PackageLink: TPackageLink;
+  PackageName:string;
+begin
+  Result:=false;
+  if not Init then exit;
+
+  LoadMiscellaneousOptions;
+
+  // Add new package:
+  for i:=0 to PackageNamesOrFiles.Count -1 do
+  begin
+    // Look for package name in all known packages
+    PackageName:='';
+    PackageLink:=PkgLinks.FindLinkWithPkgName(PackageNamesOrFiles[i]);
+    if PackageLink<>nil then PackageName:=PackageLink.Name;
+
+    if PackageName='' then begin
+      // Not a known package, so try to load package file and set it as (static) autoinstall: select for installation
+      Package:=LoadPackage(PackageNamesOrFiles[i]);
+      if Package<> nil then
+        MiscellaneousOptions.BuildLazProfiles.StaticAutoInstallPackages.Add(Package.Name)
+      else
+        debugln('Warning: could not find package '+PackageNamesOrFiles[i]+', so it is not marked for installation.');
+    end
+    else begin
+      // Select our package among the existing list and set it as (static) autoinstall: select for installation
+      MiscellaneousOptions.BuildLazProfiles.StaticAutoInstallPackages.Add(PackageName);
+    end;
+  end;
+
+  // try loading other install packages
+  PackageGraph.LoadAutoInstallPackages(MiscellaneousOptions.BuildLazProfiles.StaticAutoInstallPackages);
+
+  Result:=true;
+end;
+
 function TLazBuildApplication.Init: boolean;
 begin
   if fInitialized then exit(fInitResult);
@@ -1105,7 +1196,7 @@ begin
                 begin
                 // Required argument
                 NeedArg:=true;
-                Writeln('P ',P,' J ',J,' ',O[J],' ',l,' Havearg ',HaveArg);
+                writeln('P ',P,' J ',J,' ',O[J],' ',l,' Havearg ',HaveArg);
                 If ((P+1)=Length(ShortOptions)) or (Shortoptions[P+2]<>':') Then
                   If (J<L) or not haveArg then // Must be last in multi-opt !!
                     Result:=Format(lisErrOptionNeeded,[I,O[J]]);
@@ -1168,17 +1259,28 @@ var
 begin
   if not ParseParameters then exit;
 
+  // Build all projects/packages specified by the user...
+  // except packages to be added the IDE install list.
   for i:=0 to Files.Count-1 do begin
     if not BuildFile(Files[i]) then begin
-      writeln('Failed building ',Files[i]);
+      debugln('Failed building ',Files[i]);
       ExitCode := ErrorBuildFailed;
       exit;
     end;
   end;
-  
+
+  // Add user-requested packages to IDE install list:
+  if AddPackage then begin
+    if not AddRequestedPackages(Files) then begin
+      debugln('Failed adding package(s) ',Files.Text);
+      ExitCode := ErrorBuildFailed;
+      exit;
+    end;
+  end;
+
   if BuildIDE then begin
     if not BuildLazarusIDE then begin
-      writeln('Failed building Lazarus IDE');
+      debugln('Failed building Lazarus IDE');
       ExitCode := ErrorBuildFailed;
       exit;
     end;
@@ -1219,6 +1321,7 @@ begin
     LongOptions.Add('secondary-config-path:');
     LongOptions.Add('scp:');
     LongOptions.Add('language:');
+    LongOptions.Add('add-package');
     LongOptions.Add('build-all');
     LongOptions.Add('build-ide:');
     LongOptions.Add('recursive');
@@ -1245,6 +1348,9 @@ begin
       BuildIDE:=true;
       BuildIDEOptions:=GetOptionValue('build-ide');
     end;
+
+    // Add package to list of to be installed packages)
+    AddPackage:=HasOption('add-package');
 
     // files
     Files.Assign(NonOptions);
@@ -1320,7 +1426,7 @@ const
 begin
   TranslateResourceStrings(ProgramDirectory(true),'');
   writeln('');
-  writeln('lazbuild [options] <project or package-filename>');
+  writeln('lazbuild [options] <project/package filename or package name>');
   writeln('');
   writeln(UTF8ToConsole(lisEdtExtToolParameters));
   writeln('');
@@ -1329,6 +1435,7 @@ begin
   writeln('-B or --build-all         ', UTF8ToConsole(lisBuildAllFilesOfProjectPackageIDE));
   writeln('-r or --recursive         ', UTF8ToConsole(lisApplyBuildFlagsBToDependenciesToo));
   writeln('-d or --skip-dependencies ', UTF8ToConsole(lisDoNotCompileDependencies));
+  writeln('--add-package             ', UTF8ToConsole(lisAddPackages));
   writeln('--build-ide=<options>     ', UTF8ToConsole(lisBuildIDEWithPackages));
   writeln('-v or --version           ', UTF8ToConsole(lisShowVersionAndExit));
   writeln('');
