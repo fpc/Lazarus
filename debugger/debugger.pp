@@ -1090,9 +1090,8 @@ type
     constructor Create(AOwnerWatch: TWatch);  overload;
     constructor Create(AOwnerWatch: TWatch;
                        const AThreadId: Integer;
-                       const AStackFrame: Integer;
-                       const ADisplayFormat: TWatchDisplayFormat;
-                       const AnEvaluateFlags: TDBGEvaluateFlags = []);  overload;
+                       const AStackFrame: Integer
+                      );  overload;
     destructor Destroy; override;
     procedure Assign(AnOther: TWatchValue);
     property DisplayFormat: TWatchDisplayFormat read FDisplayFormat;
@@ -1112,14 +1111,10 @@ type
   private
     FList: TList;
     FWatch: TWatch;
-    function GetEntry(const AThreadId: Integer; const AStackFrame: Integer;
-                     const ADisplayFormat: TWatchDisplayFormat;
-                     const AnEvaluateFlags: TDBGEvaluateFlags): TWatchValue;
+    function GetEntry(const AThreadId: Integer; const AStackFrame: Integer): TWatchValue;
     function GetEntryByIdx(AnIndex: integer): TWatchValue;
   protected
-    function CreateEntry(const {%H-}AThreadId: Integer; const {%H-}AStackFrame: Integer;
-                         const {%H-}ADisplayFormat: TWatchDisplayFormat;
-                         const {%H-}AnEvaluateFlags: TDBGEvaluateFlags): TWatchValue; virtual;
+    function CreateEntry(const {%H-}AThreadId: Integer; const {%H-}AStackFrame: Integer): TWatchValue; virtual;
     procedure LoadDataFromXMLConfig(const AConfig: TXMLConfig;
                                 APath: string);
     procedure SaveDataToXMLConfig(const AConfig: TXMLConfig;
@@ -1132,9 +1127,7 @@ type
     procedure Clear;
     function Count: Integer;
     property EntriesByIdx[AnIndex: integer]: TWatchValue read GetEntryByIdx;
-    property Entries[const AThreadId: Integer; const AStackFrame: Integer;
-                     const ADisplayFormat: TWatchDisplayFormat;
-                     const AnEvaluateFlags: TDBGEvaluateFlags]: TWatchValue
+    property Entries[const AThreadId: Integer; const AStackFrame: Integer]: TWatchValue
              read GetEntry; default;
     property Watch: TWatch read FWatch;
   end;
@@ -1150,9 +1143,6 @@ type
     FValueList: TWatchValueList;
     function GetEnabled: Boolean;
     function GetValue(const AThreadId: Integer; const AStackFrame: Integer): TWatchValue;
-    function GetValueEx(const AThreadId: Integer; const AStackFrame: Integer;
-                        const ADisplayFormat: TWatchDisplayFormat;
-                        const AnEvaluateFlags: TDBGEvaluateFlags): TWatchValue;
     procedure SetEvaluateFlags(AValue: TDBGEvaluateFlags);
   protected
     procedure AssignTo(Dest: TPersistent); override;
@@ -1185,11 +1175,6 @@ type
   public
     property Values[const AThreadId: Integer; const AStackFrame: Integer]: TWatchValue
              read GetValue;
-    property ValuesEx[const AThreadId: Integer; const AStackFrame: Integer;
-                      const ADisplayFormat: TWatchDisplayFormat;
-                      const AnEvaluateFlags: TDBGEvaluateFlags
-                     ]: TWatchValue
-             read GetValueEx;
   end;
   TBaseWatchClass = class of TWatch;
 
@@ -1236,9 +1221,7 @@ type
     FSnapShot: TWatchValueList;
     procedure SetSnapShot(const AValue: TWatchValueList);
   protected
-    function CreateEntry(const AThreadId: Integer; const AStackFrame: Integer;
-      const ADisplayFormat: TWatchDisplayFormat;
-      const AnEvaluateFlags: TDBGEvaluateFlags): TWatchValue; override;
+    function CreateEntry(const AThreadId: Integer; const AStackFrame: Integer): TWatchValue; override;
     property SnapShot: TWatchValueList read FSnapShot write SetSnapShot;
   end;
 
@@ -4589,13 +4572,12 @@ begin
 end;
 
 function TCurrentWatchValueList.CreateEntry(const AThreadId: Integer;
-  const AStackFrame: Integer; const ADisplayFormat: TWatchDisplayFormat;
-  const AnEvaluateFlags: TDBGEvaluateFlags): TWatchValue;
+  const AStackFrame: Integer): TWatchValue;
 var
   R: TWatchValue;
 begin
   try DebugLnEnter(DBG_DATA_MONITORS, ['DebugDataMonitor: >>ENTER: TCurrentWatchValueList.CreateEntry  AThreadId=', AThreadId, '  AStackFrame=',AStackFrame, ' Expr=', FWatch.Expression]);
-  Result := TCurrentWatchValue.Create(FWatch, AThreadId, AStackFrame, ADisplayFormat, AnEvaluateFlags);
+  Result := TCurrentWatchValue.Create(FWatch, AThreadId, AStackFrame);
   Add(Result);
   if FSnapShot <> nil then begin
     R := TWatchValue.Create(FSnapShot.FWatch);
@@ -4607,9 +4589,7 @@ end;
 
 { TWatchValueList }
 
-function TWatchValueList.GetEntry(const AThreadId: Integer; const AStackFrame: Integer;
-  const ADisplayFormat: TWatchDisplayFormat;
-  const AnEvaluateFlags: TDBGEvaluateFlags): TWatchValue;
+function TWatchValueList.GetEntry(const AThreadId: Integer; const AStackFrame: Integer): TWatchValue;
 var
   i: Integer;
 begin
@@ -4617,13 +4597,13 @@ begin
   while i >= 0 do begin
     Result := TWatchValue(FList[i]);
     if (Result.ThreadId = AThreadId) and (Result.StackFrame = AStackFrame) and
-       (Result.DisplayFormat = ADisplayFormat) and
-       (Result.EvaluateFlags = AnEvaluateFlags)
+       (Result.DisplayFormat = FWatch.DisplayFormat) and
+       (Result.EvaluateFlags = FWatch.EvaluateFlags)
     then
       exit;
     dec(i);
   end;
-  Result := CreateEntry(AThreadId, AStackFrame, ADisplayFormat, AnEvaluateFlags);
+  Result := CreateEntry(AThreadId, AStackFrame);
 end;
 
 function TWatchValueList.GetEntryByIdx(AnIndex: integer): TWatchValue;
@@ -4631,9 +4611,7 @@ begin
   Result := TWatchValue(FList[AnIndex]);
 end;
 
-function TWatchValueList.CreateEntry(const AThreadId: Integer; const AStackFrame: Integer;
-  const ADisplayFormat: TWatchDisplayFormat;
-  const AnEvaluateFlags: TDBGEvaluateFlags): TWatchValue;
+function TWatchValueList.CreateEntry(const AThreadId: Integer; const AStackFrame: Integer): TWatchValue;
 begin
   Result := nil;
 end;
@@ -4818,19 +4796,17 @@ constructor TWatchValue.Create(AOwnerWatch: TWatch);
 begin
   FValidity := ddsUnknown;
   FWatch := AOwnerWatch;
-  FEvaluateFlags := [];
+  FDisplayFormat := FWatch.DisplayFormat;
+  FEvaluateFlags := FWatch.EvaluateFlags;
   Create;
 end;
 
 constructor TWatchValue.Create(AOwnerWatch: TWatch; const AThreadId: Integer;
-  const AStackFrame: Integer; const ADisplayFormat: TWatchDisplayFormat;
-  const AnEvaluateFlags: TDBGEvaluateFlags);
+  const AStackFrame: Integer);
 begin
   Create(AOwnerWatch);
   FThreadId := AThreadId;
   FStackFrame := AStackFrame;
-  FDisplayFormat := ADisplayFormat;
-  FEvaluateFlags := AnEvaluateFlags;
 end;
 
 destructor TWatchValue.Destroy;
@@ -8218,14 +8194,7 @@ end;
 
 function TWatch.GetValue(const AThreadId: Integer; const AStackFrame: Integer): TWatchValue;
 begin
-  Result := FValueList[AThreadId, AStackFrame, FDisplayFormat, FEvaluateFlags];
-end;
-
-function TWatch.GetValueEx(const AThreadId: Integer; const AStackFrame: Integer;
-  const ADisplayFormat: TWatchDisplayFormat;
-  const AnEvaluateFlags: TDBGEvaluateFlags): TWatchValue;
-begin
-  Result := FValueList[AThreadId, AStackFrame, ADisplayFormat, AnEvaluateFlags];
+  Result := FValueList[AThreadId, AStackFrame];
 end;
 
 procedure TWatch.SetEvaluateFlags(AValue: TDBGEvaluateFlags);
