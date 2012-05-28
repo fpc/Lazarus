@@ -4783,6 +4783,9 @@ begin
   FThreadId   := AConfig.GetValue(APath + 'ThreadId', -1);
   FStackFrame := AConfig.GetValue(APath + 'StackFrame', -1);
   FValue      := AConfig.GetValue(APath + 'Value', '');
+  if AConfig.GetValue(APath + 'ClassAutoCast', False)
+  then Include(FEvaluateFlags, defClassAutoCast)
+  else Exclude(FEvaluateFlags, defClassAutoCast);
   try    ReadStr(AConfig.GetValue(APath + 'DisplayFormat', 'wdfDefault'), FDisplayFormat);
   except FDisplayFormat := wdfDefault; end;
   try    ReadStr(AConfig.GetValue(APath + 'Validity', 'ddsValid'), FValidity);
@@ -4800,6 +4803,7 @@ begin
   AConfig.SetDeleteValue(APath + 'DisplayFormat', s, 'wdfDefault');
   WriteStr(s, FValidity);
   AConfig.SetDeleteValue(APath + 'Validity', s, 'ddsValid');
+  AConfig.SetDeleteValue(APath + 'ClassAutoCast', defClassAutoCast in FEvaluateFlags, False);
 end;
 
 constructor TWatchValue.Create;
@@ -8248,6 +8252,9 @@ procedure TWatch.LoadDataFromXMLConfig(const AConfig: TXMLConfig; const APath: s
 begin
   FEnabled    := AConfig.GetValue(APath + 'Enabled', True);
   FExpression := AConfig.GetValue(APath + 'Expression', '');
+  if AConfig.GetValue(APath + 'ClassAutoCast', False)
+  then Include(FEvaluateFlags, defClassAutoCast)
+  else Exclude(FEvaluateFlags, defClassAutoCast);
   try    ReadStr(AConfig.GetValue(APath + 'DisplayFormat', 'wdfDefault'), FDisplayFormat);
   except FDisplayFormat := wdfDefault; end;
 
@@ -8262,6 +8269,7 @@ begin
   AConfig.SetDeleteValue(APath + 'Expression', FExpression, '');
   WriteStr(s{%H-}, FDisplayFormat);
   AConfig.SetDeleteValue(APath + 'DisplayFormat', s, 'wdfDefault');
+  AConfig.SetDeleteValue(APath + 'ClassAutoCast', defClassAutoCast in FEvaluateFlags, False);
 
   FValueList.SaveDataToXMLConfig(AConfig, APath + 'ValueList/');
 end;
@@ -8354,6 +8362,9 @@ var
 begin
   Expression := AConfig.GetValue(APath + 'Expression/Value', '');
   Enabled := AConfig.GetValue(APath + 'Enabled/Value', true);
+  if AConfig.GetValue(APath + 'ClassAutoCast', False)
+  then Include(FEvaluateFlags, defClassAutoCast)
+  else Exclude(FEvaluateFlags, defClassAutoCast);
   i := StringCase
     (AConfig.GetValue(APath + 'DisplayStyle/Value', TWatchDisplayFormatNames[wdfDefault]),
     TWatchDisplayFormatNames);
@@ -8368,6 +8379,7 @@ begin
   AConfig.SetDeleteValue(APath + 'Enabled/Value', Enabled, true);
   AConfig.SetDeleteValue(APath + 'DisplayStyle/Value',
     TWatchDisplayFormatNames[DisplayFormat], TWatchDisplayFormatNames[wdfDefault]);
+  AConfig.SetDeleteValue(APath + 'ClassAutoCast', defClassAutoCast in FEvaluateFlags, False);
 end;
 
 { =========================================================================== }
