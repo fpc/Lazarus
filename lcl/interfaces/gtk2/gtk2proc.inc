@@ -2376,6 +2376,7 @@ begin
   if not EventStopped and AHandleDown then begin
 
     // send the UTF8 keypress
+    PassUTF8AsKeyPress := False;
     if ABeforeEvent then begin
       // try to get the UTF8 representation of the key
         if im_context_string <> '' then
@@ -2398,7 +2399,6 @@ begin
       {$ENDIF}
 
       // we must pass KeyPress if UTF8KeyPress returned false result. issue #21489
-      PassUTF8AsKeyPress := False;
       if Character <> '' then
       begin
         LCLObject := GetNearestLCLObject(TargetWidget);
