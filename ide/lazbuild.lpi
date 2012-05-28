@@ -80,5 +80,6 @@
       </CompilerMessages>
       <CompilerPath Value="$(CompPath)"/>
     </Other>
+    <LCLWidgetType Value="nogui"/>
   </CompilerOptions>
 </CONFIG>

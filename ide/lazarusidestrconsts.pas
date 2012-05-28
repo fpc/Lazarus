@@ -4900,9 +4900,10 @@ resourcestring
   lisUnableToCreateLinkWithTarget = 'Unable to create link %s%s%s with target %s%s%s';
   lisBuildAllFilesOfProjectPackageIDE =
     'build all files of project/package/IDE';
-  lisAddPackages='add package to list of installed packages (do not rebuild IDE).';
   lisApplyBuildFlagsBToDependenciesToo = 'apply build flags (-B) to dependencies too';
   lisDoNotCompileDependencies = 'do not compile dependencies';
+  lisAddPackageSToListOfInstalledPackagesCombineWithBui = 'add package(s) to '
+    +'list of installed packages (combine with --build-ide to rebuild IDE).';
   lisBuildIDEWithPackages = 'build IDE with packages';
   lisShowVersionAndExit = 'show version and exit';
   lisOverrideTheProjectOperatingSystemEGWin32LinuxDefau = '%soverride the '
