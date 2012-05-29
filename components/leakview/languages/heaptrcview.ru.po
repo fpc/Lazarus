@@ -27,7 +27,7 @@ msgstr "Вставить из буфера обмена"
 
 #: heaptrcview.sbtnresolve
 msgid "Resolve"
-msgstr ""
+msgstr "Уточнить"
 
 #: heaptrcview.sbtnupdate
 msgid "Update"
@@ -48,7 +48,7 @@ msgstr "LeakView - программа просмотра вывода HeapTrc"
 
 #: heaptrcview.sfrmselectfilewithdebuginfo
 msgid "Select File with debug info"
-msgstr ""
+msgstr "Выберите файл с отладочной информацией"
 
 #: heaptrcview.slbltrace
 msgid ".trc file"
