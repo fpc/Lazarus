@@ -3815,6 +3815,10 @@ msgstr "Přidat novou sadu"
 msgid "Add package requirement?"
 msgstr "Přidat požadavky balíčku?"
 
+#: lazarusidestrconsts.lisaddpackagestolistofinstalledpackagescombinewithbui
+msgid "add package(s) to list of installed packages (combine with --build-ide to rebuild IDE)."
+msgstr ""
+
 #: lazarusidestrconsts.lisaddpackagetoproject
 msgid "Add package %s to project?"
 msgstr "Přidat balíček %s do projektu?"

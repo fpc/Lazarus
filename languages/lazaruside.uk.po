@@ -3918,6 +3918,10 @@ msgstr "Додати новий набір"
 msgid "Add package requirement?"
 msgstr "Додати залежності пакунку?"
 
+#: lazarusidestrconsts.lisaddpackagestolistofinstalledpackagescombinewithbui
+msgid "add package(s) to list of installed packages (combine with --build-ide to rebuild IDE)."
+msgstr ""
+
 #: lazarusidestrconsts.lisaddpackagetoproject
 msgid "Add package %s to project?"
 msgstr "Додати пакунок %s до проекту?"

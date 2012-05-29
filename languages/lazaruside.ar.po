@@ -3822,6 +3822,10 @@ msgstr ""
 msgid "Add package requirement?"
 msgstr ""
 
+#: lazarusidestrconsts.lisaddpackagestolistofinstalledpackagescombinewithbui
+msgid "add package(s) to list of installed packages (combine with --build-ide to rebuild IDE)."
+msgstr ""
+
 #: lazarusidestrconsts.lisaddpackagetoproject
 msgid "Add package %s to project?"
 msgstr ""

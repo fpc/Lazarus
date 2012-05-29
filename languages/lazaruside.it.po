@@ -4062,6 +4062,10 @@ msgstr "Aggiungi nuovo insieme"
 msgid "Add package requirement?"
 msgstr "Aggiungi requisiti di pacchetto?"
 
+#: lazarusidestrconsts.lisaddpackagestolistofinstalledpackagescombinewithbui
+msgid "add package(s) to list of installed packages (combine with --build-ide to rebuild IDE)."
+msgstr ""
+
 #: lazarusidestrconsts.lisaddpackagetoproject
 msgid "Add package %s to project?"
 msgstr "Aggiungi pacchetto %s al progetto?"

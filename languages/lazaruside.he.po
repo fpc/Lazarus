@@ -4043,6 +4043,10 @@ msgstr "הוסף קבוצה חדשה"
 msgid "Add package requirement?"
 msgstr "הוסף דרישות חבילה?"
 
+#: lazarusidestrconsts.lisaddpackagestolistofinstalledpackagescombinewithbui
+msgid "add package(s) to list of installed packages (combine with --build-ide to rebuild IDE)."
+msgstr ""
+
 #: lazarusidestrconsts.lisaddpackagetoproject
 msgid "Add package %s to project?"
 msgstr "הוסף חבילה s% לפרוייקט?"

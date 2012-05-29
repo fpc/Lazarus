@@ -4071,6 +4071,10 @@ msgstr "新しいセットを追加"
 msgid "Add package requirement?"
 msgstr "パッケージに必要な物を追加しますか？"
 
+#: lazarusidestrconsts.lisaddpackagestolistofinstalledpackagescombinewithbui
+msgid "add package(s) to list of installed packages (combine with --build-ide to rebuild IDE)."
+msgstr ""
+
 #: lazarusidestrconsts.lisaddpackagetoproject
 msgid "Add package %s to project?"
 msgstr "プロジェクトにパッケージ%sを追加しますか？"

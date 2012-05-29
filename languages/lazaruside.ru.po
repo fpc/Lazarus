@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2012-05-19 03:08+0400\n"
+"PO-Revision-Date: 2012-05-30 02:00+0400\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -3972,6 +3972,10 @@ msgstr "Добавить новый набор"
 #: lazarusidestrconsts.lisaddpackagerequirement
 msgid "Add package requirement?"
 msgstr "Добавить зависимость от пакета?"
+
+#: lazarusidestrconsts.lisaddpackagestolistofinstalledpackagescombinewithbui
+msgid "add package(s) to list of installed packages (combine with --build-ide to rebuild IDE)."
+msgstr "добавить пакет(ы) в список установленных (использовать совместно с --build-ide для пересборки IDE)."
 
 #: lazarusidestrconsts.lisaddpackagetoproject
 msgid "Add package %s to project?"
