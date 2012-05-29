@@ -957,9 +957,9 @@ begin
   end;
   dec(FUpdateLock);
   if FUpdateLock=0 then begin
+    if cssChangedDuringLock in FStates then DoChange;
     if cssBoundsNeedsUpdate in FStates then UpdateBounds;
     if cssBoundsNeedsSaving in FStates then SaveBounds;
-    if cssChangedDuringLock in FStates then DoChange;
   end;
 end;
 
@@ -1101,6 +1101,7 @@ begin
   FHeight:=FRealHeight;
   InvalidateGuideLinesCache;
   Exclude(FStates,cssBoundsNeedsUpdate);
+  DoChangeProperties;
 end;
 
 procedure TControlSelection.RestoreBounds;
@@ -1120,9 +1121,8 @@ begin
       OldLeftTop := OldFormRelativeLeftTop;
       SetFormRelativeBounds(OldLeftTop.X, OldLeftTop.Y, OldWidth, OldHeight);
     end;
-    InvalidateGuideLinesCache;
   end;
-  UpdateRealBounds;
+  UpdateBounds;
   EndUpdate;
 end;
 
@@ -1245,7 +1245,7 @@ begin
       InvalidateGuideLinesCache;
     end;
   end;
-  UpdateRealBounds;
+  UpdateBounds;
   EndUpdate;
 end;
 
@@ -1274,7 +1274,6 @@ begin
     end;
     AdjustGrabbers;
     InvalidateGuideLines;
-    DoChangeProperties;
   end;
 end;
 
@@ -2973,8 +2972,8 @@ begin
     Items[i].Left:=NewLeft;
   end;
 
+  UpdateBounds;
   EndResizing(false);
-  UpdateRealBounds;
 end;
 
 procedure TControlSelection.MirrorVertical;
@@ -3002,8 +3001,8 @@ begin
     Items[i].Top:=NewTop;
   end;
 
+  UpdateBounds;
   EndResizing(false);
-  UpdateRealBounds;
 end;
 
 procedure TControlSelection.SizeComponents(
