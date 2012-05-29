@@ -2433,7 +2433,7 @@ begin
   if (w = nil) and (QApplication_mouseButtons() > 0) then
     w := QApplication_focusWidget()
   else
-    if w <> QWidget_mouseGrabber then
+    if (w <> QWidget_mouseGrabber) and (QWidget_mouseGrabber <> nil) then
       w := QWidget_mouseGrabber;
 
   {$ELSE}
@@ -5014,8 +5014,7 @@ begin
   if Result then
   begin
     {$IFDEF MSWINDOWS}
-    if (w is TQtMainWindow) or
-      (w.ChildOfComplexWidget in [ccwCustomControl, ccwScrollingWinControl]) then
+    if (w is TQtMainWindow) then
       w.releaseMouse()
     else
       windows.ReleaseCapture;
@@ -5450,11 +5449,7 @@ begin
     if IsValidHandle(AHandle) then
     begin
       {$IFDEF MSWINDOWS}
-      if TQtWidget(AHandle).ChildOfComplexWidget in
-          [ccwCustomControl, ccwScrollingWinControl] then
-        TQtWidget(AHandle).grabMouse()
-      else
-        Windows.SetCapture(AHandle);
+      Windows.SetCapture(QWidget_winID(TQtWidget(AHandle).Widget));
       {$ELSE}
       TQtWidget(AHandle).grabMouse();
       {$ENDIF}
