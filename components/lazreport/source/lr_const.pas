@@ -14,6 +14,7 @@ interface
 
 {$I LR_vers.inc}
 
+
 resourcestring
 //--- ShapeForm resources
   sShapeFormCaption='Shape';
@@ -549,6 +550,7 @@ resourcestring
   sFRDesignerForm_Help1 = '&Help contents';
   sFRDesignerForm_Help2 = 'Help &tool';
   sFRDesignerForm_Line = 'Line style';
+  sFRDesignerForm_Modified = 'Modified';
 
 //--- InspForm resources ------------------------------------------------------
   sObjectInspector ='Object inspector';
@@ -597,7 +599,7 @@ resourcestring
   sFormat53 = '_;x';
   sFormat54 = 'False;True';
   sFormat55 = 'Custom';
-
+{
   sDateFormat1 = 'mm.dd.yy';
   sDateFormat2 = 'mm.dd.yyyy';
   sDateFormat3 = 'd mmm yyyy';
@@ -607,7 +609,7 @@ resourcestring
   sTimeFormat2 = 'h:nn:ss';
   sTimeFormat3 = 'hh:nn';
   sTimeFormat4 = 'h:nn';
-
+}
 //--- PreviewSearchForm resources ---------------------------------------------
   sFindTextCaption='Find text';
   sFindTextText='Text to &find';
@@ -784,6 +786,19 @@ const
   SDatabase = frRes + 2341;
   SInsRich2Object = frRes + 2343;
   SFieldSizeError = frRes + 2346;
+
+const
+  //Don't localize this consts!
+  sDateFormat1 = 'mm.dd.yy';
+  sDateFormat2 = 'mm.dd.yyyy';
+  sDateFormat3 = 'd mmm yyyy';
+  sDateFormat4 = 'd mmmm yyyy';
+
+  sTimeFormat1 = 'hh:nn:ss';
+  sTimeFormat2 = 'h:nn:ss';
+  sTimeFormat3 = 'hh:nn';
+  sTimeFormat4 = 'h:nn';
+
 implementation
 
 end.

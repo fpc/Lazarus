@@ -237,22 +237,6 @@ msgstr "Patvirtinimas"
 msgid "CSV File"
 msgstr "CSV failas"
 
-#: lr_const.sdateformat1
-msgid "mm.dd.yy"
-msgstr "mm.dd.yy"
-
-#: lr_const.sdateformat2
-msgid "mm.dd.yyyy"
-msgstr "mm.dd.yyyy"
-
-#: lr_const.sdateformat3
-msgid "d mmm yyyy"
-msgstr "d mmm yyyy"
-
-#: lr_const.sdateformat4
-msgid "d mmmm yyyy"
-msgstr "d mmmm yyyy"
-
 #: lr_const.sdatetimecategory
 msgid "Date and time"
 msgstr "Data ir laikas"
@@ -1150,6 +1134,10 @@ msgstr "Objektų &inspektorius"
 #: lr_const.sfrdesignerform_line
 msgid "Line style"
 msgstr "Linijos stilius"
+
+#: lr_const.sfrdesignerform_modified
+msgid "Modified"
+msgstr ""
 
 #: lr_const.sfrdesignerform_new
 #, fuzzy
@@ -2329,22 +2317,6 @@ msgstr "Naujas pranešimas"
 #: lr_const.stextfile
 msgid "ASCII Text file"
 msgstr "ASCII teksto failas"
-
-#: lr_const.stimeformat1
-msgid "hh:nn:ss"
-msgstr "hh:nn:ss"
-
-#: lr_const.stimeformat2
-msgid "h:nn:ss"
-msgstr "h:nn:ss"
-
-#: lr_const.stimeformat3
-msgid "hh:nn"
-msgstr "hh:nn"
-
-#: lr_const.stimeformat4
-msgid "h:nn"
-msgstr "h:nn"
 
 #: lr_const.sto
 msgid "to"

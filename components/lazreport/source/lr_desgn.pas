@@ -97,6 +97,7 @@ type
   { TfrObjectInspector }
   TfrObjectInspector = Class({$IFDEF EXTOI}TForm{$ELSE}TPanel{$ENDIF})
   private
+    FSelectedObject: TObject;
     fPropertyGrid : TCustomPropertiesGrid;
     {$IFNDEF EXTOI}
     fcboxObjList  : TComboBox;
@@ -127,6 +128,7 @@ type
     procedure cboxObjListOnChanged(Sender: TObject);
     procedure SetModifiedEvent(AEvent: TNotifyEvent);
     procedure Refresh;
+    property SelectedObject:TObject read FSelectedObject;
   end;
   
   { TfrDesignerPage }
@@ -183,6 +185,8 @@ type
 
   TfrDesignerForm = class(TfrReportDesigner)
     acDuplicate: TAction;
+    FileSaveAs: TAction;
+    FileSave: TAction;
     acToggleFrames: TAction;
     actList: TActionList;
     frSpeedButton1: TSpeedButton;
@@ -194,6 +198,7 @@ type
     frTBSeparator16: TPanel;
     Image1: TImage;
     Image2: TImage;
+    ActionsImageList: TImageList;
     ImgIndic: TImageList;
     LinePanel: TPanel;
     OB7: TSpeedButton;
@@ -360,6 +365,8 @@ type
     procedure acDuplicateExecute(Sender: TObject);
     procedure acToggleFramesExecute(Sender: TObject);
     procedure C2GetItems(Sender: TObject);
+    procedure FileSaveAsExecute(Sender: TObject);
+    procedure FileSaveExecute(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word;  Shift: TShiftState);
@@ -385,7 +392,7 @@ type
     procedure GB2Click(Sender: TObject);
     procedure FileBtn1Click(Sender: TObject);
     procedure FileBtn2Click(Sender: TObject);
-    procedure FileBtn3Click(Sender: TObject);
+    //procedure FileBtn3Click(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure FormHide(Sender: TObject);
     procedure N8Click(Sender: TObject);
@@ -414,7 +421,7 @@ type
     procedure GB3Click(Sender: TObject);
     procedure UndoBClick(Sender: TObject);
     procedure RedoBClick(Sender: TObject);
-    procedure N20Click(Sender: TObject);
+    //procedure N20Click(Sender: TObject);
     procedure PBox1Paint(Sender: TObject);
     procedure SB1Click(Sender: TObject);
     procedure SB2Click(Sender: TObject);
@@ -450,7 +457,7 @@ type
     EditAfterInsert: Boolean;
     FCurDocName, FCaption: String;
     fCurDocFileType: Integer;
-    FileModified: Boolean;
+    //FileModified: Boolean;
     ShapeMode: TfrShapeMode;
     
     {$IFDEF StdOI}
@@ -542,6 +549,8 @@ type
     procedure ToggleFrames(View: TfrView; Data: PtrInt);
     procedure DuplicateView(View: TfrView; Data: PtrInt);
     procedure ResetDuplicateCount;
+  protected
+    procedure SetModified(AValue: Boolean);override;
   public
     constructor Create(aOwner : TComponent); override;
     destructor Destroy; override;
@@ -935,19 +944,16 @@ end;
 procedure TfrDesignerPage.DrawDialog(N: Integer; AClipRgn: HRGN);
 Var
   Dlg : TfrPageDialog;
-
-  i,iy      : Integer;
+  i      : Integer;
   t         : TfrView;
-  R, R1     : HRGN;
   Objects   : TFpList;
-
 begin
   Dlg:=TfrPageDialog(FDesigner.Page);
   
   with Canvas do
   begin
     Brush.Color := clGray;
-    FillRect(Rect(0,0,Width,Width));
+    FillRect(Rect(0,0, Width, Height + 20));
     
     Brush.Color := clBtnFace;
     Brush.Style := bsSolid;
@@ -955,72 +961,17 @@ begin
     Brush.Color := clBlue;
     Rectangle(Rect(0,0,FDesigner.Page.Width-1,20));
     
-    Canvas.TextRect(Rect(0,0,FDesigner.Page.Width-1,20),1,5,Dlg.Caption);
+    Canvas.TextRect(Rect(0,0,FDesigner.Page.Width-1,20), 1, 5, Dlg.Caption);
   end;
 
 
   Objects := FDesigner.Page.Objects;
-//  R:=CreateRectRgn(0, 0, Width, Height);
+
   for i:=Objects.Count-1 downto 0 do
   begin
     t := TfrView(Objects[i]);
     t.draw(Canvas);
   end;
-
-{  begin
-    t := TfrView(Objects[i]);
-    {$IFDEF DebugLR}
-    DebugLn('Draw ',InttoStr(i),' ',t.Name);
-    {$ENDIF}
-    if i <= N then
-    begin
-      if t.selected then
-        t.draw(canvas)
-      else
-//      if ViewIsVisible(t) then
-      begin
-        R1 := CreateRectRgn(0, 0, 1, 1);
-        CombineRgn(R1, AClipRgn, R, RGN_AND);
-        SelectClipRgn(Canvas.Handle, R1);
-        DeleteObject(R1);
-
-        t.Draw(Canvas);
-
-        iy:=1;
-        //Show indicator if script it's not empty
-        if t.Script.Count>0 then
-        begin
-          FDesigner.ImgIndic.Draw(Canvas, t.x+1, t.y+iy, 0);
-          iy:=10;
-        end;
-
-      end;
-
-    end;
-    R1 := t.GetClipRgn(rtNormal);
-    CombineRgn(R, R, R1, RGN_DIFF);
-    DeleteObject(R1);
-    SelectClipRgn(Canvas.Handle, R);
-  end;
-
-  CombineRgn(R, R, AClipRgn, RGN_AND);
-
-//  DrawBackground;
-
-  DeleteObject(R);
-  DeleteObject(AClipRgn);
-  if AClipRgn=ClipRgn then
-    ClipRgn := 0;
-
-  SelectClipRgn(Canvas.Handle, 0);
-}
-//  if not Down then
-//    DrawPage(dmSelection);
-
-  {$IFDEF DebugLR}
-  DebugLnExit('TfrDesignerPage.Draw DONE');
-  {$ENDIF}
-
 end;
 
 procedure TfrDesignerPage.Draw(N: Integer; AClipRgn: HRGN);
@@ -1567,7 +1518,8 @@ begin
                 begin
                   if GetUnusedBand <> btNone then
                     CreateSection
-                  else begin
+                  else
+                  begin
                     {$IFDEF DebugLR}
                     DebugLnExit('Inserting a new object DONE: GetUnusedBand=btNone');
                     DebugLnExit('TfrDesignerPage.MUp DONE: Inserting..');
@@ -1702,7 +1654,7 @@ begin
 
     if not ObjRepeat then
     begin
-      if FDesigner.panForDlg.Visible then
+      if FDesigner.Page is TfrPageReport then
         FDesigner.OB1.Down := True
       else
         FDesigner.OB7.Down := True
@@ -2550,7 +2502,8 @@ begin
   //Panel6.Caption :=   sFRDesignerFormTools;
   FileBtn1.Hint :=    sFRDesignerFormNewRp;
   FileBtn2.Hint :=    sFRDesignerFormOpenRp;
-  FileBtn3.Hint :=    sFRDesignerFormSaveRp;
+  //FileBtn3.Hint :=    sFRDesignerFormSaveRp;
+  FileSave.Hint:=     sFRDesignerFormSaveRp;
   FileBtn4.Hint :=    sFRDesignerFormPreview;
   CutB.Hint :=        sFRDesignerFormCut;
   CopyB.Hint :=       sFRDesignerFormCopy;
@@ -2618,7 +2571,10 @@ begin
   FileMenu.Caption := sFRDesignerForm_File;
   N23.Caption :=      sFRDesignerForm_New;
   N19.Caption :=      sFRDesignerForm_Open;
-  N20.Caption :=      sFRDesignerForm_Save;
+  //N20.Caption :=      sFRDesignerForm_Save;
+  //N17.Caption :=      sFRDesignerForm_SaveAs;
+  FileSaveAs.Caption:=   sFRDesignerForm_Save;
+  FileSaveAs.Caption:=   sFRDesignerForm_SaveAs;
   N42.Caption :=      sFRDesignerForm_Var;
   N8.Caption :=       sFRDesignerForm_RptOpt;
   N25.Caption :=      sFRDesignerForm_PgOpt;
@@ -2649,7 +2605,6 @@ begin
   Pan6.Caption :=     sFRDesignerForm_AlignPalette;
   Pan7.Caption :=     sFRDesignerForm_Tools3;
   N34.Caption :=      sFRDesignerForm_About;
-  N17.Caption :=      sFRDesignerForm_SaveAs;
   N22.Caption :=      sFRDesignerForm_Help1;
   N35.Caption :=      sFRDesignerForm_Help2;
   StB1.Hint   :=      sFRDesignerForm_Line;
@@ -2677,6 +2632,70 @@ begin
       C2.ItemIndex := i;
     Screen.Cursor := crDefault;
   end;
+end;
+
+procedure TfrDesignerForm.FileSaveAsExecute(Sender: TObject);
+var
+  s: String;
+begin
+  WasOk := False;
+  with SaveDialog1 do
+  begin
+    Filter := sFormFile + ' (*.frf)|*.frf|' +
+                sTemplFile + ' (*.frt)|*.frt|' +
+                sLazFormFile + ' (*.lrf)|*.lrf' +
+                '';
+    InitialDir:=ExtractFilePath(ParamStrUTF8(0));
+    FileName := CurDocName;
+    FilterIndex := 3;
+    if Execute then
+      FCurDocFileType := FilterIndex;
+    case FCurDocFileType of
+      dtFastReportForm:
+        begin
+              s := ChangeFileExt(FileName, '.frf');
+              CurReport.SaveToFile(s);
+              CurDocName := s;
+              WasOk := True;
+        end;
+      dtFastReportTemplate:
+            begin
+              s := ExtractFileName(ChangeFileExt(FileName, '.frt'));
+              if frTemplateDir <> '' then
+                s := frTemplateDir + PathDelim + s;
+              frTemplNewForm := TfrTemplNewForm.Create(nil);
+              with frTemplNewForm do
+              if ShowModal = mrOk then
+              begin
+                CurReport.SaveTemplate(s, Memo1.Lines, Image1.Picture.Bitmap);
+                WasOk := True;
+              end;
+              frTemplNewForm.Free;
+            end;
+      dtLazReportForm: // lasreport form xml format
+            begin
+              s := ChangeFileExt(FileName, '.lrf');
+              CurReport.SaveToXMLFile(s);
+              CurDocName := s;
+              WasOk := True;
+            end;
+    end;
+  end;
+end;
+
+procedure TfrDesignerForm.FileSaveExecute(Sender: TObject);
+begin
+  if CurDocName <> sUntitled then
+  begin
+    if FCurDocFileType=dtLazReportForm then
+      CurReport.SaveToXMLFile(curDocName)
+    else
+      CurReport.SaveToFile(CurDocName);
+//    FileModified := False;
+    Modified := False;
+  end
+  else
+    FileSaveAs.Execute;
 end;
 
 procedure TfrDesignerForm.acDuplicateExecute(Sender: TObject);
@@ -2709,7 +2728,7 @@ begin
   ClearUndoBuffer;
   ClearRedoBuffer;
   Modified := False;
-  FileModified := False;
+  //FileModified := False;
   Busy := True;
   DocMode := dmDesigning;
   
@@ -2967,7 +2986,8 @@ begin
     if WasOk then
     begin
       Modified := True;
-      FileModified := True;
+      //FileModified := True;
+      Modified := True;
       CurPage := CurReport.Pages.Count - 1
     end
     else
@@ -3009,7 +3029,8 @@ begin
   fInBuildPage:=True;
   try
     Modified := True;
-    FileModified := True;
+    //FileModified := True;
+    Modified := True;
     with CurReport do
     begin
       if (n >= 0) and (n < Pages.Count) then
@@ -3173,6 +3194,7 @@ end;
 
 procedure TfrDesignerForm.OnModify(sender: TObject);
 begin
+  Modified:=true;
   SelectionChanged;
 end;
 
@@ -3807,7 +3829,8 @@ end;
 function TfrDesignerForm.CheckFileModified: Integer;
 begin
   result := mrNo;
-  if FileModified then
+//  if FileModified then
+  if Modified then
   begin
     result:=MessageDlg(sSaveChanges + ' ' + sTo + ' ' +
       ExtractFileName(CurDocName) + '?',mtConfirmation,
@@ -3816,7 +3839,8 @@ begin
     if result = mrCancel then Exit;
     if result = mrYes then
     begin
-      FileBtn3Click(nil);
+      FileSave.Execute;
+//      FileBtn3Click(nil);
       if not WasOk then
         result := mrCancel;
     end;
@@ -3914,6 +3938,16 @@ end;
 
 {$endif}
 
+procedure TfrDesignerForm.SetModified(AValue: Boolean);
+begin
+  inherited SetModified(AValue);
+  if AValue then
+    StatusBar1.Panels[2].Text:=sFRDesignerForm_Modified
+  else
+    StatusBar1.Panels[2].Text:='';
+  FileSave.Enabled:=AValue;
+end;
+
 {$HINTS ON}
 
 function TfrDesignerForm.RectTypEnabled: Boolean;
@@ -4003,71 +4037,79 @@ begin
   ColorSelector.Hide;
   LinePanel.Hide;
   EnableControls;
-  if SelNum = 1 then
+  if Page is TfrPageReport then
   begin
-    t := TfrView(Objects[TopSelected]);
-    if t.Typ <> gtBand then
-    with t do
+    if SelNum = 1 then
     begin
-      {$IFDEF DebugLR}
-      DebugLn('Not a band');
-      {$ENDIF}
-      FrB1.Down := (frbTop in Frames);
-      FrB2.Down := (frbLeft in Frames);
-      FrB3.Down := (frbBottom in Frames);
-      FrB4.Down := (frbRight  in Frames);
-      E1.Text := FloatToStrF(FrameWidth, ffGeneral, 2, 2);
-      frSetGlyph(FillColor, ClB1, 1);
-      frSetGlyph(FrameColor, ClB3, 2);
-      if t is TfrMemoView then
-      with t as TfrMemoView do
+      t := TfrView(Objects[TopSelected]);
+      if t.Typ <> gtBand then
+      with t do
       begin
-        frSetGlyph(Font.Color, ClB2, 0);
-        if C2.ItemIndex <> C2.Items.IndexOf(Font.Name) then
-          C2.ItemIndex := C2.Items.IndexOf(Font.Name);
-          
-        if C3.Text <> IntToStr(Font.Size) then
-          C3.Text := IntToStr(Font.Size);
-          
-        FnB1.Down := fsBold in Font.Style;
-        FnB2.Down := fsItalic in Font.Style;
-        FnB3.Down := fsUnderline in Font.Style;
-        
-        AlB4.Down := (Adjust and $4) <> 0;
-        AlB5.Down := (Adjust and $18) = $8;
-        AlB6.Down := (Adjust and $18) = 0;
-        AlB7.Down := (Adjust and $18) = $10;
-        case (Adjust and $3) of
-          0: BDown(AlB1);
-          1: BDown(AlB2);
-          2: BDown(AlB3);
-          3: BDown(AlB8);
+        {$IFDEF DebugLR}
+        DebugLn('Not a band');
+        {$ENDIF}
+        FrB1.Down := (frbTop in Frames);
+        FrB2.Down := (frbLeft in Frames);
+        FrB3.Down := (frbBottom in Frames);
+        FrB4.Down := (frbRight  in Frames);
+        E1.Text := FloatToStrF(FrameWidth, ffGeneral, 2, 2);
+        frSetGlyph(FillColor, ClB1, 1);
+        frSetGlyph(FrameColor, ClB3, 2);
+        if t is TfrMemoView then
+        with t as TfrMemoView do
+        begin
+          frSetGlyph(Font.Color, ClB2, 0);
+          if C2.ItemIndex <> C2.Items.IndexOf(Font.Name) then
+            C2.ItemIndex := C2.Items.IndexOf(Font.Name);
+
+          if C3.Text <> IntToStr(Font.Size) then
+            C3.Text := IntToStr(Font.Size);
+
+          FnB1.Down := fsBold in Font.Style;
+          FnB2.Down := fsItalic in Font.Style;
+          FnB3.Down := fsUnderline in Font.Style;
+
+          AlB4.Down := (Adjust and $4) <> 0;
+          AlB5.Down := (Adjust and $18) = $8;
+          AlB6.Down := (Adjust and $18) = 0;
+          AlB7.Down := (Adjust and $18) = $10;
+          case (Adjust and $3) of
+            0: BDown(AlB1);
+            1: BDown(AlB2);
+            2: BDown(AlB3);
+            3: BDown(AlB8);
+          end;
         end;
       end;
+    end
+    else if SelNum > 1 then
+    begin
+      {$IFDEF DebugLR}
+      DebugLn('Multiple selection');
+      {$ENDIF}
+
+      BUp(FrB1);
+      BUp(FrB2);
+      BUp(FrB3);
+      BUp(FrB4);
+      ColorLocked := True;
+      frSetGlyph(0, ClB1, 1);
+      ColorLocked := False;
+      E1.Text := '1';
+      C2.ItemIndex := -1;
+      C3.Text := '';
+      BUp(FnB1);
+      BUp(FnB2);
+      BUp(FnB3);
+      BDown(AlB1);
+      BUp(AlB4);
+      BUp(AlB5);
     end;
   end
-  else if SelNum > 1 then
+  else
   begin
-    {$IFDEF DebugLR}
-    DebugLn('Multiple selection');
-    {$ENDIF}
-
-    BUp(FrB1);
-    BUp(FrB2);
-    BUp(FrB3);
-    BUp(FrB4);
-    ColorLocked := True;
-    frSetGlyph(0, ClB1, 1);
-    ColorLocked := False;
-    E1.Text := '1';
-    C2.ItemIndex := -1;
-    C3.Text := '';
-    BUp(FnB1);
-    BUp(FnB2);
-    BUp(FnB3);
-    BDown(AlB1);
-    BUp(AlB4);
-    BUp(AlB5);
+    if ObjInsp.SelectedObject = Page then
+      PageView.Invalidate;
   end;
   Busy := False;
   ShowPosition;
@@ -4102,7 +4144,7 @@ begin
     else if t.Memo.Count > 0 then
       s := s + ': ' + t.Memo[0];
   end;
-  StatusBar1.Panels[2].Text := s;
+  StatusBar1.Panels[3].Text := s;
 end;
 
 procedure TfrDesignerForm.DoClick(Sender: TObject);
@@ -4491,7 +4533,8 @@ begin
   CurReport.Pages.Add;
   CurPage := 0;
   CurDocName := sUntitled;
-  FileModified := False;
+  //FileModified := False;
+  Modified := False;
   FCurDocFileType := 3;
 end;
 
@@ -4905,7 +4948,7 @@ begin
     RedoB.Enabled := True;
   end;
   Modified := True;
-  FileModified := True;
+  //FileModified := True;
 end;
 
 procedure TfrDesignerForm.AddUndoAction(a: TfrUndoAction);
@@ -5195,12 +5238,13 @@ begin
         else
           raise Exception.Create('Unrecognized file format');
       end;
-      FileModified := False;
+      //FileModified := False;
+      Modified := False;
       CurPage := 0; // do all
     end;
   end;
 end;
-
+{
 procedure TfrDesignerForm.N20Click(Sender: TObject); // save as
 var
   s: String;
@@ -5258,18 +5302,40 @@ begin
       CurReport.SaveToXMLFile(curDocName)
     else
       CurReport.SaveToFile(CurDocName);
-    FileModified := False;
+//    FileModified := False;
+    Modified := False;
   end
   else
     N20Click(nil);
 end;
-
+}
 procedure TfrDesignerForm.FileBtn4Click(Sender: TObject); // preview
 var
   v1, v2: Boolean;
+  TestRepStream:TMemoryStream;
+  Rep, SaveR:TfrReport;
+
+procedure DoClearFormsName;
+var
+  i:integer;
+begin
+  for i:=0 to CurReport.Pages.Count - 1 do
+    if CurReport.Pages[i] is TfrPageDialog then
+      TfrPageDialog(CurReport.Pages[i]).Form.Name:='';
+end;
+
+procedure DoResoreFormsName;
+var
+  i:integer;
+begin
+  for i:=0 to CurReport.Pages.Count - 1 do
+    if CurReport.Pages[i] is TfrPageDialog then
+      TfrPageDialog(CurReport.Pages[i]).Form.Name:=TfrPageDialog(CurReport.Pages[i]).Name;
+end;
+
 begin
   if CurReport is TfrCompositeReport then Exit;
-  v1 := ObjInsp.Visible;
+{  v1 := ObjInsp.Visible;
   v2 := CurReport.ModalPreview;
   ObjInsp.Visible:=False;
   Application.ProcessMessages;
@@ -5282,7 +5348,33 @@ begin
     SetFocus;
     DisableDrawing := False;
     CurPage := 0;
+  end;}
+  Application.ProcessMessages;
+  SaveR:=CurReport;
+  TestRepStream:=TMemoryStream.Create;
+  CurReport.SaveToXMLStream(TestRepStream);
+  TestRepStream.Position:=0;
+
+  DoClearFormsName;
+  CurReport:=nil;
+
+  Rep:=TfrReport.Create(nil);
+  try
+    Rep.LoadFromXMLStream(TestRepStream);
+    Rep.ShowReport;
+    FreeAndNil(Rep)
+  except
+    on E:Exception do
+    begin
+      ShowMessage(E.Message);
+      if Assigned(Rep) then
+        FreeAndNil(Rep)
+    end;
   end;
+  TestRepStream.Free;
+  CurReport:=SaveR;
+  CurPage := 0;
+  DoResoreFormsName;
 end;
 
 procedure TfrDesignerForm.N42Click(Sender: TObject); // var editor
@@ -5290,7 +5382,7 @@ begin
   if ShowEvEditor(CurReport) then
   begin
     Modified := True;
-    FileModified := True;
+//    FileModified := True;
   end;
 end;
 
@@ -5331,7 +5423,7 @@ begin
     if ShowModal = mrOk then
     begin
       Modified := True;
-      FileModified := True;
+//      FileModified := True;
       WasOk := True;
       PrintToPrevPage :=  CB1.Checked;
       UseMargins := not CB5.Checked;
@@ -5407,7 +5499,7 @@ begin
       CurReport.ReportVersionBuild:=edtBuild.Text;
       CurReport.ReportAutor:=edAutor.Text;
       Modified := True;
-      FileModified := True;
+//      FileModified := True;
     end;
     CurPage := CurPage;
     Free;
@@ -5648,7 +5740,8 @@ procedure TfrDesignerForm.frDesignerFormCloseQuery(Sender: TObject;
 var
   Res:integer;
 begin
-  if FileModified and (CurReport<>nil) and
+//  if FileModified and (CurReport<>nil) and
+  if Modified and (CurReport<>nil) and
     (not ((csDesigning in CurReport.ComponentState) and CurReport.StoreInDFM)) then
   begin
     Res:=Application.MessageBox(PChar(sSaveChanges + ' ' + sTo + ' ' + ExtractFileName(CurDocName) + '?'),
@@ -5658,13 +5751,16 @@ begin
       mrNo:
         begin
           CanClose := True;
-          FileModified := False; // no means don't want changes
+//          FileModified := False; // no means don't want changes
+          Modified := False; // no means don't want changes
           ModalResult := mrCancel;
         end;
       mrYes:
           begin
-            FileBtn3Click(nil);
-            CanClose := not FileModified;
+            FileSave.Execute;
+//            FileBtn3Click(nil);
+//            CanClose := not FileModified;
+            CanClose := not Modified;
           end;
     else
       CanClose := False;
@@ -5790,7 +5886,7 @@ begin
 
   SetMenuItemBitmap(N23, FileBtn1);
   SetMenuItemBitmap(N19, FileBtn2);
-  SetMenuItemBitmap(N20, FileBtn3);
+//  SetMenuItemBitmap(N20, FileBtn3);
   SetMenuItemBitmap(N39, FileBtn4);
   SetMenuItemBitmap(N10, ExitB);
 
@@ -6925,12 +7021,17 @@ begin
   if Objects.Count <> fcboxObjList.Items.Count then
   begin
     fcboxObjList.Clear;
+    fcboxObjList.AddItem(TfrObject(frDesigner.Page).Name, TObject(frDesigner.Page));
+
     for i:=0 to Objects.Count-1 do
        fcboxObjList.AddItem(TfrView(Objects[i]).Name, TObject(Objects[i]));
   end;
 
+  FSelectedObject:=nil;
+
   if (Obj=nil) or (Obj is TPersistent) then
   begin
+    FSelectedObject:=Obj;
     fPropertyGrid.TIObject := TPersistent(Obj);
     if Obj <> nil then
       fcboxObjList.ItemIndex := fcboxObjList.Items.IndexOfObject(Obj);

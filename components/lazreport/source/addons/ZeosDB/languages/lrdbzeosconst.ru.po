@@ -1,0 +1,23 @@
+msgid ""
+msgstr "Content-Type: text/plain; charset=UTF-8"
+
+#: lrdbzeosconst.slreditparamsform_caption
+msgid "Edit query param list"
+msgstr "Изменить список параметров"
+
+#: lrdbzeosconst.slreditparamsform_paramslist
+msgid "Params list"
+msgstr "Список параметров"
+
+#: lrdbzeosconst.slreditparamsform_paramtype
+msgid "Param type"
+msgstr "Тип параметра"
+
+#: lrdbzeosconst.slreditparamsform_paramvalue
+msgid "Param value"
+msgstr "Значение параметра"
+
+#: lrdbzeosconst.slreditparamsform_selectexpresion
+msgid "Select expresion"
+msgstr "Выбрать выражение"
+

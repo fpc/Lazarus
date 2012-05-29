@@ -2,6 +2,7 @@
 <CONFIG>
   <Package Version="4">
     <Name Value="lr_DialogDesign"/>
+    <Author Value="Lazarus, Lagunov A.A."/>
     <CompilerOptions>
       <Version Value="11"/>
       <SearchPaths>
@@ -14,7 +15,10 @@
         <CompilerPath Value="$(CompPath)"/>
       </Other>
     </CompilerOptions>
-    <Files Count="2">
+    <License Value="modified LGPL-2
+"/>
+    <Version Minor="2" Release="2"/>
+    <Files Count="4">
       <Item1>
         <Filename Value="lrdialogcontrols.pas"/>
         <HasRegisterProc Value="True"/>
@@ -24,6 +28,14 @@
         <Filename Value="lrdialogcontrols_img.inc"/>
         <Type Value="Include"/>
       </Item2>
+      <Item3>
+        <Filename Value="lrdbdialogcontrols.pas"/>
+        <UnitName Value="lrDBDialogControls"/>
+      </Item3>
+      <Item4>
+        <Filename Value="lrdbdialogcontrols_img.inc"/>
+        <Type Value="Include"/>
+      </Item4>
     </Files>
     <Type Value="RunAndDesignTime"/>
     <RequiredPkgs Count="2">

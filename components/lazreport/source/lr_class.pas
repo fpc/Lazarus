@@ -17,7 +17,7 @@ interface
 uses
   SysUtils, {$IFDEF UNIX}CLocale,{$ENDIF} Classes, MaskUtils, Controls, FileUtil,
   Forms, Dialogs, Menus, Variants, DB, Graphics, Printers, osPrinters,
-  DOM, XMLRead, XMLConf, LCLType, LCLIntf, TypInfo, LCLProc, LR_View, LR_Pars,
+  DOM, XMLWrite, XMLRead, XMLConf, LCLType, LCLIntf, TypInfo, LCLProc, LR_View, LR_Pars,
   LR_Intrp, LR_DSet, LR_DBSet, LR_DBRel, LR_Const, LMessages;
 
 const
@@ -78,7 +78,7 @@ type
   TfrFrameBorder = (frbLeft, frbTop, frbRight, frbBottom);
   TfrFrameBorders = set of TfrFrameBorder;
   TfrFrameStyle = (frsSolid,frsDash, frsDot, frsDashDot, frsDashDotDot,frsDouble);
-  TfrPageType = (ptReport, ptDialog);
+  TfrPageType = (ptReport, ptDialog);   //todo: - remove this
   TfrReportOption = (roIgnoreFieldNotFound, roIgnoreSymbolNotFound);
   TfrReportOptions = set of TfrReportOption;
   TfrObjectType = (otlReportView, otlUIControl);
@@ -146,6 +146,7 @@ type
   TLrXMLConfig = class (TXMLConfig)
   public
     procedure LoadFromStream(const Stream: TStream);
+    procedure SaveToStream(const Stream: TStream);
     procedure SetValue(const APath: string; const AValue: string); overload;
     function  GetValue(const APath: string; const ADefault: string): string; overload;
   end;
@@ -703,7 +704,7 @@ type
     LastBand          : TfrBand;
     ColPos            : Integer;
     CurPos            : Integer;
-    PageType          : TfrPageType;
+    PageType          : TfrPageType;  //todo: - remove this
     fLayoutOrder      : TLayoutOrder;
     procedure DoAggregate(a: Array of TfrBandType);
     procedure AddRecord(b: TfrBand; rt: TfrBandRecType);
@@ -805,8 +806,9 @@ type
   private
     fHasVisibleControls : Boolean;
     FForm               : TfrDialogForm;
-    fCaption            : String;
     procedure EditFormDestroy(Sender: TObject);
+    function GetCaption: string;
+    procedure SetCaption(AValue: string);
     procedure UpdateControlPosition;
   protected
     procedure SetName(const AValue: string); override;
@@ -816,6 +818,7 @@ type
     procedure SetTop(AValue: Integer);override;
     procedure SetWidth(AValue: Integer);override;
     procedure SetHeight(AValue: Integer);override;
+    procedure ExecScript;
   public
     constructor Create(AOwnerPage:TfrPage); override;
     destructor Destroy; override;
@@ -824,7 +827,7 @@ type
     procedure SavetoXML(XML: TLrXMLConfig; const Path: String); override;
     property Form:TfrDialogForm read FForm;
   published
-    property Caption : string read fCaption write fCaption;
+    property Caption : string read GetCaption write SetCaption;
     property Left;
     property Top;
   end;
@@ -1045,6 +1048,7 @@ type
     procedure SaveToFile(FName: String);
     procedure SavetoXML(XML: TLrXMLConfig; const Path: String);
     procedure SaveToXMLFile(const FName: String);
+    procedure SaveToXMLStream(const Stream: TStream);
 
     procedure LoadFromDB(Table: TDataSet; DocN: Integer);
     procedure SaveToDB(Table: TDataSet; DocN: Integer);
@@ -1121,10 +1125,15 @@ type
     destructor Destroy; override;
   end;
 
+  { TfrReportDesigner }
+
   TfrReportDesigner = class(TForm)
+  private
+    FModified: Boolean;
+  protected
+    procedure SetModified(AValue: Boolean);virtual;
   public
     Page: TfrPage;
-    Modified: Boolean;
     procedure {%H-}RegisterObject(ButtonBmp: TBitmap; const ButtonHint: String;
       ButtonTag: Integer; ObjectType:TfrObjectType); virtual; abstract;
     procedure {%H-}RegisterTool(const MenuCaption: String; ButtonBmp: TBitmap;
@@ -1135,6 +1144,7 @@ type
     //
     function {%H-}PointsToUnits(x: Integer): Double;  virtual; abstract;
     function {%H-}UnitsToPoints(x: Double): Integer;  virtual; abstract;
+    property Modified: Boolean read FModified write SetModified;
   end;
 
   TfrDataManager = class(TObject)
@@ -1633,25 +1643,27 @@ function GetDefaultDataSet: TfrTDataSet;
 var
   FRDataset: TfrDataset;
 begin
-  FRDataset := nil;
-  if CurBand <> nil then
+  Result := nil;
+  if Assigned(CurPage) and (CurPage is TfrPageReport) then
   begin
-    case CurBand.Typ of
-      btMasterData, btReportSummary, btMasterFooter,
-      btGroupHeader, btGroupFooter:
-        FRDataset := CurPage.Bands[btMasterData].DataSet;
-      btDetailData, btDetailFooter:
-        FRDataset := CurPage.Bands[btDetailData].DataSet;
-      btSubDetailData, btSubDetailFooter:
-        FRDataset := CurPage.Bands[btSubDetailData].DataSet;
-      btCrossData, btCrossFooter:
-        FRDataset := CurPage.Bands[btCrossData].DataSet;
+    FRDataset := nil;
+    if CurBand <> nil then
+    begin
+      case CurBand.Typ of
+        btMasterData, btReportSummary, btMasterFooter,
+        btGroupHeader, btGroupFooter:
+          FRDataset := CurPage.Bands[btMasterData].DataSet;
+        btDetailData, btDetailFooter:
+          FRDataset := CurPage.Bands[btDetailData].DataSet;
+        btSubDetailData, btSubDetailFooter:
+          FRDataset := CurPage.Bands[btSubDetailData].DataSet;
+        btCrossData, btCrossFooter:
+          FRDataset := CurPage.Bands[btCrossData].DataSet;
+      end;
     end;
+    if FRDataset is TfrDBDataset then
+      Result := TfrDBDataSet(FRDataset).GetDataSet
   end;
-  if FRDataset is TfrDBDataset then
-    Result := TfrDBDataSet(FRDataset).GetDataSet
-  else
-    Result := nil;
 end;
 
 function ReadString(Stream: TStream): String;
@@ -1724,6 +1736,14 @@ function frGetBandName(BandType: TfrBandType): string;
 begin
   result := GetEnumName(TypeInfo(TFrBandType), ord(BandType));
   result := copy(result, 3, Length(result));
+end;
+
+{ TfrReportDesigner }
+
+procedure TfrReportDesigner.SetModified(AValue: Boolean);
+begin
+  if FModified=AValue then Exit;
+  FModified:=AValue;
 end;
 
 { TfrControl }
@@ -2503,7 +2523,7 @@ end;
 
 procedure TfrView.SetFrames(const AValue: TfrFrameBorders);
 begin
-  if (aValue<>fFrames) and (fUpdate=0) then
+  if (aValue<>fFrames) then
   begin
     BeforeChange;
     fFrames:=AValue;
@@ -5944,7 +5964,7 @@ var
 begin
   Result := nil;
   aName:=UpperCase(aName);
-  if UpperCase(Self.Name) = Name then
+  if UpperCase(Name) = aName then
     Result:=Self
   else
   for i := 0 to Objects.Count - 1 do
@@ -6412,13 +6432,15 @@ end;
 constructor TfrPage.Create(AOwnerPage: TfrPage);
 begin
   inherited Create(AOwnerPage);
+  FillChar(Bands, 0, SizeOf(Bands));
+
   fMargins:=TfrRect.Create;
   BaseName:='Page';
   
   List := TFpList.Create;
   Objects := TFpList.Create;
   RTObjects := TFpList.Create;
-  PageType:=ptReport;
+  PageType:=ptReport;  //todo: - remove this
 end;
 
 procedure TfrPage.ShowBandByName(const s: String);
@@ -7053,6 +7075,7 @@ var
   s: String[6];
   Bool : WordBool;
   Rc   : TRect;
+  APageType:TfrPageType; //todo: - remove this
 begin
   with Stream do
   begin
@@ -7073,8 +7096,10 @@ begin
     UseMargins:=Bool;
     Read(fColCount, 4);
     Read(fColGap, 4);
-    if frVersion>23 then
-      Read(ord(PageType), SizeOf(TfrPageType));
+{    if frVersion>23 then
+      Read(ord(PageType), SizeOf(TfrPageType));}
+    if frVersion>23 then                          //todo: - remove this
+      Read(ord(APageType), SizeOf(TfrPageType));  //todo: - remove this
     Read(fLayoutOrder, 4);
   end;
   ChangePaper(pgSize, Width, Height, Orientation);
@@ -7088,8 +7113,10 @@ begin
   
   dx := XML.GetValue(Path+'Width/Value'{%H-}, 0); // TODO chk
   dy := XML.GetValue(Path+'Height/Value'{%H-}, 0); // TODO chk
-  b := XML.GetValue(Path+'Height/PageType'{%H-}, ord(PageType));
-  PageType:=TfrPageType(b);
+{  b := XML.GetValue(Path+'PageType/Value'{%H-}, ord(PageType));
+  PageType:=TfrPageType(b);}
+
+  Script.Text:=XML.GetValue(Path+'Script/Value'{%H-}, '');
 end;
 
 procedure TfrPage.SaveToStream(Stream: TStream);
@@ -7113,7 +7140,7 @@ begin
     Write(Bool, 2);
     Write(ColCount, 4);
     Write(ColGap, 4);
-    Write(ord(PageType), SizeOf(TfrPageType));
+    Write(ord(PageType), SizeOf(TfrPageType));  //todo: - remove this
     Write(LayoutOrder, 4);
   end;
 end;
@@ -7123,7 +7150,8 @@ begin
   Inherited SavetoXML(XML,Path);
   XML.SetValue(Path+'Width/Value'{%H-}, Width);
   XML.SetValue(Path+'Height/Value'{%H-}, Height);
-  XML.SetValue(Path+'Height/PageType'{%H-}, ord(PageType));
+//  XML.SetValue(Path+'PageType/Value'{%H-}, ord(PageType));
+  XML.SetValue(Path+'Script/Value'{%H-}, Script.Text);
 end;
 
 {-----------------------------------------------------------------------}
@@ -7297,7 +7325,10 @@ begin
     clname:= XML.GetValue(aPath+'ClassName/Value', 'TFRPAGEREPORT');
     add(clName);
     
+    Inc(Pages[i].fUpdate);
     Pages[i].LoadFromXML(XML, aPath);
+    Dec(Pages[i].fUpdate);
+
     oCount := XML.GetValue(aPath+'ObjectCount/Value'{%H-}, 0);
     for j:=0 to oCount - 1 do
     begin
@@ -7314,7 +7345,9 @@ begin
           addObject(Pages[i], gtAddin, clName)
       end else
         AddObject(Pages[i], aTyp, '');
+      Inc(t.fUpdate);
       t.LoadFromXML(XML, aSubPath);
+      Dec(t.fUpdate);
     end;
   end;
   Parent.FVal.ReadBinaryDataFromXML(XML, Path+'FVal/');
@@ -8309,7 +8342,7 @@ begin
                             if Assigned(F.OnGetText) then
                               aValue:=F.DisplayText
                             else
-                              aValue:=F.AsVariant;
+                              aValue:=lrGetFieldValue(F);//F.AsVariant;
                           end;
           vtFRVar       : aValue := frParser.Calc(Field);
           vtOther       : begin
@@ -8336,7 +8369,7 @@ begin
           if Assigned(F.OnGetText) then
              aValue:=F.DisplayText
           else
-             aValue:=F.AsVariant
+             aValue:=lrGetFieldValue(F); ///F.AsVariant
         end
         else
         if (D<>nil) and (roIgnoreFieldNotFound in FReportOptions) and
@@ -8652,6 +8685,20 @@ begin
   try
     SaveToXML(XML, 'LazReport/');
     XML.Flush;
+  finally
+    XML.Free;
+  end;
+end;
+
+procedure TfrReport.SaveToXMLStream(const Stream: TStream);
+var
+  XML: TLrXMLConfig;
+begin
+  XML := TLrXMLConfig.Create(nil);
+  XML.StartEmpty := True;
+  try
+    SaveToXML(XML, 'LazReport/');
+    XML.SaveToStream(Stream);
   finally
     XML.Free;
   end;
@@ -9095,28 +9142,34 @@ begin
     Dataset.First;
   end;
   try
-    for i := 0 to Pages.Count - 1 do
-      Pages[i].Skip := False;
-
-    for i := 0 to Pages.Count - 1 do
+    if (DoublePass and not FinalPass) or (not DoublePass) then
     begin
-      if Pages[i].PageType = ptDialog then
+      for i := 0 to Pages.Count - 1 do
+        Pages[i].Skip := False;
+
+      for i := 0 to Pages.Count - 1 do
       begin
-        Pages[i].InitReport;
-        if Terminated then
-          break;
+        if Pages[i] is TfrPageDialog then
+        begin
+          Pages[i].InitReport;
+          if Terminated then
+          begin
+            FinalPass:=true;
+            break;
+          end;
+        end;
       end;
     end;
 
     if not Terminated then
     begin
       for i := 0 to Pages.Count - 1 do
-        if Pages[i].PageType <> ptDialog then
+        if Pages[i] is TfrPageReport then
           Pages[i].InitReport;
 
       PrepareDataSets;
       for i := 0 to Pages.Count - 1 do
-        if Pages[i].PageType = ptReport then
+        if Pages[i]is TfrPageReport then
           Pages[i].PrepareObjects;
 
       repeat
@@ -9130,7 +9183,7 @@ begin
 
         for i := 0 to Pages.Count - 1 do
         begin
-          if Pages[i].PageType = ptReport then
+          if Pages[i] is TfrPageReport then
           begin
             FCurPage := Pages[i];
             if FCurPage.Skip then
@@ -9469,8 +9522,8 @@ function TfrReport.ChangePrinter(OldIndex, NewIndex: Integer): Boolean;
   begin
     for i := 0 to Pages.Count - 1 do
     begin
-      with Pages[i] do
-        ChangePaper(pgSize, Width, Height, Orientation);
+      if Pages[i] is TfrPageReport then
+        Pages[i].ChangePaper(Pages[i].pgSize, Pages[i].Width, Pages[i].Height, Pages[i].Orientation);
     end;
   end;
   
@@ -9577,6 +9630,7 @@ var
   Pg:TfrPage;
 begin
   AName:=UpperCase(AName);
+  Result:=nil;
   if (Pos('.', AName)>0) then
   begin
     APgName:=Copy2SymbDel(AName, '.');
@@ -10626,6 +10680,8 @@ begin
     DebugLn('Trying to find RT Object "',St,'"');
     {$ENDIF}
     t := CurPage.FindRTObject(St);
+    if not Assigned(t) then
+       t:=CurReport.FindObject(Copy(Name, 1, Pos('.', Name) - 1));
     Prop := Copy(Name, Pos('.', Name) + 1, 255);
   end;
   {$IFDEF DebugLR}
@@ -10995,6 +11051,7 @@ begin
   Name:=XML.GetValue(Path+'Name/Value','');
   if Name='' then
     CreateUniqueName;
+
   Visible:=XML.GetValue(Path+'Visible/Value'{%H-}, true);
 end;
 
@@ -11003,7 +11060,7 @@ begin
   XML.SetValue(Path+'Name/Value', GetSaveProperty('Name'));
   XML.SetValue(Path+'ClassName/Value', self.Classname);
   
-  XML.SetValue(Path+'Visible/Value', GetSaveProperty('Visible'));
+  XML.SetValue(Path+'Visible/Value', Visible);
 end;
 
 { TfrRect }
@@ -11078,6 +11135,16 @@ begin
   fForm:=nil;
 end;
 
+function TfrPageDialog.GetCaption: string;
+begin
+  Result:=FForm.Caption;
+end;
+
+procedure TfrPageDialog.SetCaption(AValue: string);
+begin
+  FForm.Caption:=AValue;
+end;
+
 procedure TfrPageDialog.UpdateControlPosition;
 begin
   FForm.Left:=Left;
@@ -11088,9 +11155,21 @@ begin
 end;
 
 procedure TfrPageDialog.SetName(const AValue: string);
+var
+  S:string;
+  i:integer;
+  F:TComponent;
 begin
   inherited SetName(AValue);
-  fForm.Name:=Name;
+  S:=AValue;
+  F:=Application.FindComponent(S);
+  if Assigned(F) and (F<>FForm) then
+  begin
+    i:=1;
+    while Assigned(Application.FindComponent(AValue + IntToStr(i))) do inc(i);
+    S:=AValue + IntToStr(i);
+  end;
+  FForm.Name:=S;
 end;
 
 procedure TfrPageDialog.PrepareObjects;
@@ -11103,7 +11182,6 @@ var
   i:integer;
   P:TfrControl;
 begin
-  //inherited InitReport;
   fHasVisibleControls:=False;
   for i:=0 to Objects.Count - 1 do
   begin
@@ -11114,6 +11192,8 @@ begin
       P.UpdateControlPosition;
     end;
   end;
+
+  ExecScript;
 
   if fHasVisibleControls then
   begin
@@ -11147,6 +11227,34 @@ begin
   FForm.Height:=AValue;
 end;
 
+procedure TfrPageDialog.ExecScript;
+var
+//  FSaveView:TfrView;
+  FSavePage:TfrPage;
+  CmdList, ErrorList:TStringList;
+begin
+  if DocMode = dmPrinting then
+  begin
+//    FSaveView:=CurView;
+    FSavePage:=CurPage;
+
+    CmdList:=TStringList.Create;
+    ErrorList:=TStringList.Create;
+    try
+//      CurView := Self;
+      CurPage:=Self;
+      frInterpretator.PrepareScript(Script, CmdList, ErrorList);
+      frInterpretator.DoScript(CmdList);
+    finally
+      CurPage:=FSavePage;
+//      CurView := FSaveView;
+      FreeAndNil(CmdList);
+      FreeAndNil(ErrorList);
+    end;
+  end;
+end;
+
+
 constructor TfrPageDialog.Create(AOwnerPage: TfrPage);
 begin
   inherited Create(AOwnerPage);
@@ -11155,8 +11263,8 @@ begin
   fForm.OnDestroy:=@EditFormDestroy;
   BaseName:='Dialog';
   
-  Width :=200;
-  Height:=150;
+  Width :=400;
+  Height:=250;
   PageType:=ptDialog;
 end;
 
@@ -11204,6 +11312,12 @@ begin
   else
     if Doc.DocumentElement.NodeName <> RootName then
       raise EXMLConfigError.Create(SWrongRootName);
+end;
+
+procedure TLrXMLConfig.SaveToStream(const Stream: TStream);
+begin
+  WriteXMLFile(Doc, Stream);
+  Flush;
 end;
 
 procedure TLrXMLConfig.SetValue(const APath: string; const AValue: string);

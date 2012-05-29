@@ -7,7 +7,7 @@ unit lr_DialogDesign;
 interface
 
 uses
-  LRDialogControls, LazarusPackageIntf;
+  LRDialogControls, lrDBDialogControls, LazarusPackageIntf;
 
 implementation
 

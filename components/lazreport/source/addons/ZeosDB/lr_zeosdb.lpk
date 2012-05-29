@@ -2,6 +2,7 @@
 <CONFIG>
   <Package Version="4">
     <Name Value="LR_ZeosDB"/>
+    <Author Value="Lazarus, Lagunov A.A."/>
     <CompilerOptions>
       <Version Value="11"/>
       <SearchPaths>
@@ -14,7 +15,10 @@
         <CompilerPath Value="$(CompPath)"/>
       </Other>
     </CompilerOptions>
-    <Files Count="3">
+    <License Value="modified LGPL-2
+"/>
+    <Version Minor="2" Release="2"/>
+    <Files Count="5">
       <Item1>
         <Filename Value="lr_db_zeos.pas"/>
         <HasRegisterProc Value="True"/>
@@ -26,9 +30,21 @@
       </Item2>
       <Item3>
         <Filename Value="lr_editvariables.pas"/>
-        <UnitName Value="lr_editvariables"/>
+        <UnitName Value="LR_EditVariables"/>
       </Item3>
+      <Item4>
+        <Filename Value="lr_editparams.pas"/>
+        <UnitName Value="lr_EditParams"/>
+      </Item4>
+      <Item5>
+        <Filename Value="lrdbzeosconst.pas"/>
+        <UnitName Value="lrDBZeosConst"/>
+      </Item5>
     </Files>
+    <i18n>
+      <EnableI18N Value="True"/>
+      <OutDir Value="languages"/>
+    </i18n>
     <Type Value="RunAndDesignTime"/>
     <RequiredPkgs Count="3">
       <Item1>

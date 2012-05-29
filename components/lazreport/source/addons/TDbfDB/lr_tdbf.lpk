@@ -2,6 +2,7 @@
 <CONFIG>
   <Package Version="4">
     <Name Value="LR_TDbf"/>
+    <Author Value="Lazarus, Lagunov A.A."/>
     <CompilerOptions>
       <Version Value="11"/>
       <SearchPaths>
@@ -14,6 +15,9 @@
         <CompilerPath Value="$(CompPath)"/>
       </Other>
     </CompilerOptions>
+    <License Value="modified LGPL-2
+"/>
+    <Version Minor="1" Release="1"/>
     <Files Count="2">
       <Item1>
         <Filename Value="lrtdbfdata.pas"/>

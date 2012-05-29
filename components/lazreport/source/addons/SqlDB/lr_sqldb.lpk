@@ -2,6 +2,7 @@
 <CONFIG>
   <Package Version="4">
     <Name Value="LR_SqlDB"/>
+    <Author Value="Lazarus, Lagunov A.A."/>
     <CompilerOptions>
       <Version Value="11"/>
       <SearchPaths>
@@ -14,7 +15,10 @@
         <CompilerPath Value="$(CompPath)"/>
       </Other>
     </CompilerOptions>
-    <Files Count="3">
+    <License Value="modified LGPL-2
+"/>
+    <Version Minor="2" Release="2"/>
+    <Files Count="4">
       <Item1>
         <Filename Value="lr_pqconnection.pas"/>
         <HasRegisterProc Value="True"/>
@@ -22,13 +26,17 @@
       </Item1>
       <Item2>
         <Filename Value="lr_sqlquery.pas"/>
-        <UnitName Value="lr_sqlquery"/>
+        <UnitName Value="lr_SQLQuery"/>
       </Item2>
       <Item3>
         <Filename Value="lr_ibconnection.pas"/>
         <HasRegisterProc Value="True"/>
         <UnitName Value="LR_IBConnection"/>
       </Item3>
+      <Item4>
+        <Filename Value="lrsqldb_img.inc"/>
+        <Type Value="Include"/>
+      </Item4>
     </Files>
     <Type Value="RunAndDesignTime"/>
     <RequiredPkgs Count="3">

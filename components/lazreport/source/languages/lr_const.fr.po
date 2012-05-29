@@ -245,22 +245,6 @@ msgstr "Confirmer"
 msgid "CSV File"
 msgstr "Fichier CSV"
 
-#: lr_const.sdateformat1
-msgid "mm.dd.yy"
-msgstr "dd.mm.yy"
-
-#: lr_const.sdateformat2
-msgid "mm.dd.yyyy"
-msgstr "dd.mm.yyyy"
-
-#: lr_const.sdateformat3
-msgid "d mmm yyyy"
-msgstr "d mmm yyyy"
-
-#: lr_const.sdateformat4
-msgid "d mmmm yyyy"
-msgstr "d mmmm yyyy"
-
 #: lr_const.sdatetimecategory
 msgid "Date and time"
 msgstr "Date et heure"
@@ -1158,6 +1142,10 @@ msgstr "&Inspecteur d'objets"
 #: lr_const.sfrdesignerform_line
 msgid "Line style"
 msgstr "Style de ligne"
+
+#: lr_const.sfrdesignerform_modified
+msgid "Modified"
+msgstr ""
 
 #: lr_const.sfrdesignerform_new
 #, fuzzy
@@ -2337,22 +2325,6 @@ msgstr "Nouveau rapport"
 #: lr_const.stextfile
 msgid "ASCII Text file"
 msgstr "Fichier de texte ASCII"
-
-#: lr_const.stimeformat1
-msgid "hh:nn:ss"
-msgstr "hh:nn:ss"
-
-#: lr_const.stimeformat2
-msgid "h:nn:ss"
-msgstr "h:nn:ss"
-
-#: lr_const.stimeformat3
-msgid "hh:nn"
-msgstr "hh:nn"
-
-#: lr_const.stimeformat4
-msgid "h:nn"
-msgstr "h:nn"
 
 #: lr_const.sto
 msgid "to"

@@ -247,22 +247,6 @@ msgstr "Bestätigen"
 msgid "CSV File"
 msgstr "CSV-Datei"
 
-#: lr_const.sdateformat1
-msgid "mm.dd.yy"
-msgstr "tt.mm.jj"
-
-#: lr_const.sdateformat2
-msgid "mm.dd.yyyy"
-msgstr "tt.mm.jjjj"
-
-#: lr_const.sdateformat3
-msgid "d mmm yyyy"
-msgstr "t mmm jjjj"
-
-#: lr_const.sdateformat4
-msgid "d mmmm yyyy"
-msgstr "t mmmm jjjj"
-
 #: lr_const.sdatetimecategory
 msgid "Date and time"
 msgstr "Datum und Zeit"
@@ -1155,6 +1139,10 @@ msgstr "Objekt&inspektor"
 #: lr_const.sfrdesignerform_line
 msgid "Line style"
 msgstr "Linienstil"
+
+#: lr_const.sfrdesignerform_modified
+msgid "Modified"
+msgstr ""
 
 #: lr_const.sfrdesignerform_new
 #| msgid "&New..."
@@ -2323,22 +2311,6 @@ msgstr "Neuer Report"
 #: lr_const.stextfile
 msgid "ASCII Text file"
 msgstr "ASCII-Textdatei"
-
-#: lr_const.stimeformat1
-msgid "hh:nn:ss"
-msgstr "hh:mm:ss"
-
-#: lr_const.stimeformat2
-msgid "h:nn:ss"
-msgstr "h:mm:ss"
-
-#: lr_const.stimeformat3
-msgid "hh:nn"
-msgstr "hh:mm"
-
-#: lr_const.stimeformat4
-msgid "h:nn"
-msgstr "h:mm"
 
 #: lr_const.sto
 msgid "to"

@@ -239,22 +239,6 @@ msgstr "Піідтвердити"
 msgid "CSV File"
 msgstr "Файл CSV"
 
-#: lr_const.sdateformat1
-msgid "mm.dd.yy"
-msgstr "мм.дд.рр"
-
-#: lr_const.sdateformat2
-msgid "mm.dd.yyyy"
-msgstr "мм.дд.рррр"
-
-#: lr_const.sdateformat3
-msgid "d mmm yyyy"
-msgstr "д ммм рррр"
-
-#: lr_const.sdateformat4
-msgid "d mmmm yyyy"
-msgstr "д мммм рррр"
-
 #: lr_const.sdatetimecategory
 msgid "Date and time"
 msgstr "Дата та час"
@@ -1147,6 +1131,10 @@ msgstr "&Інспектор Об'єктів"
 #: lr_const.sfrdesignerform_line
 msgid "Line style"
 msgstr "Стиль лінії"
+
+#: lr_const.sfrdesignerform_modified
+msgid "Modified"
+msgstr ""
 
 #: lr_const.sfrdesignerform_new
 #| msgid "&New..."
@@ -2315,22 +2303,6 @@ msgstr "Новий звіт"
 #: lr_const.stextfile
 msgid "ASCII Text file"
 msgstr "Текстовий файл ASCII"
-
-#: lr_const.stimeformat1
-msgid "hh:nn:ss"
-msgstr "гг:хх:сс"
-
-#: lr_const.stimeformat2
-msgid "h:nn:ss"
-msgstr "г:хх:сс"
-
-#: lr_const.stimeformat3
-msgid "hh:nn"
-msgstr "гг:хх"
-
-#: lr_const.stimeformat4
-msgid "h:nn"
-msgstr "г:хх"
 
 #: lr_const.sto
 msgid "to"
