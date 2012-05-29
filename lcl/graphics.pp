@@ -1245,17 +1245,6 @@ type
 
   { TRasterImage }
 
-  { TCustomBitmap is the data of an image. The image can be loaded from a file,
-    stream or resource in .bmp (windows bitmap format) or .xpm (XPixMap format)
-    The loading routine automatically recognizes the format, so it is also used
-    to load the imagess from Delphi form streams (e.g. .dfm files).
-    When the handle is created, it is up to the interface (gtk, win32, ...)
-    to convert it automatically to the best internal format. That is why the
-    Handle is interface dependent.
-    To access the raw data, see TLazIntfImage in IntfGraphics.pas }
-
-  { TRasterImage }
-
   TRasterImage = class(TGraphic)
   private
     FCanvas: TCanvas;
@@ -1386,8 +1375,16 @@ type
     property Width: Integer read GetWidth;
   end;
 
-  { TCustomBitmap }
-  
+  { TCustomBitmap
+    is the data of an image. The image can be loaded from a file,
+    stream or resource in .bmp (windows bitmap format) or .xpm (XPixMap format)
+    The loading routine automatically recognizes the format, so it is also used
+    to load the imagess from Delphi form streams (e.g. .dfm files).
+    When the handle is created, it is up to the interface (gtk, win32, ...)
+    to convert it automatically to the best internal format. That is why the
+    Handle is interface dependent.
+    To access the raw data, see TLazIntfImage in IntfGraphics.pas }
+
   TCustomBitmap = class(TRasterImage)
   private
     FPixelFormat: TPixelFormat;

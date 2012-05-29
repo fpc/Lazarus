@@ -1618,10 +1618,10 @@ type
     property AnchorSideBottom: TAnchorSide index akBottom read GetAnchorSide write SetAnchorSide;
     property Cursor: TCursor read GetCursor write SetCursor default crDefault;
     property Left: Integer read FLeft write SetLeft; // no default value - controls usually placed to different positions
-    property Height: Integer read FHeight write SetHeight; // no default value - controls usually have differnt sizes
+    property Height: Integer read FHeight write SetHeight; // no default value - controls usually have different sizes
     property Hint: TTranslateString read FHint write SetHint stored IsHintStored;
     property Top: Integer read FTop write SetTop; // no default value - controls usually placed to different positions
-    property Width: Integer read FWidth write SetWidth; // no default value - controls usually have differnt sizes
+    property Width: Integer read FWidth write SetWidth; // no default value - controls usually have different sizes
     property HelpType: THelpType read FHelpType write FHelpType default htContext;
     property HelpKeyword: String read FHelpKeyword write SetHelpKeyword stored IsHelpKeyWordStored;
     property HelpContext: THelpContext read FHelpContext write SetHelpContext stored IsHelpContextStored default 0;
