@@ -11434,6 +11434,7 @@ var
       HelpPtr, HelpPtr2: PChar;
       NewName, NewVal: String;
       i: Integer;
+      NewField: TDBGField;
     begin
       inc(StartPtr); // skip '{'
       SkipSpaces;
@@ -11498,8 +11499,15 @@ var
         do dec(i);
 
         if i < 0 then begin
-          if (uppercase(ATypeName) <> 'TOBJECT') or (pos('vptr', NewName) < 1)
-          then debugln(DBGMI_STRUCT_PARSER, 'WARNING: PutValuesInClass: No field for "' + ATypeName + '"."' + NewName + '"');
+          if (uppercase(ATypeName) <> 'TOBJECT') or (pos('VPTR', uppercase(NewName)) < 1) then begin
+            if not(defFullTypeInfo in FEvalFlags) then begin
+              NewField := TDBGField.Create(NewName, TGDBType.Create(skSimple, ''), flPublic, [], '');
+              AType.Fields.Add(NewField);
+              NewField.DBGType.Value.AsString := HexCToHexPascal(NewVal);
+            end
+            else
+              debugln(DBGMI_STRUCT_PARSER, 'WARNING: PutValuesInClass: No field for "' + ATypeName + '"."' + NewName + '"');
+          end;
         end
         else
           AType.Fields[i].DBGType.Value.AsString := HexCToHexPascal(NewVal);
