@@ -1,11 +1,12 @@
 <?xml version="1.0"?>
 <CONFIG>
-  <Package Version="3">
+  <Package Version="4">
     <PathDelim Value="\"/>
     <Name Value="leakview"/>
+    <AddToProjectUsesSection Value="True"/>
     <Author Value="Dmitry 'skalogryz' Boyarintsev"/>
     <CompilerOptions>
-      <Version Value="9"/>
+      <Version Value="11"/>
       <PathDelim Value="\"/>
       <SearchPaths>
         <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)\$(LCLWidgetType)"/>
@@ -18,6 +19,7 @@
       </Parsing>
       <Linking>
         <Debugging>
+          <GenerateDebugInfo Value="False"/>
           <UseLineInfoUnit Value="False"/>
         </Debugging>
       </Linking>
@@ -27,7 +29,7 @@
     </CompilerOptions>
     <Description Value="Leak View. allows fast navigation trough HeapTrc (and other?) leaks."/>
     <Version Major="1"/>
-    <Files Count="3">
+    <Files Count="4">
       <Item1>
         <Filename Value="heaptrcview.lfm"/>
         <Type Value="LFM"/>
@@ -41,6 +43,10 @@
         <Filename Value="leakinfo.pas"/>
         <UnitName Value="leakinfo"/>
       </Item3>
+      <Item4>
+        <Filename Value="dbginforeader.pas"/>
+        <UnitName Value="DbgInfoReader"/>
+      </Item4>
     </Files>
     <i18n>
       <EnableI18N Value="True"/>
@@ -67,8 +73,5 @@
       <DestinationDirectory Value="$(TestDir)\publishedpackage\"/>
       <IgnoreBinaries Value="False"/>
     </PublishOptions>
-    <CustomOptions Children="ExternHelp">
-      <_ExternHelp Children="Count"/>
-    </CustomOptions>
   </Package>
 </CONFIG>
