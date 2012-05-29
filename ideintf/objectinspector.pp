@@ -39,12 +39,12 @@ uses
   // FCL
   SysUtils, Types, Classes, TypInfo,
   // LCL
-  InterfaceBase, Forms, Buttons, Graphics, GraphType, LCLProc,
-  StdCtrls, LCLType, LCLIntf, Controls, ComCtrls, ExtCtrls,
-  LMessages, LResources, LazConfigStorage, Menus, Dialogs, Themes,
-  TreeFilterEdit, ObjInspStrConsts,
+  InterfaceBase, Forms, Buttons, Graphics, GraphType, LCLProc, StdCtrls,
+  LCLType, LCLIntf, Controls, ComCtrls, ExtCtrls, LMessages, LResources,
+  LazConfigStorage, Menus, Dialogs, Themes, TreeFilterEdit, ObjInspStrConsts,
   PropEdits, GraphPropEdits, ListViewPropEdit, ImageListEditor,
-  ComponentTreeView, ComponentEditors, IDEImagesIntf, OIFavouriteProperties;
+  ComponentTreeView, ComponentEditors, IDEImagesIntf, OIFavouriteProperties,
+  PropEditUtils;
 
 const
   OIOptionsFileVersion = 3;
@@ -693,10 +693,12 @@ type
     procedure DoCollectionAddItem(Sender: TObject);
     procedure DoZOrderItemClick(Sender: TObject);
   private
+    FEnableHookGetSelection: boolean;
     FInSelection: Boolean;
     FOnAutoShow: TNotifyEvent;
     function GetComponentTreeHeight: integer;
     function GetInfoBoxHeight: integer;
+    procedure SetEnableHookGetSelection(AValue: boolean);
   protected
     function PersistentToString(APersistent: TPersistent): string;
     procedure AddPersistentToList(APersistent: TPersistent; List: TStrings);
@@ -737,49 +739,51 @@ type
     procedure FocusGrid(Grid: TOICustomPropertyGrid = nil);
 
     property AutoShow: Boolean read FAutoShow write FAutoShow;
+    property ComponentTreeHeight: integer read GetComponentTreeHeight
+                                          write SetComponentTreeHeight;
     property DefaultItemHeight: integer read FDefaultItemHeight
                                         write SetDefaultItemHeight;
-    property Selection: TPersistentSelectionList
-                                        read FSelection write SetSelection;
+    property EnableHookGetSelection: boolean read FEnableHookGetSelection
+                                             write SetEnableHookGetSelection;
+    property Favourites: TOIFavouriteProperties read FFavourites write SetFavourites;
+    property GridControl[Page: TObjectInspectorPage]: TOICustomPropertyGrid
+                                                            read GetGridControl;
+    property InfoBoxHeight: integer read GetInfoBoxHeight write SetInfoBoxHeight;
     property OnAddAvailPersistent: TOnAddAvailablePersistent
                  read FOnAddAvailablePersistent write FOnAddAvailablePersistent;
-    property OnSelectPersistentsInOI: TNotifyEvent
-                   read FOnSelectPersistentsInOI write FOnSelectPersistentsInOI;
-    property PropertyEditorHook: TPropertyEditorHook
-                           read FPropertyEditorHook write SetPropertyEditorHook;
+    property OnAddToFavourites: TNotifyEvent read FOnAddToFavourites
+                                             write FOnAddToFavourites;
+    property OnAutoShow: TNotifyEvent read FOnAutoShow write FOnAutoShow;
+    property OnFindDeclarationOfProperty: TNotifyEvent
+           read FOnFindDeclarationOfProperty write FOnFindDeclarationOfProperty;
     property OnModified: TNotifyEvent read FOnModified write FOnModified;
-    property OnSelectionChange: TNotifyEvent read FOnSelectionChange write FOnSelectionChange;
+    property OnOIKeyDown: TKeyEvent read FOnOIKeyDown write FOnOIKeyDown;
     property OnPropertyHint: TOIPropertyHint read FOnPropertyHint write FOnPropertyHint;
-    property OnShowOptions: TNotifyEvent read FOnShowOptions
-                                         write SetOnShowOptions;
-    property OnRemainingKeyUp: TKeyEvent read FOnRemainingKeyUp
-                                         write FOnRemainingKeyUp;
     property OnRemainingKeyDown: TKeyEvent read FOnRemainingKeyDown
                                          write FOnRemainingKeyDown;
+    property OnRemainingKeyUp: TKeyEvent read FOnRemainingKeyUp
+                                         write FOnRemainingKeyUp;
+    property OnRemoveFromFavourites: TNotifyEvent read FOnRemoveFromFavourites
+                                                  write FOnRemoveFromFavourites;
+    property OnSelectionChange: TNotifyEvent read FOnSelectionChange write FOnSelectionChange;
+    property OnSelectPersistentsInOI: TNotifyEvent
+                   read FOnSelectPersistentsInOI write FOnSelectPersistentsInOI;
+    property OnShowOptions: TNotifyEvent read FOnShowOptions
+                                         write SetOnShowOptions;
     property OnUpdateRestricted: TNotifyEvent read FOnUpdateRestricted
                                          write FOnUpdateRestricted;
+    property OnViewRestricted: TNotifyEvent read FOnViewRestricted write FOnViewRestricted;
+    property PropertyEditorHook: TPropertyEditorHook
+                           read FPropertyEditorHook write SetPropertyEditorHook;
+    property RestrictedProps: TOIRestrictedProperties read FRestricted write SetRestricted;
+    property Selection: TPersistentSelectionList
+                                        read FSelection write SetSelection;
     property ShowComponentTree: boolean read FShowComponentTree
                                         write SetShowComponentTree;
     property ShowFavorites: Boolean read FShowFavorites write SetShowFavorites;
-    property ShowRestricted: Boolean read FShowRestricted write SetShowRestricted;
-    property ComponentTreeHeight: integer read GetComponentTreeHeight
-                                          write SetComponentTreeHeight;
-    property InfoBoxHeight: integer read GetInfoBoxHeight write SetInfoBoxHeight;
-    property ShowStatusBar: Boolean read FShowStatusBar write SetShowStatusBar;
     property ShowInfoBox: Boolean read FShowInfoBox write SetShowInfoBox;
-    property GridControl[Page: TObjectInspectorPage]: TOICustomPropertyGrid
-                                                            read GetGridControl;
-    property Favourites: TOIFavouriteProperties read FFavourites write SetFavourites;
-    property RestrictedProps: TOIRestrictedProperties read FRestricted write SetRestricted;
-    property OnAddToFavourites: TNotifyEvent read FOnAddToFavourites
-                                             write FOnAddToFavourites;
-    property OnRemoveFromFavourites: TNotifyEvent read FOnRemoveFromFavourites
-                                                  write FOnRemoveFromFavourites;
-    property OnViewRestricted: TNotifyEvent read FOnViewRestricted write FOnViewRestricted;
-    property OnOIKeyDown: TKeyEvent read FOnOIKeyDown write FOnOIKeyDown;
-    property OnFindDeclarationOfProperty: TNotifyEvent
-           read FOnFindDeclarationOfProperty write FOnFindDeclarationOfProperty;
-    property OnAutoShow: TNotifyEvent read FOnAutoShow write FOnAutoShow;
+    property ShowRestricted: Boolean read FShowRestricted write SetShowRestricted;
+    property ShowStatusBar: Boolean read FShowStatusBar write SetShowStatusBar;
   end;
 
 const
@@ -3872,6 +3876,7 @@ constructor TObjectInspectorDlg.Create(AnOwner: TComponent);
 
 begin
   inherited Create(AnOwner);
+  FEnableHookGetSelection:= true;
   FPropertyEditorHook:=nil;
   FInSelection := False;
   FSelection:=TPersistentSelectionList.Create;
@@ -4014,6 +4019,7 @@ end;
 procedure TObjectInspectorDlg.SetPropertyEditorHook(NewValue:TPropertyEditorHook);
 var
   Page: TObjectInspectorPage;
+  ASelection: TPersistentSelectionList;
 begin
   if FPropertyEditorHook=NewValue then exit;
   if FPropertyEditorHook<>nil then begin
@@ -4024,13 +4030,23 @@ begin
     FPropertyEditorHook.AddHandlerChangeLookupRoot(@HookLookupRootChange);
     FPropertyEditorHook.AddHandlerRefreshPropertyValues(
                                                 @HookRefreshPropertyValues);
-    FPropertyEditorHook.AddHandlerGetSelection(@HookGetSelection);
     FPropertyEditorHook.AddHandlerSetSelection(@HookSetSelection);
-    // select root component
-    FSelection.Clear;
-    if (FPropertyEditorHook<>nil) and (FPropertyEditorHook.LookupRoot<>nil)
-    and (FPropertyEditorHook.LookupRoot is TComponent) then
-      FSelection.Add(TComponent(FPropertyEditorHook.LookupRoot));
+    if EnableHookGetSelection then begin
+      FPropertyEditorHook.AddHandlerGetSelection(@HookGetSelection);
+      // select root component
+      FSelection.Clear;
+      if (FPropertyEditorHook<>nil) and (FPropertyEditorHook.LookupRoot<>nil)
+      and (FPropertyEditorHook.LookupRoot is TComponent) then
+        FSelection.Add(TComponent(FPropertyEditorHook.LookupRoot));
+    end else begin
+      ASelection:=TPersistentSelectionList.Create;
+      try
+        FPropertyEditorHook.GetSelection(ASelection);
+        Selection := ASelection;
+      finally
+        ASelection.Free;
+      end;
+    end;
     FillPersistentComboBox;
     for Page:=Low(TObjectInspectorPage) to High(TObjectInspectorPage) do
       if GridControl[Page]<>nil then
@@ -4235,10 +4251,14 @@ procedure TObjectInspectorDlg.SetSelection(const ASelection: TPersistentSelectio
 begin
   if (not Assigned(ASelection)) then
     exit;
-  if FInSelection and FSelection.IsEqual(ASelection) then
-    exit; // prevent endless loops
-  if (not ASelection.ForceUpdate) and FSelection.IsEqual(ASelection) then
-    exit; // nothing changed
+  if FSelection.IsEqual(ASelection) then
+  begin
+    if FInSelection then
+      exit; // prevent endless loops
+    if (not ASelection.ForceUpdate) then
+      exit; // nothing changed
+    ASelection.ForceUpdate:=false;
+  end;
   FInSelection := True;
   try
     // ToDo: Clear filter only if a selected node is hidden (Visible=False)
@@ -5253,11 +5273,18 @@ end;
 
 function TObjectInspectorDlg.GetInfoBoxHeight: integer;
 begin
-  if Assigned(InfoPanel) then
-    Result := InfoPanel.Height
-  else        // Will never happen, remove later. JuMa
-    raise Exception.Create('InfoPanel=nil in TObjectInspectorDlg.GetInfoBoxHeight');
-    //Result := FInfoBoxHeight;
+  Result := InfoPanel.Height;
+end;
+
+procedure TObjectInspectorDlg.SetEnableHookGetSelection(AValue: boolean);
+begin
+  if FEnableHookGetSelection=AValue then Exit;
+  FEnableHookGetSelection:=AValue;
+  if PropertyEditorHook<>nil then
+    if EnableHookGetSelection then
+      FPropertyEditorHook.AddHandlerGetSelection(@HookGetSelection)
+    else
+      FPropertyEditorHook.RemoveHandlerGetSelection(@HookGetSelection)
 end;
 
 procedure TObjectInspectorDlg.HookRefreshPropertyValues;

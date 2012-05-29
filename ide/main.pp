@@ -551,6 +551,7 @@ type
     procedure OnControlSelectionPropsChanged(Sender: TObject);
     procedure OnControlSelectionFormChanged(Sender: TObject; OldForm,
                                             NewForm: TCustomForm);
+    procedure OnGetDesignerSelection(const ASelection: TPersistentSelectionList);
 
     // project inspector
     procedure ProjInspectorOpen(Sender: TObject);
@@ -1682,15 +1683,15 @@ begin
       (ObjectInspector1.Selection.Count > 0) then
   begin
     C := ObjectInspector1.Selection[0].ClassType;
-    if C.InheritsFrom(TForm) then C := TForm
-    else
-      if C.InheritsFrom(TCustomForm) then C := TCustomForm
-        else
-          if C.InheritsFrom(TDataModule) then C := TDataModule
-            else
-              if C.InheritsFrom(TFrame) then C := TFrame;
+    if C.InheritsFrom(TForm) then
+      C := TForm
+    else if C.InheritsFrom(TCustomForm) then
+      C := TCustomForm
+    else if C.InheritsFrom(TDataModule) then
+      C := TDataModule
+    else if C.InheritsFrom(TFrame) then
+      C := TFrame;
   end;
-
 
   if ObjectInspector1.GetActivePropertyRow = nil then
   begin
@@ -2186,6 +2187,7 @@ begin
   TheControlSelection.OnChange:=@OnControlSelectionChanged;
   TheControlSelection.OnPropertiesChanged:=@OnControlSelectionPropsChanged;
   TheControlSelection.OnSelectionFormChanged:=@OnControlSelectionFormChanged;
+  GlobalDesignHook.AddHandlerGetSelection(@OnGetDesignerSelection);
 end;
 
 procedure TMainIDE.SetupIDECommands;
@@ -14879,6 +14881,13 @@ begin
   UpdateIDEComponentPalette;
 end;
 
+procedure TMainIDE.OnGetDesignerSelection(
+  const ASelection: TPersistentSelectionList);
+begin
+  if TheControlSelection=nil then exit;
+  TheControlSelection.GetSelection(ASelection);
+end;
+
 
 // -----------------------------------------------------------------------------
 
@@ -17570,11 +17579,9 @@ begin
   ObjectInspector1.OnPropertyHint:=@OIOnPropertyHint;
   ObjectInspector1.OnDestroy:=@OIOnDestroy;
   ObjectInspector1.OnAutoShow:=@OIOnAutoShow;
-  ObjectInspector1.PropertyEditorHook:=GlobalDesignHook;
-  if FormEditor1<>nil then
-    FormEditor1.Obj_Inspector := ObjectInspector1;
+  ObjectInspector1.EnableHookGetSelection:=false; // the selection is stored in TheControlSelection
 
-  // after OI changes the hints needs to be updated
+  // after OI changes the hints need to be updated
   // do that after some idle time
   OIChangedTimer:=TIdleTimer.Create(OwningComponent);
   with OIChangedTimer do begin
@@ -17583,6 +17590,11 @@ begin
     OnTimer:=@OIChangedTimerTimer;
   end;
   EnvironmentOptions.ObjectInspectorOptions.AssignTo(ObjectInspector1);
+
+  // connect to designers
+  ObjectInspector1.PropertyEditorHook:=GlobalDesignHook;
+  if FormEditor1<>nil then
+    FormEditor1.Obj_Inspector := ObjectInspector1;
 end;
 
 procedure TMainIDE.OnApplicationUserInput(Sender: TObject; Msg: Cardinal);
