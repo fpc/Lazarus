@@ -4605,7 +4605,8 @@ begin
           AGraphic := gc.Create;
           AGraphic.LoadFromStream(s);
           Picture.Assign(AGraphic);
-        end;
+        end else
+          AGraphic := nil;
       finally
         if assigned(AGraphic) then
           AGraphic.Free;
