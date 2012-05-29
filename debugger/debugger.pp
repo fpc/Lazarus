@@ -1069,6 +1069,7 @@ type
   private
     FDisplayFormat: TWatchDisplayFormat;
     FEvaluateFlags: TDBGEvaluateFlags;
+    FRepeatCount: Integer;
     FStackFrame: Integer;
     FThreadId: Integer;
     FValidity: TDebuggerDataState;
@@ -1096,6 +1097,7 @@ type
     procedure Assign(AnOther: TWatchValue);
     property DisplayFormat: TWatchDisplayFormat read FDisplayFormat;
     property EvaluateFlags: TDBGEvaluateFlags read FEvaluateFlags;
+    property RepeatCount: Integer read FRepeatCount;
     property ThreadId: Integer read FThreadId;
     property StackFrame: Integer read FStackFrame;
     property Watch: TWatch read FWatch;
@@ -1140,10 +1142,12 @@ type
     FEvaluateFlags: TDBGEvaluateFlags;
     FExpression: String;
     FDisplayFormat: TWatchDisplayFormat;
+    FRepeatCount: Integer;
     FValueList: TWatchValueList;
     function GetEnabled: Boolean;
     function GetValue(const AThreadId: Integer; const AStackFrame: Integer): TWatchValue;
     procedure SetEvaluateFlags(AValue: TDBGEvaluateFlags);
+    procedure SetRepeatCount(AValue: Integer);
   protected
     procedure AssignTo(Dest: TPersistent); override;
     function CreateValueList: TWatchValueList; virtual;
@@ -1172,6 +1176,7 @@ type
     property Expression: String read GetExpression write SetExpression;
     property DisplayFormat: TWatchDisplayFormat read GetDisplayFormat write SetDisplayFormat;
     property EvaluateFlags: TDBGEvaluateFlags read FEvaluateFlags write SetEvaluateFlags;
+    property RepeatCount: Integer read FRepeatCount write SetRepeatCount;
   public
     property Values[const AThreadId: Integer; const AStackFrame: Integer]: TWatchValue
              read GetValue;
@@ -4598,6 +4603,7 @@ begin
     Result := TWatchValue(FList[i]);
     if (Result.ThreadId = AThreadId) and (Result.StackFrame = AStackFrame) and
        (Result.DisplayFormat = FWatch.DisplayFormat) and
+       (Result.RepeatCount = FWatch.RepeatCount) and
        (Result.EvaluateFlags = FWatch.EvaluateFlags)
     then
       exit;
@@ -4764,6 +4770,7 @@ begin
   if AConfig.GetValue(APath + 'ClassAutoCast', False)
   then Include(FEvaluateFlags, defClassAutoCast)
   else Exclude(FEvaluateFlags, defClassAutoCast);
+  FRepeatCount := AConfig.GetValue(APath + 'RepeatCount', 0);
   try    ReadStr(AConfig.GetValue(APath + 'DisplayFormat', 'wdfDefault'), FDisplayFormat);
   except FDisplayFormat := wdfDefault; end;
   try    ReadStr(AConfig.GetValue(APath + 'Validity', 'ddsValid'), FValidity);
@@ -4782,6 +4789,7 @@ begin
   WriteStr(s, FValidity);
   AConfig.SetDeleteValue(APath + 'Validity', s, 'ddsValid');
   AConfig.SetDeleteValue(APath + 'ClassAutoCast', defClassAutoCast in FEvaluateFlags, False);
+  AConfig.SetDeleteValue(APath + 'RepeatCount', FRepeatCount, 0);
 end;
 
 constructor TWatchValue.Create;
@@ -4798,6 +4806,7 @@ begin
   FWatch := AOwnerWatch;
   FDisplayFormat := FWatch.DisplayFormat;
   FEvaluateFlags := FWatch.EvaluateFlags;
+  FRepeatCount   := FWatch.RepeatCount;
   Create;
 end;
 
@@ -8205,6 +8214,14 @@ begin
   DoModified;
 end;
 
+procedure TWatch.SetRepeatCount(AValue: Integer);
+begin
+  if FRepeatCount = AValue then Exit;
+  FRepeatCount := AValue;
+  Changed;
+  DoModified;
+end;
+
 function TWatch.GetDisplayFormat: TWatchDisplayFormat;
 begin
   Result := FDisplayFormat;
@@ -8226,6 +8243,7 @@ begin
   else Exclude(FEvaluateFlags, defClassAutoCast);
   try    ReadStr(AConfig.GetValue(APath + 'DisplayFormat', 'wdfDefault'), FDisplayFormat);
   except FDisplayFormat := wdfDefault; end;
+  FRepeatCount := AConfig.GetValue(APath + 'RepeatCount', 0);
 
   FValueList.LoadDataFromXMLConfig(AConfig, APath + 'ValueList/');
 end;
@@ -8239,6 +8257,7 @@ begin
   WriteStr(s{%H-}, FDisplayFormat);
   AConfig.SetDeleteValue(APath + 'DisplayFormat', s, 'wdfDefault');
   AConfig.SetDeleteValue(APath + 'ClassAutoCast', defClassAutoCast in FEvaluateFlags, False);
+  AConfig.SetDeleteValue(APath + 'RepeatCount', FRepeatCount, 0);
 
   FValueList.SaveDataToXMLConfig(AConfig, APath + 'ValueList/');
 end;
@@ -8279,6 +8298,7 @@ begin
   if FSnapShot = nil then begin
     TCurrentWatchValueList(FValueList).SnapShot := nil;
   end else begin
+    // TODO: FValueList is copied twice ?
     FSnapShot.Assign(self);
     FSnapShot.Enabled := True; // Snapshots are always enabled
     TCurrentWatchValueList(FValueList).SnapShot := FSnapShot.FValueList;
@@ -8340,6 +8360,7 @@ begin
   if i >= 0
   then DisplayFormat := TWatchDisplayFormat(i)
   else DisplayFormat := wdfDefault;
+  FRepeatCount := AConfig.GetValue(APath + 'RepeatCount', 0);
 end;
 
 procedure TCurrentWatch.SaveToXMLConfig(const AConfig: TXMLConfig; const APath: string);
@@ -8349,6 +8370,7 @@ begin
   AConfig.SetDeleteValue(APath + 'DisplayStyle/Value',
     TWatchDisplayFormatNames[DisplayFormat], TWatchDisplayFormatNames[wdfDefault]);
   AConfig.SetDeleteValue(APath + 'ClassAutoCast', defClassAutoCast in FEvaluateFlags, False);
+  AConfig.SetDeleteValue(APath + 'RepeatCount', FRepeatCount, 0);
 end;
 
 { =========================================================================== }

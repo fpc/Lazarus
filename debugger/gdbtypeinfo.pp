@@ -311,7 +311,8 @@ type
                           gtcfExprIsType,
                           gtcfExprEvaluate,
                           gtcfExprEvalStrFixed,      // Evaluate with string fix, if needed; only if gtcfExprEvaluate is set
-                          gtcfAutoCastClass          // Find real class of instance, and use, instead of declared class of variable
+                          gtcfAutoCastClass,         // Find real class of instance, and use, instead of declared class of variable
+                          gtcfForceArrayEval         // Used by RepeatCount, in case of "SomePointer[i]"
                          );
   TGDBTypeCreationFlags = set of TGDBTypeCreationFlag;
 
@@ -320,7 +321,8 @@ type
      gtpsSimplePointer,
      gtpsClass, gtpsClassAutoCast, gtpsClassPointer, gtpsClassAncestor,
      gtpsArray,
-     gtpsEvalExpr, gtpsEvalExprArray, gtpsEvalExprDynArray, gtpsEvalExprDynArrayGetData,
+     gtpsEvalExpr, gtpsEvalExprRepeated,
+     gtpsEvalExprArray, gtpsEvalExprDynArray, gtpsEvalExprDynArrayGetData,
      gtpsFinished
     );
 
@@ -348,14 +350,17 @@ type
     FExprEvaluatedAsText: String;
     FHasExprEvaluatedAsText: Boolean;
     FExprEvaluateFormat: TWatchDisplayFormat;
+    FRepeatCount: Integer;
 
     // Sub-Types (FNext is managed by creator / linked list)
     FFirstProcessingSubType, FNextProcessingSubType: TGDBType;
+    FRepeatFirstIndex: Integer;
     FStringExprEvaluatedAsText: String;
     FTypeInfoAncestor: TGDBType;
 
     FArrayIndexValues: Array of TGDBType;
     FArrayIndexValueLimit: Integer;
+    FRepeatCountEval: TGDBType;
 
     // Gdb-Requests
     FEvalError: boolean;
@@ -377,10 +382,13 @@ type
     function IsReqError(AReqType: TGDBTypeProcessRequest; CheckResKind: Boolean = True): Boolean;
   protected
     procedure Init; override;
+    function DebugString: String;
+    property RepeatFirstIndex: Integer read FRepeatFirstIndex write FRepeatFirstIndex;
   public
     constructor CreateForExpression(const AnExpression: string;
                                     const AFlags: TGDBTypeCreationFlags;
-                                    AFormat: TWatchDisplayFormat = wdfDefault);
+                                    AFormat: TWatchDisplayFormat = wdfDefault;
+                                    ARepeatCount: Integer = 0);
     destructor Destroy; override;
     function ProcessExpression: Boolean;
     property EvalRequest: PGDBPTypeRequest read FEvalRequest;
@@ -404,6 +412,9 @@ function ParseTypeFromGdb(const ATypeText: string): TGDBPTypeResult;
 
 function dbgs(AFlag: TGDBPTypeResultFlag): string; overload;
 function dbgs(AFlags: TGDBPTypeResultFlags): string; overload;
+function dbgs(AFlag: TGDBTypeCreationFlag): string; overload;
+function dbgs(AFlags: TGDBTypeCreationFlags): string; overload;
+function dbgs(AState: TGDBTypeProcessState): string; overload;
 function dbgs(AKind: TGDBPTypeResultKind): string; overload;
 function dbgs(AReqType: TGDBCommandRequestType): string; overload;
 function dbgs(AReq: TGDBPTypeRequest): string; overload;
@@ -915,6 +926,29 @@ begin
       Result := Result + dbgs(i);
     end;
   if Result <> '' then Result := '[' + Result + ']';
+end;
+
+function dbgs(AFlag: TGDBTypeCreationFlag): string;
+begin
+  writestr(Result, AFlag);
+end;
+
+function dbgs(AFlags: TGDBTypeCreationFlags): string;
+var
+  i: TGDBTypeCreationFlag;
+begin
+  Result:='';
+  for i := low(TGDBTypeCreationFlags) to high(TGDBTypeCreationFlags) do
+    if i in AFlags then begin
+      if Result <> '' then Result := Result + ', ';
+      Result := Result + dbgs(i);
+    end;
+  if Result <> '' then Result := '[' + Result + ']';
+end;
+
+function dbgs(AState: TGDBTypeProcessState): string;
+begin
+  writestr(Result, AState);
 end;
 
 function dbgs(AKind: TGDBPTypeResultKind): string;
@@ -2004,8 +2038,13 @@ begin
   FParsedExpression := nil;
 end;
 
+function TGDBType.DebugString: String;
+begin
+  Result := Format('Expr="%s", Flags=%s, State=%s', [FExpression, dbgs(FCreationFlags), dbgs(FProcessState)]);
+end;
+
 constructor TGDBType.CreateForExpression(const AnExpression: string;
-  const AFlags: TGDBTypeCreationFlags; AFormat: TWatchDisplayFormat = wdfDefault);
+  const AFlags: TGDBTypeCreationFlags; AFormat: TWatchDisplayFormat; ARepeatCount: Integer);
 begin
   Create(skSimple, ''); // initialize
   FInternalTypeName := '';
@@ -2023,6 +2062,9 @@ begin
   FHasAutoTypeCastFix := False;
   FAutoTypeCastName := '';
   FArrayIndexValueLimit := 5;
+  FRepeatCountEval := nil;
+  FRepeatCount := ARepeatCount;
+  FRepeatFirstIndex := 0;
 end;
 
 destructor TGDBType.Destroy;
@@ -2035,6 +2077,7 @@ begin
     FArrayIndexValues[i].Free;
   FArrayIndexValues := nil;
   FreeAndNil(FParsedExpression);
+  FreeAndNil(FRepeatCountEval);
 end;
 
 function TGDBType.ProcessExpression: Boolean;
@@ -2043,6 +2086,7 @@ var
   procedure ProcessInitial; forward;
   procedure ProcessInitialSimple; forward;
   procedure ProcessSimplePointer; forward;
+  procedure EvaluateExpression; forward;
 
 
   function ClearAmpersand(s: string): string;
@@ -2546,15 +2590,17 @@ var
           FExprEvaluatedAsText := FExprEvaluatedAsText + ', ';
         FExprEvaluatedAsText := FExprEvaluatedAsText + s;
       end;
-      if FArrayIndexValueLimit < FLen then
+      if Length(FArrayIndexValues) < FLen then
         FExprEvaluatedAsText := FExprEvaluatedAsText + ', ...';
 
+      FHasExprEvaluatedAsText := True;
       Result := True;
       exit;
     end;
 
     if (FExprEvaluatedAsText <> '') and
-       (FExprEvaluatedAsText[1] = '{')   // gdb returned array data
+       (FExprEvaluatedAsText[1] = '{') and   // gdb returned array data
+       not(gtcfForceArrayEval in FCreationFlags)
     then begin
       if (FLen = 0) or
          ((Length(FExprEvaluatedAsText) > 1) and (FExprEvaluatedAsText[2] <> '}') )
@@ -2565,11 +2611,11 @@ var
     end;
 
     // Get Data
-    m := Min(FArrayIndexValueLimit, FLen);
+    m := Min(Max(FArrayIndexValueLimit, FRepeatCount), FLen);
     SetLength(FArrayIndexValues, m);
     for i := 0 to m-1 do begin
-      FArrayIndexValues[i] := TGDBType.CreateForExpression(FExpression+'['+IntToStr(i)+']',
-        FCreationFlags + [gtcfExprEvaluate]);
+      FArrayIndexValues[i] := TGDBType.CreateForExpression(FExpression+'['+IntToStr(FRepeatFirstIndex + i)+']',
+        FCreationFlags + [gtcfExprEvaluate] - [gtcfForceArrayEval]);
       if i = 0
       then FArrayIndexValues[i].FArrayIndexValueLimit := FArrayIndexValueLimit - 2
       else FArrayIndexValues[i].FArrayIndexValueLimit := FArrayIndexValueLimit - 3;
@@ -2647,6 +2693,10 @@ var
     FBoundHigh := PCLenToInt(PTypeResult.BoundHigh);
     FLen := PCLenToInt(PTypeResult.BoundHigh) - PCLenToInt(PTypeResult.BoundLow) + 1;
 
+    if (gtcfForceArrayEval in FCreationFlags) then begin
+      EvaluateExpressionDynArrayGetData;
+      exit;
+    end;
 
     if (saInternalPointer in FAttributes) then begin
       if not RequireRequests([gptrEvalExprDeRef]) then exit;
@@ -2678,12 +2728,92 @@ var
     Result := True;
   end;
 
+  procedure EvaluateExpressionRepeated;
+  var
+    ExpArray: TGDBExpressionPartArray;
+    s: String;
+    Idx: Int64;
+    Error: word;
+  begin
+    FProcessState := gtpsEvalExprRepeated;
+
+    if (FRepeatCount < 1) then begin
+      Result := True;
+      exit;
+    end;
+
+    if (FRepeatCount < 1) or (FParsedExpression.PartCount <> 1) or
+       not (FParsedExpression.Parts[0] is TGDBExpressionPartArray)
+    then begin
+      FRepeatCount := 0;
+      EvaluateExpression;
+      exit;
+    end;
+
+    if FRepeatCountEval <> nil then begin
+      if not FRepeatCountEval.HasExprEvaluatedAsText then begin
+        FRepeatCount := 0;
+        EvaluateExpression;
+        exit;
+      end;
+      FExprEvaluatedAsText := FRepeatCountEval.ExprEvaluatedAsText;
+      FHasExprEvaluatedAsText := True;
+      FreeAndNil(FRepeatCountEval);
+      Result := True;
+      exit;
+    end;
+
+    ExpArray := TGDBExpressionPartArray(FParsedExpression.Parts[0]);
+	if ExpArray.IndexCount < 1 then begin
+      FRepeatCount := 0;
+      EvaluateExpression;
+      exit;
+    end;
+
+    s := ExpArray.IndexPart[ExpArray.IndexCount - 1].GetPlainText;
+    if not RequireRequests([gptrEvalExpr2], Quote('('+s+')+0')) then exit;
+
+    if IsReqError(gptrEvalExpr2, False) then begin
+      FRepeatCount := 0;
+      EvaluateExpression;
+      exit;
+    end;
+
+    s := GetParsedFromResult(FReqResults[gptrEvalExpr2].Result.GdbDescription, 'value');
+    Val(s, Idx, Error);
+
+    if Error <> 0  then begin
+      FRepeatCount := 0;
+      EvaluateExpression;
+      exit;
+    end;
+
+    FRepeatCountEval := TGDBType.CreateForExpression(
+      ExpArray.GetTextToIdx(ExpArray.IndexCount-2),
+      FCreationFlags + [gtcfExprEvaluate, gtcfForceArrayEval],
+      FExprEvaluateFormat,
+      FRepeatCount
+    );
+    FRepeatCountEval.RepeatFirstIndex := Idx;
+    AddSubType(FRepeatCountEval);
+
+  end;
+
   procedure EvaluateExpression;
   begin
     FProcessState := gtpsEvalExpr;
 
     if not(gtcfExprEvaluate in FCreationFlags) then begin
       Result := True;
+      exit;
+    end;
+
+    if (FRepeatCount > 1) and (FParsedExpression.PartCount = 1) and
+       (FParsedExpression.Parts[0] is TGDBExpressionPartArray) and
+       not(gtcfForceArrayEval in FCreationFlags)
+    then begin
+      exclude(FProccesReuestsMade, gptrEvalExpr2);
+      EvaluateExpressionRepeated;
       exit;
     end;
 
@@ -2698,6 +2828,14 @@ var
 
     if FExprEvaluateFormat <> wdfDefault then begin;
       Result := True;
+      exit;
+    end;
+
+    if (gtcfForceArrayEval in FCreationFlags) then begin
+      FBoundLow :=  FRepeatFirstIndex;
+      FBoundHigh := FRepeatFirstIndex + FRepeatCount - 1;
+      FLen := FRepeatCount;
+      EvaluateExpressionDynArrayGetData;
       exit;
     end;
 
@@ -2738,25 +2876,25 @@ var
       end;
     end;
 
-    if not RequireRequests([gptrEvalExpr]) then exit;
-    if not IsReqError(gptrEvalExpr, False) then begin
-      ParseFromResult(FReqResults[gptrEvalExpr].Result.GdbDescription, 'value');
+      if not RequireRequests([gptrEvalExpr]) then exit;
+      if not IsReqError(gptrEvalExpr, False) then begin
+        ParseFromResult(FReqResults[gptrEvalExpr].Result.GdbDescription, 'value');
 
-      if (gtcfExprEvalStrFixed in FCreationFlags) and
-         (FParsedExpression <> nil) and FParsedExpression.MayNeedStringFix
-      then begin
-        if not RequireRequests([gptrEvalExpr2], FParsedExpression.TextStrFixed) then exit;
-        ParseFromResultForStrFixed(FReqResults[gptrEvalExpr2].Result.GdbDescription, 'value');
-      end;
+        if (gtcfExprEvalStrFixed in FCreationFlags) and
+           (FParsedExpression <> nil) and FParsedExpression.MayNeedStringFix
+        then begin
+          if not RequireRequests([gptrEvalExpr2], FParsedExpression.TextStrFixed) then exit;
+          ParseFromResultForStrFixed(FReqResults[gptrEvalExpr2].Result.GdbDescription, 'value');
+        end;
 
-      Result := True;
+        Result := True;
       exit;
     end;
 
-    // TODO: set Validity = error
-    ParseFromResult(FReqResults[gptrEvalExpr].Result.GdbDescription, 'msg');
-    Result := True;
-  end;
+      // TODO: set Validity = error
+      ParseFromResult(FReqResults[gptrEvalExpr].Result.GdbDescription, 'msg');
+      Result := True;
+    end;
   {%endregion    * EvaluateExpression * }
 
   procedure ProcessInitialSimple;
@@ -2984,10 +3122,10 @@ var
   var
     SubType, PrevSubType: TGDBType;
   begin
+    DebugLnEnter(DBGMI_TYPE_INFO, ['>>Enter Sub-Requests']);
     PrevSubType := nil;
     SubType := FFirstProcessingSubType;
     while SubType <> nil do begin
-      DebugLnEnter(DBGMI_TYPE_INFO, ['>>Enter Sub-Request']);
       if SubType.ProcessExpression then begin
         if PrevSubType = nil
         then FFirstProcessingSubType := SubType.FNextProcessingSubType
@@ -2996,10 +3134,10 @@ var
       else
         PrevSubType := SubType;
       SubType := SubType.FNextProcessingSubType;
-      DebugLnExit(DBGMI_TYPE_INFO, ['>>Leave Sub-Request']);
     end;
 
     Result := FFirstProcessingSubType = nil;
+    DebugLnExit(DBGMI_TYPE_INFO, ['>>Leave Sub-Request']);
   end;
 
 var
@@ -3011,8 +3149,7 @@ begin
   FEvalRequest := nil;
   FLastEvalRequest := nil;
   Lines := nil;
-  WriteStr(s, FProcessState); // TODO dbgs
-  DebugLnEnter(DBGMI_TYPE_INFO, ['>>Enter: TGDBType.ProcessExpression: state = ', s, '   Expression="', FExpression, '"']);
+  DebugLnEnter(DBGMI_TYPE_INFO, ['>>Enter: TGDBType.ProcessExpression: ', DebugString]);
   try
 
 
@@ -3036,6 +3173,7 @@ begin
     gtpsClassAncestor:    ProcessClassAncestor;
     gtpsArray:            ProcessArray;
     gtpsEvalExpr:         EvaluateExpression;
+    gtpsEvalExprRepeated: EvaluateExpressionRepeated;
     gtpsEvalExprArray:    EvaluateExpressionArray;
     gtpsEvalExprDynArray: EvaluateExpressionDynArray;
     gtpsEvalExprDynArrayGetData: EvaluateExpressionDynArrayGetData;

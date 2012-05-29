@@ -259,7 +259,8 @@ type
     function  GetWideText(const ALocation: TDBGPtr): String;
     function  GetGDBTypeInfo(const AExpression: String; FullTypeInfo: Boolean = False;
                              AFlags: TGDBTypeCreationFlags = [];
-                             AFormat: TWatchDisplayFormat = wdfDefault): TGDBType;
+                             AFormat: TWatchDisplayFormat = wdfDefault;
+                             ARepeatCount: Integer = 0): TGDBType;
     function  GetClassName(const AClass: TDBGPtr): String; overload;
     function  GetClassName(const AExpression: String; const AValues: array of const): String; overload;
     function  GetInstanceClassName(const AInstance: TDBGPtr): String; overload;
@@ -10402,8 +10403,8 @@ begin
 end;
 
 function TGDBMIDebuggerCommand.GetGDBTypeInfo(const AExpression: String;
-  FullTypeInfo: Boolean = False; AFlags: TGDBTypeCreationFlags = [];
-  AFormat: TWatchDisplayFormat = wdfDefault): TGDBType;
+  FullTypeInfo: Boolean; AFlags: TGDBTypeCreationFlags; AFormat: TWatchDisplayFormat;
+  ARepeatCount: Integer): TGDBType;
 var
   R: TGDBMIExecResult;
   f: Boolean;
@@ -10477,7 +10478,7 @@ begin
   then AFlags := AFlags + [gtcfClassIsPointer];
   if FullTypeInfo
   then AFlags := AFlags + [gtcfFullTypeInfo];
-  Result := TGdbType.CreateForExpression(AExpression, AFlags);
+  Result := TGdbType.CreateForExpression(AExpression, AFlags, wdfDefault, ARepeatCount);
   while not Result.ProcessExpression do begin
     if Result.EvalError
     then break;
@@ -12094,7 +12095,7 @@ var
     ResultList: TGDBMINameValueList;
     R: TGDBMIExecResult;
     MemDump: TGDBMIMemoryDumpResultList;
-    Size: integer;
+    i, Size: integer;
     s: String;
   begin
     Result := False;
@@ -12225,8 +12226,10 @@ var
         begin
           Result := False;
           Assert(FTypeInfo = nil, 'Type info must be nil');
+          i := 0;
+          if FWatchValue <> nil then i := FWatchValue.RepeatCount;
           FTypeInfo := GetGDBTypeInfo(AnExpression, defFullTypeInfo in FEvalFlags,
-            TypeInfoFlags + [gtcfExprEvaluate, gtcfExprEvalStrFixed], FDisplayFormat);
+            TypeInfoFlags + [gtcfExprEvaluate, gtcfExprEvalStrFixed], FDisplayFormat, i);
 
           if (FTypeInfo = nil) or (dcsCanceled in SeenStates)
           then begin

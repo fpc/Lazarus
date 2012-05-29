@@ -39,7 +39,7 @@ unit WatchPropertyDlg;
 interface
 
 uses
-  Classes, Forms, StdCtrls, Extctrls, ButtonPanel, LazarusIDEStrConsts,
+  Classes, sysutils, Forms, StdCtrls, Extctrls, ButtonPanel, LazarusIDEStrConsts,
   IDEHelpIntf, Debugger, BaseDebugManager, DebuggerStrConst;
 
 type
@@ -97,6 +97,8 @@ begin
   if chkUseInstanceClass.Checked
   then FWatch.EvaluateFlags := [defClassAutoCast]
   else FWatch.EvaluateFlags := [];
+  FWatch.RepeatCount := StrToIntDef(txtRepCount.Text, 0);
+
   FWatch.Enabled := chkEnabled.Checked;
 end;
 
@@ -124,17 +126,16 @@ begin
     txtExpression.Text := AWatchExpression;
     rgStyle.ItemIndex := 7;
     chkUseInstanceClass.Checked := False;
+    txtRepCount.Text := '0';
   end
   else begin
     txtExpression.Text := FWatch.Expression;
     chkEnabled.Checked := FWatch.Enabled;
     rgStyle.ItemIndex := DispFormatToStyle[FWatch.DisplayFormat];
     chkUseInstanceClass.Checked := defClassAutoCast in FWatch.EvaluateFlags;
+    txtRepCount.Text := IntToStr(FWatch.RepeatCount);
   end;
 
-
-  lblRepCount.Enabled := False;
-  txtRepCount.Enabled := False;
   lblDigits.Enabled := False;
   txtDigits.Enabled := False;
   chkAllowFunc.Enabled := False;
