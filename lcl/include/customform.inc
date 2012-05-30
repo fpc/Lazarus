@@ -3009,13 +3009,7 @@ begin
     CtrlCaption:=GetDockCaption(AControl);
     if CtrlCaption='' then continue;
     // do not put garbage in the title
-    p:=FindInvalidUTF8Character(PChar(CtrlCaption),length(CtrlCaption),true);
-    if p>=0 then
-    begin
-      CtrlCaption:=copy(CtrlCaption,1,p+1);
-      if CtrlCaption='' then
-        CtrlCaption:='?';
-    end;
+    UTF8FixBroken(CtrlCaption);
     if not (AControl is TCustomForm) then
     begin
       // non controls like tmemo can have very long captions => cut them
