@@ -90,7 +90,7 @@
   <Node45 Name="TCodeToolsOptsDlg" Path="Codetools_Options" HasHelp="True"/>
   <Node46 Name="TCodeToolsDefinesEditor" Path="Codetools_Defines_Editor" HasHelp="True"/>
   <Node47 Name="THelpOptionsDialog" Path="Help_Options" HasHelp="True"/>
-  <Node48 Name="TWatchPropertyDlg" Path="Watch_Properties" HasHelp="True"/>
+  <Node48 Name="TWatchPropertyDlg" Path="Watch_list#Watch_Properties" HasHelp="True" IsRoot="True"/>
   <Node49 Name="TNewOtherDialog" Path="New_Item" HasHelp="True"/>
   <Node50 Name="TObjectInspectorDlg" Path="TObjectInspectorDlg" HasHelp="True"/>
   <Node51 Name="TFPDocEditor" Path="FPDoc_Editor" HasHelp="True"/>
