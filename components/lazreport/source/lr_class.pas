@@ -8264,10 +8264,13 @@ begin
           end;
         end;
       fmtDate:
-         if f2 = 4 then
-           Result := SysToUTF8(FormatDateTime(AFormatStr, v))
-         else
-           Result := FormatDateTime(frDateFormats[f2], v);
+        if v=0 then
+          Result := ''  // date is null
+        else
+        if f2 = 4 then
+          Result := SysToUTF8(FormatDateTime(AFormatStr, v))
+        else
+          Result := FormatDateTime(frDateFormats[f2], v);
       fmtTime:
          if f2 = 4 then
            Result := FormatDateTime(AFormatStr, v)
