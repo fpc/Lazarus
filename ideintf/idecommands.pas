@@ -115,8 +115,9 @@ const
   ecInsertCVSRevision       = ecFirstLazarus + 92;
   ecInsertCVSSource         = ecFirstLazarus + 93;
   ecInsertModifiedLGPLNotice= ecFirstLazarus + 94;
-  ecInsertGUID              = ecFirstLazarus + 95;
-  ecInsertFilename          = ecFirstLazarus + 96;
+  ecInsertMITNotice         = ecFirstLazarus + 95;
+  ecInsertGUID              = ecFirstLazarus + 96;
+  ecInsertFilename          = ecFirstLazarus + 97;
 
   // source tools
   ecWordCompletion          = ecFirstLazarus + 100;

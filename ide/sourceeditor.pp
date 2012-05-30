@@ -405,6 +405,7 @@ type
     procedure InsertGPLNotice(CommentType: TCommentType);
     procedure InsertLGPLNotice(CommentType: TCommentType);
     procedure InsertModifiedLGPLNotice(CommentType: TCommentType);
+    procedure InsertMITNotice(CommentType: TCommentType);
     procedure InsertUsername;
     procedure InsertDateTime;
     procedure InsertChangeLogEntry;
@@ -3192,6 +3193,9 @@ Begin
   ecInsertModifiedLGPLNotice:
     InsertModifiedLGPLNotice(comtDefault);
 
+  ecInsertMITNotice:
+    InsertMITNotice(comtDefault);
+
   ecInsertUserName:
     InsertUsername;
 
@@ -3639,6 +3643,11 @@ end;
 procedure TSourceEditor.InsertModifiedLGPLNotice(CommentType: TCommentType);
 begin
   InsertLicenseNotice(lisModifiedLGPLNotice, CommentType);
+end;
+
+procedure TSourceEditor.InsertMITNotice(CommentType: TCommentType);
+begin
+  InsertLicenseNotice(lisMITNotice, CommentType);
 end;
 
 procedure TSourceEditor.InsertUsername;

@@ -457,6 +457,7 @@ begin
     ecInsertGPLNotice         : Result:= srkmecInsertGPLNotice;
     ecInsertLGPLNotice        : Result:= srkmecInsertLGPLNotice;
     ecInsertModifiedLGPLNotice: Result:= srkmecInsertModifiedLGPLNotice;
+    ecInsertMITNotice         : Result:= srkmecInsertMITNotice;
     ecInsertUserName          : Result:= srkmecInsertUserName;
     ecInsertDateTime          : Result:= srkmecInsertDateTime;
     ecInsertChangeLogEntry    : Result:= srkmecInsertChangeLogEntry;
@@ -959,6 +960,7 @@ begin
   ecInsertGPLNotice:     SetSingle(VK_UNKNOWN,[]);
   ecInsertLGPLNotice:    SetSingle(VK_UNKNOWN,[]);
   ecInsertModifiedLGPLNotice:SetSingle(VK_UNKNOWN,[]);
+  ecInsertMITNotice:     SetSingle(VK_UNKNOWN,[]);
   ecInsertUserName:      SetSingle(VK_UNKNOWN,[]);
   ecInsertDateTime:      SetSingle(VK_UNKNOWN,[]);
   ecInsertChangeLogEntry:SetSingle(VK_UNKNOWN,[]);
@@ -1403,6 +1405,7 @@ begin
   ecInsertGPLNotice:     SetSingle(VK_UNKNOWN,[]);
   ecInsertLGPLNotice:    SetSingle(VK_UNKNOWN,[]);
   ecInsertModifiedLGPLNotice:SetSingle(VK_UNKNOWN,[]);
+  ecInsertMITNotice:     SetSingle(VK_UNKNOWN,[]);
   ecInsertUserName:      SetSingle(VK_UNKNOWN,[]);
   ecInsertDateTime:      SetSingle(VK_UNKNOWN,[]);
   ecInsertChangeLogEntry:SetSingle(VK_UNKNOWN,[]);
@@ -2008,6 +2011,7 @@ begin
   ecInsertGPLNotice:     SetSingle(VK_UNKNOWN,[]);
   ecInsertLGPLNotice:    SetSingle(VK_UNKNOWN,[]);
   ecInsertModifiedLGPLNotice:SetSingle(VK_UNKNOWN,[]);
+  ecInsertMITNotice:     SetSingle(VK_UNKNOWN,[]);
   ecInsertUserName:      SetSingle(VK_UNKNOWN,[]);
   ecInsertDateTime:      SetSingle(VK_UNKNOWN,[]);
   ecInsertChangeLogEntry:SetSingle(VK_UNKNOWN,[]);
@@ -2533,6 +2537,7 @@ begin
   AddDefault(C, 'Insert GPL notice', srkmecInsertGPLNotice, ecInsertGPLNotice);
   AddDefault(C, 'Insert LGPL notice', srkmecInsertLGPLNotice, ecInsertLGPLNotice);
   AddDefault(C, 'Insert modified LGPL notice', srkmecInsertModifiedLGPLNotice, ecInsertModifiedLGPLNotice);
+  AddDefault(C, 'Insert MIT notice', srkmecInsertMITNotice, ecInsertMITNotice);
   AddDefault(C, 'Insert username', lisKMInsertUsername, ecInsertUserName);
   AddDefault(C, 'Insert date and time', lisKMInsertDateAndTime, ecInsertDateTime);
   AddDefault(C, 'Insert ChangeLog entry', srkmecInsertChangeLogEntry, ecInsertChangeLogEntry);

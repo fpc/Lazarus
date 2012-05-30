@@ -280,6 +280,7 @@ type
     procedure mnuSourceInsertGPLNoticeClick(Sender: TObject);
     procedure mnuSourceInsertLGPLNoticeClick(Sender: TObject);
     procedure mnuSourceInsertModifiedLGPLNoticeClick(Sender: TObject);
+    procedure mnuSourceInsertMITNoticeClick(Sender: TObject);
     procedure mnuSourceInsertUsernameClick(Sender: TObject);
     procedure mnuSourceInsertDateTimeClick(Sender: TObject);
     procedure mnuSourceInsertChangeLogEntryClick(Sender: TObject);
@@ -2641,6 +2642,7 @@ begin
     itmSourceInsertGPLNotice.OnClick:=@mnuSourceInsertGPLNoticeClick;
     itmSourceInsertLGPLNotice.OnClick:=@mnuSourceInsertLGPLNoticeClick;
     itmSourceInsertModifiedLGPLNotice.OnClick:=@mnuSourceInsertModifiedLGPLNoticeClick;
+    itmSourceInsertMITNotice.OnClick:=@mnuSourceInsertMITNoticeClick;
     itmSourceInsertUsername.OnClick:=@mnuSourceInsertUsernameClick;
     itmSourceInsertDateTime.OnClick:=@mnuSourceInsertDateTimeClick;
     itmSourceInsertChangeLogEntry.OnClick:=@mnuSourceInsertChangeLogEntryClick;
@@ -4050,6 +4052,7 @@ begin
       itmSourceInsertGPLNotice.Enabled:=Editable;
       itmSourceInsertLGPLNotice.Enabled:=Editable;
       itmSourceInsertModifiedLGPLNotice.Enabled:=Editable;
+      itmSourceInsertMITNotice.Enabled:=Editable;
       itmSourceInsertUsername.Enabled:=Editable;
       itmSourceInsertDateTime.Enabled:=Editable;
       itmSourceInsertChangeLogEntry.Enabled:=Editable;
@@ -18908,6 +18911,11 @@ end;
 procedure TMainIDE.mnuSourceInsertModifiedLGPLNoticeClick(Sender: TObject);
 begin
   DoSourceEditorCommand(ecInsertModifiedLGPLNotice,false);
+end;
+
+procedure TMainIDE.mnuSourceInsertMITNoticeClick(Sender: TObject);
+begin
+  DoSourceEditorCommand(ecInsertMITNotice,false);
 end;
 
 procedure TMainIDE.mnuSourceInsertUsernameClick(Sender: TObject);

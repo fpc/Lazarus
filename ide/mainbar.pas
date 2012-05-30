@@ -226,6 +226,7 @@ type
         itmSourceInsertGPLNotice: TIDEMenuCommand;
         itmSourceInsertLGPLNotice: TIDEMenuCommand;
         itmSourceInsertModifiedLGPLNotice: TIDEMenuCommand;
+        itmSourceInsertMITNotice: TIDEMenuCommand;
         itmSourceInsertUsername: TIDEMenuCommand;
         itmSourceInsertDateTime: TIDEMenuCommand;
         itmSourceInsertChangeLogEntry: TIDEMenuCommand;
