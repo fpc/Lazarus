@@ -90,6 +90,7 @@
     - http://bugs.freepascal.org/view.php?id=19200 minimize+restore resize
     - http://bugs.freepascal.org/view.php?id=19132 docking already docked
     - http://bugs.freepascal.org/view.php?id=18553 dock designer windows
+    - http://bugs.freepascal.org/view.php?id=22149 keep caption of a custom dock site
 }
 unit AnchorDocking;
 
@@ -371,7 +372,7 @@ type
 
     property Site: TWinControl read FSite; // the associated TControl (a TAnchorDockHostSite or a custom dock site)
     property DockSite: TAnchorDockHostSite read FDockSite; // if Site is a TAnchorDockHostSite, this is it
-    property DockableSites: TAnchors read FDockableSites write FDockableSites; // at which sides can be docked.
+    property DockableSites: TAnchors read FDockableSites write FDockableSites; // at which sides can be docked
     property InsideDockingAllowed: boolean read FInsideDockingAllowed write FInsideDockingAllowed; // if true allow to put a site into the custom dock site
     function GetChildSite: TAnchorDockHostSite; // get first child TAnchorDockHostSite
     property ResizePolicy: TADMResizePolicy read FResizePolicy write FResizePolicy;
@@ -615,7 +616,7 @@ type
     property ShowMenuItemShowHeader: boolean read FShowMenuItemShowHeader write SetShowMenuItemShowHeader default false;
     property ShowHeaderCaption: boolean read FShowHeaderCaption write SetShowHeaderCaption default true; // set to false to remove the text in the headers
     property HideHeaderCaptionFloatingControl: boolean read FHideHeaderCaptionFloatingControl
-                          write SetHideHeaderCaptionFloatingControl default true;
+                          write SetHideHeaderCaptionFloatingControl default true; // disables ShowHeaderCaption for floating controls
     property AllowDragging: boolean read FAllowDragging write SetAllowDragging default true;
     property HeaderButtonSize: integer read FHeaderButtonSize write SetHeaderButtonSize default 10;
     property OptionsChangeStamp: int64 read FOptionsChangeStamp;
@@ -4522,6 +4523,7 @@ begin
   end;
   OldCaption:=Caption;
   Caption:=NewCaption;
+  //debugln(['TAnchorDockHostSite.UpdateDockCaption Caption="',Caption,'" NewCaption="',NewCaption,'" HasParent=',Parent<>nil,' ',DbgSName(Header)]);
   if ((Parent=nil) and DockMaster.HideHeaderCaptionFloatingControl)
   or (not DockMaster.ShowHeaderCaption) then
     Header.Caption:=''
