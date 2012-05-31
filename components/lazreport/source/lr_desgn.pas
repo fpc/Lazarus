@@ -5358,7 +5358,7 @@ begin
   DoClearFormsName;
   CurReport:=nil;
 
-  Rep:=TfrReport.Create(nil);
+  Rep:=TfrReport.Create(SaveR.Owner);
   try
     Rep.LoadFromXMLStream(TestRepStream);
     Rep.ShowReport;
