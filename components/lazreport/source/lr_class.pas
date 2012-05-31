@@ -243,6 +243,7 @@ type
     FDataSet: TfrTDataSet;
     FField: String;
     olddy: Integer;
+    oldy: Integer;
 
     procedure ShowBackGround; virtual;
     procedure ShowFrame; virtual;
@@ -5022,7 +5023,7 @@ var
   t: TfrView;
 begin
   {$IFDEF DebugLR}
-  DebugLnEnter('TfrBand.StretchObjects INIT MaxHeight=%d',[MaxHeight]);
+  DebugLnEnter('TfrBand.StretchObjects INIT MaxHeight=%d Self.dy=%d',[MaxHeight,Self.dy]);
   {$ENDIF}
   for i := 0 to Objects.Count - 1 do
   begin
@@ -5033,6 +5034,7 @@ begin
         {$IFDEF DebugLR}
         DebugLn('i=%d View=%s Antes: y=%d dy=%d',[i,ViewInfo(t), t.y,t.dy]);
         {$ENDIF}
+        t.oldy := t.y;
         if t.dy=0 then
           t.y := t.y + (MaxHeight - self.dy)
         else
@@ -5056,6 +5058,7 @@ begin
   begin
     t :=TfrView(Objects[i]);
     t.dy := t.olddy;
+    t.y := t.oldy;
   end;
 end;
 
