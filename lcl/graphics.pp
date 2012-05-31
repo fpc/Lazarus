@@ -1945,7 +1945,7 @@ function ClearXLFDHeight(const LongFontName: string): string;
 function ClearXLFDPitch(const LongFontName: string): string;
 function ClearXLFDStyle(const LongFontName: string): string;
 function XLFDHeightIsSet(const LongFontName: string): boolean;
-procedure FontNameToPangoFontDescStr(const LongFontName: string;
+procedure XLFDNameToPangoFontDescStr(const LongFontName: string;
   out aFamily,aStyle:String; out aSize: Integer);
 
 // graphics
