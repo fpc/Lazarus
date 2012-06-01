@@ -89,6 +89,25 @@ var
 
 const
   RevisionIncComment = '// Created by Svn2RevisionInc';
+  
+function GitInPath: Boolean;
+var
+  P: TProcessUTF8;
+begin
+  Result := True;
+  P := TProcessUTF8.Create(nil);
+  try
+    P.Options := [poUsePipes, poWaitOnExit];
+    P.CommandLine := 'git --version';
+    try
+      P.Execute;
+    except
+      Result := False;
+    end;
+  finally
+    P.Destroy;
+  end;
+end;  
 
 function TSvn2RevisionApplication.FindRevision: boolean;
 var
@@ -238,7 +257,7 @@ begin
   if not Result then
   begin
     GitDir:= AppendPathDelim(SourceDirectory)+'.git';
-    if DirectoryExistsUTF8(GitDir) then
+    if DirectoryExistsUTF8(GitDir) and GitInPath then
     begin
       if IsThisGitUpstreamBranch then
         Result := GetRevisionFromGitVersion
