@@ -46,19 +46,25 @@ uses
 ////////////////////////////////////////////////////
   StdCtrls, CheckLst,
 ////////////////////////////////////////////////////
-  WSLCLClasses, WSStdCtrls, WSFactory;
+  WSLCLClasses, WSStdCtrls, Classes, WSFactory;
 
 type
   { TWSCustomCheckListBox }
 
   TWSCustomCheckListBox = class(TWSCustomListBox)
   published
+    class function GetCheckWidth(const ACheckListBox: TCustomCheckListBox):
+      integer; virtual;
     class function GetItemEnabled(const ACheckListBox: TCustomCheckListBox;
+      const AIndex: integer): Boolean; virtual;
+    class function GetHeader(const ACheckListBox: TCustomCheckListBox;
       const AIndex: integer): Boolean; virtual;
     class function GetState(const ACheckListBox: TCustomCheckListBox;
       const AIndex: integer): TCheckBoxState; virtual;
     class procedure SetItemEnabled(const ACheckListBox: TCustomCheckListBox;
       const AIndex: integer; const AEnabled: Boolean); virtual;
+    class procedure SetHeader(const ACheckListBox: TCustomCheckListBox;
+      const AIndex: integer; const AHeader: Boolean); virtual;
     class procedure SetState(const ACheckListBox: TCustomCheckListBox;
       const AIndex: integer; const AState: TCheckBoxState); virtual;
   end;
@@ -69,6 +75,18 @@ type
   procedure RegisterCustomCheckListBox;
 
 implementation
+
+class function TWSCustomCheckListBox.GetCheckWidth(
+  const ACheckListBox: TCustomCheckListBox): Integer;
+begin
+  Result := 0;
+end;
+
+class function TWSCustomCheckListBox.GetHeader(
+  const ACheckListBox: TCustomCheckListBox; const AIndex: integer): Boolean;
+begin
+  Result := False;
+end;
 
 class function TWSCustomCheckListBox.GetItemEnabled(
   const ACheckListBox: TCustomCheckListBox; const AIndex: integer): Boolean;
@@ -81,6 +99,12 @@ class function TWSCustomCheckListBox.GetState(
   ): TCheckBoxState;
 begin
   Result := cbUnchecked;
+end;
+
+class procedure TWSCustomCheckListBox.SetHeader(
+  const ACheckListBox: TCustomCheckListBox; const AIndex: integer;
+  const AHeader: Boolean);
+begin
 end;
 
 class procedure TWSCustomCheckListBox.SetItemEnabled(
