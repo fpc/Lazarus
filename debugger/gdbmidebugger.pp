@@ -818,6 +818,7 @@ type
     function GetInfo(AAdress: TDbgPtr; out ASource, ALine, AOffset: Integer): Boolean; override;
     function IndexOf(const ASource: String): integer; override;
     procedure Request(const ASource: String); override;
+    procedure Cancel(const ASource: String); override;
   end;
 
   {%endregion   ^^^^^  LineSymbolInfo  ^^^^^   }
@@ -5483,7 +5484,7 @@ begin
   Result := True;
   ExecuteCommand('-symbol-list-lines %s', [FSource], FResult);
 
-  if FResult.State = dsError
+  if (FResult.State = dsError) and not(dcsCanceled in SeenStates)
   then begin
     // the second trial: gdb can return info to file w/o path
     Src := ExtractFileName(FSource);
@@ -6006,6 +6007,23 @@ begin
   FGetLineSymbolsCmdObj.Priority := GDCMD_PRIOR_LINE_INFO;
   TGDBMIDebugger(Debugger).QueueCommand(FGetLineSymbolsCmdObj);
   (* DoEvaluationFinished may be called immediately at this point *)
+end;
+
+procedure TGDBMILineInfo.Cancel(const ASource: String);
+var
+  i: Integer;
+  q: TGDBMIDebugger;
+begin
+  q := TGDBMIDebugger(Debugger);
+  i := q.FCommandQueue.Count - 1;
+  while i >= 0 do begin
+    if (q.FCommandQueue[i] is TGDBMIDebuggerCommandLineSymbolInfo) and
+       (TGDBMIDebuggerCommandLineSymbolInfo(q.FCommandQueue[i]).Source = ASource)
+    then q.FCommandQueue[i].Cancel;
+    dec(i);
+    if i >= q.FCommandQueue.Count
+    then i := q.FCommandQueue.Count - 1;
+  end;
 end;
 
 

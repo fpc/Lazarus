@@ -1501,6 +1501,7 @@ type
     function GetInfo({%H-}AAdress: TDbgPtr; out {%H-}ASource, {%H-}ALine, {%H-}AOffset: Integer): Boolean; virtual;
     function IndexOf(const {%H-}ASource: String): integer; virtual;
     procedure Request(const {%H-}ASource: String); virtual;
+    procedure Cancel(const {%H-}ASource: String); virtual;
   public
     property Sources[const AnIndex: Integer]: String read GetSource;
   end;
@@ -1535,6 +1536,7 @@ type
     function GetInfo(AAdress: TDbgPtr; out ASource, ALine, AOffset: Integer): Boolean; override;
     function IndexOf(const ASource: String): integer; override;
     procedure Request(const ASource: String); override;
+    procedure Cancel(const ASource: String); override;
     property Master: TDBGLineInfo read FMaster write SetMaster;
   end;
 
@@ -10129,6 +10131,11 @@ procedure TBaseLineInfo.Request(const ASource: String);
 begin
 end;
 
+procedure TBaseLineInfo.Cancel(const ASource: String);
+begin
+
+end;
+
 function TBaseLineInfo.Count: Integer;
 begin
   Result := 0;
@@ -10245,6 +10252,13 @@ begin
   if Master = nil
   then inherited Request(ASource)
   else Master.Request(ASource);
+end;
+
+procedure TIDELineInfo.Cancel(const ASource: String);
+begin
+  if Master = nil
+  then inherited Cancel(ASource)
+  else Master.Cancel(ASource);
 end;
 
 { TDBGLineInfo }
