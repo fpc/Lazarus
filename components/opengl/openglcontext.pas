@@ -109,7 +109,7 @@ type
     FCurrentFrameTime: integer; // in msec
     FLastFrameTime: integer; // in msec
     FRGBA: boolean;
-    FMultiSampling: Cardinal;
+    FMultiSampling, FAlphaBits, FDepthBits, FStencilBits: Cardinal;
     FSharedOpenGLControl: TCustomOpenGLControl;
     FSharingOpenGlControls: TList;
     function GetSharingControls(Index: integer): TCustomOpenGLControl;
@@ -117,6 +117,9 @@ type
     procedure SetDoubleBuffered(const AValue: boolean);
     procedure SetRGBA(const AValue: boolean);
     procedure SetMultiSampling(const AMultiSampling: Cardinal);
+    procedure SetAlphaBits(const AValue: Cardinal);
+    procedure SetDepthBits(const AValue: Cardinal);
+    procedure SetStencilBits(const AValue: Cardinal);
     procedure SetSharedControl(const AValue: TCustomOpenGLControl);
   protected
     procedure WMPaint(var Message: TLMPaint); message LM_PAINT;
@@ -160,6 +163,10 @@ type
       (see ARB_multisample extension) to see how many samples have been 
       actually allocated for your context. }
     property MultiSampling: Cardinal read FMultiSampling write SetMultiSampling default 1;
+
+    property AlphaBits: Cardinal read FAlphaBits write SetAlphaBits default 0;
+    property DepthBits: Cardinal read FDepthBits write SetDepthBits default 16;
+    property StencilBits: Cardinal read FStencilBits write SetStencilBits default 0;
   end;
 
   { TOpenGLControl }
@@ -172,6 +179,9 @@ type
     property BorderSpacing;
     property Enabled;
     property MultiSampling;
+    property AlphaBits;
+    property DepthBits;
+    property StencilBits;
     property OnChangeBounds;
     property OnClick;
     property OnConstrainedResize;
@@ -264,6 +274,27 @@ begin
   OpenGLAttributesChanged;
 end;
 
+procedure TCustomOpenGLControl.SetAlphaBits(const AValue: Cardinal);
+begin
+  if FAlphaBits=AValue then exit;
+  FAlphaBits:=AValue;
+  OpenGLAttributesChanged;
+end;
+
+procedure TCustomOpenGLControl.SetDepthBits(const AValue: Cardinal);
+begin
+  if FDepthBits=AValue then exit;
+  FDepthBits:=AValue;
+  OpenGLAttributesChanged;
+end;
+
+procedure TCustomOpenGLControl.SetStencilBits(const AValue: Cardinal);
+begin
+  if FStencilBits=AValue then exit;
+  FStencilBits:=AValue;
+  OpenGLAttributesChanged;
+end;
+
 procedure TCustomOpenGLControl.SetSharedControl(
   const AValue: TCustomOpenGLControl);
 begin
@@ -353,6 +384,7 @@ begin
   FDoubleBuffered:=true;
   FRGBA:=true;
   FMultiSampling:=1;
+  FDepthBits:=16;
   ControlStyle:=ControlStyle-[csSetCaption];
   if (csDesigning in ComponentState) then begin
     FCanvas := TControlCanvas.Create;
@@ -495,6 +527,9 @@ begin
                                  OpenGlControl.SharedControl,
                                  AttrControl.DoubleBuffered,AttrControl.RGBA,
                                  AttrControl.MultiSampling,
+                                 AttrControl.AlphaBits,
+                                 AttrControl.DepthBits,
+                                 AttrControl.StencilBits,
                                  AParams);
   end;
 end;

@@ -28,7 +28,8 @@ procedure LOpenGLSwapBuffers(Handle: HWND);
 function LOpenGLMakeCurrent(Handle: HWND): boolean;
 function LOpenGLCreateContext(AWinControl: TWinControl;
                     WSPrivate: TWSPrivateClass; SharedControl: TWinControl;
-                    DoubleBuffered, RGBA: boolean; MultiSampling: Cardinal;
+                    DoubleBuffered, RGBA: boolean;
+                    const MultiSampling, AlphaBits, DepthBits, StencilBits: Cardinal;
                     const AParams: TCreateParams): HWND;
 procedure LOpenGLDestroyContextInfo(AWinControl: TWinControl);
 
@@ -351,7 +352,8 @@ begin
   end;
 end;
 
-function LGlMsCreateOpenGLContextAttrList(DoubleBuffered: boolean; RGBA: boolean; MultiSample: integer
+function LGlMsCreateOpenGLContextAttrList(DoubleBuffered: boolean; RGBA: boolean; 
+  const MultiSampling, AlphaBits, DepthBits, StencilBits: Cardinal
   ): PInteger;
 var
   p: integer;
@@ -377,11 +379,13 @@ var
       Add(WGL_TYPE_COLORINDEX_ARB);
 
     Add(WGL_COLOR_BITS_ARB);  Add(24);
-    Add(WGL_DEPTH_BITS_ARB);  Add(16);
-    if MultiSample > 0 then
+    Add(WGL_ALPHA_BITS_ARB);  Add(AlphaBits);
+    Add(WGL_DEPTH_BITS_ARB);  Add(DepthBits);
+    Add(WGL_STENCIL_BITS_ARB);  Add(StencilBits);
+    if MultiSampling > 1 then
     begin
       Add(WGL_SAMPLE_BUFFERS_ARB); Add(1);
-      Add(WGL_SAMPLES_ARB);        Add(MultiSample);
+      Add(WGL_SAMPLES_ARB);        Add(MultiSampling);
     end;
     Add(0); Add(0);
   end;
@@ -397,7 +401,8 @@ end;
 
 function LOpenGLCreateContext(AWinControl: TWinControl;
   WSPrivate: TWSPrivateClass; SharedControl: TWinControl;
-  DoubleBuffered, RGBA: boolean; MultiSampling: Cardinal;
+  DoubleBuffered, RGBA: boolean;
+  const MultiSampling, AlphaBits, DepthBits, StencilBits: Cardinal;
   const AParams: TCreateParams): HWND;
 var
   Params: TCreateWindowExParams;
@@ -445,7 +450,9 @@ begin
     else
       iPixelType:=PFD_TYPE_COLORINDEX;
     cColorBits:=24; // color depth
-    cDepthBits:=16; // Z-Buffer
+    cAlphaBits:=AlphaBits;
+    cDepthBits:=DepthBits; // Z-Buffer
+    cStencilBits:=StencilBits;
     iLayerType:=PFD_MAIN_PLANE;
   end;
 
@@ -453,7 +460,8 @@ begin
   if (MultiSampling > 1) and WGL_ARB_multisample and WGL_ARB_pixel_format
     and Assigned(wglChoosePixelFormatARB) then
   begin
-    VisualAttrList := LGlMsCreateOpenGLContextAttrList(DoubleBuffered, RGBA, MultiSampling);
+    VisualAttrList := LGlMsCreateOpenGLContextAttrList(DoubleBuffered, RGBA, 
+      MultiSampling, AlphaBits, DepthBits, StencilBits);
     try
       FillChar(VisualAttrFloat, SizeOf(VisualAttrFloat), 0);
       MsInitSuccess := wglChoosePixelFormatARB(Info^.DC, PGLint(VisualAttrList),

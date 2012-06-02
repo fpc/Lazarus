@@ -32,7 +32,8 @@ function LOpenGLMakeCurrent(Handle: HWND): boolean;
 procedure LOpenGLClip(Handle: HWND);
 function LOpenGLCreateContext(AWinControl: TWinControl;
               {%H-}WSPrivate: TWSPrivateClass; SharedControl: TWinControl;
-              DoubleBuffered, RGBA: boolean; MultiSampling: Cardinal;
+              DoubleBuffered, RGBA: boolean;
+              const MultiSampling, AlphaBits, DepthBits, StencilBits: Cardinal;
               const {%H-}AParams: TCreateParams): HWND;
 procedure LOpenGLDestroyContextInfo(AWinControl: TWinControl);
 function CreateOpenGLContextAttrList(DoubleBuffered: boolean;
@@ -162,7 +163,8 @@ end;
 
 function LOpenGLCreateContext(AWinControl: TWinControl;
   WSPrivate: TWSPrivateClass; SharedControl: TWinControl;
-  DoubleBuffered, RGBA: boolean; MultiSampling: Cardinal;
+  DoubleBuffered, RGBA: boolean;
+  const MultiSampling, AlphaBits, DepthBits, StencilBits: Cardinal;
   const AParams: TCreateParams): HWND;
 var
   disp: GDHandle;
