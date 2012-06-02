@@ -6250,8 +6250,6 @@ begin
 end;
 
 procedure TGDBMIDebugger.UnLockCommandProcessing;
-var
-  c: Boolean;
 begin
   dec(FCommandProcessingLock);
   if (FCommandProcessingLock = 0)
