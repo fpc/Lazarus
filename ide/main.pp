@@ -915,7 +915,7 @@ type
 
     // edit menu
     procedure DoCommand(ACommand: integer); override;
-    procedure DoSourceEditorCommand(EditorCommand: integer; CheckFocus: boolean);
+    procedure DoSourceEditorCommand(EditorCommand: integer; CheckFocus: boolean = true);
     procedure UpdateCustomToolsInMenu;
 
     // external tools
@@ -18791,7 +18791,7 @@ begin
   if Assigned(ActiveDesigner) then
     ActiveDesigner.CopySelection
   else
-    DoSourceEditorCommand(ecCopy,false);
+    DoSourceEditorCommand(ecCopy);
 end;
 
 procedure TMainIDE.mnuEditCutClicked(Sender: TObject);
@@ -18802,7 +18802,7 @@ begin
   if Assigned(ActiveDesigner) then
     ActiveDesigner.CutSelection
   else
-    DoSourceEditorCommand(ecCut,false);
+    DoSourceEditorCommand(ecCut);
 end;
 
 procedure TMainIDE.mnuEditPasteClicked(Sender: TObject);
@@ -18813,149 +18813,149 @@ begin
   if Assigned(ActiveDesigner) then
     ActiveDesigner.PasteSelection([cpsfFindUniquePositions])
   else
-    DoSourceEditorCommand(ecPaste,false);
+    DoSourceEditorCommand(ecPaste);
 end;
 
 procedure TMainIDE.mnuEditRedoClicked(Sender: TObject);
 begin
-  DoSourceEditorCommand(ecRedo,true);
+  DoSourceEditorCommand(ecRedo);
 end;
 
 procedure TMainIDE.mnuEditUndoClicked(Sender: TObject);
 begin
-  DoSourceEditorCommand(ecUndo,true);
+  DoSourceEditorCommand(ecUndo);
 end;
 
 procedure TMainIDE.mnuEditIndentBlockClicked(Sender: TObject);
 begin
-  DoSourceEditorCommand(ecBlockIndent,false);
+  DoSourceEditorCommand(ecBlockIndent);
 end;
 
 procedure TMainIDE.mnuEditUnindentBlockClicked(Sender: TObject);
 begin
-  DoSourceEditorCommand(ecBlockUnindent,false);
+  DoSourceEditorCommand(ecBlockUnindent);
 end;
 
 procedure TMainIDE.mnuSourceEncloseBlockClicked(Sender: TObject);
 begin
-  DoSourceEditorCommand(ecSelectionEnclose,false);
+  DoSourceEditorCommand(ecSelectionEnclose);
 end;
 
 procedure TMainIDE.mnuEditUpperCaseBlockClicked(Sender: TObject);
 begin
-  DoSourceEditorCommand(ecSelectionUpperCase,false);
+  DoSourceEditorCommand(ecSelectionUpperCase);
 end;
 
 procedure TMainIDE.mnuEditLowerCaseBlockClicked(Sender: TObject);
 begin
-  DoSourceEditorCommand(ecSelectionLowerCase,false);
+  DoSourceEditorCommand(ecSelectionLowerCase);
 end;
 
 procedure TMainIDE.mnuEditSwapCaseBlockClicked(Sender: TObject);
 begin
-  DoSourceEditorCommand(ecSelectionSwapCase,false);
+  DoSourceEditorCommand(ecSelectionSwapCase);
 end;
 
 procedure TMainIDE.mnuEditTabsToSpacesBlockClicked(Sender: TObject);
 begin
-  DoSourceEditorCommand(ecSelectionTabs2Spaces,false);
+  DoSourceEditorCommand(ecSelectionTabs2Spaces);
 end;
 
 procedure TMainIDE.mnuSourceCommentBlockClicked(Sender: TObject);
 begin
-  DoSourceEditorCommand(ecSelectionComment,false);
+  DoSourceEditorCommand(ecSelectionComment);
 end;
 
 procedure TMainIDE.mnuSourceUncommentBlockClicked(Sender: TObject);
 begin
-  DoSourceEditorCommand(ecSelectionUncomment,false);
+  DoSourceEditorCommand(ecSelectionUncomment);
 end;
 
 procedure TMainIDE.mnuSourceToggleCommentClicked(Sender: TObject);
 begin
-  DoSourceEditorCommand(ecToggleComment,false);
+  DoSourceEditorCommand(ecToggleComment);
 end;
 
 procedure TMainIDE.mnuSourceEncloseInIFDEFClicked(Sender: TObject);
 begin
-  DoSourceEditorCommand(ecSelectionEncloseIFDEF,false);
+  DoSourceEditorCommand(ecSelectionEncloseIFDEF);
 end;
 
 procedure TMainIDE.mnuEditSortBlockClicked(Sender: TObject);
 begin
   // MG: sometimes the function does nothing
   debugln(['TMainIDE.mnuEditSortBlockClicked ',DbgSName(FindOwnerControl(GetFocus))]);
-  DoSourceEditorCommand(ecSelectionSort,false);
+  DoSourceEditorCommand(ecSelectionSort);
 end;
 
 procedure TMainIDE.mnuEditSelectionBreakLinesClicked(Sender: TObject);
 begin
-  DoSourceEditorCommand(ecSelectionBreakLines,false);
+  DoSourceEditorCommand(ecSelectionBreakLines);
 end;
 
 procedure TMainIDE.mnuEditSelectAllClick(Sender: TObject);
 begin
-  DoSourceEditorCommand(ecSelectAll,true);
+  DoSourceEditorCommand(ecSelectAll);
 end;
 
 procedure TMainIDE.mnuEditSelectCodeBlockClick(Sender: TObject);
 begin
-  DoSourceEditorCommand(ecSelectCodeBlock,false);
+  DoSourceEditorCommand(ecSelectCodeBlock);
 end;
 
 procedure TMainIDE.mnuEditSelectToBraceClick(Sender: TObject);
 begin
-  DoSourceEditorCommand(ecSelectToBrace,false);
+  DoSourceEditorCommand(ecSelectToBrace);
 end;
 
 procedure TMainIDE.mnuEditSelectWordClick(Sender: TObject);
 begin
-  DoSourceEditorCommand(ecSelectWord,false);
+  DoSourceEditorCommand(ecSelectWord);
 end;
 
 procedure TMainIDE.mnuEditSelectLineClick(Sender: TObject);
 begin
-  DoSourceEditorCommand(ecSelectLine,false);
+  DoSourceEditorCommand(ecSelectLine);
 end;
 
 procedure TMainIDE.mnuEditSelectParagraphClick(Sender: TObject);
 begin
-  DoSourceEditorCommand(ecSelectParagraph,false);
+  DoSourceEditorCommand(ecSelectParagraph);
 end;
 
 procedure TMainIDE.mnuSourceInsertGPLNoticeClick(Sender: TObject);
 begin
-  DoSourceEditorCommand(ecInsertGPLNotice,false);
+  DoSourceEditorCommand(ecInsertGPLNotice);
 end;
 
 procedure TMainIDE.mnuSourceInsertLGPLNoticeClick(Sender: TObject);
 begin
-  DoSourceEditorCommand(ecInsertLGPLNotice,false);
+  DoSourceEditorCommand(ecInsertLGPLNotice);
 end;
 
 procedure TMainIDE.mnuSourceInsertModifiedLGPLNoticeClick(Sender: TObject);
 begin
-  DoSourceEditorCommand(ecInsertModifiedLGPLNotice,false);
+  DoSourceEditorCommand(ecInsertModifiedLGPLNotice);
 end;
 
 procedure TMainIDE.mnuSourceInsertMITNoticeClick(Sender: TObject);
 begin
-  DoSourceEditorCommand(ecInsertMITNotice,false);
+  DoSourceEditorCommand(ecInsertMITNotice);
 end;
 
 procedure TMainIDE.mnuSourceInsertUsernameClick(Sender: TObject);
 begin
-  DoSourceEditorCommand(ecInsertUserName,false);
+  DoSourceEditorCommand(ecInsertUserName);
 end;
 
 procedure TMainIDE.mnuSourceInsertDateTimeClick(Sender: TObject);
 begin
-  DoSourceEditorCommand(ecInsertDateTime,false);
+  DoSourceEditorCommand(ecInsertDateTime);
 end;
 
 procedure TMainIDE.mnuSourceInsertChangeLogEntryClick(Sender: TObject);
 begin
-  DoSourceEditorCommand(ecInsertChangeLogEntry,false);
+  DoSourceEditorCommand(ecInsertChangeLogEntry);
 end;
 
 procedure TMainIDE.mnuSourceInsertGUID(Sender: TObject);
@@ -18980,47 +18980,47 @@ end;
 
 procedure TMainIDE.mnuEditInsertCharacterClicked(Sender: TObject);
 begin
-  DoSourceEditorCommand(ecInsertCharacter,false);
+  DoSourceEditorCommand(ecInsertCharacter);
 end;
 
 procedure TMainIDE.mnuSourceInsertCVSAuthorClick(Sender: TObject);
 begin
-  DoSourceEditorCommand(ecInsertCVSAuthor,false);
+  DoSourceEditorCommand(ecInsertCVSAuthor);
 end;
 
 procedure TMainIDE.mnuSourceInsertCVSDateClick(Sender: TObject);
 begin
-  DoSourceEditorCommand(ecInsertCVSDate,false);
+  DoSourceEditorCommand(ecInsertCVSDate);
 end;
 
 procedure TMainIDE.mnuSourceInsertCVSHeaderClick(Sender: TObject);
 begin
-  DoSourceEditorCommand(ecInsertCVSHeader,false);
+  DoSourceEditorCommand(ecInsertCVSHeader);
 end;
 
 procedure TMainIDE.mnuSourceInsertCVSIDClick(Sender: TObject);
 begin
-  DoSourceEditorCommand(ecInsertCVSID,false);
+  DoSourceEditorCommand(ecInsertCVSID);
 end;
 
 procedure TMainIDE.mnuSourceInsertCVSLogClick(Sender: TObject);
 begin
-  DoSourceEditorCommand(ecInsertCVSLog,false);
+  DoSourceEditorCommand(ecInsertCVSLog);
 end;
 
 procedure TMainIDE.mnuSourceInsertCVSNameClick(Sender: TObject);
 begin
-  DoSourceEditorCommand(ecInsertCVSName,false);
+  DoSourceEditorCommand(ecInsertCVSName);
 end;
 
 procedure TMainIDE.mnuSourceInsertCVSRevisionClick(Sender: TObject);
 begin
-  DoSourceEditorCommand(ecInsertCVSRevision,false);
+  DoSourceEditorCommand(ecInsertCVSRevision);
 end;
 
 procedure TMainIDE.mnuSourceInsertCVSSourceClick(Sender: TObject);
 begin
-  DoSourceEditorCommand(ecInsertCVSSource,false);
+  DoSourceEditorCommand(ecInsertCVSSource);
 end;
 
 procedure TMainIDE.mnuSourceCompleteCodeClicked(Sender: TObject);
@@ -19030,7 +19030,7 @@ end;
 
 procedure TMainIDE.mnuSourceUseUnitClicked(Sender: TObject);
 begin
-  DoSourceEditorCommand(ecUseUnit,false);
+  DoSourceEditorCommand(ecUseUnit);
 end;
 
 procedure TMainIDE.mnuRefactorRenameIdentifierClicked(Sender: TObject);
@@ -19045,27 +19045,27 @@ end;
 
 procedure TMainIDE.mnuRefactorInvertAssignmentClicked(Sender: TObject);
 begin
-  DoSourceEditorCommand(ecInvertAssignment,false);
+  DoSourceEditorCommand(ecInvertAssignment);
 end;
 
 procedure TMainIDE.mnuRefactorShowAbstractMethodsClicked(Sender: TObject);
 begin
-  DoSourceEditorCommand(ecShowAbstractMethods,false);
+  DoSourceEditorCommand(ecShowAbstractMethods);
 end;
 
 procedure TMainIDE.mnuRefactorShowEmptyMethodsClicked(Sender: TObject);
 begin
-  DoSourceEditorCommand(ecRemoveEmptyMethods,false);
+  DoSourceEditorCommand(ecRemoveEmptyMethods);
 end;
 
 procedure TMainIDE.mnuRefactorShowUnusedUnitsClicked(Sender: TObject);
 begin
-  DoSourceEditorCommand(ecRemoveUnusedUnits,false);
+  DoSourceEditorCommand(ecRemoveUnusedUnits);
 end;
 
 procedure TMainIDE.mnuRefactorFindOverloadsClicked(Sender: TObject);
 begin
-  DoSourceEditorCommand(ecFindOverloads,false);
+  DoSourceEditorCommand(ecFindOverloads);
 end;
 
 procedure TMainIDE.DoCommand(ACommand: integer);
