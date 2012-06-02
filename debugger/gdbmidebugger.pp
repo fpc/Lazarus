@@ -4866,7 +4866,9 @@ begin
   FTheDebugger.FInternalStackFrame := 0;
   FTheDebugger.FCurrentThreadId := StrToIntDef(List.Values['thread-id'], -1);
   FTheDebugger.FInternalThreadId := FTheDebugger.FCurrentThreadId;
-  FTheDebugger.FCurrentLocation := FrameToLocation(List.Values['frame']);
+  FTheDebugger.FCurrentLocation.Address := 0;
+  FTheDebugger.FCurrentLocation.SrcFile := '';
+  FTheDebugger.FCurrentLocation.SrcFullName := '';
 
   try
     Reason := List.Values['reason'];
@@ -4892,6 +4894,9 @@ begin
       // ProcessFrame(List.Values['frame']);
       Exit;
     end;
+
+    // not stopped? Then we should have a location
+    FTheDebugger.FCurrentLocation := FrameToLocation(List.Values['frame']);
 
     if Reason = 'signal-received'
     then begin
