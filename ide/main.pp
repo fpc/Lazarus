@@ -19093,14 +19093,15 @@ begin
   end;
 end;
 
-procedure TMainIDE.DoSourceEditorCommand(EditorCommand: integer;
-  CheckFocus: boolean);
+procedure TMainIDE.DoSourceEditorCommand(EditorCommand: integer; CheckFocus: boolean);
 var
   CurFocusControl: TWinControl;
   ActiveSourceEditor: TSourceEditor;
   ActiveUnitInfo: TUnitInfo;
 begin
-  // check that the currently focus is on the MainIDEBar or on the SourceEditor
+  CurFocusControl:=Nil;
+  ActiveSourceEditor:=Nil;
+  // check if focus is on MainIDEBar or on SourceEditor
   if CheckFocus then
   begin
     CurFocusControl:=FindOwnerControl(GetFocus);
@@ -19109,17 +19110,16 @@ begin
         break;
       CurFocusControl:=CurFocusControl.Parent;
     end;
-    if CurFocusControl=nil then
-    begin
-      // continue processing shortcut, not handled yet
-      MainIDEBar.mnuMainMenu.ShortcutHandled := false;
-    end;
   end;
-  GetCurrentUnit(ActiveSourceEditor,ActiveUnitInfo);
-  if ActiveSourceEditor=nil then
-    MainIDEBar.mnuMainMenu.ShortcutHandled := false
-  else
-    ActiveSourceEditor.DoEditorExecuteCommand(EditorCommand);
+  if Assigned(CurFocusControl) then
+  begin    // MainIDEBar or SourceNotebook has focus -> find active source editor
+    GetCurrentUnit(ActiveSourceEditor,ActiveUnitInfo);
+    if Assigned(ActiveSourceEditor) then
+      ActiveSourceEditor.DoEditorExecuteCommand(EditorCommand); // pass the command
+  end;
+  // Not passed to source editor -> continue processing shortcut, not handled yet
+  if (CurFocusControl=Nil) or (ActiveSourceEditor=Nil) then
+    MainIDEBar.mnuMainMenu.ShortcutHandled := false;
 end;
 
 procedure TMainIDE.DoInsertGUID;
