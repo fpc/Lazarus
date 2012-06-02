@@ -40,7 +40,7 @@ interface
 
 uses
   Classes, SysUtils, Controls, Math, Variants, LCLProc, LazClasses, LazLoggerBase, Dialogs,
-  DebugUtils, Debugger, FileUtil, CmdLineDebugger, GDBTypeInfo, Maps, LCLIntf,
+  DebugUtils, Debugger, FileUtil, CmdLineDebugger, GDBTypeInfo, Maps, LCLIntf, Forms,
 {$IFdef MSWindows}
   Windows,
 {$ENDIF}
@@ -435,6 +435,9 @@ type
     procedure CancelAllQueued;
     procedure CancelBeforeRun;
     procedure CancelAfterStop;
+    procedure RunQueueASync;
+    procedure RemoveRunQueueASync;
+    procedure DoRunQueueFromASync(Data: PtrInt);
     function  StartDebugging(AContinueCommand: TGDBMIExecCommandType): Boolean;
     function  StartDebugging(AContinueCommand: TGDBMIExecCommandType; AValues: array of const): Boolean;
     function  StartDebugging(AContinueCommand: TGDBMIDebuggerCommand = nil): Boolean;
@@ -6173,6 +6176,7 @@ begin
   LockRelease;
   inherited;
   ClearCommandQueue;
+  RemoveRunQueueASync;
   FreeAndNil(FCommandQueue);
   ClearSourceInfo;
   FreeAndNil(FSourceNames);
@@ -6232,12 +6236,9 @@ begin
   then begin
     FRunQueueOnUnlock := False;
     // if FCommandQueueExecLock, then queu will be run, by however has that lock
-    if (FCommandQueueExecLock = 0)
+    if (FCommandQueueExecLock = 0) and (FCommandQueue.Count > 0)
     then begin
-      c := FCommandQueue.Count > 0;
-      if c then DebugLnEnter(DBGMI_QUEUE_DEBUG, ['TGDBMIDebugger.UnLockCommandProcessing: Execute RunQueue ']);
-      RunQueue;
-      if c then DebugLnExit(DBGMI_QUEUE_DEBUG, ['TGDBMIDebugger.UnLockCommandProcessing: Finished RunQueue']);
+      RunQueueASync;
     end
   end;
 end;
@@ -6495,6 +6496,7 @@ var
   Cmd, NestedCurrentCmd, NestedCurrentCmdTmp: TGDBMIDebuggerCommand;
   SavedInExecuteCount: LongInt;
 begin
+  RemoveRunQueueASync;
   if FCommandQueue.Count = 0
   then exit;
 
@@ -6697,6 +6699,23 @@ begin
     then i := FCommandQueue.Count - 1;
   end;
   // do not cancel FCurrentCommand;
+end;
+
+procedure TGDBMIDebugger.RunQueueASync;
+begin
+  Application.QueueAsyncCall(@DoRunQueueFromASync, 0);
+end;
+
+procedure TGDBMIDebugger.RemoveRunQueueASync;
+begin
+  Application.RemoveAsyncCalls(Self);
+end;
+
+procedure TGDBMIDebugger.DoRunQueueFromASync(Data: PtrInt);
+begin
+  DebugLnEnter(DBGMI_QUEUE_DEBUG, ['TGDBMIDebugger.DoRunQueueFromASync: Execute RunQueue ']);
+  RunQueue;
+  DebugLnExit(DBGMI_QUEUE_DEBUG, ['TGDBMIDebugger.DoRunQueueFromASync: Finished RunQueue']);
 end;
 
 class function TGDBMIDebugger.ExePaths: String;
