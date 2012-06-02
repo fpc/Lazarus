@@ -774,6 +774,7 @@ var
       DrawText(Canvas.Handle,@Line[LastTokenEnd],TokenEnd-LastTokenEnd,TokenRect,
                DT_SINGLELINE+DT_CALCRECT+DT_NOCLIP);
       TokenSize:=Point(TokenRect.Right,TokenRect.Bottom);
+      //DebugLn(['DrawHint Draw="',Draw,'" Token="',copy(Line,TokenStart,TokenEnd-TokenStart),'" TokenSize=',dbgs(TokenSize)]);
 
       if (LineHeight>0) and (TokenPos.X+TokenRect.Right>ATextRect.Right) then
       begin
@@ -821,6 +822,7 @@ var
       Item.CopyAllButton.SetBounds(AHintRect.Right-RightSpace-1,y,FBtnWidth,FBtnWidth);
       Item.CopyAllButton.Visible:=true;
     end;
+    //debugln(['DrawHint ',y,' Line="',dbgstr(Line),'" LineHeight=',LineHeight,' ']);
   end;
   
 var
@@ -860,7 +862,6 @@ begin
     if Draw and (NewMaxHeight>=MaxHeight) then break;
     CurHintRect:=Rect(0,NewMaxHeight,MaxWidth,MaxHeight);
     DrawHint(i,CurHintRect);
-    //DebugLn('TCodeContextFrm.DrawHints i=',dbgs(i),' CurTextRect=',dbgs(CurTextRect),' CurRect=',dbgs(CurRect),' s="',s,'"');
     if CurHintRect.Right>NewMaxWidth then
       NewMaxWidth:=CurHintRect.Right;
     NewMaxHeight:=CurHintRect.Bottom;
