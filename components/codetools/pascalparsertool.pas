@@ -634,7 +634,10 @@ begin
         if HasSourceType then begin
           repeat
             ReadNextAtom; // read source name
-            AtomIsIdentifierSaveE;
+            // program and library can use keywords
+            if (CurPos.Flag<>cafWord)
+            or (CurSection in [ctnUnit,ctnPackage]) then
+              AtomIsIdentifierSaveE;
             ReadNextAtom; // read ';' (or 'platform;' or 'unimplemented;')
           until CurPos.Flag<>cafPoint;
         end;
