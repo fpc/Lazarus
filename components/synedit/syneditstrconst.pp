@@ -334,11 +334,9 @@ resourcestring
   SYNS_FilterTeX                =  'TeX Files (*.tex)|*.tex';
   SYNS_FilterPo                 =  'Po Files (*.po)|*.po';
 
-{$IFDEF SYN_LAZARUS}
 // Currently the language names are used to identify the language
 // ToDo: create translation table
 const
-{$ENDIF}
   // Language names. Maybe somebody wants them translated / more detailed...
   SYNS_LangHP48                 =  'HP48';
   SYNS_LangCAClipper            =  'CA-Clipper';

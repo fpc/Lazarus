@@ -177,9 +177,7 @@ type
     function GetRange: Pointer; override;
     function GetTokenID: TtkTokenKind;
     function GetToken: String; override;
-    {$IFDEF SYN_LAZARUS}
     procedure GetTokenEx(out TokenStart: PChar; out TokenLength: integer); override;
-    {$ENDIF}
     function GetTokenAttribute: TSynHighlighterAttributes; override;
     function GetTokenKind: integer; override;
     function GetTokenPos: Integer; override;
@@ -236,16 +234,10 @@ uses
 
 var
   Identifiers: array[#0..#255] of ByteBool;
-{$IFNDEF SYN_LAZARUS}
-  mHashTable: array[#0..#255] of Integer;
-{$ENDIF}
 
 procedure MakeIdentTable;
 var
   I: Char;
-  {$IFNDEF SYN_LAZARUS}
-  J: Char;
-  {$ENDIF}
   idents:string;
 begin
   idents:='_0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ-?!';
@@ -256,13 +248,6 @@ begin
 //    case I in ['_', '0'..'9', 'a'..'z', 'A'..'Z','-','?','!'] of true: Identifiers[I] := True;
 //    else Identifiers[I] := False;
 //    end;
-    {$IFNDEF SYN_LAZARUS}
-    J := UpCase(I);
-    Case I in ['_', 'a'..'z', 'A'..'Z'] of
-      True: mHashTable[I] := Ord(J) - 64
-    else mHashTable[I] := 0;
-    end;
-    {$ENDIF}
   end;
 end;
 
@@ -278,11 +263,7 @@ begin
   while First <= Last do
   begin
     I := (First + Last) shr 1;
-    {$IFDEF SYN_LAZARUS}
     Compare := AnsiCompareStr(fKeywords[i], Token);
-    {$ELSE}
-    Compare := CompareStr(fKeywords[i], Token);
-    {$ENDIF}
     if Compare = 0 then
     begin
       Result := True;
@@ -305,11 +286,7 @@ begin
   while First <= Last do
   begin
     I := (First + Last) shr 1;
-    {$IFDEF SYN_LAZARUS}
     Compare := AnsiCompareStr(fConstants[i], Token);
-    {$ELSE}
-    Compare := CompareStr(fConstants[i], Token);
-    {$ENDIF}
     if Compare = 0 then
     begin
       Result := True;
@@ -331,11 +308,7 @@ begin
   while First <= Last do
   begin
     I := (First + Last) shr 1;
-    {$IFDEF SYN_LAZARUS}
     Compare := AnsiCompareStr(fObjects[i], Token);
-    {$ELSE}
-    Compare := CompareStr(fObjects[i], Token);
-    {$ENDIF}
     if Compare = 0 then
     begin
       Result := True;
@@ -354,53 +327,53 @@ begin
     case I of
       #39: begin
              if csVBStyle in comments then begin
-               fProcTable[I] := {$ifdef FPC}@{$endif}ApostropheProc;
+               fProcTable[I] := @ApostropheProc;
                fStringDelimch:= #34;
              end
              else
-               fProcTable[I] := {$ifdef FPC}@{$endif}UnknownProc;
+               fProcTable[I] := @UnknownProc;
            end;
       '<': begin
              if markup then
-               fProcTable[i]:= {$ifdef FPC}@{$endif}SmallerThan
+               fProcTable[i]:= @SmallerThan
              else
-               fProcTable[I] := {$ifdef FPC}@{$endif}UnknownProc;
+               fProcTable[I] := @UnknownProc;
            end;
       '>': begin
              if markup then
-               fProcTable[i]:= {$ifdef FPC}@{$endif}GreaterThan
+               fProcTable[i]:= @GreaterThan
              else
-               fProcTable[I] := {$ifdef FPC}@{$endif}UnknownProc;
+               fProcTable[I] := @UnknownProc;
            end;
       '&': begin
              if Entity then
-               fProcTable[i]:= {$ifdef FPC}@{$endif}AmpersandProc
+               fProcTable[i]:= @AmpersandProc
              else
-               fProcTable[I] := {$ifdef FPC}@{$endif}UnknownProc;
+               fProcTable[I] := @UnknownProc;
            end;
-      '#': fProcTable[I] := {$ifdef FPC}@{$endif}AsciiCharProc;
-      '{': fProcTable[I] := {$ifdef FPC}@{$endif}BraceOpenProc;
-      '}': fProcTable[I] := {$ifdef FPC}@{$endif}BraceCloseProc;
-      ';': fProcTable[I] := {$ifdef FPC}@{$endif}PointCommaProc;
-      #13: fProcTable[I] := {$ifdef FPC}@{$endif}CRProc;
-      'A'..'Z', 'a'..'z', '_': fProcTable[I] := {$ifdef FPC}@{$endif}IdentProc;
+      '#': fProcTable[I] := @AsciiCharProc;
+      '{': fProcTable[I] := @BraceOpenProc;
+      '}': fProcTable[I] := @BraceCloseProc;
+      ';': fProcTable[I] := @PointCommaProc;
+      #13: fProcTable[I] := @CRProc;
+      'A'..'Z', 'a'..'z', '_': fProcTable[I] := @IdentProc;
       '$': begin
              if dollarvariables then
-               fProcTable[I] := {$ifdef FPC}@{$endif}DollarProc
+               fProcTable[I] := @DollarProc
              else
-               fProcTable[I] := {$ifdef FPC}@{$endif}IntegerProc;
+               fProcTable[I] := @IntegerProc;
            end;
-      '.': fProcTable[i] := {$ifdef FPC}@{$endif}DotProc;
-      #10: fProcTable[I] := {$ifdef FPC}@{$endif}LFProc;
-      #0: fProcTable[I] := {$ifdef FPC}@{$endif}NullProc;
-      '0'..'9': fProcTable[I] := {$ifdef FPC}@{$endif}NumberProc;
-      '(': fProcTable[I] := {$ifdef FPC}@{$endif}RoundOpenProc;
-      ')': fProcTable[I] := {$ifdef FPC}@{$endif}RoundCloseProc;
-      '/': fProcTable[I] := {$ifdef FPC}@{$endif}SlashProc;
-      #1..#9, #11, #12, #14..#32: fProcTable[I] := {$ifdef FPC}@{$endif}SpaceProc;
-      else fProcTable[I] := {$ifdef FPC}@{$endif}UnknownProc;
+      '.': fProcTable[i] := @DotProc;
+      #10: fProcTable[I] := @LFProc;
+      #0: fProcTable[I] := @NullProc;
+      '0'..'9': fProcTable[I] := @NumberProc;
+      '(': fProcTable[I] := @RoundOpenProc;
+      ')': fProcTable[I] := @RoundCloseProc;
+      '/': fProcTable[I] := @SlashProc;
+      #1..#9, #11, #12, #14..#32: fProcTable[I] := @SpaceProc;
+      else fProcTable[I] := @UnknownProc;
     end;
-    fProcTable[fStringDelimCh] := {$ifdef FPC}@{$endif}StringProc;
+    fProcTable[fStringDelimCh] := @StringProc;
 end;
 
 constructor TSynAnySyn.Create(AOwner: TComponent);
@@ -454,7 +427,7 @@ begin
   AddAttribute(fVariableAttri);
   fPreprocessorAttri := TSynHighlighterAttributes.Create(SYNS_AttrPreprocessor, SYNS_XML_AttrPreprocessor);
   AddAttribute(fPreprocessorAttri);
-  SetAttributesOnChange({$IFDEF FPC}@{$ENDIF}DefHighlightChange);
+  SetAttributesOnChange(@DefHighlightChange);
 
   fStringDelimCh := '''';
   fIdentChars := inherited GetIdentChars;
@@ -789,10 +762,8 @@ end;
 procedure TSynAnySyn.UnknownProc;
 begin
   inc(Run);
-  {$IFDEF SYN_LAZARUS}
   while (fLine[Run] in [#128..#191]) OR // continued utf8 subcode
    ((fLine[Run]<>#0) and (fProcTable[fLine[Run]] = @UnknownProc)) do inc(Run);
-  {$ENDIF}
   fTokenID := tkUnKnown;
 end;
 
@@ -840,15 +811,12 @@ begin
   SetString(Result, (FLine + fTokenPos), Len);
 end;
 
-{$IFDEF SYN_LAZARUS}
 procedure TSynAnySyn.GetTokenEx(out TokenStart: PChar;
   out TokenLength: integer);
 begin
   TokenLength:=Run-fTokenPos;
   TokenStart:=FLine + fTokenPos;
 end;
-{$ENDIF}
-
 
 function TSynAnySyn.GetTokenID: TtkTokenKind;
 begin
@@ -1383,8 +1351,5 @@ end;
 
 initialization
   MakeIdentTable;
-{$IFNDEF FPC}
-  RegisterPlaceableHighlighter(TSynAnySyn);
-{$ENDIF}
 end.
 

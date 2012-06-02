@@ -526,8 +526,7 @@ type
     procedure Next; override;
 
     procedure ResetRange; override;
-    procedure SetLine({$IFDEF FPC}const {$ENDIF}NewValue: string;
-      LineNumber: Integer); override;
+    procedure SetLine(const NewValue: string; LineNumber: Integer); override;
     procedure SetRange(Value: Pointer); override;
     procedure StartAtLineIndex(LineNumber:Integer); override; // 0 based
 
@@ -685,14 +684,9 @@ var
 begin
   pF := PIdentFuncTableFunc(@fIdentFuncTable);
   for I := Low(fIdentFuncTable) to High(fIdentFuncTable) do begin
-    {$IFDEF FPC}
     pF^ := @AltFunc;
-    {$ELSE}
-    pF^ := AltFunc;
-    {$ENDIF}
     Inc(pF);
   end;
-  {$IFDEF FPC}
   fIdentFuncTable[15] := @Func15;
   fIdentFuncTable[19] := @Func19;
   fIdentFuncTable[20] := @Func20;
@@ -781,81 +775,6 @@ begin
   fIdentFuncTable[168] := @Func168;
   fIdentFuncTable[181] := @Func181;
   fIdentFuncTable[191] := @Func191;
-  {$ELSE}
-  fIdentFuncTable[15] := Func15;
-  fIdentFuncTable[19] := Func19;
-  fIdentFuncTable[20] := Func20;
-  fIdentFuncTable[21] := Func21;
-  fIdentFuncTable[23] := Func23;
-  fIdentFuncTable[25] := Func25;
-  fIdentFuncTable[27] := Func27;
-  fIdentFuncTable[28] := Func28;
-  fIdentFuncTable[32] := Func32;
-  fIdentFuncTable[33] := Func33;
-  fIdentFuncTable[35] := Func35;
-  fIdentFuncTable[37] := Func37;
-  fIdentFuncTable[38] := Func38;
-  fIdentFuncTable[39] := Func39;
-  fIdentFuncTable[40] := Func40;
-  fIdentFuncTable[41] := Func41;
-  fIdentFuncTable[44] := Func44;
-  fIdentFuncTable[45] := Func45;
-  fIdentFuncTable[47] := Func47;
-  fIdentFuncTable[49] := Func49;
-  fIdentFuncTable[52] := Func52;
-  fIdentFuncTable[54] := Func54;
-  fIdentFuncTable[55] := Func55;
-  fIdentFuncTable[56] := Func56;
-  fIdentFuncTable[57] := Func57;
-  fIdentFuncTable[59] := Func59;
-  fIdentFuncTable[60] := Func60;
-  fIdentFuncTable[61] := Func61;
-  fIdentFuncTable[63] := Func63;
-  fIdentFuncTable[64] := Func64;
-  fIdentFuncTable[65] := Func65;
-  fIdentFuncTable[66] := Func66;
-  fIdentFuncTable[69] := Func69;
-  fIdentFuncTable[71] := Func71;
-  fIdentFuncTable[72] := Func72;
-  fIdentFuncTable[73] := Func73;
-  fIdentFuncTable[75] := Func75;
-  fIdentFuncTable[76] := Func76;
-  fIdentFuncTable[79] := Func79;
-  fIdentFuncTable[81] := Func81;
-  fIdentFuncTable[84] := Func84;
-  fIdentFuncTable[85] := Func85;
-  fIdentFuncTable[86] := Func86;
-  fIdentFuncTable[87] := Func87;
-  fIdentFuncTable[88] := Func88;
-  fIdentFuncTable[91] := Func91;
-  fIdentFuncTable[92] := Func92;
-  fIdentFuncTable[94] := Func94;
-  fIdentFuncTable[95] := Func95;
-  fIdentFuncTable[96] := Func96;
-  fIdentFuncTable[97] := Func97;
-  fIdentFuncTable[98] := Func98;
-  fIdentFuncTable[99] := Func99;
-  fIdentFuncTable[100] := Func100;
-  fIdentFuncTable[101] := Func101;
-  fIdentFuncTable[102] := Func102;
-  fIdentFuncTable[103] := Func103;
-  fIdentFuncTable[105] := Func105;
-  fIdentFuncTable[106] := Func106;
-  fIdentFuncTable[117] := Func117;
-  fIdentFuncTable[124] := Func124;
-  fIdentFuncTable[126] := Func126;
-  fIdentFuncTable[129] := Func129;
-  fIdentFuncTable[132] := Func132;
-  fIdentFuncTable[133] := Func133;
-  fIdentFuncTable[136] := Func136;
-  fIdentFuncTable[141] := Func141;
-  fIdentFuncTable[143] := Func143;
-  fIdentFuncTable[158] := Func158;
-  fIdentFuncTable[166] := Func166;
-  fIdentFuncTable[168] := Func168;
-  fIdentFuncTable[181] := Func181;
-  fIdentFuncTable[191] := Func191;
-  {$ENDIF}
 end;
 
 function TSynPasSyn.KeyHash: Integer;
@@ -2244,7 +2163,7 @@ begin
   fToIdent := p;
   HashKey := KeyHash;
   if HashKey < 192 then
-    Result := fIdentFuncTable[HashKey]{$IFDEF FPC}(){$ENDIF}
+    Result := fIdentFuncTable[HashKey]()
   else
     Result := tkIdentifier;
 end;
@@ -2254,7 +2173,6 @@ var
   I: Char;
 begin
   for I := #0 to #255 do
-    {$IFDEF FPC}
     case I of
       #0: fProcTable[I] := @NullProc;
       #10: fProcTable[I] := @LFProc;
@@ -2292,43 +2210,6 @@ begin
     else
       fProcTable[I] := @UnknownProc;
     end;
-    {$ELSE}
-    case I of
-      #0: fProcTable[I] := NullProc;
-      #10: fProcTable[I] := LFProc;
-      #13: fProcTable[I] := CRProc;
-      #1..#9, #11, #12, #14..#32:
-        fProcTable[I] := SpaceProc;
-      '#': fProcTable[I] := AsciiCharProc;
-      '$': fProcTable[I] := HexProc;
-      #39: fProcTable[I] := StringProc;
-      '0'..'9': fProcTable[I] := NumberProc;
-      'A'..'Z', 'a'..'z', '_':
-        fProcTable[I] := IdentProc;
-      '{': fProcTable[I] := BraceOpenProc;
-      '}', '!', '"', '%', '&', '('..'/', ':'..'@', '['..'^', '`', '~':
-        begin
-          case I of
-            '(': fProcTable[I] := RoundOpenProc;
-            ')': fProcTable[I] := RoundCloseProc;
-            '[': fProcTable[I] := SquareOpenProc;
-            ']': fProcTable[I] := SquareCloseProc;
-            '=': fProcTable[I] := EqualSignProc;
-            '.': fProcTable[I] := PointProc;
-            ';': fProcTable[I] := SemicolonProc;                                //mh 2000-10-08
-            '/': fProcTable[I] := SlashProc;
-            ':': fProcTable[I] := ColonProc;
-            '>': fProcTable[I] := GreaterProc;
-            '<': fProcTable[I] := LowerProc;
-            '@': fProcTable[I] := AddressOpProc;
-          else
-            fProcTable[I] := SymbolProc;
-          end;
-        end;
-    else
-      fProcTable[I] := UnknownProc;
-    end;
-    {$ENDIF}
 end;
 
 constructor TSynPasSyn.Create(AOwner: TComponent);
@@ -2368,7 +2249,7 @@ begin
   fDirectiveAttri.Style:= [fsItalic];
   AddAttribute(fDirectiveAttri);
   CompilerMode:=pcmDelphi;
-  SetAttributesOnChange({$IFDEF FPC}@{$ENDIF}DefHighlightChange);
+  SetAttributesOnChange(@DefHighlightChange);
 
   InitIdent;
   MakeMethodTables;
@@ -3904,7 +3785,7 @@ begin
   for i := low(TSynPasDividerDrawLocation) to high(TSynPasDividerDrawLocation) do
   begin
     FDividerDrawConfig[i] := TSynDividerDrawConfig.Create;
-    FDividerDrawConfig[i].OnChange := {$IFDEF FPC}@{$ENDIF}DefHighlightChange;
+    FDividerDrawConfig[i].OnChange := @DefHighlightChange;
     FDividerDrawConfig[i].MaxDrawDepth := PasDividerDrawLocationDefaults[i];
   end;
 end;

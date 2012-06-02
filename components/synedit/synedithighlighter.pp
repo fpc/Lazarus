@@ -33,11 +33,7 @@ interface
 
 uses
   SysUtils, Classes,
-{$IFDEF SYN_CLX}
-  kTextDrawer, Types, QGraphics,
-{$ELSE}
   Graphics, FileUtil, LCLProc, LCLIntf, LCLType, Registry, IniFiles,
-{$ENDIF}
   SynEditTypes, SynEditTextBase;
 
 {$DEFINE _Gp_MustEnhanceRegistry}
@@ -329,10 +325,8 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    {$IFDEF SYN_LAZARUS}
     function AddSpecialAttribute(const AttribName: string;
                      const aStoredName: String = ''): TSynHighlighterAttributes;
-    {$ENDIF}
     procedure Assign(Source: TPersistent); override;
     procedure BeginUpdate;
     procedure EndUpdate;
@@ -366,7 +360,7 @@ type
     procedure ScanAllRanges;
     procedure SetRange(Value: Pointer); virtual;
     procedure ResetRange; virtual;
-    procedure SetLine({$IFDEF FPC}const {$ENDIF}NewValue: String;
+    procedure SetLine(const NewValue: String;
                       LineNumber:Integer // 0 based
                       ); virtual;
 
@@ -387,7 +381,7 @@ type
     property Attribute[idx: integer]: TSynHighlighterAttributes
       read GetAttribute;
     property Capabilities: TSynHighlighterCapabilities
-       read {$IFDEF SYN_LAZARUS}FCapabilities{$ELSE}GetCapabilities{$ENDIF};
+       read FCapabilities;
     property SampleSource: string read GetSampleSource write SetSampleSource;
     property CommentAttribute: TSynHighlighterAttributes
       index SYN_ATTR_COMMENT read GetDefaultAttribute;
@@ -1104,9 +1098,7 @@ end;
 
 constructor TSynCustomHighlighter.Create(AOwner: TComponent);
 begin
-  {$IFDEF SYN_LAZARUS}
   FCapabilities:=GetCapabilities;
-  {$ENDIF}
   FKnownLines := TSynEditLinesList.Create;
   inherited Create(AOwner);
   fWordBreakChars := TSynWordBreakChars;
@@ -1276,14 +1268,12 @@ begin
   fAttributes.AddObject(AAttrib.StoredName, AAttrib);
 end;
 
-{$IFDEF SYN_LAZARUS}
 function TSynCustomHighlighter.AddSpecialAttribute(const AttribName: string;
   const aStoredName: string):TSynHighlighterAttributes;
 begin
   result := TSynHighlighterAttributes.Create(AttribName,aStoredName);
   AddAttribute(result);
 end;
-{$ENDIF}
 
 procedure TSynCustomHighlighter.DefHighlightChange(Sender: TObject);
 begin
