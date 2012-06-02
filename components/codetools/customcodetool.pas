@@ -290,7 +290,7 @@ type
     procedure AtomIsIdentifierE; overload;
     function AtomIsIdentifierE(ExceptionOnNotFound: boolean): boolean; overload;
     procedure AtomIsIdentifierSaveE;
-    function AtomIsCustomOperator(AllowIdentifier, ExceptionOnNotFound: boolean): boolean;
+    function AtomIsCustomOperator(AllowIdentifier, ExceptionOnNotFound, SaveE: boolean): boolean;
     function LastAtomIs(BackIndex: integer;
         const AnAtom: shortstring): boolean; // 0=current, 1=prior current, ...
     function LastUpAtomIs(BackIndex: integer;
@@ -880,14 +880,21 @@ begin
 end;
 
 function TCustomCodeTool.AtomIsCustomOperator(AllowIdentifier,
-  ExceptionOnNotFound: boolean): boolean;
+  ExceptionOnNotFound, SaveE: boolean): boolean;
 
   procedure RaiseOperatorExpected;
   begin
-    if CurPos.StartPos>SrcLen then
-      RaiseExceptionFmt(ctsOperatorExpectedButEOFFound,[GetAtom],true)
-    else
-      RaiseExceptionFmt(ctsOperatorExpectedButAtomFound,[GetAtom],true)
+    if CurPos.StartPos>SrcLen then begin
+      if SaveE then
+        SaveRaiseException(ctsOperatorExpectedButEOFFound,true)
+      else
+        RaiseException(ctsOperatorExpectedButEOFFound,true)
+    end else begin
+      if SaveE then
+        SaveRaiseExceptionFmt(ctsOperatorExpectedButAtomFound,[GetAtom],true)
+      else
+        RaiseExceptionFmt(ctsOperatorExpectedButAtomFound,[GetAtom],true)
+    end;
   end;
 
 begin

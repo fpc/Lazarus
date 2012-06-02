@@ -3601,7 +3601,7 @@ var
         MoveCursorToCleanPos(IdentStart);
         ReadNextAtom; // read AUnitName
         if not ReadNextAtomIsChar('.') then
-          RaiseCharExpectedButAtomFound('.');
+          SaveRaiseCharExpectedButAtomFound('.');
         ReadNextAtom; // read type identifier
         IdentStart:=CurPos.StartPos;
         {$IFDEF ShowTriedBaseContexts}
