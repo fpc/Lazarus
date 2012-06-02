@@ -106,6 +106,21 @@ type
     constructor Create(TheOwner: TComponent); override;
   end;
 
+
+  { TExtCommonDialog }
+
+  // A common base class for custom drawn dialogs (Calculator and Calendar).
+  TExtCommonDialog = class(TCommonDialog)
+  private
+    FDialogPosition: TPosition;
+  public
+    constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
+  published
+    property DialogPosition: TPosition read FDialogPosition write FDialogPosition default poMainFormCenter;
+  end;
+
+
 { ---------------------------------------------------------------------
   Calculator Dialog
   ---------------------------------------------------------------------}
@@ -120,7 +135,7 @@ type
 
 { TCalculatorDialog }
 
-  TCalculatorDialog = class(TCommonDialog)
+  TCalculatorDialog = class(TExtCommonDialog)
   private
     FLayout: TCalculatorLayout;
     FValue: Double;
@@ -128,7 +143,6 @@ type
     FTitle: String;
     FPrecision: Byte;
     FBeepOnError: Boolean;
-    FHelpContext: THelpContext;
     FCalc: TCalculatorForm;
     FOnChange: TNotifyEvent;
     FOnCalcKey: TKeyPressEvent;
@@ -148,7 +162,6 @@ type
     property Memory: Double read FMemory;
   published
     property BeepOnError: Boolean read FBeepOnError write FBeepOnError default True;
-    property HelpContext: THelpContext read FHelpContext write FHelpContext default 0;
     property CalculatorLayout : TCalculatorLayout Read FLayout Write Flayout;
     property Precision: Byte read FPrecision write FPrecision default DefCalcPrecision;
     property Title;
@@ -198,13 +211,11 @@ function CreateCalculatorForm(AOwner: TComponent; ALayout : TCalculatorLayout; A
 Type
   { TCalendarDialog }
 
-  TCalendarDialog = class(TCommonDialog)
+  TCalendarDialog = class(TExtCommonDialog)
   private
     FDate: TDateTime;
     FDayChanged: TNotifyEvent;
-    FDialogPosition: TPosition;
     FDisplaySettings: TDisplaySettings;
-    FHelpContext: THelpContext;
     FMonthChanged: TNotifyEvent;
     FYearChanged: TNotifyEvent;
     FOKCaption:TCaption;
@@ -222,10 +233,8 @@ Type
     property Date: TDateTime read FDate write FDate;
     property OnDayChanged: TNotifyEvent read FDayChanged write FDayChanged;
     property DisplaySettings: TDisplaySettings read FDisplaySettings write FDisplaySettings default DefaultDisplaySettings;
-    property HelpContext: THelpContext read FHelpContext write FHelpContext default 0;
     property OnMonthChanged: TNotifyEvent read FMonthChanged write FMonthChanged;
     property OnYearChanged: TNotifyEvent read FYearChanged write FYearChanged;
-    property DialogPosition: TPosition read FDialogPosition write FDialogPosition default poMainFormCenter;
     property OKCaption:TCaption read FOKCaption write FOKCaption;
     property CancelCaption:TCaption read FCancelCaption write FCancelCaption;
   end;
@@ -505,10 +514,24 @@ begin
     end;
 end;
 
+
+{ TExtCommonDialog }
+
+constructor TExtCommonDialog.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  FDialogPosition := poMainFormCenter;     // Set the initial location on screen.
+end;
+
+destructor TExtCommonDialog.Destroy;
+begin
+  inherited Destroy;
+end;
+
+
 { ---------------------------------------------------------------------
   Calculator Dialog
   ---------------------------------------------------------------------}
-
 
 { TCalcButton }
 
@@ -1057,6 +1080,10 @@ var
 begin
   FCalc:=CreateCalculatorForm(Application, FLayout, HelpContext);
   try
+    if (csDesigning in ComponentState) then
+      FCalc.Position:=poScreenCenter
+    else
+      FCalc.Position:=DialogPosition;
     CPanel:=TCalculatorPanel(FCalc.FCalcPanel);
     FCalc.Caption:=Title;
     CPanel.FMemory:=FMemory;
@@ -1225,7 +1252,6 @@ begin
   inherited Create(AOwner);
   DisplaySettings := DefaultDisplaySettings;
   Date := trunc(Now);
-  DialogPosition := poMainFormCenter;
   OKCaption := rsMbOK;
   CancelCaption := rsMbCancel;
 end;
@@ -1272,7 +1298,10 @@ begin
   DF:=TForm.CreateNew(Application, 0);
   DF.DisableAlign;
   DF.Caption:=Title;
-  DF.Position:=DialogPosition;
+  if (csDesigning in ComponentState) then
+    DF.Position:=poScreenCenter
+  else
+    DF.Position:=DialogPosition;
   DF.BorderStyle:=bsDialog;
   DF.AutoScroll:=false;
   DF.AutoSize:=true;
