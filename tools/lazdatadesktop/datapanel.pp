@@ -151,7 +151,9 @@ begin
   FDBgrid:=TDBGrid.Create(Self);
   FDBGrid.Parent:=Self;
   FDBGrid.Align:=alClient;
+  FDBGrid.Options:=FDBGrid.Options+[dgAutoSizeColumns];
   FDBGrid.DataSource:=FDatasource;
+  FDBGrid.AutoSizeColumns;
   // Navigator;
   FNavigator:=TDBNavigator.Create(Self);
   FNavigator.Parent:=FTopPanel;
