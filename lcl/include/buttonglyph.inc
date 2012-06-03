@@ -211,8 +211,6 @@ procedure TButtonGlyph.GlyphChanged(Sender: TObject);
     end;
   end;
 
-var
-  numg1, numg2: integer;
 begin
   if FImagesCache <> nil then
   begin
@@ -225,17 +223,7 @@ begin
   begin
     FImagesCache := GetImageListCache;
     FImagesCache.RegisterListener(Self);
-    /// Test for finding the reason for bug #22164: Invalid floating point operation.
-    /// Max(1, NumGlyphs) returns 0 (zero) because of a compiler bug!
-    numg1:=1;
-    if NumGlyphs > 1 then
-      numg1 := NumGlyphs;
-    numg2:=Max(1, NumGlyphs);
-    if numg1 <> numg2 then
-      DebugLn(Format('TButtonGlyph.GlyphChanged: Max(1, %d) gives a wrong result %d, should be %d.',
-                     [NumGlyphs, numg2, numg1]));
-    /// Can be removed later!
-    FImagesCache.RegisterBitmap(Self, FOriginal, numg1);  // Max(1, NumGlyphs)
+    FImagesCache.RegisterBitmap(Self, FOriginal, Max(1, NumGlyphs));
   end;
 
   if Sender = FOriginal then
