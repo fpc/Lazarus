@@ -11137,6 +11137,10 @@ msgstr "GPL公约"
 msgid "LGPL Notice"
 msgstr "LGPL公约"
 
+#: lazarusidestrconsts.lismenuinsertmitnotice
+msgid "MIT Notice"
+msgstr ""
+
 #: lazarusidestrconsts.lismenuinsertmodifiedlgplnotice
 #, fuzzy
 #| msgid "Modified LGPL notice"
@@ -11875,6 +11879,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lismissingunitsskip
 msgid "Skip this Unit"
+msgstr ""
+
+#: lazarusidestrconsts.lismitnotice
+msgid "<description>%sCopyright (c) <year> <copyright holders>%sPermission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the \"Software\"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:%sThe above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.%sTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE."
 msgstr ""
 
 #: lazarusidestrconsts.lismodifiedlgplnotice
@@ -17828,6 +17836,10 @@ msgstr "插入 LGPL 公告"
 #: lazarusidestrconsts.srkmecinsertline
 msgid "Break line, leave cursor"
 msgstr "打断行并保留光标"
+
+#: lazarusidestrconsts.srkmecinsertmitnotice
+msgid "Insert MIT notice"
+msgstr ""
 
 #: lazarusidestrconsts.srkmecinsertmode
 msgid "Insert Mode"
