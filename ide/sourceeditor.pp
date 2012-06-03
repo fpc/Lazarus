@@ -184,6 +184,7 @@ type
     FExecutionMark: TSourceMark;
     FMarksRequested: Boolean;
     FMarklingsValid: boolean;
+    FMarksRequestedForFile: String;
     function GetExecutionLine: Integer;
   public
     UpdatingExecutionMark: Integer;
@@ -192,6 +193,7 @@ type
     property ExecutionMark: TSourceMark read FExecutionMark write FExecutionMark;
     procedure SetExecutionLine(NewLine: integer);
     property MarksRequested: Boolean read FMarksRequested write FMarksRequested;
+    property MarksRequestedForFile: String read FMarksRequestedForFile write FMarksRequestedForFile;
   private
     FInGlobalUpdate: Integer;
     FModified: boolean;
@@ -2578,8 +2580,11 @@ begin
   FLineInfoNotification.ReleaseReference;
   inherited Destroy;
   FSharedValues.RemoveSharedEditor(Self);
-  if FSharedValues.SharedEditorCount = 0 then
+  if FSharedValues.SharedEditorCount = 0 then begin
+    if FSharedValues.MarksRequested and (FSharedValues.MarksRequestedForFile <> '') then
+      DebugBoss.LineInfo.Cancel(FSharedValues.MarksRequestedForFile);
     FreeAndNil(FSharedValues);
+  end;
   DebugLnExit(SRCED_CLOSE, ['TSourceEditor.Destroy ']);
 end;
 
@@ -4991,12 +4996,14 @@ begin
     if not FSharedValues.MarksRequested then
     begin
       FSharedValues.MarksRequested := True;
+      FSharedValues.MarksRequestedForFile := ASource;
       DebugBoss.LineInfo.AddNotification(FLineInfoNotification);
       DebugBoss.LineInfo.Request(ASource);
     end;
     Exit;
   end;
 
+  FSharedValues.MarksRequestedForFile := '';
   j := -1;
   EditorComponent.IDEGutterMarks.BeginSetDebugMarks;
   try
@@ -5025,6 +5032,10 @@ procedure TSourceEditor.ClearExecutionMarks;
 var
   i: Integer;
 begin
+  if FSharedValues.MarksRequested and (FSharedValues.MarksRequestedForFile <> '') then
+    DebugBoss.LineInfo.Cancel(FSharedValues.MarksRequestedForFile);
+  FSharedValues.MarksRequestedForFile := '';
+
   EditorComponent.IDEGutterMarks.ClearDebugMarks;
   FSharedValues.MarksRequested := False;
   for i := 0 to SharedEditorCount - 1 do
