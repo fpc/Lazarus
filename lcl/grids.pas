@@ -10334,7 +10334,7 @@ procedure TCustomStringGrid.LoadFromCSVStream(AStream: TStream;
 
 var
   Lines, HeaderL: TStringList;
-  i, j, x, StartRow: Integer;
+  i, j, StartRow: Integer;
   S: String;
 begin
   Lines := TStringList.Create;
@@ -10348,7 +10348,6 @@ begin
         Lines.Delete(i);
     if Lines.Count>0 then begin
       ParseDelimitedText(Lines[0], ADelimiter, '"', HeaderL);
-      for x := 0 to HeaderL.Count - 1 do
       // Set Columns count based on loaded data
       if Columns.Enabled then begin
         while Columns.VisibleCount<>HeaderL.Count do
@@ -10366,11 +10365,9 @@ begin
         RowCount := FixedRows + Lines.Count-1;
       // Set column captions and set StartRow for the following rows
       if WithHeader then begin
-        if FixedRows>0 then
-          if Columns.Enabled then begin
-            for i:=0 to Columns.Count-1 do
-              Columns[i].Title.Caption:=HeaderL[i]
-          end;
+        if (FixedRows>0) and Columns.Enabled then
+          for i:=0 to Columns.Count-1 do
+            Columns[i].Title.Caption:=HeaderL[i];
         StartRow := Max(FixedRows-1, 0);
         j := 0;
       end else begin
