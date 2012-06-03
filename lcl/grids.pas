@@ -10260,6 +10260,78 @@ end;
 
 procedure TCustomStringGrid.LoadFromCSVStream(AStream: TStream;
   ADelimiter: Char=','; WithHeader: boolean=true);
+
+  Procedure ParseDelimitedText(const AValue: string; const ADelimiter, AQuoteChar: Char; TS: TStrings);
+  { Helper function for LoadFromCSVFile
+    Adapted from TStrings.SetDelimitedText
+    - Only ADelimiter is used for separating the fields and not other whitespace
+    - If a field is quoted and it contains AQuoteChar, this occurrence is treated as a literal part of the field
+    Example with ADelimiter = ',' and AQuoteChar = '"'
+    AValue = '111,2,22,333' -> 111|2|22|333
+    AValue = '111,"2,22",333' -> 111|2,22|333
+  }
+  var i,j:integer;
+      aNotFirst:boolean;
+  begin
+    TS.BeginUpdate;
+    i:=1;
+    j:=1;
+    aNotFirst:=false;
+    try
+      TS.Clear;
+      while i<=length(AValue) do
+      begin
+        // skip delimiter
+        if aNotFirst and (i<=length(AValue)) and (AValue[i]=ADelimiter) then inc(i);
+        // skip spaces
+        while (i<=length(AValue)) and (Ord(AValue[i])<=Ord(' ')) do inc(i);
+        // read next string
+        if i<=length(AValue) then
+        begin
+          if AValue[i]=AQuoteChar then
+          begin
+            // next string is quoted
+            j:=i+1;
+             while (j<=length(AValue)) and
+                   ( (AValue[j]<>AQuoteChar) or
+                   ( (j+1<=length(AValue)) and (AValue[j+1]=AQuoteChar) ) ) do
+             begin
+               if (j<=length(AValue)) and (AValue[j]=AQuoteChar) then
+                 inc(j,2)
+               else
+                 inc(j);
+             end;
+             // j is position of closing quote
+             TS.Add( StringReplace (Copy(AValue,i+1,j-i-1),
+                             AQuoteChar+AQuoteChar,AQuoteChar, [rfReplaceAll]));
+             i:=j+1;
+          end
+          else
+          begin
+            // next string is not quoted
+            j:=i;
+            while (j<=length(AValue)) and
+                  (Ord(AValue[j])>=Ord(' ')) and        //spaces are not treated as delimiter
+                  (AValue[j]<>ADelimiter) do inc(j);
+            //We may have trailing spaces, these need to be trimmed
+            TS.Add( TrimRight(Copy(AValue,i,j-i)));
+            i:=j;
+          end;
+       end
+       else
+       begin
+        if aNotFirst then TS.Add('');
+       end;
+       // skip spaces
+       while (i<=length(AValue)) and (Ord(AValue[i])<=Ord(' ')) do inc(i);
+       aNotFirst:=true;
+      end; //end of string
+    finally
+     TS.EndUpdate;
+    end;
+  end;//ParseDelimitedText
+
+
 var
   Lines, HeaderL: TStringList;
   i, j, x, StartRow: Integer;
@@ -10275,16 +10347,8 @@ begin
       if Trim(Lines[i])='' then
         Lines.Delete(i);
     if Lines.Count>0 then begin
-      HeaderL.Delimiter:=ADelimiter;
-      HeaderL.StrictDelimiter := True; // Do not allow #32 as separator in csv files
-      HeaderL.DelimitedText:=Lines[0]; // Use the first row as a header
-      //using StrictDelimiter means we have to handle quoted strings ourselfs
+      ParseDelimitedText(Lines[0], ADelimiter, '"', HeaderL);
       for x := 0 to HeaderL.Count - 1 do
-      begin
-        S := HeaderL[x];
-        if (Length(S) > 1) and (S[1] = '"') and (S[Length(S)] = '"') then
-          HeaderL[x] := AnsiDeQuotedStr(S,'"');
-      end;
       // Set Columns count based on loaded data
       if Columns.Enabled then begin
         while Columns.VisibleCount<>HeaderL.Count do
@@ -10316,16 +10380,7 @@ begin
       // Store the row data
       for i:=StartRow to RowCount-1 do begin
         Rows[i].Delimiter := ADelimiter;
-        //do not allow #32 as separator in csv files
-        Rows[i].StrictDelimiter := True;
-        Rows[i].DelimitedText:=Lines[i-StartRow+j];
-        //using StrictDelimiter means we have to handle quoted strings ourselfs
-        for x := 0 to Rows[i].Count - 1 do
-        begin
-          S := Rows[i][x];
-          if (Length(S) > 1) and (S[1] = '"') and (S[Length(S)] = '"') then
-            Rows[i][x] := AnsiDeQuotedStr(S,'"');
-        end;
+        ParseDelimitedText(Lines[i-StartRow+j], ADelimiter, '"', Rows[i]);
       end;
     end;
   finally
@@ -10372,6 +10427,7 @@ begin
                 HeaderL.Add(c.Title.Caption);
             end;
             HeaderL.Delimiter:=ADelimiter;
+            Headerl.StrictDelimiter := False; //do not rely on default value here
             Lines.Add(HeaderL.DelimitedText); // Add as a first row in Lines
           finally
             HeaderL.Free;
@@ -10386,6 +10442,7 @@ begin
     end else
       StartRow := FixedRows;
     for i:=StartRow to RowCount-1 do begin
+      Rows[i].StrictDelimiter := False; //do not rely on default value here
       Rows[i].Delimiter:=ADelimiter;
       Lines.Add(Rows[i].DelimitedText);
     end;
