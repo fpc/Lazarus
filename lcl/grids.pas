@@ -801,6 +801,7 @@ type
     function  IsPushCellActive: boolean;
     procedure LoadColumns(cfg: TXMLConfig; Version: integer);
     function  LoadResBitmapImage(const ResName: string): TBitmap;
+    procedure LoadSub(ACfg: TXMLConfig);
     procedure OnTitleFontChanged(Sender: TObject);
     procedure ReadColumns(Reader: TReader);
     procedure ReadColWidths(Reader: TReader);
@@ -1166,12 +1167,14 @@ type
     function  IscellVisible(aCol, aRow: Integer): Boolean;
     function  IsFixedCellVisible(aCol, aRow: Integer): boolean;
     procedure LoadFromFile(FileName: string);
+    procedure LoadFromStream(AStream: TStream);
     function  MouseCoord(X,Y: Integer): TGridCoord;
     function  MouseToCell(const Mouse: TPoint): TPoint; overload;
     procedure MouseToCell(X,Y: Integer; var ACol,ARow: Longint); overload;
     function  MouseToLogcell(Mouse: TPoint): TPoint;
     function  MouseToGridZone(X,Y: Integer): TGridZone;
     procedure SaveToFile(FileName: string);
+    procedure SaveToStream(AStream: TStream);
     procedure SetFocus; override;
 
     property SortOrder: TSortOrder read FSortOrder write FSortOrder;
@@ -8552,21 +8555,75 @@ begin
   inherited Destroy;
 end;
 
+procedure TCustomGrid.LoadSub(ACfg: TXMLConfig);
+var
+  Version: Integer;
+begin
+  Version:=ACfg.GetValue('grid/version',-1);
+  if Version=-1 then raise Exception.Create(rsNotAValidGridFile);
+  BeginUpdate;
+  LoadContent(ACfg, Version);
+  EndUpdate;
+end;
+
+procedure TCustomGrid.LoadFromFile(FileName: string);
+var
+  Cfg: TXMLConfig;
+begin
+  if not FileExistsUTF8(FileName) then
+    raise Exception.Create(rsGridFileDoesNotExists);
+  Cfg:=TXMLConfig.Create(nil);
+  Try
+    Cfg.Filename := UTF8ToSys(FileName);
+    LoadSub(Cfg);
+  Finally
+    FreeThenNil(Cfg);
+  end;
+end;
+
+procedure TCustomGrid.LoadFromStream(AStream: TStream);
+var
+  Cfg: TXMLConfig;
+begin
+  Cfg:=TXMLConfig.Create(nil);
+  Try
+    Cfg.ReadFromStream(AStream);
+    LoadSub(Cfg);
+  Finally
+    FreeThenNil(Cfg);
+  end;
+end;
+
 procedure TCustomGrid.SaveToFile(FileName: string);
 var
   Cfg: TXMLConfig;
 begin
-  if FileExistsUTF8(FileName) then DeleteFileUTF8(FileName);
-
+  if FileExistsUTF8(FileName) then
+    DeleteFileUTF8(FileName);
   Cfg:=TXMLConfig.Create(nil);
   Try
     Cfg.FileName := UTF8ToSys(FileName);
     SaveContent(Cfg);
-  Finally
     Cfg.Flush;
+  Finally
     FreeThenNil(Cfg);
   end;
 end;
+
+procedure TCustomGrid.SaveToStream(AStream: TStream);
+var
+  Cfg: TXMLConfig;
+begin
+  Cfg:=TXMLConfig.Create(nil);
+  Try
+    Cfg.Clear;
+    SaveContent(Cfg);
+    Cfg.WriteToStream(AStream);
+  Finally
+    FreeThenNil(Cfg);
+  end;
+end;
+
 
 type
   TWinCtrlAccess=class(TWinControl);
@@ -8604,27 +8661,6 @@ begin
   {$IFDEF dbgGrid}
   DebugLn('TCustomGrid.SetFocus END');
   {$ENDIF}
-end;
-
-procedure TCustomGrid.LoadFromFile(FileName: string);
-var
-  Cfg: TXMLConfig;
-  Version: Integer;
-begin
-  if not FileExistsUTF8(FileName) then
-    raise Exception.Create(rsGridFileDoesNotExists);
-
-  Cfg:=TXMLConfig.Create(nil);
-  Try
-    Cfg.Filename := UTF8ToSys(FileName);
-    Version:=cfg.GetValue('grid/version',-1);
-    if Version=-1 then raise Exception.Create(rsNotAValidGridFile);
-    BeginUpdate;
-    LoadContent(Cfg, Version);
-    EndUpdate;
-  Finally
-    FreeThenNil(Cfg);
-  end;
 end;
 
 procedure TCustomGrid.Clear;
