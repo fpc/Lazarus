@@ -19105,11 +19105,9 @@ begin
   if CheckFocus then
   begin
     CurFocusControl:=FindOwnerControl(GetFocus);
-    while (CurFocusControl<>nil) do begin
-      if (CurFocusControl=MainIDEBar) or (CurFocusControl is TSourceNotebook) then
-        break;
+    while (CurFocusControl<>nil) and (CurFocusControl<>MainIDEBar)
+    and not (CurFocusControl is TSourceNotebook) do
       CurFocusControl:=CurFocusControl.Parent;
-    end;
   end;
   if Assigned(CurFocusControl) then
   begin    // MainIDEBar or SourceNotebook has focus -> find active source editor
@@ -19117,7 +19115,7 @@ begin
     if Assigned(ActiveSourceEditor) then
       ActiveSourceEditor.DoEditorExecuteCommand(EditorCommand); // pass the command
   end;
-  // Not passed to source editor -> continue processing shortcut, not handled yet
+  // Some other window has focus -> continue processing shortcut, not handled yet
   if (CurFocusControl=Nil) or (ActiveSourceEditor=Nil) then
     MainIDEBar.mnuMainMenu.ShortcutHandled := false;
 end;
