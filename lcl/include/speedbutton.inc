@@ -237,7 +237,7 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCustomSpeedButton.SetNumGlyphs(Value : integer);
 begin
-  if Value < 0 then Value := 1;
+  if Value < Low(TNumGlyphs) then Value := Low(TNumGlyphs);
   if Value > High(TNumGlyphs) then Value := High(TNumGlyphs);
 
   if Value <> TButtonGlyph(fGlyph).NumGlyphs then

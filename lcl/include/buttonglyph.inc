@@ -72,6 +72,7 @@ begin
   FShowMode:= gsmApplication;
   FOriginal := TGlyphBitmap.Create(Self);
   FOriginal.OnChange := @GlyphChanged;
+  FNumGlyphs := Low(TNumGlyphs);
 end;
 
 {------------------------------------------------------------------------------

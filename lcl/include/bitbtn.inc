@@ -174,7 +174,7 @@ end;
 
 procedure TCustomBitBtn.SetNumGlyphs(AValue: Integer);
 begin
-  if AValue < 0 then AValue := 1;
+  if AValue < Low(TNumGlyphs) then AValue := Low(TNumGlyphs);
   if AValue > High(TNumGlyphs) then AValue := High(TNumGlyphs);
 
   if AValue <> FButtonGlyph.NumGlyphs then
