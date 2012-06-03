@@ -237,6 +237,10 @@ msgstr "Conferma"
 msgid "CSV File"
 msgstr "File CSV"
 
+#: lr_const.scurmemo
+msgid "Memo:"
+msgstr ""
+
 #: lr_const.sdatetimecategory
 msgid "Date and time"
 msgstr "Data e ora"
@@ -1292,6 +1296,10 @@ msgctxt "lr_const.sgroupeditorformcond"
 msgid "Condition"
 msgstr "Condizione"
 
+#: lr_const.shidezerovalues
+msgid "Hide zero values"
+msgstr ""
+
 #: lr_const.shilightformback
 msgid "Background"
 msgstr "Sfondo"
@@ -1409,6 +1417,10 @@ msgstr "Mantieni proporzioni"
 #: lr_const.slazformfile
 msgid "LazReport form"
 msgstr "Form LazReport"
+
+#: lr_const.slaztemplatefile
+msgid "LazReport template"
+msgstr ""
 
 #: lr_const.smathcategory
 msgid "Math"
@@ -2170,6 +2182,14 @@ msgstr "Mostra su tutte le pagine"
 #: lr_const.srepfile
 msgid "Report file"
 msgstr "File del report"
+
+#: lr_const.sreportcreatedate
+msgid "Report create date"
+msgstr ""
+
+#: lr_const.sreportlastmodifydate
+msgid "Report last modify date"
+msgstr ""
 
 #: lr_const.sreportpreparing
 msgid "Report preparing"

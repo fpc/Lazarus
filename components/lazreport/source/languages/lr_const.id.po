@@ -236,6 +236,10 @@ msgstr "Konfirmasi"
 msgid "CSV File"
 msgstr "File CSV"
 
+#: lr_const.scurmemo
+msgid "Memo:"
+msgstr ""
+
 #: lr_const.sdatetimecategory
 msgid "Date and time"
 msgstr "Tanggal dan jam"
@@ -1291,6 +1295,10 @@ msgctxt "lr_const.sgroupeditorformcond"
 msgid "Condition"
 msgstr ""
 
+#: lr_const.shidezerovalues
+msgid "Hide zero values"
+msgstr ""
+
 #: lr_const.shilightformback
 msgid "Background"
 msgstr "Latar belakang"
@@ -1408,6 +1416,10 @@ msgstr "Jaga raso aspek"
 #: lr_const.slazformfile
 msgid "LazReport form"
 msgstr "Formulir LazReport"
+
+#: lr_const.slaztemplatefile
+msgid "LazReport template"
+msgstr ""
 
 #: lr_const.smathcategory
 msgid "Math"
@@ -2169,6 +2181,14 @@ msgstr "Tampilkan pada semua halaman"
 #: lr_const.srepfile
 msgid "Report file"
 msgstr "File laporan"
+
+#: lr_const.sreportcreatedate
+msgid "Report create date"
+msgstr ""
+
+#: lr_const.sreportlastmodifydate
+msgid "Report last modify date"
+msgstr ""
 
 #: lr_const.sreportpreparing
 msgid "Report preparing"

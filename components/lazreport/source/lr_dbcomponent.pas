@@ -23,11 +23,11 @@ type
     function GetRecordCount: integer;
     procedure SetActive(AValue: boolean);
     procedure SetDataSet(AValue: TDataSet);
-    procedure SetDataSource(AValue: string);
     procedure SetFilter(AValue: string);
   protected
     FActive:boolean;
     procedure SetName(const AValue: string); override;
+    procedure SetDataSource(AValue: string); virtual;
     procedure AfterLoad;override;
     function ExecMetod(const AName: String; p1, p2, p3: Variant; var Val: Variant):boolean;override;
   public
@@ -47,6 +47,7 @@ type
   end;
 
 implementation
+uses DBPropEdits, PropEdits, LazarusPackageIntf, types, LR_Utils;
 
 { TLRDataSetControl }
 
@@ -170,14 +171,38 @@ procedure TLRDataSetControl.LoadFromXML(XML: TLrXMLConfig; const Path: String);
 begin
   inherited LoadFromXML(XML, Path);
   FActive  := XML.GetValue(Path + 'Active/Value'{%H-}, false);
+  FDataSource  := XML.GetValue(Path + 'DataSource/Value'{%H-}, '');
 end;
 
 procedure TLRDataSetControl.SaveToXML(XML: TLrXMLConfig; const Path: String);
 begin
   inherited SaveToXML(XML, Path);
   XML.SetValue(Path+'Active/Value', Active);
+  XML.SetValue(Path + 'DataSource/Value'{%H-}, FDataSource);
 end;
 
+type
+
+  { TLRDataSetControlDataSourceProperty }
+
+  TLRDataSetControlDataSourceProperty = class(TFieldProperty)
+  public
+    procedure FillValues(const Values: TStringList); override;
+  end;
+
+{ TLRDataSetControlDataSourceProperty }
+
+procedure TLRDataSetControlDataSourceProperty.FillValues(
+  const Values: TStringList);
+begin
+  if (GetComponent(0) is TLRDataSetControl) then
+    frGetComponents(nil, TDataSource, Values, nil);
+end;
+
+initialization
+  RegisterPropertyEditor(TypeInfo(string), TLRDataSetControl, 'DataSource', TLRDataSetControlDataSourceProperty);
+
+finalization
 end.
 
 

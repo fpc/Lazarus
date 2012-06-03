@@ -34,6 +34,7 @@ const
   dtFastReportForm      = 1;
   dtFastReportTemplate  = 2;
   dtLazReportForm       = 3;
+  dtLazReportTemplate   = 4;
 
 type
   TfrDesignerForm = class;
@@ -185,6 +186,7 @@ type
 
   TfrDesignerForm = class(TfrReportDesigner)
     acDuplicate: TAction;
+    FilePreview: TAction;
     FileSaveAs: TAction;
     FileSave: TAction;
     acToggleFrames: TAction;
@@ -365,6 +367,7 @@ type
     procedure acDuplicateExecute(Sender: TObject);
     procedure acToggleFramesExecute(Sender: TObject);
     procedure C2GetItems(Sender: TObject);
+    procedure FilePreviewExecute(Sender: TObject);
     procedure FileSaveAsExecute(Sender: TObject);
     procedure FileSaveExecute(Sender: TObject);
     procedure FormCreate(Sender: TObject);
@@ -399,7 +402,6 @@ type
     procedure C2DrawItem({%H-}Control: TWinControl; Index: Integer; Rect: TRect;
       {%H-}State: TOwnerDrawState);
     procedure HlB1Click(Sender: TObject);
-    procedure FileBtn4Click(Sender: TObject);
     procedure N42Click(Sender: TObject);
     procedure Popup1Popup(Sender: TObject);
     procedure N23Click(Sender: TObject);
@@ -2502,9 +2504,10 @@ begin
   //Panel6.Caption :=   sFRDesignerFormTools;
   FileBtn1.Hint :=    sFRDesignerFormNewRp;
   FileBtn2.Hint :=    sFRDesignerFormOpenRp;
-  //FileBtn3.Hint :=    sFRDesignerFormSaveRp;
-  FileSave.Hint:=     sFRDesignerFormSaveRp;
-  FileBtn4.Hint :=    sFRDesignerFormPreview;
+
+  FileSave.Hint:=        sFRDesignerFormSaveRp;
+  FilePreview.Hint :=    sFRDesignerFormPreview;
+
   CutB.Hint :=        sFRDesignerFormCut;
   CopyB.Hint :=       sFRDesignerFormCopy;
   PstB.Hint :=        sFRDesignerFormPast;
@@ -2634,6 +2637,59 @@ begin
   end;
 end;
 
+procedure TfrDesignerForm.FilePreviewExecute(Sender: TObject); // preview
+var
+  v1, v2: Boolean;
+  TestRepStream:TMemoryStream;
+  Rep, SaveR:TfrReport;
+
+procedure DoClearFormsName;
+var
+  i:integer;
+begin
+  for i:=0 to CurReport.Pages.Count - 1 do
+    if CurReport.Pages[i] is TfrPageDialog then
+      TfrPageDialog(CurReport.Pages[i]).Form.Name:='';
+end;
+
+procedure DoResoreFormsName;
+var
+  i:integer;
+begin
+  for i:=0 to CurReport.Pages.Count - 1 do
+    if CurReport.Pages[i] is TfrPageDialog then
+      TfrPageDialog(CurReport.Pages[i]).Form.Name:=TfrPageDialog(CurReport.Pages[i]).Name;
+end;
+begin
+  if CurReport is TfrCompositeReport then Exit;
+  Application.ProcessMessages;
+  SaveR:=CurReport;
+  TestRepStream:=TMemoryStream.Create;
+  CurReport.SaveToXMLStream(TestRepStream);
+  TestRepStream.Position:=0;
+
+  DoClearFormsName;
+  CurReport:=nil;
+
+  Rep:=TfrReport.Create(SaveR.Owner);
+  try
+    Rep.LoadFromXMLStream(TestRepStream);
+    Rep.ShowReport;
+    FreeAndNil(Rep)
+  except
+    on E:Exception do
+    begin
+      ShowMessage(E.Message);
+      if Assigned(Rep) then
+        FreeAndNil(Rep)
+    end;
+  end;
+  TestRepStream.Free;
+  CurReport:=SaveR;
+  CurPage := 0;
+  DoResoreFormsName;
+end;
+
 procedure TfrDesignerForm.FileSaveAsExecute(Sender: TObject);
 var
   s: String;
@@ -2643,8 +2699,8 @@ begin
   begin
     Filter := sFormFile + ' (*.frf)|*.frf|' +
                 sTemplFile + ' (*.frt)|*.frt|' +
-                sLazFormFile + ' (*.lrf)|*.lrf' +
-                '';
+                sLazFormFile + ' (*.lrf)|*.lrf|' +
+                sLazTemplateFile + ' (*.lrt)|*.lrt';
     InitialDir:=ExtractFilePath(ParamStrUTF8(0));
     FileName := CurDocName;
     FilterIndex := 3;
@@ -2658,16 +2714,22 @@ begin
               CurDocName := s;
               WasOk := True;
         end;
-      dtFastReportTemplate:
+      dtFastReportTemplate,
+      dtLazReportTemplate:
             begin
-              s := ExtractFileName(ChangeFileExt(FileName, '.frt'));
+              if FCurDocFileType = dtLazReportTemplate then
+                s := ExtractFileName(ChangeFileExt(FileName, '.lrt'))
+              else
+                s := ExtractFileName(ChangeFileExt(FileName, '.frt'));
               if frTemplateDir <> '' then
                 s := frTemplateDir + PathDelim + s;
               frTemplNewForm := TfrTemplNewForm.Create(nil);
-              with frTemplNewForm do
-              if ShowModal = mrOk then
+              if frTemplNewForm.ShowModal = mrOk then
               begin
-                CurReport.SaveTemplate(s, Memo1.Lines, Image1.Picture.Bitmap);
+                if FCurDocFileType = dtLazReportTemplate then
+                  CurReport.SaveTemplateXML(s, frTemplNewForm.Memo1.Lines, frTemplNewForm.Image1.Picture.Bitmap)
+                else
+                  CurReport.SaveTemplate(s, frTemplNewForm.Memo1.Lines, frTemplNewForm.Image1.Picture.Bitmap);
                 WasOk := True;
               end;
               frTemplNewForm.Free;
@@ -2719,8 +2781,7 @@ begin
     SetMenuBitmaps;
   FirstTime := False;
   FileBtn1.Enabled := FirstInstance;
-  FileBtn4.Enabled := FirstInstance and not (CurReport is TfrCompositeReport);
-  N39.Enabled := FileBtn4.Enabled;
+  FilePreview.Enabled := FirstInstance and not (CurReport is TfrCompositeReport);
   N23.Enabled := FirstInstance;
   OB3.Enabled := FirstInstance;
   OB5.Enabled := FirstInstance;
@@ -4535,6 +4596,8 @@ begin
   CurDocName := sUntitled;
   //FileModified := False;
   Modified := False;
+  CurReport.ReportCreateDate:=Now;
+
   FCurDocFileType := 3;
 end;
 
@@ -5199,7 +5262,10 @@ begin
     else
     begin
       ClearUndoBuffer;
-      CurReport.LoadTemplate(TemplName, nil, nil, True);
+      if ExtractFileExt(TemplName) = '.lrt' then
+        CurReport.LoadTemplateXML(TemplName, nil, nil, True)
+      else
+        CurReport.LoadTemplate(TemplName, nil, nil, True);
       CurDocName := sUntitled;
       CurPage := 0; // do all
     end;
@@ -5308,8 +5374,8 @@ begin
   else
     N20Click(nil);
 end;
-}
-procedure TfrDesignerForm.FileBtn4Click(Sender: TObject); // preview
+
+procedure TfrDesignerForm.FilePreviewExecute(Sender: TObject); // preview
 var
   v1, v2: Boolean;
   TestRepStream:TMemoryStream;
@@ -5335,20 +5401,6 @@ end;
 
 begin
   if CurReport is TfrCompositeReport then Exit;
-{  v1 := ObjInsp.Visible;
-  v2 := CurReport.ModalPreview;
-  ObjInsp.Visible:=False;
-  Application.ProcessMessages;
-  CurReport.ModalPreview := True;
-  try
-    CurReport.ShowReport;
-  finally
-    ObjInsp.Visible := v1;
-    CurReport.ModalPreview := v2;
-    SetFocus;
-    DisableDrawing := False;
-    CurPage := 0;
-  end;}
   Application.ProcessMessages;
   SaveR:=CurReport;
   TestRepStream:=TMemoryStream.Create;
@@ -5376,7 +5428,7 @@ begin
   CurPage := 0;
   DoResoreFormsName;
 end;
-
+}
 procedure TfrDesignerForm.N42Click(Sender: TObject); // var editor
 begin
   if ShowEvEditor(CurReport) then
@@ -5484,6 +5536,8 @@ begin
     edtMinor.Text   := CurReport.ReportVersionMinor;
     edtRelease.Text := CurReport.ReportVersionRelease;
     edtBuild.Text   := CurReport.ReportVersionBuild;
+    edtRepCreateDate.Text   := DateTimeToStr(CurReport.ReportCreateDate);
+    edtRepLastChangeDate.Text   := DateTimeToStr(CurReport.ReportLastChange);
     if ShowModal = mrOk then
     begin
       CurReport.PrintToDefault := not CB1.Checked;
@@ -5568,7 +5622,6 @@ procedure TfrDesignerForm.GB1Click(Sender: TObject);
 begin
   ShowGrid := GB1.Down;
 end;
-
 
 procedure TfrDesignerForm.GB2Click(Sender: TObject);
 begin
@@ -5887,7 +5940,7 @@ begin
   SetMenuItemBitmap(N23, FileBtn1);
   SetMenuItemBitmap(N19, FileBtn2);
 //  SetMenuItemBitmap(N20, FileBtn3);
-  SetMenuItemBitmap(N39, FileBtn4);
+//  SetMenuItemBitmap(N39, FileBtn4);
   SetMenuItemBitmap(N10, ExitB);
 
   SetMenuItemBitmap(N46, UndoB);

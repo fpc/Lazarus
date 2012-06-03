@@ -114,21 +114,23 @@ resourcestring
   sFieldsFormAviableDB = '&Available DB''s';
 
 //--- DocOptForm resources ----------------------------------------------------
-  sDocOptFormOpt      = 'Report options';
-  sDocOptFormPrinter  = 'Printer';
-  sDocOptFormSelect   = '&Select when report loaded';
-  sDocOptFormOther    = 'Other';
-  sDocOptForm2Pass    = '&Two-pass report';
-  sDocOptFormTitle    = 'Title';
-  sDocOptFormSubject  = 'Subject';
-  sDocOptFormKeyWords = 'Keys words';
-  sDocOptFormComments = 'Comments';
-  sDocVersion         = 'Version';
-  sDocMajor           = 'Major';
-  sDocMinor           = 'Minor';
-  sDocRelease         = 'Release';
-  sDocBuild           = 'Build';
-  sDocAutor           = 'Autor';
+  sDocOptFormOpt        = 'Report options';
+  sDocOptFormPrinter    = 'Printer';
+  sDocOptFormSelect     = '&Select when report loaded';
+  sDocOptFormOther      = 'Other';
+  sDocOptForm2Pass      = '&Two-pass report';
+  sDocOptFormTitle      = 'Title';
+  sDocOptFormSubject    = 'Subject';
+  sDocOptFormKeyWords   = 'Keys words';
+  sDocOptFormComments   = 'Comments';
+  sDocVersion           = 'Version';
+  sDocMajor             = 'Major';
+  sDocMinor             = 'Minor';
+  sDocRelease           = 'Release';
+  sDocBuild             = 'Build';
+  sDocAutor             = 'Autor';
+  sReportCreateDate     = 'Report create date';
+  sReportLastModifyDate = 'Report last modify date';
   
   
 //--- EvForm resources --------------------------------------------------------
@@ -208,9 +210,12 @@ resourcestring
   sStretched = 'Stretched';
   sVarFormat = 'Variable format ...';
   sFont = 'Font ...';
-  sWordWrap = 'Word wrap';
-  sWordBreak = 'Word break';
-  sAutoSize = 'Auto size';
+
+  sWordWrap       = 'Word wrap';
+  sWordBreak      = 'Word break';
+  sAutoSize       = 'Auto size';
+  sHideZeroValues = 'Hide zero values';
+
   sCharset  = '0';
   sNotAssigned = '[None]';
   sFormNewPage = 'Force new page';
@@ -218,9 +223,12 @@ resourcestring
   sBreaked = 'Breaked';
   sPictureCenter = 'Center picture';
   sKeepAspectRatio = 'Keep aspect ratio';
-  sFormFile = 'FastReport form';
-  sTemplFile = 'FastReport template';
-  sLazFormFile = 'LazReport form';
+
+  sFormFile        = 'FastReport form';
+  sTemplFile       = 'FastReport template';
+  sLazFormFile     = 'LazReport form';
+  sLazTemplateFile = 'LazReport template';
+
   sPictFile = 'Picture file';
   sBMPFile = 'Bitmap file';
   sAllFiles = 'All files';
@@ -259,8 +267,9 @@ resourcestring
   sObjectNotFound = 'Object "%s" not found';
 
   
-  SDoc = 'Report:';
-  SBand = 'Band:';
+  SDoc       = 'Report:';
+  SBand      = 'Band:';
+  sCurMemo   = 'Memo:';
   SReportPreparing = 'Report preparing';
   SFirstPass = 'Performing 1st pass:';
   SPagePreparing = 'Processing page:';

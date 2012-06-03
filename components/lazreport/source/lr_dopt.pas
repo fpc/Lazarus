@@ -30,6 +30,8 @@ type
     CB2: TCheckBox;
     edComments: TMemo;
     edAutor: TEdit;
+    edtRepCreateDate: TEdit;
+    edtRepLastChangeDate: TEdit;
     edtMaj: TEdit;
     edtMinor: TEdit;
     edtRelease: TEdit;
@@ -41,6 +43,9 @@ type
     GroupBox3: TGroupBox;
     ImageList1: TImageList;
     labComments: TLabel;
+    Label1: TLabel;
+    Label2: TLabel;
+    Label3: TLabel;
     labPrinter: TLabel;
     labMaj: TLabel;
     labMinor: TLabel;
@@ -104,6 +109,10 @@ begin
   labMinor.Caption:=sDocMinor;
   labRelease.Caption:=sDocRelease;
   labBuild.Caption:=sDocBuild;
+
+  Label1.Caption:=sReportCreateDate;
+  Label2.Caption:=sReportLastModifyDate;
+
 end;
 
 procedure TfrDocOptForm.ListBox1DrawItem(Control: TWinControl; Index: Integer;

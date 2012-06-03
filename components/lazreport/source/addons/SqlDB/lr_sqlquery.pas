@@ -5,7 +5,7 @@ unit lr_SQLQuery;
 interface
 
 uses
-  Classes, SysUtils, LResources, Graphics, LR_Class, LR_DBComponent, sqldb;
+  Classes, SysUtils, LResources, Graphics, LR_Class, LR_DBComponent, sqldb, DB;
 
 type
 
@@ -15,9 +15,12 @@ type
   private
     FDatabase: string;
     procedure SetDatabase(AValue: string);
+    procedure DoMakeParams;
+    procedure DoEditParams;
   protected
-    function GetSQL: TStringList;virtual;
-    procedure SetSQL(AValue: TStringList);virtual;
+    function GetSQL: string;
+    procedure SetSQL(AValue:string);
+    procedure SetDataSource(AValue: string); override;
     procedure AfterLoad;override;
   public
     constructor Create(AOwnerPage:TfrPage); override;
@@ -25,7 +28,7 @@ type
     procedure LoadFromXML(XML: TLrXMLConfig; const Path: String); override;
     procedure SaveToXML(XML: TLrXMLConfig; const Path: String); override;
   published
-    property SQL:TStringList read GetSQL write SetSQL;
+    property SQL:string read GetSQL write SetSQL;
     property Database:string read FDatabase write SetDatabase;
   end;
 
@@ -71,7 +74,7 @@ type
 
 
 implementation
-uses LR_Utils, DBPropEdits, PropEdits;
+uses LR_Utils, DBPropEdits, PropEdits, Controls;
 
 var
   lrBMP_SQLQuery:TBitmap = nil;
@@ -228,20 +231,48 @@ begin
     TSQLQuery(DataSet).DataBase:=TSQLConnection(D);
 end;
 
-function TLRSQLQuery.GetSQL: TStringList;
+procedure TLRSQLQuery.DoMakeParams;
 begin
-  Result:=TSQLQuery(DataSet).SQL;
+  { TODO : Необходимо реализовать параметры по аналогии с ZEOS }
 end;
 
-procedure TLRSQLQuery.SetSQL(AValue: TStringList);
+procedure TLRSQLQuery.DoEditParams;
 begin
-  TSQLQuery(DataSet).SQL.Assign(AValue);
+  { TODO : Необходимо реализовать параметры по аналогии с ZEOS }
+end;
+
+function TLRSQLQuery.GetSQL: string;
+begin
+  Result:=TSQLQuery(DataSet).SQL.Text;
+end;
+
+procedure TLRSQLQuery.SetSQL(AValue: string);
+begin
+  DataSet.Active:=false;
+  TSQLQuery(DataSet).SQL.Text:=AValue;
+  DoMakeParams;
+  if Assigned(frDesigner) then
+    frDesigner.Modified:=true;
+end;
+
+procedure TLRSQLQuery.SetDataSource(AValue: string);
+var
+  D:TComponent;
+begin
+  inherited SetDataSource(AValue);
+  D:=frFindComponent(OwnerForm, AValue);
+  if Assigned(D) and (D is TDataSource)then
+    TSQLQuery(DataSet).DataSource:=TDataSource(D);
 end;
 
 procedure TLRSQLQuery.AfterLoad;
 var
   D:TComponent;
 begin
+  D:=frFindComponent(OwnerForm, DataSource);
+  if Assigned(D) and (D is TDataSource)then
+    TSQLQuery(DataSet).DataSource:=TDataSource(D);
+
   D:=frFindComponent(DataSet.Owner, FDatabase);
   if Assigned(D) and (D is TSQLConnection)then
   begin
@@ -260,14 +291,14 @@ end;
 procedure TLRSQLQuery.LoadFromXML(XML: TLrXMLConfig; const Path: String);
 begin
   inherited LoadFromXML(XML, Path);
-  SQL.Text  := XML.GetValue(Path+'SQL/Value'{%H-}, '');
+  TSQLQuery(DataSet).SQL.Text  := XML.GetValue(Path+'SQL/Value'{%H-}, '');
   FDatabase:= XML.GetValue(Path+'Database/Value'{%H-}, '');
 end;
 
 procedure TLRSQLQuery.SaveToXML(XML: TLrXMLConfig; const Path: String);
 begin
   inherited SaveToXML(XML, Path);
-  XML.SetValue(Path+'SQL/Value', SQL.Text);
+  XML.SetValue(Path+'SQL/Value', TSQLQuery(DataSet).SQL.Text);
   XML.SetValue(Path+'Database/Value', FDatabase);
 end;
 
@@ -279,6 +310,52 @@ type
   public
     procedure FillValues(const Values: TStringList); override;
   end;
+
+
+  { TLRSQLQuerySQLProperty }
+
+  TLRSQLQuerySQLProperty = class(TStringPropertyEditor)
+  public
+    function GetAttributes: TPropertyAttributes; override;
+    function GetValue: ansistring; override;
+    procedure Edit; override;
+  end;
+
+{ TLRSQLQuerySQLProperty }
+
+function TLRSQLQuerySQLProperty.GetAttributes: TPropertyAttributes;
+begin
+  Result:=[paDialog, paReadOnly];
+end;
+
+function TLRSQLQuerySQLProperty.GetValue: ansistring;
+begin
+  Result:='(SQL)';
+end;
+
+procedure TLRSQLQuerySQLProperty.Edit;
+var
+  TheDialog : TStringsPropEditorDlg;
+  AString : string;
+begin
+  AString := GetStrValue;
+  TheDialog := TStringsPropEditorDlg.Create(nil);
+  try
+    TheDialog.Editor := Self;
+    TheDialog.Memo.Text := AString;
+    TheDialog.MemoChange(nil);
+    if (TheDialog.ShowModal = mrOK) then
+    begin
+      AString := TheDialog.Memo.Text;
+      //erase the last lineending if any
+      if Copy(AString, length(AString) - length(LineEnding) + 1, length(LineEnding)) = LineEnding then
+        Delete(AString, length(AString) - length(LineEnding) + 1, length(LineEnding));
+      SetStrValue(AString);
+    end;
+  finally
+    TheDialog.Free;
+  end;
+end;
 
 { TLRZConnectionProtocolProperty }
 
@@ -293,6 +370,7 @@ initialization
   InitLRComp;
 
   RegisterPropertyEditor(TypeInfo(string), TLRSQLQuery, 'Database', TLRSQLConnectionProtocolProperty);
+  RegisterPropertyEditor(TypeInfo(string), TLRSQLQuery, 'SQL', TLRSQLQuerySQLProperty);
 finalization
   if Assigned(lrBMP_SQLQuery) then
     FreeAndNil(lrBMP_SQLQuery);

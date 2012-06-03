@@ -974,11 +974,6 @@ initialization
   {$I lrdialogcontrols_img.inc}
   InitLRComp;
 
-{  RegisterPropertyEditor(TypeInfo(string), TLRZQuery, 'Database', TLRZQueryDataBaseProperty);
-  RegisterPropertyEditor(TypeInfo(TfrVariables), TLRZQuery, 'Params', TLRZQueryParamsProperty);
-
-  RegisterPropertyEditor(TypeInfo(string), TLRZConnection, 'Protocol', TLRZConnectionProtocolProperty);
-}
 finalization
   if Assigned(lrBMP_LRLabel) then
     FreeAndNil(lrBMP_LRLabel);

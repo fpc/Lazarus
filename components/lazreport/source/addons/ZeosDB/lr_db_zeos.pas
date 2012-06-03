@@ -41,6 +41,7 @@ type
   protected
     function GetSQL: string;
     procedure SetSQL(AValue: string);
+    procedure SetDataSource(AValue: string); override;
     procedure AfterLoad;override;
   public
     constructor Create(AOwnerPage:TfrPage); override;
@@ -294,14 +295,28 @@ begin
   DataSet.Active:=false;
   TZQuery(DataSet).SQL.Text:=AValue;
   DoMakeParams;
-{  if Assigned(frDesigner) then
-    frDesigner.Modified:=true;}
+  if Assigned(frDesigner) then
+    frDesigner.Modified:=true;
+end;
+
+procedure TLRZQuery.SetDataSource(AValue: string);
+var
+  D:TComponent;
+begin
+  inherited SetDataSource(AValue);
+  D:=frFindComponent(OwnerForm, AValue);
+  if Assigned(D) and (D is TDataSource)then
+    TZQuery(DataSet).DataSource:=TDataSource(D);
 end;
 
 procedure TLRZQuery.AfterLoad;
 var
   D:TComponent;
 begin
+  D:=frFindComponent(OwnerForm, DataSource);
+  if Assigned(D) and (D is TDataSource)then
+    TZQuery(DataSet).DataSource:=TDataSource(D);
+
   D:=frFindComponent(DataSet.Owner, FDatabase);
   if Assigned(D) and (D is TZConnection)then
   begin
@@ -344,8 +359,9 @@ begin
 
   for i := 0 to Q.Params.Count - 1 do
   begin
-    P:=FParams.ParamByName(Q.Params[i].Name);
-    if (P.ParamValue <> '') and (DocMode = dmPrinting) then
+    S:=Q.Params[i].Name;
+    P:=FParams.ParamByName(S);
+    if Assigned(P) and (P.ParamValue <> '') and (DocMode = dmPrinting) then
     begin
       case P.ParamType of
         ftDate,

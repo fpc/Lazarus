@@ -237,6 +237,10 @@ msgstr "Patvirtinimas"
 msgid "CSV File"
 msgstr "CSV failas"
 
+#: lr_const.scurmemo
+msgid "Memo:"
+msgstr ""
+
 #: lr_const.sdatetimecategory
 msgid "Date and time"
 msgstr "Data ir laikas"
@@ -1292,6 +1296,10 @@ msgctxt "lr_const.sgroupeditorformcond"
 msgid "Condition"
 msgstr "Sąlyga"
 
+#: lr_const.shidezerovalues
+msgid "Hide zero values"
+msgstr ""
+
 #: lr_const.shilightformback
 msgid "Background"
 msgstr "Fonas"
@@ -1409,6 +1417,10 @@ msgstr "Išlaikyti kraštinių santykį"
 #: lr_const.slazformfile
 msgid "LazReport form"
 msgstr "LazReport forma"
+
+#: lr_const.slaztemplatefile
+msgid "LazReport template"
+msgstr ""
 
 #: lr_const.smathcategory
 msgid "Math"
@@ -2170,6 +2182,14 @@ msgstr "Rodyti visuose lapuose"
 #: lr_const.srepfile
 msgid "Report file"
 msgstr "Pranešimo failas"
+
+#: lr_const.sreportcreatedate
+msgid "Report create date"
+msgstr ""
+
+#: lr_const.sreportlastmodifydate
+msgid "Report last modify date"
+msgstr ""
 
 #: lr_const.sreportpreparing
 msgid "Report preparing"

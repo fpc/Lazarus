@@ -22,13 +22,14 @@ uses
 
 const
 // object flags
-  flStretched              = 1;
-  flWordWrap               = 2;
-  flWordBreak              = 4;
-  flAutoSize               = 8;
+  flStretched              = $01;
+  flWordWrap               = $02;
+  flWordBreak              = $04;
+  flAutoSize               = $08;
   flHideDuplicates         = $10;
   flStartRecord            = $20;
   flEndRecord              = $40;
+  flHideZeros              = $80;
 
   flBandNewPageAfter       = 2;
   flBandPrintifSubsetEmpty = 4;
@@ -370,6 +371,7 @@ type
     function GetAngle: Byte;
     function GetAutoSize: Boolean;
     function GetHideDuplicates: Boolean;
+    function GetHideZeroValues: Boolean;
     function GetIsLastValueSet: boolean;
     function GetLayout: TTextLayout;
     function GetWordBreak: Boolean;
@@ -379,11 +381,13 @@ type
     procedure P3Click(Sender: TObject);
     procedure P4Click(Sender: TObject);
     procedure P5Click(Sender: TObject);
+    procedure P6Click(Sender: TObject);
     procedure SetAlignment(const AValue: TAlignment);
     procedure SetAngle(const AValue: Byte);
     procedure SetAutoSize(const AValue: Boolean);
     procedure SetFont(Value: TFont);
     procedure SetHideDuplicates(const AValue: Boolean);
+    procedure SetHideZeroValues(AValue: Boolean);
     procedure SetIsLastValueSet(const AValue: boolean);
     procedure SetLayout(const AValue: TTextLayout);
     procedure SetWordBreak(AValue: Boolean);
@@ -437,7 +441,8 @@ type
     property WordWrap  : Boolean read GetWordWrap write SetWordWrap;
     property AutoSize  : Boolean read GetAutoSize write SetAutoSize;
     property HideDuplicates: Boolean read GetHideDuplicates write SetHideDuplicates;
-    
+    property HideZeroValues : Boolean read GetHideZeroValues write SetHideZeroValues;
+
     property FillColor;
     property Memo;
     property Script;
@@ -1056,7 +1061,10 @@ type
 
     procedure LoadTemplate(const fname: String; comm: TStrings;
       Bmp: TBitmap; Load: Boolean);
+    procedure LoadTemplateXML(const fname: String; comm: TStrings;
+      Bmp: TBitmap; Load: Boolean);
     procedure SaveTemplate(const fname: String; comm: TStrings; Bmp: TBitmap);
+    procedure SaveTemplateXML(const fname: String; Desc: TStrings; Bmp: TBitmap);
     procedure LoadPreparedReport(const FName: String);
     procedure SavePreparedReport(const FName: String);
     // report manipulation methods
@@ -1222,6 +1230,7 @@ procedure SetBit(var w: Word; e: Boolean; m: Integer);
 function frGetBandName(BandType: TfrBandType): string;
 
 const
+  lrTemplatePath = 'LazReportTemplate/';
   frCurrentVersion = 25;
     // version 2.5: lazreport: added to binary stream ParentBandType variable
     //                         on TfrView, used to extend export facilities
@@ -1743,6 +1752,8 @@ end;
 
 procedure TfrReportDesigner.SetModified(AValue: Boolean);
 begin
+  if Assigned(CurReport) then
+    CurReport.FReportLastChange:=Now;
   if FModified=AValue then Exit;
   FModified:=AValue;
 end;
@@ -2637,6 +2648,12 @@ procedure TfrMemoView.SetHideDuplicates(const AValue: Boolean);
 begin
   if HideDuplicates<>AValue then
     ModifyFlag(flHideDuplicates, AValue);
+end;
+
+procedure TfrMemoView.SetHideZeroValues(AValue: Boolean);
+begin
+  if WordBreak<>AValue then
+    ModifyFlag(flHideZeros, AValue);
 end;
 
 procedure TfrMemoView.SetIsLastValueSet(const AValue: boolean);
@@ -3677,6 +3694,12 @@ begin
   m.OnClick := @P5Click;
   m.Checked := AutoSize;
   Popup.Items.Add(m);
+
+  m := TMenuItem.Create(Popup);
+  m.Caption := sHideZeroValues;
+  m.OnClick := @P6Click;
+  m.Checked := HideZeroValues;
+  Popup.Items.Add(m);
 end;
 
 procedure TfrMemoView.MonitorFontChanges;
@@ -3723,6 +3746,11 @@ end;
 function TfrMemoView.GetHideDuplicates: Boolean;
 begin
   result:=((Flags and flHideDuplicates)<>0);
+end;
+
+function TfrMemoView.GetHideZeroValues: Boolean;
+begin
+  Result:=((Flags and flHideZeros)<>0);
 end;
 
 function TfrMemoView.GetIsLastValueSet: boolean;
@@ -3805,6 +3833,11 @@ end;
 procedure TfrMemoView.P5Click(Sender: TObject);
 begin
   MenuItemCheckFlag(Sender, flAutoSize);
+end;
+
+procedure TfrMemoView.P6Click(Sender: TObject);
+begin
+  MenuItemCheckFlag(Sender, flHideZeros);
 end;
 
 procedure TfrMemoView.SetAlignment(const AValue: TAlignment);
@@ -4929,8 +4962,12 @@ begin
   ErrorStr := sErrorOccured;
   for i := 0 to CurView.Memo.Count - 1 do
     ErrorStr := ErrorStr + #13 + CurView.Memo[i];
-  ErrorStr := ErrorStr + #13 + sDoc + ' ' + CurReport.Name +
-    #13 + sBand; // + ' ' + frBandNames[Integer(CurView.Parent.Typ)];
+  ErrorStr := ErrorStr + #13 +
+    sDoc + ' ' + CurReport.Name + #13 +
+    sCurMemo + ' ' + CurView.Name;
+  if Assigned(CurView.Parent) then
+    ErrorStr := ErrorStr + #13 +
+      sBand + ' ' + CurView.Parent.Name;  //frBandNames[Integer(CurView.Parent.Typ)];
   MasterReport.Terminated := True;
 end;
 
@@ -8432,6 +8469,16 @@ begin
       end;
     end;
   end;
+
+  if CurView.Flags and flHideZeros <> 0 then
+  begin
+    if TVarData(aValue).VType in [varSmallInt, varInteger, varCurrency, varDecimal, varShortInt, varByte, varWord, varLongWord,
+                                 varInt64, varQWord] then
+    begin
+      if aValue = 0 then
+        aValue:='';
+    end;
+  end;
 end;
 
 procedure TfrReport.OnGetParsFunction(const aName: String; p1, p2, p3: Variant;
@@ -8558,8 +8605,9 @@ begin
   if ATitle<>'' then
     fTitle := ATitle;
 
-//  XML.SetValue(Path+'ReportCreateDate/Value', FReportCreateDate);
-//  XML.SetValue(Path+'ReportCreateDate/Value', FReportLastChange);
+  FReportCreateDate:=lrStrToDateTime(XML.GetValue(Path+'ReportCreateDate/Value', lrDateTimeToStr(Now)));
+  FReportLastChange:=lrStrToDateTime(XML.GetValue(Path+'ReportLastChange/Value', lrDateTimeToStr(Now)));
+
   FReportVersionBuild:=XML.GetValue(Path+'ReportVersionBuild/Value', '');
   FReportVersionMajor:=XML.GetValue(Path+'ReportVersionMajor/Value', '');
   FReportVersionMinor:=XML.GetValue(Path+'ReportVersionMinor/Value', '');
@@ -8670,8 +8718,8 @@ begin
   XML.SetValue(Path+'KeyWords/Value', fKeyWords);
   XML.SetValue(Path+'Comments/Value', fComments.Text);
 
-//  XML.SetValue(Path+'ReportCreateDate/Value', FReportCreateDate);
-//  XML.SetValue(Path+'ReportCreateDate/Value', FReportLastChange);
+  XML.SetValue(Path+'ReportCreateDate/Value', lrDateTimeToStr(FReportCreateDate));
+  XML.SetValue(Path+'ReportLastChange/Value', lrDateTimeToStr(FReportLastChange));
   XML.SetValue(Path+'ReportVersionBuild/Value', FReportVersionBuild);
   XML.SetValue(Path+'ReportVersionMajor/Value', FReportVersionMajor);
   XML.SetValue(Path+'ReportVersionMinor/Value', FReportVersionMinor);
@@ -8815,6 +8863,39 @@ begin
   Stream.Free;
 end;
 
+procedure TfrReport.LoadTemplateXML(const fname: String; comm: TStrings;
+  Bmp: TBitmap; Load: Boolean);
+var
+  XML: TLrXMLConfig;
+  BMPSize:integer;
+  M:TMemoryStream;
+begin
+  XML := TLrXMLConfig.Create(nil);
+  XML.Filename := UTF8ToSys(FName);
+  try
+    if Load then
+    begin
+      LoadFromXML(XML, lrTemplatePath);
+      FileName := '';
+    end
+    else
+    begin
+      comm.Text:=XML.GetValue(lrTemplatePath + 'Description/Value', '');
+      BMPSize:=XML.GetValue(lrTemplatePath + 'Picture/Size/Value', 0);
+      if BMPSize>0 then
+      begin
+        M:=TMemoryStream.Create;
+        XMLToStream(XML, lrTemplatePath + 'Picture/', M);
+        M.Position:=0;
+        BMP.LoadFromStream(M);
+        M.Free;
+      end;
+    end;
+  finally
+    XML.Free;
+  end;
+end;
+
 procedure TfrReport.SaveTemplate(const FName: String; Comm: TStrings; Bmp: TBitmap);
 var
   Stream: TFileStream;
@@ -8841,6 +8922,40 @@ begin
   Stream.Position := lpos;
   Pages.SaveToStream(Stream);
   Stream.Free;
+end;
+
+procedure TfrReport.SaveTemplateXML(const fname: String; Desc: TStrings;
+  Bmp: TBitmap);
+var
+  XML: TLrXMLConfig;
+
+procedure SavePicture;
+var
+  m: TMemoryStream;
+begin
+  M := TMemoryStream.Create;
+  try
+    BMP.SaveToStream(M);
+    M.Position:=0;
+    StreamToXML(XML, lrTemplatePath+'Picture/', M);
+  finally
+    M.Free;
+  end;
+end;
+
+begin
+  XML := TLrXMLConfig.Create(nil);
+  XML.StartEmpty := True;
+  XML.Filename := UTF8ToSys(FName);
+  try
+    XML.SetValue(lrTemplatePath + 'Description/Value', Desc.Text);
+    if not Bmp.Empty then
+      SavePicture;
+    SaveToXML(XML, lrTemplatePath);
+    XML.Flush;
+  finally
+    XML.Free;
+  end;
 end;
 
 // report manipulation methods

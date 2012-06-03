@@ -6,7 +6,6 @@ object frTemplForm: TfrTemplForm
   HorzScrollBar.Page = 459
   VertScrollBar.Page = 264
   ActiveControl = Memo1
-  BorderStyle = bsDialog
   Caption = 'New report'
   ClientHeight = 284
   ClientWidth = 462
@@ -14,20 +13,20 @@ object frTemplForm: TfrTemplForm
   OnCreate = FormCreate
   OnDeactivate = FormDeactivate
   Position = poScreenCenter
-  LCLVersion = '0.9.29'
+  LCLVersion = '1.1'
   object GroupBox1: TGroupBox
     AnchorSideTop.Control = Owner
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = ButtonPanel1
     Left = 253
-    Height = 234
+    Height = 230
     Top = 0
     Width = 209
     Anchors = [akTop, akRight, akBottom]
     Caption = 'Description'
-    ClientHeight = 218
-    ClientWidth = 207
+    ClientHeight = 213
+    ClientWidth = 205
     TabOrder = 0
     object Image1: TImage
       Left = 54
@@ -54,7 +53,7 @@ object frTemplForm: TfrTemplForm
     AnchorSideRight.Control = GroupBox1
     AnchorSideBottom.Control = ButtonPanel1
     Left = 6
-    Height = 228
+    Height = 224
     Top = 6
     Width = 241
     HelpContext = 65
@@ -64,19 +63,24 @@ object frTemplForm: TfrTemplForm
     ItemHeight = 0
     OnClick = ListBox1Click
     OnDblClick = LB1DblClick
+    ScrollWidth = 239
     TabOrder = 1
     TopIndex = -1
   end
   object ButtonPanel1: TButtonPanel
     Left = 6
-    Height = 38
-    Top = 240
+    Height = 42
+    Top = 236
     Width = 450
     OKButton.Name = 'OKButton'
+    OKButton.DefaultCaption = True
     HelpButton.Name = 'HelpButton'
+    HelpButton.DefaultCaption = True
     CloseButton.Name = 'CloseButton'
+    CloseButton.DefaultCaption = True
     CloseButton.Enabled = False
     CancelButton.Name = 'CancelButton'
+    CancelButton.DefaultCaption = True
     TabOrder = 2
     ShowButtons = [pbOK, pbCancel, pbHelp]
   end

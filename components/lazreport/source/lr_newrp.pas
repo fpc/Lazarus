@@ -74,6 +74,16 @@ begin
     R := FindNextUTF8(SearchRec);
   end;
   FindCloseUTF8(SearchRec);
+
+  R := FindFirstUTF8(Path + '*.lrt', faAnyFile, SearchRec);
+  while R = 0 do
+  begin
+    if (SearchRec.Attr and faDirectory) = 0 then
+      LB1.Items.Add(ChangeFileExt(SearchRec.Name, ''));
+    R := FindNextUTF8(SearchRec);
+  end;
+  FindCloseUTF8(SearchRec);
+
   Memo1.Lines.Clear;
   Image1.Picture.Clear;
   ButtonPanel1.OKButton.Enabled := False;
@@ -92,9 +102,13 @@ begin
     begin
       Memo1.Lines.Text := sTemplEmptyDesc;
       Image1.Picture.Clear;
-    end else
-      CurReport.LoadTemplate(Path + LB1.Items[Index] + '.frt',
-        Memo1.Lines, Image1.Picture.Bitmap,False);
+    end
+    else
+      if FileExistsUTF8(Path + LB1.Items[Index] + '.frt') then
+        CurReport.LoadTemplate(Path + LB1.Items[Index] + '.frt', Memo1.Lines, Image1.Picture.Bitmap,False)
+      else
+      if FileExistsUTF8(Path + LB1.Items[Index] + '.lrt') then
+        CurReport.LoadTemplateXML(Path + LB1.Items[Index] + '.lrt', Memo1.Lines, Image1.Picture.Bitmap,False)
   end;
 end;
 
@@ -111,7 +125,10 @@ begin
     if LB1.Items.Objects[LB1.ItemIndex]=self then
       DefaultTemplate := true
     else
-      TemplName := Path + LB1.Items[LB1.ItemIndex] + '.frt';
+      if FileExistsUTF8(Path + LB1.Items[LB1.ItemIndex] + '.lrt') then
+        TemplName := Path + LB1.Items[LB1.ItemIndex] + '.lrt'
+      else
+        TemplName := Path + LB1.Items[LB1.ItemIndex] + '.frt';
   end;
 end;
 

@@ -53,6 +53,8 @@ function StrTofrTypeObject(St : string) : Byte;
 
 function lrGetUnBrackedStr(const S:string):string; //remove '[' from begion of string and ']' from end
 function lrValidFieldReference(s: string):boolean;
+function lrDateTimeToStr(ADate:TDateTime):string;
+function lrStrToDateTime(AValue: string): TDateTime;
 
 // utf8 tools
 function UTF8Desc(S:string; var Desc: string): Integer;
@@ -396,7 +398,10 @@ begin
   n := Pos('.', Name);
   try
     if n = 0 then
-      Result := Owner.FindComponent(Name)
+    begin
+      if Assigned(Owner) then
+        Result := Owner.FindComponent(Name)
+    end
     else
     begin
       s1 := Copy(Name, 1, n - 1);        // module name
@@ -632,6 +637,31 @@ begin
     dec(i);
   end;
   result := n>1;
+end;
+
+function lrDateTimeToStr(ADate: TDateTime): string;
+begin
+  Result:=FormatDateTime( 'YYYY-MM-DD HH:NN:SS', ADate);
+end;
+
+function lrStrToDateTime(AValue: string): TDateTime;
+var
+  DF:TFormatSettings;
+begin
+  if AValue <> '' then
+  begin
+    DF.DateSeparator:='-';
+    DF.TimeSeparator:=':';
+    DF.ShortDateFormat:='YYYY-MM-DD';
+    DF.ShortTimeFormat:='HH:NN:SS';
+    try
+      Result:=StrToDateTime(AValue,   DF);
+    except
+      Result:=0
+    end;
+  end
+  else
+    Result:=0;
 end;
 
 function UTF8Desc(S: string; var Desc: string): Integer;

@@ -5,7 +5,7 @@ unit lrTDbfData;
 interface
 
 uses
-  Classes, SysUtils, LResources, Graphics, LR_Class, LR_DBComponent, dbf;
+  Classes, SysUtils, LResources, Graphics, LR_Class, LR_DBComponent, DB, dbf;
 
 type
   TlrTDbfData = class(TComponent)
@@ -26,6 +26,7 @@ type
     procedure SetShowDeleted(AValue: Boolean);
     procedure SetTableName(AValue: string);
   protected
+    procedure SetDataSource(AValue: string); override;
     procedure AfterLoad;override;
   public
     constructor Create(AOwnerPage:TfrPage); override;
@@ -42,6 +43,7 @@ type
 procedure Register;
 
 implementation
+uses LR_Utils;
 
 var
   lrBMP_TDbf:TBitmap = nil;
@@ -101,6 +103,11 @@ end;
 procedure TLRDbf.SetTableName(AValue: string);
 begin
   TDbf(DataSet).TableName:=AValue
+end;
+
+//TDBF not used Master-detail
+procedure TLRDbf.SetDataSource(AValue: string);
+begin
 end;
 
 procedure TLRDbf.AfterLoad;
