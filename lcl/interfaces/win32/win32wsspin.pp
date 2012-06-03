@@ -143,7 +143,8 @@ var
   newValueText: string;
 begin
   newValueText := ASpinEdit.ValueToStr(ANewValue);
-  Windows.SendMessage(ASpinEdit.Handle, WM_SETTEXT, 0, Windows.LPARAM(PChar(newValueText)));
+  if (newValueText <> ASpinEdit.Text) then
+    Windows.SendMessage(ASpinEdit.Handle, WM_SETTEXT, 0, Windows.LPARAM(PChar(newValueText)));
 end;
 
 class function TWin32WSCustomFloatSpinEdit.CreateHandle(const AWinControl: TWinControl;
