@@ -224,7 +224,7 @@ begin
   begin
     FImagesCache := GetImageListCache;
     FImagesCache.RegisterListener(Self);
-    FImagesCache.RegisterBitmap(Self, FOriginal, Max(1, NumGlyphs));
+    FImagesCache.RegisterBitmap(Self, FOriginal, NumGlyphs);
   end;
 
   if Sender = FOriginal then
