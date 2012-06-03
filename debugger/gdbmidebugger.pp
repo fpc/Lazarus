@@ -6199,7 +6199,7 @@ begin
   LockRelease;
   inherited;
   ClearCommandQueue;
-  RemoveRunQueueASync;
+  //RemoveRunQueueASync;
   FreeAndNil(FCommandQueue);
   ClearSourceInfo;
   FreeAndNil(FSourceNames);
@@ -6259,7 +6259,9 @@ begin
     // if FCommandQueueExecLock, then queu will be run, by however has that lock
     if (FCommandQueueExecLock = 0) and (FCommandQueue.Count > 0)
     then begin
-      RunQueueASync;
+      DebugLnEnter(DBGMI_QUEUE_DEBUG, ['TGDBMIDebugger.UnLockCommandProcessing: Execute RunQueue ']);
+      RunQueue; // ASync
+      DebugLnExit(DBGMI_QUEUE_DEBUG, ['TGDBMIDebugger.UnLockCommandProcessing: Finished RunQueue']);
     end
   end;
 end;
@@ -6517,7 +6519,7 @@ var
   Cmd, NestedCurrentCmd, NestedCurrentCmdTmp: TGDBMIDebuggerCommand;
   SavedInExecuteCount: LongInt;
 begin
-  RemoveRunQueueASync;
+  //RemoveRunQueueASync;
   if FCommandQueue.Count = 0
   then exit;
 
