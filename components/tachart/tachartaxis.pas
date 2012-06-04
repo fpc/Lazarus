@@ -117,6 +117,7 @@ type
     FZPosition: TChartDistance;
 
     function GetMarks: TChartAxisMarks; inline;
+    function PositionIsStored: Boolean;
     procedure SetAxisPen(AValue: TChartAxisPen);
     procedure SetGroup(AValue: Integer);
     procedure SetInverted(AValue: Boolean);
@@ -162,7 +163,7 @@ type
     property Margin: TChartDistance read FMargin write SetMargin default 0;
     property Marks: TChartAxisMarks read GetMarks write SetMarks;
     property Minors: TChartMinorAxisList read FMinors write SetMinors;
-    property Position: Double read FPosition write SetPosition;
+    property Position: Double read FPosition write SetPosition stored PositionIsStored;
     property Range: TChartRange read FRange write SetRange;
     property TickLength default DEF_TICK_LENGTH;
     property Title: TChartAxisTitle read FTitle write SetTitle;
@@ -696,6 +697,11 @@ begin
       FSize := Max(d.Scale(Arrow.Width), FSize);
       FLastMark := Max(d.Scale(Arrow.Length), FLastMark);
     end;
+end;
+
+function TChartAxis.PositionIsStored: Boolean;
+begin
+  Result := Position <> 0;
 end;
 
 procedure TChartAxis.PrepareHelper(
