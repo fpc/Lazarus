@@ -1090,8 +1090,10 @@ begin
     if (TopPascalCodeFoldBlockType = cfbtIfThen) then
       EndPascalCodeFoldBlock
     else
-    if TopPascalCodeFoldBlockType = cfbtCase then
-      StartPascalCodeFoldBlock(cfbtCaseElse)
+    if TopPascalCodeFoldBlockType = cfbtCase then begin
+      StartPascalCodeFoldBlock(cfbtCaseElse);
+      FTokenIsCaseLabel := True;
+    end;
   end
   else if KeyComp('Var') then begin
     if (PasCodeFoldRange.BracketNestLevel = 0) and
