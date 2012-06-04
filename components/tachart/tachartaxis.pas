@@ -110,6 +110,7 @@ type
     FMargin: TChartDistance;
     FMinors: TChartMinorAxisList;
     FOnMarkToText: TChartAxisMarkToTextEvent;
+    FPosition: Double;
     FRange: TChartRange;
     FTitle: TChartAxisTitle;
     FTransformations: TChartAxisTransformations;
@@ -123,6 +124,7 @@ type
     procedure SetMarks(AValue: TChartAxisMarks);
     procedure SetMinors(AValue: TChartMinorAxisList);
     procedure SetOnMarkToText(AValue: TChartAxisMarkToTextEvent);
+    procedure SetPosition(AValue: Double);
     procedure SetRange(AValue: TChartRange);
     procedure SetTitle(AValue: TChartAxisTitle);
     procedure SetTransformations(AValue: TChartAxisTransformations);
@@ -160,6 +162,7 @@ type
     property Margin: TChartDistance read FMargin write SetMargin default 0;
     property Marks: TChartAxisMarks read GetMarks write SetMarks;
     property Minors: TChartMinorAxisList read FMinors write SetMinors;
+    property Position: Double read FPosition write SetPosition;
     property Range: TChartRange read FRange write SetRange;
     property TickLength default DEF_TICK_LENGTH;
     property Title: TChartAxisTitle read FTitle write SetTitle;
@@ -765,6 +768,13 @@ begin
   StyleChanged(Self);
 end;
 
+procedure TChartAxis.SetPosition(AValue: Double);
+begin
+  if FPosition = AValue then exit;
+  FPosition := AValue;
+  StyleChanged(Self);
+end;
+
 procedure TChartAxis.SetRange(AValue: TChartRange);
 begin
   if FRange = AValue then exit;
@@ -932,8 +942,9 @@ begin
       end;
       ai += 1;
     end;
-    // Axises of the same group should have the same Alignment and ZPosition.
-    Result[axis.Alignment] += g^.FSize + g^.FTitleSize + g^.FMargin;
+    // Axises of the same group should have the same Alignment, Position and ZPosition.
+    if axis.Position = 0 then
+      Result[axis.Alignment] += g^.FSize + g^.FTitleSize + g^.FMargin;
   end;
   ai := 0;
   for i := 0 to High(FGroups) do begin
@@ -947,23 +958,45 @@ begin
 end;
 
 procedure TChartAxisList.Prepare(ARect: TRect);
+
+  function SizeByAlignment(
+    var ARect: TRect; AAlignment: TChartAxisAlignment): Integer;
+  var
+    a: TChartAxisMargins absolute ARect;
+  begin
+    Result := Abs(a[AAlignment] - a[TChartAxisAlignment((Ord(AAlignment) + 2) mod 4)]);
+  end;
+
 var
-  i, ai: Integer;
+  i, ai, offset: Integer;
   axis: TChartAxis;
   g: TChartAxisGroup;
-  axisRect: TRect;
+  axisRect, titleRect: TRect;
+  axisPosition: Double;
+  axisAlignment: TChartAxisAlignment;
 begin
   ai := 0;
   for g in FGroups do begin
     axisRect := ARect;
-    SideByAlignment(ARect, TChartAxis(FGroupOrder[ai]).Alignment, g.FSize);
+    titleRect := ARect;
+    with TChartAxis(FGroupOrder[ai]) do begin
+      axisAlignment := Alignment;
+      axisPosition := Position;
+    end;
+    SideByAlignment(titleRect, axisAlignment, g.FSize);
+    if axisPosition > 0 then begin
+      offset := Round(SizeByAlignment(ARect, axisAlignment) * axisPosition * PERCENT);
+      SideByAlignment(axisRect, axisAlignment, -offset);
+      SideByAlignment(titleRect, axisAlignment, -offset);
+    end;
     for i := 0 to g.FCount - 1 do begin
       axis := TChartAxis(FGroupOrder[ai]);
       axis.FAxisRect := axisRect;
-      axis.FTitleRect := ARect;
+      axis.FTitleRect := titleRect;
       ai += 1;
     end;
-    SideByAlignment(ARect, axis.Alignment, g.FTitleSize + g.FMargin);
+    if axisPosition = 0 then
+      SideByAlignment(ARect, axisAlignment, g.FSize + g.FTitleSize + g.FMargin);
   end;
   InitAndSort(FZOrder, @AxisZCompare);
 end;
