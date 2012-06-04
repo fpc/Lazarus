@@ -67,8 +67,6 @@ type
 
   TTransformFunc = function (A: Double): Double of object;
 
-  TAxisScale = (asIncreasing, asDecreasing, asLogIncreasing, asLogDecreasing);
-
   TChartUnits = (cuPercent, cuGraph, cuPixel);
 
   TSeriesMarksStyle = (
