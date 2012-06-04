@@ -69,6 +69,8 @@ type
 
   TAxisScale = (asIncreasing, asDecreasing, asLogIncreasing, asLogDecreasing);
 
+  TChartUnits = (cuPercent, cuGraph, cuPixel);
+
   TSeriesMarksStyle = (
     smsCustom,         { user-defined }
     smsNone,           { no labels }

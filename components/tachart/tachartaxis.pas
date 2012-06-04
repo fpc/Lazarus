@@ -111,6 +111,7 @@ type
     FMinors: TChartMinorAxisList;
     FOnMarkToText: TChartAxisMarkToTextEvent;
     FPosition: Double;
+    FPositionUnits: TChartUnits;
     FRange: TChartRange;
     FTitle: TChartAxisTitle;
     FTransformations: TChartAxisTransformations;
@@ -126,6 +127,7 @@ type
     procedure SetMinors(AValue: TChartMinorAxisList);
     procedure SetOnMarkToText(AValue: TChartAxisMarkToTextEvent);
     procedure SetPosition(AValue: Double);
+    procedure SetPositionUnits(AValue: TChartUnits);
     procedure SetRange(AValue: TChartRange);
     procedure SetTitle(AValue: TChartAxisTitle);
     procedure SetTransformations(AValue: TChartAxisTransformations);
@@ -146,9 +148,11 @@ type
     procedure DrawTitle(ASize: Integer);
     function GetChart: TCustomChart; inline;
     function GetTransform: TChartAxisTransformations;
+    function IsDefaultPosition: Boolean;
     function IsVertical: Boolean; inline;
     procedure Measure(
       const AExtent: TDoubleRect; var AMeasureData: TChartAxisGroup);
+    function PositionToCoord(const ARect: TRect): Integer;
     procedure PrepareHelper(
       ADrawer: IChartDrawer; const ATransf: ICoordTransformer;
       AClipRect: PRect; AMaxZPosition: Integer);
@@ -164,6 +168,8 @@ type
     property Marks: TChartAxisMarks read GetMarks write SetMarks;
     property Minors: TChartMinorAxisList read FMinors write SetMinors;
     property Position: Double read FPosition write SetPosition stored PositionIsStored;
+    property PositionUnits: TChartUnits
+      read FPositionUnits write SetPositionUnits default cuPercent;
     property Range: TChartRange read FRange write SetRange;
     property TickLength default DEF_TICK_LENGTH;
     property Title: TChartAxisTitle read FTitle write SetTitle;
@@ -422,6 +428,7 @@ begin
   FListener := TListener.Create(@FTransformations, @StyleChanged);
   FMarks := TChartAxisMarks.Create(ACollection.Owner as TCustomChart);
   FMinors := TChartMinorAxisList.Create(Self);
+  FPositionUnits := cuPercent;
   FRange := TChartRange.Create(ACollection.Owner as TCustomChart);
   TickLength := DEF_TICK_LENGTH;
   FTitle := TChartAxisTitle.Create(ACollection.Owner as TCustomChart);
@@ -587,6 +594,11 @@ begin
     Result := VIdentityTransform;
 end;
 
+function TChartAxis.IsDefaultPosition: Boolean;
+begin
+  Result := (PositionUnits = cuPercent) and (Position = 0);
+end;
+
 function TChartAxis.IsVertical: Boolean; inline;
 begin
   Result := Alignment in [calLeft, calRight];
@@ -704,6 +716,29 @@ begin
   Result := Position <> 0;
 end;
 
+function TChartAxis.PositionToCoord(const ARect: TRect): Integer;
+var
+  r: TChartAxisMargins absolute ARect;
+begin
+  if IsDefaultPosition then exit(r[Alignment]);
+  case PositionUnits of
+    cuPercent:
+      Result := Round(WeightedAverage(
+        r[Alignment],
+        r[TChartAxisAlignment((Ord(Alignment) + 2) mod 4)],
+        Position * PERCENT));
+    cuGraph:
+      if IsVertical then
+        Result := FHelper.FTransf.XGraphToImage(Position)
+      else
+        Result := FHelper.FTransf.YGraphToImage(Position);
+    cuPixel:
+      Result :=
+        r[Alignment] +
+        Round(Position) * IfThen(Alignment in [calLeft, calTop], 1, -1);
+  end;
+end;
+
 procedure TChartAxis.PrepareHelper(
   ADrawer: IChartDrawer; const ATransf: ICoordTransformer;
   AClipRect: PRect; AMaxZPosition: Integer);
@@ -778,6 +813,13 @@ procedure TChartAxis.SetPosition(AValue: Double);
 begin
   if FPosition = AValue then exit;
   FPosition := AValue;
+  StyleChanged(Self);
+end;
+
+procedure TChartAxis.SetPositionUnits(AValue: TChartUnits);
+begin
+  if FPositionUnits = AValue then exit;
+  FPositionUnits := AValue;
   StyleChanged(Self);
 end;
 
@@ -949,7 +991,7 @@ begin
       ai += 1;
     end;
     // Axises of the same group should have the same Alignment, Position and ZPosition.
-    if axis.Position = 0 then
+    if axis.IsDefaultPosition then
       Result[axis.Alignment] += g^.FSize + g^.FTitleSize + g^.FMargin;
   end;
   ai := 0;
@@ -964,45 +1006,27 @@ begin
 end;
 
 procedure TChartAxisList.Prepare(ARect: TRect);
-
-  function SizeByAlignment(
-    var ARect: TRect; AAlignment: TChartAxisAlignment): Integer;
-  var
-    a: TChartAxisMargins absolute ARect;
-  begin
-    Result := Abs(a[AAlignment] - a[TChartAxisAlignment((Ord(AAlignment) + 2) mod 4)]);
-  end;
-
 var
-  i, ai, offset: Integer;
+  i, ai: Integer;
   axis: TChartAxis;
   g: TChartAxisGroup;
   axisRect, titleRect: TRect;
-  axisPosition: Double;
-  axisAlignment: TChartAxisAlignment;
 begin
   ai := 0;
   for g in FGroups do begin
     axisRect := ARect;
-    titleRect := ARect;
-    with TChartAxis(FGroupOrder[ai]) do begin
-      axisAlignment := Alignment;
-      axisPosition := Position;
-    end;
-    SideByAlignment(titleRect, axisAlignment, g.FSize);
-    if axisPosition > 0 then begin
-      offset := Round(SizeByAlignment(ARect, axisAlignment) * axisPosition * PERCENT);
-      SideByAlignment(axisRect, axisAlignment, -offset);
-      SideByAlignment(titleRect, axisAlignment, -offset);
-    end;
+    axis := TChartAxis(FGroupOrder[ai]);
+    TChartAxisMargins(axisRect)[axis.Alignment] := axis.PositionToCoord(ARect);
+    titleRect := axisRect;
+    SideByAlignment(titleRect, axis.Alignment, g.FSize);
     for i := 0 to g.FCount - 1 do begin
       axis := TChartAxis(FGroupOrder[ai]);
       axis.FAxisRect := axisRect;
       axis.FTitleRect := titleRect;
       ai += 1;
     end;
-    if axisPosition = 0 then
-      SideByAlignment(ARect, axisAlignment, g.FSize + g.FTitleSize + g.FMargin);
+    if axis.IsDefaultPosition then
+      SideByAlignment(ARect, axis.Alignment, g.FSize + g.FTitleSize + g.FMargin);
   end;
   InitAndSort(FZOrder, @AxisZCompare);
 end;
