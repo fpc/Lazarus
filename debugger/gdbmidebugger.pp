@@ -12106,25 +12106,25 @@ var
     SetLength(Result, j + 1);
   end;
 
-  function TryExecute(AnExpression: string): Boolean;
-
-    procedure ParseLastError;
-    var
-      ResultList: TGDBMINameValueList;
-    begin
-      if (dcsCanceled in SeenStates)
-      then begin
-        FTextValue := '<Canceled>';
-        FValidity := ddsInvalid;
-        exit;
-      end;
-      ResultList := TGDBMINameValueList.Create(LastExecResult.Values);
-      FTextValue := ResultList.Values['msg'];
-      if FTextValue = ''
-      then  FTextValue := '<Error>';
-      FreeAndNil(ResultList);
-      FValidity := ddsError;
+  procedure ParseLastError;
+  var
+    ResultList: TGDBMINameValueList;
+  begin
+    if (dcsCanceled in SeenStates)
+    then begin
+      FTextValue := '<Canceled>';
+      FValidity := ddsInvalid;
+      exit;
     end;
+    ResultList := TGDBMINameValueList.Create(LastExecResult.Values);
+    FTextValue := ResultList.Values['msg'];
+    if FTextValue = ''
+    then  FTextValue := '<Error>';
+    FreeAndNil(ResultList);
+    FValidity := ddsError;
+  end;
+
+  function TryExecute(AnExpression: string): Boolean;
 
     function PrepareExpr(var expr: string; NoAddressOp: Boolean = False): boolean;
     begin
@@ -12316,6 +12316,7 @@ var
   ResultList: TGDBMINameValueList;
   Expr: TGDBMIExpression;
   frameidx: Integer;
+  {$IFDEF DBG_WITH_GDB_WATCHES} R: TGDBMIExecResult; {$ENDIF}
 begin
   if not SelectContext then begin
     FTextValue:='<Error>';
@@ -12346,6 +12347,28 @@ begin
       Expr.Free;
       Exit(True);
     end;
+
+    {$IFDEF DBG_WITH_GDB_WATCHES}
+    (* This code is experimental. No support will be provided.
+       It is intended for people extending the GDBMI classes of the IDE, and requires deep knowledge on how the IDE works.
+       WARNING:
+        - This bypasses some of the internals of the debugger.
+        - It does intentionally no check or validation
+        - Using this feature without full knowledge of all internals of the debugger, can *HANG* or *CRASH* the debugger or the entire IDE.
+    *)
+    if S[1]='>' then begin // raw cli commands
+      delete(S,1,1);
+      Result := ExecuteCommand('%s', [S], R);
+      Result := Result and (R.State <> dsError);
+      if (not Result) then begin
+        ParseLastError;
+        exit;
+      end;
+      FValidity := ddsValid;
+      FTextValue := UnEscapeBackslashed(R.Values, [uefNewLine, uefTab], 3);
+      exit;
+    end;
+    {$ENDIF}
 
     ResultList := TGDBMINameValueList.Create('');
     // keep the internal stackframe => same as requested by watch
