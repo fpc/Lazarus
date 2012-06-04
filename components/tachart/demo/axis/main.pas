@@ -19,6 +19,7 @@ type
     catTAutoScaleAxisTransform1: TAutoScaleAxisTransform;
     catTFahrToCel: TLinearAxisTransform;
     cbStaticY: TCheckBox;
+    cbUnitsY: TComboBox;
     ChartPosition: TChart;
     ChartIntervals: TChart;
     ChartAxisGroup: TChart;
@@ -33,12 +34,15 @@ type
     ChartToolset1ZoomOut: TZoomClickTool;
     ChartToolsetDateTime: TChartToolset;
     cbStaticX: TCheckBox;
+    cbUnitsX: TComboBox;
     csStripes: TChartStyles;
     DateTimeIntervalChartSource1: TDateTimeIntervalChartSource;
     gbPositionX: TGroupBox;
     gbPositionY: TGroupBox;
     lblPositionX: TLabel;
+    lblUnitsX: TLabel;
     lblPositionY: TLabel;
+    lblUnitsY: TLabel;
     lcsMarks: TListChartSource;
     PageControl1: TPageControl;
     pnlPosition: TPanel;
@@ -60,6 +64,8 @@ type
     udcsSub: TUserDefinedChartSource;
     procedure cbStaticXChange(Sender: TObject);
     procedure cbStaticYChange(Sender: TObject);
+    procedure cbUnitsXChange(Sender: TObject);
+    procedure cbUnitsYChange(Sender: TObject);
     procedure ChartCustomMarksAxisList1MarkToText(var AText: String; AMark: Double);
     procedure ChartPositionFuncSeries1Calculate(const AX: Double; out
       AY: Double);
@@ -98,6 +104,16 @@ begin
   ChartPosition.AxisList[2].Visible := cbStaticY.Checked;
 end;
 
+procedure TForm1.cbUnitsXChange(Sender: TObject);
+begin
+  ChartPosition.AxisList[1].PositionUnits := TChartUnits(cbUnitsX.ItemIndex);
+end;
+
+procedure TForm1.cbUnitsYChange(Sender: TObject);
+begin
+  ChartPosition.AxisList[0].PositionUnits := TChartUnits(cbUnitsY.ItemIndex);
+end;
+
 procedure TForm1.ChartCustomMarksAxisList1MarkToText(var AText: String; AMark: Double);
 begin
   if AMark = 3 then
@@ -107,7 +123,7 @@ end;
 procedure TForm1.ChartPositionFuncSeries1Calculate(
   const AX: Double; out AY: Double);
 begin
-  AY := Sin(AX / 3) + Cos(AX) * 2;
+  AY := Sin(AX / 30) * 10 + Cos(AX / 10) * 20;
 end;
 
 procedure TForm1.FormCreate(Sender: TObject);
