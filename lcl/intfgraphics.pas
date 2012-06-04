@@ -33,7 +33,7 @@ interface
 uses
   Classes, SysUtils, fpImage, FPReadBMP, FPWriteBMP, BMPComn, FPCAdds,
   AvgLvlTree, LCLType, LCLversion, Math,
-  LCLProc, GraphType, FPReadPNG, FPWritePNG, FPReadTiff, FPWriteTiff,
+  LCLProc, GraphType, FPReadPNG, FPWritePNG, FPReadTiff, FPWriteTiff, FPTiffCmn,
   IcnsTypes;
 
 type
@@ -625,10 +625,14 @@ type
   TLazReaderTiff = class(TFPReaderTiff, ILazImageReader)
   private
     FUpdateDescription: Boolean;
+    {$IF FPC_FULLVERSION<20701}
     // the OnCreateImage event is "abused" to update the description after the
     // format and before the image is read
     FOrgEvent: TTiffCreateCompatibleImgEvent;
     procedure CreateImageHook(Sender: TFPReaderTiff; var NewImage: TFPCustomImage);
+    {$ENDIF}
+  protected
+    procedure DoCreateImage(ImgFileDir: TTiffIFD); {$IF FPC_FULLVERSION>=20701}override;{$ENDIF}
   public
     function  GetUpdateDescription: Boolean;
     procedure SetUpdateDescription(AValue: Boolean);
@@ -5944,36 +5948,47 @@ end;
 
 { TLazReaderTiff }
 
+{$IF FPC_FULLVERSION<20701}
 procedure TLazReaderTiff.CreateImageHook(Sender: TFPReaderTiff; var NewImage: TFPCustomImage);
+begin
+  if Assigned(FOrgEvent) then FOrgEvent(Sender, NewImage);
+  FirstImg.Img:=NewImage;
+  DoCreateImage(FirstImg);
+end;
+{$ENDIF}
+
+procedure TLazReaderTiff.DoCreateImage(ImgFileDir: TTiffIFD);
 var
   Desc: TRawImageDescription;
   IsAlpha, IsGray: Boolean;
 begin
-  if Assigned(FOrgEvent) then FOrgEvent(Sender, NewImage);
+  {$IF FPC_FULLVERSION>=20701}
+  inherited;
+  {$ENDIF}
 
   if not FUpdateDescription then Exit;
   if not (theImage is TLazIntfImage) then Exit;
 
   // init some default
 
-  IsGray := FirstImg.PhotoMetricInterpretation in [0, 1];
-  IsAlpha := FirstImg.AlphaBits <> 0;
+  IsGray := ImgFileDir.PhotoMetricInterpretation in [0, 1];
+  IsAlpha := ImgFileDir.AlphaBits <> 0;
 
   if IsAlpha
-  then Desc.Init_BPP32_B8G8R8A8_BIO_TTB(FirstImg.ImageWidth, FirstImg.ImageHeight)
-  else Desc.Init_BPP24_B8G8R8_BIO_TTB(FirstImg.ImageWidth, FirstImg.ImageHeight);
+  then Desc.Init_BPP32_B8G8R8A8_BIO_TTB(ImgFileDir.ImageWidth, ImgFileDir.ImageHeight)
+  else Desc.Init_BPP24_B8G8R8_BIO_TTB(ImgFileDir.ImageWidth, ImgFileDir.ImageHeight);
 
   if IsGray
   then Desc.Format := ricfGray;
 
   // check mask
-  if FirstImg.PhotoMetricInterpretation = 4
+  if ImgFileDir.PhotoMetricInterpretation = 4
   then begin
     // todo: mask
   end
   else
   // check palette
-  if FirstImg.PhotoMetricInterpretation = 3
+  if ImgFileDir.PhotoMetricInterpretation = 3
   then begin
     // todo: palette
   end
@@ -5981,21 +5996,21 @@ begin
     // no palette, adjust description
     if IsGray
     then begin
-      Desc.RedPrec := FirstImg.GrayBits;
+      Desc.RedPrec := ImgFileDir.GrayBits;
       Desc.RedShift := 0;
       if IsAlpha
       then begin
-        Desc.Depth := FirstImg.GrayBits + FirstImg.AlphaBits;
-        Desc.AlphaPrec := FirstImg.AlphaBits;
-        Desc.AlphaShift := FirstImg.GrayBits;
+        Desc.Depth := ImgFileDir.GrayBits + ImgFileDir.AlphaBits;
+        Desc.AlphaPrec := ImgFileDir.AlphaBits;
+        Desc.AlphaShift := ImgFileDir.GrayBits;
       end
       else begin
-        Desc.Depth := FirstImg.GrayBits;
-        Desc.BitsPerPixel := FirstImg.GrayBits;
+        Desc.Depth := ImgFileDir.GrayBits;
+        Desc.BitsPerPixel := ImgFileDir.GrayBits;
       end;
     end
     else begin
-      Desc.Depth := FirstImg.RedBits + FirstImg.GreenBits + FirstImg.BlueBits + FirstImg.AlphaBits;
+      Desc.Depth := ImgFileDir.RedBits + ImgFileDir.GreenBits + ImgFileDir.BlueBits + ImgFileDir.AlphaBits;
       if Desc.Depth > 32
       then begin
         // switch to 64bit description
@@ -6022,11 +6037,15 @@ end;
 
 procedure TLazReaderTiff.InternalRead(Str: TStream; Img: TFPCustomImage);
 begin
+  {$IF FPC_FULLVERSION<20701}
   FOrgEvent := OnCreateImage;
   OnCreateImage := @CreateImageHook;
   inherited InternalRead(Str, Img);
   OnCreateImage := FOrgEvent;
   FOrgEvent := nil;
+  {$ELSE}
+  inherited InternalRead(Str, Img);
+  {$ENDIF}
 end;
 
 {$IFDEF FPC_HAS_CONSTREF}
