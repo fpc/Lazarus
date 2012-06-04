@@ -5,9 +5,9 @@ unit Main;
 interface
 
 uses
-  ComCtrls, ExtCtrls, Forms, TACustomSource, TAFuncSeries, TAGraph,
-  TAIntervalSources, TASeries, TASources, TAStyles, TATools, TATransformations,
-  TAChartAxis;
+  ComCtrls, ExtCtrls, Forms, Spin, StdCtrls, TACustomSource, TAFuncSeries,
+  TAGraph, TAIntervalSources, TASeries, TASources, TAStyles, TATools,
+  TATransformations, TAChartAxis, Classes;
 
 type
 
@@ -18,22 +18,38 @@ type
     catTAutoAutoScaleAxisTransform1: TAutoScaleAxisTransform;
     catTAutoScaleAxisTransform1: TAutoScaleAxisTransform;
     catTFahrToCel: TLinearAxisTransform;
+    cbStaticY: TCheckBox;
+    ChartPosition: TChart;
     ChartIntervals: TChart;
     ChartAxisGroup: TChart;
     ChartCustomMarks: TChart;
     ChartCustomMarksBarSeries1: TBarSeries;
     ChartDateTime: TChart;
     ChartDateTimeLineSeries1: TLineSeries;
+    ChartPositionFuncSeries1: TFuncSeries;
     ChartSubmarks: TChart;
     ChartSubmarksLineSeries1: TLineSeries;
     ChartToolset1ZoomIn: TZoomClickTool;
     ChartToolset1ZoomOut: TZoomClickTool;
     ChartToolsetDateTime: TChartToolset;
+    cbStaticX: TCheckBox;
     csStripes: TChartStyles;
     DateTimeIntervalChartSource1: TDateTimeIntervalChartSource;
+    gbPositionX: TGroupBox;
+    gbPositionY: TGroupBox;
+    lblPositionX: TLabel;
+    lblPositionY: TLabel;
     lcsMarks: TListChartSource;
     PageControl1: TPageControl;
+    pnlPosition: TPanel;
+    rbPositionBottom: TRadioButton;
+    rbPositionLeft: TRadioButton;
+    rbPositionTop: TRadioButton;
+    rbPositionRight: TRadioButton;
     rcsDates: TRandomChartSource;
+    seXPosition: TSpinEdit;
+    seYPosition: TSpinEdit;
+    tsPosition: TTabSheet;
     tsIntervals: TTabSheet;
     tsAxisGroup: TTabSheet;
     tsCustomMarks: TTabSheet;
@@ -42,8 +58,16 @@ type
     udcsGraph: TUserDefinedChartSource;
     udcsMain: TUserDefinedChartSource;
     udcsSub: TUserDefinedChartSource;
+    procedure cbStaticXChange(Sender: TObject);
+    procedure cbStaticYChange(Sender: TObject);
     procedure ChartCustomMarksAxisList1MarkToText(var AText: String; AMark: Double);
+    procedure ChartPositionFuncSeries1Calculate(const AX: Double; out
+      AY: Double);
     procedure FormCreate(Sender: TObject);
+    procedure rbPositionBottomChange(Sender: TObject);
+    procedure rbPositionLeftChange(Sender: TObject);
+    procedure seXPositionChange(Sender: TObject);
+    procedure seYPositionChange(Sender: TObject);
     procedure udcsGraphGetChartDataItem(ASource: TUserDefinedChartSource;
       AIndex: Integer; var AItem: TChartDataItem);
     procedure udcsMainGetChartDataItem(ASource: TUserDefinedChartSource;
@@ -58,16 +82,32 @@ var
 implementation
 
 uses
-  SysUtils, TAChartUtils;
+  SysUtils, TAChartAxisUtils, TAChartUtils;
 
 {$R *.lfm}
 
 { TForm1 }
 
+procedure TForm1.cbStaticXChange(Sender: TObject);
+begin
+  ChartPosition.AxisList[3].Visible := cbStaticX.Checked;
+end;
+
+procedure TForm1.cbStaticYChange(Sender: TObject);
+begin
+  ChartPosition.AxisList[2].Visible := cbStaticY.Checked;
+end;
+
 procedure TForm1.ChartCustomMarksAxisList1MarkToText(var AText: String; AMark: Double);
 begin
   if AMark = 3 then
     AText := '*' + AText + '*';
+end;
+
+procedure TForm1.ChartPositionFuncSeries1Calculate(
+  const AX: Double; out AY: Double);
+begin
+  AY := Sin(AX / 3) + Cos(AX) * 2;
 end;
 
 procedure TForm1.FormCreate(Sender: TObject);
@@ -116,6 +156,34 @@ begin
     XMax := Now + 5 * 365;
     PointsNumber := 10 * 365 * 24;
   end;
+end;
+
+procedure TForm1.rbPositionBottomChange(Sender: TObject);
+begin
+  with ChartPosition.AxisList[1] do
+    if rbPositionBottom.Checked then
+      Alignment := calBottom
+    else
+      Alignment := calTop;
+end;
+
+procedure TForm1.rbPositionLeftChange(Sender: TObject);
+begin
+  with ChartPosition.AxisList[0] do
+    if rbPositionLeft.Checked then
+      Alignment := calLeft
+    else
+      Alignment := calRight;
+end;
+
+procedure TForm1.seXPositionChange(Sender: TObject);
+begin
+  ChartPosition.AxisList[1].Position := seXPosition.Value;
+end;
+
+procedure TForm1.seYPositionChange(Sender: TObject);
+begin
+  ChartPosition.AxisList[0].Position := seYPosition.Value;
 end;
 
 procedure TForm1.udcsGraphGetChartDataItem(ASource: TUserDefinedChartSource;

@@ -8,7 +8,7 @@ object Form1: TForm1
   ClientWidth = 533
   OnCreate = FormCreate
   Position = poScreenCenter
-  LCLVersion = '0.9.31'
+  LCLVersion = '1.1'
   object PageControl1: TPageControl
     Left = 0
     Height = 430
@@ -306,6 +306,196 @@ object Form1: TForm1
         )
         Align = alClient
         ParentColor = False
+      end
+    end
+    object tsPosition: TTabSheet
+      Caption = 'Position'
+      ClientHeight = 404
+      ClientWidth = 525
+      object ChartPosition: TChart
+        Left = 0
+        Height = 404
+        Top = 0
+        Width = 395
+        AxisList = <        
+          item
+            Grid.Visible = False
+            Intervals.Tolerance = 1
+            AxisPen.Visible = True
+            Marks.LabelBrush.Style = bsSolid
+            Minors = <>
+            Position = 50
+          end        
+          item
+            Grid.Visible = False
+            Intervals.Tolerance = 1
+            Alignment = calBottom
+            AxisPen.Visible = True
+            Marks.LabelBrush.Style = bsSolid
+            Minors = <>
+            Position = 50
+          end        
+          item
+            Grid.Color = clGray
+            Intervals.Tolerance = 1
+            Visible = False
+            Minors = <>
+            Title.LabelFont.Orientation = 900
+          end        
+          item
+            Grid.Color = clGray
+            Intervals.Tolerance = 1
+            Visible = False
+            Alignment = calBottom
+            Minors = <>
+          end>
+        BackColor = clWhite
+        Foot.Brush.Color = clBtnFace
+        Foot.Font.Color = clBlue
+        Title.Brush.Color = clBtnFace
+        Title.Font.Color = clBlue
+        Title.Text.Strings = (
+          'TAChart'
+        )
+        Align = alClient
+        Color = clWhite
+        ParentColor = False
+        object ChartPositionFuncSeries1: TFuncSeries
+          Extent.UseXMax = True
+          Extent.UseXMin = True
+          Extent.UseYMax = True
+          Extent.UseYMin = True
+          Extent.XMax = 10
+          Extent.XMin = -10
+          Extent.YMax = 3
+          Extent.YMin = -3
+          OnCalculate = ChartPositionFuncSeries1Calculate
+          Pen.Color = clTeal
+          Pen.Width = 2
+        end
+      end
+      object pnlPosition: TPanel
+        Left = 395
+        Height = 404
+        Top = 0
+        Width = 130
+        Align = alRight
+        Caption = 'pnlPosition'
+        ClientHeight = 404
+        ClientWidth = 130
+        TabOrder = 1
+        object gbPositionX: TGroupBox
+          Left = 1
+          Height = 121
+          Top = 1
+          Width = 128
+          Align = alTop
+          Caption = ' X axis '
+          ClientHeight = 103
+          ClientWidth = 124
+          TabOrder = 0
+          object seXPosition: TSpinEdit
+            Left = 6
+            Height = 21
+            Top = 21
+            Width = 90
+            OnChange = seXPositionChange
+            TabOrder = 0
+            Value = 50
+          end
+          object lblPositionX: TLabel
+            Left = 6
+            Height = 14
+            Top = 1
+            Width = 42
+            Caption = 'Position:'
+            ParentColor = False
+          end
+          object cbStaticX: TCheckBox
+            Left = 6
+            Height = 17
+            Top = 49
+            Width = 97
+            Caption = 'Show static axis'
+            OnChange = cbStaticXChange
+            TabOrder = 1
+          end
+          object rbPositionBottom: TRadioButton
+            Left = 6
+            Height = 17
+            Top = 73
+            Width = 54
+            Caption = 'Bottom'
+            Checked = True
+            OnChange = rbPositionBottomChange
+            TabOrder = 3
+            TabStop = True
+          end
+          object rbPositionTop: TRadioButton
+            Left = 70
+            Height = 17
+            Top = 73
+            Width = 38
+            Caption = 'Top'
+            TabOrder = 2
+          end
+        end
+        object gbPositionY: TGroupBox
+          Left = 1
+          Height = 116
+          Top = 122
+          Width = 128
+          Align = alTop
+          Caption = ' Y axis '
+          ClientHeight = 98
+          ClientWidth = 124
+          TabOrder = 1
+          object lblPositionY: TLabel
+            Left = 6
+            Height = 14
+            Top = 1
+            Width = 42
+            Caption = 'Position:'
+            ParentColor = False
+          end
+          object cbStaticY: TCheckBox
+            Left = 6
+            Height = 17
+            Top = 49
+            Width = 97
+            Caption = 'Show static axis'
+            OnChange = cbStaticYChange
+            TabOrder = 0
+          end
+          object seYPosition: TSpinEdit
+            Left = 6
+            Height = 21
+            Top = 20
+            Width = 90
+            OnChange = seYPositionChange
+            TabOrder = 1
+            Value = 50
+          end
+          object rbPositionRight: TRadioButton
+            Left = 70
+            Height = 17
+            Top = 76
+            Width = 45
+            Caption = 'Right'
+            TabOrder = 2
+          end
+          object rbPositionLeft: TRadioButton
+            Left = 6
+            Height = 17
+            Top = 76
+            Width = 39
+            Caption = 'Left'
+            Checked = True
+            OnChange = rbPositionLeftChange
+            TabOrder = 3
+            TabStop = True
+          end
+        end
       end
     end
   end
