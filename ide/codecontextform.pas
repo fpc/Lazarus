@@ -774,6 +774,10 @@ var
       DrawText(Canvas.Handle,@Line[LastTokenEnd],TokenEnd-LastTokenEnd,TokenRect,
                DT_SINGLELINE+DT_CALCRECT+DT_NOCLIP);
       TokenSize:=Point(TokenRect.Right,TokenRect.Bottom);
+      {$IFDEF EnableCCFFontMin}
+      // workaround for bug 22190
+      if TokenSize.y<14 then TokenSize.y:=14;
+      {$ENDIF}
       //DebugLn(['DrawHint Draw="',Draw,'" Token="',copy(Line,TokenStart,TokenEnd-TokenStart),'" TokenSize=',dbgs(TokenSize)]);
 
       if (LineHeight>0) and (TokenPos.X+TokenRect.Right>ATextRect.Right) then
