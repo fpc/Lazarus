@@ -236,6 +236,7 @@ type
     constructor Create(AWidth, AHeight: integer); override;
     constructor Create(AWidth, AHeight: integer; AFlags: TRawImageQueryFlags);
     constructor Create(ARawImage: TRawImage; ADataOwner: Boolean);
+    constructor CreateCompatible(IntfImg: TLazIntfImage; AWidth, AHeight: integer);
     destructor Destroy; override;
     procedure BeginUpdate;
     procedure EndUpdate;
@@ -3243,6 +3244,18 @@ begin
   ChooseGetSetColorFunctions;
 end;
 
+constructor TLazIntfImage.CreateCompatible(IntfImg: TLazIntfImage; AWidth,
+  AHeight: integer);
+var
+  Desc: TRawImageDescription;
+begin
+  Create(0,0);
+  Desc:=IntfImg.DataDescription;
+  Desc.Width:=AWidth;
+  Desc.Height:=AHeight;
+  DataDescription:=Desc;
+end;
+
 destructor TLazIntfImage.Destroy;
 begin
   FreeData;
@@ -3554,8 +3567,8 @@ begin
   end;
 end;
 
-procedure TLazIntfImage.CopyPixels(ASource: TFPCustomImage; XDst, YDst: Integer;
-                                   AlphaMask: Boolean; AlphaTreshold: Word);
+procedure TLazIntfImage.CopyPixels(ASource: TFPCustomImage; XDst: Integer;
+  YDst: Integer; AlphaMask: Boolean; AlphaTreshold: Word);
 var
   SrcImg: TLazIntfImage absolute ASource;
   SrcHasMask, DstHasMask: Boolean;
