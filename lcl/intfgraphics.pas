@@ -630,9 +630,11 @@ type
     // format and before the image is read
     FOrgEvent: TTiffCreateCompatibleImgEvent;
     procedure CreateImageHook(Sender: TFPReaderTiff; var NewImage: TFPCustomImage);
-    {$ENDIF}
+    procedure DoCreateImage(ImgFileDir: TTiffIDF);
+    {$ELSE}
   protected
-    procedure DoCreateImage(ImgFileDir: TTiffIFD); {$IF FPC_FULLVERSION>=20701}override;{$ENDIF}
+    procedure DoCreateImage(ImgFileDir: TTiffIFD); override;
+    {$ENDIF}
   public
     function  GetUpdateDescription: Boolean;
     procedure SetUpdateDescription(AValue: Boolean);
@@ -5957,7 +5959,8 @@ begin
 end;
 {$ENDIF}
 
-procedure TLazReaderTiff.DoCreateImage(ImgFileDir: TTiffIFD);
+procedure TLazReaderTiff.DoCreateImage(
+  ImgFileDir: {$IF FPC_FULLVERSION<20701}TTiffIDF{$ELSE}TTiffIFD{$ENDIF});
 var
   Desc: TRawImageDescription;
   IsAlpha, IsGray: Boolean;
