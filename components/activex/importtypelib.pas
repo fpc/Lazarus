@@ -4,6 +4,7 @@ unit ImportTypelib;
 
 interface
 
+{$ifndef wince}
 uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, EditBtn,
   StdCtrls,lazideintf,projectintf,PackageIntf;
@@ -33,9 +34,11 @@ var
   FrmTL: TFrmTL;
 
 procedure ImpTypeLib(Sender: TObject);
+{$endif wince}
 
 implementation
 
+{$ifndef wince}
 uses typelib;
 
 procedure ImpTypeLib(Sender: TObject);
@@ -138,6 +141,7 @@ begin
 end;
 
 {$R *.lfm}
+{$endif wince}
 
 end.
 

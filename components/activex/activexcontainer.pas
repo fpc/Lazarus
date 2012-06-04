@@ -209,6 +209,25 @@ type
 
 implementation
 
+{$ifdef wince}
+const
+  GWLP_USERDATA=GWL_USERDATA;
+
+function GetWindowLongPtrW(hWnd:HWND; nIndex:longint):LONG;
+begin
+  result:=GetWindowLongW(hWnd, nIndex);
+end;
+
+function SetWindowLongPtrW(hWnd:HWND; nIndex:longint; dwNewLong:LONG):LONG;
+begin
+  result:=SetWindowLongW(hWnd, nIndex, dwNewLong);
+end;
+
+function SetWindowLongPtr(hWnd:HWND; nIndex:longint; dwNewLong:LONG):LONG;
+begin
+  result:=SetWindowLongW(hWnd, nIndex, dwNewLong);
+end;
+{$endif wince}
 
 function WndCallback(Ahwnd: HWND; uMsg: UINT; wParam: WParam;
   lParam: LParam): LRESULT; stdcall;

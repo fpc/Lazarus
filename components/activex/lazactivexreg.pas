@@ -33,7 +33,11 @@ unit lazactivexreg;
 interface
 
 uses
-  activexcontainer,ImportTypelib;
+  activexcontainer
+  {$ifndef wince}
+  ,ImportTypelib
+  {$endif wince}
+  ;
 
 procedure Register;
 
@@ -44,7 +48,9 @@ uses  classes,LResources,MenuIntf, LCLIntf;
 
 procedure Register; 
 begin
+  {$ifndef wince}
   RegisterIDEMenuCommand(itmSecondaryTools, 'ImportTL','Import Type Library',nil,@ImpTypeLib);
+  {$endif wince}
   RegisterComponents('ActiveX', [TActiveXContainer]);
 end;
 
