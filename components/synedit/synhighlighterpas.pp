@@ -146,6 +146,10 @@ const
      cfbtUnitSection, // unitsection, actually interface only
      cfbtVarType, cfbtLocalVarType];
 
+  PascalStatementBlocks: TPascalCodeFoldBlockTypes =
+    [cfbtBeginEnd, cfbtTopBeginEnd, cfbtCase, cfbtTry, cfbtExcept, cfbtRepeat,
+     cfbtCaseElse];
+
   PascalFoldTypeCompatibility: Array [TPascalCodeFoldBlockType] of TPascalCodeFoldBlockType =
     ( cfbtBeginEnd,      // Nested
       cfbtBeginEnd,  // cfbtTopBeginEnd,   // Begin of Procedure
@@ -992,8 +996,7 @@ begin
     fRange := fRange + [rsAtPropertyOrReadWrite];
   end
   else if KeyComp('Case') then begin
-    if TopPascalCodeFoldBlockType in
-       [cfbtBeginEnd, cfbtTopBeginEnd, cfbtCase, cfbtTry, cfbtExcept, cfbtRepeat] then
+    if TopPascalCodeFoldBlockType in PascalStatementBlocks + [cfbtUnitSection] then
       StartPascalCodeFoldBlock(cfbtCase);
     Result := tkKey;
   end
@@ -1263,8 +1266,7 @@ begin
   else if KeyComp('Array') then Result := tkKey
   else if KeyComp('Try') then
   begin
-    if TopPascalCodeFoldBlockType in
-       [cfbtBeginEnd, cfbtTopBeginEnd, cfbtCase, cfbtTry, cfbtExcept, cfbtRepeat] then
+    if TopPascalCodeFoldBlockType in PascalStatementBlocks + [cfbtUnitSection] then
       StartPascalCodeFoldBlock(cfbtTry);
     Result := tkKey;
   end
@@ -3576,13 +3578,9 @@ end;
 
 procedure TSynPasSyn.CloseBeginEndBlocksBeforeProc;
 begin
-  if not(TopPascalCodeFoldBlockType in
-         [cfbtBeginEnd, cfbtTopBeginEnd, cfbtCase, cfbtAsm, cfbtExcept, cfbtTry,
-          cfbtRepeat]) then
+  if not(TopPascalCodeFoldBlockType in PascalStatementBlocks + [cfbtAsm]) then
     exit;
-  while TopPascalCodeFoldBlockType in
-        [cfbtBeginEnd, cfbtTopBeginEnd, cfbtCase, cfbtAsm, cfbtExcept, cfbtTry,
-         cfbtRepeat] do
+  while TopPascalCodeFoldBlockType in PascalStatementBlocks + [cfbtAsm] do
     EndPascalCodeFoldBlockLastLine;
   if TopPascalCodeFoldBlockType = cfbtProcedure then
     EndPascalCodeFoldBlockLastLine; // This procedure did have a begin/end block, so it must end too
@@ -3598,8 +3596,7 @@ begin
   i := 0;
   while (i <= 2) do begin
     t := TopPascalCodeFoldBlockType(i);
-    if not (t in [cfbtBeginEnd, cfbtTopBeginEnd, cfbtCase, cfbtAsm, cfbtExcept,
-                  cfbtTry, cfbtRepeat, SearchFor]) then
+    if not (t in PascalStatementBlocks + [cfbtAsm, SearchFor]) then
       exit;
     if (t = SearchFor) then break;
     inc(i);
