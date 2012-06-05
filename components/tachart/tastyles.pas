@@ -58,6 +58,12 @@ type
 
   TChartStyles = class;
 
+  TChartStyleEnumerator = class(TCollectionEnumerator)
+  public
+    function GetCurrent: TChartStyle;
+    property Current: TChartStyle read GetCurrent;
+  end;
+
   { TChartStyleList }
 
   TChartStyleList = class(TCollection)
@@ -69,6 +75,7 @@ type
     function GetOwner: TPersistent; override;
   public
     constructor Create(AOwner: TChartStyles);
+    function GetEnumerator: TChartStyleEnumerator; inline;
     property Style[AIndex: Integer]: TChartStyle read GetStyle; default;
   end;
 
@@ -97,6 +104,13 @@ implementation
 procedure Register;
 begin
   RegisterComponents(CHART_COMPONENT_IDE_PAGE, [TChartStyles]);
+end;
+
+{ TChartStyleEnumerator }
+
+function TChartStyleEnumerator.GetCurrent: TChartStyle;
+begin
+  Result := TChartStyle(inherited GetCurrent);
 end;
 
 { TChartStyle }
@@ -193,6 +207,11 @@ constructor TChartStyleList.Create(AOwner: TChartStyles);
 begin
   inherited Create(TChartStyle);
   FOwner := AOwner;
+end;
+
+function TChartStyleList.GetEnumerator: TChartStyleEnumerator;
+begin
+  Result := TChartStyleEnumerator.Create(Self);
 end;
 
 function TChartStyleList.GetOwner: TPersistent;
