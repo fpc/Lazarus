@@ -31,7 +31,11 @@ var
   D, T: TDateTime;
   S: String;
   YY, MM, DD, HH, NN, SS: Integer;
+  {$IF FPC_FULLVERSION>=20701}
   IFD: TTiffIFD;
+  {$ELSE}
+  IFD: TTiffIDF;
+  {$ENDIF}
 begin
   IFD:=TFPReaderTiff(AReader).FirstImg;
   FArtist := IFD.Artist;
