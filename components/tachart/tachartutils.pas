@@ -267,6 +267,7 @@ procedure Exchange(var A, B: String); overload; inline;
 
 function FormatIfNotEmpty(AFormat, AStr: String): String; inline;
 
+function IfThen(ACond: Boolean; ATrue, AFalse: TObject): TObject; overload;
 function InterpolateRGB(AColor1, AColor2: Integer; ACoeff: Double): Integer;
 function IntToColorHex(AColor: Integer): String; inline;
 function IsNan(const APoint: TDoublePoint): Boolean; overload; inline;
@@ -363,6 +364,14 @@ begin
     Result := ''
   else
     Result := Format(AFormat, [AStr]);
+end;
+
+function IfThen(ACond: Boolean; ATrue, AFalse: TObject): TObject;
+begin
+  if ACond then
+    Result := ATrue
+  else
+    Result := AFalse;
 end;
 
 function InterpolateRGB(AColor1, AColor2: Integer; ACoeff: Double): Integer;
