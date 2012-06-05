@@ -556,7 +556,10 @@ begin
   Result := Point(0, 0);
   for li in AItems do begin
     li.UpdateFont(ADrawer, prevFont);
-    p := ADrawer.TextExtent(li.Text);
+    if li.Text = '' then
+      p := Point(0, ADrawer.TextExtent('I').Y)
+    else
+      p := ADrawer.TextExtent(li.Text);
     if li.HasSymbol then
       p.X += SYMBOL_TEXT_SPACING + SymbolWidth;
     Result := MaxPoint(p, Result);
