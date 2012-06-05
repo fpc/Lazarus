@@ -31,11 +31,13 @@ type
     FBrush: TBrush;
     FPen: TPen;
     FRepeatCount: Cardinal;
+    FText: String;
     FUseBrush: Boolean;
     FUsePen: Boolean;
     procedure SetBrush(AValue: TBrush);
     procedure SetPen(AValue: TPen);
     procedure SetRepeatCount(AValue: Cardinal);
+    procedure SetText(AValue: String);
     procedure SetUseBrush(AValue: Boolean);
     procedure SetUsePen(AValue: Boolean);
     procedure StyleChanged(ASender: TObject);
@@ -52,6 +54,7 @@ type
     property Pen: TPen read FPen write SetPen;
     property RepeatCount: Cardinal
       read FRepeatCount write SetRepeatCount default 1;
+    property Text: String read FText write SetText;
     property UseBrush: Boolean read FUseBrush write SetUseBrush default true;
     property UsePen: Boolean read FUsePen write SetUsePen default true;
   end;
@@ -173,6 +176,13 @@ procedure TChartStyle.SetRepeatCount(AValue: Cardinal);
 begin
   if FRepeatCount = AValue then exit;
   FRepeatCount := AValue;
+  StyleChanged(Self);
+end;
+
+procedure TChartStyle.SetText(AValue: String);
+begin
+  if FText = AValue then exit;
+  FText := AValue;
   StyleChanged(Self);
 end;
 
