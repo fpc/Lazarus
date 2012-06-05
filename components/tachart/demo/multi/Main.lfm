@@ -8,7 +8,7 @@ object Form1: TForm1
   ClientWidth = 529
   OnCreate = FormCreate
   Position = poScreenCenter
-  LCLVersion = '0.9.31'
+  LCLVersion = '1.1'
   object PageControl1: TPageControl
     Left = 0
     Height = 459
@@ -82,6 +82,7 @@ object Form1: TForm1
         Depth = 10
         Foot.Brush.Color = clBtnFace
         Foot.Font.Color = clBlue
+        Legend.Visible = True
         Title.Brush.Color = clBtnFace
         Title.Font.Color = clBlue
         Title.Text.Strings = (
@@ -90,6 +91,7 @@ object Form1: TForm1
         Align = alClient
         ParentColor = False
         object chStackedBarSeries1: TBarSeries
+          Legend.Multiplicity = lmStyle
           Active = False
           Marks.Format = '%0:.2g'
           Marks.LinkPen.Visible = False
@@ -103,6 +105,7 @@ object Form1: TForm1
           Styles = ChartStyles1
         end
         object chStackedLineSeries1: TLineSeries
+          Legend.Multiplicity = lmStyle
           Active = False
           Marks.Format = '%0:.2g'
           Marks.LinkPen.Visible = False
@@ -114,6 +117,7 @@ object Form1: TForm1
           Styles = ChartStyles1
         end
         object chStackedAreaSeries1: TAreaSeries
+          Legend.Multiplicity = lmStyle
           Marks.Format = '%0:.2g'
           Marks.LinkPen.Visible = False
           Marks.Style = smsCustom
@@ -294,14 +298,17 @@ object Form1: TForm1
       item
         Brush.Color = clRed
         Pen.Style = psDot
+        Text = 'red'
       end    
       item
         Brush.Color = clLime
         Pen.Color = clGreen
         Pen.Width = 2
+        Text = 'green'
       end    
       item
         Brush.Color = clBlue
+        Text = 'blue'
       end>
     left = 244
     top = 208
