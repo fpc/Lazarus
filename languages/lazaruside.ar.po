@@ -1,3 +1,8 @@
+# Arabic translation of Free Pascal Lazarus Project.
+# Copyright (C) 2012 Lazarus Project
+# This file is distributed under the same license as the Lazarus package.
+# Abou Al Montacir <abou.almontacir@sfr.fr>, 2007.
+# Khaled Shagrouni <shagrouni@gmail.com>, 2012.
 msgid ""
 msgstr ""
 "Project-Id-Version: Free Pascal Lazarus Project.\n"
@@ -41,7 +46,7 @@ msgstr "إستخدم المخطط المحدد سلفا"
 
 #: lazarusidestrconsts.dlfmouseresetall
 msgid "Reset all settings"
-msgstr ""
+msgstr "إلغ كلّ الإعدادات"
 
 #: lazarusidestrconsts.dlfmouseresetgutter
 msgid "Reset all gutter settings"
@@ -49,7 +54,7 @@ msgstr ""
 
 #: lazarusidestrconsts.dlfmouseresettext
 msgid "Reset all text settings"
-msgstr ""
+msgstr "إلغ كلّ إعدادات النّصّ"
 
 #: lazarusidestrconsts.dlfmousesimplebuttonaddhistorypoint
 msgid "Add history point"
@@ -99,7 +104,7 @@ msgstr ""
 
 #: lazarusidestrconsts.dlfmousesimplebuttonselcontinueplain
 msgid "Continue %0:s"
-msgstr ""
+msgstr "إستمرّ %0: ثانية
 
 #: lazarusidestrconsts.dlfmousesimplebuttonselect
 msgid "Select text"
@@ -135,7 +140,7 @@ msgstr "عيّن الكلمة الحاليّة"
 
 #: lazarusidestrconsts.dlfmousesimplebuttonzoomreset
 msgid "Reset zoom"
-msgstr ""
+msgstr "إلغ التّظخيم
 
 #: lazarusidestrconsts.dlfmousesimplediff
 msgid "This page does not represent your current settings. See advanced page. Use this page to reset any advanced changes"
@@ -144,7 +149,7 @@ msgstr ""
 #: lazarusidestrconsts.dlfmousesimplegenericsect
 msgctxt "lazarusidestrconsts.dlfmousesimplegenericsect"
 msgid "General"
-msgstr ""
+msgstr "عامّ"
 
 #: lazarusidestrconsts.dlfmousesimplegutterleftdown
 msgid "Standard, All actions (breakpoint, fold) on mouse down"
@@ -166,7 +171,7 @@ msgstr ""
 #: lazarusidestrconsts.dlfmousesimpletextsect
 msgctxt "lazarusidestrconsts.dlfmousesimpletextsect"
 msgid "Text"
-msgstr ""
+msgstr "نصّ"
 
 #: lazarusidestrconsts.dlfmousesimpletextsectalt
 msgid "Alt-Key sets column mode"
@@ -202,11 +207,11 @@ msgstr "جرّ المعيّن (نسخ ولصق("
 
 #: lazarusidestrconsts.dlfmousesimpletextsectextra1label
 msgid "Extra-1 Button"
-msgstr ""
+msgstr "زرّ إضافي-1"
 
 #: lazarusidestrconsts.dlfmousesimpletextsectextra2label
 msgid "Extra-2 Button"
-msgstr ""
+msgstr "زرّ إضافي-2"
 
 #: lazarusidestrconsts.dlfmousesimpletextsectldoublealtlabel
 msgid "Alt Double"
@@ -247,25 +252,25 @@ msgstr ""
 #: lazarusidestrconsts.dlfmousesimpletextsectpageextra1
 msgctxt "lazarusidestrconsts.dlfmousesimpletextsectpageextra1"
 msgid "Extra 1"
-msgstr ""
+msgstr "إضافي 1"
 
 #: lazarusidestrconsts.dlfmousesimpletextsectpageextra2
 msgctxt "lazarusidestrconsts.dlfmousesimpletextsectpageextra2"
 msgid "Extra 2"
-msgstr ""
+msgstr "إضافي 2"
 
 #: lazarusidestrconsts.dlfmousesimpletextsectpagelmod
 msgid "Left 1"
-msgstr ""
+msgstr "الأيسر 1"
 
 #: lazarusidestrconsts.dlfmousesimpletextsectpagelmulti
 msgid "Left 2"
-msgstr ""
+msgstr "الأيسر 2"
 
 #: lazarusidestrconsts.dlfmousesimpletextsectpageright
 msgctxt "lazarusidestrconsts.dlfmousesimpletextsectpageright"
 msgid "Right"
-msgstr ""
+msgstr "الأيمن"
 
 #: lazarusidestrconsts.dlfmousesimpletextsectpagewheel
 msgctxt "lazarusidestrconsts.dlfmousesimpletextsectpagewheel"
@@ -535,7 +540,7 @@ msgstr ""
 
 #: lazarusidestrconsts.dlgaddsemicolon
 msgid "Add semicolon"
-msgstr ""
+msgstr "أضف فاصلة منقوطة"
 
 #: lazarusidestrconsts.dlgadjusttopline
 msgid "Adjust top line due to comment in front"
@@ -543,11 +548,11 @@ msgstr ""
 
 #: lazarusidestrconsts.dlgallfiles
 msgid "All files"
-msgstr ""
+msgstr "كم الجذاذات"
 
 #: lazarusidestrconsts.dlgalphabetically
 msgid "Alphabetically"
-msgstr ""
+msgstr "هجائيّا"
 
 #: lazarusidestrconsts.dlgalreadyusesallotherunits
 msgid "\"%s\" already uses all the units in this project"
@@ -626,7 +631,7 @@ msgstr ""
 
 #: lazarusidestrconsts.dlgbackcolor
 msgid "Background"
-msgstr ""
+msgstr "الخلفيّة"
 
 #: lazarusidestrconsts.dlgbaknosubdirectory
 msgid "(no subdirectory)"
@@ -643,7 +648,7 @@ msgstr ""
 #: lazarusidestrconsts.dlgblockgroupoptions
 msgctxt "lazarusidestrconsts.dlgblockgroupoptions"
 msgid "Selection"
-msgstr ""
+msgstr "تعيين"
 
 #: lazarusidestrconsts.dlgblockindent
 msgid "Block indent (spaces)"
@@ -713,7 +718,7 @@ msgstr ""
 #: lazarusidestrconsts.dlgccotest
 msgctxt "lazarusidestrconsts.dlgccotest"
 msgid "Test"
-msgstr ""
+msgstr "إختبار"
 
 #: lazarusidestrconsts.dlgccotestcheckingcompiler
 msgid "Test: Checking compiler ..."
@@ -757,7 +762,7 @@ msgstr ""
 
 #: lazarusidestrconsts.dlgcdtlast
 msgid "Last"
-msgstr ""
+msgstr "الآخر"
 
 #: lazarusidestrconsts.dlgcdtlower
 msgid "lowercase"
@@ -825,7 +830,7 @@ msgstr ""
 
 #: lazarusidestrconsts.dlgcoasis
 msgid "As-Is"
-msgstr ""
+msgstr "كما هو"
 
 #: lazarusidestrconsts.dlgcoasmstyle
 msgid "Assembler style:"
@@ -842,12 +847,12 @@ msgstr ""
 
 #: lazarusidestrconsts.dlgcocompilation
 msgid "Compilation"
-msgstr ""
+msgstr "التّرجمة"
 
 #: lazarusidestrconsts.dlgcoconditionals
 msgctxt "lazarusidestrconsts.dlgcoconditionals"
 msgid "Conditionals"
-msgstr ""
+msgstr "الشّروط"
 
 #: lazarusidestrconsts.dlgcocops
 msgid "C style operators (*=, +=, /= and -=)"
@@ -855,7 +860,7 @@ msgstr ""
 
 #: lazarusidestrconsts.dlgcocreatechildnode
 msgid "Create child node"
-msgstr ""
+msgstr "أنشئ عقدة فرعيّة"
 
 #: lazarusidestrconsts.dlgcocreatemakefile
 msgctxt "lazarusidestrconsts.dlgcocreatemakefile"
@@ -978,7 +983,7 @@ msgstr ""
 #: lazarusidestrconsts.dlgcolors
 msgctxt "lazarusidestrconsts.dlgcolors"
 msgid "Colors"
-msgstr ""
+msgstr "الألوان"
 
 #: lazarusidestrconsts.dlgcommandlineparameters
 msgid "Command line parameters"
@@ -1020,7 +1025,7 @@ msgstr ""
 #: lazarusidestrconsts.dlgcoother
 msgctxt "lazarusidestrconsts.dlgcoother"
 msgid "Other"
-msgstr ""
+msgstr "أخرى"
 
 #: lazarusidestrconsts.dlgcooverflow
 msgid "Overflow"
@@ -1113,7 +1118,7 @@ msgstr ""
 
 #: lazarusidestrconsts.dlgcoverbosity
 msgid "Verbosity"
-msgstr ""
+msgstr "الثّرثرة"
 
 #: lazarusidestrconsts.dlgcppinline
 msgid "C++ styled INLINE"
@@ -1129,7 +1134,7 @@ msgstr ""
 
 #: lazarusidestrconsts.dlgcursorgroupoptions
 msgid "Cursor"
-msgstr ""
+msgstr "المؤشّر"
 
 #: lazarusidestrconsts.dlgcursorskipsselection
 msgid "Cursor skips selection"
@@ -1393,7 +1398,7 @@ msgstr ""
 
 #: lazarusidestrconsts.dlgedital
 msgid "Italic"
-msgstr ""
+msgstr "مائل"
 
 #: lazarusidestrconsts.dlgeditorfont
 msgid "Editor font"
@@ -1477,11 +1482,11 @@ msgstr ""
 #: lazarusidestrconsts.dlgenvnone
 msgctxt "lazarusidestrconsts.dlgenvnone"
 msgid "None"
-msgstr ""
+msgstr "لا شيء"
 
 #: lazarusidestrconsts.dlgenvotherfiles
 msgid "Other Files"
-msgstr ""
+msgstr "الجذاذات ت الأخرى"
 
 #: lazarusidestrconsts.dlgenvproject
 msgid "Tabs for project"
@@ -1490,7 +1495,7 @@ msgstr ""
 #: lazarusidestrconsts.dlgenvtype
 msgctxt "lazarusidestrconsts.dlgenvtype"
 msgid "Type"
-msgstr ""
+msgstr "النّوع"
 
 #: lazarusidestrconsts.dlgeofocusmessagesaftercompilation
 msgid "Focus messages after compilation"
@@ -1531,16 +1536,16 @@ msgstr ""
 #: lazarusidestrconsts.dlgfoldhtmlcomment
 msgctxt "lazarusidestrconsts.dlgfoldhtmlcomment"
 msgid "Comment"
-msgstr ""
+msgstr "اتّعليق
 
 #: lazarusidestrconsts.dlgfoldhtmlnode
 msgctxt "lazarusidestrconsts.dlgfoldhtmlnode"
 msgid "Node"
-msgstr ""
+msgstr "العقدة"
 
 #: lazarusidestrconsts.dlgfoldlfmitem
 msgid "Item"
-msgstr ""
+msgstr "العنصر"
 
 #: lazarusidestrconsts.dlgfoldlfmlist
 msgid "List <>"
@@ -1663,7 +1668,7 @@ msgstr ""
 #: lazarusidestrconsts.dlgfoldxmlnode
 msgctxt "lazarusidestrconsts.dlgfoldxmlnode"
 msgid "Node"
-msgstr ""
+msgstr "العقدة"
 
 #: lazarusidestrconsts.dlgfoldxmlprocess
 msgid "Processing Instruction"
@@ -1820,7 +1825,7 @@ msgstr ""
 
 #: lazarusidestrconsts.dlgheightpos
 msgid "Height:"
-msgstr ""
+msgstr "الإرتفاع"
 
 #: lazarusidestrconsts.dlghideideonrun
 msgid "Hide IDE windows on run"
@@ -1881,7 +1886,7 @@ msgstr ""
 
 #: lazarusidestrconsts.dlgignoreverb
 msgid "Ignore"
-msgstr ""
+msgstr "تجاهل"
 
 #: lazarusidestrconsts.dlgincludesystemvariables
 msgid "Include system variables"
@@ -5110,15 +5115,15 @@ msgstr ""
 
 #: lazarusidestrconsts.liscldirclean
 msgid "Clean"
-msgstr ""
+msgstr "نضّف"
 
 #: lazarusidestrconsts.liscldircleandirectory
 msgid "Clean Directory"
-msgstr ""
+msgstr "نضّف الملفّ"
 
 #: lazarusidestrconsts.liscldircleansubdirectories
 msgid "Clean sub directories"
-msgstr ""
+msgstr "نضّف الملفّات الفرعيّة"
 
 #: lazarusidestrconsts.liscldirkeepalltextfiles
 msgid "Keep all text files"
@@ -5138,7 +5143,7 @@ msgstr ""
 
 #: lazarusidestrconsts.liscleanall
 msgid "Clean all"
-msgstr ""
+msgstr "نضّف الكلّ"
 
 #: lazarusidestrconsts.liscleancommonfiles
 msgid "Clean common files"
@@ -5154,15 +5159,15 @@ msgstr ""
 
 #: lazarusidestrconsts.liscleanup
 msgid "Clean up"
-msgstr ""
+msgstr "نضّف"
 
 #: lazarusidestrconsts.liscleanupandbuild
 msgid "Clean up and build"
-msgstr ""
+msgstr "نضّف وإبن"
 
 #: lazarusidestrconsts.liscleanupandbuildproject
 msgid "Clean up and build project"
-msgstr ""
+msgstr "نضّف وإبن المشروع"
 
 #: lazarusidestrconsts.liscleanupunitpath
 msgid "Clean up unit path?"
@@ -5195,7 +5200,7 @@ msgstr "أغلق"
 #: lazarusidestrconsts.liscloseall
 msgctxt "lazarusidestrconsts.liscloseall"
 msgid "Close All"
-msgstr ""
+msgstr "أغلق الكلّ"
 
 #: lazarusidestrconsts.liscloseallchecked
 msgid "Close All Checked"
@@ -5203,11 +5208,11 @@ msgstr ""
 
 #: lazarusidestrconsts.lisclosealltabsclose
 msgid "Close files"
-msgstr ""
+msgstr "أغلق الجذاذات"
 
 #: lazarusidestrconsts.lisclosealltabshide
 msgid "Hide window"
-msgstr ""
+msgstr "إخف النّافذة"
 
 #: lazarusidestrconsts.lisclosealltabsquestion
 msgid "Closing a Source Editor Window. Do you want close all files or hide the window?"
@@ -5228,7 +5233,7 @@ msgstr ""
 #: lazarusidestrconsts.liscmplstcomponents
 msgctxt "lazarusidestrconsts.liscmplstcomponents"
 msgid "Components"
-msgstr ""
+msgstr "المكوّنات"
 
 #: lazarusidestrconsts.liscmplstinheritance
 msgid "Inheritance"
@@ -5236,7 +5241,7 @@ msgstr ""
 
 #: lazarusidestrconsts.liscmplstlist
 msgid "List"
-msgstr ""
+msgstr "القائمة"
 
 #: lazarusidestrconsts.liscmplstpalette
 msgid "Palette"
@@ -9266,7 +9271,7 @@ msgstr ""
 
 #: lazarusidestrconsts.liskmcloseproject
 msgid "Close project"
-msgstr ""
+msgstr "أغلق المشروع"
 
 #: lazarusidestrconsts.liskmcodetoolsdefineseditor
 msgid "CodeTools defines editor"
@@ -10386,7 +10391,7 @@ msgstr ""
 
 #: lazarusidestrconsts.lismenucloseproject
 msgid "Close Project"
-msgstr ""
+msgstr "أغلق المشروع"
 
 #: lazarusidestrconsts.lismenucodetoolsdefineseditor
 msgid "CodeTools Defines Editor ..."
@@ -10890,7 +10895,7 @@ msgstr ""
 
 #: lazarusidestrconsts.lismenurevert
 msgid "Revert"
-msgstr ""
+msgstr "إلغي"
 
 #: lazarusidestrconsts.lismenurun
 msgctxt "lazarusidestrconsts.lismenurun"
@@ -10912,19 +10917,19 @@ msgstr ""
 #: lazarusidestrconsts.lismenusave
 msgctxt "lazarusidestrconsts.lismenusave"
 msgid "&Save"
-msgstr ""
+msgstr "إحفظ"
 
 #: lazarusidestrconsts.lismenusaveas
 msgid "Save &As ..."
-msgstr ""
+msgstr "إحفظ باسم ..."
 
 #: lazarusidestrconsts.lismenusaveproject
 msgid "Save Project"
-msgstr ""
+msgstr "إحفظ المشروع"
 
 #: lazarusidestrconsts.lismenusaveprojectas
 msgid "Save Project As ..."
-msgstr ""
+msgstr "إحفظ المشروع باسم ..."
 
 #: lazarusidestrconsts.lismenusearch
 msgid "&Search"
@@ -10932,12 +10937,12 @@ msgstr "بحث"
 
 #: lazarusidestrconsts.lismenuselect
 msgid "Select"
-msgstr ""
+msgstr "عيّن"
 
 #: lazarusidestrconsts.lismenuselectall
 msgctxt "lazarusidestrconsts.lismenuselectall"
 msgid "Select All"
-msgstr ""
+msgstr "عيّن الكلّ"
 
 #: lazarusidestrconsts.lismenuselectcodeblock
 msgid "Select Code Block"
@@ -10945,11 +10950,11 @@ msgstr ""
 
 #: lazarusidestrconsts.lismenuselectline
 msgid "Select Line"
-msgstr ""
+msgstr "عيّن السّطر"
 
 #: lazarusidestrconsts.lismenuselectparagraph
 msgid "Select Paragraph"
-msgstr ""
+msgstr "عيّن الفقرة"
 
 #: lazarusidestrconsts.lismenuselecttobrace
 msgid "Select to Brace"
@@ -10957,7 +10962,7 @@ msgstr ""
 
 #: lazarusidestrconsts.lismenuselectword
 msgid "Select Word"
-msgstr ""
+msgstr "عيّن الكلمة"
 
 #: lazarusidestrconsts.lismenusetfreebookmark
 msgctxt "lazarusidestrconsts.lismenusetfreebookmark"
@@ -15804,7 +15809,7 @@ msgstr ""
 #: lazarusidestrconsts.lisundo
 msgctxt "lazarusidestrconsts.lisundo"
 msgid "Undo"
-msgstr ""
+msgstr "تراجع"
 
 #: lazarusidestrconsts.lisunexpectedresultthedebuggerwillterminate
 msgid "Unexpected result:%sThe debugger will terminate"
