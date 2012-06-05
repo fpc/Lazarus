@@ -226,7 +226,7 @@ type
     property Visible default false;
   end;
 
-  TLegendMultiplicity = (lmSingle, lmPoint);
+  TLegendMultiplicity = (lmSingle, lmPoint, lmStyle);
 
   TLegendItemCreateEvent = procedure (
     AItem: TLegendItem; AIndex: Integer) of object;

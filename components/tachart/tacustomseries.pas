@@ -77,6 +77,7 @@ type
   strict protected
     function GetIndex: Integer; override;
     function LegendTextSingle: String;
+    function LegendTextStyle(AStyle: TChartStyle): String;
     procedure SetIndex(AValue: Integer); override;
     function TitleIsStored: Boolean; virtual;
 
@@ -444,6 +445,14 @@ begin
     Result := Title
   else
     Result := Format(Legend.Format, [Title, Index]);
+end;
+
+function TCustomChartSeries.LegendTextStyle(AStyle: TChartStyle): String;
+begin
+  if Legend.Format = '' then
+    Result := AStyle.Text
+  else
+    Result := Format(Legend.Format, [AStyle.Text, AStyle.Index]);
 end;
 
 procedure TCustomChartSeries.ReadState(Reader: TReader);
@@ -964,6 +973,7 @@ procedure TBasicPointSeries.GetLegendItemsRect(
 var
   i: Integer;
   li: TLegendItemBrushRect;
+  s: TChartStyle;
 begin
   case Legend.Multiplicity of
     lmSingle:
@@ -974,6 +984,12 @@ begin
         li.Color := GetColor(i);
         AItems.Add(li);
       end;
+    lmStyle:
+      if Styles <> nil then
+        for s in Styles.Styles do
+          AItems.Add(TLegendItemBrushRect.Create(
+            IfThen(s.UseBrush, s.Brush, ABrush) as TBrush, LegendTextStyle(s)
+          ));
   end;
 end;
 

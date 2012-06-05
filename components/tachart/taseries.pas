@@ -322,7 +322,7 @@ implementation
 
 uses
   GraphMath, LResources, Math, PropEdits, SysUtils,
-  TADrawerCanvas, TAGeometry, TAGraph, TAMath;
+  TADrawerCanvas, TAGeometry, TAGraph, TAMath, TAStyles;
 
 { TLineSeries }
 
@@ -538,6 +538,7 @@ var
   p: TSeriesPointer;
   i: Integer;
   li: TLegendItemLinePointer;
+  s: TChartStyle;
 begin
   if LineType = ltNone then
     lp := nil
@@ -550,13 +551,19 @@ begin
   case Legend.Multiplicity of
     lmSingle:
       AItems.Add(TLegendItemLinePointer.Create(lp, p, LegendTextSingle));
-    lmPoint: begin
+    lmPoint:
       for i := 0 to Count - 1 do begin
         li := TLegendItemLinePointer.Create(lp, p, LegendTextPoint(i));
         li.Color := GetColor(i);
         AItems.Add(li);
       end;
-    end;
+    lmStyle:
+      if Styles <> nil then
+        for s in Styles.Styles do
+          AItems.Add(TLegendItemLinePointer.Create(
+            IfThen((lp <> nil) and s.UsePen, s.Pen, lp) as TPen,
+            p, LegendTextStyle(s)
+          ));
   end;
 end;
 
