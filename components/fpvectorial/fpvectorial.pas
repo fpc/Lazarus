@@ -411,6 +411,8 @@ type
     AdjacentNumber: Double;
     Formula: TvFormula;
     BottomFormula: TvFormula;
+  public
+    Top, Left, Width, Height: Integer;
     function CalculateHeight: Single; // 1.0 = the normal text height, will return for example 2.2 for 2,2 times the text height
     function CalculateWidth(ADest: TFPCustomCanvas): Integer; // in pixels
     function AsText: string;
@@ -426,6 +428,7 @@ type
   protected
     FElements: TFPList; // of TvFormulaElement
   public
+    Top, Left, Width, Height: Integer;
     constructor Create; override;
     destructor Destroy; override;
     //
@@ -1682,20 +1685,18 @@ begin
   begin
     if ADest = nil then Result := 10 * UTF8Length(lText)
     else Result := TCanvas(ADest).TextWidth(lText);
-    Exit;
   end;
 
-{  case Kind of
-    fekFraction: Result := 2.3;
-    fekRoot: Result := Formula.CalculateHeight();
+  case Kind of
+//    fekFraction: Result := 2.3;
+    fekRoot: Result := Formula.CalculateWidth(ADest) + 5;
     fekNumberWithPower,
-    fekVariableWithPower: Result := 1.1;
-    //fekParenteses: Result,// This is utilized to group elements. Inside it goes a Formula
-    fekParentesesWithPower: Result := 1.1;
-    fekSomatory: Result := 1.5;
+    fekVariableWithPower: Result := Round(Result * 1.2);
+    fekParenteses: Result := Result + 6;
+    fekParentesesWithPower: Result := Result + 8;
+    fekSomatory: Result := 8;
   else
-    Result := 1.0;
-  end;}
+  end;
 end;
 
 function TvFormulaElement.AsText: string;
@@ -1797,7 +1798,24 @@ end;
 
 procedure TvFormula.Render(ADest: TFPCustomCanvas; ADestX: Integer;
   ADestY: Integer; AMulX: Double; AMulY: Double);
+var
+  lElement: TvFormulaElement;
 begin
+  CalculateHeight();
+  CalculateWidth(ADest);
+
+  // First calculate the maximum width and height of all elements
+  lElement := GetFirstElement();
+  if lElement = nil then Exit;
+  while lElement <> nil do
+  begin
+    lElement.CalculateHeight();
+    lElement.CalculateWidth(ADest);
+
+    lElement := GetNextElement();
+  end;
+
+  // Then calculate the position of each element
 
 end;
 
