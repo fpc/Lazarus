@@ -12,14 +12,22 @@
       </SearchPaths>
       <Conditionals Value="// LCLWidgetType
 if undefined(LCLWidgetType) then begin
-  if (TargetOS='win32') or (TargetOS='win64') then
-    LCLWidgetType := 'win32'
-  else if TargetOS='wince' then
-    LCLWidgetType := 'wince'
-  else if TargetOS='darwin' then
-    LCLWidgetType := 'carbon'
-  else
-    LCLWidgetType := 'gtk2';
+  if GetIDEValue('OS')=TargetOS then begin
+    // use the same widgettype as the IDE
+    LCLWidgetType := GetIDEValue('LCLWidgetType');
+    if LCLWidgetType='nogui' then
+      LCLWidgetType:='';
+  end;
+  if LCLWidgetType='' then begin
+    if (TargetOS='win32') or (TargetOS='win64') then
+      LCLWidgetType := 'win32'
+    else if TargetOS='wince' then
+      LCLWidgetType := 'wince'
+    else if TargetOS='darwin' then
+      LCLWidgetType := 'carbon'
+    else
+      LCLWidgetType:='gtk2';
+  end;
 end;
 
 // widget set specific options

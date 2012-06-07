@@ -357,9 +357,9 @@ msgstr ":= erwartet, aber %s gefunden"
 msgid "expected identifier, but found %s"
 msgstr "Bezeichner erwartet, aber %s gefunden"
 
-#: codetoolsstrconsts.ctsexpectedstatementbutfound
-msgid "expected statement, but found %s"
-msgstr "Anweisung erwartet, aber %s gefunden"
+#: codetoolsstrconsts.ctsexpectedsemicolonofstatementbutfound
+msgid "expected ; of statement, but found %s"
+msgstr ""
 
 #: codetoolsstrconsts.ctsexportsclauseonlyallowedinlibraries
 msgid "exports clause only allowed in libraries"

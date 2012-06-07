@@ -8332,7 +8332,6 @@ begin
       if UpdateModified and MainUnitSrcEdit.Modified
       then begin
         MainUnitSrcEdit.UpdateCodeBuffer;
-        MainUnitInfo.Modified:=true;
       end;
     end;
   end else
@@ -9235,7 +9234,7 @@ begin
   AnUnitInfo := Project1.UnitWithEditorComponent(AEditor);
   if AnUnitInfo=nil then exit(mrCancel);
 
-  // check if the unit is currently reverting
+  // do not save a unit which is currently reverting
   if AnUnitInfo.IsReverting then
     exit(mrOk);
   WasVirtual:=AnUnitInfo.IsVirtual;
@@ -9406,7 +9405,7 @@ begin
   end;
 
   {$IFDEF IDE_VERBOSE}
-  writeln('TMainIDE.DoSaveEditorFile END');
+  debugln(['TMainIDE.DoSaveEditorFile END ',NewFilename,' AnUnitInfo.Modified=',AnUnitInfo.Modified,' AEditor.Modified=',AEditor.Modified]);
   {$ENDIF}
   Result:=mrOk;
 end;
@@ -11237,26 +11236,27 @@ begin
   // save all editor files
   for i:=0 to SourceEditorManager.SourceEditorCount-1 do begin
     AnUnitInfo:=Project1.UnitWithEditorComponent(SourceEditorManager.SourceEditors[i]);
-    if (Project1.MainUnitID<0) or (Project1.MainUnitInfo <> AnUnitInfo) then begin
-      SaveFileFlags:=[sfProjectSaving]
-                     +Flags*[sfCheckAmbiguousFiles];
-      if AnUnitInfo = nil
+    if (Project1.MainUnitID>=0) and (Project1.MainUnitInfo = AnUnitInfo) then
+      continue;
+    SaveFileFlags:=[sfProjectSaving]
+                   +Flags*[sfCheckAmbiguousFiles];
+    if AnUnitInfo = nil
+    then begin
+      // consistency check
+      DebugLn('TMainIDE.DoSaveProject - unit not found for page %d', [i]);
+      DumpStack;
+    end else begin
+      if AnUnitInfo.IsVirtual
       then begin
-        DebugLn('TMainIDE.DoSaveProject - unit not found for page %d', [i]);
-        DumpStack;
-      end else begin
-        if AnUnitInfo.IsVirtual
-        then begin
-          if (sfSaveToTestDir in Flags) then
-            Include(SaveFileFlags,sfSaveToTestDir)
-          else
-            continue;
-        end;
+        if (sfSaveToTestDir in Flags) then
+          Include(SaveFileFlags,sfSaveToTestDir)
+        else
+          continue;
       end;
-      Result:=DoSaveEditorFile(SourceEditorManager.SourceEditors[i], SaveFileFlags);
-      if Result=mrAbort then exit;
-      // mrCancel: continue saving other files
     end;
+    Result:=DoSaveEditorFile(SourceEditorManager.SourceEditors[i], SaveFileFlags);
+    if Result=mrAbort then exit;
+    // mrCancel: continue saving other files
   end;
 
   // update all lrs files
@@ -15396,7 +15396,6 @@ function TMainIDE.SaveSourceEditorChangesToCodeCache(AEditor: TSourceEditorInter
         SaveSourceEditorChangesToCodeCache:=true;
         SaveEditor.UpdateCodeBuffer;
         //debugln(['TMainIDE.SaveSourceEditorChangesToCodeCache.SaveChanges ',AnUnitInfo.Filename,' Step=',TCodeBuffer(SaveEditor.CodeToolsBuffer).ChangeStep]);
-        AnUnitInfo.Modified:=true;
       end;
     end;
   end;

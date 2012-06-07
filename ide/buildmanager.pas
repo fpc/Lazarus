@@ -2161,6 +2161,12 @@ begin
         s:=GetDefaultTargetCPU;
       Result.Values['TargetCPU']:=s;
     end;
+    // IDE values
+    {Result.Values['IDEOS']:=GetCompiledTargetOS;
+    Result.Values['IDESrcOS']:=GetDefaultSrcOSForTargetOS(GetCompiledTargetOS);
+    Result.Values['IDESrcOS2']:=GetDefaultSrcOS2ForTargetOS(GetCompiledTargetOS);
+    Result.Values['IDECPU']:=GetCompiledTargetCPU;
+    Result.Values['IDELCLWidgetType']:=LCLPlatformDirNames(GetDefaultLCLWidgetType);}
 
     {$IFDEF VerboseBuildMacros}
     Result.WriteDebugReport('OnGetBuildMacroValues project values');

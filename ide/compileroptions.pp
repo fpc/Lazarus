@@ -56,7 +56,7 @@ interface
 uses
   typinfo, Classes, SysUtils, FileProcs, FileUtil, Laz2_XMLCfg, InterfaceBase,
   LCLProc, Forms, Controls, ExprEval, DefineTemplates, CodeToolsCfgScript,
-  CodeToolManager,
+  CodeToolManager, KeywordFuncLists,
   // IDEIntf
   ProjectIntf, MacroIntf, IDEExternToolIntf, SrcEditorIntf, CompOptsIntf,
   IDEOptionsIntf,
@@ -125,6 +125,17 @@ type
     function CreateDiff(OtherProperties: TLazBuildMacros;
                         Tool: TCompilerDiffTool = nil): boolean;
     procedure Assign(Source: TLazBuildMacros);
+  end;
+
+type
+
+  { TIDECfgScriptEngine }
+
+  TIDECfgScriptEngine = class(TCTConfigScriptEngine)
+  protected
+    function IsCustomFunction(FunctionName: PChar): boolean; override;
+    procedure RunCustomSimpleFunction(FunctionName: PChar;
+      Value: PCTCfgScriptVariable); override;
   end;
 
 type
@@ -251,7 +262,7 @@ type
     InheritedMacroValues: TCTCfgScriptVariables;
     InheritedMacroValuesStamp: integer; // see BuildMacroChangeStamp
     InheritedMacroValuesParsing: boolean;
-    MacroValues: TCTConfigScriptEngine;
+    MacroValues: TIDECfgScriptEngine;
     MacroValuesStamp: integer; // see BuildMacroChangeStamp
     MacroValuesParsing: boolean;
     constructor Create(TheOwner: TObject);
@@ -989,6 +1000,49 @@ begin
   AConfig.SetDeleteValue(APath+'Compile', crCompile in AFlags, crCompile in DefaultFlags);
   AConfig.SetDeleteValue(APath+'Build', crBuild in AFlags, crBuild in DefaultFlags);
   AConfig.SetDeleteValue(APath+'Run', crRun in AFlags, crRun in DefaultFlags);
+end;
+
+{ TIDECfgScriptEngine }
+
+function TIDECfgScriptEngine.IsCustomFunction(FunctionName: PChar): boolean;
+begin
+  case UpChars[FunctionName^] of
+  'G':
+    if (CompareIdentifiers(FunctionName,'GetIDEValue')=0)
+    or (CompareIdentifiers(FunctionName,'GetEnv')=0)
+    then exit(true);
+  end;
+  Result:=false;
+end;
+
+procedure TIDECfgScriptEngine.RunCustomSimpleFunction(FunctionName: PChar;
+  Value: PCTCfgScriptVariable);
+var
+  VarName: String;
+begin
+  case UpChars[FunctionName^] of
+  'G':
+    if (CompareIdentifiers(FunctionName,'GetIDEValue')=0) then
+    begin
+      VarName:=GetCTCSVariableAsString(Value);
+      if CompareIdentifiers(PChar(VarName),'OS')=0 then
+        SetCTCSVariableAsString(Value,GetCompiledTargetOS)
+      else if CompareIdentifiers(PChar(VarName),'CPU')=0 then
+        SetCTCSVariableAsString(Value,GetCompiledTargetCPU)
+      else if CompareIdentifiers(PChar(VarName),'SrcOS')=0 then
+        SetCTCSVariableAsString(Value,GetDefaultSrcOSForTargetOS(GetCompiledTargetOS))
+      else if CompareIdentifiers(PChar(VarName),'SrcOS2')=0 then
+        SetCTCSVariableAsString(Value,GetDefaultSrcOS2ForTargetOS(GetCompiledTargetOS))
+      else if CompareIdentifiers(PChar(VarName),'LCLWidgetType')=0 then
+        SetCTCSVariableAsString(Value,LCLPlatformDirNames[GetDefaultLCLWidgetType])
+      else
+        ClearCTCSVariable(Value);
+    end else if (CompareIdentifiers(FunctionName,'GetEnv')=0) then
+    begin
+      VarName:=GetCTCSVariableAsString(Value);
+      SetCTCSVariableAsString(Value,GetEnvironmentVariableUTF8(VarName));
+    end;
+  end;
 end;
 
 
@@ -3664,7 +3718,7 @@ constructor TParsedCompilerOptions.Create(TheOwner: TObject);
 begin
   FOwner:=TheOwner;
   InheritedMacroValues:=TCTCfgScriptVariables.Create;
-  MacroValues:=TCTConfigScriptEngine.Create;
+  MacroValues:=TIDECfgScriptEngine.Create;
   Clear;
 end;
 

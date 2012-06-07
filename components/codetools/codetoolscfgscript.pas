@@ -30,7 +30,7 @@
     boolean operators: not, and, or, xor
     operators: =, <>, >, <, <=, >=, +
     variables
-    constants: decimal, hex, octal, binary, string, #decimal
+    constants: decimal, $hex, &octal, %binary, 'string', #character
     functions: string(), integer(), int64(), defined(), undefined()
     procedures: undefine()
     assignments: :=, +=
@@ -40,7 +40,7 @@
     - types
     - objects
     - loops
-    - functions
+    - custom functions
 }
 unit CodeToolsCfgScript;
 
@@ -207,7 +207,7 @@ type
   { TCTConfigScriptEngine }
 
   TCTConfigScriptEngine = class
-  private
+  protected
     FVariables: TCTCfgScriptVariables;
     FStack: TCTCfgScriptStack;
     FErrors: TFPList; // list of TCTCfgScriptError
@@ -230,6 +230,8 @@ type
     function GetOperatorLevel(P: PChar): integer;
     function IsKeyWord(P: PChar): boolean;
     function IsFunction(P: PChar): boolean;
+    function IsCustomFunction(FunctionName: PChar): boolean; virtual;
+    procedure RunCustomSimpleFunction(FunctionName: PChar; Value: PCTCfgScriptVariable); virtual;
   public
     Src: PChar;
     AtomStart: PChar;
@@ -306,6 +308,7 @@ begin
     and (CompareIdentifierPtrs(PChar(OldName),AtomStart)=0)
     then begin
       SrcPos:=PtrUInt(AtomStart-PChar(Src))+1;
+
       Src:=copy(Src,1,SrcPos-1)+NewName+copy(Src,SrcPos+PtrUInt(length(OldName)),length(Src));
       p:=@Src[SrcPos]+length(NewName);
     end;
@@ -1328,7 +1331,7 @@ procedure TCTConfigScriptEngine.RunStatement(Skip: boolean);
 
   procedure ErrorUnexpectedAtom;
   begin
-    AddError(Format(ctsExpectedStatementButFound, [GetAtomOrNothing]))
+    AddError(Format(ctsExpectedSemicolonOfStatementButFound, [GetAtomOrNothing]))
   end;
 
 var
@@ -1505,7 +1508,7 @@ begin
   {$IFDEF VerboseCTCfgScript}
   debugln(['TCTConfigScriptEngine.RunAssignment Operator=',GetAtom]);
   {$ENDIF}
-  // read :=
+  // read := or +=
   if AtomStart^=#0 then begin
     AddError(ctsMissing);
     exit;
@@ -1530,7 +1533,7 @@ begin
     end;
 
     {$IFDEF VerboseCTCfgScript}
-    debugln(['TCTConfigScriptEngine.RunAssignment AFTER ',GetIdentifier(VarStart),' = ',dbgs(Variable)]);
+    debugln(['TCTConfigScriptEngine.RunAssignment AFTER ',GetIdentifier(VarStart),' = ',dbgs(Variable),' Atom=',GetAtom]);
     {$ENDIF}
   end;
   // clean up stack
@@ -1617,6 +1620,8 @@ begin
   'S':
     if CompareIdentifiers(FunctionName,'string')=0 then
       MakeCTCSVariableString(@Value);
+  else
+    RunCustomSimpleFunction(FunctionName,@Value);
   end;
 
   // put result on stack as operand
@@ -1625,6 +1630,8 @@ begin
   {$ENDIF}
   FStack.Push(ctcssOperand,FunctionName);
   SetCTCSVariableValue(@Value,FStack.TopItemOperand);
+
+  ClearCTCSVariable(@Value);
 
   Result:=true;
 end;
@@ -2255,10 +2262,10 @@ begin
   Result:=CTCfgScriptOperatorLvl[AtomToCTCfgOperator(P)];
 end;
 
-function TCTConfigScriptEngine.IsFunction(P: PChar): boolean;
+function TCTConfigScriptEngine.IsFunction(p: PChar): boolean;
 begin
   Result:=false;
-  if p=nil then exit;
+  if (p=nil) or (not IsIdentStartChar[p^]) then exit;
   case UpChars[p^] of
   'I':
     if (CompareIdentifiers(p,'integer')=0)
@@ -2267,6 +2274,18 @@ begin
   'S':
     if CompareIdentifiers(p,'string')=0 then exit(true);
   end;
+  Result:=IsCustomFunction(p);
+end;
+
+function TCTConfigScriptEngine.IsCustomFunction(FunctionName: PChar): boolean;
+begin
+  Result:=false;
+end;
+
+procedure TCTConfigScriptEngine.RunCustomSimpleFunction(FunctionName: PChar;
+  Value: PCTCfgScriptVariable);
+begin
+
 end;
 
 constructor TCTConfigScriptEngine.Create;
@@ -2296,6 +2315,12 @@ end;
 
 function TCTConfigScriptEngine.Execute(const Source: string;
   StopAfterErrors: integer): boolean;
+
+  procedure ExpectedSemicolon;
+  begin
+    AddError(Format(ctsExpectedSemicolonOfStatementButFound, [GetAtomOrNothing]))
+  end;
+
 var
   Err: TCTCfgScriptError;
 begin
@@ -2319,6 +2344,8 @@ begin
     ReadRawNextPascalAtom(Src,AtomStart);
     while Src^<>#0 do begin
       RunStatement(false);
+      if not (AtomStart^ in [#0,';']) then
+        ExpectedSemicolon;
       ReadRawNextPascalAtom(Src,AtomStart);
     end;
   except

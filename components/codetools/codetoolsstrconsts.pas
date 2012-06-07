@@ -165,7 +165,7 @@ ResourceString
   ctsPropertyCurrentNotFound = 'property Current not found';
   ctsEnumerationType = 'enumeration type';
   ctsType = 'type';
-  ctsExpectedStatementButFound = 'expected statement, but found %s';
+  ctsExpectedSemicolonOfStatementButFound = 'expected ; of statement, but found %s';
   ctsUnexpectedKeyword2 = 'unexpected keyword %s';
   ctsBeginAtWithoutEnd = 'begin at %s without end';
   ctsThenExpectedButFound = 'then expected, but %s found';

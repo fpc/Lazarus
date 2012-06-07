@@ -356,9 +356,9 @@ msgstr "очікується :=, але знайдено %s"
 msgid "expected identifier, but found %s"
 msgstr "очікується ідентифікатор, але знайдено %s"
 
-#: codetoolsstrconsts.ctsexpectedstatementbutfound
-msgid "expected statement, but found %s"
-msgstr "очікується інструкція, але знайдено %s"
+#: codetoolsstrconsts.ctsexpectedsemicolonofstatementbutfound
+msgid "expected ; of statement, but found %s"
+msgstr ""
 
 #: codetoolsstrconsts.ctsexportsclauseonlyallowedinlibraries
 msgid "exports clause only allowed in libraries"

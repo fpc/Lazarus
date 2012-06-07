@@ -96,9 +96,9 @@
         <UnitName Value="TestCTXMLFixFragments"/>
       </Unit10>
       <Unit11>
-        <Filename Value="codetoolstests\testcth2pas.pas"/>
+        <Filename Value="codetoolstests\testcfgscript.pas"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="TestCTH2Pas"/>
+        <UnitName Value="TestCfgScript"/>
       </Unit11>
       <Unit12>
         <Filename Value="codetoolstests\teststdcodetools.pas"/>
@@ -120,8 +120,12 @@
   <CompilerOptions>
     <Version Value="11"/>
     <PathDelim Value="\"/>
+    <Target>
+      <Filename Value="$MakeExe(runtests)"/>
+    </Target>
     <SearchPaths>
       <OtherUnitFiles Value="bugs;lcltests;codetoolstests;lazutils"/>
+      <UnitOutputDirectory Value="units\$(TargetCPU)-$(TargetOS)"/>
     </SearchPaths>
     <Conditionals Value="if defined(EnableCTRange) then
   CustomOptions += '-dEnableCTRange';"/>
