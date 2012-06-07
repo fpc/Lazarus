@@ -123,12 +123,15 @@ begin
     chkEnabled.Checked := True;
     txtExpression.Text := AWatchExpression;
     rgStyle.ItemIndex := 7;
+    chkUseInstanceClass.Checked := False;
   end
   else begin
     txtExpression.Text := FWatch.Expression;
     chkEnabled.Checked := FWatch.Enabled;
     rgStyle.ItemIndex := DispFormatToStyle[FWatch.DisplayFormat];
+    chkUseInstanceClass.Checked := defClassAutoCast in FWatch.EvaluateFlags;
   end;
+
 
   lblRepCount.Enabled := False;
   txtRepCount.Enabled := False;

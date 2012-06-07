@@ -12,7 +12,7 @@ object WatchPropertyDlg: TWatchPropertyDlg
   ClientWidth = 420
   Constraints.MinWidth = 400
   Position = poScreenCenter
-  LCLVersion = '0.9.31'
+  LCLVersion = '1.1'
   object lblExpression: TLabel
     AnchorSideTop.Control = txtExpression
     AnchorSideTop.Side = asrCenter
@@ -98,7 +98,6 @@ object WatchPropertyDlg: TWatchPropertyDlg
     Height = 19
     Top = 64
     Width = 62
-    AllowGrayed = True
     BorderSpacing.Left = 6
     BorderSpacing.Top = 6
     Caption = 'Enabled'
