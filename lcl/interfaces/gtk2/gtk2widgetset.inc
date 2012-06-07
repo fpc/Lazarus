@@ -148,7 +148,7 @@ begin
   Result := True;
 end;
 
-function gtk2GrabNotify(widget: PGtkWidget; grabbed: GBoolean; {%H-}data: GPointer): GBoolean; cdecl;
+function gtk2GrabNotify({%H-}widget: PGtkWidget; grabbed: GBoolean; {%H-}data: GPointer): GBoolean; cdecl;
 var
   W: PGtkWidget;
   WidgetInfo: PWidgetInfo;
