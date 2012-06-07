@@ -124,12 +124,9 @@ begin
     if UseUnitDlg.ShowModal=mrOk then begin
       s:=UseUnitDlg.SelectedUnit;
       if s <> '' then begin
-        if UseUnitDlg.InterfaceSelected then begin
-          if UseUnitDlg.FImplUsedUnits.IndexOf(s) >= 0 then
-            CTRes := CodeToolBoss.RemoveUnitFromAllUsesSections(SrcEdit.CodeBuffer, s);
-          if CTRes then
-            CTRes := CodeToolBoss.AddUnitToMainUsesSection(SrcEdit.CodeBuffer, s, '');
-        end else
+        if UseUnitDlg.InterfaceSelected then
+          CTRes := CodeToolBoss.AddUnitToMainUsesSection(SrcEdit.CodeBuffer, s, '')
+        else
           CTRes:=CodeToolBoss.AddUnitToImplementationUsesSection(SrcEdit.CodeBuffer, s, '');
         if not CTRes then begin
           LazarusIDE.DoJumpToCodeToolBossError;
