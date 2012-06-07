@@ -5938,16 +5938,13 @@ var
   function UpdateScrollInfo: Integer;
   var
     iReCountMax: Integer;
-    SBUpdatesCount: Integer;
     i: Integer;
     WheelLines: Integer;
   begin
     Result := 0;
-    SBUpdatesCount := 0;
 
     if (ScrollInfo.FMask and SIF_RANGE) <> 0 then
     begin
-      inc(SBUpdatesCount);
       ScrollBar.setMinimum(ScrollInfo.nMin);
 
       // we must recount ScrollBar.Max since invalid value raises AV
@@ -5963,7 +5960,6 @@ var
       // segfaults if we don't check Enabled property
       if ScrollBar.getEnabled then
       begin
-        inc(SBUpdatesCount);
         ScrollBar.setPageStep(ScrollInfo.nPage);
         WheelLines := QApplication_wheelScrollLines();
         with Scrollbar do
@@ -5979,30 +5975,19 @@ var
 
     if (ScrollInfo.FMask and SIF_POS) <> 0 then
     begin
-      inc(SBUpdatesCount);
+      if not (ScrollBar.getTracking and ScrollBar.getSliderDown) then
+      begin
+        if (ScrollInfo.nPos < ScrollBar.getMin) then
+          ScrollInfo.nPos := ScrollBar.getMin
+        else
+        if (ScrollInfo.nPos > ScrollBar.getMax) then
+          ScrollInfo.nPos := ScrollBar.getMax;
 
-      if SBUpdatesCount = 1 then
-        ScrollBar.BeginUpdate;
-      try
-        if not (ScrollBar.getTracking and ScrollBar.getSliderDown) then
-        begin
-          {do not setValue() if values are equal, since it calls
-           signalValueChanged() which sends unneeded LM_SCROLL msgs }
-          if (ScrollBar.getValue = ScrollInfo.nPos) then
-            SBUpdatesCount := 0;
-
-          if (ScrollInfo.nPos < ScrollBar.getMin) then
-            ScrollInfo.nPos := ScrollBar.getMin
-          else
-          if (ScrollInfo.nPos > ScrollBar.getMax) then
-            ScrollInfo.nPos := ScrollBar.getMax;
-
-          if (SBUpdatesCount > 0) then
-            ScrollBar.setValue(ScrollInfo.nPos);
-        end;
-      finally
-        if ScrollBar.InUpdate then
-          ScrollBar.EndUpdate;
+        {related issues for setting pos are #16255, #19687 and #22187.
+         Do not use ScrollBar.setValue here.}
+        if (ScrollBar.getSliderPosition <> ScrollInfo.nPos) then
+          ScrollBar.setSliderPosition(ScrollInfo.nPos);
+        // setValue(ScrollInfo.nPos);
       end;
     end;
 
