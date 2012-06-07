@@ -493,11 +493,14 @@ type
     property CompileReasons: TCompileReasons read FCompileReasons write SetCompileReasons;
     property DefaultCompileReasons: TCompileReasons read FDefaultCompileReasons write SetDefaultCompileReasons;
   end;
+
+  TProjectBuildMode = class;
   
   { TProjectCompilerOptions }
 
   TProjectCompilerOptions = class(TBaseCompilerOptions)
   private
+    FBuildMode: TProjectBuildMode;
     FProject: TProject;
     FCompileReasons: TCompileReasons;
   protected
@@ -536,6 +539,7 @@ type
       ); override;
   public
     property LazProject: TProject read FProject;
+    property BuildMode: TProjectBuildMode read FBuildMode;
   published
     property CompileReasons: TCompileReasons read FCompileReasons write FCompileReasons;
   end;
@@ -5858,11 +5862,11 @@ begin
 
   if FileVersion<10 then
   begin
-    if LazProject.ActiveBuildMode<>nil then begin
+    if BuildMode<>nil then begin
       // LCLWidgetType was not a macro but a property of its own
       s := aXMLConfig.GetValue(Path+'LCLWidgetType/Value', '');
       if (s<>'') and (SysUtils.CompareText(s,'default')<>0) then
-        LazProject.ActiveBuildMode.MacroValues.Values['LCLWidgetType']:=s;
+        BuildMode.MacroValues.Values['LCLWidgetType']:=s;
     end;
   end;
 
@@ -5883,9 +5887,9 @@ begin
   SaveXMLCompileReasons(AXMLConfig, Path+'CompileReasons/', FCompileReasons,
                         crAll);
   // write the LCLWidgetType value to let older IDEs read the value
-  if LazProject.ActiveBuildMode<>nil then
+  if BuildMode<>nil then
     aXMLConfig.SetDeleteValue(Path+'LCLWidgetType/Value',
-             LazProject.ActiveBuildMode.MacroValues.Values['LCLWidgetType'],'');
+             BuildMode.MacroValues.Values['LCLWidgetType'],'');
 
   //debugln(['TProjectCompilerOptions.SaveToXMLConfig ',Path+'CompileReasons/ ',crCompile in FCompileReasons]);
 end;
@@ -6927,6 +6931,7 @@ begin
   FMacroValues.AddOnChangedHandler(@OnItemChanged);
   FCompilerOptions:=TProjectCompilerOptions.Create(LazProject);
   FCompilerOptions.AddOnChangedHandler(@OnItemChanged);
+  FCompilerOptions.FBuildMode:=Self;
 end;
 
 destructor TProjectBuildMode.Destroy;
