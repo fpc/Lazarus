@@ -926,7 +926,7 @@ begin
   end else begin
     MoveCursorToNodeStart(ProcNode);
     ReadNextAtom;
-    if AtomIsCustomOperator(true,false) then begin
+    if AtomIsCustomOperator(true,false,false) then begin
       // read name
       ReadNextAtom;
       while (CurPos.Flag=cafPoint) do begin

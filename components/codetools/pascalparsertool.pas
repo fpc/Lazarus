@@ -117,11 +117,15 @@ type
   private
   protected
     // often used errors
+    procedure SaveRaiseCharExpectedButAtomFound(c: char);
     procedure RaiseCharExpectedButAtomFound(c: char);
+    procedure SaveRaiseStringExpectedButAtomFound(const s: string);
     procedure RaiseStringExpectedButAtomFound(const s: string);
+    procedure SaveRaiseUnexpectedKeyWord;
     procedure RaiseUnexpectedKeyWord;
+    procedure SaveRaiseIllegalQualifier;
     procedure RaiseIllegalQualifier;
-    procedure RaiseEndOfSourceExpected;
+    procedure SaveRaiseEndOfSourceExpected;
   protected
     // code extraction
     ExtractMemStream: TMemoryStream;
@@ -503,7 +507,7 @@ end;
 function TPascalParserTool.EndOfSourceExpected: boolean;
 begin
   Result:=false;
-  RaiseEndOfSourceExpected;
+  SaveRaiseEndOfSourceExpected;
 end;
 
 procedure TPascalParserTool.BuildTree(Range: TLinkScannerRange);
@@ -630,7 +634,10 @@ begin
         if HasSourceType then begin
           repeat
             ReadNextAtom; // read source name
-            AtomIsIdentifierSaveE;
+            // program and library can use keywords
+            if (CurPos.Flag<>cafWord)
+            or (CurSection in [ctnUnit,ctnPackage]) then
+              AtomIsIdentifierSaveE;
             ReadNextAtom; // read ';' (or 'platform;' or 'unimplemented;')
           until CurPos.Flag<>cafPoint;
         end;
@@ -651,14 +658,14 @@ begin
               ReadConstant(true,false,[]);
           end;
           if (CurPos.Flag<>cafSemicolon) then
-            RaiseCharExpectedButAtomFound(';');
+            SaveRaiseCharExpectedButAtomFound(';');
         end;
         if CurSection=ctnUnit then begin
           ReadNextAtom;
           CurNode.EndPos:=CurPos.StartPos;
           EndChildNode;
           if not UpAtomIs('INTERFACE') then
-            RaiseStringExpectedButAtomFound('"interface"');
+            SaveRaiseStringExpectedButAtomFound('"interface"');
           CreateChildNode;
           CurSection:=ctnInterface;
           CurNode.Desc:=CurSection;
@@ -881,7 +888,7 @@ begin
       if CurPos.StartPos>=MaxPos then break;
       if BlockStatementStartKeyWordFuncList.DoIdentifier(@Src[CurPos.StartPos])
       then begin
-        if not ReadTilBlockEnd(false,true) then RaiseEndOfSourceExpected;
+        if not ReadTilBlockEnd(false,true) then SaveRaiseEndOfSourceExpected;
       end else if UpAtomIs('WITH') then
         ReadWithStatement(true,true);
     until false;
@@ -957,7 +964,7 @@ begin
       ReadNextAtom;
     end;
     if CurPos.Flag<>cafColon then
-      RaiseCharExpectedButAtomFound(':');
+      SaveRaiseCharExpectedButAtomFound(':');
     // read type
     ReadVariableType;
   end;
@@ -987,7 +994,7 @@ begin
   else if UpAtomIs('OPTIONAL') then
     NewSection:=ctnClassOptional
   else
-    RaiseStringExpectedButAtomFound('public');
+    SaveRaiseStringExpectedButAtomFound('public');
   OldSubSection:=ctnNone;
   if CurNode.Desc in AllClassSubSections then begin
     // end sub section
@@ -1082,7 +1089,7 @@ begin
     UndoReadNextAtom;
     Result:=KeyWordFuncClassVarSection;
   end else
-    RaiseStringExpectedButAtomFound('procedure');
+    SaveRaiseStringExpectedButAtomFound('procedure');
 end;
 
 function TPascalParserTool.KeyWordFuncClassFinal: boolean;
@@ -1106,7 +1113,7 @@ begin
     ReadNextAtom;
   end;
   if not UpAtomIs('VAR') then
-    RaiseStringExpectedButAtomFound('var');
+    SaveRaiseStringExpectedButAtomFound('var');
   Result:=true;
 end;
 
@@ -1157,7 +1164,7 @@ begin
     and (not UpAtomIs('CONSTRUCTOR')) and (not UpAtomIs('DESTRUCTOR'))
     and (not UpAtomIs('OPERATOR'))
     then begin
-      RaiseStringExpectedButAtomFound(ctsProcedureOrFunctionOrConstructorOrDestructor);
+      SaveRaiseStringExpectedButAtomFound(ctsProcedureOrFunctionOrConstructorOrDestructor);
     end;
   end;
   // read procedure head
@@ -1166,7 +1173,7 @@ begin
   // read name
   ReadNextAtom;
   if IsOperator then
-    AtomIsCustomOperator(true,true)
+    AtomIsCustomOperator(true,true,true)
   else
     AtomIsIdentifierSaveE;
   // create node for procedure head
@@ -1301,7 +1308,7 @@ begin
         if (CurPos.StartPos>SrcLen)
         or (Src[CurPos.StartPos]<>CloseBracket) then
           if ExceptionOnError then
-            RaiseCharExpectedButAtomFound(CloseBracket)
+            SaveRaiseCharExpectedButAtomFound(CloseBracket)
           else exit;
         break;
       end else begin
@@ -1369,13 +1376,13 @@ begin
       // read next parameter
       if (CurPos.StartPos>SrcLen) then
         if ExceptionOnError then
-          RaiseCharExpectedButAtomFound(CloseBracket)
+          SaveRaiseCharExpectedButAtomFound(CloseBracket)
         else exit;
       if (CurPos.Flag in [cafRoundBracketClose,cafEdgedBracketClose]) then
         break;
       if (CurPos.Flag<>cafSemicolon) then
         if ExceptionOnError then
-          RaiseCharExpectedButAtomFound(';')
+          SaveRaiseCharExpectedButAtomFound(';')
         else exit;
       if not Extract then
         ReadNextAtom
@@ -1386,7 +1393,7 @@ begin
   if (CloseBracket<>#0) then begin
     if Src[CurPos.StartPos]<>CloseBracket then begin
       if ExceptionOnError then
-        RaiseCharExpectedButAtomFound(CloseBracket)
+        SaveRaiseCharExpectedButAtomFound(CloseBracket)
       else
         exit;
     end;
@@ -1404,30 +1411,29 @@ end;
 
 // Support generics in methods parameters and return types
 procedure TPascalParserTool.ReadGenericParam;
+// example:  <a,b<c.d.e>>
 var
-  Atom: string;
   Level: Integer;
 begin
-  Atom := GetAtom;
-  if Atom='<' then begin
-    Level:=1;
-    repeat
+  Level:=0;
+  repeat
+    if CurPos.Flag in [cafPoint, cafComma] then begin
       ReadNextAtom;
-      Atom := GetAtom;
-      if CurPos.Flag in [cafPoint, cafComma] then begin
-        ReadNextAtom;
-        AtomIsIdentifierSaveE;
-      end
-      else if Atom='<' then begin
-        ReadNextAtom;
-        AtomIsIdentifierSaveE;
-        Inc(Level);
-      end
-      else if Atom='>' then
-        Dec(Level);
-    until Level=0;
+      AtomIsIdentifierSaveE;
+    end
+    else if AtomIsChar('<') then begin
+      inc(Level);
+      ReadNextAtom;
+      AtomIsIdentifierSaveE;
+    end
+    else if AtomIsChar('>') then begin
+      dec(Level);
+      if Level=0 then break;
+    end else
+      SaveRaiseCharExpectedButAtomFound('>');
     ReadNextAtom;
-  end;
+  until false;
+  ReadNextAtom;
 end;
 
 function TPascalParserTool.ReadParamType(ExceptionOnError, Extract: boolean;
@@ -1455,7 +1461,7 @@ begin
       if not Extract then ReadNextAtom else ExtractNextAtom(copying,Attr);
       if not UpAtomIs('OF') then begin
         if ExceptionOnError then
-          RaiseStringExpectedButAtomFound('"of"')
+          SaveRaiseStringExpectedButAtomFound('"of"')
         else
           exit;
       end;
@@ -1529,10 +1535,11 @@ begin
     end;
   end else begin
     if ExceptionOnError then
-      RaiseStringExpectedButAtomFound(ctsIdentifier)
+      SaveRaiseStringExpectedButAtomFound(ctsIdentifier)
     else exit;
   end;
-  ReadGenericParam;
+  if AtomIsChar('<') then
+    ReadGenericParam;
   Result:=true;
 end;
 
@@ -1596,6 +1603,7 @@ begin
   end;
   if (pphIsOperator in ParseAttr) and (CurPos.Flag<>cafColon) then begin
     // read operator result identifier
+    // example: operator =()IsEqual:boolean;
     AtomIsIdentifierSaveE;
     if (pphCreateNodes in ParseAttr) then begin
       CreateChildNode;
@@ -1618,8 +1626,10 @@ begin
       end;
       repeat
         ReadNextAtom;
+        if AtomIsChar('<') then
+          ReadGenericParam;
         if CurPos.Flag<>cafPoint then break;
-        //  unitname.classname.identifier
+        //  unitname.classname<T>.identifier
         ReadNextAtom;
         AtomIsIdentifierSaveE;
         if (pphCreateNodes in ParseAttr) then
@@ -1627,10 +1637,9 @@ begin
       until false;
       if (pphCreateNodes in ParseAttr) then
         EndChildNode;
-      ReadGenericParam;
     end else begin
       if (Scanner.CompilerMode<>cmDelphi) then
-        RaiseCharExpectedButAtomFound(':')
+        SaveRaiseCharExpectedButAtomFound(':')
       else begin
         // Delphi Mode
         if CurPos.Flag=cafEqual then begin
@@ -1645,10 +1654,10 @@ begin
   if UpAtomIs('OF') then begin
     // read 'of object'
     if not (pphIsType in ParseAttr) then
-      RaiseCharExpectedButAtomFound(';');
+      SaveRaiseCharExpectedButAtomFound(';');
     ReadNextAtom;
     if not UpAtomIs('OBJECT') then
-      RaiseStringExpectedButAtomFound('"object"');
+      SaveRaiseStringExpectedButAtomFound('"object"');
     ReadNextAtom;
   end;
   // read procedures/method specifiers
@@ -1686,7 +1695,7 @@ begin
     end else if UpAtomIs('IS') then begin
       ReadNextAtom;
       if not UpAtomIs('NESTED') then
-        RaiseStringExpectedButAtomFound('nested');
+        SaveRaiseStringExpectedButAtomFound('nested');
       ReadNextAtom;
     end else if UpAtomIs('EXTERNAL') or UpAtomIs('WEAKEXTERNAL') or UpAtomIs('PUBLIC') then begin
       HasForwardModifier:=UpAtomIs('EXTERNAL') or UpAtomIs('WEAKEXTERNAL');
@@ -1703,7 +1712,7 @@ begin
       end;
     end else if UpAtomIs('ALIAS') then begin
       if not ReadNextAtomIsChar(':') then
-        RaiseCharExpectedButAtomFound(':');
+        SaveRaiseCharExpectedButAtomFound(':');
       ReadNextAtom;
       ReadConstant(true,false,[]);
     end else if CurPos.Flag=cafEdgedBracketOpen then begin
@@ -1712,7 +1721,7 @@ begin
       repeat
         ReadNextAtom;
         if not (CurPos.Flag in AllCommonAtomWords) then
-          RaiseStringExpectedButAtomFound(ctsKeyword);
+          SaveRaiseStringExpectedButAtomFound(ctsKeyword);
         if not IsKeyWordProcedureBracketSpecifier.DoIdentifier(@Src[CurPos.StartPos])
         then
           RaiseKeyWordExampleExpected;
@@ -1742,16 +1751,16 @@ begin
         if CurPos.Flag in [cafColon,cafEdgedBracketClose] then
           break;
         if CurPos.Flag<>cafComma then
-          RaiseCharExpectedButAtomFound(']');
+          SaveRaiseCharExpectedButAtomFound(']');
       until false;
       if CurPos.Flag=cafColon then begin
         ReadNextAtom;
         if (not AtomIsStringConstant) and (not AtomIsIdentifier) then
-          RaiseStringExpectedButAtomFound(ctsStringConstant);
+          SaveRaiseStringExpectedButAtomFound(ctsStringConstant);
         ReadConstant(true,false,[]);
       end;
       if CurPos.Flag<>cafEdgedBracketClose then
-        RaiseCharExpectedButAtomFound(']');
+        SaveRaiseCharExpectedButAtomFound(']');
       ReadNextAtom;
       if CurPos.Flag=cafEND then begin
         UndoReadNextAtom;
@@ -1782,7 +1791,7 @@ function TPascalParserTool.ReadConstant(ExceptionOnError, Extract: boolean;
  procedure RaiseConstantExpected;
  begin
    if ExceptionOnError then
-     RaiseStringExpectedButAtomFound(ctsConstant);
+     SaveRaiseStringExpectedButAtomFound(ctsConstant);
  end;
 
 var
@@ -1817,7 +1826,7 @@ begin
       and (not IsKeyWordInConstAllowed.DoIdentifier(@Src[CurPos.StartPos])) then
       begin
         if ExceptionOnError then
-          RaiseUnexpectedKeyWord
+          SaveRaiseUnexpectedKeyWord
         else exit;
       end;
       if not Extract then ReadNextAtom else ExtractNextAtom(true,Attr);
@@ -1828,7 +1837,7 @@ begin
         and (not IsKeyWordInConstAllowed.DoIdentifier(@Src[CurPos.StartPos]))
         then begin
           if ExceptionOnError then
-            RaiseUnexpectedKeyWord
+            SaveRaiseUnexpectedKeyWord
           else exit;
         end;
         if not Extract then ReadNextAtom else ExtractNextAtom(true,Attr);
@@ -1842,12 +1851,12 @@ begin
         if (BracketType=cafRoundBracketOpen)
         and (CurPos.Flag<>cafRoundBracketClose) then
           if ExceptionOnError then
-            RaiseCharExpectedButAtomFound(')')
+            SaveRaiseCharExpectedButAtomFound(')')
           else exit;
         if (BracketType=cafEdgedBracketOpen)
         and (CurPos.Flag<>cafEdgedBracketClose) then
           if ExceptionOnError then
-            RaiseCharExpectedButAtomFound(']')
+            SaveRaiseCharExpectedButAtomFound(']')
           else exit;
         if not Extract then ReadNextAtom else ExtractNextAtom(true,Attr);
       end;
@@ -1861,7 +1870,7 @@ begin
         if not ReadConstant(ExceptionOnError,Extract,Attr) then exit;
         if (CurPos.Flag<>cafRoundBracketClose) then
           if ExceptionOnError then
-            RaiseCharExpectedButAtomFound(')')
+            SaveRaiseCharExpectedButAtomFound(')')
           else exit;
         if not Extract then ReadNextAtom else ExtractNextAtom(true,Attr);
       end else if CurPos.Flag=cafEdgedBracketOpen then begin
@@ -1876,7 +1885,7 @@ begin
             if not Extract then ReadNextAtom else ExtractNextAtom(true,Attr);
           end else if (CurPos.Flag<>cafEdgedBracketClose) then begin
             if ExceptionOnError then
-              RaiseCharExpectedButAtomFound(']')
+              SaveRaiseCharExpectedButAtomFound(']')
             else exit;
           end;
         until false;
@@ -1936,7 +1945,7 @@ begin
       ReadNextAtom;
       if not AtomIsStringConstant then
         if ExceptionOnError then
-          RaiseStringExpectedButAtomFound(ctsStringConstant)
+          SaveRaiseStringExpectedButAtomFound(ctsStringConstant)
         else exit;
       CurNode.EndPos:=CurPos.EndPos;
       ReadNextAtom;
@@ -1945,7 +1954,7 @@ begin
     if CurPos.Flag=cafSemicolon then break;
     if CurPos.Flag<>cafComma then
       if ExceptionOnError then
-        RaiseCharExpectedButAtomFound(';')
+        SaveRaiseCharExpectedButAtomFound(';')
       else exit;
   until (CurPos.StartPos>SrcLen);
   CurNode.EndPos:=CurPos.EndPos;
@@ -1980,7 +1989,7 @@ begin
     if CurPos.Flag=cafSemicolon then break;
     if CurPos.Flag<>cafComma then
       if ExceptionOnError then
-        RaiseCharExpectedButAtomFound(';')
+        SaveRaiseCharExpectedButAtomFound(';')
       else exit;
   until (CurPos.StartPos>SrcLen);
   CurNode.EndPos:=CurPos.EndPos;
@@ -2009,14 +2018,14 @@ begin
       ReadNextAtom;
       if not AtomIsStringConstant then
         if ExceptionOnError then
-          RaiseStringExpectedButAtomFound(ctsStringConstant)
+          SaveRaiseStringExpectedButAtomFound(ctsStringConstant)
         else exit;
       ReadNextAtom;
     end;
     if CurPos.Flag=cafSemicolon then break;
     if CurPos.Flag<>cafComma then
       if ExceptionOnError then
-        RaiseCharExpectedButAtomFound(';')
+        SaveRaiseCharExpectedButAtomFound(';')
       else exit;
   until (CurPos.StartPos>SrcLen);
   CurNode.EndPos:=CurPos.EndPos;
@@ -2043,10 +2052,10 @@ begin
     then
       break;
     if CurPos.StartPos>SrcLen then
-      RaiseCharExpectedButAtomFound(';');
+      SaveRaiseCharExpectedButAtomFound(';');
     if AtomIs('..') then begin
       if RangeOpFound then
-        RaiseCharExpectedButAtomFound(';');
+        SaveRaiseCharExpectedButAtomFound(';');
       RangeOpFound:=true;
     end else if CurPos.Flag in [cafRoundBracketOpen,cafEdgedBracketOpen] then
       ReadTilBracketClose(ExceptionOnError);
@@ -2335,7 +2344,7 @@ begin
   if UpAtomIs('CLASS') then begin
     ReadNextAtom;
     if not UpAtomIs('PROPERTY') then
-      RaiseStringExpectedButAtomFound('property');
+      SaveRaiseStringExpectedButAtomFound('property');
   end;
   ReadNextAtom;
   AtomIsIdentifierSaveE;
@@ -2489,7 +2498,7 @@ begin
         if ord(ScanTill)<=ord(ScannedRange) then exit;
       end else if BlockStatementStartKeyWordFuncList.DoIdentifier(@Src[CurPos.StartPos])
       then begin
-        if not ReadTilBlockEnd(false,true) then RaiseEndOfSourceExpected;
+        if not ReadTilBlockEnd(false,true) then SaveRaiseEndOfSourceExpected;
       end else if UpAtomIs('WITH') then begin
         ReadWithStatement(true,true);
       end;
@@ -2507,10 +2516,10 @@ var
 begin
   if CurPos.Flag=cafPoint then begin
     if not LastUpAtomIs(0,'END') then
-      RaiseIllegalQualifier;
+      SaveRaiseIllegalQualifier;
     UndoReadNextAtom;
     if CurNode.Desc in [ctnInterface] then
-      RaiseStringExpectedButAtomFound('"implementation"');
+      SaveRaiseStringExpectedButAtomFound('"implementation"');
     if not (CurNode.Desc in [ctnImplementation,ctnInitialization,
       ctnFinalization,ctnProgram,ctnLibrary])
     then begin
@@ -2519,7 +2528,7 @@ begin
     end;
   end else if CurPos.Flag=cafEND then begin
     if LastAtomIs(0,'@') then
-      RaiseStringExpectedButAtomFound(ctsIdentifier);
+      SaveRaiseStringExpectedButAtomFound(ctsIdentifier);
     if LastAtomIs(0,'@@') then begin
       // for Delphi compatibility @@end is allowed
       Result:=true;
@@ -2539,7 +2548,7 @@ begin
   CurNode.StartPos:=LastNodeEnd;
   ReadNextAtom;
   if CurPos.Flag<>cafPoint then
-    RaiseCharExpectedButAtomFound('.');
+    SaveRaiseCharExpectedButAtomFound('.');
   CurNode.EndPos:=CurPos.EndPos;
   EndChildNode;
   CurSection:=ctnNone;
@@ -2556,13 +2565,13 @@ var ChildCreated: boolean;
 begin
   if UpAtomIs('CLASS') then begin
     if not (CurSection in [ctnImplementation]+AllSourceTypes) then
-      RaiseStringExpectedButAtomFound(ctsIdentifier);
+      SaveRaiseStringExpectedButAtomFound(ctsIdentifier);
     ReadNextAtom;
     if UpAtomIs('PROCEDURE') or UpAtomIs('FUNCTION') or UpAtomIs('CONSTRUCTOR')
     or UpAtomIs('DESTRUCTOR') or UpAtomIs('OPERATOR') then
       IsClassProc:=true
     else
-      RaiseStringExpectedButAtomFound(ctsProcedureOrFunctionOrConstructorOrDestructor);
+      SaveRaiseStringExpectedButAtomFound(ctsProcedureOrFunctionOrConstructorOrDestructor);
   end else
     IsClassProc:=false;
   ChildCreated:=true;
@@ -2581,7 +2590,7 @@ begin
   IsMethod:=False;
   ReadNextAtom;// read first atom of head (= name/operator + parameterlist + resulttype;)
   if IsOperator then
-    AtomIsCustomOperator(true,true)
+    AtomIsCustomOperator(true,true,true)
   else
     AtomIsIdentifierSaveE;
   if ChildCreated then begin
@@ -2601,7 +2610,7 @@ begin
         ReadNextAtom;
         if AtomIsChar('>') then Break;
         if CurPos.Flag <> cafComma then
-          RaiseCharExpectedButAtomFound(',');
+          SaveRaiseCharExpectedButAtomFound(',');
       until False;
       ReadNextAtom;
     end;
@@ -2610,7 +2619,7 @@ begin
       IsMethod:=True;
       ReadNextAtom;
       if IsOperator then
-        AtomIsCustomOperator(true,true)
+        AtomIsCustomOperator(true,true,true)
       else
         AtomIsIdentifierSaveE;
       ReadNextAtom;
@@ -2676,12 +2685,12 @@ var BlockType: TEndBlockType;
       Format(ctsStrExpectedButAtomFound,[Msg,GetAtom]));
   end;
   
-  procedure RaiseUnexpectedKeywordInAsmBlock;
+  procedure SaveRaiseUnexpectedKeyWordInAsmBlock;
   begin
     SaveRaiseExceptionFmt(ctsUnexpectedKeywordInAsmBlock,[GetAtom]);
   end;
   
-  procedure RaiseUnexpectedKeyWordInBeginEndBlock;
+  procedure SaveRaiseUnexpectedKeyWordInBeginEndBlock;
   begin
     SaveRaiseExceptionWithBlockStartHint(
       Format(ctsUnexpectedKeywordInBeginEndBlock,[GetAtom]));
@@ -2734,7 +2743,7 @@ begin
         end;
         ReadNextAtom;
         if (CurPos.Flag=cafPoint) and (BlockType<>ebtBegin) then begin
-          RaiseCharExpectedButAtomFound(';');
+          SaveRaiseCharExpectedButAtomFound(';');
         end;
         UndoReadNextAtom;
         break;
@@ -2743,7 +2752,7 @@ begin
       or UpAtomIs('REPEAT') then
     begin
       if BlockType=ebtAsm then
-        RaiseUnexpectedKeywordInAsmBlock;
+        SaveRaiseUnexpectedKeyWordInAsmBlock;
       if (BlockType<>ebtRecord) or (not UpAtomIs('CASE')) then
         ReadTilBlockEnd(false,CreateNodes);
     end else if UpAtomIs('UNTIL') then begin
@@ -2777,11 +2786,11 @@ begin
       
       ebtBegin,ebtTry,ebtCase,ebtRepeat:
         if UnexpectedKeyWordInBeginBlock.DoIdentifier(@Src[CurPos.StartPos]) then
-          RaiseUnexpectedKeyWordInBeginEndBlock;
+          SaveRaiseUnexpectedKeyWordInBeginEndBlock;
           
       ebtAsm:
         if UnexpectedKeyWordInAsmBlock.DoIdentifier(@Src[CurPos.StartPos]) then
-          RaiseUnexpectedKeyWordInBeginEndBlock;
+          SaveRaiseUnexpectedKeyWordInBeginEndBlock;
 
       end;
     end;
@@ -3053,7 +3062,7 @@ begin
   // read DO
   if not UpAtomIs('DO') then begin
     if ExceptionOnError then
-      RaiseStringExpectedButAtomFound('"do"')
+      SaveRaiseStringExpectedButAtomFound('"do"')
     else begin
       CloseNodes;
       Result:=false;
@@ -3126,7 +3135,7 @@ begin
   end;
   // read 'do'
   if not UpAtomIs('DO') then
-    RaiseStringExpectedButAtomFound('DO');
+    SaveRaiseStringExpectedButAtomFound('DO');
   // ctnOnStatement
   if CreateNodes then begin
     CreateChildNode;
@@ -3188,7 +3197,7 @@ begin
       // for example: 'var a: char; cvar;'
       ReadNextAtom;
       if CurPos.Flag<>cafSemicolon then
-        RaiseCharExpectedButAtomFound(';');
+        SaveRaiseCharExpectedButAtomFound(';');
       ReadNextAtom;
     end;
     if UpAtomIs('STATIC') and (CurNode.Parent<>nil)
@@ -3197,7 +3206,7 @@ begin
       // for example: 'a: char; static;'
       ReadNextAtom;
       if CurPos.Flag<>cafSemicolon then
-        RaiseCharExpectedButAtomFound(';');
+        SaveRaiseCharExpectedButAtomFound(';');
       ReadNextAtom;
     end;
     //if UpAtomIs('EXTERNAL') then
@@ -3228,25 +3237,25 @@ begin
         ReadNextAtom;
         if (not AtomIsStringConstant)
         and (not AtomIsIdentifier) then
-          RaiseStringExpectedButAtomFound(ctsStringConstant);
+          SaveRaiseStringExpectedButAtomFound(ctsStringConstant);
         ReadConstant(true,false,[]);
         if UpAtomIs('SECTION') then begin
           // for example FreePascal_TLS_callback : pointer = @Exec_Tls_callback; public name '__FPC_tls_callbacks' section '.CRT$XLFPC'
           ReadNextAtom;
           if (not AtomIsStringConstant)
           and (not AtomIsIdentifier) then
-            RaiseStringExpectedButAtomFound(ctsStringConstant);
+            SaveRaiseStringExpectedButAtomFound(ctsStringConstant);
           ReadConstant(true,false,[]);
         end;
       end;
       if CurPos.Flag<>cafSemicolon then
-        RaiseCharExpectedButAtomFound(';');
+        SaveRaiseCharExpectedButAtomFound(';');
     end else
       UndoReadNextAtom;
   end else if CurPos.Flag=cafEND then begin
     UndoReadNextAtom;
   end else begin
-    RaiseCharExpectedButAtomFound(';');
+    SaveRaiseCharExpectedButAtomFound(';');
   end;
   CurNode.EndPos:=CurPos.EndPos;
   EndChildNode;
@@ -3272,7 +3281,7 @@ begin
     end else
       ReadNextAtom;
     if not (CurPos.Flag in [cafSemicolon,cafRoundBracketClose]) then
-      RaiseCharExpectedButAtomFound(';');
+      SaveRaiseCharExpectedButAtomFound(';');
     EndChildNode;
   end else
     Result:=false;
@@ -3308,7 +3317,7 @@ begin
   and (not (CurNode.Desc in
     [ctnProcedure,ctnProgram,ctnLibrary,ctnImplementation]))
   then
-    RaiseStringExpectedButAtomFound('end');
+    SaveRaiseStringExpectedButAtomFound('end');
   ChildNodeCreated:=UpAtomIs('BEGIN') or UpAtomIs('ASM');
   if ChildNodeCreated then begin
     CreateChildNode;
@@ -3370,7 +3379,7 @@ function TPascalParserTool.KeyWordFuncType: boolean;
 begin
   if not (CurSection in [ctnProgram,ctnLibrary,ctnInterface,ctnImplementation])
   then
-    RaiseUnexpectedKeyWord;
+    SaveRaiseUnexpectedKeyWord;
   CreateChildNode;
   CurNode.Desc:=ctnTypeSection;
   // read all type definitions  Name = Type; or generic Name<List> = Type;
@@ -3412,7 +3421,7 @@ var
 begin
   if not (CurSection in [ctnProgram,ctnLibrary,ctnInterface,ctnImplementation])
   then
-    RaiseUnexpectedKeyWord;
+    SaveRaiseUnexpectedKeyWord;
   CreateChildNode;
   CurNode.Desc:=ctnVarSection;
   // read all variable definitions  Name : Type; [cvar;] [public [name '']]
@@ -3437,7 +3446,7 @@ begin
         ReadNextAtom;
       end;
       if (CurPos.Flag<>cafColon) then begin
-        RaiseCharExpectedButAtomFound(':');
+        SaveRaiseCharExpectedButAtomFound(':');
       end;
       // read type
       ReadVariableType;
@@ -3469,7 +3478,7 @@ function TPascalParserTool.KeyWordFuncConst: boolean;
 begin
   if not (CurSection in [ctnProgram,ctnLibrary,ctnInterface,ctnImplementation])
   then
-    RaiseUnexpectedKeyWord;
+    SaveRaiseUnexpectedKeyWord;
   CreateChildNode;
   CurNode.Desc:=ctnConstSection;
   // read all constants  Name = <Const>; or Name : type = <Const>;
@@ -3509,7 +3518,7 @@ function TPascalParserTool.KeyWordFuncResourceString: boolean;
 begin
   if not (CurSection in [ctnProgram,ctnLibrary,ctnInterface,ctnImplementation])
   then
-    RaiseUnexpectedKeyWord;
+    SaveRaiseUnexpectedKeyWord;
   CreateChildNode;
   CurNode.Desc:=ctnResStrSection;
   // read all string constants Name = 'abc';
@@ -3523,17 +3532,17 @@ begin
       CurNode.Desc:=ctnConstDefinition;
       ReadNextAtom;
       if (CurPos.Flag<>cafEqual) then
-        RaiseCharExpectedButAtomFound('=');
+        SaveRaiseCharExpectedButAtomFound('=');
       // read string constant
       ReadNextAtom;
       if (not AtomIsStringConstant) and (not AtomIsIdentifier) then
-        RaiseStringExpectedButAtomFound(ctsStringConstant);
+        SaveRaiseStringExpectedButAtomFound(ctsStringConstant);
       ReadConstant(true,false,[]);
       // read hint modifier
       ReadHintModifier;
       // read ;
       if CurPos.Flag<>cafSemicolon then
-        RaiseCharExpectedButAtomFound(';');
+        SaveRaiseCharExpectedButAtomFound(';');
       CurNode.EndPos:=CurPos.EndPos;
       EndChildNode;
     end else begin
@@ -3584,7 +3593,7 @@ begin
     end;
     if (CurPos.Flag=cafSemicolon) then break;
     if (CurPos.Flag<>cafComma) then
-      RaiseCharExpectedButAtomFound(';');
+      SaveRaiseCharExpectedButAtomFound(';');
   until false;
   CurNode.EndPos:=CurPos.EndPos;
   EndChildNode;
@@ -3599,14 +3608,14 @@ function TPascalParserTool.KeyWordFuncLabel: boolean;
 begin
   if not (CurSection in [ctnProgram,ctnLibrary,ctnInterface,ctnImplementation])
   then
-    RaiseUnexpectedKeyWord;
+    SaveRaiseUnexpectedKeyWord;
   CreateChildNode;
   CurNode.Desc:=ctnLabelSection;
   // read all constants
   repeat
     ReadNextAtom;  // identifier or number
     if (not AtomIsIdentifier) and (not AtomIsNumber) then begin
-      RaiseStringExpectedButAtomFound(ctsIdentifier);
+      SaveRaiseStringExpectedButAtomFound(ctsIdentifier);
     end;
     CreateChildNode;
     CurNode.Desc:=ctnLabelType;
@@ -3616,7 +3625,7 @@ begin
     if CurPos.Flag=cafSemicolon then begin
       break;
     end else if (CurPos.Flag<>cafComma) then begin
-      RaiseCharExpectedButAtomFound(';');
+      SaveRaiseCharExpectedButAtomFound(';');
     end;
   until false;
   CurNode.EndPos:=CurPos.EndPos;
@@ -3634,7 +3643,7 @@ function TPascalParserTool.KeyWordFuncProperty: boolean;
 begin
   if not (CurSection in [ctnProgram,ctnLibrary,ctnInterface,ctnImplementation])
   then
-    RaiseUnexpectedKeyWord;
+    SaveRaiseUnexpectedKeyWord;
   CreateChildNode;
   CurNode.Desc:=ctnPropertySection;
   // read all global properties
@@ -3688,22 +3697,22 @@ begin
           if UpAtomIs('NAME') then begin
             ReadNextAtom;
             if not AtomIsStringConstant then
-              RaiseStringExpectedButAtomFound(ctsStringConstant);
+              SaveRaiseStringExpectedButAtomFound(ctsStringConstant);
             ReadNextAtom;
             if UpAtomIs('SECTION') then begin
               ReadNextAtom;
               if not AtomIsStringConstant then
-                RaiseStringExpectedButAtomFound(ctsStringConstant);
+                SaveRaiseStringExpectedButAtomFound(ctsStringConstant);
               ReadNextAtom;
             end;
           end;
           if CurPos.Flag<>cafSemicolon then
-            RaiseStringExpectedButAtomFound(';');
+            SaveRaiseStringExpectedButAtomFound(';');
         end else
         if UpAtomIs('CVAR') then begin
           ReadNextAtom;
           if CurPos.Flag<>cafSemicolon then
-            RaiseStringExpectedButAtomFound(';');
+            SaveRaiseStringExpectedButAtomFound(';');
         end else
         begin
           UndoReadNextAtom;
@@ -3739,7 +3748,7 @@ begin
   AtomIsIdentifierSaveE;
   ReadNextAtom;
   if (TypeNode.Desc=ctnGenericType) and (not AtomIsChar('<')) then
-    RaiseCharExpectedButAtomFound('<');
+    SaveRaiseCharExpectedButAtomFound('<');
   if AtomIsChar('<') then begin
     TypeNode.Desc:=ctnGenericType;
     // name
@@ -3772,14 +3781,14 @@ begin
           dec(CurPos.EndPos);
           break;
         end else
-          RaiseCharExpectedButAtomFound('>');
+          SaveRaiseCharExpectedButAtomFound('>');
       until false;
     end else begin
       if AtomIs('>=') then
         // this is the rare case where >= are two separate atoms
         dec(CurPos.EndPos);
       if not AtomIsChar('>') then
-        RaiseCharExpectedButAtomFound('>');
+        SaveRaiseCharExpectedButAtomFound('>');
     end;
     // close ctnGenericParams
     CurNode.EndPos:=CurPos.EndPos;
@@ -3788,7 +3797,7 @@ begin
   end;
   // read =
   if (CurPos.Flag<>cafEqual) then
-    RaiseCharExpectedButAtomFound('=');
+    SaveRaiseCharExpectedButAtomFound('=');
   // read type
   ReadNextAtom;
   ParseType(CurPos.StartPos,CurPos.EndPos-CurPos.StartPos);
@@ -3796,7 +3805,7 @@ begin
   ReadHintModifier;
   // read ;
   if CurPos.Flag<>cafSemicolon then
-    RaiseCharExpectedButAtomFound(';');
+    SaveRaiseCharExpectedButAtomFound(';');
   // close ctnTypeDefinition, ctnGenericType
   CurNode.EndPos:=CurPos.EndPos;
   EndChildNode;
@@ -3837,7 +3846,7 @@ begin
   ReadNextAtom;
   if (CurPos.StartPos>SrcLen)
   or (not PackedTypesKeyWordFuncList.DoIdentifier(@Src[CurPos.StartPos])) then
-    RaiseStringExpectedButAtomFound('"record"');
+    SaveRaiseStringExpectedButAtomFound('"record"');
   Result:=ParseType(CurPos.StartPos,CurPos.EndPos-CurPos.StartPos);
 end;
 
@@ -3846,7 +3855,7 @@ begin
   ReadNextAtom;
   if (CurPos.StartPos>SrcLen)
   or (not BitPackedTypesKeyWordFuncList.DoIdentifier(@Src[CurPos.StartPos])) then
-    RaiseStringExpectedButAtomFound('"array"');
+    SaveRaiseStringExpectedButAtomFound('"array"');
   Result:=ParseType(CurPos.StartPos,CurPos.EndPos-CurPos.StartPos);
 end;
 
@@ -3881,7 +3890,7 @@ begin
   else if UpAtomIs('CPPCLASS') then
     ClassDesc:=ctnCPPClass
   else
-    RaiseStringExpectedButAtomFound('class');
+    SaveRaiseStringExpectedButAtomFound('class');
   ContextDesc:=CurNode.Desc;
   if ClassDesc<>ctnRecordType then begin
     if not (ContextDesc in [ctnTypeDefinition,ctnGenericType])
@@ -3915,7 +3924,7 @@ begin
     EndChildNode;
     ReadNextAtom;
     if CurPos.Flag<>cafSemicolon then
-      RaiseCharExpectedButAtomFound(';');
+      SaveRaiseCharExpectedButAtomFound(';');
   end else begin
     if CurPos.Flag=cafWord then begin
       if UpAtomIs('SEALED') then begin
@@ -3969,7 +3978,7 @@ begin
     end;
     if IsHelper then begin
       if not UpAtomIs('FOR') then
-        RaiseStringExpectedButAtomFound('for');
+        SaveRaiseStringExpectedButAtomFound('for');
       CreateChildNode;
       CurNode.Desc:=ctnClassHelperFor;
       repeat
@@ -4007,7 +4016,7 @@ begin
       if not ParseInnerClass(CurPos.StartPos,CurPos.EndPos-CurPos.StartPos) then
       begin
         if CurPos.Flag<>cafEnd then
-          RaiseStringExpectedButAtomFound('end');
+          SaveRaiseStringExpectedButAtomFound('end');
         break;
       end;
       ReadNextAtom;
@@ -4113,7 +4122,7 @@ begin
         if not ParseInnerClass(CurPos.StartPos,CurPos.EndPos-CurPos.StartPos) then
         begin
           if CurPos.Flag<>cafEnd then
-            RaiseStringExpectedButAtomFound('end');
+            SaveRaiseStringExpectedButAtomFound('end');
           break;
         end;
         ReadNextAtom;
@@ -4183,7 +4192,7 @@ begin
       EndChildNode; // close ctnRangeType
       if (CurPos.Flag=cafEdgedBracketClose) then break;
       if (CurPos.Flag<>cafComma) then
-        RaiseCharExpectedButAtomFound(']');
+        SaveRaiseCharExpectedButAtomFound(']');
     until false;
     ReadNextAtom;
     if CurPos.Flag in [cafSemicolon,cafRoundBracketClose,cafEdgedBracketClose]
@@ -4195,7 +4204,7 @@ begin
     end;
   end;
   if not UpAtomIs('OF') then
-    RaiseStringExpectedButAtomFound('"of"');
+    SaveRaiseStringExpectedButAtomFound('"of"');
   ReadNextAtom;
   Result:=ParseType(CurPos.StartPos,CurPos.EndPos-CurPos.StartPos);
   CurNode.EndPos:=CurPos.StartPos;
@@ -4237,12 +4246,12 @@ begin
         ReadNextAtom;
       end;
     end else begin
-      RaiseCharExpectedButAtomFound(':');
+      SaveRaiseCharExpectedButAtomFound(':');
     end;
   end;
   if UpAtomIs('OF') then begin
     if not ReadNextUpAtomIs('OBJECT') then
-      RaiseStringExpectedButAtomFound('"object"');
+      SaveRaiseStringExpectedButAtomFound('"object"');
     ReadNextAtom;
   end;
   if (CurPos.Flag=cafEqual)
@@ -4268,11 +4277,11 @@ begin
         if UpAtomIs('IS') then begin
           ReadNextAtom;
           if not UpAtomIs('NESTED') then
-            RaiseStringExpectedButAtomFound('nested');
+            SaveRaiseStringExpectedButAtomFound('nested');
         end else if UpAtomIs('OF') then begin
           ReadNextAtom;
           if not UpAtomIs('OBJECT') then
-            RaiseStringExpectedButAtomFound('object');
+            SaveRaiseStringExpectedButAtomFound('object');
         end;
         ReadNextAtom;
         if CurPos.Flag<>cafSemicolon then begin
@@ -4283,7 +4292,7 @@ begin
           if (CurPos.StartPos>SrcLen)
           or (not IsKeyWordProcedureTypeSpecifier.DoIdentifier(@Src[CurPos.StartPos]))
           then
-            RaiseCharExpectedButAtomFound(';');
+            SaveRaiseCharExpectedButAtomFound(';');
           UndoReadNextAtom;
         end;
         ReadNextAtom;
@@ -4307,7 +4316,7 @@ begin
   CreateChildNode;
   CurNode.Desc:=ctnSetType;
   if not ReadNextUpAtomIs('OF') then
-    RaiseStringExpectedButAtomFound('"of"');
+    SaveRaiseStringExpectedButAtomFound('"of"');
   ReadNextAtom;
   Result:=KeyWordFuncTypeDefault;
   CurNode.EndPos:=CurPos.EndPos;
@@ -4330,7 +4339,7 @@ function TPascalParserTool.KeyWordFuncTypeType: boolean;
 // 'type identifier'
 begin
   if not LastAtomIs(0,'=') then
-    RaiseStringExpectedButAtomFound(ctsIdentifier);
+    SaveRaiseStringExpectedButAtomFound(ctsIdentifier);
   CreateChildNode;
   CurNode.Desc:=ctnTypeType;
   ReadNextAtom;
@@ -4430,16 +4439,16 @@ begin
         cafRoundBracketOpen,cafEdgedBracketOpen: ReadTilBracketClose(true);
         cafNone:
           if (CurPos.StartPos>SrcLen) then
-            RaiseCharExpectedButAtomFound('>')
+            SaveRaiseCharExpectedButAtomFound('>')
           else if (((CurPos.EndPos-CurPos.StartPos=1)
                 and (Src[CurPos.StartPos] in ['+','-','*','&','$'])))
               or AtomIsNumber
           then begin
           end else begin
-            RaiseCharExpectedButAtomFound('>')
+            SaveRaiseCharExpectedButAtomFound('>')
           end;
         else
-          RaiseCharExpectedButAtomFound('>');
+          SaveRaiseCharExpectedButAtomFound('>');
         end;
       until false;
       CurNode.EndPos:=CurPos.EndPos;
@@ -4479,7 +4488,7 @@ begin
           end;
           if (CurPos.Flag=cafRoundBracketClose) then break;
           if (CurPos.Flag<>cafComma) then
-            RaiseCharExpectedButAtomFound(')');
+            SaveRaiseCharExpectedButAtomFound(')');
         until false;
         CurNode.EndPos:=CurPos.EndPos;
         ReadNextAtom;
@@ -4570,7 +4579,7 @@ begin
           ReadNextAtom;
           if CurPos.Flag=cafRoundBracketClose then break;
           if CurPos.Flag<>cafComma then
-            RaiseCharExpectedButAtomFound(',');
+            SaveRaiseCharExpectedButAtomFound(',');
           ReadNextAtom;
         until false;
       end;
@@ -4597,7 +4606,7 @@ begin
   CurNode.EndPos:=LastAtoms.GetValueAt(0).EndPos;
   EndChildNode;
   if not UpAtomIs('OF') then // read 'of'
-    RaiseStringExpectedButAtomFound('"of"');
+    SaveRaiseStringExpectedButAtomFound('"of"');
   // read all variants
   repeat
     ReadNextAtom;  // read constant (variant identifier)
@@ -4611,12 +4620,12 @@ begin
       ReadConstant(true,false,[]);
       if (CurPos.Flag=cafColon) then break;
       if (CurPos.Flag<>cafComma) then
-        RaiseCharExpectedButAtomFound(':');
+        SaveRaiseCharExpectedButAtomFound(':');
       ReadNextAtom;
     until false;
     ReadNextAtom;  // read '('
     if (CurPos.Flag<>cafRoundBracketOpen) then
-      RaiseCharExpectedButAtomFound('(');
+      SaveRaiseCharExpectedButAtomFound('(');
     // read all variables
     ReadNextAtom; // read first variable name
     repeat
@@ -4629,7 +4638,7 @@ begin
         // sub record variant
         KeyWordFuncTypeRecordCase();
         if (CurPos.Flag<>cafRoundBracketClose) then
-          RaiseCharExpectedButAtomFound(')');
+          SaveRaiseCharExpectedButAtomFound(')');
       end else begin
         // sub identifier
         repeat
@@ -4640,7 +4649,7 @@ begin
           ReadNextAtom;
           if (CurPos.Flag=cafColon) then break;
           if (CurPos.Flag<>cafComma) then
-            RaiseCharExpectedButAtomFound(',');
+            SaveRaiseCharExpectedButAtomFound(',');
           EndChildNode;
           ReadNextAtom; // read next variable name
         until false;
@@ -4663,7 +4672,7 @@ begin
         break;
       end;
       if CurPos.Flag<>cafSemicolon then
-        RaiseCharExpectedButAtomFound(';');
+        SaveRaiseCharExpectedButAtomFound(';');
       ReadNextAtom;
     until false;
     CurNode.EndPos:=CurPos.StartPos;
@@ -4674,7 +4683,7 @@ begin
     if (CurPos.Flag in [cafEnd,cafRoundBracketClose]) then
       break;
     if CurPos.Flag<>cafSemicolon then
-      RaiseCharExpectedButAtomFound(';');
+      SaveRaiseCharExpectedButAtomFound(';');
     // read next variant
   until false;
   {$IFDEF VerboseRecordCase}
@@ -4690,7 +4699,7 @@ begin
   Result:=true;
 end;
 
-procedure TPascalParserTool.RaiseCharExpectedButAtomFound(c: char);
+procedure TPascalParserTool.SaveRaiseCharExpectedButAtomFound(c: char);
 var
   a: String;
 begin
@@ -4699,7 +4708,17 @@ begin
   SaveRaiseExceptionFmt(ctsStrExpectedButAtomFound,[c,a]);
 end;
 
-procedure TPascalParserTool.RaiseStringExpectedButAtomFound(const s: string);
+procedure TPascalParserTool.RaiseCharExpectedButAtomFound(c: char);
+var
+  a: String;
+begin
+  a:=GetAtom;
+  if a='' then a:=ctsEndOfFile;
+  RaiseExceptionFmt(ctsStrExpectedButAtomFound,[c,a]);
+end;
+
+procedure TPascalParserTool.SaveRaiseStringExpectedButAtomFound(const s: string
+  );
 var
   a: String;
 begin
@@ -4708,17 +4727,36 @@ begin
   SaveRaiseExceptionFmt(ctsStrExpectedButAtomFound,[s,a]);
 end;
 
-procedure TPascalParserTool.RaiseUnexpectedKeyWord;
+procedure TPascalParserTool.RaiseStringExpectedButAtomFound(const s: string);
+var
+  a: String;
+begin
+  a:=GetAtom;
+  if a='' then a:=ctsEndOfFile;
+  RaiseExceptionFmt(ctsStrExpectedButAtomFound,[s,a]);
+end;
+
+procedure TPascalParserTool.SaveRaiseUnexpectedKeyWord;
 begin
   SaveRaiseExceptionFmt(ctsUnexpectedKeyword,[GetAtom]);
 end;
 
-procedure TPascalParserTool.RaiseIllegalQualifier;
+procedure TPascalParserTool.RaiseUnexpectedKeyWord;
+begin
+  RaiseExceptionFmt(ctsUnexpectedKeyword,[GetAtom]);
+end;
+
+procedure TPascalParserTool.SaveRaiseIllegalQualifier;
 begin
   SaveRaiseExceptionFmt(ctsIllegalQualifier,[GetAtom]);
 end;
 
-procedure TPascalParserTool.RaiseEndOfSourceExpected;
+procedure TPascalParserTool.RaiseIllegalQualifier;
+begin
+  RaiseExceptionFmt(ctsIllegalQualifier,[GetAtom]);
+end;
+
+procedure TPascalParserTool.SaveRaiseEndOfSourceExpected;
 begin
   SaveRaiseExceptionFmt(ctsEndofSourceExpectedButAtomFound,[GetAtom]);
 end;
@@ -4726,7 +4764,7 @@ end;
 procedure TPascalParserTool.ReadConstExpr;
 begin
   if (CurPos.Flag <> cafEqual) then
-    RaiseCharExpectedButAtomFound('=');
+    SaveRaiseCharExpectedButAtomFound('=');
   // read constant
   ReadNextAtom;
   CreateChildNode;
@@ -4737,7 +4775,7 @@ begin
     if (CurPos.Flag in AllCommonAtomWords)
     and (not IsKeyWordInConstAllowed.DoIdentifier(@Src[CurPos.StartPos]))
     and AtomIsKeyWord then
-      RaiseStringExpectedButAtomFound('constant');
+      SaveRaiseStringExpectedButAtomFound('constant');
     if (CurPos.Flag = cafWord) and
        (UpAtomIs('DEPRECATED') or UpAtomIs('PLATFORM')
        or UpAtomIs('UNIMPLEMENTED') or UpAtomIs('EXPERIMENTAL')) then Break;
@@ -5162,7 +5200,7 @@ procedure TPascalParserTool.ReadGUID;
 
   procedure RaiseStringConstantExpected;
   begin
-    RaiseStringExpectedButAtomFound(ctsStringConstant);
+    SaveRaiseStringExpectedButAtomFound(ctsStringConstant);
   end;
 
 begin
@@ -5174,7 +5212,7 @@ begin
     RaiseStringConstantExpected;
   ReadNextAtom;
   if CurPos.Flag<>cafEdgedBracketClose then
-    RaiseCharExpectedButAtomFound(']');
+    SaveRaiseCharExpectedButAtomFound(']');
   CurNode.EndPos:=CurPos.EndPos;
   EndChildNode;
   ReadNextAtom;
@@ -5212,7 +5250,7 @@ begin
       // read comma or )
       if CurPos.Flag=cafRoundBracketClose then break;
       if CurPos.Flag<>cafComma then
-        RaiseCharExpectedButAtomFound(')');
+        SaveRaiseCharExpectedButAtomFound(')');
       ReadNextAtom;
     until false;
   end;
@@ -5257,7 +5295,7 @@ begin
   end;
   // read type list
   if not AtomIsChar('<') then
-    RaiseCharExpectedButAtomFound('<');
+    SaveRaiseCharExpectedButAtomFound('<');
   if CreateChildNodes then begin
     CreateChildNode;
     CurNode.Desc:=ctnSpecializeParams;
@@ -5279,7 +5317,7 @@ begin
     else if CurPos.Flag=cafComma then begin
       // read next parameter
     end else
-      RaiseCharExpectedButAtomFound('>');
+      SaveRaiseCharExpectedButAtomFound('>');
   until false;
   if CreateChildNodes then begin
     // close list
@@ -5361,31 +5399,29 @@ begin
     IsFunction:=UpAtomIs('FUNCTION');
     IsOperator:=(not IsFunction) and UpAtomIs('OPERATOR');
     IsProcType:=ProcNode.Desc=ctnProcedureType;
-    // read procedure head (= [name] + parameterlist + resulttype;)
+    // read procedure head (= [name[<parameters>]] + parameterlist + resulttype;)
     ReadNextAtom;// read first atom of head
     CurNode:=ProcHeadNode;
     if CurNode=nil then
       if ProcNode.Desc=ctnProcedureType then
-        RaiseCharExpectedButAtomFound(';')
+        SaveRaiseCharExpectedButAtomFound(';')
       else
-        RaiseStringExpectedButAtomFound('identifier');
+        SaveRaiseStringExpectedButAtomFound('identifier');
     ProcHeadNode.SubDesc:=ProcHeadNode.SubDesc and (not ctnsNeedJITParsing);
 
     if not IsProcType then begin
-      if IsOperator then
-        AtomIsCustomOperator(true,true)
-      else
-        AtomIsIdentifierSaveE;
-      ReadNextAtom;
-      while (CurPos.Flag=cafPoint) do begin
-        // read procedure name of a class method (the name after the . )
-        ReadNextAtom;
+      // read procedure name of a class method (the name after the . )
+      repeat
         if IsOperator then
-          AtomIsCustomOperator(true,true)
+          AtomIsCustomOperator(true,true,true)
         else
           AtomIsIdentifierSaveE;
         ReadNextAtom;
-      end;
+        if AtomIsChar('<') then
+          ReadGenericParam;
+        if CurPos.Flag<>cafPoint then break;
+        ReadNextAtom;
+      until false;
     end;
     // read rest of procedure head and build nodes
     HasForwardModifier:=false;
