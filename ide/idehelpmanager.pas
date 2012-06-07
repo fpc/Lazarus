@@ -1608,7 +1608,7 @@ begin
   end;
   if IsHTML then begin
     Provider:=nil;
-    HTMLControl:=CreateIDEHTMLControl(aHintWindow,Provider);
+    HTMLControl:=CreateIDEHTMLControl(aHintWindow,Provider, [ihcWithClipboardMenu]);
     Provider.BaseURL:=BaseURL;
     HTMLControl.Parent:=aHintWindow;
     HTMLControl.Align:=alClient;
