@@ -64,7 +64,6 @@ begin
   FDataFields := TList.Create;
   FKeyFields := TList.Create;
   FListLink:= TFieldDataLink.Create;
-  FListLink.DataSource := TDataSource.Create(Self);
   FListLink.Control := Self;
   FListLink.OnActiveChange := @ActiveChange;
   FListLink.OnEditingChange:=@EditingChange;
@@ -87,6 +86,16 @@ begin
     Exit;
   if FListLink.Active and not FListLinkTmpSetActive then
     Initialize(FControlLink, FControlItems);
+end;
+
+procedure TDBLookup.ChangeListLinkDataSource(NewDataSource: TDataSource);
+begin
+  if NewDataSource <> FListLink.DataSource then
+  begin
+    FListLink.OnActiveChange := nil;
+    FListLink.DataSource := NewDataSource;
+    FListLink.OnActiveChange := @ActiveChange;
+  end;
 end;
 
 procedure TDBLookup.EditingChange(Sender: TObject);
@@ -257,8 +266,11 @@ begin
       FLookUpFieldIsCached := (FHasLookupField and FControlLink.Field.LookupCache);
       if FHasLookUpField then
       begin
-        if (FListLink.DataSource.DataSet <> FControlLink.Field.LookupDataSet) then
-          FListLink.DataSource.DataSet:= FControlLink.Field.LookupDataSet;
+        if FLookupSource = nil then
+          FLookupSource := TDataSource.Create(Self);
+        if (FLookupSource.DataSet <> FControlLink.Field.LookupDataSet) then
+          FLookupSource.DataSet:= FControlLink.Field.LookupDataSet;
+        ChangeListLinkDataSource(FLookupSource);
         FDataFieldNames := FControlLink.Field.KeyFields;
         FKeyFieldNames := FControlLink.Field.LookupKeyFields;
       end else
@@ -267,13 +279,7 @@ begin
     end;
   end;
   if not FHasLookUpField then
-    if Assigned(FListSource) then
-    begin
-      if (FListLink.DataSource.DataSet <> FListSource.DataSet) then
-        FListLink.DataSource.DataSet := FListSource.DataSet;
-    end
-    else
-      FListLink.Datasource.DataSet := nil;
+    ChangeListLinkDataSource(FListSource);
 
   if (FKeyFieldNames > '') and Assigned(FListLink.Dataset) then
   begin

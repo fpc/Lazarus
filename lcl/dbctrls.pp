@@ -119,6 +119,7 @@ Type
     FControlItems: TStrings;
     FListLink: TFieldDataLink;
     FListSource: TDataSource;
+    FLookupSource: TDataSource;
     FDataFieldNames: string;
     FKeyFieldNames: string;
     FListFieldName: string;
@@ -133,6 +134,7 @@ Type
     FLookUpFieldIsCached: Boolean;
     FLookupCache: boolean;
     procedure ActiveChange(Sender: TObject);
+    procedure ChangeListLinkDataSource(NewDataSource: TDataSource);
     procedure EditingChange(Sender: TObject);
     procedure FetchLookupData;
     function GetKeyFieldName: string;
