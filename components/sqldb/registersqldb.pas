@@ -30,9 +30,14 @@ unit registersqldb;
 {$DEFINE HASSQLPARSER}
 {$ENDIF}
 
-{$IF FPC_FULLVERSION>= 20700}
-{$IF DEFINED(BEOS) OR DEFINED(HAIKU) OR DEFINED(LINUX) OR DEFINED(FREEBSD) OR DEFINED (NETBSD) OR DEFINED(OPENBSD) OR DEFINED(WIN32) }
-// MS SQL Server and Sybase ASE connectors were introduced in the FPC 2.7 development branch.
+{$IF FPC_FULLVERSION>= 20601}
+{$DEFINE HASMYSQL55CONNECTION}
+{$ENDIF}
+
+{$IF FPC_FULLVERSION>= 20601}
+{$IF DEFINED(BEOS) OR DEFINED(HAIKU) OR DEFINED(LINUX) OR DEFINED(FREEBSD) OR DEFINED (NETBSD) OR DEFINED(OPENBSD) OR DEFINED(WIN32) OR DEFINED(WIN64)}
+// MS SQL Server and Sybase ASE connectors were introduced in the FPC 2.7 development branch, and
+// backported to 2.6.1
 // Operating systems should match FPC packages\fcl-db\fpmake.pp
 {$DEFINE HASMSSQLCONNECTION}
 {$DEFINE HASSYBASECONNECTION}
@@ -62,6 +67,9 @@ uses
   mysql50conn,
 {$IFDEF HASMYSQL51CONNECTION}
   mysql51conn,
+{$ENDIF}
+{$IFDEF HASMYSQL55CONNECTION}
+  mysql55conn,
 {$ENDIF}
 {$IFDEF HASSQLITE3CONNECTION}
   sqlite3conn,
@@ -157,6 +165,9 @@ begin
                               TMySQL50Connection,
 {$IFDEF HASMYSQL51CONNECTION}
                               TMySQL51Connection,
+{$ENDIF}
+{$IFDEF HASMYSQL55CONNECTION}
+                              TMySQL55Connection,
 {$ENDIF}
 {$IFDEF HASSQLITE3CONNECTION}
                               TSQLite3Connection,

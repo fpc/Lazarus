@@ -2687,10 +2687,9 @@ msgid "as invoker (asInvoker)"
 msgstr "chamador \"as\" (asInvoker)"
 
 #: lazarusidestrconsts.dlgpoclearicon
-#, fuzzy
 #| msgid "Clear Icon"
 msgid "&Clear Icon"
-msgstr "Limpar ícone"
+msgstr "&Limpar ícone"
 
 #: lazarusidestrconsts.dlgpocreateappbundle
 msgid "Create Application Bundle"
@@ -2731,10 +2730,9 @@ msgid "(none)"
 msgstr "(nenhum)"
 
 #: lazarusidestrconsts.dlgpoloadicon
-#, fuzzy
 #| msgid "Load Icon"
 msgid "&Load Icon"
-msgstr "Carregar ícone"
+msgstr "&Carregar ícone"
 
 #: lazarusidestrconsts.dlgpomisc
 msgctxt "lazarusidestrconsts.dlgpomisc"
@@ -2751,10 +2749,9 @@ msgid "require administrator (requireAdministrator)"
 msgstr "requer administrador (requireAdministrator)"
 
 #: lazarusidestrconsts.dlgposaveicon
-#, fuzzy
 #| msgid "Save Icon"
 msgid "&Save Icon"
-msgstr "Salvar ícone"
+msgstr "&Salvar ícone"
 
 #: lazarusidestrconsts.dlgposavesession
 msgid "Session"
@@ -3948,7 +3945,7 @@ msgstr "Opções adicionais do compilador herdadas dos pacotes"
 
 #: lazarusidestrconsts.lisaddkeyworddo
 msgid "Add keyword \"do\""
-msgstr ""
+msgstr "Adicionar palavra-chave \"do\""
 
 #: lazarusidestrconsts.lisaddnewbuildmodecopyingsettingsfrom
 msgid "Add new build mode, copying settings from \"%s\""
@@ -4283,7 +4280,7 @@ msgstr "Automático"
 
 #: lazarusidestrconsts.lisautomatically
 msgid "Automatically"
-msgstr "Automaticamente"
+msgstr "Automatizada"
 
 #: lazarusidestrconsts.lisautomaticallyconvertlfmfilestolrsincludefiles
 msgid "Automatically convert .lfm files to .lrs include files"
@@ -5308,7 +5305,7 @@ msgstr "Limpar o Fonte do Lazarus (Clean)"
 
 #: lazarusidestrconsts.liscleanonlyonce
 msgid "Switch after building to automatically"
-msgstr "Mudar após construção para automaticamente"
+msgstr "Mudar após construção para automatizada"
 
 #: lazarusidestrconsts.liscleanup
 msgid "Clean up"
@@ -8263,7 +8260,7 @@ msgstr "Há um máximo de %s ferramentas."
 
 #: lazarusidestrconsts.lisexttooltitlecompleted
 msgid "\"%s\" completed"
-msgstr "\"%s\" completado"
+msgstr "\"%s\" , Ok!"
 
 #: lazarusidestrconsts.lisexttoolunabletorunthetool
 msgid "Unable to run the tool %s%s%s:%s%s"
@@ -11840,7 +11837,7 @@ msgstr "Nova configuração"
 
 #: lazarusidestrconsts.lisnewthegnudebuggerthroughsshallowstoremotedebugviaassh
 msgid "The GNU debugger through ssh allows to remote debug via a ssh connection. See docs/RemoteDebugging.txt for details. The path must contain the ssh client.Use SSH_Startup_Options for the hostname and optional username.And Remote_GDB_Exe for the filename of gdb on the remote computer."
-msgstr ""
+msgstr "O depurador GNU através de ssh permite depuração remota via conexão remota. Veja docs/RemoteDebugging.txt para detalhes. O caminho deve conter o cliente ssh. Use SSH_Startup_Options para o servidor e nome de usuário opcional. E Remote_GDB_Exe para o nome de arquivo do gdb no computador remoto."
 
 #: lazarusidestrconsts.lisnewunitsareaddedtousessections
 #| msgid "New units are added to uses sections:"
@@ -14144,35 +14141,30 @@ msgid "Unitname and Filename do not match.%sExample: unit1.pas and Unit1"
 msgstr "Nome de unidade e Nome de arquivo não coincidem.%sEx: unit1.pas e Unit1"
 
 #: lazarusidestrconsts.lispwconvertproject
-#, fuzzy
 #| msgid "Convert Delphi Project"
 msgid "Convert &Delphi Project"
-msgstr "Converter Projeto Delphi"
+msgstr "Converter Projeto &Delphi"
 
 #: lazarusidestrconsts.lispwnewproject
-#, fuzzy
 #| msgid "New Project"
 msgid "&New Project"
-msgstr "Novo Projeto"
+msgstr "&Novo Projeto"
 
 #: lazarusidestrconsts.lispwopenproject
-#, fuzzy
 #| msgid "Open Project"
 msgid "&Open Project"
-msgstr "Abrir Projeto"
+msgstr "&Abrir Projeto"
 
 #: lazarusidestrconsts.lispwopenrecentproject
-#, fuzzy
 #| msgid "Open Recent Project"
 msgctxt "lazarusidestrconsts.lispwopenrecentproject"
 msgid "Open &Recent Project"
-msgstr "Abrir Projeto Recente"
+msgstr "Abrir Projeto &Recente"
 
 #: lazarusidestrconsts.lispwviewexampleprojects
-#, fuzzy
 #| msgid "View Example Projects"
 msgid "View &Example Projects"
-msgstr "Exibir projetos de exemplo"
+msgstr "&Exibir projetos de exemplo"
 
 #: lazarusidestrconsts.lisquickfixcreatelocalvariable
 msgid "Create local variable"
@@ -14196,10 +14188,9 @@ msgid "Quit"
 msgstr "Sair"
 
 #: lazarusidestrconsts.lisquitlazarus
-#, fuzzy
 #| msgid "Quit Lazarus"
 msgid "&Quit Lazarus"
-msgstr "Sair do Lazarus"
+msgstr "&Sair do Lazarus"
 
 #: lazarusidestrconsts.lisreaderror
 msgid "Read Error"
@@ -16073,7 +16064,7 @@ msgstr "Impossível localizar unidade pascal (.pas,.pp) para arquivo .lfm %s%s%s
 
 #: lazarusidestrconsts.lisunabletofindthecomponentclassitisnotregisteredviar
 msgid "Unable to find the component class \"%s\".%sIt is not registered via RegisterClass and no lfm was found.%sIt is needed by unit:%s%s"
-msgstr ""
+msgstr "Incapaz de localizar a classe do componente \"%s\".%sEla não foi registrada via RegisterClass e nenhum lfm foi encontrado.%sEla é necessária na unidade:%s%s"
 
 #: lazarusidestrconsts.lisunabletogathereditorchanges
 msgid "Unable to gather editor changes."
@@ -16732,7 +16723,7 @@ msgstr "Exibir tipo para os Registradores selecionados"
 
 #: lazarusidestrconsts.regdlgformat
 msgid "Format"
-msgstr ""
+msgstr "Formatar"
 
 #: lazarusidestrconsts.regdlghex
 msgid "Hex"

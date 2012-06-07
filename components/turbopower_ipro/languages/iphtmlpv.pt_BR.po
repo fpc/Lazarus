@@ -30,10 +30,9 @@ msgid "Print preview"
 msgstr "Visualizar Impressão"
 
 #: iphtmlpv.rsiphtmlpreviewselectprinter
-#, fuzzy
 #| msgid "Select printer..."
 msgid "Select printer ..."
-msgstr "Selecionar impressora..."
+msgstr "Selecionar impressora ..."
 
 #: iphtmlpv.rsiphtmlpreviewzoom
 msgid "Zoom:"

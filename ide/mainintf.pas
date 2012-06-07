@@ -234,6 +234,7 @@ type
   protected
     function GetResourceType: TResourceType; override;
   end;
+
   { TFileDescPascalUnitWithForm }
 
   TFileDescPascalUnitWithForm = class(TFileDescPascalUnitWithProjectResource)

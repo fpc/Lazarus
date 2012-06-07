@@ -30,11 +30,13 @@ unit CodyRegistration;
 interface
 
 uses
-  Classes, SysUtils, LResources, LCLProc, Controls,
-  IDECommands, MenuIntf, IDEWindowIntf, SrcEditorIntf, IDEOptionsIntf,
+  Classes, SysUtils, LazUTF8, LResources, LCLProc, Controls, Forms,
+  MenuIntf, IDEWindowIntf, SrcEditorIntf, IDEOptionsIntf, ProjectIntf,
+  IDECommands,
+  CodeToolManager,
   CodyStrConsts, CodyCtrls, PPUListDlg, AddAssignMethodDlg, AddWithBlockDlg,
   CodyUtils, CodyNodeInfoDlg, CodyFrm, DeclareVarDlg, CodyCopyDeclaration,
-  CodyIdentifiersDlg, CodyMiscOptsFrame, CodyOpts;
+  CodyIdentifiersDlg, CodyMiscOptsFrame, CodyOpts, NewIDEWndDlg;
 
 procedure Register;
 
@@ -205,7 +207,10 @@ begin
   CodyWindowCreator:=IDEWindowCreators.Add(CodyWindowName,@CreateCodyWindow,nil,
     '80%','50%','+18%','+25%','CodeExplorer',alBottom);
 
-  // Options - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+  // File types - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+  RegisterProjectFileDescriptor(TFileDescIDEDockableWindow.Create);
+
+  // Options Frame - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   CodyMiscOptionID:=RegisterIDEOptionsEditor(GroupCodetools,
       TCodyMiscOptionsFrame,CodyMiscOptionID)^.Index;
   CodyOptions.Apply;

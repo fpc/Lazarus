@@ -89,7 +89,7 @@ msgstr "Nome duplicado:"
 
 #: anchordockstr.adrseachdockedwindowhasaheaderthatallowsdragginghasaco
 msgid "Each docked window has a header that allows dragging, has a context menu with extra layout functions and shows the caption of the docked window"
-msgstr ""
+msgstr "Cada janela ancorada tem um cabeçalho que permite arrastá-la, tem um menu de contexto com layout de funções extras e exibe o cabeçalho da janela ancorada"
 
 #: anchordockstr.adrsemptyname
 msgid "Empty name: "
@@ -245,7 +245,7 @@ msgstr "Exibir títulos de cabeçalho"
 
 #: anchordockstr.adrsshowheaders
 msgid "Show headers"
-msgstr ""
+msgstr "Exibir cabeçalhos"
 
 #: anchordockstr.adrssplitterthickness
 msgid "Splitter thickness"

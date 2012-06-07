@@ -4,6 +4,7 @@ tmysql40connection.png
 tmysql41connection.png
 tmysql50connection.png
 tmysql51connection.png
+tmysql55connection.png
 tmysqlconnection.png
 todbcconnection.png
 toracleconnection.png
