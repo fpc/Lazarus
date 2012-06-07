@@ -2949,14 +2949,15 @@ function TCustomCodeTool.FindLineEndOrCodeAfterPosition(StartPos: integer;
 var
   LinkIndex, LinkEnd: integer;
 begin
+  Result:=StartPos;
   LinkIndex:=Scanner.LinkIndexAtCleanPos(StartPos);
-  LinkEnd:=Scanner.LinkCleanedEndPos(LinkIndex);
-  if LinkEnd>StartPos then
-    Result:=BasicCodeTools.FindLineEndOrCodeAfterPosition(Src,
-                  StartPos,LinkEnd-1,Scanner.NestedComments,true,SkipEmptyLines,
-                  IncludeLineEnd)
-  else
-    Result:=StartPos;
+  if LinkIndex>=0 then begin
+    LinkEnd:=Scanner.LinkCleanedEndPos(LinkIndex);
+    if LinkEnd>StartPos then
+      Result:=BasicCodeTools.FindLineEndOrCodeAfterPosition(Src,
+                    StartPos,LinkEnd-1,Scanner.NestedComments,true,SkipEmptyLines,
+                    IncludeLineEnd);
+  end;
 end;
 
 function TCustomCodeTool.FindLineEndOrCodeInFrontOfPosition(StartPos: integer;
@@ -2968,11 +2969,14 @@ function TCustomCodeTool.FindLineEndOrCodeInFrontOfPosition(StartPos: integer;
 var
   LinkIndex, LinkStart: integer;
 begin
+  Result:=StartPos;
   LinkIndex:=Scanner.LinkIndexAtCleanPos(StartPos);
-  LinkStart:=Scanner.Links[LinkIndex].CleanedPos;
-  Result:=BasicCodeTools.FindLineEndOrCodeInFrontOfPosition(Src,
+  if LinkIndex>=0 then begin
+    LinkStart:=Scanner.Links[LinkIndex].CleanedPos;
+    Result:=BasicCodeTools.FindLineEndOrCodeInFrontOfPosition(Src,
               StartPos,LinkStart,Scanner.NestedComments,StopAtDirectives,false,
               SkipEmptyLines);
+  end;
 end;
 
 procedure TCustomCodeTool.ClearIgnoreErrorAfter;

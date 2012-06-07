@@ -4880,7 +4880,8 @@ begin
           debugln(['TPascalParserTool.FetchScannerSource first character changed ',MainFilename]);
           {$ENDIF}
           AllChanged:=true;
-        end else if (DiffPos>NewSrcLen) and (not LastErrorValid) then begin
+        end else if (DiffPos>NewSrcLen) and (SrcLen=NewSrcLen)
+        and (not LastErrorValid) then begin
           // no change and no error => keep all nodes
           {$IFDEF VerboseUpdateNeeded}
           debugln(['TPascalParserTool.FetchScannerSource cleansrc has not changed => keep all nodes ',MainFilename]);
