@@ -12,7 +12,7 @@ object PathEditorDialog: TPathEditorDialog
   OnCreate = FormCreate
   OnResize = FormResize
   Position = poScreenCenter
-  LCLVersion = '0.9.31'
+  LCLVersion = '1.1'
   object PathGroupBox: TGroupBox
     Left = 6
     Height = 221
@@ -41,7 +41,6 @@ object PathEditorDialog: TPathEditorDialog
       Anchors = [akRight]
       BorderSpacing.Around = 6
       GlyphShowMode = gsmAlways
-      NumGlyphs = 0
       OnClick = MoveUpButtonClick
       ParentShowHint = False
       ShowHint = True
@@ -60,7 +59,6 @@ object PathEditorDialog: TPathEditorDialog
       Width = 25
       BorderSpacing.Around = 14
       GlyphShowMode = gsmAlways
-      NumGlyphs = 0
       OnClick = MoveDownButtonClick
       ParentShowHint = False
       ShowHint = True
@@ -80,7 +78,6 @@ object PathEditorDialog: TPathEditorDialog
       BorderSpacing.Around = 6
       Caption = 'DeleteButton'
       Enabled = False
-      NumGlyphs = 0
       OnClick = DeleteButtonClick
       ParentShowHint = False
       ShowHint = True
@@ -90,7 +87,6 @@ object PathEditorDialog: TPathEditorDialog
       AnchorSideLeft.Control = PathGroupBox
       AnchorSideTop.Control = PathGroupBox
       AnchorSideRight.Control = MoveUpButton
-      AnchorSideBottom.Control = DirectoryEdit
       Left = 6
       Height = 135
       Top = 6
@@ -103,23 +99,6 @@ object PathEditorDialog: TPathEditorDialog
       OnSelectionChange = PathListBoxSelectionChange
       Style = lbOwnerDrawFixed
       TabOrder = 0
-    end
-    object DirectoryEdit: TDirectoryEdit
-      AnchorSideLeft.Control = ReplaceButton
-      AnchorSideRight.Control = PathListBox
-      AnchorSideRight.Side = asrBottom
-      AnchorSideBottom.Control = ReplaceButton
-      Left = 6
-      Height = 21
-      Top = 147
-      Width = 494
-      ShowHidden = False
-      ButtonWidth = 23
-      NumGlyphs = 0
-      Anchors = [akLeft, akRight, akBottom]
-      MaxLength = 0
-      TabOrder = 3
-      OnChange = DirectoryEditChange
     end
     object ReplaceButton: TBitBtn
       AnchorSideLeft.Control = PathGroupBox
@@ -134,7 +113,6 @@ object PathEditorDialog: TPathEditorDialog
       BorderSpacing.Around = 6
       Caption = 'ReplaceButton'
       Enabled = False
-      NumGlyphs = 0
       OnClick = ReplaceButtonClick
       ParentShowHint = False
       ShowHint = True
@@ -154,7 +132,6 @@ object PathEditorDialog: TPathEditorDialog
       BorderSpacing.Around = 6
       Caption = 'AddButton'
       Enabled = False
-      NumGlyphs = 0
       OnClick = AddButtonClick
       ParentShowHint = False
       ShowHint = True
@@ -174,11 +151,27 @@ object PathEditorDialog: TPathEditorDialog
       BorderSpacing.Around = 6
       Caption = 'DeleteInvalidPathsButton'
       Enabled = False
-      NumGlyphs = 0
       OnClick = DeleteInvalidPathsButtonClick
       ParentShowHint = False
       ShowHint = True
       TabOrder = 7
+    end
+    object DirectoryEdit: TShortPathEdit
+      AnchorSideRight.Control = PathListBox
+      AnchorSideRight.Side = asrBottom
+      AnchorSideBottom.Control = ReplaceButton
+      Left = 6
+      Height = 21
+      Top = 147
+      Width = 494
+      OnAcceptDirectory = DirectoryEditAcceptDirectory
+      ShowHidden = False
+      ButtonWidth = 23
+      NumGlyphs = 1
+      Anchors = [akLeft, akRight, akBottom]
+      MaxLength = 0
+      TabOrder = 3
+      OnChange = DirectoryEditChange
     end
   end
   object TemplateGroupBox: TGroupBox
@@ -224,7 +217,6 @@ object PathEditorDialog: TPathEditorDialog
       AutoSize = True
       BorderSpacing.Around = 6
       Caption = 'AddTemplateButton'
-      NumGlyphs = 0
       OnClick = AddTemplateButtonClick
       ParentShowHint = False
       ShowHint = True

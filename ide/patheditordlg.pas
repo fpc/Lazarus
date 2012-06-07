@@ -29,7 +29,7 @@ interface
 uses
   Classes, SysUtils, Forms, Controls, Buttons, StdCtrls, Dialogs,
   FileUtil, ButtonPanel, ExtCtrls, EditBtn, MacroIntf, LCLType, Graphics,
-  types, TransferMacros, LazarusIDEStrConsts;
+  types, TransferMacros, LazarusIDEStrConsts, shortpathedit;
 
 type
 
@@ -41,7 +41,7 @@ type
     ReplaceButton: TBitBtn;
     AddButton: TBitBtn;
     DeleteInvalidPathsButton: TBitBtn;
-    DirectoryEdit: TDirectoryEdit;
+    DirectoryEdit: TShortPathEdit;
     Splitter1: TSplitter;
     DeleteButton: TBitBtn;
     PathListBox: TListBox;
@@ -55,6 +55,7 @@ type
     procedure AddTemplateButtonClick(Sender: TObject);
     procedure DeleteInvalidPathsButtonClick(Sender: TObject);
     procedure DeleteButtonClick(Sender: TObject);
+    procedure DirectoryEditAcceptDirectory(Sender: TObject; var Value: String);
     procedure DirectoryEditChange(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormResize(Sender: TObject);
@@ -184,6 +185,12 @@ begin
   UpdateButtons;
 end;
 
+procedure TPathEditorDialog.DirectoryEditAcceptDirectory(Sender: TObject;
+  var Value: String);
+begin
+  DirectoryEdit.Text := BaseRelative(Value);
+end;
+
 procedure TPathEditorDialog.DeleteInvalidPathsButtonClick(Sender: TObject);
 var
   i: Integer;
@@ -218,10 +225,15 @@ begin
 end;
 
 procedure TPathEditorDialog.PathListBoxSelectionChange(Sender: TObject; User: boolean);
+Var
+  FullPath : String;
 begin
   with PathListBox do
     if ItemIndex>-1 then begin
-      DirectoryEdit.Text:=PathAsAbsolute(Items[ItemIndex]);
+      DirectoryEdit.Text:=BaseRelative(Items[ItemIndex]);
+      FullPath := Items[ItemIndex];
+      IDEMacros.SubstituteMacros(FullPath);
+      DirectoryEdit.Directory:=PathAsAbsolute(FullPath);
       UpdateButtons;
     end;
 end;
