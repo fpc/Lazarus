@@ -22,8 +22,6 @@ type
     CheckBox1: TCheckBox;
     ComboBox1: TComboBox;
     Label1: TLabel;
-    MainMenu1: TMainMenu;
-    MenuItem1: TMenuItem;
     ProgressBar1: TProgressBar;
     TrackBar1: TTrackBar;
     procedure Arrow1Click(Sender: TObject);
@@ -320,14 +318,22 @@ end;
 procedure TForm1.SocketProc2;
 var
   javaClass_DefaultHttpClient, javaClass_HttpGet,
-    javaClass_URI, javaClass_InputStreamReader, javaClass_BufferedReader: jclass;
+    javaClass_URI, javaClass_HttpResponse, javaClass_HttpEntity,
+    javaClass_InputStreamReader, javaClass_BufferedReader: jclass;
   javaMethod_DefaultHttpClient_new,
     javaMethod_HttpGet_new, javaMethod_HttpGet_setURI,
-    javaMethod_URI_new, javaMethod_InputStreamReader_new, javaMethod_BufferedReader_new: jmethod;
+    javaMethod_URI_new,
+    javaMethod_HttpResponse_getEntity,
+    javaMethod_HttpEntity_getContent,
+    javaMethod_InputStreamReader_new,
+    javaMethod_BufferedReader_new, javaMethod_BufferedReader_readLine,
+    javaMethod_BufferedReader_close: jmethod;
   javaHttpClient, javaRequest, javaURI,
-    javaResponse, javaStreamReader, javaBufferedReader: jobject;
+    javaResponse, javaEntity, javaContent,
+    javaStreamReader, javaBufferedReader: jobject;
   javaString: jstring;
   lParams: array[0..2] of JValue;
+  lNativeString: PChar;
 begin
   // First call FindClass for all required classes
   javaClass_DefaultHttpClient := javaEnvRef^^.FindClass(
@@ -337,59 +343,78 @@ begin
     'org/apache/http/client/methods/HttpGet');
   javaClass_URI := javaEnvRef^^.FindClass(javaEnvRef,
     'android/net/URI/');
+  javaClass_HttpResponse := javaEnvRef^^.FindClass(javaEnvRef,
+    'org/apache/http/HttpResponse');
+  javaClass_HttpEntity := javaEnvRef^^.FindClass(javaEnvRef,
+    'org/apache/http/HttpEntity');
   javaClass_InputStreamReader := javaEnvRef^^.FindClass(javaEnvRef,
     'java/io/InputStreamReader');
   javaClass_BufferedReader := javaEnvRef^^.FindClass(javaEnvRef,
     'java/io/BufferedReader');
 
-  // Create a new DefaultHttpClient instance
-  // HttpClient javaHttpClient = new DefaultHttpClient();
+  // Now all Method IDs
   javaMethod_DefaultHttpClient_new :=
     javaEnvRef^^.GetMethodID(javaEnvRef,
     javaClass_DefaultHttpClient, '<init>', '()V');
+  javaMethod_HttpGet_new := javaEnvRef^^.GetMethodID(
+    javaEnvRef, javaClass_HttpGet, '<init>', '()V');
+  javaMethod_URI_new := javaEnvRef^^.GetMethodID(
+    javaEnvRef, javaClass_URI, '<init>',
+    '(Ljava/lang/String;)V');
+  javaMethod_HttpGet_setURI := javaEnvRef^^.GetMethodID(
+    javaEnvRef, javaClass_URI, 'setURI',
+    '(Landroid/net/URI/;)V');
+  javaMethod_HttpClient_execute := javaEnvRef^^.GetMethodID(
+    javaEnvRef, javaClass_URI, 'execute',
+    '(Lorg/apache/http/client/methods/HttpUriRequest;)Lorg/apache/http/HttpResponse;');
+  javaMethod_HttpResponse_getEntity := javaEnvRef^^.GetMethodID(
+    javaEnvRef, javaClass_HttpResponse, 'getEntity', '()Lorg/apache/http/HttpEntity;');
+  javaMethod_HttpEntity_getContent := javaEnvRef^^.GetMethodID(
+    javaEnvRef, javaClass_HttpEntity, 'getContent', '()Ljava/io/InputStream;');
+  javaMethod_InputStreamReader_new := javaEnvRef^^.GetMethodID(
+    javaEnvRef, javaClass_URI, '<init>',
+    '(Ljava/io/InputStream)V');
+  javaMethod_BufferedReader_readLine := javaEnvRef^^.GetMethodID(
+    javaEnvRef, javaClass_URI, 'readLine', '()V');
+  javaMethod_BufferedReader_close := javaEnvRef^^.GetMethodID(
+    javaEnvRef, javaClass_URI, 'close', '()Ljava/lang/String;');
+
+  // Create a new DefaultHttpClient instance
+  // HttpClient javaHttpClient = new DefaultHttpClient();
   javaHttpClient := javaEnvRef^^.NewObject(javaEnvRef,
     javaClass_DefaultHttpClient,
     javaMethod_DefaultHttpClient_new);
 
-  // Create a new instence for the HTTP request object
+  // Create a new instance for the HTTP request object
   // HttpGet javaRequest = new HttpGet();
-  javaMethod_HttpGet_new := javaEnvRef^^.GetMethodID(
-    javaEnvRef, javaClass_DefaultHttpClient, '<init>', '()V');
   javaRequest := javaEnvRef^^.NewObject(javaEnvRef,
-    javaClass_DefaultHttpClient,
-    javaMethod_DefaultHttpClient_new);
+    javaClass_HttpGet,
+    javaMethod_HttpGet_new);
 
   // Add a URI for the request object
   // URI myURI = new URI("http://w3mentor.com/");
-  javaMethod_URI_new := javaEnvRef^^.GetMethodID(
-    javaEnvRef, javaClass_URI, '<init>',
-    '(Ljava/lang/String;)V');
   lParams[0].l := javaEnvRef^^.NewStringUTF(javaEnvRef, 'http://w3mentor.com/');
   javaURI := javaEnvRef^^.NewObjectA(javaEnvRef,
     javaClass_URI, javaMethod_URI_new, @lParams[0]);
   javaEnvRef^^.DeleteLocalRef(javaEnvRef, lParams[0].l);
   // javaRequest.setURI(myURI);
-  javaMethod_HttpGet_setURI := javaEnvRef^^.GetMethodID(
-    javaEnvRef, javaClass_URI, 'setURI',
-    '(Landroid/net/URI/;)V');
+  lParams[0].l := javaURI;
   javaEnvRef^^.CallVoidMethodA(javaEnvRef, javaRequest,
     javaMethod_HttpGet_setURI, @lParams[0]);
 
   // Execute the HTTP request and obtain a HTTP response
   // HttpResponse response = javaHttpClient.execute(javaRequest);
-  javaMethod_HttpClient_execute := javaEnvRef^^.GetMethodID(
-    javaEnvRef, javaClass_URI, 'execute',
-    '(Lorg/apache/http/client/methods/HttpUriRequest;)Lorg/apache/http/HttpResponse;');
   lParams[0].l := javaRequest;
   javaResponse := javaEnvRef^^.CallObjectMethodA(javaEnvRef, javaHttpClient,
     javaMethod_HttpClient_execute, @lParams[0]);
 
-  // javaContent = response.getEntity().getContent();
-  // .....
+  // HttpEntity javaEntity = response.getEntity();
+  javaEntity := javaEnvRef^^.CallObjectMethod(javaEnvRef, javaResponse,
+    javaMethod_HttpResponse_getEntity);
+  // InputStream javaContent = javaEntity.getContent();
+  javaContent := javaEnvRef^^.CallObjectMethod(javaEnvRef, javaEntity,
+    javaMethod_HttpEntity_getContent);
   // javaStreamReader = new InputStreamReader(javaContent)
-  javaMethod_InputStreamReader_new := javaEnvRef^^.GetMethodID(
-    javaEnvRef, javaClass_URI, '<init>',
-    '(Ljava/io/InputStream)V');
   lParams[0].l := javaRequest;
   javaStreamReader := javaEnvRef^^.NewObjectA(javaEnvRef,
     javaClass_InputStreamReader,
@@ -406,7 +431,19 @@ begin
   // String line = "";
   // while ((line = javaBufferedReader.readLine()) != null) {
   // }
+  while True do
+  begin
+    javaString := javaEnvRef^^.CallObjectMethod(javaEnvRef, javaBufferedReader,
+      javaMethod_BufferedReader_readLine);
+    if javaString = nil then Break;
+    lNativeString := javaEnvRef^^.GetStringUTFChars(javaEnvRef, JavaString, nil);
+    DebugLn(lJavaString);
+    javaEnvRef^^.ReleaseStringUTFChars(javaEnvRef, JavaString, lNativeString);
+  end;
+
   // javaBufferedReader.close();
+  javaEnvRef^^.CallVoidMethod(javaEnvRef, javaBufferedReader,
+    javaMethod_BufferedReader_close);
 end;
 
 end.
