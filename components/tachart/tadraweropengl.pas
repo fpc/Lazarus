@@ -20,7 +20,8 @@ unit TADrawerOpenGL;
 interface
 
 uses
-  Classes, FPCanvas, FPImage, GL, GLu, Glut, TADrawUtils;
+  Classes, FPCanvas, FPImage, GL, GLu, Glut,
+  TAChartUtils, TADrawUtils;
 
 type
 
@@ -71,9 +72,6 @@ type
   end;
 
 implementation
-
-uses
-  TAChartUtils;
 
 procedure ChartGLColor(AColor: TFPColor);
 begin
