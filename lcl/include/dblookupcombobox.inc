@@ -46,7 +46,8 @@ end;
 
 procedure TDBLookupComboBox.ActiveChange(Sender: TObject);
 begin
-  UpdateLookup;
+  if FDataLink.Active then
+    UpdateLookup;
 end;
 
 procedure TDBLookupComboBox.DataChange(Sender: TObject);

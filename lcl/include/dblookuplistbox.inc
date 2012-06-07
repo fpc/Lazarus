@@ -38,7 +38,8 @@ end;
 
 procedure TDBLookupListBox.ActiveChange(Sender: TObject);
 begin
-  UpdateLookup;
+  if FDataLink.Active then
+    UpdateLookup;
 end;
 
 procedure TDBLookupListBox.DataChange(Sender: TObject);
