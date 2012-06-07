@@ -29,7 +29,7 @@ function LOpenGLMakeCurrent(Handle: HWND): boolean;
 function LOpenGLCreateContext(AWinControl: TWinControl;
                     WSPrivate: TWSPrivateClass; SharedControl: TWinControl;
                     DoubleBuffered, RGBA: boolean;
-                    const MultiSampling, AlphaBits, DepthBits, StencilBits: Cardinal;
+                    const MultiSampling, AlphaBits, DepthBits, StencilBits, AUXBuffers: Cardinal;
                     const AParams: TCreateParams): HWND;
 procedure LOpenGLDestroyContextInfo(AWinControl: TWinControl);
 
@@ -402,7 +402,7 @@ end;
 function LOpenGLCreateContext(AWinControl: TWinControl;
   WSPrivate: TWSPrivateClass; SharedControl: TWinControl;
   DoubleBuffered, RGBA: boolean;
-  const MultiSampling, AlphaBits, DepthBits, StencilBits: Cardinal;
+  const MultiSampling, AlphaBits, DepthBits, StencilBits, AUXBuffers: Cardinal;
   const AParams: TCreateParams): HWND;
 var
   Params: TCreateWindowExParams;
@@ -453,6 +453,7 @@ begin
     cAlphaBits:=AlphaBits;
     cDepthBits:=DepthBits; // Z-Buffer
     cStencilBits:=StencilBits;
+    cAuxBuffers:=AUXBuffers;
     iLayerType:=PFD_MAIN_PLANE;
   end;
 

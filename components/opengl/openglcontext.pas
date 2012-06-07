@@ -109,7 +109,7 @@ type
     FCurrentFrameTime: integer; // in msec
     FLastFrameTime: integer; // in msec
     FRGBA: boolean;
-    FMultiSampling, FAlphaBits, FDepthBits, FStencilBits: Cardinal;
+    FMultiSampling, FAlphaBits, FDepthBits, FStencilBits, FAUXBuffers: Cardinal;
     FSharedOpenGLControl: TCustomOpenGLControl;
     FSharingOpenGlControls: TList;
     function GetSharingControls(Index: integer): TCustomOpenGLControl;
@@ -120,6 +120,7 @@ type
     procedure SetAlphaBits(const AValue: Cardinal);
     procedure SetDepthBits(const AValue: Cardinal);
     procedure SetStencilBits(const AValue: Cardinal);
+    procedure SetAUXBuffers(const AValue: Cardinal);
     procedure SetSharedControl(const AValue: TCustomOpenGLControl);
   protected
     procedure WMPaint(var Message: TLMPaint); message LM_PAINT;
@@ -167,6 +168,7 @@ type
     property AlphaBits: Cardinal read FAlphaBits write SetAlphaBits default 0;
     property DepthBits: Cardinal read FDepthBits write SetDepthBits default 16;
     property StencilBits: Cardinal read FStencilBits write SetStencilBits default 0;
+    property AUXBuffers: Cardinal read FAUXBuffers write SetAUXBuffers default 0;
   end;
 
   { TOpenGLControl }
@@ -182,6 +184,7 @@ type
     property AlphaBits;
     property DepthBits;
     property StencilBits;
+    property AUXBuffers;
     property OnChangeBounds;
     property OnClick;
     property OnConstrainedResize;
@@ -294,7 +297,12 @@ begin
   FStencilBits:=AValue;
   OpenGLAttributesChanged;
 end;
-
+procedure TCustomOpenGLControl.SetAUXBuffers(const AValue: Cardinal);
+begin
+  if FAUXBuffers=AValue then exit;
+  FAUXBuffers:=AValue;
+  OpenGLAttributesChanged;
+end;
 procedure TCustomOpenGLControl.SetSharedControl(
   const AValue: TCustomOpenGLControl);
 begin
@@ -530,6 +538,7 @@ begin
                                  AttrControl.AlphaBits,
                                  AttrControl.DepthBits,
                                  AttrControl.StencilBits,
+                                 AttrControl.AUXBuffers,
                                  AParams);
   end;
 end;

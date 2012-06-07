@@ -12,6 +12,7 @@
 
   Author: Mattias Gaertner
 
+  ToDo: MultiSampling, AuxBuffers
 }
 unit GLCarbonAGLContext;
 
@@ -23,7 +24,7 @@ uses
   Classes, SysUtils, LCLProc, LCLType, gl, Forms,
   MacOSAll,
   AGL, CarbonProc, CarbonDef, CarbonPrivate,
-  WSLCLClasses, CarbonWSControls, CarbonUtils,
+  WSLCLClasses, CarbonUtils,
   Controls;
 
 procedure LOpenGLViewport(Left, Top, Width, Height: integer);
@@ -33,11 +34,11 @@ procedure LOpenGLClip(Handle: HWND);
 function LOpenGLCreateContext(AWinControl: TWinControl;
               {%H-}WSPrivate: TWSPrivateClass; SharedControl: TWinControl;
               DoubleBuffered, RGBA: boolean;
-              const MultiSampling, AlphaBits, DepthBits, StencilBits: Cardinal;
+              const MultiSampling, AlphaBits, DepthBits, StencilBits, AUXBuffers: Cardinal;
               const {%H-}AParams: TCreateParams): HWND;
 procedure LOpenGLDestroyContextInfo(AWinControl: TWinControl);
-function CreateOpenGLContextAttrList(DoubleBuffered: boolean;
-  RGBA: boolean): PInteger;
+function CreateOpenGLContextAttrList(DoubleBuffered: boolean; RGBA: boolean;
+              MultiSampling, AlphaBits, DepthBits, StencilBits: cardinal): PInteger;
 
 
 type
@@ -164,7 +165,7 @@ end;
 function LOpenGLCreateContext(AWinControl: TWinControl;
   WSPrivate: TWSPrivateClass; SharedControl: TWinControl;
   DoubleBuffered, RGBA: boolean;
-  const MultiSampling, AlphaBits, DepthBits, StencilBits: Cardinal;
+  const MultiSampling, AlphaBits, DepthBits, StencilBits, AUXBuffers: Cardinal;
   const AParams: TCreateParams): HWND;
 var
   disp: GDHandle;
@@ -190,7 +191,8 @@ begin
 
   // create the AGL context
   disp := GetMainDevice ();
-  AttrList:=CreateOpenGLContextAttrList(DoubleBuffered,RGBA);
+  AttrList:=CreateOpenGLContextAttrList(DoubleBuffered,RGBA,
+    MultiSampling,AlphaBits,DepthBits,StencilBits);
   aglPixFmt := aglChoosePixelFormat (@disp, 1, AttrList);
   System.FreeMem(AttrList);
   aglContext := aglCreateContext (aglPixFmt, NIL);
@@ -232,8 +234,8 @@ begin
   FreeAGLControlInfo(Ref);
 end;
 
-function CreateOpenGLContextAttrList(DoubleBuffered: boolean; RGBA: boolean
-  ): PInteger;
+function CreateOpenGLContextAttrList(DoubleBuffered: boolean; RGBA: boolean;
+  MultiSampling, AlphaBits, DepthBits, StencilBits: cardinal): PInteger;
 var
   p: integer;
 
@@ -257,7 +259,9 @@ var
     Add(AGL_RED_SIZE); Add(1);
     Add(AGL_GREEN_SIZE); Add(1);
     Add(AGL_BLUE_SIZE); Add(1);
-    Add(AGL_DEPTH_SIZE); Add(1);
+    Add(AGL_ALPHA_SIZE); Add(AlphaBits);
+    Add(AGL_DEPTH_SIZE); Add(DepthBits);
+    Add(AGL_STENCIL_SIZE); Add(StencilBits);
     Add(AGL_NONE);
   end;
 

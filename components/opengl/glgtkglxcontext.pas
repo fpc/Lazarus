@@ -149,7 +149,7 @@ function LOpenGLMakeCurrent(Handle: HWND): boolean;
 function LOpenGLCreateContext(AWinControl: TWinControl;
              WSPrivate: TWSPrivateClass; SharedControl: TWinControl;
              DoubleBuffered, RGBA: boolean;
-             const MultiSampling, AlphaBits, DepthBits, StencilBits: Cardinal;
+             const MultiSampling, AlphaBits, DepthBits, StencilBits, AUXBuffers: Cardinal;
              const AParams: TCreateParams): HWND;
 procedure LOpenGLDestroyContextInfo(AWinControl: TWinControl);
 
@@ -158,7 +158,7 @@ procedure LOpenGLDestroyContextInfo(AWinControl: TWinControl);
   already checked that GLX_ARB_multisample is available. }
 function CreateOpenGLContextAttrList(DoubleBuffered: boolean;
   RGBA: boolean; 
-  const MultiSampling, AlphaBits, DepthBits, StencilBits: Cardinal): PInteger;
+  const MultiSampling, AlphaBits, DepthBits, StencilBits, AUXBuffers: Cardinal): PInteger;
 
 implementation
 
@@ -830,7 +830,7 @@ end;
 function LOpenGLCreateContextCore(AWinControl: TWinControl;
   WSPrivate: TWSPrivateClass; SharedControl: TWinControl;
   DoubleBuffered, RGBA: boolean;
-  const MultiSampling, AlphaBits, DepthBits, StencilBits: Cardinal;
+  const MultiSampling, AlphaBits, DepthBits, StencilBits, AUXBuffers: Cardinal;
   const AParams: TCreateParams): HWND;
 var
   NewWidget: PGtkWidget;
@@ -839,7 +839,7 @@ var
 begin
   if WSPrivate=nil then ;
   AttrList:=CreateOpenGLContextAttrList(DoubleBuffered,RGBA,MultiSampling,
-    AlphaBits,DepthBits,StencilBits);
+    AlphaBits,DepthBits,StencilBits,AUXBuffers);
   try
     if SharedControl<>nil then begin
       SharedArea:={%H-}PGtkGLArea(PtrUInt(SharedControl.Handle));
@@ -866,7 +866,7 @@ end;
 function LOpenGLCreateContext(AWinControl: TWinControl;
   WSPrivate: TWSPrivateClass; SharedControl: TWinControl;
   DoubleBuffered, RGBA: boolean;
-  const MultiSampling, AlphaBits, DepthBits, StencilBits: Cardinal;
+  const MultiSampling, AlphaBits, DepthBits, StencilBits, AUXBuffers: Cardinal;
   const AParams: TCreateParams): HWND;
 begin
   if (MultiSampling > 1) and
@@ -879,16 +879,16 @@ begin
      {$ENDIF} then
   try
     Result := LOpenGLCreateContextCore(AWinControl, WSPrivate, SharedControl, 
-      DoubleBuffered, RGBA, MultiSampling, AlphaBits, DepthBits, StencilBits, AParams);
+      DoubleBuffered, RGBA, MultiSampling, AlphaBits, DepthBits, StencilBits, AUXBuffers, AParams);
   except
     { retry without MultiSampling }
     Result := LOpenGLCreateContextCore(AWinControl, WSPrivate, SharedControl, 
-      DoubleBuffered, RGBA, 1, AlphaBits, DepthBits, StencilBits, AParams);
+      DoubleBuffered, RGBA, 1, AlphaBits, DepthBits, StencilBits, AUXBuffers, AParams);
   end else
     { no multi-sampling requested (or GLX_ARB_multisample not available),
       just pass to LOpenGLCreateContextCore }
     Result := LOpenGLCreateContextCore(AWinControl, WSPrivate, SharedControl, 
-      DoubleBuffered, RGBA, MultiSampling, AlphaBits, DepthBits, StencilBits, AParams);
+      DoubleBuffered, RGBA, MultiSampling, AlphaBits, DepthBits, StencilBits, AUXBuffers, AParams);
 end;
 
 procedure LOpenGLDestroyContextInfo(AWinControl: TWinControl);
@@ -898,7 +898,7 @@ begin
 end;
 
 function CreateOpenGLContextAttrList(DoubleBuffered: boolean; RGBA: boolean;
-  const MultiSampling, AlphaBits, DepthBits, StencilBits: Cardinal): PInteger;
+  const MultiSampling, AlphaBits, DepthBits, StencilBits, AUXBuffers: Cardinal): PInteger;
 var
   p: integer;
   UseFBConfig: boolean;
@@ -930,7 +930,8 @@ var
     Add(GLX_ALPHA_SIZE);  Add(AlphaBits);
     Add(GLX_DEPTH_SIZE);  Add(DepthBits);
     Add(GLX_STENCIL_SIZE);  Add(StencilBits);
-    
+    Add(GLX_AUX_BUFFERS);  Add(AUXBuffers);
+
     if MultiSampling > 1 then
     begin
       Add(GLX_SAMPLE_BUFFERS_ARB); Add(1);
