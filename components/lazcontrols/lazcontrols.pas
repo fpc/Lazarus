@@ -8,7 +8,7 @@ interface
 
 uses
   DividerBevel, ExtendedNotebook, ListFilterEdit, TreeFilterEdit, 
-  shortpathedit, LazarusPackageIntf;
+  ShortPathEdit, LazarusPackageIntf;
 
 implementation
 
@@ -18,7 +18,7 @@ begin
   RegisterUnit('ExtendedNotebook', @ExtendedNotebook.Register);
   RegisterUnit('ListFilterEdit', @ListFilterEdit.Register);
   RegisterUnit('TreeFilterEdit', @TreeFilterEdit.Register);
-  RegisterUnit('shortpathedit', @shortpathedit.Register);
+  RegisterUnit('ShortPathEdit', @ShortPathEdit.Register);
 end;
 
 initialization

@@ -1,4 +1,4 @@
-unit shortpathedit;
+unit ShortPathEdit;
 
 {$mode objfpc}{$H+}
 
@@ -7,17 +7,20 @@ interface
 uses
   Classes, SysUtils, EditBtn, LResources, Dialogs, FileUtil;
 
-Type
+type
+
+  { TShortPathEdit }
+
   TShortPathEdit = class(TDirectoryEdit)
-    private
-      FDirectory : String;
-      FOnAcceptDir: TAcceptFileNameEvent;
-    protected
-      function CreateDialog: TCommonDialog; override;
-      procedure RunDialog; override;
-    published
-      property Directory: String read FDirectory write FDirectory;
-      property OnAcceptDirectory: TAcceptFileNameEvent read FOnAcceptDir write FonAcceptDir;
+  private
+    FDirectory : String;
+    FOnAcceptDir: TAcceptFileNameEvent;
+  protected
+    function CreateDialog: TCommonDialog; override;
+    procedure RunDialog; override;
+  published
+    property Directory: String read FDirectory write FDirectory;
+    property OnAcceptDirectory: TAcceptFileNameEvent read FOnAcceptDir write FonAcceptDir;
   end;
 
 procedure Register;
