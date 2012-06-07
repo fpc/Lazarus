@@ -2,24 +2,25 @@
   This source is only used to compile and install the package.
  }
 
-unit LazControls; 
+unit LazControls;
 
 interface
 
 uses
   DividerBevel, ExtendedNotebook, ListFilterEdit, TreeFilterEdit, 
-  LazarusPackageIntf;
+  shortpathedit, LazarusPackageIntf;
 
 implementation
 
-procedure Register; 
+procedure Register;
 begin
-  RegisterUnit('DividerBevel', @DividerBevel.Register); 
-  RegisterUnit('ExtendedNotebook', @ExtendedNotebook.Register); 
-  RegisterUnit('ListFilterEdit', @ListFilterEdit.Register); 
-  RegisterUnit('TreeFilterEdit', @TreeFilterEdit.Register); 
-end; 
+  RegisterUnit('DividerBevel', @DividerBevel.Register);
+  RegisterUnit('ExtendedNotebook', @ExtendedNotebook.Register);
+  RegisterUnit('ListFilterEdit', @ListFilterEdit.Register);
+  RegisterUnit('TreeFilterEdit', @TreeFilterEdit.Register);
+  RegisterUnit('shortpathedit', @shortpathedit.Register);
+end;
 
 initialization
-  RegisterPackage('LazControls', @Register); 
+  RegisterPackage('LazControls', @Register);
 end.
