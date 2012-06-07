@@ -6974,6 +6974,12 @@ begin
             NewControl.ControlStyle:=NewControl.ControlStyle+[csNoDesignVisible];
           if DisableAutoSize then
             NewControl.EnableAutoSizing;
+          if NewComponent is TFrame then
+            AnUnitInfo.ResourceBaseClass:=pfcbcFrame
+          else if NewComponent is TDataModule then
+            AnUnitInfo.ResourceBaseClass:=pfcbcDataModule
+          else if NewComponent is TForm then
+            AnUnitInfo.ResourceBaseClass:=pfcbcForm;
         end;
         Project1.InvalidateUnitComponentDesignerDependencies;
         AnUnitInfo.Component:=NewComponent;
