@@ -379,6 +379,7 @@ type
     procedure UnhideIDE;
     procedure CreatePopupMenus(TheOwner: TComponent);
     property OnActive: TNotifyEvent read FOnActive write FOnActive;
+    procedure UpdateDockCaption(Exclude: TControl); override;
   end;
 
 var
@@ -465,6 +466,11 @@ begin
   inherited WndProc(Message);
   if (Message.Msg=LM_ACTIVATE) and (Message.Result=0) then
     DoActive;
+end;
+
+procedure TMainIDEBar.UpdateDockCaption(Exclude: TControl);
+begin
+  // keep IDE caption
 end;
 
 constructor TMainIDEBar.Create(TheOwner: TComponent);
