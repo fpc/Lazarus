@@ -44,6 +44,12 @@ const
 
 const
   gdkdll = gdklib;
+  // additional response codes for gtk2
+  GTK_RESPONSE_LCL_ALL = GTK_RESPONSE_APPLY;
+  GTK_RESPONSE_LCL_YESTOALL = GTK_RESPONSE_ACCEPT;
+  GTK_RESPONSE_LCL_RETRY = -12;
+  GTK_RESPONSE_LCL_IGNORE = -13;
+  GTK_RESPONSE_LCL_NOTOALL = -14;
 
 {$IF FPC_FULLVERSION<20600}
 // missing declarations in fpc 2.2
