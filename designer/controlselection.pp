@@ -240,7 +240,7 @@ type
     cssBoundsNeedsUpdate,
     cssBoundsNeedsSaving,
     cssParentLevelNeedsUpdate,
-    cssNotSavingBounds,
+    cssDoNotSaveBounds,
     cssSnapping,
     cssChangedDuringLock,
     cssRubberbandActive,
@@ -377,26 +377,26 @@ type
     destructor Destroy; override;
     procedure OnIdle(Sender: TObject; var Done: Boolean);
 
-    // items
-    property Items[Index:integer]:TSelectedControl
-      read GetItems write SetItems; default;
-    function Count:integer;
-    procedure Sort(SortProc: TSelectionSortCompare);
-
     procedure BeginUpdate;
     procedure EndUpdate;
     procedure DoChange(ForceUpdate: Boolean = False);
     property UpdateLock: integer read FUpdateLock;
 
-    function IndexOf(APersistent: TPersistent):integer;
-    function Add(APersistent: TPersistent):integer;
+    // items
+    property Items[Index:integer]: TSelectedControl
+      read GetItems write SetItems; default;
+    function Count: integer;
+    procedure Sort(SortProc: TSelectionSortCompare);
+    function IndexOf(APersistent: TPersistent): integer;
+    function Add(APersistent: TPersistent): integer;
     procedure Remove(APersistent: TPersistent);
-    procedure Delete(Index:integer);
+    procedure Delete(Index: integer);
     procedure Clear;
     function Equals(const ASelection: TPersistentSelectionList): boolean; reintroduce;
     function AssignPersistent(APersistent: TPersistent): boolean;
     procedure Assign(AControlSelection: TControlSelection); reintroduce;
-    procedure AssignSelection(const ASelection: TPersistentSelectionList);
+    procedure AssignSelection(const ASelection: TPersistentSelectionList); // set selection
+    procedure GetSelection(const ASelection: TPersistentSelectionList);
     function IsSelected(APersistent: TPersistent): Boolean;
     function IsOnlySelected(APersistent: TPersistent): Boolean;
     function ParentLevel: integer;
@@ -957,9 +957,9 @@ begin
   end;
   dec(FUpdateLock);
   if FUpdateLock=0 then begin
+    if cssChangedDuringLock in FStates then DoChange;
     if cssBoundsNeedsUpdate in FStates then UpdateBounds;
     if cssBoundsNeedsSaving in FStates then SaveBounds;
-    if cssChangedDuringLock in FStates then DoChange;
   end;
 end;
 
@@ -1101,6 +1101,7 @@ begin
   FHeight:=FRealHeight;
   InvalidateGuideLinesCache;
   Exclude(FStates,cssBoundsNeedsUpdate);
+  DoChangeProperties;
 end;
 
 procedure TControlSelection.RestoreBounds;
@@ -1120,9 +1121,8 @@ begin
       OldLeftTop := OldFormRelativeLeftTop;
       SetFormRelativeBounds(OldLeftTop.X, OldLeftTop.Y, OldWidth, OldHeight);
     end;
-    InvalidateGuideLinesCache;
   end;
-  UpdateRealBounds;
+  UpdateBounds;
   EndUpdate;
 end;
 
@@ -1245,7 +1245,7 @@ begin
       InvalidateGuideLinesCache;
     end;
   end;
-  UpdateRealBounds;
+  UpdateBounds;
   EndUpdate;
 end;
 
@@ -1274,7 +1274,6 @@ begin
     end;
     AdjustGrabbers;
     InvalidateGuideLines;
-    DoChangeProperties;
   end;
 end;
 
@@ -1972,7 +1971,7 @@ var
   i: integer;
   g: TGrabIndex;
 begin
-  if cssNotSavingBounds in FStates then exit;
+  if cssDoNotSaveBounds in FStates then exit;
   //debugln('TControlSelection.SaveBounds');
   if FUpdateLock > 0 then
   begin
@@ -2092,7 +2091,6 @@ function TControlSelection.Equals(const ASelection: TPersistentSelectionList
   ): boolean;
 var
   i: Integer;
-  Index: Integer;
   Instance: TPersistent;
 begin
   if (ASelection=nil) then begin
@@ -2102,25 +2100,18 @@ begin
   Result:=Count=ASelection.Count;
   if not Result then
     exit;
-  Index:=0;
   for i:=0 to ASelection.Count-1 do
   begin
     Instance := ASelection[i];
-    if Instance is TPersistent then begin
-      if Items[Index].Persistent<>Instance then begin
-        Result:=false;
-        exit;
-      end;
-      inc(Index);
-    end;
+    if Items[i].Persistent<>Instance then exit(false);
   end;
 end;
 
 procedure TControlSelection.Assign(AControlSelection: TControlSelection);
 var i:integer;
 begin
-  if (AControlSelection=Self) or (cssNotSavingBounds in FStates) then exit;
-  Include(FStates,cssNotSavingBounds);
+  if (AControlSelection=Self) or (cssDoNotSaveBounds in FStates) then exit;
+  Include(FStates,cssDoNotSaveBounds);
   BeginUpdate;
   Clear;
   FControls.Capacity:=AControlSelection.Count;
@@ -2128,7 +2119,7 @@ begin
     Add(AControlSelection[i].Persistent);
   SetCustomForm;
   UpdateBounds;
-  Exclude(FStates,cssNotSavingBounds);
+  Exclude(FStates,cssDoNotSaveBounds);
   SaveBounds;
   EndUpdate;
   DoChange;
@@ -2141,8 +2132,8 @@ var
   instance: TPersistent;
 begin
   if Equals(ASelection) then exit;
-  if (cssNotSavingBounds in FStates) then exit;
-  Include(FStates,cssNotSavingBounds);
+  if (cssDoNotSaveBounds in FStates) then exit;
+  Include(FStates,cssDoNotSaveBounds);
   BeginUpdate;
   Clear;
   FControls.Capacity:=ASelection.Count;
@@ -2153,10 +2144,22 @@ begin
   end;
   SetCustomForm;
   UpdateBounds;
-  Exclude(FStates,cssNotSavingBounds);
+  Exclude(FStates,cssDoNotSaveBounds);
   SaveBounds;
   EndUpdate;
   DoChange;
+end;
+
+procedure TControlSelection.GetSelection(
+  const ASelection: TPersistentSelectionList);
+var
+  i: Integer;
+begin
+  if ASelection=nil then exit;
+  if Equals(ASelection) then exit;
+  ASelection.Clear;
+  for i:=0 to Count-1 do
+    ASelection.Add(Items[i].Persistent);
 end;
 
 function TControlSelection.IsSelected(APersistent: TPersistent): Boolean;
@@ -2969,8 +2972,8 @@ begin
     Items[i].Left:=NewLeft;
   end;
 
+  UpdateBounds;
   EndResizing(false);
-  UpdateRealBounds;
 end;
 
 procedure TControlSelection.MirrorVertical;
@@ -2998,8 +3001,8 @@ begin
     Items[i].Top:=NewTop;
   end;
 
+  UpdateBounds;
   EndResizing(false);
-  UpdateRealBounds;
 end;
 
 procedure TControlSelection.SizeComponents(
