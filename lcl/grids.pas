@@ -10260,7 +10260,9 @@ end;
 
 procedure TCustomStringGrid.LoadFromCSVStream(AStream: TStream;
   ADelimiter: Char=','; WithHeader: boolean=true);
-
+  //Note for developer:
+  //  When TStrings.SetDelimitedText gets fixed (in a release version)
+  //  wen can remove this helper procedure and use DelimitedText with Strictdelimiter := True
   Procedure ParseDelimitedText(const AValue: string; const ADelimiter, AQuoteChar: Char; TS: TStrings);
   { Helper function for LoadFromCSVFile
     Adapted from TStrings.SetDelimitedText
