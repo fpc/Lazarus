@@ -5462,9 +5462,8 @@ begin
   then begin
     LogCaret:=Point(fBookMarks[BookMark].Column, fBookMarks[BookMark].Line);
     DoIncPaintLock(Self); // No editing is taking place
+    FCaret.ChangeOnTouch;
     FCaret.LineBytePos := LogCaret;
-    SetBlockEnd(LogCaret);
-    SetBlockBegin(LogCaret);
     DoDecPaintLock(Self);
   end;
 end;
