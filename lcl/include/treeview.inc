@@ -3624,6 +3624,8 @@ var
   i: integer;
 begin
   Result := nil;
+  if not Assigned(Items) then
+    Exit;
   if (Y >= BorderWidth) and (Y < (ClientHeight - ScrollBarWidth) - BorderWidth) then
   begin
     inc(Y, FScrolledTop - BorderWidth);
@@ -3659,7 +3661,7 @@ begin
   if (X >= BorderWidth) and (X < ClientWidth - BorderWidth) then
   begin
     Result := GetNodeAtY(Y);
-    if (Result <> nil) and (X < Result.DisplayExpandSignLeft) then
+    if Assigned(Result) and (X < Result.DisplayExpandSignLeft) then
       Result := nil;
   end;
 end;
