@@ -52,7 +52,8 @@ type
     PropertyGrid: TOIPropertyGrid;
     FCurDebuggerClass: TDebuggerClass; // currently shown debugger class
     FPropertyEditorHook: TPropertyEditorHook;
-    FOldDebuggerPathAndParams: string;
+    FOldDebuggerFilename: string;
+    fOldDebuggerSearchPath: string;
     FCurrentDebPropertiesList: TStringList; // temporarilly modified
     procedure FetchDebuggerClass;
     procedure FetchDebuggerGeneralOptions;
@@ -68,6 +69,7 @@ type
     procedure Setup(ADialog: TAbstractOptionsEditorDialog); override;
     procedure ReadSettings(AOptions: TAbstractIDEOptions); override;
     procedure WriteSettings(AOptions: TAbstractIDEOptions); override;
+    procedure RestoreSettings(AOptions: TAbstractIDEOptions); override;
     class function SupportedOptionsClass: TAbstractIDEOptionsClass; override;
   end;
 
@@ -111,7 +113,7 @@ begin
     if OpenDialog.Execute then begin
       AFilename:=CleanAndExpandFilename(OpenDialog.Filename);
       SetComboBoxText(cmbDebuggerPath,AFilename,cstFilename);
-      CheckExecutable(FOldDebuggerPathAndParams,cmbDebuggerPath.Text,
+      CheckExecutable(FOldDebuggerFilename,AFilename,
         lisEnvOptDlgInvalidDebuggerFilename,
         lisEnvOptDlgInvalidDebuggerFilenameMsg);
     end;
@@ -290,11 +292,16 @@ function TDebuggerGeneralOptionsFrame.Check: Boolean;
 begin
   Result := false;
 
-  if assigned(FCurDebuggerClass) and FCurDebuggerClass.HasExePath and
-    not CheckExecutable(FOldDebuggerPathAndParams,cmbDebuggerPath.Text,
+  if assigned(FCurDebuggerClass) and FCurDebuggerClass.HasExePath
+  and (EnvironmentOptions.DebuggerFilename <> cmbDebuggerPath.Text)
+  then begin
+    EnvironmentOptions.DebuggerFilename := cmbDebuggerPath.Text;
+    if not CheckExecutable(FOldDebuggerFilename,
+          EnvironmentOptions.GetParsedDebuggerFilename,
           lisEnvOptDlgInvalidDebuggerFilename,
           lisEnvOptDlgInvalidDebuggerFilenameMsg)
-  then exit;
+    then exit;
+  end;
 
   Result := true;
 end;
@@ -321,8 +328,11 @@ begin
   with EnvironmentOptions do
   begin
     ObjectInspectorOptions.AssignTo(PropertyGrid);
-    FOldDebuggerPathAndParams := DebuggerFilename;
-    cmbDebuggerPath.Text := FOldDebuggerPathAndParams;
+
+    FOldDebuggerFilename := DebuggerFilename;
+    fOldDebuggerSearchPath := DebuggerSearchPath;
+
+    cmbDebuggerPath.Text := FOldDebuggerFilename;
     FetchDebuggerClass;
     FetchDebuggerGeneralOptions;
   end;
@@ -348,6 +358,15 @@ begin
     if FCurDebuggerClass = nil
     then DebuggerConfig.DebuggerClass := ''
     else DebuggerConfig.DebuggerClass := FCurDebuggerClass.ClassName;
+  end;
+end;
+
+procedure TDebuggerGeneralOptionsFrame.RestoreSettings(
+  AOptions: TAbstractIDEOptions);
+begin
+  with EnvironmentOptions do begin
+    DebuggerFilename := FOldDebuggerFilename;
+    DebuggerSearchPath := fOldDebuggerSearchPath;
   end;
 end;
 
