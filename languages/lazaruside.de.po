@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2012-04-08 19:03+0100\n"
+"PO-Revision-Date: 2012-05-19 19:37+0100\n"
 "Last-Translator: Swen Heinig <swen.heinig@freenet.de>\n"
 "Language-Team: Deutsch <lazarus@miraclec.com>\n"
 "MIME-Version: 1.0\n"
@@ -1748,7 +1748,7 @@ msgstr "Reihenfolge der Prozeduren beibehalten"
 
 #: lazarusidestrconsts.dlgfpcpath
 msgid "Compiler path (e.g. %s)"
-msgstr "Compilerdateiname (%s)"
+msgstr "Compilerdateiname (z.B. %s)"
 
 #: lazarusidestrconsts.dlgfpcsrcpath
 msgid "FPC source directory"
@@ -1922,10 +1922,9 @@ msgid "Right Of Cursor"
 msgstr "Rechts vom Cursor"
 
 #: lazarusidestrconsts.dlghintsparametersendernotused
-#, fuzzy
 #| msgid "Show Hints for parameter \"Sender\" not used"
 msgid "Show hints for parameter \"Sender\" not used"
-msgstr "Hintanzeige für unbenutzte Parameter »Sender«"
+msgstr "Hinweisanzeige für unbenutzte Parameter \"Sender\""
 
 #: lazarusidestrconsts.dlghintsunused
 #, fuzzy
@@ -2661,10 +2660,9 @@ msgid "Pass options to linker (delimiter is space)"
 msgstr "Linker zusätzliche Einstellungen übergeben (Leerzeichen trennt)"
 
 #: lazarusidestrconsts.dlgpasstringkeywords
-#, fuzzy
 #| msgid "Highlight String keyword(s)"
 msgid "Highlight \"String\" keyword(s)"
-msgstr "Hebe String Schlüsselwort(e) hervor"
+msgstr "Hebe \"String\" Schlüsselwort(e) hervor"
 
 #: lazarusidestrconsts.dlgpasstringkeywordsoptdefault
 msgctxt "lazarusidestrconsts.dlgpasstringkeywordsoptdefault"
@@ -2699,13 +2697,12 @@ msgstr "Anwendung"
 
 #: lazarusidestrconsts.dlgpoasinvoker
 msgid "as invoker (asInvoker)"
-msgstr ""
+msgstr "wie Aufrufer (asInvoker)"
 
 #: lazarusidestrconsts.dlgpoclearicon
-#, fuzzy
 #| msgid "Clear Icon"
 msgid "&Clear Icon"
-msgstr "Symbol löschen"
+msgstr "Symbol lös&chen"
 
 #: lazarusidestrconsts.dlgpocreateappbundle
 msgid "Create Application Bundle"
@@ -2726,7 +2723,7 @@ msgstr "Formulare"
 
 #: lazarusidestrconsts.dlgpohighestavailable
 msgid "highest available (highestAvailable)"
-msgstr ""
+msgstr "höchste verfügbare (highestAvailable)"
 
 #: lazarusidestrconsts.dlgpoi18n
 msgid "i18n"
@@ -2746,10 +2743,9 @@ msgid "(none)"
 msgstr "(keiner)"
 
 #: lazarusidestrconsts.dlgpoloadicon
-#, fuzzy
 #| msgid "Load Icon"
 msgid "&Load Icon"
-msgstr "Symbol laden"
+msgstr "Symbol &laden"
 
 #: lazarusidestrconsts.dlgpomisc
 msgctxt "lazarusidestrconsts.dlgpomisc"
@@ -2763,13 +2759,12 @@ msgstr "Ausgabeeinstellungen"
 
 #: lazarusidestrconsts.dlgporequireadministrator
 msgid "require administrator (requireAdministrator)"
-msgstr ""
+msgstr "benötigt Administrator (requireAdministrator)"
 
 #: lazarusidestrconsts.dlgposaveicon
-#, fuzzy
 #| msgid "Save Icon"
 msgid "&Save Icon"
-msgstr "Symbol speichern"
+msgstr "Symbol &speichern"
 
 #: lazarusidestrconsts.dlgposavesession
 msgid "Session"
@@ -3940,7 +3935,7 @@ msgstr "Aktionen:"
 
 #: lazarusidestrconsts.lisactivate
 msgid "Activate"
-msgstr ""
+msgstr "Aktiviere"
 
 #: lazarusidestrconsts.lisactivateregularexpressionsyntaxfortextandreplaceme
 msgid "Activate regular expression syntax for text and replacement (pretty much like perl)"
@@ -3948,7 +3943,7 @@ msgstr "Aktiviere die Syntax regulärer Ausdrücke für Text und Ersetzen (sehr 
 
 #: lazarusidestrconsts.lisactivateselected
 msgid "Activate Selected"
-msgstr ""
+msgstr "Aktiviere Gewählte"
 
 #: lazarusidestrconsts.lisactive
 msgid "Active"
@@ -3973,7 +3968,7 @@ msgstr "Von anderen Packages übernommene zusätzliche Compilereinstellungen"
 
 #: lazarusidestrconsts.lisaddkeyworddo
 msgid "Add keyword \"do\""
-msgstr ""
+msgstr "Schlüsselwort \"do\" hinzufügen"
 
 #: lazarusidestrconsts.lisaddnewbuildmodecopyingsettingsfrom
 msgid "Add new build mode, copying settings from \"%s\""
@@ -4636,10 +4631,9 @@ msgid "Ambiguous compiler"
 msgstr "Unklarer Compiler"
 
 #: lazarusidestrconsts.lisccochecktestdir
-#, fuzzy
 #| msgid "Please check the Test directory under %sEnvironment -> Environment Options -> Files -> Directory for building test projects"
 msgid "Please check the Test directory under %sTools -> Options -> Files -> Directory for building test projects"
-msgstr "Bitte prüfen Sie das Test-Verzeichnis unter %sEinstellungen -> Umgebungseinstellungen -> Dateien -> Verzeichnis für das Anlegen von Testprojekten"
+msgstr "Bitte prüfen Sie das Test-Verzeichnis unter %sWerkzeuge -> Einstellungen -> Umgebungseinstellungen -> Dateien -> Verzeichnis für das Anlegen von Testprojekten"
 
 #: lazarusidestrconsts.lisccocompilernotanexe
 msgid "The compiler \"%s\" is not an executable file.%sDetails: %s"
@@ -4822,10 +4816,9 @@ msgid "Is a root control"
 msgstr "Ist ein Wurzelelement"
 
 #: lazarusidestrconsts.liscelongparamlistcount
-#, fuzzy
 #| msgid "Parameters count treating as \"many\""
 msgid "Parameters count treated as \"many\""
-msgstr "Parameterzahl als »viele« behandeln"
+msgstr "Parameterzahl als \"viele\" behandeln"
 
 #: lazarusidestrconsts.liscelongprocedures
 msgid "Long procedures"
@@ -4950,7 +4943,7 @@ msgstr "Stil"
 
 #: lazarusidestrconsts.liscesurrounding
 msgid "Surrounding"
-msgstr ""
+msgstr "Umgebung"
 
 #: lazarusidestrconsts.liscetodos
 msgid "ToDos"
@@ -7916,7 +7909,7 @@ msgstr "Makros einschalten"
 
 #: lazarusidestrconsts.lisenablereplacewholeidentifierdisablereplaceprefix
 msgid "Enable = replace whole identifier, Disable = replace prefix"
-msgstr ""
+msgstr "Aktivieren = ganzen Bezeichner ersetzen, Deaktivieren = Präfix ersetzen"
 
 #: lazarusidestrconsts.lisenclose
 msgid "Enclose"
@@ -9143,10 +9136,9 @@ msgid "Project:"
 msgstr "Projekt:"
 
 #: lazarusidestrconsts.lisinfobuildsuccess
-#, fuzzy
 #| msgid "Success..."
 msgid "Success ..."
-msgstr "Erfolg..."
+msgstr "Erfolg ..."
 
 #: lazarusidestrconsts.lisinfobuildwarning
 msgid "Warnings:"
@@ -9415,7 +9407,7 @@ msgstr "Verzeichnis nicht gefunden"
 
 #: lazarusidestrconsts.lisissues
 msgid "Issues"
-msgstr ""
+msgstr "Probleme"
 
 #: lazarusidestrconsts.lisiwonderhowyoudidthaterrorinthe
 msgid "I wonder how you did that. Error in the %s:"
@@ -10957,7 +10949,6 @@ msgid "Options ..."
 msgstr "Einstellungen ..."
 
 #: lazarusidestrconsts.lismenugotoincludedirective
-#, fuzzy
 #| msgid "Goto include directive"
 msgid "Goto Include Directive"
 msgstr "Zu Include-Anweisung springen"
@@ -11638,13 +11629,11 @@ msgid "Toggle Form/Unit View"
 msgstr "Formular-/Unit-Ansicht umschalten"
 
 #: lazarusidestrconsts.lismenuviewunitdependencies
-#, fuzzy
 #| msgid "Unit Dependencies"
 msgid "Unit Dependencies ..."
 msgstr "Unit-Abhängigkeiten anzeigen"
 
 #: lazarusidestrconsts.lismenuviewunitinfo
-#, fuzzy
 #| msgid "Unit Information"
 msgid "Unit Information ..."
 msgstr "Unit-Informationen anzeigen"
@@ -11992,7 +11981,6 @@ msgid "No ResourceString Section found"
 msgstr "Kein ResourceString-Abschnitt gefunden"
 
 #: lazarusidestrconsts.lisnormallythefilterisaregularexpressioninsimplesynta
-#, fuzzy
 #| msgid "Normally the filter is a regular expression. In Simple Syntax a . is a normal character, a * stands for anything, a ? stands for any character, and comma and semicolon separates alternatives. For example: Simple Syntax *.pas;*.pp corresponds to ^(.*\\.pas|.*\\.pp)$"
 msgid "Normally the filter is a regular expression. In simple syntax a . is a normal character, a * stands for anything, a ? stands for any character, and comma and semicolon separates alternatives. For example: Simple syntax *.pas;*.pp corresponds to ^(.*\\.pas|.*\\.pp)$"
 msgstr "Normalerweise ist der Filter ein regulärer Ausdruck. Bei *Einfacher Syntax* gilt ein Punkt als normales Zeichen, ein * steht für eine beliebige Zeichenkette, ein ? für ein beliebiges Zeichen, und ein Komma und Semikolon als Trenner zwischen Alternativen. Beispiel: Einfache Syntax *.pas;*.pp bedeutet ^(.*\\.pas|.*\\.pp)$"
@@ -12303,7 +12291,7 @@ msgstr "Projekt %s öffnen?"
 
 #: lazarusidestrconsts.lisopenxml
 msgid "Open XML"
-msgstr ""
+msgstr "XML öffnen"
 
 #: lazarusidestrconsts.lisoptionschangedrecompilingcleanwithb
 msgid "Options changed, recompiling clean with -B"
@@ -12459,7 +12447,7 @@ msgstr "Den gewählten Pfad löschen"
 
 #: lazarusidestrconsts.lispatheditordeleteinvalidhint
 msgid "Remove non-existent (gray) paths from the list"
-msgstr ""
+msgstr "Nicht existierende (graue) Pfade aus der Liste entfernen"
 
 #: lazarusidestrconsts.lispatheditorreplacehint
 msgid "Replace the selected path with a new path"
@@ -13484,10 +13472,9 @@ msgid "There is already another package with the name %s%s%s.%sConflict package:
 msgstr "Es gibt bereits ein Package mit dem Namen %s%s%s.%sPackage-Konflikt: %s%s%s%sDatei: %s%s%s"
 
 #: lazarusidestrconsts.lispkgmangthereisalreadyapackageloadedfromfile
-#, fuzzy
 #| msgid "There is already a package %s%s%s loaded%sfrom file %s%s%s.%sSee Components -> Package Graph.%sReplace is impossible."
 msgid "There is already a package %s%s%s loaded%sfrom file %s%s%s.%sSee Package -> Package Graph.%sReplace is impossible."
-msgstr "Es ist bereits ein Package %s%s%s aus der Datei %s%s%s geladen.%sSiehe Komponenten->Package-Graph.%sErsetzen ist nicht möglich."
+msgstr "Es ist bereits ein Package %s%s%s aus der Datei %s%s%s geladen.%sSiehe Package->Package-Graph.%sErsetzen ist nicht möglich."
 
 #: lazarusidestrconsts.lispkgmangthereisanunsavedpackageintherequiredpackages
 msgid "There is an unsaved package in the required packages. See package graph."
@@ -13870,7 +13857,6 @@ msgid "Program source must have a pascal extension like .pas, .pp or .lpr"
 msgstr "Der Programmquelltext muß eine Pascal-Endung wie .pas, .pp oder .lpr besitzen"
 
 #: lazarusidestrconsts.lisprojaddaddfilestoproject
-#, fuzzy
 #| msgid "Add files to project"
 msgid "Add Files to Project"
 msgstr "Dateien zum Projekt hinzufügen"
@@ -14038,7 +14024,7 @@ msgstr "Verzeichnis, in dem sich die Projekt-Hauptdatei befinden muß"
 
 #: lazarusidestrconsts.lisprojectsessionchanged
 msgid "Project session changed"
-msgstr ""
+msgstr "Projektsitzung geändert"
 
 #: lazarusidestrconsts.lisprojectsourcedirectories
 msgid "Project source directories"
@@ -14225,16 +14211,14 @@ msgid "Unitname and Filename do not match.%sExample: unit1.pas and Unit1"
 msgstr "Unit-Name und Dateiname passen nicht zusammen.%sBeispiel: unit1.pas und Unit1"
 
 #: lazarusidestrconsts.lispwconvertproject
-#, fuzzy
 #| msgid "Convert Delphi Project"
 msgid "Convert &Delphi Project"
-msgstr "Delphi-Projekt umwandeln"
+msgstr "&Delphi-Projekt umwandeln"
 
 #: lazarusidestrconsts.lispwnewproject
-#, fuzzy
 #| msgid "New Project"
 msgid "&New Project"
-msgstr "Neues Projekt"
+msgstr "&Neues Projekt"
 
 #: lazarusidestrconsts.lispwopenproject
 #, fuzzy
@@ -14428,7 +14412,6 @@ msgid "Replacements"
 msgstr "Ersetzungen"
 
 #: lazarusidestrconsts.lisreplaceremoveunknown
-#, fuzzy
 #| msgid "Replace unknown types and properties"
 msgid "Fix unknown properties and types"
 msgstr "Unbekannte Typen und Eigenschaften ersetzen"
@@ -14695,7 +14678,7 @@ msgstr "Projekt %s speichern (*%s)"
 
 #: lazarusidestrconsts.lissavesessionchangestoproject
 msgid "Save session changes to project %s?"
-msgstr ""
+msgstr "Sitzungsänderungen in Projekt %s speichern?"
 
 #: lazarusidestrconsts.lissavesettings
 msgid "Save Settings"
@@ -15582,10 +15565,9 @@ msgid "The project compiler options and the directives in the main source differ
 msgstr "Die Projekt-Compilereinstellungen unterscheiden sich von den Direktiven in der Hauptquelldatei. Für die neue Unit werden der Modus und der String-Typ der Projekteinstellungen verwendet:"
 
 #: lazarusidestrconsts.listheprojectdoesnotusethelclunitinterfacesbutitseems
-#, fuzzy
 #| msgid "The project does not use the LCL unit interfaces, but it seems it needs it.%sYou will get strange linker errors if you use the LCL forms without interfaces."
 msgid "The project does not use the LCL unit interfaces, which is required by LCLBase.%sYou will get strange linker errors if you use the LCL without interfaces."
-msgstr "Das Projekt bindet die LCL-Unit-Schnittstelllen nicht ein, scheint sie aber zu brauchen.%sEs führt zu Linker-Fehlern, wenn die LCL-Fenster ohne ihre Interfaces eingebunden werden."
+msgstr "Das Projekt bindet die LCL-Unit-Schnittstellen nicht ein, welche von LCLBase benötigt werden.%sEs führt zu Linker-Fehlern, wenn die LCL-Fenster ohne ihre Interfaces eingebunden werden."
 
 #: lazarusidestrconsts.listheprojecthasnomainsourcefile
 msgid "The project has no main source file."
@@ -16480,7 +16462,6 @@ msgid "Use identifier %s in %s at %s"
 msgstr "Bezeichner %s in %s bei %s verwenden"
 
 #: lazarusidestrconsts.lisuseincludefilter
-#, fuzzy
 #| msgid "Use Include Filter"
 msgid "Use include filter"
 msgstr "Include-Filter anwenden"
@@ -16662,7 +16643,7 @@ msgstr "Allgemein"
 
 #: lazarusidestrconsts.liswatchscopelocal
 msgid "Declaration"
-msgstr ""
+msgstr "Deklaration"
 
 #: lazarusidestrconsts.liswatchtowatchpoint
 msgid "Create &Data/Watch Breakpoint ..."
@@ -17930,11 +17911,11 @@ msgstr "Bis zu Position auswählen"
 
 #: lazarusidestrconsts.srkmecselhalfwordleft
 msgid "Select half-word left"
-msgstr ""
+msgstr "Halbwort links markieren"
 
 #: lazarusidestrconsts.srkmecselhalfwordright
 msgid "Select half-word right"
-msgstr ""
+msgstr "Halbwort rechts markieren"
 
 #: lazarusidestrconsts.srkmecselleft
 msgid "SelLeft"
@@ -17990,11 +17971,11 @@ msgstr "Auswahl nach oben"
 
 #: lazarusidestrconsts.srkmecselwordendleft
 msgid "Select word-end left"
-msgstr ""
+msgstr "Wortende links markieren"
 
 #: lazarusidestrconsts.srkmecselwordendright
 msgid "Select word-end right"
-msgstr ""
+msgstr "Wortende rechts markieren"
 
 #: lazarusidestrconsts.srkmecselwordleft
 msgctxt "lazarusidestrconsts.srkmecselwordleft"
@@ -18486,7 +18467,7 @@ msgstr "&Suche Deklaration"
 
 #: lazarusidestrconsts.uemfindinotherwindow
 msgid "Find in other Window"
-msgstr ""
+msgstr "in anderem Fenster finden"
 
 #: lazarusidestrconsts.uemgotobookmark
 msgctxt "lazarusidestrconsts.uemgotobookmark"
