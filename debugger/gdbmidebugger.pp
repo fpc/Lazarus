@@ -8885,8 +8885,8 @@ begin
     exit;
   end;
 
-  TGDBMIDebugger(Debugger).FCurrentStackFrame := -1;
-  TGDBMIDebugger(Debugger).FInternalStackFrame := -1;
+  TGDBMIDebugger(Debugger).FCurrentStackFrame := 0;
+  TGDBMIDebugger(Debugger).FInternalStackFrame := 0;
   tid := Debugger.Threads.Monitor.CurrentThreads.CurrentThreadId;
   cs := TCurrentCallStack(CurrentCallStackList.EntriesForThreads[tid]);
   idx := cs.CurrentIndex;  // CURRENT
