@@ -453,10 +453,12 @@ procedure TIntervalSourceTest.AssertValueEquals(
   const AExpected: array of Double; const AActual: TChartValueTextArray);
 var
   i: Integer;
+  a: array of Double;
 begin
-  AssertEquals(Length(AExpected), Length(AActual));
-  for i := 0 to High(AExpected) do
-    AssertEquals(AExpected[i], AActual[i].FValue);
+  SetLength(a, Length(AActual));
+  for i := 0 to High(AActual) do
+    a[i] := AActual[i].FValue;
+  AssertEquals(AExpected, a, 1e-6);
 end;
 
 procedure TIntervalSourceTest.IntervalSource;
