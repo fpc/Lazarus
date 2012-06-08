@@ -769,7 +769,6 @@ type
     procedure doTopleftChange(DimChg: Boolean);
     procedure DrawXORVertLine(X: Integer);
     procedure DrawXORHorzLine(Y: Integer);
-    function  EditorCanProcessKey(var Key: TUTF8Char): boolean;
     function  EditorGetValue(validate:boolean=false): boolean;
     procedure EditorPos;
     procedure EditorShowChar(Ch: TUTF8Char);
@@ -2946,13 +2945,6 @@ begin
   end;
   Canvas.Pen.Mode := OldPenMode;
   Canvas.Pen.Color := OldPenColor;
-end;
-
-function TCustomGrid.EditorCanProcessKey(var Key: TUTF8Char): boolean;
-begin
-  result := EditorCanAcceptKey(Key) and not EditorIsReadOnly;
-  if not Result then
-    Key := '';
 end;
 
 procedure TCustomGrid.VisualChange;
