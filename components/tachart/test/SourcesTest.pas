@@ -82,7 +82,7 @@ type
 implementation
 
 uses
-  Math, TAMath;
+  Math, TAMath, AssertHelpers;
 
 type
   TDummyTransform = object
@@ -385,24 +385,23 @@ begin
   AssertEquals(1, FSource.YCount);
   FSource.Add(1, 2);
   FSource.YCount := 2;
-  AssertEquals(1, Length(FSource[0]^.YList));
-  AssertEquals(0, FSource[0]^.YList[0]);
+  AssertEquals([0], FSource[0]^.YList);
   FSource.SetYList(0, [3, 4]);
-  AssertEquals(3, FSource[0]^.YList[0]);
+  AssertEquals('Extra items are chopped', [3], FSource[0]^.YList);
   FSource.DataPoints.Add('1|2|3|4|?|t');
   AssertEquals(3, FSource.YCount);
-  AssertEquals(4, FSource[1]^.YList[1]);
+  AssertEquals(2, FSource[1]^.Y);
+  AssertEquals([3, 4], FSource[1]^.YList);
 
   FSource.AddXYList(2, [7, 8, 9]);
   AssertEquals(3, FSource.YCount);
   AssertEquals(7, FSource[2]^.Y);
-  AssertEquals(8, FSource[2]^.YList[0]);
-  AssertEquals(9, FSource[2]^.YList[1]);
+  AssertEquals([8, 9], FSource[2]^.YList);
   FSource.AddXYList(3, [10]);
   AssertEquals(4, FSource.Count);
   AssertEquals(3, FSource.YCount);
   AssertEquals(10, FSource[3]^.Y);
-  AssertEquals(0, FSource[3]^.YList[0]);
+  AssertEquals([0, 0], FSource[3]^.YList);
   try
     FSource.AddXYList(4, []);
     Fail('Empty YList');

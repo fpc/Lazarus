@@ -39,7 +39,7 @@
         <PackageName Value="TAChartLazarusPkg"/>
       </Item1>
     </RequiredPackages>
-    <Units Count="3">
+    <Units Count="4">
       <Unit0>
         <Filename Value="test.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -55,6 +55,11 @@
         <IsPartOfProject Value="True"/>
         <UnitName Value="SourcesTest"/>
       </Unit2>
+      <Unit3>
+        <Filename Value="AssertHelpers.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="AssertHelpers"/>
+      </Unit3>
     </Units>
   </ProjectOptions>
   <CompilerOptions>
@@ -86,7 +91,7 @@
     </Other>
   </CompilerOptions>
   <Debugging>
-    <Exceptions Count="3">
+    <Exceptions Count="4">
       <Item1>
         <Name Value="EAbort"/>
       </Item1>
@@ -96,6 +101,9 @@
       <Item3>
         <Name Value="EFOpenError"/>
       </Item3>
+      <Item4>
+        <Name Value="TListChartSource.EYListEmptyError"/>
+      </Item4>
     </Exceptions>
   </Debugging>
 </CONFIG>
