@@ -39,6 +39,7 @@ type
     function NewItem: PChartDataItem;
     procedure SetDataPoints(AValue: TStrings);
     procedure SetSorted(AValue: Boolean);
+    procedure SetYListInternal(AIndex, ACount: Integer; AYList: PDouble);
     procedure UpdateCachesAfterAdd(AX, AY: Double);
   protected
     function GetCount: Integer; override;
@@ -50,6 +51,9 @@ type
   public
     function Add(
       AX, AY: Double; const ALabel: String = '';
+      AColor: TChartColor = clTAColor): Integer;
+    function AddXYList(
+      AX: Double; const AY: array of Double; const ALabel: String = '';
       AColor: TChartColor = clTAColor): Integer;
     procedure Clear;
     procedure CopyFrom(ASource: TCustomChartSource);
@@ -379,6 +383,14 @@ begin
   Notify;
 end;
 
+function TListChartSource.AddXYList(
+  AX: Double; const AY: array of Double;
+  const ALabel: String; AColor: TChartColor): Integer;
+begin
+  Result := Add(AX, AY[0], ALabel, AColor);
+  SetYListInternal(Result, High(AY), @AY[1]);
+end;
+
 procedure TListChartSource.Clear; inline;
 var
   i: Integer;
@@ -555,11 +567,17 @@ end;
 
 procedure TListChartSource.SetYList(
   AIndex: Integer; const AYList: array of Double);
+begin
+  SetYListInternal(AIndex, Length(AYList), @AYList[0]);
+end;
+
+procedure TListChartSource.SetYListInternal(
+  AIndex, ACount: Integer; AYList: PDouble);
 var
   i: Integer;
 begin
   with Item[AIndex]^ do
-    for i := 0 to Min(High(AYList), High(YList)) do
+    for i := 0 to Min(High(YList), ACount - 1) do
       YList[i] := AYList[i];
 end;
 
