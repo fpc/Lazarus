@@ -2,6 +2,10 @@ unit mainform;
 
 {$mode objfpc}{$H+}
 
+{$ifdef Linux}{$ifdef CPUARM}
+  {$define Android}
+{$endif}{$endif}
+
 interface
 
 uses
@@ -53,7 +57,7 @@ type
     ClickCounter: Integer;
     procedure HandleMessageDialogFinished(Sender: TObject; AResult: Integer);
     procedure SocketProc;
-    procedure SocketProc2;
+    function LoadHTMLPageViaJNI(AURL: string): string;
   end; 
 
   { TSubControl }
@@ -75,7 +79,7 @@ implementation
 
 uses secondform,
   ctypes, //android_sockets,
-  {$ifdef CPUARM}
+  {$ifdef Android}
   jni,
   {$endif}
   customdrawnint;
@@ -164,6 +168,7 @@ end;
 procedure TForm1.Button1Click(Sender: TObject);
 var
   sqliteDLL : Pointer;
+  lStr: string;
 begin
 (*  sqliteDLL:=DlOpen('/system/lib/libsqlite.so',RTLD_LAZY);
   DebugLn(IntToHex(PtrUInt(sqliteDLL), 8));
@@ -172,7 +177,7 @@ begin
   DebugLn('Button1Click');
   ProgressBar1.Position := ProgressBar1.Position + 10;
   DebugLn('Cliboard.AsText='+ClipBoard.AsText);
-  SocketProc2();
+  lStr := LoadHTMLPageViaJNI('http://w3mentor.com/');
   //ClipBoard.AsText:='Button1Clicked';
 //  OpenDocument('/mnt/sdcard/dcim/100MEDIA/IMAG0008.jpg');
 //  OpenDocument('/mnt/sdcard/emaillog.txt');
@@ -324,10 +329,10 @@ begin
   }//-- end main --//*)
 end;
 
-procedure TForm1.SocketProc2;
-{$ifdef CPUARM}
+function TForm1.LoadHTMLPageViaJNI(AURL: string): string;
+{$ifdef Android}
 var
-  javaClass_DefaultHttpClient, javaClass_HttpGet,
+  javaClass_DefaultHttpClient, javaClass_AbstractHttpClient, javaClass_HttpGet,
     javaClass_URI, javaClass_HttpResponse, javaClass_HttpEntity,
     javaClass_InputStreamReader, javaClass_BufferedReader: jclass;
   javaMethod_DefaultHttpClient_new, javaMethod_DefaultHttpClient_execute,
@@ -346,15 +351,19 @@ var
   lNativeString: PChar;
 {$endif}
 begin
-{$ifdef CPUARM}
+{$ifdef Android}
+  DebugLn(':>LoadHTMLPageViaJNI');
   // First call FindClass for all required classes
   javaClass_DefaultHttpClient := javaEnvRef^^.FindClass(
     javaEnvRef,
     'org/apache/http/impl/client/DefaultHttpClient');
+  javaClass_AbstractHttpClient := javaEnvRef^^.FindClass(
+    javaEnvRef,
+    'org/apache/http/impl/client/AbstractHttpClient');
   javaClass_HttpGet := javaEnvRef^^.FindClass(javaEnvRef,
     'org/apache/http/client/methods/HttpGet');
   javaClass_URI := javaEnvRef^^.FindClass(javaEnvRef,
-    'android/net/URI/');
+    'java/net/URI');
   javaClass_HttpResponse := javaEnvRef^^.FindClass(javaEnvRef,
     'org/apache/http/HttpResponse');
   javaClass_HttpEntity := javaEnvRef^^.FindClass(javaEnvRef,
@@ -365,31 +374,24 @@ begin
     'java/io/BufferedReader');
 
   // Now all Method IDs
-  javaMethod_DefaultHttpClient_new :=
-    javaEnvRef^^.GetMethodID(javaEnvRef,
-    javaClass_DefaultHttpClient, '<init>', '()V');
-  javaMethod_HttpGet_new := javaEnvRef^^.GetMethodID(
-    javaEnvRef, javaClass_HttpGet, '<init>', '()V');
-  javaMethod_URI_new := javaEnvRef^^.GetMethodID(
-    javaEnvRef, javaClass_URI, '<init>',
-    '(Ljava/lang/String;)V');
-  javaMethod_HttpGet_setURI := javaEnvRef^^.GetMethodID(
-    javaEnvRef, javaClass_URI, 'setURI',
-    '(Landroid/net/URI/;)V');
-  javaMethod_DefaultHttpClient_execute := javaEnvRef^^.GetMethodID(
-    javaEnvRef, javaClass_DefaultHttpClient, 'execute',
+  DebugLn(':LoadHTMLPageViaJNI 1');
+  javaMethod_DefaultHttpClient_new := javaEnvRef^^.GetMethodID(javaEnvRef, javaClass_DefaultHttpClient, '<init>', '()V');
+  javaMethod_HttpGet_new := javaEnvRef^^.GetMethodID(javaEnvRef, javaClass_HttpGet, '<init>', '()V');
+  javaMethod_URI_new := javaEnvRef^^.GetMethodID(javaEnvRef, javaClass_URI, '<init>', '(Ljava/lang/String;)V');
+  javaMethod_HttpGet_setURI := javaEnvRef^^.GetMethodID(javaEnvRef, javaClass_HttpGet, 'setURI', '(Ljava/net/URI;)V');
+  javaMethod_DefaultHttpClient_execute := javaEnvRef^^.GetMethodID(javaEnvRef, javaClass_AbstractHttpClient, 'execute',
     '(Lorg/apache/http/client/methods/HttpUriRequest;)Lorg/apache/http/HttpResponse;');
-  javaMethod_HttpResponse_getEntity := javaEnvRef^^.GetMethodID(
-    javaEnvRef, javaClass_HttpResponse, 'getEntity', '()Lorg/apache/http/HttpEntity;');
+  javaMethod_HttpResponse_getEntity := javaEnvRef^^.GetMethodID(javaEnvRef, javaClass_HttpResponse, 'getEntity',
+    '()Lorg/apache/http/HttpEntity;');
   javaMethod_HttpEntity_getContent := javaEnvRef^^.GetMethodID(
     javaEnvRef, javaClass_HttpEntity, 'getContent', '()Ljava/io/InputStream;');
   javaMethod_InputStreamReader_new := javaEnvRef^^.GetMethodID(
-    javaEnvRef, javaClass_URI, '<init>',
-    '(Ljava/io/InputStream)V');
+    javaEnvRef, javaClass_InputStreamReader, '<init>',
+    '(Ljava/io/InputStream;)V');
   javaMethod_BufferedReader_readLine := javaEnvRef^^.GetMethodID(
-    javaEnvRef, javaClass_URI, 'readLine', '()V');
+    javaEnvRef, javaClass_BufferedReader, 'readLine', '()Ljava/lang/String;');
   javaMethod_BufferedReader_close := javaEnvRef^^.GetMethodID(
-    javaEnvRef, javaClass_URI, 'close', '()Ljava/lang/String;');
+    javaEnvRef, javaClass_BufferedReader, 'close', '()V');
 
   // Create a new DefaultHttpClient instance
   // HttpClient javaHttpClient = new DefaultHttpClient();
@@ -397,49 +399,58 @@ begin
     javaClass_DefaultHttpClient,
     javaMethod_DefaultHttpClient_new);
 
+  DebugLn(':LoadHTMLPageViaJNI 3 javaHttpClient='+IntToHex(PtrInt(javaHttpClient), 8));
   // Create a new instance for the HTTP request object
   // HttpGet javaRequest = new HttpGet();
   javaRequest := javaEnvRef^^.NewObject(javaEnvRef,
     javaClass_HttpGet,
     javaMethod_HttpGet_new);
 
+  DebugLn(':LoadHTMLPageViaJNI 4 javaRequest='+IntToHex(PtrInt(javaRequest), 8));
   // Add a URI for the request object
-  // URI myURI = new URI("http://w3mentor.com/");
-  lParams[0].l := javaEnvRef^^.NewStringUTF(javaEnvRef, 'http://w3mentor.com/');
+  // URI javaURI = new URI("http://w3mentor.com/");
+  lParams[0].l := javaEnvRef^^.NewStringUTF(javaEnvRef, PChar(AURL));
   javaURI := javaEnvRef^^.NewObjectA(javaEnvRef,
     javaClass_URI, javaMethod_URI_new, @lParams[0]);
   javaEnvRef^^.DeleteLocalRef(javaEnvRef, lParams[0].l);
-  // javaRequest.setURI(myURI);
+  // javaRequest.setURI(javaURI);
   lParams[0].l := javaURI;
   javaEnvRef^^.CallVoidMethodA(javaEnvRef, javaRequest,
     javaMethod_HttpGet_setURI, @lParams[0]);
 
+  DebugLn(':LoadHTMLPageViaJNI 5');
   // Execute the HTTP request and obtain a HTTP response
   // HttpResponse response = javaHttpClient.execute(javaRequest);
   lParams[0].l := javaRequest;
   javaResponse := javaEnvRef^^.CallObjectMethodA(javaEnvRef, javaHttpClient,
     javaMethod_DefaultHttpClient_execute, @lParams[0]);
 
+  DebugLn(':LoadHTMLPageViaJNI 6 javaResponse='+IntToHex(PtrInt(javaResponse), 8));
   // HttpEntity javaEntity = response.getEntity();
   javaEntity := javaEnvRef^^.CallObjectMethod(javaEnvRef, javaResponse,
     javaMethod_HttpResponse_getEntity);
+  DebugLn(':LoadHTMLPageViaJNI 6.1');
   // InputStream javaContent = javaEntity.getContent();
   javaContent := javaEnvRef^^.CallObjectMethod(javaEnvRef, javaEntity,
     javaMethod_HttpEntity_getContent);
+  DebugLn(':LoadHTMLPageViaJNI 6.2');
   // javaStreamReader = new InputStreamReader(javaContent)
   lParams[0].l := javaRequest;
   javaStreamReader := javaEnvRef^^.NewObjectA(javaEnvRef,
     javaClass_InputStreamReader,
     javaMethod_InputStreamReader_new, @lParams[0]);
   // javaBufferedReader = new BufferedReader(javaStreamReader);
+  DebugLn(':LoadHTMLPageViaJNI 6.3');
   javaMethod_BufferedReader_new := javaEnvRef^^.GetMethodID(
     javaEnvRef, javaClass_URI, '<init>',
     '(Ljava/io/InputStream)V');
   lParams[0].l := javaStreamReader;
+  DebugLn(':LoadHTMLPageViaJNI 6.4');
   javaBufferedReader := javaEnvRef^^.NewObjectA(javaEnvRef,
     javaClass_BufferedReader,
     javaMethod_BufferedReader_new, @lParams[0]);
 
+  DebugLn(':LoadHTMLPageViaJNI 7');
   // String line = "";
   // while ((line = javaBufferedReader.readLine()) != null) {
   // }
@@ -450,9 +461,11 @@ begin
     if javaString = nil then Break;
     lNativeString := javaEnvRef^^.GetStringUTFChars(javaEnvRef, JavaString, nil);
     DebugLn(lNativeString);
+    Result := lNativeString;
     javaEnvRef^^.ReleaseStringUTFChars(javaEnvRef, JavaString, lNativeString);
   end;
 
+  DebugLn(':LoadHTMLPageViaJNI 8');
   // javaBufferedReader.close();
   javaEnvRef^^.CallVoidMethod(javaEnvRef, javaBufferedReader,
     javaMethod_BufferedReader_close);
