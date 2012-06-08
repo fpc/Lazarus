@@ -376,22 +376,17 @@ begin
   // Now all Method IDs
   DebugLn(':LoadHTMLPageViaJNI 1');
   javaMethod_DefaultHttpClient_new := javaEnvRef^^.GetMethodID(javaEnvRef, javaClass_DefaultHttpClient, '<init>', '()V');
-  javaMethod_HttpGet_new := javaEnvRef^^.GetMethodID(javaEnvRef, javaClass_HttpGet, '<init>', '()V');
-  javaMethod_URI_new := javaEnvRef^^.GetMethodID(javaEnvRef, javaClass_URI, '<init>', '(Ljava/lang/String;)V');
-  javaMethod_HttpGet_setURI := javaEnvRef^^.GetMethodID(javaEnvRef, javaClass_HttpGet, 'setURI', '(Ljava/net/URI;)V');
   javaMethod_DefaultHttpClient_execute := javaEnvRef^^.GetMethodID(javaEnvRef, javaClass_AbstractHttpClient, 'execute',
     '(Lorg/apache/http/client/methods/HttpUriRequest;)Lorg/apache/http/HttpResponse;');
-  javaMethod_HttpResponse_getEntity := javaEnvRef^^.GetMethodID(javaEnvRef, javaClass_HttpResponse, 'getEntity',
-    '()Lorg/apache/http/HttpEntity;');
-  javaMethod_HttpEntity_getContent := javaEnvRef^^.GetMethodID(
-    javaEnvRef, javaClass_HttpEntity, 'getContent', '()Ljava/io/InputStream;');
-  javaMethod_InputStreamReader_new := javaEnvRef^^.GetMethodID(
-    javaEnvRef, javaClass_InputStreamReader, '<init>',
-    '(Ljava/io/InputStream;)V');
-  javaMethod_BufferedReader_readLine := javaEnvRef^^.GetMethodID(
-    javaEnvRef, javaClass_BufferedReader, 'readLine', '()Ljava/lang/String;');
-  javaMethod_BufferedReader_close := javaEnvRef^^.GetMethodID(
-    javaEnvRef, javaClass_BufferedReader, 'close', '()V');
+  javaMethod_HttpGet_new := javaEnvRef^^.GetMethodID(javaEnvRef, javaClass_HttpGet, '<init>', '()V');
+  javaMethod_HttpGet_setURI := javaEnvRef^^.GetMethodID(javaEnvRef, javaClass_HttpGet, 'setURI', '(Ljava/net/URI;)V');
+  javaMethod_URI_new := javaEnvRef^^.GetMethodID(javaEnvRef, javaClass_URI, '<init>', '(Ljava/lang/String;)V');
+  javaMethod_HttpResponse_getEntity := javaEnvRef^^.GetMethodID(javaEnvRef, javaClass_HttpResponse, 'getEntity', '()Lorg/apache/http/HttpEntity;');
+  javaMethod_HttpEntity_getContent := javaEnvRef^^.GetMethodID(javaEnvRef, javaClass_HttpEntity, 'getContent', '()Ljava/io/InputStream;');
+  javaMethod_InputStreamReader_new := javaEnvRef^^.GetMethodID(javaEnvRef, javaClass_InputStreamReader, '<init>', '(Ljava/io/InputStream;)V');
+  javaMethod_BufferedReader_new := javaEnvRef^^.GetMethodID(javaEnvRef, javaClass_BufferedReader, '<init>', '(Ljava/io/InputStream;)V');
+  javaMethod_BufferedReader_readLine := javaEnvRef^^.GetMethodID(javaEnvRef, javaClass_BufferedReader, 'readLine', '()Ljava/lang/String;');
+  javaMethod_BufferedReader_close := javaEnvRef^^.GetMethodID(javaEnvRef, javaClass_BufferedReader, 'close', '()V');
 
   // Create a new DefaultHttpClient instance
   // HttpClient javaHttpClient = new DefaultHttpClient();
@@ -441,9 +436,6 @@ begin
     javaMethod_InputStreamReader_new, @lParams[0]);
   // javaBufferedReader = new BufferedReader(javaStreamReader);
   DebugLn(':LoadHTMLPageViaJNI 6.3');
-  javaMethod_BufferedReader_new := javaEnvRef^^.GetMethodID(
-    javaEnvRef, javaClass_URI, '<init>',
-    '(Ljava/io/InputStream)V');
   lParams[0].l := javaStreamReader;
   DebugLn(':LoadHTMLPageViaJNI 6.4');
   javaBufferedReader := javaEnvRef^^.NewObjectA(javaEnvRef,
