@@ -353,8 +353,7 @@ begin
 end;
 
 function LGlMsCreateOpenGLContextAttrList(DoubleBuffered: boolean; RGBA: boolean; 
-  const MultiSampling, AlphaBits, DepthBits, StencilBits: Cardinal
-  ): PInteger;
+  const MultiSampling, AlphaBits, DepthBits, StencilBits, AUXBuffers: Cardinal): PInteger;
 var
   p: integer;
 
@@ -382,6 +381,7 @@ var
     Add(WGL_ALPHA_BITS_ARB);  Add(AlphaBits);
     Add(WGL_DEPTH_BITS_ARB);  Add(DepthBits);
     Add(WGL_STENCIL_BITS_ARB);  Add(StencilBits);
+    Add(WGL_AUX_BUFFERS_ARB);  Add(AUXBuffers);
     if MultiSampling > 1 then
     begin
       Add(WGL_SAMPLE_BUFFERS_ARB); Add(1);
@@ -462,7 +462,7 @@ begin
     and Assigned(wglChoosePixelFormatARB) then
   begin
     VisualAttrList := LGlMsCreateOpenGLContextAttrList(DoubleBuffered, RGBA, 
-      MultiSampling, AlphaBits, DepthBits, StencilBits);
+      MultiSampling, AlphaBits, DepthBits, StencilBits, AUXBuffers);
     try
       FillChar(VisualAttrFloat, SizeOf(VisualAttrFloat), 0);
       MsInitSuccess := wglChoosePixelFormatARB(Info^.DC, PGLint(VisualAttrList),
