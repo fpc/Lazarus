@@ -1051,9 +1051,11 @@ end;
 procedure TGtk2WidgetSet.AppBringToFront;
 begin
   if Assigned(Application.MainForm) and Application.MainForm.HandleAllocated then
+  begin
     gdk_window_raise({%H-}PGtkWidget(Application.MainForm.Handle)^.window);
     gdk_window_focus({%H-}PGtkWidget(Application.MainForm.Handle)^.window,
                                 gtk_get_current_event_time);
+  end;
 end;
 
 procedure TGtk2WidgetSet.AppMinimize;
