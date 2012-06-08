@@ -392,6 +392,23 @@ begin
   FSource.DataPoints.Add('1|2|3|4|?|t');
   AssertEquals(3, FSource.YCount);
   AssertEquals(4, FSource[1]^.YList[1]);
+
+  FSource.AddXYList(2, [7, 8, 9]);
+  AssertEquals(3, FSource.YCount);
+  AssertEquals(7, FSource[2]^.Y);
+  AssertEquals(8, FSource[2]^.YList[0]);
+  AssertEquals(9, FSource[2]^.YList[1]);
+  FSource.AddXYList(3, [10]);
+  AssertEquals(4, FSource.Count);
+  AssertEquals(3, FSource.YCount);
+  AssertEquals(10, FSource[3]^.Y);
+  AssertEquals(0, FSource[3]^.YList[0]);
+  try
+    FSource.AddXYList(4, []);
+    Fail('Empty YList');
+  except on E: Exception do
+    AssertTrue('Empty YList', E is TListChartSource.EYListEmptyError);
+  end;
 end;
 
 procedure TListSourceTest.SetUp;

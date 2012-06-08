@@ -46,6 +46,9 @@ type
     function GetItem(AIndex: Integer): PChartDataItem; override;
     procedure SetYCount(AValue: Cardinal); override;
   public
+    type
+      EYListEmptyError = class(EChartError);
+  public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   public
@@ -387,8 +390,11 @@ function TListChartSource.AddXYList(
   AX: Double; const AY: array of Double;
   const ALabel: String; AColor: TChartColor): Integer;
 begin
+  if Length(AY) = 0 then
+    raise EYListEmptyError.Create('AddXYList: Y List is empty');
   Result := Add(AX, AY[0], ALabel, AColor);
-  SetYListInternal(Result, High(AY), @AY[1]);
+  if Length(AY) > 1 then
+    SetYListInternal(Result, High(AY), @AY[1]);
 end;
 
 procedure TListChartSource.Clear; inline;
