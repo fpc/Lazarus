@@ -1655,8 +1655,8 @@ var
       AddrOperatorPos:=-1;
     // check assignment operator :=
     if not AtomIs(':=') then exit;
-    AssignmentOperator:=CurPos.StartPos;
     ReadPriorAtom;
+    AssignmentOperator:=CurPos.EndPos;
     // check event name
     if not AtomIsIdentifier then exit;
     PropVarAtom:=CurPos;
