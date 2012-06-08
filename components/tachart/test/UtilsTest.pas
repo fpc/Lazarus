@@ -83,7 +83,7 @@ type
 implementation
 
 uses
-  Math, TAGeometry, TAMath;
+  Math, TAGeometry, TAMath, AssertHelpers;
 
 { TIntervalListTest }
 
@@ -407,30 +407,9 @@ end;
 
 procedure TPublishedIntegerSetTest.TestAsBooleans;
 
-  function BooleansToStr(const A: array of Boolean): String;
-  var
-    b: Boolean;
-  begin
-    Result := '';
-    for b in A do begin
-      if Result <> '' then
-        Result += ',';
-      Result += BoolToStr(b, 'true', 'false');
-    end;
-    Result := '[' + Result + ']';
-  end;
-
   procedure AssertBooleans(const AExpected: array of Boolean; ACount: Integer);
-  var
-    actual: array of Boolean;
-    len: Integer;
   begin
-    actual := FISet.AsBooleans(ACount);
-    len := Length(actual);
-    AssertTrue(
-      BooleansToStr(actual) + ' = ' + BooleansToStr(AExpected),
-      (len = Length(AExpected)) and
-      ((len = 0) or (CompareByte(actual[0], AExpected[0], len) = 0)));
+    AssertEquals(AExpected, FISet.AsBooleans(ACount));
   end;
 
 begin
