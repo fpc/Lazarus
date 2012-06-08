@@ -15,6 +15,7 @@ type
   TForm1 = class(TForm)
     ccsStacked: TCalculatedChartSource;
     cbPercentage: TCheckBox;
+    cgShowStackLevels: TCheckGroup;
     chOHLC: TChart;
     ChartStyles1: TChartStyles;
     chOHLCOpenHighLowCloseSeries1: TOpenHighLowCloseSeries;
@@ -36,6 +37,7 @@ type
     tsStacked: TTabSheet;
     tsBubble: TTabSheet;
     procedure cbPercentageChange(Sender: TObject);
+    procedure cgShowStackLevelsItemClick(Sender: TObject; Index: integer);
     procedure FormCreate(Sender: TObject);
     procedure rgStackedSeriesClick(Sender: TObject);
   end;
@@ -52,6 +54,20 @@ implementation
 procedure TForm1.cbPercentageChange(Sender: TObject);
 begin
   ccsStacked.Percentage := cbPercentage.Checked;
+end;
+
+procedure TForm1.cgShowStackLevelsItemClick(Sender: TObject; Index: integer);
+var
+  s: String;
+  i: Integer;
+begin
+  s := '';
+  for i := 0 to cgShowStackLevels.Items.Count - 1 do begin
+    if cgShowStackLevels.Checked[i] then
+      s += Format('%d,', [i]);
+    ChartStyles1.Styles[i].RepeatCount := Ord(cgShowStackLevels.Checked[i]);
+  end;
+  ccsStacked.ReorderYList := s[1..Length(s) - 1];
 end;
 
 procedure TForm1.FormCreate(Sender: TObject);
