@@ -74,8 +74,11 @@ var
 implementation
 
 uses secondform,
-  ctypes, android_sockets,
-  jni, customdrawnint;
+  ctypes, //android_sockets,
+  {$ifdef CPUARM}
+  jni,
+  {$endif}
+  customdrawnint;
 
 { TSubControl }
 
@@ -159,7 +162,13 @@ begin
 end;
 
 procedure TForm1.Button1Click(Sender: TObject);
+var
+  sqliteDLL : Pointer;
 begin
+(*  sqliteDLL:=DlOpen('/system/lib/libsqlite.so',RTLD_LAZY);
+  DebugLn(IntToHex(PtrUInt(sqliteDLL), 8));
+  sqliteDLL:=DlOpen('/data/data/com.pascal.lcltest/lib/libsqlite.so',RTLD_LAZY);*)
+  Button1.Caption := IntToHex(PtrUInt(sqliteDLL), 8);
   DebugLn('Button1Click');
   ProgressBar1.Position := ProgressBar1.Position + 10;
   DebugLn('Cliboard.AsText='+ClipBoard.AsText);
@@ -257,7 +266,7 @@ end;
 procedure TForm1.SocketProc;
 const
   RCVBUFSIZE = 64;
-var
+(*var
   sock: cint;                      { Socket descriptor }
   echoServAddr: Tsockaddr_in;      { Echo server address }
   echoServPort: cushort;           { Echo server port }
@@ -265,9 +274,9 @@ var
   echoString: PChar;               { String to send to echo server }
   echoBuffer: array[0..RCVBUFSIZE-1] of Char;     { Buffer for echo string }
   echoStringLen: cuint;            { Length of string to echo }
-  bytesRcvd, totalBytesRcvd: cint; { Bytes read in single recv() and total bytes read }
+  bytesRcvd, totalBytesRcvd: cint; { Bytes read in single recv() and total bytes read }*)
 begin
-  servIP := '123.123.123.123';
+(*  servIP := '123.123.123.123';
   echoString := 'echo string';
 
   echoServPort := 7; // 7 is the well-known port for the echo service
@@ -278,7 +287,7 @@ begin
 //  if sock < 0 then
 //    DieWithError("socket() failed");
 
-  // Construct the server address structure */
+  // Construct the server address structure */*)
 (*      memset(&echoServAddr, 0, sizeof(echoServAddr));     /* Zero out structure */
       echoServAddr.sin_family      = AF_INET;             /* Internet address family */
       echoServAddr.sin_addr.s_addr = inet_addr(servIP);   /* Server IP address */
@@ -316,25 +325,28 @@ begin
 end;
 
 procedure TForm1.SocketProc2;
+{$ifdef CPUARM}
 var
   javaClass_DefaultHttpClient, javaClass_HttpGet,
     javaClass_URI, javaClass_HttpResponse, javaClass_HttpEntity,
     javaClass_InputStreamReader, javaClass_BufferedReader: jclass;
-  javaMethod_DefaultHttpClient_new,
+  javaMethod_DefaultHttpClient_new, javaMethod_DefaultHttpClient_execute,
     javaMethod_HttpGet_new, javaMethod_HttpGet_setURI,
     javaMethod_URI_new,
     javaMethod_HttpResponse_getEntity,
     javaMethod_HttpEntity_getContent,
     javaMethod_InputStreamReader_new,
     javaMethod_BufferedReader_new, javaMethod_BufferedReader_readLine,
-    javaMethod_BufferedReader_close: jmethod;
+    javaMethod_BufferedReader_close: jmethodid;
   javaHttpClient, javaRequest, javaURI,
     javaResponse, javaEntity, javaContent,
     javaStreamReader, javaBufferedReader: jobject;
   javaString: jstring;
   lParams: array[0..2] of JValue;
   lNativeString: PChar;
+{$endif}
 begin
+{$ifdef CPUARM}
   // First call FindClass for all required classes
   javaClass_DefaultHttpClient := javaEnvRef^^.FindClass(
     javaEnvRef,
@@ -364,8 +376,8 @@ begin
   javaMethod_HttpGet_setURI := javaEnvRef^^.GetMethodID(
     javaEnvRef, javaClass_URI, 'setURI',
     '(Landroid/net/URI/;)V');
-  javaMethod_HttpClient_execute := javaEnvRef^^.GetMethodID(
-    javaEnvRef, javaClass_URI, 'execute',
+  javaMethod_DefaultHttpClient_execute := javaEnvRef^^.GetMethodID(
+    javaEnvRef, javaClass_DefaultHttpClient, 'execute',
     '(Lorg/apache/http/client/methods/HttpUriRequest;)Lorg/apache/http/HttpResponse;');
   javaMethod_HttpResponse_getEntity := javaEnvRef^^.GetMethodID(
     javaEnvRef, javaClass_HttpResponse, 'getEntity', '()Lorg/apache/http/HttpEntity;');
@@ -406,7 +418,7 @@ begin
   // HttpResponse response = javaHttpClient.execute(javaRequest);
   lParams[0].l := javaRequest;
   javaResponse := javaEnvRef^^.CallObjectMethodA(javaEnvRef, javaHttpClient,
-    javaMethod_HttpClient_execute, @lParams[0]);
+    javaMethod_DefaultHttpClient_execute, @lParams[0]);
 
   // HttpEntity javaEntity = response.getEntity();
   javaEntity := javaEnvRef^^.CallObjectMethod(javaEnvRef, javaResponse,
@@ -437,13 +449,14 @@ begin
       javaMethod_BufferedReader_readLine);
     if javaString = nil then Break;
     lNativeString := javaEnvRef^^.GetStringUTFChars(javaEnvRef, JavaString, nil);
-    DebugLn(lJavaString);
+    DebugLn(lNativeString);
     javaEnvRef^^.ReleaseStringUTFChars(javaEnvRef, JavaString, lNativeString);
   end;
 
   // javaBufferedReader.close();
   javaEnvRef^^.CallVoidMethod(javaEnvRef, javaBufferedReader,
     javaMethod_BufferedReader_close);
+{$endif}
 end;
 
 end.
