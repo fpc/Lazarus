@@ -73,10 +73,12 @@ type
     BarC: TBarCode;
     FText: string;
     
+    function GetAngle: Double;
     function GetBarType: TBarcodeType;
     function GetCheckSum: Boolean;
     function GetShowText: Boolean;
     function GetZoom: Double;
+    procedure SetAngle(AValue: Double);
     procedure SetBarType(const AValue: TBarcodeType);
     procedure SetCheckSum(const AValue: Boolean);
     procedure SetShowText(const AValue: Boolean);
@@ -104,6 +106,7 @@ type
     property BarType : TBarcodeType read GetBarType write SetBarType;
     property ShowText : Boolean read GetShowText write SetShowText;
     property Zoom : Double read GetZoom write SetZoom;
+    property Angle: Double read GetAngle write SetAngle;
     property Memo;
     property Frames;
     property FrameColor;
@@ -206,6 +209,11 @@ begin
   Result:=Param.cBarType;
 end;
 
+function TfrBarCodeView.GetAngle: Double;
+begin
+  Result := Param.cAngle;
+end;
+
 function TfrBarCodeView.GetCheckSum: Boolean;
 begin
   Result:=Param.cCheckSum;
@@ -221,28 +229,55 @@ begin
   Result:=Param.cRatio;
 end;
 
+procedure TfrBarCodeView.SetAngle(AValue: Double);
+begin
+  if (Param.cAngle<>AValue) and
+     ((AValue=0.0) or (AValue=90.0) or (AValue=180.0) or (AValue=270.0)) then
+  begin
+    BeforeChange;
+    Param.cAngle:=AValue;
+    AfterChange;
+  end;
+end;
+
 procedure TfrBarCodeView.SetBarType(const AValue: TBarcodeType);
 begin
-  Param.cBarType:=aValue;
-  invalidate;
+  if Param.cBarType<>AValue then
+  begin
+    BeforeChange;
+    Param.cBarType:=aValue;
+    AfterChange;
+  end;
 end;
 
 procedure TfrBarCodeView.SetCheckSum(const AValue: Boolean);
 begin
-  Param.cCheckSum:=aValue;
-  invalidate;
+  if Param.cCheckSum<>AValue then
+  begin
+    BeforeChange;
+    Param.cCheckSum:=aValue;
+    AfterChange;
+  end;
 end;
 
 procedure TfrBarCodeView.SetShowText(const AValue: Boolean);
 begin
-  Param.cShowText:=aValue;
-  invalidate;
+  if Param.cShowText<>AValue then
+  begin
+    BeforeChange;
+    Param.cShowText:=aValue;
+    AfterChange;
+  end;
 end;
 
 procedure TfrBarCodeView.SetZoom(const AValue: Double);
 begin
-  Param.cRatio:=aValue;
-  invalidate;
+  if Param.cRatio<>AValue then
+  begin
+    BeforeChange;
+    Param.cRatio:=aValue;
+    AfterChange;
+  end;
 end;
 
 function TfrBarCodeView.CreateBarcode: TBitmap;
@@ -578,6 +613,7 @@ begin
   RestoreProperty('ShowText',XML.GetValue(Path+'BarCode/ShowText',''));
   RestoreProperty('CheckSum',XML.GetValue(Path+'BarCode/CheckSum',''));
   RestoreProperty('Zoom',XML.GetValue(Path+'BarCode/Zoom','1'));
+  RestoreProperty('Angle',XML.GetValue(Path+'BarCode/Angle','0'));
 end;
 
 procedure TfrBarCodeView.SaveToXML(XML: TLrXMLConfig; const Path: String);
@@ -588,6 +624,7 @@ begin
   XML.SetValue(Path+'BarCode/ShowText', GetSaveProperty('ShowText'));
   XML.SetValue(Path+'BarCode/CheckSum', GetSaveProperty('CheckSum'));
   XML.SetValue(Path+'BarCode/Zoom', GetSaveProperty('Zoom'));
+  XML.SetValue(Path+'BarCode/Angle', GetSaveProperty('Angle'));
 end;
 
 //--------------------------------------------------------------------------
@@ -631,6 +668,8 @@ begin
 end;
 
 procedure TfrBarCodeForm.ShowEditor(t:TfrView);
+var
+  tmp:Double;
 begin
   if t.Memo.Count > 0 then
     M1.Text := t.Memo.Strings[0];
@@ -653,21 +692,22 @@ begin
     begin
       Memo.Clear;
       Memo.Add(M1.Text);
-      Param.cCheckSum  := ckCheckSum.Checked;
-      Param.cShowText  := ckViewText.Checked;
-      Param.cBarType   := TBarcodeType(cbType.ItemIndex);
-      Param.cRatio     := StrToFloatDef(edZoom.Text,1);
-      if Param.cRatio<1 then
-        Param.cRatio:=1;
+      CheckSum  := ckCheckSum.Checked;
+      ShowText  := ckViewText.Checked;
+      BarType   := TBarcodeType(cbType.ItemIndex);
+      tmp := StrToFloatDef(edZoom.Text,1);
+      if tmp<1.0 then
+        tmp:=1.0;
+      Zoom := tmp;
         
       if RB1.Checked then
-        Param.cAngle := 0
+        Angle := 0
       else if RB2.Checked then
-        Param.cAngle := 90
+        Angle := 90
       else if RB3.Checked then
-        Param.cAngle := 180
+        Angle := 180
       else
-        Param.cAngle := 270;
+        Angle := 270;
     end;
   end;
 end;
