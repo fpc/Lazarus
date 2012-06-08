@@ -39,7 +39,6 @@ type
     function NewItem: PChartDataItem;
     procedure SetDataPoints(AValue: TStrings);
     procedure SetSorted(AValue: Boolean);
-    procedure SetYListInternal(AIndex, ACount: Integer; AYList: PDouble);
     procedure UpdateCachesAfterAdd(AX, AY: Double);
   protected
     function GetCount: Integer; override;
@@ -394,7 +393,7 @@ begin
     raise EYListEmptyError.Create('AddXYList: Y List is empty');
   Result := Add(AX, AY[0], ALabel, AColor);
   if Length(AY) > 1 then
-    SetYListInternal(Result, High(AY), @AY[1]);
+    SetYList(Result, AY[1..High(AY)]);
 end;
 
 procedure TListChartSource.Clear; inline;
@@ -573,17 +572,11 @@ end;
 
 procedure TListChartSource.SetYList(
   AIndex: Integer; const AYList: array of Double);
-begin
-  SetYListInternal(AIndex, Length(AYList), @AYList[0]);
-end;
-
-procedure TListChartSource.SetYListInternal(
-  AIndex, ACount: Integer; AYList: PDouble);
 var
   i: Integer;
 begin
   with Item[AIndex]^ do
-    for i := 0 to Min(High(YList), ACount - 1) do
+    for i := 0 to Min(High(AYList), High(YList)) do
       YList[i] := AYList[i];
 end;
 
