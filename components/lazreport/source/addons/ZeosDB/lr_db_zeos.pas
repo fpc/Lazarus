@@ -353,7 +353,7 @@ begin
   SavePage := CurPage;
   SaveBand := CurBand;
 
-  CurView := nil;
+  CurView := Self;
   CurPage := OwnerPage;
   CurBand := nil;
 

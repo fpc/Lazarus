@@ -8470,7 +8470,7 @@ begin
     end;
   end;
 
-  if CurView.Flags and flHideZeros <> 0 then
+  if Assigned(CurView) and (CurView.Flags and flHideZeros <> 0) then
   begin
     if TVarData(aValue).VType in [varSmallInt, varInteger, varCurrency, varDecimal, varShortInt, varByte, varWord, varLongWord,
                                  varInt64, varQWord] then
