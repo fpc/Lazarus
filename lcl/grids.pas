@@ -10252,17 +10252,17 @@ end;
 
 procedure TCustomStringGrid.LoadFromCSVStream(AStream: TStream;
   ADelimiter: Char=','; WithHeader: boolean=true);
-  //Note for developer:
-  //  When TStrings.SetDelimitedText gets fixed (in a release version)
-  //  wen can remove this helper procedure and use DelimitedText with Strictdelimiter := True
   Procedure ParseDelimitedText(const AValue: string; const ADelimiter, AQuoteChar: Char; TS: TStrings);
   { Helper function for LoadFromCSVFile
     Adapted from TStrings.SetDelimitedText
     - Only ADelimiter is used for separating the fields and not other whitespace
     - If a field is quoted and it contains AQuoteChar, this occurrence is treated as a literal part of the field
+    - As per RFC4180 whitespace is considered to be part of the field, even if the field is not quoted
+    - Trailing spaces of a quoted field are trimmed
     Example with ADelimiter = ',' and AQuoteChar = '"'
     AValue = '111,2,22,333' -> 111|2|22|333
     AValue = '111,"2,22",333' -> 111|2,22|333
+    AValue = '111,  222  ,333' -> 111|   222   |333
   }
   var i,j:integer;
       aNotFirst:boolean;
@@ -10277,8 +10277,6 @@ procedure TCustomStringGrid.LoadFromCSVStream(AStream: TStream;
       begin
         // skip delimiter
         if aNotFirst and (i<=length(AValue)) and (AValue[i]=ADelimiter) then inc(i);
-        // skip spaces
-        while (i<=length(AValue)) and (Ord(AValue[i])<=Ord(' ')) do inc(i);
         // read next string
         if i<=length(AValue) then
         begin
@@ -10305,10 +10303,10 @@ procedure TCustomStringGrid.LoadFromCSVStream(AStream: TStream;
             // next string is not quoted
             j:=i;
             while (j<=length(AValue)) and
-                  (Ord(AValue[j])>=Ord(' ')) and        //spaces are not treated as delimiter
+                  //basically any other character means some invalid text
+                  ((Ord(AValue[j])>=Ord(' ')) or (AValue[j] in [#10,#13,#9,#0])) and
                   (AValue[j]<>ADelimiter) do inc(j);
-            //We may have trailing spaces, these need to be trimmed
-            TS.Add( TrimRight(Copy(AValue,i,j-i)));
+            TS.Add(Copy(AValue,i,j-i));
             i:=j;
           end;
        end
@@ -10316,8 +10314,9 @@ procedure TCustomStringGrid.LoadFromCSVStream(AStream: TStream;
        begin
         if aNotFirst then TS.Add('');
        end;
-       // skip spaces
-       while (i<=length(AValue)) and (Ord(AValue[i])<=Ord(' ')) do inc(i);
+       // skip trailing spaces of a quoted field
+       // not really sure if that is RFC4180 compliant
+       while (i<=length(AValue)) and (Ord(AValue[i])<=Ord(' ')) and (AValue[i] <> ADelimiter) do inc(i);
        aNotFirst:=true;
       end; //end of string
     finally
@@ -10418,7 +10417,7 @@ begin
                 HeaderL.Add(c.Title.Caption);
             end;
             HeaderL.Delimiter:=ADelimiter;
-            Headerl.StrictDelimiter := False; //do not rely on default value here
+            Headerl.StrictDelimiter := False; //force quoting of strings that contain whitespace or Delimiter
             Lines.Add(HeaderL.DelimitedText); // Add as a first row in Lines
           finally
             HeaderL.Free;
@@ -10433,7 +10432,7 @@ begin
     end else
       StartRow := FixedRows;
     for i:=StartRow to RowCount-1 do begin
-      Rows[i].StrictDelimiter := False; //do not rely on default value here
+      Rows[i].StrictDelimiter := False; //force quoting of strings that contain whitespace or Delimiter
       Rows[i].Delimiter:=ADelimiter;
       Lines.Add(Rows[i].DelimitedText);
     end;
