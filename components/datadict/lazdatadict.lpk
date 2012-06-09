@@ -17,64 +17,68 @@
         <CompilerPath Value="$(CompPath)"/>
       </Other>
     </CompilerOptions>
-    <Files Count="14">
+    <Files Count="15">
       <Item1>
-        <Filename Value="frmconfprojdatadict.pp"/>
-        <UnitName Value="frmconfprojdatadict"/>
+        <Filename Value="frmconfprojdatadict.lfm"/>
+        <Type Value="LFM"/>
       </Item1>
       <Item2>
-        <Filename Value="idedatadict.pp"/>
-        <UnitName Value="idedatadict"/>
+        <Filename Value="frmconfprojdatadict.pp"/>
+        <UnitName Value="frmconfprojdatadict"/>
       </Item2>
       <Item3>
+        <Filename Value="idedatadict.pp"/>
+        <UnitName Value="idedatadict"/>
+      </Item3>
+      <Item4>
         <Filename Value="reglazdatadict.pp"/>
         <HasRegisterProc Value="True"/>
         <UnitName Value="reglazdatadict"/>
-      </Item3>
-      <Item4>
-        <Filename Value="frmconfdatadict.lfm"/>
-        <Type Value="LFM"/>
       </Item4>
       <Item5>
-        <Filename Value="frmconfdatadict.pp"/>
-        <UnitName Value="frmconfdatadict"/>
+        <Filename Value="frmconfdatadict.lfm"/>
+        <Type Value="LFM"/>
       </Item5>
       <Item6>
-        <Filename Value="frmselectcodegenerator.lfm"/>
-        <Type Value="LFM"/>
+        <Filename Value="frmconfdatadict.pp"/>
+        <UnitName Value="frmconfdatadict"/>
       </Item6>
       <Item7>
-        <Filename Value="frmselectcodegenerator.pp"/>
-        <UnitName Value="frmSelectCodeGenerator"/>
+        <Filename Value="frmselectcodegenerator.lfm"/>
+        <Type Value="LFM"/>
       </Item7>
       <Item8>
-        <Filename Value="fpcodegenerator.pp"/>
-        <UnitName Value="fpcodegenerator"/>
+        <Filename Value="frmselectcodegenerator.pp"/>
+        <UnitName Value="frmSelectCodeGenerator"/>
       </Item8>
       <Item9>
-        <Filename Value="frmbaseconfigcodegenerator.lfm"/>
-        <Type Value="LFM"/>
+        <Filename Value="fpcodegenerator.pp"/>
+        <UnitName Value="fpcodegenerator"/>
       </Item9>
       <Item10>
-        <Filename Value="frmbaseconfigcodegenerator.pp"/>
-        <UnitName Value="frmBaseConfigCodeGenerator"/>
+        <Filename Value="frmbaseconfigcodegenerator.lfm"/>
+        <Type Value="LFM"/>
       </Item10>
       <Item11>
-        <Filename Value="frmgeneratedcode.lfm"/>
-        <Type Value="LFM"/>
+        <Filename Value="frmbaseconfigcodegenerator.pp"/>
+        <UnitName Value="frmBaseConfigCodeGenerator"/>
       </Item11>
       <Item12>
-        <Filename Value="frmgeneratedcode.pp"/>
-        <UnitName Value="frmgeneratedcode"/>
+        <Filename Value="frmgeneratedcode.lfm"/>
+        <Type Value="LFM"/>
       </Item12>
       <Item13>
-        <Filename Value="reglazdatadict.lrs"/>
-        <Type Value="LRS"/>
+        <Filename Value="frmgeneratedcode.pp"/>
+        <UnitName Value="frmgeneratedcode"/>
       </Item13>
       <Item14>
+        <Filename Value="reglazdatadict.lrs"/>
+        <Type Value="LRS"/>
+      </Item14>
+      <Item15>
         <Filename Value="ldd_consts.pas"/>
         <UnitName Value="ldd_consts"/>
-      </Item14>
+      </Item15>
     </Files>
     <i18n>
       <EnableI18N Value="True"/>
