@@ -20,7 +20,7 @@ unit frmexportprogress;
 interface
 
 uses
-  Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, StdCtrls,
+  Classes, SysUtils, Forms, Controls, Graphics, Dialogs, StdCtrls,
   ComCtrls, sdb_consts;
 
 type
@@ -47,6 +47,8 @@ var
   ExportProgressForm: TExportProgressForm;
 
 implementation
+
+{$R *.lfm}
 
 { TExportProgressForm }
 
@@ -78,9 +80,6 @@ begin
   PBExport.StepIt;
   Application.ProcessMessages;
 end;
-
-initialization
-  {$I frmexportprogress.lrs}
 
 end.
 

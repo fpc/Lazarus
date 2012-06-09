@@ -10,7 +10,7 @@ object SelectExportFormatForm: TSelectExportFormatForm
   OnCreate = FormCreate
   OnShow = FormShow
   Position = poScreenCenter
-  LCLVersion = '0.9.27'
+  LCLVersion = '1.1'
   object RGFormats: TRadioGroup
     Left = 8
     Height = 224
@@ -27,14 +27,21 @@ object SelectExportFormatForm: TSelectExportFormatForm
     ChildSizing.ShrinkVertical = crsScaleChilds
     ChildSizing.Layout = cclLeftToRightThenTopToBottom
     ChildSizing.ControlsPerLine = 1
-    OnClick = RGFormatsClick
     TabOrder = 0
   end
   object BPButtons: TButtonPanel
     Left = 6
-    Height = 35
-    Top = 254
+    Height = 34
+    Top = 255
     Width = 388
+    OKButton.Name = 'OKButton'
+    OKButton.DefaultCaption = True
+    HelpButton.Name = 'HelpButton'
+    HelpButton.DefaultCaption = True
+    CloseButton.Name = 'CloseButton'
+    CloseButton.DefaultCaption = True
+    CancelButton.Name = 'CancelButton'
+    CancelButton.DefaultCaption = True
     TabOrder = 1
     ShowButtons = [pbOK, pbCancel]
     ShowGlyphs = [pbOK, pbCancel]

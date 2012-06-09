@@ -756,13 +756,10 @@ components/dbexport/demo/stdexports/testdata.dbf -text
 components/dbexport/demo/stdexports/testdata.mdx -text
 components/dbexport/fpdataexporter.pp svneol=native#text/plain
 components/dbexport/frmbaseconfigexport.lfm svneol=native#text/plain
-components/dbexport/frmbaseconfigexport.lrs svneol=native#text/pascal
 components/dbexport/frmbaseconfigexport.pp svneol=native#text/plain
 components/dbexport/frmexportprogress.lfm svneol=native#text/plain
-components/dbexport/frmexportprogress.lrs svneol=native#text/pascal
 components/dbexport/frmexportprogress.pp svneol=native#text/plain
 components/dbexport/frmselectexportformat.lfm svneol=native#text/plain
-components/dbexport/frmselectexportformat.lrs svneol=native#text/pascal
 components/dbexport/frmselectexportformat.pp svneol=native#text/plain
 components/dbexport/languages/sdb_consts.de.po svneol=native#text/plain
 components/dbexport/languages/sdb_consts.it.po svneol=native#text/plain

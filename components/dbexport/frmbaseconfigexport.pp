@@ -20,7 +20,7 @@ unit frmBaseConfigExport;
 interface
 
 uses
-  Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, StdCtrls,
+  Classes, SysUtils, Forms, Controls, Graphics, Dialogs, StdCtrls,
   ExtCtrls, ButtonPanel, EditBtn, CheckLst, ComCtrls, RTTIGrids, fpdbexport,
   Buttons, ActnList, sdb_consts;
 
@@ -55,7 +55,6 @@ type
     procedure AUpExecute(Sender: TObject);
     procedure AUpUpdate(Sender: TObject);
     procedure CLBFieldsClick(Sender: TObject);
-    procedure CLBFieldsClickCheck(Sender: TObject);
     procedure CLBFieldsItemClick(Sender: TObject; Index: integer);
     procedure CLBFieldsKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure FormCreate(Sender: TObject);
@@ -87,6 +86,8 @@ Procedure RegisterBaseExportConfigForm;
 implementation
 
 uses typinfo,lcltype;
+
+{$R *.lfm}
 
 Function ShowBaseExportConfig (AExporter : TCustomDatasetExporter) : Boolean;
 
@@ -241,10 +242,6 @@ begin
   (Sender as Taction).Enabled:=(CLBFields.Itemindex>0)
 end;
 
-procedure TBaseConfigExportForm.CLBFieldsClickCheck(Sender: TObject);
-begin
-end;
-
 procedure TBaseConfigExportForm.FormCreate(Sender: TObject);
 begin
   //
@@ -359,11 +356,7 @@ begin
     end;
 end;
 
-
-initialization
-  {$I frmbaseconfigexport.lrs}
-
-Finalization
+finalization
   FreeAndNil(DLG);
 end.
 

@@ -10,12 +10,20 @@ object BaseConfigExportForm: TBaseConfigExportForm
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   Position = poScreenCenter
-  LCLVersion = '0.9.27'
+  LCLVersion = '1.1'
   object PButtons: TButtonPanel
     Left = 6
-    Height = 35
-    Top = 372
+    Height = 34
+    Top = 373
     Width = 532
+    OKButton.Name = 'OKButton'
+    OKButton.DefaultCaption = True
+    HelpButton.Name = 'HelpButton'
+    HelpButton.DefaultCaption = True
+    CloseButton.Name = 'CloseButton'
+    CloseButton.DefaultCaption = True
+    CancelButton.Name = 'CancelButton'
+    CancelButton.DefaultCaption = True
     TabOrder = 0
     ShowButtons = [pbOK, pbCancel]
     ShowGlyphs = [pbOK, pbCancel]
@@ -32,16 +40,16 @@ object BaseConfigExportForm: TBaseConfigExportForm
     TabOrder = 1
     object LEFileName: TLabel
       Left = 10
-      Height = 18
+      Height = 14
       Top = 8
-      Width = 53
+      Width = 43
       Caption = '&Filename'
       FocusControl = EFileName
       ParentColor = False
     end
     object EFileName: TFileNameEdit
       Left = 115
-      Height = 27
+      Height = 21
       Top = 2
       Width = 405
       DialogOptions = []
@@ -50,12 +58,13 @@ object BaseConfigExportForm: TBaseConfigExportForm
       ButtonWidth = 23
       NumGlyphs = 1
       Anchors = [akTop, akLeft, akRight]
+      MaxLength = 0
       TabOrder = 0
     end
   end
   object PCFields: TPageControl
     Left = 0
-    Height = 334
+    Height = 335
     Top = 32
     Width = 544
     ActivePage = TSFields
@@ -64,7 +73,7 @@ object BaseConfigExportForm: TBaseConfigExportForm
     TabOrder = 2
     object TSFields: TTabSheet
       Caption = 'Fields'
-      ClientHeight = 304
+      ClientHeight = 309
       ClientWidth = 536
       object PFieldsTop: TPanel
         Left = 0
@@ -78,79 +87,81 @@ object BaseConfigExportForm: TBaseConfigExportForm
         TabOrder = 0
         object LCLBFields: TLabel
           Left = 6
-          Height = 18
+          Height = 14
           Top = 4
-          Width = 132
+          Width = 106
           Caption = 'Select fi&elds to export'
           FocusControl = CLBFields
           ParentColor = False
         end
         object Label2: TLabel
           Left = 206
-          Height = 18
+          Height = 14
           Top = 4
-          Width = 168
+          Width = 137
           Caption = 'Properties for selected field:'
           ParentColor = False
         end
       end
       object PFieldProps: TPanel
         Left = 175
-        Height = 276
+        Height = 281
         Top = 28
         Width = 361
         Align = alClient
         BevelOuter = bvNone
-        ClientHeight = 276
+        ClientHeight = 281
         ClientWidth = 361
         TabOrder = 1
         object GFieldProps: TTIPropertyGrid
           Left = 0
-          Height = 276
+          Height = 281
           Top = 0
           Width = 361
           Align = alClient
+          DefaultValueFont.Color = clWindowText
           Filter = [tkInteger, tkChar, tkEnumeration, tkFloat, tkSet, tkMethod, tkSString, tkLString, tkAString, tkWString, tkVariant, tkArray, tkRecord, tkInterface, tkClass, tkObject, tkWChar, tkBool, tkInt64, tkQWord, tkDynArray, tkInterfaceRaw]
+          Indent = 9
+          NameFont.Color = clWindowText
           ValueFont.Color = clMaroon
         end
       end
       object SplitterFields: TSplitter
         Left = 170
-        Height = 276
+        Height = 281
         Top = 28
         Width = 5
       end
       object PExportFieldList: TPanel
         Left = 0
-        Height = 276
+        Height = 281
         Top = 28
         Width = 170
         Align = alLeft
         BevelOuter = bvNone
-        ClientHeight = 276
+        ClientHeight = 281
         ClientWidth = 170
         TabOrder = 2
         object CLBFields: TCheckListBox
           Left = 31
-          Height = 276
+          Height = 281
           Top = 0
           Width = 139
           Align = alClient
           ItemHeight = 0
           OnClick = CLBFieldsClick
-          OnClickCheck = CLBFieldsClickCheck
           OnItemClick = CLBFieldsItemClick
           OnKeyUp = CLBFieldsKeyUp
           TabOrder = 0
         end
         object PUPDown: TPanel
           Left = 0
-          Height = 276
+          Height = 281
           Top = 0
           Width = 31
           Align = alLeft
           BevelOuter = bvNone
-          ClientHeight = 276
+          ClientHeight = 281
           ClientWidth = 31
           TabOrder = 1
           object SBup: TSpeedButton
@@ -159,7 +170,6 @@ object BaseConfigExportForm: TBaseConfigExportForm
             Top = 7
             Width = 23
             Action = AUp
-            Color = clBtnFace
             Glyph.Data = {
               FA090000424DFA09000000000000360000002800000019000000190000000100
               200000000000C409000064000000640000000000000000000000E0E0E0FFBBBB
@@ -242,7 +252,6 @@ object BaseConfigExportForm: TBaseConfigExportForm
               FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
               FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFE5E5E5FFE3E3E3FF
             }
-            NumGlyphs = 0
           end
           object SBDown: TSpeedButton
             Left = 4
@@ -250,7 +259,6 @@ object BaseConfigExportForm: TBaseConfigExportForm
             Top = 31
             Width = 23
             Action = ADown
-            Color = clBtnFace
             Glyph.Data = {
               FA090000424DFA09000000000000360000002800000019000000190000000100
               200000000000C409000064000000640000000000000000000000E0E0E0FFBBBB
@@ -333,7 +341,6 @@ object BaseConfigExportForm: TBaseConfigExportForm
               FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
               FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFE5E5E5FFE3E3E3FF
             }
-            NumGlyphs = 0
           end
         end
       end
@@ -348,7 +355,10 @@ object BaseConfigExportForm: TBaseConfigExportForm
         Top = 0
         Width = 536
         Align = alClient
+        DefaultValueFont.Color = clWindowText
         Filter = [tkInteger, tkChar, tkEnumeration, tkFloat, tkSet, tkMethod, tkSString, tkLString, tkAString, tkWString, tkVariant, tkArray, tkRecord, tkInterface, tkClass, tkObject, tkWChar, tkBool, tkInt64, tkQWord, tkDynArray, tkInterfaceRaw]
+        Indent = 9
+        NameFont.Color = clWindowText
         PreferredSplitterX = 200
         SplitterX = 200
         ValueFont.Color = clMaroon

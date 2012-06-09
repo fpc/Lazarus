@@ -20,7 +20,7 @@ unit frmSelectExportFormat;
 interface
 
 uses
-  Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, ExtCtrls,
+  Classes, SysUtils, Forms, Controls, Graphics, Dialogs, ExtCtrls,
   ButtonPanel, fpdbexport, sdb_consts;
 
 type
@@ -33,7 +33,6 @@ type
     procedure FormCreate(Sender: TObject);
     procedure FormShow(Sender: TObject);
     function GetSelected: TExportFormatItem;
-    procedure RGFormatsClick(Sender: TObject);
     procedure SetSelected(const AValue: TExportFormatItem);
   private
     { private declarations }
@@ -47,6 +46,8 @@ var
   SelectExportFormatForm: TSelectExportFormatForm;
 
 implementation
+
+{$R *.lfm}
 
 { TSelectExportFormatForm }
 
@@ -70,11 +71,6 @@ begin
       Result:=Nil
     else
       Result:=Items.Objects[ItemIndex] as TExportFormatItem;
-end;
-
-procedure TSelectExportFormatForm.RGFormatsClick(Sender: TObject);
-begin
-
 end;
 
 procedure TSelectExportFormatForm.SetSelected(const AValue: TExportFormatItem);
@@ -107,9 +103,6 @@ begin
   If RGFormats.Items.Count>0 then
     RGFormats.ItemIndex:=0;
 end;
-
-initialization
-  {$I frmselectexportformat.lrs}
 
 end.
 
