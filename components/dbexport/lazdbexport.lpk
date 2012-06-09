@@ -1,13 +1,19 @@
 <?xml version="1.0"?>
 <CONFIG>
-  <Package Version="3">
+  <Package Version="4">
     <Name Value="lazdbexport"/>
+    <AddToProjectUsesSection Value="True"/>
     <Author Value="Michael Van Canneyt"/>
     <CompilerOptions>
-      <Version Value="8"/>
+      <Version Value="11"/>
       <SearchPaths>
         <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)"/>
       </SearchPaths>
+      <Parsing>
+        <SyntaxOptions>
+          <UseAnsiStrings Value="False"/>
+        </SyntaxOptions>
+      </Parsing>
       <Other>
         <CompilerPath Value="$(CompPath)"/>
       </Other>
@@ -15,7 +21,7 @@
     <Description Value="Standard TDataset Export objects from FCL"/>
     <License Value="Modified LGPL"/>
     <Version Major="1"/>
-    <Files Count="12">
+    <Files Count="9">
       <Item1>
         <Filename Value="regdbexport.pp"/>
         <HasRegisterProc Value="True"/>
@@ -30,41 +36,29 @@
         <Type Value="LFM"/>
       </Item3>
       <Item4>
-        <Filename Value="frmselectexportformat.lrs"/>
-        <Type Value="LRS"/>
-      </Item4>
-      <Item5>
         <Filename Value="frmselectexportformat.pp"/>
         <UnitName Value="frmSelectExportFormat"/>
-      </Item5>
-      <Item6>
+      </Item4>
+      <Item5>
         <Filename Value="frmexportprogress.lfm"/>
         <Type Value="LFM"/>
-      </Item6>
-      <Item7>
-        <Filename Value="frmexportprogress.lrs"/>
-        <Type Value="LRS"/>
-      </Item7>
-      <Item8>
+      </Item5>
+      <Item6>
         <Filename Value="frmexportprogress.pp"/>
         <UnitName Value="frmexportprogress"/>
-      </Item8>
-      <Item9>
+      </Item6>
+      <Item7>
         <Filename Value="frmbaseconfigexport.lfm"/>
         <Type Value="LFM"/>
-      </Item9>
-      <Item10>
-        <Filename Value="frmbaseconfigexport.lrs"/>
-        <Type Value="LRS"/>
-      </Item10>
-      <Item11>
+      </Item7>
+      <Item8>
         <Filename Value="frmbaseconfigexport.pp"/>
         <UnitName Value="frmBaseConfigExport"/>
-      </Item11>
-      <Item12>
+      </Item8>
+      <Item9>
         <Filename Value="sdb_consts.pas"/>
         <UnitName Value="sdb_consts"/>
-      </Item12>
+      </Item9>
     </Files>
     <i18n>
       <EnableI18N Value="True"/>
@@ -93,5 +87,8 @@
       <Version Value="2"/>
       <IgnoreBinaries Value="False"/>
     </PublishOptions>
+    <CustomOptions Items="ExternHelp" Version="2">
+      <_ExternHelp Items="Count"/>
+    </CustomOptions>
   </Package>
 </CONFIG>
