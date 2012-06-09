@@ -5,7 +5,7 @@ unit frmBaseConfigCodeGenerator;
 interface
 
 uses
-  Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, ExtCtrls,
+  Classes, SysUtils, Forms, Controls, Graphics, Dialogs, ExtCtrls,
   StdCtrls, EditBtn, ComCtrls, RTTIGrids, CheckLst, fpddcodegen, Buttons,
   ActnList, ButtonPanel, ldd_consts;
 
@@ -78,6 +78,8 @@ implementation
 
 uses typinfo,lcltype;
 
+{$R *.lfm}
+
 { TBaseConfigGeneratorForm }
 
 procedure TBaseConfigGeneratorForm.CLBFieldsClick(Sender: TObject);
@@ -123,7 +125,6 @@ end;
 procedure TBaseConfigGeneratorForm.GeneratorToForm;
 
 Var
-  B : Boolean;
   I,J : Integer;
   PD : TFieldPropDef;
   CC : TCodeGeneratorOptionsClass;
@@ -295,8 +296,6 @@ begin
     FGen.Fields[I].Assign(FFieldMap[i]);
   FGen.CodeOptions.Assign(FCodeOptions);
 end;
-initialization
-  {$I frmbaseconfigcodegenerator.lrs}
 
 end.
 

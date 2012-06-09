@@ -5,7 +5,7 @@ unit frmconfprojdatadict;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, LResources, Forms, Controls, Graphics, Dialogs,
+  Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs,
   EditBtn, StdCtrls, idedatadict, ldd_consts;
 
 type
@@ -43,6 +43,8 @@ var
 Function ShowConfigProjectDDDialog : Boolean;
 
 implementation
+
+{$R *.lfm}
 
 Function ShowConfigProjectDDDialog : Boolean;
 
@@ -157,9 +159,6 @@ begin
   FN:=FDD.GetDictionaryFileName(CBDD.Text);
   FEDD.FileName:=FN;
 end;
-
-initialization
-  {$I frmconfprojdatadict.lrs}
 
 end.
 

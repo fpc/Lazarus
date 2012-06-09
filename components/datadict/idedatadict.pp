@@ -228,7 +228,6 @@ Var
   ProjActive : Boolean;
   ProjFileName : String;
   ProjDD : String;
-  NeedReload : Boolean;
 
 begin
   If Not(Assigned(LazarusIDE) and Assigned(LazarusIDE.ActiveProject)) then

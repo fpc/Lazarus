@@ -5,7 +5,7 @@ unit frmgeneratedcode;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, LResources, Forms, Controls, Graphics, Dialogs,
+  Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs,
   SynHighlighterPas, SynMemo, ExtCtrls, StdCtrls, ldd_consts;
 
 type
@@ -36,6 +36,8 @@ var
   CodeForm: TCodeForm;
 
 implementation
+
+{$R *.lfm}
 
 { TCodeForm }
 
@@ -70,9 +72,6 @@ procedure TCodeForm.SetCode(const AValue: TStrings);
 begin
   MCode.Lines.Assign(AValue);
 end;
-
-initialization
-  {$I frmgeneratedcode.lrs}
 
 end.
 

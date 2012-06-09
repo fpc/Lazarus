@@ -6,7 +6,7 @@ interface
 
 uses
   // General units
-  Classes, SysUtils, Process, UTF8Process, DB, Typinfo,
+  Classes, SysUtils, UTF8Process, DB, Typinfo,
   // IDE interface
   MenuIntf, propedits, lresources,
   // Data dict units
@@ -308,7 +308,6 @@ procedure TIDEDataDictCommandHandler.CreateDDCode(Sender: TObject);
 Var
   ASelection : TPersistentSelectionList;
   DS : TDataset;
-  PI : PPropInfo;
   HaveSQL : Boolean;
   ASQL :String;
 

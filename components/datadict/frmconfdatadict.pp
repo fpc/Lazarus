@@ -5,7 +5,7 @@ unit frmconfdatadict;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, LResources, Forms, Controls, Graphics, Dialogs,
+  Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs,
   EditBtn, StdCtrls, idedatadict, ButtonPanel, ldd_consts;
 
 type
@@ -35,6 +35,8 @@ var
 Function ShowConfigIDEDataDictDialog : Boolean;
 
 implementation
+
+{$R *.lfm}
 
 Function ShowConfigIDEDataDictDialog : Boolean;
 
@@ -93,10 +95,6 @@ begin
   FEDD.FileName:=DataDesktopBinary;
   DEDD.Text:=DefaultDictionaryDir;
 end;
-
-
-initialization
-  {$I frmconfdatadict.lrs}
 
 end.
 

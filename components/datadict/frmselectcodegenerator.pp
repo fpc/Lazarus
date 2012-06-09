@@ -5,8 +5,7 @@ unit frmSelectCodeGenerator;
 interface
 
 uses
-  Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, ExtCtrls,
-  fpddcodegen,
+  Classes, SysUtils, Forms, Controls, Graphics, Dialogs, ExtCtrls, fpddcodegen,
   ButtonPanel, ldd_consts;
 
 type
@@ -36,6 +35,8 @@ var
   SelectCodeGeneratorForm: TSelectCodeGeneratorForm;
 
 implementation
+
+{$R *.lfm}
 
 { TSelectCodeGeneratorForm }
 
@@ -95,9 +96,6 @@ begin
       If Items.Count>0 then
         ItemIndex:=0;
 end;
-
-initialization
-  {$I frmselectcodegenerator.lrs}
 
 end.
 
