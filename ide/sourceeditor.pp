@@ -5866,15 +5866,20 @@ procedure TSourceNotebook.SetPageIndex(const AValue: Integer);
 begin
   FPageIndex := AValue;
   if FUpdateLock = 0 then begin
-    FPageIndex := Max(0, Min(FPageIndex, FNotebook.PageCount-1));
-    if Assigned(Manager) and (FNotebook.PageIndex = FPageIndex) then
-      DoActiveEditorChanged;
-    // make sure the statusbar is updated
-    Include(States, snNotbookPageChangedNeeded);
-    FNotebook.PageIndex := FPageIndex;
-    if snNotbookPageChangedNeeded in States then
-      NotebookPageChanged(nil);
-    HistorySetMostRecent(FNotebook.Pages[FPageIndex]);
+    DebugBoss.LockCommandProcessing;
+    try
+      FPageIndex := Max(0, Min(FPageIndex, FNotebook.PageCount-1));
+      if Assigned(Manager) and (FNotebook.PageIndex = FPageIndex) then
+        DoActiveEditorChanged;
+      // make sure the statusbar is updated
+      Include(States, snNotbookPageChangedNeeded);
+      FNotebook.PageIndex := FPageIndex;
+      if snNotbookPageChangedNeeded in States then
+        NotebookPageChanged(nil);
+      HistorySetMostRecent(FNotebook.Pages[FPageIndex]);
+    finally
+      DebugBoss.UnLockCommandProcessing;
+    end;
   end;
 end;
 
@@ -7373,50 +7378,56 @@ Begin
     Include(States, snNotbookPageChangedNeeded);
     exit;
   end;
-  Exclude(States, snNotbookPageChangedNeeded);
-  TempEditor:=GetActiveSE;
 
-  //debugln('TSourceNotebook.NotebookPageChanged ',Pageindex,' ',TempEditor <> nil,' fAutoFocusLock=',fAutoFocusLock);
-  if TempEditor <> nil then
-  begin
-    if not TempEditor.Visible then begin
-      // As long as SynEdit had no Handle, it had kept all those Values untouched
-      CaretXY := TempEditor.EditorComponent.CaretXY;
-      TopLine := TempEditor.EditorComponent.TopLine;
-      TempEditor.BeginUpdate;
-      TempEditor.Visible := True;
-      TempEditor.EndUpdate;
-      // Restore the intial Positions, must be after lock
-      TempEditor.EditorComponent.LeftChar := 1;
-      TempEditor.EditorComponent.CaretXY := CaretXY;
-      TempEditor.EditorComponent.TopLine := TopLine;
-    end;
-    if (fAutoFocusLock=0) and (Screen.ActiveCustomForm=GetParentForm(Self)) and
-       not(Manager.HasAutoFocusLock)
-    then
+  DebugBoss.LockCommandProcessing;
+  try
+    Exclude(States, snNotbookPageChangedNeeded);
+    TempEditor:=GetActiveSE;
+
+    //debugln('TSourceNotebook.NotebookPageChanged ',Pageindex,' ',TempEditor <> nil,' fAutoFocusLock=',fAutoFocusLock);
+    if TempEditor <> nil then
     begin
-      {$IFDEF VerboseFocus}
-      debugln('TSourceNotebook.NotebookPageChanged BEFORE SetFocus ',
-        TempEditor.EditorComponent.Name,' ',
-        NoteBookPages[FindPageWithEditor(TempEditor)]);
-      {$ENDIF}
-      TempEditor.FocusEditor; // recursively calls NotebookPageChanged, via EditorEnter
-      {$IFDEF VerboseFocus}
-      debugln('TSourceNotebook.NotebookPageChanged AFTER SetFocus ',
-        TempEditor.EditorComponent.Name,' ',
-        NotebookPages[FindPageWithEditor(TempEditor)]);
-      {$ENDIF}
+      if not TempEditor.Visible then begin
+        // As long as SynEdit had no Handle, it had kept all those Values untouched
+        CaretXY := TempEditor.EditorComponent.CaretXY;
+        TopLine := TempEditor.EditorComponent.TopLine;
+        TempEditor.BeginUpdate;
+        TempEditor.Visible := True;
+        TempEditor.EndUpdate;
+        // Restore the intial Positions, must be after lock
+        TempEditor.EditorComponent.LeftChar := 1;
+        TempEditor.EditorComponent.CaretXY := CaretXY;
+        TempEditor.EditorComponent.TopLine := TopLine;
+      end;
+      if (fAutoFocusLock=0) and (Screen.ActiveCustomForm=GetParentForm(Self)) and
+         not(Manager.HasAutoFocusLock)
+      then
+      begin
+        {$IFDEF VerboseFocus}
+        debugln('TSourceNotebook.NotebookPageChanged BEFORE SetFocus ',
+          TempEditor.EditorComponent.Name,' ',
+          NoteBookPages[FindPageWithEditor(TempEditor)]);
+        {$ENDIF}
+        TempEditor.FocusEditor; // recursively calls NotebookPageChanged, via EditorEnter
+        {$IFDEF VerboseFocus}
+        debugln('TSourceNotebook.NotebookPageChanged AFTER SetFocus ',
+          TempEditor.EditorComponent.Name,' ',
+          NotebookPages[FindPageWithEditor(TempEditor)]);
+        {$ENDIF}
+      end;
+      UpdateStatusBar;
+      UpdateActiveEditColors(TempEditor.EditorComponent);
+      if (DebugBoss.State in [dsPause, dsRun]) and
+         not TempEditor.HasExecutionMarks and
+         (TempEditor.FileName <> '') then
+        TempEditor.FillExecutionMarks;
+      DoActiveEditorChanged;
     end;
-    UpdateStatusBar;
-    UpdateActiveEditColors(TempEditor.EditorComponent);
-    if (DebugBoss.State in [dsPause, dsRun]) and
-       not TempEditor.HasExecutionMarks and
-       (TempEditor.FileName <> '') then
-      TempEditor.FillExecutionMarks;
-    DoActiveEditorChanged;
-  end;
 
-  CheckCurrentCodeBufferChanged;
+    CheckCurrentCodeBufferChanged;
+  finally
+    DebugBoss.UnLockCommandProcessing;
+  end;
 end;
 
 Procedure TSourceNotebook.ProcessParentCommand(Sender: TObject;
