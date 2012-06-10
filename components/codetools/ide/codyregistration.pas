@@ -40,7 +40,42 @@ uses
 
 procedure Register;
 
+function CreateRefactorCommand(CmdCatCodeTools: TIDECommandCategory;
+  Name, Description: string;
+  const OnExecuteMethod: TNotifyEvent; const OnExecuteProc: TNotifyProcedure;
+  const MenuCaption: string = ''): TIDECommand;
+function CreateSourceCommand(CmdCatCodeTools: TIDECommandCategory;
+  Name, Description: string;
+  const OnExecuteMethod: TNotifyEvent; const OnExecuteProc: TNotifyProcedure;
+  const MenuCaption: string = ''): TIDECommand;
+
 implementation
+
+function CreateRefactorCommand(CmdCatCodeTools: TIDECommandCategory;
+  Name, Description: string;
+  const OnExecuteMethod: TNotifyEvent; const OnExecuteProc: TNotifyProcedure;
+  const MenuCaption: string): TIDECommand;
+begin
+  Result:=RegisterIDECommand(CmdCatCodeTools, Name, Description,
+    CleanIDEShortCut,CleanIDEShortCut,OnExecuteMethod,OnExecuteProc);
+  RegisterIDEMenuCommand(SrcEditSubMenuRefactor, 'SrcEditRefactor'+Name,
+    MenuCaption, nil, nil, Result);
+  RegisterIDEMenuCommand(itmRefactorAdvanced, 'BarRefactor'+Name,
+    MenuCaption, nil, nil, Result);
+end;
+
+function CreateSourceCommand(CmdCatCodeTools: TIDECommandCategory; Name,
+  Description: string; const OnExecuteMethod: TNotifyEvent;
+  const OnExecuteProc: TNotifyProcedure; const MenuCaption: string
+  ): TIDECommand;
+begin
+  Result:=RegisterIDECommand(CmdCatCodeTools, Name, Description,
+    CleanIDEShortCut,CleanIDEShortCut,OnExecuteMethod,OnExecuteProc);
+  RegisterIDEMenuCommand(SrcEditSubMenuSource, 'SrcEditSource'+Name,
+    MenuCaption, nil, nil, Result);
+  RegisterIDEMenuCommand(itmSourceInsertions, 'BarSource'+Name,
+    MenuCaption, nil, nil, Result);
+end;
 
 procedure Register;
 var
@@ -48,21 +83,12 @@ var
   CmdCatCodeTools: TIDECommandCategory;
   CmdCatFileMenu: TIDECommandCategory;
   PPUListCommand: TIDECommand;
-  AddAssignMethodCommand: TIDECommand;
-  ExplodeAWithBlockCommand: TIDECommand;
-  AddAWithBlockCommand: TIDECommand;
-  InsertFileAtCursorCommand: TIDECommand;
-  DeclareVariableCommand: TIDECommand;
   TVIconRes: TLResource;
-  InsertCallInheritedCommand: TIDECommand;
   ShowCodeNodeInfoCommand: TIDECommand;
   CmdCatView: TIDECommandCategory;
   ViewCodyWindowCommand: TIDECommand;
   {$IFDEF EnableCodyExperiments}
-  CopyDeclarationToClipboardCommand: TIDECommand;
-  CutDeclarationToClipboardCommand: TIDECommand;
   {$ENDIF}
-  ShowIdentifierDictionaryCommand: TIDECommand;
 begin
   CodyOptions:=TCodyMiscOptions.Create;
   CodyOptions.LoadSafe;
@@ -93,92 +119,47 @@ begin
   // Source menu - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
   // insert file at cursor
-  InsertFileAtCursorCommand:=RegisterIDECommand(CmdCatFileMenu,
-    'InsertFileAtCursor',crsInsertFileAtCursor,
-    CleanIDEShortCut,CleanIDEShortCut,nil,@InsertFileAtCursor);
-  RegisterIDEMenuCommand(SrcEditSubMenuSource,'SrcEditInsertFileAtCursor',
-    crsInsertFileAtCursor,nil,nil,InsertFileAtCursorCommand);
-  RegisterIDEMenuCommand(itmSourceInsertions,'InsertFileAtCursor',
-    crsInsertFileAtCursor,nil,nil,InsertFileAtCursorCommand);
+  CreateSourceCommand(CmdCatFileMenu,'InsertFileAtCursor',
+    crsInsertFileAtCursor,nil,@InsertFileAtCursor);
 
   // add call inherited
-  InsertCallInheritedCommand:=RegisterIDECommand(CmdCatCodeTools, 'InsertCallInherited',
-    crsInsertCallInherited,
-    CleanIDEShortCut,CleanIDEShortCut,nil,@InsertCallInherited);
-  RegisterIDEMenuCommand(SrcEditSubMenuSource, 'SrcEditAddCallInherited',
-    crsInsertCallInherited, nil, nil, InsertCallInheritedCommand);
-  RegisterIDEMenuCommand(itmSourceInsertions, 'InsertCallInherited',
-    crsInsertCallInherited, nil, nil, InsertCallInheritedCommand);
-
-  // declare variable
-  DeclareVariableCommand:=RegisterIDECommand(CmdCatCodeTools, 'DeclareVariable',
-    crsDeclareVariable,
-    CleanIDEShortCut,CleanIDEShortCut,nil,@ShowDeclareVariableDialog);
-  RegisterIDEMenuCommand(SrcEditSubMenuRefactor, 'SrcEditDeclareVariable',
-    crsDeclareVariable2, nil, nil, DeclareVariableCommand);
-  RegisterIDEMenuCommand(itmRefactorCodeTools, 'DeclareVariable',
-    crsDeclareVariable2, nil, nil, DeclareVariableCommand);
+  CreateSourceCommand(CmdCatCodeTools,'InsertCallInherited',
+    crsInsertCallInherited,nil,@InsertCallInherited);
 
   // Show unit / identifier dictionary
   InitUnitDictionary;
-  ShowIdentifierDictionaryCommand:=RegisterIDECommand(CmdCatCodeTools, 'ShowUnitDictionary',
-    crsShowUnitIdentifierDictionary,
-    CleanIDEShortCut,CleanIDEShortCut,nil,@ShowUnitDictionaryDialog);
-  RegisterIDEMenuCommand(SrcEditSubMenuSource, 'SrcEditShowIdentifierDictionary',
-    crsShowUnitIdentifierDictionary, nil, nil, ShowIdentifierDictionaryCommand);
-  RegisterIDEMenuCommand(itmSourceInsertions, 'ShowIdentifierDictionary',
-    crsShowUnitIdentifierDictionary, nil, nil, ShowIdentifierDictionaryCommand);
-
+  CreateSourceCommand(CmdCatCodeTools,'ShowUnitDictionary',
+    crsShowUnitIdentifierDictionary,nil,@ShowUnitDictionaryDialog);
 
   // Refactor menu - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
+  // declare variable
+  CreateRefactorCommand(CmdCatCodeTools,'DeclareVariable',
+    crsDeclareVariable,nil,@ShowDeclareVariableDialog,crsDeclareVariable2);
+
   // add Assign method
-  AddAssignMethodCommand:=RegisterIDECommand(CmdCatCodeTools, 'AddAssignMethod',
-    crsAddAssignMethod,
-    CleanIDEShortCut,CleanIDEShortCut,nil,@ShowAddAssignMethodDialog);
-  RegisterIDEMenuCommand(SrcEditSubMenuRefactor, 'SrcEditAddAssignMethod',
-    crsAddAssignMethod2,nil,nil,AddAssignMethodCommand);
-  RegisterIDEMenuCommand(itmRefactorAdvanced, 'AddAssignMethod',
-    crsAddAssignMethod2,nil,nil,AddAssignMethodCommand);
+  CreateRefactorCommand(CmdCatCodeTools,'AddAssignMethod',
+    crsAddAssignMethod,nil,@ShowAddAssignMethodDialog,crsAddAssignMethod2);
 
   // Copy declaration to clipboard
   {$IFDEF EnableCodyExperiments}
-  CopyDeclarationToClipboardCommand:=RegisterIDECommand(CmdCatCodeTools,
-    'CopyDeclarationToClipboard', crsCopyDeclarationToClipboard,
-    CleanIDEShortCut,CleanIDEShortCut,nil,@CopyDeclarationToClipboard);
-  RegisterIDEMenuCommand(SrcEditSubMenuRefactor, 'SrcEditCopyDeclarationToClipboard',
-    crsCopyDeclarationToClipboard,nil,nil,CopyDeclarationToClipboardCommand);
-  RegisterIDEMenuCommand(itmRefactorCodeTools, 'CopyDeclarationToClipboard',
-    crsCopyDeclarationToClipboard,nil,nil,CopyDeclarationToClipboardCommand);
+  CreateRefactorCommand(CmdCatCodeTools,'CopyDeclarationToClipboard',
+    crsCopyDeclarationToClipboard,nil,@CopyDeclarationToClipboard);
   {$ENDIF}
 
   // Cut declaration to clipboard
   {$IFDEF EnableCodyExperiments}
-  CutDeclarationToClipboardCommand:=RegisterIDECommand(CmdCatCodeTools,
-    'CutDeclarationToClipboard', crsCutDeclarationToClipboard,
-    CleanIDEShortCut,CleanIDEShortCut,nil,@CutDeclarationToClipboard);
-  RegisterIDEMenuCommand(SrcEditSubMenuRefactor, 'SrcEditCutDeclarationToClipboard',
-    crsCutDeclarationToClipboard,nil,nil,CutDeclarationToClipboardCommand);
-  RegisterIDEMenuCommand(itmRefactorCodeTools, 'CutDeclarationToClipboard',
-    crsCutDeclarationToClipboard,nil,nil,CutDeclarationToClipboardCommand);
+  CreateRefactorCommand(CmdCatCodeTools,'CutDeclarationToClipboard',
+    crsCutDeclarationToClipboard,nil,@CutDeclarationToClipboard);
   {$ENDIF}
 
   // explode a With block
-  ExplodeAWithBlockCommand:=RegisterIDECommand(CmdCatCodeTools, 'ExplodeAWithBlock',
-    crsExplodeAWithBlock,
-    CleanIDEShortCut,CleanIDEShortCut,nil,@ExplodeAWithBlockCmd);
-  RegisterIDEMenuCommand(SrcEditSubMenuRefactor, 'SrcEditExplodeAWithBlock',
-    crsExplodeAWithBlock, nil, nil, ExplodeAWithBlockCommand);
-  RegisterIDEMenuCommand(itmRefactorAdvanced, 'ExplodeAWithBlock',
-    crsExplodeAWithBlock, nil, nil, ExplodeAWithBlockCommand);
+  CreateRefactorCommand(CmdCatCodeTools,'ExplodeAWithBlock',
+    crsExplodeAWithBlock,nil,@ExplodeAWithBlockCmd);
   // add a With block
-  AddAWithBlockCommand:=RegisterIDECommand(CmdCatCodeTools, 'AddAWithBlock',
-    crsAddAWithBlock,
-    CleanIDEShortCut,CleanIDEShortCut,nil,@ShowAddWithBlockDialog);
-  RegisterIDEMenuCommand(SrcEditSubMenuRefactor, 'SrcEditAddAWithBlock',
-    crsAddAWithBlock, nil, nil, AddAWithBlockCommand);
-  RegisterIDEMenuCommand(itmRefactorAdvanced, 'AddAWithBlock',
-    crsAddAWithBlock, nil, nil, AddAWithBlockCommand);
+  CreateRefactorCommand(CmdCatCodeTools,'AddAWithBlock',
+    crsAddAWithBlock,nil,@ShowAddWithBlockDialog);
+
 
   // IDE internals menu - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
