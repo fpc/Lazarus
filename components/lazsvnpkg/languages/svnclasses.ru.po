@@ -170,7 +170,7 @@ msgstr "Вывести из-под управления версиями"
 
 #: svnclasses.rsrepositorypath
 msgid "Repository path"
-msgstr "Путь к репозитарию"
+msgstr "Путь к репозиторию"
 
 #: svnclasses.rsrevert
 msgid "Revert"
