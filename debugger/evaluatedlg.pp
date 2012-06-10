@@ -39,10 +39,13 @@ interface
 uses
   Classes, SysUtils, LCLType, Forms,
   IDEWindowIntf, IDEImagesIntf, LazarusIDEStrConsts,
-  ComCtrls, StdCtrls, DebuggerDlg, BaseDebugManager,
+  ComCtrls, StdCtrls, Menus, DebuggerDlg, BaseDebugManager,
   InputHistory, IDEProcs, Debugger, DebuggerStrConst;
 
 type
+
+  TEvalHistDirection=(EHDNone,EHDUp,EHDDown);
+
 
   { TEvaluateDlg }
 
@@ -53,6 +56,12 @@ type
     Label1: TLabel;
     Label2: TLabel;
     lblNewValue: TLabel;
+    MenuItem1: TMenuItem;
+    MenuItem2: TMenuItem;
+    MenuItem3: TMenuItem;
+    mnuHistory: TPopupMenu;
+    ToolButton1: TToolButton;
+    tbHistory: TToolButton;
     txtResult: TMemo;
     ToolBar1: TToolBar;
     tbInspect: TToolButton;
@@ -68,12 +77,16 @@ type
     procedure cmbExpressionChange(Sender: TObject);
     procedure cmbExpressionKeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
+    procedure MenuItem1Click(Sender: TObject);
+    procedure MenuItem2Click(Sender: TObject);
+    procedure MenuItem3Click(Sender: TObject);
     procedure tbEvaluateClick(Sender: TObject);
     procedure tbInspectClick(Sender: TObject);
     procedure tbModifyClick(Sender: TObject);
     procedure tbWatchClick(Sender: TObject);
     
   private
+    fHistDirection:TEvalHistDirection;
     function GetFindText: string;
     procedure SetFindText(const NewFindText: string);
     procedure Evaluate;
@@ -89,6 +102,11 @@ implementation
 
 var
   EvaluateDlgWindowCreator: TIDEWindowCreator;
+
+const
+  RESULTSEPARATOR='-----------';
+  RESULTEVAL='>>>> ';
+  RESULTMOD='<<>> ';
 
 { TEvaluateDlg }
 
@@ -109,12 +127,18 @@ begin
   Label2.Caption := lisDBGEMResult;
   lblNewValue.Caption := lisDBGEMNewValue;
   chkTypeCast.Caption := drsUseInstanceClassType;
+  fHistDirection:=EHDNone;
 
   ToolBar1.Images := IDEImages.Images_16;
   tbInspect.ImageIndex := IDEImages.LoadImage(16, 'debugger_inspect');
   tbWatch.ImageIndex := IDEImages.LoadImage(16, 'debugger_watches');
   tbModify.ImageIndex := IDEImages.LoadImage(16, 'debugger_modify');
   tbEvaluate.ImageIndex := IDEImages.LoadImage(16, 'debugger_evaluate');
+  tbHistory.ImageIndex := IDEImages.LoadImage(16, 'evaluate_no_hist');
+
+  mnuHistory.Items[0].Caption:=drsEvalHistoryNone;
+  mnuHistory.Items[1].Caption:=dsrEvalHistoryUp;
+  mnuHistory.Items[2].Caption:=dsrEvalHistoryDown;
 end;
 
 procedure TEvaluateDlg.Evaluate;
@@ -142,7 +166,20 @@ begin
   else
     tbModify.Enabled := False;
   FreeAndNil(DBGType);
-  txtResult.Lines.Text := R;
+  if fHistDirection<>EHDNone then
+    begin
+    if txtResult.Lines.Text='' then
+      txtResult.Lines.Text := RESULTEVAL+ S+':'+LineEnding+ R + LineEnding
+    else
+      if fHistDirection=EHDUp then
+        txtResult.Lines.Text := RESULTEVAL+ S+':'+LineEnding+ R + LineEnding
+           + RESULTSEPARATOR + LineEnding + txtResult.Lines.Text
+      else
+        txtResult.Lines.Text := txtResult.Lines.Text + RESULTSEPARATOR + LineEnding
+           + RESULTEVAL+ S+':'+LineEnding+ R+LineEnding;
+    end
+  else
+    txtResult.Lines.Text := R;
 end;
 
 procedure TEvaluateDlg.cmbExpressionChange(Sender: TObject);
@@ -164,6 +201,27 @@ begin
     Evaluate;
     Key := 0;
   end;
+end;
+
+procedure TEvaluateDlg.MenuItem1Click(Sender: TObject);
+begin
+  fHistDirection:=EHDNone;
+  tbHistory.ImageIndex := IDEImages.LoadImage(16, 'evaluate_no_hist');
+  txtResult.Lines.Clear;
+end;
+
+procedure TEvaluateDlg.MenuItem2Click(Sender: TObject);
+begin
+  fHistDirection:=EHDUp;
+  tbHistory.ImageIndex := IDEImages.LoadImage(16, 'evaluate_up');
+  txtResult.Lines.Clear;
+end;
+
+procedure TEvaluateDlg.MenuItem3Click(Sender: TObject);
+begin
+  fHistDirection:=EHDDown;
+  tbHistory.ImageIndex := IDEImages.LoadImage(16, 'callstack_goto');
+  txtResult.Lines.Clear;
 end;
 
 procedure TEvaluateDlg.SetFindText(const NewFindText: string);
@@ -199,7 +257,20 @@ begin
   DBGType:=nil;
   if not DebugBoss.Evaluate(S, R, DBGType) then Exit;
   FreeAndNil(DBGType);
-  txtResult.Lines.Text := R;
+  if fHistDirection<>EHDNone then
+    begin
+    if txtResult.Lines.Text='' then
+      txtResult.Lines.Text := RESULTMOD+ S+':'+LineEnding+ R + LineEnding
+    else
+      if fHistDirection=EHDUp then
+        txtResult.Lines.Text := RESULTMOD+ S+':'+LineEnding+ R + LineEnding
+           + RESULTSEPARATOR + LineEnding + txtResult.Lines.Text
+      else
+        txtResult.Lines.Text := txtResult.Lines.Text + RESULTSEPARATOR + LineEnding
+           + RESULTMOD+ S+':'+LineEnding+ R+LineEnding;
+    end
+  else
+    txtResult.Lines.Text := R;
 end;
 
 procedure TEvaluateDlg.FormClose(Sender: TObject; var CloseAction: TCloseAction);

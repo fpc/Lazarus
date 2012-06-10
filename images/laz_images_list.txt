@@ -202,6 +202,8 @@ debugger/debugger_show_execution_point.png
 debugger/debugger_source_line.png
 debugger/debugger_watches.png
 debugger/debugger_event_log.png
+debugger/evaluate_no_hist.png
+debugger/evaluate_up.png
 packages/pkg_add.png
 packages/pkg_graph.png
 packages/pkg_inherited.png

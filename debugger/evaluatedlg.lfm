@@ -19,9 +19,9 @@ inherited EvaluateDlg: TEvaluateDlg
     AnchorSideTop.Control = ToolBar1
     AnchorSideTop.Side = asrBottom
     Left = 6
-    Height = 16
+    Height = 14
     Top = 47
-    Width = 59
+    Width = 57
     BorderSpacing.Left = 6
     BorderSpacing.Top = 3
     Caption = '&Expression:'
@@ -33,9 +33,9 @@ inherited EvaluateDlg: TEvaluateDlg
     AnchorSideTop.Control = cmbExpression
     AnchorSideTop.Side = asrBottom
     Left = 6
-    Height = 16
-    Top = 95
-    Width = 36
+    Height = 14
+    Top = 91
+    Width = 35
     BorderSpacing.Left = 6
     BorderSpacing.Top = 6
     Caption = '&Result:'
@@ -46,9 +46,9 @@ inherited EvaluateDlg: TEvaluateDlg
     AnchorSideLeft.Control = Owner
     AnchorSideBottom.Control = cmbNewValue
     Left = 6
-    Height = 16
-    Top = 242
-    Width = 59
+    Height = 14
+    Top = 246
+    Width = 55
     Anchors = [akLeft, akBottom]
     BorderSpacing.Left = 6
     BorderSpacing.Bottom = 3
@@ -71,7 +71,7 @@ inherited EvaluateDlg: TEvaluateDlg
     TabOrder = 0
     TabStop = True
     object tbInspect: TToolButton
-      Left = 154
+      Left = 152
       Top = 2
       Caption = '&Inspect'
       Enabled = False
@@ -79,7 +79,7 @@ inherited EvaluateDlg: TEvaluateDlg
       OnClick = tbInspectClick
     end
     object tbWatch: TToolButton
-      Left = 104
+      Left = 102
       Top = 2
       AllowAllUp = True
       Caption = '&Watch'
@@ -88,7 +88,7 @@ inherited EvaluateDlg: TEvaluateDlg
       OnClick = tbWatchClick
     end
     object tbModify: TToolButton
-      Left = 54
+      Left = 52
       Top = 2
       Caption = '&Modify'
       Enabled = False
@@ -103,6 +103,20 @@ inherited EvaluateDlg: TEvaluateDlg
       ImageIndex = 0
       OnClick = tbEvaluateClick
     end
+    object ToolButton1: TToolButton
+      Left = 202
+      Top = 2
+      Width = 10
+      Caption = 'ToolButton1'
+      Style = tbsSeparator
+    end
+    object tbHistory: TToolButton
+      Left = 212
+      Top = 2
+      Caption = 'History'
+      DropdownMenu = mnuHistory
+      Style = tbsDropDown
+    end
   end
   object cmbExpression: TComboBox[4]
     AnchorSideLeft.Control = Owner
@@ -111,14 +125,14 @@ inherited EvaluateDlg: TEvaluateDlg
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 6
-    Height = 23
-    Top = 66
+    Height = 21
+    Top = 64
     Width = 388
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Left = 6
     BorderSpacing.Top = 3
     BorderSpacing.Right = 6
-    ItemHeight = 15
+    ItemHeight = 13
     OnChange = cmbExpressionChange
     OnKeyDown = cmbExpressionKeyDown
     TabOrder = 2
@@ -131,8 +145,8 @@ inherited EvaluateDlg: TEvaluateDlg
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = lblNewValue
     Left = 6
-    Height = 122
-    Top = 114
+    Height = 132
+    Top = 108
     Width = 388
     Anchors = [akTop, akLeft, akRight, akBottom]
     BorderSpacing.Left = 6
@@ -149,14 +163,14 @@ inherited EvaluateDlg: TEvaluateDlg
     AnchorSideBottom.Control = Owner
     AnchorSideBottom.Side = asrBottom
     Left = 6
-    Height = 23
-    Top = 261
+    Height = 21
+    Top = 263
     Width = 388
     Anchors = [akLeft, akRight, akBottom]
     BorderSpacing.Left = 6
     BorderSpacing.Right = 6
     BorderSpacing.Bottom = 6
-    ItemHeight = 15
+    ItemHeight = 13
     OnKeyDown = cmbNewValueKeyDown
     TabOrder = 3
   end
@@ -165,15 +179,31 @@ inherited EvaluateDlg: TEvaluateDlg
     AnchorSideTop.Side = asrCenter
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
-    Left = 306
-    Height = 19
+    Left = 312
+    Height = 17
     Top = 46
-    Width = 88
+    Width = 82
     Anchors = [akTop, akRight]
     BorderSpacing.Right = 6
     Caption = 'chkTypeCast'
     Checked = True
     State = cbChecked
     TabOrder = 4
+  end
+  object mnuHistory: TPopupMenu[8]
+    left = 72
+    top = 136
+    object MenuItem1: TMenuItem
+      Caption = 'None'
+      OnClick = MenuItem1Click
+    end
+    object MenuItem2: TMenuItem
+      Caption = 'Up'
+      OnClick = MenuItem2Click
+    end
+    object MenuItem3: TMenuItem
+      Caption = 'Down'
+      OnClick = MenuItem3Click
+    end
   end
 end
