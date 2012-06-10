@@ -1320,7 +1320,8 @@ type
   TGDBMIDisassembler = class(TDBGDisassembler)
   private
     FDisassembleEvalCmdObj: TGDBMIDebuggerCommandDisassembe;
-    FLastExecAddr: TDBGPtr;
+    FLastExecAddr, FCancelledAddr: TDBGPtr;
+    FIsCancelled: Boolean;
     procedure DoDisassembleExecuted(Sender: TObject);
     procedure DoDisassembleProgress(Sender: TObject);
     procedure DoDisassembleDestroyed(Sender: TObject);
@@ -2756,13 +2757,18 @@ end;
 
 procedure TGDBMIDisassembler.DoDisassembleProgress(Sender: TObject);
 begin
-  Changed;;
+  Changed;
 end;
 
 procedure TGDBMIDisassembler.DoDisassembleExecuted(Sender: TObject);
 begin
   // Results were added from inside the TGDBMIDebuggerCommandDisassembe object
   FLastExecAddr := TGDBMIDebuggerCommandDisassembe(Sender).StartAddr;
+  if dcsCanceled in TGDBMIDebuggerCommandDisassembe(Sender).SeenStates then begin
+    // TODO: fill a block of data with "canceled" info
+    FIsCancelled := True;
+    FCancelledAddr := TGDBMIDebuggerCommandDisassembe(Sender).StartAddr;
+  end;
   FDisassembleEvalCmdObj := nil;
   Changed;
 end;
@@ -2775,6 +2781,9 @@ begin
   Result := False;
   if (Debugger = nil) or not(Debugger.State in [dsPause, dsInternalPause])
   then exit;
+  if FIsCancelled and (FCancelledAddr = AnAddr) then
+    exit;
+
 
   if (FDisassembleEvalCmdObj <> nil)
   then begin
@@ -2857,6 +2866,7 @@ end;
 
 procedure TGDBMIDisassembler.Clear;
 begin
+  FIsCancelled := False;
   inherited Clear;
   if FDisassembleEvalCmdObj <> nil
   then begin
