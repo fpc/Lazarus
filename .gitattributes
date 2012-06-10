@@ -3549,7 +3549,6 @@ examples/autosize/childsizinglayout/mainunit.pas svneol=native#text/plain
 examples/barchart/chartdemo.lpi svneol=native#text/plain
 examples/barchart/chartdemo.lpr svneol=native#text/pascal
 examples/barchart/frmmain.lfm svneol=native#text/plain
-examples/barchart/frmmain.lrs svneol=native#text/pascal
 examples/barchart/frmmain.pas svneol=native#text/pascal
 examples/bidi/project1.lpi svneol=native#text/plain
 examples/bidi/project1.lpr svneol=native#text/plain

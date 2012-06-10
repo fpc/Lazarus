@@ -5,7 +5,7 @@ unit frmmain;
 interface
 
 uses
-  Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, BarChart;
+  Classes, SysUtils, Forms, Controls, Graphics, Dialogs, BarChart;
 
 type
   TForm1 = class(TForm)
@@ -22,6 +22,8 @@ var
 
 implementation
 
+{$R *.lfm}
+
 { TForm1 }
 
 procedure TForm1.Form1Show(Sender: TObject);
@@ -32,9 +34,6 @@ begin
   BarChart1.AddBar('2003',400,clGreen);
   BarChart1.AddBar('2004',400,clGreen);
 end;
-
-initialization
-  {$I frmmain.lrs}
 
 end.
 
