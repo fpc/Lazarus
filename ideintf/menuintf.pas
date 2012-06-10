@@ -542,9 +542,13 @@ function RegisterIDEMenuCommand(Parent: TIDEMenuSection;
                                 const ResourceName: String = '';
                                 const UserTag: PtrUInt = 0
                                 ): TIDEMenuCommand;
+var
+  s: String;
 begin
   Result := TIDEMenuCommand.Create(Name);
-  Result.Caption := Caption;
+  s:=Caption;
+  if (s='') and (Command<>nil) then s:=Command.LocalizedName;
+  Result.Caption := s;
   Result.OnClick := OnClickMethod;
   Result.OnClickProc := OnClickProc;
   Result.Command := Command;
