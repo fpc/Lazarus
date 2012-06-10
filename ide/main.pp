@@ -16790,6 +16790,28 @@ end;
 
 procedure TMainIDE.OnSrcNotebookShowHintForSource(SrcEdit: TSourceEditor;
   ClientPos: TPoint; CaretPos: TPoint);
+
+  function CheckExpressionIsValid(var Expr: String): boolean;
+  var
+    i: Integer;
+    InStr: Boolean;
+  begin
+    Result := True;
+    Expr := Trim(Expr);
+    if (Expr <> '') and (Expr[Length(Expr)] = ';') then
+      SetLength(Expr, Length(Expr) - 1);
+    if (pos(#10, Expr) < 1) and (pos(#13, Expr) < 1) then exit; // single line, assume ok
+
+    Result := False;
+    InStr := False;
+    for i := 1 to Length(Expr) do begin
+      if Expr[i] = '''' then InStr := not InStr;
+      if (not InStr) and (Expr[i] in [';', ':']) then exit; // can not be an expression
+      // Todo: Maybe check for keywords: If Then Begin End ...
+    end;
+    Result := True;
+  end;
+
 var
   ActiveUnitInfo: TUnitInfo;
   BaseURL, SmartHintStr, Expression, DebugEval, DebugEvalDerefer: String;
@@ -16824,8 +16846,11 @@ begin
   case ToolStatus of
     itDebugger: begin
       if EditorOpts.AutoToolTipExprEval then begin
-        if SrcEdit.SelectionAvailable and SrcEdit.CaretInSelection(CaretPos) then
-          Expression := SrcEdit.GetText(True)
+        if SrcEdit.SelectionAvailable and SrcEdit.CaretInSelection(CaretPos) then begin
+          Expression := SrcEdit.GetText(True);
+          if not CheckExpressionIsValid(Expression) then
+            Expression := '';
+        end
         else
           Expression := SrcEdit.GetOperandFromCaret(CaretPos);
         if Expression='' then exit;
