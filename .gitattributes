@@ -3506,7 +3506,6 @@ examples/address_book/addrbook.lpi svneol=native#text/plain
 examples/address_book/addrbook.lpr svneol=native#text/pascal
 examples/address_book/addrbook.res svneol=native#unset
 examples/address_book/frmmain.lfm svneol=native#text/plain
-examples/address_book/frmmain.lrs svneol=native#text/pascal
 examples/address_book/frmmain.pas svneol=native#text/pascal
 examples/address_book/mybook.dbf -text svneol=unset#application/x-dbf
 examples/address_book/mybook.mdx -text svneol=unset#application/x-mdx

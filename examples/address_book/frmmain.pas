@@ -25,7 +25,7 @@ interface
 uses
   SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, DB, Dbf, Grids, DBGrids, DBCtrls, ExtCtrls, ActnList, Menus,
-  StdCtrls,lresources;
+  StdCtrls;
 
 type
   TDataSetFirst = TAction;
@@ -130,6 +130,7 @@ var
 
 implementation
 
+{$R *.lfm}
 
 resourcestring
   SSaveData = 'There is still unsaved data. Save now ?';
@@ -267,6 +268,4 @@ begin
     (Sender As Taction).EnAbled:=State in dsEditModes;
 end;
 
-initialization
-{$i frmmain.lrs}
 end.
