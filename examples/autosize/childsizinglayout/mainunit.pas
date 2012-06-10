@@ -25,7 +25,7 @@ unit MainUnit;
 interface
 
 uses
-  Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, StdCtrls,
+  Classes, SysUtils, Forms, Controls, Graphics, Dialogs, StdCtrls,
   Buttons, RTTICtrls, ExtCtrls, RTTIGrids;
 
 type
@@ -51,6 +51,8 @@ var
   ChildsizingLayoutDemoForm: TChildsizingLayoutDemoForm;
 
 implementation
+
+{$R *.lfm}
 
 { TChildsizingLayoutDemoForm }
 
@@ -104,9 +106,6 @@ begin
   SetButtonCount(StrToIntDef(
                ButtonCountRadioGroup.Items[ButtonCountRadioGroup.ItemIndex],3));
 end;
-
-initialization
-  {$I mainunit.lrs}
 
 end.
 

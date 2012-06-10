@@ -3546,7 +3546,6 @@ examples/androidlcl/secondform.pas svneol=native#text/pascal
 examples/autosize/childsizinglayout/childsizinglayout.lpi svneol=native#text/plain
 examples/autosize/childsizinglayout/childsizinglayout.lpr svneol=native#text/plain
 examples/autosize/childsizinglayout/mainunit.lfm svneol=native#text/plain
-examples/autosize/childsizinglayout/mainunit.lrs svneol=native#text/pascal
 examples/autosize/childsizinglayout/mainunit.pas svneol=native#text/plain
 examples/barchart/chartdemo.lpi svneol=native#text/plain
 examples/barchart/chartdemo.lpr svneol=native#text/pascal
