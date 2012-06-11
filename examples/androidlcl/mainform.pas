@@ -430,7 +430,7 @@ begin
     javaMethod_HttpEntity_getContent);
   DebugLn(':LoadHTMLPageViaJNI 6.2');
   // javaStreamReader = new InputStreamReader(javaContent)
-  lParams[0].l := javaRequest;
+  lParams[0].l := javaContent;
   javaStreamReader := javaEnvRef^^.NewObjectA(javaEnvRef,
     javaClass_InputStreamReader,
     javaMethod_InputStreamReader_new, @lParams[0]);
@@ -442,26 +442,23 @@ begin
     javaClass_BufferedReader,
     javaMethod_BufferedReader_new, @lParams[0]);
 
-  DebugLn(':LoadHTMLPageViaJNI 7 javaBufferedReader='+IntToHex(PtrInt(javaBufferedReader), 8));
   // String line = "";
-  // while ((line = javaBufferedReader.readLine()) != null) {
-  // }
+  // while ((line = javaBufferedReader.readLine()) != null)
   while True do
   begin
-    DebugLn(':LoadHTMLPageViaJNI 7.1');
-    javaString := javaEnvRef^^.CallObjectMethod(javaEnvRef, javaBufferedReader,
+    javaString := javaEnvRef^^.CallObjectMethod(javaEnvRef,
+      javaBufferedReader,
       javaMethod_BufferedReader_readLine);
-    DebugLn(':LoadHTMLPageViaJNI 7.2');
     if javaString = nil then Break;
-    DebugLn(':LoadHTMLPageViaJNI 7.3');
-    lNativeString := javaEnvRef^^.GetStringUTFChars(javaEnvRef, JavaString, nil);
+    lNativeString := javaEnvRef^^.GetStringUTFChars(
+      javaEnvRef, JavaString, nil);
     DebugLn(lNativeString);
     Result := lNativeString;
-    javaEnvRef^^.ReleaseStringUTFChars(javaEnvRef, JavaString, lNativeString);
-    DebugLn(':LoadHTMLPageViaJNI 7.4');
+    javaEnvRef^^.ReleaseStringUTFChars(javaEnvRef,
+      JavaString, lNativeString);
+    javaEnvRef^^.DeleteLocalRef(javaEnvRef, javaString);
   end;
 
-  DebugLn(':LoadHTMLPageViaJNI 8');
   // javaBufferedReader.close();
   javaEnvRef^^.CallVoidMethod(javaEnvRef, javaBufferedReader,
     javaMethod_BufferedReader_close);
