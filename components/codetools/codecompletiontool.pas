@@ -513,17 +513,13 @@ begin
   // search in new nodes, which will be inserted
   ANodeExt:=FirstInsert;
   while ANodeExt<>nil do begin
-    if CompareTextIgnoringSpace(ANodeExt.Txt,UpperName,true)=0 then begin
-      Result:=true;
-      exit;
-    end;
+    if CompareTextIgnoringSpace(ANodeExt.Txt,UpperName,true)=0 then
+      exit(true);
     ANodeExt:=ANodeExt.Next;
   end;
-  if not Result then begin
-    // ToDo: check ancestor vars too
-    // search in current class
-    Result:=(FindVarNode(FCompletingStartNode,UpperName)<>nil);
-  end;
+  // ToDo: check ancestor vars too
+  // search in current class
+  Result:=(FindVarNode(FCompletingStartNode,UpperName)<>nil);
 end;
 
 procedure TCodeCompletionCodeTool.AddClassInsertion(
@@ -6864,17 +6860,11 @@ const
   Identifiers = AllIdentifierDefinitions+[ctnProperty,ctnProcedure,ctnClassGUID];
 begin
   if ClassNode=nil then exit(nil);
-  Result:=CodeCompleteClassNode.FirstChild;
+  Result:=ClassNode.FirstChild;
   while Result<>nil do begin
-    if (Result.Desc in Identifiers) then begin
-      break;
-    end else if (Result.Desc in AllClassSections)
-    and (Result.FirstChild<>nil)
-    and (Result.FirstChild.Desc in Identifiers) then begin
-      Result:=Result.FirstChild;
-      break;
-    end else
-      Result:=Result.NextBrother;
+    if (Result.Desc in Identifiers) then
+      exit;
+    Result:=FindNextIdentNodeInClass(Result);
   end;
 end;
 
