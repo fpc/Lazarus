@@ -1,12 +1,12 @@
 object Form2: TForm2
-  Left = 236
+  Left = 138
   Height = 259
-  Top = 137
+  Top = 247
   Width = 320
   Caption = 'Form2'
   ClientHeight = 259
   ClientWidth = 320
-  LCLVersion = '0.9.31'
+  LCLVersion = '1.1'
   object Button1: TButton
     Left = 8
     Height = 25
@@ -18,7 +18,7 @@ object Form2: TForm2
   end
   object textDest: TEdit
     Left = 8
-    Height = 25
+    Height = 21
     Top = 56
     Width = 80
     OnExit = textDestExit
@@ -31,7 +31,7 @@ object Form2: TForm2
   object Image1: TImage
     Left = 102
     Height = 138
-    Top = 32
+    Top = 64
     Width = 210
     Picture.Data = {
       07545069786D617044DA00002F2A2058504D202A2F0A73746174696320636861
@@ -1786,7 +1786,7 @@ object Form2: TForm2
   object btnStartAccel: TButton
     Left = 8
     Height = 25
-    Top = 194
+    Top = 216
     Width = 112
     Caption = 'Read Accel.'
     OnClick = btnStartAccelClick
@@ -1794,16 +1794,16 @@ object Form2: TForm2
   end
   object labelSensorData: TLabel
     Left = 8
-    Height = 18
+    Height = 14
     Top = 168
-    Width = 81
+    Width = 60
     Caption = 'Sensor Data'
     ParentColor = False
   end
   object btnStopAccel: TButton
     Left = 128
     Height = 25
-    Top = 194
+    Top = 216
     Width = 91
     Caption = 'Stop Accel.'
     OnClick = btnStopAccelClick
@@ -1812,7 +1812,7 @@ object Form2: TForm2
   object btnGetPos: TButton
     Left = 224
     Height = 25
-    Top = 194
+    Top = 216
     Width = 88
     Caption = 'Get Position'
     OnClick = btnGetPosClick
@@ -1820,15 +1820,15 @@ object Form2: TForm2
   end
   object Label1: TLabel
     Left = 10
-    Height = 18
+    Height = 14
     Top = 88
-    Width = 63
+    Width = 50
     Caption = 'SMS Text:'
     ParentColor = False
   end
   object textBody: TEdit
     Left = 8
-    Height = 25
+    Height = 21
     Top = 104
     Width = 80
     TabOrder = 5
@@ -1845,10 +1845,19 @@ object Form2: TForm2
   end
   object Label2: TLabel
     Left = 8
-    Height = 18
+    Height = 14
     Top = 32
-    Width = 53
+    Width = 38
     Caption = 'Number'
     ParentColor = False
+  end
+  object Button2: TButton
+    Left = 102
+    Height = 25
+    Top = 32
+    Width = 203
+    Caption = 'Load HTML page'
+    OnClick = Button2Click
+    TabOrder = 7
   end
 end

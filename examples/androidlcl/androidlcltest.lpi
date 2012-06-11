@@ -35,7 +35,7 @@
           </Target>
           <SearchPaths>
             <IncludeFiles Value="$(ProjOutDir)"/>
-            <Libraries Value="/home/felipe/Programas/android-ndk-r5/platforms/android-8/arch-arm/usr/lib/;/home/felipe/Programas/android-ndk-r5/toolchains/arm-eabi-4.4.0/prebuilt/linux-x86/lib/gcc/arm-eabi/4.4.0/"/>
+            <Libraries Value="/home/felipe/Programas/android-ndk-r5/platforms/android-8/arch-arm/usr/lib;/home/felipe/Programas/android-ndk-r5/toolchains/arm-eabi-4.4.0/prebuilt/linux-x86/lib/gcc/arm-eabi/4.4.0"/>
             <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)"/>
           </SearchPaths>
           <CodeGeneration>
@@ -59,6 +59,7 @@
             <CustomOptions Value="-dANDROID -Xd -CpARMV6"/>
             <CompilerPath Value="$(CompPath)"/>
           </Other>
+          <LCLWidgetType Value="customdrawn"/>
         </CompilerOptions>
       </Item2>
       <Item3 Name="Windows-Release">
@@ -72,7 +73,7 @@
           </Target>
           <SearchPaths>
             <IncludeFiles Value="$(ProjOutDir)"/>
-            <Libraries Value="C:/Programas/android-ndk-r7b/platforms/android-8/arch-arm/usr/lib"/>
+            <Libraries Value="C:/Programas/android-ndk-r7b/platforms/android-8/arch-arm/usr/lib/"/>
             <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)"/>
           </SearchPaths>
           <CodeGeneration>
@@ -99,6 +100,7 @@
             <CustomOptions Value="-dANDROID -Xd -CpARMV6"/>
             <CompilerPath Value="$(CompPath)"/>
           </Other>
+          <LCLWidgetType Value="customdrawn"/>
         </CompilerOptions>
       </Item3>
     </BuildModes>
@@ -139,6 +141,7 @@
         <Filename Value="secondform.pas"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="Form2"/>
+        <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="secondform"/>
       </Unit3>
@@ -178,6 +181,7 @@
       <CustomOptions Value="-dANDROID -Xd -CpARMV6"/>
       <CompilerPath Value="$(CompPath)"/>
     </Other>
+    <LCLWidgetType Value="customdrawn"/>
   </CompilerOptions>
   <Debugging>
     <Exceptions Count="3">

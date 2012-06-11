@@ -18,6 +18,7 @@ type
     btnStopAccel: TButton;
     btnGetPos: TButton;
     btnSendSMS: TButton;
+    Button2: TButton;
     textDest: TEdit;
     textBody: TEdit;
     Image1: TImage;
@@ -29,6 +30,7 @@ type
     procedure btnStartAccelClick(Sender: TObject);
     procedure btnStopAccelClick(Sender: TObject);
     procedure btnGetPosClick(Sender: TObject);
+    procedure Button2Click(Sender: TObject);
     procedure textDestExit(Sender: TObject);
     procedure textDestKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure textDestKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);
@@ -48,7 +50,7 @@ var
 
 implementation
 
-uses TypInfo;
+uses TypInfo, mainform;
 
 {$R *.lfm}
 
@@ -86,6 +88,13 @@ procedure TForm2.btnGetPosClick(Sender: TObject);
 begin
   PositionInfo.RequestPositionInfo(pmGPS);
   PositionInfo.OnPositionRetrieved := @HandlePositionRetrieved;
+end;
+
+procedure TForm2.Button2Click(Sender: TObject);
+var
+  lStr: string;
+begin
+  lStr := Form1.LoadHTMLPageViaJNI('http://magnifier.sourceforge.net/');
 end;
 
 procedure TForm2.textDestExit(Sender: TObject);

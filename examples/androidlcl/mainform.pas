@@ -168,7 +168,6 @@ end;
 procedure TForm1.Button1Click(Sender: TObject);
 var
   sqliteDLL : Pointer;
-  lStr: string;
 begin
 (*  sqliteDLL:=DlOpen('/system/lib/libsqlite.so',RTLD_LAZY);
   DebugLn(IntToHex(PtrUInt(sqliteDLL), 8));
@@ -177,7 +176,6 @@ begin
   DebugLn('Button1Click');
   ProgressBar1.Position := ProgressBar1.Position + 10;
   DebugLn('Cliboard.AsText='+ClipBoard.AsText);
-  lStr := LoadHTMLPageViaJNI('http://w3mentor.com/');
   //ClipBoard.AsText:='Button1Clicked';
 //  OpenDocument('/mnt/sdcard/dcim/100MEDIA/IMAG0008.jpg');
 //  OpenDocument('/mnt/sdcard/emaillog.txt');
@@ -364,14 +362,14 @@ begin
     'org/apache/http/client/methods/HttpGet');
   javaClass_URI := javaEnvRef^^.FindClass(javaEnvRef,
     'java/net/URI');
-  javaClass_HttpResponse := javaEnvRef^^.FindClass(javaEnvRef,
-    'org/apache/http/HttpResponse');
-  javaClass_HttpEntity := javaEnvRef^^.FindClass(javaEnvRef,
-    'org/apache/http/HttpEntity');
-  javaClass_InputStreamReader := javaEnvRef^^.FindClass(javaEnvRef,
-    'java/io/InputStreamReader');
-  javaClass_BufferedReader := javaEnvRef^^.FindClass(javaEnvRef,
-    'java/io/BufferedReader');
+  javaClass_HttpResponse := javaEnvRef^^.FindClass(
+    javaEnvRef, 'org/apache/http/HttpResponse');
+  javaClass_HttpEntity := javaEnvRef^^.FindClass(
+    javaEnvRef, 'org/apache/http/HttpEntity');
+  javaClass_InputStreamReader := javaEnvRef^^.FindClass(
+    javaEnvRef, 'java/io/InputStreamReader');
+  javaClass_BufferedReader := javaEnvRef^^.FindClass(
+    javaEnvRef, 'java/io/BufferedReader');
 
   // Now all Method IDs
   DebugLn(':LoadHTMLPageViaJNI 1');
