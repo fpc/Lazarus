@@ -3477,12 +3477,14 @@ begin
   if (FLastResizeWidth<>Width) or (FLastResizeHeight<>Height)
   or (FLastResizeClientWidth<>ClientWidth)
   or (FLastResizeClientHeight<>ClientHeight) then begin
-    //if AnsiCompareText('NOTEBOOK',Name)=0 then
-    {DebugLn(['[TControl.Resize] ',Name,':',ClassName,
-    ' Last=',FLastResizeWidth,',',FLastResizeHeight,
-    ' LastClient=',FLastResizeClientWidth,',',FLastResizeClientHeight,
-    ' New=',Width,',',Height,
-    ' NewClient=',ClientWidth,',',ClientHeight]);}
+    {if CompareText('SubPanel',Name)=0 then begin
+      DebugLn(['[TControl.Resize] ',Name,':',ClassName,
+      ' Last=',FLastResizeWidth,',',FLastResizeHeight,
+      ' LastClient=',FLastResizeClientWidth,',',FLastResizeClientHeight,
+      ' New=',Width,',',Height,
+      ' NewClient=',ClientWidth,',',ClientHeight]);
+      DumpStack;
+    end;}
     FLastResizeWidth:=Width;
     FLastResizeHeight:=Height;
     FLastResizeClientWidth:=ClientWidth;
