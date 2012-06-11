@@ -1388,8 +1388,6 @@ procedure TControl.DoBorderSpacingChange(Sender: TObject;
 begin
   if Parent <> nil then Parent.InvalidatePreferredSize;
   AdjustSize;
-  if (csDesigning in ComponentState) and (Parent <> nil) then
-    Parent.Invalidate;
 end;
 
 function TControl.IsBorderSpacingInnerBorderStored: Boolean;
