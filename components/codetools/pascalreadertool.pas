@@ -727,8 +727,10 @@ function TPascalReaderTool.FindProcNode(StartNode: TCodeTreeNode;
 // (e.g. 'public', 'private', ...) then the search will continue in the next
 // section
 var CurProcHead: string;
+  InClass: Boolean;
 begin
   Result:=StartNode;
+  InClass:=FindClassOrInterfaceNode(StartNode)<>nil;
   while (Result<>nil) do begin
     //DebugLn('TPascalReaderTool.FindProcNode A "',NodeDescriptionAsString(Result.Desc),'"');
     if Result.Desc=ctnProcedure then begin
@@ -745,7 +747,10 @@ begin
       end;
     end;
     // next node
-    Result:=FindNextNodeOnSameLvl(Result);
+    if InClass then
+      Result:=FindNextIdentNodeInClass(Result)
+    else
+      Result:=FindNextNodeOnSameLvl(Result);
   end;
 end;
 
@@ -1608,13 +1613,19 @@ end;
 
 function TPascalReaderTool.FindVarNode(StartNode: TCodeTreeNode;
   const UpperVarName: string): TCodeTreeNode;
+var
+  InClass: Boolean;
 begin
   Result:=StartNode;
+  InClass:=FindClassOrInterfaceNode(StartNode)<>nil;
   while Result<>nil do begin
     if (Result.Desc=ctnVarDefinition)
     and (CompareNodeIdentChars(Result,UpperVarName)=0) then
       exit;
-    Result:=FindNextIdentNodeInClass(Result);
+    if InClass then
+      Result:=FindNextIdentNodeInClass(Result)
+    else
+      Result:=FindNextNodeOnSameLvl(Result);
   end;
 end;
 

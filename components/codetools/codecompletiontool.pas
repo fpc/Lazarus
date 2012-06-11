@@ -418,17 +418,13 @@ begin
   // search in new nodes, which will be inserted
   ANodeExt:=FirstInsert;
   while ANodeExt<>nil do begin
-    if CompareTextIgnoringSpace(ANodeExt.Txt,NameAndParamsUpCase,true)=0 then begin
-      Result:=true;
-      exit;
-    end;
+    if CompareTextIgnoringSpace(ANodeExt.Txt,NameAndParamsUpCase,true)=0 then
+      exit(true);
     ANodeExt:=ANodeExt.Next;
   end;
-  if not Result then begin
-    // ToDo: check ancestor procs too
-    // search in current class
-    Result:=(FindProcNode(FCompletingStartNode,NameAndParamsUpCase,[phpInUpperCase])<>nil);
-  end;
+  // ToDo: check ancestor procs too
+  // search in current class
+  Result:=(FindProcNode(FCompletingStartNode,NameAndParamsUpCase,[phpInUpperCase])<>nil);
 end;
 
 procedure TCodeCompletionCodeTool.SetCodeCompleteClassNode(const AClassNode: TCodeTreeNode);
