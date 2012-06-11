@@ -6450,6 +6450,7 @@ var AccessParam, AccessParamPrefix, CleanAccessFunc, AccessFunc,
   procedure CompleteReadSpecifier;
   var
     IsGetterFunc: boolean;
+    VarCode: String;
   begin
     // check read specifier
     VariableName:='';
@@ -6511,19 +6512,20 @@ var AccessParam, AccessParamPrefix, CleanAccessFunc, AccessFunc,
       VariableName:=AccessParam;
 
     // check if read access method exists
-    if (Parts[ppParamList].StartPos>0) then begin
-      if (Parts[ppIndexWord].StartPos<1) then begin
+    if (Parts[ppIndexWord].StartPos<1) then begin
+      if (Parts[ppParamList].StartPos>0) then begin
         // param list, no index
         CleanAccessFunc:=UpperCaseStr(AccessParam)+'('+CleanParamList+');';
       end else begin
+        // no param list, no index
+        CleanAccessFunc:=UpperCaseStr(AccessParam)+';';
+      end;
+    end else begin
+      // ToDo: find out type of index
+      if (Parts[ppParamList].StartPos>0) then begin
         // index + param list
         CleanAccessFunc:=UpperCaseStr(AccessParam)+'(INTEGER;'
                         +CleanParamList+');';
-      end;
-    end else begin
-      if (Parts[ppIndexWord].StartPos<1) then begin
-        // no param list, no index
-        CleanAccessFunc:=UpperCaseStr(AccessParam)+';';
       end else begin
         // index, no param list
         CleanAccessFunc:=UpperCaseStr(AccessParam)+'(INTEGER);';
@@ -6586,8 +6588,10 @@ var AccessParam, AccessParamPrefix, CleanAccessFunc, AccessFunc,
     end else begin
       // the read identifier is a variable
       // variable does not exist yet -> add insert demand for variable
+      VarCode:=VariableName+':'+PropType+';';
+      if IsClassProp then VarCode:='class var '+VarCode;
       AddClassInsertion(UpperCaseStr(VariableName),
-         VariableName+':'+PropType+';',VariableName,ncpPrivateVars,PropNode);
+         VarCode,VariableName,ncpPrivateVars,PropNode);
     end;
   end;
   
