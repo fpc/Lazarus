@@ -384,7 +384,7 @@ begin
   javaMethod_HttpResponse_getEntity := javaEnvRef^^.GetMethodID(javaEnvRef, javaClass_HttpResponse, 'getEntity', '()Lorg/apache/http/HttpEntity;');
   javaMethod_HttpEntity_getContent := javaEnvRef^^.GetMethodID(javaEnvRef, javaClass_HttpEntity, 'getContent', '()Ljava/io/InputStream;');
   javaMethod_InputStreamReader_new := javaEnvRef^^.GetMethodID(javaEnvRef, javaClass_InputStreamReader, '<init>', '(Ljava/io/InputStream;)V');
-  javaMethod_BufferedReader_new := javaEnvRef^^.GetMethodID(javaEnvRef, javaClass_BufferedReader, '<init>', '(Ljava/io/InputStream;)V');
+  javaMethod_BufferedReader_new := javaEnvRef^^.GetMethodID(javaEnvRef, javaClass_BufferedReader, '<init>', '(Ljava/io/Reader;)V');
   javaMethod_BufferedReader_readLine := javaEnvRef^^.GetMethodID(javaEnvRef, javaClass_BufferedReader, 'readLine', '()Ljava/lang/String;');
   javaMethod_BufferedReader_close := javaEnvRef^^.GetMethodID(javaEnvRef, javaClass_BufferedReader, 'close', '()V');
 
@@ -435,26 +435,30 @@ begin
     javaClass_InputStreamReader,
     javaMethod_InputStreamReader_new, @lParams[0]);
   // javaBufferedReader = new BufferedReader(javaStreamReader);
-  DebugLn(':LoadHTMLPageViaJNI 6.3');
+  DebugLn(':LoadHTMLPageViaJNI 6.3 javaStreamReader='+IntToHex(PtrInt(javaStreamReader), 8));
   lParams[0].l := javaStreamReader;
   DebugLn(':LoadHTMLPageViaJNI 6.4');
   javaBufferedReader := javaEnvRef^^.NewObjectA(javaEnvRef,
     javaClass_BufferedReader,
     javaMethod_BufferedReader_new, @lParams[0]);
 
-  DebugLn(':LoadHTMLPageViaJNI 7');
+  DebugLn(':LoadHTMLPageViaJNI 7 javaBufferedReader='+IntToHex(PtrInt(javaBufferedReader), 8));
   // String line = "";
   // while ((line = javaBufferedReader.readLine()) != null) {
   // }
   while True do
   begin
+    DebugLn(':LoadHTMLPageViaJNI 7.1');
     javaString := javaEnvRef^^.CallObjectMethod(javaEnvRef, javaBufferedReader,
       javaMethod_BufferedReader_readLine);
+    DebugLn(':LoadHTMLPageViaJNI 7.2');
     if javaString = nil then Break;
+    DebugLn(':LoadHTMLPageViaJNI 7.3');
     lNativeString := javaEnvRef^^.GetStringUTFChars(javaEnvRef, JavaString, nil);
     DebugLn(lNativeString);
     Result := lNativeString;
     javaEnvRef^^.ReleaseStringUTFChars(javaEnvRef, JavaString, lNativeString);
+    DebugLn(':LoadHTMLPageViaJNI 7.4');
   end;
 
   DebugLn(':LoadHTMLPageViaJNI 8');
