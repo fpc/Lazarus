@@ -347,7 +347,7 @@ begin
     and (Parent=nil)
     and (Self is TCustomForm)
   then begin
-    DebugLn(['TControl.Adjustsize ',DbgSName(Self)]);
+    DebugLn(['TControl.AdjustSize ',DbgSName(Self)]);
   end;
   {$ENDIF}
   Include(FControlFlags, cfAutoSizeNeeded);
@@ -1386,6 +1386,7 @@ end;
 procedure TControl.DoBorderSpacingChange(Sender: TObject;
   InnerSpaceChanged: Boolean);
 begin
+  if Parent <> nil then Parent.InvalidatePreferredSize;
   AdjustSize;
   if (csDesigning in ComponentState) and (Parent <> nil) then
     Parent.Invalidate;
