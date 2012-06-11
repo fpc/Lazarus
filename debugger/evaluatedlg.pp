@@ -175,8 +175,11 @@ begin
         txtResult.Lines.Text := RESULTEVAL+ S+':'+LineEnding+ R + LineEnding
            + RESULTSEPARATOR + LineEnding + txtResult.Lines.Text
       else
+        begin
         txtResult.Lines.Text := txtResult.Lines.Text + RESULTSEPARATOR + LineEnding
            + RESULTEVAL+ S+':'+LineEnding+ R+LineEnding;
+        txtResult.SelStart:=length(txtResult.Lines.Text);
+        end;
     end
   else
     txtResult.Lines.Text := R;
@@ -266,8 +269,11 @@ begin
         txtResult.Lines.Text := RESULTMOD+ S+':'+LineEnding+ R + LineEnding
            + RESULTSEPARATOR + LineEnding + txtResult.Lines.Text
       else
+        begin
         txtResult.Lines.Text := txtResult.Lines.Text + RESULTSEPARATOR + LineEnding
            + RESULTMOD+ S+':'+LineEnding+ R+LineEnding;
+        txtResult.SelStart:=length(txtResult.Lines.Text);
+        end;
     end
   else
     txtResult.Lines.Text := R;
