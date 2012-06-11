@@ -732,7 +732,6 @@ begin
   Result:=StartNode;
   InClass:=FindClassOrInterfaceNode(StartNode)<>nil;
   while (Result<>nil) do begin
-    //DebugLn('TPascalReaderTool.FindProcNode A "',NodeDescriptionAsString(Result.Desc),'"');
     if Result.Desc=ctnProcedure then begin
       if (not ((phpIgnoreForwards in Attr)
                and ((Result.SubDesc and ctnsForwardDeclaration)>0)))
@@ -1942,21 +1941,14 @@ begin
     // descend into class sections, skip empty class sections
     if (Result.FirstChild<>nil) and (Result.Desc in AllClassSections) then
       Result:=Result.FirstChild
-    else if Result.NextBrother<>nil then
-      Result:=Result.NextBrother
-    else if Result.Parent.Desc in AllClassSections then begin
-      repeat
+    else begin
+      while Result.NextBrother=nil do begin
         Result:=Result.Parent;
-        if Result.NextBrother<>nil then begin
-          Result:=Result.NextBrother;
-          break;
-        end else if Result.Parent.Desc in AllClassSections then
-          Result:=Result.Parent
-        else
+        if (Result=nil) or (not (Result.Desc in AllClassSections)) then
           exit(nil);
-      until false;
-    end else
-      exit(nil);
+      end;
+      Result:=Result.NextBrother
+    end;
   until not (Result.Desc in AllClassSections);
 end;
 
