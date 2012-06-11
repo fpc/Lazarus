@@ -169,6 +169,9 @@ type
         IgnoreForwards, IgnoreNonForwards, IgnoreImplementation,
         ErrorOnNotFound: boolean): TCodeTreeNode;
     function FindFirstIdentNodeInClass(ClassNode: TCodeTreeNode): TCodeTreeNode;
+    function FindLastIdentNodeInClass(ClassNode: TCodeTreeNode): TCodeTreeNode;
+    function FindNextIdentNodeInClass(Node: TCodeTreeNode): TCodeTreeNode;
+    function FindPriorIdentNodeInClass(Node: TCodeTreeNode): TCodeTreeNode;
     function ClassSectionNodeStartsWithWord(ANode: TCodeTreeNode): boolean;
     function IsClassNode(Node: TCodeTreeNode): boolean; // class, not object
     function FindInheritanceNode(ClassNode: TCodeTreeNode): TCodeTreeNode;
@@ -1611,7 +1614,7 @@ begin
     if (Result.Desc=ctnVarDefinition)
     and (CompareNodeIdentChars(Result,UpperVarName)=0) then
       exit;
-    Result:=FindNextNodeOnSameLvl(Result);
+    Result:=FindNextIdentNodeInClass(Result);
   end;
 end;
 
@@ -1902,13 +1905,65 @@ end;
 function TPascalReaderTool.FindFirstIdentNodeInClass(ClassNode: TCodeTreeNode
   ): TCodeTreeNode;
 begin
-  Result:=nil;
-  if (ClassNode=nil) then exit;
-  Result:=ClassNode.FirstChild;
-  while (Result<>nil) and (Result.FirstChild=nil) do
-    Result:=Result.NextBrother;
+  if (ClassNode=nil) then exit(nil);
+  Result:=FindNextIdentNodeInClass(ClassNode.FirstChild);
+end;
+
+function TPascalReaderTool.FindLastIdentNodeInClass(ClassNode: TCodeTreeNode
+  ): TCodeTreeNode;
+begin
+  if (ClassNode=nil) then exit(nil);
+  Result:=ClassNode.LastChild;
   if Result=nil then exit;
-  Result:=Result.FirstChild;
+  while (Result.FirstChild<>nil) and (Result.Desc in AllClassSections) do
+    Result:=Result.LastChild;
+  if not (Result.Desc in AllClassSections) then
+    Result:=FindPriorIdentNodeInClass(Result);
+end;
+
+function TPascalReaderTool.FindNextIdentNodeInClass(Node: TCodeTreeNode
+  ): TCodeTreeNode;
+// Node must be nil or a class section or an identifier node in a class
+begin
+  Result:=Node;
+  if Result=nil then exit;
+  repeat
+    // descend into class sections, skip empty class sections
+    if (Result.FirstChild<>nil) and (Result.Desc in AllClassSections) then
+      Result:=Result.FirstChild
+    else if Result.NextBrother<>nil then
+      Result:=Result.NextBrother
+    else if Result.Parent.Desc in AllClassSections then begin
+      repeat
+        Result:=Result.Parent;
+        if Result.NextBrother<>nil then begin
+          Result:=Result.NextBrother;
+          break;
+        end else if Result.Parent.Desc in AllClassSections then
+          Result:=Result.Parent
+        else
+          exit(nil);
+      until false;
+    end else
+      exit(nil);
+  until not (Result.Desc in AllClassSections);
+end;
+
+function TPascalReaderTool.FindPriorIdentNodeInClass(Node: TCodeTreeNode
+  ): TCodeTreeNode;
+begin
+  Result:=Node;
+  if Result=nil then exit;
+  repeat
+    if Result.PriorBrother<>nil then begin
+      Result:=Result.PriorBrother;
+      while (Result.LastChild<>nil) and (Result.Desc in AllClassSections) do
+        Result:=Result.LastChild;
+    end else if Result.Parent.Desc in AllClassSections then
+      Result:=Result.Parent
+    else
+      exit(nil);
+  until not (Result.Desc in AllClassSections);
 end;
 
 function TPascalReaderTool.ClassSectionNodeStartsWithWord(ANode: TCodeTreeNode
