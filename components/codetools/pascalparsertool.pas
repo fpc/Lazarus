@@ -4556,13 +4556,14 @@ begin
   }
   AtomIsIdentifierSaveE;
   CreateChildNode;
-  CurNode.Desc:=ctnVarDefinition;
+  CurNode.Desc:=ctnIdentifier;
   {$IFDEF VerboseRecordCase}
   debugln(['TPascalParserTool.KeyWordFuncTypeRecordCase case name="',GetAtom,'"']);
   {$ENDIF}
   ReadNextAtom;
   if (CurPos.Flag=cafColon) then begin
     // has type
+    CurNode.Desc:=ctnVarDefinition;
     ReadNextAtom;
     if CurPos.Flag=cafRoundBracketOpen then begin
       CreateChildNode;
@@ -4601,8 +4602,14 @@ begin
       end;
       EndChildNode; // close ctnIdentifier
     end;
-  end;
-  // close ctnVarDefinition
+  end else
+  if (CurPos.Flag=cafPoint) then // unit.type
+    while CurPos.Flag=cafPoint do begin
+      ReadNextAtom;
+      AtomIsIdentifierSaveE;
+      ReadNextAtom;
+    end;
+  // close ctnIdentifier/ctnVarDefinition
   CurNode.EndPos:=LastAtoms.GetValueAt(0).EndPos;
   EndChildNode;
   if not UpAtomIs('OF') then // read 'of'
