@@ -6741,7 +6741,7 @@ var
       end;
       // add new Insert Node
       if IsClassProp then
-        AccessFunc:='class '+AccessFunc;
+        AccessFunc:='class '+AccessFunc+' static;';
       if CompleteProperties then
         AddClassInsertion(CleanAccessFunc,AccessFunc,AccessParam,
                           ncpPrivateProcs,PropNode,ProcBody);
