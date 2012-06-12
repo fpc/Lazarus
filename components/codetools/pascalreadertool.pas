@@ -163,6 +163,7 @@ type
         NodeDesc: TCodeTreeNodeDesc): TCodeTreeNode;
     function FindLastClassSection(ClassNode: TCodeTreeNode;
         NodeDesc: TCodeTreeNodeDesc): TCodeTreeNode;
+    function GetClassVisibility(Node: TCodeTreeNode): TCodeTreeNodeDesc;
     function FindClassNodeInInterface(const AClassName: string;
         IgnoreForwards, IgnoreNonForwards, ErrorOnNotFound: boolean): TCodeTreeNode;
     function FindClassNodeInUnit(const AClassName: string;
@@ -1858,6 +1859,23 @@ begin
   Result:=ClassNode.LastChild;
   while (Result<>nil) and (Result.Desc<>NodeDesc) do
     Result:=Result.PriorBrother;
+end;
+
+function TPascalReaderTool.GetClassVisibility(Node: TCodeTreeNode
+  ): TCodeTreeNodeDesc;
+begin
+  Result:=ctnNone;
+  if Node=nil then exit;
+  if Node.Desc=ctnProcedureHead then
+    Node:=Node.Parent;
+  if not (Node.Desc in AllClassSections) then begin
+    Node:=Node.Parent;
+    if Node=nil then exit;
+  end;
+  if Node.Desc in AllClassSubSections then
+    Node:=Node.Parent;
+  if Node.Desc in AllClassBaseSections then
+    Result:=Node.Desc;
 end;
 
 function TPascalReaderTool.FindClassNodeInInterface(
