@@ -1398,7 +1398,19 @@ begin
 end;
 
 procedure TJITComponentList.ReadComponentsProc(AComponent: TComponent);
+var
+  aControl: TControl;
+  aCaption: TCaption;
 begin
+  if (AComponent.Name<>'') and (AComponent is TControl) then begin
+    aControl:=TControl(AComponent);
+    aCaption:=aControl.Caption;
+    if (aCaption<>'') and (fRenameList[aCaption]=AComponent.Name) then begin
+      // caption is the old name of the component
+      // component was renamed => change caption too
+      aControl.Caption:=AComponent.Name;
+    end;
+  end;
   if fReadComponents<>nil then
     fReadComponents.Add(AComponent);
 end;

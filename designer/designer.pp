@@ -1129,11 +1129,13 @@ var
         if (NewComponents.IndexOf(OverlappedControl)<0)
         and (OverlappedControl.Left=P.X)
         and (OverlappedControl.Top=P.Y) then begin
+          // overlaps with an old control => move
           inc(P.X,NonVisualCompWidth);
           inc(P.Y,NonVisualCompWidth);
           if (P.X>AParent.ClientWidth-AControl.Width)
           or (P.Y>AParent.ClientHeight-AControl.Height) then
             break;
+          // restart check
           i:=AParent.ControlCount-1;
         end else
           dec(i);
