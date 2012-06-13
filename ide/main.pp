@@ -14709,6 +14709,7 @@ var
   NewClassName: String;
   ARegComp: TRegisteredComponent;
   BinCompStream: TMemoryStream;
+  c: Char;
 begin
   DebugLn('TMainIDE.OnDesignerPasteComponent A');
 
@@ -14739,6 +14740,9 @@ begin
   try
     try
       LRSObjectTextToBinary(TxtCompStream,BinCompStream);
+      // always append an "object list end"
+      c:=#0;
+      BinCompStream.Write(c,1);
     except
       on E: Exception do begin
         IDEMessageDialog(lisConversionError,
