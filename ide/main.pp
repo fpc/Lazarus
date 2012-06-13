@@ -533,6 +533,7 @@ type
     procedure OnDesignerPasteComponent(Sender: TObject; LookupRoot: TComponent;
                             TxtCompStream: TStream; ParentControl: TWinControl;
                             var NewComponent: TComponent);
+    procedure OnDesignerPastedComponents(Sender: TObject; LookupRoot: TComponent);
     procedure OnDesignerPropertiesChanged(Sender: TObject);
     procedure OnDesignerPersistentDeleted(Sender: TObject;
                                           APersistent: TPersistent);
@@ -3801,6 +3802,7 @@ begin
     OnGetSelectedComponentClass:=@OnDesignerGetSelectedComponentClass;
     OnModified:=@OnDesignerModified;
     OnPasteComponent:=@OnDesignerPasteComponent;
+    OnPastedComponents:=@OnDesignerPastedComponents;
     OnProcessCommand:=@OnProcessIDECommand;
     OnPropertiesChanged:=@OnDesignerPropertiesChanged;
     OnRenameComponent:=@OnDesignerRenameComponent;
@@ -7316,12 +7318,16 @@ var
   LoadResult: TModalResult;
   LoadingReferenceNames: TStringList;
 begin
+  //debugln(['TMainIDE.DoFixupComponentReferences START']);
   Result:=mrOk;
   CurRoot:=RootComponent;
   while CurRoot.Owner<>nil do
     CurRoot:=CurRoot.Owner;
   RootUnitInfo:=Project1.UnitWithComponent(CurRoot);
-  if RootUnitInfo=nil then exit;
+  if RootUnitInfo=nil then begin
+    debugln(['TMainIDE.DoFixupComponentReferences WARNING: component without unitinfo: ',DbgSName(RootComponent),' CurRoot=',DbgSName(CurRoot)]);
+    exit;
+  end;
 
   UnitFilenames:=nil;
   ComponentNameToUnitFilename:=nil;
@@ -7338,6 +7344,7 @@ begin
       // load referenced components
       ReferenceRootNames.Clear;
       GetFixupReferenceNames(CurRoot,ReferenceRootNames);
+      //debugln(['TMainIDE.DoFixupComponentReferences ',i,'/',RootComponents.Count,' ',DbgSName(CurRoot),' References=',ReferenceRootNames.Count]);
       for j:=0 to ReferenceRootNames.Count-1 do begin
         RefRootName:=ReferenceRootNames[j];
         ReferenceInstanceNames.Clear;
@@ -14756,6 +14763,12 @@ begin
   finally
     BinCompStream.Free;
   end;
+end;
+
+procedure TMainIDE.OnDesignerPastedComponents(Sender: TObject;
+  LookupRoot: TComponent);
+begin
+  DoFixupComponentReferences(LookupRoot,[]);
 end;
 
 procedure TMainIDE.OnDesignerPropertiesChanged(Sender: TObject);

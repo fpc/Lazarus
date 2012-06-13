@@ -40,7 +40,7 @@ uses
   // FCL + LCL
   Types, Classes, SysUtils, Math, LCLProc, LCLType, LResources, LCLIntf, LMessages,
   InterfaceBase, Forms, Controls, GraphType, Graphics, Dialogs, ExtCtrls, Menus,
-  ClipBrd, TypInfo,
+  ClipBrd, TypInfo, contnrs,
   // IDEIntf
   IDEDialogs, PropEdits, PropEditUtils, ComponentEditors, MenuIntf, IDEImagesIntf,
   FormEditingIntf,
@@ -60,6 +60,7 @@ type
   TOnPasteComponent = procedure(Sender: TObject; LookupRoot: TComponent;
     TxtCompStream: TStream; Parent: TWinControl;
     var NewComponent: TComponent) of object;
+  TOnPastedComponents = procedure(Sender: TObject; LookupRoot: TComponent) of object;
   TOnPersistentDeleted = procedure(Sender: TObject; APersistent: TPersistent)
     of object;
   TOnGetNonVisualCompIcon = procedure(Sender: TObject;
@@ -93,6 +94,7 @@ type
     FLookupRoot: TComponent;
     FMediator: TDesignerMediator;
     FFreeComponent: boolean;
+    FOnPastedComponents: TOnPastedComponents;
     FProcessingDesignerEvent: Integer;
     FOnActivated: TNotifyEvent;
     FOnCloseQuery: TNotifyEvent;
@@ -332,6 +334,8 @@ type
     property OnModified: TNotifyEvent read FOnModified write FOnModified;
     property OnPasteComponent: TOnPasteComponent read FOnPasteComponent
                                                  write FOnPasteComponent;
+    property OnPastedComponents: TOnPastedComponents read FOnPastedComponents
+                                                 write FOnPastedComponents;
     property OnPropertiesChanged: TNotifyEvent
                            read FOnPropertiesChanged write FOnPropertiesChanged;
     property OnRenameComponent: TOnRenameComponent
@@ -1102,12 +1106,7 @@ end;
 function TDesigner.DoInsertFromStream(s: TStream;
   PasteParent: TWinControl; PasteFlags: TComponentPasteSelectionFlags): Boolean;
 var
-  AllComponentText: string;
-  StartPos: Integer;
-  EndPos: Integer;
-  CurTextCompStream: TStream;
   NewSelection: TControlSelection;
-  l: Integer;
 
   procedure FindUniquePosition(AComponent: TComponent);
   var
@@ -1183,6 +1182,14 @@ var
     Result:=true;
   end;
 
+var
+  AllComponentText: string;
+  StartPos: Integer;
+  EndPos: Integer;
+  CurTextCompStream: TStream;
+  CompStreams: TObjectList;
+  l: Integer;
+  i: Integer;
 begin
   Result:=false;
   //debugln('TDesigner.DoInsertFromStream A');
@@ -1191,6 +1198,7 @@ begin
   //debugln('TDesigner.DoInsertFromStream B s.Size=',dbgs(s.Size),' S.Position=',dbgs(S.Position));
   if PasteParent=nil then PasteParent:=GetPasteParent;
   NewSelection:=TControlSelection.Create;
+  CompStreams:=TObjectList.Create(true);
   try
     Form.DisableAutoSizing;
     try
@@ -1229,15 +1237,9 @@ begin
           {$ENDIF}
 
           CurTextCompStream:=TMemoryStream.Create;
-          try
-            CurTextCompStream.Write(AllComponentText[StartPos],EndPos-StartPos);
-            CurTextCompStream.Position:=0;
-            // create component from stream
-            if not PasteComponent(CurTextCompStream) then exit;
-
-          finally
-            CurTextCompStream.Free;
-          end;
+          CurTextCompStream.Write(AllComponentText[StartPos],EndPos-StartPos);
+          CurTextCompStream.Position:=0;
+          CompStreams.Add(CurTextCompStream);
 
           StartPos:=EndPos;
         end else begin
@@ -1245,10 +1247,20 @@ begin
         end;
       end;
 
+      for i:=0 to CompStreams.Count-1 do begin
+        CurTextCompStream:=TMemoryStream(CompStreams[i]);
+        // create component from stream
+        if not PasteComponent(CurTextCompStream) then exit;
+      end;
+
+      if NewSelection.Count>0 then
+        FOnPastedComponents(Self,FLookupRoot);
+
     finally
       Form.EnableAutoSizing;
     end;
   finally
+    CompStreams.Free;
     if NewSelection.Count>0 then
       ControlSelection.Assign(NewSelection);
     NewSelection.Free;

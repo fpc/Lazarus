@@ -103,6 +103,7 @@ type
     FOnReaderError: TJITReaderErrorEvent;
     FJITComponents: TFPList;
     FFlags: TJITCompListFlags;
+    fRenameList: TStringToStringTree;
     procedure Notification(AComponent: TComponent; Operation: TOperation);
          override;
 
@@ -701,11 +702,13 @@ begin
   inherited Create(TheOwner);
   FJITComponents:=TFPList.Create;
   FErrors:=TLRPositionLinks.Create;
+  fRenameList:=TStringToStringTree.Create(false);
 end;
 
 destructor TJITComponentList.Destroy;
 begin
   while FJITComponents.Count>0 do DestroyJITComponent(FJITComponents.Count-1);
+  FreeAndNil(fRenameList);
   FreeAndNil(FJITComponents);
   FreeAndNil(FErrors);
   inherited Destroy;
@@ -968,6 +971,7 @@ end;
 procedure TJITComponentList.InitReading;
 begin
   FFlags:=FFlags-[jclAutoRenameComponents];
+  fRenameList.Clear;
   FErrors.Clear;
   
   MyFindGlobalComponentProc:=@OnFindGlobalComponent;
@@ -1752,18 +1756,30 @@ end;
 
 procedure TJITComponentList.ReaderSetName(Reader: TReader;
   Component: TComponent; var NewName: Ansistring);
+var
+  OldName: String;
 begin
 //  debugln('[TJITComponentList.ReaderSetName] OldName="'+Component.Name+'" NewName="'+NewName+'"');
   if jclAutoRenameComponents in FFlags then begin
+    OldName:=NewName;
     while FCurReadJITComponent.FindComponent(NewName)<>nil do
       NewName:=CreateNextIdentifier(NewName);
+    if OldName<>NewName then
+      fRenameList[OldName]:=NewName;
   end;
 end;
 
 procedure TJITComponentList.ReaderReferenceName(Reader: TReader;
   var RefName: Ansistring);
+var
+  NewName: String;
 begin
   //debugln('[TJITComponentList.ReaderReferenceName] Name='''+RefName+'''');
+  NewName:=fRenameList[RefName];
+  if NewName<>'' then begin
+    //debugln(['TJITComponentList.ReaderReferenceName Old="',RefName,'" New="',NewName,'"']);
+    RefName:=NewName;
+  end;
 end;
 
 procedure TJITComponentList.ReaderAncestorNotFound(Reader: TReader;
