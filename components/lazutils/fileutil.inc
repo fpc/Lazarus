@@ -969,14 +969,14 @@ begin
 end;
 
 function CopyFile(const SrcFilename, DestFilename: string; PreserveTime: Boolean): boolean;
-// Deparecated because Flags parameter can used for the same thing.
+// Flags parameter can be used for the same thing.
 var
   Flags: TCopyFileFlags;
 begin
   if PreserveTime then
-    Flags:=[cffPreserveTime]
+    Flags:=[cffPreserveTime, cffOverwriteFile]
   else
-    Flags:=[];
+    Flags:=[cffOverwriteFile];
   Result := CopyFile(SrcFilename, DestFilename, Flags);
 end;
 
