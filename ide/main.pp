@@ -530,9 +530,9 @@ type
     procedure OnDesignerSetDesigning(Sender: TObject; Component: TComponent;
                                      Value: boolean);
     procedure OnDesignerShowOptions(Sender: TObject);
-    procedure OnDesignerPasteComponent(Sender: TObject; LookupRoot: TComponent;
+    procedure OnDesignerPasteComponents(Sender: TObject; LookupRoot: TComponent;
                             TxtCompStream: TStream; ParentControl: TWinControl;
-                            var NewComponent: TComponent);
+                            var NewComponents: TFPList);
     procedure OnDesignerPastedComponents(Sender: TObject; LookupRoot: TComponent);
     procedure OnDesignerPropertiesChanged(Sender: TObject);
     procedure OnDesignerPersistentDeleted(Sender: TObject;
@@ -3801,7 +3801,7 @@ begin
                  @TComponentPalette(IDEComponentPalette).OnGetNonVisualCompIcon;
     OnGetSelectedComponentClass:=@OnDesignerGetSelectedComponentClass;
     OnModified:=@OnDesignerModified;
-    OnPasteComponent:=@OnDesignerPasteComponent;
+    OnPasteComponents:=@OnDesignerPasteComponents;
     OnPastedComponents:=@OnDesignerPastedComponents;
     OnProcessCommand:=@OnProcessIDECommand;
     OnPropertiesChanged:=@OnDesignerPropertiesChanged;
@@ -14702,16 +14702,15 @@ begin
   DoOpenIDEOptions(TFormEditorOptionsFrame);
 end;
 
-procedure TMainIDE.OnDesignerPasteComponent(Sender: TObject;
+procedure TMainIDE.OnDesignerPasteComponents(Sender: TObject;
   LookupRoot: TComponent; TxtCompStream: TStream; ParentControl: TWinControl;
-  var NewComponent: TComponent);
+  var NewComponents: TFPList);
 var
   NewClassName: String;
   ARegComp: TRegisteredComponent;
   BinCompStream: TMemoryStream;
 begin
   DebugLn('TMainIDE.OnDesignerPasteComponent A');
-  NewComponent:=nil;
 
   // check the class of the new component
   NewClassName:=FindLFMClassName(TxtCompStream);
@@ -14753,10 +14752,10 @@ begin
     BinCompStream.Position:=0;
 
     // create the component
-    NewComponent := FormEditor1.CreateChildComponentFromStream(BinCompStream,
-                     ARegComp.ComponentClass,LookupRoot,ParentControl);
-    if NewComponent=nil then begin
-      DebugLn('TMainIDE.OnDesignerPasteComponent FAILED');
+    FormEditor1.CreateChildComponentsFromStream(BinCompStream,
+                ARegComp.ComponentClass,LookupRoot,ParentControl,NewComponents);
+    if NewComponents.Count=0 then begin
+      DebugLn('TMainIDE.OnDesignerPasteComponent FAILED FormEditor1.CreateChildComponentFromStream');
       exit;
     end;
 

@@ -57,9 +57,9 @@ type
     var RegisteredComponent: TRegisteredComponent) of object;
   TOnSetDesigning = procedure(Sender: TObject; Component: TComponent;
     Value: boolean) of object;
-  TOnPasteComponent = procedure(Sender: TObject; LookupRoot: TComponent;
+  TOnPasteComponents = procedure(Sender: TObject; LookupRoot: TComponent;
     TxtCompStream: TStream; Parent: TWinControl;
-    var NewComponent: TComponent) of object;
+    var NewComponents: TFPList) of object;
   TOnPastedComponents = procedure(Sender: TObject; LookupRoot: TComponent) of object;
   TOnPersistentDeleted = procedure(Sender: TObject; APersistent: TPersistent)
     of object;
@@ -105,7 +105,7 @@ type
     FOnGetNonVisualCompIcon: TOnGetNonVisualCompIcon;
     FOnGetSelectedComponentClass: TOnGetSelectedComponentClass;
     FOnModified: TNotifyEvent;
-    FOnPasteComponent: TOnPasteComponent;
+    FOnPasteComponent: TOnPasteComponents;
     FOnProcessCommand: TOnProcessCommand;
     FOnPropertiesChanged: TNotifyEvent;
     FOnRenameComponent: TOnRenameComponent;
@@ -332,7 +332,7 @@ type
     property OnProcessCommand: TOnProcessCommand
                                  read FOnProcessCommand write FOnProcessCommand;
     property OnModified: TNotifyEvent read FOnModified write FOnModified;
-    property OnPasteComponent: TOnPasteComponent read FOnPasteComponent
+    property OnPasteComponents: TOnPasteComponents read FOnPasteComponent
                                                  write FOnPasteComponent;
     property OnPastedComponents: TOnPastedComponents read FOnPastedComponents
                                                  write FOnPastedComponents;
@@ -1107,6 +1107,7 @@ function TDesigner.DoInsertFromStream(s: TStream;
   PasteParent: TWinControl; PasteFlags: TComponentPasteSelectionFlags): Boolean;
 var
   NewSelection: TControlSelection;
+  NewComponents: TFPList;
 
   procedure FindUniquePosition(AComponent: TComponent);
   var
@@ -1125,7 +1126,7 @@ var
       i:=AParent.ControlCount-1;
       while i>=0 do begin
         OverlappedControl:=AParent.Controls[i];
-        if (OverlappedControl<>AComponent)
+        if (NewComponents.IndexOf(OverlappedControl)<0)
         and (OverlappedControl.Left=P.X)
         and (OverlappedControl.Top=P.Y) then begin
           inc(P.X,NonVisualCompWidth);
@@ -1157,39 +1158,9 @@ var
     end;
   end;
 
-  function PasteComponent(TextCompStream: TStream): boolean;
-  var
-    NewComponent: TComponent;
-  begin
-    Result:=false;
-    TextCompStream.Position:=0;
-    if Assigned(FOnPasteComponent) then begin
-      NewComponent:=nil;
-      // create component and add to LookupRoot
-      FOnPasteComponent(Self,FLookupRoot,TextCompStream,
-                        PasteParent,NewComponent);
-      if NewComponent=nil then exit;
-      // add new component to new selection
-      NewSelection.Add(NewComponent);
-      // set new nice bounds
-      if cpsfFindUniquePositions in PasteFlags then
-        FindUniquePosition(NewComponent);
-      // finish adding component
-      NotifyPersistentAdded(NewComponent);
-      Modified;
-    end;
-
-    Result:=true;
-  end;
-
 var
-  AllComponentText: string;
-  StartPos: Integer;
-  EndPos: Integer;
-  CurTextCompStream: TStream;
-  CompStreams: TObjectList;
-  l: Integer;
   i: Integer;
+  NewComponent: TComponent;
 begin
   Result:=false;
   //debugln('TDesigner.DoInsertFromStream A');
@@ -1198,7 +1169,7 @@ begin
   //debugln('TDesigner.DoInsertFromStream B s.Size=',dbgs(s.Size),' S.Position=',dbgs(S.Position));
   if PasteParent=nil then PasteParent:=GetPasteParent;
   NewSelection:=TControlSelection.Create;
-  CompStreams:=TObjectList.Create(true);
+  NewComponents:=TFPList.Create;
   try
     Form.DisableAutoSizing;
     try
@@ -1208,49 +1179,19 @@ begin
         debugln('TDesigner.DoInsertFromStream Stream Empty s.Size=',dbgs(s.Size),' S.Position=',dbgs(S.Position));
         exit;
       end;
-      l:=s.Size-s.Position;
-      SetLength(AllComponentText,l);
-      s.Read(AllComponentText[1],length(AllComponentText));
 
-      StartPos:=1;
-      EndPos:=StartPos;
-      // read till 'end'
-      while EndPos<=length(AllComponentText) do begin
-        //debugln('TDesigner.DoInsertFromStream C');
-        if (AllComponentText[EndPos] in ['e','E'])
-        and (EndPos>1)
-        and (AllComponentText[EndPos-1] in [#10,#13])
-        and (CompareText(copy(AllComponentText,EndPos,3),'END')=0)
-        and ((EndPos+3>length(AllComponentText))
-             or (AllComponentText[EndPos+3] in [#10,#13]))
-        then begin
-          inc(EndPos,4);
-          while (EndPos<=length(AllComponentText))
-          and (AllComponentText[EndPos] in [' ',#10,#13])
-          do
-            inc(EndPos);
-          // extract text for the current component
-          {$IFDEF VerboseDesigner}
-          DebugLn('TDesigner.DoInsertFromStream==============================');
-          DebugLn(copy(AllComponentText,StartPos,EndPos-StartPos));
-          DebugLn('TDesigner.DoInsertFromStream==============================');
-          {$ENDIF}
-
-          CurTextCompStream:=TMemoryStream.Create;
-          CurTextCompStream.Write(AllComponentText[StartPos],EndPos-StartPos);
-          CurTextCompStream.Position:=0;
-          CompStreams.Add(CurTextCompStream);
-
-          StartPos:=EndPos;
-        end else begin
-          inc(EndPos);
-        end;
-      end;
-
-      for i:=0 to CompStreams.Count-1 do begin
-        CurTextCompStream:=TMemoryStream(CompStreams[i]);
-        // create component from stream
-        if not PasteComponent(CurTextCompStream) then exit;
+      // create components and add to LookupRoot
+      FOnPasteComponent(Self,FLookupRoot,s,PasteParent,NewComponents);
+      // add new component to new selection
+      for i:=0 to NewComponents.Count-1 do begin
+        NewComponent:=TComponent(NewComponents[i]);
+        NewSelection.Add(NewComponent);
+        // set new nice bounds
+        if cpsfFindUniquePositions in PasteFlags then
+          FindUniquePosition(NewComponent);
+        // finish adding component
+        NotifyPersistentAdded(NewComponent);
+        Modified;
       end;
 
       if NewSelection.Count>0 then
@@ -1260,7 +1201,7 @@ begin
       Form.EnableAutoSizing;
     end;
   finally
-    CompStreams.Free;
+    NewComponents.Free;
     if NewSelection.Count>0 then
       ControlSelection.Assign(NewSelection);
     NewSelection.Free;
