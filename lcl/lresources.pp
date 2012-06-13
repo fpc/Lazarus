@@ -2913,13 +2913,11 @@ var
   begin
     if parser.TokenSymbolIs('OBJECT') then
       Flags :=0  { IsInherited := False }
+    else if parser.TokenSymbolIs('INHERITED') then
+      Flags := 1 { IsInherited := True; }
     else begin
-      if parser.TokenSymbolIs('INHERITED') then
-        Flags := 1 { IsInherited := True; }
-      else begin
-        parser.CheckTokenSymbol('INLINE');
-        Flags := 4;
-      end;
+      parser.CheckTokenSymbol('INLINE');
+      Flags := 4;
     end;
     ParserNextToken;
     parser.CheckToken(toSymbol);
@@ -2969,6 +2967,8 @@ var
     Output.WriteByte(0);        // Terminate property list
   end;
 
+var
+  Count: Integer;
 begin
   if Links<>nil then begin
     // sort links for LFM positions
@@ -2980,8 +2980,14 @@ begin
   OldThousandSeparator:=DefaultFormatSettings.ThousandSeparator;
   DefaultFormatSettings.ThousandSeparator:=',';
   try
-    Output.Write(FilerSignature[1], length(FilerSignature));
-    ProcessObject;
+    Count:=0;
+    repeat
+      Output.Write(FilerSignature[1], length(FilerSignature));
+      ProcessObject;
+      inc(Count);
+    until parser.TokenString='';
+    if Count>1 then
+      Output.WriteByte(0);        // Terminate object list
   finally
     parser.Free;
     DefaultFormatSettings.DecimalSeparator:=OldDecimalSeparator;
