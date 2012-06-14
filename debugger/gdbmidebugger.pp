@@ -3373,9 +3373,19 @@ function TGDBMIDebuggerCommandDisassembe.DoExecute: Boolean;
     // we can only do that, if we know the offset of firstaddr (limit to DAssRangeOverFuncTreshold avg lines, should be enough)
     // TODO: limit offset ONLY, if previous range known (already have disass)
     if (AFirstAddr.Offset >= 0)
-    then DisAssListWithSrc := ExecDisassmble
-          (AFirstAddr.Value - Min(AFirstAddr.Offset, DAssRangeOverFuncTreshold * DAssBytesPerCommandAvg),
-           ALastAddr.Value, True);
+    then begin
+      TmpAddr := AFirstAddr.Value - Min(AFirstAddr.Offset, DAssRangeOverFuncTreshold * DAssBytesPerCommandAvg);
+      DisAssListWithSrc := ExecDisassmble(TmpAddr, ALastAddr.Value, True);
+    end;
+
+    if (DisAssListWithSrc <> nil) and (DisAssListWithSrc.Count > 0) and DisAssListWithSrc.HasSourceInfo
+    then begin
+      DisAssListWithSrc.SortByAddress;
+      // gdb may return data far out of range.
+      if (DisAssListWithSrc.LastItem^.Addr < TmpAddr) and
+         (TmpAddr - DisAssListWithSrc.LastItem^.Addr > DAssMaxRangeSize)
+      then FreeAndNil(DisAssListWithSrc);
+    end;
 
     if (DisAssListWithSrc <> nil) and (DisAssListWithSrc.Count > 0) and DisAssListWithSrc.HasSourceInfo
     then begin
@@ -3384,7 +3394,7 @@ function TGDBMIDebuggerCommandDisassembe.DoExecute: Boolean;
          ***
       *)
       Result := True;
-      DisAssListWithSrc.SortByAddress;
+      //DisAssListWithSrc.SortByAddress;
       if DisAssListWithSrc.Item[0]^.Addr > AFirstAddr.Value
       then begin
         // fill in gap at start
