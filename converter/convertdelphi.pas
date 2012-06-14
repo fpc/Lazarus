@@ -101,8 +101,8 @@ type
     function FixLfmFilenameAndLoad(ADfmFilename: string): TModalResult;
     function ConvertUnitFile: TModalResult;
     function ConvertFormFile: TModalResult;
-    function AskUnitPathFromUser: TModalResult;
     function FixIncludeFiles: TModalResult;
+    function AskUnitPathFromUser: TModalResult;
   protected
   public
     constructor Create(AOwnerConverter: TConvertDelphiPBase; const AFilename: string;
@@ -482,6 +482,9 @@ begin
   fCTLink:=TCodeToolLink.Create(fPascalBuffer);
   fCTLink.Settings:=fSettings;
   fCTLink.AskAboutError:=Assigned(fOwnerConverter);
+  // Fix include file names.
+  Result:=FixIncludeFiles;
+  if Result<>mrOk then exit;
   // Create a toold for missing units.
   fUsedUnitsTool:=TUsedUnitsTool.Create(fCTLink, fOrigUnitFilename);
   if Assigned(fOwnerConverter) then begin
@@ -573,9 +576,6 @@ begin
   // Get DFM file name and close it in editor.
   DfmFilename:=GetDfmFileName;
   Result:=FixLfmFilenameAndLoad(DfmFilename);
-  if Result<>mrOk then exit;
-  // Fix include file names.
-  Result:=FixIncludeFiles;
   if Result<>mrOk then exit;
   if fSettings.UnitsReplaceMode<>rlDisabled then begin
     // Find and prepare the missing units. Don't replace yet.
@@ -686,6 +686,7 @@ end;
 function TConvertDelphiUnit.FixIncludeFiles: TModalResult;
 // fix include filenames
 var
+  FoundIncludeFiles: TStrings;
   MissingIncludeFilesCodeXYPos: TFPList;
   CodePos: PCodeXYPosition;
   Msg: string;
@@ -693,11 +694,12 @@ var
   OldChange: Boolean;
 begin
   Result:=mrOk;
+  MissingIncludeFilesCodeXYPos:=Nil;
   OldChange:=LazarusIDE.OpenEditorsOnCodeToolChange;
   LazarusIDE.OpenEditorsOnCodeToolChange:=False;
   try
-    if not CodeToolBoss.FixIncludeFilenames(fPascalBuffer,true,MissingIncludeFilesCodeXYPos)
-    then begin
+    if not fCodeTool.FixIncludeFilenames(fCode,fSrcCache,FoundIncludeFiles,
+                                         MissingIncludeFilesCodeXYPos) then begin
       if MissingIncludeFilesCodeXYPos<>nil then begin
         for i:=0 to MissingIncludeFilesCodeXYPos.Count-1 do begin
           CodePos:=PCodeXYPosition(MissingIncludeFilesCodeXYPos[i]);
@@ -710,10 +712,9 @@ begin
                                       [CodeToolBoss.ErrorMessage]), '', -1);
       Application.ProcessMessages;
       Result:=mrCancel;
-      exit;
     end;
   finally
-    CodeToolBoss.FreeListOfPCodeXYPosition(MissingIncludeFilesCodeXYPos);
+    CodeCache.FreeListOfPCodeXYPosition(MissingIncludeFilesCodeXYPos);
     LazarusIDE.OpenEditorsOnCodeToolChange:=OldChange;
   end;
 end;
@@ -1601,8 +1602,8 @@ begin
       ConvUnits.Add(Converter);
       Result:=Converter.CopyAndLoadFile;
       if Result<>mrOK then exit;
-      Result:=Converter.CheckFailed(Result);
-      if Result<>mrOK then Break;
+      //Result:=Converter.CheckFailed(Result);
+      //if Result<>mrOK then Break;
       Result:=Converter.ConvertUnitFile;
       if Result<>mrOK then exit;
       Result:=Converter.CheckFailed(Result);

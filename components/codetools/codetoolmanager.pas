@@ -1621,10 +1621,8 @@ end;
 
 procedure TCodeToolManager.FreeListOfPCodeXYPosition(var List: TFPList);
 begin
-  if List<>nil then begin
-    CodeCache.FreeListOfPCodeXYPosition(List);
-    List:=nil;
-  end;
+  CodeCache.FreeListOfPCodeXYPosition(List);
+  List:=nil;
 end;
 
 procedure TCodeToolManager.FreeTreeOfPCodeXYPosition(var Tree: TAVLTree);

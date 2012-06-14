@@ -133,6 +133,7 @@ begin
     fCodeTool:=CodeToolBoss.CurCodeTool;
     fSrcCache:=CodeToolBoss.SourceChangeCache;
     ResetMainScanner;
+    fCodeTool.Scanner.IgnoreMissingIncludeFiles:=True;
   except
     on e: Exception do
       CodeToolBoss.HandleException(e);
@@ -175,13 +176,13 @@ begin
   fLowerCaseRes:=True;
   fIsConsoleApp:=False;
   fCTLinkCreated:=True;
-  if fCTLink.CodeTool=nil then exit;
-  try
-    fCTLink.CodeTool.BuildTree(lsrInitializationStart);
-  except
-    on e: Exception do
-      CodeToolBoss.HandleException(e);
-  end;
+  if Assigned(fCTLink.CodeTool) then
+    try
+      fCTLink.CodeTool.BuildTree(lsrInitializationStart);
+    except
+      on e: Exception do
+        CodeToolBoss.HandleException(e);
+    end;
 end;
 
 constructor TConvDelphiCodeTool.Create(ACTLink: TCodeToolLink);
@@ -537,7 +538,7 @@ var
     FuncInfo.StartPos:=xStart;
     with fCTLink.CodeTool do begin
       MoveCursorToCleanPos(xStart);
-      ReadNextAtom;                     // Read func name.
+      ReadNextAtom;                     // Read proc name.
       ReadNextAtom;                     // Read first atom after proc name.
       if AtomIsChar('(') then begin
         // read parameter list
