@@ -701,6 +701,7 @@ begin
     end;
   end;
 
+  //debugln(['TCodeCompletionCodeTool.FindInsertPositionForForwardProc ',ord(SourceChangeCache.BeautifyCodeOptions.ForwardProcBodyInsertPolicy)]);
   if SourceChangeCache.BeautifyCodeOptions.KeepForwardProcOrder then begin
     // KeepForwardProcOrder: gather all procs and try to insert the new body
     //  in the same order of other forward proc definitions.
@@ -736,7 +737,7 @@ begin
       {ProcAVLNode:=ForwardProcNodes.FindLowest;
       while ProcAVLNode<>nil do begin
         NearestProcNode:=TCodeTreeNodeExtension(ProcAVLNode.Data).Node;
-        DebugLn('FindInsertPositionForForwardProc B ',NearestProcNode.StartPos,' "',copy(Src,NearestProcNode.StartPos,20),'"');
+        DebugLn(['FindInsertPositionForForwardProc B ',NearestProcNode.StartPos,' "',copy(Src,NearestProcNode.StartPos,20),'"']);
         ProcAVLNode:=ForwardProcNodes.FindSuccessor(ProcAVLNode);
       end;}
 
@@ -788,6 +789,8 @@ begin
         NearestProcNode:=NearestNodeExt.Node;
         SetIndentAndInsertPos(NearestProcNode,InsertBehind);
         exit;
+      end else begin
+        // there is no other proc => use ForwardProcBodyInsertPolicy
       end;
       
     finally
@@ -796,11 +799,13 @@ begin
       DisposeAVLTree(ProcBodyNodes);
       DisposeAVLTree(ForwardProcNodes);
     end;
-  end else if SourceChangeCache.BeautifyCodeOptions.ForwardProcBodyInsertPolicy
+  end;
+
+  if SourceChangeCache.BeautifyCodeOptions.ForwardProcBodyInsertPolicy
     = fpipInFrontOfMethods
   then begin
     // Try to insert new proc in front of existing methods
-    
+
     // find first method
     NearestProcNode:=StartSearchProc;
     while (NearestProcNode<>nil) and (not NodeIsMethodBody(NearestProcNode)) do
