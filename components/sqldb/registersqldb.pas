@@ -47,6 +47,8 @@ unit registersqldb;
 {$IF FPC_FULLVERSION>= 20700}
 // FBAdmin component introduced in FPC 2.7
 {$DEFINE HASFBADMIN}
+{$DEFINE HASPQEVENT}
+{$DEFINE HASFBEVENT}
 {$ENDIF}
 
 interface
@@ -61,6 +63,9 @@ uses
   odbcconn,
 {$IFDEF HASPQCONNECTION}
   pqconnection,
+  {$IFDEF HASPQEVENT}
+  pqteventmonitor,
+  {$ENDIF}
 {$ENDIF}
 {$IFDEF HASORACLECONNECTION}
   oracleconnection,
@@ -81,6 +86,9 @@ uses
 {$ENDIF}
 {$IFDEF HASFBADMIN}
   fbadmin,
+{$ENDIF}
+{$IFDEF HASFBEVENT}
+  fbeventmonitor,
 {$ENDIF}
   propedits,
   sqlstringspropertyeditordlg,
@@ -161,6 +169,9 @@ begin
 {$ENDIF}                              
 {$IFDEF HASPQCONNECTION}
                               TPQConnection,
+  {$IFDEF HASPQEVENT}
+                              TPQTEventMonitor,
+  {$ENDIF}
 {$ENDIF}
 {$IFDEF HASORACLECONNECTION}
                               TOracleConnection,
@@ -183,6 +194,9 @@ begin
                               TIBConnection
 {$IFDEF HASFBADMIN}
                               ,TFBAdmin
+{$ENDIF}
+{$IFDEF HASFBEVENT}
+                              ,TFBEventMonitor
 {$ENDIF}
                               ]);
 end;
