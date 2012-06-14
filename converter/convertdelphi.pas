@@ -698,8 +698,9 @@ begin
   OldChange:=LazarusIDE.OpenEditorsOnCodeToolChange;
   LazarusIDE.OpenEditorsOnCodeToolChange:=False;
   try
-    if not fCodeTool.FixIncludeFilenames(fCode,fSrcCache,FoundIncludeFiles,
-                                         MissingIncludeFilesCodeXYPos) then begin
+    with fCTLink do
+    if not CodeTool.FixIncludeFilenames(Code,SrcCache,FoundIncludeFiles,
+                                        MissingIncludeFilesCodeXYPos) then begin
       if MissingIncludeFilesCodeXYPos<>nil then begin
         for i:=0 to MissingIncludeFilesCodeXYPos.Count-1 do begin
           CodePos:=PCodeXYPosition(MissingIncludeFilesCodeXYPos[i]);
