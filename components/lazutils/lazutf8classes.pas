@@ -26,7 +26,36 @@ type
     procedure SaveToFile(const FileName: string); override;
   end;
 
+procedure LoadStringsFromFileUTF8(List: TStrings; const FileName: string);
+procedure SaveStringsToFileUTF8(List: TStrings; const FileName: string);
+
 implementation
+
+procedure LoadStringsFromFileUTF8(List: TStrings; const FileName: string);
+var
+  uList: TStringListUTF8;
+begin
+  uList:=TStringListUTF8.Create;
+  try
+    uList.LoadFromFile(FileName);
+    List.Assign(uList);
+  finally
+    uList.Free;
+  end;
+end;
+
+procedure SaveStringsToFileUTF8(List: TStrings; const FileName: string);
+var
+  uList: TStringListUTF8;
+begin
+  uList:=TStringListUTF8.Create;
+  try
+    uList.Assign(List);
+    uList.SaveToFile(FileName);
+  finally
+    uList.Free;
+  end;
+end;
 
 constructor TFileStreamUTF8.Create(const AFileName: utf8string; Mode: Word);
 var
