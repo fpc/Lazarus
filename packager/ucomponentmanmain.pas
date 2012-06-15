@@ -1,4 +1,3 @@
-{  $Id$  }
 {***************************************************************************
  *                                                                         *
  *   This source is free software; you can redistribute it and/or modify   *
@@ -29,7 +28,7 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, StdCtrls,
-  Buttons, FileUtil, IDEProcs, UFrmAddComponent;
+  Buttons, FileUtil, lazutf8classes, IDEProcs, UFrmAddComponent;
   
 Type
   TRComponent = class(TObject)
@@ -76,7 +75,7 @@ type
     function FindUnitName: String;
   private
     FLazPath: String;
-    MyFile: TStringList;
+    MyFile: TStringListUTF8;
     procedure SetLazPath(const AValue: String);
   public
     property LazPath: String read FLazPath write SetLazPath;
@@ -130,7 +129,7 @@ begin
     // load in and parse the source
     try
       MyFile.Clear;
-      MyFile.LoadFromFile(UTF8ToSys(DlgLoad.Filename));
+      MyFile.LoadFromFile(DlgLoad.Filename);
     except
       MessageDlg('Error loading unit: '+DlgLoad.Filename,mtError,[mbCancel],0);
       exit;
@@ -198,7 +197,7 @@ begin
   MakeUses;
   MakeRegister;
   try
-    MyFile.SaveToFile(UTF8ToSys(FLazPath+'components/custom/customidecomps.pas'));
+    MyFile.SaveToFile(FLazPath+'components/custom/customidecomps.pas');
   except
     MessageDlg('Error saving customidecomps.pas!',mtError,[mbCancel],0);
     exit;
@@ -210,7 +209,7 @@ end;
 
 procedure TFrmComponentMan.FrmMainCREATE(Sender: TObject);
 begin
-  MyFile := TStringList.Create;
+  MyFile := TStringListUTF8.Create;
   Caption:='Custom Component Manager (No packages!)';
   Label1.Caption:='Installed Custom Components';
 end;
@@ -233,7 +232,7 @@ begin
   RegisterFilename:=
     AppendPathDelim(FLazPath)+'components/custom/customidecomps.pas';
   try
-    MyFile.LoadFromFile(UTF8ToSys(RegisterFilename));
+    MyFile.LoadFromFile(RegisterFilename);
   except
     on E: Exception do begin
       if messagedlg('Error loading '+RegisterFilename+': '+E.Message+#13#10+
@@ -258,7 +257,7 @@ begin
       MyFile.Clear;
       exit;
     end;
-    MyFile.SaveToFile(UTF8ToSys(ChangeFileExt(RegisterFilename,'.orig')));
+    MyFile.SaveToFile(ChangeFileExt(RegisterFilename,'.orig'));
   end;
   
   // okay got a good file here...

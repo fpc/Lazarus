@@ -66,6 +66,7 @@ uses
   LCLProc, LCLMemManager, LCLType, LCLIntf, LConvEncoding, LMessages, ComCtrls,
   FileUtil, LResources, StdCtrls, Forms, Buttons, Menus, Controls, GraphType,
   HelpIntfs, Graphics, ExtCtrls, Dialogs, InterfaceBase, UTF8Process, LazLogger,
+  lazutf8classes,
   // codetools
   FileProcs, CodeBeautifier, FindDeclarationTool, LinkScanner, BasicCodeTools,
   CodeToolsStructs, CodeToolManager, CodeCache, DefineTemplates,
@@ -12587,7 +12588,7 @@ procedure TMainIDE.DoExecuteRemoteControl;
 
 var
   Filename: String;
-  List: TStringList;
+  List: TStringListUTF8;
   Files: TStrings;
   i: Integer;
   CmdShow: Boolean;
@@ -12596,12 +12597,12 @@ begin
   if FileExistsUTF8(Filename) and (FRemoteControlFileAge<>FileAgeUTF8(Filename))
   then begin
     // the control file exists and has changed
-    List:=TStringList.Create;
+    List:=TStringListUTF8.Create;
     Files:=nil;
     try
       // load and delete the file
       try
-        List.LoadFromFile(UTF8ToSys(Filename));
+        List.LoadFromFile(Filename);
       except
         DebugLn(['TMainIDE.DoExecuteRemoteControl reading file failed: ',Filename]);
       end;
@@ -13520,12 +13521,13 @@ end;
 
 function TMainIDE.DoLoadMemoryStreamFromFile(MemStream: TMemoryStream;
   const AFilename:string): TModalResult;
-var FileStream: TFileStream;
+var
+  FileStream: TFileStreamUTF8;
   ACaption,AText:string;
 begin
   repeat
     try
-      FileStream:=TFileStream.Create(UTF8ToSys(AFilename),fmOpenRead);
+      FileStream:=TFileStreamUTF8.Create(AFilename,fmOpenRead);
       try
         FileStream.Position:=0;
         MemStream.CopyFrom(FileStream,FileStream.Size);

@@ -48,7 +48,7 @@ uses
   contnrs, StringHashList, Translations, LResources,
   // codetools
   CodeToolsConfig, CodeToolManager, CodeCache, CodeToolsStructs, BasicCodeTools,
-  FileProcs, Laz2_XMLCfg,
+  FileProcs, Laz2_XMLCfg, lazutf8classes,
   // IDE Interface
   SrcEditorIntf, NewItemIntf, ProjectIntf, PackageIntf, CompOptsIntf,
   MenuIntf, IDEWindowIntf, PropEdits, MacroIntf, LazIDEIntf,
@@ -627,7 +627,7 @@ var
   NewSource: String;
   UnitDirectives: String;
   IconLRSFilename: String;
-  BinFileStream: TFileStream;
+  BinFileStream: TFileStreamUTF8;
   BinMemStream: TMemoryStream;
   BinExt: String;
   ResourceType: String;
@@ -647,7 +647,7 @@ begin
       exit;
     end;
     try
-      BinFileStream:=TFileStream.Create(UTF8ToSys(Params.IconFile),fmOpenRead);
+      BinFileStream:=TFileStreamUTF8.Create(Params.IconFile,fmOpenRead);
       try
         BinMemStream:=TMemoryStream.Create;
         ResMemStream:=TMemoryStream.Create;

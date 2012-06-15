@@ -33,8 +33,9 @@ interface
 
 uses
   // FCL+LCL
-  Classes, SysUtils, AVL_Tree, LCLProc, LCLIntf, LCLType, Forms, Controls, Buttons,
-  StdCtrls, Dialogs, ExtCtrls, FileProcs, Graphics, ButtonPanel, LConvEncoding,
+  Classes, SysUtils, AVL_Tree, LCLProc, LCLIntf, LCLType, Forms, Controls,
+  Buttons, StdCtrls, Dialogs, ExtCtrls, FileProcs, Graphics, ButtonPanel,
+  LConvEncoding, lazutf8classes,
   // CodeTools
   BasicCodeTools, CodeToolManager, CodeAtom, CodeCache, CustomCodeTool, CodeTree,
   PascalParserTool, FindDeclarationTool,
@@ -877,7 +878,7 @@ function TLIHProviders.GetStream(const URL: string; Shared: boolean): TStream;
   procedure OpenFile(out Stream: TStream; const Filename: string;
     UseCTCache: boolean);
   var
-    fs: TFileStream;
+    fs: TFileStreamUTF8;
     ok: Boolean;
     Buf: TCodeBuffer;
     ms: TMemoryStream;
@@ -895,7 +896,7 @@ function TLIHProviders.GetStream(const URL: string; Shared: boolean): TStream;
       ok:=false;
       try
         DebugLn(['TLIHProviders.GetStream.OpenFile ',Filename]);
-        fs:=TFileStream.Create(UTF8ToSys(Filename),fmOpenRead);
+        fs:=TFileStreamUTF8.Create(Filename,fmOpenRead);
         Stream:=fs;
         ok:=true;
       finally

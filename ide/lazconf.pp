@@ -46,7 +46,8 @@ interface
 {$endif}
 
 uses
-  SysUtils, Classes, InterfaceBase, FileUtil, LCLProc, DefineTemplates;
+  SysUtils, Classes, InterfaceBase, FileUtil, lazutf8classes, LCLProc,
+  DefineTemplates;
 
 const
   LazarusVersionStr = {$I version.inc};
@@ -187,12 +188,12 @@ function CreateCompilerTestPascalFilename: string;
 
   function CreateFile(const Filename: string): boolean;
   var
-    fs: TFileStream;
+    fs: TFileStreamUTF8;
   begin
     if FileExistsUTF8(Filename) then exit(true);
     Result:=false;
     try
-      fs:=TFileStream.Create(UTF8ToSys(Filename),fmCreate);
+      fs:=TFileStreamUTF8.Create(Filename,fmCreate);
       fs.Free;
       Result:=true;
     except

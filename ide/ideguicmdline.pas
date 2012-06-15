@@ -37,7 +37,8 @@ unit IDEGuiCmdLine;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, LazConf, LCLProc, LazarusIDEStrConsts, IDECmdLine;
+  Classes, SysUtils, FileUtil, lazutf8classes, LazConf, LCLProc,
+  LazarusIDEStrConsts, IDECmdLine;
 
 procedure ParseGuiCmdLineParams(var SkipAutoLoadingLastProject,
                                       StartedByStartLazarus,
@@ -174,10 +175,10 @@ function SetupMainIDEInstance: boolean;
   procedure WritePIDFile(const Filename: string; aPID: int64);
   var
     Dir: String;
-    sl: TStringList;
+    sl: TStringListUTF8;
   begin
     debugln(['WritePIDFile File="',Filename,'" PID=',aPID]);
-    sl:=TStringList.Create;
+    sl:=TStringListUTF8.Create;
     try
       sl.Add(IntToStr(aPID));
       try
@@ -187,7 +188,7 @@ function SetupMainIDEInstance: boolean;
             debugln(['WritePIDFile failed to create directory ',Dir]);
           exit;
         end;
-        sl.SaveToFile(UTF8ToSys(Filename));
+        sl.SaveToFile(Filename);
       except
         on E: Exception do begin
           debugln(['WritePIDFile "',Filename,'" failed:']);
@@ -201,16 +202,16 @@ function SetupMainIDEInstance: boolean;
 
   function ReadPIDFile(const Filename: string; out ConfigPID: int64): boolean;
   var
-    sl: TStringList;
+    sl: TStringListUTF8;
   begin
     Result:=false;
     ConfigPID:=-1;
     debugln(['ReadPIDFile ',Filename]);
     if not FileExistsUTF8(Filename) then exit;
-    sl:=TStringList.Create;
+    sl:=TStringListUTF8.Create;
     try
       try
-        sl.LoadFromFile(UTF8ToSys(Filename));
+        sl.LoadFromFile(Filename);
         ConfigPID:=StrToInt64(sl[0]);
         Result:=true;
         debugln(['ReadPIDFile ConfigPID=',ConfigPID]);
@@ -227,12 +228,12 @@ function SetupMainIDEInstance: boolean;
 
   procedure SendCmdlineActionsToMainInstance;
   var
-    sl: TStringList;
+    sl: TStringListUTF8;
     Param: String;
     Filename: String;
     i: Integer;
   begin
-    sl:=TStringList.Create;
+    sl:=TStringListUTF8.Create;
     try
       sl.Add('Show');
       for i:=1 to Paramcount do begin
@@ -243,7 +244,7 @@ function SetupMainIDEInstance: boolean;
       Filename:=GetRemoteControlFilename;
       try
         debugln(['SendCmdlineActionsToMainInstance Commands="',sl.Text,'"']);
-        sl.SaveToFile(UTF8ToSys(Filename));
+        sl.SaveToFile(Filename);
       except
         on E: Exception do begin
           debugln(['SendCmdlineActionsToMainInstance failed to write ',Filename]);

@@ -33,7 +33,7 @@ interface
 
 uses
   Classes, SysUtils, LCLProc, Forms, Controls, Buttons, StdCtrls,
-  Laz2_XMLWrite,
+  Laz2_XMLWrite, lazutf8classes,
   SynEdit, SynHighlighterDiff, LCLType, ComCtrls, ExtCtrls,
   FileProcs, CodeToolManager, CodeCache,
   Project, DiffPatch, LazarusIDEStrConsts, EnvironmentOpts, EditorOptions,
@@ -104,7 +104,7 @@ function ShowDiskDiffsDialog(AnUnitList, APackageList: TFPList): TModalResult;
   var
     i: Integer;
     CurUnit: TUnitInfo;
-    fs: TFileStream;
+    fs: TFileStreamUTF8;
     UnitDidNotChange: Boolean;
     s: string;
   begin
@@ -113,7 +113,7 @@ function ShowDiskDiffsDialog(AnUnitList, APackageList: TFPList): TModalResult;
       CurUnit:=TUnitInfo(AnUnitList[i]);
       UnitDidNotChange:=false;
       try
-        fs:=TFileStream.Create(UTF8ToSys(CurUnit.Filename),fmOpenRead);
+        fs:=TFileStreamUTF8.Create(CurUnit.Filename,fmOpenRead);
         try
           if fs.Size=CurUnit.Source.SourceLength then begin
             // size has not changed => load to see difference
@@ -140,7 +140,7 @@ function ShowDiskDiffsDialog(AnUnitList, APackageList: TFPList): TModalResult;
     i: Integer;
     CurPackage: TLazPackage;
     PackageDidNotChange: Boolean;
-    fs: TFileStream;
+    fs: TFileStreamUTF8;
     CurSource, DiskSource: string;
   begin
     if APackageList=nil then exit;
@@ -151,7 +151,7 @@ function ShowDiskDiffsDialog(AnUnitList, APackageList: TFPList): TModalResult;
         continue;// this package was not loaded/saved
       try
         CurPackage.SaveToString(CurSource);
-        fs:=TFileStream.Create(UTF8ToSys(CurPackage.Filename),fmOpenRead);
+        fs:=TFileStreamUTF8.Create(CurPackage.Filename,fmOpenRead);
         try
           if fs.Size=length(CurSource) then begin
             // size has not changed => load to see difference
@@ -272,7 +272,7 @@ end;
 function TDiskDiffsDlg.GetCachedDiff(FileOwner: TObject): PDiffItem;
 var
   i: integer;
-  fs: TFileStream;
+  fs: TFileStreamUTF8;
   Filename: String;
   AnUnitInfo: TUnitInfo;
   APackage: TLazPackage;
@@ -305,7 +305,7 @@ begin
       Filename:='';
       Source:='';
     end;
-    fs:=TFileStream.Create(UTF8ToSys(Filename),fmOpenRead);
+    fs:=TFileStreamUTF8.Create(Filename,fmOpenRead);
     SetLength(Result^.TxtOnDisk,fs.Size);
     if Result^.TxtOnDisk<>'' then
       fs.Read(Result^.TxtOnDisk[1],length(Result^.TxtOnDisk));

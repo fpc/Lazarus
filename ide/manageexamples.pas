@@ -5,8 +5,8 @@ unit ManageExamples;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, ListFilterEdit, Forms, Controls, Graphics,
-  Dialogs, StdCtrls, ExtCtrls, ButtonPanel, Buttons, EditBtn, LCLProc,
+  Classes, SysUtils, FileUtil, lazutf8classes, ListFilterEdit, Forms, Controls,
+  Graphics, Dialogs, StdCtrls, ExtCtrls, ButtonPanel, Buttons, EditBtn, LCLProc,
   IDEWindowIntf, LazIDEIntf, MainIntf, EnvironmentOpts, LazarusIDEStrConsts;
 
 type
@@ -317,7 +317,6 @@ begin
 end;
 
 // Project list selection changes. Adjust buttons.
-
 procedure TManageExamplesForm.ProjectsListBoxSelectionChange(Sender: TObject; User: boolean);
 var
   HasSelected: Boolean;
@@ -337,7 +336,7 @@ begin
           ReadMe:=ExtractFilePath(ProjectsListBox.Items[i])+'README.txt';
           RealReadMe:=FindDiskFileCaseInsensitive(ReadMe);
           if RealReadMe <> '' then
-            DescriptionMemo.Lines.LoadFromFile(RealReadMe)
+            LoadStringsFromFileUTF8(DescriptionMemo.Lines,RealReadMe)
           else
             DescriptionMemo.Clear;
           Break;

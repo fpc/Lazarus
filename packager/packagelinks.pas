@@ -39,8 +39,8 @@ unit PackageLinks;
 interface
 
 uses
-  Classes, SysUtils, Laz2_XMLCfg, FileProcs, CodeToolManager,
-  CodeToolsStructs, LCLProc, FileUtil, AvgLvlTree, MacroIntf, PackageIntf,
+  Classes, SysUtils, Laz2_XMLCfg, FileProcs, CodeToolManager, CodeToolsStructs,
+  LCLProc, FileUtil, AvgLvlTree, lazutf8classes, MacroIntf, PackageIntf,
   IDEProcs, EnvironmentOpts, PackageDefs, LazConf;
   
 const
@@ -421,7 +421,7 @@ var
   NewPkgName: string;
   PkgVersion: TPkgVersion;
   NewPkgLink: TPackageLink;
-  sl: TStringList;
+  sl: TStringListUTF8;
   CurFilename: String;
   NewFilename: string;
 begin
@@ -445,9 +445,9 @@ begin
         continue;
       end;
       NewFilename:='';
-      sl:=TStringList.Create;
+      sl:=TStringListUTF8.Create;
       try
-        sl.LoadFromFile(UTF8ToSys(CurFilename));
+        sl.LoadFromFile(CurFilename);
         if sl.Count<=0 then begin
           DebugLn('WARNING: suspicious pkg link file found (content): ',CurFilename);
           continue;

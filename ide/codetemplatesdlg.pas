@@ -32,7 +32,8 @@ interface
 
 uses
   Classes, SysUtils, LCLProc, LResources, Forms, Controls, Graphics, Dialogs,
-  ClipBrd, StdCtrls, Buttons, ExtCtrls, Menus, FileUtil, ButtonPanel,
+  ClipBrd, StdCtrls, Buttons, ExtCtrls, Menus, FileUtil, lazutf8classes,
+  ButtonPanel,
   // synedit
   SynEdit, SynHighlighterPas, SynEditAutoComplete, SynRegExpr,
   // codetools
@@ -978,7 +979,7 @@ begin
     s:=EditorOpts.CodeTemplateFileName;
     if FileExistsUTF8(s) then
       try
-        AutoCompleteList.LoadFromFile(UTF8ToSys(s));
+         LoadStringsFromFileUTF8(AutoCompleteList,s);
       except
         DebugLn('NOTE: unable to read code template file ''',s,'''');
       end;
@@ -1021,8 +1022,7 @@ begin
     Res:=mrOk;
     repeat
       try
-        SynAutoComplete.AutoCompleteList.SaveToFile(
-          UTF8ToSys(EditorOpts.CodeTemplateFileName));
+        SaveStringsToFileUTF8(SynAutoComplete.AutoCompleteList,EditorOpts.CodeTemplateFileName);
       except
         res:=IDEMessageDialog(lisCCOErrorCaption, 'Unable to write code '
           +'templates to file '''

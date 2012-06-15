@@ -36,10 +36,10 @@ unit DialogProcs;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, LResources, Forms, Controls, Dialogs, FileProcs, FileUtil, LazFileUtils, Laz2_XMLCfg,
-  CodeToolsConfig, CodeCache, CodeToolManager,
-  AVL_Tree, LazIDEIntf,
-  IDEProcs, LazarusIDEStrConsts, IDEDialogs;
+  Classes, SysUtils, LCLProc, LResources, Forms, Controls, Dialogs, FileProcs,
+  FileUtil, LazFileUtils, Laz2_XMLCfg, lazutf8classes, CodeToolsConfig,
+  CodeCache, CodeToolManager, AVL_Tree, LazIDEIntf, IDEProcs,
+  LazarusIDEStrConsts, IDEDialogs;
 
 type
   // load buffer flags
@@ -291,9 +291,9 @@ function LoadStringListFromFile(const Filename, ListTitle: string;
 begin
   Result:=mrCancel;
   if sl=nil then
-    sl:=TStringList.Create;
+    sl:=TStringListUTF8.Create;
   try
-    sl.LoadFromFile(UTF8ToSys(Filename));
+    LoadStringsFromFileUTF8(sl,Filename);
     Result:=mrOk;
   except
     on E: Exception do begin
@@ -308,9 +308,9 @@ function SaveStringListToFile(const Filename, ListTitle: string;
 begin
   Result:=mrCancel;
   if sl=nil then
-    sl:=TStringList.Create;
+    sl:=TStringListUTF8.Create;
   try
-    sl.SaveToFile(UTF8ToSys(Filename));
+    sl.SaveToFile(Filename);
     Result:=mrOk;
   except
     on E: Exception do begin
@@ -421,14 +421,14 @@ function CheckCreatingFile(const AFilename: string;
   CheckReadable: boolean; WarnOverwrite: boolean; CreateBackup: boolean
   ): TModalResult;
 var
-  fs: TFileStream;
+  fs: TFileStreamUTF8;
   c: char;
 begin
   // create if not yet done
   if not FileExistsCached(AFilename) then begin
     try
       InvalidateFileStateCache;
-      fs:=TFileStream.Create(UTF8ToSys(AFilename),fmCreate);
+      fs:=TFileStreamUTF8.Create(AFilename,fmCreate);
       fs.Free;
     except
       Result:=IDEMessageDialog(lisUnableToCreateFile,
@@ -456,9 +456,9 @@ begin
   try
     if CheckReadable then begin
       InvalidateFileStateCache;
-      fs:=TFileStream.Create(UTF8ToSys(AFilename),fmOpenWrite)
+      fs:=TFileStreamUTF8.Create(AFilename,fmOpenWrite)
     end else
-      fs:=TFileStream.Create(UTF8ToSys(AFilename),fmOpenReadWrite);
+      fs:=TFileStreamUTF8.Create(AFilename,fmOpenReadWrite);
     try
       fs.Position:=fs.Size;
       c := ' ';
@@ -475,7 +475,7 @@ begin
   // check readable
   try
     InvalidateFileStateCache;
-    fs:=TFileStream.Create(UTF8ToSys(AFilename),fmOpenReadWrite);
+    fs:=TFileStreamUTF8.Create(AFilename,fmOpenReadWrite);
     try
       fs.Position:=fs.Size-1;
       fs.Read(c,1);
@@ -609,11 +609,11 @@ end;
 function SaveStringToFile(const Filename, Content: string;
   ErrorButtons: TMsgDlgButtons; const Context: string): TModalResult;
 var
-  fs: TFileStream;
+  fs: TFileStreamUTF8;
 begin
   try
     InvalidateFileStateCache;
-    fs:=TFileStream.Create(UTF8ToSys(Filename),fmCreate);
+    fs:=TFileStreamUTF8.Create(Filename,fmCreate);
     try
       if Content<>'' then
         fs.Write(Content[1],length(Content));

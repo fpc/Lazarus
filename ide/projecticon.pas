@@ -34,8 +34,8 @@ unit ProjectIcon;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, Laz2_XMLCfg, Process, LCLProc, Controls, Forms,
-  CodeToolManager, CodeCache, LazConf, LResources, resource,
+  Classes, SysUtils, FileUtil, Laz2_XMLCfg, lazutf8classes, Process, LCLProc,
+  Controls, Forms, CodeToolManager, CodeCache, LazConf, LResources, resource,
   DialogProcs, groupiconresource, ProjectIntf, ProjectResourcesIntf;
    
 type
@@ -220,7 +220,7 @@ begin
     // We need to restore data from the .ico file
     if FileExistsUTF8(FicoFileName) then
     begin
-      AStream := TFileStream.Create(UTF8ToSys(FicoFileName), fmOpenRead);
+      AStream := TFileStreamUTF8.Create(FicoFileName,fmOpenRead);
       try
         SetLength(NewData, AStream.Size);
         AStream.ReadBuffer(NewData[0], AStream.Size);

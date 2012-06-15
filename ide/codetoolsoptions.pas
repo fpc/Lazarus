@@ -35,7 +35,7 @@ unit CodeToolsOptions;
 interface
 
 uses
-  Classes, SysUtils, LazConf, FileUtil, Laz2_XMLCfg,
+  Classes, SysUtils, LazConf, FileUtil, Laz2_XMLCfg, lazutf8classes,
   LResources, Forms, Controls, Buttons, LclProc, ExtCtrls,
   Dialogs, CodeToolManager, DefineTemplates, SourceChanger, SynEdit,
   IDEOptionsIntf, IDEOptionDefs, EditDefineTree, LazarusIDEStrConsts, IDEProcs;
@@ -829,7 +829,7 @@ end;
 procedure TCodeToolsOptions.CreateDefaultIndentationFile;
 var
   res: TLResource;
-  fs: TFileStream;
+  fs: TFileStreamUTF8;
 begin
   // indentations (laz_indentation.pas)
   CopySecondaryConfigFile(DefaultIndentationFilename);
@@ -839,7 +839,7 @@ begin
     if (res <> Nil) and (res.Value <> '') and (res.ValueType = 'PAS') then
       try
         InvalidateFileStateCache;
-        fs := TFileStream.Create(UTF8ToSys(IndentationFilename), fmCreate);
+        fs := TFileStreamUTF8.Create(IndentationFilename, fmCreate);
         try
           fs.Write(res.Value[1], length(res.Value));
         finally

@@ -27,7 +27,7 @@ interface
 uses
   Classes, SysUtils, FPCAdds, Forms, Controls, Graphics, Dialogs, LResources,
   LCLProc, StdCtrls, Buttons, LazConf, LazarusIDEStrConsts, ExtCtrls, ComCtrls,
-  EnvironmentOpts, Clipbrd, FileUtil, Menus, LCLIntf;
+  EnvironmentOpts, Clipbrd, FileUtil, lazutf8classes, Menus, LCLIntf;
 
 type
 
@@ -248,7 +248,7 @@ begin
   //writeln('TAboutForm.LoadContributors ',FileExistsUTF8(ContributorsFileName),' ',ContributorsFileName);
 
   if FileExistsUTF8(ContributorsFileName) then
-    Contributors.Lines.LoadFromFile(UTF8ToSys(ContributorsFileName))
+    LoadStringsFromFileUTF8(Contributors.Lines,ContributorsFileName)
   else
     Contributors.Lines.Text:=lisAboutNoContributors;
 end;
@@ -267,7 +267,7 @@ begin
     +'docs'+PathDelim+'acknowledgements.txt';
 
   if FileExistsUTF8(AcknowledgementsFileName) then
-    Acknowledgements.Lines.LoadFromFile(UTF8ToSys(AcknowledgementsFileName))
+    LoadStringsFromFileUTF8(Acknowledgements.Lines,AcknowledgementsFileName)
   else
     Acknowledgements.Lines.Text:=lisAboutNoContributors;
 end;

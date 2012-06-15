@@ -46,8 +46,8 @@ interface
 uses
   Classes, SysUtils, LCLProc, LConvEncoding, Forms, Controls, LCLType, LCLIntf,
   Graphics, GraphType, StdCtrls, ExtCtrls, Buttons, FileUtil, LazUTF8,
-  LazLogger, Dialogs, InterfaceBase, Themes, CheckLst, Menus, ComCtrls,
-  DividerBevel, DefineTemplates,
+  LazLogger, lazutf8classes, Dialogs, InterfaceBase, Themes, CheckLst, Menus,
+  ComCtrls, DividerBevel, DefineTemplates,
   // IDEIntf
   LazIDEIntf, IDEMsgIntf, IDEHelpIntf, IDEImagesIntf, IDEWindowIntf, IDEDialogs,
   // IDE
@@ -775,7 +775,7 @@ function SaveIDEMakeOptions(Profile: TBuildLazarusProfile;
 var
   ExOptions: String;
   Filename: String;
-  fs: TFileStream;
+  fs: TFileStreamUTF8;
   OptionsAsText: String;
   UpdateRevisionInc: boolean;
   OutputDirRedirected: boolean;
@@ -788,7 +788,7 @@ begin
   Filename:=GetMakeIDEConfigFilename;
   try
     InvalidateFileStateCache;
-    fs:=TFileStream.Create(UTF8ToSys(Filename),fmCreate);
+    fs:=TFileStreamUTF8.Create(Filename,fmCreate);
     try
       if ExOptions<>'' then begin
         OptionsAsText:=BreakOptions(ExOptions);
