@@ -4173,20 +4173,21 @@ function TLRSObjectReader.ReadSet(EnumType: Pointer): Integer;
 type
   tset = set of 0..31;
 var
-  Name: String;
-  Value: Integer;
+  OName: String;
+  OValue: Integer;
 begin
   try
     Result := 0;
     while True do
     begin
-      Name := ReadStr;
-      if Length(Name) = 0 then
+      OName := ReadStr;
+      if Length(OName) = 0 then
         break;
-      Value := GetEnumValue(PTypeInfo(EnumType), Name);
-      if Value = -1 then
-        PropValueError;
-      include(tset(result),Value);
+      OValue := GetEnumValue(PTypeInfo(EnumType), OName);
+      // Eg. "Options" is a set and can give an error when changing component type.
+      // Do nothing on error (OValue = -1), was PropValueError;  (JuMa)
+      if OValue >= 0 then
+        include(tset(result),OValue);
     end;
   except
     SkipSetBody;
