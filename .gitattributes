@@ -2390,6 +2390,7 @@ components/synedit/design/tsynfreepascalsyn.png -text svneol=unset#image/png
 components/synedit/design/tsynhtmlsyn.png -text svneol=unset#image/png
 components/synedit/design/tsyninisyn.png -text
 components/synedit/design/tsynjavasyn.png -text svneol=unset#image/png
+components/synedit/design/tsynjscriptsyn.png -text
 components/synedit/design/tsynlfmsyn.png -text svneol=unset#image/png
 components/synedit/design/tsynmacrorecorder.png -text svneol=unset#image/png
 components/synedit/design/tsynmemo.png -text svneol=unset#image/png

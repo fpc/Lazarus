@@ -8,6 +8,7 @@ tsynexporterhtml.png
 tsynfreepascalsyn.png
 tsynhtmlsyn.png
 tsynjavasyn.png
+tsynjscriptsyn.png
 tsynlfmsyn.png
 tsynmacrorecorder.png
 tsynmemo.png

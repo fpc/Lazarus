@@ -43,7 +43,7 @@ uses
   SynHighlighterPython, SynHighlighterVB, SynHighlighterAny, SynHighlighterDiff,
   SynHighlighterBat, SynHighlighterIni, SynHighlighterPo,
   SynPluginSyncroEdit,
-  SynPropertyEditObjectList, SynDesignStringConstants,
+  SynPropertyEditObjectList, SynDesignStringConstants, SynHighlighterJScript,
   LazarusPackageIntf, LResources, PropEdits, ComponentEditors;
 
 procedure Register;
@@ -89,6 +89,11 @@ end;
 procedure RegisterSynHighlighterJava;
 begin
   RegisterComponents('SynEdit',[TSynJavaSyn]);
+end;
+
+procedure RegisterSynHighlighterJScript;
+begin
+  RegisterComponents('SynEdit',[TSynJScriptSyn]);
 end;
 
 procedure RegisterSynHighlighterCPP;
@@ -225,6 +230,7 @@ begin
   RegisterUnit('SynHighlighterPas',@RegisterSynHighlighterPas);
   RegisterUnit('SynHighlighterCPP',@RegisterSynHighlighterCPP);
   RegisterUnit('SynHighlighterJava',@RegisterSynHighlighterJava);
+  RegisterUnit('SynHighlighterJScript',@RegisterSynHighlighterJScript);
   RegisterUnit('SynHighlighterPerl',@RegisterSynHighlighterPerl);
   RegisterUnit('SynHighlighterHTML',@RegisterSynHighlighterHTML);
   RegisterUnit('SynHighlighterXML',@RegisterSynHighlighterXML);
