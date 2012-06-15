@@ -15,10 +15,8 @@ interface
 {$I LR_Vers.inc}
 
 uses
-  Classes, SysUtils, FileUtil, LResources,
-  Forms, Controls, Graphics, Dialogs,
-  Buttons, StdCtrls,ExtCtrls, ButtonPanel,
-  LR_Const;
+  Classes, SysUtils, FileUtil, LResources, Forms, Controls, Graphics, Dialogs,
+  Buttons, StdCtrls,ExtCtrls, ButtonPanel, LR_Const;
 
 type
 
@@ -36,9 +34,8 @@ type
     procedure FormCreate(Sender: TObject);
     procedure LB1DblClick(Sender: TObject);
   private
-    { Private declarations }
+    FTemplatePath: String;
   public
-    { Public declarations }
     DefaultTemplate: boolean;
     TemplName: String;
   end;
@@ -47,26 +44,17 @@ var
   frTemplForm: TfrTemplForm;
 
 implementation
-
-{$R *.lfm}
-
 uses LR_Class, LR_Desgn;
 
-var
-  Path: String;
-
+{$R *.lfm}
 
 procedure TfrTemplForm.FormActivate(Sender: TObject);
 var
   SearchRec: TSearchRec;
   r: Word;
 begin
-  if frTemplateDir = '' then
-    Path := ''
-  else
-    Path := frTemplateDir + DirectorySeparator;
   LB1.Items.Clear;
-  R := FindFirstUTF8(Path + '*.frt', faAnyFile, SearchRec);
+  R := FindFirstUTF8(FTemplatePath + '*.frt', faAnyFile, SearchRec);
   while R = 0 do
   begin
     if (SearchRec.Attr and faDirectory) = 0 then
@@ -75,7 +63,7 @@ begin
   end;
   FindCloseUTF8(SearchRec);
 
-  R := FindFirstUTF8(Path + '*.lrt', faAnyFile, SearchRec);
+  R := FindFirstUTF8(FTemplatePath + '*.lrt', faAnyFile, SearchRec);
   while R = 0 do
   begin
     if (SearchRec.Attr and faDirectory) = 0 then
@@ -104,11 +92,11 @@ begin
       Image1.Picture.Clear;
     end
     else
-      if FileExistsUTF8(Path + LB1.Items[Index] + '.frt') then
-        CurReport.LoadTemplate(Path + LB1.Items[Index] + '.frt', Memo1.Lines, Image1.Picture.Bitmap,False)
+      if FileExistsUTF8(FTemplatePath + LB1.Items[Index] + '.frt') then
+        CurReport.LoadTemplate(FTemplatePath + LB1.Items[Index] + '.frt', Memo1.Lines, Image1.Picture.Bitmap,False)
       else
-      if FileExistsUTF8(Path + LB1.Items[Index] + '.lrt') then
-        CurReport.LoadTemplateXML(Path + LB1.Items[Index] + '.lrt', Memo1.Lines, Image1.Picture.Bitmap,False)
+      if FileExistsUTF8(FTemplatePath + LB1.Items[Index] + '.lrt') then
+        CurReport.LoadTemplateXML(FTemplatePath + LB1.Items[Index] + '.lrt', Memo1.Lines, Image1.Picture.Bitmap,False)
   end;
 end;
 
@@ -125,10 +113,10 @@ begin
     if LB1.Items.Objects[LB1.ItemIndex]=self then
       DefaultTemplate := true
     else
-      if FileExistsUTF8(Path + LB1.Items[LB1.ItemIndex] + '.lrt') then
-        TemplName := Path + LB1.Items[LB1.ItemIndex] + '.lrt'
+      if FileExistsUTF8(FTemplatePath + LB1.Items[LB1.ItemIndex] + '.lrt') then
+        TemplName := FTemplatePath + LB1.Items[LB1.ItemIndex] + '.lrt'
       else
-        TemplName := Path + LB1.Items[LB1.ItemIndex] + '.frt';
+        TemplName := FTemplatePath + LB1.Items[LB1.ItemIndex] + '.frt';
   end;
 end;
 
@@ -136,6 +124,11 @@ procedure TfrTemplForm.FormCreate(Sender: TObject);
 begin
   Caption := sTemplFormNewRp;
   GroupBox1.Caption := sTemplFormDesc;
+
+  if frTemplateDir = '' then
+    FTemplatePath := ''
+  else
+    FTemplatePath := AppendPathDelim(frTemplateDir);
 end;
 
 end.
