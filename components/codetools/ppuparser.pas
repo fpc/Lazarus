@@ -37,7 +37,7 @@ unit PPUParser;
 interface
 
 uses
-  Classes, SysUtils, FileProcs, contnrs;
+  Classes, SysUtils, FileProcs, lazutf8classes, contnrs;
 
 const
   PPUIsEndianBig = {$IFDEF ENDIAN_BIG}True{$ELSE}False{$ENDIF};
@@ -2258,9 +2258,9 @@ end;
 procedure TPPU.LoadFromFile(const Filename: string; const Parts: TPPUParts);
 var
   ms: TMemoryStream;
-  fs: TFileStream;
+  fs: TFileStreamUTF8;
 begin
-  fs:=TFileStream.Create(UTF8ToSys(Filename),fmOpenRead or fmShareDenyWrite);
+  fs:=TFileStreamUTF8.Create(Filename,fmOpenRead or fmShareDenyWrite);
   ms:=TMemoryStream.Create;
   try
     ms.Size:=fs.Size;

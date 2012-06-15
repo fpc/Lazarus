@@ -36,7 +36,7 @@ uses
   {$IFDEF MEM_CHECK}
   MemCheck,
   {$ENDIF}
-  Classes, SysUtils, FileProcs, LazUTF8;
+  Classes, SysUtils, FileProcs, LazUTF8, lazutf8classes;
 
 type
   TSourceLog = class;
@@ -813,13 +813,13 @@ end;
 function TSourceLog.LoadFromFile(const Filename: string): boolean;
 var
   s: string;
-  fs: TFileStream;
+  fs: TFileStreamUTF8;
   p: Integer;
 begin
   Result := False;
   LastError:='';
   try
-    fs := TFileStream.Create(UTF8ToSys(Filename), fmOpenRead or fmShareDenyNone);
+    fs := TFileStreamUTF8.Create(Filename, fmOpenRead or fmShareDenyNone);
     try
       SetLength(s, fs.Size);
       if s <> '' then
@@ -869,7 +869,7 @@ end;
 
 function TSourceLog.SaveToFile(const Filename: string): boolean;
 var 
-  fs: TFileStream;
+  fs: TFileStreamUTF8;
   s: String;
 begin
   {$IFDEF VerboseCTSave}
@@ -882,11 +882,11 @@ begin
     // keep filename case on disk
     if FileExistsUTF8(Filename) then begin
       InvalidateFileStateCache(Filename);
-      fs := TFileStream.Create(UTF8ToSys(Filename), fmOpenWrite or fmShareDenyNone);
+      fs := TFileStreamUTF8.Create(Filename, fmOpenWrite or fmShareDenyNone);
       fs.Size := 0;
     end else begin
       InvalidateFileStateCache; // invalidate all (samba shares)
-      fs := TFileStream.Create(UTF8ToSys(Filename), fmCreate);
+      fs := TFileStreamUTF8.Create(Filename, fmCreate);
     end;
     try
       s := Source;
