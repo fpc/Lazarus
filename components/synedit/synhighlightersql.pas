@@ -86,7 +86,7 @@ type
   TProcTableProc = procedure of object;
 
   TSQLDialect = (sqlStandard, sqlInterbase6, sqlMSSQL7, sqlMySQL, sqlOracle,
-    sqlSybase, sqlIngres, sqlMSSQL2K);                                           // JJV 2000-11-16
+    sqlSybase, sqlIngres, sqlMSSQL2K, sqlSQLite);                                           // JJV 2000-11-16
 
 type
   PIdentifierTable = ^TIdentifierTable;
@@ -236,6 +236,31 @@ var
   mHashTableMSSQL7: THashTable;
 
 const
+  //---SQLite keywords------------------------------------------------------------
+  SQLiteKW: string =
+    'abort,action,add,after,all,alter,analyze,and,as,asc,attach,autoincrement,' +
+    'before,begin,between,by,cascade,case,cast,check,collate,column,commit,' +
+    'conflict,constraint,create,cross,current_date,current_time,current_timestamp,' +
+    'database,default,deferrable,deferred,delete,desc,detach,distinct,drop,each,else,' +
+    'end,escape,except,exclusive,exists,explain,fail,for,foreign,from,full,glob,group,' +
+    'having,if,ignore,immediate,in,index,indexed,initially,inner,insert,instead,intersect,' +
+    'into,is,isnull,join,key,left,like,limit,match,natural,no,not,notnull,null,of,offset,on,' +
+    'or,order,outer,plan,pragma,primary,query,raise,references,regexp,reindex,release,rename,' +
+    'replace,restrict,right,rollback,row,savepoint,select,set,table,temp,temporary,then,to,' +
+    'transaction,trigger,union,unique,update,using,vacuum,values,view,virtual,when,where';
+
+  SQLiteTypes: string =
+    'int,integer,tinyint,smallint,mediumint,bigint,int2,int8,character,varchar,' +
+    'nchar,,nvarchar,text,clob,blob,real,double,float,numeric,decimal,boolean,' +
+    'date,datetime';
+
+  SQLiteFunctions: string =
+    'abs,avg,changes,coalesce,count,group_concat,hex,ifnull,' +
+    'julianday,last_insert_rowid,length,load_extension,lower,ltrim,max,min,' +
+    'nullif,quote,random,randomblob,round,rtrim,soundex,sqlite_compileoption_get,' +
+    'sqlite_compileoption_used,sqlite_source_id,sqlite_version,strftim,substr,sum,time,' +
+    'total,total_changes,trim,typeof,upper,zeroblob';
+
 //---"Standard" (ANSI SQL keywords (Version 1, 2 and 3) (www.sql.org)---------
   StandardKW: string =
     'absolute,action,active,actor,add,after,alias,all,allocate,alter,' +
@@ -1586,6 +1611,14 @@ begin
   end;
 
   case fDialect of
+    sqlSqlite:
+      begin
+        EnumerateKeywords(Ord(tkDatatype), SQLiteTypes, IdentChars,
+          {$IFDEF FPC}@{$ENDIF}DoAddKeyword);
+        EnumerateKeywords(Ord(tkFunction), SQLiteFunctions, IdentChars,
+          {$IFDEF FPC}@{$ENDIF}DoAddKeyword);
+        EnumerateKeywords(Ord(tkKey), SQLiteKW, IdentChars, {$IFDEF FPC}@{$ENDIF}DoAddKeyword);
+      end;
     sqlIngres:
       begin
         EnumerateKeywords(Ord(tkDatatype), IngresTypes, IdentChars,
