@@ -35,6 +35,11 @@ procedure LoadStringsFromFileUTF8(List: TStrings; const FileName: string);
 var
   uList: TStringListUTF8;
 begin
+  if List is TStringListUTF8 then
+  begin
+    List.LoadFromFile(FileName);
+    exit;
+  end;
   uList:=TStringListUTF8.Create;
   try
     uList.LoadFromFile(FileName);
@@ -48,6 +53,11 @@ procedure SaveStringsToFileUTF8(List: TStrings; const FileName: string);
 var
   uList: TStringListUTF8;
 begin
+  if List is TStringListUTF8 then
+  begin
+    List.SaveToFile(FileName);
+    exit;
+  end;
   uList:=TStringListUTF8.Create;
   try
     uList.Assign(List);
