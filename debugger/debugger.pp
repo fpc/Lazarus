@@ -4110,7 +4110,12 @@ begin
       i := FThreads.CurrentThreads.CurrentThreadId;
       j := FCallStack.CurrentCallStackList.EntriesForThreads[i].CurrentIndex;
       w := FWatches.CurrentWatches;
-      for k := 0 to w.Count - 1 do w[k].Values[i, j].Value;
+      k := 0;
+      while k < w.Count do begin
+        if CurSnap <> FCurrentSnapshot then exit; // Debugger did "run" in between
+        w[k].Values[i, j].Value;
+        inc(k);
+      end;
       if (not(FCurrentState in [dsPause, dsInternalPause])) or
          (Debugger = nil) or ( (not Debugger.IsIdle) and (not AForce) )
       then exit;
