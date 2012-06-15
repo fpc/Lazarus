@@ -60,7 +60,6 @@ type
     FDesigner: TComponentEditorDesigner;
     procedure OnPersistentDeleting(APersistent: TPersistent);
     procedure OnPersistentAdded(APersistent: TPersistent; Select: boolean);
-    procedure CreateDesignerMenu;
     procedure UpdateListOfMenus;
   public
     procedure SetMenu(NewMenu: TMenu);
@@ -68,8 +67,8 @@ type
                                                  write FDesignerMainMenu;
   end;
 
-{ TMenuComponentEditor
-  The default component editor for TMenu. }
+{ TMenuComponentEditor -- The default component editor for TMenu. }
+
   TMainMenuComponentEditor = class(TComponentEditor)
   private
     FDesigner: TComponentEditorDesigner;
@@ -85,8 +84,7 @@ type
 
 
 { TMenuItemsPropertyEditor
-  PropertyEditor editor for the TMenu.Items properties.
-  Brings up the menu editor. }
+  PropertyEditor editor for the TMenu.Items properties. Brings up the menu editor. }
 
   TMenuItemsPropertyEditor = class(TClassPropertyEditor)
   public
@@ -126,8 +124,7 @@ begin
   GlobalDesignHook.AddHandlerPersistentAdded(@OnPersistentAdded);
 end;
 
-procedure TMainMenuEditorForm.FormClose(Sender: TObject;
-  var CloseAction: TCloseAction);
+procedure TMainMenuEditorForm.FormClose(Sender: TObject; var CloseAction: TCloseAction);
 begin
   SetMenu(nil);
 end;
@@ -144,9 +141,7 @@ var
   CurComponent: TComponent;
 begin
   for i := 0 to List_menus.Items.Count - 1 do
-  begin
     if List_menus.Selected[i] then
-    begin
       for j := 0 to FDesigner.Form.ComponentCount - 1 do
       begin
         CurComponent:=FDesigner.Form.Components[j];
@@ -156,8 +151,6 @@ begin
           Exit;
         end;
       end;
-    end;
-  end;
 end;
 
 procedure TMainMenuEditorForm.OnPersistentDeleting(APersistent: TPersistent);
@@ -172,7 +165,8 @@ begin
     i := List_menus.Items.IndexOf(AComponent.Name);
     if i >= 0 then List_menus.Items.Delete(i);
     
-    if AComponent = FMenu then SetMenu(nil);
+    if AComponent = FMenu then
+      SetMenu(nil);
   end;
 end;
 
@@ -182,19 +176,6 @@ begin
   //debugln('TMainMenuEditorForm.OnPersistentAdded ',dbgsName(APersistent));
   if APersistent is TMenu then
     UpdateListOfMenus;
-end;
-
-procedure TMainMenuEditorForm.CreateDesignerMenu;
-begin
-  DesignerMainMenu := TDesignerMainMenu.CreateWithMenu(Self, FMenu);
-  with DesignerMainMenu do
-  begin
-    Parent := Self;
-    ParentCanvas := Canvas;
-    LoadMainMenu;
-    SetCoordinates(10, 10, 0, DesignerMainMenu.Root);
-  end;
-  DesignerMainMenu.Panel := Panel;
 end;
 
 procedure TMainMenuEditorForm.UpdateListOfMenus;
@@ -211,38 +192,37 @@ begin
       CurComponent:=FDesigner.Form.Components[i];
       //debugln('TMainMenuEditorForm.UpdateListOfMenus A ',dbgsName(CurComponent));
       if (CurComponent is TMainMenu) or (CurComponent is TPopupMenu) then
-      begin
         List_menus.Items.Add(CurComponent.Name);
-      end;
     end;
   end;
   List_menus.Items.EndUpdate;
 
   if FMenu <> nil then 
-  begin
     for i := 0 to List_menus.Items.Count - 1 do
-      begin
-        if (FMenu.Name = List_menus.Items[i]) then
-        begin
-          List_menus.Selected[i] := True;
-        end;
-      end;
-  end;
+      if (FMenu.Name = List_menus.Items[i]) then
+        List_menus.Selected[i] := True;
 end;
 
 procedure TMainMenuEditorForm.SetMenu(NewMenu: TMenu);
 begin
   if NewMenu <> FMenu then
   begin
-    DesignerMainMenu.Free;
-    DesignerMainMenu := nil;
+    FreeAndNil(FDesignerMainMenu);
     FMenu := NewMenu;
     FDesigner := FindRootDesigner(FMenu) as TComponentEditorDesigner;
     UpdateListOfMenus;
     if FMenu <> nil then
     begin
-      CreateDesignerMenu;
-      DesignerMainMenu.RealignDesigner;
+      FDesignerMainMenu := TDesignerMainMenu.CreateWithMenu(Self, FMenu);
+      with FDesignerMainMenu do
+      begin
+        Parent := Self;
+        ParentCanvas := Canvas;
+        LoadMainMenu;
+        SetCoordinates(10, 10, 0, FDesignerMainMenu.Root);
+      end;
+      FDesignerMainMenu.Panel := Panel;
+      FDesignerMainMenu.RealignDesigner;
      end
      else
        Close;

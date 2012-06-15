@@ -11,14 +11,14 @@ object TemplateMenuForm: TTemplateMenuForm
   OnCreate = FormCreate
   OnResize = FormResize
   Position = poScreenCenter
-  LCLVersion = '0.9.27'
+  LCLVersion = '1.1'
   object Label_template_description: TLabel
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = Owner
     Left = 6
-    Height = 14
+    Height = 15
     Top = 6
-    Width = 132
+    Width = 139
     BorderSpacing.Left = 6
     BorderSpacing.Top = 6
     Caption = 'Label_template_description'
@@ -28,18 +28,26 @@ object TemplateMenuForm: TTemplateMenuForm
     AnchorSideLeft.Control = ListBoxView
     AnchorSideTop.Control = Owner
     Left = 262
-    Height = 14
+    Height = 15
     Top = 6
-    Width = 102
+    Width = 107
     BorderSpacing.Top = 6
     Caption = 'Label_template_view'
     ParentColor = False
   end
   object ButtonPanel1: TButtonPanel
     Left = 6
-    Height = 26
-    Top = 212
+    Height = 33
+    Top = 205
     Width = 508
+    OKButton.Name = 'OKButton'
+    OKButton.DefaultCaption = True
+    HelpButton.Name = 'HelpButton'
+    HelpButton.DefaultCaption = True
+    CloseButton.Name = 'CloseButton'
+    CloseButton.DefaultCaption = True
+    CancelButton.Name = 'CancelButton'
+    CancelButton.DefaultCaption = True
     TabOrder = 3
     ShowButtons = [pbOK, pbCancel]
     ShowBevel = False
@@ -51,8 +59,8 @@ object TemplateMenuForm: TTemplateMenuForm
     AnchorSideBottom.Control = ListBoxView
     AnchorSideBottom.Side = asrBottom
     Left = 6
-    Height = 180
-    Top = 26
+    Height = 172
+    Top = 27
     Width = 244
     Anchors = [akTop, akLeft, akBottom]
     BorderSpacing.Left = 6
@@ -70,8 +78,8 @@ object TemplateMenuForm: TTemplateMenuForm
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = ButtonPanel1
     Left = 262
-    Height = 180
-    Top = 26
+    Height = 172
+    Top = 27
     Width = 252
     Anchors = [akTop, akLeft, akRight, akBottom]
     BorderSpacing.Left = 6
@@ -86,8 +94,8 @@ object TemplateMenuForm: TTemplateMenuForm
     AnchorSideRight.Control = TemplatesListBox
     AnchorSideRight.Side = asrBottom
     Left = 6
-    Height = 23
-    Top = 212
+    Height = 24
+    Top = 205
     Width = 244
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Top = 6

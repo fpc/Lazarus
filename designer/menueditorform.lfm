@@ -1,7 +1,7 @@
 object MainMenuEditorForm: TMainMenuEditorForm
-  Left = 397
+  Left = 395
   Height = 220
-  Top = 505
+  Top = 480
   Width = 600
   Caption = 'MainMenuEditorForm'
   ClientHeight = 220
@@ -11,7 +11,7 @@ object MainMenuEditorForm: TMainMenuEditorForm
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   Position = poScreenCenter
-  LCLVersion = '0.9.31'
+  LCLVersion = '1.1'
   object MenuScrollBox: TScrollBox
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = Owner
@@ -56,9 +56,9 @@ object MainMenuEditorForm: TMainMenuEditorForm
       AnchorSideRight.Side = asrBottom
       AnchorSideBottom.Control = List_menus
       Left = 8
-      Height = 16
-      Top = 10
-      Width = 70
+      Height = 15
+      Top = 11
+      Width = 65
       Anchors = [akLeft, akBottom]
       Caption = 'Label_menus'
       ParentColor = False

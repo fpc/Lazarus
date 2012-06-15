@@ -123,7 +123,7 @@ type
     constructor CreateWithMenu(AOwner: TComponent; AMenu: TMenu);
     destructor Destroy; override;
     
-    // Properties for  accesing private variables
+    // Properties for accesing private variables
     property Root: TDesignerMenuItem read FRoot write SetRoot;
     property Panel: TPanel read FPanel write FPanel;
     property DesignerMenuItemIdent: Integer read FDesignerMenuItemIdent write FDesignerMenuItemIdent;
@@ -183,7 +183,7 @@ type
     function GetDesignerMenuItem(DMenuItem: TDesignerMenuItem; const Ident: string): TDesignerMenuItem;
     function FindDesignerMenuItem(AMenuItem: TMenuItem): TDesignerMenuItem;
   end;
-  
+
 
 implementation
 
@@ -202,7 +202,7 @@ const
   // Name of the file where menu templates are stored
   MenuTemplatesFile='menutemplates.xml';
 
-var 
+var
   TemplateMenuFormCreateAction: Integer;
   XMLConfig: TXMLConfig = nil;
 
@@ -339,8 +339,7 @@ begin
   PopupMenuItem.OnClick := @DeleteFromTemplateClick;
   FDesignerPopupMenu.Items.Add(PopupMenuItem);
 
-  //Handler for renaming a caption in the OI for some menuitem to rename also a
-  // designermenuitem
+  //Handler for renaming a caption in OI for some menuitem to rename also designermenuitem
   GlobalDesignHook.AddHandlerModified(@OnDesignerModified);
   //GlobalDesignHook.AddHandlerPersistentAdded(@OnComponentAdded);
   GlobalDesignHook.AddHandlerPersistentDeleting(@PersistentDeleting);
@@ -563,12 +562,9 @@ begin
       end;
     end;
     if (DMenuItem.Selected) or ((DMenuItem.Level = 1) and (fMenu is TMainMenu)) then
-    begin
-      Bevelouter:=bvraised;
-    end else
-    begin
+      Bevelouter:=bvraised
+    else
       Bevelouter:=bvnone;
-    end;
   end;
   
   DMenuItem.CaptionLabel.Caption:=DMenuItem.Caption;
@@ -606,12 +602,9 @@ begin
   if (DMenuItem.SubMenu <> nil) then
   begin
     if (DMenuItem.Level = 1) and (fMenu is TMainMenu) then
-    begin
-      DMenuItem.SubMenuArrow.ArrowType:=atdown;
-    end else
-    begin
+      DMenuItem.SubMenuArrow.ArrowType:=atdown
+    else
       DMenuItem.SubMenuArrow.ArrowType:=atright;
-    end;
     DMenuItem.SubMenuArrow.Left:=DMenuItem.SelfPanel.Width - DMenuItem.SubMenuArrow.Width - 1;
     DMenuItem.SubMenuArrow.Top:=(DMenuItem.SelfPanel.Height - DMenuItem.SubMenuArrow.Height) div 2;
     DMenuItem.SubMenuArrow.Visible:=true;
@@ -1853,11 +1846,8 @@ function TDesignerMainMenu.FindDesignerMenuItem(AMenuItem: TMenuItem): TDesigner
       if ParentDesignerMenuItem <> nil then
         Result := ParentDesignerMenuItem.SubMenu;
     end;
-    if Result <> nil then
-    begin
-      while (Result <> nil) and (Result.RealMenuItem <> TheMenuItem) do
-        Result := Result.NextItem;
-    end;
+    while (Result <> nil) and (Result.RealMenuItem <> TheMenuItem) do
+      Result := Result.NextItem;
   end;
 
 begin
@@ -1893,7 +1883,7 @@ begin
       else
         index_sequence[Ind + 1]:=-1;
     end;
-    if not (Result) then
+    if not Result then
       if (DMenuItem.NextItem <> nil) then
         if (CreateIndexSequence(DMenuItem.NextItem,Ident,Ind)) then
           Result:=true;
@@ -2108,14 +2098,12 @@ var
   i: Integer;
 begin
   for i:=0 to TemplatesListBox.Items.Count-1 do
-    if TemplatesListBox.Selected[i] then SelectedMenuTemplate:=i + 1;
-  if (fAction = 2) and (Edit_template_description.Text <> '') then
-  begin
-    Description:=Edit_template_description.Text;
-  end else
-  begin
-    if (fAction = 2) then
-      // content of "Description" is generated from LazarusIDEStrConsts
+    if TemplatesListBox.Selected[i] then
+      SelectedMenuTemplate:=i + 1;
+  if (fAction = 2) then begin
+    if Edit_template_description.Text <> '' then
+      Description:=Edit_template_description.Text
+    else        // content of "Description" is generated from LazarusIDEStrConsts
       Description:=lisMenuEditorNewTemplateDescription;
   end;
 end;
