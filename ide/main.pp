@@ -536,8 +536,7 @@ type
                             var NewComponents: TFPList);
     procedure OnDesignerPastedComponents(Sender: TObject; LookupRoot: TComponent);
     procedure OnDesignerPropertiesChanged(Sender: TObject);
-    procedure OnDesignerPersistentDeleted(Sender: TObject;
-                                          APersistent: TPersistent);
+    procedure OnDesignerPersistentDeleted(Sender: TObject; APersistent: TPersistent);
     procedure OnDesignerModified(Sender: TObject);
     procedure OnDesignerActivated(Sender: TObject);
     procedure OnDesignerCloseQuery(Sender: TObject);
@@ -14771,8 +14770,7 @@ begin
   end;
 end;
 
-procedure TMainIDE.OnDesignerPastedComponents(Sender: TObject;
-  LookupRoot: TComponent);
+procedure TMainIDE.OnDesignerPastedComponents(Sender: TObject; LookupRoot: TComponent);
 begin
   DoFixupComponentReferences(LookupRoot,[]);
 end;
@@ -14783,8 +14781,7 @@ begin
     ObjectInspector1.RefreshPropertyValues;
 end;
 
-procedure TMainIDE.OnDesignerPersistentDeleted(Sender: TObject;
-  APersistent: TPersistent);
+procedure TMainIDE.OnDesignerPersistentDeleted(Sender: TObject; APersistent: TPersistent);
 // important: APersistent was freed, do not access it
 var
   CurDesigner: TDesigner;
