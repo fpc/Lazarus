@@ -521,8 +521,7 @@ begin
                                                       'Custom dynamic section');
 
   // register align section
-  DesignerMenuSectionAlign:=RegisterIDEMenuSection(DesignerMenuRoot,
-                                                               'Align section');
+  DesignerMenuSectionAlign:=RegisterIDEMenuSection(DesignerMenuRoot,'Align section');
     DesignerMenuAlign:=RegisterIDEMenuCommand(DesignerMenuSectionAlign,
         'Align',fdmAlignMenu, nil, nil, nil, 'align');
     DesignerMenuMirrorHorizontal:=RegisterIDEMenuCommand(DesignerMenuSectionAlign,
@@ -552,8 +551,7 @@ begin
           'Move z order backwards one',fdmOrderBackOne, nil, nil, nil, 'Order_back_one');
 
   // register clipboard section
-  DesignerMenuSectionClipboard:=RegisterIDEMenuSection(DesignerMenuRoot,
-                                                           'Clipboard section');
+  DesignerMenuSectionClipboard:=RegisterIDEMenuSection(DesignerMenuRoot,'Clipboard section');
     DesignerMenuCut:=RegisterIDEMenuCommand(DesignerMenuSectionClipboard,
         'Cut',lisCut, nil, nil, nil, 'laz_cut');
     DesignerMenuCopy:=RegisterIDEMenuCommand(DesignerMenuSectionClipboard,
@@ -566,10 +564,9 @@ begin
         'Select All',fdmSelectAll, nil, nil, nil, 'menu_select_all');
 
   // register miscellaneous section
-  DesignerMenuSectionMisc:=RegisterIDEMenuSection(DesignerMenuRoot,
-                                                       'Miscellaneous section');
+  DesignerMenuSectionMisc:=RegisterIDEMenuSection(DesignerMenuRoot,'Miscellaneous section');
     DesignerMenuChangeClass:=RegisterIDEMenuCommand(DesignerMenuSectionMisc,
-                                                 'Change class',lisChangeClass);
+                                                 'Change class',lisDlgChangeClass);
     DesignerMenuChangeParent:=RegisterIDEMenuSection(DesignerMenuSectionMisc,
                                                  'Change parent');
     DesignerMenuChangeParent.ChildsAsSubMenu:=true;
@@ -582,8 +579,7 @@ begin
                                                 'Center form', lisCenterForm);
 
   // register options section
-  DesignerMenuSectionOptions:=RegisterIDEMenuSection(DesignerMenuRoot,
-                                                             'Options section');
+  DesignerMenuSectionOptions:=RegisterIDEMenuSection(DesignerMenuRoot,'Options section');
     DesignerMenuSnapToGridOption:=RegisterIDEMenuCommand(DesignerMenuSectionOptions,
                                             'Snap to grid',fdmSnapToGridOption);
     DesignerMenuSnapToGuideLinesOption:=RegisterIDEMenuCommand(DesignerMenuSectionOptions,

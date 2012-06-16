@@ -2482,6 +2482,7 @@ resourcestring
   fdmDeleteSelection='Delete Selection';
   fdmSelectAll='Select All';
   lisChangeClass = 'Change Class';
+  lisDlgChangeClass = 'Change Class ...';
   fdmSnapToGridOption='Option: Snap to grid';
   fdmSnapToGuideLinesOption='Option: Snap to guide lines';
   lisViewSourceLfm = 'View Source (.lfm)';
