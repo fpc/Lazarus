@@ -1191,7 +1191,8 @@ var
   procedure WriteHelp(const AText: string);
   begin
     if TextRec(Output).Mode = fmClosed then
-      IDEMessageDialog(lisInformation, AText, mtInformation, [mbOk])
+      // Note: do not use IDEMessageDialog here:
+      MessageDlg(lisInformation, AText, mtInformation, [mbOk],0)
     else
       WriteLn(UTF8ToConsole(AText));
     Application.Terminate;
