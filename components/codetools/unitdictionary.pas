@@ -1087,8 +1087,7 @@ begin
   IncreaseChangeStamp;
 end;
 
-function TUnitDictionary.ParseUnit(UnitFilename: string; Group: TUDUnitGroup
-  ): TUDUnit;
+function TUnitDictionary.ParseUnit(UnitFilename: string; Group: TUDUnitGroup): TUDUnit;
 var
   Code: TCodeBuffer;
 begin
@@ -1101,8 +1100,7 @@ begin
   Result:=ParseUnit(Code,Group);
 end;
 
-function TUnitDictionary.ParseUnit(Code: TCodeBuffer; Group: TUDUnitGroup
-  ): TUDUnit;
+function TUnitDictionary.ParseUnit(Code: TCodeBuffer; Group: TUDUnitGroup): TUDUnit;
 begin
   Result:=nil;
   if Code=nil then exit;
@@ -1111,8 +1109,7 @@ begin
   Result:=ParseUnit(CodeToolBoss.CurCodeTool,Group);
 end;
 
-function TUnitDictionary.ParseUnit(Tool: TCodeTool; Group: TUDUnitGroup
-  ): TUDUnit;
+function TUnitDictionary.ParseUnit(Tool: TCodeTool; Group: TUDUnitGroup): TUDUnit;
 var
   SrcTree: TAVLTree;
   AVLNode: TAVLTreeNode;
@@ -1163,66 +1160,67 @@ begin
   // update list of identifiers
   Changed:=false;
   SrcTree:=Tool.InterfaceIdentifierCache.Items;
-  AVLNode:=SrcTree.FindLowest;
-  PrevItem:=nil;
-  CurItem:=Result.FirstIdentifier;
-  //debugln(['TUnitDictionary.ParseUnit ',SrcTree.Count]);
-  while AVLNode<>nil do begin
-    SrcItem:=PInterfaceIdentCacheEntry(AVLNode.Data);
-    //debugln(['TUnitDictionary.ParseUnit ',GetIdentifier(SrcItem^.Identifier)]);
-    if (SrcItem^.Node<>nil) and (SrcItem^.Identifier<>nil) then begin
-      while (CurItem<>nil)
-      and (CompareDottedIdentifiers(PChar(Pointer(CurItem.Name)),SrcItem^.Identifier)<0)
-      do begin
-        // delete old item
-        //debugln(['TUnitDictionary.ParseUnit delete old item '+CurItem.Name+' in '+Result.Name]);
-        Changed:=true;
-        NextItem:=CurItem.NextInUnit;
-        if PrevItem<>nil then
-          PrevItem.NextInUnit:=NextItem
-        else
-          Result.FirstIdentifier:=NextItem;
-        if Result.LastIdentifier=CurItem then
-          Result.LastIdentifier:=PrevItem;
-        AVLRemovePointer(Identifiers,CurItem);
-        CurItem.Free;
-        CurItem:=NextItem;
-      end;
-      if (CurItem=nil)
-      or (CompareDottedIdentifiers(PChar(Pointer(CurItem.Name)),SrcItem^.Identifier)>0)
-      then begin
-        // new item
-        //debugln(['TUnitDictionary.ParseUnit inserting new item '+GetIdentifier(SrcItem^.Identifier)+' in '+Result.Name]);
-        Changed:=true;
-        NewItem:=TUDIdentifier.Create(SrcItem^.Identifier);
-        NewItem.DUnit:=Result;
-        NewItem.NextInUnit:=CurItem;
-        if PrevItem<>nil then
-          PrevItem.NextInUnit:=NewItem
-        else
-          Result.FirstIdentifier:=NewItem;
-        if CurItem=nil then begin
-          // at end of list
-          PrevItem:=NewItem;
-          Result.LastIdentifier:=NewItem;
+  if SrcTree<>nil then begin
+    AVLNode:=SrcTree.FindLowest;
+    PrevItem:=nil;
+    CurItem:=Result.FirstIdentifier;
+    //debugln(['TUnitDictionary.ParseUnit ',SrcTree.Count]);
+    while AVLNode<>nil do begin
+      SrcItem:=PInterfaceIdentCacheEntry(AVLNode.Data);
+      //debugln(['TUnitDictionary.ParseUnit ',GetIdentifier(SrcItem^.Identifier)]);
+      if (SrcItem^.Node<>nil) and (SrcItem^.Identifier<>nil) then begin
+        while (CurItem<>nil)
+        and (CompareDottedIdentifiers(PChar(Pointer(CurItem.Name)),SrcItem^.Identifier)<0)
+        do begin
+          // delete old item
+          //debugln(['TUnitDictionary.ParseUnit delete old item '+CurItem.Name+' in '+Result.Name]);
+          Changed:=true;
+          NextItem:=CurItem.NextInUnit;
+          if PrevItem<>nil then
+            PrevItem.NextInUnit:=NextItem
+          else
+            Result.FirstIdentifier:=NextItem;
+          if Result.LastIdentifier=CurItem then
+            Result.LastIdentifier:=PrevItem;
+          AVLRemovePointer(Identifiers,CurItem);
+          CurItem.Free;
+          CurItem:=NextItem;
         end;
-        FIdentifiers.Add(NewItem);
-      end else begin
-        // already in list, skip
-        //debugln(['TUnitDictionary.ParseUnit keep '+CurItem.Name]);
-        PrevItem:=CurItem;
-        CurItem:=CurItem.NextInUnit;
+        if (CurItem=nil)
+        or (CompareDottedIdentifiers(PChar(Pointer(CurItem.Name)),SrcItem^.Identifier)>0)
+        then begin
+          // new item
+          //debugln(['TUnitDictionary.ParseUnit inserting new item '+GetIdentifier(SrcItem^.Identifier)+' in '+Result.Name]);
+          Changed:=true;
+          NewItem:=TUDIdentifier.Create(SrcItem^.Identifier);
+          NewItem.DUnit:=Result;
+          NewItem.NextInUnit:=CurItem;
+          if PrevItem<>nil then
+            PrevItem.NextInUnit:=NewItem
+          else
+            Result.FirstIdentifier:=NewItem;
+          if CurItem=nil then begin
+            // at end of list
+            PrevItem:=NewItem;
+            Result.LastIdentifier:=NewItem;
+          end;
+          FIdentifiers.Add(NewItem);
+        end else begin
+          // already in list, skip
+          //debugln(['TUnitDictionary.ParseUnit keep '+CurItem.Name]);
+          PrevItem:=CurItem;
+          CurItem:=CurItem.NextInUnit;
+        end;
       end;
+      AVLNode:=SrcTree.FindSuccessor(AVLNode);
     end;
-    AVLNode:=SrcTree.FindSuccessor(AVLNode);
   end;
 
   if Changed then
     IncreaseChangeStamp;
 end;
 
-function TUnitDictionary.FindUnitWithFilename(const aFilename: string
-  ): TUDUnit;
+function TUnitDictionary.FindUnitWithFilename(const aFilename: string): TUDUnit;
 var
   AVLNode: TAVLTreeNode;
 begin
