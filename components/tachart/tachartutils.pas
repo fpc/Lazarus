@@ -250,6 +250,7 @@ const
     '%4:.9g' // smsXValue
   );
   ZeroDoublePoint: TDoublePoint = (X: 0; Y: 0);
+  ZeroRect: TRect = (Left: 0; Top: 0; Right: 0; Bottom: 0);
   EmptyDoubleRect: TDoubleRect = (coords: (0, 0, 0, 0));
   EmptyExtent: TDoubleRect =
     (coords: (Infinity, Infinity, NegInfinity, NegInfinity));

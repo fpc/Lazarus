@@ -218,8 +218,8 @@ procedure TChartListbox.CalcRects(
 var
   w, x: Integer;
 begin
-  ACheckBoxRect := Rect(-1, -1, -1, -1);
-  ASeriesIconRect := Rect(-1, -1, -1, -1);
+  ACheckBoxRect := ZeroRect;
+  ASeriesIconRect := ZeroRect;
   w := GetSystemMetrics(SM_CYMENUCHECK);
   x := 2;
   if cloShowCheckboxes in Options then begin

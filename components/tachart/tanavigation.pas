@@ -265,7 +265,7 @@ begin
   FFullExtentPen.OnChange := @ChartExtentChanged;
   FLogicalExtentPen := TPen.Create;
   FLogicalExtentPen.OnChange := @ChartExtentChanged;
-  FLogicalExtentRect := Rect(0, 0, 0, 0);
+  FLogicalExtentRect := ZeroRect;
   Width := DEF_WIDTH;
   Height := DEF_HEIGHT;
   FAllowDragNavigation := true;

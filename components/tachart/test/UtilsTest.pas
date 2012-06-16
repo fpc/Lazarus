@@ -190,7 +190,7 @@ procedure TGeometryTest.TestExpandRect;
 var
   r: TRect;
 begin
-  r := Rect(0, 0, 0, 0);
+  r := ZeroRect;
   ExpandRect(r, Point(1, 2));
   AssertEquals(Rect(0, 0, 1, 2), r);
   ExpandRect(r, Point(-5, -6));

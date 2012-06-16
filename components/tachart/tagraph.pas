@@ -1001,7 +1001,7 @@ var
   a: TRectArray absolute Result;
   s: TBasicChartSeries;
 begin
-  Result := Rect(0, 0, 0, 0);
+  Result := ZeroRect;
   for s in Series do
     if s.Active then
       s.UpdateMargins(ADrawer, Result);
@@ -1171,7 +1171,7 @@ begin
 
   // There is a cyclic dependency: extent -> visible marks -> margins.
   // We recalculate them iteratively hoping that the process converges.
-  CalculateTransformationCoeffs(Rect(0, 0, 0, 0));
+  CalculateTransformationCoeffs(ZeroRect);
   cr := FClipRect;
   for tries := 1 to 10 do begin
     axisMargin := AxisList.Measure(CurrentExtent);
