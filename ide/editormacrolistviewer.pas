@@ -46,6 +46,7 @@ type
     RenameButton: TPanelBitBtn;
     procedure btnRenameClick(Sender: TObject);
     procedure btnSelectClick(Sender: TObject);
+    procedure lbRecordedViewSelectItem(Sender: TObject; Item: TListItem; Selected: Boolean);
   private
     FImageRec: Integer;
     FImagePlay: Integer;
@@ -136,6 +137,13 @@ begin
   UpdateDisplay;
 end;
 
+procedure TMacroListView.lbRecordedViewSelectItem(Sender: TObject; Item: TListItem;
+  Selected: Boolean);
+begin
+  btnSelect.Enabled := (EditorMacroRecorder.State = msStopped) and (lbRecordedView.ItemIndex >= 0);
+  btnRename.Enabled := (lbRecordedView.ItemIndex >= 0);
+end;
+
 procedure TMacroListView.DoOnMacroListChange(Sender: TObject);
 begin
   UpdateDisplay;
@@ -167,11 +175,12 @@ begin
     lbRecordedView.ItemIndex := idx
   else
     lbRecordedView.ItemIndex := -1;
+
+  lbRecordedViewSelectItem(nil, nil, False);
 end;
 
 procedure TMacroListView.DoEditorMacroStateChanged;
 begin
-  btnSelect.Enabled := EditorMacroRecorder.State = msStopped;
   UpdateDisplay;
 end;
 
@@ -187,6 +196,8 @@ begin
   FImageRec := IDEImages.LoadImage(16, 'ActiveBreakPoint');  // red dot
   FImagePlay := IDEImages.LoadImage(16, 'menu_run');  // green triangle
   FImageSel := IDEImages.LoadImage(16, 'arrow_right');
+
+  lbRecordedViewSelectItem(nil, nil, False);
 end;
 
 { TEditorMacroList }

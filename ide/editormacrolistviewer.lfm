@@ -36,6 +36,7 @@ object MacroListView: TMacroListView
       ShowColumnHeaders = False
       TabOrder = 0
       ViewStyle = vsReport
+      OnSelectItem = lbRecordedViewSelectItem
     end
     object lblRecordedTitle: TLabel
       Left = 0
