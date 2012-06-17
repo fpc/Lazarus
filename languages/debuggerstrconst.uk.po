@@ -70,6 +70,10 @@ msgstr "Графа стану"
 msgid "Value column"
 msgstr "Графа значення"
 
+#: debuggerstrconst.drsevalhistorynone
+msgid "No history kept"
+msgstr ""
+
 #: debuggerstrconst.drshistorycolwidthcurrent
 msgid "Current column"
 msgstr "Поточна графа"
@@ -120,5 +124,13 @@ msgstr "Викор. тип екземпляра класу"
 
 #: debuggerstrconst.drswatchsplitterinspect
 msgid "Inspect pane"
+msgstr ""
+
+#: debuggerstrconst.dsrevalhistorydown
+msgid "Append result at bottom of history"
+msgstr ""
+
+#: debuggerstrconst.dsrevalhistoryup
+msgid "Insert result at top of history"
 msgstr ""
 

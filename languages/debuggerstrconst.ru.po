@@ -71,6 +71,10 @@ msgstr "Столбец состояния"
 msgid "Value column"
 msgstr "Столбец значения"
 
+#: debuggerstrconst.drsevalhistorynone
+msgid "No history kept"
+msgstr "Не сохранять историю"
+
 #: debuggerstrconst.drshistorycolwidthcurrent
 msgid "Current column"
 msgstr "Столбец текущего положения"
@@ -122,4 +126,12 @@ msgstr "Использовать тип экземпляра класса"
 #: debuggerstrconst.drswatchsplitterinspect
 msgid "Inspect pane"
 msgstr "Панель просмотра"
+
+#: debuggerstrconst.dsrevalhistorydown
+msgid "Append result at bottom of history"
+msgstr "Добавлять результат в историю снизу"
+
+#: debuggerstrconst.dsrevalhistoryup
+msgid "Insert result at top of history"
+msgstr "Добавлять результат в историю сверху"
 
