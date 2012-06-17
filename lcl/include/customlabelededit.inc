@@ -127,12 +127,6 @@ begin
     FEditLabel.Enabled:=Enabled;
 end;
 
-procedure TCustomLabeledEdit.CMFontChanged(var Message: TLMessage);
-begin
-  FEditLabel.Font.Assign(Font);
-  Invalidate;
-end;
-
 constructor TCustomLabeledEdit.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);

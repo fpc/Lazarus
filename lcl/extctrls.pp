@@ -873,7 +873,6 @@ type
     procedure CMBiDiModeChanged(var Msg: TLMessage); message CM_BIDIMODECHANGED;
     procedure CMVisibleChanged(var Msg: TLMessage); message CM_VISIBLECHANGED;
     procedure CMEnabledChanged(var Msg: TLMessage); message CM_ENABLEDCHANGED;
-    procedure CMFontChanged(var Message: TLMessage); message CM_FONTCHANGED;
     procedure CreateInternalLabel; virtual;
   public
     constructor Create(TheOwner: TComponent); override;
