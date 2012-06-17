@@ -13,6 +13,10 @@ msgstr ""
 msgid "Add Divider"
 msgstr "Trenner hinzufügen"
 
+#: editortoolbar_str.rsaddselected
+msgid "Add selected item to toolbar"
+msgstr ""
+
 #: editortoolbar_str.rscancel
 msgid "Cancel"
 msgstr "Abbrechen"
@@ -30,15 +34,31 @@ msgid "Jump To"
 msgstr "Springe zu"
 
 #: editortoolbar_str.rsmenutree
-msgid "Menu Tree"
+#, fuzzy
+#| msgid "Menu Tree"
+msgid "Available Menu Items"
 msgstr "Menü-Baum"
+
+#: editortoolbar_str.rsmoveselecteddown
+msgid "Move selected toolbar item down"
+msgstr ""
+
+#: editortoolbar_str.rsmoveselectedup
+msgid "Move selected toolbar item up"
+msgstr ""
 
 #: editortoolbar_str.rsok
 msgid "OK"
 msgstr "OK"
 
+#: editortoolbar_str.rsremoveselected
+msgid "Remove selected item from toolbar"
+msgstr ""
+
 #: editortoolbar_str.rstoolbar
-msgid "Toolbar"
+#, fuzzy
+#| msgid "Toolbar"
+msgid "Toolbar Items"
 msgstr "Toolbar"
 
 #: editortoolbar_str.serrcouldnotfind

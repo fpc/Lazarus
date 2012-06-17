@@ -13,6 +13,10 @@ msgstr ""
 msgid "Add Divider"
 msgstr "Добавить разделитель"
 
+#: editortoolbar_str.rsaddselected
+msgid "Add selected item to toolbar"
+msgstr "Добавить выбранный элемент на панель"
+
 #: editortoolbar_str.rscancel
 msgid "Cancel"
 msgstr "Отмена"
@@ -30,16 +34,30 @@ msgid "Jump To"
 msgstr "Перейти к ..."
 
 #: editortoolbar_str.rsmenutree
-msgid "Menu Tree"
-msgstr "Дерево меню"
+#| msgid "Menu Tree"
+msgid "Available Menu Items"
+msgstr "Доступные элементы меню"
+
+#: editortoolbar_str.rsmoveselecteddown
+msgid "Move selected toolbar item down"
+msgstr "Переместить выбранный элемент вниз"
+
+#: editortoolbar_str.rsmoveselectedup
+msgid "Move selected toolbar item up"
+msgstr "Переместить выбранный элемент вверх"
 
 #: editortoolbar_str.rsok
 msgid "OK"
 msgstr "ОК"
 
+#: editortoolbar_str.rsremoveselected
+msgid "Remove selected item from toolbar"
+msgstr "Удалить выбранный элемент с панели"
+
 #: editortoolbar_str.rstoolbar
-msgid "Toolbar"
-msgstr "Инструментальная панель"
+#| msgid "Toolbar"
+msgid "Toolbar Items"
+msgstr "Элементы панели"
 
 #: editortoolbar_str.serrcouldnotfind
 msgid "Could not find <%s>"

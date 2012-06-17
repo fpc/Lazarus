@@ -5,6 +5,10 @@ msgstr "Content-Type: text/plain; charset=UTF-8"
 msgid "Add Divider"
 msgstr ""
 
+#: editortoolbar_str.rsaddselected
+msgid "Add selected item to toolbar"
+msgstr ""
+
 #: editortoolbar_str.rscancel
 msgid "Cancel"
 msgstr ""
@@ -22,15 +26,27 @@ msgid "Jump To"
 msgstr ""
 
 #: editortoolbar_str.rsmenutree
-msgid "Menu Tree"
+msgid "Available Menu Items"
+msgstr ""
+
+#: editortoolbar_str.rsmoveselecteddown
+msgid "Move selected toolbar item down"
+msgstr ""
+
+#: editortoolbar_str.rsmoveselectedup
+msgid "Move selected toolbar item up"
 msgstr ""
 
 #: editortoolbar_str.rsok
 msgid "OK"
 msgstr ""
 
+#: editortoolbar_str.rsremoveselected
+msgid "Remove selected item from toolbar"
+msgstr ""
+
 #: editortoolbar_str.rstoolbar
-msgid "Toolbar"
+msgid "Toolbar Items"
 msgstr ""
 
 #: editortoolbar_str.serrcouldnotfind

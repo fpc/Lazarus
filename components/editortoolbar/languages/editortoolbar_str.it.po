@@ -1,4 +1,4 @@
-# Massimo Soricetti <notturno@quipo.it>, 2011.
+ Massimo Soricetti <notturno@quipo.it>, 2011.
 msgid ""
 msgstr ""
 "PO-Revision-Date: 2011-04-18 11:18+0200\n"
@@ -14,6 +14,10 @@ msgstr ""
 #: editortoolbar_str.rsadddivider
 msgid "Add Divider"
 msgstr "Aggiungi divisore"
+
+#: editortoolbar_str.rsaddselected
+msgid "Add selected item to toolbar"
+msgstr ""
 
 #: editortoolbar_str.rscancel
 msgid "Cancel"
@@ -32,17 +36,34 @@ msgid "Jump To"
 msgstr "Salta a"
 
 #: editortoolbar_str.rsmenutree
-msgid "Menu Tree"
+#, fuzzy
+#| msgid "Menu Tree"
+msgid "Available Menu Items"
 msgstr "Albero dei menu"
+
+#: editortoolbar_str.rsmoveselecteddown
+msgid "Move selected toolbar item down"
+msgstr ""
+
+#: editortoolbar_str.rsmoveselectedup
+msgid "Move selected toolbar item up"
+msgstr ""
 
 #: editortoolbar_str.rsok
 msgid "OK"
 msgstr "OK"
 
+#: editortoolbar_str.rsremoveselected
+msgid "Remove selected item from toolbar"
+msgstr ""
+
 #: editortoolbar_str.rstoolbar
-msgid "Toolbar"
+#, fuzzy
+#| msgid "Toolbar"
+msgid "Toolbar Items"
 msgstr "Toolbar"
 
 #: editortoolbar_str.serrcouldnotfind
 msgid "Could not find <%s>"
 msgstr "Impossibile trovare <%s>"
+
