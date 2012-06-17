@@ -206,9 +206,8 @@ var
   InAtom, UnitNameAtom: TAtomPosition;
   OldUnitName, OldInFilename: String;
   NewUnitName, NewInFilename: String;
-  AFilename, s, slo: String;
+  AFilename, s, LowNU: String;
   x: Integer;
-  OmitUnit: Boolean;
 begin
   UsesNode:=UsesSectionNode;
   if UsesNode=nil then exit(true);
@@ -225,30 +224,29 @@ begin
         OldInFilename:='';
       // find unit file
       NewUnitName:=OldUnitName;
+      LowNU:=LowerCase(NewUnitName);
       NewInFilename:=OldInFilename;
       AFilename:=CodeTool.FindUnitCaseInsensitive(NewUnitName,NewInFilename);
       s:=NewUnitName;
       if NewInFilename<>'' then
         s:=s+' in '''+NewInFilename+'''';
       if AFilename<>'' then begin                         // unit found
-        OmitUnit:=Settings.OmitProjUnits.Find(NewUnitName, x);
-        if (NewUnitName<>OldUnitName) and not OmitUnit then begin
+        if (NewUnitName<>OldUnitName) and not Settings.OmitProjUnits.Find(NewUnitName,x)
+        then begin
           // Character case differs and it will not be replaced.
           fUnitsToFixCase[OldUnitName]:=NewUnitName;      // fix case
           IDEMessagesWindow.AddMsg(Format(lisConvDelphiFixedUnitCase,
                                           [OldUnitName, NewUnitName]), '', -1);
         end;
         // Report Windows specific units as missing if target is MultiPlatform,
-        //  needed if work-platform is Windows (kind of a hack).
-        slo:=LowerCase(NewUnitName);                        // 'variants' ?
-        if (Settings.MultiPlatform and ((slo='windows') or (slo='shellapi'))) or OmitUnit then
+        //  needed if work-platform is Windows (kind of a hack).  'variants' ?
+        if Settings.MultiPlatform and ((LowNU='windows') or (LowNU='shellapi')) then
           fMissingUnits.Add(s);
       end
       else begin
         // Omit Windows specific units from the list if target is "Windows only",
         //  needed if work-platform is different from Windows (kind of a hack).
-        slo:=LowerCase(NewUnitName);
-        if Settings.MultiPlatform or ((slo<>'windows') and (slo<>'shellapi')) then
+        if Settings.MultiPlatform or ((LowNU<>'windows') and (LowNU<>'shellapi')) then
           fMissingUnits.Add(s);
       end;
       if CodeTool.CurPos.Flag=cafComma then begin
@@ -267,6 +265,7 @@ procedure TUsedUnits.ToBeRenamedOrRemoved(AOldName, ANewName: string);
 // Replace a unit name with a new name or remove it if there is no new name.
 var
   UnitInFileName: string;
+  i: Integer;
 begin
   if ANewName<>'' then begin
     fUnitsToRename[AOldName]:=ANewName;
@@ -282,7 +281,11 @@ begin
           ;
   end
   else begin
-    fUnitsToRemove.Add(AOldName);
+    i:=Pos(' in ',AOldName);
+    if i>1 then
+      AOldName:=Copy(AOldName, 1 ,i-1);  // Strip the file name part.
+    if fUnitsToRemove.IndexOf(AOldName)=-1 then
+      fUnitsToRemove.Add(AOldName);
     IDEMessagesWindow.AddMsg(Format(lisConvDelphiRemovedUnitInUsesSection,
                                     [AOldName]), '', -1);
   end;
@@ -439,7 +442,6 @@ begin
     if not fCTLink.CodeTool.RemoveUnitFromUsesSection(UsesSectionNode,
                          UpperCaseStr(fUnitsToRemove[i]), fCTLink.SrcCache) then
       exit;
-    if not fCTLink.SrcCache.Apply then exit;
   end;
   fUnitsToRemove.Clear;
   Result:=true;
@@ -713,7 +715,8 @@ end;
 
 function TUsedUnitsTool.GetMissingUnitCount: integer;
 begin
-  Result:=fMainUsedUnits.fMissingUnits.Count+fImplUsedUnits.fMissingUnits.Count;
+  Result:=fMainUsedUnits.fMissingUnits.Count
+         +fImplUsedUnits.fMissingUnits.Count;
 end;
 
 end.

@@ -57,11 +57,11 @@ type
     fAskAboutError: Boolean;
     fSettings: TConvertSettings;          // Conversion settings.
     procedure InitCodeTool;
-    function HandleCodetoolError: TModalResult;
   public
     constructor Create(ACode: TCodeBuffer);
     destructor Destroy; override;
     procedure ResetMainScanner;
+    function HandleCodetoolError: TModalResult;
   public
     property CodeTool: TCodeTool read fCodeTool;
     property Code: TCodeBuffer read fCode;
@@ -212,24 +212,17 @@ function TConvDelphiCodeTool.Convert: TModalResult;
 begin
   Result:=mrCancel;
   if fCTLink.CodeTool=nil then exit;
+  fCTLink.SrcCache.BeginUpdate;
   try
-    fCTLink.SrcCache.BeginUpdate;
-    try
-      // these changes can be applied together without rescan
-      if not AddModeDelphiDirective then exit;
-      if not RenameResourceDirectives then exit;
-      if fCTLink.Settings.FuncReplaceMode=rsEnabled then
-        if not ReplaceFuncCalls(fIsConsoleApp) then exit;
-    finally
-      fCTLink.SrcCache.EndUpdate;
-    end;
-    Result:=mrOK;
-  except
-    on e: Exception do begin
-      CodeToolBoss.HandleException(e);
-      Result:=fCTLink.HandleCodetoolError;
-    end;
+    // these changes can be applied together without rescan
+    if not AddModeDelphiDirective then exit;
+    if not RenameResourceDirectives then exit;
+    if fCTLink.Settings.FuncReplaceMode=rsEnabled then
+      if not ReplaceFuncCalls(fIsConsoleApp) then exit;
+  finally
+    fCTLink.SrcCache.EndUpdate;
   end;
+  Result:=mrOK;
 end;
 
 function TConvDelphiCodeTool.FindApptypeConsole: boolean;
@@ -389,10 +382,14 @@ var
   // Returns the first position where comments can be searched from.
   var
     i, xNum, xStart, xLen: Integer;
+    HasBracket: Boolean;
   begin
+    HasBracket:=False;
     i:=0;
     while i<Length(aStr) do begin
       Inc(i);
+      if aStr[i]='(' then
+        HasBracket:=True;
       if aStr[i]='$' then begin
         xStart:=i;
         Inc(i);                           // Skip '$'
@@ -400,16 +397,16 @@ var
           Inc(i);                         // Get the number after '$'
         xLen:=i-xStart;
         if xLen<2 then
-          raise EDelphiConverterError.Create('"$" should be followed by a number.');
+          raise EDelphiConverterError.Create('"$" should be followed by a number: '+ aStr);
         xNum:=StrToInt(copy(aStr, xStart+1, xLen-1)); // Leave out '$', convert number.
         if xNum < 1 then
           raise EDelphiConverterError.Create(
-                           'Replacement function parameter number should be >= 1.');
+                           'Replacement function parameter number should be >= 1: '+ aStr);
         ReplacementParams.Add(TReplacementParam.Create(xNum, xLen, xStart));
       end;
     end;
-    if aStr[i]<>')' then
-      raise EDelphiConverterError.Create('")" is missing from replacement function.');
+    if HasBracket and (aStr[i]<>')') then
+      raise EDelphiConverterError.Create('")" is missing from replacement function: '+ aStr);
     Result:=i+1;
   end;
 

@@ -12,9 +12,9 @@ object MissingUnitsDialog: TMissingUnitsDialog
   LCLVersion = '1.1'
   object MissingUnitsInfoLabel: TLabel
     Left = 16
-    Height = 14
+    Height = 15
     Top = 16
-    Width = 85
+    Width = 90
     Caption = 'Missing Units Info'
     ParentColor = False
   end
@@ -51,40 +51,46 @@ object MissingUnitsDialog: TMissingUnitsDialog
     TabOrder = 2
   end
   object ChoicesLabel: TLabel
-    Left = 224
-    Height = 14
+    AnchorSideLeft.Control = MissingUnitsCheckListBox
+    AnchorSideLeft.Side = asrBottom
+    Left = 336
+    Height = 15
     Top = 40
     Width = 42
+    BorderSpacing.Left = 16
     BorderSpacing.Top = 23
     Caption = 'Choices:'
     ParentColor = False
   end
   object Info1Label: TLabel
+    AnchorSideLeft.Control = ChoicesLabel
     AnchorSideTop.Control = ChoicesLabel
-    Left = 224
-    Height = 14
+    Left = 336
+    Height = 15
     Top = 63
-    Width = 27
+    Width = 26
     BorderSpacing.Top = 23
     Caption = 'Info1'
     ParentColor = False
   end
   object Info2Label: TLabel
+    AnchorSideLeft.Control = ChoicesLabel
     AnchorSideTop.Control = Info1Label
-    Left = 224
-    Height = 14
+    Left = 336
+    Height = 15
     Top = 86
-    Width = 27
+    Width = 26
     BorderSpacing.Top = 23
     Caption = 'Info2'
     ParentColor = False
   end
   object Info3Label: TLabel
+    AnchorSideLeft.Control = ChoicesLabel
     AnchorSideTop.Control = Info2Label
-    Left = 224
-    Height = 14
+    Left = 336
+    Height = 15
     Top = 109
-    Width = 27
+    Width = 26
     BorderSpacing.Top = 23
     Caption = 'Info3'
     ParentColor = False
@@ -93,8 +99,8 @@ object MissingUnitsDialog: TMissingUnitsDialog
     Left = 16
     Height = 222
     Top = 40
-    Width = 192
-    Anchors = [akTop, akLeft, akBottom]
+    Width = 304
+    Anchors = [akTop, akLeft, akRight, akBottom]
     ItemHeight = 0
     PopupMenu = PopupMenu1
     TabOrder = 3

@@ -13253,7 +13253,7 @@ begin
   InputHistories.LastConvertDelphiUnit:=DelphiFilename;
   OldChange:=OpenEditorsOnCodeToolChange;
   OpenEditorsOnCodeToolChange:=true;
-  Converter := TConvertDelphiUnit.Create(nil, DelphiFilename, []);
+  Converter := TConvertDelphiUnit.Create(DelphiFilename);
   try
     Result:=Converter.Convert;
   finally

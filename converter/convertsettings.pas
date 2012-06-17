@@ -385,11 +385,27 @@ begin
 
   // * Add default values for configuration if ConfigStorage doesn't have them *
 
-  // Units left out of project. Not saved in configuration.
+  // Units left out of project. Some projects include them although there are
+  //  Lazarus packages for them. This setting is not saved in configuration.
   with fOmitProjUnits do begin
     Add('FastMM4');
     Add('FastMM4Messages');
     Add('OpenGL');
+    Add('SynEdit');
+    Add('SynEditMiscProcs');
+    Add('SynEditTextBuffer');
+    Add('SynEditTypes');
+    Add('SynEditHighlighter');
+    Add('SynEditKbdHandler');
+    Add('SynEditKeyCmds');
+    Add('SynEditKeyConst');
+    Add('SynEditMiscClasses');
+    Add('SynTextDrawer');
+    Add('SynHighlighterMulti');
+    Add('SynRegExpr');
+    Add('SynEditStrConst');
+    Add('SynEditWordWrap');
+    Add('SynHighlighterPas');
     CaseSensitive:=False;
     Sorted:=True;
   end;
