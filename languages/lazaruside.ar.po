@@ -7313,6 +7313,10 @@ msgstr ""
 msgid "Distinguish big and small letters e.g. A and a"
 msgstr ""
 
+#: lazarusidestrconsts.lisdlgchangeclass
+msgid "Change Class ..."
+msgstr ""
+
 #: lazarusidestrconsts.lisdlgeditorwindowmanager
 msgid "Editor Window Manager ..."
 msgstr ""

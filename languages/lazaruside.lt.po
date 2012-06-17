@@ -7623,6 +7623,10 @@ msgstr "Kai kurie failai buvo pakeisti iš išorės:"
 msgid "Distinguish big and small letters e.g. A and a"
 msgstr "Ieškant skirti didžiąsias ir mažąsias raides"
 
+#: lazarusidestrconsts.lisdlgchangeclass
+msgid "Change Class ..."
+msgstr ""
+
 #: lazarusidestrconsts.lisdlgeditorwindowmanager
 msgid "Editor Window Manager ..."
 msgstr ""

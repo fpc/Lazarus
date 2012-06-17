@@ -7559,6 +7559,10 @@ msgstr "Certains fichiers ont changé sur le disque :"
 msgid "Distinguish big and small letters e.g. A and a"
 msgstr "Différencier majuscules et minuscules (i.e. A et a)"
 
+#: lazarusidestrconsts.lisdlgchangeclass
+msgid "Change Class ..."
+msgstr ""
+
 #: lazarusidestrconsts.lisdlgeditorwindowmanager
 msgid "Editor Window Manager ..."
 msgstr ""

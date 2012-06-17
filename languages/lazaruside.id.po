@@ -7543,6 +7543,10 @@ msgstr "Beberapa file telah berubah pada disk:"
 msgid "Distinguish big and small letters e.g. A and a"
 msgstr "Bedakan huruf besar dan kecil contoh A dan a"
 
+#: lazarusidestrconsts.lisdlgchangeclass
+msgid "Change Class ..."
+msgstr ""
+
 #: lazarusidestrconsts.lisdlgeditorwindowmanager
 msgid "Editor Window Manager ..."
 msgstr ""

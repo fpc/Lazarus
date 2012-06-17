@@ -7638,6 +7638,10 @@ msgstr "מספר קבצים השתנו בדיסק:"
 msgid "Distinguish big and small letters e.g. A and a"
 msgstr "הבחן בין אותיות גדולות וקטנות למשל A ו a"
 
+#: lazarusidestrconsts.lisdlgchangeclass
+msgid "Change Class ..."
+msgstr ""
+
 #: lazarusidestrconsts.lisdlgeditorwindowmanager
 msgid "Editor Window Manager ..."
 msgstr ""

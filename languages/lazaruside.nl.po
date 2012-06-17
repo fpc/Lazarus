@@ -7523,6 +7523,10 @@ msgstr "Bepaalde bestanden zijn gewijzigd op schijf:"
 msgid "Distinguish big and small letters e.g. A and a"
 msgstr "Maak onderscheid tussen hoofd- en kleine letters. Bijv. A en a"
 
+#: lazarusidestrconsts.lisdlgchangeclass
+msgid "Change Class ..."
+msgstr ""
+
 #: lazarusidestrconsts.lisdlgeditorwindowmanager
 msgid "Editor Window Manager ..."
 msgstr ""

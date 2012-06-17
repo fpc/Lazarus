@@ -7503,6 +7503,10 @@ msgstr "Alguns fitxers han canviat al disc:"
 msgid "Distinguish big and small letters e.g. A and a"
 msgstr "Distingeix entre lletres grans i petites p.ex. A i a"
 
+#: lazarusidestrconsts.lisdlgchangeclass
+msgid "Change Class ..."
+msgstr ""
+
 #: lazarusidestrconsts.lisdlgeditorwindowmanager
 msgid "Editor Window Manager ..."
 msgstr ""

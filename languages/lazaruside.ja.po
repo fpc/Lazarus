@@ -7671,6 +7671,10 @@ msgstr "ディスク上のいくつかのファイルが変更されました。
 msgid "Distinguish big and small letters e.g. A and a"
 msgstr "大文字と小文字（例:Aとa）を区別する"
 
+#: lazarusidestrconsts.lisdlgchangeclass
+msgid "Change Class ..."
+msgstr ""
+
 #: lazarusidestrconsts.lisdlgeditorwindowmanager
 msgid "Editor Window Manager ..."
 msgstr "エディタウィンドウマネージャー ..."

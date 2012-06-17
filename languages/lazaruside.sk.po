@@ -7576,6 +7576,10 @@ msgstr "Niektoré súbory boli na disku zmenené:"
 msgid "Distinguish big and small letters e.g. A and a"
 msgstr "Rozoznávať veľké a malé písmená, napr. C a c"
 
+#: lazarusidestrconsts.lisdlgchangeclass
+msgid "Change Class ..."
+msgstr ""
+
 #: lazarusidestrconsts.lisdlgeditorwindowmanager
 msgid "Editor Window Manager ..."
 msgstr ""

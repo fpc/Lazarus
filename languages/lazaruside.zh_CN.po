@@ -7602,6 +7602,10 @@ msgstr "一些文件已经更改:"
 msgid "Distinguish big and small letters e.g. A and a"
 msgstr "区分大小写,例如: A 和 a"
 
+#: lazarusidestrconsts.lisdlgchangeclass
+msgid "Change Class ..."
+msgstr ""
+
 #: lazarusidestrconsts.lisdlgeditorwindowmanager
 msgid "Editor Window Manager ..."
 msgstr ""
