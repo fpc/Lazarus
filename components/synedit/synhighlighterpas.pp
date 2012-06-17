@@ -124,6 +124,8 @@ type
     // Internal type / not configurable
     cfbtCaseElse,     // "else" in case can have multiply statements
     cfbtPackage,
+    cfbtIfThen,
+    //cfbtIfElse,
     cfbtNone
     );
   TPascalCodeFoldBlockTypes = set of TPascalCodeFoldBlockType;
@@ -145,6 +147,10 @@ const
     [cfbtNone, cfbtProcedure, cfbtProgram, cfbtClass, cfbtClassSection, cfbtRecord,
      cfbtUnitSection, // unitsection, actually interface only
      cfbtVarType, cfbtLocalVarType];
+
+  PascalStatementBlocks: TPascalCodeFoldBlockTypes =
+    [cfbtBeginEnd, cfbtTopBeginEnd, cfbtCase, cfbtTry, cfbtExcept, cfbtRepeat,
+     cfbtCaseElse, cfbtIfThen];
 
   PascalFoldTypeCompatibility: Array [TPascalCodeFoldBlockType] of TPascalCodeFoldBlockType =
     ( cfbtBeginEnd,      // Nested
@@ -173,6 +179,7 @@ const
       // Internal type / not configurable
       cfbtCaseElse,
       cfbtPackage,
+      cfbtIfThen,
       cfbtNone
     );
 
@@ -995,6 +1002,10 @@ begin
       PasCodeFoldRange.BracketNestLevel := 0; // Reset in case of partial code
       // there may be more than on block ending here
       tfb := TopPascalCodeFoldBlockType;
+      while (tfb = cfbtIfThen) do begin // no semicolon before end
+        EndPascalCodeFoldBlock;
+        tfb := TopPascalCodeFoldBlockType;
+      end;
       if tfb = cfbtRecord then begin
         EndPascalCodeFoldBlock;
       end else if tfb = cfbtUnit then begin
@@ -1073,8 +1084,7 @@ begin
     fRange := fRange + [rsAtPropertyOrReadWrite];
   end
   else if KeyComp('Case') then begin
-    if TopPascalCodeFoldBlockType in
-       [cfbtBeginEnd, cfbtTopBeginEnd, cfbtCase, cfbtTry, cfbtExcept, cfbtRepeat] then
+    if TopPascalCodeFoldBlockType in PascalStatementBlocks + [cfbtUnitSection] then
       StartPascalCodeFoldBlock(cfbtCase);
     Result := tkKey;
   end
@@ -1158,8 +1168,13 @@ function TSynPasSyn.Func41: TtkTokenKind;
 begin
   if KeyComp('Else') then begin
     Result := tkKey;
-    if TopPascalCodeFoldBlockType = cfbtCase
-    then StartPascalCodeFoldBlock(cfbtCaseElse)
+    if (TopPascalCodeFoldBlockType = cfbtIfThen) then
+      EndPascalCodeFoldBlock
+    else
+    if TopPascalCodeFoldBlockType = cfbtCase then begin
+      StartPascalCodeFoldBlock(cfbtCaseElse);
+      FTokenIsCaseLabel := True;
+    end;
   end
   else if KeyComp('Var') then begin
     if (PasCodeFoldRange.BracketNestLevel = 0) and
@@ -1225,8 +1240,12 @@ end;
 
 function TSynPasSyn.Func47: TtkTokenKind;
 begin
-  if KeyComp('Then') then
-    Result := tkKey
+  if KeyComp('Then') then begin
+    Result := tkKey;
+    // in a "case", we need to distinguish a possible follwing "else"
+    if TopPascalCodeFoldBlockType in [cfbtCase, cfbtIfThen] then
+      StartPascalCodeFoldBlock(cfbtIfThen);
+  end
   else
     Result := tkIdentifier;
 end;
@@ -1344,8 +1363,7 @@ begin
   else if KeyComp('Array') then Result := tkKey
   else if KeyComp('Try') then
   begin
-    if TopPascalCodeFoldBlockType in
-       [cfbtBeginEnd, cfbtTopBeginEnd, cfbtCase, cfbtTry, cfbtExcept, cfbtRepeat] then
+    if TopPascalCodeFoldBlockType in PascalStatementBlocks + [cfbtUnitSection] then
       StartPascalCodeFoldBlock(cfbtTry);
     Result := tkKey;
   end
@@ -1463,6 +1481,8 @@ function TSynPasSyn.Func73: TtkTokenKind;
 begin
   if KeyComp('Except') then begin
     Result := tkKey;
+    while (TopPascalCodeFoldBlockType = cfbtIfThen) do // no semicolon before except
+      EndPascalCodeFoldBlock;
     SmartCloseBeginEndBlocks(cfbtTry);
     if TopPascalCodeFoldBlockType = cfbtTry then
       StartPascalCodeFoldBlock(cfbtExcept);
@@ -1487,6 +1507,8 @@ function TSynPasSyn.Func76: TtkTokenKind;
 begin
   if KeyComp('Until') then begin
     Result := tkKey;
+    while (TopPascalCodeFoldBlockType = cfbtIfThen) do  // no semicolon before until
+      EndPascalCodeFoldBlock;
     SmartCloseBeginEndBlocks(cfbtRepeat);
     if TopPascalCodeFoldBlockType = cfbtRepeat then EndPascalCodeFoldBlock;
   end
@@ -1497,6 +1519,8 @@ function TSynPasSyn.Func79: TtkTokenKind;
 begin
   if KeyComp('Finally') then begin
     Result := tkKey;
+    while (TopPascalCodeFoldBlockType = cfbtIfThen) do  // no semicolon before finally
+      EndPascalCodeFoldBlock;
     SmartCloseBeginEndBlocks(cfbtTry);
     if TopPascalCodeFoldBlockType = cfbtTry then
       StartPascalCodeFoldBlock(cfbtExcept);
@@ -2866,6 +2890,11 @@ begin
   if (tfb = cfbtClass) and (rsAfterClass in fRange) then
     EndPascalCodeFoldBlock(True);
 
+  while (tfb = cfbtIfThen) do begin
+    EndPascalCodeFoldBlock;
+    tfb := TopPascalCodeFoldBlockType;
+  end;
+
   if (tfb = cfbtCase) then
     fRange := fRange + [rsAtCaseLabel];
 
@@ -3693,13 +3722,9 @@ end;
 
 procedure TSynPasSyn.CloseBeginEndBlocksBeforeProc;
 begin
-  if not(TopPascalCodeFoldBlockType in
-         [cfbtBeginEnd, cfbtTopBeginEnd, cfbtCase, cfbtAsm, cfbtExcept, cfbtTry,
-          cfbtRepeat]) then
+  if not(TopPascalCodeFoldBlockType in PascalStatementBlocks + [cfbtAsm]) then
     exit;
-  while TopPascalCodeFoldBlockType in
-        [cfbtBeginEnd, cfbtTopBeginEnd, cfbtCase, cfbtAsm, cfbtExcept, cfbtTry,
-         cfbtRepeat] do
+  while TopPascalCodeFoldBlockType in PascalStatementBlocks + [cfbtAsm] do
     EndPascalCodeFoldBlockLastLine;
   if TopPascalCodeFoldBlockType = cfbtProcedure then
     EndPascalCodeFoldBlockLastLine; // This procedure did have a begin/end block, so it must end too
@@ -3715,8 +3740,7 @@ begin
   i := 0;
   while (i <= 2) do begin
     t := TopPascalCodeFoldBlockType(i);
-    if not (t in [cfbtBeginEnd, cfbtTopBeginEnd, cfbtCase, cfbtAsm, cfbtExcept,
-                  cfbtTry, cfbtRepeat, SearchFor]) then
+    if not (t in PascalStatementBlocks + [cfbtAsm, SearchFor]) then
       exit;
     if (t = SearchFor) then break;
     inc(i);
