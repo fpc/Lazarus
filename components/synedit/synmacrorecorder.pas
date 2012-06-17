@@ -51,8 +51,10 @@ resourcestring
   sCannotResume = 'Can only resume when paused';
 
 type
-  TSynMacroState = (msStopped, msRecording, msPlaying, msPaused);
+  TSynMacroState = (msStopped, msRecording, msPlaying, msPaused); // msPaused = paused recording
   TSynMacroCommand = (mcRecord, mcPlayback);
+
+  { TSynMacroEvent }
 
   TSynMacroEvent = class(TObject)
   protected
@@ -60,10 +62,11 @@ type
     function GetAsString : string; virtual; abstract;
     procedure InitEventParameters(aStr : string); virtual; abstract;
   public
-    constructor Create; {$IFNDEF FPC}virtual;{$ENDIF}
+    constructor Create; virtual;
     procedure Initialize(aCmd: TSynEditorCommand;
       const aChar: TUTF8Char;
       aData: Pointer);  virtual; abstract;
+    procedure Assign(AnEvent: TSynMacroEvent); virtual;
     { the CommandID must not be read inside LoadFromStream/SaveToStream. It's read by the
     MacroRecorder component to decide which MacroEvent class to instanciate }
     procedure LoadFromStream(aStream: TStream); virtual; abstract;
@@ -72,6 +75,8 @@ type
     property AsString : string read GetAsString;
     property RepeatCount : Byte read fRepeatCount write fRepeatCount;
   end;
+
+  TSynMacroEventClass = class of TSynMacroEvent;
 
   { TSynIgnoredEvent }
 
@@ -88,6 +93,8 @@ type
     procedure Playback(aEditor: TCustomSynEdit); override;
   end;
 
+  { TSynBasicEvent }
+
   TSynBasicEvent = class(TSynMacroEvent)
   protected
     fCommand: TSynEditorCommand;
@@ -97,12 +104,15 @@ type
     procedure Initialize(aCmd: TSynEditorCommand;
       const aChar: TUTF8Char;
       aData: Pointer); override;
+    procedure Assign(AnEvent: TSynMacroEvent); override;
     procedure LoadFromStream(aStream: TStream); override;
     procedure SaveToStream(aStream: TStream); override;
     procedure Playback(aEditor: TCustomSynEdit); override;
   public
     property Command: TSynEditorCommand read fCommand write fCommand;
   end;
+
+  { TSynCharEvent }
 
   TSynCharEvent = class(TSynMacroEvent)
   protected
@@ -113,12 +123,15 @@ type
     procedure Initialize(aCmd: TSynEditorCommand;
       const aChar: TUTF8Char;
       aData: Pointer); override;
+    procedure Assign(AnEvent: TSynMacroEvent); override;
     procedure LoadFromStream(aStream: TStream); override;
     procedure SaveToStream(aStream: TStream); override;
     procedure Playback(aEditor: TCustomSynEdit); override;
   public
     property Key: TUTF8Char read fKey write fKey;
   end;
+
+  { TSynStringEvent }
 
   TSynStringEvent = class(TSynMacroEvent)
   protected
@@ -129,12 +142,15 @@ type
     procedure Initialize(aCmd: TSynEditorCommand;
       const aChar: TUTF8Char;
       aData: Pointer); override;
+    procedure Assign(AnEvent: TSynMacroEvent); override;
     procedure LoadFromStream(aStream: TStream); override;
     procedure SaveToStream(aStream: TStream); override;
     procedure Playback(aEditor: TCustomSynEdit); override;
   public
     property Value: string read fString write fString;
   end;
+
+  { TSynPositionEvent }
 
   TSynPositionEvent = class(TSynBasicEvent)
   protected
@@ -145,12 +161,15 @@ type
     procedure Initialize(aCmd: TSynEditorCommand;
       const aChar: TUTF8Char;
       aData: Pointer); override;
+    procedure Assign(AnEvent: TSynMacroEvent); override;
     procedure LoadFromStream(aStream: TStream); override;
     procedure SaveToStream(aStream: TStream); override;
     procedure Playback(aEditor: TCustomSynEdit); override;
   public
     property Position: TPoint read fPosition write fPosition;
   end;
+
+  { TSynDataEvent }
 
   TSynDataEvent = class(TSynBasicEvent)
   protected
@@ -159,6 +178,7 @@ type
     procedure Initialize(aCmd: TSynEditorCommand;
       const aChar: TUTF8Char;
       aData: Pointer); override;
+    procedure Assign(AnEvent: TSynMacroEvent); override;
     procedure LoadFromStream(aStream: TStream); override;
     procedure SaveToStream(aStream: TStream); override;
     procedure Playback(aEditor: TCustomSynEdit); override;
@@ -234,6 +254,7 @@ type
     procedure Stop;
     procedure Pause;
     procedure Resume;
+    procedure AssignEventsFrom(AMacroRecorder: TCustomSynMacroRecorder);
     property IsEmpty: boolean read GetIsEmpty;
     property State: TSynMacroState read fState;
     procedure Clear;
@@ -319,7 +340,13 @@ procedure TSynDataEvent.Initialize(aCmd: TSynEditorCommand; const aChar: TUTF8Ch
 begin
   fCommand := aCmd;
   Assert( aChar = #0 );
-  fData := aData;
+  fData := aData; // Todo: must be copied...
+end;
+
+procedure TSynDataEvent.Assign(AnEvent: TSynMacroEvent);
+begin
+  inherited Assign(AnEvent);
+  // Todo: COPY data.
 end;
 
 procedure TSynDataEvent.LoadFromStream(aStream: TStream);
@@ -659,6 +686,22 @@ begin
   StateChanged;
 end;
 
+procedure TCustomSynMacroRecorder.AssignEventsFrom(AMacroRecorder: TCustomSynMacroRecorder);
+var
+  i: Integer;
+  NewEvent: TSynMacroEvent;
+begin
+  Clear;
+  if AMacroRecorder.fEvents = nil then exit;
+
+  fEvents := TList.Create;
+  for i := 0 to AMacroRecorder.fEvents.Count -1 do begin
+    NewEvent := TSynMacroEventClass(TSynMacroEvent(AMacroRecorder.fEvents[i]).ClassType).Create;
+    NewEvent.Assign(TSynMacroEvent(AMacroRecorder.fEvents[i]));
+    fEvents.add(NewEvent);
+  end;
+end;
+
 procedure TCustomSynMacroRecorder.SaveToStream(aDest: TStream);
 var
   cEvent, eCnt : integer;
@@ -857,6 +900,13 @@ begin
 {$ENDIF}
 end;
 
+procedure TSynBasicEvent.Assign(AnEvent: TSynMacroEvent);
+begin
+  inherited Assign(AnEvent);
+  if AnEvent is TSynBasicEvent then
+    fCommand := TSynBasicEvent(AnEvent).fCommand;
+end;
+
 procedure TSynBasicEvent.LoadFromStream(aStream: TStream);
 begin
   aStream.Read( fRepeatCount, SizeOf(fRepeatCount) );
@@ -904,6 +954,13 @@ procedure TSynCharEvent.Initialize(aCmd: TSynEditorCommand; const aChar: TUTF8Ch
 begin
   Key := aChar;
   Assert( aData = nil );
+end;
+
+procedure TSynCharEvent.Assign(AnEvent: TSynMacroEvent);
+begin
+  inherited Assign(AnEvent);
+  if AnEvent is TSynCharEvent then
+    fKey := TSynCharEvent(AnEvent).fKey;
 end;
 
 procedure TSynCharEvent.LoadFromStream(aStream: TStream);
@@ -978,6 +1035,13 @@ begin
     Position := Point( 0, 0 );
 end;
 
+procedure TSynPositionEvent.Assign(AnEvent: TSynMacroEvent);
+begin
+  inherited Assign(AnEvent);
+  if AnEvent is TSynPositionEvent then
+    fPosition := TSynPositionEvent(AnEvent).fPosition;
+end;
+
 procedure TSynPositionEvent.LoadFromStream(aStream: TStream);
 begin
   aStream.Read( fPosition, SizeOf(Position) );
@@ -1045,6 +1109,13 @@ begin
   Value := String(aData);
 end;
 
+procedure TSynStringEvent.Assign(AnEvent: TSynMacroEvent);
+begin
+  inherited Assign(AnEvent);
+  if AnEvent is TSynStringEvent then
+    fString := TSynStringEvent(AnEvent).fString;
+end;
+
 procedure TSynStringEvent.LoadFromStream(aStream: TStream);
 var
   l : Integer;
@@ -1106,6 +1177,11 @@ constructor TSynMacroEvent.Create;
 begin
   inherited Create;
   fRepeatCount := 1;
+end;
+
+procedure TSynMacroEvent.Assign(AnEvent: TSynMacroEvent);
+begin
+  fRepeatCount := AnEvent.fRepeatCount;
 end;
 
 end.
