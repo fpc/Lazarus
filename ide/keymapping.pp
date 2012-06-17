@@ -518,6 +518,7 @@ begin
     ecToggleCodeBrowser       : Result:= srkmecToggleCodeBrowser;
     ecToggleRestrictionBrowser: Result:= srkmecToggleRestrictionBrowser;
     ecViewComponents          : Result:= srkmecViewComponents;
+    ecViewMacroList           : Result:= srkmecViewEditorMacros;
     ecViewJumpHistory         : Result:= lisMenuViewJumpHistory;
     ecToggleCompPalette       : Result:= srkmecToggleCompPalette;
     ecToggleIDESpeedBtns      : Result:= srkmecToggleIDESpeedBtns;
@@ -2661,6 +2662,7 @@ begin
   C:=Categories[AddCategory('MacroRecording', srkmCatMacroRecording, IDECmdScopeSrcEditOnly)];
   AddDefault(C, 'Record Macro', srkmecSynMacroRecord, ecSynMacroRecord);
   AddDefault(C, 'Play Macro', srkmecSynMacroPlay, ecSynMacroPlay);
+  AddDefault(C, 'View Editor Macros', srkmecViewEditorMacros, ecViewMacroList);
 
   // Template editing
   C:=Categories[AddCategory('Edit Template', srkmCatTemplateEdit, IDECmdScopeSrcEditOnlyTmplEdit)];

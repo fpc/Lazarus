@@ -189,6 +189,7 @@ const
   ecViewPseudoTerminal      = ecFirstLazarus + 328;
   ecViewThreads             = ecFirstLazarus + 329;
   ecViewHistory             = ecFirstLazarus + 460;
+  ecViewMacroList           = ecFirstLazarus + 461;
 
   // sourcenotebook commands
   ecNextEditor              = ecFirstLazarus + 330;
@@ -264,7 +265,7 @@ const
   ecAddBpAddress            = ecFirstLazarus + 450;
   ecAddBpDataWatch          = ecFirstLazarus + 451;
 
-  // 460++ : used for ecViewHistory (debugger)
+  // 460++ : used for ecViewHistory (debugger) / ecViewMacroList
 
   // project menu
   ecNewProject              = ecFirstLazarus + 500;

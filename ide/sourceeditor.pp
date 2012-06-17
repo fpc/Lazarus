@@ -66,7 +66,7 @@ uses
   CodeMacroPrompt, CodeTemplatesDlg, CodeToolsOptions,
   SortSelectionDlg, EncloseSelectionDlg, ConDef, InvertAssignTool,
   SourceEditProcs, SourceMarks, CharacterMapDlg, SearchFrm,
-  FPDocHints,
+  FPDocHints, EditorMacroListViewer,
   BaseDebugManager, Debugger, MainIntf, GotoFrm;
 
 type
@@ -940,7 +940,7 @@ type
     procedure DecUpdateLock;
     procedure ShowActiveWindowOnTop(Focus: Boolean = False);
   private
-    FMacroRecorder: TSynMacroRecorder;
+    FMacroRecorder: TEditorMacro;
     FOnCurrentCodeBufferChanged: TNotifyEvent;
     procedure DoMacroRecorderState(Sender: TObject);
     procedure DoMacroRecorderUserCommand(aSender: TCustomSynMacroRecorder;
@@ -948,7 +948,7 @@ type
   public
     property OnCurrentCodeBufferChanged: TNotifyEvent
              read FOnCurrentCodeBufferChanged write FOnCurrentCodeBufferChanged;
-    property MacroRecorder: TSynMacroRecorder read FMacroRecorder;
+    property MacroRecorder: TEditorMacro read FMacroRecorder;
   end;
 
   { TSourceEditorManager }
@@ -8124,6 +8124,7 @@ var
 begin
   For i := 0 to SourceWindowCount - 1 do
     TSourceNotebook(SourceWindows[i]).UpdateStatusBar;
+  DoEditorMacroStateChanged;
 end;
 
 procedure TSourceEditorManagerBase.DoMacroRecorderUserCommand(aSender: TCustomSynMacroRecorder;
@@ -8563,13 +8564,14 @@ var
   i: TsemChangeReason;
   h: TSrcEditMangerHandlerType;
 begin
-  FMacroRecorder := TSynMacroRecorder.Create(self);
+  FMacroRecorder := TEditorMacro.Create(self);
   FMacroRecorder.OnStateChange  := @DoMacroRecorderState;
   FMacroRecorder.OnUserCommand   := @DoMacroRecorderUserCommand;
   FMacroRecorder.RecordCommandID := ecSynMacroRecord;
   FMacroRecorder.PlaybackCommandID := ecSynMacroPlay;
   FMacroRecorder.RecordShortCut := 0;
   FMacroRecorder.PlaybackShortCut := 0;
+  EditorMacroRecorder := FMacroRecorder;
 
 
   FUpdateFlags := [];
@@ -8601,6 +8603,7 @@ begin
   FreeCompletionPlugins;
   FreeSourceWindows;
   SrcEditorIntf.SourceEditorManagerIntf := nil; // xx move down
+  EditorMacroRecorder := nil;
   FreeAndNil(FMacroRecorder);
   FreeAndNil(FCompletionPlugins);
   FreeAndNil(FSourceWindowList);

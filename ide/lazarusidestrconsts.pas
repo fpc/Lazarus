@@ -305,6 +305,7 @@ resourcestring
   lisMenuJumpForward = 'Jump Forward';
   lisMenuAddJumpPointToHistory = 'Add Jump Point to History';
   lisMenuViewJumpHistory = 'Jump History';
+  lisMenuMacroListView = 'Editor Macros ...';
   lisMenuFindBlockOtherEndOfCodeBlock = 'Find Other End of Code Block';
   lisMenuFindCodeBlockStart = 'Find Start of Code Block';
   lisMenuFindDeclarationAtCursor = 'Find Declaration at Cursor';
@@ -2746,6 +2747,7 @@ resourcestring
   srkmecViewUnits                 = 'View units';
   srkmecViewForms                 = 'View forms';
   srkmecViewComponents            = 'View components';
+  srkmecViewEditorMacros          = 'View editor macros';
   lisKMViewJumpHistory            = 'View jump history';
   srkmecViewUnitDependencies      = 'View unit dependencies';
   srkmecViewUnitInfo              = 'View unit information';
@@ -5527,6 +5529,10 @@ resourcestring
   lisWhatNeedsBuilding = 'What needs building';
   lisTarget = 'Target:';
   lisDirectives = 'Directives';
+  lisRecordedMacros = 'Recorded Macros';
+  lisRename2 = 'Rename ...';
+  lisNewMacroName = 'Macro %d';
+  lisEditorMacros = 'Editor macros';
 
 implementation
 

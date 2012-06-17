@@ -152,6 +152,7 @@ uses
   UseUnitDlg, FindOverloadsDlg, EditorFileManager,
   CleanDirDlg, CodeContextForm, AboutFrm, CompatibilityRestrictions,
   RestrictionBrowser, ProjectWizardDlg, IDECmdLine, IDEGuiCmdLine, CodeExplOpts,
+  EditorMacroListViewer,
   // main ide
   MainBar, MainIntf, MainBase;
 
@@ -244,6 +245,7 @@ type
     procedure mnuViewCodeExplorerClick(Sender: TObject);
     procedure mnuViewCodeBrowserClick(Sender: TObject);
     procedure mnuViewComponentsClick(Sender: TObject);
+    procedure mnuViewMacroListClick(Sender: TObject);
     procedure mnuViewRestrictionBrowserClick(Sender: TObject);
     procedure mnuViewMessagesClick(Sender: TObject);
     procedure mnuViewSearchResultsClick(Sender: TObject);
@@ -2588,6 +2590,7 @@ begin
     itmViewCodeBrowser.OnClick := @mnuViewCodeBrowserClick;
     itmViewRestrictionBrowser.OnClick := @mnuViewRestrictionBrowserClick;
     itmViewComponents.OnClick := @mnuViewComponentsClick;
+    itmMacroListView.OnClick := @mnuViewMacroListClick;
     itmViewFPDocEditor.OnClick := @mnuViewFPDocEditorClicked;
     itmViewMessage.OnClick := @mnuViewMessagesClick;
     itmViewSearchResults.OnClick := @mnuViewSearchResultsClick;
@@ -3514,6 +3517,9 @@ begin
   ecInsertFilename:
     mnuSourceInsertFilename(self);
 
+  ecViewMacroList:
+    mnuViewMacroListClick(self);
+
   else
     Handled:=false;
     // let the bosses handle it
@@ -4152,6 +4158,11 @@ end;
 procedure TMainIDE.mnuViewComponentsClick(Sender: TObject);
 begin
   DoShowComponentList(true);
+end;
+
+procedure TMainIDE.mnuViewMacroListClick(Sender: TObject);
+begin
+  ShowMacroListViewer;
 end;
 
 procedure TMainIDE.mnuViewRestrictionBrowserClick(Sender: TObject);

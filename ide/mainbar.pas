@@ -173,6 +173,7 @@ type
         itmViewRestrictionBrowser: TIDEMenuCommand;
         itmViewComponents: TIDEMenuCommand;
         itmJumpHistory: TIDEMenuCommand;
+        itmMacroListView: TIDEMenuCommand;
       //itmViewSecondaryWindows: TIDEMenuSection;
         itmViewAnchorEditor: TIDEMenuCommand;
         itmViewTabOrder: TIDEMenuCommand;
