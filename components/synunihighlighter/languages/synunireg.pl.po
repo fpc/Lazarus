@@ -12,6 +12,6 @@ msgstr ""
 "X-Poedit-Country: POLAND\n"
 
 #: synunireg.sedituni
-msgid "Edit..."
+msgid "Edit ..."
 msgstr ""
 

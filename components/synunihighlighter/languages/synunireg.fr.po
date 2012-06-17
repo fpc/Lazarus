@@ -9,7 +9,9 @@ msgstr ""
 "Content-Type: text/plain; charset=iso-8859-1\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: synunireg:sedituni
-msgid "Edit..."
+#: synunireg.sedituni
+#, fuzzy
+#| msgid "Edit..."
+msgid "Edit ..."
 msgstr "Editer..."
 

@@ -10,6 +10,8 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 
 #: synunireg.sedituni
-msgid "Edit..."
+#, fuzzy
+#| msgid "Edit..."
+msgid "Edit ..."
 msgstr "Редагувати..."
 

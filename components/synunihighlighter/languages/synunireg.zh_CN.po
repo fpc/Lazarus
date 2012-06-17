@@ -13,6 +13,8 @@ msgstr ""
 "X-Poedit-SourceCharset: utf-8\n"
 
 #: synunireg.sedituni
-msgid "Edit..."
+#, fuzzy
+#| msgid "Edit..."
+msgid "Edit ..."
 msgstr "编辑..."
 
