@@ -122,6 +122,7 @@ begin
   tbModify.Caption := lisModify;
   tbWatch.Caption := lisWatch;
   tbInspect.Caption := lisInspect;
+  tbHistory.Caption := lisMenuViewHistory;
 
   Label1.Caption := lisDBGEMExpression;
   Label2.Caption := lisDBGEMResult;
