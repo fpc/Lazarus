@@ -88,8 +88,12 @@ type
     constructor Create(const AMessage: string);
   end;
 
+//procedure RaiseDelphiConverterErrorFmt(const AMessage: string;
+//  const args: array of const{; ClearNicePos: boolean});
+
 
 implementation
+
 
 { TSrcPropOffset }
 

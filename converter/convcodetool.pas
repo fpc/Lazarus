@@ -61,7 +61,7 @@ type
     constructor Create(ACode: TCodeBuffer);
     destructor Destroy; override;
     procedure ResetMainScanner;
-    function HandleCodetoolError: TModalResult;
+//    function HandleCodetoolError: TModalResult;
   public
     property CodeTool: TCodeTool read fCodeTool;
     property Code: TCodeBuffer read fCode;
@@ -129,22 +129,22 @@ begin
   fCodeTool:=nil;
   fSrcCache:=nil;
   if not CodeToolBoss.InitCurCodeTool(fCode) then exit;
-  try
+//  try
     fCodeTool:=CodeToolBoss.CurCodeTool;
     fSrcCache:=CodeToolBoss.SourceChangeCache;
     ResetMainScanner;
     fCodeTool.Scanner.IgnoreMissingIncludeFiles:=True;
-  except
+{  except
     on e: Exception do
       CodeToolBoss.HandleException(e);
-  end;
+  end;  }
 end;
 
 procedure TCodeToolLink.ResetMainScanner;
 begin
   fSrcCache.MainScanner:=fCodeTool.Scanner;
 end;
-
+{
 function TCodeToolLink.HandleCodetoolError: TModalResult;
 // returns mrOk or mrAbort
 const
@@ -163,7 +163,7 @@ begin
     Result:=mrOK;
   end;
 end;
-
+}
 { TConvDelphiCodeTool }
 
 constructor TConvDelphiCodeTool.Create(APascalBuffer: TCodeBuffer);
@@ -177,12 +177,12 @@ begin
   fIsConsoleApp:=False;
   fCTLinkCreated:=True;
   if Assigned(fCTLink.CodeTool) then
-    try
-      fCTLink.CodeTool.BuildTree(lsrInitializationStart);
-    except
+//    try
+    fCTLink.CodeTool.BuildTree(lsrInitializationStart);
+{    except
       on e: Exception do
         CodeToolBoss.HandleException(e);
-    end;
+    end;  }
 end;
 
 constructor TConvDelphiCodeTool.Create(ACTLink: TCodeToolLink);

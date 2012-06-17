@@ -422,7 +422,8 @@ begin
   DelphiUnit := TDelphiUnit.Create(Self, fOrigFilename, []);
   Result:=fSettings.RunForm;
   if Result=mrOK then
-    with DelphiUnit do begin
+    with DelphiUnit do
+    try
       Result:=CopyAndLoadFile;
       if Result=mrOK then begin
         Result:=ConvertUnitFile;
@@ -437,6 +438,14 @@ begin
           end;
         end;
       end;
+    except
+      on e: EDelphiConverterError do begin
+        fErrorMsg:=e.Message;
+      end;
+      else begin
+        fErrorMsg:=CodeToolBoss.ErrorMessage;
+      end;
+      Result:=mrAbort;
     end;
   ShowEndingMessage(Result);
 end;
@@ -689,20 +698,11 @@ begin
   // Do the actual code conversion.
   ConvTool:=TConvDelphiCodeTool.Create(fCTLink);
   try
-  try
     ConvTool.IsConsoleApp:=fOwnerConverter.fIsConsoleApp;
     ConvTool.LowerCaseRes:=FileExistsUTF8(ChangeFileExt(fLazUnitFilename, '.res'));
     ConvTool.HasFormFile:=DfmFilename<>'';
     ConvTool.AddUnitEvent:=@fUsedUnitsTool.AddUnitIfNeeded;
     Result:=ConvTool.Convert;
-  except
-    on e: EDelphiConverterError do begin
-      fOwnerConverter.fErrorMsg:=e.Message;
-      Result:=mrAbort;
-    end;
-    else
-      Result:=fCTLink.HandleCodetoolError;
-  end;
   finally
     ConvTool.Free;
   end;
@@ -740,18 +740,9 @@ begin
   // After other changes: add, remove, fix and comment out units in uses sections.
   IDEMessagesWindow.AddMsg(Format(lisConvDelphiFixingUsedUnits,
                                   [fOrigUnitFilename]), '', -1);
-  try
-    Result:=fUsedUnitsTool.Convert;
-    if Result<>mrOk then exit;
-    Result:=mrOk;
-  except
-    on e: EDelphiConverterError do begin
-      fOwnerConverter.fErrorMsg:=e.Message;
-      Result:=mrAbort;
-    end;
-    else
-      Result:=fCTLink.HandleCodetoolError;
-  end;
+  Result:=fUsedUnitsTool.Convert;
+  if Result<>mrOk then exit;
+  Result:=mrOk;
 end;
 
 function TDelphiUnit.AskUnitPathFromUser: TModalResult;
@@ -821,8 +812,16 @@ begin
   LazarusIDE.OpenEditorsOnCodeToolChange:=False;
   try
     with fCTLink do
-    if not CodeTool.FixIncludeFilenames(Code,SrcCache,FoundIncludeFiles,
-                                        MissingIncludeFilesCodeXYPos) then begin
+    if CodeTool.FixIncludeFilenames(Code,SrcCache,FoundIncludeFiles,MissingIncludeFilesCodeXYPos)
+    then begin
+      if Assigned(FoundIncludeFiles) then begin
+        FoundIncludeFiles.Delimiter:=';';
+        FoundIncludeFiles.StrictDelimiter:=True;
+        Msg:='Repairing include files : ' + FoundIncludeFiles.DelimitedText;
+        IDEMessagesWindow.AddMsg(Msg, '', -1);
+      end;
+    end
+    else begin
       if MissingIncludeFilesCodeXYPos<>nil then begin
         for i:=0 to MissingIncludeFilesCodeXYPos.Count-1 do begin
           CodePos:=PCodeXYPosition(MissingIncludeFilesCodeXYPos[i]);
@@ -904,29 +903,39 @@ begin
   // without delay but then we must wait for the thread before continuing.
   CacheUnitsThread:=TCacheUnitsThread.Create(Self, fSettings.MainPath);
   try
-    CacheUnitsThread.Start;
-    Result:=fSettings.RunForm;      // Get settings from user.
-    Screen.Cursor:=crHourGlass;
     try
-      CacheUnitsThread.WaitFor;     // Make sure the thread has finished.
-    finally
-      Screen.Cursor:=crDefault;
-    end;
-    if Result=mrOK then begin
-      // create/open lazarus project or package file
-      fLazPFilename:=fSettings.DelphiToLazFilename(fOrigFilename, fLazPSuffix, false);
+      CacheUnitsThread.Start;
+      Result:=fSettings.RunForm;      // Get settings from user.
+      Screen.Cursor:=crHourGlass;
+      try
+        CacheUnitsThread.WaitFor;     // Make sure the thread has finished.
+      finally
+        Screen.Cursor:=crDefault;
+      end;
+      if Result=mrOK then begin
+        // create/open lazarus project or package file
+        fLazPFilename:=fSettings.DelphiToLazFilename(fOrigFilename, fLazPSuffix, false);
 
-      // Find Delphi project / package file name
-      if CompareFileExt(fOrigFilename,fDelphiPSuffix,false)=0 then
-        fDelphiPFilename:=fOrigFilename
-      else
-        fDelphiPFilename:=ChangeFileExt(fOrigFilename,fDelphiPSuffix);
-      if not FileExistsUTF8(fDelphiPFilename) then
-        fDelphiPFilename:=FindDiskFileCaseInsensitive(fOrigFilename);
-// ? fDelphiPFilename:=CodeToolBoss.DirectoryCachePool.FindDiskFilename(fDelphiPFilename);
+        // Find Delphi project / package file name
+        if CompareFileExt(fOrigFilename,fDelphiPSuffix,false)=0 then
+          fDelphiPFilename:=fOrigFilename
+        else
+          fDelphiPFilename:=ChangeFileExt(fOrigFilename,fDelphiPSuffix);
+        if not FileExistsUTF8(fDelphiPFilename) then
+          fDelphiPFilename:=FindDiskFileCaseInsensitive(fOrigFilename);
+  // ? fDelphiPFilename:=CodeToolBoss.DirectoryCachePool.FindDiskFilename(fDelphiPFilename);
 
-      // Actual conversion.
-      Result:=ConvertSub;
+        // Actual conversion.
+        Result:=ConvertSub;
+      end;
+    except
+      on e: EDelphiConverterError do begin
+        fErrorMsg:=e.Message;
+      end;
+      else begin
+        fErrorMsg:=CodeToolBoss.ErrorMessage;
+      end;
+      Result:=mrAbort;
     end;
     ShowEndingMessage(Result);
   finally

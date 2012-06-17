@@ -255,7 +255,7 @@ begin
       end else if CodeTool.CurPos.Flag=cafSemicolon then begin
         break;
       end else
-        CodeTool.RaiseExceptionFmt(ctsStrExpectedButAtomFound,[';',CodeTool.GetAtom]);
+        Raise EDelphiConverterError.CreateFmt(ctsStrExpectedButAtomFound,[';',CodeTool.GetAtom]);
     until false;
   end;
   Result:=true;
