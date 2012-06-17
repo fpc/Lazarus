@@ -1,0 +1,118 @@
+object MacroListView: TMacroListView
+  Left = 390
+  Height = 240
+  Top = 249
+  Width = 350
+  Caption = 'MacroListView'
+  ClientHeight = 240
+  ClientWidth = 350
+  LCLVersion = '1.1'
+  object Panel1: TPanel
+    AnchorSideRight.Control = pnlButtons
+    Left = 0
+    Height = 194
+    Top = 0
+    Width = 239
+    Align = alLeft
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    BorderSpacing.Right = 12
+    BevelOuter = bvNone
+    ClientHeight = 194
+    ClientWidth = 239
+    TabOrder = 0
+    object lbRecordedView: TListView
+      Left = 0
+      Height = 172
+      Top = 22
+      Width = 239
+      Align = alClient
+      AutoWidthLastColumn = True
+      BorderSpacing.Top = 6
+      Columns = <      
+        item
+          Width = 10
+        end>
+      RowSelect = True
+      ShowColumnHeaders = False
+      TabOrder = 0
+      ViewStyle = vsReport
+    end
+    object lblRecordedTitle: TLabel
+      Left = 0
+      Height = 16
+      Top = 0
+      Width = 239
+      Align = alTop
+      Caption = 'lblRecordedTitle'
+      ParentColor = False
+      WordWrap = True
+    end
+  end
+  object ButtonPanel1: TButtonPanel
+    Left = 6
+    Height = 34
+    Top = 200
+    Width = 338
+    OKButton.Name = 'OKButton'
+    OKButton.DefaultCaption = True
+    HelpButton.Name = 'HelpButton'
+    HelpButton.DefaultCaption = True
+    CloseButton.Name = 'CloseButton'
+    CloseButton.DefaultCaption = True
+    CancelButton.Name = 'CancelButton'
+    CancelButton.DefaultCaption = True
+    TabOrder = 1
+    ShowButtons = [pbClose]
+  end
+  object pnlButtons: TPanel
+    Left = 251
+    Height = 194
+    Top = 0
+    Width = 99
+    Align = alRight
+    AutoSize = True
+    BevelOuter = bvNone
+    ClientHeight = 194
+    ClientWidth = 99
+    TabOrder = 2
+    object btnSelect: TButton
+      AnchorSideLeft.Control = pnlButtons
+      AnchorSideTop.Control = pnlButtons
+      AnchorSideRight.Control = pnlButtons
+      AnchorSideRight.Side = asrBottom
+      AnchorSideBottom.Side = asrBottom
+      Left = 6
+      Height = 25
+      Top = 6
+      Width = 87
+      Anchors = [akTop, akLeft, akRight]
+      AutoSize = True
+      BorderSpacing.Left = 6
+      BorderSpacing.Top = 6
+      BorderSpacing.Right = 6
+      Caption = 'btnSelect'
+      OnClick = btnSelectClick
+      TabOrder = 0
+    end
+    object btnRename: TButton
+      AnchorSideLeft.Control = pnlButtons
+      AnchorSideTop.Control = btnSelect
+      AnchorSideTop.Side = asrBottom
+      AnchorSideRight.Control = pnlButtons
+      AnchorSideRight.Side = asrBottom
+      AnchorSideBottom.Side = asrBottom
+      Left = 6
+      Height = 25
+      Top = 37
+      Width = 87
+      Anchors = [akTop, akLeft, akRight]
+      AutoSize = True
+      BorderSpacing.Left = 6
+      BorderSpacing.Top = 6
+      BorderSpacing.Right = 6
+      Caption = 'btnRename'
+      OnClick = btnRenameClick
+      TabOrder = 1
+    end
+  end
+end

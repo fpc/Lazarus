@@ -4274,6 +4274,8 @@ ide/editmsgscannersdlg.lfm svneol=native#text/plain
 ide/editmsgscannersdlg.pas svneol=native#text/plain
 ide/editorfilemanager.lfm svneol=native#text/plain
 ide/editorfilemanager.pas svneol=native#text/plain
+ide/editormacrolistviewer.lfm svneol=native#text/pascal
+ide/editormacrolistviewer.pas svneol=native#text/pascal
 ide/editoroptions.pp svneol=native#text/pascal
 ide/editoroptions.rc svneol=native#text/plain
 ide/editoroptions.res -text
