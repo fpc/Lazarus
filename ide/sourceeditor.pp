@@ -184,6 +184,7 @@ type
     FExecutionMark: TSourceMark;
     FMarksRequested: Boolean;
     FMarklingsValid: boolean;
+    FMarksRequestedForFile: String;
     function GetExecutionLine: Integer;
   public
     UpdatingExecutionMark: Integer;
@@ -192,6 +193,7 @@ type
     property ExecutionMark: TSourceMark read FExecutionMark write FExecutionMark;
     procedure SetExecutionLine(NewLine: integer);
     property MarksRequested: Boolean read FMarksRequested write FMarksRequested;
+    property MarksRequestedForFile: String read FMarksRequestedForFile write FMarksRequestedForFile;
   private
     FInGlobalUpdate: Integer;
     FModified: boolean;
@@ -477,6 +479,7 @@ type
     function IsActiveOnNoteBook: boolean;
 
     // debugging
+    procedure DoRequestExecutionMarks(Data: PtrInt);
     procedure FillExecutionMarks;
     procedure ClearExecutionMarks;
     procedure LineInfoNotificationChange(const ASender: TObject; const ASource: String);
@@ -2526,6 +2529,7 @@ end;
 
 destructor TSourceEditor.Destroy;
 begin
+  Application.RemoveAsyncCalls(Self);
   if FInEditorChangedUpdating then begin
     debugln(['***** TSourceEditor.Destroy: FInEditorChangedUpdating was true']);
     DebugBoss.UnLockCommandProcessing;
@@ -4938,6 +4942,11 @@ begin
     Result:=false;
 end;
 
+procedure TSourceEditor.DoRequestExecutionMarks(Data: PtrInt);
+begin
+  DebugBoss.LineInfo.Request(FSharedValues.MarksRequestedForFile);
+end;
+
 procedure TSourceEditor.FillExecutionMarks;
 var
   ASource: String;
@@ -4954,12 +4963,14 @@ begin
     if not FSharedValues.MarksRequested then
     begin
       FSharedValues.MarksRequested := True;
+      FSharedValues.MarksRequestedForFile := ASource;
       DebugBoss.LineInfo.AddNotification(FLineInfoNotification);
-      DebugBoss.LineInfo.Request(ASource);
+      Application.QueueAsyncCall(@DoRequestExecutionMarks, 0);
     end;
     Exit;
   end;
 
+  FSharedValues.MarksRequestedForFile := '';
   j := -1;
   EditorComponent.IDEGutterMarks.BeginSetDebugMarks;
   try
@@ -4988,6 +4999,7 @@ procedure TSourceEditor.ClearExecutionMarks;
 var
   i: Integer;
 begin
+  FSharedValues.MarksRequestedForFile := '';
   EditorComponent.IDEGutterMarks.ClearDebugMarks;
   FSharedValues.MarksRequested := False;
   for i := 0 to SharedEditorCount - 1 do
@@ -4998,8 +5010,10 @@ end;
 
 procedure TSourceEditor.LineInfoNotificationChange(const ASender: TObject; const ASource: String);
 begin
-  if ASource = FileName then
+  if ASource = FileName then begin
+    Application.RemoveAsyncCalls(Self);
     FillExecutionMarks;
+  end;
 end;
 
 function TSourceEditor.SourceToDebugLine(aLinePos: Integer): Integer;
