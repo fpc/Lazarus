@@ -3895,6 +3895,12 @@ examples/groupbox.lpi svneol=native#text/plain
 examples/groupbox.pp svneol=native#text/pascal
 examples/groupboxnested.lpi svneol=native#text/plain
 examples/groupboxnested.pas svneol=native#text/pascal
+examples/groupedcontrol/EditButtonDemo.lpi svneol=native#text/plain
+examples/groupedcontrol/EditButtonDemo.lpr svneol=native#text/plain
+examples/groupedcontrol/EditButtonDemo.res -text
+examples/groupedcontrol/editbuttonunit1.lfm svneol=native#text/plain
+examples/groupedcontrol/editbuttonunit1.pas svneol=native#text/plain
+examples/groupedcontrol/groupedctrls.pas svneol=native#text/plain
 examples/hello.lpi svneol=native#text/plain
 examples/hello.pp svneol=native#text/pascal
 examples/helloform.pp svneol=native#text/pascal
