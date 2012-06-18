@@ -7736,6 +7736,10 @@ msgstr ""
 msgid "Editor file types"
 msgstr ""
 
+#: lazarusidestrconsts.liseditormacros
+msgid "Editor macros"
+msgstr ""
+
 #: lazarusidestrconsts.liseditorwindowmanager
 msgid "Editor Window Manager"
 msgstr ""
@@ -11186,6 +11190,10 @@ msgstr "Skoč na predchádzajúcu chybu"
 msgid "Lowercase Selection"
 msgstr "Výber na malé písmená"
 
+#: lazarusidestrconsts.lismenumacrolistview
+msgid "Editor Macros ..."
+msgstr ""
+
 #: lazarusidestrconsts.lismenumakeresourcestring
 msgid "Make Resource String ..."
 msgstr "Vytvoriť ResourceString ..."
@@ -12015,6 +12023,10 @@ msgstr "Nové kódovanie:"
 
 #: lazarusidestrconsts.lisnewgroupasetofmodes
 msgid "New group - a set of modes"
+msgstr ""
+
+#: lazarusidestrconsts.lisnewmacroname
+msgid "Macro %d"
 msgstr ""
 
 #: lazarusidestrconsts.lisnewproject
@@ -14414,6 +14426,10 @@ msgstr "Chyba čítania"
 msgid "Recent tabs"
 msgstr ""
 
+#: lazarusidestrconsts.lisrecordedmacros
+msgid "Recorded Macros"
+msgstr ""
+
 #: lazarusidestrconsts.lisrecordstruct
 msgid "Record/Structure"
 msgstr "Záznam/Štruktúra"
@@ -14505,6 +14521,10 @@ msgstr ""
 msgctxt "lazarusidestrconsts.lisrename"
 msgid "Rename"
 msgstr "Premenovať"
+
+#: lazarusidestrconsts.lisrename2
+msgid "Rename ..."
+msgstr ""
 
 #: lazarusidestrconsts.lisrenamefile
 msgid "Rename file?"
@@ -18465,6 +18485,10 @@ msgstr "Zobraziť Editor ukotvenia"
 #: lazarusidestrconsts.srkmecviewcomponents
 msgid "View components"
 msgstr "Zobraziť komponenty"
+
+#: lazarusidestrconsts.srkmecvieweditormacros
+msgid "View editor macros"
+msgstr ""
 
 #: lazarusidestrconsts.srkmecviewforms
 msgid "View forms"

@@ -7762,6 +7762,10 @@ msgstr ""
 msgid "Editor file types"
 msgstr ""
 
+#: lazarusidestrconsts.liseditormacros
+msgid "Editor macros"
+msgstr ""
+
 #: lazarusidestrconsts.liseditorwindowmanager
 msgid "Editor Window Manager"
 msgstr ""
@@ -11214,6 +11218,10 @@ msgstr "跳到前一个错误"
 msgid "Lowercase Selection"
 msgstr "转换选区为小写"
 
+#: lazarusidestrconsts.lismenumacrolistview
+msgid "Editor Macros ..."
+msgstr ""
+
 #: lazarusidestrconsts.lismenumakeresourcestring
 msgid "Make Resource String ..."
 msgstr "制作资源字符串 ..."
@@ -12045,6 +12053,10 @@ msgstr "新的编码:"
 
 #: lazarusidestrconsts.lisnewgroupasetofmodes
 msgid "New group - a set of modes"
+msgstr ""
+
+#: lazarusidestrconsts.lisnewmacroname
+msgid "Macro %d"
 msgstr ""
 
 #: lazarusidestrconsts.lisnewproject
@@ -14444,6 +14456,10 @@ msgstr "读取错误"
 msgid "Recent tabs"
 msgstr ""
 
+#: lazarusidestrconsts.lisrecordedmacros
+msgid "Recorded Macros"
+msgstr ""
+
 #: lazarusidestrconsts.lisrecordstruct
 msgid "Record/Structure"
 msgstr "记录/结构"
@@ -14535,6 +14551,10 @@ msgstr ""
 msgctxt "lazarusidestrconsts.lisrename"
 msgid "Rename"
 msgstr "重命名"
+
+#: lazarusidestrconsts.lisrename2
+msgid "Rename ..."
+msgstr ""
 
 #: lazarusidestrconsts.lisrenamefile
 msgid "Rename file?"
@@ -18501,6 +18521,10 @@ msgstr "查看锚编辑器"
 #: lazarusidestrconsts.srkmecviewcomponents
 msgid "View components"
 msgstr "查看组件"
+
+#: lazarusidestrconsts.srkmecvieweditormacros
+msgid "View editor macros"
+msgstr ""
 
 #: lazarusidestrconsts.srkmecviewforms
 msgid "View forms"

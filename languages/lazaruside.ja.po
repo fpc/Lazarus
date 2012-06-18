@@ -7831,6 +7831,10 @@ msgstr "ヘルプを編集"
 msgid "Editor file types"
 msgstr "ファイル型を編集"
 
+#: lazarusidestrconsts.liseditormacros
+msgid "Editor macros"
+msgstr ""
+
 #: lazarusidestrconsts.liseditorwindowmanager
 msgid "Editor Window Manager"
 msgstr "エディタウィンドウマネージャー"
@@ -11313,6 +11317,10 @@ msgstr "前のエラーへ移動"
 msgid "Lowercase Selection"
 msgstr "選択部を小文字化"
 
+#: lazarusidestrconsts.lismenumacrolistview
+msgid "Editor Macros ..."
+msgstr ""
+
 #: lazarusidestrconsts.lismenumakeresourcestring
 msgid "Make Resource String ..."
 msgstr "リソース文字列作成 ..."
@@ -12163,6 +12171,10 @@ msgstr "新しいエンコーディング:"
 #: lazarusidestrconsts.lisnewgroupasetofmodes
 msgid "New group - a set of modes"
 msgstr "新しいグループ - １セットのモード"
+
+#: lazarusidestrconsts.lisnewmacroname
+msgid "Macro %d"
+msgstr ""
 
 #: lazarusidestrconsts.lisnewproject
 #, fuzzy
@@ -14569,6 +14581,10 @@ msgstr "読み取りエラー"
 msgid "Recent tabs"
 msgstr "最近のタブ"
 
+#: lazarusidestrconsts.lisrecordedmacros
+msgid "Recorded Macros"
+msgstr ""
+
 #: lazarusidestrconsts.lisrecordstruct
 msgid "Record/Structure"
 msgstr "構造体"
@@ -14660,6 +14676,10 @@ msgstr "ユニットパスを削除しますか？"
 msgctxt "lazarusidestrconsts.lisrename"
 msgid "Rename"
 msgstr "名前の変更"
+
+#: lazarusidestrconsts.lisrename2
+msgid "Rename ..."
+msgstr ""
 
 #: lazarusidestrconsts.lisrenamefile
 msgid "Rename file?"
@@ -18640,6 +18660,10 @@ msgstr "アンカーエディタを表示"
 #: lazarusidestrconsts.srkmecviewcomponents
 msgid "View components"
 msgstr "コンポーネントを表示"
+
+#: lazarusidestrconsts.srkmecvieweditormacros
+msgid "View editor macros"
+msgstr ""
 
 #: lazarusidestrconsts.srkmecviewforms
 msgid "View forms"

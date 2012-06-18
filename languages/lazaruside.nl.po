@@ -7683,6 +7683,10 @@ msgstr ""
 msgid "Editor file types"
 msgstr ""
 
+#: lazarusidestrconsts.liseditormacros
+msgid "Editor macros"
+msgstr ""
+
 #: lazarusidestrconsts.liseditorwindowmanager
 msgid "Editor Window Manager"
 msgstr ""
@@ -11073,6 +11077,10 @@ msgstr "Spring naar vorige fout"
 msgid "Lowercase Selection"
 msgstr "Wijzig selectie in kleine letters"
 
+#: lazarusidestrconsts.lismenumacrolistview
+msgid "Editor Macros ..."
+msgstr ""
+
 #: lazarusidestrconsts.lismenumakeresourcestring
 msgid "Make Resource String ..."
 msgstr "Maak Resource string ..."
@@ -11890,6 +11898,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lisnewgroupasetofmodes
 msgid "New group - a set of modes"
+msgstr ""
+
+#: lazarusidestrconsts.lisnewmacroname
+msgid "Macro %d"
 msgstr ""
 
 #: lazarusidestrconsts.lisnewproject
@@ -14275,6 +14287,10 @@ msgstr "Leesfout"
 msgid "Recent tabs"
 msgstr ""
 
+#: lazarusidestrconsts.lisrecordedmacros
+msgid "Recorded Macros"
+msgstr ""
+
 #: lazarusidestrconsts.lisrecordstruct
 msgid "Record/Structure"
 msgstr ""
@@ -14364,6 +14380,10 @@ msgstr ""
 msgctxt "lazarusidestrconsts.lisrename"
 msgid "Rename"
 msgstr "Hernoemen"
+
+#: lazarusidestrconsts.lisrename2
+msgid "Rename ..."
+msgstr ""
 
 #: lazarusidestrconsts.lisrenamefile
 msgid "Rename file?"
@@ -18301,6 +18321,10 @@ msgstr "Toon anker bewerker"
 
 #: lazarusidestrconsts.srkmecviewcomponents
 msgid "View components"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecvieweditormacros
+msgid "View editor macros"
 msgstr ""
 
 #: lazarusidestrconsts.srkmecviewforms

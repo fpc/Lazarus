@@ -7696,6 +7696,10 @@ msgstr "Hilfe bearbeiten"
 msgid "Editor file types"
 msgstr "Editor-Dateitypen"
 
+#: lazarusidestrconsts.liseditormacros
+msgid "Editor macros"
+msgstr ""
+
 #: lazarusidestrconsts.liseditorwindowmanager
 msgid "Editor Window Manager"
 msgstr "Editor-Fenstermanager"
@@ -11090,6 +11094,10 @@ msgstr "Zum vorherigen Fehler springen"
 msgid "Lowercase Selection"
 msgstr "Auswahl kleinschreiben"
 
+#: lazarusidestrconsts.lismenumacrolistview
+msgid "Editor Macros ..."
+msgstr ""
+
 #: lazarusidestrconsts.lismenumakeresourcestring
 msgid "Make Resource String ..."
 msgstr "Ressourcenstring erzeugen ..."
@@ -11891,6 +11899,10 @@ msgstr "Neue Kodierung:"
 #: lazarusidestrconsts.lisnewgroupasetofmodes
 msgid "New group - a set of modes"
 msgstr "Neue Gruppe - eine Menge von Modi"
+
+#: lazarusidestrconsts.lisnewmacroname
+msgid "Macro %d"
+msgstr ""
 
 #: lazarusidestrconsts.lisnewproject
 #| msgid "%s - (new project)"
@@ -14274,6 +14286,10 @@ msgstr "Lesefehler"
 msgid "Recent tabs"
 msgstr ""
 
+#: lazarusidestrconsts.lisrecordedmacros
+msgid "Recorded Macros"
+msgstr ""
+
 #: lazarusidestrconsts.lisrecordstruct
 msgid "Record/Structure"
 msgstr "Record/Struktur"
@@ -14364,6 +14380,10 @@ msgstr "Unit-Pfad entfernen?"
 msgctxt "lazarusidestrconsts.lisrename"
 msgid "Rename"
 msgstr "Umbenennen"
+
+#: lazarusidestrconsts.lisrename2
+msgid "Rename ..."
+msgstr ""
 
 #: lazarusidestrconsts.lisrenamefile
 msgid "Rename file?"
@@ -18298,6 +18318,10 @@ msgstr "Ankereditor anzeigen"
 #: lazarusidestrconsts.srkmecviewcomponents
 msgid "View components"
 msgstr "Komponenten anzeigen"
+
+#: lazarusidestrconsts.srkmecvieweditormacros
+msgid "View editor macros"
+msgstr ""
 
 #: lazarusidestrconsts.srkmecviewforms
 msgid "View forms"

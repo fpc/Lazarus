@@ -7599,6 +7599,10 @@ msgstr "Змінити довідку"
 msgid "Editor file types"
 msgstr "Файлові типи Редактора"
 
+#: lazarusidestrconsts.liseditormacros
+msgid "Editor macros"
+msgstr ""
+
 #: lazarusidestrconsts.liseditorwindowmanager
 msgid "Editor Window Manager"
 msgstr "Диспетчер Вікна Редактора"
@@ -10941,6 +10945,10 @@ msgstr "Перейти до попер. помилки"
 msgid "Lowercase Selection"
 msgstr "Вибір в нижньому регістрі"
 
+#: lazarusidestrconsts.lismenumacrolistview
+msgid "Editor Macros ..."
+msgstr ""
+
 #: lazarusidestrconsts.lismenumakeresourcestring
 msgid "Make Resource String ..."
 msgstr "Створити рядок ресурсу ..."
@@ -11708,6 +11716,10 @@ msgstr "Нове кодування:"
 #: lazarusidestrconsts.lisnewgroupasetofmodes
 msgid "New group - a set of modes"
 msgstr "Нова група - набір режимів"
+
+#: lazarusidestrconsts.lisnewmacroname
+msgid "Macro %d"
+msgstr ""
 
 #: lazarusidestrconsts.lisnewproject
 msgid "(new project)"
@@ -14063,6 +14075,10 @@ msgstr "Помилка читання"
 msgid "Recent tabs"
 msgstr "Недавні вкладки"
 
+#: lazarusidestrconsts.lisrecordedmacros
+msgid "Recorded Macros"
+msgstr ""
+
 #: lazarusidestrconsts.lisrecordstruct
 msgid "Record/Structure"
 msgstr "Запис/Структура"
@@ -14152,6 +14168,10 @@ msgstr "Видалити шлях до модуля?"
 msgctxt "lazarusidestrconsts.lisrename"
 msgid "Rename"
 msgstr "Перейменувати"
+
+#: lazarusidestrconsts.lisrename2
+msgid "Rename ..."
+msgstr ""
 
 #: lazarusidestrconsts.lisrenamefile
 msgid "Rename file?"
@@ -18049,6 +18069,10 @@ msgstr "Показувати редактор прив'язок"
 #: lazarusidestrconsts.srkmecviewcomponents
 msgid "View components"
 msgstr "Переглянути компоненти"
+
+#: lazarusidestrconsts.srkmecvieweditormacros
+msgid "View editor macros"
+msgstr ""
 
 #: lazarusidestrconsts.srkmecviewforms
 msgid "View forms"

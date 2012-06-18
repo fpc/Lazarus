@@ -7459,6 +7459,10 @@ msgstr ""
 msgid "Editor file types"
 msgstr "Editorin tiedostojen tyypit"
 
+#: lazarusidestrconsts.liseditormacros
+msgid "Editor macros"
+msgstr ""
+
 #: lazarusidestrconsts.liseditorwindowmanager
 msgid "Editor Window Manager"
 msgstr ""
@@ -10732,6 +10736,10 @@ msgstr "Hyppää edelliseen virheeseen"
 msgid "Lowercase Selection"
 msgstr "Valinta pieniksi kirjaimiksi"
 
+#: lazarusidestrconsts.lismenumacrolistview
+msgid "Editor Macros ..."
+msgstr ""
+
 #: lazarusidestrconsts.lismenumakeresourcestring
 msgid "Make Resource String ..."
 msgstr ""
@@ -11452,6 +11460,10 @@ msgstr "Uusi merkistö:"
 
 #: lazarusidestrconsts.lisnewgroupasetofmodes
 msgid "New group - a set of modes"
+msgstr ""
+
+#: lazarusidestrconsts.lisnewmacroname
+msgid "Macro %d"
 msgstr ""
 
 #: lazarusidestrconsts.lisnewproject
@@ -13791,6 +13803,10 @@ msgstr "Lukuvirhe"
 msgid "Recent tabs"
 msgstr ""
 
+#: lazarusidestrconsts.lisrecordedmacros
+msgid "Recorded Macros"
+msgstr ""
+
 #: lazarusidestrconsts.lisrecordstruct
 msgid "Record/Structure"
 msgstr ""
@@ -13880,6 +13896,10 @@ msgstr "Poista käännösyksikön polku?"
 msgctxt "lazarusidestrconsts.lisrename"
 msgid "Rename"
 msgstr "Nimeä uudelleen"
+
+#: lazarusidestrconsts.lisrename2
+msgid "Rename ..."
+msgstr ""
 
 #: lazarusidestrconsts.lisrenamefile
 msgid "Rename file?"
@@ -17736,6 +17756,10 @@ msgstr "Näytä ankkurointi-editori"
 #: lazarusidestrconsts.srkmecviewcomponents
 msgid "View components"
 msgstr "Näytä komponentit"
+
+#: lazarusidestrconsts.srkmecvieweditormacros
+msgid "View editor macros"
+msgstr ""
 
 #: lazarusidestrconsts.srkmecviewforms
 msgid "View forms"

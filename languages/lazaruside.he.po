@@ -7798,6 +7798,10 @@ msgstr ""
 msgid "Editor file types"
 msgstr "סוגי הקבצים של העורך"
 
+#: lazarusidestrconsts.liseditormacros
+msgid "Editor macros"
+msgstr ""
+
 #: lazarusidestrconsts.liseditorwindowmanager
 msgid "Editor Window Manager"
 msgstr ""
@@ -11274,6 +11278,10 @@ msgstr "קפוץ אל השגיאה הקודמת"
 msgid "Lowercase Selection"
 msgstr "בחירת אותיות קטנות"
 
+#: lazarusidestrconsts.lismenumacrolistview
+msgid "Editor Macros ..."
+msgstr ""
+
 #: lazarusidestrconsts.lismenumakeresourcestring
 msgid "Make Resource String ..."
 msgstr "צור מחרוזת משאבים ..."
@@ -12116,6 +12124,10 @@ msgstr "קידוד חדש:"
 #: lazarusidestrconsts.lisnewgroupasetofmodes
 msgid "New group - a set of modes"
 msgstr "קבוצה חדשה - ערכת סגנונות"
+
+#: lazarusidestrconsts.lisnewmacroname
+msgid "Macro %d"
+msgstr ""
 
 #: lazarusidestrconsts.lisnewproject
 #, fuzzy
@@ -14526,6 +14538,10 @@ msgstr "שגיאת קריאה"
 msgid "Recent tabs"
 msgstr ""
 
+#: lazarusidestrconsts.lisrecordedmacros
+msgid "Recorded Macros"
+msgstr ""
+
 #: lazarusidestrconsts.lisrecordstruct
 msgid "Record/Structure"
 msgstr "רשומה/מבנה נתונים"
@@ -14617,6 +14633,10 @@ msgstr "להסיר נתיב היחידות ?"
 msgctxt "lazarusidestrconsts.lisrename"
 msgid "Rename"
 msgstr "שנה שם"
+
+#: lazarusidestrconsts.lisrename2
+msgid "Rename ..."
+msgstr ""
 
 #: lazarusidestrconsts.lisrenamefile
 msgid "Rename file?"
@@ -18605,6 +18625,10 @@ msgstr "הצג את עורך המעגנים"
 #: lazarusidestrconsts.srkmecviewcomponents
 msgid "View components"
 msgstr "הצג רכיבים"
+
+#: lazarusidestrconsts.srkmecvieweditormacros
+msgid "View editor macros"
+msgstr ""
 
 #: lazarusidestrconsts.srkmecviewforms
 msgid "View forms"

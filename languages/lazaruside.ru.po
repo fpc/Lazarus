@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2012-06-17 23:32+0400\n"
+"PO-Revision-Date: 2012-06-19 01:12+0400\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -7680,6 +7680,10 @@ msgstr "Редактировать справку"
 msgid "Editor file types"
 msgstr "Типы файлов редактора"
 
+#: lazarusidestrconsts.liseditormacros
+msgid "Editor macros"
+msgstr "Макросы редактора"
+
 #: lazarusidestrconsts.liseditorwindowmanager
 msgid "Editor Window Manager"
 msgstr "Управление вкладками редактора"
@@ -9961,11 +9965,11 @@ msgstr "Показать локальные переменные"
 
 #: lazarusidestrconsts.liskmtoggleviewmessages
 msgid "Toggle view Messages"
-msgstr "Показывать окно сообщений"
+msgstr "Показать окно сообщений"
 
 #: lazarusidestrconsts.liskmtoggleviewobjectinspector
 msgid "Toggle view Object Inspector"
-msgstr "Показывать инспектор объектов"
+msgstr "Показать инспектор объектов"
 
 #: lazarusidestrconsts.liskmtoggleviewpseudoterminal
 #| msgid "Toggle view Terminal Output"
@@ -11063,6 +11067,10 @@ msgstr "Перейти к предыдущей ошибке"
 msgid "Lowercase Selection"
 msgstr "Нижний регистр выделенного"
 
+#: lazarusidestrconsts.lismenumacrolistview
+msgid "Editor Macros ..."
+msgstr "Макросы редактора ..."
+
 #: lazarusidestrconsts.lismenumakeresourcestring
 msgid "Make Resource String ..."
 msgstr "Создать строку ресурсов ..."
@@ -11856,6 +11864,10 @@ msgstr "Новая кодировка:"
 #: lazarusidestrconsts.lisnewgroupasetofmodes
 msgid "New group - a set of modes"
 msgstr "Новая группа - набор режимов"
+
+#: lazarusidestrconsts.lisnewmacroname
+msgid "Macro %d"
+msgstr "Макрос %d"
 
 #: lazarusidestrconsts.lisnewproject
 #| msgid "%s - (new project)"
@@ -14227,6 +14239,10 @@ msgstr "Ошибка чтения"
 msgid "Recent tabs"
 msgstr "Недавние вкладки"
 
+#: lazarusidestrconsts.lisrecordedmacros
+msgid "Recorded Macros"
+msgstr "Записанные макросы"
+
 #: lazarusidestrconsts.lisrecordstruct
 msgid "Record/Structure"
 msgstr "Запись/Структура"
@@ -14316,6 +14332,10 @@ msgstr "Удалить путь к модулям?"
 msgctxt "lazarusidestrconsts.lisrename"
 msgid "Rename"
 msgstr "Переименовать"
+
+#: lazarusidestrconsts.lisrename2
+msgid "Rename ..."
+msgstr "Переименовать ..."
 
 #: lazarusidestrconsts.lisrenamefile
 msgid "Rename file?"
@@ -18246,6 +18266,10 @@ msgstr "Показать редактор привязок"
 #: lazarusidestrconsts.srkmecviewcomponents
 msgid "View components"
 msgstr "Показать список компонентов"
+
+#: lazarusidestrconsts.srkmecvieweditormacros
+msgid "View editor macros"
+msgstr "Показать макросы редактора"
 
 #: lazarusidestrconsts.srkmecviewforms
 msgid "View forms"

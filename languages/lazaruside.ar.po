@@ -7473,6 +7473,10 @@ msgstr ""
 msgid "Editor file types"
 msgstr ""
 
+#: lazarusidestrconsts.liseditormacros
+msgid "Editor macros"
+msgstr ""
+
 #: lazarusidestrconsts.liseditorwindowmanager
 msgid "Editor Window Manager"
 msgstr ""
@@ -10731,6 +10735,10 @@ msgstr ""
 msgid "Lowercase Selection"
 msgstr ""
 
+#: lazarusidestrconsts.lismenumacrolistview
+msgid "Editor Macros ..."
+msgstr ""
+
 #: lazarusidestrconsts.lismenumakeresourcestring
 msgid "Make Resource String ..."
 msgstr ""
@@ -11460,6 +11468,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lisnewgroupasetofmodes
 msgid "New group - a set of modes"
+msgstr ""
+
+#: lazarusidestrconsts.lisnewmacroname
+msgid "Macro %d"
 msgstr ""
 
 #: lazarusidestrconsts.lisnewproject
@@ -13787,6 +13799,10 @@ msgstr ""
 msgid "Recent tabs"
 msgstr ""
 
+#: lazarusidestrconsts.lisrecordedmacros
+msgid "Recorded Macros"
+msgstr ""
+
 #: lazarusidestrconsts.lisrecordstruct
 msgid "Record/Structure"
 msgstr ""
@@ -13874,6 +13890,10 @@ msgstr ""
 msgctxt "lazarusidestrconsts.lisrename"
 msgid "Rename"
 msgstr "أبدل الإسم"
+
+#: lazarusidestrconsts.lisrename2
+msgid "Rename ..."
+msgstr ""
 
 #: lazarusidestrconsts.lisrenamefile
 msgid "Rename file?"
@@ -17735,6 +17755,10 @@ msgstr ""
 
 #: lazarusidestrconsts.srkmecviewcomponents
 msgid "View components"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecvieweditormacros
+msgid "View editor macros"
 msgstr ""
 
 #: lazarusidestrconsts.srkmecviewforms

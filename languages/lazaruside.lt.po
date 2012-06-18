@@ -7783,6 +7783,10 @@ msgstr ""
 msgid "Editor file types"
 msgstr ""
 
+#: lazarusidestrconsts.liseditormacros
+msgid "Editor macros"
+msgstr ""
+
 #: lazarusidestrconsts.liseditorwindowmanager
 msgid "Editor Window Manager"
 msgstr ""
@@ -11253,6 +11257,10 @@ msgstr "Šokti prie ankstesnės klaidos"
 msgid "Lowercase Selection"
 msgstr "Pažymėjime visas raides mažosiomis"
 
+#: lazarusidestrconsts.lismenumacrolistview
+msgid "Editor Macros ..."
+msgstr ""
+
 #: lazarusidestrconsts.lismenumakeresourcestring
 msgid "Make Resource String ..."
 msgstr "Kurti išteklių eilutę…"
@@ -12080,6 +12088,10 @@ msgstr "Nauja koduotė:"
 #: lazarusidestrconsts.lisnewgroupasetofmodes
 msgid "New group - a set of modes"
 msgstr "Nauja grupė – veiksenų rinkinys"
+
+#: lazarusidestrconsts.lisnewmacroname
+msgid "Macro %d"
+msgstr ""
 
 #: lazarusidestrconsts.lisnewproject
 #, fuzzy
@@ -14480,6 +14492,10 @@ msgstr "Skaitymo klaida"
 msgid "Recent tabs"
 msgstr ""
 
+#: lazarusidestrconsts.lisrecordedmacros
+msgid "Recorded Macros"
+msgstr ""
+
 #: lazarusidestrconsts.lisrecordstruct
 msgid "Record/Structure"
 msgstr "Įrašas/Struktūra"
@@ -14571,6 +14587,10 @@ msgstr ""
 msgctxt "lazarusidestrconsts.lisrename"
 msgid "Rename"
 msgstr "Pervadinti"
+
+#: lazarusidestrconsts.lisrename2
+msgid "Rename ..."
+msgstr ""
 
 #: lazarusidestrconsts.lisrenamefile
 msgid "Rename file?"
@@ -18559,6 +18579,10 @@ msgstr "Rodyti prieraišų rengyklę"
 #: lazarusidestrconsts.srkmecviewcomponents
 msgid "View components"
 msgstr "Rodyti komponentes"
+
+#: lazarusidestrconsts.srkmecvieweditormacros
+msgid "View editor macros"
+msgstr ""
 
 #: lazarusidestrconsts.srkmecviewforms
 msgid "View forms"

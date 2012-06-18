@@ -7515,6 +7515,10 @@ msgstr ""
 msgid "Editor file types"
 msgstr ""
 
+#: lazarusidestrconsts.liseditormacros
+msgid "Editor macros"
+msgstr ""
+
 #: lazarusidestrconsts.liseditorwindowmanager
 msgid "Editor Window Manager"
 msgstr ""
@@ -10899,6 +10903,10 @@ msgstr "Önceki hataya atla"
 msgid "Lowercase Selection"
 msgstr "Seçimi küçük harfe çevir"
 
+#: lazarusidestrconsts.lismenumacrolistview
+msgid "Editor Macros ..."
+msgstr ""
+
 #: lazarusidestrconsts.lismenumakeresourcestring
 msgid "Make Resource String ..."
 msgstr "Kaynak Dizisi Yap ..."
@@ -11714,6 +11722,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lisnewgroupasetofmodes
 msgid "New group - a set of modes"
+msgstr ""
+
+#: lazarusidestrconsts.lisnewmacroname
+msgid "Macro %d"
 msgstr ""
 
 #: lazarusidestrconsts.lisnewproject
@@ -14057,6 +14069,10 @@ msgstr "Okuma Hatası"
 msgid "Recent tabs"
 msgstr ""
 
+#: lazarusidestrconsts.lisrecordedmacros
+msgid "Recorded Macros"
+msgstr ""
+
 #: lazarusidestrconsts.lisrecordstruct
 msgid "Record/Structure"
 msgstr ""
@@ -14145,6 +14161,10 @@ msgstr ""
 #: lazarusidestrconsts.lisrename
 msgctxt "lazarusidestrconsts.lisrename"
 msgid "Rename"
+msgstr ""
+
+#: lazarusidestrconsts.lisrename2
+msgid "Rename ..."
 msgstr ""
 
 #: lazarusidestrconsts.lisrenamefile
@@ -18021,6 +18041,10 @@ msgstr ""
 
 #: lazarusidestrconsts.srkmecviewcomponents
 msgid "View components"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecvieweditormacros
+msgid "View editor macros"
 msgstr ""
 
 #: lazarusidestrconsts.srkmecviewforms

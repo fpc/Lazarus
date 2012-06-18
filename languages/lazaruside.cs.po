@@ -7460,6 +7460,10 @@ msgstr "Upravit nápovědu"
 msgid "Editor file types"
 msgstr "Typy souborů editoru"
 
+#: lazarusidestrconsts.liseditormacros
+msgid "Editor macros"
+msgstr ""
+
 #: lazarusidestrconsts.liseditorwindowmanager
 msgid "Editor Window Manager"
 msgstr "Návrhář správce oken"
@@ -10716,6 +10720,10 @@ msgstr "Skočit na předchozí chybu"
 msgid "Lowercase Selection"
 msgstr "Změnit výběr na malá písmena"
 
+#: lazarusidestrconsts.lismenumacrolistview
+msgid "Editor Macros ..."
+msgstr ""
+
 #: lazarusidestrconsts.lismenumakeresourcestring
 msgid "Make Resource String ..."
 msgstr "Vytvořit zdrojový řetězec..."
@@ -11440,6 +11448,10 @@ msgstr "Nové kódování:"
 #: lazarusidestrconsts.lisnewgroupasetofmodes
 msgid "New group - a set of modes"
 msgstr "Nová skupina - sada režimů"
+
+#: lazarusidestrconsts.lisnewmacroname
+msgid "Macro %d"
+msgstr ""
 
 #: lazarusidestrconsts.lisnewproject
 msgid "(new project)"
@@ -13760,6 +13772,10 @@ msgstr "Chyba čtení"
 msgid "Recent tabs"
 msgstr "Poslední listy"
 
+#: lazarusidestrconsts.lisrecordedmacros
+msgid "Recorded Macros"
+msgstr ""
+
 #: lazarusidestrconsts.lisrecordstruct
 msgid "Record/Structure"
 msgstr "Záznam/Struktura"
@@ -13847,6 +13863,10 @@ msgstr "Odstranit cestu jednotek?"
 msgctxt "lazarusidestrconsts.lisrename"
 msgid "Rename"
 msgstr "Přejmenování"
+
+#: lazarusidestrconsts.lisrename2
+msgid "Rename ..."
+msgstr ""
 
 #: lazarusidestrconsts.lisrenamefile
 msgid "Rename file?"
@@ -17701,6 +17721,10 @@ msgstr "Zobrazit editor kotev"
 #: lazarusidestrconsts.srkmecviewcomponents
 msgid "View components"
 msgstr "Zobrazit komponenty"
+
+#: lazarusidestrconsts.srkmecvieweditormacros
+msgid "View editor macros"
+msgstr ""
 
 #: lazarusidestrconsts.srkmecviewforms
 msgid "View forms"
