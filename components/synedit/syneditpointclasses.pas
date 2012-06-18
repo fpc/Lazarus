@@ -1664,7 +1664,7 @@ procedure TSynEditScreenCaret.DestroyCaret(SkipHide: boolean = False);
 begin
   if FCurrentCreated and HandleAllocated then begin
     {$IFDeF SynCaretDebug}
-    debugln(['SynEditCaret DestroyCaret for HandleOwner=',FHandleOwner, ' DebugShowCount=', FDebugShowCount]);
+    debugln(['SynEditCaret DestroyCaret for HandleOwner=',FHandleOwner, ' DebugShowCount=', FDebugShowCount, ' FVisible=', FVisible, ' FCurrentVisible=', FCurrentVisible]);
     {$ENDIF}
     LCLIntf.DestroyCaret(Handle);
   end;
@@ -1914,11 +1914,17 @@ begin
   end;
   if (not FCurrentVisible) then begin
     {$IFDeF SynCaretDebug}
-    debugln(['SynEditCaret ShowCaret for HandleOwner=',FHandleOwner, ' FDebugShowCount=',FDebugShowCount]);
+    debugln(['SynEditCaret ShowCaret for HandleOwner=',FHandleOwner, ' FDebugShowCount=',FDebugShowCount, ' FVisible=', FVisible, ' FCurrentVisible=', FCurrentVisible]);
     inc(FDebugShowCount);
     {$ENDIF}
     if LCLIntf.ShowCaret(Handle) then
-      FCurrentVisible := True;
+      FCurrentVisible := True
+    else begin
+      {$IFDeF SynCaretDebug}
+      debugln(['SynEditCaret ShowCaret FAILED for HandleOwner=',FHandleOwner, ' FDebugShowCount=',FDebugShowCount]);
+      {$ENDIF}
+      DestroyCaret(True);
+    end;
   end;
 end;
 
@@ -1929,11 +1935,17 @@ begin
   if not FCurrentCreated then exit;
   if FCurrentVisible then begin
     {$IFDeF SynCaretDebug}
-    debugln(['SynEditCaret HideCaret for HandleOwner=',FHandleOwner, ' FDebugShowCount=',FDebugShowCount]);
+    debugln(['SynEditCaret HideCaret for HandleOwner=',FHandleOwner, ' FDebugShowCount=',FDebugShowCount, ' FVisible=', FVisible, ' FCurrentVisible=', FCurrentVisible]);
     dec(FDebugShowCount);
     {$ENDIF}
     if LCLIntf.HideCaret(Handle) then
-      FCurrentVisible := False;
+      FCurrentVisible := False
+    else begin
+      {$IFDeF SynCaretDebug}
+      debugln(['SynEditCaret HideCaret FAILED for HandleOwner=',FHandleOwner, ' FDebugShowCount=',FDebugShowCount]);
+      {$ENDIF}
+      DestroyCaret(True);
+    end;
   end;
 end;
 
