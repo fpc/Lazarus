@@ -249,7 +249,7 @@ type
     procedure CutToClipBoard; override;
     procedure PasteFromClipBoard; override;
     { Required methods }
-    constructor Create(Aowner : TComponent); override;
+    constructor Create(TheOwner : TComponent); override;
     procedure Clear;
     procedure ValidateEdit; virtual;
     property Text: TCaption read GetText write SetText;
@@ -431,9 +431,9 @@ end;
 
 
 // Create object
-constructor TCustomMaskEdit.Create(Aowner : TComponent);
+constructor TCustomMaskEdit.Create(TheOwner: TComponent);
 begin
-  Inherited Create(Aowner);
+  Inherited Create(TheOwner);
   FRealMask      := '';
   FMask          := '';
   FSpaceChar     := '_';
