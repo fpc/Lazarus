@@ -24,7 +24,7 @@ type
     procedure FormCreate(Sender: TObject);
   private
   public
-    GrpEditButton1: TNewEditButton;
+    GrpEditButton1: TGroupedEditButton;
   end;
 
 var
@@ -38,7 +38,7 @@ implementation
 
 procedure TForm1.FormCreate(Sender: TObject);
 begin
-  GrpEditButton1:=TNewEditButton.Create(Self);
+  GrpEditButton1:=TGroupedEditButton.Create(Self);
   GrpEditButton1.Name:='GrpEditButton1';
   GrpEditButton1.Caption:='';
   GrpEditButton1.Left:=10;

@@ -79,9 +79,9 @@ type
     property OnUnDock;
   end;
 
-  { TNewCustomEditButton }
+  { TCustomGroupedEditButton }
 
-  TNewCustomEditButton = class(TCustomTransparentPanel)
+  TCustomGroupedEditButton = class(TCustomTransparentPanel)
   private
     FButton: TSpeedButton;
     FButtonNeedsFocus: Boolean;
@@ -163,7 +163,7 @@ type
     property AutoSize default true;
   end;
 
-  TNewEditButton = class(TNewCustomEditButton)
+  TGroupedEditButton = class(TCustomGroupedEditButton)
   public
     property Button;
     property Edit: TMaskEdit;
@@ -233,95 +233,95 @@ begin
   BevelInner := bvNone;
 end;
 
-{ TNewCustomEditButton }
+{ TCustomGroupedEditButton }
 
-procedure TNewCustomEditButton.DoButtonClick(Sender: TObject);
+procedure TCustomGroupedEditButton.DoButtonClick(Sender: TObject);
 begin
   if (not ReadOnly) and Assigned(FOnButtonClick) then
     FOnButtonClick(Self);
 end;
 
-function TNewCustomEditButton.GetButtonHint: TTranslateString;
+function TCustomGroupedEditButton.GetButtonHint: TTranslateString;
 begin
   Result:=Button.Hint;
 end;
 
-function TNewCustomEditButton.GetAutoSelect: Boolean;
+function TCustomGroupedEditButton.GetAutoSelect: Boolean;
 begin
   Result:=Edit.AutoSelect;
 end;
 
-function TNewCustomEditButton.GetButtonWidth: Integer;
+function TCustomGroupedEditButton.GetButtonWidth: Integer;
 begin
   Result:=Button.Width;
 end;
 
-function TNewCustomEditButton.GetCharCase: TEditCharCase;
+function TCustomGroupedEditButton.GetCharCase: TEditCharCase;
 begin
   Result:=Edit.CharCase;
 end;
 
-function TNewCustomEditButton.GetEditDragCursor: TCursor;
+function TCustomGroupedEditButton.GetEditDragCursor: TCursor;
 begin
   Result:=Edit.DragCursor;
 end;
 
-function TNewCustomEditButton.GetEditDragMode: TDragMode;
+function TCustomGroupedEditButton.GetEditDragMode: TDragMode;
 begin
   Result:=Edit.DragMode;
 end;
 
-function TNewCustomEditButton.GetEchoMode: TEchoMode;
+function TCustomGroupedEditButton.GetEchoMode: TEchoMode;
 begin
   Result:=Edit.EchoMode;
 end;
 
-function TNewCustomEditButton.GetEditColor: TColor;
+function TCustomGroupedEditButton.GetEditColor: TColor;
 begin
   Result:=Edit.Color;
 end;
 
-function TNewCustomEditButton.GetEditText: string;
+function TCustomGroupedEditButton.GetEditText: string;
 begin
   Result:=Edit.Text;
 end;
 
-function TNewCustomEditButton.GetFlat: Boolean;
+function TCustomGroupedEditButton.GetFlat: Boolean;
 begin
   Result:=Button.Flat;
 end;
 
-function TNewCustomEditButton.GetGlyph: TBitmap;
+function TCustomGroupedEditButton.GetGlyph: TBitmap;
 begin
   Result:=Button.Glyph;
 end;
 
-function TNewCustomEditButton.GetMaxLength: Integer;
+function TCustomGroupedEditButton.GetMaxLength: Integer;
 begin
   Result:=Edit.MaxLength;
 end;
 
-function TNewCustomEditButton.GetNumGlyphs: Integer;
+function TCustomGroupedEditButton.GetNumGlyphs: Integer;
 begin
   Result:=Button.NumGlyphs;
 end;
 
-function TNewCustomEditButton.GetOnChange: TNotifyEvent;
+function TCustomGroupedEditButton.GetOnChange: TNotifyEvent;
 begin
   Result:=Edit.OnChange;
 end;
 
-function TNewCustomEditButton.GetPasswordChar: Char;
+function TCustomGroupedEditButton.GetPasswordChar: Char;
 begin
   Result:=Edit.PasswordChar;
 end;
 
-function TNewCustomEditButton.GetReadOnly: boolean;
+function TCustomGroupedEditButton.GetReadOnly: boolean;
 begin
   Result:=Edit.ReadOnly;
 end;
 
-function TNewCustomEditButton.IsCustomGlyph: Boolean;
+function TCustomGroupedEditButton.IsCustomGlyph: Boolean;
 
   function _LoadRes: TBitmap;
   var
@@ -374,46 +374,46 @@ begin
   end;
 end;
 
-procedure TNewCustomEditButton.SetAutoSelect(AValue: Boolean);
+procedure TCustomGroupedEditButton.SetAutoSelect(AValue: Boolean);
 begin
   Edit.AutoSelect:=AValue;
 end;
 
-procedure TNewCustomEditButton.SetButtonHint(AValue: TTranslateString);
+procedure TCustomGroupedEditButton.SetButtonHint(AValue: TTranslateString);
 begin
   Button.Hint:=AValue;
 end;
 
-procedure TNewCustomEditButton.SetButtonNeedsFocus(AValue: Boolean);
+procedure TCustomGroupedEditButton.SetButtonNeedsFocus(AValue: Boolean);
 begin
   if FButtonNeedsFocus=AValue then Exit;
   FButtonNeedsFocus:=AValue;
   CheckButtonVisible;
 end;
 
-procedure TNewCustomEditButton.SetButtonWidth(AValue: Integer);
+procedure TCustomGroupedEditButton.SetButtonWidth(AValue: Integer);
 begin
   Button.Width:=AValue;
 end;
 
-procedure TNewCustomEditButton.SetCharCase(AValue: TEditCharCase);
+procedure TCustomGroupedEditButton.SetCharCase(AValue: TEditCharCase);
 begin
   Edit.CharCase:=AValue;
 end;
 
-procedure TNewCustomEditButton.SetDirectInput(AValue: Boolean);
+procedure TCustomGroupedEditButton.SetDirectInput(AValue: Boolean);
 begin
   // ToDo
   FDirectInput := AValue;
   //Edit.ReadOnly:=((not FDirectInput) or (FIsReadOnly))
 end;
 
-procedure TNewCustomEditButton.SetEditDragCursor(AValue: TCursor);
+procedure TCustomGroupedEditButton.SetEditDragCursor(AValue: TCursor);
 begin
   Edit.DragCursor:=AValue;
 end;
 
-procedure TNewCustomEditButton.SetBiDiMode(AValue: TBiDiMode);
+procedure TCustomGroupedEditButton.SetBiDiMode(AValue: TBiDiMode);
 begin
   if BiDiMode=AValue then exit;
   DisableAutoSizing;
@@ -425,75 +425,75 @@ begin
   end;
 end;
 
-procedure TNewCustomEditButton.SetEchoMode(AValue: TEchoMode);
+procedure TCustomGroupedEditButton.SetEchoMode(AValue: TEchoMode);
 begin
   Edit.EchoMode:=AValue;
 end;
 
-procedure TNewCustomEditButton.SetEditColor(AValue: TColor);
+procedure TCustomGroupedEditButton.SetEditColor(AValue: TColor);
 begin
   Edit.Color:=AValue;
 end;
 
-procedure TNewCustomEditButton.SetEditDragMode(AValue: TDragMode);
+procedure TCustomGroupedEditButton.SetEditDragMode(AValue: TDragMode);
 begin
   Edit.DragMode:=AValue;
 end;
 
-procedure TNewCustomEditButton.SetEditText(AValue: string);
+procedure TCustomGroupedEditButton.SetEditText(AValue: string);
 begin
   Edit.Text:=AValue;
 end;
 
-procedure TNewCustomEditButton.SetFlat(AValue: Boolean);
+procedure TCustomGroupedEditButton.SetFlat(AValue: Boolean);
 begin
   Button.Flat:=AValue;
 end;
 
-procedure TNewCustomEditButton.SetGlyph(AValue: TBitmap);
+procedure TCustomGroupedEditButton.SetGlyph(AValue: TBitmap);
 begin
   Button.Glyph:=AValue;
 end;
 
-procedure TNewCustomEditButton.SetMaxLength(AValue: Integer);
+procedure TCustomGroupedEditButton.SetMaxLength(AValue: Integer);
 begin
   Edit.MaxLength:=AValue;
 end;
 
-procedure TNewCustomEditButton.SetNumGlyphs(AValue: Integer);
+procedure TCustomGroupedEditButton.SetNumGlyphs(AValue: Integer);
 begin
   Button.NumGlyphs:=AValue;
 end;
 
-procedure TNewCustomEditButton.SetOnChange(const AValue: TNotifyEvent);
+procedure TCustomGroupedEditButton.SetOnChange(const AValue: TNotifyEvent);
 begin
   Edit.OnChange:=AValue;
 end;
 
-procedure TNewCustomEditButton.SetPasswordChar(AValue: Char);
+procedure TCustomGroupedEditButton.SetPasswordChar(AValue: Char);
 begin
   Edit.PasswordChar:=AValue;
 end;
 
-procedure TNewCustomEditButton.SetReadOnly(AValue: boolean);
+procedure TCustomGroupedEditButton.SetReadOnly(AValue: boolean);
 begin
   Edit.ReadOnly:=AValue;
   Button.Enabled:=not AValue;
 end;
 
-function TNewCustomEditButton.CalcButtonVisible: boolean;
+function TCustomGroupedEditButton.CalcButtonVisible: boolean;
 begin
   Result := (csdesigning in ComponentState) or
             (IsVisible and (Focused or not FButtonNeedsFocus));
 end;
 
-procedure TNewCustomEditButton.CheckButtonVisible;
+procedure TCustomGroupedEditButton.CheckButtonVisible;
 begin
   if Assigned(Button) then
     Button.Visible:=CalcButtonVisible;
 end;
 
-procedure TNewCustomEditButton.AnchorEditAndButton;
+procedure TCustomGroupedEditButton.AnchorEditAndButton;
 begin
   DisableAutoSizing;
   try
@@ -517,23 +517,23 @@ begin
   end;
 end;
 
-function TNewCustomEditButton.GetDefaultGlyph: TBitmap;
+function TCustomGroupedEditButton.GetDefaultGlyph: TBitmap;
 begin
   Result:=nil;
 end;
 
-function TNewCustomEditButton.GetDefaultGlyphName: String;
+function TCustomGroupedEditButton.GetDefaultGlyphName: String;
 begin
   Result:='';
 end;
 
-procedure TNewCustomEditButton.Loaded;
+procedure TCustomGroupedEditButton.Loaded;
 begin
   inherited Loaded;
   CheckButtonVisible;
 end;
 
-constructor TNewCustomEditButton.Create(TheOwner: TComponent);
+constructor TCustomGroupedEditButton.Create(TheOwner: TComponent);
 var
   aGlyph: TBitmap;
 begin
@@ -563,7 +563,7 @@ begin
   AnchorEditAndButton;
 end;
 
-destructor TNewCustomEditButton.Destroy;
+destructor TCustomGroupedEditButton.Destroy;
 begin
   FreeAndNil(FButton);
   FreeAndNil(FEdit);
