@@ -96,6 +96,7 @@ type
     function GetEditDragMode: TDragMode;
     function GetEchoMode: TEchoMode;
     function GetEditColor: TColor;
+    function GetEditText: string;
     function GetFlat: Boolean;
     function GetGlyph: TBitmap;
     function GetMaxLength: Integer;
@@ -114,6 +115,7 @@ type
     procedure SetEchoMode(AValue: TEchoMode);
     procedure SetEditColor(AValue: TColor);
     procedure SetEditDragMode(AValue: TDragMode);
+    procedure SetEditText(AValue: string);
     procedure SetFlat(AValue: Boolean);
     procedure SetGlyph(AValue: TBitmap);
     procedure SetMaxLength(AValue: Integer);
@@ -144,6 +146,7 @@ type
     property DragCursor: TCursor read GetEditDragCursor write SetEditDragCursor;
     property DragMode: TDragMode read GetEditDragMode write SetEditDragMode;
     property Color: TColor read GetEditColor write SetEditColor default {$ifdef UseCLDefault}clDefault{$else}clWindow{$endif};
+    property Text: string read GetEditText write SetEditText;
   protected
     // button
     property Button: TSpeedButton read FButton;
@@ -177,7 +180,7 @@ type
     property ButtonHint;
     property CharCase;
     property Color;
-    property DirectInput;
+    property DirectInput; // ToDo
     property DragCursor;
     property DragMode;
     property EchoMode;
@@ -276,6 +279,11 @@ end;
 function TNewCustomEditButton.GetEditColor: TColor;
 begin
   Result:=Edit.Color;
+end;
+
+function TNewCustomEditButton.GetEditText: string;
+begin
+  Result:=Edit.Text;
 end;
 
 function TNewCustomEditButton.GetFlat: Boolean;
@@ -430,6 +438,11 @@ end;
 procedure TNewCustomEditButton.SetEditDragMode(AValue: TDragMode);
 begin
   Edit.DragMode:=AValue;
+end;
+
+procedure TNewCustomEditButton.SetEditText(AValue: string);
+begin
+  Edit.Text:=AValue;
 end;
 
 procedure TNewCustomEditButton.SetFlat(AValue: Boolean);
