@@ -452,6 +452,7 @@ type
   TLMSysChar = TLMKey;
   TLMSysKeyDown = TLMKey;
   TLMSysKeyUp = TLMKey;
+  TCMWantSpecialKey = TLMKey;
 
 
   TLMCut = TLMNoParams;
