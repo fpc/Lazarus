@@ -1315,7 +1315,8 @@ type
   TGDBMIDisassembler = class(TDBGDisassembler)
   private
     FDisassembleEvalCmdObj: TGDBMIDebuggerCommandDisassembe;
-    FLastExecAddr: TDBGPtr;
+    FLastExecAddr, FCancelledAddr: TDBGPtr;
+    FIsCancelled: Boolean;
     procedure DoDisassembleExecuted(Sender: TObject);
     procedure DoDisassembleProgress(Sender: TObject);
     procedure DoDisassembleDestroyed(Sender: TObject);
@@ -2751,13 +2752,18 @@ end;
 
 procedure TGDBMIDisassembler.DoDisassembleProgress(Sender: TObject);
 begin
-  Changed;;
+  Changed;
 end;
 
 procedure TGDBMIDisassembler.DoDisassembleExecuted(Sender: TObject);
 begin
   // Results were added from inside the TGDBMIDebuggerCommandDisassembe object
   FLastExecAddr := TGDBMIDebuggerCommandDisassembe(Sender).StartAddr;
+  if dcsCanceled in TGDBMIDebuggerCommandDisassembe(Sender).SeenStates then begin
+    // TODO: fill a block of data with "canceled" info
+    FIsCancelled := True;
+    FCancelledAddr := TGDBMIDebuggerCommandDisassembe(Sender).StartAddr;
+  end;
   FDisassembleEvalCmdObj := nil;
   Changed;
 end;
@@ -2770,6 +2776,9 @@ begin
   Result := False;
   if (Debugger = nil) or not(Debugger.State in [dsPause, dsInternalPause])
   then exit;
+  if FIsCancelled and (FCancelledAddr = AnAddr) then
+    exit;
+
 
   if (FDisassembleEvalCmdObj <> nil)
   then begin
@@ -2852,6 +2861,7 @@ end;
 
 procedure TGDBMIDisassembler.Clear;
 begin
+  FIsCancelled := False;
   inherited Clear;
   if FDisassembleEvalCmdObj <> nil
   then begin
@@ -3358,9 +3368,19 @@ function TGDBMIDebuggerCommandDisassembe.DoExecute: Boolean;
     // we can only do that, if we know the offset of firstaddr (limit to DAssRangeOverFuncTreshold avg lines, should be enough)
     // TODO: limit offset ONLY, if previous range known (already have disass)
     if (AFirstAddr.Offset >= 0)
-    then DisAssListWithSrc := ExecDisassmble
-          (AFirstAddr.Value - Min(AFirstAddr.Offset, DAssRangeOverFuncTreshold * DAssBytesPerCommandAvg),
-           ALastAddr.Value, True);
+    then begin
+      TmpAddr := AFirstAddr.Value - Min(AFirstAddr.Offset, DAssRangeOverFuncTreshold * DAssBytesPerCommandAvg);
+      DisAssListWithSrc := ExecDisassmble(TmpAddr, ALastAddr.Value, True);
+    end;
+
+    if (DisAssListWithSrc <> nil) and (DisAssListWithSrc.Count > 0) and DisAssListWithSrc.HasSourceInfo
+    then begin
+      DisAssListWithSrc.SortByAddress;
+      // gdb may return data far out of range.
+      if (DisAssListWithSrc.LastItem^.Addr < TmpAddr) and
+         (TmpAddr - DisAssListWithSrc.LastItem^.Addr > DAssMaxRangeSize)
+      then FreeAndNil(DisAssListWithSrc);
+    end;
 
     if (DisAssListWithSrc <> nil) and (DisAssListWithSrc.Count > 0) and DisAssListWithSrc.HasSourceInfo
     then begin
@@ -3369,7 +3389,7 @@ function TGDBMIDebuggerCommandDisassembe.DoExecute: Boolean;
          ***
       *)
       Result := True;
-      DisAssListWithSrc.SortByAddress;
+      //DisAssListWithSrc.SortByAddress;
       if DisAssListWithSrc.Item[0]^.Addr > AFirstAddr.Value
       then begin
         // fill in gap at start
