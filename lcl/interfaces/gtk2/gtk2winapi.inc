@@ -5703,7 +5703,9 @@ begin
       end;
     SM_CXICON,
     SM_CYICON:
-      Result := 32;
+      // big icon size
+      // gtk recommends sizes 16,32,48. optional: 64 and 128
+      Result := 128;
     SM_CXICONSPACING:
       begin
         //DebugLn('Trace:TODO: [TGtk2WidgetSet.GetSystemMetrics] --> SM_CXICONSPACING    ');
@@ -5826,6 +5828,8 @@ begin
       end;
     SM_CXSMICON,
     SM_CYSMICON:
+      // small icon size
+      // gtk recommends sizes 16,32,48. optional: 64 and 128
       Result := 16;
     SM_CXSMSIZE:
       begin

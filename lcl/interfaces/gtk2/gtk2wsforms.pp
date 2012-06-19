@@ -32,8 +32,8 @@ uses
   {$IFDEF HASX}
   Gdk2x, X, XLib,
   {$ENDIF}
-  Classes, LCLType, Controls, LMessages, InterfaceBase,
-  Graphics,Forms, Math, WSForms, WSProc,
+  Math, types, Classes, LazLogger, LCLType, Controls, LMessages, InterfaceBase,
+  Graphics, Forms, WSForms, WSProc,
   Gtk2Int, Gtk2Proc, Gtk2Def, Gtk2Extra, Gtk2Globals, Gtk2WSControls;
 
 type
@@ -462,6 +462,15 @@ class procedure TGtk2WSCustomForm.SetIcon(const AForm: TCustomForm;
   const Small, Big: HICON);
 var
   List: PGList;
+  {$IFDEF EnableGtk2WndIconList}
+  Icon: TIcon;
+  CurSize: Integer;
+  i: Integer;
+  LastIndex: Integer;
+  OldChange: TNotifyEvent;
+  OldCurrent: Integer;
+  IconHnd: HICON;
+  {$ENDIF}
 begin
   if not WSCheckHandleAllocated(AForm, 'SetIcon')
   then Exit;
@@ -469,10 +478,39 @@ begin
   if (AForm.Parent <> nil) or (AForm.ParentWindow <> 0) then Exit;
 
   List := nil;
+  {$IFDEF EnableGtk2WndIconList}
+  //debugln(['TGtk2WSCustomForm.SetIcon Form=',DbgSName(AForm)]);
+  Icon:=AForm.Icon;
+  if (Icon=nil) or Icon.Empty then
+    Icon:=Application.Icon;
+  if Assigned(Icon) and not Icon.Empty then
+  begin
+    CurSize:=16;
+    OldChange:=Icon.OnChange;
+    OldCurrent:=Icon.Current;
+    Icon.OnChange := nil;
+    LastIndex:=-1;
+    while CurSize<=256 do begin
+      i:=Icon.GetBestIndexForSize(Size(CurSize,CurSize));
+      if (i>=0) and (LastIndex<>i) then begin
+        Icon.Current := i;
+        IconHnd:=Icon.ReleaseHandle;
+        if IconHnd <> 0 then
+          List := g_list_append(List, {%H-}PGdkPixbuf(IconHnd));
+        //debugln(['TGtk2WSCustomForm.SetIcon adding ',CurSize]);
+        LastIndex:=i;
+      end;
+      CurSize:=CurSize*2;
+    end;
+    Icon.Current:=OldCurrent;
+    Icon.OnChange:=OldChange;
+  end;
+  {$ELSE}
   if Small <> 0 then
     List := g_list_append(List, {%H-}PGdkPixbuf(Small));
   if Big <> 0 then
     List := g_list_append(List, {%H-}PGdkPixbuf(Big));
+  {$ENDIF}
   gtk_window_set_icon_list({%H-}PGtkWindow(AForm.Handle), List);
   if List <> nil
   then  g_list_free(List);

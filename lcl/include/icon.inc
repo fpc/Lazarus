@@ -1331,6 +1331,7 @@ begin
 end;
 
 function TIcon.ReleaseHandle: HICON;
+// simply return the current handle and set to 0 without freeing handles
 begin
   HandleNeeded;
   Result := FSharedImage.ReleaseHandle;
