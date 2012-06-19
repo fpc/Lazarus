@@ -667,7 +667,7 @@ public class LCLActivity extends Activity implements SensorEventListener, Locati
   //
   public void LCLDoShowListViewDialog(String ATitle, String[] AItems, String[] ASubItems)
   {
-    Dialog dialog = new Dialog(this);
+    final Dialog dialog = new Dialog(this);
 
     ListView lListView = new ListView(this);
     List<LCL_ListViewItem> listItems = new ArrayList<LCL_ListViewItem>();
@@ -741,7 +741,7 @@ public class LCLActivity extends Activity implements SensorEventListener, Locati
   {
     private List<LCL_ListViewItem> Items;
     // Colors to alternate
-    private int[] colors = new int[] { 0xffffffff, 0xff808080 };
+    private int[] colors = new int[] { 0xff292C29, 0xff424542 };
 
     @SuppressWarnings("unchecked") public LCL_ListViewAdapter(
       Context context,
@@ -758,11 +758,15 @@ public class LCLActivity extends Activity implements SensorEventListener, Locati
     {
       View view = super.getView(position, convertView, parent);
 
-      //int colorPos = position % colors.length;
-      //view.setBackgroundColor(colors[colorPos]);
+      int colorPos = position % colors.length;
+      view.setBackgroundColor(colors[colorPos]);
       return view;
     }
   }
+
+  // -------------------------------------------
+  // End of the helper classes of LCLDoShowListViewDialog
+  // -------------------------------------------
 
   // -------------------------------------------
   // Fields exported to the Pascal side for easier data communication
