@@ -3319,6 +3319,8 @@ begin
       HelpBoss.ShowHelpForMessage(-1)
     else if Sender is TObjectInspectorDlg then
       HelpBoss.ShowHelpForObjectInspector(Sender);
+  ecEditContextHelp:
+    ShowContextHelpEditor(Sender);
 
   ecSave:
     if (Sender is TDesigner) then begin
