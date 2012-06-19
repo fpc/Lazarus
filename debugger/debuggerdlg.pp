@@ -455,7 +455,8 @@ var
 begin
   Command := EditorOpts.KeyMap.TranslateKey(Key,Shift,TDebuggerDlg);
 
-  if Assigned(OnProcessCommand) and (Command <> ecNone)
+  if Assigned(OnProcessCommand) and (Command <> ecNone) and
+     (Command <> ecContextHelp) and(Command <> ecEditContextHelp)
   then begin
     OnProcessCommand(Self,Command,Handled);
     Key := 0;
