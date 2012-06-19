@@ -88,6 +88,7 @@ type
 
 var
   OnShowSelectItemDialogResult: TOnShowSelectItemDialogResult = nil;
+  OnListViewDialogResult: TOnShowSelectItemDialogResult = nil; // -1 in the position indicates the dialog was cancelled
 
   OpenURLWidgetsetImplementation: TOpenParamStringProc = nil;
   OpenDocumentWidgetsetImplementation: TOpenParamStringProc = nil;

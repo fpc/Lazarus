@@ -126,6 +126,7 @@ begin
   0: if Assigned(Application.OnMessageDialogFinished) then
        Application.OnMessageDialogFinished(Application, AResult);
   1: if Assigned(OnShowSelectItemDialogResult) then OnShowSelectItemDialogResult(AResult);
+  2: if Assigned(OnListViewDialogResult) then OnListViewDialogResult(AResult);
   end;
 end;
 

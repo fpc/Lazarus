@@ -659,6 +659,111 @@ public class LCLActivity extends Activity implements SensorEventListener, Locati
     });
   }
 
+  // This method allows us to use the native Android ListView in a dialog
+  // It is nice for choosing a line in a table with multiple columns of information
+  // The extra columns appear as sub-info in the Android ListView
+  //
+  // output: Calls LCLOnMessageBoxFinished which will call LCLIntf.OnListViewDialogResult
+  //
+  public void LCLDoShowListViewDialog(String ATitle, String[] AItems, String[] ASubItems)
+  {
+    Dialog dialog = new Dialog(this);
+
+    ListView lListView = new ListView(this);
+    List<LCL_ListViewItem> listItems = new ArrayList<LCL_ListViewItem>();
+    for (int i = 0; i < AItems.length; i++)
+    {
+      listItems.add(new LCL_ListViewItem(AItems[i], ASubItems[i]));
+    };
+    LCL_ListViewAdapter listAdapter = new LCL_ListViewAdapter(
+      this,
+      listItems,
+      android.R.layout.simple_list_item_2,
+      new String[] { "title", "description" },
+      new int[] { android.R.id.text1, android.R.id.text2 });
+    lListView.setAdapter(listAdapter);
+    lListView.setClickable(true);
+    AdapterView.OnItemClickListener listviewClickListener = new AdapterView.OnItemClickListener()
+    {
+      @Override public void onItemClick(AdapterView<?> arg0, View arg1, int position, long arg3)
+      {
+        //Log.i("lclapp", "LCLDoPrepareSelectItemDialog.onClick");
+        LCLOnMessageBoxFinished(position, 2);
+        dialog.dismiss();
+      }
+    };
+    lListView.setOnItemClickListener(listviewClickListener);
+
+    DialogInterface.OnCancelListener dialogCancelListener = new DialogInterface.OnCancelListener()
+    {
+      @Override public void onCancel(DialogInterface dialog)
+      {
+        LCLOnMessageBoxFinished(-1, 2);
+      }
+    };
+    dialog.setOnCancelListener(dialogCancelListener);
+    dialog.setTitle(ATitle);
+    dialog.setContentView(lListView);
+    dialog.show();
+  }
+
+  //
+  // Classes for the ListView
+  //
+
+  //
+  // ListView item
+  //
+  public class LCL_ListViewItem extends HashMap<String, String>
+  {
+    public String Title;
+    public String Description;
+
+    public LCL_ListViewItem(String ATitle, String ADescription)
+    {
+      this.Title = ATitle;
+      this.Description = ADescription;
+    }
+
+    @Override public String get(Object k)
+    {
+      String key = (String) k;
+      if (key.equals("title")) return Title;
+      else if (key.equals("description")) return Description;
+      return null;
+    }
+  }
+
+  //
+  // Adapter class for the ListView
+  //
+  public class LCL_ListViewAdapter extends SimpleAdapter
+  {
+    private List<LCL_ListViewItem> Items;
+    // Colors to alternate
+    private int[] colors = new int[] { 0xffffffff, 0xff808080 };
+
+    @SuppressWarnings("unchecked") public LCL_ListViewAdapter(
+      Context context,
+      List<? extends Map<String, String>> AItems,
+      int resource,
+      String[] from,
+      int[] to)
+    {
+      super(context, AItems, resource, from, to);
+      this.Items = (List<LCL_ListViewItem>) Items;
+    }
+
+    @Override public View getView(int position, View convertView, ViewGroup parent)
+    {
+      View view = super.getView(position, convertView, parent);
+
+      //int colorPos = position % colors.length;
+      //view.setBackgroundColor(colors[colorPos]);
+      return view;
+    }
+  }
+
   // -------------------------------------------
   // Fields exported to the Pascal side for easier data communication
   // -------------------------------------------

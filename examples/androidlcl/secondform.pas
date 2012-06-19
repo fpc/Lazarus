@@ -19,6 +19,7 @@ type
     btnGetPos: TButton;
     btnSendSMS: TButton;
     Button2: TButton;
+    Button3: TButton;
     textDest: TEdit;
     textBody: TEdit;
     Image1: TImage;
@@ -31,6 +32,7 @@ type
     procedure btnStopAccelClick(Sender: TObject);
     procedure btnGetPosClick(Sender: TObject);
     procedure Button2Click(Sender: TObject);
+    procedure Button3Click(Sender: TObject);
     procedure textDestExit(Sender: TObject);
     procedure textDestKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure textDestKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);
@@ -95,6 +97,13 @@ var
   lStr: string;
 begin
   lStr := Form1.LoadHTMLPageViaJNI('http://magnifier.sourceforge.net/');
+end;
+
+procedure TForm2.Button3Click(Sender: TObject);
+begin
+  Form1.ShowListViewDialog('Dialog Title',
+    ['Title1', 'Title2', 'Title3', 'Title4', 'Title5', 'Title6'],
+    ['Descr1', 'Descr2', 'Descr3', 'Descr4', 'Descr5', 'Descr6']);
 end;
 
 procedure TForm2.textDestExit(Sender: TObject);

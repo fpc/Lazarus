@@ -1,10 +1,10 @@
 object Form2: TForm2
   Left = 138
-  Height = 259
+  Height = 266
   Top = 247
   Width = 320
   Caption = 'Form2'
-  ClientHeight = 259
+  ClientHeight = 266
   ClientWidth = 320
   LCLVersion = '1.1'
   object Button1: TButton
@@ -31,7 +31,7 @@ object Form2: TForm2
   object Image1: TImage
     Left = 102
     Height = 138
-    Top = 64
+    Top = 96
     Width = 210
     Picture.Data = {
       07545069786D617044DA00002F2A2058504D202A2F0A73746174696320636861
@@ -1786,7 +1786,7 @@ object Form2: TForm2
   object btnStartAccel: TButton
     Left = 8
     Height = 25
-    Top = 216
+    Top = 232
     Width = 112
     Caption = 'Read Accel.'
     OnClick = btnStartAccelClick
@@ -1803,7 +1803,7 @@ object Form2: TForm2
   object btnStopAccel: TButton
     Left = 128
     Height = 25
-    Top = 216
+    Top = 232
     Width = 91
     Caption = 'Stop Accel.'
     OnClick = btnStopAccelClick
@@ -1812,7 +1812,7 @@ object Form2: TForm2
   object btnGetPos: TButton
     Left = 224
     Height = 25
-    Top = 216
+    Top = 232
     Width = 88
     Caption = 'Get Position'
     OnClick = btnGetPosClick
@@ -1859,5 +1859,14 @@ object Form2: TForm2
     Caption = 'Load HTML page'
     OnClick = Button2Click
     TabOrder = 7
+  end
+  object Button3: TButton
+    Left = 102
+    Height = 25
+    Top = 64
+    Width = 203
+    Caption = 'Show native ListView'
+    OnClick = Button3Click
+    TabOrder = 8
   end
 end

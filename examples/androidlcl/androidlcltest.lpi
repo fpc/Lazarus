@@ -119,7 +119,7 @@
         <PackageName Value="LCL"/>
       </Item1>
     </RequiredPackages>
-    <Units Count="4">
+    <Units Count="5">
       <Unit0>
         <Filename Value="androidlcltest.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -145,6 +145,10 @@
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="secondform"/>
       </Unit3>
+      <Unit4>
+        <Filename Value="android/AndroidManifest.xml"/>
+        <IsPartOfProject Value="True"/>
+      </Unit4>
     </Units>
   </ProjectOptions>
   <CompilerOptions>
