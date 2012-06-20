@@ -361,9 +361,42 @@ end;
 
 class procedure TWin32WSCustomTabControl.MovePage(const ATabControl: TCustomTabControl;
   const AChild: TCustomPage; const NewIndex: integer);
+var
+  Index: Integer;
+  TCI: TC_ITEM;
 begin
-  RemovePage(ATabControl, AChild.PageIndex);
-  AddPage(ATabControl,AChild,NewIndex);
+  if not ATabControl.ShowTabs then
+    Exit;
+
+  Index := AChild.PageIndex;
+  TCI.Mask := TCIF_IMAGE or TCIF_PARAM;
+  {$ifdef WindowsUnicodeSupport}
+  if UnicodeEnabledOS then
+    Windows.SendMessage(ATabControl.Handle, TCM_GETITEMW, Windows.WPARAM(Index), LParam(@TCI))
+  else
+    Windows.SendMessage(ATabControl.Handle, TCM_GETITEM, Windows.WPARAM(Index), LParam(@TCI));
+  {$else}
+  Windows.SendMessage(ATabControl.Handle, TCM_GETITEM, Windows.WPARAM(Index), LParam(@TCI));
+  {$endif}
+  Windows.SendMessage(ATabControl.Handle, TCM_DELETEITEM, Windows.WPARAM(Index), 0);
+  TCI.Mask := TCI.Mask or TCIF_TEXT;
+  {$ifdef WindowsUnicodeSupport}
+  if UnicodeEnabledOS then
+  begin
+    TCI.pszText := PChar(PWideChar(UTF8ToUTF16(AChild.Caption)));
+    Windows.SendMessage(ATabControl.Handle, TCM_INSERTITEMW, NewIndex, LPARAM(@TCI));
+  end
+  else
+  begin
+    TCI.pszText := PChar(Utf8ToAnsi(AChild.Caption));
+    Windows.SendMessage(ATabControl.Handle, TCM_INSERTITEM, NewIndex, LPARAM(@TCI));
+  end;
+  {$else}
+  TCI.pszText := PChar(AChild.Caption);
+  Windows.SendMessage(ATabControl.Handle, TCM_INSERTITEM, NewIndex, LPARAM(@TCI));
+  {$endif}
+  if LCLControlSizeNeedsUpdate(ATabControl, True) then
+    AdjustSizeTabControlPages(ATabControl);
 end;
 
 class procedure TWin32WSCustomTabControl.RemovePage(const ATabControl: TCustomTabControl;
