@@ -4943,6 +4943,12 @@ images/icons/cheetah.icns -text
 images/icons/cheetah.ico -text
 images/icons/lazarus.icns -text
 images/icons/lazarus.ico -text
+images/icons/lazarus128x128.png -text svneol=unset#image/png
+images/icons/lazarus16x16.png -text svneol=unset#image/png
+images/icons/lazarus256x256.png -text svneol=unset#image/png
+images/icons/lazarus32x32.png -text svneol=unset#image/png
+images/icons/lazarus48x48.png -text svneol=unset#image/png
+images/icons/lazarus64x64.png -text svneol=unset#image/png
 images/icons/lazarus_old.ico -text svneol=unset#image/x-icon
 images/icons/lazarus_orange.icns -text
 images/icons/lazarus_orange.ico -text
