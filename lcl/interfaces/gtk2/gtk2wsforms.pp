@@ -460,60 +460,93 @@ end;
 
 class procedure TGtk2WSCustomForm.SetIcon(const AForm: TCustomForm;
   const Small, Big: HICON);
-var
-  List: PGList;
-  {$IFDEF EnableGtk2WndIconList}
-  Icon: TIcon;
-  CurSize: Integer;
-  i: Integer;
-  LastIndex: Integer;
-  OldChange: TNotifyEvent;
-  OldCurrent: Integer;
-  IconHnd: HICON;
+
+  procedure SetSmallBigIcon;
+  var
+    List: PGList;
+  begin
+    List := nil;
+    if Small <> 0 then
+      List := g_list_append(List, {%H-}PGdkPixbuf(Small));
+    if Big <> 0 then
+      List := g_list_append(List, {%H-}PGdkPixbuf(Big));
+    gtk_window_set_icon_list({%H-}PGtkWindow(AForm.Handle), List);
+    if List <> nil
+    then  g_list_free(List);
+  end;
+
+  {$IFDEF Gtk2SetIconAll}
+  procedure SetAllIcons;
+  var
+    List: PGList;
+    Icon: TIcon;
+    CurSize: Integer;
+    i: Integer;
+    LastIndex: Integer;
+    OldChange: TNotifyEvent;
+    OldCurrent: Integer;
+    IconHnd: HICON;
+  begin
+    List := nil;
+    //debugln(['TGtk2WSCustomForm.SetIcon Form=',DbgSName(AForm)]);
+    Icon:=AForm.Icon;
+    if (Icon=nil) or Icon.Empty then
+      Icon:=Application.Icon;
+    if Assigned(Icon) and not Icon.Empty then
+    begin
+      CurSize:=16;
+      OldChange:=Icon.OnChange;
+      OldCurrent:=Icon.Current;
+      Icon.OnChange := nil;
+      LastIndex:=-1;
+      while CurSize<=256 do begin
+        i:=Icon.GetBestIndexForSize(Size(CurSize,CurSize));
+        if (i>=0) and (LastIndex<>i) then begin
+          Icon.Current := i;
+          IconHnd:=Icon.ReleaseHandle;
+          if IconHnd <> 0 then
+            List := g_list_append(List, {%H-}PGdkPixbuf(IconHnd));
+          //debugln(['TGtk2WSCustomForm.SetIcon adding ',CurSize]);
+          LastIndex:=i;
+        end;
+        CurSize:=CurSize*2;
+      end;
+      Icon.Current:=OldCurrent;
+      Icon.OnChange:=OldChange;
+    end;
+    gtk_window_set_icon_list({%H-}PGtkWindow(AForm.Handle), List);
+    if List <> nil
+    then  g_list_free(List);
+  end;
   {$ENDIF}
+
+  {$IFDEF Gtk2SetIconFile}
+  procedure SetIconFromFile;
+  var
+    Filename: String;
+  begin
+    Filename:='test128x128.png';
+    debugln(['SetIconFromFile filename=',Filename]);
+    gtk_window_set_icon_from_file({%H-}PGtkWindow(AForm.Handle),PGChar(Filename),null);
+    debugln(['SetIconFromFile prg name="',g_get_prgname,'"']);
+  end;
+  {$ENDIF}
+
 begin
   if not WSCheckHandleAllocated(AForm, 'SetIcon')
   then Exit;
 
   if (AForm.Parent <> nil) or (AForm.ParentWindow <> 0) then Exit;
 
-  List := nil;
-  {$IFDEF EnableGtk2WndIconList}
-  //debugln(['TGtk2WSCustomForm.SetIcon Form=',DbgSName(AForm)]);
-  Icon:=AForm.Icon;
-  if (Icon=nil) or Icon.Empty then
-    Icon:=Application.Icon;
-  if Assigned(Icon) and not Icon.Empty then
-  begin
-    CurSize:=16;
-    OldChange:=Icon.OnChange;
-    OldCurrent:=Icon.Current;
-    Icon.OnChange := nil;
-    LastIndex:=-1;
-    while CurSize<=256 do begin
-      i:=Icon.GetBestIndexForSize(Size(CurSize,CurSize));
-      if (i>=0) and (LastIndex<>i) then begin
-        Icon.Current := i;
-        IconHnd:=Icon.ReleaseHandle;
-        if IconHnd <> 0 then
-          List := g_list_append(List, {%H-}PGdkPixbuf(IconHnd));
-        //debugln(['TGtk2WSCustomForm.SetIcon adding ',CurSize]);
-        LastIndex:=i;
-      end;
-      CurSize:=CurSize*2;
-    end;
-    Icon.Current:=OldCurrent;
-    Icon.OnChange:=OldChange;
-  end;
+  {$IFDEF Gtk2SetIconAll}
+  SetAllIcons;
   {$ELSE}
-  if Small <> 0 then
-    List := g_list_append(List, {%H-}PGdkPixbuf(Small));
-  if Big <> 0 then
-    List := g_list_append(List, {%H-}PGdkPixbuf(Big));
+    {$IFDEF Gtk2SetIconFile}
+    SetIconFromFile;
+    {$ELSE}
+    SetSmallBigIcon;
+    {$ENDIF}
   {$ENDIF}
-  gtk_window_set_icon_list({%H-}PGtkWindow(AForm.Handle), List);
-  if List <> nil
-  then  g_list_free(List);
 end;
 
 class procedure TGtk2WSCustomForm.SetAlphaBlend(const ACustomForm: TCustomForm;
