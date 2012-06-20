@@ -323,8 +323,11 @@ It returns 0 if the codepoint can not be represented as a 1 to 4 byte UTF-8 sequ
       </element>
       <!-- function Visibility: default -->
       <element name="UTF8Pos">
-        <short/>
-        <descr/>
+        <short>Returns the character index, where the SearchForText starts in SearchInText</short>
+        <descr>Returns the character index, where the SearchForText starts in SearchInText.
+An optional StartPos can be given (as character index, not in byte).
+Returns 0 if not found.
+</descr>
         <errors/>
         <seealso/>
       </element>
@@ -723,6 +726,9 @@ It returns 0 if the codepoint can not be represented as a 1 to 4 byte UTF-8 sequ
     <element name="UTF8Trim"><short>Removes space at start and end</short><descr>It removes spaces, tabs, line breaks and control characters at start and end.
 Use Flags to only delete at start or only at end or to to not delete line breaks.
 Control characters are the unicode sets C0 and C1 and the left-to-right and right-to-left marks.</descr>
+      </element>
+    <element name="UTF8PosP"><short>Returns the position where SearchInText starts in SearchForText</short><descr>If not found it returns nil.
+Null characters #0 are treated as normal characters.</descr>
       </element>
     </module>
     <!-- LazUTF8 -->

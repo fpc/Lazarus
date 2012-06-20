@@ -50,6 +50,7 @@ uses
 type
   TSDFilenameQuality = (
     sddqInvalid,
+    sddqWrongMinorVersion,
     sddqWrongVersion,
     sddqIncomplete,
     sddqCompatible
@@ -700,6 +701,7 @@ begin
           if SrcVer<>FPCVer then
           begin
             Note:=Format(lisFoundVersionExpected, [SrcVer, FPCVer]);
+
             Result:=sddqWrongVersion;
             exit;
           end;

@@ -58,7 +58,9 @@ procedure UTF8FixBroken(P: PChar); overload;
 procedure UTF8FixBroken(var S: string); overload;
 function UTF8CharacterStrictLength(P: PChar): integer;
 function UTF8CStringToUTF8String(SourceStart: PChar; SourceLen: PtrInt) : string;
-function UTF8Pos(const SearchForText, SearchInText: string): PtrInt;
+function UTF8Pos(const SearchForText, SearchInText: string; StartPos: SizeInt = 1): PtrInt;
+function UTF8PosP(SearchForText: PChar; SearchForTextLen: SizeInt;
+  SearchInText: PChar; SearchInTextLen: SizeInt): PChar;
 function UTF8Copy(const s: string; StartCharIndex, CharCount: PtrInt): string;
 procedure UTF8Delete(var s: String; StartCharIndex, CharCount: PtrInt);
 procedure UTF8Insert(const source: String; var s: string; StartCharIndex: PtrInt);
@@ -472,8 +474,6 @@ end;
 
 { Len is the length in bytes of UTF8Str
   CharIndex is the position of the desired char (starting at 0), in chars
-
-  This function is similar to UTF8FindNearestCharStart
 }
 function UTF8CharStart(UTF8Str: PChar; Len, CharIndex: PtrInt): PChar;
 var
@@ -487,7 +487,7 @@ begin
       dec(CharIndex);
       inc(Result,CharLen);
     end;
-    if (CharIndex>0) or (Len<0) then
+    if (CharIndex<>0) or (Len<0) then
       Result:=nil;
   end;
 end;
@@ -674,16 +674,58 @@ begin
   SetLength(Result, Dest - PChar(Result));
 end;
 
-function UTF8Pos(const SearchForText, SearchInText: string): PtrInt;
+function UTF8Pos(const SearchForText, SearchInText: string;
+  StartPos: SizeInt = 1): PtrInt;
 // returns the character index, where the SearchForText starts in SearchInText
+// an optional StartPos can be given (in UTF-8 codepoints, not in byte)
+// returns 0 if not found
 var
-  p: LongInt;
+  i: SizeInt;
+  p: PChar;
+  StartPosP: PChar;
 begin
-  p:=System.Pos(SearchForText,SearchInText);
-  if p>0 then
-    Result:=UTF8Length(PChar(SearchInText),p-1)+1
-  else
-    Result:=0;
+  Result:=0;
+  if StartPos=1 then
+  begin
+    i:=System.Pos(SearchForText,SearchInText);
+    if i>0 then
+      Result:=UTF8Length(PChar(SearchInText),i-1)+1;
+  end
+  else if StartPos>1 then
+  begin
+    // skip
+    StartPosP:=UTF8CharStart(PChar(SearchInText),Length(SearchInText),StartPos-1);
+    if StartPosP=nil then exit;
+    // search
+    p:=UTF8PosP(PChar(SearchForText),length(SearchForText),
+                StartPosP,length(SearchInText)+PChar(SearchInText)-StartPosP);
+    // get UTF-8 position
+    if p=nil then exit;
+    Result:=StartPos+UTF8Length(StartPosP,p-StartPosP);
+  end;
+end;
+
+function UTF8PosP(SearchForText: PChar; SearchForTextLen: SizeInt;
+  SearchInText: PChar; SearchInTextLen: SizeInt): PChar;
+// returns the position where SearchInText starts in SearchForText
+// returns nil if not found
+var
+  p: SizeInt;
+begin
+  Result:=nil;
+  if (SearchForText=nil) or (SearchForTextLen=0) or (SearchInText=nil) then
+    exit;
+  while SearchInTextLen>0 do begin
+    p:=IndexByte(SearchInText^,SearchInTextLen,PByte(SearchForText)^);
+    if p<0 then exit;
+    inc(SearchInText,p);
+    dec(SearchInTextLen,p);
+    if SearchInTextLen<SearchForTextLen then exit;
+    if CompareMem(SearchInText,SearchForText,SearchForTextLen) then
+      exit(SearchInText);
+    inc(SearchInText);
+    dec(SearchInTextLen);
+  end;
 end;
 
 function UTF8Copy(const s: string; StartCharIndex, CharCount: PtrInt): string;
