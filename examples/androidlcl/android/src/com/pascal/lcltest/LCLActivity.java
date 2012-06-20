@@ -665,7 +665,8 @@ public class LCLActivity extends Activity implements SensorEventListener, Locati
   //
   // output: Calls LCLOnMessageBoxFinished which will call LCLIntf.OnListViewDialogResult
   //
-  public void LCLDoShowListViewDialog(String ATitle, String[] AItems, String[] ASubItems)
+  public void LCLDoShowListViewDialog(String ATitle, String[] AItems,
+    String[] ASubItems, int AColorOddRow, int AColorEvenRow)
   {
     final Dialog dialog = new Dialog(this);
 
@@ -681,6 +682,8 @@ public class LCLActivity extends Activity implements SensorEventListener, Locati
       android.R.layout.simple_list_item_2,
       new String[] { "title", "description" },
       new int[] { android.R.id.text1, android.R.id.text2 });
+    listAdapter.colors[0] = AColorOddRow;
+    listAdapter.colors[1] = AColorEvenRow;
     lListView.setAdapter(listAdapter);
     lListView.setClickable(true);
     AdapterView.OnItemClickListener listviewClickListener = new AdapterView.OnItemClickListener()
@@ -741,7 +744,7 @@ public class LCLActivity extends Activity implements SensorEventListener, Locati
   {
     private List<LCL_ListViewItem> Items;
     // Colors to alternate
-    private int[] colors = new int[] { 0xff292C29, 0xff424542 };
+    public int[] colors = new int[] { 0xff292C29, 0xff424542 };
 
     @SuppressWarnings("unchecked") public LCL_ListViewAdapter(
       Context context,

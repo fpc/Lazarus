@@ -199,6 +199,9 @@ type
     function DoOpenDocumentWidgetsetImplementation(APath: string): Boolean;
     function DoOpenAndroidURI(AURI: JObject; AMimeType: string): Boolean;
     function GetMimeTypeFromFileName(AFileName: string): string;
+    procedure ShowListViewDialog(ATitle: string; ATitles,
+      ADescriptions: array of string;
+      AColorOddRow: jint = $ff292C29; AColorEvenRow: jint = $ff424542);
     {$endif}
     {$ifdef CD_Cocoa}
     pool      : NSAutoreleasePool;

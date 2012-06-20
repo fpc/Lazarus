@@ -1095,6 +1095,51 @@ begin
   else Result := 'text/plain';
 end;
 
+procedure TCDWidgetSet.ShowListViewDialog(ATitle: string; ATitles,
+  ADescriptions: array of string;
+  AColorOddRow: jint = $ff292C29; AColorEvenRow: jint = $ff424542);
+var
+  javaClass_LCLActivity, javaClass_String: jclass;
+  javaMethod_LCLActivity_LCLDoShowListViewDialog: jmethodid;
+  javaString: jstring;
+  lParams: array[0..4] of JValue;
+  lNativeString: PChar;
+  i: Integer;
+begin
+  // Here we call this routine:
+  // public void LCLDoShowListViewDialog(String ATitle, String[] AItems, String[] ASubItems)
+  DebugLn(':>ShowListViewDialog');
+  // First call FindClass for all required classes
+  javaClass_LCLActivity := javaEnvRef^^.FindClass(javaEnvRef, 'com/pascal/lcltest/LCLActivity');
+  javaClass_String := javaEnvRef^^.FindClass(javaEnvRef, 'java/lang/String');
+
+  // Now all Method IDs
+  //DebugLn(':ShowListViewDialog 1');
+  javaMethod_LCLActivity_LCLDoShowListViewDialog := javaEnvRef^^.GetMethodID(javaEnvRef, javaClass_LCLACtivity,
+    'LCLDoShowListViewDialog',
+    '(Ljava/lang/String;[Ljava/lang/String;[Ljava/lang/String;II)V');
+
+  //DebugLn(':ShowListViewDialog 2');
+  // Create a new instance for the HTTP request object
+  // HttpGet javaRequest = new HttpGet();
+  lParams[0].l := javaEnvRef^^.NewStringUTF(javaEnvRef, PChar(ATitle));
+  lParams[1].l := javaEnvRef^^.NewObjectArray(javaEnvRef, Length(ATitles), javaClass_String, javaEnvRef^^.NewStringUTF(javaEnvRef, ''));
+  for i := 0 to Length(ATitles)-1 do
+    javaEnvRef^^.SetObjectArrayElement(javaEnvRef, lParams[1].l, i, javaEnvRef^^.NewStringUTF(javaEnvRef, PChar(ATitles[i])));
+  lParams[2].l := javaEnvRef^^.NewObjectArray(javaEnvRef, Length(ADescriptions), javaClass_String, javaEnvRef^^.NewStringUTF(javaEnvRef, ''));
+  for i := 0 to Length(ADescriptions)-1 do
+    javaEnvRef^^.SetObjectArrayElement(javaEnvRef, lParams[2].l, i, javaEnvRef^^.NewStringUTF(javaEnvRef, PChar(ADescriptions[i])));
+  lParams[3].i := AColorOddRow;
+  lParams[4].i := AColorEvenRow;
+  //
+  javaEnvRef^^.CallVoidMethodA(javaEnvRef, javaActivityObject,
+    javaMethod_LCLActivity_LCLDoShowListViewDialog, @lParams[0]);
+  javaEnvRef^^.DeleteLocalRef(javaEnvRef, lParams[0].l);
+  javaEnvRef^^.DeleteLocalRef(javaEnvRef, lParams[1].l);
+  javaEnvRef^^.DeleteLocalRef(javaEnvRef, lParams[2].l);
+  DebugLn(':<ShowListViewDialog END');
+end;
+
 function TCDWidgetSet.GetAppHandle: THandle;
 begin
   Result := 0;

@@ -2,6 +2,10 @@ unit secondform;
 
 {$mode objfpc}{$H+}
 
+{$ifdef Linux}{$ifdef CPUARM}
+  {$define Android}
+{$endif}{$endif}
+
 interface
 
 uses
@@ -52,7 +56,11 @@ var
 
 implementation
 
-uses TypInfo, mainform;
+uses
+  {$ifdef LCLCustomDrawn}
+  customdrawnint,
+  {$endif}
+  TypInfo, mainform;
 
 {$R *.lfm}
 
@@ -101,9 +109,11 @@ end;
 
 procedure TForm2.Button3Click(Sender: TObject);
 begin
-  Form1.ShowListViewDialog('Dialog Title',
+  {$ifdef Android}
+  CDWidgetSet.ShowListViewDialog('Dialog Title',
     ['Title1', 'Title2', 'Title3', 'Title4', 'Title5', 'Title6'],
     ['Descr1', 'Descr2', 'Descr3', 'Descr4', 'Descr5', 'Descr6']);
+  {$endif}
 end;
 
 procedure TForm2.textDestExit(Sender: TObject);
