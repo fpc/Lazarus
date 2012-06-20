@@ -808,6 +808,8 @@ resourcestring
   lisSeeMessages = 'See messages.';
   lisError = 'Error: ';
   lisWarning = 'Warning: ';
+  lisFile2 = 'File: ';
+  lisDirectory = 'Directory: ';
   lisSaveChanges = 'Save changes?';
   lisSaveFileBeforeClosingForm = 'Save file %s%s%s%sbefore closing form %s%s%s?';
   lisUnableToRenameFormInSource = 'Unable to rename form in source.';

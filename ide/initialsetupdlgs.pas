@@ -116,6 +116,7 @@ type
     fLastParsedFPCSrcDir: string;
     FIdleConnected: boolean;
     ImgIDError: LongInt;
+    ImgIDWarning: LongInt;
     FHeadGraphic: TPortableNetworkGraphic;
     FSelectingPage: boolean;
     FCandidates: array[TSDFilenameType] of TObjectList; // list of TSDFileInfo
@@ -134,6 +135,7 @@ type
     function GetFPCVer: string;
     function GetFirstCandidate(Candidates: TObjectList;
       MinQuality: TSDFilenameQuality = sddqCompatible): TSDFileInfo;
+    function QualityToImgIndex(Quality: TSDFilenameQuality): integer;
   public
     TVNodeLazarus: TTreeNode;
     TVNodeCompiler: TTreeNode;
@@ -701,8 +703,11 @@ begin
           if SrcVer<>FPCVer then
           begin
             Note:=Format(lisFoundVersionExpected, [SrcVer, FPCVer]);
-
-            Result:=sddqWrongVersion;
+            SrcVer:=VersionNr+'.'+ReleaseNr+'.';
+            if LeftStr(FPCVer,length(SrcVer))=SrcVer then
+              Result:=sddqWrongMinorVersion
+            else
+              Result:=sddqWrongVersion;
             exit;
           end;
         except
@@ -1101,6 +1106,7 @@ begin
   TVNodeCompiler:=PropertiesTreeView.Items.Add(nil,CompilerTabSheet.Caption);
   TVNodeFPCSources:=PropertiesTreeView.Items.Add(nil,FPCSourcesTabSheet.Caption);
   ImgIDError := ImageList1.AddLazarusResource('state_error');
+  ImgIDWarning := ImageList1.AddLazarusResource('state_warning');
 
   LazDirBrowseButton.Caption:=lisPathEditBrowse;
   LazDirLabel.Caption:=Format(
@@ -1389,13 +1395,11 @@ begin
   end;
   if EnvironmentOptions.LazarusDirectory<>EnvironmentOptions.GetParsedLazarusDirectory
   then
-    s:='Directory: '+EnvironmentOptions.GetParsedLazarusDirectory+LineEnding+LineEnding+s;
+    s:=lisDirectory+EnvironmentOptions.GetParsedLazarusDirectory+LineEnding+
+      LineEnding+s;
   LazDirMemo.Text:=s+Note;
 
-  if Quality=sddqCompatible then
-    ImageIndex:=-1
-  else
-    ImageIndex:=ImgIDError;
+  ImageIndex:=QualityToImgIndex(Quality);
   TVNodeLazarus.ImageIndex:=ImageIndex;
   TVNodeLazarus.SelectedIndex:=ImageIndex;
 
@@ -1431,13 +1435,11 @@ begin
   end;
   if EnvironmentOptions.CompilerFilename<>EnvironmentOptions.GetParsedCompilerFilename
   then
-    s:='File: '+EnvironmentOptions.GetParsedCompilerFilename+LineEnding+LineEnding+s;
+    s:=lisFile2+EnvironmentOptions.GetParsedCompilerFilename+LineEnding+
+      LineEnding+s;
   CompilerMemo.Text:=s+Note;
 
-  if Quality=sddqCompatible then
-    ImageIndex:=-1
-  else
-    ImageIndex:=ImgIDError;
+  ImageIndex:=QualityToImgIndex(Quality);
   TVNodeCompiler.ImageIndex:=ImageIndex;
   TVNodeCompiler.SelectedIndex:=ImageIndex;
 
@@ -1468,13 +1470,11 @@ begin
   end;
   if EnvironmentOptions.FPCSourceDirectory<>EnvironmentOptions.GetParsedFPCSourceDirectory
   then
-    s:='Directory: '+EnvironmentOptions.GetParsedFPCSourceDirectory+LineEnding+LineEnding+s;
+    s:=lisDirectory+EnvironmentOptions.GetParsedFPCSourceDirectory+LineEnding+
+      LineEnding+s;
   FPCSrcDirMemo.Text:=s+Note;
 
-  if Quality=sddqCompatible then
-    ImageIndex:=-1
-  else
-    ImageIndex:=ImgIDError;
+  ImageIndex:=QualityToImgIndex(Quality);
   TVNodeFPCSources.ImageIndex:=ImageIndex;
   TVNodeFPCSources.SelectedIndex:=ImageIndex;
 end;
@@ -1509,6 +1509,17 @@ begin
         exit;
     end;
   Result:=nil;
+end;
+
+function TInitialSetupDialog.QualityToImgIndex(Quality: TSDFilenameQuality
+  ): integer;
+begin
+  if Quality=sddqCompatible then
+    Result:=-1
+  else if Quality=sddqWrongMinorVersion then
+    Result:=ImgIDWarning
+  else
+    Result:=ImgIDError;
 end;
 
 procedure TInitialSetupDialog.Init;
