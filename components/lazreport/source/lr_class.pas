@@ -875,11 +875,11 @@ type
     function GetPages(Index: Integer): PfrPageInfo;
     procedure ExportData(Index: Integer);
     procedure PageToObjects(Index: Integer);
-    procedure ObjectsToPage(Index: Integer);
   public
     constructor Create(AParent: TfrReport);
     destructor Destroy; override;
     procedure Clear;
+    procedure ObjectsToPage(Index: Integer);
     procedure Draw(Index: Integer; Canvas: TCanvas; DrawRect: TRect);
     procedure Add(APage: TfrPage);
     procedure Insert(Index: Integer; APage: TfrPage);
@@ -7136,8 +7136,6 @@ begin
     UseMargins:=Bool;
     Read(fColCount, 4);
     Read(fColGap, 4);
-{    if frVersion>23 then
-      Read(ord(PageType), SizeOf(TfrPageType));}
     if frVersion>23 then                          //todo: - remove this
       Read(ord(APageType), SizeOf(TfrPageType));  //todo: - remove this
     Read(fLayoutOrder, 4);
@@ -7570,11 +7568,11 @@ begin
         end;
       end
     end
-    else
+{    else
     begin
       Page.Free;
       Page := nil;
-    end;
+    end;}
   end;
 end;
 

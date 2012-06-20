@@ -287,6 +287,7 @@ resourcestring
   sFrom = 'from';
   sDefaultPrinter = 'Default printer';
   sExportFilterIndexError = 'Export filter index out of range';
+  sFindTextNotFound = 'Search text not found.';
 
 //--- PrintForm resources ---------------------------------------------------
   sPrintFormPrint = 'Print';

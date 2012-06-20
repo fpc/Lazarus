@@ -65,7 +65,7 @@ type
     procedure FormResize(Sender: TObject);
   private
     { Private declarations }
-    FActiveMemo: TMemo;
+    FActiveMemo: TWinControl;
     //** procedure WMGetMinMaxInfo(var Msg: TLMGetMinMaxInfo); message LM_GETMINMAXINFO;
     procedure InsertText(const S:string);
   public
@@ -194,7 +194,7 @@ end;
 
 procedure TfrEditorForm.M1Enter(Sender: TObject);
 begin
-  FActiveMemo := Sender as TMemo;
+  FActiveMemo := Sender as TWinControl;
 end;
 
 procedure TfrEditorForm.CB1Click(Sender: TObject);
@@ -273,7 +273,13 @@ end;
 procedure TfrEditorForm.InsertText(const S: string);
 begin
   if S<>'' then
-    FActiveMemo.SelText:='['+S+']';
+  begin
+    if FActiveMemo is TMemo then
+      TMemo(FActiveMemo).SelText:='['+S+']'
+    else
+    if FActiveMemo is TSynEdit then
+      TSynEdit(FActiveMemo).SelText:='['+S+']'
+  end;
 end;
 
 end.

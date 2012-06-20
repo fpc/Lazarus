@@ -32,10 +32,10 @@ inherited frEditorForm: TfrEditorForm
     object Button1: TButton
       AnchorSideTop.Control = Panel2
       AnchorSideRight.Control = Button2
-      Left = 475
+      Left = 479
       Height = 35
       Top = 4
-      Width = 38
+      Width = 37
       HelpContext = 40
       Anchors = [akRight, akBottom]
       AutoSize = True
@@ -50,10 +50,10 @@ inherited frEditorForm: TfrEditorForm
       AnchorSideTop.Control = Panel2
       AnchorSideRight.Control = Panel2
       AnchorSideRight.Side = asrBottom
-      Left = 519
+      Left = 522
       Height = 35
       Top = 4
-      Width = 64
+      Width = 61
       HelpContext = 50
       Anchors = [akRight, akBottom]
       AutoSize = True
@@ -70,7 +70,7 @@ inherited frEditorForm: TfrEditorForm
       Left = 6
       Height = 35
       Top = 4
-      Width = 73
+      Width = 68
       HelpContext = 60
       Anchors = [akLeft, akBottom]
       AutoSize = True
@@ -84,10 +84,10 @@ inherited frEditorForm: TfrEditorForm
       AnchorSideLeft.Control = Button3
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = Panel2
-      Left = 85
+      Left = 80
       Height = 35
       Top = 4
-      Width = 71
+      Width = 67
       HelpContext = 70
       Anchors = [akLeft, akBottom]
       AutoSize = True
@@ -101,10 +101,10 @@ inherited frEditorForm: TfrEditorForm
       AnchorSideLeft.Control = Button6
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = Panel2
-      Left = 242
+      Left = 227
       Height = 35
       Top = 4
-      Width = 66
+      Width = 61
       HelpContext = 110
       Anchors = [akLeft, akBottom]
       AutoSize = True
@@ -118,10 +118,10 @@ inherited frEditorForm: TfrEditorForm
       AnchorSideLeft.Control = Button4
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = Panel2
-      Left = 162
+      Left = 153
       Height = 35
       Top = 4
-      Width = 74
+      Width = 68
       HelpContext = 70
       Anchors = [akLeft, akBottom]
       AutoSize = True
@@ -147,7 +147,7 @@ inherited frEditorForm: TfrEditorForm
       Left = 4
       Height = 16
       Top = 0
-      Width = 38
+      Width = 36
       Caption = 'S&cript'
       ParentColor = False
     end
@@ -165,6 +165,7 @@ inherited frEditorForm: TfrEditorForm
       ParentColor = False
       ParentFont = False
       TabOrder = 0
+      OnEnter = M1Enter
       BookMarkOptions.Xoffset = 2
       Gutter.Color = 13605511
       Gutter.Width = 55
@@ -715,7 +716,7 @@ inherited frEditorForm: TfrEditorForm
       Left = 6
       Height = 16
       Top = 6
-      Width = 41
+      Width = 38
       BorderSpacing.Around = 6
       Caption = '&Memo'
       ParentColor = False
@@ -754,7 +755,7 @@ inherited frEditorForm: TfrEditorForm
       Left = 4
       Height = 22
       Top = 7
-      Width = 61
+      Width = 59
       HelpContext = 80
       BorderSpacing.Around = 6
       Caption = '&Script'
@@ -765,10 +766,10 @@ inherited frEditorForm: TfrEditorForm
       AnchorSideLeft.Control = CB1
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = Panel3
-      Left = 71
+      Left = 69
       Height = 22
       Top = 7
-      Width = 75
+      Width = 70
       HelpContext = 90
       BorderSpacing.Around = 6
       Caption = '&Big font'
@@ -779,10 +780,10 @@ inherited frEditorForm: TfrEditorForm
       AnchorSideLeft.Control = CB2
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = Panel3
-      Left = 152
+      Left = 145
       Height = 22
       Top = 7
-      Width = 93
+      Width = 90
       HelpContext = 100
       BorderSpacing.Around = 6
       Caption = '&Word wrap'

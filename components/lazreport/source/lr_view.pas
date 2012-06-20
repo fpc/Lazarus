@@ -93,11 +93,13 @@ type
   { TfrPreviewForm }
 
   TfrPreviewForm = class(TForm)
+    FindBtn: TBitBtn;
     BtZoomOut: TBitBtn;
     BtZoomIn: TBitBtn;
     frTBSeparator1: TPanel;
     frTBSeparator2: TPanel;
     frTBSeparator3: TPanel;
+    frTBSeparator4: TPanel;
     LbPanel: TPanel;
     PanTop: TPanel;
     PgDown: TSpeedButton;
@@ -172,9 +174,13 @@ type
     per: Double;
     mode: TfrScaleMode;
     PaintAllowed: Boolean;
-    FindStr: String;
-    CaseSensitive: Boolean;
-    LastFoundPage, LastFoundObject: Integer;
+
+    SearchFindStr: String;
+    SearchCaseSensitive: Boolean;
+    SearchDirecion:integer;
+    SearchLastFoundPage: Integer;
+    SearchLastFoundObject: Integer;
+
     HF: String;
     
     procedure ShowPageNum;
@@ -184,6 +190,7 @@ type
     procedure LoadFromFile(aName: String);
     procedure SaveToFile(aName: String);
 //    procedure FindInEMF(emf: TMetafile);
+    function FindInEMFPages:boolean;
     procedure FindText;
     procedure SetGrayedButtons(Value: Boolean);
     procedure Connect(ADoc: Pointer);
@@ -522,6 +529,7 @@ begin
   SaveBtn.Hint := sPreviewFormSave;
   PrintBtn.Hint := sPreviewFormPrint;
   ExitBtn.Hint := sPreviewFormClose;
+  FindBtn.Hint := sPreviewFormFind;
 
   // TODO:  ADD hints to new buttons
 end;
@@ -1028,12 +1036,12 @@ begin
   end
   else if Key = vk_F3 then
   begin
-    if FindStr <> '' then
+    if SearchFindStr <> '' then
     begin
-      if LastFoundPage <> CurPage - 1 then
+      if SearchLastFoundPage <> CurPage - 1 then
       begin
-        LastFoundPage := CurPage - 1;
-        LastFoundObject := 0;
+        SearchLastFoundPage := CurPage - 1;
+        SearchLastFoundObject := 0;
       end;
       FindText;
     end;
@@ -1178,6 +1186,53 @@ begin
   Connect(Doc);
 end;
 
+function TfrPreviewForm.FindInEMFPages: boolean;
+var
+  P:PfrPageInfo;
+  V:TfrObject;
+  i, j, SK:integer;
+  Pages : TfrEMFPages;
+begin
+  Result:=false;
+  if not Assigned(EMFPages) then exit;
+
+  Pages := TfrEMFPages(EMFPages);
+
+  for i:=SearchLastFoundPage to Pages.Count - 1 do
+  begin
+    P:=Pages[i];
+
+    if not Assigned(P^.Page) then
+      Pages.ObjectsToPage(i);
+
+    if i = SearchLastFoundPage then
+      SK:=SearchLastFoundObject + 1
+    else
+      SK:=0;
+
+    for j:=SK to P^.Page.Objects.Count - 1 do
+    begin
+      V:=TfrView(P^.Page.Objects[j]);
+      if Assigned(V) and (V is TfrMemoView) then
+      begin
+        if Pos(SearchFindStr, TfrMemoView(V).Memo.Text)>0 then
+        begin
+          CurPage:=i + 1;
+
+          SearchLastFoundPage:=i;
+          SearchLastFoundObject:=j;
+
+          ShowPageNum;
+          SetToCurPage;
+          Result:=true;
+          exit;
+        end;
+      end;
+    end;
+
+  end;
+end;
+
 //**
 (*
 function EnumEMFRecordsProc(DC: HDC; HandleTable: PHandleTable;
@@ -1212,16 +1267,14 @@ begin
   RecordNum := 0;
   EnumEnhMetafile(0, emf.Handle, @EnumEMFRecordsProc, nil, Rect(0, 0, 0, 0));
 end;
-}
 
 procedure TfrPreviewForm.FindText;
-(*var
+var
   EMF: TMetafile;
   EMFCanvas: TMetafileCanvas;
   PageInfo: PfrPageInfo;
-  *)
 begin
-(*  PaintAllowed := False;
+  PaintAllowed := False;
   StrFound := False;
   while LastFoundPage < TfrEMFPages(EMFPages).Count do
   begin
@@ -1256,34 +1309,51 @@ begin
     Inc(LastFoundPage);
   end;
   PaintAllowed := True;
-*)
+end;
+}
+
+procedure TfrPreviewForm.FindText;
+begin
+  PaintAllowed := False;
+  if not FindInEMFPages then
+    ShowMessage(sFindTextNotFound);
+  PaintAllowed := True;
 end;
 
 procedure TfrPreviewForm.FindBtnClick(Sender: TObject);
 var
-  p: TfrPreviewSearchForm;
+  SrchForm: TfrPreviewSearchForm;
 begin
   if Doc = nil then Exit;
-  p := TfrPreviewSearchForm.Create(nil);
-  with p do
-  if ShowModal = mrOk then
+
+  SrchForm := TfrPreviewSearchForm.Create(nil);
+  SrchForm.Edit1.Text:=SearchFindStr;
+  SrchForm.GroupBox1.Checked[0]:=SearchCaseSensitive;
+  SrchForm.GroupBox2.ItemIndex:=SearchDirecion;
+
+
+  if SrchForm.ShowModal = mrOk then
   begin
-    FindStr := Edit1.Text;
-    CaseSensitive := CB1.Checked;
-    if not CaseSensitive then FindStr := AnsiUpperCase(FindStr);
-    if RB1.Checked then
+    SearchFindStr := SrchForm.Edit1.Text;
+    SearchCaseSensitive := SrchForm.GroupBox1.Checked[0];// CB1.Checked;
+    SearchDirecion:=SrchForm.GroupBox2.ItemIndex;
+
+    if not SearchCaseSensitive then
+      SearchFindStr := AnsiUpperCase(SearchFindStr);
+    if SrchForm.GroupBox2.ItemIndex = 0 {RB1.Checked} then
     begin
-      LastFoundPage := 0;
-      LastFoundObject := 0;
+      SearchLastFoundPage := 0;
+      SearchLastFoundObject := 0;
     end
-    else if LastFoundPage <> CurPage - 1 then
+    else
+    if SearchLastFoundPage <> CurPage - 1 then
     begin
-      LastFoundPage := CurPage - 1;
-      LastFoundObject := 0;
+      SearchLastFoundPage := CurPage - 1;
+      SearchLastFoundObject := 0;
     end;
-    Free;
     FindText;
   end;
+  SrchForm.Free;
 end;
 
 procedure TfrPreviewForm.EditBtnClick(Sender: TObject);

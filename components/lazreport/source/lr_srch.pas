@@ -16,19 +16,19 @@ interface
 
 uses
   Classes, SysUtils, LResources,Forms, Controls, Graphics, Dialogs,
-  StdCtrls,Buttons, LR_Const;
+  StdCtrls,Buttons, ButtonPanel, ExtCtrls, LR_Const;
 
 type
+
+  { TfrPreviewSearchForm }
+
   TfrPreviewSearchForm = class(TForm)
+    ButtonPanel1: TButtonPanel;
+    GroupBox1: TCheckGroup;
     Label1: TLabel;
     Edit1: TEdit;
-    Button1: TButton;
-    Button2: TButton;
-    GroupBox1: TGroupBox;
-    CB1: TCheckBox;
-    GroupBox2: TGroupBox;
-    RB1: TRadioButton;
-    RB2: TRadioButton;
+    Label2: TLabel;
+    GroupBox2: TRadioGroup;
     procedure FormActivate(Sender: TObject);
     procedure FormCreate(Sender: TObject);
   private
@@ -54,13 +54,20 @@ procedure TfrPreviewSearchForm.FormCreate(Sender: TObject);
 begin
   Caption := sFindTextCaption;
   Label1.Caption := sFindTextText;
+
   GroupBox1.Caption := sFindTextOptions;
-  CB1.Caption := sFindTextCase;
+  GroupBox1.Items.Clear;
+  GroupBox1.Items.Add(sFindTextCase);
+  //CB1.Caption := sFindTextCase;
+
   GroupBox2.Caption := sFindTextOrg;
-  RB1.Caption := sFindTextFirstPg;
-  RB2.Caption := sFindTextCurrentPg;
-  Button1.Caption := sOk;
-  Button2.Caption := sCancel;
+  GroupBox2.Items.Clear;
+  GroupBox2.Items.Add(sFindTextFirstPg);
+  GroupBox2.Items.Add(sFindTextCurrentPg);
+  //RB1.Caption := sFindTextFirstPg;
+  //RB2.Caption := sFindTextCurrentPg;
+  //Button1.Caption := sOk;
+  //Button2.Caption := sCancel;
 end;
 
 end.

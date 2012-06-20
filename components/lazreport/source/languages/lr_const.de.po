@@ -649,6 +649,10 @@ msgstr "Aktuelle Seite"
 msgid "&1st page"
 msgstr "&1. Seite"
 
+#: lr_const.sfindtextnotfound
+msgid "Search text not found."
+msgstr ""
+
 #: lr_const.sfindtextoptions
 msgctxt "lr_const.sfindtextoptions"
 msgid "Options"
