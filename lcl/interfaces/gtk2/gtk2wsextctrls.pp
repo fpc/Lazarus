@@ -195,7 +195,6 @@ var
   bwidth: gint;
   Style: PGtkRCStyle;
   BorderStyle: TBorderStyle;
-  r: TRect;
 begin
   Frame := gtk_frame_new(nil);
   BorderStyle:=TCustomControl(AWinControl).BorderStyle;
