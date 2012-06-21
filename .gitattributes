@@ -5109,6 +5109,7 @@ images/sourceeditor/InactiveBreakPoint.png -text
 images/sourceeditor/InvalidBreakPoint.png -text
 images/sourceeditor/InvalidDisabledBreakPoint.png -text svneol=unset#image/png
 images/sourceeditor/MultiBreakPoint.png -text
+images/sourceeditor/Record.png -text
 images/sourceeditor/UnknownBreakPoint.png -text
 images/sourceeditor/UnknownDisabledBreakPoint.png -text svneol=unset#image/png
 images/sourceeditor/bookmark0.png -text

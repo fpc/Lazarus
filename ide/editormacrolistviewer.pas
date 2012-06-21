@@ -193,7 +193,7 @@ begin
   btnSelect.Caption := lisMenuSelect;
   btnRename.Caption := lisRename2;
   lbRecordedView.SmallImages := IDEImages.Images_16;
-  FImageRec := IDEImages.LoadImage(16, 'ActiveBreakPoint');  // red dot
+  FImageRec := IDEImages.LoadImage(16, 'Record');  // red dot
   FImagePlay := IDEImages.LoadImage(16, 'menu_run');  // green triangle
   FImageSel := IDEImages.LoadImage(16, 'arrow_right');
 
