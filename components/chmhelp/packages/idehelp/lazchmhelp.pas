@@ -159,7 +159,7 @@ function TChmHelpViewer.GetHelpFilesPath: String;
 begin
   Result:=fCHMSearchPath;
   if Result='' then
-    Result:='$(LazarusDir)/docs/html;$(LazarusDir)/docs/html/lcl';
+    Result:='$(LazarusDir)/docs/html;$(LazarusDir)/docs/html/lcl;$(LazarusDir)/docs/chm';
   IDEMacros.SubstituteMacros(Result);
   Result:=MinimizeSearchPath(SetDirSeparators(Result));
 end;
