@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils,
-  Dialogs, FileUtil, LazFileUtils,
+  Dialogs, FileUtil, LazFileUtils, LazLogger,
   LazHelpIntf, HelpIntfs,
   IDEHelpIntf, MacroIntf;
 
@@ -50,8 +50,9 @@ uses chmreader, chmFiftiMain;
 procedure RegisterFPCDirectivesHelpDatabase;
 begin
   if not Assigned(FPCDirectivesHelpDatabase) then
-    FPCDirectivesHelpDatabase := TFPCDirectivesHelpDatabase(HelpDatabases.CreateHelpDatabase(sFPCCompilerDirectives,
-                                               TFPCDirectivesHelpDatabase, true));
+    FPCDirectivesHelpDatabase :=
+      TFPCDirectivesHelpDatabase(HelpDatabases.CreateHelpDatabase(
+        sFPCCompilerDirectives, TFPCDirectivesHelpDatabase, true));
 end;
 
 { TFPCDirectivesHelpDatabase }
@@ -146,6 +147,7 @@ begin
   and (LeftStr(HelpDirective, Length(FPCDirectiveHelpPrefix)) = FPCDirectiveHelpPrefix) then
   begin
     Filename:=FindCHMFile;
+    debugln(['TFPCDirectivesHelpDatabase.GetNodesForDirective ',Filename]);
     if (Filename='') then
     begin
       Result := shrDatabaseNotFound;
@@ -181,7 +183,7 @@ function TFPCDirectivesHelpDatabase.GetCHMSearchPath: string;
 begin
   Result:=FCHMSearchPath;
   if Result='' then begin
-    Result := '$(LazarusDir)/docs/html';
+    Result := '$(LazarusDir)/docs/html;$(LazarusDir)/docs/chm';
     IDEMacros.SubstituteMacros(Result);
     Result:=MinimizeSearchPath(SetDirSeparators(Result));
   end;
