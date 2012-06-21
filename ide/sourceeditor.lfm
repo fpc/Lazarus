@@ -10,12 +10,16 @@ inherited SourceNotebook: TSourceNotebook
   OnMouseUp = FormMouseUp
   object StatusBar: TStatusBar[0]
     Left = 0
-    Height = 22
-    Top = 278
+    Height = 23
+    Top = 277
     Width = 400
     Panels = <    
       item
         Width = 100
+      end    
+      item
+        Style = psOwnerDraw
+        Width = 0
       end    
       item
         Width = 150
@@ -29,6 +33,8 @@ inherited SourceNotebook: TSourceNotebook
       end>
     SimpleText = 'This is a test'
     SimplePanel = False
+    OnClick = StatusBarClick
     OnDblClick = StatusBarDblClick
+    OnDrawPanel = StatusBarDrawPanel
   end
 end

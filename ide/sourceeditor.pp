@@ -568,7 +568,10 @@ type
     StatusBar: TStatusBar;
     procedure FormMouseUp(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
+    procedure StatusBarClick(Sender: TObject);
     procedure StatusBarDblClick(Sender: TObject);
+    procedure StatusBarDrawPanel(AStatusBar: TStatusBar; APanel: TStatusPanel;
+      const ARect: TRect);
   private
     FNotebook: TExtendedNotebook;
     FBaseCaption: String;
@@ -621,6 +624,7 @@ type
     FProcessingCommand: boolean;
     FSourceEditorList: TList; // list of TSourceEditor
     FHistoryList: TList; // list of TSourceEditor page order for when a window closes
+    FStopBtnIdx: Integer;
   private
     FUpdateTabAndPageTimer: TTimer;
     // PopupMenu
@@ -5252,6 +5256,8 @@ begin
   CreateNotebook;
 
   Application.AddOnUserInputHandler(@OnApplicationUserInput,true);
+
+  FStopBtnIdx := IDEImages.LoadImage(16, 'menu_stop');
 end;
 
 destructor TSourceNotebook.Destroy;
@@ -6948,13 +6954,23 @@ end;
 procedure TSourceNotebook.StatusBarDblClick(Sender: TObject);
 var
   P: TPoint;
+  i: Integer;
 begin
   P := StatusBar.ScreenToClient(Mouse.CursorPos);
+  i := StatusBar.GetPanelIndexAt(P.X, P.Y);
   // if we clicked on first panel which shows position in code
-  if assigned(Manager) and (StatusBar.GetPanelIndexAt(P.X, P.Y) = 0) then
+  if assigned(Manager) and (i = 0) then
   begin
     // then show goto line dialog
     Manager.GotoLineClicked(nil);
+  end;
+end;
+
+procedure TSourceNotebook.StatusBarDrawPanel(AStatusBar: TStatusBar; APanel: TStatusPanel;
+  const ARect: TRect);
+begin
+  if APanel = StatusBar.Panels[1] then begin
+    IDEImages.Images_16.Draw(StatusBar.Canvas, ARect.Left,  ARect.Top, FStopBtnIdx);
   end;
 end;
 
@@ -7137,6 +7153,18 @@ procedure TSourceNotebook.FormMouseUp(Sender: TObject; Button: TMouseButton;
   Shift: TShiftState; X, Y: Integer);
 begin
   Cursor:=crDefault;
+end;
+
+procedure TSourceNotebook.StatusBarClick(Sender: TObject);
+var
+  P: TPoint;
+  i: Integer;
+begin
+  P := StatusBar.ScreenToClient(Mouse.CursorPos);
+  i := StatusBar.GetPanelIndexAt(P.X, P.Y);
+
+  if (i = 1) then
+    Manager.MacroRecorder.Stop;
 end;
 
 procedure TSourceNotebook.ExecuteEditorItemClick(Sender: TObject);
@@ -7362,9 +7390,16 @@ begin
       PanelCharMode := uepOvr;
 
     Statusbar.Panels[0].Text := PanelXY;
-    StatusBar.Panels[1].Text := PanelFileMode;
-    Statusbar.Panels[2].Text := PanelCharMode;
-    Statusbar.Panels[3].Text := PanelFilename;
+    StatusBar.Panels[2].Text := PanelFileMode;
+    Statusbar.Panels[3].Text := PanelCharMode;
+    Statusbar.Panels[4].Text := PanelFilename;
+    if (Manager.MacroRecorder.State in [msRecording, msPaused]) and
+       (Manager.MacroRecorder.CurrentEditor = CurEditor)
+    then
+      Statusbar.Panels[1].Width := 20
+    else
+      Statusbar.Panels[1].Width := 0;
+
   end;
   Statusbar.EndUpdate;
 
