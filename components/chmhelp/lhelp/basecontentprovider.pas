@@ -5,7 +5,7 @@ unit BaseContentProvider;
 interface
 
 uses
-  Classes, SysUtils, Controls, XMLCfg;
+  Classes, SysUtils, Controls, Laz2_XMLCfg;
   
 type
 
@@ -31,7 +31,7 @@ type
     procedure GoBack; virtual; abstract;
     procedure GoForward; virtual; abstract;
     procedure LoadPreferences(ACfg: TXMLConfig); virtual;
-    procedure SavePreferences(ACfg: TXMLConfig); virtual;
+    procedure SavePreferences({%H-}ACfg: TXMLConfig); virtual;
     class function GetProperContentProvider(const AURL: String): TBaseContentProviderClass; virtual; abstract;
     constructor Create(AParent: TWinControl; AImageList: TImageList); virtual;
     destructor Destroy; override;

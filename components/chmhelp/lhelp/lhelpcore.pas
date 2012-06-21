@@ -28,10 +28,12 @@ unit lhelpcore;
 interface
 
 uses
-  Classes, SysUtils, SimpleIPC, XMLCfg,
+  Classes, SysUtils, SimpleIPC, Laz2_XMLCfg,
   FileUtil, LResources, Forms, Controls, Graphics, Dialogs,
-  Buttons, LCLProc, StdCtrls, IpHtml, ComCtrls, ExtCtrls, Menus, LCLType,
-  BaseContentProvider, FileContentProvider, ChmContentProvider{$IFDEF USE_LNET}, HTTPContentProvider{$ENDIF};
+  Buttons, LCLProc, IpHtml, ComCtrls, ExtCtrls, Menus, LCLType,
+  BaseContentProvider, FileContentProvider,
+  ChmContentProvider
+  {$IFDEF USE_LNET}, HTTPContentProvider{$ENDIF};
 
 type
 
@@ -77,9 +79,9 @@ type
     procedure FileMenuExitItemClick(Sender: TObject);
     procedure FileMenuOpenItemClick(Sender: TObject);
     procedure FileMenuOpenURLItemClick(Sender: TObject);
-    procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
+    procedure FormClose(Sender: TObject; var {%H-}CloseAction: TCloseAction);
     procedure FormCreate(Sender: TObject);
-    procedure FormKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);
+    procedure FormKeyUp(Sender: TObject; var Key: Word; {%H-}Shift: TShiftState);
     procedure FormShow(Sender: TObject);
     procedure ForwardToolBtnClick(Sender: TObject);
     procedure HomeToolBtnClick(Sender: TObject);
@@ -97,9 +99,9 @@ type
     fConfig: TXMLConfig;
     FHasShowed: Boolean;
     procedure LoadPreferences(AIPCName: String);
-    procedure SavePreferences(AIPCName: String);
+    procedure SavePreferences({%H-}AIPCName: String);
     procedure AddRecentFile(AFileName: String);
-    procedure ContentTitleChange(sender: TObject);
+    procedure ContentTitleChange({%H-}sender: TObject);
     procedure OpenRecentItemClick(Sender: TObject);
     procedure SendResponse(Response: DWord);
     procedure ServerMessage(Sender: TObject);
@@ -187,6 +189,7 @@ var
 begin
   Protocall := GetContentProviderList;
 
+  URLSAllowed:='';
   for i := 0 to Protocall.Count-1 do
   begin
     if i < 1 then
@@ -198,7 +201,7 @@ begin
 
   URLSAllowed := Trim(URLSALLowed);
 
-
+  fRes:='';
   if InputQuery('Please Enter a URL', 'Supported URL type(s): (' +URLSAllowed+ ')', fRes) then
   begin
     if OpenURL(fRes) = ord(srSuccess) then
@@ -262,8 +265,6 @@ begin
 end;
 
 procedure THelpForm.ViewMenuContentsClick(Sender: TObject);
-var
-  AWidth: Integer;
 begin
   //TabsControl property in TChmContentProvider
   if Assigned(ActivePage) then
@@ -273,7 +274,6 @@ begin
       Splitter.Visible := TabsControl.Visible;
       Splitter.Left := TabsControl.Left + 4; //for splitter to move righter
       ViewMenuContents.Checked := TabsControl.Visible;
-      AWidth := TabsControl.Width + Splitter.Width;
     end;
 end;
 
@@ -402,6 +402,7 @@ begin
   if fInputIPC.PeekMessage(5, True) then begin
     Stream := fInputIPC.MsgData;
     Stream.Position := 0;
+    FillByte(FileReq{%H-},SizeOf(FileReq),0);
     Stream.Read(FileReq, SizeOf(FileReq));
     case FileReq.RequestType of
       rtFile    : begin
@@ -410,6 +411,7 @@ begin
                   end;
       rtUrl     : begin
                     Stream.Position := 0;
+                    FillByte(UrlReq{%H-},SizeOf(UrlReq),0);
                     Stream.Read(UrlReq, SizeOf(UrlReq));
                     if UrlReq.FileRequest.FileName <> '' then
                     begin
@@ -424,6 +426,7 @@ begin
                   end;
       rtContext : begin
                     Stream.Position := 0;
+                    FillByte(ConReq{%H-},SizeOf(ConReq),0);
                     Stream.Read(ConReq, SizeOf(ConReq));
                     Url := 'file://'+FileReq.FileName;
                     Res := OpenURL(Url, ConReq.HelpContext);
@@ -447,7 +450,7 @@ var
   URL: String;
   StrItem: PStringItem;
 begin
-  FillChar(IsHandled, 51, 0);
+  FillChar(IsHandled{%H-}, 51, 0);
   for  X := 1 to ParamCount do begin
     if LowerCase(ParamStrUTF8(X)) = '--ipcname' then begin
       IsHandled[X] := True;
@@ -473,7 +476,7 @@ begin
         URL := ParamStrUTF8(X);
       StrItem := New(PStringItem);
       StrItem^.FString := URL;
-      Application.QueueAsyncCall(TDataEvent(@LateOpenURL), PtrUInt(StrItem));
+      Application.QueueAsyncCall(TDataEvent(@LateOpenURL), {%H-}PtrUInt(StrItem));
       Break;
     end;
 end;

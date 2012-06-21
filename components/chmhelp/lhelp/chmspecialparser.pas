@@ -127,7 +127,6 @@ end;
 
 procedure TContentsFiller.DoFill(ParentNode: TTreeNode);
 var
- OrigEvent: TTVCustomCreateNodeEvent;
  X: Integer;
 begin
   fTreeView.BeginUpdate;
