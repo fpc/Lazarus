@@ -5535,6 +5535,8 @@ resourcestring
   lisRename2 = 'Rename ...';
   lisNewMacroName = 'Macro %d';
   lisEditorMacros = 'Editor macros';
+  lisPlay = 'Play';
+  lisRecord = 'Record';
 
 implementation
 

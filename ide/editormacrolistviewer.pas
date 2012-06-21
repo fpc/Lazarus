@@ -5,8 +5,9 @@ unit EditorMacroListViewer;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, SynMacroRecorder, Forms, Controls, Graphics, Dialogs, StdCtrls,
-  ButtonPanel, ComCtrls, ExtCtrls, MainBar, IDEWindowIntf, IDEImagesIntf, LazarusIDEStrConsts;
+  Classes, SysUtils, FileUtil, SynMacroRecorder, SynEdit, Forms, Controls, Graphics, Dialogs,
+  StdCtrls, ButtonPanel, ComCtrls, ExtCtrls, MainBar, IDEWindowIntf, IDEImagesIntf,
+  LazarusIDEStrConsts, SrcEditorIntf;
 
 type
 
@@ -36,6 +37,9 @@ type
   { TMacroListView }
 
   TMacroListView = class(TForm)
+    btnPlay: TButton;
+    btnRecord: TButton;
+    btnRecordStop: TButton;
     btnSelect: TButton;
     btnRename: TButton;
     ButtonPanel1: TButtonPanel;
@@ -44,6 +48,9 @@ type
     Panel1: TPanel;
     pnlButtons: TPanel;
     RenameButton: TPanelBitBtn;
+    procedure btnPlayClick(Sender: TObject);
+    procedure btnRecordClick(Sender: TObject);
+    procedure btnRecordStopClick(Sender: TObject);
     procedure btnRenameClick(Sender: TObject);
     procedure btnSelectClick(Sender: TObject);
     procedure lbRecordedViewSelectItem(Sender: TObject; Item: TListItem; Selected: Boolean);
@@ -53,6 +60,7 @@ type
     FImageSel: Integer;
     procedure DoOnMacroListChange(Sender: TObject);
     procedure UpdateDisplay;
+    procedure UpdateButtons;
   protected
     procedure DoEditorMacroStateChanged;
   public
@@ -126,6 +134,38 @@ begin
   end;
 end;
 
+procedure TMacroListView.btnPlayClick(Sender: TObject);
+begin
+  if EditorMacroRecorder.State <> msStopped then exit;
+  if lbRecordedView.ItemIndex < 0 then exit;
+
+  EditorMacroRecorder.AssignEventsFrom(EditorMacroList.Macros[lbRecordedView.ItemIndex]);
+  EditorMacroRecorder.PlaybackMacro(TCustomSynEdit(SourceEditorManagerIntf.ActiveEditor.EditorControl));
+
+  EditorMacroRecorder.AssignEventsFrom(CurrentActiveMacro);
+end;
+
+procedure TMacroListView.btnRecordClick(Sender: TObject);
+begin
+  if EditorMacroRecorder.State = msStopped then begin
+    EditorMacroRecorder.RecordMacro(TCustomSynEdit(SourceEditorManagerIntf.ActiveEditor.EditorControl));
+  end
+  else
+  if EditorMacroRecorder.State = msRecording then begin
+    EditorMacroRecorder.Pause;
+  end
+  else
+  if EditorMacroRecorder.State = msPaused then begin
+    EditorMacroRecorder.Resume;
+  end;
+  SourceEditorManagerIntf.ActiveEditor.EditorControl.SetFocus;
+end;
+
+procedure TMacroListView.btnRecordStopClick(Sender: TObject);
+begin
+  EditorMacroRecorder.Stop;
+end;
+
 procedure TMacroListView.btnSelectClick(Sender: TObject);
 begin
   if EditorMacroRecorder.State <> msStopped then exit;
@@ -140,8 +180,7 @@ end;
 procedure TMacroListView.lbRecordedViewSelectItem(Sender: TObject; Item: TListItem;
   Selected: Boolean);
 begin
-  btnSelect.Enabled := (EditorMacroRecorder.State = msStopped) and (lbRecordedView.ItemIndex >= 0);
-  btnRename.Enabled := (lbRecordedView.ItemIndex >= 0);
+  UpdateButtons;
 end;
 
 procedure TMacroListView.DoOnMacroListChange(Sender: TObject);
@@ -177,6 +216,24 @@ begin
     lbRecordedView.ItemIndex := -1;
 
   lbRecordedViewSelectItem(nil, nil, False);
+  UpdateButtons;
+end;
+
+procedure TMacroListView.UpdateButtons;
+begin
+  btnSelect.Enabled := (EditorMacroRecorder.State = msStopped) and (lbRecordedView.ItemIndex >= 0);
+  btnRename.Enabled := (lbRecordedView.ItemIndex >= 0);
+  btnPlay.Enabled := (lbRecordedView.ItemIndex >= 0);
+
+  btnRecord.Enabled := (EditorMacroRecorder.State in [msStopped, msPaused, msRecording]);
+  btnRecordStop.Visible := (EditorMacroRecorder.State in [msPaused, msRecording]);
+
+  if (EditorMacroRecorder.State = msRecording) then
+    btnRecord.Caption := lisPause
+  else if (EditorMacroRecorder.State = msPaused) then
+    btnRecord.Caption := lisContinue
+  else
+    btnRecord.Caption := lisRecord;
 end;
 
 procedure TMacroListView.DoEditorMacroStateChanged;
@@ -192,12 +249,15 @@ begin
   lblRecordedTitle.Caption := lisRecordedMacros;
   btnSelect.Caption := lisMenuSelect;
   btnRename.Caption := lisRename2;
+  btnPlay.Caption := lisPlay;
+  btnRecord.Caption := lisRecord;
+  btnRecordStop.Caption := lisStop;
   lbRecordedView.SmallImages := IDEImages.Images_16;
   FImageRec := IDEImages.LoadImage(16, 'Record');  // red dot
   FImagePlay := IDEImages.LoadImage(16, 'menu_run');  // green triangle
   FImageSel := IDEImages.LoadImage(16, 'arrow_right');
 
-  lbRecordedViewSelectItem(nil, nil, False);
+  UpdateButtons;
 end;
 
 { TEditorMacroList }

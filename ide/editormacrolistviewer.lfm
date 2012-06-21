@@ -12,25 +12,25 @@ object MacroListView: TMacroListView
     Left = 0
     Height = 194
     Top = 0
-    Width = 239
+    Width = 221
     Align = alLeft
     Anchors = [akTop, akLeft, akRight, akBottom]
     BorderSpacing.Right = 12
     BevelOuter = bvNone
     ClientHeight = 194
-    ClientWidth = 239
+    ClientWidth = 221
     TabOrder = 0
     object lbRecordedView: TListView
       Left = 0
       Height = 172
       Top = 22
-      Width = 239
+      Width = 221
       Align = alClient
       AutoWidthLastColumn = True
       BorderSpacing.Top = 6
       Columns = <      
         item
-          Width = 10
+          Width = 217
         end>
       RowSelect = True
       ShowColumnHeaders = False
@@ -42,7 +42,7 @@ object MacroListView: TMacroListView
       Left = 0
       Height = 16
       Top = 0
-      Width = 239
+      Width = 221
       Align = alTop
       Caption = 'lblRecordedTitle'
       ParentColor = False
@@ -66,15 +66,16 @@ object MacroListView: TMacroListView
     ShowButtons = [pbClose]
   end
   object pnlButtons: TPanel
-    Left = 251
+    Left = 233
     Height = 194
     Top = 0
-    Width = 99
+    Width = 117
     Align = alRight
     AutoSize = True
     BevelOuter = bvNone
     ClientHeight = 194
-    ClientWidth = 99
+    ClientWidth = 117
+    Constraints.MinHeight = 150
     TabOrder = 2
     object btnSelect: TButton
       AnchorSideLeft.Control = pnlButtons
@@ -85,7 +86,7 @@ object MacroListView: TMacroListView
       Left = 6
       Height = 25
       Top = 6
-      Width = 87
+      Width = 105
       Anchors = [akTop, akLeft, akRight]
       AutoSize = True
       BorderSpacing.Left = 6
@@ -97,15 +98,15 @@ object MacroListView: TMacroListView
     end
     object btnRename: TButton
       AnchorSideLeft.Control = pnlButtons
-      AnchorSideTop.Control = btnSelect
+      AnchorSideTop.Control = btnPlay
       AnchorSideTop.Side = asrBottom
       AnchorSideRight.Control = pnlButtons
       AnchorSideRight.Side = asrBottom
       AnchorSideBottom.Side = asrBottom
       Left = 6
       Height = 25
-      Top = 37
-      Width = 87
+      Top = 68
+      Width = 105
       Anchors = [akTop, akLeft, akRight]
       AutoSize = True
       BorderSpacing.Left = 6
@@ -114,6 +115,68 @@ object MacroListView: TMacroListView
       Caption = 'btnRename'
       OnClick = btnRenameClick
       TabOrder = 1
+    end
+    object btnPlay: TButton
+      AnchorSideLeft.Control = pnlButtons
+      AnchorSideTop.Control = btnSelect
+      AnchorSideTop.Side = asrBottom
+      AnchorSideRight.Control = pnlButtons
+      AnchorSideRight.Side = asrBottom
+      AnchorSideBottom.Side = asrBottom
+      Left = 6
+      Height = 25
+      Top = 37
+      Width = 105
+      Anchors = [akTop, akLeft, akRight]
+      AutoSize = True
+      BorderSpacing.Left = 6
+      BorderSpacing.Top = 6
+      BorderSpacing.Right = 6
+      Caption = 'btnPlay'
+      OnClick = btnPlayClick
+      TabOrder = 2
+    end
+    object btnRecord: TButton
+      AnchorSideLeft.Control = pnlButtons
+      AnchorSideTop.Control = btnRename
+      AnchorSideTop.Side = asrBottom
+      AnchorSideRight.Control = pnlButtons
+      AnchorSideRight.Side = asrBottom
+      AnchorSideBottom.Control = pnlButtons
+      AnchorSideBottom.Side = asrBottom
+      Left = 6
+      Height = 25
+      Top = 163
+      Width = 105
+      Anchors = [akLeft, akRight, akBottom]
+      AutoSize = True
+      BorderSpacing.Left = 6
+      BorderSpacing.Right = 6
+      BorderSpacing.Bottom = 6
+      Caption = 'btnRecord'
+      OnClick = btnRecordClick
+      TabOrder = 3
+    end
+    object btnRecordStop: TButton
+      AnchorSideLeft.Control = pnlButtons
+      AnchorSideTop.Control = btnRename
+      AnchorSideTop.Side = asrBottom
+      AnchorSideRight.Control = pnlButtons
+      AnchorSideRight.Side = asrBottom
+      AnchorSideBottom.Control = btnRecord
+      Left = 6
+      Height = 25
+      Top = 132
+      Width = 105
+      Anchors = [akLeft, akRight, akBottom]
+      AutoSize = True
+      BorderSpacing.Left = 6
+      BorderSpacing.Right = 6
+      BorderSpacing.Bottom = 6
+      Caption = 'btnRecordStop'
+      OnClick = btnRecordStopClick
+      TabOrder = 4
+      Visible = False
     end
   end
 end
