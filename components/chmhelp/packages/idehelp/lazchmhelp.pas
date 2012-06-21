@@ -57,8 +57,9 @@ unit LazChmHelp;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, LazHelpIntf, HelpIntfs, LazConfigStorage,
-  PropEdits, LHelpControl, Controls, ChmLangRef, ChmLcl, ChmProg;
+  Classes, SysUtils, FileUtil, LazLogger, LazHelpIntf, HelpIntfs,
+  LazConfigStorage, PropEdits, LHelpControl, Controls, ChmLangRef, ChmLcl,
+  ChmProg;
   
 type
   
@@ -71,14 +72,13 @@ type
     fHelpConnection: TLHelpConnection;
     fChmsFilePath: String;
     fHelpExeParams: String;
-    function GetHelpEXE: String;
     function DBFindViewer({%H-}HelpDB: THelpDatabase; {%H-}const MimeType: string;
       var {%H-}ErrMsg: string; out Viewer: THelpViewer): TShowHelpResult;
     function GetHelpLabel: String;
     procedure SetChmsFilePath(const AValue: String);
+    procedure SetHelpEXE(AValue: String);
   protected
     function GetFileNameAndURL(RawUrl: String; out FileName: String; out URL: String): Boolean;
-    procedure SetHelpEXE(AValue: String);
     procedure SetHelpLabel(AValue: String);
     function CheckBuildLHelp: Integer; // modal result
     function GetLazBuildEXE(out ALazBuild: String): Boolean;
@@ -95,8 +95,9 @@ type
     procedure Load(Storage: TConfigStorage); override;
     procedure Save(Storage: TConfigStorage); override;
     function GetLocalizedName: string; override;
+    function GetHelpEXE: String; // macros resolved, see property HelpEXE
   published
-    property HelpEXE: String read GetHelpEXE write SetHelpEXE;
+    property HelpEXE: String read fHelpEXE write SetHelpEXE; // with macros, see GetHelpEXE
     property HelpLabel: String read GetHelpLabel write SetHelpLabel;
     property HelpFilesPath: String read fChmsFilePath write SetChmsFilePath;
     property HelpExeParams: String read fHelpExeParams write fHelpExeParams;
@@ -159,14 +160,19 @@ begin
     FPCDirectivesHelpDatabase.DocsDir := fChmsFilePath;
 end;
 
+procedure TChmHelpViewer.SetHelpEXE(AValue: String);
+begin
+  if fHelpEXE=AValue then Exit;
+  fHelpEXE:=AValue;
+end;
+
 function TChmHelpViewer.GetHelpEXE: String;
 begin
-  if fHelpExe <> '' then
-    Exit(fHelpExe);
-  Result := '$(LazarusDir)/components/chmhelp/lhelp/lhelp$(ExeExt)';
+  Result:=fHelpExe;
+  if Result='' then
+    Result := SetDirSeparators('$(LazarusDir)/components/chmhelp/lhelp/lhelp$(ExeExt)');
   if not IDEMacros.SubstituteMacros(Result) then
     Exit('');
-  Result := FixSlash(Result);
 end;
 
 function TChmHelpViewer.GetFileNameAndURL(RawUrl:String; out FileName: String; out URL: String
@@ -181,11 +187,6 @@ begin
   FileName := Copy(RawUrl, 1, fPos-1);
   URL := Copy(RawUrl, fPos+2, Length(RawUrl)-(fPos-2));
   Result := True;
-end;
-
-procedure TChmHelpViewer.SetHelpEXE(AValue: String);
-begin
-  fHelpExe := AValue;
 end;
 
 procedure TChmHelpViewer.SetHelpLabel(AValue: String);
@@ -211,7 +212,7 @@ var
 begin
   Result := mrCancel;
 
-  if FileExistsUTF8(HelpExe) = True then
+  if FileExistsUTF8(GetHelpExe) then
     Exit(mrOK);
 
   if not GetLazBuildEXE(Lazbuild) then
@@ -390,8 +391,8 @@ begin
     Exit;
   end;
   Result:=shrNone;
-  if (ExtractFileNameOnly(HelpEXE) = 'lhelp') and (CheckBuildLHelp <> mrOK) then begin
-    ErrMsg := 'The program "' + HelpEXE + '" doesn''t seem to exist'+LineEnding+
+  if (ExtractFileNameOnly(GetHelpEXE) = 'lhelp') and (CheckBuildLHelp <> mrOK) then begin
+    ErrMsg := 'The program "' + GetHelpEXE + '" doesn''t seem to exist'+LineEnding+
               'or could not be built!';
     Exit(shrViewerNotFound);
   end;
@@ -421,8 +422,8 @@ begin
 
   FileName := IncludeTrailingPathDelimiter(DocsDir)+FileName;
 
-  if ExtractFileNameOnly(HelpExe) = 'lhelp' then begin
-    fHelpConnection.StartHelpServer(HelpLabel, HelpExe);
+  if ExtractFileNameOnly(GetHelpExe) = 'lhelp' then begin
+    fHelpConnection.StartHelpServer(HelpLabel, GetHelpExe);
     Res := fHelpConnection.OpenURL(FileName, Url);
   end else begin
     if Trim(fHelpExeParams) = '' then
@@ -430,7 +431,7 @@ begin
       Result := shrViewerError;
       ErrMsg := 'If you do not use "lhelp" as viewer you have to setup '
               + 'HelpExeParams correctly in' + sLineBreak
-              + 'Environment Options -> Help -> Help Options -> '
+              + 'Tools -> Options -> Help -> Help Options -> '
               + 'under HelpViewers - CHM Help Viewer' + sLineBreak
               + 'e.g. for HH.EXE (HTML Help in Windows) it must be' + sLineBreak
               + '  "%s::%s"' + sLineBreak
@@ -441,9 +442,9 @@ begin
     Proc := TProcess.Create(nil);
     try
       {$if (fpc_version=2) and (fpc_release<5)}
-      Proc.CommandLine := Utf8ToSys(fHelpExe + ' ' + Format(fHelpExeParams, [FileName, Url]));
+      Proc.CommandLine := Utf8ToSys(GetHelpExe + ' ' + Format(fHelpExeParams, [FileName, Url]));
       {$else}
-      Proc.Executable := Utf8ToSys(fHelpExe);
+      Proc.Executable := Utf8ToSys(GetHelpExe);
       Proc.Parameters.Add(Utf8ToSys(Format(fHelpExeParams, [FileName, Url])));
       {$endif}
       Proc.Execute;
