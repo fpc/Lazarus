@@ -57,9 +57,9 @@ unit LazChmHelp;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, LazLogger, LazHelpIntf, HelpIntfs,
-  LazConfigStorage, PropEdits, LHelpControl, Controls, ChmLangRef, ChmLcl,
-  ChmProg;
+  Classes, SysUtils, FileUtil, LazLogger, LazFileUtils, LazHelpIntf, HelpIntfs,
+  LazConfigStorage, PropEdits, LHelpControl, Controls, UTF8Process, ChmLangRef,
+  ChmLcl, ChmProg;
   
 type
   
@@ -70,7 +70,7 @@ type
     fHelpExe: String;
     fHelpLabel: String;
     fHelpConnection: TLHelpConnection;
-    fChmsFilePath: String;
+    fCHMSearchPath: String;
     fHelpExeParams: String;
     function DBFindViewer({%H-}HelpDB: THelpDatabase; {%H-}const MimeType: string;
       var {%H-}ErrMsg: string; out Viewer: THelpViewer): TShowHelpResult;
@@ -96,10 +96,11 @@ type
     procedure Save(Storage: TConfigStorage); override;
     function GetLocalizedName: string; override;
     function GetHelpEXE: String; // macros resolved, see property HelpEXE
+    function GetHelpFilesPath: String; // macros resolved, see property HelpFilesPath
   published
     property HelpEXE: String read fHelpEXE write SetHelpEXE; // with macros, see GetHelpEXE
     property HelpLabel: String read GetHelpLabel write SetHelpLabel;
-    property HelpFilesPath: String read fChmsFilePath write SetChmsFilePath;
+    property HelpFilesPath: String read fCHMSearchPath write SetChmsFilePath; // directories separated with semicolon, with macros, see GetHelpFilesPath
     property HelpExeParams: String read fHelpExeParams write fHelpExeParams;
   end;
   
@@ -108,30 +109,6 @@ type
 implementation
 
 uses Process, MacroIntf, InterfaceBase, Forms, Dialogs, HelpFPDoc, IDEMsgIntf;
-
-function FixSlash(AStr: String): String;
-var
-  WrongSlash: String;
-  FP: Integer;
-begin
-  Result := AStr;
-  case PathDelim of
-    '/': WrongSlash := '\';
-    '\': WrongSlash := '/';
-  end;
-  // fix wrong delim
-  repeat
-    FP := Pos(WrongSlash, Result);
-    if FP > 0 then
-      Result[FP] := PathDelim;
-  until FP = 0;
-  // fix double path delim
-  repeat
-    FP := Pos(PathDelim+PathDelim, Result);
-    if FP <> 0 then
-      Delete(Result, FP, 1);
-  until FP = 0;
-end;
 
 { TChmHelpViewer }
 
@@ -151,13 +128,16 @@ begin
 end;
 
 procedure TChmHelpViewer.SetChmsFilePath(const AValue: String);
+var
+  p: String;
 begin
-  if fChmsFilePath = AValue then Exit;
-  fChmsFilePath := AppendPathDelim(AValue);
+  if fCHMSearchPath = AValue then Exit;
+  fCHMSearchPath := AppendPathDelim(AValue);
+  p:=GetHelpFilesPath;
   if Assigned(LangRefHelpDatabase) then
-    LangRefHelpDatabase.LoadKeywordList(fChmsFilePath);
+    LangRefHelpDatabase.LoadKeywordList(p);
   if Assigned(FPCDirectivesHelpDatabase) then
-    FPCDirectivesHelpDatabase.DocsDir := fChmsFilePath;
+    FPCDirectivesHelpDatabase.CHMSearchPath := p;
 end;
 
 procedure TChmHelpViewer.SetHelpEXE(AValue: String);
@@ -173,6 +153,15 @@ begin
     Result := SetDirSeparators('$(LazarusDir)/components/chmhelp/lhelp/lhelp$(ExeExt)');
   if not IDEMacros.SubstituteMacros(Result) then
     Exit('');
+end;
+
+function TChmHelpViewer.GetHelpFilesPath: String;
+begin
+  Result:=fCHMSearchPath;
+  if Result='' then
+    Result:='$(LazarusDir)/docs/html;$(LazarusDir)/docs/html/lcl';
+  IDEMacros.SubstituteMacros(Result);
+  Result:=MinimizeSearchPath(SetDirSeparators(Result));
 end;
 
 function TChmHelpViewer.GetFileNameAndURL(RawUrl:String; out FileName: String; out URL: String
@@ -201,7 +190,7 @@ end;
 
 function TChmHelpViewer.CheckBuildLHelp: Integer;
 var
-  Proc: TProcess;
+  Proc: TProcessUTF8;
   Lazbuild: String;
   LHelpProject: String;
   WS: String;
@@ -218,11 +207,10 @@ begin
   if not GetLazBuildEXE(Lazbuild) then
     Exit;
 
-  LHelpProject := FixSlash('$(LazarusDir)/components/chmhelp/lhelp/lhelp.lpi');
-
-  if not (IDEMacros.SubstituteMacros(LHelpProject)
-          and FileExistsUTF8(LHelpProject))
-  then
+  LHelpProject := '$(LazarusDir)/components/chmhelp/lhelp/lhelp.lpi';
+  if not IDEMacros.SubstituteMacros(LHelpProject) then exit;
+  LHelpProject:=TrimFilename(SetDirSeparators(LHelpProject));
+  if not FileExistsUTF8(LHelpProject) then
     Exit;
 
   WS := '--ws='+LCLPlatformDirNames[WidgetSet.LCLPlatform];
@@ -231,14 +219,13 @@ begin
   //if Result <> mrYes then
   //  Exit;
 
-  Proc := TProcess.Create(nil);
+  Proc := TProcessUTF8.Create(nil);
   {$if (fpc_version=2) and (fpc_release<5)}
-  Proc.CommandLine := Utf8ToSys(Lazbuild) + ' ' + WS
-                                          + ' ' + Utf8ToSys(LHelpProject);
+  Proc.CommandLine := Lazbuild + ' ' + WS + ' ' + LHelpProject;
   {$else}
-  Proc.Executable := Utf8ToSys(Lazbuild);
+  Proc.Executable := Lazbuild;
   Proc.Parameters.Add(WS);
-  Proc.Parameters.Add(Utf8ToSys(LHelpProject));
+  Proc.Parameters.Add(LHelpProject);
   {$endif}
   Proc.Options := [poUsePipes, poStderrToOutPut];
   Proc.Execute;
@@ -250,8 +237,10 @@ begin
   IDEMessagesWindow.BeginBlock;
   IDEMessagesWindow.AddMsg('- Building lhelp -','',0);
 
-  LHelpProject := FixSlash('$(LazarusDir)/components/chmhelp/lhelp/');
+  LHelpProject := '$(LazarusDir)/components/chmhelp/lhelp/';
   IDEMacros.SubstituteMacros(LHelpProject);
+  LHelpProject:=TrimFilename(SetDirSeparators(LHelpProject));
+
   while Proc.Running do begin
     while Proc.Output.NumBytesAvailable > 0 do
     begin
@@ -299,15 +288,12 @@ begin
 end;
 
 function TChmHelpViewer.GetLazBuildEXE(out ALazBuild: String): Boolean;
-var
-  LazBuildMacro: String;
 begin
-   Result := False;
-   LazBuildMacro:= '$(LazarusDir)/$MakeExe(lazbuild)';
-   Result := IDEMacros.SubstituteMacros(LazBuildMacro)
-             and FileExistsUTF8(LazBuildMacro);
-   if Result then
-     ALazBuild := FixSlash(LazBuildMacro);
+  Result := False;
+  ALazBuild:= '$(LazarusDir)/$MakeExe(lazbuild)';
+  if not IDEMacros.SubstituteMacros(ALazBuild) then exit;
+  ALazBuild:=TrimFilename(SetDirSeparators(ALazBuild));
+  Result:=FileExistsUTF8(ALazBuild);
 end;
 
 function TChmHelpViewer.PassTheBuck(Node: THelpNode; var ErrMsg: string
@@ -382,8 +368,9 @@ var
   FileName: String;
   Url: String;
   Res: TLHelpResponse;
-  DocsDir: String;
-  Proc: TProcess;
+  SearchPath: String;
+  Proc: TProcessUTF8;
+  FoundFileName: String;
 begin
   if Pos('file://', Node.URL) = 1 then
   begin
@@ -401,26 +388,22 @@ begin
     Exit(shrDatabaseNotFound);
   end;
 
-  if HelpFilesPath = '' then
-  begin
-    DocsDir := FixSlash('$(LazarusDir)/docs/html/');
-    IDEMacros.SubstituteMacros(DocsDir);
-  end
-  else
-    DocsDir := fChmsFilePath;
+  SearchPath := GetHelpFilesPath;
+  FoundFileName:=SearchFileInPath(Filename,'',SearchPath,';',[]);
+  debugln(['TChmHelpViewer.ShowNode Filename="',Filename,'" SearchPath="',SearchPath,'" Found="',FoundFileName,'"']);
 
-  if not FileExistsUTF8(DocsDir+FileName) then
+  if FoundFileName='' then
   begin
     Result := shrDatabaseNotFound;
     ErrMsg := FileName +' not found. Please put the chm help files in '+ LineEnding
-                       +DocsDir+  LineEnding
+                       +SearchPath+  LineEnding
                        +' or set the path to lcl.chm rtl.chm fcl.chm with "HelpFilesPath" in '
                        +' Environment Options -> Help -> Help Options ->'+LineEnding
                        +' under HelpViewers - CHMHelpViewer';
     Exit;
   end;
 
-  FileName := IncludeTrailingPathDelimiter(DocsDir)+FileName;
+  FileName := FoundFileName;
 
   if ExtractFileNameOnly(GetHelpExe) = 'lhelp' then begin
     fHelpConnection.StartHelpServer(HelpLabel, GetHelpExe);
@@ -439,13 +422,13 @@ begin
               + 'and the second one will be replaced by URL';
       Exit;
     end;
-    Proc := TProcess.Create(nil);
+    Proc := TProcessUTF8.Create(nil);
     try
       {$if (fpc_version=2) and (fpc_release<5)}
-      Proc.CommandLine := Utf8ToSys(GetHelpExe + ' ' + Format(fHelpExeParams, [FileName, Url]));
+      Proc.CommandLine := GetHelpExe + ' ' + Format(fHelpExeParams, [FileName, Url]);
       {$else}
-      Proc.Executable := Utf8ToSys(GetHelpExe);
-      Proc.Parameters.Add(Utf8ToSys(Format(fHelpExeParams, [FileName, Url])));
+      Proc.Executable := GetHelpExe;
+      Proc.Parameters.Add(Format(fHelpExeParams, [FileName, Url]));
       {$endif}
       Proc.Execute;
       Res := srSuccess;

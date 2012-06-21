@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils,
-  Dialogs, FileUtil,
+  Dialogs, FileUtil, LazFileUtils,
   LazHelpIntf, HelpIntfs,
   IDEHelpIntf, MacroIntf;
 
@@ -19,10 +19,10 @@ type
 
   TLangRefHelpDatabase = class(THelpDatabase)
   private
+    FCHMSearchPath: string;
     FKeywordNodes: TList;
     FKeyWordsList: TStringList;
     FRTLIndex: TStringList;
-    FDocsDir: string;
     procedure ClearKeywordNodes;
     procedure LoadChmIndex(const Path, ChmFileName: string;
       IndexStrings: TStrings; const Filter: string = '');
@@ -36,6 +36,7 @@ type
     function ShowHelp(Query: THelpQuery; {%H-}BaseNode, NewNode: THelpNode;
                       {%H-}QueryItem: THelpQueryItem;
                       var ErrMsg: string): TShowHelpResult; override;
+    property CHMSearchPath: string read FCHMSearchPath write FCHMSearchPath;
   end;
 
 procedure RegisterLangRefHelpDatabase;
@@ -97,20 +98,21 @@ var
   SM: TChmSiteMap;
   X, Y: Integer;
   s: string;
+  Filename: String;
 begin
-  FDocsDir := Path;
-  if FDocsDir = '' then
+  fCHMSearchPath := Path;
+  if fCHMSearchPath = '' then
   begin
-    FDocsDir := '$(LazarusDir)';
-    IDEMacros.SubstituteMacros(FDocsDir);
-    FDocsDir := AppendPathDelim(FDocsDir) + 'docs' + PathDelim + 'html';
+    fCHMSearchPath := '$(LazarusDir)/docs/html';
+    IDEMacros.SubstituteMacros(fCHMSearchPath);
+    fCHMSearchPath := MinimizeSearchPath(SetDirSeparators(fCHMSearchPath));
   end;
-  FDocsDir := AppendPathDelim(FDocsDir);
+  Filename:=SearchFileInPath(ChmFileName,'',fCHMSearchPath,';',[]);
 
   IndexStrings.Clear;
-  if FileExistsUTF8(FDocsDir + ChmFileName) then
+  if (Filename<>'') then
   begin
-    chm := TChmFileList.Create(Utf8ToSys(FDocsDir + ChmFileName));
+    chm := TChmFileList.Create(Utf8ToSys(Filename));
     try
       if chm.Count = 0 then Exit;
       fchm := chm.Chm[0];
@@ -153,7 +155,7 @@ begin
   if (FPCKeyWordHelpPrefix<>'')
   and (LeftStr(HelpKeyword,length(FPCKeyWordHelpPrefix))=FPCKeyWordHelpPrefix) then
   begin
-    if FKeyWordsList.Count = 0 then LoadKeywordList(FDocsDir);
+    if FKeyWordsList.Count = 0 then LoadKeywordList(fCHMSearchPath);
     if FKeyWordsList.Count = 0 then
     begin
       Result := shrDatabaseNotFound;
@@ -161,7 +163,7 @@ begin
                          + '%s' +  LineEnding
                          +'or set the path to it with "HelpFilesPath" in '
                          +' Environment Options -> Help -> Help Options ->' + LineEnding
-                         +'under Viewers - CHM Help Viewer', [FDocsDir]);
+                         +'under Viewers - CHM Help Viewer', [fCHMSearchPath]);
       Exit;
     end;
     // HelpKeyword starts with KeywordPrefix
@@ -193,7 +195,7 @@ begin
     begin
       { it can be predefined procedure/function from RTL }
       if FRTLIndex.Count = 0 then
-        LoadChmIndex(FDocsDir, 'rtl.chm', FRTLIndex, 'system/');
+        LoadChmIndex(FCHMSearchPath, 'rtl.chm', FRTLIndex, 'system/');
       for i := 0 to FRTLIndex.Count - 1 do
       begin
         s := FRTLIndex.Names[i];
