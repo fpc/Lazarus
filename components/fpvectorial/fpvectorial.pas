@@ -386,12 +386,18 @@ type
   TvFormula = class;
 
   TvFormulaElementKind = (
+    // Basic symbols
     fekVariable,  // Text is the text of the variable
     fekEqual,     // = symbol
     fekSubtraction, // - symbol
     fekMultiplication, // either a point . or a small x
     fekSum,       // + symbol
     fekPlusMinus, // The +/- symbol
+    fekLessThan, // The < symbol
+    fekLessOrEqualThan, // The <= symbol
+    fekGreaterThan, // The > symbol
+    fekGreaterOrEqualThan, // The >= symbol
+    // More complex elements
     fekFraction,  // a division with Formula on the top and BottomFormula in the bottom
     fekRoot,      // A root. For example sqrt(something). Number gives the root, usually 2, and inside it goes a Formula
     fekNumberWithPower, // A number elevated to a given power, example: 2^5
@@ -413,9 +419,11 @@ type
     BottomFormula: TvFormula;
   public
     Top, Left, Width, Height: Integer;
-    function CalculateHeight: Single; // 1.0 = the normal text height, will return for example 2.2 for 2,2 times the text height
+    function CalculateHeight(ADest: TFPCustomCanvas): Single; // 1.0 = the normal text height, will return for example 2.2 for 2,2 times the text height
     function CalculateWidth(ADest: TFPCustomCanvas): Integer; // in pixels
     function AsText: string;
+    procedure Render(ADest: TFPCustomCanvas; ADestX: Integer = 0;
+      ADestY: Integer = 0; AMulX: Double = 1.0; AMulY: Double = 1.0);
   end;
 
   { TvFormula }
@@ -437,8 +445,9 @@ type
     procedure AddElement(AElement: TvFormulaElement);
     procedure Clear;
     //
-    function CalculateHeight: Single; // 1.0 = the normal text height, will return for example 2.2 for 2,2 times the text height
+    function CalculateHeight(ADest: TFPCustomCanvas): Single; // 1.0 = the normal text height, will return for example 2.2 for 2,2 times the text height
     function CalculateWidth(ADest: TFPCustomCanvas): Integer;
+    procedure PositionElements(ADest: TFPCustomCanvas; ABaseX, ABaseY: Integer);
     procedure CalculateBoundingBox(ADest: TFPCustomCanvas; var ALeft, ATop, ARight, ABottom: Double); override;
     procedure Render(ADest: TFPCustomCanvas; ADestX: Integer = 0;
       ADestY: Integer = 0; AMulX: Double = 1.0; AMulY: Double = 1.0); override;
@@ -1653,7 +1662,7 @@ end;
 
 { TvFormulaElement }
 
-function TvFormulaElement.CalculateHeight: Single;
+function TvFormulaElement.CalculateHeight(ADest: TFPCustomCanvas): Single;
 begin
   case Kind of
     //fekVariable,  // Text is the text of the variable
@@ -1663,7 +1672,7 @@ begin
     //fekSum,       // + symbol
     //fekPlusMinus, // The +/- symbol
     fekFraction: Result := 2.3;
-    fekRoot: Result := Formula.CalculateHeight();
+    fekRoot: Result := Formula.CalculateHeight(ADest);
     fekNumberWithPower,
     fekVariableWithPower: Result := 1.1;
     //fekParenteses: Result,// This is utilized to group elements. Inside it goes a Formula
@@ -1713,6 +1722,34 @@ begin
   end;
 end;
 
+procedure TvFormulaElement.Render(ADest: TFPCustomCanvas; ADestX: Integer;
+  ADestY: Integer; AMulX: Double; AMulY: Double);
+begin
+  case Kind of
+    fekVariable: ADest.TextOut(ADestX + Left, ADestY + Top, Text);
+    fekEqual:    ADest.TextOut(ADestX + Left, ADestY + Top, '=');
+    fekSubtraction: ADest.TextOut(ADestX + Left, ADestY + Top, '-');
+    fekMultiplication: ADest.TextOut(ADestX + Left, ADestY + Top, '×'); // Unicode times symbol
+    fekSum:      ADest.TextOut(ADestX + Left, ADestY + Top, '+');
+    fekPlusMinus:ADest.TextOut(ADestX + Left, ADestY + Top, '±');
+    fekLessThan: ADest.TextOut(ADestX + Left, ADestY + Top, '<');
+    fekLessOrEqualThan: ADest.TextOut(ADestX + Left, ADestY + Top, '≤');
+    fekGreaterThan: ADest.TextOut(ADestX + Left, ADestY + Top, '>');
+    fekGreaterOrEqualThan: ADest.TextOut(ADestX + Left, ADestY + Top, '≥');
+    {fekFraction:
+    begin
+      Formula.Render(ADest, ADestX, ADestY, AMulX, AMulY);
+      Formula.Render(ADest, ADestX, ADestY, AMulX, AMulY);
+    end;}
+    //fekRoot: Result := Formula.CalculateHeight();
+    //fekNumberWithPower,
+    //fekVariableWithPower: Result := 1.1;
+    //fekParenteses: Result,// This is utilized to group elements. Inside it goes a Formula
+    //fekParentesesWithPower: Result := 1.1;
+    //fekSomatory: Result := 1.5;
+  end;
+end;
+
 { TvFormula }
 
 procedure TvFormula.CallbackDeleteElement(data, arg: pointer);
@@ -1758,7 +1795,7 @@ begin
   FElements.Clear;
 end;
 
-function TvFormula.CalculateHeight: Single;
+function TvFormula.CalculateHeight(ADest: TFPCustomCanvas): Single;
 var
   lElement: TvFormulaElement;
 begin
@@ -1766,9 +1803,12 @@ begin
   lElement := GetFirstElement();
   while lElement <> nil do
   begin
-    Result := Max(Result, lElement.CalculateHeight());
+    Result := Max(Result, lElement.CalculateHeight(ADest));
     lElement := GetNextElement;
   end;
+  // Cache the result
+  if ADest <> nil then
+    Height := Round(Result * ADest.TextHeight('T'));
 end;
 
 function TvFormula.CalculateWidth(ADest: TFPCustomCanvas): Integer;
@@ -1782,6 +1822,38 @@ begin
     Result := Result + lElement.CalculateWidth(ADest) + SpacingBetweenElementsX;
     lElement := GetNextElement;
   end;
+  // Cache the result
+  Width := Result;
+end;
+
+procedure TvFormula.PositionElements(ADest: TFPCustomCanvas; ABaseX, ABaseY: Integer);
+var
+  lElement: TvFormulaElement;
+  lPosX: Integer = 0;
+  lPosY: Integer = 0;
+begin
+  CalculateHeight(ADest);
+  CalculateWidth(ADest);
+  Top := ABaseX;
+  Left := ABaseY;
+
+  // Then calculate the position of each element
+  lElement := GetFirstElement();
+  if lElement = nil then Exit;
+  while lElement <> nil do
+  begin
+    lElement.Left := Left + lPosX;
+    lPosX := lPosX + lElement.Width;
+    lElement.Top := Top;
+
+    if lElement.Formula <> nil then
+      lElement.Formula.PositionElements(ADest, lElement.Left, lElement.Top);
+
+    if lElement.BottomFormula <> nil then
+      lElement.BottomFormula.PositionElements(ADest, lElement.Left, lElement.Top);
+
+    lElement := GetNextElement();
+  end;
 end;
 
 procedure TvFormula.CalculateBoundingBox(ADest: TFPCustomCanvas; var ALeft, ATop, ARight,
@@ -1790,8 +1862,8 @@ begin
   ALeft := X;
   ATop := Y;
   ARight := CalculateWidth(ADest);
-  if ADest = nil then ABottom := CalculateHeight() * 15
-  else ABottom := CalculateHeight() * TCanvas(ADest).TextHeight('Źç');
+  if ADest = nil then ABottom := CalculateHeight(ADest) * 15
+  else ABottom := CalculateHeight(ADest) * TCanvas(ADest).TextHeight('Źç');
   ARight := X + ARight;
   ABottom := Y + ABottom;
 end;
@@ -1801,22 +1873,18 @@ procedure TvFormula.Render(ADest: TFPCustomCanvas; ADestX: Integer;
 var
   lElement: TvFormulaElement;
 begin
-  CalculateHeight();
-  CalculateWidth(ADest);
+  // First position all elements
+  PositionElements(ADest, 0, 0);
 
-  // First calculate the maximum width and height of all elements
+  // Now draw them all
   lElement := GetFirstElement();
   if lElement = nil then Exit;
   while lElement <> nil do
   begin
-    lElement.CalculateHeight();
-    lElement.CalculateWidth(ADest);
+    lElement.Render(ADest, ADestX, ADestY, AMulX, AMulY);
 
     lElement := GetNextElement();
   end;
-
-  // Then calculate the position of each element
-
 end;
 
 { TvVectorialPage }
