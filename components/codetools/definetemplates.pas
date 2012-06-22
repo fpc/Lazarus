@@ -53,7 +53,7 @@ interface
 
 uses
   Classes, SysUtils, LazUTF8, CodeToolsStrConsts, ExprEval, DirectoryCacher,
-  BasicCodeTools, Laz2_XMLCfg, AVL_Tree, CodeToolsStructs,
+  BasicCodeTools, Laz2_XMLCfg, lazutf8classes, AVL_Tree, CodeToolsStructs,
   Process, KeywordFuncLists, LinkScanner, FileProcs;
 
 const
@@ -1495,7 +1495,7 @@ var
   Filename: String;
   WorkDir: String;
   List: TStringList;
-  fs: TFileStream;
+  fs: TFileStreamUTF8;
 begin
   Result:=false;
   ConfigFiles:=nil;
@@ -1506,7 +1506,7 @@ begin
 
   // create empty file
   try
-    fs:=TFileStream.Create(UTF8ToSys(TestFilename),fmCreate);
+    fs:=TFileStreamUTF8.Create(TestFilename,fmCreate);
     fs.Free;
   except
     debugln(['RunFPCVerbose unable to create test file "'+TestFilename+'"']);

@@ -43,7 +43,7 @@ uses
   MemCheck,
   {$ENDIF}
   Classes, SysUtils, LazUTF8, LazDbgLog, LazFileCache, LazFileUtils,
-  AVL_Tree, CodeToolsStrConsts;
+  lazutf8classes, AVL_Tree, CodeToolsStrConsts;
 
 type
   TFPCStreamSeekType = int64;
@@ -667,12 +667,12 @@ end;
 -------------------------------------------------------------------------------}
 function ClearFile(const Filename: string; RaiseOnError: boolean): boolean;
 var
-  fs: TFileStream;
+  fs: TFileStreamUTF8;
 begin
   if FileExistsUTF8(Filename) then begin
     try
       InvalidateFileStateCache(Filename);
-      fs:=TFileStream.Create(UTF8ToSys(Filename),fmOpenWrite);
+      fs:=TFileStreamUTF8.Create(Filename,fmOpenWrite);
       fs.Size:=0;
       fs.Free;
     except
