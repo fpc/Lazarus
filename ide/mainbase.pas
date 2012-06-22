@@ -611,6 +611,7 @@ begin
       CreateMenuItem(SubParentMI,itmSourceInsertGPLNotice,'itmSourceInsertGPLNotice',lisMenuInsertGPLNotice);
       CreateMenuItem(SubParentMI,itmSourceInsertLGPLNotice,'itmSourceInsertLGPLNotice',lisMenuInsertLGPLNotice);
       CreateMenuItem(SubParentMI,itmSourceInsertModifiedLGPLNotice,'itmSourceInsertModifiedLGPLNotice',lisMenuInsertModifiedLGPLNotice);
+      CreateMenuItem(SubParentMI,itmSourceInsertMITNotice,'itmSourceInsertMITNotice',lisMenuInsertMITNotice);
       CreateMenuItem(SubParentMI,itmSourceInsertUsername,'itmSourceInsertUsername',lisMenuInsertUsername);
       CreateMenuItem(SubParentMI,itmSourceInsertDateTime,'itmSourceInsertDateTime',lisMenuInsertDateTime);
       CreateMenuItem(SubParentMI,itmSourceInsertChangeLogEntry,'itmSourceInsertChangeLogEntry',lisMenuInsertChangeLogEntry);
@@ -945,6 +946,7 @@ begin
     itmSourceInsertGPLNotice.Command:=GetCommand(ecInsertGPLNotice);
     itmSourceInsertLGPLNotice.Command:=GetCommand(ecInsertLGPLNotice);
     itmSourceInsertModifiedLGPLNotice.Command:=GetCommand(ecInsertModifiedLGPLNotice);
+    itmSourceInsertMITNotice.Command:=GetCommand(ecInsertMITNotice);
     itmSourceInsertUsername.Command:=GetCommand(ecInsertUserName);
     itmSourceInsertDateTime.Command:=GetCommand(ecInsertDateTime);
     itmSourceInsertChangeLogEntry.Command:=GetCommand(ecInsertChangeLogEntry);

@@ -280,6 +280,7 @@ type
     procedure mnuSourceInsertGPLNoticeClick(Sender: TObject);
     procedure mnuSourceInsertLGPLNoticeClick(Sender: TObject);
     procedure mnuSourceInsertModifiedLGPLNoticeClick(Sender: TObject);
+    procedure mnuSourceInsertMITNoticeClick(Sender: TObject);
     procedure mnuSourceInsertUsernameClick(Sender: TObject);
     procedure mnuSourceInsertDateTimeClick(Sender: TObject);
     procedure mnuSourceInsertChangeLogEntryClick(Sender: TObject);
@@ -914,7 +915,7 @@ type
 
     // edit menu
     procedure DoCommand(ACommand: integer); override;
-    procedure DoSourceEditorCommand(EditorCommand: integer);
+    procedure DoSourceEditorCommand(EditorCommand: integer; CheckFocus: boolean = true);
     procedure UpdateCustomToolsInMenu;
 
     // external tools
@@ -2641,6 +2642,7 @@ begin
     itmSourceInsertGPLNotice.OnClick:=@mnuSourceInsertGPLNoticeClick;
     itmSourceInsertLGPLNotice.OnClick:=@mnuSourceInsertLGPLNoticeClick;
     itmSourceInsertModifiedLGPLNotice.OnClick:=@mnuSourceInsertModifiedLGPLNoticeClick;
+    itmSourceInsertMITNotice.OnClick:=@mnuSourceInsertMITNoticeClick;
     itmSourceInsertUsername.OnClick:=@mnuSourceInsertUsernameClick;
     itmSourceInsertDateTime.OnClick:=@mnuSourceInsertDateTimeClick;
     itmSourceInsertChangeLogEntry.OnClick:=@mnuSourceInsertChangeLogEntryClick;
@@ -4050,6 +4052,7 @@ begin
       itmSourceInsertGPLNotice.Enabled:=Editable;
       itmSourceInsertLGPLNotice.Enabled:=Editable;
       itmSourceInsertModifiedLGPLNotice.Enabled:=Editable;
+      itmSourceInsertMITNotice.Enabled:=Editable;
       itmSourceInsertUsername.Enabled:=Editable;
       itmSourceInsertDateTime.Enabled:=Editable;
       itmSourceInsertChangeLogEntry.Enabled:=Editable;
@@ -17826,12 +17829,12 @@ end;
 
 procedure TMainIDE.OnApplicationQueryEndSession(var Cancel: Boolean);
 begin
- Cancel := False;
+  Cancel := False;
 end;
 
 procedure TMainIDE.OnApplicationEndSession(Sender: TObject);
 begin
- QuitIDE;
+  QuitIDE;
 end;
 
 procedure TMainIDE.OnScreenChangedForm(Sender: TObject; Form: TCustomForm);
@@ -18934,6 +18937,11 @@ begin
   DoSourceEditorCommand(ecInsertModifiedLGPLNotice);
 end;
 
+procedure TMainIDE.mnuSourceInsertMITNoticeClick(Sender: TObject);
+begin
+  DoSourceEditorCommand(ecInsertMITNotice);
+end;
+
 procedure TMainIDE.mnuSourceInsertUsernameClick(Sender: TObject);
 begin
   DoSourceEditorCommand(ecInsertUserName);
@@ -19084,22 +19092,33 @@ begin
   end;
 end;
 
-procedure TMainIDE.DoSourceEditorCommand(EditorCommand: integer);
+procedure TMainIDE.DoSourceEditorCommand(EditorCommand: integer; CheckFocus: boolean);
 var
   CurFocusControl: TWinControl;
+  ActiveSourceEditor: TSourceEditor;
+  ActiveUnitInfo: TUnitInfo;
 begin
-  // check that the currently focus is on the MainIDEBar or on the SourceEditor
-  CurFocusControl:=FindOwnerControl(GetFocus);
-  while (CurFocusControl<>nil) do begin
-    if (CurFocusControl=MainIDEBar) or (CurFocusControl is TSourceNotebook) then
-    begin
-      DoCommand(EditorCommand);
-      exit;
+  CurFocusControl:=Nil;
+  ActiveSourceEditor:=Nil;
+  // check if focus is on MainIDEBar or on SourceEditor
+  if CheckFocus then
+  begin
+    CurFocusControl:=FindOwnerControl(GetFocus);
+    while (CurFocusControl<>nil) do begin
+      if (CurFocusControl=MainIDEBar) or (CurFocusControl is TSourceNotebook) then
+        break;
+      CurFocusControl:=CurFocusControl.Parent;
     end;
-    CurFocusControl:=CurFocusControl.Parent;
   end;
-  // continue processing shortcut, not handled yet
-  MainIDEBar.mnuMainMenu.ShortcutHandled := false;
+  if Assigned(CurFocusControl) then
+  begin    // MainIDEBar or SourceNotebook has focus -> find active source editor
+    GetCurrentUnit(ActiveSourceEditor,ActiveUnitInfo);
+    if Assigned(ActiveSourceEditor) then
+      ActiveSourceEditor.DoEditorExecuteCommand(EditorCommand); // pass the command
+  end;
+  // Not passed to source editor -> continue processing shortcut, not handled yet
+  if (CurFocusControl=Nil) or (ActiveSourceEditor=Nil) then
+    MainIDEBar.mnuMainMenu.ShortcutHandled := false;
 end;
 
 procedure TMainIDE.DoInsertGUID;
