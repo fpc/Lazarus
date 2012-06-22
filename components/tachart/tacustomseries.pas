@@ -398,8 +398,8 @@ begin
     Legend.Multiplicity := lmSingle;
     GetLegendItemsBasic(AItems);
   finally
-    ParentChart.EnableRedrawing;
     Legend.Multiplicity := oldMultiplicity;
+    ParentChart.EnableRedrawing;
   end;
 end;
 

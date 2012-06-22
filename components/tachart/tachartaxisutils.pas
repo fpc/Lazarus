@@ -211,6 +211,7 @@ type
   public
     FAxis: TChartBasicAxis;
     FAxisTransf: TTransformFunc;
+    FClipRangeDelta: Integer;
     FClipRect: ^TRect;
     FDrawer: IChartDrawer;
     FPrevCoord: Integer;
@@ -357,7 +358,7 @@ var
   rmin, rmax: Integer;
 begin
   GetClipRange(rmin, rmax);
-  Result := InRange(ACoord, rmin + 1, rmax - 1);
+  Result := InRange(ACoord, rmin + FClipRangeDelta, rmax - FClipRangeDelta);
 end;
 
 procedure TAxisDrawHelper.LineZ(AP1, AP2: TPoint);

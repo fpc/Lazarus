@@ -1065,14 +1065,24 @@ begin
 end;
 
 procedure TCalculatedChartSource.ExtractItem(AIndex: Integer);
+
+  function YByOrder(AOrderIndex: Integer): Double;
+  begin
+    if AOrderIndex = 0 then
+      Result := FItem.Y
+    else
+      Result := FItem.YList[AOrderIndex - 1];
+  end;
+
 var
   t: TDoubleDynArray;
   i: Integer;
 begin
   FItem := Origin[AIndex]^;
-  SetLength(t, Length(FYOrder));
-  for i := 0 to High(FYOrder) do
-    t[i] := FItem.YList[FYOrder[i]];
+  SetLength(t, High(FYOrder));
+  for i := 1 to High(FYOrder) do
+    t[i - 1] := YByOrder(FYOrder[i]);
+  FItem.Y := YByOrder(FYOrder[0]);
   FItem.YList := t;
 end;
 
@@ -1194,8 +1204,7 @@ begin
 
   FOriginYCount := FOrigin.YCount;
   if ReorderYList = '' then begin
-    FYCount := FOrigin.YCount;
-    SetLength(FYOrder,  Max(FYCount - 1, 0));
+    SetLength(FYOrder,  FOriginYCount);
     for i := 0 to High(FYOrder) do
       FYOrder[i] := i;
   end
@@ -1205,15 +1214,14 @@ begin
       order.CommaText := ReorderYList;
       SetLength(FYOrder, order.Count);
       for i := 0 to High(FYOrder) do
-        FYOrder[i] :=
-          EnsureRange(StrToIntDef(order[i], 0), 0, FOrigin.YCount - 2);
-      FYCount := Length(FYOrder) + 1;
+        FYOrder[i] := EnsureRange(StrToIntDef(order[i], 0), 0, FOriginYCount - 1);
     finally
       order.Free;
     end;
   end;
+  FYCount := Length(FYOrder);
 
-  SetLength(FItem.YList, Length(FYOrder));
+  SetLength(FItem.YList, Max(High(FYOrder), 0));
   Changed(nil);
 end;
 

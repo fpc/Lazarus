@@ -31,7 +31,7 @@ type
     FBoundingBox: TRect;
     FBrushColor: TFPColor;
     FBrushStyle: TFPBrushStyle;
-    FCanvas: TvVectorialDocument;
+    FCanvas: TvVectorialPage;
     FFontSize: Integer;
     FPenColor: TFPColor;
 
@@ -45,7 +45,7 @@ type
     function SimpleTextExtent(const AText: String): TPoint; override;
     procedure SimpleTextOut(AX, AY: Integer; const AText: String); override;
   public
-    constructor Create(ACanvas: TvVectorialDocument);
+    constructor Create(ACanvas: TvVectorialPage);
   public
     procedure AddToFontOrientation(ADelta: Integer);
     procedure ClippingStart;
@@ -107,7 +107,7 @@ begin
   // Not implemented.
 end;
 
-constructor TFPVectorialDrawer.Create(ACanvas: TvVectorialDocument);
+constructor TFPVectorialDrawer.Create(ACanvas: TvVectorialPage);
 begin
   inherited Create;
   FCanvas := ACanvas;
@@ -123,7 +123,7 @@ var
   cx, cy, rx, ry: Integer;
 begin
   BoundingBoxToCenterAndHalfRadius(AX1, AY1, AX2, AY2, cx, cy, rx, ry);
-  FCanvas.AddEllipse(cx, InvertY(cy), 0, rx, ry, 0.0);
+  FCanvas.AddEllipse(cx, InvertY(cy), rx, ry, 0.0);
 end;
 
 procedure TFPVectorialDrawer.FillRect(AX1, AY1, AX2, AY2: Integer);

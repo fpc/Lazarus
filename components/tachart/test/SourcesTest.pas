@@ -200,23 +200,27 @@ end;
 
 procedure TCalculatedSourceTest.Reorder;
 var
-  i, j: Integer;
+  i: Integer;
 begin
   AssertEquals(3, FSource.YCount);
   FSource.ReorderYList := '2';
+  AssertEquals(1, FSource.YCount);
+  AssertEquals(104, FSource[0]^.Y);
+  AssertEquals(204, FSource[1]^.Y);
+  FSource.ReorderYList := '0,2';
   AssertEquals(2, FSource.YCount);
+  AssertEquals(102, FSource[0]^.Y);
   AssertEquals(104, FSource[0]^.YList[0]);
+  AssertEquals(202, FSource[1]^.Y);
   AssertEquals(204, FSource[1]^.YList[0]);
-  FSource.ReorderYList := '0,0,0';
-  AssertEquals(4, FSource.YCount);
-  AssertEquals(103, FSource[0]^.YList[0]);
-  AssertEquals(103, FSource[0]^.YList[1]);
-  AssertEquals(103, FSource[0]^.YList[2]);
+  FSource.ReorderYList := '1,1,1';
+  AssertEquals(3, FSource.YCount);
+  AssertEquals(103, FSource[0]^.Y);
+  AssertEquals([103, 103], FSource[0]^.YList);
   FSource.ReorderYList := '';
   for i := 0 to FSource.Count - 1 do begin
     AssertEquals(FOrigin[i]^.Y, FSource[i]^.Y);
-    for j := 0 to FSource.YCount - 2 do
-      AssertEquals(FOrigin[i]^.YList[j], FSource[i]^.YList[j]);
+    AssertEquals(FOrigin[i]^.YList, FSource[i]^.YList);
   end;
 end;
 

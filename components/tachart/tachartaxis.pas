@@ -455,6 +455,7 @@ procedure TChartAxis.Draw;
         FValueMax := Min(FAxisTransf(AMax), FValueMax);
         if FValueMax <= FValueMin then continue;
         ExpandRange(FValueMin, FValueMax, -EPS);
+        FClipRangeDelta := 1;
         try
           BeginDrawing;
           for m in minorMarks do
