@@ -1338,7 +1338,7 @@ begin
     Exclude(FStates,pgsApplyingValue);
   end;
   if FPropertyEditorHook=nil then
-    DoPaint(true)
+    Invalidate
   else
     FPropertyEditorHook.RefreshPropertyValues;
   //DebugLn(['TOICustomPropertyGrid.SetRowValue ',CurRow.Name,' ',CurRow.Editor.GetVisualValue,' ',Assigned(FOnModified)]);
@@ -1388,7 +1388,7 @@ begin
     RefreshValueEdit;
 
     //invalidate changed subproperties
-    DoPaint(True);
+    Invalidate;
   end;
 end;
 
@@ -2790,7 +2790,7 @@ end;
 procedure TOICustomPropertyGrid.RefreshPropertyValues;
 begin
   RefreshValueEdit;
-  DoPaint(true);
+  Invalidate;
 end;
 
 procedure TOICustomPropertyGrid.ScrollToActiveItem;
