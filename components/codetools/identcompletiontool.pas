@@ -198,6 +198,7 @@ type
   TIdentifierList = class
   private
     FContext: TFindContext;
+    FNewMemberVisibility: TCodeTreeNodeDesc;
     FContextFlags: TIdentifierListContextFlags;
     FStartAtom: TAtomPosition;
     FStartAtomBehind: TAtomPosition;
@@ -214,7 +215,6 @@ type
     FIdentSearchItem: TIdentifierListSearchItem;
     FPrefix: string;
     FStartContext: TFindContext;
-    procedure SetContextFlags(const AValue: TIdentifierListContextFlags);
     procedure SetHistory(const AValue: TIdentifierHistoryList);
     procedure UpdateFilteredList;
     function GetFilteredItems(Index: integer): TIdentifierListItem;
@@ -237,7 +237,9 @@ type
   public
     property Context: TFindContext read FContext write FContext;
     property ContextFlags: TIdentifierListContextFlags
-                                       read FContextFlags write SetContextFlags;
+                                       read FContextFlags write FContextFlags;
+    property NewMemberVisibility: TCodeTreeNodeDesc // identifier is a class member, e.g. a variable or a procedure name
+                     read FNewMemberVisibility write FNewMemberVisibility;
     property FilteredItems[Index: integer]: TIdentifierListItem
                                                           read GetFilteredItems;
     property History: TIdentifierHistoryList read FHistory write SetHistory;
@@ -290,7 +292,6 @@ type
 
 
   //----------------------------------------------------------------------------
-  { TCodeContextInfo }
 
   { TCodeContextInfoItem }
 
@@ -303,6 +304,8 @@ type
     ResultType: string;
     destructor Destroy; override;
   end;
+
+  { TCodeContextInfo }
 
   TCodeContextInfo = class
   private
@@ -556,13 +559,6 @@ begin
   FHistory:=AValue;
 end;
 
-procedure TIdentifierList.SetContextFlags(
-  const AValue: TIdentifierListContextFlags);
-begin
-  if FContextFlags=AValue then exit;
-  FContextFlags:=AValue;
-end;
-
 function TIdentifierList.GetFilteredItems(Index: integer): TIdentifierListItem;
 begin
   UpdateFilteredList;
@@ -600,6 +596,7 @@ var
 begin
   fContextFlags:=[];
   fContext:=CleanFindContext;
+  FNewMemberVisibility:=ctnNone;
   FStartBracketLvl:=0;
   fStartContext:=CleanFindContext;
   fStartContextPos.Code:=nil;
@@ -902,15 +899,26 @@ begin
     end;
   end else begin
     // identifier is in another unit
-    if (FoundContext.Node.Parent<>nil) then begin
-      case FoundContext.Node.Parent.Desc of
+    Node:=FoundContext.Node.Parent;
+    if (Node<>nil) and (Node.Desc in AllClassSubSections) then
+      Node:=Node.Parent;
+    if (Node<>nil) and (Node.Desc in AllClassBaseSections) then begin
+      //debugln(['TIdentCompletionTool.CollectAllIdentifiers Node=',Node.DescAsString,' Context=',CurrentIdentifierList.Context.Node.DescAsString,' CtxVis=',NodeDescToStr(CurrentIdentifierList.NewMemberVisibility)]);
+      if (CurrentIdentifierList.NewMemberVisibility<>ctnNone)
+      and (CurrentIdentifierList.NewMemberVisibility<Node.Desc)
+      and (CurrentIdentifierList.Context.Node.Desc
+        in ([ctnProcedure,ctnProcedureHead,ctnProperty]+AllClassSections))
+      then begin
+        // the user wants to override a method or property
+        // => ignore all with a higher visibility, because fpc does not allow
+        //    to downgrade the visibility and will give a hint when trying
+        //debugln(['TIdentCompletionTool.CollectAllIdentifiers skipping member, because it would downgrade: ',dbgstr(FoundContext.Tool.ExtractNode(FoundContext.Node,[]),1,30)]);
+        exit;
+      end;
+      case Node.Desc of
       ctnClassPrivate:
         begin
           // skip private definitions in other units
-          if (FoundContext.Node.Desc=ctnProperty) then begin
-            // private property: maybe the visibility was raised => continue
-            //debugln('TIdentCompletionTool.CollectAllIdentifiers MAYBE Private made Public '+StringToPascalConst(copy(FoundContext.Tool.Src,FoundContext.Node.StartPos,50)));
-          end;
           exit;
         end;
       ctnClassProtected:
@@ -2218,6 +2226,7 @@ begin
       ' Ident=',copy(Src,IdentStartPos,IdentEndPos-IdentStartPos));
     {$ENDIF}
     GatherContext:=CreateFindContext(Self,CursorNode);
+    CurrentIdentifierList.NewMemberVisibility:=GetClassVisibility(CursorNode);
     if CursorNode.Desc in [ctnUsesSection,ctnUseUnit] then begin
       GatherUnitNames;
       MoveCursorToCleanPos(IdentEndPos);

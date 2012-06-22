@@ -6577,7 +6577,7 @@ var
         end;
       end;
       if IsClassProp then
-        AccessFunc:='class '+AccessFunc;
+        AccessFunc:='class '+AccessFunc+' static;';
       // add new Insert Node
       if CompleteProperties then
         AddClassInsertion(CleanAccessFunc,AccessFunc,AccessParam,
@@ -6731,7 +6731,7 @@ var
                 +BeautifyCodeOpts.LineEnd
               +'end;';
             if IsClassProp then
-              ProcBody:='class '+ProcBody;
+              ProcBody:='class '+ProcBody+' static;';;
           end;
         end else begin
           // index, no param list
@@ -6741,7 +6741,7 @@ var
       end;
       // add new Insert Node
       if IsClassProp then
-        AccessFunc:='class '+AccessFunc;
+        AccessFunc:='class '+AccessFunc+' static;';
       if CompleteProperties then
         AddClassInsertion(CleanAccessFunc,AccessFunc,AccessParam,
                           ncpPrivateProcs,PropNode,ProcBody);
@@ -6792,7 +6792,7 @@ var
         CleanAccessFunc := UpperCaseStr(CleanAccessFunc + '('+IndexType+');');
       end;
       if IsClassProp then
-        AccessFunc:='class '+AccessFunc;
+        AccessFunc:='class '+AccessFunc+' static;';;
       // add new Insert Node
       if CompleteProperties then
         AddClassInsertion(CleanAccessFunc,AccessFunc,AccessParam,
