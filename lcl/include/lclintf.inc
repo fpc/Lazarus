@@ -34,7 +34,7 @@
 //##apiwiz##sps##   // Do not remove
 
 function AddEventHandler(AHandle: THandle; AFlags: dword; 
-  AEventHandler: TWaitHandleEvent; AData: PtrInt = 0): PEventHandler;
+  AEventHandler: TWaitHandleEvent; AData: PtrInt): PEventHandler;
 begin
   Result := WidgetSet.AddEventHandler(AHandle, AFlags, AEventHandler, AData);
 end;

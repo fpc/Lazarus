@@ -31,11 +31,17 @@ var
   D, T: TDateTime;
   S: String;
   YY, MM, DD, HH, NN, SS: Integer;
+  {$IF FPC_FULLVERSION>=20701}
+  IFD: TTiffIFD;
+  {$ELSE}
+  IFD: TTiffIDF;
+  {$ENDIF}
 begin
-  FArtist := TFPReaderTiff(AReader).FirstImg.Artist;
-  FCopyright := TFPReaderTiff(AReader).FirstImg.Copyright;
+  IFD:=TFPReaderTiff(AReader).FirstImg;
+  FArtist := IFD.Artist;
+  FCopyright := IFD.Copyright;
 
-  S := TFPReaderTiff(AReader).FirstImg.DateAndTime;
+  S := IFD.DateAndTime;
   // YYYY:MM:DD HH:MM:SS
   // 0000000001111111111
   // 1234567890123456789
@@ -50,21 +56,21 @@ begin
   then FDateTime := D + T
   else FDateTime := 0;
 
-  FDocumentName := TFPReaderTiff(AReader).FirstImg.DocumentName;
-  FHostComputer := TFPReaderTiff(AReader).FirstImg.HostComputer;
-  FImageDescription := TFPReaderTiff(AReader).FirstImg.ImageDescription;
-  FMake := TFPReaderTiff(AReader).FirstImg.Make_ScannerManufacturer;
-  FModel := TFPReaderTiff(AReader).FirstImg.Model_Scanner;
-  case TFPReaderTiff(AReader).FirstImg.ResolutionUnit of
+  FDocumentName := IFD.DocumentName;
+  FHostComputer := IFD.HostComputer;
+  FImageDescription := IFD.ImageDescription;
+  FMake := IFD.Make_ScannerManufacturer;
+  FModel := IFD.Model_Scanner;
+  case IFD.ResolutionUnit of
     1: FResolutionUnit := tuNone;
     2: FResolutionUnit := tuInch;
     3: FResolutionUnit := tuCentimeter;
   else
     FResolutionUnit := tuUnknown;
   end;
-  FSoftware := TFPReaderTiff(AReader).FirstImg.Software;
-  FXResolution := TFPReaderTiff(AReader).FirstImg.XResolution;
-  FYResolution := TFPReaderTiff(AReader).FirstImg.YResolution;
+  FSoftware := IFD.Software;
+  FXResolution := IFD.XResolution;
+  FYResolution := IFD.YResolution;
   inherited;
 end;
 

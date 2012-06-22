@@ -900,6 +900,9 @@ begin
         end;
       end;
 
+      Items.FCacheIndex := -1;
+      Items.FCacheItem := nil;
+
       FListItems.FItems.Sort(@CompareItems);
       TWSCustomListViewClass(WidgetSetClass).SetSort(Self, FSortType,
         FSortColumn, FSortDirection);
