@@ -1336,6 +1336,7 @@ type
     procedure SetMonitor(const AValue: TWatchesMonitor);
   protected
     procedure RequestData(AWatchValue: TCurrentWatchValue);
+    procedure DoStateChange(const AOldState: TDBGState); override; // workaround for state changes during TWatchValue.GetValue
     procedure InternalRequestData(AWatchValue: TCurrentWatchValue); virtual;
     procedure DoStateEnterPause; override;
     procedure DoStateLeavePause; override;
@@ -2979,6 +2980,7 @@ const
 
 var
   MDebuggerPropertiesList: TStringlist;
+  DbgStateChangeCounter: Integer = 0;  // workaround for state changes during TWatchValue.GetValue
 
 function dbgs(AState: TDBGState): String; overload;
 begin
@@ -4112,7 +4114,12 @@ begin
       i := FThreads.CurrentThreads.CurrentThreadId;
       j := FCallStack.CurrentCallStackList.EntriesForThreads[i].CurrentIndex;
       w := FWatches.CurrentWatches;
-      for k := 0 to w.Count - 1 do w[k].Values[i, j].Value;
+      k := 0;
+      while k < w.Count do begin
+        if CurSnap <> FCurrentSnapshot then exit; // Debugger did "run" in between
+        w[k].Values[i, j].Value;
+        inc(k);
+      end;
       if (not(FCurrentState in [dsPause, dsInternalPause])) or
          (Debugger = nil) or ( (not Debugger.IsIdle) and (not AForce) )
       then exit;
@@ -4708,19 +4715,22 @@ end;
 { TWatchValue }
 
 function TWatchValue.GetValue: String;
+var
+  i: Integer;
 begin
   if not FWatch.Enabled then begin
     Result := '<disabled>';
     exit;
   end;
+  i := DbgStateChangeCounter;  // workaround for state changes during TWatchValue.GetValue
+  if FValidity = ddsUnknown then begin
+    Result := '<evaluating>';
+    FValidity := ddsRequested;
+    RequestData;
+    if i <> DbgStateChangeCounter then exit; // in case the debugger did run.
+    // TODO: The watch can also be deleted by the user
+  end;
   case FValidity of
-    ddsUnknown:   begin
-        Result := '<evaluating>';
-        FValidity := ddsRequested;
-        RequestData;
-        if FValidity in [ddsValid, ddsInvalid, ddsError]
-        then Result := GetValue();
-      end;
     ddsRequested, ddsEvaluating: Result := '<evaluating>';
     ddsValid:                    Result := FValue;
     ddsInvalid:                  Result := '<invalid>';
@@ -4730,19 +4740,19 @@ begin
 end;
 
 function TWatchValue.GetTypeInfo: TDBGType;
+var
+  i: Integer;
 begin
-  if not FWatch.Enabled then begin
-    Result := nil;
+  Result := nil;
+  if not FWatch.Enabled then
     exit;
+  i := DbgStateChangeCounter;  // workaround for state changes during TWatchValue.GetValue
+  if FValidity = ddsUnknown then begin
+    FValidity := ddsRequested;
+    RequestData;
+    if i <> DbgStateChangeCounter then exit;
   end;
   case FValidity of
-    ddsUnknown: begin
-      Result := nil;
-      FValidity := ddsRequested;
-      RequestData;
-      if FValidity in [ddsValid, ddsInvalid, ddsError]
-      then Result := GetTypeInfo();
-    end;
     ddsRequested,
     ddsEvaluating: Result := nil;
     ddsValid:      Result := FTypeInfo;
@@ -4866,6 +4876,14 @@ begin
   if FNotifiedState  in [dsPause, dsInternalPause]
   then InternalRequestData(AWatchValue)
   else AWatchValue.SetValidity(ddsInvalid);
+end;
+
+procedure TWatchesSupplier.DoStateChange(const AOldState: TDBGState);
+begin
+  // workaround for state changes during TWatchValue.GetValue
+  inc(DbgStateChangeCounter);
+  if DbgStateChangeCounter = high(DbgStateChangeCounter) then DbgStateChangeCounter := 0;
+  inherited DoStateChange(AOldState);
 end;
 
 procedure TWatchesSupplier.InternalRequestData(AWatchValue: TCurrentWatchValue);
