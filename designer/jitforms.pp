@@ -103,6 +103,8 @@ type
     FOnReaderError: TJITReaderErrorEvent;
     FJITComponents: TFPList;
     FFlags: TJITCompListFlags;
+    fRenameList: TStringToStringTree;
+    fReadComponents: TFPList;
     procedure Notification(AComponent: TComponent; Operation: TOperation);
          override;
 
@@ -138,7 +140,8 @@ type
     procedure ReaderCreateComponent(Reader: TReader;
       ComponentClass: TComponentClass; var Component: TComponent);
     procedure ReaderReadComponent(Component: TComponent);
-    
+    procedure ReadComponentsProc(AComponent: TComponent);
+
     // some useful functions
     function GetItem(Index:integer):TComponent;
     function OnFindGlobalComponent(const AName:AnsiString):TComponent;
@@ -184,9 +187,9 @@ type
     procedure RenameComponentUnitname(JITComponent: TComponent;
                                       const NewUnitName: ShortString);
     // child components
-    function AddJITChildComponentFromStream(JITOwnerComponent: TComponent;
+    procedure AddJITChildComponentsFromStream(JITOwnerComponent: TComponent;
                             BinStream: TStream; ComponentClass: TComponentClass;
-                            ParentControl: TWinControl): TComponent;
+                            ParentControl: TWinControl; var NewComponents: TFPList);
     procedure ReadInlineJITChildComponent(Component: TComponent);
   public
     property OnReaderError: TJITReaderErrorEvent
@@ -701,11 +704,13 @@ begin
   inherited Create(TheOwner);
   FJITComponents:=TFPList.Create;
   FErrors:=TLRPositionLinks.Create;
+  fRenameList:=TStringToStringTree.Create(false);
 end;
 
 destructor TJITComponentList.Destroy;
 begin
   while FJITComponents.Count>0 do DestroyJITComponent(FJITComponents.Count-1);
+  FreeAndNil(fRenameList);
   FreeAndNil(FJITComponents);
   FreeAndNil(FErrors);
   inherited Destroy;
@@ -968,6 +973,7 @@ end;
 procedure TJITComponentList.InitReading;
 begin
   FFlags:=FFlags-[jclAutoRenameComponents];
+  fRenameList.Clear;
   FErrors.Clear;
   
   MyFindGlobalComponentProc:=@OnFindGlobalComponent;
@@ -1276,17 +1282,15 @@ begin
   DoRenameUnitNameOfClass(JITComponent.ClassType,NewUnitName);
 end;
 
-function TJITComponentList.AddJITChildComponentFromStream(
+procedure TJITComponentList.AddJITChildComponentsFromStream(
   JITOwnerComponent: TComponent; BinStream: TStream;
-  ComponentClass: TComponentClass; ParentControl: TWinControl): TComponent;
+  ComponentClass: TComponentClass; ParentControl: TWinControl;
+  var NewComponents: TFPList);
 var
   Reader: TReader;
-  NewComponent: TComponent;
   DestroyDriver: Boolean;
   Action: TModalResult;
 begin
-  Result:=nil;
-  NewComponent:=nil;
   if IndexOf(JITOwnerComponent)<0 then
     RaiseException('TJITComponentList.AddJITChildComponentFromStream');
   {$IFDEF VerboseJITForms}
@@ -1302,6 +1306,7 @@ begin
     {$IFDEF VerboseJITForms}
     debugln('[TJITComponentList.AddJITChildComponentFromStream] B');
     {$ENDIF}
+    fReadComponents:=NewComponents;
     try
       FCurReadJITComponent:=JITOwnerComponent;
       FCurReadClass:=JITOwnerComponent.ClassType;
@@ -1311,17 +1316,7 @@ begin
       {$IFDEF VerboseJITForms}
       debugln('[TJITComponentList.AddJITChildComponentFromStream] C1 ',ComponentClass.ClassName);
       {$ENDIF}
-      Reader.Root := FCurReadJITComponent;
-      Reader.Owner := FCurReadJITComponent;
-      Reader.Parent := ParentControl;
-      Reader.BeginReferences;
-      try
-        Reader.Driver.BeginRootComponent;
-        NewComponent:=Reader.ReadComponent(nil);
-        Reader.FixupReferences;
-      finally
-        Reader.EndReferences;
-      end;
+      Reader.ReadComponents(FCurReadJITComponent,ParentControl,@ReadComponentsProc);
 
       {$IFDEF VerboseJITForms}
       DebugLn('[TJITComponentList.AddJITChildComponentFromStream] C6 ');
@@ -1329,6 +1324,7 @@ begin
       {$ENDIF}
       DoFinishReading;
     finally
+      fReadComponents:=nil;
       UnregisterFindGlobalComponentProc(@MyFindGlobalComponent);
       Application.FindGlobalComponentEnabled:=true;
       if DestroyDriver then Reader.Driver.Free;
@@ -1340,7 +1336,6 @@ begin
     end;
   end;
   FCurReadStreamClass:=nil;
-  Result:=NewComponent;
 end;
 
 procedure TJITComponentList.ReadInlineJITChildComponent(Component: TComponent);
@@ -1400,6 +1395,24 @@ begin
   // create a TJITMethod
   JITMethod:=JITMethods.Add(JITComponent.ClassType,AName);
   Result:=JITMethod.Method;
+end;
+
+procedure TJITComponentList.ReadComponentsProc(AComponent: TComponent);
+var
+  aControl: TControl;
+  aCaption: TCaption;
+begin
+  if (AComponent.Name<>'') and (AComponent is TControl) then begin
+    aControl:=TControl(AComponent);
+    aCaption:=aControl.Caption;
+    if (aCaption<>'') and (fRenameList[aCaption]=AComponent.Name) then begin
+      // caption is the old name of the component
+      // component was renamed => change caption too
+      aControl.Caption:=AComponent.Name;
+    end;
+  end;
+  if fReadComponents<>nil then
+    fReadComponents.Add(AComponent);
 end;
 
 procedure TJITComponentList.Notification(AComponent: TComponent;
@@ -1752,18 +1765,30 @@ end;
 
 procedure TJITComponentList.ReaderSetName(Reader: TReader;
   Component: TComponent; var NewName: Ansistring);
+var
+  OldName: String;
 begin
 //  debugln('[TJITComponentList.ReaderSetName] OldName="'+Component.Name+'" NewName="'+NewName+'"');
   if jclAutoRenameComponents in FFlags then begin
+    OldName:=NewName;
     while FCurReadJITComponent.FindComponent(NewName)<>nil do
       NewName:=CreateNextIdentifier(NewName);
+    if OldName<>NewName then
+      fRenameList[OldName]:=NewName;
   end;
 end;
 
 procedure TJITComponentList.ReaderReferenceName(Reader: TReader;
   var RefName: Ansistring);
+var
+  NewName: String;
 begin
   //debugln('[TJITComponentList.ReaderReferenceName] Name='''+RefName+'''');
+  NewName:=fRenameList[RefName];
+  if NewName<>'' then begin
+    //debugln(['TJITComponentList.ReaderReferenceName Old="',RefName,'" New="',NewName,'"']);
+    RefName:=NewName;
+  end;
 end;
 
 procedure TJITComponentList.ReaderAncestorNotFound(Reader: TReader;

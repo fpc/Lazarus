@@ -530,9 +530,10 @@ type
     procedure OnDesignerSetDesigning(Sender: TObject; Component: TComponent;
                                      Value: boolean);
     procedure OnDesignerShowOptions(Sender: TObject);
-    procedure OnDesignerPasteComponent(Sender: TObject; LookupRoot: TComponent;
+    procedure OnDesignerPasteComponents(Sender: TObject; LookupRoot: TComponent;
                             TxtCompStream: TStream; ParentControl: TWinControl;
-                            var NewComponent: TComponent);
+                            var NewComponents: TFPList);
+    procedure OnDesignerPastedComponents(Sender: TObject; LookupRoot: TComponent);
     procedure OnDesignerPropertiesChanged(Sender: TObject);
     procedure OnDesignerPersistentDeleted(Sender: TObject;
                                           APersistent: TPersistent);
@@ -3800,7 +3801,8 @@ begin
                  @TComponentPalette(IDEComponentPalette).OnGetNonVisualCompIcon;
     OnGetSelectedComponentClass:=@OnDesignerGetSelectedComponentClass;
     OnModified:=@OnDesignerModified;
-    OnPasteComponent:=@OnDesignerPasteComponent;
+    OnPasteComponents:=@OnDesignerPasteComponents;
+    OnPastedComponents:=@OnDesignerPastedComponents;
     OnProcessCommand:=@OnProcessIDECommand;
     OnPropertiesChanged:=@OnDesignerPropertiesChanged;
     OnRenameComponent:=@OnDesignerRenameComponent;
@@ -7316,12 +7318,16 @@ var
   LoadResult: TModalResult;
   LoadingReferenceNames: TStringList;
 begin
+  //debugln(['TMainIDE.DoFixupComponentReferences START']);
   Result:=mrOk;
   CurRoot:=RootComponent;
   while CurRoot.Owner<>nil do
     CurRoot:=CurRoot.Owner;
   RootUnitInfo:=Project1.UnitWithComponent(CurRoot);
-  if RootUnitInfo=nil then exit;
+  if RootUnitInfo=nil then begin
+    debugln(['TMainIDE.DoFixupComponentReferences WARNING: component without unitinfo: ',DbgSName(RootComponent),' CurRoot=',DbgSName(CurRoot)]);
+    exit;
+  end;
 
   UnitFilenames:=nil;
   ComponentNameToUnitFilename:=nil;
@@ -7338,6 +7344,7 @@ begin
       // load referenced components
       ReferenceRootNames.Clear;
       GetFixupReferenceNames(CurRoot,ReferenceRootNames);
+      //debugln(['TMainIDE.DoFixupComponentReferences ',i,'/',RootComponents.Count,' ',DbgSName(CurRoot),' References=',ReferenceRootNames.Count]);
       for j:=0 to ReferenceRootNames.Count-1 do begin
         RefRootName:=ReferenceRootNames[j];
         ReferenceInstanceNames.Clear;
@@ -14694,16 +14701,16 @@ begin
   DoOpenIDEOptions(TFormEditorOptionsFrame);
 end;
 
-procedure TMainIDE.OnDesignerPasteComponent(Sender: TObject;
+procedure TMainIDE.OnDesignerPasteComponents(Sender: TObject;
   LookupRoot: TComponent; TxtCompStream: TStream; ParentControl: TWinControl;
-  var NewComponent: TComponent);
+  var NewComponents: TFPList);
 var
   NewClassName: String;
   ARegComp: TRegisteredComponent;
   BinCompStream: TMemoryStream;
+  c: Char;
 begin
   DebugLn('TMainIDE.OnDesignerPasteComponent A');
-  NewComponent:=nil;
 
   // check the class of the new component
   NewClassName:=FindLFMClassName(TxtCompStream);
@@ -14732,6 +14739,9 @@ begin
   try
     try
       LRSObjectTextToBinary(TxtCompStream,BinCompStream);
+      // always append an "object list end"
+      c:=#0;
+      BinCompStream.Write(c,1);
     except
       on E: Exception do begin
         IDEMessageDialog(lisConversionError,
@@ -14745,16 +14755,22 @@ begin
     BinCompStream.Position:=0;
 
     // create the component
-    NewComponent := FormEditor1.CreateChildComponentFromStream(BinCompStream,
-                     ARegComp.ComponentClass,LookupRoot,ParentControl);
-    if NewComponent=nil then begin
-      DebugLn('TMainIDE.OnDesignerPasteComponent FAILED');
+    FormEditor1.CreateChildComponentsFromStream(BinCompStream,
+                ARegComp.ComponentClass,LookupRoot,ParentControl,NewComponents);
+    if NewComponents.Count=0 then begin
+      DebugLn('TMainIDE.OnDesignerPasteComponent FAILED FormEditor1.CreateChildComponentFromStream');
       exit;
     end;
 
   finally
     BinCompStream.Free;
   end;
+end;
+
+procedure TMainIDE.OnDesignerPastedComponents(Sender: TObject;
+  LookupRoot: TComponent);
+begin
+  DoFixupComponentReferences(LookupRoot,[]);
 end;
 
 procedure TMainIDE.OnDesignerPropertiesChanged(Sender: TObject);

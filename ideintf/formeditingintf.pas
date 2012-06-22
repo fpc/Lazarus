@@ -123,11 +123,9 @@ type
                       Visible: boolean = true;
                       DisableAutoSize: boolean = false;
                       ContextObj: TObject = nil): TComponent; virtual; abstract;
-    function CreateChildComponentFromStream(BinStream: TStream;
-                                     ComponentClass: TComponentClass;
-                                     Root: TComponent;
-                                     ParentControl: TWinControl
-                                     ): TComponent; virtual; abstract;
+    procedure CreateChildComponentsFromStream(BinStream: TStream;
+                       ComponentClass: TComponentClass; Root: TComponent;
+                       ParentControl: TWinControl; NewComponents: TFPList); virtual; abstract;
 
     // ancestors
     function GetAncestorLookupRoot(AComponent: TComponent): TComponent; virtual; abstract;

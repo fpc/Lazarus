@@ -2675,6 +2675,13 @@ var
       Output.Write(s[1], Length(s));
   end;
 
+  procedure WriteWideString(const s: WideString);
+  begin
+    WriteLRSInteger(Output,Length(s));
+    if Length(s) > 0 then
+      Output.Write(s[1], Length(s)*2);
+  end;
+
   procedure WriteInteger(value: LongInt);
   begin
     if (value >= -128) and (value <= 127) then begin
@@ -2779,7 +2786,7 @@ var
           WriteLRSExtended(Output,flt);
           ParserNextToken;
         end;
-      toString,toWString:
+      toString:
         begin
           toStringBuf := parser.TokenString;
           //DebugLn(['ProcessValue toStringBuf="',toStringBuf,'" ',dbgstr(toStringBuf)]);
@@ -2799,6 +2806,20 @@ var
             Output.WriteByte(Ord(vaLString));
             WriteLongString(toStringBuf);
           end;
+        end;
+      toWString:
+        begin
+          toStringBuf := parser.TokenString;
+          //DebugLn(['ProcessValue toStringBuf="',toStringBuf,'" ',dbgstr(toStringBuf)]);
+          while ParserNextToken = '+' do
+          begin
+            ParserNextToken;   // Get next string fragment
+            if not (parser.Token in [toString,toWString]) then
+              parser.CheckToken(toString);
+            toStringBuf := toStringBuf + parser.TokenString;
+          end;
+          Output.WriteByte(Ord(vaWString));
+          WriteWideString(UTF8Decode(toStringBuf));
         end;
       toSymbol:
         begin
@@ -2913,13 +2934,11 @@ var
   begin
     if parser.TokenSymbolIs('OBJECT') then
       Flags :=0  { IsInherited := False }
+    else if parser.TokenSymbolIs('INHERITED') then
+      Flags := 1 { IsInherited := True; }
     else begin
-      if parser.TokenSymbolIs('INHERITED') then
-        Flags := 1 { IsInherited := True; }
-      else begin
-        parser.CheckTokenSymbol('INLINE');
-        Flags := 4;
-      end;
+      parser.CheckTokenSymbol('INLINE');
+      Flags := 4;
     end;
     ParserNextToken;
     parser.CheckToken(toSymbol);
@@ -2969,6 +2988,8 @@ var
     Output.WriteByte(0);        // Terminate property list
   end;
 
+var
+  Count: Integer;
 begin
   if Links<>nil then begin
     // sort links for LFM positions
@@ -2980,8 +3001,14 @@ begin
   OldThousandSeparator:=DefaultFormatSettings.ThousandSeparator;
   DefaultFormatSettings.ThousandSeparator:=',';
   try
-    Output.Write(FilerSignature[1], length(FilerSignature));
-    ProcessObject;
+    Count:=0;
+    repeat
+      Output.Write(FilerSignature[1], length(FilerSignature));
+      ProcessObject;
+      inc(Count);
+    until parser.TokenString='';
+    if Count>1 then
+      Output.WriteByte(0);        // Terminate object list
   finally
     parser.Free;
     DefaultFormatSettings.DecimalSeparator:=OldDecimalSeparator;
@@ -5736,4 +5763,6 @@ finalization
   FreeAndNil(PropertiesToSkip);
 
 end.
+
+
 

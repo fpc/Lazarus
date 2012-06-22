@@ -213,9 +213,9 @@ type
                       Visible: boolean = true;
                       DisableAutoSize: boolean = false;
                       ContextObj: TObject = nil): TComponent;
-    function CreateChildComponentFromStream(BinStream: TStream;
+    procedure CreateChildComponentsFromStream(BinStream: TStream;
                        ComponentClass: TComponentClass; Root: TComponent;
-                       ParentControl: TWinControl): TComponent; override;
+                       ParentControl: TWinControl; NewComponents: TFPList); override;
     function FixupReferences(AComponent: TComponent): TModalResult;
     procedure WriterFindAncestor(Writer: TWriter; Component: TComponent;
                                  const Name: string;
@@ -1435,21 +1435,19 @@ begin
   Result:=JITList[NewJITIndex];
 end;
 
-function TCustomFormEditor.CreateChildComponentFromStream(BinStream: TStream;
+procedure TCustomFormEditor.CreateChildComponentsFromStream(BinStream: TStream;
   ComponentClass: TComponentClass; Root: TComponent;
-  ParentControl: TWinControl): TComponent;
+  ParentControl: TWinControl; NewComponents: TFPList);
 var
   JITList: TJITComponentList;
 begin
-  Result:=nil;
-  
   JITList:=FindJITList(Root);
   if JITList=nil then
     RaiseException('TCustomFormEditor.CreateChildComponentFromStream ClassName='+
                    Root.ClassName);
 
-  Result:=JITList.AddJITChildComponentFromStream(
-                                   Root,BinStream,ComponentClass,ParentControl);
+  JITList.AddJITChildComponentsFromStream(
+                     Root,BinStream,ComponentClass,ParentControl,NewComponents);
 end;
 
 function TCustomFormEditor.FixupReferences(AComponent: TComponent): TModalResult;
