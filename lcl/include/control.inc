@@ -346,7 +346,7 @@ begin
     and (Parent=nil)
     and (Self is TCustomForm)
   then begin
-    DebugLn(['TControl.Adjustsize ',DbgSName(Self)]);
+    DebugLn(['TControl.AdjustSize ',DbgSName(Self)]);
   end;
   {$ENDIF}
   Include(FControlFlags, cfAutoSizeNeeded);
@@ -1394,9 +1394,8 @@ end;
 procedure TControl.DoBorderSpacingChange(Sender: TObject;
   InnerSpaceChanged: Boolean);
 begin
+  if Parent <> nil then Parent.InvalidatePreferredSize;
   AdjustSize;
-  if (csDesigning in ComponentState) and (Parent <> nil) then
-    Parent.Invalidate;
 end;
 
 function TControl.IsBorderSpacingInnerBorderStored: Boolean;
@@ -3486,12 +3485,14 @@ begin
   if (FLastResizeWidth<>Width) or (FLastResizeHeight<>Height)
   or (FLastResizeClientWidth<>ClientWidth)
   or (FLastResizeClientHeight<>ClientHeight) then begin
-    //if AnsiCompareText('NOTEBOOK',Name)=0 then
-    {DebugLn(['[TControl.Resize] ',Name,':',ClassName,
-    ' Last=',FLastResizeWidth,',',FLastResizeHeight,
-    ' LastClient=',FLastResizeClientWidth,',',FLastResizeClientHeight,
-    ' New=',Width,',',Height,
-    ' NewClient=',ClientWidth,',',ClientHeight]);}
+    {if CompareText('SubPanel',Name)=0 then begin
+      DebugLn(['[TControl.Resize] ',Name,':',ClassName,
+      ' Last=',FLastResizeWidth,',',FLastResizeHeight,
+      ' LastClient=',FLastResizeClientWidth,',',FLastResizeClientHeight,
+      ' New=',Width,',',Height,
+      ' NewClient=',ClientWidth,',',ClientHeight]);
+      DumpStack;
+    end;}
     FLastResizeWidth:=Width;
     FLastResizeHeight:=Height;
     FLastResizeClientWidth:=ClientWidth;

@@ -35,7 +35,7 @@ uses
   GLib2, Gtk2, Gdk2, Gdk2Pixbuf, Gtk2Int, Gtk2Def,
   {$ifdef UseStatusIcon}Gtk2Ext, {$endif}
   // LCL
-  LCLProc, ExtCtrls, Classes, Controls, SysUtils, Graphics, LCLType,
+  LCLProc, ExtCtrls, Classes, Controls, SysUtils, types, Graphics, LCLType,
   // widgetset
   WSExtCtrls, WSLCLClasses,
   Gtk2WSControls, Gtk2Proc, Gtk2Globals;
@@ -194,21 +194,23 @@ var
   Allocation: TGTKAllocation;
   bwidth: gint;
   Style: PGtkRCStyle;
+  BorderStyle: TBorderStyle;
+  r: TRect;
 begin
   Frame := gtk_frame_new(nil);
-  gtk_frame_set_shadow_type(PGtkFrame(Frame),
-    BorderStyleShadowMap[TCustomControl(AWinControl).BorderStyle]);
+  BorderStyle:=TCustomControl(AWinControl).BorderStyle;
+  gtk_frame_set_shadow_type(PGtkFrame(Frame),BorderStyleShadowMap[BorderStyle]);
 
-  case TCustomPanel(AWinControl).BorderStyle of
-    bsSingle:
-      bwidth:=1
-    else
-      bwidth:=0
+  case BorderStyle of
+  bsSingle:
+    bwidth:=1;
+  else
+    bwidth:=0
   end;
-  style := gtk_widget_get_modifier_style(Frame);
-  style^.xthickness := bwidth;
-  style^.ythickness := bwidth;
-  gtk_widget_modify_style(Frame, style);
+  Style := gtk_widget_get_modifier_style(Frame);
+  Style^.xthickness := bwidth;
+  Style^.ythickness := bwidth;
+  gtk_widget_modify_style(Frame, Style);
 
   {$IFDEF DebugLCLComponents}
   DebugGtkWidgets.MarkCreated(Frame, dbgsName(AWinControl));
@@ -236,6 +238,8 @@ begin
   Allocation.Width := AParams.Width;
   Allocation.Height := AParams.Height;
   gtk_widget_size_allocate(Frame, @Allocation);
+
+  //debugln(['TGtk2WSCustomPanel.CreateHandle Frame^.allocation=',dbgs(Frame^.allocation),' WidgetClient^.allocation=',dbgs(WidgetClient^.allocation)]);
 
   Set_RC_Name(AWinControl, Frame);
   SetCallbacks(Frame, WidgetInfo);

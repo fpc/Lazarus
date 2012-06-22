@@ -3934,6 +3934,17 @@ function TWinControl.GetClientRect: TRect;
     end;
   end;
 
+  procedure GetDefaults(var r: TRect);
+  begin
+    r:=inherited GetClientRect;
+    if csLoading in ComponentState then begin
+      if cfClientWidthLoaded in FControlFlags then
+        r.Right:=FLoadedClientSize.cx;
+      if cfClientHeightLoaded in FControlFlags then
+        r.Bottom:=FLoadedClientSize.cy;
+    end;
+  end;
+
 var
   InterfaceWidth, InterfaceHeight: integer;
 begin
@@ -3944,7 +3955,7 @@ begin
     then begin
       // the LCL interface provided a ClientRect
     end
-    else if HandleAllocated and (wcfBoundsRealized in FWinControlFlags) then
+    else if HandleAllocated then
     begin
       // update clientrect from interface
       LCLIntf.GetClientRect(Handle, Result);
@@ -3965,18 +3976,31 @@ begin
       //if Name=CheckClientRectName then
         debugln('TWinControl.GetClientRect ',DbgSName(Self),' InterfaceSize=',dbgs(InterfaceWidth),',',dbgs(InterfaceHeight),' Result=',dbgs(Result),' Bounds=',dbgs(BoundsRect));
       {$ENDIF}
-
-      Result.Right:=Width-(InterfaceWidth-Result.Right);
-      Result.Bottom:=Height-(InterfaceHeight-Result.Bottom);
+      if (Width<>InterfaceWidth)
+      or (Height<>InterfaceHeight) then
+      begin
+        // the LCL is not in sync with the interface
+        if wcfBoundsRealized in FWinControlFlags then
+        begin
+          // no bounds were sent yet to the interface and it didn't initialize
+          // them on its own
+          // => the client bounds from the interface are not yet ready
+          // they will probably change
+          // to avoid resizes it is better use the defaults
+          GetDefaults(Result);
+        end else begin
+          // -> adjust client rect based on LCL bounds
+          // for example: if the Width in LCL differ from the Width of the Interface
+          // object, then adjust the clientwidth accordingly
+          // this often anticipates later LM_SIZE messages from the interface
+          // and reduces resizes
+          inc(Result.Right,Width-InterfaceWidth);
+          inc(Result.Bottom,Height-InterfaceHeight);
+        end;
+      end;
     end else begin
       // no handle and no interface help => use defaults
-      Result:=inherited GetClientRect;
-      if csLoading in ComponentState then begin
-        if cfClientWidthLoaded in FControlFlags then
-          Result.Right:=FLoadedClientSize.cx;
-        if cfClientHeightLoaded in FControlFlags then
-          Result.Bottom:=FLoadedClientSize.cy;
-      end;
+      GetDefaults(Result);
     end;
     Result.Right:=Max(Result.Left,Result.Right);
     Result.Bottom:=Max(Result.Top,Result.Bottom);

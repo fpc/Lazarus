@@ -404,7 +404,7 @@ end;
 function DbgS(const ASize: TSize): string;
 begin
   {$IFnDEF USED_BY_LAZLOGGER_DUMMY}
-   Result := 'cx: ' + DbgS(ASize.cx) + ' cy: ' + DbgS(ASize.cy);
+  Result := 'x=' + DbgS(ASize.cx) + ',y=' + DbgS(ASize.cy);
   {$ELSE}
   Result := '';
   {$ENDIF}

@@ -1782,7 +1782,8 @@ begin
         finally
           Bmp.Free;
         end;
-      end;
+      end else
+        QTreeWidgetItem_setIcon(Item, 0, nil);
 
       // subitems
       for j := 0 to AItem.SubItems.Count - 1 do
