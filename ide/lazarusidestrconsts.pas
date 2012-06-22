@@ -5537,6 +5537,7 @@ resourcestring
   lisEditorMacros = 'Editor macros';
   lisPlay = 'Play';
   lisRecord = 'Record';
+  lisRepeat = 'Repeat';
 
 implementation
 

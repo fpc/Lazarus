@@ -1,36 +1,38 @@
 object MacroListView: TMacroListView
   Left = 390
-  Height = 240
+  Height = 270
   Top = 249
-  Width = 350
+  Width = 340
   Caption = 'MacroListView'
-  ClientHeight = 240
-  ClientWidth = 350
+  ClientHeight = 270
+  ClientWidth = 340
+  Constraints.MinHeight = 270
+  Constraints.MinWidth = 300
   LCLVersion = '1.1'
   object Panel1: TPanel
     AnchorSideRight.Control = pnlButtons
     Left = 0
-    Height = 194
+    Height = 224
     Top = 0
-    Width = 221
+    Width = 211
     Align = alLeft
     Anchors = [akTop, akLeft, akRight, akBottom]
     BorderSpacing.Right = 12
     BevelOuter = bvNone
-    ClientHeight = 194
-    ClientWidth = 221
+    ClientHeight = 224
+    ClientWidth = 211
     TabOrder = 0
     object lbRecordedView: TListView
       Left = 0
-      Height = 172
+      Height = 202
       Top = 22
-      Width = 221
+      Width = 211
       Align = alClient
       AutoWidthLastColumn = True
       BorderSpacing.Top = 6
       Columns = <      
         item
-          Width = 217
+          Width = 207
         end>
       RowSelect = True
       ShowColumnHeaders = False
@@ -42,7 +44,7 @@ object MacroListView: TMacroListView
       Left = 0
       Height = 16
       Top = 0
-      Width = 221
+      Width = 211
       Align = alTop
       Caption = 'lblRecordedTitle'
       ParentColor = False
@@ -52,8 +54,8 @@ object MacroListView: TMacroListView
   object ButtonPanel1: TButtonPanel
     Left = 6
     Height = 34
-    Top = 200
-    Width = 338
+    Top = 230
+    Width = 328
     OKButton.Name = 'OKButton'
     OKButton.DefaultCaption = True
     HelpButton.Name = 'HelpButton'
@@ -66,16 +68,16 @@ object MacroListView: TMacroListView
     ShowButtons = [pbClose]
   end
   object pnlButtons: TPanel
-    Left = 233
-    Height = 194
+    Left = 223
+    Height = 224
     Top = 0
     Width = 117
     Align = alRight
     AutoSize = True
     BevelOuter = bvNone
-    ClientHeight = 194
+    ClientHeight = 224
     ClientWidth = 117
-    Constraints.MinHeight = 150
+    Constraints.MinHeight = 220
     TabOrder = 2
     object btnSelect: TButton
       AnchorSideLeft.Control = pnlButtons
@@ -98,26 +100,6 @@ object MacroListView: TMacroListView
     end
     object btnRename: TButton
       AnchorSideLeft.Control = pnlButtons
-      AnchorSideTop.Control = btnPlay
-      AnchorSideTop.Side = asrBottom
-      AnchorSideRight.Control = pnlButtons
-      AnchorSideRight.Side = asrBottom
-      AnchorSideBottom.Side = asrBottom
-      Left = 6
-      Height = 25
-      Top = 68
-      Width = 105
-      Anchors = [akTop, akLeft, akRight]
-      AutoSize = True
-      BorderSpacing.Left = 6
-      BorderSpacing.Top = 6
-      BorderSpacing.Right = 6
-      Caption = 'btnRename'
-      OnClick = btnRenameClick
-      TabOrder = 1
-    end
-    object btnPlay: TButton
-      AnchorSideLeft.Control = pnlButtons
       AnchorSideTop.Control = btnSelect
       AnchorSideTop.Side = asrBottom
       AnchorSideRight.Control = pnlButtons
@@ -132,6 +114,26 @@ object MacroListView: TMacroListView
       BorderSpacing.Left = 6
       BorderSpacing.Top = 6
       BorderSpacing.Right = 6
+      Caption = 'btnRename'
+      OnClick = btnRenameClick
+      TabOrder = 1
+    end
+    object btnPlay: TButton
+      AnchorSideLeft.Control = pnlButtons
+      AnchorSideTop.Control = btnRename
+      AnchorSideTop.Side = asrBottom
+      AnchorSideRight.Control = pnlButtons
+      AnchorSideRight.Side = asrBottom
+      AnchorSideBottom.Control = chkRepeat
+      Left = 6
+      Height = 25
+      Top = 85
+      Width = 105
+      Anchors = [akLeft, akRight, akBottom]
+      AutoSize = True
+      BorderSpacing.Left = 6
+      BorderSpacing.Right = 6
+      BorderSpacing.Bottom = 3
       Caption = 'btnPlay'
       OnClick = btnPlayClick
       TabOrder = 2
@@ -142,11 +144,10 @@ object MacroListView: TMacroListView
       AnchorSideTop.Side = asrBottom
       AnchorSideRight.Control = pnlButtons
       AnchorSideRight.Side = asrBottom
-      AnchorSideBottom.Control = pnlButtons
-      AnchorSideBottom.Side = asrBottom
+      AnchorSideBottom.Control = btnRecordStop
       Left = 6
       Height = 25
-      Top = 163
+      Top = 168
       Width = 105
       Anchors = [akLeft, akRight, akBottom]
       AutoSize = True
@@ -163,20 +164,60 @@ object MacroListView: TMacroListView
       AnchorSideTop.Side = asrBottom
       AnchorSideRight.Control = pnlButtons
       AnchorSideRight.Side = asrBottom
-      AnchorSideBottom.Control = btnRecord
+      AnchorSideBottom.Control = pnlButtons
+      AnchorSideBottom.Side = asrBottom
       Left = 6
       Height = 25
-      Top = 132
+      Top = 199
       Width = 105
       Anchors = [akLeft, akRight, akBottom]
       AutoSize = True
       BorderSpacing.Left = 6
       BorderSpacing.Right = 6
-      BorderSpacing.Bottom = 6
       Caption = 'btnRecordStop'
       OnClick = btnRecordStopClick
       TabOrder = 4
-      Visible = False
+    end
+    object chkRepeat: TCheckBox
+      AnchorSideLeft.Control = pnlButtons
+      AnchorSideTop.Control = btnPlay
+      AnchorSideTop.Side = asrBottom
+      AnchorSideRight.Control = pnlButtons
+      AnchorSideRight.Side = asrBottom
+      AnchorSideBottom.Control = edRepeat
+      Left = 6
+      Height = 19
+      Top = 113
+      Width = 105
+      Anchors = [akLeft, akRight, akBottom]
+      BorderSpacing.Left = 6
+      BorderSpacing.Top = 3
+      BorderSpacing.Right = 6
+      BorderSpacing.Bottom = 3
+      Caption = 'chkRepeat'
+      TabOrder = 5
+    end
+    object edRepeat: TSpinEdit
+      AnchorSideLeft.Control = pnlButtons
+      AnchorSideTop.Control = chkRepeat
+      AnchorSideTop.Side = asrBottom
+      AnchorSideRight.Control = pnlButtons
+      AnchorSideRight.Side = asrBottom
+      AnchorSideBottom.Control = btnRecord
+      Left = 6
+      Height = 23
+      Top = 135
+      Width = 105
+      Anchors = [akLeft, akRight, akBottom]
+      AutoSize = False
+      BorderSpacing.Left = 6
+      BorderSpacing.Top = 3
+      BorderSpacing.Right = 6
+      BorderSpacing.Bottom = 10
+      MaxValue = 999
+      MinValue = 1
+      TabOrder = 6
+      Value = 1
     end
   end
 end

@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, SynMacroRecorder, SynEdit, Forms, Controls, Graphics, Dialogs,
-  StdCtrls, ButtonPanel, ComCtrls, ExtCtrls, MainBar, IDEWindowIntf, IDEImagesIntf,
+  StdCtrls, ButtonPanel, ComCtrls, ExtCtrls, Spin, MainBar, IDEWindowIntf, IDEImagesIntf,
   LazarusIDEStrConsts, SrcEditorIntf;
 
 type
@@ -43,11 +43,13 @@ type
     btnSelect: TButton;
     btnRename: TButton;
     ButtonPanel1: TButtonPanel;
+    chkRepeat: TCheckBox;
     lblRecordedTitle: TLabel;
     lbRecordedView: TListView;
     Panel1: TPanel;
     pnlButtons: TPanel;
     RenameButton: TPanelBitBtn;
+    edRepeat: TSpinEdit;
     procedure btnPlayClick(Sender: TObject);
     procedure btnRecordClick(Sender: TObject);
     procedure btnRecordStopClick(Sender: TObject);
@@ -58,6 +60,7 @@ type
     FImageRec: Integer;
     FImagePlay: Integer;
     FImageSel: Integer;
+    FIsPlaying: Boolean;
     procedure DoOnMacroListChange(Sender: TObject);
     procedure UpdateDisplay;
     procedure UpdateButtons;
@@ -135,14 +138,32 @@ begin
 end;
 
 procedure TMacroListView.btnPlayClick(Sender: TObject);
+var
+  i: Integer;
 begin
   if EditorMacroRecorder.State <> msStopped then exit;
   if lbRecordedView.ItemIndex < 0 then exit;
 
-  EditorMacroRecorder.AssignEventsFrom(EditorMacroList.Macros[lbRecordedView.ItemIndex]);
-  EditorMacroRecorder.PlaybackMacro(TCustomSynEdit(SourceEditorManagerIntf.ActiveEditor.EditorControl));
+  i := 1;
+  if chkRepeat.Enabled then i := edRepeat.Value;
+  FIsPlaying := True;
+  UpdateButtons;
+  Application.ProcessMessages;
 
-  EditorMacroRecorder.AssignEventsFrom(CurrentActiveMacro);
+  try
+    EditorMacroRecorder.AssignEventsFrom(EditorMacroList.Macros[lbRecordedView.ItemIndex]);
+    while i > 0 do begin
+      EditorMacroRecorder.PlaybackMacro(TCustomSynEdit(SourceEditorManagerIntf.ActiveEditor.EditorControl));
+      Application.ProcessMessages;
+      dec(i);
+      if not FIsPlaying then break;
+    end;
+  finally
+    FIsPlaying := False;
+    EditorMacroRecorder.AssignEventsFrom(CurrentActiveMacro);
+    UpdateButtons;
+  end;
+
 end;
 
 procedure TMacroListView.btnRecordClick(Sender: TObject);
@@ -163,6 +184,7 @@ end;
 
 procedure TMacroListView.btnRecordStopClick(Sender: TObject);
 begin
+  FIsPlaying := False;
   EditorMacroRecorder.Stop;
 end;
 
@@ -220,13 +242,18 @@ begin
 end;
 
 procedure TMacroListView.UpdateButtons;
+var
+  IsStopped: Boolean;
 begin
-  btnSelect.Enabled := (EditorMacroRecorder.State = msStopped) and (lbRecordedView.ItemIndex >= 0);
-  btnRename.Enabled := (lbRecordedView.ItemIndex >= 0);
-  btnPlay.Enabled := (lbRecordedView.ItemIndex >= 0);
+  IsStopped := (EditorMacroRecorder.State = msStopped);
+  btnSelect.Enabled := IsStopped and (lbRecordedView.ItemIndex >= 0) and (not FIsPlaying);
+  btnRename.Enabled := IsStopped and (lbRecordedView.ItemIndex >= 0) and (not FIsPlaying);
+  btnPlay.Enabled := IsStopped and (lbRecordedView.ItemIndex >= 0) and (not FIsPlaying);
+  chkRepeat.Enabled := IsStopped and (not FIsPlaying);
+  edRepeat.Enabled := IsStopped and (not FIsPlaying);
 
-  btnRecord.Enabled := (EditorMacroRecorder.State in [msStopped, msPaused, msRecording]);
-  btnRecordStop.Visible := (EditorMacroRecorder.State in [msPaused, msRecording]);
+  btnRecord.Enabled := (EditorMacroRecorder.State in [msStopped, msPaused, msRecording]) and (not FIsPlaying);
+  btnRecordStop.Enabled := (not IsStopped) or FIsPlaying;
 
   if (EditorMacroRecorder.State = msRecording) then
     btnRecord.Caption := lisPause
@@ -250,12 +277,14 @@ begin
   btnSelect.Caption := lisMenuSelect;
   btnRename.Caption := lisRename2;
   btnPlay.Caption := lisPlay;
+  chkRepeat.Caption := lisRepeat;
   btnRecord.Caption := lisRecord;
   btnRecordStop.Caption := lisStop;
   lbRecordedView.SmallImages := IDEImages.Images_16;
   FImageRec := IDEImages.LoadImage(16, 'Record');  // red dot
   FImagePlay := IDEImages.LoadImage(16, 'menu_run');  // green triangle
   FImageSel := IDEImages.LoadImage(16, 'arrow_right');
+  FIsPlaying := False;
 
   UpdateButtons;
 end;
