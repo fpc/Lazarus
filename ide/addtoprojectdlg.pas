@@ -566,7 +566,7 @@ begin
   if FilenameIsPascalUnit(NewFilename) then begin
     // check unitname is valid pascal identifier
     NewUnitName:=ExtractFileNameOnly(NewFilename);
-    if (NewUnitName='') or not (IsValidIdent(NewUnitName)) then begin
+    if (NewUnitName='') or not (IsValidUnitName(NewUnitName)) then begin
       MessageDlg(lisProjAddInvalidPascalUnitName,
         Format(lisProjAddTheUnitNameIsNotAValidPascalIdentifier, ['"',
           NewUnitName, '"']),

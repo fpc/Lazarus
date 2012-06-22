@@ -4568,6 +4568,7 @@ var
   PreferredFilename: string;
   PkgLink: TPackageLink;
   IgnoreFiles: TFilenameToStringTree;
+  i: Integer;
 begin
   if Dependency.LoadPackageResult=lprUndefined then begin
     //debugln(['TLazPackageGraph.OpenDependency ',Dependency.PackageName,' ',Dependency.DefaultFilename,' Prefer=',Dependency.PreferDefaultFilename]);
@@ -4639,6 +4640,17 @@ begin
                          AppendPathDelim(CurDir)+Dependency.PackageName+'.lpk');
             if FileExistsCached(AFilename) then begin
               OpenFile(AFilename);
+            end;
+          end;
+        end;
+        // try a package that provides this package
+        if Dependency.LoadPackageResult=lprNotFound then begin
+          for i:=0 to Count-1 do begin
+            APackage:=Packages[i];
+            if APackage=Dependency.Owner then continue;
+            if APackage.ProvidesPackage(Dependency.PackageName) then begin
+              Dependency.RequiredPackage:=APackage;
+              Dependency.LoadPackageResult:=lprSuccess;
             end;
           end;
         end;

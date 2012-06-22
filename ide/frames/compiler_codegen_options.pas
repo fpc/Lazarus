@@ -8,7 +8,7 @@ uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, StdCtrls,
   ExtCtrls, LCLProc,
   DefineTemplates, IDEOptionsIntf, Project, CompilerOptions,
-  LazarusIDEStrConsts;
+  LazarusIDEStrConsts, PackageDefs;
 
 type
 
@@ -45,6 +45,8 @@ type
     TargetCPUComboBox: TComboBox;
     TargetOSComboBox: TComboBox;
     TargetProcessorProcComboBox: TComboBox;
+  private
+    fIsPackage: boolean;
   public
     function GetTitle: string; override;
     procedure Setup(ADialog: TAbstractOptionsEditorDialog); override;
@@ -225,6 +227,7 @@ procedure TCompilerCodegenOptionsFrame.ReadSettings(AOptions: TAbstractIDEOption
 var
   i: longint;
 begin
+  fIsPackage:=AOptions is TPkgCompilerOptions;
   with AOptions as TBaseCompilerOptions do
   begin
     chkSmartLinkUnit.Checked := SmartLinkUnit;
@@ -240,18 +243,28 @@ begin
     edtHeapSize.Text := IntToStr(HeapSize);
     edtStackSize.Text := IntToStr(StackSize);
 
-    i := TargetOSComboBox.Items.IndexOf(TargetOS);
-    if i < 0 then
-      i := 0;  // 0 is default
-    TargetOSComboBox.ItemIndex := i;
-    TargetOSComboBox.Text := TargetOS;
-    i := TargetCPUComboBox.Items.IndexOf(TargetCPU);
-    if i < 0 then
-      i := 0;  // 0 is default
-    TargetCPUComboBox.ItemIndex := i;
-    TargetCPUComboBox.Text := TargetCPU;
+    if fIsPackage then begin
+      grpTargetPlatform.Enabled:=false;
+      TargetOSComboBox.ItemIndex := 0;
+      TargetOSComboBox.Text := 'default';
+      TargetCPUComboBox.ItemIndex := 0;
+      TargetCPUComboBox.Text := 'default';
+      TargetProcessorProcComboBox.Text := 'default';
+    end else begin
+      grpTargetPlatform.Enabled:=true;
+      i := TargetOSComboBox.Items.IndexOf(TargetOS);
+      if i < 0 then
+        i := 0;  // 0 is default
+      TargetOSComboBox.ItemIndex := i;
+      TargetOSComboBox.Text := TargetOS;
+      i := TargetCPUComboBox.Items.IndexOf(TargetCPU);
+      if i < 0 then
+        i := 0;  // 0 is default
+      TargetCPUComboBox.ItemIndex := i;
+      TargetCPUComboBox.Text := TargetCPU;
 
-    TargetProcessorProcComboBox.Text := ProcessorToCaption(TargetProcessor);
+      TargetProcessorProcComboBox.Text := ProcessorToCaption(TargetProcessor);
+    end;
 
     chkOptVarsInReg.Checked := VariablesInRegisters;
     chkOptUncertain.Checked := UncertainOptimizations;
@@ -296,17 +309,21 @@ begin
     else
       StackSize := hs;
 
-    NewTargetOS := TargetOSComboBox.Text;
-    if TargetOSComboBox.Items.IndexOf(NewTargetOS) <= 0 then
-      NewTargetOS := '';
-    TargetOS := CaptionToOS(NewTargetOS);
+    if not fIsPackage then
+    begin
+      NewTargetOS := TargetOSComboBox.Text;
+      if TargetOSComboBox.Items.IndexOf(NewTargetOS) <= 0 then
+        NewTargetOS := '';
+      TargetOS := CaptionToOS(NewTargetOS);
 
-    NewTargetCPU := TargetCPUComboBox.Text;
-    if TargetCPUComboBox.Items.IndexOf(NewTargetCPU) <= 0 then
-      NewTargetCPU := '';
-    TargetCPU := CaptionToCPU(NewTargetCPU);
+      NewTargetCPU := TargetCPUComboBox.Text;
+      if TargetCPUComboBox.Items.IndexOf(NewTargetCPU) <= 0 then
+        NewTargetCPU := '';
+      TargetCPU := CaptionToCPU(NewTargetCPU);
 
-    TargetProcessor := CaptionToProcessor(TargetProcessorProcComboBox.Text);
+      TargetProcessor := CaptionToProcessor(TargetProcessorProcComboBox.Text);
+    end;
+
     VariablesInRegisters := chkOptVarsInReg.Checked;
     UncertainOptimizations := chkOptUncertain.Checked;
     SmallerCode := chkOptSmaller.Checked;
