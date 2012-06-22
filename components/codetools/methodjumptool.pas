@@ -387,10 +387,6 @@ begin
       {$IFDEF CTDEBUG}
       DebugLn('TMethodJumpingCodeTool.FindJumpPoint G Gather method definitions ...');
       {$ENDIF}
-      while (StartNode<>nil) and (StartNode.FirstChild=nil) do
-        StartNode:=StartNode.NextBrother;
-      if StartNode=nil then exit;
-      StartNode:=StartNode.FirstChild;
       {$IFDEF CTDEBUG}
       DebugLn('TMethodJumpingCodeTool.FindJumpPoint H Gather SearchForNodes ...');
       {$ENDIF}
@@ -555,7 +551,6 @@ begin
           MoveCursorToNodeStart(ClassNode);
           RaiseException('method "'+ProcName+'" has no declaration');
         end;
-        StartNode:=StartNode.FirstChild;
         // search method with same name and param list
         Result:=FindBestProcNode(ProcNode,[phpWithoutClassName,phpInUpperCase],
                                  StartNode,[phpInUpperCase],false);

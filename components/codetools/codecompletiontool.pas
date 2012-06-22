@@ -418,17 +418,13 @@ begin
   // search in new nodes, which will be inserted
   ANodeExt:=FirstInsert;
   while ANodeExt<>nil do begin
-    if CompareTextIgnoringSpace(ANodeExt.Txt,NameAndParamsUpCase,true)=0 then begin
-      Result:=true;
-      exit;
-    end;
+    if CompareTextIgnoringSpace(ANodeExt.Txt,NameAndParamsUpCase,true)=0 then
+      exit(true);
     ANodeExt:=ANodeExt.Next;
   end;
-  if not Result then begin
-    // ToDo: check ancestor procs too
-    // search in current class
-    Result:=(FindProcNode(FCompletingStartNode,NameAndParamsUpCase,[phpInUpperCase])<>nil);
-  end;
+  // ToDo: check ancestor procs too
+  // search in current class
+  Result:=(FindProcNode(FCompletingStartNode,NameAndParamsUpCase,[phpInUpperCase])<>nil);
 end;
 
 procedure TCodeCompletionCodeTool.SetCodeCompleteClassNode(const AClassNode: TCodeTreeNode);
@@ -513,17 +509,13 @@ begin
   // search in new nodes, which will be inserted
   ANodeExt:=FirstInsert;
   while ANodeExt<>nil do begin
-    if CompareTextIgnoringSpace(ANodeExt.Txt,UpperName,true)=0 then begin
-      Result:=true;
-      exit;
-    end;
+    if CompareTextIgnoringSpace(ANodeExt.Txt,UpperName,true)=0 then
+      exit(true);
     ANodeExt:=ANodeExt.Next;
   end;
-  if not Result then begin
-    // ToDo: check ancestor vars too
-    // search in current class
-    Result:=(FindVarNode(FCompletingStartNode,UpperName)<>nil);
-  end;
+  // ToDo: check ancestor vars too
+  // search in current class
+  Result:=(FindVarNode(FCompletingStartNode,UpperName)<>nil);
 end;
 
 procedure TCodeCompletionCodeTool.AddClassInsertion(
@@ -1655,8 +1647,8 @@ var
       AddrOperatorPos:=-1;
     // check assignment operator :=
     if not AtomIs(':=') then exit;
-    AssignmentOperator:=CurPos.StartPos;
     ReadPriorAtom;
+    AssignmentOperator:=CurPos.EndPos;
     // check event name
     if not AtomIsIdentifier then exit;
     PropVarAtom:=CurPos;
@@ -6290,11 +6282,12 @@ var
     end;
   end;
 
-var AccessParam, AccessParamPrefix, CleanAccessFunc, AccessFunc,
-  CleanParamList, ParamList, PropType, ProcBody, VariableName: string;
+var
+  CleanAccessFunc, CleanParamList, ParamList, PropType, VariableName: string;
   IsClassProp: boolean;
   InsertPos: integer;
   BeautifyCodeOpts: TBeautifyCodeOptions;
+  IndexType: string;
   
   procedure InitCompleteProperty;
   var APart: TPropPart;
@@ -6303,6 +6296,7 @@ var AccessParam, AccessParamPrefix, CleanAccessFunc, AccessFunc,
       Parts[APart].StartPos:=-1;
       PartIsAtom[APart]:=true;
     end;
+    IndexType:='Integer';
   end;
   
   procedure ReadPropertyKeywordAndName;
@@ -6450,6 +6444,10 @@ var AccessParam, AccessParamPrefix, CleanAccessFunc, AccessFunc,
   procedure CompleteReadSpecifier;
   var
     IsGetterFunc: boolean;
+    VarCode: String;
+    AccessParamPrefix: String;
+    AccessParam: String;
+    AccessFunc: String;
   begin
     // check read specifier
     VariableName:='';
@@ -6511,22 +6509,23 @@ var AccessParam, AccessParamPrefix, CleanAccessFunc, AccessFunc,
       VariableName:=AccessParam;
 
     // check if read access method exists
-    if (Parts[ppParamList].StartPos>0) then begin
-      if (Parts[ppIndexWord].StartPos<1) then begin
+    if (Parts[ppIndexWord].StartPos<1) then begin
+      if (Parts[ppParamList].StartPos>0) then begin
         // param list, no index
         CleanAccessFunc:=UpperCaseStr(AccessParam)+'('+CleanParamList+');';
       end else begin
-        // index + param list
-        CleanAccessFunc:=UpperCaseStr(AccessParam)+'(INTEGER;'
-                        +CleanParamList+');';
-      end;
-    end else begin
-      if (Parts[ppIndexWord].StartPos<1) then begin
         // no param list, no index
         CleanAccessFunc:=UpperCaseStr(AccessParam)+';';
+      end;
+    end else begin
+      // ToDo: find out type of index
+      if (Parts[ppParamList].StartPos>0) then begin
+        // index + param list
+        CleanAccessFunc:=UpperCaseStr(AccessParam+'('+IndexType+';')
+                        +CleanParamList+');';
       end else begin
         // index, no param list
-        CleanAccessFunc:=UpperCaseStr(AccessParam)+'(INTEGER);';
+        CleanAccessFunc:=UpperCaseStr(AccessParam+'('+IndexType+');');
       end;
     end;
     if ProcExistsInCodeCompleteClass(CleanAccessFunc) then exit;
@@ -6565,7 +6564,7 @@ var AccessParam, AccessParamPrefix, CleanAccessFunc, AccessFunc,
         end else begin
           // index + param list
           AccessFunc:='function '+AccessParam
-                      +'(AIndex:Integer;'+ParamList+'):'+PropType+';';
+                      +'(AIndex:'+IndexType+';'+ParamList+'):'+PropType+';';
         end;
       end else begin
         if (Parts[ppIndexWord].StartPos<1) then begin
@@ -6574,7 +6573,7 @@ var AccessParam, AccessParamPrefix, CleanAccessFunc, AccessFunc,
         end else begin
           // index, no param list
           AccessFunc:='function '+AccessParam
-                      +'(AIndex:Integer):'+PropType+';';
+                      +'(AIndex:'+IndexType+'):'+PropType+';';
         end;
       end;
       if IsClassProp then
@@ -6586,12 +6585,19 @@ var AccessParam, AccessParamPrefix, CleanAccessFunc, AccessFunc,
     end else begin
       // the read identifier is a variable
       // variable does not exist yet -> add insert demand for variable
+      VarCode:=VariableName+':'+PropType+';';
+      if IsClassProp then VarCode:='class var '+VarCode;
       AddClassInsertion(UpperCaseStr(VariableName),
-         VariableName+':'+PropType+';',VariableName,ncpPrivateVars,PropNode);
+         VarCode,VariableName,ncpPrivateVars,PropNode);
     end;
   end;
   
   procedure CompleteWriteSpecifier;
+  var
+    ProcBody: String;
+    AccessParamPrefix: String;
+    AccessParam: String;
+    AccessFunc: String;
   begin
     // check write specifier
     if not PartIsAtom[ppWrite] then exit;
@@ -6635,25 +6641,24 @@ var AccessParam, AccessParamPrefix, CleanAccessFunc, AccessFunc,
     end;
 
     // check if write method exists
-    if (Parts[ppParamList].StartPos>0) then begin
-      if (Parts[ppIndexWord].StartPos<1) then begin
+    if (Parts[ppIndexWord].StartPos<1) then begin
+      if (Parts[ppParamList].StartPos>0) then begin
         // param list, no index
-        CleanAccessFunc:=UpperCaseStr(AccessParam)+'('+CleanParamList+';'
-                           +UpperCaseStr(PropType)+');';
+        CleanAccessFunc:=UpperCaseStr(AccessParam+'('+CleanParamList+';'
+                           +PropType+');');
       end else begin
-        // index + param list
-        CleanAccessFunc:=UpperCaseStr(AccessParam)+'(INTEGER;'
-                  +CleanParamList+';'+UpperCaseStr(PropType)+');';
+        // no param list, no index
+        CleanAccessFunc:=UpperCaseStr(AccessParam+'('+PropType+');');
       end;
     end else begin
-      if (Parts[ppIndexWord].StartPos<1) then begin
-        // no param list, no index
-        CleanAccessFunc:=UpperCaseStr(AccessParam)
-                            +'('+UpperCaseStr(PropType)+');';
+      // ToDo: find out index type
+      if (Parts[ppParamList].StartPos>0) then begin
+        // index + param list
+        CleanAccessFunc:=UpperCaseStr(AccessParam+'('+IndexType+';'
+                  +CleanParamList+';'+PropType+');');
       end else begin
         // index, no param list
-        CleanAccessFunc:=UpperCaseStr(AccessParam)+'(INTEGER;'
-                            +UpperCaseStr(PropType)+');';
+        CleanAccessFunc:=UpperCaseStr(AccessParam+'('+IndexType+';'+PropType+');');
       end;
     end;
     if ProcExistsInCodeCompleteClass(CleanAccessFunc) then exit;
@@ -6692,7 +6697,7 @@ var AccessParam, AccessParamPrefix, CleanAccessFunc, AccessFunc,
         end else begin
           // index + param list
           AccessFunc:='procedure '+AccessParam
-                      +'(AIndex:Integer;'+ParamList+';'
+                      +'(AIndex:'+IndexType+';'+ParamList+';'
                       +SetPropertyVariablename+':'+PropType+');';
         end;
       end else begin
@@ -6725,11 +6730,13 @@ var AccessParam, AccessParamPrefix, CleanAccessFunc, AccessFunc,
                 +VariableName+':='+SetPropertyVariablename+';'
                 +BeautifyCodeOpts.LineEnd
               +'end;';
+            if IsClassProp then
+              ProcBody:='class '+ProcBody;
           end;
         end else begin
           // index, no param list
           AccessFunc:='procedure '+AccessParam
-                  +'(AIndex:Integer;'+SetPropertyVariablename+':'+PropType+');';
+                  +'(AIndex:'+IndexType+';'+SetPropertyVariablename+':'+PropType+');';
         end;
       end;
       // add new Insert Node
@@ -6748,6 +6755,9 @@ var AccessParam, AccessParamPrefix, CleanAccessFunc, AccessFunc,
   end;
   
   procedure CompleteStoredSpecifier;
+  var
+    AccessParam: String;
+    AccessFunc: String;
   begin
     // check stored specifier
     if not PartIsAtom[ppStored] then exit;
@@ -6778,8 +6788,8 @@ var AccessParam, AccessParamPrefix, CleanAccessFunc, AccessFunc,
         CleanAccessFunc := CleanAccessFunc+';';
       end else begin
         // index
-        AccessFunc := 'function ' + AccessParam + '(AIndex:Integer):Boolean;';
-        CleanAccessFunc := CleanAccessFunc + '(INTEGER);';
+        AccessFunc := 'function ' + AccessParam + '(AIndex:'+IndexType+'):Boolean;';
+        CleanAccessFunc := UpperCaseStr(CleanAccessFunc + '('+IndexType+');');
       end;
       if IsClassProp then
         AccessFunc:='class '+AccessFunc;
@@ -6860,17 +6870,11 @@ const
   Identifiers = AllIdentifierDefinitions+[ctnProperty,ctnProcedure,ctnClassGUID];
 begin
   if ClassNode=nil then exit(nil);
-  Result:=CodeCompleteClassNode.FirstChild;
+  Result:=ClassNode.FirstChild;
   while Result<>nil do begin
-    if (Result.Desc in Identifiers) then begin
-      break;
-    end else if (Result.Desc in AllClassSections)
-    and (Result.FirstChild<>nil)
-    and (Result.FirstChild.Desc in Identifiers) then begin
-      Result:=Result.FirstChild;
-      break;
-    end else
-      Result:=Result.NextBrother;
+    if (Result.Desc in Identifiers) then
+      exit;
+    Result:=FindNextIdentNodeInClass(Result);
   end;
 end;
 
@@ -7553,7 +7557,7 @@ begin
         ClassNode:=Params.NewNode;
         Params.ContextNode:=ClassNode;
         Params.IdentifierTool:=Self;
-        // FirstChild skips keyword 'procedure' or 'function'
+        // FirstChild skips keywords 'procedure' or 'function' or 'class procedure'
         Params.SetIdentifier(Self,@Src[ProcNode.FirstChild.StartPos],nil);
         if Tool.FindIdentifierInContext(Params) then begin
           // Found ancestor definition.
@@ -7594,7 +7598,6 @@ function TCodeCompletionCodeTool.UpdateProcBodySignatures(ClassProcs,
   trees of TCodeTreeNodeExtension sorted with CompareCodeTreeNodeExt
   Node.Desc = ctnProcedure
   Node.Txt = ExtractProcHead(Node,SomeAttributes)
-
 }
 var
   BodyAVLNode: TAVLTreeNode;
