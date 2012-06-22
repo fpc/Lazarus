@@ -207,6 +207,7 @@ type
     fMacroName: string;
     fSaveMarkerPos: boolean;
     FStartPlayBack: boolean;
+    FStopRequested: Boolean;
     function GetCommandIDs(Index: integer): TSynEditorCommand;
     function GetEvent(aIndex: integer): TSynMacroEvent;
     function GetEventCount: integer;
@@ -655,13 +656,17 @@ var
 begin
   if State <> msStopped then
     Error( sCannotPlay );
+  FStopRequested := False;
   fState := msPlaying;
   try
     StateChanged;
-    for cEvent := 0 to EventCount -1 do
+    for cEvent := 0 to EventCount -1 do begin
       Events[ cEvent ].Playback( aEditor );
+      if FStopRequested then break;
+    end;
   finally
     fState := msStopped;
+    FStopRequested := False;
     StateChanged;
   end;
 end;
@@ -735,6 +740,10 @@ procedure TCustomSynMacroRecorder.Stop;
 begin
   if fState = msStopped then
     Exit;
+  if fState = msPlaying then begin
+    FStopRequested := True;
+    Exit;
+  end;
   fState := msStopped;
   fCurrentEditor := nil;
   if fEvents.Count = 0 then
