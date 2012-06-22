@@ -42,8 +42,8 @@ uses
   // RTL, FCL
   Classes, SysUtils, resource,
   // LCL
-  Controls, ExtCtrls, Graphics, LCLProc, FileUtil, Laz2_XMLCfg, LResources,
-  Forms, Dialogs, ComCtrls,
+  Controls, ExtCtrls, Graphics, LCLProc, FileUtil, Laz2_XMLCfg, lazutf8classes,
+  LResources, Forms, Dialogs, ComCtrls,
   // Synedit
   SynEdit, SynEditAutoComplete, SynEditKeyCmds, SynEditTypes,
   SynEditMiscClasses, SynBeautifier, SynEditTextTrimmer, SynEditMouseCmds,
@@ -3622,7 +3622,7 @@ end;
 constructor TEditorOptions.Create;
 var
   ConfFileName: String;
-  fs: TFileStream;
+  fs: TFileStreamUTF8;
   res: TLResource;
 begin
   inherited Create;
@@ -3660,7 +3660,7 @@ begin
     if (res <> Nil) and (res.Value <> '') and (res.ValueType = 'DCI') then
       try
         InvalidateFileStateCache;
-        fs := TFileStream.Create(UTF8ToSys(CodeTemplateFileName), fmCreate);
+        fs := TFileStreamUTF8.Create(CodeTemplateFileName, fmCreate);
         try
           fs.Write(res.Value[1], length(res.Value));
         finally

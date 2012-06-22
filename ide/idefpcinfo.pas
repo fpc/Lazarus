@@ -30,10 +30,10 @@ unit IDEFPCInfo;
 interface
 
 uses
-  Classes, SysUtils, AVL_Tree, FileUtil, Forms, Controls, Graphics, Dialogs,
-  StdCtrls, ComCtrls, FileProcs, DefineTemplates, CodeToolManager,
-  BaseBuildManager, Project, EnvironmentOpts, LazarusIDEStrConsts, AboutFrm,
-  IDEWindowIntf;
+  Classes, SysUtils, AVL_Tree, FileUtil, lazutf8classes, Forms, Controls,
+  Graphics, Dialogs, StdCtrls, ComCtrls, FileProcs, DefineTemplates,
+  CodeToolManager, BaseBuildManager, Project, EnvironmentOpts,
+  LazarusIDEStrConsts, AboutFrm, IDEWindowIntf;
 
 type
 
@@ -139,7 +139,7 @@ var
   TestFilename: String;
   Filename: String;
   WorkDir: String;
-  fs: TFileStream;
+  fs: TFileStreamUTF8;
 begin
   TargetOS:=BuildBoss.GetTargetOS;
   TargetCPU:=BuildBoss.GetTargetCPU;
@@ -178,7 +178,7 @@ begin
     sl.Add('Working directory: '+WorkDir);
     // create empty file
     try
-      fs:=TFileStream.Create(UTF8ToSys(TestFilename),fmCreate);
+      fs:=TFileStreamUTF8.Create(TestFilename,fmCreate);
       fs.Free;
     except
       sl.Add('Error: unable to create test file '+TestFilename);

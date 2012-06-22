@@ -42,10 +42,10 @@ uses
   {$IFDEF IDE_MEM_CHECK}
   MemCheck,
   {$ENDIF}
-  SynEditMouseCmds,
-  Classes, SysUtils, Math, Controls, ExtendedNotebook, LCLProc, LCLType, LResources,
-  LCLIntf, FileUtil, Forms, ComCtrls, Dialogs, StdCtrls, Graphics, Translations,
-  ClipBrd, types, Extctrls, Menus, HelpIntfs, LConvEncoding,
+  SynEditMouseCmds, Classes, SysUtils, Math, Controls, ExtendedNotebook,
+  LCLProc, LCLType, LResources, LCLIntf, FileUtil, Forms, ComCtrls, Dialogs,
+  StdCtrls, Graphics, Translations, ClipBrd, types, Extctrls, Menus, HelpIntfs,
+  LConvEncoding, lazutf8classes,
   // codetools
   BasicCodeTools, CodeBeautifier, CodeToolManager, CodeCache, SourceLog,
   // synedit
@@ -59,10 +59,11 @@ uses
   SrcEditorIntf, MenuIntf, LazIDEIntf, PackageIntf, IDEHelpIntf, IDEImagesIntf,
   IDEWindowIntf, ProjectIntf,
   // IDE units
-  IDEDialogs, LazarusIDEStrConsts, IDECommands, EditorOptions, EnvironmentOpts,
-  WordCompletion, FindReplaceDialog, IDEProcs, IDEOptionDefs,
-  MacroPromptDlg, TransferMacros, CodeContextForm, SrcEditHintFrm, MsgView,
-  InputHistory, CodeMacroPrompt, CodeTemplatesDlg, CodeToolsOptions,
+  IDEDialogs, DialogProcs, LazarusIDEStrConsts, IDECommands, EditorOptions,
+  EnvironmentOpts, WordCompletion, FindReplaceDialog, IDEProcs, IDEOptionDefs,
+  MacroPromptDlg, TransferMacros, CodeContextForm,
+  SrcEditHintFrm, MsgView, InputHistory,
+  CodeMacroPrompt, CodeTemplatesDlg, CodeToolsOptions,
   SortSelectionDlg, EncloseSelectionDlg, ConDef, InvertAssignTool,
   SourceEditProcs, SourceMarks, CharacterMapDlg, SearchFrm,
   FPDocHints,
@@ -8893,6 +8894,7 @@ end;
 procedure TSourceEditorManager.ReloadEditorOptions;
 var
   i: Integer;
+  Filename: string;
 begin
   for i := FSourceWindowList.Count - 1 downto 0 do
     SourceWindows[i].ReloadEditorOptions;
@@ -8901,10 +8903,16 @@ begin
   // reload code templates
   with CodeTemplateModul do begin
     if FileExistsUTF8(EditorOpts.CodeTemplateFilename) then
-      AutoCompleteList.LoadFromFile(UTF8ToSys(EditorOpts.CodeTemplateFilename))
-    else
-      if FileExistsUTF8('lazarus.dci') then
-        AutoCompleteList.LoadFromFile(UTF8ToSys('lazarus.dci'));
+      LoadStringsFromFileUTF8(AutoCompleteList,EditorOpts.CodeTemplateFilename)
+    else begin
+      Filename:=EnvironmentOptions.GetParsedLazarusDirectory+SetDirSeparators('ide/lazarus.dci');
+      if FileExistsUTF8(Filename) then begin
+        try
+          LoadStringsFromFileUTF8(AutoCompleteList,Filename);
+        except
+        end;
+      end;
+    end;
     IndentToTokenStart:=EditorOpts.CodeTemplateIndentToTokenStart;
   end;
 
@@ -9505,6 +9513,8 @@ begin
 end;
 
 constructor TSourceEditorManager.Create(AOwner: TComponent);
+var
+  DCIFilename: String;
 begin
   inherited Create(AOwner);
 
@@ -9536,11 +9546,14 @@ begin
   // code templates
   FCodeTemplateModul:=TSynEditAutoComplete.Create(Self);
   with FCodeTemplateModul do begin
-    if FileExistsUTF8(EditorOpts.CodeTemplateFilename) then
-      AutoCompleteList.LoadFromFile(UTF8ToSys(EditorOpts.CodeTemplateFilename))
-    else
-      if FileExistsUTF8('lazarus.dci') then
-        AutoCompleteList.LoadFromFile(UTF8ToSys('lazarus.dci'));
+    DCIFilename:=EditorOpts.CodeTemplateFilename;
+    if not FileExistsCached(DCIFilename) then
+      DCIFilename:=EnvironmentOptions.GetParsedLazarusDirectory+SetDirSeparators('ide/lazarus.dci');
+    if FileExistsCached(DCIFilename) then
+      try
+        LoadStringsFromFileUTF8(AutoCompleteList,DCIFilename);
+      except
+      end;
     IndentToTokenStart := EditorOpts.CodeTemplateIndentToTokenStart;
     OnTokenNotFound := @OnCodeTemplateTokenNotFound;
     OnExecuteCompletion := @OnCodeTemplateExecuteCompletion;

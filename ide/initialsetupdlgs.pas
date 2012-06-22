@@ -41,7 +41,7 @@ interface
 
 uses
   Classes, SysUtils, contnrs, LCLProc, Forms, Controls, Buttons, Dialogs,
-  FileUtil, Laz2_XMLCfg, Graphics, ComCtrls, ExtCtrls, StdCtrls,
+  FileUtil, Laz2_XMLCfg, lazutf8classes, Graphics, ComCtrls, ExtCtrls, StdCtrls,
   DefineTemplates, CodeToolManager,
   TextTools,
   TransferMacros, LazarusIDEStrConsts, LazConf, EnvironmentOpts, IDEProcs,
@@ -218,7 +218,7 @@ function CheckLazarusDirectoryQuality(ADirectory: string;
   end;
 
 var
-  sl: TStringList;
+  sl: TStringListUTF8;
   VersionIncFile: String;
   Version: String;
 begin
@@ -238,7 +238,7 @@ begin
   if not SubFileExists('ide/lazarus.lpi',Result) then exit;
   VersionIncFile:=SetDirSeparators('ide/version.inc');
   if not SubFileExists(VersionIncFile,Result) then exit;
-  sl:=TStringList.Create;
+  sl:=TStringListUTF8.Create;
   try
     try
       sl.LoadFromFile(ADirectory+VersionIncFile);
@@ -656,7 +656,7 @@ function CheckFPCSrcDirQuality(ADirectory: string; out Note: string;
 
 var
   VersionFile: String;
-  sl: TStringList;
+  sl: TStringListUTF8;
   i: Integer;
   VersionNr: String;
   ReleaseNr: String;
@@ -681,7 +681,7 @@ begin
     VersionFile:=ADirectory+'compiler'+PathDelim+'version.pas';
     if FileExistsCached(VersionFile) then
     begin
-      sl:=TStringList.Create;
+      sl:=TStringListUTF8.Create;
       try
         try
           sl.LoadFromFile(VersionFile);

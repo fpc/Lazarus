@@ -31,9 +31,8 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, LCLProc, AvgLvlTree, Laz2_XMLCfg, LazUTF8,
-  StdCtrls, ExtCtrls,
-  SourceLog, FileProcs, CodeToolManager, CodeToolsConfig, CodeCache,
-  LazConf;
+  lazutf8classes, StdCtrls, ExtCtrls, SourceLog, FileProcs, CodeToolManager,
+  CodeToolsConfig, CodeCache, LazConf;
 
 type
   // comments
@@ -1558,12 +1557,12 @@ end;
 -------------------------------------------------------------------------------}
 function ClearFile(const Filename: string; RaiseOnError: boolean): boolean;
 var
-  fs: TFileStream;
+  fs: TFileStreamUTF8;
 begin
   if FileExistsUTF8(Filename) then begin
     try
       InvalidateFileStateCache;
-      fs:=TFileStream.Create(UTF8ToSys(Filename),fmOpenWrite);
+      fs:=TFileStreamUTF8.Create(Filename,fmOpenWrite);
       fs.Size:=0;
       fs.Free;
     except
@@ -2447,12 +2446,12 @@ end;
 
 function CreateEmptyFile(const Filename: string): boolean;
 var
-  fs: TFileStream;
+  fs: TFileStreamUTF8;
 begin
   Result:=false;
   try
     InvalidateFileStateCache;
-    fs:=TFileStream.Create(UTF8ToSys(Filename),fmCreate);
+    fs:=TFileStreamUTF8.Create(Filename,fmCreate);
     fs.Free;
     Result:=true;
   except
@@ -2462,7 +2461,7 @@ end;
 function CopyFileWithMethods(const SrcFilename, DestFilename: string;
   OnCopyError: TOnCopyErrorMethod; Data: TObject): boolean;
 var
-  SrcFileStream, DestFileStream: TFileStream;
+  SrcFileStream, DestFileStream: TFileStreamUTF8;
   {$IFdef MSWindows}
   OldAttr: Longint;
   {$ELSE}
@@ -2482,10 +2481,10 @@ begin
   //writeln('CopyFileWithMethods ',SrcFilename,' ',DestFilename);
   // copy file
   try
-    SrcFileStream:=TFileStream.Create(UTF8ToSys(SrcFilename),fmOpenRead);
+    SrcFileStream:=TFileStreamUTF8.Create(SrcFilename,fmOpenRead);
     try
       InvalidateFileStateCache;
-      DestFileStream:=TFileStream.Create(UTF8ToSys(DestFilename),fmCreate);
+      DestFileStream:=TFileStreamUTF8.Create(DestFilename,fmCreate);
       try
         DestFileStream.CopyFrom(SrcFileStream,SrcFileStream.Size);
       finally

@@ -40,8 +40,8 @@ interface
 
 uses
   Classes, SysUtils, Math, Forms, Controls, Buttons, StdCtrls, FileUtil,
-  LazarusIDEStrConsts, EditorOptions, LCLType, IDEWindowIntf, IDEHelpIntf,
-  InputHistory, DiffPatch, ExtCtrls, Dialogs, ComCtrls, SynEdit,
+  lazutf8classes, LazarusIDEStrConsts, EditorOptions, LCLType, IDEWindowIntf,
+  IDEHelpIntf, InputHistory, DiffPatch, ExtCtrls, Dialogs, ComCtrls, SynEdit,
   SynHighlighterDiff, SourceEditor;
 
 type
@@ -230,8 +230,12 @@ end;
 
 procedure TDiffDlg.SaveDiffButtonClick(Sender: TObject);
 begin
-  if dlgSave.Execute then
-    DiffSynEdit.Lines.SaveToFile(UTF8ToSys(dlgSave.FileName));
+  if dlgSave.Execute then begin
+    try
+      SaveStringsToFileUTF8(DiffSynEdit.Lines,dlgSave.FileName);
+    except
+    end;
+  end;
 end;
 
 procedure TDiffDlg.Text1ComboboxChange(Sender: TObject);
@@ -317,7 +321,7 @@ end;
 procedure TDiffDlg.OnIdle(Sender: TObject; var Done: Boolean);
 var
   Text1Src, Text2Src: string;
-  dat: TStrings;
+  dat: TStringListUTF8;
   DiffOutput: TDiffOutput;
 begin
   IdleConnected := false;
@@ -327,8 +331,8 @@ begin
   if (Text1 <> nil) and (Text2 <> nil) then begin
     if Text1.Editor = nil then
       begin
-        dat := TStringList.Create;
-        dat.LoadFromFile(UTF8ToSys(Text1.Name));
+        dat := TStringListUTF8.Create;
+        dat.LoadFromFile(Text1.Name);
         Text1Src := dat.Text;
         dat.Free;
       end
@@ -341,8 +345,8 @@ begin
 
     if Text2.Editor = nil then
       begin
-        dat := TStringList.Create;
-        dat.LoadFromFile(UTF8ToSys(Text2.Name));
+        dat := TStringListUTF8.Create;
+        dat.LoadFromFile(Text2.Name);
         Text2Src := dat.Text;
         dat.Free;
       end
