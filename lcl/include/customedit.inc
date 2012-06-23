@@ -454,6 +454,15 @@ begin
     inherited WMChar(Message);
 end;
 
+procedure TCustomEdit.CMWantSpecialKey(var Message: TCMWantSpecialKey);
+begin
+  // don't allow LCL to handle arrow keys for edit controls
+  if Message.CharCode in [VK_LEFT, VK_RIGHT, VK_UP, VK_DOWN] then
+    Message.Result := 1
+  else
+    inherited;
+end;
+
 procedure TCustomEdit.MouseUp(Button: TMouseButton; Shift:TShiftState; X, Y: Integer);
 begin
   inherited MouseUp(Button, Shift, X, Y);

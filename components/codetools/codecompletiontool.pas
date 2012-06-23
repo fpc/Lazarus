@@ -1465,7 +1465,7 @@ begin
         break;
       end;
       StartProcNode:=CurProcNode;
-      CurProcNode:=FindPrevNodeOnSameLvl(CurProcNode);
+      CurProcNode:=CurProcNode.PriorBrother;
     until (CurProcNode=nil) or (CurProcNode.Desc<>ctnProcedure)
     or ((CurProcNode.SubDesc and ctnsForwardDeclaration)=0);
 
@@ -1484,7 +1484,7 @@ begin
         break;
       end;
       EndProcNode:=CurProcNode;
-      CurProcNode:=FindNextNodeOnSameLvl(CurProcNode);
+      CurProcNode:=CurProcNode.NextBrother;
     until (CurProcNode=nil) or (CurProcNode.Desc<>ctnProcedure)
     or ((CurProcNode.SubDesc and ctnsForwardDeclaration)=0);
 

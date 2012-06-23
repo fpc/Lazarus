@@ -734,10 +734,12 @@ type
     procedure SetSelText(const Val: string); virtual;
     function ChildClassAllowed(ChildClass: TClass): boolean; override;
     class function GetControlClassDefaultSize: TSize; override;
-    procedure KeyUpAfterInterface(var Key: Word; Shift: TShiftState); override;
-    procedure WMChar(var Message: TLMChar); message LM_CHAR;
     procedure MouseUp(Button: TMouseButton; Shift:TShiftState; X, Y: Integer); override;
     procedure RealSetText(const AValue: TCaption); override;
+    procedure KeyUpAfterInterface(var Key: Word; Shift: TShiftState); override;
+    procedure WMChar(var Message: TLMChar); message LM_CHAR;
+    procedure CMWantSpecialKey(var Message: TCMWantSpecialKey); message CM_WANTSPECIALKEY;
+
     property AutoSelect: Boolean read FAutoSelect write FAutoSelect default True;
     property AutoSelected: Boolean read FAutoSelected write FAutoSelected;
     property ParentColor default False;
@@ -821,8 +823,7 @@ type
     procedure SetWordWrap(const Value: boolean);
     procedure SetScrollBars(const Value: TScrollStyle);
     procedure Loaded; override;
-    procedure ControlKeyDown(var Key: Word; Shift: TShiftState); override;
-    procedure CNChar(var Message: TLMKeyUp); message CN_CHAR;
+    procedure CMWantSpecialKey(var Message: TCMWantSpecialKey); message CM_WANTSPECIALKEY;
     class function GetControlClassDefaultSize: TSize; override;
   public
     constructor Create(AOwner: TComponent); override;

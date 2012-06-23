@@ -256,26 +256,13 @@ begin
   end;
 end;
 
-procedure TCustomMemo.ControlKeyDown(var Key: Word; Shift: TShiftState);
+procedure TCustomMemo.CMWantSpecialKey(var Message: TCMWantSpecialKey);
 begin
-  if not ReadOnly then
-  begin
-    if FWantReturns and (Key=VK_RETURN) and (Shift=[]) then
-      exit;
-    if FWantTabs and (Key=VK_TAB) and (Shift-[ssShift]=[]) then
-      exit;
-  end;
-  inherited ControlKeyDown(Key, Shift);
-end;
-
-procedure TCustomMemo.CNChar(var Message: TLMKeyUp);
-begin
-  inherited CNChar(Message);
-  
-  if not FWantReturns and (Message.CharCode = VK_RETURN) then
-  begin
-    Message.CharCode := VK_UNKNOWN;
-    Message.Result := 1;
+  case Message.CharCode of
+    VK_RETURN: if WantReturns then Message.Result := 1;
+    VK_TAB: if WantTabs then Message.Result := 1;
+  else
+    inherited;
   end;
 end;
 
