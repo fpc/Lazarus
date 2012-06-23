@@ -2835,7 +2835,7 @@ var
   procedure WrapLine(const s: String);
   var
     i, cur, beg, last, len: Integer;
-    WasBreak, CRLF: Boolean;
+    WasBreak, CRLF, IsCR: Boolean;
     ch: TUTF8char;
   begin
 
@@ -2864,21 +2864,25 @@ var
         Ch := UTF8Char(s, cur, Desc);
 
         // check for items with soft-breaks
-        if (Ch=#10) or (Ch=#13) then
+        IsCR := Ch=#13;
+        if IsCR then
+        begin
+          //handle composite newline
+          ch := UTF8Char(s, cur+1, desc);
+          //dont increase char index if next char is LF (#10)
+          if ch<>#10 then
+            Inc(Cur);
+        end;
+        if Ch=#10 then
         begin
           OutLine(UTF8Range(s, beg, cur - beg, Desc) + #1);
-          while (cur<Len) and UTF8CharIn(ch, [#10,#13]) do
-          begin
-            inc(cur);
-            if cur<=len then
-              ch := UTF8Char(s, cur, desc);
-          end;
-
-          beg := cur; last := beg;
-          if UTF8CharIn(Ch,[#13, #10]) then
-            exit
-          else
-            continue;
+          //increase the char index since it's pointing to CR (#13)
+          if IsCR then
+            Inc(cur);
+          Inc(cur);
+          beg := cur;
+          last := beg;
+          Continue;
         end;
 
         if ch <> ' ' then
