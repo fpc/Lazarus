@@ -1023,8 +1023,8 @@ begin
 
   // create client widget
   APIWidget^.Client := GTKAPIWidgetClient_New;
-  gtk_object_set_data(PGTKObject(Result), 'Fixed', APIWidget^.Client);
-  gtk_object_set_data(PGTKObject(APIWidget^.Client), 'Main', Result);
+  g_object_set_data(PGObject(Result), 'Fixed', APIWidget^.Client);
+  g_object_set_data(PGObject(APIWidget^.Client), 'Main', Result);
   gtk_widget_show(APIWidget^.Client);
   gtk_container_add(PGTKContainer(APIWidget), APIWidget^.Client);
 end;

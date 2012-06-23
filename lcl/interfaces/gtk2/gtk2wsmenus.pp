@@ -274,7 +274,7 @@ begin
       if GTK_IS_MENU(ParentMenuWidget) then
         ContainerMenu := ParentMenuWidget
       else // menu item
-        ContainerMenu := PGtkWidget(gtk_object_get_data(PGtkObject(ParentMenuWidget),
+        ContainerMenu := PGtkWidget(g_object_get_data(PGObject(ParentMenuWidget),
                                     'ContainerMenu')); // find the menu container
 
       if ContainerMenu = nil then
@@ -282,12 +282,12 @@ begin
         if (GetParentMenu is TPopupMenu) and (Parent.Parent=nil) then
         begin
           ContainerMenu := {%H-}PGtkWidget(GetParentMenu.Handle);
-          gtk_object_set_data(PGtkObject(ContainerMenu), 'ContainerMenu',
+          g_object_set_data(PGObject(ContainerMenu), 'ContainerMenu',
                               ContainerMenu);
         end else
         begin
           ContainerMenu := gtk_menu_new;
-          gtk_object_set_data(PGtkObject(ParentMenuWidget), 'ContainerMenu',
+          g_object_set_data(PGObject(ParentMenuWidget), 'ContainerMenu',
                               ContainerMenu);
           gtk_menu_item_set_submenu(PGTKMenuItem(ParentMenuWidget), ContainerMenu);
         end;

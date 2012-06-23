@@ -2885,7 +2885,7 @@ var
 begin
   Result := CallBackDefaultReturn;
   //DebugLn(Format('Trace:[GTKHScrollCB] Value: %d', [RoundToInt(Adjustment^.Value)]));
-  Scroll := PgtkRange(gtk_object_get_data(PGTKObject(Adjustment), odnScrollBar));
+  Scroll := PgtkRange(g_object_get_data(PGObject(Adjustment), odnScrollBar));
   if Scroll<>nil then begin
     Msg.Msg := LM_HSCROLL;
     with Msg do begin
@@ -2914,7 +2914,7 @@ begin
   {$IFDEF SYNSCROLLDEBUG}
   DebugLn(Format('Trace:[GTKVScrollCB] Value: %d', [RoundToInt(Adjustment^.Value)]));
   {$ENDIF}
-  Scroll := PgtkRange(gtk_object_get_data(PGTKObject(Adjustment), odnScrollBar));
+  Scroll := PgtkRange(g_object_get_data(PGObject(Adjustment), odnScrollBar));
   if Scroll<>nil then begin
     Msg.Msg := LM_VSCROLL;
     with Msg do begin
@@ -3024,7 +3024,7 @@ begin
   AWidgetInfo:=PWidgetInfo(Data);
 
   //debugln(['Gtk2RangeUbuntuScrollCB ',DbgSName(AWidgetInfo^.LCLObject)]);
-  Scroll := PgtkRange(gtk_object_get_data(PGTKObject(Adjustment), odnScrollBar));
+  Scroll := PgtkRange(g_object_get_data(PGObject(Adjustment), odnScrollBar));
   if Scroll<>nil then begin
     FillByte(Msg{%H-},SizeOf(Msg),0);
     if Scroll^.orientation=GTK_ORIENTATION_VERTICAL then
@@ -3037,12 +3037,12 @@ begin
       then SmallPos := Pos
       else SmallPos := High(SmallPos);
 
-      LastPos:={%H-}PtrInt(gtk_object_get_data(PGTKObject(Adjustment), odnScrollBarLastPos));
+      LastPos:={%H-}PtrInt(g_object_get_data(PGObject(Adjustment), odnScrollBarLastPos));
       if LastPos=Pos then begin
         //debugln(['Gtk2RangeUbuntuScrollCB duplicate message => skip']);
         exit;
       end;
-      gtk_object_set_data(PGTKObject(Adjustment), odnScrollBarLastPos, {%H-}gpointer(Pos));
+      g_object_set_data(PGObject(Adjustment), odnScrollBarLastPos, {%H-}gpointer(Pos));
 
       //DebugLn('Gtk2RangeUbuntuScrollCB A Adjustment^.Value=',dbgs(Adjustment^.Value),' SmallPos=',dbgs(SmallPos));
       ScrollBar := HWND({%H-}PtrUInt(Scroll));

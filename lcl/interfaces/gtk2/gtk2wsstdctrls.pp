@@ -1451,7 +1451,6 @@ begin
   if PGtkComboBoxPrivate(PGtkComboBox(ComboWidget)^.priv)^.button <> nil then
     FreeWidgetInfo(PGtkComboBoxPrivate(PGtkComboBox(ComboWidget)^.priv)^.button);
 
-  gtk_object_set_data(PGtkObject(ComboWidget), GtkListItemLCLListTag, nil);
   gtk_event_box_set_above_child(PGtkEventBox(Box), false);
   // don't remove Combo from Box, just destroy it and during destroy it will
   // be removed by gtk code. Removing from Box and then destroyng can lead to
@@ -1466,12 +1465,12 @@ begin
   end;
   SetSensitivity(ACustomCombobox, ComboWidget);
   // undone the above increase of the ref count
-  gtk_object_set_data(PGtkObject(ComboWidget),GtkListItemLCLListTag,ItemList);
+  g_object_set_data(PGObject(ComboWidget),GtkListItemLCLListTag,ItemList);
   g_object_unref (G_OBJECT(Model));
 
   SetMainWidget(Box, GTK_BIN(ComboWidget)^.child);
   AWidgetInfo^.CoreWidget := ComboWidget;
-  gtk_object_set_data(Pointer(ComboWidget), 'widgetinfo', AWidgetInfo);
+  g_object_set_data(Pointer(ComboWidget), 'widgetinfo', AWidgetInfo);
   
   SetItemIndex(ACustomComboBox, Index);
   
@@ -1982,7 +1981,7 @@ var
 begin
   Handle := ACustomComboBox.Handle;
   ComboWidget := GetWidgetInfo({%H-}Pointer(Handle), True)^.CoreWidget;
-  Result :=  TGtkListStoreStringList(gtk_object_get_data(PGtkObject(ComboWidget),
+  Result :=  TGtkListStoreStringList(g_object_get_data(PGObject(ComboWidget),
                                      GtkListItemLCLListTag));
 end;
 
@@ -1994,7 +1993,7 @@ var
 begin
   Handle := ACustomComboBox.Handle;
   ComboWidget := GetWidgetInfo({%H-}Pointer(Handle), True)^.CoreWidget;
-  TGtkListStoreStringList(gtk_object_get_data(PGtkObject(ComboWidget),
+  TGtkListStoreStringList(g_object_get_data(PGObject(ComboWidget),
                                      GtkListItemLCLListTag)).Sorted := IsSorted;
 end;
 
@@ -2154,7 +2153,7 @@ begin
   // Items
   ItemList:= TGtkListStoreStringList.Create(
           gtk_combo_box_get_model(PGtkComboBox(ComboWidget)),0,ACustomComboBox);
-  gtk_object_set_data(PGtkObject(ComboWidget),GtkListItemLCLListTag,ItemList);
+  g_object_set_data(PGObject(ComboWidget),GtkListItemLCLListTag,ItemList);
   // This is done in InitializeWnd: ItemList.Assign(ACustomComboBox.Items);
   if ACustomComboBox.Items is TStringList then
     ItemList.Sorted:=TStringList(ACustomComboBox.Items).Sorted;
@@ -2175,7 +2174,6 @@ var
 begin
   Handle := AWinControl.Handle;
   ComboWidget := GetWidgetInfo({%H-}Pointer(Handle), True)^.CoreWidget;
-  gtk_object_set_data(PGtkObject(ComboWidget),GtkListItemLCLListTag,nil);
 
   if PGtkComboBoxPrivate(PGtkComboBox(ComboWidget)^.priv)^.button <> nil then
     FreeWidgetInfo(PGtkComboBoxPrivate(PGtkComboBox(ComboWidget)^.priv)^.button);
@@ -2245,7 +2243,7 @@ begin
   gtk_container_add(GTK_CONTAINER(p), TempWidget);
   WidgetInfo^.ClientWidget := TempWidget;
   WidgetInfo^.CoreWidget := TempWidget;
-  gtk_object_set_data(PGtkObject(TempWidget), 'widgetinfo', WidgetInfo);
+  g_object_set_data(PGObject(TempWidget), 'widgetinfo', WidgetInfo);
   {$else}
   EventBox := gtk_event_box_new;
   gtk_event_box_set_visible_window(PGtkEventBox(EventBox), False);
@@ -2255,13 +2253,13 @@ begin
   gtk_widget_show(EventBox);
   WidgetInfo^.ClientWidget := TempWidget;
   WidgetInfo^.CoreWidget := EventBox;
-  gtk_object_set_data(PGtkObject(TempWidget), 'widgetinfo', WidgetInfo);
-  gtk_object_set_data(PGtkObject(EventBox), 'widgetinfo', WidgetInfo);
+  g_object_set_data(PGObject(TempWidget), 'widgetinfo', WidgetInfo);
+  g_object_set_data(PGObject(EventBox), 'widgetinfo', WidgetInfo);
   {$endif}
   FrameBox := gtk_event_box_new;
   gtk_event_box_set_visible_window(PGtkEventBox(FrameBox), True);
   gtk_container_add(GTK_CONTAINER(FrameBox), p);
-  gtk_object_set_data(PGtkObject(FrameBox), 'widgetinfo', WidgetInfo);
+  g_object_set_data(PGObject(FrameBox), 'widgetinfo', WidgetInfo);
   gtk_widget_show(TempWidget);
   gtk_widget_show(P);
   gtk_widget_show(FrameBox);
@@ -2499,7 +2497,7 @@ begin
   WidgetInfo^.CoreWidget := BtnWidget;
   WidgetInfo^.ClientWidget := EventBox;
   //DebugLn(['TGtk2WSButton.CreateHandle ',GetWidgetInfo(EventBox)=WidgetInfo,' ',GetWidgetInfo(EventBox)^.ClientWidget=BtnWidget]);
-//  gtk_object_set_data(PGtkObject(Result), 'widgetinfo', WidgetInfo);
+//  g_object_set_data(PGObject(Result), 'widgetinfo', WidgetInfo);
   SetMainWidget(EventBox, BtnWidget);
 
   Allocation.X := AParams.X;
@@ -2830,7 +2828,7 @@ begin
 
   WidgetInfo := CreateWidgetInfo({%H-}Pointer(Result), AStaticText, AParams);
   WidgetInfo^.CoreWidget := EventBox;
-  gtk_object_set_data(PGtkObject(EventBox), 'widgetinfo', WidgetInfo);
+  g_object_set_data(PGObject(EventBox), 'widgetinfo', WidgetInfo);
 
   Allocation.X := AParams.X;
   Allocation.Y := AParams.Y;

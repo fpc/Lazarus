@@ -329,7 +329,7 @@ procedure TGtk2WidgetSet._SetCallbackEx(const AMsg: LongInt;
            or (ALCLObject is TCustomForm)
            or (ALCLObject is TCustomFrame)
       then begin
-        Scroll := gtk_object_get_data(gObject, odnScrollArea);
+        Scroll := g_object_get_data(PGObject(gObject), odnScrollArea);
         Result := PGtkObject(gtk_scrolled_window_get_vadjustment(
           PGTKScrolledWindow(Scroll)));
       end
@@ -347,7 +347,7 @@ procedure TGtk2WidgetSet._SetCallbackEx(const AMsg: LongInt;
            or (ALCLObject is TCustomForm)
            or (ALCLObject is TCustomFrame)
       then begin
-        Scroll := gtk_object_get_data(gObject, odnScrollArea);
+        Scroll := g_object_get_data(PGObject(gObject), odnScrollArea);
         Result := PgtkObject(gtk_scrolled_window_get_hadjustment(
           PGTKScrolledWindow(Scroll)));
       end
@@ -4651,7 +4651,7 @@ begin
   if Adjustment <> nil
   then with Adjustment^ do
   begin
-    gtk_object_set_data(PGTKObject(Adjustment), odnScrollBar,
+    g_object_set_data(PGObject(Adjustment), odnScrollBar,
                         PGTKScrolledWindow(Result)^.VScrollBar);
     Step_Increment := 1;
   end;
@@ -4661,7 +4661,7 @@ begin
   if Adjustment <> nil
   then with Adjustment^ do
   begin
-    gtk_object_set_data(PGTKObject(Adjustment), odnScrollBar,
+    g_object_set_data(PGObject(Adjustment), odnScrollBar,
                         PGTKScrolledWindow(Result)^.HScrollBar);
     Step_Increment := 1;
   end;
@@ -4789,7 +4789,7 @@ begin
   SubMenuWidget:=PGTKMenu(ParentSubMenuWidget);
   if SubMenuWidget^.menu_shell.children=nil then begin
     gtk_widget_destroy(PgtkWidget(SubMenuWidget));
-    gtk_object_set_data(PGtkObject(ParentMenuWidget),'ContainerMenu',nil);
+    g_object_set_data(PGObject(ParentMenuWidget),'ContainerMenu',nil);
   end;
 end;
 
@@ -5115,7 +5115,7 @@ begin
 
   Child := {%H-}PgtkWidget(CanvasHandle);
   Widget := GetFixedWidget(Child);
-  pixmap := gtk_Object_get_data(pgtkobject(Child),'Pixmap');
+  pixmap := g_object_get_data(pgobject(Child),'Pixmap');
   if PixMap = nil then Exit;
   fWindow := GetControlWindow(widget);
 
@@ -5889,7 +5889,7 @@ const
     SelectionLists, CurSelList: PGList;
     TargetSelList: PGtkTargetSelectionList;
   begin
-    SelectionLists := gtk_object_get_data (PGtkObject(Widget),
+    SelectionLists := g_object_get_data (PGObject(Widget),
                                           gtk_selection_handler_key);
     CurSelList := SelectionLists;
     while (CurSelList<>nil) do begin
@@ -5941,11 +5941,11 @@ const
     for CurClipboard := Low(TClipboardType) to High(CurClipboard) do
       gtk_selection_clear_targets(Widget, ClipboardTypeAtoms[CurClipboard]);
 
-    SelectionLists := gtk_object_get_data(PGtkObject(Widget),
+    SelectionLists := g_object_get_data(PGObject(Widget),
       gtk_selection_handler_key);
     if SelectionLists <> nil then
       g_list_free(SelectionLists);
-    gtk_object_set_data (PGtkObject(Widget), gtk_selection_handler_key, GtkNil);
+    g_object_set_data (PGObject(Widget), gtk_selection_handler_key, GtkNil);
     {$IFDEF DEBUG_CLIPBOARD}
     DebugLn('  ClearTargetLists WWW END');
     {$ENDIF}
