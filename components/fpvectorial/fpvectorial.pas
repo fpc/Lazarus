@@ -53,6 +53,16 @@ type
     vfRAW
     );
 
+  TvProgressEvent = procedure (APercentage: Byte) of object;
+
+  {@@ This routine is called to add an item of caption AStr to an item
+    AParent, which is a pointer to another item as returned by a previous call
+    of this same proc. If AParent = nil then it should add the item to the
+    top of the tree. In all cases this routine should return a pointer to the
+    newly created item.
+  }
+  TvDebugAddItemProc = function (AStr: string; AParent: Pointer): Pointer of object;
+
 const
   { Default extensions }
   { Multi-purpose document formats }
@@ -195,6 +205,7 @@ type
     procedure Render(ADest: TFPCustomCanvas; ADestX: Integer = 0;
       ADestY: Integer = 0; AMulX: Double = 1.0; AMulY: Double = 1.0); virtual;
     function GetNormalizedPos(APage: TvVectorialPage; ANewMin, ANewMax: Double): T3DPoint;
+    function GenerateDebugTree(ADestRoutine: TvDebugAddItemProc; APageItem: Pointer): Pointer; virtual;
   end;
 
   { TvEntityWithPen }
@@ -423,7 +434,8 @@ type
     function CalculateWidth(ADest: TFPCustomCanvas): Integer; // in pixels
     function AsText: string;
     procedure Render(ADest: TFPCustomCanvas; ADestX: Integer = 0;
-      ADestY: Integer = 0; AMulX: Double = 1.0; AMulY: Double = 1.0);
+      ADestY: Integer = 0; AMulX: Double = 1.0; AMulY: Double = 1.0); virtual;
+    procedure GenerateDebugTree(ADestRoutine: TvDebugAddItemProc; APageItem: Pointer); virtual;
   end;
 
   { TvFormula }
@@ -451,9 +463,8 @@ type
     procedure CalculateBoundingBox(ADest: TFPCustomCanvas; var ALeft, ATop, ARight, ABottom: Double); override;
     procedure Render(ADest: TFPCustomCanvas; ADestX: Integer = 0;
       ADestY: Integer = 0; AMulX: Double = 1.0; AMulY: Double = 1.0); override;
+    function GenerateDebugTree(ADestRoutine: TvDebugAddItemProc; APageItem: Pointer): Pointer; override;
   end;
-
-  TvProgressEvent = procedure (APercentage: Byte) of object;
 
   { TvVectorialDocument }
 
@@ -496,6 +507,8 @@ type
     function AddPage(): TvVectorialPage;
     { Data removing methods }
     procedure Clear; virtual;
+    { Debug methods }
+    procedure GenerateDebugTree(ADestRoutine: TvDebugAddItemProc);
     { Events }
     property OnProgress: TvProgressEvent read FOnProgress write FOnprogress;
   end;
@@ -559,6 +572,8 @@ type
     procedure AddAlignedDimension(BaseLeft, BaseRight, DimLeft, DimRight: T3DPoint);
     //
     function AddPoint(AX, AY, AZ: Double): TvPoint;
+    { Debug methods }
+    procedure GenerateDebugTree(ADestRoutine: TvDebugAddItemProc; APageItem: Pointer);
     //
     property Entities[AIndex: Cardinal]: TvEntity read GetEntity;
   end;
@@ -775,6 +790,15 @@ begin
   Result.X := (X - APage.MinX) * (ANewMax - ANewMin) / (APage.MaxX - APage.MinX) + ANewMin;
   Result.Y := (Y - APage.MinY) * (ANewMax - ANewMin) / (APage.MaxY - APage.MinY) + ANewMin;
   Result.Z := (Z - APage.MinZ) * (ANewMax - ANewMin) / (APage.MaxZ - APage.MinZ) + ANewMin;
+end;
+
+function TvEntity.GenerateDebugTree(ADestRoutine: TvDebugAddItemProc;
+  APageItem: Pointer): Pointer;
+var
+  lStr: string;
+begin
+  lStr := Format('[%s]', [Self.ClassName]);
+  Result := ADestRoutine(lStr, APageItem);
 end;
 
 { TvEntityWithPen }
@@ -1750,6 +1774,12 @@ begin
   end;
 end;
 
+procedure TvFormulaElement.GenerateDebugTree(ADestRoutine: TvDebugAddItemProc;
+  APageItem: Pointer);
+begin
+  ADestRoutine(Self.AsText(), APageItem);
+end;
+
 { TvFormula }
 
 procedure TvFormula.CallbackDeleteElement(data, arg: pointer);
@@ -1808,7 +1838,7 @@ begin
   end;
   // Cache the result
   if ADest <> nil then
-    Height := Round(Result * ADest.TextHeight('T'));
+    Height := Round(Result * TCanvas(ADest).TextHeight('T'));
 end;
 
 function TvFormula.CalculateWidth(ADest: TFPCustomCanvas): Integer;
@@ -1884,6 +1914,22 @@ begin
     lElement.Render(ADest, ADestX, ADestY, AMulX, AMulY);
 
     lElement := GetNextElement();
+  end;
+end;
+
+function TvFormula.GenerateDebugTree(ADestRoutine: TvDebugAddItemProc;
+  APageItem: Pointer): Pointer;
+var
+  lFormulaElement: TvFormulaElement;
+begin
+  Result := inherited GenerateDebugTree(ADestRoutine, APageItem);
+
+  lFormulaElement := GetFirstElement();
+  while lFormulaElement <> nil do
+  begin
+    lFormulaElement.GenerateDebugTree(ADestRoutine, Result);
+
+    lFormulaElement := GetNextElement()
   end;
 end;
 
@@ -2321,6 +2367,19 @@ begin
   Result := lPoint;
 end;
 
+procedure TvVectorialPage.GenerateDebugTree(ADestRoutine: TvDebugAddItemProc;
+  APageItem: Pointer);
+var
+  lCurEntity: TvEntity;
+  i: Integer;
+begin
+  for i := 0 to FEntities.Count - 1 do
+  begin
+    lCurEntity := TvEntity(FEntities.Items[i]);
+    lCurEntity.GenerateDebugTree(ADestRoutine, APageItem);
+  end;
+end;
+
 { TsWorksheet }
 
 {@@
@@ -2632,6 +2691,20 @@ begin
   end;
   FPages.Clear;
   FCurrentPageIndex:=-1;
+end;
+
+procedure TvVectorialDocument.GenerateDebugTree(ADestRoutine: TvDebugAddItemProc);
+var
+  i: integer;
+  p: TvVectorialPage;
+  lPageItem: Pointer;
+begin
+  for i:=0 to FPages.Count-1 do
+  begin
+    p := TvVectorialPage(FPages[i]);
+    lPageItem := ADestRoutine(Format('Page %d', [i]), nil);
+    p.GenerateDebugTree(ADestRoutine, lPageItem);
+  end;
 end;
 
 { TvCustomVectorialReader }
