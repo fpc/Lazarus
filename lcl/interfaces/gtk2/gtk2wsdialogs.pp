@@ -143,7 +143,7 @@ begin
      (ExtractFilePath(Filename) <> ExtractFilePath(OldFilename)) then
     OpenDialog.DoFolderChange;
   // show some information
-  FileDetailLabel := gtk_object_get_data({%H-}PGtkObject(OpenDialog.Handle), 'FileDetailLabel');
+  FileDetailLabel := g_object_get_data({%H-}PGObject(OpenDialog.Handle), 'FileDetailLabel');
   if FileDetailLabel = nil then
     Exit;
   if FileExistsUTF8(Filename) then
@@ -319,10 +319,10 @@ begin
     FileSelWidget:={%H-}PGtkFileSelection(theDialog.Handle);
     if (bevent <> nil) and (gdk_event_get_type(bevent) = GDK_2BUTTON_PRESS)
     and (FileSelWidget^.dir_list = widget) then begin
-      MenuWidget := gtk_object_get_data(PGtkObject(FileSelWidget),
+      MenuWidget := g_object_get_data(PGObject(FileSelWidget),
                                         'LCLFilterMenu');
       if MenuWidget <> nil then begin
-        AFilterEntry := TFileSelFilterEntry(gtk_object_get_data(PGtkObject(
+        AFilterEntry := TFileSelFilterEntry(g_object_get_data(PGObject(
             gtk_menu_get_active(PGtkMenu(MenuWidget))), 'LCLIsFilterMenuItem'));
         if (AFilterEntry<>nil) and (AFilterEntry.Mask<>nil) then
           PopulateFileAndDirectoryLists(FileSelWidget,AFilterEntry.Mask);
@@ -750,7 +750,7 @@ var
     AFilterEntry: TFileSelFilterEntry;
   begin
     if FilterWidget=nil then exit;
-    AFilterEntry:=TFileSelFilterEntry(gtk_object_get_data(PGtkObject(FilterWidget),
+    AFilterEntry:=TFileSelFilterEntry(g_object_get_data(PGObject(FilterWidget),
                                       'LCLIsFilterMenuItem'));
     if (AFilterEntry<>nil) and (AFilterEntry.Mask<>nil) then
     begin
@@ -769,7 +769,7 @@ begin
   theDialog:=TCommonDialog(GetNearestLCLObject(Widget));
   if (theDialog is TOpenDialog) then begin
     // check if history activated
-    AHistoryEntry:=gtk_object_get_data(PGtkObject(Widget),
+    AHistoryEntry:=g_object_get_data(PGObject(Widget),
                                        'LCLIsHistoryMenuItem');
     if (AHistoryEntry<>nil) and (AHistoryEntry^.Filename<>nil) then begin
       // user has choosen a history file
@@ -827,7 +827,7 @@ begin
   end;
 
   FreeListOfFileSelFilterEntry(ListOfFileSelFilterEntry);
-  //gtk_object_set_data(PGtkObject(SelWidget), 'LCLFilterList', ListOfFileSelFilterEntry);
+  //g_object_set_data(PGObject(SelWidget), 'LCLFilterList', ListOfFileSelFilterEntry);
 
   if GtkSelFilter <> nil then
     gtk_file_chooser_set_filter(SelWidget, GtkSelFilter);
@@ -862,7 +862,7 @@ begin
 
     // create a HBox so that the history is left justified
     HBox:=gtk_hbox_new(false,0);
-    gtk_object_set_data(PGtkObject(SelWidget), 'LCLHistoryHBox', HBox);
+    g_object_set_data(PGObject(SelWidget), 'LCLHistoryHBox', HBox);
     gtk_file_chooser_set_extra_widget(PGtkDialog(SelWidget),HBox);
 
     // create the label 'History:'
@@ -873,7 +873,7 @@ begin
 
     // create the pull down
     HistoryPullDownWidget:=gtk_option_menu_new;
-    gtk_object_set_data(PGtkObject(SelWidget), 'LCLHistoryPullDown',
+    g_object_set_data(PGObject(SelWidget), 'LCLHistoryPullDown',
       HistoryPullDownWidget);
     gtk_box_pack_start(GTK_BOX(HBox),HistoryPullDownWidget,false,false,5);
     gtk_widget_show(HistoryPullDownWidget);
@@ -887,7 +887,7 @@ begin
       MenuItemWidget:=gtk_menu_item_new_with_label(
                                 PFileSelHistoryEntry(HistoryList[i])^.Filename);
       // connect the new MenuItem to the HistoryList entry
-      gtk_object_set_data(PGtkObject(MenuItemWidget), 'LCLIsHistoryMenuItem',
+      g_object_set_data(PGObject(MenuItemWidget), 'LCLIsHistoryMenuItem',
         HistoryList[i]);
       // add activation signal and add to menu
       g_signal_connect(GTK_OBJECT(MenuItemWidget), 'activate',
@@ -903,8 +903,8 @@ begin
     MenuWidget:=nil;
     HistoryList:=nil
   end;
-  gtk_object_set_data(PGtkObject(SelWidget), 'LCLHistoryMenu', MenuWidget);
-  gtk_object_set_data(PGtkObject(SelWidget), 'LCLHistoryList', HistoryList);
+  g_object_set_data(PGObject(SelWidget), 'LCLHistoryMenu', MenuWidget);
+  g_object_set_data(PGObject(SelWidget), 'LCLHistoryList', HistoryList);
 end;
 
 class procedure TGtk2WSOpenDialog.CreatePreviewDialogControl(
@@ -921,7 +921,7 @@ begin
 
   PreviewWidget := {%H-}PGtkWidget(AControl.Handle);
 
-  gtk_object_set_data(PGtkObject(PreviewWidget),'LCLPreviewFixed',
+  g_object_set_data(PGObject(PreviewWidget),'LCLPreviewFixed',
                       PreviewWidget);
   gtk_widget_set_size_request(PreviewWidget,AControl.Width,AControl.Height);
 
@@ -1010,7 +1010,7 @@ begin
     gtk_widget_show_all(HBox);
   end else
     FileDetailLabel:=nil;
-  gtk_object_set_data(PGtkObject(SelWidget), 'FileDetailLabel',
+  g_object_set_data(PGObject(SelWidget), 'FileDetailLabel',
                       FileDetailLabel);
   *)
   // preview

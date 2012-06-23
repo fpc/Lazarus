@@ -657,7 +657,7 @@ end;
  ------------------------------------------------------------------------------}
 function WidgetIsDestroyingHandle(Widget: PGtkWidget): boolean;
 begin
-  Result:=gtk_object_get_data(PGtkObject(Widget),'LCLDestroyingHandle')<>nil;
+  Result:=g_object_get_data(PGObject(Widget),'LCLDestroyingHandle')<>nil;
 end;
 
 {------------------------------------------------------------------------------
@@ -667,7 +667,7 @@ end;
  ------------------------------------------------------------------------------}
 procedure SetWidgetIsDestroyingHandle(Widget: PGtkWidget);
 begin
-  gtk_object_set_data(PGtkObject(Widget),'LCLDestroyingHandle',Widget);
+  g_object_set_data(PGObject(Widget),'LCLDestroyingHandle',Widget);
 end;
 
 {------------------------------------------------------------------------------
@@ -3460,12 +3460,12 @@ begin
   gtk_window_set_transient_for(PGtkWindow(DlgWindow),nil);
   if ADialog is TOpenDialog then begin
     FileSelWidget:=GTK_FILE_CHOOSER(DlgWindow);
-    LCLHistoryMenu:=PGTKWidget(gtk_object_get_data(PGtkObject(FileSelWidget),
+    LCLHistoryMenu:=PGTKWidget(g_object_get_data(PGObject(FileSelWidget),
                                        'LCLHistoryMenu'));
     if LCLHistoryMenu<>nil then FreeWidgetInfo(LCLHistoryMenu);
 
     // free history
-    HistoryList:=TFPList(gtk_object_get_data(PGtkObject(DlgWindow),
+    HistoryList:=TFPList(g_object_get_data(PGObject(DlgWindow),
                                              'LCLHistoryList'));
     if HistoryList<>nil then begin
       for i:=0 to HistoryList.Count-1 do begin
@@ -3475,7 +3475,7 @@ begin
         Dispose(AHistoryEntry);
       end;
       HistoryList.Free;
-      gtk_object_set_data(PGtkObject(DlgWindow),'LCLHistoryList',nil);
+      g_object_set_data(PGObject(DlgWindow),'LCLHistoryList',nil);
     end;
 
     // free preview handle
@@ -3651,7 +3651,7 @@ begin
   if Widget = nil
   then raise EInterfaceException.Create('GetMainWidget Widget=nil');
   
-  Result := gtk_object_get_data(Widget, 'Main');
+  Result := g_object_get_data(Widget, 'Main');
   if Result = nil then Result := Widget; // the widget is the main widget itself.
 end;
 
@@ -3666,7 +3666,7 @@ begin
   if PGtkWidget(ParentWidget)^.parent=ChildWidget
   then raise EInterfaceException.Create('SetMainWidget Parent^.Parent=ChildWidget');
 
-  gtk_object_set_data(ChildWidget, 'Main', ParentWidget)
+  g_object_set_data(ChildWidget, 'Main', ParentWidget)
 end;
 
 { ------------------------------------------------------------------------------
@@ -3689,7 +3689,7 @@ begin
   else Result := nil;
   if Result <> nil then Exit;
   
-  Result := gtk_object_get_data(Widget, 'Fixed');
+  Result := g_object_get_data(Widget, 'Fixed');
   // A last resort
   if Result = nil then Result := Widget;
 end;
@@ -3709,7 +3709,7 @@ begin
   WidgetInfo := GetWidgetInfo(ParentWidget, True);
   WidgetInfo^.ClientWidget := FixedWidget;
   //TODO: remove old compatebility
-  gtk_object_set_data(ParentWidget, 'Fixed', FixedWidget)
+  g_object_set_data(ParentWidget, 'Fixed', FixedWidget)
 end;
 
 {-------------------------------------------------------------------------------
@@ -3951,7 +3951,7 @@ begin
   else begin
     New(Result);
     FillChar(Result^, SizeOf(Result^), 0);
-    gtk_object_set_data(AWidget, 'widgetinfo', Result);
+    g_object_set_data(AWidget, 'widgetinfo', Result);
   end;
 end;
 
@@ -3983,7 +3983,7 @@ begin
   if AWidget <> nil then
   begin
     MainWidget := GetMainWidget(AWidget);
-    Result := gtk_object_get_data(MainWidget, 'widgetinfo');
+    Result := g_object_get_data(PGObject(MainWidget), 'widgetinfo');
     if (Result = nil) and ACreate then
     begin
       Result := CreateWidgetInfo(MainWidget);
@@ -4000,7 +4000,7 @@ var
 begin
   if AWidget = nil then Exit;
   //DebugLn(['FreeWidgetInfo ',GetWidgetDebugReport(AWidget)]);
-  Info := gtk_object_get_data(AWidget, 'widgetinfo');
+  Info := g_object_get_data(AWidget, 'widgetinfo');
   if Info = nil then Exit;
 
   if Info^.DoubleBuffer <> nil then
@@ -4010,7 +4010,7 @@ begin
     FreeMem(Info^.UserData);
     //Info^.UserData := nil; // see below the whole memory is cleared by Fillchar
   end;
-  gtk_object_set_data(AWidget,'widgetinfo',nil);
+  g_object_set_data(AWidget,'widgetinfo',nil);
 
   // Set WidgetInfo memory to nil. This will expose bugs that use widgetinfo after
   // it has been freed and is still referenced by something!
@@ -4075,7 +4075,7 @@ begin
   WidgetInfo := GetWidgetInfo(AWidget);
   if (WidgetInfo = nil) or (WidgetInfo^.CoreWidget = nil) then
     exit(False);
-  Result := gtk_object_get_data(PGtkObject(WidgetInfo^.CoreWidget),'lcl_ttabcontrol') <> nil;
+  Result := g_object_get_data(PGObject(WidgetInfo^.CoreWidget),'lcl_ttabcontrol') <> nil;
 end;
 
 {-------------------------------------------------------------------------------
@@ -4085,7 +4085,7 @@ end;
 -------------------------------------------------------------------------------}
 function GetGtkNoteBookDummyPage(ANoteBookWidget: PGtkNoteBook): PGtkWidget;
 begin
-  Result:=gtk_object_get_data(PGtkObject(ANoteBookWidget),'LCLDummyPage');
+  Result:=g_object_get_data(PGObject(ANoteBookWidget),'LCLDummyPage');
 end;
 
 {-------------------------------------------------------------------------------
@@ -4097,7 +4097,7 @@ end;
 procedure SetGtkNoteBookDummyPage(ANoteBookWidget: PGtkNoteBook;
   DummyWidget: PGtkWidget);
 begin
-  gtk_object_set_data(PGtkObject(ANoteBookWidget),'LCLDummyPage',DummyWidget);
+  g_object_set_data(PGObject(ANoteBookWidget),'LCLDummyPage',DummyWidget);
 end;
 
 {------------------------------------------------------------------------------
@@ -4213,7 +4213,7 @@ var
         TabImageWidget := gtk_label_new(#0);
         g_signal_connect(PgtkObject(TabImageWidget), 'expose_event',
                            TGTKSignalFunc(@PageIconWidgetExposeAfter), ThePage);
-        gtk_object_set_data(PGtkObject(TabWidget), 'TabImage', TabImageWidget);
+        g_object_set_data(PGObject(TabWidget), 'TabImage', TabImageWidget);
         gtk_widget_set_usize(TabImageWidget, IconSize.X, IconSize.Y);
         gtk_widget_show(TabImageWidget);
         gtk_box_pack_start_defaults(PGtkBox(TabWidget), TabImageWidget);
@@ -4232,7 +4232,7 @@ var
         g_signal_connect_after(PgtkObject(MenuImageWidget), 'expose_event',
                           TGTKSignalFunc(@PageIconWidgetExposeAfter), ThePage);
         gtk_widget_set_usize(MenuImageWidget,IconSize.X,IconSize.Y);
-        gtk_object_set_data(PGtkObject(MenuWidget),'TabImage',MenuImageWidget);
+        g_object_set_data(PGObject(MenuWidget),'TabImage',MenuImageWidget);
         gtk_widget_show(MenuImageWidget);
         gtk_box_pack_start_defaults(PGtkBox(MenuWidget),MenuImageWidget);
         gtk_box_reorder_child(PGtkBox(MenuWidget),MenuImageWidget,0);
@@ -4245,7 +4245,7 @@ var
         // there is a pixmap for an old image in the tab
         // -> remove the icon widget
         DestroyWidget(TabImageWidget);
-        gtk_object_set_data(PGtkObject(TabWidget), 'TabImage', nil);
+        g_object_set_data(PGObject(TabWidget), 'TabImage', nil);
         TabImageWidget:=nil;
       end;
       if MenuImageWidget<>nil then
@@ -4253,7 +4253,7 @@ var
         // there is a pixmap for an old image in the menu
         // -> remove the icon widget
         DestroyWidget(MenuImageWidget);
-        gtk_object_set_data(PGtkObject(MenuWidget), 'TabImage', nil);
+        g_object_set_data(PGObject(MenuWidget), 'TabImage', nil);
         MenuImageWidget:=nil;
       end;
     end;
@@ -4290,11 +4290,11 @@ var
         style^.ythickness := 0;
         gtk_widget_modify_style(TabCloseBtnWidget, style);
 
-        gtk_object_set_data(PGtkObject(TabWidget), 'TabCloseBtn',
+        g_object_set_data(PGObject(TabWidget), 'TabCloseBtn',
                             TabCloseBtnWidget);
         // put a pixmap into the button
         TabCloseBtnImageWidget:=gtk_image_new_from_stock(GTK_STOCK_CLOSE, GTK_ICON_SIZE_MENU);
-        gtk_object_set_data(PGtkObject(TabCloseBtnWidget),'TabCloseBtnImage',
+        g_object_set_data(PGObject(TabCloseBtnWidget),'TabCloseBtnImage',
                             TabCloseBtnImageWidget);
         gtk_widget_show(TabCloseBtnImageWidget);
         gtk_container_add(PGtkContainer(TabCloseBtnWidget),
@@ -4309,7 +4309,7 @@ var
       if TabCloseBtnWidget<>nil then begin
         // there is a close button
         // -> remove it
-        gtk_object_set_data(PGtkObject(TabWidget), 'TabCloseBtn',
+        g_object_set_data(PGObject(TabWidget), 'TabCloseBtn',
                             nil);
         DestroyWidget(TabCloseBtnWidget);
         TabCloseBtnWidget:=nil;
@@ -4332,9 +4332,9 @@ begin
   TabWidget:=gtk_notebook_get_tab_label(PGtkNoteBook(NotebookWidget),
                                         PageWidget);
   if TabWidget<>nil then begin
-    TabImageWidget:=gtk_object_get_data(PGtkObject(TabWidget), 'TabImage');
-    TabLabelWidget:=gtk_object_get_data(PGtkObject(TabWidget), 'TabLabel');
-    TabCloseBtnWidget:=gtk_object_get_data(PGtkObject(TabWidget),'TabCloseBtn');
+    TabImageWidget:=g_object_get_data(PGObject(TabWidget), 'TabImage');
+    TabLabelWidget:=g_object_get_data(PGObject(TabWidget), 'TabLabel');
+    TabCloseBtnWidget:=g_object_get_data(PGObject(TabWidget),'TabCloseBtn');
   end else begin
     TabImageWidget:=nil;
     TabLabelWidget:=nil;
@@ -4345,8 +4345,8 @@ begin
   MenuWidget:=gtk_notebook_get_menu_label(PGtkNoteBook(NotebookWidget),
                                           PageWidget);
   if MenuWidget<>nil then begin
-    MenuImageWidget:=gtk_object_get_data(PGtkObject(MenuWidget), 'TabImage');
-    MenuLabelWidget:=gtk_object_get_data(PGtkObject(MenuWidget), 'TabMenuLabel');
+    MenuImageWidget:=g_object_get_data(PGObject(MenuWidget), 'TabImage');
+    MenuLabelWidget:=g_object_get_data(PGObject(MenuWidget), 'TabMenuLabel');
   end else begin
     MenuImageWidget:=nil;
     MenuLabelWidget:=nil;
@@ -4370,7 +4370,7 @@ begin
   TabWidget:=gtk_notebook_get_tab_label(PGtkNoteBook(NotebookWidget),
                                         PageWidget);
   if TabWidget<>nil then
-    TabLabelWidget:=gtk_object_get_data(PGtkObject(TabWidget), 'TabLabel')
+    TabLabelWidget:=g_object_get_data(PGObject(TabWidget), 'TabLabel')
   else
     TabLabelWidget:=nil;
 
@@ -4556,7 +4556,7 @@ end;
 function SubtractScoll(AWidget: PGtkWidget; APosition: TPoint): TPoint;
 begin
   Result := APosition;
-  AWidget := gtk_object_get_data(PGTKObject(AWidget), odnScrollArea);
+  AWidget := g_object_get_data(PGObject(AWidget), odnScrollArea);
   if GTK_IS_SCROLLED_WINDOW(AWidget) then
   begin
     with gtk_scrolled_window_get_hadjustment(PGtkScrolledWindow(AWidget))^ do
@@ -4781,13 +4781,13 @@ end;
 
 function GetDesignSignalMask(Widget: PGtkWidget): TDesignSignalMask;
 begin
-  Result:=TDesignSignalMask({%H-}PtrUInt(gtk_object_get_data(PGtkObject(Widget),
+  Result:=TDesignSignalMask({%H-}PtrUInt(g_object_get_data(PGObject(Widget),
                                                 'LCLDesignMask')));
 end;
 
 procedure SetDesignSignalMask(Widget: PGtkWidget; NewMask: TDesignSignalMask);
 begin
-  gtk_object_set_data(PGtkObject(Widget),'LCLDesignMask',{%H-}Pointer(PtrInt(NewMask)));
+  g_object_set_data(PGObject(Widget),'LCLDesignMask',{%H-}Pointer(PtrInt(NewMask)));
 end;
 
 function GetDesignOnlySignalFlag(Widget: PGtkWidget;
@@ -5016,7 +5016,7 @@ end;
 function GetAccelGroup(const Widget: PGtkWidget;
   CreateIfNotExists: boolean): PGTKAccelGroup;
 begin
-  Result := PGTKAccelGroup(gtk_object_get_data(PGtkObject(Widget),'AccelGroup'));
+  Result := PGTKAccelGroup(g_object_get_data(PGObject(Widget),'AccelGroup'));
   if (Result=nil) and CreateIfNotExists then begin
     {$IFDEF VerboseAccelerator}
     DebugLn('GetAccelGroup CREATING  Widget=',DbgS(Widget),' CreateIfNotExists=',dbgs(CreateIfNotExists));
@@ -5032,7 +5032,7 @@ procedure SetAccelGroup(const Widget: PGtkWidget;
   const AnAccelGroup: PGTKAccelGroup);
 begin
   if (Widget = nil) then exit;
-  gtk_object_set_data(PGtkObject(Widget), 'AccelGroup', AnAccelGroup);
+  g_object_set_data(PGObject(Widget), 'AccelGroup', AnAccelGroup);
   if AnAccelGroup<>nil then begin
     // attach group to widget
     {$IFDEF VerboseAccelerator}
@@ -5207,7 +5207,7 @@ end;
 
 function GetAccelKey(Widget: PGtkWidget): PAcceleratorKey;
 begin
-  Result := PAcceleratorKey(gtk_object_get_data(PGtkObject(Widget),'AccelKey'));
+  Result := PAcceleratorKey(g_object_get_data(PGObject(Widget),'AccelKey'));
 end;
 
 function SetAccelKey(const Widget: PGtkWidget;
@@ -5237,7 +5237,7 @@ begin
     ' Key=',dbgs(Key),' Mods=',DbgS(Mods),
     ' Signal="',Signal,'" Result=',DbgS(Result));
   {$ENDIF}
-  gtk_object_set_data(PGtkObject(Widget), 'AccelKey', Result);
+  g_object_set_data(PGObject(Widget), 'AccelKey', Result);
 end;
 
 procedure ClearAccelKey(Widget: PGtkWidget);
@@ -5752,7 +5752,7 @@ var
   begin
     if (MenuItemWidget = nil) or (LCLMenuItem = nil) then
       Exit;
-    LabelWidget := gtk_object_get_data(PGtkObject(MenuItemWidget), 'LCLLabel');
+    LabelWidget := g_object_get_data(PGObject(MenuItemWidget), 'LCLLabel');
     Gtk2Widgetset.SetLabelCaption(LabelWidget, LCLMenuItem.Caption);
     gtk_widget_set_direction(PGtkWidget(LabelWidget), WidgetDirection[UseRTL]);
   end;
@@ -5773,7 +5773,7 @@ var
        not ( (LCLMenuItem.Parent <> nil) and LCLMenuItem.Parent.HandleAllocated and
        GtkWidgetIsA({%H-}PGtkWidget(LCLMenuItem.Parent.Handle), GTK_TYPE_MENU_BAR) );
 
-    LabelWidget := PGtkLabel(gtk_object_get_data(PGtkObject(MenuItemWidget),'LCLShortCutLabel'));
+    LabelWidget := PGtkLabel(g_object_get_data(PGObject(MenuItemWidget),'LCLShortCutLabel'));
     if NeedShortCut then
     begin
       s := GetAcceleratorString(Key, Shift);
@@ -5784,7 +5784,7 @@ var
       begin
         // create a label for the ShortCut
         LabelWidget := PGtkLabel(gtk_label_new(PChar(Pointer(s))));
-        gtk_object_set_data(PGtkObject(MenuItemWidget), 'LCLShortCutLabel', LabelWidget);
+        g_object_set_data(PGObject(MenuItemWidget), 'LCLShortCutLabel', LabelWidget);
         gtk_container_add(GTK_CONTAINER(HBoxWidget), PGtkWidget(LabelWidget));
         gtk_widget_show(PGtkWidget(LabelWidget));
       end
@@ -5822,7 +5822,7 @@ var
     end
     else
       MinHeightWidget := nil;
-    gtk_object_set_data(PGtkObject(MenuItemWidget),
+    g_object_set_data(PGObject(MenuItemWidget),
                         'LCLMinHeight', MinHeightWidget);
   end;
 
@@ -5833,7 +5833,7 @@ var
     // create a label for the Caption
     LabelWidget := PGtkLabel(gtk_label_new(''));
     gtk_misc_set_alignment(GTK_MISC (LabelWidget), 0.0, 0.5);
-    gtk_object_set_data(PGtkObject(MenuItemWidget), 'LCLLabel', LabelWidget);
+    g_object_set_data(PGObject(MenuItemWidget), 'LCLLabel', LabelWidget);
     gtk_container_add(GTK_CONTAINER(HBoxWidget), PGtkWidget(LabelWidget));
     SetMenuItemLabelText(LCLMenuItem, MenuItemWidget);
     //gtk_accel_label_set_accel_widget(GTK_ACCEL_LABEL(LabelWidget), MenuItemWidget);
@@ -5841,7 +5841,7 @@ var
   end;
   
 begin
-  HBoxWidget := gtk_object_get_data(PGtkObject(MenuItemWidget), 'LCLHBox');
+  HBoxWidget := g_object_get_data(PGObject(MenuItemWidget), 'LCLHBox');
   if HBoxWidget = nil then
   begin
     // create inner widgets
@@ -5852,7 +5852,7 @@ begin
     end;
     HBoxWidget := gtk_hbox_new(false, 20);
     gtk_widget_set_direction(PGtkWidget(HBoxWidget), WidgetDirection[UseRTL]);
-    gtk_object_set_data(PGtkObject(MenuItemWidget), 'LCLHBox', HBoxWidget);
+    g_object_set_data(PGObject(MenuItemWidget), 'LCLHBox', HBoxWidget);
     CreateIcon;
     CreateLabel;
     UpdateShortCutLabel;
@@ -5865,7 +5865,7 @@ begin
     begin
       // a separator is an empty gtkmenuitem -> delete the inner widgets
       DestroyWidget(HBoxWidget);
-      gtk_object_set_data(PGtkObject(MenuItemWidget), 'LCLHBox', nil);
+      g_object_set_data(PGObject(MenuItemWidget), 'LCLHBox', nil);
     end else
     begin
       // just update the content
@@ -5921,7 +5921,7 @@ begin
   begin
     CurStatusPanelWidget := PGtkBoxChild(
               g_list_nth_data(PGtkBox(HBox)^.children, CurPanelCount - 1))^.Widget;
-    gtk_object_remove_data(PGtkObject(CurStatusPanelWidget),'lcl_statusbar_id');
+    g_object_set_data(PGObject(CurStatusPanelWidget),'lcl_statusbar_id', nil);
     DestroyConnectedWidgetCB(CurStatusPanelWidget, True);
     dec(CurPanelCount);
   end;
@@ -5967,7 +5967,7 @@ begin
   if TStatusBar(Data).SimplePanel then
     exit;
 
-  ItemId := PtrInt(gtk_object_get_data(PGtkObject(Widget), 'lcl_statusbar_id')^);
+  ItemId := PtrInt(g_object_get_data(PGObject(Widget), 'lcl_statusbar_id')^);
 
   if not ((ItemId >= 0) and (ItemId < TStatusBar(Data).Panels.Count)) then
     exit;
@@ -6092,7 +6092,7 @@ begin
     gtk_widget_set_usize(StatusPanelWidget, CurPanel.Width,
       StatusPanelWidget^.allocation.height);
 
-    gtk_object_set_data(PGtkObject(StatusPanelWidget),'lcl_statusbar_id',
+    g_object_set_data(PGObject(StatusPanelWidget),'lcl_statusbar_id',
       @AStatusBar.Panels[Index].ID);
     g_signal_connect_after(StatusPanelWidget, 'expose-event',
       TGtkSignalFunc(@gtk2PaintStatusBarWidget), AStatusBar);
@@ -7346,7 +7346,7 @@ begin
   //debugln('CreateFormContents Style=',GetStyleDebugReport(WindowStyle));
   gtk_container_add(PGtkContainer(ScrolledWidget), ClientAreaWidget);
 
-  gtk_object_set_data(FormWidget, odnScrollArea, ScrolledWidget);
+  g_object_set_data(FormWidget, odnScrollArea, ScrolledWidget);
 
   gtk_widget_show(ClientAreaWidget);
   SetFixedWidget(FormWidget, ClientAreaWidget);
@@ -7363,12 +7363,12 @@ begin
                                    
     Adjustment := gtk_scrolled_window_get_vadjustment(PGTKScrolledWindow(ScrolledWidget));
     if Adjustment <> nil then
-      gtk_object_set_data(PGTKObject(Adjustment), odnScrollBar,
+      g_object_set_data(PGObject(Adjustment), odnScrollBar,
         PGTKScrolledWindow(ScrolledWidget)^.vscrollbar);
 
     Adjustment := gtk_scrolled_window_get_hadjustment(PGTKScrolledWindow(ScrolledWidget));
     if Adjustment <> nil then
-      gtk_object_set_data(PGTKObject(Adjustment), odnScrollBar,
+      g_object_set_data(PGObject(Adjustment), odnScrollBar,
         PGTKScrolledWindow(ScrolledWidget)^.hscrollbar);
 
     if (AWidgetInfo <> nil) and
@@ -7648,11 +7648,11 @@ begin
         VBox:=gtk_vbox_new(false,0);// vbox is needed for menu above and fixed widget below
         gtk_widget_show(VBox);
         gtk_container_add(PGtkContainer(StyleObject^.Widget), VBox);
-        gtk_object_set_data(PGtkObject(StyleObject^.Widget),'vbox',VBox);
+        g_object_set_data(PGObject(StyleObject^.Widget),'vbox',VBox);
         WindowFixedWidget:=CreateFixedClientWidget;
         gtk_widget_show(WindowFixedWidget);
         gtk_container_add(PGtkContainer(VBox), WindowFixedWidget);
-        gtk_object_set_data(PGtkObject(StyleObject^.Widget),'fixedwidget',WindowFixedWidget);
+        g_object_set_data(PGObject(StyleObject^.Widget),'fixedwidget',WindowFixedWidget);
         gtk_widget_realize(StyleObject^.Widget);
       end
     else
@@ -7762,7 +7762,7 @@ begin
         WindowFixedWidget:=CreateFixedClientWidget{$IFNDEF GtkFixedWithWindow}(false){$ENDIF};
         gtk_widget_show(WindowFixedWidget);
         gtk_container_add(PGtkContainer(StyleObject^.Widget), WindowFixedWidget);
-        gtk_object_set_data(PGtkObject(StyleObject^.Widget),'fixedwidget',WindowFixedWidget);
+        g_object_set_data(PGObject(StyleObject^.Widget),'fixedwidget',WindowFixedWidget);
       end
 
     else
@@ -7842,7 +7842,7 @@ begin
           StyleWindowWidget:=GetStyleWidget(lgsWindow);
           // add menu above the forms client area (fixed widget)
           VBox:=PGTKWidget(
-                     gtk_object_get_data(PGtkObject(StyleWindowWidget),'vbox'));
+                     g_object_get_data(PGObject(StyleWindowWidget),'vbox'));
           gtk_box_pack_start(PGTKBox(VBox), StyleObject^.Widget, False, False, 0);
         end
         else
@@ -7861,7 +7861,7 @@ begin
           StyleWindowWidget:=GetStyleWidget(lgsWindow);
           // add widget on client area of form
           WindowFixedWidget:=PGTKWidget(
-                 gtk_object_get_data(PGtkObject(StyleWindowWidget),'fixedwidget'));
+                 g_object_get_data(PGObject(StyleWindowWidget),'fixedwidget'));
           //DebugLn('GetStyleWithName adding on hidden stylewindow ',WName,' ',GetWidgetDebugReport(StyleObject^.Widget));
           if WindowFixedWidget <> nil then
             gtk_fixed_put(PGtkFixed(WindowFixedWidget),StyleObject^.Widget,10,10);
@@ -8517,7 +8517,7 @@ begin
     allocation.height:=s;
     gtk_widget_size_allocate(StyleObject^.Widget,@allocation);
     InnerWidget:=PGTKWidget(
-          gtk_object_get_data(PGtkObject(StyleObject^.Widget),'fixedwidget'));
+          g_object_get_data(PGObject(StyleObject^.Widget),'fixedwidget'));
     allocation:=InnerWidget^.allocation;
     //DebugLn(['GetStyleFormFrameBorders BBB2 ',dbgs(allocation),' WithMenu=',WithMenu,' ClientWidget=',GetWidgetDebugReport(InnerWidget)]);
     f.Left:=Min(s,Max(0,allocation.x));
@@ -8531,10 +8531,10 @@ begin
   
   if WithMenu then begin
     InnerWidget:=PGTKWidget(
-                 gtk_object_get_data(PGtkObject(StyleObject^.Widget),'vbox'));
+                 g_object_get_data(PGObject(StyleObject^.Widget),'vbox'));
   end else begin
     InnerWidget:=PGTKWidget(
-          gtk_object_get_data(PGtkObject(StyleObject^.Widget),'fixedwidget'));
+          g_object_get_data(PGObject(StyleObject^.Widget),'fixedwidget'));
   end;
   Outer:=StyleObject^.Widget^.allocation;
   Inner:=InnerWidget^.allocation;

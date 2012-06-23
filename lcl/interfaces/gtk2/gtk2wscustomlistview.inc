@@ -189,7 +189,7 @@ begin
     NM.uNewState := LVIS_SELECTED;
   NM.uChanged := LVIF_STATE;
   msg.NMHdr := @NM.hdr;
-  if gtk_object_get_data({%H-}PGtkObject(TWinControl(Target).Handle),'lcl_gtkwidget_in_update') = nil then
+  if g_object_get_data({%H-}PGObject(TWinControl(Target).Handle),'lcl_gtkwidget_in_update') = nil then
     DeliverMessage(Target, msg);
 end;
 
@@ -1635,7 +1635,7 @@ begin
   
     Dispose(OrigScrollingData);
     WidgetInfo^.CoreWidget := PGtkWidget(MainView);
-    gtk_object_set_data(Pointer(MainView), 'widgetinfo', WidgetInfo);
+    g_object_set_data(Pointer(MainView), 'widgetinfo', WidgetInfo);
     //SetMainWidget(ScrollWidget, MainView);
     //GetWidgetInfo(ScrollWidget, True)^.CoreWidget := PGtkWidget(MainView);
     gtk_widget_show_all(PGtkWidget(MainView));
@@ -1679,16 +1679,14 @@ class procedure TGtk2WSCustomListView.BeginUpdate(const ALV: TCustomListView);
 begin
   if not WSCheckHandleAllocated(ALV, 'BeginUpdate') then
     exit;
-  if gtk_object_get_data({%H-}PGtkObject(ALV.Handle),'lcl_gtkwidget_in_update') = nil then
-    gtk_object_set_data({%H-}PGtkObject(ALV.Handle),'lcl_gtkwidget_in_update', ALV);
+  g_object_set_data({%H-}PGObject(ALV.Handle),'lcl_gtkwidget_in_update', ALV);
 end;
 
 class procedure TGtk2WSCustomListView.EndUpdate(const ALV: TCustomListView);
 begin
   if not WSCheckHandleAllocated(ALV, 'EndUpdate') then
     exit;
-  if gtk_object_get_data({%H-}PGtkObject(ALV.Handle),'lcl_gtkwidget_in_update') <> nil then
-    gtk_object_remove_data({%H-}PGtkObject(ALV.Handle),'lcl_gtkwidget_in_update');
+  g_object_set_data({%H-}PGObject(ALV.Handle),'lcl_gtkwidget_in_update', nil);
 end;
 
 class function TGtk2WSCustomListView.GetBoundingRect(const ALV: TCustomListView): TRect;

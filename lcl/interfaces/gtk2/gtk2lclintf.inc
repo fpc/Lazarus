@@ -875,7 +875,7 @@ begin
   { We were requested by window manager to close so return EscapeResult}
   if PInteger(data)^ = 0 then
   begin
-    ModalResult:= {%H-}PtrUInt(gtk_object_get_data(PGtkObject(Widget), 'modal_result'));
+    ModalResult:= {%H-}PtrUInt(g_object_get_data(PGObject(Widget), 'modal_result'));
     { Don't allow to close if we don't have a default return value }
     Result:= (ModalResult = 0);
     if not Result then PInteger(data)^:= ModalResult
@@ -885,7 +885,7 @@ end;
 
 function PromptUserButtonClicked(Widget : PGtkWidget; data: gPointer) : GBoolean; cdecl;
 begin
-  PInteger(data)^ := {%H-}PtrUInt(gtk_object_get_data(PGtkObject(Widget), 'modal_result'));
+  PInteger(data)^ := {%H-}PtrUInt(g_object_get_data(PGObject(Widget), 'modal_result'));
   Result := False;
 end;
 
@@ -1047,10 +1047,10 @@ begin
 
         BtnID := ButtonResults[Buttons[BtnIdx].ModalResult];
         if BtnID = idButtonCancel then
-           gtk_object_set_data(PGtkObject(Dialog), 'modal_result', Pointer(idButtonCancel));
+           g_object_set_data(PGObject(Dialog), 'modal_result', Pointer(idButtonCancel));
 
         X := Buttons[BtnIdx].ModalResult;
-        gtk_object_set_data(PGtkObject(Btn), 'modal_result',
+        g_object_set_data(PGObject(Btn), 'modal_result',
           {%H-}Pointer(PtrInt(X)));
 
         g_signal_connect(PGtkObject(Btn), 'clicked',
@@ -1060,7 +1060,7 @@ begin
         begin
           gtk_dialog_set_default_response(PGtkDialog(Dialog), ResponseID(BtnID));
           X := Buttons[BtnIdx].ModalResult;
-          gtk_object_set_data(PGtkObject(Dialog), 'modal_result',
+          g_object_set_data(PGObject(Dialog), 'modal_result',
             {%H-}Pointer(PtrInt(X)));
         end;
 
@@ -1210,10 +1210,10 @@ begin
         Btn := PGtkButton(ChildList^.Data);
 
         if Buttons[BtnIdx] = idButtonCancel then
-           gtk_object_set_data(PGtkObject(Dialog), 'modal_result', Pointer(idButtonCancel));
+           g_object_set_data(PGObject(Dialog), 'modal_result', Pointer(idButtonCancel));
 
         X := Buttons[BtnIdx];
-        gtk_object_set_data(PGtkObject(Btn), 'modal_result',
+        g_object_set_data(PGObject(Btn), 'modal_result',
           {%H-}Pointer(PtrInt(X)));
 
         g_signal_connect(PGtkObject(Btn), 'clicked',
@@ -1223,7 +1223,7 @@ begin
         begin
           gtk_dialog_set_default_response(PGtkDialog(Dialog), ResponseID(Buttons[BtnIdx]));
           X := Buttons[BtnIdx];
-          gtk_object_set_data(PGtkObject(Dialog), 'modal_result',
+          g_object_set_data(PGObject(Dialog), 'modal_result',
             {%H-}Pointer(PtrInt(X)));
         end;
 

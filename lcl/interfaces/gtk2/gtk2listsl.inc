@@ -61,10 +61,10 @@ begin
   //DebugLn('gtkListItemDrawCB ');
 
   // get context
-  GtkList:=PGtkList(gtk_object_get_data(PGtkObject(Data),GtkListItemGtkListTag));
+  GtkList:=PGtkList(g_object_get_data(PGObject(Data),GtkListItemGtkListTag));
   if GtkList=nil then
     RaiseGDBException('gtkListItemDrawAfterCB GtkList=nil');
-  LCLList:=TGtkListStringList(gtk_object_get_data(PGtkObject(Data),
+  LCLList:=TGtkListStringList(g_object_get_data(PGObject(Data),
                               GtkListItemLCLListTag));
   if LCLList=nil then
     RaiseGDBException('gtkListItemDrawAfterCB LCLList=nil');
@@ -145,10 +145,10 @@ begin
   //DebugLn('gtkListItemDrawCB ');
 
   // get context
-  GtkList:=PGtkList(gtk_object_get_data(PGtkObject(Data),GtkListItemGtkListTag));
+  GtkList:=PGtkList(g_object_get_data(PGObject(Data),GtkListItemGtkListTag));
   if GtkList=nil then
     RaiseGDBException('gtkListItemToggledCB GtkList=nil');
-  LCLList:=TGtkListStringList(gtk_object_get_data(PGtkObject(Data),
+  LCLList:=TGtkListStringList(g_object_get_data(PGObject(Data),
                               GtkListItemLCLListTag));
   if LCLList=nil then
     RaiseGDBException('gtkListItemToggledCB LCLList=nil');
@@ -160,7 +160,7 @@ begin
   if LockOnChange({%H-}PgtkObject(LCLList.Owner.Handle),0) > 0 then Exit;
 
   if GtkWidgetIsA(Widget,gtk_toggle_button_get_type) then begin
-    gtk_object_set_data(PgtkObject(Widget), 'Grayed', nil);
+    g_object_set_data(PGObject(Widget), 'Grayed', nil);
   end;
 
   Mess.Msg := LM_CHANGED;
@@ -212,10 +212,10 @@ begin
   Debugln('gtkListItemSelectAfterCB');
   {$ENDIF}
   // get context
-  GtkList:=PGtkList(gtk_object_get_data(PGtkObject(Data),GtkListItemGtkListTag));
+  GtkList:=PGtkList(g_object_get_data(PGObject(Data),GtkListItemGtkListTag));
   if GtkList=nil then
     RaiseGTKListNotFound;
-  LCLList:=TGtkListStringList(gtk_object_get_data(PGtkObject(Data),
+  LCLList:=TGtkListStringList(g_object_get_data(PGObject(Data),
                               GtkListItemLCLListTag));
   if LCLList=nil then
     RaiseGDBException('gtkListItemSelectAfterCB LCLList=nil');
@@ -340,8 +340,8 @@ begin
   {$IFDEF EventTrace}
    Debugln('connect itemCallback');
   {$ENDIF}
-  gtk_object_set_data(PGtkObject(li),GtkListItemLCLListTag,Self);
-  gtk_object_set_data(PGtkObject(li),GtkListItemGtkListTag,FGtkList);
+  g_object_set_data(PGObject(li),GtkListItemLCLListTag,Self);
+  g_object_set_data(PGObject(li),GtkListItemGtkListTag,FGtkList);
   //DebugLn('TGtkListStringList.ConnectItemCallbacks Self=',DbgS(Self),
   //' GtkList=',DbgS(FGtkList),
   //' Owner=',DbgS(Owner),'=',Owner.ClassName,
@@ -395,8 +395,8 @@ begin
   {$IFDEF EventTrace}
    Debugln('connect itemCallback');
   {$ENDIF}
-  gtk_object_set_data(PGtkObject(AItem), GtkListItemLCLListTag, nil);
-  gtk_object_set_data(PGtkObject(AItem), GtkListItemGtkListTag, nil);
+  g_object_set_data(PGObject(AItem), GtkListItemLCLListTag, nil);
+  g_object_set_data(PGObject(AItem), GtkListItemGtkListTag, nil);
 
   g_signal_handlers_disconnect_by_func(
     G_OBJECT(AItem), G_CALLBACK(@gtkListItemExposeEvent), AItem);
@@ -492,7 +492,7 @@ begin
   //DebugLn('[TGtkListStringList.PutObject] Index=',Index,' Count=',Count);
   ListItem:=GetListItem(Index);
   if ListItem <> nil then
-    gtk_object_set_data(PGtkObject(ListItem),'LCLStringsObject',AnObject);
+    g_object_set_data(PGObject(ListItem),'LCLStringsObject',AnObject);
 end;
 
 {------------------------------------------------------------------------------
@@ -686,7 +686,7 @@ begin
   Result:=nil;
   ListItem:=GetListItem(Index);
   if ListItem<>nil then
-    Result:=TObject(gtk_object_get_data(PGtkObject(ListItem),'LCLStringsObject'));
+    Result:=TObject(g_object_get_data(PGObject(ListItem),'LCLStringsObject'));
 end;
 
 procedure TGtkListStringList.Put(Index: Integer; const S: string);

@@ -806,7 +806,7 @@ begin
   GTK_WIDGET_UNSET_FLAGS(Scrolled^.hscrollbar, GTK_CAN_FOCUS);
   GTK_WIDGET_UNSET_FLAGS(Scrolled^.vscrollbar, GTK_CAN_FOCUS);
   gtk_scrolled_window_set_policy(Scrolled, GTK_POLICY_NEVER, GTK_POLICY_NEVER);
-  gtk_object_set_data(PGtkObject(Scrolled), odnScrollArea, Scrolled);
+  g_object_set_data(PGObject(Scrolled), odnScrollArea, Scrolled);
 
   {$IFDEF DebugLCLComponents}
   DebugGtkWidgets.MarkCreated(Scrolled, dbgsName(AWinControl));
@@ -816,11 +816,11 @@ begin
 
   Adjustment := gtk_scrolled_window_get_vadjustment(Scrolled);
   if Adjustment <> nil then
-    gtk_object_set_data(PGTKObject(Adjustment), odnScrollBar, Scrolled^.vscrollbar);
+    g_object_set_data(PGObject(Adjustment), odnScrollBar, Scrolled^.vscrollbar);
 
   Adjustment := gtk_scrolled_window_get_hadjustment(Scrolled);
   if Adjustment <> nil then
-    gtk_object_set_data(PGTKObject(Adjustment), odnScrollBar, Scrolled^.hscrollbar);
+    g_object_set_data(PGObject(Adjustment), odnScrollBar, Scrolled^.hscrollbar);
 
   // create a gtk_layout for the client area, so children can be added at
   // free x,y positions and the scrollbars automatically scrolls the children

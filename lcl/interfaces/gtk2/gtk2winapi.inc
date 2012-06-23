@@ -216,9 +216,7 @@ var
 begin
   Result := -1;
   if Handle = 0 then Exit;
-  Result := -1;
-  P := nil;
-  P := gtk_object_get_data({%H-}pgtkobject(Handle),'WNDPROC');
+  P := g_object_get_data({%H-}PGObject(Handle),'WNDPROC');
   if P <> nil then
     Proc := TWndMethod(P^)
   else
@@ -1116,7 +1114,7 @@ begin
   Result := GTKObject <> nil;
 
   if Result then begin
-    if gtk_type_is_a(gtk_object_type(GTKObject), GTKAPIWidget_GetType)
+    if gtk_type_is_a(g_object_type(GTKObject), GTKAPIWidget_GetType)
     then begin
       if IsValidGDIObjectType(Bitmap, gdiBitmap) then
         BMP := {%H-}PGdiObject(Bitmap)^.GDIBitmapObject
@@ -1989,7 +1987,7 @@ begin
   Result := true;
 
   if GTKObject<>nil then begin
-    if gtk_type_is_a(gtk_object_type(GTKObject), GTKAPIWidget_GetType)
+    if gtk_type_is_a(g_object_type(GTKObject), GTKAPIWidget_GetType)
     then begin
       GTKAPIWidget_DestroyCaret(PGTKAPIWidget(GTKObject));
     end
@@ -4257,7 +4255,7 @@ function TGtk2WidgetSet.GetCaretRespondToFocus(handle: HWND;
   var ShowHideOnFocus: boolean): Boolean;
 begin
   if handle<>0 then begin
-    if gtk_type_is_a(gtk_object_type({%H-}PGTKObject(handle)), GTKAPIWidget_GetType)
+    if gtk_type_is_a({%H-}g_object_type(PGTKObject(handle)), GTKAPIWidget_GetType)
     then begin
       GTKAPIWidget_GetCaretRespondToFocus({%H-}PGTKAPIWidget(handle),
         ShowHideOnFocus);
@@ -5321,7 +5319,7 @@ end;
  ------------------------------------------------------------------------------}
 function TGtk2WidgetSet.GetProp(Handle : hwnd; Str : PChar): Pointer;
 Begin
-  Result := gtk_object_get_data({%H-}pgtkobject(Handle),Str);
+  Result := g_object_get_data({%H-}PGObject(Handle),Str);
 end;
 
 {------------------------------------------------------------------------------
@@ -5338,8 +5336,7 @@ begin
   if GtkWidgetIsA(Widget,GTK_TYPE_SCROLLED_WINDOW) then begin
     ScrollWidget:=Widget;
   end else begin
-    ScrollWidget:=PGtkWidget(gtk_object_get_data(
-                                             PGtkObject(Widget),odnScrollArea));
+    ScrollWidget:=PGtkWidget(g_object_get_data(PGObject(Widget),odnScrollArea));
   end;
   if ScrollWidget=nil then exit;
   if BarKind=SM_CYVSCROLL then begin
@@ -5367,8 +5364,7 @@ begin
   if GtkWidgetIsA(Widget,GTK_TYPE_SCROLLED_WINDOW) then begin
     ScrollWidget:=Widget;
   end else begin
-    ScrollWidget:=PGtkWidget(gtk_object_get_data(
-                                             PGtkObject(Widget),odnScrollArea));
+    ScrollWidget:=PGtkWidget(g_object_get_data(PGObject(Widget),odnScrollArea));
   end;
   if ScrollWidget=nil then exit;
   if SBStyle=SB_VERT then begin
@@ -5397,7 +5393,7 @@ begin
   if (Handle = 0) then exit;
 
 
-  Scroll := gtk_object_get_data({%H-}PGTKObject(Handle), odnScrollArea);
+  Scroll := g_object_get_data({%H-}PGObject(Handle), odnScrollArea);
   if GtkWidgetIsA(Scroll, gtk_scrolled_window_get_type)
   then begin
     IsScrollWindow := True;
@@ -6070,7 +6066,7 @@ function TGtk2WidgetSet.GetWindowLong(Handle: HWND; int: Integer): PtrInt;
 
   function GetObjectData(Name: PChar): PtrInt;
   begin
-    Result := PtrInt({%H-}PtrUInt(gtk_object_get_data(pgtkobject(Handle),Name)));
+    Result := PtrInt(PtrUInt({%H-}g_object_get_data(PGObject(Handle),Name)));
   end;
 var
   WidgetInfo: PWidgetInfo;
@@ -6447,7 +6443,7 @@ begin
 
   if Result
   then begin
-    if gtk_type_is_a(gtk_object_type(GTKObject), GTKAPIWidget_GetType)
+    if gtk_type_is_a(g_object_type(GTKObject), GTKAPIWidget_GetType)
     then begin
       WasVisible:=false;
       GTKAPIWidget_HideCaret(PGTKAPIWidget(GTKObject),WasVisible);
@@ -6740,9 +6736,9 @@ end;
 
 function MessageButtonClicked(Widget : PGtkWidget; data: gPointer) : GBoolean; cdecl;
 begin
-  //DebugLn('[MessageButtonClicked] ',dbgs(data),' ',dbgs(gtk_object_get_data(PGtkObject(Widget), 'modal_result')));
+  //DebugLn('[MessageButtonClicked] ',dbgs(data),' ',dbgs(g_object_get_data(PGtkObject(Widget), 'modal_result')));
   if PInteger(data)^ = 0 then
-    PInteger(data)^:={%H-}PtrUInt(gtk_object_get_data(PGtkObject(Widget), 'modal_result'));
+    PInteger(data)^:={%H-}PtrUInt(g_object_get_data(PGObject(Widget), 'modal_result'));
   Result:=false;
 end;
 
@@ -6752,7 +6748,7 @@ var ModalResult : PtrUInt;
 begin
   { We were requested by window manager to close }
   if PInteger(data)^ = 0 then begin
-    ModalResult:= {%H-}PtrUInt(gtk_object_get_data(PGtkObject(Widget), 'modal_result'));
+    ModalResult:= {%H-}PtrUInt(g_object_get_data(PGObject(Widget), 'modal_result'));
     { Don't allow to close if we don't have a default return value }
     Result:= (ModalResult = 0);
     if not Result then PInteger(data)^:= ModalResult
@@ -6776,9 +6772,9 @@ var Dialog, ALabel : PGtkWidget;
       end;
       { If there is the Cancel button, allow the dialog to close }
       if RetValue = IDCANCEL then begin
-        gtk_object_set_data(PGtkObject(Dialog), 'modal_result', Pointer(IDCANCEL));
+        g_object_set_data(PGObject(Dialog), 'modal_result', Pointer(IDCANCEL));
       end;
-      gtk_object_set_data(PGtkObject(AButton), 'modal_result',
+      g_object_set_data(PGObject(AButton), 'modal_result',
                           {%H-}Pointer(PtrInt(RetValue)));
       g_signal_connect(PGtkObject(AButton), 'clicked',
                        TGtkSignalFunc(@MessageButtonClicked), @ADialogResult);
@@ -7413,7 +7409,7 @@ const
     begin
       if (Item^.Data <> {%H-}Pointer(hndMenu)) // exclude ourself
       and gtk_is_radio_menu_item(Item^.Data)
-      and (GroupIndex = Integer({%H-}PtrUInt(gtk_object_get_data(Item^.Data, GROUPIDX_DATANAME))))
+      and (GroupIndex = Integer({%H-}PtrUInt(g_object_get_data(Item^.Data, GROUPIDX_DATANAME))))
       then begin
         Result := gtk_radio_menu_item_get_group (PGtkRadioMenuItem(Item^.Data));
         Exit;
@@ -7434,7 +7430,7 @@ begin
     Exit;
   end;
 
-  CurrentGroupIndex := integer({%H-}PtrUInt(gtk_object_get_data(Pointer(hndMenu), GROUPIDX_DATANAME)));
+  CurrentGroupIndex := integer({%H-}PtrUInt(g_object_get_data(Pointer(hndMenu), GROUPIDX_DATANAME)));
 
   // Update needed ?
   if GroupIndex = CurrentGroupIndex
@@ -7445,7 +7441,7 @@ begin
 
   // Remove current group
   gtk_radio_menu_item_set_group({%H-}PGtkRadioMenuItem(hndMenu), nil);
-  gtk_object_set_data({%H-}Pointer(hndMenu), GROUPIDX_DATANAME, nil);
+  g_object_set_data({%H-}Pointer(hndMenu), GROUPIDX_DATANAME, nil);
 
   // Check remove only
   if GroupIndex = 0
@@ -7458,7 +7454,7 @@ begin
   RadioGroup := GetGroup;
 
   // Set new group
-  gtk_object_set_data({%H-}Pointer(hndMenu), GROUPIDX_DATANAME, {%H-}Pointer(PtrInt(GroupIndex)));
+  g_object_set_data({%H-}Pointer(hndMenu), GROUPIDX_DATANAME, Pointer(PtrInt(GroupIndex)));
   if RadioGroup = nil
   then begin
     // We're the only member, get a group
@@ -7569,7 +7565,7 @@ end;
  ------------------------------------------------------------------------------}
 function TGtk2WidgetSet.RemoveProp(Handle: hwnd; Str: PChar): THandle;
 begin
-  gtk_object_remove_data({%H-}pGTKObject(handle), Str);
+  g_object_set_data({%H-}PGObject(handle), Str, nil);
   Result := 1;
 end;
 
@@ -8398,7 +8394,7 @@ begin
   Result := GtkObject <> nil;
 
   if Result then begin
-    if gtk_type_is_a(gtk_object_type(GtkObject), GTKAPIWidget_GetType)
+    if gtk_type_is_a(g_object_type(GtkObject), GTKAPIWidget_GetType)
     then begin
       GTKAPIWidget_SetCaretPos(PGTKAPIWidget(GtkObject), X, Y);
     end
@@ -8420,7 +8416,7 @@ function TGtk2WidgetSet.SetCaretRespondToFocus(handle: HWND;
   ShowHideOnFocus: boolean): Boolean;
 begin
   if handle<>0 then begin
-    if gtk_type_is_a(gtk_object_type({%H-}PGTKObject(handle)), GTKAPIWidget_GetType)
+    if gtk_type_is_a(g_object_type({%H-}PGTKObject(handle)), GTKAPIWidget_GetType)
     then begin
       GTKAPIWidget_SetCaretRespondToFocus({%H-}PGTKAPIWidget(handle),
         ShowHideOnFocus);
@@ -8754,7 +8750,7 @@ end;
  ------------------------------------------------------------------------------}
 function TGtk2WidgetSet.SetProp(Handle: hwnd; Str : PChar; Data : Pointer) : Boolean;
 begin
-  gtk_object_set_data({%H-}pGTKObject(handle),Str,data);
+  g_object_set_data({%H-}pGObject(handle),Str,data);
   Result:=true;
 end;
 
@@ -8831,7 +8827,7 @@ begin
       ',nTrackPos=',ScrollInfo.nTrackPos,
       ']']);}
 
-  Scroll := gtk_object_get_data({%H-}PGTKObject(Handle), odnScrollArea);
+  Scroll := g_object_get_data({%H-}PGObject(Handle), odnScrollArea);
   if GtkWidgetIsA(Scroll, gtk_scrolled_window_get_type)
   then begin
     IsScrollWindow := True;
@@ -8994,9 +8990,9 @@ begin
     then begin
       case SBStyle of
         SB_HORZ:
-          gtk_object_set(PGTKObject(Scroll),'hscrollbar_policy',[POLICY[IsScrollbarVis],nil]);
+          g_object_set(PGTKObject(Scroll),'hscrollbar_policy',[POLICY[IsScrollbarVis],nil]);
         SB_VERT:
-          gtk_object_set(PGTKObject(Scroll),'vscrollbar_policy',[POLICY[IsScrollbarVis],nil]);
+          g_object_set(PGTKObject(Scroll),'vscrollbar_policy',[POLICY[IsScrollbarVis],nil]);
       end;
     end
     else
@@ -9176,11 +9172,11 @@ begin
       end;
     GWL_HINSTANCE :
       begin
-        gtk_object_set_data({%H-}pgtkobject(Handle),'HINSTANCE',Data);
+        g_object_set_data({%H-}pgobject(Handle),'HINSTANCE',Data);
       end;
     GWL_HWNDPARENT :
       begin
-        gtk_object_set_data({%H-}pgtkobject(Handle),'HWNDPARENT',Data);
+        g_object_set_data({%H-}pgobject(Handle),'HWNDPARENT',Data);
       end;
     GWL_STYLE :
       begin
@@ -9196,11 +9192,11 @@ begin
       end;
     GWL_USERDATA :
       begin
-        gtk_object_set_data({%H-}pgtkobject(Handle),'Userdata',Data);
+        g_object_set_data({%H-}pgobject(Handle),'Userdata',Data);
       end;
     GWL_ID :
       begin
-        gtk_object_set_data({%H-}pgtkobject(Handle),'ID',Data);
+        g_object_set_data({%H-}pgobject(Handle),'ID',Data);
       end;
   end; //case
 end;
@@ -9442,7 +9438,7 @@ begin
 
   if Result
   then begin
-    if gtk_type_is_a(gtk_object_type(GTKObject), GTKAPIWidget_GetType)
+    if gtk_type_is_a(g_object_type(GTKObject), GTKAPIWidget_GetType)
     then begin
       GTKAPIWidget_ShowCaret(PGTKAPIWidget(GTKObject));
     end
@@ -9470,7 +9466,7 @@ begin
   Result := (Handle <> 0);
   if not Result then exit;
   
-  Scroll := PGtkWidget(gtk_object_get_data({%H-}PGTKObject(Handle), odnScrollArea));
+  Scroll := PGtkWidget(g_object_get_data({%H-}PGObject(Handle), odnScrollArea));
   if GtkWidgetIsA(Scroll, gtk_scrolled_window_get_type)
   then begin
     IsScrollWindow := True;
@@ -9488,19 +9484,19 @@ begin
         NewPolicy:=GTK_POLICY_ALWAYS
       else
         NewPolicy:=GTK_POLICY_NEVER;
-      gtk_object_set(PGTKObject(Scroll), 'hscrollbar_policy', [NewPolicy,nil]);
+      g_object_set(PGTKObject(Scroll), 'hscrollbar_policy', [NewPolicy,nil]);
     end;
     if wBar in [SB_BOTH, SB_VERT] then begin
       if bShow then
         NewPolicy:=GTK_POLICY_ALWAYS
       else
         NewPolicy:=GTK_POLICY_NEVER;
-      gtk_object_set(PGTKObject(Scroll), 'vscrollbar_policy', [NewPolicy,nil]);
+      g_object_set(PGTKObject(Scroll), 'vscrollbar_policy', [NewPolicy,nil]);
     end;
   end
   else begin
     if (wBar = SB_CTL)
-    and gtk_type_is_a(gtk_object_type({%H-}PGTKObject(Handle)),gtk_widget_get_type)
+    and gtk_type_is_a(g_object_type({%H-}PGTKObject(Handle)),gtk_widget_get_type)
     then begin
       if bShow
       then gtk_widget_show(Scroll)

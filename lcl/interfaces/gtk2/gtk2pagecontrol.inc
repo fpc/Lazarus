@@ -174,9 +174,9 @@ begin
   UpdateNoteBookClientWidget(TObject(Data));
 
   // remove flag
-  IsManual := gtk_object_get_data(PGtkObject(Widget), LCL_NotebookManualPageSwitchKey) <> nil;
+  IsManual := g_object_get_data(PGObject(Widget), LCL_NotebookManualPageSwitchKey) <> nil;
   if IsManual then
-    gtk_object_set_data(PGtkObject(Widget), LCL_NotebookManualPageSwitchKey, nil);
+    g_object_set_data(PGObject(Widget), LCL_NotebookManualPageSwitchKey, nil);
   if PGtkNotebook(Widget)^.cur_page = nil then // for windows compatibility
     Exit;
 
@@ -195,7 +195,7 @@ begin
     DeliverMessage(Data, Mess);
     if Mess.Result <> 0 then
     begin
-      g_signal_stop_emission_by_name(PGtkObject(Widget), 'switch-page');
+      g_signal_stop_emission_by_name(PGObject(Widget), 'switch-page');
       Result := not CallBackDefaultReturn;
       Exit;
     end;
@@ -240,7 +240,7 @@ begin
 
   Set_RC_Name(AWinControl, Widget);
 
-  gtk_object_set_data(PGtkObject(WidgetInfo^.CoreWidget),'lcl_ttabcontrol', WidgetInfo^.CoreWidget);
+  g_object_set_data(PGObject(WidgetInfo^.CoreWidget),'lcl_ttabcontrol', WidgetInfo^.CoreWidget);
 
   TGtk2WSWinControl.SetCallbacks(GTK_OBJECT(Widget), AWinControl);
 
@@ -378,11 +378,11 @@ begin
 
   // create the tab (hbox container)
   TabWidget := gtk_hbox_new(false, 1);
-  gtk_object_set_data(PGtkObject(TabWidget), 'TabImage', nil);
-  gtk_object_set_data(PGtkObject(TabWidget), 'TabCloseBtn', nil);
+  g_object_set_data(PGObject(TabWidget), 'TabImage', nil);
+  g_object_set_data(PGObject(TabWidget), 'TabCloseBtn', nil);
   // put a label into the tab
   TabLabelWidget := gtk_label_new('');
-  gtk_object_set_data(PGtkObject(TabWidget), 'TabLabel', TabLabelWidget);
+  g_object_set_data(PGObject(TabWidget), 'TabLabel', TabLabelWidget);
   gtk_widget_show(TabLabelWidget);
   gtk_box_pack_start_defaults(PGtkBox(TabWidget), TabLabelWidget);
 
@@ -392,10 +392,10 @@ begin
   // create popup menu item
   MenuWidget := gtk_hbox_new(false, 2);
   // set icon widget to nil
-  gtk_object_set_data(PGtkObject(MenuWidget), 'TabImage', nil);
+  g_object_set_data(PGObject(MenuWidget), 'TabImage', nil);
   // put a label into the menu
   MenuLabelWidget := gtk_label_new('');
-  gtk_object_set_data(PGtkObject(MenuWidget), 'TabMenuLabel', MenuLabelWidget);
+  g_object_set_data(PGObject(MenuWidget), 'TabMenuLabel', MenuLabelWidget);
   gtk_widget_show(MenuLabelWidget);
   gtk_box_pack_start_defaults(PGtkBox(MenuWidget), MenuLabelWidget);
 
@@ -566,7 +566,7 @@ begin
     begin
       Page := {%H-}PGtkWidget(ATabControl.Page[AIndex].Handle);
       ANewIndex := gtk_notebook_page_num(GtkNoteBook, Page);
-      gtk_object_set_data(PGtkObject(GtkNotebook), LCL_NotebookManualPageSwitchKey, ATabControl);
+      g_object_set_data(PGObject(GtkNotebook), LCL_NotebookManualPageSwitchKey, ATabControl);
       gtk_notebook_set_page(GtkNotebook, ANewIndex);
     end;
   end;
@@ -657,7 +657,7 @@ begin
   if (TabWidget = nil) or not GTK_WIDGET_VISIBLE(TabWidget) then
     exit;
 
-  TabImageWidget := gtk_object_get_data(PGtkObject(TabWidget), 'TabImage');
+  TabImageWidget := g_object_get_data(PGObject(TabWidget), 'TabImage');
   if TabImageWidget <> nil then
     gtk_widget_queue_draw(TabImageWidget);
 end;
