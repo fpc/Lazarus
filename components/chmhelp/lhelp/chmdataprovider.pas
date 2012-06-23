@@ -55,11 +55,11 @@ type
     function StripInPageLink(AURL: String): String;
   protected
     function DoGetHtmlStream(const URL: string;
-      PostData: TIpFormDataEntity) : TStream; override;
+      {%H-}PostData: TIpFormDataEntity) : TStream; override;
     function DoCheckURL(const URL: string;
       var ContentType: string): Boolean; override;
-    procedure DoLeave(Html: TIpHtml); override;
-    procedure DoReference(const URL: string); override;
+    procedure DoLeave({%H-}Html: TIpHtml); override;
+    procedure DoReference(const {%H-}URL: string); override;
     procedure DoGetImage(Sender: TIpHtmlNode; const URL: string;
       var Picture: TPicture); override;
     function CanHandle(const URL: string): Boolean; override;
@@ -67,7 +67,7 @@ type
     function GetDirsParents(ADir: String): TStringList;
     function DoGetStream(const URL: string): TStream; override;
   public
-    constructor Create(AOwner: TComponent; AChm: TChmFileList);
+    constructor Create(AOwner: TComponent; AChm: TChmFileList); reintroduce;
     destructor Destroy; override;
     property Chm: TChmFileList read fChm write fChm;
     property OnHelpPopup: THelpPopupEvent read fOnHelpPopup write fOnHelpPopup;

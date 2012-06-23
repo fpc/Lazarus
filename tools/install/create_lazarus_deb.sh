@@ -2,39 +2,55 @@
 #
 # Author: Mattias Gaertner
 #
-# Usage: ./create_lazarus_deb.sh [gtk1] [append-revision]
+# Usage: ./create_lazarus_deb.sh [gtk1] [append-revision] [chmhelp]
 #
 #   Options:
 #     gtk1              compile IDE and programs for gtk1 too. gtk2 ppu are still built.
 #     append-revision   append the svn revision to the .deb version
+#     chmhelp           add package chmhelp and add chm,kwd,xct,txt files in docs/chm
 
-set -x
 set -e
 
 LCLWidgetset=
-if [ "$1" = "gtk1" ]; then
-  LCLWidgetset=gtk
-  shift
-fi
-
 LazVersionPostfix=
-if [ "$1" = "append-revision" ]; then
-  LazVersionPostfix=$(./get_svn_revision_number.sh .)
-  if [ -n "$LazVersionPostfix" ]; then
-    LazVersionPostfix=.$LazVersionPostfix
-  fi
-  shift
-fi
+UseCHMHelp=
 
-if [ -n "$1" ]; then
-  echo "Usage: ./create_lazarus_deb.sh [gtk1] [release=svn]"
-  exit
-fi
+while [ $# -gt 0 ]; do
+  echo "param=$1"
+  case "$1" in
+  gtk1)
+    echo "Compile for gtk1 too"
+    LCLWidgetset=gtk
+    ;;
+
+  append-revision)
+    LazVersionPostfix=$(./get_svn_revision_number.sh .)
+    if [ -n "$LazVersionPostfix" ]; then
+      LazVersionPostfix=.$LazVersionPostfix
+    fi
+    echo "Appending svn revision $LazVersionPostfix to deb name"
+    ;;
+
+  chmhelp)
+    echo "using package chmhelp"
+    UseCHMHelp=1
+    ;;
+
+  *)
+    echo "invalid parameter $1"
+    echo "Usage: ./create_lazarus_deb.sh [gtk1] [release=svn] [chmhelp]"
+    exit 1
+    ;;
+  esac
+  shift
+done
 
 # get FPC version
 FPCVersion=$(fpc -v | grep 'Compiler version' | sed 's/.*\([0-9]\.[0-9]\.[0-9]\).*/\1/')
+echo "FPCVersion=$FPCVersion"
 
-Arch=`dpkg --print-architecture` 
+Arch=`dpkg --print-architecture`
+echo "debian architecture=$Arch"
 if [  "$Arch" = i386 ]; then 
   ppcbin=ppc386 
 else 
@@ -52,7 +68,7 @@ else
       fi 
     fi 
   fi 
-fi 
+fi
 
 Date=`date +%Y%m%d`
 LazVersion=$(./get_lazarus_version.sh)$LazVersionPostfix
@@ -64,11 +80,17 @@ LazBuildDir=$TmpDir/lazarus_build
 LazDeb=$CurDir/lazarus_${LazVersion}-${LazRelease}_$Arch.deb
 DebianSrcDir=$CurDir/debian_lazarus
 EtcSrcDir=$CurDir/linux
+LazSrcDir=../..
 LazDestDir=$LazBuildDir/usr/share/lazarus/${LazVersion}
 LazDestDirInstalled=/usr/share/lazarus/${LazVersion}
  
-FPCVersion=$($ppcbin -v | grep version| sed 's/.*\([0-9]\+\.[0-9]\+\.[0-9]\+\).*/\1/') 
+FPCVersion=$($ppcbin -v | grep version| sed 's/.*\([0-9]\+\.[0-9]\+\.[0-9]\+\).*/\1/')
 ChangeLogDate=`date --rfc-822`
+
+echo "ppcbin=$ppcbin"
+echo "LazVersion=$LazVersion"
+echo "FPCVersion=$FPCVersion"
+echo "ChangeLogDate=$ChangeLogDate"
 
 # download/export lazarus svn if needed
 if [ ! -f $SrcTGZ ]; then
@@ -84,21 +106,35 @@ rm -rf $LazBuildDir
 
 # Unpack lazarus source
 echo "unpacking $SrcTGZ ..."
+ls -l $SrcTGZ
 mkdir -p $LazDestDir
 cd $LazDestDir
 tar xzf $CurDir/$SrcTGZ --strip 1
 cd -
+if [ "$UseCHMHelp" = "1" ]; then
+  echo
+  echo "Copying chm files"
+  cd $LazSrcDir/docs/chm
+  cp -v *.txt *.kwd *.chm *.xct $LazDestDir/docs/chm/
+  cd -
+fi
 
 # compile
+echo
 echo "Compiling may take a while ... =========================================="
 cd $LazDestDir
 MAKEOPTS="-Fl/opt/gnome/lib"
 if [ -n "$FPCCfg" ]; then
   MAKEOPTS="$MAKEOPTS -n @$FPCCfg"
 fi
+if [ "$UseCHMHelp" = "1" ]; then
+  MAKEOPTS="$MAKEOPTS -dUseCHMHelp"
+fi
+echo "MAKEOPTS=$MAKEOPTS"
 # build
 export LCL_PLATFORM=$LCLWidgetset
 make bigide PP=$ppcbin OPT="$MAKEOPTS"
+
 export LCL_PLATFORM=
 
 strip lazarus

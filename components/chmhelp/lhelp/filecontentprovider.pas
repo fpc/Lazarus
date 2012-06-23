@@ -18,7 +18,7 @@ type
     function CanGoBack: Boolean; override;
     function CanGoForward: Boolean; override;
     function GetHistory: TStrings; override;
-    function LoadURL(const AURL: String; const AContext: THelpContext=-1): Boolean; override;
+    function LoadURL(const {%H-}AURL: String; const {%H-}AContext: THelpContext=-1): Boolean; override;
     procedure GoHome; override;
     procedure GoBack; override;
     procedure GoForward; override;

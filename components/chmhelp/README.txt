@@ -25,12 +25,18 @@ This is a basic HOWTO for integrating lhelp into the Lazarus IDE.
     Change to the "Viewers" tab and select "CHM Help Viewer"
 
     HelpEXE:
-    For the "HelpEXE" entry browse to the lazarus/components/chmhelp/lhelp/ folder 
-    and select the lhelp executable.
+    Leave it empty to use the default: $(LazarusDir)/components/chmhelp/lhelp/lhelp(.exe)
 
     HelpFilesPath:
-    This is the directory that contains the help files in CHM format (lcl.chm, fcl.chm, rtl.chm etc.).
-    You can download them from http://sourceforge.net/projects/freepascal/files/Documentation/
+    This is the search path where to search for chm files.
+    Default is $(LazarusDir)/docs/html;$(LazarusDir)/docs/html/lcl;$(LazarusDir)/docs/chm
+
+    You can download the lcl.chm, fcl.chm, rtl.chm from
+    http://sourceforge.net/projects/freepascal/files/Documentation/
+    the lcl.chm, rtl.chm, fcl.chm, prog.chm from
+    http://www.stack.nl/~marcov/doc-chm.zip
+    or a daily snapshot from
+    ftp://freepascal.dfmk.hu/pub/lazarus/snapshots/
 
     HelpLabel Name and Tag do not need to be altered.
     The HelpLabel is the name of the named pipe that lazarus will use to communicate with lhelp.

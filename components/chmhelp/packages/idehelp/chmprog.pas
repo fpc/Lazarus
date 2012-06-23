@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils,
-  Dialogs, FileUtil,
+  Dialogs, FileUtil, LazFileUtils, LazLogger,
   LazHelpIntf, HelpIntfs,
   IDEHelpIntf, MacroIntf;
 
@@ -19,7 +19,7 @@ type
 
   TFPCDirectivesHelpDatabase = class(THelpDatabase)
   private
-    FDocsDir: string;
+    FCHMSearchPath: string;
     FDirectiveNodes: TFPList;
     function SearchForDirective(ADirective: string;
       var ListOfNodes: THelpNodeQueryList): Boolean;
@@ -33,7 +33,9 @@ type
     function ShowHelp(Query: THelpQuery; {%H-}BaseNode, NewNode: THelpNode;
                       {%H-}QueryItem: THelpQueryItem;
                       var ErrMsg: string): TShowHelpResult; override;
-    property DocsDir: string read FDocsDir write FDocsDir;
+    function GetCHMSearchPath: string;
+    property CHMSearchPath: string read FCHMSearchPath write FCHMSearchPath;
+    function FindCHMFile: string;
   end;
 
 procedure RegisterFPCDirectivesHelpDatabase;
@@ -48,8 +50,9 @@ uses chmreader, chmFiftiMain;
 procedure RegisterFPCDirectivesHelpDatabase;
 begin
   if not Assigned(FPCDirectivesHelpDatabase) then
-    FPCDirectivesHelpDatabase := TFPCDirectivesHelpDatabase(HelpDatabases.CreateHelpDatabase(sFPCCompilerDirectives,
-                                               TFPCDirectivesHelpDatabase, true));
+    FPCDirectivesHelpDatabase :=
+      TFPCDirectivesHelpDatabase(HelpDatabases.CreateHelpDatabase(
+        sFPCCompilerDirectives, TFPCDirectivesHelpDatabase, true));
 end;
 
 { TFPCDirectivesHelpDatabase }
@@ -65,11 +68,15 @@ var
   TitleResults: TChmWLCTopicArray;
   i, k: Integer;
   DirectiveNode: THelpNode;
+  Filename: String;
 begin
   ADirective := UpperCase(ADirective);
   Result := False;
 
-  chm := TChmFileList.Create(Utf8ToSys(FDocsDir + 'prog.chm'));
+  Filename:=FindCHMFile;
+  if Filename='' then exit;
+
+  chm := TChmFileList.Create(Utf8ToSys(Filename));
   try
     if chm.Count = 0 then Exit;
     fchm := chm.Chm[0];
@@ -132,27 +139,23 @@ function TFPCDirectivesHelpDatabase.GetNodesForDirective(
   var ErrMsg: string): TShowHelpResult;
 var
   Directive: String;
+  Filename: String;
 begin
   Result := shrHelpNotFound;
   if (csDesigning in ComponentState) then Exit;
   if (FPCDirectiveHelpPrefix<>'')
   and (LeftStr(HelpDirective, Length(FPCDirectiveHelpPrefix)) = FPCDirectiveHelpPrefix) then
   begin
-    if FDocsDir = '' then
-    begin
-      FDocsDir := '$(LazarusDir)';
-      IDEMacros.SubstituteMacros(FDocsDir);
-      FDocsDir := AppendPathDelim(FDocsDir) + 'docs' + PathDelim + 'html';
-    end;
-    FDocsDir := AppendPathDelim(FDocsDir);
-    if not FileExistsUTF8(FDocsDir + 'prog.chm') then
+    Filename:=FindCHMFile;
+    debugln(['TFPCDirectivesHelpDatabase.GetNodesForDirective ',Filename]);
+    if (Filename='') then
     begin
       Result := shrDatabaseNotFound;
       ErrMsg := Format('prog.chm not found. Please put prog.chm help file in '+ LineEnding
-                         + '%s' +  LineEnding
-                         +'or set the path to it with "HelpFilesPath" in '
-                         +' Environment Options -> Help -> Help Options ->' + LineEnding
-                         +'under Viewers - CHM Help Viewer', [FDocsDir]);
+                       + '%s' +  LineEnding
+                       +'or set the path to it with "HelpFilesPath" in '
+                       +' Environment Options -> Help -> Help Options ->' + LineEnding
+                       +'under Viewers - CHM Help Viewer', [FCHMSearchPath]);
       Exit;
     end;
     // HelpDirective starts with DirectivePrefix
@@ -174,6 +177,21 @@ begin
   Result := FindViewer('text/html', ErrMsg, Viewer);
   if Result <> shrSuccess then Exit;
   Result := Viewer.ShowNode(NewNode, ErrMsg);
+end;
+
+function TFPCDirectivesHelpDatabase.GetCHMSearchPath: string;
+begin
+  Result:=FCHMSearchPath;
+  if Result='' then begin
+    Result := '$(LazarusDir)/docs/html;$(LazarusDir)/docs/chm';
+    IDEMacros.SubstituteMacros(Result);
+    Result:=MinimizeSearchPath(SetDirSeparators(Result));
+  end;
+end;
+
+function TFPCDirectivesHelpDatabase.FindCHMFile: string;
+begin
+  Result:=SearchFileInPath('prog.chm','',GetCHMSearchPath,';',[]);
 end;
 
 end.

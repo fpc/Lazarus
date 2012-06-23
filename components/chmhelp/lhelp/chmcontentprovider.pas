@@ -20,7 +20,7 @@ unit chmcontentprovider;
 interface
 
 uses
-  Classes, SysUtils, XMLCfg,
+  Classes, SysUtils, Laz2_XMLCfg,
   FileUtil, Forms, StdCtrls, ExtCtrls, ComCtrls, Controls, Buttons, Menus,
   BaseContentProvider, FileContentProvider, IpHtml, ChmReader, ChmDataProvider;
 
@@ -66,7 +66,7 @@ type
     procedure DoCloseChm;
     procedure DoLoadContext(Context: THelpContext);
     procedure DoLoadUri(Uri: String; AChm: TChmReader = nil);
-    procedure DoError(Error: Integer);
+    procedure DoError({%H-}Error: Integer);
     procedure NewChmOpened(ChmFileList: TChmFileList; Index: Integer);
     procedure LoadingHTMLStream(var AStream: TStream);
 
@@ -77,7 +77,7 @@ type
     procedure PopupCopyClick(Sender: TObject);
     procedure ContentsTreeSelectionChanged(Sender: TObject);
     procedure IndexViewDblClick(Sender: TObject);
-    procedure TreeViewStopCollapse(Sender: TObject; Node: TTreeNode; var AllowCollapse: Boolean);
+    procedure TreeViewStopCollapse(Sender: TObject; {%H-}Node: TTreeNode; var AllowCollapse: Boolean);
     procedure ViewMenuContentsClick(Sender: TObject);
     procedure UpdateTitle;
     procedure SetTitle(const AValue: String); override;
@@ -88,7 +88,7 @@ type
     {$IFDEF CHM_SEARCH}
     procedure SearchButtonClick(Sender: TObject);
     procedure SearchResultsDblClick(Sender: TObject);
-    procedure SearchComboKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+    procedure SearchComboKeyDown(Sender: TObject; var Key: Word; {%H-}Shift: TShiftState);
     procedure GetTreeNodeClass(Sender: TCustomTreeView; var NodeClass: TTreeNodeClass);
     {$ENDIF}
   public
@@ -104,7 +104,7 @@ type
     procedure GoForward; override;
     property TabsControl: TPageControl read fTabsControl;
     property Splitter: TSplitter read fSplitter;
-    class function GetProperContentProvider(const AURL: String): TBaseContentProviderClass; override;
+    class function GetProperContentProvider(const {%H-}AURL: String): TBaseContentProviderClass; override;
 
     constructor Create(AParent: TWinControl; AImageList: TImageList); override;
     destructor Destroy; override;
@@ -112,7 +112,7 @@ type
 
 implementation
 
-uses ChmSpecialParser{$IFDEF CHM_SEARCH}, chmFIftiMain{$ENDIF}, chmsitemap, LCLType, SAX_HTML, Dom, XMLWrite, DOM_HTML, HTMWrite;
+uses ChmSpecialParser{$IFDEF CHM_SEARCH}, chmFIftiMain{$ENDIF}, chmsitemap, LCLType, SAX_HTML, Dom, DOM_HTML, HTMWrite;
 
 type
 
@@ -407,6 +407,7 @@ begin
   Words.Delimiter:=' ';
   Words.DelimitedText:=fKeywordCombo.Text;
 
+  Doc:=nil;
   try
     UseOrigStream := True;
     ReadHTMLFile(Doc, AStream);
@@ -453,7 +454,9 @@ var
   i: Integer;
   SM: TChmSiteMap;
   HasSearchIndex: Boolean = False;
+  {$IFNDEF CHM_BINARY_INDEX_TOC}
   Stream: TMemoryStream;
+  {$ENDIF}
 begin
   if fFillingToc or fFillingIndex then begin
     Application.QueueAsyncCall(@FillToc, Data);
