@@ -4,7 +4,7 @@
 
 [package]
 name=lazaruside
-version=0.9b
+version=1.0
 
 [require]
 libc=y
