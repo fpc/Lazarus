@@ -147,6 +147,9 @@ type
 function GetWidgetHAdjustment(AWidget: PGTKWidget): PGTKAdjustment;
 function GetWidgetVAdjustment(AWidget: PGTKWidget): PGTKAdjustment;
 
+var
+  HasWarnedLibOverlay: boolean = false;
+
 implementation
 
 uses
@@ -193,7 +196,10 @@ begin
   or (GetWidgetClassName(GTK_SCROLLED_WINDOW(Widget)^.hscrollbar)='OsScrollbar')
   then begin
     // ubuntu liboverlay scrollbar is active
-    debugln(['WARNING: liboverlay_scrollbar is active for control=',AWinControl,'. Set environment option LIBOVERLAY_SCROLLBAR=0 before starting this application, otherwise scrollbars will not work properly.']);
+    if not HasWarnedLibOverlay then begin
+      HasWarnedLibOverlay:=true;
+      debugln(['WARNING: liboverlay_scrollbar is active for control=',AWinControl,'. Set environment option LIBOVERLAY_SCROLLBAR=0 before starting this application, otherwise scrollbars will not work properly.']);
+    end;
   end;
 
   ScrollBar:=GTK_SCROLLED_WINDOW(Widget)^.hscrollbar;

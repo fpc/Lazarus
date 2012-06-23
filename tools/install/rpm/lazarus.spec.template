@@ -56,7 +56,7 @@ mkdir -p %{buildroot}%{_datadir}/mime/packages
 mkdir -p %{buildroot}%{_mandir}/man1
 mkdir -p %{buildroot}%{_sysconfdir}/lazarus
 cp -a lazarus/* %{buildroot}$LAZARUSDIR/
-  install -m 644 lazarus/images/ide_icon48x48.png %{buildroot}%{_datadir}/pixmaps/lazarus.png
+  install -m 644 lazarus/images/icons/lazarus128x128.png %{buildroot}%{_datadir}/pixmaps/lazarus.png
   install -m 644 lazarus/install/lazarus.desktop %{buildroot}%{_datadir}/applications/lazarus.desktop
   install -m 644 lazarus/install/lazarus-mime.xml $LazBuildDir%{buildroot}%{_datadir}/mime/packages/lazarus.xml
 ln -sf $LAZARUSDIR/lazarus %{buildroot}%{_bindir}/lazarus-ide

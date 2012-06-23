@@ -1285,12 +1285,19 @@ end;
 
 function TSynClipboardStream.WriteToClipboard(AClipboard: TClipboard): Boolean;
 begin
-  if FIsPlainText and (FText <> '') then begin
-    AClipboard.AsText:= FText;
-    if not AClipboard.HasFormat(CF_TEXT) then
-      raise ESynEditError.Create('Clipboard copy operation failed: HasFormat');
+  AClipboard.Open;
+  try
+    if FIsPlainText and (FText <> '') then begin
+      AClipboard.AsText:= FText;
+    end;
+    Result := AClipboard.AddFormat(ClipboardFormatId, FMemStream.Memory^, FMemStream.Size);
+  finally
+    AClipboard.Close;
   end;
-  Result := AClipboard.AddFormat(ClipboardFormatId, FMemStream.Memory^, FMemStream.Size);
+  {$IFDEF SynClipboardExceptions}
+  if not AClipboard.HasFormat(CF_TEXT) then
+    raise ESynEditError.Create('Clipboard copy operation failed: HasFormat');
+  {$ENDIF}
 end;
 
 procedure TSynClipboardStream.Clear;

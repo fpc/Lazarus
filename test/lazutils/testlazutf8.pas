@@ -4,6 +4,7 @@
 
  Test specific with:
      ./runtests --format=plain --suite=TestUTF8Trim
+     ./runtests --format=plain --suite=TestUTF8Pos
 }
 unit TestLazUTF8;
 
@@ -22,6 +23,7 @@ type
   public
   published
     procedure TestUTF8Trim;
+    procedure TestUTF8Pos;
   end;
 
 implementation
@@ -43,6 +45,13 @@ begin
   AssertEquals('left-to-right','a',UTF8Trim(#$E2#$80#$8E'a'));
   AssertEquals('right-to-left mark','a',UTF8Trim('a'#$E2#$80#$8F));
   AssertEquals('left-to-right, right-to-left mark','a',UTF8Trim(#$E2#$80#$8E'a'#$E2#$80#$8F));
+end;
+
+procedure TTestLazUTF8.TestUTF8Pos;
+begin
+  AssertEquals('Skip first occurence',4,UTF8Pos('ab','abcabc',2));
+  AssertEquals('Not found',0,UTF8Pos('abc'#0,'abcabc'));
+  AssertEquals('Check #0',2,UTF8Pos('bc'#0,'abc'#0'abc'));
 end;
 
 initialization
