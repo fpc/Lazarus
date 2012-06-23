@@ -44,7 +44,7 @@ endif
 
 #-----------------------------------------------------------------------------
 [rules]
-.PHONY: help registration lazutils codetools tools lcl basecomponents bigidecomponents lazbuild ide idepkg idebig cleanide bigide useride starter all clean purge install
+.PHONY: help registration lazutils codetools tools lcl basecomponents bigidecomponents lazbuild ide idepkg idebig cleanide bigide useride starter lhelp all clean purge install
 
 #-----------------------------------------------------------------------------
 help:
@@ -67,6 +67,7 @@ help:
 	@$(ECHO) "   tools          build lazres, svn2revisioninc, updatepofiles, lrstolfm, requires LCL with nogui widgetset"
 	@$(ECHO) "   basecomponents build lazcontrols, ideintf, synedit for the LCL_PLATFORM, requires lcl"
 	@$(ECHO) "   bigidecomponents build many extra packages for the LCL_PLATFORM, requires basecomponents"
+	@$(ECHO) "   lhelp          build lhelp, requires bigidecomponents"
 	@$(ECHO) "   starter        build startlazarus, requires basecomponents"
 	@$(ECHO) "   examples       build basic examples, requires basecomponents"
 	@$(ECHO) "                  Note: There are more examples having their own directory"
@@ -192,6 +193,12 @@ lazbuild: registration lazutils codetools
 	$(MAKE) -C ide lazbuilder LCL_PLATFORM=nogui
 
 #-----------------------------------------------------------------------------
+# build lhelp
+# requires bigidecomponents
+lhelp:
+	$(MAKE) -C components/chmhelp/lhelp
+
+#-----------------------------------------------------------------------------
 # build examples for the LCL_PLATFORM
 # requires basecomponents
 examples:
@@ -203,7 +210,7 @@ all: lazbuild lcl basecomponents ide starter
 
 #-----------------------------------------------------------------------------
 # build lazarus,lcl,lazbuild,startlazarus with bigide packages for the LCL_PLATFORM
-bigide: lazbuild lcl basecomponents bigidecomponents idebig starter
+bigide: lazbuild lcl basecomponents bigidecomponents idebig starter lhelp
 
 #-----------------------------------------------------------------------------
 cleanide:
@@ -218,6 +225,7 @@ cleanlaz: cleanide
 clean: cleanlaz
 	$(MAKE) -C . cleanlaz LCL_PLATFORM=nogui
 	$(MAKE) -C tools clean
+	$(MAKE) -C components/chmhelp/lhelp clean
 
 cleanbigide: clean
 
