@@ -67,9 +67,11 @@ type
       Node: TTreeNode; State: TCustomDrawState; Stage: TCustomDrawStage;
       var PaintImages, DefaultDraw: Boolean);
   private
+    function GetFilter: TDBGEventCategories;
+  private
     FEvents: TStringList;
-    FFilter: TDBGEventCategories;
     procedure UpdateFilteredList;
+    property Filter: TDBGEventCategories read GetFilter;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -122,6 +124,25 @@ begin
   imlMain.Draw(Sender.Canvas, TCustomTreeViewAccess(Sender).Indent shr 2 + 1 - TCustomTreeViewAccess(Sender).ScrolledLeft, (NodeRect.Top + NodeRect.Bottom - imlMain.Height) div 2,
       Node.ImageIndex, True);
   Sender.Canvas.TextOut(TextRect.Left, TextY, Node.Text);
+end;
+
+function TDbgEventsForm.GetFilter: TDBGEventCategories;
+begin
+  Result := [];
+  if EnvironmentOptions.DebuggerEventLogShowBreakpoint then
+    Include(Result, ecBreakpoint);
+  if EnvironmentOptions.DebuggerEventLogShowProcess then
+    Include(Result, ecProcess);
+  if EnvironmentOptions.DebuggerEventLogShowThread then
+    Include(Result, ecThread);
+  if EnvironmentOptions.DebuggerEventLogShowModule then
+    Include(Result, ecModule);
+  if EnvironmentOptions.DebuggerEventLogShowOutput then
+    Include(Result, ecOutput);
+  if EnvironmentOptions.DebuggerEventLogShowWindows then
+    Include(Result, ecWindows);
+  if EnvironmentOptions.DebuggerEventLogShowDebugger then
+    Include(Result, ecDebugger);
 end;
 
 procedure TDbgEventsForm.EditCopy1Execute(Sender: TObject);
@@ -204,7 +225,7 @@ begin
       Rec.Ptr := FEvents.Objects[i];
       Cat := TDBGEventCategory(Rec.Category);
 
-      if Cat in FFilter then
+      if Cat in Filter then
       begin
         Item := tvFilteredEvents.Items.AddChild(nil, FEvents[i]);
         Item.Data := FEvents.Objects[i];
@@ -232,22 +253,6 @@ begin
     FEvents.Assign(AEvents)
   else
     FEvents.Clear;
-
-  FFilter := [];
-  if EnvironmentOptions.DebuggerEventLogShowBreakpoint then
-    Include(FFilter, ecBreakpoint);
-  if EnvironmentOptions.DebuggerEventLogShowProcess then
-    Include(FFilter, ecProcess);
-  if EnvironmentOptions.DebuggerEventLogShowThread then
-    Include(FFilter, ecThread);
-  if EnvironmentOptions.DebuggerEventLogShowModule then
-    Include(FFilter, ecModule);
-  if EnvironmentOptions.DebuggerEventLogShowOutput then
-    Include(FFilter, ecOutput);
-  if EnvironmentOptions.DebuggerEventLogShowWindows then
-    Include(FFilter, ecWindows);
-  if EnvironmentOptions.DebuggerEventLogShowDebugger then
-    Include(FFilter, ecDebugger);
 
   UpdateFilteredList;
 end;
@@ -300,7 +305,7 @@ begin
   Rec.Category := Ord(ACategory);
   Rec.EventType := Ord(AEventType);
   FEvents.AddObject(AText, TObject(Rec.Ptr));
-  if ACategory in FFilter then
+  if ACategory in Filter then
   begin
     Item := tvFilteredEvents.Items.AddChild(nil, AText);
     Item.ImageIndex := Rec.Category;
