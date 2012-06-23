@@ -1,0 +1,70 @@
+#
+#   Makefile.fpc for Lazarus for Free Pascal
+#
+
+[package]
+name=lhelp
+version=1.0
+
+[target]
+dirs=
+programs=lhelp
+
+[require]
+libc=y
+packages=rtl
+
+[compiler]
+options=-gs -gl -Sghi -O3 -dlcl$(LCL_PLATFORM)
+unittargetdir=lib/$(CPU_TARGET)-$(OS_TARGET)
+unitdir=. $(LAZDIR)/components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) \
+          $(LAZDIR)/packager/units/$(CPU_TARGET)-$(OS_TARGET) \
+          $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET) \
+          $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) \
+          $(LAZDIR)/components/turbopower_ipro/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) \
+          $(LAZDIR)/components/printers/lib/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) \
+          ../packages/help/lib/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM)
+targetdir=.
+
+[prerules]
+LAZDIR=../../..
+LHELP_OPT=
+
+# LCL Platform
+ifndef LCL_PLATFORM
+ifneq ($(findstring $(OS_TARGET),win32 win64),)
+LCL_PLATFORM=win32
+else
+ifeq ($(OS_TARGET),darwin)
+LCL_PLATFORM=carbon
+else
+LCL_PLATFORM=gtk2
+endif
+endif
+endif
+export LCL_PLATFORM
+
+# apptype gui
+ifneq ($(findstring $(OS_TARGET),win32 win64),)
+LHELP_OPT+= -WG
+endif
+
+[clean]
+files=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) \
+      $(wildcard $(COMPILER_UNITTARGETDIR)/*$(PPUEXT)) \
+      $(wildcard $(COMPILER_UNITTARGETDIR)/*$(RSTEXT)) \
+      $(wildcard $(COMPILER_UNITTARGETDIR)/*.compiled) \
+      $(wildcard $(COMPILER_UNITTARGETDIR)/*.lfm) \
+      $(wildcard $(COMPILER_UNITTARGETDIR)/*.or) \
+      $(wildcard $(COMPILER_UNITTARGETDIR)/*.res) \
+      $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+
+#-----------------------------------------------------------------------------
+[rules]
+.PHONY: all clean
+
+all:
+        $(MAKE) --assume-new=lhelp.lpr lhelp$(EXEEXT)
+
+# end.
+
