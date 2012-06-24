@@ -30,7 +30,7 @@ unit laz2_XMLRead;
 interface
 
 uses
-  SysUtils, Classes, laz2_DOM;
+  SysUtils, Classes, laz2_DOM, lazutf8classes;
 
 type
   TErrorSeverity = (esWarning, esError, esFatal);
@@ -60,18 +60,21 @@ type
 
 procedure ReadXMLFile(out ADoc: TXMLDocument; const AFilename: String; Flags: TXMLReaderFlags = []); overload;
 procedure ReadXMLFile(out ADoc: TXMLDocument; var f: Text; Flags: TXMLReaderFlags = []); overload;
+procedure ReadXMLFile(out ADoc: TXMLDocument; var f: File; Flags: TXMLReaderFlags = []); overload;
 procedure ReadXMLFile(out ADoc: TXMLDocument; f: TStream; Flags: TXMLReaderFlags = []); overload;
 procedure ReadXMLFile(out ADoc: TXMLDocument; f: TStream; const ABaseURI: String; Flags: TXMLReaderFlags = []); overload;
 
 procedure ReadXMLFragment(AParentNode: TDOMNode; const AFilename: String; Flags: TXMLReaderFlags = []); overload;
 procedure ReadXMLFragment(AParentNode: TDOMNode; var f: Text; Flags: TXMLReaderFlags = []); overload;
-procedure ReadXMLFragment(AParentNode: TDOMNode; var f: TStream; Flags: TXMLReaderFlags = []); overload;
-procedure ReadXMLFragment(AParentNode: TDOMNode; var f: TStream; const ABaseURI: String; Flags: TXMLReaderFlags = []); overload;
+procedure ReadXMLFragment(AParentNode: TDOMNode; var f: File; Flags: TXMLReaderFlags = []); overload;
+procedure ReadXMLFragment(AParentNode: TDOMNode; f: TStream; Flags: TXMLReaderFlags = []); overload;
+procedure ReadXMLFragment(AParentNode: TDOMNode; f: TStream; const ABaseURI: String; Flags: TXMLReaderFlags = []); overload;
 
 procedure ReadDTDFile(out ADoc: TXMLDocument; const AFilename: String);  overload;
 procedure ReadDTDFile(out ADoc: TXMLDocument; var f: Text); overload;
-procedure ReadDTDFile(out ADoc: TXMLDocument; var f: TStream); overload;
-procedure ReadDTDFile(out ADoc: TXMLDocument; var f: TStream; const ABaseURI: String); overload;
+procedure ReadDTDFile(out ADoc: TXMLDocument; var f: File); overload;
+procedure ReadDTDFile(out ADoc: TXMLDocument; f: TStream); overload;
+procedure ReadDTDFile(out ADoc: TXMLDocument; f: TStream; const ABaseURI: String); overload;
 
 type
   TDOMParseOptions = class(TObject)
@@ -4136,6 +4139,29 @@ begin
   end;
 end;
 
+procedure ReadXMLFile(out ADoc: TXMLDocument; var f: File;
+  Flags: TXMLReaderFlags);
+var
+  BufSize: Int64;
+  ms: TMemoryStream;
+begin
+  ADoc := nil;
+  BufSize := FileSize(f) + 1;
+  if BufSize <= 1 then
+    exit;
+
+  ms:=TMemoryStream.Create;
+  try
+    ms.Size:=BufSize;
+    BlockRead(f, ms.Memory^, BufSize - 1);
+    PChar(ms.Memory)[BufSize - 1] := #0;
+    ms.Position:=0;
+    ReadXMLFile(ADoc,ms,Flags);
+  finally
+    ms.Free;
+  end;
+end;
+
 procedure ReadXMLFile(out ADoc: TXMLDocument; f: TStream; Flags: TXMLReaderFlags);
 begin
   ReadXMLFile(ADoc, f, 'stream:', Flags);
@@ -4147,7 +4173,7 @@ var
   FileStream: TStream;
 begin
   ADoc := nil;
-  FileStream := TFileStream.Create(UTF8ToSys(AFilename), fmOpenRead+fmShareDenyWrite);
+  FileStream := TFileStreamUTF8.Create(AFilename, fmOpenRead+fmShareDenyWrite);
   try
     ReadXMLFile(ADoc, FileStream, FilenameToURI(AFilename), Flags);
   finally
@@ -4171,7 +4197,7 @@ begin
   end;
 end;
 
-procedure ReadXMLFragment(AParentNode: TDOMNode; var f: TStream;
+procedure ReadXMLFragment(AParentNode: TDOMNode; f: TStream;
   const ABaseURI: String; Flags: TXMLReaderFlags);
 var
   Reader: TXMLReader;
@@ -4188,7 +4214,29 @@ begin
   end;
 end;
 
-procedure ReadXMLFragment(AParentNode: TDOMNode; var f: TStream;
+procedure ReadXMLFragment(AParentNode: TDOMNode; var f: File;
+  Flags: TXMLReaderFlags);
+var
+  BufSize: Int64;
+  ms: TMemoryStream;
+begin
+  BufSize := FileSize(f) + 1;
+  if BufSize <= 1 then
+    exit;
+
+  ms:=TMemoryStream.Create;
+  try
+    ms.Size:=BufSize;
+    BlockRead(f, ms.Memory^, BufSize - 1);
+    PChar(ms.Memory)[BufSize - 1] := #0;
+    ms.Position:=0;
+    ReadXMLFragment(AParentNode,ms,'stream:',Flags);
+  finally
+    ms.Free;
+  end;
+end;
+
+procedure ReadXMLFragment(AParentNode: TDOMNode; f: TStream;
   Flags: TXMLReaderFlags);
 begin
   ReadXMLFragment(AParentNode, f, 'stream:', Flags);
@@ -4199,7 +4247,7 @@ procedure ReadXMLFragment(AParentNode: TDOMNode; const AFilename: String;
 var
   Stream: TStream;
 begin
-  Stream := TFileStream.Create(UTF8ToSys(AFilename), fmOpenRead+fmShareDenyWrite);
+  Stream := TFileStreamUTF8.Create(AFilename, fmOpenRead+fmShareDenyWrite);
   try
     ReadXMLFragment(AParentNode, Stream, FilenameToURI(AFilename), Flags);
   finally
@@ -4224,7 +4272,7 @@ begin
   end;
 end;
 
-procedure ReadDTDFile(out ADoc: TXMLDocument; var f: TStream; const ABaseURI: String);
+procedure ReadDTDFile(out ADoc: TXMLDocument; f: TStream; const ABaseURI: String);
 var
   Reader: TXMLReader;
   Src: TXMLCharSource;
@@ -4241,7 +4289,29 @@ begin
   end;
 end;
 
-procedure ReadDTDFile(out ADoc: TXMLDocument; var f: TStream);
+procedure ReadDTDFile(out ADoc: TXMLDocument; var f: File);
+var
+  BufSize: Int64;
+  ms: TMemoryStream;
+begin
+  ADoc := nil;
+  BufSize := FileSize(f) + 1;
+  if BufSize <= 1 then
+    exit;
+
+  ms:=TMemoryStream.Create;
+  try
+    ms.Size:=BufSize;
+    BlockRead(f, ms.Memory^, BufSize - 1);
+    PChar(ms.Memory)[BufSize - 1] := #0;
+    ms.Position:=0;
+    ReadDTDFile(ADoc,ms,'stream:');
+  finally
+    ms.Free;
+  end;
+end;
+
+procedure ReadDTDFile(out ADoc: TXMLDocument; f: TStream);
 begin
   ReadDTDFile(ADoc, f, 'stream:');
 end;
@@ -4251,7 +4321,7 @@ var
   Stream: TStream;
 begin
   ADoc := nil;
-  Stream := TFileStream.Create(UTF8ToSys(AFilename), fmOpenRead+fmShareDenyWrite);
+  Stream := TFileStreamUTF8.Create(AFilename, fmOpenRead+fmShareDenyWrite);
   try
     ReadDTDFile(ADoc, Stream, FilenameToURI(AFilename));
   finally

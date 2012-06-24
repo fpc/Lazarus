@@ -103,16 +103,13 @@ procedure TMyApplication.Test1;
 var
   Filename: String;
 begin
-
-  // write with old
   Filename:='test1.xml';
-  Test(Filename,true,true);
+  Test(Filename,true,true); // write with old
   Test(Filename,true,false); // read old with old
   Test(Filename,false,false); // read old with new
 
-  // write with new
   Filename:='test2.xml';
-  Test(Filename,false,true);
+  Test(Filename,false,true); // write with new
   Test(Filename,false,false); // read new with new
   Test(Filename,true,false); // read new with old
 end;
