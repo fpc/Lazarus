@@ -835,7 +835,8 @@ begin
   if FStylesListener.IsListening then
     Styles.Broadcaster.Unsubscribe(FStylesListener);
   FStyles := AValue;
-  Styles.Broadcaster.Subscribe(FStylesListener);
+  if Styles <> nil then
+    Styles.Broadcaster.Subscribe(FStylesListener);
   UpdateParentChart;
 end;
 
