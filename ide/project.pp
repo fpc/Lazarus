@@ -5544,7 +5544,7 @@ var
     if siffCaseSensitive in SearchFlags then
       Result:=SearchedFilename=AFilename
     else
-      Result:=AnsiCompareText(SearchedFilename,AFilename)=0;
+      Result:=CompareFilenamesIgnoreCase(SearchedFilename,AFilename)=0;
   end;
   
 begin
