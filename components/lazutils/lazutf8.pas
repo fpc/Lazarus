@@ -87,7 +87,7 @@ procedure AssignUTF8ListToAnsi(UTF8List, AnsiList: TStrings);
 
 //compare functions
 
-function UTF8CompareStr(const S1, S2: string): Integer;
+function UTF8CompareStr(const S1, S2: string): Integer; inline;
 function UTF8CompareText(const S1, S2: string): Integer;
 function CompareStrListUTF8LowerCase(List: TStringList; Index1, Index2: Integer): Integer;
 

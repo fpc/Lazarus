@@ -174,7 +174,7 @@ begin
   CFRelease(F2);
   {$ELSE}
     {$IFDEF CaseInsensitiveFilenames}
-    Result:=AnsiCompareText(Filename1, Filename2);
+    Result:=UTF8CompareText(Filename1, Filename2);
     {$ELSE}
     Result:=CompareStr(Filename1, Filename2);
     {$ENDIF}

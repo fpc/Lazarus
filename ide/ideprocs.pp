@@ -371,7 +371,7 @@ begin
       // check if special file
       if (FileInfo.Name='.') or (FileInfo.Name='..') or (FileInfo.Name='') then
         continue;
-      if (AnsiCompareText(CaseInsensitiveFilename,FileInfo.Name)=0)
+      if (CompareFilenamesIgnoreCase(CaseInsensitiveFilename,FileInfo.Name)=0)
       and ((not IgnoreExact)
            or (CompareFilenames(CaseInsensitiveFilename,FileInfo.Name)<>0))
       then begin
