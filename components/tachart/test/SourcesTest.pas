@@ -216,11 +216,13 @@ begin
   FSource.ReorderYList := '1,1,1';
   AssertEquals(3, FSource.YCount);
   AssertEquals(103, FSource[0]^.Y);
-  AssertEquals([103, 103], FSource[0]^.YList);
+  AssertEquals(103, FSource[0]^.YList[0]);
+  AssertEquals(103, FSource[0]^.YList[1]);
   FSource.ReorderYList := '';
   for i := 0 to FSource.Count - 1 do begin
     AssertEquals(FOrigin[i]^.Y, FSource[i]^.Y);
-    AssertEquals(FOrigin[i]^.YList, FSource[i]^.YList);
+    AssertEquals(FOrigin[i]^.YList[0], FSource[i]^.YList[0]);
+    AssertEquals(FOrigin[i]^.YList[1], FSource[i]^.YList[1]);
   end;
 end;
 
