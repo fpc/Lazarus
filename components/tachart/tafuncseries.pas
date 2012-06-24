@@ -1522,7 +1522,8 @@ begin
   if FColorSourceListener.IsListening then
     ColorSource.Broadcaster.Unsubscribe(FColorSourceListener);
   FColorSource := AValue;
-  ColorSource.Broadcaster.Subscribe(FColorSourceListener);
+  if ColorSource <> nil then
+    ColorSource.Broadcaster.Subscribe(FColorSourceListener);
   UpdateParentChart;
 end;
 
