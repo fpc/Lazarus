@@ -32,7 +32,7 @@ interface
 {$ASSERTIONS ON}
 {$endif}
 
-{$IF FPC_FULLVERSION>=20701}
+{$IF FPC_FULLVERSION>=20601}
 {$DEFINE HasFPCanvas1}
 {$ENDIF}
 
