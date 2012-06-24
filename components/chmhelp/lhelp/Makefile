@@ -3080,5 +3080,5 @@ ifneq ($(wildcard fpcmake.loc),)
 include fpcmake.loc
 endif
 .PHONY: all clean
-all:
+all:    $(COMPILER_UNITTARGETDIR)
 	$(MAKE) --assume-new=lhelp.lpr lhelp$(EXEEXT)

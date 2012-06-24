@@ -63,7 +63,7 @@ files=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) \
 [rules]
 .PHONY: all clean
 
-all:
+all:    $(COMPILER_UNITTARGETDIR)
         $(MAKE) --assume-new=lhelp.lpr lhelp$(EXEEXT)
 
 # end.
