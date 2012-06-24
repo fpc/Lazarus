@@ -455,6 +455,8 @@ type
     function GetFirstElement: TvFormulaElement;
     function GetNextElement: TvFormulaElement;
     procedure AddElement(AElement: TvFormulaElement);
+    function  AddElementWithKind(AKind: TvFormulaElementKind): TvFormulaElement;
+    function  AddElementWithKindAndText(AKind: TvFormulaElementKind; AText: string): TvFormulaElement;
     procedure Clear;
     //
     function CalculateHeight(ADest: TFPCustomCanvas): Single; // 1.0 = the normal text height, will return for example 2.2 for 2,2 times the text height
@@ -1735,12 +1737,24 @@ end;
 function TvFormulaElement.AsText: string;
 begin
   case Kind of
-    fekVariable: Result := Text;
-    fekEqual:    Result := '=';
+    fekVariable:  Result := Text;
+    fekEqual:     Result := '=';
     fekSubtraction: Result := '-';
     fekMultiplication: Result := 'x';
-    fekSum: Result := '+';
+    fekSum:       Result := '+';
     fekPlusMinus: Result := '+/-';
+    fekLessThan:  Result := '<';
+    fekLessOrEqualThan: Result := '<=';
+    fekGreaterThan: Result := '>';
+    fekGreaterOrEqualThan: Result := '>=';
+    // More complex elements
+    fekFraction:  Result := '[fekFraction]';
+    fekRoot:      Result := '[fekRoot]';
+    fekNumberWithPower: Result := '[fekNumberWithPower]';
+    fekVariableWithPower: Result := '[fekVariableWithPower]';
+    fekParenteses: Result := '[fekParenteses]';
+    fekParentesesWithPower: Result := '[fekParentesesWithPower]';
+    fekSomatory:  Result := '[fekSomatory]';
   else
     Result := '';
   end;
@@ -1776,8 +1790,26 @@ end;
 
 procedure TvFormulaElement.GenerateDebugTree(ADestRoutine: TvDebugAddItemProc;
   APageItem: Pointer);
+var
+  lDBGItem, lDBGFormula, lDBGFormulaBottom: Pointer;
 begin
-  ADestRoutine(Self.AsText(), APageItem);
+  lDBGItem := ADestRoutine(Self.AsText(), APageItem);
+
+  case Kind of
+    fekFraction:
+    begin
+      lDBGFormula := ADestRoutine('Formula', lDBGItem);
+      Formula.GenerateDebugTree(ADestRoutine, lDBGFormula);
+      lDBGFormulaBottom := ADestRoutine('Bottom Formula', lDBGItem);
+      BottomFormula.GenerateDebugTree(ADestRoutine, lDBGFormulaBottom);
+    end;
+    //fekRoot: Result := Formula.CalculateHeight();
+    //fekNumberWithPower,
+    //fekVariableWithPower: Result := 1.1;
+    //fekParenteses: Result,// This is utilized to group elements. Inside it goes a Formula
+    //fekParentesesWithPower: Result := 1.1;
+    //fekSomatory: Result := 1.5;
+  end;
 end;
 
 { TvFormula }
@@ -1809,7 +1841,7 @@ end;
 
 function TvFormula.GetNextElement: TvFormulaElement;
 begin
-  if FElements.Count < FCurIndex then Exit(nil);
+  if FElements.Count <= FCurIndex then Exit(nil);
   Result := FElements.Items[FCurIndex];
   Inc(FCurIndex);
 end;
@@ -1817,6 +1849,22 @@ end;
 procedure TvFormula.AddElement(AElement: TvFormulaElement);
 begin
   FElements.Add(AElement);
+end;
+
+function TvFormula.AddElementWithKind(AKind: TvFormulaElementKind): TvFormulaElement;
+begin
+  Result := TvFormulaElement.Create;
+  Result.Kind := AKind;
+  AddElement(Result);
+end;
+
+function TvFormula.AddElementWithKindAndText(AKind: TvFormulaElementKind;
+  AText: string): TvFormulaElement;
+begin
+  Result := TvFormulaElement.Create;
+  Result.Kind := AKind;
+  Result.Text := AText;
+  AddElement(Result);
 end;
 
 procedure TvFormula.Clear;
