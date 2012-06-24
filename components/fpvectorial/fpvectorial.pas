@@ -25,7 +25,7 @@ unit fpvectorial;
 interface
 
 uses
-  Classes, SysUtils, Math,
+  Classes, SysUtils, Math, TypInfo,
   // FCL-Image
   fpcanvas, fpimage,
   // LCL
@@ -412,9 +412,8 @@ type
     fekFraction,  // a division with Formula on the top and AdjacentFormula in the bottom
     fekRoot,      // A root. For example sqrt(something). Number gives the root, usually 2, and inside it goes a Formula
     fekPower,     // A Formula elevated to a AdjacentFormula, example: 2^5
-    fekParenteses,// This is utilized to group elements. Inside it goes a Formula
-    fekParentesesWithPower, // The same as parenteses, but elevated to the power of "Number"
-    fekSomatory   // Sum of a variable given by Text from Number to AdjacentNumber
+    fekSubscript, // A Formula with a subscripted element AdjacentFormula, example: Xi
+    fekSomatory   // Sum of a variable given by Text set by Formula in the bottom and going up to AdjacentFormula in the top
     );
 
   { TvFormulaElement }
@@ -424,7 +423,6 @@ type
     Kind: TvFormulaElementKind;
     Text: string;
     Number: Double;
-    AdjacentNumber: Double;
     Formula: TvFormula;
     AdjacentFormula: TvFormula;
   public
@@ -1699,8 +1697,6 @@ begin
     fekFraction: Result := 2.3;
     fekRoot: Result := Formula.CalculateHeight(ADest);
     fekPower: Result := 1.1;
-    //fekParenteses: Result,// This is utilized to group elements. Inside it goes a Formula
-    fekParentesesWithPower: Result := 1.1;
     fekSomatory: Result := 1.5;
   else
     Result := 1.0;
@@ -1724,8 +1720,6 @@ begin
 //    fekFraction: Result := 2.3;
     fekRoot: Result := Formula.CalculateWidth(ADest) + 5;
     fekPower: Result := Round(Result * 1.2);
-    fekParenteses: Result := Result + 6;
-    fekParentesesWithPower: Result := Result + 8;
     fekSomatory: Result := 8;
   else
   end;
@@ -1744,15 +1738,9 @@ begin
     fekLessOrEqualThan: Result := '<=';
     fekGreaterThan: Result := '>';
     fekGreaterOrEqualThan: Result := '>=';
-    // More complex elements
-    fekFraction:  Result := '[fekFraction]';
-    fekRoot:      Result := '[fekRoot]';
-    fekPower:     Result := '[fekPower]';
-    fekParenteses: Result := '[fekParenteses]';
-    fekParentesesWithPower: Result := '[fekParentesesWithPower]';
-    fekSomatory:  Result := '[fekSomatory]';
+  // More complex elements
   else
-    Result := '';
+    Result := Format('[%s]', [GetEnumName(TypeInfo(TvFormulaElementKind), integer(Kind))]);
   end;
 end;
 
@@ -1792,23 +1780,17 @@ begin
   lDBGItem := ADestRoutine(Self.AsText(), APageItem);
 
   case Kind of
-    fekFraction:
+    fekFraction, fekPower, fekSubscript, fekSomatory:
     begin
-      lDBGFormula := ADestRoutine('Formula', lDBGItem);
+      lDBGFormula := ADestRoutine('Main Formula', lDBGItem);
       Formula.GenerateDebugTree(ADestRoutine, lDBGFormula);
-      lDBGFormulaBottom := ADestRoutine('Bottom Formula', lDBGItem);
+      if Kind in [fekPower, fekSomatory] then
+        lDBGFormulaBottom := ADestRoutine('Top Formula', lDBGItem)
+      else
+        lDBGFormulaBottom := ADestRoutine('Bottom Formula', lDBGItem);
       AdjacentFormula.GenerateDebugTree(ADestRoutine, lDBGFormulaBottom);
     end;
     fekRoot: Formula.GenerateDebugTree(ADestRoutine, lDBGItem);
-    fekPower:
-    begin
-      lDBGFormula := ADestRoutine('Formula', lDBGItem);
-      Formula.GenerateDebugTree(ADestRoutine, lDBGFormula);
-      lDBGFormulaBottom := ADestRoutine('Top Formula', lDBGItem);
-      AdjacentFormula.GenerateDebugTree(ADestRoutine, lDBGFormulaBottom);
-    end;
-    //fekParenteses: Result,// This is utilized to group elements. Inside it goes a Formula
-    //fekParentesesWithPower: Result := 1.1;
     //fekSomatory: Result := 1.5;
   end;
 end;
@@ -1854,9 +1836,7 @@ end;
 
 function TvFormula.AddElementWithKind(AKind: TvFormulaElementKind): TvFormulaElement;
 begin
-  Result := TvFormulaElement.Create;
-  Result.Kind := AKind;
-  AddElement(Result);
+  AddElementWithKindAndText(AKind, '');
 end;
 
 function TvFormula.AddElementWithKindAndText(AKind: TvFormulaElementKind;
@@ -1866,6 +1846,18 @@ begin
   Result.Kind := AKind;
   Result.Text := AText;
   AddElement(Result);
+
+  case AKind of
+    fekFraction, fekPower, fekSubscript, fekSomatory:
+    begin
+      Result.Formula := TvFormula.Create;
+      Result.AdjacentFormula := TvFormula.Create;
+    end;
+    fekRoot:
+    begin
+      Result.Formula := TvFormula.Create;
+    end;
+  end;
 end;
 
 procedure TvFormula.Clear;

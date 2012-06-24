@@ -66,7 +66,8 @@ var
   lSubNodeNameStr: DOMString;
 begin
   lNodeName := ANode.NodeName;
-  lNodeText := ANode.FirstChild.NodeValue;
+  if ANode.FirstChild <> nil then
+    lNodeText := ANode.FirstChild.NodeValue;
   // mi - variables
   // Examples:
   // <mi>x</mi>
@@ -154,8 +155,6 @@ begin
   else if lNodeName = 'msup' then
   begin
     lFormElem := AFormula.AddElementWithKind(fekPower);
-    lFormElem.Formula := TvFormula.Create;
-    lFormElem.AdjacentFormula := TvFormula.Create;
 
     // First read the bottom element
     lMFracRow := ANode.FirstChild;
@@ -165,11 +164,69 @@ begin
     lMFracRow := lMFracRow.NextSibling;
     AddNodeToFormula(lMFracRow, APage, lFormElem.AdjacentFormula);
   end
+  { msub - Subscript
+    Example: Xi
+  <msub>
+    <mrow>
+      <mi>x</mi>
+    </mrow>
+    <mrow>
+      <mi>i</mi>
+    </mrow>
+  </msub>
+  }
+  else if lNodeName = 'msub' then
+  begin
+    lFormElem := AFormula.AddElementWithKind(fekSubscript);
+
+    // First read the main element
+    lMFracRow := ANode.FirstChild;
+    AddNodeToFormula(lMFracRow, APage, lFormElem.Formula);
+
+    // Now the subscripted element
+    lMFracRow := lMFracRow.NextSibling;
+    AddNodeToFormula(lMFracRow, APage, lFormElem.AdjacentFormula);
+  end
   // mrow may appear where unnecessary, in this cases just keep reading further
   else if lNodeName = 'mrow' then
   begin
+    ReadFormulaFromNodeChildren(ANode, APage, AFormula);
+  end
+  // mstyle can be ignored
+  else if lNodeName = 'mstyle' then
+  begin
+    ReadFormulaFromNodeChildren(ANode, APage, AFormula);
+  end
+  { Somatory
+
+  <munderover>
+    <mrow>
+      <mo>&#x2211;</mo>
+    </mrow>
+    <mrow>
+      <mi>i</mi>
+      <mo>=</mo>
+      <mn>1</mn>
+    </mrow>
+    <mrow>
+      <mi>N</mi>
+    </mrow>
+  </munderover>
+  }
+  else if lNodeName = 'munderover' then
+  begin
+    lFormElem := AFormula.AddElementWithKind(fekSomatory);
+
+    // The first element is just the symbol, ignore it
     lMFracRow := ANode.FirstChild;
-    ReadFormulaFromNodeChildren(lMFracRow, APage, AFormula);
+
+    // Read the bottom element
+    lMFracRow := lMFracRow.NextSibling;
+    AddNodeToFormula(lMFracRow, APage, lFormElem.Formula);
+
+    // Now the top element
+    lMFracRow := lMFracRow.NextSibling;
+    AddNodeToFormula(lMFracRow, APage, lFormElem.AdjacentFormula);
   end;
 end;
 
