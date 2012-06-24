@@ -190,7 +190,7 @@ begin
   CFRelease(F1);
   CFRelease(F2);
   {$ELSE}
-  Result:=AnsiCompareText(Filename1, Filename2);
+  Result:=UTF8CompareText(Filename1, Filename2);
   {$ENDIF}
 end;
 
@@ -496,7 +496,7 @@ begin
   if CaseSensitive then
     Result:=CompareStr(n, e)
   else
-    Result:=AnsiCompareText(n, e);
+    Result:=UTF8CompareText(n, e);
   if Result<0 then Result:=1
   else if Result>0 then Result:=1;
 end;
