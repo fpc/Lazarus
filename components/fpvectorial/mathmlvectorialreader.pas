@@ -28,7 +28,8 @@ type
     { General reading methods }
     constructor Create; override;
     Destructor Destroy; override;
-    procedure ReadFormulaFromNode(ACurNode: TDOMNode; APage: TvVectorialPage; var AFormula: TvFormula);
+    procedure AddNodeToFormula(ANode: TDOMNode; APage: TvVectorialPage; var AFormula: TvFormula);
+    procedure ReadFormulaFromNodeChildren(ACurNode: TDOMNode; APage: TvVectorialPage; var AFormula: TvFormula);
     procedure ReadFromStream(AStream: TStream; AData: TvVectorialDocument); override;
   end;
 
@@ -55,80 +56,133 @@ begin
   inherited Destroy;
 end;
 
-procedure TvMathMLVectorialReader.ReadFormulaFromNode(ACurNode: TDOMNode;
+procedure TvMathMLVectorialReader.AddNodeToFormula(ANode: TDOMNode;
   APage: TvVectorialPage; var AFormula: TvFormula);
 var
-  lCurNode: TDOMNode;
-  lStr: DOMString;
+  lNodeName, lNodeText, lSubNodeName: DOMString;
   lFormula, lFormulaBottom: TvFormula;
   lFormElem: TvFormulaElement;
   lMFracRow: TDOMNode;
   lSubNodeNameStr: DOMString;
 begin
+  lNodeName := ANode.NodeName;
+  lNodeText := ANode.FirstChild.NodeValue;
+  // mi - variables
+  // Examples:
+  // <mi>x</mi>
+  if lNodeName = 'mi' then
+  begin
+    AFormula.AddElementWithKindAndText(fekVariable, lNodeText);
+  end
+  // mn - numbers
+  // Examples:
+  // <mn>4</mn>
+  else if lNodeName = 'mn' then
+  begin
+    AFormula.AddElementWithKindAndText(fekVariable, lNodeText);
+  end
+  // <mo>=</mo>
+  else if lNodeName = 'mo' then
+  begin
+    // equal
+    if lNodeText = '=' then
+      AFormula.AddElementWithKind(fekEqual)
+    // minus
+    else if (lNodeText = '&#x2212;') or (lNodeText = #$22#$12) then
+      AFormula.AddElementWithKind(fekSubtraction)
+    // &InvisibleTimes;
+    else if (lNodeText = '&#x2062;') or (lNodeText = #$20#$62) then
+      AFormula.AddElementWithKind(fekMultiplication)
+    // &PlusMinus;
+    else if (lNodeText = '&#x00B1;') or (lNodeText = #$00#$B1) then
+      AFormula.AddElementWithKind(fekPlusMinus)
+    //
+    else
+      AFormula.AddElementWithKindAndText(fekVariable, lNodeText);
+  end
+  // Fraction
+  // should contain two sets of: <mrow>...elements...</mrow>
+  else if lNodeName = 'mfrac' then
+  begin
+    // Top line
+    lMFracRow := ANode.FirstChild;
+    lSubNodeName := lMFracRow.NodeName;
+    if lSubNodeName = 'mrow' then
+    begin
+      lFormula := TvFormula.Create;
+      ReadFormulaFromNodeChildren(lMFracRow, APage, lFormula);
+    end
+    else
+      raise Exception.Create(Format('[TvMathMLVectorialReader.ReadFormulaFromNode] Error reading mfrac: expected mrow, got %s', [lSubNodeName]));    // Bottom line
+    lMFracRow := lMFracRow.NextSibling;
+    lSubNodeName := lMFracRow.NodeName;
+    if lSubNodeName = 'mrow' then
+    begin
+      lFormulaBottom := TvFormula.Create;
+      ReadFormulaFromNodeChildren(lMFracRow, APage, lFormulaBottom);
+    end
+    else
+      raise Exception.Create(Format('[TvMathMLVectorialReader.ReadFormulaFromNode] Error reading mfrac: expected mrow, got %s', [lSubNodeName]));
+    // Now add both formulas into our element
+    lFormElem := AFormula.AddElementWithKind(fekFraction);
+    lFormElem.Formula := lFormula;
+    lFormElem.AdjacentFormula := lFormulaBottom;
+  end
+  // Square Root
+  // might contain 1 set of: <mrow>...elements...</mrow>
+  // or just: ...elements...
+  else if lNodeName = 'msqrt' then
+  begin
+    lFormula := TvFormula.Create;
+
+    lMFracRow := ANode.FirstChild;
+    lSubNodeName := lMFracRow.NodeName;
+    if lSubNodeName = 'mrow' then
+      ReadFormulaFromNodeChildren(lMFracRow, APage, lFormula)
+    else
+      ReadFormulaFromNodeChildren(ANode, APage, lFormula);
+
+    lFormElem := AFormula.AddElementWithKind(fekRoot);
+    lFormElem.Formula := lFormula;
+  end
+  // msup - Power
+  // Example: b^2
+  //<msup>
+  //  <mi>b</mi>
+  //  <mn>2</mn>
+  //</msup>
+  else if lNodeName = 'msup' then
+  begin
+    lFormElem := AFormula.AddElementWithKind(fekPower);
+    lFormElem.Formula := TvFormula.Create;
+    lFormElem.AdjacentFormula := TvFormula.Create;
+
+    // First read the bottom element
+    lMFracRow := ANode.FirstChild;
+    AddNodeToFormula(lMFracRow, APage, lFormElem.Formula);
+
+    // Now the top element
+    lMFracRow := lMFracRow.NextSibling;
+    AddNodeToFormula(lMFracRow, APage, lFormElem.AdjacentFormula);
+  end
+  // mrow may appear where unnecessary, in this cases just keep reading further
+  else if lNodeName = 'mrow' then
+  begin
+    lMFracRow := ANode.FirstChild;
+    ReadFormulaFromNodeChildren(lMFracRow, APage, AFormula);
+  end;
+end;
+
+procedure TvMathMLVectorialReader.ReadFormulaFromNodeChildren(ACurNode: TDOMNode;
+  APage: TvVectorialPage; var AFormula: TvFormula);
+var
+  lCurNode: TDOMNode;
+begin
   // Now process the elements inside the first layer
   lCurNode := ACurNode.FirstChild;
   while Assigned(lCurNode) do
   begin
-    // mi - variables
-    // Examples:
-    // <mi>x</mi>
-    lStr := lCurNode.NodeName;
-    if lStr = 'mi' then
-    begin
-      AFormula.AddElementWithKindAndText(fekVariable, lCurNode.FirstChild.NodeValue);
-    end
-    // <mo>=</mo>
-    else if lStr = 'mo' then
-    begin
-      lSubNodeNameStr := lCurNode.FirstChild.NodeValue;
-      // equal
-      if lSubNodeNameStr = '=' then
-        AFormula.AddElementWithKind(fekSubtraction)
-      // minus
-      else if (lSubNodeNameStr = '&#x2212;') or (lSubNodeNameStr = #$22#$12) then
-        AFormula.AddElementWithKind(fekEqual)
-      // &InvisibleTimes;
-      else if (lSubNodeNameStr = '&#x2062;') or (lSubNodeNameStr = #$20#$62) then
-        AFormula.AddElementWithKind(fekMultiplication)
-      // &PlusMinus;
-      else if (lSubNodeNameStr = '&#x00B1;') or (lSubNodeNameStr = #$00#$B1) then
-        AFormula.AddElementWithKind(fekPlusMinus)
-      //
-      else
-        AFormula.AddElementWithKindAndText(fekVariable, lSubNodeNameStr);
-    end
-    //
-    else if lStr = 'mfrac' then
-    begin
-      // Top line
-      lMFracRow := lCurNode.FirstChild;
-      lStr := lMFracRow.NodeName;
-      if lStr = 'mrow' then
-      begin
-        lFormula := TvFormula.Create;
-        ReadFormulaFromNode(lMFracRow, APage, lFormula);
-      end
-      else
-        raise Exception.Create(Format('[TvMathMLVectorialReader.ReadFormulaFromNode] Error reading mfrac: expected mrow, got %s', [lStr]));
-      // Bottom line
-      lMFracRow := lMFracRow.NextSibling;
-      lStr := lMFracRow.NodeName;
-      if lStr = 'mrow' then
-      begin
-        lFormulaBottom := TvFormula.Create;
-        ReadFormulaFromNode(lMFracRow, APage, lFormulaBottom);
-      end
-      else
-        raise Exception.Create(Format('[TvMathMLVectorialReader.ReadFormulaFromNode] Error reading mfrac: expected mrow, got %s', [lStr]));
-      // Now add both formulas into our element
-      lFormElem := AFormula.AddElementWithKind(fekFraction);
-      lFormElem.Formula := lFormula;
-      lFormElem.BottomFormula := lFormulaBottom;
-    end
-    else if lStr = 'msqrt' then
-    begin
-
-    end;
+    AddNodeToFormula(lCurNode, APage, AFormula);
 
     lCurNode := lCurNode.NextSibling;
   end;
@@ -163,7 +217,7 @@ begin
       if lStr = 'mrow' then
       begin
         lFormula := TvFormula.Create;
-        ReadFormulaFromNode(lCurNode, lPage, lFormula);
+        ReadFormulaFromNodeChildren(lCurNode, lPage, lFormula);
         lPage.AddEntity(lFormula);
       end
       else

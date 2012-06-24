@@ -409,10 +409,9 @@ type
     fekGreaterThan, // The > symbol
     fekGreaterOrEqualThan, // The >= symbol
     // More complex elements
-    fekFraction,  // a division with Formula on the top and BottomFormula in the bottom
+    fekFraction,  // a division with Formula on the top and AdjacentFormula in the bottom
     fekRoot,      // A root. For example sqrt(something). Number gives the root, usually 2, and inside it goes a Formula
-    fekNumberWithPower, // A number elevated to a given power, example: 2^5
-    fekVariableWithPower, // A variable elevated to a given power, example: X^5
+    fekPower,     // A Formula elevated to a AdjacentFormula, example: 2^5
     fekParenteses,// This is utilized to group elements. Inside it goes a Formula
     fekParentesesWithPower, // The same as parenteses, but elevated to the power of "Number"
     fekSomatory   // Sum of a variable given by Text from Number to AdjacentNumber
@@ -427,7 +426,7 @@ type
     Number: Double;
     AdjacentNumber: Double;
     Formula: TvFormula;
-    BottomFormula: TvFormula;
+    AdjacentFormula: TvFormula;
   public
     Top, Left, Width, Height: Integer;
     function CalculateHeight(ADest: TFPCustomCanvas): Single; // 1.0 = the normal text height, will return for example 2.2 for 2,2 times the text height
@@ -1699,8 +1698,7 @@ begin
     //fekPlusMinus, // The +/- symbol
     fekFraction: Result := 2.3;
     fekRoot: Result := Formula.CalculateHeight(ADest);
-    fekNumberWithPower,
-    fekVariableWithPower: Result := 1.1;
+    fekPower: Result := 1.1;
     //fekParenteses: Result,// This is utilized to group elements. Inside it goes a Formula
     fekParentesesWithPower: Result := 1.1;
     fekSomatory: Result := 1.5;
@@ -1725,8 +1723,7 @@ begin
   case Kind of
 //    fekFraction: Result := 2.3;
     fekRoot: Result := Formula.CalculateWidth(ADest) + 5;
-    fekNumberWithPower,
-    fekVariableWithPower: Result := Round(Result * 1.2);
+    fekPower: Result := Round(Result * 1.2);
     fekParenteses: Result := Result + 6;
     fekParentesesWithPower: Result := Result + 8;
     fekSomatory: Result := 8;
@@ -1750,8 +1747,7 @@ begin
     // More complex elements
     fekFraction:  Result := '[fekFraction]';
     fekRoot:      Result := '[fekRoot]';
-    fekNumberWithPower: Result := '[fekNumberWithPower]';
-    fekVariableWithPower: Result := '[fekVariableWithPower]';
+    fekPower:     Result := '[fekPower]';
     fekParenteses: Result := '[fekParenteses]';
     fekParentesesWithPower: Result := '[fekParentesesWithPower]';
     fekSomatory:  Result := '[fekSomatory]';
@@ -1801,11 +1797,16 @@ begin
       lDBGFormula := ADestRoutine('Formula', lDBGItem);
       Formula.GenerateDebugTree(ADestRoutine, lDBGFormula);
       lDBGFormulaBottom := ADestRoutine('Bottom Formula', lDBGItem);
-      BottomFormula.GenerateDebugTree(ADestRoutine, lDBGFormulaBottom);
+      AdjacentFormula.GenerateDebugTree(ADestRoutine, lDBGFormulaBottom);
     end;
-    //fekRoot: Result := Formula.CalculateHeight();
-    //fekNumberWithPower,
-    //fekVariableWithPower: Result := 1.1;
+    fekRoot: Formula.GenerateDebugTree(ADestRoutine, lDBGItem);
+    fekPower:
+    begin
+      lDBGFormula := ADestRoutine('Formula', lDBGItem);
+      Formula.GenerateDebugTree(ADestRoutine, lDBGFormula);
+      lDBGFormulaBottom := ADestRoutine('Top Formula', lDBGItem);
+      AdjacentFormula.GenerateDebugTree(ADestRoutine, lDBGFormulaBottom);
+    end;
     //fekParenteses: Result,// This is utilized to group elements. Inside it goes a Formula
     //fekParentesesWithPower: Result := 1.1;
     //fekSomatory: Result := 1.5;
@@ -1927,8 +1928,8 @@ begin
     if lElement.Formula <> nil then
       lElement.Formula.PositionElements(ADest, lElement.Left, lElement.Top);
 
-    if lElement.BottomFormula <> nil then
-      lElement.BottomFormula.PositionElements(ADest, lElement.Left, lElement.Top);
+    if lElement.AdjacentFormula <> nil then
+      lElement.AdjacentFormula.PositionElements(ADest, lElement.Left, lElement.Top);
 
     lElement := GetNextElement();
   end;
