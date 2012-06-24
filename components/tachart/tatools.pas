@@ -483,7 +483,7 @@ uses
   GraphMath, InterfaceBase, Math, SysUtils,
   TACustomSeries, TADrawerCanvas, TAEnumerators, TAGeometry, TAMath;
 
-function InitBuitlinTools(AChart: TChart): TBasicChartToolset;
+function InitBuiltinTools(AChart: TChart): TBasicChartToolset;
 var
   ts: TChartToolset;
 begin
@@ -1605,7 +1605,7 @@ end;
 initialization
 
   ToolsClassRegistry := TStringList.Create;
-  OnInitBuiltinTools := @InitBuitlinTools;
+  OnInitBuiltinTools := @InitBuiltinTools;
   RegisterChartToolClass(TZoomDragTool, 'Zoom by drag');
   RegisterChartToolClass(TZoomClickTool, 'Zoom by click');
   RegisterChartToolClass(TZoomMouseWheelTool, 'Zoom by mouse wheel');
