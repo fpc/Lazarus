@@ -271,8 +271,8 @@ type
 function CompareCTDirectoryCaches(Data1, Data2: Pointer): integer;
 function CompareAnsiStringAndDirectoryCache(Dir, Cache: Pointer): integer;
 
-function ComparePCharFirstCaseInsThenCase(Data1, Data2: Pointer): integer;
-function ComparePCharCaseInsensitive(Data1, Data2: Pointer): integer;
+function ComparePCharFirstCaseInsAThenCase(Data1, Data2: Pointer): integer;
+function ComparePCharCaseInsensitiveA(Data1, Data2: Pointer): integer;
 function ComparePCharCaseSensitive(Data1, Data2: Pointer): integer;
 
 // unit links
@@ -301,7 +301,7 @@ var
   Info1: PWorkFileInfo absolute Data1;
   Info2: PWorkFileInfo absolute Data2;
 begin
-  Result:=ComparePCharFirstCaseInsThenCase(PChar(Info1^.Filename),PChar(Info2^.Filename));
+  Result:=ComparePCharFirstCaseInsAThenCase(PChar(Info1^.Filename),PChar(Info2^.Filename));
 end;
 
 function CompareCTDirectoryCaches(Data1, Data2: Pointer): integer;
@@ -315,14 +315,14 @@ begin
   Result:=CompareFilenames(AnsiString(Dir),TCTDirectoryCache(Cache).FDirectory);
 end;
 
-function ComparePCharFirstCaseInsThenCase(Data1, Data2: Pointer): integer;
+function ComparePCharFirstCaseInsAThenCase(Data1, Data2: Pointer): integer;
 begin
-  Result:=ComparePCharCaseInsensitive(Data1,Data2);
+  Result:=ComparePCharCaseInsensitiveA(Data1,Data2);
   if Result=0 then
     Result:=ComparePCharCaseSensitive(Data1,Data2);
 end;
 
-function ComparePCharCaseInsensitive(Data1, Data2: Pointer): integer;
+function ComparePCharCaseInsensitiveA(Data1, Data2: Pointer): integer;
 var
   p1: PChar absolute Data1;
   p2: PChar absolute Data2;
@@ -334,7 +334,7 @@ begin
   Result:=ord(FPUpChars[p1^])-ord(FPUpChars[p2^]);
 end;
 
-function ComparePCharCaseInsensitive(Data1, Data2: Pointer;
+function ComparePCharCaseInsensitiveA(Data1, Data2: Pointer;
   MaxCount: PtrInt): integer;
 var
   p1: PChar absolute Data1;
@@ -414,10 +414,10 @@ begin
     if UnitLinkLen>0 then begin
       {$IFDEF ShowTriedFiles}
       DebugLn(['  unit "',copy(UnitLinks,UnitLinkStart,UnitLinkEnd-UnitLinkStart),'" ',
-        ComparePCharCaseInsensitive(Pointer(TheUnitName),@UnitLinks[UnitLinkStart],UnitLinkLen)]);
+        ComparePCharCaseInsensitiveA(Pointer(TheUnitName),@UnitLinks[UnitLinkStart],UnitLinkLen)]);
       {$ENDIF}
       if (UnitLinkLen=length(TheUnitName))
-      and (ComparePCharCaseInsensitive(Pointer(TheUnitName),@UnitLinks[UnitLinkStart],
+      and (ComparePCharCaseInsensitiveA(Pointer(TheUnitName),@UnitLinks[UnitLinkStart],
            UnitLinkLen)=0)
       then begin
         // unit found -> parse filename
@@ -786,7 +786,7 @@ begin
   while r>=l do begin
     m:=(l+r) shr 1;
     CurFilename:=@Files[FListing.Starts[m]+NameOffset];
-    cmp:=ComparePCharCaseInsensitive(ShortFilename,CurFilename);// pointer type cast avoids #0 check
+    cmp:=ComparePCharCaseInsensitiveA(ShortFilename,CurFilename);
     if cmp>0 then
       l:=m+1
     else if cmp<0 then
@@ -817,7 +817,7 @@ begin
   while r>=l do begin
     m:=(l+r) shr 1;
     CurFilename:=@Files[FListing.Starts[m]+NameOffset];
-    cmp:=ComparePCharFirstCaseInsThenCase(ShortFilename,CurFilename);// pointer type cast avoids #0 check
+    cmp:=ComparePCharFirstCaseInsAThenCase(ShortFilename,CurFilename);// pointer type cast avoids #0 check
     if cmp>0 then
       l:=m+1
     else if cmp<0 then
@@ -908,7 +908,7 @@ begin
       i:=IndexOfFileCaseInsensitive(Pointer(ShortFilename));// pointer type cast avoids #0 check
       {$ELSE}
       begin
-        i:=IndexOfFileCaseSensitive(Pointer(ShortFilename));
+        i:=IndexOfFileCaseSensitive(Pointer(ShortFilename));// pointer type cast avoids #0 check
         // just return the parameter
         if i>=0 then
           Result:=ShortFilename;
@@ -916,7 +916,7 @@ begin
       end;
       {$ENDIF}
     ctsfcAllCase,ctsfcLoUpCase:
-      i:=IndexOfFileCaseInsensitive(Pointer(ShortFilename));
+      i:=IndexOfFileCaseInsensitive(Pointer(ShortFilename));// pointer type cast avoids #0 check
     else RaiseDontKnow;
     end;
     if i>=0 then
@@ -941,7 +941,7 @@ begin
   {$IFDEF CaseInsensitiveFilenames}
   i:=IndexOfFileCaseInsensitive(Pointer(ShortFilename));// pointer type cast avoids #0 check
   {$ELSE}
-  i:=IndexOfFileCaseSensitive(Pointer(ShortFilename));
+  i:=IndexOfFileCaseSensitive(Pointer(ShortFilename));// pointer type cast avoids #0 check
   {$ENDIF}
   if i>=0 then
     Result:=FListing.GetTime(i);
@@ -961,7 +961,7 @@ begin
   {$IFDEF CaseInsensitiveFilenames}
   i:=IndexOfFileCaseInsensitive(Pointer(ShortFilename));// pointer type cast avoids #0 check
   {$ELSE}
-  i:=IndexOfFileCaseSensitive(Pointer(ShortFilename));
+  i:=IndexOfFileCaseSensitive(Pointer(ShortFilename));// pointer type cast avoids #0 check
   {$ENDIF}
   if i>=0 then
     Result:=FListing.GetAttr(i);
@@ -981,7 +981,7 @@ begin
   {$IFDEF CaseInsensitiveFilenames}
   i:=IndexOfFileCaseInsensitive(Pointer(ShortFilename));// pointer type cast avoids #0 check
   {$ELSE}
-  i:=IndexOfFileCaseSensitive(Pointer(ShortFilename));
+  i:=IndexOfFileCaseSensitive(Pointer(ShortFilename));// pointer type cast avoids #0 check
   {$ENDIF}
   if i>=0 then
     Result:=FListing.GetSize(i);
