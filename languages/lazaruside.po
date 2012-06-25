@@ -1599,10 +1599,12 @@ msgid "Program"
 msgstr ""
 
 #: lazarusidestrconsts.dlgfoldpasrecord
+msgctxt "lazarusidestrconsts.dlgfoldpasrecord"
 msgid "Record"
 msgstr ""
 
 #: lazarusidestrconsts.dlgfoldpasrepeat
+msgctxt "lazarusidestrconsts.dlgfoldpasrepeat"
 msgid "Repeat"
 msgstr ""
 
@@ -2665,6 +2667,7 @@ msgid "Use manifest file to enable themes (Windows only)"
 msgstr ""
 
 #: lazarusidestrconsts.dlgproject
+msgctxt "lazarusidestrconsts.dlgproject"
 msgid "Project"
 msgstr ""
 
@@ -7068,6 +7071,10 @@ msgstr ""
 msgid "Delete selected files"
 msgstr ""
 
+#: lazarusidestrconsts.lisdeleteselectedmacro
+msgid "Delete selected macro?"
+msgstr ""
+
 #: lazarusidestrconsts.lisdeletesetting
 msgid "Delete setting"
 msgstr ""
@@ -7178,6 +7185,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lisdirectivesfornewunit
 msgid "Directives for new unit"
+msgstr ""
+
+#: lazarusidestrconsts.lisdirectory
+msgid "Directory: "
 msgstr ""
 
 #: lazarusidestrconsts.lisdirectorynotfound
@@ -8080,6 +8091,10 @@ msgctxt "lazarusidestrconsts.lisfile"
 msgid "File"
 msgstr ""
 
+#: lazarusidestrconsts.lisfile2
+msgid "File: "
+msgstr ""
+
 #: lazarusidestrconsts.lisfiledoesnotlooklikeatextfileopenitanyway
 msgctxt "lazarusidestrconsts.lisfiledoesnotlooklikeatextfileopenitanyway"
 msgid "File %s%s%s%sdoes not look like a text file.%sOpen it anyway?"
@@ -8778,6 +8793,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lisimplementationcommentforclass
 msgid "Implementation comment for class"
+msgstr ""
+
+#: lazarusidestrconsts.lisimport
+msgid "Import ..."
 msgstr ""
 
 #: lazarusidestrconsts.lisimportlist
@@ -10125,6 +10144,10 @@ msgstr ""
 msgid "Loading %s failed."
 msgstr ""
 
+#: lazarusidestrconsts.lisloadmacrofrom
+msgid "Load macro from"
+msgstr ""
+
 #: lazarusidestrconsts.lislocals
 msgid "Locals"
 msgstr ""
@@ -11323,6 +11346,10 @@ msgstr ""
 msgid "Move selected item up (Ctrl+Up)"
 msgstr ""
 
+#: lazarusidestrconsts.lismoveto
+msgid "Move to: "
+msgstr ""
+
 #: lazarusidestrconsts.lisms
 msgid "(ms)"
 msgstr ""
@@ -11444,6 +11471,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lisnewproject
 msgid "(new project)"
+msgstr ""
+
+#: lazarusidestrconsts.lisnewrecordedmacrosnottobesaved
+msgid "New recorded macros. Not to be saved"
 msgstr ""
 
 #: lazarusidestrconsts.lisnewsetting
@@ -13183,6 +13214,10 @@ msgstr ""
 msgid "Unable to read package file %s%s%s.%sError: %s"
 msgstr ""
 
+#: lazarusidestrconsts.lisplay
+msgid "Play"
+msgstr ""
+
 #: lazarusidestrconsts.lispldexists
 msgid "Exists"
 msgstr ""
@@ -13500,6 +13535,11 @@ msgstr ""
 msgid "Project is runnable"
 msgstr ""
 
+#: lazarusidestrconsts.lisprojectmacro
+msgctxt "lazarusidestrconsts.lisprojectmacro"
+msgid "Project"
+msgstr ""
+
 #: lazarusidestrconsts.lisprojectmacroproperties
 msgid "Project macro properties"
 msgstr ""
@@ -13761,8 +13801,13 @@ msgstr ""
 msgid "Recent tabs"
 msgstr ""
 
+#: lazarusidestrconsts.lisrecord
+msgctxt "lazarusidestrconsts.lisrecord"
+msgid "Record"
+msgstr ""
+
 #: lazarusidestrconsts.lisrecordedmacros
-msgid "Recorded Macros"
+msgid "Recorded"
 msgstr ""
 
 #: lazarusidestrconsts.lisrecordstruct
@@ -13879,6 +13924,11 @@ msgstr ""
 
 #: lazarusidestrconsts.lisreopenwithanotherencoding
 msgid "Reopen with another encoding"
+msgstr ""
+
+#: lazarusidestrconsts.lisrepeat
+msgctxt "lazarusidestrconsts.lisrepeat"
+msgid "Repeat"
 msgstr ""
 
 #: lazarusidestrconsts.lisrepeatcount
@@ -14138,6 +14188,14 @@ msgstr ""
 msgid "Saved successfully"
 msgstr ""
 
+#: lazarusidestrconsts.lissavedwithidesettings
+msgid "Saved with IDE settings"
+msgstr ""
+
+#: lazarusidestrconsts.lissavedwithprojectsession
+msgid "Saved with project session"
+msgstr ""
+
 #: lazarusidestrconsts.lissaveeditorinfoofnonprojectfiles
 msgid "Save editor info of non project files"
 msgstr ""
@@ -14152,6 +14210,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lissaveinfoofclosededitorfiles
 msgid "Save info of closed editor files"
+msgstr ""
+
+#: lazarusidestrconsts.lissavemacroas
+msgid "Save macro as"
 msgstr ""
 
 #: lazarusidestrconsts.lissaveproject

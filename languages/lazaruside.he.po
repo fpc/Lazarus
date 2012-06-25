@@ -1697,10 +1697,12 @@ msgid "Program"
 msgstr "תוכנה"
 
 #: lazarusidestrconsts.dlgfoldpasrecord
+msgctxt "lazarusidestrconsts.dlgfoldpasrecord"
 msgid "Record"
 msgstr "רשומה"
 
 #: lazarusidestrconsts.dlgfoldpasrepeat
+msgctxt "lazarusidestrconsts.dlgfoldpasrepeat"
 msgid "Repeat"
 msgstr "חזור"
 
@@ -2839,6 +2841,7 @@ msgid "Use manifest file to enable themes (Windows only)"
 msgstr "השתמש בקובץ הרשימות לאפשר ערכות נושא (חלונות בלבד)"
 
 #: lazarusidestrconsts.dlgproject
+msgctxt "lazarusidestrconsts.dlgproject"
 msgid "Project"
 msgstr ""
 
@@ -7409,6 +7412,10 @@ msgstr "מחק שורה"
 msgid "Delete selected files"
 msgstr "מחק את הקבצים שנבחרו"
 
+#: lazarusidestrconsts.lisdeleteselectedmacro
+msgid "Delete selected macro?"
+msgstr ""
+
 #: lazarusidestrconsts.lisdeletesetting
 msgid "Delete setting"
 msgstr "מחק הגדרות"
@@ -7520,6 +7527,10 @@ msgstr "הנחיות"
 #: lazarusidestrconsts.lisdirectivesfornewunit
 msgid "Directives for new unit"
 msgstr "הוראות ליחידה חדשה"
+
+#: lazarusidestrconsts.lisdirectory
+msgid "Directory: "
+msgstr ""
 
 #: lazarusidestrconsts.lisdirectorynotfound
 msgid "Directory %s%s%s not found."
@@ -8435,6 +8446,10 @@ msgctxt "lazarusidestrconsts.lisfile"
 msgid "File"
 msgstr "קובץ"
 
+#: lazarusidestrconsts.lisfile2
+msgid "File: "
+msgstr ""
+
 #: lazarusidestrconsts.lisfiledoesnotlooklikeatextfileopenitanyway
 msgctxt "lazarusidestrconsts.lisfiledoesnotlooklikeatextfileopenitanyway"
 msgid "File %s%s%s%sdoes not look like a text file.%sOpen it anyway?"
@@ -9146,6 +9161,10 @@ msgstr "העתק זיהוי של היחידה , הפרוייקט או החביל
 #: lazarusidestrconsts.lisimplementationcommentforclass
 msgid "Implementation comment for class"
 msgstr "הערת מימוש של המחלקה"
+
+#: lazarusidestrconsts.lisimport
+msgid "Import ..."
+msgstr ""
 
 #: lazarusidestrconsts.lisimportlist
 msgid "Import list"
@@ -10565,6 +10584,10 @@ msgstr ""
 #: lazarusidestrconsts.lisloadingfailed
 msgid "Loading %s failed."
 msgstr "טעינת s% נכשלה"
+
+#: lazarusidestrconsts.lisloadmacrofrom
+msgid "Load macro from"
+msgstr ""
 
 #: lazarusidestrconsts.lislocals
 msgid "Locals"
@@ -12007,6 +12030,10 @@ msgstr ""
 msgid "Move selected item up (Ctrl+Up)"
 msgstr ""
 
+#: lazarusidestrconsts.lismoveto
+msgid "Move to: "
+msgstr ""
+
 #: lazarusidestrconsts.lisms
 msgid "(ms)"
 msgstr "(ms)"
@@ -12134,6 +12161,10 @@ msgstr ""
 #| msgid "%s - (new project)"
 msgid "(new project)"
 msgstr "פרוייקט חדש - s%"
+
+#: lazarusidestrconsts.lisnewrecordedmacrosnottobesaved
+msgid "New recorded macros. Not to be saved"
+msgstr ""
 
 #: lazarusidestrconsts.lisnewsetting
 msgid "New setting"
@@ -13930,6 +13961,10 @@ msgstr "הקובץ הזה איננו באף חבילה שנטענה."
 msgid "Unable to read package file %s%s%s.%sError: %s"
 msgstr "לא ניתן לקרוא את קובץ החבילה %s%s%s.%sשגיאה: %s"
 
+#: lazarusidestrconsts.lisplay
+msgid "Play"
+msgstr ""
+
 #: lazarusidestrconsts.lispldexists
 msgid "Exists"
 msgstr "יציאות"
@@ -14258,6 +14293,11 @@ msgstr "מידע הפרויקט"
 msgid "Project is runnable"
 msgstr "הפרויקט בר ריצה"
 
+#: lazarusidestrconsts.lisprojectmacro
+msgctxt "lazarusidestrconsts.lisprojectmacro"
+msgid "Project"
+msgstr ""
+
 #: lazarusidestrconsts.lisprojectmacroproperties
 msgid "Project macro properties"
 msgstr "מאקרו תכונות הפרויקט"
@@ -14538,8 +14578,13 @@ msgstr "שגיאת קריאה"
 msgid "Recent tabs"
 msgstr ""
 
+#: lazarusidestrconsts.lisrecord
+msgctxt "lazarusidestrconsts.lisrecord"
+msgid "Record"
+msgstr "רשומה"
+
 #: lazarusidestrconsts.lisrecordedmacros
-msgid "Recorded Macros"
+msgid "Recorded"
 msgstr ""
 
 #: lazarusidestrconsts.lisrecordstruct
@@ -14661,6 +14706,11 @@ msgstr "פתח פרוייקט מחדש"
 #: lazarusidestrconsts.lisreopenwithanotherencoding
 msgid "Reopen with another encoding"
 msgstr "פתח מחדש בקידוד אחר"
+
+#: lazarusidestrconsts.lisrepeat
+msgctxt "lazarusidestrconsts.lisrepeat"
+msgid "Repeat"
+msgstr "חזור"
 
 #: lazarusidestrconsts.lisrepeatcount
 msgid "Repeat Count:"
@@ -14932,6 +14982,14 @@ msgstr "שמור את הקובץ הנוכחי שבעורך"
 msgid "Saved successfully"
 msgstr ""
 
+#: lazarusidestrconsts.lissavedwithidesettings
+msgid "Saved with IDE settings"
+msgstr ""
+
+#: lazarusidestrconsts.lissavedwithprojectsession
+msgid "Saved with project session"
+msgstr ""
+
 #: lazarusidestrconsts.lissaveeditorinfoofnonprojectfiles
 msgid "Save editor info of non project files"
 msgstr "שמור מידע עורך על קבצים שאינם של הפרוייקט"
@@ -14947,6 +15005,10 @@ msgstr "לשמור את הקובץ %s%s%s%s לפני סגירת הטופס %s%s%
 #: lazarusidestrconsts.lissaveinfoofclosededitorfiles
 msgid "Save info of closed editor files"
 msgstr "שמור מידע של קבצי עורך סגורים"
+
+#: lazarusidestrconsts.lissavemacroas
+msgid "Save macro as"
+msgstr ""
 
 #: lazarusidestrconsts.lissaveproject
 msgid "Save project %s (*%s)"

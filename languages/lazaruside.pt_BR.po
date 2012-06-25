@@ -1671,10 +1671,12 @@ msgid "Program"
 msgstr "Programa"
 
 #: lazarusidestrconsts.dlgfoldpasrecord
+msgctxt "lazarusidestrconsts.dlgfoldpasrecord"
 msgid "Record"
 msgstr "Record"
 
 #: lazarusidestrconsts.dlgfoldpasrepeat
+msgctxt "lazarusidestrconsts.dlgfoldpasrepeat"
 msgid "Repeat"
 msgstr "Repeat"
 
@@ -2780,6 +2782,7 @@ msgid "Use manifest file to enable themes (Windows only)"
 msgstr "Usar arquivo de manifesto para ativar temas (somente windows)"
 
 #: lazarusidestrconsts.dlgproject
+msgctxt "lazarusidestrconsts.dlgproject"
 msgid "Project"
 msgstr "Projeto"
 
@@ -7279,6 +7282,10 @@ msgstr "Excluir linha"
 msgid "Delete selected files"
 msgstr "Excluir arquivos selecionados"
 
+#: lazarusidestrconsts.lisdeleteselectedmacro
+msgid "Delete selected macro?"
+msgstr ""
+
 #: lazarusidestrconsts.lisdeletesetting
 msgid "Delete setting"
 msgstr "Excluir configuração"
@@ -7390,6 +7397,10 @@ msgstr "Diretivas"
 #: lazarusidestrconsts.lisdirectivesfornewunit
 msgid "Directives for new unit"
 msgstr "Diretivas para nova unidade"
+
+#: lazarusidestrconsts.lisdirectory
+msgid "Directory: "
+msgstr ""
 
 #: lazarusidestrconsts.lisdirectorynotfound
 msgid "Directory %s%s%s not found."
@@ -8299,6 +8310,10 @@ msgctxt "lazarusidestrconsts.lisfile"
 msgid "File"
 msgstr "Arquivo"
 
+#: lazarusidestrconsts.lisfile2
+msgid "File: "
+msgstr ""
+
 #: lazarusidestrconsts.lisfiledoesnotlooklikeatextfileopenitanyway
 msgctxt "lazarusidestrconsts.lisfiledoesnotlooklikeatextfileopenitanyway"
 msgid "File %s%s%s%sdoes not look like a text file.%sOpen it anyway?"
@@ -9007,6 +9022,10 @@ msgstr "Seguir exemplo recuo da unidade atual, projeto  ou pacote"
 #: lazarusidestrconsts.lisimplementationcommentforclass
 msgid "Implementation comment for class"
 msgstr "Comentário implementação para classe"
+
+#: lazarusidestrconsts.lisimport
+msgid "Import ..."
+msgstr ""
 
 #: lazarusidestrconsts.lisimportlist
 msgid "Import list"
@@ -10397,6 +10416,10 @@ msgstr "Carregado com sucesso"
 msgid "Loading %s failed."
 msgstr "Carga %s falhou."
 
+#: lazarusidestrconsts.lisloadmacrofrom
+msgid "Load macro from"
+msgstr ""
+
 #: lazarusidestrconsts.lislocals
 msgid "Locals"
 msgstr "Variáveis locais"
@@ -11722,6 +11745,10 @@ msgstr "Mover item selecionado abaixo (Ctrl+Seta Abaixo)"
 msgid "Move selected item up (Ctrl+Up)"
 msgstr "Move item selecionado acima (Ctrl+Seta acima)"
 
+#: lazarusidestrconsts.lismoveto
+msgid "Move to: "
+msgstr ""
+
 #: lazarusidestrconsts.lisms
 msgid "(ms)"
 msgstr "(ms)"
@@ -11849,6 +11876,10 @@ msgstr ""
 #| msgid "%s - (new project)"
 msgid "(new project)"
 msgstr "(novo projeto)"
+
+#: lazarusidestrconsts.lisnewrecordedmacrosnottobesaved
+msgid "New recorded macros. Not to be saved"
+msgstr ""
 
 #: lazarusidestrconsts.lisnewsetting
 msgid "New setting"
@@ -13616,6 +13647,10 @@ msgstr "O arquivo não está em nenhum pacote carregado."
 msgid "Unable to read package file %s%s%s.%sError: %s"
 msgstr "Impossível ler arquivo de pacote %s%s%s.%sErro: %s"
 
+#: lazarusidestrconsts.lisplay
+msgid "Play"
+msgstr ""
+
 #: lazarusidestrconsts.lispldexists
 msgid "Exists"
 msgstr "Existe"
@@ -13939,6 +13974,11 @@ msgstr "Informação do projeto"
 msgid "Project is runnable"
 msgstr "Projeto é executável"
 
+#: lazarusidestrconsts.lisprojectmacro
+msgctxt "lazarusidestrconsts.lisprojectmacro"
+msgid "Project"
+msgstr "Projeto"
+
 #: lazarusidestrconsts.lisprojectmacroproperties
 msgid "Project macro properties"
 msgstr "Propriedades macro do projeto"
@@ -14211,8 +14251,13 @@ msgstr "Erro de Leitura"
 msgid "Recent tabs"
 msgstr "Tabulações recentes"
 
+#: lazarusidestrconsts.lisrecord
+msgctxt "lazarusidestrconsts.lisrecord"
+msgid "Record"
+msgstr "Record"
+
 #: lazarusidestrconsts.lisrecordedmacros
-msgid "Recorded Macros"
+msgid "Recorded"
 msgstr ""
 
 #: lazarusidestrconsts.lisrecordstruct
@@ -14332,6 +14377,11 @@ msgstr "Reabrir projeto"
 #: lazarusidestrconsts.lisreopenwithanotherencoding
 msgid "Reopen with another encoding"
 msgstr "Reabrir com outra codificação"
+
+#: lazarusidestrconsts.lisrepeat
+msgctxt "lazarusidestrconsts.lisrepeat"
+msgid "Repeat"
+msgstr "Repeat"
 
 #: lazarusidestrconsts.lisrepeatcount
 msgid "Repeat Count:"
@@ -14597,6 +14647,14 @@ msgstr "Salvar o arquivo atual do editor"
 msgid "Saved successfully"
 msgstr "Salvo com sucesso"
 
+#: lazarusidestrconsts.lissavedwithidesettings
+msgid "Saved with IDE settings"
+msgstr ""
+
+#: lazarusidestrconsts.lissavedwithprojectsession
+msgid "Saved with project session"
+msgstr ""
+
 #: lazarusidestrconsts.lissaveeditorinfoofnonprojectfiles
 msgid "Save editor info of non project files"
 msgstr "Salvar informações do editor de arquivos que não são do projeto"
@@ -14612,6 +14670,10 @@ msgstr "Salvar arquivo %s%s%s%santes de fechar o formulário %s%s%s?"
 #: lazarusidestrconsts.lissaveinfoofclosededitorfiles
 msgid "Save info of closed editor files"
 msgstr "Salvar informações de arquivos fechados do editor"
+
+#: lazarusidestrconsts.lissavemacroas
+msgid "Save macro as"
+msgstr ""
 
 #: lazarusidestrconsts.lissaveproject
 msgid "Save project %s (*%s)"

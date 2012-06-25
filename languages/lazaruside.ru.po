@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2012-06-19 01:12+0400\n"
+"PO-Revision-Date: 2012-06-26 01:29+0400\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -1681,10 +1681,12 @@ msgid "Program"
 msgstr "Программа"
 
 #: lazarusidestrconsts.dlgfoldpasrecord
+msgctxt "lazarusidestrconsts.dlgfoldpasrecord"
 msgid "Record"
 msgstr "Запись"
 
 #: lazarusidestrconsts.dlgfoldpasrepeat
+msgctxt "lazarusidestrconsts.dlgfoldpasrepeat"
 msgid "Repeat"
 msgstr "Repeat"
 
@@ -2792,6 +2794,7 @@ msgid "Use manifest file to enable themes (Windows only)"
 msgstr "Использовать manifest-файл для включения поддержки тем (только Windows)"
 
 #: lazarusidestrconsts.dlgproject
+msgctxt "lazarusidestrconsts.dlgproject"
 msgid "Project"
 msgstr "Проект"
 
@@ -7295,6 +7298,10 @@ msgstr "Удалить строку"
 msgid "Delete selected files"
 msgstr "Удалить выбранные файлы"
 
+#: lazarusidestrconsts.lisdeleteselectedmacro
+msgid "Delete selected macro?"
+msgstr "Удалить выделенный макрос?"
+
 #: lazarusidestrconsts.lisdeletesetting
 msgid "Delete setting"
 msgstr "Удалить параметр"
@@ -7406,6 +7413,10 @@ msgstr "Директивы"
 #: lazarusidestrconsts.lisdirectivesfornewunit
 msgid "Directives for new unit"
 msgstr "Директивы в новом модуле"
+
+#: lazarusidestrconsts.lisdirectory
+msgid "Directory: "
+msgstr "Каталог: "
 
 #: lazarusidestrconsts.lisdirectorynotfound
 msgid "Directory %s%s%s not found."
@@ -8316,6 +8327,10 @@ msgctxt "lazarusidestrconsts.lisfile"
 msgid "File"
 msgstr "Файл"
 
+#: lazarusidestrconsts.lisfile2
+msgid "File: "
+msgstr "Файл: "
+
 #: lazarusidestrconsts.lisfiledoesnotlooklikeatextfileopenitanyway
 msgctxt "lazarusidestrconsts.lisfiledoesnotlooklikeatextfileopenitanyway"
 msgid "File %s%s%s%sdoes not look like a text file.%sOpen it anyway?"
@@ -9025,6 +9040,10 @@ msgstr "Следовать отступам в текущем модуле, пр
 msgid "Implementation comment for class"
 msgstr "Комментарий перед реализацией класса"
 
+#: lazarusidestrconsts.lisimport
+msgid "Import ..."
+msgstr "Импортировать ..."
+
 #: lazarusidestrconsts.lisimportlist
 msgid "Import list"
 msgstr "Список импорта"
@@ -9228,7 +9247,7 @@ msgstr "Вставить тег URL"
 
 #: lazarusidestrconsts.lisinsession
 msgid "In session"
-msgstr "В сессии"
+msgstr "В сеансе"
 
 #: lazarusidestrconsts.lisinspect
 msgid "&Inspect"
@@ -10415,6 +10434,10 @@ msgstr "Загрузка прошла успешно"
 #: lazarusidestrconsts.lisloadingfailed
 msgid "Loading %s failed."
 msgstr "Загрузка %s не удалась."
+
+#: lazarusidestrconsts.lisloadmacrofrom
+msgid "Load macro from"
+msgstr "Загрузить макрос"
 
 #: lazarusidestrconsts.lislocals
 msgid "Locals"
@@ -11746,6 +11769,10 @@ msgstr "Переместить выделенный элемент вниз (Ctr
 msgid "Move selected item up (Ctrl+Up)"
 msgstr "Переместить выделенный элемент вверх (Ctrl+Up)"
 
+#: lazarusidestrconsts.lismoveto
+msgid "Move to: "
+msgstr "Переместить в: "
+
 #: lazarusidestrconsts.lisms
 msgid "(ms)"
 msgstr "(мс)"
@@ -11873,6 +11900,10 @@ msgstr "Макрос %d"
 #| msgid "%s - (new project)"
 msgid "(new project)"
 msgstr "(новый проект)"
+
+#: lazarusidestrconsts.lisnewrecordedmacrosnottobesaved
+msgid "New recorded macros. Not to be saved"
+msgstr "Вновь записанные макросы. Сохранены не будут"
 
 #: lazarusidestrconsts.lisnewsetting
 msgid "New setting"
@@ -13644,6 +13675,10 @@ msgstr "Этот файл отсутствует во всех загружен�
 msgid "Unable to read package file %s%s%s.%sError: %s"
 msgstr "Невозможно прочитать файл пакета %s%s%s.%sОшибка: %s"
 
+#: lazarusidestrconsts.lisplay
+msgid "Play"
+msgstr "Воспроизвести"
+
 #: lazarusidestrconsts.lispldexists
 msgid "Exists"
 msgstr "Имеется"
@@ -13967,6 +14002,11 @@ msgstr "Сведения о проекте"
 msgid "Project is runnable"
 msgstr "Проект является запускаемым"
 
+#: lazarusidestrconsts.lisprojectmacro
+msgctxt "lazarusidestrconsts.lisprojectmacro"
+msgid "Project"
+msgstr "Проект"
+
 #: lazarusidestrconsts.lisprojectmacroproperties
 msgid "Project macro properties"
 msgstr "Свойства макросов проекта"
@@ -14239,9 +14279,15 @@ msgstr "Ошибка чтения"
 msgid "Recent tabs"
 msgstr "Недавние вкладки"
 
+#: lazarusidestrconsts.lisrecord
+msgctxt "lazarusidestrconsts.lisrecord"
+msgid "Record"
+msgstr "Записать"
+
 #: lazarusidestrconsts.lisrecordedmacros
-msgid "Recorded Macros"
-msgstr "Записанные макросы"
+#| msgid "Recorded Macros"
+msgid "Recorded"
+msgstr "Записанные"
 
 #: lazarusidestrconsts.lisrecordstruct
 msgid "Record/Structure"
@@ -14360,6 +14406,11 @@ msgstr "Переоткрыть проект"
 #: lazarusidestrconsts.lisreopenwithanotherencoding
 msgid "Reopen with another encoding"
 msgstr "Открыть с другой кодировкой"
+
+#: lazarusidestrconsts.lisrepeat
+msgctxt "lazarusidestrconsts.lisrepeat"
+msgid "Repeat"
+msgstr "Повторить"
 
 #: lazarusidestrconsts.lisrepeatcount
 msgid "Repeat Count:"
@@ -14625,6 +14676,14 @@ msgstr "Сохранить файл в текущем редакторе"
 msgid "Saved successfully"
 msgstr "Сохранение прошло успешно"
 
+#: lazarusidestrconsts.lissavedwithidesettings
+msgid "Saved with IDE settings"
+msgstr "Сохраняемые с параметрами IDE"
+
+#: lazarusidestrconsts.lissavedwithprojectsession
+msgid "Saved with project session"
+msgstr "Сохраняемые в сеансе работы с проектом"
+
 #: lazarusidestrconsts.lissaveeditorinfoofnonprojectfiles
 msgid "Save editor info of non project files"
 msgstr "Сохранять сведения редактора для файлов, не принадлежащих проекту"
@@ -14640,6 +14699,10 @@ msgstr "Сохранить файл %s%s%s%sперед закрытием фор
 #: lazarusidestrconsts.lissaveinfoofclosededitorfiles
 msgid "Save info of closed editor files"
 msgstr "Сохранять сведения о файлах, закрытых в редакторе"
+
+#: lazarusidestrconsts.lissavemacroas
+msgid "Save macro as"
+msgstr "Сохранить макрос"
 
 #: lazarusidestrconsts.lissaveproject
 msgid "Save project %s (*%s)"
@@ -15364,7 +15427,7 @@ msgstr "Файл %s%s%s%sнайден в одном из каталогов ис
 
 #: lazarusidestrconsts.listhefilewasnotfounddoyouwanttolocateityourself
 msgid "The file %s%s%s%swas not found.%sDo you want to locate it yourself ?%s"
-msgstr "Файл %s%s%s%sне найден.%sВы хотите поискать его самостоятельно?%s"
+msgstr "Файл %s%s%s%sне найден.%sВы хотите найти его самостоятельно?%s"
 
 #: lazarusidestrconsts.listhefilewasnotfoundignorewillgoonloadingtheproject
 msgid "The file %s%s%s%swas not found.%sIgnore will go on loading the project,%sAbort  will stop the loading."
@@ -15373,7 +15436,7 @@ msgstr "Файл %s%s%s%sне найден.%sПропуск продолжит �
 #: lazarusidestrconsts.listhefirstbuildmodeisthedefaultmodeandmustbestoredin
 msgctxt "lazarusidestrconsts.listhefirstbuildmodeisthedefaultmodeandmustbestoredin"
 msgid "The first build mode is the default mode and must be stored in the project, not in the session."
-msgstr "Первый режим сборки является режимом сборки по умолчанию и должен храниться в проекте, а не в сессии."
+msgstr "Первый режим сборки является режимом сборки по умолчанию и должен храниться в проекте, а не в файле сеанса."
 
 #: lazarusidestrconsts.listhefollowingmethodsusedbyarenotinthesourceremoveth
 msgid "The following methods used by %s are not in the source%s%s%s%s%s%sRemove the dangling references?"
@@ -15883,7 +15946,7 @@ msgstr "Поиск: %s"
 
 #: lazarusidestrconsts.lisuesearchstringnotfound
 msgid "Search string '%s' not found!"
-msgstr "Строка поиска '%s' не найдена!"
+msgstr "Искомая строка '%s' не найдена!"
 
 #: lazarusidestrconsts.lisuethecurre
 msgid "The current editor font does not support UTF-8, but your system seems to use it.%sThat means non ASCII characters will probably be shown incorrect.%sYou can select another font in the editor options."
@@ -16278,7 +16341,7 @@ msgstr "Невозможно записать файл сведений о пр�
 
 #: lazarusidestrconsts.lisunabletowritetheprojectsessionfileerror
 msgid "Unable to write the project session file%s\"%s\".%sError: %s"
-msgstr "Невозможно записать файл сессии проекта%s\"%s\".%sОшибка: %s"
+msgstr "Невозможно записать файл сеанса проекта%s\"%s\".%sОшибка: %s"
 
 #: lazarusidestrconsts.lisunabletowritetofile
 #| msgid "Unable to write to file %s%s%s!"

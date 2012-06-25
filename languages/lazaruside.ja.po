@@ -1700,10 +1700,12 @@ msgid "Program"
 msgstr "プログラム"
 
 #: lazarusidestrconsts.dlgfoldpasrecord
+msgctxt "lazarusidestrconsts.dlgfoldpasrecord"
 msgid "Record"
 msgstr "Record"
 
 #: lazarusidestrconsts.dlgfoldpasrepeat
+msgctxt "lazarusidestrconsts.dlgfoldpasrepeat"
 msgid "Repeat"
 msgstr "Repeat"
 
@@ -7442,6 +7444,10 @@ msgstr "行を削除"
 msgid "Delete selected files"
 msgstr "選択したファイルを削除"
 
+#: lazarusidestrconsts.lisdeleteselectedmacro
+msgid "Delete selected macro?"
+msgstr ""
+
 #: lazarusidestrconsts.lisdeletesetting
 msgid "Delete setting"
 msgstr "設定を削除"
@@ -7553,6 +7559,10 @@ msgstr "指令"
 #: lazarusidestrconsts.lisdirectivesfornewunit
 msgid "Directives for new unit"
 msgstr "新しいユニットの指令"
+
+#: lazarusidestrconsts.lisdirectory
+msgid "Directory: "
+msgstr ""
 
 #: lazarusidestrconsts.lisdirectorynotfound
 msgid "Directory %s%s%s not found."
@@ -8468,6 +8478,10 @@ msgctxt "lazarusidestrconsts.lisfile"
 msgid "File"
 msgstr "ファイル"
 
+#: lazarusidestrconsts.lisfile2
+msgid "File: "
+msgstr ""
+
 #: lazarusidestrconsts.lisfiledoesnotlooklikeatextfileopenitanyway
 msgctxt "lazarusidestrconsts.lisfiledoesnotlooklikeatextfileopenitanyway"
 msgid "File %s%s%s%sdoes not look like a text file.%sOpen it anyway?"
@@ -9183,6 +9197,10 @@ msgstr "現在のユニット、プロジェクト、パッケージのインデ
 #: lazarusidestrconsts.lisimplementationcommentforclass
 msgid "Implementation comment for class"
 msgstr "クラスのためのImplementationコメント"
+
+#: lazarusidestrconsts.lisimport
+msgid "Import ..."
+msgstr ""
 
 #: lazarusidestrconsts.lisimportlist
 msgid "Import list"
@@ -10608,6 +10626,10 @@ msgstr "読み込みに成功"
 #: lazarusidestrconsts.lisloadingfailed
 msgid "Loading %s failed."
 msgstr "%sの読み込みに失敗しました。"
+
+#: lazarusidestrconsts.lisloadmacrofrom
+msgid "Load macro from"
+msgstr ""
 
 #: lazarusidestrconsts.lislocals
 msgid "Locals"
@@ -12049,6 +12071,10 @@ msgstr "選択した項目を下に移動(Ctrl+Down)"
 msgid "Move selected item up (Ctrl+Up)"
 msgstr "選択した項目を上に移動(Ctrl+Up)"
 
+#: lazarusidestrconsts.lismoveto
+msgid "Move to: "
+msgstr ""
+
 #: lazarusidestrconsts.lisms
 msgid "(ms)"
 msgstr "(ms)"
@@ -12181,6 +12207,10 @@ msgstr ""
 #| msgid "%s - (new project)"
 msgid "(new project)"
 msgstr "%s - (新規プロジェクト)"
+
+#: lazarusidestrconsts.lisnewrecordedmacrosnottobesaved
+msgid "New recorded macros. Not to be saved"
+msgstr ""
 
 #: lazarusidestrconsts.lisnewsetting
 msgid "New setting"
@@ -13971,6 +14001,10 @@ msgstr "このファイルは読み込まれたどのパッケージにもあり
 msgid "Unable to read package file %s%s%s.%sError: %s"
 msgstr "パッケージファイル%s%s%sを読めません。エラー: %s"
 
+#: lazarusidestrconsts.lisplay
+msgid "Play"
+msgstr ""
+
 #: lazarusidestrconsts.lispldexists
 msgid "Exists"
 msgstr "存在"
@@ -14300,6 +14334,13 @@ msgstr "プロジェクト情報"
 msgid "Project is runnable"
 msgstr "プロジェクトは実行可能"
 
+#: lazarusidestrconsts.lisprojectmacro
+#, fuzzy
+#| msgid "Project"
+msgctxt "lazarusidestrconsts.lisprojectmacro"
+msgid "Project"
+msgstr "プロジェクト"
+
 #: lazarusidestrconsts.lisprojectmacroproperties
 msgid "Project macro properties"
 msgstr "プロジェクトのマクロプロパティ"
@@ -14581,8 +14622,13 @@ msgstr "読み取りエラー"
 msgid "Recent tabs"
 msgstr "最近のタブ"
 
+#: lazarusidestrconsts.lisrecord
+msgctxt "lazarusidestrconsts.lisrecord"
+msgid "Record"
+msgstr "Record"
+
 #: lazarusidestrconsts.lisrecordedmacros
-msgid "Recorded Macros"
+msgid "Recorded"
 msgstr ""
 
 #: lazarusidestrconsts.lisrecordstruct
@@ -14704,6 +14750,11 @@ msgstr "プロジェクトを再読込"
 #: lazarusidestrconsts.lisreopenwithanotherencoding
 msgid "Reopen with another encoding"
 msgstr "他のエンコーディングで開き直す"
+
+#: lazarusidestrconsts.lisrepeat
+msgctxt "lazarusidestrconsts.lisrepeat"
+msgid "Repeat"
+msgstr "Repeat"
 
 #: lazarusidestrconsts.lisrepeatcount
 msgid "Repeat Count:"
@@ -14974,6 +15025,14 @@ msgstr "現在のエディタファイルを保存"
 msgid "Saved successfully"
 msgstr "保存に成功"
 
+#: lazarusidestrconsts.lissavedwithidesettings
+msgid "Saved with IDE settings"
+msgstr ""
+
+#: lazarusidestrconsts.lissavedwithprojectsession
+msgid "Saved with project session"
+msgstr ""
+
 #: lazarusidestrconsts.lissaveeditorinfoofnonprojectfiles
 msgid "Save editor info of non project files"
 msgstr "非プロジェクトファイルのエディタ情報を保存"
@@ -14989,6 +15048,10 @@ msgstr "フォーム %s%s%s を閉じる前にファイル %s%s%s%s を保存し
 #: lazarusidestrconsts.lissaveinfoofclosededitorfiles
 msgid "Save info of closed editor files"
 msgstr "閉じられるエディタファイルの情報を保存"
+
+#: lazarusidestrconsts.lissavemacroas
+msgid "Save macro as"
+msgstr ""
 
 #: lazarusidestrconsts.lissaveproject
 msgid "Save project %s (*%s)"

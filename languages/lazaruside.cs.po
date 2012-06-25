@@ -1609,10 +1609,12 @@ msgid "Program"
 msgstr "Program"
 
 #: lazarusidestrconsts.dlgfoldpasrecord
+msgctxt "lazarusidestrconsts.dlgfoldpasrecord"
 msgid "Record"
 msgstr "Record"
 
 #: lazarusidestrconsts.dlgfoldpasrepeat
+msgctxt "lazarusidestrconsts.dlgfoldpasrepeat"
 msgid "Repeat"
 msgstr "Repeat"
 
@@ -2675,6 +2677,7 @@ msgid "Use manifest file to enable themes (Windows only)"
 msgstr "Použít soubor manifest k povolení grafických stylů (pouze Windows)"
 
 #: lazarusidestrconsts.dlgproject
+msgctxt "lazarusidestrconsts.dlgproject"
 msgid "Project"
 msgstr "Projekt"
 
@@ -7079,6 +7082,10 @@ msgstr "Odstranit řádek"
 msgid "Delete selected files"
 msgstr "Smazat vybrané soubory"
 
+#: lazarusidestrconsts.lisdeleteselectedmacro
+msgid "Delete selected macro?"
+msgstr ""
+
 #: lazarusidestrconsts.lisdeletesetting
 msgid "Delete setting"
 msgstr "Smazat nastavení"
@@ -7190,6 +7197,10 @@ msgstr "Pokyny"
 #: lazarusidestrconsts.lisdirectivesfornewunit
 msgid "Directives for new unit"
 msgstr "Pokyny pro novou jednotku"
+
+#: lazarusidestrconsts.lisdirectory
+msgid "Directory: "
+msgstr ""
 
 #: lazarusidestrconsts.lisdirectorynotfound
 msgid "Directory %s%s%s not found."
@@ -8091,6 +8102,10 @@ msgctxt "lazarusidestrconsts.lisfile"
 msgid "File"
 msgstr "Soubor"
 
+#: lazarusidestrconsts.lisfile2
+msgid "File: "
+msgstr ""
+
 #: lazarusidestrconsts.lisfiledoesnotlooklikeatextfileopenitanyway
 msgctxt "lazarusidestrconsts.lisfiledoesnotlooklikeatextfileopenitanyway"
 msgid "File %s%s%s%sdoes not look like a text file.%sOpen it anyway?"
@@ -8790,6 +8805,10 @@ msgstr "Přizpůsobit odsazení aktuální jednotce, projektu nebo balíčku"
 #: lazarusidestrconsts.lisimplementationcommentforclass
 msgid "Implementation comment for class"
 msgstr "Komentář provedení pro třídu"
+
+#: lazarusidestrconsts.lisimport
+msgid "Import ..."
+msgstr ""
 
 #: lazarusidestrconsts.lisimportlist
 msgid "Import list"
@@ -10136,6 +10155,10 @@ msgstr "Úspěšně nahráno"
 msgid "Loading %s failed."
 msgstr "Načítání %s selhalo."
 
+#: lazarusidestrconsts.lisloadmacrofrom
+msgid "Load macro from"
+msgstr ""
+
 #: lazarusidestrconsts.lislocals
 msgid "Locals"
 msgstr "Místní"
@@ -11334,6 +11357,10 @@ msgstr "Přesunout vybranou položku dolu (Ctrl+Dolu)"
 msgid "Move selected item up (Ctrl+Up)"
 msgstr "Přesunout vybranou položku nahoru (Ctrl+Nahoru)"
 
+#: lazarusidestrconsts.lismoveto
+msgid "Move to: "
+msgstr ""
+
 #: lazarusidestrconsts.lisms
 msgid "(ms)"
 msgstr "(ms)"
@@ -11456,6 +11483,10 @@ msgstr ""
 #: lazarusidestrconsts.lisnewproject
 msgid "(new project)"
 msgstr "(nový projekt)"
+
+#: lazarusidestrconsts.lisnewrecordedmacrosnottobesaved
+msgid "New recorded macros. Not to be saved"
+msgstr ""
 
 #: lazarusidestrconsts.lisnewsetting
 msgid "New setting"
@@ -13194,6 +13225,10 @@ msgstr "Soubor není v žádném načteném balíčku."
 msgid "Unable to read package file %s%s%s.%sError: %s"
 msgstr "Nelze číst soubor balíčku %s%s%s.%sChyba: %s"
 
+#: lazarusidestrconsts.lisplay
+msgid "Play"
+msgstr ""
+
 #: lazarusidestrconsts.lispldexists
 msgid "Exists"
 msgstr "Existuje"
@@ -13511,6 +13546,11 @@ msgstr "Informace projektu"
 msgid "Project is runnable"
 msgstr "Projekt je spustitelný"
 
+#: lazarusidestrconsts.lisprojectmacro
+msgctxt "lazarusidestrconsts.lisprojectmacro"
+msgid "Project"
+msgstr "Projekt"
+
 #: lazarusidestrconsts.lisprojectmacroproperties
 msgid "Project macro properties"
 msgstr "Vlastnosti makra projektu"
@@ -13772,8 +13812,13 @@ msgstr "Chyba čtení"
 msgid "Recent tabs"
 msgstr "Poslední listy"
 
+#: lazarusidestrconsts.lisrecord
+msgctxt "lazarusidestrconsts.lisrecord"
+msgid "Record"
+msgstr "Record"
+
 #: lazarusidestrconsts.lisrecordedmacros
-msgid "Recorded Macros"
+msgid "Recorded"
 msgstr ""
 
 #: lazarusidestrconsts.lisrecordstruct
@@ -13891,6 +13936,11 @@ msgstr "Znovuotevřít projekt"
 #: lazarusidestrconsts.lisreopenwithanotherencoding
 msgid "Reopen with another encoding"
 msgstr "Znovuotevřít s jiným kódováním"
+
+#: lazarusidestrconsts.lisrepeat
+msgctxt "lazarusidestrconsts.lisrepeat"
+msgid "Repeat"
+msgstr "Repeat"
 
 #: lazarusidestrconsts.lisrepeatcount
 msgid "Repeat Count:"
@@ -14149,6 +14199,14 @@ msgstr "Uložit aktuální editovaný soubor"
 msgid "Saved successfully"
 msgstr "Úspěšně uloženo"
 
+#: lazarusidestrconsts.lissavedwithidesettings
+msgid "Saved with IDE settings"
+msgstr ""
+
+#: lazarusidestrconsts.lissavedwithprojectsession
+msgid "Saved with project session"
+msgstr ""
+
 #: lazarusidestrconsts.lissaveeditorinfoofnonprojectfiles
 msgid "Save editor info of non project files"
 msgstr "Uložit informace editoru neprojektových souborů"
@@ -14164,6 +14222,10 @@ msgstr "Uložit soubor %s%s%s%spřed zavřením formuláře %s%s%s?"
 #: lazarusidestrconsts.lissaveinfoofclosededitorfiles
 msgid "Save info of closed editor files"
 msgstr "Uložit informace zavřených souborů editoru"
+
+#: lazarusidestrconsts.lissavemacroas
+msgid "Save macro as"
+msgstr ""
 
 #: lazarusidestrconsts.lissaveproject
 msgid "Save project %s (*%s)"

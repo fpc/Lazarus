@@ -1647,10 +1647,12 @@ msgid "Program"
 msgstr "Програма"
 
 #: lazarusidestrconsts.dlgfoldpasrecord
+msgctxt "lazarusidestrconsts.dlgfoldpasrecord"
 msgid "Record"
 msgstr "Record"
 
 #: lazarusidestrconsts.dlgfoldpasrepeat
+msgctxt "lazarusidestrconsts.dlgfoldpasrepeat"
 msgid "Repeat"
 msgstr "Repeat"
 
@@ -2749,6 +2751,7 @@ msgid "Use manifest file to enable themes (Windows only)"
 msgstr "Використовувати manifest-файл для ввімкнення тем (лише Windows)"
 
 #: lazarusidestrconsts.dlgproject
+msgctxt "lazarusidestrconsts.dlgproject"
 msgid "Project"
 msgstr "Проект"
 
@@ -7214,6 +7217,10 @@ msgstr "Видалити рядок"
 msgid "Delete selected files"
 msgstr "Видалити вибрані файли"
 
+#: lazarusidestrconsts.lisdeleteselectedmacro
+msgid "Delete selected macro?"
+msgstr ""
+
 #: lazarusidestrconsts.lisdeletesetting
 msgid "Delete setting"
 msgstr "Видалити параметр"
@@ -7325,6 +7332,10 @@ msgstr "Директиви"
 #: lazarusidestrconsts.lisdirectivesfornewunit
 msgid "Directives for new unit"
 msgstr "Директиви для нового модуля"
+
+#: lazarusidestrconsts.lisdirectory
+msgid "Directory: "
+msgstr ""
 
 #: lazarusidestrconsts.lisdirectorynotfound
 msgid "Directory %s%s%s not found."
@@ -8232,6 +8243,10 @@ msgctxt "lazarusidestrconsts.lisfile"
 msgid "File"
 msgstr "Файл"
 
+#: lazarusidestrconsts.lisfile2
+msgid "File: "
+msgstr ""
+
 #: lazarusidestrconsts.lisfiledoesnotlooklikeatextfileopenitanyway
 msgctxt "lazarusidestrconsts.lisfiledoesnotlooklikeatextfileopenitanyway"
 msgid "File %s%s%s%sdoes not look like a text file.%sOpen it anyway?"
@@ -8933,6 +8948,10 @@ msgstr "Наслідувати відступ поточного модуля, �
 #: lazarusidestrconsts.lisimplementationcommentforclass
 msgid "Implementation comment for class"
 msgstr "Коментар перед реалізацією класу"
+
+#: lazarusidestrconsts.lisimport
+msgid "Import ..."
+msgstr ""
 
 #: lazarusidestrconsts.lisimportlist
 msgid "Import list"
@@ -10311,6 +10330,10 @@ msgstr "Завантажено успішно"
 msgid "Loading %s failed."
 msgstr "Завантаження %s провалилось."
 
+#: lazarusidestrconsts.lisloadmacrofrom
+msgid "Load macro from"
+msgstr ""
+
 #: lazarusidestrconsts.lislocals
 msgid "Locals"
 msgstr "Локальні"
@@ -11602,6 +11625,10 @@ msgstr "Змістити вибраний ел-т вниз (Ctrl+Down)"
 msgid "Move selected item up (Ctrl+Up)"
 msgstr "Змістити вибраний ел-т вверх (Ctrl+Up)"
 
+#: lazarusidestrconsts.lismoveto
+msgid "Move to: "
+msgstr ""
+
 #: lazarusidestrconsts.lisms
 msgid "(ms)"
 msgstr "(мс)"
@@ -11724,6 +11751,10 @@ msgstr ""
 #: lazarusidestrconsts.lisnewproject
 msgid "(new project)"
 msgstr "(новий проект)"
+
+#: lazarusidestrconsts.lisnewrecordedmacrosnottobesaved
+msgid "New recorded macros. Not to be saved"
+msgstr ""
 
 #: lazarusidestrconsts.lisnewsetting
 msgid "New setting"
@@ -13485,6 +13516,10 @@ msgstr "Цього файлу немає у всіх завантажених п
 msgid "Unable to read package file %s%s%s.%sError: %s"
 msgstr "Неможливо прочитати файл пакунку %s%s%s.%sПомилка: %s"
 
+#: lazarusidestrconsts.lisplay
+msgid "Play"
+msgstr ""
+
 #: lazarusidestrconsts.lispldexists
 msgid "Exists"
 msgstr "Існує"
@@ -13806,6 +13841,11 @@ msgstr "Інформація про проект"
 msgid "Project is runnable"
 msgstr "Проект є виконуваним"
 
+#: lazarusidestrconsts.lisprojectmacro
+msgctxt "lazarusidestrconsts.lisprojectmacro"
+msgid "Project"
+msgstr "Проект"
+
 #: lazarusidestrconsts.lisprojectmacroproperties
 msgid "Project macro properties"
 msgstr "Властивості макросів проекту"
@@ -14075,8 +14115,13 @@ msgstr "Помилка читання"
 msgid "Recent tabs"
 msgstr "Недавні вкладки"
 
+#: lazarusidestrconsts.lisrecord
+msgctxt "lazarusidestrconsts.lisrecord"
+msgid "Record"
+msgstr "Record"
+
 #: lazarusidestrconsts.lisrecordedmacros
-msgid "Recorded Macros"
+msgid "Recorded"
 msgstr ""
 
 #: lazarusidestrconsts.lisrecordstruct
@@ -14196,6 +14241,11 @@ msgstr "Перевідкрити проект"
 #: lazarusidestrconsts.lisreopenwithanotherencoding
 msgid "Reopen with another encoding"
 msgstr "Перевідкрити з іншим кодуванням"
+
+#: lazarusidestrconsts.lisrepeat
+msgctxt "lazarusidestrconsts.lisrepeat"
+msgid "Repeat"
+msgstr "Repeat"
 
 #: lazarusidestrconsts.lisrepeatcount
 msgid "Repeat Count:"
@@ -14457,6 +14507,14 @@ msgstr "Зберегти поточний файл редактора"
 msgid "Saved successfully"
 msgstr "Збережено успішно"
 
+#: lazarusidestrconsts.lissavedwithidesettings
+msgid "Saved with IDE settings"
+msgstr ""
+
+#: lazarusidestrconsts.lissavedwithprojectsession
+msgid "Saved with project session"
+msgstr ""
+
 #: lazarusidestrconsts.lissaveeditorinfoofnonprojectfiles
 msgid "Save editor info of non project files"
 msgstr "Зберегти інформацію редактора про файли, що не відносяться до проекту"
@@ -14472,6 +14530,10 @@ msgstr "Зберегти файл %s%s%sперед закриттям форми
 #: lazarusidestrconsts.lissaveinfoofclosededitorfiles
 msgid "Save info of closed editor files"
 msgstr "Зберегти інформацію про закриті редактором файли"
+
+#: lazarusidestrconsts.lissavemacroas
+msgid "Save macro as"
+msgstr ""
 
 #: lazarusidestrconsts.lissaveproject
 msgid "Save project %s (*%s)"
