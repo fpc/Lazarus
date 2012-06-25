@@ -2532,6 +2532,10 @@ resourcestring
   srkmecEditorBottom          = 'Move cursor to absolute end';
   srkmecGotoXY                = 'Goto XY';
   srkmecLineTextStart         = 'Move cursor to text start in line';
+  srkmecSelSticky             = 'Start sticky selecting';
+  srkmecSelStickyCol          = 'Start sticky selecting (Columns)';
+  srkmecSelStickyLine         = 'Start sticky selecting (Line)';
+  srkmecSelStickyStop         = 'Stop sticky selecting';
   srkmecSelLeft               = 'SelLeft';
   srkmecSelRight              = 'SelRight';
   srkmecSelUp                 = 'Select Up';

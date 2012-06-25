@@ -100,6 +100,7 @@ type
        This happens, if Block and caret are adjusted directly
     *)
     FLastCarePos: TPoint;
+    FStickyAutoExtend: Boolean;
     function  AdjustBytePosToCharacterStart(Line: integer; BytePos: integer): integer;
     function  GetFirstLineBytePos: TPoint;
     function  GetLastLineBytePos: TPoint;
@@ -164,6 +165,7 @@ type
     // automatically Start/Exctend selection if caret moves
     // (depends if caret was at block border or not)
     property  AutoExtend: Boolean read FAutoExtend write FAutoExtend;
+    property  StickyAutoExtend: Boolean read FStickyAutoExtend write FStickyAutoExtend;
     property  Hide: Boolean read FHide write SetHide;
   end;
 
@@ -967,6 +969,8 @@ begin
 end;
 
 procedure TSynEditSelection.DoCaretChanged(Sender: TObject);
+var
+  f: Boolean;
 begin
   // FIgnoreNextCaretMove => caret skip selection
   if FIgnoreNextCaretMove then begin
@@ -982,7 +986,8 @@ begin
     exit;
   FLastCarePos := Point(-1, -1);
 
-  if FAutoExtend then begin
+  if FAutoExtend or FStickyAutoExtend then begin
+    f := FStickyAutoExtend;
     if (not FHide) and (FCaret.WasAtLineByte(EndLineBytePos)) then
       SetEndLineBytePos(FCaret.LineBytePos)
     else
@@ -994,6 +999,7 @@ begin
       if Persistent and IsBackwardSel then
         SortSelectionPoints;
     end;
+    FStickyAutoExtend := f;
     exit;
   end;
 
@@ -1322,6 +1328,7 @@ var
 
 begin
   FIsSettingText := True;
+  FStickyAutoExtend := False;
   FLines.BeginUpdate; // Todo: can we get here, without paintlock?
   try
     // BB is lower than BE
@@ -1380,6 +1387,7 @@ var
   nInval1, nInval2: integer;
   WasAvail: boolean;
 begin
+  FStickyAutoExtend := False;
   WasAvail := SelAvail;
   Value.y := MinMax(Value.y, 1, fLines.Count);
   if (FCaret = nil) or FCaret.AllowPastEOL then
@@ -1456,6 +1464,7 @@ var
 {$ENDIF}
 begin
   if FEnabled then begin
+    FStickyAutoExtend := False;
     Value.y := MinMax(Value.y, 1, fLines.Count);
     if (FCaret = nil) or FCaret.AllowPastEOL then
       Value.x := Max(Value.x, 1)
@@ -1501,6 +1510,7 @@ end;
 
 procedure TSynEditSelection.SetActiveSelectionMode(const Value: TSynSelectionMode);
 begin
+  FStickyAutoExtend := False;
   if FActiveSelectionMode <> Value then begin
     FActiveSelectionMode := Value;
     if SelAvail then

@@ -93,10 +93,11 @@ const
   ecHalfWordLeft    = 21;    // Move cursor left to word-begin/end or case change lower to uppper
   ecHalfWordRight   = 22;    // Move cursor right to word-begin/end or case change lower to uppper
 
-//******************************************************************************
-// Maybe the command processor should just take a boolean that signifies if
-// selection is affected or not?
-//******************************************************************************
+  // Allow selecting with any movement
+  ecStickySelection     = 95;
+  ecStickySelectionCol  = 96;
+  ecStickySelectionLine = 97;
+  ecStickySelectionStop = 99;
 
   ecSelection       = 100;  // Add this to ecXXX command to get equivalent
                             // command, but with selection enabled. This is not
@@ -496,7 +497,7 @@ type
 {$ENDIF}
 
 const
-  EditorCommandStrs: array[0..149] of TIdentMapEntry = (
+  EditorCommandStrs: array[0..153] of TIdentMapEntry = (
     (Value: ecNone; Name: 'ecNone'),
     (Value: ecLeft; Name: 'ecLeft'),
     (Value: ecRight; Name: 'ecRight'),
@@ -520,6 +521,10 @@ const
     (Value: ecEditorBottom; Name: 'ecEditorBottom'),
     (Value: ecGotoXY; Name: 'ecGotoXY'),
     (Value: ecLineTextStart; Name: 'ecLineTextStart'),
+    (Value: ecStickySelection; Name: 'ecStickySelection'),
+    (Value: ecStickySelectionCol; Name: 'ecStickySelectionCol'),
+    (Value: ecStickySelectionLine; Name: 'ecStickySelectionLine'),
+    (Value: ecStickySelectionStop; Name: 'ecStickySelectionStop'),
     (Value: ecSelLeft; Name: 'ecSelLeft'),
     (Value: ecSelRight; Name: 'ecSelRight'),
     (Value: ecSelUp; Name: 'ecSelUp'),

@@ -2981,6 +2981,7 @@ begin
             // Otherwise we are just setting the caret, selection will start on mouse move
             FBlockSelection.ActiveSelectionMode := FMouseSelectionMode;
             Include(fStateFlags, sfMouseDoneSelecting);
+            // TODO Add sfMouseSelecting, maybe only if caret did indeed move
           end;
           MouseCapture := True;
           ResetMouseCapture := False;
@@ -3276,8 +3277,10 @@ begin
   if (sfWaitForMouseSelecting in fStateFlags) and MouseCapture and
      ( (abs(fMouseDownX-X) >= MinMax(CharWidth div 2, 2, 4)) or
        (abs(fMouseDownY-Y) >= MinMax(LineHeight div 2, 2, 4)) )
-  then
+  then begin
     FStateFlags := FStateFlags - [sfWaitForMouseSelecting] + [sfMouseSelecting];
+    FBlockSelection.StickyAutoExtend := False;
+  end;
 
   //debugln('TCustomSynEdit.MouseMove sfWaitForDragging=',dbgs(sfWaitForDragging in fStateFlags),' MouseCapture=',dbgs(MouseCapture),' GetCaptureControl=',DbgSName(GetCaptureControl));
   if MouseCapture and (sfWaitForDragging in fStateFlags) then begin
@@ -3287,6 +3290,7 @@ begin
       FStateFlags := FStateFlags
                    -[sfWaitForDragging, sfWaitForMouseSelecting, sfMouseSelecting]
                    + [sfIsDragging];
+      FBlockSelection.StickyAutoExtend := False;
       //debugln('TCustomSynEdit.MouseMove BeginDrag');
       BeginDrag(true);
     end;
@@ -3308,6 +3312,7 @@ begin
     then begin
       if (sfMouseSelecting in fStateFlags) and not FInternalCaret.IsAtPos(FCaret) then
         Include(fStateFlags, sfMouseDoneSelecting);
+      FBlockSelection.StickyAutoExtend := False;
       FBlockSelection.AutoExtend := sfMouseSelecting in fStateFlags;
       FCaret.LineBytePos := FInternalCaret.LineBytePos;
       FBlockSelection.AutoExtend := False;
@@ -4669,6 +4674,8 @@ procedure TCustomSynEdit.LineCountChanged(Sender: TSynEditStrings;
   AIndex, ACount: Integer);
 begin
   {$IFDEF SynFoldDebug}debugln(['FOLD-- LineCountChanged Aindex', AIndex, '  ACount=', ACount]);{$ENDIF}
+  FBlockSelection.StickyAutoExtend := False;
+
   if (AIndex < FBeautifyStartLineIdx) or (FBeautifyStartLineIdx < 0) then
     FBeautifyStartLineIdx := AIndex;
   if ACount > 0 then begin
@@ -4703,6 +4710,8 @@ procedure TCustomSynEdit.LineTextChanged(Sender: TSynEditStrings;
   AIndex, ACount: Integer);
 begin
   {$IFDEF SynFoldDebug}debugln(['FOLD-- LineTextChanged Aindex', AIndex, '  ACount=', ACount]);{$ENDIF}
+  FBlockSelection.StickyAutoExtend := False;
+
   if (AIndex < FBeautifyStartLineIdx) or (FBeautifyStartLineIdx < 0) then
     FBeautifyStartLineIdx := AIndex;
   if (AIndex + ACount - 1 > FBeautifyEndLineIdx) then
@@ -6041,6 +6050,9 @@ begin
   try
     fUndoList.CurrentReason := Command;
 
+    if Command in [ecSelectionStart..ecSelectionEnd] then
+      FBlockSelection.StickyAutoExtend := False;
+
     if Command in [ecSelColCmdRangeStart..ecSelColCmdRangeEnd] then
       FBlockSelection.ActiveSelectionMode := smColumn;
     if Command in [ecSelCmdRangeStart..ecSelCmdRangeEnd] then
@@ -6171,6 +6183,17 @@ begin
           if FFoldedLinesView.FoldedAtTextIndex[CaretNew.Y - 1] then
             CaretNew := Point(1, FindNextUnfoldedLine(CaretNew.Y, True));
           FCaret.LineBytePos := CaretNew;
+        end;
+      ecStickySelection, ecStickySelectionCol, ecStickySelectionLine: begin
+          case command of
+            ecStickySelection:     FBlockSelection.ActiveSelectionMode := smNormal;
+            ecStickySelectionCol:  FBlockSelection.ActiveSelectionMode := smColumn;
+            ecStickySelectionLine: FBlockSelection.ActiveSelectionMode := smLine;
+          end;
+          FBlockSelection.StickyAutoExtend := True;
+        end;
+      ecStickySelectionStop: begin
+          FBlockSelection.StickyAutoExtend := False;
         end;
       ecSelectAll:
         begin

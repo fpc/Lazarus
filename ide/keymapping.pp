@@ -296,6 +296,10 @@ begin
     ecEditorBottom            : Result:= srkmecEditorBottom;
     ecGotoXY                  : Result:= srkmecGotoXY;
     ecLineTextStart           : Result:= srkmecLineTextStart;
+    ecStickySelection         : Result:= srkmecSelSticky;
+    ecStickySelectionCol      : Result:= srkmecSelStickyCol;
+    ecStickySelectionLine     : Result:= srkmecSelStickyLine;
+    ecStickySelectionStop     : Result:= srkmecSelStickyStop;
     ecSelLeft                 : Result:= srkmecSelLeft;
     ecSelRight                : Result:= srkmecSelRight;
     ecSelUp                   : Result:= srkmecSelUp;
@@ -918,6 +922,10 @@ begin
   ecSelectionEncloseIFDEF:SetSingle(VK_D,[ssShift,ssCtrl]);
   ecSelectionSort:       SetSingle(VK_UNKNOWN,[]);
   ecSelectionBreakLines: SetSingle(VK_UNKNOWN,[]);
+
+  ecStickySelection:     SetCombo(VK_K,[ssCtrl],VK_S,[],  VK_K,[ssCtrl],VK_S,[ssCtrl]);
+  ecStickySelectionCol:  SetCombo(VK_K,[ssCtrl],VK_S,[ssAlt],  VK_K,[ssCtrl],VK_S,[ssCtrl, ssAlt]);
+  ecStickySelectionStop: SetCombo(VK_K,[ssCtrl],VK_E,[],  VK_K,[ssCtrl],VK_E,[ssCtrl]);
 
   ecBlockSetBegin:       SetCombo(VK_K,[ssCtrl],VK_B,[],  VK_K,[ssCtrl],VK_B,[ssCtrl]);
   ecBlockSetEnd:         SetCombo(VK_K,[ssCtrl],VK_K,[],  VK_K,[ssCtrl],VK_K,[ssCtrl]);
@@ -1970,6 +1978,10 @@ begin
   ecSelectionSort:       SetSingle(VK_UNKNOWN,[]);
   ecSelectionBreakLines: SetSingle(VK_UNKNOWN,[]);
 
+  ecStickySelection:     SetCombo(VK_K,[ssCtrl],VK_S,[],  VK_K,[ssCtrl],VK_S,[ssCtrl]);
+  ecStickySelectionCol:  SetCombo(VK_K,[ssCtrl],VK_S,[ssAlt],  VK_K,[ssCtrl],VK_S,[ssCtrl, ssAlt]);
+  ecStickySelectionStop: SetCombo(VK_K,[ssCtrl],VK_E,[],  VK_K,[ssCtrl],VK_E,[ssCtrl]);
+
   ecBlockSetBegin:       SetCombo(VK_K,[ssCtrl],VK_B,[],   VK_K,[ssCtrl],VK_B,[ssCtrl]);
   ecBlockSetEnd:         SetCombo(VK_K,[ssCtrl],VK_K,[],   VK_K,[ssCtrl],VK_K,[ssCtrl]);
   ecBlockToggleHide:     SetCombo(VK_K,[ssCtrl],VK_H,[],   VK_K,[ssCtrl],VK_H,[ssCtrl]);
@@ -2490,7 +2502,12 @@ begin
   AddDefault(C, 'Select line', lisMenuSelectLine, ecSelectLine);
   AddDefault(C, 'Select paragraph', lisMenuSelectParagraph, ecSelectParagraph);
   AddDefault(C, 'Toggle Current-Word highlight', srkmecToggleMarkupWord, EcToggleMarkupWord);
+  AddDefault(C, 'Start sticky selecting', srkmecSelSticky, ecStickySelection);
+  AddDefault(C, 'Start sticky selecting (Columns)', srkmecSelStickyCol, ecStickySelectionCol);
+  AddDefault(C, 'Start sticky selecting (Line)', srkmecSelStickyLine, ecStickySelectionLine);
+  AddDefault(C, 'Stop sticky selecting', srkmecSelStickyStop, ecStickySelectionStop);
 
+  // Persistent Block
   AddDefault(C, 'Set Block begin', srkmecBlockSetBegin, ecBlockSetBegin);
   AddDefault(C, 'Set Block End', srkmecBlockSetEnd, ecBlockSetEnd);
   AddDefault(C, 'Toggle Block', srkmecBlockToggleHide, ecBlockToggleHide);
