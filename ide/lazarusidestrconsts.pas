@@ -5531,13 +5531,22 @@ resourcestring
   lisWhatNeedsBuilding = 'What needs building';
   lisTarget = 'Target:';
   lisDirectives = 'Directives';
-  lisRecordedMacros = 'Recorded Macros';
+  lisRecordedMacros = 'Recorded';
   lisRename2 = 'Rename ...';
   lisNewMacroName = 'Macro %d';
   lisEditorMacros = 'Editor macros';
   lisPlay = 'Play';
   lisRecord = 'Record';
   lisRepeat = 'Repeat';
+  lisDeleteSelectedMacro = 'Delete selected macro?';
+  lisSaveMacroAs = 'Save macro as';
+  lisLoadMacroFrom = 'Load macro from';
+  lisImport = 'Import ...';
+  lisProjectMacro = 'Project';
+  lisNewRecordedMacrosNotToBeSaved = 'New recorded macros. Not to be saved';
+  lisSavedWithProjectSession = 'Saved with project session';
+  lisSavedWithIDESettings = 'Saved with IDE settings';
+  lisMoveTo = 'Move to: ';
 
 implementation
 

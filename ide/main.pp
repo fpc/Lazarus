@@ -1333,6 +1333,7 @@ begin
     Application.ShowButtonGlyphs := ShowButtonGlyphs;
     Application.ShowMenuGlyphs := ShowMenuGlyphs;
   end;
+  EditorMacroListViewer.LoadGlobalInfo;
 
   OldVer:=EnvironmentOptions.OldLazarusVersion;
   NowVer:=GetLazarusVersionString;
@@ -5323,6 +5324,7 @@ begin
   fNeedSaveEnvironment:=false;
   SaveDesktopSettings(EnvironmentOptions);
   EnvironmentOptions.Save(false);
+  EditorMacroListViewer.SaveGlobalInfo;
   //debugln('TMainIDE.SaveEnvironment A ',dbgsName(ObjectInspector1.Favourites));
   if (ObjectInspector1<>nil) and (ObjectInspector1.Favourites<>nil) then
     SaveOIFavouriteProperties(ObjectInspector1.Favourites);
@@ -8321,6 +8323,10 @@ procedure TMainIDE.OnLoadProjectInfoFromXMLConfig(TheProject: TProject;
 begin
   if TheProject=Project1 then
     DebugBoss.LoadProjectSpecificInfo(XMLConfig,Merge);
+
+  if (TheProject=Project1)
+  then
+    EditorMacroListViewer.LoadProjectSpecificInfo(XMLConfig, Merge);
 end;
 
 procedure TMainIDE.OnSaveProjectInfoToXMLConfig(TheProject: TProject;
@@ -8329,6 +8335,10 @@ begin
   if (TheProject=Project1) and (not (pwfSkipDebuggerSettings in WriteFlags))
   then
     DebugBoss.SaveProjectSpecificInfo(XMLConfig,WriteFlags);
+
+  if (TheProject=Project1)
+  then
+    EditorMacroListViewer.SaveProjectSpecificInfo(XMLConfig, WriteFlags);
 end;
 
 procedure TMainIDE.OnProjectGetTestDirectory(TheProject: TProject;
