@@ -295,6 +295,7 @@ type
     FDrawHorzGridLines: Boolean;
     FActiveRowBmp: TCustomBitmap;
     FFirstClickTime: TDateTime;
+    FKeySearchText: string;
 
     // hint stuff
     FHintTimer: TTimer;
@@ -2152,6 +2153,27 @@ var
     Handled := false;
   end;
 
+  procedure FindPropertyBySearchText;
+  var
+    i: Integer;
+  begin
+    if Column = oipgcName then
+    begin
+      FKeySearchText := FKeySearchText + UpCase(Chr(Key));
+      for i := 0 to RowCount - 1 do
+        if (Rows[i].Lvl = Rows[ItemIndex].Lvl) and
+          (UpperCase(LeftStr(Rows[i].Name, Length(FKeySearchText))) = FKeySearchText) then
+        begin
+          // Set item index. To go to Value user must hit either Tab or Enter.
+          SetItemIndex(i);
+          exit;
+        end;
+      // Left part of phrase not matched, remove added char.
+      SetLength(FKeySearchText, Length(FKeySearchText) - 1);
+    end;
+    Handled := false;
+  end;
+
   procedure HandleUnshifted;
   const
     Page = 20;
@@ -2167,14 +2189,29 @@ var
 
       VK_RETURN:
         begin
-          SetRowValue;
+          if Column = oipgcName then
+            DoTabKey
+          else
+            SetRowValue;
           if FCurrentEdit is TCustomEdit then
             TCustomEdit(FCurrentEdit).SelectAll;
         end;
 
-      VK_ESCAPE: RefreshValueEdit;
+      VK_ESCAPE:
+        begin
+          RefreshValueEdit;
+          FKeySearchText := '';
+        end;
 
-      Ord('A')..Ord('Z'): FindPropertyByFirstLetter;
+      VK_BACK:
+        begin
+          if (Column = oipgcName) then
+            if (FKeySearchText <> '') then
+              SetLength(FKeySearchText, Length(FKeySearchText) - 1);
+          Handled := False;
+        end;
+
+      Ord('A')..Ord('Z'): FindPropertyBySearchText;
 
       else
         Handled := false;
@@ -2247,6 +2284,7 @@ begin
     if FCurrentEdit <> nil then
       FCurrentEdit.SetFocus;
   end;
+  FKeySearchText := '';
 end;
 
 function TOICustomPropertyGrid.EditorFilter(
