@@ -53,6 +53,31 @@ resourcestring
 type
   TSynMacroState = (msStopped, msRecording, msPlaying, msPaused); // msPaused = paused recording
   TSynMacroCommand = (mcRecord, mcPlayback);
+  TSynEventParamType = (ptString, ptInteger);
+
+  TSynMacroEvent = class;
+
+  TSynMacroEventWriter = class(TObject)
+  public
+    procedure WriteEventCommand(const ACmd: TSynEditorCommand); virtual; abstract;
+    procedure WriteEventParam(const AParam: string); virtual; abstract;
+    procedure WriteEventParam(const AParam: integer); virtual; abstract;
+  end;
+
+  { TSynMacroEventReader }
+
+  TSynMacroEventReader = class(TObject)
+  protected
+    function GetParamAsInt(Index: Integer): Integer; virtual; abstract;
+    function GetParamAsString(Index: Integer): String; virtual; abstract;
+    function GetParamType(Index: Integer): TSynEventParamType; virtual; abstract;
+  public
+    function  EventCommand: TSynEditorCommand; virtual; abstract;
+    function  ParamCount: Integer; virtual; abstract;
+    property  ParamType[Index: Integer]: TSynEventParamType read GetParamType;
+    property  ParamAsString[Index: Integer]: String read GetParamAsString;
+    property  ParamAsInt[Index: Integer]: Integer read GetParamAsInt;
+  end;
 
   { TSynMacroEvent }
 
@@ -71,6 +96,8 @@ type
     MacroRecorder component to decide which MacroEvent class to instanciate }
     procedure LoadFromStream(aStream: TStream); virtual; abstract;
     procedure SaveToStream(aStream: TStream); virtual; abstract;
+    procedure LoadFromReader(aReader: TSynMacroEventReader); virtual; abstract;
+    procedure SaveToWriter(aWriter: TSynMacroEventWriter); virtual; abstract;
     procedure Playback(aEditor: TCustomSynEdit); virtual; abstract;
     property AsString : string read GetAsString;
     property RepeatCount : Byte read fRepeatCount write fRepeatCount;
@@ -90,6 +117,8 @@ type
       aData: Pointer); override;
     procedure LoadFromStream(aStream: TStream); override;
     procedure SaveToStream(aStream: TStream); override;
+    procedure LoadFromReader(aReader: TSynMacroEventReader); override;
+    procedure SaveToWriter(aWriter: TSynMacroEventWriter); override;
     procedure Playback(aEditor: TCustomSynEdit); override;
   end;
 
@@ -107,6 +136,8 @@ type
     procedure Assign(AnEvent: TSynMacroEvent); override;
     procedure LoadFromStream(aStream: TStream); override;
     procedure SaveToStream(aStream: TStream); override;
+    procedure LoadFromReader(aReader: TSynMacroEventReader); override;
+    procedure SaveToWriter(aWriter: TSynMacroEventWriter); override;
     procedure Playback(aEditor: TCustomSynEdit); override;
   public
     property Command: TSynEditorCommand read fCommand write fCommand;
@@ -126,6 +157,8 @@ type
     procedure Assign(AnEvent: TSynMacroEvent); override;
     procedure LoadFromStream(aStream: TStream); override;
     procedure SaveToStream(aStream: TStream); override;
+    procedure LoadFromReader(aReader: TSynMacroEventReader); override;
+    procedure SaveToWriter(aWriter: TSynMacroEventWriter); override;
     procedure Playback(aEditor: TCustomSynEdit); override;
   public
     property Key: TUTF8Char read fKey write fKey;
@@ -145,6 +178,8 @@ type
     procedure Assign(AnEvent: TSynMacroEvent); override;
     procedure LoadFromStream(aStream: TStream); override;
     procedure SaveToStream(aStream: TStream); override;
+    procedure LoadFromReader(aReader: TSynMacroEventReader); override;
+    procedure SaveToWriter(aWriter: TSynMacroEventWriter); override;
     procedure Playback(aEditor: TCustomSynEdit); override;
   public
     property Value: string read fString write fString;
@@ -164,6 +199,8 @@ type
     procedure Assign(AnEvent: TSynMacroEvent); override;
     procedure LoadFromStream(aStream: TStream); override;
     procedure SaveToStream(aStream: TStream); override;
+    procedure LoadFromReader(aReader: TSynMacroEventReader); override;
+    procedure SaveToWriter(aWriter: TSynMacroEventWriter); override;
     procedure Playback(aEditor: TCustomSynEdit); override;
   public
     property Position: TPoint read fPosition write fPosition;
@@ -241,8 +278,8 @@ type
       var Handled: boolean; var Command: TSynEditorCommand;
       var aChar: TUTF8Char;
       Data: pointer; HandlerData: pointer);
-    function CreateMacroEvent(aCmd: TSynEditorCommand): TSynMacroEvent;
   protected
+    function CreateMacroEvent(aCmd: TSynEditorCommand): TSynMacroEvent; virtual;
     property RecordCommandID: TSynEditorCommand index ord(mcRecord) read GetCommandIDs write SetCommandIDs;
     property PlaybackCommandID: TSynEditorCommand index ord(mcPlayback) read GetCommandIDs write SetCommandIDs;
     function GetShortCuts(Cmd: integer): TShortCut;
@@ -327,6 +364,16 @@ end;
 procedure TSynIgnoredEvent.SaveToStream(aStream: TStream);
 begin
   //
+end;
+
+procedure TSynIgnoredEvent.LoadFromReader(aReader: TSynMacroEventReader);
+begin
+  //
+end;
+
+procedure TSynIgnoredEvent.SaveToWriter(aWriter: TSynMacroEventWriter);
+begin
+  aWriter.WriteEventCommand(ecNone);
 end;
 
 procedure TSynIgnoredEvent.Playback(aEditor: TCustomSynEdit);
@@ -417,6 +464,8 @@ function TCustomSynMacroRecorder.CreateMacroEvent(aCmd: TSynEditorCommand): TSyn
 
 begin
   case aCmd of
+    ecNone:
+      Result := TSynIgnoredEvent.Create;
     ecGotoXY, ecSelGotoXY, ecSetMarker0..ecSetMarker9:
       begin
         Result := TSynPositionEvent.Create;
@@ -697,7 +746,7 @@ var
   NewEvent: TSynMacroEvent;
 begin
   Clear;
-  if AMacroRecorder.fEvents = nil then exit;
+  if (AMacroRecorder = nil) or (AMacroRecorder.fEvents = nil) then exit;
 
   fEvents := TList.Create;
   for i := 0 to AMacroRecorder.fEvents.Count -1 do begin
@@ -935,6 +984,21 @@ begin
   aStream.Write( RepeatCount, SizeOf(RepeatCount) );
 end;
 
+procedure TSynBasicEvent.LoadFromReader(aReader: TSynMacroEventReader);
+begin
+  fCommand := aReader.EventCommand;
+  fRepeatCount := 1;
+  if aReader.ParamCount > 0 then
+    fRepeatCount := aReader.GetParamAsInt(0);
+end;
+
+procedure TSynBasicEvent.SaveToWriter(aWriter: TSynMacroEventWriter);
+begin
+  aWriter.WriteEventCommand(fCommand);
+  if fRepeatCount <> 1 then
+    aWriter.WriteEventParam(fRepeatCount);
+end;
+
 { TSynCharEvent }
 
 function TSynCharEvent.GetAsString: string;
@@ -993,6 +1057,22 @@ begin
   aStream.Write( iCharCommand, SizeOf(TSynEditorCommand) );
   aStream.Write( Key, SizeOf(Key) );
   aStream.Write( RepeatCount, SizeOf(RepeatCount) );
+end;
+
+procedure TSynCharEvent.LoadFromReader(aReader: TSynMacroEventReader);
+begin
+  fKey := aReader.GetParamAsString(0);
+  fRepeatCount := 1;
+  if aReader.ParamCount > 1 then
+    fRepeatCount := aReader.GetParamAsInt(1);
+end;
+
+procedure TSynCharEvent.SaveToWriter(aWriter: TSynMacroEventWriter);
+begin
+  aWriter.WriteEventCommand(ecChar);
+  aWriter.WriteEventParam(fKey);
+  if fRepeatCount <> 1 then
+    aWriter.WriteEventParam(fRepeatCount);
 end;
 
 { TSynPositionEvent }
@@ -1068,6 +1148,25 @@ procedure TSynPositionEvent.SaveToStream(aStream: TStream);
 begin
   inherited;
   aStream.Write( Position, SizeOf(Position) );
+end;
+
+procedure TSynPositionEvent.LoadFromReader(aReader: TSynMacroEventReader);
+begin
+  fCommand := aReader.EventCommand;
+  fPosition.x := aReader.GetParamAsInt(0);
+  fPosition.y := aReader.GetParamAsInt(1);
+  fRepeatCount := 1;
+  if aReader.ParamCount > 2 then
+    fRepeatCount := aReader.GetParamAsInt(2);
+end;
+
+procedure TSynPositionEvent.SaveToWriter(aWriter: TSynMacroEventWriter);
+begin
+  aWriter.WriteEventCommand(fCommand);
+  aWriter.WriteEventParam(fPosition.x);
+  aWriter.WriteEventParam(fPosition.y);
+  if fRepeatCount <> 1 then
+    aWriter.WriteEventParam(fRepeatCount);
 end;
 
 { TSynStringEvent }
@@ -1178,7 +1277,21 @@ begin
   aStream.Write( RepeatCount, SizeOf(RepeatCount) );
 end;
 
+procedure TSynStringEvent.LoadFromReader(aReader: TSynMacroEventReader);
+begin
+  fString := aReader.GetParamAsString(0);
+  fRepeatCount := 1;
+  if aReader.ParamCount > 1 then
+    fRepeatCount := aReader.GetParamAsInt(1);
+end;
 
+procedure TSynStringEvent.SaveToWriter(aWriter: TSynMacroEventWriter);
+begin
+  aWriter.WriteEventCommand(ecString);
+  aWriter.WriteEventParam(fString);
+  if fRepeatCount <> 1 then
+    aWriter.WriteEventParam(fRepeatCount);
+end;
 
 { TSynMacroEvent }
 
