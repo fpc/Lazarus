@@ -172,11 +172,9 @@ type
     function GetEol: Boolean; override;
     function GetRange: Pointer; override;
     function GetTokenID: TtkTokenKind;
-    procedure SetLine({$IFDEF FPC}const {$ENDIF}NewValue: string; LineNumber:Integer); override;
+    procedure SetLine(const NewValue: string; LineNumber:Integer); override;
     function GetToken: string; override;
-    {$IFDEF SYN_LAZARUS}
     procedure GetTokenEx(out TokenStart: PChar; out TokenLength: integer); override;
-    {$ENDIF}
     function GetTokenAttribute: TSynHighlighterAttributes; override;
     function GetTokenKind: integer; override;
     function GetTokenPos: Integer; override;
@@ -292,7 +290,7 @@ begin
   AddAttribute(fSpaceAttri);
   AddAttribute(fTextAttri);
 
-  SetAttributesOnChange({$IFDEF FPC}@{$ENDIF}DefHighlightChange);
+  SetAttributesOnChange(@DefHighlightChange);
 
   MakeMethodTables;
   fRange := rsText;
@@ -307,35 +305,35 @@ begin
     case i of
     #0:
       begin
-        fProcTable[i] := {$IFDEF FPC}@{$ENDIF}NullProc;
+        fProcTable[i] := @NullProc;
       end;
     #10:
       begin
-        fProcTable[i] := {$IFDEF FPC}@{$ENDIF}LineFeedProc;
+        fProcTable[i] := @LineFeedProc;
       end;
     #13:
       begin
-        fProcTable[i] := {$IFDEF FPC}@{$ENDIF}CarriageReturnProc;
+        fProcTable[i] := @CarriageReturnProc;
       end;
     #1..#9, #11, #12, #14..#32:
       begin
-        fProcTable[i] := {$IFDEF FPC}@{$ENDIF}SpaceProc;
+        fProcTable[i] := @SpaceProc;
       end;
     '<':
       begin
-        fProcTable[i] := {$IFDEF FPC}@{$ENDIF}LessThanProc;
+        fProcTable[i] := @LessThanProc;
       end;
     '>':
       begin
-        fProcTable[i] := {$IFDEF FPC}@{$ENDIF}GreaterThanProc;
+        fProcTable[i] := @GreaterThanProc;
       end;
     else
-      fProcTable[i] := {$IFDEF FPC}@{$ENDIF}IdentProc;
+      fProcTable[i] := @IdentProc;
     end;
   end;
 end;
 
-procedure TSynXMLSyn.SetLine({$IFDEF FPC}const {$ENDIF}NewValue: string;
+procedure TSynXMLSyn.SetLine(const NewValue: string;
   LineNumber:Integer);
 begin
   inherited;
@@ -443,7 +441,7 @@ begin
   fTokenID := tkComment;
 
   if (fLine[Run] In [#0, #10, #13]) then begin
-    fProcTable[fLine[Run]]{$IFDEF FPC}(){$ENDIF};
+    fProcTable[fLine[Run]]();
     Exit;
   end;
 
@@ -461,7 +459,7 @@ procedure TSynXMLSyn.ProcessingInstructionProc;
 begin
   fTokenID := tkProcessingInstruction;
   if (fLine[Run] In [#0, #10, #13]) then begin
-    fProcTable[fLine[Run]]{$IFDEF FPC}(){$ENDIF};
+    fProcTable[fLine[Run]]();
     Exit;
   end;
 
@@ -483,7 +481,7 @@ begin
   fTokenID := tkDocType;
 
   if (fLine[Run] In [#0, #10, #13]) then begin
-    fProcTable[fLine[Run]]{$IFDEF FPC}(){$ENDIF};
+    fProcTable[fLine[Run]]();
     Exit;
   end;
 
@@ -543,7 +541,7 @@ begin
   fTokenID := tkCDATA;
   if (fLine[Run] In [#0, #10, #13]) then
   begin
-    fProcTable[fLine[Run]]{$IFDEF FPC}(){$ENDIF};
+    fProcTable[fLine[Run]]();
     Exit;
   end;
 
@@ -691,7 +689,7 @@ procedure TSynXMLSyn.TextProc;
 const StopSet = [#0..#31, '<', '&'];
 begin
   if fLine[Run] in (StopSet - ['&']) then begin
-    fProcTable[fLine[Run]]{$IFDEF FPC}(){$ENDIF};
+    fProcTable[fLine[Run]]();
     exit;
   end;
 
@@ -756,35 +754,35 @@ begin
   case fRange of
   rsElement, rsOpenElement, rsCloseElement:
     begin
-      ElementProc{$IFDEF FPC}(){$ENDIF};
+      ElementProc();
     end;
   rsAttribute:
     begin
-      AttributeProc{$IFDEF FPC}(){$ENDIF};
+      AttributeProc();
     end;
   rsEqual, rsnsEqual:
     begin
-      EqualProc{$IFDEF FPC}(){$ENDIF};
+      EqualProc();
     end;
   rsQuoteAttrValue, rsnsQuoteAttrValue:
     begin
-      QAttributeValueProc{$IFDEF FPC}(){$ENDIF};
+      QAttributeValueProc();
     end;
   rsAposAttrValue, rsnsAPosAttrValue:
     begin
-      AAttributeValueProc{$IFDEF FPC}(){$ENDIF};
+      AAttributeValueProc();
     end;
   rsQuoteEntityRef, rsnsQuoteEntityRef:
     begin
-      QEntityRefProc{$IFDEF FPC}(){$ENDIF};
+      QEntityRefProc();
     end;
   rsAposEntityRef, rsnsAPosEntityRef:
     begin
-      AEntityRefProc{$IFDEF FPC}(){$ENDIF};
+      AEntityRefProc();
     end;
   rsEntityRef:
     begin
-      EntityRefProc{$IFDEF FPC}(){$ENDIF};
+      EntityRefProc();
     end;
   else ;
   end;
@@ -796,26 +794,26 @@ begin
   case fRange of
   rsText:
     begin
-      TextProc{$IFDEF FPC}(){$ENDIF};
+      TextProc();
     end;
   rsComment:
     begin
-      CommentProc{$IFDEF FPC}(){$ENDIF};
+      CommentProc();
     end;
   rsProcessingInstruction:
     begin
-      ProcessingInstructionProc{$IFDEF FPC}(){$ENDIF};
+      ProcessingInstructionProc();
     end;
   rsDocType, rsDocTypeSquareBraces:                                            //ek 2001-11-11
     begin
-      DocTypeProc{$IFDEF FPC}(){$ENDIF};
+      DocTypeProc();
     end;
   rsCDATA:
     begin
-      CDATAProc{$IFDEF FPC}(){$ENDIF};
+      CDATAProc();
     end;
   else
-    fProcTable[fLine[Run]]{$IFDEF FPC}(){$ENDIF};
+    fProcTable[fLine[Run]]();
   end;
 end;
 
@@ -860,14 +858,12 @@ begin
   SetString(Result, (FLine + fTokenPos), len);
 end;
 
-{$IFDEF SYN_LAZARUS}
 procedure TSynXMLSyn.GetTokenEx(out TokenStart: PChar;
   out TokenLength: integer);
 begin
   TokenLength:=Run-fTokenPos;
   TokenStart:=FLine + fTokenPos;
 end;
-{$ENDIF}
 
 function TSynXMLSyn.GetTokenID: TtkTokenKind;
 begin

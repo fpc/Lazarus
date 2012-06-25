@@ -42,9 +42,7 @@ Known Issues:
 The SynHighlighterPHP unit provides SynEdit with a PHP syntax highlighter.
 Thanks to Martin Waldenburg.
 }
-{$IFNDEF QSYNHIGHLIGHTERPHP}
 unit SynHighlighterPHP;
-{$ENDIF}
 
 {$I SynEdit.inc}
 
@@ -52,20 +50,9 @@ interface
 
 uses
   SysUtils, Classes,
-  {$IFDEF SYN_CLX}
-  Qt, QControls, QGraphics,
-  QSynEditTypes,
-  QSynEditHighlighter,
-  {$ELSE}
-  {$IFDEF SYN_LAZARUS}
   LCLIntf, LCLType,
-  {$ELSE}
-  Windows, Messages, Registry,
-  {$ENDIF}
   Controls, Graphics,
   SynEditTypes, SynEditHighlighter;
-  {$ENDIF}
-
 
 type
   TtkTokenKind = (tkComment, tkIdentifier, tkInvalidSymbol, tkKey, tkNull,
@@ -83,9 +70,7 @@ type
   private
     fRange: TRangeState;
     fLine: PChar;
-    {$IFDEF SYN_LAZARUS}
     fLineLen: integer;
-    {$ENDIF}
     fLineNumber: Integer;
     fProcTable: array[#0..#255] of TProcTableProc;
     Run: LongInt;
@@ -206,11 +191,9 @@ type
     function GetEol: Boolean; override;
     function GetRange: Pointer; override;
     function GetTokenID: TtkTokenKind;
-    procedure SetLine({$IFDEF FPC}const {$ENDIF}NewValue: String; LineNumber: Integer); override;
+    procedure SetLine(const NewValue: String; LineNumber: Integer); override;
     function GetToken: String; override;
-    {$IFDEF SYN_LAZARUS}
     procedure GetTokenEx(out TokenStart: PChar; out TokenLength: integer); override;
-    {$ENDIF}
 
     function GetTokenAttribute: TSynHighlighterAttributes; override;
     function GetTokenKind: integer; override;
@@ -241,11 +224,7 @@ type
 implementation
 
 uses
-{$IFDEF SYN_CLX}
-  QSynEditStrConst;
-{$ELSE}
   SynEditStrConst;
-{$ENDIF}
 
 var
   Identifiers: array[#0..#255] of ByteBool;
@@ -277,55 +256,55 @@ var
 begin
   pF := PIdentFuncTableFunc(@fIdentFuncTable);
   for I := Low(fIdentFuncTable) to High(fIdentFuncTable) do begin
-    pF^ := {$IFDEF FPC}@{$ENDIF}AltFunc;
+    pF^ := @AltFunc;
     Inc(pF);
   end;
-  fIdentFuncTable[15] := {$IFDEF FPC}@{$ENDIF}Func15;
-  fIdentFuncTable[18] := {$IFDEF FPC}@{$ENDIF}Func18;
-  fIdentFuncTable[19] := {$IFDEF FPC}@{$ENDIF}Func19;
-  fIdentFuncTable[28] := {$IFDEF FPC}@{$ENDIF}Func28;
-  fIdentFuncTable[31] := {$IFDEF FPC}@{$ENDIF}Func31;
-  fIdentFuncTable[33] := {$IFDEF FPC}@{$ENDIF}Func33;
-  fIdentFuncTable[36] := {$IFDEF FPC}@{$ENDIF}Func36;
-  fIdentFuncTable[37] := {$IFDEF FPC}@{$ENDIF}Func37;
-  fIdentFuncTable[38] := {$IFDEF FPC}@{$ENDIF}Func38;
-  fIdentFuncTable[39] := {$IFDEF FPC}@{$ENDIF}Func39;
-  fIdentFuncTable[40] := {$IFDEF FPC}@{$ENDIF}Func40;
-  fIdentFuncTable[41] := {$IFDEF FPC}@{$ENDIF}Func41;
-  fIdentFuncTable[42] := {$IFDEF FPC}@{$ENDIF}Func42;
-  fIdentFuncTable[43] := {$IFDEF FPC}@{$ENDIF}Func43;
-  fIdentFuncTable[49] := {$IFDEF FPC}@{$ENDIF}Func49;
-  fIdentFuncTable[54] := {$IFDEF FPC}@{$ENDIF}Func54;
-  fIdentFuncTable[55] := {$IFDEF FPC}@{$ENDIF}Func55;
-  fIdentFuncTable[56] := {$IFDEF FPC}@{$ENDIF}Func56;
-  fIdentFuncTable[57] := {$IFDEF FPC}@{$ENDIF}Func57;
-  fIdentFuncTable[58] := {$IFDEF FPC}@{$ENDIF}Func58;
-  fIdentFuncTable[59] := {$IFDEF FPC}@{$ENDIF}Func59;
-  fIdentFuncTable[60] := {$IFDEF FPC}@{$ENDIF}Func60;
-  fIdentFuncTable[62] := {$IFDEF FPC}@{$ENDIF}Func62;
-  fIdentFuncTable[63] := {$IFDEF FPC}@{$ENDIF}Func63;
-  fIdentFuncTable[64] := {$IFDEF FPC}@{$ENDIF}Func64;
-  fIdentFuncTable[68] := {$IFDEF FPC}@{$ENDIF}Func68;
-  fIdentFuncTable[69] := {$IFDEF FPC}@{$ENDIF}Func69;
-  fIdentFuncTable[71] := {$IFDEF FPC}@{$ENDIF}Func71;
-  fIdentFuncTable[72] := {$IFDEF FPC}@{$ENDIF}Func72;
-  fIdentFuncTable[77] := {$IFDEF FPC}@{$ENDIF}Func77;
-  fIdentFuncTable[78] := {$IFDEF FPC}@{$ENDIF}Func78;
-  fIdentFuncTable[79] := {$IFDEF FPC}@{$ENDIF}Func79;
-  fIdentFuncTable[80] := {$IFDEF FPC}@{$ENDIF}Func80;
-  fIdentFuncTable[82] := {$IFDEF FPC}@{$ENDIF}Func82;
-  fIdentFuncTable[87] := {$IFDEF FPC}@{$ENDIF}Func87;
-  fIdentFuncTable[91] := {$IFDEF FPC}@{$ENDIF}Func91;
-  fIdentFuncTable[93] := {$IFDEF FPC}@{$ENDIF}Func93;
-  fIdentFuncTable[96] := {$IFDEF FPC}@{$ENDIF}Func96;
-  fIdentFuncTable[101] := {$IFDEF FPC}@{$ENDIF}Func101;
-  fIdentFuncTable[102] := {$IFDEF FPC}@{$ENDIF}Func102;
-  fIdentFuncTable[105] := {$IFDEF FPC}@{$ENDIF}Func105;
-  fIdentFuncTable[151] := {$IFDEF FPC}@{$ENDIF}Func151;
-  fIdentFuncTable[156] := {$IFDEF FPC}@{$ENDIF}Func156;
-  fIdentFuncTable[164] := {$IFDEF FPC}@{$ENDIF}Func164;
-  fIdentFuncTable[177] := {$IFDEF FPC}@{$ENDIF}Func177;
-  fIdentFuncTable[206] := {$IFDEF FPC}@{$ENDIF}Func206;
+  fIdentFuncTable[15] := @Func15;
+  fIdentFuncTable[18] := @Func18;
+  fIdentFuncTable[19] := @Func19;
+  fIdentFuncTable[28] := @Func28;
+  fIdentFuncTable[31] := @Func31;
+  fIdentFuncTable[33] := @Func33;
+  fIdentFuncTable[36] := @Func36;
+  fIdentFuncTable[37] := @Func37;
+  fIdentFuncTable[38] := @Func38;
+  fIdentFuncTable[39] := @Func39;
+  fIdentFuncTable[40] := @Func40;
+  fIdentFuncTable[41] := @Func41;
+  fIdentFuncTable[42] := @Func42;
+  fIdentFuncTable[43] := @Func43;
+  fIdentFuncTable[49] := @Func49;
+  fIdentFuncTable[54] := @Func54;
+  fIdentFuncTable[55] := @Func55;
+  fIdentFuncTable[56] := @Func56;
+  fIdentFuncTable[57] := @Func57;
+  fIdentFuncTable[58] := @Func58;
+  fIdentFuncTable[59] := @Func59;
+  fIdentFuncTable[60] := @Func60;
+  fIdentFuncTable[62] := @Func62;
+  fIdentFuncTable[63] := @Func63;
+  fIdentFuncTable[64] := @Func64;
+  fIdentFuncTable[68] := @Func68;
+  fIdentFuncTable[69] := @Func69;
+  fIdentFuncTable[71] := @Func71;
+  fIdentFuncTable[72] := @Func72;
+  fIdentFuncTable[77] := @Func77;
+  fIdentFuncTable[78] := @Func78;
+  fIdentFuncTable[79] := @Func79;
+  fIdentFuncTable[80] := @Func80;
+  fIdentFuncTable[82] := @Func82;
+  fIdentFuncTable[87] := @Func87;
+  fIdentFuncTable[91] := @Func91;
+  fIdentFuncTable[93] := @Func93;
+  fIdentFuncTable[96] := @Func96;
+  fIdentFuncTable[101] := @Func101;
+  fIdentFuncTable[102] := @Func102;
+  fIdentFuncTable[105] := @Func105;
+  fIdentFuncTable[151] := @Func151;
+  fIdentFuncTable[156] := @Func156;
+  fIdentFuncTable[164] := @Func164;
+  fIdentFuncTable[177] := @Func177;
+  fIdentFuncTable[206] := @Func206;
 end;
 
 function TSynPHPSyn.KeyHash(ToHash: PChar): Integer;
@@ -611,7 +590,7 @@ begin
   fToIdent := MayBe;
   HashKey := KeyHash(MayBe);
   if HashKey < 207 then
-    Result := fIdentFuncTable[HashKey]{$IFDEF FPC}(){$ENDIF}
+    Result := fIdentFuncTable[HashKey]()
   else
     Result := tkIdentifier;
 end;
@@ -622,42 +601,42 @@ var
 begin
   for I := #0 to #255 do
     case I of
-      '&': fProcTable[I] := {$IFDEF FPC}@{$ENDIF}AndSymbolProc;
-      #39: fProcTable[I] := {$IFDEF FPC}@{$ENDIF}String39Proc; // single quote
-      '@': fProcTable[I] := {$IFDEF FPC}@{$ENDIF}AtSymbolProc;
-      '}': fProcTable[I] := {$IFDEF FPC}@{$ENDIF}BraceCloseProc;
-      '{': fProcTable[I] := {$IFDEF FPC}@{$ENDIF}BraceOpenProc;
-      #13: fProcTable[I] := {$IFDEF FPC}@{$ENDIF}CRProc;
-      ':': fProcTable[I] := {$IFDEF FPC}@{$ENDIF}ColonProc;
-      ',': fProcTable[I] := {$IFDEF FPC}@{$ENDIF}CommaProc;
-      '=': fProcTable[I] := {$IFDEF FPC}@{$ENDIF}EqualProc;
-      '>': fProcTable[I] := {$IFDEF FPC}@{$ENDIF}GreaterProc;
-      'A'..'Z', 'a'..'z', '_': fProcTable[I] := {$IFDEF FPC}@{$ENDIF}IdentProc;
-      #10: fProcTable[I] := {$IFDEF FPC}@{$ENDIF}LFProc;
-      '<': fProcTable[I] := {$IFDEF FPC}@{$ENDIF}LowerProc;
-      '-': fProcTable[I] := {$IFDEF FPC}@{$ENDIF}MinusProc;
-      '*': fProcTable[I] := {$IFDEF FPC}@{$ENDIF}MultiplyProc;
-      '!': fProcTable[I] := {$IFDEF FPC}@{$ENDIF}NotSymbolProc;
-      #0: fProcTable[I] := {$IFDEF FPC}@{$ENDIF}NullProc;
-      '0'..'9': fProcTable[I] := {$IFDEF FPC}@{$ENDIF}NumberProc;
-      '|': fProcTable[I] := {$IFDEF FPC}@{$ENDIF}OrSymbolProc;
-      '+': fProcTable[I] := {$IFDEF FPC}@{$ENDIF}PlusProc;
-      '.': fProcTable[I] := {$IFDEF FPC}@{$ENDIF}PointProc;
-      '#': fProcTable[I] := {$IFDEF FPC}@{$ENDIF}PoundProc;
-      '?': fProcTable[I] := {$IFDEF FPC}@{$ENDIF}QuestionProc;
-      '%': fProcTable[I] := {$IFDEF FPC}@{$ENDIF}RemainderSymbolProc;
-      ')': fProcTable[I] := {$IFDEF FPC}@{$ENDIF}RoundCloseProc;
-      '(': fProcTable[I] := {$IFDEF FPC}@{$ENDIF}RoundOpenProc;
-      ';': fProcTable[I] := {$IFDEF FPC}@{$ENDIF}SemiColonProc;
-      '/': fProcTable[I] := {$IFDEF FPC}@{$ENDIF}SlashProc;
-      #1..#9, #11, #12, #14..#32: fProcTable[I] := {$IFDEF FPC}@{$ENDIF}SpaceProc;
-      ']': fProcTable[I] := {$IFDEF FPC}@{$ENDIF}SquareCloseProc;
-      '[': fProcTable[I] := {$IFDEF FPC}@{$ENDIF}SquareOpenProc;
-      #34: fProcTable[I] := {$IFDEF FPC}@{$ENDIF}String34Proc; // double quote
-      '~': fProcTable[I] := {$IFDEF FPC}@{$ENDIF}TildeProc;
-      '$': fProcTable[I] := {$IFDEF FPC}@{$ENDIF}VariableProc;
-      '^': fProcTable[I] := {$IFDEF FPC}@{$ENDIF}XOrSymbolProc;
-      else fProcTable[I] := {$IFDEF FPC}@{$ENDIF}UnknownProc;
+      '&': fProcTable[I] := @AndSymbolProc;
+      #39: fProcTable[I] := @String39Proc; // single quote
+      '@': fProcTable[I] := @AtSymbolProc;
+      '}': fProcTable[I] := @BraceCloseProc;
+      '{': fProcTable[I] := @BraceOpenProc;
+      #13: fProcTable[I] := @CRProc;
+      ':': fProcTable[I] := @ColonProc;
+      ',': fProcTable[I] := @CommaProc;
+      '=': fProcTable[I] := @EqualProc;
+      '>': fProcTable[I] := @GreaterProc;
+      'A'..'Z', 'a'..'z', '_': fProcTable[I] := @IdentProc;
+      #10: fProcTable[I] := @LFProc;
+      '<': fProcTable[I] := @LowerProc;
+      '-': fProcTable[I] := @MinusProc;
+      '*': fProcTable[I] := @MultiplyProc;
+      '!': fProcTable[I] := @NotSymbolProc;
+      #0: fProcTable[I] := @NullProc;
+      '0'..'9': fProcTable[I] := @NumberProc;
+      '|': fProcTable[I] := @OrSymbolProc;
+      '+': fProcTable[I] := @PlusProc;
+      '.': fProcTable[I] := @PointProc;
+      '#': fProcTable[I] := @PoundProc;
+      '?': fProcTable[I] := @QuestionProc;
+      '%': fProcTable[I] := @RemainderSymbolProc;
+      ')': fProcTable[I] := @RoundCloseProc;
+      '(': fProcTable[I] := @RoundOpenProc;
+      ';': fProcTable[I] := @SemiColonProc;
+      '/': fProcTable[I] := @SlashProc;
+      #1..#9, #11, #12, #14..#32: fProcTable[I] := @SpaceProc;
+      ']': fProcTable[I] := @SquareCloseProc;
+      '[': fProcTable[I] := @SquareOpenProc;
+      #34: fProcTable[I] := @String34Proc; // double quote
+      '~': fProcTable[I] := @TildeProc;
+      '$': fProcTable[I] := @VariableProc;
+      '^': fProcTable[I] := @XOrSymbolProc;
+      else fProcTable[I] := @UnknownProc;
     end;
 end;
 
@@ -686,20 +665,18 @@ begin
   fVariableAttri := TSynHighlighterAttributes.Create(SYNS_AttrVariable, SYNS_XML_AttrVariable);
   AddAttribute(fVariableAttri);
 {end}                                                                           //mh 2000-01-14
-  SetAttributesOnChange({$IFDEF FPC}@{$ENDIF}DefHighlightChange);
+  SetAttributesOnChange(@DefHighlightChange);
   InitIdent;
   MakeMethodTables;
   fDefaultFilter := SYNS_FilterPHP;
   fRange := rsUnknown;
 end;
 
-procedure TSynPHPSyn.SetLine({$IFDEF FPC}const {$ENDIF}NewValue: String; LineNumber: Integer);
+procedure TSynPHPSyn.SetLine(const NewValue: String; LineNumber: Integer);
 begin
   inherited;
   fLine := PChar(NewValue);
-  {$IFDEF SYN_LAZARUS}
   fLineLen := length(NewValue);
-  {$ENDIF}
   Run := 0;
   fLineNumber := LineNumber;
   Next;
@@ -909,10 +886,8 @@ end;
 procedure TSynPHPSyn.NullProc;
 begin
   fTokenID := tkNull;
-  {$IFDEF SYN_LAZARUS}
   if Run<fLineLen then
     inc(Run);
-  {$ENDIF}
 end;
 
 procedure TSynPHPSyn.NumberProc;
@@ -1111,7 +1086,7 @@ var
 begin
   if (FLine[Run] in [#0, #10, #13]) and (fTokenPos = Run) then
   begin
-    fProcTable[ FLine[Run] ]{$IFDEF FPC}(){$ENDIF};
+    fProcTable[ FLine[Run] ]();
     Exit;
   end;
   fTokenID := tkString;
@@ -1274,10 +1249,8 @@ end;
 procedure TSynPHPSyn.UnknownProc;
 begin
   inc(Run);
-  {$IFDEF SYN_LAZARUS}
   while (fLine[Run] in [#128..#191]) OR // continued utf8 subcode
    ((fLine[Run]<>#0) and (fProcTable[fLine[Run]] = @UnknownProc)) do inc(Run);
-  {$ENDIF}
   fTokenID := tkUnknown;
 end;
 
@@ -1341,7 +1314,7 @@ begin
     rsVarExpansion: VarExpansionProc;
     else begin
       fRange := rsUnknown;
-      fProcTable[fLine[Run]]{$IFDEF FPC}(){$ENDIF};
+      fProcTable[fLine[Run]]();
     end;
   end;
 end;
@@ -1426,13 +1399,11 @@ begin
   Result := TSynValidStringChars;
 end;
 
-{$IFDEF SYN_LAZARUS}
 procedure TSynPHPSyn.GetTokenEx(out TokenStart: PChar; out TokenLength: integer);
 begin
   TokenLength:=Run-fTokenPos;
   TokenStart:=FLine + fTokenPos;
 end;
-{$ENDIF}
 
 class function TSynPHPSyn.GetLanguageName: string;
 begin

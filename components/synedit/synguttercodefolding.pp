@@ -248,7 +248,7 @@ procedure TSynGutterCodeFolding.CreatePopUpMenuEntries(var APopUp: TPopupMenu;
   function AddPopUpItem(const ACaption: String): TMenuItem;
   begin
     Result := TMenuItem.Create(APopUp);
-    Result.OnClick := {$IFDEF FPC}@{$ENDIF}PopClicked;
+    Result.OnClick := @PopClicked;
     Result.Caption := ACaption;
     Result.GlyphShowMode := gsmAlways;
     if FReversePopMenuOrder then

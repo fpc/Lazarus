@@ -42,21 +42,14 @@ unit SynEditSearch;
 interface
 
 uses
-  Classes
-  {$IFDEF SYN_LAZARUS}
-  , LCLProc, SynRegExpr, SynEditMiscProcs, SynEditTypes
-  {$ENDIF};
+  Classes, LCLProc, SynRegExpr, SynEditMiscProcs, SynEditTypes;
 
 procedure MakeCompTable;
-{$IFNDEF SYN_LAZARUS}
-procedure MakeDelimiterTable;
-{$ENDIF}
 
 type
   TByteArray256 = array[#0..#255] of Byte;
   PByteArray256 = ^TByteArray256;
 
-  {$IFDEF SYN_LAZARUS}
   TSynEditSearchResult = class
   public
     Start: integer;
@@ -64,7 +57,6 @@ type
     Replace: string;
     constructor Create(NewStart, NewLen: integer; const NewReplace: string);
   end;
-  {$ENDIF}
 
   { TSynEditSearch }
 
@@ -83,7 +75,6 @@ type
     fWhole: Boolean;
     fResults: TList;
     fShiftInitialized: boolean;
-    {$IFDEF SYN_LAZARUS}
     FIdentChars: TSynIdentChars;
     FoundLen: integer;
     RegExprEngine : TRegExpr;
@@ -95,7 +86,6 @@ type
     CompTable: PByteArray256;
     function GetResultLen(Index: integer): integer;
     procedure SetRegExpr(const NewValue: boolean);
-    {$ENDIF}
     function GetFinished: Boolean;
     function GetResult(Index: integer): integer;
     function GetResultCount: integer;
@@ -111,10 +101,8 @@ type
     function FindFirstUTF8(const NewText: string): Integer;
     procedure FixResults(First, Delta: integer);
     function Next: Integer;
-    {$IFDEF SYN_LAZARUS}
     function FindNextOne(Lines: TStrings; StartPos, EndPos: TPoint;
                          out FoundStartPos, FoundEndPos: TPoint; ASupportUnicodeCase: Boolean=False): boolean;
-    {$ENDIF}
     property Count: Integer read fCount write fCount;
     property Finished: Boolean read GetFinished;
     property Pattern: string read Pat write SetPattern;// search for this text
@@ -122,7 +110,6 @@ type
     property ResultCount: integer read GetResultCount;
     property Sensitive: Boolean read fSensitive write SetSensitive;// case sensitive
     property Whole: Boolean read fWhole write fWhole;// whole words
-    {$IFDEF SYN_LAZARUS}
   public
     procedure ClearResults;
     procedure ResetIdentChars;
@@ -135,32 +122,21 @@ type
     property Replacement: string read fReplacement write fReplacement;
     property Backwards: boolean read FBackwards write FBackwards;
     property IdentChars: TSynIdentChars read FIdentChars write FIdentChars;
-    {$ENDIF}
   end;
 
-{$IFDEF SYN_LAZARUS}
 function GetLineCountOfString(const aText: string): integer;
 function GetLastLineLength(const aText: string): integer;
 function AdjustPositionAfterReplace(const p, ReplaceStart, ReplaceEnd: TPoint;
   const AReplacement: string): TPoint;
-{$ENDIF SYN_LAZARUS}
 
 implementation
 
 uses
-  {$IFDEF SYN_LAZARUS}
-  LCLIntf, LCLType,
-  {$ELSE}
-  Windows,
-  {$ENDIF}
-  SysUtils;
+  LCLIntf, LCLType, SysUtils;
 
 var
   CompTableSensitive: TByteArray256;
   CompTableNoneSensitive: TByteArray256;
-  {$IFNDEF SYN_LAZARUS}
-  DelimTable: array[#0..#255] of boolean;
-  {$ENDIF}
 
 procedure MakeCompTable;
 var
@@ -170,16 +146,6 @@ begin
   for I := #0 to #255 do CompTableNoneSensitive[I] := ord(uppercase(I)[1]);
 end;
 
-{$IFNDEF SYN_LAZARUS}
-procedure MakeDelimiterTable;
-var
-  c: char;
-begin
-  for c := #0 to #255 do DelimTable[c] := not IsCharAlphaNumeric(c);
-end;
-{$ENDIF}
-
-{$IFDEF SYN_LAZARUS}
 function GetLineCountOfString(const aText: string): integer;
 // returns the number of line separators
 var
@@ -249,7 +215,6 @@ begin
     end;
   end;
 end;
-{$ENDIF}
 
 { TSynEditSearch }
 
@@ -259,10 +224,8 @@ begin
   fSensitive := False;
   CompTable := @CompTableNoneSensitive;
   fResults := TList.Create;
-  {$IFDEF SYN_LAZARUS}
   RegExprEngine:=TRegExpr.Create;
   ResetIdentChars;
-  {$ENDIF}
 end;
 
 function TSynEditSearch.GetFinished: Boolean;
@@ -274,11 +237,7 @@ function TSynEditSearch.GetResult(Index: integer): integer;
 begin
   Result := 0;
   if (Index >= 0) and (Index < fResults.Count) then
-    {$IFDEF SYN_LAZARUS}
     Result := TSynEditSearchResult(fResults[Index]).Start;
-    {$ELSE}
-    Result := integer(fResults[Index]);
-    {$ENDIF}
 end;
 
 function TSynEditSearch.GetResultCount: integer;
@@ -293,7 +252,6 @@ begin
   if (Delta <> 0) and (fResults.Count > 0) then begin
     i := Pred(fResults.Count);
     while i >= 0 do begin
-      {$IFDEF SYN_LAZARUS}
       if GetResult(i)>=First then begin
         dec(TSynEditSearchResult(fResults[i]).Start,Delta);
         if GetResult(i)<First then begin
@@ -302,10 +260,6 @@ begin
           fResults.Delete(i);
         end;
       end;
-      {$ELSE}
-      if GetResult(i) <= First then break;
-      fResults[i] := pointer(integer(fResults[i]) - Delta);
-      {$ENDIF}
       Dec(i);
     end;
   end;
@@ -334,13 +288,8 @@ var
   Test: PChar;
 begin
   Test := Run - PatLen;
-  {$IFDEF SYN_LAZARUS}
   Result := ((Test < Origin) or (not (Test[0] in FIdentChars))) and
     ((Run >= TheEnd) or (not (Run[1] in FIdentChars)));
-  {$ELSE}
-  Result := ((Test < Origin) or DelimTable[Test[0]]) and
-    ((Run >= TheEnd) or DelimTable[Run[1]]);
-  {$ENDIF}
 end;
 
 function TSynEditSearch.Next: Integer;
@@ -349,9 +298,7 @@ var
   J: PChar;
 begin
   Result := 0;
-  {$IFDEF SYN_LAZARUS}
   if not fRegExpr then begin
-  {$ENDIF}
     inc(Run, PatLen);
     FoundLen:=PatLen;
     while Run < TheEnd do
@@ -385,7 +332,6 @@ begin
 {end}                                                                           //mh 2000-08-29
       end;
     end;
-  {$IFDEF SYN_LAZARUS}
   end else begin
     // regular expressions
     inc(Run);
@@ -398,11 +344,9 @@ begin
       FoundLen:=0;
       Run:=TheEnd;
     end;
-  {$ENDIF}
   end;
 end;
 
-{$IFDEF SYN_LAZARUS}
 // ASupportUnicodeCase -> If we will support Unicode lowercase/uppercase
 //   by default this is off to increase the speed of the routine
 function TSynEditSearch.FindNextOne(Lines: TStrings; StartPos, EndPos: TPoint;
@@ -975,14 +919,11 @@ begin
       inc(y);
   until (y<MinY) or (y>MaxY);
 end;
-{$ENDIF}
 
 destructor TSynEditSearch.Destroy;
 begin
-  {$IFDEF SYN_LAZARUS}
   ClearResults;
   RegExprEngine.Free;
-  {$ENDIF}
   fResults.Free;
   inherited Destroy;
 end;
@@ -992,9 +933,7 @@ begin
   if Pat <> Value then begin
     Pat := Value;
     fShiftInitialized := FALSE;
-    {$IFDEF SYN_LAZARUS}
     PatLen:=length(Pat);
-    {$ENDIF}
   end;
   fCount := 0;
 end;
@@ -1007,38 +946,25 @@ begin
     then CompTable := @CompTableSensitive
     else CompTable := @CompTableNoneSensitive;
     fShiftInitialized := FALSE;
-    {$IFDEF SYN_LAZARUS}
     RegExprEngine.ModifierI:=not fSensitive;
-    {$ENDIF}
   end;
 end;
 
 function TSynEditSearch.FindAll(const NewText: string): integer;
 var
   Found: integer;
-  {$IFDEF SYN_LAZARUS}
   TheReplace: string;
-  {$ENDIF}
 begin
   if not fShiftInitialized then
     InitShiftTable;
-  {$IFDEF SYN_LAZARUS}
   ClearResults;
-  {$ELSE}
-  // never shrink Capacity
-  fResults.Count := 0;
-  {$ENDIF}
   Found := FindFirstUTF8(NewText);
   while Found > 0 do
   begin
-    {$IFDEF SYN_LAZARUS}
     TheReplace:=Replacement;
     if fRegExpr then
       TheReplace:=RegExprEngine.Substitute(Replacement);
     fResults.Add(TSynEditSearchResult.Create(Found,FoundLen,TheReplace));
-    {$ELSE}
-    fResults.Add(pointer(Found));
-    {$ENDIF}
     Found := Next;
   end;
   Result := fResults.Count;
@@ -1049,14 +975,12 @@ begin
   Result := 0;
   fTextLen := Length(NewText);
   if fTextLen=0 then exit;
-  {$IFDEF SYN_LAZARUS}
   if fRegExpr then begin
     RegExprEngine.ModifierI:=not fSensitive;
     RegExprEngine.ModifierM:=fRegExprMultiLine;
     RegExprEngine.Expression:=Pat;
     RegExprEngine.InputString:=NewText;
   end;
-  {$ENDIF}
   if (fTextLen >= PatLen) or fRegExpr then
   begin
     Origin := PChar(NewText);
@@ -1066,7 +990,6 @@ begin
   end;
 end;
 
-{$IFDEF SYN_LAZARUS}
 procedure TSynEditSearch.ClearResults;
 var
   i: Integer;
@@ -1108,7 +1031,6 @@ begin
   fRegExpr:=NewValue;
 end;
 
-
 { TSynEditSearchResult }
 
 constructor TSynEditSearchResult.Create(NewStart, NewLen: integer;
@@ -1119,13 +1041,7 @@ begin
   Replace:=NewReplace;
 end;
 
-{$ENDIF}
-
 initialization
   MakeCompTable;
-  {$IFNDEF SYN_LAZARUS}
-  MakeDelimiterTable;
-  {$ENDIF}
-
 end.
 

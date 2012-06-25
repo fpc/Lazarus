@@ -87,7 +87,7 @@ type
       aCommandID: TSynEditorCommand; aShortCut: TShortCut);
     procedure OnCommand(Sender: TObject; AfterProcessing: boolean;
       var Handled: boolean; var Command: TSynEditorCommand;
-      var aChar: {$IFDEF SYN_LAZARUS}TUTF8Char{$ELSE}Char{$ENDIF};
+      var aChar: TUTF8Char;
       Data: pointer; HandlerData: pointer); virtual; abstract;
   end;
 
@@ -133,7 +133,7 @@ type
     procedure SetCurrentString(const Value: String); virtual;
     procedure OnCommand(Sender: TObject; AfterProcessing: boolean;
       var Handled: boolean; var Command: TSynEditorCommand;
-      var aChar: {$IFDEF SYN_LAZARUS}TUTF8Char{$ELSE}Char{$ENDIF};
+      var aChar: TUTF8Char;
       Data: pointer; HandlerData: pointer); override;
     procedure DoExecute; override;
     procedure DoAccept; override;
@@ -303,7 +303,7 @@ begin
   iKeystroke.Command := aCommandID;
 
   if AFlags <> [] then
-    aEditor.RegisterCommandHandler( {$IFDEF FPC}@{$ENDIF}OnCommand, Self, AFlags);
+    aEditor.RegisterCommandHandler( @OnCommand, Self, AFlags);
 end;
 
 procedure TAbstractSynHookerPlugin.UnHookEditor(aEditor: TCustomSynEdit;
@@ -311,7 +311,7 @@ procedure TAbstractSynHookerPlugin.UnHookEditor(aEditor: TCustomSynEdit;
 var
   iIndex: integer;
 begin
-  aEditor.UnregisterCommandHandler( {$IFDEF FPC}@{$ENDIF}OnCommand );
+  aEditor.UnregisterCommandHandler( @OnCommand );
   iIndex := TCustomSynEdit(aEditor).Keystrokes.FindShortcut( aShortCut );
   if (iIndex >= 0) and
     (TCustomSynEdit(aEditor).Keystrokes[iIndex].Command = aCommandID) then
@@ -463,7 +463,7 @@ end;
 procedure TAbstractSynCompletion.OnCommand(Sender: TObject;
   AfterProcessing: boolean; var Handled: boolean;
   var Command: TSynEditorCommand;
-  var aChar: {$IFDEF SYN_LAZARUS}TUTF8Char{$ELSE}Char{$ENDIF};
+  var aChar: TUTF8Char;
   Data, HandlerData: pointer);
 var
   iString: String;
@@ -490,15 +490,9 @@ begin
               end
               else
               begin
-                {$IFDEF SYN_LAZARUS}
-                if (length(aChar)<>1)
+                if (length(aChar) <> 1)
                 or (not (aChar[1] in CurrentEditor.IdentChars)) then
                   Accept;
-                {$ELSE}
-                if not (aChar in CurrentEditor.IdentChars) then
-                  Accept;
-                {don't handle the char}
-                {$ENDIF}
               end;
             ecLineBreak:
             begin

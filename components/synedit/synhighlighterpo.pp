@@ -34,11 +34,7 @@ interface
 
 uses
   Classes, SysUtils,
-  {$IFDEF SYN_CLX}
-  QGraphics,
-  {$ELSE}
   Graphics,
-  {$ENDIF}
   SynEditTypes, SynEditHighlighter, SynEditStrConst;
 
 type
@@ -228,10 +224,8 @@ begin
     IdentProc
   else begin
     inc(Run);
-    {$IFDEF SYN_LAZARUS}
     while (fLine[Run] in [#128..#191]) OR // continued utf8 subcode
      ((fLine[Run]<>#0) and (fProcTable[fLine[Run]] = @TextProc)) do inc(Run);
-    {$ENDIF}
     fTokenID := tkText;
   end;
 end;

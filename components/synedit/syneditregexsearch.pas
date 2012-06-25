@@ -66,15 +66,6 @@ type
 
 implementation
 
-{$IFNDEF SYN_LAZARUS}
-uses
-{$IFDEF SYN_CLX}
-  QConsts;
-{$ELSE}
-  Consts;
-{$ENDIF}
-{$ENDIF}
-
 { TSynEditRegexSearch }
 
 constructor TSynEditRegexSearch.Create(AOwner: TComponent);

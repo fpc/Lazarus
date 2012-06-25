@@ -34,9 +34,7 @@ The unit SynHighlighterTeX provides SynEdit with a TeX highlighter.
 Known Issues:
 -------------------------------------------------------------------------------}
 
-{$IFNDEF QSYNHIGHLIGHTERTEX}
 unit SynHighlighterTeX;
-{$ENDIF}
 
 {$I SynEdit.inc}
 
@@ -44,22 +42,9 @@ interface
 
 uses
   SysUtils, Classes,
-  {$IFDEF SYN_CLX}
-  Qt, QControls, QGraphics,
-  QSynEditTypes,
-  QSynEditHighlighter,
-  {$ELSE}
-  {$IFDEF SYN_LAZARUS}
   LCLProc, LCLIntf, LCLType,
-  {$ELSE}
-  Windows, Registry, Messages,
-  {$ENDIF}
   Controls, Graphics,
   SynEditTypes, SynEditHighlighter;
-  {$ENDIF}
-
-
-
 
 type
   TtkTokenKind = (tkBrace, tkBracket, tkNull, tkSpace, tkText, tkComment,
@@ -113,12 +98,10 @@ type
       override;
     function GetEol: Boolean; override;
     function GetTokenID: TtkTokenKind;
-    procedure SetLine({$IFDEF FPC}const {$ENDIF}NewValue: String;
+    procedure SetLine(const NewValue: String;
                       LineNumber:Integer); override;
     function GetToken: String; override;
-    {$IFDEF SYN_LAZARUS}
     procedure GetTokenEx(out TokenStart: PChar; out TokenLength: integer); override;
-    {$ENDIF}
 
     function GetTokenAttribute: TSynHighlighterAttributes; override;
     function GetTokenKind: integer; override;
@@ -144,11 +127,7 @@ type
 implementation
 
 uses
-{$IFDEF SYN_CLX}
-  QSynEditStrConst;
-{$ELSE}
   SynEditStrConst;
-{$ENDIF}
 
 procedure TSynTeXSyn.MakeMethodTables;
 var
@@ -156,19 +135,19 @@ var
 begin
   for i := #0 to #255 do
     case i of
-      #0                         : fProcTable[I] := {$IFDEF FPC}@{$ENDIF}NullProc;
-      #10                        : fProcTable[I] := {$IFDEF FPC}@{$ENDIF}LFProc;
-      #13                        : fProcTable[I] := {$IFDEF FPC}@{$ENDIF}CRProc;
-      #37                        : fProcTable[I] := {$IFDEF FPC}@{$ENDIF}CommentProc;
-      #92                        : fProcTable[I] := {$IFDEF FPC}@{$ENDIF}ControlSequenceProc;
-      #123                       : fProcTable[I] := {$IFDEF FPC}@{$ENDIF}BraceOpenProc;
-      #125                       : fProcTable[I] := {$IFDEF FPC}@{$ENDIF}BraceCloseProc;
-      #91                        : fProcTable[I] := {$IFDEF FPC}@{$ENDIF}BracketOpenProc;
-      #93                        : fProcTable[I] := {$IFDEF FPC}@{$ENDIF}BracketCloseProc;
-      #1..#9, #11, #12, #14..#32 : fProcTable[I] := {$IFDEF FPC}@{$ENDIF}SpaceProc;
-      #36                        : fProcTable[I] := {$IFDEF FPC}@{$ENDIF}MathmodeProc;
+      #0                         : fProcTable[I] := @NullProc;
+      #10                        : fProcTable[I] := @LFProc;
+      #13                        : fProcTable[I] := @CRProc;
+      #37                        : fProcTable[I] := @CommentProc;
+      #92                        : fProcTable[I] := @ControlSequenceProc;
+      #123                       : fProcTable[I] := @BraceOpenProc;
+      #125                       : fProcTable[I] := @BraceCloseProc;
+      #91                        : fProcTable[I] := @BracketOpenProc;
+      #93                        : fProcTable[I] := @BracketCloseProc;
+      #1..#9, #11, #12, #14..#32 : fProcTable[I] := @SpaceProc;
+      #36                        : fProcTable[I] := @MathmodeProc;
     else
-      fProcTable[I] := {$IFDEF FPC}@{$ENDIF}TextProc;
+      fProcTable[I] := @TextProc;
     end;
 end;
 
@@ -199,12 +178,12 @@ begin
   AddAttribute(fBraceAttri);
 
   //*************************
-  SetAttributesOnChange({$IFDEF FPC}@{$ENDIF}DefHighlightChange);
+  SetAttributesOnChange(@DefHighlightChange);
   fDefaultFilter                := SYNS_FilterTeX;
   MakeMethodTables;
 end;  { Create }
 
-procedure TSynTeXSyn.SetLine({$IFDEF FPC}const {$ENDIF}NewValue: String; LineNumber:Integer);
+procedure TSynTeXSyn.SetLine(const NewValue: String; LineNumber:Integer);
 begin
   inherited;
   fLine       := PChar(NewValue);
@@ -312,7 +291,7 @@ end;  { ControlSequenceProc }
 procedure TSynTeXSyn.Next;
 begin
   fTokenPos := Run;
-  fProcTable[fLine[Run]]{$IFDEF FPC}(){$ENDIF};
+  fProcTable[fLine[Run]]();
 end;  { Next }
 
 function TSynTeXSyn.GetDefaultAttribute(Index: integer):
@@ -339,13 +318,11 @@ begin
   SetString(Result, (FLine + fTokenPos), Len);
 end;  { GetToken }
 
-{$IFDEF SYN_LAZARUS}
 procedure TSynTeXSyn.GetTokenEx(out TokenStart: PChar; out TokenLength: integer);
 begin
   TokenLength:=Run-fTokenPos;
   TokenStart:=FLine + fTokenPos;
 end;
-{$ENDIF}
 
 function TSynTeXSyn.GetTokenID: TtkTokenKind;
 begin

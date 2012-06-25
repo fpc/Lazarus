@@ -45,17 +45,7 @@ interface
 
 uses
   Classes,
-{$IFDEF SYN_CLX}
-  Qt,
-  QGraphics,
-{$ELSE}
-  {$IFDEF SYN_LAZARUS}
   LCLIntf, LCLType, Graphics, ClipBrd,
-  {$ELSE}
-  Windows,
-  Graphics,
-  {$ENDIF}
-{$ENDIF}
   SynEditExport;
 
 type
@@ -108,9 +98,7 @@ const
 begin
   inherited Create(AOwner);
   {**************}
-  {$IFNDEF SYN_CLX}
   fClipboardFormat := RegisterClipboardFormat(CF_HTML);
-  {$ENDIF}
   fFontSize := fs03;
   fDefaultFilter := SYNS_FilterHTML;
   // setup array of chars to be replaced
@@ -225,25 +213,19 @@ begin
   RGBColor := ColorToRGB(AColor);
   Result := '"#000000"';
  {****************}
-{$IFNDEF SYN_CLX}
   RGBValue := GetRValue(RGBColor);
-{$ENDIF}
   if RGBValue > 0 then begin
     Result[3] := Digits[RGBValue shr  4];
     Result[4] := Digits[RGBValue and 15];
   end;
  {****************}
-{$IFNDEF SYN_CLX}
   RGBValue := GetGValue(RGBColor);
-{$ENDIF}
   if RGBValue > 0 then begin
     Result[5] := Digits[RGBValue shr  4];
     Result[6] := Digits[RGBValue and 15];
   end;
  {****************}
-{$IFNDEF SYN_CLX}
   RGBValue := GetBValue(RGBColor);
-{$ENDIF}
   if RGBValue > 0 then begin
     Result[7] := Digits[RGBValue shr  4];
     Result[8] := Digits[RGBValue and 15];

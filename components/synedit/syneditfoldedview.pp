@@ -3226,7 +3226,7 @@ begin
   fLinesInWindow := -1;
   fLines := aTextView;
   fCaret := ACaret;
-  fCaret.AddChangeHandler({$IFDEF FPC}@{$ENDIF}DoCaretChanged);
+  fCaret.AddChangeHandler(@DoCaretChanged);
   fFoldTree := TSynTextFoldAVLTree.Create;
   FFoldProvider := TSynEditFoldProvider.Create(aTextView, fFoldTree);
   FDisplayView := TLazSynDisplayFold.Create(Self);
@@ -3236,17 +3236,17 @@ begin
   FMarkupInfoFoldedCode.Foreground := clDkGray;
   FMarkupInfoFoldedCode.FrameColor := clDkGray;
 
-  fLines.AddChangeHandler(senrLineCount, {$IFDEF FPC}@{$ENDIF}LineCountChanged);
-  fLines.AddNotifyHandler(senrCleared, {$IFDEF FPC}@{$ENDIF}LinesCleared);
-  fLines.AddEditHandler({$IFDEF FPC}@{$ENDIF}LineEdited);
+  fLines.AddChangeHandler(senrLineCount, @LineCountChanged);
+  fLines.AddNotifyHandler(senrCleared, @LinesCleared);
+  fLines.AddEditHandler(@LineEdited);
 end;
 
 destructor TSynEditFoldedView.Destroy;
 begin
-  fLines.RemoveChangeHandler(senrLineCount, {$IFDEF FPC}@{$ENDIF}LineCountChanged);
-  fLines.RemoveNotifyHandler(senrCleared, {$IFDEF FPC}@{$ENDIF}LinesCleared);
-  fLines.RemoveEditHandler({$IFDEF FPC}@{$ENDIF}LineEdited);
-  fCaret.RemoveChangeHandler({$IFDEF FPC}@{$ENDIF}DoCaretChanged);
+  fLines.RemoveChangeHandler(senrLineCount, @LineCountChanged);
+  fLines.RemoveNotifyHandler(senrCleared, @LinesCleared);
+  fLines.RemoveEditHandler(@LineEdited);
+  fCaret.RemoveChangeHandler(@DoCaretChanged);
   FreeAndNil(FDisplayView);
   fFoldTree.Free;
   fTextIndexList := nil;

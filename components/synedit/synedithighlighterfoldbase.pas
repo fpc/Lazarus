@@ -350,7 +350,7 @@ type
 
     procedure SetRange(Value: Pointer); override;
     procedure ResetRange; override;
-    procedure SetLine({$IFDEF FPC}const {$ENDIF}NewValue: String;
+    procedure SetLine(const NewValue: String;
                       LineNumber:Integer // 0 based
                       ); override;
   public

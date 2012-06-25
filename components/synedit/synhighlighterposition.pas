@@ -75,15 +75,13 @@ type
     function GetEol: Boolean; override;
     function GetRange: Pointer; override;
     function GetToken: string; override;
-    {$IFDEF SYN_LAZARUS}
     procedure GetTokenEx(out TokenStart: PChar; out TokenLength: integer); override;
-    {$ENDIF}
     function GetTokenAttribute: TSynHighlighterAttributes; override;
     function GetTokenKind: integer; override;
     function GetTokenPos: Integer; override;
     procedure Next; override;
     procedure ResetRange; override;
-    procedure SetLine({$IFDEF FPC}const {$ENDIF}NewValue: string;
+    procedure SetLine(const NewValue: string;
       LineNumber:Integer); override;
     procedure SetRange(Value: Pointer); override;
     function UseUserSettings(settingIndex: integer): boolean; override;
@@ -157,7 +155,7 @@ begin
   fCopiedAttributes:=TList.Create;
   fTextAttri := TSynHighlighterAttributes.Create(SYNS_AttrText, SYNS_XML_AttrText);
   AddAttribute(fTextAttri);
-  SetAttributesOnChange({$IFDEF FPC}@{$ENDIF}DefHighlightChange);
+  SetAttributesOnChange(@DefHighlightChange);
 
   fDefaultFilter := '';
 end;
@@ -190,7 +188,6 @@ begin
   System.Move(fLine[fTokenPos],Result[1],Len);
 end;
 
-{$IFDEF SYN_LAZARUS}
 procedure TSynPositionHighlighter.GetTokenEx(out TokenStart: PChar;
   out TokenLength: integer);
 begin
@@ -201,7 +198,6 @@ begin
     TokenStart:=nil;
   end;
 end;
-{$ENDIF}
 
 function TSynPositionHighlighter.GetTokenAttribute: TSynHighlighterAttributes;
 var

@@ -175,10 +175,8 @@ type
     procedure SetCaseSensitive(const Value: Boolean);
     procedure SetVirtualLines(const AValue: TSynHLightMultiVirtualLines);
   protected
-{$IFDEF SYN_COMPILER_3_UP}
     function GetDisplayName: String; override;
     procedure SetDisplayName(const Value: String); override;
-{$ENDIF}
   public
     constructor Create(TheCollection: TCollection); override;
     destructor Destroy; override;
@@ -216,10 +214,8 @@ type
     procedure SetCurrentLine(const AValue: String);
     procedure SetItems(Index: integer; const Value: TSynHighlighterMultiScheme);
   protected
-{$IFDEF SYN_COMPILER_3_UP}
     function GetOwner: TPersistent; override;
     procedure Update(Item: TCollectionItem); override;
-{$ENDIF}
     procedure Notify(Item: TCollectionItem;Action: TCollectionNotification); override;
   public
     constructor Create(aOwner: TSynMultiSyn);
@@ -317,7 +313,7 @@ type
     function  GetTokenAttribute: TSynHighlighterAttributes; override;
     function  GetTokenKind: integer; override;
     function  GetTokenPos: Integer; override; // 0-based
-    procedure SetLine({$IFDEF FPC}const {$ENDIF}NewValue: string; LineNumber: Integer); override;
+    procedure SetLine(const NewValue: string; LineNumber: Integer); override;
     function  GetRange: Pointer; override;
     procedure SetRange(Value: Pointer); override;
     procedure ResetRange; override;
@@ -1193,7 +1189,7 @@ end;
 
 procedure TSynMultiSyn.HookHighlighter(aHL: TSynCustomHighlighter);
 begin
-  aHL.HookAttrChangeEvent( {$IFDEF FPC}@{$ENDIF}DefHighlightChange );
+  aHL.HookAttrChangeEvent( @DefHighlightChange );
 end;
 
 procedure TSynMultiSyn.Next;
@@ -1433,7 +1429,7 @@ begin
   Result := TSynHighlighterMultiRangeList(inherited CurrentRanges)
 end;
 
-procedure TSynMultiSyn.SetLine({$IFDEF FPC}const {$ENDIF}NewValue: string;
+procedure TSynMultiSyn.SetLine(const NewValue: string;
   LineNumber: Integer);
   procedure InitRunSection(ASchemeIdx: Integer);
   var
@@ -1520,7 +1516,7 @@ procedure TSynMultiSyn.UnhookHighlighter(aHL: TSynCustomHighlighter);
 begin
   if csDestroying in aHL.ComponentState then
     Exit;
-  aHL.UnhookAttrChangeEvent( {$IFDEF FPC}@{$ENDIF}DefHighlightChange );
+  aHL.UnhookAttrChangeEvent( @DefHighlightChange );
 end;
 
 function TSynMultiSyn.GetSampleSource: string;
@@ -1612,19 +1608,16 @@ begin
     Items[i].ClearLinesSet;
 end;
 
-{$IFDEF SYN_COMPILER_3_UP}
 function TSynHighlighterMultiSchemeList.GetOwner: TPersistent;
 begin
   Result := Owner;
 end;
-{$ENDIF}
 
 procedure TSynHighlighterMultiSchemeList.SetItems(Index: integer; const Value: TSynHighlighterMultiScheme);
 begin
   inherited Items[Index] := Value;
 end;
 
-{$IFDEF SYN_COMPILER_3_UP}
 procedure TSynHighlighterMultiSchemeList.Update(Item: TCollectionItem);
 begin
   // property of an Item changed
@@ -1638,8 +1631,6 @@ begin
   inherited Notify(Item, Action);
   Owner.SchemeChanged;
 end;
-
-{$ENDIF}
 
 { TSynHighlighterMultiScheme }
 
@@ -1679,7 +1670,7 @@ begin
   FEndExprScanner := TRegExpr.Create;
   fCaseSensitive := True;
   fMarkerAttri := TSynHighlighterAttributes.Create(SYNS_AttrMarker, SYNS_XML_AttrMarker);
-  fMarkerAttri.OnChange := {$IFDEF FPC}@{$ENDIF}MarkerAttriChanged;
+  fMarkerAttri.OnChange := @MarkerAttriChanged;
   MarkerAttri.Background := clYellow;
   MarkerAttri.Style := [fsBold];
   MarkerAttri.InternalSaveDefaultValues;
@@ -1769,7 +1760,6 @@ begin
   until False;
 end;
 
-{$IFDEF SYN_COMPILER_3_UP}
 function TSynHighlighterMultiScheme.GetDisplayName: String;
 begin
   if SchemeName <> '' then
@@ -1777,7 +1767,6 @@ begin
   else
     Result := inherited GetDisplayName;
 end;
-{$ENDIF SYN_COMPILER_3_UP}
 
 procedure TSynHighlighterMultiScheme.MarkerAttriChanged(Sender: TObject);
 begin
@@ -1805,12 +1794,10 @@ begin
     FHighlighter.CurrentLines := AValue;
 end;
 
-{$IFDEF SYN_COMPILER_3_UP}
 procedure TSynHighlighterMultiScheme.SetDisplayName(const Value: String);
 begin
   SchemeName := Value;
 end;
-{$ENDIF SYN_COMPILER_3_UP}
 
 procedure TSynHighlighterMultiScheme.SetEndExpr(const Value: string);
 var OldValue: String;

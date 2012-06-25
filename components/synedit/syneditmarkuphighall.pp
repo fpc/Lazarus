@@ -586,10 +586,10 @@ end;
 procedure TSynEditMarkupHighlightAllCaret.SetSelection(const AValue: TSynEditSelection);
 begin
   if Assigned(FSelection) then
-    FSelection.RemoveChangeHandler({$IFDEF FPC}@{$ENDIF}SelectionChanged);
+    FSelection.RemoveChangeHandler(@SelectionChanged);
   FSelection := AValue;
   if Assigned(FSelection) then
-    FSelection.AddChangeHandler({$IFDEF FPC}@{$ENDIF}SelectionChanged);
+    FSelection.AddChangeHandler(@SelectionChanged);
 end;
 
 procedure TSynEditMarkupHighlightAllCaret.SetTrim(const AValue: Boolean);
@@ -738,14 +738,14 @@ begin
   FTimer := TTimer.Create(nil);
   FTimer.Enabled := False;
   FTimer.Interval := FWaitTime;
-  FTimer.OnTimer := {$IFDEF FPC}@{$ENDIF}ScrollTimerHandler;
+  FTimer.OnTimer := @ScrollTimerHandler;
   MarkupInfo.Clear;
 end;
 
 destructor TSynEditMarkupHighlightAllCaret.Destroy;
 begin
   if Assigned(FSelection) then
-    FSelection.RemoveChangeHandler({$IFDEF FPC}@{$ENDIF}SelectionChanged);
+    FSelection.RemoveChangeHandler(@SelectionChanged);
   FreeAndNil(FTimer);
   inherited Destroy;
 end;

@@ -181,15 +181,13 @@ type
     function GetRange(Index: Pointer): TSynManagedStorageMem; override;
     procedure PutRange(Index: Pointer; const ARange: TSynManagedStorageMem); override;
     function Get(Index: integer): string; override;
-    function GetCapacity: integer;
-      {$IFDEF SYN_COMPILER_3_UP} override; {$ENDIF}                             //mh 2000-10-18
+    function GetCapacity: integer; override;
     function GetCount: integer; override;
     procedure SetCount(const AValue: Integer);
     function GetObject(Index: integer): TObject; override;
     procedure Put(Index: integer; const S: string); override;
     procedure PutObject(Index: integer; AObject: TObject); override;
-    procedure SetCapacity(NewCapacity: integer);
-      {$IFDEF SYN_COMPILER_3_UP} override; {$ENDIF}                             //mh 2000-10-18
+    procedure SetCapacity(NewCapacity: integer); override;
     procedure SetUpdateState(Updating: Boolean; Sender: TObject); override;
 
     procedure UndoEditLinesDelete(LogY, ACount: Integer);
@@ -254,15 +252,7 @@ type
 
 implementation
 
-{$IFNDEF FPC}
-  {$IFDEF SYN_COMPILER_3_UP}
-resourcestring
-  {$ELSE}
 const
-  {$ENDIF}
-{$ELSE}
-const
-{$ENDIF}
   SListIndexOutOfBounds = 'Invalid stringlist index %d';
 
 type
@@ -550,9 +540,9 @@ begin
 
   FAttachedSynEditList := TFPList.Create;
   FUndoList := TSynEditUndoList.Create;
-  fUndoList.OnAddedUndo := {$IFDEF FPC}@{$ENDIF}UndoRedoAdded;
+  fUndoList.OnAddedUndo := @UndoRedoAdded;
   FRedoList := TSynEditUndoList.Create;
-  fRedoList.OnAddedUndo := {$IFDEF FPC}@{$ENDIF}UndoRedoAdded;
+  fRedoList.OnAddedUndo := @UndoRedoAdded;
   FIsUndoing := False;
   FIsRedoing := False;
   FModified := False;

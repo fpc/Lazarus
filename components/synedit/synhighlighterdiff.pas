@@ -138,7 +138,7 @@ type
     procedure Next; override;
     function GetEol: Boolean; override;
 
-    procedure SetLine({$IFDEF FPC}const {$ENDIF}NewValue: String;
+    procedure SetLine(const NewValue: String;
       LineNumber: Integer); override;
     function GetRange: Pointer; override;
     procedure SetRange(Value: Pointer); override;
@@ -647,7 +647,7 @@ begin
   Result := fTokenId = tkNull;
 end;
 
-procedure TSynDiffSyn.SetLine({$IFDEF FPC}const {$ENDIF}NewValue: String;
+procedure TSynDiffSyn.SetLine(const NewValue: String;
   LineNumber: Integer);
 begin
   inherited;

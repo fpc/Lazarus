@@ -253,9 +253,7 @@ var
 begin
   Canvas.Brush.Color := Color;
   dc := Canvas.Handle;
-  {$IFDEF SYN_LAZARUS}
   LCLIntf.SetBkColor(dc, TColorRef(Canvas.Brush.Color));
-  {$ENDIF}
 
   // Clear all
   TextDrawer.BeginDrawing(dc);

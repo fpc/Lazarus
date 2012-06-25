@@ -59,14 +59,12 @@ type
     function GetTextChangeStamp: int64;
   protected
     function Get(Index: integer): string; override;
-    function GetCapacity: integer;
-      {$IFDEF SYN_COMPILER_3_UP} override; {$ENDIF}                             //mh 2000-10-18
+    function GetCapacity: integer; override;
     function GetCount: integer; override;
     function GetObject(Index: integer): TObject; override;
     procedure Put(Index: integer; const S: string); override;
     procedure PutObject(Index: integer; AObject: TObject); override;
-    procedure SetCapacity(NewCapacity: integer);
-                                   {$IFDEF SYN_COMPILER_3_UP} override; {$ENDIF}
+    procedure SetCapacity(NewCapacity: integer); override;
     procedure SetUpdateState(Updating: Boolean); override;
   public
     constructor Create(ATextBuffer: TSynEditStringList; OnSaved: TSavedNotification);

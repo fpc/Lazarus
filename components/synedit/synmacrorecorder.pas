@@ -515,9 +515,9 @@ begin
   if (PlaybackCommandID <> ecNone) and (PlaybackShortCut <> 0) then
     HookEditor( aEditor, PlaybackCommandID, 0, PlaybackShortCut, []);
 
-  aEditor.RegisterCommandHandler( {$IFDEF FPC}@{$ENDIF}OnCommand, Self, [hcfPreExec]);
-  aEditor.RegisterCommandHandler( {$IFDEF FPC}@{$ENDIF}OnPreCommand, Self, [hcfInit]);
-  aEditor.RegisterCommandHandler( {$IFDEF FPC}@{$ENDIF}OnFinishCommand, Self, [hcfFinish]);
+  aEditor.RegisterCommandHandler( @OnCommand, Self, [hcfPreExec]);
+  aEditor.RegisterCommandHandler( @OnPreCommand, Self, [hcfInit]);
+  aEditor.RegisterCommandHandler( @OnFinishCommand, Self, [hcfFinish]);
 end;
 
 procedure TCustomSynMacroRecorder.DoEditorRemoving(aEditor: TCustomSynEdit);
@@ -527,9 +527,9 @@ begin
   if PlaybackCommandID <> ecNone then
     UnHookEditor( aEditor, PlaybackCommandID, PlaybackShortCut );
 
-  aEditor.UnregisterCommandHandler( {$IFDEF FPC}@{$ENDIF}OnCommand);
-  aEditor.UnregisterCommandHandler( {$IFDEF FPC}@{$ENDIF}OnPreCommand);
-  aEditor.UnregisterCommandHandler( {$IFDEF FPC}@{$ENDIF}OnFinishCommand);
+  aEditor.UnregisterCommandHandler( @OnCommand);
+  aEditor.UnregisterCommandHandler( @OnPreCommand);
+  aEditor.UnregisterCommandHandler( @OnFinishCommand);
 end;
 
 procedure TCustomSynMacroRecorder.Error(const aMsg: String);
@@ -1171,7 +1171,6 @@ end;
 
 { TSynStringEvent }
 
-{$IFNDEF SYN_COMPILER_3_UP}
 function QuotedStr(const S: string; QuoteChar: Char): string;
 var
   i: Integer;
@@ -1182,17 +1181,12 @@ begin
       Insert(QuoteChar, Result, i);
   Result := QuoteChar + Result + QuoteChar;
 end;
-{$ENDIF}
 
 function TSynStringEvent.GetAsString: string;
 begin
   Result := '';
   EditorCommandToIdent(ecString, Result);
-  {$IFDEF SYN_COMPILER_3_UP}
   Result := Result + ' ' + AnsiQuotedStr(Value, #39);
-  {$ELSE}
-  Result := Result + ' ' + QuotedStr(Value, #39);
-  {$ENDIF}
   if RepeatCount > 1 then
     Result := Result + ' ' + IntToStr(RepeatCount);
 end;

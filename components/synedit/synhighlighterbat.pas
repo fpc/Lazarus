@@ -50,11 +50,7 @@ interface
 
 uses
   Classes,
-  {$IFDEF SYN_CLX}
-  QControls, QGraphics,
-  {$ELSE}
   Graphics,
-  {$ENDIF}
   SynEditTypes, SynEditHighlighter;
 
 type
@@ -136,7 +132,7 @@ type
       override;
     function GetEol: Boolean; override;
     function GetTokenID: TtkTokenKind;
-    procedure SetLine({$IFDEF FPC}const {$ENDIF}NewValue: String; LineNumber: Integer); override;
+    procedure SetLine(const NewValue: String; LineNumber: Integer); override;
     function GetToken: String; override;
     procedure GetTokenEx(out TokenStart: PChar; out TokenLength: integer); override;
     function GetTokenAttribute: TSynHighlighterAttributes; override;
@@ -414,7 +410,7 @@ begin
   fDefaultFilter := SYNS_FilterBatch;
 end;
 
-procedure TSynBatSyn.SetLine({$IFDEF FPC}const {$ENDIF}NewValue: String; LineNumber: Integer);
+procedure TSynBatSyn.SetLine(const NewValue: String; LineNumber: Integer);
 begin
   inherited;
   fLine := PChar(NewValue);
@@ -517,10 +513,8 @@ begin
   else
 {$ENDIF}
   inc(Run);
-  {$IFDEF SYN_LAZARUS}
   while (fLine[Run] in [#128..#191]) OR // continued utf8 subcode
    ((fLine[Run]<>#0) and (fProcTable[fLine[Run]] = @UnknownProc)) do inc(Run);
-  {$ENDIF}
   fTokenID := tkUnknown;
   //inc(Run);
   //fTokenID := tkUnknown;

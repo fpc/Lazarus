@@ -74,7 +74,7 @@ type
     procedure EndXmlCodeFoldBlock;
     procedure EndXmlNodeCodeFoldBlock(ClosePos: Integer = -1; AName: String = '');
   public
-    procedure SetLine({$IFDEF FPC}const {$ENDIF}NewValue: string; LineNumber:Integer); override;
+    procedure SetLine(const NewValue: string; LineNumber:Integer); override;
   end;
 
 implementation
@@ -102,7 +102,7 @@ begin
   end;
 end;
 
-procedure TSynCustomXmlHighlighter.SetLine({$IFDEF FPC}const {$ENDIF}NewValue: string;
+procedure TSynCustomXmlHighlighter.SetLine(const NewValue: string;
   LineNumber:Integer);
 begin
   inherited;

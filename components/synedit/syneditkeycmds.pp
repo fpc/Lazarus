@@ -42,12 +42,7 @@ unit SynEditKeyCmds;
 interface
 
 uses
-  {$IFDEF SYN_LAZARUS}
-  LCLIntf, LCLType,
-  {$ELSE}
-  Windows,
-  {$ENDIF}
-  Classes, Menus, SysUtils;
+  Classes, Menus, SysUtils, LCLIntf, LCLType;
 
 const
   //****************************************************************************
@@ -313,9 +308,7 @@ type
     procedure SetShortCut(const Value: TShortCut);
     procedure SetShortCut2(const Value: TShortCut);
   protected
-{$IFDEF SYN_COMPILER_3_UP}
     function GetDisplayName: string; override;
-{$ENDIF}
   public
     procedure Assign(Source: TPersistent); override;
 {begin}                                                                         //ac 2000-07-05
@@ -347,9 +340,7 @@ type
     function GetItem(Index: Integer): TSynEditKeyStroke;
     procedure SetItem(Index: Integer; Value: TSynEditKeyStroke);
   protected
-{$IFDEF SYN_COMPILER_3_UP}
     function GetOwner: TPersistent; override;
-{$ENDIF}
     function FindKeycode2(Code1: word; SS1: TShiftState;
       Code2: word; SS2: TShiftState): integer;
     function FindKeycode2Start(Code: word; SS: TShiftState): integer;
@@ -486,15 +477,6 @@ end;
 
 
 { Command mapping routines }
-
-{$IFDEF SYN_COMPILER_2}
-// This is defined in D3/C3 and up.
-type
-  TIdentMapEntry = record
-    Value: TSynEditorCommand;
-    Name: string;
-  end;
-{$ENDIF}
 
 const
   EditorCommandStrs: array[0..153] of TIdentMapEntry = (
@@ -770,7 +752,6 @@ begin
     inherited Assign(Source);
 end;
 
-{$IFDEF SYN_COMPILER_3_UP}
 function TSynEditKeyStroke.GetDisplayName: string;
 begin
   Result := EditorCommandToCodeString(Command) + ' - ' + ShortCutToText(ShortCut);
@@ -779,7 +760,6 @@ begin
   if Result = '' then
     Result := inherited GetDisplayName;
 end;
-{$ENDIF}
 
 function TSynEditKeyStroke.GetShortCut: TShortCut;
 begin
@@ -969,10 +949,6 @@ function TSynEditKeyStrokes.FindKeycodeEx(Code: word; SS: TShiftState; var Data:
 var
   i: integer;
   CurComboStart: TSynEditKeyStrokes;
-{$IFNDEF SYN_COMPILER_3_UP}
-const
-  VK_ACCEPT = $30;
-{$ENDIF}
 begin
   (* if FinishComboOnly=True then ComboStart are the KeyStrokes, which have the
      already received keys.
@@ -1094,12 +1070,10 @@ begin
   Result := TSynEditKeyStroke(inherited GetItem(Index));
 end;
 
-{$IFDEF SYN_COMPILER_3_UP}
 function TSynEditKeyStrokes.GetOwner: TPersistent;
 begin
   Result := FOwner;
 end;
-{$ENDIF}
 
 {begin}                                                                         //ac 2000-07-05
 procedure TSynEditKeyStrokes.LoadFromStream(AStream: TStream);
@@ -1259,8 +1233,8 @@ end;
 
 initialization
   RegisterIntegerConsts(TypeInfo(TSynEditorCommand),
-                        {$IFDEF FPC}@{$ENDIF}IdentToEditorCommand,
-                        {$IFDEF FPC}@{$ENDIF}EditorCommandToIdent);
+                        @IdentToEditorCommand,
+                        @EditorCommandToIdent);
 
 finalization
   ExtraIdentToIntFn := nil;

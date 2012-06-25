@@ -513,7 +513,7 @@ begin
   if FGutterPartList <> nil then
     FreeAndNil(FGutterPartList);
   FGutterPartList := APartList;
-  FGutterPartList.OnChange := {$IFDEF FPC}@{$ENDIF}DoChange;
+  FGutterPartList.OnChange := @DoChange;
 end;
 
 procedure TSynGutterBase.Clear;
@@ -625,7 +625,7 @@ begin
   FMarkupInfo.Background := clBtnFace;
   FMarkupInfo.Foreground := clNone;
   FMarkupInfo.FrameColor := clNone;
-  FMarkupInfo.OnChange := {$IFDEF FPC}@{$ENDIF}DoChange;
+  FMarkupInfo.OnChange := @DoChange;
 
   FMouseActions := CreateMouseActions;
 
@@ -739,8 +739,8 @@ end;
 
 procedure TSynGutterPartListBase.RegisterItem(AnItem: TSynObjectListItem);
 begin
-  TSynGutterPartBase(AnItem).OnChange := {$IFDEF FPC}@{$ENDIF}DoChange;
-  TSynGutterPartBase(AnItem).OnGutterClick := {$IFDEF FPC}@{$ENDIF}Gutter.DoDefaultGutterClick;
+  TSynGutterPartBase(AnItem).OnChange := @DoChange;
+  TSynGutterPartBase(AnItem).OnGutterClick := @Gutter.DoDefaultGutterClick;
   inherited RegisterItem(AnItem);
 end;
 

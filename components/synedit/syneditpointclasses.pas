@@ -758,7 +758,7 @@ begin
   FIsSettingText := False;
   if FHookedLines then begin
     FLines.AddEditHandler(@DoLinesEdited);
-    FLines.AddChangeHandler(senrLineChange, {$IFDEF FPC}@{$ENDIF}LineChanged);
+    FLines.AddChangeHandler(senrLineChange, @LineChanged);
   end;
 end;
 
@@ -767,7 +767,7 @@ begin
   FreeAndNil(FInternalCaret);
   if FHookedLines then begin
     FLines.RemoveEditHandler(@DoLinesEdited);
-    FLines.RemoveChangeHandler(senrLineChange, {$IFDEF FPC}@{$ENDIF}LineChanged);
+    FLines.RemoveChangeHandler(senrLineChange, @LineChanged);
   end;
   inherited Destroy;
 end;
@@ -1153,15 +1153,7 @@ var
           r := FInternalCaret.CharPos;
           // swap l, r if needed
           if l > r then
-          {$IFDEF SYN_COMPILER_3_UP}
             SwapInt(l, r);
-          {$ELSE}
-          begin
-            y := l;
-            l := r;
-            r := y;
-          end;
-          {$ENDIF}
           for y := BB.Y to BE.Y do begin
             FInternalCaret.LineCharPos := Point(l, y);
             xb := FInternalCaret.BytePos;

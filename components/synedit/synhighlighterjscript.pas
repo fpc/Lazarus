@@ -45,24 +45,16 @@ The highlighter formats JavaScript source code highlighting keywords, strings, n
 
 { Converted for Lazarus on 2007-12-11 by DiBo33 }
 
-{$IFNDEF QSYNHIGHLIGHTERJSCRIPT}
 unit SynHighlighterJScript;
-{$ENDIF}
 
 {$I SynEdit.inc}
 
 interface
 
 uses
-{$IFDEF SYN_CLX}
-  QGraphics,
-  QSynEditTypes,
-  QSynEditHighlighter,
-{$ELSE}
   Graphics,
   SynEditTypes,
   SynEditHighlighter,
-{$ENDIF}
   SysUtils, Classes;
 
 type
@@ -272,10 +264,8 @@ type
     function GetEol: Boolean; override;
     function GetRange: Pointer; override;
     function GetTokenID: TtkTokenKind;
-    {$IFDEF SYN_LAZARUS}
     procedure GetTokenEx(out TokenStart: PChar; out TokenLength: integer); override;
-    {$ENDIF}
-    procedure SetLine({$IFDEF FPC}const {$ENDIF}NewValue: String; LineNumber: Integer); override;
+    procedure SetLine(const NewValue: String; LineNumber: Integer); override;
     function GetToken: String; override;
     function GetTokenAttribute: TSynHighlighterAttributes; override;
     function GetTokenKind: integer; override;
@@ -304,11 +294,7 @@ type
 implementation
 
 uses
-{$IFDEF SYN_CLX}
-  QSynEditStrConst;
-{$ELSE}
   SynEditStrConst;
-{$ENDIF}
 
 var
   Identifiers: array[#0..#255] of ByteBool;
@@ -339,146 +325,146 @@ var
 begin
   pF := PIdentFuncTableFunc(@fIdentFuncTable);
   for I := Low(fIdentFuncTable) to High(fIdentFuncTable) do begin
-    pF^ := {$IFDEF FPC}@{$ENDIF}AltFunc;
+    pF^ := @AltFunc;
     Inc(pF);
   end;
-  fIdentFuncTable[5] := {$IFDEF FPC}@{$ENDIF}Func5;
-  fIdentFuncTable[15] := {$IFDEF FPC}@{$ENDIF}Func15;
-  fIdentFuncTable[17] := {$IFDEF FPC}@{$ENDIF}Func17;
-  fIdentFuncTable[18] := {$IFDEF FPC}@{$ENDIF}Func18;
-  fIdentFuncTable[19] := {$IFDEF FPC}@{$ENDIF}Func19;
-  fIdentFuncTable[22] := {$IFDEF FPC}@{$ENDIF}Func22;
-  fIdentFuncTable[23] := {$IFDEF FPC}@{$ENDIF}Func23;
-  fIdentFuncTable[25] := {$IFDEF FPC}@{$ENDIF}Func25;
-  fIdentFuncTable[26] := {$IFDEF FPC}@{$ENDIF}Func26;
-  fIdentFuncTable[28] := {$IFDEF FPC}@{$ENDIF}Func28;
-  fIdentFuncTable[29] := {$IFDEF FPC}@{$ENDIF}Func29;
-  fIdentFuncTable[30] := {$IFDEF FPC}@{$ENDIF}Func30;
-  fIdentFuncTable[33] := {$IFDEF FPC}@{$ENDIF}Func33;
-  fIdentFuncTable[34] := {$IFDEF FPC}@{$ENDIF}Func34;
-  fIdentFuncTable[35] := {$IFDEF FPC}@{$ENDIF}Func35;
-  fIdentFuncTable[36] := {$IFDEF FPC}@{$ENDIF}Func36;
-  fIdentFuncTable[37] := {$IFDEF FPC}@{$ENDIF}Func37;
-  fIdentFuncTable[38] := {$IFDEF FPC}@{$ENDIF}Func38;
-  fIdentFuncTable[39] := {$IFDEF FPC}@{$ENDIF}Func39;
-  fIdentFuncTable[40] := {$IFDEF FPC}@{$ENDIF}Func40;
-  fIdentFuncTable[41] := {$IFDEF FPC}@{$ENDIF}Func41;
-  fIdentFuncTable[42] := {$IFDEF FPC}@{$ENDIF}Func42;
-  fIdentFuncTable[43] := {$IFDEF FPC}@{$ENDIF}Func43;
-  fIdentFuncTable[44] := {$IFDEF FPC}@{$ENDIF}Func44;
-  fIdentFuncTable[45] := {$IFDEF FPC}@{$ENDIF}Func45;
-  fIdentFuncTable[46] := {$IFDEF FPC}@{$ENDIF}Func46;
-  fIdentFuncTable[47] := {$IFDEF FPC}@{$ENDIF}Func47;
-  fIdentFuncTable[48] := {$IFDEF FPC}@{$ENDIF}Func48;
-  fIdentFuncTable[49] := {$IFDEF FPC}@{$ENDIF}Func49;
-  fIdentFuncTable[50] := {$IFDEF FPC}@{$ENDIF}Func50;
-  fIdentFuncTable[51] := {$IFDEF FPC}@{$ENDIF}Func51;
-  fIdentFuncTable[52] := {$IFDEF FPC}@{$ENDIF}Func52;
-  fIdentFuncTable[53] := {$IFDEF FPC}@{$ENDIF}Func53;
-  fIdentFuncTable[54] := {$IFDEF FPC}@{$ENDIF}Func54;
-  fIdentFuncTable[55] := {$IFDEF FPC}@{$ENDIF}Func55;
-  fIdentFuncTable[56] := {$IFDEF FPC}@{$ENDIF}Func56;
-  fIdentFuncTable[57] := {$IFDEF FPC}@{$ENDIF}Func57;
-  fIdentFuncTable[58] := {$IFDEF FPC}@{$ENDIF}Func58;
-  fIdentFuncTable[59] := {$IFDEF FPC}@{$ENDIF}Func59;
-  fIdentFuncTable[60] := {$IFDEF FPC}@{$ENDIF}Func60;
-  fIdentFuncTable[61] := {$IFDEF FPC}@{$ENDIF}Func61;
-  fIdentFuncTable[62] := {$IFDEF FPC}@{$ENDIF}Func62;
-  fIdentFuncTable[63] := {$IFDEF FPC}@{$ENDIF}Func63;
-  fIdentFuncTable[64] := {$IFDEF FPC}@{$ENDIF}Func64;
-  fIdentFuncTable[65] := {$IFDEF FPC}@{$ENDIF}Func65;
-  fIdentFuncTable[66] := {$IFDEF FPC}@{$ENDIF}Func66;
-  fIdentFuncTable[67] := {$IFDEF FPC}@{$ENDIF}Func67;
-  fIdentFuncTable[69] := {$IFDEF FPC}@{$ENDIF}Func69;
-  fIdentFuncTable[70] := {$IFDEF FPC}@{$ENDIF}Func70;
-  fIdentFuncTable[71] := {$IFDEF FPC}@{$ENDIF}Func71;
-  fIdentFuncTable[72] := {$IFDEF FPC}@{$ENDIF}Func72;
-  fIdentFuncTable[73] := {$IFDEF FPC}@{$ENDIF}Func73;
-  fIdentFuncTable[74] := {$IFDEF FPC}@{$ENDIF}Func74;
-  fIdentFuncTable[75] := {$IFDEF FPC}@{$ENDIF}Func75;
-  fIdentFuncTable[76] := {$IFDEF FPC}@{$ENDIF}Func76;
-  fIdentFuncTable[77] := {$IFDEF FPC}@{$ENDIF}Func77;
-  fIdentFuncTable[78] := {$IFDEF FPC}@{$ENDIF}Func78;
-  fIdentFuncTable[79] := {$IFDEF FPC}@{$ENDIF}Func79;
-  fIdentFuncTable[80] := {$IFDEF FPC}@{$ENDIF}Func80;
-  fIdentFuncTable[81] := {$IFDEF FPC}@{$ENDIF}Func81;
-  fIdentFuncTable[82] := {$IFDEF FPC}@{$ENDIF}Func82;
-  fIdentFuncTable[83] := {$IFDEF FPC}@{$ENDIF}Func83;
-  fIdentFuncTable[84] := {$IFDEF FPC}@{$ENDIF}Func84;
-  fIdentFuncTable[85] := {$IFDEF FPC}@{$ENDIF}Func85;
-  fIdentFuncTable[86] := {$IFDEF FPC}@{$ENDIF}Func86;
-  fIdentFuncTable[87] := {$IFDEF FPC}@{$ENDIF}Func87;
-  fIdentFuncTable[88] := {$IFDEF FPC}@{$ENDIF}Func88;
-  fIdentFuncTable[89] := {$IFDEF FPC}@{$ENDIF}Func89;
-  fIdentFuncTable[90] := {$IFDEF FPC}@{$ENDIF}Func90;
-  fIdentFuncTable[91] := {$IFDEF FPC}@{$ENDIF}Func91;
-  fIdentFuncTable[92] := {$IFDEF FPC}@{$ENDIF}Func92;
-  fIdentFuncTable[93] := {$IFDEF FPC}@{$ENDIF}Func93;
-  fIdentFuncTable[94] := {$IFDEF FPC}@{$ENDIF}Func94;
-  fIdentFuncTable[95] := {$IFDEF FPC}@{$ENDIF}Func95;
-  fIdentFuncTable[96] := {$IFDEF FPC}@{$ENDIF}Func96;
-  fIdentFuncTable[98] := {$IFDEF FPC}@{$ENDIF}Func98;
-  fIdentFuncTable[99] := {$IFDEF FPC}@{$ENDIF}Func99;
-  fIdentFuncTable[100] := {$IFDEF FPC}@{$ENDIF}Func100;
-  fIdentFuncTable[101] := {$IFDEF FPC}@{$ENDIF}Func101;
-  fIdentFuncTable[102] := {$IFDEF FPC}@{$ENDIF}Func102;
-  fIdentFuncTable[103] := {$IFDEF FPC}@{$ENDIF}Func103;
-  fIdentFuncTable[105] := {$IFDEF FPC}@{$ENDIF}Func105;
-  fIdentFuncTable[106] := {$IFDEF FPC}@{$ENDIF}Func106;
-  fIdentFuncTable[107] := {$IFDEF FPC}@{$ENDIF}Func107;
-  fIdentFuncTable[108] := {$IFDEF FPC}@{$ENDIF}Func108;
-  fIdentFuncTable[109] := {$IFDEF FPC}@{$ENDIF}Func109;
-  fIdentFuncTable[110] := {$IFDEF FPC}@{$ENDIF}Func110;
-  fIdentFuncTable[111] := {$IFDEF FPC}@{$ENDIF}Func111;
-  fIdentFuncTable[113] := {$IFDEF FPC}@{$ENDIF}Func113;
-  fIdentFuncTable[114] := {$IFDEF FPC}@{$ENDIF}Func114;
-  fIdentFuncTable[115] := {$IFDEF FPC}@{$ENDIF}Func115;
-  fIdentFuncTable[116] := {$IFDEF FPC}@{$ENDIF}Func116;
-  fIdentFuncTable[117] := {$IFDEF FPC}@{$ENDIF}Func117;
-  fIdentFuncTable[118] := {$IFDEF FPC}@{$ENDIF}Func118;
-  fIdentFuncTable[119] := {$IFDEF FPC}@{$ENDIF}Func119;
-  fIdentFuncTable[120] := {$IFDEF FPC}@{$ENDIF}Func120;
-  fIdentFuncTable[121] := {$IFDEF FPC}@{$ENDIF}Func121;
-  fIdentFuncTable[122] := {$IFDEF FPC}@{$ENDIF}Func122;
-  fIdentFuncTable[123] := {$IFDEF FPC}@{$ENDIF}Func123;
-  fIdentFuncTable[124] := {$IFDEF FPC}@{$ENDIF}Func124;
-  fIdentFuncTable[125] := {$IFDEF FPC}@{$ENDIF}Func125;
-  fIdentFuncTable[126] := {$IFDEF FPC}@{$ENDIF}Func126;
-  fIdentFuncTable[128] := {$IFDEF FPC}@{$ENDIF}Func128;
-  fIdentFuncTable[129] := {$IFDEF FPC}@{$ENDIF}Func129;
-  fIdentFuncTable[130] := {$IFDEF FPC}@{$ENDIF}Func130;
-  fIdentFuncTable[131] := {$IFDEF FPC}@{$ENDIF}Func131;
-  fIdentFuncTable[132] := {$IFDEF FPC}@{$ENDIF}Func132;
-  fIdentFuncTable[133] := {$IFDEF FPC}@{$ENDIF}Func133;
-  fIdentFuncTable[135] := {$IFDEF FPC}@{$ENDIF}Func135;
-  fIdentFuncTable[136] := {$IFDEF FPC}@{$ENDIF}Func136;
-  fIdentFuncTable[139] := {$IFDEF FPC}@{$ENDIF}Func139;
-  fIdentFuncTable[140] := {$IFDEF FPC}@{$ENDIF}Func140;
-  fIdentFuncTable[142] := {$IFDEF FPC}@{$ENDIF}Func142;
-  fIdentFuncTable[143] := {$IFDEF FPC}@{$ENDIF}Func143;
-  fIdentFuncTable[144] := {$IFDEF FPC}@{$ENDIF}Func144;
-  fIdentFuncTable[145] := {$IFDEF FPC}@{$ENDIF}Func145;
-  fIdentFuncTable[146] := {$IFDEF FPC}@{$ENDIF}Func146;
-  fIdentFuncTable[147] := {$IFDEF FPC}@{$ENDIF}Func147;
-  fIdentFuncTable[150] := {$IFDEF FPC}@{$ENDIF}Func150;
-  fIdentFuncTable[155] := {$IFDEF FPC}@{$ENDIF}Func155;
-  fIdentFuncTable[157] := {$IFDEF FPC}@{$ENDIF}Func157;
-  fIdentFuncTable[158] := {$IFDEF FPC}@{$ENDIF}Func158;
-  fIdentFuncTable[160] := {$IFDEF FPC}@{$ENDIF}Func160;
-  fIdentFuncTable[162] := {$IFDEF FPC}@{$ENDIF}Func162;
-  fIdentFuncTable[166] := {$IFDEF FPC}@{$ENDIF}Func166;
-  fIdentFuncTable[167] := {$IFDEF FPC}@{$ENDIF}Func167;
-  fIdentFuncTable[169] := {$IFDEF FPC}@{$ENDIF}Func169;
-  fIdentFuncTable[170] := {$IFDEF FPC}@{$ENDIF}Func170;
-  fIdentFuncTable[176] := {$IFDEF FPC}@{$ENDIF}Func176;
-  fIdentFuncTable[177] := {$IFDEF FPC}@{$ENDIF}Func177;
-  fIdentFuncTable[178] := {$IFDEF FPC}@{$ENDIF}Func178;
-  fIdentFuncTable[188] := {$IFDEF FPC}@{$ENDIF}Func188;
-  fIdentFuncTable[189] := {$IFDEF FPC}@{$ENDIF}Func189;
-  fIdentFuncTable[210] := {$IFDEF FPC}@{$ENDIF}Func210;
-  fIdentFuncTable[220] := {$IFDEF FPC}@{$ENDIF}Func220;
-  fIdentFuncTable[222] := {$IFDEF FPC}@{$ENDIF}Func222;
-  fIdentFuncTable[252] := {$IFDEF FPC}@{$ENDIF}Func252;
+  fIdentFuncTable[5] := @Func5;
+  fIdentFuncTable[15] := @Func15;
+  fIdentFuncTable[17] := @Func17;
+  fIdentFuncTable[18] := @Func18;
+  fIdentFuncTable[19] := @Func19;
+  fIdentFuncTable[22] := @Func22;
+  fIdentFuncTable[23] := @Func23;
+  fIdentFuncTable[25] := @Func25;
+  fIdentFuncTable[26] := @Func26;
+  fIdentFuncTable[28] := @Func28;
+  fIdentFuncTable[29] := @Func29;
+  fIdentFuncTable[30] := @Func30;
+  fIdentFuncTable[33] := @Func33;
+  fIdentFuncTable[34] := @Func34;
+  fIdentFuncTable[35] := @Func35;
+  fIdentFuncTable[36] := @Func36;
+  fIdentFuncTable[37] := @Func37;
+  fIdentFuncTable[38] := @Func38;
+  fIdentFuncTable[39] := @Func39;
+  fIdentFuncTable[40] := @Func40;
+  fIdentFuncTable[41] := @Func41;
+  fIdentFuncTable[42] := @Func42;
+  fIdentFuncTable[43] := @Func43;
+  fIdentFuncTable[44] := @Func44;
+  fIdentFuncTable[45] := @Func45;
+  fIdentFuncTable[46] := @Func46;
+  fIdentFuncTable[47] := @Func47;
+  fIdentFuncTable[48] := @Func48;
+  fIdentFuncTable[49] := @Func49;
+  fIdentFuncTable[50] := @Func50;
+  fIdentFuncTable[51] := @Func51;
+  fIdentFuncTable[52] := @Func52;
+  fIdentFuncTable[53] := @Func53;
+  fIdentFuncTable[54] := @Func54;
+  fIdentFuncTable[55] := @Func55;
+  fIdentFuncTable[56] := @Func56;
+  fIdentFuncTable[57] := @Func57;
+  fIdentFuncTable[58] := @Func58;
+  fIdentFuncTable[59] := @Func59;
+  fIdentFuncTable[60] := @Func60;
+  fIdentFuncTable[61] := @Func61;
+  fIdentFuncTable[62] := @Func62;
+  fIdentFuncTable[63] := @Func63;
+  fIdentFuncTable[64] := @Func64;
+  fIdentFuncTable[65] := @Func65;
+  fIdentFuncTable[66] := @Func66;
+  fIdentFuncTable[67] := @Func67;
+  fIdentFuncTable[69] := @Func69;
+  fIdentFuncTable[70] := @Func70;
+  fIdentFuncTable[71] := @Func71;
+  fIdentFuncTable[72] := @Func72;
+  fIdentFuncTable[73] := @Func73;
+  fIdentFuncTable[74] := @Func74;
+  fIdentFuncTable[75] := @Func75;
+  fIdentFuncTable[76] := @Func76;
+  fIdentFuncTable[77] := @Func77;
+  fIdentFuncTable[78] := @Func78;
+  fIdentFuncTable[79] := @Func79;
+  fIdentFuncTable[80] := @Func80;
+  fIdentFuncTable[81] := @Func81;
+  fIdentFuncTable[82] := @Func82;
+  fIdentFuncTable[83] := @Func83;
+  fIdentFuncTable[84] := @Func84;
+  fIdentFuncTable[85] := @Func85;
+  fIdentFuncTable[86] := @Func86;
+  fIdentFuncTable[87] := @Func87;
+  fIdentFuncTable[88] := @Func88;
+  fIdentFuncTable[89] := @Func89;
+  fIdentFuncTable[90] := @Func90;
+  fIdentFuncTable[91] := @Func91;
+  fIdentFuncTable[92] := @Func92;
+  fIdentFuncTable[93] := @Func93;
+  fIdentFuncTable[94] := @Func94;
+  fIdentFuncTable[95] := @Func95;
+  fIdentFuncTable[96] := @Func96;
+  fIdentFuncTable[98] := @Func98;
+  fIdentFuncTable[99] := @Func99;
+  fIdentFuncTable[100] := @Func100;
+  fIdentFuncTable[101] := @Func101;
+  fIdentFuncTable[102] := @Func102;
+  fIdentFuncTable[103] := @Func103;
+  fIdentFuncTable[105] := @Func105;
+  fIdentFuncTable[106] := @Func106;
+  fIdentFuncTable[107] := @Func107;
+  fIdentFuncTable[108] := @Func108;
+  fIdentFuncTable[109] := @Func109;
+  fIdentFuncTable[110] := @Func110;
+  fIdentFuncTable[111] := @Func111;
+  fIdentFuncTable[113] := @Func113;
+  fIdentFuncTable[114] := @Func114;
+  fIdentFuncTable[115] := @Func115;
+  fIdentFuncTable[116] := @Func116;
+  fIdentFuncTable[117] := @Func117;
+  fIdentFuncTable[118] := @Func118;
+  fIdentFuncTable[119] := @Func119;
+  fIdentFuncTable[120] := @Func120;
+  fIdentFuncTable[121] := @Func121;
+  fIdentFuncTable[122] := @Func122;
+  fIdentFuncTable[123] := @Func123;
+  fIdentFuncTable[124] := @Func124;
+  fIdentFuncTable[125] := @Func125;
+  fIdentFuncTable[126] := @Func126;
+  fIdentFuncTable[128] := @Func128;
+  fIdentFuncTable[129] := @Func129;
+  fIdentFuncTable[130] := @Func130;
+  fIdentFuncTable[131] := @Func131;
+  fIdentFuncTable[132] := @Func132;
+  fIdentFuncTable[133] := @Func133;
+  fIdentFuncTable[135] := @Func135;
+  fIdentFuncTable[136] := @Func136;
+  fIdentFuncTable[139] := @Func139;
+  fIdentFuncTable[140] := @Func140;
+  fIdentFuncTable[142] := @Func142;
+  fIdentFuncTable[143] := @Func143;
+  fIdentFuncTable[144] := @Func144;
+  fIdentFuncTable[145] := @Func145;
+  fIdentFuncTable[146] := @Func146;
+  fIdentFuncTable[147] := @Func147;
+  fIdentFuncTable[150] := @Func150;
+  fIdentFuncTable[155] := @Func155;
+  fIdentFuncTable[157] := @Func157;
+  fIdentFuncTable[158] := @Func158;
+  fIdentFuncTable[160] := @Func160;
+  fIdentFuncTable[162] := @Func162;
+  fIdentFuncTable[166] := @Func166;
+  fIdentFuncTable[167] := @Func167;
+  fIdentFuncTable[169] := @Func169;
+  fIdentFuncTable[170] := @Func170;
+  fIdentFuncTable[176] := @Func176;
+  fIdentFuncTable[177] := @Func177;
+  fIdentFuncTable[178] := @Func178;
+  fIdentFuncTable[188] := @Func188;
+  fIdentFuncTable[189] := @Func189;
+  fIdentFuncTable[210] := @Func210;
+  fIdentFuncTable[220] := @Func220;
+  fIdentFuncTable[222] := @Func222;
+  fIdentFuncTable[252] := @Func252;
 end;
 
 function TSynJScriptSyn.KeyHash(ToHash: PChar): Integer;
@@ -1472,7 +1458,7 @@ begin
   fToIdent := MayBe;
   HashKey := KeyHash(MayBe);
   if HashKey < 253 then
-    Result := fIdentFuncTable[HashKey]{$IFDEF FPC}(){$ENDIF}
+    Result := fIdentFuncTable[HashKey]()
   else
     Result := tkIdentifier;
 end;
@@ -1483,25 +1469,25 @@ var
 begin
   for I := #0 to #255 do
     case I of
-      '&': fProcTable[I] := {$IFDEF FPC}@{$ENDIF}AndSymbolProc;
-      #13: fProcTable[I] := {$IFDEF FPC}@{$ENDIF}CRProc;
-      'A'..'Z', 'a'..'z', '_': fProcTable[I] := {$IFDEF FPC}@{$ENDIF}IdentProc;
-      #10: fProcTable[I] := {$IFDEF FPC}@{$ENDIF}LFProc;
-      '-': fProcTable[I] := {$IFDEF FPC}@{$ENDIF}MinusProc;
-      '%': fProcTable[I] := {$IFDEF FPC}@{$ENDIF}ModSymbolProc;
-      #0: fProcTable[I] := {$IFDEF FPC}@{$ENDIF}NullProc;
-      '0'..'9': fProcTable[I] := {$IFDEF FPC}@{$ENDIF}NumberProc;
-      '|': fProcTable[I] := {$IFDEF FPC}@{$ENDIF}OrSymbolProc;
-      '+': fProcTable[I] := {$IFDEF FPC}@{$ENDIF}PlusProc;
-      '.': fProcTable[I] := {$IFDEF FPC}@{$ENDIF}PointProc;
-      '/': fProcTable[I] := {$IFDEF FPC}@{$ENDIF}SlashProc;
-      #1..#9, #11, #12, #14..#32: fProcTable[I] := {$IFDEF FPC}@{$ENDIF}SpaceProc;
-      '*': fProcTable[I] := {$IFDEF FPC}@{$ENDIF}StarProc;
-      '"', #39: fProcTable[I] := {$IFDEF FPC}@{$ENDIF}StringProc;
+      '&': fProcTable[I] := @AndSymbolProc;
+      #13: fProcTable[I] := @CRProc;
+      'A'..'Z', 'a'..'z', '_': fProcTable[I] := @IdentProc;
+      #10: fProcTable[I] := @LFProc;
+      '-': fProcTable[I] := @MinusProc;
+      '%': fProcTable[I] := @ModSymbolProc;
+      #0: fProcTable[I] := @NullProc;
+      '0'..'9': fProcTable[I] := @NumberProc;
+      '|': fProcTable[I] := @OrSymbolProc;
+      '+': fProcTable[I] := @PlusProc;
+      '.': fProcTable[I] := @PointProc;
+      '/': fProcTable[I] := @SlashProc;
+      #1..#9, #11, #12, #14..#32: fProcTable[I] := @SpaceProc;
+      '*': fProcTable[I] := @StarProc;
+      '"', #39: fProcTable[I] := @StringProc;
       '~', '{', '}', ',', '(', ')', '[', ']', '<', '>', ':', '?', ';', '!', '=':
-        fProcTable[I] := {$IFDEF FPC}@{$ENDIF}SymbolProc;
+        fProcTable[I] := @SymbolProc;
     else
-      fProcTable[I] := {$IFDEF FPC}@{$ENDIF}UnknownProc;
+      fProcTable[I] := @UnknownProc;
     end;
 end;
 
@@ -1528,14 +1514,14 @@ begin
   AddAttribute(fStringAttri);
   fSymbolAttri := TSynHighlighterAttributes.Create(SYNS_AttrSymbol, SYNS_XML_AttrSymbol);
   AddAttribute(fSymbolAttri);
-  SetAttributesOnChange({$IFDEF FPC}@{$ENDIF}DefHighlightChange);
+  SetAttributesOnChange(@DefHighlightChange);
   InitIdent;
   MakeMethodTables;
   fDefaultFilter := SYNS_FilterJScript;
   fRange := rsUnknown;
 end;
 
-procedure TSynJScriptSyn.SetLine({$IFDEF FPC}const {$ENDIF}NewValue: String; LineNumber: Integer);
+procedure TSynJScriptSyn.SetLine(const NewValue: String; LineNumber: Integer);
 begin
   inherited;
   fLine := PChar(NewValue);
@@ -1735,10 +1721,8 @@ begin
   else
 {$ENDIF}
   inc(Run);
-  {$IFDEF SYN_LAZARUS}
   while (fLine[Run] in [#128..#191]) OR // continued utf8 subcode
    ((fLine[Run]<>#0) and (fProcTable[fLine[Run]] = @UnknownProc)) do inc(Run);
-  {$ENDIF}
   fTokenID := tkUnknown;
 end;
 
@@ -1788,13 +1772,11 @@ begin
   Result := fTokenId;
 end;
 
-{$IFDEF SYN_LAZARUS}
 procedure TSynJScriptSyn.GetTokenEx(out TokenStart: PChar; out TokenLength: integer);
 begin
   TokenLength:=Run-fTokenPos;
   TokenStart:=FLine + fTokenPos;
 end;
-{$ENDIF}
 
 function TSynJScriptSyn.GetTokenAttribute: TSynHighlighterAttributes;
 begin

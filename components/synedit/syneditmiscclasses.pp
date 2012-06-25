@@ -1091,7 +1091,7 @@ end;
 
 procedure TSynObjectList.Sort;
 begin
-  FList.Sort({$IFDEF FPC}@{$ENDIF}CompareSynObjectListItems);
+  FList.Sort(@CompareSynObjectListItems);
 end;
 
 function TSynObjectList.Add(AnItem: TSynObjectListItem): Integer;

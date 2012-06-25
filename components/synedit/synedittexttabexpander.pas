@@ -138,9 +138,9 @@ begin
   inherited Create(ASynStringSource);
   TextBufferChanged(nil);
   TabWidth := 8;
-  fSynStrings.AddChangeHandler(senrLineCount, {$IFDEF FPC}@{$ENDIF}LineCountChanged);
-  fSynStrings.AddChangeHandler(senrLineChange, {$IFDEF FPC}@{$ENDIF}LineCountChanged);
-  fSynStrings.AddNotifyHandler(senrTextBufferChanged, {$IFDEF FPC}@{$ENDIF}TextBufferChanged);
+  fSynStrings.AddChangeHandler(senrLineCount, @LineCountChanged);
+  fSynStrings.AddChangeHandler(senrLineChange, @LineCountChanged);
+  fSynStrings.AddNotifyHandler(senrTextBufferChanged, @TextBufferChanged);
 end;
 
 destructor TSynEditStringTabExpander.Destroy;
@@ -155,9 +155,9 @@ begin
       Data.Free;
     end;
   end;
-  fSynStrings.RemoveChangeHandler(senrLineChange, {$IFDEF FPC}@{$ENDIF}LineCountChanged);
-  fSynStrings.RemoveChangeHandler(senrLineCount, {$IFDEF FPC}@{$ENDIF}LineCountChanged);
-  fSynStrings.RemoveNotifyHandler(senrTextBufferChanged, {$IFDEF FPC}@{$ENDIF}TextBufferChanged);
+  fSynStrings.RemoveChangeHandler(senrLineChange, @LineCountChanged);
+  fSynStrings.RemoveChangeHandler(senrLineCount, @LineCountChanged);
+  fSynStrings.RemoveNotifyHandler(senrTextBufferChanged, @TextBufferChanged);
   inherited Destroy;
 end;
 

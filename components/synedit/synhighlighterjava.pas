@@ -49,15 +49,7 @@ interface
 
 uses
   SysUtils, Classes,
-  {$IFDEF SYN_LAZARUS}
   LCLIntf, LCLType, Graphics,
-  {$ELSE}
-  {$IFDEF SYN_CLX}
-  Qt, QControls, QGraphics,
-  {$ELSE}
-  Windows, Messages, Controls, Graphics, Registry,
-  {$ENDIF}
-  {$ENDIF}
   SynEditTypes, SynEditHighlighter;
 
 type
@@ -206,12 +198,10 @@ type
     function GetEol: Boolean; override;
     function GetRange: Pointer; override;
     function GetTokenID: TtkTokenKind;
-    procedure SetLine({$IFDEF FPC}const {$ENDIF}NewValue: String;
+    procedure SetLine(const NewValue: String;
       LineNumber:Integer); override;
     function GetToken: String; override;
-    {$IFDEF SYN_LAZARUS}
     procedure GetTokenEx(out TokenStart: PChar; out TokenLength: integer); override;
-    {$ENDIF}
     function GetTokenAttribute: TSynHighlighterAttributes; override;
     function GetTokenKind: integer; override;
     function GetTokenPos: Integer; override;
@@ -275,52 +265,52 @@ var
 begin
   for I := 0 to 172 do
     Case I of
-      17: fIdentFuncTable[I] := {$IFDEF SYN_LAZARUS}@{$ENDIF}Func17;
-      21: fIdentFuncTable[I] := {$IFDEF SYN_LAZARUS}@{$ENDIF}Func21;
-      32: fIdentFuncTable[I] := {$IFDEF SYN_LAZARUS}@{$ENDIF}Func32;
-      34: fIdentFuncTable[I] := {$IFDEF SYN_LAZARUS}@{$ENDIF}Func34;
-      40: fIdentFuncTable[I] := {$IFDEF SYN_LAZARUS}@{$ENDIF}Func40;
-      42: fIdentFuncTable[I] := {$IFDEF SYN_LAZARUS}@{$ENDIF}Func42;
-      45: fIdentFuncTable[I] := {$IFDEF SYN_LAZARUS}@{$ENDIF}Func45;
-      46: fIdentFuncTable[I] := {$IFDEF SYN_LAZARUS}@{$ENDIF}Func46;
-      47: fIdentFuncTable[I] := {$IFDEF SYN_LAZARUS}@{$ENDIF}Func47;
-      48: fIdentFuncTable[I] := {$IFDEF SYN_LAZARUS}@{$ENDIF}Func48;
-      51: fIdentFuncTable[I] := {$IFDEF SYN_LAZARUS}@{$ENDIF}Func51;
-      52: fIdentFuncTable[I] := {$IFDEF SYN_LAZARUS}@{$ENDIF}Func52;
-      54: fIdentFuncTable[I] := {$IFDEF SYN_LAZARUS}@{$ENDIF}Func54;
-      56: fIdentFuncTable[I] := {$IFDEF SYN_LAZARUS}@{$ENDIF}Func56;
-      59: fIdentFuncTable[I] := {$IFDEF SYN_LAZARUS}@{$ENDIF}Func59;
-      60: fIdentFuncTable[I] := {$IFDEF SYN_LAZARUS}@{$ENDIF}Func60;
-      61: fIdentFuncTable[I] := {$IFDEF SYN_LAZARUS}@{$ENDIF}Func61;
-      62: fIdentFuncTable[I] := {$IFDEF SYN_LAZARUS}@{$ENDIF}Func62;
-      63: fIdentFuncTable[I] := {$IFDEF SYN_LAZARUS}@{$ENDIF}Func63;
-      65: fIdentFuncTable[I] := {$IFDEF SYN_LAZARUS}@{$ENDIF}Func65;
-      66: fIdentFuncTable[I] := {$IFDEF SYN_LAZARUS}@{$ENDIF}Func66;
-      68: fIdentFuncTable[I] := {$IFDEF SYN_LAZARUS}@{$ENDIF}Func68;
-      69: fIdentFuncTable[I] := {$IFDEF SYN_LAZARUS}@{$ENDIF}Func69;
-      71: fIdentFuncTable[I] := {$IFDEF SYN_LAZARUS}@{$ENDIF}Func71;
-      76: fIdentFuncTable[I] := {$IFDEF SYN_LAZARUS}@{$ENDIF}Func76;
-      77: fIdentFuncTable[I] := {$IFDEF SYN_LAZARUS}@{$ENDIF}Func77;
-      78: fIdentFuncTable[I] := {$IFDEF SYN_LAZARUS}@{$ENDIF}Func78;
-      84: fIdentFuncTable[I] := {$IFDEF SYN_LAZARUS}@{$ENDIF}Func84;
-      85: fIdentFuncTable[I] := {$IFDEF SYN_LAZARUS}@{$ENDIF}Func85;
-      86: fIdentFuncTable[I] := {$IFDEF SYN_LAZARUS}@{$ENDIF}Func86;
-      88: fIdentFuncTable[I] := {$IFDEF SYN_LAZARUS}@{$ENDIF}Func88;
-      89: fIdentFuncTable[I] := {$IFDEF SYN_LAZARUS}@{$ENDIF}Func89;
-      90: fIdentFuncTable[I] := {$IFDEF SYN_LAZARUS}@{$ENDIF}Func90;
-      92: fIdentFuncTable[I] := {$IFDEF SYN_LAZARUS}@{$ENDIF}Func92;
-      97: fIdentFuncTable[I] := {$IFDEF SYN_LAZARUS}@{$ENDIF}Func97;
-      98: fIdentFuncTable[I] := {$IFDEF SYN_LAZARUS}@{$ENDIF}Func98;
-      102: fIdentFuncTable[I] := {$IFDEF SYN_LAZARUS}@{$ENDIF}Func102;
-      104: fIdentFuncTable[I] := {$IFDEF SYN_LAZARUS}@{$ENDIF}Func104;
-      109: fIdentFuncTable[I] := {$IFDEF SYN_LAZARUS}@{$ENDIF}Func109;
-      115: fIdentFuncTable[I] := {$IFDEF SYN_LAZARUS}@{$ENDIF}Func115;
-      116: fIdentFuncTable[I] := {$IFDEF SYN_LAZARUS}@{$ENDIF}Func116;
-      119: fIdentFuncTable[I] := {$IFDEF SYN_LAZARUS}@{$ENDIF}Func119;
-      129: fIdentFuncTable[I] := {$IFDEF SYN_LAZARUS}@{$ENDIF}Func129;
-      136: fIdentFuncTable[I] := {$IFDEF SYN_LAZARUS}@{$ENDIF}Func136;
-      172: fIdentFuncTable[I] := {$IFDEF SYN_LAZARUS}@{$ENDIF}Func172;
-    else fIdentFuncTable[I] := {$IFDEF SYN_LAZARUS}@{$ENDIF}AltFunc;
+      17: fIdentFuncTable[I] := @Func17;
+      21: fIdentFuncTable[I] := @Func21;
+      32: fIdentFuncTable[I] := @Func32;
+      34: fIdentFuncTable[I] := @Func34;
+      40: fIdentFuncTable[I] := @Func40;
+      42: fIdentFuncTable[I] := @Func42;
+      45: fIdentFuncTable[I] := @Func45;
+      46: fIdentFuncTable[I] := @Func46;
+      47: fIdentFuncTable[I] := @Func47;
+      48: fIdentFuncTable[I] := @Func48;
+      51: fIdentFuncTable[I] := @Func51;
+      52: fIdentFuncTable[I] := @Func52;
+      54: fIdentFuncTable[I] := @Func54;
+      56: fIdentFuncTable[I] := @Func56;
+      59: fIdentFuncTable[I] := @Func59;
+      60: fIdentFuncTable[I] := @Func60;
+      61: fIdentFuncTable[I] := @Func61;
+      62: fIdentFuncTable[I] := @Func62;
+      63: fIdentFuncTable[I] := @Func63;
+      65: fIdentFuncTable[I] := @Func65;
+      66: fIdentFuncTable[I] := @Func66;
+      68: fIdentFuncTable[I] := @Func68;
+      69: fIdentFuncTable[I] := @Func69;
+      71: fIdentFuncTable[I] := @Func71;
+      76: fIdentFuncTable[I] := @Func76;
+      77: fIdentFuncTable[I] := @Func77;
+      78: fIdentFuncTable[I] := @Func78;
+      84: fIdentFuncTable[I] := @Func84;
+      85: fIdentFuncTable[I] := @Func85;
+      86: fIdentFuncTable[I] := @Func86;
+      88: fIdentFuncTable[I] := @Func88;
+      89: fIdentFuncTable[I] := @Func89;
+      90: fIdentFuncTable[I] := @Func90;
+      92: fIdentFuncTable[I] := @Func92;
+      97: fIdentFuncTable[I] := @Func97;
+      98: fIdentFuncTable[I] := @Func98;
+      102: fIdentFuncTable[I] := @Func102;
+      104: fIdentFuncTable[I] := @Func104;
+      109: fIdentFuncTable[I] := @Func109;
+      115: fIdentFuncTable[I] := @Func115;
+      116: fIdentFuncTable[I] := @Func116;
+      119: fIdentFuncTable[I] := @Func119;
+      129: fIdentFuncTable[I] := @Func129;
+      136: fIdentFuncTable[I] := @Func136;
+      172: fIdentFuncTable[I] := @Func172;
+    else fIdentFuncTable[I] := @AltFunc;
     end;
 end;
 
@@ -612,47 +602,47 @@ var
 begin
   for I := #0 to #255 do
     case I of
-      '&': fProcTable[I] := {$IFDEF SYN_LAZARUS}@{$ENDIF}AndSymbolProc;
-      #39: fProcTable[I] := {$IFDEF SYN_LAZARUS}@{$ENDIF}AsciiCharProc;
-      '@': fProcTable[I] := {$IFDEF SYN_LAZARUS}@{$ENDIF}AtSymbolProc;
-      '}': fProcTable[I] := {$IFDEF SYN_LAZARUS}@{$ENDIF}BraceCloseProc;
-      '{': fProcTable[I] := {$IFDEF SYN_LAZARUS}@{$ENDIF}BraceOpenProc;
-      #13: fProcTable[I] := {$IFDEF SYN_LAZARUS}@{$ENDIF}CRProc;
-      ':': fProcTable[I] := {$IFDEF SYN_LAZARUS}@{$ENDIF}ColonProc;
-      ',': fProcTable[I] := {$IFDEF SYN_LAZARUS}@{$ENDIF}CommaProc;
-      '=': fProcTable[I] := {$IFDEF SYN_LAZARUS}@{$ENDIF}EqualProc;
-      '>': fProcTable[I] := {$IFDEF SYN_LAZARUS}@{$ENDIF}GreaterProc;
+      '&': fProcTable[I] := @AndSymbolProc;
+      #39: fProcTable[I] := @AsciiCharProc;
+      '@': fProcTable[I] := @AtSymbolProc;
+      '}': fProcTable[I] := @BraceCloseProc;
+      '{': fProcTable[I] := @BraceOpenProc;
+      #13: fProcTable[I] := @CRProc;
+      ':': fProcTable[I] := @ColonProc;
+      ',': fProcTable[I] := @CommaProc;
+      '=': fProcTable[I] := @EqualProc;
+      '>': fProcTable[I] := @GreaterProc;
       'A'..'Z', 'a'..'z', '_', '$':
-           fProcTable[I] := {$IFDEF SYN_LAZARUS}@{$ENDIF}IdentProc;
-      #10: fProcTable[I] := {$IFDEF SYN_LAZARUS}@{$ENDIF}LFProc;
-      '<': fProcTable[I] := {$IFDEF SYN_LAZARUS}@{$ENDIF}LowerProc;
-      '-': fProcTable[I] := {$IFDEF SYN_LAZARUS}@{$ENDIF}MinusProc;
-      '*': fProcTable[I] := {$IFDEF SYN_LAZARUS}@{$ENDIF}MultiplyProc;
-      '!': fProcTable[I] := {$IFDEF SYN_LAZARUS}@{$ENDIF}NotSymbolProc;
-      #0: fProcTable[I] := {$IFDEF SYN_LAZARUS}@{$ENDIF}NullProc;
-      '0'..'9': fProcTable[I] := {$IFDEF SYN_LAZARUS}@{$ENDIF}NumberProc;
-      '|': fProcTable[I] := {$IFDEF SYN_LAZARUS}@{$ENDIF}OrSymbolProc;
-      '+': fProcTable[I] := {$IFDEF SYN_LAZARUS}@{$ENDIF}PlusProc;
-      '.': fProcTable[I] := {$IFDEF SYN_LAZARUS}@{$ENDIF}PointProc;
-      '#': fProcTable[I] := {$IFDEF SYN_LAZARUS}@{$ENDIF}PoundProc;
-      '?': fProcTable[I] := {$IFDEF SYN_LAZARUS}@{$ENDIF}QuestionProc;
-      '%': fProcTable[I] := {$IFDEF SYN_LAZARUS}@{$ENDIF}RemainderSymbolProc;
-      ')': fProcTable[I] := {$IFDEF SYN_LAZARUS}@{$ENDIF}RoundCloseProc;
-      '(': fProcTable[I] := {$IFDEF SYN_LAZARUS}@{$ENDIF}RoundOpenProc;
-      ';': fProcTable[I] := {$IFDEF SYN_LAZARUS}@{$ENDIF}SemiColonProc;
-      '/': fProcTable[I] := {$IFDEF SYN_LAZARUS}@{$ENDIF}SlashProc;
+           fProcTable[I] := @IdentProc;
+      #10: fProcTable[I] := @LFProc;
+      '<': fProcTable[I] := @LowerProc;
+      '-': fProcTable[I] := @MinusProc;
+      '*': fProcTable[I] := @MultiplyProc;
+      '!': fProcTable[I] := @NotSymbolProc;
+      #0: fProcTable[I] := @NullProc;
+      '0'..'9': fProcTable[I] := @NumberProc;
+      '|': fProcTable[I] := @OrSymbolProc;
+      '+': fProcTable[I] := @PlusProc;
+      '.': fProcTable[I] := @PointProc;
+      '#': fProcTable[I] := @PoundProc;
+      '?': fProcTable[I] := @QuestionProc;
+      '%': fProcTable[I] := @RemainderSymbolProc;
+      ')': fProcTable[I] := @RoundCloseProc;
+      '(': fProcTable[I] := @RoundOpenProc;
+      ';': fProcTable[I] := @SemiColonProc;
+      '/': fProcTable[I] := @SlashProc;
       #1..#9, #11, #12, #14..#32:
-           fProcTable[I] := {$IFDEF SYN_LAZARUS}@{$ENDIF}SpaceProc;
-      ']': fProcTable[I] := {$IFDEF SYN_LAZARUS}@{$ENDIF}SquareCloseProc;
-      '[': fProcTable[I] := {$IFDEF SYN_LAZARUS}@{$ENDIF}SquareOpenProc;
-      #34: fProcTable[I] := {$IFDEF SYN_LAZARUS}@{$ENDIF}StringProc;
-      '~': fProcTable[I] := {$IFDEF SYN_LAZARUS}@{$ENDIF}TildeProc;
-      '^': fProcTable[I] := {$IFDEF SYN_LAZARUS}@{$ENDIF}XOrSymbolProc;
+           fProcTable[I] := @SpaceProc;
+      ']': fProcTable[I] := @SquareCloseProc;
+      '[': fProcTable[I] := @SquareOpenProc;
+      #34: fProcTable[I] := @StringProc;
+      '~': fProcTable[I] := @TildeProc;
+      '^': fProcTable[I] := @XOrSymbolProc;
     else
       if (I in TSynSpecialChars) then
-        fProcTable[I] := {$IFDEF SYN_LAZARUS}@{$ENDIF}IdentProc
+        fProcTable[I] := @IdentProc
       else
-        fProcTable[I] := {$IFDEF SYN_LAZARUS}@{$ENDIF}UnknownProc;
+        fProcTable[I] := @UnknownProc;
     end;
 end;
 
@@ -682,14 +672,14 @@ begin
   fSymbolAttri := TSynHighlighterAttributes.Create(SYNS_AttrSymbol, SYNS_XML_AttrSymbol);
   AddAttribute(fSymbolAttri);
   fRange := rsUnknown;
-  SetAttributesOnChange({$IFDEF SYN_LAZARUS}@{$ENDIF}DefHighlightChange);
+  SetAttributesOnChange(@DefHighlightChange);
 
   InitIdent;
   MakeMethodTables;
   fDefaultFilter := SYNS_FilterJava;
 end; { Create }
 
-procedure TSynJavaSyn.SetLine({$IFDEF FPC}const {$ENDIF}NewValue: String;
+procedure TSynJavaSyn.SetLine(const NewValue: String;
   LineNumber:Integer);
 begin
   inherited;
@@ -1253,10 +1243,8 @@ begin
   else
 {$ENDIF}
   inc(Run);
-  {$IFDEF SYN_LAZARUS}
   while (fLine[Run] in [#128..#191]) OR // continued utf8 subcode
    ((fLine[Run]<>#0) and (fProcTable[fLine[Run]] = @UnknownProc)) do inc(Run);
-  {$ENDIF}
   fTokenID := tkUnknown;
 end;
 
@@ -1316,13 +1304,11 @@ begin
   SetString(Result, (FLine + fTokenPos), Len);
 end;
 
-{$IFDEF SYN_LAZARUS}
 procedure TSynJavaSyn.GetTokenEx(out TokenStart: PChar; out TokenLength: integer);
 begin
   TokenLength:=Run-fTokenPos;
   TokenStart:=FLine + fTokenPos;
 end;
-{$ENDIF}
 
 function TSynJavaSyn.GetTokenID: TtkTokenKind;
 begin

@@ -758,8 +758,8 @@ begin
   Active := False;
   if Editor <> nil then begin
     if not FTextBufferChanging then begin
-      ViewedTextBuffer.RemoveGenericHandler(senrTextBufferChanging, TMethod({$IFDEF FPC}@{$ENDIF}DoBufferChanging));
-      ViewedTextBuffer.RemoveGenericHandler(senrTextBufferChanged, TMethod({$IFDEF FPC}@{$ENDIF}DoBufferChanged));
+      ViewedTextBuffer.RemoveGenericHandler(senrTextBufferChanging, TMethod(@DoBufferChanging));
+      ViewedTextBuffer.RemoveGenericHandler(senrTextBufferChanged, TMethod(@DoBufferChanged));
     end;
     ViewedTextBuffer.RemoveEditHandler(@DoLinesEdited);
     ViewedTextBuffer.RemoveNotifyHandler(senrAfterIncPaintLock, @DoIncPaintLock);
@@ -794,8 +794,8 @@ begin
     ViewedTextBuffer.AddNotifyHandler(senrAfterIncPaintLock, @DoIncPaintLock);
     ViewedTextBuffer.AddNotifyHandler(senrBeforeDecPaintLock, @DoDecPaintLock);
     if not FTextBufferChanging then begin
-      ViewedTextBuffer.AddGenericHandler(senrTextBufferChanging, TMethod({$IFDEF FPC}@{$ENDIF}DoBufferChanging));
-      ViewedTextBuffer.AddGenericHandler(senrTextBufferChanged, TMethod({$IFDEF FPC}@{$ENDIF}DoBufferChanged));
+      ViewedTextBuffer.AddGenericHandler(senrTextBufferChanging, TMethod(@DoBufferChanging));
+      ViewedTextBuffer.AddGenericHandler(senrTextBufferChanged, TMethod(@DoBufferChanged));
     end;
   end;
 end;

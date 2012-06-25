@@ -306,10 +306,8 @@ type
     function  GetIsRedoing: Boolean; override;
   protected
     function GetCount: integer; override;
-    function GetCapacity: integer;
-      {$IFDEF SYN_COMPILER_3_UP} override; {$ELSE} virtual; {$ENDIF}
-    procedure SetCapacity(NewCapacity: integer);
-      {$IFDEF SYN_COMPILER_3_UP} override; {$ELSE} virtual; {$ENDIF}
+    function GetCapacity: integer; override;
+    procedure SetCapacity(NewCapacity: integer); override;
     function  Get(Index: integer): string; override;
     function  GetObject(Index: integer): TObject; override;
     procedure Put(Index: integer; const S: string); override;

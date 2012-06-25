@@ -361,13 +361,13 @@ procedure TSynPluginSyncroEditLowerLineCache.SetLines(const AValue: TSynEditStri
 begin
   Clear;
   if FLines <> nil then begin
-    fLines.RemoveChangeHandler(senrLineChange, {$IFDEF FPC}@{$ENDIF}LineTextChanged);
-    fLines.RemoveChangeHandler(senrLineCount, {$IFDEF FPC}@{$ENDIF}LineTextChanged);
+    fLines.RemoveChangeHandler(senrLineChange, @LineTextChanged);
+    fLines.RemoveChangeHandler(senrLineCount, @LineTextChanged);
   end;
   FLines := AValue;
   if FLines <> nil then begin
-    fLines.AddChangeHandler(senrLineChange, {$IFDEF FPC}@{$ENDIF}LineTextChanged);
-    fLines.AddChangeHandler(senrLineCount, {$IFDEF FPC}@{$ENDIF}LineTextChanged);
+    fLines.AddChangeHandler(senrLineChange, @LineTextChanged);
+    fLines.AddChangeHandler(senrLineCount, @LineTextChanged);
   end;
 end;
 
@@ -1596,9 +1596,9 @@ initialization
   MouseOffset  := AllocatePluginMouseRange(emcSynPSyncroEdCount, True);
   KeyOffset    := AllocatePluginKeyRange(ecSynPSyncroEdCount, True);
 
-  RegisterKeyCmdIdentProcs({$IFDEF FPC}@{$ENDIF}IdentToSyncroCommand,
-                           {$IFDEF FPC}@{$ENDIF}SyncroCommandToIdent);
-  RegisterExtraGetEditorCommandValues({$IFDEF FPC}@{$ENDIF}GetEditorCommandValues);
+  RegisterKeyCmdIdentProcs(@IdentToSyncroCommand,
+                           @SyncroCommandToIdent);
+  RegisterExtraGetEditorCommandValues(@GetEditorCommandValues);
 
 end.
 

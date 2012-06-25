@@ -50,24 +50,8 @@ uses
   Classes,
   SysUtils,
   SynEditHighlighter,
-{$IFDEF SYN_KYLIX}
-  Libc,  //js 07-04-2002 "," was missing here 
-{$ENDIF}
-{$IFDEF SYN_CLX}
-  Qt,
-  QGraphics,
-  Types,
-  QClipbrd
-{$ELSE}
-{$IFDEF SYN_LAZARUS}
   FileUtil, FPCAdds, LCLIntf, LCLType,
-{$ELSE}
-  Windows,
-{$ENDIF}
-  Graphics,
-  Clipbrd
-{$ENDIF}
-  ;
+  Graphics, Clipbrd;
 
 type
   PSynReplaceCharsArray = ^TSynReplaceCharsArray;
@@ -221,9 +205,7 @@ begin
   inherited Create(AOwner);
   fBuffer := TMemoryStream.Create;
   {*****************}
-{$IFNDEF SYN_CLX}
   fClipboardFormat := CF_TEXT;
-{$ENDIF}
   fFont := TFont.Create;
   fBackgroundColor := clWindow;
   AssignFont(nil);
@@ -282,48 +264,15 @@ end;
 procedure TSynCustomExporter.CopyToClipboard;
 begin
   if fExportAsText then
-  {$IFDEF SYN_CLX}
-    CopyToClipboardFormat(0)
-  {$ELSE}
     CopyToClipboardFormat(CF_TEXT)
-  {$ENDIF}
   else
     CopyToClipboardFormat(GetClipboardFormat);
 end;
 
 procedure TSynCustomExporter.CopyToClipboardFormat(AFormat: UINT);
-{$IFNDEF SYN_LAZARUS}
-var
-  hData: THandle;
-  hDataSize: UINT;
-  PtrData: PChar;
-{$ENDIF}
 begin
-  {$IFDEF SYN_LAZARUS}
   fBuffer.Position:=0;
   ClipBoard.AddFormat(AFormat,fBuffer);
-  {$ELSE}
-  {$IFNDEF SYN_CLX}
-  hDataSize := GetBufferSize + 1;
-  hData := GlobalAlloc(GMEM_MOVEABLE or GMEM_ZEROINIT or GMEM_SHARE, hDataSize);
-  if hData <> 0 then try
-    PtrData := GlobalLock(hData);
-    if Assigned(PtrData) then begin
-      try
-        fBuffer.Position := 0;
-        fBuffer.Read(PtrData^, hDataSize - 1); // trailing #0
-      finally
-        GlobalUnlock(hData);
-      end;
-      Clipboard.SetAsHandle(AFormat, hData);
-    end else
-      Abort;
-  except
-    GlobalFree(hData);
-    OutOfMemoryError;
-  end;
-  {$ENDIF}
-  {$ENDIF}
 end;
 
 procedure TSynCustomExporter.ExportAll(ALines: TStrings);
@@ -342,20 +291,12 @@ begin
   if not Assigned(ALines) or not Assigned(Highlighter) or (ALines.Count = 0)
     or (Start.Y > ALines.Count) or (Start.Y > Stop.Y)
   then
-  {$IFDEF SYN_CLX}
-    exit;
-  {$ELSE}
     Abort;
-  {$ENDIF}
   Stop.Y := Max(1, Min(Stop.Y, ALines.Count));
   Stop.X := Max(1, Min(Stop.X, Length(ALines[Stop.Y - 1]) + 1));
   Start.X := Max(1, Min(Start.X, Length(ALines[Start.Y - 1]) + 1));
   if (Start.Y = Stop.Y) and (Start.X >= Stop.X) then
-  {$IFDEF SYN_CLX}
-    exit;
-  {$ELSE}
     Abort;
-  {$ENDIF}
   // initialization
   fBuffer.Position := 0;
   // Size is ReadOnly in Delphi 2
@@ -414,7 +355,7 @@ end;
 
 procedure TSynCustomExporter.InsertData(APos: integer; const AText: string);
 var
-  Len, ToMove, SizeNeeded: {$IFDEF SYN_LAZARUS}TStreamSeekType{$ELSE}integer{$ENDIF};
+  Len, ToMove, SizeNeeded: TStreamSeekType;
   Dest: PChar;
 begin
   Len := Length(AText);
@@ -425,11 +366,7 @@ begin
       // Size is ReadOnly in Delphi 2
       fBuffer.SetSize((SizeNeeded + $1800) and not $FFF); // increment in pages
     Dest := fBuffer.Memory;
-    {$IFDEF SYN_LAZARUS}
     Dest:=Dest+Len;
-    {$ELSE}
-    inc(Dest,Len);
-    {$ENDIF}
     Move(fBuffer.Memory^, Dest^, TCompareMemSize(ToMove));
     fBuffer.Position := 0;
     fBuffer.Write(AText[1], TMemStreamSeekType(Len));

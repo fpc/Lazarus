@@ -211,8 +211,8 @@ end;
 destructor TSynEditMarkupCtrlMouseLink.Destroy;
 begin
   if Lines <> nil then begin;
-    Lines.RemoveChangeHandler(senrLineCount, {$IFDEF FPC}@{$ENDIF}LinesChanged);
-    Lines.RemoveChangeHandler(senrLineChange, {$IFDEF FPC}@{$ENDIF}LinesChanged);
+    Lines.RemoveChangeHandler(senrLineCount, @LinesChanged);
+    Lines.RemoveChangeHandler(senrLineChange, @LinesChanged);
   end;
   inherited Destroy;
 end;
@@ -221,8 +221,8 @@ procedure TSynEditMarkupCtrlMouseLink.SetLines(const AValue: TSynEditStrings);
 begin
   inherited SetLines(AValue);
   if Lines <> nil then begin;
-    Lines.AddChangeHandler(senrLineCount, {$IFDEF FPC}@{$ENDIF}LinesChanged);
-    Lines.AddChangeHandler(senrLineChange, {$IFDEF FPC}@{$ENDIF}LinesChanged);
+    Lines.AddChangeHandler(senrLineCount, @LinesChanged);
+    Lines.AddChangeHandler(senrLineChange, @LinesChanged);
   end;
 end;
 

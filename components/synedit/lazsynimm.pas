@@ -237,7 +237,7 @@ constructor LazSynImeSimple.Create(AOwner: TSynEditBase);
 begin
   inherited Create(AOwner);
   FImeBlockSelection := TSynEditSelection.Create(ViewedTextBuffer, False);
-  FImeBlockSelection.InvalidateLinesMethod := {$IFDEF FPC}@{$ENDIF}InvalidateLines;
+  FImeBlockSelection.InvalidateLinesMethod := @InvalidateLines;
 
   TCustomSynEdit(FriendEdit).RegisterStatusChangedHandler(@DoStatusChanged, [scCaretX, scCaretY, scLeftChar, scTopLine, scModified]);
   TCustomSynEdit(FriendEdit).RegisterCommandHandler(@DoOnCommand, nil, [hcfInit]);
@@ -406,9 +406,9 @@ begin
   inherited Create(AOwner);
 
   FImeBlockSelection := TSynEditSelection.Create(ViewedTextBuffer, False);
-  FImeBlockSelection.InvalidateLinesMethod := {$IFDEF FPC}@{$ENDIF}InvalidateLines;
+  FImeBlockSelection.InvalidateLinesMethod := @InvalidateLines;
   FImeBlockSelection2 := TSynEditSelection.Create(ViewedTextBuffer, False);
-  FImeBlockSelection2.InvalidateLinesMethod := {$IFDEF FPC}@{$ENDIF}InvalidateLines;
+  FImeBlockSelection2.InvalidateLinesMethod := @InvalidateLines;
 
   FImeMarkupSelection  := TSynEditMarkupSelection.Create(FriendEdit, FImeBlockSelection);
   FImeMarkupSelection2 := TSynEditMarkupSelection.Create(FriendEdit, FImeBlockSelection2);

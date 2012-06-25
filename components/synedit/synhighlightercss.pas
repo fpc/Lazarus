@@ -42,9 +42,7 @@ Known Issues:
 The SynHighlighterCss unit provides SynEdit with a Cascading Style Sheets syntax highlighter.
 Thanks to Martin Waldenburg.
 }
-{$IFNDEF QSYNHIGHLIGHTERCSS}
 unit SynHighlighterCss;
-{$ENDIF}
 
 {$I SynEdit.inc}
 
@@ -53,21 +51,9 @@ interface
 uses
 
   SysUtils, Classes,
-  {$IFDEF SYN_CLX}
-  Qt, QControls, QGraphics,
-  QSynEditTypes,
-  QSynEditHighlighter,
-  {$ELSE}
-    {$IFDEF SYN_LAZARUS}
-     LCLIntf, LCLType,
-    {$ELSE}
-     Windows, Messages, Registry,
-    {$ENDIF}
+  LCLIntf, LCLType,
   Controls, Graphics,
   SynEditTypes, SynEditHighlighter;
-  {$ENDIF}
-
-  
 
 type
   TtkTokenKind = (tkComment, tkIdentifier, tkKey, tkNull, tkNumber, tkSpace,
@@ -248,11 +234,9 @@ type
     function GetEol: Boolean; override;
     function GetRange: Pointer; override;
     function GetTokenID: TtkTokenKind;
-    procedure SetLine({$IFDEF FPC}const {$ENDIF}NewValue: String; LineNumber: Integer); override;
+    procedure SetLine(const NewValue: String; LineNumber: Integer); override;
     function GetToken: string; override;
-    {$IFDEF SYN_LAZARUS}
     procedure GetTokenEx(out TokenStart: PChar; out TokenLength: integer); override;
-    {$ENDIF}
     function GetTokenAttribute: TSynHighlighterAttributes; override;
     function GetTokenKind: integer; override;
     function GetTokenPos: Integer; override;
@@ -281,11 +265,7 @@ type
 implementation
 
 uses
-{$IFDEF SYN_CLX}
-  QSynEditStrConst;
-{$ELSE}
   SynEditStrConst;
-{$ENDIF}
 
 var
   Identifiers: array[#0..#255] of ByteBool;
@@ -316,125 +296,125 @@ var
 begin
   pF := PIdentFuncTableFunc(@FIdentFuncTable);
   for I := Low(FIdentFuncTable) to High(FIdentFuncTable) do begin
-    pF^ :=  {$IFDEF FPC}@{$ENDIF}AltFunc;
+    pF^ :=  @AltFunc;
     Inc(pF);
   end;
-  FIdentFuncTable[16] := {$IFDEF FPC}@{$ENDIF}Func16;
-  FIdentFuncTable[18] := {$IFDEF FPC}@{$ENDIF}Func18;
-  FIdentFuncTable[19] := {$IFDEF FPC}@{$ENDIF}Func19;
-  FIdentFuncTable[23] := {$IFDEF FPC}@{$ENDIF}Func23;
-  FIdentFuncTable[24] := {$IFDEF FPC}@{$ENDIF}Func24;
-  FIdentFuncTable[26] := {$IFDEF FPC}@{$ENDIF}Func26;
-  FIdentFuncTable[29] := {$IFDEF FPC}@{$ENDIF}Func29;
-  FIdentFuncTable[30] := {$IFDEF FPC}@{$ENDIF}Func30;
-  FIdentFuncTable[32] := {$IFDEF FPC}@{$ENDIF}Func32;
-  FIdentFuncTable[34] := {$IFDEF FPC}@{$ENDIF}Func34;
-  FIdentFuncTable[36] := {$IFDEF FPC}@{$ENDIF}Func36;
-  FIdentFuncTable[39] := {$IFDEF FPC}@{$ENDIF}Func39;
-  FIdentFuncTable[40] := {$IFDEF FPC}@{$ENDIF}Func40;
-  FIdentFuncTable[43] := {$IFDEF FPC}@{$ENDIF}Func43;
-  FIdentFuncTable[45] := {$IFDEF FPC}@{$ENDIF}Func45;
-  FIdentFuncTable[51] := {$IFDEF FPC}@{$ENDIF}Func51;
-  FIdentFuncTable[52] := {$IFDEF FPC}@{$ENDIF}Func52;
-  FIdentFuncTable[54] := {$IFDEF FPC}@{$ENDIF}Func54;
-  FIdentFuncTable[55] := {$IFDEF FPC}@{$ENDIF}Func55;
-  FIdentFuncTable[56] := {$IFDEF FPC}@{$ENDIF}Func56;
-  FIdentFuncTable[57] := {$IFDEF FPC}@{$ENDIF}Func57;
-  FIdentFuncTable[58] := {$IFDEF FPC}@{$ENDIF}Func58;
-  FIdentFuncTable[59] := {$IFDEF FPC}@{$ENDIF}Func59;
-  FIdentFuncTable[60] := {$IFDEF FPC}@{$ENDIF}Func60;
-  FIdentFuncTable[61] := {$IFDEF FPC}@{$ENDIF}Func61;
-  FIdentFuncTable[62] := {$IFDEF FPC}@{$ENDIF}Func62;
-  FIdentFuncTable[63] := {$IFDEF FPC}@{$ENDIF}Func63;
-  FIdentFuncTable[64] := {$IFDEF FPC}@{$ENDIF}Func64;
-  FIdentFuncTable[65] := {$IFDEF FPC}@{$ENDIF}Func65;
-  FIdentFuncTable[67] := {$IFDEF FPC}@{$ENDIF}Func67;
-  FIdentFuncTable[69] := {$IFDEF FPC}@{$ENDIF}Func69;
-  FIdentFuncTable[70] := {$IFDEF FPC}@{$ENDIF}Func70;
-  FIdentFuncTable[72] := {$IFDEF FPC}@{$ENDIF}Func72;
-  FIdentFuncTable[74] := {$IFDEF FPC}@{$ENDIF}Func74;
-  FIdentFuncTable[76] := {$IFDEF FPC}@{$ENDIF}Func76;
-  FIdentFuncTable[78] := {$IFDEF FPC}@{$ENDIF}Func78;
-  FIdentFuncTable[79] := {$IFDEF FPC}@{$ENDIF}Func79;
-  FIdentFuncTable[80] := {$IFDEF FPC}@{$ENDIF}Func80;
-  FIdentFuncTable[81] := {$IFDEF FPC}@{$ENDIF}Func81;
-  FIdentFuncTable[82] := {$IFDEF FPC}@{$ENDIF}Func82;
-  FIdentFuncTable[83] := {$IFDEF FPC}@{$ENDIF}Func83;
-  FIdentFuncTable[85] := {$IFDEF FPC}@{$ENDIF}Func85;
-  FIdentFuncTable[86] := {$IFDEF FPC}@{$ENDIF}Func86;
-  FIdentFuncTable[87] := {$IFDEF FPC}@{$ENDIF}Func87;
-  FIdentFuncTable[88] := {$IFDEF FPC}@{$ENDIF}Func88;
-  FIdentFuncTable[90] := {$IFDEF FPC}@{$ENDIF}Func90;
-  FIdentFuncTable[91] := {$IFDEF FPC}@{$ENDIF}Func91;
-  FIdentFuncTable[93] := {$IFDEF FPC}@{$ENDIF}Func93;
-  FIdentFuncTable[94] := {$IFDEF FPC}@{$ENDIF}Func94;
-  FIdentFuncTable[95] := {$IFDEF FPC}@{$ENDIF}Func95;
-  FIdentFuncTable[96] := {$IFDEF FPC}@{$ENDIF}Func96;
-  FIdentFuncTable[97] := {$IFDEF FPC}@{$ENDIF}Func97;
-  FIdentFuncTable[98] := {$IFDEF FPC}@{$ENDIF}Func98;
-  FIdentFuncTable[99] := {$IFDEF FPC}@{$ENDIF}Func99;
-  FIdentFuncTable[100] := {$IFDEF FPC}@{$ENDIF}Func100;
-  FIdentFuncTable[101] := {$IFDEF FPC}@{$ENDIF}Func101;
-  FIdentFuncTable[102] := {$IFDEF FPC}@{$ENDIF}Func102;
-  FIdentFuncTable[103] := {$IFDEF FPC}@{$ENDIF}Func103;
-  FIdentFuncTable[105] := {$IFDEF FPC}@{$ENDIF}Func105;
-  FIdentFuncTable[106] := {$IFDEF FPC}@{$ENDIF}Func106;
-  FIdentFuncTable[107] := {$IFDEF FPC}@{$ENDIF}Func107;
-  FIdentFuncTable[108] := {$IFDEF FPC}@{$ENDIF}Func108;
-  FIdentFuncTable[110] := {$IFDEF FPC}@{$ENDIF}Func110;
-  FIdentFuncTable[111] := {$IFDEF FPC}@{$ENDIF}Func111;
-  FIdentFuncTable[112] := {$IFDEF FPC}@{$ENDIF}Func112;
-  FIdentFuncTable[113] := {$IFDEF FPC}@{$ENDIF}Func113;
-  FIdentFuncTable[114] := {$IFDEF FPC}@{$ENDIF}Func114;
-  FIdentFuncTable[115] := {$IFDEF FPC}@{$ENDIF}Func115;
-  FIdentFuncTable[116] := {$IFDEF FPC}@{$ENDIF}Func116;
-  FIdentFuncTable[117] := {$IFDEF FPC}@{$ENDIF}Func117;
-  FIdentFuncTable[118] := {$IFDEF FPC}@{$ENDIF}Func118;
-  FIdentFuncTable[120] := {$IFDEF FPC}@{$ENDIF}Func120;
-  FIdentFuncTable[121] := {$IFDEF FPC}@{$ENDIF}Func121;
-  FIdentFuncTable[122] := {$IFDEF FPC}@{$ENDIF}Func122;
-  FIdentFuncTable[124] := {$IFDEF FPC}@{$ENDIF}Func124;
-  FIdentFuncTable[126] := {$IFDEF FPC}@{$ENDIF}Func126;
-  FIdentFuncTable[128] := {$IFDEF FPC}@{$ENDIF}Func128;
-  FIdentFuncTable[129] := {$IFDEF FPC}@{$ENDIF}Func129;
-  FIdentFuncTable[130] := {$IFDEF FPC}@{$ENDIF}Func130;
-  FIdentFuncTable[131] := {$IFDEF FPC}@{$ENDIF}Func131;
-  FIdentFuncTable[134] := {$IFDEF FPC}@{$ENDIF}Func134;
-  FIdentFuncTable[136] := {$IFDEF FPC}@{$ENDIF}Func136;
-  FIdentFuncTable[137] := {$IFDEF FPC}@{$ENDIF}Func137;
-  FIdentFuncTable[138] := {$IFDEF FPC}@{$ENDIF}Func138;
-  FIdentFuncTable[139] := {$IFDEF FPC}@{$ENDIF}Func139;
-  FIdentFuncTable[140] := {$IFDEF FPC}@{$ENDIF}Func140;
-  FIdentFuncTable[141] := {$IFDEF FPC}@{$ENDIF}Func141;
-  FIdentFuncTable[144] := {$IFDEF FPC}@{$ENDIF}Func144;
-  FIdentFuncTable[148] := {$IFDEF FPC}@{$ENDIF}Func148;
-  FIdentFuncTable[149] := {$IFDEF FPC}@{$ENDIF}Func149;
-  FIdentFuncTable[150] := {$IFDEF FPC}@{$ENDIF}Func150;
-  FIdentFuncTable[151] := {$IFDEF FPC}@{$ENDIF}Func151;
-  FIdentFuncTable[152] := {$IFDEF FPC}@{$ENDIF}Func152;
-  FIdentFuncTable[154] := {$IFDEF FPC}@{$ENDIF}Func154;
-  FIdentFuncTable[156] := {$IFDEF FPC}@{$ENDIF}Func156;
-  FIdentFuncTable[158] := {$IFDEF FPC}@{$ENDIF}Func158;
-  FIdentFuncTable[160] := {$IFDEF FPC}@{$ENDIF}Func160;
-  FIdentFuncTable[164] := {$IFDEF FPC}@{$ENDIF}Func164;
-  FIdentFuncTable[166] := {$IFDEF FPC}@{$ENDIF}Func166;
-  FIdentFuncTable[167] := {$IFDEF FPC}@{$ENDIF}Func167;
-  FIdentFuncTable[169] := {$IFDEF FPC}@{$ENDIF}Func169;
-  FIdentFuncTable[172] := {$IFDEF FPC}@{$ENDIF}Func172;
-  FIdentFuncTable[173] := {$IFDEF FPC}@{$ENDIF}Func173;
-  FIdentFuncTable[174] := {$IFDEF FPC}@{$ENDIF}Func174;
-  FIdentFuncTable[178] := {$IFDEF FPC}@{$ENDIF}Func178;
-  FIdentFuncTable[182] := {$IFDEF FPC}@{$ENDIF}Func182;
-  FIdentFuncTable[187] := {$IFDEF FPC}@{$ENDIF}Func187;
-  FIdentFuncTable[190] := {$IFDEF FPC}@{$ENDIF}Func190;
-  FIdentFuncTable[194] := {$IFDEF FPC}@{$ENDIF}Func194;
-  FIdentFuncTable[195] := {$IFDEF FPC}@{$ENDIF}Func195;
-  FIdentFuncTable[199] := {$IFDEF FPC}@{$ENDIF}Func199;
-  FIdentFuncTable[200] := {$IFDEF FPC}@{$ENDIF}Func200;
-  FIdentFuncTable[210] := {$IFDEF FPC}@{$ENDIF}Func210;
-  FIdentFuncTable[213] := {$IFDEF FPC}@{$ENDIF}Func213;
-  FIdentFuncTable[220] := {$IFDEF FPC}@{$ENDIF}Func220;
-  FIdentFuncTable[250] := {$IFDEF FPC}@{$ENDIF}Func250;
+  FIdentFuncTable[16] := @Func16;
+  FIdentFuncTable[18] := @Func18;
+  FIdentFuncTable[19] := @Func19;
+  FIdentFuncTable[23] := @Func23;
+  FIdentFuncTable[24] := @Func24;
+  FIdentFuncTable[26] := @Func26;
+  FIdentFuncTable[29] := @Func29;
+  FIdentFuncTable[30] := @Func30;
+  FIdentFuncTable[32] := @Func32;
+  FIdentFuncTable[34] := @Func34;
+  FIdentFuncTable[36] := @Func36;
+  FIdentFuncTable[39] := @Func39;
+  FIdentFuncTable[40] := @Func40;
+  FIdentFuncTable[43] := @Func43;
+  FIdentFuncTable[45] := @Func45;
+  FIdentFuncTable[51] := @Func51;
+  FIdentFuncTable[52] := @Func52;
+  FIdentFuncTable[54] := @Func54;
+  FIdentFuncTable[55] := @Func55;
+  FIdentFuncTable[56] := @Func56;
+  FIdentFuncTable[57] := @Func57;
+  FIdentFuncTable[58] := @Func58;
+  FIdentFuncTable[59] := @Func59;
+  FIdentFuncTable[60] := @Func60;
+  FIdentFuncTable[61] := @Func61;
+  FIdentFuncTable[62] := @Func62;
+  FIdentFuncTable[63] := @Func63;
+  FIdentFuncTable[64] := @Func64;
+  FIdentFuncTable[65] := @Func65;
+  FIdentFuncTable[67] := @Func67;
+  FIdentFuncTable[69] := @Func69;
+  FIdentFuncTable[70] := @Func70;
+  FIdentFuncTable[72] := @Func72;
+  FIdentFuncTable[74] := @Func74;
+  FIdentFuncTable[76] := @Func76;
+  FIdentFuncTable[78] := @Func78;
+  FIdentFuncTable[79] := @Func79;
+  FIdentFuncTable[80] := @Func80;
+  FIdentFuncTable[81] := @Func81;
+  FIdentFuncTable[82] := @Func82;
+  FIdentFuncTable[83] := @Func83;
+  FIdentFuncTable[85] := @Func85;
+  FIdentFuncTable[86] := @Func86;
+  FIdentFuncTable[87] := @Func87;
+  FIdentFuncTable[88] := @Func88;
+  FIdentFuncTable[90] := @Func90;
+  FIdentFuncTable[91] := @Func91;
+  FIdentFuncTable[93] := @Func93;
+  FIdentFuncTable[94] := @Func94;
+  FIdentFuncTable[95] := @Func95;
+  FIdentFuncTable[96] := @Func96;
+  FIdentFuncTable[97] := @Func97;
+  FIdentFuncTable[98] := @Func98;
+  FIdentFuncTable[99] := @Func99;
+  FIdentFuncTable[100] := @Func100;
+  FIdentFuncTable[101] := @Func101;
+  FIdentFuncTable[102] := @Func102;
+  FIdentFuncTable[103] := @Func103;
+  FIdentFuncTable[105] := @Func105;
+  FIdentFuncTable[106] := @Func106;
+  FIdentFuncTable[107] := @Func107;
+  FIdentFuncTable[108] := @Func108;
+  FIdentFuncTable[110] := @Func110;
+  FIdentFuncTable[111] := @Func111;
+  FIdentFuncTable[112] := @Func112;
+  FIdentFuncTable[113] := @Func113;
+  FIdentFuncTable[114] := @Func114;
+  FIdentFuncTable[115] := @Func115;
+  FIdentFuncTable[116] := @Func116;
+  FIdentFuncTable[117] := @Func117;
+  FIdentFuncTable[118] := @Func118;
+  FIdentFuncTable[120] := @Func120;
+  FIdentFuncTable[121] := @Func121;
+  FIdentFuncTable[122] := @Func122;
+  FIdentFuncTable[124] := @Func124;
+  FIdentFuncTable[126] := @Func126;
+  FIdentFuncTable[128] := @Func128;
+  FIdentFuncTable[129] := @Func129;
+  FIdentFuncTable[130] := @Func130;
+  FIdentFuncTable[131] := @Func131;
+  FIdentFuncTable[134] := @Func134;
+  FIdentFuncTable[136] := @Func136;
+  FIdentFuncTable[137] := @Func137;
+  FIdentFuncTable[138] := @Func138;
+  FIdentFuncTable[139] := @Func139;
+  FIdentFuncTable[140] := @Func140;
+  FIdentFuncTable[141] := @Func141;
+  FIdentFuncTable[144] := @Func144;
+  FIdentFuncTable[148] := @Func148;
+  FIdentFuncTable[149] := @Func149;
+  FIdentFuncTable[150] := @Func150;
+  FIdentFuncTable[151] := @Func151;
+  FIdentFuncTable[152] := @Func152;
+  FIdentFuncTable[154] := @Func154;
+  FIdentFuncTable[156] := @Func156;
+  FIdentFuncTable[158] := @Func158;
+  FIdentFuncTable[160] := @Func160;
+  FIdentFuncTable[164] := @Func164;
+  FIdentFuncTable[166] := @Func166;
+  FIdentFuncTable[167] := @Func167;
+  FIdentFuncTable[169] := @Func169;
+  FIdentFuncTable[172] := @Func172;
+  FIdentFuncTable[173] := @Func173;
+  FIdentFuncTable[174] := @Func174;
+  FIdentFuncTable[178] := @Func178;
+  FIdentFuncTable[182] := @Func182;
+  FIdentFuncTable[187] := @Func187;
+  FIdentFuncTable[190] := @Func190;
+  FIdentFuncTable[194] := @Func194;
+  FIdentFuncTable[195] := @Func195;
+  FIdentFuncTable[199] := @Func199;
+  FIdentFuncTable[200] := @Func200;
+  FIdentFuncTable[210] := @Func210;
+  FIdentFuncTable[213] := @Func213;
+  FIdentFuncTable[220] := @Func220;
+  FIdentFuncTable[250] := @Func250;
 end;
 
 function TSynCssSyn.KeyHash(ToHash: PChar): Integer;
@@ -1416,7 +1396,7 @@ begin
   FToIdent := MayBe;
   HashKey := KeyHash(MayBe);
   if (HashKey >= 16) and (HashKey <= 250) then
-    Result := fIdentFuncTable[HashKey]{$IFDEF FPC}(){$ENDIF}
+    Result := fIdentFuncTable[HashKey]()
   else
     Result := tkIdentifier;
 end;
@@ -1427,20 +1407,20 @@ var
 begin
   for chI := #0 to #255 do
     case chI of
-      '{', '}'                    : FProcTable[chI] := {$IFDEF FPC}@{$ENDIF}AsciiCharProc;
-      #13                         : FProcTable[chI] := {$IFDEF FPC}@{$ENDIF}CRProc;
-      '-'                         : FProcTable[chI] := {$IFDEF FPC}@{$ENDIF}DashProc;
-      'A'..'Z', 'a'..'z', '_'     : FProcTable[chI] := {$IFDEF FPC}@{$ENDIF}IdentProc;
-      '#', '$'                    : FProcTable[chI] := {$IFDEF FPC}@{$ENDIF}IntegerProc;
-      #10                         : FProcTable[chI] := {$IFDEF FPC}@{$ENDIF}LFProc;
-      #0                          : FProcTable[chI] := {$IFDEF FPC}@{$ENDIF}NullProc;
-      '0'..'9'                    : FProcTable[chI] := {$IFDEF FPC}@{$ENDIF}NumberProc;
-      ')', '('                    : FProcTable[chI] := {$IFDEF FPC}@{$ENDIF}RoundOpenProc;
-      '/'                         : FProcTable[chI] := {$IFDEF FPC}@{$ENDIF}SlashProc;
-      #1..#9, #11, #12, #14..#32  : FProcTable[chI] := {$IFDEF FPC}@{$ENDIF}SpaceProc;
-      #39                         : FProcTable[chI] := {$IFDEF FPC}@{$ENDIF}StringProc;
+      '{', '}'                    : FProcTable[chI] := @AsciiCharProc;
+      #13                         : FProcTable[chI] := @CRProc;
+      '-'                         : FProcTable[chI] := @DashProc;
+      'A'..'Z', 'a'..'z', '_'     : FProcTable[chI] := @IdentProc;
+      '#', '$'                    : FProcTable[chI] := @IntegerProc;
+      #10                         : FProcTable[chI] := @LFProc;
+      #0                          : FProcTable[chI] := @NullProc;
+      '0'..'9'                    : FProcTable[chI] := @NumberProc;
+      ')', '('                    : FProcTable[chI] := @RoundOpenProc;
+      '/'                         : FProcTable[chI] := @SlashProc;
+      #1..#9, #11, #12, #14..#32  : FProcTable[chI] := @SpaceProc;
+      #39                         : FProcTable[chI] := @StringProc;
     else
-      FProcTable[chI] := {$IFDEF FPC}@{$ENDIF}UnknownProc;
+      FProcTable[chI] := @UnknownProc;
     end;
 end;
 
@@ -1463,14 +1443,14 @@ begin
   AddAttribute(fStringAttri);
   fSymbolAttri := TSynHighlighterAttributes.Create(SYNS_AttrSymbol, SYNS_XML_AttrSymbol);
   AddAttribute(fSymbolAttri);
-  SetAttributesOnChange({$IFDEF FPC}@{$ENDIF}DefHighlightChange);
+  SetAttributesOnChange(@DefHighlightChange);
   InitIdent;
   MakeMethodTables;
   fDefaultFilter := SYNS_FilterCSS;
   fRange := rsUnknown;
 end;
 
-procedure TSynCssSyn.SetLine({$IFDEF FPC}const {$ENDIF}NewValue: String; LineNumber: Integer);
+procedure TSynCssSyn.SetLine(const NewValue: String; LineNumber: Integer);
 begin
   inherited;
   fLine := PChar(NewValue);
@@ -1615,10 +1595,8 @@ begin
   else
 {$ENDIF}
   Inc(Run);
-  {$IFDEF SYN_LAZARUS}
   while (fLine[Run] in [#128..#191]) OR // continued utf8 subcode
    ((fLine[Run]<>#0) and (fProcTable[fLine[Run]] = @UnknownProc)) do inc(Run);
-  {$ENDIF}
   FTokenID := tkUnknown;
 end;
 
@@ -1628,7 +1606,7 @@ begin
   if FRange = rsCStyle then
     CStyleCommentProc
   else
-    FProcTable[FLine[Run]]{$IFDEF FPC}(){$ENDIF};
+    FProcTable[FLine[Run]]();
 end;
 
 function TSynCssSyn.GetDefaultAttribute(Index: Integer): TSynHighlighterAttributes;
@@ -1664,15 +1642,11 @@ begin
   SetString(Result, (FLine + FTokenPos), Len);
 end;
 
-
-{$IFDEF SYN_LAZARUS}
 procedure TSynCssSyn.GetTokenEx(out TokenStart: PChar; out TokenLength: integer);
-
 begin
   TokenLength:=Run-fTokenPos;
   TokenStart:=FLine + fTokenPos;
 end;
-{$ENDIF}
 
 function TSynCssSyn.GetTokenID: TtkTokenKind;
 begin

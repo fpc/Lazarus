@@ -42,21 +42,14 @@ Known Issues:
 The classes in this unit can be used to use the hashing algorithm while still
 having the ability to change the set of keywords.
 }
-{$IFNDEF QSYNHIGHLIGHTERHASHENTRIES}
 unit SynHighlighterHashEntries;
-{$ENDIF}
 
 {$I SynEdit.inc}
 
 interface
 
 uses
-{$IFDEF SYN_CLX}
-  QSynEditTypes,
-{$ELSE}
-  SynEditTypes,
-{$ENDIF}
-  Classes;
+  SynEditTypes, Classes;
 
 type
   { Class to hold the keyword to recognize, its length and its token kind. The
@@ -93,13 +86,6 @@ type
     { Points to the next keyword entry with the same hashvalue. }
     property Next: TSynHashEntry read fNext;
   end;
-
-
-{$IFNDEF SYN_COMPILER_4_UP}
-  {$IFNDEF SYN_CPPB_3}
-    {$DEFINE LIST_CLEAR_NOT_VIRTUAL}
-  {$ENDIF}
-{$ENDIF}
 
   { A list of keyword entries, stored as single-linked lists under the hashvalue
     of the keyword. }
@@ -227,13 +213,7 @@ end;
 function TSynHashEntryList.Get(HashKey: Integer): TSynHashEntry;
 begin
   if (HashKey >= 0) and (HashKey < Count) then
-    Result :=
-      {$IFDEF FPC}
-         TSynHashEntry(inherited Items[HashKey])
-      {$ELSE}
-         inherited Items[HashKey]
-      {$ENDIF}
-    
+    Result := TSynHashEntry(inherited Items[HashKey])
   else
     Result := nil;
 end;

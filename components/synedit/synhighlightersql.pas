@@ -45,10 +45,7 @@ Known Issues:
 The SynHighlighterSQL implements a highlighter for SQL for the SynEdit projects.
 Different SQL dialects can be selected via the Dialect property.
 }
-{$IFNDEF QSYNHIGHLIGHTERSQL}
 unit SynHighlighterSQL;
-{$ENDIF}
-
 
 {$I SynEdit.inc}
 
@@ -56,25 +53,10 @@ interface
 
 uses
   SysUtils, Classes,
-  {$IFDEF SYN_CLX}
-  Types,
-  QGraphics,
-  QSynEditTypes,
-  QSynEditHighlighter,
-  QSynHighlighterHashEntries,
-  {$ELSE}
-  {$IFDEF SYN_LAZARUS}
   LCLIntf, LCLType,
-  {$ELSE}
-  Windows, Messages, Registry,
-  {$ENDIF}
   Controls, Graphics,
   SynEditTypes, SynEditHighlighter,
   SynHighlighterHashEntries;
-  {$ENDIF}
-
-  
-  
 
 type
   TtkTokenKind = (tkComment, tkDatatype, tkDefaultPackage, tkException,         // DJLP 2000-08-11
@@ -172,9 +154,7 @@ type
     function GetEol: Boolean; override;
     function GetRange: Pointer; override;
     function GetToken: string; override;
-    {$IFDEF SYN_LAZARUS}
     procedure GetTokenEx(out TokenStart: PChar; out TokenLength: integer); override;
-    {$ENDIF}
 
     function GetTokenAttribute: TSynHighlighterAttributes; override;
     function GetTokenID: TtkTokenKind;
@@ -183,7 +163,7 @@ type
     function IsKeyword(const AKeyword: string): boolean; override;              // DJLP 2000-08-09
     procedure Next; override;
     procedure ResetRange; override;
-    procedure SetLine({$IFDEF FPC}const {$ENDIF}NewValue: string; LineNumber: Integer); override;
+    procedure SetLine(const NewValue: string; LineNumber: Integer); override;
     procedure SetRange(Value: Pointer); override;
   published
     property CommentAttri: TSynHighlighterAttributes read fCommentAttri
@@ -222,11 +202,7 @@ type
 implementation
 
 uses
-{$IFDEF SYN_CLX}
-  QSynEditStrConst;
-{$ELSE}
   SynEditStrConst;
-{$ENDIF}
 
 var
   Identifiers: TIdentifierTable;
@@ -968,15 +944,7 @@ begin
   Start := ToHash;
   while fIdentifiersPtr^[ToHash^] do begin
   
-   {$IFDEF FPC}
-       Result := (2 * Result + fmHashTablePtr^[ToHash^]) and $FFFFFF;
-   {$ELSE}
-      {$IFOPT Q-}
-          Result := 2 * Result + fmHashTablePtr[ToHash^];
-      {$ELSE}
-          Result := (2 * Result + fmHashTablePtr[ToHash^]) and $FFFFFF;
-      {$ENDIF}
-   {$ENDIF}
+    Result := (2 * Result + fmHashTablePtr^[ToHash^]) and $FFFFFF;
     inc(ToHash);
   end;
   Result := Result and $FF; // 255
@@ -1029,33 +997,33 @@ var
 begin
   for I := #0 to #255 do
     case I of
-       #0: fProcTable[I] := {$IFDEF FPC}@{$ENDIF}NullProc;
-      #10: fProcTable[I] := {$IFDEF FPC}@{$ENDIF}LFProc;
-      #13: fProcTable[I] := {$IFDEF FPC}@{$ENDIF}CRProc;
-      #39: fProcTable[I] := {$IFDEF FPC}@{$ENDIF}AsciiCharProc;
-      '=': fProcTable[I] := {$IFDEF FPC}@{$ENDIF}EqualProc;
-      '>': fProcTable[I] := {$IFDEF FPC}@{$ENDIF}GreaterProc;
-      '<': fProcTable[I] := {$IFDEF FPC}@{$ENDIF}LowerProc;
-      '-': fProcTable[I] := {$IFDEF FPC}@{$ENDIF}MinusProc;
-      '|': fProcTable[I] := {$IFDEF FPC}@{$ENDIF}OrSymbolProc;
-      '+': fProcTable[I] := {$IFDEF FPC}@{$ENDIF}PlusProc;
-      '/': fProcTable[I] := {$IFDEF FPC}@{$ENDIF}SlashProc;
-      '&': fProcTable[I] := {$IFDEF FPC}@{$ENDIF}AndSymbolProc;
-      #34: fProcTable[I] := {$IFDEF FPC}@{$ENDIF}StringProc;
+       #0: fProcTable[I] := @NullProc;
+      #10: fProcTable[I] := @LFProc;
+      #13: fProcTable[I] := @CRProc;
+      #39: fProcTable[I] := @AsciiCharProc;
+      '=': fProcTable[I] := @EqualProc;
+      '>': fProcTable[I] := @GreaterProc;
+      '<': fProcTable[I] := @LowerProc;
+      '-': fProcTable[I] := @MinusProc;
+      '|': fProcTable[I] := @OrSymbolProc;
+      '+': fProcTable[I] := @PlusProc;
+      '/': fProcTable[I] := @SlashProc;
+      '&': fProcTable[I] := @AndSymbolProc;
+      #34: fProcTable[I] := @StringProc;
       ':', '@':
-        fProcTable[I] := {$IFDEF FPC}@{$ENDIF}VariableProc;
+        fProcTable[I] := @VariableProc;
       'A'..'Z', 'a'..'z', '_':
-        fProcTable[I] := {$IFDEF FPC}@{$ENDIF}IdentProc;
+        fProcTable[I] := @IdentProc;
       '0'..'9':
-        fProcTable[I] := {$IFDEF FPC}@{$ENDIF}NumberProc;
+        fProcTable[I] := @NumberProc;
       #1..#9, #11, #12, #14..#32:
-        fProcTable[I] := {$IFDEF FPC}@{$ENDIF}SpaceProc;
+        fProcTable[I] := @SpaceProc;
       '^', '%', '*', '!':
-        fProcTable[I] := {$IFDEF FPC}@{$ENDIF}SymbolAssignProc;
+        fProcTable[I] := @SymbolAssignProc;
       '{', '}', '.', ',', ';', '?', '(', ')', '[', ']', '~':
-        fProcTable[I] := {$IFDEF FPC}@{$ENDIF}SymbolProc;
+        fProcTable[I] := @SymbolProc;
       else
-        fProcTable[I] := {$IFDEF FPC}@{$ENDIF}UnknownProc;
+        fProcTable[I] := @UnknownProc;
     end;
 end;
 
@@ -1064,7 +1032,7 @@ begin
   inherited Create(AOwner);
   fKeywords := TSynHashEntryList.Create;
   fTableNames := TStringList.Create;
-  TStringList(fTableNames).OnChange := {$IFDEF FPC}@{$ENDIF}TableNamesChanged;
+  TStringList(fTableNames).OnChange := @TableNamesChanged;
   fCommentAttri := TSynHighlighterAttributes.Create(SYNS_AttrComment, SYNS_XML_AttrComment);
   fCommentAttri.Style := [fsItalic];
   AddAttribute(fCommentAttri);
@@ -1110,7 +1078,7 @@ begin
   AddAttribute(fTableNameAttri);
   fVariableAttri := TSynHighlighterAttributes.Create(SYNS_AttrVariable, SYNS_XML_AttrVariable);
   AddAttribute(fVariableAttri);
-  SetAttributesOnChange({$IFDEF FPC}@{$ENDIF}DefHighlightChange);
+  SetAttributesOnChange(@DefHighlightChange);
   MakeMethodTables;
   fDefaultFilter := SYNS_FilterSQL;
   fRange := rsUnknown;
@@ -1132,7 +1100,7 @@ begin
     SQLDialect := TSynSQLSyn(Source).SQLDialect;
 end;
 
-procedure TSynSQLSyn.SetLine({$IFDEF FPC}const {$ENDIF}NewValue: string; LineNumber: Integer);
+procedure TSynSQLSyn.SetLine(const NewValue: string; LineNumber: Integer);
 begin
   inherited;
   fLine := PChar(NewValue);
@@ -1392,10 +1360,8 @@ begin
     else
     {$ENDIF}
     inc(Run);
-    {$IFDEF SYN_LAZARUS}
     while (fLine[Run] in [#128..#191]) OR // continued utf8 subcode
      ((fLine[Run]<>#0) and (fProcTable[fLine[Run]] = @UnknownProc)) do inc(Run);
-    {$ENDIF}
     fTokenID := tkUnknown;
   end;
 end;
@@ -1449,7 +1415,7 @@ begin
     rsString:
       AsciiCharProc;
   else
-    fProcTable[fLine[Run]]{$IFDEF FPC}(){$ENDIF};
+    fProcTable[fLine[Run]]();
   end;
 end;
 
@@ -1486,13 +1452,12 @@ begin
   Len := Run - fTokenPos;
   Setstring(Result, (FLine + fTokenPos), Len);
 end;
-{$IFDEF SYN_LAZARUS}
+
 procedure TSynSQLSyn.GetTokenEx(out TokenStart: PChar; out TokenLength: integer);
 begin
   TokenLength:=Run-fTokenPos;
   TokenStart:=FLine + fTokenPos;
 end;
-{$ENDIF}
 
 function TSynSQLSyn.GetTokenID: TtkTokenKind;
 begin
@@ -1622,63 +1587,63 @@ begin
     sqlIngres:
       begin
         EnumerateKeywords(Ord(tkDatatype), IngresTypes, IdentChars,
-          {$IFDEF FPC}@{$ENDIF}DoAddKeyword);
-        EnumerateKeywords(Ord(tkKey), IngresKW, IdentChars, {$IFDEF FPC}@{$ENDIF}DoAddKeyword);
+          @DoAddKeyword);
+        EnumerateKeywords(Ord(tkKey), IngresKW, IdentChars, @DoAddKeyword);
         EnumerateKeywords(Ord(tkFunction), IngresFunctions, IdentChars,
-          {$IFDEF FPC}@{$ENDIF}DoAddKeyword);
+          @DoAddKeyword);
       end;
     sqlInterbase6:
       begin
         EnumerateKeywords(Ord(tkDatatype), Interbase6Types, IdentChars,
-          {$IFDEF FPC}@{$ENDIF}DoAddKeyword);
+          @DoAddKeyword);
         EnumerateKeywords(Ord(tkFunction), Interbase6Functions, IdentChars,
-          {$IFDEF FPC}@{$ENDIF}DoAddKeyword);
-        EnumerateKeywords(Ord(tkKey), Interbase6KW, IdentChars, {$IFDEF FPC}@{$ENDIF}DoAddKeyword);
+          @DoAddKeyword);
+        EnumerateKeywords(Ord(tkKey), Interbase6KW, IdentChars, @DoAddKeyword);
       end;
     sqlMSSQL7:
       begin
-        EnumerateKeywords(Ord(tkKey), MSSQL7KW, IdentChars, {$IFDEF FPC}@{$ENDIF}DoAddKeyword);
+        EnumerateKeywords(Ord(tkKey), MSSQL7KW, IdentChars, @DoAddKeyword);
         EnumerateKeywords(Ord(tkDatatype), MSSQL7Types, IdentChars,
-          {$IFDEF FPC}@{$ENDIF}DoAddKeyword);
+          @DoAddKeyword);
         EnumerateKeywords(Ord(tkFunction), MSSQL7Functions, IdentChars,
-          {$IFDEF FPC}@{$ENDIF}DoAddKeyword);
+          @DoAddKeyword);
       end;
     sqlMSSQL2K:
       begin
-        EnumerateKeywords(ord(tkKey), MSSQL2000KW, IdentChars, {$IFDEF FPC}@{$ENDIF}DoAddKeyword);
-        EnumerateKeywords(ord(tkDataType), MSSQL2000Types, IdentChars, {$IFDEF FPC}@{$ENDIF}DoAddKeyword);
-        EnumerateKeywords(ord(tkFunction), MSSQL2000Functions, IdentChars, {$IFDEF FPC}@{$ENDIF}DoAddKeyword);
+        EnumerateKeywords(ord(tkKey), MSSQL2000KW, IdentChars, @DoAddKeyword);
+        EnumerateKeywords(ord(tkDataType), MSSQL2000Types, IdentChars, @DoAddKeyword);
+        EnumerateKeywords(ord(tkFunction), MSSQL2000Functions, IdentChars, @DoAddKeyword);
       end;
     sqlMySql:
       begin
-        EnumerateKeywords(Ord(tkKey), MySqlKW, IdentChars, {$IFDEF FPC}@{$ENDIF}DoAddKeyword);
+        EnumerateKeywords(Ord(tkKey), MySqlKW, IdentChars, @DoAddKeyword);
         EnumerateKeywords(Ord(tkDatatype), MySqlTypes, IdentChars,
-          {$IFDEF FPC}@{$ENDIF}DoAddKeyword);
+          @DoAddKeyword);
         EnumerateKeywords(Ord(tkFunction), MySqlFunctions, IdentChars,
-          {$IFDEF FPC}@{$ENDIF}DoAddKeyword);
+          @DoAddKeyword);
       end;
     sqlOracle:
       begin
-        EnumerateKeywords(Ord(tkKey), OracleKW, IdentChars, {$IFDEF FPC}@{$ENDIF}DoAddKeyword);
+        EnumerateKeywords(Ord(tkKey), OracleKW, IdentChars, @DoAddKeyword);
         EnumerateKeywords(Ord(tkDatatype), OracleTypes, IdentChars,
-          {$IFDEF FPC}@{$ENDIF}DoAddKeyword);
+          @DoAddKeyword);
         EnumerateKeywords(Ord(tkException), OracleExceptions, IdentChars,
-          {$IFDEF FPC}@{$ENDIF}DoAddKeyword);
+          @DoAddKeyword);
         EnumerateKeywords(Ord(tkFunction), OracleFunctions, IdentChars,
-          {$IFDEF FPC}@{$ENDIF}DoAddKeyword);
+          @DoAddKeyword);
         EnumerateKeywords(Ord(tkComment), OracleCommentKW, IdentChars,
-          {$IFDEF FPC}@{$ENDIF}DoAddKeyword);
+          @DoAddKeyword);
         EnumerateKeywords(Ord(tkDefaultPackage), OracleDefaultPackages,
-          IdentChars, {$IFDEF FPC}@{$ENDIF}DoAddKeyword);
+          IdentChars, @DoAddKeyword);
         EnumerateKeywords(Ord(tkPLSQL), OraclePLSQLKW, IdentChars,
-          {$IFDEF FPC}@{$ENDIF}DoAddKeyword);
+          @DoAddKeyword);
         EnumerateKeywords(Ord(tkSQLPlus), OracleSQLPlusCommands, IdentChars,
-          {$IFDEF FPC}@{$ENDIF}DoAddKeyword);
+          @DoAddKeyword);
       end;
     sqlStandard:
-      EnumerateKeywords(Ord(tkKey), StandardKW, IdentChars + ['-'], {$IFDEF FPC}@{$ENDIF}DoAddKeyword);
+      EnumerateKeywords(Ord(tkKey), StandardKW, IdentChars + ['-'], @DoAddKeyword);
     sqlSybase:
-      EnumerateKeywords(Ord(tkKey), SybaseKW, IdentChars, {$IFDEF FPC}@{$ENDIF}DoAddKeyword);
+      EnumerateKeywords(Ord(tkKey), SybaseKW, IdentChars, @DoAddKeyword);
   end;
   PutTableNamesInKeywordList;
   DefHighlightChange(Self);

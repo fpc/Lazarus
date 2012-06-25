@@ -75,16 +75,16 @@ procedure TSynGutterLineNumber.Init;
 begin
   inherited Init;
   FTextDrawer := Gutter.TextDrawer;
-  TSynEditStringList(TextBuffer).AddGenericHandler(senrLineCount, TMethod({$IFDEF FPC}@{$ENDIF}LineCountChanged));
-  TSynEditStringList(TextBuffer).AddGenericHandler(senrTextBufferChanged, TMethod({$IFDEF FPC}@{$ENDIF}BufferChanged));
-  FTextDrawer.RegisterOnFontChangeHandler({$IFDEF FPC}@{$ENDIF}FontChanged);
+  TSynEditStringList(TextBuffer).AddGenericHandler(senrLineCount, TMethod(@LineCountChanged));
+  TSynEditStringList(TextBuffer).AddGenericHandler(senrTextBufferChanged, TMethod(@BufferChanged));
+  FTextDrawer.RegisterOnFontChangeHandler(@FontChanged);
   LineCountchanged(nil, 0, 0);
 end;
 
 destructor TSynGutterLineNumber.Destroy;
 begin
   TSynEditStringList(TextBuffer).RemoveHanlders(self);
-  FTextDrawer.UnRegisterOnFontChangeHandler({$IFDEF FPC}@{$ENDIF}FontChanged);
+  FTextDrawer.UnRegisterOnFontChangeHandler(@FontChanged);
   inherited Destroy;
 end;
 
@@ -195,8 +195,8 @@ end;
 procedure TSynGutterLineNumber.BufferChanged(Sender: TObject);
 begin
   TSynEditStringList(Sender).RemoveHanlders(self);
-  TSynEditStringList(TextBuffer).AddGenericHandler(senrLineCount, TMethod({$IFDEF FPC}@{$ENDIF}LineCountChanged));
-  TSynEditStringList(TextBuffer).AddGenericHandler(senrTextBufferChanged, TMethod({$IFDEF FPC}@{$ENDIF}BufferChanged));
+  TSynEditStringList(TextBuffer).AddGenericHandler(senrLineCount, TMethod(@LineCountChanged));
+  TSynEditStringList(TextBuffer).AddGenericHandler(senrTextBufferChanged, TMethod(@BufferChanged));
   LineCountChanged(nil, 0, 0);
 end;
 

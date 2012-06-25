@@ -519,13 +519,10 @@ begin
   FormStyle := fsSystemStayOnTop;
   Scroll := TScrollBar.Create(self);
   Scroll.Kind := sbVertical;
-  {$IFNDEF SYN_LAZARUS}
-  Scroll.ParentCtl3D := False;
-  {$ENDIF}
-  Scroll.OnChange := {$IFDEF FPC}@{$ENDIF}ScrollChange;
+  Scroll.OnChange := @ScrollChange;
   Scroll.Parent := Self;
-  Scroll.OnEnter := {$IFDEF FPC}@{$ENDIF}ScrollGetFocus;
-  Scroll.OnScroll := {$IFDEF FPC}@{$ENDIF}ScrollScroll;
+  Scroll.OnEnter := @ScrollGetFocus;
+  Scroll.OnScroll := @ScrollScroll;
   Scroll.TabStop := False;
   Scroll.Visible := True;
   //Scroll.Align:=alRight;
@@ -572,13 +569,13 @@ begin
   FHint.OnMouseDown :=@HintWindowMouseDown;
   {$ENDIF}
   FHintTimer := TTimer.Create(nil);
-  FHintTimer.OnTimer := {$IFDEF FPC}@{$ENDIF}OnHintTimer;
+  FHintTimer.OnTimer := @OnHintTimer;
   FHintTimer.Interval := 0;
   FLongLineHintTime := 0;
   FLongLineHintType := sclpExtendRightOnly;
   Visible := false;
   ClSelect := clHighlight;
-  TStringList(FItemList).OnChange := {$IFDEF FPC}@{$ENDIF}StringListChange;
+  TStringList(FItemList).OnChange := @StringListChange;
   FNbLinesInWindow := 6;
   FontChanged(Font);
   ShowHint := False;
@@ -1129,7 +1126,7 @@ procedure TSynBaseCompletionForm.RegisterHandlers(EditOnly: Boolean);
 begin
   if FCurrentEditor <> nil then begin
     FCurrentEditor.RegisterStatusChangedHandler
-    ({$IFDEF FPC}@{$ENDIF}EditorStatusChanged, [scTopLine]);
+    (@EditorStatusChanged, [scTopLine]);
     // Catch Editor events. Some Widgetset may report keys to the editor,
     // if the user types faster, then the app can open the form
     FCurrentEditor.RegisterBeforeKeyDownHandler(@DoEditorKeyDown);
@@ -1137,19 +1134,19 @@ begin
     FCurrentEditor.RegisterBeforeUtf8KeyPressHandler(@DoEditorUtf8KeyPress);
   end;
   if not EditOnly then
-    Application.AddOnDeactivateHandler({$IFDEF FPC}@{$ENDIF}AppDeactivated);
+    Application.AddOnDeactivateHandler(@AppDeactivated);
 end;
 
 procedure TSynBaseCompletionForm.UnRegisterHandlers(EditOnly: Boolean);
 begin
   if FCurrentEditor <> nil then begin
-    FCurrentEditor.UnRegisterStatusChangedHandler({$IFDEF FPC}@{$ENDIF}EditorStatusChanged);
+    FCurrentEditor.UnRegisterStatusChangedHandler(@EditorStatusChanged);
     FCurrentEditor.UnregisterBeforeKeyDownHandler(@DoEditorKeyDown);
     FCurrentEditor.UnregisterBeforeKeyPressHandler(@DoEditorKeyPress);
     FCurrentEditor.UnregisterBeforeUtf8KeyPressHandler(@DoEditorUtf8KeyPress);
   end;
   if not EditOnly then
-    Application.RemoveOnDeactivateHandler({$IFDEF FPC}@{$ENDIF}AppDeactivated);
+    Application.RemoveOnDeactivateHandler(@AppDeactivated);
 end;
 
 procedure TSynBaseCompletionForm.SetCurrentEditor(const AValue: TCustomSynEdit);
@@ -1754,9 +1751,9 @@ constructor TSynCompletion.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   Form.OnUTF8KeyPress := @UTF8KeyPress;
-  Form.OnKeyDelete := {$IFDEF FPC}@{$ENDIF}Backspace;
-  Form.OnValidate := {$IFDEF FPC}@{$ENDIF}Validate;
-  Form.OnCancel := {$IFDEF FPC}@{$ENDIF}Cancel;
+  Form.OnKeyDelete := @Backspace;
+  Form.OnValidate := @Validate;
+  Form.OnCancel := @Cancel;
   Form.OnPaint:=@OnFormPaint;
   FEndOfTokenChr := '()[].';
   fShortCut := Menus.ShortCut(Ord(' '), [ssCtrl]);
@@ -2140,9 +2137,9 @@ end;
 initialization
   KeyOffset    := AllocatePluginKeyRange(ecSynCompletionCount, True);
 
-  RegisterKeyCmdIdentProcs({$IFDEF FPC}@{$ENDIF}IdentToSynCompletionCommand,
-                           {$IFDEF FPC}@{$ENDIF}SynCompletionCommandToIdent);
-  RegisterExtraGetEditorCommandValues({$IFDEF FPC}@{$ENDIF}GetEditorCommandValues);
+  RegisterKeyCmdIdentProcs(@IdentToSynCompletionCommand,
+                           @SynCompletionCommandToIdent);
+  RegisterExtraGetEditorCommandValues(@GetEditorCommandValues);
 
 
 end.

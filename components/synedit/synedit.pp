@@ -95,11 +95,7 @@ uses
   SynGutterBase, SynGutter, SynGutterCodeFolding, SynGutterChanges,
   SynGutterLineNumber, SynGutterMarks, SynGutterLineOverview,
   SynEditMiscClasses, SynEditHighlighter, LazSynTextArea, SynTextDrawer,
-  LResources, Clipbrd
-  {$IFDEF SYN_COMPILER_4_UP}
-  , StdActns
-  {$ENDIF}
-  ;
+  LResources, Clipbrd, StdActns;
 
 const
   ScrollBarWidth=0;
@@ -110,11 +106,6 @@ const
   SynDefaultFontSize:    Integer      = 10;
   SynDefaultFontPitch:   TFontPitch   = fpFixed;
   SynDefaultFontQuality: TFontQuality = fqNonAntialiased;
-
-  {$IFNDEF SYN_COMPILER_3_UP}
-   // not defined in all Delphi versions
-  WM_MOUSEWHEEL = $020A;
-  {$ENDIF}
 
   // maximum scroll range
   MAX_SCROLL = 32767;
@@ -440,13 +431,13 @@ type
     procedure WMDropFiles(var Msg: TMessage); message WM_DROPFILES;
     procedure WMEraseBkgnd(var Msg: TMessage); message WM_ERASEBKGND;
     procedure WMGetDlgCode(var Msg: TWMGetDlgCode); message WM_GETDLGCODE;
-    procedure WMHScroll(var Msg: {$IFDEF SYN_LAZARUS}TLMScroll{$ELSE}TWMScroll{$ENDIF}); message WM_HSCROLL;
+    procedure WMHScroll(var Msg: TLMScroll); message WM_HSCROLL;
     procedure WMKillFocus(var Msg: TWMKillFocus); message WM_KILLFOCUS;
     procedure WMExit(var Message: TLMExit); message LM_EXIT;
     procedure WMMouseWheel(var Message: TLMMouseEvent); message LM_MOUSEWHEEL;
     //procedure WMMouseWheel(var Msg: TMessage); message WM_MOUSEWHEEL;
     procedure WMSetFocus(var Msg: TLMSetFocus); message WM_SETFOCUS;
-    procedure WMVScroll(var Msg: {$IFDEF SYN_LAZARUS}TLMScroll{$ELSE}TWMScroll{$ENDIF}); message WM_VSCROLL;
+    procedure WMVScroll(var Msg: TLMScroll); message WM_VSCROLL;
   protected
     procedure CMWantSpecialKey(var Message: TLMessage); message CM_WANTSPECIALKEY;
   private
@@ -928,9 +919,7 @@ type
     property CanPaste: Boolean read GetCanPaste;
 
     procedure DragDrop(Source: TObject; X, Y: Integer); override;
-{$IFDEF SYN_COMPILER_4_UP}
     function ExecuteAction(ExeAction: TBasicAction): boolean; override;
-{$ENDIF}
     procedure CommandProcessor(Command:TSynEditorCommand;
       AChar: TUTF8Char;
       Data:pointer); virtual;
@@ -1011,9 +1000,7 @@ type
     procedure ResetMouseActions;  // set mouse-actions according to current Options / may clear them
     procedure SetOptionFlag(Flag: TSynEditorOption; Value: boolean);
     Procedure SetHighlightSearch(const ASearch: String; AOptions: TSynSearchOptions);
-{$IFDEF SYN_COMPILER_4_UP}
     function UpdateAction(TheAction: TBasicAction): boolean; override;
-{$ENDIF}
     procedure WndProc(var Msg: TMessage); override;
     procedure EraseBackground(DC: HDC); override;
   public
@@ -1148,10 +1135,8 @@ type
     property BlockIndent;
     property BlockTabIndent;
     property BorderSpacing;
-{$IFDEF SYN_COMPILER_4_UP}
     property Anchors;
     property Constraints;
-{$ENDIF}
     property Color;
     property Cursor default crIBeam;
     property Enabled;
@@ -1175,10 +1160,8 @@ type
     property OnQuadClick;
     property OnDragDrop;
     property OnDragOver;
-{$IFDEF SYN_COMPILER_4_UP}
 // ToDo Docking
     property OnEndDock;
-{$ENDIF}
     property OnEndDrag;
     property OnEnter;
     property OnExit;
@@ -1192,10 +1175,8 @@ type
     property OnMouseLink: TSynMouseLinkEvent read FOnMouseLink write FOnMouseLink;
     property OnMouseEnter;
     property OnMouseLeave;
-{$IFDEF SYN_COMPILER_4_UP}
 // ToDo Docking
     property OnStartDock;
-{$ENDIF}
     property OnStartDrag;
     // TCustomSynEdit properties
     property BookMarkOptions;
@@ -1881,7 +1862,7 @@ begin
 
   FCaret := TSynEditCaret.Create;
   FCaret.MaxLeftChar := @CurrentMaxLineLen;
-  FCaret.AddChangeHandler({$IFDEF FPC}@{$ENDIF}CaretChanged);
+  FCaret.AddChangeHandler(@CaretChanged);
   FInternalCaret := TSynEditCaret.Create;
   FInternalCaret.MaxLeftChar := @CurrentMaxLineLen;
 
@@ -1900,14 +1881,14 @@ begin
   FTopLinesView := FTrimmedLinesView;
 
   FFoldedLinesView := TSynEditFoldedView.Create(FTheLinesView, fCaret);
-  FFoldedLinesView.OnFoldChanged := {$IFDEF FPC}@{$ENDIF}FoldChanged;
-  FFoldedLinesView.OnLineInvalidate := {$IFDEF FPC}@{$ENDIF}InvalidateGutterLines;
+  FFoldedLinesView.OnFoldChanged := @FoldChanged;
+  FFoldedLinesView.OnLineInvalidate := @InvalidateGutterLines;
   FFoldedLinesView.DisplayView.NextView := FTheLinesView.DisplayView;
 
   FDisplayView := FFoldedLinesView.DisplayView;
 
   // External Accessor
-  FStrings := TSynEditLines.Create(TSynEditStringList(FLines), {$IFDEF FPC}@{$ENDIF}MarkTextAsSaved);
+  FStrings := TSynEditLines.Create(TSynEditStringList(FLines), @MarkTextAsSaved);
 
   FCaret.Lines := FTheLinesView;
   FInternalCaret.Lines := FTheLinesView;
@@ -1916,24 +1897,24 @@ begin
   FOldHeight := -1;
 
   with TSynEditStringList(fLines) do begin
-    AddChangeHandler(senrLineCount, {$IFDEF FPC}@{$ENDIF}LineCountChanged);
-    AddChangeHandler(senrLineChange, {$IFDEF FPC}@{$ENDIF}LineTextChanged);
-    AddChangeHandler(senrHighlightChanged, {$IFDEF FPC}@{$ENDIF}DoHighlightChanged);
-    AddNotifyHandler(senrCleared, {$IFDEF FPC}@{$ENDIF}ListCleared);
-    AddNotifyHandler(senrUndoRedoAdded, {$IFDEF FPC}@{$ENDIF}Self.UndoRedoAdded);
-    AddNotifyHandler(senrModifiedChanged, {$IFDEF FPC}@{$ENDIF}ModifiedChanged);
-    AddNotifyHandler(senrIncPaintLock, {$IFDEF FPC}@{$ENDIF}DoIncPaintLock);
-    AddNotifyHandler(senrDecPaintLock, {$IFDEF FPC}@{$ENDIF}DoDecPaintLock);
-    AddNotifyHandler(senrIncOwnedPaintLock, {$IFDEF FPC}@{$ENDIF}DoIncForeignPaintLock);
-    AddNotifyHandler(senrDecOwnedPaintLock, {$IFDEF FPC}@{$ENDIF}DoDecForeignPaintLock);
+    AddChangeHandler(senrLineCount, @LineCountChanged);
+    AddChangeHandler(senrLineChange, @LineTextChanged);
+    AddChangeHandler(senrHighlightChanged, @DoHighlightChanged);
+    AddNotifyHandler(senrCleared, @ListCleared);
+    AddNotifyHandler(senrUndoRedoAdded, @Self.UndoRedoAdded);
+    AddNotifyHandler(senrModifiedChanged, @ModifiedChanged);
+    AddNotifyHandler(senrIncPaintLock, @DoIncPaintLock);
+    AddNotifyHandler(senrDecPaintLock, @DoDecPaintLock);
+    AddNotifyHandler(senrIncOwnedPaintLock, @DoIncForeignPaintLock);
+    AddNotifyHandler(senrDecOwnedPaintLock, @DoDecForeignPaintLock);
   end;
 
   FScreenCaret := TSynEditScreenCaret.Create(Self);
-  FScreenCaret.OnExtraLineCharsChanged := {$IFDEF FPC}@{$ENDIF}ExtraLineCharsChanged;
+  FScreenCaret.OnExtraLineCharsChanged := @ExtraLineCharsChanged;
 
   FUndoList := TSynEditStringList(fLines).UndoList;
   FRedoList := TSynEditStringList(fLines).RedoList;
-  FUndoList.OnNeedCaretUndo := {$IFDEF FPC}@{$ENDIF}GetCaretUndo;
+  FUndoList.OnNeedCaretUndo := @GetCaretUndo;
   {$IFDEF SynUndoDebugCalls}
   fUndoList.DebugName := 'UNDO';
   fRedoList.DebugName := 'REDO';
@@ -1941,11 +1922,11 @@ begin
 
   FBlockSelection := TSynEditSelection.Create(FTheLinesView, True);
   FBlockSelection.Caret := FCaret;
-  FBlockSelection.InvalidateLinesMethod := {$IFDEF FPC}@{$ENDIF}InvalidateLines;
-  FBlockSelection.AddChangeHandler({$IFDEF FPC}@{$ENDIF}DoBlockSelectionChanged);
+  FBlockSelection.InvalidateLinesMethod := @InvalidateLines;
+  FBlockSelection.AddChangeHandler(@DoBlockSelectionChanged);
 
   FInternalBlockSelection := TSynEditSelection.Create(FTheLinesView, False);
-  FInternalBlockSelection.InvalidateLinesMethod := {$IFDEF FPC}@{$ENDIF}InvalidateLines;
+  FInternalBlockSelection.InvalidateLinesMethod := @InvalidateLines;
   // No need for caret, on interanl block
 
   FFoldedLinesView.BlockSelection := FBlockSelection;
@@ -1962,14 +1943,14 @@ begin
   FPaintLineColor := TSynSelectedColor.Create;
   FPaintLineColor2 := TSynSelectedColor.Create;
   fBookMarkOpt := TSynBookMarkOpt.Create(Self);
-  fBookMarkOpt.OnChange := {$IFDEF FPC}@{$ENDIF}BookMarkOptionsChanged;
+  fBookMarkOpt.OnChange := @BookMarkOptionsChanged;
 
   FLeftGutter := CreateGutter(self, gsLeft, FTextDrawer);
-  FLeftGutter.RegisterChangeHandler({$IFDEF FPC}@{$ENDIF}GutterChanged);
-  FLeftGutter.RegisterResizeHandler({$IFDEF FPC}@{$ENDIF}GutterResized);
+  FLeftGutter.RegisterChangeHandler(@GutterChanged);
+  FLeftGutter.RegisterResizeHandler(@GutterResized);
   FRightGutter := CreateGutter(self, gsRight, FTextDrawer);
-  FRightGutter.RegisterChangeHandler({$IFDEF FPC}@{$ENDIF}GutterChanged);
-  FRightGutter.RegisterResizeHandler({$IFDEF FPC}@{$ENDIF}GutterResized);
+  FRightGutter.RegisterChangeHandler(@GutterChanged);
+  FRightGutter.RegisterResizeHandler(@GutterResized);
 
   ControlStyle := ControlStyle + [csOpaque, csSetCaption, csTripleClicks, csQuadClicks];
   Height := 150;
@@ -2044,7 +2025,7 @@ begin
 
   Color := clWhite;
   Font.Assign(fFontDummy);
-  Font.OnChange := {$IFDEF FPC}@{$ENDIF}FontChanged;
+  Font.OnChange := @FontChanged;
   FontChanged(nil);
   ParentFont := False;
   ParentColor := False;
@@ -2086,7 +2067,7 @@ begin
   fScrollTimer := TTimer.Create(Self);
   fScrollTimer.Enabled := False;
   fScrollTimer.Interval := 100;
-  fScrollTimer.OnTimer := {$IFDEF FPC}@{$ENDIF}ScrollTimerHandler;
+  fScrollTimer.OnTimer := @ScrollTimerHandler;
 
   // Accessibility
   AccessibleRole := larTextEditorMultiline;
@@ -2127,7 +2108,7 @@ begin
     Style := Style or ScrollBar[FScrollBars] or BorderStyles[BorderStyle]
       or WS_CLIPCHILDREN;
     {$IFDEF RangeCheckOn}{$R+}{$ENDIF}
-    if NewStyleControls {$IFNDEF SYN_LAZARUS}and Ctl3D{$ENDIF} and (BorderStyle = bsSingle) then begin
+    if NewStyleControls and (BorderStyle = bsSingle) then begin
       Style := Style and not Cardinal(WS_BORDER);
       ExStyle := ExStyle or WS_EX_CLIENTEDGE;
     end;
@@ -2293,17 +2274,17 @@ begin
   end;
 
   RemoveHandlers;
-  FLeftGutter.UnRegisterChangeHandler({$IFDEF FPC}@{$ENDIF}GutterChanged);
-  FLeftGutter.UnRegisterResizeHandler({$IFDEF FPC}@{$ENDIF}GutterResized);
-  FRightGutter.UnRegisterChangeHandler({$IFDEF FPC}@{$ENDIF}GutterChanged);
-  FRightGutter.UnRegisterResizeHandler({$IFDEF FPC}@{$ENDIF}GutterResized);
+  FLeftGutter.UnRegisterChangeHandler(@GutterChanged);
+  FLeftGutter.UnRegisterResizeHandler(@GutterResized);
+  FRightGutter.UnRegisterChangeHandler(@GutterChanged);
+  FRightGutter.UnRegisterResizeHandler(@GutterResized);
 
   FreeAndNil(FHookedKeyTranslationList);
   fHookedCommandHandlers:=nil;
   fPlugins:=nil;
   FCaret.Lines := nil;
   FInternalCaret.Lines := nil;
-  FMarkList.UnRegisterChangeHandler({$IFDEF FPC}@{$ENDIF}MarkListChange);
+  FMarkList.UnRegisterChangeHandler(@MarkListChange);
   FreeAndNil(FPaintArea);
   FreeAndNil(FLeftGutterArea);
   FreeAndNil(FRightGutterArea);
@@ -3154,19 +3135,19 @@ begin
   try
     // Check plugins/external handlers
     if FMouseActionSearchHandlerList.CallSearchHandlers(Info,
-                                         {$IFDEF FPC}@{$ENDIF}DoHandleMouseAction)
+                                         @DoHandleMouseAction)
     then
       exit;
 
     if FLeftGutter.Visible and (X < FLeftGutter.Width) then begin
       // mouse event occured in Gutter ?
-      if FLeftGutter.MaybeHandleMouseAction(Info, {$IFDEF FPC}@{$ENDIF}DoHandleMouseAction) then
+      if FLeftGutter.MaybeHandleMouseAction(Info, @DoHandleMouseAction) then
         exit;
     end
     else
     if FRightGutter.Visible and (X > ClientWidth - FRightGutter.Width) then begin
       // mouse event occured in Gutter ?
-      if FRightGutter.MaybeHandleMouseAction(Info, {$IFDEF FPC}@{$ENDIF}DoHandleMouseAction) then
+      if FRightGutter.MaybeHandleMouseAction(Info, @DoHandleMouseAction) then
         exit;
     end
     else
@@ -4463,7 +4444,7 @@ begin
     Msg.Result := Msg.Result or DLGC_WANTTAB;
 end;
 
-procedure TCustomSynEdit.WMHScroll(var Msg: {$IFDEF SYN_LAZARUS}TLMScroll{$ELSE}TWMScroll{$ENDIF});
+procedure TCustomSynEdit.WMHScroll(var Msg: TLMScroll);
 begin
   case Msg.ScrollCode of
       // Scrolls to start / end of the line
@@ -4560,7 +4541,7 @@ begin
   Result.HideInterval := 1500;
 end;
 
-procedure TCustomSynEdit.WMVScroll(var Msg: {$IFDEF SYN_LAZARUS}TLMScroll{$ELSE}TWMScroll{$ENDIF});
+procedure TCustomSynEdit.WMVScroll(var Msg: TLMScroll);
 var
   s: ShortString;
   rc: TRect;
@@ -5280,7 +5261,7 @@ begin
 
   // Recreate te public access to FLines
   FreeAndNil(FStrings);
-  FStrings := TSynEditLines.Create(TSynEditStringList(FLines), {$IFDEF FPC}@{$ENDIF}MarkTextAsSaved);
+  FStrings := TSynEditLines.Create(TSynEditStringList(FLines), @MarkTextAsSaved);
 
   // Flines has been set to the new buffer; and self is attached to the new FLines
   // FTheLinesView points to new FLines
@@ -5336,7 +5317,7 @@ begin
       FBookMarks[i] := nil;
   end;
 
-  FMarkList.RegisterChangeHandler({$IFDEF FPC}@{$ENDIF}MarkListChange,
+  FMarkList.RegisterChangeHandler(@MarkListChange,
     [low(TSynEditMarkChangeReason)..high(TSynEditMarkChangeReason)]);
 end;
 
@@ -5349,7 +5330,7 @@ begin
     exit;
 
   TSynEditMarkListInternal(fMarkList).RemoveOwnerEdit(Self);
-  FMarkList.UnRegisterChangeHandler({$IFDEF FPC}@{$ENDIF}MarkListChange);
+  FMarkList.UnRegisterChangeHandler(@MarkListChange);
 
   if IsMarkListShared then begin
     s := TSynEditStringList(FLines).AttachedSynEdits[0];
@@ -5757,7 +5738,7 @@ procedure TCustomSynEdit.RemoveHooksFromHighlighter;
 begin
   if not Assigned(fHighlighter) then
     exit;
-  fHighlighter.UnhookAttrChangeEvent({$IFDEF FPC}@{$ENDIF}HighlighterAttrChanged);
+  fHighlighter.UnhookAttrChangeEvent(@HighlighterAttrChanged);
   fHighlighter.DetachFromLines(FLines);
   fHighlighter.RemoveFreeNotification(self);
 end;
@@ -5769,7 +5750,7 @@ begin
     RemoveHooksFromHighlighter;
     if Assigned(Value) then begin
       Value.HookAttrChangeEvent(
-        {$IFDEF FPC}@{$ENDIF}HighlighterAttrChanged);
+        @HighlighterAttrChanged);
       Value.FreeNotification(Self);
       Value.AttachToLines(FLines);
     end;
@@ -6635,7 +6616,7 @@ begin
   {$IFDEF SynUndoDebugBeginEnd}
   DebugLnEnter(['>> TCustomSynEdit.InternalBeginUndoBlock', DbgSName(self), ' ', dbgs(Self), ' aList=', aList, ' FPaintLock=', FPaintLock, ' InGroupCount=',aList.InGroupCount]);
   {$ENDIF}
-  aList.OnNeedCaretUndo := {$IFDEF FPC}@{$ENDIF}GetCaretUndo;
+  aList.OnNeedCaretUndo := @GetCaretUndo;
   aList.BeginBlock;
   IncPaintLock;
   FFoldedLinesView.Lock;
@@ -6662,7 +6643,7 @@ begin
   DebugLnEnter(['>> TCustomSynEdit.BeginUndoBlock ', DbgSName(self), ' ', dbgs(Self), ' Caller=', ACaller, ' FPaintLock=', FPaintLock, ' InGroupCount=',fUndoList.InGroupCount, '  FIsInDecPaintLock=',dbgs(FIsInDecPaintLock)]);
   if ACaller = '' then DumpStack;
   {$ENDIF}
-  fUndoList.OnNeedCaretUndo := {$IFDEF FPC}@{$ENDIF}GetCaretUndo;
+  fUndoList.OnNeedCaretUndo := @GetCaretUndo;
   fUndoList.BeginBlock;
   ////FFoldedLinesView.Lock;
   //FTrimmedLinesView.Lock;
@@ -7984,7 +7965,6 @@ begin
   end;
 end;
 
-{$IFDEF SYN_COMPILER_4_UP}
 function TCustomSynEdit.ExecuteAction(ExeAction: TBasicAction): boolean;
 begin
   if ExeAction is TEditAction then
@@ -7996,14 +7976,12 @@ begin
       CopyToClipboard
     else if ExeAction is TEditPaste then
       PasteFromClipboard
-{$IFDEF SYN_COMPILER_5_UP}
     else if ExeAction is TEditDelete then
       ClearSelection
     else if ExeAction is TEditUndo then
       Undo
     else if ExeAction is TEditSelectAll then
       SelectAll;
-{$ENDIF}
   end else
     Result := inherited ExecuteAction(ExeAction);
 end;
@@ -8019,19 +7997,16 @@ begin
         TEditAction(TheAction).Enabled := SelAvail
       else if TheAction is TEditPaste then
         TEditAction(TheAction).Enabled := CanPaste
-{$IFDEF SYN_COMPILER_5_UP}
       else if TheAction is TEditDelete then
         TEditAction(TheAction).Enabled := TRUE
       else if TheAction is TEditUndo then
         TEditAction(TheAction).Enabled := CanUndo
       else if TheAction is TEditSelectAll then
         TEditAction(TheAction).Enabled := TRUE;
-{$ENDIF}
     end;
   end else
     Result := inherited UpdateAction(TheAction);
 end;
-{$ENDIF}
 
 procedure TCustomSynEdit.SetModified(Value: boolean);
 begin

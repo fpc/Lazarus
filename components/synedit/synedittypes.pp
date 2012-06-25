@@ -71,9 +71,9 @@ type
   PSynSelectionMode = ^TSynSelectionMode;
   // to be binary (clipboard) compatible with other (Delphi compiled) synedits
   // use {$PACKENUM 1}
-{$IFDEF SYN_LAZARUS}{$PACKENUM 1}{$ENDIF SYN_LAZARUS}
+{$PACKENUM 1}
   TSynSelectionMode = (smNormal, smLine, smColumn, smCurrent);
-{$IFDEF SYN_LAZARUS}{$PACKENUM 4}{$ENDIF SYN_LAZARUS}
+{$PACKENUM 4}
 
   TSynSearchOption =
     ( ssoMatchCase, ssoWholeWord,
@@ -88,9 +88,7 @@ type
     );
   TSynSearchOptions = set of TSynSearchOption;
 
-  {$IFDEF SYN_LAZARUS}
   TSynEditRange = pointer;
-  {$ENDIF}
 
   TSynStatusChange = (scCaretX, scCaretY,
     scLeftChar, scTopLine, scLinesInWindow,

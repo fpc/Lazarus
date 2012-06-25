@@ -44,18 +44,7 @@ unit SynMemo;
 interface
 
 uses
-  Classes,
-{$IFDEF SYN_CLX}
-  Qt,
-  Types,
-{$ELSE}
-  {$IFDEF SYN_LAZARUS}
-  LCLIntf, Controls,
-  {$ELSE}
-  Windows,
-  {$ENDIF}
-{$ENDIF}
-  SynEdit;
+  Classes, LCLIntf, Controls, SynEdit;
 
 //SelStart and SelEnd are now in TCustomSynEdit                                 //DDH Addition
 
@@ -79,29 +68,15 @@ type
   published
     // inherited properties
     property Align;
-    {$IFDEF SYN_LAZARUS}
     property BorderSpacing;
-    {$ENDIF}
-{$IFDEF SYN_COMPILER_4_UP}
     property Anchors;
     property Constraints;
-{$ENDIF}
     property Color;
-  {$IFNDEF SYN_CLX}
-    {$IFNDEF SYN_LAZARUS}
-    property Ctl3D;
-    {$ENDIF}
-  {$ENDIF}
     property Enabled;
     property Font;
     property Height;
     property Name;
     property ParentColor;
-  {$IFNDEF SYN_CLX}
-    {$IFNDEF SYN_LAZARUS}
-    property ParentCtl3D;
-    {$ENDIF}
-  {$ENDIF}
     property ParentFont;
     property ParentShowHint;
     property PopupMenu;
@@ -116,13 +91,6 @@ type
     property OnDblClick;
     property OnDragDrop;
     property OnDragOver;
-{$IFDEF SYN_COMPILER_4_UP}
-{$IFNDEF SYN_CLX}
-{$IFNDEF SYN_LAZARUS}
-    property OnEndDock;
-{$ENDIF}
-{$ENDIF}
-{$ENDIF}
     property OnEndDrag;
     property OnEnter;
     property OnExit;
@@ -132,13 +100,6 @@ type
     property OnMouseDown;
     property OnMouseMove;
     property OnMouseUp;
-{$IFDEF SYN_COMPILER_4_UP}
-{$IFNDEF SYN_CLX}
-{$IFNDEF SYN_LAZARUS}
-    property OnStartDock;
-{$ENDIF}
-{$ENDIF}
-{$ENDIF}
     property OnStartDrag;
     // TCustomSynEdit properties
     property BookMarkOptions;
@@ -161,9 +122,6 @@ type
     property ReadOnly;
     property RightEdge;
     property RightEdgeColor;
-    {$IFNDEF SYN_LAZARUS}
-    property SearchEngine;
-    {$ENDIF}
     property ScrollBars;
     property SelectedColor;
     property SelectionMode;
@@ -175,10 +133,6 @@ type
     property OnCommandProcessed;
     property OnDropFiles;
     property OnGutterClick;
-    {$IFNDEF SYN_LAZARUS}
-    property OnGutterGetText;
-    property OnGutterPaint;
-    {$ENDIF}
     property OnPaint;
     property OnPlaceBookmark;
     property OnProcessCommand;
@@ -186,17 +140,11 @@ type
     property OnReplaceText;
     property OnSpecialLineColors;
     property OnStatusChange;
-    {$IFNDEF SYN_LAZARUS}
-    property OnPaintTransient;
-    {$ENDIF}
   end;
 
 implementation
 
 uses
-  {$IFNDEF SYN_LAZARUS}
-  SynEditStrConst,
-  {$ENDIF}
   SynEditMiscProcs;
 
 { TCustomSynMemo }

@@ -417,16 +417,16 @@ begin
   FLineEdited := False;
   FTrimType := settLeaveLine;
   Inherited Create(ASynStringSource);
-  fSynStrings.AddChangeHandler(senrLineCount, {$IFDEF FPC}@{$ENDIF}LineCountChanged);
-  fSynStrings.AddChangeHandler(senrLineChange, {$IFDEF FPC}@{$ENDIF}LinesChanged);
-  fSynStrings.AddNotifyHandler(senrCleared, {$IFDEF FPC}@{$ENDIF}ListCleared);
+  fSynStrings.AddChangeHandler(senrLineCount, @LineCountChanged);
+  fSynStrings.AddChangeHandler(senrLineChange, @LinesChanged);
+  fSynStrings.AddNotifyHandler(senrCleared, @ListCleared);
 end;
 
 destructor TSynEditStringTrimmingList.Destroy;
 begin
-  fSynStrings.RemoveChangeHandler(senrLineCount, {$IFDEF FPC}@{$ENDIF}LineCountChanged);
-  fSynStrings.RemoveChangeHandler(senrLineChange, {$IFDEF FPC}@{$ENDIF}LinesChanged);
-  fSynStrings.RemoveNotifyHandler(senrCleared, {$IFDEF FPC}@{$ENDIF}ListCleared);
+  fSynStrings.RemoveChangeHandler(senrLineCount, @LineCountChanged);
+  fSynStrings.RemoveChangeHandler(senrLineChange, @LinesChanged);
+  fSynStrings.RemoveNotifyHandler(senrCleared, @ListCleared);
   fCaret.RemoveChangeHandler(@DoCaretChanged);
   FreeAndNil(FDisplayView);
   FreeAndNil(fLockList);

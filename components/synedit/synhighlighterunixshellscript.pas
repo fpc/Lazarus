@@ -47,27 +47,17 @@ Known Issues:
 The SynHighlighterUNIXShellScript unit provides SynEdit with a UNIX Shell Script highlighter.
 }
 
-{$IFNDEF QSYNHIGHLIGHTERUNIXSHELLSCRIPT}
 unit synhighlighterunixshellscript;
-{$ENDIF}
 
 {$I SynEdit.inc}
 
 interface
 
 uses
-  {$IFDEF SYN_CLX}
-  QGraphics,
-  QSynEditTypes,
-  QSynEditHighlighter,
-  {$ELSE}
   Graphics,
-  {$IFDEF SYN_LAZARUS}
   GraphType, /////TL 2003-06-11: Added for font attribute declaration fsBold
-  {$ENDIF}
   SynEditTypes,
   SynEditHighlighter,
-  {$ENDIF}
   SysUtils,
   Classes;
 
@@ -131,13 +121,11 @@ type
     function GetEol: Boolean; override;
     function GetRange: Pointer; override;
     function GetTokenID: TtkTokenKind;
-    procedure SetLine({$IFDEF FPC}const {$ENDIF}NewValue: String; LineNumber:Integer); override; /////TL: Added 2003-06-11
+    procedure SetLine(const NewValue: String; LineNumber:Integer); override; /////TL: Added 2003-06-11
     function IsKeyword(const AKeyword: string): boolean; override;              //mh 2000-11-08
     function IsSecondKeyWord(aToken: string): Boolean;
     function GetToken: string; override;
-    {$IFDEF SYN_LAZARUS}
     procedure GetTokenEx(out TokenStart: PChar; out TokenLength: integer); override; /////TL: Added 2003-06-11
-    {$ENDIF}
     function GetTokenAttribute: TSynHighlighterAttributes; override;
     function GetTokenKind: integer; override;
     function GetTokenPos: Integer; override;
@@ -168,11 +156,7 @@ type
 implementation
 
 uses
-{$IFDEF SYN_CLX}
-  QSynEditStrConst;
-{$ELSE}
   SynEditStrConst;
-{$ENDIF}
 
 const
   ShellScriptKeysCount = 110;
@@ -198,16 +182,10 @@ const
 
 var
   Identifiers: array[#0..#255] of ByteBool;
-  {$IFNDEF SYN_LAZARUS}
-  mHashTable: array[#0..#255] of Integer;
-  {$ENDIF}
 
 procedure MakeIdentTable;
 var
   I: Char;
-  {$IFNDEF SYN_LAZARUS}
-  K: Char;
-  {$ENDIF}
 begin
   for I := #0 to #255 do
   begin
@@ -217,13 +195,6 @@ begin
       else
         Identifiers[I] := False;
     end;
-    {$IFNDEF SYN_LAZARUS}
-    J := UpCase(I);
-    case I in ['_', 'a'..'z', 'A'..'Z'] of
-      True: mHashTable[I] := Ord(J) - 64
-      else mHashTable[I] := 0;
-    end;
-    {$ENDIF}
   end;
 end;
 
@@ -277,21 +248,21 @@ var
 begin
   for I := #0 to #255 do
     case I of  /////TL 2003-06-11: added "@" prefix to function identifiers being assigned
-      '#': fProcTable[I] := {$IFDEF SYN_LAZARUS}@{$ENDIF}SlashProc{!@#$AsciiCharProc};
-      '{': fProcTable[I] := {$IFDEF SYN_LAZARUS}@{$ENDIF}BraceOpenProc;
-      ';': fProcTable[I] := {$IFDEF SYN_LAZARUS}@{$ENDIF}PointCommaProc;
-      '.': fProcTable[i] := {$IFDEF SYN_LAZARUS}@{$ENDIF}DotProc;
-      #13: fProcTable[I] := {$IFDEF SYN_LAZARUS}@{$ENDIF}CRProc;
-      'A'..'Z', 'a'..'z', '_': fProcTable[I] := {$IFDEF SYN_LAZARUS}@{$ENDIF}IdentProc;
-      #10: fProcTable[I] := {$IFDEF SYN_LAZARUS}@{$ENDIF}LFProc;
-      #0: fProcTable[I] := {$IFDEF SYN_LAZARUS}@{$ENDIF}NullProc;
-      '0'..'9': fProcTable[I] := {$IFDEF SYN_LAZARUS}@{$ENDIF}NumberProc;
-      '(': fProcTable[I] := {$IFDEF SYN_LAZARUS}@{$ENDIF}RoundOpenProc;
-      '/': fProcTable[I] := {$IFDEF SYN_LAZARUS}@{$ENDIF}SlashProc;
-      '$': fProcTable[i] := {$IFDEF SYN_LAZARUS}@{$ENDIF}DollarProc;
-      #1..#9, #11, #12, #14..#32: fProcTable[I] := {$IFDEF SYN_LAZARUS}@{$ENDIF}SpaceProc;
-      #34, #39{!@#$#39}: fProcTable[I] := {$IFDEF SYN_LAZARUS}@{$ENDIF}StringProc;
-      else fProcTable[I] := {$IFDEF SYN_LAZARUS}@{$ENDIF}UnknownProc;
+      '#': fProcTable[I] := @SlashProc{!@#$AsciiCharProc};
+      '{': fProcTable[I] := @BraceOpenProc;
+      ';': fProcTable[I] := @PointCommaProc;
+      '.': fProcTable[i] := @DotProc;
+      #13: fProcTable[I] := @CRProc;
+      'A'..'Z', 'a'..'z', '_': fProcTable[I] := @IdentProc;
+      #10: fProcTable[I] := @LFProc;
+      #0: fProcTable[I] := @NullProc;
+      '0'..'9': fProcTable[I] := @NumberProc;
+      '(': fProcTable[I] := @RoundOpenProc;
+      '/': fProcTable[I] := @SlashProc;
+      '$': fProcTable[i] := @DollarProc;
+      #1..#9, #11, #12, #14..#32: fProcTable[I] := @SpaceProc;
+      #34, #39{!@#$#39}: fProcTable[I] := @StringProc;
+      else fProcTable[I] := @UnknownProc;
     end;
 end;
 
@@ -341,7 +312,7 @@ begin
   fVarAttri := TSynHighlighterAttributes.Create(SYNS_AttrVariable, SYNS_XML_AttrVariable);
   fVarAttri.Foreground := clPurple;
   AddAttribute(fVarAttri);
-  SetAttributesOnChange({$IFDEF SYN_LAZARUS}@{$ENDIF}DefHighlightChange);   ////TL 2003-06-11: added the @prefix to DefHighlightChange
+  SetAttributesOnChange(@DefHighlightChange);   ////TL 2003-06-11: added the @prefix to DefHighlightChange
 
   MakeMethodTables;
   fRange := rsUnknown;
@@ -350,7 +321,7 @@ end; { Create }
 
 ////TL 2003-06-11: Replaced existing SetLine with this one... identical except for the IFDEF
 procedure TSynUNIXShellScriptSyn.SetLine(
-  {$IFDEF FPC}const {$ENDIF}NewValue: String;
+  const NewValue: String;
   LineNumber:Integer);
 begin
   inherited;
@@ -661,10 +632,8 @@ end;
 procedure TSynUNIXShellScriptSyn.UnknownProc;
 begin
   inc(Run);
-  {$IFDEF SYN_LAZARUS}
   while (fLine[Run] in [#128..#191]) OR // continued utf8 subcode
    ((fLine[Run]<>#0) and (fProcTable[fLine[Run]] = @UnknownProc)) do inc(Run);
-  {$ENDIF}
   fTokenID := tkUnKnown;
 end;
 
@@ -714,14 +683,12 @@ begin
 end;
 
 ////TL 2003-06-11: Added the following to satisfy abstract method override
-{$IFDEF SYN_LAZARUS}
 procedure TSynUNIXShellScriptSyn.GetTokenEx(out TokenStart: PChar;
   out TokenLength: integer);
 begin
   TokenLength:=Run-fTokenPos;
   TokenStart:=FLine + fTokenPos;
 end;
-{$ENDIF}
 
 function TSynUNIXShellScriptSyn.GetTokenID: TtkTokenKind;
 begin

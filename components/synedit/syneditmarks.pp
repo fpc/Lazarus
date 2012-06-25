@@ -615,7 +615,7 @@ begin
   if PrimaryOrder = smsoUnsorted then
     exit;
 
-  FMarks.Sort({$IFDEF FPC}@{$ENDIF}CompareSynEditMarks);
+  FMarks.Sort(@CompareSynEditMarks);
 end;
 
 function TSynEditMarkLine.Add(Item: TSynEditMark): Integer;

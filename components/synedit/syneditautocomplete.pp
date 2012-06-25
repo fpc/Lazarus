@@ -166,7 +166,7 @@ begin
   inherited Create(AOwner);
   fAutoCompleteList := TStringList.Create;
   TStringList(fAutoCompleteList).OnChange :=
-     {$IFDEF FPC}@{$ENDIF}CompletionListChanged;
+     @CompletionListChanged;
   fCompletions := TStringList.Create;
   fCompletionComments := TStringList.Create;
   fCompletionValues := TStringList.Create;
@@ -561,13 +561,13 @@ end;
 procedure TCustomSynAutoComplete.DoEditorAdded(AValue: TCustomSynEdit);
 begin
   inherited DoEditorAdded(AValue);
-  AValue.RegisterCommandHandler({$IFDEF FPC}@{$ENDIF}SynEditCommandHandler, nil);
+  AValue.RegisterCommandHandler(@SynEditCommandHandler, nil);
 end;
 
 procedure TCustomSynAutoComplete.DoEditorRemoving(AValue: TCustomSynEdit);
 begin
   inherited DoEditorRemoving(AValue);
-  AValue.UnregisterCommandHandler({$IFDEF FPC}@{$ENDIF}SynEditCommandHandler);
+  AValue.UnregisterCommandHandler(@SynEditCommandHandler);
 end;
 
 end.

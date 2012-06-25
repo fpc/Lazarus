@@ -231,15 +231,7 @@ type
 
 implementation
 
-{$IFNDEF FPC}
-  {$IFDEF SYN_COMPILER_3_UP}
-resourcestring
-  {$ELSE}
 const
-  {$ENDIF}
-{$ELSE}
-const
-{$ENDIF}
   SListIndexOutOfBounds = 'Invalid stringlist index %d';
 
 procedure ListIndexOutOfBounds(Index: integer);

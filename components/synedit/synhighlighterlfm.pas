@@ -136,12 +136,10 @@ type
     function GetEol: Boolean; override;
     function GetRange: Pointer; override;
     function GetTokenID: TtkTokenKind;
-    procedure SetLine({$IFDEF FPC}const {$ENDIF}NewValue: String;
+    procedure SetLine(const NewValue: String;
       LineNumber: Integer); override;
     function GetToken: String; override;
-    {$IFDEF SYN_LAZARUS}
     procedure GetTokenEx(out TokenStart: PChar; out TokenLength: integer); override;
-    {$ENDIF}
     function GetTokenAttribute: TSynHighlighterAttributes; override;
     function GetTokenKind: integer; override;
     function GetTokenPos: Integer; override;
@@ -172,7 +170,7 @@ implementation
 uses
   SynEditStrConst;
 
-{ A couple of useful Delphi Form functions }
+{ A couple of useful Lazarus Form functions }
 
 function LoadLFMFile2Strings(const AFile: string; AStrings: TStrings;
   var WasText: boolean): integer;
@@ -244,28 +242,28 @@ var
 begin
   for I := #0 to #255 do
     case I of
-      '#': fProcTable[I] := {$IFDEF FPC}@{$ENDIF}AsciiCharProc;
-      '}': fProcTable[I] := {$IFDEF FPC}@{$ENDIF}BraceCloseProc;
-      '{': fProcTable[I] := {$IFDEF FPC}@{$ENDIF}BraceOpenProc;
-      #13: fProcTable[I] := {$IFDEF FPC}@{$ENDIF}CRProc;
+      '#': fProcTable[I] := @AsciiCharProc;
+      '}': fProcTable[I] := @BraceCloseProc;
+      '{': fProcTable[I] := @BraceOpenProc;
+      #13: fProcTable[I] := @CRProc;
       'A'..'Z', 'a'..'z', '_':
         if I in ['e', 'E'] then
-          fProcTable[I] := {$IFDEF FPC}@{$ENDIF}EndProc
+          fProcTable[I] := @EndProc
         else if I in ['o', 'O'] then
-          fProcTable[I] := {$IFDEF FPC}@{$ENDIF}ObjectProc
+          fProcTable[I] := @ObjectProc
         else if I in ['i', 'I'] then
-          fProcTable[I] := {$IFDEF FPC}@{$ENDIF}InheritedInlineProc
+          fProcTable[I] := @InheritedInlineProc
         else
-          fProcTable[I] := {$IFDEF FPC}@{$ENDIF}AltProc;
-      '$': fProcTable[I] := {$IFDEF FPC}@{$ENDIF}IntegerProc;
-      #10: fProcTable[I] := {$IFDEF FPC}@{$ENDIF}LFProc;
-      #0: fProcTable[I] := {$IFDEF FPC}@{$ENDIF}NullProc;
-      '0'..'9': fProcTable[I] := {$IFDEF FPC}@{$ENDIF}NumberProc;
+          fProcTable[I] := @AltProc;
+      '$': fProcTable[I] := @IntegerProc;
+      #10: fProcTable[I] := @LFProc;
+      #0: fProcTable[I] := @NullProc;
+      '0'..'9': fProcTable[I] := @NumberProc;
       '(', ')', '/', '=', '<', '>', '.', ',', '[', ']':
-        fProcTable[I] := {$IFDEF FPC}@{$ENDIF}SymbolProc;
-      #1..#9, #11, #12, #14..#32: fProcTable[I] := {$IFDEF FPC}@{$ENDIF}SpaceProc;
-      #39: fProcTable[I] := {$IFDEF FPC}@{$ENDIF}StringProc;
-    else fProcTable[I] := {$IFDEF FPC}@{$ENDIF}UnknownProc;
+        fProcTable[I] := @SymbolProc;
+      #1..#9, #11, #12, #14..#32: fProcTable[I] := @SpaceProc;
+      #39: fProcTable[I] := @StringProc;
+    else fProcTable[I] := @UnknownProc;
     end;
 end;
 
@@ -294,7 +292,7 @@ begin
   AddAttribute(fStringAttri);
   fSymbolAttri := TSynHighlighterAttributes.Create(SYNS_AttrSymbol, SYNS_XML_AttrSymbol);
   AddAttribute(fSymbolAttri);
-  SetAttributesOnChange({$IFDEF FPC}@{$ENDIF}DefHighlightChange);
+  SetAttributesOnChange(@DefHighlightChange);
   MakeMethodTables;
   fDefaultFilter := SYNS_FilterLFM;
   fRange := rsUnknown;
@@ -305,7 +303,7 @@ begin
   inherited Destroy;
 end;
 
-procedure TSynLFMSyn.SetLine({$IFDEF FPC}const {$ENDIF}NewValue: String;
+procedure TSynLFMSyn.SetLine(const NewValue: String;
   LineNumber: Integer);
 begin
   inherited;
@@ -509,10 +507,8 @@ begin
   else
 {$ENDIF}
   inc(Run);
-  {$IFDEF SYN_LAZARUS}
   while (fLine[Run] in [#128..#191]) OR // continued utf8 subcode
    ((fLine[Run]<>#0) and (fProcTable[fLine[Run]] = @UnknownProc)) do inc(Run);
-  {$ENDIF}
   fTokenID := tkUnknown;
 end;
 
@@ -523,7 +519,7 @@ begin
     if fLine[Run] = #0 then NullProc
                        else CommentProc;
   end else
-    fProcTable[fLine[Run]]{$IFDEF FPC}(){$ENDIF};
+    fProcTable[fLine[Run]]();
 end;
 
 function TSynLFMSyn.GetDefaultAttribute(Index: integer): TSynHighlighterAttributes;
@@ -565,14 +561,12 @@ begin
   SetString(Result, (FLine + fTokenPos), Len);
 end;
 
-{$IFDEF SYN_LAZARUS}
 procedure TSynLFMSyn.GetTokenEx(out TokenStart: PChar;
   out TokenLength: integer);
 begin
   TokenLength:=Run-fTokenPos;
   TokenStart:=FLine + fTokenPos;
 end;
-{$ENDIF}
 
 function TSynLFMSyn.GetTokenAttribute: TSynHighlighterAttributes;
 begin
