@@ -82,16 +82,20 @@ uses
 {$ENDIF}
   Classes, SysUtils, Process, UTF8Process,
   LCLProc, FileProcs, FileUtil, Forms, Controls, Dialogs,
-  IDECmdLine, LazConf, Splash;
+  IDECmdLine, LazConf, Splash, BaseIDEIntf;
   
 type
+
+  { TLazarusProcess }
+
   TLazarusProcess = class
   private
     FOnStart: TNotifyEvent;
     FProcess: TProcessUTF8;
     FWantsRestart: boolean;
   public
-    constructor Create(const LazarusPath: string; const CommandLine: string);
+    constructor Create(const LazarusPath: string; const CommandLine: string;
+      EnvOverrides: TStringList = nil);
     destructor Destroy; override;
     procedure Execute;
     procedure WaitOnExit;
@@ -245,6 +249,7 @@ var
   CustomExe: String;
   MsgResult: TModalResult;
   StartPath: String;
+  EnvOverrides: TStringList;
 begin
   WaitForLazarus;
   try
@@ -337,9 +342,18 @@ begin
       {$ENDIF}
 
       DebugLn(['TLazarusManager.Run starting ',FLazarusPath,' ...']);
-      FLazarusProcess :=
-        TLazarusProcess.Create(FLazarusPath,
-             GetCommandLineParameters(FCmdLineParams, True)+' '+FCmdLineFiles);
+      EnvOverrides:=TStringList.Create;
+      try
+        {$IFDEF Linux}
+        EnvOverrides.Values['LIBOVERLAY_SCROLLBAR']:='0';
+        {$ENDIF}
+        FLazarusProcess :=
+          TLazarusProcess.Create(FLazarusPath,
+               GetCommandLineParameters(FCmdLineParams, True)+' '+FCmdLineFiles,
+               EnvOverrides);
+      finally
+        EnvOverrides.Free;
+      end;
       // clear the command line files, so that they are passed only once.
       FCmdLineFiles:='';
       FLazarusProcess.OnStart := @LazarusProcessStart;
@@ -366,12 +380,14 @@ end;
 { TLazarusProcess }
 
 constructor TLazarusProcess.Create(const LazarusPath: string;
-  const CommandLine: string);
+  const CommandLine: string; EnvOverrides: TStringList);
 begin
   FProcess := TProcessUTF8.Create(nil);
   FProcess.Options := [];
   FProcess.ShowWindow := swoShow;
   FProcess.CommandLine := LazarusPath + CommandLine;
+  if (EnvOverrides<>nil) and (EnvOverrides.Count>0) then
+    AssignEnvironmentTo(FProcess.Environment,EnvOverrides);
 end;
 
 destructor TLazarusProcess.Destroy;
