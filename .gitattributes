@@ -5780,6 +5780,7 @@ lcl/interfaces/gtk2/gtk2debug.pp svneol=native#text/pascal
 lcl/interfaces/gtk2/gtk2def.pp svneol=native#text/pascal
 lcl/interfaces/gtk2/gtk2defines.inc svneol=native#text/plain
 lcl/interfaces/gtk2/gtk2devicecontext.inc svneol=native#text/pascal
+lcl/interfaces/gtk2/gtk2disableliboverlay.pas svneol=native#text/plain
 lcl/interfaces/gtk2/gtk2extra.inc svneol=native#text/pascal
 lcl/interfaces/gtk2/gtk2extra.pp svneol=native#text/pascal
 lcl/interfaces/gtk2/gtk2extrah.inc svneol=native#text/pascal

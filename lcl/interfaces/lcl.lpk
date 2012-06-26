@@ -121,7 +121,7 @@ end;"/>
     <License Value="modified LGPL-2
 "/>
     <Version Major="1" Release="1"/>
-    <Files Count="398">
+    <Files Count="399">
       <Item1>
         <Filename Value="carbon/agl.pp"/>
         <AddToUsesPkgSection Value="False"/>
@@ -1978,6 +1978,11 @@ end;"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="QtWSDialogs"/>
       </Item398>
+      <Item399>
+        <Filename Value="gtk2/gtk2disableliboverlay.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="gtk2disableliboverlay"/>
+      </Item399>
     </Files>
     <LazDoc Paths="../../docs/xml/lcl"/>
     <i18n>
