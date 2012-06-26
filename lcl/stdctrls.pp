@@ -417,6 +417,7 @@ type
     property AutoSize;// Note: windows has a fixed height in some styles
     property BidiMode;
     property BorderSpacing;
+    property BorderStyle;
     property CharCase;
     property Color;
     property Constraints;
@@ -853,8 +854,8 @@ type
     property AutoSize;
     property AutoSelect;
     property BidiMode;
-    property BorderStyle;
     property BorderSpacing;
+    property BorderStyle;
     property CharCase;
     property Color;
     property Constraints;
