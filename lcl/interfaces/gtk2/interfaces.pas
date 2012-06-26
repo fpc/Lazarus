@@ -33,7 +33,10 @@ uses
 
 implementation
 
-uses 
+uses
+  {$IFNDEF EnableLibOverlay}
+  gtk2DisableLibOverlay,
+  {$ENDIF}
   Gtk2Int, Forms;
 
 initialization

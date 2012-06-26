@@ -121,7 +121,7 @@ end;"/>
     <License Value="modified LGPL-2
 "/>
     <Version Major="1" Release="1"/>
-    <Files Count="400">
+    <Files Count="401">
       <Item1>
         <Filename Value="carbon/agl.pp"/>
         <AddToUsesPkgSection Value="False"/>
@@ -1987,6 +1987,11 @@ end;"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="CustomDrawnWSMenus"/>
       </Item400>
+      <Item401>
+        <Filename Value="gtk2/gtk2disableliboverlay.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="gtk2disableliboverlay"/>
+      </Item401>
     </Files>
     <LazDoc Paths="../../docs/xml/lcl"/>
     <i18n>
