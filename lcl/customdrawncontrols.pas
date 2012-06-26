@@ -285,11 +285,12 @@ type
   private
     FIsClickingButton: Boolean;
     FItemIndex: Integer;
-    FItems: TStringList;
+    FItems: TStrings;
     FKeyboardInputBehavior: TKeyboardInputBehavior;
     function GetItems: TStrings;
     procedure OnShowSelectItemDialogResult(ASelectedItem: Integer);
     procedure SetItemIndex(AValue: Integer);
+    procedure SetItems(AValue: TStrings);
     procedure SetKeyboardInputBehavior(AValue: TKeyboardInputBehavior);
   protected
     function GetControlId: TCDControlID; override;
@@ -301,7 +302,7 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   published
-    property Items: TStrings read GetItems;
+    property Items: TStrings read GetItems write SetItems;
     property ItemIndex: Integer read FItemIndex write SetItemIndex;
     // This allows controlling the virtual keyboard behavior, mostly for Android
     property KeyboardInputBehavior: TKeyboardInputBehavior read FKeyboardInputBehavior write SetKeyboardInputBehavior;
@@ -939,7 +940,7 @@ begin
   lValue := AValue;
 
   // First basic check
-  if lValue > FItems.Count then lValue := FItems.Count;
+  if lValue >= FItems.Count then lValue := FItems.Count - 1;
   if lValue < -1 then lValue := -1;
 
   // Check if the text changed too, because it might differ from the choosen item
@@ -951,6 +952,14 @@ begin
     Text := lText;
   end;
   Invalidate;
+end;
+
+procedure TCDComboBox.SetItems(AValue: TStrings);
+begin
+  if Assigned(FItems) then
+    FItems.Assign(AValue)
+  else
+    FItems := AValue;
 end;
 
 procedure TCDComboBox.SetKeyboardInputBehavior(AValue: TKeyboardInputBehavior);
