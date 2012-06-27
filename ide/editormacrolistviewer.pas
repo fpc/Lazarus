@@ -8,7 +8,7 @@ uses
   Classes, SysUtils, FileUtil, Laz2_XMLCfg, SynMacroRecorder, SynEdit, SynEditKeyCmds,
   FileProcs, Forms, Controls, Graphics, Dialogs, StdCtrls, ButtonPanel, ComCtrls, ExtCtrls,
   Spin, Menus, MainBar, IDEWindowIntf, IDEImagesIntf, LazarusIDEStrConsts, ProjectDefs,
-  LazConf, Project, SrcEditorIntf;
+  LazConf, Project, SrcEditorIntf, IDEHelpIntf;
 
 type
 
@@ -132,6 +132,7 @@ type
     procedure btnRenameClick(Sender: TObject);
     procedure btnSelectClick(Sender: TObject);
     procedure FormActivate(Sender: TObject);
+    procedure HelpButtonClick(Sender: TObject);
     procedure lbRecordedViewSelectItem(Sender: TObject; Item: TListItem; Selected: Boolean);
     procedure mnExportClick(Sender: TObject);
     procedure mnImportClick(Sender: TObject);
@@ -657,6 +658,11 @@ end;
 procedure TMacroListView.FormActivate(Sender: TObject);
 begin
   lbRecordedView.HideSelection := Active;
+end;
+
+procedure TMacroListView.HelpButtonClick(Sender: TObject);
+begin
+  LazarusHelp.ShowHelpForIDEControl(Self);
 end;
 
 procedure TMacroListView.lbRecordedViewSelectItem(Sender: TObject; Item: TListItem;
