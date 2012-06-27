@@ -91,6 +91,7 @@ var
   lPenColor: string;
   // Brush properties
   lFillColor: string;
+  styleStr: string;
 begin
   OldPtX := 0;
   OldPtY := 0;
@@ -173,9 +174,18 @@ begin
 
   // Now effectively write the path
   AStrings.Add('  <path');
-  AStrings.Add(Format('    style="fill:%s;stroke:%s;stroke-width:%dpx;'
-   + 'stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"',
-   [lFillColor, lPenColor, lPenWidth]));
+  styleStr:=Format('    style="fill:%s;stroke:%s;stroke-width:%dpx;'
+   + 'stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;',
+   [lFillColor, lPenColor, lPenWidth]);
+  case APath.Pen.Style of
+       psDash: styleStr:=styleStr+'stroke-dasharray: 9, 5;';
+       psDot: styleStr:=styleStr+'stroke-dasharray: 3, 5;';
+       psDashDot: styleStr:=styleStr+'stroke-dasharray: 9, 5, 3, 5;';
+       psDashDotDot: styleStr:=styleStr+'stroke-dasharray: 9, 5, 3, 5, 3, 5;';
+       else
+  end;
+  styleStr:=styleStr+'"';
+  AStrings.Add(styleStr);
   AStrings.Add('    d="' + PathStr + '"');
   AStrings.Add('  id="path' + IntToStr(AIndex) + '" />');
 end;
