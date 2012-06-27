@@ -144,6 +144,9 @@ strip tools/lazres
 strip tools/updatepofiles
 strip tools/lrstolfm
 strip tools/svn2revisioninc
+if [ "$UseCHMHelp" = "1" ]; then
+  strip components/chmhelp/lhelp/lhelp
+fi
 cd -
 
 # create control file

@@ -1,21 +1,48 @@
 #!/bin/bash
+#
+# Author: Mattias Gaertner
+#
+# Usage: ./create_lazarus_export_tgz.sh [chmhelp] [download] outputfilename
+#
+#   Options:
+#     chmhelp    add chm,kwd,xct,txt files in docs/chm
+#     download   download instead of using the current files
+#
 
-#set -x
-set -e
-
-OutputFile=$1
-Usage="$0 [download] outputfilename"
+Download=
+UseCHMHelp=
+OutputFile=
 TmpDir=~/tmp
 
-Download=no
-if [ "x$1" = "xdownload" ]; then
-  Download=yes
+LastParam=
+while [ $# -gt 0 ]; do
+  echo "param=$1"
+  case "$1" in
+  chmhelp)
+    echo "using files in docs/chm"
+    UseCHMHelp=1
+    ;;
+  download)
+    Download=yes
+    ;;
+
+  *)
+    if [ -n "$OutputFile" ]; then
+        echo "invalid parameter $LastParam"
+	exit 1
+    fi
+    OutputFile=$1
+    ;;
+  esac
+  LastParam=$1
   shift
-fi
+done
+
+set -e
 
 if [ "x$OutputFile" = "x" ]; then
-  echo $Usage
-  exit
+  echo "Usage: ./create_lazarus_export_tgz.sh [chmhelp] [download] outputfilename"
+  exit 1
 fi
 
 TmpLazDir=$TmpDir/lazarus
@@ -30,11 +57,18 @@ if [ "x$Download" = "xyes" ]; then
   cd -
 else
   echo "extracting lazarus from local svn ..."
-  SourceDir=$(pwd | sed -e 's#/tools/install.*$##')
-  Revision=$(svnversion $SourceDir)
+  LazSrcDir=$(pwd | sed -e 's#/tools/install.*$##')
+  Revision=$(svnversion $LazSrcDir)
   cd $TmpDir
-  svn export $SourceDir $TmpLazDir
+  svn export $LazSrcDir $TmpLazDir
   cd -
+  if [ "$UseCHMHelp" = "1" ]; then
+    echo
+    echo "Copying chm files"
+    cd $LazSrcDir/docs/chm
+    cp -v *.txt *.kwd *.chm *.xct $TmpLazDir/docs/chm/
+    cd -
+  fi
 fi
 
 # add ide/revision.inc
