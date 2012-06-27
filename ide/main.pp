@@ -1061,7 +1061,6 @@ type
     function DoMakeResourceString: TModalResult;
     function DoDiff: TModalResult;
     function DoFindInFiles: TModalResult;
-    procedure DoInsertGUID;
     procedure DoInsertFilename;
 
     // conversion
@@ -19000,7 +18999,7 @@ end;
 
 procedure TMainIDE.mnuSourceInsertGUID(Sender: TObject);
 begin
-  DoInsertGUID;
+  DoSourceEditorCommand(ecInsertGUID);
 end;
 
 procedure TMainIDE.mnuSourceInsertFilename(Sender: TObject);
@@ -19162,22 +19161,6 @@ begin
   // Some other window has focus -> continue processing shortcut, not handled yet
   if (CurFocusControl=Nil) or (ActiveSourceEditor=Nil) then
     MainIDEBar.mnuMainMenu.ShortcutHandled := false;
-end;
-
-procedure TMainIDE.DoInsertGUID;
-const
-  cGUID = '[''%s'']';     // The format of the GUID used for Interfaces
-var
-  ActiveSrcEdit: TSourceEditor;
-  ActiveUnitInfo: TUnitInfo;
-  lGUID: TGUID;
-begin
-  // get active source editor
-  if not BeginCodeTool(ActiveSrcEdit,ActiveUnitInfo,[]) then exit;
-  if ActiveSrcEdit = nil then Exit;
-
-  CreateGUID(lGUID);
-  ActiveSrcEdit.Selection := Format(cGUID, [GUIDToString(lGUID)]);
 end;
 
 procedure TMainIDE.DoInsertFilename;

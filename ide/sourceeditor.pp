@@ -413,6 +413,7 @@ type
     procedure InsertDateTime;
     procedure InsertChangeLogEntry;
     procedure InsertCVSKeyword(const AKeyWord: string);
+    procedure InsertGUID;
     function GetSelEnd: Integer; override;
     function GetSelStart: Integer; override;
     procedure SetSelEnd(const AValue: Integer); override;
@@ -3241,6 +3242,9 @@ Begin
   ecInsertCVSSource:
     InsertCVSKeyword('Source');
 
+  ecInsertGUID:
+    InsertGUID;
+
   ecLockEditor:
     IsLocked := not IsLocked;
 
@@ -3686,6 +3690,17 @@ procedure TSourceEditor.InsertCVSKeyword(const AKeyWord: string);
 begin
   if ReadOnly then Exit;
   FEditor.InsertTextAtCaret('$'+AKeyWord+'$'+LineEnding);
+end;
+
+procedure TSourceEditor.InsertGUID;
+const
+  cGUID = '[''%s'']'; // The format of the GUID used for Interfaces
+var
+  lGUID: TGUID;
+begin
+  if ReadOnly then Exit;
+  CreateGUID(lGUID);
+  FEditor.InsertTextAtCaret(Format(cGUID, [GUIDToString(lGUID)]));
 end;
 
 function TSourceEditor.GetSelEnd: Integer;
