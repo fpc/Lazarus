@@ -8,28 +8,29 @@ begin
   // TProcess does not report, if a program can not be executed
   // to get good error messages consider the OS
   if not FileExistsUTF8(AFilename) then begin
-    raise Exception.Create('file "'+AFilename+'" does not exist');
+    raise Exception.Create(Format(lrsFileDoesNotExist, [AFilename]));
   end;
   if DirPathExists(AFilename) then begin
-    raise Exception.Create('file "'+AFilename+'" is a directory and not an executable');
+    raise Exception.Create(Format(lrsFileIsADirectoryAndNotAnExecutable, [
+      AFilename]));
   end;
   if not FileIsExecutable(AFilename) then
   begin
     AText:='"'+AFilename+'"';
     case fpGetErrno() of
     ESysEAcces:
-      AText:='read access denied for '+AText;
+      AText:=Format(lrsReadAccessDeniedFor, [AText]);
     ESysENoEnt:
-      AText:='a directory component in '+AText
-             +' does not exist or is a dangling symlink';
+      AText:=Format(lrsADirectoryComponentInDoesNotExistOrIsADanglingSyml, [
+        AText]);
     ESysENotDir:
-      AText:='a directory component in '+Atext+' is not a directory';
+      AText:=Format(lrsADirectoryComponentInIsNotADirectory, [Atext]);
     ESysENoMem:
-      AText:='insufficient memory';
+      AText:=lrsInsufficientMemory;
     ESysELoop:
-      AText:=AText+' has a circular symbolic link';
+      AText:=Format(lrsHasACircularSymbolicLink, [AText]);
     else
-      AText:=AText+' is not executable';
+      AText:=Format(lrsIsNotExecutable, [AText]);
     end;
     raise Exception.Create(AText);
   end;
@@ -44,24 +45,24 @@ var
 begin
   // to get good error messages consider the OS
   if not FileExistsUTF8(AFilename) then begin
-    raise Exception.Create('file "'+AFilename+'" does not exist');
+    raise Exception.Create(Format(lrsFileDoesNotExist, [AFilename]));
   end;
   if FpReadLink(AFilename)='' then begin
     AText:='"'+AFilename+'"';
     case fpGetErrno() of
     ESysEAcces:
-      AText:='read access denied for '+AText;
+      AText:=Format(lrsReadAccessDeniedFor, [AText]);
     ESysENoEnt:
-      AText:='a directory component in '+AText
-                          +' does not exist or is a dangling symlink';
+      AText:=Format(lrsADirectoryComponentInDoesNotExistOrIsADanglingSyml2, [
+        AText]);
     ESysENotDir:
-      AText:='a directory component in '+Atext+' is not a directory';
+      AText:=Format(lrsADirectoryComponentInIsNotADirectory2, [Atext]);
     ESysENoMem:
-      AText:='insufficient memory';
+      AText:=lrsInsufficientMemory;
     ESysELoop:
-      AText:=AText+' has a circular symbolic link';
+      AText:=Format(lrsHasACircularSymbolicLink, [AText]);
     else
-      AText:=AText+' is not a symbolic link';
+      AText:=Format(lrsIsNotASymbolicLink, [AText]);
     end;
     raise Exception.Create(AText);
   end;

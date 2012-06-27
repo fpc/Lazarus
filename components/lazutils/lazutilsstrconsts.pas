@@ -31,6 +31,22 @@ resourceString
   lrsModified = '  modified ';
   lrsInvalidCharSet = 'The char set in mask "%s" is not valid!';
   lrsSize = '  size ';
+  lrsFileDoesNotExist = 'file "%s" does not exist';
+  lrsFileIsADirectoryAndNotAnExecutable = 'file "%s" is a directory and not an'
+    +' executable';
+  lrsReadAccessDeniedFor = 'read access denied for %s';
+  lrsADirectoryComponentInDoesNotExistOrIsADanglingSyml2 = 'a directory '
+    +'component in %s does not exist or is a dangling symlink';
+  lrsADirectoryComponentInIsNotADirectory2 = 'a directory component in %s is '
+    +'not a directory';
+  lrsADirectoryComponentInDoesNotExistOrIsADanglingSyml = 'a directory '
+    +'component in %s does not exist or is a dangling symlink';
+  lrsADirectoryComponentInIsNotADirectory = 'a directory component in %s is '
+    +'not a directory';
+  lrsInsufficientMemory = 'insufficient memory';
+  lrsHasACircularSymbolicLink = '%s has a circular symbolic link';
+  lrsIsNotASymbolicLink = '%s is not a symbolic link';
+  lrsIsNotExecutable = '%s is not executable';
   lrsUnableToCreateConfigDirectoryS = 'Unable to create config directory "%s"';
 
 implementation
