@@ -254,13 +254,16 @@ begin
   SVGFontFamily := 'Arial, sans-serif';//lText.FontName;
 
   AStrings.Add('  <text ');
-  AStrings.Add('    x="' + FloatToStr(PtX, FPointSeparator) + '"');
-  AStrings.Add('    y="' + FloatToStr(PtY, FPointSeparator) + '"');
+  AStrings.Add('    x="' + FloatToStr(PtX+0.5*lText.Font.Size, FPointSeparator) + '"');
+  AStrings.Add('    y="' + FloatToStr(PtY-6.0*lText.Font.Size, FPointSeparator) + '"');
 //    AStrings.Add('    font-size="' + IntToStr(FontSize) + '"'); Doesn't seam to work, we need to use the tspan
   AStrings.Add('    font-family="' + SVGFontFamily + '">');
   AStrings.Add('    <tspan ');
   AStrings.Add('      style="font-size:' + IntToStr(FontSize) + '" ');
-//    AStrings.Add('      id="tspan2828" ');
+// Does not support fill="none"
+  AStrings.Add('      fill="' +
+               '#' + FPColorToRGBHexString(lText.Font.Color) + '" ');
+  //    AStrings.Add('      id="tspan2828" ');
   AStrings.Add('    >');
   AStrings.Add(TextStr + '</tspan></text>');
 end;

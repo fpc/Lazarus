@@ -1232,6 +1232,7 @@ begin
       LowerDim.Y := CoordToCanvasY(LowerDim.Y);
     end;
 
+    ADest.Font.FPColor:=Font.Color;
     ADest.TextOut(CoordToCanvasX(X), Round(LowerDim.Y), Value.Strings[i]);
   end;
 end;
