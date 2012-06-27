@@ -194,10 +194,10 @@ begin
   //Result:=Result+' Owner: '+IntToStr(info.uid)+'.'+IntToStr(info.gid);
 
   // size
-  Result:=Result+rsSize+IntToStr(info.st_size);
+  Result:=Result+lrsSize+IntToStr(info.st_size);
 
   // date + time
-  Result:=Result+rsModified;
+  Result:=Result+lrsModified;
   try
     Result:=Result+FormatDateTime('DD/MM/YYYY hh:mm',
                            FileDateToDateTime(FileAgeUTF8(AFilename)));

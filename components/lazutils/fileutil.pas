@@ -233,8 +233,9 @@ function FileCreateUTF8(Const FileName : string; Rights: Cardinal) : THandle; ov
 function ParamStrUTF8(Param: Integer): string;
 function GetEnvironmentStringUTF8(Index: Integer): string;
 function GetEnvironmentVariableUTF8(const EnvVar: string): String;
-function GetAppConfigDirUTF8(Global: Boolean): string;
-function GetAppConfigFileUTF8(Global: Boolean; SubDir: boolean = false): string;
+function GetAppConfigDirUTF8(Global: Boolean; Create: boolean = false): string;
+function GetAppConfigFileUTF8(Global: Boolean; SubDir: boolean = false;
+  CreateDir: boolean = false): string;
 
 // other
 function SysErrorMessageUTF8(ErrorCode: Integer): String;

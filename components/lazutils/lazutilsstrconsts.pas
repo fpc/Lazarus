@@ -28,9 +28,10 @@ unit LazUtilsStrConsts;
 interface
 
 resourceString
-  rsModified = '  modified ';
-  sInvalidCharSet = 'The char set in mask "%s" is not valid!';
-  rsSize = '  size ';
+  lrsModified = '  modified ';
+  lrsInvalidCharSet = 'The char set in mask "%s" is not valid!';
+  lrsSize = '  size ';
+  lrsUnableToCreateConfigDirectoryS = 'Unable to create config directory "%s"';
 
 implementation
 

@@ -121,7 +121,7 @@ var
   
   procedure CharSetError;
   begin
-    raise EConvertError.CreateFmt(sInvalidCharSet, [AValue]);
+    raise EConvertError.CreateFmt(lrsInvalidCharSet, [AValue]);
   end;
   
   procedure AddAnyText;

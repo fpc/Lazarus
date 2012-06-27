@@ -1,15 +1,22 @@
 msgid ""
 msgstr "Content-Type: text/plain; charset=UTF-8"
 
-#: lazutilsstrconsts.rsmodified
+#: lazutilsstrconsts.lrsinvalidcharset
+msgctxt "lazutilsstrconsts.lrsinvalidcharset"
+msgid "The char set in mask \"%s\" is not valid!"
+msgstr ""
+
+#: lazutilsstrconsts.lrsmodified
+msgctxt "lazutilsstrconsts.lrsmodified"
 msgid "  modified "
 msgstr ""
 
-#: lazutilsstrconsts.rssize
+#: lazutilsstrconsts.lrssize
+msgctxt "lazutilsstrconsts.lrssize"
 msgid "  size "
 msgstr ""
 
-#: lazutilsstrconsts.sinvalidcharset
-msgid "The char set in mask \"%s\" is not valid!"
+#: lazutilsstrconsts.lrsunabletocreateconfigdirectorys
+msgid "Unable to create config directory \"%s\""
 msgstr ""
 

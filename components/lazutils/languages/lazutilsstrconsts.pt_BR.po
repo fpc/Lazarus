@@ -9,15 +9,22 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: lazutilsstrconsts.rsmodified
+#: lazutilsstrconsts.lrsinvalidcharset
+msgctxt "lazutilsstrconsts.lrsinvalidcharset"
+msgid "The char set in mask \"%s\" is not valid!"
+msgstr "Conjunto de caracteres na máscara \"%s\" inválido!"
+
+#: lazutilsstrconsts.lrsmodified
+msgctxt "lazutilsstrconsts.lrsmodified"
 msgid "  modified "
 msgstr "  modificado"
 
-#: lazutilsstrconsts.rssize
+#: lazutilsstrconsts.lrssize
+msgctxt "lazutilsstrconsts.lrssize"
 msgid "  size "
 msgstr "  tamanho"
 
-#: lazutilsstrconsts.sinvalidcharset
-msgid "The char set in mask \"%s\" is not valid!"
-msgstr "Conjunto de caracteres na máscara \"%s\" inválido!"
+#: lazutilsstrconsts.lrsunabletocreateconfigdirectorys
+msgid "Unable to create config directory \"%s\""
+msgstr ""
 
