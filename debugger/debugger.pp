@@ -1719,6 +1719,7 @@ type
                                   APath: string;
                                   AUnitInvoPrv: TDebuggerUnitInfoProvider = nil
                                  );
+    procedure ClearLocation; // TODO need a way to call Changed on TCallStack or TThreads // corrently done in SetThreadState
   public
     constructor Create;
     constructor Create(const AIndex:Integer; const AnAdress: TDbgPtr;
@@ -2138,6 +2139,7 @@ type
     FThreadId: Integer;
     FThreadName: String;
     FThreadState: String;
+    procedure SetThreadState(AValue: String);
   protected
     procedure LoadDataFromXMLConfig(const AConfig: TXMLConfig;
                                     const APath: string;
@@ -2158,7 +2160,7 @@ type
     constructor CreateCopy(const ASource: TThreadEntry);
     property ThreadId: Integer read FThreadId;
     property ThreadName: String read FThreadName;
-    property ThreadState: String read FThreadState;
+    property ThreadState: String read FThreadState write SetThreadState;
   end;
 
   { TThreads }
@@ -2168,6 +2170,7 @@ type
     FCurrentThreadId: Integer;
     FList: TList;
     function GetEntry(const AnIndex: Integer): TThreadEntry;
+    function GetEntryById(const AnID: Integer): TThreadEntry;
     procedure SetCurrentThreadId(const AValue: Integer); virtual;
   protected
     procedure Assign(AOther: TThreads);
@@ -2185,7 +2188,9 @@ type
     function Count: Integer; virtual;
     procedure Clear; virtual;
     procedure Add(AThread: TThreadEntry);
+    procedure Remove(AThread: TThreadEntry);
     property Entries[const AnIndex: Integer]: TThreadEntry read GetEntry; default;
+    property EntryById[const AnID: Integer]: TThreadEntry read GetEntryById;
     property CurrentThreadId: Integer read FCurrentThreadId write SetCurrentThreadId;
   end;
 
@@ -2199,6 +2204,7 @@ type
     procedure SetCurrentThreadId(const AValue: Integer); override;
     procedure SetSnapShot(const AValue: TThreads);
   protected
+    Paused: Boolean; // Todo: introduce Supplie.ReadyForRequest
     property SnapShot: TThreads read FSnapShot write SetSnapShot;
   public
     constructor Create(AMonitor: TThreadsMonitor);
@@ -2247,7 +2253,9 @@ type
     procedure DoStateEnterPause; override;
     procedure DoStateLeavePause; override;
     procedure DoStateLeavePauseClean; override;
+    procedure DoCleanAfterPause; virtual;
   public
+    procedure Changed; // TODO: needed because entries can not notify the monitor
     property  CurrentThreads: TCurrentThreads read GetCurrentThreads;
     property  Monitor: TThreadsMonitor read GetMonitor write SetMonitor;
   end;
@@ -5555,17 +5563,25 @@ end;
 
 function TCurrentThreads.Count: Integer;
 begin
-  case FDataValidity of
-    ddsUnknown:   begin
-        Result := 0;
-        FDataValidity := ddsRequested;
-        FMonitor.RequestData;
-        if FDataValidity = ddsValid then Result := inherited Count();
-      end;
-    ddsRequested, ddsEvaluating: Result := 0;
-    ddsValid:                    Result := inherited Count;
-    ddsInvalid, ddsError:        Result := 0;
+  if (FDataValidity = ddsUnknown) and Paused then begin
+    FDataValidity := ddsRequested;
+    Paused := False;
+    FMonitor.RequestData;
   end;
+
+  Result := inherited Count;
+
+  //case FDataValidity of
+  //  ddsUnknown:   begin
+  //      Result := 0;
+  //      FDataValidity := ddsRequested;
+  //      FMonitor.RequestData;
+  //      if FDataValidity = ddsValid then Result := inherited Count();
+  //    end;
+  //  ddsRequested, ddsEvaluating: Result := 0;
+  //  ddsValid:                    Result := inherited Count;
+  //  ddsInvalid, ddsError:        Result := 0;
+  //end;
 end;
 
 procedure TCurrentThreads.Clear;
@@ -5593,6 +5609,12 @@ begin
   Inherited Monitor := AValue;
 end;
 
+procedure TThreadsSupplier.Changed;
+begin
+  if Monitor <> nil
+  then Monitor.Changed;
+end;
+
 procedure TThreadsSupplier.ChangeCurrentThread(ANewId: Integer);
 begin
   //
@@ -5607,6 +5629,7 @@ procedure TThreadsSupplier.DoStateEnterPause;
 begin
   if (CurrentThreads = nil) then Exit;
   CurrentThreads.SetValidity(ddsUnknown);
+  CurrentThreads.Paused := True;
 end;
 
 procedure TThreadsSupplier.DoStateLeavePause;
@@ -5619,6 +5642,11 @@ procedure TThreadsSupplier.DoStateLeavePauseClean;
 begin
   if (CurrentThreads = nil) then Exit;
   CurrentThreads.SnapShot := nil;
+  DoCleanAfterPause;
+end;
+
+procedure TThreadsSupplier.DoCleanAfterPause;
+begin
   if Monitor <> nil
   then Monitor.Clear;
 end;
@@ -5788,6 +5816,13 @@ end;
 
 { TThreadEntry }
 
+procedure TThreadEntry.SetThreadState(AValue: String);
+begin
+  if FThreadState = AValue then Exit;
+  FThreadState := AValue;
+  ClearLocation;
+end;
+
 procedure TThreadEntry.LoadDataFromXMLConfig(const AConfig: TXMLConfig; const APath: string;
   AUnitInvoPrv: TDebuggerUnitInfoProvider = nil);
 begin
@@ -5833,6 +5868,20 @@ function TThreads.GetEntry(const AnIndex: Integer): TThreadEntry;
 begin
   if (AnIndex < 0) or (AnIndex >= Count) then exit(nil);
   Result := TThreadEntry(FList[AnIndex]);
+end;
+
+function TThreads.GetEntryById(const AnID: Integer): TThreadEntry;
+var
+  i: Integer;
+begin
+  i := Count - 1;
+  while i >= 0 do begin
+    Result := Entries[i];
+    if Result.ThreadId = AnID then
+      exit;
+    dec(i);
+  end;
+  Result := nil;
 end;
 
 procedure TThreads.SetCurrentThreadId(const AValue: Integer);
@@ -5908,6 +5957,12 @@ end;
 procedure TThreads.Add(AThread: TThreadEntry);
 begin
   FList.Add(TThreadEntry.CreateCopy(AThread));
+end;
+
+procedure TThreads.Remove(AThread: TThreadEntry);
+begin
+  FList.Remove(AThread);
+  AThread.Free;
 end;
 
 { TDebuggerProperties }
@@ -9216,6 +9271,17 @@ begin
   end;
   WriteStr(s{%H-}, FState);
   AConfig.SetValue(APath + 'State', s);
+end;
+
+procedure TCallStackEntry.ClearLocation;
+begin
+  FIndex := 0;
+  FAdress := 0;
+  FFunctionName := '';
+  FLine := 0;
+  if FArguments <> nil then
+    FArguments.Clear;
+  SetUnitInfo(TDebuggerUnitInfo.Create('',''));
 end;
 
 constructor TCallStackEntry.Create;

@@ -1392,6 +1392,7 @@ type
     procedure RequestMasterData; override;
     procedure ChangeCurrentThread(ANewId: Integer); override;
     property Debugger: TGDBMIDebugger read GetDebugger;
+    procedure DoCleanAfterPause; override;
   public
     constructor Create(const ADebugger: TDebugger);
     destructor Destroy; override;
@@ -1590,20 +1591,89 @@ var
   function DoExecAsync(var Line: String): Boolean;
   var
     S: String;
+    i: Integer;
+    ct: TCurrentThreads;
+    t: TThreadEntry;
   begin
     Result := False;
     S := GetPart('*', ',', Line);
-    case StringCase(S, ['stopped', 'started', 'disappeared']) of
+    case StringCase(S, ['stopped', 'started', 'disappeared', 'running']) of
       0: begin // stopped
-        AStoppedParams := Line;
-      end;
+          AStoppedParams := Line;
+        end;
       1, 2:; // Known, but undocumented classes
+      3: begin // running,thread-id="1"  // running,thread-id="all"
+          if (FTheDebugger.Threads.Monitor <> nil) and
+             (FTheDebugger.Threads.Monitor.CurrentThreads <> nil)
+          then begin
+            ct := FTheDebugger.Threads.Monitor.CurrentThreads;
+            S := GetPart('thread-id="', '"', Line);
+            if s = 'all' then begin
+              for i := 0 to  ct.Count - 1 do
+                ct[i].ThreadState := 'running'; // TODO enum?
+            end
+            else begin
+              S := S + ',';
+              while s <> '' do begin
+                i := StrToIntDef(GetPart('', ',', s), -1);
+                if i < 0 then Continue;
+                t := ct.EntryById[i];
+                if t <> nil then
+                  t.ThreadState := 'running'; // TODO enum?
+              end;
+            end;
+            FTheDebugger.Threads.Changed;
+          end;
+        end;
     else
       // Assume targetoutput, strip char and continue
       DebugLn('[DBGTGT] *');
       Line := S + Line;
       Result := True;
     end;
+  end;
+
+  procedure DoMsgAsync(var Line: String);
+  var
+    S: String;
+    i, x: Integer;
+    ct: TCurrentThreads;
+    t: TThreadEntry;
+  begin
+    S := GetPart('=', ',', Line, False, False);
+    x := StringCase(S, ['thread-created', 'thread-exited']);
+    case x of // thread-group-exited // thread-group-added,id="i1"
+      0,1: begin
+          i := StrToIntDef(GetPart(',id="', '"', Line, False, False), -1);
+          if (i > 0) and (FTheDebugger.Threads.Monitor <> nil) and
+             (FTheDebugger.Threads.Monitor.CurrentThreads <> nil)
+          then begin
+            ct := FTheDebugger.Threads.Monitor.CurrentThreads;
+            t := ct.EntryById[i];
+            case x of
+              0: begin
+                  if t = nil then begin
+                    t := TThreadEntry.Create(0, 0, nil, '', nil, 0, i, '', 'unknown');
+                    ct.Add(t);
+                    t.Free;
+                  end
+                  else
+                    debugln('GDBMI: Duplicate thread');
+                end;
+              1: begin
+                  if t <> nil then begin
+                    ct.Remove(t);
+                  end
+                  else
+                    debugln('GDBMI: Missing thread');
+                end;
+            end;
+            FTheDebugger.Threads.Changed;
+          end;
+        end;
+    end;
+
+     FTheDebugger.DoNotifyAsync(Line);
   end;
 
   procedure DoStatusAsync(const Line: String);
@@ -1711,7 +1781,7 @@ begin
         '&': DoLogStream(S);
         '*': if DoExecAsync(S) then Continue;
         '+': DoStatusAsync(S);
-        '=': FTheDebugger.DoNotifyAsync(S);
+        '=': DoMsgAsync(S);
       else
         // since target output isn't prefixed (yet?)
         // one of our known commands could be part of it.
@@ -2192,6 +2262,17 @@ begin
             and (Debugger.State <> dsInternalPause);
   TGDBMIDebugger(Debugger).QueueCommand(FChangeThreadsCmdObj, ForceQueue);
   (* DoEvaluationFinished may be called immediately at this point *)
+end;
+
+procedure TGDBMIThreads.DoCleanAfterPause;
+begin
+  if (Debugger.State <> dsRun) or (Monitor = nil) then begin
+    inherited DoCleanAfterPause;
+    exit;
+  end;
+
+  //for i := 0 to  Monitor.CurrentThreads.Count - 1 do
+  //  Monitor.CurrentThreads[i].ClearLocation; // TODO enum?
 end;
 
 { TGDBMIDebuggerCommandThreads }
@@ -10137,14 +10218,83 @@ var
 
   procedure DoExecAsync(Line: String);
   var
-    EventText: String;
+    S: String;
+    ct: TCurrentThreads;
+    i: Integer;
+    t: TThreadEntry;
   begin
-    EventText := GetPart(['*'], [','], Line, False, False);
-    if EventText = 'running'
-    then
-      DoDbgEvent(ecProcess, etProcessStart, 'Process Start: ' + FTheDebugger.FileName)
+    S := GetPart(['*'], [','], Line);
+    if S = 'running'
+    then begin
+      if (FTheDebugger.Threads.Monitor <> nil) and
+         (FTheDebugger.Threads.Monitor.CurrentThreads <> nil)
+      then begin
+        ct := FTheDebugger.Threads.Monitor.CurrentThreads;
+        S := GetPart('thread-id="', '"', Line);
+        if s = 'all' then begin
+          for i := 0 to  ct.Count - 1 do
+            ct[i].ThreadState := 'running'; // TODO enum?
+        end
+        else begin
+          S := S + ',';
+          while s <> '' do begin
+            i := StrToIntDef(GetPart('', ',', s), -1);
+            if i < 0 then Continue;
+            t := ct.EntryById[i];
+            if t <> nil then
+              t.ThreadState := 'running'; // TODO enum?
+          end;
+        end;
+        FTheDebugger.Threads.Changed;
+      end;
+
+      DoDbgEvent(ecProcess, etProcessStart, 'Process Start: ' + FTheDebugger.FileName);
+    end
     else
       DebugLn('[WARNING] Debugger: Unexpected async-record: ', Line);
+  end;
+
+  procedure DoMsgAsync(var Line: String);
+  var
+    S: String;
+    i, x: Integer;
+    ct: TCurrentThreads;
+    t: TThreadEntry;
+  begin
+    S := GetPart('=', ',', Line, False, False);
+    x := StringCase(S, ['thread-created', 'thread-exited']);
+    case x of // thread-group-exited // thread-group-added,id="i1"
+      0,1: begin
+          i := StrToIntDef(GetPart(',id="', '"', Line, False, False), -1);
+          if (i > 0) and (FTheDebugger.Threads.Monitor <> nil) and
+             (FTheDebugger.Threads.Monitor.CurrentThreads <> nil)
+          then begin
+            ct := FTheDebugger.Threads.Monitor.CurrentThreads;
+            t := ct.EntryById[i];
+            case x of
+              0: begin
+                  if t = nil then begin
+                    t := TThreadEntry.Create(0, 0, nil, '', nil, 0, i, '', 'unknown');
+                    ct.Add(t);
+                    t.Free;
+                  end
+                  else
+                    debugln('GDBMI: Duplicate thread');
+                end;
+              1: begin
+                  if t <> nil then begin
+                    ct.Remove(t);
+                  end
+                  else
+                    debugln('GDBMI: Missing thread');
+                end;
+            end;
+            FTheDebugger.Threads.Changed;
+          end;
+        end;
+    end;
+
+     FTheDebugger.DoNotifyAsync(Line);
   end;
 
   procedure DoStatusAsync(const Line: String);
@@ -10174,7 +10324,7 @@ begin
       '&': DoLogStream(S);
       '*': DoExecAsync(S);
       '+': DoStatusAsync(S);
-      '=': FTheDebugger.DoNotifyAsync(S);
+      '=': DoMsgAsync(S);
     else
       DebugLn('[WARNING] Debugger: Unknown record: ', S);
     end;
