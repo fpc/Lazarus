@@ -88,7 +88,7 @@ end;
 function GetFileDescription(const AFilename: string): string;
 begin
   // date + time
-  Result:=rsModified;
+  Result:=lrsModified;
   try
     Result:=Result+FormatDateTime('DD/MM/YYYY hh:mm',
                            FileDateToDateTime(FileAgeUTF8(AFilename)));
