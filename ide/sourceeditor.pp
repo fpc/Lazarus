@@ -414,6 +414,7 @@ type
     procedure InsertChangeLogEntry;
     procedure InsertCVSKeyword(const AKeyWord: string);
     procedure InsertGUID;
+    procedure InsertFilename;
     function GetSelEnd: Integer; override;
     function GetSelStart: Integer; override;
     procedure SetSelEnd(const AValue: Integer); override;
@@ -3245,6 +3246,9 @@ Begin
   ecInsertGUID:
     InsertGUID;
 
+  ecInsertFilename:
+    InsertFilename;
+
   ecLockEditor:
     IsLocked := not IsLocked;
 
@@ -3701,6 +3705,22 @@ begin
   if ReadOnly then Exit;
   CreateGUID(lGUID);
   FEditor.InsertTextAtCaret(Format(cGUID, [GUIDToString(lGUID)]));
+end;
+
+procedure TSourceEditor.InsertFilename;
+var
+  Dlg: TOpenDialog;
+begin
+  if ReadOnly then Exit;
+  Dlg:=TOpenDialog.Create(nil);
+  try
+    InitIDEFileDialog(Dlg);
+    Dlg.Title:=lisSelectFile;
+    if not Dlg.Execute then exit;
+    FEditor.InsertTextAtCaret(Dlg.FileName);
+  finally
+    Dlg.Free;
+  end;
 end;
 
 function TSourceEditor.GetSelEnd: Integer;

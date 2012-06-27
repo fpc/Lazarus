@@ -1061,7 +1061,6 @@ type
     function DoMakeResourceString: TModalResult;
     function DoDiff: TModalResult;
     function DoFindInFiles: TModalResult;
-    procedure DoInsertFilename;
 
     // conversion
     function DoConvertDFMtoLFM: TModalResult;
@@ -19004,7 +19003,7 @@ end;
 
 procedure TMainIDE.mnuSourceInsertFilename(Sender: TObject);
 begin
-  DoInsertFilename;
+  DoSourceEditorCommand(ecInsertFilename);
 end;
 
 procedure TMainIDE.mnuSearchFindInFiles(Sender: TObject);
@@ -19161,23 +19160,6 @@ begin
   // Some other window has focus -> continue processing shortcut, not handled yet
   if (CurFocusControl=Nil) or (ActiveSourceEditor=Nil) then
     MainIDEBar.mnuMainMenu.ShortcutHandled := false;
-end;
-
-procedure TMainIDE.DoInsertFilename;
-var
-  ActiveSrcEdit: TSourceEditor;
-  ActiveUnitInfo: TUnitInfo;
-begin
-  if not BeginCodeTool(ActiveSrcEdit,ActiveUnitInfo,[]) then exit;
-  if ActiveSrcEdit = nil then Exit;
-  with TOpenDialog.Create(nil) do
-  try
-    Title:=lisSelectFile;
-    if not Execute then exit;
-    ActiveSrcEdit.Selection := FileName;
-  finally
-    Free;
-  end;
 end;
 
 function TMainIDE.DoReplaceUnitUse(OldFilename, OldUnitName, NewFilename,
