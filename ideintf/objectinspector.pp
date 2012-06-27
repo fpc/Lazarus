@@ -1656,9 +1656,10 @@ begin
   for a:=0 to FRows.Count-1 do Rows[a].Free;
   FRows.Clear;
   // get properties
-  GetPersistentProperties(
-    FSelection, FFilter + [tkClass], FPropertyEditorHook, @AddPropertyEditor,
-    @EditorFilter);
+  if FPropertyEditorHook=Nil then
+    debugln('TOICustomPropertyGrid.BuildPropertyList: FPropertyEditorHook=Nil');
+  GetPersistentProperties(FSelection, FFilter + [tkClass], FPropertyEditorHook,
+    @AddPropertyEditor, @EditorFilter);
   // sort
   FRows.Sort(@SortGridRows);
   for a:=0 to FRows.Count-1 do begin

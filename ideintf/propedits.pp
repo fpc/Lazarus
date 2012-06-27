@@ -2202,12 +2202,13 @@ end;
 
 { TPropertyEditor }
 
-constructor TPropertyEditor.Create(Hook: TPropertyEditorHook;
-  APropCount:Integer);
+constructor TPropertyEditor.Create(Hook: TPropertyEditorHook; APropCount:Integer);
 var
   PropListSize: Integer;
 begin
   FPropertyHook:=Hook;
+  if not Assigned(FPropertyHook) then
+    debugln('TPropertyEditor.Create : Hook=Nil <- Wrong!');
   PropListSize:=APropCount * SizeOf(TInstProp);
   GetMem(FPropList,PropListSize);
   FillChar(FPropList^,PropListSize,0);
@@ -3950,8 +3951,10 @@ end;
 
 function TMethodPropertyEditor.GetValue: ansistring;
 begin
-  Result:=PropertyHook.GetMethodName(GetMethodValue,GetComponent(0));
-  //debugln(['TMethodPropertyEditor.GetValue Name=',GetName,' Result=',Result,' Data=',dbgs(GetMethodValue.Data)]);
+  if Assigned(PropertyHook) then
+    Result:=PropertyHook.GetMethodName(GetMethodValue,GetComponent(0))
+  else
+    debugln(['TMethodPropertyEditor.GetValue : PropertyHook=Nil Name=',GetName,' Data=',dbgs(GetMethodValue.Data)]);
 end;
 
 procedure TMethodPropertyEditor.GetValues(Proc: TGetStrProc);
