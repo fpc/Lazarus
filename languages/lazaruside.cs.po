@@ -17458,6 +17458,22 @@ msgstr "Vybrat stránku nahoře"
 msgid "SelRight"
 msgstr "SelRight"
 
+#: lazarusidestrconsts.srkmecselsticky
+msgid "Start sticky selecting"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecselstickycol
+msgid "Start sticky selecting (Columns)"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecselstickyline
+msgid "Start sticky selecting (Line)"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecselstickystop
+msgid "Stop sticky selecting"
+msgstr ""
+
 #: lazarusidestrconsts.srkmecselup
 msgid "Select Up"
 msgstr "Vybrat nahoru"

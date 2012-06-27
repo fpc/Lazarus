@@ -18009,6 +18009,22 @@ msgstr "Selecciona la pàgina d'amunt"
 msgid "SelRight"
 msgstr "Alinea a la dreta"
 
+#: lazarusidestrconsts.srkmecselsticky
+msgid "Start sticky selecting"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecselstickycol
+msgid "Start sticky selecting (Columns)"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecselstickyline
+msgid "Start sticky selecting (Line)"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecselstickystop
+msgid "Stop sticky selecting"
+msgstr ""
+
 #: lazarusidestrconsts.srkmecselup
 msgid "Select Up"
 msgstr "Selecciona amunt"

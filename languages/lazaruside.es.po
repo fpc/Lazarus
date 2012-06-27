@@ -18334,6 +18334,22 @@ msgstr "Seleccionar página arriba"
 msgid "SelRight"
 msgstr "Sel.Der"
 
+#: lazarusidestrconsts.srkmecselsticky
+msgid "Start sticky selecting"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecselstickycol
+msgid "Start sticky selecting (Columns)"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecselstickyline
+msgid "Start sticky selecting (Line)"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecselstickystop
+msgid "Stop sticky selecting"
+msgstr ""
+
 #: lazarusidestrconsts.srkmecselup
 msgid "Select Up"
 msgstr "Seleccionar arriba"
