@@ -12,38 +12,38 @@ msgstr ""
 #: lazutilsstrconsts.lrsadirectorycomponentindoesnotexistorisadanglingsyml
 msgctxt "lazutilsstrconsts.lrsadirectorycomponentindoesnotexistorisadanglingsyml"
 msgid "a directory component in %s does not exist or is a dangling symlink"
-msgstr ""
+msgstr "составная часть %s не существует либо является ссылкой на несуществующий объект"
 
 #: lazutilsstrconsts.lrsadirectorycomponentindoesnotexistorisadanglingsyml2
 msgctxt "lazutilsstrconsts.lrsadirectorycomponentindoesnotexistorisadanglingsyml2"
 msgid "a directory component in %s does not exist or is a dangling symlink"
-msgstr ""
+msgstr "составная часть %s не существует либо является ссылкой на несуществующий объект"
 
 #: lazutilsstrconsts.lrsadirectorycomponentinisnotadirectory
 msgctxt "lazutilsstrconsts.lrsadirectorycomponentinisnotadirectory"
 msgid "a directory component in %s is not a directory"
-msgstr ""
+msgstr "составная часть %s не является каталогом"
 
 #: lazutilsstrconsts.lrsadirectorycomponentinisnotadirectory2
 msgctxt "lazutilsstrconsts.lrsadirectorycomponentinisnotadirectory2"
 msgid "a directory component in %s is not a directory"
-msgstr ""
+msgstr "составная часть %s не является каталогом"
 
 #: lazutilsstrconsts.lrsfiledoesnotexist
 msgid "file \"%s\" does not exist"
-msgstr ""
+msgstr "файл \"%s\" не существует"
 
 #: lazutilsstrconsts.lrsfileisadirectoryandnotanexecutable
 msgid "file \"%s\" is a directory and not an executable"
-msgstr ""
+msgstr "файл \"%s\" является каталогом либо не исполнимый"
 
 #: lazutilsstrconsts.lrshasacircularsymboliclink
 msgid "%s has a circular symbolic link"
-msgstr ""
+msgstr "%s имеет циклическую символическую ссылку"
 
 #: lazutilsstrconsts.lrsinsufficientmemory
 msgid "insufficient memory"
-msgstr ""
+msgstr "недостаточно памяти"
 
 #: lazutilsstrconsts.lrsinvalidcharset
 msgctxt "lazutilsstrconsts.lrsinvalidcharset"
@@ -52,11 +52,11 @@ msgstr "Набор символов в маске \"%s\" некорректен!
 
 #: lazutilsstrconsts.lrsisnotasymboliclink
 msgid "%s is not a symbolic link"
-msgstr ""
+msgstr "%s не является символической ссылкой"
 
 #: lazutilsstrconsts.lrsisnotexecutable
 msgid "%s is not executable"
-msgstr ""
+msgstr "%s не является исполнимым файлом"
 
 #: lazutilsstrconsts.lrsmodified
 msgctxt "lazutilsstrconsts.lrsmodified"
@@ -65,7 +65,7 @@ msgstr "  изменён "
 
 #: lazutilsstrconsts.lrsreadaccessdeniedfor
 msgid "read access denied for %s"
-msgstr ""
+msgstr "доступ для чтения %s запрещён"
 
 #: lazutilsstrconsts.lrssize
 msgctxt "lazutilsstrconsts.lrssize"
@@ -74,5 +74,5 @@ msgstr "  размер "
 
 #: lazutilsstrconsts.lrsunabletocreateconfigdirectorys
 msgid "Unable to create config directory \"%s\""
-msgstr ""
+msgstr "Невозможно создать каталог настройки \"%s\""
 
