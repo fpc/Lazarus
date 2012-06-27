@@ -79,7 +79,7 @@ function CompareLazarusVersion(V1, V2: string): integer;
 }
 function GetPrimaryConfigPath: String;
 function GetSecondaryConfigPath: String;
-procedure CreatePrimaryConfigPath;
+function CreatePrimaryConfigPath: boolean;
 procedure SetPrimaryConfigPath(const NewValue: String);
 procedure SetSecondaryConfigPath(const NewValue: String);
 procedure CopySecondaryConfigFile(const ShortFilename: String);
@@ -295,9 +295,9 @@ end;
 {---------------------------------------------------------------------------
   createPrimaryConfigPath procedure
  ---------------------------------------------------------------------------}
-procedure CreatePrimaryConfigPath;
+function CreatePrimaryConfigPath: boolean;
 begin
-  CreateDirUTF8(GetPrimaryConfigPath);
+  Result:=ForceDirectoriesUTF8(GetPrimaryConfigPath);
 end;
 
 {---------------------------------------------------------------------------
@@ -330,8 +330,14 @@ begin
   SecondaryFilename:=AppendPathDelim(GetSecondaryConfigPath)+ShortFilename;
   if (not FileExistsUTF8(PrimaryFilename))
   and (FileExistsUTF8(SecondaryFilename)) then begin
-    if not CopyFile(SecondaryFilename,PrimaryFilename) then
-      debugln(['WARNING: unable to copy config "',SecondaryFilename,'" to "',SecondaryFilename,'"']);
+    if not CreatePrimaryConfigPath then begin
+      debugln(['WARNING: unable to create primary config directory "',GetPrimaryConfigPath,'"']);
+      exit;
+    end;
+    if not CopyFile(SecondaryFilename,PrimaryFilename) then begin
+      debugln(['WARNING: unable to copy config "',SecondaryFilename,'" to "',PrimaryFilename,'"']);
+      exit;
+    end;
   end;
 end;
 
