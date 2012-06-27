@@ -918,7 +918,8 @@ type
 
     // edit menu
     procedure DoCommand(ACommand: integer); override;
-    procedure DoSourceEditorCommand(EditorCommand: integer; CheckFocus: boolean = true);
+    procedure DoSourceEditorCommand(EditorCommand: integer;
+      CheckFocus: boolean = true; FocusEditor: boolean = true);
     procedure UpdateCustomToolsInMenu;
 
     // external tools
@@ -19132,7 +19133,8 @@ begin
   end;
 end;
 
-procedure TMainIDE.DoSourceEditorCommand(EditorCommand: integer; CheckFocus: boolean);
+procedure TMainIDE.DoSourceEditorCommand(EditorCommand: integer;
+  CheckFocus: boolean; FocusEditor: boolean);
 var
   CurFocusControl: TWinControl;
   ActiveSourceEditor: TSourceEditor;
@@ -19151,8 +19153,11 @@ begin
   if Assigned(CurFocusControl) then
   begin    // MainIDEBar or SourceNotebook has focus -> find active source editor
     GetCurrentUnit(ActiveSourceEditor,ActiveUnitInfo);
-    if Assigned(ActiveSourceEditor) then
+    if Assigned(ActiveSourceEditor) then begin
       ActiveSourceEditor.DoEditorExecuteCommand(EditorCommand); // pass the command
+      if FocusEditor then
+        ActiveSourceEditor.EditorControl.SetFocus;
+    end;
   end;
   // Some other window has focus -> continue processing shortcut, not handled yet
   if (CurFocusControl=Nil) or (ActiveSourceEditor=Nil) then
@@ -19185,8 +19190,8 @@ begin
   with TOpenDialog.Create(nil) do
   try
     Title:=lisSelectFile;
-    if Execute then
-      ActiveSrcEdit.Selection := FileName;
+    if not Execute then exit;
+    ActiveSrcEdit.Selection := FileName;
   finally
     Free;
   end;
