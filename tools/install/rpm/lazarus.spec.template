@@ -33,16 +33,17 @@ MAKEOPTS="-Fl/opt/gnome/lib"
 if [ -n "$FPCCfg" ]; then
   MAKEOPTS="$MAKEOPTS -n @$FPCCfg"
 fi
+%CHMHELP:MAKEOPTS="$MAKEOPTS -dUseCHMHelp"
 make bigide OPT="$MAKEOPTS" USESVN2REVISIONINC=0
-make tools OPT="$MAKEOPTS"
-make lazbuild OPT="$MAKEOPTS"
-# build gtk2 .ppu
-export LCL_PLATFORM=gtk2
-make lcl ideintf packager/registration bigidecomponents OPT="$MAKEOPTS"
 export LCL_PLATFORM=
 strip lazarus
 strip startlazarus
 strip lazbuild
+strip tools/lazres
+strip tools/updatepofiles
+strip tools/lrstolfm
+strip tools/svn2revisioninc
+%CHMHELP:strip components/chmhelp/lhelp/lhelp
 
 %install
 [ %{buildroot} != "/" ] && ( rm -rf %{buildroot} )
@@ -91,6 +92,8 @@ update-desktop-database &> /dev/null ||:
 %{_mandir}/*/*
 
 %changelog
+* Mon Jun 21 2012 Mattias Gaertner <mattias@freepascal.org> 1.0-0
+- 128x128 icon, chmhelp
 * Sat Sep 9 2006 Mattias Gaertner <mattias@freepascal.org> 0.9.18-0
 - Initial build.
 * Wed Jul 20 2005 Joost van der Sluis <joost@cnoc.nl> 0.9.8-0.1
