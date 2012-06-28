@@ -1,4 +1,4 @@
-{ Copyright (C) <2005> <Andrew Haines> lhelpcore.pas
+{ Copyright (C) 2005  Andrew Haines
 
   This source is free software; you can redistribute it and/or modify it under
   the terms of the GNU General Public License as published by the Free
@@ -36,8 +36,6 @@ uses
   {$IFDEF USE_LNET}, HTTPContentProvider{$ENDIF};
 
 type
-
-
 
   { TContentTab }
 
@@ -88,7 +86,6 @@ type
     procedure PageControlChange(Sender: TObject);
     procedure PageControlEnter(Sender: TObject);
     procedure ViewMenuContentsClick(Sender: TObject);
-
   private
     { private declarations }
     fServerName: String;
@@ -136,7 +133,6 @@ type
   public
     URL: String;
   end;
-
 
 { THelpForm }
 
@@ -300,7 +296,7 @@ begin
   RecentCount:= fConfig.GetValue('Recent/ItemCount/Value', 0);
 
   for i := RecentCount-1 downto 0 do // downto since oldest are knocked off the list
-    AddRecentFile(fConfig.GetValue('Recent/Item/'+IntToStr(i)+'/Value',''));
+    AddRecentFile(fConfig.GetValue('Recent/Item'+IntToStr(i)+'/Value',''));
 end;
 
 procedure THelpForm.SavePreferences(AIPCName: String);
@@ -319,8 +315,7 @@ begin
 
   fConfig.SetValue('Recent/ItemCount/Value', FileMenuOpenRecentItem.Count);
   for i := 0 to FileMenuOpenRecentItem.Count-1 do // downto since oldest are knocked off the list
-    fConfig.SetValue('Recent/Item/'+IntToStr(i)+'/Value', TRecentMenuItem(FileMenuOpenRecentItem.Items[I]).URL);
-
+    fConfig.SetValue('Recent/Item'+IntToStr(i)+'/Value', TRecentMenuItem(FileMenuOpenRecentItem.Items[I]).URL);
 
   fConfig.Flush;
   fConfig.Free;
@@ -388,8 +383,6 @@ begin
   FreeAndNil(fOutputIPC);
 end;
 
-
-
 procedure THelpForm.ServerMessage(Sender: TObject);
 var
   UrlReq: TUrlRequest;
@@ -440,8 +433,6 @@ begin
     Self.ShowOnTop;
   end;
 end;
-
-
 
 procedure THelpForm.ReadCommandLineOptions;
 var
