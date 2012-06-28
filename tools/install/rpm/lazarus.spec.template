@@ -33,7 +33,7 @@ MAKEOPTS="-Fl/opt/gnome/lib"
 if [ -n "$FPCCfg" ]; then
   MAKEOPTS="$MAKEOPTS -n @$FPCCfg"
 fi
-%CHMHELP:MAKEOPTS="$MAKEOPTS -dUseCHMHelp"
+#CHMHELP:MAKEOPTS="$MAKEOPTS -dUseCHMHelp"
 make bigide OPT="$MAKEOPTS" USESVN2REVISIONINC=0
 export LCL_PLATFORM=
 strip lazarus
@@ -43,7 +43,7 @@ strip tools/lazres
 strip tools/updatepofiles
 strip tools/lrstolfm
 strip tools/svn2revisioninc
-%CHMHELP:strip components/chmhelp/lhelp/lhelp
+#CHMHELP:strip components/chmhelp/lhelp/lhelp
 
 %install
 [ %{buildroot} != "/" ] && ( rm -rf %{buildroot} )
