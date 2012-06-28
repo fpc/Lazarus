@@ -70,7 +70,7 @@ echo "creating lazarus tgz ..."
 
 # create spec file
 echo "creating lazarus spec file ..."
-CHMCOMMENT="% "
+CHMCOMMENT="# "
 if [ "$UseCHMHelp" = "1" ]; then CHMCOMMENT=""; fi
 cat rpm/lazarus.spec.template | \
   sed -e "s/LAZVERSION/$LazVersion/g" \
