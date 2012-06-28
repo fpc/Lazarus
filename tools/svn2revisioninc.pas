@@ -27,21 +27,32 @@
        svn2revisioninc sourcedir revision.inc
 
   Description:
-       svn2revisioninc creates an include file with the current revision number.
+       svn2revisioninc creates an include file with the current revision number
+       coming from a version control repository.
 
-       If the source directory contains a .svn subdirectory, it tries to execute
-       svnversion to get the revision number.
+       This tool supports Subversion (svn), git copies from and Mercurial (hg) repositories.
+
+       1. If the source directory contains a .svn subdirectory, it tries to
+       execute svnversion to get the revision number.
        If that fails - for example, because it can't find svnversion - it opens
        .svn/entries to get the revision number of the source directory.
 
-       If it can't find revision information, it checks whether the revision.inc
+       If it can't find revision information, it checks whether revision.inc
        exists. If it exists and seems to be created with svn2revisioninc, it
        will leave the file as is. Otherwise it will create a new revision.inc,
        indicating that the revision number is unknown.
 
-       If the source directory don't contains a .svn subdirectory, it search for
-       a .git directory. If i exist, it tries to execute git to get the revision
-       number.
+       2. If the source directory doesn't contain a .svn subdirectory, it
+       searches for a .git directory. If it exists, it tries to execute git to
+       get the revision number.
+
+       3. If the source directory doesn't contain a .svn or .git subdirectory,
+       it tries to execute hg to get the revision id.
+       Not checking for the .hg subdirectory allows getting the hg revision id
+       even in subdirectories.
+       No support yet for svn repos converted to hg (e.g. with hgsubversion),
+       so you get a Mercurial commit identifier (a hex number) instead of svn.
+       To minimize confusion, the text hg: is prepended to the string.
 }
 program Svn2RevisionInc;
 
@@ -107,11 +118,32 @@ begin
   finally
     P.Destroy;
   end;
-end;  
+end;
+
+function HgInPath: Boolean;
+var
+  P: TProcessUTF8;
+begin
+  Result := True;
+  P := TProcessUTF8.Create(nil);
+  try
+    P.Options := [poUsePipes, poWaitOnExit];
+    P.CommandLine := 'hg --version';
+    try
+      P.Execute;
+    except
+      Result := False;
+    end;
+  finally
+    P.Destroy;
+  end;
+end;
+
 
 function TSvn2RevisionApplication.FindRevision: boolean;
 var
   GitDir: string;
+
 
   function GetRevisionFromGitVersion : boolean;
   var
@@ -147,6 +179,49 @@ var
     end;
   end;
 
+  function GetRevisionFromHgVersion : boolean;
+  var
+    HgVersionProcess: TProcessUTF8;
+    Buffer: string;
+    n: LongInt;
+    ScrapeResult: string;
+  begin
+    Result:=false;
+    HgVersionProcess := TProcessUTF8.Create(nil);
+    try
+      with HgVersionProcess do begin
+        // Get global revision ID (no need to worry about branches)
+        CommandLine := 'hg id --id "' + SourceDirectory + '"';
+        Options := [poUsePipes, poWaitOnExit];
+        try
+          Execute;
+          SetLength(Buffer, 80);
+          n:=OutPut.Read(Buffer[1], 80);
+
+          Result:=true;
+          // Just blindly copy results; check for errors below.
+          ScrapeResult := Trim(Copy(Buffer, 1, n));
+          System.Delete(ScrapeResult, 1, Pos(#13, ScrapeResult));
+          System.Delete(ScrapeResult, 1, Pos(#10, ScrapeResult));
+          System.Delete(ScrapeResult, Pos(' ', ScrapeResult), Length(ScrapeResult));
+          //Indicate we're dealing with Mercurial to avoid confusing the user:
+          ScrapeResult:='hg:'+ScrapeResult;
+        except
+        // ignore error, default result is false
+        end;
+        // Check for errors returned by command (e.g. repository not found)
+        if ExitStatus<>0 then
+        begin
+          show('GetRevisionFromHgRevision: non-zero exit status: no hg repo?');
+          result:=false;
+        end;
+        if result then RevisionStr:=ScrapeResult;
+      end;
+    finally
+      HgVersionProcess.Free;
+    end;
+  end;
+
   function GetRevisionFromSvnVersion : boolean;
   var
     SvnVersionProcess: TProcessUTF8;
@@ -173,7 +248,7 @@ var
           SetLength(Buffer, 1024);
           n:=Stderr.Read(Buffer[1], 1024);
 
-          Show('Retrieved revision with svnversion.');
+          Show('Tried retrieving revision with svnversion.');
           Show('');
           Show('svnversion error:');
           Show(Copy(Buffer, 1, n));
@@ -251,9 +326,11 @@ var
   end;
 
 begin
+  // Try Subversion/svn
   Result := GetRevisionFromSvnVersion or GetRevisionFromEntriesTxt or
             GetRevisionFromEntriesXml;
 
+  // Try git
   if not Result then
   begin
     GitDir:= AppendPathDelim(SourceDirectory)+'.git';
@@ -264,6 +341,13 @@ begin
       else
         Result := GitRevisionFromGitCommit;
     end;
+  end;
+
+  // Try Mercurial/hg
+  if not Result then
+  begin
+    if HgInPath then
+      Result := GetRevisionFromHgVersion;
   end;
 end;
 
