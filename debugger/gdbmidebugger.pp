@@ -1616,6 +1616,11 @@ var
               S := S + ',';
               while s <> '' do begin
                 i := StrToIntDef(GetPart('', ',', s), -1);
+                if (s <> '') and (s[1] = ',') then delete(s, 1, 1)
+                else begin
+                  debugln('GDBMI: Error parsing threads');
+                  break
+                end;
                 if i < 0 then Continue;
                 t := ct.EntryById[i];
                 if t <> nil then
@@ -10239,6 +10244,11 @@ var
           S := S + ',';
           while s <> '' do begin
             i := StrToIntDef(GetPart('', ',', s), -1);
+            if (s <> '') and (s[1] = ',') then delete(s, 1, 1)
+            else begin
+              debugln('GDBMI: Error parsing threads');
+              break
+            end;
             if i < 0 then Continue;
             t := ct.EntryById[i];
             if t <> nil then
