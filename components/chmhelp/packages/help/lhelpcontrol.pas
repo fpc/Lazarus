@@ -109,6 +109,13 @@ var
 begin
   Result := False;
 
+  {$IFDEF Unix}
+  {$NOTE ToDo: fix simpleipc to allow changing the filenames, then fix this }
+  // clean up old files
+  DeleteFileUTF8('/tmp/lazhelp');
+  DeleteFileUTF8('/tmp/lazhelpclient');
+  {$ENDIF}
+
   fServerIn.Active := False;
   fServerIn.ServerID := NameForServer+'client';
   fServerIn.Global := True;
