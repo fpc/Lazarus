@@ -115,7 +115,7 @@ configure-stamp:
 	# Remove auto-generated make files.
 	find -name Makefile.fpc -execdir 'sh' '-c' '${RM} $$(basename {} .fpc)' ';'
 	# Regenrate make files using fpcmake.
-	${FPCMAKE} -r -Tall
+	find -name Makefile.fpc -exec ${FPCMAKE} '{}' -Tall ';'
 	# Remove auto-generated version file.
 	${RM} ide/version.inc
 	# Add version.inc:
@@ -126,7 +126,7 @@ build-arch: debian-files configure build-arch-stamp
 build-arch-stamp:
 	@echo "--- Building"
 	dh_testdir
-	${MAKE} all ${BUILDOPTS}
+	${MAKE} bigide ${BUILDOPTS}
 	${MV} $(CURDIR)/lazarus $(CURDIR)/lazarus-gtk2
 	touch build-arch-stamp
 
