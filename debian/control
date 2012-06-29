@@ -64,7 +64,7 @@ Description: IDE for Free Pascal - LCL Sources Code
  code tool to work properly (retrieving declarations and navigating in code).
 
 Package: lazarus-ide
-Architecture: i386 powerpc sparc amd64 armel
+Architecture: i386 powerpc sparc amd64 armel armhf
 Depends: ${misc:Depends}, ${shlibs:Depends}, fp-compiler, lazarus-src, lazarus-ide-gtk | lazarus-ide-qt
 Recommends: fpc, lcl, gdb
 Suggests: fp-utils
@@ -88,7 +88,7 @@ Description: IDE for Free Pascal - Common IDE files
  This package contains the commons files required to run lazarus IDE.
 
 Package: lazarus-ide-gtk2
-Architecture: i386 powerpc sparc amd64 armel
+Architecture: i386 powerpc sparc amd64 armel armhf
 Depends: ${misc:Depends}, ${shlibs:Depends}, lazarus-ide
 Recommends: fpc, lcl, gdb
 Suggests: fp-utils
@@ -115,7 +115,7 @@ Description: IDE for Free Pascal - IDE build on top of GTK+ backend
  This package contains the lazarus IDE build on top of GTK+ backend.
 
 Package: lazarus-ide-qt4
-Architecture: i386 powerpc sparc amd64 armel
+Architecture: i386 powerpc sparc amd64 armel armhf
 Depends: ${misc:Depends}, ${shlibs:Depends}, lazarus-ide, lazarus-ide-gtk
 Recommends: fpc, lcl, gdb
 Suggests: fp-utils
@@ -143,7 +143,7 @@ Description: IDE for Free Pascal - IDE build on top of QT backend
  for now it just depends on gtk based IDE.
 
 Package: lcl
-Architecture: i386 powerpc sparc amd64 armel
+Architecture: i386 powerpc sparc amd64 armel armhf
 Depends: ${misc:Depends}, ${shlibs:Depends}, lcl-units, lcl-utils
 Recommends: fpc, lazarus-ide
 Suggests: gdb
@@ -169,7 +169,7 @@ Description: Lazarus Components Library - LCL metapackage
  This is a metapackage to ease installing the LCL and components.
 
 Package: lcl-utils
-Architecture: i386 powerpc sparc amd64 armel
+Architecture: i386 powerpc sparc amd64 armel armhf
 Depends: ${misc:Depends}, ${shlibs:Depends}, fp-compiler
 Recommends: lcl, lazarus-ide
 Breaks: lazarus-ide (<= 0.9.28.2-2)
@@ -194,7 +194,7 @@ Description: Lazarus Components Library - Command Line build tools
  This package contains command line tools to ease building LCL applications.
 
 Package: lcl-units
-Architecture: i386 powerpc sparc amd64 armel
+Architecture: i386 powerpc sparc amd64 armel armhf
 Depends: ${misc:Depends}, ${shlibs:Depends}, ${fpc-abi:Depends}, lcl-gtk2 | lcl-gtk | lcl-qt
 Recommends: lazarus-ide, fpc
 Suggests: gdb
@@ -221,7 +221,7 @@ Description: Lazarus Components Library - Backend independent components
  This package contains the LCL and components.
 
 Package: lcl-nogui
-Architecture: i386 powerpc sparc amd64 armel
+Architecture: i386 powerpc sparc amd64 armel armhf
 Depends: ${misc:Depends}, ${shlibs:Depends}, ${fpc-abi:Depends}, fp-units-rtl, fp-units-base, fp-units-fcl
 Recommends: lazarus-ide, fpc
 Suggests: gdb
@@ -248,7 +248,7 @@ Description: Lazarus Components Library - No GUI backend
  line tools and non graphical applications.
 
 Package: lcl-gtk2
-Architecture: i386 powerpc sparc amd64 armel
+Architecture: i386 powerpc sparc amd64 armel armhf
 Depends: ${misc:Depends}, ${shlibs:Depends}, ${fpc-abi:Depends}, fp-units-rtl, fp-units-base, fp-units-fcl, fp-units-gtk2
 Recommends: lazarus-ide, fpc
 Suggests: gdb
@@ -275,7 +275,7 @@ Description: Lazarus Components Library - GTK+ backend
  This package contains the LCL and components GTK+ based backend.
 
 Package: lcl-qt4
-Architecture: i386 powerpc sparc amd64 armel
+Architecture: i386 powerpc sparc amd64 armel armhf
 Depends: ${misc:Depends}, ${shlibs:Depends}, ${fpc-abi:Depends}, fp-units-rtl, fp-units-base, fp-units-fcl, libqt4pas-dev
 Recommends: lazarus-ide, fpc
 Suggests: gdb

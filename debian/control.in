@@ -70,7 +70,7 @@ Description: IDE for Free Pascal - LCL Sources Code
  code tool to work properly (retrieving declarations and navigating in code).
 
 Package: lazarus-ide${PACKAGESUFFIX}
-Architecture: i386 powerpc sparc amd64 armel
+Architecture: i386 powerpc sparc amd64 armel armhf
 Depends: ${misc:Depends}, ${shlibs:Depends}, fp-compiler, lazarus-src${PACKAGESUFFIX}, lazarus-ide-gtk${PACKAGESUFFIX} | lazarus-ide-qt${PACKAGESUFFIX}
 Recommends: fpc, lcl${PACKAGESUFFIX}, gdb
 Suggests: fp-utils
@@ -97,7 +97,7 @@ Description: IDE for Free Pascal - Common IDE files
  This package contains the commons files required to run lazarus IDE.
 
 Package: lazarus-ide-gtk2${PACKAGESUFFIX}
-Architecture: i386 powerpc sparc amd64 armel
+Architecture: i386 powerpc sparc amd64 armel armhf
 Depends: ${misc:Depends}, ${shlibs:Depends}, lazarus-ide${PACKAGESUFFIX}
 Recommends: fpc, lcl${PACKAGESUFFIX}, gdb
 Suggests: fp-utils
@@ -124,7 +124,7 @@ Description: IDE for Free Pascal - IDE build on top of GTK+ backend
  This package contains the lazarus IDE build on top of GTK+ backend.
 
 Package: lazarus-ide-qt4${PACKAGESUFFIX}
-Architecture: i386 powerpc sparc amd64 armel
+Architecture: i386 powerpc sparc amd64 armel armhf
 Depends: ${misc:Depends}, ${shlibs:Depends}, lazarus-ide${PACKAGESUFFIX}, lazarus-ide-gtk${PACKAGESUFFIX}
 Recommends: fpc, lcl${PACKAGESUFFIX}, gdb
 Suggests: fp-utils
@@ -152,7 +152,7 @@ Description: IDE for Free Pascal - IDE build on top of QT backend
  for now it just depends on gtk based IDE.
 
 Package: lcl${PACKAGESUFFIX}
-Architecture: i386 powerpc sparc amd64 armel
+Architecture: i386 powerpc sparc amd64 armel armhf
 Depends: ${misc:Depends}, ${shlibs:Depends}, lcl-units${PACKAGESUFFIX}, lcl-utils${PACKAGESUFFIX}
 Recommends: fpc, lazarus-ide${PACKAGESUFFIX}
 Suggests: gdb
@@ -179,7 +179,7 @@ Description: Lazarus Components Library - LCL metapackage
  This is a metapackage to ease installing the LCL and components.
 
 Package: lcl-utils${PACKAGESUFFIX}
-Architecture: i386 powerpc sparc amd64 armel
+Architecture: i386 powerpc sparc amd64 armel armhf
 Depends: ${misc:Depends}, ${shlibs:Depends}, fp-compiler
 Recommends: lcl${PACKAGESUFFIX}, lazarus-ide${PACKAGESUFFIX}
 Provides: lcl-utils
@@ -205,7 +205,7 @@ Description: Lazarus Components Library - Command Line build tools
  This package contains command line tools to ease building LCL applications.
 
 Package: lcl-units${PACKAGESUFFIX}
-Architecture: i386 powerpc sparc amd64 armel
+Architecture: i386 powerpc sparc amd64 armel armhf
 Depends: ${misc:Depends}, ${shlibs:Depends}, ${fpc-abi:Depends}, lcl-gtk2${PACKAGESUFFIX} (= ${binary:Version}) | lcl-gtk${PACKAGESUFFIX} (= ${binary:Version}) | lcl-qt${PACKAGESUFFIX} (= ${binary:Version})
 Recommends: lazarus-ide${PACKAGESUFFIX}, fpc
 Suggests: gdb
@@ -232,7 +232,7 @@ Description: Lazarus Components Library - Backend independent components
  This package contains the LCL and components.
 
 Package: lcl-nogui${PACKAGESUFFIX}
-Architecture: i386 powerpc sparc amd64 armel
+Architecture: i386 powerpc sparc amd64 armel armhf
 Depends: ${misc:Depends}, ${shlibs:Depends}, ${fpc-abi:Depends}, fp-units-rtl, fp-units-base, fp-units-fcl
 Recommends: lazarus-ide${PACKAGESUFFIX}, fpc
 Suggests: gdb
@@ -260,7 +260,7 @@ Description: Lazarus Components Library - No GUI backend
  line tools and non graphical applications.
 
 Package: lcl-gtk2${PACKAGESUFFIX}
-Architecture: i386 powerpc sparc amd64 armel
+Architecture: i386 powerpc sparc amd64 armel armhf
 Depends: ${misc:Depends}, ${shlibs:Depends}, ${fpc-abi:Depends}, fp-units-rtl, fp-units-base, fp-units-fcl, fp-units-gtk2
 Recommends: lazarus-ide${PACKAGESUFFIX}, fpc
 Suggests: gdb
@@ -287,7 +287,7 @@ Description: Lazarus Components Library - GTK+ backend
  This package contains the LCL and components GTK+ based backend.
 
 Package: lcl-qt4${PACKAGESUFFIX}
-Architecture: i386 powerpc sparc amd64 armel
+Architecture: i386 powerpc sparc amd64 armel armhf
 Depends: ${misc:Depends}, ${shlibs:Depends}, ${fpc-abi:Depends}, fp-units-rtl, fp-units-base, fp-units-fcl, libqt4pas-dev
 Recommends: lazarus-ide${PACKAGESUFFIX}, fpc
 Suggests: gdb
@@ -396,7 +396,7 @@ Description: IDE for Free Pascal - LCL Sources Code metapackage
  and navigating in code).
 
 Package: lazarus-ide
-Architecture: i386 powerpc sparc amd64 armel
+Architecture: i386 powerpc sparc amd64 armel armhf
 Depends: ${misc:Depends}, lazarus-ide${PACKAGESUFFIX} (= ${binary:Version})
 Description: IDE for Free Pascal - Common IDE files metapackage
  Lazarus is an IDE to create (graphical and console) applications with Free
