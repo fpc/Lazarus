@@ -4,11 +4,12 @@ lazarus (1.1-0) unstable; urgency=low
 
  -- Vincent Snijders <vincents@freepascal.org>  Sun, 01 Apr 2012 20:12:12 +0200
 
-lazarus (0.9.31-0) unstable; urgency=low
+lazarus (0.9.30.4-1.1) unstable; urgency=low
 
-  * Snapshot building.
+  * Non-maintainer upload.
+  * Add armhf to architecture lists (Closes: #675894)
 
- -- Abou Al Montacir <abou.almontacir@sfr.fr>  Tue, 06 Mar 2012 09:16:00 +0100
+ -- Peter Michael Green <plugwash@p10link.net>  Sun, 10 Jun 2012 07:49:14 +0000
 
 lazarus (0.9.30.4-1) unstable; urgency=low
 
