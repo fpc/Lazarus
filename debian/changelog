@@ -2,7 +2,13 @@ lazarus (1.1-0) unstable; urgency=low
 
   * Snapshot building.
 
- -- Vincent Snijders <vincents@freepascal.org>  Sun, 01 Apr 2012 20:12:12 +0200
+ -- Vincent Snijders <vincents@freepascal.org>  Sun, 15 Jun 2012 20:12:12 +0200
+
+lazarus (0.9.30.4-2) unstable; urgency=low
+
+  * Package  LCL Qt widget set units. (Closes: Bug#627345)
+
+ -- Abou Al Montacir <abou.almontacir@sfr.fr>  Fri, 15 Jun 2012 20:06:00 +0200
 
 lazarus (0.9.30.4-1.1) unstable; urgency=low
 

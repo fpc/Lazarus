@@ -1,3 +1,4 @@
 01_topmakefile.diff
 02_components.diff
 default_config.diff
+lcl-with-multple-widget-sets.diff
