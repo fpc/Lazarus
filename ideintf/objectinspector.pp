@@ -944,6 +944,7 @@ begin
     OnExit:=@ValueCheckBoxExit;
     OnKeyDown:=@ValueCheckBoxKeyDown;
     OnKeyUp:=@ValueCheckBoxKeyUp;
+    OnClick:=@ValueCheckBoxClick;
   end;
 
   ValueButton:=TSpeedButton.Create(Self);
@@ -1465,6 +1466,7 @@ var
   CurRow: TOIPropertyGridRow;
 begin
   if (pgsUpdatingEditControl in FStates) or not IsCurrentEditorAvailable then exit;
+  ValueCheckBox.Caption:=BoolToStr(ValueCheckBox.Checked, True); //'True','False';
   CurRow:=Rows[FItemIndex];
   if paAutoUpdate in CurRow.Editor.GetAttributes then
     SetRowValue;
