@@ -153,10 +153,6 @@
       </Optimizations>
     </CodeGeneration>
     <Linking>
-      <Debugging>
-        <GenerateDebugInfo Value="False"/>
-        <DebugInfoType Value="dsStabs"/>
-      </Debugging>
       <Options>
         <Win32>
           <GraphicApplication Value="True"/>

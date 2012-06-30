@@ -147,7 +147,7 @@ function TLHelpConnection.ServerRunning: Boolean;
 {$IFDEF STALE_PIPE_WORKAROUND}
 {$ENDIF}
 begin
-  Result := (fServerOut<>nil) and (fServerOut.Active);
+  Result := (fServerOut<>nil) and (fServerOut.ServerRunning);
   {$IFDEF STALE_PIPE_WORKAROUND}
   if not Result then
     Exit; // ==>
