@@ -203,11 +203,13 @@ var
           System.Delete(ScrapeResult, 1, Pos(#13, ScrapeResult));
           System.Delete(ScrapeResult, 1, Pos(#10, ScrapeResult));
           System.Delete(ScrapeResult, Pos(' ', ScrapeResult), Length(ScrapeResult));
+          if ScrapeResult[1]='"' then //linux returns "
+            ScrapeResult:=copy(ScrapeResult,2,length(ScrapeResult)-2);
           if ScrapeResult[1]=':' then //no svn version found.
             //Indicate we're dealing with Mercurial to avoid confusing the user:
             ScrapeResult:='hg'+ScrapeResult
           else
-            ScrapeResult:=copy(ScrapeResult,2,pos(':',ScrapeResult)-2);
+            ScrapeResult:=copy(ScrapeResult,1,pos(':',ScrapeResult)-1);
         except
         // ignore error, default result is false
         end;
