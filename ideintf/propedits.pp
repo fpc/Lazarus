@@ -2931,8 +2931,7 @@ begin
   Result:=OrdValueToVisualValue(GetDefaultOrdValue);
 end;
 
-function TOrdinalPropertyEditor.OrdValueToVisualValue(OrdValue: longint
-  ): string;
+function TOrdinalPropertyEditor.OrdValueToVisualValue(OrdValue: longint): string;
 begin
   Result:=IntToStr(OrdValue);
 end;

@@ -198,7 +198,7 @@ type
     function IsReadOnly: boolean;
     function IsDisabled: boolean;
     procedure MeasureHeight(ACanvas: TCanvas);
-    function Sort(const Compare: TListSortCompare): boolean;// true if changed
+    function Sort(const Compare: TListSortCompare): boolean; // true if changed
     function IsSorted(const Compare: TListSortCompare): boolean;
     function Next: TOIPropertyGridRow;
     function NextSkipChilds: TOIPropertyGridRow;
@@ -1554,9 +1554,7 @@ begin
   if (NewIndex>=0) and (NewIndex<FRows.Count) then
   begin
     NewRow:=Rows[NewIndex];
-
     ScrollToItem(NewIndex);
-
     if CanFocus then
       NewRow.Editor.Activate;
     EditorAttributes:=NewRow.Editor.GetAttributes;
@@ -2922,8 +2920,7 @@ begin
     F.ActiveControl := AControl;
 end;
 
-procedure TOICustomPropertyGrid.SetColumn(
-  const AValue: TOICustomPropertyGridColumn);
+procedure TOICustomPropertyGrid.SetColumn(const AValue: TOICustomPropertyGridColumn);
 begin
   if FColumn <> AValue then
   begin
