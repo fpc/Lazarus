@@ -23,6 +23,12 @@ unit lhelpcore;
 {$NOTE You can add http capability to lhelp by adding the lnetvisual package v0.6.3 or greater requirement to lhelp.}
 {$ENDIF}
 
+{$IFDEF UNIX}
+  {$if FPC_FULLVERSION <= 20700}
+       {$DEFINE STALE_PIPE_WORKAROUND}
+  {$ENDIF}
+{$ENDIF}
+
 {$mode objfpc}{$H+}
 
 interface
@@ -219,6 +225,7 @@ procedure THelpForm.FormCreate(Sender: TObject);
 begin
   fContext := -1;
   ReadCommandLineOptions;
+  LoadPreferences(fServerName);
   if fServerName <> '' then begin
     StartServer(fServerName);
   end;
@@ -237,7 +244,7 @@ begin
   if FHasShowed then
     Exit;
   FHasShowed := True;
-  LoadPreferences(fServerName);
+
 end;
 
 procedure THelpForm.ForwardToolBtnClick(Sender: TObject);
@@ -372,11 +379,15 @@ var
 begin
   fOutputIPC := TSimpleIPCClient.Create(nil);
   fOutputIPC.ServerID := fServerName+'client';
-  fOutputIPC.Active := True;
+  if fOutputIPC.ServerRunning {$IFDEF STALE_PIPE_WORKAROUND} and not IPCPipeIsStale(fOutputIPC){$ENDIF}
+  then
+    fOutputIPC.Active := True;
 
   Stream := TMemoryStream.Create;
   Stream.WriteDWord(Response);
-  fOutputIPC.SendMessage(mtUnknown, Stream);
+
+  if fOutputIPC.Active then
+    fOutputIPC.SendMessage(mtUnknown, Stream);
 
   if fOutputIPC.Active then
     fOutputIPC.Active := False;
@@ -474,6 +485,7 @@ end;
 
 procedure THelpForm.StartServer(ServerName: String);
 begin
+
   fInputIPC := TSimpleIPCServer.Create(nil);
   fInputIPC.ServerID := ServerName;
   fInputIPC.Global := True;
