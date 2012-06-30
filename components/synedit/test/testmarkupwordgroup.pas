@@ -85,11 +85,23 @@ end;
 
 procedure TTestMarkupWordGroup.TestWordGroup;
   procedure CheckWord(Name: String; X,Y, w1X,w1E,w1Y, w2X,w2E,w2Y, w3X,w3E,w3Y: Integer);
+    Procedure SortWordPoint(var w1,w2: TWordPoint);
+    var w3: TWordPoint;
+    begin
+      if (w1.Y > w2.Y) or ((w1.Y = w2.Y) and (w1.X > w2.X)) then begin
+        w3 := w1;
+        w1 := w2;
+        w2 := w3;
+      end;
+    end;
   var
     w1,w2,w3: TWordPoint;
   begin
     Name := Name + ' At '+IntToStr(x)+ ','+IntToStr(y)+' ';
     Markup.FindMatchingWords(Point(X,Y), w1, w2, w3);
+    SortWordPoint(w1, w2);
+    SortWordPoint(w2, w3);
+    SortWordPoint(w1, w2);
     if w1Y = -1 then
       AssertEquals(Name+'Y', -1, w1.Y)
     else begin

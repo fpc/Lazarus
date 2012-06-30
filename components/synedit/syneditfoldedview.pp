@@ -1583,12 +1583,13 @@ begin
             FReadType := FReadDefaultType;
         end;
 
-        if ((aY < FReadY) or ((aY = FReadY) and (aX < FReadX))) then
+        // ax may be off by one, since pas highlighter changed to include $ in $IFDEF
+        if ((aY < FReadY) or ((aY = FReadY) and (aX+1 < FReadX))) then
           exit(scftOpen);  // actually, read before point
 
         i := 0;
         if FReadType = scftHide then i := 1; // fold one more than len
-        if (aY <> FReadY) or (aX <> FReadX) or (aLen + i <> FReadSumLen) then
+        if (aY <> FReadY) or (abs(aX - FReadX) > 1) or (aLen + i <> FReadSumLen) then
           exit(Invalidate);
 
         FReadLastY := FReadY;

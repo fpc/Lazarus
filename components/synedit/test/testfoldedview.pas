@@ -2067,7 +2067,7 @@ begin
     TheList.FoldFlags := [];
     AssertEquals(BaseTestName + 'Cnt', 3, TheList.Count);
     CheckNode(TheList.HLNode[2],  2, 0,  0, 9,  1, 2,  1, 2,  3, 3, 1, [sfaOpen,sfaMarkup,sfaFold,sfaFoldFold]);
-    CheckNode(TheList.HLNode[1],  1, 0,  2, 7,  0, 1,  0, 1,  18, 18, 3, [sfaOpen,sfaFold,sfaFoldFold]);
+    CheckNode(TheList.HLNode[1],  1, 0,  1, 7,  0, 1,  0, 1,  18, 18, 3, [sfaOpen,sfaMarkup,sfaFold,sfaFoldFold]);
     CheckNode(TheList.HLNode[0],  0, 0,  0, 7,  0, 1,  0, 1,  10, 10, 1, [sfaOpen,sfaMarkup,sfaFold,sfaFoldFold]);
 
 
@@ -2087,7 +2087,7 @@ begin
     TheList.FoldGroup := 3;
     TheList.FoldFlags := [];
     AssertEquals(BaseTestName + 'Cnt', 1, TheList.Count);
-    CheckNode(TheList.HLNode[0],  1, 0,  2, 7,  0, 1,  0, 1,  18, 18, 3, [sfaOpen,sfaFold,sfaFoldFold]);
+    CheckNode(TheList.HLNode[0],  1, 0,  1, 7,  0, 1,  0, 1,  18, 18, 3, [sfaOpen,sfaMarkup,sfaFold,sfaFoldFold]);
 
 
     PopPushBaseName('All Enabled - group 0 - line 3');

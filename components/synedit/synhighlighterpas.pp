@@ -138,7 +138,8 @@ const
     [low(TPascalCodeFoldBlockType)..high(TPascalCodeFoldBlockType)];
   PascalWordTripletRanges: TPascalCodeFoldBlockTypes =
     [cfbtBeginEnd, cfbtTopBeginEnd, cfbtProcedure, cfbtClass, cfbtProgram, cfbtRecord,
-     cfbtTry, cfbtExcept, cfbtRepeat, cfbtAsm, cfbtCase
+     cfbtTry, cfbtExcept, cfbtRepeat, cfbtAsm, cfbtCase, cfbtCaseElse,
+     cfbtIfDef, cfbtRegion
     ];
 
   // restrict cdecl etc to places where they can be.
@@ -2474,25 +2475,48 @@ procedure TSynPasSyn.BraceOpenProc;
     end;
   end;
 
+  procedure StartDirectiveFoldBlock(ABlockType: TPascalCodeFoldBlockType); inline;
+  begin
+    dec(Run);
+    inc(fStringLen); // include $
+    StartCustomCodeFoldBlock(ABlockType);
+    inc(Run);
+  end;
+
+  procedure EndDirectiveFoldBlock(ABlockType: TPascalCodeFoldBlockType); inline;
+  begin
+    dec(Run);
+    inc(fStringLen); // include $
+    EndCustomCodeFoldBlock(ABlockType);
+    inc(Run);
+  end;
+
+  procedure EndStartDirectiveFoldBlock(ABlockType: TPascalCodeFoldBlockType); inline;
+  begin
+    dec(Run);
+    inc(fStringLen); // include $
+    EndCustomCodeFoldBlock(ABlockType);
+    StartCustomCodeFoldBlock(ABlockType);
+    inc(Run);
+  end;
+
 var
   nd: PSynFoldNodeInfo;
 begin
   if (Run < fLineLen-1) and (fLine[Run+1] = '$') then begin
     // compiler directive
     fRange := fRange + [rsDirective];
-    inc(Run,2);
+    inc(Run, 2);
     fToIdent := Run;
     KeyHash;
     if KeyComp('ifdef') or KeyComp('ifndef') or KeyComp('if') then
-      StartCustomCodeFoldBlock(cfbtIfDef)
+      StartDirectiveFoldBlock(cfbtIfDef)
     else if KeyComp('endif') then
-      EndCustomCodeFoldBlock(cfbtIfDef)
-    else if KeyComp('else') then begin
-      EndCustomCodeFoldBlock(cfbtIfDef);
-      StartCustomCodeFoldBlock(cfbtIfDef);
-    end
+      EndDirectiveFoldBlock(cfbtIfDef)
+    else if KeyComp('else') then
+      EndStartDirectiveFoldBlock(cfbtIfDef)
     else if KeyComp('region') then begin
-      StartCustomCodeFoldBlock(cfbtRegion);
+      StartDirectiveFoldBlock(cfbtRegion);
       if FCatchNodeInfo then
         // Scan ahead
         if ScanRegion then begin
@@ -2502,7 +2526,7 @@ begin
         end;
     end
     else if KeyComp('endregion') then
-      EndCustomCodeFoldBlock(cfbtRegion);
+      EndDirectiveFoldBlock(cfbtRegion);
     DirectiveProc;
   end else begin
     // curly bracket open -> borland comment
@@ -2515,7 +2539,7 @@ begin
       fToIdent := Run;
       KeyHash;
       if KeyComp('region') then begin
-        StartCustomCodeFoldBlock(cfbtRegion);
+        StartDirectiveFoldBlock(cfbtRegion);
         if FCatchNodeInfo then
           // Scan ahead
           if ScanRegion then begin
@@ -2525,7 +2549,7 @@ begin
           end;
       end
       else if KeyComp('endregion') then
-        EndCustomCodeFoldBlock(cfbtRegion)
+        EndDirectiveFoldBlock(cfbtRegion)
       else begin
         dec(Run, 2);
         StartPascalCodeFoldBlock(cfbtBorCommand);
