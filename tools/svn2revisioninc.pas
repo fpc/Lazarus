@@ -50,9 +50,7 @@
        it tries to execute hg to get the revision id.
        Not checking for the .hg subdirectory allows getting the hg revision id
        even in subdirectories.
-       No support yet for svn repos converted to hg (e.g. with hgsubversion),
-       so you get a Mercurial commit identifier (a hex number) instead of svn.
-       To minimize confusion, the text hg: is prepended to the string.
+       Support for svn repos converted to hg with hgsubversion.
 }
 program Svn2RevisionInc;
 
@@ -191,7 +189,8 @@ var
     try
       with HgVersionProcess do begin
         // Get global revision ID (no need to worry about branches)
-        CommandLine := 'hg id --id "' + SourceDirectory + '"';
+        CurrentDirectory:=SourceDirectory;
+        CommandLine := 'hg parents --template="{svnrev}:{node|short}"';
         Options := [poUsePipes, poWaitOnExit];
         try
           Execute;
@@ -204,8 +203,11 @@ var
           System.Delete(ScrapeResult, 1, Pos(#13, ScrapeResult));
           System.Delete(ScrapeResult, 1, Pos(#10, ScrapeResult));
           System.Delete(ScrapeResult, Pos(' ', ScrapeResult), Length(ScrapeResult));
-          //Indicate we're dealing with Mercurial to avoid confusing the user:
-          ScrapeResult:='hg:'+ScrapeResult;
+          if ScrapeResult[1]=':' then //no svn version found.
+            //Indicate we're dealing with Mercurial to avoid confusing the user:
+            ScrapeResult:='hg'+ScrapeResult
+          else
+            ScrapeResult:=copy(ScrapeResult,2,pos(':',ScrapeResult)-2);
         except
         // ignore error, default result is false
         end;
