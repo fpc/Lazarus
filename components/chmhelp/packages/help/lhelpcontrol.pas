@@ -121,7 +121,7 @@ var
 begin
   Result := False;
   PipeName:='/tmp/'+AIPC.ServerID;
-  if (AIPC is TSimpleIPCServer) and (TSimpleIPCServer(AIPC).Global) and (TSimpleIPCServer(AIPC).InstanceID <> '') then
+  if (AIPC is TSimpleIPCServer) and (not TSimpleIPCServer(AIPC).Global) and (TSimpleIPCServer(AIPC).InstanceID <> '') then
     PipeName := PipeName +'-'+TSimpleIPCServer(AIPC).InstanceID;
 
   // it's possible to have a stale file that is not open for reading which will
