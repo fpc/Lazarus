@@ -79,7 +79,7 @@ uses
   {$IFDEF USE_UTF8BIDI_LCL}
   FreeBIDI, utf8bidi,
   {$ENDIF}
-  Types, LCLIntf, LCLType, LMessages, LazUTF8, LCLProc, LazMethodList, LazLogger,
+  Types, LCLIntf, LCLType, LMessages, LazUTF8, LCLProc, LazMethodList, LazLoggerBase,
   SysUtils, Classes, Messages, Controls, Graphics, Forms, StdCtrls, ExtCtrls, Menus,
   SynEditTypes, SynEditSearch, SynEditKeyCmds, SynEditMouseCmds, SynEditMiscProcs,
   SynEditPointClasses, SynBeautifier, SynEditMarks,
