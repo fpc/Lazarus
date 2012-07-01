@@ -2483,6 +2483,16 @@ begin
     if Layout = oilHorizontal
     then begin
       EditCompRect.Left := RRect.Left + SplitterX;
+      {$IFDEF UseOICheckBox}
+      {$IFDEF WINDOWS}
+      // Make the edit control short, it reveals redraw problems in many places
+      // on Windows. Normally the long control hides the problems.
+      // Note! This has nothing to do with CheckBox editors directly.
+      // CheckBox only revealed the problem originally because its caption
+      // does not cover all the drawing area.
+      EditCompRect.Right:=EditCompRect.Left+50; // This line can be removed
+      {$ENDIF}
+      {$ENDIF}
     end
     else begin
       EditCompRect.Top := RRect.Top + GetNameRowHeight;
@@ -2584,17 +2594,6 @@ begin
 
   if Layout = oilVertical then
     ValueRect.Left := NameTextRect.Left
-    {$IFDEF UseOICheckBox}
-    {$IFDEF WINDOWS}
-    // Make the edit control short, it reveals redraw problems in many places
-    // on Windows. Normally the long control hides the problems.
-    // Note! This has nothing to do with CheckBox editors directly.
-    // CheckBox only revealed the problem originally because its caption
-    // does not cover all the drawing area.
-    EditCompRect.Right:=EditCompRect.Left+50; // This line can be removed
-    later
-    {$ENDIF}
-    {$ENDIF}
   else
   begin
     inc(NameIconRect.Right, 2 + Ord(ShowGutter));
