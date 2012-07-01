@@ -449,6 +449,7 @@ type
     function  GetTopTextIndex : integer;
     procedure SetTopTextIndex(const AIndex : integer);
     procedure SetLinesInWindow(const AValue : integer);
+    procedure DoFoldChanged(AnIndex: Integer);
   protected
     procedure DoBlockSelChanged(Sender: TObject);
     Procedure CalculateMaps;
@@ -3436,6 +3437,12 @@ begin
   CalculateMaps;
 end;
 
+procedure TSynEditFoldedView.DoFoldChanged(AnIndex: Integer);
+begin
+  if Assigned(fOnFoldChanged) then
+    fOnFoldChanged(AnIndex);
+end;
+
 procedure TSynEditFoldedView.DoBlockSelChanged(Sender: TObject);
 begin
   CalculateMaps;
@@ -3673,8 +3680,7 @@ begin
           // currently always VisibleLines=1 => since region only folds
           fFoldTree.InsertNewFold(i+2, j, fldinf.Column, fldinf.ColumnLen, fldinf.LineCount, 1,
                                   fldinf.Classification, fldinf.FoldTypeCompatible);
-          if Assigned(fOnFoldChanged) then
-            fOnFoldChanged(i);
+          DoFoldChanged(i);
         end;
       inc(j);
       end;
@@ -4031,8 +4037,7 @@ begin
 
   fTopLine := -1;  // make sure seting TopLineTextIndex, will do CalculateMaps;
   TopTextIndex := top;
-  if Assigned(fOnFoldChanged) then
-    fOnFoldChanged(AStartIndex);
+  DoFoldChanged(AStartIndex);
 end;
 
 procedure TSynEditFoldedView.UnFoldAtLine(AStartLine : Integer;
@@ -4104,8 +4109,8 @@ begin
 
   fTopLine := -1;  // make sure seting TopLineTextIndex, will do CalculateMaps;
   TopTextIndex := top;
-  if Assigned(fOnFoldChanged) and (r >= 0) then
-    fOnFoldChanged(Max(0, r - 2));
+  if (r >= 0) then
+    DoFoldChanged(Max(0, r - 2));
 end;
 
 procedure TSynEditFoldedView.UnFoldAtTextIndexCollapsed(AStartIndex: Integer);
@@ -4116,8 +4121,7 @@ begin
   r := fFoldTree.RemoveFoldForLine(AStartIndex+1) - 1;
   fTopLine := -1;  // make sure seting TopLineTextIndex, will do CalculateMaps;
   TopTextIndex := top;
-  if Assigned(fOnFoldChanged) then
-    fOnFoldChanged(r);
+  DoFoldChanged(r);
 end;
 
 procedure TSynEditFoldedView.UnfoldAll;
@@ -4128,8 +4132,7 @@ begin
   fFoldTree.Clear;
   fTopLine := -1;  // make sure seting TopLineTextIndex, will do CalculateMaps;
   TopTextIndex := top;
-  if Assigned(fOnFoldChanged) then
-    fOnFoldChanged(0);
+  DoFoldChanged(0);
 end;
 
 procedure TSynEditFoldedView.FoldAll(StartLevel : Integer = 0; IgnoreNested : Boolean = False);
@@ -4162,8 +4165,7 @@ begin
   end;
   fTopLine := -1;
   TopTextIndex := top;
-  if Assigned(fOnFoldChanged) then
-    fOnFoldChanged(0);
+  DoFoldChanged(0);
 end;
 
 function TSynEditFoldedView.FixFolding(AStart: Integer; AMinEnd: Integer;
@@ -4336,8 +4338,8 @@ begin
   SrcLineForFldInfos := -1;
   Result := DoFixFolding(-1, AMinEnd, 0, aFoldTree, node);
   CalculateMaps;
-  if Assigned(fOnFoldChanged) and (FirstchangedLine >= 0) then
-    fOnFoldChanged(FirstchangedLine);
+  if (FirstchangedLine >= 0) then
+    DoFoldChanged(FirstchangedLine);
   {$IFDEF SynFoldDebug}finally DebugLnExit(['<<FOLD-- FixFolding: DONE=', Result]); end{$ENDIF}
 end;
 
