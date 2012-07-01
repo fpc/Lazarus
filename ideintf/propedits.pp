@@ -439,6 +439,8 @@ type
 { TBoolPropertyEditor
   Default property editor for all boolean properties }
 
+  const PropCheckBoxSquareWidth = 15;
+  type
   { TBoolPropertyEditor }
 
   TBoolPropertyEditor = class(TEnumPropertyEditor)
@@ -3123,7 +3125,7 @@ begin
   ACanvas.Brush.Style := bsSolid;
   ACanvas.Brush.Color := clWhite;
   BRect := ARect;
-  BRect.Right:=BRect.Left+15;
+  BRect.Right:=BRect.Left+PropCheckBoxSquareWidth;
   Inc(BRect.Top);
   Dec(BRect.Bottom,3);
   ACanvas.Rectangle(BRect);

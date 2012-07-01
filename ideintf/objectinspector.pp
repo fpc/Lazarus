@@ -1940,7 +1940,7 @@ begin
     SetActiveControl(FCurrentEdit);
     if (FCurrentEdit is TCustomEdit) then
       TCustomEdit(FCurrentEdit).SelectAll
-    else if WasValueClick and (FCurrentEdit is TCheckBox) then
+    else if (FCurrentEdit is TCheckBox) and WasValueClick then
       TCheckBox(FCurrentEdit).Checked:=not TCheckBox(FCurrentEdit).Checked;
   end;
 end;
@@ -2026,7 +2026,8 @@ begin
               ExpandRow(Index);
           end;
         end;
-        SetItemIndexAndFocus(Index, SplitterX<X);
+        // WasValueClick param is only for checkboxes, toggled if user clicks the square
+        SetItemIndexAndFocus(Index, (X>SplitterX) and (X<=SplitterX+PropCheckBoxSquareWidth));
         SetCaptureControl(Self);
         Column := oipgcValue;
       end;
