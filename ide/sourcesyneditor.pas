@@ -1178,8 +1178,10 @@ begin
         Priority := 20;
       with TSynGutterLOvProviderModifiedLines.Create(Providers) do
         Priority := 9;
-      with TSynGutterLOvProviderCurrentPage.Create(Providers) do
+      with TSynGutterLOvProviderCurrentPage.Create(Providers) do begin
         Priority := 1;
+        FoldedTextBuffer := TSynEditFoldedView(TIDESynEditor(Self.SynEdit).FoldedTextBuffer);
+      end;
       with TIDESynGutterLOvProviderPascal.Create(Providers) do
         Priority := 0;
     end;

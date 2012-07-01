@@ -29,7 +29,7 @@ interface
 uses
   Classes, Graphics, Controls, LCLProc, LCLType, LCLIntf, FPCanvas, sysutils, math,
   SynGutterBase, SynEditTypes, LazSynEditText, SynEditTextBuffer, SynEditMarks,
-  SynEditMiscClasses;
+  SynEditMiscClasses, SynEditFoldedView;
 
 type
   TSynGutterLineOverview = class;
@@ -198,16 +198,20 @@ type
 
   TSynGutterLOvProviderCurrentPage = class(TSynGutterLineOverviewProvider)
   private
-    FCurTopLine, FCurLinesInWindow: Integer;
+    FCurTopLine, FCurBottomLine: Integer;
+    FFoldedTextBuffer: TSynEditFoldedView;
     FPixelTopLine, FPixelBottomLine: Integer;
+    procedure SetFoldedTextBuffer(AValue: TSynEditFoldedView);
   protected
     procedure SynStatusChanged(Sender: TObject; Changes: TSynStatusChanges);
+    procedure FoldChanged(aLine: Integer);
 
     procedure Paint(Canvas: TCanvas; AClip: TRect; TopOffset: integer); override;
     procedure ReCalc; override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor  Destroy; override;
+    property FoldedTextBuffer: TSynEditFoldedView read FFoldedTextBuffer write SetFoldedTextBuffer;
   end;
 
   { TSynGutterLOvProviderModifiedLines }
@@ -893,12 +897,29 @@ end;
 
 { TSynGutterLOvProviderCurrentPage }
 
+procedure TSynGutterLOvProviderCurrentPage.FoldChanged(aLine: Integer);
+begin
+  SynStatusChanged(nil, []);
+end;
+
+procedure TSynGutterLOvProviderCurrentPage.SetFoldedTextBuffer(AValue: TSynEditFoldedView);
+begin
+  if FFoldedTextBuffer <> nil then
+    FFoldedTextBuffer.RemoveFoldChangedHandler(@FoldChanged);
+
+  if FFoldedTextBuffer = AValue then Exit;
+  FFoldedTextBuffer := AValue;
+
+  if FFoldedTextBuffer <> nil then
+    FFoldedTextBuffer.AddFoldChangedHandler(@FoldChanged);
+end;
+
 procedure TSynGutterLOvProviderCurrentPage.SynStatusChanged(Sender: TObject;
   Changes: TSynStatusChanges);
 begin
   InvalidatePixelLines(FPixelTopLine, FPixelBottomLine);
   FCurTopLine := TCustomSynEdit(SynEdit).TopLine;
-  FCurLinesInWindow := TCustomSynEdit(SynEdit).LinesInWindow;
+  FCurBottomLine := TCustomSynEdit(SynEdit).ScreenRowToRow(TCustomSynEdit(SynEdit).LinesInWindow);
   ReCalc;
   InvalidatePixelLines(FPixelTopLine, FPixelBottomLine);
 end;
@@ -906,7 +927,7 @@ end;
 procedure TSynGutterLOvProviderCurrentPage.ReCalc;
 begin
   FPixelTopLine    := TextLineToPixel(FCurTopLine);
-  FPixelBottomLine := TextLineToPixelEnd(FCurTopLine + FCurLinesInWindow - 1);
+  FPixelBottomLine := TextLineToPixelEnd(FCurBottomLine - 1);
 end;
 
 procedure TSynGutterLOvProviderCurrentPage.Paint(Canvas: TCanvas; AClip: TRect;
