@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2012-05-19 19:37+0100\n"
+"PO-Revision-Date: 2012-07-01 18:27+0100\n"
 "Last-Translator: Swen Heinig <swen.heinig@freenet.de>\n"
 "Language-Team: Deutsch <lazarus@miraclec.com>\n"
 "MIME-Version: 1.0\n"
@@ -1176,10 +1176,9 @@ msgid "Cursor beyond EOL"
 msgstr "Cursor hinter dem Zeilenende"
 
 #: lazarusidestrconsts.dlgcursorgroupoptions
-#, fuzzy
 #| msgid "Cursor:"
 msgid "Cursor"
-msgstr "Cursoreinstellungen:"
+msgstr "Cursoreinstellungen"
 
 #: lazarusidestrconsts.dlgcursorskipsselection
 msgid "Cursor skips selection"
@@ -1929,7 +1928,6 @@ msgid "Show hints for parameter \"Sender\" not used"
 msgstr "Hinweisanzeige für unbenutzte Parameter \"Sender\""
 
 #: lazarusidestrconsts.dlghintsunused
-#, fuzzy
 #| msgid "Show Hints for unused units in main source"
 msgid "Show hints for unused units in main"
 msgstr "Hinweis a. überflüssige Units im Hauptquelltext"
@@ -1969,10 +1967,9 @@ msgid "Indent code to"
 msgstr "Code einrücken auf"
 
 #: lazarusidestrconsts.dlgindentstabsgroupoptions
-#, fuzzy
 #| msgid "Indent and Tabs:"
 msgid "Indent and Tabs"
-msgstr "Einstellungen für Einrück./Tabs:"
+msgstr "Einstellungen für Einrück./Tabs"
 
 #: lazarusidestrconsts.dlginfrontofmethods
 msgid "In front of methods"
@@ -2531,10 +2528,9 @@ msgid "Multi Select"
 msgstr "Mehrfachauswahl"
 
 #: lazarusidestrconsts.dlgmultiwinaccessgroup
-#, fuzzy
 #| msgid "Find editor for jump targets"
 msgid "Find Editor for Jump Targets"
-msgstr "Editorauswahl für Sprungziele:"
+msgstr "Editorauswahl für Sprungziele"
 
 #: lazarusidestrconsts.dlgmultiwinaccessorder
 msgid "Order to use for editors matching the same criteria"
@@ -2629,7 +2625,6 @@ msgid "Optimizations"
 msgstr "Optimierungen"
 
 #: lazarusidestrconsts.dlgotherunitfiles
-#, fuzzy
 #| msgid "Other Unit Files (-Fu) (Delimiter is semicolon):"
 msgid "Other unit files (-Fu) (delimiter is semicolon):"
 msgstr "Andere Units (-Fu) (Trenner ist der Strichpunkt):"
@@ -2782,7 +2777,7 @@ msgstr "Titel:"
 
 #: lazarusidestrconsts.dlgpouiaccess
 msgid "UI Access (uiAccess)"
-msgstr ""
+msgstr "UI-Zugriff (uiAccess)"
 
 #: lazarusidestrconsts.dlgpouseappbundle
 #| msgid "Use Application Bundle for running and debugging (darwin only)"
@@ -2962,10 +2957,9 @@ msgid "Scroll by one less"
 msgstr "Eine Zeile weniger scrollen"
 
 #: lazarusidestrconsts.dlgscrollgroupoptions
-#, fuzzy
 #| msgid "Scrolling:"
 msgid "Scrolling"
-msgstr "Scrolleinstellungen:"
+msgstr "Scrolleinstellungen"
 
 #: lazarusidestrconsts.dlgscrollhint
 msgctxt "lazarusidestrconsts.dlgscrollhint"
@@ -3120,7 +3114,7 @@ msgstr "Einzelnen Schalter im Taskbar anzeigen"
 
 #: lazarusidestrconsts.dlgskipforwardclassdeclarations
 msgid "Skip forward class declarations"
-msgstr "forward Klassendeklarationen überspringen"
+msgstr "\"forward\" Klassendeklarationen überspringen"
 
 #: lazarusidestrconsts.dlgsmarttabs
 msgid "Smart tabs"
@@ -4346,10 +4340,9 @@ msgid "do not add character"
 msgstr "Zeichen nicht hinzufügen"
 
 #: lazarusidestrconsts.lisautomaticfeatures
-#, fuzzy
 #| msgid "Automatic features"
 msgid "Completion and Hints"
-msgstr "Automatische Funktionen"
+msgstr "Vervollständigung/Hinweise"
 
 #: lazarusidestrconsts.lisautoshowobjectinspector
 msgid "Auto show"
@@ -6258,7 +6251,7 @@ msgstr ""
 
 #: lazarusidestrconsts.lisconfirmation
 msgid "Confirmation"
-msgstr ""
+msgstr "Bestätigung"
 
 #: lazarusidestrconsts.lisconfirmbuildallprofiles
 msgid "Lazarus will be rebuilt with the following profiles:%sContinue?"
@@ -7316,7 +7309,7 @@ msgstr "Gewählte Dateien löschen"
 
 #: lazarusidestrconsts.lisdeleteselectedmacro
 msgid "Delete selected macro?"
-msgstr ""
+msgstr "Ausgewähltes Makro löschen?"
 
 #: lazarusidestrconsts.lisdeletesetting
 msgid "Delete setting"
@@ -7432,7 +7425,7 @@ msgstr "Direktiven für neue Unit"
 
 #: lazarusidestrconsts.lisdirectory
 msgid "Directory: "
-msgstr ""
+msgstr "Verzeichnis:"
 
 #: lazarusidestrconsts.lisdirectorynotfound
 msgid "Directory %s%s%s not found."
@@ -7549,7 +7542,7 @@ msgstr "Groß- und Kleinschreibung unterscheiden"
 
 #: lazarusidestrconsts.lisdlgchangeclass
 msgid "Change Class ..."
-msgstr ""
+msgstr "Klasse ändern ..."
 
 #: lazarusidestrconsts.lisdlgeditorwindowmanager
 msgid "Editor Window Manager ..."
@@ -7709,7 +7702,7 @@ msgstr "Editor-Dateitypen"
 
 #: lazarusidestrconsts.liseditormacros
 msgid "Editor macros"
-msgstr ""
+msgstr "Editormakros"
 
 #: lazarusidestrconsts.liseditorwindowmanager
 msgid "Editor Window Manager"
@@ -8343,7 +8336,7 @@ msgstr "Datei"
 
 #: lazarusidestrconsts.lisfile2
 msgid "File: "
-msgstr ""
+msgstr "Datei:"
 
 #: lazarusidestrconsts.lisfiledoesnotlooklikeatextfileopenitanyway
 msgctxt "lazarusidestrconsts.lisfiledoesnotlooklikeatextfileopenitanyway"
@@ -9121,10 +9114,9 @@ msgid "Compile Project"
 msgstr "Kompiliere Projekt"
 
 #: lazarusidestrconsts.lisinfobuildcomplile
-#, fuzzy
 #| msgid "Compiling..."
 msgid "Compiling ..."
-msgstr "Kompilieren..."
+msgstr "Kompilieren ..."
 
 #: lazarusidestrconsts.lisinfobuilderror
 #| msgid "Error..."
@@ -10539,7 +10531,6 @@ msgid "Macro value"
 msgstr "Makro-Wert"
 
 #: lazarusidestrconsts.lismainunithasapplicationcreateformstatements
-#, fuzzy
 #| msgid "Main Unit has Application.CreateForm statements"
 msgid "Main unit has Application.CreateForm statements"
 msgstr "Die Haupt-Unit enthält die Anweisung »Application.CreateForm«."
@@ -11055,7 +11046,7 @@ msgstr "LGPL-Hinweis"
 
 #: lazarusidestrconsts.lismenuinsertmitnotice
 msgid "MIT Notice"
-msgstr ""
+msgstr "MIT-Notiz"
 
 #: lazarusidestrconsts.lismenuinsertmodifiedlgplnotice
 #| msgid "Modified LGPL notice"
@@ -11119,7 +11110,7 @@ msgstr "Auswahl kleinschreiben"
 
 #: lazarusidestrconsts.lismenumacrolistview
 msgid "Editor Macros ..."
-msgstr ""
+msgstr "Editormakros ..."
 
 #: lazarusidestrconsts.lismenumakeresourcestring
 msgid "Make Resource String ..."
@@ -11209,7 +11200,6 @@ msgid "Open Recent Package"
 msgstr "Letztes Package wieder öffnen ..."
 
 #: lazarusidestrconsts.lismenuopenrecentproject
-#, fuzzy
 #| msgid "Open Recent Project ..."
 msgctxt "lazarusidestrconsts.lismenuopenrecentproject"
 msgid "Open Recent Project"
@@ -11372,7 +11362,6 @@ msgid "Select Paragraph"
 msgstr "Absatz auswählen"
 
 #: lazarusidestrconsts.lismenuselecttobrace
-#, fuzzy
 #| msgid "Select to brace"
 msgid "Select to Brace"
 msgstr "Bis zur Klammer"
@@ -11569,11 +11558,10 @@ msgid "&Components"
 msgstr "&Komponenten"
 
 #: lazarusidestrconsts.lismenuviewdebugevents
-#, fuzzy
 #| msgid "Debug events"
 msgctxt "lazarusidestrconsts.lismenuviewdebugevents"
 msgid "Event Log"
-msgstr "Debug-Ereignisse"
+msgstr "Ereignis-Protokoll"
 
 #: lazarusidestrconsts.lismenuviewdebugoutput
 #| msgid "Debug output"
@@ -11690,11 +11678,10 @@ msgid "&Window"
 msgstr "&Fenster"
 
 #: lazarusidestrconsts.lismeother
-#, fuzzy
 #| msgid "Other"
 msgctxt "lazarusidestrconsts.lismeother"
 msgid "Other tabs"
-msgstr "Andere"
+msgstr "Andere Tabs"
 
 #: lazarusidestrconsts.lismeprojects
 msgid "Projects"
@@ -11806,7 +11793,7 @@ msgstr ""
 
 #: lazarusidestrconsts.lismoveto
 msgid "Move to: "
-msgstr ""
+msgstr "Verschieben zu:"
 
 #: lazarusidestrconsts.lisms
 msgid "(ms)"
@@ -11929,7 +11916,7 @@ msgstr "Neue Gruppe - eine Menge von Modi"
 
 #: lazarusidestrconsts.lisnewmacroname
 msgid "Macro %d"
-msgstr ""
+msgstr "Makro %d"
 
 #: lazarusidestrconsts.lisnewproject
 #| msgid "%s - (new project)"
@@ -12679,7 +12666,6 @@ msgid "Recompile All Required"
 msgstr "Alles Benötigte neu kompilieren"
 
 #: lazarusidestrconsts.lispckeditrecompileclean
-#, fuzzy
 #| msgid "Recompile clean"
 msgid "Recompile Clean"
 msgstr "Sauber rekompilieren"
@@ -12921,7 +12907,6 @@ msgid "This package provides the same as the following packages:"
 msgstr "Dieses Package stellt das gleiche wie die folgenden Packages bereit:"
 
 #: lazarusidestrconsts.lispckoptsupdaterebuild
-#, fuzzy
 #| msgid "Update/Rebuild"
 msgid "Update / Rebuild"
 msgstr "Aktualisieren/Neukompilieren"
@@ -13717,7 +13702,7 @@ msgstr "Kann Package-Datei %s%s%s nicht lesen.%sFehler: %s"
 
 #: lazarusidestrconsts.lisplay
 msgid "Play"
-msgstr ""
+msgstr "Ausführen"
 
 #: lazarusidestrconsts.lispldexists
 msgid "Exists"
@@ -14272,7 +14257,6 @@ msgid "&New Project"
 msgstr "&Neues Projekt"
 
 #: lazarusidestrconsts.lispwopenproject
-#, fuzzy
 #| msgid "Open Project"
 msgid "&Open Project"
 msgstr "Projekt öffnen"
@@ -14285,7 +14269,6 @@ msgid "Open &Recent Project"
 msgstr "Wieder öffnen"
 
 #: lazarusidestrconsts.lispwviewexampleprojects
-#, fuzzy
 #| msgid "View Example Projects"
 msgid "View &Example Projects"
 msgstr "Beispielprojekte anzeigen"
@@ -14313,7 +14296,6 @@ msgid "Quit"
 msgstr "Schliessen"
 
 #: lazarusidestrconsts.lisquitlazarus
-#, fuzzy
 #| msgid "Quit Lazarus"
 msgid "&Quit Lazarus"
 msgstr "Lazarus beenden"
@@ -14333,7 +14315,7 @@ msgstr "Record"
 
 #: lazarusidestrconsts.lisrecordedmacros
 msgid "Recorded"
-msgstr ""
+msgstr "Aufgezeichnet"
 
 #: lazarusidestrconsts.lisrecordstruct
 msgid "Record/Structure"
@@ -14428,7 +14410,7 @@ msgstr "Umbenennen"
 
 #: lazarusidestrconsts.lisrename2
 msgid "Rename ..."
-msgstr ""
+msgstr "Umbenennen ..."
 
 #: lazarusidestrconsts.lisrenamefile
 msgid "Rename file?"
@@ -14912,7 +14894,7 @@ msgstr "Leere Units/Packages anzeigen"
 
 #: lazarusidestrconsts.lisshowglyphsfor
 msgid "Show Glyphs for:"
-msgstr "Zeige Bildzeichen für:"
+msgstr "Zeige Bildzeichen für"
 
 #: lazarusidestrconsts.lisshowgutterinobjectinspector
 msgid "Show gutter"
@@ -15563,7 +15545,7 @@ msgstr "Die neue Unit ist noch nicht im Unit-Suchpfad.%sVerzeichnis hinzufügen 
 
 #: lazarusidestrconsts.listheoldconfigurationwillbeupgraded
 msgid "The old configuration will be upgraded."
-msgstr ""
+msgstr "Die alte Konfiguration wird aktualisiert."
 
 #: lazarusidestrconsts.listheothersourcescontainsadirectorywhichisalreadyint
 msgid "The \"Other sources\" contains a directory which is already in the \"Other unit files\".%s%s"
@@ -16590,7 +16572,6 @@ msgid "UTF-8 with BOM"
 msgstr "UTF-8 mit BOM"
 
 #: lazarusidestrconsts.lisvalue
-#, fuzzy
 #| msgid "Value:"
 msgctxt "lazarusidestrconsts.lisvalue"
 msgid "Value"
@@ -16740,7 +16721,7 @@ msgstr "Willkommen zu Lazarus %s%s%sEs gibt bereits eine Konfiguration von Versi
 
 #: lazarusidestrconsts.liswhatneedsbuilding
 msgid "What needs building"
-msgstr ""
+msgstr "Noch zu erstellen"
 
 #: lazarusidestrconsts.liswhenaunitisrenamedupdatereferences
 #| msgid "When a unit is renamed, update references ..."
@@ -16885,7 +16866,7 @@ msgstr "Anzeigetyp für gewählte Register"
 
 #: lazarusidestrconsts.regdlgformat
 msgid "Format"
-msgstr ""
+msgstr "Format"
 
 #: lazarusidestrconsts.regdlghex
 msgid "Hex"
@@ -17733,7 +17714,7 @@ msgstr "Zeilen trennen, Cursor belassen"
 
 #: lazarusidestrconsts.srkmecinsertmitnotice
 msgid "Insert MIT notice"
-msgstr ""
+msgstr "MIT-Notiz einfügen"
 
 #: lazarusidestrconsts.srkmecinsertmode
 msgid "Insert Mode"
@@ -18399,7 +18380,7 @@ msgstr "Komponenten anzeigen"
 
 #: lazarusidestrconsts.srkmecvieweditormacros
 msgid "View editor macros"
-msgstr ""
+msgstr "Editormakros anzeigen"
 
 #: lazarusidestrconsts.srkmecviewforms
 msgid "View forms"
@@ -18501,7 +18482,7 @@ msgstr "Gesperrt"
 
 #: lazarusidestrconsts.uemacrorecording
 msgid "Recording"
-msgstr ""
+msgstr "Aufzeichnung"
 
 #: lazarusidestrconsts.uemacrorecordingpaused
 msgid "Rec-pause"
@@ -18640,7 +18621,6 @@ msgid "New Window"
 msgstr "Neues Fenster"
 
 #: lazarusidestrconsts.uemnextbookmark
-#, fuzzy
 #| msgid "Goto next Bookmark"
 msgid "Goto Next Bookmark"
 msgstr "Springe zum nächsten Lesezeichen"
