@@ -450,7 +450,8 @@ type
     procedure ScrollToItem(NewIndex: Integer);
     procedure SetBounds(aLeft, aTop, aWidth, aHeight: integer); override;
     procedure SetCurrentRowValue(const NewValue: string);
-    procedure SetItemIndexAndFocus(NewItemIndex: integer);
+    procedure SetItemIndexAndFocus(NewItemIndex: integer;
+                                   WasMouseClick: Boolean = False);
 
     property BackgroundColor: TColor read FBackgroundColor
                                      write SetBackgroundColor default DefBackgroundColor;
@@ -1929,7 +1930,8 @@ begin
   SetRowValue;
 end;
 
-procedure TOICustomPropertyGrid.SetItemIndexAndFocus(NewItemIndex: integer);
+procedure TOICustomPropertyGrid.SetItemIndexAndFocus(NewItemIndex: integer;
+                                                     WasMouseClick: Boolean);
 begin
   if not InRange(NewItemIndex, 0, FRows.Count - 1) then exit;
   ItemIndex:=NewItemIndex;
@@ -1937,7 +1939,9 @@ begin
   begin
     SetActiveControl(FCurrentEdit);
     if (FCurrentEdit is TCustomEdit) then
-      TCustomEdit(FCurrentEdit).SelectAll;
+      TCustomEdit(FCurrentEdit).SelectAll
+    else if WasMouseClick and (FCurrentEdit is TCheckBox) then
+      TCheckBox(FCurrentEdit).Checked:=not TCheckBox(FCurrentEdit).Checked;
   end;
 end;
 
@@ -2023,7 +2027,7 @@ begin
           end;
         end;
 
-        SetItemIndexAndFocus(Index);
+        SetItemIndexAndFocus(Index, True);
         SetCaptureControl(Self);
         Column := oipgcValue;
       end;
