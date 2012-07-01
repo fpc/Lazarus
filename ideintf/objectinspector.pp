@@ -451,7 +451,7 @@ type
     procedure SetBounds(aLeft, aTop, aWidth, aHeight: integer); override;
     procedure SetCurrentRowValue(const NewValue: string);
     procedure SetItemIndexAndFocus(NewItemIndex: integer;
-                                   WasMouseClick: Boolean = False);
+                                   WasValueClick: Boolean = False);
 
     property BackgroundColor: TColor read FBackgroundColor
                                      write SetBackgroundColor default DefBackgroundColor;
@@ -1931,7 +1931,7 @@ begin
 end;
 
 procedure TOICustomPropertyGrid.SetItemIndexAndFocus(NewItemIndex: integer;
-                                                     WasMouseClick: Boolean);
+                                                     WasValueClick: Boolean);
 begin
   if not InRange(NewItemIndex, 0, FRows.Count - 1) then exit;
   ItemIndex:=NewItemIndex;
@@ -1940,7 +1940,7 @@ begin
     SetActiveControl(FCurrentEdit);
     if (FCurrentEdit is TCustomEdit) then
       TCustomEdit(FCurrentEdit).SelectAll
-    else if WasMouseClick and (FCurrentEdit is TCheckBox) then
+    else if WasValueClick and (FCurrentEdit is TCheckBox) then
       TCheckBox(FCurrentEdit).Checked:=not TCheckBox(FCurrentEdit).Checked;
   end;
 end;
@@ -2026,8 +2026,7 @@ begin
               ExpandRow(Index);
           end;
         end;
-
-        SetItemIndexAndFocus(Index, True);
+        SetItemIndexAndFocus(Index, SplitterX<X);
         SetCaptureControl(Self);
         Column := oipgcValue;
       end;
