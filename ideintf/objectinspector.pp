@@ -441,7 +441,7 @@ type
     function PropertyPath(Index: integer):string;
     function PropertyPath(Row: TOIPropertyGridRow):string;
     function TopMax: integer;
-    procedure BuildPropertyList(OnlyIfNeeded: boolean = false);
+    procedure BuildPropertyList(OnlyIfNeeded: boolean = False);
     procedure Clear;
     procedure Paint; override;
     procedure PropEditLookupRootChange;
@@ -1322,8 +1322,7 @@ begin
     end;
     {$ENDIF}
     if (OldChangeStep<>FChangeStep) then begin
-      // the selection has changed
-      // => CurRow does not exist any more
+      // the selection has changed => CurRow does not exist any more
       exit;
     end;
 
@@ -1383,8 +1382,7 @@ begin
     {$ENDIF}
 
     if (OldChangeStep<>FChangeStep) then begin
-      // the selection has changed
-      // => CurRow does not exist any more
+      // the selection has changed => CurRow does not exist any more
       RefreshPropertyValues;
       exit;
     end;
@@ -1576,24 +1574,17 @@ begin
     {$ENDIF}
     if paValueList in EditorAttributes then begin
       FCurrentEdit:=ValueComboBox;
-      if paPickList in EditorAttributes then begin
-        // text field should be readonly
-        if paCustomDrawn in EditorAttributes then
-          ValueComboBox.Style:=csOwnerDrawVariable
-        else
-          ValueComboBox.Style:=csDropDownList;
-      end else begin
-        if paCustomDrawn in EditorAttributes then
-          ValueComboBox.Style:=csOwnerDrawVariable
-        else
-          ValueComboBox.Style:=csDropDown;
-      end;
+      if paCustomDrawn in EditorAttributes then
+        ValueComboBox.Style:=csOwnerDrawVariable
+      else if paPickList in EditorAttributes then
+        ValueComboBox.Style:=csDropDownList      // text field should be readonly
+      else
+        ValueComboBox.Style:=csDropDown;
       ValueComboBox.MaxLength:=NewRow.Editor.GetEditLimit;
       ValueComboBox.Sorted:=paSortList in NewRow.Editor.GetAttributes;
       ValueComboBox.Enabled:=not NewRow.IsReadOnly;
       // Do not fill the items here, because it can be very slow.
-      // Just fill in some values and update the values, before the combobox
-      // popups
+      // Just fill in some values and update the values, before the combobox popups
       ValueComboBox.Items.Text:=NewValue;
       Exclude(FStates,pgsGetComboItemsCalled);
       SetIdleEvent(true);
@@ -1685,9 +1676,8 @@ begin
   UpdateScrollBar;
   // reselect
   CurRow:=GetRowByPath(OldSelectedRowPath);
-  if CurRow<>nil then begin
+  if CurRow<>nil then
     ItemIndex:=CurRow.Index;
-  end;
   // paint
   Invalidate;
 end;
@@ -2469,7 +2459,8 @@ begin
 end;
 
 procedure TOICustomPropertyGrid.AlignEditComponents;
-var RRect,EditCompRect,EditBtnRect:TRect;
+var
+  RRect,EditCompRect,EditBtnRect:TRect;
 
   function CompareRectangles(r1,r2:TRect):boolean;
   begin
@@ -2483,7 +2474,7 @@ begin
   then begin
     RRect := RowRect(ItemIndex);
     EditCompRect := RRect;
-    EditCompRect.Bottom := EditCompRect.Bottom - 1;
+    Dec(EditCompRect.Bottom);
 
     if Layout = oilHorizontal
     then begin
@@ -2503,9 +2494,8 @@ begin
         Right := EditCompRect.Right;
         EditCompRect.Right := Left;
       end;
-      if not CompareRectangles(FCurrentButton.BoundsRect,EditBtnRect) then begin
+      if not CompareRectangles(FCurrentButton.BoundsRect,EditBtnRect) then
         FCurrentButton.BoundsRect:=EditBtnRect;
-      end;
       //DebugLn(['TOICustomPropertyGrid.AlignEditComponents FCurrentButton.BoundsRect=',dbgs(FCurrentButton.BoundsRect),' EditBtnRect=',dbgs(EditBtnRect)]);
     end;
     if FCurrentEdit<>nil then begin
@@ -2517,8 +2507,7 @@ begin
       if not CompareRectangles(FCurrentEdit.BoundsRect,EditCompRect) then begin
         FCurrentEdit.BoundsRect:=EditCompRect;
         if FCurrentEdit is TComboBox then
-          TComboBox(FCurrentEdit).ItemHeight:=
-                                         EditCompRect.Bottom-EditCompRect.Top-6;
+          TComboBox(FCurrentEdit).ItemHeight:=EditCompRect.Bottom-EditCompRect.Top-6;
         FCurrentEdit.Invalidate;
       end;
     end;
@@ -2550,11 +2539,6 @@ var
     Details := ThemeServices.GetElementDetails(PlusMinusDetail[Minus]);
     Size := ThemeServices.GetDetailSize(Details);
     ThemeServices.DrawElement(Canvas.Handle, Details, Rect(X, Y, X + Size.cx, Y + Size.cy), nil);
-  end;
-
-  procedure DrawActiveRow(X, Y: Integer);
-  begin
-    Canvas.Draw(X, Y, FActiveRowBmp);
   end;
 
 // PaintRow
@@ -2631,9 +2615,8 @@ begin
     // draw icon
     if CanExpandRow(CurRow) then
       DrawTreeIcon(IconX, IconY, CurRow.Expanded)
-    else
-    if (ARow = FItemIndex) then
-      DrawActiveRow(IconX, IconY);
+    else if (ARow = FItemIndex) then
+      Canvas.Draw(IconX, IconY, FActiveRowBmp);
 
     // draw name
     OldFont:=Font;
@@ -2749,7 +2732,7 @@ begin
         end;
       end;
     end
-    else begin
+    else begin                              // Layout <> oilHorizontal
       Pen.Style := psSolid;
       Pen.Color := cl3DLight;
       MoveTo(ValueRect.Left, ValueRect.Bottom - 1);
