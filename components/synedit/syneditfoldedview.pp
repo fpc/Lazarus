@@ -386,6 +386,13 @@ type
     property NestedFoldsList: TLazSynEditNestedFoldsList read GetNestedFoldsList;
   end;
 
+  { TFoldChangedHandlerList }
+
+  TFoldChangedHandlerList = class(TMethodList)
+  public
+    procedure CallFoldChangedEvents(AnIndex: Integer);
+  end;
+
   TSynEditFoldedView = class;
 
   { TLazSynDisplayFold }
@@ -433,6 +440,7 @@ type
     fNeedCaretCheck : Boolean;
     FInTopLineChanged: Boolean;
     FDisplayView: TLazSynDisplayFold;
+    FFoldChangedHandlerList: TFoldChangedHandlerList;
 
     function GetCount : integer;
     function GetDisplayView: TLazSynDisplayView;
@@ -567,6 +575,9 @@ type
     // Find the visible first line of the fold at ALine. Returns -1 if Aline is not folded
     function CollapsedLineForFoldAtLine(ALine : Integer) : Integer;
     function ExpandedLineForBlockAtLine(ALine : Integer; HalfExpanded: Boolean = True) : Integer;
+
+    procedure AddFoldChangedHandler(AHandler: TFoldChangedEvent);
+    procedure RemoveFoldChangedHandler(AHandler: TFoldChangedEvent);
 
     function GetPhysicalCharWidths(Index: Integer): TPhysicalCharWidths;
 
@@ -723,6 +734,17 @@ begin
   end;
   for i := 1 to length(NumEncode86Chars) do
     NumEncode86Values[NumEncode86Chars[i]] := i - 1;
+end;
+
+{ TFoldChangedHandlerList }
+
+procedure TFoldChangedHandlerList.CallFoldChangedEvents(AnIndex: Integer);
+var
+  i: LongInt;
+begin
+  i:=Count;
+  while NextDownIndex(i) do
+    TFoldChangedEvent(Items[i])(AnIndex);
 end;
 
 { TLazSynDisplayFold }
@@ -3232,6 +3254,7 @@ begin
   fFoldTree := TSynTextFoldAVLTree.Create;
   FFoldProvider := TSynEditFoldProvider.Create(aTextView, fFoldTree);
   FDisplayView := TLazSynDisplayFold.Create(Self);
+  FFoldChangedHandlerList := TFoldChangedHandlerList.Create;
 
   FMarkupInfoFoldedCode := TSynSelectedColor.Create;
   FMarkupInfoFoldedCode.Background := clNone;
@@ -3250,6 +3273,7 @@ begin
   fLines.RemoveEditHandler(@LineEdited);
   fCaret.RemoveChangeHandler(@DoCaretChanged);
   FreeAndNil(FDisplayView);
+  FreeAndNil(FFoldChangedHandlerList);
   fFoldTree.Free;
   fTextIndexList := nil;
   fFoldTypeList := nil;
@@ -3441,6 +3465,7 @@ procedure TSynEditFoldedView.DoFoldChanged(AnIndex: Integer);
 begin
   if Assigned(fOnFoldChanged) then
     fOnFoldChanged(AnIndex);
+  FFoldChangedHandlerList.CallFoldChangedEvents(AnIndex);
 end;
 
 procedure TSynEditFoldedView.DoBlockSelChanged(Sender: TObject);
@@ -4548,6 +4573,17 @@ begin
   end;
   if (hl.FoldBlockEndLevel(i) > 0) then // TODO, check for collapsed at index = 0
     Result := i + 1;
+end;
+
+procedure TSynEditFoldedView.AddFoldChangedHandler(AHandler: TFoldChangedEvent);
+begin
+  FFoldChangedHandlerList.Add(TMethod(AHandler));
+end;
+
+procedure TSynEditFoldedView.RemoveFoldChangedHandler(
+  AHandler: TFoldChangedEvent);
+begin
+  FFoldChangedHandlerList.Remove(TMethod(AHandler));
 end;
 
 function TSynEditFoldedView.GetPhysicalCharWidths(Index: Integer): TPhysicalCharWidths;
