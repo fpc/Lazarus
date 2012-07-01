@@ -319,9 +319,7 @@ type
 // use scAll to update a statusbar when another TCustomSynEdit got the focus
   TSynStatusChange = SynEditTypes.TSynStatusChange;
   TSynStatusChanges = SynEditTypes.TSynStatusChanges;
-
-  TStatusChangeEvent = procedure(Sender: TObject; Changes: TSynStatusChanges)
-    of object;
+  TStatusChangeEvent = SynEditTypes.TStatusChangeEvent;
 
   TCustomSynEdit = class;
 
@@ -487,6 +485,8 @@ type
     FPaintLock: Integer;
     FPaintLockOwnerCnt: Integer;
     FUndoBlockAtPaintLock: Integer;
+    FStatusChangeLock: Integer;
+    FRecalcCharsAndLinesLock: Integer;
     FScrollBarUpdateLock: Integer;
     FInvalidateRect: TRect;
     FIsInDecPaintLock: Boolean;
@@ -703,6 +703,7 @@ type
     procedure SetLineBlock(Value: TPoint; WithLeadSpaces: Boolean = True);
     procedure SetParagraphBlock(Value: TPoint);
     procedure RecalcCharsAndLinesInWin(CheckCaret: Boolean);
+    procedure StatusChangedEx(Sender: TObject; Changes: TSynStatusChanges);
     procedure StatusChanged(AChanges: TSynStatusChanges);
     procedure UndoRedoAdded(Sender: TObject);
     procedure ModifiedChanged(Sender: TObject);
@@ -738,6 +739,8 @@ type
     procedure DoIncForeignPaintLock(Sender: TObject);
     procedure DoDecForeignPaintLock(Sender: TObject);
     procedure SetUpdateState(NewUpdating: Boolean; Sender: TObject); virtual;      // Called *before* paintlock, and *after* paintlock
+    procedure IncStatusChangeLock;
+    procedure DecStatusChangeLock;
 
     property PaintLockOwner: TSynEditBase read GetPaintLockOwner write SetPaintLockOwner;
     property TextDrawer: TheTextDrawer read fTextDrawer;
@@ -1850,7 +1853,9 @@ begin
   ControlStyle:=ControlStyle+[csOwnedChildrenNotSelectable];
   FScrollBarUpdateLock := 0;
   FPaintLock := 0;
+  FStatusChangeLock := 0;
   FUndoBlockAtPaintLock := 0;
+  FRecalcCharsAndLinesLock := 0;
 
   FStatusChangedList := TSynStatusChangedHandlerList.Create;
 
@@ -2008,6 +2013,7 @@ begin
   FTextArea.MarkupManager := fMarkupManager;
   FTextArea.TheLinesView := FTheLinesView;
   FTextArea.Highlighter := nil;
+  FTextArea.OnStatusChange := @StatusChangedEx;
 
   FLeftGutterArea := TLazSynGutterArea.Create(Self);
   FLeftGutterArea.TextArea := FTextArea;
@@ -2158,6 +2164,18 @@ procedure TCustomSynEdit.SetUpdateState(NewUpdating: Boolean; Sender: TObject);
 begin
   if assigned(FOnChangeUpdating) then
     FOnChangeUpdating(Self, NewUpdating);
+end;
+
+procedure TCustomSynEdit.IncStatusChangeLock;
+begin
+  inc(FStatusChangeLock);
+end;
+
+procedure TCustomSynEdit.DecStatusChangeLock;
+begin
+  inc(FStatusChangeLock);
+  if FStatusChangeLock = 0 then
+    StatusChanged([]);
 end;
 
 procedure TCustomSynEdit.DoIncPaintLock(Sender: TObject);
@@ -7358,51 +7376,52 @@ end;
 
 procedure TCustomSynEdit.RecalcCharsAndLinesInWin(CheckCaret: Boolean);
 var
-  OldLinesInWindow: Integer;
   l, r: Integer;
 begin
-  if FLeftGutter.Visible
-  then l := FLeftGutter.Width
-  else l := 0;
-  if FRightGutter.Visible
-  then r := FRightGutter.Width
-  else r := 0;
+  if FRecalcCharsAndLinesLock > 0 then
+    exit;
 
-  OldLinesInWindow := FTextArea.LinesInWindow;
+  IncStatusChangeLock;
+  try
+    if FLeftGutter.Visible
+    then l := FLeftGutter.Width
+    else l := 0;
+    if FRightGutter.Visible
+    then r := FRightGutter.Width
+    else r := 0;
 
-  // TODO: lock FTextArea, so size re-calc is done once only
-  FPaintArea.SetBounds(0, 0, ClientHeight - ScrollBarWidth, ClientWidth - ScrollBarWidth);
-  FPaintArea.LeftGutterWidth := l;
-  FPaintArea.RightGutterWidth := r;
+    // TODO: lock FTextArea, so size re-calc is done once only
+    FPaintArea.SetBounds(0, 0, ClientHeight - ScrollBarWidth, ClientWidth - ScrollBarWidth);
+    FPaintArea.LeftGutterWidth := l;
+    FPaintArea.RightGutterWidth := r;
 
-  if FLeftGutter.Visible
-  then FPaintArea.Padding[bsLeft] := GutterTextDist
-  else FPaintArea.Padding[bsLeft] := 1;
-  if FRightGutter.Visible
-  then FPaintArea.Padding[bsRight] := 0 //GutterTextDist
-  else FPaintArea.Padding[bsRight] := 0;
+    if FLeftGutter.Visible
+    then FPaintArea.Padding[bsLeft] := GutterTextDist
+    else FPaintArea.Padding[bsLeft] := 1;
+    if FRightGutter.Visible
+    then FPaintArea.Padding[bsRight] := 0 //GutterTextDist
+    else FPaintArea.Padding[bsRight] := 0;
 
-  //CharsInWindow := Max(1, w div CharWidth);
-  if OldLinesInWindow <> FTextArea.LinesInWindow then
-    StatusChanged([scLinesInWindow]);
+    FFoldedLinesView.LinesInWindow := LinesInWindow;
+    FMarkupManager.LinesInWindow := LinesInWindow;
 
-  FFoldedLinesView.LinesInWindow := LinesInWindow;
-  FMarkupManager.LinesInWindow := LinesInWindow;
+    FScreenCaret.Lock;
+    FScreenCaret.ClipRect := FTextArea.Bounds;
+    //FScreenCaret.ClipRect := Rect(TextLeftPixelOffset(False), 0,
+    //                              ClientWidth - TextRightPixelOffset - ScrollBarWidth + 1,
+    //                              ClientHeight - ScrollBarWidth);
+    FScreenCaret.ClipExtraPixel := FTextArea.Bounds.Right - FTextArea.Bounds.Left - CharsInWindow * CharWidth;
+    UpdateCaret;
+    FScreenCaret.UnLock;
 
-  FScreenCaret.Lock;
-  FScreenCaret.ClipRect := FTextArea.Bounds;
-  //FScreenCaret.ClipRect := Rect(TextLeftPixelOffset(False), 0,
-  //                              ClientWidth - TextRightPixelOffset - ScrollBarWidth + 1,
-  //                              ClientHeight - ScrollBarWidth);
-  FScreenCaret.ClipExtraPixel := FTextArea.Bounds.Right - FTextArea.Bounds.Left - CharsInWindow * CharWidth;
-  UpdateCaret;
-  FScreenCaret.UnLock;
-
-  if CheckCaret then begin
-    if not (eoScrollPastEol in Options) then
-      LeftChar := LeftChar;
-    if not (eoScrollPastEof in Options) then
-      TopView := TopView;
+    if CheckCaret then begin
+      if not (eoScrollPastEol in Options) then
+        LeftChar := LeftChar;
+      if not (eoScrollPastEof in Options) then
+        TopView := TopView;
+    end;
+  finally
+    DecStatusChangeLock;
   end;
 end;
 
@@ -7521,40 +7540,50 @@ var
   i: Integer;
 begin
   (* Highlighter or Font changed *)
-
-  FFontDummy.Assign(Font);
-  with FFontDummy do begin
-    // Keep GTK happy => By ensuring a change the XFLD fontname gets cleared
-    {$IFDEF LCLGTK1}
-    Pitch := fpVariable;
-    Style := [fsBold];
-    Pitch := fpDefault; // maybe Fixed
-    {$ENDIF}
-    // TODO: Clear style only, if Highlighter uses styles
-    Style := [];        // Reserved for Highlighter
-  end;
-  //debugln(['TCustomSynEdit.RecalcCharExtent ',fFontDummy.Name,' ',fFontDummy.Size]);
-  //debugln('TCustomSynEdit.RecalcCharExtent A UseUTF8=',dbgs(UseUTF8),
-  //  ' Font.CanUTF8='+dbgs(Font.CanUTF8)+' CharHeight=',dbgs(CharHeight));
-
-  fTextDrawer.BaseFont := FFontDummy;
-  if Assigned(fHighlighter) then
-    for i := 0 to Pred(fHighlighter.AttrCount) do
-      fTextDrawer.BaseStyle := fHighlighter.Attribute[i].Style;
-  fTextDrawer.CharExtra := fExtraCharSpacing;
-
-  FUseUTF8:=fTextDrawer.UseUTF8;
-  FLines.IsUtf8 := FUseUTF8;
-
-  FScreenCaret.Lock;
+  IncStatusChangeLock;
   try
-    FScreenCaret.CharWidth := CharWidth;
-    FScreenCaret.CharHeight := LineHeight - Max(0, ExtraLineSpacing);
-    SizeOrFontChanged(TRUE);
+    inc(FRecalcCharsAndLinesLock);
+    try
+      FFontDummy.Assign(Font);
+      with FFontDummy do begin
+        // Keep GTK happy => By ensuring a change the XFLD fontname gets cleared
+        {$IFDEF LCLGTK1}
+        Pitch := fpVariable;
+        Style := [fsBold];
+        Pitch := fpDefault; // maybe Fixed
+        {$ENDIF}
+        // TODO: Clear style only, if Highlighter uses styles
+        Style := [];        // Reserved for Highlighter
+      end;
+      //debugln(['TCustomSynEdit.RecalcCharExtent ',fFontDummy.Name,' ',fFontDummy.Size]);
+      //debugln('TCustomSynEdit.RecalcCharExtent A UseUTF8=',dbgs(UseUTF8),
+      //  ' Font.CanUTF8='+dbgs(Font.CanUTF8)+' CharHeight=',dbgs(CharHeight));
+
+      fTextDrawer.BaseFont := FFontDummy;
+      if Assigned(fHighlighter) then
+        for i := 0 to Pred(fHighlighter.AttrCount) do
+          fTextDrawer.BaseStyle := fHighlighter.Attribute[i].Style;
+      fTextDrawer.CharExtra := fExtraCharSpacing;
+
+      FUseUTF8:=fTextDrawer.UseUTF8;
+      FLines.IsUtf8 := FUseUTF8;
+    finally
+      dec(FRecalcCharsAndLinesLock);
+      // RecalcCharsAndLinesInWin will be called by SizeOrFontChanged
+    end;
+
+    FScreenCaret.Lock;
+    try
+      FScreenCaret.CharWidth := CharWidth;
+      FScreenCaret.CharHeight := LineHeight - Max(0, ExtraLineSpacing);
+      SizeOrFontChanged(TRUE);
+    finally
+      FScreenCaret.UnLock;
+    end;
+    UpdateScrollBars;
   finally
-    FScreenCaret.UnLock;
+    DecStatusChangeLock;
   end;
-  UpdateScrollBars;
   //debugln('TCustomSynEdit.RecalcCharExtent UseUTF8=',dbgs(UseUTF8),' Font.CanUTF8=',dbgs(Font.CanUTF8));
 end;
 
@@ -7571,10 +7600,15 @@ begin
   end;
 end;
 
+procedure TCustomSynEdit.StatusChangedEx(Sender: TObject; Changes: TSynStatusChanges);
+begin
+  StatusChanged(Changes);
+end;
+
 procedure TCustomSynEdit.StatusChanged(AChanges: TSynStatusChanges);
 begin
   fStatusChanges := fStatusChanges + AChanges;
-  if PaintLock = 0 then
+  if (PaintLock = 0) and (FStatusChangeLock = 0) and (fStatusChanges <> []) then
     DoOnStatusChange(fStatusChanges);
 end;
 

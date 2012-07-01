@@ -91,10 +91,12 @@ type
   TSynEditRange = pointer;
 
   TSynStatusChange = (scCaretX, scCaretY,
-    scLeftChar, scTopLine, scLinesInWindow,
+    scLeftChar, scTopLine, scLinesInWindow, scCharsInWindow,
     scInsertMode, scModified, scSelection, scReadOnly
    );
   TSynStatusChanges = set of TSynStatusChange;
+  TStatusChangeEvent = procedure(Sender: TObject; Changes: TSynStatusChanges)
+    of object;
 
   TSynVisibleSpecialChar = (vscSpace, vscTabAtFirst, vscTabAtLast);
   TSynVisibleSpecialChars = set of TSynVisibleSpecialChar;

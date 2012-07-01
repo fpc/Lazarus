@@ -19,6 +19,7 @@ type
     FCharsInWindow: Integer;
     FCharWidth: integer;
     FLinesInWindow: Integer;
+    fOnStatusChange: TStatusChangeEvent;
     FTextHeight: integer;
 
     FCanvas: TCanvas;
@@ -92,6 +93,7 @@ type
     property CharWidth: integer  read FCharWidth;
     property LinesInWindow: Integer read FLinesInWindow;
     property CharsInWindow: Integer read FCharsInWindow;
+    property OnStatusChange: TStatusChangeEvent read fOnStatusChange write fOnStatusChange;
   end;
 
   { TLazSynSurfaceManager }
@@ -496,18 +498,33 @@ begin
 end;
 
 procedure TLazSynTextArea.FontChanged;
+var
+  OldChars, OldLines: Integer;
+  Chg: TSynStatusChanges;
 begin
   // ToDo: wait for handle creation
   // Report FLinesInWindow=-1 if no handle
   FCharWidth := FTextDrawer.CharWidth;  // includes extra
   FTextHeight := FTextDrawer.CharHeight + FExtraLineSpacing;
 
+  OldChars := FCharsInWindow;
+  OldLines := FLinesInWindow;
   FCharsInWindow :=  0;
   FLinesInWindow :=  0;
   if FCharWidth > 0 then
     FCharsInWindow := Max(0, (FTextBounds.Right - FTextBounds.Left) div FCharWidth);
   if FTextHeight > 0 then
     FLinesInWindow := Max(0, (FTextBounds.Bottom - FTextBounds.Top) div FTextHeight);
+
+  if assigned(fOnStatusChange) then begin
+    Chg := [];
+    if OldChars <> FCharsInWindow then
+      Chg := Chg + [scCharsInWindow];
+    if OldLines <> FLinesInWindow then
+      Chg := Chg + [scLinesInWindow];
+    if (Chg <> []) then
+      fOnStatusChange(Self, Chg);
+  end;
 end;
 
 procedure TLazSynTextArea.DoPaint(ACanvas: TCanvas; AClip: TRect);
