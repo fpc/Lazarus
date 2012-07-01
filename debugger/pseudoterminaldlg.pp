@@ -39,7 +39,7 @@ procedure TPseudoConsoleDlg.Memo1UTF8KeyPress(Sender: TObject;
   var UTF8Key: TUTF8Char);
 begin
   DebugBoss.DoSendConsoleInput(Utf8Key);
-  Utf8Key := #0;
+  Utf8Key := '';
 end;
 
 procedure TPseudoConsoleDlg.DoClose(var CloseAction: TCloseAction);
