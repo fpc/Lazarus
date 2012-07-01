@@ -13,5 +13,6 @@ inherited PseudoConsoleDlg: TPseudoConsoleDlg
     ReadOnly = True
     ScrollBars = ssAutoBoth
     TabOrder = 0
+    WantTabs = True
   end
 end

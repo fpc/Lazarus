@@ -2,9 +2,18 @@ unit LHelpControl;
 
 {$mode objfpc}{$H+}
 
+{$IFDEF UNIX}
+  {$if FPC_FULLVERSION <= 20700}
+       {$DEFINE STALE_PIPE_WORKAROUND}
+  {$ENDIF}
+{$ENDIF}
+
 interface
 
 uses
+  {$IFDEF STALE_PIPE_WORKAROUND}
+  BaseUnix,
+  {$ENDIF}
   Classes, SysUtils, FileUtil, SimpleIPC, UTF8Process;
 
 type
@@ -48,7 +57,10 @@ type
 
     property ProcessWhileWaiting: TProcedureOfObject read FProcessWhileWaiting write FProcessWhileWaiting;
   end;
-  
+
+  {$IFDEF STALE_PIPE_WORKAROUND}
+  function IPCPipeIsStale(AIPC: TSimpleIPC): Boolean;
+  {$ENDIF}
 
 implementation
 
@@ -76,8 +88,12 @@ end;
 
 function TLHelpConnection.SendMessage(Stream: TStream): TLHelpResponse;
 begin
-  fServerOut.SendMessage(mtUnknown, Stream);
-  Result := WaitForMsgResponse;
+  //try
+    fServerOut.SendMessage(mtUnknown, Stream);
+    Result := WaitForMsgResponse;
+  //except
+  //  on EIPCError do Result := srNoAnswer;
+  //end;
 end;
 
 constructor TLHelpConnection.Create;
@@ -97,9 +113,46 @@ begin
   inherited Destroy;
 end;
 
-function TLHelpConnection.ServerRunning: Boolean;
+{$IFDEF STALE_PIPE_WORKAROUND}
+function IPCPipeIsStale(AIPC: TSimpleIPC): Boolean;
+var
+  PipeName: String;
+  fd: cint;
 begin
-  Result := (fServerOut<>nil) and (fServerOut.Active);
+  Result := False;
+  PipeName:='/tmp/'+AIPC.ServerID;
+  if (AIPC is TSimpleIPCServer) and (not TSimpleIPCServer(AIPC).Global) and (TSimpleIPCServer(AIPC).InstanceID <> '') then
+    PipeName := PipeName +'-'+TSimpleIPCServer(AIPC).InstanceID;
+
+  // it's possible to have a stale file that is not open for reading which will
+  // cause fpOpen to hang/block later when .Active is set to true while it
+  // wait's for the pipe to be opened on the other end
+
+  // O_WRONLY | O_NONBLOCK causes fpOpen to return -1 if the file is not open for reading
+  // so in fact the 'server' is not running
+  fd := FpOpen(PipeName, O_WRONLY or O_NONBLOCK);
+  if fd = -1 then
+  begin
+    Result := True;
+    // delete the named pipe since it's orphaned
+    FpUnlink(PipeName);
+  end
+  else
+  FpClose(fd);
+
+end;
+
+{$ENDIF}
+function TLHelpConnection.ServerRunning: Boolean;
+{$IFDEF STALE_PIPE_WORKAROUND}
+{$ENDIF}
+begin
+  Result := (fServerOut<>nil) and (fServerOut.ServerRunning);
+  {$IFDEF STALE_PIPE_WORKAROUND}
+  if not Result then
+    Exit; // ==>
+  Result := not IPCPipeIsStale(fServerOut);
+  {$ENDIF}
 end;
 
 function TLHelpConnection.StartHelpServer(NameForServer: String;
@@ -109,13 +162,6 @@ var
 begin
   Result := False;
 
-  {$IFDEF Unix}
-  {$NOTE ToDo: fix simpleipc to allow changing the filenames, then fix this }
-  // clean up old files
-  DeleteFileUTF8('/tmp/lazhelp');
-  DeleteFileUTF8('/tmp/lazhelpclient');
-  {$ENDIF}
-
   fServerIn.Active := False;
   fServerIn.ServerID := NameForServer+'client';
   fServerIn.Global := True;
@@ -123,7 +169,7 @@ begin
 
   fServerOut.Active := False;
   fServerOut.ServerID := NameForServer;
-  if not fServerOut.ServerRunning then begin
+  if not ServerRunning then begin
     with TProcessUTF8.Create(nil) do begin
       CommandLine := ServerExe + ' --ipcname ' + NameForServer;
       Execute;
@@ -131,6 +177,7 @@ begin
     end;
     // give the server some time to get started
     for X := 0 to 40 do begin
+      // use fServerOut.ServerRunning here instead of Self.ServerRunning to avoid a race condition
       if not fServerOut.ServerRunning then Sleep(200);
     end;
   end;
