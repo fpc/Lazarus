@@ -2509,7 +2509,7 @@ begin
     inc(Run, 2);
     fToIdent := Run;
     KeyHash;
-    if KeyComp('ifdef') or KeyComp('ifndef') or KeyComp('if') then
+    if KeyComp('ifdef') or KeyComp('ifndef') or KeyComp('if') or KeyComp('ifopt') then
       StartDirectiveFoldBlock(cfbtIfDef)
     else if KeyComp('endif') then
       EndDirectiveFoldBlock(cfbtIfDef)
