@@ -6,10 +6,10 @@ program update_lcl_docs;
 {$ENDIF}
 
 uses
-  Classes, Sysutils, GetOpts, Process;
+  Classes, Sysutils, GetOpts, LazFileUtils, FileUtil, UTF8Process, Process;
   
 var
-  fpdoc: String;
+  fpdoc: String = 'fpdoc';
   ArgParams: String;
   EnvParams: String;
   fpdocfooter: String;
@@ -30,7 +30,7 @@ const
                 + ' --descr='+XMLSrcDir+PackageName+'.xml'
                 + ' --input=@'+InputFileList+' ';
   
-procedure SetString(var S: String; DefaultValue: String; EnvName: String);
+procedure GetEnvDef(var S: String; DefaultValue: String; EnvName: String);
 begin
   S := GetEnvironmentVariable(EnvName);
   if S = '' then
@@ -81,6 +81,7 @@ begin
   Options[6].Name:='footer';
   Options[6].Has_arg:=1;
   Options[7].Name:='warnings';
+  OptIndex:=0;
   repeat
     c := GetLongOpts('help:arg:fpdoc:outfmt:showcmd:fpcdocs:footer:warnings', @Options[0], OptIndex);
     case c of
@@ -103,7 +104,8 @@ begin
       '?': PrintHelp;
       EndOfOptions: Break;
     else
-      WriteLn('Unknown option ', c, ' ', ord(c), ' ',OptArg);
+      WriteLn('Unknown option -',c,' ',OptArg);
+      PrintHelp;
     end;
   until c = EndOfOptions;
 end;
@@ -111,14 +113,16 @@ end;
 procedure InitVars;
 begin
   // see if any are set or set then to a default value
-  SetString(OutFormat,   OutFormat,  'FPDOCFORMAT');
-  SetString(EnvParams,   '',         'FPDOCPARAMS');
-  if fpdoc <> '' then
-    SetString(fpdoc,         fpdoc,    'FPDOC')
-  else
-    SetString(fpdoc,       'fpdoc',    'FPDOC');
-  SetString(fpdocfooter, '',         'FPDOCFOOTER');
-  SetString(FPCDocsPath, FPCDocsPath, 'FPCDOCS');
+  GetEnvDef(OutFormat,   OutFormat,  'FPDOCFORMAT');
+  GetEnvDef(EnvParams,   '',         'FPDOCPARAMS');
+
+  GetEnvDef(fpdoc,       fpdoc,    'FPDOC');
+
+  GetEnvDef(fpdocfooter, '',         'FPDOCFOOTER');
+  fpdocfooter:=TrimFilename(fpdocfooter);
+
+  GetEnvDef(FPCDocsPath, FPCDocsPath, 'FPCDOCS');
+  FPCDocsPath:=TrimAndExpandDirectory(FPCDocsPath);
   
   if OutFormat = '' then
     OutFormat := 'html';
@@ -127,26 +131,26 @@ begin
   begin
     if OutFormat = 'html' then
     begin
-      SetString(RTLPrefix, '../rtl/', 'RTLLINKPREFIX');
-      SetString(FCLPrefix, '../fcl/', 'FCLLINKPREFIX');
+      GetEnvDef(RTLPrefix, '../rtl/', 'RTLLINKPREFIX');
+      GetEnvDef(FCLPrefix, '../fcl/', 'FCLLINKPREFIX');
     end
     else if OutFormat = 'chm' then
     begin
-      SetString(RTLPrefix, 'ms-its:rtl.chm::/', 'RTLLINKPREFIX');
-      SetString(FCLPrefix, 'ms-its:fcl.chm::/', 'FCLLINKPREFIX');
+      GetEnvDef(RTLPrefix, 'ms-its:rtl.chm::/', 'RTLLINKPREFIX');
+      GetEnvDef(FCLPrefix, 'ms-its:fcl.chm::/', 'FCLLINKPREFIX');
     end
     else
     begin
-      SetString(RTLPrefix, '', 'RTLLINKPREFIX');
-      SetString(FCLPrefix, '', 'FCLLINKPREFIX');
+      GetEnvDef(RTLPrefix, '', 'RTLLINKPREFIX');
+      GetEnvDef(FCLPrefix, '', 'FCLLINKPREFIX');
     end;
     
     if (RTLPrefix<>'') and (RTLPrefix[1]<>',') then
       RTLPrefix := ','+RTLPrefix;
     if (FCLPrefix<>'') and (FCLPrefix[1]<>',') then
       FCLPrefix := ','+FCLPrefix;
-    ArgParams:=ArgParams+ '--import='+FPCDocsPath+PathDelim+'rtl.xct'+RTLPrefix
-                        +' --import='+FPCDocsPath+PathDelim+'fcl.xct'+FCLPrefix;
+    ArgParams:=ArgParams+ '--import='+TrimFilename(FPCDocsPath+PathDelim+'rtl.xct')+RTLPrefix
+                        +' --import='+TrimFilename(FPCDocsPath+PathDelim+'fcl.xct')+FCLPrefix;
   end;
   
   if OutFormat='chm' then
@@ -162,53 +166,36 @@ end;
 procedure AddFilesToList(Dir: String; Ext: String; List: TStrings);
 var
   FRec: TSearchRec;
-  Res: Longint;
   SubDirs: String; // we do not want the PasSrcDir in this string but the subfolders only
 begin
-  Res := FindFirst(Dir+'*', faAnyFile, FRec);
-  while Res = 0 do begin
-    //WriteLn('Checking file ' +FRec.Name);
-    if ((FRec.Attr and faDirectory) <> 0) and (FRec.Name[1] <> '.')then
-    begin
-      AddFilesToList(IncludeTrailingPathDelimiter(Dir+FRec.Name), Ext, List);
-      //WriteLn('Checking Subfolder ',Dir+ FRec.Name);
-    end
-    else if Lowercase(ExtractFileExt(FRec.Name)) = Ext then
-    begin
-      SubDirs := IncludeTrailingPathDelimiter(Copy(Dir, Length(PasSrcDir)+1, Length(Dir)));
-      if Length(SubDirs) = 1 then
-        SubDirs:='';
-      List.Add(SubDirs+FRec.Name);
-
-    end;
-    Res := FindNext(FRec);
-  end;
-  FindClose(FRec);
+  Dir:=AppendPathDelim(Dir);
+  if FindFirstUTF8(Dir+AllFilesMask, faAnyFile, FRec)=0 then
+    repeat
+      //WriteLn('Checking file ' +FRec.Name);
+      if (FRec.Name='') or (FRec.Name='.') or (FRec.Name='..') then continue;
+      if ((FRec.Attr and faDirectory) <> 0) then
+      begin
+        AddFilesToList(Dir+FRec.Name, Ext, List);
+        //WriteLn('Checking Subfolder ',Dir+ FRec.Name);
+      end
+      else if Lowercase(ExtractFileExt(FRec.Name)) = Ext then
+      begin
+        SubDirs := AppendPathDelim(Copy(Dir, Length(PasSrcDir)+1, Length(Dir)));
+        if Length(SubDirs) = 1 then
+          SubDirs:='';
+        List.Add(SubDirs+FRec.Name);
+      end;
+    until FindNextUTF8(FRec)<>0;
+  FindCloseUTF8(FRec);
 end;
 
 function FileInPath(FileName: String): Boolean;
 var
-  FRec: TSearchRec;
-  Paths: TStringList;
-  I: Integer;
+  FullFilename: String;
 begin
-  Result := FileExists(FileName);
-  if Result then
-    Exit;
-  Paths := TStringList.Create;
-  Paths.Delimiter:=PathSeparator;
-  Paths.DelimitedText := GetEnvironmentVariable('PATH');
-  for I := 0 to Paths.Count-1 do
-  begin
-    if FindFirst(IncludeTrailingPathDelimiter(Paths[I])+FileName,
-          faAnyFile and not faDirectory, FRec) = 0 then
-      Result := True;
-    FindClose(FRec);
-    if Result then break;
-  end;
-  Paths.Free;
+  FullFilename:=FindDefaultExecutablePath(Filename);
+  Result:=(FullFilename<>'') and not DirectoryExistsUTF8(FullFilename);
 end;
-
 
 procedure MakeFileList;
 var
@@ -226,7 +213,7 @@ begin
   for I := 0 to FileList.Count-1 do
   begin
     XMLFile := XMLSrcDir+ChangeFileExt(FileList[I],'.xml');
-    if FileExists(PackageName+PathDelim+XMLFile) then
+    if FileExistsUTF8(PackageName+PathDelim+XMLFile) then
     begin
       InputList.Add('..'+PathDelim+PasSrcDir+FileList[I] + ' -Fi..'+PathDelim+PasSrcDir+'include');
       ArgParams:=ArgParams+' --descr='+XMLSrcDir+ChangeFileExt(FileList[I],'.xml');
@@ -262,10 +249,10 @@ begin
             'or set it with --fpdoc path',PathDelim,'to',PathDelim,'fpdoc'{$IFDEF MSWINDOWS},'.exe'{$ENDIF});
     Halt(1);
   end;
-  Process := TProcess.Create(nil);
+  Process := TProcessUTF8.Create(nil);
   try
     Process.Options := Process.Options + [poWaitOnExit];
-    Process.CurrentDirectory := GetCurrentDir+PathDelim+PackageName;
+    Process.CurrentDirectory := GetCurrentDirUTF8+PathDelim+PackageName;
     Process.CommandLine := CmdLine;
     try
       Process.Execute;
@@ -284,7 +271,7 @@ end;
 
 begin
   ReadOptions;
-  if Not DirectoryExists(PackageName) then
+  if Not DirectoryExistsUTF8(PackageName) then
     mkdir(PackageName);
   InitVars;
   MakeFileList;
