@@ -7553,9 +7553,9 @@ dmFindTarget: find child control under the mouse
       </element>
       <!-- property Visibility: protected -->
       <element name="TControl.AccessibleRole">
-        <short>The accessible role of the control which classifies what kind of object this is. See TLazAccessibleRole for a list of possible values</short>
+        <short>The accessible role of the control which classifies what kind of object this is. See TLazAccessibilityRole for a list of possible values</short>
         <seealso>
-          <link id="TLazAccessibleRole"/>
+          <link id="TLazAccessibilityRole"/>
           <link id="TLazAccessibleObject.AccessibleRole"/>
         </seealso>
       </element>
