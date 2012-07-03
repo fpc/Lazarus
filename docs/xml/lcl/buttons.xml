@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <fpdoc-descriptions>
-  <package name="LCL">
+  <package name="lcl">
     <module name="Buttons">
       <short>Defines several specialist button classes</short>
       <descr/>
@@ -640,7 +640,7 @@ bkYesToAll
         <short>Indicates the policy for showing or hiding the glyph image of this button</short>
         <descr/>
         <seealso>
-          <link id="#LCL.Forms.Menus.TGlyphShowMode"/>
+          <link id="#LCL.Menus.TGlyphShowMode"/>
           <link id="#LCL.Forms.TApplication.ShowMenuGlyphs"/>
         </seealso>
       </element>
