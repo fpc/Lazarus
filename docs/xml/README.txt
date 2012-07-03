@@ -3,13 +3,15 @@ These are the fpdoc xml files of the lazarus units.
 The lcl directory contains the fpdoc xml files for the lcl. For example
 lcl/controls.xml for controls.pp.
 
+You can create new entries with the fpdoc editor of the IDE (View / FPDoc Editor).
+
 --------------------------------------------------------------------------------
-They were created with:
+You can create xml files for new units with the IDE fpdoc editor or with:
 perl multi_makeskel.pl -p lcl -s ../../lcl -o lcl \
   -i '-Fi/path/to/lazarus/lcl/include' -x
   
 At the moment the fpdoc tool 'makeskel' is not yet capable of updating the
-files. But this will follow in a few weeks.
+files.
 
 --------------------------------------------------------------------------------
 If you don't have perl installed, you can use the following command to update

@@ -23,7 +23,7 @@ Public items (methods...) are for use by coders, the short description can read 
 "Use ... to ..."
 Other items can be hit during coding or debugging, the short description should
 provide meaningful information in the FPDoc editor or in the popup hints. Avoid
-excess decoration, e.g.:
+access decoration, e.g.:
 "Returns ..."
 instead of
 "<var>ThisItem<var> - reads the <link id="Class.FItem">FItem</link> field."
@@ -59,7 +59,7 @@ For lenghty descriptions you can use paragraphs (<p>) like this:
 </descr>
 
 Then it's easy to copy a </p><p> line to all places, where paragraph breaks
-should occur.
+should occur. Keep in mind that these are XML files, not HTML.
 
 
 XML Syntax
