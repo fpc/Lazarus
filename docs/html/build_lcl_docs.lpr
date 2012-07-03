@@ -235,10 +235,13 @@ procedure Run;
 var
   Process: TProcess;
   CmdLine: String;
+  WorkDir: String;
 begin
   CmdLine := fpdoc + FPDocParams + ArgParams + EnvParams;
+  WorkDir := GetCurrentDirUTF8+PathDelim+PackageName;
   if ShowCmd then
   begin
+    Writeln('WorkDirectory:',WorkDir);
     WriteLn(CmdLine);
     Exit;
   end;
@@ -252,7 +255,7 @@ begin
   Process := TProcessUTF8.Create(nil);
   try
     Process.Options := Process.Options + [poWaitOnExit];
-    Process.CurrentDirectory := GetCurrentDirUTF8+PathDelim+PackageName;
+    Process.CurrentDirectory := WorkDir;
     Process.CommandLine := CmdLine;
     try
       Process.Execute;
