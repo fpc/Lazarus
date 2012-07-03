@@ -6091,6 +6091,10 @@ begin
     //DebugLn('  CurPanel.Width="',CurPanel.Width,'"');
     gtk_widget_set_usize(StatusPanelWidget, CurPanel.Width,
       StatusPanelWidget^.allocation.height);
+    if CurPanel.Width > 0 then
+      gtk_widget_show(StatusPanelWidget)
+    else
+      gtk_widget_hide(StatusPanelWidget);
 
     g_object_set_data(PGObject(StatusPanelWidget),'lcl_statusbar_id',
       @AStatusBar.Panels[Index].ID);
