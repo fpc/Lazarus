@@ -1,10 +1,8 @@
 #!/bin/bash
 # Builds all Lazarus docs and pack them in one .chm file
 #
-# Notes:
-#
-# Before running this file, first compile the project build_lcl_docs.lpi
-#
+../../lazbuild build_lcl_docs.lpi
 ./build_lcl_docs --outfmt chm
 
-
+# Build with links to RTL+FCL
+#./build_lcl_docs --fpcdocs ../chm/ --footer locallclfooter.xml --outfmt chm
