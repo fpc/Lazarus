@@ -279,7 +279,7 @@ begin
   if not FHasLookUpField then
     ChangeListLinkDataSource(FListSource);
 
-  if (FKeyFieldNames > '') and Assigned(FListLink.Dataset) then
+  if (FKeyFieldNames > '') and Assigned(FListLink.Dataset) and not (csLoading in FListLink.DataSet.ComponentState) then
   begin
     FListLinkTmpSetActive := not FListLink.DataSet.Active;
     if FListLinkTmpSetActive then
