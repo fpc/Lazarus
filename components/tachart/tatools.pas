@@ -428,36 +428,51 @@ type
       read FUseDefaultHintText write FUseDefaultHintText default true;
   end;
 
-  TDataPointCrosshairTool = class;
+  { TDataPointDrawTool }
 
-  TChartCrosshairDrawEvent = procedure (
-    ASender: TDataPointCrosshairTool) of object;
+  TDataPointDrawTool = class;
 
-  TChartCrosshairShape = (ccsNone, ccsVertical, ccsHorizontal, ccsCross);
+  TChartDataPointDrawEvent = procedure (ASender: TDataPointDrawTool) of object;
 
-  TDataPointCrosshairTool = class(TDataPointTool)
+  TDataPointDrawTool = class(TDataPointTool)
   strict private
-    FCrosshairPen: TChartPen;
-    FOnDraw: TChartCrosshairDrawEvent;
-    FPosition: TDoublePoint;
-    FShape: TChartCrosshairShape;
-    FSize: Integer;
-    procedure DoDraw;
-    procedure DoHide;
-    procedure SetCrosshairPen(AValue: TChartPen);
+    FOnDraw: TChartDataPointDrawEvent;
+  strict protected
+    FPen: TChartPen;
+    procedure DoDraw; virtual;
+    procedure DoHide; virtual;
+    procedure SetPen(AValue: TChartPen);
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure Draw(AChart: TChart; ADrawer: IChartDrawer); override;
-    procedure Hide;
+    procedure Hide; virtual;
     procedure KeyDown(APoint: TPoint); override;
+  published
+    property DrawingMode;
+    property GrabRadius default 20;
+    property OnDraw: TChartDataPointDrawEvent read FOnDraw write FOnDraw;
+  end;
+
+  TChartCrosshairShape = (ccsNone, ccsVertical, ccsHorizontal, ccsCross);
+
+  { TDataPointCrossHairTool }
+
+  TDataPointCrosshairTool = class(TDataPointDrawTool)
+  strict private
+    FPosition: TDoublePoint;
+    FShape: TChartCrosshairShape;
+    FSize: Integer;
+  strict protected
+    procedure DoDraw; override;
+    procedure DoHide; override;
+  public
+    constructor Create(AOwner: TComponent); override;
+    procedure Draw(AChart: TChart; ADrawer: IChartDrawer); override;
     procedure MouseMove(APoint: TPoint); override;
     property Position: TDoublePoint read FPosition;
   published
-    property CrosshairPen: TChartPen read FCrosshairPen write SetCrosshairPen;
-    property DrawingMode;
-    property GrabRadius default 20;
-    property OnDraw: TChartCrosshairDrawEvent read FOnDraw write FOnDraw;
+    property CrosshairPen: TChartPen read FPen write SetPen;
     property Shape: TChartCrosshairShape
       read FShape write FShape default ccsCross;
     property Size: Integer read FSize write FSize default -1;
@@ -1513,19 +1528,73 @@ begin
   FUseApplicationHint := AValue;
 end;
 
+{ TDataPointDrawTool }
+
+constructor TDataPointDrawTool.Create(AOwner: TComponent);
+begin
+  inherited;
+  GrabRadius := 20;
+  FPen := TChartPen.Create;
+end;
+
+destructor TDataPointDrawTool.Destroy;
+begin
+  FreeAndNil(FPen);
+  inherited;
+end;
+
+procedure TDataPointDrawTool.DoDraw;
+begin
+  if Assigned(OnDraw) then
+    OnDraw(Self);
+end;
+
+procedure TDataPointDrawTool.DoHide;
+begin
+  case EffectiveDrawingMode of
+    tdmXor: begin
+      PrepareXorPen(FChart.Canvas);
+      DoDraw;
+    end;
+    tdmNormal:
+      FChart.StyleChanged(Self);
+  end;
+end;
+
+procedure TDataPointDrawTool.Draw(AChart: TChart; ADrawer: IChartDrawer);
+begin
+  inherited;
+  case EffectiveDrawingMode of
+    tdmXor:
+      PrepareXorPen(FChart.Canvas);
+    tdmNormal:
+      FChart.Drawer.Pen := FPen;
+  end;
+  DoDraw;
+end;
+
+procedure TDataPointDrawTool.Hide;
+begin
+  DoHide;
+  FChart := nil;
+end;
+
+procedure TDataPointDrawTool.KeyDown(APoint: TPoint);
+begin
+  MouseMove(APoint);
+end;
+
+procedure TDataPointDrawTool.SetPen(AValue: TChartPen);
+begin
+  FPen.Assign(AValue);
+end;
+
 { TDataPointCrosshairTool }
 
 constructor TDataPointCrosshairTool.Create(AOwner: TComponent);
 begin
   inherited;
   SetPropDefaults(Self, ['Shape', 'Size']);
-  FCrosshairPen := TChartPen.Create;
-end;
-
-destructor TDataPointCrosshairTool.Destroy;
-begin
-  FreeAndNil(FCrosshairPen);
-  inherited;
 end;
 
 procedure TDataPointCrosshairTool.DoDraw;
@@ -1543,46 +1612,20 @@ begin
       FChart.DrawLineHoriz(FChart.Drawer, p.Y)
     else
       FChart.Drawer.Line(p - Point(Size, 0), p + Point(Size, 0));
-  if Assigned(OnDraw) then
-    OnDraw(Self);
+  inherited;
 end;
 
 procedure TDataPointCrosshairTool.DoHide;
 begin
   if FSeries = nil then exit;
   FSeries := nil;
-  case EffectiveDrawingMode of
-    tdmXor: begin
-      PrepareXorPen(FChart.Canvas);
-      DoDraw;
-    end;
-    tdmNormal:
-      FChart.StyleChanged(Self);
-  end;
+  inherited;
 end;
 
 procedure TDataPointCrosshairTool.Draw(AChart: TChart; ADrawer: IChartDrawer);
 begin
   if FSeries = nil then exit;
   inherited;
-  case EffectiveDrawingMode of
-    tdmXor:
-      PrepareXorPen(FChart.Canvas);
-    tdmNormal:
-      FChart.Drawer.Pen := CrosshairPen;
-  end;
-  DoDraw;
-end;
-
-procedure TDataPointCrosshairTool.Hide;
-begin
-  DoHide;
-  FChart := nil;
-end;
-
-procedure TDataPointCrosshairTool.KeyDown(APoint: TPoint);
-begin
-  MouseMove(APoint);
 end;
 
 procedure TDataPointCrosshairTool.MouseMove(APoint: TPoint);
@@ -1597,10 +1640,6 @@ begin
   end;
 end;
 
-procedure TDataPointCrosshairTool.SetCrosshairPen(AValue: TChartPen);
-begin
-  FCrosshairPen.Assign(AValue);
-end;
 
 initialization
 
