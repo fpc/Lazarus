@@ -552,7 +552,6 @@ class procedure TQtWSStatusBar.RecreatePanels(const AStatusBar: TStatusBar;
 var
   Str: WideString;
   i: Integer;
-  Margin: Integer;
 begin
   Str := '';
   //clean up. http://bugs.freepascal.org/view.php?id=18683
@@ -565,9 +564,6 @@ begin
   end else
   if AStatusBar.Panels.Count > 0 then
   begin
-    Margin := (QStyle_pixelMetric(QApplication_style(), QStylePM_DefaultFrameWidth, nil, nil) * 2) - 1;
-    if Margin <= 0 then
-      Margin := 2;
     Widget.setUpdatesEnabled(False);
     SetLength(Widget.Panels, AStatusBar.Panels.Count);
     for i := 0 to AStatusBar.Panels.Count - 1 do
@@ -582,7 +578,7 @@ begin
         AlignmentToQtAlignmentMap[AStatusBar.Panels[i].Alignment]);
       QWidget_setMinimumWidth(Widget.Panels[i].Widget, AStatusBar.Panels[i].Width);
       QWidget_setVisible(Widget.Panels[i].Widget,
-        AStatusBar.Panels[i].Width >= Margin);
+        AStatusBar.Panels[i].Width > 0);
       Widget.Panels[i].AttachEvents;
       Widget.addWidget(Widget.Panels[i].Widget, ord(i = AStatusBar.Panels.Count - 1));
     end;
@@ -620,7 +616,6 @@ class procedure TQtWSStatusBar.PanelUpdate(const AStatusBar: TStatusBar; PanelIn
 var
   QtStatusBar: TQtStatusBar;
   Str: Widestring;
-  Margin: Integer;
 begin
   QtStatusBar := TQtStatusBar(AStatusBar.Handle);
   if AStatusBar.SimplePanel then
@@ -636,10 +631,6 @@ begin
     if (PanelIndex >= Low(QtStatusBar.Panels)) and
       (PanelIndex <= High(QtStatusBar.Panels)) then
     begin
-      Margin := (QStyle_pixelMetric(QApplication_style(), QStylePM_DefaultFrameWidth, nil, nil) * 2) - 1;
-      if Margin <= 0 then
-        Margin := 2;
-
       Str := GetUtf8String(AStatusBar.Panels[PanelIndex].Text);
       QLabel_setText(QLabelH(QtStatusBar.Panels[PanelIndex].Widget), @Str);
       QLabel_setAlignment(QLabelH(QtStatusBar.Panels[PanelIndex].Widget),
@@ -647,7 +638,7 @@ begin
       QWidget_setMinimumWidth(QtStatusBar.Panels[PanelIndex].Widget,
         AStatusBar.Panels[PanelIndex].Width);
       QWidget_setVisible(QtStatusBar.Panels[PanelIndex].Widget,
-        AStatusBar.Panels[PanelIndex].Width >= Margin);
+        AStatusBar.Panels[PanelIndex].Width > 0);
     end;
   end;
 end;
