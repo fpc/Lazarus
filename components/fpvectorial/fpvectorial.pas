@@ -78,6 +78,8 @@ const
   STR_RAW_EXTENSION = '.raw';
   STR_MATHML_EXTENSION = '.mathml';
 
+  STR_FPVECTORIAL_TEXT_HEIGHT_SAMPLE = 'Ćą';
+
 type
   TvCustomVectorialWriter = class;
   TvCustomVectorialReader = class;
@@ -427,8 +429,8 @@ type
     AdjacentFormula: TvFormula;
   public
     Top, Left, Width, Height: Double;
-    function CalculateHeight(ADest: TFPCustomCanvas): Double; // 1.0 = the normal text height, will return for example 2.2 for 2,2 times the text height
-    function CalculateWidth(ADest: TFPCustomCanvas): Double; // in pixels
+    function CalculateHeight(ADest: TFPCustomCanvas): Double; // in milimeters
+    function CalculateWidth(ADest: TFPCustomCanvas): Double; // in milimeters
     function AsText: string;
     procedure Render(ADest: TFPCustomCanvas; ADestX: Integer = 0;
       ADestY: Integer = 0; AMulX: Double = 1.0; AMulY: Double = 1.0); virtual;
@@ -456,8 +458,8 @@ type
     function  AddElementWithKindAndText(AKind: TvFormulaElementKind; AText: string): TvFormulaElement;
     procedure Clear;
     //
-    function CalculateHeight(ADest: TFPCustomCanvas): Double; // 1.0 = the normal text height, will return for example 2.2 for 2,2 times the text height
-    function CalculateWidth(ADest: TFPCustomCanvas): Double;
+    function CalculateHeight(ADest: TFPCustomCanvas): Double; // in milimeters
+    function CalculateWidth(ADest: TFPCustomCanvas): Double; // in milimeters
     procedure PositionElements(ADest: TFPCustomCanvas; ABaseX, ABaseY: Double);
     procedure CalculateBoundingBox(ADest: TFPCustomCanvas; var ALeft, ATop, ARight, ABottom: Double); override;
     procedure Render(ADest: TFPCustomCanvas; ADestX: Integer = 0;
@@ -1687,7 +1689,14 @@ end;
 { TvFormulaElement }
 
 function TvFormulaElement.CalculateHeight(ADest: TFPCustomCanvas): Double;
+var
+  lLineHeight: Integer;
 begin
+  if ADest <> nil then
+    lLineHeight := TCanvas(ADest).TextHeight(STR_FPVECTORIAL_TEXT_HEIGHT_SAMPLE) + 2
+  else
+    lLineHeight := 15;
+
   case Kind of
     //fekVariable,  // Text is the text of the variable
     //fekEqual,     // = symbol
@@ -1699,13 +1708,13 @@ begin
     begin
       Formula.CalculateHeight(ADest);
       AdjacentFormula.CalculateHeight(ADest);
-      Result := Formula.Height + AdjacentFormula.Height + 5;
+      Result := Formula.Height + AdjacentFormula.Height * 1.2;
     end;
     fekRoot: Result := Formula.CalculateHeight(ADest) * 1.2;
-    fekPower: Result := 11;
-    fekSomatory: Result := 15;
+    fekPower: Result := lLineHeight * 1.2;
+    fekSomatory: Result := lLineHeight * 1.5;
   else
-    Result := 10;
+    Result := lLineHeight;
   end;
 
   Height := Result;
@@ -1813,8 +1822,10 @@ procedure TvFormulaElement.GenerateDebugTree(ADestRoutine: TvDebugAddItemProc;
   APageItem: Pointer);
 var
   lDBGItem, lDBGFormula, lDBGFormulaBottom: Pointer;
+  lStr: string;
 begin
-  lDBGItem := ADestRoutine(Self.AsText(), APageItem);
+  lStr := Self.AsText() + Format(' Left=%f Top=%f Width=%f Height=%f', [Left, Top, Width, Height]);
+  lDBGItem := ADestRoutine(lStr, APageItem);
 
   case Kind of
     fekFraction, fekPower, fekSubscript, fekSomatory:
@@ -1907,16 +1918,20 @@ function TvFormula.CalculateHeight(ADest: TFPCustomCanvas): Double;
 var
   lElement: TvFormulaElement;
 begin
-  Result := 1.0;
+  if ADest <> nil then
+    Result := TCanvas(ADest).TextHeight(STR_FPVECTORIAL_TEXT_HEIGHT_SAMPLE) + 2
+  else
+    Result := 15;
+
   lElement := GetFirstElement();
   while lElement <> nil do
   begin
     Result := Max(Result, lElement.CalculateHeight(ADest));
     lElement := GetNextElement;
   end;
+
   // Cache the result
-  if ADest <> nil then
-    Height := Result * TCanvas(ADest).TextHeight('T');
+  Height := Result;
 end;
 
 function TvFormula.CalculateWidth(ADest: TFPCustomCanvas): Double;
@@ -1954,19 +1969,30 @@ begin
     lPosX := lPosX + lElement.Width;
     lElement.Top := Top;
 
-    if lElement.Formula <> nil then
-      lElement.Formula.PositionElements(ADest, lElement.Left, lElement.Top);
-
     case lElement.Kind of
-    fekFraction:
-    begin
-      //if lElement.AdjacentFormula = nil then
-      lElement.AdjacentFormula.PositionElements(ADest, lElement.Left, lElement.Top - lElement.Formula.Height - 3);
-    end;
-    //fekRoot:
-    //fekPower:
-    ///fekSubscript:
-    //fekSomatory:
+      fekFraction:
+      begin
+        lElement.Formula.PositionElements(ADest, lElement.Left, lElement.Top);
+        lElement.AdjacentFormula.PositionElements(ADest, lElement.Left, lElement.Top - lElement.Formula.Height - 3);
+      end;
+      fekRoot:
+      begin
+        lElement.Formula.PositionElements(ADest, lElement.Left + 5, lElement.Top);
+      end;
+      fekPower:
+      begin
+        lElement.Formula.PositionElements(ADest, lElement.Left, lElement.Top);
+        lElement.AdjacentFormula.PositionElements(ADest, lElement.Left + lElement.Formula.Width, lElement.Top + lElement.Formula.Height);
+      end;
+      fekSubscript:
+      begin
+        lElement.Formula.PositionElements(ADest, lElement.Left, lElement.Top);
+        lElement.AdjacentFormula.PositionElements(ADest, lElement.Left + lElement.Formula.Width, lElement.Top - lElement.Formula.Height / 2);
+      end;
+      fekSomatory:
+      begin
+        lElement.Formula.PositionElements(ADest, lElement.Left + 10, lElement.Top);
+      end;
     end;
 
     lElement := GetNextElement();
@@ -2008,8 +2034,12 @@ function TvFormula.GenerateDebugTree(ADestRoutine: TvDebugAddItemProc;
   APageItem: Pointer): Pointer;
 var
   lFormulaElement: TvFormulaElement;
+  lStr: string;
 begin
-  Result := inherited GenerateDebugTree(ADestRoutine, APageItem);
+  //  Result := inherited GenerateDebugTree(ADestRoutine, APageItem);
+  lStr := Format('[%s]', [Self.ClassName]);
+  lStr := lStr + Format(' Left=%f Top=%f Width=%f Height=%f', [Left, Top, Width, Height]);
+  Result := ADestRoutine(lStr, APageItem);
 
   lFormulaElement := GetFirstElement();
   while lFormulaElement <> nil do
