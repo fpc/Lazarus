@@ -217,7 +217,7 @@ begin
   }
   else if lNodeName = 'munderover' then
   begin
-    lFormElem := AFormula.AddElementWithKind(fekSomatory);
+    lFormElem := AFormula.AddElementWithKind(fekSummation);
 
     // The first element is just the symbol, ignore it
     lMFracRow := ANode.FirstChild;

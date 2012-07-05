@@ -415,7 +415,7 @@ type
     fekRoot,      // A root. For example sqrt(something). Number gives the root, usually 2, and inside it goes a Formula
     fekPower,     // A Formula elevated to a AdjacentFormula, example: 2^5
     fekSubscript, // A Formula with a subscripted element AdjacentFormula, example: Xi
-    fekSomatory   // Sum of a variable given by Text set by Formula in the bottom and going up to AdjacentFormula in the top
+    fekSummation   // Sum of a variable given by Text set by Formula in the bottom and going up to AdjacentFormula in the top
     );
 
   { TvFormulaElement }
@@ -1712,7 +1712,7 @@ begin
     end;
     fekRoot: Result := Formula.CalculateHeight(ADest) * 1.2;
     fekPower: Result := lLineHeight * 1.2;
-    fekSomatory: Result := lLineHeight * 1.5;
+    fekSummation: Result := lLineHeight * 1.5;
   else
     Result := lLineHeight;
   end;
@@ -1748,7 +1748,7 @@ begin
       Result := Formula.CalculateWidth(ADest) +
         AdjacentFormula.CalculateWidth(ADest) / 2;
     end;
-    fekSomatory: Result := 8;
+    fekSummation: Result := 8;
   else
   end;
 
@@ -1791,6 +1791,7 @@ var
   LeftC, TopC: Integer;
   lPt: array[0..3] of TPoint;
   lOldFontSize: Integer;
+  lStr: string;
 begin
   LeftC := CoordToCanvasX(Left);
   TopC := CoordToCanvasY(Top);
@@ -1851,9 +1852,31 @@ begin
       AdjacentFormula.Render(ADest, ADestX, ADestY, AMulX, AMulY);
       ADest.Font.Size := lOldFontSize;
     end;
-    //fekParenteses: Result,// This is utilized to group elements. Inside it goes a Formula
-    //fekParentesesWithPower: Result := 1.1;
-    //fekSomatory: Result := 1.5;
+    fekSubscript:
+    begin
+      Formula.Render(ADest, ADestX, ADestY, AMulX, AMulY);
+      // The subscripted item
+      lOldFontSize := ADest.Font.Size;
+      if lOldFontSize = 0 then ADest.Font.Size := 5
+      else ADest.Font.Size := lOldFontSize div 2;
+      AdjacentFormula.Render(ADest, ADestX, ADestY, AMulX, AMulY);
+      ADest.Font.Size := lOldFontSize;
+    end;
+    fekSummation:
+    begin
+      // Draw the summation symbol
+      lOldFontSize := ADest.Font.Size;
+      ADest.Font.Size := 15;
+      lStr := #$E2#$88#$91; // Unicode Character 'N-ARY SUMMATION' (U+2211)
+      ADest.TextOut(LeftC, TopC, lStr);
+      ADest.Font.Size := lOldFontSize;
+
+      // Draw the bottom/main formula
+      Formula.Render(ADest, ADestX, ADestY, AMulX, AMulY);
+
+      // Draw the top formula
+      AdjacentFormula.Render(ADest, ADestX, ADestY, AMulX, AMulY);
+    end;
   end;
 end;
 
@@ -1868,11 +1891,11 @@ begin
   lDBGItem := ADestRoutine(lStr, APageItem);
 
   case Kind of
-    fekFraction, fekPower, fekSubscript, fekSomatory:
+    fekFraction, fekPower, fekSubscript, fekSummation:
     begin
       lDBGFormula := ADestRoutine('Main Formula', lDBGItem);
       Formula.GenerateDebugTree(ADestRoutine, lDBGFormula);
-      if Kind in [fekPower, fekSomatory] then
+      if Kind in [fekPower, fekSummation] then
         lDBGFormulaBottom := ADestRoutine('Top Formula', lDBGItem)
       else
         lDBGFormulaBottom := ADestRoutine('Bottom Formula', lDBGItem);
@@ -1936,7 +1959,7 @@ begin
   AddElement(Result);
 
   case AKind of
-    fekFraction, fekPower, fekSubscript, fekSomatory:
+    fekFraction, fekPower, fekSubscript, fekSummation:
     begin
       Result.Formula := TvFormula.Create;
       Result.AdjacentFormula := TvFormula.Create;
@@ -2051,9 +2074,12 @@ begin
         lElement.Formula.PositionElements(ADest, lElement.Left, lElement.Top);
         lElement.AdjacentFormula.PositionElements(ADest, lElement.Left + lElement.Formula.Width, lElement.Top - lElement.Formula.Height / 2);
       end;
-      fekSomatory:
+      fekSummation:
       begin
-        lElement.Formula.PositionElements(ADest, lElement.Left + 10, lElement.Top);
+        // main/bottom formula
+        lElement.Formula.PositionElements(ADest, lElement.Left, lElement.Top - 30);
+        // top formula
+        lElement.AdjacentFormula.PositionElements(ADest, lElement.Left, lElement.Top);
       end;
     end;
 
