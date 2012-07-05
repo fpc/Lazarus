@@ -1740,8 +1740,12 @@ begin
       AdjacentFormula.CalculateWidth(ADest);
       Result := Max(Formula.Width, AdjacentFormula.Width);
     end;
-    fekRoot: Result := Formula.CalculateWidth(ADest) + 5;
-    fekPower: Result := Formula.CalculateWidth(ADest) * 1.5;
+    fekRoot: Result := Formula.CalculateWidth(ADest) + 10;
+    fekPower, fekSubscript:
+    begin
+      Result := Formula.CalculateWidth(ADest) +
+        AdjacentFormula.CalculateWidth(ADest) / 2;
+    end;
     fekSomatory: Result := 8;
   else
   end;
@@ -1784,6 +1788,7 @@ procedure TvFormulaElement.Render(ADest: TFPCustomCanvas; ADestX: Integer;
 var
   LeftC, TopC: Integer;
   lPt: array[0..3] of TPoint;
+  lOldFontSize: Integer;
 begin
   LeftC := CoordToCanvasX(Left);
   TopC := CoordToCanvasY(Top);
@@ -1833,7 +1838,12 @@ begin
     fekPower:
     begin
       Formula.Render(ADest, ADestX, ADestY, AMulX, AMulY);
+      // The superscripted power
+      lOldFontSize := ADest.Font.Size;
+      if lOldFontSize = 0 then ADest.Font.Size := 5
+      else ADest.Font.Size := lOldFontSize div 2;
       AdjacentFormula.Render(ADest, ADestX, ADestY, AMulX, AMulY);
+      ADest.Font.Size := lOldFontSize;
     end;
     //fekParenteses: Result,// This is utilized to group elements. Inside it goes a Formula
     //fekParentesesWithPower: Result := 1.1;
@@ -1968,6 +1978,8 @@ begin
     Result := Result + lElement.CalculateWidth(ADest) + SpacingBetweenElementsX;
     lElement := GetNextElement;
   end;
+  // Remove an extra spacing, since it is added even to the last item
+  Result := Result - SpacingBetweenElementsX;
   // Cache the result
   Width := Result;
 end;
@@ -1979,6 +1991,7 @@ var
   lPosY: Double = 0;
   lCentralizeFactor: Double = 0;
   lCentralizeFactorAdj: Double = 0;
+  lMaxHeight: Double = 0;
 begin
   CalculateHeight(ADest);
   CalculateWidth(ADest);
@@ -1993,6 +2006,7 @@ begin
     lElement.Left := Left + lPosX;
     lPosX := lPosX + lElement.Width;
     lElement.Top := Top;
+    lMaxHeight := Max(lMaxHeight, lElement.Height);
 
     case lElement.Kind of
       fekFraction:
@@ -2022,7 +2036,7 @@ begin
       fekPower:
       begin
         lElement.Formula.PositionElements(ADest, lElement.Left, lElement.Top);
-        lElement.AdjacentFormula.PositionElements(ADest, lElement.Left + lElement.Formula.Width, lElement.Top + lElement.Formula.Height);
+        lElement.AdjacentFormula.PositionElements(ADest, lElement.Left + lElement.Formula.Width, lElement.Top);
       end;
       fekSubscript:
       begin
@@ -2033,6 +2047,21 @@ begin
       begin
         lElement.Formula.PositionElements(ADest, lElement.Left + 10, lElement.Top);
       end;
+    end;
+
+    lElement := GetNextElement();
+  end;
+
+  // Go back and make a second loop to
+  // check if there are any high elements in the same line,
+  // and if yes, centralize the smaller ones
+  lElement := GetFirstElement();
+  if lElement = nil then Exit;
+  while lElement <> nil do
+  begin
+    if lElement.Height < lMaxHeight then
+    begin
+      lElement.Top := Top - lMaxHeight / 2 + lElement.Height / 2;
     end;
 
     lElement := GetNextElement();
