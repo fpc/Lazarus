@@ -1741,7 +1741,7 @@ begin
       Result := Max(Formula.Width, AdjacentFormula.Width);
     end;
     fekRoot: Result := Formula.CalculateWidth(ADest) + 5;
-    fekPower: Result := Result * 1.5;
+    fekPower: Result := Formula.CalculateWidth(ADest) * 1.5;
     fekSomatory: Result := 8;
   else
   end;
@@ -1954,6 +1954,8 @@ var
   lElement: TvFormulaElement;
   lPosX: Double = 0;
   lPosY: Double = 0;
+  lCentralizeFactor: Double = 0;
+  lCentralizeFactorAdj: Double = 0;
 begin
   CalculateHeight(ADest);
   CalculateWidth(ADest);
@@ -1972,8 +1974,22 @@ begin
     case lElement.Kind of
       fekFraction:
       begin
-        lElement.Formula.PositionElements(ADest, lElement.Left, lElement.Top);
-        lElement.AdjacentFormula.PositionElements(ADest, lElement.Left, lElement.Top - lElement.Formula.Height - 3);
+        // Check which fraction is the largest and centralize the other one
+        lElement.Formula.CalculateWidth(ADest);
+        lElement.AdjacentFormula.CalculateWidth(ADest);
+        if lElement.Formula.Width > lElement.AdjacentFormula.Width then
+        begin
+          lCentralizeFactor := 0;
+          lCentralizeFactorAdj := lElement.Formula.Width / 2 - lElement.AdjacentFormula.Width / 2;
+        end
+        else
+        begin
+          lCentralizeFactor := lElement.AdjacentFormula.Width / 2 - lElement.Formula.Width / 2;
+          lCentralizeFactorAdj := 0;
+        end;
+
+        lElement.Formula.PositionElements(ADest, lElement.Left + lCentralizeFactor, lElement.Top);
+        lElement.AdjacentFormula.PositionElements(ADest, lElement.Left + lCentralizeFactorAdj, lElement.Top - lElement.Formula.Height - 3);
       end;
       fekRoot:
       begin
