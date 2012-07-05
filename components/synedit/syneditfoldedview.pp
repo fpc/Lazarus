@@ -318,8 +318,7 @@ type
   private
     FFoldFlags: TSynFoldBlockFilterFlags;
     FGroupCount: Integer;
-    // TODO: FGroupEndLevels is not used
-    FGroupEndLevels, FGroupEndLevelsAtEval: Array of integer;
+    FGroupEndLevelsAtEval: Array of integer;
     FCount, FOpeningOnLineCount: Integer;
     FIncludeOpeningOnLine: Boolean;
     FNestInfo: Array of TLazSynEditNestedFoldsListEntry;
@@ -2878,22 +2877,18 @@ begin
     // special, join other groups (or some other...)
     FGroupCount := hl.FoldTypeCount;
     // start at 1, so FoldGroup can be used as index
-    SetLength(FGroupEndLevels, FGroupCount + 1);
     SetLength(FGroupEndLevelsAtEval, FGroupCount + 1);
     for i := 1 to FGroupCount do begin
-      FGroupEndLevels[i] := hl.FoldBlockEndLevel(FLine - 1, i, FFoldFlags);
+      FGroupEndLevelsAtEval[i] := hl.FoldBlockEndLevel(FLine - 1, i, FFoldFlags);
       // TODO: adjust flags, if include disabled
       if FIncludeOpeningOnLine then
-        FGroupEndLevels[i] := FGroupEndLevels[i] + hl.FoldNodeInfo[FLine].CountEx([sfaOpen, sfaFold], i);
-      FGroupEndLevelsAtEval[i] := FGroupEndLevels[i];
+        FGroupEndLevelsAtEval[i] := FGroupEndLevelsAtEval[i] + hl.FoldNodeInfo[FLine].CountEx([sfaOpen, sfaFold], i);
     end;
   end
   else begin
     FGroupCount := 1;
-    SetLength(FGroupEndLevels, 1);
     SetLength(FGroupEndLevelsAtEval, 1);
-    FGroupEndLevels[0] := Count;  // includes OpeningOnLineCount
-    FGroupEndLevelsAtEval[0] := FGroupEndLevels[0];
+    FGroupEndLevelsAtEval[0] := Count;  // includes OpeningOnLineCount
   end;
 end;
 
@@ -3080,7 +3075,6 @@ begin
            ' FFoldFlags=', dbgs(FFoldFlags), ' FGroupCount=', FGroupCount,
            ' FIncludeOpeningOnLine=', dbgs(FIncludeOpeningOnLine), ' FEvaluationIndex=', FEvaluationIndex,
            ' FCount=', FCount, ' FOpeningOnLineCount=', FOpeningOnLineCount]);
-  Debugln(['FGroupEndLevels=', length(FGroupEndLevels), ': ']); for i := 0 to length(FGroupEndLevels)-1 do DbgOut([FGroupEndLevels[i]]); Debugln;
   Debugln(['FGroupEndLevelsAtEval=', length(FGroupEndLevelsAtEval), ': ']); for i := 0 to length(FGroupEndLevelsAtEval)-1 do DbgOut([FGroupEndLevelsAtEval[i]]); Debugln;
   for i := 0 to length(FNestInfo)-1 do
     Debugln(['N-Info ', i,': ',dbgs(FNestInfo[i])]);
