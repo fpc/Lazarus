@@ -1,0 +1,1632 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<fpdoc-descriptions>
+<package name="lazutils">
+
+<!--
+  ====================================================================
+    LazFreeType
+  ====================================================================
+-->
+
+<module name="LazFreeType">
+<short></short>
+<descr>
+</descr>
+
+<!-- function Visibility: default -->
+<element name="TT_Init_FreeType">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TT_Init_FreeType.Result">
+<short></short>
+</element>
+
+<!-- procedure Visibility: default -->
+<element name="TT_Done_FreeType">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: default -->
+<element name="TT_Set_Raster_Palette">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TT_Set_Raster_Palette.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TT_Set_Raster_Palette.palette">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="TT_Open_Face">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TT_Open_Face.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TT_Open_Face.fontname">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TT_Open_Face._face">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="TT_Open_Collection">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TT_Open_Collection.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TT_Open_Collection.fontname">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TT_Open_Collection.faceIndex">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TT_Open_Collection._face">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="TT_Get_Face_Properties">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TT_Get_Face_Properties.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TT_Get_Face_Properties._face">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TT_Get_Face_Properties.prop">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="TT_Set_Face_Pointer">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TT_Set_Face_Pointer.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TT_Set_Face_Pointer._face">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TT_Set_Face_Pointer.data">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="TT_Get_Face_Pointer">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TT_Get_Face_Pointer.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TT_Get_Face_Pointer._face">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="TT_Close_Face">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TT_Close_Face.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TT_Close_Face._face">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="TT_New_Instance">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TT_New_Instance.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TT_New_Instance._face">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TT_New_Instance._ins">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="TT_Set_Instance_Resolutions">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TT_Set_Instance_Resolutions.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TT_Set_Instance_Resolutions._ins">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TT_Set_Instance_Resolutions.x_resolution">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TT_Set_Instance_Resolutions.y_resolution">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="TT_Set_Instance_PointSize">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TT_Set_Instance_PointSize.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TT_Set_Instance_PointSize._ins">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TT_Set_Instance_PointSize.pointsize">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="TT_Set_Instance_CharSize">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TT_Set_Instance_CharSize.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TT_Set_Instance_CharSize._ins">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TT_Set_Instance_CharSize.charsize">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="TT_Set_Instance_CharSizes">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TT_Set_Instance_CharSizes.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TT_Set_Instance_CharSizes._ins">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TT_Set_Instance_CharSizes.charsizex">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TT_Set_Instance_CharSizes.charsizey">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="TT_Set_Instance_PixelSizes">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TT_Set_Instance_PixelSizes.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TT_Set_Instance_PixelSizes._ins">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TT_Set_Instance_PixelSizes.pixelX">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TT_Set_Instance_PixelSizes.pixelY">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TT_Set_Instance_PixelSizes.pointsize">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="TT_Set_Instance_Transforms">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TT_Set_Instance_Transforms.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TT_Set_Instance_Transforms._ins">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TT_Set_Instance_Transforms.rotated">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TT_Set_Instance_Transforms.distorted">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="TT_Get_Instance_Metrics">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TT_Get_Instance_Metrics.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TT_Get_Instance_Metrics._ins">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TT_Get_Instance_Metrics.m">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="TT_Set_Instance_Pointer">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TT_Set_Instance_Pointer.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TT_Set_Instance_Pointer._ins">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TT_Set_Instance_Pointer.data">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="TT_Get_Instance_Pointer">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TT_Get_Instance_Pointer.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TT_Get_Instance_Pointer._ins">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="TT_Done_Instance">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TT_Done_Instance.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TT_Done_Instance._ins">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="TT_New_Glyph">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TT_New_Glyph.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TT_New_Glyph._face">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TT_New_Glyph._glyph">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="TT_Done_Glyph">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TT_Done_Glyph.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TT_Done_Glyph._glyph">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="TT_Load_Glyph">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TT_Load_Glyph.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TT_Load_Glyph._instance">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TT_Load_Glyph._glyph">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TT_Load_Glyph.glyph_index">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TT_Load_Glyph.load_flags">
+<short></short>
+</element>
+
+<!-- constant Visibility: default -->
+<element name="TT_Load_Scale_Glyph">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- constant Visibility: default -->
+<element name="TT_Load_Hint_Glyph">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- constant Visibility: default -->
+<element name="TT_Load_Debug">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- constant Visibility: default -->
+<element name="TT_Load_Default">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: default -->
+<element name="TT_Get_Glyph_Outline">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TT_Get_Glyph_Outline.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TT_Get_Glyph_Outline._glyph">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TT_Get_Glyph_Outline.outline">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="TT_Get_Glyph_Metrics">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TT_Get_Glyph_Metrics.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TT_Get_Glyph_Metrics._glyph">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TT_Get_Glyph_Metrics.gmetrics">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="TT_Get_Glyph_Big_Metrics">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TT_Get_Glyph_Big_Metrics.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TT_Get_Glyph_Big_Metrics._glyph">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TT_Get_Glyph_Big_Metrics.gmetrics">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="TT_Get_Glyph_Bitmap">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TT_Get_Glyph_Bitmap.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TT_Get_Glyph_Bitmap._glyph">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TT_Get_Glyph_Bitmap.map">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TT_Get_Glyph_Bitmap.x_offset">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TT_Get_Glyph_Bitmap.y_offset">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TT_Get_Glyph_Bitmap.rasterizer">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="TT_Get_Glyph_Pixmap">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TT_Get_Glyph_Pixmap.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TT_Get_Glyph_Pixmap._glyph">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TT_Get_Glyph_Pixmap.map">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TT_Get_Glyph_Pixmap.x_offset">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TT_Get_Glyph_Pixmap.y_offset">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TT_Get_Glyph_Pixmap.rasterizer">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="TT_Get_Glyph_Pixmap_HQ">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TT_Get_Glyph_Pixmap_HQ.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TT_Get_Glyph_Pixmap_HQ._glyph">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TT_Get_Glyph_Pixmap_HQ.map">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TT_Get_Glyph_Pixmap_HQ.x_offset">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TT_Get_Glyph_Pixmap_HQ.y_offset">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TT_Get_Glyph_Pixmap_HQ.rasterizer">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="TT_Render_Directly_Glyph_Gray">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TT_Render_Directly_Glyph_Gray.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TT_Render_Directly_Glyph_Gray._glyph">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TT_Render_Directly_Glyph_Gray.x_offset">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TT_Render_Directly_Glyph_Gray.y_offset">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TT_Render_Directly_Glyph_Gray.x">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TT_Render_Directly_Glyph_Gray.y">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TT_Render_Directly_Glyph_Gray.tx">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TT_Render_Directly_Glyph_Gray.ty">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TT_Render_Directly_Glyph_Gray.OnRender">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TT_Render_Directly_Glyph_Gray.rasterizer">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="TT_Render_Directly_Glyph_HQ">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TT_Render_Directly_Glyph_HQ.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TT_Render_Directly_Glyph_HQ._glyph">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TT_Render_Directly_Glyph_HQ.x_offset">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TT_Render_Directly_Glyph_HQ.y_offset">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TT_Render_Directly_Glyph_HQ.x">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TT_Render_Directly_Glyph_HQ.y">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TT_Render_Directly_Glyph_HQ.tx">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TT_Render_Directly_Glyph_HQ.ty">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TT_Render_Directly_Glyph_HQ.OnRender">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TT_Render_Directly_Glyph_HQ.rasterizer">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="TT_Translate_Outline">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TT_Translate_Outline.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TT_Translate_Outline.out">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TT_Translate_Outline.x">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TT_Translate_Outline.y">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="TT_Transform_Outline">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TT_Transform_Outline.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TT_Transform_Outline.out">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TT_Transform_Outline.mat">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="TT_Transform_Vector">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TT_Transform_Vector.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TT_Transform_Vector.x">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TT_Transform_Vector.y">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TT_Transform_Vector.mat">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="TT_Get_Outline_Bitmap">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TT_Get_Outline_Bitmap.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TT_Get_Outline_Bitmap.out">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TT_Get_Outline_Bitmap.map">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TT_Get_Outline_Bitmap.rasterizer">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="TT_Get_Outline_Pixmap">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TT_Get_Outline_Pixmap.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TT_Get_Outline_Pixmap.out">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TT_Get_Outline_Pixmap.map">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TT_Get_Outline_Pixmap.rasterizer">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="TT_Get_Outline_Pixmap_HQ">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TT_Get_Outline_Pixmap_HQ.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TT_Get_Outline_Pixmap_HQ.out">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TT_Get_Outline_Pixmap_HQ.map">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TT_Get_Outline_Pixmap_HQ.rasterizer">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="TT_Render_Directly_Outline_Gray">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TT_Render_Directly_Outline_Gray.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TT_Render_Directly_Outline_Gray.out">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TT_Render_Directly_Outline_Gray.x">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TT_Render_Directly_Outline_Gray.y">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TT_Render_Directly_Outline_Gray.tx">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TT_Render_Directly_Outline_Gray.ty">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TT_Render_Directly_Outline_Gray.OnRender">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TT_Render_Directly_Outline_Gray.rasterizer">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="TT_Render_Directly_Outline_HQ">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TT_Render_Directly_Outline_HQ.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TT_Render_Directly_Outline_HQ.out">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TT_Render_Directly_Outline_HQ.x">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TT_Render_Directly_Outline_HQ.y">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TT_Render_Directly_Outline_HQ.tx">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TT_Render_Directly_Outline_HQ.ty">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TT_Render_Directly_Outline_HQ.OnRender">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TT_Render_Directly_Outline_HQ.rasterizer">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="TT_Get_Outline_BBox">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TT_Get_Outline_BBox.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TT_Get_Outline_BBox.out">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TT_Get_Outline_BBox.bbox">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="TT_New_Outline">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TT_New_Outline.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TT_New_Outline.n_points">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TT_New_Outline.n_contours">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TT_New_Outline.out">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="TT_Copy_Outline">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TT_Copy_Outline.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TT_Copy_Outline.source">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TT_Copy_Outline.target">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="TT_Clone_Outline">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TT_Clone_Outline.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TT_Clone_Outline.source">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TT_Clone_Outline.target">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="TT_Done_Outline">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TT_Done_Outline.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TT_Done_Outline.out">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="TT_Get_CharMap_Count">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TT_Get_CharMap_Count.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TT_Get_CharMap_Count.face">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="TT_Get_CharMap_ID">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TT_Get_CharMap_ID.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TT_Get_CharMap_ID.face">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TT_Get_CharMap_ID.charmapIndex">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TT_Get_CharMap_ID.platform">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TT_Get_CharMap_ID.encoding">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="TT_Get_CharMap">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TT_Get_CharMap.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TT_Get_CharMap.face">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TT_Get_CharMap.charmapIndex">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TT_Get_CharMap.charMap">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="TT_Char_Index">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TT_Char_Index.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TT_Char_Index.charmap">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TT_Char_Index.charCode">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="TT_Get_Name_Count">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TT_Get_Name_Count.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TT_Get_Name_Count.face">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="TT_Get_Name_ID">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TT_Get_Name_ID.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TT_Get_Name_ID.face">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TT_Get_Name_ID.nameIndex">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TT_Get_Name_ID.platform">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TT_Get_Name_ID.encoding">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TT_Get_Name_ID.language">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TT_Get_Name_ID.nameid">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="TT_Get_Name_String">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TT_Get_Name_String.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TT_Get_Name_String.face">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TT_Get_Name_String.nameIndex">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TT_Get_Name_String.str">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TT_Get_Name_String.len">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="TT_Get_Font_Data">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TT_Get_Font_Data.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TT_Get_Font_Data.face">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TT_Get_Font_Data.tableTag">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TT_Get_Font_Data.offset">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TT_Get_Font_Data.buffer">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TT_Get_Font_Data.length">
+<short></short>
+</element>
+
+</module> <!-- LazFreeType -->
+
+</package>
+</fpdoc-descriptions>
