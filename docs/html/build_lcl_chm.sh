@@ -4,6 +4,8 @@
 # assumes a fpcdocs checkout where "fixdocs.sh" has been succesfully run.
 # on 1.7GHz Core2 laptop single thread 6:26 minutes. Don't be impatient :-)
 
+set -e
+
 # set to path to FPC docs dir. Default assume it is on the same level as the lazarus checkout
 if [ -z "$FPCDocDir" ]; then
   FPCDocDir=../../../fpcdocs
@@ -19,8 +21,8 @@ exit 1
 fi
 
 export HTMLFMT=chm
-sh build_lazutils_html.sh fpdoc `pwd`/locallclfooter.xml $FPCDocDirEXP 1>lazutilsoutput.log 2>lazutilserror.log
-sh build_lcl_html.sh fpdoc `pwd`/locallclfooter.xml $FPCDocDirEXP 1>lcloutput.log 2>lclerror.log
+bash build_lazutils_html.sh fpdoc `pwd`/locallclfooter.xml $FPCDocDirEXP 1>lazutilsoutput.log 2>lazutilserror.log
+bash build_lcl_html.sh fpdoc `pwd`/locallclfooter.xml $FPCDocDirEXP 1>lcloutput.log 2>lclerror.log
 
 # end.
 

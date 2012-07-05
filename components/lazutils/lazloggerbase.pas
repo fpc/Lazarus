@@ -4,7 +4,7 @@ unit LazLoggerBase;
 (*
   - All globas variables, initialization and finalization uses TObject instead
     of TLazLogger.
-    This means, usinc the unit, without calling any of the functions, will not
+    This means, using the unit, without calling any of the functions, will not
     make any reference to the classes, and they should be smart-linked away.
 *)
 

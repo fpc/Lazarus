@@ -25,7 +25,7 @@ interface
 type
   (* IntN types :                                                       *)
   (*                                                                    *)
-  (*  These types are used as a way to garantee the size of some        *)
+  (*  These types are used as a way to guarantee the size of some        *)
   (*  specific integers.                                                *)
   (*                                                                    *)
   (*  Of course, they are equivalent to Short, UShort, Long, etc ..     *)
