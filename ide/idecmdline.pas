@@ -38,7 +38,7 @@ unit IDECmdLine;
 interface
 
 uses 
-  Classes, SysUtils, FileUtil, LazConf, LCLProc;
+  Classes, SysUtils, FileUtil, LazFileUtils, LazConf, LCLProc;
 
 const
   ShowSetupDialogOptLong='--setup';
@@ -55,10 +55,11 @@ const
   LanguageOpt='--language=';
   LazarusDirOpt ='--lazarusdir=';
 
-procedure ParseCommandLine(aCmdLineParams : TStrings; out IDEPid : Integer;
+procedure ParseCommandLine(aCmdLineParams: TStrings; out IDEPid : Integer;
             out ShowSplashScreen: boolean);
-function GetCommandLineParameters(aCmdLineParams : TStrings;
-            isStartLazarus : Boolean = False) : String;
+function GetCommandLineParameters(aCmdLineParams: TStrings;
+            isStartLazarus: Boolean = False) : string;
+function ExtractPrimaryConfigPath(aCmdLineParams: TStrings): string;
 
 function IsHelpRequested : Boolean;
 function IsVersionRequested : boolean;
@@ -70,8 +71,6 @@ function ParamIsOptionPlusValue(ParamIndex : integer;
 procedure ParseNoGuiCmdLineParams;
 
 function ExtractCmdLineFilenames : TStrings;
-
-function GetLazarusDirectory : String;
 
 implementation
 
@@ -101,29 +100,22 @@ begin
       end;
     end
     else if ParamIsOption(i, NoSplashScreenOptLong) or
-            ParamIsOption(i, NoSplashScreenOptShort)    then
-       begin
-         ShowSplashScreen := false;
-       end
-    else
+            ParamIsOption(i, NoSplashScreenOptShort) then
+    begin
+      ShowSplashScreen := false;
+    end
+    else begin
+      // Do not add file to the parameter list
+      if not (Copy(Param,1,1) = '-') and (FileExistsUTF8(ExpandFileNameUTF8(Param))) then
       begin
-        // pass these parameters to Lazarus
-
-        if LeftStr(Param,length(PrimaryConfPathOptShort))=PrimaryConfPathOptShort
-        then begin
-          SetPrimaryConfigPath(copy(Param,length(PrimaryConfPathOptShort)+1,length(Param)));
-        end;
-
-        // Do not add file to the parameter list
-        if not (Copy(Param,1,1) = '-') and (FileExistsUTF8(ExpandFileNameUTF8(Param))) then
-          begin
-            DebugLn('%s is a file', [Param]);
-            continue;
-          end;
-          
-        DebugLn('Adding "%s" as a parameter', [Param]);
-        aCmdLineParams.Add(Param);
+        DebugLn('%s is a file', [Param]);
+        continue;
       end;
+
+      // pass these parameters to Lazarus
+      DebugLn('Adding "%s" as a parameter', [Param]);
+      aCmdLineParams.Add(Param);
+    end;
   end;
   // make sure that command line parameters are still
   // double quoted, if they contain spaces
@@ -144,6 +136,25 @@ begin
     Result := '';
   for i := 0 to aCmdLineParams.Count - 1 do
     Result := Result + ' ' + aCmdLineParams[i];
+end;
+
+function ExtractPrimaryConfigPath(aCmdLineParams: TStrings): string;
+
+  procedure GetParam(Param, Prefix: string; var Value: string);
+  begin
+    if LeftStr(Param,length(Prefix))=Prefix then
+      Value:=copy(Param,length(Prefix)+1,length(Param));
+  end;
+
+var
+  i: Integer;
+begin
+  Result:='';
+  for i:=0 to aCmdLineParams.Count-1 do
+  begin
+    GetParam(aCmdLineParams[i],PrimaryConfPathOptLong,Result);
+    GetParam(aCmdLineParams[i],PrimaryConfPathOptShort,Result);
+  end;
 end;
 
 function IsHelpRequested : Boolean;
@@ -242,11 +253,6 @@ begin
        Result := TStringList.Create;
      Result.Add(Filename);
     end;
-end;
-
-function GetLazarusDirectory : String;
-begin
-  Result := ExtractFileDir(ParamStrUTF8(0));
 end;
 
 end.

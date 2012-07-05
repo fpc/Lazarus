@@ -222,13 +222,23 @@ procedure TLazarusManager.Initialize;
 var
   CmdLineFiles: TStrings;
   i: integer;
+  PCP: String;
 begin
   FShowSplashOption:=true;
   SplashForm := nil;
+
+  // get command line parameters
   FCmdLineParams := TStringList.Create;
   ParseCommandLine(FCmdLineParams, FLazarusPID, FShowSplashOption);
   if FShowSplashOption then
     ShowSplash;
+
+  // set primary config path
+  PCP:=ExtractPrimaryConfigPath(FCmdLineParams);
+  if PCP<>'' then
+    SetPrimaryConfigPath(PCP);
+
+  // get command line files
   CmdLineFiles := ExtractCmdLineFilenames;
   if CmdLineFiles<>nil then
   begin

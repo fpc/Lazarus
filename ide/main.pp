@@ -1119,6 +1119,7 @@ implementation
 
 
 var
+  ParamBaseDirectory: string = '';
   SkipAutoLoadingLastProject: boolean = false;
   StartedByStartLazarus: boolean = false;
   ShowSetupDialog: boolean = false;
@@ -1203,6 +1204,7 @@ var
   ConfFileName: String;
   Cfg: TXMLConfig;
 begin
+  ParamBaseDirectory:=GetCurrentDirUTF8;
   StartedByStartLazarus:=false;
   SkipAutoLoadingLastProject:=false;
   EnableRemoteControl:=false;
@@ -12466,17 +12468,18 @@ const
   begin
     StartLazProcess := TProcessUTF8.Create(nil);
     try
-      // TODO: use the target directory, where the new startlazarus is
-      StartLazProcess.CurrentDirectory := GetLazarusDirectory;
+      // use the same working directory as the IDE, so that all relative file
+      // names in parameters still work
+      StartLazProcess.CurrentDirectory := ParamBaseDirectory;
       //DebugLn('Parsing commandLine: ');
       Params := TStringList.Create;
       ParseCommandLine(Params, Dummy, Unused);
       //DebugLn('Done parsing CommandLine');
       {$ifndef darwin}
-      ExeName := AppendPathDelim(StartLazProcess.CurrentDirectory) +
+      ExeName := AppendPathDelim(EnvironmentOptions.GetParsedLazarusDirectory) +
         'startlazarus' + GetExecutableExt;
       {$else}
-      ExeName := ExpandUNCFileNameUTF8(StartLazProcess.CurrentDirectory);
+      ExeName := ExpandUNCFileNameUTF8(EnvironmentOptions.GetParsedLazarusDirectory);
       ExeName := AppendPathDelim( ExtractFilePath(ExeName) ) +
              DarwinStartlazBundlePath + 'startlazarus' + GetExecutableExt;
       {$endif}
