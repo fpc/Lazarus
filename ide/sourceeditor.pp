@@ -2808,10 +2808,15 @@ begin
     LogCaret.X:=StartX;
     Include(Flags,ssoBackwards);
   end;
-  EditorComponent.LogicalCaretXY:=LogCaret;
-  EditorComponent.SearchReplace(EditorComponent.GetWordAtRowCol(LogCaret),
-                                '',Flags);
-  CenterCursor(True);
+  EditorComponent.BeginUpdate(False);
+  try
+    EditorComponent.LogicalCaretXY:=LogCaret;
+    EditorComponent.SearchReplace(EditorComponent.GetWordAtRowCol(LogCaret),
+                                  '',Flags);
+    CenterCursor(True);
+  finally
+    EditorComponent.EndUpdate;
+  end;
 end;
 
 function TSourceEditor.DoFindAndReplace(aFindText, aReplaceText: String;
