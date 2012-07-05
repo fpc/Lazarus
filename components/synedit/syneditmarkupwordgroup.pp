@@ -119,15 +119,13 @@ procedure TSynEditMarkupWordGroup.FindMatchingWords(PhysCaret: TPoint;
 var
   LCnt: Integer;
   HL: TSynCustomFoldHighlighter;
+  NodeList: TLazSynFoldNodeInfoList;
 
   function FindEndNode(StartNode: TSynFoldNodeInfo;
                        var YIndex, NIndex: Integer): TSynFoldNodeInfo;
     function SearchLine(ALineIdx: Integer; var ANodeIdx: Integer): TSynFoldNodeInfo;
-    var
-      NodeList: TLazSynFoldNodeInfoList;
     begin
-      NodeList := HL.FoldNodeInfo[ALineIdx];
-      NodeList.ActionFilter := [sfaMarkup];
+      NodeList.Line := ALineIdx;
       repeat
         inc(ANodeIdx);
         Result := NodeList[ANodeIdx];
@@ -158,11 +156,10 @@ var
   function FindStartNode(EndNode: TSynFoldNodeInfo;
                        var YIndex, NIndex: Integer): TSynFoldNodeInfo;
     function SearchLine(ALineIdx: Integer; var ANodeIdx: Integer): TSynFoldNodeInfo;
-    var
-      NodeList: TLazSynFoldNodeInfoList;
     begin
-      NodeList := HL.FoldNodeInfo[ALineIdx];
-      NodeList.ActionFilter := [sfaMarkup];
+      NodeList.Line := ALineIdx;
+      if ANodeIdx < 0 then
+        ANodeIdx := NodeList.Count;
       repeat
         dec(ANodeIdx);
         Result := NodeList[ANodeIdx];
@@ -182,7 +179,7 @@ var
     if YIndex < 0 then
       exit;
 
-    NIndex := HL.FoldNodeInfo[YIndex].CountEx([sfaMarkup]);
+    NIndex := -1;
     Result := SearchLine(YIndex, NIndex);
 
     if (Result.LogXEnd = 0) or (sfaLastLineClose in Result.FoldAction) then
@@ -197,8 +194,8 @@ var
               (Node1.LogXEnd = Node2.LogXEnd);
   end;
 
-  function CheckNeighbourNode(const NodeList: TLazSynFoldNodeInfoList;
-    const CurNode: TSynFoldNodeInfo; Offset: Integer; var FoundNode: TSynFoldNodeInfo): Boolean;
+  function CheckNeighbourNode(const CurNode: TSynFoldNodeInfo; Offset: Integer;
+    var FoundNode: TSynFoldNodeInfo): Boolean;
   var
     TmpNode: TSynFoldNodeInfo;
   begin
@@ -212,7 +209,6 @@ var
   LogCaretXY: TPoint;
   i, y: integer;
   StartNode, CloseNode, Node3, TmpNode: TSynFoldNodeInfo;
-  NodeList: TLazSynFoldNodeInfoList;
 begin
   Word1.Y := -1;
   Word2.Y := -1;
@@ -237,46 +233,51 @@ begin
   *)
   i := 0;
   NodeList := HL.FoldNodeInfo[y];
-  NodeList.ActionFilter := [sfaMarkup];
-  TmpNode := NodeList[i];
-  while not(sfaInvalid in TmpNode.FoldAction) and (TmpNode.LogXEnd < LogCaretXY.X-1) do
-  begin
-    inc(i);
+  NodeList.AddReference;
+  try
+    NodeList.ActionFilter := [sfaMarkup];
     TmpNode := NodeList[i];
-  end;
-  if (TmpNode.LogXStart > LogCaretXY.X - 1) or (sfaInvalid in TmpNode.FoldAction) then
-    exit;
-
-  (* Find other end *)
-  Node3.FoldAction := [sfaInvalid];
-  if TmpNode.FoldAction * [sfaOpen, sfaOneLineOpen] <> [] then begin
-    StartNode := TmpNode;
-    CloseNode := FindEndNode(StartNode, y, i);
-    if (sfaInvalid in CloseNode.FoldAction) then
+    while not(sfaInvalid in TmpNode.FoldAction) and (TmpNode.LogXEnd < LogCaretXY.X-1) do
+    begin
+      inc(i);
+      TmpNode := NodeList[i];
+    end;
+    if (TmpNode.LogXStart > LogCaretXY.X - 1) or (sfaInvalid in TmpNode.FoldAction) then
       exit;
-    // NodeList now holds the closing line
-    if not CheckNeighbourNode(NodeList, CloseNode, 1, Node3)
-    then CheckNeighbourNode(NodeList, CloseNode, -1, Node3);
-  end else begin
-    CloseNode := TmpNode;
-    CheckNeighbourNode(NodeList, CloseNode, 1, Node3); // still having the correct NodeList;
-    StartNode := FindStartNode(CloseNode, y, i);
-    if (sfaInvalid in StartNode.FoldAction) then
-      exit;
-    // NodeList now holds the opening line
-    if sfaInvalid in Node3.FoldAction then
-      CheckNeighbourNode(NodeList, StartNode, -1, Node3); // StartNode could be $ELSE
-  end;
 
+    (* Find other end *)
+    Node3.FoldAction := [sfaInvalid];
+    if TmpNode.FoldAction * [sfaOpen, sfaOneLineOpen] <> [] then begin
+      StartNode := TmpNode;
+      CloseNode := FindEndNode(StartNode, y, i);
+      if (sfaInvalid in CloseNode.FoldAction) then
+        exit;
+      // NodeList now holds the closing line
+      if not CheckNeighbourNode(CloseNode, 1, Node3)
+      then CheckNeighbourNode(CloseNode, -1, Node3);
+    end else begin
+      CloseNode := TmpNode;
+      CheckNeighbourNode(CloseNode, 1, Node3); // still having the correct NodeList;
+      StartNode := FindStartNode(CloseNode, y, i);
+      if (sfaInvalid in StartNode.FoldAction) then
+        exit;
+      // NodeList now holds the opening line
+      if sfaInvalid in Node3.FoldAction then
+        CheckNeighbourNode(StartNode, -1, Node3); // StartNode could be $ELSE
+    end;
 
-  (* Find optional 3rd Node *)
-  if not(sfaInvalid in Node3.FoldAction) then begin
-    i := Node3.NodeIndex;
-    y := Node3.LineIndex;
-    if Node3.FoldAction * [sfaOpen, sfaOneLineOpen] <> [] then
-      Node3 := FindEndNode(Node3, y, i)
-    else
-      Node3 := FindStartNode(Node3, y, i);
+    (* Find optional 3rd Node *)
+    if not(sfaInvalid in Node3.FoldAction) then begin
+      i := Node3.NodeIndex;
+      y := Node3.LineIndex;
+      if Node3.FoldAction * [sfaOpen, sfaOneLineOpen] <> [] then
+        Node3 := FindEndNode(Node3, y, i)
+      else
+        Node3 := FindStartNode(Node3, y, i);
+    end;
+
+  finally
+    NodeList.ReleaseReference;
   end;
 
   Word1.Y  := StartNode.LineIndex + 1;

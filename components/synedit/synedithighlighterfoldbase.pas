@@ -58,7 +58,7 @@ interface
 
 uses
   SysUtils, Classes, math, LCLProc, SynEditHighlighter, SynEditTypes,
-  AvgLvlTree;
+  AvgLvlTree, LazClasses;
 
 const
   NullRange = TSynEditRange(nil);
@@ -114,6 +114,7 @@ procedure InitFoldBlockFilter(out AFilter: TSynFoldBlockFilter;
                               AFoldGroup: Integer = 0; AFlag: TSynFoldBlockFilterFlags = []);
 
 type
+  TSynCustomFoldHighlighter = class;
 
   TSynFoldNodeInfo = record
     LineIndex: Integer;
@@ -130,8 +131,9 @@ type
 
   { TLazSynFoldNodeInfoList }
 
-  TLazSynFoldNodeInfoList = class
+  TLazSynFoldNodeInfoList = class(TRefCountedObject)
   private
+    FHighLighter: TSynCustomFoldHighlighter;
     FValid: Boolean;
     FActionFilter: TSynFoldActions;
     FGroupFilter: Integer;
@@ -156,6 +158,7 @@ type
     function  CountAll: Integer;
     property  ItemPointer[AnIndex: Integer]: PSynFoldNodeInfo read GetItemPointer;
     property  LastItemPointer: PSynFoldNodeInfo read GetLastItemPointer;
+    property  HighLighter: TSynCustomFoldHighlighter read FHighLighter write FHighLighter;
   protected
     function  DefaultGroup: Integer; virtual;
     function  MinCapacity: Integer; virtual;
@@ -174,7 +177,8 @@ type
     function CountEx   (AnActionFilter: TSynFoldActions; AGroupFilter: Integer = 0): Integer;
     function NodeInfoEx(Index: Integer; AnActionFilter: TSynFoldActions; AGroupFilter: Integer = 0): TSynFoldNodeInfo; virtual;
   public
-    property Line: TLineIdx read FLine;
+    // Only allowed to be set, if highlighter has CurrentLines (and is scanned)
+    property Line: TLineIdx read FLine write SetLine;
   end;
 
   TSynCustomFoldConfigMode = (fmFold, fmHide);
@@ -346,6 +350,10 @@ type
     function FoldEndLine(ALineIndex, FoldIndex: Integer): integer; virtual;     // FoldEndLine, can be more than given by FoldLineLength, since Length my cut off early
 
     // All fold-nodes
+    // FoldNodeInfo: Returns a shared object
+    // Adding RefCount, will prevent others from getting further copies, but not from using copies they already have.
+    // If not adding refcount, the object should not be stored/re-used
+    // Not adding ref-count, should only be done for CountEx, NodeInfoEx
     property FoldNodeInfo[Line: TLineIdx]: TLazSynFoldNodeInfoList read GetFoldNodeInfo;
 
     procedure SetRange(Value: Pointer); override;
@@ -551,6 +559,7 @@ begin
   if FLine = ALine then exit;
   Clear;
   FLine := ALine;
+  FHighLighter.InitFoldNodeInfo(Self, FLine);
 end;
 
 function TLazSynFoldNodeInfoList.MinCapacity: Integer;
@@ -710,7 +719,7 @@ begin
   DestroyFoldConfig;
   FreeAndNil(FCodeFoldRange);
   FreeAndNil(FRootCodeFoldBlock);
-  FreeAndNil(FFoldNodeInfoList);
+  ReleaseRefAndNil(FFoldNodeInfoList);
   fRanges.Release;
   FFoldConfig := nil;
 end;
@@ -982,13 +991,17 @@ end;
 function TSynCustomFoldHighlighter.GetFoldNodeInfo(Line: TLineIdx
   ): TLazSynFoldNodeInfoList;
 begin
-  if FFoldNodeInfoList = nil then
+  if (FFoldNodeInfoList <> nil) and (FFoldNodeInfoList.RefCount > 1) then
+    ReleaseRefAndNil(FFoldNodeInfoList);
+
+  if FFoldNodeInfoList = nil then begin
     FFoldNodeInfoList := CreateFoldNodeInfoList;
-  Result := FFoldNodeInfoList;
-  if Result.Line <> Line then begin
-    Result.SetLine(Line);
-    InitFoldNodeInfo(Result, Line);
+    FFoldNodeInfoList.AddReference;
+    FFoldNodeInfoList.HighLighter := Self;
   end;
+
+  Result := FFoldNodeInfoList;
+  Result.Line := Line;
 end;
 
 procedure TSynCustomFoldHighlighter.InitFoldNodeInfo(AList: TLazSynFoldNodeInfoList; Line: TLineIdx);
