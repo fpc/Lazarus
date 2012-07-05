@@ -2173,7 +2173,7 @@ end;
 
 procedure TCustomSynEdit.DecStatusChangeLock;
 begin
-  inc(FStatusChangeLock);
+  dec(FStatusChangeLock);
   if FStatusChangeLock = 0 then
     StatusChanged([]);
 end;
