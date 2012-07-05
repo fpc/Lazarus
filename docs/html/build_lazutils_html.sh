@@ -28,11 +28,11 @@ InputFileList=inputfile.txt
 # missing units will be dropped from this list, other units added.
 # units not in import order will mutilate links.
 
-PreorderUnitList=( lazutilstrconsts luresstrings lazutf8sysutils lazmethodlist avglvltree )
+PreorderUnitList=( lazutilsstrconsts luresstrings lazutf8sysutils lazmethodlist avglvltree )
 PreorderUnitList+=( lazutf8 lazutf16 masks fileutil lazutf8classes lconvencoding paswstring )
-PreorderUnitList+=( lazdbglog lazfileutils lazfilecache  lazutils ) 
+PreorderUnitList+=( lazlogger lazdbglog lazfileutils lazfilecache  lazutils )
 PreorderUnitList+=( laz2_xmlutils laz2_dom laz2_xmlread laz2_xmlwrite )
-PreorderUnitList+=( laz_dom lazxmlread laz_xmlwrite )
+PreorderUnitList+=( laz_dom laz_xmlread laz_xmlwrite )
 PreorderUnitList+=( laz_xmlcfg laz2_xmlcfg  laz_xmlstreaming )
 #------------------
 
