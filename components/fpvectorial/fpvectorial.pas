@@ -1783,6 +1783,7 @@ procedure TvFormulaElement.Render(ADest: TFPCustomCanvas; ADestX: Integer;
 
 var
   LeftC, TopC: Integer;
+  lPt: array[0..3] of TPoint;
 begin
   LeftC := CoordToCanvasX(Left);
   TopC := CoordToCanvasY(Top);
@@ -1802,10 +1803,32 @@ begin
     begin
       Formula.Render(ADest, ADestX, ADestY, AMulX, AMulY);
       AdjacentFormula.Render(ADest, ADestX, ADestY, AMulX, AMulY);
+
+      // Division line
+      lPt[0].X := CoordToCanvasX(Formula.Left);
+      lPt[1].X := CoordToCanvasX(Formula.Left + Formula.Width);
+      lPt[0].Y := CoordToCanvasY(Formula.Top - Formula.Height);
+      lPt[1].Y := CoordToCanvasY(Formula.Top - Formula.Height);
+      ADest.Line(lPt[0].X, lPt[0].Y, lPt[1].X, lPt[1].Y);
     end;
     fekRoot:
     begin
       Formula.Render(ADest, ADestX, ADestY, AMulX, AMulY);
+
+      // Root drawing
+      lPt[0].X := CoordToCanvasX(Left);
+      lPt[0].Y := CoordToCanvasY(Top - Formula.Height * 0.7 + 5);
+      // diagonal down
+      lPt[1].X := CoordToCanvasX(Left + 5);
+      lPt[1].Y := CoordToCanvasY(Top - Formula.Height * 0.7);
+      // up
+      lPt[2].X := CoordToCanvasX(Left + 5);
+      lPt[2].Y := CoordToCanvasY(Top);
+      // straight right
+      lPt[3].X := CoordToCanvasX(Left + Formula.Width);
+      lPt[3].Y := CoordToCanvasY(Top);
+      //
+      ADest.Polyline(lPt);
     end;
     fekPower:
     begin
@@ -1993,7 +2016,8 @@ begin
       end;
       fekRoot:
       begin
-        lElement.Formula.PositionElements(ADest, lElement.Left + 5, lElement.Top);
+        // Give a factor for the root drawing
+        lElement.Formula.PositionElements(ADest, lElement.Left + 10, lElement.Top);
       end;
       fekPower:
       begin
