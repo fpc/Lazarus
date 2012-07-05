@@ -23,13 +23,13 @@ Authors: Luнs Rodrigues, Philippe Martinole, Alexander Klenin
 }
 unit TATypes;
 
-{$H+}
+{$mode objfpc}{$H+}
 
 interface
 
 uses
-  Classes, SysUtils, Graphics, Controls, FPCanvas, Types,
-  TAChartUtils, TADrawUtils;
+  Classes, SysUtils, Math, Graphics, Controls, FPCanvas, Types, GraphMath,
+  TACustomSource, TAChartUtils, TADrawUtils, TAGeometry;
 
 const
   MARKS_MARGIN_X = 4;
@@ -407,10 +407,6 @@ type
 
 implementation
 
-uses
-  GraphMath, Math,
-  TACustomSource, TAGeometry;
-
 { TChartPen }
 
 procedure TChartPen.Assign(ASource: TPersistent);
@@ -747,7 +743,7 @@ var
   d: Integer;
 begin
   d := ADrawer.Scale(Distance);
-  Result := Point(d, d);
+  Result := Size(d, d);
   if not DistanceToCenter then
     Result += MeasureLabel(ADrawer, AText) div 2;
 end;
