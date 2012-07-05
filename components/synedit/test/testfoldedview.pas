@@ -42,6 +42,7 @@ type
     function TestText8: TStringArray;
     function TestText9: TStringArray;
     function TestText10: TStringArray;
+    function TestText11: TStringArray;
     function TestTextHide(ALen: Integer): TStringArray;
     function TestTextHide2(ALen: Integer): TStringArray;
     function TestTextHide3: TStringArray;
@@ -474,6 +475,33 @@ begin
   Result[14] := 'end.';
   Result[15] := '';
   Result[16] := '';
+
+end;
+
+function TTestFoldedView.TestText11: TStringArray;
+begin
+  SetLength(Result, 21);
+  Result[ 0] := 'program Foo;';
+  Result[ 1] := '{$IFDEF a} {$ENDIF}'; // lines with same fold-end-level
+  Result[ 2] := '  {$IFDEF b} {$ENDIF}   {$IFDEF c} {$ENDIF}';
+  Result[ 3] := '{$IFDEF X} ';
+  Result[ 4] := '  {$ENDIF}   {$IFDEF Y}';
+  Result[ 5] := '    {$ENDIF}';
+  Result[ 6] := 'procedure a;';
+  Result[ 7] := '  procedure inner;';
+  Result[ 8] := '  begin  writeln();  end;';
+  Result[ 9] := 'begin  writeln();  end;';
+  Result[10] := '';
+  Result[11] := 'procedure a;';
+  Result[12] := '  procedure inner;';
+  Result[13] := '  begin  writeln();  end;';
+  Result[14] := 'begin  writeln();';
+  Result[15] := 'end;';
+  Result[16] := '//';
+  Result[17] := '';
+  Result[18] := '//';
+  Result[19] := '//';
+  Result[20] := '';
 
 end;
 
@@ -1815,6 +1843,7 @@ begin
     TheList.Line := 2;
     TheList.FoldGroup := 0;
     TheList.FoldFlags := [];
+TheList.Count; TheList.HLNode[0]; TheList.Debug;
     AssertEquals(BaseTestName + 'Cnt', 3, TheList.Count);
     CheckNode(TheList.HLNode[2],  2, 0,  0, 5,  2, 3,  2, 3,  1, 0, 1, [sfaOpen,sfaMarkup,sfaFold,sfaFoldFold]);
     CheckNode(TheList.HLNode[1],  1, 0,  0, 9,  1, 2,  1, 2,  3, 3, 1, [sfaOpen,sfaMarkup,sfaFold,sfaFoldFold]);
@@ -2102,6 +2131,62 @@ begin
 
     PopBaseName;
   {%endregion TestText2}
+
+  {%region TestText11}
+    TstSetText('TestText11', TestText11);
+    TheList := FoldedView.FoldProvider.NestedFoldsList;
+    EnableFolds([cfbtBeginEnd..cfbtNone]);
+
+    PushBaseName('All Enabled - group 0 - incl line 4');
+    TheList.ResetFilter;
+    TheList.Line := 4;
+    TheList.IncludeOpeningOnLine := True;
+    TheList.FoldGroup := 0;
+    TheList.FoldFlags := [];
+TheList.Count; TheList.HLNode[0]; TheList.Debug;
+    AssertEquals(BaseTestName + 'Cnt', 3, TheList.Count);
+    CheckNode(TheList.HLNode[2],  4, 0,  14, 20,  0, 1,  0, 1,  18, 18, FOLDGROUP_IFDEF, [sfaOpen,sfaMarkup,sfaFold,sfaFoldFold]);
+    CheckNode(TheList.HLNode[1],  3, 0,   1,  7,  0, 1,  0, 1,  18, 18, FOLDGROUP_IFDEF, [sfaOpen,sfaMarkup,sfaFold,sfaFoldFold]);
+    CheckNode(TheList.HLNode[0],  0, 0,   0,  7,  0, 1,  0, 1,  10, 10, FOLDGROUP_PASCAL, [sfaOpen,sfaMarkup,sfaFold,sfaFoldFold]);
+
+    PopPushBaseName('All Enabled - group 0 - excl line 4');
+    TheList.ResetFilter;
+    TheList.Line := 4;
+    TheList.IncludeOpeningOnLine := False;
+    TheList.FoldGroup := 0;
+    TheList.FoldFlags := [];
+TheList.Count; TheList.HLNode[0]; TheList.Debug;
+    AssertEquals(BaseTestName + 'Cnt', 2, TheList.Count);
+    CheckNode(TheList.HLNode[1],  3, 0,   1,  7,  0, 1,  0, 1,  18, 18, FOLDGROUP_IFDEF, [sfaOpen,sfaMarkup,sfaFold,sfaFoldFold]);
+    CheckNode(TheList.HLNode[0],  0, 0,   0,  7,  0, 1,  0, 1,  10, 10, FOLDGROUP_PASCAL, [sfaOpen,sfaMarkup,sfaFold,sfaFoldFold]);
+
+
+    PushBaseName('All Enabled - group IF - incl line 4');
+    TheList.ResetFilter;
+    TheList.Line := 4;
+    TheList.IncludeOpeningOnLine := True;
+    TheList.FoldGroup := FOLDGROUP_IFDEF;
+    TheList.FoldFlags := [];
+TheList.Count; TheList.HLNode[0]; TheList.Debug;
+    AssertEquals(BaseTestName + 'Cnt', 2, TheList.Count);
+    CheckNode(TheList.HLNode[1],  4, 0,  14, 20,  0, 1,  0, 1,  18, 18, FOLDGROUP_IFDEF, [sfaOpen,sfaMarkup,sfaFold,sfaFoldFold]);
+    CheckNode(TheList.HLNode[0],  3, 0,   1,  7,  0, 1,  0, 1,  18, 18, FOLDGROUP_IFDEF, [sfaOpen,sfaMarkup,sfaFold,sfaFoldFold]);
+
+    PopPushBaseName('All Enabled - group IF - excl line 4');
+    TheList.ResetFilter;
+    TheList.Line := 4;
+    TheList.IncludeOpeningOnLine := False;
+    TheList.FoldGroup := FOLDGROUP_IFDEF;
+    TheList.FoldFlags := [];
+TheList.Count; TheList.HLNode[0]; TheList.Debug;
+    AssertEquals(BaseTestName + 'Cnt', 1, TheList.Count);
+    CheckNode(TheList.HLNode[0],  3, 0,   1,  7,  0, 1,  0, 1,  18, 18, FOLDGROUP_IFDEF, [sfaOpen,sfaMarkup,sfaFold,sfaFoldFold]);
+
+
+
+
+    PopBaseName;
+  {%endregion TestText11}
 
 
   TstSetText('TestText9', TestText9);
