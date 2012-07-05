@@ -1,0 +1,369 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<fpdoc-descriptions>
+<package name="lazutils">
+
+<!--
+  ====================================================================
+    TTLoad
+  ====================================================================
+-->
+
+<module name="TTLoad">
+<short></short>
+<descr>
+</descr>
+
+<!-- function Visibility: default -->
+<element name="LookUp_TrueType_Table">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="LookUp_TrueType_Table.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="LookUp_TrueType_Table.face">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="LookUp_TrueType_Table.aTag">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="Load_TrueType_Directory">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="Load_TrueType_Directory.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="Load_TrueType_Directory.face">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="Load_TrueType_Directory.faceIndex">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="Load_TrueType_MaxProfile">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="Load_TrueType_MaxProfile.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="Load_TrueType_MaxProfile.face">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="Load_TrueType_Header">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="Load_TrueType_Header.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="Load_TrueType_Header.face">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="Load_TrueType_Locations">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="Load_TrueType_Locations.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="Load_TrueType_Locations.face">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="Load_TrueType_CVT">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="Load_TrueType_CVT.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="Load_TrueType_CVT.face">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="Load_TrueType_CMap">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="Load_TrueType_CMap.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="Load_TrueType_CMap.face">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="Load_TrueType_Gasp">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="Load_TrueType_Gasp.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="Load_TrueType_Gasp.face">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="Load_TrueType_Names">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="Load_TrueType_Names.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="Load_TrueType_Names.face">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="Load_TrueType_Programs">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="Load_TrueType_Programs.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="Load_TrueType_Programs.face">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="Load_trueType_Postscript">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="Load_trueType_Postscript.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="Load_trueType_Postscript.face">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="Load_TrueType_OS2">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="Load_TrueType_OS2.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="Load_TrueType_OS2.face">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="Load_TrueType_HDMX">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="Load_TrueType_HDMX.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="Load_TrueType_HDMX.face">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="Load_TrueType_Metrics_Header">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="Load_TrueType_Metrics_Header.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="Load_TrueType_Metrics_Header.face">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="Load_TrueType_Metrics_Header.vertical">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="Load_TrueType_Any">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="Load_TrueType_Any.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="Load_TrueType_Any.face">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="Load_TrueType_Any.tag">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="Load_TrueType_Any.offset">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="Load_TrueType_Any.buffer">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="Load_TrueType_Any.length">
+<short></short>
+</element>
+
+</module> <!-- TTLoad -->
+
+</package>
+</fpdoc-descriptions>

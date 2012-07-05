@@ -1,0 +1,1126 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<fpdoc-descriptions>
+<package name="lazutils">
+
+<!--
+  ====================================================================
+    LazFreeTypeFontCollection
+  ====================================================================
+-->
+
+<module name="LazFreeTypeFontCollection">
+<short></short>
+<descr>
+</descr>
+
+<!-- class Visibility: default -->
+<element name="TFontCollectionItem">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TFontCollectionItem.FFilename">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TFontCollectionItem.FInformation">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TFontCollectionItem.FVersionNumber">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TFontCollectionItem.FStyleList">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TFontCollectionItem.FFace">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TFontCollectionItem.FFaceUsage">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TFontCollectionItem.FUsePostscriptStyle">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: private -->
+<element name="TFontCollectionItem.UpdateStyles">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: private -->
+<element name="TFontCollectionItem.SetInformation">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TFontCollectionItem.SetInformation.AIndex">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TFontCollectionItem.SetInformation.AValue">
+<short></short>
+</element>
+
+<!-- procedure Visibility: private -->
+<element name="TFontCollectionItem.SetUsePostscriptStyle">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TFontCollectionItem.SetUsePostscriptStyle.AValue">
+<short></short>
+</element>
+
+<!-- function Visibility: protected -->
+<element name="TFontCollectionItem.GetFilename">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TFontCollectionItem.GetFilename.Result">
+<short></short>
+</element>
+
+<!-- function Visibility: protected -->
+<element name="TFontCollectionItem.GetBold">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TFontCollectionItem.GetBold.Result">
+<short></short>
+</element>
+
+<!-- function Visibility: protected -->
+<element name="TFontCollectionItem.GetInformation">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TFontCollectionItem.GetInformation.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TFontCollectionItem.GetInformation.AIndex">
+<short></short>
+</element>
+
+<!-- function Visibility: protected -->
+<element name="TFontCollectionItem.GetItalic">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TFontCollectionItem.GetItalic.Result">
+<short></short>
+</element>
+
+<!-- function Visibility: protected -->
+<element name="TFontCollectionItem.GetStyleCount">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TFontCollectionItem.GetStyleCount.Result">
+<short></short>
+</element>
+
+<!-- function Visibility: protected -->
+<element name="TFontCollectionItem.GetStyles">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TFontCollectionItem.GetStyles.Result">
+<short></short>
+</element>
+
+<!-- function Visibility: protected -->
+<element name="TFontCollectionItem.GetStyle">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TFontCollectionItem.GetStyle.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TFontCollectionItem.GetStyle.AIndex">
+<short></short>
+</element>
+
+<!-- function Visibility: protected -->
+<element name="TFontCollectionItem.GetVersionNumber">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TFontCollectionItem.GetVersionNumber.Result">
+<short></short>
+</element>
+
+<!-- constructor Visibility: public -->
+<element name="TFontCollectionItem.Create">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TFontCollectionItem.Create.AFilename">
+<short></short>
+</element>
+
+<!-- destructor Visibility: public -->
+<element name="TFontCollectionItem.Destroy">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TFontCollectionItem.HasStyle">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TFontCollectionItem.HasStyle.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TFontCollectionItem.HasStyle.AStyle">
+<short></short>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TFontCollectionItem.Information">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TFontCollectionItem.Information.AIndex">
+<short></short>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TFontCollectionItem.VersionNumber">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TFontCollectionItem.CreateFont">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TFontCollectionItem.CreateFont.Result">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TFontCollectionItem.QueryFace">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TFontCollectionItem.QueryFace.Result">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TFontCollectionItem.ReleaseFace">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TFontCollectionItem.UsePostscriptStyle">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- class Visibility: default -->
+<element name="TFamilyCollectionItem">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TFamilyCollectionItem.FFamilyName">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TFamilyCollectionItem.FFonts">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TFamilyCollectionItem.FFontCount">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TFamilyCollectionItem.FStyles">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TFamilyCollectionItem.FStyleCount">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TFamilyCollectionItem.FUsePostscriptStyle">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: protected -->
+<element name="TFamilyCollectionItem.GetFontByIndex">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TFamilyCollectionItem.GetFontByIndex.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TFamilyCollectionItem.GetFontByIndex.AIndex">
+<short></short>
+</element>
+
+<!-- function Visibility: protected -->
+<element name="TFamilyCollectionItem.GetFontByStyles">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TFamilyCollectionItem.GetFontByStyles.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TFamilyCollectionItem.GetFontByStyles.AStyles">
+<short></short>
+</element>
+
+<!-- function Visibility: protected -->
+<element name="TFamilyCollectionItem.GetFontIndexByStyles">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TFamilyCollectionItem.GetFontIndexByStyles.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TFamilyCollectionItem.GetFontIndexByStyles.AStyles">
+<short></short>
+</element>
+
+<!-- function Visibility: protected -->
+<element name="TFamilyCollectionItem.GetStyle">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TFamilyCollectionItem.GetStyle.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TFamilyCollectionItem.GetStyle.AIndex">
+<short></short>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TFamilyCollectionItem.AddStyle">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TFamilyCollectionItem.AddStyle.AName">
+<short></short>
+</element>
+
+<!-- function Visibility: protected -->
+<element name="TFamilyCollectionItem.GetStyles">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TFamilyCollectionItem.GetStyles.Result">
+<short></short>
+</element>
+
+<!-- function Visibility: protected -->
+<element name="TFamilyCollectionItem.GetFamilyName">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TFamilyCollectionItem.GetFamilyName.Result">
+<short></short>
+</element>
+
+<!-- function Visibility: protected -->
+<element name="TFamilyCollectionItem.GetFontCount">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TFamilyCollectionItem.GetFontCount.Result">
+<short></short>
+</element>
+
+<!-- function Visibility: protected -->
+<element name="TFamilyCollectionItem.GetStyleCount">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TFamilyCollectionItem.GetStyleCount.Result">
+<short></short>
+</element>
+
+<!-- constructor Visibility: public -->
+<element name="TFamilyCollectionItem.Create">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TFamilyCollectionItem.Create.AName">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TFamilyCollectionItem.AddFont">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TFamilyCollectionItem.AddFont.AFontItem">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TFamilyCollectionItem.GetFont">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TFamilyCollectionItem.GetFont.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TFamilyCollectionItem.GetFont.AStyles">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TFamilyCollectionItem.GetFont.NeedAllStyles">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TFamilyCollectionItem.GetFont.NoMoreStyle">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TFamilyCollectionItem.GetFont.AStyle">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TFamilyCollectionItem.GetFontIndex">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TFamilyCollectionItem.GetFontIndex.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TFamilyCollectionItem.GetFontIndex.AStyles">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TFamilyCollectionItem.GetFontIndex.NeedAllStyles">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TFamilyCollectionItem.GetFontIndex.NoMoreStyle">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TFamilyCollectionItem.GetFontIndex.AStyle">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TFamilyCollectionItem.HasStyle">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TFamilyCollectionItem.HasStyle.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TFamilyCollectionItem.HasStyle.AName">
+<short></short>
+</element>
+
+<!-- class Visibility: default -->
+<element name="TFreeTypeFontCollection">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TFreeTypeFontCollection.FFontList">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TFreeTypeFontCollection.FTempFont">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TFreeTypeFontCollection.FUpdateCount">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TFreeTypeFontCollection.FFamilyList">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: private -->
+<element name="TFreeTypeFontCollection.AddFamily">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TFreeTypeFontCollection.AddFamily.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TFreeTypeFontCollection.AddFamily.AName">
+<short></short>
+</element>
+
+<!-- function Visibility: private -->
+<element name="TFreeTypeFontCollection.FindFamily">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TFreeTypeFontCollection.FindFamily.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TFreeTypeFontCollection.FindFamily.AName">
+<short></short>
+</element>
+
+<!-- function Visibility: private -->
+<element name="TFreeTypeFontCollection.FindFont">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TFreeTypeFontCollection.FindFont.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TFreeTypeFontCollection.FindFont.AFileName">
+<short></short>
+</element>
+
+<!-- function Visibility: private -->
+<element name="TFreeTypeFontCollection.CompareFontFileName">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TFreeTypeFontCollection.CompareFontFileName.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TFreeTypeFontCollection.CompareFontFileName.Tree">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TFreeTypeFontCollection.CompareFontFileName.Data1">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TFreeTypeFontCollection.CompareFontFileName.Data2">
+<short></short>
+</element>
+
+<!-- function Visibility: private -->
+<element name="TFreeTypeFontCollection.CompareFamilyName">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TFreeTypeFontCollection.CompareFamilyName.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TFreeTypeFontCollection.CompareFamilyName.Tree">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TFreeTypeFontCollection.CompareFamilyName.Data1">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TFreeTypeFontCollection.CompareFamilyName.Data2">
+<short></short>
+</element>
+
+<!-- function Visibility: protected -->
+<element name="TFreeTypeFontCollection.GetFont">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TFreeTypeFontCollection.GetFont.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TFreeTypeFontCollection.GetFont.AFileName">
+<short></short>
+</element>
+
+<!-- function Visibility: protected -->
+<element name="TFreeTypeFontCollection.GetFamily">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TFreeTypeFontCollection.GetFamily.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TFreeTypeFontCollection.GetFamily.AName">
+<short></short>
+</element>
+
+<!-- function Visibility: protected -->
+<element name="TFreeTypeFontCollection.GetFamilyCount">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TFreeTypeFontCollection.GetFamilyCount.Result">
+<short></short>
+</element>
+
+<!-- function Visibility: protected -->
+<element name="TFreeTypeFontCollection.GetFontCount">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TFreeTypeFontCollection.GetFontCount.Result">
+<short></short>
+</element>
+
+<!-- constructor Visibility: public -->
+<element name="TFreeTypeFontCollection.Create">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TFreeTypeFontCollection.Clear">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TFreeTypeFontCollection.BeginUpdate">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TFreeTypeFontCollection.AddFolder">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TFreeTypeFontCollection.AddFolder.AFolder">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TFreeTypeFontCollection.AddFile">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TFreeTypeFontCollection.AddFile.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TFreeTypeFontCollection.AddFile.AFilename">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TFreeTypeFontCollection.EndUpdate">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- destructor Visibility: public -->
+<element name="TFreeTypeFontCollection.Destroy">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TFreeTypeFontCollection.FontFileEnumerator">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TFreeTypeFontCollection.FontFileEnumerator.Result">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TFreeTypeFontCollection.FamilyEnumerator">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TFreeTypeFontCollection.FamilyEnumerator.Result">
+<short></short>
+</element>
+
+</module> <!-- LazFreeTypeFontCollection -->
+
+</package>
+</fpdoc-descriptions>

@@ -1,0 +1,253 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<fpdoc-descriptions>
+<package name="lazutils">
+
+<!--
+  ====================================================================
+    TTCalc
+  ====================================================================
+-->
+
+<module name="TTCalc">
+<short></short>
+<descr>
+</descr>
+
+<!-- alias type Visibility: default -->
+<element name="Int16">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- alias type Visibility: default -->
+<element name="Word16">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- alias type Visibility: default -->
+<element name="Int32">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- alias type Visibility: default -->
+<element name="Word32">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: default -->
+<element name="MulDiv">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="MulDiv.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="MulDiv.A">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="MulDiv.B">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="MulDiv.C">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="MulDiv_Round">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="MulDiv_Round.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="MulDiv_Round.A">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="MulDiv_Round.B">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="MulDiv_Round.C">
+<short></short>
+</element>
+
+<!-- procedure Visibility: default -->
+<element name="MulTo64">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="MulTo64.X">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="MulTo64.Y">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="MulTo64.Z">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="Div64by32">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="Div64by32.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="Div64by32.X">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="Div64by32.Y">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="Order64">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="Order64.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="Order64.Z">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="Order32">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="Order32.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="Order32.Z">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="Sqrt32">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="Sqrt32.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="Sqrt32.L">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="Sqrt64">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="Sqrt64.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="Sqrt64.L">
+<short></short>
+</element>
+
+</module> <!-- TTCalc -->
+
+</package>
+</fpdoc-descriptions>

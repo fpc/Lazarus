@@ -1,0 +1,1363 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<fpdoc-descriptions>
+<package name="lazutils">
+
+<!--
+  ====================================================================
+    TTProfile
+  ====================================================================
+-->
+
+<module name="TTProfile">
+<short></short>
+<descr>
+</descr>
+
+<!-- constant Visibility: default -->
+<element name="PoolMaxCapacity">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- constant Visibility: default -->
+<element name="PoolIdleCapacity">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- enumeration type Visibility: default -->
+<element name="TCurveDirection">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TCurveDirection.GoingUnknown">
+<short></short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TCurveDirection.GoingUp">
+<short></short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TCurveDirection.GoingDown">
+<short></short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TCurveDirection.GoingHoriz">
+<short></short>
+</element>
+
+<!-- record type Visibility: default -->
+<element name="TPoint">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: default -->
+<element name="TPoint.x">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: default -->
+<element name="TPoint.y">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- array type Visibility: default -->
+<element name="TBezierStack">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- pointer type Visibility: default -->
+<element name="PBezierStack">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- class Visibility: default -->
+<element name="TProfile">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- class Visibility: default -->
+<element name="TProfileCollection">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- class Visibility: default -->
+<element name="TRenderPool">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: protected -->
+<element name="TRenderPool.Precision">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: protected -->
+<element name="TRenderPool.PrecisionHalf">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: protected -->
+<element name="TRenderPool.BezierPrecision">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: protected -->
+<element name="TRenderPool.BoundsMinY">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: protected -->
+<element name="TRenderPool.BoundsMaxY">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: protected -->
+<element name="TRenderPool.scaleShift">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: protected -->
+<element name="TRenderPool.Bezier_Down">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TRenderPool.Bezier_Down.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TRenderPool.Bezier_Down.miny">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TRenderPool.Bezier_Down.maxy">
+<short></short>
+</element>
+
+<!-- function Visibility: protected -->
+<element name="TRenderPool.Bezier_State">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TRenderPool.Bezier_State.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TRenderPool.Bezier_State.y1">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TRenderPool.Bezier_State.y2">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TRenderPool.Bezier_State.y3">
+<short></short>
+</element>
+
+<!-- function Visibility: protected -->
+<element name="TRenderPool.Bezier_To">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TRenderPool.Bezier_To.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TRenderPool.Bezier_To.x">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TRenderPool.Bezier_To.y">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TRenderPool.Bezier_To.Cx">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TRenderPool.Bezier_To.Cy">
+<short></short>
+</element>
+
+<!-- function Visibility: protected -->
+<element name="TRenderPool.Bezier_Up">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TRenderPool.Bezier_Up.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TRenderPool.Bezier_Up.miny">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TRenderPool.Bezier_Up.maxy">
+<short></short>
+</element>
+
+<!-- function Visibility: protected -->
+<element name="TRenderPool.CEILING">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TRenderPool.CEILING.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TRenderPool.CEILING.x">
+<short></short>
+</element>
+
+<!-- function Visibility: protected -->
+<element name="TRenderPool.DecomposeCurve">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TRenderPool.DecomposeCurve.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TRenderPool.DecomposeCurve.first">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TRenderPool.DecomposeCurve.last">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TRenderPool.DecomposeCurve.flipped">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TRenderPool.DecomposeCurve.points">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TRenderPool.DecomposeCurve.flags">
+<short></short>
+</element>
+
+<!-- function Visibility: protected -->
+<element name="TRenderPool.FLOOR">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TRenderPool.FLOOR.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TRenderPool.FLOOR.x">
+<short></short>
+</element>
+
+<!-- function Visibility: protected -->
+<element name="TRenderPool.FRAC">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TRenderPool.FRAC.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TRenderPool.FRAC.x">
+<short></short>
+</element>
+
+<!-- function Visibility: protected -->
+<element name="TRenderPool.GetCapacity">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TRenderPool.GetCapacity.Result">
+<short></short>
+</element>
+
+<!-- function Visibility: protected -->
+<element name="TRenderPool.Line_Down">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TRenderPool.Line_Down.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TRenderPool.Line_Down.x1">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TRenderPool.Line_Down.y1">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TRenderPool.Line_Down.x2">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TRenderPool.Line_Down.y2">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TRenderPool.Line_Down.miny">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TRenderPool.Line_Down.maxy">
+<short></short>
+</element>
+
+<!-- function Visibility: protected -->
+<element name="TRenderPool.Line_To">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TRenderPool.Line_To.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TRenderPool.Line_To.x">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TRenderPool.Line_To.y">
+<short></short>
+</element>
+
+<!-- function Visibility: protected -->
+<element name="TRenderPool.Line_Up">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TRenderPool.Line_Up.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TRenderPool.Line_Up.x1">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TRenderPool.Line_Up.y1">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TRenderPool.Line_Up.x2">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TRenderPool.Line_Up.y2">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TRenderPool.Line_Up.miny">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TRenderPool.Line_Up.maxy">
+<short></short>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TRenderPool.Move_To">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TRenderPool.Move_To.x">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TRenderPool.Move_To.y">
+<short></short>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TRenderPool.PushBezier">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TRenderPool.PushBezier.x1">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TRenderPool.PushBezier.y1">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TRenderPool.PushBezier.x2">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TRenderPool.PushBezier.y2">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TRenderPool.PushBezier.x3">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TRenderPool.PushBezier.y3">
+<short></short>
+</element>
+
+<!-- function Visibility: protected -->
+<element name="TRenderPool.SCALED">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TRenderPool.SCALED.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TRenderPool.SCALED.x">
+<short></short>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TRenderPool.Split_Bezier">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TRenderPool.Split_Bezier.base">
+<short></short>
+</element>
+
+<!-- function Visibility: protected -->
+<element name="TRenderPool.TRUNC">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TRenderPool.TRUNC.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TRenderPool.TRUNC.x">
+<short></short>
+</element>
+
+<!-- function Visibility: protected -->
+<element name="TRenderPool.RequireCapacity">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TRenderPool.RequireCapacity.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TRenderPool.RequireCapacity.count">
+<short></short>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TRenderPool.PushValue">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TRenderPool.PushValue.AValue">
+<short></short>
+</element>
+
+<!-- property Visibility: protected -->
+<element name="TRenderPool.Capacity">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: public -->
+<element name="TRenderPool.Joint">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: public -->
+<element name="TRenderPool.Fresh">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: public -->
+<element name="TRenderPool.cProfile">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: public -->
+<element name="TRenderPool.ProfileColl">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: public -->
+<element name="TRenderPool.LastX">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: public -->
+<element name="TRenderPool.LastY">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: public -->
+<element name="TRenderPool.CurveDir">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: public -->
+<element name="TRenderPool.Arcs">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: public -->
+<element name="TRenderPool.CurArc">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: public -->
+<element name="TRenderPool.data">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: public -->
+<element name="TRenderPool.position">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- constructor Visibility: public -->
+<element name="TRenderPool.Create">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TRenderPool.Create.APrecision">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TRenderPool.Create.ABezierPrecision">
+<short></short>
+</element>
+
+<!-- destructor Visibility: public -->
+<element name="TRenderPool.Destroy">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TRenderPool.SetPrecision">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TRenderPool.SetPrecision.APrecision">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TRenderPool.SetPrecision.ABezierPrecision">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TRenderPool.SetBounds">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TRenderPool.SetBounds.MinY">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TRenderPool.SetBounds.MaxY">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TRenderPool.SetScaleShift">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TRenderPool.SetScaleShift.value">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TRenderPool.Clear">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TRenderPool.ReduceCapacity">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TRenderPool.Convert_Glyph">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TRenderPool.Convert_Glyph.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TRenderPool.Convert_Glyph.flipped">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TRenderPool.Convert_Glyph.points">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TRenderPool.Convert_Glyph.flags">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TRenderPool.Convert_Glyph.Outs">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TRenderPool.Convert_Glyph.nContours">
+<short></short>
+</element>
+
+<!-- variable Visibility: default -->
+<element name="TProfile.Pool">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: default -->
+<element name="TProfile.Flow">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: default -->
+<element name="TProfile.Height">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: default -->
+<element name="TProfile.Start">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: default -->
+<element name="TProfile.Offset">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: default -->
+<element name="TProfile.X">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: default -->
+<element name="TProfile.nextInContour">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: default -->
+<element name="TProfile.nextInColl">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: default -->
+<element name="TProfile.nextInList">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: default -->
+<element name="TProfile.prevInList">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- constructor Visibility: default -->
+<element name="TProfile.Create">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TProfile.Create.APool">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TProfile.Create.ADirection">
+<short></short>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TProfileCollection.Remove_Profile">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: public -->
+<element name="TProfileCollection.Pool">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: public -->
+<element name="TProfileCollection.prevProfile">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: public -->
+<element name="TProfileCollection.fProfile">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: public -->
+<element name="TProfileCollection.gProfile">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: public -->
+<element name="TProfileCollection.nProfs">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- constructor Visibility: public -->
+<element name="TProfileCollection.Create">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TProfileCollection.Create.APool">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TProfileCollection.Clear">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TProfileCollection.New_Profile">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TProfileCollection.New_Profile.ADirection">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TProfileCollection.End_Profile">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- destructor Visibility: public -->
+<element name="TProfileCollection.Destroy">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: default -->
+<element name="ProfileList_Init">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="ProfileList_Init.L">
+<short></short>
+</element>
+
+<!-- procedure Visibility: default -->
+<element name="ProfileList_InsertFirstElement">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="ProfileList_InsertFirstElement.L">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="ProfileList_InsertFirstElement.Element">
+<short></short>
+</element>
+
+<!-- procedure Visibility: default -->
+<element name="ProfileList_AppendToList">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="ProfileList_AppendToList.ListOrElement">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="ProfileList_AppendToList.ElementOrListToAppend">
+<short></short>
+</element>
+
+<!-- procedure Visibility: default -->
+<element name="ProfileList_Remove">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="ProfileList_Remove.List">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="ProfileList_Remove.ElementToRemove">
+<short></short>
+</element>
+
+<!-- procedure Visibility: default -->
+<element name="ProfileList_SortByX">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="ProfileList_SortByX.L">
+<short></short>
+</element>
+
+<!-- procedure Visibility: default -->
+<element name="ProfileList_SortByStart">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="ProfileList_SortByStart.L">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="ProfileList_Count">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="ProfileList_Count.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="ProfileList_Count.L">
+<short></short>
+</element>
+
+<!-- procedure Visibility: default -->
+<element name="ProfileList_Split">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="ProfileList_Split.List">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="ProfileList_Split.Part1">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="ProfileList_Split.Part2">
+<short></short>
+</element>
+
+</module> <!-- TTProfile -->
+
+</package>
+</fpdoc-descriptions>

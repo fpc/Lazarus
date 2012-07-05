@@ -7,17 +7,22 @@
 set -e
 
 # set to path to FPC docs dir. Default assume it is on the same level as the lazarus checkout
-FPCDIR=../../../fpcdocs
-FPCDIREXP=`cd $FPCDIR ; pwd`
+if [ -z "$FPCDocDir" ]; then
+  FPCDocDir=../../../fpcdocs
+fi
+FPCDocDirEXP=$(cd "$FPCDocDir" ; pwd)
 
-if [ -d "$FPCDIREXP" ]
+if [ -d "$FPCDocDirEXP" ]
 then
-echo FPCDOCS dir is $FPCDIREXP
+echo FPCDOCS dir is $FPCDocDirEXP
 else
-echo FPCDOCS dir $FPCDIR expanded to $FPCDIREXP and was not found.
+echo FPCDOCS dir $FPCDocDir expanded to $FPCDocDirEXP and was not found.
 exit 1
 fi
 
 export HTMLFMT=chm
-bash build_lazutils_html.sh fpdoc `pwd`/locallclfooter.xml $FPCDIREXP 1>lazutilsoutput.log 2>lazutilserror.log
-bash build_lcl_html.sh fpdoc `pwd`/locallclfooter.xml $FPCDIREXP 1>lcloutput.log 2>lclerror.log
+bash build_lazutils_html.sh fpdoc `pwd`/locallclfooter.xml $FPCDocDirEXP 1>lazutilsoutput.log 2>lazutilserror.log
+bash build_lcl_html.sh fpdoc `pwd`/locallclfooter.xml $FPCDocDirEXP 1>lcloutput.log 2>lclerror.log
+
+# end.
+
