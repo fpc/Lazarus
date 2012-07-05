@@ -64,6 +64,7 @@ var
   lFormElem: TvFormulaElement;
   lMFracRow: TDOMNode;
   lSubNodeNameStr: DOMString;
+  lNodeTextLen: Integer;
 begin
   lNodeName := ANode.NodeName;
   if ANode.FirstChild <> nil then
@@ -85,17 +86,18 @@ begin
   // <mo>=</mo>
   else if lNodeName = 'mo' then
   begin
+    lNodeTextLen := Length(lNodeText);
     // equal
     if lNodeText = '=' then
       AFormula.AddElementWithKind(fekEqual)
     // minus
-    else if (lNodeText = '&#x2212;') or (lNodeText = #$22#$12) then
+    else if (lNodeText = '&#x2212;') or (lNodeText = #$E2#$88#$92) or (lNodeText = '-') then
       AFormula.AddElementWithKind(fekSubtraction)
     // &InvisibleTimes;
-    else if (lNodeText = '&#x2062;') or (lNodeText = #$20#$62) then
+    else if (lNodeText = '&#x2062;') or (lNodeText = #$E2#$81#$A2) then
       AFormula.AddElementWithKind(fekMultiplication)
     // &PlusMinus;
-    else if (lNodeText = '&#x00B1;') or (lNodeText = #$00#$B1) then
+    else if (lNodeText = '&#x00B1;') or (lNodeText = #$C2#$B1) or (lNodeText = '±') then
       AFormula.AddElementWithKind(fekPlusMinus)
     //
     else

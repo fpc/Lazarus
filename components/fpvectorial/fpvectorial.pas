@@ -1734,6 +1734,8 @@ begin
   end;
 
   case Kind of
+    fekMultiplication: Result := 0;
+    //
     fekFraction:
     begin
       Formula.CalculateWidth(ADest);
@@ -1797,7 +1799,11 @@ begin
     fekVariable: ADest.TextOut(LeftC, TopC, Text);
     fekEqual:    ADest.TextOut(LeftC, TopC, '=');
     fekSubtraction: ADest.TextOut(LeftC, TopC, '-');
-    fekMultiplication: ADest.TextOut(LeftC, TopC, '×'); // Unicode times symbol
+    fekMultiplication:
+    begin
+      // Don't draw anything, leave an empty space, it looks better
+      //ADest.TextOut(LeftC, TopC, 'x'); // × -> Unicode times symbol
+    end;
     fekSum:      ADest.TextOut(LeftC, TopC, '+');
     fekPlusMinus:ADest.TextOut(LeftC, TopC, '±');
     fekLessThan: ADest.TextOut(LeftC, TopC, '<');
@@ -1857,7 +1863,8 @@ var
   lDBGItem, lDBGFormula, lDBGFormulaBottom: Pointer;
   lStr: string;
 begin
-  lStr := Self.AsText() + Format(' Left=%f Top=%f Width=%f Height=%f', [Left, Top, Width, Height]);
+  lStr := Format('%s [%s]', [Self.AsText(), GetEnumName(TypeInfo(TvFormulaElementKind), integer(Kind))]);
+  lStr := lStr + Format(' Left=%f Top=%f Width=%f Height=%f', [Left, Top, Width, Height]);
   lDBGItem := ADestRoutine(lStr, APageItem);
 
   case Kind of
@@ -1887,7 +1894,7 @@ constructor TvFormula.Create;
 begin
   inherited Create;
   FElements := TFPList.Create;
-  SpacingBetweenElementsX := 10;
+  SpacingBetweenElementsX := 5;
 end;
 
 destructor TvFormula.Destroy;
@@ -1975,7 +1982,8 @@ begin
   lElement := GetFirstElement();
   while lElement <> nil do
   begin
-    Result := Result + lElement.CalculateWidth(ADest) + SpacingBetweenElementsX;
+    if lElement.Kind <> fekMultiplication then
+      Result := Result + lElement.CalculateWidth(ADest) + SpacingBetweenElementsX;
     lElement := GetNextElement;
   end;
   // Remove an extra spacing, since it is added even to the last item
@@ -2004,7 +2012,7 @@ begin
   while lElement <> nil do
   begin
     lElement.Left := Left + lPosX;
-    lPosX := lPosX + lElement.Width;
+    lPosX := lPosX + lElement.Width + SpacingBetweenElementsX;
     lElement.Top := Top;
     lMaxHeight := Max(lMaxHeight, lElement.Height);
 
@@ -2105,7 +2113,6 @@ var
   lFormulaElement: TvFormulaElement;
   lStr: string;
 begin
-  //  Result := inherited GenerateDebugTree(ADestRoutine, APageItem);
   lStr := Format('[%s]', [Self.ClassName]);
   lStr := lStr + Format(' Left=%f Top=%f Width=%f Height=%f', [Left, Top, Width, Height]);
   Result := ADestRoutine(lStr, APageItem);
