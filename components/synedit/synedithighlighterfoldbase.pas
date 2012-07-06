@@ -150,9 +150,11 @@ type
   protected
     procedure Invalidate;
     procedure Clear;
+    procedure ClearData;
     procedure ClearFilteredList;
     procedure DoFilter(MinIndex: Integer = -1);
     procedure SetLine(ALine: TLineIdx);
+    procedure SetLineClean(ALine: TLineIdx);
     procedure Add(const AnInfo: TSynFoldNodeInfo);
     procedure Delete(AnIndex: Integer = -1);
     function  CountAll: Integer;
@@ -505,8 +507,16 @@ procedure TLazSynFoldNodeInfoList.Clear;
 var
   c: Integer;
 begin
-  FValid := True;
   ClearFilter;
+  ClearData;
+end;
+
+procedure TLazSynFoldNodeInfoList.ClearData;
+var
+  c: Integer;
+begin
+  FValid := True;
+  ClearFilteredList;
   FLine := -1;
   c := MinCapacity;
   FNodeCount := 0;
@@ -556,7 +566,15 @@ end;
 
 procedure TLazSynFoldNodeInfoList.SetLine(ALine: TLineIdx);
 begin
-  if FLine = ALine then exit;
+  if (FLine = ALine) or (ALine < 0) then exit;
+  ClearData;
+  FLine := ALine;
+  FHighLighter.InitFoldNodeInfo(Self, FLine);
+end;
+
+procedure TLazSynFoldNodeInfoList.SetLineClean(ALine: TLineIdx);
+begin
+  if (FLine = ALine) or (ALine < 0) then exit;
   Clear;
   FLine := ALine;
   FHighLighter.InitFoldNodeInfo(Self, FLine);
@@ -1001,7 +1019,7 @@ begin
   end;
 
   Result := FFoldNodeInfoList;
-  Result.Line := Line;
+  Result.SetLineClean(Line);
 end;
 
 procedure TSynCustomFoldHighlighter.InitFoldNodeInfo(AList: TLazSynFoldNodeInfoList; Line: TLineIdx);
