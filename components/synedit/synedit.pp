@@ -2252,7 +2252,7 @@ begin
     FIsInDecPaintLock := False;
     if FPaintLock = 0 then begin
       SetUpdateState(False, Self);
-      if FInvalidateRect.Bottom > FInvalidateRect.Top then begin
+      if FInvalidateRect.Bottom >= FInvalidateRect.Top then begin
         InvalidateRect(Handle, @FInvalidateRect, False);
         {$IFDEF SynCheckPaintLock}
         debugln('Returning from Paintlock, wich had Paint called while active');
@@ -2270,6 +2270,12 @@ var
   i: integer;
   p: TList;
 begin
+  {$IFDEF SynCheckPaintLock}
+  if (FPaintLock > 0) then begin
+    debugln(['TCustomSynEdit.Destroy: Paintlock=', FPaintLock, ' FInvalidateRect=', dbgs(FInvalidateRect)]);
+    DumpStack;
+  end;
+  {$ENDIF}
   Application.RemoveOnIdleHandler(@IdleScanRanges);
   SurrenderPrimarySelection;
   Highlighter := nil;
@@ -6011,7 +6017,7 @@ begin
       finally
         InternalEndUndoBlock;
         {$IFDEF SynCheckPaintLock}
-        if (FPaintLock > 0) and (FInvalidateRect.Bottom > FInvalidateRect.Top) then begin
+        if (FPaintLock > 0) and (FInvalidateRect.Bottom >= FInvalidateRect.Top) then begin
           debugln(['TCustomSynEdit.CommandProcessor: Paint called while locked  InitialCmd=', InitialCmd, ' Command=', Command]);
           DumpStack;
         end;
@@ -7689,6 +7695,12 @@ end;
 
 procedure TCustomSynEdit.DestroyWnd;
 begin
+  {$IFDEF SynCheckPaintLock}
+  if (FPaintLock > 0) then begin
+    debugln(['TCustomSynEdit.DestroyWnd: Paintlock=', FPaintLock, ' FInvalidateRect=', dbgs(FInvalidateRect)]);
+    DumpStack;
+  end;
+  {$ENDIF}
   if (eoDropFiles in fOptions) and not (csDesigning in ComponentState) then begin
     {$IFDEF SYN_LAZARUS}
     // ToDo DragAcceptFiles
