@@ -405,9 +405,9 @@ begin
     Canvas.Font.Color := clWhite;
     if Assigned(TestSuite) then
     begin
+      alltests := TestSuite.CountTestCases;
       if alltests - skipsCounter <> 0 then
       begin
-        alltests := TestSuite.CountTestCases;
         if FailureCounter + ErrorCounter = 0 then
           barColor := clGreen;
         Canvas.Brush.Color := barColor;
