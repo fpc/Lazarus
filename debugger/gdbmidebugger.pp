@@ -11627,22 +11627,25 @@ var
 
     Procedure SkipToEndOfField(EndAtComma: Boolean = False);
     var
-      i: Integer;
+      i, j: Integer;
     begin
       // skip forward, past the next ",", but do NOT skip the closing "}"
       i := 1;
+      j := 0;
       while (StartPtr <= EndPtr) and (i > 0) do begin
         case StartPtr^ of
           '{': inc(i);
           '}': if i = 1
                then break  // do not skip }
                else dec(i);
+          '[': inc(j);
+          ']': dec(j);
           '''': begin
               inc(StartPtr);
               while (StartPtr <= EndPtr) and (StartPtr^ <> '''') do inc(StartPtr);
             end;
-          ',': if (i = 1) then begin
-              if EndAtComma then break;
+          ',': if (i = 1) and (j < 1) then begin
+              if EndAtComma then break; // Do not increase StartPtr;
               i := 0;
             end;
         end;
