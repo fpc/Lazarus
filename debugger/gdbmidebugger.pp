@@ -565,7 +565,8 @@ resourcestring
 implementation
 
 var
-  DBGMI_QUEUE_DEBUG, DBGMI_STRUCT_PARSER: PLazLoggerLogGroup;
+  DBGMI_QUEUE_DEBUG, DBGMI_STRUCT_PARSER, DBG_VERBOSE, DBG_WARNINGS,
+  DBG_DISASSEMBLER: PLazLoggerLogGroup;
 
 
 const
@@ -1618,7 +1619,7 @@ var
                 i := StrToIntDef(GetPart('', ',', s), -1);
                 if (s <> '') and (s[1] = ',') then delete(s, 1, 1)
                 else begin
-                  debugln('GDBMI: Error parsing threads');
+                  debugln(DBG_WARNINGS, 'GDBMI: Error parsing threads');
                   break
                 end;
                 if i < 0 then Continue;
@@ -1632,7 +1633,7 @@ var
         end;
     else
       // Assume targetoutput, strip char and continue
-      DebugLn('[DBGTGT] *');
+      DebugLn(DBG_VERBOSE, '[DBGTGT] *');
       Line := S + Line;
       Result := True;
     end;
@@ -1663,14 +1664,14 @@ var
                     t.Free;
                   end
                   else
-                    debugln('GDBMI: Duplicate thread');
+                    debugln(DBG_WARNINGS, 'GDBMI: Duplicate thread');
                 end;
               1: begin
                   if t <> nil then begin
                     ct.Remove(t);
                   end
                   else
-                    debugln('GDBMI: Missing thread');
+                    debugln(DBG_WARNINGS, 'GDBMI: Missing thread');
                 end;
             end;
             FTheDebugger.Threads.Changed;
@@ -1683,14 +1684,14 @@ var
 
   procedure DoStatusAsync(const Line: String);
   begin
-    DebugLn('[Debugger] Status output: ', Line);
+    DebugLn(DBG_VERBOSE, '[Debugger] Status output: ', Line);
   end;
 
   procedure DoResultRecord(Line: String);
   var
     ResultClass: String;
   begin
-    DebugLn('[WARNING] Debugger: unexpected result-record: ', Line);
+    DebugLn(DBG_WARNINGS, '[WARNING] Debugger: unexpected result-record: ', Line);
 
     ResultClass := GetPart('^', ',', Line);
     if Line = ''
@@ -1714,7 +1715,7 @@ var
         AResult.State := dsIdle;
       end;
       3: begin // error
-        DebugLn('TGDBMIDebugger.ProcessResult Error: ', Line);
+        DebugLn(DBG_WARNINGS, 'TGDBMIDebugger.ProcessResult Error: ', Line);
         // todo: implement with values
         if  (pos('msg=', Line) > 0)
         and (pos('not being run', Line) > 0)
@@ -1725,18 +1726,18 @@ var
       //TODO: should that better be dsError ?
       //Result := False;
       AResult.State := dsIdle; // just indicate a ressult <> dsNone
-      DebugLn('[WARNING] Debugger: Unknown result class: ', ResultClass);
+      DebugLn(DBG_WARNINGS, '[WARNING] Debugger: Unknown result class: ', ResultClass);
     end;
   end;
 
   procedure DoConsoleStream(const Line: String);
   begin
-    DebugLn('[Debugger] Console output: ', Line);
+    DebugLn(DBG_VERBOSE, '[Debugger] Console output: ', Line);
   end;
 
   procedure DoTargetStream(const Line: String);
   begin
-    DebugLn('[Debugger] Target output: ', Line);
+    DebugLn(DBG_VERBOSE, '[Debugger] Target output: ', Line);
   end;
 
   procedure DoLogStream(const Line: String);
@@ -1745,7 +1746,7 @@ var
   var
     Warning: String;
   begin
-    DebugLn('[Debugger] Log output: ', Line);
+    DebugLn(DBG_VERBOSE, '[Debugger] Log output: ', Line);
     Warning := Line;
     if Copy(Warning, 1, 2) = '&"' then
       Delete(Warning, 1, 2);
@@ -1793,13 +1794,13 @@ begin
         idx := Pos('*stopped', S);
         if idx  > 0
         then begin
-          DebugLn('[DBGTGT] ', Copy(S, 1, idx - 1));
+          DebugLn(DBG_VERBOSE, '[DBGTGT] ', Copy(S, 1, idx - 1));
           Delete(S, 1, idx - 1);
           Continue;
         end
         else begin
           // normal target output
-          DebugLn('[DBGTGT] ', S);
+          DebugLn(DBG_VERBOSE, '[DBGTGT] ', S);
         end;
       end;
       Break;
@@ -2473,13 +2474,9 @@ var
   i, j: Integer;
   SFile, SLine: TPCharWithLen;
 begin
-  {$IFDEF DBG_VERBOSE}
   // The "^done" is stripped already
-  if (FNameValueList.Count <> 1) or
-     (FNameValueList.IndexOf('asm_insns') < 0)
-  then
-    debugln(['WARNING: TGDBMIDisassembleResultList: Unexpected Entries']);
-  {$ENDIF}
+  if (FNameValueList.Count <> 1) or(FNameValueList.IndexOf('asm_insns') < 0)
+  then debugln(DBG_DISASSEMBLER, ['WARNING: TGDBMIDisassembleResultList: Unexpected Entries']);
   HasItemPointerList := False;
   FNameValueList.SetPath('asm_insns');
   FCount := 0;
@@ -2881,11 +2878,9 @@ begin
         - (ALinesAfter + FDisassembleEvalCmdObj.LinesBefore) * DAssBytesPerCommandAvg)
     then begin
       // merge before
-      {$IFDEF DBG_VERBOSE}
-      debugln(['INFO: TGDBMIDisassembler.PrepareEntries  MERGE request at START: NewStartAddr=', AnAddr,
+      debugln(DBG_DISASSEMBLER, ['INFO: TGDBMIDisassembler.PrepareEntries  MERGE request at START: NewStartAddr=', AnAddr,
                ' NewLinesBefore=', Max(ALinesBefore, FDisassembleEvalCmdObj.LinesBefore), ' OldStartAddr=', FDisassembleEvalCmdObj.StartAddr,
                '  OldLinesBefore=', FDisassembleEvalCmdObj.LinesBefore ]);
-      {$ENDIF}
       FDisassembleEvalCmdObj.StartAddr := AnAddr;
       FDisassembleEvalCmdObj.LinesBefore := Max(ALinesBefore, FDisassembleEvalCmdObj.LinesBefore);
       exit;
@@ -2896,11 +2891,9 @@ begin
         + (ALinesBefore + FDisassembleEvalCmdObj.LinesAfter) * DAssBytesPerCommandAvg)
     then begin
       // merge after
-      {$IFDEF DBG_VERBOSE}
-      debugln(['INFO: TGDBMIDisassembler.PrepareEntries  MERGE request at END: NewEndAddr=', AnAddr,
+      debugln(DBG_DISASSEMBLER, ['INFO: TGDBMIDisassembler.PrepareEntries  MERGE request at END: NewEndAddr=', AnAddr,
                ' NewLinesAfter=', Max(ALinesAfter, FDisassembleEvalCmdObj.LinesAfter), ' OldEndAddr=', FDisassembleEvalCmdObj.EndAddr,
                '  OldLinesAfter=', FDisassembleEvalCmdObj.LinesAfter ]);
-      {$ENDIF}
       FDisassembleEvalCmdObj.EndAddr := AnAddr;
       FDisassembleEvalCmdObj.LinesAfter := Max(ALinesAfter, FDisassembleEvalCmdObj.LinesAfter);
       exit;
@@ -3095,9 +3088,7 @@ function TGDBMIDebuggerCommandDisassembe.DoExecute: Boolean;
       and (ARangeBefore.EntriesPtr[ARangeBefore.Count - 1]^.Offset > DAssRangeOverFuncTreshold  * DAssBytesPerCommandAvg)
       then begin
         // got a big overlap, don't redo the whole function
-        {$IFDEF DBG_VERBOSE}
-        debugln(['INFO: Restarting inside previous range for known function-start=', DbgsAddr(AStartAddr),'  and ARangeBefore=', dbgs(ARangeBefore)]);
-        {$ENDIF}
+        debugln(DBG_DISASSEMBLER, ['INFO: Restarting inside previous range for known function-start=', DbgsAddr(AStartAddr),'  and ARangeBefore=', dbgs(ARangeBefore)]);
         // redo one statement
         {$PUSH}{$IFnDEF DBGMI_WITH_DISASS_OVERFLOW}{$Q-}{$R-}{$ENDIF} // Overflow is allowed to occur
         AStartAddr.Value  := ARangeBefore.EntriesPtr[ARangeBefore.Count - 1]^.Addr;
@@ -3108,9 +3099,7 @@ function TGDBMIDebuggerCommandDisassembe.DoExecute: Boolean;
       end
     end
     else begin
-      {$IFDEF DBG_VERBOSE}
-      debugln(['INFO: No known function-start for ', DbgsAddr(AStartAddr),'  ARangeBefore=', dbgs(ARangeBefore)]);
-      {$ENDIF}
+      debugln(DBG_DISASSEMBLER, ['INFO: No known function-start for ', DbgsAddr(AStartAddr),'  ARangeBefore=', dbgs(ARangeBefore)]);
       // no function found // check distance to previous range
       // The distance of range before has been checked by the caller
       if (ARangeBefore <> nil)
@@ -3158,10 +3147,7 @@ function TGDBMIDebuggerCommandDisassembe.DoExecute: Boolean;
     ItmPtr := ADisAssList.Item[AFromIndex];
     i := ADestRange.Count;
     while (i > 0) and (ADestRange.EntriesPtr[i-1]^.Addr >= ItmPtr^.Addr) do dec(i);
-    {$IFDEF DBG_VERBOSE}
-    if ADestRange.Count <> i then
-    debugln(['NOTICE, CopyToRange: Removing ',i,' entries from the end of Range. AFromIndex=',AFromIndex, ' ACount=', ACount, ' Range=',dbgs(ADestRange)]);
-    {$ENDIF}
+    if ADestRange.Count <> i then debugln(DBG_DISASSEMBLER, ['NOTICE, CopyToRange: Removing ',i,' entries from the end of Range. AFromIndex=',AFromIndex, ' ACount=', ACount, ' Range=',dbgs(ADestRange)]);
     ADestRange.Count := i;
     if  i > 0 then begin
       ItmPtr2 := ADestRange.EntriesPtr[i-1];
@@ -3169,10 +3155,7 @@ function TGDBMIDebuggerCommandDisassembe.DoExecute: Boolean;
         {$PUSH}{$IFnDEF DBGMI_WITH_DISASS_OVERFLOW}{$Q-}{$R-}{$ENDIF} // Overflow is allowed to occur
         j := (ItmPtr^.Addr - ItmPtr2^.Addr) * 2;
         {$POP}
-        {$IFDEF DBG_VERBOSE}
-        if length(ItmPtr2^.Dump) > j then
-        debugln(['NOTICE, CopyToRange: Shortening Dump at the end of Range. AFromIndex=',AFromIndex, ' ACount=', ACount, ' Range=',dbgs(ADestRange)]);
-        {$ENDIF}
+        if length(ItmPtr2^.Dump) > j then debugln(DBG_DISASSEMBLER, ['NOTICE, CopyToRange: Shortening Dump at the end of Range. AFromIndex=',AFromIndex, ' ACount=', ACount, ' Range=',dbgs(ADestRange)]);
         if length(ItmPtr2^.Dump) > j then ItmPtr2^.Dump := copy(ItmPtr2^.Dump, 1, j);
       end;
     end;
@@ -3390,10 +3373,8 @@ function TGDBMIDebuggerCommandDisassembe.DoExecute: Boolean;
           if (not DisAssIterator.IsFirstSubList) and (DisAssListCurrentSub.Item[0]^.Offset <> 0)
           then begin
             // Current block starts with offset. Adjust and disassemble again
-            {$IFDEF DBG_VERBOSE}
-            debugln(['WARNING: Sublist not at offset 0 (filling gap in/before Src-Info): FromIdx=', DisAssIterator.CurrentIndex, ' NextIdx=', DisAssIterator.NextIndex,
+            debugln(DBG_DISASSEMBLER, ['WARNING: Sublist not at offset 0 (filling gap in/before Src-Info): FromIdx=', DisAssIterator.CurrentIndex, ' NextIdx=', DisAssIterator.NextIndex,
                      ' SequenceNo=', DisAssIterator.SublistNumber, ' StartIdx=', DisAssIterator.IndexOfLocateAddress, ' StartOffs=', DisAssIterator.OffsetOfLocateAddress]);
-            {$ENDIF}
             DisAssListCurrentSub := ExecDisassmble(DisAssIterator.CurrentFixedAddr(DAssMaxRangeSize),
               DisAssIterator.NextStartAddr, False, DisAssListCurrentSub, True);
           end;
@@ -3448,12 +3429,10 @@ function TGDBMIDebuggerCommandDisassembe.DoExecute: Boolean;
     if not (ALastAddr.Validity in TrustedValidity)
     then PadAddress(ALastAddr, 2 * DAssBytesPerCommandMax);
 
-    {$IFDEF DBG_VERBOSE}
-    DebugLnEnter(['INFO: DoDisassembleRange for AFirstAddr =', DbgsAddr(AFirstAddr),
+    DebugLnEnter(DBG_DISASSEMBLER, ['INFO: DoDisassembleRange for AFirstAddr =', DbgsAddr(AFirstAddr),
     ' ALastAddr=', DbgsAddr(ALastAddr), ' OrigFirst=', DbgsAddr(OrigFirstAddress), ' OrigLastAddress=', DbgsAddr(OrigLastAddress),
     '  StopAffterAddr=', StopAfterAddress, ' StopAfterLines=',  StopAfterNumLines ]);
-    try
-    {$ENDIF}
+    try  // only needed for debugln DBG_DISASSEMBLER,
 
     // check if we have an overall source-info
     // we can only do that, if we know the offset of firstaddr (limit to DAssRangeOverFuncTreshold avg lines, should be enough)
@@ -3512,10 +3491,8 @@ function TGDBMIDebuggerCommandDisassembe.DoExecute: Boolean;
         // check for gap
         if DisAssListCurrentSub.LastItem^.Addr < DisAssIterator.NextStartAddr - DAssBytesPerCommandAlign
         then begin
-          {$IFDEF DBG_VERBOSE}
-          debugln(['Info: Filling GAP in the middle of Source: Src-FromIdx=', DisAssIterator.CurrentIndex, ' Src-NextIdx=', DisAssIterator.NextIndex,
+          debugln(DBG_DISASSEMBLER, ['Info: Filling GAP in the middle of Source: Src-FromIdx=', DisAssIterator.CurrentIndex, ' Src-NextIdx=', DisAssIterator.NextIndex,
                    ' Src-SequenceNo=', DisAssIterator.SublistNumber, '  Last Address in Src-Block=', DisAssListCurrentSub.LastItem^.Addr ]);
-          {$ENDIF}
           DoDisassembleSourceless(DisAssListCurrentSub.LastItem^.Addr, DisAssIterator.NextStartAddr, NewRange, True);
         end;
       end;
@@ -3620,9 +3597,7 @@ function TGDBMIDebuggerCommandDisassembe.DoExecute: Boolean;
       // Do we have enough lines (without the current block)?
       if (DisAssIterator.CountLinesAfterCounterAddr > StopAfterNumLines)
       then begin
-        {$IFDEF DBG_VERBOSE}
-        DebugLn(['INFO: Got enough line in Iteration: CurrentIndex=', DisAssIterator.CurrentIndex]);
-        {$ENDIF}
+        DebugLn(DBG_DISASSEMBLER, ['INFO: Got enough line in Iteration: CurrentIndex=', DisAssIterator.CurrentIndex]);
         NewRange.LastEntryEndAddr := DisAssIterator.NextStartAddr;
         //AdjustLastEntryEndAddr(NewRange, DisAssList);
         break;
@@ -3631,10 +3606,8 @@ function TGDBMIDebuggerCommandDisassembe.DoExecute: Boolean;
       if (not DisAssIterator.IsFirstSubList) and (DisAssListCurrentSub.Item[0]^.Offset <> 0)
       then begin
         // Got List with Offset at start
-        {$IFDEF DBG_VERBOSE}
-        debugln(['WARNING: Sublist not at offset 0 (offs=',DisAssListCurrentSub.Item[0]^.Offset,'): FromIdx=', DisAssIterator.CurrentIndex, ' NextIdx=', DisAssIterator.NextIndex,
+        debugln(DBG_DISASSEMBLER, ['WARNING: Sublist not at offset 0 (offs=',DisAssListCurrentSub.Item[0]^.Offset,'): FromIdx=', DisAssIterator.CurrentIndex, ' NextIdx=', DisAssIterator.NextIndex,
                  ' SequenceNo=', DisAssIterator.SublistNumber, ' StartIdx=', DisAssIterator.IndexOfLocateAddress, ' StartOffs=', DisAssIterator.OffsetOfLocateAddress]);
-        {$ENDIF}
         // Current block starts with offset. Adjust and disassemble again
         // Try with source first, in case it returns dat without source
         DisAssListWithSrc := ExecDisassmble(DisAssIterator.CurrentFixedAddr(DAssMaxRangeSize),
@@ -3690,10 +3663,8 @@ function TGDBMIDebuggerCommandDisassembe.DoExecute: Boolean;
       end;
 
       // Got a problematic block
-      {$IFDEF DBG_VERBOSE}
-      debugln(['WARNING: FindProcEnd reported an issue FromIdx=', DisAssIterator.CurrentIndex,' NextIdx=',
+      debugln(DBG_DISASSEMBLER, ['WARNING: FindProcEnd reported an issue FromIdx=', DisAssIterator.CurrentIndex,' NextIdx=',
       DisAssIterator.NextIndex, ' StartIdx=', DisAssIterator.IndexOfLocateAddress, ' StartOffs=', DisAssIterator.OffsetOfLocateAddress]);
-      {$ENDIF}
       //if DisAssIterator.IsFirstSubList and (not(AFirstAddr.Validity in TrustedValidity))
       //and (DisAssIterator.IndexOfLocateAddress >= DisAssIterator.CurrentIndex) // in current list
       //and (DisAssIterator.OffsetOfLocateAddress <> 0)
@@ -3716,11 +3687,9 @@ function TGDBMIDebuggerCommandDisassembe.DoExecute: Boolean;
     FreeAndNil(DisAssList);
     FreeAndNil(DisAssListCurrentSub);
     FreeAndNil(DisAssListWithSrc);
-    {$IFDEF DBG_VERBOSE}
     finally
-      DebugLnExit(['INFO: DoDisassembleRange finished' ]);
+      DebugLnExit(DBG_DISASSEMBLER, ['INFO: DoDisassembleRange finished' ]);
     end;
-    {$ENDIF}
   end;
 
   procedure AddMemDumps;
@@ -3783,9 +3752,7 @@ begin
   // check max size
   if (TryStartAt.Value < FStartAddr - Min(FStartAddr, DAssMaxRangeSize))
   then begin
-    {$IFDEF DBG_VERBOSE}
-    DebugLn(['INFO: Limit Range for Disass: FStartAddr=', FStartAddr, '  TryStartAt.Value=', TryStartAt.Value  ]);
-    {$ENDIF}
+    DebugLn(DBG_DISASSEMBLER, ['INFO: Limit Range for Disass: FStartAddr=', FStartAddr, '  TryStartAt.Value=', TryStartAt.Value  ]);
     TryStartAt := InitAddress(TmpAddr, avGuessed);
   end;
 
@@ -3903,9 +3870,7 @@ begin
     AdjustToRangeOrKnowFunctionStart(TryStartAt, RngBefore);
     if (TryStartAt.Value < TryEndAt.Value - Min(TryEndAt.Value, DAssMaxRangeSize))
     then begin
-      {$IFDEF DBG_VERBOSE}
-      DebugLn(['INFO: Limit Range for Disass: TryEndAt.Value=', TryEndAt.Value, '  TryStartAt.Value=', TryStartAt.Value  ]);
-      {$ENDIF}
+      DebugLn(DBG_DISASSEMBLER, ['INFO: Limit Range for Disass: TryEndAt.Value=', TryEndAt.Value, '  TryStartAt.Value=', TryStartAt.Value  ]);
       TryStartAt := InitAddress(TmpAddr, avGuessed);
     end;
 
@@ -4055,7 +4020,7 @@ function TGDBMIDebuggerCommandStartDebugging.DoExecute: Boolean;
       end;
     else
       // Unknown filetype, use GDB cpu
-      DebugLn('[WARNING] [Debugger.TargetInfo] Unknown FileType: %s, using GDB cpu', [AFileType]);
+      DebugLn(DBG_WARNINGS, '[WARNING] [Debugger.TargetInfo] Unknown FileType: %s, using GDB cpu', [AFileType]);
 
       TargetInfo^.TargetCPU := FTheDebugger.FGDBCPU;
       // Todo: check PtrSize and downgrade 64 bit cpu to 32 bit cpu, if required
@@ -4123,7 +4088,7 @@ function TGDBMIDebuggerCommandStartDebugging.DoExecute: Boolean;
       TargetInfo^.TargetRegisters[0] := '';
       TargetInfo^.TargetRegisters[1] := '';
       TargetInfo^.TargetRegisters[2] := '';
-      DebugLn('[WARNING] [Debugger] Unknown target CPU: ', TargetInfo^.TargetCPU);
+      DebugLn(DBG_WARNINGS, '[WARNING] [Debugger] Unknown target CPU: ', TargetInfo^.TargetCPU);
     end;
 
   end;
@@ -4322,9 +4287,7 @@ function TGDBMIDebuggerCommandStartDebugging.DoExecute: Boolean;
 
     if R.State = dsStop
     then begin
-      {$IFDEF DBG_VERBOSE}
-      debugln('Debugger INIT failed. App has already run');
-      {$ENDIF}
+      debugln(DBG_WARNINGS, 'Debugger INIT failed. App has already run');
       SetDebuggerErrorState(Format(gdbmiCommandStartMainRunToStopError, [LineEnding]),
                             ErrorStateInfo);
       exit;
@@ -4472,8 +4435,8 @@ begin
         EntryPoint := List.Values['entry-point'];
         List.Free;
       end;
-      DebugLn('[Debugger] File type: ', FileType);
-      DebugLn('[Debugger] Entry point: ', EntryPoint);
+      DebugLn(DBG_VERBOSE, '[Debugger] File type: ', FileType);
+      DebugLn(DBG_VERBOSE, '[Debugger] Entry point: ', EntryPoint);
     end;
 
     SetTargetInfo(FileType);
@@ -4522,7 +4485,7 @@ begin
       Exit;
     end;
 
-    DebugLn('[Debugger] Target PID: %u', [TargetInfo^.TargetPID]);
+    DebugLn(DBG_VERBOSE, '[Debugger] Target PID: %u', [TargetInfo^.TargetPID]);
 
     // they may still exist from prev run, addr will be checked
     FTheDebugger.FExceptionBreak.SetByAddr(Self);
@@ -5088,7 +5051,7 @@ begin
       Exit;
     end;
 
-    DebugLn('[WARNING] Debugger: Unknown stopped reason: ', Reason);
+    DebugLn(DBG_WARNINGS, '[WARNING] Debugger: Unknown stopped reason: ', Reason);
     SetDebuggerState(dsPause);
     ProcessFrame(List.Values['frame']);
   finally
@@ -5892,9 +5855,7 @@ begin
     EndIdx   := FCallstack.HighestUnknown;
     while EndIdx >= StartIdx do begin
       if (FCallstack = nil) or (dcsCanceled in SeenStates) then break;
-      {$IFDEF DBG_VERBOSE}
-      debugln(['Callstach.Frames A StartIdx=',StartIdx, ' EndIdx=',EndIdx]);
-      {$ENDIF}
+      debugln(DBG_VERBOSE, ['Callstack.Frames A StartIdx=',StartIdx, ' EndIdx=',EndIdx]);
       // search for existing blocks in the middle
       if not It.Locate(StartIdx)
       then if not It.EOM
@@ -5907,9 +5868,7 @@ begin
         It.Next;
       end;
 
-      {$IFDEF DBG_VERBOSE}
-      debugln(['Callstach.Frames B StartIdx=',StartIdx, ' EndIdx=',EndIdx]);
-      {$ENDIF}
+      debugln(DBG_VERBOSE, ['Callstack.Frames B StartIdx=',StartIdx, ' EndIdx=',EndIdx]);
       ExecForRange(StartIdx, EndIdx);
       if (FCallstack = nil) or (dcsCanceled in SeenStates) then break;
 
@@ -6535,7 +6494,7 @@ begin
     6: DoDbgEvent(ecThread, etThreadStart, ParseThread(Line, EventText));
     7: DoDbgEvent(ecThread, etThreadExit, ParseThread(Line, EventText));
   else
-    DebugLn('[WARNING] Debugger: Unexpected async-record: ', Line);
+    DebugLn(DBG_WARNINGS, '[WARNING] Debugger: Unexpected async-record: ', Line);
   end;
 end;
 
@@ -6673,7 +6632,7 @@ begin
 
       if State in [dsError, dsDestroying]
       then begin
-        //DebugLn('[WARNING] TGDBMIDebugger:  ExecuteCommand "',Cmd,'" failed.');
+        //DebugLn(DBG_WARNINGS, '[WARNING] TGDBMIDebugger:  ExecuteCommand "',Cmd,'" failed.');
         Break;
       end;
 
@@ -7056,7 +7015,7 @@ begin
       Result := True;
     end;
     dsIdle: begin
-      DebugLn('[WARNING] Debugger: Unable to run in idle state');
+      DebugLn(DBG_WARNINGS, '[WARNING] Debugger: Unable to run in idle state');
     end;
   end;
 end;
@@ -7075,7 +7034,7 @@ begin
       Result := True;
     end;
     dsIdle: begin
-      DebugLn('[WARNING] Debugger: Unable to runto in idle state');
+      DebugLn(DBG_WARNINGS, '[WARNING] Debugger: Unable to runto in idle state');
     end;
   end;
 
@@ -7172,7 +7131,7 @@ begin
       Result := True;
     end;
     dsIdle: begin
-      DebugLn('[WARNING] Debugger: Unable to step in idle state');
+      DebugLn(DBG_WARNINGS, '[WARNING] Debugger: Unable to step in idle state');
     end;
   end;
 end;
@@ -7190,7 +7149,7 @@ begin
       Result := True;
     end;
     dsIdle: begin
-      DebugLn('[WARNING] Debugger: Unable to step over instr in idle state');
+      DebugLn(DBG_WARNINGS, '[WARNING] Debugger: Unable to step over instr in idle state');
     end;
   end;
 end;
@@ -7208,7 +7167,7 @@ begin
       Result := True;
     end;
     dsIdle: begin
-      DebugLn('[WARNING] Debugger: Unable to step in instr idle state');
+      DebugLn(DBG_WARNINGS, '[WARNING] Debugger: Unable to step in instr idle state');
     end;
   end;
 end;
@@ -7226,7 +7185,7 @@ begin
       Result := True;
     end;
     dsIdle: begin
-      DebugLn('[WARNING] Debugger: Unable to step out in idle state');
+      DebugLn(DBG_WARNINGS, '[WARNING] Debugger: Unable to step out in idle state');
     end;
   end;
 end;
@@ -7244,7 +7203,7 @@ begin
       Result := True;
     end;
     dsIdle: begin
-      DebugLn('[WARNING] Debugger: Unable to step over in idle state');
+      DebugLn(DBG_WARNINGS, '[WARNING] Debugger: Unable to step over in idle state');
     end;
   end;
 end;
@@ -7264,9 +7223,7 @@ begin
   if (FCurrentCommand is TGDBMIDebuggerCommandExecute)
   and TGDBMIDebuggerCommandExecute(FCurrentCommand).KillNow
   then begin
-    {$IFDEF DBG_VERBOSE}
-    debugln(['KillNow did stop']);
-    {$ENDIF}
+    debugln(DBG_VERBOSE, ['KillNow did stop']);
     Result := True;
     exit;
   end;
@@ -7307,11 +7264,11 @@ procedure TGDBMIDebugger.Init;
   begin
     if FGDBVersion < '5.3'
     then begin
-      DebugLn('[WARNING] Debugger: Running an old (< 5.3) GDB version: ', FGDBVersion);
-      DebugLn('                    Not all functionality will be supported.');
+      DebugLn(DBG_WARNINGS, '[WARNING] Debugger: Running an old (< 5.3) GDB version: ', FGDBVersion);
+      DebugLn(DBG_WARNINGS, '                    Not all functionality will be supported.');
     end
     else begin
-      DebugLn('[Debugger] Running GDB version: ', FGDBVersion);
+      DebugLn(DBG_VERBOSE, '[Debugger] Running GDB version: ', FGDBVersion);
       Include(FDebuggerFlags, dfImplicidTypes);
     end;
   end;
@@ -7387,7 +7344,7 @@ procedure TGDBMIDebugger.InterruptTarget;
       then begin
         E := GetLastError;
         FormatMessage(FORMAT_MESSAGE_FROM_SYSTEM or FORMAT_MESSAGE_ALLOCATE_BUFFER, nil, E, 0, PChar(@Emsg), 0, nil);
-        DebugLN('Error creating remote thread: ' + String(EMsg));
+        DebugLN(DBG_WARNINGS, 'Error creating remote thread: ' + String(EMsg));
         // Yuck !
         // mixing handles and pointers, but it is how MS documented it
         LocalFree(HLOCAL(Emsg));
@@ -10072,7 +10029,7 @@ begin
   then begin
     // either gdb did not return a Result Record: "^xxxx,"
     // or the Result Record was not a known one: 'done', 'running', 'exit', 'error'
-    DebugLn('[WARNING] TGDBMIDebugger:  ExecuteCommand "',ACommand,'" failed.');
+    DebugLn(DBG_WARNINGS, '[WARNING] TGDBMIDebugger:  ExecuteCommand "',ACommand,'" failed.');
     SetDebuggerErrorState(ErrorStateMessage, ErrorStateInfo);
     AResult.State := dsError;
   end;
@@ -10139,7 +10096,7 @@ var
         AResult.State := dsIdle;
       end;
       3: begin // error
-        DebugLn('TGDBMIDebugger.ProcessResult Error: ', Line);
+        DebugLn(DBG_WARNINGS, 'TGDBMIDebugger.ProcessResult Error: ', Line);
         // todo: implement with values
         if  (pos('msg=', Line) > 0)
         and (pos('not being run', Line) > 0)
@@ -10153,11 +10110,11 @@ var
       then begin
         // Gdb 6.3.5 on Mac, does sometime return a 2nd mis-formatted error line
         // The line seems truncated, it simply is (note the misplaced quote): ^error"
-        DebugLn('[WARNING] Debugger: Unknown result class (IGNORING): ', ResultClass);
+        DebugLn(DBG_WARNINGS, '[WARNING] Debugger: Unknown result class (IGNORING): ', ResultClass);
       end
       else begin
         Result := False;
-        DebugLn('[WARNING] Debugger: Unknown result class: ', ResultClass);
+        DebugLn(DBG_WARNINGS, '[WARNING] Debugger: Unknown result class: ', ResultClass);
       end;
     end;
   end;
@@ -10195,7 +10152,7 @@ var
 
   procedure DoTargetStream(const Line: String);
   begin
-    DebugLn('[Debugger] Target output: ', Line);
+    DebugLn(DBG_VERBOSE, '[Debugger] Target output: ', Line);
   end;
 
   procedure DoLogStream(const Line: String);
@@ -10208,7 +10165,7 @@ var
       TargetInfo^.TargetFlags := TargetInfo^.TargetFlags - [tfHasSymbols];
       DoDbgEvent(ecDebugger, etDefault, Format('File ''%s'' has no debug symbols', [FTheDebugger.FileName]));
     end;
-    DebugLn('[Debugger] Log output: ', Line);
+    DebugLn(DBG_VERBOSE, '[Debugger] Log output: ', Line);
     if Line = '&"kill\n"'
     then AResult.State := dsStop
     else if LeftStr(Line, 8) = '&"Error '
@@ -10246,7 +10203,7 @@ var
             i := StrToIntDef(GetPart('', ',', s), -1);
             if (s <> '') and (s[1] = ',') then delete(s, 1, 1)
             else begin
-              debugln('GDBMI: Error parsing threads');
+              debugln(DBG_WARNINGS, 'GDBMI: Error parsing threads');
               break
             end;
             if i < 0 then Continue;
@@ -10261,7 +10218,7 @@ var
       DoDbgEvent(ecProcess, etProcessStart, 'Process Start: ' + FTheDebugger.FileName);
     end
     else
-      DebugLn('[WARNING] Debugger: Unexpected async-record: ', Line);
+      DebugLn(DBG_WARNINGS, '[WARNING] Debugger: Unexpected async-record: ', Line);
   end;
 
   procedure DoMsgAsync(var Line: String);
@@ -10289,14 +10246,14 @@ var
                     t.Free;
                   end
                   else
-                    debugln('GDBMI: Duplicate thread');
+                    debugln(DBG_WARNINGS, 'GDBMI: Duplicate thread');
                 end;
               1: begin
                   if t <> nil then begin
                     ct.Remove(t);
                   end
                   else
-                    debugln('GDBMI: Missing thread');
+                    debugln(DBG_WARNINGS, 'GDBMI: Missing thread');
                 end;
             end;
             FTheDebugger.Threads.Changed;
@@ -10309,7 +10266,7 @@ var
 
   procedure DoStatusAsync(const Line: String);
   begin
-    DebugLn('[WARNING] Debugger: Unexpected async-record: ', Line);
+    DebugLn(DBG_WARNINGS, '[WARNING] Debugger: Unexpected async-record: ', Line);
   end;
 
 var
@@ -10336,7 +10293,7 @@ begin
       '+': DoStatusAsync(S);
       '=': DoMsgAsync(S);
     else
-      DebugLn('[WARNING] Debugger: Unknown record: ', S);
+      DebugLn(DBG_WARNINGS, '[WARNING] Debugger: Unknown record: ', S);
     end;
     {$IFDEF VerboseIDEToDo}{$message warning condition should also check end-of-file reached for process output stream}{$ENDIF}
     if FTheDebugger.ReadLineTimedOut
@@ -11302,7 +11259,7 @@ procedure TGDBMIDebuggerSimpleCommand.DoStateChanged(OldState: TGDBMIDebuggerCom
 begin
   inherited DoStateChanged(OldState);
   if (State = dcsQueued) and (cfExternal in FFlags)
-  then DebugLn('[WARNING] Debugger: Execution of external command "', FCommand, '" while queue exists');
+  then DebugLn(DBG_WARNINGS, '[WARNING] Debugger: Execution of external command "', FCommand, '" while queue exists');
 end;
 
 constructor TGDBMIDebuggerSimpleCommand.Create(AOwner: TGDBMIDebugger;
@@ -11501,7 +11458,7 @@ var
     Deep,j: SizeInt;
     InString: Boolean;
   begin
-    DebugLn('->->', ASource);
+    DebugLn(DBG_VERBOSE, '->->', ASource);
     Deep := 0;
     InString := False;
 
@@ -12487,7 +12444,7 @@ var
             exit;
           end;
 
-          debugln('############# Not expected to be here');
+          debugln(DBG_WARNINGS, '############# Not expected to be here');
           FTextValue := '<ERROR>';
         end;
     end;
@@ -12664,5 +12621,8 @@ initialization
   RegisterDebugger(TGDBMIDebugger);
   DBGMI_QUEUE_DEBUG := DebugLogger.RegisterLogGroup('DBGMI_QUEUE_DEBUG' {$IFDEF DBGMI_QUEUE_DEBUG} , True {$ENDIF} );
   DBGMI_STRUCT_PARSER := DebugLogger.RegisterLogGroup('DBGMI_STRUCT_PARSER' {$IFDEF DBGMI_STRUCT_PARSER} , True {$ENDIF} );
+  DBG_VERBOSE := DebugLogger.FindOrRegisterLogGroup('DBG_VERBOSE' {$IFDEF DBG_VERBOSE} , True {$ENDIF} );
+  DBG_WARNINGS := DebugLogger.FindOrRegisterLogGroup('DBG_WARNINGS' {$IFDEF DBG_WARNINGS} , True {$ENDIF} );
+  DBG_DISASSEMBLER := DebugLogger.FindOrRegisterLogGroup('DBG_DISASSEMBLER' {$IFDEF DBG_DISASSEMBLER} , True {$ENDIF} );
 
 end.

@@ -426,7 +426,7 @@ const
   GdbCmdWhatIs = 'whatis ';
   GdbCmdEvaluate = '-data-evaluate-expression ';
 var
-  DBGMI_TYPE_INFO: PLazLoggerLogGroup;
+  DBGMI_TYPE_INFO, DBG_WARNINGS: PLazLoggerLogGroup;
 
 function CreatePTypeValueList(AResultValues: String): TStringList;
 var
@@ -3196,7 +3196,7 @@ begin
   if (FProcessState = OldProcessState) and (FProccesReuestsMade = OldReqMade)
   and (not Result) and (FEvalRequest = nil)
   then begin
-    debugln('ERROR: detected state loop in ProcessExpression');
+    debugln(DBG_WARNINGS, ['ERROR: detected state loop in ProcessExpression']);
     Result := True;
   end;
   finally
@@ -3223,5 +3223,6 @@ end;
 
 initialization
   DBGMI_TYPE_INFO := DebugLogger.RegisterLogGroup('DBGMI_TYPE_INFO' {$IFDEF DBGMI_TYPE_INFO} , True {$ENDIF} );
+  DBG_WARNINGS := DebugLogger.FindOrRegisterLogGroup('DBG_WARNINGS' {$IFDEF DBG_WARNINGS} , True {$ENDIF} );
 
 end.

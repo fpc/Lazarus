@@ -2963,8 +2963,8 @@ function HasConsoleSupport: Boolean;
 implementation
 
 var
-  DBG_STATE, DBG_EVENTS, DBG_STATE_EVENT,
-  DBG_DATA_MONITORS, DBG_LOCATION_INFO: PLazLoggerLogGroup;
+  DBG_STATE, DBG_EVENTS, DBG_STATE_EVENT, DBG_DATA_MONITORS, DBG_LOCATION_INFO,
+  DBG_VERBOSE, DBG_WARNINGS, DBG_DISASSEMBLER: PLazLoggerLogGroup;
 
 const
   COMMANDMAP: array[TDBGState] of TDBGCommands = (
@@ -6431,11 +6431,11 @@ begin
   then begin
     Result := RequestCommand(ACommand, AParams);
     if not Result then begin
-      DebugLn('TDebugger.ReqCmd failed: ',DBGCommandNames[ACommand]);
+      DebugLn(DBG_WARNINGS, 'TDebugger.ReqCmd failed: ',DBGCommandNames[ACommand]);
     end;
   end
   else begin
-    DebugLn('TDebugger.ReqCmd Command not supported: ',
+    DebugLn(DBG_WARNINGS, 'TDebugger.ReqCmd Command not supported: ',
             DBGCommandNames[ACommand],' ClassName=',ClassName);
     Result := False;
   end;
@@ -6470,7 +6470,7 @@ procedure TDebugger.SetFileName(const AValue: String);
 begin
   if FFileName <> AValue
   then begin
-    DebugLn('[TDebugger.SetFileName] "', AValue, '"');
+    DebugLn(DBG_VERBOSE, '[TDebugger.SetFileName] "', AValue, '"');
     if FState in [dsRun, dsPause]
     then begin
       Stop;
@@ -6575,37 +6575,37 @@ end;
 procedure TDebugger.StepInto;
 begin
   if ReqCmd(dcStepInto, []) then exit;
-  DebugLn('TDebugger.StepInto Class=',ClassName,' failed.');
+  DebugLn(DBG_WARNINGS, 'TDebugger.StepInto Class=',ClassName,' failed.');
 end;
 
 procedure TDebugger.StepOverInstr;
 begin
   if ReqCmd(dcStepOverInstr, []) then exit;
-  DebugLn('TDebugger.StepOverInstr Class=',ClassName,' failed.');
+  DebugLn(DBG_WARNINGS, 'TDebugger.StepOverInstr Class=',ClassName,' failed.');
 end;
 
 procedure TDebugger.StepIntoInstr;
 begin
   if ReqCmd(dcStepIntoInstr, []) then exit;
-  DebugLn('TDebugger.StepIntoInstr Class=',ClassName,' failed.');
+  DebugLn(DBG_WARNINGS, 'TDebugger.StepIntoInstr Class=',ClassName,' failed.');
 end;
 
 procedure TDebugger.StepOut;
 begin
   if ReqCmd(dcStepOut, []) then exit;
-  DebugLn('TDebugger.StepOut Class=', ClassName, ' failed.');
+  DebugLn(DBG_WARNINGS, 'TDebugger.StepOut Class=', ClassName, ' failed.');
 end;
 
 procedure TDebugger.StepOver;
 begin
   if ReqCmd(dcStepOver, []) then exit;
-  DebugLn('TDebugger.StepOver Class=',ClassName,' failed.');
+  DebugLn(DBG_WARNINGS, 'TDebugger.StepOver Class=',ClassName,' failed.');
 end;
 
 procedure TDebugger.Stop;
 begin
   if ReqCmd(dcStop,[]) then exit;
-  DebugLn('TDebugger.Stop Class=',ClassName,' failed.');
+  DebugLn(DBG_WARNINGS, 'TDebugger.Stop Class=',ClassName,' failed.');
 end;
 
 (******************************************************************************)
@@ -10438,9 +10438,7 @@ begin
   // increase count withou change notification
   if ACount < FCountBefore
   then begin
-    {$IFDEF DBG_VERBOSE}
-    debugln(['WARNING: TBaseDisassembler.InternalIncreaseCountBefore will decrease was ', FCountBefore , ' new=',ACount]);
-    {$ENDIF}
+    debugln(DBG_DISASSEMBLER, ['WARNING: TBaseDisassembler.InternalIncreaseCountBefore will decrease was ', FCountBefore , ' new=',ACount]);
     SetCountBefore(ACount);
   end
   else FCountBefore := ACount;
@@ -10451,9 +10449,7 @@ begin
   // increase count withou change notification
   if ACount < FCountAfter
   then begin
-    {$IFDEF DBG_VERBOSE}
-    debugln(['WARNING: TBaseDisassembler.InternalIncreaseCountAfter will decrease was ', FCountAfter , ' new=',ACount]);
-    {$ENDIF}
+    debugln(DBG_DISASSEMBLER, ['WARNING: TBaseDisassembler.InternalIncreaseCountAfter will decrease was ', FCountAfter , ' new=',ACount]);
     SetCountAfter(ACount)
   end
   else FCountAfter := ACount;
@@ -10681,9 +10677,7 @@ begin
     while (i >= 0) and (AnotherRange.EntriesPtr[i]^.Addr >= a)
     do dec(i);
     inc(i);
-    {$IFDEF DBG_VERBOSE}
-    debugln(['INFO: TDBGDisassemblerEntryRange.Merge: Merged to START:   Other=', dbgs(AnotherRange), '  To other index=', i, ' INTO self=', dbgs(self) ]);
-    {$ENDIF}
+    debugln(DBG_DISASSEMBLER, ['INFO: TDBGDisassemblerEntryRange.Merge: Merged to START:   Other=', dbgs(AnotherRange), '  To other index=', i, ' INTO self=', dbgs(self) ]);
     if Capacity < Count + i
     then Capacity := Count + i;
     for j := Count-1 downto 0 do
@@ -10699,9 +10693,7 @@ begin
     i := 0;
     while (i < AnotherRange.Count) and (AnotherRange.EntriesPtr[i]^.Addr <= a)
     do inc(i);
-    {$IFDEF DBG_VERBOSE}
-    debugln(['INFO: TDBGDisassemblerEntryRange.Merge to END:   Other=', dbgs(AnotherRange), '  From other index=', i, ' INTO self=', dbgs(self) ]);
-    {$ENDIF}
+    debugln(DBG_DISASSEMBLER, ['INFO: TDBGDisassemblerEntryRange.Merge to END:   Other=', dbgs(AnotherRange), '  From other index=', i, ' INTO self=', dbgs(self) ]);
     if Capacity < Count + AnotherRange.Count - i
     then Capacity := Count + AnotherRange.Count - i;
     for j := 0 to AnotherRange.Count - i - 1 do
@@ -10710,9 +10702,7 @@ begin
     FRangeEndAddr := AnotherRange.FRangeEndAddr;
     FLastEntryEndAddr := AnotherRange.FLastEntryEndAddr;
   end;
-  {$IFDEF DBG_VERBOSE}
-  debugln(['INFO: TDBGDisassemblerEntryRange.Merge AFTER MERGE: ', dbgs(self) ]);
-  {$ENDIF}
+  debugln(DBG_DISASSEMBLER, ['INFO: TDBGDisassemblerEntryRange.Merge AFTER MERGE: ', dbgs(self) ]);
 end;
 
 function TDBGDisassemblerEntryRange.FirstAddr: TDbgPtr;
@@ -10838,9 +10828,7 @@ var
   MergeRng, MergeRng2: TDBGDisassemblerEntryRange;
   OldId: TDBGPtr;
 begin
-  {$IFDEF DBG_VERBOSE}
-  debugln(['INFO: TDBGDisassemblerEntryMap.AddRange ', dbgs(ARange), ' to map with count=', Count ]);
-  {$ENDIF}
+  debugln(DBG_DISASSEMBLER, ['INFO: TDBGDisassemblerEntryMap.AddRange ', dbgs(ARange), ' to map with count=', Count ]);
   if ARange.Count = 0 then exit;
 
   MergeRng := GetRangeForAddr(ARange.RangeStartAddr, True);
@@ -10929,9 +10917,7 @@ begin
     end
     else if FCurrentRange.ContainsAddr(BaseAddr)
     then begin
-      {$IFDEF DBG_VERBOSE}
-      debugln(['WARNING: TDBGDisassembler.OnMerge: Address at odd offset ',BaseAddr, ' before=',CountBefore, ' after=', CountAfter]);
-      {$ENDIF}
+      debugln(DBG_DISASSEMBLER, ['WARNING: TDBGDisassembler.OnMerge: Address at odd offset ',BaseAddr, ' before=',CountBefore, ' after=', CountAfter]);
       lb := CountBefore;
       la := CountAfter;
       if HandleRangeWithInvalidAddr(FCurrentRange, BaseAddr, lb, la)
@@ -10968,9 +10954,7 @@ begin
 
     if NewRange = nil
     then begin
-      {$IFDEF DBG_VERBOSE}
-      debugln(['INFO: TDBGDisassembler.FindRange: Address not found ', AnAddr, ' wanted-before=',ALinesBefore,' wanted-after=',ALinesAfter,' in map with count=', FEntryRanges.Count ]);
-      {$ENDIF}
+      debugln(DBG_DISASSEMBLER, ['INFO: TDBGDisassembler.FindRange: Address not found ', AnAddr, ' wanted-before=',ALinesBefore,' wanted-after=',ALinesAfter,' in map with count=', FEntryRanges.Count ]);
       exit;
     end;
 
@@ -10979,9 +10963,7 @@ begin
     then begin
       // address at incorrect offset
       Result := HandleRangeWithInvalidAddr(NewRange, AnAddr, ALinesBefore, ALinesAfter);
-      {$IFDEF DBG_VERBOSE}
-      debugln(['WARNING: TDBGDisassembler.FindRange: Address at odd offset ',AnAddr,'  Result=', dbgs(result), ' before=',CountBefore, ' after=', CountAfter, ' wanted-before=',ALinesBefore,' wanted-after=',ALinesAfter,' in map with count=', FEntryRanges.Count]);
-      {$ENDIF}
+      debugln(DBG_DISASSEMBLER, ['WARNING: TDBGDisassembler.FindRange: Address at odd offset ',AnAddr,'  Result=', dbgs(result), ' before=',CountBefore, ' after=', CountAfter, ' wanted-before=',ALinesBefore,' wanted-after=',ALinesAfter,' in map with count=', FEntryRanges.Count]);
       if Result
       then begin
         FCurrentRange := NewRange;
@@ -10997,9 +10979,7 @@ begin
     SetCountBefore(i);
     SetCountAfter(NewRange.Count - 1 - i);
     Result := (i >= ALinesBefore) and (CountAfter >= ALinesAfter);
-    {$IFDEF DBG_VERBOSE}
-    debugln(['INFO: TDBGDisassembler.FindRange: Address found ',AnAddr,' Result=', dbgs(result), ' before=',CountBefore, ' after=', CountAfter, ' wanted-before=',ALinesBefore,' wanted-after=',ALinesAfter,' in map with count=', FEntryRanges.Count]);
-    {$ENDIF}
+    debugln(DBG_DISASSEMBLER, ['INFO: TDBGDisassembler.FindRange: Address found ',AnAddr,' Result=', dbgs(result), ' before=',CountBefore, ' after=', CountAfter, ' wanted-before=',ALinesBefore,' wanted-after=',ALinesAfter,' in map with count=', FEntryRanges.Count]);
   finally
     UnlockChanged;
   end;
@@ -11014,9 +10994,7 @@ end;
 
 procedure TDBGDisassembler.Clear;
 begin
-  {$IFDEF DBG_VERBOSE}
-  debugln(['INFO: TDBGDisassembler.Clear:  map had count=', FEntryRanges.Count ]);
-  {$ENDIF}
+  debugln(DBG_DISASSEMBLER, ['INFO: TDBGDisassembler.Clear:  map had count=', FEntryRanges.Count ]);
   FCurrentRange := nil;
   FEntryRanges.Clear;
   inherited Clear;
@@ -11087,31 +11065,28 @@ begin
 
   // Do not LockChange, if FindRange changes something, then notification must be send to syncronize counts on IDE-object
   Result:= FindRange(AnAddr, ALinesBefore, ALinesAfter);
-  {$IFDEF DBG_VERBOSE}
-  if result then debugln(['INFO: TDBGDisassembler.PrepareRange  found existing data  Addr=', AnAddr,' before=', ALinesBefore, ' After=', ALinesAfter ]);
-  {$ENDIF}
+  if result then debugln(DBG_DISASSEMBLER, ['INFO: TDBGDisassembler.PrepareRange  found existing data  Addr=', AnAddr,' before=', ALinesBefore, ' After=', ALinesAfter ]);
   if Result
   then exit;
 
-  {$IFDEF DBG_VERBOSE}
-  if result then debugln(['INFO: TDBGDisassembler.PrepareRange  calling PrepareEntries Addr=', AnAddr,' before=', ALinesBefore, ' After=', ALinesAfter ]);
-  {$ENDIF}
+  if result then debugln(DBG_DISASSEMBLER, ['INFO: TDBGDisassembler.PrepareRange  calling PrepareEntries Addr=', AnAddr,' before=', ALinesBefore, ' After=', ALinesAfter ]);
   if PrepareEntries(AnAddr, ALinesBefore, ALinesAfter)
   then Result:= FindRange(AnAddr, ALinesBefore, ALinesAfter);
-  {$IFDEF DBG_VERBOSE}
-  if result then debugln(['INFO: TDBGDisassembler.PrepareRange  found data AFTER PrepareEntries Addr=', AnAddr,' before=', ALinesBefore, ' After=', ALinesAfter ]);
-  {$ENDIF}
+  if result then debugln(DBG_DISASSEMBLER, ['INFO: TDBGDisassembler.PrepareRange  found data AFTER PrepareEntries Addr=', AnAddr,' before=', ALinesBefore, ' After=', ALinesAfter ]);
 end;
 
 initialization
   MDebuggerPropertiesList := nil;
   {$IFDEF DBG_STATE}  {$DEFINE DBG_STATE_EVENT} {$ENDIF}
   {$IFDEF DBG_EVENTS} {$DEFINE DBG_STATE_EVENT} {$ENDIF}
+  DBG_VERBOSE := DebugLogger.FindOrRegisterLogGroup('DBG_VERBOSE' {$IFDEF DBG_VERBOSE} , True {$ENDIF} );
+  DBG_WARNINGS := DebugLogger.FindOrRegisterLogGroup('DBG_WARNINGS' {$IFDEF DBG_WARNINGS} , True {$ENDIF} );
   DBG_STATE       := DebugLogger.RegisterLogGroup('DBG_STATE' {$IFDEF DBG_STATE} , True {$ENDIF} );
   DBG_EVENTS      := DebugLogger.RegisterLogGroup('DBG_EVENTS' {$IFDEF DBG_EVENTS} , True {$ENDIF} );
   DBG_STATE_EVENT := DebugLogger.RegisterLogGroup('DBG_STATE_EVENT' {$IFDEF DBG_STATE_EVENT} , True {$ENDIF} );
   DBG_DATA_MONITORS := DebugLogger.FindOrRegisterLogGroup('DBG_DATA_MONITORS' {$IFDEF DBG_DATA_MONITORS} , True {$ENDIF} );
   DBG_LOCATION_INFO := DebugLogger.FindOrRegisterLogGroup('DBG_LOCATION_INFO' {$IFDEF DBG_LOCATION_INFO} , True {$ENDIF} );
+  DBG_DISASSEMBLER := DebugLogger.FindOrRegisterLogGroup('DBG_DISASSEMBLER' {$IFDEF DBG_DISASSEMBLER} , True {$ENDIF} );
 
 finalization
   DoFinalization;
