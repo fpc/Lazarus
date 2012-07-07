@@ -1808,22 +1808,10 @@ procedure TTestFoldedView.TestNestedFoldsList;
     FoldType: integer;  FoldTypeCompatible: integer; FoldGroup: Integer;
     FoldAction: TSynFoldActions);
   begin
-    AssertEquals(Format('%s (%d/%d) LineIndex',    [BaseTestName, ALine, AColumn]), ALine, nd.LineIndex);
-    AssertEquals(Format('%s (%d/%d) NodeIndex',    [BaseTestName, ALine, AColumn]), AColumn, nd.NodeIndex);
-    if not(sfaInvalid in nd.FoldAction) then begin
-      AssertEquals(Format('%s (%d/%d) LogXStart',    [BaseTestName, ALine, AColumn]), LogXStart, nd.LogXStart);
-      AssertEquals(Format('%s (%d/%d) LogXEnd',      [BaseTestName, ALine, AColumn]), LogXEnd, nd.LogXEnd);
-      if FoldLvlStart >= 0 then
-      AssertEquals(Format('%s (%d/%d) FoldLvlStart', [BaseTestName, ALine, AColumn]), FoldLvlStart, nd.FoldLvlStart);
-      if FoldLvlEnd >= 0 then
-      AssertEquals(Format('%s (%d/%d) FoldLvlEnd',   [BaseTestName, ALine, AColumn]), FoldLvlEnd, nd.FoldLvlEnd);
-      AssertEquals(Format('%s (%d/%d) NestLvlStart', [BaseTestName, ALine, AColumn]), NestLvlStart, nd.NestLvlStart);
-      AssertEquals(Format('%s (%d/%d) NestLvlEnd',   [BaseTestName, ALine, AColumn]), NestLvlEnd, nd.NestLvlEnd);
-      AssertEquals(Format('%s (%d/%d) FoldType',     [BaseTestName, ALine, AColumn]), FoldType, PtrUInt(nd.FoldType));
-      AssertEquals(Format('%s (%d/%d) FoldTypeCompatible', [BaseTestName, ALine, AColumn]), FoldTypeCompatible, PtrUInt(nd.FoldTypeCompatible));
-      AssertEquals(Format('%s (%d/%d) FoldGroup:',   [BaseTestName, ALine, AColumn]), FoldGroup, nd.FoldGroup);
-    end;
-    AssertEquals(Format('%s (%d/%d) FoldAction',   [BaseTestName, ALine, AColumn]), FoldActionsToString(FoldAction), FoldActionsToString(nd.FoldAction));
+    CheckPasFoldNodeInfo('', nd, ALine, AColumn, LogXStart, LogXEnd, FoldLvlStart,
+      FoldLvlEnd, NestLvlStart, NestLvlEnd,
+      TPascalCodeFoldBlockType(FoldType), TPascalCodeFoldBlockType(FoldTypeCompatible),
+      FoldGroup, FoldAction);
   end;
 var
   TheList: TLazSynEditNestedFoldsList;
