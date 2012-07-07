@@ -1123,7 +1123,7 @@ begin
       // Line 5:     {$ifdef b} if a then begin {$endif}                        zz# pasminlvl=3 endlvl=4
       CheckNode( 5, [], 0,   0,   3, 9,   0, 1,   0, 1,
                                   cfbtIfDef, cfbtIfDef,  FOLDGROUP_IFDEF,
-                                  [sfaOpen, sfaMarkup,sfaFoldFold,sfaOneLineOpen]);
+                                  [sfaOpen, sfaMarkup,sfaOneLineOpen]);
       CheckNode( 5, [], 0,   1,   23, 28,   3, 4,   3, 4,
                                   cfbtBeginEnd, cfbtBeginEnd,  FOLDGROUP_PASCAL,
                                   [sfaOpen, sfaOpenFold,sfaMarkup,sfaFold,sfaFoldFold]);
@@ -1156,7 +1156,7 @@ begin
       // Line 11:   //                                                          # pasminlvl=0 endlvl=0
       CheckNode(11, [], 0,   0,   0, 2,   0, 1,   0, 1,
                                   cfbtSlashComment, cfbtSlashComment,  FOLDGROUP_PASCAL,
-                                  [sfaOpen, sfaFoldFold,sfaOneLineOpen]);
+                                  [sfaOpen, sfaOneLineOpen]);
       CheckNode(11, [], 0,   1,   2, 2,   1, 0,   1, 0,
                                   cfbtSlashComment, cfbtSlashComment,  FOLDGROUP_PASCAL,
                                   [sfaClose, sfaOneLineClose,sfaLastLineClose]);
@@ -1214,7 +1214,7 @@ begin
       // Line 11:   //                                                          # pasminlvl=0 endlvl=0
       CheckNode(11, [], 1,   0,   0, 2,   0, 1,   0, 1,
                                   cfbtSlashComment, cfbtSlashComment,  FOLDGROUP_PASCAL,
-                                  [sfaOpen, sfaFoldFold,sfaOneLineOpen]);
+                                  [sfaOpen, sfaOneLineOpen]);
       CheckNode(11, [], 1,   1,   2, 2,   1, 0,   1, 0,
                                   cfbtSlashComment, cfbtSlashComment,  FOLDGROUP_PASCAL,
                                   [sfaClose, sfaOneLineClose,sfaLastLineClose]);
@@ -1420,7 +1420,7 @@ begin
       // Line 5:     {$ifdef b} if a then begin {$endif}                                                    # pasminlvl=2 endlvl=3
       CheckNode( 5, [], 0,   0,   3, 9,   0, 1,   0, 1,
                                   cfbtIfDef, cfbtIfDef,  FOLDGROUP_IFDEF,
-                                  [sfaOpen, sfaMarkup,sfaFoldFold,sfaOneLineOpen]);
+                                  [sfaOpen, sfaMarkup,sfaOneLineOpen]);
       CheckNode( 5, [], 0,   1,   23, 28,   2, 3,   3, 4,
                                   cfbtBeginEnd, cfbtBeginEnd,  FOLDGROUP_PASCAL,
                                   [sfaOpen, sfaOpenFold,sfaMarkup,sfaFold,sfaFoldFold]);
@@ -1489,10 +1489,10 @@ begin
                                   [sfaOpen, sfaOpenFold,sfaMarkup,sfaFold,sfaFoldFold]);  // begin
       CheckNode( 2, [], 0,   2,   18, 24,   1, 2,   1, 2,
                                   cfbtIfDef, cfbtIfDef,  FOLDGROUP_IFDEF,
-                                  [sfaOpen, sfaMarkup,sfaFoldFold,sfaOneLineOpen]);           // {$IFDEF B}
+                                  [sfaOpen, sfaMarkup,sfaOneLineOpen]);           // {$IFDEF B}
       CheckNode( 2, [], 0,   3,   28, 34,   3, 4,   3, 4,
                                   cfbtRepeat, cfbtRepeat,  FOLDGROUP_PASCAL,
-                                  [sfaOpen, sfaMarkup,sfaFoldFold,sfaOneLineOpen]); // repeat a;
+                                  [sfaOpen, sfaMarkup,sfaOneLineOpen]); // repeat a;
       CheckNode( 2, [], 0,   4,   39, 45,   2, 1,   2, 1,
                                   cfbtIfDef, cfbtIfDef,  FOLDGROUP_IFDEF,
                                   [sfaClose, sfaMarkup,sfaOneLineClose]);                      // {$ENDIF}
@@ -1501,7 +1501,7 @@ begin
                                   [sfaClose, sfaMarkup,sfaOneLineClose]);            // until b;
       CheckNode( 2, [], 0,   6,   57, 63,   1, 2,   1, 2,
                                   cfbtIfDef, cfbtIfDef,  FOLDGROUP_IFDEF,
-                                  [sfaOpen, sfaMarkup,sfaFoldFold,sfaOneLineOpen]);           // {$IFDEF c}
+                                  [sfaOpen, sfaMarkup,sfaOneLineOpen]);           // {$IFDEF c}
       CheckNode( 2, [], 0,   7,   67, 70,   3, 4,   3, 4,
                                   cfbtTry, cfbtTry,  FOLDGROUP_PASCAL,
                                   [sfaOpen, sfaOpenFold,sfaMarkup,sfaFold,sfaFoldFold]);// try
@@ -1514,7 +1514,7 @@ begin
       // Line 3:     //foo                                                      # pasminlvl=4 endlvl=4
       CheckNode( 3, [], 0,   0,   2, 4,   4, 5,   4, 5,
                                   cfbtSlashComment, cfbtSlashComment,  FOLDGROUP_PASCAL,
-                                  [sfaOpen, sfaFoldFold,sfaOneLineOpen]);
+                                  [sfaOpen, sfaOneLineOpen]);
       CheckNode( 3, [], 0,   1,   7, 7,   5, 4,   5, 4,
                                   cfbtSlashComment, cfbtSlashComment,  FOLDGROUP_PASCAL,
                                   [sfaClose, sfaOneLineClose, sfaCloseForNextLine]);
@@ -1524,7 +1524,7 @@ begin
                                   [sfaOpen, sfaOpenFold,sfaMarkup,sfaFold,sfaFoldFold]);
       CheckNode( 4, [], 0,   1,   10, 16,   5, 6,   5, 6,
                                   cfbtRepeat, cfbtRepeat,  FOLDGROUP_PASCAL,
-                                  [sfaOpen, sfaMarkup,sfaFoldFold,sfaOneLineOpen]);
+                                  [sfaOpen, sfaMarkup,sfaOneLineOpen]);
       CheckNode( 4, [], 0,   2,   21, 27,   2, 1,   2, 1,
                                   cfbtIfDef, cfbtIfDef,  FOLDGROUP_IFDEF,
                                   [sfaClose, sfaCloseFold,sfaMarkup,sfaFold]);
@@ -1534,7 +1534,7 @@ begin
       // Line 5:     repeat m; until n; end; {$endif a} //                                      # pasminlvl=3 endlvl=3
       CheckNode( 5, [], 0,   0,   2, 8,   5, 6,   5, 6,
                                   cfbtRepeat, cfbtRepeat,  FOLDGROUP_PASCAL,
-                                  [sfaOpen, sfaMarkup,sfaFoldFold,sfaOneLineOpen]);
+                                  [sfaOpen, sfaMarkup,sfaOneLineOpen]);
       CheckNode( 5, [], 0,   1,   12, 17,   6, 5,   6, 5,
                                   cfbtRepeat, cfbtRepeat,  FOLDGROUP_PASCAL,
                                   [sfaClose, sfaMarkup,sfaOneLineClose]);
@@ -1557,7 +1557,7 @@ begin
       // Line 7:   begin end.                                                   # pasminlvl=0 endlvl=0
       CheckNode( 7, [], 0,   0,   0, 5,   1, 2,   1, 2,
                                   cfbtBeginEnd, cfbtBeginEnd,  FOLDGROUP_PASCAL,
-                                  [sfaOpen, sfaMarkup,sfaFoldFold,sfaOneLineOpen]);
+                                  [sfaOpen, sfaMarkup,sfaOneLineOpen]);
       CheckNode( 7, [], 0,   1,   6, 9,   2, 1,   2, 1,
                                   cfbtBeginEnd, cfbtBeginEnd,  FOLDGROUP_PASCAL,
                                   [sfaClose, sfaMarkup,sfaOneLineClose]);
@@ -1590,7 +1590,7 @@ begin
       // Line 2:   type a=integer;                                              # pasminlvl=2 endlvl=2
       CheckNode( 2, [], 0,   0,   0, 4,   2, 3,   2, 3,
                                   cfbtVarType, cfbtVarType,  FOLDGROUP_PASCAL,
-                                  [sfaOpen, sfaFoldFold,sfaOneLineOpen]);
+                                  [sfaOpen, sfaOneLineOpen]);
       CheckNode( 2, [], 0,   1,   15, 15,   3, 2,   3, 2,
                                   cfbtVarType, cfbtVarType,  FOLDGROUP_PASCAL,
                                   [sfaClose, sfaOneLineClose, sfaCloseForNextLine]);
@@ -1624,7 +1624,7 @@ begin
       // Line 9:   //, unit-section                                             # pasminlvl=1 endlvl=1
       CheckNode( 9, [], 0,   0,   0, 2,   2, 3,   2, 3,
                                   cfbtSlashComment, cfbtSlashComment,  FOLDGROUP_PASCAL,
-                                  [sfaOpen, sfaFoldFold,sfaOneLineOpen]);
+                                  [sfaOpen, sfaOneLineOpen]);
       CheckNode( 9, [], 0,   1,   2, 2,   3, 2,   3, 2,
                                   cfbtSlashComment, cfbtSlashComment,  FOLDGROUP_PASCAL,
                                   [sfaClose, sfaOneLineClose, sfaCloseForNextLine]);
@@ -1689,7 +1689,7 @@ begin
       // Line 6:   //                                                           # pasminlvl=1 endlvl=0
       CheckNode( 6, [], 0,   0,   0, 2,   1, 2,   1, 2,
                                   cfbtSlashComment, cfbtSlashComment,  FOLDGROUP_PASCAL,
-                                  [sfaOpen, sfaFoldFold,sfaOneLineOpen]);
+                                  [sfaOpen, sfaOneLineOpen]);
       CheckNode( 6, [], 0,   1,   2, 2,   2, 1,   2, 1,
                                   cfbtSlashComment, cfbtSlashComment,  FOLDGROUP_PASCAL,
                                   [sfaClose, sfaOneLineClose,sfaLastLineClose]);

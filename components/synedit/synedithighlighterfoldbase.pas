@@ -69,11 +69,11 @@ type
                      sfaClose,        // Any Closing node
                      sfaOpenFold,     // At this node a new Fold can start // Actually, includes all,any multiline node too.
                      sfaCloseFold,    // At this node a fold ends
-                     sfaMarkup,   // This node can be highlighted, by the matching Word-Pair Markup
-                     sfaFold,     // Part of a fold- or hide-able block (FoldConf.Enabled = True)           - excludes one=liners for FoldFold
-                     sfaFoldFold, // Part of a fold-able block (FoldConf.Enabled = True / smFold in Modes)  - includes one=liners / only opening node (todo: maybe both?)
+                     sfaFold,     // Part of a fold- or hide-able block (FoldConf.Enabled = True)           - excludes one=liners for FoldFold, as they can not fold
+                     sfaFoldFold, // Part of a fold-able block (FoldConf.Enabled = True / smFold in Modes)  - excludes one=liners / only opening node (todo: maybe both?)
                      sfaFoldHide, // Part of a hide-able block (FoldConf.Enabled = True / smHide in Modes)  - includes one=liners / only opening node (todo: maybe both?)
                      sfaInvalid,  // Wrong Index
+                     sfaMarkup,   // This node can be highlighted, by the matching Word-Pair Markup
                      sfaDefaultCollapsed,
                      sfaOneLineOpen,   // Open, but closes on same line; *only* if hide-able has [sfaOpenFold, sfaFold]; always has [sfaFoldFold, sfaFoldHide]
                      sfaOneLineClose,  // Open, but closes on same line;

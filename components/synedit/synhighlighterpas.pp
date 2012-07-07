@@ -3454,13 +3454,14 @@ begin
       nd^.FoldAction  := nd^.FoldAction + [sfaOneLineOpen];
       Node.FoldAction := Node.FoldAction + [sfaOneLineClose];
       if (sfaFoldHide in nd^.FoldAction) then begin
+        assert(sfaFold in nd^.FoldAction, 'sfaFoldHide without sfaFold');
         // one liner: hide-able / not fold-able
         nd^.FoldAction  := nd^.FoldAction - [sfaFoldFold];
         Node.FoldAction := Node.FoldAction - [sfaFoldFold];
       end else begin
         // one liner: nether hide-able nore fold-able
-        nd^.FoldAction  := nd^.FoldAction - [sfaOpenFold, sfaFold]; // TODO -[sfaFoldFold, sfaFoldHide]
-        Node.FoldAction := Node.FoldAction - [sfaCloseFold, sfaFold];
+        nd^.FoldAction  := nd^.FoldAction - [sfaOpenFold, sfaFold, sfaFoldFold];
+        Node.FoldAction := Node.FoldAction - [sfaCloseFold, sfaFold, sfaFoldFold];
       end;
     end;
   end;
