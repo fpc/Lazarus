@@ -356,7 +356,7 @@ msgstr "identificador esperado, mas encontrado %s"
 
 #: codetoolsstrconsts.ctsexpectedsemicolonofstatementbutfound
 msgid "expected ; of statement, but found %s"
-msgstr ""
+msgstr "esperado ; da declaração, mas %s encontrado"
 
 #: codetoolsstrconsts.ctsexportsclauseonlyallowedinlibraries
 msgid "exports clause only allowed in libraries"

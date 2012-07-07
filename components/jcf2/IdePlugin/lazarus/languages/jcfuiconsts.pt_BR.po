@@ -4,7 +4,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
 "PO-Revision-Date: \n"
-"Last-Translator: Marcelo Borges de Paula\n"
+"Last-Translator: Marcelo B Paula\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -506,11 +506,11 @@ msgstr "Configurações \"JCF\""
 
 #: jcfuiconsts.lisjedicodeformatofareyousurethatyouwanttoformatallfi
 msgid "JEDI Code Format of %sAre you sure that you want to format all %s files in the project?"
-msgstr ""
+msgstr "Formatador de código JEDI de %sTem certeza que deseja formatar todos %s arquivos no projeto?"
 
 #: jcfuiconsts.lisjedicodeformatofstartformatting
 msgid "JEDI Code Format of %sStart formatting?"
-msgstr ""
+msgstr "Formatador de código JEDI de %sIniciar formatação?"
 
 #: jcfuiconsts.lislbbreaklinesthatarelongerthanmaxlinelength
 msgid "&Break lines that are longer than max line length"

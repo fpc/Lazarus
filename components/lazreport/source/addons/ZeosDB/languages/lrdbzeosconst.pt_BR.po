@@ -1,0 +1,31 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Marcelo B Paula\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: lrdbzeosconst.slreditparamsform_caption
+msgid "Edit query param list"
+msgstr "Editar lista de parâmetros da \"query\""
+
+#: lrdbzeosconst.slreditparamsform_paramslist
+msgid "Params list"
+msgstr "Lista de parâmetros"
+
+#: lrdbzeosconst.slreditparamsform_paramtype
+msgid "Param type"
+msgstr "Tipo de parâmetro"
+
+#: lrdbzeosconst.slreditparamsform_paramvalue
+msgid "Param value"
+msgstr "Valor do parâmetro"
+
+#: lrdbzeosconst.slreditparamsform_selectexpresion
+msgid "Select expresion"
+msgstr "Selecionar expressão"
+

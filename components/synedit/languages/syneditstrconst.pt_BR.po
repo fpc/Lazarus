@@ -39,7 +39,7 @@ msgstr "Rótulo \"Case\""
 
 #: syneditstrconst.syns_attrcdata
 msgid "CDATA"
-msgstr ""
+msgstr "CDATA"
 
 #: syneditstrconst.syns_attrcdatasection
 msgid "CDATA Section"

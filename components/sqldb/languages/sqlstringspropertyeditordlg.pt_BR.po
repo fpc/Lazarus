@@ -4,34 +4,34 @@ msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
 "PO-Revision-Date: \n"
-"Last-Translator: Marcelo Borges de Paula\n"
+"Last-Translator: Marcelo B Paula\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Transfer-Encoding: 8bit\n"
 
 #: sqlstringspropertyeditordlg.smetacolumns
 msgid "Columns"
-msgstr ""
+msgstr "Colunas"
 
 #: sqlstringspropertyeditordlg.smetapleasespecifyatableintheobjectfield
 msgid "Please specify a table in the object field."
-msgstr ""
+msgstr "Favor especificar uma tabela no campo do objeto."
 
 #: sqlstringspropertyeditordlg.smetaprocedures
 msgid "Procedures"
-msgstr ""
+msgstr "Procedures"
 
 #: sqlstringspropertyeditordlg.smetasystables
 msgid "SysTables"
-msgstr ""
+msgstr "Tabelas de Sistema"
 
 #: sqlstringspropertyeditordlg.smetatabcaption
 msgid "Metadata"
-msgstr ""
+msgstr "Metadata"
 
 #: sqlstringspropertyeditordlg.smetatables
 msgid "Tables"
-msgstr ""
+msgstr "Tabelas"
 
 #: sqlstringspropertyeditordlg.sresulttabcaption
 msgid "Results"

@@ -238,7 +238,7 @@ msgstr "Arquivo CSV"
 
 #: lr_const.scurmemo
 msgid "Memo:"
-msgstr ""
+msgstr "Memo:"
 
 #: lr_const.sdatetimecategory
 msgid "Date and time"
@@ -640,7 +640,7 @@ msgstr "&1ª página"
 
 #: lr_const.sfindtextnotfound
 msgid "Search text not found."
-msgstr ""
+msgstr "Texto de busca não encontrado."
 
 #: lr_const.sfindtextoptions
 msgctxt "lr_const.sfindtextoptions"
@@ -1139,7 +1139,7 @@ msgstr "Estilo Linha"
 
 #: lr_const.sfrdesignerform_modified
 msgid "Modified"
-msgstr ""
+msgstr "Modificado"
 
 #: lr_const.sfrdesignerform_new
 #| msgid "&New..."
@@ -1288,7 +1288,7 @@ msgstr "Condição"
 
 #: lr_const.shidezerovalues
 msgid "Hide zero values"
-msgstr ""
+msgstr "Ocultar valores zerados"
 
 #: lr_const.shilightformback
 msgid "Background"
@@ -1408,7 +1408,7 @@ msgstr "Formulário LazReport"
 
 #: lr_const.slaztemplatefile
 msgid "LazReport template"
-msgstr ""
+msgstr "Modelo LazReport"
 
 #: lr_const.smathcategory
 msgid "Math"
@@ -2172,11 +2172,11 @@ msgstr "Arquivo relatório"
 
 #: lr_const.sreportcreatedate
 msgid "Report create date"
-msgstr ""
+msgstr "Data de criação do relatório"
 
 #: lr_const.sreportlastmodifydate
 msgid "Report last modify date"
-msgstr ""
+msgstr "Data da última alteração do relatório"
 
 #: lr_const.sreportpreparing
 msgid "Report preparing"
@@ -2302,11 +2302,11 @@ msgstr "Subrelatório na página"
 
 #: lr_const.stemplemptydesc
 msgid "New report based on empty template"
-msgstr ""
+msgstr "Novo relatório baseado no modelo em branco"
 
 #: lr_const.stemplemtpyrp
 msgid "Empty template"
-msgstr ""
+msgstr "Modelo em branco"
 
 #: lr_const.stemplfile
 msgid "FastReport template"

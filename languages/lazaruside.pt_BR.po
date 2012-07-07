@@ -3968,7 +3968,7 @@ msgstr "Adicionar requisito pacote?"
 
 #: lazarusidestrconsts.lisaddpackagestolistofinstalledpackagescombinewithbui
 msgid "add package(s) to list of installed packages (combine with --build-ide to rebuild IDE)."
-msgstr ""
+msgstr "adicionar pacote(s) à lista de pacotes instalados (combinar com --build-ide para reconstruir a IDE)."
 
 #: lazarusidestrconsts.lisaddpackagetoproject
 msgid "Add package %s to project?"
@@ -7284,7 +7284,7 @@ msgstr "Excluir arquivos selecionados"
 
 #: lazarusidestrconsts.lisdeleteselectedmacro
 msgid "Delete selected macro?"
-msgstr ""
+msgstr "Excluir macro selecionada?"
 
 #: lazarusidestrconsts.lisdeletesetting
 msgid "Delete setting"
@@ -7400,7 +7400,7 @@ msgstr "Diretivas para nova unidade"
 
 #: lazarusidestrconsts.lisdirectory
 msgid "Directory: "
-msgstr ""
+msgstr "Diretório:"
 
 #: lazarusidestrconsts.lisdirectorynotfound
 msgid "Directory %s%s%s not found."
@@ -7517,7 +7517,7 @@ msgstr "Distinguir letras grandes e pequenas, ex: A e a"
 
 #: lazarusidestrconsts.lisdlgchangeclass
 msgid "Change Class ..."
-msgstr ""
+msgstr "Alterar classe ..."
 
 #: lazarusidestrconsts.lisdlgeditorwindowmanager
 msgid "Editor Window Manager ..."
@@ -7677,7 +7677,7 @@ msgstr "Tipos Editor arquivos"
 
 #: lazarusidestrconsts.liseditormacros
 msgid "Editor macros"
-msgstr ""
+msgstr "Editor de macros"
 
 #: lazarusidestrconsts.liseditorwindowmanager
 msgid "Editor Window Manager"
@@ -8312,7 +8312,7 @@ msgstr "Arquivo"
 
 #: lazarusidestrconsts.lisfile2
 msgid "File: "
-msgstr ""
+msgstr "Arquivo:"
 
 #: lazarusidestrconsts.lisfiledoesnotlooklikeatextfileopenitanyway
 msgctxt "lazarusidestrconsts.lisfiledoesnotlooklikeatextfileopenitanyway"
@@ -9025,7 +9025,7 @@ msgstr "Comentário implementação para classe"
 
 #: lazarusidestrconsts.lisimport
 msgid "Import ..."
-msgstr ""
+msgstr "Importar ..."
 
 #: lazarusidestrconsts.lisimportlist
 msgid "Import list"
@@ -10418,7 +10418,7 @@ msgstr "Carga %s falhou."
 
 #: lazarusidestrconsts.lisloadmacrofrom
 msgid "Load macro from"
-msgstr ""
+msgstr "Carregar macro de"
 
 #: lazarusidestrconsts.lislocals
 msgid "Locals"
@@ -11009,7 +11009,7 @@ msgstr "Aviso LGPL"
 
 #: lazarusidestrconsts.lismenuinsertmitnotice
 msgid "MIT Notice"
-msgstr ""
+msgstr "Nota MIT"
 
 #: lazarusidestrconsts.lismenuinsertmodifiedlgplnotice
 #| msgid "Modified LGPL notice"
@@ -11073,7 +11073,7 @@ msgstr "Seleção em minúsculas"
 
 #: lazarusidestrconsts.lismenumacrolistview
 msgid "Editor Macros ..."
-msgstr ""
+msgstr "Editor de macros ..."
 
 #: lazarusidestrconsts.lismenumakeresourcestring
 msgid "Make Resource String ..."
@@ -11709,7 +11709,7 @@ msgstr "Saltar esta Unidade"
 
 #: lazarusidestrconsts.lismitnotice
 msgid "<description>%sCopyright (c) <year> <copyright holders>%sPermission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the \"Software\"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:%sThe above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.%sTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE."
-msgstr ""
+msgstr "<description>%sCopyright (c) <year> <copyright holders>%sPermission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the \"Software\"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:%sThe above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.%sTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE."
 
 #: lazarusidestrconsts.lismodifiedlgplnotice
 msgid "<description>%sCopyright (C) <year> <name of author> <contact>%sThis library is free software; you can redistribute it and/or modify it under the terms of the GNU Library General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version with the following modification:%sAs a special exception, the copyright holders of this library give you permission to link this library with independent modules to produce an executable, regardless of the license terms of these independent modules,and to copy and distribute the resulting executable under terms of your choice, provided that you also meet, for each linked independent module, the terms and conditions of the license of that module. An independent module is a module which is not derived from or based on this library. If you modify this library, you may extend this exception to your version of the library, but you are not obligated to do so. If you do not wish to do so, delete this exception statement from your version.%sThis program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Library General Public License for more details. %sYou should have received a copy of the GNU Library General Public License along with this library; if not, write to the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA."
@@ -11747,7 +11747,7 @@ msgstr "Move item selecionado acima (Ctrl+Seta acima)"
 
 #: lazarusidestrconsts.lismoveto
 msgid "Move to: "
-msgstr ""
+msgstr "Mover para:"
 
 #: lazarusidestrconsts.lisms
 msgid "(ms)"
@@ -11870,7 +11870,7 @@ msgstr "Novo grupo - um conjunto de modos"
 
 #: lazarusidestrconsts.lisnewmacroname
 msgid "Macro %d"
-msgstr ""
+msgstr "Macro %d"
 
 #: lazarusidestrconsts.lisnewproject
 #| msgid "%s - (new project)"
@@ -11879,7 +11879,7 @@ msgstr "(novo projeto)"
 
 #: lazarusidestrconsts.lisnewrecordedmacrosnottobesaved
 msgid "New recorded macros. Not to be saved"
-msgstr ""
+msgstr "Novas macros gravadas. Não é para serem salvas"
 
 #: lazarusidestrconsts.lisnewsetting
 msgid "New setting"
@@ -13649,7 +13649,7 @@ msgstr "Impossível ler arquivo de pacote %s%s%s.%sErro: %s"
 
 #: lazarusidestrconsts.lisplay
 msgid "Play"
-msgstr ""
+msgstr "Reproduzir"
 
 #: lazarusidestrconsts.lispldexists
 msgid "Exists"
@@ -14258,7 +14258,7 @@ msgstr "Record"
 
 #: lazarusidestrconsts.lisrecordedmacros
 msgid "Recorded"
-msgstr ""
+msgstr "Gravado"
 
 #: lazarusidestrconsts.lisrecordstruct
 msgid "Record/Structure"
@@ -14352,7 +14352,7 @@ msgstr "Renomear"
 
 #: lazarusidestrconsts.lisrename2
 msgid "Rename ..."
-msgstr ""
+msgstr "Renomear ..."
 
 #: lazarusidestrconsts.lisrenamefile
 msgid "Rename file?"
@@ -14649,11 +14649,11 @@ msgstr "Salvo com sucesso"
 
 #: lazarusidestrconsts.lissavedwithidesettings
 msgid "Saved with IDE settings"
-msgstr ""
+msgstr "Salvo com as configurações da IDE"
 
 #: lazarusidestrconsts.lissavedwithprojectsession
 msgid "Saved with project session"
-msgstr ""
+msgstr "Salvo com a sessão do projeto"
 
 #: lazarusidestrconsts.lissaveeditorinfoofnonprojectfiles
 msgid "Save editor info of non project files"
@@ -14673,7 +14673,7 @@ msgstr "Salvar informações de arquivos fechados do editor"
 
 #: lazarusidestrconsts.lissavemacroas
 msgid "Save macro as"
-msgstr ""
+msgstr "Salvar macro como"
 
 #: lazarusidestrconsts.lissaveproject
 msgid "Save project %s (*%s)"
@@ -15218,7 +15218,6 @@ msgid "Editable Cell"
 msgstr "Célula Editável"
 
 #: lazarusidestrconsts.listemplateeditparamcellhelp
-#, fuzzy
 msgid "Inserts an editable Cell. Cells can be navigated using the tab key.%0:sThe \"param\" macro takes a list of comma separated arguments.%0:sThe first argument is the default value.%0:sThe 2nd argument (optional) can be used to link the cell to another cell (syncro edit)%0:s%0:s  while param(\"foo\") do param(foo);%0:sInserts 2 independent cells, both with the default text \"foo\"%0:sThe quotes are optional%0:s%0:s  if param(\"foo\") > 0 and param(\"foo\",sync=1) < 99 then%0:sInserts 2 linked cells, editing either one, will change the other one too%0:sThe value \"1\" refers to the position of the other \"param()\", so if there are more params:%0:s  if param(\"bar\") and param(foo) > 0 and param(foo,sync=2) < 99 then%0:sThe 2nd and third are linked. (the 3rd refers to \"2\") %0:s%0:s\"sync can be shortened to \"s\":%0:s  if param(\"foo\") > 0 and param(\"foo\",s=1) < 99 then%0:s%0:s  if param(\"bar\") and param(\"foo\") > 0 and param(\"foo\",sync) < 99 then%0:sThe 2nd and third are linked.%0:sNote: \"Sync has no position and no \"=\", so it syncs to the previous cell with the same default (in this case \"foo\")"
 msgstr "Insere uma Célula editável. Células podem ser navegadas usando a tecla tab.%0:sA macro \"param\" toma uma lista de argumentos separados por vírgula.%0:sO primeiro argumento é o valor padrão.%0:sO segundo argumento (opcional) pode ser usado para vincular uma célula a outra (edição síncrona)%0:s%0:s while param(\"foo\") do param(foo);%0:sInsere 2 células independentes, ambas com o texto padrão \"foo\"%0:sAs aspas são opcionais%0:s%0:s if param(\"foo\") > 0 and param(\"foo\",sync=1) < 99 then%0:sInsere 2 células vinculadas, editando qualquer uma, irá alterar a outra também%0:sO valor \"1\" refere-se à posição do outro \"param()\", então se houver mais parâmetros:%0:s if param(\"bar\") and param(foo) > 0 and param(foo,sync=2) < 99 then%0:sA segunda e a terceira serão vinculadas. (a 3ª refere-se ao \"2\") %0:s%0:s\"sync pode ser abreviado para \"s\":%0:s if param(\"foo\") > 0 and param(\"foo\",s=1) < 99 then%0:s%0:s if param(\"bar\") and param(\"foo\") > 0 and param(\"foo\",sync) < 99 then%0:sA segunda e a terceira serão vinculadas.%0:sNota: \"Sync não tem posição e nenhum \"=\", então ele sincroniza para a célula anterior com o mesmo padrão(neste caso \"foo\")"
 
@@ -16716,7 +16715,7 @@ msgstr "Expressão"
 
 #: lazarusidestrconsts.liswlinspectpane
 msgid "Inspect pane"
-msgstr ""
+msgstr "Painel de inspeção"
 
 #: lazarusidestrconsts.liswlproperties
 msgid "&Properties"
@@ -17650,7 +17649,7 @@ msgstr "Interromper linha, manter o cursor"
 
 #: lazarusidestrconsts.srkmecinsertmitnotice
 msgid "Insert MIT notice"
-msgstr ""
+msgstr "Inserir nota MIT"
 
 #: lazarusidestrconsts.srkmecinsertmode
 msgid "Insert Mode"
@@ -17969,19 +17968,19 @@ msgstr "SelRight"
 
 #: lazarusidestrconsts.srkmecselsticky
 msgid "Start sticky selecting"
-msgstr ""
+msgstr "Iniciar seleção aderente"
 
 #: lazarusidestrconsts.srkmecselstickycol
 msgid "Start sticky selecting (Columns)"
-msgstr ""
+msgstr "Iniciar seleção aderente (Colunas)"
 
 #: lazarusidestrconsts.srkmecselstickyline
 msgid "Start sticky selecting (Line)"
-msgstr ""
+msgstr "Iniciar seleção aderente (Linha)"
 
 #: lazarusidestrconsts.srkmecselstickystop
 msgid "Stop sticky selecting"
-msgstr ""
+msgstr "Encerrar seleção aderente"
 
 #: lazarusidestrconsts.srkmecselup
 msgid "Select Up"
@@ -18076,12 +18075,12 @@ msgstr "Próxima Célula (tudo selecionado)"
 #: lazarusidestrconsts.srkmecsynpsyncroednextfirstcell
 msgctxt "lazarusidestrconsts.srkmecsynpsyncroednextfirstcell"
 msgid "Next Cell (firsts only)"
-msgstr ""
+msgstr "Próxima célula (primeiros apenas)"
 
 #: lazarusidestrconsts.srkmecsynpsyncroednextfirstcellsel
 msgctxt "lazarusidestrconsts.srkmecsynpsyncroednextfirstcellsel"
 msgid "Next Cell (all selected / firsts only)"
-msgstr ""
+msgstr "Próxima célula (tudo selecionado / primeiros apenas)"
 
 #: lazarusidestrconsts.srkmecsynpsyncroedprevcell
 msgctxt "lazarusidestrconsts.srkmecsynpsyncroedprevcell"
@@ -18096,12 +18095,12 @@ msgstr "Célula Anterior (tudo selecionado)"
 #: lazarusidestrconsts.srkmecsynpsyncroedprevfirstcell
 msgctxt "lazarusidestrconsts.srkmecsynpsyncroedprevfirstcell"
 msgid "Previous Cell (firsts only)"
-msgstr ""
+msgstr "Célula anterior (primeiros apenas)"
 
 #: lazarusidestrconsts.srkmecsynpsyncroedprevfirstcellsel
 msgctxt "lazarusidestrconsts.srkmecsynpsyncroedprevfirstcellsel"
 msgid "Previous Cell (all selected / firsts only)"
-msgstr ""
+msgstr "Célula anterior (tudo selecionado / primeiros apenas)"
 
 #: lazarusidestrconsts.srkmecsynpsyncroedstart
 msgid "Start Syncro edit"
@@ -18151,20 +18150,20 @@ msgstr "Próxima Célula (rotacionar / tudo selecionado)"
 #: lazarusidestrconsts.srkmecsynptmplednextfirstcell
 msgctxt "lazarusidestrconsts.srkmecsynptmplednextfirstcell"
 msgid "Next Cell (firsts only)"
-msgstr ""
+msgstr "Próxima célula (primeiros apenas)"
 
 #: lazarusidestrconsts.srkmecsynptmplednextfirstcellrotate
 msgid "Next Cell (rotate / firsts only)"
-msgstr ""
+msgstr "Próxima célula (rotacionar / primeiros apenas)"
 
 #: lazarusidestrconsts.srkmecsynptmplednextfirstcellsel
 msgctxt "lazarusidestrconsts.srkmecsynptmplednextfirstcellsel"
 msgid "Next Cell (all selected / firsts only)"
-msgstr ""
+msgstr "Próxima célula (tudo selecionado / primeiros apenas)"
 
 #: lazarusidestrconsts.srkmecsynptmplednextfirstcellselrotate
 msgid "Next Cell (rotate / all selected / firsts only)"
-msgstr ""
+msgstr "Próxima célula (rotacionar / tudo selecionado / primeiros apenas)"
 
 #: lazarusidestrconsts.srkmecsynptmpledprevcell
 msgctxt "lazarusidestrconsts.srkmecsynptmpledprevcell"
@@ -18179,12 +18178,12 @@ msgstr "Célula Anterior (tudo selecionado)"
 #: lazarusidestrconsts.srkmecsynptmpledprevfirstcell
 msgctxt "lazarusidestrconsts.srkmecsynptmpledprevfirstcell"
 msgid "Previous Cell (firsts only)"
-msgstr ""
+msgstr "Célula anterior (primeiros apenas)"
 
 #: lazarusidestrconsts.srkmecsynptmpledprevfirstcellsel
 msgctxt "lazarusidestrconsts.srkmecsynptmpledprevfirstcellsel"
 msgid "Previous Cell (all selected / firsts only)"
-msgstr ""
+msgstr "Célula anterior (tudo selecionado / primeiros apenas)"
 
 #: lazarusidestrconsts.srkmecsyntaxcheck
 #| msgid "Syntax check"
@@ -18316,7 +18315,7 @@ msgstr "Exibir componentes"
 
 #: lazarusidestrconsts.srkmecvieweditormacros
 msgid "View editor macros"
-msgstr ""
+msgstr "Exibir editor de macros"
 
 #: lazarusidestrconsts.srkmecviewforms
 msgid "View forms"
