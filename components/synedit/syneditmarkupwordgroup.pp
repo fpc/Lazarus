@@ -247,7 +247,7 @@ begin
 
     (* Find other end *)
     Node3.FoldAction := [sfaInvalid];
-    if TmpNode.FoldAction * [sfaOpen, sfaOneLineOpen] <> [] then begin
+    if TmpNode.FoldAction * [sfaOpenFold, sfaOneLineOpen] <> [] then begin
       StartNode := TmpNode;
       CloseNode := FindEndNode(StartNode, y, i);
       if (sfaInvalid in CloseNode.FoldAction) then
@@ -270,7 +270,7 @@ begin
     if not(sfaInvalid in Node3.FoldAction) then begin
       i := Node3.NodeIndex;
       y := Node3.LineIndex;
-      if Node3.FoldAction * [sfaOpen, sfaOneLineOpen] <> [] then
+      if Node3.FoldAction * [sfaOpenFold, sfaOneLineOpen] <> [] then
         Node3 := FindEndNode(Node3, y, i)
       else
         Node3 := FindStartNode(Node3, y, i);

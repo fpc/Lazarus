@@ -3299,8 +3299,8 @@ function TSynPasSyn.FoldTypeAtNodeIndex(ALineIndex, FoldIndex: Integer;
 var
   act: TSynFoldActions;
 begin
-  act := [sfaOpen, sfaFold];
-  if UseCloseNodes then act := [sfaClose, sfaFold];
+  act := [sfaOpenFold, sfaFold];
+  if UseCloseNodes then act := [sfaCloseFold, sfaFold];
   case TPascalCodeFoldBlockType(PtrUInt(FoldNodeInfo[ALineIndex].NodeInfoEx(FoldIndex, act).FoldType)) of
     cfbtRegion:
       Result := 2;
@@ -3316,7 +3316,7 @@ var
   atype : Integer;
   node: TSynFoldNodeInfo;
 begin
-  node := FoldNodeInfo[ALineIndex].NodeInfoEx(FoldIndex, [sfaOpen, sfaFold]);
+  node := FoldNodeInfo[ALineIndex].NodeInfoEx(FoldIndex, [sfaOpenFold, sfaFold]);
   if sfaInvalid in node.FoldAction then exit(-1);
   if sfaOneLineOpen in node.FoldAction then exit(0);
   case TPascalCodeFoldBlockType(PtrUInt(node.FoldType)) of
@@ -3341,7 +3341,7 @@ var
   lvl, cnt, atype : Integer;
   node: TSynFoldNodeInfo;
 begin
-  node := FoldNodeInfo[ALineIndex].NodeInfoEx(FoldIndex, [sfaOpen, sfaFold]);
+  node := FoldNodeInfo[ALineIndex].NodeInfoEx(FoldIndex, [sfaOpenFold, sfaFold]);
   if sfaInvalid in node.FoldAction then exit(-1);
   if sfaOneLineOpen in node.FoldAction then exit(ALineIndex);
   case TPascalCodeFoldBlockType(PtrUInt(node.FoldType)) of
@@ -3443,7 +3443,7 @@ begin
     while (i >= 0) and
           ( (nd^.FoldType <> node.FoldType) or
             (nd^.FoldGroup <> node.FoldGroup) or
-            (not (sfaOpen in nd^.FoldAction)) or
+            (not (sfaOpenFold in nd^.FoldAction)) or
             (nd^.FoldLvlEnd <> Node.FoldLvlStart)
           )
     do begin
@@ -3459,8 +3459,8 @@ begin
         Node.FoldAction := Node.FoldAction - [sfaFoldFold];
       end else begin
         // one liner: nether hide-able nore fold-able
-        nd^.FoldAction  := nd^.FoldAction - [sfaOpen, sfaFold];
-        Node.FoldAction := Node.FoldAction - [sfaClose, sfaFold];
+        nd^.FoldAction  := nd^.FoldAction - [sfaOpenFold, sfaFold];
+        Node.FoldAction := Node.FoldAction - [sfaCloseFold, sfaFold];
       end;
     end;
   end;
@@ -3478,7 +3478,7 @@ begin
     act := FFoldConfig[ord(ABlockType)].FoldActions;
     if not FAtLineStart then
       act := act - [sfaFoldHide];
-    InitNode(nd, +1, ABlockType, [sfaOpen] + act, True);
+    InitNode(nd, +1, ABlockType, [sfaOpen, sfaOpenFold] + act, True);
     FCatchNodeInfoList.Add(nd);
   end;
   case ABlockType of
@@ -3496,7 +3496,7 @@ begin
   if not FFoldConfig[ord(ABlockType)].Enabled then exit;
   if FCatchNodeInfo then begin // exclude subblocks, because they do not increase the foldlevel yet
     InitNode(nd, -1, ABlockType,
-             [sfaClose, sfaFold], True); // + FFoldConfig[ord(ABlockType)].FoldActions);
+             [sfaClose, sfaCloseFold, sfaFold], True); // + FFoldConfig[ord(ABlockType)].FoldActions);
     FCatchNodeInfoList.Add(nd);
   end;
   case ABlockType of
@@ -3538,6 +3538,8 @@ begin
   i := LastLinePasFoldLevelFix(Line+1, FOLDGROUP_PASCAL, True);  // all pascal nodes (incl. not folded)
   while i < 0 do begin
     EndPascalCodeFoldBlock;
+    FCatchNodeInfoList.LastItemPointer^.FoldAction :=
+      FCatchNodeInfoList.LastItemPointer^.FoldAction + [sfaCloseForNextLine];
     inc(i);
   end;
   if Line = CurrentLines.Count - 1 then begin
@@ -3570,7 +3572,7 @@ begin
   FoldBlock := FFoldConfig[ord(ABlockType)].Enabled;
   p := 0;
   if FCatchNodeInfo then begin // exclude subblocks, because they do not increase the foldlevel yet
-    act := [sfaOpen];
+    act := [sfaOpen, sfaOpenFold];
     if FoldBlock then
       act := act + FFoldConfig[ord(ABlockType)].FoldActions;
     if not FAtLineStart then
@@ -3593,7 +3595,7 @@ begin
   BlockType := TopCodeFoldBlockType;
   DecreaseLevel := BlockType < CountPascalCodeFoldBlockOffset;
   if FCatchNodeInfo then begin // exclude subblocks, because they do not increase the foldlevel yet
-    act := [sfaClose];
+    act := [sfaClose, sfaCloseFold];
     if DecreaseLevel then
       act := act + [sfaFold]; //FFoldConfig[PtrUInt(BlockType)].FoldActions;
     InitNode(nd, -1, TopPascalCodeFoldBlockType, act, DecreaseLevel);

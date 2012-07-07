@@ -65,17 +65,20 @@ const
 
 type
 
-  TSynFoldAction = (sfaOpen,     // At this node a new Fold can start
-                    sfaClose,    // At this node a fold ends
-                    sfaMarkup,   // This node can be highlighted, by the matching Word-Pair Markup
-                    sfaFold,     // Part of a fold- or hide-able block (FoldConf.Enabled = True)           - excludes one=liners for FoldFold
-                    sfaFoldFold, // Part of a fold-able block (FoldConf.Enabled = True / smFold in Modes)  - includes one=liners / only opening node (todo: maybe both?)
-                    sfaFoldHide, // Part of a hide-able block (FoldConf.Enabled = True / smHide in Modes)  - includes one=liners / only opening node (todo: maybe both?)
-                    sfaInvalid,  // Wrong Index
-                    sfaDefaultCollapsed,
-                    sfaOneLineOpen,  // Open, but closes on same line; *only* if hide-able has [sfaOpen, sfaFold]; always has [sfaFoldFold, sfaFoldHide]
-                    sfaOneLineClose, // Open, but closes on same line;
-                    sfaLastLineClose // Fold is incomplete, and closed at last line of file
+  TSynFoldAction = ( sfaOpen,         // Any Opening node
+                     sfaClose,        // Any Closing node
+                     sfaOpenFold,     // At this node a new Fold can start // Actually, includes all,any multiline node too.
+                     sfaCloseFold,    // At this node a fold ends
+                     sfaMarkup,   // This node can be highlighted, by the matching Word-Pair Markup
+                     sfaFold,     // Part of a fold- or hide-able block (FoldConf.Enabled = True)           - excludes one=liners for FoldFold
+                     sfaFoldFold, // Part of a fold-able block (FoldConf.Enabled = True / smFold in Modes)  - includes one=liners / only opening node (todo: maybe both?)
+                     sfaFoldHide, // Part of a hide-able block (FoldConf.Enabled = True / smHide in Modes)  - includes one=liners / only opening node (todo: maybe both?)
+                     sfaInvalid,  // Wrong Index
+                     sfaDefaultCollapsed,
+                     sfaOneLineOpen,   // Open, but closes on same line; *only* if hide-able has [sfaOpenFold, sfaFold]; always has [sfaFoldFold, sfaFoldHide]
+                     sfaOneLineClose,  // Open, but closes on same line;
+                     sfaLastLineClose, // Fold is incomplete, and closed at last line of file
+                     sfaCloseForNextLine  // Fold closes this line, but keyword is on the next (e.g. "var" block)
                    );
   TSynFoldActions = set of TSynFoldAction;
 
