@@ -2012,7 +2012,7 @@ end;
 
 function TSynFoldNodeInfoHelper.FirstOpen: TSynFoldNodeInfo;
 begin
-  FActions := [sfaOpenFold, sfaFold];
+  FActions := [sfaOpen, sfaFold];
   FCurInfo.NodeIndex := -1;
   FCurInfo.LineIndex := 0;
   Result := Next;
@@ -2073,7 +2073,7 @@ var
 begin
   Line := FCurInfo.LineIndex;
   EndLine := FHighlighter.FoldEndLine(Line, FCurInfo.NodeIndex);
-  FActions := [sfaCloseFold, sfaFold];
+  FActions := [sfaClose, sfaFold];
   Cnt := FHighlighter.FoldNodeInfo[EndLine].CountEx(FActions) - 1;
   while Cnt >= 0 do begin
     NdInfo := FHighlighter.FoldNodeInfo[EndLine].NodeInfoEx(Cnt, FActions);
@@ -2092,7 +2092,7 @@ end;
 
 function TSynFoldNodeInfoHelper.GotoOpenPos(aLineIdx, aNodeIdx: integer): TSynFoldNodeInfo;
 begin
-  FActions := [sfaOpenFold, sfaFold];
+  FActions := [sfaOpen, sfaFold];
   FCurInfo := FHighlighter.FoldNodeInfo[aLineIdx].NodeInfoEx(aNodeIdx, FActions);
   Result := FCurInfo;
 end;
@@ -2101,7 +2101,7 @@ function TSynFoldNodeInfoHelper.GotoOpenAtChar(aLineIdx, aXPos: integer): TSynFo
 var
   Cnt: Integer;
 begin
-  FActions := [sfaOpenFold, sfaFold];
+  FActions := [sfaOpen, sfaFold];
   Cnt := FHighlighter.FoldNodeInfo[aLineIdx].CountEx(FActions) - 1;
   while Cnt >= 0 do begin
     FCurInfo := FHighlighter.FoldNodeInfo[aLineIdx].NodeInfoEx(Cnt, FActions);
@@ -2115,7 +2115,7 @@ end;
 
 function TSynFoldNodeInfoHelper.GotoNodeOpenPos(ANode: TSynTextFoldAVLNode): TSynFoldNodeInfo;
 begin
-  FActions := [sfaOpenFold, sfaFold];
+  FActions := [sfaOpen, sfaFold];
   FCurInfo := FHighlighter.FoldNodeInfo[ANode.StartLine - ANode.SourceLineOffset - 1]
               .NodeInfoEx(ANode.FoldIndex, FActions);
   Result := FCurInfo;
@@ -2126,9 +2126,9 @@ var
   NdInfo, NdInfo2: TSynFoldNodeInfo;
   Cnt, EndCol, EndLineIdx: Integer;
 begin
-  FActions := [sfaCloseFold, sfaFold];
+  FActions := [sfaClose, sfaFold];
   NdInfo := FHighlighter.FoldNodeInfo[ANode.StartLine - ANode.SourceLineOffset - 1]
-            .NodeInfoEx(ANode.FoldIndex, [sfaOpenFold, sfaFold]);
+            .NodeInfoEx(ANode.FoldIndex, [sfaOpen, sfaFold]);
   if sfaInvalid in NdInfo.FoldAction then exit(NdInfo);
 
   EndLineIdx := FHighlighter.FoldEndLine(ANode.StartLine - ANode.SourceLineOffset - 1,
@@ -2136,10 +2136,10 @@ begin
   {$IFDEF SynAssertFold}
   SynAssert(EndLineIdx >= 0, 'TSynFoldNodeInfoHelper.GotoNodeClosePos: Bad EndLineIdx=%d # Anode: StartLine=%d SrcLOffs=%d ColIdx=%d FoldCol=%d', [EndLineIdx, ANode.StartLine, ANode.SourceLineOffset, ANode.FoldIndex, ANode.FoldColumn]);
   {$ENDIF}
-  Cnt := FHighlighter.FoldNodeInfo[EndLineIdx].CountEx([sfaCloseFold, sfaFold]);
+  Cnt := FHighlighter.FoldNodeInfo[EndLineIdx].CountEx([sfaClose, sfaFold]);
   EndCol := 0;
   while EndCol < Cnt do begin
-    NdInfo2 := FHighlighter.FoldNodeInfo[EndLineIdx].NodeInfoEx(EndCol, [sfaCloseFold, sfaFold]);
+    NdInfo2 := FHighlighter.FoldNodeInfo[EndLineIdx].NodeInfoEx(EndCol, [sfaClose, sfaFold]);
     if (NdInfo2.FoldLvlStart = NdInfo.FoldLvlEnd) and
        (NdInfo2.FoldType = NdInfo.FoldType) then break;
     inc(EndCol);
@@ -3248,7 +3248,7 @@ function TSynEditFoldProvider.FoldOpenInfo(ALineIdx, AFoldIdx: Integer;
     Result.NestLvlStart := 0;
     Result.NestLvlEnd   := 1;
     Result.FoldLvlEnd   := 1;
-    Result.FoldAction   := [sfaOpenFold, sfaFold, sfaFoldHide];
+    Result.FoldAction   := [sfaOpen, sfaOpenFold, sfaFold, sfaFoldHide];
     Result.FoldType           := nil;
     Result.FoldTypeCompatible := nil;
     Result.FoldGroup := -1;
@@ -3269,7 +3269,7 @@ begin
   then
     Result := BlockSelInfo(AFoldIdx)
   else
-    Result := FHighlighter.FoldNodeInfo[ALineIdx].NodeInfoEx(AFoldIdx, [sfaOpenFold, sfaFold], AType);
+    Result := FHighlighter.FoldNodeInfo[ALineIdx].NodeInfoEx(AFoldIdx, [sfaOpen, sfaFold], AType);
 end;
 
 function TSynEditFoldProvider.FoldLineLength(ALine, AFoldIndex: Integer): integer;
@@ -3746,12 +3746,12 @@ begin
     exit(0);
   // AStartIndex is 0-based
   // FoldTree is 1-based AND first line remains visble
-  c := hl.FoldNodeInfo[AStartIndex].CountEx([sfaOpenFold, sfaFold]);
+  c := hl.FoldNodeInfo[AStartIndex].CountEx([sfaOpen, sfaFold]);
   if c = 0 then
     exit(-1);
   i := 0;
   while i < c do begin
-    nd := hl.FoldNodeInfo[aStartIndex].NodeInfoEx(i, [sfaOpenFold, sfaFold]);
+    nd := hl.FoldNodeInfo[aStartIndex].NodeInfoEx(i, [sfaOpen, sfaFold]);
     if (nd.LogXStart >= LogX) then begin
       dec(i);
       if not Previous then
@@ -3781,7 +3781,7 @@ begin
      // Currently PascalHl Type 2 = Region
     c := hl.FoldBlockOpeningCount(i, 2);
     if c > 0 then begin
-      c := hl.FoldNodeInfo[i].CountEx([sfaOpenFold, sfaFold]);
+      c := hl.FoldNodeInfo[i].CountEx([sfaOpen, sfaFold]);
       j := 0;
       while j < c do begin
         fldinf := FoldProvider.InfoForFoldAtTextIndex(i, j);
@@ -4561,8 +4561,8 @@ begin
   if ColIndex >= Lvl then begin
     n := ColIndex - Lvl;
     if AType = 0 then begin
-      o :=  hl.FoldNodeInfo[aStartIndex].CountEx([sfaOpenFold, sfaFold]);
-      nd := hl.FoldNodeInfo[aStartIndex].NodeInfoEx(n, [sfaOpenFold, sfaFold]);
+      o :=  hl.FoldNodeInfo[aStartIndex].CountEx([sfaOpen, sfaFold]);
+      nd := hl.FoldNodeInfo[aStartIndex].NodeInfoEx(n, [sfaOpen, sfaFold]);
     end else begin
       // no sfaFold
       o :=  hl.FoldNodeInfo[aStartIndex].CountEx([sfaOpenFold],AType);

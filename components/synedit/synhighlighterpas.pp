@@ -3459,7 +3459,7 @@ begin
         Node.FoldAction := Node.FoldAction - [sfaFoldFold];
       end else begin
         // one liner: nether hide-able nore fold-able
-        nd^.FoldAction  := nd^.FoldAction - [sfaOpenFold, sfaFold];
+        nd^.FoldAction  := nd^.FoldAction - [sfaOpenFold, sfaFold]; // TODO -[sfaFoldFold, sfaFoldHide]
         Node.FoldAction := Node.FoldAction - [sfaCloseFold, sfaFold];
       end;
     end;
