@@ -279,14 +279,6 @@ type
     //   DecLastLineCodeFoldLevelFix <> DecLastLinePasFoldFix
   end;
 
-  { TLazSynPasFoldNodeInfoList }
-
-  TLazSynPasFoldNodeInfoList = class(TLazSynFoldNodeInfoList)
-  protected
-    function Match(const AnInfo: TSynFoldNodeInfo;
-      AnActionFilter: TSynFoldActions; AGroupFilter: Integer = 0): Boolean; override;
-  end;
-
   TProcTableProc = procedure of object;
 
   PIdentFuncTableFunc = ^TIdentFuncTableFunc;
@@ -333,7 +325,7 @@ type
     FCompilerMode: TPascalCompilerMode;
     fD4syntax: boolean;
     FCatchNodeInfo: Boolean;
-    FCatchNodeInfoList: TLazSynPasFoldNodeInfoList;
+    FCatchNodeInfoList: TLazSynFoldNodeInfoList;
     // Divider
     FDividerDrawConfig: Array [TSynPasDividerDrawLocation] of TSynDividerDrawConfig;
 
@@ -502,7 +494,8 @@ type
     procedure InitFoldNodeInfo(AList: TLazSynFoldNodeInfoList; Line: TLineIdx); override;
 
   protected
-    function LastLinePasFoldLevelFix(Index: Integer; AType: Integer = 1): integer; // TODO deprecated; // foldable nodes
+    function LastLinePasFoldLevelFix(Index: Integer; AType: Integer = 1;
+                                     AIncludeDisabled: Boolean = False): integer; // TODO deprecated; // foldable nodes
 
     // Divider
     function GetDrawDivider(Index: integer): TSynDividerDrawConfigSetting; override;
@@ -671,18 +664,6 @@ begin
     IsUnderScoreOrNumberChar[I]:=(I in ['_','0'..'9']);
     IsLetterChar[I]:=(I in ['a'..'z','A'..'Z']);
   end;
-end;
-
-{ TLazSynPasFoldNodeInfoList }
-
-function TLazSynPasFoldNodeInfoList.Match(const AnInfo: TSynFoldNodeInfo;
-  AnActionFilter: TSynFoldActions; AGroupFilter: Integer): Boolean;
-begin
-  Result := (AnInfo.FoldAction * AnActionFilter = AnActionFilter) and
-            ( (AGroupFilter = 0) or
-              ( (AGroupFilter in [1..3]) and (AnInfo.FoldGroup = AGroupFilter) ) or
-              ( (AGroupFilter = 4) and (AnInfo.FoldGroup in [1,4]) )
-            );
 end;
 
 procedure TSynPasSyn.InitIdent;
@@ -3384,30 +3365,26 @@ begin
     dec(Result);
 end;
 
-function TSynPasSyn.LastLinePasFoldLevelFix(Index: Integer; AType: Integer = 1): integer;
+function TSynPasSyn.LastLinePasFoldLevelFix(Index: Integer; AType: Integer;
+  AIncludeDisabled: Boolean): integer;
 var
   r: TSynPasSynRange;
 begin
+  // AIncludeDisabled only works for Pascal Nodes
   case AType of
     2: Result := 0;
     3: Result := 0;
-    4:  // all pascal nodes (incl. not folded)
-      begin
-        if (Index < 0) or (Index >= CurrentLines.Count) then
-          exit(0);
-        r := TSynPasSynRange(CurrentRanges[Index]);
-        if (r <> nil) and (Pointer(r) <> NullRange) then
-          Result := r.LastLineCodeFoldLevelFix
-        else
-          Result := 0;
-      end;
     else
       begin
         if (Index < 0) or (Index >= CurrentLines.Count) then
           exit(0);
         r := TSynPasSynRange(CurrentRanges[Index]);
-        if (r <> nil) and (Pointer(r) <> NullRange) then
-          Result := r.PasFoldFixLevel
+        if (r <> nil) and (Pointer(r) <> NullRange) then begin
+          if AIncludeDisabled then
+            Result := r.LastLineCodeFoldLevelFix  // all pascal nodes (incl. not folded)
+          else
+            Result := r.PasFoldFixLevel
+        end
         else
           Result := 0;
       end;
@@ -3542,7 +3519,7 @@ end;
 
 function TSynPasSyn.CreateFoldNodeInfoList: TLazSynFoldNodeInfoList;
 begin
-  Result := TLazSynPasFoldNodeInfoList.Create;
+  Result := TLazSynFoldNodeInfoList.Create;
 end;
 
 procedure TSynPasSyn.InitFoldNodeInfo(AList: TLazSynFoldNodeInfoList; Line: TLineIdx);
@@ -3551,14 +3528,14 @@ var
   i: Integer;
 begin
   FCatchNodeInfo := True;
-  FCatchNodeInfoList := TLazSynPasFoldNodeInfoList(AList);
+  FCatchNodeInfoList := TLazSynFoldNodeInfoList(AList);
 
   StartAtLineIndex(Line);
   fStringLen := 0;
   NextToEol;
 
   fStringLen := 0;
-  i := LastLinePasFoldLevelFix(Line+1, 4);
+  i := LastLinePasFoldLevelFix(Line+1, FOLDGROUP_PASCAL, True);  // all pascal nodes (incl. not folded)
   while i < 0 do begin
     EndPascalCodeFoldBlock;
     inc(i);
@@ -3737,10 +3714,10 @@ begin
   // SetRange[Index] has the folds at the start of this line
   // ClosedByNextLine: Folds closed by the next lines LastLineFix
   //                   must be taken from SetRange[Index+1] (end of this line)
-  ClosedByNextLine := -LastLinePasFoldLevelFix(Index + 1, 4);
+  ClosedByNextLine := -LastLinePasFoldLevelFix(Index + 1, FOLDGROUP_PASCAL, True);
   // ClosedInLastLine: Folds Closed by this lines LastLineFix
   //                   must be ignored. (They are part of SetRange[Index] / this line)
-  ClosedInLastLine := -LastLinePasFoldLevelFix(Index, 4);
+  ClosedInLastLine := -LastLinePasFoldLevelFix(Index, FOLDGROUP_PASCAL, True);
 
   // Get the highest close-offset
   i := ClosedByNextLine - 1;

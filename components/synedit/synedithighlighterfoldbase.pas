@@ -155,12 +155,14 @@ type
     procedure DoFilter(MinIndex: Integer = -1);
     procedure SetLine(ALine: TLineIdx);
     procedure SetLineClean(ALine: TLineIdx);
+    property  HighLighter: TSynCustomFoldHighlighter read FHighLighter write FHighLighter;
+  public
+    // used by HighLighters to add data
     procedure Add(const AnInfo: TSynFoldNodeInfo);
     procedure Delete(AnIndex: Integer = -1);
     function  CountAll: Integer;
     property  ItemPointer[AnIndex: Integer]: PSynFoldNodeInfo read GetItemPointer;
     property  LastItemPointer: PSynFoldNodeInfo read GetLastItemPointer;
-    property  HighLighter: TSynCustomFoldHighlighter read FHighLighter write FHighLighter;
   protected
     function  DefaultGroup: Integer; virtual;
     function  MinCapacity: Integer; virtual;
@@ -651,7 +653,8 @@ end;
 function TLazSynFoldNodeInfoList.Match(const AnInfo: TSynFoldNodeInfo;
   AnActionFilter: TSynFoldActions; AGroupFilter: Integer): Boolean;
 begin
-  Result := (AnActionFilter = []) and (AGroupFilter = DefaultGroup);
+  Result := (AnInfo.FoldAction * AnActionFilter = AnActionFilter) and
+            ( (AGroupFilter = 0) or (AnInfo.FoldGroup = AGroupFilter) );
 end;
 
 function TLazSynFoldNodeInfoList.DefaultGroup: Integer;

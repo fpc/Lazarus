@@ -1148,38 +1148,38 @@ begin
       CheckNode(11, [], 1,   1,   2, 2,   1, 0,   1, 0,   22, 22,  1, [sfaOneLineClose,sfaLastLineClose]);
     {%endregion TEXT 1 -- [cfbtBeginEnd..cfbtNone], [] grp=1}
 
-    {%region TEXT 1 -- [cfbtBeginEnd,cfbtIfDef], [] grp=4}
+    {%region TEXT 1 -- [cfbtBeginEnd,cfbtIfDef], [] grp=1}
       PopPushBaseName('Text 1 -- [cfbtBeginEnd,cfbtIfDef], [], grp=4');
       SetLines(TestTextFoldInfo1);
       EnableFolds([cfbtBeginEnd,cfbtIfDef], []);
       //DebugFoldInfo([],4);
 
-      CheckFoldInfoCounts('', [], 4, [1, 1, 0, 1, 0, 1, 0, 1, 2, 1, 2, 2]);
+      CheckFoldInfoCounts('', [], 1, [1, 1, 0, 1, 0, 1, 0, 1, 2, 1, 2, 2]);
 
       //### Foldinfo Line: 0   PasMinLvl=0 EndLvl=0 : program Foo;
-      CheckNode( 0, [], 4,   0,   0, 7,   0, 0,   0, 1,   10, 10,  1, [sfaOpen,sfaMarkup]);   // program
+      CheckNode( 0, [], 1,   0,   0, 7,   0, 0,   0, 1,   10, 10,  1, [sfaOpen,sfaMarkup]);   // program
       //### Foldinfo Line: 1   PasMinLvl=0 EndLvl=0 : procedure a;
-      CheckNode( 1, [], 4,   0,   0, 9,   1, 1,   1, 2,   3, 3,  1, [sfaOpen,sfaMarkup]);   // procedure
+      CheckNode( 1, [], 1,   0,   0, 9,   1, 1,   1, 2,   3, 3,  1, [sfaOpen,sfaMarkup]);   // procedure
       //### Foldinfo Line: 2   PasMinLvl=0 EndLvl=0 : {$IFDEF A}
       //### Foldinfo Line: 3   PasMinLvl=0 EndLvl=0 : begin
-      CheckNode( 3, [], 4,   0,   0, 5,   2, 2,   2, 3,   1, 0,  1, [sfaOpen,sfaMarkup]);   // begin
+      CheckNode( 3, [], 1,   0,   0, 5,   2, 2,   2, 3,   1, 0,  1, [sfaOpen,sfaMarkup]);   // begin
       //### Foldinfo Line: 4   PasMinLvl=0 EndLvl=0 : {$ENDIF}
       //### Foldinfo Line: 5   PasMinLvl=0 EndLvl=1 :   {$IFDEF B} if a then begin {$ENDIF}
-      CheckNode( 5, [], 4,   0,   23, 28,   0, 1,   3, 4,   0, 0,  1, [sfaOpen,sfaMarkup,sfaFold,sfaFoldFold]);   //  begin
+      CheckNode( 5, [], 1,   0,   23, 28,   0, 1,   3, 4,   0, 0,  1, [sfaOpen,sfaMarkup,sfaFold,sfaFoldFold]);   //  begin
       //### Foldinfo Line: 6   PasMinLvl=1 EndLvl=1 :     writeln()
       //### Foldinfo Line: 7   PasMinLvl=0 EndLvl=0 :   end;
-      CheckNode( 7, [], 4,   0,   2, 5,   1, 0,   4, 3,   0, 0,  1, [sfaClose,sfaMarkup,sfaFold]);   //  end
+      CheckNode( 7, [], 1,   0,   2, 5,   1, 0,   4, 3,   0, 0,  1, [sfaClose,sfaMarkup,sfaFold]);   //  end
       //### Foldinfo Line: 8   PasMinLvl=0 EndLvl=0 : end;
-      CheckNode( 8, [], 4,   0,   0, 3,   3, 3,   3, 2,   1, 0,  1, [sfaClose,sfaMarkup]);   // end;
-      CheckNode( 8, [], 4,   1,   0, 3,   2, 2,   2, 1,   3, 3,  1, [sfaClose,sfaMarkup]);   // end;
+      CheckNode( 8, [], 1,   0,   0, 3,   3, 3,   3, 2,   1, 0,  1, [sfaClose,sfaMarkup]);   // end;
+      CheckNode( 8, [], 1,   1,   0, 3,   2, 2,   2, 1,   3, 3,  1, [sfaClose,sfaMarkup]);   // end;
       //### Foldinfo Line: 9   PasMinLvl=0 EndLvl=1 : begin
-      CheckNode( 9, [], 4,   0,   0, 5,   0, 1,   1, 2,   0, 0,  1, [sfaOpen,sfaMarkup,sfaFold,sfaFoldFold]);   // begin
+      CheckNode( 9, [], 1,   0,   0, 5,   0, 1,   1, 2,   0, 0,  1, [sfaOpen,sfaMarkup,sfaFold,sfaFoldFold]);   // begin
       //### Foldinfo Line: 10   PasMinLvl=0 EndLvl=0 : end.
-      CheckNode(10, [], 4,   0,   0, 3,   1, 0,   2, 1,   0, 0,  1, [sfaClose,sfaMarkup,sfaFold]);   // end.
-      CheckNode(10, [], 4,   1,   0, 3,   1, 1,   1, 0,   10, 10,  1, [sfaClose,sfaMarkup]);   // end.
+      CheckNode(10, [], 1,   0,   0, 3,   1, 0,   2, 1,   0, 0,  1, [sfaClose,sfaMarkup,sfaFold]);   // end.
+      CheckNode(10, [], 1,   1,   0, 3,   1, 1,   1, 0,   10, 10,  1, [sfaClose,sfaMarkup]);   // end.
       //### Foldinfo Line: 11   PasMinLvl=0 EndLvl=0 : //
-      CheckNode(11, [], 4,   0,   0, 2,   0, 0,   0, 1,   22, 22,  1, [sfaOpen]);   // //
-      CheckNode(11, [], 4,   1,   2, 2,   1, 1,   1, 0,   22, 22,  1, [sfaClose,sfaLastLineClose]);   // /
+      CheckNode(11, [], 1,   0,   0, 2,   0, 0,   0, 1,   22, 22,  1, [sfaOpen]);   // //
+      CheckNode(11, [], 1,   1,   2, 2,   1, 1,   1, 0,   22, 22,  1, [sfaClose,sfaLastLineClose]);   // /
     {%endregion TEXT 1 -- [cfbtBeginEnd..cfbtNone], [] grp=4}
 
     {%region TEXT 1 -- [cfbtBeginEnd..cfbtNone], [sfaFold]}

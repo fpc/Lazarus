@@ -245,7 +245,7 @@ type
     FNode: TSynTextFoldAVLNode; // AvlFoldNode
     Text, Keyword: String;
     LineNum, ColIndex: Integer;
-    OpenCount: Integer;
+    OpenCount: Integer; // Highlighter-Nodes opening on this line (limited to the FoldGroup requested)
   end;
 
   TSynEditFoldLineCapability = (
