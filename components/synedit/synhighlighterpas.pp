@@ -3398,6 +3398,7 @@ var
   i: Integer;
   nd: PSynFoldNodeInfo;
 begin
+  aActions := aActions + [sfaMultiLine];
   Node.LineIndex := LineIndex;
   Node.LogXStart := Run;
   Node.LogXEnd := Run + fStringLen;
@@ -3451,8 +3452,8 @@ begin
       nd := FCatchNodeInfoList.ItemPointer[i];
     end;
     if i >= 0 then begin
-      nd^.FoldAction  := nd^.FoldAction + [sfaOneLineOpen];
-      Node.FoldAction := Node.FoldAction + [sfaOneLineClose];
+      nd^.FoldAction  := nd^.FoldAction + [sfaOneLineOpen, sfaSingleLine] - [sfaMultiLine];
+      Node.FoldAction := Node.FoldAction + [sfaOneLineClose, sfaSingleLine] - [sfaMultiLine];
       if (sfaFoldHide in nd^.FoldAction) then begin
         assert(sfaFold in nd^.FoldAction, 'sfaFoldHide without sfaFold');
         // one liner: hide-able / not fold-able
