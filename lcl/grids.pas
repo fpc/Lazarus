@@ -4195,6 +4195,19 @@ var
     until (Result<>0) or (aCol>=ColCount) or (aCol<0);
   end;
 
+  function AccumColWidths(Start, Stop: Integer): Integer;
+  var
+    aCol, Incr: Integer;
+  begin
+    Result := 0;
+    if (Stop > Start) then Incr := 1 else Incr := -1;
+    aCol := Start;
+    repeat
+      Result := Result + GetColWidths(aCol);
+      aCol := aCol + Incr;
+    until (aCol >= ColCount) or (aCol < 0) or (aCol = Stop + Incr);
+  end;
+
 begin
 
   {$IfDef dbgScroll}
@@ -4239,8 +4252,8 @@ begin
     SB_LINERIGHT:  C := CTL + NextColWidth( FTopLeft.X, 1);
     SB_LINELEFT:   C := CTL - NextColWidth( FTopLeft.X - 1, -1);
       // Scrolls one page of lines up / down
-    SB_PAGERIGHT:  C := CTL + FGCache.ClientWidth;
-    SB_PAGELEFT:   C := CTL - FGCache.ClientWidth;
+    SB_PAGERIGHT:  C := CTL + AccumColWidths(FGCache.FullVisibleGrid.Left, FGCache.FullVisibleGrid.Right);
+    SB_PAGELEFT:   C := CTL - AccumColWidths(FGCache.FullVisibleGrid.Left, FGCache.FullVisibleGrid.Right);
       // Scrolls to the current scroll bar position
     SB_THUMBPOSITION:
       C := aPos;
@@ -4319,6 +4332,19 @@ var
     until (Result<>0) or (aRow>=RowCount) or (aRow<0);
   end;
 
+  function AccumRowHeights(Start, Stop: Integer): Integer;
+  var
+    aRow, Incr: Integer;
+  begin
+    Result := 0;
+    if (Stop > Start) then Incr := 1 else Incr := -1;
+    aRow := Start;
+    repeat
+      Result := Result + GetRowHeights(aRow);
+      aRow := aRow + Incr;
+    until (aRow >= RowCount) or (aRow < 0) or (aRow = Stop + Incr);
+  end;
+
 begin
   {$IfDef dbgScroll}
   DebugLn('VSCROLL: Code=%d Position=%d',[message.ScrollCode, message.Pos]);
@@ -4345,8 +4371,17 @@ begin
     SB_LINEDOWN:   C := CTL + NextRowHeight(FTopleft.Y, 1);
     SB_LINEUP:     C := CTL - NextRowHeight(FTopleft.Y-1, -1);
       // Scrolls one page of lines up / down
-    SB_PAGEDOWN:   C := CTL + FGCache.ClientHeight;
-    SB_PAGEUP:     C := CTL - FGCache.ClientHeight;
+    SB_PAGEDOWN:   begin
+      {$IfDef dbgScroll}
+      debugln('VSCROLL: FGCache.FullVisibleGrid.Top    = ',DbgS(FGCache.FullVisibleGrid.Top));
+      debugln('VSCROLL: FGCache.FullVisibleGrid.Bottom = ',DbgS(FGCache.FullVisibleGrid.Bottom));
+      dbgout('VSCROLL: AccumRowHeights(',DbgS(FGCache.FullVisibleGrid.Top),',',DbgS(FGCache.FullVisibleGrid.Bottom));
+      debugln(') = ',DbgS(AccumRowHeights(FGCache.FullVisibleGrid.Top, FGCache.FullVisibleGrid.Bottom)));
+      debugln('FGCache.ClientHeight = ',DbgS(FGCache.ClientHeight));
+      {$EndIf}
+     C := CTL + AccumRowHeights(FGCache.FullVisibleGrid.Top, FGCache.FullVisibleGrid.Bottom);
+    end;
+    SB_PAGEUP:     C := CTL - AccumRowHeights(FGCache.FullVisibleGrid.Top, FGCache.FullVisibleGrid.Bottom);
       // Scrolls to the current scroll bar position
     SB_THUMBPOSITION:
       C := Message.Pos;
