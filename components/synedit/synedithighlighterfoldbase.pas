@@ -130,6 +130,7 @@ type
   TSynFoldNodeInfo = record
     LineIndex: Integer;
     NodeIndex: Integer;          // Indicates the position within the list of info nodes (depends on search-Filter)
+    AllNodeIndex: Integer;       // Indicates the position within the unfiltered list of info nodes
     LogXStart, LogXEnd: Integer; // -1 previous line
     FoldLvlStart, FoldLvlEnd: Integer; // FoldLvl within each FoldGroup
     NestLvlStart, NestLvlEnd: Integer; // include disabled nodes, e.g markup (within each FoldGroup)
@@ -615,6 +616,7 @@ begin
     SetLength(FNodeInfoList, Max(Length(FNodeInfoList) * 2, c));
   end;
   FNodeInfoList[FNodeCount] := AnInfo;
+  FNodeInfoList[FNodeCount].AllNodeIndex := FNodeCount;
   inc(FNodeCount);
 end;
 
@@ -623,7 +625,8 @@ begin
   if AnIndex > 0 then begin
     while (AnIndex < FNodeCount) do begin
       FNodeInfoList[AnIndex] := FNodeInfoList[AnIndex + 1];
-      inc(AnIndex);
+      FNodeInfoList[AnIndex].AllNodeIndex := AnIndex;
+    inc(AnIndex);
     end;
   end;
   if FNodeCount > 0 then

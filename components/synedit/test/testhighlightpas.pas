@@ -26,6 +26,11 @@ type
     procedure DebugFoldInfo(AFilter: TSynFoldActions; Group: Integer=0);
     function FoldActionsToString(AFoldActions: TSynFoldActions): String;
     Procedure CheckPasFoldNodeInfo(AName: String; nd: TSynFoldNodeInfo;
+      ALine: TLineIdx; AColumn, AAllColIndex: integer; LogXStart, LogXEnd,
+      FoldLvlStart, FoldLvlEnd,  NestLvlStart, NestLvlEnd: Integer;
+      FoldType, FoldTypeCompatible: TPascalCodeFoldBlockType; FoldGroup: Integer;
+      FoldAction: TSynFoldActions);
+    Procedure CheckPasFoldNodeInfo(AName: String; nd: TSynFoldNodeInfo;
       ALine: TLineIdx; AColumn: integer; LogXStart, LogXEnd,
       FoldLvlStart, FoldLvlEnd,  NestLvlStart, NestLvlEnd: Integer;
       FoldType, FoldTypeCompatible: TPascalCodeFoldBlockType; FoldGroup: Integer;
@@ -146,13 +151,16 @@ begin
 end;
 
 procedure TTestBaseHighlighterPas.CheckPasFoldNodeInfo(AName: String; nd: TSynFoldNodeInfo;
-  ALine: TLineIdx; AColumn: integer; LogXStart, LogXEnd, FoldLvlStart, FoldLvlEnd,
-  NestLvlStart, NestLvlEnd: Integer; FoldType, FoldTypeCompatible: TPascalCodeFoldBlockType;
-  FoldGroup: Integer; FoldAction: TSynFoldActions);
+  ALine: TLineIdx; AColumn, AAllColIndex: integer; LogXStart, LogXEnd, FoldLvlStart,
+  FoldLvlEnd, NestLvlStart, NestLvlEnd: Integer; FoldType,
+  FoldTypeCompatible: TPascalCodeFoldBlockType; FoldGroup: Integer;
+  FoldAction: TSynFoldActions);
 begin
   AName := BaseTestName + AName;
   AssertEquals(Format('%s (%d/%d) LineIndex',    [AName, ALine, AColumn]), ALine, nd.LineIndex);
   AssertEquals(Format('%s (%d/%d) NodeIndex',    [AName, ALine, AColumn]), AColumn, nd.NodeIndex);
+  if AAllColIndex >= 0 then
+  AssertEquals(Format('%s (%d/%d) NodeIndex',    [AName, ALine, AColumn]), AAllColIndex, nd.AllNodeIndex);
   if not(sfaInvalid in nd.FoldAction) then begin
     AssertEquals(Format('%s (%d/%d) LogXStart',    [AName, ALine, AColumn]), LogXStart, nd.LogXStart);
     AssertEquals(Format('%s (%d/%d) LogXEnd',      [AName, ALine, AColumn]), LogXEnd, nd.LogXEnd);
@@ -167,6 +175,16 @@ begin
     AssertEquals(Format('%s (%d/%d) FoldGroup:',   [AName, ALine, AColumn]), FoldGroup, nd.FoldGroup);
   end;
   AssertEquals(Format('%s (%d/%d) FoldAction',   [AName, ALine, AColumn]), FoldActionsToString(FoldAction), FoldActionsToString(nd.FoldAction));
+end;
+
+procedure TTestBaseHighlighterPas.CheckPasFoldNodeInfo(AName: String; nd: TSynFoldNodeInfo;
+  ALine: TLineIdx; AColumn: integer; LogXStart, LogXEnd, FoldLvlStart, FoldLvlEnd,
+  NestLvlStart, NestLvlEnd: Integer; FoldType, FoldTypeCompatible: TPascalCodeFoldBlockType;
+  FoldGroup: Integer; FoldAction: TSynFoldActions);
+begin
+  CheckPasFoldNodeInfo(AName, nd, ALine, AColumn, -1, LogXStart, LogXEnd,
+    FoldLvlStart, FoldLvlEnd, NestLvlStart, NestLvlEnd, FoldType, FoldTypeCompatible,
+    FoldGroup, FoldAction);
 end;
 
   { TTestHighlighterPas }
@@ -1058,7 +1076,7 @@ end;
 procedure TTestHighlighterPas.TestFoldNodeInfo;
   Procedure CheckNode(ALine: TLineIdx; AFilter: TSynFoldActions; AFoldGroup: Integer;
     AColumn: integer;
-    LogXStart, LogXEnd,  FoldLvlStart, FoldLvlEnd,  NestLvlStart, NestLvlEnd: Integer;
+    AAllColIndex, LogXStart, LogXEnd,  FoldLvlStart, FoldLvlEnd,  NestLvlStart, NestLvlEnd: Integer;
     FoldType, FoldTypeCompatible: TPascalCodeFoldBlockType; FoldGroup: Integer;
     FoldAction: TSynFoldActions);
   var
@@ -1069,7 +1087,7 @@ procedure TTestHighlighterPas.TestFoldNodeInfo;
 
     // use NodeInfoEx
     nd := PasHighLighter.FoldNodeInfo[ALine].NodeInfoEx(AColumn, AFilter, AFoldGroup);
-    CheckPasFoldNodeInfo('', nd, ALine, AColumn, LogXStart, LogXEnd, FoldLvlStart,
+    CheckPasFoldNodeInfo('', nd, ALine, AColumn, AAllColIndex, LogXStart, LogXEnd, FoldLvlStart,
       FoldLvlEnd, NestLvlStart, NestLvlEnd, FoldType, FoldTypeCompatible,
       FoldGroup, FoldAction);
 
@@ -1078,8 +1096,18 @@ procedure TTestHighlighterPas.TestFoldNodeInfo;
     l.ActionFilter := AFilter;
     l.GroupFilter := AFoldGroup;
     nd := PasHighLighter.FoldNodeInfo[ALine].Item[AColumn];
-    CheckPasFoldNodeInfo('', nd, ALine, AColumn, LogXStart, LogXEnd, FoldLvlStart,
+    CheckPasFoldNodeInfo('', nd, ALine, AColumn, AAllColIndex, LogXStart, LogXEnd, FoldLvlStart,
       FoldLvlEnd, NestLvlStart, NestLvlEnd, FoldType, FoldTypeCompatible,
+      FoldGroup, FoldAction);
+  end;
+  Procedure CheckNode(ALine: TLineIdx; AFilter: TSynFoldActions; AFoldGroup: Integer;
+    AColumn: integer;
+    LogXStart, LogXEnd,  FoldLvlStart, FoldLvlEnd,  NestLvlStart, NestLvlEnd: Integer;
+    FoldType, FoldTypeCompatible: TPascalCodeFoldBlockType; FoldGroup: Integer;
+    FoldAction: TSynFoldActions);
+  begin
+    CheckNode(ALine, AFilter, AFoldGroup, AColumn, -1, LogXStart, LogXEnd,
+      FoldLvlStart, FoldLvlEnd, NestLvlStart, NestLvlEnd, FoldType, FoldTypeCompatible,
       FoldGroup, FoldAction);
   end;
 begin
@@ -1101,65 +1129,65 @@ begin
       CheckFoldInfoCounts('', [], 0, [1, 1, 1, 1, 1, 3, 0, 1, 2, 1, 2, 2]);
 
       // Line 0:   program foo;                                                 # pasminlvl=0 endlvl=1
-      CheckNode( 0, [], 0,   0,   0, 7,   0, 1,   0, 1,
+      CheckNode( 0, [], 0,   0,   0,   0, 7,   0, 1,   0, 1,
                                   cfbtProgram, cfbtProgram,  FOLDGROUP_PASCAL,
-                                  [sfaOpen, sfaOpenFold,sfaMarkup,sfaFold,sfaFoldFold]);
+                                  [sfaOpen, sfaOpenFold,sfaMarkup,sfaFold,sfaFoldFold, sfaMultiLine]);
       // Line 1:   procedure a;                                                 # pasminlvl=1 endlvl=2
-      CheckNode( 1, [], 0,   0,   0, 9,   1, 2,   1, 2,
+      CheckNode( 1, [], 0,   0,   0,   0, 9,   1, 2,   1, 2,
                                   cfbtProcedure, cfbtProcedure,  FOLDGROUP_PASCAL,
-                                  [sfaOpen, sfaOpenFold,sfaMarkup,sfaFold,sfaFoldFold]);
+                                  [sfaOpen, sfaOpenFold,sfaMarkup,sfaFold,sfaFoldFold, sfaMultiLine]);
       // Line 2:   {$ifdef a}                                                   # pasminlvl=2 endlvl=2
-      CheckNode( 2, [], 0,   0,   1, 7,   0, 1,   0, 1,
+      CheckNode( 2, [], 0,   0,   0,   1, 7,   0, 1,   0, 1,
                                   cfbtIfDef, cfbtIfDef,  FOLDGROUP_IFDEF,
-                                  [sfaOpen, sfaOpenFold,sfaMarkup,sfaFold,sfaFoldFold]);
+                                  [sfaOpen, sfaOpenFold,sfaMarkup,sfaFold,sfaFoldFold, sfaMultiLine]);
       // Line 3:   begin                                                        # pasminlvl=2 endlvl=3
-      CheckNode( 3, [], 0,   0,   0, 5,   2, 3,   2, 3,
+      CheckNode( 3, [], 0,   0,   0,   0, 5,   2, 3,   2, 3,
                                   cfbtTopBeginEnd, cfbtBeginEnd,  FOLDGROUP_PASCAL,
-                                  [sfaOpen, sfaOpenFold,sfaMarkup,sfaFold,sfaFoldFold]);
+                                  [sfaOpen, sfaOpenFold,sfaMarkup,sfaFold,sfaFoldFold, sfaMultiLine]);
       // Line 4:   {$endif}                                                     # pasminlvl=3 endlvl=3
-      CheckNode( 4, [], 0,   0,   1, 7,   1, 0,   1, 0,
+      CheckNode( 4, [], 0,   0,   0,   1, 7,   1, 0,   1, 0,
                                   cfbtIfDef, cfbtIfDef,  FOLDGROUP_IFDEF,
-                                  [sfaClose, sfaCloseFold,sfaMarkup,sfaFold]);
+                                  [sfaClose, sfaCloseFold,sfaMarkup,sfaFold, sfaMultiLine]);
       // Line 5:     {$ifdef b} if a then begin {$endif}                        zz# pasminlvl=3 endlvl=4
-      CheckNode( 5, [], 0,   0,   3, 9,   0, 1,   0, 1,
+      CheckNode( 5, [], 0,   0,   0,   3, 9,   0, 1,   0, 1,
                                   cfbtIfDef, cfbtIfDef,  FOLDGROUP_IFDEF,
-                                  [sfaOpen, sfaMarkup,sfaOneLineOpen]);
-      CheckNode( 5, [], 0,   1,   23, 28,   3, 4,   3, 4,
+                                  [sfaOpen, sfaMarkup,sfaOneLineOpen, sfaSingleLine]);
+      CheckNode( 5, [], 0,   1,   1,   23, 28,   3, 4,   3, 4,
                                   cfbtBeginEnd, cfbtBeginEnd,  FOLDGROUP_PASCAL,
-                                  [sfaOpen, sfaOpenFold,sfaMarkup,sfaFold,sfaFoldFold]);
-      CheckNode( 5, [], 0,   2,   30, 36,   1, 0,   1, 0,
+                                  [sfaOpen, sfaOpenFold,sfaMarkup,sfaFold,sfaFoldFold, sfaMultiLine]);
+      CheckNode( 5, [], 0,   2,   2,   30, 36,   1, 0,   1, 0,
                                   cfbtIfDef, cfbtIfDef,  FOLDGROUP_IFDEF,
-                                  [sfaClose, sfaMarkup,sfaOneLineClose]);
+                                  [sfaClose, sfaMarkup,sfaOneLineClose, sfaSingleLine]);
       // Line 6:       writeln()                                                # pasminlvl=4 endlvl=4
       // Line 7:     end;                                                       # pasminlvl=3 endlvl=3
-      CheckNode( 7, [], 0,   0,   2, 5,   4, 3,   4, 3,
+      CheckNode( 7, [], 0,   0,   0,   2, 5,   4, 3,   4, 3,
                                   cfbtBeginEnd, cfbtBeginEnd,  FOLDGROUP_PASCAL,
-                                  [sfaClose, sfaCloseFold,sfaMarkup,sfaFold]);
+                                  [sfaClose, sfaCloseFold,sfaMarkup,sfaFold, sfaMultiLine]);
       // Line 8:   end;                                                         # pasminlvl=1 endlvl=1
-      CheckNode( 8, [], 0,   0,   0, 3,   3, 2,   3, 2,
+      CheckNode( 8, [], 0,   0,   0,   0, 3,   3, 2,   3, 2,
                                   cfbtTopBeginEnd, cfbtBeginEnd,  FOLDGROUP_PASCAL,
-                                  [sfaClose, sfaCloseFold,sfaMarkup,sfaFold]);
-      CheckNode( 8, [], 0,   1,   0, 3,   2, 1,   2, 1,
+                                  [sfaClose, sfaCloseFold,sfaMarkup,sfaFold, sfaMultiLine]);
+      CheckNode( 8, [], 0,   1,   1,   0, 3,   2, 1,   2, 1,
                                   cfbtProcedure, cfbtProcedure,  FOLDGROUP_PASCAL,
-                                  [sfaClose, sfaCloseFold,sfaMarkup,sfaFold]);
+                                  [sfaClose, sfaCloseFold,sfaMarkup,sfaFold, sfaMultiLine]);
       // Line 9:   begin                                                        # pasminlvl=1 endlvl=2
-      CheckNode( 9, [], 0,   0,   0, 5,   1, 2,   1, 2,
+      CheckNode( 9, [], 0,   0,   0,   0, 5,   1, 2,   1, 2,
                                   cfbtBeginEnd, cfbtBeginEnd,  FOLDGROUP_PASCAL,
-                                  [sfaOpen, sfaOpenFold,sfaMarkup,sfaFold,sfaFoldFold]);
+                                  [sfaOpen, sfaOpenFold,sfaMarkup,sfaFold,sfaFoldFold, sfaMultiLine]);
       // Line 10:   end.                                                        # pasminlvl=0 endlvl=0
-      CheckNode(10, [], 0,   0,   0, 3,   2, 1,   2, 1,
+      CheckNode(10, [], 0,   0,   0,   0, 3,   2, 1,   2, 1,
                                   cfbtBeginEnd, cfbtBeginEnd,  FOLDGROUP_PASCAL,
-                                  [sfaClose, sfaCloseFold,sfaMarkup,sfaFold]);
-      CheckNode(10, [], 0,   1,   0, 3,   1, 0,   1, 0,
+                                  [sfaClose, sfaCloseFold,sfaMarkup,sfaFold, sfaMultiLine]);
+      CheckNode(10, [], 0,   1,   1,   0, 3,   1, 0,   1, 0,
                                   cfbtProgram, cfbtProgram,  FOLDGROUP_PASCAL,
-                                  [sfaClose, sfaCloseFold,sfaMarkup,sfaFold]);
+                                  [sfaClose, sfaCloseFold,sfaMarkup,sfaFold, sfaMultiLine]);
       // Line 11:   //                                                          # pasminlvl=0 endlvl=0
-      CheckNode(11, [], 0,   0,   0, 2,   0, 1,   0, 1,
+      CheckNode(11, [], 0,   0,   0,   0, 2,   0, 1,   0, 1,
                                   cfbtSlashComment, cfbtSlashComment,  FOLDGROUP_PASCAL,
-                                  [sfaOpen, sfaOneLineOpen]);
-      CheckNode(11, [], 0,   1,   2, 2,   1, 0,   1, 0,
+                                  [sfaOpen, sfaOneLineOpen, sfaSingleLine]);
+      CheckNode(11, [], 0,   1,   1,   2, 2,   1, 0,   1, 0,
                                   cfbtSlashComment, cfbtSlashComment,  FOLDGROUP_PASCAL,
-                                  [sfaClose, sfaOneLineClose,sfaLastLineClose]);
+                                  [sfaClose, sfaOneLineClose,sfaLastLineClose, sfaSingleLine]);
     {%endregion TEXT 1 -- [cfbtBeginEnd..cfbtNone], []}
 
     {%region TEXT 1 -- [cfbtBeginEnd..cfbtNone], [] grp=1}
@@ -1171,53 +1199,53 @@ begin
       CheckFoldInfoCounts('', [], 1, [1, 1, 0, 1, 0, 1, 0, 1, 2, 1, 2, 2]);
 
       // Line 0:   program foo;                                                 # pasminlvl=0 endlvl=1
-      CheckNode( 0, [], 1,   0,   0, 7,   0, 1,   0, 1,
+      CheckNode( 0, [], 1,   0,   0,   0, 7,   0, 1,   0, 1,
                                   cfbtProgram, cfbtProgram,  FOLDGROUP_PASCAL,
-                                  [sfaOpen, sfaOpenFold,sfaMarkup,sfaFold,sfaFoldFold]);
+                                  [sfaOpen, sfaOpenFold,sfaMarkup,sfaFold,sfaFoldFold, sfaMultiLine]);
       // Line 1:   procedure a;                                                 # pasminlvl=1 endlvl=2
-      CheckNode( 1, [], 1,   0,   0, 9,   1, 2,   1, 2,
+      CheckNode( 1, [], 1,   0,   0,   0, 9,   1, 2,   1, 2,
                                   cfbtProcedure, cfbtProcedure,  FOLDGROUP_PASCAL,
-                                  [sfaOpen, sfaOpenFold,sfaMarkup,sfaFold,sfaFoldFold]);
+                                  [sfaOpen, sfaOpenFold,sfaMarkup,sfaFold,sfaFoldFold, sfaMultiLine]);
       // Line 2:   {$ifdef a}                                                   # pasminlvl=2 endlvl=2
       // Line 3:   begin                                                        # pasminlvl=2 endlvl=3
-      CheckNode( 3, [], 1,   0,   0, 5,   2, 3,   2, 3,
+      CheckNode( 3, [], 1,   0,   0,   0, 5,   2, 3,   2, 3,
                                   cfbtTopBeginEnd, cfbtBeginEnd,  FOLDGROUP_PASCAL,
-                                  [sfaOpen, sfaOpenFold,sfaMarkup,sfaFold,sfaFoldFold]);
+                                  [sfaOpen, sfaOpenFold,sfaMarkup,sfaFold,sfaFoldFold, sfaMultiLine]);
       // Line 4:   {$endif}                                                     # pasminlvl=3 endlvl=3
       // Line 5:     {$ifdef b} if a then begin {$endif}                                                    # pasminlvl=3 endlvl=4
-      CheckNode( 5, [], 1,   0,   23, 28,   3, 4,   3, 4,
+      CheckNode( 5, [], 1,   0,   1,   23, 28,   3, 4,   3, 4,
                                   cfbtBeginEnd, cfbtBeginEnd,  FOLDGROUP_PASCAL,
-                                  [sfaOpen, sfaOpenFold,sfaMarkup,sfaFold,sfaFoldFold]);
+                                  [sfaOpen, sfaOpenFold,sfaMarkup,sfaFold,sfaFoldFold, sfaMultiLine]);
       // Line 6:       writeln()                                                # pasminlvl=4 endlvl=4
       // Line 7:     end;                                                       # pasminlvl=3 endlvl=3
-      CheckNode( 7, [], 1,   0,   2, 5,   4, 3,   4, 3,
+      CheckNode( 7, [], 1,   0,   0,   2, 5,   4, 3,   4, 3,
                                   cfbtBeginEnd, cfbtBeginEnd,  FOLDGROUP_PASCAL,
-                                  [sfaClose, sfaCloseFold,sfaMarkup,sfaFold]);
+                                  [sfaClose, sfaCloseFold,sfaMarkup,sfaFold, sfaMultiLine]);
       // Line 8:   end;                                                         # pasminlvl=1 endlvl=1
-      CheckNode( 8, [], 1,   0,   0, 3,   3, 2,   3, 2,
+      CheckNode( 8, [], 1,   0,   0,   0, 3,   3, 2,   3, 2,
                                   cfbtTopBeginEnd, cfbtBeginEnd,  FOLDGROUP_PASCAL,
-                                  [sfaClose, sfaCloseFold,sfaMarkup,sfaFold]);
-      CheckNode( 8, [], 1,   1,   0, 3,   2, 1,   2, 1,
+                                  [sfaClose, sfaCloseFold,sfaMarkup,sfaFold, sfaMultiLine]);
+      CheckNode( 8, [], 1,   1,   1,   0, 3,   2, 1,   2, 1,
                                   cfbtProcedure, cfbtProcedure,  FOLDGROUP_PASCAL,
-                                  [sfaClose, sfaCloseFold,sfaMarkup,sfaFold]);
+                                  [sfaClose, sfaCloseFold,sfaMarkup,sfaFold, sfaMultiLine]);
       // Line 9:   begin                                                        # pasminlvl=1 endlvl=2
-      CheckNode( 9, [], 1,   0,   0, 5,   1, 2,   1, 2,
+      CheckNode( 9, [], 1,   0,   0,   0, 5,   1, 2,   1, 2,
                                   cfbtBeginEnd, cfbtBeginEnd,  FOLDGROUP_PASCAL,
-                                  [sfaOpen, sfaOpenFold,sfaMarkup,sfaFold,sfaFoldFold]);
+                                  [sfaOpen, sfaOpenFold,sfaMarkup,sfaFold,sfaFoldFold, sfaMultiLine]);
       // Line 10:   end.                                                        # pasminlvl=0 endlvl=0
-      CheckNode(10, [], 1,   0,   0, 3,   2, 1,   2, 1,
+      CheckNode(10, [], 1,   0,   0,   0, 3,   2, 1,   2, 1,
                                   cfbtBeginEnd, cfbtBeginEnd,  FOLDGROUP_PASCAL,
-                                  [sfaClose, sfaCloseFold,sfaMarkup,sfaFold]);
-      CheckNode(10, [], 1,   1,   0, 3,   1, 0,   1, 0,
+                                  [sfaClose, sfaCloseFold,sfaMarkup,sfaFold, sfaMultiLine]);
+      CheckNode(10, [], 1,   1,   1,   0, 3,   1, 0,   1, 0,
                                   cfbtProgram, cfbtProgram,  FOLDGROUP_PASCAL,
-                                  [sfaClose, sfaCloseFold,sfaMarkup,sfaFold]);
+                                  [sfaClose, sfaCloseFold,sfaMarkup,sfaFold, sfaMultiLine]);
       // Line 11:   //                                                          # pasminlvl=0 endlvl=0
-      CheckNode(11, [], 1,   0,   0, 2,   0, 1,   0, 1,
+      CheckNode(11, [], 1,   0,   0,   0, 2,   0, 1,   0, 1,
                                   cfbtSlashComment, cfbtSlashComment,  FOLDGROUP_PASCAL,
-                                  [sfaOpen, sfaOneLineOpen]);
-      CheckNode(11, [], 1,   1,   2, 2,   1, 0,   1, 0,
+                                  [sfaOpen, sfaOneLineOpen, sfaSingleLine]);
+      CheckNode(11, [], 1,   1,   1,   2, 2,   1, 0,   1, 0,
                                   cfbtSlashComment, cfbtSlashComment,  FOLDGROUP_PASCAL,
-                                  [sfaClose, sfaOneLineClose,sfaLastLineClose]);
+                                  [sfaClose, sfaOneLineClose,sfaLastLineClose, sfaSingleLine]);
     {%endregion TEXT 1 -- [cfbtBeginEnd..cfbtNone], [] grp=1}
 
     {%region TEXT 1 -- [cfbtBeginEnd,cfbtIfDef], [] grp=1}
@@ -1231,163 +1259,163 @@ begin
       // Line 0:   program foo;                                                 # pasminlvl=0 endlvl=0
       CheckNode( 0, [], 1,   0,   0, 7,   0, 0,   0, 1,
                                   cfbtProgram, cfbtProgram,  FOLDGROUP_PASCAL,
-                                  [sfaOpen, sfaOpenFold,sfaMarkup]);   // program
+                                  [sfaOpen, sfaOpenFold,sfaMarkup, sfaMultiLine]);   // program
       // Line 1:   procedure a;                                                 # pasminlvl=0 endlvl=0
       CheckNode( 1, [], 1,   0,   0, 9,   1, 1,   1, 2,
                                   cfbtProcedure, cfbtProcedure,  FOLDGROUP_PASCAL,
-                                  [sfaOpen, sfaOpenFold,sfaMarkup]);   // procedure
+                                  [sfaOpen, sfaOpenFold,sfaMarkup, sfaMultiLine]);   // procedure
       // Line 2:   {$ifdef a}                                                   # pasminlvl=0 endlvl=0
       // Line 3:   begin                                                        # pasminlvl=0 endlvl=0
       CheckNode( 3, [], 1,   0,   0, 5,   2, 2,   2, 3,
                                   cfbtTopBeginEnd, cfbtBeginEnd,  FOLDGROUP_PASCAL,
-                                  [sfaOpen, sfaOpenFold,sfaMarkup]);   // begin
+                                  [sfaOpen, sfaOpenFold,sfaMarkup, sfaMultiLine]);   // begin
       // Line 4:   {$endif}                                                     # pasminlvl=0 endlvl=0
       // Line 5:     {$ifdef b} if a then begin {$endif}                                                    # pasminlvl=0 endlvl=1
       CheckNode( 5, [], 1,   0,   23, 28,   0, 1,   3, 4,
                                   cfbtBeginEnd, cfbtBeginEnd,  FOLDGROUP_PASCAL,
-                                  [sfaOpen, sfaOpenFold,sfaMarkup,sfaFold,sfaFoldFold]);   //  begin
+                                  [sfaOpen, sfaOpenFold,sfaMarkup,sfaFold,sfaFoldFold, sfaMultiLine]);   //  begin
       // Line 6:       writeln()                                                # pasminlvl=1 endlvl=1
       // Line 7:     end;                                                       # pasminlvl=0 endlvl=0
       CheckNode( 7, [], 1,   0,   2, 5,   1, 0,   4, 3,
                                   cfbtBeginEnd, cfbtBeginEnd,  FOLDGROUP_PASCAL,
-                                  [sfaClose, sfaCloseFold,sfaMarkup,sfaFold]);   //  end
+                                  [sfaClose, sfaCloseFold,sfaMarkup,sfaFold, sfaMultiLine]);   //  end
       // Line 8:   end;                                                         # pasminlvl=0 endlvl=0
       CheckNode( 8, [], 1,   0,   0, 3,   3, 3,   3, 2,
                                   cfbtTopBeginEnd, cfbtBeginEnd,  FOLDGROUP_PASCAL,
-                                  [sfaClose, sfaCloseFold,sfaMarkup]);   // end;
+                                  [sfaClose, sfaCloseFold,sfaMarkup, sfaMultiLine]);   // end;
       CheckNode( 8, [], 1,   1,   0, 3,   2, 2,   2, 1,
                                   cfbtProcedure, cfbtProcedure,  FOLDGROUP_PASCAL,
-                                  [sfaClose, sfaCloseFold,sfaMarkup]);   // end;
+                                  [sfaClose, sfaCloseFold,sfaMarkup, sfaMultiLine]);   // end;
       // Line 9:   begin                                                        # pasminlvl=0 endlvl=1
       CheckNode( 9, [], 1,   0,   0, 5,   0, 1,   1, 2,
                                   cfbtBeginEnd, cfbtBeginEnd,  FOLDGROUP_PASCAL,
-                                  [sfaOpen, sfaOpenFold,sfaMarkup,sfaFold,sfaFoldFold]);   // begin
+                                  [sfaOpen, sfaOpenFold,sfaMarkup,sfaFold,sfaFoldFold, sfaMultiLine]);   // begin
       // Line 10:   end.                                                        # pasminlvl=0 endlvl=0
       CheckNode(10, [], 1,   0,   0, 3,   1, 0,   2, 1,
                                   cfbtBeginEnd, cfbtBeginEnd,  FOLDGROUP_PASCAL,
-                                  [sfaClose, sfaCloseFold,sfaMarkup,sfaFold]);   // end.
+                                  [sfaClose, sfaCloseFold,sfaMarkup,sfaFold, sfaMultiLine]);   // end.
       CheckNode(10, [], 1,   1,   0, 3,   1, 1,   1, 0,
                                   cfbtProgram, cfbtProgram,  FOLDGROUP_PASCAL,
-                                  [sfaClose, sfaCloseFold,sfaMarkup]);   // end.
+                                  [sfaClose, sfaCloseFold,sfaMarkup, sfaMultiLine]);   // end.
       // Line 11:   //                                                          # pasminlvl=0 endlvl=0
       CheckNode(11, [], 1,   0,   0, 2,   0, 0,   0, 1,
                                   cfbtSlashComment, cfbtSlashComment,  FOLDGROUP_PASCAL,
-                                  [sfaOpen, sfaOpenFold]);   // //
+                                  [sfaOpen, sfaOpenFold, sfaMultiLine]);   // //
       CheckNode(11, [], 1,   1,   2, 2,   1, 1,   1, 0,
                                   cfbtSlashComment, cfbtSlashComment,  FOLDGROUP_PASCAL,
-                                  [sfaClose, sfaCloseFold,sfaLastLineClose]);   // /
+                                  [sfaClose, sfaCloseFold,sfaLastLineClose, sfaMultiLine]);   // /
     {%endregion TEXT 1 -- [cfbtBeginEnd..cfbtNone], [] grp=4}
 
-    {%region TEXT 1 -- [cfbtBeginEnd..cfbtNone], [sfaFold]}
-      PopPushBaseName('Text 1 -- [cfbtBeginEnd..cfbtNone], [sfaFold], 0');
+    {%region TEXT 1 -- [cfbtBeginEnd..cfbtNone], [sfaFold, sfaMultiLine]}
+      PopPushBaseName('Text 1 -- [cfbtBeginEnd..cfbtNone], [sfaFold, sfaMultiLine], 0');
       SetLines(TestTextFoldInfo1);
       EnableFolds([cfbtBeginEnd..cfbtNone], []);
-      //DebugFoldInfo([sfaFold]);
+      //DebugFoldInfo([sfaFold, sfaMultiLine]);
 
-      CheckFoldInfoCounts('', [sfaFold], 0, [1, 1, 1, 1, 1, 1, 0, 1, 2, 1, 2, 0]);
+      CheckFoldInfoCounts('', [sfaFold, sfaMultiLine], 0, [1, 1, 1, 1, 1, 1, 0, 1, 2, 1, 2, 0]);
 
       // Line 0:   program foo;                                                 # pasminlvl=0 endlvl=1
-      CheckNode( 0, [sfafold], 0,   0,   0, 7,   0, 1,   0, 1,
+      CheckNode( 0, [sfafold, sfaMultiLine], 0,   0,   0, 7,   0, 1,   0, 1,
                                   cfbtProgram, cfbtProgram,  FOLDGROUP_PASCAL,
-                                  [sfaOpen, sfaOpenFold,sfaMarkup,sfaFold,sfaFoldFold]);
+                                  [sfaOpen, sfaOpenFold,sfaMarkup,sfaFold,sfaFoldFold, sfaMultiLine]);
       // Line 1:   procedure a;                                                 # pasminlvl=1 endlvl=2
-      CheckNode( 1, [sfafold], 0,   0,   0, 9,   1, 2,   1, 2,
+      CheckNode( 1, [sfafold, sfaMultiLine], 0,   0,   0, 9,   1, 2,   1, 2,
                                   cfbtProcedure, cfbtProcedure,  FOLDGROUP_PASCAL,
-                                  [sfaOpen, sfaOpenFold,sfaMarkup,sfaFold,sfaFoldFold]);
+                                  [sfaOpen, sfaOpenFold,sfaMarkup,sfaFold,sfaFoldFold, sfaMultiLine]);
       // Line 2:   {$ifdef a}                                                   # pasminlvl=2 endlvl=2
-      CheckNode( 2, [sfafold], 0,   0,   1, 7,   0, 1,   0, 1,
+      CheckNode( 2, [sfafold, sfaMultiLine], 0,   0,   1, 7,   0, 1,   0, 1,
                                   cfbtIfDef, cfbtIfDef,  FOLDGROUP_IFDEF,
-                                  [sfaOpen, sfaOpenFold,sfaMarkup,sfaFold,sfaFoldFold]);
+                                  [sfaOpen, sfaOpenFold,sfaMarkup,sfaFold,sfaFoldFold, sfaMultiLine]);
       // Line 3:   begin                                                        # pasminlvl=2 endlvl=3
-      CheckNode( 3, [sfafold], 0,   0,   0, 5,   2, 3,   2, 3,
+      CheckNode( 3, [sfafold, sfaMultiLine], 0,   0,   0, 5,   2, 3,   2, 3,
                                   cfbtTopBeginEnd, cfbtBeginEnd,  FOLDGROUP_PASCAL,
-                                  [sfaOpen, sfaOpenFold,sfaMarkup,sfaFold,sfaFoldFold]);
+                                  [sfaOpen, sfaOpenFold,sfaMarkup,sfaFold,sfaFoldFold, sfaMultiLine]);
       // Line 4:   {$endif}                                                     # pasminlvl=3 endlvl=3
-      CheckNode( 4, [sfafold], 0,   0,   1, 7,   1, 0,   1, 0,
+      CheckNode( 4, [sfafold, sfaMultiLine], 0,   0,   1, 7,   1, 0,   1, 0,
                                   cfbtIfDef, cfbtIfDef,  FOLDGROUP_IFDEF,
-                                  [sfaClose, sfaCloseFold,sfaMarkup,sfaFold]);
+                                  [sfaClose, sfaCloseFold,sfaMarkup,sfaFold, sfaMultiLine]);
       // Line 5:     {$ifdef b} if a then begin {$endif}                                                    # pasminlvl=3 endlvl=4
-      CheckNode( 5, [sfafold], 0,   0,   23, 28,   3, 4,   3, 4,
+      CheckNode( 5, [sfafold, sfaMultiLine], 0,   0,   23, 28,   3, 4,   3, 4,
                                   cfbtBeginEnd, cfbtBeginEnd,  FOLDGROUP_PASCAL,
-                                  [sfaOpen, sfaOpenFold,sfaMarkup,sfaFold,sfaFoldFold]);
+                                  [sfaOpen, sfaOpenFold,sfaMarkup,sfaFold,sfaFoldFold, sfaMultiLine]);
       // Line 6:       writeln()                                                # pasminlvl=4 endlvl=4
       // Line 7:     end;                                                       # pasminlvl=3 endlvl=3
-      CheckNode( 7, [sfafold], 0,   0,   2, 5,   4, 3,   4, 3,
+      CheckNode( 7, [sfafold, sfaMultiLine], 0,   0,   2, 5,   4, 3,   4, 3,
                                   cfbtBeginEnd, cfbtBeginEnd,  FOLDGROUP_PASCAL,
-                                  [sfaClose, sfaCloseFold,sfaMarkup,sfaFold]);
+                                  [sfaClose, sfaCloseFold,sfaMarkup,sfaFold, sfaMultiLine]);
       // Line 8:   end;                                                         # pasminlvl=1 endlvl=1
-      CheckNode( 8, [sfafold], 0,   0,   0, 3,   3, 2,   3, 2,
+      CheckNode( 8, [sfafold, sfaMultiLine], 0,   0,   0, 3,   3, 2,   3, 2,
                                   cfbtTopBeginEnd, cfbtBeginEnd,  FOLDGROUP_PASCAL,
-                                  [sfaClose, sfaCloseFold,sfaMarkup,sfaFold]);
-      CheckNode( 8, [sfafold], 0,   1,   0, 3,   2, 1,   2, 1,
+                                  [sfaClose, sfaCloseFold,sfaMarkup,sfaFold, sfaMultiLine]);
+      CheckNode( 8, [sfafold, sfaMultiLine], 0,   1,   0, 3,   2, 1,   2, 1,
                                   cfbtProcedure, cfbtProcedure,  FOLDGROUP_PASCAL,
-                                  [sfaClose, sfaCloseFold,sfaMarkup,sfaFold]);
+                                  [sfaClose, sfaCloseFold,sfaMarkup,sfaFold, sfaMultiLine]);
       // Line 9:   begin                                                        # pasminlvl=1 endlvl=2
-      CheckNode( 9, [sfafold], 0,   0,   0, 5,   1, 2,   1, 2,
+      CheckNode( 9, [sfafold, sfaMultiLine], 0,   0,   0, 5,   1, 2,   1, 2,
                                   cfbtBeginEnd, cfbtBeginEnd,  FOLDGROUP_PASCAL,
-                                  [sfaOpen, sfaOpenFold,sfaMarkup,sfaFold,sfaFoldFold]);
+                                  [sfaOpen, sfaOpenFold,sfaMarkup,sfaFold,sfaFoldFold, sfaMultiLine]);
       // Line 10:   end.                                                        # pasminlvl=0 endlvl=0
-      CheckNode(10, [sfafold], 0,   0,   0, 3,   2, 1,   2, 1,
+      CheckNode(10, [sfafold, sfaMultiLine], 0,   0,   0, 3,   2, 1,   2, 1,
                                   cfbtBeginEnd, cfbtBeginEnd,  FOLDGROUP_PASCAL,
-                                  [sfaClose, sfaCloseFold,sfaMarkup,sfaFold]);
-      CheckNode(10, [sfafold], 0,   1,   0, 3,   1, 0,   1, 0,
+                                  [sfaClose, sfaCloseFold,sfaMarkup,sfaFold, sfaMultiLine]);
+      CheckNode(10, [sfafold, sfaMultiLine], 0,   1,   0, 3,   1, 0,   1, 0,
                                   cfbtProgram, cfbtProgram,  FOLDGROUP_PASCAL,
-                                  [sfaClose, sfaCloseFold,sfaMarkup,sfaFold]);
+                                  [sfaClose, sfaCloseFold,sfaMarkup,sfaFold, sfaMultiLine]);
       // Line 11:   //                                                          # pasminlvl=0 endlvl=0
 
-    {%endregion TEXT 1 -- [cfbtBeginEnd..cfbtNone], [sfaFold]}
+    {%endregion TEXT 1 -- [cfbtBeginEnd..cfbtNone], [sfaFold, sfaMultiLine]}
 
-    {%region TEXT 1 -- [cfbtBeginEnd..cfbtNone], [sfaMarkup]}
-      PopPushBaseName('Text 1 -- [cfbtBeginEnd..cfbtNone]-cfbtIfDef, [sfaMarkup], 0');
+    {%region TEXT 1 -- [cfbtBeginEnd..cfbtNone], [sfaMarkup, sfaMultiLine]}
+      PopPushBaseName('Text 1 -- [cfbtBeginEnd..cfbtNone]-cfbtIfDef, [sfaMarkup, sfaMultiLine], 0');
       SetLines(TestTextFoldInfo1);
       EnableFolds([cfbtBeginEnd..cfbtNone]-[cfbtIfDef], []);
-      //DebugFoldInfo([sfaMarkup]);
+      //DebugFoldInfo([sfaMarkup, sfaMultiLine]);
 
-      CheckFoldInfoCounts('', [sfaMarkup], 0, [1, 1, 0, 1, 0, 1, 0, 1, 2, 1, 2, 0]);
+      CheckFoldInfoCounts('', [sfaMarkup, sfaMultiLine], 0, [1, 1, 0, 1, 0, 1, 0, 1, 2, 1, 2, 0]);
       // Line 0:   program foo;                                                 # pasminlvl=0 endlvl=1
-      CheckNode( 0, [sfamarkup], 0,   0,   0, 7,   0, 1,   0, 1,
+      CheckNode( 0, [sfamarkup, sfaMultiLine], 0,   0,   0, 7,   0, 1,   0, 1,
                                   cfbtProgram, cfbtProgram,  FOLDGROUP_PASCAL,
-                                  [sfaOpen, sfaOpenFold,sfaMarkup,sfaFold,sfaFoldFold]);
+                                  [sfaOpen, sfaOpenFold,sfaMarkup,sfaFold,sfaFoldFold, sfaMultiLine]);
       // Line 1:   procedure a;                                                 # pasminlvl=1 endlvl=2
-      CheckNode( 1, [sfamarkup], 0,   0,   0, 9,   1, 2,   1, 2,
+      CheckNode( 1, [sfamarkup, sfaMultiLine], 0,   0,   0, 9,   1, 2,   1, 2,
                                   cfbtProcedure, cfbtProcedure,  FOLDGROUP_PASCAL,
-                                  [sfaOpen, sfaOpenFold,sfaMarkup,sfaFold,sfaFoldFold]);
+                                  [sfaOpen, sfaOpenFold,sfaMarkup,sfaFold,sfaFoldFold, sfaMultiLine]);
       // Line 2:   {$ifdef a}                                                   # pasminlvl=2 endlvl=2
       // Line 3:   begin                                                        # pasminlvl=2 endlvl=3
-      CheckNode( 3, [sfamarkup], 0,   0,   0, 5,   2, 3,   2, 3,
+      CheckNode( 3, [sfamarkup, sfaMultiLine], 0,   0,   0, 5,   2, 3,   2, 3,
                                   cfbtTopBeginEnd, cfbtBeginEnd,  FOLDGROUP_PASCAL,
-                                  [sfaOpen, sfaOpenFold,sfaMarkup,sfaFold,sfaFoldFold]);
+                                  [sfaOpen, sfaOpenFold,sfaMarkup,sfaFold,sfaFoldFold, sfaMultiLine]);
       // Line 4:   {$endif}                                                     # pasminlvl=3 endlvl=3
       // Line 5:     {$ifdef b} if a then begin {$endif}                                                    # pasminlvl=3 endlvl=4
-      CheckNode( 5, [sfamarkup], 0,   0,   23, 28,   3, 4,   3, 4,
+      CheckNode( 5, [sfamarkup, sfaMultiLine], 0,   0,   23, 28,   3, 4,   3, 4,
                                   cfbtBeginEnd, cfbtBeginEnd,  FOLDGROUP_PASCAL,
-                                  [sfaOpen, sfaOpenFold,sfaMarkup,sfaFold,sfaFoldFold]);
+                                  [sfaOpen, sfaOpenFold,sfaMarkup,sfaFold,sfaFoldFold, sfaMultiLine]);
       // Line 6:       writeln()                                                # pasminlvl=4 endlvl=4
       // Line 7:     end;                                                       # pasminlvl=3 endlvl=3
-      CheckNode( 7, [sfamarkup], 0,   0,   2, 5,   4, 3,   4, 3,
+      CheckNode( 7, [sfamarkup, sfaMultiLine], 0,   0,   2, 5,   4, 3,   4, 3,
                                   cfbtBeginEnd, cfbtBeginEnd,  FOLDGROUP_PASCAL,
-                                  [sfaClose, sfaCloseFold,sfaMarkup,sfaFold]);
+                                  [sfaClose, sfaCloseFold,sfaMarkup,sfaFold, sfaMultiLine]);
       // Line 8:   end;                                                         # pasminlvl=1 endlvl=1
-      CheckNode( 8, [sfamarkup], 0,   0,   0, 3,   3, 2,   3, 2,
+      CheckNode( 8, [sfamarkup, sfaMultiLine], 0,   0,   0, 3,   3, 2,   3, 2,
                                   cfbtTopBeginEnd, cfbtBeginEnd,  FOLDGROUP_PASCAL,
-                                  [sfaClose, sfaCloseFold,sfaMarkup,sfaFold]);
-      CheckNode( 8, [sfamarkup], 0,   1,   0, 3,   2, 1,   2, 1,
+                                  [sfaClose, sfaCloseFold,sfaMarkup,sfaFold, sfaMultiLine]);
+      CheckNode( 8, [sfamarkup, sfaMultiLine], 0,   1,   0, 3,   2, 1,   2, 1,
                                   cfbtProcedure, cfbtProcedure,  FOLDGROUP_PASCAL,
-                                  [sfaClose, sfaCloseFold,sfaMarkup,sfaFold]);
+                                  [sfaClose, sfaCloseFold,sfaMarkup,sfaFold, sfaMultiLine]);
       // Line 9:   begin                                                        # pasminlvl=1 endlvl=2
-      CheckNode( 9, [sfamarkup], 0,   0,   0, 5,   1, 2,   1, 2,
+      CheckNode( 9, [sfamarkup, sfaMultiLine], 0,   0,   0, 5,   1, 2,   1, 2,
                                   cfbtBeginEnd, cfbtBeginEnd,  FOLDGROUP_PASCAL,
-                                  [sfaOpen, sfaOpenFold,sfaMarkup,sfaFold,sfaFoldFold]);
+                                  [sfaOpen, sfaOpenFold,sfaMarkup,sfaFold,sfaFoldFold, sfaMultiLine]);
       // Line 10:   end.                                                        # pasminlvl=0 endlvl=0
-      CheckNode(10, [sfamarkup], 0,   0,   0, 3,   2, 1,   2, 1,
+      CheckNode(10, [sfamarkup, sfaMultiLine], 0,   0,   0, 3,   2, 1,   2, 1,
                                   cfbtBeginEnd, cfbtBeginEnd,  FOLDGROUP_PASCAL,
-                                  [sfaClose, sfaCloseFold,sfaMarkup,sfaFold]);
-      CheckNode(10, [sfamarkup], 0,   1,   0, 3,   1, 0,   1, 0,
+                                  [sfaClose, sfaCloseFold,sfaMarkup,sfaFold, sfaMultiLine]);
+      CheckNode(10, [sfamarkup, sfaMultiLine], 0,   1,   0, 3,   1, 0,   1, 0,
                                   cfbtProgram, cfbtProgram,  FOLDGROUP_PASCAL,
-                                  [sfaClose, sfaCloseFold,sfaMarkup,sfaFold]);
+                                  [sfaClose, sfaCloseFold,sfaMarkup,sfaFold, sfaMultiLine]);
       // Line 11:   //                                                          # pasminlvl=0 endlvl=0
 
-    {%endregion TEXT 1 -- [cfbtBeginEnd..cfbtNone], [sfaMarkup]}
+    {%endregion TEXT 1 -- [cfbtBeginEnd..cfbtNone], [sfaMarkup, sfaMultiLine]}
 
     {%region TEXT 1 -- [cfbtBeginEnd..cfbtNone]-[cfbtProcedure], [cfbtSlashComment]}
       PopPushBaseName('Text 1 -- [cfbtBeginEnd..cfbtNone]-[cfbtProcedure], [cfbtSlashComment], 0');
@@ -1400,63 +1428,63 @@ begin
       // Line 0:   program foo;                                                 # pasminlvl=0 endlvl=1
       CheckNode( 0, [], 0,   0,   0, 7,   0, 1,   0, 1,
                                   cfbtProgram, cfbtProgram,  FOLDGROUP_PASCAL,
-                                  [sfaOpen, sfaOpenFold,sfaMarkup,sfaFold,sfaFoldFold]);
+                                  [sfaOpen, sfaOpenFold,sfaMarkup,sfaFold,sfaFoldFold, sfaMultiLine]);
       // Line 1:   procedure a;                                                 # pasminlvl=1 endlvl=1
       CheckNode( 1, [], 0,   0,   0, 9,   1, 1,   1, 2,
                                   cfbtProcedure, cfbtProcedure,  FOLDGROUP_PASCAL,
-                                  [sfaOpen, sfaOpenFold,sfaMarkup]);
+                                  [sfaOpen, sfaOpenFold,sfaMarkup, sfaMultiLine]);
       // Line 2:   {$ifdef a}                                                   # pasminlvl=1 endlvl=1
       CheckNode( 2, [], 0,   0,   1, 7,   0, 1,   0, 1,
                                   cfbtIfDef, cfbtIfDef,  FOLDGROUP_IFDEF,
-                                  [sfaOpen, sfaOpenFold,sfaMarkup,sfaFold,sfaFoldFold]);
+                                  [sfaOpen, sfaOpenFold,sfaMarkup,sfaFold,sfaFoldFold, sfaMultiLine]);
       // Line 3:   begin                                                        # pasminlvl=1 endlvl=2
       CheckNode( 3, [], 0,   0,   0, 5,   1, 2,   2, 3,
                                   cfbtTopBeginEnd, cfbtBeginEnd,  FOLDGROUP_PASCAL,
-                                  [sfaOpen, sfaOpenFold,sfaMarkup,sfaFold,sfaFoldFold]);
+                                  [sfaOpen, sfaOpenFold,sfaMarkup,sfaFold,sfaFoldFold, sfaMultiLine]);
       // Line 4:   {$endif}                                                     # pasminlvl=2 endlvl=2
       CheckNode( 4, [], 0,   0,   1, 7,   1, 0,   1, 0,
                                   cfbtIfDef, cfbtIfDef,  FOLDGROUP_IFDEF,
-                                  [sfaClose, sfaCloseFold,sfaMarkup,sfaFold]);
+                                  [sfaClose, sfaCloseFold,sfaMarkup,sfaFold, sfaMultiLine]);
       // Line 5:     {$ifdef b} if a then begin {$endif}                                                    # pasminlvl=2 endlvl=3
       CheckNode( 5, [], 0,   0,   3, 9,   0, 1,   0, 1,
                                   cfbtIfDef, cfbtIfDef,  FOLDGROUP_IFDEF,
-                                  [sfaOpen, sfaMarkup,sfaOneLineOpen]);
+                                  [sfaOpen, sfaMarkup,sfaOneLineOpen, sfaSingleLine]);
       CheckNode( 5, [], 0,   1,   23, 28,   2, 3,   3, 4,
                                   cfbtBeginEnd, cfbtBeginEnd,  FOLDGROUP_PASCAL,
-                                  [sfaOpen, sfaOpenFold,sfaMarkup,sfaFold,sfaFoldFold]);
+                                  [sfaOpen, sfaOpenFold,sfaMarkup,sfaFold,sfaFoldFold, sfaMultiLine]);
       CheckNode( 5, [], 0,   2,   30, 36,   1, 0,   1, 0,
                                   cfbtIfDef, cfbtIfDef,  FOLDGROUP_IFDEF,
-                                  [sfaClose, sfaMarkup,sfaOneLineClose]);
+                                  [sfaClose, sfaMarkup,sfaOneLineClose, sfaSingleLine]);
       // Line 6:       writeln()                                                # pasminlvl=3 endlvl=3
       // Line 7:     end;                                                       # pasminlvl=2 endlvl=2
       CheckNode( 7, [], 0,   0,   2, 5,   3, 2,   4, 3,
                                   cfbtBeginEnd, cfbtBeginEnd,  FOLDGROUP_PASCAL,
-                                  [sfaClose, sfaCloseFold,sfaMarkup,sfaFold]);
+                                  [sfaClose, sfaCloseFold,sfaMarkup,sfaFold, sfaMultiLine]);
       // Line 8:   end;                                                         # pasminlvl=1 endlvl=1
       CheckNode( 8, [], 0,   0,   0, 3,   2, 1,   3, 2,
                                   cfbtTopBeginEnd, cfbtBeginEnd,  FOLDGROUP_PASCAL,
-                                  [sfaClose, sfaCloseFold,sfaMarkup,sfaFold]);
+                                  [sfaClose, sfaCloseFold,sfaMarkup,sfaFold, sfaMultiLine]);
       CheckNode( 8, [], 0,   1,   0, 3,   2, 2,   2, 1,
                                   cfbtProcedure, cfbtProcedure,  FOLDGROUP_PASCAL,
-                                  [sfaClose, sfaCloseFold,sfaMarkup]);
+                                  [sfaClose, sfaCloseFold,sfaMarkup, sfaMultiLine]);
       // Line 9:   begin                                                        # pasminlvl=1 endlvl=2
       CheckNode( 9, [], 0,   0,   0, 5,   1, 2,   1, 2,
                                   cfbtBeginEnd, cfbtBeginEnd,  FOLDGROUP_PASCAL,
-                                  [sfaOpen, sfaOpenFold,sfaMarkup,sfaFold,sfaFoldFold]);
+                                  [sfaOpen, sfaOpenFold,sfaMarkup,sfaFold,sfaFoldFold, sfaMultiLine]);
       // Line 10:   end.                                                        # pasminlvl=0 endlvl=0
       CheckNode(10, [], 0,   0,   0, 3,   2, 1,   2, 1,
                                   cfbtBeginEnd, cfbtBeginEnd,  FOLDGROUP_PASCAL,
-                                  [sfaClose, sfaCloseFold,sfaMarkup,sfaFold]);
+                                  [sfaClose, sfaCloseFold,sfaMarkup,sfaFold, sfaMultiLine]);
       CheckNode(10, [], 0,   1,   0, 3,   1, 0,   1, 0,
                                   cfbtProgram, cfbtProgram,  FOLDGROUP_PASCAL,
-                                  [sfaClose, sfaCloseFold,sfaMarkup,sfaFold]);
+                                  [sfaClose, sfaCloseFold,sfaMarkup,sfaFold, sfaMultiLine]);
       // Line 11:   //                                                          # pasminlvl=0 endlvl=0
       CheckNode(11, [], 0,   0,   0, 2,   0, 1,   0, 1,
                                   cfbtSlashComment, cfbtSlashComment,  FOLDGROUP_PASCAL,
-                                  [sfaOpen, sfaOpenFold,sfaFold,sfaFoldHide,sfaOneLineOpen]);
+                                  [sfaOpen, sfaOpenFold,sfaFold,sfaFoldHide,sfaOneLineOpen, sfaSingleLine]);
       CheckNode(11, [], 0,   1,   2, 2,   1, 0,   1, 0,
                                   cfbtSlashComment, cfbtSlashComment,  FOLDGROUP_PASCAL,
-                                  [sfaClose, sfaCloseFold,sfaFold,sfaOneLineClose,sfaLastLineClose]);
+                                  [sfaClose, sfaCloseFold,sfaFold,sfaOneLineClose,sfaLastLineClose, sfaSingleLine]);
     {%endregion TEXT 1 -- [cfbtBeginEnd..cfbtNone]-[cfbtProcedure], [cfbtSlashComment]}
 
   {%endregion TEXT 1}
@@ -1475,95 +1503,95 @@ begin
       // Line 0:   program foo;                                                 # pasminlvl=0 endlvl=1
       CheckNode( 0, [], 0,   0,   0, 7,   0, 1,   0, 1,
                                   cfbtProgram, cfbtProgram,  FOLDGROUP_PASCAL,
-                                  [sfaOpen, sfaOpenFold,sfaMarkup,sfaFold,sfaFoldFold]);
+                                  [sfaOpen, sfaOpenFold,sfaMarkup,sfaFold,sfaFoldFold, sfaMultiLine]);
       // Line 1:   procedure a;                                                 # pasminlvl=1 endlvl=2
       CheckNode( 1, [], 0,   0,   0, 9,   1, 2,   1, 2,
                                   cfbtProcedure, cfbtProcedure,  FOLDGROUP_PASCAL,
-                                  [sfaOpen, sfaOpenFold,sfaMarkup,sfaFold,sfaFoldFold]);
+                                  [sfaOpen, sfaOpenFold,sfaMarkup,sfaFold,sfaFoldFold, sfaMultiLine]);
       // Line 2:   {$ifdef a} begin {$ifdef b} repeat a; {$endif} until b; {$ifdef c} try {$else} //x                                                     zz# pasminlvl=2 endlvl=4
       CheckNode( 2, [], 0,   0,   1, 7,   0, 1,   0, 1,
                                   cfbtIfDef, cfbtIfDef,  FOLDGROUP_IFDEF,
-                                  [sfaOpen, sfaOpenFold,sfaMarkup,sfaFold,sfaFoldFold]);            // {$IFDEF A}
+                                  [sfaOpen, sfaOpenFold,sfaMarkup,sfaFold,sfaFoldFold, sfaMultiLine]);            // {$IFDEF A}
       CheckNode( 2, [], 0,   1,   11, 16,   2, 3,   2, 3,
                                   cfbtTopBeginEnd, cfbtBeginEnd,  FOLDGROUP_PASCAL,
-                                  [sfaOpen, sfaOpenFold,sfaMarkup,sfaFold,sfaFoldFold]);  // begin
+                                  [sfaOpen, sfaOpenFold,sfaMarkup,sfaFold,sfaFoldFold, sfaMultiLine]);  // begin
       CheckNode( 2, [], 0,   2,   18, 24,   1, 2,   1, 2,
                                   cfbtIfDef, cfbtIfDef,  FOLDGROUP_IFDEF,
-                                  [sfaOpen, sfaMarkup,sfaOneLineOpen]);           // {$IFDEF B}
+                                  [sfaOpen, sfaMarkup,sfaOneLineOpen, sfaSingleLine]);           // {$IFDEF B}
       CheckNode( 2, [], 0,   3,   28, 34,   3, 4,   3, 4,
                                   cfbtRepeat, cfbtRepeat,  FOLDGROUP_PASCAL,
-                                  [sfaOpen, sfaMarkup,sfaOneLineOpen]); // repeat a;
+                                  [sfaOpen, sfaMarkup,sfaOneLineOpen, sfaSingleLine]); // repeat a;
       CheckNode( 2, [], 0,   4,   39, 45,   2, 1,   2, 1,
                                   cfbtIfDef, cfbtIfDef,  FOLDGROUP_IFDEF,
-                                  [sfaClose, sfaMarkup,sfaOneLineClose]);                      // {$ENDIF}
+                                  [sfaClose, sfaMarkup,sfaOneLineClose, sfaSingleLine]);                      // {$ENDIF}
       CheckNode( 2, [], 0,   5,   47, 52,   4, 3,   4, 3,
                                   cfbtRepeat, cfbtRepeat,  FOLDGROUP_PASCAL,
-                                  [sfaClose, sfaMarkup,sfaOneLineClose]);            // until b;
+                                  [sfaClose, sfaMarkup,sfaOneLineClose, sfaSingleLine]);            // until b;
       CheckNode( 2, [], 0,   6,   57, 63,   1, 2,   1, 2,
                                   cfbtIfDef, cfbtIfDef,  FOLDGROUP_IFDEF,
-                                  [sfaOpen, sfaMarkup,sfaOneLineOpen]);           // {$IFDEF c}
+                                  [sfaOpen, sfaMarkup,sfaOneLineOpen, sfaSingleLine]);           // {$IFDEF c}
       CheckNode( 2, [], 0,   7,   67, 70,   3, 4,   3, 4,
                                   cfbtTry, cfbtTry,  FOLDGROUP_PASCAL,
-                                  [sfaOpen, sfaOpenFold,sfaMarkup,sfaFold,sfaFoldFold]);// try
+                                  [sfaOpen, sfaOpenFold,sfaMarkup,sfaFold,sfaFoldFold, sfaMultiLine]);// try
       CheckNode( 2, [], 0,   8,   72, 77,   2, 1,   2, 1,
                                   cfbtIfDef, cfbtIfDef,  FOLDGROUP_IFDEF,
-                                  [sfaClose, sfaMarkup,sfaOneLineClose]);                      // {$ELSE}
+                                  [sfaClose, sfaMarkup,sfaOneLineClose, sfaSingleLine]);                      // {$ELSE}
       CheckNode( 2, [], 0,   9,   72, 77,   1, 2,   1, 2,
                                   cfbtIfDef, cfbtIfDef,  FOLDGROUP_IFDEF,
-                                  [sfaMarkup,sfaOpen, sfaOpenFold,sfaFold,sfaFoldFold]);          // {$ELSE}
+                                  [sfaMarkup,sfaOpen, sfaOpenFold,sfaFold,sfaFoldFold, sfaMultiLine]);          // {$ELSE}
       // Line 3:     //foo                                                      # pasminlvl=4 endlvl=4
       CheckNode( 3, [], 0,   0,   2, 4,   4, 5,   4, 5,
                                   cfbtSlashComment, cfbtSlashComment,  FOLDGROUP_PASCAL,
-                                  [sfaOpen, sfaOneLineOpen]);
+                                  [sfaOpen, sfaOneLineOpen, sfaSingleLine]);
       CheckNode( 3, [], 0,   1,   7, 7,   5, 4,   5, 4,
                                   cfbtSlashComment, cfbtSlashComment,  FOLDGROUP_PASCAL,
-                                  [sfaClose, sfaOneLineClose, sfaCloseForNextLine]);
+                                  [sfaClose, sfaOneLineClose, sfaCloseForNextLine, sfaSingleLine]);
       // Line 4:     finally repeat x; {$endif c} until y;                                      # pasminlvl=4 endlvl=5
       CheckNode( 4, [], 0,   0,   2, 9,   4, 5,   4, 5,
                                   cfbtExcept, cfbtExcept,  FOLDGROUP_PASCAL,
-                                  [sfaOpen, sfaOpenFold,sfaMarkup,sfaFold,sfaFoldFold]);
+                                  [sfaOpen, sfaOpenFold,sfaMarkup,sfaFold,sfaFoldFold, sfaMultiLine]);
       CheckNode( 4, [], 0,   1,   10, 16,   5, 6,   5, 6,
                                   cfbtRepeat, cfbtRepeat,  FOLDGROUP_PASCAL,
-                                  [sfaOpen, sfaMarkup,sfaOneLineOpen]);
+                                  [sfaOpen, sfaMarkup,sfaOneLineOpen, sfaSingleLine]);
       CheckNode( 4, [], 0,   2,   21, 27,   2, 1,   2, 1,
                                   cfbtIfDef, cfbtIfDef,  FOLDGROUP_IFDEF,
-                                  [sfaClose, sfaCloseFold,sfaMarkup,sfaFold]);
+                                  [sfaClose, sfaCloseFold,sfaMarkup,sfaFold, sfaMultiLine]);
       CheckNode( 4, [], 0,   3,   31, 36,   6, 5,   6, 5,
                                   cfbtRepeat, cfbtRepeat,  FOLDGROUP_PASCAL,
-                                  [sfaClose, sfaMarkup,sfaOneLineClose]);
+                                  [sfaClose, sfaMarkup,sfaOneLineClose, sfaSingleLine]);
       // Line 5:     repeat m; until n; end; {$endif a} //                                      # pasminlvl=3 endlvl=3
       CheckNode( 5, [], 0,   0,   2, 8,   5, 6,   5, 6,
                                   cfbtRepeat, cfbtRepeat,  FOLDGROUP_PASCAL,
-                                  [sfaOpen, sfaMarkup,sfaOneLineOpen]);
+                                  [sfaOpen, sfaMarkup,sfaOneLineOpen, sfaSingleLine]);
       CheckNode( 5, [], 0,   1,   12, 17,   6, 5,   6, 5,
                                   cfbtRepeat, cfbtRepeat,  FOLDGROUP_PASCAL,
-                                  [sfaClose, sfaMarkup,sfaOneLineClose]);
+                                  [sfaClose, sfaMarkup,sfaOneLineClose, sfaSingleLine]);
       CheckNode( 5, [], 0,   2,   21, 24,   5, 4,   5, 4,
                                   cfbtExcept, cfbtExcept,  FOLDGROUP_PASCAL,
-                                  [sfaClose, sfaCloseFold,sfaMarkup,sfaFold]);
+                                  [sfaClose, sfaCloseFold,sfaMarkup,sfaFold, sfaMultiLine]);
       CheckNode( 5, [], 0,   3,   21, 24,   4, 3,   4, 3,
                                   cfbtTry, cfbtTry,  FOLDGROUP_PASCAL,
-                                  [sfaClose, sfaCloseFold,sfaMarkup,sfaFold]);
+                                  [sfaClose, sfaCloseFold,sfaMarkup,sfaFold, sfaMultiLine]);
       CheckNode( 5, [], 0,   4,   27, 33,   1, 0,   1, 0,
                                   cfbtIfDef, cfbtIfDef,  FOLDGROUP_IFDEF,
-                                  [sfaClose, sfaCloseFold,sfaMarkup,sfaFold]);
+                                  [sfaClose, sfaCloseFold,sfaMarkup,sfaFold, sfaMultiLine]);
       // Line 6:   end                                                          # pasminlvl=1 endlvl=1
       CheckNode( 6, [], 0,   0,   0, 3,   3, 2,   3, 2,
                                   cfbtTopBeginEnd, cfbtBeginEnd,  FOLDGROUP_PASCAL,
-                                  [sfaClose, sfaCloseFold,sfaMarkup,sfaFold]);
+                                  [sfaClose, sfaCloseFold,sfaMarkup,sfaFold, sfaMultiLine]);
       CheckNode( 6, [], 0,   1,   0, 3,   2, 1,   2, 1,
                                   cfbtProcedure, cfbtProcedure,  FOLDGROUP_PASCAL,
-                                  [sfaClose, sfaCloseFold,sfaMarkup,sfaFold]);
+                                  [sfaClose, sfaCloseFold,sfaMarkup,sfaFold, sfaMultiLine]);
       // Line 7:   begin end.                                                   # pasminlvl=0 endlvl=0
       CheckNode( 7, [], 0,   0,   0, 5,   1, 2,   1, 2,
                                   cfbtBeginEnd, cfbtBeginEnd,  FOLDGROUP_PASCAL,
-                                  [sfaOpen, sfaMarkup,sfaOneLineOpen]);
+                                  [sfaOpen, sfaMarkup,sfaOneLineOpen, sfaSingleLine]);
       CheckNode( 7, [], 0,   1,   6, 9,   2, 1,   2, 1,
                                   cfbtBeginEnd, cfbtBeginEnd,  FOLDGROUP_PASCAL,
-                                  [sfaClose, sfaMarkup,sfaOneLineClose]);
+                                  [sfaClose, sfaMarkup,sfaOneLineClose, sfaSingleLine]);
       CheckNode( 7, [], 0,   2,   6, 9,   1, 0,   1, 0,
                                   cfbtProgram, cfbtProgram,  FOLDGROUP_PASCAL,
-                                  [sfaClose, sfaCloseFold,sfaMarkup,sfaFold]);
+                                  [sfaClose, sfaCloseFold,sfaMarkup,sfaFold, sfaMultiLine]);
     {%endregion TEXT 2 -- [cfbtBeginEnd..cfbtNone], []}
 
   {%region TEXT 2}
@@ -1582,62 +1610,62 @@ begin
       // Line 0:   unit foo;                                                    # pasminlvl=0 endlvl=1
       CheckNode( 0, [], 0,   0,   0, 4,   0, 1,   0, 1,
                                   cfbtUnit, cfbtUnit,  FOLDGROUP_PASCAL,
-                                  [sfaOpen, sfaOpenFold,sfaFold,sfaFoldFold]);
+                                  [sfaOpen, sfaOpenFold,sfaFold,sfaFoldFold, sfaMultiLine]);
       // Line 1:   interface                                                    # pasminlvl=1 endlvl=2
       CheckNode( 1, [], 0,   0,   0, 9,   1, 2,   1, 2,
                                   cfbtUnitSection, cfbtUnitSection,  FOLDGROUP_PASCAL,
-                                  [sfaOpen, sfaOpenFold,sfaFold,sfaFoldFold]);
+                                  [sfaOpen, sfaOpenFold,sfaFold,sfaFoldFold, sfaMultiLine]);
       // Line 2:   type a=integer;                                              # pasminlvl=2 endlvl=2
       CheckNode( 2, [], 0,   0,   0, 4,   2, 3,   2, 3,
                                   cfbtVarType, cfbtVarType,  FOLDGROUP_PASCAL,
-                                  [sfaOpen, sfaOneLineOpen]);
+                                  [sfaOpen, sfaOneLineOpen, sfaSingleLine]);
       CheckNode( 2, [], 0,   1,   15, 15,   3, 2,   3, 2,
                                   cfbtVarType, cfbtVarType,  FOLDGROUP_PASCAL,
-                                  [sfaClose, sfaOneLineClose, sfaCloseForNextLine]);
+                                  [sfaClose, sfaOneLineClose, sfaCloseForNextLine, sfaSingleLine]);
       // Line 3:   var                                                          # pasminlvl=2 endlvl=3
       CheckNode( 3, [], 0,   0,   0, 3,   2, 3,   2, 3,
                                   cfbtVarType, cfbtVarType,  FOLDGROUP_PASCAL,
-                                  [sfaOpen, sfaOpenFold,sfaFold,sfaFoldFold]);
+                                  [sfaOpen, sfaOpenFold,sfaFold,sfaFoldFold, sfaMultiLine]);
       // Line 4:     b:integer                                                  # pasminlvl=2 endlvl=2
       CheckNode( 4, [], 0,   0,   11, 11,   3, 2,   3, 2,
                                   cfbtVarType, cfbtVarType,  FOLDGROUP_PASCAL,
-                                  [sfaClose, sfaCloseFold,sfaFold, sfaCloseForNextLine]);
+                                  [sfaClose, sfaCloseFold,sfaFold, sfaCloseForNextLine, sfaMultiLine]);
       // Line 5:   const                                                        # pasminlvl=2 endlvl=3
       CheckNode( 5, [], 0,   0,   0, 5,   2, 3,   2, 3,
                                   cfbtVarType, cfbtVarType,  FOLDGROUP_PASCAL,
-                                  [sfaOpen, sfaOpenFold,sfaFold,sfaFoldFold]);
+                                  [sfaOpen, sfaOpenFold,sfaFold,sfaFoldFold, sfaMultiLine]);
       // Line 6:     c = 1;                                                     # pasminlvl=3 endlvl=3
       // Line 7:     d = 2; {$ifdef a}                                          # pasminlvl=1 endlvl=1
       CheckNode( 7, [], 0,   0,   10, 16,   0, 1,   0, 1,
                                   cfbtIfDef, cfbtIfDef,  FOLDGROUP_IFDEF,
-                                  [sfaOpen, sfaOpenFold,sfaMarkup,sfaFold,sfaFoldFold]);
+                                  [sfaOpen, sfaOpenFold,sfaMarkup,sfaFold,sfaFoldFold, sfaMultiLine]);
       CheckNode( 7, [], 0,   1,   19, 19,   3, 2,   3, 2,
                                   cfbtVarType, cfbtVarType,  FOLDGROUP_PASCAL,
-                                  [sfaClose, sfaCloseFold,sfaFold, sfaCloseForNextLine]);
+                                  [sfaClose, sfaCloseFold,sfaFold, sfaCloseForNextLine, sfaMultiLine]);
       CheckNode( 7, [], 0,   2,   19, 19,   2, 1,   2, 1,
                                   cfbtUnitSection, cfbtUnitSection,  FOLDGROUP_PASCAL,
-                                  [sfaClose, sfaCloseFold,sfaFold, sfaCloseForNextLine]);
+                                  [sfaClose, sfaCloseFold,sfaFold, sfaCloseForNextLine, sfaMultiLine]);
       // Line 8:   implementation                                               # pasminlvl=1 endlvl=2
       CheckNode( 8, [], 0,   0,   0, 14,   1, 2,   1, 2,
                                   cfbtUnitSection, cfbtUnitSection,  FOLDGROUP_PASCAL,
-                                  [sfaOpen, sfaOpenFold,sfaFold,sfaFoldFold]);
+                                  [sfaOpen, sfaOpenFold,sfaFold,sfaFoldFold, sfaMultiLine]);
       // Line 9:   //, unit-section                                             # pasminlvl=1 endlvl=1
       CheckNode( 9, [], 0,   0,   0, 2,   2, 3,   2, 3,
                                   cfbtSlashComment, cfbtSlashComment,  FOLDGROUP_PASCAL,
-                                  [sfaOpen, sfaOneLineOpen]);
+                                  [sfaOpen, sfaOneLineOpen, sfaSingleLine]);
       CheckNode( 9, [], 0,   1,   2, 2,   3, 2,   3, 2,
                                   cfbtSlashComment, cfbtSlashComment,  FOLDGROUP_PASCAL,
-                                  [sfaClose, sfaOneLineClose, sfaCloseForNextLine]);
+                                  [sfaClose, sfaOneLineClose, sfaCloseForNextLine, sfaSingleLine]);
       CheckNode( 9, [], 0,   2,   2, 2,   2, 1,   2, 1,
                                   cfbtUnitSection, cfbtUnitSection,  FOLDGROUP_PASCAL,
-                                  [sfaClose, sfaCloseFold,sfaFold, sfaCloseForNextLine]);
+                                  [sfaClose, sfaCloseFold,sfaFold, sfaCloseForNextLine, sfaMultiLine]);
       // Line 10:   end.                                                        # pasminlvl=0 endlvl=0
       CheckNode(10, [], 0,   0,   0, 3,   1, 0,   1, 0,
                                   cfbtUnit, cfbtUnit,  FOLDGROUP_PASCAL,
-                                  [sfaClose, sfaCloseFold,sfaFold]);
+                                  [sfaClose, sfaCloseFold,sfaFold, sfaMultiLine]);
       CheckNode(10, [], 0,   1,   4, 4,   1, 0,   1, 0,
                                   cfbtIfDef, cfbtIfDef,  FOLDGROUP_IFDEF,
-                                  [sfaClose, sfaCloseFold,sfaMarkup,sfaFold,sfaLastLineClose]);
+                                  [sfaClose, sfaCloseFold,sfaMarkup,sfaFold,sfaLastLineClose, sfaMultiLine]);
     {%endregion TEXT 3 -- [cfbtBeginEnd..cfbtNone], []}
 
   {%region TEXT 3}
@@ -1656,48 +1684,47 @@ begin
       // Line 0:   program p;                                                   # pasminlvl=0 endlvl=1
       CheckNode( 0, [], 0,   0,   0, 7,   0, 1,   0, 1,
                                   cfbtProgram, cfbtProgram,  FOLDGROUP_PASCAL,
-                                  [sfaOpen, sfaOpenFold,sfaMarkup,sfaFold,sfaFoldFold]);
+                                  [sfaOpen, sfaOpenFold,sfaMarkup,sfaFold,sfaFoldFold, sfaMultiLine]);
       // Line 1:   procedure a;                                                 # pasminlvl=1 endlvl=2
       CheckNode( 1, [], 0,   0,   0, 9,   1, 2,   1, 2,
                                   cfbtProcedure, cfbtProcedure,  FOLDGROUP_PASCAL,
-                                  [sfaOpen, sfaOpenFold,sfaMarkup,sfaFold,sfaFoldFold]);
+                                  [sfaOpen, sfaOpenFold,sfaMarkup,sfaFold,sfaFoldFold, sfaMultiLine]);
       // Line 2:   begin {$ifdef} if a then begin                                             # pasminlvl=2 endlvl=4
       CheckNode( 2, [], 0,   0,   0, 5,   2, 3,   2, 3,
                                   cfbtTopBeginEnd, cfbtBeginEnd,  FOLDGROUP_PASCAL,
-                                  [sfaOpen, sfaOpenFold,sfaMarkup,sfaFold,sfaFoldFold]);
+                                  [sfaOpen, sfaOpenFold,sfaMarkup,sfaFold,sfaFoldFold, sfaMultiLine]);
       CheckNode( 2, [], 0,   1,   7, 13,   0, 1,   0, 1,
                                   cfbtIfDef, cfbtIfDef,  FOLDGROUP_IFDEF,
-                                  [sfaOpen, sfaOpenFold,sfaMarkup,sfaFold,sfaFoldFold]);
+                                  [sfaOpen, sfaOpenFold,sfaMarkup,sfaFold,sfaFoldFold, sfaMultiLine]);
       CheckNode( 2, [], 0,   2,   25, 30,   3, 4,   3, 4,
                                   cfbtBeginEnd, cfbtBeginEnd,  FOLDGROUP_PASCAL,
-                                  [sfaOpen, sfaOpenFold,sfaMarkup,sfaFold,sfaFoldFold]);
+                                  [sfaOpen, sfaOpenFold,sfaMarkup,sfaFold,sfaFoldFold, sfaMultiLine]);
       // Line 3:     end; // 2                                                  # pasminlvl=3 endlvl=3
       CheckNode( 3, [], 0,   0,   2, 5,   4, 3,   4, 3,
                                   cfbtBeginEnd, cfbtBeginEnd,  FOLDGROUP_PASCAL,
-                                  [sfaClose, sfaCloseFold,sfaMarkup,sfaFold]);
+                                  [sfaClose, sfaCloseFold,sfaMarkup,sfaFold, sfaMultiLine]);
       // Line 4:   end; // 1                                                    # pasminlvl=1 endlvl=1
       CheckNode( 4, [], 0,   0,   0, 3,   3, 2,   3, 2,
                                   cfbtTopBeginEnd, cfbtBeginEnd,  FOLDGROUP_PASCAL,
-                                  [sfaClose, sfaCloseFold,sfaMarkup,sfaFold]);
+                                  [sfaClose, sfaCloseFold,sfaMarkup,sfaFold, sfaMultiLine]);
       CheckNode( 4, [], 0,   1,   0, 3,   2, 1,   2, 1,
                                   cfbtProcedure, cfbtProcedure,  FOLDGROUP_PASCAL,
-                                  [sfaClose, sfaCloseFold,sfaMarkup,sfaFold]);
+                                  [sfaClose, sfaCloseFold,sfaMarkup,sfaFold, sfaMultiLine]);
       // Line 5:   {$endif}                                                     # pasminlvl=1 endlvl=1
       CheckNode( 5, [], 0,   0,   1, 7,   1, 0,   1, 0,
                                   cfbtIfDef, cfbtIfDef,  FOLDGROUP_IFDEF,
-                                  [sfaClose, sfaCloseFold,sfaMarkup,sfaFold]);
+                                  [sfaClose, sfaCloseFold,sfaMarkup,sfaFold, sfaMultiLine]);
       // Line 6:   //                                                           # pasminlvl=1 endlvl=0
       CheckNode( 6, [], 0,   0,   0, 2,   1, 2,   1, 2,
                                   cfbtSlashComment, cfbtSlashComment,  FOLDGROUP_PASCAL,
-                                  [sfaOpen, sfaOneLineOpen]);
+                                  [sfaOpen, sfaOneLineOpen, sfaSingleLine]);
       CheckNode( 6, [], 0,   1,   2, 2,   2, 1,   2, 1,
                                   cfbtSlashComment, cfbtSlashComment,  FOLDGROUP_PASCAL,
-                                  [sfaClose, sfaOneLineClose,sfaLastLineClose]);
+                                  [sfaClose, sfaOneLineClose,sfaLastLineClose, sfaSingleLine]);
       CheckNode( 6, [], 0,   2,   2, 2,   1, 0,   1, 0,
                                   cfbtProgram, cfbtProgram,  FOLDGROUP_PASCAL,
-                                  [sfaClose, sfaCloseFold,sfaFold,sfaLastLineClose]);
-    {%endregion TEXT 4 -- [cfbtBeginEnd..cfbtNone], [
-                                  ]}
+                                  [sfaClose, sfaCloseFold,sfaFold,sfaLastLineClose, sfaMultiLine]);
+    {%endregion TEXT 4 -- [cfbtBeginEnd..cfbtNone], []}
 
   {%region TEXT 4}
 
