@@ -2584,14 +2584,15 @@ var
       FExprEvaluatedAsText := '';
       for i := 0 to Length(FArrayIndexValues) - 1 do begin
         s := FArrayIndexValues[i].ExprEvaluatedAsText;
-        if (pos(' ', s) > 0) or (pos(',', s) > 0) then
-          s := '('+s+')';
+        if (pos(',', s) > 0) and not(s[1] in ['(', '[', '{', '"', '''', '#']) then
+          s := '{'+s+'}';
         if i > 0 then
           FExprEvaluatedAsText := FExprEvaluatedAsText + ', ';
         FExprEvaluatedAsText := FExprEvaluatedAsText + s;
       end;
       if Length(FArrayIndexValues) < FLen then
         FExprEvaluatedAsText := FExprEvaluatedAsText + ', ...';
+      FExprEvaluatedAsText := '(' + FExprEvaluatedAsText + ')';
 
       FHasExprEvaluatedAsText := True;
       Result := True;
