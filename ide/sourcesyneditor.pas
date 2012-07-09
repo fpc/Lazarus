@@ -646,6 +646,7 @@ begin
       List.Line := CaretY-1;
       List.FoldGroup := FOLDGROUP_PASCAL;
       List.FoldFlags := [sfbIncludeDisabled];
+      List.IncludeOpeningOnLine := False;
 
       InfCnt := List.Count;
       for i := InfCnt-1 downto 0 do begin
