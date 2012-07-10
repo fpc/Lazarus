@@ -320,6 +320,7 @@ type
     FGroupCount: Integer;
     FGroupEndLevelsAtEval: Array of integer;
     FCount, FOpeningOnLineCount: Integer;
+    FOpeningLineEndIndex: Integer;
     FIncludeOpeningOnLine: Boolean;
     FNestInfo: Array of TLazSynEditNestedFoldsListEntry;
     FEvaluationIndex: Integer;
@@ -329,13 +330,14 @@ type
     function GetHLNode(Index: Integer): TSynFoldNodeInfo;
     function GetNodeFoldGroup(Index: Integer): Integer;
     function GetNodeFoldType(Index: Integer): Pointer;
-    procedure InitSubGroupEndLevels;
+    procedure InitSubGroupEndLevels(const AHighlighter: TSynCustomFoldHighlighter);
     procedure InitNestInfoForIndex(AnIndex: Integer);
+    procedure InitOpeningOnLine(const AHighlighter: TSynCustomFoldHighlighter);
     procedure SetFoldFlags(AValue: TSynFoldBlockFilterFlags);
     procedure SetIncludeOpeningOnLine(AValue: Boolean);
-    function GetOpeningOnLineCount(const AHighlighter: TSynCustomFoldHighlighter; AFoldGroup: Integer): Integer;  // ignores FFoldFlags
     procedure AquireFoldNodeInfoList(const AHighlighter: TSynCustomFoldHighlighter; const ALine: Integer = -1);
     procedure ReleaseFoldNodeInfoList;
+    procedure SetOpeningLineEndIndex(AValue: Integer);
   public
     constructor Create(aFoldProvider: TSynEditFoldProvider);
     procedure Clear;
@@ -347,7 +349,10 @@ type
     property FoldGroup: Integer read FFoldGroup write SetFoldGroup;
     property FoldFlags: TSynFoldBlockFilterFlags read FFoldFlags write SetFoldFlags;
     property IncludeOpeningOnLine: Boolean read FIncludeOpeningOnLine write SetIncludeOpeningOnLine;
-    //property OpeningLineLogicalPos: Integer read FOpeningLineLogicalPos write SetOpeningLineLogicalPos;
+    // OpeningLineEnd... can only be used with sfbIncludeDisabled
+    // Highest included index (unfiltered index)
+    property OpeningLineEndIndex: Integer read FOpeningLineEndIndex write SetOpeningLineEndIndex;
+    //property OpeningLineEndLogicalPos: Integer read FOpeningLineEndLogicalPos write SetOpeningLineEndLogicalPos;
   public
     property HLNode[Index: Integer]: TSynFoldNodeInfo read GetHLNode;
     property NodeFoldType[Index: Integer]: Pointer read GetNodeFoldType;           // e.g.cfbtBeginEnd, cfbtcfbtProcedure ...
@@ -2854,9 +2859,11 @@ end;
 procedure TLazSynEditNestedFoldsList.Clear;
 begin
   FGroupCount := -1;
+  SetLength(FGroupEndLevelsAtEval, 0);
   FCount := -1;
   FOpeningOnLineCount := -1;
   FEvaluationIndex := -1;
+  FOpeningLineEndIndex := -1;
   SetLength(FNestInfo, 0);
 end;
 
@@ -2868,40 +2875,25 @@ begin
   Clear;
 end;
 
-procedure TLazSynEditNestedFoldsList.InitSubGroupEndLevels;
+procedure TLazSynEditNestedFoldsList.InitSubGroupEndLevels(const AHighlighter: TSynCustomFoldHighlighter);
 var
-  hl: TSynCustomFoldHighlighter;
   i: integer;
 begin
-  if FGroupCount > 0 then
+  if Length(FGroupEndLevelsAtEval) > 0 then
     exit;
 
-  hl := FFoldProvider.HighLighterWithLines;
-  if hl = nil then exit;
-
   if FFoldGroup = 0 then begin
-    // special, join other groups (or some other...)
-    FGroupCount := hl.FoldTypeCount;
+    // special, join other groups
+    FGroupCount := AHighlighter.FoldTypeCount;
     // start at 1, so FoldGroup can be used as index
     SetLength(FGroupEndLevelsAtEval, FGroupCount + 1);
-    if FIncludeOpeningOnLine then
-      AquireFoldNodeInfoList(hl, FLine);
-    try
-      for i := 1 to FGroupCount do begin
-        FGroupEndLevelsAtEval[i] := hl.FoldBlockEndLevel(FLine - 1, i, FFoldFlags);
-        // TODO: adjust flags, if include disabled
-        if FIncludeOpeningOnLine then
-          FGroupEndLevelsAtEval[i] := FGroupEndLevelsAtEval[i] + GetOpeningOnLineCount(hl, i);
-      end;
-    finally
-      if FIncludeOpeningOnLine then
-        ReleaseFoldNodeInfoList;
-    end;
+    for i := 1 to FGroupCount do
+      FGroupEndLevelsAtEval[i] := AHighlighter.FoldBlockEndLevel(FLine - 1, i, FFoldFlags);
   end
   else begin
     FGroupCount := 1;
     SetLength(FGroupEndLevelsAtEval, 1);
-    FGroupEndLevelsAtEval[0] := Count;  // includes OpeningOnLineCount
+    FGroupEndLevelsAtEval[0] := Count - OpeningOnLineCount;
   end;
 end;
 
@@ -2952,7 +2944,7 @@ begin
   try
     if (AnIndex >= Count) or (AnIndex >= FEvaluationIndex) then exit;
 
-    InitSubGroupEndLevels;
+    InitSubGroupEndLevels(hl);
     if (FEvaluationIndex = Count) then begin
       if (OpeningOnLineCount > 0) then
         CurLine := Line
@@ -3020,6 +3012,107 @@ begin
   assert(AnIndex >= FEvaluationIndex, 'TLazSynEditNestedFoldsList.InitNestInfoForIndex Index not found');
 end;
 
+procedure TLazSynEditNestedFoldsList.InitOpeningOnLine(const AHighlighter: TSynCustomFoldHighlighter);
+var
+  nd: TSynFoldNodeInfo;
+  OpenIdx: Array of Array of Integer; // List of open-node-index, for each FoldCroup
+  OpenCnt: Array of Integer; // List of open-node-index, for each FoldCroup
+  Grp, c, i, j, GrpLow, GrpHigh: Integer;
+  oc: LongInt;
+begin
+  Assert((FOpeningLineEndIndex < 0) or (sfbIncludeDisabled in FoldFlags), 'OpeningLineEndIndex only implemented for sfbIncludeDisabled');
+
+  FCount := AHighlighter.FoldBlockEndLevel(FLine - 1, FFoldGroup, FFoldFlags);
+  FEvaluationIndex := FCount;
+
+  if not FIncludeOpeningOnLine then begin
+    SetLength(FNestInfo, FCount); // Capacity for max opening nodes
+    exit;
+  end;
+
+  AquireFoldNodeInfoList(AHighlighter, FLine);
+  try
+    if (sfbIncludeDisabled in FFoldFlags) then
+      FFoldNodeInfoList.ActionFilter := []
+    else
+      FFoldNodeInfoList.ActionFilter := [sfaFold];
+    FFoldNodeInfoList.GroupFilter := 0;
+
+    if FFoldGroup = 0 then begin
+      FGroupCount := AHighlighter.FoldTypeCount;
+      GrpLow := 1;
+      GrpHigh := FGroupCount;
+    end
+    else begin
+      FGroupCount := 1;
+      GrpLow := FFoldGroup;
+      GrpHigh := FFoldGroup;
+    end;
+    SetLength(OpenIdx, FGroupCount, FFoldNodeInfoList.Count);
+    SetLength(OpenCnt, FGroupCount);
+    FOpeningOnLineCount := 0;
+    for Grp := 0 to FGroupCount - 1 do
+      OpenCnt[Grp] := 0;
+
+    for Grp := GrpLow to GrpHigh do begin
+      (* Filtering group in the loop instead of the list only works, if 0 is the only special group
+         See use of NodeIndex below, if changing this *)
+      //FFoldNodeInfoList.GroupFilter := Grp;
+      for i := 0 to FFoldNodeInfoList.Count - 1 do begin
+        nd := FFoldNodeInfoList[i];
+        if (sfaInvalid in nd.FoldAction) or (nd.FoldGroup <> Grp) then
+          Continue;
+        if (FOpeningLineEndIndex >= 0) and (nd.AllNodeIndex > FOpeningLineEndIndex) then
+          break;
+
+        if sfaOpen in nd.FoldAction then begin
+          inc(FOpeningOnLineCount);
+          OpenIdx[Grp - GrpLow, OpenCnt[Grp - GrpLow]] := nd.NodeIndex; // Using NodeIndex only works, because we do NOT change the filter
+          inc(OpenCnt[Grp - GrpLow]);
+        end
+        else
+        if (nd.FoldAction * [sfaClose, sfaFold, sfaSingleLine] = [sfaClose, sfaSingleLine]) then begin
+          dec(FOpeningOnLineCount);
+          dec(OpenCnt[Grp - GrpLow]);
+        end;
+      end;
+    end;
+
+    SetLength(FNestInfo, FCount + FOpeningOnLineCount);
+
+// TODO: skip if FOpeningOnLineCount = 0
+
+    //FFoldNodeInfoList.ActionFilter := [];
+    //FFoldNodeInfoList.GroupFilter := 0;
+    c := FFoldNodeInfoList.Count - 1;
+    if (FOpeningLineEndIndex >= 0) and (c > FOpeningLineEndIndex) then
+      c := FOpeningLineEndIndex;
+    j := FOpeningOnLineCount;
+
+    For i := c downto 0 do begin
+      if j = 0 then break;
+      nd := FFoldNodeInfoList[i];
+      Grp := nd.FoldGroup;
+      if (Grp < GrpLow) or (Grp > GrpHigh) then Continue;
+      oc := OpenCnt[Grp - GrpLow];
+      Assert(oc >= 0, 'TLazSynEditNestedFoldsList.InitOpeningOnLine bad count for '+IntToStr(Grp));
+      Assert((oc=0) or (OpenIdx[Grp - GrpLow, oc-1] <= i), 'TLazSynEditNestedFoldsList.InitOpeningOnLine bad index for '+IntToStr(i)+' G='+IntToStr(Grp));
+      if (oc > 0) and (OpenIdx[Grp - GrpLow, oc-1] = i) then begin
+        dec(OpenCnt[Grp - GrpLow]);
+        dec(j);
+        FNestInfo[FCount + j].LineIdx := FLine;
+        FNestInfo[FCount + j].HNode := nd;
+        FNestInfo[FCount + j].HNode.NodeIndex := j;
+      end;
+    end;
+
+    FCount := FCount + FOpeningOnLineCount;
+    Assert(j=0, 'TLazSynEditNestedFoldsList.InitOpeningOnLine did not fill all nodes '+IntToStr(j));
+  finally
+    ReleaseFoldNodeInfoList;
+  end;
+end;
+
 procedure TLazSynEditNestedFoldsList.SetFoldFlags(AValue: TSynFoldBlockFilterFlags);
 begin
   if FFoldFlags = AValue then Exit;
@@ -3052,6 +3145,13 @@ begin
     ReleaseRefAndNil(FFoldNodeInfoList);
 end;
 
+procedure TLazSynEditNestedFoldsList.SetOpeningLineEndIndex(AValue: Integer);
+begin
+  if FOpeningLineEndIndex = AValue then Exit;
+  FOpeningLineEndIndex := AValue;
+  Clear; // TODO only clear current line, the rest will still be valid
+end;
+
 procedure TLazSynEditNestedFoldsList.SetFoldGroup(AValue: Integer);
 begin
   if FFoldGroup = AValue then Exit;
@@ -3077,29 +3177,8 @@ begin
   hl := FFoldProvider.HighLighterWithLines;
   if hl = nil then exit(-1);
 
-  FCount := hl.FoldBlockEndLevel(FLine - 1, FFoldGroup, FFoldFlags) + OpeningOnLineCount;
-  FEvaluationIndex := FCount;
-  SetLength(FNestInfo, FCount);
+  InitOpeningOnLine(hl);
   Result := FCount;
-end;
-
-function TLazSynEditNestedFoldsList.GetOpeningOnLineCount(const AHighlighter: TSynCustomFoldHighlighter;
-  AFoldGroup: Integer): Integer;
-begin
-  AquireFoldNodeInfoList(AHighlighter, FLine);
-  try
-    // TODO: adjust flags, if include disabled
-    //NFilter := [sfaOpenFold];
-    //if not(sfbIncludeDisabled in FFoldFlags) then Include(NFilter, sfaFold);
-    FFoldNodeInfoList.ActionFilter := [sfaOpenFold, sfaFold];
-    FFoldNodeInfoList.GroupFilter := AFoldGroup;
-
-    // Need to check alll nodes with FoldNodeInfoCount
-    // Hide-able nodes can open and close on the same line "(* comment *)"
-    Result := FFoldNodeInfoList.Count;
-  finally
-    ReleaseFoldNodeInfoList;
-  end;
 end;
 
 function TLazSynEditNestedFoldsList.OpeningOnLineCount: Integer;
@@ -3115,7 +3194,7 @@ begin
   Result := FOpeningOnLineCount;
   if Result >= 0 then exit;
 
-  FOpeningOnLineCount := GetOpeningOnLineCount(hl, FFoldGroup);
+  InitOpeningOnLine(hl);
   Result := FOpeningOnLineCount;
 end;
 
