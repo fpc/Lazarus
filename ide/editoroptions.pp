@@ -4711,10 +4711,11 @@ begin
   if FGutterSeparatorIndex <> -1 then
   ASynEdit.Gutter.SeparatorPart(0).Index := FGutterSeparatorIndex;
 
+  ASynEdit.RightEdge := fRightMargin;
   if fVisibleRightMargin then
-    ASynEdit.RightEdge := fRightMargin
+    ASynEdit.Options := ASynEdit.Options - [eoHideRightMargin]
   else
-    ASynEdit.RightEdge := 0;
+    ASynEdit.Options := ASynEdit.Options + [eoHideRightMargin];
 
   ApplyFontSettingsTo(ASynEdit);
   //debugln(['TEditorOptions.GetSynEditSettings ',ASynEdit.font.height]);

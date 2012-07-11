@@ -216,10 +216,11 @@ begin
       for a := Low(PreviewEdits) to High(PreviewEdits) do
         if PreviewEdits[a] <> nil then
         begin
+          PreviewEdits[a].RightEdge := NewVal;
           if VisibleRightMarginCheckBox.Checked then
-            PreviewEdits[a].RightEdge := NewVal
+            PreviewEdits[a].Options := PreviewEdits[a].Options - [eoHideRightMargin]
           else
-            PreviewEdits[a].RightEdge := 0;
+            PreviewEdits[a].Options := PreviewEdits[a].Options + [eoHideRightMargin];
         end;
   end;
 end;
@@ -269,10 +270,11 @@ begin
           if Separator.Visible then
             Separator.Index := GutterSeparatorIndexSpinBox.Value;
         end;
+        PreviewEdits[a].RightEdge := StrToIntDef(RightMarginComboBox.Text, 80);
         if VisibleRightMarginCheckBox.Checked then
-          PreviewEdits[a].RightEdge := StrToIntDef(RightMarginComboBox.Text, 80)
+          PreviewEdits[a].Options := PreviewEdits[a].Options - [eoHideRightMargin]
         else
-          PreviewEdits[a].RightEdge := 0;
+          PreviewEdits[a].Options := PreviewEdits[a].Options + [eoHideRightMargin];
         if DisableAntialiasingCheckBox.Checked then
           PreviewEdits[a].Font.Quality := fqNonAntialiased
         else

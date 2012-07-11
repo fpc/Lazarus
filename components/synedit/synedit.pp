@@ -7266,8 +7266,10 @@ begin
   end;
   fMarkupSpecialChar.Enabled := (eoShowSpecialChars in fOptions);
 
-  if (eoHideRightMargin in ChangedOptions) then
+  if (eoHideRightMargin in ChangedOptions) then begin
     FPaintArea.RightEdgeVisible := not(eoHideRightMargin in FOptions);
+    Invalidate;
+  end;
 
   (* Deal with deprecated Mouse values
      Those are all controlled by mouse-actions.
