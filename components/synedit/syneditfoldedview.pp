@@ -4783,6 +4783,7 @@ end;
 
 function dbgs(AFoldFlag: TSynFoldBlockFilterFlag): String;
 begin
+  Result:='';
   WriteStr(Result, AFoldFlag);
 end;
 
