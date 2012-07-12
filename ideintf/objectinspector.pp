@@ -1648,10 +1648,10 @@ begin
   for a:=0 to FRows.Count-1 do Rows[a].Free;
   FRows.Clear;
   // get properties
-  if FPropertyEditorHook=Nil then
-    debugln('TOICustomPropertyGrid.BuildPropertyList: FPropertyEditorHook=Nil');
-  GetPersistentProperties(FSelection, FFilter + [tkClass], FPropertyEditorHook,
-    @AddPropertyEditor, @EditorFilter);
+  if FSelection.Count>0 then begin
+    GetPersistentProperties(FSelection, FFilter + [tkClass], FPropertyEditorHook,
+      @AddPropertyEditor, @EditorFilter);
+  end;
   // sort
   FRows.Sort(@SortGridRows);
   for a:=0 to FRows.Count-1 do begin
@@ -4066,7 +4066,12 @@ begin
     FPropertyEditorHook.AddHandlerRefreshPropertyValues(
                                                 @HookRefreshPropertyValues);
     FPropertyEditorHook.AddHandlerSetSelection(@HookSetSelection);
+    Selection := nil;
+    for Page:=Low(TObjectInspectorPage) to High(TObjectInspectorPage) do
+      if GridControl[Page]<>nil then
+        GridControl[Page].PropertyEditorHook:=FPropertyEditorHook;
     if EnableHookGetSelection then begin
+      // the propertyeditorhook gets the selection from the OI
       FPropertyEditorHook.AddHandlerGetSelection(@HookGetSelection);
       // select root component
       FSelection.Clear;
@@ -4074,6 +4079,7 @@ begin
       and (FPropertyEditorHook.LookupRoot is TComponent) then
         FSelection.Add(TComponent(FPropertyEditorHook.LookupRoot));
     end else begin
+      // the OI gets the selection from the propertyeditorhook
       ASelection:=TPersistentSelectionList.Create;
       try
         FPropertyEditorHook.GetSelection(ASelection);
@@ -4083,9 +4089,6 @@ begin
       end;
     end;
     FillPersistentComboBox;
-    for Page:=Low(TObjectInspectorPage) to High(TObjectInspectorPage) do
-      if GridControl[Page]<>nil then
-        GridControl[Page].PropertyEditorHook:=FPropertyEditorHook;
     ComponentTree.PropertyEditorHook:=FPropertyEditorHook;
     RefreshSelection;
   end;
@@ -4284,21 +4287,26 @@ end;
 
 procedure TObjectInspectorDlg.SetSelection(const ASelection: TPersistentSelectionList);
 begin
-  if (not Assigned(ASelection)) then
-    exit;
-  if FSelection.IsEqual(ASelection) then
-  begin
-    if FInSelection then
-      exit; // prevent endless loops
-    if (not ASelection.ForceUpdate) then
-      exit; // nothing changed
-    ASelection.ForceUpdate:=false;
+  if ASelection<>nil then begin
+    if FSelection.IsEqual(ASelection) then
+    begin
+      if FInSelection then
+        exit; // prevent endless loops
+      if (not ASelection.ForceUpdate) then
+        exit; // nothing changed
+      ASelection.ForceUpdate:=false;
+    end;
+  end else begin
+    if FSelection.Count=0 then exit;
   end;
   FInSelection := True;
   try
     // ToDo: Clear filter only if a selected node is hidden (Visible=False)
     CompFilterEdit.Filter:='';
-    FSelection.Assign(ASelection);
+    if ASelection<>nil then
+      FSelection.Assign(ASelection)
+    else
+      FSelection.Clear;
     SetAvailComboBoxText;
     RefreshSelection;
     if Assigned(FOnSelectPersistentsInOI) then

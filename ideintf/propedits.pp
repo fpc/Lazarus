@@ -2213,8 +2213,6 @@ var
   PropListSize: Integer;
 begin
   FPropertyHook:=Hook;
-  if not Assigned(FPropertyHook) then
-    debugln('TPropertyEditor.Create : Hook=Nil <- Wrong!');
   PropListSize:=APropCount * SizeOf(TInstProp);
   GetMem(FPropList,PropListSize);
   FillChar(FPropList^,PropListSize,0);
