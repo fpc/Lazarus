@@ -709,9 +709,14 @@ begin
   fState := msPlaying;
   try
     StateChanged;
-    for cEvent := 0 to EventCount -1 do begin
-      Events[ cEvent ].Playback( aEditor );
-      if FStopRequested then break;
+    aEditor.BeginUpdate;
+    try
+      for cEvent := 0 to EventCount -1 do begin
+        Events[ cEvent ].Playback( aEditor );
+        if FStopRequested then break;
+      end;
+    finally
+      aEditor.EndUpdate;
     end;
   finally
     fState := msStopped;
