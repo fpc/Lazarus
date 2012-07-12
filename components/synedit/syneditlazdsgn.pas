@@ -35,6 +35,7 @@ uses
   Classes, SysUtils,
   SynGutter, SynGutterCodeFolding, SynGutterChanges, SynGutterLineNumber,
   SynGutterMarks, SynGutterBase, SynEditMouseCmds,
+  {$IFDEF DesignSynGutterLineOverview} SynGutterLineOverview, {$ENDIF}
   SynEditKeyCmds, SynEdit, SynCompletion, SynExportHTML, SynMacroRecorder,
   SynMemo, SynHighlighterPas, SynHighlighterCPP, SynHighlighterJava,
   SynHighlighterPerl, SynHighlighterHTML, SynHighlighterXML,
