@@ -370,6 +370,7 @@ type
     FExceptionBreak: TGDBMIInternalBreakPoint;
     FPauseWaitState: TGDBMIPauseWaitState;
     FInExecuteCount: Integer;
+    FInIdle: Boolean;
     FRunQueueOnUnlock: Boolean;
     FDebuggerFlags: TGDBMIDebuggerFlags;
     FSourceNames: TStringList; // Objects[] -> TMap[Integer|Integer] -> TDbgPtr
@@ -6659,8 +6660,24 @@ begin
     FCurrentCommand := NestedCurrentCmd;
   end;
 
-  if (FCommandQueue.Count = 0) and assigned(OnIdle)
-  then OnIdle(Self);
+  if (FCommandQueue.Count = 0) and assigned(OnIdle) and (FInExecuteCount=0) and (not FInIdle)
+  then begin
+    repeat
+      DebugLnEnter(DBGMI_QUEUE_DEBUG, ['>> Run OnIdle']);
+      LockCommandProcessing;
+      FInIdle := True;
+      try
+        OnIdle(Self);
+      finally
+        R := (FCommandQueue.Count > 0) and (FCommandProcessingLock = 1) and FRunQueueOnUnlock;
+        DebugLn(DBGMI_QUEUE_DEBUG, ['OnIdle: UnLock']);
+        UnLockCommandProcessing;
+        FInIdle := False;
+      end;
+      DebugLnExit(DBGMI_QUEUE_DEBUG, ['<< Run OnIdle']);
+    until not R;
+    DebugLn(DBGMI_QUEUE_DEBUG, ['OnIdle: Finished ']);
+  end;
 
   if FNeedStateToIdle and (FInExecuteCount = 0)
   then ResetStateToIdle;
@@ -7283,6 +7300,7 @@ begin
     FPauseWaitState := pwsNone;
     FErrorHandlingFlags := [];
     FInExecuteCount := 0;
+    FInIdle := False;
     FNeedStateToIdle := False;
     Options := '-silent -i mi -nx';
 
@@ -8563,7 +8581,7 @@ begin
   and (Debugger.State = dsPause)
   then RegistersNeeded;
 
-  Result := Length(FRegNames)
+  Result := Length(FRegNames);
 end;
 
 function TGDBMIRegisters.GetModified(const AnIndex: Integer): Boolean;
@@ -8675,7 +8693,7 @@ end;
 
 function TGDBMIRegisters.GetDebugger: TGDBMIDebugger;
 begin
-  Result := TGDBMIDebugger(inherited Debugger)
+  Result := TGDBMIDebugger(inherited Debugger);
 end;
 
 procedure TGDBMIRegisters.DoGetRegValuesDestroyed(Sender: TObject);
