@@ -14920,6 +14920,8 @@ begin
   if (TheControlSelection=nil) or (FormEditor1=nil) then exit;
   if OldForm<>nil then
     OldForm.Invalidate;
+  if TheControlSelection.LookupRoot<>nil then
+    GlobalDesignHook.LookupRoot:=TheControlSelection.LookupRoot;
   if NewForm<>nil then
     NewForm.Invalidate;
   UpdateIDEComponentPalette;
