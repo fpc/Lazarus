@@ -609,6 +609,8 @@ begin
 end;
 
 procedure TMacroListView.btnDeleteClick(Sender: TObject);
+var
+  m: TEditorMacro;
 begin
   if lbRecordedView.ItemIndex < 0 then exit;
   if MessageDlg(lisDeleteSelectedMacro, mtConfirmation, [mbYes, mbNo], 0) = mrYes
@@ -617,7 +619,9 @@ begin
       CurrentActiveMacro := nil;
       EditorMacroRecorder.Clear;
     end;
+    m := CurrentEditorMacroList.Macros[lbRecordedView.ItemIndex];
     CurrentEditorMacroList.Delete(lbRecordedView.ItemIndex);
+    m.Free;
     UpdateDisplay;
   end;
 end;
@@ -874,7 +878,7 @@ begin
   FImageErr := IDEImages.LoadImage(16, 'state_error');
   FIsPlaying := False;
 
-  UpdateButtons;
+  UpdateDisplay;
 end;
 
 { TEditorMacroList }
