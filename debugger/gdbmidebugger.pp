@@ -5398,6 +5398,7 @@ begin
 
   try
     repeat
+      FTheDebugger.CancelBeforeRun; // TODO: see comment on top of TGDBMIDebugger.QueueCommand
       FTheDebugger.QueueExecuteLock; // prevent other commands from executing
       try
         if (not ContinueStep) and
@@ -6691,6 +6692,7 @@ begin
   (* TODO: if an exec-command is queued, cancel watches-commands, etc (unless required for snapshot)
      This may occur if multiply exe are queued.
      Currently, they will be ForcedQueue, and end up, after the exec command => cancel by state change
+     Also see call to CancelBeforeRun in TGDBMIDebuggerCommandExecute.DoExecute
   *)
 
 
