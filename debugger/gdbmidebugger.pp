@@ -369,6 +369,7 @@ type
     FExceptionBreak: TGDBMIInternalBreakPoint;
     FPauseWaitState: TGDBMIPauseWaitState;
     FInExecuteCount: Integer;
+    FInIdle: Boolean;
     FRunQueueOnUnlock: Boolean;
     FDebuggerFlags: TGDBMIDebuggerFlags;
     FSourceNames: TStringList; // Objects[] -> TMap[Integer|Integer] -> TDbgPtr
@@ -5338,6 +5339,7 @@ begin
 
   try
     repeat
+      FTheDebugger.CancelBeforeRun; // TODO: see comment on top of TGDBMIDebugger.QueueCommand
       FTheDebugger.QueueExecuteLock; // prevent other commands from executing
       try
         if (not ContinueStep) and
@@ -6588,8 +6590,24 @@ begin
     FCurrentCommand := NestedCurrentCmd;
   end;
 
-  if (FCommandQueue.Count = 0) and assigned(OnIdle)
-  then OnIdle(Self);
+  if (FCommandQueue.Count = 0) and assigned(OnIdle) and (FInExecuteCount=0) and (not FInIdle)
+  then begin
+    repeat
+      DebugLnEnter(DBGMI_QUEUE_DEBUG, ['>> Run OnIdle']);
+      LockCommandProcessing;
+      FInIdle := True;
+      try
+        OnIdle(Self);
+      finally
+        R := (FCommandQueue.Count > 0) and (FCommandProcessingLock = 1) and FRunQueueOnUnlock;
+        DebugLn(DBGMI_QUEUE_DEBUG, ['OnIdle: UnLock']);
+        UnLockCommandProcessing;
+        FInIdle := False;
+      end;
+      DebugLnExit(DBGMI_QUEUE_DEBUG, ['<< Run OnIdle']);
+    until not R;
+    DebugLn(DBGMI_QUEUE_DEBUG, ['OnIdle: Finished ']);
+  end;
 
   if FNeedStateToIdle and (FInExecuteCount = 0)
   then ResetStateToIdle;
@@ -6603,6 +6621,7 @@ begin
   (* TODO: if an exec-command is queued, cancel watches-commands, etc (unless required for snapshot)
      This may occur if multiply exe are queued.
      Currently, they will be ForcedQueue, and end up, after the exec command => cancel by state change
+     Also see call to CancelBeforeRun in TGDBMIDebuggerCommandExecute.DoExecute
   *)
 
 
@@ -7197,6 +7216,7 @@ begin
     FPauseWaitState := pwsNone;
     FErrorHandlingFlags := [];
     FInExecuteCount := 0;
+    FInIdle := False;
     FNeedStateToIdle := False;
     Options := '-silent -i mi -nx';
 
@@ -8477,7 +8497,7 @@ begin
   and (Debugger.State = dsPause)
   then RegistersNeeded;
 
-  Result := Length(FRegNames)
+  Result := Length(FRegNames);
 end;
 
 function TGDBMIRegisters.GetModified(const AnIndex: Integer): Boolean;
@@ -8589,7 +8609,7 @@ end;
 
 function TGDBMIRegisters.GetDebugger: TGDBMIDebugger;
 begin
-  Result := TGDBMIDebugger(inherited Debugger)
+  Result := TGDBMIDebugger(inherited Debugger);
 end;
 
 procedure TGDBMIRegisters.DoGetRegValuesDestroyed(Sender: TObject);

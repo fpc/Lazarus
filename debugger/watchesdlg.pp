@@ -699,6 +699,8 @@ procedure TWatchesDlg.UpdateItem(const AItem: TListItem; const AWatch: TWatch);
 var
   WatchValue: TWatchValue;
 begin
+  DebugBoss.LockCommandProcessing;
+  try
 // Expression
 // Result
   if (not ToolButtonPower.Down) or (not Visible) then exit;
@@ -724,6 +726,9 @@ begin
     popDeleteClick(nil);
   if wdsfNeedDeleteAll in FStateFlags then
     popDeleteAllClick(nil);
+  finally
+    DebugBoss.UnLockCommandProcessing;
+  end;
 end;
 
 procedure TWatchesDlg.UpdateAll;
@@ -745,6 +750,7 @@ begin
   else Caption:= liswlWatchList;
 
   FUpdatingAll := True;
+  DebugBoss.LockCommandProcessing;
   lvWatches.BeginUpdate;
   try
     l := Watches.Count;
@@ -760,6 +766,7 @@ begin
   finally
     FUpdatingAll := False;
     lvWatches.EndUpdate;
+    DebugBoss.UnLockCommandProcessing;
     lvWatchesSelectItem(nil, nil, False);
   end;
   finally DebugLnExit(DBG_DATA_MONITORS, ['DebugDataWindow: TWatchesDlg.UpdateAll: <<EXIT: TWatchesDlg.UpdateAll ']); end;
