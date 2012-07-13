@@ -456,7 +456,7 @@ begin
   try
     if CheckReadable then begin
       InvalidateFileStateCache;
-      fs:=TFileStreamUTF8.Create(AFilename,fmOpenWrite)
+      fs:=TFileStreamUTF8.Create(AFilename,fmOpenWrite or fmShareDenyNone)
     end else
       fs:=TFileStreamUTF8.Create(AFilename,fmOpenReadWrite);
     try
