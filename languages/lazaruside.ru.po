@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2012-06-28 00:24+0400\n"
+"PO-Revision-Date: 2012-07-14 00:31+0400\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -17920,7 +17920,7 @@ msgstr "Прокрутить вверх на одну строку"
 
 #: lazarusidestrconsts.srkmecseldown
 msgid "Select Down"
-msgstr "Выделить вниз"
+msgstr "Выделить снизу"
 
 #: lazarusidestrconsts.srkmecselectall
 msgctxt "lazarusidestrconsts.srkmecselectall"
@@ -17952,8 +17952,9 @@ msgid "Select half-word right"
 msgstr "Выделить полслова справа"
 
 #: lazarusidestrconsts.srkmecselleft
-msgid "SelLeft"
-msgstr "SelLeft"
+#| msgid "SelLeft"
+msgid "Select Left"
+msgstr "Выделить слева"
 
 #: lazarusidestrconsts.srkmecsellineend
 msgctxt "lazarusidestrconsts.srkmecsellineend"
@@ -17996,8 +17997,9 @@ msgid "Select Page Up"
 msgstr "Выделить страницу сверху"
 
 #: lazarusidestrconsts.srkmecselright
-msgid "SelRight"
-msgstr "SelRight"
+#| msgid "SelRight"
+msgid "Select Right"
+msgstr "Выделить справа"
 
 #: lazarusidestrconsts.srkmecselsticky
 msgid "Start sticky selecting"
@@ -18017,7 +18019,7 @@ msgstr "Окончить выделение с привязкой"
 
 #: lazarusidestrconsts.srkmecselup
 msgid "Select Up"
-msgstr "Выделить вверх"
+msgstr "Выделить сверху"
 
 #: lazarusidestrconsts.srkmecselwordendleft
 msgid "Select word-end left"

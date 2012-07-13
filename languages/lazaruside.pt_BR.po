@@ -17919,7 +17919,9 @@ msgid "Select half-word right"
 msgstr "Selecionar meia palavra à direita"
 
 #: lazarusidestrconsts.srkmecselleft
-msgid "SelLeft"
+#, fuzzy
+#| msgid "SelLeft"
+msgid "Select Left"
 msgstr "SelLeft"
 
 #: lazarusidestrconsts.srkmecsellineend
@@ -17963,7 +17965,9 @@ msgid "Select Page Up"
 msgstr "Selecionar página acima"
 
 #: lazarusidestrconsts.srkmecselright
-msgid "SelRight"
+#, fuzzy
+#| msgid "SelRight"
+msgid "Select Right"
 msgstr "SelRight"
 
 #: lazarusidestrconsts.srkmecselsticky

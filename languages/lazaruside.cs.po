@@ -17411,7 +17411,9 @@ msgid "Select half-word right"
 msgstr "Vybrat půl slova vpravo"
 
 #: lazarusidestrconsts.srkmecselleft
-msgid "SelLeft"
+#, fuzzy
+#| msgid "SelLeft"
+msgid "Select Left"
 msgstr "SelLeft"
 
 #: lazarusidestrconsts.srkmecsellineend
@@ -17455,7 +17457,9 @@ msgid "Select Page Up"
 msgstr "Vybrat stránku nahoře"
 
 #: lazarusidestrconsts.srkmecselright
-msgid "SelRight"
+#, fuzzy
+#| msgid "SelRight"
+msgid "Select Right"
 msgstr "SelRight"
 
 #: lazarusidestrconsts.srkmecselsticky
