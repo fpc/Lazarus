@@ -2728,7 +2728,7 @@ var
 begin
   if FileName = '' then
     raise exception.Create('FileName is empty');
-  F:=TFileStream.Create(UTF8ToSys(FileName),fmOpenWrite);
+  F:=TFileStream.Create(UTF8ToSys(FileName),fmOpenWrite or fmShareDenyNone);
   try
     SaveToStream( F );
   finally
