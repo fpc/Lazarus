@@ -2314,7 +2314,7 @@ begin
   PID:=PtrInt(GetThreadID);
   Filename:='Log'+IntToStr(PID);
   if FileExistsUTF8(Filename) then
-    fs:=TFileStream.Create(UTF8ToSys(Filename),fmOpenWrite)
+    fs:=TFileStream.Create(UTF8ToSys(Filename),fmOpenWrite or fmShareDenyNone)
   else
     fs:=TFileStream.Create(UTF8ToSys(Filename),fmCreate);
   fs.Position:=fs.Size;
