@@ -2536,8 +2536,8 @@ resourcestring
   srkmecSelStickyCol          = 'Start sticky selecting (Columns)';
   srkmecSelStickyLine         = 'Start sticky selecting (Line)';
   srkmecSelStickyStop         = 'Stop sticky selecting';
-  srkmecSelLeft               = 'SelLeft';
-  srkmecSelRight              = 'SelRight';
+  srkmecSelLeft               = 'Select Left';
+  srkmecSelRight              = 'Select Right';
   srkmecSelUp                 = 'Select Up';
   srkmecSelDown               = 'Select Down';
   srkmecSelWordLeft           = 'Select Word Left';
