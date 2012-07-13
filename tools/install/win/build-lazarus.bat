@@ -19,6 +19,7 @@ IF "%IDE_WIDGETSET%"=="" SET IDE_WIDGETSET=win32
 %FPCBINDIR%\strip.exe lazarus.exe
 %FPCBINDIR%\strip.exe lazbuild.exe
 %FPCBINDIR%\strip.exe startlazarus.exe
+%FPCBINDIR%\strip.exe components\chmhelp\lhelp\lhelp.exe
 
 %OLDCURDRIVE%
 cd %OLDCURDIR%
