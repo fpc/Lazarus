@@ -175,6 +175,21 @@ var
     finally
       GitVersionProcess.Free;
     end;
+    if Result then
+    begin
+      Show('Success retrieving revision with git log.');
+    end
+    else
+    begin
+      Show('Failed retrieving revision with git log.');
+      if n>0 then
+      begin
+        Show('');
+        Show('git log error output:');
+        Show(Copy(Buffer, 1, n));
+      end;
+    end;
+    Show('');
   end;
 
   function GetRevisionFromHgVersion : boolean;
@@ -224,6 +239,21 @@ var
     finally
       HgVersionProcess.Free;
     end;
+    if Result then
+    begin
+      Show('Success retrieving revision with hg/mercurial.');
+    end
+    else
+    begin
+      Show('Failed retrieving revision with hg/mercurial.');
+      if n>0 then
+      begin
+        Show('');
+        Show('hg parents error output:');
+        Show(Copy(Buffer, 1, n));
+      end;
+    end;
+    Show('');
   end;
 
   function GetRevisionFromSvnVersion : boolean;
@@ -251,12 +281,6 @@ var
 
           SetLength(Buffer, 1024);
           n:=Stderr.Read(Buffer[1], 1024);
-
-          Show('Tried retrieving revision with svnversion.');
-          Show('');
-          Show('svnversion error:');
-          Show(Copy(Buffer, 1, n));
-          Show('');
         except
         // ignore error, default result is false
         end;
@@ -264,6 +288,21 @@ var
     finally
       SvnVersionProcess.Free;
     end;
+    if Result then
+    begin
+      Show('Success retrieving revision with svnversion.');
+    end
+    else
+    begin
+      Show('Failed retrieving revision with svnversion.');
+      if n>0 then
+      begin
+        Show('');
+        Show('svnversion error output:');
+        Show(Copy(Buffer, 1, n));
+      end;
+    end;
+    Show('');
   end;
 
   function GetRevisionFromEntriesTxt: boolean;
@@ -294,6 +333,11 @@ var
          // ignore error, default result is false
        end;
     end;
+    if Result then
+     Show('Success retrieving revision with entries file: '+EntriesFileName)
+    else
+     Show('Failure retrieving revision with entries file: '+EntriesFileName);
+    Show('');
   end;
 
   function GetRevisionFromEntriesXml: boolean;
@@ -327,10 +371,17 @@ var
          // ignore error, default result is false
        end;
     end;
+    if Result then
+      Show('Success retrieving revision with entries XML file: '+EntriesFileName)
+    else
+      Show('Failure retrieving revision with entries XML file: '+EntriesFileName);
+    Show('');
   end;
 
 begin
+  Show('Going to retrieve revision for source directory: '+SourceDirectory);
   // Try Subversion/svn
+  // Use or's short circuiting to make sure only the last succesful function writes to RevisionStr
   Result := GetRevisionFromSvnVersion or GetRevisionFromEntriesTxt or
             GetRevisionFromEntriesXml;
 
