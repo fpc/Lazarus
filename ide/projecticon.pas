@@ -183,19 +183,18 @@ end;
 
 function TProjectIcon.CreateIconFile: Boolean;
 var
-  AStream: TStream;
-  Code: TCodeBuffer;
+  fs: TFileStreamUTF8;
 begin
   Result := False;
-  AStream := GetStream;
-  if AStream=nil then exit;
+  if IsEmpty then exit;
   try
-    Code:=CodeToolBoss.CreateFile(FIcoFileName);
-    if Code=nil then exit;
-    Code.LoadFromStream(AStream);
-    Result:=SaveCodeBuffer(Code) in [mrOk,mrIgnore];
-  finally
-    AStream.Free;
+    fs:=TFileStreamUTF8.Create(FIcoFileName,fmCreate or fmOpenReadWrite);
+    try
+      fs.Write(FData[0],length(FData));
+    finally
+      fs.Free;
+    end;
+  except
   end;
 end;
 
@@ -212,6 +211,7 @@ procedure TProjectIcon.SetIsEmpty(const AValue: Boolean);
 var
   NewData: TIconData;
   Code: TCodeBuffer;
+  fs: TFileStreamUTF8;
 begin
   if IsEmpty=AValue then exit;
   if AValue then
@@ -219,16 +219,19 @@ begin
   else
   begin
     // We need to restore data from the .ico file
-    Code:=CodeToolBoss.LoadFile(FIcoFileName,true,false);
-    if Code<>nil then
-    begin
-      SetLength(NewData, Code.SourceLength);
-      if length(NewData)>0 then
-        Move(Code.Source[1],NewData[0],length(NewData));
-      IconData := NewData;
-    end
-    else
-      IconData := nil;
+    IconData := nil;
+    try
+      fs:=TFileStreamUTF8.Create(FIcoFileName,fmOpenRead);
+      try
+        SetLength(NewData, fs.Size);
+        if length(NewData)>0 then
+          fs.Read(NewData[0],length(NewData));
+        IconData := NewData;
+      finally
+        fs.Free
+      end;
+    except
+    end;
   end;
   Modified := True;
 end;
