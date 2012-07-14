@@ -35,8 +35,8 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, Laz2_XMLCfg, lazutf8classes, Process, LCLProc,
-  Controls, Forms, CodeToolManager, CodeCache, LazConf, LResources, resource,
-  DialogProcs, groupiconresource, ProjectIntf, ProjectResourcesIntf;
+  Controls, Forms, CodeToolManager, CodeCache, FileProcs, LazConf, LResources,
+  resource, DialogProcs, groupiconresource, ProjectIntf, ProjectResourcesIntf;
    
 type
   TIconData = array of byte;
@@ -190,7 +190,7 @@ begin
   AStream := GetStream;
   if AStream=nil then exit;
   try
-    Code:=CodeToolBoss.CreateFile(FicoFileName);
+    Code:=CodeToolBoss.CreateFile(FIcoFileName);
     if Code=nil then exit;
     Code.LoadFromStream(AStream);
     Result:=SaveCodeBuffer(Code) in [mrOk,mrIgnore];
@@ -210,34 +210,32 @@ end;
 
 procedure TProjectIcon.SetIsEmpty(const AValue: Boolean);
 var
-  AStream: TStream;
   NewData: TIconData;
+  Code: TCodeBuffer;
 begin
+  if IsEmpty=AValue then exit;
   if AValue then
     IconData := nil
   else
   begin
     // We need to restore data from the .ico file
-    if FileExistsUTF8(FicoFileName) then
+    Code:=CodeToolBoss.LoadFile(FIcoFileName,true,false);
+    if Code<>nil then
     begin
-      AStream := TFileStreamUTF8.Create(FicoFileName,fmOpenRead);
-      try
-        SetLength(NewData, AStream.Size);
-        AStream.ReadBuffer(NewData[0], AStream.Size);
-        IconData := NewData;
-      finally
-        AStream.Free;
-      end;
+      SetLength(NewData, Code.SourceLength);
+      if length(NewData)>0 then
+        Move(Code.Source[1],NewData[0],length(NewData));
+      IconData := NewData;
     end
     else
       IconData := nil;
   end;
+  Modified := True;
 end;
 
 constructor TProjectIcon.Create;
 begin
   inherited Create;
-
   FData := nil;
 end;
 
