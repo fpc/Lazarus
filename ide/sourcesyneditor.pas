@@ -125,8 +125,6 @@ type
     property TopLineCount: Integer read FTopLineCount write SetTopLineCount;
   end;
 
-
-
   { TIDESynEditor }
 
   TIDESynEditor = class(TSynEdit)
@@ -628,10 +626,13 @@ end;
 procedure TIDESynEditor.SrcSynCaretChanged(Sender: TObject);
 var
   InfCnt, i, t, ListCnt: Integer;
-  InfList: array [0..1] of TSynFoldNodeInfo;
+  InfList: array [0..1] of
+    record
+      LineIndex: Integer;
+      FoldType: TPascalCodeFoldBlockType;
+    end;
   NodeFoldType: TPascalCodeFoldBlockType;
   List: TLazSynEditNestedFoldsList;
-  Inf: TSynFoldNodeInfo;
 begin
   if (not FShowTopInfo) or (not HandleAllocated) then exit;
   if FSrcSynCaretChangedLock or not(TextView.HighLighter is TSynPasSyn) then exit;
@@ -643,6 +644,7 @@ begin
     if CaretY >= TopLine then begin
       List := TextView.FoldProvider.NestedFoldsList;
       List.ResetFilter;
+      List.Clear;
       List.Line := CaretY-1;
       List.FoldGroup := FOLDGROUP_PASCAL;
       List.FoldFlags := [sfbIncludeDisabled];
@@ -650,34 +652,34 @@ begin
 
       InfCnt := List.Count;
       for i := InfCnt-1 downto 0 do begin
-        if not(TPascalCodeFoldBlockType({%H-}PtrUInt(List.NodeFoldType[i])) in
+        NodeFoldType := TPascalCodeFoldBlockType({%H-}PtrUInt(List.NodeFoldType[i]));
+        if not(NodeFoldType in
            [cfbtClass, cfbtClassSection, cfbtProcedure])
         then
           continue;
 
-        Inf := List.HLNode[i];
-        if sfaInvalid in Inf.FoldAction then
-          continue;
-
-        NodeFoldType:=TPascalCodeFoldBlockType({%H-}PtrUInt(Inf.FoldType));
         if (NodeFoldType in [cfbtClassSection]) and (ListCnt = 0) then begin
-          InfList[ListCnt] := Inf;
+          InfList[ListCnt].LineIndex := List.NodeLine[i];
+          InfList[ListCnt].FoldType := NodeFoldType;
           inc(ListCnt);
         end;
 
         if (NodeFoldType in [cfbtClass]) and (ListCnt < 2) then begin
-          InfList[ListCnt] := Inf;
+          InfList[ListCnt].LineIndex := List.NodeLine[i];
+          InfList[ListCnt].FoldType := NodeFoldType;
           inc(ListCnt);
         end;
 
         if (NodeFoldType in [cfbtProcedure]) and (ListCnt < 2) then begin
-          InfList[ListCnt] := Inf;
+          InfList[ListCnt].LineIndex := List.NodeLine[i];
+          InfList[ListCnt].FoldType := NodeFoldType;
           inc(ListCnt);
         end;
         if (NodeFoldType in [cfbtProcedure]) and (ListCnt = 2) and
-           (TPascalCodeFoldBlockType({%H-}PtrUInt(InfList[ListCnt-1].FoldType)) = cfbtProcedure)
+           (InfList[ListCnt-1].FoldType = cfbtProcedure)
         then begin
-          InfList[ListCnt-1] := Inf;
+          InfList[ListCnt-1].LineIndex := List.NodeLine[i];
+          InfList[ListCnt-1].FoldType := NodeFoldType;
         end;
       end;
     end;
