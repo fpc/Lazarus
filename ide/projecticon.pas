@@ -210,7 +210,6 @@ end;
 procedure TProjectIcon.SetIsEmpty(const AValue: Boolean);
 var
   NewData: TIconData;
-  Code: TCodeBuffer;
   fs: TFileStreamUTF8;
 begin
   if IsEmpty=AValue then exit;
