@@ -554,6 +554,8 @@ var
 begin
   DebugLn(DBG_DATA_MONITORS, ['DebugDataWindow: TWatchesDlg.SnapshotChanged ',  DbgSName(Sender), '  Upd:', IsUpdating]);
   lvWatches.BeginUpdate;
+  // prevent lvWatchesSelectItem when deleting the itews. Snapsot may have been deleted
+  FUpdatingAll := True; // will be reset by UpdateAll
   try
     NewWatches := Watches;
     if FWatchesInView <> NewWatches
@@ -561,6 +563,7 @@ begin
     FWatchesInView := NewWatches;
     UpdateAll;
   finally
+    FUpdatingAll := False; // wan reset by UpdateAll anyway
     lvWatches.EndUpdate;
   end;
 end;
