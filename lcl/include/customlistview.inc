@@ -874,9 +874,8 @@ var
   AItemIndex: Integer;
 begin
   if FSortType = stNone then exit;
-  if FListItems.Count < 2 then Exit;
-  if lffPreparingSorting in FFlags then
-    exit;
+  if FListItems.Count < 2 then exit;
+  if lffPreparingSorting in FFlags then exit;
 
   if HandleAllocated then
   begin
@@ -891,13 +890,9 @@ begin
       begin
         FSavedSelection.Add(Selected);
         if MultiSelect then
-        begin
           for i := 0 to Items.Count-1 do
-          begin
             if Items[i].Selected and (Items[i] <> Selected) then
               FSavedSelection.Add(Items[i]);
-          end;
-        end;
       end;
 
       Items.FCacheIndex := -1;
