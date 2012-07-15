@@ -8,7 +8,7 @@ object TestControlForm: TTestControlForm
   ClientHeight = 350
   ClientWidth = 456
   OnShow = FormShow
-  LCLVersion = '0.9.31'
+  LCLVersion = '1.1'
   Visible = True
   object Panel1: TPanel
     Left = 0
@@ -28,8 +28,7 @@ object TestControlForm: TTestControlForm
       Left = 1
       Height = 19
       Top = 1
-      Width = 454
-      Anchors = [akTop, akLeft, akRight]
+      Width = 76
       Caption = 'Write Logs'
       OnChange = CheckWriteLogsChange
       TabOrder = 0
@@ -61,6 +60,21 @@ object TestControlForm: TTestControlForm
       OnChange = EditLogDirChange
       TabOrder = 1
       Text = 'EditLogDir'
+    end
+    object WriteLogsOnErr: TCheckBox
+      AnchorSideLeft.Control = CheckWriteLogs
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = CheckWriteLogs
+      Left = 87
+      Height = 19
+      Top = 1
+      Width = 123
+      BorderSpacing.Left = 10
+      Caption = 'Write Logs On Error'
+      Checked = True
+      OnChange = WriteLogsOnErrChange
+      State = cbChecked
+      TabOrder = 2
     end
   end
   object Panel2: TPanel

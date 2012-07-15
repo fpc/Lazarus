@@ -84,6 +84,7 @@
         <Filename Value="testgdbmicontrol.pas"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="TestControlForm"/>
+        <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="TestGDBMIControl"/>
       </Unit7>

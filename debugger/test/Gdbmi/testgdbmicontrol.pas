@@ -13,6 +13,7 @@ type
   { TTestControlForm }
 
 TTestControlForm = class(TForm)
+    WriteLogsOnErr: TCheckBox;
     CheckListBox1: TCheckListBox;
     chkGDB: TCheckListBox;
     CheckWriteLogs: TCheckBox;
@@ -27,6 +28,7 @@ TTestControlForm = class(TForm)
     procedure CheckWriteLogsChange(Sender: TObject);
 procedure EditLogDirChange(Sender: TObject);
 procedure FormShow(Sender: TObject);
+procedure WriteLogsOnErrChange(Sender: TObject);
   private
     { private declarations }
   public
@@ -99,6 +101,14 @@ begin
     j := chkFPC.Items.Add(c.Name[i]);
     chkFPC.Checked[j] := True;
   end;
+
+  WriteLog := CheckWriteLogs.Checked;
+  WriteLogOnErr := WriteLogsOnErr.Checked;
+end;
+
+procedure TTestControlForm.WriteLogsOnErrChange(Sender: TObject);
+begin
+  WriteLogOnErr := WriteLogsOnErr.Checked;
 end;
 
 procedure TTestControlForm.EditLogDirChange(Sender: TObject);

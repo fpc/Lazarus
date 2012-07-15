@@ -220,7 +220,8 @@ type
     FCurrentPrgName, FCurrentExename: String;
     FLogFile: TextFile;
     FLogFileCreated: Boolean;
-    FLogFileName, FFinalLogFileName: String;
+    FLogFileName, FFinalLogFileName, FLogBufferText: String;
+    FLogDebuglnCount: Integer;
     function GetCompilerInfo: TCompilerInfo;
     function GetDebuggerInfo: TDebuggerInfo;
     function GetSymbolType: TSymbolType;
@@ -295,7 +296,7 @@ var
   AppDir: String;
   ConfDir: String;
   Logdir: String;
-  WriteLog: Boolean;
+  WriteLog, WriteLogOnErr: Boolean;
 
 implementation
 
@@ -376,7 +377,7 @@ end;
 
 procedure TGDBTestCase.InternalDbgOutPut(Sender: TObject; const AText: String);
 begin
-  LogToFile(AText);
+  //LogToFile(AText);
   DoDbgOutPut(Sender, AText);
 end;
 
@@ -387,12 +388,28 @@ end;
 
 procedure TGDBTestCase.DoDbgOut(Sender: TObject; S: string; var Handled: Boolean);
 begin
-  LogToFile('# '+S);
+  DoDebugln(Sender, '| '+S, Handled);
 end;
 
 procedure TGDBTestCase.DoDebugln(Sender: TObject; S: string; var Handled: Boolean);
 begin
-  LogToFile('# '+S);
+  if GetLogActive then begin
+    CreateLog;
+    writeln(FLogFile, s);
+  end
+  else
+    FLogBufferText := FLogBufferText + s + LineEnding;
+
+  Handled := True;
+
+  if pos('(gdb)', s) > 0 then begin
+    inc(FLogDebuglnCount);
+    if FLogDebuglnCount mod 10 = 0 then begin
+      DebugLogger.OnDebugLn  := nil;
+      DebugLn([FLogDebuglnCount]);
+      DebugLogger.OnDebugLn  := @DoDebugln;
+    end;
+  end;
 end;
 
 function TGDBTestCase.GetCompilerInfo: TCompilerInfo;
@@ -418,7 +435,7 @@ end;
 
 function TGDBTestCase.GetLogActive: Boolean;
 begin
-  Result := WriteLog;
+  Result := WriteLog or FLogFileCreated;
 end;
 
 procedure TGDBTestCase.CreateLog;
@@ -450,18 +467,22 @@ begin
     Rewrite(FLogFile);
     FLogFileCreated := True;
 
-    DebugLogger.OnDbgOut  := @DoDbgOut;
-    DebugLogger.OnDebugLn  := @DoDebugln;
+    writeln(FLogFile, FLogBufferText);
+    FLogBufferText := '';
   //end;
 end;
 
 procedure TGDBTestCase.SetUp;
 begin
+  FLogDebuglnCount := 0;
   FLogFileCreated := False;
+  FLogBufferText := '';
   ClearTestErrors;
   FTotalErrorCnt := 0;
   FTotalIgnoredErrorCnt := 0;
   FTotalUnexpectedSuccessCnt := 0;
+  DebugLogger.OnDbgOut  := @DoDbgOut;
+  DebugLogger.OnDebugLn  := @DoDebugln;
   inherited SetUp;
 end;
 
@@ -486,6 +507,9 @@ begin
     FFinalLogFileName := FFinalLogFileName + '.log';
     RenameFileUTF8(FLogFileName, FFinalLogFileName);
   end;
+  DebugLogger.OnDbgOut  := nil;
+  DebugLogger.OnDebugLn  := nil;
+  FLogBufferText := '';
 end;
 
 function TGDBTestCase.StartGDB(AppDir, TestExeName: String): TGDBMIDebugger;
@@ -711,7 +735,7 @@ begin
   s1 := Format('Failed: %d of %d - Ignored: %d Unexpected: %d - Success: %d',
                [FTestErrorCnt, FTestCnt, FIgnoredErrorCnt, FUnexpectedSuccessCnt, FSucessCnt ]);
   FTestErrors := '';
-  if GetLogActive then begin
+  if GetLogActive or (WriteLogOnErr and (FTestErrorCnt > 0)) then begin
     CreateLog;
     writeln(FLogFile, '***' + s1 + '***' +LineEnding);
     writeln(FLogFile, '================= Failed:'+LineEnding);
@@ -751,14 +775,8 @@ begin
 end;
 
 procedure TGDBTestCase.LogToFile(const s: string);
-var
-  buf: array[0..5000] of char;
-  i: Integer;
 begin
-  if GetLogActive then begin
-    CreateLog;
-    writeln(FLogFile, s);
-  end;
+  DebugLn('## '+s);
 end;
 
 { TBaseList }
@@ -1228,6 +1246,16 @@ begin
 end;
 
 initialization
+  // GDBMIDebugger is un uses
+  DebugLogger.FindOrRegisterLogGroup('DBG_CMD_ECHO' , True  )^.Enabled := True;
+  DebugLogger.FindOrRegisterLogGroup('DBGMI_QUEUE_DEBUG' , True  )^.Enabled := True;
+  DebugLogger.FindOrRegisterLogGroup('DBGMI_STRUCT_PARSER' , True  )^.Enabled := True;
+  DebugLogger.FindOrRegisterLogGroup('DBG_VERBOSE'  , True  )^.Enabled := True;
+  DebugLogger.FindOrRegisterLogGroup('DBG_WARNINGS', True )^.Enabled := True;
+  DebugLogger.FindOrRegisterLogGroup('DBG_DISASSEMBLER', True  )^.Enabled := True;
+  DebugLogger.FindOrRegisterLogGroup('DBGMI_TYPE_INFO', True  )^.Enabled := True;
+
+
   AppDir := AppendPathDelim(ExtractFilePath(Paramstr(0)));
   if  not(CheckAppDir(AppDir))
   and not(CheckAppDirLib(AppDir))

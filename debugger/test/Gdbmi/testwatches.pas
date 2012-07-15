@@ -116,6 +116,7 @@ type
     TestName: String;
     Expression:  string;
     DspFormat: TWatchDisplayFormat;
+    EvaluateFlags: TDBGEvaluateFlags;
     StackFrame: Integer;
     Result: Array [TSymbolType] of TWatchExpectationResult;
   end;
@@ -149,8 +150,22 @@ type
       AStackFrame: Integer = 0;
       AMinGdb: Integer = 0; AMinFpc: Integer = 0
     ): PWatchExpectation;
+    function AddTo(var ExpArray: TWatchExpectationArray;
+      AnExpr:  string; AFmt: TWatchDisplayFormat; AEvaluateFlags: TDBGEvaluateFlags;
+      AMtch: string; AKind: TDBGSymbolKind; ATpNm: string;
+      AFlgs: TWatchExpectationFlags = [];
+      AStackFrame: Integer = 0;
+      AMinGdb: Integer = 0; AMinFpc: Integer = 0
+    ): PWatchExpectation;
     function AddTo(var ExpArray: TWatchExpectationArray; ATestName: String;
       AnExpr:  string; AFmt: TWatchDisplayFormat;
+      AMtch: string; AKind: TDBGSymbolKind; ATpNm: string;
+      AFlgs: TWatchExpectationFlags = [];
+      AStackFrame: Integer = 0;
+      AMinGdb: Integer = 0; AMinFpc: Integer = 0
+    ): PWatchExpectation;
+    function AddTo(var ExpArray: TWatchExpectationArray; ATestName: String;
+      AnExpr:  string; AFmt: TWatchDisplayFormat; AEvaluateFlags: TDBGEvaluateFlags;
       AMtch: string; AKind: TDBGSymbolKind; ATpNm: string;
       AFlgs: TWatchExpectationFlags = [];
       AStackFrame: Integer = 0;
@@ -160,7 +175,10 @@ type
     // using FCurrentExpArray
     function Add(AnExpr:  string; AFmt: TWatchDisplayFormat; AMtch: string;
                  AKind: TDBGSymbolKind; ATpNm: string; AFlgs: TWatchExpectationFlags): PWatchExpectation;
+    function Add(AnExpr:  string; AFmt: TWatchDisplayFormat; AEvalFlags: TDBGEvaluateFlags; AMtch: string;
+                 AKind: TDBGSymbolKind; ATpNm: string; AFlgs: TWatchExpectationFlags): PWatchExpectation;
     function AddFmtDef        (AnExpr, AMtch: string; AKind: TDBGSymbolKind; ATpNm: string; AFlgs: TWatchExpectationFlags=[]): PWatchExpectation;
+    function AddFmtDef        (AnExpr: String; AEvalFlags: TDBGEvaluateFlags; AMtch: string; AKind: TDBGSymbolKind; ATpNm: string; AFlgs: TWatchExpectationFlags=[]): PWatchExpectation;
     function AddStringFmtDef  (AnExpr, AMtch, ATpNm: string; AFlgs: TWatchExpectationFlags=[]): PWatchExpectation;
     function AddShortStrFmtDef(AnExpr, AMtch: string; ATpNm: string = 'ShortString'; AFlgs: TWatchExpectationFlags=[]): PWatchExpectation;
     function AddCharFmtDef    (AnExpr, AMtch: string; ATpNm: string = 'Char'; AFlgs: TWatchExpectationFlags=[]): PWatchExpectation;
@@ -275,25 +293,20 @@ function TTestWatches.AddTo(var ExpArray: TWatchExpectationArray; AnExpr: string
   AFmt: TWatchDisplayFormat; AMtch: string; AKind: TDBGSymbolKind; ATpNm: string;
   AFlgs: TWatchExpectationFlags; AStackFrame: Integer = 0; AMinGdb: Integer = 0;
   AMinFpc: Integer = 0): PWatchExpectation;
-var
-  i: TSymbolType;
 begin
-  SetLength(ExpArray, Length(ExpArray)+1);
-  with ExpArray[Length(ExpArray)-1] do begin
-    TestName     := AnExpr;
-    Expression   := AnExpr;
-    DspFormat    := AFmt;
-    for i := low(TSymbolType) to high(TSymbolType) do begin
-      Result[i].ExpMatch     := AMtch;
-      Result[i].ExpKind      := AKind;
-      Result[i].ExpTypeName  := ATpNm;
-      Result[i].Flgs         := AFlgs;
-      Result[i].MinGdb := AMinGdb;
-      Result[i].MinFpc := AMinFpc;
-    end;
-    StackFrame   := AStackFrame;
-  end;
-  Result := @ExpArray[Length(ExpArray)-1];
+  Result := AddTo(ExpArray,
+    AnExpr + ' (' + TWatchDisplayFormatNames[AFmt] + ', []',
+    AnExpr, AFmt, [], AMtch, AKind, ATpNm, AFlgs, AStackFrame, AMinGdb, AMinFpc);
+end;
+
+function TTestWatches.AddTo(var ExpArray: TWatchExpectationArray; AnExpr: string;
+  AFmt: TWatchDisplayFormat; AEvaluateFlags: TDBGEvaluateFlags; AMtch: string;
+  AKind: TDBGSymbolKind; ATpNm: string; AFlgs: TWatchExpectationFlags; AStackFrame: Integer;
+  AMinGdb: Integer; AMinFpc: Integer): PWatchExpectation;
+begin
+  Result := AddTo(ExpArray,
+    AnExpr + ' (' + TWatchDisplayFormatNames[AFmt] + ', ' + dbgs(AEvaluateFlags) + ')',
+    AnExpr, AFmt, AEvaluateFlags, AMtch, AKind, ATpNm, AFlgs, AStackFrame, AMinGdb, AMinFpc);
 end;
 
 function TTestWatches.AddTo(var ExpArray: TWatchExpectationArray; ATestName: String;
@@ -303,11 +316,23 @@ function TTestWatches.AddTo(var ExpArray: TWatchExpectationArray; ATestName: Str
 var
   i: TSymbolType;
 begin
+  Result := AddTo(ExpArray, ATestName, AnExpr, AFmt, [], AMtch, AKind, ATpNm,
+    AFlgs, AStackFrame, AMinGdb, AMinFpc);
+end;
+
+function TTestWatches.AddTo(var ExpArray: TWatchExpectationArray; ATestName: String;
+  AnExpr: string; AFmt: TWatchDisplayFormat; AEvaluateFlags: TDBGEvaluateFlags; AMtch: string;
+  AKind: TDBGSymbolKind; ATpNm: string; AFlgs: TWatchExpectationFlags; AStackFrame: Integer;
+  AMinGdb: Integer; AMinFpc: Integer): PWatchExpectation;
+var
+  i: TSymbolType;
+begin
   SetLength(ExpArray, Length(ExpArray)+1);
   with ExpArray[Length(ExpArray)-1] do begin
     TestName     := ATestName;
     Expression   := AnExpr;
     DspFormat    := AFmt;
+    EvaluateFlags := AEvaluateFlags;
     for i := low(TSymbolType) to high(TSymbolType) do begin
       Result[i].ExpMatch     := AMtch;
       Result[i].ExpKind      := AKind;
@@ -327,10 +352,23 @@ begin
   Result := AddTo(FCurrentExpArray^, AnExpr, AFmt, AMtch, AKind, ATpNm, AFlgs );
 end;
 
+function TTestWatches.Add(AnExpr: string; AFmt: TWatchDisplayFormat;
+  AEvalFlags: TDBGEvaluateFlags; AMtch: string; AKind: TDBGSymbolKind; ATpNm: string;
+  AFlgs: TWatchExpectationFlags): PWatchExpectation;
+begin
+  Result := AddTo(FCurrentExpArray^, AnExpr, AFmt, AEvalFlags, AMtch, AKind, ATpNm, AFlgs );
+end;
+
 function TTestWatches.AddFmtDef(AnExpr, AMtch: string; AKind: TDBGSymbolKind; ATpNm: string;
   AFlgs: TWatchExpectationFlags): PWatchExpectation;
 begin
   Result := Add(AnExpr, wdfDefault, AMtch, AKind, ATpNm, AFlgs );
+end;
+
+function TTestWatches.AddFmtDef(AnExpr: String; AEvalFlags: TDBGEvaluateFlags; AMtch: string;
+  AKind: TDBGSymbolKind; ATpNm: string; AFlgs: TWatchExpectationFlags): PWatchExpectation;
+begin
+  Result := Add(AnExpr, wdfDefault, AEvalFlags, AMtch, AKind, ATpNm, AFlgs );
 end;
 
 function TTestWatches.AddStringFmtDef(AnExpr, AMtch, ATpNm: string;
@@ -688,6 +726,7 @@ begin
   {%region    * Classes * }
 
   AddFmtDef('ArgTFoo',      Match_ArgTFoo,                 skClass,   'TFoo',  []);
+  AddFmtDef('TFoo(ArgTFoo)',Match_ArgTFoo,                 skClass,   'TFoo',  []);
   AddFmtDef('@ArgTFoo',     '(P|\^T)Foo\('+Match_Pointer,  skPointer, '(P|\^T)Foo',  [fTpMtch]);
   // Only with brackets...
   AddFmtDef('(@ArgTFoo)^',   Match_ArgTFoo,                skClass,   'TFoo',  []);
@@ -703,6 +742,7 @@ begin
 
 
   AddFmtDef('VArgTFoo',     Match_ArgTFoo,                 skClass,   'TFoo',  []);
+  AddFmtDef('TFoo(VArgTFoo)',Match_ArgTFoo,                 skClass,   'TFoo',  []);
   AddFmtDef('@VArgTFoo',    '(P|\^T)Foo\('+Match_Pointer,  skPointer, '(P|\^T)Foo',  [fTpMtch]);
   AddFmtDef('(@VArgTFoo)^',   Match_ArgTFoo,                 skClass,   'TFoo',  []);
 
@@ -786,6 +826,58 @@ begin
   //AddFmtDef('ArgTFoo=nil',            'False',        skSimple,      'bool', []);
   //AddFmtDef('not(ArgTFoo=nil)',       'True',         skSimple,      'bool', []);
   //AddFmtDef('ArgTFoo<>nil',           'True',         skSimple,      'bool', []);
+
+  { casting }
+  { gdb below 6.7.50 with stabs may fail }
+  r := AddFmtDef('VarOTestTCast2', [defFullTypeInfo],
+               MatchClass('TObject'),          skClass,      'TObject', []);
+  if (DebuggerInfo.Version > 0) and (DebuggerInfo.Version < 060750) then UpdRes(r, stStabs, '.', skClass, '.', [fTpMtch]);
+  r := AddFmtDef('VarOTestTCast2', [],
+               MatchClass('TObject'),          skClass,      'TObject', []);
+  if (DebuggerInfo.Version > 0) and (DebuggerInfo.Version < 060750) then UpdRes(r, stStabs, '.', skClass, '.', [fTpMtch]);
+
+  r := AddFmtDef('TObject(VarOTestTCast2)', [defFullTypeInfo],
+               MatchClass('TObject'),          skClass,      'TObject', []);
+  if (DebuggerInfo.Version > 0) and (DebuggerInfo.Version < 060750) then UpdRes(r, stStabs, '.', skClass, '.', [fTpMtch]);
+  r := AddFmtDef('TObject(VarOTestTCast2)', [],
+               MatchClass('TObject'),          skClass,      'TObject', []);
+  if (DebuggerInfo.Version > 0) and (DebuggerInfo.Version < 060750) then UpdRes(r, stStabs, '.', skClass, '.', [fTpMtch]);
+
+  r := AddFmtDef('TClassTCast(VarOTestTCast2)', [defFullTypeInfo],
+                 MatchClass('TClassTCast', 'b *='),          skClass,      'TClassTCast', []);
+  if (DebuggerInfo.Version > 0) and (DebuggerInfo.Version < 060750) then UpdRes(r, stStabs, '.', skClass, '.', [fTpMtch]);
+  r := AddFmtDef('TClassTCast(VarOTestTCast2)', [],
+               MatchClass('TClassTCast', 'b *='),          skClass,      'TClassTCast', []);
+  if (DebuggerInfo.Version > 0) and (DebuggerInfo.Version < 060750) then UpdRes(r, stStabs, '.', skClass, '.', [fTpMtch]);
+
+
+  { UseInstanceClass }
+  { gdb below 6.7.50 with stabs may fail }
+  r := AddFmtDef('VarOTestTCast2', [defFullTypeInfo, defClassAutoCast],
+                 MatchClass('TClassTCast', 'b *='),          skClass,      'TClassTCast', []);
+  if (DebuggerInfo.Version > 0) and (DebuggerInfo.Version < 060750) then UpdRes(r, stStabs, '.', skClass, '.', [fTpMtch]);
+  r := AddFmtDef('VarOTestTCast2', [defClassAutoCast],
+               MatchClass('TClassTCast', 'b *='),          skClass,      'TClassTCast', []);
+  if (DebuggerInfo.Version > 0) and (DebuggerInfo.Version < 060750) then UpdRes(r, stStabs, '.', skClass, '.', [fTpMtch]);
+
+  r := AddFmtDef('TObject(VarOTestTCast2)', [defFullTypeInfo, defClassAutoCast],
+                 MatchClass('TClassTCast', 'b *='),          skClass,      'TClassTCast', []);
+  //if (DebuggerInfo.Version > 0) and (DebuggerInfo.Version < 060750) then
+  UpdRes(r, stStabs, '.', skClass, '.', [fTpMtch]);
+  r := AddFmtDef('TObject(VarOTestTCast2)', [defClassAutoCast],
+               MatchClass('TClassTCast', 'b *='),          skClass,      'TClassTCast', []);
+  //if (DebuggerInfo.Version > 0) and (DebuggerInfo.Version < 060750) then
+  UpdRes(r, stStabs, '.', skClass, '.', [fTpMtch]);
+
+  r := AddFmtDef('TClassTCast(VarOTestTCast2)', [defFullTypeInfo, defClassAutoCast],
+                 MatchClass('TClassTCast', 'b *='),          skClass,      'TClassTCast', []);
+  //if (DebuggerInfo.Version > 0) and (DebuggerInfo.Version < 060750) then
+  UpdRes(r, stStabs, '.', skClass, '.', [fTpMtch]);
+  r := AddFmtDef('TClassTCast(VarOTestTCast2)', [defClassAutoCast],
+               MatchClass('TClassTCast', 'b *='),          skClass,      'TClassTCast', []);
+  //if (DebuggerInfo.Version > 0) and (DebuggerInfo.Version < 060750) then
+  UpdRes(r, stStabs, '.', skClass, '.', [fTpMtch]);
+
 
   {%endregion    * Classes * }
 
@@ -1870,7 +1962,7 @@ var
     // Get Value
     n := Data.TestName;
     LogToFile('###### ' + n + '######' +LineEnding);
-    if n = '' then n := Data.Expression + ' (' + TWatchDisplayFormatNames[Data.DspFormat] + ')';
+    if n = '' then n := Data.Expression + ' (' + TWatchDisplayFormatNames[Data.DspFormat] + ', ' + dbgs(Data.EvaluateFlags) + ')';
     Name := Name + ' ' + n;
     flag := AWatch <> nil; // test for typeinfo/kind  // Awatch=nil > direct gdb command
     IsValid := True;
@@ -1996,6 +2088,7 @@ begin
         WList[i] := TCurrentWatch.Create(FWatches);
         WList[i].Expression := ExpectBreakFoo[i].Expression;
         WList[i].DisplayFormat := ExpectBreakFoo[i].DspFormat;
+        WList[i].EvaluateFlags:= ExpectBreakFoo[i].EvaluateFlags;
         WList[i].enabled := True;
       end;
     end;
@@ -2007,6 +2100,7 @@ begin
         WListSub[i] := TCurrentWatch.Create(FWatches);
         WListSub[i].Expression := ExpectBreakSubFoo[i].Expression;
         WListSub[i].DisplayFormat := ExpectBreakSubFoo[i].DspFormat;
+        WListSub[i].EvaluateFlags:= ExpectBreakSubFoo[i].EvaluateFlags;
         WListSub[i].enabled := True;
       end;
     end;
@@ -2018,6 +2112,7 @@ begin
         WListArray[i] := TCurrentWatch.Create(FWatches);
         WListArray[i].Expression := ExpectBreakFooArray[i].Expression;
         WListArray[i].DisplayFormat := ExpectBreakFooArray[i].DspFormat;
+        WListArray[i].EvaluateFlags:= ExpectBreakFooArray[i].EvaluateFlags;
         WListArray[i].enabled := True;
       end;
     end;

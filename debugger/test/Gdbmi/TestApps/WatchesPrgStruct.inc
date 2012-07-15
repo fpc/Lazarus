@@ -307,13 +307,13 @@
 {%region  CLASSES  TypeCast }
     {$IFDEF Global_Type}
       //type
-      TClassTCast = class                        public b: Integer;  end;
-      TClassTCastObject = class(TObject)         public b: Integer;  end;
+      TClassTCast          = class               public b: Integer;  end;
+      TClassTCastObject    = class(TObject)      public b: Integer;  end;
       TClassTCastComponent = class(TComponent)   public b: Integer;  end;
 
       {$IFDEF USE_W1}
-      TClassTCastUW1 = class(TClassUW1Base)                     public b: Integer;  end;
-      TClassTCastUW1Object = class(TClassUW1BaseObject)         public b: Integer;  end;
+      TClassTCastUW1          = class(TClassUW1Base)            public b: Integer;  end;
+      TClassTCastUW1Object    = class(TClassUW1BaseObject)      public b: Integer;  end;
       TClassTCastUW1Component = class(TClassUW1BaseComponent)   public b: Integer;  end;
       {$ENDIF}
 
@@ -323,89 +323,96 @@
 
     {$IFDEF FooFunc_LocalVar}
       // VarO..., VarNO... : TObject; // cast to real class
-      VarOTestTCast, VarOTestTCastObj, VarOTestTCastComp, VarOTestTCast2: TObject;
+      VarOTestTCast, VarOTestTCastObj, VarOTestTCastComp, VarOTestTCast2:     TObject;
       VarNOTestTCast, VarNOTestTCastObj, VarNOTestTCastComp, VarNOTestTCast2: TObject; // nil
       {$IFDEF USE_W1}
-      VarOTestTCastUW1, VarOTestTCastUW1Obj, VarOTestTCastUW1Comp: TObject;
-      VarNOTestTCastUW1, VarNOTestTCastUW1Obj, VarNOTestTCastUW1Comp: TObject; // nil
+      VarOTestTCastUW1, VarOTestTCastUW1Obj, VarOTestTCastUW1Comp:            TObject;
+      VarNOTestTCastUW1, VarNOTestTCastUW1Obj, VarNOTestTCastUW1Comp:         TObject; // nil
       {$ENDIF}
 
       // VarC..., VarNC...: TComponent; // cast to real class OR object
-      VarCTestTCastComp, VarNCTestTCastComp: TComponent;
+      VarCTestTCastComp, VarNCTestTCastComp:         TComponent;
       {$IFDEF USE_W1}
-      VarCTestTCastUW1Comp, VarNCTestTCastUW1Comp: TComponent;
+      VarCTestTCastUW1Comp, VarNCTestTCastUW1Comp:   TComponent;
       {$ENDIF}
 
       // VarB.., VarBN...: TBase;
-      VarBTestTCast2, VarBNTestTCast2: TClassTCast;
+      VarBTestTCast2, VarBNTestTCast2:               TClassTCast;
 
       // Var.., VarN...: TRealType; // cast to lower class
-      VarTestTCast, VarNTestTCast: TClassTCast;
-      VarTestTCastObj, VarNTestTCastObj: TClassTCastObject;
-      VarTestTCastComp, VarNTestTCastComp: TClassTCastComponent;
-      VarTestTCast2, VarNTestTCast2: TClassTCast2;
-      VarTestTCast3, VarNTestTCast3: TClassTCast3;
+      VarTestTCast, VarNTestTCast:                   TClassTCast;
+      VarTestTCastObj, VarNTestTCastObj:             TClassTCastObject;
+      VarTestTCastComp, VarNTestTCastComp:           TClassTCastComponent;
+      VarTestTCast2, VarNTestTCast2:                 TClassTCast2;
+      VarTestTCast3, VarNTestTCast3:                 TClassTCast3;
       {$IFDEF USE_W1}
-      VarUTestTCastUW1, VarNUTestTCastUW1: TClassUW1Base;
-      VarUTestTCastUW1Obj, VarNUTestTCastUW1Obj: TClassUW1BaseObject;
-      VarUTestTCastUW1Comp, VarNUTestTCastUW1Comp: TClassUW1BaseComponent;
-      VarTestTCastUW1, VarNTestTCastUW1: TClassTCastUW1;
-      VarTestTCastUW1Obj, VarNTestTCastUW1Obj: TClassTCastUW1Object;
-      VarTestTCastUW1Comp, VarNTestTCastUW1Comp: TClassTCastUW1Component;
+      VarUTestTCastUW1, VarNUTestTCastUW1:           TClassUW1Base;
+      VarUTestTCastUW1Obj, VarNUTestTCastUW1Obj:     TClassUW1BaseObject;
+      VarUTestTCastUW1Comp, VarNUTestTCastUW1Comp:   TClassUW1BaseComponent;
+      VarTestTCastUW1, VarNTestTCastUW1:             TClassTCastUW1;
+      VarTestTCastUW1Obj, VarNTestTCastUW1Obj:       TClassTCastUW1Object;
+      VarTestTCastUW1Comp, VarNTestTCastUW1Comp:     TClassTCastUW1Component;
       {$ENDIF}
     {$ENDIF}
 
     {$IFDEF FooFunc_Body}
-      VarOTestTCast := TClassTCast.Create;
-      VarOTestTCastObj := TClassTCastObject.Create;
-      VarOTestTCastComp := TClassTCastComponent.Create(nil);
-      VarOTestTCast2 := TClassTCast.Create;
-      VarNOTestTCast := nil;
-      VarNOTestTCastObj := nil;
-      VarNOTestTCastComp := nil;
-      VarNOTestTCast2 := nil;
+      // Declared TObject
+      VarOTestTCast               := TClassTCast.Create;
+      VarOTestTCastObj            := TClassTCastObject.Create;
+      VarOTestTCastComp           := TClassTCastComponent.Create(nil);
+      VarOTestTCast2              := TClassTCast.Create;
+      VarNOTestTCast              := nil;
+      VarNOTestTCastObj           := nil;
+      VarNOTestTCastComp          := nil;
+      VarNOTestTCast2             := nil;
       {$IFDEF USE_W1}
-      VarOTestTCastUW1 := TClassTCastUW1.Create;
-      VarOTestTCastUW1Obj := TClassTCastUW1Object.Create;
-      VarOTestTCastUW1Comp := TClassTCastUW1Component.Create(nil);
-      VarNOTestTCastUW1 := nil;
-      VarNOTestTCastUW1Obj := nil;
-      VarNOTestTCastUW1Comp := nil;
+      VarOTestTCastUW1            := TClassTCastUW1.Create;
+      VarOTestTCastUW1Obj         := TClassTCastUW1Object.Create;
+      VarOTestTCastUW1Comp        := TClassTCastUW1Component.Create(nil);
+      VarNOTestTCastUW1           := nil;
+      VarNOTestTCastUW1Obj        := nil;
+      VarNOTestTCastUW1Comp       := nil;
       {$ENDIF}
 
-      VarCTestTCastComp := TClassTCastComponent.Create(nil);
-      VarNCTestTCastComp := nil;
+      // declared TComponent
+      VarCTestTCastComp           := TClassTCastComponent.Create(nil);
+      VarNCTestTCastComp          := nil;
       {$IFDEF USE_W1}
-      VarCTestTCastUW1Comp := TClassTCastUW1Component.Create(nil);
-      VarNCTestTCastUW1Comp := nil;
+      VarCTestTCastUW1Comp        := TClassTCastUW1Component.Create(nil);
+      VarNCTestTCastUW1Comp       := nil;
       {$ENDIF}
 
-      VarBTestTCast2 := TClassTCast2.Create;
-      VarBNTestTCast2 := nil;
+      // declared TClassTCast
+      VarBTestTCast2              := TClassTCast2.Create;
+      VarBNTestTCast2             := nil;
 
-      VarTestTCast := TClassTCast.Create;
-      VarNTestTCast := nil;
-      VarTestTCastObj := TClassTCastObject.Create;
-      VarNTestTCastObj := nil;
-      VarTestTCastComp := TClassTCastComponent.Create(nil);
-      VarNTestTCastComp := nil;
-      VarTestTCast2 := TClassTCast2.Create;
-      VarNTestTCast2 := nil;
-      VarTestTCast3 := TClassTCast3.Create;
-      VarNTestTCast3 := nil;
+      VarTestTCast                := TClassTCast.Create;
+      VarNTestTCast               := nil;
+      // Declared TClassTCastObject;
+      VarTestTCastObj             := TClassTCastObject.Create;
+      VarNTestTCastObj            := nil;
+      // declared TClassTCastComponent;
+      VarTestTCastComp            := TClassTCastComponent.Create(nil);
+      VarNTestTCastComp           := nil;
+      // declared TClassTCast2
+      VarTestTCast2               := TClassTCast2.Create;
+      VarNTestTCast2              := nil;
+      // declared TClassTCast3
+      VarTestTCast3               := TClassTCast3.Create;
+      VarNTestTCast3              := nil;
       {$IFDEF USE_W1}
-      VarUTestTCastUW1 := TClassTCastUW1.Create;
-      VarNUTestTCastUW1 := nil;
-      VarUTestTCastUW1Obj := TClassTCastUW1Object.Create;
-      VarNUTestTCastUW1Obj := nil;
-      VarUTestTCastUW1Comp := TClassTCastUW1Component.Create(nil);
-      VarNUTestTCastUW1Comp := nil;
-      VarTestTCastUW1 := TClassTCastUW1.Create;
-      VarNTestTCastUW1 := nil;
-      VarTestTCastUW1Obj := TClassTCastUW1Object.Create;
-      VarNTestTCastUW1Obj := nil;
-      VarTestTCastUW1Comp := TClassTCastUW1Component.Create(nil);
-      VarNTestTCastUW1Comp := nil;
+      VarUTestTCastUW1            := TClassTCastUW1.Create;
+      VarNUTestTCastUW1           := nil;
+      VarUTestTCastUW1Obj         := TClassTCastUW1Object.Create;
+      VarNUTestTCastUW1Obj        := nil;
+      VarUTestTCastUW1Comp        := TClassTCastUW1Component.Create(nil);
+      VarNUTestTCastUW1Comp       := nil;
+      VarTestTCastUW1             := TClassTCastUW1.Create;
+      VarNTestTCastUW1            := nil;
+      VarTestTCastUW1Obj          := TClassTCastUW1Object.Create;
+      VarNTestTCastUW1Obj         := nil;
+      VarTestTCastUW1Comp         := TClassTCastUW1Component.Create(nil);
+      VarNTestTCastUW1Comp        := nil;
       {$ENDIF}
     {$ENDIF}
 {%endregion  CLASSES  TypeCast}
