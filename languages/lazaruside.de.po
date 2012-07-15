@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2012-05-19 19:37+0100\n"
+"PO-Revision-Date: 2012-07-14 23:02+0100\n"
 "Last-Translator: Swen Heinig <swen.heinig@freenet.de>\n"
 "Language-Team: Deutsch <lazarus@miraclec.com>\n"
 "MIME-Version: 1.0\n"
@@ -1176,10 +1176,9 @@ msgid "Cursor beyond EOL"
 msgstr "Cursor hinter dem Zeilenende"
 
 #: lazarusidestrconsts.dlgcursorgroupoptions
-#, fuzzy
 #| msgid "Cursor:"
 msgid "Cursor"
-msgstr "Cursoreinstellungen:"
+msgstr "Cursoreinstellungen"
 
 #: lazarusidestrconsts.dlgcursorskipsselection
 msgid "Cursor skips selection"
@@ -1967,10 +1966,9 @@ msgid "Indent code to"
 msgstr "Code einrücken auf"
 
 #: lazarusidestrconsts.dlgindentstabsgroupoptions
-#, fuzzy
 #| msgid "Indent and Tabs:"
 msgid "Indent and Tabs"
-msgstr "Einstellungen für Einrück./Tabs:"
+msgstr "Einstellungen für Einrück./Tabs"
 
 #: lazarusidestrconsts.dlginfrontofmethods
 msgid "In front of methods"
@@ -2780,7 +2778,7 @@ msgstr "Titel:"
 
 #: lazarusidestrconsts.dlgpouiaccess
 msgid "UI Access (uiAccess)"
-msgstr ""
+msgstr "UI-Zugriff (uiAccess)"
 
 #: lazarusidestrconsts.dlgpouseappbundle
 #| msgid "Use Application Bundle for running and debugging (darwin only)"
@@ -2959,10 +2957,9 @@ msgid "Scroll by one less"
 msgstr "Eine Zeile weniger scrollen"
 
 #: lazarusidestrconsts.dlgscrollgroupoptions
-#, fuzzy
 #| msgid "Scrolling:"
 msgid "Scrolling"
-msgstr "Scrolleinstellungen:"
+msgstr "Scrolleinstellungen"
 
 #: lazarusidestrconsts.dlgscrollhint
 msgctxt "lazarusidestrconsts.dlgscrollhint"
@@ -4339,10 +4336,9 @@ msgid "do not add character"
 msgstr "Zeichen nicht hinzufügen"
 
 #: lazarusidestrconsts.lisautomaticfeatures
-#, fuzzy
 #| msgid "Automatic features"
 msgid "Completion and Hints"
-msgstr "Automatische Funktionen"
+msgstr "Vervollständigung/Hinweise"
 
 #: lazarusidestrconsts.lisautoshowobjectinspector
 msgid "Auto show"
@@ -11338,7 +11334,6 @@ msgid "Select Paragraph"
 msgstr "Absatz auswählen"
 
 #: lazarusidestrconsts.lismenuselecttobrace
-#, fuzzy
 #| msgid "Select to brace"
 msgid "Select to Brace"
 msgstr "Bis zur Klammer"
@@ -14262,7 +14257,6 @@ msgid "Quit"
 msgstr "Schliessen"
 
 #: lazarusidestrconsts.lisquitlazarus
-#, fuzzy
 #| msgid "Quit Lazarus"
 msgid "&Quit Lazarus"
 msgstr "Lazarus beenden"
@@ -14831,7 +14825,7 @@ msgstr "Leere Units/Packages anzeigen"
 
 #: lazarusidestrconsts.lisshowglyphsfor
 msgid "Show Glyphs for:"
-msgstr "Zeige Bildzeichen für:"
+msgstr "Zeige Bildzeichen für"
 
 #: lazarusidestrconsts.lisshowgutterinobjectinspector
 msgid "Show gutter"
