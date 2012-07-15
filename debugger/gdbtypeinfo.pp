@@ -319,7 +319,7 @@ type
   TGDBTypeProcessState =
     (gtpsInitial, gtpsInitialSimple,
      gtpsSimplePointer,
-     gtpsClass, gtpsClassAutoCast, gtpsClassPointer, gtpsClassAncestor,
+     gtpsClass, gtpsClassAutoCast, gtpsClassPointer, gtpsFinishProcessClass, gtpsClassAncestor,
      gtpsArray,
      gtpsEvalExpr, gtpsEvalExprRepeated,
      gtpsEvalExprArray, gtpsEvalExprDynArray, gtpsEvalExprDynArrayGetData,
@@ -2351,6 +2351,7 @@ var
 
   procedure FinishProcessClass;
   begin
+    FProcessState := gtpsFinishProcessClass;
     if (gtcfFullTypeInfo in FCreationFlags) and  not (gtcfExprIsType in FCreationFlags) then
       if not RequireRequests([gptrWhatisExpr]) then
         exit;
@@ -2449,7 +2450,7 @@ var
       s := '^' + s;
       FHasAutoTypeCastFix := True;
       exclude(FProccesReuestsMade, gptrPtypeCustomAutoCast2);
-      RequireRequests([gptrPtypeCustomAutoCast2], FExpression);
+      RequireRequests([gptrPtypeCustomAutoCast2], s);
       exit;
     end;
 
@@ -3165,18 +3166,19 @@ begin
   OldReqMade := FProccesReuestsMade;
 
   case FProcessState of
-    gtpsInitial:          ProcessInitial;
-    gtpsInitialSimple:    ProcessInitialSimple;
-    gtpsSimplePointer:    ProcessSimplePointer;
-    gtpsClass:            ProcessClass;
-    gtpsClassAutoCast:    ProcessClassAutoCast;
-    gtpsClassPointer:     ProcessClassPointer;
-    gtpsClassAncestor:    ProcessClassAncestor;
-    gtpsArray:            ProcessArray;
-    gtpsEvalExpr:         EvaluateExpression;
-    gtpsEvalExprRepeated: EvaluateExpressionRepeated;
-    gtpsEvalExprArray:    EvaluateExpressionArray;
-    gtpsEvalExprDynArray: EvaluateExpressionDynArray;
+    gtpsInitial:            ProcessInitial;
+    gtpsInitialSimple:      ProcessInitialSimple;
+    gtpsSimplePointer:      ProcessSimplePointer;
+    gtpsClass:              ProcessClass;
+    gtpsClassAutoCast:      ProcessClassAutoCast;
+    gtpsClassPointer:       ProcessClassPointer;
+    gtpsFinishProcessClass: FinishProcessClass;
+    gtpsClassAncestor:      ProcessClassAncestor;
+    gtpsArray:              ProcessArray;
+    gtpsEvalExpr:           EvaluateExpression;
+    gtpsEvalExprRepeated:   EvaluateExpressionRepeated;
+    gtpsEvalExprArray:      EvaluateExpressionArray;
+    gtpsEvalExprDynArray:   EvaluateExpressionDynArray;
     gtpsEvalExprDynArrayGetData: EvaluateExpressionDynArrayGetData;
   end;
 
