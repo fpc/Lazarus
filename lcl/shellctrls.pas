@@ -815,6 +815,7 @@ begin
       // Third column - Type
       NewItem.SubItems.Add(ExtractFileExt(CurFileName));
     end;
+    Sort;
   finally
     Files.Free;
   end;
