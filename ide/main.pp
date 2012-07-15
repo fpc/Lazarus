@@ -12124,14 +12124,20 @@ begin
   end;
 
   Result:=PrepareForCompile;
-  if Result<>mrOk then exit;
-  
+  if Result<>mrOk then begin
+    debugln(['TMainIDE.DoBuildProject PrepareForCompile failed']);
+    exit;
+  end;
+
   if (AReason in [crCompile,crBuild])
   and ([pbfDoNotCompileProject,pbfSkipTools]*Flags=[]) then
   begin
     // warn if nothing to do
     Result:=CheckCompileReasons(AReason,Project1.CompilerOptions,false);
-    if Result<>mrOk then exit;
+    if Result<>mrOk then begin
+      debugln(['TMainIDE.DoBuildProject CheckCompileReasons negative']);
+      exit;
+    end;
   end;
 
   // show messages
@@ -12140,7 +12146,10 @@ begin
 
   try
     Result:=DoSaveForBuild(AReason);
-    if Result<>mrOk then exit;
+    if Result<>mrOk then begin
+      debugln(['TMainIDE.DoBuildProject DoSaveForBuild failed']);
+      exit;
+    end;
 
     if (Project1.ProjResources.ResourceType=rtRes) then begin
       // FPC resources are only supported with FPC 2.4+
@@ -12162,7 +12171,10 @@ begin
 
     // now building can start: call handler
     Result:=DoCallModalFunctionHandler(lihtProjectBuilding);
-    if Result<>mrOk then exit;
+    if Result<>mrOk then begin
+      debugln(['TMainIDE.DoBuildProject handler lihtProjectBuilding negative']);
+      exit;
+    end;
 
     // get main source filename
     if not Project1.IsVirtual then begin
@@ -12176,24 +12188,32 @@ begin
     // compile required packages
     if not (pbfDoNotCompileDependencies in Flags) then begin
       Result:=DoCallModalFunctionHandler(lihtProjectDependenciesCompiling);
-      if Result<>mrOk then exit;
+      if Result<>mrOk then begin
+        debugln(['TMainIDE.DoBuildProject handler lihtProjectDependenciesCompiling negative']);
+        exit;
+      end;
       PkgFlags:=[pcfDoNotSaveEditorFiles];
       if pbfCompileDependenciesClean in Flags then
         Include(PkgFlags,pcfCompileDependenciesClean);
       Result:=PkgBoss.DoCompileProjectDependencies(Project1,PkgFlags);
       if Result <> mrOk then
       begin
+        debugln(['TMainIDE.DoBuildProject PkgBoss.DoCompileProjectDependencies failed']);
         CompileProgress.Ready(lisInfoBuildError);
         exit;
       end;
       Result:=DoCallModalFunctionHandler(lihtProjectDependenciesCompiled);
-      if Result<>mrOk then exit;
+      if Result<>mrOk then begin
+        debugln(['TMainIDE.DoBuildProject handler lihtProjectDependenciesCompiled negative']);
+        exit;
+      end;
     end;
 
     // warn for ambiguous files
     Result:=DoWarnAmbiguousFiles;
     if Result<>mrOk then
     begin
+      debugln(['TMainIDE.DoBuildProject DoWarnAmbiguousFiles negative']);
       CompileProgress.Ready(lisInfoBuildError);
       exit;
     end;
@@ -12208,12 +12228,14 @@ begin
       if  (pbfOnlyIfNeeded in Flags)
       and (not (pfAlwaysBuild in Project1.Flags)) then begin
         if Result=mrNo then begin
+          debugln(['TMainIDE.DoBuildProject MainBuildBoss.DoCheckIfProjectNeedsCompilation nothing to be done']);
           CompileProgress.Ready(lisInfoBuildError);
           Result:=mrOk;
           exit;
         end;
         if Result<>mrYes then
         begin
+          debugln(['TMainIDE.DoBuildProject MainBuildBoss.DoCheckIfProjectNeedsCompilation failed']);
           CompileProgress.Ready(lisInfoBuildError);
           exit;
         end;
@@ -12234,7 +12256,10 @@ begin
         if Result<>mrYes then exit;
       end;
       Result:=ForceDirectoryInteractive(UnitOutputDirectory,[mbRetry]);
-      if Result<>mrOk then exit;
+      if Result<>mrOk then begin
+        debugln(['TMainIDE.DoBuildProject ForceDirectoryInteractive "',UnitOutputDirectory,'" failed']);
+        exit;
+      end;
     end;
 
     // create target output directory
@@ -12252,7 +12277,10 @@ begin
         if Result<>mrYes then exit;
       end;
       Result:=ForceDirectoryInteractive(TargetExeDirectory,[mbRetry]);
-      if Result<>mrOk then exit;
+      if Result<>mrOk then begin
+        debugln(['TMainIDE.DoBuildProject ForceDirectoryInteractive "',TargetExeDirectory,'" failed']);
+        exit;
+      end;
     end;
 
     // create application bundle
@@ -12260,13 +12288,22 @@ begin
     and (MainBuildBoss.GetLCLWidgetType=LCLPlatformDirNames[lpCarbon])
     then begin
       Result:=CreateApplicationBundle(TargetExeName, Project1.GetTitleOrName);
-      if not (Result in [mrOk,mrIgnore]) then exit;
+      if not (Result in [mrOk,mrIgnore]) then begin
+        debugln(['TMainIDE.DoBuildProject CreateApplicationBundle "',TargetExeName,'" failed']);
+        exit;
+      end;
       Result:=CreateAppBundleSymbolicLink(TargetExeName);
-      if not (Result in [mrOk,mrIgnore]) then exit;
+      if not (Result in [mrOk,mrIgnore]) then begin
+        debugln(['TMainIDE.DoBuildProject CreateAppBundleSymbolicLink "',TargetExeName,'" failed']);
+        exit;
+      end;
     end;
 
-    if not Project1.ProjResources.Regenerate(Project1.MainFilename, False, True, TargetExeDirectory) then
-      Exit;
+    if not Project1.ProjResources.Regenerate(Project1.MainFilename, False, True, TargetExeDirectory)
+    then begin
+      debugln(['TMainIDE.DoBuildProject Project1.ProjResources.Regenerate failed']);
+      exit;
+    end;
 
     // execute compilation tool 'Before'
     if not (pbfSkipTools in Flags) then begin
@@ -12277,6 +12314,7 @@ begin
                            Project1.ProjectDirectory,lisExecutingCommandBefore);
         if Result<>mrOk then
         begin
+          debugln(['TMainIDE.DoBuildProject Project1.CompilerOptions.ExecuteBefore.Execute failed']);
           CompileProgress.Ready(lisInfoBuildError);
           exit;
         end;
@@ -12303,6 +12341,7 @@ begin
         // write state file, to avoid building clean every time
         Result:=Project1.SaveStateFile(CompilerFilename,CompilerParams,false);
         if Result<>mrOk then begin
+          debugln(['TMainIDE.DoBuildProject SaveStateFile before compile failed']);
           CompileProgress.Ready(lisInfoBuildError);
           exit;
         end;
@@ -12319,11 +12358,13 @@ begin
           Project1.LastCompilerFileDate:=FileAgeCached(CompilerFilename);
           DoJumpToCompilerMessage(-1,not EnvironmentOptions.ShowCompileDialog);
           CompileProgress.Ready(lisInfoBuildError);
+          debugln(['TMainIDE.DoBuildProject Compile failed']);
           exit;
         end;
         // compilation succeded -> write state file
         Result:=Project1.SaveStateFile(CompilerFilename,CompilerParams,true);
         if Result<>mrOk then begin
+          debugln(['TMainIDE.DoBuildProject SaveStateFile after compile failed']);
           CompileProgress.Ready(lisInfoBuildError);
           exit;
         end;
@@ -12331,6 +12372,7 @@ begin
         // update project .po file
         Result:=UpdateProjectPOFile(Project1);
         if Result<>mrOk then begin
+          debugln(['TMainIDE.DoBuildProject UpdateProjectPOFile failed']);
           CompileProgress.Ready(lisInfoBuildError);
           exit;
         end;
@@ -12350,6 +12392,7 @@ begin
                             Project1.ProjectDirectory,lisExecutingCommandAfter);
         if Result<>mrOk then
         begin
+          debugln(['TMainIDE.DoBuildProject CompilerOptions.ExecuteAfter.Execute failed']);
           CompileProgress.Ready(lisInfoBuildError);
           exit;
         end;
@@ -12397,12 +12440,12 @@ begin
   Result := mrCancel;
 
   // Check if we can run this project
-  debugln('TMainIDE.DoInitProjectRun A ',dbgs(pfRunnable in Project1.Flags),' ',dbgs(Project1.MainUnitID));
+  debugln('TMainIDE.DoInitProjectRun Check if project can run: ',dbgs(pfRunnable in Project1.Flags),' ',dbgs(Project1.MainUnitID));
   if not ( ((Project1.CompilerOptions.ExecutableType=cetProgram) or
             (Project1.RunParameterOptions.HostApplicationFilename<>''))
           and (pfRunnable in Project1.Flags) and (Project1.MainUnitID >= 0) ) then Exit;
 
-  debugln('TMainIDE.DoInitProjectRun B');
+  debugln('TMainIDE.DoInitProjectRun Check build ...');
   // Build project first
   if DoBuildProject(crRun,[pbfOnlyIfNeeded]) <> mrOk then Exit;
 
@@ -12427,7 +12470,7 @@ end;
 
 function TMainIDE.DoRunProject: TModalResult;
 begin
-  DebugLn('[TMainIDE.DoRunProject] A');
+  DebugLn('[TMainIDE.DoRunProject] INIT');
 
   if (DoInitProjectRun <> mrOK)
   or (ToolStatus <> itDebugger)
@@ -12435,7 +12478,7 @@ begin
     Result := mrAbort;
     Exit;
   end;
-  debugln('[TMainIDE.DoRunProject] B ',EnvironmentOptions.DebuggerConfig.DebuggerClass);
+  debugln('[TMainIDE.DoRunProject] Debugger=',EnvironmentOptions.DebuggerConfig.DebuggerClass);
 
   Result := mrCancel;
 
