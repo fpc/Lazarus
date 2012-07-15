@@ -2953,6 +2953,8 @@ function dbgs(AnAttributes: TDBGSymbolAttributes): String; overload;
 function dbgs(AFlag: TDebuggerLocationFlag): String; overload;
 function dbgs(AFlags: TDebuggerLocationFlags): String; overload;
 function dbgs(ACategory: TDBGEventCategory): String; overload;
+function dbgs(AFlag: TDBGEvaluateFlag): String; overload;
+function dbgs(AFlags: TDBGEvaluateFlags): String; overload;
 
 function HasConsoleSupport: Boolean;
 (******************************************************************************)
@@ -3042,6 +3044,25 @@ end;
 function dbgs(ACategory: TDBGEventCategory): String;
 begin
   writestr(Result{%H-}, ACategory);
+end;
+
+function dbgs(AFlag: TDBGEvaluateFlag): String;
+begin
+  Result := '';
+  WriteStr(Result, AFlag);
+end;
+
+function dbgs(AFlags: TDBGEvaluateFlags): String;
+var
+  i: TDBGEvaluateFlag;
+begin
+  Result:='';
+  for i := low(TDBGEvaluateFlags) to high(TDBGEvaluateFlags) do
+    if i in AFlags then begin
+      if Result <> '' then Result := Result + ', ';
+      Result := Result + dbgs(i);
+    end;
+  Result := '[' + Result + ']';
 end;
 
 function dbgs(ADisassRange: TDBGDisassemblerEntryRange): String; overload;
