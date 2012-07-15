@@ -127,20 +127,10 @@ begin
 
   SetFileNames(MainFilename);
   if FilenameIsAbsolute(FIcoFileName) then
-    if not CreateIconFile then
+    if not CreateIconFile then begin
+      debugln(['TProjectIcon.UpdateResources CreateIconFile "'+FIcoFileName+'" failed']);
       exit(false);
-
-{ to create an lrs with icon we can use this but there is no reason anymore
-  if AResources.ResourceType <> rtRes then
-  begin
-    AResource := GetStream;
-    try
-      AResources.AddLazarusResource(AResource, 'MAINICON', 'ICO');
-    finally
-      AResource.Free;
     end;
-  end;
-}
 
   AName := TResourceDesc.Create('MAINICON');
   ARes := TGroupIconResource.Create(nil, AName); //type is always RT_GROUP_ICON
@@ -153,7 +143,7 @@ begin
         ItemStream:=ARes.ItemData;
       except
         on E: Exception do begin
-          DebugLn(['TProjectIcon.UpdateResources bug in fcl: ',E.Message]);
+          DebugLn(['TProjectIcon.UpdateResources ignoring bug in fcl: ',E.Message]);
         end;
       end;
       if ItemStream<>nil then
@@ -188,13 +178,19 @@ begin
   Result := False;
   if IsEmpty then exit;
   try
-    fs:=TFileStreamUTF8.Create(FIcoFileName,fmCreate or fmOpenReadWrite);
+    if FileExistsUTF8(FIcoFileName) then
+      fs:=TFileStreamUTF8.Create(FIcoFileName,fmOpenWrite)
+    else
+      fs:=TFileStreamUTF8.Create(FIcoFileName,fmCreate);
     try
       fs.Write(FData[0],length(FData));
+      Result:=true;
     finally
       fs.Free;
     end;
   except
+    on E: Exception do
+      debugln(['TProjectIcon.CreateIconFile "'+FIcoFileName+'": '+E.Message]);
   end;
 end;
 

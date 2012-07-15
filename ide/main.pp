@@ -12301,7 +12301,7 @@ begin
 
     if not Project1.ProjResources.Regenerate(Project1.MainFilename, False, True, TargetExeDirectory)
     then begin
-      debugln(['TMainIDE.DoBuildProject Project1.ProjResources.Regenerate failed']);
+      debugln(['TMainIDE.DoBuildProject ProjResources.Regenerate failed']);
       exit;
     end;
 
@@ -12314,7 +12314,7 @@ begin
                            Project1.ProjectDirectory,lisExecutingCommandBefore);
         if Result<>mrOk then
         begin
-          debugln(['TMainIDE.DoBuildProject Project1.CompilerOptions.ExecuteBefore.Execute failed']);
+          debugln(['TMainIDE.DoBuildProject CompilerOptions.ExecuteBefore.Execute failed']);
           CompileProgress.Ready(lisInfoBuildError);
           exit;
         end;

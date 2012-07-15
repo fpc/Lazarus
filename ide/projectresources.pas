@@ -368,14 +368,18 @@ end;
 function TProjectResources.Update: Boolean;
 var
   i: integer;
+  Res: TAbstractProjectResource;
 begin
   Result:=true;
   Clear;
   for i := 0 to FResources.Count - 1 do
   begin
-    Result := TAbstractProjectResource(FResources[i]).UpdateResources(Self, resFileName);
-    if not Result then
+    Res:=TAbstractProjectResource(FResources[i]);
+    Result := Res.UpdateResources(Self, resFileName);
+    if not Result then begin
+      debugln(['TProjectResources.Update UpdateResources of ',DbgSName(Res),' failed']);
       Exit;
+    end;
   end;
 end;
 
@@ -495,16 +499,22 @@ begin
 
   try
     // update resources (FLazarusResources, FSystemResources, ...)
-    if not Update then
+    if not Update then begin
+      debugln(['TProjectResources.Regenerate Update failed']);
       Exit;
+    end;
     // create codebuffers of new .lrs and .rc files
     UpdateCodeBuffers;
     // update .lpr file (old and new include files exist, so parsing should work without errors)
-    if UpdateSource and not UpdateMainSourceFile(MainFileName) then
-      Exit;
+    if UpdateSource and not UpdateMainSourceFile(MainFileName) then begin
+      debugln(['TProjectResources.Regenerate UpdateMainSourceFile failed']);
+      exit;
+    end;
 
-    if PerformSave and not Save(SaveToTestDir) then
+    if PerformSave and not Save(SaveToTestDir) then begin
+      debugln(['TProjectResources.Regenerate Save failed']);
       Exit;
+    end;
   finally
     DeleteLastCodeBuffers;
   end;
