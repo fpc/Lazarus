@@ -51,52 +51,58 @@ unit registersqldb;
 {$DEFINE HASFBEVENT}
 {$ENDIF}
 
+{$IFNDEF Solaris}
+{$DEFINE HASIBCONNECTION}
+{$ENDIF}
+
 interface
 
 uses
   Classes, SysUtils, LResources, db, sqldb,
-  ibconnection,
-{$IFDEF HASMSSQLCONNECTION}  
-  // mssqlconn provide both MS SQL Server and Sybase ASE connectors.
-  mssqlconn,
-{$ENDIF}
-  odbcconn,
-{$IFDEF HASPQCONNECTION}
-  pqconnection,
-  {$IFDEF HASPQEVENT}
-  pqteventmonitor,
+  {$IFDEF HASIBCONNECTION}
+    ibconnection,
   {$ENDIF}
-{$ENDIF}
-{$IFDEF HASORACLECONNECTION}
-  oracleconnection,
-{$ENDIF}
+  {$IFDEF HASMSSQLCONNECTION}
+    // mssqlconn provide both MS SQL Server and Sybase ASE connectors.
+    mssqlconn,
+  {$ENDIF}
+  odbcconn,
+  {$IFDEF HASPQCONNECTION}
+    pqconnection,
+    {$IFDEF HASPQEVENT}
+    pqteventmonitor,
+    {$ENDIF}
+  {$ENDIF}
+  {$IFDEF HASORACLECONNECTION}
+    oracleconnection,
+  {$ENDIF}
 
-{$IFDEF HASMYSQL4CONNECTION}
-  mysql40conn, mysql41conn,
-{$ENDIF}
-  mysql50conn,
-{$IFDEF HASMYSQL51CONNECTION}
-  mysql51conn,
-{$ENDIF}
-{$IFDEF HASMYSQL55CONNECTION}
-  mysql55conn,
-{$ENDIF}
-{$IFDEF HASSQLITE3CONNECTION}
-  sqlite3conn,
-{$ENDIF}
-{$IFDEF HASFBADMIN}
-  fbadmin,
-{$ENDIF}
-{$IFDEF HASFBEVENT}
-  fbeventmonitor,
-{$ENDIF}
+  {$IFDEF HASMYSQL4CONNECTION}
+    mysql40conn, mysql41conn,
+  {$ENDIF}
+    mysql50conn,
+  {$IFDEF HASMYSQL51CONNECTION}
+    mysql51conn,
+  {$ENDIF}
+  {$IFDEF HASMYSQL55CONNECTION}
+    mysql55conn,
+  {$ENDIF}
+  {$IFDEF HASSQLITE3CONNECTION}
+    sqlite3conn,
+  {$ENDIF}
+  {$IFDEF HASFBADMIN}
+    fbadmin,
+  {$ENDIF}
+  {$IFDEF HASFBEVENT}
+    fbeventmonitor,
+  {$ENDIF}
   propedits,
   sqlstringspropertyeditordlg,
   controls,
   forms,
-{$IFDEF HASSQLPARSER}
-  sqlscript, fpsqltree, fpsqlparser,
-{$ENDIF HASSQLPARSER}
+  {$IFDEF HASSQLPARSER}
+    sqlscript, fpsqltree, fpsqlparser,
+  {$ENDIF HASSQLPARSER}
   LazarusPackageIntf,
   lazideintf,
   srceditorintf,
@@ -157,48 +163,51 @@ implementation
 
 procedure RegisterUnitSQLdb;
 begin
-  RegisterComponents('SQLdb',[TSQLQuery,
-                              TSQLTransaction,
-                              TSQLScript,
-                              TSQLConnector,
+  RegisterComponents('SQLdb',[
+    TSQLQuery,
+    TSQLTransaction,
+    TSQLScript,
+    TSQLConnector
 {$IFDEF HASMSSQLCONNECTION}                                
-                              TMSSQLConnection,
+    ,TMSSQLConnection
 {$ENDIF}
 {$IFDEF HASSYBASECONNECTION}                                
-                              TSybaseConnection,
+    ,TSybaseConnection
 {$ENDIF}                              
 {$IFDEF HASPQCONNECTION}
-                              TPQConnection,
+    ,TPQConnection
   {$IFDEF HASPQEVENT}
-                              TPQTEventMonitor,
+      ,TPQTEventMonitor
   {$ENDIF}
 {$ENDIF}
 {$IFDEF HASORACLECONNECTION}
-                              TOracleConnection,
+    ,TOracleConnection
 {$ENDIF}
-                              TODBCConnection,
+    ,TODBCConnection
 {$IFDEF HASMYSQL4CONNECTION}
-                              TMySQL40Connection,
-                              TMySQL41Connection,
+    ,TMySQL40Connection
+    ,TMySQL41Connection
 {$ENDIF}
-                              TMySQL50Connection,
+    ,TMySQL50Connection
 {$IFDEF HASMYSQL51CONNECTION}
-                              TMySQL51Connection,
+    ,TMySQL51Connection
 {$ENDIF}
 {$IFDEF HASMYSQL55CONNECTION}
-                              TMySQL55Connection,
+    ,TMySQL55Connection
 {$ENDIF}
 {$IFDEF HASSQLITE3CONNECTION}
-                              TSQLite3Connection,
+    ,TSQLite3Connection
 {$ENDIF}
-                              TIBConnection
+{$IFDEF HASIBCONNECTION}
+    ,TIBConnection
+{$ENDIF}
 {$IFDEF HASFBADMIN}
-                              ,TFBAdmin
+    ,TFBAdmin
 {$ENDIF}
 {$IFDEF HASFBEVENT}
-                              ,TFBEventMonitor
+    ,TFBEventMonitor
 {$ENDIF}
-                              ]);
+    ]);
 end;
 
 
@@ -460,7 +469,7 @@ begin
 end;
 
 initialization
- {$i registersqldb.lrs}
+  {$i registersqldb.lrs}
 
 {$IFDEF HASSQLPARSER}
 finalization

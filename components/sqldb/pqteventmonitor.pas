@@ -14,7 +14,6 @@ type
 
   TPQTEventMonitor=class(TPQEventMonitor)
   private
-    Fpoll: integer;
     Timer:TTimer;
     function GetPollInterval: integer;
     procedure OnTimer(Sender: TObject);

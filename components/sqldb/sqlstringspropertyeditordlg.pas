@@ -61,7 +61,7 @@ type
     procedure OpenToolButtonClick(Sender: TObject);
     procedure SaveToolButtonClick(Sender: TObject);
     procedure SQLEditorMouseDown(Sender: TObject; Button: TMouseButton;
-      Shift: TShiftState; X, Y: Integer);
+      {%H-}Shift: TShiftState; X, Y: Integer);
     procedure TBCheckClick(Sender: TObject);
   private
     { private declarations }
