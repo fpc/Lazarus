@@ -111,7 +111,3 @@ msgstr ""
 msgid "Use Instance class type"
 msgstr ""
 
-#: debuggerstrconst.drswatchsplitterinspect
-msgid "Inspect pane"
-msgstr ""
-

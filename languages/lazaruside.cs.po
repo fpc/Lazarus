@@ -808,6 +808,10 @@ msgstr "Kontrolovat balíčky při vytváření formuláře"
 msgid "Choose code template file (*.dci)"
 msgstr "Vyberte šablonu kódu (*.dci)"
 
+#: lazarusidestrconsts.dlgclassinsertpolicy
+msgid "Class part insert policy"
+msgstr ""
+
 #: lazarusidestrconsts.dlgclosebuttonsnotebook
 msgid "Show close buttons in notebook"
 msgstr "Ukázat tlačítka pro zavření v zápisníku"
@@ -1902,10 +1906,6 @@ msgstr "Před metodami"
 msgid "Constructor name must be 'init' (destructor must be 'done')"
 msgstr "Jméno konstruktoru musí být 'init' (destruktor musí být 'done')"
 
-#: lazarusidestrconsts.dlginsertclassparts
-msgid "Insert class parts"
-msgstr "Vložit části třídy"
-
 #: lazarusidestrconsts.dlginsertimplementation
 msgid "Implementation"
 msgstr "Implementace"
@@ -1913,10 +1913,6 @@ msgstr "Implementace"
 #: lazarusidestrconsts.dlginsertinterface
 msgid "Interface"
 msgstr "Rozhraní"
-
-#: lazarusidestrconsts.dlginsertmethods
-msgid "Insert methods"
-msgstr "Vložit metody"
 
 #: lazarusidestrconsts.dlginsertsection
 msgid "Insert into Uses section of"
@@ -2083,6 +2079,10 @@ msgstr "Maximum nedávných souborů"
 #: lazarusidestrconsts.dlgmaxrecentprojs
 msgid "Max recent project files"
 msgstr "Maximum nedávných souborů projektů"
+
+#: lazarusidestrconsts.dlgmethodinspolicy
+msgid "Method insert policy"
+msgstr ""
 
 #: lazarusidestrconsts.dlgmixmethodsandproperties
 msgid "Mix methods and properties"
@@ -7187,6 +7187,10 @@ msgstr "Pokyny"
 msgid "Directives for new unit"
 msgstr "Pokyny pro novou jednotku"
 
+#: lazarusidestrconsts.lisdirectory
+msgid "Directory: "
+msgstr ""
+
 #: lazarusidestrconsts.lisdirectorynotfound
 msgid "Directory %s%s%s not found."
 msgstr "Adresář %s%s%s nenalezen."
@@ -8078,6 +8082,10 @@ msgstr "Vykreslovat prvky návrháře pouze při nečinnosti (snižuje zatížen
 msgctxt "lazarusidestrconsts.lisfile"
 msgid "File"
 msgstr "Soubor"
+
+#: lazarusidestrconsts.lisfile2
+msgid "File: "
+msgstr ""
 
 #: lazarusidestrconsts.lisfiledoesnotlooklikeatextfileopenitanyway
 msgctxt "lazarusidestrconsts.lisfiledoesnotlooklikeatextfileopenitanyway"
@@ -10664,6 +10672,10 @@ msgstr "Poznámka GPL"
 msgid "LGPL Notice"
 msgstr "Poznámka LGPL"
 
+#: lazarusidestrconsts.lismenuinsertmitnotice
+msgid "MIT Notice"
+msgstr ""
+
 #: lazarusidestrconsts.lismenuinsertmodifiedlgplnotice
 msgid "Modified LGPL Notice"
 msgstr "Poznámka k upravené LGPL"
@@ -11286,6 +11298,10 @@ msgstr "Cesta jednotek projektu"
 msgid "Skip this Unit"
 msgstr "Přeskočit tuto jednotku"
 
+#: lazarusidestrconsts.lismitnotice
+msgid "<description>%sCopyright (c) <year> <copyright holders>%sPermission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the \"Software\"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:%sThe above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.%sTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE."
+msgstr ""
+
 #: lazarusidestrconsts.lismodifiedlgplnotice
 msgid "<description>%sCopyright (C) <year> <name of author> <contact>%sThis library is free software; you can redistribute it and/or modify it under the terms of the GNU Library General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version with the following modification:%sAs a special exception, the copyright holders of this library give you permission to link this library with independent modules to produce an executable, regardless of the license terms of these independent modules,and to copy and distribute the resulting executable under terms of your choice, provided that you also meet, for each linked independent module, the terms and conditions of the license of that module. An independent module is a module which is not derived from or based on this library. If you modify this library, you may extend this exception to your version of the library, but you are not obligated to do so. If you do not wish to do so, delete this exception statement from your version.%sThis program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Library General Public License for more details. %sYou should have received a copy of the GNU Library General Public License along with this library; if not, write to the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA."
 msgstr "<popis>%sCopyright (C) <rok> <jméno autora> <kontakt>%sTato knihovna je svobodný program; můžete ji distribuovat a/nebo upravovat podle ustanovení GNU Library General Public License tak jak ji zveřejnila Free Software Foundation; buď verze 2 Licence nebo (podle Vaší volby) jakékoliv novější verze s následujícími úpravami:%sJako speciální výjimka, vlastníci autorského práva této knihovny Vám dovolují připojit tuto knihovnu s nezávislými moduly za účelem vytvoření programů, pričemž nezávisí na licenci těchto nezávislých modulů, a kopírovat a distribuovat výsledné programy za podmínek poskytnutých podle Vašeho rozhodnutí, které se můžou líšit pro každý nezávislý modul. Nezávislý modul je modul, který není odvozený nebo založený na této knihovně. Pokud upravujete tuto knihovnu, můžete rozšířit tuto výjimku pro svojí verzi knihovny, ale není to Vaše povinnost. Pokud to nechcete udělat, smažte tuto výjimku ze své verze. %sTento program je distribuován v naději, že bude užitečný, ale BEZ JAKÉKOLIV ZÁRUKY; dokonce i bez záruky MERCHANTABILITY nebo FITNESS FOR A PARTICULAR PURPOSE. Další podrobnosti najdete v GNU Library General Public License. %sKopi GNU Library General Public License jste měli získat spolu s touto knihovnou, pokud ne, napište Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA."
@@ -11441,10 +11457,6 @@ msgstr "(nový projekt)"
 #: lazarusidestrconsts.lisnewsetting
 msgid "New setting"
 msgstr "Nové nastavení"
-
-#: lazarusidestrconsts.lisnewthegnudebuggerthroughsshallowstoremotedebugviaassh
-msgid "The GNU debugger through ssh allows to remote debug via a ssh connection. See docs/RemoteDebugging.txt for details. The path must contain the ssh client.Use SSH_Startup_Options for the hostname and optional username.And Remote_GDB_Exe for the filename of gdb on the remote computer."
-msgstr "GNU ladič přes SSH umožňuje vzdálené ladění přes SSH spojení. Viz docs/RemoteDebugging.txt pro více detailů. Cesta musí obsahovat SSH klienta. Použijte SSH_Startup_Options pro název hostitele a volitelně uživatelské jméno. Použijte Remote_GDB_Exe pro jméno gdb souboru na vzdáleném počítači. "
 
 #: lazarusidestrconsts.lisnewunitsareaddedtousessections
 msgid "New units are added to uses sections"
@@ -14888,6 +14900,10 @@ msgstr "Překladač Free Pascal (jméno souboru: %s) nebyl nalezen.%sDoporučuje
 msgid "The Free Pascal source directory was not found.%sSome code functions will not work.%sIt is recommended that you install it and set the path%sTools -> Options -> Files"
 msgstr "Adresář zdrojových kódů Free Pascalu nebyl nalezen.%sNěkteré funkce kódu nebudou fungovat.%sDoporučujeme jej nainstalovat a nastavit cestu v %sNástroje -> Nastavení -> Soubory"
 
+#: lazarusidestrconsts.listhegnudebuggerthroughsshallowstoremotedebugviaassh
+msgid "The GNU debugger through ssh allows to remote debug via a ssh connection. See docs/RemoteDebugging.txt for details. The path must contain the ssh client filename, the hostname with an optional username and the filename of gdb on the remote computer. For example: %s/usr/bin/ssh username@hostname gdb%s or: %s/usr/bin/setsid /usr/bin/ssh username@hostname gdb%s"
+msgstr ""
+
 #: lazarusidestrconsts.listheidentifierisaunitpleaseusethefilesaveasfunction
 msgid "The identifier is a unit. Please use the File - Save as function to rename a unit."
 msgstr "Identifikátor je jednotkou. Použijte funkci Soubor->Uložit jako k přejmenování jednotky."
@@ -16156,10 +16172,6 @@ msgstr "&Povolit vše"
 msgid "Expression"
 msgstr "Výraz"
 
-#: lazarusidestrconsts.liswlinspectpane
-msgid "Inspect pane"
-msgstr ""
-
 #: lazarusidestrconsts.liswlproperties
 msgid "&Properties"
 msgstr "&Vlastnosti"
@@ -17066,6 +17078,10 @@ msgstr "Vložit poznámku LGPL"
 msgid "Break line, leave cursor"
 msgstr "Ukončit řádek a nechat kurzor"
 
+#: lazarusidestrconsts.srkmecinsertmitnotice
+msgid "Insert MIT notice"
+msgstr ""
+
 #: lazarusidestrconsts.srkmecinsertmode
 msgid "Insert Mode"
 msgstr "Režim vkládání"
@@ -17461,16 +17477,6 @@ msgctxt "lazarusidestrconsts.srkmecsynpsyncroednextcellsel"
 msgid "Next Cell (all selected)"
 msgstr "Další buňka (všechny vybrané)"
 
-#: lazarusidestrconsts.srkmecsynpsyncroednextfirstcell
-msgctxt "lazarusidestrconsts.srkmecsynpsyncroednextfirstcell"
-msgid "Next Cell (firsts only)"
-msgstr ""
-
-#: lazarusidestrconsts.srkmecsynpsyncroednextfirstcellsel
-msgctxt "lazarusidestrconsts.srkmecsynpsyncroednextfirstcellsel"
-msgid "Next Cell (all selected / firsts only)"
-msgstr ""
-
 #: lazarusidestrconsts.srkmecsynpsyncroedprevcell
 msgctxt "lazarusidestrconsts.srkmecsynpsyncroedprevcell"
 msgid "Previous Cell"
@@ -17480,16 +17486,6 @@ msgstr "Předchozí buňka"
 msgctxt "lazarusidestrconsts.srkmecsynpsyncroedprevcellsel"
 msgid "Previous Cell (all selected)"
 msgstr "Předchozí buňka (všechny vybrané)"
-
-#: lazarusidestrconsts.srkmecsynpsyncroedprevfirstcell
-msgctxt "lazarusidestrconsts.srkmecsynpsyncroedprevfirstcell"
-msgid "Previous Cell (firsts only)"
-msgstr ""
-
-#: lazarusidestrconsts.srkmecsynpsyncroedprevfirstcellsel
-msgctxt "lazarusidestrconsts.srkmecsynpsyncroedprevfirstcellsel"
-msgid "Previous Cell (all selected / firsts only)"
-msgstr ""
 
 #: lazarusidestrconsts.srkmecsynpsyncroedstart
 msgid "Start Syncro edit"
@@ -17536,24 +17532,6 @@ msgstr "Další buňka (všechny vybrané)"
 msgid "Next Cell (rotate / all selected)"
 msgstr "Další buňka (rotace / všechny vybrané)"
 
-#: lazarusidestrconsts.srkmecsynptmplednextfirstcell
-msgctxt "lazarusidestrconsts.srkmecsynptmplednextfirstcell"
-msgid "Next Cell (firsts only)"
-msgstr ""
-
-#: lazarusidestrconsts.srkmecsynptmplednextfirstcellrotate
-msgid "Next Cell (rotate / firsts only)"
-msgstr ""
-
-#: lazarusidestrconsts.srkmecsynptmplednextfirstcellsel
-msgctxt "lazarusidestrconsts.srkmecsynptmplednextfirstcellsel"
-msgid "Next Cell (all selected / firsts only)"
-msgstr ""
-
-#: lazarusidestrconsts.srkmecsynptmplednextfirstcellselrotate
-msgid "Next Cell (rotate / all selected / firsts only)"
-msgstr ""
-
 #: lazarusidestrconsts.srkmecsynptmpledprevcell
 msgctxt "lazarusidestrconsts.srkmecsynptmpledprevcell"
 msgid "Previous Cell"
@@ -17563,16 +17541,6 @@ msgstr "Předchozí buňka"
 msgctxt "lazarusidestrconsts.srkmecsynptmpledprevcellsel"
 msgid "Previous Cell (all selected)"
 msgstr "Předchozí buňka (všechny vybrané)"
-
-#: lazarusidestrconsts.srkmecsynptmpledprevfirstcell
-msgctxt "lazarusidestrconsts.srkmecsynptmpledprevfirstcell"
-msgid "Previous Cell (firsts only)"
-msgstr ""
-
-#: lazarusidestrconsts.srkmecsynptmpledprevfirstcellsel
-msgctxt "lazarusidestrconsts.srkmecsynptmpledprevfirstcellsel"
-msgid "Previous Cell (all selected / firsts only)"
-msgstr ""
 
 #: lazarusidestrconsts.srkmecsyntaxcheck
 msgid "Syntax Check"

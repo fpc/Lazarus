@@ -843,6 +843,10 @@ msgstr "Verificar pacotes na criação formulário"
 msgid "Choose code template file (*.dci)"
 msgstr "Escolha o arquivo de modelos de código (*.dci)"
 
+#: lazarusidestrconsts.dlgclassinsertpolicy
+msgid "Class part insert policy"
+msgstr ""
+
 #: lazarusidestrconsts.dlgclosebuttonsnotebook
 msgid "Show close buttons in notebook"
 msgstr "Exibir botões de fechar no \"notebook\""
@@ -2021,20 +2025,12 @@ msgstr "Na frente de métodos"
 msgid "Constructor name must be 'init' (destructor must be 'done')"
 msgstr "Nome do construtor precisa ser \"init\" (e o destrutor precisa ser \"done\")"
 
-#: lazarusidestrconsts.dlginsertclassparts
-msgid "Insert class parts"
-msgstr ""
-
 #: lazarusidestrconsts.dlginsertimplementation
 msgid "Implementation"
 msgstr ""
 
 #: lazarusidestrconsts.dlginsertinterface
 msgid "Interface"
-msgstr ""
-
-#: lazarusidestrconsts.dlginsertmethods
-msgid "Insert methods"
 msgstr ""
 
 #: lazarusidestrconsts.dlginsertsection
@@ -2226,6 +2222,10 @@ msgstr "Máximo de arquivos recentes"
 #: lazarusidestrconsts.dlgmaxrecentprojs
 msgid "Max recent project files"
 msgstr "Máximo de arquivos de projeto recentes"
+
+#: lazarusidestrconsts.dlgmethodinspolicy
+msgid "Method insert policy"
+msgstr ""
 
 #: lazarusidestrconsts.dlgmixmethodsandproperties
 msgid "Mix methods and properties"
@@ -7539,6 +7539,10 @@ msgstr "Diretivas"
 msgid "Directives for new unit"
 msgstr "Diretivas para nova unidade"
 
+#: lazarusidestrconsts.lisdirectory
+msgid "Directory: "
+msgstr ""
+
 #: lazarusidestrconsts.lisdirectorynotfound
 msgid "Directory %s%s%s not found."
 msgstr "Diretório %s%s%s não encontrado."
@@ -8446,6 +8450,10 @@ msgstr "Atualizar itens da janela do editor quando ocioso.(Reduz pico processame
 msgctxt "lazarusidestrconsts.lisfile"
 msgid "File"
 msgstr "Arquivo"
+
+#: lazarusidestrconsts.lisfile2
+msgid "File: "
+msgstr ""
 
 #: lazarusidestrconsts.lisfiledoesnotlooklikeatextfileopenitanyway
 msgctxt "lazarusidestrconsts.lisfiledoesnotlooklikeatextfileopenitanyway"
@@ -11219,6 +11227,10 @@ msgstr "Aviso GPL"
 msgid "LGPL Notice"
 msgstr "Aviso LGPL"
 
+#: lazarusidestrconsts.lismenuinsertmitnotice
+msgid "MIT Notice"
+msgstr ""
+
 #: lazarusidestrconsts.lismenuinsertmodifiedlgplnotice
 #, fuzzy
 #| msgid "Modified LGPL notice"
@@ -11968,6 +11980,10 @@ msgstr "Caminho Busca Unidades"
 msgid "Skip this Unit"
 msgstr ""
 
+#: lazarusidestrconsts.lismitnotice
+msgid "<description>%sCopyright (c) <year> <copyright holders>%sPermission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the \"Software\"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:%sThe above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.%sTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE."
+msgstr ""
+
 #: lazarusidestrconsts.lismodifiedlgplnotice
 msgid "<description>%sCopyright (C) <year> <name of author> <contact>%sThis library is free software; you can redistribute it and/or modify it under the terms of the GNU Library General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version with the following modification:%sAs a special exception, the copyright holders of this library give you permission to link this library with independent modules to produce an executable, regardless of the license terms of these independent modules,and to copy and distribute the resulting executable under terms of your choice, provided that you also meet, for each linked independent module, the terms and conditions of the license of that module. An independent module is a module which is not derived from or based on this library. If you modify this library, you may extend this exception to your version of the library, but you are not obligated to do so. If you do not wish to do so, delete this exception statement from your version.%sThis program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Library General Public License for more details. %sYou should have received a copy of the GNU Library General Public License along with this library; if not, write to the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA."
 msgstr "<description>%sCopyright (C) <year> <name of author> <contact>%sEsta biblioteca é software livre; você pode redistribuí-la e/ou moficá-la sob os termos da licença GNU Library General Public License como publicada pela Free Software Foundation; ou a versão 2 da Licença, ou (a sua escolha) qualquer versão posterior com as seguintes modificações:%sComo uma exceção especial, os detentores do copyright desta biblioteca dão permissão para usá-la com módulos independentes para produzir um executável, independentemente dos termos de licença destes módulos independentes, e copiar e distribuir o executável resultante sob os termos de sua escolha, desde que você encontre, para cada módulo independente vinculado, os termos e condições da licença daquele módulo. Um módulo independente e um módulo que não é derivado ou baseado nesta biblioteca. Se você modificar esta biblioteca você deve estender esta exceção a sua versão da biblioteca, mas não é obrigado a fazer isto. Se você não quiser fazer isto, elimine o estatuto desta exceção da sua versão.%sEste programa é distribuido na esperança de que seja útil, mas SEM QUALQUER GARANTIA; nem mesmo a garantia implícita de COMERCIABILIDADE ou ADEQUAÇÃO A UMA FINALIDADE PARTICULAR. Veja a licença GNU General Public License para maiores detalhes.%sVocê deve ter recebido uma cópia da licença GNU Library General Public License juntamente com esta biblioteca; senão, escreva a Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA."
@@ -12130,10 +12146,6 @@ msgstr "(novo projeto)"
 #: lazarusidestrconsts.lisnewsetting
 msgid "New setting"
 msgstr "Nova configuração"
-
-#: lazarusidestrconsts.lisnewthegnudebuggerthroughsshallowstoremotedebugviaassh
-msgid "The GNU debugger through ssh allows to remote debug via a ssh connection. See docs/RemoteDebugging.txt for details. The path must contain the ssh client.Use SSH_Startup_Options for the hostname and optional username.And Remote_GDB_Exe for the filename of gdb on the remote computer."
-msgstr ""
 
 #: lazarusidestrconsts.lisnewunitsareaddedtousessections
 #, fuzzy
@@ -15705,6 +15717,10 @@ msgstr "O compilador Free Pascal (nome do arquivo: %s) não foi encontrado.%sRec
 msgid "The Free Pascal source directory was not found.%sSome code functions will not work.%sIt is recommended that you install it and set the path%sTools -> Options -> Files"
 msgstr "O diretório do fonte Free Pascal não foi encontrado.%sAlgumas funções não funcionarão.%sRecomenda-se que você instale e configure o caminho%sAmbiente -> Opções de Ambiente -> Arquivos"
 
+#: lazarusidestrconsts.listhegnudebuggerthroughsshallowstoremotedebugviaassh
+msgid "The GNU debugger through ssh allows to remote debug via a ssh connection. See docs/RemoteDebugging.txt for details. The path must contain the ssh client filename, the hostname with an optional username and the filename of gdb on the remote computer. For example: %s/usr/bin/ssh username@hostname gdb%s or: %s/usr/bin/setsid /usr/bin/ssh username@hostname gdb%s"
+msgstr ""
+
 #: lazarusidestrconsts.listheidentifierisaunitpleaseusethefilesaveasfunction
 msgid "The identifier is a unit. Please use the File - Save as function to rename a unit."
 msgstr "O identificador é uma unidade. Favor usar Salvar Arquivo como função para renomear a unidade."
@@ -16998,10 +17014,6 @@ msgstr "H&abillitar tudo"
 msgid "Expression"
 msgstr "Expressão"
 
-#: lazarusidestrconsts.liswlinspectpane
-msgid "Inspect pane"
-msgstr ""
-
 #: lazarusidestrconsts.liswlproperties
 msgid "&Properties"
 msgstr "&Propriedades"
@@ -17947,6 +17959,10 @@ msgstr "Inserir nota LGPL"
 msgid "Break line, leave cursor"
 msgstr "Interromper linha, manter o cursor"
 
+#: lazarusidestrconsts.srkmecinsertmitnotice
+msgid "Insert MIT notice"
+msgstr ""
+
 #: lazarusidestrconsts.srkmecinsertmode
 msgid "Insert Mode"
 msgstr "Modo de Inserção"
@@ -18362,16 +18378,6 @@ msgctxt "lazarusidestrconsts.srkmecsynpsyncroednextcellsel"
 msgid "Next Cell (all selected)"
 msgstr "Próxima Célula (tudo selecionado)"
 
-#: lazarusidestrconsts.srkmecsynpsyncroednextfirstcell
-msgctxt "lazarusidestrconsts.srkmecsynpsyncroednextfirstcell"
-msgid "Next Cell (firsts only)"
-msgstr ""
-
-#: lazarusidestrconsts.srkmecsynpsyncroednextfirstcellsel
-msgctxt "lazarusidestrconsts.srkmecsynpsyncroednextfirstcellsel"
-msgid "Next Cell (all selected / firsts only)"
-msgstr ""
-
 #: lazarusidestrconsts.srkmecsynpsyncroedprevcell
 msgctxt "lazarusidestrconsts.srkmecsynpsyncroedprevcell"
 msgid "Previous Cell"
@@ -18381,16 +18387,6 @@ msgstr "Célula Anterior"
 msgctxt "lazarusidestrconsts.srkmecsynpsyncroedprevcellsel"
 msgid "Previous Cell (all selected)"
 msgstr "Célula Anterior (tudo selecionado)"
-
-#: lazarusidestrconsts.srkmecsynpsyncroedprevfirstcell
-msgctxt "lazarusidestrconsts.srkmecsynpsyncroedprevfirstcell"
-msgid "Previous Cell (firsts only)"
-msgstr ""
-
-#: lazarusidestrconsts.srkmecsynpsyncroedprevfirstcellsel
-msgctxt "lazarusidestrconsts.srkmecsynpsyncroedprevfirstcellsel"
-msgid "Previous Cell (all selected / firsts only)"
-msgstr ""
 
 #: lazarusidestrconsts.srkmecsynpsyncroedstart
 msgid "Start Syncro edit"
@@ -18437,24 +18433,6 @@ msgstr "Próxima Célula (tudo selecionado)"
 msgid "Next Cell (rotate / all selected)"
 msgstr "Próxima Célula (rotacionar / tudo selecionado)"
 
-#: lazarusidestrconsts.srkmecsynptmplednextfirstcell
-msgctxt "lazarusidestrconsts.srkmecsynptmplednextfirstcell"
-msgid "Next Cell (firsts only)"
-msgstr ""
-
-#: lazarusidestrconsts.srkmecsynptmplednextfirstcellrotate
-msgid "Next Cell (rotate / firsts only)"
-msgstr ""
-
-#: lazarusidestrconsts.srkmecsynptmplednextfirstcellsel
-msgctxt "lazarusidestrconsts.srkmecsynptmplednextfirstcellsel"
-msgid "Next Cell (all selected / firsts only)"
-msgstr ""
-
-#: lazarusidestrconsts.srkmecsynptmplednextfirstcellselrotate
-msgid "Next Cell (rotate / all selected / firsts only)"
-msgstr ""
-
 #: lazarusidestrconsts.srkmecsynptmpledprevcell
 msgctxt "lazarusidestrconsts.srkmecsynptmpledprevcell"
 msgid "Previous Cell"
@@ -18464,16 +18442,6 @@ msgstr "Célula Anterior"
 msgctxt "lazarusidestrconsts.srkmecsynptmpledprevcellsel"
 msgid "Previous Cell (all selected)"
 msgstr "Célula Anterior (tudo selecionado)"
-
-#: lazarusidestrconsts.srkmecsynptmpledprevfirstcell
-msgctxt "lazarusidestrconsts.srkmecsynptmpledprevfirstcell"
-msgid "Previous Cell (firsts only)"
-msgstr ""
-
-#: lazarusidestrconsts.srkmecsynptmpledprevfirstcellsel
-msgctxt "lazarusidestrconsts.srkmecsynptmpledprevfirstcellsel"
-msgid "Previous Cell (all selected / firsts only)"
-msgstr ""
 
 #: lazarusidestrconsts.srkmecsyntaxcheck
 #, fuzzy

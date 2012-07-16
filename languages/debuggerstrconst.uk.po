@@ -118,7 +118,3 @@ msgstr "Дов=%d: "
 msgid "Use Instance class type"
 msgstr "Викор. тип екземпляра класу"
 
-#: debuggerstrconst.drswatchsplitterinspect
-msgid "Inspect pane"
-msgstr ""
-
