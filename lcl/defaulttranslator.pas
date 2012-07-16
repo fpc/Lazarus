@@ -33,10 +33,21 @@ interface
 
 uses
   Classes, SysUtils, LResources, GetText, Controls, typinfo, FileUtil, LCLProc,
-  Translations;
+  Translations, Forms;
 
 type
-  TDefaultTranslator = class(TAbstractTranslator)
+
+  { TUpdateTranslator }
+
+  TUpdateTranslator = class(TAbstractTranslator)
+  private
+    FStackPath: string;
+    procedure IntUpdateTranslation(AnInstance: TPersistent);
+  public
+    procedure UpdateTranslation(AnInstance: TPersistent);
+  end;
+
+  TDefaultTranslator = class(TUpdateTranslator)
   private
     FMOFile: TMOFile;
   public
@@ -46,7 +57,9 @@ type
       PropInfo: PPropInfo; var Content: string); override;
   end;
 
-  TPOTranslator = class(TAbstractTranslator)
+  { TPOTranslator }
+
+  TPOTranslator = class(TUpdateTranslator)
   private
     FPOFile: TPOFile;
   public
@@ -56,6 +69,8 @@ type
       PropInfo: PPropInfo; var Content: string); override;
   end;
 
+procedure SetDefaultLang(Lang: string);
+
 implementation
 
 uses
@@ -64,9 +79,9 @@ uses
 type
   TPersistentAccess = class(TPersistent);
 
-function FindLocaleFileName(LCExt: string): string;
+function FindLocaleFileName(LCExt: string; Lang: string): string;
 var
-  Lang, T: string;
+  T: string;
   i: integer;
 
   function GetLocaleFileName(const LangID, LCExt: string): string;
@@ -176,12 +191,12 @@ var
 
 begin
   Result := '';
-  Lang := '';
 
-  for i := 1 to Paramcount - 1 do
-    if (ParamStrUTF8(i) = '--LANG') or (ParamStrUTF8(i) = '-l') or
-      (ParamStrUTF8(i) = '--lang') then
-      Lang := ParamStrUTF8(i + 1);
+  if Lang = '' then
+    for i := 1 to Paramcount - 1 do
+      if (ParamStrUTF8(i) = '--LANG') or (ParamStrUTF8(i) = '-l') or
+        (ParamStrUTF8(i) = '--lang') then
+        Lang := ParamStrUTF8(i + 1);
 
   //Win32 user may decide to override locale with LANG variable.
   if Lang = '' then
@@ -225,18 +240,107 @@ begin
   if (csDesigning in Component.ComponentState) then
     exit;
 
-  if not (Sender is TReader) then
-    exit;
-  Reader := TReader(Sender);
-  if Reader.Driver is TLRSObjectReader then
-    Result := TLRSObjectReader(Reader.Driver).GetStackPath
-  else
-    Result := Instance.ClassName + '.' + PropInfo^.Name;
+  if (Sender is TReader) then
+  begin
+    Reader := TReader(Sender);
+    if Reader.Driver is TLRSObjectReader then
+      Result := TLRSObjectReader(Reader.Driver).GetStackPath
+    else
+      Result := Instance.ClassName + '.' + PropInfo^.Name;
+  end else if (Sender is TUpdateTranslator) then
+    Result := TUpdateTranslator(Sender).FStackPath + '.' + PropInfo^.Name;
   Result := UpperCase(Result);
 end;
 
 var
   lcfn: string;
+
+{ TUpdateTranslator }
+
+procedure TUpdateTranslator.IntUpdateTranslation(AnInstance: TPersistent);
+var
+  i,j: integer;
+  APropCount: integer;
+  APropList: PPropList;
+  APropInfo: PPropInfo;
+  TmpStr: string;
+  APersistentProp: TPersistent;
+  StoreStackPath: string;
+begin
+  APropCount := GetPropList(AnInstance.ClassInfo, APropList);
+  try
+    for i := 0 to APropCount-1 do
+      begin
+      APropInfo:=APropList^[i];
+      if Assigned(PPropInfo(APropInfo)^.GetProc) and
+         assigned(APropInfo^.PropType) and
+         IsStoredProp(AnInstance, APropInfo) then
+        case APropInfo^.PropType^.Kind of
+          tkSString,
+          tkLString,
+          tkAString:  begin
+                      TmpStr := '';
+                      LRSTranslator.TranslateStringProperty(self,aninstance,APropInfo,TmpStr);
+                      if TmpStr <>'' then
+                        SetStrProp(AnInstance, APropInfo, TmpStr);
+                      end;
+          tkclass:    begin
+                      APersistentProp := TPersistent(GetObjectProp(AnInstance, APropInfo, TPersistent));
+                      if Assigned(APersistentProp) then
+                        begin
+                        if APersistentProp is TCollection then
+                          begin
+                          for j := 0 to TCollection(APersistentProp).Count-1 do
+                            begin
+                            StoreStackPath:=FStackPath;
+                            FStackPath:=FStackPath+'.'+APropInfo^.Name+'['+inttostr(j)+']';
+                            IntUpdateTranslation(TCollection(APersistentProp).Items[j]);
+                            FStackPath:=StoreStackPath;
+                            end;
+                          end
+                        else
+                          begin
+                          if APersistentProp is TComponent then
+                            begin
+                            if (csSubComponent in TComponent(APersistentProp).ComponentStyle) then
+                              begin
+                              StoreStackPath:=FStackPath;
+                              FStackPath:=FStackPath+'.'+TComponent(APersistentProp).Name;
+                              IntUpdateTranslation(APersistentProp);
+                              FStackPath:=StoreStackPath;
+                              end
+                            end
+                          else
+                            begin
+                            StoreStackPath:=FStackPath;
+                            FStackPath:=FStackPath+'.'+APropInfo^.Name;
+                            IntUpdateTranslation(APersistentProp);
+                            FStackPath:=StoreStackPath;
+                            end;
+                          end;
+                        end;
+                      end;
+          end;
+      end;
+  finally
+    freemem(APropList);
+  end;
+
+  if (AnInstance is TComponent) then
+    for i := 0 to TComponent(AnInstance).ComponentCount-1 do
+      begin
+      StoreStackPath:=FStackPath;
+      FStackPath:=FStackPath+'.'+TComponent(AnInstance).Components[i].Name;
+      IntUpdateTranslation(TComponent(AnInstance).Components[i]);
+      FStackPath:=StoreStackPath;
+      end;
+end;
+
+procedure TUpdateTranslator.UpdateTranslation(AnInstance: TPersistent);
+begin
+  FStackPath:=AnInstance.ClassName;
+  IntUpdateTranslation(AnInstance);
+end;
 
 { TDefaultTranslator }
 
@@ -311,19 +415,19 @@ begin
   end;
 end;
 
+procedure SetDefaultLang(Lang: string);
+
 var
   Dot1: integer;
   LCLPath: string;
-  LocalTranslator: TAbstractTranslator;
+  LocalTranslator: TUpdateTranslator;
+  i: integer;
 
-initialization
-  //It is safe to place code here as no form is initialized before unit
-  //initialization made
-
+begin
   LocalTranslator := nil;
   // search first po translation resources
   try
-     lcfn := FindLocaleFileName('.po');
+     lcfn := FindLocaleFileName('.po', Lang);
      if lcfn <> '' then
      begin
        Translations.TranslateResourceStrings(lcfn);
@@ -345,7 +449,7 @@ initialization
   begin
     // try now with MO traslation resources
     try
-      lcfn := FindLocaleFileName('.mo');
+      lcfn := FindLocaleFileName('.mo', Lang);
       if lcfn <> '' then
       begin
         GetText.TranslateResourceStrings(UTF8ToSys(lcfn));
@@ -366,9 +470,28 @@ initialization
   end;
 
   if LocalTranslator<>nil then
+  begin
+    if Assigned(LRSTranslator) then
+      LRSTranslator.Free;
     LRSTranslator := LocalTranslator;
 
+    // Do not update the translations when this function is called from within
+    // the unit initialization.
+    if (Lang<>'') then
+    begin
+      for i := 0 to Screen.CustomFormCount-1 do
+        LocalTranslator.UpdateTranslation(Screen.CustomForms[i]);
+    end;
+  end;
+end;
+
+
+initialization
+  //It is safe to place code here as no form is initialized before unit
+  //initialization made
+  SetDefaultLang('');
+
 finalization
-  LocalTranslator.Free;
+  LRSTranslator.Free;
 
 end.
