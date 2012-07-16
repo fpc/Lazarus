@@ -930,7 +930,7 @@ end;
 function THistoryLists.IndexOfName(const Name: string): integer;
 begin
   Result:=Count-1;
-  while (Result>=0) and (AnsiCompareText(Items[Result].Name,Name)<>0) do
+  while (Result>=0) and (UTF8CompareText(Items[Result].Name,Name)<>0) do
     dec(Result);
 end;
 

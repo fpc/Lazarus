@@ -4076,9 +4076,9 @@ begin
     if ((OnlyProjectUnits and Units[Result].IsPartOfProject)
     or (not OnlyProjectUnits))
     and (IgnoreUnit<>Units[Result]) then begin
-      if (AnsiCompareText(Units[Result].ComponentName,AComponentName)=0)
+      if (CompareText(Units[Result].ComponentName,AComponentName)=0)
       or ((Units[Result].Component<>nil)
-        and (AnsiCompareText(Units[Result].Component.Name,AComponentName)=0))
+        and (CompareText(Units[Result].Component.Name,AComponentName)=0))
       then
         exit;
     end;

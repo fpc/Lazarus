@@ -28,7 +28,7 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, StdCtrls,
-  Buttons, FileUtil, lazutf8classes, IDEProcs, UFrmAddComponent;
+  Buttons, FileUtil, lazutf8classes, LazUTF8, IDEProcs, UFrmAddComponent;
   
 Type
   TRComponent = class(TObject)
@@ -376,7 +376,7 @@ begin
               MyObj2 := ListComps.Items.Objects[J] as TRComponent;
               //messagedlg('Comparing object '+MyObj.Name+' at '+inttostr(I)+' with '+MyObj2.Name, mtInformation,[mbOk],0);
               if assigned(MyOBj2) then begin
-                Found := AnsiCompareText(MyObj2.Unit_Name,Myobj.Unit_Name)=0;
+                Found := CompareText(MyObj2.Unit_Name,Myobj.Unit_Name)=0;
               end; // if assigned
             end; // for J
           end; // For I

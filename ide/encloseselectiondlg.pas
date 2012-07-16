@@ -421,7 +421,7 @@ var
 begin
   i:=TypeRadiogroup.ItemIndex;
   for Result:=Low(TEncloseSelectionType) to High(TEncloseSelectionType) do
-    if AnsiCompareText(TypeRadiogroup.Items[i],
+    if UTF8CompareText(TypeRadiogroup.Items[i],
                        EncloseSelectionTypeDescription(Result))=0
     then
       exit;

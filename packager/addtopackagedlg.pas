@@ -849,7 +849,7 @@ begin
   end;
 
   // check unitname - filename redundancy
-  if AnsiCompareText(Params.Unit_name,ExtractFileNameOnly(Params.UnitFilename))<>0
+  if CompareText(Params.Unit_name,ExtractFileNameOnly(Params.UnitFilename))<>0
   then begin
     IDEMessageDialog(lisA2PUnitNameInvalid,
       Format(lisA2PTheUnitNameDoesNotCorrespondToTheFilename, ['"',Params.Unit_Name, '"']),
@@ -866,7 +866,7 @@ begin
   end;
 
   // check classname<>ancestortype
-  if AnsiCompareText(Params.NewClassName,Params.AncestorType)=0 then begin
+  if CompareText(Params.NewClassName,Params.AncestorType)=0 then begin
     IDEMessageDialog(lisA2PInvalidCircularDependency,
       Format(lisA2PTheClassNameAndAncestorTypeAreTheSame, ['"',Params.NewClassName, '"', '"', Params.AncestorType, '"']),
       mtError,[mbCancel]);

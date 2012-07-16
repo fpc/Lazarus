@@ -402,14 +402,14 @@ end;
 function IDEDirectiveNameToDirective(const DirectiveName: string): TIDEDirective;
 begin
   for Result:=Low(TIDEDirective) to High(TIDEDirective) do
-    if AnsiCompareText(IDEDirectiveNames[Result],DirectiveName)=0 then exit;
+    if CompareText(IDEDirectiveNames[Result],DirectiveName)=0 then exit;
   Result:=idedNone;
 end;
 
 function IDEDirBuildScanFlagNameToFlag(const FlagName: string): TIDEDirBuildScanFlag;
 begin
   for Result:=Low(TIDEDirBuildScanFlag) to High(TIDEDirBuildScanFlag) do
-    if AnsiCompareText(IDEDirBuildScanFlagNames[Result],FlagName)=0 then
+    if CompareText(IDEDirBuildScanFlagNames[Result],FlagName)=0 then
       exit;
   Result:=idedbsfNone;
 end;
@@ -443,7 +443,7 @@ end;
 function IDEDirRunFlagNameToFlag(const FlagName: string): TIDEDirRunFlag;
 begin
   for Result:=Low(TIDEDirRunFlag) to High(TIDEDirRunFlag) do
-    if AnsiCompareText(IDEDirRunFlagNames[Result],FlagName)=0 then
+    if CompareText(IDEDirRunFlagNames[Result],FlagName)=0 then
       exit;
   Result:=idedrfNone;
 end;

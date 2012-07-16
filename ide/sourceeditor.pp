@@ -1945,7 +1945,7 @@ begin
           while (x<=length(s)) and (s[x]<>#3) do inc(x);
           if x<length(s) then begin
             inc(x,2);
-            if AnsiCompareText(CurStr,copy(s,x,length(CurStr)))=0 then begin
+            if UTF8CompareText(CurStr,copy(s,x,length(CurStr)))=0 then begin
               APosition:=i;
               break;
             end;
@@ -4006,7 +4006,7 @@ begin
     else
       SrcToken:=copy(Line,length(Line)-length(AToken)+1,length(AToken));
     //DebugLn(['TSourceEditor.AutoCompleteChar ',AToken,' SrcToken=',SrcToken,' CatName=',CatName,' Index=',Manager.CodeTemplateModul.CompletionAttributes[i].IndexOfName(CatName)]);
-    if (AnsiCompareText(AToken,SrcToken)=0)
+    if (UTF8CompareText(AToken,SrcToken)=0)
     and (Manager.CodeTemplateModul.CompletionAttributes[i].IndexOfName(CatName)>=0)
     and ( (not FEditor.SelAvail) or
           (Manager.CodeTemplateModul.CompletionAttributes[i].IndexOfName(
@@ -9373,7 +9373,7 @@ var
     for a := 0 to SourceEditorCount - 1 do begin
       if (SourceEditors[a] <> IgnoreEditor) and
          (not SourceEditors[a].IsSharedWith(IgnoreEditor)) and
-         (AnsiCompareText(AName, SourceEditors[a].PageName) = 0)
+         (CompareText(AName, SourceEditors[a].PageName) = 0)
       then begin
         Result:=true;
         exit;

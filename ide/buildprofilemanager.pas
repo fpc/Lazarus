@@ -31,11 +31,11 @@ unit BuildProfileManager;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, Laz2_XMLCfg, LazLogger, LazFileUtils, LResources,
-  Forms, Controls, Graphics, Dialogs, ExtCtrls, Buttons, StdCtrls, ComCtrls,
-  Contnrs, ButtonPanel, DefineTemplates, IDEImagesIntf, IDEMsgIntf, IDEHelpIntf,
-  IDEDialogs, LazarusIDEStrConsts, LazConf, InterfaceBase, IDEProcs,
-  TransferMacros, CompilerOptions, EnvironmentOpts;
+  Classes, SysUtils, FileUtil, Laz2_XMLCfg, LazLogger, LazFileUtils, LazUTF8,
+  LResources, Forms, Controls, Graphics, Dialogs, ExtCtrls, Buttons, StdCtrls,
+  ComCtrls, Contnrs, ButtonPanel, DefineTemplates, IDEImagesIntf, IDEMsgIntf,
+  IDEHelpIntf, IDEDialogs, LazarusIDEStrConsts, LazConf, InterfaceBase,
+  IDEProcs, TransferMacros, CompilerOptions, EnvironmentOpts;
 
 type
 
@@ -354,7 +354,7 @@ end;
 function TBuildLazarusProfiles.IndexByName(AName: string): integer;
 begin
   Result:=Count-1;
-  while (Result>=0) and (AnsiCompareText(Items[Result].Name,AName)<>0) do
+  while (Result>=0) and (UTF8CompareText(Items[Result].Name,AName)<>0) do
     dec(Result);
 end;
 

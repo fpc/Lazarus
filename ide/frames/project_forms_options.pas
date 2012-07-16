@@ -93,7 +93,7 @@ begin
       cmp := 1;
       while (NewPos < FormsAvailFormsListBox.Items.Count) do
       begin
-        cmp := AnsiCompareText(FormsAvailFormsListBox.Items[NewPos], OldFormName);
+        cmp := CompareText(FormsAvailFormsListBox.Items[NewPos], OldFormName);
         if cmp < 0 then
           Inc(NewPos)
         else
@@ -222,7 +222,7 @@ var
       p := Pos(':', FormsAutoCreatedListBox.Items[Result]);
       if p < 1 then
         p := Length(FormsAutoCreatedListBox.Items[Result]) + 1;
-      if AnsiCompareText(copy(FormsAutoCreatedListBox.Items[Result], 1, p - 1),
+      if CompareText(copy(FormsAutoCreatedListBox.Items[Result], 1, p - 1),
         FormName) = 0 then
         Exit;
       Dec(Result);

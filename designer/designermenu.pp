@@ -1804,7 +1804,7 @@ function TDesignerMainMenu.GetDesignerMenuItem(DMenuItem: TDesignerMenuItem;
 begin
   Result:=nil;
   if DMenuItem=nil then exit;
-  if (AnsiCompareText(DMenuItem.ID,Ident)=0) then
+  if (CompareText(DMenuItem.ID,Ident)=0) then
     Result:=DMenuItem
   else
   begin

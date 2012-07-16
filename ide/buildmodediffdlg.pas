@@ -29,9 +29,9 @@ unit BuildModeDiffDlg;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, ButtonPanel,
-  StdCtrls, ComCtrls,
-  LazarusIDEStrConsts, Project, CompilerOptions, CompOptsModes;
+  Classes, SysUtils, FileUtil, LazUTF8, Forms, Controls, Graphics, Dialogs,
+  ButtonPanel, StdCtrls, ComCtrls, LazarusIDEStrConsts, Project,
+  CompilerOptions, CompOptsModes;
 
 type
 
@@ -94,7 +94,7 @@ var
 begin
   if fProject<>nil then
     for i:=0 to fProject.BuildModes.Count-1 do
-      if SysUtils.AnsiCompareText(fProject.BuildModes[i].GetCaption,ModeComboBox.Text)=0
+      if UTF8CompareText(fProject.BuildModes[i].GetCaption,ModeComboBox.Text)=0
       then begin
         fBaseMode:=fProject.BuildModes[i];
         FillDiffTreeView;

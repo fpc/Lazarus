@@ -123,14 +123,14 @@ const
 function SortDirectionNameToType(const s: string): TSortDirection;
 begin
   for Result:=Low(TSortDirection) to High(TSortDirection) do
-    if AnsiCompareText(SortDirectionNames[Result],s)=0 then exit;
+    if CompareText(SortDirectionNames[Result],s)=0 then exit;
   Result:=sdAscending;
 end;
 
 function SortDomainNameToType(const s: string): TSortDomain;
 begin
   for Result:=Low(TSortDomain) to High(TSortDomain) do
-    if AnsiCompareText(SortDomainNames[Result],s)=0 then exit;
+    if CompareText(SortDomainNames[Result],s)=0 then exit;
   Result:=sdLines;
 end;
 
@@ -139,14 +139,14 @@ function ResourcestringInsertPolicyNameToType(
 begin
   for Result:=Low(TResourcestringInsertPolicy)
   to High(TResourcestringInsertPolicy) do
-    if AnsiCompareText(ResourcestringInsertPolicyNames[Result],s)=0 then exit;
+    if CompareText(ResourcestringInsertPolicyNames[Result],s)=0 then exit;
   Result:=rsipAppend;
 end;
 
 function FindRenameScopeNameToScope(const s: string): TFindRenameScope;
 begin
   for Result:=Low(TFindRenameScope) to High(TFindRenameScope) do
-    if AnsiCompareText(FindRenameScopeNames[Result],s)=0 then exit;
+    if CompareText(FindRenameScopeNames[Result],s)=0 then exit;
   Result:=frAllOpenProjectsAndPackages;
 end;
 

@@ -265,7 +265,7 @@ procedure CheckList(List: TList; TestListNil, TestDoubles, TestNils: boolean);
 procedure CheckList(List: TFPList; TestListNil, TestDoubles, TestNils: boolean);
 procedure CheckEmptyListCut(List1, List2: TList);
 procedure RemoveDoubles(List: TStrings);
-function AnsiSearchInStringList(List: TStrings; const s: string): integer;
+function UTF8SearchInStringList(List: TStrings; const s: string): integer;
 procedure ReverseList(List: TList);
 procedure ReverseList(List: TFPList);
 procedure FreeListObjects(List: TList; FreeList: boolean);
@@ -1365,13 +1365,13 @@ begin
 end;
 
 {-------------------------------------------------------------------------------
-  function AnsiSearchInStringList(List: TStrings; const s: string): integer;
+  function UTF8SearchInStringList(List: TStrings; const s: string): integer;
 -------------------------------------------------------------------------------}
-function AnsiSearchInStringList(List: TStrings; const s: string): integer;
+function UTF8SearchInStringList(List: TStrings; const s: string): integer;
 begin
   if List=nil then exit(-1);
   Result:=List.Count-1;
-  while (Result>=0) and (AnsiCompareText(List[Result],s)<>0) do dec(Result);
+  while (Result>=0) and (UTF8CompareText(List[Result],s)<>0) do dec(Result);
 end;
 
 {-------------------------------------------------------------------------------
@@ -2751,7 +2751,7 @@ begin
   for i:=0 to List.Count-1 do begin
     case Cmp of
     cstCaseSensitive: if List[i]=s then exit(i);
-    cstCaseInsensitive: if AnsiCompareText(List[i],s)=0 then exit(i);
+    cstCaseInsensitive: if UTF8CompareText(List[i],s)=0 then exit(i);
     cstFilename: if CompareFilenames(List[i],s)=0 then exit(i);
     end;
   end;

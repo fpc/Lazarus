@@ -521,7 +521,7 @@ var
 begin
   if Identifier<>'' then begin
     for i:=0 to ResStrWithSameValuesCombobox.Items.Count-1 do begin
-      if AnsiCompareText(Identifier,ResStrWithSameValuesCombobox.Items[i])=0
+      if CompareText(Identifier,ResStrWithSameValuesCombobox.Items[i])=0
       then begin
         Result:=true;
         exit;

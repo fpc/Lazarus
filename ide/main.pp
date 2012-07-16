@@ -7404,7 +7404,7 @@ begin
       GetFixupReferenceNames(CurRoot,ReferenceRootNames);
       for j:=0 to ReferenceRootNames.Count-1 do begin
         RefRootName:=ReferenceRootNames[j];
-        if AnsiSearchInStringList(LoadingReferenceNames,RefRootName)>=0
+        if UTF8SearchInStringList(LoadingReferenceNames,RefRootName)>=0
         then
           continue;
         ReferenceInstanceNames.Clear;
@@ -12029,12 +12029,12 @@ begin
   try
     if not CodeToolBoss.FindUsedUnitNames(MainUnitInfo.Source,
       MainUsesSection,ImplementationUsesSection) then exit;
-    if (AnsiSearchInStringList(MainUsesSection,'forms')<0)
-    and (AnsiSearchInStringList(ImplementationUsesSection,'forms')<0) then
+    if (UTF8SearchInStringList(MainUsesSection,'forms')<0)
+    and (UTF8SearchInStringList(ImplementationUsesSection,'forms')<0) then
       exit;
     // project uses lcl unit Forms
-    if (AnsiSearchInStringList(MainUsesSection,'interfaces')>=0)
-    or (AnsiSearchInStringList(ImplementationUsesSection,'interfaces')>=0) then
+    if (UTF8SearchInStringList(MainUsesSection,'interfaces')>=0)
+    or (UTF8SearchInStringList(ImplementationUsesSection,'interfaces')>=0) then
       exit;
     // project uses lcl unit Forms, but not unit interfaces
     // this will result in strange linker error

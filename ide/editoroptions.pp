@@ -1557,7 +1557,7 @@ end;
 function StrToLazSyntaxHighlighter(const s: String): TLazSyntaxHighlighter;
 begin
   for Result := Low(TLazSyntaxHighlighter) to High(TLazSyntaxHighlighter) do
-    if (AnsiCompareText(s, LazSyntaxHighlighterNames[Result]) = 0) then
+    if (CompareText(s, LazSyntaxHighlighterNames[Result]) = 0) then
       exit;
   Result := lshFreePascal;
 end;
@@ -2464,7 +2464,7 @@ end;
 function TEditOptLangList.FindByName(const Name: String): Integer;
 begin
   Result := Count - 1;
-  while (Result >= 0) and (AnsiCompareText(
+  while (Result >= 0) and (UTF8CompareText(
       Items[Result].SynClass.GetLanguageName, Name) <> 0) do
     dec(Result);
 end;

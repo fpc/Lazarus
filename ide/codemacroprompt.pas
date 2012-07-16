@@ -464,7 +464,7 @@ begin
       TokenStartX:=length(s)+1;
     j:=length(TemplateName);
     while (j>0)
-    and (AnsiCompareText(copy(TemplateName,1,j),copy(s,TokenStartX-j,j))<>0) do
+    and (UTF8CompareText(copy(TemplateName,1,j),copy(s,TokenStartX-j,j))<>0) do
       dec(j);
     dec(TokenStartX,j);
     AEditor.BlockBegin := Point(TokenStartX, p.y);
