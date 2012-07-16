@@ -10,44 +10,44 @@ msgstr ""
 "Last-Translator: Valdas Jankūnas <skroblas@erdves.lt>\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
-#: TLAZCONVERTERFORM.BUTTON1.CAPTION
+#: tlazconverterform.button1.caption
 msgid "Path"
 msgstr "Kelias"
 
-#: TLAZCONVERTERFORM.BUTTON2.CAPTION
+#: tlazconverterform.button2.caption
 msgid "Search"
 msgstr "Ieškoti"
 
-#: TLAZCONVERTERFORM.BUTTON3.CAPTION
+#: tlazconverterform.button3.caption
 msgid "Convert"
 msgstr "Konvertuoti"
 
-#: TLAZCONVERTERFORM.CAPTION
+#: tlazconverterform.caption
 msgctxt "TLAZCONVERTERFORM.CAPTION"
 msgid "Codepage LazConverter for PAS, LFM, LRS, LRT & INC files v0.0.6"
 msgstr "Koduotės konverteris LazConverter (PAS, LFM, LRS ir INC failams) v0.0.6"
 
-#: TLAZCONVERTERFORM.LABEL1.CAPTION
+#: tlazconverterform.label1.caption
 msgid "Path to your project:"
 msgstr "Kelias iki jūsų projekto:"
 
-#: TLAZCONVERTERFORM.LABEL2.CAPTION
+#: tlazconverterform.label2.caption
 msgid "Convert From:"
 msgstr "Konvertuoti iš:"
 
-#: TLAZCONVERTERFORM.LABEL3.CAPTION
+#: tlazconverterform.label3.caption
 msgid "Convert To:"
 msgstr "Konvertuoti į:"
 
-#: TLAZCONVERTERFORM.LABEL6.CAPTION
+#: tlazconverterform.label6.caption
 msgid "Ready..."
 msgstr "Parengtyje..."
 
-#: TLAZCONVERTERFORM.MENUITEM1.CAPTION
+#: tlazconverterform.menuitem1.caption
 msgid "Remove from conversion"
 msgstr "Nekonvertuoti"
 
-#: TLAZCONVERTERFORM.SELECTDIRECTORYDIALOG1.TITLE
+#: tlazconverterform.selectdirectorydialog1.title
 msgid "Select Directory"
 msgstr ""
 

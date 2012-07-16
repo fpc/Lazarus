@@ -1,44 +1,44 @@
 msgid ""
 msgstr "Content-Type: text/plain; charset=UTF-8"
 
-#: TLAZCONVERTERFORM.BUTTON1.CAPTION
+#: tlazconverterform.button1.caption
 msgid "Path"
 msgstr ""
 
-#: TLAZCONVERTERFORM.BUTTON2.CAPTION
+#: tlazconverterform.button2.caption
 msgid "Search"
 msgstr ""
 
-#: TLAZCONVERTERFORM.BUTTON3.CAPTION
+#: tlazconverterform.button3.caption
 msgid "Convert"
 msgstr ""
 
-#: TLAZCONVERTERFORM.CAPTION
+#: tlazconverterform.caption
 msgctxt "TLAZCONVERTERFORM.CAPTION"
 msgid "Codepage LazConverter for PAS, LFM, LRS, LRT & INC files v0.0.6"
 msgstr ""
 
-#: TLAZCONVERTERFORM.LABEL1.CAPTION
+#: tlazconverterform.label1.caption
 msgid "Path to your project:"
 msgstr ""
 
-#: TLAZCONVERTERFORM.LABEL2.CAPTION
+#: tlazconverterform.label2.caption
 msgid "Convert From:"
 msgstr ""
 
-#: TLAZCONVERTERFORM.LABEL3.CAPTION
+#: tlazconverterform.label3.caption
 msgid "Convert To:"
 msgstr ""
 
-#: TLAZCONVERTERFORM.LABEL6.CAPTION
+#: tlazconverterform.label6.caption
 msgid "Ready..."
 msgstr ""
 
-#: TLAZCONVERTERFORM.MENUITEM1.CAPTION
+#: tlazconverterform.menuitem1.caption
 msgid "Remove from conversion"
 msgstr ""
 
-#: TLAZCONVERTERFORM.SELECTDIRECTORYDIALOG1.TITLE
+#: tlazconverterform.selectdirectorydialog1.title
 msgid "Select Directory"
 msgstr ""
 
