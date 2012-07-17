@@ -278,7 +278,9 @@ begin
   if (FDBGInfo.TypeName <> '') and (FDBGInfo.TypeName[1] = '^')
   then FGridData.Cells[1,1]:='Pointer to '+copy(FDBGInfo.TypeName, 2, length(FDBGInfo.TypeName))
   else FGridData.Cells[1,1]:=FDBGInfo.TypeName;
+  {$PUSH}{$RANGECHECKS OFF}
   FGridData.Cells[2,1]:=format('$%x',[PtrUInt(FDBGInfo.Value.AsPointer)]);
+  {$POP}
   //FGridData.AutoSizeColumn(2);
 end;
 
