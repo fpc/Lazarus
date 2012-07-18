@@ -46,7 +46,7 @@
         <PackageName Value="FCL"/>
       </Item5>
     </RequiredPackages>
-    <Units Count="11">
+    <Units Count="12">
       <Unit0>
         <Filename Value="TestGdbmi.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -103,6 +103,11 @@
         <IsPartOfProject Value="True"/>
         <UnitName Value="TestEnvironment"/>
       </Unit10>
+      <Unit11>
+        <Filename Value="testargv.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="TestArgV"/>
+      </Unit11>
     </Units>
   </ProjectOptions>
   <CompilerOptions>

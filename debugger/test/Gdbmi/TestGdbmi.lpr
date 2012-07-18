@@ -6,7 +6,7 @@ uses
   Interfaces, Forms, GuiTestRunner, CompileHelpers,
   TestGdbType, TestDisAss,
   TestGDBMIControl,
-  TestBase, TestException, Testwatches, TestBreakPoint, TestEnvironment;
+  TestBase, TestException, Testwatches, TestBreakPoint, TestEnvironment, TestArgV;
 
 {$R *.res}
 
