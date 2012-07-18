@@ -15,7 +15,7 @@ var
   s: String;
 begin
   s := '';
-  for i := 0 to argc - 1 do begin
+  for i := 1 to argc - 1 do begin
     p := (argv+i)^;
     while p^ <> #0 do begin
       s := s + IntToHex(ord(p^), 2);
