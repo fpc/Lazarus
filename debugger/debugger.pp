@@ -3050,9 +3050,11 @@ begin
     if (ADisassRange.Count > 0)
     then fo := ADisassRange.EntriesPtr[0]^.Offset
     else fo := 0;
+    {$PUSH}{$RANGECHECKS OFF}
     with ADisassRange do
       Result := Format('Range(%u)=[[ Cnt=%d, Capac=%d, [0].Addr=%u, RFirst=%u, [Cnt].Addr=%u, RLast=%u, REnd=%u, FirstOfs=%d ]]',
         [PtrUInt(ADisassRange), Count, Capacity, FirstAddr, RangeStartAddr, LastAddr, RangeEndAddr, LastEntryEndAddr, fo]);
+    {$POP}
   end;
 end;
 
