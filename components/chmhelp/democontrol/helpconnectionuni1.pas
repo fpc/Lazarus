@@ -1,4 +1,4 @@
-unit Unit1; 
+unit HelpConnectionUnit1;
 
 {$mode objfpc}{$H+}
 

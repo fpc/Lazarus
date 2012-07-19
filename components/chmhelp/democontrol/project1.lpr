@@ -4,8 +4,7 @@ program project1;
 
 uses
   Interfaces, // this includes the LCL widgetset
-  Forms
-  { add your units here }, Unit1, lhelpcontrolpkg;
+  Forms, HelpConnectionUnit1, lhelpcontrolpkg;
 
 begin
   Application.Initialize;
