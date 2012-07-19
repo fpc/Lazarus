@@ -6501,6 +6501,7 @@ tools/apiwizz/apiwizard.pp svneol=native#text/pascal
 tools/apiwizz/apiwizz.lpi svneol=native#text/plain
 tools/apiwizz/apiwizz.pp svneol=native#text/pascal
 tools/check_ide_libs.sh -text svneol=native#application/x-sh
+tools/chmmaker/README.txt svneol=native#text/plain
 tools/chmmaker/chmmaker.lpi svneol=native#text/plain
 tools/chmmaker/chmmaker.lpr svneol=native#text/plain
 tools/chmmaker/chmsitemapeditor.lfm svneol=native#text/plain
