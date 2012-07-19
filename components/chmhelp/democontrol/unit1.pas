@@ -6,8 +6,10 @@ interface
 
 uses
   Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, LHelpControl,
-  Buttons, StdCtrls;
+  Buttons, StdCtrls, FileUtil;
 
+const
+  IPCFile = 'letstestagain';
 type
 
   { TForm1 }
@@ -20,10 +22,9 @@ type
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
   private
-    { private declarations }
   public
-    { public declarations }
-  end; 
+    function GetLHelpFilename: string;
+  end;
 
 var
   Form1: TForm1; 
@@ -41,7 +42,6 @@ begin
     srInvalidFile:Result := 'InvalidFileName';
     srInvalidURL:Result := 'InvalidURL';
     srInvalidContext:Result := 'InvalidContext';
-
   end;
 end;
 
@@ -49,15 +49,25 @@ procedure TForm1.Button1Click(Sender: TObject);
 var
   Res: TLHelpResponse;
 begin
+  OpenDialog1.InitialDir:=GetCurrentDirUTF8;
   if not OpenDialog1.Execute then exit;
   if Help.ServerRunning = false then
-    Help.StartHelpServer('letstestagain', '../lhelp/lhelp');
+    Help.StartHelpServer(IPCFile, GetLHelpFilename);
   Res :=Help.OpenFile(OpenDialog1.FileName);
   Label1.Caption := ResponseToString(Res);
 end;
 
 procedure TForm1.FormCreate(Sender: TObject);
+var
+  LHelp: String;
 begin
+  {$IFDEF Unix}
+  DeleteFile('/tmp/'+IPCFile);
+  {$ENDIF}
+  LHelp:=GetLHelpFilename;
+  if not FileExistsUTF8(LHelp) then
+    MessageDlg('Missing lhelp','Can not find the lhelp application "'+LHelp+'"',
+       mtError,[mbOk],0);
   Help := TLHelpConnection.Create;
   Help.ProcessWhileWaiting := @Application.ProcessMessages;
 end;
@@ -65,6 +75,14 @@ end;
 procedure TForm1.FormDestroy(Sender: TObject);
 begin
   Help.Free;
+end;
+
+function TForm1.GetLHelpFilename: string;
+begin
+  Result:='../lhelp/lhelp';
+  {$IFDEF darwin}
+  Result:=Result+'.app/Contents/MacOS/'+ExtractFilename(Result);
+  {$ENDIF}
 end;
 
 initialization
