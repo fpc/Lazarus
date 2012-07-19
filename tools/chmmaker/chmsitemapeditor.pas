@@ -40,7 +40,7 @@ type
     procedure DeleteBtnClick(Sender: TObject);
     procedure DescriptionEditChange(Sender: TObject);
     procedure LocalComboChange(Sender: TObject);
-    procedure LocalComboKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);
+    procedure LocalComboKeyUp(Sender: TObject; var Key: Word; {%H-}Shift: TShiftState);
     procedure SaveBtnClick(Sender: TObject);
     procedure SitemapTreeCustomCreateItem(Sender: TCustomTreeView;
       var ATreeNode: TTreenode);
