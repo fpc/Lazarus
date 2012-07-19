@@ -9,6 +9,7 @@
       </Flags>
       <SessionStorage Value="InIDEConfig"/>
       <MainUnit Value="0"/>
+      <Title Value="lhelpconnectiondemo1"/>
       <ResourceType Value="res"/>
     </General>
     <BuildModes Count="1">
@@ -37,9 +38,9 @@
     </RequiredPackages>
     <Units Count="2">
       <Unit0>
-        <Filename Value="project1.lpr"/>
+        <Filename Value="lhelpconnectiondemo1.lpr"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="project1"/>
+        <UnitName Value="lhelpconnectiondemo1"/>
       </Unit0>
       <Unit1>
         <Filename Value="helpconnectionunit1.pas"/>
@@ -54,7 +55,7 @@
     <Version Value="11"/>
     <PathDelim Value="\"/>
     <Target>
-      <Filename Value="project1"/>
+      <Filename Value="lhelpconnectiondemo1"/>
     </Target>
     <SearchPaths>
       <OtherUnitFiles Value="..\lhelp"/>

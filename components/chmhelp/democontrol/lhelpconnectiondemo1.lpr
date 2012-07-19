@@ -1,4 +1,4 @@
-program project1;
+program lhelpconnectiondemo1;
 
 {$mode objfpc}{$H+}
 
