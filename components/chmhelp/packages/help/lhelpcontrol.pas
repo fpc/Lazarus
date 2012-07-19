@@ -1,5 +1,14 @@
 unit LHelpControl;
 
+{
+Starts, stops and controls external help viewer via IPC.
+This is used to display context-sensitive help in Lazarus, and could be used in applications to do the same.
+
+This unit serves as reference implementation and documentation of the protocol used to communicate with help viewers.
+
+Currently, the only help viewer that supports this protocol is the lhelp CHM help viewer.
+}
+
 {$mode objfpc}{$H+}
 
 {$IFDEF UNIX}
@@ -48,13 +57,17 @@ type
   public
     constructor Create;
     destructor Destroy; override;
+    // Checks whether the server is running using SimpleIPC
     function ServerRunning: Boolean;
+    // Starts server
+    // Server must support a switch --ipcname that accepts the NameForServer argument to identify it for SimpleIPC
     function StartHelpServer(NameForServer: String; ServerEXE: String = ''): Boolean;
-
+    // Shows URL in the HelpFileName file by sending a TUrlRequest
     function OpenURL(HelpFileName: String; Url: String): TLHelpResponse;
+    // Shows help for Context in the HelpFileName file by sending a TContextRequest request
     function OpenContext(HelpFileName: String; Context: THelpContext): TLHelpResponse;
+    // Opens HelpFileName by sending a TContextRequest
     function OpenFile(HelpFileName: String): TLHelpResponse;
-
     property ProcessWhileWaiting: TProcedureOfObject read FProcessWhileWaiting write FProcessWhileWaiting;
   end;
 
