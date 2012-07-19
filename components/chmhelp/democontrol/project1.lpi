@@ -9,6 +9,7 @@
       </Flags>
       <SessionStorage Value="InIDEConfig"/>
       <MainUnit Value="0"/>
+      <ResourceType Value="res"/>
     </General>
     <BuildModes Count="1">
       <Item1 Name="default" Default="True"/>

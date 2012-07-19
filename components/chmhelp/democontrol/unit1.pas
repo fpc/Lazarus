@@ -85,8 +85,7 @@ begin
   {$ENDIF}
 end;
 
-initialization
-  {$I unit1.lrs}
+{$R *.lfm}
 
 end.
 
