@@ -18,9 +18,9 @@
         <CompilerPath Value="$(CompPath)"/>
       </Other>
     </CompilerOptions>
-    <Description Value="This package contains unit that will allow you to &quot;remote control&quot; the program LHelp.
-"/>
-    <Version Minor="1"/>
+    <Description Value="This package contains unit that will allow you to &quot;remote control&quot; the program LHelp."/>
+    <License Value="Modified LGPL-2, same as LCL"/>
+    <Version Minor="2"/>
     <Files Count="1">
       <Item1>
         <Filename Value="lhelpcontrol.pas"/>

@@ -2,6 +2,7 @@
 <CONFIG>
   <Package Version="4">
     <Name Value="ChmHelpPkg"/>
+    <Author Value="Andrew Haines"/>
     <CompilerOptions>
       <Version Value="11"/>
       <SearchPaths>
@@ -19,7 +20,9 @@
         <CompilerPath Value="$(CompPath)"/>
       </Other>
     </CompilerOptions>
-    <Version Minor="1"/>
+    <Description Value="IDE package to use chm help files in the IDE via the lhelp viewer."/>
+    <License Value="GPL 2"/>
+    <Version Minor="2"/>
     <Files Count="4">
       <Item1>
         <Filename Value="lazchmhelp.pas"/>
