@@ -2,7 +2,7 @@
   This source is only used to compile and install the package.
  }
 
-unit CodeTools; 
+unit CodeTools;
 
 interface
 
@@ -18,14 +18,14 @@ uses
   PascalReaderTool, PPUCodeTools, PPUGraph, PPUParser, ResourceCodeTool, 
   SourceChanger, SourceLog, StdCodeTools, OtherIdentifierTree, 
   CodeToolsCfgScript, CTXMLFixFragment, CTUnitGraph, ChangeDeclarationTool, 
-  CodeToolsFPCMsgs, UnitDictionary, LazarusPackageIntf;
+  CodeToolsFPCMsgs, UnitDictionary, ctloadlaz, LazarusPackageIntf;
 
 implementation
 
-procedure Register; 
+procedure Register;
 begin
-end; 
+end;
 
 initialization
-  RegisterPackage('CodeTools', @Register); 
+  RegisterPackage('CodeTools', @Register);
 end.

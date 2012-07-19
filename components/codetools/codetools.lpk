@@ -29,7 +29,7 @@
     <License Value="GPL-2
 "/>
     <Version Major="1" Release="1"/>
-    <Files Count="58">
+    <Files Count="59">
       <Item1>
         <Filename Value="Makefile"/>
         <Type Value="Text"/>
@@ -261,8 +261,12 @@
       </Item57>
       <Item58>
         <Filename Value="unitdictionary.pas"/>
-        <UnitName Value="unitdictionary"/>
+        <UnitName Value="UnitDictionary"/>
       </Item58>
+      <Item59>
+        <Filename Value="ctloadlaz.pas"/>
+        <UnitName Value="ctloadlaz"/>
+      </Item59>
     </Files>
     <LazDoc Paths="docs"/>
     <i18n>
