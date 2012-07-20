@@ -21,12 +21,18 @@
     <Description Value="This package contains unit that will allow you to &quot;remote control&quot; the program LHelp."/>
     <License Value="Modified LGPL-2, same as LCL"/>
     <Version Minor="2"/>
-    <Files Count="1">
+    <Files Count="2">
       <Item1>
         <Filename Value="lhelpcontrol.pas"/>
         <UnitName Value="LHelpControl"/>
       </Item1>
+      <Item2>
+        <Filename Value="lazhelpchm.pas"/>
+        <HasRegisterProc Value="True"/>
+        <UnitName Value="LazHelpCHM"/>
+      </Item2>
     </Files>
+    <Type Value="RunAndDesignTime"/>
     <RequiredPkgs Count="2">
       <Item1>
         <PackageName Value="LCL"/>
