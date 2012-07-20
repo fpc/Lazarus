@@ -335,7 +335,7 @@ begin
       end
       else
       begin
-        MsgBox('You are about to install multiply copies of Lazarus. This may lead to conflicts, if they use the same configuration directory. Please ensure the correct setup after the installation finished', mbInformation, MB_OK);
+        MsgBox('You are about to install multiple copies of Lazarus. This may lead to conflicts, if they use the same configuration directory. Please ensure the correct setup after the installation finished', mbInformation, MB_OK);
       end;        
     end;
 	
