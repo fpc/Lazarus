@@ -448,6 +448,7 @@ components/codetools/codetoolsfpcmsgs.pas svneol=native#text/plain
 components/codetools/codetoolsstrconsts.pas svneol=native#text/pascal
 components/codetools/codetoolsstructs.pas svneol=native#text/pascal
 components/codetools/codetree.pas svneol=native#text/pascal
+components/codetools/ctloadlaz.pas svneol=native#text/plain
 components/codetools/ctunitgraph.pas svneol=native#text/plain
 components/codetools/ctxmlfixfragment.pas svneol=native#text/plain
 components/codetools/customcodetool.pas svneol=native#text/pascal
