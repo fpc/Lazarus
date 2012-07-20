@@ -87,12 +87,16 @@ begin
 end;
 
 procedure TForm1.FormCreate(Sender: TObject);
+const
+  {$IFDEF Darwin}
+  HelpShortcut = #$e2#$8c#$98'?';
+  {$ELSE}
+  HelpShortcut = 'F1'';
+  {$ENDIF}
 begin
   HTMLHelpDatabase1.BaseURL:='file://html';
-  {$ifdef darwin}
-  Edit1.Text:='Edit1 - Press '+#$e2#$8c#$98'?'+' for help';
-  Edit2.Text:='Edit2 - Press '+#$e2#$8c#$98'?'+' for help';
-  {$endif}
+  Edit1.Text:='Edit1 - Press '+HelpShortcut+' for help';
+  Edit2.Text:='Edit2 - Press '+HelpShortcut+' for help';
 end;
 
 {$R *.lfm}
