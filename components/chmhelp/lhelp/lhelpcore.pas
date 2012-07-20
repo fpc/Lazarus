@@ -237,6 +237,9 @@ procedure THelpForm.FormKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState
 begin
   if Key = VK_ESCAPE then
     Close;
+  // Backspace: go to previous page (as if BackBttn were clicked)
+  if Key = VK_BACK then
+    if Assigned(ActivePage) then ActivePage.ContentProvider.GoBack;
 end;
 
 procedure THelpForm.FormShow(Sender: TObject);
