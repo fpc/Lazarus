@@ -6,9 +6,13 @@
       <Flags>
         <LRSInOutputDirectory Value="False"/>
       </Flags>
-      <SessionStorage Value="InProjectDir"/>
+      <SessionStorage Value="InIDEConfig"/>
       <MainUnit Value="0"/>
+      <ResourceType Value="res"/>
     </General>
+    <BuildModes Count="1">
+      <Item1 Name="default" Default="True"/>
+    </BuildModes>
     <PublishOptions>
       <Version Value="2"/>
       <IncludeFileFilter Value="*.(pas|pp|inc|lfm|lpr|lrs|lpi|lpk|sh|xml)"/>
@@ -52,15 +56,13 @@
     </Units>
   </ProjectOptions>
   <CompilerOptions>
-    <Version Value="9"/>
+    <Version Value="11"/>
+    <Target>
+      <Filename Value="htmlhelp1"/>
+    </Target>
     <SearchPaths>
-      <SrcPath Value="$(LazarusDir)/lcl;$(LazarusDir)/lcl/interfaces/$(LCLWidgetType)"/>
+      <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)"/>
     </SearchPaths>
-    <Parsing>
-      <SyntaxOptions>
-        <UseAnsiStrings Value="False"/>
-      </SyntaxOptions>
-    </Parsing>
     <Linking>
       <Options>
         <Win32>

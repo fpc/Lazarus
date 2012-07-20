@@ -3940,7 +3940,6 @@ examples/helphtml/html/index.html svneol=native#text/plain
 examples/helphtml/htmlhelp1.lpi svneol=native#text/plain
 examples/helphtml/htmlhelp1.lpr svneol=native#text/plain
 examples/helphtml/unit1.lfm svneol=native#text/plain
-examples/helphtml/unit1.lrs svneol=native#text/pascal
 examples/helphtml/unit1.pas svneol=native#text/plain
 examples/htmlhelp_ipro/htmlhelp2unit1.lfm svneol=native#text/plain
 examples/htmlhelp_ipro/htmlhelp2unit1.lrs svneol=native#text/pascal
