@@ -29,6 +29,7 @@ AppUpdatesURL=http://www.lazarus.freepascal.org/
 ArchitecturesInstallIn64BitMode=x64
 DefaultDirName={code:GetDefDir|{sd}\lazarus}
 DefaultGroupName={#AppName}
+DirExistsWarning=no
 OutputBaseFilename={#OutputFileName}
 InternalCompressLevel=ultra
 ;InternalCompressLevel=ultra64
@@ -47,6 +48,7 @@ ChangesAssociations=true
 
 [Tasks]
 Name: desktopicon; Description: {cm:CreateDesktopIcon}; GroupDescription: {cm:AdditionalIcons}; Flags: unchecked
+Name: delusersettings; Description: Delete all user configuration files from previous installs; GroupDescription: Clean up;  Flags: unchecked checkedonce
 
 [Components]
 #if FPCTargetOS=="win32"
@@ -61,6 +63,18 @@ Name: associatelpr; Description: {code:GetAssociateDesc|.lpr}; Types: custom ful
 Name: associateinc; Description: {code:GetAssociateDesc|.inc}; Types: custom full
 Name: associatepas; Description: {code:GetAssociateDesc|.pas}; Types: custom full
 Name: associatepp; Description: {code:GetAssociateDesc|.pp}; Types: custom full
+
+[InstallDelete]
+Name: {localappdata}\lazarus\*.xml; Type: files; Tasks: delusersettings
+Name: {localappdata}\lazarus\*.cfg; Type: files; Tasks: delusersettings
+Name: {localappdata}\lazarus\lazarus.dci; Type: files; Tasks: delusersettings
+Name: {localappdata}\lazarus\compilertest.pas; Type: files; Tasks: delusersettings
+Name: {localappdata}\lazarus\easydocklayout.lyt; Type: files; Tasks: delusersettings
+Name: {localappdata}\lazarus\laz_indentation.pas; Type: files; Tasks: delusersettings
+Name: {localappdata}\lazarus\staticpackages.inc; Type: files; Tasks: delusersettings
+Name: {localappdata}\lazarus\unitdictionarycodyunitdictionary*.tmp; Type: files; Tasks: delusersettings
+Name: {localappdata}\lazarus\projectsessions\*.lps; Type: files; Tasks: delusersettings
+Name: {localappdata}\lazarus\userschemes\*.xml; Type: files; Tasks: delusersettings
 
 [Files]
 Source: {#BuildDir}\*.*; DestDir: {app}; Flags: recursesubdirs
@@ -99,6 +113,8 @@ Name: {app}\Lazarus Wiki Help.url; Type: files
 Name: {app}\Lazarus Home Page.url; Type: files
 Name: {app}\Lazarus Forums.url; Type: files
 Name: {app}\fpc\{#FPCVersion}\bin\{#FPCFullTarget}\fpc.cfg; Type: files
+Name: {app}\lazarus.old.exe; Type: files
+Name: {app}\lazarus.old2.exe; Type: files
 
 [Registry]
 ; HKLM
@@ -221,29 +237,109 @@ Name: sk; MessagesFile: compiler:Languages\Slovak.isl
 Name: sl; MessagesFile: compiler:Languages\Slovenian.isl
 
 [Code]
+function GetUninstallData(s: String): String; // 'UninstallString'
+var
+  Path: String;
+begin
+  Path := ExpandConstant('Software\Microsoft\Windows\CurrentVersion\Uninstall\lazarus_is1');
+  Result := '';
+  if not RegQueryStringValue(HKLM, Path, s, Result) then
+    RegQueryStringValue(HKCU, Path, s, Result);
+end;
+
+function IsDirEmpty(s: String): Boolean;
+var
+	FindRec: TFindRec;
+begin
+  Result := not DirExists(s);
+  if Result then exit;
+  SetCurrentDir(s);
+  Result := not FindFirst('*', FindRec);
+  if Result then exit;
+  if (FindRec.Name = '.') or (FindRec.Name = '..') then Result := not FindNext(FindRec);
+  if (not Result) and ((FindRec.Name = '.') or (FindRec.Name = '..')) then Result := not FindNext(FindRec);
+  FindClose(FindRec);
+end;
+
 function NextButtonClick(CurPage: Integer): Boolean;
 var
-	folder: String;
+    folder, OldPath, OldName, UnInstaller: String;
+    PathEqual, FolderEmpty: Boolean;
+	i: integer;
 begin
-
   // by default go to next page
   Result := true;
 
   // if curpage is wpSelectDir check is filesystem
   if CurPage = wpSelectDir then
   begin
-
     folder := WizardDirValue;
 
     if Pos( ' ', folder ) > 0 then
     begin
       MsgBox( 'Selected folder contains spaces, please select a folder without spaces in it.', mbInformation, MB_OK );
-
       Result := false;
+      exit;
     end
 
+    UnInstaller := RemoveQuotes(GetUninstallData('UninstallString'));
+    if (UnInstaller <> '') and FileExists(UnInstaller) then 
+    begin
+      OldPath := RemoveQuotes((GetUninstallData('Inno Setup: App Path')));
+      OldName := GetUninstallData('DisplayName');
+      PathEqual := (OldPath <> '') and (CompareText(RemoveBackslashUnlessRoot(OldPath), RemoveBackslashUnlessRoot(folder)) = 0);
+    end
+    else
+    begin
+      UnInstaller := '';
+      PathEqual := False;
+    end;
+    FolderEmpty := IsDirEmpty(folder);
+    
+    if not(FolderEmpty) then begin
+      // Dir NOT empty
+      if (UnInstaller <> '') and PathEqual then
+      begin
+        // Overwriting old install. Uninstaller 
+        if MsgBox(FmtMessage('Another installation of "%1" exists in the target folder. This may prevent the new installation from working properly. Do you want to run the uninstaller first?', [OldName]), mbConfirmation, MB_YESNO) = IDYES then 
+        begin
+          if Exec(UnInstaller, '/SILENT /NORESTART','', SW_SHOW, ewWaitUntilTerminated, i) then
+          begin
+            Result := IsDirEmpty(folder);
+			if not Result then begin Sleep(500); Result := IsDirEmpty(folder); end;
+			if not Result then begin Sleep(500); Result := IsDirEmpty(folder); end;
+			if not Result then begin Sleep(500); Result := IsDirEmpty(folder); end;
+            if not(Result) then
+              Result := MsgBox('The target folder is still not empty. Continue with installation?', mbConfirmation, MB_YESNO) = IDYES;
+          end
+          else
+          begin
+            Result := MsgBox('Uninstall failed. Continue anyway?', mbConfirmation, MB_YESNO) = IDYES;
+          end;
+        end;
+        UnInstaller := '';
+      end
+	  else begin
+        // Overwriting something. Uninstaller maybe somewhere else
+        Result := MsgBox('The target folder is not empty. If it contains a previous installation, then this may prevent the new installation from working properly. Continue with installation?', mbConfirmation, MB_YESNO) = IDYES;
+	  end;
+    end;
+	if not Result then exit;
+  
+    if UnInstaller <> '' then
+    begin
+      if MsgBox(FmtMessage('Found another installation of "%1" in "%2". Do you want to run the uninstaller?', [OldName, OldPath]), mbConfirmation, MB_YESNO) = IDYES then 
+      begin
+        if not Exec(UnInstaller, '/SILENT /NORESTART','', SW_SHOW, ewWaitUntilTerminated, i) then
+          Result := MsgBox('Uninstall failed. Continue anyway?', mbConfirmation, MB_YESNO) = IDYES;
+      end
+      else
+      begin
+        MsgBox('You are about to install multiply copies of Lazarus. This may lead to conflicts, if they use the same configuration directory. Please ensure the correct setup after the installation finished', mbInformation, MB_OK);
+      end;        
+    end;
+	
   end;
-
 end;
 
 function GetDefDir( def: String ) : String;
@@ -286,10 +382,10 @@ var
   PoFilename: string;
 begin
   if (GetArrayLength(PoFileStrings)=0) then begin
-	PoFilename := ExpandConstant('{app}\languages\installerstrconsts.{language}.po');
-	if not FileExists(PoFileName) then
-	  PoFilename := ExpandConstant('{app}\languages\installerstrconsts.po');
-	LoadStringsFromFile(PoFileName, PoFileStrings);
+    PoFilename := ExpandConstant('{app}\languages\installerstrconsts.{language}.po');
+    if not FileExists(PoFileName) then
+      PoFilename := ExpandConstant('{app}\languages\installerstrconsts.po');
+    LoadStringsFromFile(PoFileName, PoFileStrings);
   end;
 end;
 
@@ -343,10 +439,10 @@ begin
     i := i+1;
   end;
   if i+2<Count then begin
-	Result := copy(PoFileStrings[i+2],9, Length(PoFileStrings[i+2])-9);
+    Result := copy(PoFileStrings[i+2],9, Length(PoFileStrings[i+2])-9);
     //MsgBox(Result, mbInformation, MB_OK);
-	if Result='' then
-	  Result := copy(PoFileStrings[i+1],8, Length(PoFileStrings[i+1])-8);
+    if Result='' then
+      Result := copy(PoFileStrings[i+1],8, Length(PoFileStrings[i+1])-8);
   end;
   Result := ConvertUTF8ToSystemCharSet(Result);
 end;
