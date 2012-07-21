@@ -72,12 +72,14 @@ SET PATH=%FPCBINDIR%
 :: copy lazarus dir
 rmdir /s /q %BUILDDIR%
 %SVN% export %LAZSVNDIR% %BUILDDIR% >> %LOGFILE%
+IF %ERRORLEVEL% NEQ 0 GOTO SVNERR
 call svn2revisioninc.bat %LAZSVNDIR% %BUILDDIR%\ide\revision.inc
 
 call build-fpc.bat
 
 :: INSTALL_BINDIR is set by build-fpc.bat
 %SVN% export %FPCBINDIR% %BUILDDIR%\fpcbins >> %LOGFILE%
+IF %ERRORLEVEL% NEQ 0 GOTO SVNERR
 mv %BUILDDIR%\fpcbins\*.* %INSTALL_BINDIR%
 %FPCBINDIR%\rm -rf %BUILDDIR%\fpcbins
 del %INSTALL_BINDIR%\gdb.exe
@@ -113,10 +115,15 @@ if not [%IDE_WIDGETSET%]==[win32] SET OutputFileName=lazarus-%IDE_WIDGETSET%-%LA
 %ISCC% lazarus.iss >> installer.log
 
 :: do not delete build dir, if installer failed.
-if not exist output\%OutputFileName%.exe goto END
+if not exist "output\%OutputFileName%.exe" goto END
 
 :: delete build dir
 rd /s /q %BUILDDIR% > NUL
+
+GOTO END
+
+:SVNERR
+echo SVN failed
 
 :END
 
