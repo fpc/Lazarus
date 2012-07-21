@@ -45,10 +45,13 @@ ShowTasksTreeLines=true
 TimeStampRounding=0
 PrivilegesRequired=none
 ChangesAssociations=true
+; prevent chekbox pre-set (for delete user conf). Latest inno supports unchecked checkedonce
+UsePreviousTasks=no
 
 [Tasks]
 Name: desktopicon; Description: {cm:CreateDesktopIcon}; GroupDescription: {cm:AdditionalIcons}; Flags: unchecked
-Name: delusersettings; Description: Delete all user configuration files from previous installs; GroupDescription: Clean up;  Flags: unchecked checkedonce
+Name: delusersettings; Description: Delete all user configuration files from previous installs; GroupDescription: Clean up;  Flags: unchecked 
+;unchecked checkedonce
 
 [Components]
 #if FPCTargetOS=="win32"
@@ -75,6 +78,7 @@ Name: {localappdata}\lazarus\staticpackages.inc; Type: files; Tasks: delusersett
 Name: {localappdata}\lazarus\unitdictionarycodyunitdictionary*.tmp; Type: files; Tasks: delusersettings
 Name: {localappdata}\lazarus\projectsessions\*.lps; Type: files; Tasks: delusersettings
 Name: {localappdata}\lazarus\userschemes\*.xml; Type: files; Tasks: delusersettings
+#include "RemovedFiles.iss"
 
 [Files]
 Source: {#BuildDir}\*.*; DestDir: {app}; Flags: recursesubdirs
@@ -233,7 +237,8 @@ Name: pl; MessagesFile: compiler:Languages\Polish.isl
 Name: pt; MessagesFile: compiler:Languages\Portuguese.isl
 Name: pt_BR; MessagesFile: compiler:Languages\BrazilianPortuguese.isl
 Name: ru; MessagesFile: compiler:Languages\Russian.isl
-Name: sk; MessagesFile: compiler:Languages\Slovak.isl
+;Slovak.isl not avail with latest inno setup
+;Name: sk; MessagesFile: compiler:Languages\Slovak.isl
 Name: sl; MessagesFile: compiler:Languages\Slovenian.isl
 
 [Code]
