@@ -4251,7 +4251,6 @@ ide/addtoprojectdlg.pas svneol=native#text/pascal
 ide/applicationbundle.pas svneol=native#text/plain
 ide/basebuildmanager.pas svneol=native#text/plain
 ide/basedebugmanager.pas svneol=native#text/pascal
-ide/bigidemake.cfg svneol=native#text/plain
 ide/buildfiledlg.lfm svneol=native#text/plain
 ide/buildfiledlg.pas svneol=native#text/pascal
 ide/buildlazdialog.lfm svneol=native#text/plain
