@@ -232,6 +232,7 @@ type
 
 var
   HelpManager: THelpManager = nil;// set by the IDE
+    // LCL applications can call CreateLCLHelpSystem in unit LazHelpIntf
 
 //==============================================================================
 { Showing help (how it works):
@@ -348,6 +349,10 @@ end;
 function ShowHelpForKeyword(HelpDatabaseID: THelpDatabaseID;
   const HelpKeyword: string; var ErrMsg: string): TShowHelpResult;
 begin
+  if HelpManager=nil then begin
+    ErrMsg:='HelpManager=nil';
+    exit(shrHelpNotFound);
+  end;
   Result:=HelpManager.ShowHelpForQuery(
             THelpQueryKeyword.Create(HelpDatabaseID,HelpKeyword),
             true,ErrMsg);
