@@ -4003,7 +4003,7 @@ begin
   end else begin
     // start the first class section (the one without a keyword)
     CreateChildNode;
-    if ClassDesc=ctnClass then
+    if ClassDesc in [ctnClass,ctnObjCClass] then
       CurNode.Desc:=ctnClassPublished
     else
       CurNode.Desc:=ctnClassPublic;
