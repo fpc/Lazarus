@@ -2319,29 +2319,36 @@ procedure TCarbonMemo.InsertLine(AIndex: Integer; const S: String);
 var
   AStart, AEnd: TXNOffset;
   W: WideString;
+  LineCnt: Integer;
+  p: PWideChar;
 const
   // Carbon Line ending should be MacOS classic rather than Unix compatible, see #16267
   CarbonEoln = #13;
 begin
   if AIndex < 0 then AIndex := 0;
   W := UTF8ToUTF16(S);
-  
-  if GetLineCount = 0 then
+
+  LineCnt:=GetLineCount;
+  if LineCnt = 0 then
     AStart := 0
   else
-  if AIndex < GetLineCount then
+  if AIndex < LineCnt then
   begin
     GetLineOffset(AIndex, AStart, AEnd);
     W := W + CarbonEoln;
   end
   else
   begin
-    GetLineOffset(GetLineCount - 1, AStart, AEnd);
+    GetLineOffset(LineCnt - 1, AStart, AEnd);
     W := CarbonEoln + W;
     AStart := AEnd;
   end;
 
-  OSError(TXNSetData(HITextViewGetTXNObject(ControlRef(Widget)), kTXNUnicodeTextData, @W[1], Length(W) * 2, AStart, AStart),
+  p:=nil;
+  if W<>'' then
+    p:=@W[1];
+  OSError(TXNSetData(HITextViewGetTXNObject(ControlRef(Widget)),
+    kTXNUnicodeTextData, p, Length(W) * 2, AStart, AStart),
     Self, 'InsertLine', 'TXNSetData');
 end;
 
