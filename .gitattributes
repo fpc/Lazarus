@@ -6611,6 +6611,7 @@ tools/install/slacktgz/build.sh svneol=native#text/plain
 tools/install/slacktgz/slack-desc svneol=native#text/plain
 tools/install/smart_strip.sh svneol=native#text/plain
 tools/install/win/RemovedFiles.iss svneol=native#text/plain
+tools/install/win/RemovedFiles64.iss svneol=native#text/plain
 tools/install/win/build-cross.bat svneol=native#text/x-msdos-program
 tools/install/win/build-fpc.bat svneol=native#text/x-msdos-program
 tools/install/win/build-lazarus.bat svneol=native#text/x-msdos-program
