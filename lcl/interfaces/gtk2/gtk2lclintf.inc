@@ -911,6 +911,7 @@ var
   MainList,ChildList: PGList;
   Title: String;
   ActiveWindow: HWND;
+  BtnResult: LongInt;
 
   procedure CreateButton(const ALabel : String; const AResponse: Integer;
       const AImageHint: Integer = -1);
@@ -1045,6 +1046,9 @@ begin
       begin
         Btn := PGtkButton(ChildList^.Data);
 
+        BtnID := -1;
+        BtnResult:=Buttons[BtnIdx].ModalResult;
+        if (BtnResult>=Low(ButtonResults)) and (BtnResult<=High(ButtonResults)) then
         BtnID := ButtonResults[Buttons[BtnIdx].ModalResult];
         if BtnID = idButtonCancel then
            gtk_object_set_data(PGtkObject(Dialog), 'modal_result', Pointer(idButtonCancel));
