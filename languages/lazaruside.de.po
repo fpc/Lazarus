@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2012-07-14 23:02+0100\n"
+"PO-Revision-Date: 2012-07-21 23:21+0100\n"
 "Last-Translator: Swen Heinig <swen.heinig@freenet.de>\n"
 "Language-Team: Deutsch <lazarus@miraclec.com>\n"
 "MIME-Version: 1.0\n"
@@ -826,7 +826,7 @@ msgstr "Auswahl der Code-Vorlagendatei (*.dci)"
 
 #: lazarusidestrconsts.dlgclassinsertpolicy
 msgid "Class part insert policy"
-msgstr ""
+msgstr "Klassenteileeinfügung"
 
 #: lazarusidestrconsts.dlgclosebuttonsnotebook
 msgid "Show close buttons in notebook"
@@ -2174,7 +2174,7 @@ msgstr "Höchstens gemerkte Projektdateien"
 
 #: lazarusidestrconsts.dlgmethodinspolicy
 msgid "Method insert policy"
-msgstr ""
+msgstr "Methodeneinfügung"
 
 #: lazarusidestrconsts.dlgmixmethodsandproperties
 msgid "Mix methods and properties"
@@ -7417,7 +7417,7 @@ msgstr "Direktiven für neue Unit"
 
 #: lazarusidestrconsts.lisdirectory
 msgid "Directory: "
-msgstr ""
+msgstr "Verzeichnis:"
 
 #: lazarusidestrconsts.lisdirectorynotfound
 msgid "Directory %s%s%s not found."
@@ -8320,7 +8320,7 @@ msgstr "Datei"
 
 #: lazarusidestrconsts.lisfile2
 msgid "File: "
-msgstr ""
+msgstr "Datei:"
 
 #: lazarusidestrconsts.lisfiledoesnotlooklikeatextfileopenitanyway
 msgctxt "lazarusidestrconsts.lisfiledoesnotlooklikeatextfileopenitanyway"
@@ -11033,7 +11033,7 @@ msgstr "LGPL-Hinweis"
 
 #: lazarusidestrconsts.lismenuinsertmitnotice
 msgid "MIT Notice"
-msgstr ""
+msgstr "MIT-Notiz"
 
 #: lazarusidestrconsts.lismenuinsertmodifiedlgplnotice
 #| msgid "Modified LGPL notice"
@@ -16519,11 +16519,10 @@ msgid "UTF-8 with BOM"
 msgstr "UTF-8 mit BOM"
 
 #: lazarusidestrconsts.lisvalue
-#, fuzzy
 #| msgid "Value:"
 msgctxt "lazarusidestrconsts.lisvalue"
 msgid "Value"
-msgstr "Wert:"
+msgstr "Wert"
 
 #: lazarusidestrconsts.lisvalue2
 msgid "Value%s"
@@ -17658,7 +17657,7 @@ msgstr "Zeilen trennen, Cursor belassen"
 
 #: lazarusidestrconsts.srkmecinsertmitnotice
 msgid "Insert MIT notice"
-msgstr ""
+msgstr "MIT-Notiz einfügen"
 
 #: lazarusidestrconsts.srkmecinsertmode
 msgid "Insert Mode"
