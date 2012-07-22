@@ -911,6 +911,7 @@ var
   MainList,ChildList: PGList;
   Title: String;
   ActiveWindow: HWND;
+  BtnResult: LongInt;
 
   procedure CreateButton(const ALabel : String; const AResponse: Integer;
       const AImageHint: Integer = -1);
@@ -1045,9 +1046,12 @@ begin
       begin
         Btn := PGtkButton(ChildList^.Data);
 
-        BtnID := ButtonResults[Buttons[BtnIdx].ModalResult];
+        BtnID := -1;
+        BtnResult:=Buttons[BtnIdx].ModalResult;
+        if (BtnResult>=Low(ButtonResults)) and (BtnResult<=High(ButtonResults)) then
+          BtnID := ButtonResults[Buttons[BtnIdx].ModalResult];
         if BtnID = idButtonCancel then
-           g_object_set_data(PGObject(Dialog), 'modal_result', Pointer(idButtonCancel));
+          g_object_set_data(PGObject(Dialog), 'modal_result', Pointer(idButtonCancel));
 
         X := Buttons[BtnIdx].ModalResult;
         g_object_set_data(PGObject(Btn), 'modal_result',
