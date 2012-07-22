@@ -109,10 +109,6 @@ if not exist %BUILDDIR%\startlazarus.exe goto END
 :: copy gdb into build dir
 if exist %GDBDIR% %SVN% export %GDBDIR% %BUILDDIR%\mingw
 
-if [%CHMHELPFILES%]==[] GOTO NOCHM
-cp -pr %CHMHELPFILES%\* %BUILDDIR%\docs\chm
-:NOCHM
-
 :: create the installer
 IF [%BUILDLAZRELEASE%]==[] GOTO SNAPSHOT
 SET OutputFileName=lazarus-%LAZVERSION%-fpc-%FPCFULLVERSION%-%FPCTARGETOS%
