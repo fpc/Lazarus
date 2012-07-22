@@ -4407,7 +4407,7 @@ end;
 procedure TMainIDE.mnuProjectOptionsClicked(Sender: TObject);
 begin
   DoOpenIDEOptions(nil, Format(dlgProjectOptionsFor, [Project1.GetTitleOrName]),
-    [TProject, TProjectCompilerOptions], []);
+    [TAbstractIDEProjectOptions, TProjectCompilerOptions], []);
 end;
 
 function TMainIDE.UpdateProjectPOFile(AProject: TProject): TModalResult;

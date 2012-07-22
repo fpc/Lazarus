@@ -10,7 +10,7 @@ Abstract:
 How was the example created:
     Put a TCHMHelpDatabase on a form.
     Set AutoRegister to true.
-    Set KeywordPrefix to 'example/'
+    Set KeywordPrefix to 'example'
     Set Filename to the path of the chm file '../../../tools/chmaker/example.chm'
     You can create the example.chm with chmmaker (see the REDAME.txt
     in the chmmaker directory).
@@ -25,7 +25,7 @@ How was the example created:
 
     Run the program.
     Focus the edit field and press F1. lhelp will be started. lhelp will load
-    example.chm and show the page MainPage.html.
+    example.chm and shows the page MainPage.html.
 }
 unit CtxCHMHelpUnit1;
 
