@@ -11000,12 +11000,12 @@ msgstr "Geral"
 #: lazarusidestrconsts.lismenuinsertgplnotice
 #| msgid "GPL notice"
 msgid "GPL Notice"
-msgstr "Aviso GPL"
+msgstr "Nota GPL"
 
 #: lazarusidestrconsts.lismenuinsertlgplnotice
 #| msgid "LGPL notice"
 msgid "LGPL Notice"
-msgstr "Aviso LGPL"
+msgstr "Nota LGPL"
 
 #: lazarusidestrconsts.lismenuinsertmitnotice
 msgid "MIT Notice"
@@ -11014,7 +11014,7 @@ msgstr "Nota MIT"
 #: lazarusidestrconsts.lismenuinsertmodifiedlgplnotice
 #| msgid "Modified LGPL notice"
 msgid "Modified LGPL Notice"
-msgstr "Aviso LGL modificado"
+msgstr "Nota LGL modificada"
 
 #: lazarusidestrconsts.lismenuinsertusername
 #| msgid "Current username"
@@ -17919,10 +17919,9 @@ msgid "Select half-word right"
 msgstr "Selecionar meia palavra à direita"
 
 #: lazarusidestrconsts.srkmecselleft
-#, fuzzy
 #| msgid "SelLeft"
 msgid "Select Left"
-msgstr "SelLeft"
+msgstr "Selecionar à esquerda"
 
 #: lazarusidestrconsts.srkmecsellineend
 msgctxt "lazarusidestrconsts.srkmecsellineend"
@@ -17965,10 +17964,9 @@ msgid "Select Page Up"
 msgstr "Selecionar página acima"
 
 #: lazarusidestrconsts.srkmecselright
-#, fuzzy
 #| msgid "SelRight"
 msgid "Select Right"
-msgstr "SelRight"
+msgstr "Selecionar à direita"
 
 #: lazarusidestrconsts.srkmecselsticky
 msgid "Start sticky selecting"
