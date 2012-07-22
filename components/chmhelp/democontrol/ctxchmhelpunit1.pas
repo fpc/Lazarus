@@ -41,7 +41,7 @@ const
   {$IFDEF Darwin}
   HelpShortcut = #$e2#$8c#$98'?';
   {$ELSE}
-  HelpShortcut = 'F1'';
+  HelpShortcut = 'F1';
   {$ENDIF}
 
 type
