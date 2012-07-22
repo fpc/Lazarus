@@ -78,7 +78,12 @@ Name: {localappdata}\lazarus\staticpackages.inc; Type: files; Tasks: delusersett
 Name: {localappdata}\lazarus\unitdictionarycodyunitdictionary*.tmp; Type: files; Tasks: delusersettings
 Name: {localappdata}\lazarus\projectsessions\*.lps; Type: files; Tasks: delusersettings
 Name: {localappdata}\lazarus\userschemes\*.xml; Type: files; Tasks: delusersettings
-#include "RemovedFiles.iss"
+#if FPCTargetOS=="win32"
+#include "RemovedFiles32.iss"
+#endif
+#if FPCTargetOS=="win64"
+#include "RemovedFiles64.iss"
+#endif
 
 [Files]
 Source: {#BuildDir}\*.*; DestDir: {app}; Flags: recursesubdirs

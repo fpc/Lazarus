@@ -125,13 +125,6 @@ if not [%IDE_WIDGETSET%]==[win32] SET OutputFileName=lazarus-%IDE_WIDGETSET%-%LA
 
 :GO_ON
 
-if [%FPCTARGETOS%]==[win64] GOTO GO64
-cp RemovedFiles32.iss RemovedFiles.iss
-GOTO GO_ON2
-:GO64
-cp RemovedFiles64.iss RemovedFiles.iss
-
-:GO_ON2
 %ISCC% lazarus.iss >> installer.log
 
 :: do not delete build dir, if installer failed.
