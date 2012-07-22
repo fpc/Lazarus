@@ -19,6 +19,10 @@ unit LazHelpCHM;
 
 {$mode objfpc}{$H+}
 
+{$IFDEF VerboseLCLHelp}
+{$DEFINE VerboseChmHelp}
+{$ENDIF}
+
 interface
 
 uses
@@ -40,7 +44,7 @@ type
 
         Put a TCHMHelpDatabase on a form.
         Set AutoRegister to true.
-        Set KeywordPrefix to 'example/'
+        Set KeywordPrefix to 'example'
         Set CHM file to '../../../tools/chmmaker/example.chm'
 
         Put a TLHelpRemoteViewer on the form.
@@ -52,7 +56,8 @@ type
         Set HelpKeyword to 'example/MainPage.html'
 
         Run the program.
-        Focus the edit field and press F1. The page 'MainPage.html' will be shown.
+        Focus the edit field and press F1. The page '/MainPage.html' will be shown.
+        Note: lhelp requires the leading slash.
         }
   TCHMHelpDatabase = class(THelpDatabase)
   private
@@ -141,7 +146,9 @@ var
   Response: TLHelpResponse;
   s: String;
 begin
+  {$IFDEF VerboseChmHelp}
   debugln(['TLHelpConnector.ShowNode START URL="',Node.URL,'"']);
+  {$ENDIF}
 
   Result:=shrViewerError;
   ErrMsg:='';
@@ -162,6 +169,8 @@ begin
   end;
 
   SubPath:='';
+  if (URLParams<>'') and (URLParams[1]='?') then
+    Delete(URLParams,1,1);
   if LeftStr(URLParams,length(CHMPathParam)+1)=CHMPathParam+'=' then begin
     SubPath:=URLParams;
     Delete(SubPath,1,length(CHMPathParam)+1);
@@ -210,6 +219,9 @@ begin
     Connection.StartHelpServer(IPCFile,Path);
   end;
 
+  {$IFDEF VerboseChmHelp}
+  debugln(['TLHelpConnector.ShowNode CHMFilename="',CHMFilename,'" SubPath="',SubPath,'"']);
+  {$ENDIF}
   Response:=Connection.OpenURL(CHMFilename,SubPath);
   case Response of
   srSuccess: exit(shrSuccess);

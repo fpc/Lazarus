@@ -10,7 +10,7 @@ object Form1: TForm1
   LCLVersion = '1.1'
   object Edit1: TEdit
     Left = 71
-    Height = 22
+    Height = 25
     Top = 72
     Width = 225
     HelpType = htKeyword
@@ -20,7 +20,7 @@ object Form1: TForm1
   end
   object Edit2: TEdit
     Left = 71
-    Height = 22
+    Height = 25
     Top = 128
     Width = 224
     HelpType = htKeyword
@@ -30,9 +30,9 @@ object Form1: TForm1
   end
   object ShowHelpButton: TButton
     Left = 70
-    Height = 20
+    Height = 27
     Top = 20
-    Width = 128
+    Width = 105
     AutoSize = True
     Caption = 'ShowHelpButton'
     OnClick = ShowHelpButtonClick
@@ -41,7 +41,7 @@ object Form1: TForm1
   object CHMHelpDatabase1: TCHMHelpDatabase
     AutoRegister = True
     Filename = '../../../tools/chmmaker/example.chm'
-    KeywordPrefix = 'example/'
+    KeywordPrefix = 'example'
     left = 80
     top = 168
   end
