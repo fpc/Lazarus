@@ -28,10 +28,18 @@ SET LAZSVNBINDIR=%3
 SET RELEASE_PPC=%4
 
 :: Optional parameter to indicate the LCL Widget set used by the IDE
+IF [%5]==[] GOTO EMPTY5
+IF [%5]==[""] GOTO EMPTY5
 SET IDE_WIDGETSET=%5
+:EMPTY5
 
 :: Name of fpc patch file
-SET PATCHFILE=%6
+IF [%5]==[] GOTO EMPTY6
+IF [%5]==[""] GOTO EMPTY6
+IF NOT [%6]==[] SET PATCHFILE=%6
+:EMPTY6
+
+SET CHMHELPFILES=%7
 
 ::=====================================================================
 :: no change needed after this.
@@ -101,6 +109,10 @@ if not exist %BUILDDIR%\startlazarus.exe goto END
 :: copy gdb into build dir
 if exist %GDBDIR% %SVN% export %GDBDIR% %BUILDDIR%\mingw
 
+if [%CHMHELPFILES%]==[] GOTO NOCHM
+cp -pr %CHMHELPFILES%\* %BUILDDIR%\docs\chm
+:NOCHM
+
 :: create the installer
 IF [%BUILDLAZRELEASE%]==[] GOTO SNAPSHOT
 SET OutputFileName=lazarus-%LAZVERSION%-fpc-%FPCFULLVERSION%-%FPCTARGETOS%
@@ -145,12 +157,13 @@ goto STOP
 :USAGE
 @echo off
 echo Usage:
-echo create_installer.bat FPCSVNDIR LAZSVNDIR LAZSVNBINDIR RELEASECOMPILER  [IDEWIDGETSET] [PATCHFILE]
+echo create_installer.bat FPCSVNDIR LAZSVNDIR LAZSVNBINDIR RELEASECOMPILER  [IDEWIDGETSET] [PATCHFILE] [CHMHELPFILES]
 echo FPCSVNDIR: directory that contains a svn version of the fpcbuild repository
 echo LAZSVNDIR: directory that contains a svn version of the lazarus repository
 echo LAZSVNBINDIR: directory that contains a svn version of the lazarus binaries repository
 echo RELEASECOMPILER: bootstrapping compiler for building fpc
 echo IDEWIDGETSET: optional, LCL platform used for compiling the IDE
 echo PATCHFILE: optional patch file for the fpc sources
+echo CHMHELPFILES: optional directory with chm helpfiles
 
 :STOP
