@@ -2154,7 +2154,7 @@ begin
       end;
 
     VK_NEXT:
-      begin
+      if ValidDataSet then begin
         doOnKeyDown;
         if Key<>0 then begin
           doOperation(opMoveBy, VisibleRowCount);
@@ -2164,7 +2164,7 @@ begin
       end;
 
     VK_PRIOR:
-      begin
+      if ValidDataSet then begin
         doOnKeyDown;
         if Key<>0 then begin
           doOperation(opMoveBy, -VisibleRowCount);
