@@ -4367,6 +4367,9 @@ end;
 
 procedure TControl.ShowHelp;
 begin
+  {$IFDEF VerboseLCLHelp}
+  debugln(['TControl.ShowHelp ',DbgSName(Self)]);
+  {$ENDIF}
   if HelpType = htContext then
   begin
     if HelpContext <> 0 then
