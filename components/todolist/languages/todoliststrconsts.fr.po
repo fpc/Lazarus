@@ -6,7 +6,7 @@ msgstr ""
 "Last-Translator: Beuselinck Vincent <vincent@beuselinck.fr>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=iso-8859-1\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
 #: todoliststrconsts.dlgfropts
@@ -15,11 +15,11 @@ msgstr "Options"
 
 #: todoliststrconsts.dlgunitdeprefresh
 msgid "Refresh"
-msgstr "Rafraîchir"
+msgstr "RafraÃ®chir"
 
 #: todoliststrconsts.lisctinsertmacro
 msgid "Insert Macro"
-msgstr "Insère Macro"
+msgstr "InsÃ¨re Macro"
 
 #: todoliststrconsts.lispkgfiletypetext
 msgid "Text"
@@ -31,7 +31,7 @@ msgstr "Imprimer"
 
 #: todoliststrconsts.listddinserttodo
 msgid "Insert ToDo"
-msgstr "insère un ToDo"
+msgstr "insÃ¨re un ToDo"
 
 #: todoliststrconsts.listodoexport
 msgid "Export"
@@ -59,7 +59,7 @@ msgstr "Liste ToDo"
 
 #: todoliststrconsts.listodolistgotoline
 msgid "Goto selected source line"
-msgstr "Aller à la ligne de la source sélectionnée"
+msgstr "Aller Ã  la ligne de la source sÃ©lectionnÃ©e"
 
 #: todoliststrconsts.listodolistoptions
 #, fuzzy
@@ -69,27 +69,27 @@ msgstr "Options ToDo..."
 
 #: todoliststrconsts.listodolistprintlist
 msgid "Print todo items"
-msgstr "imprimer les éléments ToDo"
+msgstr "imprimer les Ã©lÃ©ments ToDo"
 
 #: todoliststrconsts.listodolistrefresh
 msgid "Refresh todo items"
-msgstr "Rafraîchir les éléments ToDo"
+msgstr "RafraÃ®chir les Ã©lÃ©ments ToDo"
 
 #: todoliststrconsts.listodolline
 msgid "Line"
-msgstr "ligne"
+msgstr "Ligne"
 
 #: todoliststrconsts.listodolowner
 msgid "Owner"
-msgstr "Propriétaire"
+msgstr "PropriÃ©taire"
 
 #: todoliststrconsts.listodolpriority
 msgid "Priority"
-msgstr "Priorité"
+msgstr "PrioritÃ©"
 
 #: todoliststrconsts.listtodolcategory
 msgid "Category"
-msgstr "Catégorie"
+msgstr "CatÃ©gorie"
 
 #: todoliststrconsts.lisviewtodolist
 msgid "View ToDo List"
