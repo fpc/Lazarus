@@ -2008,7 +2008,7 @@ begin
   if (AForm.Name='') or (not IsValidIdent(AForm.Name)) then
     raise Exception.Create('TIDEWindowCreatorList.ShowForm invalid form name '+AForm.Name);
 
-  // auto create a layput storage for every shown form
+  // auto create a layout storage for every shown form
   Layout:=SimpleLayoutStorage.ItemByFormID(AForm.Name);
   if Layout=nil then begin
     if not (csDesigning in AForm.ComponentState) then
