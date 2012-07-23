@@ -37,6 +37,7 @@ SET TARGETOS=%5
 :: Some internal variables
 SET OLDCURDIR=%CD%
 SET OLDCURDRIVE=%CD:~,2%
+SET FPCSVNDRIVE=%FPCSVNDIR:~,2%
 SET BUILDDRIVE=%BUILDDIR:~,2%
 
 
@@ -51,6 +52,7 @@ SET MAKEEXE=%FPCBINDIR%\make.exe
 :: set path to make sure the right tools are used
 SET OLDPATH=%PATH%
 PATH=%FPCBINDIR%;
+%FPCSVNDRIVE%
 cd %FPCSVNDIR%\fpcsrc
 
 %MAKEEXE% distclean FPC=%RELEASE_PPC% 
@@ -106,6 +108,7 @@ SET COMPILER=%INSTALL_BINDIR%\%PPCNAME%
 
 gmkdir -p %BUILDDIR%\packager
 %SVN% export %LAZSVNDIR%\packager\registration %BUILDDIR%\packager\registration
+%BUILDDRIVE%
 cd %BUILDDIR%\packager\registration
 %MAKEEXE% FPC=%compiler%
 IF ERRORLEVEL 1 GOTO CLEANUP
@@ -114,6 +117,7 @@ cp -pr %BUILDDIR%\packager\units\%FPCFULLTARGET% %BUILDDIR%\image\packager\units
 
 gmkdir -p %BUILDDIR%\components
 %SVN% export %LAZSVNDIR%\components\lazutils %BUILDDIR%\components\lazutils
+%BUILDDRIVE%
 cd %BUILDDIR%\components\lazutils
 %MAKEEXE% FPC=%compiler%
 IF ERRORLEVEL 1 GOTO CLEANUP

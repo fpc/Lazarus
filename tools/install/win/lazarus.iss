@@ -18,6 +18,7 @@ EnableISX=true
 #define QtInfDir GetEnv('QTINFDIR')
 #define IDEWidgetSet GetEnv('IDE_WidgetSet')
 #define OutputFileName GetEnv('OutputFileName')
+#define CHMHELPFILES GetEnv('CHMHELPFILES')
 [Setup]
 AllowNoIcons=yes
 AppName={#AppName}
@@ -29,24 +30,29 @@ AppUpdatesURL=http://www.lazarus.freepascal.org/
 ArchitecturesInstallIn64BitMode=x64
 DefaultDirName={code:GetDefDir|{sd}\lazarus}
 DefaultGroupName={#AppName}
+DirExistsWarning=no
 OutputBaseFilename={#OutputFileName}
 InternalCompressLevel=ultra
 ;InternalCompressLevel=ultra64
 ;Compression=lzma2/ultra64
-SolidCompression=true
+SolidCompression=yes
 VersionInfoVersion={#FileVersion}
 VersionInfoTextVersion={#AppVersion}-{#SetupDate}
 ShowLanguageDialog=yes
 WizardImageFile=lazarus_install_cheetah.bmp
 WizardSmallImageFile=lazarus_install_cheetah_small.bmp
 WizardImageStretch=false
-ShowTasksTreeLines=true
+ShowTasksTreeLines=yes
 TimeStampRounding=0
 PrivilegesRequired=none
-ChangesAssociations=true
+ChangesAssociations=yes
+; prevent chekbox pre-set (for delete user conf). Latest inno supports unchecked checkedonce
+UsePreviousTasks=no
 
 [Tasks]
 Name: desktopicon; Description: {cm:CreateDesktopIcon}; GroupDescription: {cm:AdditionalIcons}; Flags: unchecked
+Name: delusersettings; Description: Delete all user configuration files from previous installs; GroupDescription: Clean up;  Flags: unchecked 
+;unchecked checkedonce
 
 [Components]
 #if FPCTargetOS=="win32"
@@ -54,13 +60,37 @@ Name: desktopicon; Description: {cm:CreateDesktopIcon}; GroupDescription: {cm:Ad
 Name: installqtintfdll; Description: Install QT interface dll; Types: custom full compact
 #endif
 #endif
-Name: associatelfm; Description: {code:GetAssociateDesc|.lfm}; Types: custom full
-Name: associatelpi; Description: {code:GetAssociateDesc|.lpi}; Types: custom full
-Name: associatelpk; Description: {code:GetAssociateDesc|.lpk}; Types: custom full
-Name: associatelpr; Description: {code:GetAssociateDesc|.lpr}; Types: custom full
-Name: associateinc; Description: {code:GetAssociateDesc|.inc}; Types: custom full
-Name: associatepas; Description: {code:GetAssociateDesc|.pas}; Types: custom full
-Name: associatepp; Description: {code:GetAssociateDesc|.pp}; Types: custom full
+#ifdef CHMHELPFILES
+#if CHMHELPFILES!=""
+Name: installhelp; Description: Install chm help files; Types: custom full
+#endif
+#endif
+Name: association; Description: Associate file extensions; Types: custom full
+Name: association/associatelfm; Description: {code:GetAssociateDesc|.lfm}; Types: custom full
+Name: association/associatelpi; Description: {code:GetAssociateDesc|.lpi}; Types: custom full
+Name: association/associatelpk; Description: {code:GetAssociateDesc|.lpk}; Types: custom full
+Name: association/associatelpr; Description: {code:GetAssociateDesc|.lpr}; Types: custom full
+Name: association/associateinc; Description: {code:GetAssociateDesc|.inc}; Types: custom full
+Name: association/associatepas; Description: {code:GetAssociateDesc|.pas}; Types: custom full
+Name: association/associatepp; Description: {code:GetAssociateDesc|.pp}; Types: custom full
+
+[InstallDelete]
+Name: {localappdata}\lazarus\*.xml; Type: files; Tasks: delusersettings
+Name: {localappdata}\lazarus\*.cfg; Type: files; Tasks: delusersettings
+Name: {localappdata}\lazarus\lazarus.dci; Type: files; Tasks: delusersettings
+Name: {localappdata}\lazarus\compilertest.pas; Type: files; Tasks: delusersettings
+Name: {localappdata}\lazarus\easydocklayout.lyt; Type: files; Tasks: delusersettings
+Name: {localappdata}\lazarus\laz_indentation.pas; Type: files; Tasks: delusersettings
+Name: {localappdata}\lazarus\staticpackages.inc; Type: files; Tasks: delusersettings
+Name: {localappdata}\lazarus\unitdictionarycodyunitdictionary*.tmp; Type: files; Tasks: delusersettings
+Name: {localappdata}\lazarus\projectsessions\*.lps; Type: files; Tasks: delusersettings
+Name: {localappdata}\lazarus\userschemes\*.xml; Type: files; Tasks: delusersettings
+#if FPCTargetOS=="win32"
+#include "RemovedFiles32.iss"
+#endif
+#if FPCTargetOS=="win64"
+#include "RemovedFiles64.iss"
+#endif
 
 [Files]
 Source: {#BuildDir}\*.*; DestDir: {app}; Flags: recursesubdirs
@@ -73,6 +103,12 @@ Source: {#QtInfDir}\*.dll; DestDir: {sys}; Flags: sharedfile replacesameversion;
 #endif
 #if FPCVersion=="2.2.0"
 Source: {#BuildDir}\fpc\{#FPCVersion}\bin\{#FPCFullTarget}\cpp.exe; DestDir: {app}\ide; MinVersion: 1,0
+#endif
+#endif
+
+#ifdef CHMHELPFILES
+#if CHMHELPFILES!=""
+Source: {#CHMHELPFILES}\*.*; DestDir: {app}\docs\chm; Components: installhelp; Flags: recursesubdirs
 #endif
 #endif
 
@@ -99,6 +135,8 @@ Name: {app}\Lazarus Wiki Help.url; Type: files
 Name: {app}\Lazarus Home Page.url; Type: files
 Name: {app}\Lazarus Forums.url; Type: files
 Name: {app}\fpc\{#FPCVersion}\bin\{#FPCFullTarget}\fpc.cfg; Type: files
+Name: {app}\lazarus.old.exe; Type: files
+Name: {app}\lazarus.old2.exe; Type: files
 
 [Registry]
 ; HKLM
@@ -137,13 +175,13 @@ Root: HKLM; Subkey: Software\Classes\Lazarus.AssocFile.pp\DefaultIcon; ValueType
 Root: HKLM; Subkey: Software\Classes\Lazarus.AssocFile.pp\Shell\Open; ValueName: Icon; ValueType: String; ValueData: {app}\images\lprfile.ico; Flags: uninsdeletekey; Check: IsHKLMWriteable
 Root: HKLM; Subkey: Software\Classes\Lazarus.AssocFile.pp\Shell\Open\Command; ValueType: String; ValueData: """{app}\lazarus.exe"" ""%1"""; Flags: uninsdeletekey; Check: IsHKLMWriteable
 
-Root: HKLM; Subkey: Software\Classes\.lfm; ValueType: String; ValueData: Lazarus.AssocFile.lfm; Flags: uninsdeletevalue; Check: IsHKLMWriteable; Components: associatelfm
-Root: HKLM; Subkey: Software\Classes\.lpi; ValueType: String; ValueData: Lazarus.AssocFile.lpi; Flags: uninsdeletevalue; Check: IsHKLMWriteable; Components: associatelpi
-Root: HKLM; Subkey: Software\Classes\.lpk; ValueType: String; ValueData: Lazarus.AssocFile.lpk; Flags: uninsdeletevalue; Check: IsHKLMWriteable; Components: associatelpk
-Root: HKLM; Subkey: Software\Classes\.lpr; ValueType: String; ValueData: Lazarus.AssocFile.lpr; Flags: uninsdeletevalue; Check: IsHKLMWriteable; Components: associatelpr
-Root: HKLM; Subkey: Software\Classes\.inc; ValueType: String; ValueData: Lazarus.AssocFile.inc; Flags: uninsdeletevalue; Check: IsHKLMWriteable; Components: associateinc
-Root: HKLM; Subkey: Software\Classes\.pas; ValueType: String; ValueData: Lazarus.AssocFile.pas; Flags: uninsdeletevalue; Check: IsHKLMWriteable; Components: associatepas
-Root: HKLM; Subkey: Software\Classes\.pp; ValueType: String; ValueData: Lazarus.AssocFile.pp; Flags: uninsdeletevalue; Check: IsHKLMWriteable; Components: associatepp
+Root: HKLM; Subkey: Software\Classes\.lfm; ValueType: String; ValueData: Lazarus.AssocFile.lfm; Flags: uninsdeletevalue; Check: IsHKLMWriteable; Components: association/associatelfm
+Root: HKLM; Subkey: Software\Classes\.lpi; ValueType: String; ValueData: Lazarus.AssocFile.lpi; Flags: uninsdeletevalue; Check: IsHKLMWriteable; Components: association/associatelpi
+Root: HKLM; Subkey: Software\Classes\.lpk; ValueType: String; ValueData: Lazarus.AssocFile.lpk; Flags: uninsdeletevalue; Check: IsHKLMWriteable; Components: association/associatelpk
+Root: HKLM; Subkey: Software\Classes\.lpr; ValueType: String; ValueData: Lazarus.AssocFile.lpr; Flags: uninsdeletevalue; Check: IsHKLMWriteable; Components: association/associatelpr
+Root: HKLM; Subkey: Software\Classes\.inc; ValueType: String; ValueData: Lazarus.AssocFile.inc; Flags: uninsdeletevalue; Check: IsHKLMWriteable; Components: association/associateinc
+Root: HKLM; Subkey: Software\Classes\.pas; ValueType: String; ValueData: Lazarus.AssocFile.pas; Flags: uninsdeletevalue; Check: IsHKLMWriteable; Components: association/associatepas
+Root: HKLM; Subkey: Software\Classes\.pp; ValueType: String; ValueData: Lazarus.AssocFile.pp; Flags: uninsdeletevalue; Check: IsHKLMWriteable; Components: association/associatepp
 
 Root: HKLM; Subkey: Software\Lazarus\Capabilities; ValueType: String; ValueName: ApplicationName; ValueData: Lazarus IDE; Flags: uninsdeletekey; Check: IsHKLMWriteable
 Root: HKLM; Subkey: Software\Lazarus\Capabilities; ValueType: String; ValueName: ApplicationDescription; ValueData: Open Source IDE for Free Pascal.; Flags: uninsdeletekey; Check: IsHKLMWriteable
@@ -193,13 +231,13 @@ Root: HKCU; Subkey: Software\Classes\Lazarus.AssocFile.pp\DefaultIcon; ValueType
 Root: HKCU; Subkey: Software\Classes\Lazarus.AssocFile.pp\Shell\Open; ValueName: Icon; ValueType: String; ValueData: {app}\images\lprfile.ico; Flags: uninsdeletekey; Check: IsHKLMNotWriteable
 Root: HKCU; Subkey: Software\Classes\Lazarus.AssocFile.pp\Shell\Open\Command; ValueType: String; ValueData: """{app}\lazarus.exe"" ""%1"""; Flags: uninsdeletekey; Check: IsHKLMNotWriteable
 
-Root: HKCU; Subkey: Software\Classes\.lfm; ValueType: String; ValueData: Lazarus.AssocFile.lfm; Flags: uninsdeletevalue; Check: IsHKLMNotWriteable; Components: associatelfm
-Root: HKCU; Subkey: Software\Classes\.lpi; ValueType: String; ValueData: Lazarus.AssocFile.lpi; Flags: uninsdeletevalue; Check: IsHKLMNotWriteable; Components: associatelpi
-Root: HKCU; Subkey: Software\Classes\.lpk; ValueType: String; ValueData: Lazarus.AssocFile.lpk; Flags: uninsdeletevalue; Check: IsHKLMNotWriteable; Components: associatelpk
-Root: HKCU; Subkey: Software\Classes\.lpr; ValueType: String; ValueData: Lazarus.AssocFile.lpr; Flags: uninsdeletevalue; Check: IsHKLMNotWriteable; Components: associatelpr
-Root: HKCU; Subkey: Software\Classes\.inc; ValueType: String; ValueData: Lazarus.AssocFile.inc; Flags: uninsdeletevalue; Check: IsHKLMNotWriteable; Components: associateinc
-Root: HKCU; Subkey: Software\Classes\.pas; ValueType: String; ValueData: Lazarus.AssocFile.pas; Flags: uninsdeletevalue; Check: IsHKLMNotWriteable; Components: associatepas
-Root: HKCU; Subkey: Software\Classes\.pp; ValueType: String; ValueData: Lazarus.AssocFile.pp; Flags: uninsdeletevalue; Check: IsHKLMNotWriteable; Components: associatepp
+Root: HKCU; Subkey: Software\Classes\.lfm; ValueType: String; ValueData: Lazarus.AssocFile.lfm; Flags: uninsdeletevalue; Check: IsHKLMNotWriteable; Components: association/associatelfm
+Root: HKCU; Subkey: Software\Classes\.lpi; ValueType: String; ValueData: Lazarus.AssocFile.lpi; Flags: uninsdeletevalue; Check: IsHKLMNotWriteable; Components: association/associatelpi
+Root: HKCU; Subkey: Software\Classes\.lpk; ValueType: String; ValueData: Lazarus.AssocFile.lpk; Flags: uninsdeletevalue; Check: IsHKLMNotWriteable; Components: association/associatelpk
+Root: HKCU; Subkey: Software\Classes\.lpr; ValueType: String; ValueData: Lazarus.AssocFile.lpr; Flags: uninsdeletevalue; Check: IsHKLMNotWriteable; Components: association/associatelpr
+Root: HKCU; Subkey: Software\Classes\.inc; ValueType: String; ValueData: Lazarus.AssocFile.inc; Flags: uninsdeletevalue; Check: IsHKLMNotWriteable; Components: association/associateinc
+Root: HKCU; Subkey: Software\Classes\.pas; ValueType: String; ValueData: Lazarus.AssocFile.pas; Flags: uninsdeletevalue; Check: IsHKLMNotWriteable; Components: association/associatepas
+Root: HKCU; Subkey: Software\Classes\.pp; ValueType: String; ValueData: Lazarus.AssocFile.pp; Flags: uninsdeletevalue; Check: IsHKLMNotWriteable; Components: association/associatepp
 
 [Languages]
 Name: default; MessagesFile: compiler:Default.isl
@@ -217,33 +255,114 @@ Name: pl; MessagesFile: compiler:Languages\Polish.isl
 Name: pt; MessagesFile: compiler:Languages\Portuguese.isl
 Name: pt_BR; MessagesFile: compiler:Languages\BrazilianPortuguese.isl
 Name: ru; MessagesFile: compiler:Languages\Russian.isl
-Name: sk; MessagesFile: compiler:Languages\Slovak.isl
+;Slovak.isl not avail with latest inno setup
+;Name: sk; MessagesFile: compiler:Languages\Slovak.isl
 Name: sl; MessagesFile: compiler:Languages\Slovenian.isl
 
 [Code]
+function GetUninstallData(s: String): String; // 'UninstallString'
+var
+  Path: String;
+begin
+  Path := ExpandConstant('Software\Microsoft\Windows\CurrentVersion\Uninstall\lazarus_is1');
+  Result := '';
+  if not RegQueryStringValue(HKLM, Path, s, Result) then
+    RegQueryStringValue(HKCU, Path, s, Result);
+end;
+
+function IsDirEmpty(s: String): Boolean;
+var
+	FindRec: TFindRec;
+begin
+  Result := not DirExists(s);
+  if Result then exit;
+  SetCurrentDir(s);
+  Result := not FindFirst('*', FindRec);
+  if Result then exit;
+  if (FindRec.Name = '.') or (FindRec.Name = '..') then Result := not FindNext(FindRec);
+  if (not Result) and ((FindRec.Name = '.') or (FindRec.Name = '..')) then Result := not FindNext(FindRec);
+  FindClose(FindRec);
+end;
+
 function NextButtonClick(CurPage: Integer): Boolean;
 var
-	folder: String;
+    folder, OldPath, OldName, UnInstaller: String;
+    PathEqual, FolderEmpty: Boolean;
+	i: integer;
 begin
-
   // by default go to next page
   Result := true;
 
   // if curpage is wpSelectDir check is filesystem
   if CurPage = wpSelectDir then
   begin
-
     folder := WizardDirValue;
 
     if Pos( ' ', folder ) > 0 then
     begin
       MsgBox( 'Selected folder contains spaces, please select a folder without spaces in it.', mbInformation, MB_OK );
-
       Result := false;
+      exit;
     end
 
+    UnInstaller := RemoveQuotes(GetUninstallData('UninstallString'));
+    if (UnInstaller <> '') and FileExists(UnInstaller) then 
+    begin
+      OldPath := RemoveQuotes((GetUninstallData('Inno Setup: App Path')));
+      OldName := GetUninstallData('DisplayName');
+      PathEqual := (OldPath <> '') and (CompareText(RemoveBackslashUnlessRoot(OldPath), RemoveBackslashUnlessRoot(folder)) = 0);
+    end
+    else
+    begin
+      UnInstaller := '';
+      PathEqual := False;
+    end;
+    FolderEmpty := IsDirEmpty(folder);
+    
+    if not(FolderEmpty) then begin
+      // Dir NOT empty
+      if (UnInstaller <> '') and PathEqual then
+      begin
+        // Overwriting old install. Uninstaller 
+        if MsgBox(FmtMessage('Another installation of "%1" exists in the target folder. This may prevent the new installation from working properly. Do you want to run the uninstaller first?', [OldName]), mbConfirmation, MB_YESNO) = IDYES then 
+        begin
+          if Exec(UnInstaller, '/SILENT /NORESTART','', SW_SHOW, ewWaitUntilTerminated, i) then
+          begin
+            Result := IsDirEmpty(folder);
+			if not Result then begin Sleep(500); Result := IsDirEmpty(folder); end;
+			if not Result then begin Sleep(500); Result := IsDirEmpty(folder); end;
+			if not Result then begin Sleep(500); Result := IsDirEmpty(folder); end;
+            if not(Result) then
+              Result := MsgBox('The target folder is still not empty. Continue with installation?', mbConfirmation, MB_YESNO) = IDYES;
+          end
+          else
+          begin
+            Result := MsgBox('Uninstall failed. Continue anyway?', mbConfirmation, MB_YESNO) = IDYES;
+          end;
+        end;
+        UnInstaller := '';
+      end
+	  else begin
+        // Overwriting something. Uninstaller maybe somewhere else
+        Result := MsgBox('The target folder is not empty. If it contains a previous installation, then this may prevent the new installation from working properly. Continue with installation?', mbConfirmation, MB_YESNO) = IDYES;
+	  end;
+    end;
+	if not Result then exit;
+  
+    if UnInstaller <> '' then
+    begin
+      if MsgBox(FmtMessage('Found another installation of "%1" in "%2". Do you want to run the uninstaller?', [OldName, OldPath]), mbConfirmation, MB_YESNO) = IDYES then 
+      begin
+        if not Exec(UnInstaller, '/SILENT /NORESTART','', SW_SHOW, ewWaitUntilTerminated, i) then
+          Result := MsgBox('Uninstall failed. Continue anyway?', mbConfirmation, MB_YESNO) = IDYES;
+      end
+      else
+      begin
+        MsgBox('You are about to install multiple copies of Lazarus. This may lead to conflicts, if they use the same configuration directory. Please ensure the correct setup after the installation finished', mbInformation, MB_OK);
+      end;        
+    end;
+	
   end;
-
 end;
 
 function GetDefDir( def: String ) : String;
@@ -286,10 +405,10 @@ var
   PoFilename: string;
 begin
   if (GetArrayLength(PoFileStrings)=0) then begin
-	PoFilename := ExpandConstant('{app}\languages\installerstrconsts.{language}.po');
-	if not FileExists(PoFileName) then
-	  PoFilename := ExpandConstant('{app}\languages\installerstrconsts.po');
-	LoadStringsFromFile(PoFileName, PoFileStrings);
+    PoFilename := ExpandConstant('{app}\languages\installerstrconsts.{language}.po');
+    if not FileExists(PoFileName) then
+      PoFilename := ExpandConstant('{app}\languages\installerstrconsts.po');
+    LoadStringsFromFile(PoFileName, PoFileStrings);
   end;
 end;
 
@@ -343,10 +462,10 @@ begin
     i := i+1;
   end;
   if i+2<Count then begin
-	Result := copy(PoFileStrings[i+2],9, Length(PoFileStrings[i+2])-9);
+    Result := copy(PoFileStrings[i+2],9, Length(PoFileStrings[i+2])-9);
     //MsgBox(Result, mbInformation, MB_OK);
-	if Result='' then
-	  Result := copy(PoFileStrings[i+1],8, Length(PoFileStrings[i+1])-8);
+    if Result='' then
+      Result := copy(PoFileStrings[i+1],8, Length(PoFileStrings[i+1])-8);
   end;
   Result := ConvertUTF8ToSystemCharSet(Result);
 end;
