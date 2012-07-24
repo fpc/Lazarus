@@ -236,10 +236,14 @@ end;
 function THintWindow.CalcHintRect(MaxWidth: Integer; const AHint: String;
   AData: Pointer): TRect;
 begin
+  if AHint='' then
+  begin
+    Result:=Rect(0,0,0,0);
+    exit;
+  end;
   if MaxWidth <= 0 then
     MaxWidth := Screen.Width - 4 * HintBorderWidth;
   Result := Rect(0, 0, MaxWidth, Screen.Height - 4 * HintBorderWidth);
-  if AHint='' then exit;
   DrawText(Canvas.GetUpdatedHandle([csFontValid]), PChar(AHint), Length(AHint),
            Result, DT_CALCRECT or DT_NOPREFIX or DT_WORDBREAK);
   inc(Result.Right, 4 * HintBorderWidth);
