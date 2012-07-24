@@ -1427,6 +1427,7 @@ Type
     property BorderWidth;
     property ButtonColor;
     property Hint;
+    property Link;
     property OnChangeBounds;
     property OnColorChanged;
     property OnMouseDown;
