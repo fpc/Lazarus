@@ -173,6 +173,16 @@ begin
 end;
 
 function TDbChartSource.GetItem(AIndex: Integer): PChartDataItem;
+
+  function FieldValueOrNaN(ADataset: TDataSet; const AFieldName: String): Double;
+  begin
+    with ADataset.FieldByName(AFieldName) do
+      if IsNull then
+        Result := SafeNan
+      else
+        Result := AsFloat;
+  end;
+
 var
   ds: TDataSet;
   i: Integer;
@@ -203,13 +213,13 @@ begin
     exit;
   end;
   if FieldX <> '' then
-    FCurItem.X := ds.FieldByName(FieldX).AsFloat
+    FCurItem.X := FieldValueOrNaN(ds, FieldX)
   else
     FCurItem.X := ds.RecNo;
   if FYCount > 0 then begin
-    FCurItem.Y := ds.FieldByName(FFieldYList[0]).AsFloat;
+    FCurItem.Y := FieldValueOrNaN(ds, FFieldYList[0]);
     for i := 0 to High(FCurItem.YList) do
-      FCurItem.YList[i] := ds.FieldByName(FFieldYList[i + 1]).AsFloat;
+      FCurItem.YList[i] := FieldValueOrNaN(ds, FFieldYList[i + 1]);
   end;
   if FieldColor <> '' then
     FCurItem.Color := ds.FieldByName(FieldColor).AsInteger;
