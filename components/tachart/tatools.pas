@@ -399,12 +399,16 @@ type
   TChartToolHintEvent = procedure (
     ATool: TDataPointHintTool; const APoint: TPoint; var AHint: String) of object;
 
+  TChartToolHintPositionEvent = procedure (
+    ATool: TDataPointHintTool; var APoint: TPoint) of object;
+
   { TDataPointHintTool }
 
   TDataPointHintTool = class(TDataPointTool)
   strict private
     FHintWindow: THintWindow;
     FOnHint: TChartToolHintEvent;
+    FOnHintPosition: TChartToolHintPositionEvent;
     FPrevPointIndex: Integer;
     FPrevSeries: TBasicChartSeries;
     FUseApplicationHint: Boolean;
@@ -422,6 +426,8 @@ type
   published
     property ActiveCursor;
     property OnHint: TChartToolHintEvent read FOnHint write FOnHint;
+    property OnHintPosition: TChartToolHintPositionEvent
+      read FOnHintPosition write FOnHintPosition;
     property UseApplicationHint: Boolean
       read FUseApplicationHint write SetUseApplicationHint default false;
     property UseDefaultHintText: Boolean
@@ -1498,6 +1504,8 @@ begin
   FPrevSeries := Series;
   FPrevPointIndex := PointIndex;
   APoint := FChart.ClientToScreen(APoint);
+  if Assigned(OnHintPosition) then
+    OnHintPosition(Self, APoint);
 
   if UseApplicationHint then begin
     FChart.Hint := GetHintText;
