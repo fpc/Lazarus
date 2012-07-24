@@ -364,6 +364,8 @@ begin
       begin
         IdentItem := TIdentifierListItem(Items.Objects[ItemIndex]);
         Result := IdentItem.Identifier;
+        with CodeToolBoss.SourceChangeCache.BeautifyCodeOptions do
+          if WordExceptions.CheckExceptions(Result) then Exit;
         CodeBuf := CodeToolBoss.FindUnitSource(SourceEditorManager.ActiveEditor.CodeBuffer, Result, '');
         if Assigned(CodeBuf) then
         begin

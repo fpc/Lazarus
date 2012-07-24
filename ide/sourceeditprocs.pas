@@ -552,6 +552,7 @@ var
   Indent: LongInt;
   StartContextPos: TCodeXYPosition;
   s: String;
+  IsWordPolicyExcept: Boolean;
 begin
   Result:='';
   CursorToLeft:=0;
@@ -574,7 +575,7 @@ begin
 
   Result:=IdentItem.Identifier;
   with CodeToolBoss.SourceChangeCache.BeautifyCodeOptions do
-    WordExceptions.CheckExceptions(Result);
+    IsWordPolicyExcept:=WordExceptions.CheckExceptions(Result);
 
   case IdentItem.GetDesc of
 
@@ -670,9 +671,8 @@ begin
       end;
 
     icvUnitName:
-      begin
+      if not IsWordPolicyExcept then
         Result:=FindUnitName(IdentList,IdentItem);
-      end;
   end;
 
   if CursorAtEnd then ;
