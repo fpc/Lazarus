@@ -1510,6 +1510,7 @@ begin
     if FHintWindow = nil then
       FHintWindow := THintWindow.Create(nil);
     h := GetHintText;
+    if h = '' then exit;
     r := FHintWindow.CalcHintRect(FChart.Width, h, nil);
     OffsetRect(r, APoint.X, APoint.Y);
     FHintWindow.ActivateHint(r, h);
