@@ -23,7 +23,7 @@ uses
   cthreads,
   {$ENDIF}{$ENDIF}
   Classes, SysUtils, CustApp, FPCUnit, TestReport, TestRegistry,
-  PlainTestReport, UtilsTest, SourcesTest, AssertHelpers;
+  PlainTestReport, UtilsTest, SourcesTest, AssertHelpers, DbTest;
 
 // This is deliberately a console application to also test a proper
 // separation of logic and presentation in TAChart units.
