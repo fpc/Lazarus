@@ -41,7 +41,7 @@ type
     FFieldYList: TStringList;
     FOptions: TDbChartSourceOptions;
 
-    function GetDataSource: TDataSource;
+    function GetDataSource: TDataSource; inline;
     procedure SetDataSource(AValue: TDataSource);
     procedure SetFieldColor(const AValue: String);
     procedure SetFieldText(const AValue: String);
@@ -58,6 +58,7 @@ type
   public
     procedure AfterDraw; override;
     procedure BeforeDraw; override;
+    function DataSet: TDataSet; inline;
     procedure Reset;
   published
     property DataSource: TDataSource read GetDataSource write SetDataSource;
@@ -155,6 +156,11 @@ begin
   FDataLink := TDbChartSourceDataLink.Create(Self);
   FFieldYList := TStringList.Create;
   FYCount := 0; // Set to 1 by inherited.
+end;
+
+function TDbChartSource.DataSet: TDataSet;
+begin
+  Result := FDataLink.DataSet;
 end;
 
 destructor TDbChartSource.Destroy;
