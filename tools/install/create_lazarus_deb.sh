@@ -127,9 +127,6 @@ MAKEOPTS="-Fl/opt/gnome/lib"
 if [ -n "$FPCCfg" ]; then
   MAKEOPTS="$MAKEOPTS -n @$FPCCfg"
 fi
-if [ "$UseCHMHelp" = "1" ]; then
-  MAKEOPTS="$MAKEOPTS -dUseCHMHelp"
-fi
 echo "MAKEOPTS=$MAKEOPTS"
 # build
 export LCL_PLATFORM=$LCLWidgetset

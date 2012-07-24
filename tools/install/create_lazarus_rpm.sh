@@ -71,7 +71,6 @@ echo "creating lazarus tgz ..."
 # create spec file
 echo "creating lazarus spec file ..."
 CHMCOMMENT="# "
-if [ "$UseCHMHelp" = "1" ]; then CHMCOMMENT=""; fi
 cat rpm/lazarus.spec.template | \
   sed -e "s/LAZVERSION/$LazVersion/g" \
       -e "s/LAZRELEASE/$LazRelease/g" \
@@ -79,7 +78,6 @@ cat rpm/lazarus.spec.template | \
       -e "s/FPCBUILDVERSION/2.6.1/g" \
       -e "s/FPCVERSION/$FPCRPMVersion/g" \
       -e "s/FPCSRCVERSION/$FPCSRCRPMVersion/g" \
-      -e "s/%CHMHELP:/$CHMCOMMENT/" \
   > $SpecFile
 
 # build rpm
