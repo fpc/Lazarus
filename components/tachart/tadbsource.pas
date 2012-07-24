@@ -25,6 +25,8 @@ uses
 
 type
 
+  TDbChartSourceOptions = set of (dcsoDateTimeX, dcsoDateTimeY);
+
   { TDbChartSource }
 
   TDbChartSource = class(TCustomChartSource)
@@ -37,6 +39,7 @@ type
     FFieldX: String;
     FFieldY: String;
     FFieldYList: TStringList;
+    FOptions: TDbChartSourceOptions;
 
     function GetDataSource: TDataSource;
     procedure SetDataSource(AValue: TDataSource);
@@ -44,6 +47,7 @@ type
     procedure SetFieldText(const AValue: String);
     procedure SetFieldX(const AValue: String);
     procedure SetFieldY(const AValue: String);
+    procedure SetOptions(AValue: TDbChartSourceOptions);
   protected
     function GetCount: Integer; override;
     function GetItem(AIndex: Integer): PChartDataItem; override;
@@ -61,6 +65,7 @@ type
     property FieldText: String read FFieldText write SetFieldText;
     property FieldX: String read FFieldX write SetFieldX;
     property FieldY: String read FFieldY write SetFieldY;
+    property Options: TDbChartSourceOptions read FOptions write SetOptions default [];
   end;
 
 procedure Register;
@@ -174,11 +179,14 @@ end;
 
 function TDbChartSource.GetItem(AIndex: Integer): PChartDataItem;
 
-  function FieldValueOrNaN(ADataset: TDataSet; const AFieldName: String): Double;
+  function FieldValueOrNaN(
+    ADataset: TDataSet; const AFieldName: String; ADateTime: Boolean): Double;
   begin
     with ADataset.FieldByName(AFieldName) do
       if IsNull then
         Result := SafeNan
+      else if ADateTime then
+        Result := AsDateTime
       else
         Result := AsFloat;
   end;
@@ -213,13 +221,14 @@ begin
     exit;
   end;
   if FieldX <> '' then
-    FCurItem.X := FieldValueOrNaN(ds, FieldX)
+    FCurItem.X := FieldValueOrNaN(ds, FieldX, dcsoDateTimeX in Options)
   else
     FCurItem.X := ds.RecNo;
   if FYCount > 0 then begin
-    FCurItem.Y := FieldValueOrNaN(ds, FFieldYList[0]);
+    FCurItem.Y := FieldValueOrNaN(ds, FFieldYList[0], dcsoDateTimeY in Options);
     for i := 0 to High(FCurItem.YList) do
-      FCurItem.YList[i] := FieldValueOrNaN(ds, FFieldYList[i + 1]);
+      FCurItem.YList[i] :=
+        FieldValueOrNaN(ds, FFieldYList[i + 1], dcsoDateTimeY in Options);
   end;
   if FieldColor <> '' then
     FCurItem.Color := ds.FieldByName(FieldColor).AsInteger;
@@ -271,6 +280,13 @@ begin
     FFieldYList.CommaText := FFieldY;
   FYCount := FFieldYList.Count;
   SetLength(FCurItem.YList, Max(FYCount - 1, 0));
+  Reset;
+end;
+
+procedure TDbChartSource.SetOptions(AValue: TDbChartSourceOptions);
+begin
+  if FOptions = AValue then exit;
+  FOptions := AValue;
   Reset;
 end;
 
