@@ -1360,6 +1360,7 @@ Type
   published
     property Align;
     property Anchors;
+    property BarShowText;
     property BorderSpacing;
     property BorderWidth;
     property Constraints;
@@ -1368,6 +1369,7 @@ Type
     property DragMode;
     property Enabled;
     property Hint;
+    property Link;
     property Max;
     property Min;
     property OnDragDrop;
@@ -1390,8 +1392,8 @@ Type
     property Step;
     property TabOrder;
     property TabStop;
+    property UseRTTIMinMax;
     property Visible;
-    property BarShowText;
   end;
 
 
