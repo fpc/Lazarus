@@ -6079,17 +6079,11 @@ begin
 end;
 
 function GetClassUnitName(Value: TClass): string;
-var
-  TheTypeInfo: PTypeInfo;
-  TheTypeData: PTypeData;
 begin
-  Result:='';
-  TheTypeInfo:=ClassTypeInfo(Value);
-  if TheTypeInfo=nil then exit;
-  TheTypeData:=GetTypeData(TheTypeInfo);
-  if TheTypeData=nil then exit;
-  Result:=TheTypeData^.UnitName;
-  //debugln('GetClassUnitName A Result="',Result,'"');
+  if Value=nil then
+    Result:=''
+  else
+    Result:=Value.UnitName;
 end;
 
 procedure CreateComponentEvent(AComponent: TComponent; const EventName: string);
