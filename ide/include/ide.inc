@@ -33,8 +33,6 @@
 {off $apptype console}
 
 {off $define UseTurbopowerInHelp}
-{$define UseCHMHelp}
-{$define UseJCF}
 
 // debug form load/save
 { $DEFINE VerboseJITForms}

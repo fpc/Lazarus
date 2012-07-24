@@ -62,8 +62,7 @@ uses
     RunTimeTypeInfoControls, Printer4Lazarus, Printers4LazIDE,
     LeakView, MemDSLaz, SDFLaz, InstantFPCLaz, ExternHelp,
     TurboPowerIPro, {$ifdef UseTurbopowerInHelp}TurboPowerIProDsgn,{$endif}
-    {$ifdef UseJCF}jcfidelazarus,{$endif}
-    {$ifdef UseCHMHelp}chmhelppkg,{$endif}
+    jcfidelazarus, chmhelppkg,
     FPCUnitTestRunner, FPCUnitIDE, ProjTemplates, TAChartLazarusPkg,
     TodoListLaz,
     SQLDBLaz, DBFLaz,
