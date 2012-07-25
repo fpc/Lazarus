@@ -37,6 +37,7 @@ type
     procedure TearDown; override;
   published
     procedure Basic;
+    procedure Fields;
   end;
 
 implementation
@@ -54,12 +55,16 @@ end;
 procedure TDbSourceTest.Basic;
 begin
   AddRecord(1, 1.0, 2.0, 'test');
-  FSource.FieldY := 'X, Y';
+  AssertEquals(1, FSource.Count);
+  AssertEquals(2.0, FSource.Item[0]^.Y);
+end;
+
+procedure TDbSourceTest.Fields;
+begin
+  FSource.FieldY := 'X,a b';
   AssertEquals(2, FSource.YCount);
   FSource.FieldY := 'Y';
   AssertEquals(1, FSource.YCount);
-  AssertEquals(1, FSource.Count);
-  AssertEquals(2.0, FSource.Item[0]^.Y);
 end;
 
 procedure TDbSourceTest.SetUp;
