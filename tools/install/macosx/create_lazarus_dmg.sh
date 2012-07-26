@@ -3,12 +3,14 @@
 # This script requires an installed 'Iceberg'
 #
 # Usage:
-#
-#  Build a lazarus dmg:
-#   ./create_lazarus_dmg.sh
+#   ./create_lazarus_dmg.sh [chmhelp] [edit]
 #
 # This will setup a lazarus package in ~/tmp/buildlaz
 # run 'freeze' of Iceberg and create the dmg.
+#
+# Options:
+#   chmhelp          add package chmhelp and add chm,kwd files in docs/chm
+#   append-revision  append svn revision to dmg
 #
 # To edit the Iceberg configuration 'lazarus.packproj', run
 #   ./create_lazarus_dmg.sh edit
@@ -28,19 +30,37 @@ set -x
 HDIUTIL=/usr/bin/hdiutil
 
 LazVersionPostfix=
-if [ "$1" = "append-revision" ]; then
-  LazVersionPostfix=$(../get_svn_revision_number.sh .)
-  if [ -n "$LazVersionPostfix" ]; then
-    LazVersionPostfix=.$LazVersionPostfix
-  fi
-  shift
-fi
-
+UseCHMHelp=
 EditMode=
-if [ "$1" = "edit" ]; then
-  EditMode=$1
+
+while [ $# -gt 0 ]; do
+  echo "param=$1"
+  case "$1" in
+  chmhelp)
+    echo "using package chmhelp"
+    UseCHMHelp=1
+    ;;
+
+  append-revision)
+    LazRevision=$(../get_svn_revision_number.sh .)
+    if [ -n "$LazRevision" ]; then
+      LazVersionPostfix=$LazVersionPostfix.$LazRevision
+    fi
+    echo "Appending svn revision $LazVersionPostfix to dmg name"
+    ;;
+
+  edit)
+    EditMode=1
+    ;;
+
+  *)
+    echo "invalid parameter $1"
+    echo "Usage: ./create_lazarus_dmg.sh [chmhelp] [append-revision] [edit]"
+    exit 1
+    ;;
+  esac
   shift
-fi
+done
 
 PPCARCH=ppcppc
 ARCH=$(uname -p)
@@ -102,6 +122,14 @@ rm -rf $BUILDDIR
 mkdir -p $ROOTDIR/Developer
 $SVN export $LAZSOURCEDIR $LAZBUILDDIR
 
+if [ "$UseCHMHelp" = "1" ]; then
+  echo
+  echo "Copying chm files"
+  cd $LAZSOURCEDIR/docs/chm
+  cp -v *.kwd *.chm $LAZBUILDDIR/docs/chm/
+  cd -
+fi
+
 #cp $LAZSOURCEDIR/lazarus $LAZBUILDDIR/
 #cp -R $LAZSOURCEDIR/lazarus.app $LAZBUILDDIR/
 #mkdir -p $LAZBUILDDIR/tools/install/
@@ -109,35 +137,19 @@ $SVN export $LAZSOURCEDIR $LAZBUILDDIR
 #cp -R $LAZSOURCEDIR/images $LAZBUILDDIR/
 
 cd $LAZBUILDDIR
-if [ ! -e tools/svn2revisioninc ]; then
-  make registration lazutils PP=$COMPILER OPT="$MACOSX104LINKEROPTS"
-  make lcl LCL_PLATFORM=nogui PP=$COMPILER OPT="$MACOSX104LINKEROPTS"
-  make tools PP=$COMPILER OPT="$MACOSX104LINKEROPTS"
-fi
-./tools/svn2revisioninc $LAZSOURCEDIR ide/revision.inc
-
-make bigide PP=$COMPILER USESVN2REVISIONINC=0 OPT="$MACOSX104LINKEROPTS"
-
-# make non-default LCL platforms
-make LCL_PLATFORM=gtk PP=$COMPILER lcl
-make LCL_PLATFORM=gtk2 OPT="-dUseX" PP=$COMPILER lcl
-
-# cross compile units?
-if [ -n "$CROSSCOMPILER" ]; then
-  make registration CPU_TARGET=powerpc PP=$CROSSCOMPILER
-  make lazutils CPU_TARGET=powerpc PP=$CROSSCOMPILER
-  make lcl CPU_TARGET=powerpc PP=$CROSSCOMPILER
-  make lcl CPU_TARGET=powerpc LCL_PLATFORM=gtk PP=$CROSSCOMPILER
-  make lcl CPU_TARGET=powerpc LCL_PLATFORM=gtk2 OPT="-dUseX" PP=$CROSSCOMPILER
-  make -C ideintf CPU_TARGET=powerpc PP=$CROSSCOMPILER
-  make -C components/synedit CPU_TARGET=powerpc PP=$CROSSCOMPILER
-  make -C components/codetools CPU_TARGET=powerpc PP=$CROSSCOMPILER
-fi
+make bigide PP=$COMPILER USESVN2REVISIONINC=1 OPT="$MACOSX104LINKEROPTS"
 
 # clean up
 strip lazarus
 strip startlazarus
 strip lazbuild
+strip tools/lazres
+strip tools/updatepofiles
+strip tools/lrstolfm
+strip tools/svn2revisioninc
+if [ -f components/chmhelp/lhelp/lhelp ]; then
+  strip components/chmhelp/lhelp/lhelp
+fi
 find $BUILDDIR -name '.svn' -exec rm -rf {} \; || true
 find $BUILDDIR -name '.DS_Store' -exec rm -rf {} \; || true
 
