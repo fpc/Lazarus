@@ -143,34 +143,4 @@ CHM files:
 
 Mac OS X:
 
-Creating the DMG packages for FPC and Lazarus:
-
-1. create a temp directory with a usr/local hierarchy under it, owned
-   by root (e.g. sudo mkdir -p ~/fpcinst/usr/local)
-2. cd fpc   (your fpc source directory)
-3. make all
-4. sudo make install INSTALL_PREFIX=~/fpcinst/usr/local
-   (it's very important that you use sudo, because the ownership info will be
-   the same when it's installed on the user's computer and you don't want
-   those files to belong to the user that happens to have the same uid as
-   you have)
-5. cd compiler
-   sudo make installsymlink INSTALL_PREFIX=~/fpcinst/usr/local
-   Fix sym link:
-   sudo ln -sf /usr/local/lib/fpc/2.1.1/ppcppc ~/fpcinst/usr/local/bin/ppcppc
-6. unzip the <lazarus>/tools/install/macosx/fpc_installer_info.zip somewhere,
-   open "fpc 2.1.1.pmsp" (it will open in PackageMaker) change the "resources"
-   path so it points to the unzipped fpc_resources directory and the "files"
-   path so it points to ~/fpcinst and then choose File->Create Package
-7. Put the package in a directory called "Free Pascal Compiler 2.1.1",
-   add in the "Introduction.txt" and "ReadMe.txt" files from the dmg you
-   already downloaded and create a (compressed or not doesn't really
-   matter, the package is already compressed) disk image from the folder
-   with Disk Copy (if you're under 10.1/10.2), Disk Utility (10.3) or
-   hdiutil (command line, see manpage for how to do it).
-
-Unfortunaly, there does not seem to be a command line program that can
-create an installer package starting from a .pmsp file and PackageMaker
-is not AppleScriptable... It could still be automated using GUI
-scripting of course).
-
+see macosx/README.txt
