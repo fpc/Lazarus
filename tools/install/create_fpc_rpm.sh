@@ -66,14 +66,11 @@ fi
 # retrieve the version information
 echo -n "getting FPC version from local svn ..."
 VersionFile="$TmpDir/fpc/compiler/version.pas"
-CompilerVersion=`cat $VersionFile | grep ' *version_nr *=.*;' | sed -e 's/[^0-9]//g'`
-CompilerRelease=`cat $VersionFile | grep ' *release_nr *=.*;' | sed -e 's/[^0-9]//g'`
-CompilerPatch=`cat $VersionFile | grep ' *patch_nr *=.*;' | sed -e 's/[^0-9]//g'`
+CompilerVersion=$(cat $VersionFile | grep ' *version_nr *=.*;' | sed -e 's/[^0-9]//g')
+CompilerRelease=$(cat $VersionFile | grep ' *release_nr *=.*;' | sed -e 's/[^0-9]//g')
+CompilerPatch=$(cat $VersionFile | grep ' *patch_nr *=.*;' | sed -e 's/[^0-9]//g')
 CompilerVersionStr="$CompilerVersion.$CompilerRelease.$CompilerPatch"
-FPCVersion="$CompilerVersion.$CompilerRelease"
-if [ "$CompilerPatch" != "0" ]; then
-  FPCVersion="$FPCVersion.$CompilerPatch"
-fi
+FPCVersion="$CompilerVersion.$CompilerRelease.$CompilerPatch"
 echo " $CompilerVersionStr-$FPCRelease"
 
 Arch=$(rpm --eval "%{_arch}")
