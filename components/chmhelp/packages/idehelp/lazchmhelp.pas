@@ -15,41 +15,6 @@
   to the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston,
   MA 02111-1307, USA.
 }
-
-{
-ToDos:
-
-- predefined procs:
-   Anton: I've prepared some changes to ChmHelpPkg. Now help must be shown for
-   such procs/funcs as Exit, Break, Inc, Dec, Continue etc. (full list can be
-   found in fpc/rtl/inc/system.fpd)
-
-- predefined identifiers:
-  ref.chm contains help for FPC predefined identifiers - base types
-  (e.g. Byte, Boolean etc.) and constants (True, False, ..)
-
-- compiler directives:
-
-- fpc messages:
-
-- fpc compiler options:
-
-- IDE dialogs / wiki:
-  download content, without wiki links like upload, history, ...
-
-- how to build lcl.chm?
-  how to refer to fcl.chm?
-  how to refer to rtl.chm?
-
-- how to build ideintf.chm?
-  how to refer to lcl.chm?
-  how to refer to fcl.chm?
-  how to refer to rtl.chm?
-
-- how to build rtl.chm?
-
-}
-
 unit LazChmHelp;
 
 {$mode objfpc}{$H+}
@@ -147,12 +112,21 @@ begin
 end;
 
 function TChmHelpViewer.GetHelpEXE: String;
+{$IFDEF darwin}
+var
+  Filename: String;
+{$ENDIF}
 begin
   Result:=fHelpExe;
   if Result='' then
     Result := SetDirSeparators('$(LazarusDir)/components/chmhelp/lhelp/lhelp$(ExeExt)');
   if not IDEMacros.SubstituteMacros(Result) then
     Exit('');
+  {$IFDEF darwin}
+  Filename:=Result+'.app/Contents/MacOS/'+ExtractFileName(Result);
+  if FileExistsUTF8(Filename) then
+    Result:=Filename;
+  {$ENDIF}
 end;
 
 function TChmHelpViewer.GetHelpFilesPath: String;
@@ -201,17 +175,24 @@ var
 begin
   Result := mrCancel;
 
+  debugln(['TChmHelpViewer.CheckBuildLHelp AAA1 ']);
   if FileExistsUTF8(GetHelpExe) then
     Exit(mrOK);
 
   if not GetLazBuildEXE(Lazbuild) then
+  begin
+    debugln(['TChmHelpViewer.CheckBuildLHelp failed because lazbuild not found']);
     Exit;
+  end;
 
   LHelpProject := '$(LazarusDir)/components/chmhelp/lhelp/lhelp.lpi';
   if not IDEMacros.SubstituteMacros(LHelpProject) then exit;
   LHelpProject:=TrimFilename(SetDirSeparators(LHelpProject));
   if not FileExistsUTF8(LHelpProject) then
+  begin
+    debugln(['TChmHelpViewer.CheckBuildLHelp failed because lhelp.lpi not found']);
     Exit;
+  end;
 
   WS := '--ws='+LCLPlatformDirNames[WidgetSet.LCLPlatform];
 
@@ -228,6 +209,7 @@ begin
   Proc.Parameters.Add(LHelpProject);
   {$endif}
   Proc.Options := [poUsePipes, poStderrToOutPut];
+  debugln(['TChmHelpViewer.CheckBuildLHelp running "',Lazbuild,' ',WS,' ',LHelpProject,'" ...']);
   Proc.Execute;
 
 
