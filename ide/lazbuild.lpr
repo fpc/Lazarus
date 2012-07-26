@@ -28,6 +28,9 @@ uses
   {$IFDEF unix}
   cthreads,
   {$ENDIF}
+  {$IFDEF darwin}
+  cwstring,
+  {$ENDIF}
   Classes, SysUtils, CustApp, LCLProc, Dialogs, Forms, Controls, FileUtil,
   Interfaces, InterfaceBase, UTF8Process, LConvEncoding,
   // codetools
