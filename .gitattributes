@@ -6460,6 +6460,7 @@ tools/install/debian_fpc/copyright svneol=native#text/plain
 tools/install/debian_fpc/postinst svneol=native#text/plain
 tools/install/debian_lazarus/control svneol=native#text/plain
 tools/install/debian_lazarus/controlgtk svneol=native#text/plain
+tools/install/debian_lazarus/controlqt svneol=native#text/plain
 tools/install/do_nothing.sh svneol=native#text/plain
 tools/install/file_filter.sh svneol=native#text/plain
 tools/install/freebsd_ports/Makefile svneol=native#text/plain

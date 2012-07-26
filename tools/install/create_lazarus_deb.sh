@@ -5,7 +5,8 @@
 # Usage: ./create_lazarus_deb.sh [gtk1] [append-revision] [chmhelp]
 #
 #   Options:
-#     gtk1              compile IDE and programs for gtk1 too. gtk2 ppu are still built.
+#     gtk1              compile IDE and programs for gtk1.
+#     qt                compile IDE and programs for qt.
 #     append-revision   append the svn revision to the .deb version
 #     chmhelp           add package chmhelp and add chm,kwd,xct,txt files in docs/chm
 
@@ -14,19 +15,35 @@ set -e
 LCLWidgetset=
 LazVersionPostfix=
 UseCHMHelp=
+LazRelease='0'
 
 while [ $# -gt 0 ]; do
   echo "param=$1"
   case "$1" in
   gtk1)
-    echo "Compile for gtk1 too"
+    echo "Compile for gtk1"
+    if [ -n "$LCLWidgetset" ]; then
+      echo "widgetset already set to $LCLWidgetset"
+      exit -1
+    fi
     LCLWidgetset=gtk
+    LazVersionPostfix=${LazVersionPostfix}-gtk
+    ;;
+
+  qt)
+    echo "Compile for qt"
+    if [ -n "$LCLWidgetset" ]; then
+      echo "widgetset already set to $LCLWidgetset"
+      exit -1
+    fi
+    LCLWidgetset=qt
+    LazVersionPostfix=${LazVersionPostfix}-qt
     ;;
 
   append-revision)
-    LazVersionPostfix=$(./get_svn_revision_number.sh .)
-    if [ -n "$LazVersionPostfix" ]; then
-      LazVersionPostfix=.$LazVersionPostfix
+    LazRevision=$(./get_svn_revision_number.sh .)
+    if [ -n "$LazRevision" ]; then
+      LazVersionPostfix=$LazVersionPostfix.$LazRevision
     fi
     echo "Appending svn revision $LazVersionPostfix to deb name"
     ;;
@@ -38,7 +55,7 @@ while [ $# -gt 0 ]; do
 
   *)
     echo "invalid parameter $1"
-    echo "Usage: ./create_lazarus_deb.sh [gtk1] [release=svn] [chmhelp]"
+    echo "Usage: ./create_lazarus_deb.sh [chmhelp] [gtk1] [qt] [qtlib=<dir>] [release=svn] "
     exit 1
     ;;
   esac
@@ -72,7 +89,6 @@ fi
 
 Date=`date +%Y%m%d`
 LazVersion=$(./get_lazarus_version.sh)$LazVersionPostfix
-LazRelease='0'
 SrcTGZ=lazarus-$LazVersion-$LazRelease.tar.gz
 CurDir=`pwd`
 TmpDir=~/tmp/lazarus$LazVersion
@@ -127,9 +143,6 @@ MAKEOPTS="-Fl/opt/gnome/lib"
 if [ -n "$FPCCfg" ]; then
   MAKEOPTS="$MAKEOPTS -n @$FPCCfg"
 fi
-if [ "$UseCHMHelp" = "1" ]; then
-  MAKEOPTS="$MAKEOPTS -dUseCHMHelp"
-fi
 echo "MAKEOPTS=$MAKEOPTS"
 # build
 export LCL_PLATFORM=$LCLWidgetset
@@ -144,7 +157,7 @@ strip tools/lazres
 strip tools/updatepofiles
 strip tools/lrstolfm
 strip tools/svn2revisioninc
-if [ "$UseCHMHelp" = "1" ]; then
+if [ -f components/chmhelp/lhelp/lhelp ]; then
   strip components/chmhelp/lhelp/lhelp
 fi
 cd -
