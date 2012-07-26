@@ -57,8 +57,8 @@ type
       Shift: TShiftState);
   private
     UnitImgInd: Integer;
-    FMainUsedUnits: TStrings;
-    FImplUsedUnits: TStrings;
+    FMainUsedUnits: TStringList;
+    FImplUsedUnits: TStringList;
     FProjUnits, FOtherUnits: TStringList;
     procedure AddImplUsedUnits;
     function GetProjUnits(SrcEdit: TSourceEditor): Boolean;
@@ -287,22 +287,29 @@ function TUseUnitDialog.GetProjUnits(SrcEdit: TSourceEditor): Boolean;
 var
   ProjFile: TUnitInfo;
   CurrentUnitName, s: String;
+  x: Integer;
 begin
   Result := False;
   FMainUsedUnits := nil;
   FImplUsedUnits := nil;
   if SrcEdit = nil then Exit;
   Assert(Assigned(SrcEdit.CodeBuffer));
-  if not CodeToolBoss.FindUsedUnitNames(SrcEdit.CodeBuffer,
-                                        FMainUsedUnits,FImplUsedUnits)
+  if not CodeToolBoss.FindUsedUnitNames(SrcEdit.CodeBuffer, TStrings(FMainUsedUnits),
+                                                            TStrings(FImplUsedUnits))
   then begin
     DebugLn(['ShowUseProjUnitDialog CodeToolBoss.FindUsedUnitNames failed']);
     LazarusIDE.DoJumpToCodeToolBossError;
     Exit;
   end;
   Result := True;
-  TStringList(FMainUsedUnits).CaseSensitive := False;
-  TStringList(FImplUsedUnits).CaseSensitive := False;
+  if Assigned(FMainUsedUnits) then begin
+    FMainUsedUnits.Sorted := True;
+    FMainUsedUnits.CaseSensitive := False;
+  end;
+  if Assigned(FImplUsedUnits) then begin
+    FImplUsedUnits.Sorted := True;
+    FImplUsedUnits.CaseSensitive := False;
+  end;
   if SrcEdit.GetProjectFile is TUnitInfo then
     CurrentUnitName := TUnitInfo(SrcEdit.GetProjectFile).Unit_Name
   else
@@ -314,7 +321,7 @@ begin
     if s = CurrentUnitName then       // current unit
       s := '';
     if (ProjFile <> Project1.MainUnitInfo) and (s <> '') then
-      if FMainUsedUnits.IndexOf(s) < 0 then
+      if not FMainUsedUnits.Find(s, x) then
         FProjUnits.Add(s);
     ProjFile := ProjFile.NextPartOfProject;
   end;
@@ -323,13 +330,15 @@ end;
 
 procedure TUseUnitDialog.CreateOtherUnitsList;
 var
-  i: Integer; curUnit: string;
+  i, x: Integer;
+  curUnit: string;
   SrcEdit: TSourceEditor;
 begin
   if not (Assigned(FMainUsedUnits) and Assigned(FImplUsedUnits)) then Exit;
   Screen.Cursor:=crHourGlass;
   try
     FOtherUnits := TStringList.Create;
+    FOtherUnits.Sorted := True;
     SrcEdit := SourceEditorManager.ActiveEditor;
     with CodeToolBoss do
       if GatherUnitNames(SrcEdit.CodeBuffer) then
@@ -338,14 +347,12 @@ begin
         for i := 0 to IdentifierList.GetFilteredCount - 1 do
         begin
           curUnit := IdentifierList.FilteredItems[i].Identifier;
-          if (FMainUsedUnits.IndexOf(curUnit) < 0)
-          and (FImplUsedUnits.IndexOf(curUnit) < 0)
-          and (FOtherUnits.IndexOf(curUnit) < 0) then
+          if  not FMainUsedUnits.Find(curUnit, x)
+          and not FImplUsedUnits.Find(curUnit, x) then
             FOtherUnits.AddObject(IdentifierList.FilteredItems[i].Identifier,
                                   IdentifierList.FilteredItems[i]);
         end;
       end;
-    FOtherUnits.Sort;
   finally
     Screen.Cursor:=crDefault;
   end;
@@ -413,7 +420,7 @@ end;
 procedure TUseUnitDialog.FillAvailableUnitsList;
 var
   curUnit: String;
-  i: Integer;
+  i, x: Integer;
 begin
   if not (Assigned(FMainUsedUnits) and Assigned(FImplUsedUnits)) then Exit;
   if not Assigned(FProjUnits) then Exit;
@@ -421,8 +428,8 @@ begin
   for i := 0 to FProjUnits.Count - 1 do
   begin
     curUnit := FProjUnits[i];
-    if (FMainUsedUnits.IndexOf(curUnit) < 0)
-    and (FImplUsedUnits.IndexOf(curUnit) < 0) then
+    if  not FMainUsedUnits.Find(curUnit, x)
+    and not FImplUsedUnits.Find(curUnit, x) then
       FilterEdit.Items.Add(FProjUnits[i]);
   end;
   FilterEdit.InvalidateFilter;
