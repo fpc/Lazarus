@@ -3,12 +3,14 @@
 # This script requires an installed 'Iceberg'
 #
 # Usage:
-#
-#  Build a lazarus dmg:
-#   ./create_lazarus_dmg.sh
+#   ./create_lazarus_dmg.sh [chmhelp] [edit]
 #
 # This will setup a lazarus package in ~/tmp/buildlaz
 # run 'freeze' of Iceberg and create the dmg.
+#
+# Options:
+#   chmhelp          add package chmhelp and add chm,kwd files in docs/chm
+#   append-revision  append svn revision to dmg
 #
 # To edit the Iceberg configuration 'lazarus.packproj', run
 #   ./create_lazarus_dmg.sh edit
@@ -28,19 +30,37 @@ set -x
 HDIUTIL=/usr/bin/hdiutil
 
 LazVersionPostfix=
-if [ "$1" = "append-revision" ]; then
-  LazVersionPostfix=$(../get_svn_revision_number.sh .)
-  if [ -n "$LazVersionPostfix" ]; then
-    LazVersionPostfix=.$LazVersionPostfix
-  fi
-  shift
-fi
-
+UseCHMHelp=
 EditMode=
-if [ "$1" = "edit" ]; then
-  EditMode=$1
+
+while [ $# -gt 0 ]; do
+  echo "param=$1"
+  case "$1" in
+  chmhelp)
+    echo "using package chmhelp"
+    UseCHMHelp=1
+    ;;
+
+  append-revision)
+    LazRevision=$(../get_svn_revision_number.sh .)
+    if [ -n "$LazRevision" ]; then
+      LazVersionPostfix=$LazVersionPostfix.$LazRevision
+    fi
+    echo "Appending svn revision $LazVersionPostfix to dmg name"
+    ;;
+
+  edit)
+    EditMode=1
+    ;;
+
+  *)
+    echo "invalid parameter $1"
+    echo "Usage: ./create_lazarus_dmg.sh [chmhelp] [append-revision] [edit]"
+    exit 1
+    ;;
+  esac
   shift
-fi
+done
 
 PPCARCH=ppcppc
 ARCH=$(uname -p)
@@ -101,6 +121,14 @@ MACOSX104LINKEROPTS="-k-macosx_version_min -k10.4 -XR/Developer/SDKs/MacOSX10.4u
 rm -rf $BUILDDIR
 mkdir -p $ROOTDIR/Developer
 $SVN export $LAZSOURCEDIR $LAZBUILDDIR
+
+if [ "$UseCHMHelp" = "1" ]; then
+  echo
+  echo "Copying chm files"
+  cd $LAZSOURCEDIR/docs/chm
+  cp -v *.kwd *.chm $LAZBUILDDIR/docs/chm/
+  cd -
+fi
 
 #cp $LAZSOURCEDIR/lazarus $LAZBUILDDIR/
 #cp -R $LAZSOURCEDIR/lazarus.app $LAZBUILDDIR/

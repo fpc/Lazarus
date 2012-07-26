@@ -8,7 +8,7 @@
 #     gtk1              compile IDE and programs for gtk1.
 #     qt                compile IDE and programs for qt.
 #     append-revision   append the svn revision to the .deb version
-#     chmhelp           add package chmhelp and add chm,kwd,xct,txt files in docs/chm
+#     chmhelp           add package chmhelp and add chm,kwd files in docs/chm
 
 set -e
 
@@ -131,7 +131,7 @@ if [ "$UseCHMHelp" = "1" ]; then
   echo
   echo "Copying chm files"
   cd $LazSrcDir/docs/chm
-  cp -v *.txt *.kwd *.chm *.xct $LazDestDir/docs/chm/
+  cp -v *.kwd *.chm $LazDestDir/docs/chm/
   cd -
 fi
 
