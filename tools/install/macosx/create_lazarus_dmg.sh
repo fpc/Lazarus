@@ -109,36 +109,19 @@ $SVN export $LAZSOURCEDIR $LAZBUILDDIR
 #cp -R $LAZSOURCEDIR/images $LAZBUILDDIR/
 
 cd $LAZBUILDDIR
-if [ ! -e tools/svn2revisioninc ]; then
-  make registration lazutils PP=$COMPILER OPT="$MACOSX104LINKEROPTS"
-  make lcl LCL_PLATFORM=nogui PP=$COMPILER OPT="$MACOSX104LINKEROPTS"
-  make tools PP=$COMPILER OPT="$MACOSX104LINKEROPTS"
-fi
-./tools/svn2revisioninc $LAZSOURCEDIR ide/revision.inc
-
-make bigide PP=$COMPILER USESVN2REVISIONINC=0 OPT="$MACOSX104LINKEROPTS"
-
-# make non-default LCL platforms
-make LCL_PLATFORM=gtk PP=$COMPILER lcl
-make LCL_PLATFORM=gtk2 OPT="-dUseX" PP=$COMPILER lcl
-
-# cross compile units?
-if [ -n "$CROSSCOMPILER" ]; then
-  make registration CPU_TARGET=powerpc PP=$CROSSCOMPILER
-  make lazutils CPU_TARGET=powerpc PP=$CROSSCOMPILER
-  make lcl CPU_TARGET=powerpc PP=$CROSSCOMPILER
-  make lcl CPU_TARGET=powerpc LCL_PLATFORM=gtk PP=$CROSSCOMPILER
-  make lcl CPU_TARGET=powerpc LCL_PLATFORM=gtk2 OPT="-dUseX" PP=$CROSSCOMPILER
-  make -C components/lazcontrols CPU_TARGET=powerpc PP=$CROSSCOMPILER
-  make -C ideintf CPU_TARGET=powerpc PP=$CROSSCOMPILER
-  make -C components/synedit CPU_TARGET=powerpc PP=$CROSSCOMPILER
-  make -C components/codetools CPU_TARGET=powerpc PP=$CROSSCOMPILER
-fi
+make bigide PP=$COMPILER USESVN2REVISIONINC=1 OPT="$MACOSX104LINKEROPTS"
 
 # clean up
 strip lazarus
 strip startlazarus
 strip lazbuild
+strip tools/lazres
+strip tools/updatepofiles
+strip tools/lrstolfm
+strip tools/svn2revisioninc
+if [ -f components/chmhelp/lhelp/lhelp ]; then
+  strip components/chmhelp/lhelp/lhelp
+fi
 find $BUILDDIR -name '.svn' -exec rm -rf {} \; || true
 find $BUILDDIR -name '.DS_Store' -exec rm -rf {} \; || true
 
