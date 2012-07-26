@@ -175,7 +175,6 @@ var
 begin
   Result := mrCancel;
 
-  debugln(['TChmHelpViewer.CheckBuildLHelp AAA1 ']);
   if FileExistsUTF8(GetHelpExe) then
     Exit(mrOK);
 
