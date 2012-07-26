@@ -89,7 +89,13 @@ Creating the lazarus rpm:
   build the lazarus RPM. Otherwise the compiled lazarus RPM is not compatible
   to the fpc RPM.
 
-  []$ ./create_lazarus_rpm.sh.
+  []$ ./create_lazarus_rpm.sh
+
+CHM files:
+  Download chm files and put them into docs/chm/
+  Then run
+
+  []$ ./create_lazarus_rpm.sh chmhelp
 
 
 Creating other system specific rpms:
@@ -104,8 +110,8 @@ Debian:
 Creating the debian fpc and fpc-src packages:
 
   There are two versions of the compiler: the stable 2.0.x and the unstable
-  developer version 2.1.x. To build them, you must install fpc first. Install the
-  stable fpc release (2.0.x). Note: The 2.0.x can not be built with a 2.1.x
+  developer version 2.1.x. To build them, you must install fpc first. Install
+  the stable fpc release (2.0.x). Note: The 2.0.x can not be built with a 2.1.x
   compiler.
   The create_fpc_deb.sh works nearly automatically. Become root and execute it.
   For 2.0.x: ./create_fpc_deb.sh stable
@@ -125,8 +131,13 @@ Creating the debian lazarus package:
   build the lazarus deb. Otherwise the compiled lazarus deb is not compatible
   to the fpc debs.
 
-  As root:
-  Execute create_lazarus_deb.sh.
+  []$ ./create_lazarus_deb.sh
+
+CHM files:
+  Download chm files and put them into docs/chm/
+  Then run
+
+  []$ ./create_lazarus_deb.sh chmhelp
 
 --------------------------------------------------------------------------------
 
