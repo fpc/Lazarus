@@ -112,21 +112,12 @@ begin
 end;
 
 function TChmHelpViewer.GetHelpEXE: String;
-{$IFDEF darwin}
-var
-  Filename: String;
-{$ENDIF}
 begin
   Result:=fHelpExe;
   if Result='' then
     Result := SetDirSeparators('$(LazarusDir)/components/chmhelp/lhelp/lhelp$(ExeExt)');
   if not IDEMacros.SubstituteMacros(Result) then
     Exit('');
-  {$IFDEF darwin}
-  Filename:=Result+'.app/Contents/MacOS/'+ExtractFileName(Result);
-  if FileExistsUTF8(Filename) then
-    Result:=Filename;
-  {$ENDIF}
 end;
 
 function TChmHelpViewer.GetHelpFilesPath: String;
@@ -352,6 +343,7 @@ var
   SearchPath: String;
   Proc: TProcessUTF8;
   FoundFileName: String;
+  LHelpPath: String;
 begin
   if Pos('file://', Node.URL) = 1 then
   begin
@@ -384,7 +376,7 @@ begin
     Exit;
   end;
 
-  FileName := FoundFileName;
+  FileName := CleanAndExpandFilename(FoundFileName);
 
   if ExtractFileNameOnly(GetHelpExe) = 'lhelp' then begin
     fHelpConnection.StartHelpServer(HelpLabel, GetHelpExe);
@@ -408,7 +400,21 @@ begin
       {$if (fpc_version=2) and (fpc_release<5)}
       Proc.CommandLine := GetHelpExe + ' ' + Format(fHelpExeParams, [FileName, Url]);
       {$else}
-      Proc.Executable := GetHelpExe;
+      LHelpPath:=GetHelpEXE;
+      Proc.Executable := LHelpPath;
+      {$IFDEF darwin}
+      if DirectoryExistsUTF8(LHelpPath+'.app') then
+        LHelpPath+='.app';
+      if DirectoryExistsUTF8(LHelpPath) then begin
+        // application bundle
+        // to put lhelp into the foreground, use "open -n lhelp.app --args args"
+        Proc.Executable := '/usr/bin/open';
+        Proc.Parameters.Add('-n');
+        Proc.Parameters.Add(LHelpPath);
+        Proc.Parameters.Add('--args');
+        Proc.Parameters.Add(Format(fHelpExeParams, [FileName, Url]));
+      end;
+      {$ENDIF}
       Proc.Parameters.Add(Format(fHelpExeParams, [FileName, Url]));
       {$endif}
       Proc.Execute;
