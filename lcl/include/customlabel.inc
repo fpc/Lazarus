@@ -73,9 +73,8 @@ begin
 
     DrawText(DC, PChar(LabelText), Length(LabelText), R, Flags);
     SelectObject(DC, OldFont);
-    // add one to be able to display disabled label
-    NeededWidth := R.Right - R.Left + 1;
-    NeededHeight := R.Bottom - R.Top + 1;
+    NeededWidth := R.Right - R.Left;
+    NeededHeight := R.Bottom - R.Top;
     //DebugLn(['TCustomLabel.CalculatePreferredSize ',DbgSName(Self),' R=',dbgs(R),' MaxWidth=',MaxWidth,' DT_WORDBREAK=',(DT_WORDBREAK and Flags)>0,' LabelText="',LabelText,'"']);
   finally
     ReleaseDC(Parent.Handle, DC);
