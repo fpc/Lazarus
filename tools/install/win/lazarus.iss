@@ -260,6 +260,19 @@ Name: ru; MessagesFile: compiler:Languages\Russian.isl
 Name: sl; MessagesFile: compiler:Languages\Slovenian.isl
 
 [Code]
+type
+  TUninstallState = (uiUnknown, UIDone, UIOtherNeeded, uiDestNeeded);
+var 
+  wpAskUnistall: TWizardPage;
+  wpLabel1, wpLabel2, wpLabel3, wpLabel4: TNewStaticText;
+  wpCheckBox: TNewCheckBox;
+  wpButton: TNewButton;
+  
+  UninstallState, UninstallDoneState: TUninstallState;
+  OldPath, OldName, UnInstaller: String;
+  PathEqual: Boolean;
+
+
 function GetUninstallData(s: String): String; // 'UninstallString'
 var
   Path: String;
@@ -284,11 +297,36 @@ begin
   FindClose(FindRec);
 end;
 
+procedure UpdateUninstallInfo;
+begin 
+  OldPath := '';
+  OldName := '';
+  UnInstaller := '';
+  PathEqual := False;
+  if UninstallState = uiDone then exit;
+
+  UnInstaller := RemoveQuotes(GetUninstallData('UninstallString'));
+  if (UnInstaller <> '') and FileExists(UnInstaller) then 
+  begin
+    OldPath := RemoveQuotes((GetUninstallData('Inno Setup: App Path')));
+	OldName := GetUninstallData('DisplayName');
+    PathEqual := (OldPath <> '') and (CompareText(RemoveBackslashUnlessRoot(OldPath), RemoveBackslashUnlessRoot(WizardDirValue)) = 0);
+	if PathEqual then
+      UninstallState := uiDestNeeded
+	else
+      UninstallState := uiOtherNeeded;
+
+  end
+  else
+  begin
+    UninstallState := uiDone;
+  end;
+end;
+
 function NextButtonClick(CurPage: Integer): Boolean;
 var
-    folder, OldPath, OldName, UnInstaller: String;
-    PathEqual, FolderEmpty: Boolean;
-	i: integer;
+    folder: String;
+    FolderEmpty: Boolean;
 begin
   // by default go to next page
   Result := true;
@@ -305,64 +343,18 @@ begin
       exit;
     end
 
+	UpdateUninstallInfo;
     UnInstaller := RemoveQuotes(GetUninstallData('UninstallString'));
-    if (UnInstaller <> '') and FileExists(UnInstaller) then 
-    begin
-      OldPath := RemoveQuotes((GetUninstallData('Inno Setup: App Path')));
-      OldName := GetUninstallData('DisplayName');
-      PathEqual := (OldPath <> '') and (CompareText(RemoveBackslashUnlessRoot(OldPath), RemoveBackslashUnlessRoot(folder)) = 0);
-    end
-    else
-    begin
-      UnInstaller := '';
-      PathEqual := False;
-    end;
     FolderEmpty := IsDirEmpty(folder);
     
-    if not(FolderEmpty) then begin
+    if ((UninstallState = uiDone) or (UninstallState = UIOtherNeeded)) and not(FolderEmpty) then begin
       // Dir NOT empty
-      if (UnInstaller <> '') and PathEqual then
-      begin
-        // Overwriting old install. Uninstaller 
-        if MsgBox(FmtMessage('Another installation of "%1" exists in the target folder. This may prevent the new installation from working properly. Do you want to run the uninstaller first?', [OldName]), mbConfirmation, MB_YESNO) = IDYES then 
-        begin
-          if Exec(UnInstaller, '/SILENT /NORESTART','', SW_SHOW, ewWaitUntilTerminated, i) then
-          begin
-            Result := IsDirEmpty(folder);
-			if not Result then begin Sleep(500); Result := IsDirEmpty(folder); end;
-			if not Result then begin Sleep(500); Result := IsDirEmpty(folder); end;
-			if not Result then begin Sleep(500); Result := IsDirEmpty(folder); end;
-            if not(Result) then
-              Result := MsgBox('The target folder is still not empty. Continue with installation?', mbConfirmation, MB_YESNO) = IDYES;
-          end
-          else
-          begin
-            Result := MsgBox('Uninstall failed. Continue anyway?', mbConfirmation, MB_YESNO) = IDYES;
-          end;
-        end;
-        UnInstaller := '';
-      end
-	  else begin
-        // Overwriting something. Uninstaller maybe somewhere else
-        Result := MsgBox('The target folder is not empty. If it contains a previous installation, then this may prevent the new installation from working properly. Continue with installation?', mbConfirmation, MB_YESNO) = IDYES;
-	  end;
+        Result := MsgBox('The target folder is not empty. Continue with installation?', mbConfirmation, MB_YESNO) = IDYES;
     end;
 	if not Result then exit;
   
-    if UnInstaller <> '' then
-    begin
-      if MsgBox(FmtMessage('Found another installation of "%1" in "%2". Do you want to run the uninstaller?', [OldName, OldPath]), mbConfirmation, MB_YESNO) = IDYES then 
-      begin
-        if not Exec(UnInstaller, '/SILENT /NORESTART','', SW_SHOW, ewWaitUntilTerminated, i) then
-          Result := MsgBox('Uninstall failed. Continue anyway?', mbConfirmation, MB_YESNO) = IDYES;
-      end
-      else
-      begin
-        MsgBox('You are about to install multiple copies of Lazarus. This may lead to conflicts, if they use the same configuration directory. Please ensure the correct setup after the installation finished', mbInformation, MB_OK);
-      end;        
-    end;
-	
   end;
+    
 end;
 
 function GetDefDir( def: String ) : String;
@@ -479,3 +471,166 @@ begin
   if AmpersandPos>0 then
     Delete(Result, AmpersandPos, 1);
 end;
+
+procedure InitAskUninstall(s1, s2, s3, s4: String);
+begin
+  wpLabel1.Caption := s1;
+  wpLabel2.Caption := s2;
+  wpLabel3.Caption := s3;
+  wpLabel4.Caption := s4;
+  
+  wpLabel1.AdjustHeight;
+  wpLabel2.AdjustHeight;
+  wpLabel3.AdjustHeight;
+  wpLabel4.AdjustHeight;
+  
+  wpLabel2.Top := wpLabel1.Top + wpLabel1.Height + ScaleY(5);
+  wpLabel3.Top := wpLabel2.Top + wpLabel2.Height + ScaleY(5);
+  wpLabel4.Top := wpLabel3.Top + wpLabel3.Height + ScaleY(5);
+  wpButton.Top := wpLabel4.Top + wpLabel4.Height + ScaleY(20);
+end;
+  
+procedure UnInstUpdateGUI;
+begin
+  UpdateUninstallInfo;
+  
+  WizardForm.NextButton.Enabled := (UninstallState = uiDone) or (UninstallState = uiDestNeeded) or wpCheckBox.Checked;
+  wpCheckBox.Enabled := not(UninstallState = uiDone);
+  wpButton.Enabled := not(UninstallState = uiDone);  
+end;
+
+procedure ActivateAskUninst(Sender: TWizardPage);
+begin
+  UnInstUpdateGUI;
+end;
+
+function SkipAskUninst(Sender: TWizardPage): Boolean;
+begin
+  Result := UninstallState = uiDone;
+  if Result Then exit;
+  
+  UnInstUpdateGUI;
+  //UpdateUninstallInfo;
+  
+  //FolderEmpty := IsDirEmpty(WizardDirValue);
+
+  if UninstallState = uiDestNeeded then begin
+	wpLabel2.Font.Color := clDefault;
+    wpCheckBox.Visible := False;
+	InitAskUninstall(
+	  'Another installation of "'+OldName+'" exists in the destination folder. If you wish to uninstall first, please use the button below.',
+	  '',
+	  '',
+	  ''
+	);
+  end
+  else
+  begin	
+	wpLabel2.Font.Color := clRed;
+    wpCheckBox.Visible := True;
+	InitAskUninstall(
+	  'Another installation of "'+OldName+'" was found at "'+OldPath+'". Please use the button below to uninstall it now. If you wish to keep it, please tick the checkbox to continue.',
+	  'Note: Using multiple copies of Lazarus is not supported by this installer.',
+	  'Using several installations of Lazarus can lead to conflicts in files shared by all of the installations, such as the IDE configuration.',
+	  'If you wish to use more than one installation, then you must do additional setup after this installation finished. Please see the Lazarus web page for this, and how to use --primary-config-path'
+	);
+  end;
+
+end;
+  
+procedure UnInstBtnClick(Sender: TObject);
+var
+  UnInstaller: String;
+  b, FolderEmpty : Boolean;
+  i: integer;
+begin
+  UninstallDoneState := UninstallState;
+  UninstallState := uiDone;
+  
+  UnInstaller := RemoveQuotes(GetUninstallData('UninstallString'));
+  
+  b := (UnInstaller <> '') and FileExists(UnInstaller);
+  if b then b := Exec(UnInstaller, '/SILENT /NORESTART','', SW_SHOW, ewWaitUntilTerminated, i);
+  if not b then  
+    MsgBox('Uninstall failed.', mbConfirmation, MB_OK)
+  else begin
+    if (UninstallDoneState = uiDestNeeded) then
+    begin
+      FolderEmpty := IsDirEmpty(WizardDirValue);
+	  if not FolderEmpty then begin Sleep(500); FolderEmpty := IsDirEmpty(WizardDirValue); end;
+	  if not FolderEmpty then begin Sleep(500); FolderEmpty := IsDirEmpty(WizardDirValue); end;
+	  if not FolderEmpty then begin Sleep(500); FolderEmpty := IsDirEmpty(WizardDirValue); end;
+      if not(FolderEmpty) then begin
+        // Dir NOT empty, after uninstall
+        MsgBox('The target folder is not empty.', mbConfirmation, MB_OK);
+      end;
+    end;
+  end;
+
+  UnInstUpdateGUI;
+end;
+
+procedure UnInstCheckboxClick(Sender: TObject);
+begin
+  UnInstUpdateGUI;
+end;
+  
+procedure InitializeWizard();
+begin
+  wpAskUnistall := CreateCustomPage(wpSelectDir, 'Previous Installation', 'Do you want to run the uninstaller?');
+  wpAskUnistall.OnShouldSkipPage := @SkipAskUninst;
+  wpAskUnistall.OnActivate := @ActivateAskUninst;
+  
+  wpLabel1 := TNewStaticText.Create(wpAskUnistall);
+  wpLabel1.Parent := wpAskUnistall.Surface;
+  wpLabel1.Top := 0;  
+  wpLabel1.Left := 0;  
+  wpLabel1.Width := wpAskUnistall.SurfaceWidth;  
+  wpLabel1.Autosize:= False;
+  wpLabel1.WordWrap := True;
+  wpLabel1.Caption := '';
+  
+  wpLabel2 := TNewStaticText.Create(wpAskUnistall);
+  wpLabel2.Parent := wpAskUnistall.Surface;
+  wpLabel2.Left := 0;  
+  wpLabel2.Width := wpAskUnistall.SurfaceWidth;  
+  wpLabel2.Autosize:= False;
+  wpLabel2.WordWrap := True;
+  wpLabel2.Caption := '';
+  
+  wpLabel3 := TNewStaticText.Create(wpAskUnistall);
+  wpLabel3.Parent := wpAskUnistall.Surface;
+  wpLabel3.Left := 0;  
+  wpLabel3.Width := wpAskUnistall.SurfaceWidth;  
+  wpLabel3.Autosize:= False;
+  wpLabel3.WordWrap := True;
+  wpLabel3.Caption := '';
+  
+  wpLabel4 := TNewStaticText.Create(wpAskUnistall);
+  wpLabel4.Parent := wpAskUnistall.Surface;
+  wpLabel4.Left := 0;  
+  wpLabel4.Width := wpAskUnistall.SurfaceWidth;  
+  wpLabel4.Autosize:= False;
+  wpLabel4.WordWrap := True;
+  wpLabel4.Caption := '';
+  
+  wpButton := TNewButton.Create(wpAskUnistall);
+  wpButton.Parent := wpAskUnistall.Surface;
+  wpButton.Width := ScaleX(80);
+  wpButton.Left := (wpAskUnistall.SurfaceWidth div 2) - ScaleX(40);
+  wpButton.Caption := 'Uninstall';
+  wpButton.OnClick := @UnInstBtnClick;
+
+  wpCheckBox := TNewCheckBox.Create(wpAskUnistall);
+  wpCheckBox.Parent := wpAskUnistall.Surface;
+  wpCheckBox.Top := wpAskUnistall.SurfaceHeight - wpCheckBox.Height - 1;
+  wpCheckBox.Width := wpAskUnistall.SurfaceWidth;  
+  wpCheckBox.Caption := 'Continue without uninstall';
+  wpCheckBox.OnClick := @UnInstCheckboxClick;
+  
+  UninstallState := uiUnknown;
+  UninstallDoneState := uiUnknown;
+ 
+end;
+
+
