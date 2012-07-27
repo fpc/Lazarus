@@ -237,6 +237,9 @@ procedure THelpForm.FormKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState
 begin
   if Key = VK_ESCAPE then
     Close;
+  // Backspace: go to previous page (as if BackBttn were clicked)
+  if Key = VK_BACK then
+    if Assigned(ActivePage) then ActivePage.ContentProvider.GoBack;
 end;
 
 procedure THelpForm.FormShow(Sender: TObject);
@@ -451,31 +454,48 @@ var
   IsHandled: array[0..50] of boolean;
   URL: String;
   StrItem: PStringItem;
+  Filename: String;
 begin
   FillChar(IsHandled{%H-}, 51, 0);
-  for  X := 1 to ParamCount do begin
+  X:=1;
+  while X<=ParamCount do begin
     if LowerCase(ParamStrUTF8(X)) = '--ipcname' then begin
       IsHandled[X] := True;
-      if X < ParamCount then begin
-        fServerName := ParamStrUTF8(X+1);
-        IsHandled[X+1] := True;
+      inc(X);
+      if X <= ParamCount then begin
+        fServerName := ParamStrUTF8(X);
+        IsHandled[X] := True;
+        inc(X);
       end;
-    end;
-    if LowerCase(ParamStrUTF8(X)) = '--context' then begin
+    end else  if LowerCase(ParamStrUTF8(X)) = '--context' then begin
       IsHandled[X] := True;
-      if (X < ParamCount) then
-        if TryStrToInt(ParamStrUTF8(X+1), fContext) then
-          IsHandled[X+1] := True;
+      inc(X);
+      if (X <= ParamCount) then
+        if TryStrToInt(ParamStrUTF8(X), fContext) then begin
+          IsHandled[X] := True;
+          inc(X);
+        end;
+    end else begin
+      IsHandled[X]:=copy(ParamStrUTF8(X),1,1)='-'; // ignore other parameters
+      inc(X);
     end;
   end;
   // Loop through a second time for the url
   for X := 1 to ParamCount do
     if not IsHandled[X] then begin
       //DoOpenChm(ParamStrUTF8(X));
-      if Pos('://', ParamStrUTF8(X)) = 0 then
-        URL := 'file://'+ParamStrUTF8(X)
-      else
-        URL := ParamStrUTF8(X);
+      URL:=ParamStrUTF8(X);
+      if Pos('://', URL) = 0 then
+        URL := 'file://'+URL;
+      Filename:=URL;
+      if copy(Filename,1,length('file://'))='file://' then begin
+        System.Delete(Filename,1,length('file://'));
+        Filename:=SetDirSeparators(Filename);
+        if not FileExistsUTF8(Filename) then begin
+          debugln(['THelpForm.ReadCommandLineOptions file not found "',Filename,'"']);
+          continue;
+        end;
+      end;
       StrItem := New(PStringItem);
       StrItem^.FString := URL;
       Application.QueueAsyncCall(TDataEvent(@LateOpenURL), {%H-}PtrUInt(StrItem));

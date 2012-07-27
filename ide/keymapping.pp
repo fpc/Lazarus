@@ -2249,8 +2249,8 @@ begin
   // help menu
   ecAboutLazarus:        SetSingle(VK_UNKNOWN,[]);
   ecOnlineHelp:          SetSingle(VK_UNKNOWN,[]);
-  ecContextHelp:         SetSingle(VK_HELP,[]);
-  ecEditContextHelp:     SetSingle(VK_HELP,[ssShift,ssCtrl], VK_HELP,[ssCtrl]);
+  ecContextHelp:         SetSingle(VK_F1,[],VK_HELP,[]);
+  ecEditContextHelp:     SetSingle(VK_F1,[ssShift], VK_HELP,[ssCtrl]);
   ecReportingBug:        SetSingle(VK_UNKNOWN,[]);
   ecFocusHint:           SetSingle(VK_UNKNOWN,[]);
 

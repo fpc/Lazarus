@@ -1,5 +1,14 @@
 unit LHelpControl;
 
+{
+Starts, stops and controls external help viewer via IPC.
+This is used to display context-sensitive help in Lazarus, and could be used in applications to do the same.
+
+This unit serves as reference implementation and documentation of the protocol used to communicate with help viewers.
+
+Currently, the only help viewer that supports this protocol is the lhelp CHM help viewer.
+}
+
 {$mode objfpc}{$H+}
 
 {$IFDEF UNIX}
@@ -14,7 +23,7 @@ uses
   {$IFDEF STALE_PIPE_WORKAROUND}
   BaseUnix,
   {$ENDIF}
-  Classes, SysUtils, FileUtil, SimpleIPC, UTF8Process;
+  Classes, SysUtils, FileUtil, LazLogger, SimpleIPC, process, UTF8Process;
 
 type
   TRequestType = (rtFile, rtUrl, rtContext);
@@ -48,13 +57,17 @@ type
   public
     constructor Create;
     destructor Destroy; override;
+    // Checks whether the server is running using SimpleIPC
     function ServerRunning: Boolean;
+    // Starts server
+    // Server must support a switch --ipcname that accepts the NameForServer argument to identify it for SimpleIPC
     function StartHelpServer(NameForServer: String; ServerEXE: String = ''): Boolean;
-
+    // Shows URL in the HelpFileName file by sending a TUrlRequest
     function OpenURL(HelpFileName: String; Url: String): TLHelpResponse;
+    // Shows help for Context in the HelpFileName file by sending a TContextRequest request
     function OpenContext(HelpFileName: String; Context: THelpContext): TLHelpResponse;
+    // Opens HelpFileName by sending a TContextRequest
     function OpenFile(HelpFileName: String): TLHelpResponse;
-
     property ProcessWhileWaiting: TProcedureOfObject read FProcessWhileWaiting write FProcessWhileWaiting;
   end;
 
@@ -159,6 +172,7 @@ function TLHelpConnection.StartHelpServer(NameForServer: String;
   ServerEXE: String): Boolean;
 var
   X: Integer;
+  Cmd: String;
 begin
   Result := False;
 
@@ -170,8 +184,21 @@ begin
   fServerOut.Active := False;
   fServerOut.ServerID := NameForServer;
   if not ServerRunning then begin
+    Cmd:= ServerExe + ' --ipcname ' + NameForServer;
+    {$IFDEF darwin}
+    if DirectoryExistsUTF8(ServerEXE+'.app') then
+      ServerEXE+='.app';
+    debugln(['TLHelpConnection.StartHelpServer ',ServerEXE]);
+    if DirectoryExistsUTF8(ServerEXE) then begin
+      // application bundle
+      // to put lhelp into the foreground, use "open -n"
+      Cmd:='/usr/bin/open -n '+ServerEXE+' --args --ipcname ' + NameForServer
+    end;
+    DebugLn(['TLHelpConnection.StartHelpServer ',cmd]);
+    {$ENDIF}
     with TProcessUTF8.Create(nil) do begin
-      CommandLine := ServerExe + ' --ipcname ' + NameForServer;
+      ShowWindow:=swoShowNormal;
+      CommandLine := Cmd;
       Execute;
       Free;
     end;
