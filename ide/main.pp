@@ -5813,8 +5813,7 @@ begin
     if Project1.IndexOfUnitWithName(NewUnitName,true,AnUnitInfo)>=0 then
     begin
       Result:=IDEQuestionDialogAb(lisUnitNameAlreadyExistsCap,
-         Format(lisTheUnitAlreadyExistsIgnoreWillForceTheRenaming, ['"',
-           NewUnitName, '"', #13, #13, #13]),
+         Format(lisTheUnitAlreadyExists, ['"', NewUnitName, '"']),
           mtConfirmation, [mrIgnore, lisForceRenaming,
                           mrCancel, lisCancelRenaming,
                           mrAbort, lisAbortAll], not CanAbort);

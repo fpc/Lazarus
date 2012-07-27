@@ -945,9 +945,7 @@ resourcestring
       +'As Lazarus is growing we need more developers.';
   lisAboutNoContributors = 'Cannot find contributors list.';
   lisUnitNameAlreadyExistsCap = 'Unitname already in project';
-  lisTheUnitAlreadyExistsIgnoreWillForceTheRenaming = 'The unit %s%s%s '
-    +'already exists.%sIgnore will force the renaming,%sCancel will cancel '
-    +'the saving of this source and%sAbort will abort the whole saving.';
+  lisTheUnitAlreadyExists = 'The unit %s%s%s already exists.';
   lisForceRenaming = 'Force renaming';
   lisCancelRenaming = 'Cancel renaming';
   lisAbortAll = 'Abort all';
