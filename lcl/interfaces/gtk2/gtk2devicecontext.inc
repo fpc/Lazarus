@@ -188,7 +188,7 @@ begin
     if not (FMapMode in [MM_TEXT, MM_ANISOTROPIC, MM_ISOTROPIC]) then
     begin
       FViewPortExt.X := Gtk2WidgetSet.GetDeviceCaps(HDC(Self), LOGPIXELSX);
-      FViewPortExt.Y := Gtk2WidgetSet.GetDeviceCaps(HDC(Self), LOGPIXELSX);
+      FViewPortExt.Y := Gtk2WidgetSet.GetDeviceCaps(HDC(Self), LOGPIXELSY);
     end;
     TransfUpdateFont;
     TransfUpdatePen;
