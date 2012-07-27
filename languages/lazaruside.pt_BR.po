@@ -15674,9 +15674,9 @@ msgstr "Os fontes dos pacotes Free Pascal são requeridos para navegação e com
 msgid "The Test Directory could not be found:%s%s%s%s%s(see IDE options)"
 msgstr "O diretório de Teste não pode ser encontrado:%s%s%s%s%s(veja opções IDE)"
 
-#: lazarusidestrconsts.listheunitalreadyexistsignorewillforcetherenaming
-msgid "The unit %s%s%s already exists.%sIgnore will force the renaming,%sCancel will cancel the saving of this source and%sAbort will abort the whole saving."
-msgstr "A unidade %s%s%s já existe.%sIgnorar forçará a renomeação,%sCancelar cancelará o salvamento deste fonte e%sAbortar abortará todo o salvamento."
+#: lazarusidestrconsts.listheunitalreadyexists
+msgid "The unit %s%s%s already exists."
+msgstr ""
 
 #: lazarusidestrconsts.listheunitbelongstopackage
 msgid "The unit belongs to package %s."

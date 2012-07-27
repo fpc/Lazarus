@@ -16065,9 +16065,9 @@ msgstr "Free Pascalパッケージのソースはブラウザとコード補完�
 msgid "The Test Directory could not be found:%s%s%s%s%s(see IDE options)"
 msgstr "テストディレクトリ"
 
-#: lazarusidestrconsts.listheunitalreadyexistsignorewillforcetherenaming
-msgid "The unit %s%s%s already exists.%sIgnore will force the renaming,%sCancel will cancel the saving of this source and%sAbort will abort the whole saving."
-msgstr "ユニット%s%s%sは既に存在しています。%s[無視]すると強制的に名称変更します。%s[キャンセル]するとこのソースの保存をキャンセルします。%s[中止]すると全ての保存を中止します。"
+#: lazarusidestrconsts.listheunitalreadyexists
+msgid "The unit %s%s%s already exists."
+msgstr ""
 
 #: lazarusidestrconsts.listheunitbelongstopackage
 msgid "The unit belongs to package %s."

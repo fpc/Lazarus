@@ -15242,9 +15242,9 @@ msgstr "Free Pascalin pakettien lähdekoodit tarvitaan niiden tutkimista ja kood
 msgid "The Test Directory could not be found:%s%s%s%s%s(see IDE options)"
 msgstr "Testi hakemistoa ei löydy:%s%s%s%s%s(katso IDE asetukset)"
 
-#: lazarusidestrconsts.listheunitalreadyexistsignorewillforcetherenaming
-msgid "The unit %s%s%s already exists.%sIgnore will force the renaming,%sCancel will cancel the saving of this source and%sAbort will abort the whole saving."
-msgstr "Käännösyksikkö %s%s%s on jo olemassa.%sOhita pakottaa nimeämisen,%sPeru peruuttaa tämän tiedoston talletuksen ja%sPoistu lopettaa koko talletuksen."
+#: lazarusidestrconsts.listheunitalreadyexists
+msgid "The unit %s%s%s already exists."
+msgstr ""
 
 #: lazarusidestrconsts.listheunitbelongstopackage
 msgid "The unit belongs to package %s."

@@ -15209,9 +15209,9 @@ msgstr "Zdrojové kódy balíčků Free Pascalu jsou nutné pro prohlížení a 
 msgid "The Test Directory could not be found:%s%s%s%s%s(see IDE options)"
 msgstr "Adresář testů nelze nalézt:%s%s%s%s%s(viz volby IDE)"
 
-#: lazarusidestrconsts.listheunitalreadyexistsignorewillforcetherenaming
-msgid "The unit %s%s%s already exists.%sIgnore will force the renaming,%sCancel will cancel the saving of this source and%sAbort will abort the whole saving."
-msgstr "Jednotka %s%s%s již existuje.%sIgnorovat vynutí přejmenování,%sZrušit zruší ukládání tohoto zdrojového kódu a %sZrušit zruší celé ukládání."
+#: lazarusidestrconsts.listheunitalreadyexists
+msgid "The unit %s%s%s already exists."
+msgstr ""
 
 #: lazarusidestrconsts.listheunitbelongstopackage
 msgid "The unit belongs to package %s."

@@ -15712,9 +15712,9 @@ msgstr ""
 msgid "The Test Directory could not be found:%s%s%s%s%s(see IDE options)"
 msgstr ""
 
-#: lazarusidestrconsts.listheunitalreadyexistsignorewillforcetherenaming
-msgid "The unit %s%s%s already exists.%sIgnore will force the renaming,%sCancel will cancel the saving of this source and%sAbort will abort the whole saving."
-msgstr "Ja existeix la unitat %s%s%s.%sIgnora forçarà el canvi de nom,%sCancel·la no desarà el codi font i%sAvorta no desarà cap cànvi."
+#: lazarusidestrconsts.listheunitalreadyexists
+msgid "The unit %s%s%s already exists."
+msgstr ""
 
 #: lazarusidestrconsts.listheunitbelongstopackage
 msgid "The unit belongs to package %s."

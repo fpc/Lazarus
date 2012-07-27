@@ -15519,9 +15519,9 @@ msgstr "Початковий код пакунків Free Pascal необхід�
 msgid "The Test Directory could not be found:%s%s%s%s%s(see IDE options)"
 msgstr "Неможливо знайти Тестову Теку:%s%s%s%s%s(див. параметри IDE)"
 
-#: lazarusidestrconsts.listheunitalreadyexistsignorewillforcetherenaming
-msgid "The unit %s%s%s already exists.%sIgnore will force the renaming,%sCancel will cancel the saving of this source and%sAbort will abort the whole saving."
-msgstr "Модуль %s%s%s вже існує. Пропуск призведе до перейменування,%sВідміна скасує збереження цього файлу, а%sПерервати відмінить збереження взагалі."
+#: lazarusidestrconsts.listheunitalreadyexists
+msgid "The unit %s%s%s already exists."
+msgstr ""
 
 #: lazarusidestrconsts.listheunitbelongstopackage
 msgid "The unit belongs to package %s."
