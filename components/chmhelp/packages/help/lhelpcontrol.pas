@@ -23,7 +23,7 @@ uses
   {$IFDEF STALE_PIPE_WORKAROUND}
   BaseUnix,
   {$ENDIF}
-  Classes, SysUtils, FileUtil, SimpleIPC, UTF8Process;
+  Classes, SysUtils, FileUtil, LazLogger, SimpleIPC, process, UTF8Process;
 
 type
   TRequestType = (rtFile, rtUrl, rtContext);
@@ -172,6 +172,7 @@ function TLHelpConnection.StartHelpServer(NameForServer: String;
   ServerEXE: String): Boolean;
 var
   X: Integer;
+  Cmd: String;
 begin
   Result := False;
 
@@ -183,8 +184,21 @@ begin
   fServerOut.Active := False;
   fServerOut.ServerID := NameForServer;
   if not ServerRunning then begin
+    Cmd:= ServerExe + ' --ipcname ' + NameForServer;
+    {$IFDEF darwin}
+    if DirectoryExistsUTF8(ServerEXE+'.app') then
+      ServerEXE+='.app';
+    debugln(['TLHelpConnection.StartHelpServer ',ServerEXE]);
+    if DirectoryExistsUTF8(ServerEXE) then begin
+      // application bundle
+      // to put lhelp into the foreground, use "open -n"
+      Cmd:='/usr/bin/open -n '+ServerEXE+' --args --ipcname ' + NameForServer
+    end;
+    DebugLn(['TLHelpConnection.StartHelpServer ',cmd]);
+    {$ENDIF}
     with TProcessUTF8.Create(nil) do begin
-      CommandLine := ServerExe + ' --ipcname ' + NameForServer;
+      ShowWindow:=swoShowNormal;
+      CommandLine := Cmd;
       Execute;
       Free;
     end;

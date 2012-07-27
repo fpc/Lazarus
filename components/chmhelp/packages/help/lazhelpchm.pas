@@ -162,9 +162,13 @@ begin
   end;
 
   SplitURL(Node.URL,URLScheme,URLPath,URLParams);
-  CHMFilename:=SetDirSeparators(URLPath);
+  CHMFilename:=CleanAndExpandFilename(URLPath);
   if not FileExistsUTF8(CHMFilename) then begin
     ErrMsg:='chm file "'+CHMFilename+'" not found';
+    exit;
+  end;
+  if DirPathExists(CHMFilename) then begin
+    ErrMsg:='invalid chm file "'+CHMFilename+'"';
     exit;
   end;
 
@@ -205,12 +209,6 @@ begin
       if s<>'' then Path:=s;
     end;
 
-    {$IFDEF darwin}
-    // search exe in application bundle
-    if DirectoryExistsUTF8(Path+'.app') then
-      Path:=Path+'.app/Contents/MacOS/'+ExtractFileName(Path);
-    {$ENDIF}
-
     if not FileExistsUTF8(Path) then begin
       ErrMsg:='The chm viewer program lhelp was not found at "'+Path+'"';
       exit;
@@ -231,6 +229,7 @@ begin
   else
     ErrMsg:='Something is wrong with lhelp';
   end;
+  debugln(['TLHelpConnector.ShowNode error: ',ErrMsg]);
 end;
 
 procedure TLHelpConnector.Assign(Source: TPersistent);
