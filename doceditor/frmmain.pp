@@ -334,9 +334,8 @@ procedure TMainForm.CanFormat(Sender: TObject);
 Var
   B : Boolean;
 begin
-  B:=(CurrentEditor<>Nil);
-  If B then
-    B:=CurrentEditor.CanInsertTag(TTagType((Sender as TAction).Tag));
+  B:=(CurrentEditor<>Nil) and
+      CurrentEditor.CanInsertTag(TTagType((Sender as TAction).Tag));
   (Sender as Taction).Enabled:=B;
 end;
 
@@ -349,9 +348,7 @@ procedure TMainForm.AInsertLinkUpdate(Sender: TObject);
 var
   B : Boolean;
 begin
-  B:=(CurrentEditor<>Nil);
-  If B then
-    B:=CurrentEditor.CanInsertTag(ttLink);
+  B:=(CurrentEditor<>Nil) and CurrentEditor.CanInsertTag(ttLink);
   (Sender as TAction).Enabled:=B;
 end;
 
@@ -364,9 +361,7 @@ procedure TMainForm.AInsertTableUpdate(Sender: TObject);
 var
   B : Boolean;
 begin
-  B:=(CurrentEditor<>Nil);
-  If B then
-    B:=CurrentEditor.CanInsertTag(ttTable);
+  B:=(CurrentEditor<>Nil) and CurrentEditor.CanInsertTag(ttTable);
   (Sender as TAction).Enabled:=B;
 end;
 
@@ -381,9 +376,7 @@ procedure TMainForm.AInsertShortPrintLinkUpdate(Sender: TObject);
 var
   B: Boolean;
 begin
-  B := (CurrentEditor <> nil);
-  if B then
-    B := CurrentEditor.CanInsertTag(ttPrintShort);
+  B := (CurrentEditor <> nil) and CurrentEditor.CanInsertTag(ttPrintShort);
   (Sender as TAction).Enabled := B;
 end;
 
