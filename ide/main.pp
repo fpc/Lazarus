@@ -16918,7 +16918,6 @@ begin
   if not BeginCodeTool(SrcEdit, ActiveUnitInfo,
     [ctfUseGivenSourceEditor {, ctfActivateAbortMode}]) then exit;
 
-
   BaseURL:='';
   SmartHintStr := '';
   {$IFDEF IDE_DEBUG}
@@ -17067,21 +17066,17 @@ var
   begin
     if SysUtils.CompareText(ActiveUnitInfo.Unit_Name,AName)=0 then
       raise Exception.Create(Format(
-        lisTheUnitItselfHasAlreadyTheNamePascalIdentifiersMus, ['"', AName, '"']
-        ));
+        lisTheUnitItselfHasAlreadyTheNamePascalIdentifiersMus, ['"', AName, '"']));
     if ActiveUnitInfo.IsPartOfProject then begin
       // check if component name already exists in project
       i:=Project1.IndexOfUnitWithComponentName(AName,true,ActiveUnitInfo);
       if i>=0 then
-        raise Exception.Create(
-                           Format(lisThereIsAlreadyAFormWithTheName, ['"',
-                             AName, '"']));
+        raise Exception.Create(Format(lisThereIsAlreadyAFormWithTheName, ['"', AName, '"']));
       // check if pascal identifier already exists in the units
       i:=Project1.IndexOfUnitWithName(AName,true,nil);
       if i>=0 then
         raise Exception.Create(Format(
-          lisThereIsAlreadyAUnitWithTheNamePascalIdentifiersMus, ['"', AName,
-          '"']));
+          lisThereIsAlreadyAUnitWithTheNamePascalIdentifiersMus, ['"', AName, '"']));
     end;
 
     // check if classname
@@ -17096,8 +17091,7 @@ var
 
     // check if keyword
     if CodeToolBoss.IsKeyWord(ActiveUnitInfo.Source,AName) then
-      raise Exception.Create(Format(lisComponentNameIsKeyword, ['"', AName, '"']
-        ));
+      raise Exception.Create(Format(lisComponentNameIsKeyword, ['"', AName, '"']));
 
     // check if registered component class
     RegComp:=IDEComponentPalette.FindComponent(AName);
@@ -17258,23 +17252,16 @@ begin
   then begin
     raise Exception.Create(Format(lisComponentNameIsAPascalKeyword, [NewName]));
   end;
-  if AComponent.Name='' then begin
-    // this component was never added to the source. It is a new component.
-    exit;
-  end;
+  if AComponent.Name='' then
+    exit; // this component was never added to the source. It is a new component.
 
   if (FRenamingComponents<>nil)
-  and (FRenamingComponents.IndexOf(AComponent)>=0) then begin
-    // already validated
-    exit;
-  end;
+  and (FRenamingComponents.IndexOf(AComponent)>=0) then
+    exit; // already validated
 
-  if SysUtils.CompareText(AComponent.Name,'Owner')=0 then begin
+  if SysUtils.CompareText(AComponent.Name,'Owner')=0 then
     // 'Owner' is used by TReader/TWriter
-    raise EComponentError.Create(
-      lisOwnerIsAlreadyUsedByTReaderTWriterPleaseChooseAnot);
-    exit;
-  end;
+    raise EComponentError.Create(lisOwnerIsAlreadyUsedByTReaderTWriterPleaseChooseAnot);
 
   BeginCodeTool(ADesigner,ActiveSrcEdit,ActiveUnitInfo,[ctfSwitchToFormSource]);
   ActiveUnitInfo:=Project1.UnitWithComponent(ADesigner.LookupRoot);
@@ -17332,8 +17319,7 @@ begin
       BossResult:=CodeToolBoss.RenamePublishedVariable(ActiveUnitInfo.Source,
         ADesigner.LookupRoot.ClassName,
         AComponent.Name,NewName,AComponent.ClassName,true);
-      ApplyBossResult(Format(lisUnableToRenameVariableInSource, [#13])
-        );
+      ApplyBossResult(Format(lisUnableToRenameVariableInSource, [#13]));
     end else begin
       RaiseException('TMainIDE.OnDesignerRenameComponent internal error:'+AComponent.Name+':'+AComponent.ClassName);
     end;
@@ -17398,21 +17384,15 @@ begin
     // if this is a project file, start in project directory
     if AnUnitInfo.IsPartOfProject and (not Project1.IsVirtual)
     and (not FileIsInPath(SaveDialog.InitialDir,Project1.ProjectDirectory)) then
-    begin
       SaveDialog.InitialDir:=Project1.ProjectDirectory;
-    end;
     // if this is a package file, then start in package directory
-    PkgDefaultDirectory:=
-                    PkgBoss.GetDefaultSaveDirectoryForFile(AnUnitInfo.Filename);
+    PkgDefaultDirectory:=PkgBoss.GetDefaultSaveDirectoryForFile(AnUnitInfo.Filename);
     if (PkgDefaultDirectory<>'')
     and (not FileIsInPath(SaveDialog.InitialDir,PkgDefaultDirectory)) then
       SaveDialog.InitialDir:=PkgDefaultDirectory;
     // show save dialog
-    if (not SaveDialog.Execute) or (ExtractFileName(SaveDialog.Filename)='')
-    then begin
-      // user cancels
-      exit;
-    end;
+    if (not SaveDialog.Execute) or (ExtractFileName(SaveDialog.Filename)='') then
+      exit;   // user cancels
     Filename:=ExpandFileNameUTF8(SaveDialog.Filename);
   finally
     InputHistories.StoreFileDialogSettings(SaveDialog);
@@ -18319,8 +18299,7 @@ begin
     ActiveUnitInfo:=Project1.UnitWithComponent(ADesigner.LookupRoot)
   else if (GlobalDesignHook.LookupRoot<>nil)
   and (GlobalDesignHook.LookupRoot is TComponent) then
-    ActiveUnitInfo:=
-      Project1.UnitWithComponent(TComponent(GlobalDesignHook.LookupRoot))
+    ActiveUnitInfo:=Project1.UnitWithComponent(TComponent(GlobalDesignHook.LookupRoot))
   else
     ActiveUnitInfo:=nil;
   if (ActiveUnitInfo<>nil) and (ActiveUnitInfo.OpenEditorInfoCount > 0) then begin
