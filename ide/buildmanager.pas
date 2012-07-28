@@ -58,8 +58,8 @@ type
     FUnitSetCache: TFPCUnitSetCache;
     procedure OnMacroSubstitution(TheMacro: TTransferMacro;
                                const MacroName: string; var s: string;
-                               const Data: PtrInt; var Handled, Abort: boolean;
-                               Depth: integer);
+                               const {%H-}Data: PtrInt; var Handled, {%H-}Abort: boolean;
+                               {%H-}Depth: integer);
     function OnSubstituteCompilerOption(Options: TParsedCompilerOptions;
                                         const UnparsedValue: string;
                                         PlatformIndependent: boolean): string;

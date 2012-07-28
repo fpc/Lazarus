@@ -381,7 +381,7 @@ type
     procedure UnhideIDE;
     procedure CreatePopupMenus(TheOwner: TComponent);
     property OnActive: TNotifyEvent read FOnActive write FOnActive;
-    procedure UpdateDockCaption(Exclude: TControl); override;
+    procedure UpdateDockCaption({%H-}Exclude: TControl); override;
   end;
 
 var
