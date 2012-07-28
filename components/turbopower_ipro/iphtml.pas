@@ -16859,7 +16859,7 @@ begin
   Dec(FUseCount);
   if UseCount = 0 then begin
     for i := Pred(FOwner.PropBCache.Count) downto 0 do
-      if FOwner.PropBCache[i] = Self then begin
+      if TObject(FOwner.PropBCache[i]) = Self then begin
         FOwner.PropBCache.Delete(i);
         Free;
         Exit;
