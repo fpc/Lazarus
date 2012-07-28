@@ -1272,6 +1272,7 @@ begin
   AddBaseType('WideString');
   AddBaseType('UnicodeString');
   AddBaseType('Pointer');
+  AddBaseType('LongInt');
   AddBaseType('Word');
   AddBaseType('SmallInt');
   AddBaseType('ShortInt');
