@@ -403,6 +403,7 @@ begin
       LHelpPath:=GetHelpEXE;
       Proc.Executable := LHelpPath;
       {$IFDEF darwin}
+      debugln(['TChmHelpViewer.ShowNode LHelpPath=',LHelpPath]);
       if DirectoryExistsUTF8(LHelpPath+'.app') then
         LHelpPath+='.app';
       if DirectoryExistsUTF8(LHelpPath) then begin
@@ -417,6 +418,7 @@ begin
       {$ENDIF}
       Proc.Parameters.Add(Format(fHelpExeParams, [FileName, Url]));
       {$endif}
+      debugln(['TChmHelpViewer.ShowNode Executable=',Proc.Executable,' Params="',dbgstr(Proc.Parameters.Text),'"']);
       Proc.Execute;
       Res := srSuccess;
     except
