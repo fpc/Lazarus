@@ -603,7 +603,7 @@ type
     function FindIdentifierInHiddenUsedUnits(
       Params: TFindDeclarationParams): boolean;
     function FindIdentifierInUsedUnit(const AnUnitName: string;
-      Params: TFindDeclarationParams): boolean;
+      Params: TFindDeclarationParams; ErrorPos: integer): boolean;
     function FindIdentifierInTypeOfConstant(VarConstNode: TCodeTreeNode;
       Params: TFindDeclarationParams): boolean;
   protected
@@ -2079,6 +2079,7 @@ var
   NewUnitName: String;
   NewInFilename: String;
   NewCompiledUnitname: String;
+  ErrMsg: string;
 begin
   {$IF defined(ShowTriedFiles) or defined(ShowTriedUnits)}
   DebugLn('TFindDeclarationTool.FindUnitSource Self="',MainFilename,'" AnUnitName="',AnUnitName,'" AnUnitInFilename="',AnUnitInFilename,'"');
@@ -2114,19 +2115,24 @@ begin
   end;
 
   if (Result=nil) and ExceptionOnNotFound then begin
+    ErrMsg:='';
     if ErrorPos>0 then
       MoveCursorToCleanPos(ErrorPos)
-    else
+    else begin
       CurPos.StartPos:=-1;
+      ErrMsg:=' (needed by mode "'+CompilerModeNames[Scanner.CompilerMode]+'")';
+    end;
     if CompiledFilename<>'' then begin
       // there is a compiled unit, only the source was not found
       RaiseExceptionInstance(
         ECodeToolUnitNotFound.Create(Self,
-          Format(ctsSourceNotFoundUnit, [CompiledFilename]),AnUnitName));
+          Format(ctsSourceNotFoundUnit+ErrMsg, [CompiledFilename]),
+          AnUnitName));
     end else begin
       // nothing found
       RaiseExceptionInstance(
-        ECodeToolUnitNotFound.Create(Self,Format(ctsUnitNotFound,[AnUnitName]),
+        ECodeToolUnitNotFound.Create(Self,
+          Format(ctsUnitNotFound+ErrMsg,[AnUnitName]),
           AnUnitInFilename));
     end;
   end;
@@ -6418,7 +6424,8 @@ begin
 end;
 
 function TFindDeclarationTool.FindIdentifierInUsedUnit(
-  const AnUnitName: string; Params: TFindDeclarationParams): boolean;
+  const AnUnitName: string; Params: TFindDeclarationParams; ErrorPos: integer
+  ): boolean;
 { Note: this function is internally used by FindIdentifierInHiddenUsedUnits
   for hidden used units, like the system unit or the objpas unit
 }
@@ -6429,10 +6436,13 @@ var
 begin
   Result:=false;
   // open the unit and search the identifier in the interface
-  NewCode:=FindUnitSource(AnUnitName,'',true);
+  NewCode:=FindUnitSource(AnUnitName,'',true,ErrorPos);
   if NewCode=TCodeBuffer(Scanner.MainCode) then begin
     // Searching again in hidden unit
     DebugLn('WARNING: Searching again in hidden unit: "',NewCode.Filename,'" identifier=',GetIdentifier(Params.Identifier));
+    NewCodeTool:=Self;
+    CurPos.StartPos:=ErrorPos;
+    RaiseExceptionFmt(ctsIllegalCircleInUsedUnits,[AnUnitName]);
   end else begin
     // source found -> get codetool for it
     {$IF defined(ShowTriedContexts) or defined(ShowTriedUnits)}
@@ -6440,16 +6450,15 @@ begin
     ' This source is=',TCodeBuffer(Scanner.MainCode).Filename,
     ' NewCode=',NewCode.Filename,' IgnoreUsedUnits=',dbgs(fdfIgnoreUsedUnits in Params.Flags));
     {$ENDIF}
-    if Assigned(FOnGetCodeToolForBuffer) then begin
-      NewCodeTool:=FOnGetCodeToolForBuffer(Self,NewCode,false);
-      if NewCodeTool=nil then begin
-        CurPos.StartPos:=-1;
-        RaiseException(Format('Unable to create codetool for "%s"',[NewCode.Filename]));
-      end;
-    end else if NewCode=TCodeBuffer(Scanner.MainCode) then begin
-      NewCodeTool:=Self;
-      CurPos.StartPos:=-1;
-      RaiseExceptionFmt(ctsIllegalCircleInUsedUnits,[AnUnitName]);
+    NewCodeTool:=nil;
+    if not Assigned(FOnGetCodeToolForBuffer) then begin
+      CurPos.StartPos:=ErrorPos;
+      RaiseException(Format('Unable to create codetool for "%s", need OnGetCodeToolForBuffer',[NewCode.Filename]));
+    end;
+    NewCodeTool:=FOnGetCodeToolForBuffer(Self,NewCode,false);
+    if NewCodeTool=nil then begin
+      CurPos.StartPos:=ErrorPos;
+      RaiseException(Format('Unable to create codetool for "%s"',[NewCode.Filename]));
     end;
     // search the identifier in the interface of the used unit
     OldFlags:=Params.Flags;
@@ -6550,7 +6559,7 @@ begin
       AnUnitName:=GetDottedIdentifier(@HiddenUnits[p]);
       if AnUnitName<>'' then begin
         // try hidden used unit
-        Result:=FindIdentifierInUsedUnit(AnUnitName,Params);
+        Result:=FindIdentifierInUsedUnit(AnUnitName,Params,0);
         if Result and Params.IsFoundProcFinal then exit;
       end;
       dec(p);
