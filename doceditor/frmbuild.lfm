@@ -14,15 +14,15 @@ object BuildForm: TBuildForm
   OnCreate = BuildFormCreate
   OnResize = FormResize
   OnShow = FormResize
-  LCLVersion = '0.9.29'
+  LCLVersion = '1.1'
   object LCBPackage: TLabel
     AnchorSideLeft.Control = CBFormat
     AnchorSideLeft.Side = asrBottom
     AnchorSideTop.Control = Owner
     Left = 175
-    Height = 18
+    Height = 16
     Top = 6
-    Width = 71
+    Width = 47
     BorderSpacing.Around = 6
     Caption = '&Package'
     FocusControl = CBPackage
@@ -33,9 +33,9 @@ object BuildForm: TBuildForm
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = Owner
     Left = 6
-    Height = 18
+    Height = 16
     Top = 6
-    Width = 61
+    Width = 42
     BorderSpacing.Around = 6
     Caption = '&Format'
     FocusControl = CBFormat
@@ -44,12 +44,12 @@ object BuildForm: TBuildForm
   end
   object Label1: TLabel
     AnchorSideLeft.Control = Owner
-    AnchorSideTop.Control = CBPackage
+    AnchorSideTop.Control = CBAutoTOC
     AnchorSideTop.Side = asrBottom
     Left = 6
-    Height = 18
-    Top = 65
-    Width = 61
+    Height = 16
+    Top = 85
+    Width = 43
     BorderSpacing.Around = 6
     Caption = '&Output'
     Layout = tlCenter
@@ -61,9 +61,9 @@ object BuildForm: TBuildForm
     AnchorSideTop.Side = asrBottom
     AnchorSideRight.Control = Panel1
     Left = 181
-    Height = 29
-    Top = 30
-    Width = 348
+    Height = 23
+    Top = 28
+    Width = 347
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Around = 6
     ItemHeight = 0
@@ -74,21 +74,23 @@ object BuildForm: TBuildForm
     AnchorSideTop.Control = LCBFormat
     AnchorSideTop.Side = asrBottom
     Left = 12
-    Height = 31
-    Top = 30
+    Height = 24
+    Top = 28
     Width = 157
     BorderSpacing.Around = 6
     ItemHeight = 0
     ItemIndex = 0
     Items.Strings = (
+      'chm'
       'html'
       'latex'
       'man'
       'txt'
     )
+    OnChange = CBFormatChange
     Style = csDropDownList
     TabOrder = 1
-    Text = 'html'
+    Text = 'chm'
   end
   object PCOptions: TPageControl
     AnchorSideLeft.Control = Owner
@@ -99,27 +101,27 @@ object BuildForm: TBuildForm
     AnchorSideBottom.Control = Owner
     AnchorSideBottom.Side = asrBottom
     Left = 0
-    Height = 221
-    Top = 158
+    Height = 241
+    Top = 138
     Width = 604
-    ActivePage = TSOther
+    ActivePage = TSDescription
     Anchors = [akTop, akLeft, akRight, akBottom]
-    TabIndex = 2
+    TabIndex = 0
     TabOrder = 2
     object TSDescription: TTabSheet
       Caption = 'Description'
-      ClientHeight = 190
-      ClientWidth = 600
+      ClientHeight = 211
+      ClientWidth = 596
       object PBDescr: TPanel
-        Left = 530
-        Height = 190
+        Left = 524
+        Height = 211
         Top = 0
-        Width = 70
+        Width = 72
         Align = alRight
         AutoSize = True
         BevelOuter = bvNone
-        ClientHeight = 190
-        ClientWidth = 70
+        ClientHeight = 211
+        ClientWidth = 72
         FullRepaint = False
         TabOrder = 0
         object BAddDescription: TButton
@@ -128,9 +130,9 @@ object BuildForm: TBuildForm
           AnchorSideRight.Control = PBDescr
           AnchorSideRight.Side = asrBottom
           Left = 6
-          Height = 29
+          Height = 24
           Top = 6
-          Width = 58
+          Width = 60
           Action = ADescrAdd
           Anchors = [akTop, akLeft, akRight]
           AutoSize = True
@@ -144,9 +146,9 @@ object BuildForm: TBuildForm
           AnchorSideRight.Control = PBDescr
           AnchorSideRight.Side = asrBottom
           Left = 6
-          Height = 29
-          Top = 41
-          Width = 58
+          Height = 24
+          Top = 36
+          Width = 60
           Action = ADescrDelete
           Anchors = [akTop, akLeft, akRight]
           AutoSize = True
@@ -160,9 +162,9 @@ object BuildForm: TBuildForm
           AnchorSideRight.Control = PBDescr
           AnchorSideRight.Side = asrBottom
           Left = 6
-          Height = 29
-          Top = 76
-          Width = 58
+          Height = 24
+          Top = 66
+          Width = 60
           Action = ADescrEdit
           Anchors = [akTop, akLeft, akRight]
           AutoSize = True
@@ -176,9 +178,9 @@ object BuildForm: TBuildForm
           AnchorSideRight.Control = PBDescr
           AnchorSideRight.Side = asrBottom
           Left = 6
-          Height = 29
-          Top = 111
-          Width = 58
+          Height = 24
+          Top = 96
+          Width = 60
           Action = ADescrAddAll
           Anchors = [akTop, akLeft, akRight]
           AutoSize = True
@@ -188,14 +190,13 @@ object BuildForm: TBuildForm
       end
       object LBDescrFiles: TListBox
         Left = 0
-        Height = 190
+        Height = 211
         Top = 0
-        Width = 530
+        Width = 524
         Align = alClient
         ClickOnSelChange = False
         ItemHeight = 0
         TabOrder = 1
-        TopIndex = -1
       end
     end
     object TSSources: TTabSheet
@@ -276,7 +277,7 @@ object BuildForm: TBuildForm
         RowCount = 2
         TabOrder = 1
         TitleStyle = tsNative
-		OnDblClick = SGSourcesDblClick
+        OnDblClick = SGSourcesDblClick
         ColWidths = (
           242
           119
@@ -294,16 +295,16 @@ object BuildForm: TBuildForm
     end
     object TSOther: TTabSheet
       Caption = 'Other options'
-      ClientHeight = 190
-      ClientWidth = 600
+      ClientHeight = 211
+      ClientWidth = 596
       object Label2: TLabel
         AnchorSideLeft.Control = TSOther
         AnchorSideTop.Control = CBWarnNoNode
         AnchorSideTop.Side = asrBottom
         Left = 6
-        Height = 18
-        Top = 81
-        Width = 128
+        Height = 16
+        Top = 87
+        Width = 111
         Alignment = taRightJustify
         BorderSpacing.Around = 6
         Caption = 'Import content file'
@@ -317,10 +318,10 @@ object BuildForm: TBuildForm
         AnchorSideTop.Side = asrBottom
         AnchorSideBottom.Control = ETargetCPU
         AnchorSideBottom.Side = asrBottom
-        Left = 128
-        Height = 18
-        Top = 151
-        Width = 68
+        Left = 122
+        Height = 16
+        Top = 145
+        Width = 56
         Alignment = taRightJustify
         Anchors = [akLeft, akBottom]
         BorderSpacing.Left = 6
@@ -336,9 +337,9 @@ object BuildForm: TBuildForm
         AnchorSideBottom.Control = ETargetCPU
         AnchorSideBottom.Side = asrBottom
         Left = 6
-        Height = 18
-        Top = 151
-        Width = 30
+        Height = 16
+        Top = 145
+        Width = 24
         Alignment = taRightJustify
         Anchors = [akLeft, akBottom]
         BorderSpacing.Left = 6
@@ -352,9 +353,9 @@ object BuildForm: TBuildForm
         AnchorSideTop.Control = CBHideProtected
         AnchorSideTop.Side = asrBottom
         Left = 6
-        Height = 19
-        Top = 31
-        Width = 174
+        Height = 21
+        Top = 33
+        Width = 150
         BorderSpacing.Around = 6
         Caption = 'Show p&rivate methods'
         TabOrder = 0
@@ -363,9 +364,9 @@ object BuildForm: TBuildForm
         AnchorSideLeft.Control = TSOther
         AnchorSideTop.Control = TSOther
         Left = 6
-        Height = 19
+        Height = 21
         Top = 6
-        Width = 189
+        Width = 166
         BorderSpacing.Around = 6
         Caption = '&Hide protected methods'
         TabOrder = 1
@@ -375,9 +376,9 @@ object BuildForm: TBuildForm
         AnchorSideTop.Control = CBShowPrivate
         AnchorSideTop.Side = asrBottom
         Left = 6
-        Height = 19
-        Top = 56
-        Width = 280
+        Height = 21
+        Top = 60
+        Width = 240
         BorderSpacing.Around = 6
         Caption = 'Warn if no documentation node found'
         TabOrder = 2
@@ -387,9 +388,9 @@ object BuildForm: TBuildForm
         AnchorSideTop.Control = Label2
         AnchorSideTop.Side = asrBottom
         Left = 12
-        Height = 29
-        Top = 105
-        Width = 562
+        Height = 23
+        Top = 109
+        Width = 558
         DialogOptions = []
         FilterIndex = 0
         HideDirectories = False
@@ -406,9 +407,9 @@ object BuildForm: TBuildForm
         AnchorSideLeft.Side = asrBottom
         AnchorSideTop.Control = FEImportFIle
         AnchorSideTop.Side = asrBottom
-        Left = 42
-        Height = 29
-        Top = 140
+        Left = 36
+        Height = 23
+        Top = 138
         Width = 80
         BorderSpacing.Around = 6
         TabOrder = 4
@@ -418,9 +419,9 @@ object BuildForm: TBuildForm
         AnchorSideLeft.Side = asrBottom
         AnchorSideTop.Control = FEImportFIle
         AnchorSideTop.Side = asrBottom
-        Left = 202
-        Height = 29
-        Top = 140
+        Left = 184
+        Height = 23
+        Top = 138
         Width = 120
         BorderSpacing.Around = 6
         TabOrder = 5
@@ -445,8 +446,8 @@ object BuildForm: TBuildForm
     AnchorSideTop.Control = Label1
     AnchorSideTop.Side = asrBottom
     Left = 6
-    Height = 29
-    Top = 89
+    Height = 23
+    Top = 107
     Width = 490
     Anchors = [akTop, akLeft, akRight]
     ButtonWidth = 23
@@ -459,12 +460,12 @@ object BuildForm: TBuildForm
   object CBContent: TCheckBox
     AnchorSideLeft.Control = Label1
     AnchorSideLeft.Side = asrBottom
-    AnchorSideTop.Control = CBPackage
+    AnchorSideTop.Control = CBAutoTOC
     AnchorSideTop.Side = asrBottom
-    Left = 73
-    Height = 19
-    Top = 65
-    Width = 149
+    Left = 55
+    Height = 21
+    Top = 85
+    Width = 135
     BorderSpacing.Around = 6
     Caption = 'Create cont&ent file'
     TabOrder = 4
@@ -473,16 +474,16 @@ object BuildForm: TBuildForm
     AnchorSideTop.Control = Owner
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
-    Left = 535
-    Height = 146
+    Left = 534
+    Height = 126
     Top = 6
-    Width = 63
+    Width = 64
     Anchors = [akTop, akRight]
     AutoSize = True
     BorderSpacing.Around = 6
     BevelOuter = bvNone
-    ClientHeight = 146
-    ClientWidth = 63
+    ClientHeight = 126
+    ClientWidth = 64
     TabOrder = 5
     object BSave: TButton
       AnchorSideLeft.Control = Panel1
@@ -491,9 +492,9 @@ object BuildForm: TBuildForm
       AnchorSideRight.Control = Panel1
       AnchorSideRight.Side = asrBottom
       Left = 6
-      Height = 29
-      Top = 76
-      Width = 51
+      Height = 24
+      Top = 66
+      Width = 52
       Action = ASave
       Anchors = [akTop, akLeft, akRight]
       AutoSize = True
@@ -507,9 +508,9 @@ object BuildForm: TBuildForm
       AnchorSideRight.Control = Panel1
       AnchorSideRight.Side = asrBottom
       Left = 6
-      Height = 29
-      Top = 41
-      Width = 51
+      Height = 24
+      Top = 36
+      Width = 52
       Action = ALoad
       Anchors = [akTop, akLeft, akRight]
       AutoSize = True
@@ -522,9 +523,9 @@ object BuildForm: TBuildForm
       AnchorSideRight.Control = Panel1
       AnchorSideRight.Side = asrBottom
       Left = 6
-      Height = 29
+      Height = 24
       Top = 6
-      Width = 51
+      Width = 52
       Action = ABuild
       Anchors = [akTop, akLeft, akRight]
       AutoSize = True
@@ -538,9 +539,9 @@ object BuildForm: TBuildForm
       AnchorSideRight.Control = Panel1
       AnchorSideRight.Side = asrBottom
       Left = 6
-      Height = 29
-      Top = 111
-      Width = 51
+      Height = 24
+      Top = 96
+      Width = 52
       Anchors = [akTop, akLeft, akRight]
       AutoSize = True
       BorderSpacing.Around = 6
@@ -549,8 +550,45 @@ object BuildForm: TBuildForm
       TabOrder = 3
     end
   end
+  object CBAutoTOC: TCheckBox
+    AnchorSideLeft.Control = CBFormat
+    AnchorSideTop.Control = CBFormat
+    AnchorSideTop.Side = asrBottom
+    Left = 16
+    Height = 21
+    Top = 58
+    Width = 79
+    BorderSpacing.Around = 4
+    Caption = 'Auto TOC'
+    TabOrder = 6
+  end
+  object CBAutoIndex: TCheckBox
+    AnchorSideLeft.Control = CBAutoTOC
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = CBAutoTOC
+    AnchorSideTop.Side = asrCenter
+    Left = 99
+    Height = 21
+    Top = 58
+    Width = 85
+    BorderSpacing.Around = 4
+    Caption = 'Auto Index'
+    TabOrder = 7
+  end
+  object CBMakeSearchable: TCheckBox
+    AnchorSideLeft.Control = CBAutoIndex
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = CBAutoIndex
+    AnchorSideTop.Side = asrCenter
+    Left = 188
+    Height = 21
+    Top = 58
+    Width = 119
+    BorderSpacing.Around = 4
+    Caption = 'Make Searchable'
+    TabOrder = 8
+  end
   object ODSettings: TOpenDialog
-    Title = 'Open existing file'
     DefaultExt = '.ldp'
     Filter = 'Documentation project files|*.ldp|All files|*.*'
     FilterIndex = 0
@@ -559,7 +597,6 @@ object BuildForm: TBuildForm
     top = 72
   end
   object SDSettings: TSaveDialog
-    Title = 'Save file as'
     DefaultExt = '.ldp'
     Filter = 'Documentation project files|*.ldp|All files|*.*'
     FilterIndex = 0
@@ -568,7 +605,6 @@ object BuildForm: TBuildForm
     top = 72
   end
   object ODDescription: TOpenDialog
-    Title = 'Open existing file'
     DefaultExt = '.xml'
     Filter = 'XML files|*.xml|All files|*.*'
     FilterIndex = 0

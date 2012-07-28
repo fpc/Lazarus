@@ -60,12 +60,15 @@ type
     BSourceDelete: TButton;
     BSourceEdit: TButton;
     BAddAll: TButton;
+    CBMakeSearchable: TCheckBox;
     CBHideProtected: TCheckBox;
     CBPackage: TComboBox;
     CBFormat: TComboBox;
     CBContent: TCheckBox;
     CBShowPrivate: TCheckBox;
     CBWarnNoNode: TCheckBox;
+    CBAutoTOC: TCheckBox;
+    CBAutoIndex: TCheckBox;
     ETargetOS: TEdit;
     ETargetCPU: TEdit;
     EOutput: TEditButton;
@@ -113,6 +116,7 @@ type
     procedure BuildFormCloseQuery(Sender: TObject; var CanClose: boolean);
     procedure BuildFormCreate(Sender: TObject);
     procedure BuildFormDestroy(Sender: TObject);
+    procedure CBFormatChange(Sender: TObject);
     procedure EOutputButtonClick(Sender: TObject);
     procedure FormResize(Sender: TObject);
     procedure Sgsourcesdblclick(Sender: Tobject);
@@ -394,6 +398,13 @@ procedure TBuildForm.BuildFormDestroy(Sender: TObject);
 begin
   if Sender=nil then ;
   FOptions.Free;
+end;
+
+procedure TBuildForm.CBFormatChange(Sender: TObject);
+begin
+  CBAutoTOC.Enabled := CBFormat.ItemIndex = 0;
+  CBAutoIndex.Enabled := CBFormat.ItemIndex = 0;
+  CBMakeSearchable.Enabled := CBFormat.ItemIndex = 0;
 end;
 
 procedure TBuildForm.EOutputButtonClick(Sender: TObject);
@@ -702,6 +713,14 @@ begin
   Result:=Result+' --package='+CBPackage.Text;
   Result:=Result+' --output='+Eoutput.Text;
   Result:=Result+' --format='+CBFormat.Text;
+  if CBFormat.Text = 'chm' then begin
+    if CBAutoTOC.Checked then
+      Result:=Result+' --auto-toc';
+    if CBAutoIndex.Checked then
+      Result:=Result+' --auto-index';
+    if CBMakeSearchable.Checked then
+      Result:=Result+' --make-searchable';
+  end;
   If CBShowPrivate.Checked then
     Result:=Result+' --show-private';
   If CBHideProtected.Checked then

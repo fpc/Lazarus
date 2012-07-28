@@ -1,19 +1,19 @@
 object MainForm: TMainForm
   Left = 290
   Height = 544
-  Top = 170
+  Top = 162
   Width = 602
   HorzScrollBar.Page = 601
   VertScrollBar.Page = 523
   ActiveControl = Splitter1
   Caption = 'MainForm'
-  ClientHeight = 520
+  ClientHeight = 523
   ClientWidth = 602
   Menu = MMain
   OnCloseQuery = MainFormCloseQuery
   OnCreate = MainFormCreate
   OnDestroy = MainFormDestroy
-  LCLVersion = '0.9.31'
+  LCLVersion = '1.1'
   object TBMain: TToolBar
     Left = 0
     Height = 30
@@ -130,20 +130,20 @@ object MainForm: TMainForm
   end
   object StatusBar1: TStatusBar
     Left = 0
-    Height = 19
-    Top = 501
+    Height = 20
+    Top = 503
     Width = 602
     Panels = <>
   end
   object Splitter1: TSplitter
     Left = 0
-    Height = 471
+    Height = 473
     Top = 30
     Width = 5
   end
   object PCFiles: TPageControl
     Left = 5
-    Height = 471
+    Height = 473
     Top = 30
     Width = 597
     Align = alClient
@@ -1209,6 +1209,7 @@ object MainForm: TMainForm
       Hint = 'Format selection bold'
       ImageIndex = 7
       OnExecute = DoFormat
+      OnUpdate = CanFormat
       ShortCut = 16450
     end
     object AFormatItalic: TAction
