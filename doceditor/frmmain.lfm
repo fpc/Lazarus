@@ -7,7 +7,7 @@ object MainForm: TMainForm
   VertScrollBar.Page = 523
   ActiveControl = Splitter1
   Caption = 'MainForm'
-  ClientHeight = 523
+  ClientHeight = 517
   ClientWidth = 602
   Menu = MMain
   OnCloseQuery = MainFormCloseQuery
@@ -130,20 +130,20 @@ object MainForm: TMainForm
   end
   object StatusBar1: TStatusBar
     Left = 0
-    Height = 20
-    Top = 503
+    Height = 22
+    Top = 495
     Width = 602
     Panels = <>
   end
   object Splitter1: TSplitter
     Left = 0
-    Height = 473
+    Height = 465
     Top = 30
     Width = 5
   end
   object PCFiles: TPageControl
     Left = 5
-    Height = 473
+    Height = 465
     Top = 30
     Width = 597
     Align = alClient
@@ -1157,7 +1157,7 @@ object MainForm: TMainForm
       Hint = 'Insert a new module'
       ImageIndex = 4
       OnExecute = InsertStructure
-      OnUpdate = HaveEditor
+      OnUpdate = HaveEditorAndPackage
     end
     object AInsertElement: TAction
       Tag = 3
@@ -1166,7 +1166,7 @@ object MainForm: TMainForm
       Hint = 'Insert a new element'
       ImageIndex = 6
       OnExecute = InsertStructure
-      OnUpdate = HaveEditor
+      OnUpdate = HaveEditorAndModule
     end
     object AInsertTopic: TAction
       Tag = 4
@@ -1175,7 +1175,7 @@ object MainForm: TMainForm
       Hint = 'Insert a new topic'
       ImageIndex = 5
       OnExecute = InsertStructure
-      OnUpdate = HaveEditor
+      OnUpdate = HaveEditorAndTopicOrSomething
     end
     object AInsertLink: TAction
       Category = 'Insert'

@@ -163,6 +163,9 @@ type
     procedure ASaveExecute(Sender: TObject);
     procedure DoFormat(Sender: TObject);
     procedure HaveEditor(Sender: TObject);
+    procedure HaveEditorAndModule(Sender: TObject);
+    procedure HaveEditorAndPackage(Sender: TObject);
+    procedure HaveEditorAndTopicOrSomething(Sender: TObject);
     procedure InsertStructure(Sender: TObject);
     procedure MainFormCloseQuery(Sender: TObject; var CanClose: boolean);
     procedure MainFormCreate(Sender: TObject);
@@ -423,6 +426,26 @@ end;
 procedure TMainForm.HaveEditor(Sender: TObject);
 begin
   (Sender as TAction).Enabled:=(CurrentEditor <> nil);
+end;
+
+procedure TMainForm.HaveEditorAndModule(Sender: TObject);
+begin
+  (Sender as TAction).Enabled:=(CurrentEditor <> nil) and
+                               (Currenteditor.CurrentModule <> nil);
+end;
+
+procedure TMainForm.HaveEditorAndPackage(Sender: TObject);
+begin
+  (Sender as TAction).Enabled:=(CurrentEditor <> nil) and
+                               (Currenteditor.CurrentPackage <> nil);
+end;
+
+procedure TMainForm.HaveEditorAndTopicOrSomething(Sender: TObject);
+begin
+  (Sender as TAction).Enabled:=(CurrentEditor <> nil) and
+    (  (Currenteditor.CurrentTopic <> nil)
+    or (Currenteditor.CurrentModule <> nil)
+    or (Currenteditor.CurrentPackage <> nil) );
 end;
 
 procedure TMainForm.InsertStructure(Sender: TObject);

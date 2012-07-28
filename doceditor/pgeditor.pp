@@ -470,11 +470,9 @@ begin
   if (CurrentTopic<>Nil) then
     begin
     M:=CurrentTopic.ParentNode as TDomElement;
-    If M.NodeName='module' then
+    If (M.NodeName='module') or (M.NodeName='topic') then
       P:=M
-    else if M.NodeName='topic' then
-      P:=M
-    else   
+    else
       P:=CurrentTopic;
     end
   else if (CurrentModule<>Nil) then
