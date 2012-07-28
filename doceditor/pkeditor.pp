@@ -271,6 +271,7 @@ Constructor TPackageEditor.Create(AOwner : TComponent);
 
 begin
   Inherited;
+  Width:=300;
   FImageList := TImageList.Create(Self);
   Fimagelist.AddLazarusResource('node_new');      // ImgIndxNew
   Fimagelist.AddLazarusResource('node_edit');     // ImgIndxEdited

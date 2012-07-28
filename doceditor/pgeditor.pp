@@ -148,6 +148,7 @@ begin
   FSplitter:=TSplitter.Create(Self);
   FSPlitter.Parent:=Self;
   FSplitter.Align:=alLeft;
+  FSplitter.Left:=1;
   FSplitter.Width:=5;
 
   FElement:=TElementEditor.Create(Self);
