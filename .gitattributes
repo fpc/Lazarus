@@ -397,6 +397,9 @@ components/chmhelp/lhelp/images/lhelp32.png -text
 components/chmhelp/lhelp/images/table_close.png -text
 components/chmhelp/lhelp/images/table_item.png -text
 components/chmhelp/lhelp/images/table_open.png -text
+components/chmhelp/lhelp/lhelp.app/Contents/Info.plist svneol=native#text/plain
+components/chmhelp/lhelp/lhelp.app/Contents/MacOS/lhelp -text svneol=unset#application/octet-stream
+components/chmhelp/lhelp/lhelp.app/Contents/PkgInfo svneol=native#text/plain
 components/chmhelp/lhelp/lhelp.ico -text svneol=unset#image/icon
 components/chmhelp/lhelp/lhelp.lpi svneol=native#text/plain
 components/chmhelp/lhelp/lhelp.lpr svneol=native#text/plain
