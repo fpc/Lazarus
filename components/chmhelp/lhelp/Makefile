@@ -3171,4 +3171,4 @@ include fpcmake.loc
 endif
 .PHONY: all clean
 all:    $(COMPILER_UNITTARGETDIR)
-	$(MAKE) --assume-new=lhelp.lpr OPT=$(LHELP_OPT) lhelp$(EXEEXT)
+	$(MAKE) --assume-new=lhelp.lpr OPT="$(LHELP_OPT)" lhelp$(EXEEXT)
