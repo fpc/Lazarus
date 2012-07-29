@@ -51,21 +51,21 @@ UsePreviousTasks=no
 
 [Tasks]
 Name: desktopicon; Description: {cm:CreateDesktopIcon}; GroupDescription: {cm:AdditionalIcons}; Flags: unchecked
-Name: delusersettings; Description: Delete all user configuration files from previous installs; GroupDescription: Clean up;  Flags: unchecked 
+Name: delusersettings; Description: {cm:DelUserConf}; GroupDescription: {cm:CleanUp};  Flags: unchecked 
 ;unchecked checkedonce
 
 [Components]
 #if FPCTargetOS=="win32"
 #if IDEWidgetSet!="qt"
-Name: installqtintfdll; Description: Install QT interface dll; Types: custom full compact
+Name: installqtintfdll; Description: {cm:InstallQt}; Types: custom full compact
 #endif
 #endif
 #ifdef CHMHELPFILES
 #if CHMHELPFILES!=""
-Name: installhelp; Description: Install chm help files; Types: custom full
+Name: installhelp; Description: {cm:InstallChm}; Types: custom full
 #endif
 #endif
-Name: association; Description: Associate file extensions; Types: custom full
+Name: association; Description: {cm:AssociateGroup}; Types: custom full
 Name: association/associatelfm; Description: {code:GetAssociateDesc|.lfm}; Types: custom full
 Name: association/associatelpi; Description: {code:GetAssociateDesc|.lpi}; Types: custom full
 Name: association/associatelpk; Description: {code:GetAssociateDesc|.lpk}; Types: custom full
@@ -261,6 +261,13 @@ Name: sl; MessagesFile: compiler:Languages\Slovenian.isl
 
 [CustomMessages]
 
+DelUserConf=Delete all user configuration files from previous installs
+CleanUp=Clean up
+
+InstallQt=Install QT interface dll
+InstallChm=Install chm help files
+AssociateGroup=Associate file extensions
+
 FolderHasSpaces=Selected folder contains spaces, please select a folder without spaces in it.
 FolderNotEmpty=The target folder is not empty. Continue with installation?
 
@@ -268,6 +275,8 @@ FolderNotEmpty2=The target folder is not empty.
 
 AskUninstallTitle1=Previous Installation
 AskUninstallTitle2=Do you want to run the uninstaller?
+BtnUninstall=Uninstall
+ChkContinue=Continue without uninstall
 
 OldInDestFolder1=Another installation of %1 exists in the destination folder. If you wish to uninstall first, please use the button below.
 OldInDestFolder2=
@@ -671,18 +680,28 @@ begin
   wpLabel4.WordWrap := True;
   wpLabel4.Caption := '';
   
+  try 
+    s := CustomMessage('BtnUninstall');
+  except
+    s := 'Uninstall';
+  end;
   wpButton := TNewButton.Create(wpAskUnistall);
   wpButton.Parent := wpAskUnistall.Surface;
   wpButton.Width := ScaleX(80);
   wpButton.Left := (wpAskUnistall.SurfaceWidth div 2) - ScaleX(40);
-  wpButton.Caption := 'Uninstall';
+  wpButton.Caption := s;
   wpButton.OnClick := @UnInstBtnClick;
 
+  try 
+    s := CustomMessage('ChkContinue');
+  except
+    s := 'Continue without uninstall';
+  end;
   wpCheckBox := TNewCheckBox.Create(wpAskUnistall);
   wpCheckBox.Parent := wpAskUnistall.Surface;
   wpCheckBox.Top := wpAskUnistall.SurfaceHeight - wpCheckBox.Height - 1;
   wpCheckBox.Width := wpAskUnistall.SurfaceWidth;  
-  wpCheckBox.Caption := 'Continue without uninstall';
+  wpCheckBox.Caption := s;
   wpCheckBox.OnClick := @UnInstCheckboxClick;
   
   UninstallState := uiUnknown;
