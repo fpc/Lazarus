@@ -1454,7 +1454,7 @@ begin
       else
         FullString := '';
 
-      FullString := AFamily + ' ' + aStyle + ' ' + FullString;
+      FullString := AFamily + ', ' + aStyle + ' ' + FullString;
       PangoDesc := pango_font_description_from_string(PChar(FullString));
 
       if lfWeight <> FW_DONTCARE then
