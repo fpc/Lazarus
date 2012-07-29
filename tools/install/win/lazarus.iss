@@ -51,21 +51,21 @@ UsePreviousTasks=no
 
 [Tasks]
 Name: desktopicon; Description: {cm:CreateDesktopIcon}; GroupDescription: {cm:AdditionalIcons}; Flags: unchecked
-Name: delusersettings; Description: Delete all user configuration files from previous installs; GroupDescription: Clean up;  Flags: unchecked 
+Name: delusersettings; Description: {cm:DelUserConf}; GroupDescription: {cm:CleanUp};  Flags: unchecked 
 ;unchecked checkedonce
 
 [Components]
 #if FPCTargetOS=="win32"
 #if IDEWidgetSet!="qt"
-Name: installqtintfdll; Description: Install QT interface dll; Types: custom full compact
+Name: installqtintfdll; Description: {cm:InstallQt}; Types: custom full compact
 #endif
 #endif
 #ifdef CHMHELPFILES
 #if CHMHELPFILES!=""
-Name: installhelp; Description: Install chm help files; Types: custom full
+Name: installhelp; Description: {cm:InstallChm}; Types: custom full
 #endif
 #endif
-Name: association; Description: Associate file extensions; Types: custom full
+Name: association; Description: {cm:AssociateGroup}; Types: custom full
 Name: association/associatelfm; Description: {code:GetAssociateDesc|.lfm}; Types: custom full
 Name: association/associatelpi; Description: {code:GetAssociateDesc|.lpi}; Types: custom full
 Name: association/associatelpk; Description: {code:GetAssociateDesc|.lpk}; Types: custom full
@@ -259,6 +259,38 @@ Name: ru; MessagesFile: compiler:Languages\Russian.isl
 ;Name: sk; MessagesFile: compiler:Languages\Slovak.isl
 Name: sl; MessagesFile: compiler:Languages\Slovenian.isl
 
+[CustomMessages]
+
+DelUserConf=Delete all user configuration files from previous installs
+CleanUp=Clean up
+
+InstallQt=Install QT interface dll
+InstallChm=Install chm help files
+AssociateGroup=Associate file extensions
+
+FolderHasSpaces=Selected folder contains spaces, please select a folder without spaces in it.
+FolderNotEmpty=The target folder is not empty. Continue with installation?
+
+FolderNotEmpty2=The target folder is not empty.
+
+AskUninstallTitle1=Previous Installation
+AskUninstallTitle2=Do you want to run the uninstaller?
+BtnUninstall=Uninstall
+ChkContinue=Continue without uninstall
+
+OldInDestFolder1=Another installation of %1 exists in the destination folder. If you wish to uninstall first, please use the button below.
+OldInDestFolder2=
+OldInDestFolder3=
+OldInDestFolder4=
+
+OldInOtherFolder1=Another installation of %1 was found at %2. Please use the button below to uninstall it now. If you wish to keep it, please tick the checkbox to continue.',
+OldInOtherFolder2=Note: Using multiple copies of Lazarus is not supported by this installer.
+OldInOtherFolder3=Using several installations of Lazarus can lead to conflicts in files shared by all of the installations, such as the IDE configuration.
+OldInOtherFolder4=If you wish to use more than one installation, then you must do additional setup after this installation finished. Please see the Lazarus web page for this, and how to use --primary-config-path
+
+
+#include "lazarus.ru.isl"
+
 [Code]
 type
   TUninstallState = (uiUnknown, UIDone, UIOtherNeeded, uiDestNeeded);
@@ -325,7 +357,7 @@ end;
 
 function NextButtonClick(CurPage: Integer): Boolean;
 var
-    folder: String;
+    s, folder: String;
     FolderEmpty: Boolean;
 begin
   // by default go to next page
@@ -338,7 +370,12 @@ begin
 
     if Pos( ' ', folder ) > 0 then
     begin
-      MsgBox( 'Selected folder contains spaces, please select a folder without spaces in it.', mbInformation, MB_OK );
+	  try 
+		s := CustomMessage('FolderHasSpaces');
+	  except
+		s := 'Selected folder contains spaces, please select a folder without spaces in it.';
+	  end;
+      MsgBox(s, mbInformation, MB_OK );
       Result := false;
       exit;
     end
@@ -349,7 +386,12 @@ begin
     
     if ((UninstallState = uiDone) or (UninstallState = UIOtherNeeded)) and not(FolderEmpty) then begin
       // Dir NOT empty
-        Result := MsgBox('The target folder is not empty. Continue with installation?', mbConfirmation, MB_YESNO) = IDYES;
+	    try 
+		  s := CustomMessage('FolderNotEmpty');
+		except
+		  s := 'The target folder is not empty. Continue with installation?';
+		end;
+        Result := MsgBox(s, mbConfirmation, MB_YESNO) = IDYES;
     end;
 	if not Result then exit;
   
@@ -517,30 +559,40 @@ begin
   if UninstallState = uiDestNeeded then begin
 	wpLabel2.Font.Color := clDefault;
     wpCheckBox.Visible := False;
-	InitAskUninstall(
-	  'Another installation of "'+OldName+'" exists in the destination folder. If you wish to uninstall first, please use the button below.',
-	  '',
-	  '',
-	  ''
-	);
+	try 
+      InitAskUninstall(FmtMessage(CustomMessage('OldInDestFolder1'), [OldName]), 
+	                   CustomMessage('OldInDestFolder2'), CustomMessage('OldInDestFolder3'), CustomMessage('OldInDestFolder4'));
+	except
+      InitAskUninstall(
+	    'Another installation of "'+OldName+'" exists in the destination folder. If you wish to uninstall first, please use the button below.',
+	    '',
+	    '',
+	    ''
+	  );
+	end;
   end
   else
   begin	
 	wpLabel2.Font.Color := clRed;
     wpCheckBox.Visible := True;
-	InitAskUninstall(
-	  'Another installation of "'+OldName+'" was found at "'+OldPath+'". Please use the button below to uninstall it now. If you wish to keep it, please tick the checkbox to continue.',
-	  'Note: Using multiple copies of Lazarus is not supported by this installer.',
-	  'Using several installations of Lazarus can lead to conflicts in files shared by all of the installations, such as the IDE configuration.',
-	  'If you wish to use more than one installation, then you must do additional setup after this installation finished. Please see the Lazarus web page for this, and how to use --primary-config-path'
-	);
+	try 
+      InitAskUninstall(FmtMessage(CustomMessage('OldInOtherFolder1'), [OldName, OldPath]), 
+	                   CustomMessage('OldInOtherFolder2'), CustomMessage('OldInOtherFolder3'), CustomMessage('OldInOtherFolder4'));
+	except
+      InitAskUninstall(
+      'Another installation of "'+OldName+'" was found at "'+OldPath+'". Please use the button below to uninstall it now. If you wish to keep it, please tick the checkbox to continue.',
+	    'Note: Using multiple copies of Lazarus is not supported by this installer.',
+	    'Using several installations of Lazarus can lead to conflicts in files shared by all of the installations, such as the IDE configuration.',
+	    'If you wish to use more than one installation, then you must do additional setup after this installation finished. Please see the Lazarus web page for this, and how to use --primary-config-path'
+	  );
+	end;
   end;
 
 end;
   
 procedure UnInstBtnClick(Sender: TObject);
 var
-  UnInstaller: String;
+  s, UnInstaller: String;
   b, FolderEmpty : Boolean;
   i: integer;
 begin
@@ -562,7 +614,12 @@ begin
 	  if not FolderEmpty then begin Sleep(500); FolderEmpty := IsDirEmpty(WizardDirValue); end;
       if not(FolderEmpty) then begin
         // Dir NOT empty, after uninstall
-        MsgBox('The target folder is not empty.', mbConfirmation, MB_OK);
+	    try 
+		  s := CustomMessage('FolderNotEmpty2');
+	    except
+		  s := 'The target folder is not empty.';
+        end;
+        MsgBox(s, mbConfirmation, MB_OK);
       end;
     end;
   end;
@@ -576,8 +633,17 @@ begin
 end;
   
 procedure InitializeWizard();
+var
+  s, s2 : String;
 begin
-  wpAskUnistall := CreateCustomPage(wpSelectDir, 'Previous Installation', 'Do you want to run the uninstaller?');
+  try 
+    s := CustomMessage('AskUninstallTitle1');
+    s2 := CustomMessage('AskUninstallTitle2');
+  except
+    s := 'Previous Installation';
+	s2 := 'Do you want to run the uninstaller?';
+  end;
+  wpAskUnistall := CreateCustomPage(wpSelectDir, s, s2);
   wpAskUnistall.OnShouldSkipPage := @SkipAskUninst;
   wpAskUnistall.OnActivate := @ActivateAskUninst;
   
@@ -614,18 +680,28 @@ begin
   wpLabel4.WordWrap := True;
   wpLabel4.Caption := '';
   
+  try 
+    s := CustomMessage('BtnUninstall');
+  except
+    s := 'Uninstall';
+  end;
   wpButton := TNewButton.Create(wpAskUnistall);
   wpButton.Parent := wpAskUnistall.Surface;
   wpButton.Width := ScaleX(80);
   wpButton.Left := (wpAskUnistall.SurfaceWidth div 2) - ScaleX(40);
-  wpButton.Caption := 'Uninstall';
+  wpButton.Caption := s;
   wpButton.OnClick := @UnInstBtnClick;
 
+  try 
+    s := CustomMessage('ChkContinue');
+  except
+    s := 'Continue without uninstall';
+  end;
   wpCheckBox := TNewCheckBox.Create(wpAskUnistall);
   wpCheckBox.Parent := wpAskUnistall.Surface;
   wpCheckBox.Top := wpAskUnistall.SurfaceHeight - wpCheckBox.Height - 1;
   wpCheckBox.Width := wpAskUnistall.SurfaceWidth;  
-  wpCheckBox.Caption := 'Continue without uninstall';
+  wpCheckBox.Caption := s;
   wpCheckBox.OnClick := @UnInstCheckboxClick;
   
   UninstallState := uiUnknown;

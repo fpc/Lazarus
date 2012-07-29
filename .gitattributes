@@ -6516,6 +6516,7 @@ tools/install/win/create_installer.bat svneol=native#text/x-msdos-program
 tools/install/win/environmentoptions.xml svneol=native#text/xml
 tools/install/win/installerstrconsts.pas svneol=native#text/plain
 tools/install/win/lazarus-cross.iss svneol=native#text/plain
+tools/install/win/lazarus.ru.isl svneol=native#text/plain
 tools/install/win/lazarus_install_cheetah.bmp -text svneol=unset#image/bmp
 tools/install/win/lazarus_install_cheetah_small.bmp -text svneol=unset#image/bmp
 tools/install/win/readme.txt svneol=native#text/plain
