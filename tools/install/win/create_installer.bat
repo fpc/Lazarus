@@ -68,6 +68,7 @@ SET BUILDDRIVE=%BUILDDIR:~,2%
 SET CP=%FPCBINDIR%\cp.exe
 FOR /F "delims='" %%F IN (%LAZSVNDIR%\ide\version.inc) DO set LAZVERSION=%%F
 FOR /F %%F IN ('svnversion.exe %LAZSVNDIR%') DO set LAZREVISION=%%F
+IF %ERRORLEVEL% NEQ 0 GOTO SVNVERERR
 
 
 ECHO Starting at: > %LOGFILE%
@@ -131,9 +132,11 @@ rd /s /q %BUILDDIR% > NUL
 
 GOTO END
 
+:SVNVERERR
+echo SVNVersion failed
+GOTO END
 :SVNERR
 echo SVN failed
-
 :END
 
 SET PATH=%OLDPATH%
