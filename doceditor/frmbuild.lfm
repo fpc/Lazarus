@@ -112,6 +112,7 @@ object BuildForm: TBuildForm
       Caption = 'Description'
       ClientHeight = 211
       ClientWidth = 596
+      Hint = 'Description/XML files with help text'
       object PBDescr: TPanel
         Left = 524
         Height = 211
@@ -123,6 +124,7 @@ object BuildForm: TBuildForm
         ClientHeight = 211
         ClientWidth = 72
         FullRepaint = False
+        Hint = 'Description/XML files with help text'
         TabOrder = 0
         object BAddDescription: TButton
           AnchorSideLeft.Control = PBDescr
@@ -194,6 +196,7 @@ object BuildForm: TBuildForm
         Top = 0
         Width = 524
         Align = alClient
+        Hint = 'Description/XML files with help text'
         ClickOnSelChange = False
         ItemHeight = 0
         TabOrder = 1
@@ -203,6 +206,7 @@ object BuildForm: TBuildForm
       Caption = 'Sources'
       ClientHeight = 190
       ClientWidth = 600
+      Hint = 'Pascal sources documented by the description files'
       object PSources: TPanel
         Left = 530
         Height = 190
@@ -214,6 +218,7 @@ object BuildForm: TBuildForm
         ClientHeight = 190
         ClientWidth = 70
         FullRepaint = False
+        Hint = 'Pascal sources documented by the description files'
         TabOrder = 0
         object BSourceAdd: TButton
           AnchorSideLeft.Control = PSources
@@ -273,6 +278,7 @@ object BuildForm: TBuildForm
         ColCount = 2
         DefaultColWidth = 150
         FixedCols = 0
+        Hint = 'Pascal sources documented by the description files'
         Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goColSizing, goSmoothScroll]
         RowCount = 2
         TabOrder = 1
@@ -452,6 +458,7 @@ object BuildForm: TBuildForm
     Anchors = [akTop, akLeft, akRight]
     ButtonWidth = 23
     CharCase = ecNormal
+    Hint = 'Documentation/help output file'
     MaxLength = 0
     NumGlyphs = 1
     OnButtonClick = EOutputButtonClick

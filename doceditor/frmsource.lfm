@@ -48,8 +48,10 @@ object SourceForm: TSourceForm
     Top = 30
     Width = 417
     DialogOptions = []
+    Filter = 'Pascal files (*.pas,*.pp)|*.pas;*.pp|All files|*.*'	
     FilterIndex = 0
     HideDirectories = False
+    Hint = 'Pascal sources documented by the XML description files'	
     ButtonWidth = 23
     NumGlyphs = 1
     Anchors = [akTop, akLeft, akRight]

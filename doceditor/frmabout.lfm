@@ -40,7 +40,7 @@ object AboutForm: TAboutForm
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Top = 12
     BorderSpacing.Around = 6
-    Caption = 'This application is (c) by  Michael Van Canneyt and the Lazarus team'
+    Caption = 'This application is (c) by Michael Van Canneyt and the Lazarus team'
     ParentColor = False
   end
   object LCopyRight2: TLabel

@@ -32,12 +32,9 @@ type
     procedure GoForward; override;
     class function GetProperContentProvider(const AURL: String): TBaseContentProviderClass; override;
     constructor Create(AParent: TWinControl; AImageList: TImageList); override;
-
   end;
 
 implementation
-
-
 
 { THTTPContentProvider }
 

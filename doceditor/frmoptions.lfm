@@ -148,6 +148,7 @@ object OptionsForm: TOptionsForm
         DialogOptions = []
         FilterIndex = 0
         HideDirectories = False
+        Hint = 'FPC''s makeskel program, e.g. c:\lazarus\fpc\2.6.1\bin\i386-win32\makeskel.exe'		
         ButtonWidth = 23
         NumGlyphs = 1
         Anchors = [akTop, akLeft, akRight]
@@ -168,6 +169,7 @@ object OptionsForm: TOptionsForm
         DialogOptions = []
         FilterIndex = 0
         HideDirectories = False
+        Hint = 'FPC''s fpdoc program, e.g. C:\Lazarus\fpc\2.6.1\bin\i386-win32\fpdoc.exe'
         ButtonWidth = 23
         NumGlyphs = 1
         Anchors = [akTop, akLeft, akRight]
