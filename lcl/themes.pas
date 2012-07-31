@@ -2093,6 +2093,8 @@ begin
                 Bevel := bvNone;
 
               Frame3D(DC, ARect, 1, Bevel);
+              ARect:=R;
+              InflateRect(ARect, -1, -1);
               DrawDropDownArrow(ARect);
             end;
           TP_SEPARATOR:
