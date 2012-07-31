@@ -5451,11 +5451,13 @@ resourcestring
   lisTheFreePascalCompilerExecutableTypicallyHasTheName = 'The Free Pascal '
     +'compiler executable typically has the name "%s". You can also use the '
     +'target specific compiler like "%s". Please give the full file path.';
-  lisTheMakeExecutableTypicallyHasTheName = 'The make executable typically '
-    +'has the name "%s". Please give the full file path.';
-  lisTheDebuggerExecutableTypicallyHasTheName = 'The debugger executable '
-    +'typically has the name "%s". Pleae give the full file path. '
-    +'A useful setting on Windows systems is: $(LazarusDir)\mingw\bin\$(TargetCPU)-$(TargetOS)\gdb.exe';
+  lisTheMakeExecutableTypicallyHasTheName = 'The "make" executable typically '
+    +'has the name "%s". It is needed for building the IDE. Please give the full file path.';
+  lisTheDebuggerExecutableTypicallyHasTheNamePleaseGive = 'The debugger '
+    +'executable typically has the name "%s". Please give the full file path.';
+  lisAUsefulSettingOnWindowsSystemsIsLazarusDirMingwBin = 'A useful setting on'
+    +' Windows systems is: $(LazarusDir)\mingw\bin\$(TargetCPU)-$(TargetOS)\'
+    +'gdb.exe';
   lisFoundVersionExpected = 'Found version %s, expected %s';
   lisInvalidVersionIn = 'invalid version in %s';
   lisWrongVersionIn = 'wrong version in %s: %s';

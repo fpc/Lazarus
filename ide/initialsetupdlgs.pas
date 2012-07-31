@@ -88,32 +88,32 @@ type
     CompilerComboBox: TComboBox;
     CompilerLabel: TLabel;
     CompilerMemo: TMemo;
-    FPCSrcDirBrowseButton: TButton;
-    MakeExeBrowseButton: TButton;
+    CompilerTabSheet: TTabSheet;
     DebuggerBrowseButton: TButton;
-    FPCSrcDirComboBox: TComboBox;
-    MakeExeComboBox: TComboBox;
     DebuggerComboBox: TComboBox;
-    FPCSrcDirLabel: TLabel;
-    MakeExeLabel: TLabel;
     DebuggerLabel: TLabel;
-    FPCSrcDirMemo: TMemo;
-    MakeExeMemo: TMemo;
     DebuggerMemo: TMemo;
+    DebuggerTabSheet: TTabSheet;
+    FPCSourcesTabSheet: TTabSheet;
+    FPCSrcDirBrowseButton: TButton;
+    FPCSrcDirComboBox: TComboBox;
+    FPCSrcDirLabel: TLabel;
+    FPCSrcDirMemo: TMemo;
     ImageList1: TImageList;
+    LazarusTabSheet: TTabSheet;
     LazDirBrowseButton: TButton;
-    LazDirLabel: TLabel;
     LazDirComboBox: TComboBox;
+    LazDirLabel: TLabel;
     LazDirMemo: TMemo;
+    MakeExeBrowseButton: TButton;
+    MakeExeComboBox: TComboBox;
+    MakeExeLabel: TLabel;
+    MakeExeMemo: TMemo;
+    MakeExeTabSheet: TTabSheet;
     PropertiesPageControl: TPageControl;
     PropertiesTreeView: TTreeView;
     Splitter1: TSplitter;
     StartIDEBitBtn: TBitBtn;
-    LazarusTabSheet: TTabSheet;
-    CompilerTabSheet: TTabSheet;
-    FPCSourcesTabSheet: TTabSheet;
-    MakeExeTabSheet: TTabSheet;
-    DebuggerTabSheet: TTabSheet;
     WelcomePaintBox: TPaintBox;
     procedure CompilerBrowseButtonClick(Sender: TObject);
     procedure CompilerComboBoxChange(Sender: TObject);
@@ -1288,6 +1288,8 @@ end;
 { TInitialSetupDialog }
 
 procedure TInitialSetupDialog.FormCreate(Sender: TObject);
+var
+  s: String;
 begin
   Caption:=Format(lisWelcomeToLazarusIDE, [GetLazarusVersionString]);
 
@@ -1330,8 +1332,12 @@ begin
     lisTheMakeExecutableTypicallyHasTheName, ['make'+GetExecutableExt('')]);
 
   DebuggerBrowseButton.Caption:=lisPathEditBrowse;
-  DebuggerLabel.Caption:=Format(
-    lisTheDebuggerExecutableTypicallyHasTheName, ['gdb'+GetExecutableExt('')]);
+  s:=Format(lisTheDebuggerExecutableTypicallyHasTheNamePleaseGive, [
+    'gdb'+GetExecutableExt]);
+  {$IFDEF Windows}
+  s+=' '+lisAUsefulSettingOnWindowsSystemsIsLazarusDirMingwBin;
+  {$ENDIF}
+  DebuggerLabel.Caption:=s;
 end;
 
 procedure TInitialSetupDialog.CompilerComboBoxChange(Sender: TObject);
