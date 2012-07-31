@@ -1327,7 +1327,6 @@ begin
   DebuggerBrowseButton.Caption:=lisPathEditBrowse;
   DebuggerLabel.Caption:=Format(
     lisTheDebuggerExecutableTypicallyHasTheName, ['gdb'+GetExecutableExt('')]);
-
 end;
 
 procedure TInitialSetupDialog.CompilerComboBoxChange(Sender: TObject);
