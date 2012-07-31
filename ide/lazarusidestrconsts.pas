@@ -5440,10 +5440,10 @@ resourcestring
     +'compiler the code browsing and compiling will be disappointing.';
   lisWithoutAProperDebuggerDebuggingWillBeDisappointing = 'Without a proper '
     +'debugger, debugging will be disappointing.';
-  lisWithoutAProperMakeExecutableTheCodeBrowsingAndComp = 'Without a proper '
-    +'make executable the code browsing and compiling will be disappointing.';
   lisWithoutTheProperFPCSourcesCodeBrowsingAndCompletio = 'Without the proper '
     +'FPC sources code browsing and completion will be very limited.';
+  lisWithoutAProperMakeExecutableTheCompilingOfTheIDEIs = 'Without a proper "'
+    +'make" executable the compiling of the IDE is not possible.';
   lisTheLazarusDirectoryContainsTheSourcesOfTheIDEAndTh = 'The Lazarus '
     +'directory contains the sources of the IDE and the package files of LCL '
     +'and many standard packages. For example it contains the file "ide%'

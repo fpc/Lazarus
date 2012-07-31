@@ -1490,7 +1490,7 @@ begin
   else if Node=TVNodeFPCSources then
     s:=lisWithoutTheProperFPCSourcesCodeBrowsingAndCompletio
   else if Node=TVNodeMakeExe then
-    s:=lisWithoutAProperMakeExecutableTheCodeBrowsingAndComp
+    s:=lisWithoutAProperMakeExecutableTheCompilingOfTheIDEIs
   else if Node=TVNodeDebugger then
     s:=lisWithoutAProperDebuggerDebuggingWillBeDisappointing;
   if s<>'' then begin
