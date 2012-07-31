@@ -534,6 +534,7 @@ var
   var
     c: char;
     validblank: boolean;
+    InitPos: Integer;
     
     function IsBlank: boolean;
     begin
@@ -549,11 +550,13 @@ var
     Result := '';
     validblank := true;
     ParsePos := Length(LongFontname);
+    InitPos := ParsePos;
     while ParsePos>0 do begin
       c := longFontName[ParsePos];
       if IsBlank then
         if ValidBlank then begin
           dec(ParsePos);
+          dec(InitPos);
           continue
         end else
           break;
@@ -561,8 +564,14 @@ var
       if IsDigit then begin
         Result := C + Result;
         dec(ParsePos);
-      end else
+      end else begin
+        if not IsBlank then
+        begin
+          Result := '';
+          ParsePos := InitPos;
+        end;
         break;
+      end;
     end;
   end;
   
