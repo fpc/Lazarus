@@ -2008,6 +2008,7 @@ resourcestring
   dlgCOLibraries = 'Libraries (-Fl):';
   dlgCODebugPath = 'Debugger path addition (none):';
   lisCompiler = 'Compiler';
+  lisDebugger = 'Debugger';
   lisToFPCPath = 'Path:';
   lisCOSkipCallingCompiler = 'Skip calling compiler';
   lisCOAmbiguousAdditionalCompilerConfigFile = 'Ambiguous additional compiler '
@@ -5437,6 +5438,10 @@ resourcestring
     +'Lazarus directory you will get a lot of warnings.';
   lisWithoutAProperCompilerTheCodeBrowsingAndCompilingW = 'Without a proper '
     +'compiler the code browsing and compiling will be disappointing.';
+  lisWithoutAProperDebuggerDebuggingWillBeDisappointing = 'Without a proper '
+    +'debugger, debugging will be disappointing.';
+  lisWithoutAProperMakeExecutableTheCodeBrowsingAndComp = 'Without a proper '
+    +'make executable the code browsing and compiling will be disappointing.';
   lisWithoutTheProperFPCSourcesCodeBrowsingAndCompletio = 'Without the proper '
     +'FPC sources code browsing and completion will be very limited.';
   lisTheLazarusDirectoryContainsTheSourcesOfTheIDEAndTh = 'The Lazarus '
@@ -5446,6 +5451,11 @@ resourcestring
   lisTheFreePascalCompilerExecutableTypicallyHasTheName = 'The Free Pascal '
     +'compiler executable typically has the name "%s". You can also use the '
     +'target specific compiler like "%s". Please give the full file path.';
+  lisTheMakeExecutableTypicallyHasTheName = 'The make executable typically '
+    +'has the name "%s". Please give the full file path.';
+  lisTheDebuggerExecutableTypicallyHasTheName = 'The debugger executable '
+    +'typically has the name "%s". Pleae give the full file path. '
+    +'A useful setting on Windows systems is: $(LazarusDir)\mingw\bin\$(TargetCPU)-$(TargetOS)\gdb.exe';
   lisFoundVersionExpected = 'Found version %s, expected %s';
   lisInvalidVersionIn = 'invalid version in %s';
   lisWrongVersionIn = 'wrong version in %s: %s';

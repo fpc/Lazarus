@@ -67,7 +67,9 @@ type
   TSDFilenameType = (
     sddtLazarusSrcDir,
     sddtCompilerFilename,
-    sddtFPCSrcDir
+    sddtFPCSrcDir,
+    sddtMakeExeFilename,
+    sddtDebuggerFilename
     );
 
   { TInitialSetupDialog }
@@ -79,9 +81,17 @@ type
     CompilerLabel: TLabel;
     CompilerMemo: TMemo;
     FPCSrcDirBrowseButton: TButton;
+    MakeExeBrowseButton: TButton;
+    DebuggerBrowseButton: TButton;
     FPCSrcDirComboBox: TComboBox;
+    MakeExeComboBox: TComboBox;
+    DebuggerComboBox: TComboBox;
     FPCSrcDirLabel: TLabel;
+    MakeExeLabel: TLabel;
+    DebuggerLabel: TLabel;
     FPCSrcDirMemo: TMemo;
+    MakeExeMemo: TMemo;
+    DebuggerMemo: TMemo;
     ImageList1: TImageList;
     LazDirBrowseButton: TButton;
     LazDirLabel: TLabel;
@@ -94,15 +104,21 @@ type
     LazarusTabSheet: TTabSheet;
     CompilerTabSheet: TTabSheet;
     FPCSourcesTabSheet: TTabSheet;
+    MakeExeTabSheet: TTabSheet;
+    DebuggerTabSheet: TTabSheet;
     WelcomePaintBox: TPaintBox;
     procedure CompilerBrowseButtonClick(Sender: TObject);
     procedure CompilerComboBoxChange(Sender: TObject);
+    procedure DebuggerBrowseButtonClick(Sender: TObject);
+    procedure DebuggerComboBoxChange(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure FPCSrcDirBrowseButtonClick(Sender: TObject);
     procedure FPCSrcDirComboBoxChange(Sender: TObject);
     procedure LazDirBrowseButtonClick(Sender: TObject);
     procedure LazDirComboBoxChange(Sender: TObject);
+    procedure MakeExeBrowseButtonClick(Sender: TObject);
+    procedure MakeExeComboBoxChange(Sender: TObject);
     procedure PropertiesPageControlChange(Sender: TObject);
     procedure PropertiesTreeViewSelectionChanged(Sender: TObject);
     procedure StartIDEBitBtnClick(Sender: TObject);
@@ -111,9 +127,13 @@ type
   private
     FLazarusDirChanged: boolean;
     fCompilerFilenameChanged: boolean;
+    fMakeExeFilenameChanged: boolean;
+    fDebuggerFilenameChanged: boolean;
     FLastParsedLazDir: string;
     fLastParsedCompiler: string;
     fLastParsedFPCSrcDir: string;
+    fLastParsedMakeExe: string;
+    fLastParsedDebugger: string;
     FIdleConnected: boolean;
     ImgIDError: LongInt;
     ImgIDWarning: LongInt;
@@ -125,12 +145,16 @@ type
     procedure UpdateLazarusDirCandidates;
     procedure UpdateCompilerFilenameCandidates;
     procedure UpdateFPCSrcDirCandidates;
+    procedure UpdateMakeExeCandidates;
+    procedure UpdateDebuggerCandidates;
     procedure FillComboboxWithFileInfoList(ABox: TComboBox; List: TObjectList;
        ItemIndex: integer = 0);
     procedure SetIdleConnected(const AValue: boolean);
     procedure UpdateLazDirNote;
     procedure UpdateCompilerNote;
     procedure UpdateFPCSrcDirNote;
+    procedure UpdateMakeExeNote;
+    procedure UpdateDebuggerNote;
     function FirstErrorNode: TTreeNode;
     function GetFPCVer: string;
     function GetFirstCandidate(Candidates: TObjectList;
@@ -140,7 +164,9 @@ type
     TVNodeLazarus: TTreeNode;
     TVNodeCompiler: TTreeNode;
     TVNodeFPCSources: TTreeNode;
-    procedure Init;
+    TVNodeMakeExe: TTreeNode;
+    TVNodeDebugger: TTreeNode;
+    procedure Init; //Check for config errors, find and show alternatives
     property IdleConnected: boolean read FIdleConnected write SetIdleConnected;
   end;
 
@@ -164,9 +190,14 @@ function SearchFPCSrcDirCandidates(StopIfFits: boolean;
 procedure SetupFPCSrcDir(FPCVer: string);
 
 function CheckMakeExeQuality(AFilename: string;
-  out Note: string): TSDFilenameQuality;
-function SearchMakeExeCandidates(StopIfFits: boolean): TObjectList;
-procedure SetupMakeExe;
+  out Note: string): TSDFilenameQuality; // Checks a given file to see if it is a valid make executable
+function SearchMakeExeCandidates(StopIfFits: boolean): TObjectList; //Search make candidates and add them to the list, including quality level
+procedure SetupMakeExe; //Checks if the make specified in user's options (if any) is ok. If not, search for and set a valid one if possible
+
+function CheckDebuggerQuality(AFilename: string;
+  out Note: string): TSDFilenameQuality; // Checks a given file to see if it is a valid debugger (only gdb supported for now)
+function SearchDebuggerCandidates(StopIfFits: boolean): TObjectList; //Search debugger candidates and add them to list, including quality level
+procedure SetupDebugger; //Checks if the debugger specified in user's option (if any) is ok. If not, search for and set a valid one if possible
 
 function GetValueFromPrimaryConfig(OptionFilename, Path: string): string;
 function GetValueFromSecondaryConfig(OptionFilename, Path: string): string;
@@ -565,7 +596,7 @@ begin
 
     // check $(LazarusDir)\fpc\bin\i386-win32\fpc.exe
     if CheckFile(SetDirSeparators('$(LazarusDir)/fpc/bin/$(TargetCPU)-$(TargetOS)/')+ShortCompFile,Result)
-    then exit;
+      then exit;
 
     // check common directories
     Files:=TStringList.Create;
@@ -577,8 +608,8 @@ begin
       Files.Free;
     end;
 
+    // Windows-only locations:
     if (GetDefaultSrcOSForTargetOS(GetCompiledTargetOS)='win') then begin
-      // Windows has some special places
       SysDrive:=GetEnvironmentVariableUTF8('SYSTEMDRIVE');
       if SysDrive='' then SysDrive:='C:';
       SysDrive:=AppendPathDelim(SysDrive);
@@ -842,6 +873,165 @@ begin
   end;
 end;
 
+function CheckDebuggerQuality(AFilename: string; out Note: string
+  ): TSDFilenameQuality;
+begin
+  Result:=sddqInvalid;
+  AFilename:=TrimFilename(AFilename);
+  if not FileExistsCached(AFilename) then
+  begin
+    Note:=lisFileNotFound4;
+    exit;
+  end;
+  if DirPathExistsCached(AFilename) then
+  begin
+    Note:=lisFileIsDirectory;
+    exit;
+  end;
+  if not FileIsExecutableCached(AFilename) then
+  begin
+    Note:=lisFileIsNotAnExecutable;
+    exit;
+  end;
+
+  { We could call gdb and parse the output looking for something like
+  GNU gdb, but that may be going too far. }
+  Note:=lisOk;
+  Result:=sddqCompatible;
+end;
+
+function SearchDebuggerCandidates(StopIfFits: boolean): TObjectList;
+
+  function CheckFile(AFilename: string; var List: TObjectList): boolean;
+  var
+    Item: TSDFileInfo;
+    RealFilename: String;
+  begin
+    Result:=false;
+    if AFilename='' then exit;
+    DoDirSeparators(AFilename);
+    // check if already checked
+    if CaptionInSDFileList(AFilename,List) then exit;
+    EnvironmentOptions.DebuggerFilename:=AFilename;
+    RealFilename:=EnvironmentOptions.GetParsedDebuggerFilename;
+    debugln(['SearchDebuggerCandidates Value=',AFilename,' File=',RealFilename]);
+    if RealFilename='' then exit;
+    // check if exists
+    if not FileExistsCached(RealFilename) then exit;
+    // add to list and check quality
+    Item:=TSDFileInfo.Create;
+    Item.Filename:=RealFilename;
+    Item.Quality:=CheckDebuggerQuality(RealFilename,Item.Note);
+    Item.Caption:=AFilename;
+    if List=nil then
+      List:=TObjectList.create(true);
+    List.Add(Item);
+    Result:=(Item.Quality=sddqCompatible) and StopIfFits;
+  end;
+const
+  DebuggerFileName='gdb'; //For Windows, .exe will be appended
+var
+  OldDebuggerFilename: String;
+  AFilename: String;
+  Files: TStringList;
+  i: Integer;
+begin
+  Result:=nil;
+
+  OldDebuggerFilename:=EnvironmentOptions.DebuggerFilename;
+  try
+    // check current setting
+    if CheckFile(EnvironmentOptions.DebuggerFilename,Result) then exit;
+
+    // check the primary options
+    AFilename:=GetValueFromPrimaryConfig(EnvOptsConfFileName,
+                                    'EnvironmentOptions/DebuggerFilename/Value');
+    if CheckFile(AFilename,Result) then exit;
+
+    // check the secondary options
+    AFilename:=GetValueFromSecondaryConfig(EnvOptsConfFileName,
+                                    'EnvironmentOptions/DebuggerFilename/Value');
+    if CheckFile(AFilename,Result) then exit;
+
+    // The next 2 locations are locations used by older and newer versions of the Windows installers
+    // If other platform installers follow the same strategy, this can be useful.
+    // Chances of this are low (gdb is generally installed in the path on Unixy systems), but it can't hurt...
+    // and it can be useful for cross compiling/custom setups.
+
+    // Check new installation location: $(LazarusDir)\mingw\$(TargetCPU)-$(TargetOS)\bin\gdb.exe
+    if CheckFile(SetDirSeparators('$(LazarusDir)/mingw/$(TargetCPU)-$(TargetOS)/bin/'+DebuggerFileName+GetExecutableExt),Result)
+      then exit;
+
+    // Older Lazarus installers did not use macros for their debuggers: there was only one debugger
+    // Check old installation location: $(LazarusDir)\mingw\bin\gdb.exe
+    if CheckFile(SetDirSeparators('$(LazarusDir)/mingw/bin/'+DebuggerFileName+GetExecutableExt),Result)
+      then exit;
+
+    // Windows-only locations:
+    if (GetDefaultSrcOSForTargetOS(GetCompiledTargetOS)='win') then begin
+      // check for debugger in fpc.exe directory - could be a lucky shot
+      if CheckFile(SetDirSeparators('$Path($(CompPath))/'+DebuggerFileName+GetExecutableExt),Result)
+        then exit;
+    end;
+
+    // check history
+    Files:=EnvironmentOptions.DebuggerFileHistory;
+    if Files<>nil then
+      for i:=0 to Files.Count-1 do
+        if CheckFile(Files[i],Result) then exit;
+
+    // check PATH
+    AFilename:=DebuggerFileName;
+    AFilename+=GetExecutableExt;
+    if CheckFile(FindDefaultExecutablePath(AFilename),Result) then exit;
+
+    // There are no common directories apart from the PATH
+    // where gdb would be installed. Otherwise we could do something similar as
+    // in SearchMakeExeCandidates.
+  finally
+    EnvironmentOptions.DebuggerFilename:=OldDebuggerFilename;
+  end;
+end;
+
+procedure SetupDebugger;
+var
+  Note: string;
+  Filename: String;
+  Quality: TSDFilenameQuality;
+  BestDir: TSDFileInfo;
+  List: TObjectList;
+begin
+  Filename:=EnvironmentOptions.GetParsedDebuggerFilename;
+  Quality:=CheckDebuggerQuality(Filename,Note);
+  if Quality<>sddqInvalid then exit;
+  // bad debugger
+  dbgout('SetupDebugger:');
+  if EnvironmentOptions.DebuggerFilename<>'' then
+  begin
+    dbgout(' The "gdb" executable "',EnvironmentOptions.DebuggerFilename,'"');
+    if EnvironmentOptions.DebuggerFilename<>Filename then
+      dbgout(' => "',Filename,'"');
+    dbgout(' is invalid (Error: ',Note,')');
+    debugln(' Searching a proper one ...');
+  end else begin
+    debugln(' Searching "gdb" ...');
+  end;
+  List:=SearchDebuggerCandidates(true);
+  try
+    BestDir:=nil;
+    if List<>nil then
+      BestDir:=TSDFileInfo(List[List.Count-1]);
+    if (BestDir=nil) or (BestDir.Quality=sddqInvalid) then begin
+      debugln(['SetupDebugger: no proper "gdb" found.']);
+      exit;
+    end;
+    EnvironmentOptions.DebuggerFilename:=BestDir.Filename;
+    debugln(['SetupDebugger: using ',EnvironmentOptions.DebuggerFilename]);
+  finally
+    List.Free;
+  end;
+end;
+
 function CheckMakeExeQuality(AFilename: string; out Note: string
   ): TSDFilenameQuality;
 begin
@@ -863,11 +1053,13 @@ begin
     exit;
   end;
 
+  // Windows-only locations:
   if (GetDefaultSrcOSForTargetOS(GetCompiledTargetOS)='win') then begin
-    // under Windows the make.exe is in the same directory as fpc.exe
+    // under Windows, make.exe is in the same directory as fpc.exe
     if not FileExistsCached(ExtractFilePath(AFilename)+'fpc.exe') then begin
-      Note:='There is no fpc.exe in the directory of the '+ExtractFilename(AFilename)+'. Usually the make executable is installed together with the fpc compiler.';
+      Note:='There is no fpc.exe in the directory of '+ExtractFilename(AFilename)+'. Usually the make executable is installed together with the FPC compiler.';
       Result:=sddqIncomplete;
+      exit;
     end;
   end;
 
@@ -926,6 +1118,7 @@ begin
                                     'EnvironmentOptions/MakeFilename/Value');
     if CheckFile(AFilename,Result) then exit;
 
+    // Windows-only locations:
     if (GetDefaultSrcOSForTargetOS(GetCompiledTargetOS)='win') then begin
       // check make in fpc.exe directory
       if CheckFile(SetDirSeparators('$Path($(CompPath))/make.exe'),Result)
@@ -1098,6 +1291,8 @@ begin
   LazarusTabSheet.Caption:='Lazarus';
   CompilerTabSheet.Caption:=lisCompiler;
   FPCSourcesTabSheet.Caption:=lisFPCSources;
+  MakeExeTabSheet.Caption:='make';
+  DebuggerTabSheet.Caption:=lisDebugger;
 
   FHeadGraphic:=TPortableNetworkGraphic.Create;
   FHeadGraphic.LoadFromLazarusResource('ide_icon48x48');
@@ -1105,6 +1300,8 @@ begin
   TVNodeLazarus:=PropertiesTreeView.Items.Add(nil,LazarusTabSheet.Caption);
   TVNodeCompiler:=PropertiesTreeView.Items.Add(nil,CompilerTabSheet.Caption);
   TVNodeFPCSources:=PropertiesTreeView.Items.Add(nil,FPCSourcesTabSheet.Caption);
+  TVNodeMakeExe:=PropertiesTreeView.Items.Add(nil,MakeExeTabSheet.Caption);
+  TVNodeDebugger:=PropertiesTreeView.Items.Add(nil,DebuggerTabSheet.Caption);
   ImgIDError := ImageList1.AddLazarusResource('state_error');
   ImgIDWarning := ImageList1.AddLazarusResource('state_warning');
 
@@ -1122,11 +1319,49 @@ begin
   FPCSrcDirLabel.Caption:=Format(
     lisTheSourcesOfTheFreePascalPackagesAreRequiredForBro, [SetDirSeparators('rtl'
     +'/linux/system.pp')]);
+
+  MakeExeBrowseButton.Caption:=lisPathEditBrowse;
+  MakeExeLabel.Caption:=Format(
+    lisTheMakeExecutableTypicallyHasTheName, ['make'+GetExecutableExt('')]);
+
+  DebuggerBrowseButton.Caption:=lisPathEditBrowse;
+  DebuggerLabel.Caption:=Format(
+    lisTheDebuggerExecutableTypicallyHasTheName, ['gdb'+GetExecutableExt('')]);
+
 end;
 
 procedure TInitialSetupDialog.CompilerComboBoxChange(Sender: TObject);
 begin
   UpdateCompilerNote;
+end;
+
+procedure TInitialSetupDialog.DebuggerBrowseButtonClick(Sender: TObject);
+var
+  Filename: String;
+  Dlg: TOpenDialog;
+  Filter: String;
+begin
+  Dlg:=TOpenDialog.Create(nil);
+  try
+    Filename:='gdb'+GetExecutableExt;
+    Dlg.Title:=Format(lisSelectPathTo, [Filename]);
+    Dlg.Options:=Dlg.Options+[ofFileMustExist];
+    Filter:=dlgAllFiles+'|'+GetAllFilesMask;
+    if ExtractFileExt(Filename)<>'' then
+      Filter:=lisExecutable+'|*'+ExtractFileExt(Filename)+'|'+Filter;
+    Dlg.Filter:=Filter;
+    if not Dlg.Execute then exit;
+    Filename:=Dlg.FileName;
+  finally
+    Dlg.Free;
+  end;
+  DebuggerComboBox.Text:=Filename;
+  UpdateDebuggerNote;
+end;
+
+procedure TInitialSetupDialog.DebuggerComboBoxChange(Sender: TObject);
+begin
+  UpdateDebuggerNote;
 end;
 
 procedure TInitialSetupDialog.CompilerBrowseButtonClick(Sender: TObject);
@@ -1193,6 +1428,35 @@ begin
   UpdateLazDirNote;
 end;
 
+procedure TInitialSetupDialog.MakeExeBrowseButtonClick(Sender: TObject);
+var
+  Filename: String;
+  Dlg: TOpenDialog;
+  Filter: String;
+begin
+  Dlg:=TOpenDialog.Create(nil);
+  try
+    Filename:='make'+GetExecutableExt;
+    Dlg.Title:=Format(lisSelectPathTo, [Filename]);
+    Dlg.Options:=Dlg.Options+[ofFileMustExist];
+    Filter:=dlgAllFiles+'|'+GetAllFilesMask;
+    if ExtractFileExt(Filename)<>'' then
+      Filter:=lisExecutable+'|*'+ExtractFileExt(Filename)+'|'+Filter;
+    Dlg.Filter:=Filter;
+    if not Dlg.Execute then exit;
+    Filename:=Dlg.FileName;
+  finally
+    Dlg.Free;
+  end;
+  MakeExeComboBox.Text:=Filename;
+  UpdateMakeExeNote;
+end;
+
+procedure TInitialSetupDialog.MakeExeComboBoxChange(Sender: TObject);
+begin
+  UpdateMakeExeNote;
+end;
+
 procedure TInitialSetupDialog.PropertiesPageControlChange(Sender: TObject);
 var
   s: String;
@@ -1225,7 +1489,11 @@ begin
   else if Node=TVNodeCompiler then
     s:=lisWithoutAProperCompilerTheCodeBrowsingAndCompilingW
   else if Node=TVNodeFPCSources then
-    s:=lisWithoutTheProperFPCSourcesCodeBrowsingAndCompletio;
+    s:=lisWithoutTheProperFPCSourcesCodeBrowsingAndCompletio
+  else if Node=TVNodeMakeExe then
+    s:=lisWithoutAProperMakeExecutableTheCodeBrowsingAndComp
+  else if Node=TVNodeDebugger then
+    s:=lisWithoutAProperDebuggerDebuggingWillBeDisappointing;
   if s<>'' then begin
     MsgResult:=MessageDlg(lisCCOWarningCaption, s, mtWarning, [mbIgnore,
       mbCancel], 0);
@@ -1241,8 +1509,12 @@ begin
   s:=FPCSrcDirComboBox.Text;
   if s<>'' then
     EnvironmentOptions.FPCSourceDirectory:=s;
-
-  SetupMakeExe;
+  s:=MakeExeComboBox.Text;
+  if s<>'' then
+    EnvironmentOptions.MakeFilename:=s;
+  s:=DebuggerComboBox.Text;
+  if s<>'' then
+    EnvironmentOptions.DebuggerFilename:=s;
 
   ModalResult:=mrOk;
 end;
@@ -1267,6 +1539,12 @@ begin
   end else if fCompilerFilenameChanged then begin
     UpdateFPCSrcDirCandidates;
     UpdateFPCSrcDirNote;
+  end else if fMakeExeFilenameChanged then begin
+    UpdateMakeExeCandidates;
+    UpdateMakeExeNote;
+  end else if fDebuggerFilenameChanged then begin
+    UpdateDebuggerCandidates;
+    UpdateDebuggerNote;
   end else
     IdleConnected:=false;
 end;
@@ -1339,6 +1617,28 @@ begin
   FreeAndNil(FCandidates[sddtFPCSrcDir]);
   FCandidates[sddtFPCSrcDir]:=Dirs;
   FillComboboxWithFileInfoList(FPCSrcDirComboBox,Dirs);
+end;
+
+procedure TInitialSetupDialog.UpdateMakeExeCandidates;
+var
+  Files: TObjectList;
+begin
+  FLazarusDirChanged:=false;
+  Files:=SearchMakeExeCandidates(false);
+  FreeAndNil(FCandidates[sddtMakeExeFileName]);
+  FCandidates[sddtMakeExeFileName]:=Files;
+  FillComboboxWithFileInfoList(MakeExeComboBox,Files);
+end;
+
+procedure TInitialSetupDialog.UpdateDebuggerCandidates;
+var
+  Files: TObjectList;
+begin
+  FLazarusDirChanged:=false;
+  Files:=SearchDebuggerCandidates(false);
+  FreeAndNil(FCandidates[sddtDebuggerFilename]);
+  FCandidates[sddtDebuggerFilename]:=Files;
+  FillComboboxWithFileInfoList(DebuggerComboBox,Files);
 end;
 
 procedure TInitialSetupDialog.FillComboboxWithFileInfoList(ABox: TComboBox;
@@ -1479,6 +1779,76 @@ begin
   TVNodeFPCSources.SelectedIndex:=ImageIndex;
 end;
 
+procedure TInitialSetupDialog.UpdateMakeExeNote;
+var
+  CurCaption: String;
+  Note: string;
+  Quality: TSDFilenameQuality;
+  s: String;
+  ImageIndex: Integer;
+begin
+  if csDestroying in ComponentState then exit;
+  CurCaption:=MakeExeComboBox.Text;
+  EnvironmentOptions.MakeFilename:=CurCaption;
+  if fLastParsedMakeExe=EnvironmentOptions.GetParsedMakeFilename then exit;
+  fLastParsedMakeExe:=EnvironmentOptions.GetParsedMakeFilename;
+  //debugln(['TInitialSetupDialog.UpdateMakeExeNote ',fLastParsedMakeExe]);
+  Quality:=CheckMakeExeQuality(fLastParsedMakeExe,Note);
+
+  case Quality of
+  sddqInvalid: s:=lisError;
+  sddqCompatible: s:='';
+  else s:=lisWarning;
+  end;
+  if EnvironmentOptions.MakeFilename<>EnvironmentOptions.GetParsedMakeFilename
+  then
+    s:=lisFile2+EnvironmentOptions.GetParsedMakeFilename+LineEnding+
+      LineEnding+s;
+  MakeExeMemo.Text:=s+Note;
+
+  ImageIndex:=QualityToImgIndex(Quality);
+  TVNodeMakeExe.ImageIndex:=ImageIndex;
+  TVNodeMakeExe.SelectedIndex:=ImageIndex;
+
+  fMakeExeFilenameChanged:=true;
+  IdleConnected:=true;
+end;
+
+procedure TInitialSetupDialog.UpdateDebuggerNote;
+var
+  CurCaption: String;
+  Note: string;
+  Quality: TSDFilenameQuality;
+  s: String;
+  ImageIndex: Integer;
+begin
+  if csDestroying in ComponentState then exit;
+  CurCaption:=DebuggerComboBox.Text;
+  EnvironmentOptions.DebuggerFilename:=CurCaption;
+  if fLastParsedDebugger=EnvironmentOptions.GetParsedDebuggerFilename then exit;
+  fLastParsedDebugger:=EnvironmentOptions.GetParsedDebuggerFilename;
+  //debugln(['TInitialSetupDialog.UpdateDebuggerNote ',fLastParsedDebugger]);
+  Quality:=CheckDebuggerQuality(fLastParsedDebugger,Note);
+
+  case Quality of
+  sddqInvalid: s:=lisError;
+  sddqCompatible: s:='';
+  else s:=lisWarning;
+  end;
+  if EnvironmentOptions.DebuggerFilename<>EnvironmentOptions.GetParsedDebuggerFilename
+  then
+    s:=lisFile2+EnvironmentOptions.GetParsedDebuggerFilename+LineEnding+
+      LineEnding+s;
+  DebuggerMemo.Text:=s+Note;
+
+  ImageIndex:=QualityToImgIndex(Quality);
+  TVNodeDebugger.ImageIndex:=ImageIndex;
+  TVNodeDebugger.SelectedIndex:=ImageIndex;
+
+  fDebuggerFilenameChanged:=true;
+  IdleConnected:=true;
+end;
+
 function TInitialSetupDialog.FirstErrorNode: TTreeNode;
 var
   i: Integer;
@@ -1517,6 +1887,8 @@ begin
   if Quality=sddqCompatible then
     Result:=-1
   else if Quality=sddqWrongMinorVersion then
+    Result:=ImgIDWarning
+  else if Quality=sddqIncomplete then
     Result:=ImgIDWarning
   else
     Result:=ImgIDError;
@@ -1567,6 +1939,32 @@ begin
   FPCSrcDirComboBox.Text:=EnvironmentOptions.FPCSourceDirectory;
   fLastParsedFPCSrcDir:='. .';
   UpdateFPCSrcDirNote;
+
+  // Make executable
+  UpdateMakeExeCandidates;
+  if (not FileExistsCached(EnvironmentOptions.Filename)) then
+  begin
+    // first start => choose first best candidate
+    Candidate:=GetFirstCandidate(FCandidates[sddtMakeExeFilename]);
+    if Candidate<>nil then
+      EnvironmentOptions.MakeFilename:=Candidate.Caption;
+  end;
+  MakeExeComboBox.Text:=EnvironmentOptions.MakeFilename;
+  fLastParsedMakeExe:='. .';
+  UpdateMakeExeNote;
+
+  // Debugger
+  UpdateDebuggerCandidates;
+  if (not FileExistsCached(EnvironmentOptions.Filename)) then
+  begin
+    // first start => choose first best candidate
+    Candidate:=GetFirstCandidate(FCandidates[sddtDebuggerFilename]);
+    if Candidate<>nil then
+      EnvironmentOptions.DebuggerFilename:=Candidate.Caption;
+  end;
+  DebuggerComboBox.Text:=EnvironmentOptions.DebuggerFilename;
+  fLastParsedDebugger:='. .';
+  UpdateDebuggerNote;
 
   // select first error
   Node:=FirstErrorNode;

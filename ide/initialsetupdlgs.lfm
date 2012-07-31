@@ -1,8 +1,8 @@
 object InitialSetupDialog: TInitialSetupDialog
   AnchorSideBottom.Side = asrBottom
-  Left = 253
+  Left = 319
   Height = 385
-  Top = 253
+  Top = 238
   Width = 620
   Caption = 'InitialSetupDialog'
   ClientHeight = 385
@@ -10,7 +10,7 @@ object InitialSetupDialog: TInitialSetupDialog
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   Position = poScreenCenter
-  LCLVersion = '0.9.31'
+  LCLVersion = '1.1'
   object PropertiesTreeView: TTreeView
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = WelcomePaintBox
@@ -18,7 +18,7 @@ object InitialSetupDialog: TInitialSetupDialog
     AnchorSideRight.Control = Splitter1
     AnchorSideBottom.Control = BtnPanel
     Left = 6
-    Height = 289
+    Height = 286
     Top = 54
     Width = 159
     Anchors = [akTop, akLeft, akRight, akBottom]
@@ -40,7 +40,7 @@ object InitialSetupDialog: TInitialSetupDialog
     AnchorSideBottom.Control = PropertiesTreeView
     AnchorSideBottom.Side = asrBottom
     Left = 165
-    Height = 289
+    Height = 286
     Top = 54
     Width = 5
     Align = alNone
@@ -48,21 +48,21 @@ object InitialSetupDialog: TInitialSetupDialog
   end
   object BtnPanel: TPanel
     Left = 10
-    Height = 22
-    Top = 353
+    Height = 25
+    Top = 350
     Width = 600
     Align = alBottom
     AutoSize = True
     BorderSpacing.Around = 10
     BevelOuter = bvNone
-    ClientHeight = 22
+    ClientHeight = 25
     ClientWidth = 600
     TabOrder = 2
     object StartIDEBitBtn: TBitBtn
-      Left = 489
-      Height = 22
+      Left = 500
+      Height = 25
       Top = 0
-      Width = 111
+      Width = 100
       Align = alRight
       AutoSize = True
       Caption = 'StartIDEBitBtn'
@@ -80,13 +80,13 @@ object InitialSetupDialog: TInitialSetupDialog
     AnchorSideBottom.Control = Splitter1
     AnchorSideBottom.Side = asrBottom
     Left = 170
-    Height = 289
+    Height = 286
     Top = 54
     Width = 444
-    ActivePage = FPCSourcesTabSheet
+    ActivePage = LazarusTabSheet
     Anchors = [akTop, akLeft, akRight, akBottom]
     BorderSpacing.Right = 6
-    TabIndex = 2
+    TabIndex = 0
     TabOrder = 3
     OnChange = PropertiesPageControlChange
     Options = [nboHidePageListPopup]
@@ -96,11 +96,11 @@ object InitialSetupDialog: TInitialSetupDialog
       ChildSizing.TopBottomSpacing = 6
       ChildSizing.HorizontalSpacing = 6
       ChildSizing.VerticalSpacing = 6
-      ClientHeight = 255
-      ClientWidth = 442
+      ClientHeight = 258
+      ClientWidth = 436
       object LazDirLabel: TLabel
         Left = 6
-        Height = 14
+        Height = 15
         Top = 6
         Width = 424
         Align = alTop
@@ -115,11 +115,11 @@ object InitialSetupDialog: TInitialSetupDialog
         AnchorSideRight.Control = LazarusTabSheet
         AnchorSideRight.Side = asrBottom
         Left = 6
-        Height = 21
-        Top = 26
+        Height = 23
+        Top = 27
         Width = 424
         Anchors = [akTop, akLeft, akRight]
-        ItemHeight = 0
+        ItemHeight = 15
         OnChange = LazDirComboBoxChange
         TabOrder = 0
         Text = 'LazDirComboBox'
@@ -128,8 +128,8 @@ object InitialSetupDialog: TInitialSetupDialog
         AnchorSideTop.Control = LazDirBrowseButton
         AnchorSideTop.Side = asrBottom
         Left = 6
-        Height = 174
-        Top = 82
+        Height = 165
+        Top = 87
         Width = 424
         Align = alBottom
         Anchors = [akTop, akLeft, akRight, akBottom]
@@ -148,9 +148,9 @@ object InitialSetupDialog: TInitialSetupDialog
         AnchorSideTop.Side = asrBottom
         AnchorSideRight.Side = asrBottom
         Left = 6
-        Height = 23
-        Top = 53
-        Width = 122
+        Height = 25
+        Top = 56
+        Width = 132
         AutoSize = True
         Caption = 'LazDirBrowseButton'
         OnClick = LazDirBrowseButtonClick
@@ -163,13 +163,13 @@ object InitialSetupDialog: TInitialSetupDialog
       ChildSizing.TopBottomSpacing = 6
       ChildSizing.HorizontalSpacing = 6
       ChildSizing.VerticalSpacing = 6
-      ClientHeight = 250
-      ClientWidth = 438
+      ClientHeight = 258
+      ClientWidth = 436
       object CompilerLabel: TLabel
         Left = 6
-        Height = 17
+        Height = 15
         Top = 6
-        Width = 426
+        Width = 424
         Align = alTop
         Caption = 'CompilerLabel'
         ParentColor = False
@@ -182,11 +182,11 @@ object InitialSetupDialog: TInitialSetupDialog
         AnchorSideRight.Control = CompilerTabSheet
         AnchorSideRight.Side = asrBottom
         Left = 6
-        Height = 21
-        Top = 29
-        Width = 426
+        Height = 23
+        Top = 27
+        Width = 424
         Anchors = [akTop, akLeft, akRight]
-        ItemHeight = 0
+        ItemHeight = 15
         OnChange = CompilerComboBoxChange
         TabOrder = 0
         Text = 'CompilerComboBox'
@@ -196,9 +196,9 @@ object InitialSetupDialog: TInitialSetupDialog
         AnchorSideTop.Control = CompilerComboBox
         AnchorSideTop.Side = asrBottom
         Left = 6
-        Height = 20
+        Height = 25
         Top = 56
-        Width = 168
+        Width = 149
         AutoSize = True
         Caption = 'CompilerBrowseButton'
         OnClick = CompilerBrowseButtonClick
@@ -213,9 +213,9 @@ object InitialSetupDialog: TInitialSetupDialog
         AnchorSideBottom.Control = CompilerTabSheet
         AnchorSideBottom.Side = asrBottom
         Left = 6
-        Height = 162
-        Top = 82
-        Width = 426
+        Height = 165
+        Top = 87
+        Width = 424
         Anchors = [akTop, akLeft, akRight, akBottom]
         Lines.Strings = (
           'CompilerMemo'
@@ -232,13 +232,13 @@ object InitialSetupDialog: TInitialSetupDialog
       ChildSizing.TopBottomSpacing = 6
       ChildSizing.HorizontalSpacing = 6
       ChildSizing.VerticalSpacing = 6
-      ClientHeight = 250
-      ClientWidth = 438
+      ClientHeight = 258
+      ClientWidth = 436
       object FPCSrcDirLabel: TLabel
         Left = 6
-        Height = 17
+        Height = 15
         Top = 6
-        Width = 426
+        Width = 424
         Align = alTop
         Caption = 'FPCSrcDirLabel'
         ParentColor = False
@@ -246,11 +246,11 @@ object InitialSetupDialog: TInitialSetupDialog
       end
       object FPCSrcDirComboBox: TComboBox
         Left = 6
-        Height = 21
-        Top = 29
-        Width = 426
+        Height = 23
+        Top = 27
+        Width = 424
         Align = alTop
-        ItemHeight = 0
+        ItemHeight = 15
         OnChange = FPCSrcDirComboBoxChange
         TabOrder = 0
         Text = 'FPCSrcDirComboBox'
@@ -260,9 +260,9 @@ object InitialSetupDialog: TInitialSetupDialog
         AnchorSideTop.Control = FPCSrcDirComboBox
         AnchorSideTop.Side = asrBottom
         Left = 6
-        Height = 20
+        Height = 25
         Top = 56
-        Width = 171
+        Width = 152
         AutoSize = True
         Caption = 'FPCSrcDirBrowseButton'
         OnClick = FPCSrcDirBrowseButtonClick
@@ -272,9 +272,121 @@ object InitialSetupDialog: TInitialSetupDialog
         AnchorSideTop.Control = FPCSrcDirBrowseButton
         AnchorSideTop.Side = asrBottom
         Left = 6
-        Height = 162
-        Top = 82
-        Width = 426
+        Height = 165
+        Top = 87
+        Width = 424
+        Align = alBottom
+        Anchors = [akTop, akLeft, akRight, akBottom]
+        Lines.Strings = (
+          'FPCSrcDirMemo'
+          ''
+          ''
+        )
+        ReadOnly = True
+        TabOrder = 2
+      end
+    end
+    object MakeExeTabSheet: TTabSheet
+      Caption = 'MakeExeTabSheet'
+      ClientHeight = 258
+      ClientWidth = 436
+      object MakeExeComboBox: TComboBox
+        Left = 0
+        Height = 23
+        Top = 15
+        Width = 436
+        Align = alTop
+        ItemHeight = 15
+        OnChange = MakeExeComboBoxChange
+        TabOrder = 0
+        Text = 'MakeExeComboBox'
+      end
+      object MakeExeLabel: TLabel
+        Left = 0
+        Height = 15
+        Top = 0
+        Width = 436
+        Align = alTop
+        Caption = 'MakeExeLabel'
+        ParentColor = False
+        WordWrap = True
+      end
+      object MakeExeBrowseButton: TButton
+        AnchorSideLeft.Control = FPCSourcesTabSheet
+        AnchorSideTop.Control = MakeExeComboBox
+        AnchorSideTop.Side = asrBottom
+        Left = 6
+        Height = 25
+        Top = 38
+        Width = 146
+        AutoSize = True
+        Caption = 'MakeExeBrowseButton'
+        OnClick = MakeExeBrowseButtonClick
+        TabOrder = 1
+      end
+      object MakeExeMemo: TMemo
+        AnchorSideTop.Control = MakeExeBrowseButton
+        AnchorSideTop.Side = asrBottom
+        Left = 0
+        Height = 195
+        Top = 63
+        Width = 436
+        Align = alBottom
+        Anchors = [akTop, akLeft, akRight, akBottom]
+        Lines.Strings = (
+          'FPCSrcDirMemo'
+          ''
+          ''
+        )
+        ReadOnly = True
+        TabOrder = 2
+      end
+    end
+    object DebuggerTabSheet: TTabSheet
+      Caption = 'DebuggerTabSheet'
+      ClientHeight = 258
+      ClientWidth = 436
+      object DebuggerComboBox: TComboBox
+        Left = 0
+        Height = 23
+        Top = 15
+        Width = 436
+        Align = alTop
+        ItemHeight = 15
+        OnChange = DebuggerComboBoxChange
+        TabOrder = 0
+        Text = 'DebuggerComboBox'
+      end
+      object DebuggerLabel: TLabel
+        Left = 0
+        Height = 15
+        Top = 0
+        Width = 436
+        Align = alTop
+        Caption = 'DebuggerLabel'
+        ParentColor = False
+        WordWrap = True
+      end
+      object DebuggerBrowseButton: TButton
+        AnchorSideLeft.Control = FPCSourcesTabSheet
+        AnchorSideTop.Control = DebuggerComboBox
+        AnchorSideTop.Side = asrBottom
+        Left = 6
+        Height = 25
+        Top = 38
+        Width = 152
+        AutoSize = True
+        Caption = 'DebuggerBrowseButton'
+        OnClick = DebuggerBrowseButtonClick
+        TabOrder = 1
+      end
+      object DebuggerMemo: TMemo
+        AnchorSideTop.Control = DebuggerBrowseButton
+        AnchorSideTop.Side = asrBottom
+        Left = 0
+        Height = 195
+        Top = 63
+        Width = 436
         Align = alBottom
         Anchors = [akTop, akLeft, akRight, akBottom]
         Lines.Strings = (
