@@ -1355,6 +1355,7 @@ var
   GdiObject: PGdiObject;
   FullString, aFamily, aStyle, ALongFontName: String;
   aSize: Integer;
+  aSizeInPixels: Boolean;
   PangoDesc: PPangoFontDescription;
   CachedFont: TGtkFontCacheDescriptor;
   AttrList: PPangoAttrList;
@@ -1410,7 +1411,7 @@ begin
         exit;
       end;
 
-      FontNameToPangoFontDescStr(ALongFontname, aFamily, aStyle, aSize);
+      FontNameToPangoFontDescStr(ALongFontname, aFamily, aStyle, aSize, aSizeInPixels);
 
       // if font specified size, prefer this instead of 'possibly' inaccurate
       // lfHeight note that lfHeight may actually have a most accurate value
@@ -1450,19 +1451,28 @@ begin
         FullString := '10' // use some default: TODO: find out the default size of the widget
       else
       if aSize > 0 then
-        FullString := IntToStr(aSize)
+      begin
+        FullString := IntToStr(aSize);
+        if aSizeInPixels then
+          FullString := FullString + 'px';
+      end
       else
         FullString := '';
 
-      FullString := AFamily + ', ' + aStyle + ' ' + FullString;
+      if Pos(',', AFamily) > 0 then
+        FullString := AFamily + ' ' + aStyle + ' ' + FullString
+      else
+        FullString := AFamily + ', ' + aStyle + ' ' + FullString;
       PangoDesc := pango_font_description_from_string(PChar(FullString));
 
-      if lfWeight <> FW_DONTCARE then
+      if (pango_font_description_get_weight(PangoDesc) = PANGO_WEIGHT_NORMAL)
+        and (lfWeight <> FW_DONTCARE) then
         pango_font_description_set_weight(PangoDesc, lfWeight);
 
-      if lfItalic <> 0 then
+      if (pango_font_description_get_style (PangoDesc) = PANGO_STYLE_NORMAL)
+          and (lfItalic <> 0) then
         pango_font_description_set_style(PangoDesc, PANGO_STYLE_ITALIC);
-
+      aStyle := pango_font_description_to_string(PangoDesc);
       if (aSize=0) and (lfHeight<>0) then
       begin
         // a size is not specified, try to calculate one based on lfHeight

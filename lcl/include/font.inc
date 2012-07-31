@@ -514,7 +514,7 @@ end;
 // [SIZE]         is a decimal number (size in points) (... and points in PANGO_UNITS)
 // any of these options may be absent.
 procedure FontNameToPangoFontDescStr(const LongFontName: string;
-  out aFamily,aStyle: string; out aSize: Integer);
+  out aFamily,aStyle: string; out aSize: Integer; out aSizeInPixels: Boolean);
 
 var
   ParsePos: Integer;
@@ -533,7 +533,7 @@ var
   function GetSize: string;
   var
     c: char;
-    validblank: boolean;
+    ValidBlank, CheckPixelsNeeded: boolean;
     InitPos: Integer;
     
     function IsBlank: boolean;
@@ -548,7 +548,8 @@ var
     
   begin
     Result := '';
-    validblank := true;
+    ValidBlank := True;
+    CheckPixelsNeeded := True;
     ParsePos := Length(LongFontname);
     InitPos := ParsePos;
     while ParsePos>0 do begin
@@ -560,16 +561,29 @@ var
           continue
         end else
           break;
-      ValidBlank := false;
+      ValidBlank := False;
+      if CheckPixelsNeeded then
+      begin
+        CheckPixelsNeeded := False;
+        aSizeInPixels := (ParsePos > 2) and (longFontName[ParsePos - 1] = 'p')
+          and (longFontName[ParsePos] = 'x');
+        if aSizeInPixels then
+        begin
+          dec(ParsePos, 2);
+          Continue;
+        end;
+      end;
       if IsDigit then begin
         Result := C + Result;
         dec(ParsePos);
       end else begin
-        if not IsBlank then
+        if not IsBlank and (C <> ',')then
         begin
           Result := '';
           ParsePos := InitPos;
         end;
+        if C = ',' then
+          dec(ParsePos);
         break;
       end;
     end;
@@ -579,6 +593,7 @@ begin
   aStyle := '';
   aFamily := '';
   aSize := 0;
+  aSizeInPixels := False;
   if IsFontNameXLogicalFontDesc(LongFontName) then begin
     aFamily := ExtractXLFDItem(LongFontName, XLFD_FAMILY);
     if aFamily='*' then
