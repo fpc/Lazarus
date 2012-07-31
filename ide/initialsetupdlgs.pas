@@ -72,6 +72,14 @@ type
     sddtDebuggerFilename
     );
 
+  TSDFlag = (
+    sdfCompilerFilenameNeedsUpdate,
+    sdfFPCScDirNeedsUpdate,
+    sdfMakeExeFilenameNeedsUpdate,
+    sdfDebuggerFilenameNeedsUpdate
+    );
+  TSDFlags = set of TSDFlag;
+
   { TInitialSetupDialog }
 
   TInitialSetupDialog = class(TForm)
@@ -125,10 +133,7 @@ type
     procedure WelcomePaintBoxPaint(Sender: TObject);
     procedure OnIdle(Sender: TObject; var {%H-}Done: Boolean);
   private
-    FLazarusDirChanged: boolean;
-    fCompilerFilenameChanged: boolean;
-    fMakeExeFilenameChanged: boolean;
-    fDebuggerFilenameChanged: boolean;
+    FFlags: TSDFlags;
     FLastParsedLazDir: string;
     fLastParsedCompiler: string;
     fLastParsedFPCSrcDir: string;
@@ -1532,16 +1537,16 @@ end;
 
 procedure TInitialSetupDialog.OnIdle(Sender: TObject; var Done: Boolean);
 begin
-  if FLazarusDirChanged then begin
+  if sdfCompilerFilenameNeedsUpdate in FFlags then begin
     UpdateCompilerFilenameCandidates;
     UpdateCompilerNote;
-  end else if fCompilerFilenameChanged then begin
+  end else if sdfFPCScDirNeedsUpdate in FFlags then begin
     UpdateFPCSrcDirCandidates;
     UpdateFPCSrcDirNote;
-  end else if fMakeExeFilenameChanged then begin
+  end else if sdfMakeExeFilenameNeedsUpdate in FFlags then begin
     UpdateMakeExeCandidates;
     UpdateMakeExeNote;
-  end else if fDebuggerFilenameChanged then begin
+  end else if sdfDebuggerFilenameNeedsUpdate in FFlags then begin
     UpdateDebuggerCandidates;
     UpdateDebuggerNote;
   end else
@@ -1599,7 +1604,7 @@ procedure TInitialSetupDialog.UpdateCompilerFilenameCandidates;
 var
   Files: TObjectList;
 begin
-  FLazarusDirChanged:=false;
+  Exclude(FFlags,sdfCompilerFilenameNeedsUpdate);
   Files:=SearchCompilerCandidates(false,
                     CodeToolBoss.FPCDefinesCache.TestFilename);
   FreeAndNil(FCandidates[sddtCompilerFilename]);
@@ -1611,7 +1616,7 @@ procedure TInitialSetupDialog.UpdateFPCSrcDirCandidates;
 var
   Dirs: TObjectList;
 begin
-  fCompilerFilenameChanged:=false;
+  Exclude(FFlags,sdfFPCScDirNeedsUpdate);
   Dirs:=SearchFPCSrcDirCandidates(false,GetFPCVer);
   FreeAndNil(FCandidates[sddtFPCSrcDir]);
   FCandidates[sddtFPCSrcDir]:=Dirs;
@@ -1622,7 +1627,7 @@ procedure TInitialSetupDialog.UpdateMakeExeCandidates;
 var
   Files: TObjectList;
 begin
-  FLazarusDirChanged:=false;
+  Exclude(FFlags,sdfMakeExeFilenameNeedsUpdate);
   Files:=SearchMakeExeCandidates(false);
   FreeAndNil(FCandidates[sddtMakeExeFileName]);
   FCandidates[sddtMakeExeFileName]:=Files;
@@ -1633,7 +1638,7 @@ procedure TInitialSetupDialog.UpdateDebuggerCandidates;
 var
   Files: TObjectList;
 begin
-  FLazarusDirChanged:=false;
+  Exclude(FFlags,sdfDebuggerFilenameNeedsUpdate);
   Files:=SearchDebuggerCandidates(false);
   FreeAndNil(FCandidates[sddtDebuggerFilename]);
   FCandidates[sddtDebuggerFilename]:=Files;
@@ -1702,7 +1707,8 @@ begin
   TVNodeLazarus.ImageIndex:=ImageIndex;
   TVNodeLazarus.SelectedIndex:=ImageIndex;
 
-  FLazarusDirChanged:=true;
+  FFlags:=FFlags+[sdfCompilerFilenameNeedsUpdate,sdfFPCScDirNeedsUpdate,
+                  sdfMakeExeFilenameNeedsUpdate,sdfDebuggerFilenameNeedsUpdate];
   IdleConnected:=true;
 end;
 
@@ -1742,7 +1748,8 @@ begin
   TVNodeCompiler.ImageIndex:=ImageIndex;
   TVNodeCompiler.SelectedIndex:=ImageIndex;
 
-  fCompilerFilenameChanged:=true;
+  FFlags:=FFlags+[sdfFPCScDirNeedsUpdate,
+                  sdfMakeExeFilenameNeedsUpdate,sdfDebuggerFilenameNeedsUpdate];
   IdleConnected:=true;
 end;
 
@@ -1809,7 +1816,6 @@ begin
   TVNodeMakeExe.ImageIndex:=ImageIndex;
   TVNodeMakeExe.SelectedIndex:=ImageIndex;
 
-  fMakeExeFilenameChanged:=true;
   IdleConnected:=true;
 end;
 
@@ -1844,7 +1850,6 @@ begin
   TVNodeDebugger.ImageIndex:=ImageIndex;
   TVNodeDebugger.SelectedIndex:=ImageIndex;
 
-  fDebuggerFilenameChanged:=true;
   IdleConnected:=true;
 end;
 
@@ -1897,10 +1902,13 @@ procedure TInitialSetupDialog.Init;
 var
   Node: TTreeNode;
   Candidate: TSDFileInfo;
+  IsFirstStart: Boolean;
 begin
+  IsFirstStart:=not FileExistsCached(EnvironmentOptions.Filename);
+
   // Lazarus directory
   UpdateLazarusDirCandidates;
-  if (not FileExistsCached(EnvironmentOptions.Filename)) then
+  if IsFirstStart then
   begin
     // first start => choose first best candidate
     Candidate:=GetFirstCandidate(FCandidates[sddtLazarusSrcDir]);
@@ -1910,11 +1918,10 @@ begin
   LazDirComboBox.Text:=EnvironmentOptions.LazarusDirectory;
   FLastParsedLazDir:='. .';
   UpdateLazDirNote;
-  FLazarusDirChanged:=false;
 
   // compiler filename
   UpdateCompilerFilenameCandidates;
-  if (not FileExistsCached(EnvironmentOptions.Filename)) then
+  if IsFirstStart then
   begin
     // first start => choose first best candidate
     Candidate:=GetFirstCandidate(FCandidates[sddtCompilerFilename]);
@@ -1924,11 +1931,10 @@ begin
   CompilerComboBox.Text:=EnvironmentOptions.CompilerFilename;
   fLastParsedCompiler:='. .';
   UpdateCompilerNote;
-  fCompilerFilenameChanged:=false;
 
   // FPC source directory
   UpdateFPCSrcDirCandidates;
-  if (not FileExistsCached(EnvironmentOptions.Filename)) then
+  if IsFirstStart then
   begin
     // first start => choose first best candidate
     Candidate:=GetFirstCandidate(FCandidates[sddtFPCSrcDir]);
@@ -1941,7 +1947,7 @@ begin
 
   // Make executable
   UpdateMakeExeCandidates;
-  if (not FileExistsCached(EnvironmentOptions.Filename)) then
+  if IsFirstStart then
   begin
     // first start => choose first best candidate
     Candidate:=GetFirstCandidate(FCandidates[sddtMakeExeFilename]);
@@ -1954,7 +1960,7 @@ begin
 
   // Debugger
   UpdateDebuggerCandidates;
-  if (not FileExistsCached(EnvironmentOptions.Filename)) then
+  if IsFirstStart then
   begin
     // first start => choose first best candidate
     Candidate:=GetFirstCandidate(FCandidates[sddtDebuggerFilename]);
