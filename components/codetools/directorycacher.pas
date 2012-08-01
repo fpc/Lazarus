@@ -271,9 +271,9 @@ type
 function CompareCTDirectoryCaches(Data1, Data2: Pointer): integer;
 function CompareAnsiStringAndDirectoryCache(Dir, Cache: Pointer): integer;
 
-function ComparePCharFirstCaseInsAThenCase(Data1, Data2: Pointer): integer;
-function ComparePCharCaseInsensitiveA(Data1, Data2: Pointer): integer;
-function ComparePCharCaseSensitive(Data1, Data2: Pointer): integer;
+function ComparePCharFirstCaseInsAThenCase(Data1, Data2: Pointer): integer; // insensitive ASCII then byte wise
+function ComparePCharCaseInsensitiveA(Data1, Data2: Pointer): integer; // insensitive ASCII
+function ComparePCharCaseSensitive(Data1, Data2: Pointer): integer; // byte wise
 
 // unit links
 function SearchUnitInUnitLinks(const UnitLinks, TheUnitName: string;

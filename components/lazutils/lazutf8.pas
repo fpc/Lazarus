@@ -88,6 +88,8 @@ procedure AssignUTF8ListToAnsi(UTF8List, AnsiList: TStrings);
 //compare functions
 
 function UTF8CompareStr(const S1, S2: string): Integer; inline;
+function UTF8CompareStrP(S1, S2: PChar): Integer;
+function UTF8CompareStr(S1: PChar; Count1: SizeInt; S2: PChar; Count2: SizeInt): Integer;
 function UTF8CompareText(const S1, S2: string): Integer;
 function CompareStrListUTF8LowerCase(List: TStringList; Index1, Index2: Integer): Integer;
 
@@ -2500,12 +2502,36 @@ end;
   Params: S1, S2 - UTF8 encoded strings
   Returns: < 0 if S1 < S2, 0 if S1 = S2, > 0 if S2 > S1.
   Compare 2 UTF8 encoded strings, case sensitive.
-  Note: Use this function instead of AnsiCompareStr.
-  This function guarantees proper collation on all supported platforms.
  ------------------------------------------------------------------------------}
 function UTF8CompareStr(const S1, S2: string): Integer;
 begin
-  Result := SysUtils.CompareStr(S1, S2);
+  Result := UTF8CompareStr(PChar(Pointer(S1)),length(S1),
+                            PChar(Pointer(S2)),length(S2));
+end;
+
+function UTF8CompareStrP(S1, S2: PChar): Integer;
+begin
+  Result:=UTF8CompareStr(S1,StrLen(S1),S2,StrLen(S2));
+end;
+
+function UTF8CompareStr(S1: PChar; Count1: SizeInt; S2: PChar; Count2: SizeInt
+  ): Integer;
+var
+  Count: SizeInt;
+begin
+  Result := 0;
+  if Count1>Count2 then
+    Count:=Count2
+  else
+    Count:=Count1;
+  Result := CompareMemRange(Pointer(S1),Pointer(S2), Count); // Note: CompareMemRange can handle nil if Count=0
+  if Result<>0 then exit;
+  if Count1>Count2 then
+    Result:=1
+  else if Count1<Count2 then
+    Result:=-1
+  else
+    Result:=0;
 end;
 
 {------------------------------------------------------------------------------

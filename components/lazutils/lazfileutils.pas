@@ -25,6 +25,10 @@ function CompareFileExt(const Filename, Ext: string;
 function CompareFilenameStarts(const Filename1, Filename2: string): integer;
 function CompareFilenames(Filename1: PChar; Len1: integer;
   Filename2: PChar; Len2: integer): integer;
+function CompareFilenamesP(Filename1, Filename2: PChar;
+  IgnoreCase: boolean = false // false = use default
+  ): integer;
+
 function DirPathExists(DirectoryName: string): boolean;
 function DirectoryIsWritable(const DirectoryName: string): boolean;
 function ExtractFileNameOnly(const AFilename: string): string;
@@ -359,6 +363,65 @@ begin
   end;
   if Result=0 Then
     Result:=Len1-Len2;
+  {$ENDIF}
+end;
+
+function CompareFilenamesP(Filename1, Filename2: PChar;
+  IgnoreCase: boolean = false): integer;
+var
+  {$IFDEF darwin}
+  F1: CFStringRef;
+  F2: CFStringRef;
+  Flags: CFStringCompareFlags;
+  {$ELSE}
+  File1, File2: string;
+  Len1: SizeInt;
+  Len2: SizeInt;
+  {$ENDIF}
+begin
+  if (Filename1=nil) or (Filename1^=#0) then begin
+    if (Filename2=nil) or (Filename2^=#0) then begin
+      // both empty
+      exit(0);
+    end else begin
+      // filename1 empty, filename2 not empty
+      exit(-1);
+    end;
+  end else if (Filename2=nil) or (Filename2^=#0) then begin
+    // filename1 not empty, filename2 empty
+    exit(1);
+  end;
+
+  {$IFDEF CaseInsensitiveFilenames}
+  // this platform is by default case insensitive
+  IgnoreCase:=true;
+  {$ENDIF}
+  {$IFDEF darwin}
+  F1:=CFStringCreateWithCString(nil,Pointer(Filename1),kCFStringEncodingUTF8);
+  F2:=CFStringCreateWithCString(nil,Pointer(Filename2),kCFStringEncodingUTF8);
+  Flags:=kCFCompareNonliteral;
+  if IgnoreCase then Flags+=kCFCompareCaseInsensitive;
+  Result:=CFStringCompare(F1,F2,Flags);
+  CFRelease(F1);
+  CFRelease(F2);
+  {$ELSE}
+  if IgnoreCase then begin
+    // compare case insensitive
+    Len1:=StrLen(Filename1);
+    SetLength(File1,Len1);
+    System.Move(Filename1^,File1[1],Len1);
+    Len2:=StrLen(Filename2);
+    SetLength(File2,Len2);
+    System.Move(Filename2^,File2[1],Len2);
+    Result:=UTF8CompareText(File1,File2);
+  end else begin
+    // compare literally
+    while (Filename1^=Filename2^) and (Filename1^<>#0) do begin
+      inc(Filename1);
+      Inc(Filename2);
+    end;
+    Result:=ord(Filename1^)-ord(Filename2^);
+  end;
   {$ENDIF}
 end;
 
