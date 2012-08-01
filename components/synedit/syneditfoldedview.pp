@@ -3032,8 +3032,6 @@ var
   CurLine: TLineIdx;
   hl: TSynCustomFoldHighlighter;
   i, c, c1, l: Integer;
-  NFilter: TSynFoldActions;
-  nd: TSynFoldNodeInfo;
 begin
   if HasCount and ((AnIndex >= Count - OpeningOnLineCount) or (AnIndex >= FEvaluationIndex)) then exit;
   assert(FEvaluationIndex > 0, 'TLazSynEditNestedFoldsList.InitLineInfoForIndex already finilhed');
@@ -3102,8 +3100,6 @@ begin
 end;
 
 procedure TLazSynEditNestedFoldsList.InitCount(const AHighlighter: TSynCustomFoldHighlighter);
-var
-  i, j: Integer;
 begin
   FCount := AHighlighter.FoldBlockEndLevel(FLine - 1, FFoldGroup, FFoldFlags);
   FEvaluationIndex := FCount;

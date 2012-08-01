@@ -518,8 +518,6 @@ begin
 end;
 
 procedure TLazSynFoldNodeInfoList.Clear;
-var
-  c: Integer;
 begin
   ClearFilter;
   ClearData;
