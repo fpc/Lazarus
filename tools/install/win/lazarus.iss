@@ -515,6 +515,8 @@ begin
 end;
 
 procedure InitAskUninstall(s1, s2, s3, s4: String);
+var
+  y: integer;
 begin
   wpLabel1.Caption := s1;
   wpLabel2.Caption := s2;
@@ -529,7 +531,10 @@ begin
   wpLabel2.Top := wpLabel1.Top + wpLabel1.Height + ScaleY(5);
   wpLabel3.Top := wpLabel2.Top + wpLabel2.Height + ScaleY(5);
   wpLabel4.Top := wpLabel3.Top + wpLabel3.Height + ScaleY(5);
-  wpButton.Top := wpLabel4.Top + wpLabel4.Height + ScaleY(20);
+  y := wpLabel4.Top + wpLabel4.Height + ScaleY(20);
+  if y > wpAskUnistall.SurfaceHeight - wpCheckBox.Height - wpButton.Height then
+    y := wpAskUnistall.SurfaceHeight - wpCheckBox.Height - wpButton.Height;
+  wpButton.Top := y;
 end;
   
 procedure UnInstUpdateGUI;
