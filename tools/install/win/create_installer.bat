@@ -10,7 +10,7 @@ if [%ISCC%]==[] SET ISCC="C:\Program Files\Inno Setup 5\iscc.exe"
 
 :: Path to build directory.
 :: In this directory an image of the installation will be built.
-if [%BUILDDIR%]==[] SET BUILDDIR=c:\temp\lazbuild
+SET BUILDDIR=c:\temp\lazbuild
 
 :: Path to the svn executable
 if [%SVN%]==[] SET SVN="c:\program files\subversion\bin\svn.exe"
