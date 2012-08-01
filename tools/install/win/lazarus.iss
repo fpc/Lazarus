@@ -378,7 +378,7 @@ begin
       MsgBox(s, mbInformation, MB_OK );
       Result := false;
       exit;
-    end
+    end;
 
 	UpdateUninstallInfo;
     UnInstaller := RemoveQuotes(GetUninstallData('UninstallString'));
@@ -410,8 +410,7 @@ end;
 
 procedure UpdateEnvironmentOptions();
 var
-  FileName: string;
-  Content: string;
+  FileName, Content: string;
 begin
   FileName := ExpandConstant(CurrentFileName);
   LoadStringFromFile(FileName, Content);
@@ -444,64 +443,6 @@ begin
       PoFilename := ExpandConstant('{app}\languages\installerstrconsts.po');
     LoadStringsFromFile(PoFileName, PoFileStrings);
   end;
-end;
-
-function MultiByteToWideChar(CodePage, dwFlags: cardinal; lpMultiByteStr: PChar;
-   cbMultiByte: integer; lpWideCharStr: PChar; cchWideChar: integer) : integer;
-   EXTERNAL 'MultiByteToWideChar@kernel32.dll stdcall';
-
-function WideCharToMultiByte(CodePage, dwFlags: cardinal; lpWideCharStr: PChar;
-  cchWideChar: integer; lpMultiByteStr: PChar; cbMultiByte: integer;
-  lpDefaultChar: integer; lpUsedDefaultChar: integer): integer;
-   EXTERNAL 'WideCharToMultiByte@kernel32.dll stdcall';
-
-function GetLastError: DWord;
-   EXTERNAL 'GetLastError@kernel32.dll stdcall';
-
-const
-  CP_ACP = 0;
-  CP_UTF8 = 65001;
-
-function ConvertUTF8ToSystemCharSet(const UTF8String: string): string;
-var
-  UTF8Length: integer;
-  UCS2String : string;
-  SystemCharSetString: string;
-  ResultLength: integer;
-begin
-  UTF8Length := length(UTF8String);
-  // this is certainly long enough
-  SetLength(UCS2String, length(UTF8String)*2+1);
-  MultiByteToWideChar(CP_UTF8, 0,
-    PChar(UTF8String), -1, PChar(UCS2String), UTF8Length + 1);
-  SetLength(SystemCharSetString, Length(UTF8String));
-  ResultLength := WideCharToMultiByte(CP_ACP, 0, PChar(UCS2String), -1,
-    PChar(SystemCharSetString), Length(SystemCharSetString)+1, 0, 0) -1;
-  Result := copy(SystemCharSetString, 1, ResultLength);
-end;
-
-function GetPoString(const msgid: string): string;
-var
-  Signature: string;
-  i: integer;
-  Count: integer;
-begin
-  LoadPoFile;
-  //MsgBox(msgid, mbInformation, MB_OK);
-  Result := msgid;
-  Signature := '#: '+ msgid;
-  Count := GetArrayLength(PoFileStrings);
-  i := 0;
-  while (i<Count) and (PoFileStrings[i]<>Signature) do begin
-    i := i+1;
-  end;
-  if i+2<Count then begin
-    Result := copy(PoFileStrings[i+2],9, Length(PoFileStrings[i+2])-9);
-    //MsgBox(Result, mbInformation, MB_OK);
-    if Result='' then
-      Result := copy(PoFileStrings[i+1],8, Length(PoFileStrings[i+1])-8);
-  end;
-  Result := ConvertUTF8ToSystemCharSet(Result);
 end;
 
 function GetAssociateDesc(const ext: string): string;
