@@ -2827,15 +2827,10 @@ end;
   Params: S1, S2 - UTF8 encoded strings
   Returns: < 0 if S1 < S2, 0 if S1 = S2, > 0 if S2 > S1.
   Compare 2 UTF8 encoded strings, case sensitive.
-  Remark: A widestring manager must be installed in order for this function
-  to work correctly with various character sets. eg. under unixes cwstring unit
-  must be included in project.
-  Note: Use this function instead of AnsiCompareStr.
-  This function guarantees proper collation on all supported platforms.
  ------------------------------------------------------------------------------}
 function UTF8CompareStr(const S1, S2: String): Integer;
 begin
-  Result := WideCompareStr(UTF8ToUTF16(S1), UTF8ToUTF16(S2));
+  Result := LazUTF8.UTF8CompareStr(S1,S2);
 end;
 
 {------------------------------------------------------------------------------
@@ -2843,15 +2838,10 @@ end;
   Params: S1, S2 - UTF8 encoded strings
   Returns: < 0 if S1 < S2, 0 if S1 = S2, > 0 if S2 > S1.
   Compare 2 UTF8 encoded strings, case insensitive.
-  Remark: A widestring manager must be installed in order for this function
-  to work correctly with various character sets. eg. under unixes cwstring unit
-  must be included in project.
-  Note: Use this function instead of AnsiCompareText.
-  This function guarantees proper collation on all supported platforms.
  ------------------------------------------------------------------------------}
 function UTF8CompareText(const S1, S2: String): Integer;
 begin
-  Result := WideCompareText(UTF8ToUTF16(S1), UTF8ToUTF16(S2));
+  Result := LazUTF8.UTF8CompareText(S1,S2);
 end;
 
 {------------------------------------------------------------------------------
