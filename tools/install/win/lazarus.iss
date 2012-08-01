@@ -430,21 +430,6 @@ begin
   Result := not IsHKLMWriteable();
 end;
 
-var
-  PoFileStrings: TArrayOfString;
-
-procedure LoadPoFile;
-var
-  PoFilename: string;
-begin
-  if (GetArrayLength(PoFileStrings)=0) then begin
-    PoFilename := ExpandConstant('{app}\languages\installerstrconsts.{language}.po');
-    if not FileExists(PoFileName) then
-      PoFilename := ExpandConstant('{app}\languages\installerstrconsts.po');
-    LoadStringsFromFile(PoFileName, PoFileStrings);
-  end;
-end;
-
 function GetAssociateDesc(const ext: string): string;
 var
   AmpersandPos: integer;
