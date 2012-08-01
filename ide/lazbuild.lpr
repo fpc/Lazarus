@@ -26,7 +26,7 @@ program lazbuild;
 
 uses
   {$IFDEF unix}
-  cthreads, cwstring,
+  cthreads,
   {$ENDIF}
   Classes, SysUtils, CustApp, LCLProc, Dialogs, Forms, Controls, FileUtil,
   Interfaces, InterfaceBase, UTF8Process, LConvEncoding,
