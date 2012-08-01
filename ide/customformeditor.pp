@@ -1307,8 +1307,8 @@ begin
         // data module
         with TDataModule(NewComponent) do
         begin
-          if CompWidth <= 0 then CompWidth := Max(50, DesignSize.X);
-          if CompHeight <= 0 then CompHeight := Max(50, DesignSize.Y);
+          if CompWidth <= 0 then CompWidth := Max(150, DesignSize.X);
+          if CompHeight <= 0 then CompHeight := Max(150, DesignSize.Y);
           MonitorBounds := ActiveMonitor.BoundsRect;
           if CompLeft < MonitorBounds.Left + PreferredDistanceMin then
             with MonitorBounds do

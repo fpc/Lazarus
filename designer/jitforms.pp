@@ -1013,7 +1013,7 @@ function TJITComponentList.DoCreateJITComponent(
   const NewComponentName, NewClassName, NewUnitName: shortstring;
   AncestorClass: TClass; Visible, DisableAutoSize: boolean):integer;
 var
-  Instance:TComponent;
+  Instance: TComponent;
   ok: boolean;
   Action: TModalResult;
   OldSetCaption: boolean;
@@ -1059,6 +1059,7 @@ begin
         if OldSetCaption then
           TControl(Instance).ControlStyle:=TControl(Instance).ControlStyle+[csSetCaption];
       end;
+      // set class name
       DoRenameClass(FCurReadClass,NewClassName);
       ok:=true;
     //debugln('[TJITForms.DoCreateJITComponent] Initialization was successful! FormName="',NewFormName,'"');
