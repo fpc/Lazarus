@@ -31,7 +31,7 @@ else
 endif
 
 clean:
-	${RM} build_lcl_docs lcl
+	${RM} build_lcl_docs lcl lazutils
 
 htmlinstall chminstall:
 	install -d ${INSTALL_DOCDIR}
