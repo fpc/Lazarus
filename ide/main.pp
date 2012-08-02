@@ -12522,7 +12522,7 @@ end;
 procedure TMainIDE.DoRestart;
 
 const
-  DarwinStartlazBundlePath = 'Resources/startlazarus.app/Contents/MacOS/';
+  DarwinStartlazBundlePath = 'lazarus.app/Contents/Resources/startlazarus.app/Contents/MacOS/';
 
   procedure StartStarter;
   var
@@ -12542,13 +12542,12 @@ const
       Params := TStringList.Create;
       ParseCommandLine(Params, Dummy, Unused);
       //DebugLn('Done parsing CommandLine');
-      {$ifndef darwin}
+      {$ifdef darwin}
+      ExeName := AppendPathDelim(EnvironmentOptions.GetParsedLazarusDirectory)+
+             DarwinStartlazBundlePath + 'startlazarus';
+      {$else}
       ExeName := AppendPathDelim(EnvironmentOptions.GetParsedLazarusDirectory) +
         'startlazarus' + GetExecutableExt;
-      {$else}
-      ExeName := ExpandUNCFileNameUTF8(EnvironmentOptions.GetParsedLazarusDirectory);
-      ExeName := AppendPathDelim( ExtractFilePath(ExeName) ) +
-             DarwinStartlazBundlePath + 'startlazarus' + GetExecutableExt;
       {$endif}
       if not FileExistsUTF8(ExeName) then begin
         IDEMessageDialog('Error',Format(lisCannotFindLazarusStarter,
