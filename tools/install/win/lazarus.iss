@@ -243,7 +243,7 @@ Root: HKCU; Subkey: Software\Classes\.pp; ValueType: String; ValueData: Lazarus.
 Name: default; MessagesFile: lazarus.def.isl
 Name: ca; MessagesFile: compiler:Languages\Catalan.isl
 Name: cs; MessagesFile: compiler:Languages\Czech.isl
-Name: de; MessagesFile: compiler:Languages\German.isl
+Name: de; MessagesFile: lazarus.de.isl
 Name: es; MessagesFile: compiler:Languages\Spanish.isl
 Name: fi; MessagesFile: compiler:Languages\Finnish.isl
 Name: fr; MessagesFile: compiler:Languages\French.isl
