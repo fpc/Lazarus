@@ -1299,7 +1299,7 @@ begin
   LazarusTabSheet.Caption:='Lazarus';
   CompilerTabSheet.Caption:=lisCompiler;
   FPCSourcesTabSheet.Caption:=lisFPCSources;
-  MakeExeTabSheet.Caption:='make';
+  MakeExeTabSheet.Caption:='Make';
   DebuggerTabSheet.Caption:=lisDebugger;
 
   FHeadGraphic:=TPortableNetworkGraphic.Create;
