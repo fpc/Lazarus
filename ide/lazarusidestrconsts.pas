@@ -5464,6 +5464,9 @@ resourcestring
   lisFPCSources = 'FPC sources';
   lisConfigureLazarusIDE = 'Configure Lazarus IDE';
   lisFileIsNotAnExecutable = 'File is not an executable';
+  lisThereIsNoFpcExeInTheDirectoryOfUsuallyTheMakeExecu = 'There is no fpc.exe'
+    +' in the directory of %s. Usually the make executable is installed '
+    +'together with the FPC compiler.';
   lisUnusualCompilerFileNameUsuallyItStartsWithFpcPpcOr = 'Unusual compiler '
     +'file name. Usually it starts with fpc, ppc or ppcross.';
   lisFpcCfgIsMissing = 'fpc.cfg is missing.';

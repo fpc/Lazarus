@@ -1062,7 +1062,8 @@ begin
   if (GetDefaultSrcOSForTargetOS(GetCompiledTargetOS)='win') then begin
     // under Windows, make.exe is in the same directory as fpc.exe
     if not FileExistsCached(ExtractFilePath(AFilename)+'fpc.exe') then begin
-      Note:='There is no fpc.exe in the directory of '+ExtractFilename(AFilename)+'. Usually the make executable is installed together with the FPC compiler.';
+      Note:=Format(lisThereIsNoFpcExeInTheDirectoryOfUsuallyTheMakeExecu, [
+        ExtractFilename(AFilename)]);
       Result:=sddqIncomplete;
       exit;
     end;
