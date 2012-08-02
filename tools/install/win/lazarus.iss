@@ -253,7 +253,7 @@ Name: nl; MessagesFile: compiler:Languages\Dutch.isl
 Name: no; MessagesFile: compiler:Languages\Norwegian.isl
 Name: pl; MessagesFile: compiler:Languages\Polish.isl
 Name: pt; MessagesFile: compiler:Languages\Portuguese.isl
-Name: pt_BR; MessagesFile: compiler:Languages\BrazilianPortuguese.isl
+Name: pt_BR; MessagesFile: lazarus.pt_BR.isl
 Name: ru; MessagesFile: lazarus.ru.isl
 ;Slovak.isl not avail with latest inno setup
 ;Name: sk; MessagesFile: compiler:Languages\Slovak.isl
