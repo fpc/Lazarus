@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2012-05-19 03:08+0400\n"
+"PO-Revision-Date: 2012-08-03 01:18+0400\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -837,7 +837,7 @@ msgstr "Выберите файл шаблонов кода (*.dci)"
 
 #: lazarusidestrconsts.dlgclassinsertpolicy
 msgid "Class part insert policy"
-msgstr ""
+msgstr "Политика вставки частей класса"
 
 #: lazarusidestrconsts.dlgclosebuttonsnotebook
 msgid "Show close buttons in notebook"
@@ -1685,10 +1685,12 @@ msgid "Program"
 msgstr "Программа"
 
 #: lazarusidestrconsts.dlgfoldpasrecord
+msgctxt "lazarusidestrconsts.dlgfoldpasrecord"
 msgid "Record"
 msgstr "Запись"
 
 #: lazarusidestrconsts.dlgfoldpasrepeat
+msgctxt "lazarusidestrconsts.dlgfoldpasrepeat"
 msgid "Repeat"
 msgstr "Repeat"
 
@@ -2176,7 +2178,7 @@ msgstr "Максимальное количество недавних прое�
 
 #: lazarusidestrconsts.dlgmethodinspolicy
 msgid "Method insert policy"
-msgstr ""
+msgstr "Политика вставки методов"
 
 #: lazarusidestrconsts.dlgmixmethodsandproperties
 msgid "Mix methods and properties"
@@ -2792,6 +2794,7 @@ msgid "Use manifest file to enable themes (Windows only)"
 msgstr "Использовать manifest-файл для включения поддержки тем (только Windows)"
 
 #: lazarusidestrconsts.dlgproject
+msgctxt "lazarusidestrconsts.dlgproject"
 msgid "Project"
 msgstr "Проект"
 
@@ -7405,7 +7408,7 @@ msgstr "Директивы в новом модуле"
 
 #: lazarusidestrconsts.lisdirectory
 msgid "Directory: "
-msgstr ""
+msgstr "Каталог: "
 
 #: lazarusidestrconsts.lisdirectorynotfound
 msgid "Directory %s%s%s not found."
@@ -8310,7 +8313,7 @@ msgstr "Файл"
 
 #: lazarusidestrconsts.lisfile2
 msgid "File: "
-msgstr ""
+msgstr "Файл: "
 
 #: lazarusidestrconsts.lisfiledoesnotlooklikeatextfileopenitanyway
 msgctxt "lazarusidestrconsts.lisfiledoesnotlooklikeatextfileopenitanyway"
@@ -9233,7 +9236,7 @@ msgstr "Вставить тег URL"
 
 #: lazarusidestrconsts.lisinsession
 msgid "In session"
-msgstr "В сессии"
+msgstr "В сеансе"
 
 #: lazarusidestrconsts.lisinspect
 msgid "&Inspect"
@@ -9970,11 +9973,11 @@ msgstr "Показать локальные переменные"
 
 #: lazarusidestrconsts.liskmtoggleviewmessages
 msgid "Toggle view Messages"
-msgstr "Показывать окно сообщений"
+msgstr "Показать окно сообщений"
 
 #: lazarusidestrconsts.liskmtoggleviewobjectinspector
 msgid "Toggle view Object Inspector"
-msgstr "Показывать инспектор объектов"
+msgstr "Показать инспектор объектов"
 
 #: lazarusidestrconsts.liskmtoggleviewpseudoterminal
 #| msgid "Toggle view Terminal Output"
@@ -11010,7 +11013,7 @@ msgstr "Заметка о LGPL"
 
 #: lazarusidestrconsts.lismenuinsertmitnotice
 msgid "MIT Notice"
-msgstr ""
+msgstr "Заметка о MIT"
 
 #: lazarusidestrconsts.lismenuinsertmodifiedlgplnotice
 #| msgid "Modified LGPL notice"
@@ -11711,7 +11714,7 @@ msgstr "Пропустить этот модуль"
 
 #: lazarusidestrconsts.lismitnotice
 msgid "<description>%sCopyright (c) <year> <copyright holders>%sPermission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the \"Software\"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:%sThe above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.%sTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE."
-msgstr ""
+msgstr "<description>%sCopyright (c) <year> <copyright holders>%sPermission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the \"Software\"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:%sThe above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.%sTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE."
 
 #: lazarusidestrconsts.lismodifiedlgplnotice
 msgid "<description>%sCopyright (C) <year> <name of author> <contact>%sThis library is free software; you can redistribute it and/or modify it under the terms of the GNU Library General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version with the following modification:%sAs a special exception, the copyright holders of this library give you permission to link this library with independent modules to produce an executable, regardless of the license terms of these independent modules,and to copy and distribute the resulting executable under terms of your choice, provided that you also meet, for each linked independent module, the terms and conditions of the license of that module. An independent module is a module which is not derived from or based on this library. If you modify this library, you may extend this exception to your version of the library, but you are not obligated to do so. If you do not wish to do so, delete this exception statement from your version.%sThis program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Library General Public License for more details. %sYou should have received a copy of the GNU Library General Public License along with this library; if not, write to the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA."
@@ -12136,7 +12139,7 @@ msgstr "Выберите пакет"
 
 #: lazarusidestrconsts.lisoippleaseselectapackagetoopen
 msgid "Please select a package to open"
-msgstr "Выберите пакет, чтобы открыть"
+msgstr "Выберите открываемый пакет"
 
 #: lazarusidestrconsts.lisoipreadonly
 msgid "readonly"
@@ -15357,7 +15360,7 @@ msgstr "Файл %s%s%s%sнайден в одном из каталогов ис
 
 #: lazarusidestrconsts.listhefilewasnotfounddoyouwanttolocateityourself
 msgid "The file %s%s%s%swas not found.%sDo you want to locate it yourself ?%s"
-msgstr "Файл %s%s%s%sне найден.%sВы хотите поискать его самостоятельно?%s"
+msgstr "Файл %s%s%s%sне найден.%sВы хотите найти его самостоятельно?%s"
 
 #: lazarusidestrconsts.listhefilewasnotfoundignorewillgoonloadingtheproject
 msgid "The file %s%s%s%swas not found.%sIgnore will go on loading the project,%sAbort  will stop the loading."
@@ -15366,7 +15369,7 @@ msgstr "Файл %s%s%s%sне найден.%sПропуск продолжит �
 #: lazarusidestrconsts.listhefirstbuildmodeisthedefaultmodeandmustbestoredin
 msgctxt "lazarusidestrconsts.listhefirstbuildmodeisthedefaultmodeandmustbestoredin"
 msgid "The first build mode is the default mode and must be stored in the project, not in the session."
-msgstr "Первый режим сборки является режимом сборки по умолчанию и должен храниться в проекте, а не в сессии."
+msgstr "Первый режим сборки является режимом сборки по умолчанию и должен храниться в проекте, а не в файле сеанса."
 
 #: lazarusidestrconsts.listhefollowingmethodsusedbyarenotinthesourceremoveth
 msgid "The following methods used by %s are not in the source%s%s%s%s%s%sRemove the dangling references?"
@@ -15391,7 +15394,7 @@ msgstr "Каталог исходного кода Free Pascal не найден
 
 #: lazarusidestrconsts.listhegnudebuggerthroughsshallowstoremotedebugviaassh
 msgid "The GNU debugger through ssh allows to remote debug via a ssh connection. See docs/RemoteDebugging.txt for details. The path must contain the ssh client filename, the hostname with an optional username and the filename of gdb on the remote computer. For example: %s/usr/bin/ssh username@hostname gdb%s or: %s/usr/bin/setsid /usr/bin/ssh username@hostname gdb%s"
-msgstr ""
+msgstr "Отладчик GNU через SSH позволяет вести удалённую отладку через соединение SSH. Обратитесь к docs/RemoteDebugging.txt за подробностями. Путь должен содержать имя файла клиента SSH, имя удалённой машины с необязательным именем пользователя и имя файла GDB на удалённой машине. Например: %s/usr/bin/ssh username@hostname gdb%s или: %s/usr/bin/setsid /usr/bin/ssh username@hostname gdb%s"
 
 #: lazarusidestrconsts.listheidentifierisaunitpleaseusethefilesaveasfunction
 msgid "The identifier is a unit. Please use the File - Save as function to rename a unit."
@@ -15880,7 +15883,7 @@ msgstr "Поиск: %s"
 
 #: lazarusidestrconsts.lisuesearchstringnotfound
 msgid "Search string '%s' not found!"
-msgstr "Строка поиска '%s' не найдена!"
+msgstr "Искомая строка '%s' не найдена!"
 
 #: lazarusidestrconsts.lisuethecurre
 msgid "The current editor font does not support UTF-8, but your system seems to use it.%sThat means non ASCII characters will probably be shown incorrect.%sYou can select another font in the editor options."
@@ -16275,7 +16278,7 @@ msgstr "Невозможно записать файл сведений о пр�
 
 #: lazarusidestrconsts.lisunabletowritetheprojectsessionfileerror
 msgid "Unable to write the project session file%s\"%s\".%sError: %s"
-msgstr "Невозможно записать файл сессии проекта%s\"%s\".%sОшибка: %s"
+msgstr "Невозможно записать файл сеанса проекта%s\"%s\".%sОшибка: %s"
 
 #: lazarusidestrconsts.lisunabletowritetofile
 #| msgid "Unable to write to file %s%s%s!"
@@ -17612,7 +17615,7 @@ msgstr "Разорвать строку, оставить курсор"
 
 #: lazarusidestrconsts.srkmecinsertmitnotice
 msgid "Insert MIT notice"
-msgstr ""
+msgstr "Вставить заметку о MIT"
 
 #: lazarusidestrconsts.srkmecinsertmode
 msgid "Insert Mode"
@@ -17850,7 +17853,7 @@ msgstr "Прокрутить вверх на одну строку"
 
 #: lazarusidestrconsts.srkmecseldown
 msgid "Select Down"
-msgstr "Выделить вниз"
+msgstr "Выделить снизу"
 
 #: lazarusidestrconsts.srkmecselectall
 msgctxt "lazarusidestrconsts.srkmecselectall"
@@ -17882,8 +17885,9 @@ msgid "Select half-word right"
 msgstr "Выделить полслова справа"
 
 #: lazarusidestrconsts.srkmecselleft
+#| msgid "Select Left"
 msgid "SelLeft"
-msgstr "SelLeft"
+msgstr "Выделить слева"
 
 #: lazarusidestrconsts.srkmecsellineend
 msgctxt "lazarusidestrconsts.srkmecsellineend"
@@ -17926,12 +17930,13 @@ msgid "Select Page Up"
 msgstr "Выделить страницу сверху"
 
 #: lazarusidestrconsts.srkmecselright
+#| msgid "Select Right"
 msgid "SelRight"
-msgstr "SelRight"
+msgstr "Выделить справа"
 
 #: lazarusidestrconsts.srkmecselup
 msgid "Select Up"
-msgstr "Выделить вверх"
+msgstr "Выделить сверху"
 
 #: lazarusidestrconsts.srkmecselwordendleft
 msgid "Select word-end left"

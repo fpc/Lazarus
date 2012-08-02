@@ -83,7 +83,7 @@ msgstr "Локальный префикс"
 
 #: fppkg_const.rslocalrepository
 msgid "Local repository"
-msgstr "Локальный репозитарий"
+msgstr "Локальный репозиторий"
 
 #: fppkg_const.rsnofppkgexecutablefound
 msgid "No fppkg executable found"
@@ -99,7 +99,7 @@ msgstr "Адрес списка удалённых зеркал"
 
 #: fppkg_const.rsremoterepository
 msgid "Remote repository"
-msgstr "Удалённый репозитарий"
+msgstr "Удалённый репозиторий"
 
 #: fppkg_const.rsshowlazaruspackagemanager
 #| msgid "Show Lazarus package manager"
