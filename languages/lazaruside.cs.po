@@ -4105,6 +4105,10 @@ msgstr "Zeptat se na jméno souboru při novém souboru"
 msgid "Ask name on create"
 msgstr "Zeptat se na jméno při vytvoření"
 
+#: lazarusidestrconsts.lisausefulsettingonwindowssystemsislazarusdirmingwbin
+msgid "A useful setting on Windows systems is: $(LazarusDir)\\mingw\\bin\\$(TargetCPU)-$(TargetOS)\\gdb.exe"
+msgstr ""
+
 #: lazarusidestrconsts.lisautocompletionoff
 msgid "Auto completion: off"
 msgstr "Automatické dokončení: vypnuto"
@@ -6808,6 +6812,11 @@ msgstr "Zapnout/Vypnout"
 #: lazarusidestrconsts.lisdbgwinpowerhint
 msgid "Disable/Enable updates for the entire window"
 msgstr "Zakázat/Povolit změny pro celé okno"
+
+#: lazarusidestrconsts.lisdebugger
+msgctxt "lazarusidestrconsts.lisdebugger"
+msgid "Debugger"
+msgstr "Ladič"
 
 #: lazarusidestrconsts.lisdebuggererror
 msgid "Debugger error"
@@ -14864,6 +14873,10 @@ msgstr "Aktuální adresář Lazarusu %s%s%s%snevypadá správně.%sBez něj neb
 msgid "The debugger %s%s%s%sdoes not exist or is not executable.%s%sSee Tools -> Options -> Debugger options"
 msgstr "Ladič %s%s%s%sneexistuje, nebo není spustitelný.%s%sZkontrolujte Nástroje -> Nastavení -> Volby ladiče"
 
+#: lazarusidestrconsts.listhedebuggerexecutabletypicallyhasthenamepleasegive
+msgid "The debugger executable typically has the name \"%s\". Please give the full file path."
+msgstr ""
+
 #: lazarusidestrconsts.listhedestinationdirectorydoesnotexist
 msgid "The destination directory%s%s%s%s does not exist."
 msgstr "Cílový adresář%s%s%s%s neexistuje."
@@ -15004,6 +15017,10 @@ msgstr "Soubor LFM (formulář Lazarusu) obsahuje neplatné vlastnosti. To např
 #: lazarusidestrconsts.listhemacrodoesnotbeginwith
 msgid "The macro \"%s\" does not begin with \"%s\"."
 msgstr "Makro \"%s\" nezačíná na \"%s\"."
+
+#: lazarusidestrconsts.listhemakeexecutabletypicallyhasthename
+msgid "The \"make\" executable typically has the name \"%s\". It is needed for building the IDE. Please give the full file path."
+msgstr ""
 
 #: lazarusidestrconsts.listhenameisnotavalidpascalidentifier
 msgid "The name %s%s%s is not a valid pascal identifier."
@@ -15164,6 +15181,10 @@ msgstr "Jednotka se jménem %s%s%sjiž existuje. Identifikátory Pascalu musí b
 #: lazarusidestrconsts.listhereisaunitwiththenameintheprojectpleasechoose
 msgid "There is a unit with the name %s%s%s in the project.%sPlease choose a different name"
 msgstr "Jednotka se jménem %s%s%s již v projektu existuje.%sZvolte, prosím, jiné jméno"
+
+#: lazarusidestrconsts.listhereisnofpcexeinthedirectoryofusuallythemakeexecu
+msgid "There is no fpc.exe in the directory of %s. Usually the make executable is installed together with the FPC compiler."
+msgstr ""
 
 #: lazarusidestrconsts.listheremustbeatleastonebuildmode
 msgid "There must be at least one build mode."
@@ -16209,9 +16230,17 @@ msgstr ", se zahrnutými "
 msgid "Without a proper compiler the code browsing and compiling will be disappointing."
 msgstr "Bez správného překladače nebude procházení kódu a překlad dokonalé."
 
+#: lazarusidestrconsts.liswithoutaproperdebuggerdebuggingwillbedisappointing
+msgid "Without a proper debugger, debugging will be disappointing."
+msgstr ""
+
 #: lazarusidestrconsts.liswithoutaproperlazarusdirectoryyouwillgetalotofwarn
 msgid "Without a proper Lazarus directory you will get a lot of warnings."
 msgstr "Bez správného adresáře Lazarusu dostanete mnoho varování."
+
+#: lazarusidestrconsts.liswithoutapropermakeexecutablethecompilingoftheideis
+msgid "Without a proper \"make\" executable the compiling of the IDE is not possible."
+msgstr ""
 
 #: lazarusidestrconsts.liswithouttheproperfpcsourcescodebrowsingandcompletio
 msgid "Without the proper FPC sources code browsing and completion will be very limited."

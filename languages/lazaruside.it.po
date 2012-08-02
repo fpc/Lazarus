@@ -4366,6 +4366,10 @@ msgstr "Chiedi il nome del file per ogni nuovo file"
 msgid "Ask name on create"
 msgstr "Chiedi il nome alla creazione"
 
+#: lazarusidestrconsts.lisausefulsettingonwindowssystemsislazarusdirmingwbin
+msgid "A useful setting on Windows systems is: $(LazarusDir)\\mingw\\bin\\$(TargetCPU)-$(TargetOS)\\gdb.exe"
+msgstr ""
+
 #: lazarusidestrconsts.lisautocompletionoff
 msgid "Auto completion: off"
 msgstr "Completamento automatico: off"
@@ -7156,6 +7160,11 @@ msgstr "On/Off"
 #: lazarusidestrconsts.lisdbgwinpowerhint
 msgid "Disable/Enable updates for the entire window"
 msgstr "Disabilita/Abilita aggiornamenti per tutta la finestra"
+
+#: lazarusidestrconsts.lisdebugger
+msgctxt "lazarusidestrconsts.lisdebugger"
+msgid "Debugger"
+msgstr "Debugger"
 
 #: lazarusidestrconsts.lisdebuggererror
 msgid "Debugger error"
@@ -15683,6 +15692,10 @@ msgstr "La cartella di Lazarus corrente %s%s%s%snon sembra corretta.%sSenza di e
 msgid "The debugger %s%s%s%sdoes not exist or is not executable.%s%sSee Tools -> Options -> Debugger options"
 msgstr "Il debugger %s%s%s%snon esiste o non è eseguibile.%s%sVedere Ambiente -> Opzioni di debug"
 
+#: lazarusidestrconsts.listhedebuggerexecutabletypicallyhasthenamepleasegive
+msgid "The debugger executable typically has the name \"%s\". Please give the full file path."
+msgstr ""
+
 #: lazarusidestrconsts.listhedestinationdirectorydoesnotexist
 msgid "The destination directory%s%s%s%s does not exist."
 msgstr "La cartella di destinazione%s%s%s%s non esiste."
@@ -15826,6 +15839,10 @@ msgstr "Il file (form Lazarus) LFM contiene proprietà non valide. Ciò signific
 
 #: lazarusidestrconsts.listhemacrodoesnotbeginwith
 msgid "The macro \"%s\" does not begin with \"%s\"."
+msgstr ""
+
+#: lazarusidestrconsts.listhemakeexecutabletypicallyhasthename
+msgid "The \"make\" executable typically has the name \"%s\". It is needed for building the IDE. Please give the full file path."
 msgstr ""
 
 #: lazarusidestrconsts.listhenameisnotavalidpascalidentifier
@@ -15991,6 +16008,10 @@ msgstr "C'è già una unit con il nome %s%s%s. Gli identificativi Pascal devono 
 #: lazarusidestrconsts.listhereisaunitwiththenameintheprojectpleasechoose
 msgid "There is a unit with the name %s%s%s in the project.%sPlease choose a different name"
 msgstr "C'è già una unit con nome %s%s%s nel progetto.%sScegliere un altro nome."
+
+#: lazarusidestrconsts.listhereisnofpcexeinthedirectoryofusuallythemakeexecu
+msgid "There is no fpc.exe in the directory of %s. Usually the make executable is installed together with the FPC compiler."
+msgstr ""
 
 #: lazarusidestrconsts.listheremustbeatleastonebuildmode
 msgid "There must be at least one build mode."
@@ -17056,8 +17077,16 @@ msgstr ", con include"
 msgid "Without a proper compiler the code browsing and compiling will be disappointing."
 msgstr ""
 
+#: lazarusidestrconsts.liswithoutaproperdebuggerdebuggingwillbedisappointing
+msgid "Without a proper debugger, debugging will be disappointing."
+msgstr ""
+
 #: lazarusidestrconsts.liswithoutaproperlazarusdirectoryyouwillgetalotofwarn
 msgid "Without a proper Lazarus directory you will get a lot of warnings."
+msgstr ""
+
+#: lazarusidestrconsts.liswithoutapropermakeexecutablethecompilingoftheideis
+msgid "Without a proper \"make\" executable the compiling of the IDE is not possible."
 msgstr ""
 
 #: lazarusidestrconsts.liswithouttheproperfpcsourcescodebrowsingandcompletio

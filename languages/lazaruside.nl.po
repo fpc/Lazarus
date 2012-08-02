@@ -4290,6 +4290,10 @@ msgstr ""
 msgid "Ask name on create"
 msgstr ""
 
+#: lazarusidestrconsts.lisausefulsettingonwindowssystemsislazarusdirmingwbin
+msgid "A useful setting on Windows systems is: $(LazarusDir)\\mingw\\bin\\$(TargetCPU)-$(TargetOS)\\gdb.exe"
+msgstr ""
+
 #: lazarusidestrconsts.lisautocompletionoff
 msgid "Auto completion: off"
 msgstr ""
@@ -7028,6 +7032,11 @@ msgstr ""
 
 #: lazarusidestrconsts.lisdbgwinpowerhint
 msgid "Disable/Enable updates for the entire window"
+msgstr ""
+
+#: lazarusidestrconsts.lisdebugger
+msgctxt "lazarusidestrconsts.lisdebugger"
+msgid "Debugger"
 msgstr ""
 
 #: lazarusidestrconsts.lisdebuggererror
@@ -15407,6 +15416,10 @@ msgstr "De huidige Lazarus-directorie %s%s%s%slijkt niet correct.%sZonder dat ku
 msgid "The debugger %s%s%s%sdoes not exist or is not executable.%s%sSee Tools -> Options -> Debugger options"
 msgstr "De debugger %s%s%s%sbestaat niet of is niet uitvoerbaar.%s%sZie Instellingen -> Debugger opties"
 
+#: lazarusidestrconsts.listhedebuggerexecutabletypicallyhasthenamepleasegive
+msgid "The debugger executable typically has the name \"%s\". Please give the full file path."
+msgstr ""
+
 #: lazarusidestrconsts.listhedestinationdirectorydoesnotexist
 msgid "The destination directory%s%s%s%s does not exist."
 msgstr "De doel directorie%s%s%s%s bestaat niet."
@@ -15550,6 +15563,10 @@ msgstr "Het LFM (Lazarus form) bestand bevat ongeldige properties. Dit kan betek
 
 #: lazarusidestrconsts.listhemacrodoesnotbeginwith
 msgid "The macro \"%s\" does not begin with \"%s\"."
+msgstr ""
+
+#: lazarusidestrconsts.listhemakeexecutabletypicallyhasthename
+msgid "The \"make\" executable typically has the name \"%s\". It is needed for building the IDE. Please give the full file path."
 msgstr ""
 
 #: lazarusidestrconsts.listhenameisnotavalidpascalidentifier
@@ -15713,6 +15730,10 @@ msgstr "Er is al een unit met de naam %s%s%S. Pascal identifiers moeten uniek zi
 #: lazarusidestrconsts.listhereisaunitwiththenameintheprojectpleasechoose
 msgid "There is a unit with the name %s%s%s in the project.%sPlease choose a different name"
 msgstr "Er is een unit met de naam %s%s%s in het project.%sKies een andere naam"
+
+#: lazarusidestrconsts.listhereisnofpcexeinthedirectoryofusuallythemakeexecu
+msgid "There is no fpc.exe in the directory of %s. Usually the make executable is installed together with the FPC compiler."
+msgstr ""
 
 #: lazarusidestrconsts.listheremustbeatleastonebuildmode
 msgid "There must be at least one build mode."
@@ -16766,8 +16787,16 @@ msgstr ""
 msgid "Without a proper compiler the code browsing and compiling will be disappointing."
 msgstr ""
 
+#: lazarusidestrconsts.liswithoutaproperdebuggerdebuggingwillbedisappointing
+msgid "Without a proper debugger, debugging will be disappointing."
+msgstr ""
+
 #: lazarusidestrconsts.liswithoutaproperlazarusdirectoryyouwillgetalotofwarn
 msgid "Without a proper Lazarus directory you will get a lot of warnings."
+msgstr ""
+
+#: lazarusidestrconsts.liswithoutapropermakeexecutablethecompilingoftheideis
+msgid "Without a proper \"make\" executable the compiling of the IDE is not possible."
 msgstr ""
 
 #: lazarusidestrconsts.liswithouttheproperfpcsourcescodebrowsingandcompletio
