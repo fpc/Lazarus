@@ -175,6 +175,7 @@ begin
   Result := HWND(TCocoaAccessibleObject.alloc.init);
   TCocoaAccessibleObject(Result).LCLAcc := AObject;
   TCocoaAccessibleObject(Result).LCLControl := AObject.OwnerControl;
+  TCocoaAccessibleObject(Result).LCLInjectedControl := nil;
 end;
 
 class procedure TCDWSLazAccessibleObject.DestroyHandle(

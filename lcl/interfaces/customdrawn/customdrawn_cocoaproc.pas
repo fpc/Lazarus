@@ -1040,11 +1040,11 @@ begin
   begin
     lHandle := TCDWinControl(TWinControl(LCLControl).Handle);
     LCLBaseControl := lHandle;
+    if lHandle <> nil then
+      LCLInjectedControl := lHandle.CDControl
+    else
+      LCLInjectedControl := nil;
   end;
-  if LCLBaseControl = nil then Exit;
-
-  if LCLInjectedControl = nil then
-    LCLInjectedControl := lHandle.CDControl;
 end;
 
 function TCocoaAccessibleObject.accessibilityAttributeNames: NSArray;
@@ -1057,33 +1057,29 @@ begin
   {$endif}
   lResult := NSMutableArray.array_();
 
+  // Basic elements which all roles have
+  lResult.addObject(NSAccessibilityDescriptionAttribute);
+  lResult.addObject(NSAccessibilityEnabledAttribute);
+  lResult.addObject(NSAccessibilityFocusedAttribute);
+  lResult.addObject(NSAccessibilityParentAttribute);
+  lResult.addObject(NSAccessibilityPositionAttribute);
+  lResult.addObject(NSAccessibilityRoleAttribute);
+  lResult.addObject(NSAccessibilitySizeAttribute);
+  lResult.addObject(NSAccessibilityTitleAttribute);
+  lResult.addObject(NSAccessibilityTopLevelUIElementAttribute);
+  lResult.addObject(NSAccessibilityWindowAttribute);
+
   lCocoaRole := TCocoaCustomControl.LazRoleToCocoaRole(LCLAcc.AccessibleRole);
   if lCocoaRole.isEqualToString(NSAccessibilityButtonRole) then
   begin
-    lResult.addObject(NSAccessibilityDescriptionAttribute);
-    lResult.addObject(NSAccessibilityEnabledAttribute);
-    lResult.addObject(NSAccessibilityFocusedAttribute);
-    lResult.addObject(NSAccessibilityParentAttribute);
-    lResult.addObject(NSAccessibilityPositionAttribute);
-    lResult.addObject(NSAccessibilityRoleAttribute);
     lResult.addObject(NSAccessibilityRoleDescriptionAttribute);
-    lResult.addObject(NSAccessibilitySizeAttribute);
-    lResult.addObject(NSAccessibilityTitleAttribute);
-    lResult.addObject(NSAccessibilityTopLevelUIElementAttribute);
-    lResult.addObject(NSAccessibilityWindowAttribute);
+  end
+  else if  lCocoaRole.isEqualToString(NSAccessibilityStaticTextRole) then
+  begin
+    lResult.addObject(NSAccessibilityValueAttribute);
   end
   else
   begin
-    lResult.addObject(NSAccessibilityDescriptionAttribute);
-    lResult.addObject(NSAccessibilityEnabledAttribute);
-    lResult.addObject(NSAccessibilityFocusedAttribute);
-    lResult.addObject(NSAccessibilityParentAttribute);
-    lResult.addObject(NSAccessibilityPositionAttribute);
-    lResult.addObject(NSAccessibilityRoleAttribute);
-    lResult.addObject(NSAccessibilitySizeAttribute);
-    lResult.addObject(NSAccessibilityTitleAttribute);
-    lResult.addObject(NSAccessibilityTopLevelUIElementAttribute);
-    lResult.addObject(NSAccessibilityWindowAttribute);
   end;
 
   // This one we use to put LCL object and class names to help debugging =)
@@ -1104,6 +1100,7 @@ var
   lNSSize: NSSize;
   lPoint: TPoint;
   lNSPoint: NSPoint;
+  lBool: Boolean;
   //
   i: Integer;
   lChildAcc: TLazAccessibleObject;
@@ -1142,7 +1139,7 @@ begin
   //
   else if attribute.isEqualToString(NSAccessibilityValueAttribute) then
   begin
-    //Result := NSStringUtf8(LCLControl.Caption);
+    Result := NSStringUtf8(LCLControl.Caption);
   end
   {else if attribute = NSAccessibilityMinValueAttribute: NSString; cvar; external;
   NSAccessibilityMaxValueAttribute: NSString; cvar; external;}
@@ -1160,10 +1157,10 @@ begin
   begin
     if LCLControl is TWinControl then
     begin
-      if LCLInjectedControl <> nil then
-        Result := NSNumber.numberWithBool(LCLInjectedControl.Focused)
-      else
-        Result := NSNumber.numberWithBool(TWinControl(LCLControl).Focused)
+      lBool := TWinControl(LCLControl).Focused;
+      if (not lBool) and (LCLInjectedControl <> nil) then
+        lBool := LCLInjectedControl.Focused;
+      Result := NSNumber.numberWithBool(lBool);
     end
     else Result := NSNumber.numberWithBool(False);
   end
