@@ -36,8 +36,8 @@ SET IDE_WIDGETSET=%5
 :EMPTY5
 
 :: Name of fpc patch file
-IF [%5]==[] GOTO EMPTY6
-IF [%5]==[""] GOTO EMPTY6
+IF [%6]==[] GOTO EMPTY6
+IF [%6]==[""] GOTO EMPTY6
 IF NOT [%6]==[] SET PATCHFILE=%6
 :EMPTY6
 
