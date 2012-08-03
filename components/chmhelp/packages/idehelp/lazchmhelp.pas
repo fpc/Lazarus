@@ -23,8 +23,8 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, LazLogger, LazFileUtils, LazHelpIntf, HelpIntfs,
-  LazConfigStorage, PropEdits, LHelpControl, Controls, UTF8Process, ChmLangRef,
-  ChmLcl, ChmProg;
+  LazConfigStorage, PropEdits, LazIDEIntf, LHelpControl, Controls, UTF8Process,
+  ChmLangRef, ChmLcl, ChmProg;
   
 type
   
@@ -163,6 +163,7 @@ var
   BufC: Char;
   Buffer: array[0..511] of char;
   BufP: Integer;
+  PCP: String;
 begin
   Result := mrCancel;
 
@@ -185,6 +186,7 @@ begin
   end;
 
   WS := '--ws='+LCLPlatformDirNames[WidgetSet.LCLPlatform];
+  PCP := '--pcp='+LazarusIDE.GetPrimaryConfigPath;
 
   //Result := MessageDlg('The help viewer is not compiled yet. Try to compile it now?', mtConfirmation, mbYesNo ,0);
   //if Result <> mrYes then
@@ -192,14 +194,15 @@ begin
 
   Proc := TProcessUTF8.Create(nil);
   {$if (fpc_version=2) and (fpc_release<5)}
-  Proc.CommandLine := Lazbuild + ' ' + WS + ' ' + LHelpProject;
+  Proc.CommandLine := Lazbuild+' '+WS+' '+PCP+' '+LHelpProject;
   {$else}
   Proc.Executable := Lazbuild;
   Proc.Parameters.Add(WS);
+  Proc.Parameters.Add(PCP);
   Proc.Parameters.Add(LHelpProject);
   {$endif}
   Proc.Options := [poUsePipes, poStderrToOutPut];
-  debugln(['TChmHelpViewer.CheckBuildLHelp running "',Lazbuild,' ',WS,' ',LHelpProject,'" ...']);
+  debugln(['TChmHelpViewer.CheckBuildLHelp running "',Lazbuild,' ',WS,' ',PCP,' ',LHelpProject,'" ...']);
   Proc.Execute;
 
 
