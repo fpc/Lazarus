@@ -20,9 +20,13 @@ which runs on windows, wince and linux.
 Compilation:
 You don't need ./configure, just do
 
+  []$ make clean bigide
+
+This will create the lazarus executable with a lot of packages.
+Start it and enjoy.
+
+If the above gives an error you can try to build a minimal IDE with
   []$ make clean all
-  
-This will create the lazarus executable. Start it and enjoy.
 
 --------------------------------------------------------------------------------
 Installation and Requirements:
@@ -35,9 +39,6 @@ Usage:
 Start the IDE with:
   []$ cd your/lazarus/directory
   []$ ./lazarus
-
-Under Ubuntu 10.10 and above you need
-  []$ LIBOVERLAY_SCROLLBAR=0 ./lazarus
 
 --------------------------------------------------------------------------------
 Documentation:
