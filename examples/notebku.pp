@@ -275,26 +275,21 @@ end;
 
 procedure TForm1.Button1Click(Sender: TObject);
 begin
-  //writeln('Button 1 Clicked');
   fNotebk.PageIndex := 0;
 end;
 
 procedure TForm1.Button2Click(Sender: TObject);
 begin
-  //writeln('Button 2 Clicked');
   fNotebk.PageIndex := fNotebk.Pages.Count - 1;
 end;
 
 procedure TForm1.Button3Click(Sender: TObject);
 begin
-  //writeln('Close Button Clicked');
   Close;
 end;
 
 procedure TForm1.Button4Click(Sender: TObject);
 begin
-  //writeln('Show/Hide Tabs Button Clicked');
-
   fNotebook.ShowTabs := not fNotebook.ShowTabs;
   if (fNotebook.ShowTabs) then
     fButton4.Caption := 'Hide Tabs'
@@ -304,8 +299,6 @@ end;
 
 procedure TForm1.Button5Click(Sender: TObject);
 begin
-  //writeln('Delete Page Button Clicked');
-
   if (fNotebook.PageCount > 1) then
   begin
     // Make sure we don't delete the page with the delete button on it
@@ -318,8 +311,6 @@ end;
 
 procedure TForm1.Button6Click(Sender: TObject);
 begin
-  //writeln('Set Tab Position Button Clicked');
-
   if fNotebook.TabPosition = tpTop then
      fNotebook.TabPosition := tpRight
   else if fNotebook.TabPosition = tpRight then

@@ -90,7 +90,6 @@ var
     procedure LineSample(txt:string);
     begin
       tmp := Pt2Pix(PsCanvas.Font.Size) div 2;
-      //WriteLn('LineSample: Y=',Y,' FontSize=', PsCanvas.Font.Size,' Pix=',tmp*2,' Spc= ',tmp,' Sy=',Sy(Tmp));
       PsCanvas.Line(x+Sx(170),y+tmp,x+Sx(170+100),y+tmp);
       PsCanvas.TextOut(x,y,txt);
       inc(y,tmp*3);

@@ -32,7 +32,7 @@ Program MessagDialogs;
 
 {$mode objfpc}{$H+}
 
-uses Interfaces, Classes, Forms, Dialogs, Buttons, StdCtrls;
+uses Interfaces, Classes, Forms, Dialogs, Buttons, StdCtrls, LazLogger;
      
 type
    TMainForm = class(TForm)
@@ -70,7 +70,7 @@ end;
 procedure TMainForm.Button1Click(Sender : TObject);
 begin
    ShowMessage ('First simple test!');
-   writeln('Go to second dialog');
+   DebugLn('Go to second dialog');
    MessageDlg  ('Caption', 'Two buttons now ...', mtError, [mbOK,mbCancel], 0);
    MessageDlg  ('Warning, not fully implemented', mtWarning, [mbYes, mbNo, mbOK,mbCancel], 0);
    ShowMessageFmt ('The show will end now'+LineEnding+'%s'+LineEnding+'Good bye!!!', [MainForm.Caption]);

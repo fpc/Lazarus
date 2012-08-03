@@ -23,7 +23,7 @@ program ListBoxTest;
 {$mode objfpc}{$H+}
 
 uses
-  Interfaces, Buttons, Classes, Forms, StdCtrls, SysUtils, Controls;
+  Interfaces, Buttons, Classes, Forms, StdCtrls, SysUtils, Controls, LazLogger;
 
 type
   TListBoxTestForm = class(TForm)
@@ -140,7 +140,7 @@ var
   X: PtrInt;
 begin
   X := PtrInt(ListBox.Items.Objects[ListBox.ItemIndex]);
-  writeln('TListBoxTestForm.Button4Click ',X);
+  DebugLn(['TListBoxTestForm.Button4Click ',X]);
 end;
 
 procedure TListBoxTestForm.FormResize(Sender: TObject);

@@ -35,7 +35,7 @@ program Toolbar;
 
 uses
   Interfaces, Classes, StdCtrls, Forms, Buttons, Menus, ComCtrls,
-  SysUtils, ExtCtrls, Controls;
+  SysUtils, ExtCtrls, Controls, LazLogger;
 
 type
         TForm1 = class(TFORM)
@@ -127,23 +127,23 @@ end;
 
 Procedure TFORM1.Button1Click(Sender : TObject);
 Begin
-Writeln('******************');
-Writeln('Toolbar button  1  clicked!');
-Writeln('******************');
+  debugln('******************');
+  debugln('Toolbar button  1  clicked!');
+  debugln('******************');
 end;
 
 Procedure TFORM1.Button2Click(Sender : TObject);
 Begin
-Writeln('******************');
-Writeln('Toolbar button  2  clicked!');
-Writeln('******************');
+  debugln('******************');
+  debugln('Toolbar button  2  clicked!');
+  debugln('******************');
 end;
 
 Procedure TFORM1.Button3Click(Sender : TObject);
 Begin
-Writeln('******************');
-Writeln('Toolbar button  3  clicked!');
-Writeln('******************');
+  DebugLn('******************');
+  debugln('Toolbar button  3  clicked!');
+  debugln('******************');
 end;
 
 

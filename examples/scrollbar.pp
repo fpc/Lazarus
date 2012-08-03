@@ -34,7 +34,7 @@ program Scrollbar;
 
 uses
   Interfaces, Classes, StdCtrls, Forms, Buttons, Menus, ComCtrls,
-  SysUtils, ExtCtrls, Controls;
+  SysUtils, ExtCtrls, Controls, LazLogger;
 
 type
   TForm1 = class(TFORM)
@@ -130,8 +130,8 @@ End;
 
 Procedure TForm1.Button1Clicked(sender : tobject);
 Begin
-Writeln('[Button1cvlikced]');
-if ScrollBar1.Kind = sbHorizontal then
+  debugln('[Button1Clicked]');
+  if ScrollBar1.Kind = sbHorizontal then
     Scrollbar1.Kind := sbVertical else
     Scrollbar1.kind := sbHorizontal;
  
@@ -161,7 +161,7 @@ End;
 
 Procedure TForm1.Scrollbar1OnScroll(Sender: TObject; ScrollCode: TScrollCode; var ScrollPos: Integer);
 Begin
-Writeln('.............Scrolled...............');
+  DebugLn('.............Scrolled...............');
 End;
 
 begin

@@ -101,7 +101,6 @@ begin
   // paint first on the buffer
   
   // paint background
-  //writeln('TPlayGroundForm.UpdateImage A');
   BufferImg.Canvas.CopyRect(Rect(0,0,BufferImg.Width,BufferImg.Height),
        BackgroundImg.Canvas,Rect(0,0,BackgroundImg.Width,BackgroundImg.Height));
   // paint sprite
@@ -110,16 +109,13 @@ begin
   t:=Now*86400;
   x:=CenterX+round(cos(t)*CenterX*2/3)-(SpriteImg.Width div 2);
   y:=CenterY+round(sin(t*0.7)*CenterY*2/3)-(SpriteImg.Height div 2);
-  //writeln('TPlayGroundForm.UpdateImage B ',x,',',y,' ',t);
   BufferImg.Canvas.Draw(x, y, SpriteImg);
-  //writeln('TPlayGroundForm.UpdateImage C');
 
   // copy to image
   DestImg:=PictureControl.Picture.Bitmap;
   DestImg.Width:=BufferImg.Width;
   DestImg.Height:=BufferImg.Height;
   DestImg.Canvas.Draw(0,0,BufferImg);
-  //writeln('TPlayGroundForm.UpdateImage D');
 end;
 
 { TPictureControl }

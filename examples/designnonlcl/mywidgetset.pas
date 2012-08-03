@@ -292,7 +292,6 @@ end;
 
 procedure TMyWidget.InvalidateRect(ARect: TRect; Erase: boolean);
 begin
-  //writeln('TMyWidget.InvalidateRect ',Name,' ',ARect.Left,',',ARect.Top);
   ARect.Left:=Max(0,ARect.Left);
   ARect.Top:=Max(0,ARect.Top);
   ARect.Right:=Min(Width,ARect.Right);
