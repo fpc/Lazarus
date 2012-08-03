@@ -330,6 +330,7 @@ begin
   SecondaryFilename:=AppendPathDelim(GetSecondaryConfigPath)+ShortFilename;
   if (not FileExistsUTF8(PrimaryFilename))
   and (FileExistsUTF8(SecondaryFilename)) then begin
+    debugln(['CopySecondaryConfigFile ',SecondaryFilename,' -> ',PrimaryFilename]);
     if not CreatePrimaryConfigPath then begin
       debugln(['WARNING: unable to create primary config directory "',GetPrimaryConfigPath,'"']);
       exit;

@@ -933,6 +933,7 @@ function SearchDebuggerCandidates(StopIfFits: boolean): TObjectList;
     List.Add(Item);
     Result:=(Item.Quality=sddqCompatible) and StopIfFits;
   end;
+
 const
   DebuggerFileName='gdb'; //For Windows, .exe will be appended
 var
@@ -986,8 +987,7 @@ begin
         if CheckFile(Files[i],Result) then exit;
 
     // check PATH
-    AFilename:=DebuggerFileName;
-    AFilename+=GetExecutableExt;
+    AFilename:=DebuggerFileName+GetExecutableExt;
     if CheckFile(FindDefaultExecutablePath(AFilename),Result) then exit;
 
     // There are no common directories apart from the PATH
@@ -1910,13 +1910,43 @@ var
   Node: TTreeNode;
   Candidate: TSDFileInfo;
   IsFirstStart: Boolean;
+  PrimaryFilename: String;
+  SecondaryFilename: String;
+  PrimaryEnvs: TStringListUTF8;
+  SecondaryEnvs: TStringListUTF8;
 begin
   IsFirstStart:=not FileExistsCached(EnvironmentOptions.Filename);
+  if not IsFirstStart then begin
+    PrimaryFilename:=EnvironmentOptions.Filename;
+    SecondaryFilename:=AppendPathDelim(GetSecondaryConfigPath)+ExtractFilename(PrimaryFilename);
+    if FileExistsUTF8(PrimaryFilename)
+    and FileExistsUTF8(SecondaryFilename) then begin
+      // compare content of primary and secondary config
+      PrimaryEnvs:=TStringListUTF8.Create;
+      SecondaryEnvs:=TStringListUTF8.Create;
+      try
+        PrimaryEnvs.LoadFromFile(PrimaryFilename);
+      except
+        on E: Exception do
+          debugln(['TInitialSetupDialog.Init unable to read "'+PrimaryFilename+'": '+E.Message]);
+      end;
+      try
+        SecondaryEnvs.LoadFromFile(SecondaryFilename);
+      except
+        on E: Exception do
+          debugln(['TInitialSetupDialog.Init unable to read "'+SecondaryFilename+'": '+E.Message]);
+      end;
+      IsFirstStart:=PrimaryEnvs.Text=SecondaryEnvs.Text;
+      PrimaryEnvs.Free;
+      SecondaryEnvs.Free;
+    end;
+  end;
+  //debugln(['TInitialSetupDialog.Init IsFirstStart=',IsFirstStart,' ',EnvironmentOptions.Filename]);
 
   // Lazarus directory
   UpdateLazarusDirCandidates;
-  if IsFirstStart then
-  begin
+  if IsFirstStart or (not FileExistsCached(EnvironmentOptions.GetParsedLazarusDirectory))
+  then begin
     // first start => choose first best candidate
     Candidate:=GetFirstCandidate(FCandidates[sddtLazarusSrcDir]);
     if Candidate<>nil then
@@ -1928,8 +1958,8 @@ begin
 
   // compiler filename
   UpdateCompilerFilenameCandidates;
-  if IsFirstStart then
-  begin
+  if IsFirstStart or (not FileExistsCached(EnvironmentOptions.GetParsedCompilerFilename))
+  then begin
     // first start => choose first best candidate
     Candidate:=GetFirstCandidate(FCandidates[sddtCompilerFilename]);
     if Candidate<>nil then
@@ -1941,8 +1971,8 @@ begin
 
   // FPC source directory
   UpdateFPCSrcDirCandidates;
-  if IsFirstStart then
-  begin
+  if IsFirstStart or (not FileExistsCached(EnvironmentOptions.GetParsedFPCSourceDirectory))
+  then begin
     // first start => choose first best candidate
     Candidate:=GetFirstCandidate(FCandidates[sddtFPCSrcDir]);
     if Candidate<>nil then
@@ -1954,7 +1984,7 @@ begin
 
   // Make executable
   UpdateMakeExeCandidates;
-  if IsFirstStart then
+  if IsFirstStart or (EnvironmentOptions.MakeFilename='') then
   begin
     // first start => choose first best candidate
     Candidate:=GetFirstCandidate(FCandidates[sddtMakeExeFilename]);
@@ -1967,8 +1997,8 @@ begin
 
   // Debugger
   UpdateDebuggerCandidates;
-  if IsFirstStart then
-  begin
+  if IsFirstStart or (not FileExistsCached(EnvironmentOptions.GetParsedDebuggerFilename))
+  then begin
     // first start => choose first best candidate
     Candidate:=GetFirstCandidate(FCandidates[sddtDebuggerFilename]);
     if Candidate<>nil then
