@@ -367,21 +367,21 @@ var
   i: Integer;
   Item: TMyCollectionItem;
 begin
-  writeln('TMyComponent.WriteDebugReport ');
-  writeln('  MyDouble=',MyDouble);
-  writeln('  MySingle=',MySingle);
-  writeln('  MyEnum=',GetEnumName(TypeInfo(TMyEnum),ord(MyEnum)));
-  writeln('  MySet=',HexStr(Cardinal(MySet),8));
-  writeln('  MyString=',MyString);
-  writeln('  MyWideString=',MyWideString);
-  writeln('  MyInteger=',MyInteger);
-  writeln('  MyInt64=',MyInt64);
-  writeln('  MyCollection.Count=',MyCollection.Count);
+  debugln('TMyComponent.WriteDebugReport ');
+  debugln(['  MyDouble=',MyDouble]);
+  debugln(['  MySingle=',MySingle]);
+  debugln(['  MyEnum=',GetEnumName(TypeInfo(TMyEnum),ord(MyEnum))]);
+  debugln(['  MySet=',HexStr(Cardinal(MySet),8)]);
+  debugln(['  MyString=',MyString]);
+  debugln(['  MyWideString=',MyWideString]);
+  debugln(['  MyInteger=',MyInteger]);
+  debugln(['  MyInt64=',MyInt64]);
+  debugln(['  MyCollection.Count=',MyCollection.Count]);
   for i:=0 to MyCollection.Count-1 do begin
     Item:=TMyCollectionItem(MyCollection.Items[i]);
-    writeln('    ',i,' MyString=',Item.MyString);
+    debugln(['    ',i,' MyString=',Item.MyString]);
   end;
-  writeln('  MyStrings='+dbgstr(MyStrings.Text));
+  debugln(['  MyStrings='+dbgstr(MyStrings.Text)]);
 end;
 
 { TMyGroupBox }

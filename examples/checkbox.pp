@@ -32,11 +32,10 @@
 program CheckBox;
 
 {$mode objfpc}{$H+}
-// program uses WriteLn
 
 uses
   Interfaces, Classes, Stdctrls, Forms, Buttons, Menus, Comctrls,
-  SysUtils, ExtCtrls, GraphType, Graphics, Controls;
+  SysUtils, ExtCtrls, GraphType, Graphics, Controls, LazLogger;
 
 type
   TForm1 = class(TFORM)
@@ -121,13 +120,12 @@ End;
 
 procedure TForm1.CheckBoxClick(Sender : TObject);
 Begin
-  WriteLn('[TForm1.CheckBoxClick]');
+  DebugLn('[TForm1.CheckBoxClick]');
    if assigned (CheckBox1) and assigned (label1) then begin
       Writeln ('   [checkbox and label assigned]');
       if CheckBox1.Checked
         then label1.Caption := 'checked'
         else label1.Caption := 'unchecked';
-// ***SIGSEGV!!!!!!!!!      label1.Repaint; 
       if CheckBox1.Checked
         then CheckBox1.Caption := 'new caption'
         else CheckBox1.Caption := 'Checkbox 1';
@@ -136,25 +134,24 @@ End;
 
 procedure TForm1.RadioButtonClick(Sender : TObject);
 begin
-   WriteLn('[TForm1.RadioButtonClick]');
+   debugln('[TForm1.RadioButtonClick]');
    if assigned (label2)
       then label2.Caption := 'active: ' + TRadioButton (Sender).Caption
 end;
 
 procedure TForm1.RadioGroupClick(Sender : TObject);
 begin
-   WriteLn('[TForm1.RadioGroupClick]');
+   debugln('[TForm1.RadioGroupClick]');
 end;
 
 procedure TForm1.ToggleBoxClick(Sender : TObject);
 begin
-   WriteLn('[TForm1.ToggleBoxClick]');
+   debugln('[TForm1.ToggleBoxClick]');
    if assigned (ToggleBox) then
    begin
       if ToggleBox.checked
          then ToggleBox.Caption := 'Togglebox1'
 	 else ToggleBox.Caption := 'does nothing:-(';
-// ***SIGSEGV!!!!!!!!!      ToggleBox.RePaint;
    end;
 end;
 

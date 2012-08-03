@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs,
-  LCLType, LCLIntf, StdCtrls, Buttons, LCLProc, ComCtrls, ExtCtrls, Grids,
+  LCLType, LCLIntf, StdCtrls, Buttons, LCLProc, ExtCtrls, Grids,
   FileUtil, IniFiles;
 
 type
@@ -399,7 +399,7 @@ begin
     i := Sender.Items.IndexOf(s);
     if i>-1 then begin
       {$ifdef debug}
-      WriteLn('RestoreSelection: listbox=',Sender.Name,' Old=',GetSelection,' New=',S);
+      debugln('RestoreSelection: listbox=',Sender.Name,' Old=',GetSelection,' New=',S);
       {$endif}
       if i<>Sender.ItemIndex then
         Sender.ItemIndex := i;
@@ -428,7 +428,7 @@ begin
   lf.lfPitchAndFamily := i;
 
   {$ifdef debug}
-  WriteLn('LoadFontList: for charset=',CharSetToString(lf.lfcharset));
+  debugln('LoadFontList: for charset=',CharSetToString(lf.lfcharset));
   {$endif}
 
   L := TStringList.create;
@@ -492,9 +492,9 @@ begin
   {$ifdef debug}
   Write('LoadFamilyFonts: for family=', lbFamily.Items[i],' and Charset=');
   if LoadingCharsets then
-    WriteLn('ALL_CHARSETS')
+    debugln('ALL_CHARSETS')
   else
-    WriteLn(CharsetToString(byte(Charset)));
+    debugln(CharsetToString(byte(Charset)));
   {$endif}
 
   // at the moment only global fonts are enumerated

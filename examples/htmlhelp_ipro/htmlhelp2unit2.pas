@@ -112,9 +112,7 @@ end;
 procedure TForm2.showURL(URL : String);
 begin
   Show;
-  //writeln ('ShowUrl ',ansiuppercase(URL));
   URL := expandLocalHtmlFileName (URL);
-  //writeln ('showURL: "',URL,'"');
   IHP.OpenURL(URL);
 end;
 

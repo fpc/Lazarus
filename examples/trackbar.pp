@@ -40,7 +40,7 @@ program Trackbar;
 
 uses
   Interfaces, Classes, Forms, Buttons, StdCtrls, Menus, ComCtrls,
-  SysUtils, Controls;
+  SysUtils, Controls, LazLogger;
 
 type
         TForm1 = class(TFORM)
@@ -102,7 +102,7 @@ End;
 procedure TForm1.Button3Click(Sender : TObject);
 Begin
    if assigned (Track1) then begin
-        writeln ('Setting new position');
+        debugln ('Setting new position');
         Track1.Position := Track1.Position + 1;
    end;
 End;
@@ -110,7 +110,7 @@ End;
 procedure TForm1.Button4Click(Sender : TObject);
 Begin
    if assigned (Track1) then begin
-     writeln ('Setting new position for scale. Old:', ord (Track1.ScalePos));
+     debugln (['Setting new position for scale. Old:', ord (Track1.ScalePos)]);
      case Track1.ScalePos of
        trLeft  : Track1.ScalePos := trRight;
        trRight : Track1.ScalePos := trTop;
@@ -123,7 +123,7 @@ End;
 procedure TForm1.Button5Click(Sender : TObject);
 Begin
    if assigned (Track1) then begin
-        writeln ('Toggling showing tickmarks');
+        debugln ('Toggling showing tickmarks');
      if Track1.TickStyle = tsNone
        then Track1.TickStyle := tsAuto
        else Track1.TickStyle := tsNone;
@@ -139,7 +139,7 @@ End;
 procedure TForm1.Button7Click(Sender : TObject);
 Begin
    if assigned (Track1) then begin
-        writeln ('Incrementing LineSize');
+        debugln ('Incrementing LineSize');
         Track1.LineSize := Track1.LineSize + 1;
    end;
 End;
@@ -147,7 +147,7 @@ End;
 procedure TForm1.Button8Click(Sender : TObject);
 Begin
    if assigned (Track1) then begin
-        writeln ('Incrementing PageSize');
+        debugln ('Incrementing PageSize');
         Track1.PageSize := Track1.PageSize + 1;
    end;
 End;
@@ -155,7 +155,7 @@ End;
 procedure TForm1.Track1Change(Sender : TObject);
 begin
    if assigned (Track1) then begin
-        writeln ('*** CALLBACK ONCHANGE!!!!! ***');
+        DebugLn ('*** CALLBACK ONCHANGE!!!!! ***');
         Track1.PageSize := Track1.PageSize + 1;
    end;
 end;

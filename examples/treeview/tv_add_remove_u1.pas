@@ -52,7 +52,7 @@ begin
          with tv_eg1.Items.AddFirst(  nil,  'Root'  ) do
          begin
             Selected := true;
-            writeln('tv_eg1.Selected=',DbgS(tv_eg1.Selected));
+            debugln('tv_eg1.Selected=',DbgS(tv_eg1.Selected));
          end;
       end
       else begin

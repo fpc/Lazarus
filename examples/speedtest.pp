@@ -24,7 +24,7 @@ program SpeedTest;
 
 uses 
   Interfaces, Forms, SysUtils, Buttons, Classes, StdCtrls, LCLType,
-  LCLIntf, Graphics;
+  LCLIntf, Graphics, LazLogger;
 
 type
   TForm1 = class(TForm)
@@ -165,12 +165,12 @@ var
   
   
 begin
-   WriteLN('------ INIT ------- ');
+   debugln('------ INIT ------- ');
    Application.Initialize; { calls InitProcedure which starts up GTK }
-   WriteLN('------ CREATE ------- ');
+   debugln('------ CREATE ------- ');
    Application.CreateForm(TForm1, Form1);
-   WriteLN('------ RUN ------- ');
+   debugln('------ RUN ------- ');
    Application.Run;
-   WriteLN('------ DONE ------- ');
+   DebugLn('------ DONE ------- ');
 end.
 

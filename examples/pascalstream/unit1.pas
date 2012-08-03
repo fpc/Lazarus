@@ -261,21 +261,21 @@ var
   i: Integer;
   Item: TMyCollectionItem;
 begin
-  writeln('TMyComponent.WriteDebugReport ');
-  writeln('  MyDouble=',FMyDouble);
-  writeln('  MySingle=',FMySingle);
-  writeln('  MyEnum=',GetEnumName(TypeInfo(TMyEnum),ord(FMyEnum)));
-  writeln('  MySet=',HexStr(Cardinal(FMySet),8));
-  writeln('  MyString=',FMyString);
-  writeln('  MyWideString=',FMyWideString);
-  writeln('  MyInteger=',FMyInteger);
-  writeln('  MyInt64=',FMyInt64);
-  writeln('  MyCollection.Count=',FMyCollection.Count);
+  debugln('TMyComponent.WriteDebugReport ');
+  debugln(['  MyDouble=',FMyDouble]);
+  debugln(['  MySingle=',FMySingle]);
+  debugln(['  MyEnum=',GetEnumName(TypeInfo(TMyEnum),ord(FMyEnum))]);
+  debugln(['  MySet=',HexStr(Cardinal(FMySet),8)]);
+  debugln(['  MyString=',FMyString]);
+  debugln(['  MyWideString=',FMyWideString]);
+  debugln(['  MyInteger=',FMyInteger]);
+  debugln(['  MyInt64=',FMyInt64]);
+  debugln(['  MyCollection.Count=',FMyCollection.Count]);
   for i:=0 to FMyCollection.Count-1 do begin
     Item:=TMyCollectionItem(FMyCollection.Items[i]);
-    writeln('    ',i,' MyString=',Item.MyString);
+    debugln(['    ',i,' MyString=',Item.MyString]);
   end;
-  //writeln('  MyStrings='+dbgstr(MyStrings.Text));
+  //debugln(['  MyStrings='+dbgstr(MyStrings.Text)]);
 end;
 
 procedure TMyComponent.GetChildren(Proc: TGetChildProc; Root: TComponent);
