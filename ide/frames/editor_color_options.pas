@@ -458,8 +458,14 @@ begin
   ColorPreview.GetHighlighterAttriAtRowCol(XY, Token, Attri);
   if Attri = nil then
     Attri := FCurrentHighlighter.WhitespaceAttribute;
-  if Attri <> nil then
-    NewNode := ColorElementTree.Items.FindNodeWithText(COLOR_NODE_PREFIX+Attri.Name);
+  if Attri <> nil then begin
+    NewNode := ColorElementTree.Items.GetFirstNode;
+    while Assigned(NewNode) do begin
+      if (NewNode.Data <> nil) and (TColorSchemeAttribute(NewNode.Data).StoredName = Attri.StoredName) then
+        break;
+      NewNode := NewNode.GetNext;
+    end;
+  end;
   if NewNode <> nil then begin
     NewNode.Selected := True;
     FindCurHighlightElement;
