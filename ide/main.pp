@@ -15040,6 +15040,7 @@ var
   InteractiveSetup: boolean;
   Note: string;
   CfgCache: TFPCTargetConfigCache;
+  OldLazDir: String;
 begin
   Result:=true;
   InteractiveSetup:=true;
@@ -15109,9 +15110,16 @@ begin
         ShowSetupDialog:=true;
       end;
     end;
-    if ShowSetupDialog then
+    if ShowSetupDialog then begin
+      OldLazDir:=EnvironmentOptions.LazarusDirectory;
       if ShowInitialSetupDialog<>mrOk then
         exit(false);
+      if OldLazDir<>EnvironmentOptions.LazarusDirectory then begin
+        CollectTranslations(EnvironmentOptions.GetParsedLazarusDirectory);
+        TranslateResourceStrings(EnvironmentOptions.GetParsedLazarusDirectory,
+                                 EnvironmentOptions.LanguageID);
+      end;
+    end;
   end;
 
   // set global macros
