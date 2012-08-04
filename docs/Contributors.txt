@@ -159,6 +159,7 @@ Seppo Suutarla - finnish translation
 Sergio Marcelo
 Shane Miller
 Sileno Goedicke
+Silvio Clecio
 Slavko Fedorik
 Stefan Hille
 Takeda Matsuki
