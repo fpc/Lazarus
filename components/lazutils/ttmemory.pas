@@ -223,11 +223,8 @@ const
  begin
    if Pointer(P) = nil then exit;
 
-   i    := -1;
-   head := @(PBlock_Headers(P)^[i]);
-   (* A hack to get the header in PB, as the line             *)
-   (*  @(PBlock_Headers(P)^[-1] would give a 'constant error' *)
-   (* at compile time. I'm unsure this works correctly in BP  *)
+   head:=PBlock_Header(P);
+   dec(head);
 
    if head^.magic <> Mark_Magic then
    begin
