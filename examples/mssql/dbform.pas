@@ -5,7 +5,9 @@ unit dbform;
 interface
 
 uses
-  Classes, SysUtils, mssqlconn, db, sqldb, FileUtil, Forms, Controls, Graphics,
+  Classes, SysUtils,
+  mssqlconn, // mssqlconn was added to 2.6.1, you need a recent 2.6.1
+  db, sqldb, FileUtil, Forms, Controls, Graphics,
   Dialogs, DBGrids, dbloginform;
 
 type
