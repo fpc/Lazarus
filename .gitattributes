@@ -3677,7 +3677,6 @@ examples/comdialogs.pp svneol=native#text/pascal
 examples/componentstreaming/componentstreaming.lpi svneol=native#text/plain
 examples/componentstreaming/componentstreaming.lpr svneol=native#text/plain
 examples/componentstreaming/mainunit.lfm svneol=native#text/plain
-examples/componentstreaming/mainunit.lrs svneol=native#text/pascal
 examples/componentstreaming/mainunit.pas svneol=native#text/plain
 examples/cursors/car.cur -text svneol=unset#image/x-cursor
 examples/cursors/car.lrs svneol=native#text/pascal

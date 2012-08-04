@@ -92,7 +92,7 @@ object CompStreamDemoForm: TCompStreamDemoForm
       Top = 95
       Width = 492
       Align = alBottom
-      Caption = 'Show sream in LFM format (text)'
+      Caption = 'Show stream in LFM format (text)'
       OnChange = StreamAsLFMCheckBoxChange
       TabOrder = 1
     end
