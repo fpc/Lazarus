@@ -17,14 +17,18 @@ type
   protected
     procedure SetRealLinesText;
     procedure SetRealLinesText2;
+    procedure SetRealLinesText3;
     procedure DumpLines(ALines: TSynHLightMultiVirtualLines);
     procedure DumpSections(ASectList: TSynHLightMultiSectionList);
     procedure DumpRanges(ARangeList: TSynHighlighterRangeList);
     procedure DumpAll(Hl: TSynMultiSyn);
+    procedure CheckTokensForLine(Name: String; HL: TSynCustomHighlighter;
+                                 LineIdx: Integer; ExpAttr: Array of TSynHighlighterAttributes);
   published
     procedure TestSectionList;
     procedure TestVirtualLines;
     procedure TestMultiHL;
+    procedure TestMultiHLEdit;
   end;
 
 implementation
@@ -62,6 +66,25 @@ begin
            ]);
 end;
 
+procedure TTestHighlightMulti.SetRealLinesText3;
+begin
+  SetLines(['abc',
+            'abc',
+            'test<pas>unit a;',
+            '//Comment',
+            '//Comment',
+            'uses Foo;',
+            '//</pas><x>',
+            'def',
+            'def',
+            'def',
+            'x<pas>interface',
+            '//Comment',
+            '//</pas></x>',
+            'abc'
+           ]);
+end;
+
 procedure TTestHighlightMulti.DumpLines(ALines: TSynHLightMultiVirtualLines);
 var
   i: Integer;
@@ -92,16 +115,39 @@ procedure TTestHighlightMulti.DumpAll(Hl: TSynMultiSyn);
 var
   i: Integer;
 begin  // ensure CurrentLines are set
-  debugln(['--- Default']);
-  DumpLines(hl.DefaultVirtualLines);
-  DumpSections(hl.DefaultVirtualLines.SectionList);
-  debugln(['-']);
-  DumpRanges(TSynHighlighterRangeList(hl.CurrentLines.Ranges[hl]));
-  for i := 0 to hl.Schemes.Count - 1 do begin
-    debugln(['-- ',i,' ', dbgs(hl.Schemes[i].Highlighter)]);
-    DumpLines(hl.Schemes[i].VirtualLines);
-    DumpSections(hl.Schemes[i].VirtualLines.SectionList);
+  DebugLnEnter(['>> --- Default / Lines']); DebugLnEnter;
+    DumpLines(hl.DefaultVirtualLines);
+  DebugLnExit; DebugLnEnter(['-- Sections']);
+    DumpSections(hl.DefaultVirtualLines.SectionList);
+  DebugLnExit; DebugLnEnter(['-- Ranges']);
+    DumpRanges(TSynHighlighterRangeList(hl.CurrentLines.Ranges[hl]));
+    for i := 0 to hl.Schemes.Count - 1 do begin
+  DebugLnExit; DebugLnEnter(['-- Scheme=',i,' ', dbgs(hl.Schemes[i].Highlighter)]);
+      DumpLines(hl.Schemes[i].VirtualLines);
+      DumpSections(hl.Schemes[i].VirtualLines.SectionList);
+    end;
+  DebugLnExit;
+  DebugLnExit('<<');
+end;
+
+procedure TTestHighlightMulti.CheckTokensForLine(Name: String; HL: TSynCustomHighlighter;
+  LineIdx: Integer; ExpAttr: array of TSynHighlighterAttributes);
+var
+  c: Integer;
+begin
+  HL.StartAtLineIndex(LineIdx);
+  c := 0;
+  while not HL.GetEol do begin
+    //DebugLn([HL.GetToken,' (',HL.GetTokenID ,') at ', HL.GetTokenPos]);
+    AssertTrue(Format('%s Attrib Line=%d pos=%d exp=%s got=%s',
+                      [Name, LineIdx, c,  ExpAttr[c].StoredName, HL.GetTokenAttribute.StoredName]),
+               ExpAttr[c] = HL.GetTokenAttribute);
+    HL.Next;
+    inc(c);
+    if c >= length(ExpAttr) then
+      break;
   end;
+  AssertEquals(Name+ 'TokenId Line='+IntToStr(LineIdx)+'  amount of tokens', length(ExpAttr), c );
 end;
 
 procedure TTestHighlightMulti.TestSectionList;
@@ -757,6 +803,189 @@ begin
 
   PopPushBaseName('SetupXmlLfmPas start 1 line');
   RunXmlLfmPas('<dummy>foo<lfm>' + LineEnding);
+end;
+
+procedure TTestHighlightMulti.TestMultiHLEdit;
+var
+  MultiHl: TSynMultiSyn;
+  XmlHl: TSynXMLSyn;
+  EmptyScheme, PasScheme: TSynHighlighterMultiScheme;
+  AttEl, AttSym: TSynHighlighterAttributes;
+  PasHl: TSynPasSyn;
+
+  procedure InitMultiXmlPasHl;
+  begin
+    MultiHl := TSynMultiSyn.Create(Form);
+    XmlHl := TSynXMLSyn.Create(Form);
+    MultiHl.DefaultHighlighter := XmlHl;
+    PasScheme := TSynHighlighterMultiScheme(MultiHl.Schemes.Add);
+    PasScheme.CaseSensitive := False;
+    PasScheme.StartExpr := '<pas>';
+    PasScheme.EndExpr := '</pas>';
+    PasHl := TSynPasSyn.Create(Form);
+    PasScheme.Highlighter := PasHl;
+    SynEdit.Highlighter := MultiHl;
+  end;
+  procedure FinishMultiXmlPasHl;
+  begin
+    SynEdit.Highlighter := nil;
+    FreeAndNil(XmlHl);
+    FreeAndNil(PasHl);
+    FreeAndNil(MultiHl);
+  end;
+begin
+  {%region}
+    // Issue 0022519
+    MultiHl := TSynMultiSyn.Create(Form);
+    XmlHl := TSynXMLSyn.Create(Form);
+    MultiHl.DefaultHighlighter := XmlHl;
+    EmptyScheme := TSynHighlighterMultiScheme(MultiHl.Schemes.Add);
+
+    AttEl  := XmlHl.ElementAttri;
+    AttSym := XmlHl.SymbolAttri;
+
+    SynEdit.Highlighter := MultiHl;
+
+    SynEdit.SetTextBetweenPoints(Point(1,1), Point(1,1), '<html>'+LineEnding);
+  DumpAll(MultiHl);
+    MultiHl.CurrentLines := SynEdit.TextBuffer;
+    CheckTokensForLine('1st line=html', MultiHl, 0, [AttSym, AttEl, AttSym]);
+
+    SynEdit.SetTextBetweenPoints(Point(1,2), Point(1,2), '<a>'+LineEnding);
+  DumpAll(MultiHl);
+    SynEdit.SetTextBetweenPoints(Point(1,1), Point(1,1), ''+LineEnding);
+  DumpAll(MultiHl);
+    SynEdit.SetTextBetweenPoints(Point(1,1), Point(1,2), '');
+  DumpAll(MultiHl);
+
+    SynEdit.Highlighter := nil;
+    FreeAndNil(XmlHl);
+    FreeAndNil(MultiHl);
+  {%endregion}
+
+  {%region}
+    // multiple section (same scheme) on one line
+    SynEdit.ClearAll;
+    InitMultiXmlPasHl;
+
+    SynEdit.SetTextBetweenPoints(Point(1,1), Point(1,1),
+      'abc'+LineEnding+
+      'test<pas>unit a;</pas><x><pas>uses </pas></x><pas> Foo;</pas>a'+LineEnding+
+      'abc'+LineEnding
+    );
+DumpAll(MultiHl);
+//Application.ProcessMessages; readln;
+    SynEdit.SetTextBetweenPoints(Point(1,1), Point(1,3), '');
+DumpAll(MultiHl);
+//Application.ProcessMessages; readln;
+
+    FinishMultiXmlPasHl;
+  {%endregion}
+
+  {%region}
+    // longer section, delete part at begin of section (no overlap / 1 line)
+    SetRealLinesText3;
+    InitMultiXmlPasHl;
+    SynEdit.SimulatePaintText;
+
+DumpAll(MultiHl); //Application.ProcessMessages; readln;
+    SynEdit.SetTextBetweenPoints(Point(1,3), Point(1,4), '');
+DumpAll(MultiHl); //Application.ProcessMessages; readln;
+
+    FinishMultiXmlPasHl;
+  {%endregion}
+
+  {%region}
+    // longer section, delete part at begin of section (no overlap / 2 line)
+    SetRealLinesText3;
+    InitMultiXmlPasHl;
+    SynEdit.SimulatePaintText;
+
+DumpAll(MultiHl); //Application.ProcessMessages; readln;
+    SynEdit.SetTextBetweenPoints(Point(1,3), Point(1,5), '');
+DumpAll(MultiHl); //Application.ProcessMessages; readln;
+
+    FinishMultiXmlPasHl;
+  {%endregion}
+
+  {%region}
+    // longer section, delete part at begin of section (overlap / 1 line of sect)
+    SetRealLinesText3;
+    InitMultiXmlPasHl;
+    SynEdit.SimulatePaintText;
+
+DumpAll(MultiHl); //Application.ProcessMessages; readln;
+    SynEdit.SetTextBetweenPoints(Point(1,2), Point(1,4), '');
+DumpAll(MultiHl); //Application.ProcessMessages; readln;
+
+    FinishMultiXmlPasHl;
+  {%endregion}
+
+  {%region}
+    // longer section, delete part at begin of section (overlap / 2 line of sect)
+    SetRealLinesText3;
+    InitMultiXmlPasHl;
+    SynEdit.SimulatePaintText;
+
+DumpAll(MultiHl); //Application.ProcessMessages; readln;
+    SynEdit.SetTextBetweenPoints(Point(1,2), Point(1,5), '');
+DumpAll(MultiHl); //Application.ProcessMessages; readln;
+
+    FinishMultiXmlPasHl;
+  {%endregion}
+
+  {%region}
+    // longer section, delete part at middle of section (1 line)
+    SetRealLinesText3;
+    InitMultiXmlPasHl;
+    SynEdit.SimulatePaintText;
+
+DumpAll(MultiHl); //Application.ProcessMessages; readln;
+    SynEdit.SetTextBetweenPoints(Point(1,4), Point(1,5), '');
+DumpAll(MultiHl); //Application.ProcessMessages; readln;
+
+    FinishMultiXmlPasHl;
+  {%endregion}
+
+  {%region}
+    // longer section, delete part at end of section (no overlap 1 line)
+    SetRealLinesText3;
+    InitMultiXmlPasHl;
+    SynEdit.SimulatePaintText;
+
+DumpAll(MultiHl); //Application.ProcessMessages; readln;
+    SynEdit.SetTextBetweenPoints(Point(1,7), Point(1,8), '');
+DumpAll(MultiHl); //Application.ProcessMessages; readln;
+
+    FinishMultiXmlPasHl;
+  {%endregion}
+
+  {%region}
+    // longer section, delete part at end of section (no overlap 2 line)
+    SetRealLinesText3;
+    InitMultiXmlPasHl;
+    SynEdit.SimulatePaintText;
+
+DumpAll(MultiHl); //Application.ProcessMessages; readln;
+    SynEdit.SetTextBetweenPoints(Point(1,6), Point(1,8), '');
+DumpAll(MultiHl); //Application.ProcessMessages; readln;
+
+    FinishMultiXmlPasHl;
+  {%endregion}
+
+  {%region}
+    // longer section, delete part at end of section (overlap 1 line of sect)
+    SetRealLinesText3;
+    InitMultiXmlPasHl;
+    SynEdit.SimulatePaintText;
+
+DumpAll(MultiHl); //Application.ProcessMessages; readln;
+    SynEdit.SetTextBetweenPoints(Point(1,7), Point(1,9), '');
+DumpAll(MultiHl); //Application.ProcessMessages; readln;
+
+    FinishMultiXmlPasHl;
+  {%endregion}
+
 end;
 
 initialization

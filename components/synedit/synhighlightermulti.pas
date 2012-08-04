@@ -614,18 +614,18 @@ begin
   do
     FSectionList.Delete(FRegionScanRangeIndex);
   VDiff := 0;
-DebugLn(['***** ', FRegionScanStartRangeIndex, ' cnt ', Count]);
+//DebugLn(['***** ', FRegionScanStartRangeIndex, ' cnt ', Count]);
   if FRegionScanStartRangeIndex < Count then begin
     // fix virtual lines on sections
     if (FRegionScanStartRangeIndex > 0) then begin
       s := FSectionList.Sections[FRegionScanStartRangeIndex-1];
       NewVLine := s.VirtualLine + s.EndPos.y - s.StartPos.y;
-DebugLn(['A ', NewVLine]);
+//DebugLn(['A ', NewVLine]);
       LastEnd := s.EndPos.y;
     end
     else begin
       NewVLine := 0;
-DebugLn(['B ', NewVLine]);
+//DebugLn(['B ', NewVLine]);
       LastEnd := FSectionList.Sections[FRegionScanStartRangeIndex].StartPos.y;
     end;
     LastVline := NewVLine;
@@ -734,49 +734,74 @@ end;
 procedure TSynHLightMultiVirtualLines.RealLinesDeleted(AIndex, ACount: Integer);
 var
   i: Integer;
-  PartCnt, VLineDiff: Integer;
+  CountInSection, PrevEndVLine, FirstVLine, VLineCount: Integer;
   p: PSynHLightMultiVirtualSection;
+
+  procedure DelVLines;
+  begin
+    if VLineCount > 0 then begin
+      FRangeList.ChildDeleteRows(FirstVLine, VLineCount);
+      FRangeList.CallDeletedLines(FirstVLine, VLineCount);
+    end;
+  end;
 begin
   i := FSectionList.IndexOfFirstSectionAtLineIdx(AIndex, -1, True);
   if i = FSectionList.Count then exit;
 
-  VLineDiff := 0;
   p := FSectionList.PSections[i];
+  VLineCount := 0;                              // Count of deleted virtual lines
+  FirstVLine := p^.VirtualLine;                 // First deleted virtual line
+  PrevEndVLine := -1;                           // Keep track of overlap, when next section starts on the same V-line as previous sectian ends
   if AIndex > p^.StartPos.y then begin
-    PartCnt := p^.EndPos.y - AIndex + 1;
-    FRangeList.ChildDeleteRows(p^.VirtualLine + AIndex - p^.StartPos.y, PartCnt);
-    FRangeList.CallDeletedLines(p^.VirtualLine + AIndex - p^.StartPos.y, PartCnt);
-    p^.EndPos.y := p^.EndPos.y - PartCnt;
+    // Real-lines starting in the middle of the Section
+    CountInSection := Min(AIndex + ACount, p^.EndPos.y + 1) - AIndex;
+    FirstVLine := p^.VirtualLine + AIndex - p^.StartPos.y;
+    PrevEndVLine := p^.VirtualLine + p^.EndPos.y - p^.EndPos.y;
+    p^.EndPos.y := p^.EndPos.y - CountInSection;
     inc(i);
+    if i = FSectionList.Count then begin
+      DelVLines;
+      exit;
+    end;
     p := FSectionList.PSections[i];
-    VLineDiff := PartCnt;
+    VLineCount := CountInSection;
   end;
   while p^.EndPos.y < AIndex + ACount do begin
-    VLineDiff := VLineDiff + p^.EndPos.y - p^.StartPos.y + 1;
-    FRangeList.ChildDeleteRows(p^.VirtualLine, p^.EndPos.y - p^.StartPos.y + 1);
-    FRangeList.CallDeletedLines(p^.VirtualLine, p^.EndPos.y - p^.StartPos.y + 1);
+    // Completly delete node (All Real lines deleted)
+    VLineCount := VLineCount + p^.EndPos.y - p^.StartPos.y + 1;
+    if PrevEndVLine = p^.VirtualLine then
+      dec(VLineCount);
+    PrevEndVLine := p^.VirtualLine + p^.EndPos.y - p^.EndPos.y;
     FSectionList.Delete(i);
-    if i = FSectionList.Count then
+    if i = FSectionList.Count then begin
+      DelVLines;
       exit;
+    end;
     p := FSectionList.PSections[i];
   end;
   if AIndex + ACount > p^.StartPos.y then begin
-    PartCnt := ACount - (p^.StartPos.y - AIndex);
-    FRangeList.ChildDeleteRows(p^.VirtualLine, PartCnt);
-    FRangeList.CallDeletedLines(p^.VirtualLine, PartCnt);
-    p^.EndPos.y := p^.EndPos.y - PartCnt;
-    p^.VirtualLine := p^.VirtualLine - VLineDiff;
-    VLineDiff := VLineDiff + PartCnt;
+    // Some real-lines at the start of section are deleted
+    p^.VirtualLine := p^.VirtualLine - VLineCount;
+    CountInSection := ACount - (p^.StartPos.y - AIndex);
+    VLineCount := VLineCount + CountInSection;
+    if PrevEndVLine = p^.VirtualLine then
+      dec(VLineCount);
+    p^.StartPos.y := p^.StartPos.y - (ACount - CountInSection);
+    p^.EndPos.y := p^.EndPos.y - ACount;
+    assert(p^.EndPos.y >= p^.StartPos.y, 'TSynHLightMultiVirtualLines.RealLinesDeleted: p^.EndPos.y >= p^.StartPos.y');
     inc(i);
   end;
 
+  // Adjust StartPos for all sections, after the deleted.
   while i < FSectionList.Count do begin
     p := FSectionList.PSections[i];
     p^.StartPos.y := p^.StartPos.y - ACount;
     p^.EndPos.y := p^.EndPos.y - ACount;
-    p^.VirtualLine := p^.VirtualLine - VLineDiff;
+    p^.VirtualLine := p^.VirtualLine - VLineCount;
     inc(i);
   end;
+
+  DelVLines;
 end;
 
 procedure TSynHLightMultiVirtualLines.RealLinesChanged(AIndex, ACount: Integer);
