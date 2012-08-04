@@ -832,7 +832,7 @@ msgstr "Escolha o arquivo de modelos de código (*.dci)"
 
 #: lazarusidestrconsts.dlgclassinsertpolicy
 msgid "Class part insert policy"
-msgstr ""
+msgstr "Política de inserção de partes da Classe"
 
 #: lazarusidestrconsts.dlgclosebuttonsnotebook
 msgid "Show close buttons in notebook"
@@ -2167,7 +2167,7 @@ msgstr "Máximo de arquivos de projeto recentes"
 
 #: lazarusidestrconsts.dlgmethodinspolicy
 msgid "Method insert policy"
-msgstr ""
+msgstr "Política de inserção de método"
 
 #: lazarusidestrconsts.dlgmixmethodsandproperties
 msgid "Mix methods and properties"
@@ -7389,7 +7389,7 @@ msgstr "Diretivas para nova unidade"
 
 #: lazarusidestrconsts.lisdirectory
 msgid "Directory: "
-msgstr ""
+msgstr "Diretório:"
 
 #: lazarusidestrconsts.lisdirectorynotfound
 msgid "Directory %s%s%s not found."
@@ -8293,7 +8293,7 @@ msgstr "Arquivo"
 
 #: lazarusidestrconsts.lisfile2
 msgid "File: "
-msgstr ""
+msgstr "Arquivo:"
 
 #: lazarusidestrconsts.lisfiledoesnotlooklikeatextfileopenitanyway
 msgctxt "lazarusidestrconsts.lisfiledoesnotlooklikeatextfileopenitanyway"
@@ -10982,21 +10982,21 @@ msgstr "Geral"
 #: lazarusidestrconsts.lismenuinsertgplnotice
 #| msgid "GPL notice"
 msgid "GPL Notice"
-msgstr "Aviso GPL"
+msgstr "Nota GPL"
 
 #: lazarusidestrconsts.lismenuinsertlgplnotice
 #| msgid "LGPL notice"
 msgid "LGPL Notice"
-msgstr "Aviso LGPL"
+msgstr "Nota LGPL"
 
 #: lazarusidestrconsts.lismenuinsertmitnotice
 msgid "MIT Notice"
-msgstr ""
+msgstr "Nota MIT"
 
 #: lazarusidestrconsts.lismenuinsertmodifiedlgplnotice
 #| msgid "Modified LGPL notice"
 msgid "Modified LGPL Notice"
-msgstr "Aviso LGL modificado"
+msgstr "Nota LGL modificada"
 
 #: lazarusidestrconsts.lismenuinsertusername
 #| msgid "Current username"
@@ -11687,7 +11687,7 @@ msgstr "Saltar esta Unidade"
 
 #: lazarusidestrconsts.lismitnotice
 msgid "<description>%sCopyright (c) <year> <copyright holders>%sPermission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the \"Software\"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:%sThe above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.%sTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE."
-msgstr ""
+msgstr "<description>%sCopyright (c) <year> <copyright holders>%sPermission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the \"Software\"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:%sThe above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.%sTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE."
 
 #: lazarusidestrconsts.lismodifiedlgplnotice
 msgid "<description>%sCopyright (C) <year> <name of author> <contact>%sThis library is free software; you can redistribute it and/or modify it under the terms of the GNU Library General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version with the following modification:%sAs a special exception, the copyright holders of this library give you permission to link this library with independent modules to produce an executable, regardless of the license terms of these independent modules,and to copy and distribute the resulting executable under terms of your choice, provided that you also meet, for each linked independent module, the terms and conditions of the license of that module. An independent module is a module which is not derived from or based on this library. If you modify this library, you may extend this exception to your version of the library, but you are not obligated to do so. If you do not wish to do so, delete this exception statement from your version.%sThis program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Library General Public License for more details. %sYou should have received a copy of the GNU Library General Public License along with this library; if not, write to the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA."
@@ -15149,7 +15149,6 @@ msgid "Editable Cell"
 msgstr "Célula Editável"
 
 #: lazarusidestrconsts.listemplateeditparamcellhelp
-#, fuzzy
 msgid "Inserts an editable Cell. Cells can be navigated using the tab key.%0:sThe \"param\" macro takes a list of comma separated arguments.%0:sThe first argument is the default value.%0:sThe 2nd argument (optional) can be used to link the cell to another cell (syncro edit)%0:s%0:s  while param(\"foo\") do param(foo);%0:sInserts 2 independent cells, both with the default text \"foo\"%0:sThe quotes are optional%0:s%0:s  if param(\"foo\") > 0 and param(\"foo\",sync=1) < 99 then%0:sInserts 2 linked cells, editing either one, will change the other one too%0:sThe value \"1\" refers to the position of the other \"param()\", so if there are more params:%0:s  if param(\"bar\") and param(foo) > 0 and param(foo,sync=2) < 99 then%0:sThe 2nd and third are linked. (the 3rd refers to \"2\") %0:s%0:s\"sync can be shortened to \"s\":%0:s  if param(\"foo\") > 0 and param(\"foo\",s=1) < 99 then%0:s%0:s  if param(\"bar\") and param(\"foo\") > 0 and param(\"foo\",sync) < 99 then%0:sThe 2nd and third are linked.%0:sNote: \"Sync has no position and no \"=\", so it syncs to the previous cell with the same default (in this case \"foo\")"
 msgstr "Insere uma Célula editável. Células podem ser navegadas usando a tecla tab.%0:sA macro \"param\" toma uma lista de argumentos separados por vírgula.%0:sO primeiro argumento é o valor padrão.%0:sO segundo argumento (opcional) pode ser usado para vincular uma célula a outra (edição síncrona)%0:s%0:s while param(\"foo\") do param(foo);%0:sInsere 2 células independentes, ambas com o texto padrão \"foo\"%0:sAs aspas são opcionais%0:s%0:s if param(\"foo\") > 0 and param(\"foo\",sync=1) < 99 then%0:sInsere 2 células vinculadas, editando qualquer uma, irá alterar a outra também%0:sO valor \"1\" refere-se à posição do outro \"param()\", então se houver mais parâmetros:%0:s if param(\"bar\") and param(foo) > 0 and param(foo,sync=2) < 99 then%0:sA segunda e a terceira serão vinculadas. (a 3ª refere-se ao \"2\") %0:s%0:s\"sync pode ser abreviado para \"s\":%0:s if param(\"foo\") > 0 and param(\"foo\",s=1) < 99 then%0:s%0:s if param(\"bar\") and param(\"foo\") > 0 and param(\"foo\",sync) < 99 then%0:sA segunda e a terceira serão vinculadas.%0:sNota: \"Sync não tem posição e nenhum \"=\", então ele sincroniza para a célula anterior com o mesmo padrão(neste caso \"foo\")"
 
@@ -15364,7 +15363,7 @@ msgstr "O diretório do fonte Free Pascal não foi encontrado.%sAlgumas funçõe
 
 #: lazarusidestrconsts.listhegnudebuggerthroughsshallowstoremotedebugviaassh
 msgid "The GNU debugger through ssh allows to remote debug via a ssh connection. See docs/RemoteDebugging.txt for details. The path must contain the ssh client filename, the hostname with an optional username and the filename of gdb on the remote computer. For example: %s/usr/bin/ssh username@hostname gdb%s or: %s/usr/bin/setsid /usr/bin/ssh username@hostname gdb%s"
-msgstr ""
+msgstr "O depurador GNU através de ssh permite depuração remota via conexão remota. Veja docs/RemoteDebugging.txt para detalhes. O caminho deve conter o cliente ssh. Use SSH_Startup_Options para o servidor e nome de usuário opcional. E Remote_GDB_Exe para o nome de arquivo do gdb no computador remoto."
 
 #: lazarusidestrconsts.listheidentifierisaunitpleaseusethefilesaveasfunction
 msgid "The identifier is a unit. Please use the File - Save as function to rename a unit."
@@ -17581,7 +17580,7 @@ msgstr "Interromper linha, manter o cursor"
 
 #: lazarusidestrconsts.srkmecinsertmitnotice
 msgid "Insert MIT notice"
-msgstr ""
+msgstr "Inserir nota MIT"
 
 #: lazarusidestrconsts.srkmecinsertmode
 msgid "Insert Mode"
