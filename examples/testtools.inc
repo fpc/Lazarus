@@ -2188,6 +2188,7 @@ end;
 
 procedure TForm1.PanelOutBevelClick(Sender: TObject);
 begin
+  if rgPanelInBevel=nil then exit;
   case rgPanelInBevel.ItemIndex of
      0 : Panel1.BevelOuter := bvLowered;
      1 : Panel1.BevelOuter := bvRaised;
@@ -2233,6 +2234,7 @@ end;
 //++++++++++++++++++++++++++++++++ TBevel +++++++++++++++++++++++++++++++++++++++++++
 procedure TForm1.BevelSettings(Sender : TObject);
 begin
+   if chbBevelShape=nil then exit;
    case chbBevelShape.ItemIndex of
       0 : Bevel1.Shape := bsBox;
       1 : Bevel1.Shape := bsFrame;
@@ -2241,6 +2243,7 @@ begin
       4 : Bevel1.Shape := bsLeftLine;
       5 : Bevel1.Shape := bsRightLine;
    end;
+   if chbBevelStyle=nil then exit;
    if chbBevelStyle.ItemIndex = 0
      then Bevel1.Style := bsLowered
      else Bevel1.Style := bsRaised
@@ -2386,6 +2389,7 @@ end;
 
 procedure TForm1.EventOnClick(Sender : TObject);
 begin
+  if lbEvents=nil then exit;
   lbEvents.Items.Add(Sender.ClassName+'.Click');
   EventWatch;
   //DebugLn('Trace:'+Sender.ClassName+'.EventOnClick');
