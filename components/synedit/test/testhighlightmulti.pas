@@ -7,7 +7,7 @@ interface
 uses
   Classes, SysUtils, LCLProc, fpcunit, testregistry, TestBase, Forms,
   SynEditHighlighter, SynHighlighterMulti,
-  SynHighlighterLFM, SynHighlighterXML, SynHighlighterPas;
+  SynHighlighterLFM, SynHighlighterXML, SynHighlighterPas, SynEditKeyCmds;
 
 type
 
@@ -484,7 +484,7 @@ begin
   InitVRange;
   TestVRange('selftest', [1,2,3,4,5,6,7]);
   vl.PrepareRegionScan(0);
-  vl.RegionScanUpdate0rInsertRegion(RPoint(1,1), RPoint(2,4), 0, 0);
+  vl.RegionScanUpdateOrInsertRegion(RPoint(1,1), RPoint(2,4), 0, 0);
   vl.FinishRegionScan(2);
   TestVLines('',    ['', '  Fo', ' ac;', 'test', '123', '', 'end']);
   TestVRange('', [1,2,3,4,5,6,7]);
@@ -492,7 +492,7 @@ begin
   Name := 'Scan(1,1-2,4) to (2,1-2,5)';
   InitVRange;
   vl.PrepareRegionScan(0);
-  vl.RegionScanUpdate0rInsertRegion(RPoint(2,1), RPoint(2,5), 0, 0);
+  vl.RegionScanUpdateOrInsertRegion(RPoint(2,1), RPoint(2,5), 0, 0);
   vl.FinishRegionScan(2);
   TestVLines('',    ['  Foo', ' ac;', 'test', '123', '', 'end']);
   TestVRange('', [2,3,4,5,6,7]);
@@ -508,7 +508,7 @@ begin
   Name := 'Scan(2,1-2,3) to (1,1-2,5) del(3,*)';
   InitVRange;
   vl.PrepareRegionScan(1);
-  vl.RegionScanUpdate0rInsertRegion(RPoint(1,1), RPoint(2,5), 0, 0);
+  vl.RegionScanUpdateOrInsertRegion(RPoint(1,1), RPoint(2,5), 0, 0);
   vl.FinishRegionScan(3);
   TestVLines('',    ['', '  Foo', 'test', '123', '', 'end']);
   TestVRange('', [-1,-1,3,4,5,6]);
@@ -548,7 +548,7 @@ begin
   Name := 'Scan insert (4,*)';
   InitVRange;
   vl.PrepareRegionScan(3);
-  vl.RegionScanUpdate0rInsertRegion(RPoint(4,1), RPoint(4,3), 0, 0);
+  vl.RegionScanUpdateOrInsertRegion(RPoint(4,1), RPoint(4,3), 0, 0);
   vl.FinishRegionScan(5);
   TestVLines('',    ['', '  Foo', '  ', 'z 123', '', 'end']);
   TestVRange('', [1,2,-1,3,4,5]);
@@ -834,37 +834,89 @@ var
     FreeAndNil(MultiHl);
   end;
 begin
-  {%region}
-    // Issue 0022519
+  {%region Issue 0022519}
+    PushBaseName('Edit: Issue 0022519');   // Issue 0022519
     MultiHl := TSynMultiSyn.Create(Form);
     XmlHl := TSynXMLSyn.Create(Form);
     MultiHl.DefaultHighlighter := XmlHl;
     EmptyScheme := TSynHighlighterMultiScheme(MultiHl.Schemes.Add);
 
+XmlHl.ElementAttri.Foreground := 255;
     AttEl  := XmlHl.ElementAttri;
     AttSym := XmlHl.SymbolAttri;
 
     SynEdit.Highlighter := MultiHl;
 
-    SynEdit.SetTextBetweenPoints(Point(1,1), Point(1,1), '<html>'+LineEnding);
-  DumpAll(MultiHl);
-    MultiHl.CurrentLines := SynEdit.TextBuffer;
-    CheckTokensForLine('1st line=html', MultiHl, 0, [AttSym, AttEl, AttSym]);
+    PushBaseName('Insert "html"');
+      SynEdit.SetTextBetweenPoints(Point(1,1), Point(1,1), '<html>');
+DumpAll(MultiHl);
+      MultiHl.CurrentLines := SynEdit.TextBuffer;
+      CheckTokensForLine('1st line=html', MultiHl, 0, [AttSym, AttEl, AttSym]);
 
-    SynEdit.SetTextBetweenPoints(Point(1,2), Point(1,2), '<a>'+LineEnding);
-  DumpAll(MultiHl);
-    SynEdit.SetTextBetweenPoints(Point(1,1), Point(1,1), ''+LineEnding);
-  DumpAll(MultiHl);
-    SynEdit.SetTextBetweenPoints(Point(1,1), Point(1,2), '');
-  DumpAll(MultiHl);
+    PopPushBaseName('Insert "a"');
+      //SynEdit.SetTextBetweenPoints(Point(1,2), Point(1,2), '<a>');
+      SynEdit.CaretXY := point(7,1);
+      SynEdit.CommandProcessor(ecLineBreak, '', nil);
+DumpAll(MultiHl);
+      SynEdit.CommandProcessor(ecChar, '<', nil);
+      SynEdit.CommandProcessor(ecChar, 'a', nil);
+      SynEdit.CommandProcessor(ecChar, '>', nil);
+//Application.ProcessMessages; readln;
+DumpAll(MultiHl);
+      //CheckTokensForLine('1st line=html', MultiHl, 0, [AttSym, AttEl, AttSym]);
+      //CheckTokensForLine('2nd line=html', MultiHl, 1, [AttSym, AttEl, AttSym]);
+
+    PopPushBaseName('Insert empty');
+      SynEdit.SetTextBetweenPoints(Point(1,1), Point(1,1), ''+LineEnding);
+DumpAll(MultiHl);
+      //CheckTokensForLine('1st line=html', MultiHl, 0, []);
+      //CheckTokensForLine('2nd line=html', MultiHl, 1, [AttSym, AttEl, AttSym]);
+      //CheckTokensForLine('3rd line=html', MultiHl, 2, [AttSym, AttEl, AttSym]);
+
+    PopPushBaseName('Delete empty');
+      SynEdit.SetTextBetweenPoints(Point(1,1), Point(1,2), '');
+DumpAll(MultiHl);
+      //CheckTokensForLine('1st line=html', MultiHl, 0, [AttSym, AttEl, AttSym]);
+      //CheckTokensForLine('2nd line=html', MultiHl, 1, [AttSym, AttEl, AttSym]);
+
+
+
+    SynEdit.ClearAll;
+    PushBaseName('Insert "html"');
+      SynEdit.SetTextBetweenPoints(Point(1,1), Point(1,1), '<html>'+LineEnding);
+DumpAll(MultiHl);
+      CheckTokensForLine('1st line=html', MultiHl, 0, [AttSym, AttEl, AttSym]);
+
+    PopPushBaseName('Insert "b"');
+      SynEdit.SetTextBetweenPoints(Point(1,2), Point(1,2), '<b>'+LineEnding);
+DumpAll(MultiHl);
+//Application.ProcessMessages; readln;
+
+    PushBaseName('Insert "foo"');
+      SynEdit.SetTextBetweenPoints(Point(1,1), Point(1,1), '<foo>'+LineEnding);
+
+    SynEdit.Undo;
+    SynEdit.Undo;
+    SynEdit.Undo;
+
+    SynEdit.Redo;
+    SynEdit.Redo;
+    SynEdit.Redo;
+
+    SynEdit.Undo;
+    SynEdit.Undo;
+    SynEdit.Undo;
 
     SynEdit.Highlighter := nil;
     FreeAndNil(XmlHl);
     FreeAndNil(MultiHl);
+    PopBaseName;
+    PopBaseName;
   {%endregion}
+//exit;
 
-  {%region}
-    // multiple section (same scheme) on one line
+  {%region multiple section (same scheme) on one line}
+    PushBaseName('multiple section (same scheme) on one line');
     SynEdit.ClearAll;
     InitMultiXmlPasHl;
 
@@ -880,10 +932,11 @@ DumpAll(MultiHl);
 //Application.ProcessMessages; readln;
 
     FinishMultiXmlPasHl;
+    PopBaseName;
   {%endregion}
 
   {%region}
-    // longer section, delete part at begin of section (no overlap / 1 line)
+    PushBaseName('longer section, delete part at begin of section (no overlap / 1 line)');
     SetRealLinesText3;
     InitMultiXmlPasHl;
     SynEdit.SimulatePaintText;
@@ -893,10 +946,11 @@ DumpAll(MultiHl); //Application.ProcessMessages; readln;
 DumpAll(MultiHl); //Application.ProcessMessages; readln;
 
     FinishMultiXmlPasHl;
+    PopBaseName;
   {%endregion}
 
   {%region}
-    // longer section, delete part at begin of section (no overlap / 2 line)
+    PushBaseName('longer section, delete part at begin of section (no overlap / 2 line)');
     SetRealLinesText3;
     InitMultiXmlPasHl;
     SynEdit.SimulatePaintText;
@@ -906,10 +960,11 @@ DumpAll(MultiHl); //Application.ProcessMessages; readln;
 DumpAll(MultiHl); //Application.ProcessMessages; readln;
 
     FinishMultiXmlPasHl;
+    PopBaseName;
   {%endregion}
 
   {%region}
-    // longer section, delete part at begin of section (overlap / 1 line of sect)
+    PushBaseName('longer section, delete part at begin of section (overlap / 1 line of sect)');
     SetRealLinesText3;
     InitMultiXmlPasHl;
     SynEdit.SimulatePaintText;
@@ -919,10 +974,11 @@ DumpAll(MultiHl); //Application.ProcessMessages; readln;
 DumpAll(MultiHl); //Application.ProcessMessages; readln;
 
     FinishMultiXmlPasHl;
+    PopBaseName;
   {%endregion}
 
   {%region}
-    // longer section, delete part at begin of section (overlap / 2 line of sect)
+    PushBaseName('longer section, delete part at begin of section (overlap / 2 line of sect)');
     SetRealLinesText3;
     InitMultiXmlPasHl;
     SynEdit.SimulatePaintText;
@@ -932,10 +988,11 @@ DumpAll(MultiHl); //Application.ProcessMessages; readln;
 DumpAll(MultiHl); //Application.ProcessMessages; readln;
 
     FinishMultiXmlPasHl;
+    PopBaseName;
   {%endregion}
 
   {%region}
-    // longer section, delete part at middle of section (1 line)
+    PushBaseName('longer section, delete part at middle of section (1 line)');
     SetRealLinesText3;
     InitMultiXmlPasHl;
     SynEdit.SimulatePaintText;
@@ -945,10 +1002,11 @@ DumpAll(MultiHl); //Application.ProcessMessages; readln;
 DumpAll(MultiHl); //Application.ProcessMessages; readln;
 
     FinishMultiXmlPasHl;
+    PopBaseName;
   {%endregion}
 
   {%region}
-    // longer section, delete part at end of section (no overlap 1 line)
+    PushBaseName('longer section, delete part at end of section (no overlap 1 line)');
     SetRealLinesText3;
     InitMultiXmlPasHl;
     SynEdit.SimulatePaintText;
@@ -958,10 +1016,11 @@ DumpAll(MultiHl); //Application.ProcessMessages; readln;
 DumpAll(MultiHl); //Application.ProcessMessages; readln;
 
     FinishMultiXmlPasHl;
+    PopBaseName;
   {%endregion}
 
   {%region}
-    // longer section, delete part at end of section (no overlap 2 line)
+    PushBaseName('longer section, delete part at end of section (no overlap 2 line)');
     SetRealLinesText3;
     InitMultiXmlPasHl;
     SynEdit.SimulatePaintText;
@@ -971,10 +1030,11 @@ DumpAll(MultiHl); //Application.ProcessMessages; readln;
 DumpAll(MultiHl); //Application.ProcessMessages; readln;
 
     FinishMultiXmlPasHl;
+    PopBaseName;
   {%endregion}
 
   {%region}
-    // longer section, delete part at end of section (overlap 1 line of sect)
+    PushBaseName('longer section, delete part at end of section (overlap 1 line of sect)');
     SetRealLinesText3;
     InitMultiXmlPasHl;
     SynEdit.SimulatePaintText;
@@ -984,6 +1044,7 @@ DumpAll(MultiHl); //Application.ProcessMessages; readln;
 DumpAll(MultiHl); //Application.ProcessMessages; readln;
 
     FinishMultiXmlPasHl;
+    PopBaseName;
   {%endregion}
 
 end;

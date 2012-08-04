@@ -118,7 +118,7 @@ type
     procedure PrepareRegionScan(AStartLineIdx: Integer);
     procedure FinishRegionScan(AEndLineIdx: Integer);
     procedure RegionScanUpdateFirstRegionEnd(AnEndPoint: TPoint; ATokenEndPos: Integer);
-    procedure RegionScanUpdate0rInsertRegion(AStartPoint, AnEndPoint: TPoint;
+    procedure RegionScanUpdateOrInsertRegion(AStartPoint, AnEndPoint: TPoint;
                                   ATokenStartPos, ATokenEndPos: Integer);
     procedure RegionScanUpdateLastRegionStart(AStartPoint: TPoint;
                                   ATokenStartPos: Integer; ALineIndex: Integer);
@@ -600,7 +600,7 @@ begin
   if FRegionScanRangeIndex < FSectionList.Count then
     FRScanStartedAtVLine := FSectionList[FRegionScanRangeIndex].VirtualLine
   else
-    FRScanStartedAtVLine := FSectionList.Count;
+    FRScanStartedAtVLine := FSectionList.Count; // xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 end;
 
 procedure TSynHLightMultiVirtualLines.FinishRegionScan(AEndLineIdx: Integer);
@@ -664,7 +664,7 @@ begin
   inc(FRegionScanRangeIndex);
 end;
 
-procedure TSynHLightMultiVirtualLines.RegionScanUpdate0rInsertRegion(AStartPoint,
+procedure TSynHLightMultiVirtualLines.RegionScanUpdateOrInsertRegion(AStartPoint,
   AnEndPoint: TPoint; ATokenStartPos, ATokenEndPos: Integer);
 var
   Sect: TSynHLightMultiVirtualSection;
@@ -985,7 +985,7 @@ var
       DefaultVirtualLines.RegionScanUpdateFirstRegionEnd(pt, 0)
     else
     if pt >= CurRegStart then
-      DefaultVirtualLines.RegionScanUpdate0rInsertRegion(CurRegStart, pt, 0, 0);
+      DefaultVirtualLines.RegionScanUpdateOrInsertRegion(CurRegStart, pt, 0, 0);
 
     FCurScheme := NewScheme;
     CurRegStart.y := StartAtLine;
@@ -1002,7 +1002,7 @@ var
       FCurScheme.VirtualLines.RegionScanUpdateFirstRegionEnd(pt, TokenEndChar)
     else
     if pt >= CurRegStart then
-      FCurScheme.VirtualLines.RegionScanUpdate0rInsertRegion
+      FCurScheme.VirtualLines.RegionScanUpdateOrInsertRegion
         (CurRegStart, pt, CurRegTokenPos, TokenEndChar);
 
     FCurScheme := nil;
