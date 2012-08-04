@@ -443,12 +443,15 @@ begin
         QWidget_setParent(Widget.Widget, QApplication_desktop());
       {$endif}
 
-      QWidget_setWindowFlags(Widget.Widget, QtDialog or
-        {$ifdef darwin}
-        QtWindowSystemMenuHint or
-        {$endif}
-        GetQtBorderIcons(TCustomForm(AWinControl).BorderStyle,
-          TCustomForm(AWinControl).BorderIcons));
+      if TCustomForm(AWinControl).BorderStyle <> bsNone then
+      begin
+        QWidget_setWindowFlags(Widget.Widget, QtDialog or
+          {$ifdef darwin}
+          QtWindowSystemMenuHint or
+          {$endif}
+          GetQtBorderIcons(TCustomForm(AWinControl).BorderStyle,
+            TCustomForm(AWinControl).BorderIcons));
+      end;
 
       Widget.setWindowModality(QtApplicationModal);
     end;
