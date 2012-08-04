@@ -4206,7 +4206,6 @@ examples/treeview/TV_Add_Remove.res svneol=native#unset
 examples/treeview/TV_Add_Remove_U1.dfm svneol=native#unset
 examples/treeview/tv_add_remove.lpi svneol=native#text/plain
 examples/treeview/tv_add_remove_u1.lfm svneol=native#text/plain
-examples/treeview/tv_add_remove_u1.lrs svneol=native#text/pascal
 examples/treeview/tv_add_remove_u1.pas svneol=native#text/pascal
 examples/turbopower_ipro/defaultimage.lrs svneol=native#text/pascal
 examples/turbopower_ipro/defaultimage.xpm -text svneol=native#image/x-pixmap

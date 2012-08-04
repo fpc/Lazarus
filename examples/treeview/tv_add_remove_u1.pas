@@ -25,9 +25,7 @@ type
     procedure but_AddClick(Sender: TObject);
     procedure but_RemoveClick(Sender: TObject);
   private
-    { Private declarations }
   public
-    { Public declarations }
     constructor Create(TheOwner: TComponent); override;
   end;
 
@@ -35,8 +33,6 @@ var
   Form1: TForm1;
 
 implementation
-
-//{$R *.DFM}
 
 procedure TForm1.but_AddClick(Sender: TObject);
 var
@@ -113,7 +109,6 @@ begin
   RootNode.Expanded:=true;
 end;
 
-Initialization
-{$I tv_add_remove_u1.lrs}
+{$R *.lfm}
 
 end.
