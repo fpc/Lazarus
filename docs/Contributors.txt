@@ -1,6 +1,5 @@
 #The following people contributed to Lazarus:
 
-Reinier Olislagers
 A. J. Venter
 Aleksey Lagunov
 Alexander Grau
@@ -55,8 +54,8 @@ Dominique Louis
 Ere Maijala
 Eric Chapman
 Erivelton Silva
-Eugene Kryukov
 Erwin van den Bosch
+Eugene Kryukov
 Evgen A. Palamarchuck
 Ezik Shlomi
 Fabrizio Fellini
@@ -126,8 +125,8 @@ Mattias Gaertner
 Mattias Hansson
 Maxim Ganetsky
 Mazen Neifer
-Michael A. Hess
 Micha Nelissen
+Michael A. Hess
 Michal Bukovjan
 Nikolay Ermolov
 Olivier Guilbaud
@@ -135,8 +134,8 @@ Patrick Chevalley
 Paul Ishenin
 Paul Michell
 Pawel Trochimczuk
-Petr Kristan
 Peter Dyson
+Petr Kristan
 Philip J. Hess
 Pierre Gillmann
 Przemyslaw Nagay
@@ -144,6 +143,7 @@ Radek Cervinka
 Raul Moratalla
 Razvan Adrian Bogdan
 Reimar Grabowski
+Reinier Olislagers
 Roozbeh GHolizadeh
 Rostislav Okulov
 Salvatore Coppola
@@ -160,16 +160,16 @@ Stefan Hille
 Taras Boychuk
 Theo Lustenberger
 Tobias Giesen
-Tomas Gregorovic
 Tom Lisjac
+Tomas Gregorovic
 Tomasz Wieckowski
 Tony Maro
 Valdas Jankunas
 Vasily I. Volchenko
 Vincent Beuselinck
 Vincent Snijders
-Vladimir Zhirov
 Vladimir Serotyukov
+Vladimir Zhirov
 Wanderlan Santos dos Anjos
 Wojciech Malinowski
 Yauheni Nazimau
