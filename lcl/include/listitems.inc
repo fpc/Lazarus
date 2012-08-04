@@ -306,7 +306,7 @@ begin
     end;
   end;
 
-  if FCacheIndex = idx then
+  if FCacheIndex >= idx then
     FCacheIndex := -1;
   FItems.Delete(idx);
 end;
