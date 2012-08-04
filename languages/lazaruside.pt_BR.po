@@ -4262,7 +4262,7 @@ msgstr "Perguntar nome ao criar"
 
 #: lazarusidestrconsts.lisausefulsettingonwindowssystemsislazarusdirmingwbin
 msgid "A useful setting on Windows systems is: $(LazarusDir)\\mingw\\bin\\$(TargetCPU)-$(TargetOS)\\gdb.exe"
-msgstr ""
+msgstr "Uma configuração útil em sistemas Windows é: $(LazarusDir)\\mingw\\bin\\$(TargetCPU)-$(TargetOS)\\gdb.exe"
 
 #: lazarusidestrconsts.lisautocompletionoff
 msgid "Auto completion: off"
@@ -15335,7 +15335,7 @@ msgstr "O depurador %s%s%s%snão existe ou não é executável.%s%sVeja Ferramen
 
 #: lazarusidestrconsts.listhedebuggerexecutabletypicallyhasthenamepleasegive
 msgid "The debugger executable typically has the name \"%s\". Please give the full file path."
-msgstr ""
+msgstr "O executável do depurador geralmente tem o nome \"%s\". Favor informar o caminho completo para o arquivo."
 
 #: lazarusidestrconsts.listhedestinationdirectorydoesnotexist
 msgid "The destination directory%s%s%s%s does not exist."
@@ -15482,7 +15482,7 @@ msgstr "A macro \"%s\" não se inicia com \"%s\"."
 
 #: lazarusidestrconsts.listhemakeexecutabletypicallyhasthename
 msgid "The \"make\" executable typically has the name \"%s\". It is needed for building the IDE. Please give the full file path."
-msgstr ""
+msgstr "O executável do \"make\" geralmente tem o nome \"%s\". Ele é necessário para construir a IDE. Favor informar o caminho completo para o arquivo."
 
 #: lazarusidestrconsts.listhenameisnotavalidpascalidentifier
 msgid "The name %s%s%s is not a valid pascal identifier."
@@ -15648,7 +15648,7 @@ msgstr "Há uma unidade com o nome %s%s%s no projeto.%sFavor escolher um nome di
 
 #: lazarusidestrconsts.listhereisnofpcexeinthedirectoryofusuallythemakeexecu
 msgid "There is no fpc.exe in the directory of %s. Usually the make executable is installed together with the FPC compiler."
-msgstr ""
+msgstr "Não há nenhum fpc.exe no diretório de %s. Geralmente o executável make é instalado juntamente com o compilador FPC."
 
 #: lazarusidestrconsts.listheremustbeatleastonebuildmode
 msgid "There must be at least one build mode."
@@ -15697,7 +15697,7 @@ msgstr "O diretório de Teste não pode ser encontrado:%s%s%s%s%s(veja opções 
 
 #: lazarusidestrconsts.listheunitalreadyexists
 msgid "The unit %s%s%s already exists."
-msgstr ""
+msgstr "A unidade %s%s%s já existe."
 
 #: lazarusidestrconsts.listheunitbelongstopackage
 msgid "The unit belongs to package %s."
@@ -16708,7 +16708,7 @@ msgstr "Sem um compilador apropriado a navegação de código e compilação ser
 
 #: lazarusidestrconsts.liswithoutaproperdebuggerdebuggingwillbedisappointing
 msgid "Without a proper debugger, debugging will be disappointing."
-msgstr ""
+msgstr "Sem um depurador apropriado, a depuração será decepcionante."
 
 #: lazarusidestrconsts.liswithoutaproperlazarusdirectoryyouwillgetalotofwarn
 msgid "Without a proper Lazarus directory you will get a lot of warnings."
@@ -16716,7 +16716,7 @@ msgstr "Sem um diretório Lazarus apropriado você obterá muitos avisos."
 
 #: lazarusidestrconsts.liswithoutapropermakeexecutablethecompilingoftheideis
 msgid "Without a proper \"make\" executable the compiling of the IDE is not possible."
-msgstr ""
+msgstr "Sem um executável \"make\" apropriado, não será possível a compilação da IDE."
 
 #: lazarusidestrconsts.liswithouttheproperfpcsourcescodebrowsingandcompletio
 msgid "Without the proper FPC sources code browsing and completion will be very limited."
