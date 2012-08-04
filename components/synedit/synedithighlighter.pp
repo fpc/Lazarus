@@ -1523,6 +1523,8 @@ var
 begin
   Result := StartIndex;
   c := CurrentLines.Count;
+  if (c = 0) or (Result >= c) then
+    exit;
   StartAtLineIndex(Result);
   NextToEol;
   while UpdateRangeInfoAtLine(Result) or (Result <= EndIndex) do begin
