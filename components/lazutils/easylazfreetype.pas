@@ -591,7 +591,7 @@ begin
 
     errorNum := TT_Open_Face(AName,FFace);
     if errorNum <> TT_Err_Ok then
-      raise exception.Create('Cannot open font (TT_Error ' + intToStr(errorNum)+')');
+      raise exception.Create('Cannot open font (TT_Error ' + intToStr(errorNum)+') "'+AName+'"');
   end else
   begin
     familyItem := Collection.Family[AName];
