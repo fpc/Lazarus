@@ -240,10 +240,10 @@ Root: HKCU; Subkey: Software\Classes\.pas; ValueType: String; ValueData: Lazarus
 Root: HKCU; Subkey: Software\Classes\.pp; ValueType: String; ValueData: Lazarus.AssocFile.pp; Flags: uninsdeletevalue; Check: IsHKLMNotWriteable; Components: association/associatepp
 
 [Languages]
-Name: default; MessagesFile: compiler:Default.isl
+Name: default; MessagesFile: lazarus.def.isl
 Name: ca; MessagesFile: compiler:Languages\Catalan.isl
 Name: cs; MessagesFile: compiler:Languages\Czech.isl
-Name: de; MessagesFile: compiler:Languages\German.isl
+Name: de; MessagesFile: lazarus.de.isl
 Name: es; MessagesFile: compiler:Languages\Spanish.isl
 Name: fi; MessagesFile: compiler:Languages\Finnish.isl
 Name: fr; MessagesFile: compiler:Languages\French.isl
@@ -253,43 +253,11 @@ Name: nl; MessagesFile: compiler:Languages\Dutch.isl
 Name: no; MessagesFile: compiler:Languages\Norwegian.isl
 Name: pl; MessagesFile: compiler:Languages\Polish.isl
 Name: pt; MessagesFile: compiler:Languages\Portuguese.isl
-Name: pt_BR; MessagesFile: compiler:Languages\BrazilianPortuguese.isl
-Name: ru; MessagesFile: compiler:Languages\Russian.isl
+Name: pt_BR; MessagesFile: lazarus.pt_BR.isl
+Name: ru; MessagesFile: lazarus.ru.isl
 ;Slovak.isl not avail with latest inno setup
 ;Name: sk; MessagesFile: compiler:Languages\Slovak.isl
 Name: sl; MessagesFile: compiler:Languages\Slovenian.isl
-
-[CustomMessages]
-
-DelUserConf=Delete all user configuration files from previous installs
-CleanUp=Clean up
-
-InstallQt=Install QT interface dll
-InstallChm=Install chm help files
-AssociateGroup=Associate file extensions
-
-FolderHasSpaces=Selected folder contains spaces, please select a folder without spaces in it.
-FolderNotEmpty=The target folder is not empty. Continue with installation?
-
-FolderNotEmpty2=The target folder is not empty.
-
-AskUninstallTitle1=Previous Installation
-AskUninstallTitle2=Do you want to run the uninstaller?
-BtnUninstall=Uninstall
-ChkContinue=Continue without uninstall
-
-OldInDestFolder1=Another installation of %1 exists in the destination folder. If you wish to uninstall first, please use the button below.
-OldInDestFolder2=
-OldInDestFolder3=
-OldInDestFolder4=
-
-OldInOtherFolder1=Another installation of %1 was found at %2. Please use the button below to uninstall it now. If you wish to keep it, please tick the checkbox to continue.',
-OldInOtherFolder2=Note: Using multiple copies of Lazarus is not supported by this installer.
-OldInOtherFolder3=Using several installations of Lazarus can lead to conflicts in files shared by all of the installations, such as the IDE configuration.
-OldInOtherFolder4=If you wish to use more than one installation, then you must do additional setup after this installation finished. Please see the Lazarus web page for this, and how to use --primary-config-path
-
-
-#include "lazarus.ru.isl"
 
 [Code]
 type
@@ -378,7 +346,7 @@ begin
       MsgBox(s, mbInformation, MB_OK );
       Result := false;
       exit;
-    end
+    end;
 
 	UpdateUninstallInfo;
     UnInstaller := RemoveQuotes(GetUninstallData('UninstallString'));
@@ -410,11 +378,12 @@ end;
 
 procedure UpdateEnvironmentOptions();
 var
-  FileName: string;
-  Content: string;
+  FileName, Content: string;
+  s: Ansistring;
 begin
   FileName := ExpandConstant(CurrentFileName);
-  LoadStringFromFile(FileName, Content);
+  LoadStringFromFile(FileName, s);
+  Content := s;
   StringChange(Content, '%Temp%', GetTempDir);
   StringChange(Content, '%LazDir%', ExpandConstant('{app}'));
   StringChange(Content, '%FpcBinDir%', ExpandConstant('{app}\fpc\{#FPCVersion}\bin\{#FPCFullTarget}\'));
@@ -431,79 +400,6 @@ begin
   Result := not IsHKLMWriteable();
 end;
 
-var
-  PoFileStrings: TArrayOfString;
-
-procedure LoadPoFile;
-var
-  PoFilename: string;
-begin
-  if (GetArrayLength(PoFileStrings)=0) then begin
-    PoFilename := ExpandConstant('{app}\languages\installerstrconsts.{language}.po');
-    if not FileExists(PoFileName) then
-      PoFilename := ExpandConstant('{app}\languages\installerstrconsts.po');
-    LoadStringsFromFile(PoFileName, PoFileStrings);
-  end;
-end;
-
-function MultiByteToWideChar(CodePage, dwFlags: cardinal; lpMultiByteStr: PChar;
-   cbMultiByte: integer; lpWideCharStr: PChar; cchWideChar: integer) : integer;
-   EXTERNAL 'MultiByteToWideChar@kernel32.dll stdcall';
-
-function WideCharToMultiByte(CodePage, dwFlags: cardinal; lpWideCharStr: PChar;
-  cchWideChar: integer; lpMultiByteStr: PChar; cbMultiByte: integer;
-  lpDefaultChar: integer; lpUsedDefaultChar: integer): integer;
-   EXTERNAL 'WideCharToMultiByte@kernel32.dll stdcall';
-
-function GetLastError: DWord;
-   EXTERNAL 'GetLastError@kernel32.dll stdcall';
-
-const
-  CP_ACP = 0;
-  CP_UTF8 = 65001;
-
-function ConvertUTF8ToSystemCharSet(const UTF8String: string): string;
-var
-  UTF8Length: integer;
-  UCS2String : string;
-  SystemCharSetString: string;
-  ResultLength: integer;
-begin
-  UTF8Length := length(UTF8String);
-  // this is certainly long enough
-  SetLength(UCS2String, length(UTF8String)*2+1);
-  MultiByteToWideChar(CP_UTF8, 0,
-    PChar(UTF8String), -1, PChar(UCS2String), UTF8Length + 1);
-  SetLength(SystemCharSetString, Length(UTF8String));
-  ResultLength := WideCharToMultiByte(CP_ACP, 0, PChar(UCS2String), -1,
-    PChar(SystemCharSetString), Length(SystemCharSetString)+1, 0, 0) -1;
-  Result := copy(SystemCharSetString, 1, ResultLength);
-end;
-
-function GetPoString(const msgid: string): string;
-var
-  Signature: string;
-  i: integer;
-  Count: integer;
-begin
-  LoadPoFile;
-  //MsgBox(msgid, mbInformation, MB_OK);
-  Result := msgid;
-  Signature := '#: '+ msgid;
-  Count := GetArrayLength(PoFileStrings);
-  i := 0;
-  while (i<Count) and (PoFileStrings[i]<>Signature) do begin
-    i := i+1;
-  end;
-  if i+2<Count then begin
-    Result := copy(PoFileStrings[i+2],9, Length(PoFileStrings[i+2])-9);
-    //MsgBox(Result, mbInformation, MB_OK);
-    if Result='' then
-      Result := copy(PoFileStrings[i+1],8, Length(PoFileStrings[i+1])-8);
-  end;
-  Result := ConvertUTF8ToSystemCharSet(Result);
-end;
-
 function GetAssociateDesc(const ext: string): string;
 var
   AmpersandPos: integer;
@@ -515,6 +411,8 @@ begin
 end;
 
 procedure InitAskUninstall(s1, s2, s3, s4: String);
+var
+  y: integer;
 begin
   wpLabel1.Caption := s1;
   wpLabel2.Caption := s2;
@@ -529,7 +427,10 @@ begin
   wpLabel2.Top := wpLabel1.Top + wpLabel1.Height + ScaleY(5);
   wpLabel3.Top := wpLabel2.Top + wpLabel2.Height + ScaleY(5);
   wpLabel4.Top := wpLabel3.Top + wpLabel3.Height + ScaleY(5);
-  wpButton.Top := wpLabel4.Top + wpLabel4.Height + ScaleY(20);
+  y := wpLabel4.Top + wpLabel4.Height + ScaleY(20);
+  if y > wpAskUnistall.SurfaceHeight - wpCheckBox.Height - wpButton.Height then
+    y := wpAskUnistall.SurfaceHeight - wpCheckBox.Height - wpButton.Height;
+  wpButton.Top := y;
 end;
   
 procedure UnInstUpdateGUI;
