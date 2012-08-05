@@ -95,8 +95,7 @@ end;
 procedure TForm1.FormCreate(Sender: TObject);
 begin
   (* SynEdit currently does not include own images for bookmarks.
-     If no images are given it will currently crash
-  *)
+     If no images are given it will currently crash  *)
   SynEdit1.BookMarkOptions.BookmarkImages := imgBookMarks;
   spinMarkGutterWidth.Value := SynEdit1.Gutter.MarksPart(0).Width;
   chkMarkGutterAutoSize.Checked := SynEdit1.Gutter.MarksPart(0).AutoSize;

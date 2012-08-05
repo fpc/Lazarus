@@ -1,21 +1,21 @@
 object Form1: TForm1
-  Left = -659
+  Left = 317
   Height = 419
-  Top = 219
+  Top = 180
   Width = 481
   Caption = 'Form1'
   ClientHeight = 419
   ClientWidth = 481
   OnCreate = FormCreate
-  LCLVersion = '0.9.31'
+  LCLVersion = '1.1'
   object Panel1: TPanel
     Left = 0
-    Height = 62
-    Top = 265
+    Height = 65
+    Top = 256
     Width = 481
     Align = alBottom
     AutoSize = True
-    ClientHeight = 62
+    ClientHeight = 65
     ClientWidth = 481
     TabOrder = 0
     object Button1: TButton
@@ -25,7 +25,7 @@ object Form1: TForm1
       AnchorSideBottom.Side = asrBottom
       Left = 350
       Height = 25
-      Top = 30
+      Top = 33
       Width = 124
       Anchors = [akRight, akBottom]
       BorderSpacing.Around = 6
@@ -38,9 +38,9 @@ object Form1: TForm1
       AnchorSideTop.Control = spinImg
       AnchorSideTop.Side = asrCenter
       Left = 7
-      Height = 16
-      Top = 10
-      Width = 68
+      Height = 15
+      Top = 12
+      Width = 70
       BorderSpacing.Around = 6
       Caption = 'Select Image'
       ParentColor = False
@@ -50,9 +50,9 @@ object Form1: TForm1
       AnchorSideTop.Control = SpinLine
       AnchorSideTop.Side = asrCenter
       Left = 7
-      Height = 16
-      Top = 39
-      Width = 57
+      Height = 15
+      Top = 43
+      Width = 60
       BorderSpacing.Around = 6
       Caption = 'Select Line'
       ParentColor = False
@@ -61,9 +61,9 @@ object Form1: TForm1
       AnchorSideLeft.Control = spinImg
       AnchorSideTop.Control = spinImg
       AnchorSideTop.Side = asrBottom
-      Left = 81
-      Height = 23
-      Top = 36
+      Left = 83
+      Height = 25
+      Top = 38
       Width = 50
       MaxValue = 18
       TabOrder = 1
@@ -73,8 +73,8 @@ object Form1: TForm1
       AnchorSideLeft.Control = Label1
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = Panel1
-      Left = 81
-      Height = 23
+      Left = 83
+      Height = 25
       Top = 7
       Width = 50
       BorderSpacing.Around = 6
@@ -85,10 +85,10 @@ object Form1: TForm1
       AnchorSideLeft.Control = spinImg
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = Panel1
-      Left = 157
-      Height = 19
+      Left = 159
+      Height = 24
       Top = 7
-      Width = 74
+      Width = 81
       BorderSpacing.Left = 20
       BorderSpacing.Around = 6
       Caption = 'Bookmark'
@@ -98,7 +98,7 @@ object Form1: TForm1
   end
   inline SynEdit1: TSynEdit
     Left = 0
-    Height = 265
+    Height = 256
     Top = 0
     Width = 481
     Align = alClient
@@ -112,50 +112,24 @@ object Form1: TForm1
     Gutter.Width = 57
     Gutter.MouseActions = <    
       item
-        Shift = []
-        ShiftMask = []
-        Button = mbLeft
         ClickCount = ccAny
         ClickDir = cdDown
-        Command = 13
-        MoveCaret = False
-        Option = 0
-        Priority = 0
+        Command = emcOnMainGutterClick
       end    
       item
-        Shift = []
-        ShiftMask = []
         Button = mbRight
-        ClickCount = ccSingle
-        ClickDir = cdUp
-        Command = 12
-        MoveCaret = False
-        Option = 0
-        Priority = 0
+        Command = emcContextMenu
       end>
     RightGutter.Width = 0
     RightGutter.MouseActions = <    
       item
-        Shift = []
-        ShiftMask = []
-        Button = mbLeft
         ClickCount = ccAny
         ClickDir = cdDown
-        Command = 13
-        MoveCaret = False
-        Option = 0
-        Priority = 0
+        Command = emcOnMainGutterClick
       end    
       item
-        Shift = []
-        ShiftMask = []
         Button = mbRight
-        ClickCount = ccSingle
-        ClickDir = cdUp
-        Command = 12
-        MoveCaret = False
-        Option = 0
-        Priority = 0
+        Command = emcContextMenu
       end>
     Keystrokes = <    
       item
@@ -580,126 +554,71 @@ object Form1: TForm1
       end>
     MouseActions = <    
       item
-        Shift = []
         ShiftMask = [ssShift, ssAlt]
-        Button = mbLeft
-        ClickCount = ccSingle
         ClickDir = cdDown
-        Command = 1
+        Command = emcStartSelections
         MoveCaret = True
-        Option = 0
-        Priority = 0
       end    
       item
         Shift = [ssShift]
         ShiftMask = [ssShift, ssAlt]
-        Button = mbLeft
-        ClickCount = ccSingle
         ClickDir = cdDown
-        Command = 1
+        Command = emcStartSelections
         MoveCaret = True
         Option = 1
-        Priority = 0
       end    
       item
         Shift = [ssAlt]
         ShiftMask = [ssShift, ssAlt]
-        Button = mbLeft
-        ClickCount = ccSingle
         ClickDir = cdDown
-        Command = 3
+        Command = emcStartColumnSelections
         MoveCaret = True
-        Option = 0
-        Priority = 0
       end    
       item
         Shift = [ssShift, ssAlt]
         ShiftMask = [ssShift, ssAlt]
-        Button = mbLeft
-        ClickCount = ccSingle
         ClickDir = cdDown
-        Command = 3
+        Command = emcStartColumnSelections
         MoveCaret = True
         Option = 1
-        Priority = 0
       end    
       item
-        Shift = []
-        ShiftMask = []
         Button = mbRight
-        ClickCount = ccSingle
-        ClickDir = cdUp
-        Command = 12
-        MoveCaret = False
-        Option = 0
-        Priority = 0
+        Command = emcContextMenu
       end    
       item
-        Shift = []
-        ShiftMask = []
-        Button = mbLeft
         ClickCount = ccDouble
         ClickDir = cdDown
-        Command = 6
+        Command = emcSelectWord
         MoveCaret = True
-        Option = 0
-        Priority = 0
       end    
       item
-        Shift = []
-        ShiftMask = []
-        Button = mbLeft
         ClickCount = ccTriple
         ClickDir = cdDown
-        Command = 7
+        Command = emcSelectLine
         MoveCaret = True
-        Option = 0
-        Priority = 0
       end    
       item
-        Shift = []
-        ShiftMask = []
-        Button = mbLeft
         ClickCount = ccQuad
         ClickDir = cdDown
-        Command = 8
+        Command = emcSelectPara
         MoveCaret = True
-        Option = 0
-        Priority = 0
       end    
       item
-        Shift = []
-        ShiftMask = []
         Button = mbMiddle
-        ClickCount = ccSingle
         ClickDir = cdDown
-        Command = 10
+        Command = emcPasteSelection
         MoveCaret = True
-        Option = 0
-        Priority = 0
       end    
       item
         Shift = [ssCtrl]
         ShiftMask = [ssShift, ssAlt, ssCtrl]
-        Button = mbLeft
-        ClickCount = ccSingle
-        ClickDir = cdUp
-        Command = 11
-        MoveCaret = False
-        Option = 0
-        Priority = 0
+        Command = emcMouseLink
       end>
     MouseSelActions = <    
       item
-        Shift = []
-        ShiftMask = []
-        Button = mbLeft
-        ClickCount = ccSingle
         ClickDir = cdDown
-        Command = 9
-        MoveCaret = False
-        Option = 0
-        Priority = 0
+        Command = emcStartDragMove
       end>
     Lines.Strings = (
       'Lorem ipsum dolor sit amet, '
@@ -723,10 +642,21 @@ object Form1: TForm1
     )
     VisibleSpecialChars = [vscSpace, vscTabAtLast]
     BracketHighlightStyle = sbhsBoth
+    BracketMatchColor.Background = clNone
+    BracketMatchColor.Foreground = clNone
+    BracketMatchColor.Style = [fsBold]
+    FoldedCodeColor.Background = clNone
+    FoldedCodeColor.Foreground = clGray
+    FoldedCodeColor.FrameColor = clGray
+    MouseLinkColor.Background = clNone
+    MouseLinkColor.Foreground = clBlue
+    LineHighlightColor.Background = clNone
+    LineHighlightColor.Foreground = clNone
     OnStatusChange = SynEdit1StatusChange
     inline SynLeftGutterPartList1: TSynGutterPartList
       object SynGutterMarks1: TSynGutterMarks
         Width = 24
+        MouseActions = <>
       end
       object SynGutterLineNumber1: TSynGutterLineNumber
         Width = 17
@@ -740,35 +670,26 @@ object Form1: TForm1
       end
       object SynGutterChanges1: TSynGutterChanges
         Width = 4
+        MouseActions = <>
         ModifiedColor = 59900
         SavedColor = clGreen
       end
       object SynGutterSeparator1: TSynGutterSeparator
         Width = 2
+        MouseActions = <>
       end
       object SynGutterCodeFolding1: TSynGutterCodeFolding
         MouseActions = <        
           item
-            Shift = []
-            ShiftMask = []
             Button = mbRight
-            ClickCount = ccSingle
-            ClickDir = cdUp
-            Command = 16
-            MoveCaret = False
-            Option = 0
-            Priority = 0
+            Command = emcCodeFoldContextMenu
           end        
           item
-            Shift = []
             ShiftMask = [ssShift]
             Button = mbMiddle
             ClickCount = ccAny
             ClickDir = cdDown
-            Command = 14
-            MoveCaret = False
-            Option = 0
-            Priority = 0
+            Command = emcCodeFoldCollaps
           end        
           item
             Shift = [ssShift]
@@ -776,71 +697,49 @@ object Form1: TForm1
             Button = mbMiddle
             ClickCount = ccAny
             ClickDir = cdDown
-            Command = 14
-            MoveCaret = False
+            Command = emcCodeFoldCollaps
             Option = 1
-            Priority = 0
           end        
           item
-            Shift = []
-            ShiftMask = []
-            Button = mbLeft
             ClickCount = ccAny
             ClickDir = cdDown
-            Command = 0
-            MoveCaret = False
-            Option = 0
-            Priority = 0
+            Command = emcNone
           end>
         MarkupInfo.Background = clNone
         MarkupInfo.Foreground = clGray
         MouseActionsExpanded = <        
           item
-            Shift = []
-            ShiftMask = []
-            Button = mbLeft
             ClickCount = ccAny
             ClickDir = cdDown
-            Command = 14
-            MoveCaret = False
-            Option = 0
-            Priority = 0
+            Command = emcCodeFoldCollaps
           end>
         MouseActionsCollapsed = <        
           item
             Shift = [ssCtrl]
             ShiftMask = [ssCtrl]
-            Button = mbLeft
             ClickCount = ccAny
             ClickDir = cdDown
-            Command = 15
-            MoveCaret = False
-            Option = 0
-            Priority = 0
+            Command = emcCodeFoldExpand
           end        
           item
-            Shift = []
             ShiftMask = [ssCtrl]
-            Button = mbLeft
             ClickCount = ccAny
             ClickDir = cdDown
-            Command = 15
-            MoveCaret = False
+            Command = emcCodeFoldExpand
             Option = 1
-            Priority = 0
           end>
       end
     end
   end
   object Panel2: TPanel
     Left = 0
-    Height = 55
-    Top = 327
+    Height = 59
+    Top = 321
     Width = 481
     Align = alBottom
     AutoSize = True
     Caption = ' '
-    ClientHeight = 55
+    ClientHeight = 59
     ClientWidth = 481
     TabOrder = 2
     object chkDrawBookMarkFirst: TCheckBox
@@ -848,9 +747,9 @@ object Form1: TForm1
       AnchorSideTop.Control = Label3
       AnchorSideTop.Side = asrBottom
       Left = 7
-      Height = 19
-      Top = 29
-      Width = 128
+      Height = 24
+      Top = 28
+      Width = 139
       BorderSpacing.Around = 6
       Caption = 'DrawBookmarksFirst'
       OnChange = chkDrawBookMarkFirstChange
@@ -858,7 +757,7 @@ object Form1: TForm1
     end
     object Label3: TLabel
       Left = 7
-      Height = 16
+      Height = 15
       Top = 7
       Width = 467
       Align = alTop
@@ -869,13 +768,13 @@ object Form1: TForm1
   end
   object Panel3: TPanel
     Left = 0
-    Height = 37
-    Top = 382
+    Height = 39
+    Top = 380
     Width = 481
     Align = alBottom
     AutoSize = True
     Caption = ' '
-    ClientHeight = 37
+    ClientHeight = 39
     ClientWidth = 481
     TabOrder = 3
     object Label4: TLabel
@@ -883,9 +782,9 @@ object Form1: TForm1
       AnchorSideTop.Control = spinMarkGutterWidth
       AnchorSideTop.Side = asrCenter
       Left = 7
-      Height = 16
-      Top = 10
-      Width = 124
+      Height = 15
+      Top = 12
+      Width = 129
       BorderSpacing.Around = 6
       Caption = 'Marks-GutterPartWidth'
       ParentColor = False
@@ -894,8 +793,8 @@ object Form1: TForm1
       AnchorSideLeft.Control = Label4
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = Panel3
-      Left = 137
-      Height = 23
+      Left = 142
+      Height = 25
       Top = 7
       Width = 50
       BorderSpacing.Around = 6
@@ -906,10 +805,10 @@ object Form1: TForm1
       AnchorSideLeft.Control = spinMarkGutterWidth
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = Panel3
-      Left = 213
-      Height = 19
+      Left = 218
+      Height = 24
       Top = 7
-      Width = 66
+      Width = 75
       BorderSpacing.Left = 20
       BorderSpacing.Around = 6
       Caption = 'AutoSize'

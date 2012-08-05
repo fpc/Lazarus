@@ -8,6 +8,10 @@ See readme.txt for details on required drivers.
 
 {$mode objfpc}{$H+}
 
+{$IF FPC_FULLVERSION<20601}
+{$ERROR this example requires at least fpc 2.6.1}
+{$ENDIF}
+
 uses
   {$IFDEF UNIX}{$IFDEF UseCThreads}
   cthreads,

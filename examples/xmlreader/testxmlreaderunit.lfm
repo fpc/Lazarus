@@ -1,24 +1,24 @@
 object XMLRederForm: TXMLRederForm
   Left = 312
-  Height = 690
+  Height = 381
   Top = 119
-  Width = 939
+  Width = 732
   ActiveControl = Panel1
   Caption = 'XML reader test'
-  ClientHeight = 690
-  ClientWidth = 939
+  ClientHeight = 381
+  ClientWidth = 732
   OnClose = FormClose
   OnCreate = FormCreate
   Position = poScreenCenter
-  LCLVersion = '0.9.29'
+  LCLVersion = '1.1'
   object TreeView1: TTreeView
     Left = 0
-    Height = 624
-    Top = 66
-    Width = 457
+    Height = 316
+    Top = 65
+    Width = 342
     Align = alLeft
     AutoExpand = True
-    DefaultItemHeight = 19
+    DefaultItemHeight = 18
     ReadOnly = True
     TabOrder = 0
     OnClick = TreeView1Click
@@ -26,23 +26,23 @@ object XMLRederForm: TXMLRederForm
   end
   object Panel1: TPanel
     Left = 0
-    Height = 66
+    Height = 65
     Top = 0
-    Width = 939
+    Width = 732
     Align = alTop
     AutoSize = True
-    ClientHeight = 66
-    ClientWidth = 939
+    ClientHeight = 65
+    ClientWidth = 732
     TabOrder = 1
     object BitBtn1: TBitBtn
       AnchorSideTop.Control = Label1
       AnchorSideTop.Side = asrBottom
       AnchorSideRight.Control = Panel1
       AnchorSideRight.Side = asrBottom
-      Left = 867
+      Left = 666
       Height = 30
-      Top = 30
-      Width = 66
+      Top = 28
+      Width = 59
       Anchors = [akTop, akRight]
       AutoSize = True
       BorderSpacing.Around = 6
@@ -66,10 +66,10 @@ object XMLRederForm: TXMLRederForm
     object Label1: TLabel
       AnchorSideLeft.Control = Panel1
       AnchorSideTop.Control = Panel1
-      Left = 6
-      Height = 18
-      Top = 6
-      Width = 66
+      Left = 7
+      Height = 15
+      Top = 7
+      Width = 52
       BorderSpacing.Around = 6
       Caption = 'File name'
       ParentColor = False
@@ -78,16 +78,16 @@ object XMLRederForm: TXMLRederForm
       AnchorSideLeft.Control = Label1
       AnchorSideTop.Control = Label1
       AnchorSideTop.Side = asrBottom
-      Left = 12
-      Height = 29
-      Top = 30
-      Width = 828
-      FileName = '/home/alexs/work/a/2009-11-24/Magazin_7_RealizaciqTovarovUslug_2009-11-11.xml'
+      Left = 13
+      Height = 25
+      Top = 28
+      Width = 620
+      FileName = 'test.xml'
       DialogOptions = []
       FilterIndex = 0
       HideDirectories = False
       ButtonWidth = 23
-      NumGlyphs = 0
+      NumGlyphs = 1
       Anchors = [akTop, akLeft, akRight]
       BorderSpacing.Left = 6
       BorderSpacing.Top = 6
@@ -97,28 +97,28 @@ object XMLRederForm: TXMLRederForm
     end
   end
   object Splitter1: TSplitter
-    Left = 457
-    Height = 624
-    Top = 66
+    Left = 342
+    Height = 316
+    Top = 65
     Width = 5
   end
   object Panel2: TPanel
-    Left = 462
-    Height = 624
-    Top = 66
-    Width = 477
+    Left = 347
+    Height = 316
+    Top = 65
+    Width = 385
     Align = alClient
     Caption = 'Panel2'
-    ClientHeight = 624
-    ClientWidth = 477
+    ClientHeight = 316
+    ClientWidth = 385
     TabOrder = 3
     object ListView1: TListView
       AnchorSideTop.Control = Edit2
       AnchorSideTop.Side = asrBottom
       Left = 1
-      Height = 499
-      Top = 124
-      Width = 475
+      Height = 204
+      Top = 111
+      Width = 383
       Align = alBottom
       Anchors = [akTop, akLeft, akRight, akBottom]
       BorderSpacing.Top = 6
@@ -137,10 +137,10 @@ object XMLRederForm: TXMLRederForm
     object Label2: TLabel
       AnchorSideLeft.Control = Panel2
       AnchorSideTop.Control = Panel2
-      Left = 6
-      Height = 18
-      Top = 6
-      Width = 81
+      Left = 7
+      Height = 15
+      Top = 7
+      Width = 63
       BorderSpacing.Around = 6
       Caption = 'Node name'
       ParentColor = False
@@ -149,10 +149,10 @@ object XMLRederForm: TXMLRederForm
       AnchorSideLeft.Control = Panel2
       AnchorSideTop.Control = Edit1
       AnchorSideTop.Side = asrBottom
-      Left = 6
-      Height = 18
-      Top = 65
-      Width = 78
+      Left = 7
+      Height = 15
+      Top = 59
+      Width = 62
       BorderSpacing.Around = 6
       Caption = 'Node value'
       ParentColor = False
@@ -163,10 +163,10 @@ object XMLRederForm: TXMLRederForm
       AnchorSideTop.Side = asrBottom
       AnchorSideRight.Control = Panel2
       AnchorSideRight.Side = asrBottom
-      Left = 12
-      Height = 29
-      Top = 30
-      Width = 459
+      Left = 13
+      Height = 25
+      Top = 28
+      Width = 365
       Anchors = [akTop, akLeft, akRight]
       BorderSpacing.Around = 6
       TabOrder = 1
@@ -178,10 +178,10 @@ object XMLRederForm: TXMLRederForm
       AnchorSideTop.Side = asrBottom
       AnchorSideRight.Control = Panel2
       AnchorSideRight.Side = asrBottom
-      Left = 12
-      Height = 29
-      Top = 89
-      Width = 459
+      Left = 13
+      Height = 25
+      Top = 80
+      Width = 365
       Anchors = [akTop, akLeft, akRight]
       BorderSpacing.Around = 6
       TabOrder = 2

@@ -128,8 +128,7 @@ begin
   TreeView1Click(nil);
 end;
 
-initialization
-  {$I testxmlreaderunit.lrs}
+{$R *.lfm}
 
 end.
 
