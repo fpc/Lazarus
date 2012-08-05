@@ -57,7 +57,7 @@ type
     procedure SetDropDownRows(const AValue: Integer);
     procedure SetKeyOptions({const} AValue: TKeyOptions);
     procedure SetKey(Index: Integer; const Value: string);
-    procedure SetValue(const Key, Value: string);
+    procedure SetValue(const Key: string; AValue: string);
     procedure SetOnEditButtonClick(const AValue: TNotifyEvent);
     procedure SetOptions(const AValue: TGridOptions);
     procedure SetStrings(const AValue: TValueListStrings);
@@ -328,8 +328,8 @@ end;
 
 procedure TValueListEditor.SetOptions(const AValue: TGridOptions);
 begin
-  // ToDo: Check that column is not moving (goColMoving in Options).
-  inherited Options := AValue;
+  if not (goColMoving in Options) then
+    inherited Options := AValue;
 end;
 
 procedure TValueListEditor.SetStrings(const AValue: TValueListStrings);
@@ -364,17 +364,17 @@ begin
   end;
 end;
 
-procedure TValueListEditor.SetValue(const Key, Value: string);
+procedure TValueListEditor.SetValue(const Key: string; AValue: string);
 var
   I: Integer;
 begin
   I := Strings.IndexOfName(Key);
   if Row > -1 then begin
     Inc(I, FixedRows);
-    Cells[1,I]:=Value;
+    Cells[1,I]:=AValue;
   end
   else
-    Strings.Add(Key+'='+Value);
+    Strings.Add(Key+'='+AValue);
 end;
 
 procedure TValueListEditor.ShowColumnTitles;
@@ -390,9 +390,10 @@ end;
 
 procedure TValueListEditor.AdjustColumnWidths;
 begin
-// ToDo: Change column widths only if they are not set automatically (DisplayOptions).
-// If key column is fixed then adjust only the second column,
-//  otherwise adjust both columns propertionally.
+  if not (doAutoColResize in DisplayOptions) then begin
+    // ToDo: If key column is fixed then adjust only the second column,
+    //  otherwise adjust both columns propertionally.
+  end;
 end;
 
 procedure TValueListEditor.AdjustRowCount;
