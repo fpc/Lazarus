@@ -39,15 +39,17 @@ type
   TValueListEditor = class(TCustomStringGrid)
   private
     FTitleCaptions: TStrings;
-    FStrings: TStrings;
+    FStrings: TValueListStrings;
     FKeyOptions: TKeyOptions;
     FDisplayOptions: TDisplayOptions;
     FDropDownRows: Integer;
     FOnGetPickList: TGetPickListEvent;
     FOnEditButtonClick: TNotifyEvent;
+    FOnStringsChange: TNotifyEvent;
+    FOnStringsChanging: TNotifyEvent;
     FOnValidate: TOnValidateEvent;
-    function GetOnStringsChange: TNotifyEvent;
-    function GetOnStringsChanging: TNotifyEvent;
+    procedure StringsChange(Sender: TObject);
+    procedure StringsChanging(Sender: TObject);
     function GetOptions: TGridOptions;
     function GetKey(Index: Integer): string;
     function GetValue(const Key: string): string;
@@ -57,10 +59,8 @@ type
     procedure SetKey(Index: Integer; const Value: string);
     procedure SetValue(const Key, Value: string);
     procedure SetOnEditButtonClick(const AValue: TNotifyEvent);
-    procedure SetOnStringsChange(const AValue: TNotifyEvent);
-    procedure SetOnStringsChanging(const AValue: TNotifyEvent);
     procedure SetOptions(const AValue: TGridOptions);
-    procedure SetStrings(const AValue: TStrings);
+    procedure SetStrings(const AValue: TValueListStrings);
     procedure SetTitleCaptions(const AValue: TStrings);
   protected
     class procedure WSRegisterClass; override;
@@ -187,7 +187,7 @@ type
     property Options: TGridOptions read GetOptions write SetOptions default
      [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goColSizing,
       goEditing, goAlwaysShowEditor, goThumbTracking];
-    property Strings: TStrings read FStrings write SetStrings;
+    property Strings: TValueListStrings read FStrings write SetStrings;
     property TitleCaptions: TStrings read FTitleCaptions write SetTitleCaptions;
 
     property OnEditButtonClick: TNotifyEvent read FOnEditButtonClick
@@ -195,10 +195,8 @@ type
     property OnGetPickList: TGetPickListEvent read FOnGetPickList write FOnGetPickList;
     property OnMouseEnter;
     property OnMouseLeave;
-    property OnStringsChange: TNotifyEvent read GetOnStringsChange
-      write SetOnStringsChange;
-    property OnStringsChanging: TNotifyEvent read GetOnStringsChanging
-      write SetOnStringsChanging;
+    property OnStringsChange: TNotifyEvent read FOnStringsChange write FOnStringsChange;
+    property OnStringsChanging: TNotifyEvent read FOnStringsChanging write FOnStringsChanging;
     property OnValidate: TOnValidateEvent read FOnValidate write FOnValidate;
 
   end;
@@ -240,9 +238,8 @@ constructor TValueListEditor.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FStrings := TValueListStrings.Create(Self);
-  // NOTE: here should be a handler for Strings.OnChange event
-  //       so changing externally any value (or count) would be
-  //       reflected in grid
+  FStrings.OnChange:=@StringsChange;
+  FStrings.OnChanging:=@StringsChanging;
   FTitleCaptions := TStringList.Create;
   TStringList(FTitleCaptions).OnChange := @TitlesChanged;
   with Columns.Add do
@@ -272,14 +269,18 @@ begin
   inherited Destroy;
 end;
 
-function TValueListEditor.GetOnStringsChange: TNotifyEvent;
+procedure TValueListEditor.StringsChange(Sender: TObject);
 begin
-  Result := nil;       // Placeholder for Delphi compatibility.
+  AdjustRowCount;
+  Invalidate;
+  if Assigned(OnStringsChange) then
+    OnStringsChange(Self);
 end;
 
-function TValueListEditor.GetOnStringsChanging: TNotifyEvent;
+procedure TValueListEditor.StringsChanging(Sender: TObject);
 begin
-  Result := nil;       // Placeholder for Delphi compatibility.
+  if Assigned(OnStringsChanging) then
+    OnStringsChanging(Self);
 end;
 
 function TValueListEditor.GetOptions: TGridOptions;
@@ -325,23 +326,13 @@ begin
   // If edit list for inplace editing is implemented, set its handler, too.
 end;
 
-procedure TValueListEditor.SetOnStringsChange(const AValue: TNotifyEvent);
-begin
-  ;                    // Placeholder for Delphi compatibility.
-end;
-
-procedure TValueListEditor.SetOnStringsChanging(const AValue: TNotifyEvent);
-begin
-  ;                    // Placeholder for Delphi compatibility.
-end;
-
 procedure TValueListEditor.SetOptions(const AValue: TGridOptions);
 begin
   // ToDo: Check that column is not moving (goColMoving in Options).
   inherited Options := AValue;
 end;
 
-procedure TValueListEditor.SetStrings(const AValue: TStrings);
+procedure TValueListEditor.SetStrings(const AValue: TValueListStrings);
 begin
   FStrings.Assign(AValue);
 end;
