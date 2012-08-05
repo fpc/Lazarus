@@ -30,6 +30,10 @@
         <UnitName Value="InstantFPCRegisterLaz"/>
       </Item1>
     </Files>
+    <i18n>
+      <EnableI18N Value="True"/>
+      <OutDir Value="languages"/>
+    </i18n>
     <Type Value="DesignTime"/>
     <RequiredPkgs Count="2">
       <Item1>
@@ -45,5 +49,8 @@
     <PublishOptions>
       <Version Value="2"/>
     </PublishOptions>
+    <CustomOptions Items="ExternHelp" Version="2">
+      <_ExternHelp Items="Count"/>
+    </CustomOptions>
   </Package>
 </CONFIG>
