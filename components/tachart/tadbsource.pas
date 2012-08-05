@@ -149,6 +149,7 @@ begin
   inherited Create(AOwner);
   FDataLink := TDbChartSourceDataLink.Create(Self);
   FFieldYList := TStringList.Create;
+  FFieldYList.StrictDelimiter := true;
   FYCount := 0; // Set to 1 by inherited.
 end;
 
