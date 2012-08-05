@@ -763,6 +763,8 @@ var
     if (rcToken.Right <= rcToken.Left) then exit;
     // Draw the right edge under the text if necessary
     nX := ScreenColumnToXValue(FirstPhysical); // == rcToken.Left
+    if nX < rcToken.Left then
+      rcToken.Left := nX;
     if ForceEto then fTextDrawer.ForceNextTokenWithEto;
     if bDoRightEdge
     and (nRightEdge<rcToken.Right) and (nRightEdge>=rcToken.Left)
