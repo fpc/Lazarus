@@ -66,6 +66,9 @@ see http://www.mozilla.org/MPL/
         <PackageName Value="SynEdit"/>
       </Item4>
     </RequiredPkgs>
+    <UsageOptions>
+      <UnitPath Value="$(PkgOutDir)"/>
+    </UsageOptions>
     <PublishOptions>
       <Version Value="2"/>
       <IgnoreBinaries Value="False"/>
