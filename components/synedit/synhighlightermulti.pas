@@ -356,6 +356,10 @@ end;
 
 function TSynHLightMultiSectionList.GetSectionPointer(Index: Integer): PSynHLightMultiVirtualSection;
 begin
+  {$IFDEF AssertSynMemIndex}
+  if (Index < 0) or (Index >= Count) then
+    raise Exception.Create(Format('TSynHLightMultiSectionList.GetSectionPointer - Bad Index cnt= %d idx= %d',[Count, Index]));
+  {$ENDIF}
   Result := PSynHLightMultiVirtualSection(ItemPointer[Index]);
 end;
 
@@ -593,14 +597,20 @@ begin
 end;
 
 procedure TSynHLightMultiVirtualLines.PrepareRegionScan(AStartLineIdx: Integer);
+var
+  p: PSynHLightMultiVirtualSection;
 begin
   FRegionScanRangeIndex := FSectionList.IndexOfFirstSectionAtLineIdx(AStartLineIdx, -1 ,True);
   FRegionScanStartRangeIndex := FRegionScanRangeIndex;
   FRScanStartedWithLineCount := Count;
   if FRegionScanRangeIndex < FSectionList.Count then
     FRScanStartedAtVLine := FSectionList[FRegionScanRangeIndex].VirtualLine
-  else
-    FRScanStartedAtVLine := FSectionList.Count; // xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+  else if FSectionList.Count = 0 then
+    FRScanStartedAtVLine := 0
+  else begin
+    p := FSectionList.PSections[FSectionList.Count - 1];
+    FRScanStartedAtVLine := p^.VirtualLine + p^.EndPos.y - p^.StartPos.y + 1;
+  end;
 end;
 
 procedure TSynHLightMultiVirtualLines.FinishRegionScan(AEndLineIdx: Integer);
@@ -1014,6 +1024,10 @@ var
 begin
   (* Scan regions *)
   Result := StartIndex;
+
+  // last node may need to extend to next line
+  if Result > 0 then dec(Result);
+
   c := CurrentLines.Count - 1;
   if c < 0 then begin
     // Clear ?
@@ -1030,7 +1044,8 @@ begin
     CurRegStart.x := 1;
     CurRegTokenPos := 1;
   end;
-  StartAtLineIndex(Result);
+  StartAtLineIndex(Result);             // Set FCurScheme
+
   dec(Result);
   repeat
     inc(Result);
@@ -1072,7 +1087,7 @@ begin
   if Result = c then begin
     i := length(CurrentLines[c]) +  1;
     if FCurScheme = nil then
-      StartScheme(nil, c, i, i)
+      StartScheme(nil, c, i, i)  // DefaultVirtualLines.RegionScanUpdateFirstRegionEnd(pt, 0)
     else
       EndScheme(c, i, i);
   end

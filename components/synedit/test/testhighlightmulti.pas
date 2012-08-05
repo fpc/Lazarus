@@ -134,18 +134,26 @@ procedure TTestHighlightMulti.CheckTokensForLine(Name: String; HL: TSynCustomHig
   LineIdx: Integer; ExpAttr: array of TSynHighlighterAttributes);
 var
   c: Integer;
+  tk: TSynHighlighterAttributes;
+  tkName: String;
 begin
   HL.StartAtLineIndex(LineIdx);
   c := 0;
   while not HL.GetEol do begin
     //DebugLn([HL.GetToken,' (',HL.GetTokenID ,') at ', HL.GetTokenPos]);
+    tk := HL.GetTokenAttribute;
+    if tk <> nil
+    then tkName := tk.StoredName
+    else tkName := '<nil>';
     AssertTrue(Format('%s Attrib Line=%d pos=%d exp=%s got=%s',
-                      [Name, LineIdx, c,  ExpAttr[c].StoredName, HL.GetTokenAttribute.StoredName]),
+                      [Name, LineIdx, c,  ExpAttr[c].StoredName, tkName]),
                ExpAttr[c] = HL.GetTokenAttribute);
     HL.Next;
     inc(c);
-    if c >= length(ExpAttr) then
+    if c >= length(ExpAttr) then begin
+      if not HL.GetEol then inc(c);
       break;
+    end;
   end;
   AssertEquals(Name+ 'TokenId Line='+IntToStr(LineIdx)+'  amount of tokens', length(ExpAttr), c );
 end;
@@ -810,21 +818,38 @@ var
   MultiHl: TSynMultiSyn;
   XmlHl: TSynXMLSyn;
   EmptyScheme, PasScheme: TSynHighlighterMultiScheme;
-  AttEl, AttSym: TSynHighlighterAttributes;
+  AtXmlEl, AtXmlSym, AtXmlTxt: TSynHighlighterAttributes;
+  AtPasMark, AtPasSym, AtPasId, AtPasKey, AtPasSp, AtPasCom: TSynHighlighterAttributes;
   PasHl: TSynPasSyn;
 
   procedure InitMultiXmlPasHl;
   begin
     MultiHl := TSynMultiSyn.Create(Form);
+
     XmlHl := TSynXMLSyn.Create(Form);
+    XmlHl.ElementAttri.Foreground := 255;
     MultiHl.DefaultHighlighter := XmlHl;
+
     PasScheme := TSynHighlighterMultiScheme(MultiHl.Schemes.Add);
     PasScheme.CaseSensitive := False;
     PasScheme.StartExpr := '<pas>';
     PasScheme.EndExpr := '</pas>';
     PasHl := TSynPasSyn.Create(Form);
     PasScheme.Highlighter := PasHl;
+
     SynEdit.Highlighter := MultiHl;
+    MultiHl.CurrentLines := SynEdit.TextBuffer;
+
+    AtXmlEl  := XmlHl.ElementAttri;
+    AtXmlSym := XmlHl.SymbolAttri;
+    AtXmlTxt := XmlHl.TextAttri;
+
+    AtPasMark:= PasScheme.MarkerAttri;
+    AtPasSym := PasHl.SymbolAttri;
+    AtPasId  := PasHl.IdentifierAttri;
+    AtPasKey := PasHl.KeyAttri;
+    AtPasSp  := PasHl.SpaceAttri;
+    AtPasCom := PasHl.CommentAttri;
   end;
   procedure FinishMultiXmlPasHl;
   begin
@@ -835,76 +860,99 @@ var
   end;
 begin
   {%region Issue 0022519}
-    PushBaseName('Edit: Issue 0022519');   // Issue 0022519
+    PushBaseName('append after EOT (default scheme)');   // Issue 0022519
     MultiHl := TSynMultiSyn.Create(Form);
     XmlHl := TSynXMLSyn.Create(Form);
+    XmlHl.ElementAttri.Foreground := 255;
+
     MultiHl.DefaultHighlighter := XmlHl;
     EmptyScheme := TSynHighlighterMultiScheme(MultiHl.Schemes.Add);
 
-XmlHl.ElementAttri.Foreground := 255;
-    AttEl  := XmlHl.ElementAttri;
-    AttSym := XmlHl.SymbolAttri;
+    AtXmlEl  := XmlHl.ElementAttri;
+    AtXmlSym := XmlHl.SymbolAttri;
+    AtXmlTxt := XmlHl.TextAttri;
 
     SynEdit.Highlighter := MultiHl;
+    MultiHl.CurrentLines := SynEdit.TextBuffer;
 
     PushBaseName('Insert "html"');
       SynEdit.SetTextBetweenPoints(Point(1,1), Point(1,1), '<html>');
-DumpAll(MultiHl);
-      MultiHl.CurrentLines := SynEdit.TextBuffer;
-      CheckTokensForLine('1st line=html', MultiHl, 0, [AttSym, AttEl, AttSym]);
+      CheckTokensForLine('1st line=html', MultiHl, 0, [AtXmlSym, AtXmlEl, AtXmlSym]);
+      AssertEquals(BaseTestName + 'Section Count', 1, MultiHl.DefaultVirtualLines.SectionList.Count);
 
     PopPushBaseName('Insert "a"');
       //SynEdit.SetTextBetweenPoints(Point(1,2), Point(1,2), '<a>');
       SynEdit.CaretXY := point(7,1);
       SynEdit.CommandProcessor(ecLineBreak, '', nil);
-DumpAll(MultiHl);
       SynEdit.CommandProcessor(ecChar, '<', nil);
       SynEdit.CommandProcessor(ecChar, 'a', nil);
       SynEdit.CommandProcessor(ecChar, '>', nil);
-//Application.ProcessMessages; readln;
-DumpAll(MultiHl);
-      //CheckTokensForLine('1st line=html', MultiHl, 0, [AttSym, AttEl, AttSym]);
-      //CheckTokensForLine('2nd line=html', MultiHl, 1, [AttSym, AttEl, AttSym]);
+      CheckTokensForLine('1st line=html', MultiHl, 0, [AtXmlSym, AtXmlEl, AtXmlSym]);
+      CheckTokensForLine('2nd line=html', MultiHl, 1, [AtXmlSym, AtXmlEl, AtXmlSym]);
+      AssertEquals(BaseTestName + 'Section Count', 1, MultiHl.DefaultVirtualLines.SectionList.Count);
 
     PopPushBaseName('Insert empty');
       SynEdit.SetTextBetweenPoints(Point(1,1), Point(1,1), ''+LineEnding);
-DumpAll(MultiHl);
-      //CheckTokensForLine('1st line=html', MultiHl, 0, []);
-      //CheckTokensForLine('2nd line=html', MultiHl, 1, [AttSym, AttEl, AttSym]);
-      //CheckTokensForLine('3rd line=html', MultiHl, 2, [AttSym, AttEl, AttSym]);
+      CheckTokensForLine('1st line=html', MultiHl, 0, []);
+      CheckTokensForLine('2nd line=html', MultiHl, 1, [AtXmlSym, AtXmlEl, AtXmlSym]);
+      CheckTokensForLine('3rd line=html', MultiHl, 2, [AtXmlSym, AtXmlEl, AtXmlSym]);
+      AssertEquals(BaseTestName + 'Section Count', 1, MultiHl.DefaultVirtualLines.SectionList.Count);
 
     PopPushBaseName('Delete empty');
       SynEdit.SetTextBetweenPoints(Point(1,1), Point(1,2), '');
-DumpAll(MultiHl);
-      //CheckTokensForLine('1st line=html', MultiHl, 0, [AttSym, AttEl, AttSym]);
-      //CheckTokensForLine('2nd line=html', MultiHl, 1, [AttSym, AttEl, AttSym]);
-
+      CheckTokensForLine('1st line=html', MultiHl, 0, [AtXmlSym, AtXmlEl, AtXmlSym]);
+      CheckTokensForLine('2nd line=html', MultiHl, 1, [AtXmlSym, AtXmlEl, AtXmlSym]);
+      AssertEquals(BaseTestName + 'Section Count', 1, MultiHl.DefaultVirtualLines.SectionList.Count);
 
 
     SynEdit.ClearAll;
     PushBaseName('Insert "html"');
       SynEdit.SetTextBetweenPoints(Point(1,1), Point(1,1), '<html>'+LineEnding);
-DumpAll(MultiHl);
-      CheckTokensForLine('1st line=html', MultiHl, 0, [AttSym, AttEl, AttSym]);
+      CheckTokensForLine('1st line=html', MultiHl, 0, [AtXmlSym, AtXmlEl, AtXmlSym]);
+      AssertEquals(BaseTestName + 'Section Count', 1, MultiHl.DefaultVirtualLines.SectionList.Count);
 
     PopPushBaseName('Insert "b"');
       SynEdit.SetTextBetweenPoints(Point(1,2), Point(1,2), '<b>'+LineEnding);
-DumpAll(MultiHl);
-//Application.ProcessMessages; readln;
+      CheckTokensForLine('1st line=html', MultiHl, 0, [AtXmlSym, AtXmlEl, AtXmlSym]);
+      CheckTokensForLine('2nd line=html', MultiHl, 1, [AtXmlSym, AtXmlEl, AtXmlSym]);
+      AssertEquals(BaseTestName + 'Section Count', 1, MultiHl.DefaultVirtualLines.SectionList.Count);
 
     PushBaseName('Insert "foo"');
-      SynEdit.SetTextBetweenPoints(Point(1,1), Point(1,1), '<foo>'+LineEnding);
+      SynEdit.SetTextBetweenPoints(Point(1,1), Point(1,1), '<foo>x'+LineEnding);
+      CheckTokensForLine('1st line=html', MultiHl, 0, [AtXmlSym, AtXmlEl, AtXmlSym, AtXmlTxt]);
+      CheckTokensForLine('2nd line=html', MultiHl, 1, [AtXmlSym, AtXmlEl, AtXmlSym]);
+      CheckTokensForLine('3rd line=html', MultiHl, 2, [AtXmlSym, AtXmlEl, AtXmlSym]);
+      AssertEquals(BaseTestName + 'Section Count', 1, MultiHl.DefaultVirtualLines.SectionList.Count);
 
     SynEdit.Undo;
+      CheckTokensForLine('1st line=html', MultiHl, 0, [AtXmlSym, AtXmlEl, AtXmlSym]);
+      CheckTokensForLine('2nd line=html', MultiHl, 1, [AtXmlSym, AtXmlEl, AtXmlSym]);
+      AssertEquals(BaseTestName + 'Section Count', 1, MultiHl.DefaultVirtualLines.SectionList.Count);
     SynEdit.Undo;
+      CheckTokensForLine('1st line=html', MultiHl, 0, [AtXmlSym, AtXmlEl, AtXmlSym]);
+      AssertEquals(BaseTestName + 'Section Count', 1, MultiHl.DefaultVirtualLines.SectionList.Count);
     SynEdit.Undo;
 
     SynEdit.Redo;
+      CheckTokensForLine('1st line=html', MultiHl, 0, [AtXmlSym, AtXmlEl, AtXmlSym]);
+      AssertEquals(BaseTestName + 'Section Count', 1, MultiHl.DefaultVirtualLines.SectionList.Count);
     SynEdit.Redo;
+      CheckTokensForLine('1st line=html', MultiHl, 0, [AtXmlSym, AtXmlEl, AtXmlSym]);
+      CheckTokensForLine('2nd line=html', MultiHl, 1, [AtXmlSym, AtXmlEl, AtXmlSym]);
+      AssertEquals(BaseTestName + 'Section Count', 1, MultiHl.DefaultVirtualLines.SectionList.Count);
     SynEdit.Redo;
+      CheckTokensForLine('1st line=html', MultiHl, 0, [AtXmlSym, AtXmlEl, AtXmlSym, AtXmlTxt]);
+      CheckTokensForLine('2nd line=html', MultiHl, 1, [AtXmlSym, AtXmlEl, AtXmlSym]);
+      CheckTokensForLine('3rd line=html', MultiHl, 2, [AtXmlSym, AtXmlEl, AtXmlSym]);
+      AssertEquals(BaseTestName + 'Section Count', 1, MultiHl.DefaultVirtualLines.SectionList.Count);
 
     SynEdit.Undo;
+      CheckTokensForLine('1st line=html', MultiHl, 0, [AtXmlSym, AtXmlEl, AtXmlSym]);
+      CheckTokensForLine('2nd line=html', MultiHl, 1, [AtXmlSym, AtXmlEl, AtXmlSym]);
+      AssertEquals(BaseTestName + 'Section Count', 1, MultiHl.DefaultVirtualLines.SectionList.Count);
     SynEdit.Undo;
+      CheckTokensForLine('1st line=html', MultiHl, 0, [AtXmlSym, AtXmlEl, AtXmlSym]);
+      AssertEquals(BaseTestName + 'Section Count', 1, MultiHl.DefaultVirtualLines.SectionList.Count);
     SynEdit.Undo;
 
     SynEdit.Highlighter := nil;
@@ -913,7 +961,56 @@ DumpAll(MultiHl);
     PopBaseName;
     PopBaseName;
   {%endregion}
-//exit;
+
+  {%region}
+    PushBaseName('append after EOT - after sub-scheme');
+    SynEdit.ClearAll;
+    SynEdit.SetTextBetweenPoints(Point(1,1), Point(1,1), 'a<pas>unit</pas>');
+    InitMultiXmlPasHl;
+    MultiHl.CurrentLines := SynEdit.TextBuffer;
+    SynEdit.SimulatePaintText;
+      CheckTokensForLine('1st line', MultiHl, 0, [AtXmlTxt, AtPasMark, AtPasKey, AtPasMark]);
+      AssertEquals(BaseTestName + 'Section Count def', 1, MultiHl.DefaultVirtualLines.SectionList.Count);
+      AssertEquals(BaseTestName + 'Section Count pas', 1, PasScheme.VirtualLines.SectionList.Count);
+
+    SynEdit.CaretXY := point(17,1);
+    SynEdit.CommandProcessor(ecLineBreak, '', nil);
+    SynEdit.CommandProcessor(ecChar, '<', nil);
+    SynEdit.CommandProcessor(ecChar, 'a', nil);
+    SynEdit.CommandProcessor(ecChar, '>', nil);
+//DumpAll(MultiHl);
+      CheckTokensForLine('1st line', MultiHl, 0, [AtXmlTxt, AtPasMark, AtPasKey, AtPasMark]);
+      CheckTokensForLine('2nd line', MultiHl, 1, [AtXmlSym, AtXmlEl, AtXmlSym]);
+      AssertEquals(BaseTestName + 'Section Count def', 2, MultiHl.DefaultVirtualLines.SectionList.Count);
+      AssertEquals(BaseTestName + 'Section Count pas', 1, PasScheme.VirtualLines.SectionList.Count);
+
+    FinishMultiXmlPasHl;
+    PopBaseName;
+  {%endregion}
+
+  {%region}
+    PushBaseName('append after EOT - in sub-scheme');
+    SynEdit.ClearAll;
+    SynEdit.SetTextBetweenPoints(Point(1,1), Point(1,1), 'a<pas>unit');
+    InitMultiXmlPasHl;
+    MultiHl.CurrentLines := SynEdit.TextBuffer;
+    SynEdit.SimulatePaintText;
+      CheckTokensForLine('1st line', MultiHl, 0, [AtXmlTxt, AtPasMark, AtPasKey]);
+      AssertEquals(BaseTestName + 'Section Count def', 1, MultiHl.DefaultVirtualLines.SectionList.Count);
+      AssertEquals(BaseTestName + 'Section Count pas', 1, PasScheme.VirtualLines.SectionList.Count);
+
+      SynEdit.CaretXY := point(17,1);
+      SynEdit.CommandProcessor(ecLineBreak, '', nil);
+//DumpAll(MultiHl);
+      SynEdit.CommandProcessor(ecChar, ';', nil);
+      CheckTokensForLine('1st line', MultiHl, 0, [AtXmlTxt, AtPasMark, AtPasKey]);
+      CheckTokensForLine('2nd line', MultiHl, 1, [AtPasSym]);
+      AssertEquals(BaseTestName + 'Section Count def', 1, MultiHl.DefaultVirtualLines.SectionList.Count);
+      AssertEquals(BaseTestName + 'Section Count pas', 1, PasScheme.VirtualLines.SectionList.Count);
+
+    FinishMultiXmlPasHl;
+    PopBaseName;
+  {%endregion}
 
   {%region multiple section (same scheme) on one line}
     PushBaseName('multiple section (same scheme) on one line');
@@ -925,11 +1022,7 @@ DumpAll(MultiHl);
       'test<pas>unit a;</pas><x><pas>uses </pas></x><pas> Foo;</pas>a'+LineEnding+
       'abc'+LineEnding
     );
-DumpAll(MultiHl);
-//Application.ProcessMessages; readln;
     SynEdit.SetTextBetweenPoints(Point(1,1), Point(1,3), '');
-DumpAll(MultiHl);
-//Application.ProcessMessages; readln;
 
     FinishMultiXmlPasHl;
     PopBaseName;
@@ -941,9 +1034,7 @@ DumpAll(MultiHl);
     InitMultiXmlPasHl;
     SynEdit.SimulatePaintText;
 
-DumpAll(MultiHl); //Application.ProcessMessages; readln;
     SynEdit.SetTextBetweenPoints(Point(1,3), Point(1,4), '');
-DumpAll(MultiHl); //Application.ProcessMessages; readln;
 
     FinishMultiXmlPasHl;
     PopBaseName;
@@ -955,9 +1046,7 @@ DumpAll(MultiHl); //Application.ProcessMessages; readln;
     InitMultiXmlPasHl;
     SynEdit.SimulatePaintText;
 
-DumpAll(MultiHl); //Application.ProcessMessages; readln;
     SynEdit.SetTextBetweenPoints(Point(1,3), Point(1,5), '');
-DumpAll(MultiHl); //Application.ProcessMessages; readln;
 
     FinishMultiXmlPasHl;
     PopBaseName;
@@ -969,9 +1058,7 @@ DumpAll(MultiHl); //Application.ProcessMessages; readln;
     InitMultiXmlPasHl;
     SynEdit.SimulatePaintText;
 
-DumpAll(MultiHl); //Application.ProcessMessages; readln;
     SynEdit.SetTextBetweenPoints(Point(1,2), Point(1,4), '');
-DumpAll(MultiHl); //Application.ProcessMessages; readln;
 
     FinishMultiXmlPasHl;
     PopBaseName;
@@ -983,9 +1070,7 @@ DumpAll(MultiHl); //Application.ProcessMessages; readln;
     InitMultiXmlPasHl;
     SynEdit.SimulatePaintText;
 
-DumpAll(MultiHl); //Application.ProcessMessages; readln;
     SynEdit.SetTextBetweenPoints(Point(1,2), Point(1,5), '');
-DumpAll(MultiHl); //Application.ProcessMessages; readln;
 
     FinishMultiXmlPasHl;
     PopBaseName;
@@ -997,9 +1082,7 @@ DumpAll(MultiHl); //Application.ProcessMessages; readln;
     InitMultiXmlPasHl;
     SynEdit.SimulatePaintText;
 
-DumpAll(MultiHl); //Application.ProcessMessages; readln;
     SynEdit.SetTextBetweenPoints(Point(1,4), Point(1,5), '');
-DumpAll(MultiHl); //Application.ProcessMessages; readln;
 
     FinishMultiXmlPasHl;
     PopBaseName;
@@ -1011,9 +1094,7 @@ DumpAll(MultiHl); //Application.ProcessMessages; readln;
     InitMultiXmlPasHl;
     SynEdit.SimulatePaintText;
 
-DumpAll(MultiHl); //Application.ProcessMessages; readln;
     SynEdit.SetTextBetweenPoints(Point(1,7), Point(1,8), '');
-DumpAll(MultiHl); //Application.ProcessMessages; readln;
 
     FinishMultiXmlPasHl;
     PopBaseName;
@@ -1025,9 +1106,7 @@ DumpAll(MultiHl); //Application.ProcessMessages; readln;
     InitMultiXmlPasHl;
     SynEdit.SimulatePaintText;
 
-DumpAll(MultiHl); //Application.ProcessMessages; readln;
     SynEdit.SetTextBetweenPoints(Point(1,6), Point(1,8), '');
-DumpAll(MultiHl); //Application.ProcessMessages; readln;
 
     FinishMultiXmlPasHl;
     PopBaseName;
@@ -1039,9 +1118,7 @@ DumpAll(MultiHl); //Application.ProcessMessages; readln;
     InitMultiXmlPasHl;
     SynEdit.SimulatePaintText;
 
-DumpAll(MultiHl); //Application.ProcessMessages; readln;
     SynEdit.SetTextBetweenPoints(Point(1,7), Point(1,9), '');
-DumpAll(MultiHl); //Application.ProcessMessages; readln;
 
     FinishMultiXmlPasHl;
     PopBaseName;
