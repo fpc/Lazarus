@@ -53,7 +53,9 @@ type
     FShellListView: TCustomShellListView;
     FFileSortType: TFileSortType;
     { Setters and getters }
+    function GetPath: string;
     procedure SetFileSortType(const AValue: TFileSortType);
+    procedure SetPath(AValue: string);
     procedure SetRoot(const AValue: string);
     procedure SetShellListView(const Value: TCustomShellListView);
   protected
@@ -74,14 +76,15 @@ type
     class procedure GetFilesInDir(const ABaseDir: string;
       AMask: string; AObjectTypes: TObjectTypes; AResult: TStrings; AFileSortType: TFileSortType = fstNone);
     { Other methods specific to Lazarus }
-    function  GetPathFromNode(ANode: TTreeNode): string;
-    function  GetSelectedNodePath(): string;
+    function  GetPathFromNode(ANode: TTreeNode; AIncludeRoot: Boolean = True): string;
+    function  GetSelectedNodePath: string;
 
     { Properties }
     property ObjectTypes: TObjectTypes read FObjectTypes write FObjectTypes;
     property ShellListView: TCustomShellListView read FShellListView write SetShellListView;
     property FileSortType: TFileSortType read FFileSortType write SetFileSortType;
     property Root: string read FRoot write SetRoot;
+    property Path: string read GetPath write SetPath;
 
     { Protected properties which users may want to access, see bug 15374 }
     property Items;
@@ -116,6 +119,7 @@ type
     property ReadOnly;
     property RightClickSelect;
     property Root;
+    property Path;
     property RowSelect;
     property ScrollBars;
     property SelectionColor;
@@ -575,6 +579,7 @@ function TCustomShellTreeView.GetRootPath: string;
 begin
   if FRoot <> '' then Result := FRoot
   else Result := GetBasePath();
+  Result := IncludeTrailingPathDelimiter(Result);
 end;
 
 { Returns true if at least one item was added, false otherwise }
@@ -666,39 +671,83 @@ begin
     FShellListView.Root := GetPathFromNode(Selected);
 end;
 
-function TCustomShellTreeView.GetPathFromNode(ANode: TTreeNode): string;
+function TCustomShellTreeView.GetPathFromNode(ANode: TTreeNode; AIncludeRoot: Boolean): string;
 var
-  rootDir : String;
+  nodeDir : String;
 begin
-  // If nothing is selected, then the base is selected
-  if ANode = nil then Exit(GetRootPath());
+  Result := '';
+  // return the base if nothing is selected
+  if ANode = nil then
+  begin
+    if AIncludeRoot then
+      Result := GetRootPath();
+    Exit;
+  end;
 
-  // In the future use ANode.Data instead of ANode.Text
-  rootDir := PChar(ANode.Text);
+  // Build the path. In the future use ANode.Data instead of ANode.Text
+  nodeDir := ANode.Text;
   while (ANode.Parent <> nil) do
   begin
     ANode := ANode.Parent;
-    if (PChar(ANode.Text) <> PathDelim) then
-      rootDir := PChar(ANode.Text) + PathDelim + rootDir
-    else
-      rootDir := PChar(ANode.Text) + rootDir;
+    // Was tested in original code (and didn't make sense), now replaced with assertion. [JuMa]
+    Assert(PChar(ANode.Text) <> PathDelim,
+      Format('TCustomShellTreeView.GetPathFromNode: ANode.Text (%s) is PathDelim', [ANode.Text]));
+    nodeDir := ANode.Text + PathDelim + nodeDir;
   end;
-  // Check if the base directory should be taken into account
-  if FRoot = '' then
-  begin
-    if GetBasePath() <> '' then
-      Result := rootDir
-    else
-      Result := GetBasePath + rootDir;
-  end
+  // Check if root directory should be included
+  if AIncludeRoot then
+    Result := GetRootPath() + nodeDir
   else
-    Result := IncludeTrailingPathDelimiter(FRoot) + rootDir;
+    Result := nodeDir;
 end;
 
-function TCustomShellTreeView.GetSelectedNodePath(): string;
+function TCustomShellTreeView.GetSelectedNodePath: string;
 begin
   Result := GetPathFromNode(Selected);
 end;
+
+function TCustomShellTreeView.GetPath: string;
+begin
+  Result := GetPathFromNode(Selected, False);
+end;
+
+procedure TCustomShellTreeView.SetPath(AValue: string);
+var
+  sl: TStringList;
+  Node: TTreeNode;
+  i: integer;
+begin
+  // We got a full path, make it relative
+  if DirectoryExistsUTF8(AValue) then
+    AValue := CreateRelativePath(AValue, GetRootPath());
+  // Make sure the path is correct now
+  if not DirectoryExistsUTF8(GetRootPath()+AValue) then Exit;
+  sl := TStringList.Create;
+  sl.Delimiter := PathDelim;
+  sl.StrictDelimiter := True;
+  sl.DelimitedText := TrimFilename(AValue);  // Clean the path and then split it
+  BeginUpdate;
+  try
+    Node := Items.GetFirstVisibleNode;
+    for i := 0 to sl.Count-1 do
+    begin
+      while (Node <> Nil) and (Node.Text <> sl[i]) do
+        Node := Node.GetNextVisibleSibling;
+      if Node <> Nil then
+      begin
+        Node.Expanded := True;
+        Node.Selected := True;
+        Node := Node.GetFirstVisibleChild;
+      end
+      else
+        Break;
+    end;
+  finally
+    sl.free;
+    EndUpdate;
+  end;
+end;
+
 
 { TCustomShellListView }
 
