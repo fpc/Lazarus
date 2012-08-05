@@ -7,9 +7,6 @@ interface
 uses
   Classes, SysUtils, ProjectIntf, Forms, LazIDEIntf;
 
-const
-  FileDescNameInstantFPC = 'InstantFPC program';
-  ProjDescNameInstantFPCProject = 'InstantFPC project';
 type
   { TFileDescInstantFPCScript }
 
@@ -33,6 +30,18 @@ type
     function CreateStartFiles(AProject: TLazProject): TModalResult; override;
   end;
 
+
+resourcestring
+  rsInstantFPCPr = 'InstantFPC program';
+  rsSingleFileFr = '%s%sSingle file Free Pascal program executed by InstantFPC';
+  rsInstantFPCSc = 'InstantFPC script';
+  rsSingleFilePr = '%s%sSingle file program using InstantFPC to compile and '
+    +'execute';
+
+const
+  FileDescNameInstantFPC : string = rsInstantFPCPr;
+  ProjDescNameInstantFPCProject : string = 'InstantFPC project';
+
 procedure Register;
 
 implementation
@@ -55,13 +64,12 @@ end;
 
 function TProjectInstantFPCDescriptor.GetLocalizedName: string;
 begin
-  Result:='InstantFPC program';
+  Result:=rsInstantFPCPr;
 end;
 
 function TProjectInstantFPCDescriptor.GetLocalizedDescription: string;
 begin
-  Result:=GetLocalizedName+#13
-    +'Single file Free Pascal program executed by instantfpc';
+  Result:=Format(rsSingleFileFr, [GetLocalizedName, #13]);
 end;
 
 function TProjectInstantFPCDescriptor.InitProject(AProject: TLazProject
@@ -123,13 +131,12 @@ end;
 
 function TFileDescInstantFPCScript.GetLocalizedName: string;
 begin
-  Result:='InstantFPC script';
+  Result:=rsInstantFPCSc;
 end;
 
 function TFileDescInstantFPCScript.GetLocalizedDescription: string;
 begin
-  Result:=GetLocalizedName+#13
-         +'Single file program using instantfpc to compile and execute';
+  Result:=Format(rsSingleFilePr, [GetLocalizedName, #13]);
 end;
 
 function TFileDescInstantFPCScript.CreateSource(const Filename, SourceName,
