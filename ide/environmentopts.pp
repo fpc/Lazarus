@@ -1599,7 +1599,7 @@ begin
       XMLConfig.SetDeleteValue(Path+'CharcaseFileAction/Value',
                                CharCaseFileActionNames[fCharcaseFileAction],
                                CharCaseFileActionNames[ccfaAutoRename]);
-      XMLConfig.SetDeleteValue(Path+'AutoDeleteAmbiguousSources/Value',
+      XMLConfig.SetDeleteValue(Path+'AmbiguousFileAction/Value',
         AmbiguousFileActionNames[fAmbiguousFileAction],
         AmbiguousFileActionNames[afaAsk]);
       XMLConfig.SetDeleteValue(Path+'AskForFilenameOnNewFile/Value',
