@@ -24,6 +24,9 @@ Uses
 {$IFDEF UNIX}{$IFDEF UseCThreads}
   cthreads,
 {$ENDIF}{$ENDIF}
+  {$IF FPC_FULLVERSION<20701}
+  {$ERROR this example requires at least fpc 2.7.1}
+  {$ENDIF}
   daemonapp,
   sysutils
   { add your units here }, svcmap, svccleandirs, dircleaner;
