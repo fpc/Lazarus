@@ -3601,7 +3601,7 @@ var
           // read atom behind identifier name
           NewPos:=PtrInt(PtrUInt(Identifier))-PtrInt(PtrUInt(@Src[1]))+1;
           inc(NewPos,GetIdentLen(Identifier));
-          ReadRawNextPascalAtom(Src,NewPos,AtomStart,Scanner.NestedComments);
+          ReadRawNextPascalAtom(Src,NewPos,AtomStart,Scanner.NestedComments,true);
           if (AtomStart<=SrcLen) and (Src[AtomStart]<>'(') then begin
             // no parameters
             // this is the function pointer, not the result => constant

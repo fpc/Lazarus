@@ -1122,28 +1122,47 @@ begin
         end;
       '{': // pascal comment
         begin
-          CommentLvl:=1;
-          while true do begin
-            inc(p);
-            case p^ of
-            #0:
-              begin
-                CurPos.StartPos:=p-PChar(Src)+1;
-                if CurPos.StartPos>SrcLen then break;
-              end;
-            '{':
-              if Scanner.NestedComments then begin
-                //debugln('TCustomCodeTool.ReadNextAtom ',copy(Src,CurPos.StartPos,CurPos.StartPos-CurPos.EndPos));
-                inc(CommentLvl);
-              end;
-            '}':
-              begin
-                dec(CommentLvl);
-                if CommentLvl=0 then begin
-                  inc(p);
+          inc(p);
+          if p^=#3 then begin
+            // codetools skip comment {#3 #3}
+            repeat
+              case p^ of
+              #0:
+                begin
+                  CurPos.StartPos:=p-PChar(Src)+1;
+                  if CurPos.StartPos>SrcLen then break;
+                end;
+              #3:
+                if p[1]='}' then begin
+                  inc(p,2);
                   break;
                 end;
               end;
+              inc(p);
+            until false;
+          end else begin
+            // pascal comment {}
+            CommentLvl:=1;
+            while true do begin
+              case p^ of
+              #0:
+                begin
+                  CurPos.StartPos:=p-PChar(Src)+1;
+                  if CurPos.StartPos>SrcLen then break;
+                end;
+              '{':
+                if Scanner.NestedComments then
+                  inc(CommentLvl);
+              '}':
+                begin
+                  dec(CommentLvl);
+                  if CommentLvl=0 then begin
+                    inc(p);
+                    break;
+                  end;
+                end;
+              end;
+              inc(p);
             end;
           end;
         end;
@@ -1488,32 +1507,43 @@ var
 
       '{':
         begin
-          // skip pascal comment
-          CommentLvl:=1;
           inc(PrePos);
-          while (PrePos<=CurPos.StartPos) do begin
-            case Src[PrePos] of
-            '{': if Scanner.NestedComments then inc(CommentLvl);
-            '}':
-              begin
-                dec(CommentLvl);
-                if CommentLvl=0 then break;
-              end;
-            end;
+          if (PrePos<=CurPos.StartPos) and (Src[PrePos]=#3) then begin
+            // skip codetools comment
             inc(PrePos);
+            while (PrePos<=CurPos.StartPos) do begin
+              if (Src[PrePos]=#3) and (PrePos<CurPos.StartPos)
+              and (Src[PrePos+1]='}') then begin
+                inc(PrePos,2);
+                break;
+              end;
+              inc(PrePos);
+            end;
+          end else begin
+            // skip pascal comment
+            CommentLvl:=1;
+            while (PrePos<=CurPos.StartPos) do begin
+              case Src[PrePos] of
+              '{': if Scanner.NestedComments then inc(CommentLvl);
+              '}':
+                begin
+                  dec(CommentLvl);
+                  if CommentLvl=0 then break;
+                end;
+              end;
+              inc(PrePos);
+            end;
           end;
         end;
 
       '(':
-        begin
-          if Src[PrePos+1]='*' then begin
-            // skip turbo pascal comment
-            inc(PrePos,2);
-            while (PrePos<CurPos.StartPos)
-            and ((Src[PrePos]<>'*') or (Src[PrePos+1]<>')')) do
-              inc(PrePos);
+        if Src[PrePos+1]='*' then begin
+          // skip turbo pascal comment
+          inc(PrePos,2);
+          while (PrePos<CurPos.StartPos)
+          and ((Src[PrePos]<>'*') or (Src[PrePos+1]<>')')) do
             inc(PrePos);
-          end;
+          inc(PrePos);
         end;
 
       '''':
@@ -1574,16 +1604,30 @@ begin
     if IsCommentEndChar[Src[CurPos.StartPos]] then begin
       case Src[CurPos.StartPos] of
       
-      '}': // pascal comment
+      '}':
         begin
-          CommentLvl:=1;
           dec(CurPos.StartPos);
-          while (CurPos.StartPos>=1) and (CommentLvl>0) do begin
-            case Src[CurPos.StartPos] of
-            '}': if Scanner.NestedComments then inc(CommentLvl);
-            '{': dec(CommentLvl);
-            end;
+          if (CurPos.StartPos>=1) and (Src[CurPos.StartPos]=#3) then begin
+            // codetools skip comment {#3 #3}
             dec(CurPos.StartPos);
+            while (CurPos.StartPos>=1) do begin
+              if (Src[CurPos.StartPos]=#3) and (CurPos.StartPos>1)
+              and (Src[CurPos.StartPos-1]='}') then begin
+                dec(CurPos.StartPos,2);
+                break;
+              end;
+              dec(CurPos.StartPos);
+            end;
+          end else begin
+            // pascal comment {}
+            CommentLvl:=1;
+            while (CurPos.StartPos>=1) and (CommentLvl>0) do begin
+              case Src[CurPos.StartPos] of
+              '}': if Scanner.NestedComments then inc(CommentLvl);
+              '{': dec(CommentLvl);
+              end;
+              dec(CurPos.StartPos);
+            end;
           end;
         end;
         
@@ -2010,49 +2054,10 @@ end;
 
 procedure TCustomCodeTool.ReadTillCommentEnd;
 var
-  CommentLvl: Integer;
+  EndP: PChar;
 begin
-  {$IFOPT R+}{$DEFINE RangeChecking}{$ENDIF}
-  {$R-}
-  case Src[CurPos.StartPos] of
-  '{': // pascal comment
-    begin
-      CommentLvl:=1;
-      inc(CurPos.StartPos);
-      while true do begin
-        case Src[CurPos.StartPos] of
-        #0:  if CurPos.StartPos>SrcLen then break;
-        '{': if Scanner.NestedComments then inc(CommentLvl);
-        '}':
-          begin
-            dec(CommentLvl);
-            if CommentLvl=0 then break;
-          end;
-        end;
-        inc(CurPos.StartPos);
-      end;
-      inc(CurPos.StartPos);
-    end;
-  '/':  // Delphi comment
-    if (Src[CurPos.StartPos+1]='/') then begin
-      inc(CurPos.StartPos,2);
-      while (not (Src[CurPos.StartPos] in [#10,#13,#0])) do
-        inc(CurPos.StartPos);
-      inc(CurPos.StartPos);
-      if (CurPos.StartPos<=SrcLen) and (Src[CurPos.StartPos] in [#10,#13])
-      and (Src[CurPos.StartPos-1]<>Src[CurPos.StartPos]) then
-        inc(CurPos.StartPos);
-    end;
-  '(': // old turbo pascal comment
-    if (Src[CurPos.StartPos+1]='*') then begin
-      inc(CurPos.StartPos,3);
-      while (CurPos.StartPos<=SrcLen)
-      and ((Src[CurPos.StartPos-1]<>'*') or (Src[CurPos.StartPos]<>')')) do
-        inc(CurPos.StartPos);
-      inc(CurPos.StartPos);
-    end;
-  end;
-  {$IFDEF RangeChecking}{$R+}{$UNDEF RangeChecking}{$ENDIF}
+  EndP:=FindCommentEnd(PChar(Src)+CurPos.StartPos,Scanner.NestedComments);
+  CurPos.StartPos:=EndP-PChar(Src)+1;
 end;
 
 procedure TCustomCodeTool.BeginParsing(Range: TLinkScannerRange);

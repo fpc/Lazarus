@@ -3,6 +3,8 @@
    ./runtests --format=plain --suite=TTestBasicCodeTools
    ./runtests --format=plain --suite=TestFindLineEndOrCodeInFrontOfPosition
    ./runtests --format=plain --suite=TestHasTxtWord
+   ./runtests --format=plain --suite=TestBasicFindCommentEnd
+   ./runtests --format=plain --suite=TestBasicFindNextComment
 }
 unit TestBasicCodetools;
 
@@ -21,6 +23,8 @@ type
   published
     procedure TestFindLineEndOrCodeInFrontOfPosition;
     procedure TestHasTxtWord;
+    procedure TestBasicFindCommentEnd;
+    procedure TestBasicFindNextComment;
   end;
 
 implementation
@@ -88,6 +92,53 @@ begin
   t('a','ab a',true,1);
   t('abc','ab abcd',false,1);
   t('ab','abab',false,2);
+end;
+
+procedure TTestBasicCodeTools.TestBasicFindCommentEnd;
+
+  procedure TestFindCommentEnd(Src: string;
+    NestedComments: boolean; ExpectedEndPos: integer);
+  var
+    EndPos: Integer;
+    p: PChar;
+    EndP: PChar;
+  begin
+    EndPos:=FindCommentEnd(Src,1,NestedComments);
+    AssertEquals('FindCommentEnd(string) '+dbgstr(Src),ExpectedEndPos,EndPos);
+    p:=PChar(Src);
+    EndP:=FindCommentEnd(p,NestedComments);
+    EndPos:=EndP-PChar(Src)+1;
+    AssertEquals('FindCommentEnd(pchar) '+dbgstr(Src),ExpectedEndPos,EndPos);
+  end;
+
+begin
+  TestFindCommentEnd(' ',false,1);
+  TestFindCommentEnd('{}',false,3);
+  TestFindCommentEnd('(**)',false,5);
+  TestFindCommentEnd('(*)',false,4);
+  TestFindCommentEnd('{{}}',false,4);
+  TestFindCommentEnd('{{}}',true,5);
+  TestFindCommentEnd('{'#3#3'}',false,5);
+  TestFindCommentEnd('{'#3'}'#3'}',false,6);
+  TestFindCommentEnd('//',false,3);
+end;
+
+procedure TTestBasicCodeTools.TestBasicFindNextComment;
+
+  procedure TestFindNextComment(Src: string; ExpectedPos: integer);
+  var
+    StartPos: Integer;
+  begin
+    StartPos:=FindNextComment(Src,1);
+    AssertEquals('FindNextComment '+dbgstr(Src),ExpectedPos,StartPos);
+  end;
+
+begin
+  TestFindNextComment('{',1);
+  TestFindNextComment('//',1);
+  TestFindNextComment('(*',1);
+  TestFindNextComment('(',2);
+  TestFindNextComment('/',2);
 end;
 
 initialization

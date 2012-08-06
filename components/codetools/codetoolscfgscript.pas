@@ -302,7 +302,7 @@ begin
   p:=PChar(Src);
   //debugln(['RenameCTCSVariable START ',dbgstr(Src)]);
   repeat
-    ReadRawNextPascalAtom(p,AtomStart);
+    ReadRawNextPascalAtom(p,AtomStart,nil,false,true);
     if (p=AtomStart) then break;
     if IsIdentStartChar[AtomStart^]
     and (CompareIdentifierPtrs(PChar(OldName),AtomStart)=0)
@@ -1406,18 +1406,18 @@ begin
   BeginStart:=AtomStart;
   StartTop:=FStack.Top;
   FStack.Push(ctcssBegin,AtomStart);
-  ReadRawNextPascalAtom(Src,AtomStart);
+  ReadRawNextPascalAtom(Src,AtomStart,nil,false,true);
   repeat
     if (AtomStart^=#0) then begin
       ErrorMissingEnd;
       break;
     end else if CompareIdentifiers('END',AtomStart)=0 then begin
       FStack.Pop;
-      ReadRawNextPascalAtom(Src,AtomStart);
+      ReadRawNextPascalAtom(Src,AtomStart,nil,false,true);
       break;
     end else if AtomStart^=';' then begin
       // skip
-      ReadRawNextPascalAtom(Src,AtomStart);
+      ReadRawNextPascalAtom(Src,AtomStart,nil,false,true);
     end else begin
       RunStatement(Skip);
     end;
@@ -1438,7 +1438,7 @@ begin
   IfStart:=AtomStart;
   StartTop:=FStack.Top;
   FStack.Push(ctcssIf,IfStart);
-  ReadRawNextPascalAtom(Src,AtomStart);
+  ReadRawNextPascalAtom(Src,AtomStart,nil,false,true);
   ExprIsTrue:=false;
   if RunExpression then begin
     ExprIsTrue:=CTCSVariableIsTrue(FStack.TopItemOperand);
@@ -1452,11 +1452,11 @@ begin
   if CompareIdentifiers(AtomStart,'then')<>0 then
     AddError(Format(ctsThenExpectedButFound, [GetAtomOrNothing]));
   // then statement
-  ReadRawNextPascalAtom(Src,AtomStart);
+  ReadRawNextPascalAtom(Src,AtomStart,nil,false,true);
   RunStatement(Skip or not ExprIsTrue);
   if CompareIdentifiers(AtomStart,'else')=0 then begin
     // else statement
-    ReadRawNextPascalAtom(Src,AtomStart);
+    ReadRawNextPascalAtom(Src,AtomStart,nil,false,true);
     RunStatement(Skip or ExprIsTrue);
   end;
   // clean up stack
@@ -1467,25 +1467,25 @@ procedure TCTConfigScriptEngine.RunUndefine(Skip: boolean);
 var
   VarStart: PChar;
 begin
-  ReadRawNextPascalAtom(Src,AtomStart);
+  ReadRawNextPascalAtom(Src,AtomStart,nil,false,true);
   if AtomStart^<>'(' then begin
     AddError(Format(ctsExpectedButFound, [GetAtomOrNothing]));
     exit;
   end;
-  ReadRawNextPascalAtom(Src,AtomStart);
+  ReadRawNextPascalAtom(Src,AtomStart,nil,false,true);
   if (not IsIdentStartChar[AtomStart^]) or IsKeyWord(AtomStart) then begin
     AddError(Format(ctsExpectedIdentifierButFound, [GetAtomOrNothing]));
     exit;
   end;
   VarStart:=AtomStart;
-  ReadRawNextPascalAtom(Src,AtomStart);
+  ReadRawNextPascalAtom(Src,AtomStart,nil,false,true);
   if AtomStart^<>')' then begin
     AddError(Format(ctsExpectedButFound2, [GetAtomOrNothing]));
     exit;
   end;
   if not Skip then
     Variables.Undefine(VarStart);
-  ReadRawNextPascalAtom(Src,AtomStart);
+  ReadRawNextPascalAtom(Src,AtomStart,nil,false,true);
 end;
 
 procedure TCTConfigScriptEngine.RunAssignment(Skip: boolean);
@@ -1504,7 +1504,7 @@ begin
   {$ENDIF}
   StartTop:=FStack.Top;
   FStack.Push(ctcssAssignment,VarStart);
-  ReadRawNextPascalAtom(Src,AtomStart);
+  ReadRawNextPascalAtom(Src,AtomStart,nil,false,true);
   {$IFDEF VerboseCTCfgScript}
   debugln(['TCTConfigScriptEngine.RunAssignment Operator=',GetAtom]);
   {$ENDIF}
@@ -1519,7 +1519,7 @@ begin
     exit;
   end;
   // read expression
-  ReadRawNextPascalAtom(Src,AtomStart);
+  ReadRawNextPascalAtom(Src,AtomStart,nil,false,true);
   if RunExpression and (not Skip) then begin
     Variable:=Variables.GetVariable(VarStart,true);
     {$IFDEF VerboseCTCfgScript}
@@ -1557,18 +1557,18 @@ var
   b: Boolean;
 begin
   Result:=false;
-  ReadRawNextPascalAtom(Src,AtomStart);
+  ReadRawNextPascalAtom(Src,AtomStart,nil,false,true);
   if AtomStart^<>'(' then begin
     AddError(Format(ctsExpectedButFound, [GetAtomOrNothing]));
     exit;
   end;
-  ReadRawNextPascalAtom(Src,AtomStart);
+  ReadRawNextPascalAtom(Src,AtomStart,nil,false,true);
   if (not IsIdentStartChar[AtomStart^]) or IsKeyWord(AtomStart) then begin
     AddError(Format(ctsExpectedIdentifierButFound, [GetAtomOrNothing]));
     exit;
   end;
   VarStart:=AtomStart;
-  ReadRawNextPascalAtom(Src,AtomStart);
+  ReadRawNextPascalAtom(Src,AtomStart,nil,false,true);
   if AtomStart^<>')' then begin
     AddError(Format(ctsExpectedButFound2, [GetAtomOrNothing]));
     exit;
@@ -1588,12 +1588,12 @@ begin
   Result:=false;
   FunctionName:=AtomStart;
   StartTop:=FStack.Top;
-  ReadRawNextPascalAtom(Src,AtomStart);
+  ReadRawNextPascalAtom(Src,AtomStart,nil,false,true);
   if AtomStart^<>'(' then begin
     AddError(Format(ctsExpectedButFound, [GetAtomOrNothing]));
     exit;
   end;
-  ReadRawNextPascalAtom(Src,AtomStart);
+  ReadRawNextPascalAtom(Src,AtomStart,nil,false,true);
 
   FStack.Push(ctcssRoundBracketOpen,AtomStart);
   FillByte(Value{%H-},SizeOf(Value),0);
@@ -2029,7 +2029,7 @@ begin
       end;
       break;
     end;
-    ReadRawNextPascalAtom(Src,AtomStart);
+    ReadRawNextPascalAtom(Src,AtomStart,nil,false,true);
   end;
 
   if Result then begin
@@ -2341,12 +2341,12 @@ begin
 
   try
     // execute all statements
-    ReadRawNextPascalAtom(Src,AtomStart);
+    ReadRawNextPascalAtom(Src,AtomStart,nil,false,true);
     while Src^<>#0 do begin
       RunStatement(false);
       if not (AtomStart^ in [#0,';']) then
         ExpectedSemicolon;
-      ReadRawNextPascalAtom(Src,AtomStart);
+      ReadRawNextPascalAtom(Src,AtomStart,nil,false,true);
     end;
   except
     on E: Exception do begin
@@ -2391,7 +2391,7 @@ var
 begin
   if P=nil then
     exit('');
-  ReadRawNextPascalAtom(P,StartPos);
+  ReadRawNextPascalAtom(P,StartPos,nil,false,true);
   SetLength(Result,p-StartPos);
   if Result<>'' then
     System.Move(StartPos^,Result[1],length(Result));

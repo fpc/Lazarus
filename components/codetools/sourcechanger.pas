@@ -119,11 +119,12 @@ type
     HiddenIndent: integer; // the next indent is the sum of the current line indent plus HiddenIndent
     CommentLvl: integer;
     CommentStartPos: array of integer;
+    CommentType: char; // {, (, /, #3
     Src: string;
     procedure AddAtom(var CurCode: string; NewAtom: string);
     procedure ReadNextAtom;
     procedure ReadTilCommentEnd;
-    function IsCommentType(CommentStart: char): boolean;
+    function IsCommentType(aCommentType: char): boolean;
     procedure StartComment(p: integer);
     function EndComment(CommentStart: char; p: integer): boolean;
   public
@@ -1441,8 +1442,14 @@ begin
             inc(CurPos);
           until (CurPos>SrcLen) or (not IsHexNumberChar[Src[CurPos]]);
         end;
-      '{': // curly bracket comment or directive
-        if (CommentLvl=0) or (NestedComments and IsCommentType('{')) then begin
+      '{':
+        if (CurPos<SrcLen) and (Src[CurPos+1]=#3) then begin
+          // codetools skip comment {#3#3}
+          StartComment(CurPos);
+          inc(CurPos,2);
+          CurAtomType:=atCommentStart;
+        end else if (CommentLvl=0) or (NestedComments and IsCommentType('{')) then begin
+          // curly bracket comment or directive {}
           StartComment(CurPos);
           inc(CurPos);
           if (CurPos<=SrcLen) and (Src[CurPos]='$') then begin
@@ -1460,8 +1467,14 @@ begin
           inc(CurPos);
           CurAtomType:=atSymbol;
         end;
-      '}': // curly bracket comment end
-        begin
+      '}':
+        if IsCommentType(#3) and (CurPos<SrcLen) and (Src[CurPos+1]=#3) then begin
+          // codetools skip comment
+          EndComment(#3,CurPos);
+          inc(CurPos,2);
+          CurAtomType:=atCommentEnd;
+        end else begin
+          // curly bracket comment end
           if EndComment('{',CurPos) then
             CurAtomType:=atCommentEnd
           else
@@ -1571,14 +1584,19 @@ begin
   until (CurAtomType=atNone) or (CommentLvl<Lvl);
 end;
 
-function TBeautifyCodeOptions.IsCommentType(CommentStart: char): boolean;
+function TBeautifyCodeOptions.IsCommentType(aCommentType: char): boolean;
 begin
-  Result:=(CommentLvl>0) and (Src[CommentStartPos[CommentLvl-1]]=CommentStart);
+  Result:=(CommentLvl>0) and (CommentType=aCommentType);
 end;
 
 procedure TBeautifyCodeOptions.StartComment(p: integer);
 begin
   inc(CommentLvl);
+  if CommentLvl=1 then begin
+    CommentType:=Src[p];
+    if (CommentType='{') and (p<SrcLen) and (Src[p+1]=#3) then
+      CommentType:=#3;
+  end;
   if length(CommentStartPos)<CommentLvl then
     SetLength(CommentStartPos,length(CommentStartPos)*2+10);
   CommentStartPos[CommentLvl-1]:=p;

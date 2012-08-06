@@ -1102,7 +1102,8 @@ begin
             CurLine:=LinkCode.GetLine(SourceLine-1);
             EndPos:=1;
             while (EndPos<=length(CurLine)) do begin
-              BasicCodeTools.ReadRawNextPascalAtom(CurLine,EndPos,StartPos);
+              BasicCodeTools.ReadRawNextPascalAtom(CurLine,EndPos,StartPos,
+                                                   Scanner.NestedComments,true);
               if (EndPos<=length(CurLine))
               and (CompareIdentifiers(@CurLine[StartPos],PChar(Identifier))=0)
               then begin

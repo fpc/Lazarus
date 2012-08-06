@@ -329,12 +329,14 @@ function SearchCodeInSource(const Source, Find: string; StartPos: integer;
    out EndFoundPosition: integer; CaseSensitive: boolean;
    NestedComments: boolean = false): integer;
 function ReadNextPascalAtom(const Source: string;
-   var Position, AtomStart: integer; NestedComments: boolean = false): string;
+   var Position, AtomStart: integer; NestedComments: boolean = false;
+   SkipDirectives: boolean = false): string;
 procedure ReadRawNextPascalAtom(const Source: string;
    var Position: integer; out AtomStart: integer;
-   NestedComments: boolean = false);
+   NestedComments: boolean = false; SkipDirectives: boolean = false);
 procedure ReadRawNextPascalAtom(var Position: PChar; out AtomStart: PChar;
-   const SrcEnd: PChar = nil; NestedComments: boolean = false);
+   const SrcEnd: PChar = nil; NestedComments: boolean = false;
+   SkipDirectives: boolean = false);
 function ReadTilPascalBracketClose(const Source: string;
    var Position: integer; NestedComments: boolean = false): boolean;
 function GetAtomLength(p: PChar; NestedComments: boolean): integer;
@@ -1042,7 +1044,7 @@ end;
 function SearchCodeInSource(const Source, Find: string; StartPos: integer;
   out EndFoundPosition: integer; CaseSensitive: boolean;
   NestedComments: boolean):integer;
-// search pascal atoms of Find in Source
+// search pascal atoms of <Find> in <Source>
 // returns the start pos
 // -1 on failure
 var
@@ -1128,27 +1130,44 @@ begin
 
   '{':
     begin
-      CommentLvl:=1;
       inc(Result);
-      repeat
-        case Result^ of
-        #0: break;
-        '{':
-          if NestedComments then
-            inc(CommentLvl);
-
-        '}':
-          begin
-            dec(CommentLvl);
-            if CommentLvl=0 then begin
-              inc(Result);
+      if Result^=#3 then begin
+        // codetools skip comment
+        inc(Result);
+        repeat
+          case Result^ of
+          #0: break;
+          #3:
+            if Result[1]='}' then begin
+              inc(Result,2);
               break;
             end;
           end;
+          inc(Result);
+        until false;
+      end else begin
+        // pascal comment {}
+        CommentLvl:=1;
+        repeat
+          case Result^ of
+          #0: break;
+          '{':
+            if NestedComments then
+              inc(CommentLvl);
 
-        end;
-        inc(Result);
-      until false;
+          '}':
+            begin
+              dec(CommentLvl);
+              if CommentLvl=0 then begin
+                inc(Result);
+                break;
+              end;
+            end;
+
+          end;
+          inc(Result);
+        until false;
+      end;
     end;
 
   '(':
@@ -1162,10 +1181,9 @@ begin
           dec(CommentLvl);
           if CommentLvl=0 then
             break;
-        end else if (Result^='(') and (Result[1]='*') then begin
+        end else if (Result^='(') and (Result[1]='*') and NestedComments then begin
           inc(Result,2);
-          if NestedComments then
-            inc(CommentLvl);
+          inc(CommentLvl);
         end else
           inc(Result);
       until false;
@@ -1177,15 +1195,13 @@ end;
 function IsCommentEnd(const ASource: string; EndPos: integer): boolean;
 // return true if EndPos on } or on *) or in a // comment
 var
-  l: Integer;
   LineStart: LongInt;
 begin
   Result:=false;
   if EndPos<1 then exit;
-  l:=length(ASource);
-  if EndPos>l then exit;
+  if EndPos>length(ASource) then exit;
   if ASource[EndPos]='}' then begin
-    // delphi comment end
+    // delphi or codetools comment end
     Result:=true;
     exit;
   end;
@@ -1194,7 +1210,7 @@ begin
     Result:=true;
     exit;
   end;
-  // test for Delphi comment
+  // test for Delphi comment //
   // skip line end
   LineStart:=EndPos;
   if ASource[LineStart] in [#10,#13] then begin
@@ -1419,59 +1435,87 @@ function FindCommentEnd(const ASource: string; StartPos: integer;
   NestedComments: boolean): integer;
 // returns position after the comment end, e.g. after }
 var
-  MaxPos, CommentLvl: integer;
+  CommentLvl: integer;
+  p: PChar;
 begin
-  MaxPos:=length(ASource);
   Result:=StartPos;
-  if Result>MaxPos then exit;
-  case ASource[Result] of
+  if Result<1 then exit;
+  if Result>length(ASource) then exit;
+  p:=PChar(ASource);
+  case p^ of
   '/':
     begin
-      if (Result<MaxPos) and (ASource[Result+1]='/') then begin
+      if p[1]='/' then begin
         // skip Delphi comment
-        while (Result<=MaxPos) and (not (ASource[Result] in [#10,#13])) do
-          inc(Result);
+        while (not (p^ in [#0,#10,#13])) do
+          inc(p);
       end;
     end;
 
   '{':
     begin
-      CommentLvl:=1;
-      inc(Result);
-      while Result<=MaxPos do begin
-        case ASource[Result] of
-        '{':
-          if NestedComments then
-            inc(CommentLvl);
-
-        '}':
-          begin
-            dec(CommentLvl);
-            if CommentLvl=0 then begin
-              inc(Result);
+      inc(p);
+      if p^=#3 then begin
+        // Codetools skip comment {#3 #3}
+        inc(p);
+        repeat
+          case p^ of
+          #0:
+            if p-PChar(ASource)>=length(ASource) then break;
+          #3:
+            if p[1]='}' then begin
+              inc(p,2);
               break;
             end;
           end;
-
-        end;
-        inc(Result);
+          inc(p);
+        until false;
+      end else begin
+        // Pascal comment {}
+        CommentLvl:=1;
+        repeat
+          case p^ of
+          #0:
+            if p-PChar(ASource)>=length(ASource) then break;
+          '{':
+            if NestedComments then
+              inc(CommentLvl);
+          '}':
+            begin
+              dec(CommentLvl);
+              if CommentLvl=0 then begin
+                inc(p);
+                break;
+              end;
+            end;
+          end;
+          inc(p);
+        until false;
       end;
     end;
 
   '(':
-    if (Result<MaxPos) and (ASource[Result+1]='*') then begin
-      inc(Result,2);
-      while (Result<=MaxPos) do begin
-        if (Result<MaxPos) and (ASource[Result]='*') and (ASource[Result+1]=')')
-        then begin
-          inc(Result,2);
-          break;
-        end;
-        inc(Result);
-      end;
+    if (p[1]='*') then begin
+      inc(p,2);
+      CommentLvl:=1;
+      repeat
+        if (p^=#0) then begin
+          if p-PChar(ASource)>=length(ASource) then break;
+          inc(p);
+        end else if (p^='(') and (p[1]='*') and NestedComments then begin
+          inc(p,2);
+          inc(CommentLvl);
+        end else if (p^='*') and (p[1]=')') then begin
+          inc(p,2);
+          dec(CommentLvl);
+          if CommentLvl=0 then break;
+        end else
+          inc(p);
+      until false;
     end;
 
   end;
+  Result:=p-PChar(ASource)+1;
 end;
 
 procedure GetLineStartEndAtPosition(const Source:string; Position:integer;
@@ -1535,55 +1579,10 @@ function EmptyCodeLineCount(const Source: string; StartPos, EndPos: integer;
   ignore line ends in comments
   Result is Position of Start of Line End
 }
-var SrcLen: integer;
+var
+  SrcLen: integer;
   SrcPos: Integer;
-
-  procedure ReadComment(var P: integer);
-  begin
-    case Source[P] of
-      '{':
-        begin
-          inc(P);
-          while (P<=SrcLen) and (Source[P]<>'}') do begin
-            if NestedComments and (Source[P] in ['{','(','/']) then
-              ReadComment(P)
-            else
-              inc(P);
-          end;
-          inc(P);
-        end;
-      '(':
-        begin
-          inc(P);
-          if (P<=SrcLen) and (Source[P]='*') then begin
-            inc(P);
-            while (P<=SrcLen-1)
-            and ((Source[P]<>'*') or (Source[P-1]<>')')) do begin
-              if NestedComments and (Source[P] in ['{','(','/']) then
-                ReadComment(P)
-              else
-                inc(P);
-            end;
-            inc(P,2);
-          end;
-        end;
-      '/':
-        begin
-          inc(P);
-          if (P<=SrcLen) and (Source[P]='/') then begin
-            inc(P);
-            while (P<=SrcLen)
-            and (not (Source[P] in [#10,#13])) do begin
-              if NestedComments and (Source[P] in ['{','(','/']) then
-                ReadComment(P)
-              else
-                inc(P);
-            end;
-          end;
-        end;
-    end;
-  end;
-
+  CommentEndPos: Integer;
 begin
   Result:=0;
   SrcLen:=length(Source);
@@ -1592,7 +1591,13 @@ begin
   while (SrcPos<EndPos) do begin
     case Source[SrcPos] of
     '{','(','/':
-      ReadComment(SrcPos);
+      begin
+        CommentEndPos:=FindCommentEnd(Source,SrcPos,NestedComments);
+        if CommentEndPos>SrcPos then
+          SrcPos:=CommentEndPos
+        else
+          inc(SrcPos); // not a comment start => skip char
+      end;
     #10,#13:
       begin
         // skip line end
@@ -1684,13 +1689,13 @@ begin
   // read till first semicolon
   p:=1;
   while p<=length(ProcText) do begin
-    ReadRawNextPascalAtom(ProcText,p,AtomStart,NestedComments);
+    ReadRawNextPascalAtom(ProcText,p,AtomStart,NestedComments,true);
     if AtomStart>length(ProcText) then exit;
     if ProcText[AtomStart] in ['[','('] then begin
       if not ReadTilPascalBracketClose(ProcText,p,NestedComments) then
         exit;
     end else if ProcText[AtomStart]=';' then begin
-      ReadRawNextPascalAtom(ProcText,p,AtomStart,NestedComments);
+      ReadRawNextPascalAtom(ProcText,p,AtomStart,NestedComments,true);
       Result:=AtomStart;
       exit;
     end;
@@ -1709,7 +1714,7 @@ var
 begin
   Result:=FindFirstProcSpecifier(ProcText,NestedComments);
   while Result<=length(ProcText) do begin
-    ReadRawNextPascalAtom(ProcText,Result,AtomStart,NestedComments);
+    ReadRawNextPascalAtom(ProcText,Result,AtomStart,NestedComments,true);
     if AtomStart>length(ProcText) then exit(-1);
     if CompareIdentifiers(@ProcText[AtomStart],@Specifier[1])=0 then begin
       Result:=AtomStart;
@@ -1724,7 +1729,7 @@ begin
   SpecifierEndPosition:=Result;
   while (SpecifierEndPosition<=length(ProcText))
   and (ProcText[SpecifierEndPosition]<>';') do begin
-    ReadRawNextPascalAtom(ProcText,SpecifierEndPosition,AtomStart,NestedComments);
+    ReadRawNextPascalAtom(ProcText,SpecifierEndPosition,AtomStart,NestedComments,true);
     if AtomStart>length(ProcText) then exit;
     if ProcText[AtomStart] in ['[','('] then begin
       if not ReadTilPascalBracketClose(ProcText,SpecifierEndPosition,NestedComments)
@@ -1753,39 +1758,16 @@ begin
 end;
 
 function ReadNextPascalAtom(const Source:string;
-  var Position, AtomStart: integer; NestedComments: boolean):string;
-var DirectiveName:string;
-  DirStart,DirEnd,EndPos:integer;
+  var Position, AtomStart: integer; NestedComments: boolean;
+  SkipDirectives: boolean):string;
 begin
-  repeat
-    ReadRawNextPascalAtom(Source,Position,AtomStart,NestedComments);
-    Result:=copy(Source,AtomStart,Position-AtomStart);
-    if (length(Result)>=2)
-    and (Result[1] in ['{','(']) and (Result[2]='*') then begin
-      if copy(Result,1,2)='{$' then begin
-        DirStart:=3;
-        DirEnd:=length(Result);
-      end else begin
-        DirStart:=4;
-        DirEnd:=length(Result)-1;
-      end;
-      EndPos:=DirStart;
-      while (EndPos<DirEnd) and (IsIdentChar[Result[EndPos]]) do inc(EndPos);
-      DirectiveName:=lowercase(copy(Result,DirStart,EndPos-DirStart));
-      if (length(DirectiveName)=1) and (Result[DirEnd] in ['+','-']) then begin
-        // switch
-        break;
-      end else if (DirectiveName='i') or (DirectiveName='include') then begin
-        // include directive
-        break;
-      end;
-    end else
-      break;
-  until false;
+  ReadRawNextPascalAtom(Source,Position,AtomStart,NestedComments,SkipDirectives);
+  Result:=copy(Source,AtomStart,Position-AtomStart);
 end;
 
 procedure ReadRawNextPascalAtom(const Source: string;
-  var Position: integer; out AtomStart: integer; NestedComments: boolean);
+  var Position: integer; out AtomStart: integer; NestedComments: boolean;
+  SkipDirectives: boolean);
 var
   Len:integer;
   SrcPos, SrcStart, SrcAtomStart: PChar;
@@ -1800,14 +1782,14 @@ begin
   end;
   SrcStart:=PChar(Source);
   SrcPos:=@Source[Position];
-  ReadRawNextPascalAtom(SrcPos,SrcAtomStart,SrcStart+len);
+  ReadRawNextPascalAtom(SrcPos,SrcAtomStart,SrcStart+len,SkipDirectives);
   Position:=SrcPos-SrcStart+1;
   AtomStart:=SrcAtomStart-SrcStart+1;
   {$IFDEF RangeChecking}{$R+}{$UNDEF RangeChecking}{$ENDIF}
 end;
 
 procedure ReadRawNextPascalAtom(var Position: PChar; out AtomStart: PChar;
-  const SrcEnd: PChar; NestedComments: boolean);
+  const SrcEnd: PChar; NestedComments: boolean; SkipDirectives: boolean);
 var
   c1,c2:char;
   CommentLvl: Integer;
@@ -1834,20 +1816,34 @@ begin
       end;
     '{':    // comment start or compiler directive
       begin
-        if (Src[1]='$') then
+        if (Src[1]='$') and (not SkipDirectives) then
           // compiler directive
           break
-        else begin
-          // read till comment end
+        else if Src[1]=#3 then begin
+          // codetools comment => skip
+          inc(Src,2);
+          repeat
+            case Src^ of
+            #0:
+              if (SrcEnd=nil) or (Src>=SrcEnd) then
+                break;
+            #3:
+              if Src[1]='}' then begin
+                inc(Src,2);
+                break;
+              end;
+            end;
+            inc(Src);
+          until false;
+        end else begin
+          // Pascal comment => skip
           CommentLvl:=1;
           while true do begin
             inc(Src);
             case Src^ of
             #0:
               if (SrcEnd=nil) or (Src>=SrcEnd) then
-                break
-              else
-                inc(Src);
+                break;
             '{':
               if NestedComments then
                 inc(CommentLvl);
@@ -1873,7 +1869,7 @@ begin
         break;
     '(':  // comment, bracket or compiler directive
       if (Src[1]='*') then begin
-        if (Src[2]='$') then
+        if (Src[2]='$') and (not SkipDirectives) then
           // compiler directive
           break
         else begin
@@ -1989,7 +1985,7 @@ begin
           inc(Src);
       end;
     end;
-  '{':  // compiler directive
+  '{':  // compiler directive (it can not be a comment, because see above)
     begin
       CommentLvl:=1;
       while true do begin
@@ -1997,9 +1993,7 @@ begin
         case Src^ of
         #0:
           if (SrcEnd=nil) or (Src>=SrcEnd) then
-            break
-          else
-            inc(Src);
+            break;
         '{':
           if NestedComments then
             inc(CommentLvl);
@@ -2089,7 +2083,7 @@ begin
   end;
   AtomStart:=Position;
   while Position<=Len do begin
-    ReadRawNextPascalAtom(Source,Position,AtomStart,NestedComments);
+    ReadRawNextPascalAtom(Source,Position,AtomStart,NestedComments,true);
     //DebugLn(['ReadTilPascalBracketClose ',copy(Source,AtomStart,Position-AtomStart)]);
     if Position>Len then
       exit; // CloseBracket not found
@@ -2185,9 +2179,7 @@ begin
         case p^ of
         #0:  break;
         '{': if NestedComments then
-          begin
             inc(CommentLvl);
-          end;
         '}':
           begin
             dec(CommentLvl);
@@ -2475,6 +2467,7 @@ begin
 end;
 
 function FindEndOfAtom(const Source: string; Position: integer): integer;
+// comments have length 0
 var
   p: PChar;
 begin
@@ -2566,57 +2559,6 @@ function FindLineEndOrCodeAfterPosition(const Source: string;
 }
 var SrcLen: integer;
 
-  function ReadComment(var P: integer): boolean;
-  // true if it is a comment
-  // false if it is a directive
-  begin
-    case Source[P] of
-      '{':
-        begin
-          if StopAtDirectives and (P<length(Source)) and (Source[P+1]='$') then
-            exit(false);
-          inc(P);
-          while (P<=SrcLen) and (Source[P]<>'}') do begin
-            if NestedComments and (Source[P] in ['{','(','/']) then
-              ReadComment(P)
-            else
-              inc(P);
-          end;
-          inc(P);
-        end;
-      '(':
-        begin
-          inc(P);
-          if (P<=SrcLen) and (Source[P]='*') then begin
-            inc(P);
-            while (P<=SrcLen-1)
-            and ((Source[P]<>'*') or (Source[P+1]<>')')) do begin
-              if NestedComments and (Source[P] in ['{','(','/']) then
-                ReadComment(P)
-              else
-                inc(P);
-            end;
-            inc(P,2);
-          end;
-        end;
-      '/':
-        begin
-          inc(P);
-          if (P<=SrcLen) and (Source[P]='/') then begin
-            inc(P);
-            while (P<=SrcLen)
-            and (not (Source[P] in [#10,#13])) do begin
-              if NestedComments and (Source[P] in ['{','(','/']) then
-                ReadComment(P)
-              else
-                inc(P);
-            end;
-          end;
-        end;
-    end;
-    Result:=true;
-  end;
-  
   procedure DoSkipEmptyLines(var p: integer);
   var
     r: LongInt;
@@ -2644,8 +2586,23 @@ begin
   if Result=0 then exit;
   while (Result<=SrcLen) do begin
     case Source[Result] of
-      '{','(','/':
-        if not ReadComment(Result) then exit;
+      '/':
+        if (Result<SrcLen) and (Source[Result+1]='/') then
+          Result:=FindCommentEnd(Source,Result,NestedComments)
+        else
+          inc(Result);
+      '{':
+        if (Result<SrcLen) and (Source[Result+1]='$') and StopAtDirectives then
+          exit  // stop at directive {$ }
+        else
+          Result:=FindCommentEnd(Source,Result,NestedComments);
+      '(':
+        if (Result<SrcLen) and (Source[Result+1]='*') then begin
+          if (Result+1<SrcLen) and (Source[Result+2]='$') and StopAtDirectives then
+            exit;  // stop at directive (*$ *)
+          Result:=FindCommentEnd(Source,Result,NestedComments);
+        end else
+          inc(Result); // normal bracket (
       #10,#13:
         begin
           if SkipEmptyLines then DoSkipEmptyLines(Result);
@@ -2733,19 +2690,34 @@ var SrcStart: integer;
         '}':
           begin
             dec(p);
-            while (p>SrcStart) and (Source[p]<>'{') do begin
-              if NestedComments and (Source[p]='}') then
-                ReadComment(p,true)
-              else
+            if (p>SrcStart) and (Source[p]=#3) then begin
+              // codetools skip comment
+              dec(p);
+              while (p>SrcStart) do begin
+                if (Source[p]=#3)
+                and (Source[p-1]='{') then begin
+                  dec(p);
+                  break;
+                end;
                 dec(p);
+              end;
+            end else begin
+              // Pascal comment {}
+              while (p>SrcStart) and (Source[p]<>'{') do begin
+                if NestedComments and (Source[p]='}') then
+                  ReadComment(p,true)
+                else
+                  dec(p);
+              end;
+              IsDirective:=(p>=SrcStart) and (Source[p+1]='$');
+              dec(p);
             end;
-            IsDirective:=(p>=SrcStart) and (Source[p+1]='$');
-            dec(p);
           end;
         ')':
           begin
             dec(p);
             if (p>SrcStart) and (Source[p]='*') then begin
+              // tp comment (* *)
               dec(p);
               while (p>SrcStart)
               and ((Source[p-1]<>'(') or (Source[p]<>'*')) do begin
@@ -2898,54 +2870,9 @@ function FindFirstLineEndAfterInCode(const Source: string;
   ignore line ends in comments
   Result is Position of Start of Line End
 }
-var SrcLen: integer;
-
-  procedure ReadComment(var P: integer);
-  begin
-    case Source[P] of
-      '{':
-        begin
-          inc(P);
-          while (P<=SrcLen) and (Source[P]<>'}') do begin
-            if NestedComments and (Source[P] in ['{','(','/']) then
-              ReadComment(P)
-            else
-              inc(P);
-          end;
-          inc(P);
-        end;
-      '(':
-        begin
-          inc(P);
-          if (P<=SrcLen) and (Source[P]='*') then begin
-            inc(P);
-            while (P<=SrcLen-1)
-            and ((Source[P]<>'*') or (Source[P-1]<>')')) do begin
-              if NestedComments and (Source[P] in ['{','(','/']) then
-                ReadComment(P)
-              else
-                inc(P);
-            end;
-            inc(P,2);
-          end;
-        end;
-      '/':
-        begin
-          inc(P);
-          if (P<=SrcLen) and (Source[P]='/') then begin
-            inc(P);
-            while (P<=SrcLen)
-            and (not (Source[P] in [#10,#13])) do begin
-              if NestedComments and (Source[P] in ['{','(','/']) then
-                ReadComment(P)
-              else
-                inc(P);
-            end;
-          end;
-        end;
-    end;
-  end;
-
+var
+  SrcLen: integer;
+  CommentEndPos: Integer;
 begin
   SrcLen:=length(Source);
   if SrcLen>MaxPosition then SrcLen:=MaxPosition;
@@ -2953,7 +2880,13 @@ begin
   while (Result<=SrcLen) do begin
     case Source[Result] of
       '{','(','/':
-        ReadComment(Result);
+        begin
+          CommentEndPos:=FindCommentEnd(Source,Result,NestedComments);
+          if CommentEndPos>Result then
+            Result:=CommentEndPos
+          else
+            inc(Result);
+        end;
       #10,#13:
         exit;
     else
@@ -3157,13 +3090,26 @@ var
       '}':
         begin
           dec(P);
-          while (P>=SrcStart) and (Source[P]<>'{') do begin
-            if NestedComments and (Source[P] in ['}',')']) then
-              ReadComment(P)
-            else
+          if (P>=SrcStart) and (Source[P]=#3) then begin
+            // codetools comment {#3 #3}
+            dec(p);
+            while (P>SrcStart) do begin
+              if (Source[P]=#3) and (Source[P-1]='{') then begin
+                dec(P,2);
+                break;
+              end;
               dec(P);
+            end;
+          end else begin
+            // Pascal comment {}
+            while (P>=SrcStart) and (Source[P]<>'{') do begin
+              if NestedComments and (Source[P] in ['}',')']) then
+                ReadComment(P)
+              else
+                dec(P);
+            end;
+            dec(P);
           end;
-          dec(P);
         end;
       ')':
         begin
@@ -3460,69 +3406,23 @@ end;
 
 function CleanCodeFromComments(const DirtyCode: string;
   NestedComments: boolean): string;
-var DirtyPos, CleanPos, DirtyLen: integer;
-  c: char;
-
-  procedure ReadComment(var P: integer);
-  begin
-    case DirtyCode[P] of
-      '{':
-        begin
-          inc(P);
-          while (P<=DirtyLen) and (DirtyCode[P]<>'}') do begin
-            if NestedComments and (DirtyCode[P] in ['{','(','/']) then
-              ReadComment(P)
-            else
-              inc(P);
-          end;
-          inc(P);
-        end;
-      '(':
-        begin
-          inc(P);
-          if (P<=DirtyLen) and (DirtyCode[P]='*') then begin
-            inc(P);
-            while (P<=DirtyLen-1)
-            and ((DirtyCode[P]<>'*') or (DirtyCode[P-1]<>')')) do begin
-              if NestedComments and (DirtyCode[P] in ['{','(','/']) then
-                ReadComment(P)
-              else
-                inc(P);
-            end;
-            inc(P,2);
-          end;
-        end;
-      '/':
-        begin
-          inc(P);
-          if (P<=DirtyLen) and (DirtyCode[P]='/') then begin
-            inc(P);
-            while (P<=DirtyLen)
-            and (not (DirtyCode[P] in [#10,#13])) do begin
-              if NestedComments and (DirtyCode[P] in ['{','(','/']) then
-                ReadComment(P)
-              else
-                inc(P);
-            end;
-          end;
-        end;
-    end;
-  end;
-
+var
+  DirtyPos: Integer;
+  CleanPos: Integer;
+  StartPos: Integer;
+  l: Integer;
 begin
-  DirtyLen:=length(DirtyCode);
-  SetLength(Result,DirtyLen);
+  SetLength(Result,length(DirtyCode));
   DirtyPos:=1;
   CleanPos:=1;
-  while (DirtyPos<=DirtyLen) do begin
-    c:=DirtyCode[DirtyPos];
-    if not (c in ['/','{','(']) then begin
-      Result[CleanPos]:=c;
-      inc(DirtyPos);
-      inc(CleanPos);
-    end else begin
-      ReadComment(DirtyPos);
+  while DirtyPos<=length(DirtyCode) do begin
+    StartPos:=FindNextComment(DirtyCode,DirtyPos);
+    l:=StartPos-DirtyPos;
+    if l>0 then begin
+      System.Move(DirtyCode[DirtyPos],Result[CleanPos],l);
+      inc(CleanPos,l);
     end;
+    DirtyPos:=FindCommentEnd(DirtyCode,StartPos,NestedComments);
   end;
   SetLength(Result,CleanPos-1);
 end;
@@ -3550,8 +3450,19 @@ begin
     end;
   end else if (ASource[StartPos]='{') then begin
     inc(StartPos);
-    if (EndPos<=length(ASource)) and (ASource[EndPos-1]='}') then
-      dec(EndPos);
+    if (StartPos<=length(ASource)) and (ASource[StartPos]=#3) then begin
+      // codetools skip comment {#3#3}
+      inc(StartPos);
+      if (EndPos<=length(ASource)) and (ASource[EndPos-1]='}') then begin
+        dec(EndPos);
+        if (EndPos<=length(ASource)) and (ASource[EndPos-1]=#3) then
+          dec(EndPos);
+      end;
+    end else begin
+      // Pascal comment {}
+      if (EndPos<=length(ASource)) and (ASource[EndPos-1]='}') then
+        dec(EndPos);
+    end;
   end else if (ASource[StartPos]='(') then begin
     inc(StartPos);
     if (StartPos<=length(ASource)) and (ASource[StartPos]='*') then
@@ -3874,6 +3785,7 @@ end;
 function CompareComments(p1, p2: PChar; NestedComments: boolean): integer;
 var
   CommentLvl: Integer;
+  IsCodetoolsComment: Boolean;
 begin
   if p1^<>p2^ then begin
     if p1^<p2^ then
@@ -3921,6 +3833,7 @@ begin
       inc(p1);
       inc(p2);
       CommentLvl:=1;
+      IsCodetoolsComment:=p1^=#3;
       while true do begin
         if p1^<>p2^ then begin
           if p1^<p2^ then
@@ -3930,15 +3843,22 @@ begin
         end;
         inc(p1);
         inc(p2);
-        case p1^ of
-        #0:  exit(0);
-        '{': if NestedComments then
-            inc(CommentLvl);
-        '}':
-          begin
-            dec(CommentLvl);
-            if CommentLvl=0 then
-              exit(0);
+        if IsCodetoolsComment then begin
+          case p1^ of
+          #0:  exit(0);
+          '}': if p1[-1]=#3 then exit(0);
+          end;
+        end else begin
+          case p1^ of
+          #0:  exit(0);
+          '{': if NestedComments then
+              inc(CommentLvl);
+          '}':
+            begin
+              dec(CommentLvl);
+              if CommentLvl=0 then
+                exit(0);
+            end;
           end;
         end;
       end;
@@ -4841,7 +4761,7 @@ begin
   AtomEndPos:=1;
   repeat
     AtomStartPos:=AtomEndPos;
-    ReadRawNextPascalAtom(ACode,AtomEndPos,AtomStartPos);
+    ReadRawNextPascalAtom(ACode,AtomEndPos,AtomStartPos,true);
     if (AtomEndPos>StartPos) then begin
       // token found
       Len:=length(ACode);
@@ -4897,7 +4817,7 @@ begin
   AtomEndPos:=1;
   repeat
     AtomStartPos:=AtomEndPos;
-    ReadRawNextPascalAtom(ACode,AtomEndPos,AtomStartPos);
+    ReadRawNextPascalAtom(ACode,AtomEndPos,AtomStartPos,true);
     if (AtomEndPos>=EndPos) then begin
       // token found
       Len:=length(ACode);
