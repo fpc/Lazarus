@@ -1279,16 +1279,15 @@ var CleanCursorPos: integer;
     TypeNode: TCodeTreeNode;
   begin
     if SkipChecks then exit;
-    if CursorNode.Desc in [ctnTypeDefinition,ctnGenericType] then begin
-      TypeNode:=FindTypeNodeOfDefinition(CursorNode);
-      if (TypeNode<>nil)
-      and (TypeNode.Desc in AllClasses)
-      and ((TypeNode.SubDesc and ctnsForwardDeclaration)>0) then
-      begin
-        DirectSearch:=true;
-        SearchForward:=true;
-        SkipChecks:=true;
-      end;
+    if not (CursorNode.Desc in [ctnTypeDefinition,ctnGenericType]) then exit;
+    TypeNode:=FindTypeNodeOfDefinition(CursorNode);
+    if (TypeNode<>nil)
+    and (TypeNode.Desc in AllClasses)
+    and ((TypeNode.SubDesc and ctnsForwardDeclaration)>0) then
+    begin
+      DirectSearch:=true;
+      SearchForward:=true;
+      SkipChecks:=true;
     end;
   end;
 
@@ -1307,28 +1306,16 @@ var CleanCursorPos: integer;
     and (not (ClassNode.Desc in AllClasses))
     do
       ClassNode:=ClassNode.Parent;
-    if ClassNode<>nil then begin
-      // cursor is in class/object/class interface definition
-      if (ClassNode.SubDesc and ctnsForwardDeclaration)=0 then begin
-        // parse class and build CodeTreeNodes for all properties/methods
-        CursorNode:=FindDeepestNodeAtPos(ClassNode,CleanCursorPos,true);
-        if CursorNode.GetNodeOfType(ctnClassInheritance)<>nil then begin
-          // identifier is an ancestor/interface identifier
-          CursorNode:=ClassNode.Parent;
-          DirectSearch:=true;
-          SkipChecks:=true;
-        end;
-      end;
-    end;
-  end;
-
-  procedure CheckIfCursorInBeginNode;
-  begin
-    if SkipChecks then exit;
-    if CursorNode.Desc=ctnBeginBlock then begin
-      BuildSubTreeForBeginBlock(CursorNode);
-      CursorNode:=FindDeepestNodeAtPos(CursorNode,CleanCursorPos,true);
-    end;
+    if ClassNode=nil then exit;
+    // cursor is in class/object/class interface definition
+    if (ClassNode.SubDesc and ctnsForwardDeclaration)>0 then exit;
+    // parse class and build CodeTreeNodes for all properties/methods
+    CursorNode:=FindDeepestNodeAtPos(ClassNode,CleanCursorPos,true);
+    if CursorNode.GetNodeOfType(ctnClassInheritance)=nil then exit;
+    // identifier is an ancestor/interface identifier
+    CursorNode:=ClassNode.Parent;
+    DirectSearch:=true;
+    SkipChecks:=true;
   end;
 
   procedure CheckIfCursorInProcNode;
@@ -1337,50 +1324,47 @@ var CleanCursorPos: integer;
     if SkipChecks then exit;
     if CursorNode.Desc=ctnProcedureHead then
       CursorNode:=CursorNode.Parent;
-    if CursorNode.Desc=ctnProcedure then begin
-      BuildSubTreeForProcHead(CursorNode);
-      CursorNode:=FindDeepestNodeAtPos(CursorNode,CleanCursorPos,true);
-      // check if cursor on proc name
-      if (CursorNode.Desc=ctnProcedureHead)
-      and (CleanCursorPos>=CursorNode.StartPos) then begin
-        MoveCursorToNodeStart(CursorNode);
+    if CursorNode.Desc<>ctnProcedure then exit;
+    BuildSubTreeForProcHead(CursorNode);
+    CursorNode:=FindDeepestNodeAtPos(CursorNode,CleanCursorPos,true);
+    // check if cursor on proc name
+    if (CursorNode.Desc=ctnProcedureHead)
+    and (CleanCursorPos>=CursorNode.StartPos) then begin
+      MoveCursorToNodeStart(CursorNode);
+      ReadNextAtom;
+      IsMethod:=false;
+      if AtomIsIdentifier then begin
         ReadNextAtom;
-        IsMethod:=false;
-        if AtomIsIdentifier then begin
+        if AtomIsChar('.') then begin
           ReadNextAtom;
-          if AtomIsChar('.') then begin
-            ReadNextAtom;
-            ReadNextAtom;
-            IsMethod:=true;
-          end;
-        end;
-        if (CurPos.StartPos>CleanCursorPos) and (not IsMethod) then begin
-          // cursor on proc name
-          // -> ignore proc name and search overloaded identifier
-          DirectSearch:=true;
-          SkipChecks:=true;
+          ReadNextAtom;
+          IsMethod:=true;
         end;
       end;
-      if CursorNode.Desc=ctnProcedureHead then
-        CursorNode:=CursorNode.Parent;
+      if (CurPos.StartPos>CleanCursorPos) and (not IsMethod) then begin
+        // cursor on proc name
+        // -> ignore proc name and search overloaded identifier
+        DirectSearch:=true;
+        SkipChecks:=true;
+      end;
     end;
+    if CursorNode.Desc=ctnProcedureHead then
+      CursorNode:=CursorNode.Parent;
   end;
 
   procedure CheckIfCursorInPropertyNode;
   begin
     if SkipChecks then exit;
-    if (CursorNode.Desc=ctnProperty) or (CursorNode.Desc=ctnGlobalProperty) then
-    begin
-      MoveCursorToNodeStart(CursorNode);
-      if (CursorNode.Desc=ctnProperty) then begin
-        ReadNextAtom; // read 'property'
-        if UpAtomIs('CLASS') then ReadNextAtom;
-      end;
-      ReadNextAtom; // read property name
-      if CleanCursorPos<CurPos.EndPos then begin
-        DirectSearch:=true;
-        SkipChecks:=true;
-      end;
+    if not (CursorNode.Desc in [ctnProperty,ctnGlobalProperty]) then exit;
+    MoveCursorToNodeStart(CursorNode);
+    if (CursorNode.Desc=ctnProperty) then begin
+      ReadNextAtom; // read 'property'
+      if UpAtomIs('CLASS') then ReadNextAtom;
+    end;
+    ReadNextAtom; // read property name
+    if CleanCursorPos<CurPos.EndPos then begin
+      DirectSearch:=true;
+      SkipChecks:=true;
     end;
   end;
   
@@ -1497,7 +1481,6 @@ begin
     CheckIfCursorOnAForwardDefinedClass;
     CheckIfCursorInClassNode;
     CheckIfCursorInTypeNode;
-    CheckIfCursorInBeginNode;
     CheckIfCursorInProcNode;
     CheckIfCursorInPropertyNode;
     // set cursor on identifier
@@ -2492,21 +2475,13 @@ begin
   {$ENDIF}
   Result:=false;
   // search in cleaned source
+
   MoveCursorToCleanPos(Params.Identifier);
-  StartPos:=-1;
-  if Params.ContextNode.Desc=ctnIdentifier then begin
-    if HybridCursorType=hcDirty then
-      StartPos:=DirtySrc.CurPos.StartPos
-    else
-      StartPos:=Params.ContextNode.StartPos;
-  end;
-  ReadNextAtom;
-  EndPos:=CurPos.EndPos;
-  ReadNextAtom;
-  if CurPos.Flag=cafRoundBracketOpen then begin
-    ReadTilBracketClose(true);
-    EndPos:=CurPos.EndPos;
-  end;
+  StartPos:=FindStartOfTerm(CurPos.StartPos,NodeTermInType(Params.ContextNode));
+  EndPos:=FindEndOfTerm(StartPos,true,false);
+  {$IFDEF ShowExprEval}
+  debugln(['TFindDeclarationTool.FindDeclarationOfIdentAtParam Term=',dbgstr(Src,StartPos,EndPos-StartPos)]);
+  {$ENDIF}
   SkipForward:=fdfSkipClassForward in Params.Flags;
   Include(Params.Flags,fdfFindVariable);
   ExprType:=FindExpressionTypeOfTerm(StartPos,EndPos,Params,false);
@@ -4544,41 +4519,53 @@ var
   var
     CommentLvl: Integer;
     InStrConst: Boolean;
-    //CommentStart: LongInt;
   begin
     StartPos:=MinPos;
     UnitStartFound:=false;
     while StartPos<=MaxPos do begin
       case Src[StartPos] of
       
-      '{': // pascal comment
+      '{':
         begin
-          //CommentStart:=StartPos;
           inc(StartPos);
-          CommentLvl:=1;
-          InStrConst:=false;
-          while StartPos<=MaxPos do begin
-            case Src[StartPos] of
-            '{': if Scanner.NestedComments then inc(CommentLvl);
-            '}':
-              begin
-                dec(CommentLvl);
-                if CommentLvl=0 then break;
+          if (StartPos<=MaxPos) and (Src[StartPos]=#3) then begin
+            // codetools skip comment {#3 #3}
+            inc(StartPos);
+            while (StartPos<=MaxPos) do begin
+              if (Src[StartPos]=#3) and (StartPos<MaxPos) and (Src[StartPos+1]='}')
+              then begin
+                inc(StartPos,2);
+                break;
               end;
-            'a'..'z','A'..'Z','_':
-              if not InStrConst then begin
-                ReadIdentifier(true);
-                dec(StartPos);
+              inc(StartPos);
+            end;
+          end else begin
+            // pascal comment {}
+            CommentLvl:=1;
+            InStrConst:=false;
+            while StartPos<=MaxPos do begin
+              case Src[StartPos] of
+              '{': if Scanner.NestedComments then inc(CommentLvl);
+              '}':
+                begin
+                  dec(CommentLvl);
+                  if CommentLvl=0 then break;
+                end;
+              'a'..'z','A'..'Z','_':
+                if not InStrConst then begin
+                  ReadIdentifier(true);
+                  dec(StartPos);
+                end;
+              '''':
+                InStrConst:=not InStrConst;
+              #10,#13:
+                InStrConst:=false;
               end;
-            '''':
-              InStrConst:=not InStrConst;
-            #10,#13:
-              InStrConst:=false;
+              inc(StartPos);
             end;
             inc(StartPos);
+            //debugln(StartPos,' ',copy(Src,CommentStart,StartPos-CommentStart));
           end;
-          inc(StartPos);
-          //debugln(StartPos,' ',copy(Src,CommentStart,StartPos-CommentStart));
         end;
         
       '/':  // Delphi comment
