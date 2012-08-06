@@ -1,0 +1,54 @@
+# Arabic translation of Free Pascal Lazarus Project.
+# Copyright (C) 2012 Lazarus Project
+# This file is distributed under the same license as the Lazarus package.
+# Khaled Shagrouni <shagrouni@gmail.com>, 2012.
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: 2012-08-05 02:19+0100\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: \n"
+"MIME-Version: \n"
+"Content-Type: \n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+"X-Generator: Easy Po 0.9.4.2 (Development release)\n"
+
+#: sqlstringspropertyeditordlg.smetacolumns
+msgid "Columns"
+msgstr ""
+
+#: sqlstringspropertyeditordlg.smetapleasespecifyatableintheobjectfield
+msgid "Please specify a table in the object field."
+msgstr ""
+
+#: sqlstringspropertyeditordlg.smetaprocedures
+msgid "Procedures"
+msgstr ""
+
+#: sqlstringspropertyeditordlg.smetasystables
+msgid "SysTables"
+msgstr ""
+
+#: sqlstringspropertyeditordlg.smetatabcaption
+msgid "Metadata"
+msgstr ""
+
+#: sqlstringspropertyeditordlg.smetatables
+msgid "Tables"
+msgstr ""
+
+#: sqlstringspropertyeditordlg.sresulttabcaption
+msgid "Results"
+msgstr "«·‰ «∆Ã"
+
+#: sqlstringspropertyeditordlg.ssqltabcaption
+msgid "SQL Code"
+msgstr "ﬂÊœ SQL"
+
+
+
+
