@@ -101,6 +101,8 @@ resourcestring
   SMetaTables       = 'Tables';
   SMetaColumns      = 'Columns';
   SMetaProcedures   = 'Procedures';
+  SMetaPleaseSpecifyATableInTheObjectField = 'Please specify a table in the '
+    +'object field.';
   SMetaSysTables    = 'SysTables';
   {$IFDEF HASSQLPARSER}
   SSQLOK            = 'SQL OK';
@@ -316,7 +318,7 @@ begin
         SchemaType:=stColumns;
         if EdtObject.Text='' then
           begin
-          ShowMessage('Please specify a table in the object field.');
+          ShowMessage(SMetaPleaseSpecifyATableInTheObjectField);
           exit;
           end;
       end;
