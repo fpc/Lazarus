@@ -1,0 +1,402 @@
+# Arabic translation of Free Pascal Lazarus Project.
+# Copyright (C) 2012 Lazarus Project
+# This file is distributed under the same license as the Lazarus package.
+# Khaled Shagrouni <shagrouni@gmail.com>, 2012.
+msgid ""
+msgstr ""
+"Project-Id-Version: Free Pascal Lazarus Project.\n"
+"Report-Msgid-Bugs-To: BUG-EMAIL-ADDR <EMAIL@ADDRESS\n"
+"POT-Creation-Date: yyyy-mm-dd hh:mm+0000\n"
+"PO-Revision-Date: 2012-05-10 08:51+0100\n"
+"Last-Translator: Khaled Shagrouni <shagrouni@gmail.com>\n"
+"Language-Team: Arabic\n"
+"Language: arabic\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0\n"
+"X-Generator: Easy Po 0.9.2\n"
+
+#: fpwebstrconsts.scssfile
+msgid "CSS file"
+msgstr "ملف CSS "
+
+#: fpwebstrconsts.scssfiledesc
+msgid "Create new CSS file ..."
+msgstr "إنشاء ملف CSS جديد ..."
+
+#: fpwebstrconsts.scsssource
+msgid "Enter your classes/style definitions here"
+msgstr ""
+
+#: fpwebstrconsts.sdocumentlocation
+msgid "&Location"
+msgstr "ال&موقع"
+
+#: fpwebstrconsts.sdocumentroot
+msgid "&Directory"
+msgstr "ال&دليل"
+
+#: fpwebstrconsts.senteryoutext
+msgid "Enter your text ..."
+msgstr "أدخل نصك ..."
+
+#: fpwebstrconsts.shtmlautor
+msgid "Html &author - <meta name=\"author\">"
+msgstr ""
+
+#: fpwebstrconsts.shtmlcharset
+msgid "HTML chars&et"
+msgstr ""
+
+#: fpwebstrconsts.shtmlcopyright
+msgid "Html cop&yright - meta name=\"copyright\">"
+msgstr ""
+
+#: fpwebstrconsts.shtmlcssfile
+msgid "&CSS file"
+msgstr "ملف &CSS "
+
+#: fpwebstrconsts.shtmldesign
+msgid "HTML design"
+msgstr "تصميم HTML"
+
+#: fpwebstrconsts.shtmlfile
+msgid "HTML file"
+msgstr "ملف HTML"
+
+#: fpwebstrconsts.shtmlfiledesc
+msgid "Create new HTML file ..."
+msgstr "إنشاء ملف HTML جديد ..."
+
+#: fpwebstrconsts.shtmlinputformaccesskey
+msgid "Access key"
+msgstr ""
+
+#: fpwebstrconsts.shtmlinputformalign
+msgid "Align"
+msgstr "المحاداة"
+
+#: fpwebstrconsts.shtmlinputformalt
+msgid "Alt"
+msgstr "Alt"
+
+#: fpwebstrconsts.shtmlinputformcaption
+msgid "Tag property: INPUT"
+msgstr ""
+
+#: fpwebstrconsts.shtmlinputformimagesrc
+msgid "Image src"
+msgstr "مصدر الصورة"
+
+#: fpwebstrconsts.shtmlinputformmaxlen
+msgid "Max length"
+msgstr "الطول الأقصى"
+
+#: fpwebstrconsts.shtmlinputformname
+msgid "Name"
+msgstr "الإسم"
+
+#: fpwebstrconsts.shtmlinputformsize
+msgid "Size"
+msgstr "الحجم"
+
+#: fpwebstrconsts.shtmlinputformtabindex
+msgid "Tab Index"
+msgstr ""
+
+#: fpwebstrconsts.shtmlinputformtype
+msgid "Type"
+msgstr "النوع"
+
+#: fpwebstrconsts.shtmlinputformvalue
+msgid "Value"
+msgstr "القيمة"
+
+#: fpwebstrconsts.shtmljsfile
+msgid "&Javascript file"
+msgstr "ملف &جافا سكريبت"
+
+#: fpwebstrconsts.shtmltableformborderwidth
+msgid "Border width"
+msgstr "عرض الإطار"
+
+#: fpwebstrconsts.shtmltableformcaption
+msgid "New HTML table ..."
+msgstr "ملف HTML جديد..."
+
+#: fpwebstrconsts.shtmltableformcellpadding
+msgid "Cell padding"
+msgstr ""
+
+#: fpwebstrconsts.shtmltableformcellspacing
+msgid "Cell spacing"
+msgstr ""
+
+#: fpwebstrconsts.shtmltableformcolumncount
+msgid "Column count"
+msgstr "عدد الأعمدة"
+
+#: fpwebstrconsts.shtmltableformheaderbgcolor
+msgid "Header bg color"
+msgstr "لون خلفية الترويسة"
+
+#: fpwebstrconsts.shtmltableformrowcount
+msgid "Row count"
+msgstr "عدد الأسطر"
+
+#: fpwebstrconsts.shtmltableformuseheader
+msgid "Use header row"
+msgstr ""
+
+#: fpwebstrconsts.shtmltableformwidth
+msgid "Width"
+msgstr "العرض"
+
+#: fpwebstrconsts.shtmltagcaptionreset
+msgid "Reset"
+msgstr ""
+
+#: fpwebstrconsts.shtmltagcaptionsubmit
+msgid "Submit"
+msgstr "تقديم"
+
+#: fpwebstrconsts.shtmltagproperty
+msgid "Tag property: %s"
+msgstr ""
+
+#: fpwebstrconsts.shtmltitle
+msgid "Html &title - <title>"
+msgstr ""
+
+#: fpwebstrconsts.shttpport
+msgid "&Port to listen for requests:"
+msgstr ""
+
+#: fpwebstrconsts.sjsfile
+msgid "Javascript file"
+msgstr "ملف &جافا سكريبت"
+
+#: fpwebstrconsts.sjsfiledesc
+msgid "Create new javascript file ..."
+msgstr ""
+
+#: fpwebstrconsts.sjssource
+msgid "Enter your javascript code here"
+msgstr ""
+
+#: fpwebstrconsts.smihtmleditor
+msgid "HTML Editor"
+msgstr "محرر HTML"
+
+#: fpwebstrconsts.smihtmlformbuttton
+msgid "Insert Button control"
+msgstr "إدراج متحكم لزرّ"
+
+#: fpwebstrconsts.smihtmlformcheckbox
+msgid "Insert CheckBox control"
+msgstr ""
+
+#: fpwebstrconsts.smihtmlformfieldset
+msgid "Insert HTML FIELDSET tag"
+msgstr ""
+
+#: fpwebstrconsts.smihtmlformlegend
+msgid "Insert HTML LEGEND tag"
+msgstr ""
+
+#: fpwebstrconsts.smihtmlformradiobtn
+msgid "Insert RadioBtn control"
+msgstr ""
+
+#: fpwebstrconsts.smihtmlforms
+msgid "Forms"
+msgstr "تماذج"
+
+#: fpwebstrconsts.smihtmlformselect
+msgid "Insert Select control"
+msgstr ""
+
+#: fpwebstrconsts.smihtmlformselectopt
+msgid "Insert Select options"
+msgstr ""
+
+#: fpwebstrconsts.smihtmlformselectoptwd
+msgid "Insert Select options with dialog"
+msgstr ""
+
+#: fpwebstrconsts.smihtmlinsertbr
+msgid "Insert new line"
+msgstr ""
+
+#: fpwebstrconsts.smihtmlinsertcolor
+msgid "Insert HTML color value"
+msgstr ""
+
+#: fpwebstrconsts.smihtmlinsertcomment
+msgid "Insert HTML comment"
+msgstr ""
+
+#: fpwebstrconsts.smihtmlinsertdivblock
+msgid "Insert HTML DIV tag"
+msgstr ""
+
+#: fpwebstrconsts.smihtmlinsertform
+msgid "Insert HTML Form"
+msgstr ""
+
+#: fpwebstrconsts.smihtmlinsertheader1level
+msgid "Insert HTML level 1 header"
+msgstr ""
+
+#: fpwebstrconsts.smihtmlinsertheader2level
+msgid "Insert HTML level 2 header"
+msgstr ""
+
+#: fpwebstrconsts.smihtmlinsertheader3level
+msgid "Insert HTML level 3 header"
+msgstr ""
+
+#: fpwebstrconsts.smihtmlinsertheader4level
+msgid "Insert HTML level 4 header"
+msgstr ""
+
+#: fpwebstrconsts.smihtmlinsertheader5level
+msgid "Insert HTML level 5 header"
+msgstr ""
+
+#: fpwebstrconsts.smihtmlinserthr
+msgid "Insert horizontal line"
+msgstr ""
+
+#: fpwebstrconsts.smihtmlinsertimg
+msgid "Insert image"
+msgstr ""
+
+#: fpwebstrconsts.smihtmlinsertinput
+msgid "Insert HTML INPUT tag"
+msgstr ""
+
+#: fpwebstrconsts.smihtmlinsertinputreset
+msgid "Insert \"Reset\" button"
+msgstr ""
+
+#: fpwebstrconsts.smihtmlinsertinputsubmit
+msgid "Insert \"Submit\" button "
+msgstr ""
+
+#: fpwebstrconsts.smihtmlinsertlink
+msgid "Insert link (HREF)"
+msgstr ""
+
+#: fpwebstrconsts.smihtmlinsertlist
+msgid "Insert HTML list"
+msgstr ""
+
+#: fpwebstrconsts.smihtmlinsertnbsp
+msgid "Insert Non Breaking Space"
+msgstr ""
+
+#: fpwebstrconsts.smihtmlinsertpre
+msgid "Insert HTML PRE tag"
+msgstr ""
+
+#: fpwebstrconsts.smihtmlinsertspantext
+msgid "Insert HTML SPAN tag"
+msgstr ""
+
+#: fpwebstrconsts.smihtmlinsertsub
+msgid "Insert Subscript"
+msgstr ""
+
+#: fpwebstrconsts.smihtmlinsertsuper
+msgid "Insert Superscript"
+msgstr ""
+
+#: fpwebstrconsts.smihtmlinserttable
+msgid "Insert HTML table"
+msgstr "إدراج جدول HTML"
+
+#: fpwebstrconsts.smihtmlinserttabledata
+msgid "Insert HTML table data"
+msgstr ""
+
+#: fpwebstrconsts.smihtmlinserttabledatawd
+msgid "Insert HTML table data with dialog"
+msgstr ""
+
+#: fpwebstrconsts.smihtmlinserttablerow
+msgid "Insert HTML table row"
+msgstr ""
+
+#: fpwebstrconsts.smihtmlinserttablerowwd
+msgid "Insert HTML table row with dialog"
+msgstr "إدراج سطر جدول HTML مع حوار"
+
+#: fpwebstrconsts.smihtmllists
+msgid "Lists"
+msgstr "القوائم"
+
+#: fpwebstrconsts.smihtmlother
+msgid "Other"
+msgstr "أخرى"
+
+#: fpwebstrconsts.smihtmlstandart
+msgid "Standard"
+msgstr "قياسي"
+
+#: fpwebstrconsts.smihtmlstyle
+msgid "Styles"
+msgstr "الأنماط"
+
+#: fpwebstrconsts.smihtmltables
+msgid "Tables"
+msgstr "الجداول"
+
+#: fpwebstrconsts.smihtmltextaligncenter
+msgid "Text align center"
+msgstr ""
+
+#: fpwebstrconsts.smihtmltextalignjustify
+msgid "Text align justify"
+msgstr ""
+
+#: fpwebstrconsts.smihtmltextalignleft
+msgid "Text align left"
+msgstr ""
+
+#: fpwebstrconsts.smihtmltextalignright
+msgid "Text align right"
+msgstr ""
+
+#: fpwebstrconsts.smihtmltextbold
+msgid "Bold"
+msgstr "داكن"
+
+#: fpwebstrconsts.smihtmltextitalic
+msgid "Italic"
+msgstr "مائل"
+
+#: fpwebstrconsts.smihtmltextunderline
+msgid "Underline"
+msgstr "تحته خط"
+
+#: fpwebstrconsts.smiotherinsertfn
+msgid "Insert file name"
+msgstr "إدراج إسم ملف"
+
+#: fpwebstrconsts.snewhtmlfileprops
+msgid "New Html file properties"
+msgstr ""
+
+#: fpwebstrconsts.snewhttpapp
+msgid "New HTTP application"
+msgstr ""
+
+#: fpwebstrconsts.sregisterfiles
+msgid "&Register location to serve files from"
+msgstr ""
+
+#: fpwebstrconsts.susethreads
+msgid "Use &threads to serve requests in"
+msgstr ""

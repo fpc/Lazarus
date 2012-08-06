@@ -1,0 +1,316 @@
+# Arabic translation of Free Pascal Lazarus Project.
+# Copyright (C) 2012 Lazarus Project
+# This file is distributed under the same license as the Lazarus package.
+# Khaled Shagrouni <shagrouni@gmail.com>, 2012.
+msgid ""
+msgstr ""
+"Project-Id-Version: Free Pascal Lazarus Project.\n"
+"Report-Msgid-Bugs-To: BUG-EMAIL-ADDR <EMAIL@ADDRESS\n"
+"POT-Creation-Date: yyyy-mm-dd hh:mm+0000\n"
+"PO-Revision-Date: 2012-05-03 12:20+0100\n"
+"Last-Translator: Khaled Shagrouni <shagrouni@gmail.com>\n"
+"Language-Team: Arabic\n"
+"Language: arabic\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0\n"
+"X-Generator: Easy Po 0.9.2\n"
+
+#: msgjsonviewer.sarray
+msgid "Array (%d elements)"
+msgstr "مصفةفة (%d عنصر)"
+
+#: msgjsonviewer.scancelclose
+msgid "Do not close the window"
+msgstr "لا تقم بإغلاق النافذة"
+
+#: msgjsonviewer.scancelpaste
+msgid "Do not paste the new data"
+msgstr "لا تقم بلصق البيانات الجديدة"
+
+#: msgjsonviewer.scaption
+msgctxt "msgjsonviewer.scaption"
+msgid "JSON Viewer"
+msgstr "عارض JSON"
+
+#: msgjsonviewer.sdiscard
+msgid "Discard changes"
+msgstr "إهمال التغييرات"
+
+#: msgjsonviewer.sdocumentmodified
+msgid "JSON document modified"
+msgstr "وثيقة JSON تم تحويرها"
+
+#: msgjsonviewer.sdocumentmodifiedaction
+msgid ""
+"The JSON data was changed but not saved.\n"
+"What do want to do ?\n"
+msgstr ""
+"بيانات JSON قد تغيرت لكن لم يتم حفظها\n"
+"ما هو الإجراء المرغوب؟\n"
+
+#: msgjsonviewer.sduplicatemembername
+msgid "Duplicate member name \"%s\"."
+msgstr "اسم عضو متكرر \"%s\"."
+
+#: msgjsonviewer.selement
+msgid "Element nr. %d"
+msgstr "العصر رقم. %d"
+
+#: msgjsonviewer.sempty
+msgid "Empty document"
+msgstr "وثيقة فارغة"
+
+#: msgjsonviewer.serrcreatingconfigdir
+msgid "Could not create the configuration files directory \"s\""
+msgstr "عدم التمكن من إنشاء دليل ملفات التوصيف \"s\""
+
+#: msgjsonviewer.serrinvalidvalue
+msgid "Invalid value or wrong type: \"%s\""
+msgstr ""
+
+#: msgjsonviewer.serrnovalidjsonclipboard
+msgid "The clipboard does not contain valid JSON data"
+msgstr ""
+
+#: msgjsonviewer.snewmember
+msgid "New object member"
+msgstr ""
+
+#: msgjsonviewer.snewmembername
+msgid "Enter a name for the new member (type: %s)"
+msgstr ""
+
+#: msgjsonviewer.snomorematches
+msgid "No nodes match the criterium"
+msgstr ""
+
+#: msgjsonviewer.snull
+msgid "null"
+msgstr ""
+
+#: msgjsonviewer.sobject
+msgid "Object (%d members)"
+msgstr ""
+
+#: msgjsonviewer.ssavedata
+msgid "Save the changes"
+msgstr ""
+
+#: TMAINFORM.ACOPY.CAPTION
+msgid "&Copy"
+msgstr "%نسخ"
+
+#: TMAINFORM.ACOPY.HINT
+msgid "Copy selected node to clipboard as JSON"
+msgstr ""
+
+#: TMAINFORM.ACUT.CAPTION
+msgid "C&ut"
+msgstr "&قصّ"
+
+#: TMAINFORM.ACUT.HINT
+msgid "Cut selected node to clipboard as JSON"
+msgstr ""
+
+#: TMAINFORM.ADELETEVALUE.CAPTION
+msgid "&Delete value"
+msgstr "إل&غاء القيمة"
+
+#: TMAINFORM.ADELETEVALUE.HINT
+msgid "Delete the selected value"
+msgstr "إلغاء القيمة المختارة"
+
+#: TMAINFORM.AEXPANDALL.CAPTION
+msgid "E&xpand all nodes"
+msgstr ""
+
+#: TMAINFORM.AEXPANDALL.HINT
+msgid "Expand all nodes in the document"
+msgstr ""
+
+#: TMAINFORM.AEXPANDCURRENTCONTAINER.CAPTION
+msgid "Expand &current object/array"
+msgstr ""
+
+#: TMAINFORM.AEXPANDCURRENTCONTAINER.HINT
+msgid "Expand all nodes in the current object/array"
+msgstr ""
+
+#: TMAINFORM.AFIND.CAPTION
+msgid "&Find"
+msgstr "بح&ث"
+
+#: TMAINFORM.AFINDNEXT.CAPTION
+msgid "Find &next occurrence"
+msgstr ""
+
+#: TMAINFORM.ANEW.CAPTION
+msgid "&New"
+msgstr "&جديد"
+
+#: TMAINFORM.ANEW.HINT
+msgid "Create new JSON document"
+msgstr ""
+
+#: TMAINFORM.ANEWARRAY.CAPTION
+msgid "New &Array"
+msgstr "مص&فوفة جديدة"
+
+#: TMAINFORM.ANEWARRAY.HINT
+msgid "Add a new JSON array"
+msgstr "إضافة مصفوفة JSON جديدة"
+
+#: TMAINFORM.ANEWBOOLEANVALUE.CAPTION
+msgid "New &boolean value"
+msgstr ""
+
+#: TMAINFORM.ANEWBOOLEANVALUE.HINT
+msgid "Add a new boolean value"
+msgstr ""
+
+#: TMAINFORM.ANEWNULLVALUE.CAPTION
+msgid "New N&ull value"
+msgstr ""
+
+#: TMAINFORM.ANEWNULLVALUE.HINT
+msgid "Add a new null value"
+msgstr ""
+
+#: TMAINFORM.ANEWNUMBERVALUE.CAPTION
+msgid "&New numerical Value"
+msgstr ""
+
+#: TMAINFORM.ANEWNUMBERVALUE.HINT
+msgid "Add a new number value"
+msgstr ""
+
+#: TMAINFORM.ANEWOBJECT.CAPTION
+msgid "New &Object"
+msgstr ""
+
+#: TMAINFORM.ANEWOBJECT.HINT
+msgid "Add a new JSON object"
+msgstr ""
+
+#: TMAINFORM.ANEWSTRINGVALUE.CAPTION
+msgid "New &string value"
+msgstr ""
+
+#: TMAINFORM.ANEWSTRINGVALUE.HINT
+msgid "Add a new string value"
+msgstr ""
+
+#: TMAINFORM.AOPEN.CAPTION
+msgid "&Open"
+msgstr "&فتح"
+
+#: TMAINFORM.AOPEN.HINT
+msgid "Open JSON document from file"
+msgstr ""
+
+#: TMAINFORM.APASTE.CAPTION
+msgid "&Paste"
+msgstr "ل&صق"
+
+#: TMAINFORM.APASTE.HINT
+msgid "Paste JSON data in clipboard as new member"
+msgstr ""
+
+#: TMAINFORM.APASTEASDOCUMENT.CAPTION
+msgid "Paste as new document"
+msgstr ""
+
+#: TMAINFORM.APASTEASDOCUMENT.HINT
+msgid "Paste JSON data in clipboard as new document"
+msgstr ""
+
+#: TMAINFORM.AQUIT.CAPTION
+msgid "&Quit"
+msgstr "&خروج"
+
+#: TMAINFORM.AQUIT.HINT
+msgid "Exit the program"
+msgstr ""
+
+#: TMAINFORM.ASAVE.CAPTION
+msgid "&Save"
+msgstr "حفظ"
+
+#: TMAINFORM.ASAVE.HINT
+msgid "Save the JSON document to file"
+msgstr ""
+
+#: TMAINFORM.ASAVEAS.CAPTION
+msgid "Save &as"
+msgstr "حفظ بإ&سم"
+
+#: TMAINFORM.ASAVEAS.HINT
+msgid "Save JSON document with a new name"
+msgstr ""
+
+#: TMAINFORM.MAINFORM.CAPTION
+msgctxt "TMAINFORM.MAINFORM.CAPTION"
+msgid "JSON Viewer"
+msgstr ""
+
+#: TMAINFORM.MEDIT.CAPTION
+msgid "&Edit"
+msgstr "تحرير"
+
+#: TMAINFORM.MENUITEM1.CAPTION
+msgctxt "TMAINFORM.MENUITEM1.CAPTION"
+msgid "-"
+msgstr "-"
+
+#: TMAINFORM.MENUITEM2.CAPTION
+msgctxt "TMAINFORM.MENUITEM2.CAPTION"
+msgid "-"
+msgstr "-"
+
+#: TMAINFORM.MENUITEM3.CAPTION
+msgctxt "TMAINFORM.MENUITEM3.CAPTION"
+msgid "-"
+msgstr "-"
+
+#: TMAINFORM.MENUITEM8.CAPTION
+msgctxt "TMAINFORM.MENUITEM8.CAPTION"
+msgid "-"
+msgstr "-"
+
+#: TMAINFORM.MFILE.CAPTION
+msgid "&File"
+msgstr "&ملف"
+
+#: TMAINFORM.MIDOCUMENT.CAPTION
+msgid "&New document with object"
+msgstr "وثيقة &جديدة مع كائن"
+
+#: TMAINFORM.MIINSERT.CAPTION
+msgid "&Values"
+msgstr "ال&قيم"
+
+#: TMAINFORM.MISORTMEMBERS.CAPTION
+msgid "Sort object members"
+msgstr ""
+
+#: TMAINFORM.MISTRICT.CAPTION
+msgid "&Strict JSON"
+msgstr ""
+
+#: TMAINFORM.MOPTIONS.CAPTION
+msgid "&Options"
+msgstr "&خيارات"
+
+#: TMAINFORM.TBJSON.CAPTION
+msgid "TBJSON"
+msgstr "TBJSON"
+
+#: TMAINFORM.TOOLBUTTON1.CAPTION
+msgid "ToolButton1"
+msgstr "ToolButton1"
+
+#: TMAINFORM.TOOLBUTTON4.CAPTION
+msgid "ToolButton4"
+msgstr "ToolButton4"
