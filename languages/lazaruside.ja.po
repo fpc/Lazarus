@@ -15617,7 +15617,7 @@ msgstr ""
 
 #: lazarusidestrconsts.listheapplicationbundlewascreatedfor
 msgid "The Application Bundle was created for \"%s\""
-msgstr "編集可能なセルを挿入します。セル間はタブキーを使って移動できます。%0:s\"param\"マクロはコンマ区切りの引数のリストを取ります。最初の引数はその既定値です。%0:s2番目の引数（選択可能）はセルを他のセルにリンクするのに使えます（同期編集）。%0:s%0:s例えば、 while param(\"foo\") do param(foo);は %0:s デフォルトのテキスト\"fooを持つ２つの独立したセルを挿入します。%0:s引用符は省略可能です。%0:sまた、例えば、 if param(\"foo\") > 0 and param(\"foo\",sync=1) < 99 thenは片方を編集するともう片方も変更される２つのリンクされたセルを挿入します。%0:s値\"1\"は他の\"param()\"の位置を指していますので、より多くのparamsがある場合、例えば、%0:s if param(\"bar\") and param(foo) > 0 and param(foo,sync=2) < 99 then ２つ目と３つ目はリンクされます（３番アプリケーションバンドルが\"%s\"について作成されました。"
+msgstr "アプリケーションバンドルが\"%s\"について作成されました。"
 
 #: lazarusidestrconsts.listheclassisatcontrolandcannotbepastedontoanoncontro
 msgid "The class %s%s%s is a TControl and can not be pasted onto a non control.%sUnable to paste."
