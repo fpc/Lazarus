@@ -1142,7 +1142,7 @@ procedure TFitSeries.Draw(ADrawer: IChartDrawer);
 var
   de : TIntervalList;
 begin
-  if IsEmpty then exit;
+  if IsEmpty or not FValidFitParams then exit;
   ADrawer.Pen := Pen;
   de := PrepareIntervals;
   try
