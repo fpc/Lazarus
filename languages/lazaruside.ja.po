@@ -3,7 +3,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"PO-Revision-Date: 2012-4-21 06:54+0900\n"
+"PO-Revision-Date: 2012-8-5 20:15+0900\n"
 "Project-Id-Version: lazaruside.ja\n"
 "Last-Translator: Haruyuki Fujimaki, from r36915\n"
 "Language-Team: Japanese Lazarus ML\n"
@@ -2013,7 +2013,7 @@ msgstr "コンストラクタの名前は'init'（デストラクタは'done'）
 
 #: lazarusidestrconsts.dlginsertclassparts
 msgid "Insert class parts"
-msgstr "クラスパーツを挿入"
+msgstr ""
 
 #: lazarusidestrconsts.dlginsertimplementation
 msgid "Implementation"
@@ -2025,7 +2025,7 @@ msgstr "インターフェース"
 
 #: lazarusidestrconsts.dlginsertmethods
 msgid "Insert methods"
-msgstr "メソッドを挿入"
+msgstr ""
 
 #: lazarusidestrconsts.dlginsertsection
 msgid "Insert into Uses section of"
@@ -3972,7 +3972,7 @@ msgstr "すべての読み込みを中止"
 
 #: lazarusidestrconsts.lisabortloadingproject
 msgid "Abort loading project"
-msgstr "読み込みプロジェクトを中止"
+msgstr "プロジェクトの読み込みを中止"
 
 #: lazarusidestrconsts.lisabortwholeloading
 msgid "Abort whole loading"
@@ -4055,7 +4055,7 @@ msgstr "パッケージから継承されたその他のコンパイラオプシ
 
 #: lazarusidestrconsts.lisaddkeyworddo
 msgid "Add keyword \"do\""
-msgstr ""
+msgstr "キーワード\"do\"を追加"
 
 #: lazarusidestrconsts.lisaddnewbuildmodecopyingsettingsfrom
 msgid "Add new build mode, copying settings from \"%s\""
@@ -5482,7 +5482,7 @@ msgstr "ファイルを閲覧するためにここをクリックしてくださ
 
 #: lazarusidestrconsts.lisclicktoseethepossibleuses
 msgid "Click to see the possible uses"
-msgstr "可能なuses節を見るにはクリック"
+msgstr "可能な利用方法を見るにはクリック"
 
 #: lazarusidestrconsts.lisclose
 #, fuzzy
@@ -7571,7 +7571,7 @@ msgstr "新しいユニットの指令"
 
 #: lazarusidestrconsts.lisdirectory
 msgid "Directory: "
-msgstr ""
+msgstr "ディレクトリ: "
 
 #: lazarusidestrconsts.lisdirectorynotfound
 msgid "Directory %s%s%s not found."
@@ -8489,7 +8489,7 @@ msgstr "ファイル"
 
 #: lazarusidestrconsts.lisfile2
 msgid "File: "
-msgstr ""
+msgstr "ファイル："
 
 #: lazarusidestrconsts.lisfiledoesnotlooklikeatextfileopenitanyway
 msgctxt "lazarusidestrconsts.lisfiledoesnotlooklikeatextfileopenitanyway"
@@ -11277,7 +11277,7 @@ msgstr "LGPL覚え書き"
 
 #: lazarusidestrconsts.lismenuinsertmitnotice
 msgid "MIT Notice"
-msgstr ""
+msgstr "MIT覚え書き"
 
 #: lazarusidestrconsts.lismenuinsertmodifiedlgplnotice
 #, fuzzy
@@ -12051,7 +12051,7 @@ msgstr ""
 
 #: lazarusidestrconsts.lismodify
 msgid "&Modify"
-msgstr "<説明>%s著作権(C)<年><作者名><連絡先>%sこのライブラリはフリーソフトです。あなたは、Free Software Foundationが公表したGNU一般公有使用許諾の「バージョン2」或いはそれ以降の各バージョンの中からいずれかを選択し、そのバージョンが定める条項に従って本プログラムを再頒布または変更することができます。特殊な例外として、それぞれのリンクされた独立モジュールについて、そのモジュールのライセンスの条項と条件をあなたもまた満たしている場合には、このライブラリの著作権保有者は、あなたがこれらの独立したモジュールのライセンスに関わりなく、実行ファイルを作成するためにこのライブラリに独立したモジュールをリンクし、作成された実行ファイルをコピーしてあなたが選択したライセンス条項の下で供与することの許可をあなたに与えます。修正 (&M)"
+msgstr ""
 
 #: lazarusidestrconsts.lismore
 msgctxt "lazarusidestrconsts.lismore"
@@ -15613,11 +15613,11 @@ msgstr ""
 
 #: lazarusidestrconsts.listestdirectory
 msgid "Test directory"
-msgstr "編集可能なセルを挿入します。セル間はタブキーを使って移動できます。%0:s\"param\"マクロはコンマ区切りの引数のリストを取ります。最初の引数はその既定値です。%0:s2番目の引数（選択可能）はセルを他のセルにリンクするのに使えます（同期編集）。%0:s%0:s例えば、 while param(\"foo\") do param(foo);は %0:s デフォルトのテキスト\"fooを持つ２つの独立したセルを挿入します。%0:s引用符は省略可能です。%0:sまた、例えば、 if param(\"foo\") > 0 and param(\"foo\",sync=1) < 99 thenは片方を編集するともう片方も変更される２つのリンクされたセルを挿入します。%0:s値\"1\"は他の\"param()\"の位置を指していますので、より多くのparamsがある場合、例えば、%0:s if param(\"bar\") and param(foo) > 0 and param(foo,sync=2) < 99 then ２つ目と３つ目はリンクされます（３番テストディレクトリ"
+msgstr ""
 
 #: lazarusidestrconsts.listheapplicationbundlewascreatedfor
 msgid "The Application Bundle was created for \"%s\""
-msgstr "アプリケーションバンドルが\"%s\"について作成されました。"
+msgstr "編集可能なセルを挿入します。セル間はタブキーを使って移動できます。%0:s\"param\"マクロはコンマ区切りの引数のリストを取ります。最初の引数はその既定値です。%0:s2番目の引数（選択可能）はセルを他のセルにリンクするのに使えます（同期編集）。%0:s%0:s例えば、 while param(\"foo\") do param(foo);は %0:s デフォルトのテキスト\"fooを持つ２つの独立したセルを挿入します。%0:s引用符は省略可能です。%0:sまた、例えば、 if param(\"foo\") > 0 and param(\"foo\",sync=1) < 99 thenは片方を編集するともう片方も変更される２つのリンクされたセルを挿入します。%0:s値\"1\"は他の\"param()\"の位置を指していますので、より多くのparamsがある場合、例えば、%0:s if param(\"bar\") and param(foo) > 0 and param(foo,sync=2) < 99 then ２つ目と３つ目はリンクされます（３番アプリケーションバンドルが\"%s\"について作成されました。"
 
 #: lazarusidestrconsts.listheclassisatcontrolandcannotbepastedontoanoncontro
 msgid "The class %s%s%s is a TControl and can not be pasted onto a non control.%sUnable to paste."
@@ -15900,19 +15900,19 @@ msgstr "出力ディレクトリ%s%s%sがありません。"
 
 #: lazarusidestrconsts.listheoutputdirectoryofislistedintheincludesearchpath
 msgid "The output directory of %s is listed in the include search path of %s."
-msgstr "%sの出力ディレクトリ%sは%sのインクルード検索パスに列記されています。"
+msgstr "%sの出力ディレクトリは%sのインクルード検索パスに列記されています。"
 
 #: lazarusidestrconsts.listheoutputdirectoryofislistedintheinheritedincludes
 msgid "The output directory of %s is listed in the inherited include search path of %s."
-msgstr "%sの出力ディレクトリ%sは%sの継承されたインクルード検索パスに列記されています。"
+msgstr "%sの出力ディレクトリは%sの継承されたインクルード検索パスに列記されています。"
 
 #: lazarusidestrconsts.listheoutputdirectoryofislistedintheinheritedunitsear
 msgid "The output directory of %s is listed in the inherited unit search path of %s."
-msgstr "%sの出力ディレクトリ%sは%sのインクルード検索パスに列記されています。"
+msgstr "%sの出力ディレクトリは%sのインクルード検索パスに列記されています。"
 
 #: lazarusidestrconsts.listheoutputdirectoryofislistedintheunitsearchpathof
 msgid "The output directory of %s is listed in the unit search path of %s."
-msgstr "%sの出力ディレクトリ%sは%sのユニット検索パスに列記されています。"
+msgstr "%sの出力ディレクトリは%sのユニット検索パスに列記されています。"
 
 #: lazarusidestrconsts.listheoutputdirectoryshouldbeaseparatedirectoryandnot
 msgid " The output directory should be a separate directory and not contain any source files."
@@ -16559,7 +16559,7 @@ msgstr ".lfmファイル%s%s%s%sに対応するpascalユニットファイル(.p
 
 #: lazarusidestrconsts.lisunabletofindthecomponentclassitisnotregisteredviar
 msgid "Unable to find the component class \"%s\".%sIt is not registered via RegisterClass and no lfm was found.%sIt is needed by unit:%s%s"
-msgstr ""
+msgstr "コンポーネントクラス \"%s\"が見つかりません。%sそれはRegisterClassに登録されておらず、lfmファイルが見つかりませんでした。%sそれはユニット%s%sに必要とされています。"
 
 #: lazarusidestrconsts.lisunabletogathereditorchanges
 msgid "Unable to gather editor changes."
@@ -17233,7 +17233,7 @@ msgstr "選択されたレジスタについての型を表示"
 
 #: lazarusidestrconsts.regdlgformat
 msgid "Format"
-msgstr ""
+msgstr "フォーマット"
 
 #: lazarusidestrconsts.regdlghex
 msgid "Hex"
@@ -18094,7 +18094,7 @@ msgstr "改行してカーソルはそのまま"
 
 #: lazarusidestrconsts.srkmecinsertmitnotice
 msgid "Insert MIT notice"
-msgstr ""
+msgstr "MIT覚え書きを挿入"
 
 #: lazarusidestrconsts.srkmecinsertmode
 msgid "Insert Mode"
