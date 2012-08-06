@@ -5108,6 +5108,7 @@ languages/README.txt svneol=native#text/plain
 languages/debuggerstrconst.po svneol=native#text/plain
 languages/debuggerstrconst.ru.po svneol=native#text/plain
 languages/debuggerstrconst.uk.po svneol=native#text/plain
+languages/gdbmidebugger.ja.po svneol=native#text/plain
 languages/gdbmidebugger.po svneol=native#text/plain
 languages/gdbmidebugger.pt_BR.po svneol=native#text/plain
 languages/gdbmidebugger.ru.po svneol=native#text/plain

@@ -1,0 +1,75 @@
+msgid ""
+msgstr "Content-Type: text/plain; charset=UTF-8"
+
+#: gdbmidebugger.gdbmibreakpointerroronruncommand
+msgid "The debugger encountered an error when trying to run/step the application:%0:s%0:s%1:s%0:s%0:sPress \"Ok\" to remove the breakpoints and continue debugging (paused), and correct the problem, or choose an alternative run command.%0:sPress \"Stop\" to end the debug session."
+msgstr "デバッガがアプリケーション%0:s%0:s%1:s%0:s%0:の実行/ステップ実行を試みた際にエラーが発生しました。ブレークポイントを削除しデバッギング（一時停止）を継続する場合は\"Ok\"を押し、問題を修正し、あるいは別の実行コマンドを選択してください。%0:sデバッグセッションを終了する場合は\"Stop\"を押してください。"
+
+#: gdbmidebugger.gdbmicommandstartmainbreakerror
+msgid "The debugger could not set a breakpoint on the application's entry point.%0:sThis may be caused by missing debug info."
+msgstr "デバッガはブレークポイントをアプリケーションのエントリポイントにセットできませんでした。%0:これはおそらくデバッグ情報の欠損により引き起こされたものでしょう。"
+
+#: gdbmidebugger.gdbmicommandstartmainrunerror
+msgid "The debugger could not run the application.%0:sThis may be caused by missing debug info."
+msgstr "デバッガはアプリケーションを実行できませんでした。%0:これはおそらくデバッグ情報の欠損により引き起こされたものでしょう。"
+
+#: gdbmidebugger.gdbmicommandstartmainrunnopiderror
+msgid "The debugger failed to get the application's PID.%0:sThis may be caused by missing debug info."
+msgstr "デバッガはアプリケーションのPIDを取得できませんでした。%0:これはおそらくデバッグ情報の欠損により引き起こされたものでしょう。"
+
+#: gdbmidebugger.gdbmicommandstartmainruntostoperror
+msgid "The debugger was unable to initalize itself.%0:sThe application did run (and terminated) before the debugger could set any breakpoints. %0:sThis may be caused by missing debug info."
+msgstr "デバッガは自身を初期化できませんでした。%0:sアプリケーションはデバッガがブレークポイントを設置する前に開始（そして終了）しました。%0:これはおそらくデバッグ情報の欠損により引き起こされたものでしょう。"
+
+#: gdbmidebugger.gdbmierroronruncommand
+msgid "The debugger encountered an error when trying to run/step the application:%0:s%0:s%1:s%0:s%0:sPress \"Ok\" to continue debugging (paused), and correct the problem, or choose an alternative run command.%0:sPress \"Stop\" to end the debug session."
+msgstr "デバッガがアプリケーション%0:s%0:s%1:s%0:s%0:の実行/ステップ実行を試みた際にエラーが発生しました。ブレークポイントを削除しデバッギング（一時停止）を継続する場合は\"Ok\"を押し、問題を修正し、あるいは別の実行コマンドを選択してください。%0:sデバッグセッションを終了する場合は\"Stop\"を押してください。"
+
+#: gdbmidebugger.gdbmierroronruncommandwithwarning
+msgid "%0:s%0:sIn addition to the error the following warning was encountered:%0:s%0:s%1:s"
+msgstr "%0:s%0:sエラーに加え、下記の警告が出されました。:%0:s%0:s%1:s"
+
+#: gdbmidebugger.gdbmierrorstategenericinfo
+msgid "Error in: %1:s %0:s"
+msgstr "エラー: %1:s %0:s"
+
+#: gdbmidebugger.gdbmierrorstateinfocommanderror
+msgid "%0:sThe GDB command:%0:s\"%1:s\"%0:sreturned the error:%0:s\"%2:s\"%0:s"
+msgstr "%0:sGDBコマンド:%0:s\"%1:s\"%0:sはエラー:%0:s\"%2:s\"%0:sを返しました。"
+
+#: gdbmidebugger.gdbmierrorstateinfocommandnoresult
+msgid "%0:sThe GDB command:%0:s\"%1:s\"%0:sdid not return any result.%0:s"
+msgstr "%0:sGDBコマンド:%0:s\"%1:s\"%0:sはいかなる結果も返しませんでした。:%0:s"
+
+#: gdbmidebugger.gdbmierrorstateinfofailedread
+msgid "%0:sCould not read output from GDB.%0:s"
+msgstr "%0:sGDBからの出力を読めませんでした。%0:s"
+
+#: gdbmidebugger.gdbmierrorstateinfofailedwrite
+msgid "%0:sCould not send a command to GDB.%0:s"
+msgstr "%0:sGDBにコマンドを送れませんでした。%0:s"
+
+#: gdbmidebugger.gdbmierrorstateinfogdbgone
+msgid "%0:sThe GDB process is no longer running.%0:s"
+msgstr "%0:sGDBプロセスは今はもう実行されていません。%0:s"
+
+#: gdbmidebugger.gdbmifatalerroroccured
+msgid "Unrecoverable error: \"%s\""
+msgstr "修復不可能なエラー：\"%s\""
+
+#: gdbmidebugger.gdbmipressignoretocontinuedebuggingthismaynotbesafepres
+msgid "Press \"Ignore\" to continue debugging. This may NOT be safe. Press \"Abort\" to stop the debugger.%0:sException: %1:s with message \"%2:s\"%0:sContext: %4:s. State: %5:s %0:s%0:s%3:s"
+msgstr "デバッグを継続する場合は\"Ignore\"を押してください。これは安全ではないでしょう。デバッグを停止する場合は\"Abort\"を押してください。%0:s例外： %1:s メッセージ \"%2:s\"%0:sコンテクスト: %4:s. 状態: %5:s %0:s%0:s%3:s"
+
+#: gdbmidebugger.gdbmithedebuggerexperiencedanunknowncondition
+msgid "The debugger experienced an unknown condition"
+msgstr "デバッガは未知の状態を経験しました"
+
+#: gdbmidebugger.gdbmitimeoutforcmd
+msgid "Time-out for command: \"%s\""
+msgstr "コマンド \"%s\"が時間切れ"
+
+#: gdbmidebugger.gdbmiwarningunknowbreakpoint
+msgid "The debugger reached an unexpected %1:s%0:s%0:sPress \"Ok\" to continue debugging (paused).%0:sPress \"Stop\" to end the debug session."
+msgstr "デバッガは予期しない状態に達しました %1:s%0:s%0:sデバッギング（一時停止）を継続する場合は\"Ok\"を押してください。%0:sデバッグセッションを終了する場合は\"Stop\"を押してください。"
+
