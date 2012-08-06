@@ -675,26 +675,18 @@ end;
 
 function TCustomShellTreeView.GetPathFromNode(ANode: TTreeNode; AIncludeRoot: Boolean): string;
 var
-  nodeDir : String;
+  nodeDir: string;
 begin
-  Result := '';
-  // return the base if nothing is selected
-  if ANode = nil then
+  nodeDir := '';
+  if ANode <> nil then  // Will return the root if nothing is selected (ANode=nil)
   begin
-    if AIncludeRoot then
-      Result := GetRootPath();
-    Exit;
-  end;
-
-  // Build the path. In the future use ANode.Data instead of ANode.Text
-  nodeDir := ANode.Text;
-  while (ANode.Parent <> nil) do
-  begin
-    ANode := ANode.Parent;
-    // Was tested in original code (and didn't make sense), now replaced with assertion. [JuMa]
-    Assert(PChar(ANode.Text) <> PathDelim,
-      Format('TCustomShellTreeView.GetPathFromNode: ANode.Text (%s) is PathDelim', [ANode.Text]));
-    nodeDir := ANode.Text + PathDelim + nodeDir;
+    // Build the path. In the future use ANode.Data instead of ANode.Text
+    nodeDir := ANode.Text;
+    while (ANode.Parent <> nil) do
+    begin
+      ANode := ANode.Parent;
+      nodeDir := IncludeTrailingPathDelimiter(ANode.Text) + nodeDir;
+    end;
   end;
   // Check if root directory should be included
   if AIncludeRoot then
@@ -728,6 +720,8 @@ begin
   sl.Delimiter := PathDelim;
   sl.StrictDelimiter := True;
   sl.DelimitedText := TrimFilename(AValue);  // Clean the path and then split it
+  if sl[0] = '' then                    // This happens when root dir is empty
+    sl[0] := PathDelim;                 //  and PathDelim was the first char
   BeginUpdate;
   try
     Node := Items.GetFirstVisibleNode;
