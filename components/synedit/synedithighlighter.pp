@@ -1533,6 +1533,8 @@ var
 begin
   Result := StartIndex;
   c := CurrentLines.Count;
+  if (c = 0) or (Result >= c) then
+    exit;
   StartAtLineIndex(Result);
   NextToEol;
   while UpdateRangeInfoAtLine(Result) or (Result <= EndIndex) do begin
@@ -1567,7 +1569,9 @@ begin
   if AValue = FCurrentLines then
     exit;
   FCurrentLines := AValue;
-  FCurrentRanges := TSynHighlighterRangeList(AValue.Ranges[GetRangeIdentifier]);
+  if FCurrentLines <> nil
+  then FCurrentRanges := TSynHighlighterRangeList(AValue.Ranges[GetRangeIdentifier])
+  else FCurrentRanges := nil;
 end;
 
 procedure TSynCustomHighlighter.AttachToLines(Lines: TSynEditStringsBase);
@@ -1591,6 +1595,8 @@ procedure TSynCustomHighlighter.DetachFromLines(Lines: TSynEditStringsBase);
 var
   r: TSynHighlighterRangeList;
 begin
+  //if Lines = CurrentLines then
+  //  CurrentLines := nil;
   r := TSynHighlighterRangeList(Lines.Ranges[GetRangeIdentifier]);
   if not assigned(r) then exit;
   r.DecRefCount;
