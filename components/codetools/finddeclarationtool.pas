@@ -5941,6 +5941,12 @@ var
         Params);
       // put result on stack
       ExprStack[StackPtr-1]:=ExprStack[StackPtr];
+
+      // ToDo: handle alias in CalculateBinaryOperator
+      // => Workaround:
+      if NewOperand.Desc<>ExprStack[StackPtr-1].Operand.Desc then
+        ExprStack[StackPtr-1].AliasType:=CleanFindContext; // reset alias type
+
       dec(StackPtr);
       ExprStack[StackPtr].Operand:=NewOperand;
     end;
