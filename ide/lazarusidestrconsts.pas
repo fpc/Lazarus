@@ -5564,6 +5564,7 @@ resourcestring
   lisSavedWithProjectSession = 'Saved with project session';
   lisSavedWithIDESettings = 'Saved with IDE settings';
   lisMoveTo = 'Move to: ';
+  lisFailedToSaveFile = 'Failed to save file,';
 
 implementation
 

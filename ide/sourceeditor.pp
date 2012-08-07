@@ -3773,13 +3773,16 @@ var
   Html: TSynExporterHTML;
 begin
   Html := TSynExporterHTML.Create(nil);
-  Html.Clear;
-  Html.ExportAsText := True;
-  Html.Highlighter := FEditor.Highlighter;
-  Html.Title := PageName;
-  Html.ExportAll(FEditor.Lines);
-  Html.SaveToFile(AFileName);
-  Html.Free;
+  try
+    Html.Clear;
+    Html.ExportAsText := True;
+    Html.Highlighter := FEditor.Highlighter;
+    Html.Title := PageName;
+    Html.ExportAll(FEditor.Lines);
+    Html.SaveToFile(AFileName);
+  finally
+    Html.Free;
+  end;
 end;
 
 procedure TSourceEditor.FindHelpForSourceAtCursor;
