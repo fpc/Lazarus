@@ -4066,6 +4066,7 @@ var
   procedure UseUnit(AnUnitName: string);
   begin
     if AddedUnitNames.Contains(AnUnitName) then exit;
+    if CompareDottedIdentifiers(PChar(AnUnitName),PChar(PkgUnitName))=0 then exit;
     AddedUnitNames.Add(AnUnitName,'');
     if UsedUnits<>'' then
       UsedUnits:=UsedUnits+', ';
@@ -4084,6 +4085,11 @@ begin
     DebugLn('TLazPackageGraph.SavePackageMainSource DoDeleteAmbiguousFiles failed');
     exit;
   end;
+
+  // get unit name
+  PkgUnitName := ExtractFileNameOnly(SrcFilename);
+  if CompareDottedIdentifiers(PChar(APackage.Name), PChar(PkgUnitName))=0 then
+    PkgUnitName := APackage.Name;
 
   // collect unitnames
   e:=LineEnding;
@@ -4166,9 +4172,6 @@ begin
            +'  This source is only used to compile and install the package.'+e
            +' }'+e+e;
   // leave the unit case the same as the package name (e.g: package name LazReport, unit name lazreport)
-  PkgUnitName := ExtractFileNameOnly(SrcFilename);
-  if AnsiSameText(APackage.Name, PkgUnitName) then
-    PkgUnitName := APackage.Name;  
   Src:='unit '+ PkgUnitName +';'+e
       +e
       +'interface'+e
