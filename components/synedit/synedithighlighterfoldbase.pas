@@ -45,7 +45,7 @@ located at http://SynEdit.SourceForge.net
    Remove when FPC 2.6.2 is out
 *)
 {$IFDEF CPU64}
-{$IF (FPC_FULLVERSION = 2060) or (FPC_FULLVERSION = 20501)}
+{$IF (FPC_FULLVERSION = 20600) or (FPC_FULLVERSION = 20501)}
   {$DEFINE ISSUE_20850 }
 {$ENDIF}
 {$ENDIF}
