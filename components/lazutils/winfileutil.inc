@@ -604,21 +604,30 @@ const
                FILE_SHARE_WRITE,
                FILE_SHARE_READ or FILE_SHARE_WRITE);
 begin
-  Result := CreateFileW(PWideChar(UTF8Decode(FileName)), dword(AccessMode[Mode and 3]),
-                       dword(ShareMode[(Mode and $F0) shr 4]), nil, OPEN_EXISTING,
-                       FILE_ATTRIBUTE_NORMAL, 0);
+  if (Win32Platform = VER_PLATFORM_WIN32_WINDOWS) then
+    Result := FileOpen(UTF8ToSys(FileName), Mode)
+  else
+    Result := CreateFileW(PWideChar(UTF8Decode(FileName)), dword(AccessMode[Mode and 3]),
+                         dword(ShareMode[(Mode and $F0) shr 4]), nil, OPEN_EXISTING,
+                         FILE_ATTRIBUTE_NORMAL, 0);
   //if fail api return feInvalidHandle (INVALIDE_HANDLE=feInvalidHandle=-1)
 end;
 
 function FileCreateUTF8(Const FileName : string) : THandle;
 begin
-  Result := CreateFileW(PWideChar(UTF8Decode(FileName)), GENERIC_READ or GENERIC_WRITE,
-                       0, nil, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, 0);
+  if (Win32Platform = VER_PLATFORM_WIN32_WINDOWS) then
+    Result := FileCreate(Utf8ToSys(FileName))
+  else
+    Result := CreateFileW(PWideChar(UTF8Decode(FileName)), GENERIC_READ or GENERIC_WRITE,
+                          0, nil, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, 0);
 end;
 
 function FileCreateUTF8(Const FileName : string; Rights: Cardinal) : THandle;
 begin
-  Result := CreateFileW(PWideChar(UTF8Decode(FileName)), GENERIC_READ or GENERIC_WRITE,
+  if (Win32Platform = VER_PLATFORM_WIN32_WINDOWS) then
+    Result := FileCreate(Utf8ToSys(FileName), Rights)
+  else
+    Result := CreateFileW(PWideChar(UTF8Decode(FileName)), GENERIC_READ or GENERIC_WRITE,
                        0, nil, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, 0);
 end;
 
