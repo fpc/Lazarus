@@ -110,6 +110,8 @@ type
     LCLInjectedControl: TCustomControl;
     LCLBaseControl: TCDBaseControl;
     procedure ReadInjectedAndBaseControl; message 'ReadInjectedAndBaseControl';
+    function GetSelectedText: PChar; message 'GetSelectedText';
+    function GetSelectedTextStart: Integer; message 'GetSelectedTextStart';
     //NSAccessibilityCategory = objccategory external (NSObject)
     function accessibilityAttributeNames: NSArray; override;
     function accessibilityAttributeValue(attribute: NSString): id; override;
@@ -1047,39 +1049,98 @@ begin
   end;
 end;
 
+function TCocoaAccessibleObject.GetSelectedText: PChar;
+begin
+  Result := '';
+end;
+
+function TCocoaAccessibleObject.GetSelectedTextStart: Integer;
+begin
+  Result := 0;
+end;
+
+{
+  See the documentation about accessibility Roles and their required attributes:
+  http://developer.apple.com/library/mac/documentation/UserExperience/Reference/Accessibility_RoleAttribute_Ref/Role.html
+}
 function TCocoaAccessibleObject.accessibilityAttributeNames: NSArray;
 var
   lResult: NSMutableArray;
   lCocoaRole: NSString;
+
+    // Basic elements which most roles have
+  procedure AddBasicAttributes;
+  begin
+    lResult.addObject(NSAccessibilityDescriptionAttribute);
+    lResult.addObject(NSAccessibilityEnabledAttribute);
+    lResult.addObject(NSAccessibilityFocusedAttribute);
+    lResult.addObject(NSAccessibilityParentAttribute);
+    lResult.addObject(NSAccessibilityPositionAttribute);
+    lResult.addObject(NSAccessibilityRoleAttribute);
+    lResult.addObject(NSAccessibilitySizeAttribute);
+    lResult.addObject(NSAccessibilityTitleAttribute);
+    lResult.addObject(NSAccessibilityTopLevelUIElementAttribute);
+    lResult.addObject(NSAccessibilityWindowAttribute);
+  end;
+
 begin
   {$ifdef VerboseCDAccessibility}
   DebugLn(Format('[TCocoaAccessibleObject.accessibilityAttributeNames] Self=%x', [PtrUInt(Self)]));
   {$endif}
   lResult := NSMutableArray.array_();
 
-  // Basic elements which all roles have
-  lResult.addObject(NSAccessibilityDescriptionAttribute);
-  lResult.addObject(NSAccessibilityEnabledAttribute);
-  lResult.addObject(NSAccessibilityFocusedAttribute);
-  lResult.addObject(NSAccessibilityParentAttribute);
-  lResult.addObject(NSAccessibilityPositionAttribute);
-  lResult.addObject(NSAccessibilityRoleAttribute);
-  lResult.addObject(NSAccessibilitySizeAttribute);
-  lResult.addObject(NSAccessibilityTitleAttribute);
-  lResult.addObject(NSAccessibilityTopLevelUIElementAttribute);
-  lResult.addObject(NSAccessibilityWindowAttribute);
-
   lCocoaRole := TCocoaCustomControl.LazRoleToCocoaRole(LCLAcc.AccessibleRole);
+  //larAnimation
+  //larButton
   if lCocoaRole.isEqualToString(NSAccessibilityButtonRole) then
   begin
+    AddBasicAttributes();
     lResult.addObject(NSAccessibilityRoleDescriptionAttribute);
   end
-  else if  lCocoaRole.isEqualToString(NSAccessibilityStaticTextRole) then
+  //larCell
+  //larChart
+  //larCheckBox
+  //larClock
+  //larColorPicker
+  //larComboBox
+  //larDateField
+  //larGrid
+  //larGroup
+  //larImage
+  //larLabel
+  else if lCocoaRole.isEqualToString(NSAccessibilityStaticTextRole) then
   begin
+    AddBasicAttributes();
     lResult.addObject(NSAccessibilityValueAttribute);
   end
+  //larListBox
+  //larListItem
+  //larMenuBar
+  //larMenuItem
+  //larProgressIndicator
+  //larRadioButton
+  //larResizeGrip
+  //larScrollBar
+  //larSpinner
+  //larTabControl
+  //larTextEditorMultiline
+  //larTextEditorSingleline
+  else if lCocoaRole.isEqualToString(NSAccessibilityTextFieldRole) then
+  begin
+    AddBasicAttributes();
+    lResult.addObject(NSAccessibilityNumberOfCharactersAttribute); // Number of characters in an editable text field. Must not be settable.
+    lResult.addObject(NSAccessibilitySelectedTextAttribute); // Currently selected text of a UI element. May be settable.
+    lResult.addObject(NSAccessibilitySelectedTextRangeAttribute); // Position and length (in characters) of a selected portion of text in the UI element. May be settable.
+    lResult.addObject(NSAccessibilityValueAttribute); // The element’s value. May be settable.
+    lResult.addObject(NSAccessibilityVisibleCharacterRangeAttribute); // Range of characters that are scrolled into view in an editable text element. May be settable.
+  end
+  //larTrackBar
+  //larTreeView
+  //larTreeItem
+  //larWindow
   else
   begin
+    AddBasicAttributes();
   end;
 
   // This one we use to put LCL object and class names to help debugging =)
@@ -1093,19 +1154,29 @@ end;
 function TCocoaAccessibleObject.accessibilityAttributeValue(attribute: NSString): id;
 var
   lStrAttr: String;
+  lTmpStr: string;
+  //
+  lSize: TSize;
+  lPoint: TPoint;
+  lBool: Boolean;
+  lInt: Integer;
   //
   lAResult: NSArray;
   lMAResult: NSMutableArray;
-  lSize: TSize;
   lNSSize: NSSize;
-  lPoint: TPoint;
   lNSPoint: NSPoint;
-  lBool: Boolean;
+  lNSRange: NSRange;
   //
   i: Integer;
   lChildAcc: TLazAccessibleObject;
   lForm: TCustomForm;
   lParent: TWinControl;
+
+  function GetControlText: string;
+  begin
+    Result := LCLControl.Caption;
+  end;
+
 begin
   //Result := inherited accessibilityAttributeValue(attribute); -> This raises errors, so don't
   Result := nil;
@@ -1136,6 +1207,8 @@ begin
   end
   //
   // Value
+  //
+  // The element’s value. May be settable.
   //
   else if attribute.isEqualToString(NSAccessibilityValueAttribute) then
   begin
@@ -1249,6 +1322,63 @@ begin
     lNSSize.width := lSize.CX;
     lNSSize.height := lSize.CY;
     Result := NSValue.valueWithSize(lNSSize);
+    {$ifdef VerboseCDAccessibility}
+    DebugLn(Format(':<[TCocoaAccessibleObject.accessibilityAttributeValue] NSAccessibilitySizeAttribute Result=%d,%d', [lSize.CX, lSize.CY]));
+    {$endif}
+  end
+  //
+  // NumberOfCharacters
+  //
+  // Number of characters in an editable text field. Must not be settable.
+  //
+  else if attribute.isEqualToString(NSAccessibilityNumberOfCharactersAttribute) then
+  begin
+    lTmpStr := LCLControl.Caption;
+    lInt := UTF8Length(lTmpStr);
+    Result := NSNumber.numberWithInt(lInt);
+    {$ifdef VerboseCDAccessibility}
+    DebugLn(Format(':<[TCocoaAccessibleObject.accessibilityAttributeValue] NSAccessibilityNumberOfCharactersAttribute Text=%s Result=%d', [lTmpStr, lInt]));
+    {$endif}
+  end
+  //
+  // SelectedText
+  //
+  // Currently selected text of a UI element. May be settable.
+  //
+  else if attribute.isEqualToString(NSAccessibilitySelectedTextAttribute) then
+  begin
+    lTmpStr := GetSelectedText();
+    Result := NSStringUtf8(lTmpStr);
+    //{$ifdef VerboseCDAccessibility}
+    //DebugLn(Format(':<[TCocoaAccessibleObject.accessibilityAttributeValue] NSAccessibilitySizeAttribute Result=%d,%d', [lSize.CX, lSize.CY]));
+    //{$endif}
+  end
+  //
+  // SelectedTextRange
+  //
+  // Position and length (in characters) of a selected portion of text in the UI element. May be settable.
+  //
+  else if attribute.isEqualToString(NSAccessibilitySelectedTextRangeAttribute) then
+  begin
+    lTmpStr := GetSelectedText();
+    lNSRange.location := GetSelectedTextStart();
+    lNSRange.length := UTF8Length(lTmpStr);
+    Result := NSValue.valueWithRange(lNSRange);
+    //{$ifdef VerboseCDAccessibility}
+    //DebugLn(Format(':<[TCocoaAccessibleObject.accessibilityAttributeValue] NSAccessibilitySizeAttribute Result=%d,%d', [lSize.CX, lSize.CY]));
+    //{$endif}
+  end
+  //
+  // VisibleCharacterRange
+  //
+  // Range of characters that are scrolled into view in an editable text element. May be settable.
+  //
+  else if attribute.isEqualToString(NSAccessibilityVisibleCharacterRangeAttribute) then
+  begin
+    lTmpStr := GetControlText();
+    lNSRange.location := 0;
+    lNSRange.length := UTF8Length(lTmpStr);
+    Result := NSValue.valueWithRange(lNSRange);
     {$ifdef VerboseCDAccessibility}
     DebugLn(Format(':<[TCocoaAccessibleObject.accessibilityAttributeValue] NSAccessibilitySizeAttribute Result=%d,%d', [lSize.CX, lSize.CY]));
     {$endif}

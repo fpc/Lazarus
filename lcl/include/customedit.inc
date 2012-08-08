@@ -81,6 +81,8 @@ begin
   FAutoSelect := True;
   FAutoSelected := False;
   AutoSize := True;
+  // Accessibility
+  AccessibleRole := larTextEditorSingleline;
 end;
 
 {------------------------------------------------------------------------------
