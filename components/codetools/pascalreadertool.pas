@@ -277,16 +277,30 @@ begin
         if IsCommentStartChar[Src[CommentStart]] then begin
           CurCommentPos:=CommentStart;
           case Src[CurCommentPos] of
-          '{': // pascal comment
+          '{':
             begin
-              CommentLvl:=1;
               inc(CurCommentPos);
-              while (CurCommentPos<CommentEnd) and (CommentLvl>0) do begin
-                case Src[CurCommentPos] of
-                '{': if Scanner.NestedComments then inc(CommentLvl);
-                '}': dec(CommentLvl);
-                end;
+              if (CurCommentPos<CommentEnd) and (Src[CurCommentPos]=#3) then begin
+                // codetools skip comment
                 inc(CurCommentPos);
+                while (CurCommentPos<CommentEnd) do begin
+                  if (Src[CurCommentPos]=#3) and (CurCommentPos+1<CommentEnd)
+                  and (Src[CurCommentPos]='}') then begin
+                    inc(CurCommentPos,2);
+                    break;
+                  end;
+                  inc(CurCommentPos);
+                end;
+              end else begin
+                // pascal comment
+                CommentLvl:=1;
+                while (CurCommentPos<CommentEnd) and (CommentLvl>0) do begin
+                  case Src[CurCommentPos] of
+                  '{': if Scanner.NestedComments then inc(CommentLvl);
+                  '}': dec(CommentLvl);
+                  end;
+                  inc(CurCommentPos);
+                end;
               end;
             end;
           '/':  // Delphi comment
