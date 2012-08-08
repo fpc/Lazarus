@@ -2981,24 +2981,37 @@ begin
           inc(p);
       #1..#32:
         inc(p);
-      '{': // pascal comment
+      '{':
         begin
-          CommentLvl:=1;
           CommentStartPos:=p;
-          inc(p);
-          while true do begin
-            case Src[p] of
-            #0:  if p>SrcLen then break;
-            '{': if Scanner.NestedComments then inc(CommentLvl);
-            '}':
-              begin
-                dec(CommentLvl);
-                if CommentLvl=0 then break;
+          if (p<SrcLen) and (Src[p+1]=#3) then begin
+            // codetools skip comment
+            inc(p,2);
+            while p<=SrcLen do begin
+              if (Src[p]=#3) and (p<SrcLen) and (Src[p+1]='}') then begin
+                inc(p,2);
               end;
+              inc(p);
             end;
+          end else begin
+            // pascal comment
+            CommentLvl:=1;
             inc(p);
+            while p<=SrcLen do begin
+              case Src[p] of
+              '{': if Scanner.NestedComments then inc(CommentLvl);
+              '}':
+                begin
+                  dec(CommentLvl);
+                  if CommentLvl=0 then begin
+                    inc(p);
+                    break;
+                  end;
+                end;
+              end;
+              inc(p);
+            end;
           end;
-          inc(p);
           CompareComment(CommentStartPos,p);
         end;
       '/':  // Delphi comment

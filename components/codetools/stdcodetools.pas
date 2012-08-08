@@ -6658,40 +6658,20 @@ function TStandardCodeTool.ReadForwardTilAnyBracketClose: boolean;
 // this function reads any bracket
 // (the ReadTilBracketClose function reads only brackets in code, not comments)
 var OpenBracket: char;
-  CommentLvl: integer;
 begin
   Result:=false;
   OpenBracket:=Src[CurPos.StartPos];
   if OpenBracket='{' then begin
     // read til end of comment
-    CommentLvl:=1;
-    inc(CurPos.StartPos);
-    while (CurPos.StartPos<=SrcLen) and (CommentLvl>0) do begin
-      case Src[CurPos.StartPos] of
-      '{': if Scanner.NestedComments then inc(CommentLvl);
-      '}':
-        if CommentLvl=1 then begin
-          Result:=true;
-          break;
-        end else
-          dec(CommentLvl);
-      end;
-      inc(CurPos.StartPos);
-    end;
+    CurPos.StartPos:=FindCommentEnd(Src,CurPos.StartPos,Scanner.NestedComments);
+    Result:=CurPos.StartPos<=SrcLen;
   end else if OpenBracket='(' then begin
     if (CurPos.StartPos<SrcLen) and (Src[CurPos.StartPos+1]='*') then begin
       // read til end of comment
-      inc(CurPos.StartPos,3);
-      while true do begin
-        if (CurPos.StartPos<=SrcLen)
-        and ((Src[CurPos.StartPos-1]='*') and (Src[CurPos.StartPos]=')')) then
-        begin
-          Result:=true;
-          exit;
-        end;
-        inc(CurPos.StartPos);
-      end;
+      CurPos.StartPos:=FindCommentEnd(Src,CurPos.StartPos,Scanner.NestedComments);
+      Result:=CurPos.StartPos<=SrcLen;
     end else begin
+      // round bracket operator
       Result:=ReadTilBracketClose(false);
     end;
   end else if OpenBracket='[' then begin
@@ -6710,19 +6690,33 @@ begin
   OpenBracket:=Src[CurPos.StartPos];
   if OpenBracket='}' then begin
     // read backwards til end of comment
-    CommentLvl:=1;
     dec(CurPos.StartPos);
-    while (CurPos.StartPos>=1) and (CommentLvl>0) do begin
-      case Src[CurPos.StartPos] of
-      '}': if Scanner.NestedComments then inc(CommentLvl);
-      '{':
-        if CommentLvl=1 then begin
-          Result:=true;
-          break;
-        end else
-          dec(CommentLvl);
-      end;
+    if (CurPos.StartPos>0) and (Src[CurPos.StartPos]=#3) then begin
+      // codetools skip comment
       dec(CurPos.StartPos);
+      while (CurPos.StartPos>=1) do begin
+        if (Src[CurPos.StartPos]=#3) and (CurPos.StartPos>1)
+        and (Src[CurPos.StartPos-1]='}') then begin
+          dec(CurPos.StartPos,2);
+          break;
+        end;
+        dec(CurPos.StartPos);
+      end;
+    end else begin
+      // pascal comment
+      CommentLvl:=1;
+      while (CurPos.StartPos>=1) and (CommentLvl>0) do begin
+        case Src[CurPos.StartPos] of
+        '}': if Scanner.NestedComments then inc(CommentLvl);
+        '{':
+          if CommentLvl=1 then begin
+            Result:=true;
+            break;
+          end else
+            dec(CommentLvl);
+        end;
+        dec(CurPos.StartPos);
+      end;
     end;
   end else if OpenBracket=')' then begin
     if (CurPos.StartPos>1) and (Src[CurPos.StartPos-1]='*') then begin
