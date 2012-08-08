@@ -407,7 +407,7 @@ function LOpenGLCreateContext(AWinControl: TWinControl;
 var
   Params: TCreateWindowExParams;
   pfd: PIXELFORMATDESCRIPTOR;
-  Info: PWGLControlInfo;
+  Info, SharedInfo: PWGLControlInfo;
 
   ReturnedFormats: UINT;
   VisualAttrList: PInteger;
@@ -490,6 +490,12 @@ begin
   Info^.WGLContext:=wglCreateContext(Info^.DC);
   if Info^.WGLContext=0 then
     raise Exception.Create('LOpenGLCreateContext wglCreateContext failed');
+
+  // share context objects
+  if Assigned(SharedControl) then begin
+    SharedInfo:=GetWGLControlInfo(SharedControl.Handle);
+    if Assigned(SharedInfo) then wglShareLists(SharedInfo^.WGLContext, Info^.WGLContext);
+  end;
 end;
 
 procedure LOpenGLDestroyContextInfo(AWinControl: TWinControl);
