@@ -485,7 +485,6 @@ resourcestring
   lisMenuEditCodeTemplates = 'Code Templates ...';
   dlgEdCodeTempl = 'Code Templates';
   dlgTplFName = 'Template file name';
-  lisMenuCodeToolsDefinesEditor = 'CodeTools Defines Editor ...';
 
   lisMenuOnlineHelp = 'Online Help';
   lisMenuReportingBug = 'Reporting a Bug';
@@ -2861,8 +2860,9 @@ resourcestring
   srkmecExtTool                   = 'External tool %d';
   srkmecEnvironmentOptions        = 'IDE options';
   lisKMEditCodeTemplates          = 'Edit Code Templates';
-  lisKMCodeToolsDefinesEditor     = 'CodeTools defines editor';
-  srkmecCodeToolsDefinesEd        = 'Codetools defines editor';
+  lisKMCodeToolsDefinesEditor            = 'CodeTools defines editor';
+  lisCodeToolsDefsCodeToolsDefinesEditor = 'CodeTools Defines Editor';
+  lisMenuCodeToolsDefinesEditor          = 'CodeTools Defines Editor ...';
   lisMenuRescanFPCSourceDirectory = 'Rescan FPC Source Directory';
   srkmecMakeResourceString        = 'Make Resource String';
   lisKMDiffEditorFiles            = 'Diff Editor Files';
@@ -3243,11 +3243,9 @@ resourcestring
   lisCodeToolsDefsAutoCreatedNodesReadOnly = 'Auto created nodes can not be '
     +'edited,%snor can they have non auto created child nodes.';
   lisCodeToolsDefsInvalidParentNode = 'Invalid parent node';
-  lisCodeToolsDefsParentNodeCanNotContainCh = 'Parent node can not contain '
-    +'child nodes.';
+  lisCodeToolsDefsParentNodeCanNotContainCh = 'Parent node can not contain child nodes.';
   lisCodeToolsDefsNewNode = 'NewNode';
-  lisCodeToolsDefsCodeToolsDefinesEditor = 'CodeTools Defines Editor';
-  
+
   // code template dialog
   lisCodeTemplAddCodeTemplate = 'Add code template';
   lisCodeTemplAdd = 'Add template';

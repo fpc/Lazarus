@@ -615,7 +615,7 @@ begin
     ecEnvironmentOptions      : Result:= srkmecEnvironmentOptions;
     ecRescanFPCSrcDir         : Result:= lisMenuRescanFPCSourceDirectory;
     ecEditCodeTemplates       : Result:= lisMenuEditCodeTemplates;
-    ecCodeToolsDefinesEd      : Result:= srkmecCodeToolsDefinesEd;
+    ecCodeToolsDefinesEd      : Result:= lisKMCodeToolsDefinesEditor;
 
     ecExtToolSettings         : Result:= srkmecExtToolSettings;
     ecManageExamples          : Result:= lisMenuExampleProjects;
