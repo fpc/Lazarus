@@ -1441,7 +1441,7 @@ begin
   Result:=StartPos;
   if Result<1 then exit;
   if Result>length(ASource) then exit;
-  p:=PChar(ASource);
+  p:=@ASource[Result];
   case p^ of
   '/':
     begin
