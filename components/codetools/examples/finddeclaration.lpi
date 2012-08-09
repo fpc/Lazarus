@@ -29,7 +29,7 @@
         <PackageName Value="CodeTools"/>
       </Item1>
     </RequiredPackages>
-    <Units Count="3">
+    <Units Count="4">
       <Unit0>
         <Filename Value="finddeclaration.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -45,10 +45,14 @@
         <IsPartOfProject Value="True"/>
         <UnitName Value="OverloadedFunction"/>
       </Unit2>
+      <Unit3>
+        <Filename Value="../../../../../amat/test/test.inc"/>
+        <IsPartOfProject Value="True"/>
+      </Unit3>
     </Units>
   </ProjectOptions>
   <CompilerOptions>
-    <Version Value="10"/>
+    <Version Value="11"/>
     <SearchPaths>
       <OtherUnitFiles Value="scanexamples"/>
     </SearchPaths>

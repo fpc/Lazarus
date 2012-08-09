@@ -44,6 +44,7 @@ unit LinkScanner;
 {$I codetools.inc}
 
 { $DEFINE ShowIgnoreErrorAfter}
+{ $DEFINE EnableIncludeSkippedCode}
 
 // debugging
 { $DEFINE ShowUpdateCleanedSrc}
@@ -136,7 +137,11 @@ type
     lsrEnd // scan till 'end.'
     );
 
-  TCommentStyle = (CommentNone, CommentTP, CommentOldTP, CommentDelphi);
+  TCommentStyle = (CommentNone,
+    CommentCurly,  // {}
+    CommentRound,  // (* *)
+    CommentLine    // //
+    );
 
   TCompilerMode = (
     cmFPC,
@@ -149,19 +154,19 @@ type
     cmISO);
   { TCompilerModeSwitch - see fpc/compiler/globtype.pas  }
   TCompilerModeSwitch = (
-    cmsClass,         { delphi class model }
-    cmsObjpas,        { load objpas unit }
-    cmsResult,        { result in functions }
-    cmsString_pchar,  { pchar 2 string conversion }
-    cmsCvar_support,  { cvar variable directive }
-    cmsNested_comment,{ nested comments }
-    cmsTp_procvar,    { tp style procvars (no @ needed) }
-    cmsMac_procvar,   { macpas style procvars }
-    cmsRepeat_forward,      { repeating forward declarations is needed }
-    cmsPointer_2_procedure, { allows the assignement of pointers to  procedure variables }
-    cmsAutoderef,           { does auto dereferencing of struct. vars, e.g. a.b -> a^.b }
-    cmsInitfinal,           { initialization/finalization for units }
-    cmsAdd_pointer,
+    cmsClass,              { delphi class model }
+    cmsObjpas,             { load objpas unit }
+    cmsResult,             { result in functions }
+    cmsString_pchar,       { pchar 2 string conversion }
+    cmsCvar_support,       { cvar variable directive }
+    cmsNested_comment,     { nested comments }
+    cmsTp_procvar,         { tp style procvars (no @ needed) }
+    cmsMac_procvar,        { macpas style procvars }
+    cmsRepeat_forward,     { repeating forward declarations is needed }
+    cmsPointer_2_procedure,{ allows the assignement of pointers to  procedure variables }
+    cmsAutoderef,          { does auto dereferencing of struct. vars, e.g. a.b -> a^.b }
+    cmsInitfinal,          { initialization/finalization for units }
+    cmsAdd_pointer,        { ? }
     cmsDefault_ansistring, { ansistring turned on by default }
     cmsOut,                { support the calling convention OUT }
     cmsDefault_para,       { support default parameters }
@@ -317,7 +322,7 @@ type
     procedure SetLinks(Index: integer; const Value: TSourceLink);
     procedure SetSource(ACode: Pointer); // set current source
     procedure AddSourceChangeStep(ACode: pointer; AChangeStep: integer);
-    procedure AddLink(ACleanedPos, ASrcPos: integer; ACode: Pointer);
+    procedure AddLink(ASrcPos: integer; ACode: Pointer);
     procedure IncreaseChangeStep;
     procedure SetMainCode(const Value: pointer);
     procedure SetScanTill(const Value: TLinkScannerRange);
@@ -735,7 +740,7 @@ end;
 
 { TLinkScanner }
 
-procedure TLinkScanner.AddLink(ACleanedPos, ASrcPos: integer; ACode: pointer);
+procedure TLinkScanner.AddLink(ASrcPos: integer; ACode: pointer);
 var
   NewCapacity: Integer;
 begin
@@ -746,7 +751,7 @@ begin
     FLinkCapacity:=NewCapacity;
   end;
   with FLinks[FLinkCount] do begin
-    CleanedPos:=ACleanedPos;
+    CleanedPos:=CleanedLen+1;
     SrcPos:=ASrcPos;
     Code:=ACode;
   end;
@@ -1346,7 +1351,7 @@ begin
   FMacrosOn:=(Values.Variables['MACROS']<>'0');
   if Src='' then exit;
   // begin scanning
-  AddLink(1,SrcPos,Code);
+  AddLink(SrcPos,Code);
   LastTokenType:=lsttNone;
   LastProgressPos:=0;
   CheckForAbort:=Assigned(OnProgress);
@@ -1422,13 +1427,13 @@ procedure TLinkScanner.SkipCurlyComment;
 var
   p: PChar;
 begin
-  CommentStyle:=CommentTP;
+  CommentStyle:=CommentCurly;
   CommentStartPos:=SrcPos;
   IncCommentLevel;
   CommentInnerStartPos:=SrcPos+1;
   p:=@Src[SrcPos];
   inc(p);
-  { HandleSwitches can dec CommentLevel }
+  // HandleSwitches can dec CommentLevel
   while true do begin
     case p^ of
       #0:
@@ -1454,7 +1459,7 @@ begin
   CommentEndPos:=SrcPos;
   CommentInnerEndPos:=SrcPos-1;
   if (CommentLevel>0) then CommentEndNotFound;
-  { handle compiler switches }
+  // handle compiler switches
   if Src[CommentInnerStartPos]='$' then HandleDirectives;
   EndComment;
 end;
@@ -1464,7 +1469,7 @@ procedure TLinkScanner.SkipLineComment;
 var
   p: PChar;
 begin
-  CommentStyle:=CommentDelphi;
+  CommentStyle:=CommentLine;
   CommentStartPos:=SrcPos;
   IncCommentLevel;
   p:=@Src[SrcPos];
@@ -1476,16 +1481,16 @@ begin
   SrcPos:=p-PChar(Src)+1;
   CommentEndPos:=SrcPos;
   CommentInnerEndPos:=SrcPos-1;
-  { handle compiler switches (ignore) }
+  // handle compiler switches (ignore)
   EndComment;
 end;
 
 procedure TLinkScanner.SkipRoundComment;
-// a (* *) comment
+// a delphi comment (* *)
 var
   p: PChar;
 begin
-  CommentStyle:=CommentDelphi;
+  CommentStyle:=CommentLine;
   CommentStartPos:=SrcPos;
   IncCommentLevel;
   CommentInnerStartPos:=SrcPos+2;
@@ -1524,7 +1529,7 @@ begin
   CommentEndPos:=SrcPos;
   CommentInnerEndPos:=SrcPos-2;
   if (CommentLevel>0) then CommentEndNotFound;
-  { handle compiler switches }
+  // handle compiler switches
   if Src[CommentInnerStartPos]='$' then HandleDirectives;
   EndComment;
 end;
@@ -3229,7 +3234,7 @@ begin
     if Assigned(FOnIncludeCode) then
       FOnIncludeCode(FMainCode,NewCode);
     SetSource(NewCode);
-    AddLink(CleanedLen+1,SrcPos,Code);
+    AddLink(SrcPos,Code);
   end else begin
     if MissingIncludeFile<>nil then begin
       if FMissingIncludeFiles=nil then
@@ -3240,8 +3245,8 @@ begin
       RaiseExceptionFmt(ctsIncludeFileNotFound,[AFilename])
     end else begin
       // add a dummy link
-      AddLink(CleanedLen+1,SrcPos,MissingIncludeFileCode);
-      AddLink(CleanedLen+1,SrcPos,Code);
+      AddLink(SrcPos,MissingIncludeFileCode);
+      AddLink(SrcPos,Code);
     end;
   end;
 end;
@@ -3445,7 +3450,7 @@ begin
   OldSrcFilename:=SrcFilename;
   //DebugLn(['TLinkScanner.AddMacroSource BEFORE CleanedSrc=',dbgstr(copy(FCleanedSrc,CleanedLen-19,20))]);
   // add macro source
-  AddLink(CleanedLen+1,Macro^.StartPos,Macro^.Code);
+  AddLink(Macro^.StartPos,Macro^.Code);
   Code:=Macro^.Code;
   Src:=Macro^.Src;
   SrcLen:=length(Src);
@@ -3459,7 +3464,7 @@ begin
   SrcLen:=length(Src);
   SrcFilename:=OldSrcFilename;
   CopiedSrcPos:=SrcPos-1;
-  AddLink(CleanedLen+1,SrcPos,Code);
+  AddLink(SrcPos,Code);
   // clear token type
   TokenType:=lsttNone;
   // SrcPos was not touched and still stands behind the macro name
@@ -3482,7 +3487,7 @@ begin
     SetSource(OldPos.Code);
     SrcPos:=OldPos.SrcPos;
     CopiedSrcPos:=SrcPos-1;
-    AddLink(CleanedLen+1,SrcPos,Code);
+    AddLink(SrcPos,Code);
   end;
   Result:=SrcPos<=SrcLen;
 end;
@@ -3642,7 +3647,7 @@ begin
   {$ENDIF}
   UpdateCleanedSource(SrcPos-1);
   
-  // parse till $else, $elseif or $endif without adding the code to FCleanedSrc
+  // parse till $else, $elseif or $endif
   FSkipIfLevel:=IfLevel;
   if (SrcPos<=SrcLen) then begin
     p:=@Src[SrcPos];
@@ -3699,7 +3704,7 @@ begin
   end;
   if CommentStartPos>0 then begin
     CopiedSrcPos:=CommentStartPos-1;
-    AddLink(CleanedLen+1,CommentStartPos,Code);
+    AddLink(CommentStartPos,Code);
   end else begin
     CopiedSrcPos:=SrcLen+1;
   end;
