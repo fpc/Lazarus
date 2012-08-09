@@ -8385,6 +8385,10 @@ msgstr ""
 msgid "Failed to load fold state"
 msgstr ""
 
+#: lazarusidestrconsts.lisfailedtosavefile
+msgid "Failed to save file."
+msgstr ""
+
 #: lazarusidestrconsts.lisfepaintdesigneritemsonidle
 msgid "Reduce designer painting"
 msgstr ""
@@ -17461,10 +17465,6 @@ msgstr ""
 #: lazarusidestrconsts.srkmecclearall
 msgid "Delete whole text"
 msgstr "Usuń cały tekst"
-
-#: lazarusidestrconsts.srkmeccodetoolsdefinesed
-msgid "Codetools defines editor"
-msgstr ""
 
 #: lazarusidestrconsts.srkmeccolseldown
 msgid "Column Select Down"

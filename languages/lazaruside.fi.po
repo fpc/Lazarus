@@ -8065,6 +8065,10 @@ msgstr ""
 msgid "Failed to load fold state"
 msgstr "Laskostuksen lataaminen epäonnistui"
 
+#: lazarusidestrconsts.lisfailedtosavefile
+msgid "Failed to save file."
+msgstr ""
+
 #: lazarusidestrconsts.lisfepaintdesigneritemsonidle
 msgid "Reduce designer painting"
 msgstr "Vähennä lomake-editorin päivittämistä"
@@ -10155,7 +10159,7 @@ msgstr ""
 #: lazarusidestrconsts.lislogevalexpression
 msgctxt "lazarusidestrconsts.lislogevalexpression"
 msgid "Eval expression"
-msgstr ""
+msgstr "Eval lauseke"
 
 #: lazarusidestrconsts.lislogmessage
 msgid "Log Message"
@@ -13504,7 +13508,7 @@ msgstr "Projekti on ajettavissa virheenjäljittimessä"
 #: lazarusidestrconsts.lisprojectmacro
 msgctxt "lazarusidestrconsts.lisprojectmacro"
 msgid "Project"
-msgstr ""
+msgstr "Projekti"
 
 #: lazarusidestrconsts.lisprojectmacroproperties
 msgid "Project macro properties"
@@ -16777,10 +16781,6 @@ msgstr "siivoa koontatiedostot"
 #: lazarusidestrconsts.srkmecclearall
 msgid "Delete whole text"
 msgstr "Poista koko teksti"
-
-#: lazarusidestrconsts.srkmeccodetoolsdefinesed
-msgid "Codetools defines editor"
-msgstr "CodeTools määritysten muokkain"
 
 #: lazarusidestrconsts.srkmeccolseldown
 msgid "Column Select Down"

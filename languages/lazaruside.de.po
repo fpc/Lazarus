@@ -8330,6 +8330,10 @@ msgstr "Erzeugung des Anwendungsbundle für \"%s\" fehlgeschlagen"
 msgid "Failed to load fold state"
 msgstr "Laden des Status des Faltens fehlgeschlagen"
 
+#: lazarusidestrconsts.lisfailedtosavefile
+msgid "Failed to save file."
+msgstr ""
+
 #: lazarusidestrconsts.lisfepaintdesigneritemsonidle
 msgid "Reduce designer painting"
 msgstr "Designer möglichst selten neu zeichnen"
@@ -17380,10 +17384,6 @@ msgstr "aufräumen und kompilieren"
 #: lazarusidestrconsts.srkmecclearall
 msgid "Delete whole text"
 msgstr "Gesamten Text löschen"
-
-#: lazarusidestrconsts.srkmeccodetoolsdefinesed
-msgid "Codetools defines editor"
-msgstr "Editor für CodeTools-Einstellungen"
 
 #: lazarusidestrconsts.srkmeccolseldown
 msgid "Column Select Down"

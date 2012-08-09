@@ -8380,6 +8380,10 @@ msgstr ""
 msgid "Failed to load fold state"
 msgstr ""
 
+#: lazarusidestrconsts.lisfailedtosavefile
+msgid "Failed to save file."
+msgstr ""
+
 #: lazarusidestrconsts.lisfepaintdesigneritemsonidle
 msgid "Reduce designer painting"
 msgstr "Redukovať kreslenie návrhára"
@@ -17549,10 +17553,6 @@ msgstr ""
 #: lazarusidestrconsts.srkmecclearall
 msgid "Delete whole text"
 msgstr "Zmazať celý text"
-
-#: lazarusidestrconsts.srkmeccodetoolsdefinesed
-msgid "Codetools defines editor"
-msgstr "Editor definícií CodeTools"
 
 #: lazarusidestrconsts.srkmeccolseldown
 msgid "Column Select Down"

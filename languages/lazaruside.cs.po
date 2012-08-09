@@ -8098,6 +8098,10 @@ msgstr "Selhalo vytváření Aplikačního balíku pro \"%s\""
 msgid "Failed to load fold state"
 msgstr "Načtení stavu složení selhalo"
 
+#: lazarusidestrconsts.lisfailedtosavefile
+msgid "Failed to save file."
+msgstr ""
+
 #: lazarusidestrconsts.lisfepaintdesigneritemsonidle
 msgid "Reduce designer painting"
 msgstr "Redukovat vykreslování návrháře"
@@ -16835,10 +16839,6 @@ msgstr "vyčistit sestavené soubory"
 #: lazarusidestrconsts.srkmecclearall
 msgid "Delete whole text"
 msgstr "Odstranit celý text"
-
-#: lazarusidestrconsts.srkmeccodetoolsdefinesed
-msgid "Codetools defines editor"
-msgstr "Definiční editor CodeTools"
 
 #: lazarusidestrconsts.srkmeccolseldown
 msgid "Column Select Down"

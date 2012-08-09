@@ -8442,6 +8442,10 @@ msgstr "לא מצליח ליצור חבילת יישומים עבור \"%s\""
 msgid "Failed to load fold state"
 msgstr "נכשל בטעינת מצב מקופל"
 
+#: lazarusidestrconsts.lisfailedtosavefile
+msgid "Failed to save file."
+msgstr ""
+
 #: lazarusidestrconsts.lisfepaintdesigneritemsonidle
 msgid "Reduce designer painting"
 msgstr "צמצם את צביעת המעצב"
@@ -17679,10 +17683,6 @@ msgstr ""
 #: lazarusidestrconsts.srkmecclearall
 msgid "Delete whole text"
 msgstr "מחק את כל הטקסט"
-
-#: lazarusidestrconsts.srkmeccodetoolsdefinesed
-msgid "Codetools defines editor"
-msgstr "הגדרת עורך ע\"י CodeTools"
 
 #: lazarusidestrconsts.srkmeccolseldown
 msgid "Column Select Down"

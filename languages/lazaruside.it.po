@@ -8464,6 +8464,10 @@ msgstr "Non posso creare l'Application bundle per \"%s\""
 msgid "Failed to load fold state"
 msgstr "Caricamento stato di collassatura fallito"
 
+#: lazarusidestrconsts.lisfailedtosavefile
+msgid "Failed to save file."
+msgstr ""
+
 #: lazarusidestrconsts.lisfepaintdesigneritemsonidle
 msgid "Reduce designer painting"
 msgstr "Riduce il disegno del designer"
@@ -17689,10 +17693,6 @@ msgstr ""
 #: lazarusidestrconsts.srkmecclearall
 msgid "Delete whole text"
 msgstr "Cancella tutto il testo"
-
-#: lazarusidestrconsts.srkmeccodetoolsdefinesed
-msgid "Codetools defines editor"
-msgstr "Editor dei define dei CodeTool"
 
 #: lazarusidestrconsts.srkmeccolseldown
 msgid "Column Select Down"

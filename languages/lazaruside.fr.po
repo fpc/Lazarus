@@ -8361,6 +8361,10 @@ msgstr ""
 msgid "Failed to load fold state"
 msgstr "Echec du téléchargement de l'état de repliement"
 
+#: lazarusidestrconsts.lisfailedtosavefile
+msgid "Failed to save file."
+msgstr ""
+
 #: lazarusidestrconsts.lisfepaintdesigneritemsonidle
 msgid "Reduce designer painting"
 msgstr "Réduire le traçage du designer"
@@ -17499,10 +17503,6 @@ msgstr "Nettoyer les fichiers de compilation"
 #: lazarusidestrconsts.srkmecclearall
 msgid "Delete whole text"
 msgstr "Supprimer tout le texte"
-
-#: lazarusidestrconsts.srkmeccodetoolsdefinesed
-msgid "Codetools defines editor"
-msgstr "Editeur des directives des outils de code ..."
 
 #: lazarusidestrconsts.srkmeccolseldown
 msgid "Column Select Down"

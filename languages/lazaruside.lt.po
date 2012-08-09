@@ -8427,6 +8427,10 @@ msgstr ""
 msgid "Failed to load fold state"
 msgstr "Nepavyko įkelti sulankstymo būsenos"
 
+#: lazarusidestrconsts.lisfailedtosavefile
+msgid "Failed to save file."
+msgstr ""
+
 #: lazarusidestrconsts.lisfepaintdesigneritemsonidle
 msgid "Reduce designer painting"
 msgstr "Sumažinti paišymą konstruktoriuje"
@@ -17636,10 +17640,6 @@ msgstr ""
 #: lazarusidestrconsts.srkmecclearall
 msgid "Delete whole text"
 msgstr "Pašalinti visą tekstą"
-
-#: lazarusidestrconsts.srkmeccodetoolsdefinesed
-msgid "Codetools defines editor"
-msgstr "CodeTools apibrėžčių rengyklė"
 
 #: lazarusidestrconsts.srkmeccolseldown
 msgid "Column Select Down"

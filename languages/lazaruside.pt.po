@@ -8466,6 +8466,10 @@ msgstr "Falha ao criar Aplicação Encartada para \"%s\""
 msgid "Failed to load fold state"
 msgstr "Falha ao carregar estado retração"
 
+#: lazarusidestrconsts.lisfailedtosavefile
+msgid "Failed to save file."
+msgstr ""
+
 #: lazarusidestrconsts.lisfepaintdesigneritemsonidle
 msgid "Reduce designer painting"
 msgstr "Reduzir atualização de janela"
@@ -17684,10 +17688,6 @@ msgstr ""
 #: lazarusidestrconsts.srkmecclearall
 msgid "Delete whole text"
 msgstr "Excluir todo o texto"
-
-#: lazarusidestrconsts.srkmeccodetoolsdefinesed
-msgid "Codetools defines editor"
-msgstr "Editor Definições das Ferramentas de Código"
 
 #: lazarusidestrconsts.srkmeccolseldown
 msgid "Column Select Down"

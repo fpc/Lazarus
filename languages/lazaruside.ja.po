@@ -8474,6 +8474,10 @@ msgstr "\"%s\"についてのアプリケーションバンドルの作成に失
 msgid "Failed to load fold state"
 msgstr "折りたたみ状態の読み込みに失敗"
 
+#: lazarusidestrconsts.lisfailedtosavefile
+msgid "Failed to save file."
+msgstr ""
+
 #: lazarusidestrconsts.lisfepaintdesigneritemsonidle
 msgid "Reduce designer painting"
 msgstr "デザイナーによる描画を減らす"
@@ -17719,10 +17723,6 @@ msgstr "構築ファイルを掃除"
 #: lazarusidestrconsts.srkmecclearall
 msgid "Delete whole text"
 msgstr "テキスト全体を削除"
-
-#: lazarusidestrconsts.srkmeccodetoolsdefinesed
-msgid "Codetools defines editor"
-msgstr "コードツール定義エディタ"
 
 #: lazarusidestrconsts.srkmeccolseldown
 msgid "Column Select Down"
