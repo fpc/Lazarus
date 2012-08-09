@@ -5521,7 +5521,7 @@ resourcestring
   lisWhatNeedsBuilding = 'What needs building';
   lisTarget = 'Target:';
   lisDirectives = 'Directives';
-  lisFailedToSaveFile = 'Failed to save file,';
+  lisFailedToSaveFile = 'Failed to save file.';
 
 implementation
 
