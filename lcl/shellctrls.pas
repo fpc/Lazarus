@@ -76,7 +76,7 @@ type
     class procedure GetFilesInDir(const ABaseDir: string;
       AMask: string; AObjectTypes: TObjectTypes; AResult: TStrings; AFileSortType: TFileSortType = fstNone);
     { Other methods specific to Lazarus }
-    function  GetPathFromNode(ANode: TTreeNode; AIncludeRoot: Boolean = True): string;
+    function  GetPathFromNode(ANode: TTreeNode): string;
     function  GetSelectedNodePath: string;
 
     { Properties }
@@ -117,7 +117,6 @@ type
     property ParentColor default False;
     property ParentFont;
     property ParentShowHint;
-    property Path;
     property PopupMenu;
     property ReadOnly;
     property RightClickSelect;
@@ -579,9 +578,12 @@ end;
 
 function TCustomShellTreeView.GetRootPath: string;
 begin
-  if FRoot <> '' then Result := FRoot
-  else Result := GetBasePath();
-  Result := IncludeTrailingPathDelimiter(Result);
+  if FRoot <> '' then
+    Result := FRoot
+  else
+    Result := GetBasePath();
+  if Result <> '' then
+    Result := IncludeTrailingPathDelimiter(Result);
 end;
 
 { Returns true if at least one item was added, false otherwise }
@@ -673,26 +675,20 @@ begin
     FShellListView.Root := GetPathFromNode(Selected);
 end;
 
-function TCustomShellTreeView.GetPathFromNode(ANode: TTreeNode; AIncludeRoot: Boolean): string;
-var
-  nodeDir: string;
+function TCustomShellTreeView.GetPathFromNode(ANode: TTreeNode): string;
 begin
-  nodeDir := '';
+  Result := '';
   if ANode <> nil then  // Will return the root if nothing is selected (ANode=nil)
   begin
     // Build the path. In the future use ANode.Data instead of ANode.Text
-    nodeDir := ANode.Text;
+    Result := ANode.Text;
     while (ANode.Parent <> nil) do
     begin
       ANode := ANode.Parent;
-      nodeDir := IncludeTrailingPathDelimiter(ANode.Text) + nodeDir;
+      Result := IncludeTrailingPathDelimiter(ANode.Text) + Result;
     end;
   end;
-  // Check if root directory should be included
-  if AIncludeRoot then
-    Result := GetRootPath() + nodeDir
-  else
-    Result := nodeDir;
+  Result := GetRootPath() + Result;    // Include root directory
 end;
 
 function TCustomShellTreeView.GetSelectedNodePath: string;
@@ -702,7 +698,7 @@ end;
 
 function TCustomShellTreeView.GetPath: string;
 begin
-  Result := GetPathFromNode(Selected, False);
+  Result := GetPathFromNode(Selected);
 end;
 
 procedure TCustomShellTreeView.SetPath(AValue: string);
@@ -711,9 +707,17 @@ var
   Node: TTreeNode;
   i: integer;
 begin
-  // We got a full path, make it relative
-  if DirectoryExistsUTF8(AValue) then
-    AValue := CreateRelativePath(AValue, GetRootPath());
+  if DirectoryExistsUTF8(AValue) then begin
+    // We got a full path, make it relative to root
+    if FRoot = '' then
+      AValue := IncludeLeadingPathDelimiter(AValue) // No root, make sure path is full
+    else if FRoot = PathDelim then
+      AValue := ExcludeLeadingPathDelimiter(AValue) // Make relative to top dir ('/')
+    else
+      // When issue #22603 is fixed, this can be replaced with:
+      //  AValue := CreateRelativePath(AValue, GetRootPath());
+      Avalue := Stringreplace(AValue, GetRootPath(), '', []);
+  end;
   // Make sure the path is correct now
   if not DirectoryExistsUTF8(GetRootPath()+AValue) then Exit;
   sl := TStringList.Create;
