@@ -8305,6 +8305,10 @@ msgstr "Erzeugung des Anwendungsbundle für \"%s\" fehlgeschlagen"
 msgid "Failed to load fold state"
 msgstr "Laden des Status des Faltens fehlgeschlagen"
 
+#: lazarusidestrconsts.lisfailedtosavefile
+msgid "Failed to save file."
+msgstr ""
+
 #: lazarusidestrconsts.lisfepaintdesigneritemsonidle
 msgid "Reduce designer painting"
 msgstr "Designer möglichst selten neu zeichnen"

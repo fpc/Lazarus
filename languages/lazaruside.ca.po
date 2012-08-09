@@ -8275,6 +8275,10 @@ msgstr ""
 msgid "Failed to load fold state"
 msgstr ""
 
+#: lazarusidestrconsts.lisfailedtosavefile
+msgid "Failed to save file."
+msgstr ""
+
 #: lazarusidestrconsts.lisfepaintdesigneritemsonidle
 msgid "Reduce designer painting"
 msgstr "Redueix la pintura del disseny"

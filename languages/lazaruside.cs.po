@@ -8070,6 +8070,10 @@ msgstr "Selhalo vytváření Aplikačního balíku pro \"%s\""
 msgid "Failed to load fold state"
 msgstr "Načtení stavu složení selhalo"
 
+#: lazarusidestrconsts.lisfailedtosavefile
+msgid "Failed to save file."
+msgstr ""
+
 #: lazarusidestrconsts.lisfepaintdesigneritemsonidle
 msgid "Reduce designer painting"
 msgstr "Redukovat vykreslování návrháře"

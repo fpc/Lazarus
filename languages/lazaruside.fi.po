@@ -1597,6 +1597,7 @@ msgid "Program"
 msgstr "Ohjelma"
 
 #: lazarusidestrconsts.dlgfoldpasrecord
+msgctxt "lazarusidestrconsts.dlgfoldpasrecord"
 msgid "Record"
 msgstr ""
 
@@ -4076,10 +4077,6 @@ msgstr "Kysy tiedoston nimi uutta tiedostoa luotaessa"
 #: lazarusidestrconsts.lisasknameoncreate
 msgid "Ask name on create"
 msgstr "Kysy komponentin nimi sitä luodessa"
-
-#: lazarusidestrconsts.lisausefulsettingonwindowssystemsislazarusdirmingwbin
-msgid "A useful setting on Windows systems is: $(LazarusDir)\\mingw\\bin\\$(TargetCPU)-$(TargetOS)\\gdb.exe"
-msgstr "Hyödyllinen asetus Windowsissa on: $(LazarusDir)\\mingw\\bin\\$(TargetCPU)-$(TargetOS)\\gdb.exe"
 
 #: lazarusidestrconsts.lisautocompletionoff
 msgid "Auto completion: off"
@@ -7046,10 +7043,6 @@ msgstr "Poista rivi"
 msgid "Delete selected files"
 msgstr "Poista valitut tiedostot"
 
-#: lazarusidestrconsts.lisdeleteselectedmacro
-msgid "Delete selected macro?"
-msgstr "Poista valitut makrot?"
-
 #: lazarusidestrconsts.lisdeletesetting
 msgid "Delete setting"
 msgstr "Poista asetus"
@@ -7275,10 +7268,6 @@ msgstr "Seuraavat tiedostot ovat muuttuneet:"
 msgid "Distinguish big and small letters e.g. A and a"
 msgstr "Erottelee pienet ja isot kirjaimet (esim. A ja a )"
 
-#: lazarusidestrconsts.lisdlgchangeclass
-msgid "Change Class ..."
-msgstr "Vaihda luokka ..."
-
 #: lazarusidestrconsts.lisdlgeditorwindowmanager
 msgid "Editor Window Manager ..."
 msgstr "Editorin ikkunoiden hallinta ..."
@@ -7434,10 +7423,6 @@ msgstr ""
 #: lazarusidestrconsts.liseditorfiletypes
 msgid "Editor file types"
 msgstr "Editorin tiedostojen tyypit"
-
-#: lazarusidestrconsts.liseditormacros
-msgid "Editor macros"
-msgstr "Editorin makrot"
 
 #: lazarusidestrconsts.liseditorwindowmanager
 msgid "Editor Window Manager"
@@ -8052,6 +8037,10 @@ msgstr ""
 #: lazarusidestrconsts.lisfailedtoloadfoldstat
 msgid "Failed to load fold state"
 msgstr "Laskostuksen lataaminen epäonnistui"
+
+#: lazarusidestrconsts.lisfailedtosavefile
+msgid "Failed to save file."
+msgstr ""
 
 #: lazarusidestrconsts.lisfepaintdesigneritemsonidle
 msgid "Reduce designer painting"
@@ -10144,7 +10133,7 @@ msgstr ""
 #: lazarusidestrconsts.lislogevalexpression
 msgctxt "lazarusidestrconsts.lislogevalexpression"
 msgid "Eval expression"
-msgstr ""
+msgstr "Eval lauseke"
 
 #: lazarusidestrconsts.lislogmessage
 msgid "Log Message"
@@ -10698,10 +10687,6 @@ msgstr "Hyppää edelliseen virheeseen"
 #: lazarusidestrconsts.lismenulowercaseselection
 msgid "Lowercase Selection"
 msgstr "Valinta pieniksi kirjaimiksi"
-
-#: lazarusidestrconsts.lismenumacrolistview
-msgid "Editor Macros ..."
-msgstr "Editorin makrot ..."
 
 #: lazarusidestrconsts.lismenumakeresourcestring
 msgid "Make Resource String ..."
@@ -11305,10 +11290,6 @@ msgstr "Siirrä valittu kohta alas (Ctrl+Up)"
 #: lazarusidestrconsts.lismoveselectedup
 msgid "Move selected item up (Ctrl+Up)"
 msgstr "Siirrä valittu kohta ylös (Ctrl+Up)"
-
-#: lazarusidestrconsts.lismoveto
-msgid "Move to: "
-msgstr "Siirrä:"
 
 #: lazarusidestrconsts.lisms
 msgid "(ms)"
@@ -13742,15 +13723,6 @@ msgstr "Lukuvirhe"
 msgid "Recent tabs"
 msgstr "Edelliset välilehdet"
 
-#: lazarusidestrconsts.lisrecord
-msgctxt "lazarusidestrconsts.lisrecord"
-msgid "Record"
-msgstr "Nauhoita"
-
-#: lazarusidestrconsts.lisrecordedmacros
-msgid "Recorded"
-msgstr "Nauhoitettu"
-
 #: lazarusidestrconsts.lisrecordstruct
 msgid "Record/Structure"
 msgstr ""
@@ -14120,14 +14092,6 @@ msgstr "Tallenna nykyinen editorin tiedosto"
 msgid "Saved successfully"
 msgstr "Tallennus onnistui"
 
-#: lazarusidestrconsts.lissavedwithidesettings
-msgid "Saved with IDE settings"
-msgstr "Tallennettu IDE:n asetusten kanssa"
-
-#: lazarusidestrconsts.lissavedwithprojectsession
-msgid "Saved with project session"
-msgstr "Tallennettu projektin istunnon kanssa"
-
 #: lazarusidestrconsts.lissaveeditorinfoofnonprojectfiles
 msgid "Save editor info of non project files"
 msgstr "Tallenna editorin tiedot projektiin kuulumattomista tiedostoista"
@@ -14143,10 +14107,6 @@ msgstr "Tallennetaanko tiedosto %s%s%s%sennenkuin suljetaan lomake (form) %s%s%s
 #: lazarusidestrconsts.lissaveinfoofclosededitorfiles
 msgid "Save info of closed editor files"
 msgstr "Tallenna editorin tiedot suljetuista tiedostoista"
-
-#: lazarusidestrconsts.lissavemacroas
-msgid "Save macro as"
-msgstr "Tallenna makro nimellä"
 
 #: lazarusidestrconsts.lissaveproject
 msgid "Save project %s (*%s)"
@@ -16158,10 +16118,6 @@ msgstr "Salli kaikki"
 #: lazarusidestrconsts.liswlexpression
 msgid "Expression"
 msgstr "Lauseke"
-
-#: lazarusidestrconsts.liswlinspectpane
-msgid "Inspect pane"
-msgstr "Tarkastus-osa"
 
 #: lazarusidestrconsts.liswlproperties
 msgid "&Properties"

@@ -8211,6 +8211,10 @@ msgstr "Не вдалось створити Пакет Програм для \"
 msgid "Failed to load fold state"
 msgstr "Не вдалось завантажити стан згортки"
 
+#: lazarusidestrconsts.lisfailedtosavefile
+msgid "Failed to save file."
+msgstr ""
+
 #: lazarusidestrconsts.lisfepaintdesigneritemsonidle
 msgid "Reduce designer painting"
 msgstr "Обмежити мал. дизайнера"

@@ -8418,6 +8418,10 @@ msgstr "Falló al crear el envoltorio de la aplicación para \"%s\""
 msgid "Failed to load fold state"
 msgstr "Ha fallado La carga del estado de plegado de código"
 
+#: lazarusidestrconsts.lisfailedtosavefile
+msgid "Failed to save file."
+msgstr ""
+
 #: lazarusidestrconsts.lisfepaintdesigneritemsonidle
 msgid "Reduce designer painting"
 msgstr "Reducir pintado del diseñador"

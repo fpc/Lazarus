@@ -8438,6 +8438,10 @@ msgstr "Falha ao criar Aplicação Encartada para \"%s\""
 msgid "Failed to load fold state"
 msgstr "Falha ao carregar estado retração"
 
+#: lazarusidestrconsts.lisfailedtosavefile
+msgid "Failed to save file."
+msgstr ""
+
 #: lazarusidestrconsts.lisfepaintdesigneritemsonidle
 msgid "Reduce designer painting"
 msgstr "Reduzir atualização de janela"

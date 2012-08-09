@@ -8436,6 +8436,10 @@ msgstr "Non posso creare l'Application bundle per \"%s\""
 msgid "Failed to load fold state"
 msgstr "Caricamento stato di collassatura fallito"
 
+#: lazarusidestrconsts.lisfailedtosavefile
+msgid "Failed to save file."
+msgstr ""
+
 #: lazarusidestrconsts.lisfepaintdesigneritemsonidle
 msgid "Reduce designer painting"
 msgstr "Riduce il disegno del designer"

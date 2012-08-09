@@ -8333,6 +8333,10 @@ msgstr ""
 msgid "Failed to load fold state"
 msgstr "Echec du téléchargement de l'état de repliement"
 
+#: lazarusidestrconsts.lisfailedtosavefile
+msgid "Failed to save file."
+msgstr ""
+
 #: lazarusidestrconsts.lisfepaintdesigneritemsonidle
 msgid "Reduce designer painting"
 msgstr "Réduire le traçage du designer"

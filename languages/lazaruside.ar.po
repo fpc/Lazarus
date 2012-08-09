@@ -8071,6 +8071,10 @@ msgstr "فشل عند إنشاء رزمة تطبيق ل \"%s\""
 msgid "Failed to load fold state"
 msgstr "فشل تحميل وصعية الطيّ"
 
+#: lazarusidestrconsts.lisfailedtosavefile
+msgid "Failed to save file."
+msgstr ""
+
 #: lazarusidestrconsts.lisfepaintdesigneritemsonidle
 msgid "Reduce designer painting"
 msgstr "تخغيض تحبير المصمم"

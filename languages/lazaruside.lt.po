@@ -8399,6 +8399,10 @@ msgstr ""
 msgid "Failed to load fold state"
 msgstr "Nepavyko įkelti sulankstymo būsenos"
 
+#: lazarusidestrconsts.lisfailedtosavefile
+msgid "Failed to save file."
+msgstr ""
+
 #: lazarusidestrconsts.lisfepaintdesigneritemsonidle
 msgid "Reduce designer painting"
 msgstr "Sumažinti paišymą konstruktoriuje"
