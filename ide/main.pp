@@ -3040,7 +3040,7 @@ begin
     SaveDialog.Title:=lisSaveSpace;
     SaveDialog.FileName:=SrcEdit.PageName+'.html';
     SaveDialog.Filter := ' (*.html;*.htm)|*.html;*.htm';
-    SaveDialog.Options := [ofOverwritePrompt, ofPathMustExist, ofNoReadOnlyReturn];
+    SaveDialog.Options := [ofOverwritePrompt, ofPathMustExist{, ofNoReadOnlyReturn}]; // Does not work for desktop
     // show save dialog
     if (not SaveDialog.Execute) or (ExtractFileName(SaveDialog.Filename)='')
     then begin
@@ -3051,7 +3051,11 @@ begin
     SaveDialog.Free;
   end;
 
-  SrcEdit.ExportAsHtml(Filename);
+  try
+    SrcEdit.ExportAsHtml(Filename);
+  except
+    MessageDlg(lisFailedToSaveFile, mtError, [mbOK], 0);
+  end;
 end;
 
 procedure TMainIDE.mnuCloseClicked(Sender: TObject);

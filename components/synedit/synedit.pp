@@ -8053,7 +8053,7 @@ var
         end;
         fHighlighter.Next;
       end;
-      MaxKnownTokenPos := Length(Line);
+      MaxKnownTokenPos := Length(Line) + 1;             // 1 based end+1 of last token (start pos of none existing after eol token)
       TokenPosList[i].X := MaxKnownTokenPos;
       TokenListCnt := i + 1;
       Result := TokenPosList[i-1].Attr = BracketKind;
