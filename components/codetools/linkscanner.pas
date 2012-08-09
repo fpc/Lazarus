@@ -1137,137 +1137,137 @@ begin
   // read token
   c1:=p^;
   case c1 of
-    '_','A'..'Z','a'..'z':
-      begin
-        // keyword or identifier
+  '_','A'..'Z','a'..'z':
+    begin
+      // keyword or identifier
+      inc(p);
+      while IsIdentChar[p^] do
         inc(p);
-        while IsIdentChar[p^] do
-          inc(p);
-        TokenType:=lsttWord;
-        SrcPos:=p-PChar(Src)+1;
-        if FMacrosOn then begin
-          MacroID:=IndexOfMacro(@Src[TokenStart],false);
-          if MacroID>=0 then begin
-            AddMacroSource(MacroID);
-          end;
+      TokenType:=lsttWord;
+      SrcPos:=p-PChar(Src)+1;
+      if FMacrosOn then begin
+        MacroID:=IndexOfMacro(@Src[TokenStart],false);
+        if MacroID>=0 then begin
+          AddMacroSource(MacroID);
         end;
       end;
-    '''','#':
-      begin
-        TokenType:=lsttStringConstant;
-        while true do begin
-          case p^ of
-          #0:
-            begin
-              SrcPos:=p-PChar(Src)+1;
-              if SrcPos>SrcLen then break;
-              inc(p);
-            end;
-          '#':
-            begin
-              inc(p);
-              while IsNumberChar[p^] do
-                inc(p);
-            end;
-          '''':
-            begin
-              inc(p);
-              while true do begin
-                case p^ of
-                #0:
-                  begin
-                    SrcPos:=p-PChar(Src)+1;
-                    if SrcPos>SrcLen then break;
-                    inc(p);
-                  end;
-                '''':
-                  begin
-                    inc(p);
-                    break;
-                  end;
-                #10,#13:
-                  break;
-                else
-                  inc(p);
-                end;
-              end;
-            end;
-          else
-            break;
+    end;
+  '''','#':
+    begin
+      TokenType:=lsttStringConstant;
+      while true do begin
+        case p^ of
+        #0:
+          begin
+            SrcPos:=p-PChar(Src)+1;
+            if SrcPos>SrcLen then break;
+            inc(p);
           end;
-        end;
-        SrcPos:=p-PChar(Src)+1;
-      end;
-    '0'..'9':
-      begin
-        TokenType:=lsttNone;
-        inc(p);
-        while IsNumberChar[p^] do
-          inc(p);
-        if (p^='.') and (p[1]<>'.') then begin
-          // real type number
-          inc(p);
-          while IsNumberChar[p^] do
+        '#':
+          begin
             inc(p);
-          if (p^ in ['E','e']) then begin
-            // read exponent
-            inc(p);
-            if (p^ in ['-','+']) then inc(p);
             while IsNumberChar[p^] do
               inc(p);
           end;
+        '''':
+          begin
+            inc(p);
+            while true do begin
+              case p^ of
+              #0:
+                begin
+                  SrcPos:=p-PChar(Src)+1;
+                  if SrcPos>SrcLen then break;
+                  inc(p);
+                end;
+              '''':
+                begin
+                  inc(p);
+                  break;
+                end;
+              #10,#13:
+                break;
+              else
+                inc(p);
+              end;
+            end;
+          end;
+        else
+          break;
         end;
-        SrcPos:=p-PChar(Src)+1;
       end;
-    '%': // boolean
-      begin
-        TokenType:=lsttNone;
-        inc(p);
-        while p^ in ['0'..'1'] do
-          inc(p);
-        SrcPos:=p-PChar(Src)+1;
-      end;
-    '$': // hex
-      begin
-        TokenType:=lsttNone;
-        inc(p);
-        while IsHexNumberChar[p^] do
-          inc(p);
-        SrcPos:=p-PChar(Src)+1;
-      end;
-    '=':
-      begin
-        SrcPos:=p-PChar(Src)+2;
-        TokenType:=lsttEqual;
-      end;
-    '.':
-      begin
-        SrcPos:=p-PChar(Src)+2;
-        TokenType:=lsttPoint;
-      end;
-    ';':
-      begin
-        SrcPos:=p-PChar(Src)+2;
-        TokenType:=lsttSemicolon;
-      end;
-    ',':
-      begin
-        SrcPos:=p-PChar(Src)+2;
-        TokenType:=lsttComma;
-      end;
-    else
+      SrcPos:=p-PChar(Src)+1;
+    end;
+  '0'..'9':
+    begin
       TokenType:=lsttNone;
       inc(p);
-      c2:=p^;
-      // test for double char operators
-      //  :=, +=, -=, /=, *=, <>, <=, >=, **, ><, ..
-      if ((c2='=') and  (IsEqualOperatorStartChar[c1]))
-      or ((c1='<') and (c2='>'))
-      or ((c1='>') and (c2='<'))
-      or ((c1='.') and (c2='.'))
-      or ((c1='*') and (c2='*'))
-      then inc(p);
+      while IsNumberChar[p^] do
+        inc(p);
+      if (p^='.') and (p[1]<>'.') then begin
+        // real type number
+        inc(p);
+        while IsNumberChar[p^] do
+          inc(p);
+        if (p^ in ['E','e']) then begin
+          // read exponent
+          inc(p);
+          if (p^ in ['-','+']) then inc(p);
+          while IsNumberChar[p^] do
+            inc(p);
+        end;
+      end;
       SrcPos:=p-PChar(Src)+1;
+    end;
+  '%': // boolean
+    begin
+      TokenType:=lsttNone;
+      inc(p);
+      while p^ in ['0'..'1'] do
+        inc(p);
+      SrcPos:=p-PChar(Src)+1;
+    end;
+  '$': // hex
+    begin
+      TokenType:=lsttNone;
+      inc(p);
+      while IsHexNumberChar[p^] do
+        inc(p);
+      SrcPos:=p-PChar(Src)+1;
+    end;
+  '=':
+    begin
+      SrcPos:=p-PChar(Src)+2;
+      TokenType:=lsttEqual;
+    end;
+  '.':
+    begin
+      SrcPos:=p-PChar(Src)+2;
+      TokenType:=lsttPoint;
+    end;
+  ';':
+    begin
+      SrcPos:=p-PChar(Src)+2;
+      TokenType:=lsttSemicolon;
+    end;
+  ',':
+    begin
+      SrcPos:=p-PChar(Src)+2;
+      TokenType:=lsttComma;
+    end;
+  else
+    TokenType:=lsttNone;
+    inc(p);
+    c2:=p^;
+    // test for double char operators
+    //  :=, +=, -=, /=, *=, <>, <=, >=, **, ><, ..
+    if ((c2='=') and  (IsEqualOperatorStartChar[c1]))
+    or ((c1='<') and (c2='>'))
+    or ((c1='>') and (c2='<'))
+    or ((c1='.') and (c2='.'))
+    or ((c1='*') and (c2='*'))
+    then inc(p);
+    SrcPos:=p-PChar(Src)+1;
   end;
   {$IFDEF RangeChecking}{$R+}{$UNDEF RangeChecking}{$ENDIF}
 end;
