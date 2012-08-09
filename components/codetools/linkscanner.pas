@@ -71,8 +71,6 @@ const
   MacroUseSysThrds = ExternalMacroStart+'UseSysThrds';
   MacroControllerUnit = ExternalMacroStart+'ControllerUnit';
 
-  MissingIncludeFileCode = Pointer(1);
-
 type
   TLinkScanner = class;
 
@@ -95,11 +93,17 @@ type
                                    out InitValuesChangeStep: integer) of object;
 
   { TSourceLink is used to map between the codefiles and the cleaned source }
+  TSourceLinkKind = (
+    slkCode,
+    slkMissingIncludeFile
+    );
+  TSourceLinkKinds = set of TSourceLinkKind;
   PSourceLink = ^TSourceLink;
   TSourceLink = record
     CleanedPos: integer;
     SrcPos: integer;
     Code: Pointer;
+    Kind: TSourceLinkKind;
     Next: PSourceLink;
   end;
 
@@ -322,7 +326,8 @@ type
     procedure SetLinks(Index: integer; const Value: TSourceLink);
     procedure SetSource(ACode: Pointer); // set current source
     procedure AddSourceChangeStep(ACode: pointer; AChangeStep: integer);
-    procedure AddLink(ASrcPos: integer; ACode: Pointer);
+    procedure AddLink(ASrcPos: integer; ACode: Pointer;
+                      AKind: TSourceLinkKind = slkCode);
     procedure IncreaseChangeStep;
     procedure SetMainCode(const Value: pointer);
     procedure SetScanTill(const Value: TLinkScannerRange);
@@ -740,9 +745,11 @@ end;
 
 { TLinkScanner }
 
-procedure TLinkScanner.AddLink(ASrcPos: integer; ACode: pointer);
+procedure TLinkScanner.AddLink(ASrcPos: integer; ACode: Pointer;
+  AKind: TSourceLinkKind);
 var
   NewCapacity: Integer;
+  Link: PSourceLink;
 begin
   if FLinkCount=FLinkCapacity then begin
     NewCapacity:=FLinkCapacity*2;
@@ -750,10 +757,12 @@ begin
     ReAllocMem(FLinks,NewCapacity*SizeOf(TSourceLink));
     FLinkCapacity:=NewCapacity;
   end;
-  with FLinks[FLinkCount] do begin
+  Link:=@FLinks[FLinkCount];
+  with Link^ do begin
     CleanedPos:=CleanedLen+1;
     SrcPos:=ASrcPos;
     Code:=ACode;
+    Kind:=AKind;
   end;
   inc(FLinkCount);
 end;
@@ -3245,7 +3254,7 @@ begin
       RaiseExceptionFmt(ctsIncludeFileNotFound,[AFilename])
     end else begin
       // add a dummy link
-      AddLink(SrcPos,MissingIncludeFileCode);
+      AddLink(SrcPos,nil,slkMissingIncludeFile);
       AddLink(SrcPos,Code);
     end;
   end;
