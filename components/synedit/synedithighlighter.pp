@@ -1474,7 +1474,9 @@ begin
   CurrentRanges.ClearReScanNeeded;
   // Invalidate one line above, since folds can change depending on next line
   // TODO: only classes with end-fold-last-line
-  CurrentLines.SendHighlightChanged(StartIndex - 1, EndIndex - StartIndex + 1);
+  if StartIndex > 0
+  then CurrentLines.SendHighlightChanged(StartIndex - 1, EndIndex - StartIndex + 1)
+  else CurrentLines.SendHighlightChanged(StartIndex,     EndIndex - StartIndex    );
 end;
 
 function TSynCustomHighlighter.IdleScanRanges: Boolean;
