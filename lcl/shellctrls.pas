@@ -709,13 +709,10 @@ var
 begin
   if DirectoryExistsUTF8(AValue) then begin
     // We got a full path, make it relative to root
-    if FRoot = '' then
-      AValue := IncludeLeadingPathDelimiter(AValue) // No root, make sure path is full
-    else if FRoot = PathDelim then
+    if FRoot = PathDelim then
       AValue := ExcludeLeadingPathDelimiter(AValue) // Make relative to top dir ('/')
-    else
-      // When issue #22603 is fixed, this can be replaced with:
-      //  AValue := CreateRelativePath(AValue, GetRootPath());
+    else if FRoot <> '' then // When issue #22603 is fixed, can be replaced with:
+      // AValue := CreateRelativePath(AValue, GetRootPath());
       Avalue := Stringreplace(AValue, GetRootPath(), '', []);
   end;
   // Make sure the path is correct now
