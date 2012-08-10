@@ -43,12 +43,19 @@ unit SynHighlighterMulti;
 
 {$I synedit.inc}
 
+{$IFDEF SynDebug}
+  {$DEFINE SynDebugMultiHL}
+{$ENDIF}
+
+
 interface
 
 uses
   Classes, Graphics, SysUtils, LCLProc, math,
   SynRegExpr, SynEditStrConst, SynEditTypes, SynEditTextBase,
-  SynEditHighlighter;
+  SynEditHighlighter,
+  {$IFDEF SynDebugMultiHL}LazLoggerBase{$ELSE}LazLoggerDummy{$ENDIF}
+  ;
 
 type
 
@@ -75,6 +82,7 @@ type
     procedure SetSection(Index: Integer; const AValue: TSynHLightMultiVirtualSection);
   public
     constructor Create;
+    procedure Debug;
     procedure Insert(AnIndex: Integer; AnSection: TSynHLightMultiVirtualSection);
     procedure Delete(AnIndex: Integer);
     property Sections[Index: Integer]: TSynHLightMultiVirtualSection
@@ -83,7 +91,8 @@ type
              read GetSectionPointer;
     function IndexOfFirstSectionAtLineIdx(ALineIdx: Integer; ACharPos: Integer = -1;
                                           UseNext: Boolean = True): Integer;
-    function IndexOfFirstSectionAtVirtualIdx(ALineIdx: Integer): Integer;
+    function IndexOfFirstSectionAtVirtualIdx(ALineIdx: Integer; AGetLastSection: Boolean = False): Integer;
+    function VirtualIdxToRealIdx(AVLineIdx: Integer): Integer;
   end;
 
   { TSynHLightMultiVirtualLines }
@@ -237,6 +246,7 @@ type
     FVirtualLines: TSynHLightMultiVirtualLinesList;
     function GetVirtualLines(Index: TSynHighlighterMultiScheme): TSynHLightMultiVirtualLines;
   protected
+    procedure LineTextChanged(AIndex: Integer; ACount: Integer = 1); override;
     procedure InsertedLines(AIndex, ACount: Integer); override;
     procedure DeletedLines(AIndex, ACount: Integer); override;
   public
@@ -327,7 +337,12 @@ type
       write fDefaultLanguageName;
   end;
 
+function dbgs(const ASect: TSynHLightMultiVirtualSection): String; overload;
+
 implementation
+
+var
+  SYNDEBUG_MULTIHL: PLazLoggerLogGroup;
 
 const
   TokenKindPerHighlighter = 100;
@@ -347,10 +362,20 @@ begin
   Result := (p1.y < p2.y) or ( (p1.y = p2.y) and (p1.x < p2.x) );
 end;
 
+function dbgs(const ASect: TSynHLightMultiVirtualSection): String;
+begin
+  Result := Format('Start=%s, End=%s, VLine=%d, TokStart=%d, TokEnd=%d',
+            [dbgs(ASect.StartPos), dbgs(ASect.EndPos), ASect.VirtualLine, ASect.TokenStartPos, ASect.TokenEndPos]);
+end;
+
 { TSynHLightMultiSectionList }
 
 function TSynHLightMultiSectionList.GetSection(Index: Integer): TSynHLightMultiVirtualSection;
 begin
+  {$IFDEF AssertSynMemIndex}
+  if (Index < 0) or (Index >= Count) then
+    raise Exception.Create(Format('TSynHLightMultiSectionList.GetSection - Bad Index cnt= %d idx= %d',[Count, Index]));
+  {$ENDIF}
   Result := PSynHLightMultiVirtualSection(ItemPointer[Index])^;
 end;
 
@@ -366,6 +391,10 @@ end;
 procedure TSynHLightMultiSectionList.SetSection(Index: Integer;
   const AValue: TSynHLightMultiVirtualSection);
 begin
+  {$IFDEF AssertSynMemIndex}
+  if (Index < 0) or (Index >= Count) then
+    raise Exception.Create(Format('TSynHLightMultiSectionList.SetSection - Bad Index cnt= %d idx= %d',[Count, Index]));
+  {$ENDIF}
   PSynHLightMultiVirtualSection(ItemPointer[Index])^ := AValue;
 end;
 
@@ -373,6 +402,15 @@ constructor TSynHLightMultiSectionList.Create;
 begin
   inherited;
   ItemSize := SizeOf(TSynHLightMultiVirtualSection);
+end;
+
+procedure TSynHLightMultiSectionList.Debug;
+var
+  i: Integer;
+begin
+  debugln(SYNDEBUG_MULTIHL, ['SectionList ', dbgs(self), ' Count=', Count]);
+  for i := 0 to Count - 1 do
+    debugln(SYNDEBUG_MULTIHL, ['  ', i, ': ', dbgs(PSections[i]^)]);
 end;
 
 procedure TSynHLightMultiSectionList.Insert(AnIndex: Integer;
@@ -442,7 +480,8 @@ begin
   end;
 end;
 
-function TSynHLightMultiSectionList.IndexOfFirstSectionAtVirtualIdx(ALineIdx: Integer): Integer;
+function TSynHLightMultiSectionList.IndexOfFirstSectionAtVirtualIdx(ALineIdx: Integer;
+  AGetLastSection: Boolean): Integer;
 var
   p, p1, p2: Integer;
   s: PSynHLightMultiVirtualSection;
@@ -469,7 +508,7 @@ begin
   end;
 
   s := PSynHLightMultiVirtualSection(ItemPointer[p1]);
-  if ALineIdx = s^.VirtualLine then begin
+  if (ALineIdx = s^.VirtualLine) and (not AGetLastSection) then begin
     while (p1 >= 0) and (s^.VirtualLine = ALineIdx) do begin
       dec(p1);
       if p1 >= 0 then
@@ -489,6 +528,16 @@ begin
   end;
 
   Result := p1;
+end;
+
+function TSynHLightMultiSectionList.VirtualIdxToRealIdx(AVLineIdx: Integer): Integer;
+var
+  i: Integer;
+begin
+  if Count = 0 then exit(AVLineIdx);
+  i := IndexOfFirstSectionAtVirtualIdx(AVLineIdx, True);
+  if i < 0 then exit(AVLineIdx);
+  Result := PSections[i]^.StartPos.y + AVLineIdx;
 end;
 
 { TSynHLightMultiVirtualLines }
@@ -579,7 +628,7 @@ begin
   if (FFirstHLChangedLine < 0) or (FFirstHLChangedLine > aIndex) then
     FFirstHLChangedLine := aIndex;
   if (FLastHLChangedLine < aIndex + aCount - 1) then
-    FFirstHLChangedLine := aIndex + aCount - 1;
+    FLastHLChangedLine := aIndex + aCount - 1;
 end;
 
 constructor TSynHLightMultiVirtualLines.Create(ALines: TSynEditStringsBase);
@@ -611,6 +660,12 @@ begin
     p := FSectionList.PSections[FSectionList.Count - 1];
     FRScanStartedAtVLine := p^.VirtualLine + p^.EndPos.y - p^.StartPos.y + 1;
   end;
+  {$IFDEF SynDebugMultiHL}
+  debugln(SYNDEBUG_MULTIHL, ['TSynHLightMultiVirtualLines.PrepareRegionScan ', dbgs(self),
+          ' FRegionScanRangeIndex=', FRegionScanRangeIndex, ' FRScanStartedWithLineCount=', FRScanStartedWithLineCount,
+          ' FSectionList.Count=', FSectionList.Count, ' FRScanStartedAtVLine=', FRScanStartedAtVLine
+  ]);
+  {$ENDIF}
 end;
 
 procedure TSynHLightMultiVirtualLines.FinishRegionScan(AEndLineIdx: Integer);
@@ -619,23 +674,32 @@ var
   s: TSynHLightMultiVirtualSection;
   VDiff: Integer;
 begin
+  {$IFDEF SynDebugMultiHL}
+  debugln(SYNDEBUG_MULTIHL, ['TSynHLightMultiVirtualLines.FinishRegionScan AEndLineIdx=', AEndLineIdx]);
+  {$ENDIF}
   while (FRegionScanRangeIndex < FSectionList.Count) and
         (FSectionList.Sections[FRegionScanRangeIndex].StartPos.y <= AEndLineIdx)
   do
     FSectionList.Delete(FRegionScanRangeIndex);
   VDiff := 0;
-//DebugLn(['***** ', FRegionScanStartRangeIndex, ' cnt ', Count]);
+  {$IFDEF SynDebugMultiHL}
+  DebugLn(SYNDEBUG_MULTIHL, ['***** ', FRegionScanStartRangeIndex, ' cnt ', Count]);
+  {$ENDIF}
   if FRegionScanStartRangeIndex < Count then begin
     // fix virtual lines on sections
     if (FRegionScanStartRangeIndex > 0) then begin
       s := FSectionList.Sections[FRegionScanStartRangeIndex-1];
       NewVLine := s.VirtualLine + s.EndPos.y - s.StartPos.y;
-//DebugLn(['A ', NewVLine]);
+      {$IFDEF SynDebugMultiHL}
+      DebugLn(SYNDEBUG_MULTIHL, ['A ', NewVLine]);
+      {$ENDIF}
       LastEnd := s.EndPos.y;
     end
     else begin
       NewVLine := 0;
-//DebugLn(['B ', NewVLine]);
+      {$IFDEF SynDebugMultiHL}
+      DebugLn(SYNDEBUG_MULTIHL, ['B ', NewVLine]);
+      {$ENDIF}
       LastEnd := FSectionList.Sections[FRegionScanStartRangeIndex].StartPos.y;
     end;
     LastVline := NewVLine;
@@ -669,6 +733,12 @@ var
   p: PSynHLightMultiVirtualSection;
 begin
   p := FSectionList.PSections[FRegionScanRangeIndex];
+  {$IFDEF SynDebugMultiHL}
+  debugln(SYNDEBUG_MULTIHL, ['TSynHLightMultiVirtualLines.RegionScanUpdateFirstRegionEnd',
+          ' AnEndPoint', dbgs(AnEndPoint), ' ATokenEndPos=', ATokenEndPos, ' FRegionScanRangeIndex=', FRegionScanRangeIndex,
+          ' p^.StartPos=', dbgs(p^.StartPos), ' p^.EndPos=', dbgs(p^.EndPos)
+          ]);
+  {$ENDIF}
   p^.EndPos := AnEndPoint;
   p^.TokenEndPos := ATokenEndPos;
   inc(FRegionScanRangeIndex);
@@ -680,6 +750,13 @@ var
   Sect: TSynHLightMultiVirtualSection;
   p: PSynHLightMultiVirtualSection;
 begin
+  {$IFDEF SynDebugMultiHL}
+  debugln(SYNDEBUG_MULTIHL, ['TSynHLightMultiVirtualLines.RegionScanUpdateOrInsertRegion',
+          ' AStartPoint=', dbgs(AStartPoint), ' AnEndPoint=', dbgs(AnEndPoint),
+          ' ATokenStartPos=', ATokenStartPos, ' ATokenEndPos=', ATokenEndPos,
+          ' FRegionScanRangeIndex=', FRegionScanRangeIndex
+    ]);
+  {$ENDIF}
   if (FRegionScanRangeIndex = FSectionList.Count)
   or (FSectionList.Sections[FRegionScanRangeIndex].StartPos > AnEndPoint)
   then begin
@@ -864,6 +941,16 @@ begin
       exit(FVirtualLines[i]);
 end;
 
+procedure TSynHighlighterMultiRangeList.LineTextChanged(AIndex: Integer; ACount: Integer);
+var
+  i: Integer;
+begin
+  inherited LineTextChanged(AIndex, ACount);
+  for i := 0 to FVirtualLines.Count - 1 do
+    FVirtualLines[i].RealLinesChanged(AIndex, ACount);
+  FDefaultVirtualLines.RealLinesChanged(AIndex, ACount);
+end;
+
 procedure TSynHighlighterMultiRangeList.InsertedLines(AIndex, ACount: Integer);
 var
   i: Integer;
@@ -1024,8 +1111,14 @@ var
 begin
   (* Scan regions *)
   Result := StartIndex;
+  {$IFDEF SynDebugMultiHL}
+  debugln(SYNDEBUG_MULTIHL, ['TSynMultiSyn.PerformScan StartIndex=', Result]);
+  {$ENDIF}
 
   // last node may need to extend to next line
+  // TODO: instead check, that FCurScheme is cvered by region
+  //    p := DefaultVirtualLines.SectionList.PSections[DefaultVirtualLines.FRegionScanRangeIndex]
+  //    p := FCurScheme.VirtualLines .SectionList.PSections[FCurScheme.VirtualLines.FRegionScanRangeIndex];
   if Result > 0 then dec(Result);
 
   c := CurrentLines.Count - 1;
@@ -1035,8 +1128,11 @@ begin
   end;
 
   DefaultVirtualLines.PrepareRegionScan(Result);
-  for i := 0 to Schemes.Count - 1 do
+  for i := 0 to Schemes.Count - 1 do begin
+    Schemes[i].VirtualLines.ResetHLChangedLines;
     Schemes[i].VirtualLines.PrepareRegionScan(Result);
+  end;
+
 
   CurRegStart.y := -1;
   if Result = 0 then begin
@@ -1095,7 +1191,14 @@ begin
     if FCurScheme = nil
     then DefaultVirtualLines.RegionScanUpdateLastRegionStart(CurRegStart, 0, Result)
     else FCurScheme.VirtualLines.RegionScanUpdateLastRegionStart(CurRegStart, CurRegTokenPos, Result);
+  end
+  else begin
+    // nothing changed, keep current
+    if FCurScheme = nil
+    then inc(DefaultVirtualLines.FRegionScanRangeIndex)
+    else inc(FCurScheme.VirtualLines.FRegionScanRangeIndex);
   end;
+
   DefaultVirtualLines.FinishRegionScan(Result);
   for i := 0 to Schemes.Count - 1 do
     Schemes[i].VirtualLines.FinishRegionScan(Result);
@@ -1104,13 +1207,15 @@ begin
   for i := 0 to Schemes.Count - 1 do
     if Schemes[i].Highlighter <> nil then begin
       Schemes[i].Highlighter.ScanRanges;
-      if Result < Schemes[i].VirtualLines.LastHLChangedLine then
-        Result := Schemes[i].VirtualLines.LastHLChangedLine;
+      j := Schemes[i].VirtualLines.SectionList.VirtualIdxToRealIdx(Schemes[i].VirtualLines.LastHLChangedLine);
+      if Result < j then
+        Result := j;
     end;
   if FDefaultHighlighter <> nil then begin
     FDefaultHighlighter.ScanRanges;
-    if Result < DefaultVirtualLines.LastHLChangedLine then
-      Result := DefaultVirtualLines.LastHLChangedLine;
+    j := DefaultVirtualLines.SectionList.VirtualIdxToRealIdx(DefaultVirtualLines.LastHLChangedLine);
+    if Result < j then
+      Result := j;
   end;
 end;
 
@@ -1903,6 +2008,9 @@ begin
     FNeedHLScan := False;
   end;
 end;
+
+initialization
+  SYNDEBUG_MULTIHL := DebugLogger.RegisterLogGroup('SYNDEBUG_MULTIHL', False);
 
 end.
 

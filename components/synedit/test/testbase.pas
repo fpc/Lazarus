@@ -7,7 +7,7 @@ interface
 
 uses
   Classes, SysUtils, Forms, fpcunit, SynEdit, LCLType, LCLProc, math,
-  SynEditTypes, SynEditPointClasses, Clipbrd;
+  SynEditTypes, SynEditPointClasses, SynEditKeyCmds, Clipbrd;
 
 type
 
@@ -25,6 +25,8 @@ type
   TTestSynEdit = class(TSynEdit)
   public
     procedure TestKeyPress(Key: Word; Shift: TShiftState);
+    procedure TestTypeText(ALogCaretX, ALogCaretY: Integer; Input: String);
+    procedure TestTypeText(Input: String);
     function  TestFullText: String;
     procedure TestSetSelText(Value: String;
                              PasteMode: TSynSelectionMode = smNormal;
@@ -158,6 +160,34 @@ begin
     UTF8KeyPress(c);
   KeyUp(Key, Shift);
   {$IFDEF WITH_APPMSG}Application.ProcessMessages;{$ENDIF}
+end;
+
+procedure TTestSynEdit.TestTypeText(ALogCaretX, ALogCaretY: Integer; Input: String);
+begin
+  LogicalCaretXY := Point(ALogCaretX, ALogCaretY);
+  TestTypeText(Input);
+end;
+
+procedure TTestSynEdit.TestTypeText(Input: String);
+var
+  l: Integer;
+begin
+  while Input <> '' do begin
+    if Input[1] = #13 then begin
+      CommandProcessor(ecLineBreak, '', nil);
+      delete(Input, 1, 1);
+      Continue;
+    end;
+    if Input[1] = #8 then begin
+      CommandProcessor(ecDeleteLastChar, '', nil);
+      delete(Input, 1, 1);
+      Continue;
+    end;
+    l := UTF8CharacterLength(@Input[1]);
+    if l < 1 then Break;
+    CommandProcessor(ecChar, copy(Input, 1, l), nil);
+    delete(Input, 1, l);
+  end;
 end;
 
 function TTestSynEdit.TestFullText: String;

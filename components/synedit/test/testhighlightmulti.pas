@@ -5,15 +5,20 @@ unit TestHighlightMulti;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, fpcunit, testregistry, TestBase, Forms,
-  SynEditHighlighter, SynHighlighterMulti,
-  SynHighlighterLFM, SynHighlighterXML, SynHighlighterPas, SynEditKeyCmds;
+  Classes, SysUtils, math, LCLProc, fpcunit, testregistry, TestBase, Forms, SynEditHighlighter,
+  SynHighlighterMulti, SynHighlighterLFM, SynHighlighterXML, SynHighlighterPas, SynEditKeyCmds,
+  LazSynEditText, SynEditTextBuffer, LazLogger;
 
 type
 
   { TTestHighlightMulti }
 
   TTestHighlightMulti = class(TTestBase)
+  private
+    // Track lines that SynEdit invalidates
+    FHLCLow, FHLCHigh:Integer;
+    procedure ResetHighlightChanged;
+    procedure DoHighlightChanged(Sender: TSynEditStrings; AIndex, ACount : Integer);
   protected
     procedure SetRealLinesText;
     procedure SetRealLinesText2;
@@ -34,6 +39,24 @@ type
 implementation
 
 { TTestHighlightMulti }
+
+procedure TTestHighlightMulti.ResetHighlightChanged;
+begin
+  FHLCLow := -1;
+  FHLCHigh := -1;
+end;
+
+procedure TTestHighlightMulti.DoHighlightChanged(Sender: TSynEditStrings; AIndex,
+  ACount: Integer);
+begin
+  if FHLCLow < 0
+  then FHLCLow := AIndex
+  else FHLCLow := Min(FHLCLow, AIndex);
+
+  if FHLCHigh < 0
+  then FHLCHigh := AIndex + ACount
+  else FHLCHigh := Max(FHLCHigh, AIndex + ACount);
+end;
 
 procedure TTestHighlightMulti.SetRealLinesText;
 begin
@@ -98,10 +121,7 @@ var
   s: TSynHLightMultiVirtualSection;
   i: Integer;
 begin
-  for i := 0 to ASectList.Count - 1 do begin
-    s := ASectList[i];
-    debugln([i,' Start=',dbgs(s.StartPos),' End=',dbgs(s.EndPos),' VLine=',s.VirtualLine,' TokenStart=',dbgs(s.TokenStartPos),' TokenEnd=',dbgs(s.TokenEndPos)]);
-  end;
+  ASectList.Debug;
 end;
 
 procedure TTestHighlightMulti.DumpRanges(ARangeList: TSynHighlighterRangeList);
@@ -140,6 +160,10 @@ begin
   HL.StartAtLineIndex(LineIdx);
   c := 0;
   while not HL.GetEol do begin
+    if c >= length(ExpAttr) then begin
+      inc(c);
+      break;
+    end;
     //DebugLn([HL.GetToken,' (',HL.GetTokenID ,') at ', HL.GetTokenPos]);
     tk := HL.GetTokenAttribute;
     if tk <> nil
@@ -147,13 +171,9 @@ begin
     else tkName := '<nil>';
     AssertTrue(Format('%s Attrib Line=%d pos=%d exp=%s got=%s',
                       [Name, LineIdx, c,  ExpAttr[c].StoredName, tkName]),
-               ExpAttr[c] = HL.GetTokenAttribute);
+               ExpAttr[c] = tk);
     HL.Next;
     inc(c);
-    if c >= length(ExpAttr) then begin
-      if not HL.GetEol then inc(c);
-      break;
-    end;
   end;
   AssertEquals(Name+ 'TokenId Line='+IntToStr(LineIdx)+'  amount of tokens', length(ExpAttr), c );
 end;
@@ -684,6 +704,7 @@ var
       end;
       //if synedit.Highlighter <> nil then begin MultiHl.CurrentLines := SynEdit.TextBuffer; DumpAll(MultiHl); end;
       SynEdit.SimulatePaintText;
+if MultiHl.CurrentLines <> nil then DumpAll(MultiHl) else debugln('#');
       //SynEdit.Invalidate;
       //Application.ProcessMessages;
     end;
@@ -821,6 +842,30 @@ var
   AtXmlEl, AtXmlSym, AtXmlTxt: TSynHighlighterAttributes;
   AtPasMark, AtPasSym, AtPasId, AtPasKey, AtPasSp, AtPasCom: TSynHighlighterAttributes;
   PasHl: TSynPasSyn;
+  i, j: Integer;
+
+  procedure InitMultiEMpty;
+  begin
+    MultiHl := TSynMultiSyn.Create(Form);
+    XmlHl := TSynXMLSyn.Create(Form);
+    XmlHl.ElementAttri.Foreground := 255;
+
+    MultiHl.DefaultHighlighter := XmlHl;
+    EmptyScheme := TSynHighlighterMultiScheme(MultiHl.Schemes.Add);
+
+    AtXmlEl  := XmlHl.ElementAttri;
+    AtXmlSym := XmlHl.SymbolAttri;
+    AtXmlTxt := XmlHl.TextAttri;
+
+    SynEdit.Highlighter := MultiHl;
+    MultiHl.CurrentLines := SynEdit.TextBuffer;
+  end;
+  procedure FinishMultiEmpty;
+  begin
+    SynEdit.Highlighter := nil;
+    FreeAndNil(XmlHl);
+    FreeAndNil(MultiHl);
+  end;
 
   procedure InitMultiXmlPasHl;
   begin
@@ -859,21 +904,13 @@ var
     FreeAndNil(MultiHl);
   end;
 begin
+  TSynEditStringList(SynEdit.TextBuffer).AddChangeHandler(senrHighlightChanged, @DoHighlightChanged);
+
+
   {%region Issue 0022519}
     PushBaseName('append after EOT (default scheme)');   // Issue 0022519
-    MultiHl := TSynMultiSyn.Create(Form);
-    XmlHl := TSynXMLSyn.Create(Form);
-    XmlHl.ElementAttri.Foreground := 255;
-
-    MultiHl.DefaultHighlighter := XmlHl;
-    EmptyScheme := TSynHighlighterMultiScheme(MultiHl.Schemes.Add);
-
-    AtXmlEl  := XmlHl.ElementAttri;
-    AtXmlSym := XmlHl.SymbolAttri;
-    AtXmlTxt := XmlHl.TextAttri;
-
-    SynEdit.Highlighter := MultiHl;
-    MultiHl.CurrentLines := SynEdit.TextBuffer;
+    SynEdit.ClearAll;
+    InitMultiEMpty;
 
     PushBaseName('Insert "html"');
       SynEdit.SetTextBetweenPoints(Point(1,1), Point(1,1), '<html>');
@@ -955,10 +992,291 @@ begin
       AssertEquals(BaseTestName + 'Section Count', 1, MultiHl.DefaultVirtualLines.SectionList.Count);
     SynEdit.Undo;
 
-    SynEdit.Highlighter := nil;
-    FreeAndNil(XmlHl);
-    FreeAndNil(MultiHl);
+    FinishMultiEmpty;
     PopBaseName;
+    PopBaseName;
+  {%endregion}
+
+  {%region edit text in single default region (scan end before eot) // Issue 0022519}
+    for j := 0 to 5 do begin
+      // 0: do a loop for lines 1 to 5 in the same setup
+      // 1..5 do each line with an entire setup of it's own
+      PushBaseName('edit text in single default region (scan end before eot) j='+ IntToStr(j));   // Issue 0022519
+      SynEdit.ClearAll;
+      InitMultiEMpty;
+
+      PushBaseName('Insert "html"');
+        SynEdit.TestTypeText(1, 1, '<html>'+#13+'a<body>');
+        CheckTokensForLine('1st line=html', MultiHl, 0, [AtXmlSym, AtXmlEl, AtXmlSym]);
+        CheckTokensForLine('2nd line=html', MultiHl, 1, [AtXmlTxt, AtXmlSym, AtXmlEl, AtXmlSym]);
+        AssertEquals(BaseTestName + 'Section Count', 1, MultiHl.DefaultVirtualLines.SectionList.Count);
+
+      PushBaseName('Insert "p"');
+        SynEdit.TestTypeText(1, 2, '<p>'+#13+'</p>a'+#13+'<foo></foo>'+#13);
+        CheckTokensForLine('1st line=html', MultiHl, 0, [AtXmlSym, AtXmlEl, AtXmlSym]);
+        CheckTokensForLine('2nd line=html', MultiHl, 1, [AtXmlSym, AtXmlEl, AtXmlSym]);
+        CheckTokensForLine('3rd line=html', MultiHl, 2, [AtXmlSym, AtXmlEl, AtXmlSym, AtXmlTxt]);
+        CheckTokensForLine('4th line=html', MultiHl, 3, [AtXmlSym, AtXmlEl, AtXmlSym,AtXmlSym, AtXmlEl, AtXmlSym]);
+        CheckTokensForLine('5th line=html', MultiHl, 4, [AtXmlTxt, AtXmlSym, AtXmlEl, AtXmlSym]);
+        AssertEquals(BaseTestName + 'Section Count', 1, MultiHl.DefaultVirtualLines.SectionList.Count);
+
+      i := j;
+      if j = 0 then i := 1;
+      while ( (j = 0) and (i <= 5)) or (i = j) do begin
+        PushBaseName('"a" line '+IntToStr(i));
+          SynEdit.TestTypeText(3, i, 'a');
+          CheckTokensForLine('1st line=html', MultiHl, 0, [AtXmlSym, AtXmlEl, AtXmlSym]);
+          CheckTokensForLine('2nd line=html', MultiHl, 1, [AtXmlSym, AtXmlEl, AtXmlSym]);
+          CheckTokensForLine('3rd line=html', MultiHl, 2, [AtXmlSym, AtXmlEl, AtXmlSym, AtXmlTxt]);
+          CheckTokensForLine('4th line=html', MultiHl, 3, [AtXmlSym, AtXmlEl, AtXmlSym,AtXmlSym, AtXmlEl, AtXmlSym]);
+          CheckTokensForLine('5th line=html', MultiHl, 4, [AtXmlTxt, AtXmlSym, AtXmlEl, AtXmlSym]);
+          AssertEquals(BaseTestName + 'Section Count', 1, MultiHl.DefaultVirtualLines.SectionList.Count);
+
+
+        PushBaseName('"a" line '+IntToStr(i)+' undo');
+          SynEdit.Undo;
+          CheckTokensForLine('1st line=html', MultiHl, 0, [AtXmlSym, AtXmlEl, AtXmlSym]);
+          CheckTokensForLine('2nd line=html', MultiHl, 1, [AtXmlSym, AtXmlEl, AtXmlSym]);
+          CheckTokensForLine('3rd line=html', MultiHl, 2, [AtXmlSym, AtXmlEl, AtXmlSym, AtXmlTxt]);
+          CheckTokensForLine('4th line=html', MultiHl, 3, [AtXmlSym, AtXmlEl, AtXmlSym,AtXmlSym, AtXmlEl, AtXmlSym]);
+          CheckTokensForLine('5th line=html', MultiHl, 4, [AtXmlTxt, AtXmlSym, AtXmlEl, AtXmlSym]);
+          AssertEquals(BaseTestName + 'Section Count', 1, MultiHl.DefaultVirtualLines.SectionList.Count);
+
+        PushBaseName('"a" line '+IntToStr(i)+' redo');
+          SynEdit.Redo;
+          CheckTokensForLine('1st line=html', MultiHl, 0, [AtXmlSym, AtXmlEl, AtXmlSym]);
+          CheckTokensForLine('2nd line=html', MultiHl, 1, [AtXmlSym, AtXmlEl, AtXmlSym]);
+          CheckTokensForLine('3rd line=html', MultiHl, 2, [AtXmlSym, AtXmlEl, AtXmlSym, AtXmlTxt]);
+          CheckTokensForLine('4th line=html', MultiHl, 3, [AtXmlSym, AtXmlEl, AtXmlSym,AtXmlSym, AtXmlEl, AtXmlSym]);
+          CheckTokensForLine('5th line=html', MultiHl, 4, [AtXmlTxt, AtXmlSym, AtXmlEl, AtXmlSym]);
+          AssertEquals(BaseTestName + 'Section Count', 1, MultiHl.DefaultVirtualLines.SectionList.Count);
+
+        inc(i);
+      end;
+
+      FinishMultiEmpty;
+      PopBaseName;
+      PopBaseName;
+    end; // for j
+  {%endregion}
+
+  {%region edit text in single pascal region (scan end before eot) // Issue 0022519}
+    for i := 1 to 6 do begin
+      PushBaseName('edit text in single pascal region (scan end before eot) j='+ IntToStr(j));   // Issue 0022519
+      SynEdit.ClearAll;
+      InitMultiXmlPasHl;
+
+      PushBaseName('Insert "<pas>"');
+        SynEdit.TestTypeText(1, 1, '<pas>'+#13+'</pas>');
+        CheckTokensForLine('1st line=html', MultiHl, 0, [AtPasMark]);
+        CheckTokensForLine('2nd line=html', MultiHl, 1, [AtPasMark]);
+        AssertEquals(BaseTestName + 'Section Count def', 0, MultiHl.DefaultVirtualLines.SectionList.Count);
+        AssertEquals(BaseTestName + 'Section Count pas', 1, PasScheme.VirtualLines.SectionList.Count);
+
+      PushBaseName('Insert "unit..."');
+        SynEdit.TestTypeText(1, 2, 'unit'+#13+'Foo;'+#13+'uses'+#13+'Bar;'+#13);
+//DumpAll(MultiHl);
+        CheckTokensForLine('1st line=html', MultiHl, 0, [AtPasMark]);
+        CheckTokensForLine('2nd line=html', MultiHl, 1, [AtPasKey]);          // unit
+        CheckTokensForLine('3rd line=html', MultiHl, 2, [AtPasId, AtPasSym]); // Foo;
+        CheckTokensForLine('4th line=html', MultiHl, 3, [AtPasKey]);         // uses
+        CheckTokensForLine('5th line=html', MultiHl, 4, [AtPasId, AtPasSym]); // Bar;
+        CheckTokensForLine('6th line=html', MultiHl, 5, [AtPasMark]);
+        AssertEquals(BaseTestName + 'Section Count def', 0, MultiHl.DefaultVirtualLines.SectionList.Count);
+        AssertEquals(BaseTestName + 'Section Count pas', 1, PasScheme.VirtualLines.SectionList.Count);
+
+      PushBaseName('"//" line '+IntToStr(i));
+        if i = 1
+        then SynEdit.TestTypeText(6, i, '//')
+        else if i = 6
+        then SynEdit.TestTypeText(1, i, '//')
+        else SynEdit.TestTypeText(5, i, '//');
+//DumpAll(MultiHl);
+        if i = 1
+        then CheckTokensForLine('1st line=html', MultiHl, 0, [AtPasMark, AtPasCom])
+        else CheckTokensForLine('1st line=html', MultiHl, 0, [AtPasMark]);
+        if i = 2
+        then CheckTokensForLine('2nd line=html', MultiHl, 1, [AtPasKey, AtPasCom])          // unit
+        else CheckTokensForLine('2nd line=html', MultiHl, 1, [AtPasKey]);          // unit
+        if i = 3
+        then CheckTokensForLine('3rd line=html', MultiHl, 2, [AtPasId, AtPasSym, AtPasCom]) // Foo;
+        else CheckTokensForLine('3rd line=html', MultiHl, 2, [AtPasId, AtPasSym]); // Foo;
+        if i = 4
+        then CheckTokensForLine('4th line=html', MultiHl, 3, [AtPasKey, AtPasCom])         // uses
+        else CheckTokensForLine('4th line=html', MultiHl, 3, [AtPasKey]);         // uses
+        if i = 5
+        then CheckTokensForLine('5th line=html', MultiHl, 4, [AtPasId, AtPasSym, AtPasCom]) // Bar;
+        else CheckTokensForLine('5th line=html', MultiHl, 4, [AtPasId, AtPasSym]); // Bar;
+        AssertEquals(BaseTestName + 'Section Count def', 0, MultiHl.DefaultVirtualLines.SectionList.Count);
+        AssertEquals(BaseTestName + 'Section Count pas', 1, PasScheme.VirtualLines.SectionList.Count);
+        if i = 6
+        then CheckTokensForLine('6th line=html', MultiHl, 5, [AtPasCom, AtPasMark])
+        else CheckTokensForLine('6th line=html', MultiHl, 5, [AtPasMark]);
+
+      PushBaseName('undo //');
+        SynEdit.Undo;
+//DumpAll(MultiHl);
+        CheckTokensForLine('1st line=html', MultiHl, 0, [AtPasMark]);
+        CheckTokensForLine('2nd line=html', MultiHl, 1, [AtPasKey]);          // unit
+        CheckTokensForLine('3rd line=html', MultiHl, 2, [AtPasId, AtPasSym]); // Foo;
+        CheckTokensForLine('4th line=html', MultiHl, 3, [AtPasKey]);         // uses
+        CheckTokensForLine('5th line=html', MultiHl, 4, [AtPasId, AtPasSym]); // Bar;
+        CheckTokensForLine('6th line=html', MultiHl, 5, [AtPasMark]);
+        AssertEquals(BaseTestName + 'Section Count def', 0, MultiHl.DefaultVirtualLines.SectionList.Count);
+        AssertEquals(BaseTestName + 'Section Count pas', 1, PasScheme.VirtualLines.SectionList.Count);
+
+      PushBaseName('"(*" line '+IntToStr(i));
+        ResetHighlightChanged;
+        if i = 1
+        then SynEdit.TestTypeText(6, i, '(*')
+        else if i = 6
+        then SynEdit.TestTypeText(1, i, '(*')
+        else SynEdit.TestTypeText(5, i, '(*');
+//DumpAll(MultiHl);
+        if i = 1
+        then CheckTokensForLine('1st line=html', MultiHl, 0, [AtPasMark, AtPasCom])
+        else CheckTokensForLine('1st line=html', MultiHl, 0, [AtPasMark]);
+        if i = 2
+        then CheckTokensForLine('2nd line=html', MultiHl, 1, [AtPasKey, AtPasCom])          // unit
+        else if i < 2
+        then CheckTokensForLine('2nd line=html', MultiHl, 1, [AtPasCom])
+        else CheckTokensForLine('2nd line=html', MultiHl, 1, [AtPasKey]);          // unit
+        if i = 3
+        then CheckTokensForLine('3rd line=html', MultiHl, 2, [AtPasId, AtPasSym, AtPasCom]) // Foo;
+        else if i < 3
+        then CheckTokensForLine('3rd line=html', MultiHl, 2, [AtPasCom]) // Foo;
+        else CheckTokensForLine('3rd line=html', MultiHl, 2, [AtPasId, AtPasSym]); // Foo;
+        if i = 4
+        then CheckTokensForLine('4th line=html', MultiHl, 3, [AtPasKey, AtPasCom])         // uses
+        else if i < 4
+        then CheckTokensForLine('4th line=html', MultiHl, 3, [AtPasCom])         // uses
+        else CheckTokensForLine('4th line=html', MultiHl, 3, [AtPasKey]);
+        if i = 5
+        then CheckTokensForLine('5th line=html', MultiHl, 4, [AtPasId, AtPasSym, AtPasCom]) // Bar;
+        else if i < 5
+        then CheckTokensForLine('5th line=html', MultiHl, 4, [AtPasCom]) // Bar;
+        else CheckTokensForLine('5th line=html', MultiHl, 4, [AtPasId, AtPasSym]); // Bar;
+        if i = 6
+        then CheckTokensForLine('6th line=html', MultiHl, 5, [AtPasCom, AtPasMark])
+        else CheckTokensForLine('6th line=html', MultiHl, 5, [AtPasMark]);
+        AssertEquals(BaseTestName + 'Section Count def', 0, MultiHl.DefaultVirtualLines.SectionList.Count);
+        AssertEquals(BaseTestName + 'Section Count pas', 1, PasScheme.VirtualLines.SectionList.Count);
+
+        // either invalidate from line-index i-1, or 1 before (max 1 before)
+//DebugLn(['FHLCLow=', FHLCLow, '  FHLCHigh=',FHLCHigh]);
+        AssertTrue('Top inval', (FHLCLow = Max(-1,i-2)) or (FHLCLow = i-1));  // HL currently sends -1
+        //AssertTrue('Top inval', FHLCLow in [Max(0,i-2), i-1]);
+        AssertTrue('bottom inval', FHLCHigh = 5);
+
+      PushBaseName('undo (*');
+        SynEdit.Undo;
+//DumpAll(MultiHl);
+        CheckTokensForLine('1st line=html', MultiHl, 0, [AtPasMark]);
+        CheckTokensForLine('2nd line=html', MultiHl, 1, [AtPasKey]);          // unit
+        CheckTokensForLine('3rd line=html', MultiHl, 2, [AtPasId, AtPasSym]); // Foo;
+        CheckTokensForLine('4th line=html', MultiHl, 3, [AtPasKey]);         // uses
+        CheckTokensForLine('5th line=html', MultiHl, 4, [AtPasId, AtPasSym]); // Bar;
+        CheckTokensForLine('6th line=html', MultiHl, 5, [AtPasMark]);
+        AssertEquals(BaseTestName + 'Section Count def', 0, MultiHl.DefaultVirtualLines.SectionList.Count);
+        AssertEquals(BaseTestName + 'Section Count pas', 1, PasScheme.VirtualLines.SectionList.Count);
+
+
+
+      FinishMultiXmlPasHl;
+      PopBaseName;
+      PopBaseName;
+    end; // for j
+  {%endregion}
+
+  {%region edit text in single pascal region after default}
+    // ensure virtuallines by nested HL are mapped for invalidation
+    PushBaseName('edit text in pascal region after default (scan end before eot) j='+ IntToStr(j));   // Issue 0022519
+    SynEdit.ClearAll;
+    InitMultiXmlPasHl;
+
+    PushBaseName('Insert "<pas>"');
+      SynEdit.TestTypeText(1, 1, 'x'+#13+'x'+#13+'<pas>'+#13+'</pas>');
+
+    PushBaseName('Insert "unit..."');
+      SynEdit.TestTypeText(1, 4, 'unit'+#13+'Foo;'+#13+'uses'+#13+'Bar;'+#13+'var'+#13+'xx');
+//DumpAll(MultiHl);
+      CheckTokensForLine('1st line=html', MultiHl, 0, [AtXmlTxt]);
+      CheckTokensForLine('2st line=html', MultiHl, 1, [AtXmlTxt]);
+      CheckTokensForLine('3st line=html', MultiHl, 2, [AtPasMark]);
+      CheckTokensForLine('4nd line=html', MultiHl, 3, [AtPasKey]);          // unit
+      CheckTokensForLine('5rd line=html', MultiHl, 4, [AtPasId, AtPasSym]); // Foo;
+      CheckTokensForLine('6th line=html', MultiHl, 5, [AtPasKey]);         // uses
+      CheckTokensForLine('7th line=html', MultiHl, 6, [AtPasId, AtPasSym]); // Bar;
+      CheckTokensForLine('8th line=html', MultiHl, 7, [AtPasKey]);
+      CheckTokensForLine('9th line=html', MultiHl, 8, [AtPasId, AtPasMark]);
+      AssertEquals(BaseTestName + 'Section Count def', 1, MultiHl.DefaultVirtualLines.SectionList.Count);
+      AssertEquals(BaseTestName + 'Section Count pas', 1, PasScheme.VirtualLines.SectionList.Count);
+
+
+    PushBaseName('"(*" line '+IntToStr(i));
+      ResetHighlightChanged;
+      SynEdit.TestTypeText(5, 5, '(*'); // after FOO
+DumpAll(MultiHl);
+      CheckTokensForLine('1st line=html', MultiHl, 0, [AtXmlTxt]);
+      CheckTokensForLine('2st line=html', MultiHl, 1, [AtXmlTxt]);
+      CheckTokensForLine('3st line=html', MultiHl, 2, [AtPasMark]);
+      CheckTokensForLine('4nd line=html', MultiHl, 3, [AtPasKey]);          // unit
+      CheckTokensForLine('5rd line=html', MultiHl, 4, [AtPasId, AtPasSym, AtPasCom]); // Foo;
+      CheckTokensForLine('6th line=html', MultiHl, 5, [AtPasCom]);         // uses
+      CheckTokensForLine('7th line=html', MultiHl, 6, [AtPasCom]); // Bar;
+      CheckTokensForLine('8th line=html', MultiHl, 7, [AtPasCom]);
+      CheckTokensForLine('9th line=html', MultiHl, 8, [AtPasCom, AtPasMark]);
+      AssertEquals(BaseTestName + 'Section Count def', 1, MultiHl.DefaultVirtualLines.SectionList.Count);
+      AssertEquals(BaseTestName + 'Section Count pas', 1, PasScheme.VirtualLines.SectionList.Count);
+DebugLn(['FHLCLow=', FHLCLow, '  FHLCHigh=',FHLCHigh]);
+        AssertTrue('Top inval', (FHLCLow = 3) or (FHLCLow = 4));  // HL currently sends -1
+        //AssertTrue('Top inval', FHLCLow in [Max(0,i-2), i-1]);
+        AssertTrue('bottom inval', FHLCHigh = 8);
+
+
+    PushBaseName('undo (*');
+      SynEdit.Undo;
+DumpAll(MultiHl);
+      CheckTokensForLine('1st line=html', MultiHl, 0, [AtXmlTxt]);
+      CheckTokensForLine('2st line=html', MultiHl, 1, [AtXmlTxt]);
+      CheckTokensForLine('3st line=html', MultiHl, 2, [AtPasMark]);
+      CheckTokensForLine('4nd line=html', MultiHl, 3, [AtPasKey]);          // unit
+      CheckTokensForLine('5rd line=html', MultiHl, 4, [AtPasId, AtPasSym]); // Foo;
+      CheckTokensForLine('6th line=html', MultiHl, 5, [AtPasKey]);         // uses
+      CheckTokensForLine('7th line=html', MultiHl, 6, [AtPasId, AtPasSym]); // Bar;
+      CheckTokensForLine('8th line=html', MultiHl, 7, [AtPasKey]);
+      CheckTokensForLine('9th line=html', MultiHl, 8, [AtPasId, AtPasMark]);
+      AssertEquals(BaseTestName + 'Section Count def', 1, MultiHl.DefaultVirtualLines.SectionList.Count);
+      AssertEquals(BaseTestName + 'Section Count pas', 1, PasScheme.VirtualLines.SectionList.Count);
+
+    FinishMultiXmlPasHl;
+    PopBaseName;
+    PopBaseName;
+  {%endregion}
+
+  {%region}
+    PushBaseName('append after EOT - after sub-scheme');
+    SynEdit.ClearAll;
+    SynEdit.SetTextBetweenPoints(Point(1,1), Point(1,1), 'a<pas>unit</pas>');
+    InitMultiXmlPasHl;
+    MultiHl.CurrentLines := SynEdit.TextBuffer;
+    SynEdit.SimulatePaintText;
+      CheckTokensForLine('1st line', MultiHl, 0, [AtXmlTxt, AtPasMark, AtPasKey, AtPasMark]);
+      AssertEquals(BaseTestName + 'Section Count def', 1, MultiHl.DefaultVirtualLines.SectionList.Count);
+      AssertEquals(BaseTestName + 'Section Count pas', 1, PasScheme.VirtualLines.SectionList.Count);
+
+    SynEdit.CaretXY := point(17,1);
+    SynEdit.CommandProcessor(ecLineBreak, '', nil);
+    SynEdit.CommandProcessor(ecChar, '<', nil);
+    SynEdit.CommandProcessor(ecChar, 'a', nil);
+    SynEdit.CommandProcessor(ecChar, '>', nil);
+//DumpAll(MultiHl);
+      CheckTokensForLine('1st line', MultiHl, 0, [AtXmlTxt, AtPasMark, AtPasKey, AtPasMark]);
+      CheckTokensForLine('2nd line', MultiHl, 1, [AtXmlSym, AtXmlEl, AtXmlSym]);
+      AssertEquals(BaseTestName + 'Section Count def', 2, MultiHl.DefaultVirtualLines.SectionList.Count);
+      AssertEquals(BaseTestName + 'Section Count pas', 1, PasScheme.VirtualLines.SectionList.Count);
+
+    FinishMultiXmlPasHl;
     PopBaseName;
   {%endregion}
 
@@ -1129,5 +1447,7 @@ end;
 initialization
 
   RegisterTest(TTestHighlightMulti);
+  DebugLogger.FindOrRegisterLogGroup('SYNDEBUG_MULTIHL', True)^.Enabled := True;
+
 end.
 
