@@ -101,17 +101,17 @@ function UTF8ToUCS2BE(const s: string): string; // UCS2-BE 2byte big endian with
 
 // Asian encodings
 
+function CP932ToUTF8(const s: string): string;      // Japanese
 function CP936ToUTF8(const s: string): string;      // Chinese
+function CP949ToUTF8(const s: string): string;      // Korea
 function CP950ToUTF8(const s: string): string;      // Chinese Complex
-function CP949ToUTF8(const s: string): string;      // korea
-function CP932ToUTF8(const s: string): string;      // japanese
 
 function SingleByteToUTF8Ex(const s: string; CodeP: integer): string; // Note: slow, needs optimization
 
+function UTF8ToCP932(const s: string): string;      // Japanese
 function UTF8ToCP936(const s: string): string;      // Chinese, essentially the same as GB 2312 and a predecessor to GB 18030
+function UTF8ToCP949(const s: string): string;      // Korea
 function UTF8ToCP950(const s: string): string;      // Chinese Complex
-function UTF8ToCP949(const s: string): string;      // korea
-function UTF8ToCP932(const s: string): string;      // japanese
 
 function UTF8ToSingleByteEx(const s: string;
                             const UTF8CharConvFunc: TUnicodeToCharID): string;
