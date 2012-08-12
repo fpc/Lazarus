@@ -2478,7 +2478,14 @@ begin
 
   MoveCursorToCleanPos(Params.Identifier);
   StartPos:=FindStartOfTerm(CurPos.StartPos,NodeTermInType(Params.ContextNode));
-  EndPos:=FindEndOfTerm(StartPos,true,false);
+  MoveCursorToCleanPos(Params.Identifier);
+  ReadNextAtom;
+  EndPos:=CurPos.EndPos;
+  ReadNextAtom;
+  if CurPos.Flag=cafRoundBracketOpen then begin
+    ReadTilBracketClose(true);
+    EndPos:=CurPos.EndPos;
+  end;
   {$IFDEF ShowExprEval}
   debugln(['TFindDeclarationTool.FindDeclarationOfIdentAtParam Term=',dbgstr(Src,StartPos,EndPos-StartPos)]);
   {$ENDIF}

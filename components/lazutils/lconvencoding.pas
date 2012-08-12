@@ -114,7 +114,7 @@ function UTF8ToCP949(const s: string): string;      // korea
 function UTF8ToCP932(const s: string): string;      // japanese
 
 function UTF8ToSingleByteEx(const s: string;
-                          const UTF8CharConvFunc: TUnicodeToCharID): string;
+                            const UTF8CharConvFunc: TUnicodeToCharID): string;
 
 procedure GetSupportedEncodings(List: TStrings);
 
