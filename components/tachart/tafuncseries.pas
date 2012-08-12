@@ -449,6 +449,8 @@ var
   hint: Integer;
   xg, xa, xg1, xa1, xmax: Double;
 begin
+  if FGraphStep = 0 then exit;
+
   FDrawer := ADrawer;
   with FSeries do
     if IsRotated then begin

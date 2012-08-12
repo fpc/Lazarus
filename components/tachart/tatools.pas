@@ -1074,7 +1074,7 @@ begin
   ext := FChart.LogicalExtent;
   center := FChart.ImageToGraph(APoint);
   sz := ext.b - ext.a;
-  if FixedPoint then
+  if FixedPoint and (sz.X <> 0) and (sz.Y <> 0) then
     ratio := (center - ext.a) / sz
   else
     ratio := DoublePoint(0.5, 0.5);
