@@ -858,14 +858,14 @@ end;
 procedure TGenericChartMarks.SetLabelFont(AValue: TFont);
 begin
   if FLabelFont = AValue then exit;
-  FLabelFont := AValue;
+  FLabelFont.Assign(AValue);
   StyleChanged(Self);
 end;
 
 procedure TGenericChartMarks.SetLinkPen(AValue: _TLinkPen);
 begin
   if FLinkPen = AValue then exit;
-  FLinkPen := AValue;
+  FLinkPen.Assign(AValue);
   StyleChanged(Self);
 end;
 
