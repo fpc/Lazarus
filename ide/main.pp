@@ -3992,8 +3992,8 @@ begin
     end
     else
     begin
-      itmEditUndo.Enabled := Editable and SrcEditorActive;
-      itmEditRedo.Enabled := itmEditUndo.Enabled;
+      itmEditUndo.Enabled := Editable and SrcEditorActive and ASrcEdit.EditorComponent.CanUndo;
+      itmEditRedo.Enabled := Editable and SrcEditorActive and ASrcEdit.EditorComponent.CanRedo;
       itmEditCut.Enabled := SelEditable;
       itmEditCopy.Enabled := SelAvail;
       itmEditPaste.Enabled := Editable;
