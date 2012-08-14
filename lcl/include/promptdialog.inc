@@ -184,8 +184,6 @@ begin
   end;
   if FCancelKind = bkCustom then FCancelKind := bkCancel; //default value if no mbCancel, mbNo or mbOk
 
-
-
   // Assures a minimum text size
   if MSG = '' then MSG := '   ';
 

@@ -1120,11 +1120,19 @@ var
 
   procedure CreateButton(const ALabel : String; const AResponse: Integer);
   var
-    NewButton: PGtkWidget;
+    NewButton: PGtkButton;
   begin
-    NewButton := gtk_dialog_add_button(PGtkDialog(Dialog),
-      PgChar(Ampersands2Underscore(ALabel)), AResponse);
-    gtk_button_set_use_underline(PGtkButton(NewButton), True);
+    NewButton := PGtkButton(gtk_dialog_add_button(PGtkDialog(Dialog),
+      PgChar(Ampersands2Underscore(ALabel)), AResponse));
+    gtk_button_set_use_underline(NewButton, True);
+  end;
+
+  function tr(UseWidgetStr: boolean; const TranslatedStr, WidgetStr: String): string;
+  begin
+    if UseWidgetStr then
+      Result:=WidgetStr
+    else
+      Result:=TranslatedStr;
   end;
 
   function ResponseID(const AnID: Integer): Integer;
@@ -1185,12 +1193,12 @@ begin
     for BtnIdx := ButtonCount-1 downto 0 do
     begin
       case Buttons[BtnIdx] of
-        idButtonOK       : CreateButton('gtk-ok', GTK_RESPONSE_OK);
-        idButtonCancel   : CreateButton('gtk-cancel', GTK_RESPONSE_CANCEL);
-        idButtonHelp     : CreateButton('gtk-help', GTK_RESPONSE_HELP);
-        idButtonYes      : CreateButton('gtk-yes', GTK_RESPONSE_YES);
-        idButtonNo       : CreateButton('gtk-no', GTK_RESPONSE_NO);
-        idButtonClose    : CreateButton('gtk-close', GTK_RESPONSE_CLOSE);
+        idButtonOK       : CreateButton(tr(rsmbOK='&OK',rsmbOK, 'gtk-ok'), GTK_RESPONSE_OK);
+        idButtonCancel   : CreateButton(tr(rsmbCancel='Cancel',rsmbCancel,'gtk-cancel'), GTK_RESPONSE_CANCEL);
+        idButtonHelp     : CreateButton(tr(rsmbHelp='&Help',rsmbHelp,'gtk-help'), GTK_RESPONSE_HELP);
+        idButtonYes      : CreateButton(tr(rsmbYes='&Yes',rsmbYes,'gtk-yes'), GTK_RESPONSE_YES);
+        idButtonNo       : CreateButton(tr(rsmbNo='&No',rsmbNo,'gtk-no'), GTK_RESPONSE_NO);
+        idButtonClose    : CreateButton(tr(rsmbClose='&Close',rsmbClose,'gtk-close'), GTK_RESPONSE_CLOSE);
         idButtonAbort    : CreateButton(rsMBAbort, GTK_RESPONSE_REJECT);
         idButtonRetry    : CreateButton(rsMBRetry, GTK_RESPONSE_LCL_RETRY);
         idButtonIgnore   : CreateButton(rsMBIgnore, GTK_RESPONSE_LCL_IGNORE);
@@ -1214,7 +1222,7 @@ begin
         Btn := PGtkButton(ChildList^.Data);
 
         if Buttons[BtnIdx] = idButtonCancel then
-           g_object_set_data(PGObject(Dialog), 'modal_result', Pointer(idButtonCancel));
+          g_object_set_data(PGObject(Dialog), 'modal_result', Pointer(idButtonCancel));
 
         X := Buttons[BtnIdx];
         g_object_set_data(PGObject(Btn), 'modal_result',
