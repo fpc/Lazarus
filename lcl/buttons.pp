@@ -429,6 +429,8 @@ function GetDefaultButtonIcon(idButton: Integer): TCustomBitmap;
 function GetButtonIcon(idButton: Integer): TCustomBitmap;
 function BidiAdjustButtonLayout(IsRightToLeft: Boolean; Layout: TButtonLayout): TButtonLayout;
 
+function dbgs(Kind: TBitBtnKind): string; overload;
+
 procedure Register;
 
 implementation
@@ -564,6 +566,12 @@ const
 function BidiAdjustButtonLayout(IsRightToLeft: Boolean; Layout: TButtonLayout): TButtonLayout;
 begin
   Result := BtnBidiLayout[IsRightToLeft, Layout];
+end;
+
+function dbgs(Kind: TBitBtnKind): string;
+begin
+  Result:='';
+  writestr(Result,Kind);
 end;
 
 procedure Register;
