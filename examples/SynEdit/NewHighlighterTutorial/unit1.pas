@@ -9,7 +9,7 @@ This is NOT about extending the IDE. This is about SynEdit and it's Highlighter 
 Therefore this does not include:
 - registration in the component pallette.
 - Using the Object Inspector
-Those steps are the same as they would be for any other self wriiten componont.
+Those steps are the same as they would be for any other self writen componont.
 
 *)
 {$mode objfpc}{$H+}
