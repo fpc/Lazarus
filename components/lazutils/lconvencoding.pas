@@ -18,6 +18,8 @@ unit LConvEncoding;
 
 interface
 
+{ $Define DisableAsianCodePages}
+
 uses
   SysUtils, Classes, dos, LazUTF8
   {$IFDEF EnableIconvEnc},iconvenc{$ENDIF};
@@ -99,22 +101,23 @@ function UTF8ToSingleByte(const s: string;
 function UTF8ToUCS2LE(const s: string): string; // UCS2-LE 2byte little endian without BOM
 function UTF8ToUCS2BE(const s: string): string; // UCS2-BE 2byte big endian without BOM
 
+{$IFNDEF DisableAsianCodePages}
 // Asian encodings
-
 function CP936ToUTF8(const s: string): string;      // Chinese
 function CP950ToUTF8(const s: string): string;      // Chinese Complex
 function CP949ToUTF8(const s: string): string;      // korea
 function CP932ToUTF8(const s: string): string;      // japanese
 
-function SingleByteToUTF8Ex(const s: string; CodeP: integer): string; // Note: slow, needs optimization
+function DBCSToUTF8(const s: string; CodeP: integer): string;
 
 function UTF8ToCP936(const s: string): string;      // Chinese, essentially the same as GB 2312 and a predecessor to GB 18030
 function UTF8ToCP950(const s: string): string;      // Chinese Complex
 function UTF8ToCP949(const s: string): string;      // korea
 function UTF8ToCP932(const s: string): string;      // japanese
 
-function UTF8ToSingleByteEx(const s: string;
+function UTF8ToDBCS(const s: string;
                           const UTF8CharConvFunc: TUnicodeToCharID): string;
+{$ENDIF}
 
 procedure GetSupportedEncodings(List: TStrings);
 
@@ -127,8 +130,10 @@ uses Windows;
 var EncodingValid: boolean = false;
     DefaultTextEncoding: string = EncodingAnsi;
 
+{$IFNDEF DisableAsianCodePages}
 {$include asiancodepages.inc}
 {$include asiancodepagefunctions.inc}
+{$ENDIF}
 
 {$IFDEF Windows}
 // AConsole - If false, it is the general system encoding,
@@ -6198,10 +6203,15 @@ begin
   List.Add('CP852');
   List.Add('CP866');
   List.Add('CP874');
-  List.Add('CP936');
-  List.Add('CP950');
-  List.Add('CP949');
+
+  {$IFNDEF DisableAsianCodePages}
+  // asian
   List.Add('CP932');
+  List.Add('CP936');
+  List.Add('CP949');
+  List.Add('CP950');
+  {$ENDIF}
+
   List.Add('ISO-8859-1');
   List.Add('ISO-8859-2');
   List.Add('KOI-8');
@@ -6378,26 +6388,12 @@ begin
     if ATo='cp852' then begin  Result:=UTF8ToCP852(s);  exit; end;
     if ATo='cp866' then begin  Result:=UTF8ToCP866(s);  exit; end;
     if ATo='cp874' then begin  Result:=UTF8ToCP874(s);  exit; end;
-    if ATo = 'cp936' then
-    begin
-      Result := UTF8ToCP936(s);
-      exit;
-    end;
-    if ATo = 'cp950' then
-    begin
-      Result := UTF8ToCP950(s);
-      exit;
-    end;
-    if ATo = 'cp949' then
-    begin
-      Result := UTF8ToCP949(s);
-      exit;
-    end;
-    if ATo = 'cp932' then
-    begin
-      Result := UTF8ToCP932(s);
-      exit;
-    end;
+    {$IFNDEF DisableAsianCodePages}
+    if ATo='cp936' then begin Result := UTF8ToCP936(s); exit; end;
+    if ATo='cp950' then begin Result := UTF8ToCP950(s); exit; end;
+    if ATo='cp949' then begin Result := UTF8ToCP949(s); exit; end;
+    if ATo='cp932' then begin Result := UTF8ToCP932(s); exit; end;
+    {$ENDIF}
     if ATo='koi8' then begin  Result:=UTF8ToKOI8(s);  exit; end;
     if ATo=EncodingUCS2LE then begin Result:=UTF8ToUCS2LE(s); exit; end;
     if ATo=EncodingUCS2BE then begin Result:=UTF8ToUCS2BE(s); exit; end;
@@ -6424,26 +6420,12 @@ begin
     if AFrom='cp852' then begin  Result:=CP852ToUTF8(s);  exit; end;
     if AFrom='cp866' then begin  Result:=CP866ToUTF8(s);  exit; end;
     if AFrom='cp874' then begin  Result:=CP874ToUTF8(s);  exit; end;
-    if AFrom = 'cp936' then
-    begin
-      Result := CP936ToUTF8(s);
-      exit;
-    end;
-    if AFrom = 'cp950' then
-    begin
-      Result := CP950ToUTF8(s);
-      exit;
-    end;
-    if AFrom = 'cp949' then
-    begin
-      Result := CP949ToUTF8(s);
-      exit;
-    end;
-    if AFrom = 'cp932' then
-    begin
-      Result := CP932ToUTF8(s);
-      exit;
-    end;
+    {$IFNDEF DisableAsianCodePages}
+    if AFrom='cp936' then begin Result := CP936ToUTF8(s); exit; end;
+    if AFrom='cp950' then begin Result := CP950ToUTF8(s); exit; end;
+    if AFrom='cp949' then begin Result := CP949ToUTF8(s); exit; end;
+    if AFrom='cp932' then begin Result := CP932ToUTF8(s); exit; end;
+    {$ENDIF}
     if AFrom='koi8' then begin  Result:=KOI8ToUTF8(s);  exit; end;
     if AFrom=EncodingUCS2LE then begin Result:=UCS2LEToUTF8(s); exit; end;
     if AFrom=EncodingUCS2BE then begin Result:=UCS2BEToUTF8(s); exit; end;
@@ -6519,6 +6501,7 @@ begin
       Result:=CP874ToUTF8(s);
       Encoded := true;
     end
+    {$IFNDEF DisableAsianCodePages}
     else if AFrom = 'cp936' then
     begin
       Result  := CP936ToUTF8(s);
@@ -6539,6 +6522,7 @@ begin
       Result  := CP932ToUTF8(s);
       Encoded := True;
     end
+    {$ENDIF}
     else if AFrom='koi8' then begin
       Result:=KOI8ToUTF8(s);
       Encoded := true;
@@ -6611,6 +6595,7 @@ begin
         Result:=UTF8ToCP874(Result);
         Encoded := true;
       end
+      {$IFNDEF DisableAsianCodePages}
       else if ATo = 'cp936' then
       begin
         Result  := UTF8ToCP936(Result);
@@ -6631,6 +6616,7 @@ begin
         Result  := UTF8ToCP932(Result);
         Encoded := True;
       end
+      {$ENDIF}
       else if ATo='koi8' then begin
         Result:=UTF8ToKOI8(Result);
         Encoded := true;
