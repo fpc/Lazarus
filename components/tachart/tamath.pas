@@ -31,6 +31,8 @@ procedure EnsureOrder(var A, B: Double); overload; inline;
 
 procedure ExpandRange(var ALo, AHi: Double; ACoeff: Double);
 
+function InRangeUlps(AX, ALo, AHi: Double; AMaxUlps: Word): Boolean;
+
 function SafeInfinity: Double; inline;
 function SafeInRange(AValue, ABound1, ABound2: Double): Boolean;
 function SafeMin(A, B: Double): Double;
@@ -40,6 +42,8 @@ implementation
 
 uses
   Math, spe, TAChartUtils;
+
+function Ulps(AX: Double): Int64; forward;
 
 // Cumulative normal distribution
 // x = -INF ... INF --> Result = 0 ... 1
@@ -143,6 +147,11 @@ begin
   AHi += d * ACoeff;
 end;
 
+function InRangeUlps(AX, ALo, AHi: Double; AMaxUlps: Word): Boolean;
+begin
+  Result := InRange(Ulps(AX), Ulps(ALo) - AMaxUlps, Ulps(AHi) + AMaxUlps);
+end;
+
 function SafeInfinity: Double;
 begin
   {$PUSH}{$R-}{$Q-}
@@ -173,6 +182,15 @@ begin
   {$PUSH}{$R-}{$Q-}
   Result := NaN;
   {$POP}
+end;
+
+// Convert double value to integer 2's complement representation.
+// Difference between resulting integers can be interpreted as distance in ulps.
+function Ulps(AX: Double): Int64; inline;
+begin
+  Result := Int64(AX);
+  if Result < 0 then
+    Result := (1 shl 63) - Result;
 end;
 
 end.

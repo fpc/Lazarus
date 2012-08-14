@@ -270,7 +270,7 @@ implementation
 
 uses
   Math, SysUtils,
-  TAGeometry;
+  TAGeometry, TAMath;
 
 { TChartMinorAxisMarks }
 
@@ -326,7 +326,7 @@ var
 begin
   coord := GraphToImage(AMark);
   if
-    not IsInClipRange(coord) or not InRange(AMark, FValueMin, FValueMax)
+    not IsInClipRange(coord) or not InRangeUlps(AMark, FValueMin, FValueMax, 2)
   then exit;
 
   if FAxis.Grid.Visible then begin
