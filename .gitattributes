@@ -1664,6 +1664,7 @@ components/lazreport/source/addons/TDbfDB/lr_tdbf.lpk svneol=native#text/plain
 components/lazreport/source/addons/TDbfDB/lr_tdbf.pas svneol=native#text/plain
 components/lazreport/source/addons/TDbfDB/lrtdbfdata.pas svneol=native#text/plain
 components/lazreport/source/addons/TDbfDB/lrtdbfdata_img.inc svneol=native#text/plain
+components/lazreport/source/addons/ZeosDB/languages/lrdbzeosconst.de.po svneol=native#text/plain
 components/lazreport/source/addons/ZeosDB/languages/lrdbzeosconst.po svneol=native#text/plain
 components/lazreport/source/addons/ZeosDB/languages/lrdbzeosconst.pt_BR.po svneol=native#text/plain
 components/lazreport/source/addons/ZeosDB/languages/lrdbzeosconst.ru.po svneol=native#text/plain
