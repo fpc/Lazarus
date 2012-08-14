@@ -4,7 +4,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
 "PO-Revision-Date: \n"
-"Last-Translator: Joerg Braun <jb@toolbox-mag.de>\n"
+"Last-Translator: Swen Heinig <swen.heinig@freenet.de>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -169,7 +169,7 @@ msgstr "Protected-Met&hoden verbergen"
 
 #: lazdemsg.shinteditelementlink
 msgid "Edit element link"
-msgstr ""
+msgstr "Element-Link bearbeiten"
 
 #: lazdemsg.shintfileclose
 msgid "Close current file"
@@ -307,7 +307,7 @@ msgstr "Lazarus-Dokumentations-Editor"
 
 #: lazdemsg.slinksto
 msgid " links to "
-msgstr ""
+msgstr "verweist auf"
 
 #: lazdemsg.sload
 msgid "&Load"
@@ -649,7 +649,7 @@ msgstr "Quellen"
 
 #: lazdemsg.sstartnodenotfound
 msgid "Start element \"%s\" could not be found"
-msgstr ""
+msgstr "Startelement \"%s\" nicht gefunden"
 
 #: lazdemsg.stargetos
 msgid "Target OS"
