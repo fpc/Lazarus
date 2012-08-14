@@ -214,12 +214,15 @@ end;
 procedure CallbackKeyDown(AWindowHandle: TCDForm; AKey: Word);
 var
   lTarget: TWinControl;
+  lIsTab, lTabDirForward: Boolean;
+  lTabNextControl: TWinControl;
 begin
   lTarget := AWindowHandle.GetFocusedControl();
   {$ifdef VerboseCDEvents}
    DebugLn(Format('CallbackKeyDown FocusedControl=%s:%s AKey=%x', [lTarget.Name, lTarget.ClassName, AKey]));
   {$endif}
 
+  lIsTab := AKey = VK_TAB;
   LCLSendKeyDownEvent(lTarget, AKey, 0, True, False);
 
   // If this is a interface control, send the message to the main LCL control too
@@ -230,6 +233,15 @@ begin
      DebugLn(Format('CallbackKeyDown IsIntfControl, sending msg to Parent=%s:%s', [lTarget.Name, lTarget.ClassName]));
     {$endif}
     LCLSendKeyDownEvent(lTarget, AKey, 0, True, False);
+  end;
+
+  // If the control didn't eat the tab, then circle around controls
+  // Shift+Tab circles in the opposite direction
+  lIsTab := lIsTab and (AKey = VK_TAB);
+  if (lTarget.Parent <> nil) and lIsTab then
+  begin
+    lTabDirForward := LCLIntf.GetKeyState(VK_SHIFT) = 0;
+    lTarget.Parent.SelectNext(lTarget, lTabDirForward, True);
   end;
 end;
 
