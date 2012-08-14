@@ -20,17 +20,15 @@
   The clipboard is able to work with the windows and gtk behaviour/features.
 }
 
-function SingleByteToUTF8Ex(const s: string; CodeP: integer): string;
+function DBCSToUTF8(const s: string; CodeP: integer): string;
 var
-  len:  integer;
-  i, j:    integer;
+  len:  SizeInt;
   Src:  PChar;
   Dest: PChar;
   c:    char;
-  tempstr: ansistring;
-  tempint: integer;
+  l: Integer;
+  code: word;
 begin
-  SetLength(tempstr, 4);
   if s = '' then
   begin
     Result := s;
@@ -40,74 +38,64 @@ begin
   SetLength(Result, len * 4);// Asia UTF-8 is at most 4 bytes
   Src  := PChar(s);
   Dest := PChar(Result);
-  i    := 1;
-  while i < len do
-  begin
+  repeat
     c := Src^;
     Inc(Src);
-    i := i + 1;
     if Ord(c) < 128 then
     begin
+      if (c=#0) and (Src-PChar(s)>=len) then break;
       Dest^ := c;
       Inc(Dest);
     end
     else
     begin
-      tempint := Byte(c) shl 8;
-      if i <= len then
-      begin
-        tempint := tempint + Byte(Src^);
-        i := i + 1;
-      end;
-
+      code := Byte(c) shl 8;
+      c:=Src^;
+      if (c=#0) and (Src-PChar(s)>=len) then break;
+      code := code + Byte(c);
       Inc(Src);
 
       case CodeP of
         936:
-          tempint := Uni936C[SearchTable(CP936CC, tempint)];
+          code := Uni936C[SearchTable(CP936CC, code)];
         950:
-          tempint := Uni950C[SearchTable(CP950CC, tempint)];
+          code := Uni950C[SearchTable(CP950CC, code)];
         949:
-          tempint := Uni949C[SearchTable(CP949CC, tempint)];
+          code := Uni949C[SearchTable(CP949CC, code)];
         932:
-          tempint := Uni932C[SearchTable(CP932CC, tempint)];
+          code := Uni932C[SearchTable(CP932CC, code)];
         else
-          tempint := -1;
+          code := 0;
       end;
 
-      if tempint <> -1 then
+      if code>0 then
       begin
-        TempStr := UnicodeToUTF8(tempint);
-
-        for j := 1 to Length(TempStr) do
-        begin
-          Dest^ := TempStr[j];
-          Inc(Dest);
-        end;
+        l:=UnicodeToUTF8Inline(code,Dest);
+        inc(Dest,l);
       end;
     end;
-  end;
+  until false;
   SetLength(Result, {%H-}PtrUInt(Dest) - PtrUInt(Result));
 end;
 
 function CP936ToUTF8(const s: string): string;
 begin
-  Result := SingleByteToUTF8Ex(s, 936);
+  Result := DBCSToUTF8(s, 936);
 end;
 
 function CP950ToUTF8(const s: string): string;
 begin
-  Result := SingleByteToUTF8Ex(s, 950);
+  Result := DBCSToUTF8(s, 950);
 end;
 
 function CP949ToUTF8(const s: string): string;
 begin
-  Result := SingleByteToUTF8Ex(s, 949);
+  Result := DBCSToUTF8(s, 949);
 end;
 
 function CP932ToUTF8(const s: string): string;
 begin
-  Result := SingleByteToUTF8Ex(s, 932);
+  Result := DBCSToUTF8(s, 932);
 end;
 
 function UnicodeToCP936(Unicode: cardinal): integer;
@@ -146,7 +134,7 @@ begin
   end;
 end;
 
-function UTF8ToSingleByteEx(const s: string;
+function UTF8ToDBCS(const s: string;
   const UTF8CharConvFunc: TUnicodeToCharID): string;
 var
   len:  integer;
@@ -163,24 +151,22 @@ begin
     exit;
   end;
   len := length(s);
-  SetLength(Result, len);
+  SetLength(Result, len); // DBCS needs at most space as UTF-8
   Src  := PChar(s);
   Dest := PChar(Result);
-  while len > 0 do
-  begin
+  repeat
     c := Src^;
     if c < #128 then
     begin
+      if (c=#0) and (Src-PChar(s)>=len) then break;
       Dest^ := c;
       Inc(Dest);
       Inc(Src);
-      Dec(len);
     end
     else
     begin
       Unicode := UTF8CharacterToUnicode(Src, CharLen);
       Inc(Src, CharLen);
-      Dec(len, CharLen);
       i := UTF8CharConvFunc(Unicode);
       //writeln(Format('%X', [i]));
       if i >= 0 then
@@ -196,28 +182,28 @@ begin
         Inc(Dest);
       end;
     end;
-  end;
+  until false;
   //SetLength(Result, Dest - PChar(Result));
   SetLength(Result, {%H-}PtrUInt(Dest) - PtrUInt(Result));
 end;
 
 function UTF8ToCP936(const s: string): string;
 begin
-  Result := UTF8ToSingleByteEx(s, @UnicodeToCP936);
+  Result := UTF8ToDBCS(s, @UnicodeToCP936);
 end;
 
 function UTF8ToCP950(const s: string): string;
 begin
-  Result := UTF8ToSingleByteEx(s, @UnicodeToCP950);
+  Result := UTF8ToDBCS(s, @UnicodeToCP950);
 end;
 
 function UTF8ToCP949(const s: string): string;
 begin
-  Result := UTF8ToSingleByteEx(s, @UnicodeToCP949);
+  Result := UTF8ToDBCS(s, @UnicodeToCP949);
 end;
 
 function UTF8ToCP932(const s: string): string;
 begin
-  Result := UTF8ToSingleByteEx(s, @UnicodeToCP932);
+  Result := UTF8ToDBCS(s, @UnicodeToCP932);
 end;
 
