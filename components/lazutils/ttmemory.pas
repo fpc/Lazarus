@@ -218,7 +218,6 @@ const
  procedure Free( var P );
  var
    head : PBlock_Header;
-   i    : Integer;
    size : Longint;
  begin
    if Pointer(P) = nil then exit;
