@@ -196,13 +196,13 @@ type
     class procedure SetCaretPos(const ACustomEdit: TCustomEdit; const NewPos: TPoint); override;
     class procedure SetEchoMode(const ACustomEdit: TCustomEdit; NewMode: TEchoMode); override;
     class procedure SetMaxLength(const ACustomEdit: TCustomEdit; NewLength: integer); override;
-    class procedure SetReadOnly(const ACustomEdit: TCustomEdit; NewReadOnly: boolean); override;
+    class procedure SetReadOnly(const ACustomEdit: TCustomEdit; NewReadOnly: boolean); override;}
     class function GetSelStart(const ACustomEdit: TCustomEdit): integer; override;
     class function GetSelLength(const ACustomEdit: TCustomEdit): integer; override;
     class procedure SetSelStart(const ACustomEdit: TCustomEdit; NewStart: integer); override;
     class procedure SetSelLength(const ACustomEdit: TCustomEdit; NewLength: integer); override;
 
-    //class procedure SetPasswordChar(const ACustomEdit: TCustomEdit; NewChar: char); override;
+{    //class procedure SetPasswordChar(const ACustomEdit: TCustomEdit; NewChar: char); override;
     class procedure Cut(const ACustomEdit: TCustomEdit); override;
     class procedure Copy(const ACustomEdit: TCustomEdit); override;
     class procedure Paste(const ACustomEdit: TCustomEdit); override;
@@ -1474,69 +1474,48 @@ begin
   Widget := TQtWidget(ACustomEdit.Handle);
   if Supports(Widget, IQtEdit, QtEdit) then
     QtEdit.setReadOnly(NewReadOnly);
-end;
+end;*)
 
 class function TCDWSCustomEdit.GetSelStart(const ACustomEdit: TCustomEdit): integer;
 var
-  Widget: TQtWidget;
-  QtEdit: IQtEdit;
+  lCDWinControl: TCDWinControl;
 begin
-  Result := 0;
-  if not WSCheckHandleAllocated(ACustomEdit, 'GetSelStart') then
-    Exit;
-
-  Widget := TQtWidget(ACustomEdit.Handle);
-  if Supports(Widget, IQtEdit, QtEdit) then
-    Result := QtEdit.getSelectionStart;
+  lCDWinControl := TCDWinControl(ACustomEdit.Handle);
+  if lCDWinControl.CDControl = nil then Exit;
+  Result := TCDIntfEdit(lCDWinControl.CDControl).GetSelStartX();
 end;
 
 class function TCDWSCustomEdit.GetSelLength(const ACustomEdit: TCustomEdit): integer;
 var
-  Widget: TQtWidget;
-  QtEdit: IQtEdit;
+  lCDWinControl: TCDWinControl;
 begin
-  Result := 0;
-  if not WSCheckHandleAllocated(ACustomEdit, 'GetSelLength') then
-    Exit;
-
-  Widget := TQtWidget(ACustomEdit.Handle);
-  if Supports(Widget, IQtEdit, QtEdit) then
-    Result := QtEdit.getSelectionLength;
+  lCDWinControl := TCDWinControl(ACustomEdit.Handle);
+  if lCDWinControl.CDControl = nil then Exit;
+  Result := TCDIntfEdit(lCDWinControl.CDControl).GetSelLength();
+  if Result < 0 then Result := -1 * Result;
 end;
 
 class procedure TCDWSCustomEdit.SetSelStart(const ACustomEdit: TCustomEdit;
   NewStart: integer);
 var
-  Widget: TQtWidget;
-  QtEdit: IQtEdit;
-  ALength: Integer;
+  lCDWinControl: TCDWinControl;
 begin
-  if not WSCheckHandleAllocated(ACustomEdit, 'SetSelStart') then
-    Exit;
-
-  Widget := TQtWidget(ACustomEdit.Handle);
-  ALength := GetSelLength(ACustomEdit);
-  if Supports(Widget, IQtEdit, QtEdit) then
-    QtEdit.setSelection(NewStart, ALength);
+  lCDWinControl := TCDWinControl(ACustomEdit.Handle);
+  if lCDWinControl.CDControl = nil then Exit;
+  TCDIntfEdit(lCDWinControl.CDControl).SetSelStartX(NewStart);
 end;
 
 class procedure TCDWSCustomEdit.SetSelLength(const ACustomEdit: TCustomEdit;
   NewLength: integer);
 var
-  Widget: TQtWidget;
-  QtEdit: IQtEdit;
-  AStart: Integer;
+  lCDWinControl: TCDWinControl;
 begin
-  if not WSCheckHandleAllocated(ACustomEdit, 'SetSelLength') then
-    Exit;
-
-  Widget := TQtWidget(ACustomEdit.Handle);
-  AStart := GetSelStart(ACustomEdit);
-  if Supports(Widget, IQtEdit, QtEdit) then
-    QtEdit.setSelection(AStart, NewLength);
+  lCDWinControl := TCDWinControl(ACustomEdit.Handle);
+  if lCDWinControl.CDControl = nil then Exit;
+  TCDIntfEdit(lCDWinControl.CDControl).SetSelLength(NewLength);
 end;
 
-class procedure TCDWSCustomEdit.Cut(const ACustomEdit: TCustomEdit);
+(*class procedure TCDWSCustomEdit.Cut(const ACustomEdit: TCustomEdit);
 var
   Widget: TQtWidget;
   QtEdit: IQtEdit;

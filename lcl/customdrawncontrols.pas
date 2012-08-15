@@ -230,6 +230,11 @@ type
     procedure SetCurrentLine(AStr: string);
     property LeftTextMargin: Integer read GetLeftTextMargin write SetLeftTextMargin;
     property RightTextMargin: Integer read GetRightTextMargin write SetRightTextMargin;
+    // selection info in a format compatible with TEdit
+    function GetSelStartX: Integer;
+    function GetSelLength: Integer;
+    procedure SetSelStartX(ANewX: Integer);
+    procedure SetSelLength(ANewLength: Integer);
   published
     property Align;
     property Anchors;
@@ -1967,6 +1972,27 @@ begin
     FEditState.CaretPos.Y := 0;
   end
   else FLines.Strings[FEditState.CaretPos.Y] := AStr;
+end;
+
+function TCDEdit.GetSelStartX: Integer;
+begin
+  Result := FEditState.SelStart.X;
+end;
+
+function TCDEdit.GetSelLength: Integer;
+begin
+  Result := FEditState.SelLength;
+  if Result < 0 then Result := Result * -1;
+end;
+
+procedure TCDEdit.SetSelStartX(ANewX: Integer);
+begin
+  FEditState.SelStart.X := ANewX;
+end;
+
+procedure TCDEdit.SetSelLength(ANewLength: Integer);
+begin
+  FEditState.SelLength := ANewLength;
 end;
 
 { TCDCheckBox }

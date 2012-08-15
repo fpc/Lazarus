@@ -7,7 +7,7 @@ interface
 
 uses
   // rtl+ftl
-  Types, Classes, SysUtils,
+  Types, Classes, SysUtils, Math,
   CGGeometry,
   fpimage, fpcanvas,
   // Custom Drawn Canvas
@@ -15,7 +15,7 @@ uses
   // Libs
   MacOSAll, CocoaAll, CocoaUtils, CocoaGDIObjects, lazutf8sysutils,
   //
-  LMessages,
+  LMessages, StdCtrls, LCLIntf,
   Forms, Controls, LCLMessageGlue, WSControls, LCLType, LCLProc, GraphType;
 
 type
@@ -99,6 +99,21 @@ type
     function accessibilityFocusedUIElement: id; override;
   end;
 
+  TSelectionInfo = class
+  public
+    SelectedText: string;
+    CaretPos: TPoint;
+    SelLength: Integer;
+    SelStart: Integer;
+  end;
+
+  TVisibleTextInfo = class
+  public
+    VisibleLineStart, VisibleLineCount: Integer;
+    // now as a character index in relation to the entire text string
+    VisibleTextStart, VisibleTextLength: Integer;
+  end;
+
   { TCocoaAccessibleObject }
 
   TCocoaAccessibleObject = objcclass(NSObject)
@@ -110,8 +125,8 @@ type
     LCLInjectedControl: TCustomControl;
     LCLBaseControl: TCDBaseControl;
     procedure ReadInjectedAndBaseControl; message 'ReadInjectedAndBaseControl';
-    function GetSelectedText: PChar; message 'GetSelectedText';
-    function GetSelectedTextStart: Integer; message 'GetSelectedTextStart';
+    function GetSelectedTextInfo: TSelectionInfo; message 'GetSelectedTextInfo';
+    function GetVisibleTextInfo: TVisibleTextInfo; message 'GetVisibleTextInfo';
     //NSAccessibilityCategory = objccategory external (NSObject)
     function accessibilityAttributeNames: NSArray; override;
     function accessibilityAttributeValue(attribute: NSString): id; override;
@@ -1049,14 +1064,85 @@ begin
   end;
 end;
 
-function TCocoaAccessibleObject.GetSelectedText: PChar;
+function TCocoaAccessibleObject.GetSelectedTextInfo: TSelectionInfo;
+var
+  lCustomEdit: TCustomEdit;
 begin
-  Result := '';
+  // initialization
+  Result := TSelectionInfo.Create;
+
+  if LCLControl is TCustomEdit then
+  begin
+    lCustomEdit := TCustomEdit(LCLControl);
+    Result.SelectedText := lCustomEdit.SelText;
+    Result.CaretPos := lCustomEdit.CaretPos;
+    Result.SelLength := lCustomEdit.SelLength;
+    Result.SelStart := lCustomEdit.SelStart;
+  end;
 end;
 
-function TCocoaAccessibleObject.GetSelectedTextStart: Integer;
+function TCocoaAccessibleObject.GetVisibleTextInfo: TVisibleTextInfo;
+var
+  lCustomMemo: TCustomMemo;
+  lCustomEdit: TCustomEdit;
+  lDC: HDC;
+  lOldFont: HFont;
+  lTM: TTextMetric;
+  lRect: TRect;
+  lLines: TStrings = nil;
+  lScrollBar: TControlScrollbar = nil;
+  i: Integer;
+  lScrollPos, lScrollRange, lScrollPage: Integer;
+  lStr: String;
 begin
-  Result := 0;
+  // initialization
+  Result := TVisibleTextInfo.Create;
+  Result.VisibleLineCount := 1;
+
+  if LCLControl is TCustomMemo then
+  begin
+    lCustomMemo := TCustomMemo(LCLControl);
+    lDC := LCLIntf.GetDC(lCustomMemo.Handle);
+    lOldFont := SelectObject(lDC, lCustomMemo.Font.Handle);
+    try
+      GetTextMetrics(lDC, lTM);
+      lRect := LCLControl.ClientRect;
+      Result.VisibleLineCount := (lRect.Bottom - lRect.Top) div
+        (lTM.tmHeight + lTM.tmExternalLeading);
+    finally
+      SelectObject(lDC, lOldFont);
+      ReleaseDC(lCustomMemo.Handle, lDC);
+    end;
+
+    lLines := lCustomMemo.Lines;
+    lScrollBar := lCustomMemo.VertScrollBar;
+  end;
+
+  // With a TStrings and a ScrollBar we can get the visible range info
+  if (lLines <> nil) and (lScrollBar <> nil) then
+  begin
+    lScrollPos := lScrollBar.Position;
+    lScrollRange := lScrollBar.Range;
+    lScrollPage := lScrollBar.Page;
+    Result.VisibleLineStart := Round((lScrollPos / lScrollRange) * lLines.Count);
+    Result.VisibleLineCount := Round((lScrollPage / lScrollRange) * lLines.Count);
+    Result.VisibleLineCount := Min(Result.VisibleLineCount, lLines.Count - 1 - Result.VisibleLineStart); // sanity correction
+
+    // using the calculated info get the character indexes
+    for i := 0 to Result.VisibleLineStart + Result.VisibleLineCount do
+    begin
+      if i < Result.VisibleLineStart then
+      begin
+        lStr := lLines.Strings[i];
+        Result.VisibleTextStart := Result.VisibleTextStart + UTF8Length(lStr) + 1; // +1 for the Mac line ending
+      end
+      else
+      begin
+        lStr := lLines.Strings[i];
+        Result.VisibleTextLength := Result.VisibleTextLength + UTF8Length(lStr) + 1; // +1 for the Mac line ending
+      end;
+    end;
+  end;
 end;
 
 {
@@ -1171,6 +1257,8 @@ var
   lChildAcc: TLazAccessibleObject;
   lForm: TCustomForm;
   lParent: TWinControl;
+  lSelInfo: TSelectionInfo;
+  lVisibleTextInfo: TVisibleTextInfo;
 
   function GetControlText: string;
   begin
@@ -1347,8 +1435,12 @@ begin
   //
   else if attribute.isEqualToString(NSAccessibilitySelectedTextAttribute) then
   begin
-    lTmpStr := GetSelectedText();
-    Result := NSStringUtf8(lTmpStr);
+    lSelInfo := GetSelectedTextInfo();
+    try
+      Result := NSStringUtf8(lSelInfo.SelectedText);
+    finally
+      lSelInfo.Free;
+    end;
     //{$ifdef VerboseCDAccessibility}
     //DebugLn(Format(':<[TCocoaAccessibleObject.accessibilityAttributeValue] NSAccessibilitySizeAttribute Result=%d,%d', [lSize.CX, lSize.CY]));
     //{$endif}
@@ -1360,10 +1452,14 @@ begin
   //
   else if attribute.isEqualToString(NSAccessibilitySelectedTextRangeAttribute) then
   begin
-    lTmpStr := GetSelectedText();
-    lNSRange.location := GetSelectedTextStart();
-    lNSRange.length := UTF8Length(lTmpStr);
-    Result := NSValue.valueWithRange(lNSRange);
+    lSelInfo := GetSelectedTextInfo();
+    try
+      lNSRange.location := lSelInfo.SelStart;
+      lNSRange.length := lSelInfo.SelLength;
+      Result := NSValue.valueWithRange(lNSRange);
+    finally
+      lSelInfo.Free;
+    end;
     //{$ifdef VerboseCDAccessibility}
     //DebugLn(Format(':<[TCocoaAccessibleObject.accessibilityAttributeValue] NSAccessibilitySizeAttribute Result=%d,%d', [lSize.CX, lSize.CY]));
     //{$endif}
@@ -1375,13 +1471,17 @@ begin
   //
   else if attribute.isEqualToString(NSAccessibilityVisibleCharacterRangeAttribute) then
   begin
-    lTmpStr := GetControlText();
-    lNSRange.location := 0;
-    lNSRange.length := UTF8Length(lTmpStr);
-    Result := NSValue.valueWithRange(lNSRange);
-    {$ifdef VerboseCDAccessibility}
-    DebugLn(Format(':<[TCocoaAccessibleObject.accessibilityAttributeValue] NSAccessibilitySizeAttribute Result=%d,%d', [lSize.CX, lSize.CY]));
-    {$endif}
+    lVisibleTextInfo := GetVisibleTextInfo();
+    try
+      lNSRange.location := lVisibleTextInfo.VisibleTextStart;
+      lNSRange.length := lVisibleTextInfo.VisibleTextLength;
+      Result := NSValue.valueWithRange(lNSRange);
+    finally
+      lVisibleTextInfo.Free;
+    end;
+    //{$ifdef VerboseCDAccessibility}
+    //DebugLn(Format(':<[TCocoaAccessibleObject.accessibilityAttributeValue] NSAccessibilityVisibleCharacterRangeAttribute Result=%d,%d', [lSize.CX, lSize.CY]));
+    //{$endif}
   end
   //
   // This one we use to put LCL object and class names to help debugging =)
