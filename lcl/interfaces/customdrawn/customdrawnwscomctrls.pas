@@ -42,9 +42,9 @@ type
 
   TCDWSCustomPage = class(TWSCustomPage)
   published
-{    class function CreateHandle(const AWinControl: TWinControl;
+    class function CreateHandle(const AWinControl: TWinControl;
           const AParams: TCreateParams): TLCLIntfHandle; override;
-    class procedure UpdateProperties(const ACustomPage: TCustomPage); override;}
+//    class procedure UpdateProperties(const ACustomPage: TCustomPage); override;}
   end;
 
   { TCDWSCustomTabControl }
@@ -258,6 +258,28 @@ type
 
 
 implementation
+
+{ TCDWSCustomPage }
+
+// Return the handle of the page installed in the TCDPageControl instead of creating a new one
+class function TCDWSCustomPage.CreateHandle(const AWinControl: TWinControl;
+  const AParams: TCreateParams): TLCLIntfHandle;
+var
+  lPageControlHandle: TCDWinControl;
+begin
+  if AWinControl is TTabSheet then
+  begin
+    lPageControlHandle := TCDWinControl(TTabSheet(AWinControl).PageControl.Handle);
+    if not lPageControlHandle.CDControlInjected then
+    begin
+      TCDWSCustomTabControl.InjectCDControl(AWinControl, lPageControlHandle.CDControl);
+      lPageControlHandle.CDControlInjected := True;
+    end;
+    Result := lPageControlHandle.CDControl.Handle;
+  end
+  else
+    Result := TCDWSWinControl.CreateHandle(AWinControl, AParams);
+end;
 
 { TCDWSCustomTabControl }
 

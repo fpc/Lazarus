@@ -168,7 +168,8 @@ end;
 
 function RegisterTabSheet: Boolean; alias : 'WSRegisterTabSheet';
 begin
-  Result := False;
+  RegisterWSComponent(TCustomPage, TCDWSCustomPage);
+  Result := True;
 end;
 
 function RegisterPageControl: Boolean; alias : 'WSRegisterPageControl';
@@ -342,12 +343,14 @@ begin
 end;
 
 // extctrls
+// Already registered in function RegisterTabSheet: Boolean;
 function RegisterCustomPage: Boolean; alias : 'WSRegisterCustomPage';
 begin
-//  RegisterWSComponent(TCustomPage, TWinCEWSCustomPage);
+  //RegisterWSComponent(TCustomPage, TCDWSCustomPage);
   Result := False;
 end;
 
+// Already registered in function RegisterPageControl: Boolean;
 function RegisterCustomNotebook: Boolean; alias : 'WSRegisterCustomNotebook';
 begin
 //  RegisterWSComponent(TCustomTabControl, TWinCEWSCustomNotebook);
