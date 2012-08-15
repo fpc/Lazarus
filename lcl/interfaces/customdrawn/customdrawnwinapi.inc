@@ -5463,8 +5463,9 @@ begin
   {$endif}
   Result := 0;
   // Strangly this breaks the Android Virtual Keyboard =(
-  // Uncomment only when we can guarantee that this doesn't break Android Virtual Keyboard
-(*  if hwnd = 0 then
+  // Remove the ifdef only when we can guarantee that this doesn't break Android Virtual Keyboard
+  {$ifndef CD_Android}
+  if hwnd = 0 then
   begin
     Result := GetFocus();
     Exit;
@@ -5490,7 +5491,8 @@ begin
   else
   begin
     Result := BackendSetFocus(hWnd);
-  end;*)
+  end;
+  {$endif}
 end;
 
 (*function TQtWidgetSet.GetForegroundWindow: HWND;

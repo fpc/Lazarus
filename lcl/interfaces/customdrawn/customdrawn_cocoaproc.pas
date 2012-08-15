@@ -1499,11 +1499,50 @@ begin
   DebugLn('[TCocoaAccessibleObject.accessibilityIsAttributeSettable]');
   {$endif}
   Result := False;
+
+  //
+  // Value - The element’s value. May be settable.
+  //
+  if attribute.isEqualToString(NSAccessibilityValueAttribute) then
+  begin
+    if LCLAcc.AccessibleRole in [larComboBox, larTextEditorMultiline, larTextEditorSingleline] then
+    begin
+      Result := True;
+    end;
+  end
+  //
+  // Always Settable attributes
+  //
+  else if attribute.isEqualToString(NSAccessibilityFocusedAttribute) or
+    attribute.isEqualToString(NSAccessibilitySelectedTextAttribute) or
+    attribute.isEqualToString(NSAccessibilitySelectedTextRangeAttribute) or
+    attribute.isEqualToString(NSAccessibilityVisibleCharacterRangeAttribute) then
+  begin
+    Result := True;
+  end;
 end;
 
 procedure TCocoaAccessibleObject.accessibilitySetValue_forAttribute(value: id;
   attribute: NSString);
 begin
+  {$ifdef VerboseCDAccessibility}
+  DebugLn(':>[TCocoaAccessibleObject.accessibilitySetValue_forAttribute]');
+  {$endif}
+  if attribute.isEqualToString(NSAccessibilityFocusedAttribute) then
+  begin
+    {$ifdef VerboseCDAccessibility}
+    DebugLn(':<[TCocoaAccessibleObject.accessibilitySetValue_forAttribute] Control=%s:%s Value=%d',
+      [LCLControl.Name, LCLControl.ClassName, NSNumber(value).intValue()]);
+    {$endif}
+    if not (LCLControl is TWinControl) then Exit;
+    if not NSNumber(value).boolValue() then Exit;
+    if LCLInjectedControl <> nil then LCLInjectedControl.SetFocus()
+    else TWinControl(LCLControl).SetFocus();
+  end
+  else if attribute.isEqualToString(NSAccessibilityValueAttribute) then
+  begin
+    LCLControl.Caption := NSStringToString(value);
+  end;
 end;
 
 function TCocoaAccessibleObject.accessibilityParameterizedAttributeNames: NSArray;
