@@ -1087,8 +1087,13 @@ begin
 
     // ToDo: Ignore alpha blended controls
 
-    // Basic case: alClient
-    if lWinChild.Align = alClient then Exit(False);
+    // Basic case: alClient, but watch out for borders!!!
+    if (lWinChild.Align = alClient) and
+      (lWinChild.BorderSpacing.Around = 0) and
+      (lWinChild.BorderSpacing.Bottom = 0) and
+      (lWinChild.BorderSpacing.Left = 0) and
+      (lWinChild.BorderSpacing.Right = 0) and
+      (lWinChild.BorderSpacing.Top = 0) then Exit(False);
 
     // Another case: coordinates match
     if (lWinChild.Left = 0) and (lWinChild.Top = 0) and
