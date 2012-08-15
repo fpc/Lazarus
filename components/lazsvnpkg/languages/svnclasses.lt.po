@@ -1,14 +1,17 @@
+# Valdas Jankunas <zmuogs@gmail.com>, 2010, 2012.
 msgid ""
 msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
-"Last-Translator: Valdas Jankūnas <zmuogs@gmail.com>\n"
-"PO-Revision-Date: 2010-05-16 16:15+0300\n"
+"Last-Translator: Valdas Jankunas <zmuogs@gmail.com>\n"
+"PO-Revision-Date: 2012-08-06 18:46+0300\n"
 "Project-Id-Version: \n"
-"Language-Team: Lietuvių <kde-i18n-lt@kde.org>\n"
+"Language-Team: Lithuanian <kde-i18n-lt@kde.org>\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Lokalize 1.0\n"
+"X-Generator: Lokalize 1.5\n"
 "MIME-Version: 1.0\n"
-"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && (n%"
+"100<10 || n%100>=20) ? 1 : 2);\n"
+"Language: lt\n"
 
 #: svnclasses.rsaction
 msgid "Action"
@@ -16,7 +19,7 @@ msgstr "Veiksmas"
 
 #: svnclasses.rsadd
 msgid "Add to version control"
-msgstr ""
+msgstr "Įdėti laidos kontrolę"
 
 #: svnclasses.rsadded
 msgid "Added"
@@ -32,11 +35,11 @@ msgstr "Nusiųsta"
 
 #: svnclasses.rscommitmsg
 msgid "Commit Message"
-msgstr ""
+msgstr "Siuntimo pranešimas"
 
 #: svnclasses.rscommitmsghistory
 msgid "Commit Message History"
-msgstr ""
+msgstr "Siuntimo pranešimų istoriją"
 
 #: svnclasses.rscommitrevision
 msgid "Commit revision"
@@ -52,7 +55,7 @@ msgstr "Kopijuoti iš kelio"
 
 #: svnclasses.rscreatepatchfile
 msgid "Create patch file"
-msgstr ""
+msgstr "Kurti pataisos failą"
 
 #: svnclasses.rsdate
 msgid "Date"
@@ -80,7 +83,7 @@ msgstr "Plėtinys"
 
 #: svnclasses.rsfilenotinworkingcopyanymore
 msgid "File is not part of local working copy (anymore)"
-msgstr ""
+msgstr "Failas nėra (jau nebe) vietinės darbinės kopijos dalis"
 
 #: svnclasses.rsfilestatus
 msgid "File status"
@@ -95,22 +98,19 @@ msgid "LazarusSVN Commit"
 msgstr "LazarusSVN nusiuntimas"
 
 #: svnclasses.rslazarussvndiff
-#, fuzzy
 #| msgid "%s - LazarusSVN Diff..."
 msgid "%s - LazarusSVN Diff ..."
-msgstr "%s - LazarusSVN skirtumai..."
+msgstr "%s - LazarusSVN skirtumai…"
 
 #: svnclasses.rslazarussvnlog
-#, fuzzy
 #| msgid "%s - LazarusSVN Log..."
 msgid "%s - LazarusSVN Log ..."
-msgstr "%s - LazarusSVN žurnalas..."
+msgstr "%s - LazarusSVN žurnalas…"
 
 #: svnclasses.rslazarussvnupdate
-#, fuzzy
 #| msgid "%s - LazarusSVN Update..."
 msgid "%s - LazarusSVN Update ..."
-msgstr "%s - LazarusSVN naujinimas..."
+msgstr "%s - LazarusSVN naujinimas…"
 
 #: svnclasses.rsmerged
 msgid "Merged"
@@ -126,19 +126,19 @@ msgstr "(autoriaus nėra)"
 
 #: svnclasses.rsonlymodifieditemscanbediffed
 msgid "Only modified (M) Items can be diffed"
-msgstr ""
+msgstr "Skirtumų galima ieškoti tik modifikuotose (M) elementuose"
 
 #: svnclasses.rsopenfileineditor
 msgid "Open file in editor"
-msgstr ""
+msgstr "Failą atverti rengyklėje"
 
 #: svnclasses.rsopenpreviousrevisionineditor
 msgid "Open previous revision in editor"
-msgstr ""
+msgstr "Rengyklėje atverti ankstesnį poversijį"
 
 #: svnclasses.rsopenthisrevisionineditor
 msgid "Open this revision in editor"
-msgstr ""
+msgstr "Šį poversijį atverti rengyklėje"
 
 #: svnclasses.rspath
 msgid "Path"
@@ -170,7 +170,7 @@ msgstr "Savybės būsena"
 
 #: svnclasses.rsremove
 msgid "Remove from version control (keep local)"
-msgstr ""
+msgstr "Pašalinti iš versijų kontrolės (laikyti lokaliai)"
 
 #: svnclasses.rsrepositorypath
 msgid "Repository path"
@@ -198,21 +198,20 @@ msgstr "Rodyti skirtumus"
 
 #: svnclasses.rsshowdiffbase
 msgid "Show Diff of Local Changes"
-msgstr ""
+msgstr "Rodyti skirtumus tarp vietinių pakeitimų"
 
 #: svnclasses.rsshowdiffcountrev
-#, fuzzy
 #| msgid "Show last X commits"
 msgid "Show Last X Commits"
 msgstr "Rodyti paskutiniuosius X nusiuntimus"
 
 #: svnclasses.rsshowdiffhead
 msgid "Show Diff Against HEAD"
-msgstr ""
+msgstr "Rodyti skirtumus lyginant su HEAD"
 
 #: svnclasses.rsshowdiffprev
 msgid "Show Diff Against Previous Version"
-msgstr ""
+msgstr "Rodyti skirtumus lyginant su ankstesnėmis laidomis"
 
 #: svnclasses.rsshowlog
 msgid "Show log"
@@ -220,7 +219,8 @@ msgstr "Rodyti žurnalą"
 
 #: svnclasses.rssourcefiledoesnotbelongtotheprojectpleaseaddfirst
 msgid "Source file does not belong to the project. Please add first."
-msgstr "Pirminio kodo failas nėra projekto dalis. Jį reikia pridėti prie projekto."
+msgstr ""
+"Pirminio kodo failas nėra projekto dalis. Jį reikia pridėti prie projekto."
 
 #: svnclasses.rssvnsettings
 msgid "SVN settings"
@@ -237,4 +237,5 @@ msgstr "Naujinti"
 #: svnclasses.rsupdated
 msgid "Updated"
 msgstr "Atnaujinta"
+
 

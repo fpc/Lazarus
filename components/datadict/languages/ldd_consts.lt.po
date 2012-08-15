@@ -1,15 +1,17 @@
- Valdas Jankūnas <zmuogs@gmail.com>, 2010.
+# Valdas Jankūnas <zmuogs@gmail.com>, 2010, 2012.
 msgid ""
 msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
-"Last-Translator: Valdas Jankūnas <zmuogs@gmail.com>\n"
-"PO-Revision-Date: 2010-05-16 13:34+0300\n"
+"Last-Translator: Valdas Jankunas <zmuogs@gmail.com>\n"
+"PO-Revision-Date: 2012-08-06 12:37+0300\n"
 "Project-Id-Version: \n"
-"Language-Team: Lietuvių <kde-i18n-lt@kde.org>\n"
+"Language-Team: Lithuanian <kde-i18n-lt@kde.org>\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Lokalize 1.0\n"
+"X-Generator: Lokalize 1.5\n"
 "MIME-Version: 1.0\n"
-"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && (n%"
+"100<10 || n%100>=20) ? 1 : 2);\n"
+"Language: lt\n"
 
 #: ldd_consts.ldd_availablecodegenerators
 msgid "Available code generators"
@@ -172,10 +174,9 @@ msgid "Configuration"
 msgstr "Sąranka"
 
 #: ldd_consts.smenuconfprojdatadict
-#, fuzzy
 #| msgid "Set..."
 msgid "Set ..."
-msgstr "Nustatyti..."
+msgstr "Nustatyti…"
 
 #: ldd_consts.smenudatadesktop
 msgid "Database Desktop"
@@ -212,4 +213,5 @@ msgstr "Įspėjimas: duomenų žodyno laukas %s nėra apibrėžtas"
 #: ldd_consts.swrongselection
 msgid "Wrong selection count : %d"
 msgstr "Netinkamas išrinktųjų kiekis: %d"
+
 

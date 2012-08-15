@@ -1,18 +1,19 @@
 msgid ""
 msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
-"Last-Translator: Valdas Jankūnas <zmuogs@gmail.com>\n"
-"PO-Revision-Date: 2010-05-19 19:44+0300\n"
+"Last-Translator: Valdas Jankunas <zmuogs@gmail.com>\n"
+"PO-Revision-Date: 2012-08-06 22:23+0300\n"
 "Project-Id-Version: \n"
-"Language-Team: Lietuvių <kde-i18n-lt@kde.org>\n"
+"Language-Team: Lithuanian <kde-i18n-lt@kde.org>\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Lokalize 1.0\n"
+"X-Generator: Lokalize 1.5\n"
 "MIME-Version: 1.0\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"Language: lt\n"
 
 #: reconstsunit.sabout
 msgid "About..."
-msgstr "Apie..."
+msgstr "Apie…"
 
 #: reconstsunit.sbuilddate
 msgid "Build date : "
@@ -64,7 +65,7 @@ msgstr "Tai laisvoji programinė įranga, kuriai taikoma GNU GPL 2 licencija (ž
 
 #: reconstsunit.sopen
 msgid "Open..."
-msgstr "Atverti..."
+msgstr "Atverti…"
 
 #: reconstsunit.sotherguiwidgetset
 msgid "Other gui"
@@ -80,7 +81,7 @@ msgstr "Išteklių naršyklė"
 
 #: reconstsunit.ssaveresource
 msgid "Save resource..."
-msgstr "Įrašyti išteklius..."
+msgstr "Įrašyti išteklius…"
 
 #: reconstsunit.sstrings
 msgid "Strings"
