@@ -4226,8 +4226,11 @@ Application developers should use the <link id="TCustomGrid.SelectCell.OnSelectC
       <!-- property Visibility: protected -->
       <element name="TCustomGrid.SaveOptions">
         <short>The set of options for saving information from the grid (design, attributes, content or position)</short>
-        <descr/>
-        <seealso/>
+        <descr>These options are used when saving grid information, but also when loading grid information.</descr>
+        <seealso>
+	  <link id="TCustomGrid.LoadFromFile"/>
+	  <link id="TCustomGrid.SaveToFile"/>
+	</seealso>
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomGrid.SelectActive">
@@ -4555,9 +4558,12 @@ Application developers may use the OnSelection and OnBeforeSelection events to r
       <!-- procedure Visibility: public -->
       <element name="TCustomGrid.LoadFromFile">
         <short>Load the grid data from a file with the specified name</short>
-        <descr/>
+        <descr>Note that the SaveOptions property determines what information is loaded.</descr>
         <errors/>
-        <seealso/>
+        <seealso>
+	  <link id="TCustomGrid.SaveToFile"/>
+	  <link id="TCustomGrid.SaveOptions"/>
+	</seealso>
       </element>
       <!-- argument Visibility: default -->
       <element name="TCustomGrid.LoadFromFile.FileName">
@@ -4662,9 +4668,12 @@ Application developers may use the OnSelection and OnBeforeSelection events to r
       <!-- procedure Visibility: public -->
       <element name="TCustomGrid.SaveToFile">
         <short>Save the data in the grid to a file with specified name</short>
-        <descr/>
+        <descr>Note that the property SaveOptions determines what information is saved.</descr>
         <errors/>
-        <seealso/>
+        <seealso>
+	  <link id="TCustomGrid.LoadFromFile"/>
+	  <link id="TCustomGrid.SaveOptions"/>
+	</seealso>
       </element>
       <!-- argument Visibility: default -->
       <element name="TCustomGrid.SaveToFile.FileName">
