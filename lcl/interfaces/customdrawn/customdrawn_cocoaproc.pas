@@ -59,6 +59,7 @@ type
     function lclFrame: TRect; message 'lclFrame';
     procedure lclSetFrame(const r: TRect); message 'lclSetFrame:';
     function lclClientFrame: TRect; message 'lclClientFrame';
+    procedure lclSetClientFrame(const r: TRect); message 'lclSetClientFrame:';
     // callback routines
     procedure CallbackActivate; message 'CallbackActivate';
     procedure CallbackDeactivate; message 'CallbackDeactivate';
@@ -690,7 +691,7 @@ end;
 
 procedure TCocoaForm.lclSetFrame(const r:TRect);
 var
-  ns : NSREct;
+  ns: NSRect;
 begin
   if Assigned(screen)
     then LCLToNSRect(r, screen.frame.size.height, ns)
@@ -709,6 +710,25 @@ begin
   Result.Top:=Round(wr.size.height-b.origin.y);
   Result.Right:=Round(b.origin.x+b.size.width);
   Result.Bottom:=Round(Result.Top+b.size.height);
+end;
+
+procedure TCocoaForm.lclSetClientFrame(const r: TRect);
+var
+  ns, lAdjustedRect: NSRect;
+  lTitleBarHeight: Single;
+begin
+  if Assigned(screen)
+    then LCLToNSRect(r, screen.frame.size.height, ns)
+    else LCLToNSRect(r, ns);
+  // LCL coordinates are for the client area of the Window, while setFrame_display
+  // includes the title bar too, so we need to consider this here, but in a clever
+  // way, as to keep the window position the same
+  lAdjustedRect := frameRectForContentRect(ns);
+  lTitleBarHeight := lAdjustedRect.size.height - ns.size.height;
+  ns.origin.y := ns.origin.y - lTitleBarHeight;
+  ns.size.height := lAdjustedRect.size.height;
+
+  setFrame_display(ns, isVisible);
 end;
 
 procedure TCocoaForm.CallbackActivate;

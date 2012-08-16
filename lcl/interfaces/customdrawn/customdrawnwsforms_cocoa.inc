@@ -87,7 +87,7 @@ begin
   if AWinControl.Handle=0 then Exit;
   {todo: setFrame_display(, true)? }
   //sf:=NSScreen.mainScreen.frame;
-  TCocoaWindow(AWinControl.Handle).CocoaForm.lclSetFrame(Bounds(ALeft, ATop, AWidth, AHeight));
+  TCocoaWindow(AWinControl.Handle).CocoaForm.lclSetClientFrame(Bounds(ALeft, ATop, AWidth, AHeight));
 
   //LCLToCocoaRect( GetNSRect(ALeft,ATop,AWidth,AHeight), sf, wf);
   //NSWindow(AWinControl.Handle).setFrame_display(wf, false);
