@@ -255,14 +255,16 @@ begin
 end;
 
 procedure TfrmMain.FormCreate(Sender: TObject);
-const
-  FMT = '%g';
+var
+  eq: TFitSeries.IEquationText;
 begin
+  eq := TFitSeries.TEquationText.Create;
   with cbTestFunction do begin
-    Items.Add(ParamsToEquation(fePolynomial, POLY_PARAMS, FMT));
-    Items.Add(ParamsToEquation(feLinear, LIN_PARAMS, FMT));
-    Items.Add(ParamsToEquation(feExp, EXP_PARAMS, FMT));
-    Items.Add(ParamsToEquation(fePower, PWR_PARAMS, FMT));
+    Items.Add(eq.Equation(fePolynomial).Params(POLY_PARAMS));
+    Items.Add(eq.Equation(feLinear).Params(LIN_PARAMS));
+    Items.Add(eq.Equation(feExp).Params(EXP_PARAMS));
+    Items.Add(eq.Equation(fePower).Params(PWR_PARAMS));
+    Items.Add(eq.Equation(fePower).Params(PWR_PARAMS));
     ItemIndex := Ord(fePolynomial);
   end;
 
