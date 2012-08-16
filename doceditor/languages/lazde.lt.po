@@ -1,14 +1,15 @@
 msgid ""
 msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
-"Last-Translator: Valdas Jankūnas <zmuogs@gmail.com>\n"
-"PO-Revision-Date: 2010-05-19 19:20+0300\n"
+"Last-Translator: Valdas Jankunas <zmuogs@gmail.com>\n"
+"PO-Revision-Date: 2012-08-06 22:22+0300\n"
 "Project-Id-Version: \n"
-"Language-Team: Lietuvių <kde-i18n-lt@kde.org>\n"
+"Language-Team: Lithuanian <kde-i18n-lt@kde.org>\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Lokalize 1.0\n"
+"X-Generator: Lokalize 1.5\n"
 "MIME-Version: 1.0\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"Language: lt\n"
 
 #: lazdemsg.saboutformcaption
 msgid "About this application"
@@ -170,7 +171,7 @@ msgstr "&Slėpti apsaugotuosius metodus"
 
 #: lazdemsg.shinteditelementlink
 msgid "Edit element link"
-msgstr ""
+msgstr "Keisti elemento saitą"
 
 #: lazdemsg.shintfileclose
 msgid "Close current file"
@@ -308,7 +309,7 @@ msgstr "Lazarus dokumentacijos rengyklė"
 
 #: lazdemsg.slinksto
 msgid " links to "
-msgstr ""
+msgstr " saitas į "
 
 #: lazdemsg.sload
 msgid "&Load"
@@ -650,7 +651,7 @@ msgstr "Pradiniai kodai"
 
 #: lazdemsg.sstartnodenotfound
 msgid "Start element \"%s\" could not be found"
-msgstr ""
+msgstr "Pradžios elementas „%s“ nerastas"
 
 #: lazdemsg.stargetos
 msgid "Target OS"

@@ -1,0 +1,235 @@
+# Valdas Jankunas <zmuogs@gmail.com>, 2012.
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Last-Translator: Valdas Jankunas <zmuogs@gmail.com>\n"
+"PO-Revision-Date: 2012-08-06 13:07+0300\n"
+"Project-Id-Version: \n"
+"Language-Team: Lithuanian <kde-i18n-lt@kde.org>\n"
+"Language: lt\n"
+"Content-Transfer-Encoding: 8bit\n"
+"MIME-Version: 1.0\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && (n%"
+"100<10 || n%100>=20) ? 1 : 2);\n"
+"X-Generator: Lokalize 1.5\n"
+
+#: eduoptions.edurseducation
+msgid "Education"
+msgstr "Mokymas"
+
+#: eduoptions.ersaddanentrytothenewdialogtocreateanewprogram
+msgid "Add an entry to the %sNew ...%s dialog to create a new program"
+msgstr "Naujos programos kūrimui dialoge %sNaujas…%s pridėti elementą"
+
+#: eduoptions.ersaddanidemenuitemtocreateanewprogram
+msgid "Add an IDE menu item to create a new program"
+msgstr "Į IKA įdėti meniu elementą, skirtą naujos programos kūrimui"
+
+#: eduoptions.ersaddaspeedbuttontotheidetoolbartocreateanewprogram
+msgid "Add a speed button to the IDE toolbar to create a new program"
+msgstr "Į IKA įdėti spartos mygtuką, skirtą naujos programos kūrimui"
+
+#: eduoptions.ersaddicon
+msgid "Add icon"
+msgstr "Pridėti piktogramą"
+
+#: eduoptions.ersaddmenuitem
+msgid "Add menu item"
+msgstr "Pridėti meniu elementą"
+
+#: eduoptions.ersaddtonewdialog
+msgid "Add to %sNew ...%s dialog"
+msgstr "Įdėti į dialogą %sNaujas…%s"
+
+#: eduoptions.ersasimpleprogramonlyonefileiscreatedandaddedtothecur
+msgid ""
+"A simple program. Only one file is created and added to the current project."
+msgstr ""
+"Paprasta programa. Į veikiamąjį projektą bus sukurtas ir įdėtas tik vienas "
+"failas."
+
+#: eduoptions.erseducomppalettetitle
+msgid "Component palette"
+msgstr "Komponenčių paletė"
+
+#: eduoptions.erseduenvoptsframetitle
+msgid "General"
+msgstr "Pagrindinis"
+
+#: eduoptions.ersedumenutitle
+msgid "Menus"
+msgstr "Meniu"
+
+#: eduoptions.ersedunewprogramtitle
+msgctxt "eduoptions.ersedunewprogramtitle"
+msgid "New program"
+msgstr "Nauja programa"
+
+#: eduoptions.erseduoipages
+msgid "Object Inspector"
+msgstr "Objektų inspektorius"
+
+#: eduoptions.ersedupropseventstitle
+msgid "Properties and Events"
+msgstr "Savybės ir įvykiai"
+
+#: eduoptions.ersedusbtitle
+msgid "Speed Buttons"
+msgstr "Spartieji mygtukai"
+
+#: eduoptions.ersenableeducheckboxcaption
+msgid "Enable education settings"
+msgstr "Įgalinti mokymo nuostatas"
+
+#: eduoptions.ersgrpboxeventsext
+msgid "Events: Extended Configuration"
+msgstr "Įvykiai: išplėstinė sąranka"
+
+#: eduoptions.ersgrpboxeventsfull
+msgid "Events: Full Configuration"
+msgstr "Įvykiai: pilna sąranka"
+
+#: eduoptions.ersgrpboxeventsmin
+msgid "Events: Minimal Configuration"
+msgstr "Įvykiai: minimali sąranka"
+
+#: eduoptions.ersgrpboxpropsext
+msgid "Properties: Extended Configuration"
+msgstr "Savybės: išplėstinė sąranka"
+
+#: eduoptions.ersgrpboxpropsfull
+msgid "Properties: Full Configuration"
+msgstr "Savybės: pilna sąranka"
+
+#: eduoptions.ersgrpboxpropsmin
+msgid "Properties: Minimal Configuration"
+msgstr "Savybės: minimali sąranka"
+
+#: eduoptions.ershideall
+msgid "Hide all"
+msgstr "Visus slėpti"
+
+#: eduoptions.ersidemenuitems
+msgid "IDE menu items"
+msgstr "IKA meniu elementai"
+
+#: eduoptions.ersloaddefaultcode
+msgid "Load default code?"
+msgstr "Įkelti numatytą kodą?"
+
+#: eduoptions.ersloadsourcefromfile
+msgid "Load source from file"
+msgstr "Pirminį kodą įkelti iš failo"
+
+#: eduoptions.ersnewprogram
+msgctxt "eduoptions.ersnewprogram"
+msgid "New program"
+msgstr "Nauja programa"
+
+#: eduoptions.ersnewsinglefileeducationprogram
+msgid "New single file education program"
+msgstr "Nauja vieno failo mokymo programa"
+
+#: eduoptions.ersnewsinglefileprogram
+msgid "New single file program"
+msgstr "Nauja vieno failo programa"
+
+#: eduoptions.ersrdbtnfull
+msgid "Show All"
+msgstr "Rodyti visus"
+
+#: eduoptions.ersrdgrpeventscaption
+msgid "Events"
+msgstr "Įvykiai"
+
+#: eduoptions.ersrdgrppropscaption
+msgid "Properties"
+msgstr "Savybės"
+
+#: eduoptions.ersreplacecurrentsourcewithdefaultsourcecode
+msgid "Replace current source with default source code"
+msgstr "Dabartinį pirminį kodą pakeisti numatytuoju"
+
+#: eduoptions.ersreplacecurrentwithdefaultsourcecode
+msgid "Replace current with default source code?"
+msgstr "Dabartinį pirminį kodą pakeisti numatytuoju?"
+
+#: eduoptions.ersshowall
+msgid "Show all"
+msgstr "Rodyti visus"
+
+#: eduoptions.ersshowallchilds
+msgid "Show all children"
+msgstr "Rodyti visus vaikus"
+
+#: eduoptions.ersshowextended
+msgid "Show Extended"
+msgstr "Rodyti išplėstą"
+
+#: eduoptions.ersshowminimal
+msgid "Show Minimal"
+msgstr "Rodyti minimalų"
+
+#: eduoptions.ersshowoipages
+msgid "Show Object Inspector Pages"
+msgstr "Rodyti objektų inspektoriaus lapus"
+
+#: eduoptions.ersshowselection
+msgid "Show Selection"
+msgstr "Rodyti žymėjimą"
+
+#: eduoptions.erssinglefileprogram
+msgid "Single file program"
+msgstr "Vieno failo programa"
+
+#: eduoptions.erssource
+msgid "Source"
+msgstr "Pirminis kodas"
+
+#: eduoptions.erssttexteventsext
+msgid ""
+"OnClick, OnChange, OnMouseMove, OnDblClick, OnCreate, OnKeyPress, OnFormCreate"
+msgstr ""
+"OnClick, OnChange, OnMouseMove, OnDblClick, OnCreate, OnKeyPress, OnFormCreate"
+
+#: eduoptions.erssttexteventsfull
+msgid "All Events available"
+msgstr "Galimi visi įvykiai"
+
+#: eduoptions.erssttexteventsmin
+msgid "OnClick, OnChange, OnMouseMove"
+msgstr "OnClick, OnChange, OnMouseMove"
+
+#: eduoptions.erssttextpropsext
+msgid ""
+"Align, Left, Top, Hint, ShowHint, ParentFont, TabOrder, ParentShowHint, "
+"WordWrap, FixedCols, FixedRows, DefaultColWidth, DefaultRowHeight, ColCount, "
+"RowCount, Borderstyle, Glyph, State, Interval, DataSource, DataField + "
+"DB-Properties"
+msgstr ""
+"Align, Left, Top, Hint, ShowHint, ParentFont, TabOrder, ParentShowHint, "
+"WordWrap, FixedCols, FixedRows, DefaultColWidth, DefaultRowHeight, ColCount, "
+"RowCount, Borderstyle, Glyph, State, Interval, DataSource, DataField + "
+"DB-Properties"
+
+#: eduoptions.erssttextpropsfull
+msgid "All Properties available"
+msgstr "Galimos visos savybės"
+
+#: eduoptions.erssttextpropsmin
+msgid ""
+"Name, Caption, Visible, Text, Checked, Items, Font, Color, Enabled, Height, "
+"Width, MaxLength, Picture, Columns"
+msgstr ""
+"Name, Caption, Visible, Text, Checked, Items, Font, Color, Enabled, Height, "
+"Width, MaxLength, Picture, Columns"
+
+#: eduoptions.ersvisiblecomponents
+msgid "Visible components"
+msgstr "Matomos komponentės"
+
+#: eduoptions.ersvisiblespeedbuttons
+msgid "Visible SpeedButtons"
+msgstr "Matomi spartos mygtukai"
+
+

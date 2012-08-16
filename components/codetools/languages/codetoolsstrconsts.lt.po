@@ -2,33 +2,34 @@ msgid ""
 msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"PO-Revision-Date: 2010-05-16 13:00+0300\n"
+"PO-Revision-Date: 2012-08-04 00:02+0300\n"
 "Project-Id-Version: codetoolsstrconsts\n"
-"Language-Team: Lietuvių <kde-i18n-lt@kde.org>\n"
-"X-Generator: Lokalize 1.0\n"
-"Last-Translator: Valdas Jankūnas <zmuogs@gmail.com>\n"
+"Language-Team: Lithuanian <kde-i18n-lt@kde.org>\n"
+"X-Generator: Lokalize 1.4\n"
+"Last-Translator: Valdas Jankunas <zmuogs@gmail.com>\n"
 "MIME-Version: 1.0\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"Language: lt\n"
 
 #: codetoolsstrconsts.crsbracketnotfound
 msgid "bracket ) not found"
-msgstr ""
+msgstr "sklaustas „)“ nerastas"
 
 #: codetoolsstrconsts.crsbracketnotfound2
 msgid "bracket ] not found"
-msgstr ""
+msgstr "sklaustas „]“ nerastas"
 
 #: codetoolsstrconsts.crsclosingbracketnotfound
 msgid "closing bracket not found"
-msgstr ""
+msgstr "uždarantysis skliaustas nerastas"
 
 #: codetoolsstrconsts.crsfoundunexpectedat
 msgid "%s, found unexpected %s at %s"
-msgstr ""
+msgstr "%s, rastas netikėtas „%s“ ties %s"
 
 #: codetoolsstrconsts.crsrecordendnotfound
 msgid "record end not found"
-msgstr ""
+msgstr "nerasta įrašo pabaiga"
 
 #: codetoolsstrconsts.ctsaddsdirtoincludepath
 msgid "adds %s to IncPath"
@@ -60,7 +61,7 @@ msgstr "nerastas „%s“ bazinis tipas"
 
 #: codetoolsstrconsts.ctsbeginatwithoutend
 msgid "begin at %s without end"
-msgstr ""
+msgstr "„begin“ ties %s neturi „end“"
 
 #: codetoolsstrconsts.ctsbinaryoperator
 msgid "binary operator"
@@ -80,7 +81,7 @@ msgstr "tikėtasi atidarančiojo skliausto, tačiau aptikta %s"
 
 #: codetoolsstrconsts.ctscharacterconstantoutofrange
 msgid "character constant out of range"
-msgstr ""
+msgstr "simbolinė konstanta peržengia ribas"
 
 #: codetoolsstrconsts.ctscircleindefinitions
 msgid "circle in definitions"
@@ -156,7 +157,7 @@ msgstr "Derintuvės aplankas"
 
 #: codetoolsstrconsts.ctsdefaultancestornotfound
 msgid "default ancestor %s not found"
-msgstr ""
+msgstr "nerastas numatytasis protėvis „%s“"
 
 #: codetoolsstrconsts.ctsdefaultclassancestortobjectnotfound
 msgid "default class ancestor TObject not found"
@@ -164,27 +165,27 @@ msgstr "nerastas klasės protėvis TObject"
 
 #: codetoolsstrconsts.ctsdefaultdispinterfaceancestoridispatchnotfound
 msgid "default dispinterface ancestor IDispatch not found"
-msgstr ""
+msgstr "nerastas „dispinterface“ numatytasis protėvis „IDispatch“"
 
 #: codetoolsstrconsts.ctsdefaultfpcsource2operatingsystem
 msgid "Default fpc source Operating System 2"
-msgstr ""
+msgstr "FPC pirminio kodo numatytoji operacinė sistema 2"
 
 #: codetoolsstrconsts.ctsdefaultfpcsourceoperatingsystem
 msgid "Default fpc source Operating System"
-msgstr ""
+msgstr "FPC pirminio kodo numatytoji operacinė sistema"
 
 #: codetoolsstrconsts.ctsdefaultfpcsymbol
 msgid "Default fpc symbol"
-msgstr ""
+msgstr "Numatytasis FPC simbolis"
 
 #: codetoolsstrconsts.ctsdefaultfpctargetoperatingsystem
 msgid "Default fpc target Operating System"
-msgstr ""
+msgstr "Numatyta FPC paskirties operacinė sistema"
 
 #: codetoolsstrconsts.ctsdefaultfpctargetprocessor
 msgid "Default fpc target processor"
-msgstr ""
+msgstr "Numatytas FPC paskirties procesorius"
 
 #: codetoolsstrconsts.ctsdefaultinterfaceancestoriinterfacenotfound
 msgid "default interface ancestor IInterface not found"
@@ -192,7 +193,7 @@ msgstr "nerastas interfeiso protėvis IInterface"
 
 #: codetoolsstrconsts.ctsdefaultjavaclassancestorjlobjectnotfound
 msgid "default java class ancestor JLObject not found"
-msgstr ""
+msgstr "nerastas „java“ klasės protėvis „JLObject“"
 
 #: codetoolsstrconsts.ctsdefaultparameterexpectedbutatomfound
 msgid "default parameter expected, but %s found"
@@ -296,17 +297,16 @@ msgstr "nerasta įrašo pabaiga"
 
 #: codetoolsstrconsts.ctsendoffile
 msgid "end of file"
-msgstr ""
+msgstr "Failo pabaiga"
 
 #: codetoolsstrconsts.ctsendofsourceexpectedbutatomfound
 msgid "expected end., but %s found"
 msgstr "tikėtasi „end.“, tačiau aptikta %s"
 
 #: codetoolsstrconsts.ctsendofsourcenotfound
-#, fuzzy
 #| msgid "End of source not found"
 msgid "End of source not found."
-msgstr "Nerasta pirminio kodo pabaiga"
+msgstr "Nerasta pirminio kodo pabaiga."
 
 #: codetoolsstrconsts.ctsenumerationtype
 msgid "enumeration type"
@@ -338,27 +338,27 @@ msgstr "%s apibrėžtas leidimas startuoti"
 
 #: codetoolsstrconsts.ctsexpected
 msgid "\"%s\" expected"
-msgstr ""
+msgstr "tikėtasi „%s“"
 
 #: codetoolsstrconsts.ctsexpectedbutfound
 msgid "expected (, but found %s"
-msgstr ""
+msgstr "tikėtasi „(“, tačiau rasta „%s“"
 
 #: codetoolsstrconsts.ctsexpectedbutfound2
 msgid "expected ), but found %s"
-msgstr ""
+msgstr "tikėtasi „)“, tačiau rasta „%s“"
 
 #: codetoolsstrconsts.ctsexpectedbutfound3
 msgid "expected :=, but %s found"
-msgstr ""
+msgstr "tikėtasi „:=“, tačiau rasta „%s“"
 
 #: codetoolsstrconsts.ctsexpectedidentifierbutfound
 msgid "expected identifier, but found %s"
-msgstr ""
+msgstr "tikėtasi identifikatoriaus, tačiau rasta „%s“"
 
 #: codetoolsstrconsts.ctsexpectedsemicolonofstatementbutfound
 msgid "expected ; of statement, but found %s"
-msgstr ""
+msgstr "tikėtasi sakinio „;“, tačiau rasta „%s“"
 
 #: codetoolsstrconsts.ctsexportsclauseonlyallowedinlibraries
 msgid "exports clause only allowed in libraries"
@@ -424,7 +424,7 @@ msgstr "gtk2 interfeiso aplankas"
 
 #: codetoolsstrconsts.ctshaserror
 msgid "HasError"
-msgstr ""
+msgstr "TuriKlaida"
 
 #: codetoolsstrconsts.ctsidedirectory
 msgid "IDE Directory"
@@ -460,7 +460,7 @@ msgstr "identifikatorius nerastas: %s"
 
 #: codetoolsstrconsts.ctsifdefdarwin
 msgid "IfDef Darwin"
-msgstr ""
+msgstr "IfDef Darwin"
 
 #: codetoolsstrconsts.ctsifdeflinux
 msgid "IfDef Linux"
@@ -568,7 +568,7 @@ msgstr "veiksenos perjungiklis „%s“ yra klaidingas"
 
 #: codetoolsstrconsts.ctsinvalidoperator
 msgid "invalid operator %s"
-msgstr ""
+msgstr "Klaidingas operatorius „%s“<"
 
 #: codetoolsstrconsts.ctsinvalidsubrange
 msgid "invalid subrange"
@@ -616,7 +616,7 @@ msgstr "metodo pavadinimas"
 
 #: codetoolsstrconsts.ctsmethodsignaturesnotfoundinclass
 msgid "Method signature %s not found in class"
-msgstr ""
+msgstr "Klasėje nerasta metodo signatūra „%s“"
 
 #: codetoolsstrconsts.ctsmethodtypedefinitionnotfound
 msgid "method type definition not found"
@@ -624,7 +624,7 @@ msgstr "nerasta metodo tipo apibrėžtis"
 
 #: codetoolsstrconsts.ctsmissing
 msgid "missing :="
-msgstr ""
+msgstr "trūksta „:=“"
 
 #: codetoolsstrconsts.ctsmissingenumlist
 msgid "missing enum list"
@@ -676,7 +676,7 @@ msgstr "„%s“ skirtas žvalgytuvas nerastas. Jei tai įdedamasis failas, pirm
 
 #: codetoolsstrconsts.ctsnotenoughgenparams
 msgid "Not enough actual generic parameters"
-msgstr ""
+msgstr "Per mažai tikrų daugybinių parametrų"
 
 #: codetoolsstrconsts.ctsoldmethodnotfound
 msgid "old method not found: %s"
@@ -684,29 +684,29 @@ msgstr "nerastas senasis metodas: %s"
 
 #: codetoolsstrconsts.ctsoperandexpectedbutfound
 msgid "operand expected but %s found"
-msgstr ""
+msgstr "tikėtasi operando, tačiau rasta „%s“"
 
 #: codetoolsstrconsts.ctsoperandexpectedbutfound2
 msgid "operand expected, but %s found"
-msgstr ""
+msgstr "tikėtasi operando, tačiau rasta „%s“"
 
 #: codetoolsstrconsts.ctsoperatorexpectedbutatomfound
 msgctxt "codetoolsstrconsts.ctsoperatorexpectedbutatomfound"
 msgid "operator expected, but %s found"
-msgstr ""
+msgstr "tikėtasi operatoriaus, tačiau rasta „%s“"
 
 #: codetoolsstrconsts.ctsoperatorexpectedbuteoffound
 msgid "unexpected end of file (operator expected)"
-msgstr ""
+msgstr "netikėta failo pabaiga (tikėtasi operatoriaus)"
 
 #: codetoolsstrconsts.ctsoperatorexpectedbutfound
 msgid "operator expected but %s found"
-msgstr ""
+msgstr "tikėtasi operatoriaus, tačiau rasta „%s“"
 
 #: codetoolsstrconsts.ctsoperatorexpectedbutfound2
 msgctxt "codetoolsstrconsts.ctsoperatorexpectedbutfound2"
 msgid "operator expected, but %s found"
-msgstr ""
+msgstr "tikėtasi operatoriaus, tačiau rasta „%s“"
 
 #: codetoolsstrconsts.ctsothercompilerdefines
 msgid "%s Compiler Defines"
@@ -778,7 +778,7 @@ msgstr "Veikos meto biblioteka"
 
 #: codetoolsstrconsts.ctsscannedfiles
 msgid "Scanned files: %s"
-msgstr ""
+msgstr "Skenuota failų: %s"
 
 #: codetoolsstrconsts.ctssemicolonafterpropspecmissing
 msgid "; expected after \"%s\" property specifier, but %s found"
@@ -842,7 +842,7 @@ msgstr "Termas neturi paprasto tipo"
 
 #: codetoolsstrconsts.ctsthenexpectedbutfound
 msgid "then expected, but %s found"
-msgstr ""
+msgstr "tikėtasi „then“, tačiau rasta „%s“"
 
 #: codetoolsstrconsts.ctstoolsdirectory
 msgid "Tools Directory"
@@ -886,7 +886,7 @@ msgstr "netikėtas raktažodis „%s“"
 
 #: codetoolsstrconsts.ctsunexpectedkeyword2
 msgid "unexpected keyword %s"
-msgstr ""
+msgstr "netikėtas raktažodis „%s“"
 
 #: codetoolsstrconsts.ctsunexpectedkeywordinasmblock
 msgid "unexpected keyword \"%s\" in asm block found"

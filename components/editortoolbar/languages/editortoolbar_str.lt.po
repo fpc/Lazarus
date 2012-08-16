@@ -1,0 +1,68 @@
+# Valdas Jankunas <zmuogs@gmail.com>, 2012.
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Last-Translator: Valdas Jankunas <zmuogs@gmail.com>\n"
+"PO-Revision-Date: 2012-08-06 12:46+0300\n"
+"Project-Id-Version: \n"
+"Language-Team: Lithuanian <kde-i18n-lt@kde.org>\n"
+"Language: lt\n"
+"Content-Transfer-Encoding: 8bit\n"
+"MIME-Version: 1.0\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && (n%"
+"100<10 || n%100>=20) ? 1 : 2);\n"
+"X-Generator: Lokalize 1.5\n"
+
+#: editortoolbar_str.rsadddivider
+msgid "Add Divider"
+msgstr "Pridėti skyriklį"
+
+#: editortoolbar_str.rsaddselected
+msgid "Add selected item to toolbar"
+msgstr "Pažymėtą elementą įdėti į įrankių juostą"
+
+#: editortoolbar_str.rscancel
+msgid "Cancel"
+msgstr "Atsisakyti"
+
+#: editortoolbar_str.rsconfiguretoo
+msgid "Configure Toolbar"
+msgstr "Derinti įrankių juostą"
+
+#: editortoolbar_str.rseditortoolbarconfigform
+msgid "Editor Toolbar Configuration"
+msgstr "Rengyklės įrankių juostos sąranka"
+
+#: editortoolbar_str.rsjumpto
+msgid "Jump To"
+msgstr "Šokti į"
+
+#: editortoolbar_str.rsmenutree
+msgid "Available Menu Items"
+msgstr "Esami meniu elementai"
+
+#: editortoolbar_str.rsmoveselecteddown
+msgid "Move selected toolbar item down"
+msgstr "Pažymėtą įrankių juostos elementą perkelti žemyn"
+
+#: editortoolbar_str.rsmoveselectedup
+msgid "Move selected toolbar item up"
+msgstr "Pažymėtą įrankių juostos elementą perkelti aukštyn"
+
+#: editortoolbar_str.rsok
+msgid "OK"
+msgstr "Tinka"
+
+#: editortoolbar_str.rsremoveselected
+msgid "Remove selected item from toolbar"
+msgstr "Iš įrankių juostos pašalinti pažymėtą elementą"
+
+#: editortoolbar_str.rstoolbar
+msgid "Toolbar Items"
+msgstr "Įrankių juostos elementai"
+
+#: editortoolbar_str.serrcouldnotfind
+msgid "Could not find <%s>"
+msgstr "Nepavyko rasti <%s>"
+
+

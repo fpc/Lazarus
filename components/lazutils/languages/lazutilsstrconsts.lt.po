@@ -1,0 +1,89 @@
+# Valdas Jankunas <zmuogs@gmail.com>, 2012.
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Last-Translator: Valdas Jankunas <zmuogs@gmail.com>\n"
+"PO-Revision-Date: 2012-08-06 18:53+0300\n"
+"Project-Id-Version: \n"
+"Language-Team: Lithuanian <kde-i18n-lt@kde.org>\n"
+"Language: lt\n"
+"Content-Transfer-Encoding: 8bit\n"
+"MIME-Version: 1.0\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && (n%"
+"100<10 || n%100>=20) ? 1 : 2);\n"
+"X-Generator: Lokalize 1.5\n"
+
+#: lazutilsstrconsts.lrsadirectorycomponentindoesnotexistorisadanglingsyml
+msgctxt ""
+"lazutilsstrconsts.lrsadirectorycomponentindoesnotexistorisadanglingsyml"
+msgid "a directory component in %s does not exist or is a dangling symlink"
+msgstr ""
+"%s esantis aplanko komponentas neegzistuoja arba jis yra betikslis simbolinis "
+"saitas"
+
+#: lazutilsstrconsts.lrsadirectorycomponentindoesnotexistorisadanglingsyml2
+msgctxt ""
+"lazutilsstrconsts.lrsadirectorycomponentindoesnotexistorisadanglingsyml2"
+msgid "a directory component in %s does not exist or is a dangling symlink"
+msgstr ""
+"%s esantis aplanko komponentas neegzistuoja arba jis yra betikslis simbolinis "
+"saitas"
+
+#: lazutilsstrconsts.lrsadirectorycomponentinisnotadirectory
+msgctxt "lazutilsstrconsts.lrsadirectorycomponentinisnotadirectory"
+msgid "a directory component in %s is not a directory"
+msgstr "%s esantis aplanko komponentas nėra aplankas"
+
+#: lazutilsstrconsts.lrsadirectorycomponentinisnotadirectory2
+msgctxt "lazutilsstrconsts.lrsadirectorycomponentinisnotadirectory2"
+msgid "a directory component in %s is not a directory"
+msgstr "%s esantis aplanko komponentas nėra aplankas"
+
+#: lazutilsstrconsts.lrsfiledoesnotexist
+msgid "file \"%s\" does not exist"
+msgstr "failas „%s“ neegzistuoja"
+
+#: lazutilsstrconsts.lrsfileisadirectoryandnotanexecutable
+msgid "file \"%s\" is a directory and not an executable"
+msgstr "failas „%s“ yra aplankas, o ne vykdomasis failas"
+
+#: lazutilsstrconsts.lrshasacircularsymboliclink
+msgid "%s has a circular symbolic link"
+msgstr "%s turi uždarą simbolinį saitą"
+
+#: lazutilsstrconsts.lrsinsufficientmemory
+msgid "insufficient memory"
+msgstr "trūksta atminties"
+
+#: lazutilsstrconsts.lrsinvalidcharset
+msgctxt "lazutilsstrconsts.lrsinvalidcharset"
+msgid "The char set in mask \"%s\" is not valid!"
+msgstr "Klaidinga kaukės „%s“ koduotė!"
+
+#: lazutilsstrconsts.lrsisnotasymboliclink
+msgid "%s is not a symbolic link"
+msgstr "%s nėra simbolinis saitas"
+
+#: lazutilsstrconsts.lrsisnotexecutable
+msgid "%s is not executable"
+msgstr "%s nėra vykdomasis failas"
+
+#: lazutilsstrconsts.lrsmodified
+msgctxt "lazutilsstrconsts.lrsmodified"
+msgid "  modified "
+msgstr "  pakeista "
+
+#: lazutilsstrconsts.lrsreadaccessdeniedfor
+msgid "read access denied for %s"
+msgstr "iš %s skaityti draudžiama"
+
+#: lazutilsstrconsts.lrssize
+msgctxt "lazutilsstrconsts.lrssize"
+msgid "  size "
+msgstr "  dydis "
+
+#: lazutilsstrconsts.lrsunabletocreateconfigdirectorys
+msgid "Unable to create config directory \"%s\""
+msgstr "Nepavyko sukurti aplanko „%s“ konfigūracijai"
+
+

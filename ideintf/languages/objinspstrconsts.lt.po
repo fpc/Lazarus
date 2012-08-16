@@ -2,13 +2,14 @@ msgid ""
 msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"PO-Revision-Date: 2010-05-19 20:05+0300\n"
+"PO-Revision-Date: 2012-08-06 22:39+0300\n"
 "Project-Id-Version: objinspstrconsts\n"
-"Language-Team: Lietuvių <kde-i18n-lt@kde.org>\n"
-"X-Generator: Lokalize 1.0\n"
+"Language-Team: Lithuanian <kde-i18n-lt@kde.org>\n"
+"X-Generator: Lokalize 1.5\n"
 "MIME-Version: 1.0\n"
-"Last-Translator: Valdas Jankūnas <zmuogs@gmail.com>\n"
+"Last-Translator: Valdas Jankunas <zmuogs@gmail.com>\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"Language: lt\n"
 
 #: objinspstrconsts.cactionlisteditorallcategory
 msgid "(All)"
@@ -132,7 +133,7 @@ msgstr "Viršun"
 
 #: objinspstrconsts.fescalculated
 msgid "&Calculated"
-msgstr ""
+msgstr "Ap&skaičiuota"
 
 #: objinspstrconsts.fescancelbtn
 msgctxt "objinspstrconsts.fescancelbtn"
@@ -145,60 +146,58 @@ msgstr "Patikrinkite duomenų aibės nustatymus"
 
 #: objinspstrconsts.fesdata
 msgid "&Data"
-msgstr ""
+msgstr "&Duomenys"
 
 #: objinspstrconsts.fesdataset
 msgid "&Dataset:"
-msgstr ""
+msgstr "Duo&menų aibė:"
 
 #: objinspstrconsts.fesfetitle
-#, fuzzy
 #| msgid "Edit Fields..."
 msgid "Edit Fields ..."
-msgstr "Keisti laukus..."
+msgstr "Keisti laukus…"
 
 #: objinspstrconsts.fesfieldcantbec
 msgid "Field %s cannot be created!"
-msgstr ""
+msgstr "Neina sukurti laukelio „%s“!"
 
 #: objinspstrconsts.fesfieldprops
 msgid "Field properties"
-msgstr ""
+msgstr "Laukelio savybės"
 
 #: objinspstrconsts.fesfieldtype
 msgid "Field Type"
-msgstr ""
+msgstr "Laukelio tipas"
 
 #: objinspstrconsts.fesfltitle
 msgid "FieldDefs"
 msgstr "FieldDefs"
 
 #: objinspstrconsts.fesformcaption
-#, fuzzy
 #| msgid "New fileld"
 msgctxt "objinspstrconsts.fesformcaption"
 msgid "New field"
-msgstr "Dialogas"
+msgstr "Naujas laukelis"
 
 #: objinspstrconsts.feskeyfield
 msgid "&Key fields:"
-msgstr ""
+msgstr "&Raktiniai laukeliai:"
 
 #: objinspstrconsts.feslookup
 msgid "&Lookup"
-msgstr ""
+msgstr "&Ieškoti"
 
 #: objinspstrconsts.feslookupdef
 msgid "Lookup definition"
-msgstr ""
+msgstr "Ieškoti apibrėžties"
 
 #: objinspstrconsts.feslookupkeys
 msgid "L&ookup keys:"
-msgstr ""
+msgstr "I&eškos raktai:"
 
 #: objinspstrconsts.fesname
 msgid "&Name:"
-msgstr ""
+msgstr "&Pavadinimas:"
 
 #: objinspstrconsts.fesnofields
 msgid "It was not possible to get the dataset field's list"
@@ -215,19 +214,19 @@ msgstr "Tinka"
 
 #: objinspstrconsts.fespersistentcompname
 msgid "Co&mponent Name:"
-msgstr ""
+msgstr "&Komponentės pavadinimas:"
 
 #: objinspstrconsts.fesresultfield
 msgid "&Result Fields:"
-msgstr ""
+msgstr "Re&zultato laukeliai:"
 
 #: objinspstrconsts.fessize
 msgid "&Size:"
-msgstr ""
+msgstr "D&ydis:"
 
 #: objinspstrconsts.festype
 msgid "&Type:"
-msgstr ""
+msgstr "&Tipas:"
 
 #: objinspstrconsts.ilesadd
 msgctxt "objinspstrconsts.ilesadd"
@@ -263,40 +262,34 @@ msgid "Set value"
 msgstr "Keisti vertę"
 
 #: objinspstrconsts.nbcesaddpage
-#, fuzzy
 #| msgid "Add page"
 msgid "Add Page"
 msgstr "Pridėti lapą"
 
 #: objinspstrconsts.nbcesdeletepage
-#, fuzzy
 #| msgid "Delete page"
 msgid "Delete Page"
 msgstr "Pašalinti lapą"
 
 #: objinspstrconsts.nbcesinsertpage
-#, fuzzy
 #| msgid "Insert page"
 msgid "Insert Page"
 msgstr "Įterpti lapą"
 
 #: objinspstrconsts.nbcesmovepageleft
-#, fuzzy
 #| msgid "Move page left"
 msgid "Move Page Left"
 msgstr "Lapą perkelti kairėn"
 
 #: objinspstrconsts.nbcesmovepageright
-#, fuzzy
 #| msgid "Move page right"
 msgid "Move Page Right"
 msgstr "Lapą perkelti dešinėn"
 
 #: objinspstrconsts.nbcesshowpage
-#, fuzzy
 #| msgid "Show page ..."
 msgid "Show Page"
-msgstr "Rodyti lapą..."
+msgstr "Rodyti lapą"
 
 #: objinspstrconsts.oicoleditadd
 msgctxt "objinspstrconsts.oicoleditadd"
@@ -335,10 +328,9 @@ msgid "Action"
 msgstr "Veiksmas"
 
 #: objinspstrconsts.oisactionlistcomponenteditor
-#, fuzzy
 #| msgid "Action&List Editor..."
 msgid "Action&List Editor ..."
-msgstr "ActionList &rengyklė..."
+msgstr "ActionList rengy&klė…"
 
 #: objinspstrconsts.oisactionlisteditor
 #| msgid "Action List Editor"
@@ -382,11 +374,10 @@ msgid "&Add"
 msgstr "Pri&dėti"
 
 #: objinspstrconsts.oiscancel
-#, fuzzy
 #| msgid "&Cancel"
 msgctxt "objinspstrconsts.oiscancel"
 msgid "Cancel"
-msgstr "&Atsisakyti"
+msgstr "Atsisakyti"
 
 #: objinspstrconsts.oiscategory
 msgid "Category"
@@ -394,7 +385,7 @@ msgstr "Kategorija"
 
 #: objinspstrconsts.oiscdelete
 msgid "Delete?"
-msgstr ""
+msgstr "Pašalinti?"
 
 #: objinspstrconsts.oischar
 msgid "Char"
@@ -521,13 +512,12 @@ msgstr "Realusis skaičius"
 
 #: objinspstrconsts.oishelp
 msgid "&Help"
-msgstr ""
+msgstr "Žin&ynas"
 
 #: objinspstrconsts.oisimagelistcomponenteditor
-#, fuzzy
 #| msgid "I&mageList Editor..."
 msgid "I&mageList Editor ..."
-msgstr "I&mageList rengyklė..."
+msgstr "I&mageList rengyklė…"
 
 #: objinspstrconsts.oisincompatibleidentifier
 msgid "Incompatible Identifier"
@@ -567,7 +557,7 @@ msgstr "pažymėta %u elementų"
 
 #: objinspstrconsts.oisjumptodeclarationof
 msgid "Jump to declaration of %s"
-msgstr ""
+msgstr "Rodyti kur paskelbta „%s“"
 
 #: objinspstrconsts.oisload
 msgid "&Load"
@@ -582,10 +572,9 @@ msgid "Load picture"
 msgstr "Įkelti paveikslą"
 
 #: objinspstrconsts.oismasks
-#, fuzzy
 #| msgid "Masks..."
 msgid "Masks ..."
-msgstr "Kaukės..."
+msgstr "Kaukės…"
 
 #: objinspstrconsts.oismethod
 msgid "Method"
@@ -597,7 +586,7 @@ msgstr "Perkelti že&myn"
 
 #: objinspstrconsts.oismovedownhint
 msgid "Move field down"
-msgstr ""
+msgstr "Laukelį perkelti žemyn"
 
 #: objinspstrconsts.oismoveup
 msgctxt "objinspstrconsts.oismoveup"
@@ -606,7 +595,7 @@ msgstr "Perkelti au&kštyn"
 
 #: objinspstrconsts.oismoveuphint
 msgid "Move field up"
-msgstr ""
+msgstr "Laukelį perkelti aukštyn"
 
 #: objinspstrconsts.oisnew
 msgid "&New"
@@ -720,7 +709,7 @@ msgstr "Žymėti &viską"
 
 #: objinspstrconsts.oisselectallhint
 msgid "Select All Fields"
-msgstr ""
+msgstr "Pažymėti visus laukelius"
 
 #: objinspstrconsts.oisselectshortcut
 msgid "Select short cut"
@@ -767,10 +756,9 @@ msgid "Strings Editor Dialog"
 msgstr "Teksto rengyklė"
 
 #: objinspstrconsts.oistdactcolorselect1headline
-#, fuzzy
 #| msgid "Select &Color..."
 msgid "Select &Color ..."
-msgstr "Išrinkti &spalvą..."
+msgstr "Išrinkti &spalvą…"
 
 #: objinspstrconsts.oistdactcolorselecthint
 msgid "Color Select"
@@ -951,10 +939,9 @@ msgid "Exit"
 msgstr "Baigti darbą"
 
 #: objinspstrconsts.oistdactfileopenheadline
-#, fuzzy
 #| msgid "&Open..."
 msgid "&Open ..."
-msgstr "At&verti..."
+msgstr "At&verti…"
 
 #: objinspstrconsts.oistdactfileopenhint
 msgctxt "objinspstrconsts.oistdactfileopenhint"
@@ -966,30 +953,27 @@ msgid "Ctrl+O"
 msgstr "Ctrl+O"
 
 #: objinspstrconsts.oistdactfileopenwithheadline
-#, fuzzy
 #| msgid "Open with..."
 msgid "Open with ..."
-msgstr "Atverti su..."
+msgstr "Atverti su…"
 
 #: objinspstrconsts.oistdactfileopenwithhint
 msgid "Open with"
 msgstr "Atverti su"
 
 #: objinspstrconsts.oistdactfilesaveasheadline
-#, fuzzy
 #| msgid "Save &As..."
 msgid "Save &As ..."
-msgstr "Įrašyti &kaip..."
+msgstr "Įrašyti &kaip…"
 
 #: objinspstrconsts.oistdactfilesaveashint
 msgid "Save As"
 msgstr "Įrašyti taip"
 
 #: objinspstrconsts.oistdactfonteditheadline
-#, fuzzy
 #| msgid "Select &Font..."
 msgid "Select &Font ..."
-msgstr "Išrinkti šri&ftą..."
+msgstr "Išrinkti šri&ftą…"
 
 #: objinspstrconsts.oistdactfontedithint
 msgid "Font Select"
@@ -1028,10 +1012,9 @@ msgid "Find first"
 msgstr "Ieškoti pirmojo"
 
 #: objinspstrconsts.oistdactsearchfindheadline
-#, fuzzy
 #| msgid "&Find..."
 msgid "&Find ..."
-msgstr "&Ieškoti..."
+msgstr "&Ieškoti…"
 
 #: objinspstrconsts.oistdactsearchfindhint
 msgid "Find"
@@ -1062,10 +1045,9 @@ msgid "Replace"
 msgstr "Pakeisti"
 
 #: objinspstrconsts.oistestdialog
-#, fuzzy
 #| msgid "Test dialog..."
 msgid "Test dialog ..."
-msgstr "Išbandyti dialogą..."
+msgstr "Išbandyti dialogą…"
 
 #: objinspstrconsts.oistestinput
 msgid "Test Input"
@@ -1103,7 +1085,7 @@ msgstr "&Naikinti visą žymėjimą"
 
 #: objinspstrconsts.oisunselectallhint
 msgid "Unselect All"
-msgstr ""
+msgstr "Naikinti žymėjimą"
 
 #: objinspstrconsts.oisvalue
 msgid "Value:"
@@ -1142,10 +1124,9 @@ msgid "Filter name"
 msgstr "Filtro pavadinimas"
 
 #: objinspstrconsts.pirsunit
-#, fuzzy
 #| msgid "Unit"
 msgid "Pascal unit"
-msgstr "Modulis"
+msgstr "Paskalio modulis"
 
 #: objinspstrconsts.rscdalignment
 msgid "Alignment"
@@ -1203,21 +1184,19 @@ msgid "Sections Editor ..."
 msgstr "Antraščių rengyklė..."
 
 #: objinspstrconsts.sccsiledtadd
-#, fuzzy
 #| msgid "Add ..."
 msgid "&Add ..."
-msgstr "Pridėti..."
+msgstr "&Pridėti…"
 
 #: objinspstrconsts.sccsiledtadjustment
 msgid "Adjustment"
 msgstr "Korekcija"
 
 #: objinspstrconsts.sccsiledtapply
-#, fuzzy
 #| msgid "Apply"
 msgctxt "objinspstrconsts.sccsiledtapply"
 msgid "&Apply"
-msgstr "Pritaikyti"
+msgstr "Pri&taikyti"
 
 #: objinspstrconsts.sccsiledtcaption
 msgid "ImageList Editor"
@@ -1228,22 +1207,20 @@ msgid "Center"
 msgstr "Centruoti"
 
 #: objinspstrconsts.sccsiledtclear
-#, fuzzy
 #| msgid "Clear"
 msgctxt "objinspstrconsts.sccsiledtclear"
 msgid "&Clear"
-msgstr "Išvalyti"
+msgstr "Iš&valyti"
 
 #: objinspstrconsts.sccsiledtcrop
 msgid "Crop"
 msgstr "Apkirtpti"
 
 #: objinspstrconsts.sccsiledtdelete
-#, fuzzy
 #| msgid "Delete"
 msgctxt "objinspstrconsts.sccsiledtdelete"
 msgid "&Delete"
-msgstr "Pašalinti"
+msgstr "Paša&linti"
 
 #: objinspstrconsts.sccsiledtgrplcaption
 msgid "Images"
@@ -1254,18 +1231,16 @@ msgid "Selected Image"
 msgstr "Pažymėtas paveikslas"
 
 #: objinspstrconsts.sccsiledtmovedown
-#, fuzzy
 #| msgid "Move Down"
 msgctxt "objinspstrconsts.sccsiledtmovedown"
 msgid "Move D&own"
-msgstr "Perkelti žemyn"
+msgstr "Perkelti že&myn"
 
 #: objinspstrconsts.sccsiledtmoveup
-#, fuzzy
 #| msgid "Move Up"
 msgctxt "objinspstrconsts.sccsiledtmoveup"
 msgid "Move &Up"
-msgstr "Perkelti aukštyn"
+msgstr "Perkelti au&kštyn"
 
 #: objinspstrconsts.sccsiledtnone
 msgid "None"
@@ -1280,14 +1255,12 @@ msgid "Transparent Color:"
 msgstr "Permatoma spalva:"
 
 #: objinspstrconsts.sccsiledtsave
-#, fuzzy
 #| msgid "Save ..."
 msgctxt "objinspstrconsts.sccsiledtsave"
 msgid "&Save ..."
-msgstr "Įrašyti..."
+msgstr "Į&rašyti…"
 
 #: objinspstrconsts.sccsiledtsaveall
-#, fuzzy
 #| msgid "Save All..."
 msgid "Save All ..."
 msgstr "Įrašyti visus…"
@@ -1305,11 +1278,10 @@ msgid "Edit Columns ..."
 msgstr "Keisti stulpelis..."
 
 #: objinspstrconsts.sccslvedt
-#, fuzzy
 #| msgid "Edit Items..."
 msgctxt "objinspstrconsts.sccslvedt"
 msgid "Edit Items ..."
-msgstr "Keisti elementus..."
+msgstr "Keisti elementus…"
 
 #: objinspstrconsts.sccslvedtapply
 msgctxt "objinspstrconsts.sccslvedtapply"
@@ -1365,20 +1337,18 @@ msgid "New SubItem"
 msgstr "Naujas poelementis"
 
 #: objinspstrconsts.sccsmaskeditor
-#, fuzzy
 #| msgid "Edit Mask Editor..."
 msgid "Edit Mask Editor ..."
-msgstr "Keitimo kaukės rengyklė..."
+msgstr "Keitimo kaukės rengyklė…"
 
 #: objinspstrconsts.sccssbeditpanels
 msgid "Panels Editor ..."
 msgstr "Panelių rengyklė..."
 
 #: objinspstrconsts.sccssgedt
-#, fuzzy
 #| msgid "Edit StringGrid..."
 msgid "Edit StringGrid ..."
-msgstr "Keisti StringGrid..."
+msgstr "Keisti StringGrid…"
 
 #: objinspstrconsts.sccssgedtapply
 msgctxt "objinspstrconsts.sccssgedtapply"
@@ -1398,10 +1368,9 @@ msgid "String Grid"
 msgstr "Teksto lentelė"
 
 #: objinspstrconsts.sccssgedtload
-#, fuzzy
 #| msgid "Load..."
 msgid "Load ..."
-msgstr "Įkelti..."
+msgstr "Įkelti…"
 
 #: objinspstrconsts.sccssgedtmoverowscols
 msgid "Move Rows/Cols"
@@ -1413,11 +1382,10 @@ msgid "Open"
 msgstr "Atverti"
 
 #: objinspstrconsts.sccssgedtsave
-#, fuzzy
 #| msgid "Save..."
 msgctxt "objinspstrconsts.sccssgedtsave"
 msgid "Save ..."
-msgstr "Įrašyti..."
+msgstr "Įrašyti…"
 
 #: objinspstrconsts.sccssgedtsavedialog
 msgctxt "objinspstrconsts.sccssgedtsavedialog"
@@ -1425,11 +1393,10 @@ msgid "Save"
 msgstr "Įrašyti"
 
 #: objinspstrconsts.sccstredt
-#, fuzzy
 #| msgid "Edit Items..."
 msgctxt "objinspstrconsts.sccstredt"
 msgid "Edit Items ..."
-msgstr "Keisti elementus..."
+msgstr "Keisti elementus…"
 
 #: objinspstrconsts.sccstredtapply
 msgctxt "objinspstrconsts.sccstredtapply"
@@ -1525,19 +1492,19 @@ msgstr "Ar norite perskelti paveikslą?"
 
 #: objinspstrconsts.tbcenewbutton
 msgid "New Button"
-msgstr ""
+msgstr "Naujas mygtukas"
 
 #: objinspstrconsts.tbcenewcheckbutton
 msgid "New CheckButton"
-msgstr ""
+msgstr "Naujas žymimasis mygtukas"
 
 #: objinspstrconsts.tbcenewdivider
 msgid "New Divider"
-msgstr ""
+msgstr "Naujas skyriklis"
 
 #: objinspstrconsts.tbcenewseparator
 msgid "New Separator"
-msgstr ""
+msgstr "Naujas skirtukas"
 
 #: objinspstrconsts.tccesaddtab
 msgid "Add tab"

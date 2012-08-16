@@ -1,0 +1,51 @@
+# Valdas Jankunas <zmuogs@gmail.com>, 2012.
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Last-Translator: Valdas Jankunas <zmuogs@gmail.com>\n"
+"PO-Revision-Date: 2012-08-06 12:34+0300\n"
+"Project-Id-Version: \n"
+"Language-Team: Lithuanian <kde-i18n-lt@kde.org>\n"
+"Language: lt\n"
+"Content-Transfer-Encoding: 8bit\n"
+"MIME-Version: 1.0\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && (n%"
+"100<10 || n%100>=20) ? 1 : 2);\n"
+"X-Generator: Lokalize 1.5\n"
+
+#: reglazdaemon.sdaemonappdescr
+msgid ""
+"Daemon (service) application is a non-gui application that runs in the "
+"background."
+msgstr ""
+"Tarnyba – tai foniniu režimu veikianti programa, kuri neturi grafinės sąsajos."
+
+#: reglazdaemon.sdaemonappname
+msgid "Daemon (service) application"
+msgstr "Tarnybos programa"
+
+#: reglazdaemon.sdaemonapps
+msgid "Daemon (service) applications"
+msgstr "Tarnybos programos"
+
+#: reglazdaemon.sdaemondescr
+msgid "Daemon Module for inclusion in a daemon application"
+msgstr "Tarnybos modulis, įtraukiamas į tarnybos programą"
+
+#: reglazdaemon.sdaemonmapperdescr
+msgid ""
+"Daemon mapper for inclusion in a daemon application.\n"
+"Only one daemon mapper may exist in a daemon application.\n"
+msgstr ""
+"Į tarnybos programą įtraukiamas tarnybos atvaizdis.\n"
+"Tarnybos programoje gali būti tik vienas tarnybos atvaizdis.\n"
+
+#: reglazdaemon.sdaemonmappername
+msgid "Daemon mapper"
+msgstr "Tarnybos atvaizdis"
+
+#: reglazdaemon.sdaemonname
+msgid "Daemon Module"
+msgstr "Tarnybos modulis"
+
+
