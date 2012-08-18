@@ -236,6 +236,7 @@ type
     function Get(Index: Integer): String; override;
     function GetCount: Integer; override;
     procedure Put(Index: Integer; const S: String); override;
+    procedure SetUpdateState(AUpdating: Boolean); override;
   public
     constructor Create(ASource: TListChartSource);
     procedure Clear; override;
@@ -344,7 +345,20 @@ end;
 
 procedure TListChartSourceStrings.Put(Index: Integer; const S: String);
 begin
+  FSource.BeginUpdate;
+  try
   Parse(S, FSource[Index]);
+  finally
+    FSource.EndUpdate;
+  end;
+end;
+
+procedure TListChartSourceStrings.SetUpdateState(AUpdating: Boolean);
+begin
+  if AUpdating then
+    FSource.BeginUpdate
+  else
+    FSource.EndUpdate;
 end;
 
 { TListChartSource }
@@ -376,7 +390,6 @@ begin
   pcd^.Text := ALabel;
   FData.Insert(APos, pcd);
   UpdateCachesAfterAdd(AX, AY);
-  Notify;
 end;
 
 procedure TListChartSource.Clear; inline;
@@ -626,6 +639,7 @@ begin
   end;
   if FValuesTotalIsValid then
     FValuesTotal += AY;
+  Notify;
 end;
 
 { TMWCRandomGenerator }

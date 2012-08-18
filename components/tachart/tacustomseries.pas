@@ -787,7 +787,7 @@ begin
     Source.Broadcaster.Unsubscribe(FListener);
   FSource := AValue;
   Source.Broadcaster.Subscribe(FListener);
-  UpdateParentChart;
+  SourceChanged(Self);
 end;
 
 procedure TChartSeries.SetStyles(AValue: TChartStyles);
