@@ -129,7 +129,7 @@ begin
 
   RootRadioGroup.Caption:=lisSearchProjectsFrom;
   RootRadioGroup.Items.Add(lisLazarusSource);
-  RootRadioGroup.Items.Add(lisCEOtherGroup);  // could use lisCEOtherGroup
+  RootRadioGroup.Items.Add(lisCEOtherGroup);
   RootRadioGroup.ItemIndex:=0;
   RootRadioGroupClick(RootRadioGroup);
 
