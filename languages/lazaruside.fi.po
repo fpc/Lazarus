@@ -9245,7 +9245,7 @@ msgstr "Kokoa projekti/ohjelma"
 
 #: lazarusidestrconsts.liskmchoosekeymappingscheme
 msgid "Choose Keymapping scheme"
-msgstr "Valitse näppäinkaavio"
+msgstr "Valitse näppäinkartan malli"
 
 #: lazarusidestrconsts.liskmclassic
 msgid "Classic"
@@ -9442,7 +9442,7 @@ msgstr "Tutki"
 
 #: lazarusidestrconsts.liskmkeymappingscheme
 msgid "Keymapping Scheme"
-msgstr "Näppäinkaavio"
+msgstr "Näppäinkartan malli"
 
 #: lazarusidestrconsts.liskmlazarusdefault
 msgid "Lazarus (default)"
@@ -13898,7 +13898,7 @@ msgstr "Avaa uudestaan toisella merkistön koodauksella"
 #: lazarusidestrconsts.lisrepeat
 msgctxt "lazarusidestrconsts.lisrepeat"
 msgid "Repeat"
-msgstr ""
+msgstr "Toistoja"
 
 #: lazarusidestrconsts.lisrepeatcount
 msgid "Repeat Count:"
@@ -13907,7 +13907,7 @@ msgstr "Toistojen määrä:"
 #: lazarusidestrconsts.lisreplace
 msgctxt "lazarusidestrconsts.lisreplace"
 msgid "Replace"
-msgstr "Etsi ja korvaa"
+msgstr "Korvaa"
 
 #: lazarusidestrconsts.lisreplacement
 msgid "Replacement"
@@ -14044,7 +14044,7 @@ msgstr "Suorita"
 
 #: lazarusidestrconsts.lisruntimeonlycannotbeinstalledinide
 msgid "Runtime only, can not be installed in IDE"
-msgstr ""
+msgstr "Vain ajonaikainen, ei voida asentaa IDE:en"
 
 #: lazarusidestrconsts.lisruntofailed
 msgid "Run-to failed"
@@ -14207,15 +14207,15 @@ msgstr "Skaalauskerroin:"
 
 #: lazarusidestrconsts.lissearchfor
 msgid "Search For "
-msgstr "Viittaukset tunnisteeseen: "
+msgstr "Etsi "
 
 #: lazarusidestrconsts.lissearchpaths2
 msgid "Search paths"
-msgstr ""
+msgstr "Etsi polkuja"
 
 #: lazarusidestrconsts.lissearchprojectsfrom
 msgid "Search projects from"
-msgstr ""
+msgstr "Etsi projekteja täältä"
 
 #: lazarusidestrconsts.lissearchunit
 msgid "Search unit"
@@ -14263,7 +14263,7 @@ msgstr "(valittu alapuolen naapuri)"
 
 #: lazarusidestrconsts.lisselectedcommandsmapping
 msgid "Selected Command's Mapping"
-msgstr ""
+msgstr "Valitun komennon kartta"
 
 #: lazarusidestrconsts.lisselectedleftneighbour
 msgid "(selected left neighbour)"
@@ -14327,7 +14327,7 @@ msgstr "Lyhyt:"
 
 #: lazarusidestrconsts.lisshow
 msgid "Show"
-msgstr ""
+msgstr "Näytä"
 
 #: lazarusidestrconsts.lisshowdeclarationhints
 msgid "Show declaration hints"
@@ -14368,7 +14368,7 @@ msgstr "Näytä lisätieto-osa"
 
 #: lazarusidestrconsts.lisshowoverviewgutter
 msgid "Show overview Gutter"
-msgstr ""
+msgstr "Näytä yleiskuvan reunapalkki "
 
 #: lazarusidestrconsts.lisshowpackages
 msgid "Show packages"
@@ -14440,7 +14440,7 @@ msgstr "Löydetty"
 
 #: lazarusidestrconsts.lissorrythistypeisnotyetimplemented
 msgid "Sorry, this type is not yet implemented"
-msgstr ""
+msgstr "Valitan, tätä tyyppiä ei ole vielä toteutettu"
 
 #: lazarusidestrconsts.lissortselascending
 msgid "Ascending"
@@ -14516,7 +14516,7 @@ msgstr "Lähdekoodi muuttunut"
 
 #: lazarusidestrconsts.lissourceofpagehaschangedsave
 msgid "Source of page %s%s%s has changed. Save?"
-msgstr ""
+msgstr "Sivun %s%s%s lähdekoodi on muuttunut. Tallenna?"
 
 #: lazarusidestrconsts.lissourceofpagehaschangedsaveextended
 msgid "Sources of more than one page have changed. Save page %s%s%s? (%d more)"
