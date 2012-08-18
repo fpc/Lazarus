@@ -143,6 +143,7 @@ type
     ImgIDError: LongInt;
     ImgIDWarning: LongInt;
     FHeadGraphic: TPortableNetworkGraphic;
+    FInitialDebuggerFileName: String;
     FSelectingPage: boolean;
     FCandidates: array[TSDFilenameType] of TObjectList; // list of TSDFileInfo
     procedure SelectPage(const NodeText: string);
@@ -1524,8 +1525,11 @@ begin
   if s<>'' then
     EnvironmentOptions.MakeFilename:=s;
   s:=DebuggerComboBox.Text;
-  if s<>'' then
+  if s<>'' then begin
     EnvironmentOptions.DebuggerFilename:=s;
+    if s <> FInitialDebuggerFileName then
+      EnvironmentOptions.DebuggerConfig.DebuggerClass := 'TGDBMIDebugger';
+  end;
 
   ModalResult:=mrOk;
 end;
@@ -1996,6 +2000,7 @@ begin
   UpdateMakeExeNote;
 
   // Debugger
+  FInitialDebuggerFileName := EnvironmentOptions.DebuggerFilename;
   UpdateDebuggerCandidates;
   if IsFirstStart or (not FileExistsCached(EnvironmentOptions.GetParsedDebuggerFilename))
   then begin
