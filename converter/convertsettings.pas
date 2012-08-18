@@ -466,6 +466,9 @@ begin
   MapReplacement('TPNGObject',        'TPortableNetworkGraphic');
   MapReplacement('TTabbedNotebook',   'TPageControl');
   MapReplacement('TTabPage',          'ts$autoinc: TTabSheet');
+  MapReplacement('THeader',           'THeaderControl');
+  MapReplacement('TMonthCalendar',    'TCalendar');
+  MapReplacement('TOleContainer',     'TActiveXContainer'); // from LazActiveX
   // Database components
   MapReplacement('TSQLConnection',    'TSQLConnector');
   MapReplacement('TSQLClientDataSet', 'TSQLConnector');
