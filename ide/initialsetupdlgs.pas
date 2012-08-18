@@ -193,17 +193,14 @@ function CheckFPCSrcDirQuality(ADirectory: string;
   out Note: string; FPCVer: string): TSDFilenameQuality;
 function SearchFPCSrcDirCandidates(StopIfFits: boolean;
   const FPCVer: string): TObjectList;
-procedure SetupFPCSrcDir(FPCVer: string);
 
 function CheckMakeExeQuality(AFilename: string;
   out Note: string): TSDFilenameQuality; // Checks a given file to see if it is a valid make executable
 function SearchMakeExeCandidates(StopIfFits: boolean): TObjectList; //Search make candidates and add them to the list, including quality level
-procedure SetupMakeExe; //Checks if the make specified in user's options (if any) is ok. If not, search for and set a valid one if possible
 
 function CheckDebuggerQuality(AFilename: string;
   out Note: string): TSDFilenameQuality; // Checks a given file to see if it is a valid debugger (only gdb supported for now)
 function SearchDebuggerCandidates(StopIfFits: boolean): TObjectList; //Search debugger candidates and add them to list, including quality level
-procedure SetupDebugger; //Checks if the debugger specified in user's option (if any) is ok. If not, search for and set a valid one if possible
 
 function GetValueFromPrimaryConfig(OptionFilename, Path: string): string;
 function GetValueFromSecondaryConfig(OptionFilename, Path: string): string;
@@ -840,45 +837,6 @@ begin
   end;
 end;
 
-procedure SetupFPCSrcDir(FPCVer: string);
-var
-  Note: string;
-  Dir: String;
-  Quality: TSDFilenameQuality;
-  BestDir: TSDFileInfo;
-  List: TObjectList;
-begin
-  Dir:=EnvironmentOptions.GetParsedFPCSourceDirectory;
-  Quality:=CheckFPCSrcDirQuality(Dir,Note,FPCVer);
-  if Quality<>sddqInvalid then exit;
-  // bad fpc src directory => searching a good one
-  dbgout('SetupFPCSourceDirectory:');
-  if EnvironmentOptions.FPCSourceDirectory<>'' then
-  begin
-    dbgout(' The FPC source directory "',EnvironmentOptions.FPCSourceDirectory,'"');
-    if EnvironmentOptions.FPCSourceDirectory<>Dir then
-      dbgout(' => "',Dir,'"');
-    dbgout(' is invalid (Error: ',Note,')');
-    debugln(' Searching a proper one ...');
-  end else begin
-    debugln(' Searching ...');
-  end;
-  List:=SearchFPCSrcDirCandidates(true,FPCVer);
-  try
-    BestDir:=nil;
-    if List<>nil then
-      BestDir:=TSDFileInfo(List[List.Count-1]);
-    if (BestDir=nil) or (BestDir.Quality=sddqInvalid) then begin
-      debugln(['SetupFPCSourceDirectory: no proper FPC source directory found.']);
-      exit;
-    end;
-    EnvironmentOptions.FPCSourceDirectory:=BestDir.Filename;
-    debugln(['SetupFPCSourceDirectory: using ',EnvironmentOptions.FPCSourceDirectory]);
-  finally
-    List.Free;
-  end;
-end;
-
 function CheckDebuggerQuality(AFilename: string; out Note: string
   ): TSDFilenameQuality;
 begin
@@ -996,45 +954,6 @@ begin
     // in SearchMakeExeCandidates.
   finally
     EnvironmentOptions.DebuggerFilename:=OldDebuggerFilename;
-  end;
-end;
-
-procedure SetupDebugger;
-var
-  Note: string;
-  Filename: String;
-  Quality: TSDFilenameQuality;
-  BestDir: TSDFileInfo;
-  List: TObjectList;
-begin
-  Filename:=EnvironmentOptions.GetParsedDebuggerFilename;
-  Quality:=CheckDebuggerQuality(Filename,Note);
-  if Quality<>sddqInvalid then exit;
-  // bad debugger
-  dbgout('SetupDebugger:');
-  if EnvironmentOptions.DebuggerFilename<>'' then
-  begin
-    dbgout(' The "gdb" executable "',EnvironmentOptions.DebuggerFilename,'"');
-    if EnvironmentOptions.DebuggerFilename<>Filename then
-      dbgout(' => "',Filename,'"');
-    dbgout(' is invalid (Error: ',Note,')');
-    debugln(' Searching a proper one ...');
-  end else begin
-    debugln(' Searching "gdb" ...');
-  end;
-  List:=SearchDebuggerCandidates(true);
-  try
-    BestDir:=nil;
-    if List<>nil then
-      BestDir:=TSDFileInfo(List[List.Count-1]);
-    if (BestDir=nil) or (BestDir.Quality=sddqInvalid) then begin
-      debugln(['SetupDebugger: no proper "gdb" found.']);
-      exit;
-    end;
-    EnvironmentOptions.DebuggerFilename:=BestDir.Filename;
-    debugln(['SetupDebugger: using ',EnvironmentOptions.DebuggerFilename]);
-  finally
-    List.Free;
   end;
 end;
 
@@ -1158,45 +1077,6 @@ begin
     end;
   finally
     EnvironmentOptions.MakeFilename:=OldMakeFilename;
-  end;
-end;
-
-procedure SetupMakeExe;
-var
-  Note: string;
-  Filename: String;
-  Quality: TSDFilenameQuality;
-  BestDir: TSDFileInfo;
-  List: TObjectList;
-begin
-  Filename:=EnvironmentOptions.GetParsedMakeFilename;
-  Quality:=CheckMakeExeQuality(Filename,Note);
-  if Quality<>sddqInvalid then exit;
-  // bad make exe
-  dbgout('SetupMakeExe:');
-  if EnvironmentOptions.MakeFilename<>'' then
-  begin
-    dbgout(' The "make" executable "',EnvironmentOptions.MakeFilename,'"');
-    if EnvironmentOptions.MakeFilename<>Filename then
-      dbgout(' => "',Filename,'"');
-    dbgout(' is invalid (Error: ',Note,')');
-    debugln(' Searching a proper one ...');
-  end else begin
-    debugln(' Searching "make" ...');
-  end;
-  List:=SearchMakeExeCandidates(true);
-  try
-    BestDir:=nil;
-    if List<>nil then
-      BestDir:=TSDFileInfo(List[List.Count-1]);
-    if (BestDir=nil) or (BestDir.Quality=sddqInvalid) then begin
-      debugln(['SetupMakeExe: no proper "make" found.']);
-      exit;
-    end;
-    EnvironmentOptions.MakeFilename:=BestDir.Filename;
-    debugln(['SetupMakeExe: using ',EnvironmentOptions.MakeFilename]);
-  finally
-    List.Free;
   end;
 end;
 
