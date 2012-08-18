@@ -530,7 +530,9 @@ var
 
   procedure ReadParams(FuncInfo: TFuncReplacement);
   var
-    ExprStartPos, ExprEndPos, BracketCount: integer;
+    ExprStartPos, ExprEndPos: integer;
+    RoundBrLvl, SquareBrLvl: integer;
+    ShouldReadNextAtom: Boolean;
   begin
     FuncInfo.InclSemiColon:='';
     FuncInfo.StartPos:=xStart;
@@ -541,22 +543,33 @@ var
       if AtomIsChar('(') then begin
         // read parameter list
         ReadNextAtom;
+        // Don't read twice inside a loop. Atom can be for example '['
+        ShouldReadNextAtom:=False;
         if not AtomIsChar(')') then begin
           // read all expressions
-          BracketCount:=0;
+          RoundBrLvl:=0;
+          SquareBrLvl:=0;
           while true do begin
             ExprStartPos:=CurPos.StartPos;
             // read til comma or bracket close
             repeat
-              ReadNextAtom;
-              if (CurPos.StartPos>SrcLen) or (CurPos.Flag=cafComma) then
+              if ShouldReadNextAtom then
+                ReadNextAtom;
+              ShouldReadNextAtom:=True;
+              if CurPos.StartPos>SrcLen then
                 break;
-              if CurPos.Flag=cafRoundBracketOpen then
-                Inc(BracketCount)
+              if (CurPos.Flag=cafComma) and (RoundBrLvl=0) and (SquareBrLvl=0) then
+                break;
+              if CurPos.Flag=cafEdgedBracketOpen then
+                Inc(SquareBrLvl)
+              else if CurPos.Flag=cafEdgedBracketClose then
+                Dec(SquareBrLvl)
+              else if CurPos.Flag=cafRoundBracketOpen then
+                Inc(RoundBrLvl)
               else if CurPos.Flag=cafRoundBracketClose then begin
-                if BracketCount=0 then
-                  break;
-                Dec(BracketCount);
+                if RoundBrLvl=0 then
+                  break;              // Closing bracket, end of parameters
+                Dec(RoundBrLvl);
               end;
             until false;
             ExprEndPos:=CurPos.StartPos;
