@@ -205,8 +205,8 @@ begin
 end;
 
 function TConvDelphiCodeTool.Convert: TModalResult;
-// add {$mode delphi} directive
-// remove {$R *.dfm} or {$R *.xfm} directive
+// Add {$mode delphi} directive
+// Remove {$R *.dfm} or {$R *.xfm} directive
 // Change {$R *.RES} to {$R *.res} if needed
 // TODO: fix delphi ambiguouties like incomplete proc implementation headers
 begin
@@ -378,7 +378,8 @@ var
   ReplacementParams: TObjectList;           // Replacement parameters.
 
   function ParseReplacementParams(const aStr: string): integer;
-  // Parse replacement params. They show which original params are copied where.
+  // Parse replacement params which are defined in configuration.
+  // They show which original params are copied where.
   // Returns the first position where comments can be searched from.
   var
     i, xNum, xStart, xLen: Integer;
@@ -505,7 +506,7 @@ begin
     ReadNextAtom;               // Read proc name.
     ProcName:=GetAtom;
     ReadNextAtom;
-    if GetAtom<>'.' then        // Don't save a method name (like TClass.Method).
+    if GetAtom<>'.' then        // Don't save a method name (like TMyClass.Method).
       fDefinedProcNames.Add(ProcName);
   end;
   Result:=aNode.Next;
@@ -514,7 +515,7 @@ end;
 function TConvDelphiCodeTool.ReplaceFuncCalls(aIsConsoleApp: boolean): boolean;
 // Copied and modified from TFindDeclarationTool.FindReferences.
 // Search for calls to functions / procedures in a list from current unit's
-// implementation section. Replace found calls with a given replacement.
+// implementation section code. Replace found calls with a given replacement.
 var
   xStart: Integer;
 
