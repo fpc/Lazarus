@@ -2663,6 +2663,7 @@ end;
 
 function TLinkScanner.ModeSwitchDirective: boolean;
 // $MODESWITCH objectivec1
+// $MODESWITCH systemcodepage-
 var
   ValStart: LongInt;
   ModeSwitch: TCompilerModeSwitch;
