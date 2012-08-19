@@ -398,8 +398,23 @@ end;
 procedure TCacheUnitsThread.Execute;
 // This assumes that cache is not used while updating it.
 // The main GUI thread must wait for this thread before starting conversion.
+
+  function IsRootPath(APath: String): Boolean;
+  //crude function, it maybe needs support for UNC drives
+  begin
+    {$ifdef windows}
+    Result := ((Length(APath) = 3) and (APath[1] in ['a'..'z','A'..'Z']) and (APath[2] = ':') and (APath[3] = PathDelim))
+              or (APath = PathDelim);
+    {$else}
+    Result := (APath = PathDelim);
+    {$endif}
+  end;
+
 begin
-  fConverter.CacheUnitsInPath(fPath); // Scan for unit files.
+  //If a project is in a subfolder of the root, fPath will be root path.
+  //Do not search the entire drive, or we may find Borland VCL files and convert them too
+  if not IsRootPath(fPath) then
+    fConverter.CacheUnitsInPath(fPath); // Scan for unit files.
 end;
 
 { TConvertDelphiUnit }
