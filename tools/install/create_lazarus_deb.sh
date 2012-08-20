@@ -162,6 +162,9 @@ if [ -f components/chmhelp/lhelp/lhelp ]; then
 fi
 cd -
 
+# get installed size in kb
+LazSize=$(du -s $LazDestDir | cut -f1)
+
 # create control file
 echo "========================================================================="
 echo "copying control file"
@@ -170,6 +173,7 @@ cat $DebianSrcDir/control$LCLWidgetset | \
   sed -e "s/FPCVERSION/$FPCVersion/g" \
       -e "s/LAZVERSION/$LazVersion/g" \
       -e "s/ARCH/$Arch/g" \
+      -e "s/LAZSIZE/$LazSize/g" \
   > $LazBuildDir/DEBIAN/control
 
 # copyright and changelog files
@@ -211,8 +215,7 @@ echo "fixing permissions ..."
 find $LazBuildDir -type d | xargs -d '\n' chmod 755  # this is needed, don't ask me why
 
 # postinst + postrm:
-# ToDo: update-mime-database /usr/share/mime
-# ToDo: update-desktop-database
+#  don't know
 
 # creating deb
 echo "creating deb ..."
