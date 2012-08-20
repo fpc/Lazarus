@@ -194,10 +194,12 @@ function TCarbonWidgetSet.PromptUser(const DialogCaption : string;
       end;
   end;
   
-const
-  ButtonCaption: Array [idButtonOk..idButtonNoToAll] of String =
-    ('OK', 'Cancel', ''{Help}, 'Yes', 'No', 'Close', 'Abort', 'Retry', 'Ignore',
-     'All', 'Yes To All', 'No To All');
+  function tr(TranslatedStr: string): string;
+  begin
+    Result:=TranslatedStr;
+    DeleteAmpersands(Result);
+  end;
+
 { Note: Not using Pointer(kAlertDefaultOKText) or Pointer(kAlertDefaultCancelText)
   since this just passes in -1, which tells button to use its normal text and
   we need to override with Yes and No. If Localizable.strings file is in app 
@@ -216,6 +218,7 @@ var
   AlertRef    : DialogRef;
   AlertBtnIdx : DialogItemIndex;
   I: Integer;
+  BtnCaption: String;
 
 const SName = 'PromptUser';
 begin
@@ -268,13 +271,11 @@ begin
     if Buttons[I] = idButtonHelp then ParamRec.helpButton := True
     else
     begin
-      if (Buttons[I] < Low(ButtonCaption)) or (Buttons[I] > High(ButtonCaption)) then
-      begin
-        DebugLn('TCarbonWidgetSet.PromptUser Invalid button ID: ' + DbgS(Buttons[I]));
-        Continue;
-      end;
-      
-      CreateCFString(ButtonCaption[Buttons[I]], CFString);
+      BtnCaption:=tr(GetButtonCaption(Buttons[i]));
+      if BtnCaption='' then
+        continue;
+
+      CreateCFString(BtnCaption, CFString);
       try
         case ButtonID of
           0: // set right button caption and result
