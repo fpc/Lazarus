@@ -1421,7 +1421,7 @@ type
     property ShowWorkAreas: Boolean index Ord(lvpShowWorkAreas) read GetProperty write SetProperty default False;
     property SmallImages: TCustomImageList index Ord(lvilSmall) read GetImageList write SetImageList;
     property SortType: TSortType read FSortType write SetSortType default stNone;
-    property SortColumn: Integer read FSortColumn write SetSortColumn default 0;
+    property SortColumn: Integer read FSortColumn write SetSortColumn default -1;
     property SortDirection: TSortDirection read FSortDirection write SetSortDirection default sdAscending;
     property StateImages: TCustomImageList index Ord(lvilState) read GetImageList write SetImageList;
     property ToolTips: Boolean index Ord(lvpToolTips) read GetProperty write SetProperty default True;

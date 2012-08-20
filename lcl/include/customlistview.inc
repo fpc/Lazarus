@@ -127,6 +127,7 @@ begin
   FCompStyle := csListView;
   FViewStyle := vsList;
   FSortType := stNone;
+  FSortColumn := -1;
 
   for lvil := Low(TListViewImageList) to High(TListViewImageList) do
   begin
@@ -229,8 +230,10 @@ begin
   begin
     if SortType <> stNone then
     begin
-      if AColumn.Index <> SortColumn then
-        SortColumn := AColumn.Index
+      if AColumn.Index <> SortColumn then begin
+        SortColumn := AColumn.Index;
+        SortDirection := sdAscending;
+      end
       else
       begin
         // with same column we are changing only direction
@@ -874,6 +877,7 @@ var
   AItemIndex: Integer;
 begin
   if FSortType = stNone then exit;
+  if (FSortColumn < 0) or (FSortColumn >= ColumnCount) then exit;
   if FListItems.Count < 2 then exit;
   if lffPreparingSorting in FFlags then exit;
 
