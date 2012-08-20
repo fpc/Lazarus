@@ -32,6 +32,7 @@ object OpenInstalledPackagesDlg: TOpenInstalledPackagesDlg
     Align = alClient
     Columns = <>
     RowSelect = True
+    SortType = stText
     TabOrder = 1
     OnDblClick = PkgListViewDblClick
     OnSelectItem = PkgListViewSelectItem
