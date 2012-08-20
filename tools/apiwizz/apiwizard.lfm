@@ -12,12 +12,12 @@ object ApiWizForm: TApiWizForm
   OnCreate = ApiWizFormCreate
   OnDestroy = FormDestroy
   Position = poDefaultPosOnly
-  LCLVersion = '0.9.29'
+  LCLVersion = '1.1'
   object lblDeclare: TLabel
     AnchorSideTop.Side = asrBottom
     Left = 4
-    Height = 18
-    Top = 288
+    Height = 17
+    Top = 289
     Width = 424
     Anchors = [akLeft, akRight, akBottom]
     Caption = 'Declaration (each line is a separate entry):'
@@ -25,9 +25,9 @@ object ApiWizForm: TApiWizForm
   end
   object lblLazarus: TLabel
     Left = 4
-    Height = 18
+    Height = 17
     Top = 8
-    Width = 78
+    Width = 74
     Caption = 'Lazarus dir:'
     ParentColor = False
   end
@@ -45,7 +45,7 @@ object ApiWizForm: TApiWizForm
   object txtLazarus: TEdit
     Tag = 493
     Left = 4
-    Height = 27
+    Height = 25
     Top = 24
     Width = 693
     Anchors = [akTop, akLeft, akRight]
@@ -67,8 +67,8 @@ object ApiWizForm: TApiWizForm
     ChildSizing.ShrinkVertical = crsScaleChilds
     ChildSizing.Layout = cclLeftToRightThenTopToBottom
     ChildSizing.ControlsPerLine = 1
-    ClientHeight = 53
-    ClientWidth = 174
+    ClientHeight = 51
+    ClientWidth = 170
     ItemIndex = 0
     Items.Strings = (
       'win32 compatibility'
@@ -84,20 +84,19 @@ object ApiWizForm: TApiWizForm
     Width = 348
     Anchors = [akRight, akBottom]
     Caption = 'LCL Widgetset'
-    ClientHeight = 125
-    ClientWidth = 344
+    ClientHeight = 123
+    ClientWidth = 340
     TabOrder = 3
     object rbIndependent: TRadioButton
       Left = 10
-      Height = 21
+      Height = 22
       Top = 3
-      Width = 109
-      AllowGrayed = True
+      Width = 107
       Caption = 'Independent'
       Checked = True
       OnClick = rbPlatformDependencyClick
-      State = cbChecked
       TabOrder = 0
+      TabStop = True
     end
     object cbgLCLPlatform: TCheckGroup
       Left = 26
@@ -113,6 +112,8 @@ object ApiWizForm: TApiWizForm
       ChildSizing.ShrinkVertical = crsScaleChilds
       ChildSizing.Layout = cclTopToBottomThenLeftToRight
       ChildSizing.ControlsPerLine = 3
+      ClientHeight = 56
+      ClientWidth = 300
       ColumnLayout = clVerticalThenHorizontal
       Columns = 3
       Enabled = False
@@ -134,14 +135,12 @@ object ApiWizForm: TApiWizForm
     end
     object rbDependent: TRadioButton
       Left = 10
-      Height = 21
+      Height = 22
       Top = 23
-      Width = 100
-      AllowGrayed = True
+      Width = 98
       Caption = 'Dependent'
       OnClick = rbPlatformDependencyClick
       TabOrder = 1
-      TabStop = False
     end
   end
   object txtDeclarations: TMemo
@@ -176,29 +175,29 @@ object ApiWizForm: TApiWizForm
         AutoSize = True
         Caption = 'name'
         MinWidth = 250
-        Width = 250
+        Width = 100
       end    
       item
         Alignment = taCenter
         AutoSize = True
         Caption = 'api'
-        Width = 29
+        Width = 100
       end    
       item
         Alignment = taCenter
         AutoSize = True
         Caption = 'indep'
-        Width = 46
+        Width = 100
       end    
       item
         Alignment = taCenter
         AutoSize = True
         Caption = 'base'
-        Width = 517
+        Width = 100
       end>
-    ItemIndex = -1
     ReadOnly = True
     RowSelect = True
+    SortType = stText
     TabOrder = 6
     ViewStyle = vsReport
   end

@@ -13,12 +13,11 @@ object XMLRederForm: TXMLRederForm
   LCLVersion = '1.1'
   object TreeView1: TTreeView
     Left = 0
-    Height = 316
-    Top = 65
+    Height = 315
+    Top = 66
     Width = 342
     Align = alLeft
     AutoExpand = True
-    DefaultItemHeight = 18
     ReadOnly = True
     TabOrder = 0
     OnClick = TreeView1Click
@@ -26,12 +25,12 @@ object XMLRederForm: TXMLRederForm
   end
   object Panel1: TPanel
     Left = 0
-    Height = 65
+    Height = 66
     Top = 0
     Width = 732
     Align = alTop
     AutoSize = True
-    ClientHeight = 65
+    ClientHeight = 66
     ClientWidth = 732
     TabOrder = 1
     object BitBtn1: TBitBtn
@@ -39,10 +38,10 @@ object XMLRederForm: TXMLRederForm
       AnchorSideTop.Side = asrBottom
       AnchorSideRight.Control = Panel1
       AnchorSideRight.Side = asrBottom
-      Left = 666
-      Height = 30
-      Top = 28
-      Width = 59
+      Left = 650
+      Height = 29
+      Top = 30
+      Width = 75
       Anchors = [akTop, akRight]
       AutoSize = True
       BorderSpacing.Around = 6
@@ -67,9 +66,9 @@ object XMLRederForm: TXMLRederForm
       AnchorSideLeft.Control = Panel1
       AnchorSideTop.Control = Panel1
       Left = 7
-      Height = 15
+      Height = 17
       Top = 7
-      Width = 52
+      Width = 61
       BorderSpacing.Around = 6
       Caption = 'File name'
       ParentColor = False
@@ -80,7 +79,7 @@ object XMLRederForm: TXMLRederForm
       AnchorSideTop.Side = asrBottom
       Left = 13
       Height = 25
-      Top = 28
+      Top = 30
       Width = 620
       FileName = 'test.xml'
       DialogOptions = []
@@ -98,26 +97,26 @@ object XMLRederForm: TXMLRederForm
   end
   object Splitter1: TSplitter
     Left = 342
-    Height = 316
-    Top = 65
+    Height = 315
+    Top = 66
     Width = 5
   end
   object Panel2: TPanel
     Left = 347
-    Height = 316
-    Top = 65
+    Height = 315
+    Top = 66
     Width = 385
     Align = alClient
     Caption = 'Panel2'
-    ClientHeight = 316
+    ClientHeight = 315
     ClientWidth = 385
     TabOrder = 3
     object ListView1: TListView
       AnchorSideTop.Control = Edit2
       AnchorSideTop.Side = asrBottom
       Left = 1
-      Height = 204
-      Top = 111
+      Height = 199
+      Top = 115
       Width = 383
       Align = alBottom
       Anchors = [akTop, akLeft, akRight, akBottom]
@@ -131,6 +130,7 @@ object XMLRederForm: TXMLRederForm
           Caption = 'Value'
           Width = 350
         end>
+      SortType = stText
       TabOrder = 0
       ViewStyle = vsReport
     end
@@ -138,9 +138,9 @@ object XMLRederForm: TXMLRederForm
       AnchorSideLeft.Control = Panel2
       AnchorSideTop.Control = Panel2
       Left = 7
-      Height = 15
+      Height = 17
       Top = 7
-      Width = 63
+      Width = 75
       BorderSpacing.Around = 6
       Caption = 'Node name'
       ParentColor = False
@@ -150,9 +150,9 @@ object XMLRederForm: TXMLRederForm
       AnchorSideTop.Control = Edit1
       AnchorSideTop.Side = asrBottom
       Left = 7
-      Height = 15
-      Top = 59
-      Width = 62
+      Height = 17
+      Top = 61
+      Width = 72
       BorderSpacing.Around = 6
       Caption = 'Node value'
       ParentColor = False
@@ -165,7 +165,7 @@ object XMLRederForm: TXMLRederForm
       AnchorSideRight.Side = asrBottom
       Left = 13
       Height = 25
-      Top = 28
+      Top = 30
       Width = 365
       Anchors = [akTop, akLeft, akRight]
       BorderSpacing.Around = 6
@@ -180,7 +180,7 @@ object XMLRederForm: TXMLRederForm
       AnchorSideRight.Side = asrBottom
       Left = 13
       Height = 25
-      Top = 80
+      Top = 84
       Width = 365
       Anchors = [akTop, akLeft, akRight]
       BorderSpacing.Around = 6

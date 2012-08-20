@@ -10,17 +10,17 @@ object ChgEncodingDialog: TChgEncodingDialog
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   Position = poScreenCenter
-  LCLVersion = '0.9.31'
+  LCLVersion = '1.1'
   object FilesGroupBox: TGroupBox
     Left = 6
-    Height = 163
-    Top = 72
+    Height = 164
+    Top = 74
     Width = 671
     Align = alTop
     AutoSize = True
     BorderSpacing.Around = 6
     Caption = 'FilesGroupBox'
-    ClientHeight = 142
+    ClientHeight = 143
     ClientWidth = 663
     TabOrder = 0
     object FileFilterLabel: TLabel
@@ -28,9 +28,9 @@ object ChgEncodingDialog: TChgEncodingDialog
       AnchorSideTop.Control = NonUTF8FilesCheckBox
       AnchorSideTop.Side = asrBottom
       Left = 6
-      Height = 18
+      Height = 17
       Top = 71
-      Width = 99
+      Width = 84
       BorderSpacing.Left = 6
       BorderSpacing.Top = 15
       BorderSpacing.Bottom = 2
@@ -43,7 +43,7 @@ object ChgEncodingDialog: TChgEncodingDialog
       Left = 6
       Height = 22
       Top = 6
-      Width = 160
+      Width = 149
       BorderSpacing.Around = 6
       Caption = 'UTF8FilesCheckBox'
       Checked = True
@@ -58,7 +58,7 @@ object ChgEncodingDialog: TChgEncodingDialog
       Left = 6
       Height = 22
       Top = 34
-      Width = 188
+      Width = 175
       BorderSpacing.Around = 6
       Caption = 'NonUTF8FilesCheckBox'
       Checked = True
@@ -72,8 +72,8 @@ object ChgEncodingDialog: TChgEncodingDialog
       AnchorSideTop.Side = asrBottom
       Left = 6
       Height = 22
-      Top = 120
-      Width = 151
+      Top = 121
+      Width = 141
       BorderSpacing.Left = 6
       BorderSpacing.Top = 2
       Caption = 'RegExprCheckBox'
@@ -87,8 +87,8 @@ object ChgEncodingDialog: TChgEncodingDialog
       AnchorSideRight.Control = FilesGroupBox
       AnchorSideRight.Side = asrBottom
       Left = 6
-      Height = 27
-      Top = 91
+      Height = 29
+      Top = 90
       Width = 651
       Anchors = [akTop, akLeft, akRight]
       BorderSpacing.Left = 6
@@ -101,68 +101,65 @@ object ChgEncodingDialog: TChgEncodingDialog
   end
   object BtnPanel: TPanel
     Left = 0
-    Height = 46
-    Top = 514
+    Height = 45
+    Top = 515
     Width = 683
     Align = alBottom
     AutoSize = True
     BevelOuter = bvNone
-    ClientHeight = 46
+    ClientHeight = 45
     ClientWidth = 683
     TabOrder = 1
     object CloseButton: TBitBtn
-      Left = 575
-      Height = 34
+      Left = 585
+      Height = 33
       Top = 6
-      Width = 102
+      Width = 92
       Align = alRight
       AutoSize = True
       BorderSpacing.Around = 6
       Caption = 'CloseButton'
       Constraints.MinWidth = 75
       ModalResult = 1
-      NumGlyphs = 0
       TabOrder = 0
     end
     object ApplyButton: TBitBtn
-      Left = 465
-      Height = 34
+      Left = 487
+      Height = 33
       Top = 6
-      Width = 104
+      Width = 92
       Align = alRight
       AutoSize = True
       BorderSpacing.Around = 6
       Caption = 'ApplyButton'
       Constraints.MinWidth = 75
-      NumGlyphs = 0
       OnClick = ApplyButtonClick
       TabOrder = 1
     end
     object HelpButton: TBitBtn
       Left = 6
-      Height = 34
+      Height = 33
       Top = 6
-      Width = 85
+      Width = 77
       Align = alLeft
       AutoSize = True
       BorderSpacing.Around = 6
       Caption = '&Help'
       Kind = bkHelp
-      NumGlyphs = 0
       OnClick = HelpButtonClick
       TabOrder = 2
     end
   end
   object ScopeGroupBox: TGroupBox
     Left = 6
-    Height = 60
+    Height = 62
     Top = 6
     Width = 671
     Align = alTop
     AutoSize = True
     BorderSpacing.Around = 6
     Caption = 'ScopeGroupBox'
-    ClientHeight = 39
+    ClientHeight = 41
     ClientWidth = 663
     TabOrder = 2
     object NewEncodingLabel: TLabel
@@ -170,10 +167,10 @@ object ChgEncodingDialog: TChgEncodingDialog
       AnchorSideTop.Control = NewEncodingComboBox
       AnchorSideTop.Side = asrCenter
       AnchorSideRight.Control = NewEncodingComboBox
-      Left = 400
-      Height = 18
-      Top = 10
-      Width = 130
+      Left = 411
+      Height = 17
+      Top = 12
+      Width = 119
       Anchors = [akTop, akRight]
       BorderSpacing.Left = 15
       Caption = 'NewEncodingLabel'
@@ -184,9 +181,9 @@ object ChgEncodingDialog: TChgEncodingDialog
       AnchorSideTop.Control = ScopeGroupBox
       AnchorSideRight.Control = NewEncodingLabel
       Left = 6
-      Height = 27
+      Height = 29
       Top = 6
-      Width = 379
+      Width = 390
       Anchors = [akTop, akLeft, akRight]
       BorderSpacing.Around = 6
       ItemHeight = 0
@@ -199,7 +196,7 @@ object ChgEncodingDialog: TChgEncodingDialog
       AnchorSideRight.Control = ScopeGroupBox
       AnchorSideRight.Side = asrBottom
       Left = 530
-      Height = 27
+      Height = 29
       Top = 6
       Width = 127
       Anchors = [akTop, akRight]
@@ -214,18 +211,18 @@ object ChgEncodingDialog: TChgEncodingDialog
   end
   object PreviewGroupBox: TGroupBox
     Left = 6
-    Height = 267
-    Top = 241
+    Height = 265
+    Top = 244
     Width = 671
     Align = alClient
     BorderSpacing.Around = 6
     Caption = 'PreviewGroupBox'
-    ClientHeight = 246
+    ClientHeight = 244
     ClientWidth = 663
     TabOrder = 3
     object PreviewListView: TListView
       Left = 0
-      Height = 246
+      Height = 244
       Top = 0
       Width = 663
       Align = alClient
@@ -242,6 +239,7 @@ object ChgEncodingDialog: TChgEncodingDialog
           MinWidth = 75
           Width = 100
         end>
+      SortType = stText
       TabOrder = 0
       ViewStyle = vsReport
     end

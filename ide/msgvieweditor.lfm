@@ -7,8 +7,7 @@ object MsgViewEditorDlg: TMsgViewEditorDlg
   ClientHeight = 345
   ClientWidth = 548
   OnCreate = MsgViewEditorDlgCreate
-  ParentFont = False
-  LCLVersion = '0.9.25'
+  LCLVersion = '1.1'
   object FilterSetGroupBox: TGroupBox
     Left = 8
     Height = 112
@@ -16,22 +15,24 @@ object MsgViewEditorDlg: TMsgViewEditorDlg
     Width = 534
     Anchors = [akTop, akLeft, akRight]
     Caption = 'Filter Set:'
-    ClientHeight = 94
-    ClientWidth = 530
-    ParentCtl3D = False
+    ClientHeight = 91
+    ClientWidth = 526
     TabOrder = 0
     object FilterSetsListBox: TListBox
-      Height = 94
+      Left = 0
+      Height = 91
+      Top = 0
       Width = 358
       Align = alLeft
+      ItemHeight = 0
       TabOrder = 0
     end
     object AddNewSetButton: TBitBtn
       Left = 366
       Height = 25
+      Top = 0
       Width = 155
       Caption = 'AddNewSetButton'
-      NumGlyphs = 0
       OnClick = AddNewSetButtonClick
       TabOrder = 1
     end
@@ -41,7 +42,6 @@ object MsgViewEditorDlg: TMsgViewEditorDlg
       Top = 31
       Width = 155
       Caption = 'DeleteSetButton'
-      NumGlyphs = 0
       OnClick = DeleteSetButtonClick
       TabOrder = 2
     end
@@ -51,7 +51,6 @@ object MsgViewEditorDlg: TMsgViewEditorDlg
       Top = 63
       Width = 155
       Caption = 'RenameSetButton'
-      NumGlyphs = 0
       OnClick = RenameSetButtonClick
       TabOrder = 3
     end
@@ -63,13 +62,14 @@ object MsgViewEditorDlg: TMsgViewEditorDlg
     Width = 535
     Anchors = [akTop, akLeft, akRight, akBottom]
     Caption = 'ActiveFilterSetGroupBox'
-    ClientHeight = 161
-    ClientWidth = 531
-    ParentCtl3D = False
+    ClientHeight = 158
+    ClientWidth = 527
     TabOrder = 1
     object RulesListView: TListView
-      Height = 161
-      Width = 531
+      Left = 0
+      Height = 158
+      Top = 0
+      Width = 527
       Align = alClient
       Columns = <      
         item
@@ -87,6 +87,7 @@ object MsgViewEditorDlg: TMsgViewEditorDlg
         end      
         item
         end>
+      SortType = stText
       TabOrder = 0
       ViewStyle = vsReport
     end
@@ -99,7 +100,6 @@ object MsgViewEditorDlg: TMsgViewEditorDlg
     Anchors = [akLeft, akBottom]
     Caption = 'CancelButton'
     ModalResult = 2
-    NumGlyphs = 0
     TabOrder = 2
   end
   object OkButton: TBitBtn
@@ -109,7 +109,6 @@ object MsgViewEditorDlg: TMsgViewEditorDlg
     Width = 131
     Anchors = [akLeft, akBottom]
     Caption = 'OkButton'
-    NumGlyphs = 0
     OnClick = OkButtonClick
     TabOrder = 3
   end

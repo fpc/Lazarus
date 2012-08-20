@@ -1,7 +1,7 @@
 object IDETodoWindow: TIDETodoWindow
-  Left = 462
+  Left = 263
   Height = 300
-  Top = 419
+  Top = 409
   Width = 643
   ActiveControl = lvTodo
   Caption = 'IDETodoWindow'
@@ -12,7 +12,7 @@ object IDETodoWindow: TIDETodoWindow
   OnKeyDown = FormKeyDown
   OnShow = FormShow
   Position = poScreenCenter
-  LCLVersion = '0.9.31'
+  LCLVersion = '1.1'
   object StatusBar: TStatusBar
     Left = 0
     Height = 22
@@ -26,7 +26,6 @@ object IDETodoWindow: TIDETodoWindow
     Top = 48
     Width = 643
     Align = alClient
-    AutoSort = False
     Columns = <    
       item
         AutoSize = True
@@ -50,10 +49,12 @@ object IDETodoWindow: TIDETodoWindow
       item
         AutoSize = True
         Caption = 'Line'
+        Width = 100
       end    
       item
         AutoSize = True
         Caption = 'Owner'
+        Width = 100
       end    
       item
         AutoSize = True
@@ -83,7 +84,7 @@ object IDETodoWindow: TIDETodoWindow
     ShowHint = True
     TabOrder = 1
     object tbOptions: TToolButton
-      Left = 189
+      Left = 199
       Top = 2
       AllowAllUp = True
       AutoSize = True
@@ -91,7 +92,7 @@ object IDETodoWindow: TIDETodoWindow
       Visible = False
     end
     object tbPrint: TToolButton
-      Left = 142
+      Left = 152
       Top = 2
       AutoSize = True
       Caption = 'Print'
@@ -104,13 +105,13 @@ object IDETodoWindow: TIDETodoWindow
       AutoSize = True
     end
     object tbGoto: TToolButton
-      Left = 58
+      Left = 56
       Top = 2
       Action = acGoto
       AutoSize = True
     end
     object tbExport: TToolButton
-      Left = 97
+      Left = 103
       Top = 2
       Action = acExport
       AutoSize = True

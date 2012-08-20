@@ -32,6 +32,7 @@ inherited WatchesDlg: TWatchesDlg
     ReadOnly = True
     RowSelect = True
     ScrollBars = ssAutoBoth
+    SortType = stText
     TabOrder = 0
     ViewStyle = vsReport
     OnDblClick = lvWatchesDblClick
@@ -142,8 +143,8 @@ inherited WatchesDlg: TWatchesDlg
     object Page1: TPage
       object InspectMemo: TMemo
         Left = 0
-        Height = 158
-        Top = 16
+        Height = 157
+        Top = 17
         Width = 200
         Align = alClient
         ReadOnly = True
@@ -153,7 +154,7 @@ inherited WatchesDlg: TWatchesDlg
       end
       object InspectLabel: TLabel
         Left = 0
-        Height = 16
+        Height = 17
         Top = 0
         Width = 200
         Align = alTop

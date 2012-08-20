@@ -9,7 +9,7 @@ object Form1: TForm1
   Caption = 'Listview test'
   ClientHeight = 360
   ClientWidth = 620
-  LCLVersion = '0.9.31'
+  LCLVersion = '1.1'
   object PageControl1: TPageControl
     Left = 399
     Height = 341
@@ -21,13 +21,13 @@ object Form1: TForm1
     TabOrder = 0
     object Page3: TTabSheet
       Caption = 'LV'
-      ClientHeight = 307
-      ClientWidth = 205
+      ClientHeight = 308
+      ClientWidth = 207
       object Label11: TLabel
         Left = 6
         Height = 17
         Top = 60
-        Width = 59
+        Width = 63
         Caption = 'Scrollbars'
         ParentColor = False
       end
@@ -35,7 +35,7 @@ object Form1: TForm1
         Left = 6
         Height = 17
         Top = 122
-        Width = 69
+        Width = 76
         Caption = 'SortColumn'
         ParentColor = False
       end
@@ -43,7 +43,7 @@ object Form1: TForm1
         Left = 6
         Height = 17
         Top = 154
-        Width = 52
+        Width = 55
         Caption = 'SortType'
         ParentColor = False
       end
@@ -51,7 +51,7 @@ object Form1: TForm1
         Left = 6
         Height = 17
         Top = 186
-        Width = 59
+        Width = 61
         Caption = 'ViewStyle'
         ParentColor = False
       end
@@ -59,14 +59,14 @@ object Form1: TForm1
         Left = 6
         Height = 22
         Top = 4
-        Width = 87
+        Width = 95
         Caption = 'Multiselect'
         OnClick = CheckBox3Click
         TabOrder = 0
       end
       object ComboBox2: TComboBox
         Left = 77
-        Height = 26
+        Height = 29
         Top = 52
         Width = 95
         ItemHeight = 0
@@ -87,7 +87,7 @@ object Form1: TForm1
       end
       object Edit11: TEdit
         Left = 78
-        Height = 22
+        Height = 25
         Top = 116
         Width = 80
         OnChange = Edit11Change
@@ -96,7 +96,7 @@ object Form1: TForm1
       end
       object ComboBox3: TComboBox
         Left = 77
-        Height = 26
+        Height = 29
         Top = 146
         Width = 95
         ItemHeight = 0
@@ -114,7 +114,7 @@ object Form1: TForm1
       end
       object ComboBox4: TComboBox
         Left = 78
-        Height = 26
+        Height = 29
         Top = 178
         Width = 95
         ItemHeight = 0
@@ -134,7 +134,7 @@ object Form1: TForm1
         Left = 6
         Height = 22
         Top = 28
-        Width = 86
+        Width = 91
         Caption = 'RowSelect'
         OnClick = CheckBox4Click
         TabOrder = 5
@@ -143,7 +143,7 @@ object Form1: TForm1
         Left = 6
         Height = 22
         Top = 84
-        Width = 148
+        Width = 164
         Caption = 'ShowColumnHeaders'
         Checked = True
         OnClick = CheckBox5Click
@@ -154,7 +154,7 @@ object Form1: TForm1
         Left = 97
         Height = 22
         Top = 4
-        Width = 104
+        Width = 115
         Caption = 'HideSelection'
         Checked = True
         OnChange = HideSelectionChange
@@ -165,7 +165,7 @@ object Form1: TForm1
         Left = 6
         Height = 22
         Top = 249
-        Width = 88
+        Width = 98
         Caption = 'OwnerData'
         OnChange = ChBoxOwnerDataChange
         TabOrder = 8
@@ -174,14 +174,14 @@ object Form1: TForm1
         Left = 10
         Height = 17
         Top = 281
-        Width = 55
+        Width = 60
         Caption = 'SetCount'
         Enabled = False
         ParentColor = False
       end
       object OwnerDataCount: TSpinEdit
         Left = 88
-        Height = 22
+        Height = 25
         Top = 276
         Width = 84
         Enabled = False
@@ -194,7 +194,7 @@ object Form1: TForm1
         Left = 6
         Height = 22
         Top = 217
-        Width = 154
+        Width = 168
         Caption = 'AutoWidthLastColumn'
         OnChange = CheckBox6Change
         TabOrder = 10
@@ -203,7 +203,7 @@ object Form1: TForm1
         Left = 97
         Height = 22
         Top = 28
-        Width = 81
+        Width = 87
         Caption = 'ReadOnly'
         Checked = True
         OnChange = CheckBox7Change
@@ -507,6 +507,7 @@ object Form1: TForm1
     ReadOnly = True
     ScrollBars = ssAutoBoth
     SmallImages = ImageList1
+    SortType = stText
     TabOrder = 1
     ViewStyle = vsReport
     OnColumnClick = ListView1ColumnClick

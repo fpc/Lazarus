@@ -38,6 +38,7 @@ inherited ThreadsDlg: TThreadsDlg
       end>
     ReadOnly = True
     RowSelect = True
+    SortType = stText
     TabOrder = 0
     ViewStyle = vsReport
     OnDblClick = lvThreadsDblClick
@@ -57,7 +58,7 @@ inherited ThreadsDlg: TThreadsDlg
       OnClick = tbCurrentClick
     end
     object tbGoto: TToolButton
-      Left = 60
+      Left = 70
       Top = 2
       Caption = 'tbGoto'
       OnClick = lvThreadsDblClick

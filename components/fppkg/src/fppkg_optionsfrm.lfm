@@ -9,15 +9,15 @@ object OptionsForm: TOptionsForm
   OnCreate = FormCreate
   OnShow = FormShow
   Position = poScreenCenter
-  LCLVersion = '0.9.31'
+  LCLVersion = '1.1'
   object FPMakePageControl: TPageControl
     Left = 0
-    Height = 493
+    Height = 488
     Top = 0
     Width = 474
-    ActivePage = TabSheet1
+    ActivePage = GlobalTabSheet
     Align = alClient
-    TabIndex = 1
+    TabIndex = 3
     TabOrder = 0
     object ConfigTabSheet: TTabSheet
       Caption = 'Config'
@@ -43,8 +43,8 @@ object OptionsForm: TOptionsForm
         AutoSize = True
         BorderSpacing.Around = 6
         Caption = 'Compiler configuration'
-        ClientHeight = 56
-        ClientWidth = 450
+        ClientHeight = 74
+        ClientWidth = 454
         TabOrder = 1
         object CompilerConfigCheckBox: TCheckBox
           Left = 6
@@ -124,8 +124,8 @@ object OptionsForm: TOptionsForm
         Align = alTop
         BorderSpacing.Around = 6
         Caption = 'Compiler options'
-        ClientHeight = 57
-        ClientWidth = 450
+        ClientHeight = 75
+        ClientWidth = 454
         TabOrder = 5
         object CompilerConfigCheckBox1: TCheckBox
           Left = 6
@@ -181,8 +181,8 @@ object OptionsForm: TOptionsForm
         AutoSize = True
         BorderSpacing.Around = 6
         Caption = 'Prefix'
-        ClientHeight = 56
-        ClientWidth = 450
+        ClientHeight = 74
+        ClientWidth = 454
         TabOrder = 7
         object CompilerConfigCheckBox2: TCheckBox
           Left = 6
@@ -281,7 +281,7 @@ object OptionsForm: TOptionsForm
         Width = 245
         Anchors = [akTop, akLeft, akRight]
         BorderSpacing.Around = 6
-        ItemHeight = 13
+        ItemHeight = 0
         TabOrder = 11
         Text = 'ComboBox1'
       end
@@ -297,20 +297,20 @@ object OptionsForm: TOptionsForm
         Width = 180
         Anchors = [akTop, akLeft, akRight]
         BorderSpacing.Around = 6
-        ItemHeight = 13
+        ItemHeight = 0
         TabOrder = 12
         Text = 'ComboBox2'
       end
     end
     object TabSheet1: TTabSheet
       Caption = 'Messages'
-      ClientHeight = 467
-      ClientWidth = 466
+      ClientHeight = 455
+      ClientWidth = 470
       object VerbosityCheckGroup: TCheckGroup
         Left = 6
-        Height = 81
+        Height = 99
         Top = 6
-        Width = 454
+        Width = 458
         Align = alTop
         AutoFill = True
         AutoSize = True
@@ -324,6 +324,8 @@ object OptionsForm: TOptionsForm
         ChildSizing.ShrinkVertical = crsScaleChilds
         ChildSizing.Layout = cclLeftToRightThenTopToBottom
         ChildSizing.ControlsPerLine = 2
+        ClientHeight = 78
+        ClientWidth = 450
         Columns = 2
         Items.Strings = (
           'Error'
@@ -341,8 +343,8 @@ object OptionsForm: TOptionsForm
     end
     object UserInterfaceTabSheet: TTabSheet
       Caption = 'User interface'
-      ClientHeight = 467
-      ClientWidth = 466
+      ClientHeight = 455
+      ClientWidth = 470
       object VisibleColumnsListBox: TListBox
         AnchorSideLeft.Control = UserInterfaceTabSheet
         AnchorSideTop.Control = VisibleColumnsLabel
@@ -351,9 +353,9 @@ object OptionsForm: TOptionsForm
         AnchorSideBottom.Control = UserInterfaceTabSheet
         AnchorSideBottom.Side = asrBottom
         Left = 6
-        Height = 435
-        Top = 26
-        Width = 209
+        Height = 420
+        Top = 29
+        Width = 211
         Anchors = [akTop, akLeft, akRight, akBottom]
         BorderSpacing.Left = 6
         BorderSpacing.Top = 6
@@ -367,9 +369,9 @@ object OptionsForm: TOptionsForm
         AnchorSideLeft.Control = UserInterfaceTabSheet
         AnchorSideTop.Control = UserInterfaceTabSheet
         Left = 6
-        Height = 14
+        Height = 17
         Top = 6
-        Width = 71
+        Width = 99
         BorderSpacing.Around = 6
         Caption = 'Visible columns'
         ParentColor = False
@@ -378,9 +380,9 @@ object OptionsForm: TOptionsForm
         AnchorSideLeft.Control = lblMiddle
         AnchorSideLeft.Side = asrCenter
         AnchorSideTop.Control = VisibleColumnsListBox
-        Left = 221
+        Left = 223
         Height = 24
-        Top = 26
+        Top = 29
         Width = 24
         Glyph.Data = {
           36040000424D3604000000000000360000002800000010000000100000000100
@@ -418,16 +420,15 @@ object OptionsForm: TOptionsForm
           FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
           FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00
         }
-        NumGlyphs = 0
         OnClick = AddToVisibleColumnsButtonClick
       end
       object RemoveFromVisibleColumnsButton: TSpeedButton
         AnchorSideLeft.Control = AddToVisibleColumnsButton
         AnchorSideTop.Control = AddToVisibleColumnsButton
         AnchorSideTop.Side = asrBottom
-        Left = 221
+        Left = 223
         Height = 24
-        Top = 56
+        Top = 59
         Width = 24
         BorderSpacing.Top = 6
         Glyph.Data = {
@@ -466,16 +467,15 @@ object OptionsForm: TOptionsForm
           FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
           FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00
         }
-        NumGlyphs = 0
         OnClick = RemoveFromVisibleColumnsButtonClick
       end
       object AvailableColumnsLabel: TLabel
         AnchorSideLeft.Control = AvailableColumnsListBox
         AnchorSideTop.Control = UserInterfaceTabSheet
-        Left = 252
-        Height = 14
+        Left = 254
+        Height = 17
         Top = 6
-        Width = 85
+        Width = 114
         BorderSpacing.Top = 6
         Caption = 'Available columns'
         ParentColor = False
@@ -489,10 +489,10 @@ object OptionsForm: TOptionsForm
         AnchorSideRight.Side = asrBottom
         AnchorSideBottom.Control = UserInterfaceTabSheet
         AnchorSideBottom.Side = asrBottom
-        Left = 252
-        Height = 435
-        Top = 26
-        Width = 208
+        Left = 254
+        Height = 420
+        Top = 29
+        Width = 210
         Anchors = [akTop, akLeft, akRight, akBottom]
         BorderSpacing.Left = 18
         BorderSpacing.Top = 6
@@ -507,90 +507,93 @@ object OptionsForm: TOptionsForm
         AnchorSideLeft.Side = asrCenter
         AnchorSideTop.Control = UserInterfaceTabSheet
         AnchorSideTop.Side = asrCenter
-        Left = 233
+        Left = 235
         Height = 1
-        Top = 233
+        Top = 227
         Width = 1
         ParentColor = False
       end
     end
     object GlobalTabSheet: TTabSheet
       Caption = 'Global settings'
-      ClientHeight = 467
-      ClientWidth = 466
+      ClientHeight = 455
+      ClientWidth = 470
       object GlobalListView: TListView
         Left = 0
-        Height = 467
+        Height = 455
         Top = 0
-        Width = 466
+        Width = 470
         Align = alClient
         Columns = <        
           item
             AutoSize = True
             Caption = 'Name'
-            Width = 462
+            Width = 100
           end        
           item
             AutoSize = True
             Caption = 'Value'
-            Width = 41
+            Width = 100
           end>
         ReadOnly = True
         RowSelect = True
+        SortType = stText
         TabOrder = 0
         ViewStyle = vsReport
       end
     end
     object CompilerTabSheet: TTabSheet
       Caption = 'Compiler settings'
-      ClientHeight = 467
-      ClientWidth = 466
+      ClientHeight = 455
+      ClientWidth = 470
       object CompilerListView: TListView
         Left = 0
-        Height = 467
+        Height = 455
         Top = 0
-        Width = 466
+        Width = 470
         Align = alClient
         Columns = <        
           item
             AutoSize = True
             Caption = 'Name'
-            Width = 462
+            Width = 100
           end        
           item
             AutoSize = True
             Caption = 'Value'
-            Width = 41
+            Width = 100
           end>
         ReadOnly = True
         RowSelect = True
+        SortType = stText
         TabOrder = 0
         ViewStyle = vsReport
       end
     end
     object FPMakeTabSheet: TTabSheet
       Caption = 'FPMake settings'
-      ClientHeight = 467
-      ClientWidth = 466
+      ClientHeight = 455
+      ClientWidth = 470
       object FPMakeListView: TListView
         Left = 0
-        Height = 467
+        Height = 455
         Top = 0
-        Width = 466
+        Width = 470
         Align = alClient
         Columns = <        
           item
             AutoSize = True
             Caption = 'Name'
-            Width = 462
+            Width = 100
           end        
           item
             AutoSize = True
             Caption = 'Value'
-            Width = 41
+            Width = 100
           end>
         ReadOnly = True
         RowSelect = True
+        SortType = stText
         TabOrder = 0
         ViewStyle = vsReport
       end
@@ -598,14 +601,18 @@ object OptionsForm: TOptionsForm
   end
   object ButtonPanel1: TButtonPanel
     Left = 6
-    Height = 34
-    Top = 499
+    Height = 39
+    Top = 494
     Width = 462
     OKButton.Name = 'OKButton'
+    OKButton.DefaultCaption = True
     OKButton.OnClick = OKButtonClick
     HelpButton.Name = 'HelpButton'
+    HelpButton.DefaultCaption = True
     CloseButton.Name = 'CloseButton'
+    CloseButton.DefaultCaption = True
     CancelButton.Name = 'CancelButton'
+    CancelButton.DefaultCaption = True
     CancelButton.OnClick = CancelButtonClick
     TabOrder = 1
     DefaultButton = pbCancel

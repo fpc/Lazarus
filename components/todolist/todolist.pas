@@ -346,8 +346,10 @@ Var
 begin
   aListItem := lvTodo.Selected;
 
-  If lvTodo.SortDirection = sdAscending then lvTodo.SortDirection := sdDescending
-  Else lvTodo.SortDirection := sdAscending;
+  If lvTodo.SortDirection = sdAscending then
+    lvTodo.SortDirection := sdDescending
+  Else
+    lvTodo.SortDirection := sdAscending;
 
   lvTodo.SortColumn := Column.Index;
 

@@ -16,7 +16,7 @@ object frmShowParseTree: TfrmShowParseTree
   OnKeyUp = FormKeyUp
   OnShow = FormShow
   Position = poOwnerFormCenter
-  LCLVersion = '0.9.27'
+  LCLVersion = '1.1'
   object StatusBar1: TStatusBar
     Left = 0
     Height = 23
@@ -40,7 +40,7 @@ object frmShowParseTree: TfrmShowParseTree
       Left = 11
       Height = 18
       Top = 31
-      Width = 115
+      Width = 124
       Caption = 'Tree has ? nodes'
       ParentColor = False
     end
@@ -48,7 +48,7 @@ object frmShowParseTree: TfrmShowParseTree
       Left = 11
       Height = 18
       Top = 55
-      Width = 167
+      Width = 188
       Caption = 'Tree has max depth of ??'
       ParentColor = False
     end
@@ -56,7 +56,7 @@ object frmShowParseTree: TfrmShowParseTree
       Left = 11
       Height = 23
       Top = 5
-      Width = 141
+      Width = 156
       Caption = 'Show whitespace'
       OnClick = cbShowWhiteSpaceClick
       TabOrder = 0
@@ -74,33 +74,33 @@ object frmShowParseTree: TfrmShowParseTree
     TabOrder = 2
     object lblCurrent: TLabel
       Left = 11
-      Height = 20
+      Height = 18
       Top = 2
-      Width = 51
+      Width = 60
       Caption = 'Current:'
       ParentColor = False
     end
     object lblDepth: TLabel
       Left = 11
-      Height = 20
+      Height = 18
       Top = 26
-      Width = 44
+      Width = 49
       Caption = 'Depth:'
       ParentColor = False
     end
     object lblTotalNodeCount: TLabel
       Left = 271
-      Height = 20
+      Height = 18
       Top = 26
-      Width = 116
+      Width = 125
       Caption = 'Total node count:'
       ParentColor = False
     end
     object lblImmediateChildCount: TLabel
       Left = 271
-      Height = 20
+      Height = 18
       Top = 2
-      Width = 152
+      Width = 166
       Caption = 'Immediate child count:'
       ParentColor = False
     end
@@ -116,34 +116,30 @@ object frmShowParseTree: TfrmShowParseTree
     TabOrder = 3
     object tsTokens: TTabSheet
       Caption = 'Tokens'
-      ClientHeight = 367
-      ClientWidth = 573
+      ClientHeight = 363
+      ClientWidth = 577
       object lvTokens: TListView
         Left = 0
-        Height = 367
+        Height = 363
         Top = 0
-        Width = 573
+        Width = 577
         Align = alClient
         Columns = <        
           item
-            AutoSize = False
             Caption = 'Index'
             Width = 63
           end        
           item
-            AutoSize = False
             Caption = 'Type'
             Width = 185
           end        
           item
-            AutoSize = False
             Caption = 'Text'
             Width = 271
           end>
         ReadOnly = True
         RowSelect = True
-        SortColumn = 0
-        SortType = stNone
+        SortType = stText
         TabOrder = 0
         ViewStyle = vsReport
         OnDblClick = lvTokensDblClick
@@ -152,17 +148,15 @@ object frmShowParseTree: TfrmShowParseTree
     end
     object tsTree: TTabSheet
       Caption = 'Tree'
-      ClientHeight = 371
-      ClientWidth = 573
+      ClientHeight = 363
+      ClientWidth = 577
       ImageIndex = 1
       object tvParseTree: TTreeView
         Left = 0
-        Height = 371
+        Height = 363
         Top = 0
-        Width = 573
+        Width = 577
         Align = alClient
-        Ctl3D = False
-        DefaultItemHeight = 15
         HideSelection = False
         Indent = 22
         RightClickSelect = True

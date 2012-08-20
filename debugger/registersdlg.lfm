@@ -26,6 +26,7 @@ inherited RegistersDlg: TRegistersDlg
     PopupMenu = PopupMenu1
     RowSelect = True
     SmallImages = ImageList1
+    SortType = stText
     TabOrder = 0
     ViewStyle = vsReport
     OnSelectItem = lvRegistersSelectItem

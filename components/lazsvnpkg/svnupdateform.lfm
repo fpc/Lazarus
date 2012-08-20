@@ -11,10 +11,10 @@ object SVNUpdateFrm: TSVNUpdateFrm
   OnDestroy = FormDestroy
   OnShow = FormShow
   Position = poScreenCenter
-  LCLVersion = '0.9.31'
+  LCLVersion = '1.1'
   object SVNUpdateListView: TListView
     Left = 6
-    Height = 244
+    Height = 241
     Top = 6
     Width = 628
     Align = alClient
@@ -29,20 +29,25 @@ object SVNUpdateFrm: TSVNUpdateFrm
     PopupMenu = UpdatePopupMenu
     RowSelect = True
     ScrollBars = ssAutoBoth
+    SortType = stText
     TabOrder = 0
     ViewStyle = vsReport
   end
   object ButtonPanel: TButtonPanel
     Left = 6
-    Height = 38
-    Top = 256
+    Height = 41
+    Top = 253
     Width = 628
     OKButton.Name = 'OKButton'
+    OKButton.DefaultCaption = True
     OKButton.OnClick = OKButtonClick
     HelpButton.Name = 'HelpButton'
+    HelpButton.DefaultCaption = True
     HelpButton.OnClick = ShowLogButtonClick
     CloseButton.Name = 'CloseButton'
+    CloseButton.DefaultCaption = True
     CancelButton.Name = 'CancelButton'
+    CancelButton.DefaultCaption = True
     TabOrder = 1
     ShowButtons = [pbOK, pbHelp]
   end

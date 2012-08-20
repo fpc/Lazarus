@@ -57,7 +57,6 @@ inherited BreakpointsDlg: TBreakpointsDlg
     TabOrder = 0
     ViewStyle = vsReport
     OnClick = lvBreakPointsClick
-    OnColumnClick = lvBreakPointsColumnClick
     OnDblClick = lvBreakPointsDBLCLICK
     OnSelectItem = lvBreakPointsSelectItem
   end

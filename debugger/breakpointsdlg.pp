@@ -113,7 +113,6 @@ type
     procedure actShowExecute(Sender: TObject);
     procedure BreakpointsDlgCREATE(Sender: TObject);
     procedure lvBreakPointsClick(Sender: TObject);
-    procedure lvBreakPointsColumnClick(Sender: TObject; Column: TListColumn);
     procedure lvBreakPointsDBLCLICK(Sender: TObject);
     procedure lvBreakPointsSelectItem(Sender: TObject; Item: TListItem; Selected: Boolean);
     procedure mnuPopupPopup(Sender: TObject);
@@ -369,12 +368,6 @@ begin
     lvBreakPoints.Column[i].Width := COL_WIDTHS[i];
 
   FLockActionUpdate := 0;
-end;
-
-procedure TBreakPointsDlg.lvBreakPointsColumnClick(Sender: TObject;
-  Column: TListColumn);
-begin
-  lvBreakPoints.SortColumn := Column.Index;
 end;
 
 procedure TBreakPointsDlg.BreakpointsDlgCREATE(Sender: TObject);

@@ -4,16 +4,16 @@ object MainForm: TMainForm
   Top = 281
   Width = 400
   Caption = 'Debug message viewer'
-  ClientHeight = 276
+  ClientHeight = 273
   ClientWidth = 400
   Menu = MMDebugServer
   OnClose = FormClose
   OnCreate = FormCreate
   OnDestroy = FormDestroy
-  LCLVersion = '0.9.29'
+  LCLVersion = '1.1'
   object LVMessages: TListView
     Left = 0
-    Height = 250
+    Height = 247
     Top = 26
     Width = 400
     Align = alClient
@@ -32,11 +32,11 @@ object MainForm: TMainForm
         Caption = 'Message'
         Width = 219
       end>
-    ItemIndex = -1
     MultiSelect = True
     ReadOnly = True
     RowSelect = True
     SmallImages = ILMessages
+    SortType = stText
     TabOrder = 0
     ViewStyle = vsReport
     OnDblClick = LVMessagesDblClick
@@ -55,12 +55,12 @@ object MainForm: TMainForm
       Action = APause
     end
     object ToolButton2: TToolButton
-      Left = 78
+      Left = 80
       Top = 2
       Action = AClear
     end
     object TBCopyMessages: TToolButton
-      Left = 124
+      Left = 126
       Top = 2
       Action = ACopyLines
     end
@@ -70,14 +70,14 @@ object MainForm: TMainForm
       Action = AQuit
     end
     object TBSave: TToolButton
-      Left = 101
+      Left = 103
       Top = 2
       Action = ASelectAll
     end
     object ToolButton3: TToolButton
       Left = 70
       Top = 2
-      Width = 8
+      Width = 10
       Caption = 'ToolButton3'
       Style = tbsSeparator
     end
@@ -87,7 +87,7 @@ object MainForm: TMainForm
       Action = AHide
     end
     object ToolButton4: TToolButton
-      Left = 147
+      Left = 149
       Top = 2
       Action = ASave
     end

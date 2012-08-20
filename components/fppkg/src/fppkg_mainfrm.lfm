@@ -4,13 +4,13 @@ object FppkgForm: TFppkgForm
   Top = 208
   Width = 800
   Caption = 'FppkgForm'
-  ClientHeight = 580
+  ClientHeight = 573
   ClientWidth = 800
   Menu = MainMenu
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   Position = poScreenCenter
-  LCLVersion = '0.9.31'
+  LCLVersion = '1.1'
   object ToolBar: TToolBar
     Left = 0
     Height = 56
@@ -33,7 +33,7 @@ object FppkgForm: TFppkgForm
       OnClick = UpdateButtonClick
     end
     object BuildButton: TToolButton
-      Left = 44
+      Left = 56
       Hint = 'Build package'
       Top = 2
       Caption = 'Build'
@@ -41,7 +41,7 @@ object FppkgForm: TFppkgForm
       OnClick = BuildButtonClick
     end
     object CompileButton: TToolButton
-      Left = 80
+      Left = 95
       Hint = 'Compile package'
       Top = 2
       Caption = 'Compile'
@@ -49,7 +49,7 @@ object FppkgForm: TFppkgForm
       OnClick = CompileButtonClick
     end
     object InstallButton: TToolButton
-      Left = 125
+      Left = 155
       Hint = 'Install package'
       Top = 2
       Caption = 'Install'
@@ -57,7 +57,7 @@ object FppkgForm: TFppkgForm
       OnClick = InstallButtonClick
     end
     object CleanButton: TToolButton
-      Left = 162
+      Left = 200
       Hint = 'Clean package'
       Top = 2
       Caption = 'Clean'
@@ -65,7 +65,7 @@ object FppkgForm: TFppkgForm
       OnClick = CleanButtonClick
     end
     object ArchiveButton: TToolButton
-      Left = 198
+      Left = 244
       Hint = 'Create archive of package'
       Top = 2
       Caption = 'Archive'
@@ -73,7 +73,7 @@ object FppkgForm: TFppkgForm
       OnClick = ArchiveButtonClick
     end
     object DownloadButton: TToolButton
-      Left = 242
+      Left = 299
       Hint = 'Download package'
       Top = 2
       Caption = 'Download'
@@ -81,14 +81,14 @@ object FppkgForm: TFppkgForm
       OnClick = DownloadButtonClick
     end
     object FixBrokenButton: TToolButton
-      Left = 297
+      Left = 369
       Top = 2
       Caption = 'Fix broken'
       ImageIndex = 7
       OnClick = FixBrokenButtonClick
     end
     object SearchPanel: TPanel
-      Left = 355
+      Left = 441
       Height = 50
       Top = 2
       Width = 170
@@ -98,7 +98,7 @@ object FppkgForm: TFppkgForm
       TabOrder = 0
       object SearchLabel: TLabel
         Left = 6
-        Height = 14
+        Height = 17
         Top = 6
         Width = 158
         Align = alTop
@@ -112,8 +112,8 @@ object FppkgForm: TFppkgForm
         AnchorSideTop.Side = asrBottom
         AnchorSideRight.Control = SearchButton
         Left = 6
-        Height = 21
-        Top = 26
+        Height = 25
+        Top = 29
         Width = 135
         Anchors = [akTop, akLeft, akRight]
         BorderSpacing.Around = 6
@@ -128,7 +128,7 @@ object FppkgForm: TFppkgForm
         Left = 147
         Height = 22
         Hint = 'Search for keywords'
-        Top = 26
+        Top = 29
         Width = 23
         Anchors = [akTop, akRight]
         Glyph.Data = {
@@ -167,24 +167,23 @@ object FppkgForm: TFppkgForm
           FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
           FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00
         }
-        NumGlyphs = 0
         OnClick = SearchButtonClick
       end
     end
   end
   object Panel: TPanel
     Left = 0
-    Height = 524
+    Height = 517
     Top = 56
     Width = 800
     Align = alClient
     BevelOuter = bvNone
-    ClientHeight = 524
+    ClientHeight = 517
     ClientWidth = 800
     TabOrder = 1
     object PackageListView: TListView
       Left = 175
-      Height = 406
+      Height = 400
       Top = 0
       Width = 625
       Align = alClient
@@ -198,6 +197,7 @@ object FppkgForm: TFppkgForm
           Caption = 'State'
           MinWidth = 50
           Visible = False
+          Width = 0
         end      
         item
           Caption = 'Installed'
@@ -208,30 +208,31 @@ object FppkgForm: TFppkgForm
         item
           AutoSize = True
           Caption = 'Description'
-          Width = 471
+          Width = 100
         end>
       MultiSelect = True
       PopupMenu = PackagePopupMenu
       ReadOnly = True
       RowSelect = True
       SmallImages = PackageSupportImages
+      SortType = stText
       TabOrder = 0
       ViewStyle = vsReport
       OnDblClick = PackageListViewDblClick
     end
     object FilterPanel: TPanel
       Left = 0
-      Height = 406
+      Height = 400
       Top = 0
       Width = 170
       Align = alLeft
       BevelOuter = bvNone
-      ClientHeight = 406
+      ClientHeight = 400
       ClientWidth = 170
       TabOrder = 1
       object SupportCheckGroup: TCheckGroup
         Left = 6
-        Height = 81
+        Height = 99
         Hint = 'Filter packages on support level'
         Top = 6
         Width = 158
@@ -250,6 +251,8 @@ object FppkgForm: TFppkgForm
         ChildSizing.ShrinkVertical = crsScaleChilds
         ChildSizing.Layout = cclLeftToRightThenTopToBottom
         ChildSizing.ControlsPerLine = 1
+        ClientHeight = 78
+        ClientWidth = 150
         Items.Strings = (
           'Freepascal'
           'Lazarus'
@@ -265,8 +268,8 @@ object FppkgForm: TFppkgForm
       end
       object CategoriesLabel: TLabel
         Left = 6
-        Height = 14
-        Top = 93
+        Height = 17
+        Top = 111
         Width = 158
         Align = alTop
         BorderSpacing.Around = 6
@@ -275,8 +278,8 @@ object FppkgForm: TFppkgForm
       end
       object CategoryCheckListBox: TCheckListBox
         Left = 6
-        Height = 287
-        Top = 113
+        Height = 260
+        Top = 134
         Width = 158
         Align = alClient
         BorderSpacing.Around = 6
@@ -287,14 +290,14 @@ object FppkgForm: TFppkgForm
     end
     object VertSplitter: TSplitter
       Left = 170
-      Height = 406
+      Height = 400
       Top = 0
       Width = 5
     end
     object StatusBar1: TStatusBar
       Left = 0
-      Height = 23
-      Top = 501
+      Height = 22
+      Top = 495
       Width = 800
       Panels = <>
     end
@@ -302,7 +305,7 @@ object FppkgForm: TFppkgForm
       Cursor = crVSplit
       Left = 0
       Height = 5
-      Top = 406
+      Top = 400
       Width = 800
       Align = alBottom
       ResizeAnchor = akBottom
@@ -310,7 +313,7 @@ object FppkgForm: TFppkgForm
     object OutputMemo: TMemo
       Left = 0
       Height = 90
-      Top = 411
+      Top = 405
       Width = 800
       Align = alBottom
       ReadOnly = True

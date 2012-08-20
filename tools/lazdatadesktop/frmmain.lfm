@@ -5,7 +5,7 @@ object MainForm: TMainForm
   Width = 666
   ActiveControl = PCDD
   Caption = 'Lazarus Database Desktop'
-  ClientHeight = 460
+  ClientHeight = 453
   ClientWidth = 666
   Menu = MainMenu1
   OnClose = FormClose
@@ -15,7 +15,7 @@ object MainForm: TMainForm
   OnShow = FormShow
   Position = poScreenCenter
   SessionProperties = 'Height;Left;Top;Width;WindowState'
-  LCLVersion = '0.9.29'
+  LCLVersion = '1.1'
   object TBMain: TToolBar
     Left = 0
     Height = 26
@@ -47,70 +47,70 @@ object MainForm: TMainForm
     object ToolButton1: TToolButton
       Left = 73
       Top = 2
-      Width = 15
+      Width = 10
       Style = tbsSeparator
     end
     object TBNewTable: TToolButton
-      Left = 88
+      Left = 83
       Top = 2
       Action = ANewTable
     end
     object TBNewField: TToolButton
-      Left = 112
+      Left = 107
       Top = 2
       Action = ANewField
     end
     object ToolButton2: TToolButton
-      Left = 232
+      Left = 227
       Top = 2
-      Width = 16
+      Width = 10
       Style = tbsSeparator
     end
     object TBDeleteTable: TToolButton
-      Left = 248
+      Left = 237
       Top = 2
       Action = ADeleteObject
     end
     object ToolButton3: TToolButton
-      Left = 272
+      Left = 261
       Top = 2
-      Width = 15
+      Width = 10
       Style = tbsSeparator
     end
     object TBGenerateSQL: TToolButton
-      Left = 287
+      Left = 271
       Top = 2
       Action = AGenerateSQL
     end
     object TBAddIndex: TToolButton
-      Left = 160
+      Left = 155
       Top = 2
       Action = ANewIndex
     end
     object ToolButton5: TToolButton
-      Left = 311
+      Left = 295
       Top = 2
       Action = ACreateCode
     end
     object TBAddSequence: TToolButton
-      Left = 184
+      Left = 179
       Top = 2
       Action = AAddSequence
     end
     object ToolButton4: TToolButton
-      Left = 208
+      Left = 203
       Top = 2
       Action = AAddDomain
     end
     object ToolButton6: TToolButton
-      Left = 136
+      Left = 131
       Top = 2
       Action = AAddForeignKey
     end
   end
   object PCDD: TPageControl
     Left = 0
-    Height = 414
+    Height = 407
     Top = 26
     Width = 666
     ActivePage = TSRecent
@@ -119,13 +119,13 @@ object MainForm: TMainForm
     TabOrder = 1
     object TSRecent: TTabSheet
       Caption = 'Dictionaries'
-      ClientHeight = 388
-      ClientWidth = 658
+      ClientHeight = 374
+      ClientWidth = 662
       object LVDicts: TListView
         Left = 0
-        Height = 388
+        Height = 374
         Top = 0
-        Width = 658
+        Width = 662
         Align = alClient
         Columns = <        
           item
@@ -143,6 +143,7 @@ object MainForm: TMainForm
         PopupMenu = PMDataDict
         ReadOnly = True
         RowSelect = True
+        SortType = stText
         TabOrder = 0
         ViewStyle = vsReport
         OnDblClick = OpenRecentDatadict
@@ -151,13 +152,13 @@ object MainForm: TMainForm
     end
     object TSConnections: TTabSheet
       Caption = 'Connections'
-      ClientHeight = 383
-      ClientWidth = 658
+      ClientHeight = 374
+      ClientWidth = 662
       object LVConnections: TListView
         Left = 0
-        Height = 383
+        Height = 374
         Top = 0
-        Width = 658
+        Width = 662
         Align = alClient
         Columns = <        
           item
@@ -190,7 +191,7 @@ object MainForm: TMainForm
   object PStatus: TPanel
     Left = 0
     Height = 20
-    Top = 440
+    Top = 433
     Width = 666
     Align = alBottom
     BevelOuter = bvNone

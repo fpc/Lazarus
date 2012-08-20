@@ -8,27 +8,26 @@ object NewOtherDialog: TNewOtherDialog
   ClientHeight = 421
   ClientWidth = 561
   Position = poScreenCenter
-  LCLVersion = '0.9.31'
+  LCLVersion = '1.1'
   object Panel1: TPanel
     Left = 6
-    Height = 369
+    Height = 370
     Top = 6
     Width = 549
     Align = alClient
     BorderSpacing.Around = 6
     BevelOuter = bvNone
-    ClientHeight = 369
+    ClientHeight = 370
     ClientWidth = 549
     TabOrder = 0
     object ItemsTreeView: TTreeView
       AnchorSideLeft.Control = Owner
       AnchorSideTop.Control = Owner
       Left = 0
-      Height = 369
+      Height = 370
       Top = 0
       Width = 263
       Align = alClient
-      DefaultItemHeight = 19
       ReadOnly = True
       ScrollBars = ssAutoBoth
       TabOrder = 0
@@ -42,17 +41,17 @@ object NewOtherDialog: TNewOtherDialog
       AnchorSideTop.Control = Owner
       AnchorSideRight.Control = Owner
       Left = 268
-      Height = 369
+      Height = 370
       Top = 0
       Width = 281
       Align = alRight
       Caption = 'DescriptionGroupBox'
-      ClientHeight = 348
+      ClientHeight = 349
       ClientWidth = 273
       TabOrder = 1
       object DescriptionLabel: TLabel
         Left = 6
-        Height = 18
+        Height = 17
         Top = 6
         Width = 261
         Align = alTop
@@ -63,8 +62,8 @@ object NewOtherDialog: TNewOtherDialog
       end
       object InheritableComponentsListView: TListView
         Left = 0
-        Height = 318
-        Top = 30
+        Height = 320
+        Top = 29
         Width = 273
         Align = alClient
         Columns = <        
@@ -80,13 +79,14 @@ object NewOtherDialog: TNewOtherDialog
         ReadOnly = True
         RowSelect = True
         ScrollBars = ssAutoBoth
+        SortType = stText
         TabOrder = 0
         ViewStyle = vsReport
       end
     end
     object Splitter1: TSplitter
       Left = 263
-      Height = 369
+      Height = 370
       Top = 0
       Width = 5
       Align = alRight
@@ -95,16 +95,20 @@ object NewOtherDialog: TNewOtherDialog
   end
   object ButtonPanel: TButtonPanel
     Left = 6
-    Height = 34
-    Top = 381
+    Height = 33
+    Top = 382
     Width = 549
     OKButton.Name = 'OKButton'
+    OKButton.DefaultCaption = True
     OKButton.OnClick = OkButtonClick
     HelpButton.Name = 'HelpButton'
+    HelpButton.DefaultCaption = True
     HelpButton.OnClick = HelpButtonClick
     CloseButton.Name = 'CloseButton'
+    CloseButton.DefaultCaption = True
     CloseButton.Enabled = False
     CancelButton.Name = 'CancelButton'
+    CancelButton.DefaultCaption = True
     TabOrder = 1
     ShowButtons = [pbOK, pbCancel, pbHelp]
     ShowBevel = False

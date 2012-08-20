@@ -28,6 +28,7 @@ inherited LocalsDlg: TLocalsDlg
     PopupMenu = PopupMenu1
     ReadOnly = True
     RowSelect = True
+    SortType = stText
     TabOrder = 0
     ViewStyle = vsReport
   end
