@@ -150,11 +150,6 @@ type
 
 function ShowConfigureBuildLazarusDlg(AProfiles: TBuildLazarusProfiles): TModalResult;
 
-{ Clean all
-  clean ide
-  ide
-  clean ide + ide
-}
 function MakeLazarus(Profile: TBuildLazarusProfile;
   ExternalTools: TBaseExternalToolList; Macros: TTransferMacroList;
   const PackageOptions, CompilerPath, MakePath: string;
@@ -395,7 +390,7 @@ begin
       Tool.Title:=lisIDE;
       Tool.WorkingDirectory:=WorkingDirectory;
       if IdeBuildMode=bmBuild then
-        Tool.CmdLineParams:='ide'
+        Tool.CmdLineParams:='idepkg'
       else
         Tool.CmdLineParams:='cleanide ide';
       // append extra Profile
@@ -528,6 +523,7 @@ var
   NewTargetDirectoryIsDefault: Boolean;
   DefaultTargetFilename: string;
   NewTargetFilenameIsDefault: Boolean;
+  TargetLCLPlatform: String;
 begin
   Result:=mrOk;
   OutputDirRedirected:=false;
@@ -577,6 +573,7 @@ begin
   DefaultTargetCPU:=GetDefaultTargetCPU;
   TargetOS:=Profile.FPCTargetOS;
   TargetCPU:=Profile.FPCTargetCPU;
+  TargetLCLPlatform:=LCLPlatformDirNames[Profile.TargetPlatform];
   if TargetOS='' then TargetOS:=DefaultTargetOS;
   if TargetCPU='' then TargetCPU:=DefaultTargetCPU;
   DefaultTargetFilename:='lazarus'+GetExecutableExt(TargetOS);
@@ -601,11 +598,12 @@ begin
     if CrossCompiling then
     begin
       // Case 2. crosscompiling the IDE
-      // create directory <primary config dir>/bin/<TargetCPU>-<TargetOS>
+      // lazarus.exe to <primary config dir>/bin/<TargetCPU>-<TargetOS>
       TargetDirectory:=AppendPathDelim(GetPrimaryConfigPath)+'bin'
                           +PathDelim+TargetCPU+'-'+TargetOS;
+      // ppu files to <primary config dir>/units/<TargetCPU>-<TargetOS>/<LCLWidgetType>
       UnitOutDir:=AppendPathDelim(GetPrimaryConfigPath)+'units'
-                      +PathDelim+TargetCPU+'-'+TargetOS;
+                  +PathDelim+TargetCPU+'-'+TargetOS+PathDelim+TargetLCLPlatform;
       debugln('CreateBuildLazarusOptions Options.TargetOS=',Profile.FPCTargetOS,' Options.TargetCPU=',
               Profile.FPCTargetCPU,' DefaultOS=',DefaultTargetOS,' DefaultCPU=',DefaultTargetCPU);
     end else begin
@@ -617,14 +615,18 @@ begin
       begin
         if not DirectoryIsWritableCached(TargetDirectory) then begin
           // Case 3. the lazarus directory is not writable
-          // create directory <primary config dir>/bin/
+          // lazarus.exe to <primary config dir>/bin/
+          // ppu files to <primary config dir>/units/<TargetCPU>-<TargetOS>/<LCLWidgetType>
           UpdateRevisionInc:=false;
           TargetDirectory:=AppendPathDelim(GetPrimaryConfigPath)+'bin';
           debugln('CreateBuildLazarusOptions LazDir readonly NewTargetDirectory=',TargetDirectory);
           UnitOutDir:=AppendPathDelim(GetPrimaryConfigPath)+'units'
-                          +PathDelim+TargetCPU+'-'+TargetOS;
+                  +PathDelim+TargetCPU+'-'+TargetOS+PathDelim+TargetLCLPlatform;
         end else begin
           // Case 4. the lazarus directory is writable
+          // ppu files to <lazarusdir>/units/<TargetCPU>-<TargetOS>/<LCLWidgetType>
+          UnitOutDir:=AppendPathDelim(TargetDirectory)+'units'
+                  +PathDelim+TargetCPU+'-'+TargetOS+PathDelim+TargetLCLPlatform;
         end;
       end else begin
         // lazarus dir is not valid (probably someone is experimenting)
@@ -666,7 +668,7 @@ begin
     if Result<>mrOk then exit;
   end;
 
-  OutputDirRedirected:=TargetDirectory<>'';
+  OutputDirRedirected:=not NewTargetDirectoryIsDefault;
 
   // create apple bundle if needed
   //debugln(['CreateBuildLazarusOptions NewTargetDirectory=',TargetDirectory]);
@@ -696,20 +698,19 @@ begin
   end;
 
   if UnitOutDir<>'' then
-    // FPC interpretes '\ ' as an escape for a space in a path,
-    // so make sure the directory doesn't end with the path delimeter.
+    // FPC interpretes '\ ' as an escape for a space in a path on Windows,
+    // so make sure the directory doesn't end with the path delimiter.
     AppendExtraOption('-FU'+ChompPathDelim(UnitOutDir));
 
-  if not NewTargetDirectoryIsDefault then
-    // FPC interpretes '\ ' as an escape for a space in a path,
-    // so make sure the directory doesn't end with the path delimeter.
+  if TargetDirectory<>'' then
+    // FPC interpretes '\ ' as an escape for a space in a path on Windows,
+    // so make sure the directory doesn't end with the path delimiter.
     AppendExtraOption('-FE'+ChompPathDelim(TargetDirectory));
 
   if not NewTargetFilenameIsDefault then begin
-    // FPC automatically changes the last extension (append or replace)
+    // Note: FPC automatically changes the last extension (append or replace)
     // For example under linux, where executables don't need any extension
     // fpc removes the last extension of the -o option.
-    // Trick fpc:
     AppendExtraOption('-o'+TargetFilename);
   end;
 

@@ -16,22 +16,13 @@ programs=lazarus startlazarus lazbuild
 [compiler]
 options=-gl -Sci -dlcl$(LCL_PLATFORM)
 unittargetdir=../units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM)
-unitdir=../lcl/units/$(CPU_TARGET)-$(OS_TARGET) \
-        ../lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) \
-        ../components/codetools/units/$(CPU_TARGET)-$(OS_TARGET) \
-        ../components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) \
-        ../components/synedit/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) \
-        ../components/lazcontrols/lib/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) \
-        ../components/custom \
-        ../ideintf/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) \
-        ../designer \
+unitdir=../designer \
         ../debugger \
         ../debugger/frames \
         ../converter \
         ../packager \
         ../packager/frames \
-        ../packager/units/$(CPU_TARGET)-$(OS_TARGET) \
-        ../units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) \
+        ../components/custom \
         frames \
         .
 includedir=include include/$(OS_TARGET) ../images
@@ -101,8 +92,21 @@ LAZARUS_IDE_CONFIG='$(LAZARUS_CONFIG_DIR)/idemake.cfg'
 LAZARUS_OPT=$(LAZARUS_LIBPATHS)
 
 #
+# Options to compile an IDE without extra packages
+DEFAULT_IDE_OPTIONS= $(LAZARUS_LIBPATHS) \
+  -Fu../packager/units/$(CPU_TARGET)-$(OS_TARGET) \
+  -Fu../components/codetools/units/$(CPU_TARGET)-$(OS_TARGET) \
+  -Fu../components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) \
+  -Fu../lcl/units/$(CPU_TARGET)-$(OS_TARGET) \
+  -Fu../lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) \
+  -Fu../ideintf/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) \
+  -Fu../components/synedit/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) \
+  -Fu../components/lazcontrols/lib/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) \
+  -Fu../units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM)
+
+#
 # Options to compile an IDE with a lot of packages
-BIG_IDE_OPTIONS=-dBigIDE $(LAZARUS_LIBPATHS) \
+BIG_IDE_OPTIONS=-dBigIDE $(DEFAULT_IDE_OPTIONS) \
   -Fu../components/rtticontrols/lib/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) \
   -Fu../components/printers/lib/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) \
   -Fu../components/printers/design/lib/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) \
@@ -124,6 +128,8 @@ BIG_IDE_OPTIONS=-dBigIDE $(LAZARUS_LIBPATHS) \
   -Fu../components/instantfpc/lib/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) \
   -Fu../components/externhelp/lib/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM)
 
+#
+# Options for compiling lazbuild
 LAZBUILD_OPT=$(LAZARUS_LIBPATHS)
 
 #
@@ -147,18 +153,17 @@ endif
 endif
 
 #-----------------------------------------------------------------------------
+# compile IDE without extra packages
 ide: $(COMPILER_UNITTARGETDIR) revisioninc
-ifeq ($(LAZARUS_OPT),)
-        $(MAKE) --assume-new=lazarus.pp lazarus$(EXEEXT)
-else
-        $(MAKE) --assume-new=lazarus.pp lazarus$(EXEEXT) OPT='$(LAZARUS_OPT) $(OPT)'
-endif
+        $(MAKE) --assume-new=lazarus.pp lazarus$(EXEEXT) OPT='$(DEFAULT_IDE_OPTIONS) $(LAZARUS_OPT) $(OPT)'
 
 #-----------------------------------------------------------------------------
+# compile IDE using the idemake.cfg
 idepkg: $(COMPILER_UNITTARGETDIR) revisioninc
         $(MAKE) --assume-new=lazarus.pp lazarus$(EXEEXT) OPT='$(LAZARUS_OPT) $(OPT) @$(LAZARUS_IDE_CONFIG)'
 
 #-----------------------------------------------------------------------------
+# compile IDE with some extra packages
 bigide: $(COMPILER_UNITTARGETDIR) revisioninc
         -$(DEL) $(COMPILER_UNITTARGETDIR)/pkgmanager$(PPUEXT)
         $(MAKE) --assume-new=lazarus.pp lazarus$(EXEEXT) OPT='$(OPT) $(BIG_IDE_OPTIONS)'
