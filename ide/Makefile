@@ -3689,17 +3689,9 @@ bigide: $(COMPILER_UNITTARGETDIR) revisioninc
 	-$(DEL) $(COMPILER_UNITTARGETDIR)/pkgmanager$(PPUEXT)
 	$(MAKE) --assume-new=lazarus.pp lazarus$(EXEEXT) OPT='$(OPT) $(BIG_IDE_OPTIONS)'
 starter: $(COMPILER_UNITTARGETDIR)
-ifeq ($(LAZARUS_OPT),)
-	$(MAKE) --assume-new=startlazarus.lpr startlazarus$(EXEEXT)
-else
-	$(MAKE) --assume-new=startlazarus.lpr startlazarus$(EXEEXT) OPT='$(LAZARUS_OPT) $(OPT)'
-endif
+	$(MAKE) --assume-new=startlazarus.lpr startlazarus$(EXEEXT) OPT='$(DEFAULT_IDE_OPTIONS) $(LAZARUS_OPT) $(OPT)'
 lazbuilder: $(COMPILER_UNITTARGETDIR)
-ifeq ($(LAZBUILD_OPT),)
-	$(MAKE) --assume-new=lazbuild.lpr lazbuild$(EXEEXT)
-else
-	$(MAKE) --assume-new=lazbuild.lpr lazbuild$(EXEEXT) OPT='$(LAZBUILD_OPT) $(OPT)'
-endif
+	$(MAKE) --assume-new=lazbuild.lpr lazbuild$(EXEEXT) OPT='$(DEFAULT_IDE_OPTIONS) $(LAZARUS_OPT) $(OPT)'
 all: ide starter lazbuilder
 cleanide:
 	-$(DEL) $(wildcard *$(OEXT))
