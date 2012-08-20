@@ -401,13 +401,14 @@ procedure TCacheUnitsThread.Execute;
 
   function IsRootPath(APath: String): Boolean;
   //crude function, it maybe needs support for UNC drives
+  var
+    D: String;
+    Len: Integer;
   begin
-    {$ifdef windows}
-    Result := ((Length(APath) = 3) and (APath[1] in ['a'..'z','A'..'Z']) and (APath[2] = ':') and (APath[3] = PathDelim))
-              or (APath = PathDelim);
-    {$else}
-    Result := (APath = PathDelim);
-    {$endif}
+    D := ExtractFileDrive(APath);
+    Len := Length(D);
+    System.Delete(APath, 1, Len);
+    Result := (Length(APath) = 1) and (APath[1] in AllowDirectorySeparators);
   end;
 
 begin
