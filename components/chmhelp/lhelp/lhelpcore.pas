@@ -36,7 +36,7 @@ interface
 uses
   Classes, SysUtils, SimpleIPC, Laz2_XMLCfg,
   FileUtil, LResources, Forms, Controls, Graphics, Dialogs,
-  Buttons, LCLProc, IpHtml, ComCtrls, ExtCtrls, Menus, LCLType,
+  Buttons, LCLProc, IpHtml, ComCtrls, ExtCtrls, Menus, LCLType, LCLIntf, StdCtrls,
   BaseContentProvider, FileContentProvider,
   ChmContentProvider
   {$IFDEF USE_LNET}, HTTPContentProvider{$ENDIF};
@@ -149,11 +149,43 @@ begin
 end;
 
 procedure THelpForm.AboutItemClick(Sender: TObject);
+var
+  f: TForm;
+  l: TLabel;
+  b: TButton;
 begin
-  Application.MessageBox('LHelp (CHM file viewer)'#13 +
-    'Ver. 2009.06.08'#13 +
-    'Copyright (C) Andrew Haines',
-    'About', 0);
+  f := TForm.Create(Application);
+  try
+    f.Caption := 'About';
+    f.BorderStyle := bsDialog;
+    f.Position := poMainFormCenter;
+    f.Constraints.MinWidth := 150;
+    f.Constraints.MaxWidth := 250;
+    l := TLabel.Create(f);
+    l.Parent := f;;
+    l.Align := alTop;
+    l.BorderSpacing.Around := 6;
+    l.Caption := 'LHelp (CHM file viewer)' + LineEnding +
+      'Ver. 2009.06.08' + LineEnding +
+      'Copyright (C) Andrew Haines';
+    l.AutoSize := True;
+    l.WordWrap := True;
+    b := TButton.Create(f);
+    b.Parent := f;
+    b.BorderSpacing.Around := 6;
+    b.Anchors := [akTop, akLeft];
+    b.AnchorSide[akTop].Control := l;
+    b.AnchorSide[akTop].Side := asrBottom;
+    b.AnchorSide[akLeft].Control := f;
+    b.AnchorSide[akLeft].Side := asrCenter;
+    b.Caption := 'Ok';
+    b.ModalResult := mrOk;
+    f.AutoSize := False;
+    f.AutoSize := True;
+    f.ShowModal;
+  finally
+    f.free;
+  end;
 end;
 
 
