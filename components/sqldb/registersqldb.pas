@@ -49,6 +49,7 @@ unit registersqldb;
 {$DEFINE HASFBADMIN}
 {$DEFINE HASPQEVENT}
 {$DEFINE HASFBEVENT}
+{$DEFINE HASLIBLOADER}
 {$ENDIF}
 
 {$IFNDEF Solaris}
@@ -100,6 +101,9 @@ uses
   sqlstringspropertyeditordlg,
   controls,
   forms,
+  {$IFDEF HASLIBLOADER}
+    sqldblib,
+  {$ENDIF}
   {$IFDEF HASSQLPARSER}
     sqlscript, fpsqltree, fpsqlparser,
   {$ENDIF HASSQLPARSER}
@@ -139,6 +143,24 @@ Type
                           {%H-}ResourceName: string): string; override;
   end;
 
+  { TSQLDBConnectorTypePropertyEditor }
+
+  TSQLDBConnectorTypePropertyEditor = class(TStringPropertyEditor)
+  public
+    function GetAttributes: TPropertyAttributes; override;
+    procedure GetValues(Proc: TGetStrProc); override;
+  end;
+
+{$IFDEF HASLIBLOADER}
+
+  { TSQLDBLibraryLoaderLibraryNamePropertyEditor }
+
+  TSQLDBLibraryLoaderLibraryNamePropertyEditor=class(TFileNamePropertyEditor)
+  public
+    function GetFilter: String; override;
+  end;
+
+{$ENDIF}
 
 {$IFDEF HASSQLPARSER}
   TSQLSyntaxChecker = Class(TComponent)
@@ -160,6 +182,8 @@ Type
 procedure Register;
 
 implementation
+
+uses dynlibs;
 
 procedure RegisterUnitSQLdb;
 begin
@@ -207,6 +231,9 @@ begin
 {$IFDEF HASFBEVENT}
     ,TFBEventMonitor
 {$ENDIF}
+{$IFDEF HASLIBLOADER}
+    ,TSQLDBLibraryLoader
+{$ENDIF}
     ]);
 end;
 
@@ -219,6 +246,39 @@ Resourcestring
   SFireBirdDatabases = 'Firebird databases';
   SInterbaseDatabases = 'Interbase databases';
   SSQLStringsPropertyEditorDlgTitle = 'Editing %s';
+
+  sLibraries = 'Shared libraries';
+
+{ TSQLDBLibraryLoaderConnectionTypePropertyEditor }
+
+function TSQLDBConnectorTypePropertyEditor.GetAttributes: TPropertyAttributes;
+begin
+  Result := [paMultiSelect, paSortList, paValueList, paRevertable];
+end;
+
+procedure TSQLDBConnectorTypePropertyEditor.GetValues(
+  Proc: TGetStrProc);
+
+Var
+  L : TStringList;
+  I : Integer;
+begin
+  L:=TStringList.Create;
+  try
+    for I:=0 to L.Count-1 do
+       Proc(L[i]);
+  finally
+    L.Free;
+  end;
+end;
+
+{ TSQLDBLibraryLoaderLibraryNamePropertyEditor }
+
+function TSQLDBLibraryLoaderLibraryNamePropertyEditor.GetFilter: String;
+begin
+  Result := sLibraries+'|*.'+SharedSuffix;
+  Result := Result+ '|'+ inherited GetFilter;
+end;
 
 { TDbfFileNamePropertyEditor }
 
@@ -420,6 +480,14 @@ procedure Register;
 begin
   RegisterPropertyEditor(TypeInfo(AnsiString),
     TIBConnection, 'DatabaseName', TSQLFirebirdFileNamePropertyEditor);
+  RegisterPropertyEditor(TypeInfo(AnsiString),
+    TSQLConnector, 'ConnectorType', TSQLDBConnectorTypePropertyEditor);
+{$IFDEF HASLIBLOADER}
+  RegisterPropertyEditor(TypeInfo(AnsiString),
+    TSQLDBLibraryLoader, 'LibraryName', TSQLDBLibraryLoaderLibraryNamePropertyEditor);
+  RegisterPropertyEditor(TypeInfo(AnsiString),
+    TSQLDBLibraryLoader, 'ConnectionType', TSQLDBConnectorTypePropertyEditor);
+{$endif}
   RegisterPropertyEditor(TStrings.ClassInfo, TSQLQuery,  'SQL'      , TSQLStringsPropertyEditor);
   RegisterPropertyEditor(TStrings.ClassInfo, TSQLQuery,  'InsertSQL', TSQLStringsPropertyEditor);
   RegisterPropertyEditor(TStrings.ClassInfo, TSQLQuery,  'DeleteSQL', TSQLStringsPropertyEditor);

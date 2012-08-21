@@ -18,3 +18,4 @@ tsqlquery.png
 tsqlscript.png
 tsqltransaction.png
 tsybaseconnection.png
+tsqldblibraryloader.png

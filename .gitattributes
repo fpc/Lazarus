@@ -2394,6 +2394,7 @@ components/sqldb/Makefile svneol=native#text/plain
 components/sqldb/Makefile.compiled svneol=native#text/plain
 components/sqldb/Makefile.fpc svneol=native#text/plain
 components/sqldb/design/registersqldb.bat svneol=native#text/x-msdos-program
+components/sqldb/design/registersqldb.sh svneol=native#text/plain
 components/sqldb/design/registersqldb.txt svneol=native#text/plain
 components/sqldb/design/tfbadmin.png -text svneol=unset#image/png
 components/sqldb/design/tfbeventmonitor.png -text
