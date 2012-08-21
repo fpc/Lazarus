@@ -236,18 +236,38 @@ begin
 end;
 
 function CompareLazarusVersion(V1, V2: string): integer;
+// compare decimal numbers in strings
+// For example
+//   '0.9.30' < '1.0'
+//   '1.0 RC1' < '1.0 RC2'
+//   '1.0 RC2' < '1.0'
+//   '1.0' < '1.1'
+//   '1.0' < '1.0-0'
+//   '1.0 RC2' < '1.0.1'
+//   '1.0-2' < '1.0.0'
+
+// Rules: 'RC' < EndOfString < '-' < '.'
 
   function ReadNumber(var p: PChar): integer;
   begin
-    Result:=0;
-    while not (p^ in [#0,'0'..'9']) do inc(p);
-    while (p^ in ['0'..'9']) do begin
-      if Result<100000 then
-        Result:=Result*10+ord(p^)-ord('0');
-      inc(p);
+    if p^=#0 then exit(-1);
+
+    if p^ in ['0'..'9'] then begin
+      Result:=0;
+      while (p^ in ['0'..'9']) do begin
+        if Result<100000 then
+          Result:=Result*10+ord(p^)-ord('0');
+        inc(p);
+      end;
+    end else begin
+      while (p^ in [' ',#9]) do inc(p);
+      case p^ of
+      '-': Result:=1;
+      '.': Result:=2;
+      else Result:=-2; // for example 'RC'
+      end;
+      while not (p^ in [#0,'0'..'9']) do inc(p);
     end;
-    while not (p^ in ['.',#0]) do inc(p);
-    if p^='.' then inc(p);
   end;
 
 var
