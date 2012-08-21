@@ -34,7 +34,7 @@ This is a basic HOWTO for integrating lhelp into the Lazarus IDE.
     You can download the lcl.chm, fcl.chm, rtl.chm from
     http://sourceforge.net/projects/freepascal/files/Documentation/
     the lcl.chm, rtl.chm, fcl.chm, prog.chm from
-    http://www.stack.nl/~marcov/doc-chm.zip
+    http://www.stack.nl/~marcov/doc-chm_rc1.zip
     or a daily snapshot from
     ftp://freepascal.dfmk.hu/pub/lazarus/snapshots/
 
