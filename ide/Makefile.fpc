@@ -76,19 +76,7 @@ endif
 endif
 
 #
-# user config
-ifndef LAZARUS_CONFIG_DIR
-ifneq ($(findstring $(OS_TARGET),win32 win64),)
-LAZARUS_CONFIG_DIR=..
-else
-LAZARUS_CONFIG_DIR=$(HOME)/.lazarus
-endif
-endif
-export LAZARUS_CONFIG_DIR
-
-#
 # idemake.cfg
-LAZARUS_IDE_CONFIG='$(LAZARUS_CONFIG_DIR)/idemake.cfg'
 LAZARUS_OPT=$(LAZARUS_LIBPATHS)
 
 #
@@ -160,7 +148,7 @@ ide: $(COMPILER_UNITTARGETDIR) revisioninc
 #-----------------------------------------------------------------------------
 # compile IDE using the idemake.cfg
 idepkg: $(COMPILER_UNITTARGETDIR) revisioninc
-        $(MAKE) --assume-new=lazarus.pp lazarus$(EXEEXT) OPT='$(LAZARUS_OPT) $(OPT) @$(LAZARUS_IDE_CONFIG)'
+        $(MAKE) --assume-new=lazarus.pp lazarus$(EXEEXT) OPT='$(LAZARUS_OPT) $(OPT)'
 
 #-----------------------------------------------------------------------------
 # compile IDE with some extra packages
