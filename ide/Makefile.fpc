@@ -162,7 +162,7 @@ starter: $(COMPILER_UNITTARGETDIR)
 
 #-----------------------------------------------------------------------------
 lazbuilder: $(COMPILER_UNITTARGETDIR)
-        $(MAKE) --assume-new=lazbuild.lpr lazbuild$(EXEEXT) OPT='$(DEFAULT_IDE_OPTIONS) $(LAZARUS_OPT) $(OPT)'
+        $(MAKE) --assume-new=lazbuild.lpr lazbuild$(EXEEXT) OPT='$(DEFAULT_IDE_OPTIONS) $(OPT)'
 
 #-----------------------------------------------------------------------------
 all: ide starter lazbuilder
