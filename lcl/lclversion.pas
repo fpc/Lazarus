@@ -43,7 +43,7 @@ const
   lcl_release = 1;
   lcl_patch = 2;
   lcl_fullversion = ((lcl_major *  100 + lcl_minor) * 100 + lcl_release) * 100 + lcl_patch;
-  lcl_version = '1.0.0';
+  lcl_version = '1.0.1.2';
 
 implementation
 
