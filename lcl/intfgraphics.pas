@@ -3534,7 +3534,7 @@ begin
       // Never draw outside the destination
       if (CurX < 0) or (CurY < 0) then Continue;
 
-      if ASourceAlpha = nil then
+      if ASourceAlpha <> nil then
         MaskValue := ASourceAlpha.Colors[x, y].alpha
       else
         MaskValue := ASource.Colors[x, y].alpha;
