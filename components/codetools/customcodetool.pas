@@ -2893,7 +2893,7 @@ begin
         ReadTillCommentEnd;
         SameArea.EndPos:=CurPos.StartPos;
         if (SameArea.StartPos=SameArea.EndPos) then
-          RaiseException('TCustomCodeTool.GetCleanPosInfo Internal Error A',true);
+          RaiseException('TCustomCodeTool.GetCleanPosInfo Internal Error A');
         if CleanPos<SameArea.EndPos then begin
           // cursor is in comment
           if ResolveComments then begin
@@ -2903,7 +2903,7 @@ begin
             '{': inc(CodePosInFront);
             '(','/': inc(CodePosInFront,2);
             else
-              RaiseException('TCustomCodeTool.GetCleanPosInfo Internal Error B',true);
+              RaiseException('TCustomCodeTool.GetCleanPosInfo Internal Error B '+dbgstr(Src[CodePosInFront])+' at '+CleanPosToStr(CodePosInFront,true));
             end;
             GetCleanPosInfo(CodePosInFront,CleanPos,true,SameArea);
           end;
