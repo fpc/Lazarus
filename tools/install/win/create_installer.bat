@@ -68,7 +68,7 @@ SET BUILDDRIVE=%BUILDDIR:~,2%
 SET CP=%FPCBINDIR%\cp.exe
 FOR /F %%F IN ('%LAZSVNDIR%\tools\install\get_lazarus_version.bat') DO set LAZVERSION=%%F
 FOR /F %%F IN ('svnversion.exe %LAZSVNDIR%') DO set LAZREVISION=%%F
-IF %ERRORLEVEL% NEQ 0 GOTO SVNVERERR
+IF [%LAZREVISION%] == [] GOTO SVNVERERR
 
 
 ECHO Starting at: > %LOGFILE%
