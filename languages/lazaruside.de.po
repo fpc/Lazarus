@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2012-07-01 18:27+0100\n"
+"PO-Revision-Date: 2012-08-15 17:02+0100\n"
 "Last-Translator: Swen Heinig <swen.heinig@freenet.de>\n"
 "Language-Team: Deutsch <lazarus@miraclec.com>\n"
 "MIME-Version: 1.0\n"
@@ -3283,7 +3283,6 @@ msgid "Undo after save"
 msgstr "Rücknahme auch nach dem Speichern"
 
 #: lazarusidestrconsts.dlgundogroupoptions
-#, fuzzy
 #| msgid "Undo / Redo:"
 msgid "Undo / Redo"
 msgstr "Einstellungen für Rücknahme"
@@ -3435,7 +3434,7 @@ msgstr "Mehrfachselektion nur auf einem Formular möglich."
 
 #: lazarusidestrconsts.fdmalignmenu
 msgid "Align ..."
-msgstr ""
+msgstr "Ausrichtung ..."
 
 #: lazarusidestrconsts.fdmdeleteselection
 #| msgid "Delete selection"
@@ -3486,7 +3485,7 @@ msgstr "Form im XML-Format speichern"
 
 #: lazarusidestrconsts.fdmscalemenu
 msgid "Scale ..."
-msgstr ""
+msgstr "Skalierung ..."
 
 #: lazarusidestrconsts.fdmscaleword
 msgid "Scale"
@@ -3901,7 +3900,6 @@ msgid "About Lazarus"
 msgstr "Über Lazarus"
 
 #: lazarusidestrconsts.lisaboutlazarusmsg
-#, fuzzy
 #| msgid "License: GPL/LGPL%sLazarus is an IDE to create (graphical and console) applications with Free Pascal. Free Pascal is a (L)GPL'ed Pascal and Object Pascal compiler that runs on Windows, Linux, Mac OS X, FreeBSD and more.%sLazarus is the missing part of the puzzle that will allow you to develop programs for all of the above platforms in a Delphi like environment. The IDE is a RAD tool that includes a form designer.%sAs Lazarus is growing we need more developers."
 msgid "License: GPL/LGPL. See Lazarus and Free Pascal sources for license details.%sLazarus is an IDE to create graphical and console applications with Free Pascal. Free Pascal is Pascal and Object Pascal compiler that runs on Windows, Linux, Mac OS X, FreeBSD and more.%sLazarus is the missing part of the puzzle that will allow you to develop programs for all of the above platforms in a Delphi like environment. The IDE is a RAD tool that includes a form designer.%sAs Lazarus is growing we need more developers."
 msgstr "Lizenz: GPL/LGPL%sLazarus ist eine integrierte Entwicklungsumgebung für das Schreiben grafischer und Konsolenanwendungen mit Free Pascal. Free Pascal ist ein Pascal- und Object-Pascal-Compiler unter (L)GPL für (unter anderem) Windows, Linux, Mac OS X und FreeBSD.%sLazarus ist das fehlende Stück des Puzzles, um Programme für die oben genannten Plattformen in einer Delphi-artigen Umgebung zu entwickeln. Die IDE ist ein RAD-Werkzeug mit einem Formulardesigner.%sMit der Weiterentwicklung von Lazarus brauchen wir zusätzliche Unterstützung."
@@ -4229,7 +4227,6 @@ msgid "Append short description to long description"
 msgstr "Kurze Beschreibung zur langen Beschreibung hinzufügen"
 
 #: lazarusidestrconsts.lisapplicationagraphicallclfreepascalprogramtheprogra
-#, fuzzy
 #| msgid "Application%sA graphical lcl/freepascal program. The program file is automatically maintained by lazarus."
 msgid "Application%sA graphical LCL/Free Pascal program. The program source is automatically maintained by Lazarus."
 msgstr "Applikation%sEin grafisches LCL/Free-Pascal-Programm. Die Programmdatei wird automatisch von Lazarus gepflegt."
@@ -4280,7 +4277,7 @@ msgstr "Komponentennamen beim Neuanlegen abfragen"
 
 #: lazarusidestrconsts.lisausefulsettingonwindowssystemsislazarusdirmingwbin
 msgid "A useful setting on Windows systems is: $(LazarusDir)\\mingw\\bin\\$(TargetCPU)-$(TargetOS)\\gdb.exe"
-msgstr ""
+msgstr "Eine brauchbare Einstellung unter Windows ist: $(LazarusDir)\\mingw\\bin\\$(TargetCPU)-$(TargetOS)\\gdb.exe"
 
 #: lazarusidestrconsts.lisautocompletionoff
 msgid "Auto completion: off"
@@ -4855,13 +4852,11 @@ msgid "Nested procedures count treated as \"many\""
 msgstr "Zählung der geschachtelten Prozeduren als »viele« behandeln"
 
 #: lazarusidestrconsts.liscentercontrolhorizontallyrelativetosibling
-#, fuzzy
 #| msgid "Center control horizontally relative to the given sibling"
 msgid "Center control horizontally relative to the given sibling. BorderSpacing is ignored."
 msgstr "Kontrollelement waagrecht relativ zum angegebenen Geschwister zentrieren"
 
 #: lazarusidestrconsts.liscentercontrolverticallyrelativetosibling
-#, fuzzy
 #| msgid "Center control vertically relative to the given sibling"
 msgid "Center control vertically relative to the given sibling. BorderSpacing is ignored."
 msgstr "Kontrollelement senkrecht relativ zum angegebenen Geschwister zentrieren"
@@ -5130,11 +5125,11 @@ msgstr "Änderungen wurden nicht gespeichert"
 
 #: lazarusidestrconsts.lischangetounix
 msgid "Change to Unix /"
-msgstr "zu Unix / ändern"
+msgstr "zu Unix / geändert"
 
 #: lazarusidestrconsts.lischangetowindows
 msgid "Change to Windows \\"
-msgstr "zu Windows \\ ändern"
+msgstr "zu Windows \\ geändert"
 
 #: lazarusidestrconsts.lischaracter
 msgid "Character"
@@ -7577,7 +7572,7 @@ msgstr "%s nicht verfügbar: %s"
 
 #: lazarusidestrconsts.lisdonotchange
 msgid "Do not change"
-msgstr "Nicht ändern"
+msgstr "unverändert"
 
 #: lazarusidestrconsts.lisdonotclosetheide
 msgid "Do not close the IDE"
@@ -9061,7 +9056,7 @@ msgstr "Implementierungs-Kommentar für die Klasse"
 
 #: lazarusidestrconsts.lisimport
 msgid "Import ..."
-msgstr ""
+msgstr "Import ..."
 
 #: lazarusidestrconsts.lisimportlist
 msgid "Import list"
@@ -10193,7 +10188,6 @@ msgid "Common Settings"
 msgstr "Allgemeine Einstellungen"
 
 #: lazarusidestrconsts.lislazbuildconfirmbuild
-#, fuzzy
 #| msgid "Confirm before rebuilding Lazarus"
 msgid "Confirm before build"
 msgstr "Kompilieren von Lazarus bestätigen "
@@ -10360,7 +10354,7 @@ msgstr "Vom Vorläufer kopieren"
 
 #: lazarusidestrconsts.lislddoesnothaveanyvalidfpdocpathunabletocreatethefpdo
 msgid "%s does not have any valid FPDoc path.%sUnable to create the fpdoc file for %s"
-msgstr ""
+msgstr "%s besitzt keinen gültigen FPDoc-Pfad.%sKann die FPDoc-Datei für %s nicht erzeugen"
 
 #: lazarusidestrconsts.lisldmoveentriestoinherited
 msgid "Move entries to inherited"
@@ -10467,7 +10461,7 @@ msgstr "Laden von %s fehlgeschlagen"
 
 #: lazarusidestrconsts.lisloadmacrofrom
 msgid "Load macro from"
-msgstr ""
+msgstr "Lade Makro aus"
 
 #: lazarusidestrconsts.lislocals
 msgid "Locals"
@@ -11684,7 +11678,7 @@ msgstr "Überwachte Ausdrücke"
 
 #: lazarusidestrconsts.lismenuwhatneedsbuilding
 msgid "What Needs Building"
-msgstr ""
+msgstr "Noch zu erstellen"
 
 #: lazarusidestrconsts.lismenuwindow
 msgid "&Window"
@@ -11737,7 +11731,6 @@ msgid "For Delphi only"
 msgstr "Nur für Delphi"
 
 #: lazarusidestrconsts.lismissingunitsinfo1
-#, fuzzy
 #| msgid "1) Comment out the missing units (ignore them)."
 msgid "1) Comment out the selected units."
 msgstr "1) Alle fehlenden Units auskommentieren (übergehen)."
@@ -11747,13 +11740,11 @@ msgid "1) Use the units only for Delphi."
 msgstr "1) Units nur bei Delphi einbinden"
 
 #: lazarusidestrconsts.lismissingunitsinfo2
-#, fuzzy
 #| msgid "2) Select a unit path which will be added to project settings."
 msgid "2) Search for units. Found paths are added to project settings."
 msgstr "2) Unit-Pfad auswählen, der zu den Projekteinstellungen hinzugefügt wird."
 
 #: lazarusidestrconsts.lismissingunitsinfo3
-#, fuzzy
 #| msgid "3) Abort now, fix the unit path or install packages and try again."
 msgid "3) Abort now, install packages or fix paths and try again."
 msgstr "3) Jetzt abbrechen, die Unit-Pfade korrigieren oder Packages installieren und noch einmal probieren."
@@ -11938,7 +11929,7 @@ msgstr "(neues Projekt)"
 
 #: lazarusidestrconsts.lisnewrecordedmacrosnottobesaved
 msgid "New recorded macros. Not to be saved"
-msgstr ""
+msgstr "Neu aufgezeichnete Makros, noch nicht gespeichert"
 
 #: lazarusidestrconsts.lisnewsetting
 msgid "New setting"
@@ -13458,7 +13449,6 @@ msgid "The package %s is a runtime only package.%sRuntime only packages can not 
 msgstr "Das Package %s ist ein Nur-Laufzeit-Package.%sLaufzeit-Packages können nicht in die IDE installiert werden."
 
 #: lazarusidestrconsts.lispkgmangthepackageiscompiledautomaticallyanditsoutputdirec
-#, fuzzy
 #| msgid "The package %s is compiled automatically and its output directory is \"%s\", which is in the default unit search path of the compiler. The package uses other packages which also uses the default unit search of the compiler. This creates a cycle.%sYou can fix this issue%sby removing the path from your compiler config (e.g. fpc.cfg)%sor by disabling the auto update of this package%sor by removing dependencies."
 msgid "The package %s is compiled automatically and its output directory is \"%s\", which is in the default unit search path of the compiler. The package uses other packages which also uses the default unit search of the compiler. This creates an endless loop.%sYou can fix this issue%sby removing the path from your compiler config (e.g. fpc.cfg)%sor by disabling the auto update of this package%sor by removing dependencies."
 msgstr "Das Package %s wird automatisch kompiliert und sein Ausgabeverzeichnis ist \"%s\", was dem vorgegebenen Unit-Suchpfad des Compilers entspricht. Das Package benutzt andere Packages, welche ebenfalls den vorgegebenen Unit-Suchpfad des Compilers verwenden. Dadurch entsteht ein Zirkularbezug.%sSie beseitigen dieses Problem%sindem Sie den Pfad aus Ihrer Compilerkonfiguration (z.B. fpc.cfg) entfernen%soder indem Sie das automatische Update dieses Packages deaktivieren%soder durch Beseitigen der Abhängigkeiten."
@@ -14722,11 +14712,11 @@ msgstr "Erfolgreich gespeichert"
 
 #: lazarusidestrconsts.lissavedwithidesettings
 msgid "Saved with IDE settings"
-msgstr ""
+msgstr "Gespeichert mit IDE-Einstellungen"
 
 #: lazarusidestrconsts.lissavedwithprojectsession
 msgid "Saved with project session"
-msgstr ""
+msgstr "Gespeichert mit Projektsitzung"
 
 #: lazarusidestrconsts.lissaveeditorinfoofnonprojectfiles
 msgid "Save editor info of non project files"
@@ -14746,7 +14736,7 @@ msgstr "Info geschlossener Editordateien speichern"
 
 #: lazarusidestrconsts.lissavemacroas
 msgid "Save macro as"
-msgstr ""
+msgstr "Makro speichern unter"
 
 #: lazarusidestrconsts.lissaveproject
 msgid "Save project %s (*%s)"
@@ -15765,7 +15755,7 @@ msgstr "Das Testverzeichnis kann nicht gefunden werden:%s%s%s%s%s(siehe IDE Eins
 
 #: lazarusidestrconsts.listheunitalreadyexists
 msgid "The unit %s%s%s already exists."
-msgstr ""
+msgstr "Die Unit %s%s%s existiert bereits."
 
 #: lazarusidestrconsts.listheunitbelongstopackage
 msgid "The unit belongs to package %s."
@@ -16088,11 +16078,11 @@ msgstr "Deinstallation unmöglich"
 
 #: lazarusidestrconsts.lisunabletoaddthedependencybecausethepackagehasalread
 msgid "Unable to add the dependency %s, because the package %s has already a dependency %s"
-msgstr ""
+msgstr "Kann Abhängigkeit %s nicht hinzufügen, weil das Package %s bereits eine Abhängigkeit %s besitzt"
 
 #: lazarusidestrconsts.lisunabletoaddthedependencybecausethepackagehasalread2
 msgid "Unable to add the dependency %s, because the package %s has already a dependency to %s"
-msgstr ""
+msgstr "Kann Abhängigkeit %s nicht hinzufügen, weil das Package %s bereits eine Abhängigkeit auf %s besitzt"
 
 #: lazarusidestrconsts.lisunabletoaddthedependencybecausethiswouldcreatea
 msgid "Unable to add the dependency %s, because this would create a circular dependency. Dependency %s"
@@ -18742,4 +18732,5 @@ msgstr "Schreibgeschützt"
 #: lazarusidestrconsts.versioninfotitle
 msgid "Version Info"
 msgstr "Versionsinformation"
+
 
