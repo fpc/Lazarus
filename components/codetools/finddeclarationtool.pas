@@ -1412,12 +1412,10 @@ begin
     {$ENDIF}
     if DirtySrc<>nil then DirtySrc.Clear;
     BuildTreeAndGetCleanPos(trTillCursor,lsrEnd,CursorPos,CleanCursorPos,
-                  [btSetIgnoreErrorPos,btCursorPosOutAllowed]);
+                  [btSetIgnoreErrorPos,btLoadDirtySource,btCursorPosOutAllowed]);
     {$IFDEF CTDEBUG}
     DebugLn('TFindDeclarationTool.FindDeclaration C CleanCursorPos=',dbgs(CleanCursorPos));
     {$ENDIF}
-    debugln(['TFindDeclarationTool.FindDeclaration ',dbgstr]);
-
     // find CodeTreeNode at cursor
     if (Tree.Root<>nil) and (Tree.Root.StartPos<=CleanCursorPos) then begin
       CursorNode:=BuildSubTreeAndFindDeepestNodeAtPos(CleanCursorPos,true);
@@ -5167,7 +5165,7 @@ begin
     // build code tree
     if DirtySrc<>nil then DirtySrc.Clear;
     BuildTreeAndGetCleanPos(trTillCursor,lsrEnd,CursorPos,CleanCursorPos,
-                  [btSetIgnoreErrorPos,btCursorPosOutAllowed]);
+                  [btSetIgnoreErrorPos,btLoadDirtySource,btCursorPosOutAllowed]);
     // find CodeTreeNode at cursor
     if (Tree.Root<>nil) and (Tree.Root.StartPos<=CleanCursorPos) then
       CursorNode := BuildSubTreeAndFindDeepestNodeAtPos(CleanCursorPos, True)
