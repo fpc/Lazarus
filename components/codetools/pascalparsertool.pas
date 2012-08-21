@@ -106,7 +106,6 @@ type
   TBuildTreeFlag = (
     btSetIgnoreErrorPos,
     btKeepIgnoreErrorPos,
-    btLoadDirtySource,
     btCursorPosOutAllowed
     );
   TBuildTreeFlags = set of TBuildTreeFlag;
@@ -5134,10 +5133,6 @@ begin
   CaretType:=CaretToCleanPos(CursorPos, CleanCursorPos);
   if (CaretType=0) or (CaretType=-1) then begin
     BuildSubTree(CleanCursorPos);
-    if (CaretType=-1) and (btLoadDirtySource in BuildTreeFlags) then begin
-      // cursor position lies in dead code (skipped code between IFDEF/ENDIF)
-      LoadDirtySource(CursorPos);
-    end;
     exit;
   end
   else if (CaretType=-2) or (not (btCursorPosOutAllowed in BuildTreeFlags)) then

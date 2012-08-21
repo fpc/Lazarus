@@ -29,7 +29,7 @@
         <PackageName Value="CodeTools"/>
       </Item1>
     </RequiredPackages>
-    <Units Count="4">
+    <Units Count="5">
       <Unit0>
         <Filename Value="finddeclaration.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -49,6 +49,11 @@
         <Filename Value="../../../../../amat/test/test.inc"/>
         <IsPartOfProject Value="True"/>
       </Unit3>
+      <Unit4>
+        <Filename Value="scanexamples/commentsidentifiers.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="commentsidentifiers"/>
+      </Unit4>
     </Units>
   </ProjectOptions>
   <CompilerOptions>
