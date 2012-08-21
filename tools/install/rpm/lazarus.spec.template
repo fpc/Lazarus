@@ -43,7 +43,9 @@ strip tools/lazres
 strip tools/updatepofiles
 strip tools/lrstolfm
 strip tools/svn2revisioninc
-#CHMHELP:strip components/chmhelp/lhelp/lhelp
+if [ -f components/chmhelp/lhelp/lhelp ]; then
+  strip components/chmhelp/lhelp/lhelp
+fi
 
 %install
 [ %{buildroot} != "/" ] && ( rm -rf %{buildroot} )
