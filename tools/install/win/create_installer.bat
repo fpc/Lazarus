@@ -68,7 +68,7 @@ SET QTINFDIR=%LAZSVNBINDIR%\%FPCFULLTARGET%\qt
 FOR /F %%L IN ('%FPCBINDIR%\gdate.exe +%%Y%%m%%d') DO SET DATESTAMP=%%L
 SET BUILDDRIVE=%BUILDDIR:~,2%
 SET CP=%FPCBINDIR%\cp.exe
-FOR /F "delims='" %%F IN (%LAZSVNDIR%\ide\version.inc) DO set LAZVERSION=%%F
+FOR /F %F IN ('%LAZSVNDIR%\tools\install\get_lazarus_version.bat') DO set LAZVERSION=%%F
 FOR /F %%F IN ('svnversion.exe %LAZSVNDIR%') DO set LAZREVISION=%%F
 IF [%LAZREVISION%] == [] GOTO SVNVERERR
 
