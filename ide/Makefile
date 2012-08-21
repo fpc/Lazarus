@@ -3719,7 +3719,7 @@ bigide: $(COMPILER_UNITTARGETDIR) revisioninc
 starter: $(COMPILER_UNITTARGETDIR)
 	$(MAKE) --assume-new=startlazarus.lpr startlazarus$(EXEEXT) OPT='$(DEFAULT_IDE_OPTIONS) $(LAZARUS_OPT) $(OPT)'
 lazbuilder: $(COMPILER_UNITTARGETDIR)
-	$(MAKE) --assume-new=lazbuild.lpr lazbuild$(EXEEXT) OPT='$(DEFAULT_IDE_OPTIONS) $(LAZARUS_OPT) $(OPT)'
+	$(MAKE) --assume-new=lazbuild.lpr lazbuild$(EXEEXT) OPT='$(DEFAULT_IDE_OPTIONS) $(OPT)'
 all: ide starter lazbuilder
 cleanide:
 	-$(DEL) $(wildcard *$(OEXT))
