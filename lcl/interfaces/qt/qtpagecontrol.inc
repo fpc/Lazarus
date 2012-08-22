@@ -85,8 +85,12 @@ var
   ImageList: TCustomImageList;
   ImageIndex: Integer;
   Bmp: TBitmap;
+  Icon: QIconH;
+  B: Boolean;
 begin
   ImageList := TCustomTabControl(ACustomPage.Parent).Images;
+
+  B := False;
 
   if Assigned(ImageList) then
   begin
@@ -97,9 +101,22 @@ begin
       try
         ImageList.GetBitmap(ACustomPage.ImageIndex, Bmp);
         TQtPage(ACustomPage.Handle).setIcon(TQtImage(Bmp.Handle).AsIcon);
+        B := True;
       finally
         Bmp.Free;
       end;
+    end;
+  end;
+
+  // no ImageList or invalid index.
+  if not B then
+  begin
+    Icon := TQtPage(ACustomPage.Handle).getIcon;
+    if (Icon <> nil) and not QIcon_isNull(Icon) then
+    begin
+      Icon := QIcon_create;
+      TQtPage(ACustomPage.Handle).setIcon(Icon);
+      QIcon_destroy(Icon);
     end;
   end;
 
