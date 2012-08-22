@@ -472,7 +472,7 @@ type
     property Enabled;
     property Font;
     property Height stored False;
-    property ImageIndex default 0;
+    property ImageIndex;
     property Left stored False;
     property OnContextPopup;
     property OnDragDrop;
