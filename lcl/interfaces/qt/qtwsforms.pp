@@ -498,7 +498,8 @@ begin
         Flags := Flags or QtWindowStaysOnTopHint;
         Widget.setWindowFlags(Flags);
       end;
-      if not (fsModal in TForm(AWinControl).FormState) and
+      if not Assigned(AWinControl.Parent) and
+        not (fsModal in TForm(AWinControl).FormState) and
         (TForm(AWinControl).FormStyle <> fsMDIChild) and
         (QApplication_activeModalWidget() <> nil) then
           TQtMainWindow(Widget).setPopupParent(pmExplicit,
