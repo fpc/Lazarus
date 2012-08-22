@@ -67,7 +67,7 @@ type
 
   TTransformFunc = function (A: Double): Double of object;
 
-  TChartUnits = (cuPercent, cuGraph, cuPixel);
+  TChartUnits = (cuPercent, cuAxis, cuGraph, cuPixel);
 
   TSeriesMarksStyle = (
     smsCustom,         { user-defined }

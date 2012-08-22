@@ -728,7 +728,8 @@ begin
         r[Alignment],
         r[TChartAxisAlignment((Ord(Alignment) + 2) mod 4)],
         Position * PERCENT));
-    cuGraph:
+    // TODO: Add OrthogonalAxis property to support cuAxis position.
+    cuAxis, cuGraph:
       if IsVertical then
         Result := FHelper.FTransf.XGraphToImage(Position)
       else

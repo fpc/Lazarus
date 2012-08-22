@@ -404,9 +404,9 @@ object Form1: TForm1
           end
           object lblPositionX: TLabel
             Left = 6
-            Height = 14
+            Height = 13
             Top = 5
-            Width = 42
+            Width = 41
             Caption = 'Position:'
             ParentColor = False
           end
@@ -440,9 +440,9 @@ object Form1: TForm1
           end
           object lblUnitsX: TLabel
             Left = 6
-            Height = 14
+            Height = 13
             Top = 33
-            Width = 29
+            Width = 28
             Caption = 'Units:'
             ParentColor = False
           end
@@ -455,6 +455,7 @@ object Form1: TForm1
             ItemIndex = 0
             Items.Strings = (
               'percent'
+              'axis'
               'graph'
               'pixel'
             )
@@ -476,9 +477,9 @@ object Form1: TForm1
           TabOrder = 1
           object lblPositionY: TLabel
             Left = 6
-            Height = 14
+            Height = 13
             Top = 4
-            Width = 42
+            Width = 41
             Caption = 'Position:'
             ParentColor = False
           end
@@ -538,9 +539,9 @@ object Form1: TForm1
           end
           object lblUnitsY: TLabel
             Left = 6
-            Height = 14
+            Height = 13
             Top = 33
-            Width = 29
+            Width = 28
             Caption = 'Units:'
             ParentColor = False
           end
