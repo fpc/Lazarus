@@ -1,17 +1,17 @@
 object Form1: TForm1
   Left = 605
-  Height = 479
+  Height = 494
   Top = 364
   Width = 691
   Caption = 'Form1'
-  ClientHeight = 479
+  ClientHeight = 494
   ClientWidth = 691
   OnCreate = FormCreate
   Position = poScreenCenter
-  LCLVersion = '0.9.31'
+  LCLVersion = '1.1'
   object PageControl1: TPageControl
     Left = 0
-    Height = 479
+    Height = 494
     Top = 0
     Width = 691
     ActivePage = tsFast
@@ -21,11 +21,11 @@ object Form1: TForm1
     OnChange = PageControl1Change
     object tsFast: TTabSheet
       Caption = 'Fast drawing'
-      ClientHeight = 453
+      ClientHeight = 468
       ClientWidth = 683
       object chFast: TChart
         Left = 0
-        Height = 415
+        Height = 430
         Top = 38
         Width = 683
         AxisList = <        
@@ -153,11 +153,11 @@ object Form1: TForm1
     end
     object tsPointers: TTabSheet
       Caption = 'Pointers'
-      ClientHeight = 453
+      ClientHeight = 468
       ClientWidth = 683
       object chPointers: TChart
         Left = 0
-        Height = 453
+        Height = 468
         Top = 0
         Width = 513
         AxisList = <        
@@ -170,9 +170,10 @@ object Form1: TForm1
             Minors = <>
           end>
         AxisVisible = False
-        ExpandPercentage = 5
         Foot.Brush.Color = clBtnFace
         Foot.Font.Color = clBlue
+        Margins.Left = 20
+        Margins.Right = 20
         Title.Brush.Color = clBtnFace
         Title.Font.Color = clBlue
         Title.Text.Strings = (
@@ -183,11 +184,11 @@ object Form1: TForm1
       end
       object pnlPointers: TPanel
         Left = 513
-        Height = 453
+        Height = 468
         Top = 0
         Width = 170
         Align = alRight
-        ClientHeight = 453
+        ClientHeight = 468
         ClientWidth = 170
         TabOrder = 1
         object sePointerSize: TSpinEdit
@@ -201,9 +202,9 @@ object Form1: TForm1
         end
         object lblPointerSize: TLabel
           Left = 9
-          Height = 14
+          Height = 13
           Top = 10
-          Width = 20
+          Width = 19
           Caption = 'Size'
           ParentColor = False
         end
