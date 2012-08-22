@@ -86,6 +86,7 @@ Jason King
 Jeffrey A. Wormsley
 Jeroen van Idekinge
 Jesus Reyes
+JiXian Yang
 Joerg Braun - german translation
 Johannes Muller
 Jonas Maebe
