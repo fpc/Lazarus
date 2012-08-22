@@ -272,6 +272,7 @@ begin
   end;
 end;
 
+{$IFDEF HASLIBLOADER}
 { TSQLDBLibraryLoaderLibraryNamePropertyEditor }
 
 function TSQLDBLibraryLoaderLibraryNamePropertyEditor.GetFilter: String;
@@ -279,6 +280,7 @@ begin
   Result := sLibraries+'|*.'+SharedSuffix;
   Result := Result+ '|'+ inherited GetFilter;
 end;
+{$ENDIF}
 
 { TDbfFileNamePropertyEditor }
 
