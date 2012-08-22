@@ -505,10 +505,24 @@ type
 
   TDataPointDistanceToolMeasureEvent =
     procedure (ASender: TDataPointDistanceTool) of object;
+  TDataPointGetDistanceTextEvent =
+    procedure (ASender: TDataPointDistanceTool; var AText: String) of object;
 
   TDataPointDistanceToolPointer = class(TSeriesPointer)
   published
     property Style default psVertBar;
+  end;
+
+  TDataPointDistanceToolMarks = class(TCustomChartMarks)
+  public
+    procedure Assign(ASource: TPersistent); override;
+    constructor Create(AOwner: TCustomChart);
+  published
+    property Distance default DEF_MARKS_DISTANCE;
+    property Format;
+    property Frame;
+    property LabelBrush;
+    property LinkPen;
   end;
 
   TDataPointDistanceTool = class(TDataPointDrawTool)
@@ -518,12 +532,15 @@ type
 
   strict private
     FAnchors: array of TDataPointTool.TPointRef;
+    FMarks: TDataPointDistanceToolMarks;
     FMeasureMode: TChartDistanceMode;
+    FOnGetDistanceText: TDataPointGetDistanceTextEvent;
     FOnMeasure: TDataPointDistanceToolMeasureEvent;
     FOptions: TOptions;
     FPointerEnd: TDataPointDistanceToolPointer;
     FPointerStart: TDataPointDistanceToolPointer;
     function GetPointEnd: TDataPointTool.TPointRef; inline;
+    procedure SetMarks(AValue: TDataPointDistanceToolMarks);
     procedure SetOptions(AValue: TOptions);
     procedure SetPointerEnd(AValue: TDataPointDistanceToolPointer);
     procedure SetPointerStart(AValue: TDataPointDistanceToolPointer);
@@ -531,6 +548,7 @@ type
   strict protected
     procedure DoDraw; override;
     function FindRef(APoint: TPoint; ADest: TDataPointTool.TPointRef): Boolean;
+    function GetDistanceText: String;
     function SameTransformations(ASeries1, ASeries2: TBasicChartSeries): Boolean;
 
   public
@@ -549,6 +567,7 @@ type
     property DrawingMode;
     property GrabRadius default 20;
     property LinePen: TChartPen read FPen write SetPen;
+    property Marks: TDataPointDistanceToolMarks read FMarks write SetMarks;
     property MeasureMode: TChartDistanceMode
       read FMeasureMode write FMeasureMode default cdmXY;
     property Options: TOptions read FOptions write SetOptions default [];
@@ -557,6 +576,8 @@ type
     property PointerStart: TDataPointDistanceToolPointer
       read FPointerStart write SetPointerStart;
   published
+    property OnGetDistanceText: TDataPointGetDistanceTextEvent
+      read FOnGetDistanceText write FOnGetDistanceText;
     property OnMeasure: TDataPointDistanceToolMeasureEvent
       read FOnMeasure write FOnMeasure;
   end;
@@ -576,8 +597,11 @@ var
 implementation
 
 uses
-  GraphMath, InterfaceBase, Math, SysUtils,
+  Graphics, GraphMath, InterfaceBase, LCLIntf, LCLType, Math, SysUtils,
   TAChartAxis, TACustomSeries, TADrawerCanvas, TAEnumerators, TAGeometry, TAMath;
+
+const
+  DEF_DISTANCE_FORMAT = '%0:.9g';
 
 function InitBuiltinTools(AChart: TChart): TBasicChartToolset;
 var
@@ -606,6 +630,27 @@ procedure RegisterChartToolClass(
 begin
   RegisterClass(AToolClass);
   ToolsClassRegistry.AddObject(ACaption, TObject(AToolClass));
+end;
+
+{ TDataPointDistanceToolMarks }
+
+procedure TDataPointDistanceToolMarks.Assign(ASource: TPersistent);
+begin
+  if ASource is TChartMarks then
+    with TDataPointDistanceToolMarks(ASource) do begin
+      Self.FLabelBrush.Assign(FLabelBrush);
+      Self.FLabelFont.Assign(FLabelFont);
+      Self.FLinkPen.Assign(FLinkPen);
+    end;
+  inherited Assign(ASource);
+end;
+
+constructor TDataPointDistanceToolMarks.Create(AOwner: TCustomChart);
+begin
+  inherited Create(AOwner);
+  FDistance := DEF_MARKS_DISTANCE;
+  FLabelBrush.Color := clYellow;
+  Format := DEF_DISTANCE_FORMAT;
 end;
 
 { TDataPointTool.TPointRef }
@@ -1760,6 +1805,7 @@ begin
   SetLength(FAnchors, 2);
   FAnchors[0] := TDataPointTool.TPointRef.Create;
   FAnchors[1] := TDataPointTool.TPointRef.Create;
+  FMarks := TDataPointDistanceToolMarks.Create(nil);
   FPointerEnd := TDataPointDistanceToolPointer.Create(nil);
   FPointerStart := TDataPointDistanceToolPointer.Create(nil);
 end;
@@ -1768,6 +1814,7 @@ destructor TDataPointDistanceTool.Destroy;
 begin
   FAnchors[0].Free;
   FAnchors[1].Free;
+  FreeAndNil(FMarks);
   FreeAndNil(FPointerEnd);
   FreeAndNil(FPointerStart);
   inherited;
@@ -1805,9 +1852,33 @@ begin
 end;
 
 procedure TDataPointDistanceTool.DoDraw;
+
+  procedure DrawXorText(ACanvas: TCanvas; APoint: TPoint; const AText: String);
+  var
+    bmp: TBitmap;
+    ext: TSize;
+  begin
+    ext := ACanvas.TextExtent(AText);
+    bmp := TBitmap.Create;
+    try
+      bmp.SetSize(ext.cx, ext.cy);
+      bmp.Canvas.Brush.Style := bsClear;
+      bmp.Canvas.Font := ACanvas.Font;
+      bmp.Canvas.Font.Color := clWhite;
+      bmp.Canvas.TextOut(0, 0, AText);
+      APoint -= ext div 2;
+      BitBlt(
+        ACanvas.Handle, APoint.X, APoint.Y, ext.cx, ext.cy,
+        bmp.Canvas.Handle, 0, 0, SRCINVERT);
+    finally
+      bmp.Free;
+    end;
+  end;
+
 var
   p1, p2: TPoint;
   a: Double;
+  dummy: TPointArray = nil;
 begin
   p1 := FChart.GraphToImage(PointStart.GraphPos);
   p2 := FChart.GraphToImage(PointEnd.GraphPos);
@@ -1824,6 +1895,12 @@ begin
   with PointerEnd do
     if Visible then
       DrawSize(FChart.Drawer, p2, Point(HorizSize, VertSize), clTAColor, a);
+  p1 := (p1 + p2) div 2;
+  if EffectiveDrawingMode = tdmNormal then
+    Marks.DrawLabel(FChart.Drawer, p1, p1, GetDistanceText, dummy)
+  else
+    DrawXorText(FChart.Canvas, p1, GetDistanceText);
+  inherited;
 end;
 
 function TDataPointDistanceTool.FindRef(
@@ -1841,6 +1918,17 @@ begin
   else
     ADest.SetGraphPos(FChart.ImageToGraph(APoint));
   Result := true;
+end;
+
+// Use Marks.Format and/or OnGetDistanceText event handler to create the text
+// to be displayed along the connecting line between PointStart and PointEnd.
+// OnGetDistanceText is useful for converting the distance, for example, to a
+// datetime string.
+function TDataPointDistanceTool.GetDistanceText: String;
+begin
+  Result := Format(Marks.Format, [Distance]);
+  if Assigned(OnGetDistanceText) then
+    OnGetDistanceText(Self, Result);
 end;
 
 function TDataPointDistanceTool.GetPointEnd: TDataPointTool.TPointRef;
@@ -1872,20 +1960,19 @@ var
   newEnd: TPointRef;
 begin
   if not IsActive then exit;
+  DoHide;
   newEnd := TPointRef.Create;
   try
     if
-      not FindRef(APoint, newEnd) or
-      not SameTransformations(PointStart.Series, newEnd.Series)
+      FindRef(APoint, newEnd) and
+      SameTransformations(PointStart.Series, newEnd.Series)
     then
-      exit;
-    DoHide;
-    PointEnd.Assign(newEnd);
-    if EffectiveDrawingMode = tdmXor then
-      DoDraw;
+      PointEnd.Assign(newEnd);
   finally
     FreeAndNil(newEnd);
   end;
+  if EffectiveDrawingMode = tdmXor then
+    DoDraw;
   Handled;
 end;
 
@@ -1917,6 +2004,12 @@ begin
     (ASeries2 is TCustomChartSeries) and
     ((MeasureMode = cdmOnlyY) or CheckAxis(s1.AxisIndexX, s2.AxisIndexX)) and
     ((MeasureMode = cdmOnlyX) or CheckAxis(s1.AxisIndexY, s2.AxisIndexY));
+end;
+
+procedure TDataPointDistanceTool.SetMarks(AValue: TDataPointDistanceToolMarks);
+begin
+  if FMarks = AValue then exit;
+  FMarks.Assign(AValue);
 end;
 
 procedure TDataPointDistanceTool.SetOptions(AValue: TOptions);
