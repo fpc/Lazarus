@@ -349,6 +349,7 @@ type
       procedure SetGraphPos(const ANewPos: TDoublePoint);
     public
       procedure Assign(ASource: TPointRef);
+      function AxisPos: TDoublePoint;
       property GraphPos: TDoublePoint read FGraphPos;
       property Index: Integer read FIndex;
       property Series: TBasicChartSeries read FSeries;
@@ -616,6 +617,15 @@ begin
     Self.FIndex := FIndex;
     Self.FSeries := FSeries;
   end;
+end;
+
+function TDataPointTool.TPointRef.AxisPos: TDoublePoint;
+begin
+  if Series = nil then
+    Result := GraphPos
+  else
+    with Series do
+      Result := DoublePoint(GraphToAxisX(GraphPos.X), GraphToAxisY(GraphPos.Y));
 end;
 
 procedure TDataPointTool.TPointRef.SetGraphPos(const ANewPos: TDoublePoint);
@@ -1767,23 +1777,20 @@ function TDataPointDistanceTool.Distance(AUnits: TChartUnits): Double;
 var
   p1, p2: TDoublePoint;
 begin
-  p1 := PointStart.GraphPos;
-  p2 := PointEnd.GraphPos;
   case AUnits of
     cuPercent: exit(0); // Not implemented.
     cuAxis: begin
-      if PointStart.Series <> nil then
-        with PointStart.Series do
-          p1 := DoublePoint(GraphToAxisX(p1.X), GraphToAxisY(p1.Y));
-      if PointEnd.Series <> nil then
-        with PointEnd.Series do
-          p2 := DoublePoint(GraphToAxisX(p2.X), GraphToAxisY(p2.Y));
+      p1 := PointStart.AxisPos;
+      p2 := PointEnd.AxisPos;
     end;
-    cuGraph: ;
+    cuGraph: begin
+      p1 := PointStart.GraphPos;
+      p2 := PointEnd.GraphPos;
+    end;
     cuPixel: begin
-      with FChart.GraphToImage(p1) do
+      with FChart.GraphToImage(PointStart.GraphPos) do
         p1 := DoublePoint(X, Y);
-      with FChart.GraphToImage(p2) do
+      with FChart.GraphToImage(PointEnd.GraphPos) do
         p2 := DoublePoint(X, Y);
     end;
   end;
