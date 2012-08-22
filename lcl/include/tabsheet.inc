@@ -61,7 +61,6 @@ end;
 constructor TTabSheet.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
-  ImageIndex:=0;
 end;
 
 destructor TTabSheet.Destroy;
