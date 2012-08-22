@@ -500,6 +500,11 @@ type
     property Size: Integer read FSize write FSize default -1;
   end;
 
+  TDataPointDistanceTool = class;
+
+  TDataPointDistanceToolMeasureEvent =
+    procedure (ASender: TDataPointDistanceTool) of object;
+
   TDataPointDistanceTool = class(TDataPointDrawTool)
   published
   type
@@ -508,6 +513,7 @@ type
   strict private
     FAnchors: array of TDataPointTool.TPointRef;
     FMeasureMode: TChartDistanceMode;
+    FOnMeasure: TDataPointDistanceToolMeasureEvent;
     FOptions: TOptions;
     function GetPointEnd: TDataPointTool.TPointRef; inline;
     procedure SetOptions(AValue: TOptions);
@@ -520,6 +526,7 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+    function Distance(AUnits: TChartUnits = cuGraph): Double;
     procedure KeyDown(APoint: TPoint); override;
     procedure KeyUp(APoint: TPoint); override;
     procedure MouseDown(APoint: TPoint); override;
@@ -535,6 +542,9 @@ type
     property MeasureMode: TChartDistanceMode
       read FMeasureMode write FMeasureMode default cdmXY;
     property Options: TOptions read FOptions write SetOptions default [];
+  published
+    property OnMeasure: TDataPointDistanceToolMeasureEvent
+      read FOnMeasure write FOnMeasure;
   end;
 
   TReticuleTool = class(TChartTool)
@@ -1736,6 +1746,40 @@ begin
   inherited;
 end;
 
+function TDataPointDistanceTool.Distance(AUnits: TChartUnits): Double;
+var
+  p1, p2: TDoublePoint;
+begin
+  p1 := PointStart.GraphPos;
+  p2 := PointEnd.GraphPos;
+  case AUnits of
+    cuPercent: exit(0); // Not implemented.
+    cuAxis: begin
+      if PointStart.Series <> nil then
+        with PointStart.Series do
+          p1 := DoublePoint(GraphToAxisX(p1.X), GraphToAxisY(p1.Y));
+      if PointEnd.Series <> nil then
+        with PointEnd.Series do
+          p2 := DoublePoint(GraphToAxisX(p2.X), GraphToAxisY(p2.Y));
+    end;
+    cuGraph: ;
+    cuPixel: begin
+      with FChart.GraphToImage(p1) do
+        p1 := DoublePoint(X, Y);
+      with FChart.GraphToImage(p2) do
+        p2 := DoublePoint(X, Y);
+    end;
+  end;
+  case MeasureMode of
+    cdmOnlyX: Result := Abs(p1.X - p2.X);
+    cdmOnlyY: Result := Abs(p1.Y - p2.Y);
+    // The user is responsible for ensuring that both axes have
+    // the same physical dimensions: the xy distance is not
+    // meaningful, for example, if x is in days and y in Dollars.
+    cdmXY: Result := Norm([p1.X - p2.X, p1.Y - p2.Y]);
+  end;
+end;
+
 procedure TDataPointDistanceTool.DoDraw;
 var
   p1, p2: TPoint;
@@ -1816,6 +1860,8 @@ end;
 procedure TDataPointDistanceTool.MouseUp(APoint: TPoint);
 begin
   MouseMove(APoint);
+  if Assigned(OnMeasure) then
+    OnMeasure(Self);
   Deactivate;
 end;
 
