@@ -8308,7 +8308,7 @@ msgstr "Falha ao carregar estado retração"
 
 #: lazarusidestrconsts.lisfailedtosavefile
 msgid "Failed to save file."
-msgstr ""
+msgstr "Falha ao salvar arquivo."
 
 #: lazarusidestrconsts.lisfepaintdesigneritemsonidle
 msgid "Reduce designer painting"
