@@ -420,7 +420,7 @@ begin
       {$endif}
 
       {$ifdef HASX11}
-      if IsOldKDEInstallation then
+      if (GetWindowManager = 'kwin') and IsOldKDEInstallation then
       begin
         W := nil;
         ActiveWin := GetActiveWindow;
