@@ -597,7 +597,7 @@ var
 implementation
 
 uses
-  Graphics, GraphMath, InterfaceBase, LCLIntf, LCLType, Math, SysUtils,
+  FPCanvas, Graphics, GraphMath, InterfaceBase, LCLIntf, LCLType, Math, SysUtils,
   TAChartAxis, TACustomSeries, TADrawerCanvas, TAEnumerators, TAGeometry, TAMath;
 
 const
@@ -1876,8 +1876,38 @@ procedure TDataPointDistanceTool.DoDraw;
   end;
 
 var
-  p1, p2: TPoint;
   a: Double;
+
+  procedure DrawPointer(APointer: TDataPointDistanceToolPointer; APos: TPoint);
+  var
+    oldMode: TFPPenMode;
+    oldColor: TColor;
+    oldStyle: TFPBrushStyle;
+  begin
+    with APointer do begin
+      if not Visible then exit;
+      if EffectiveDrawingMode = tdmXor then begin
+        oldMode := Pen.Mode;
+        oldColor := Pen.Color;
+        oldStyle := Brush.Style;
+        Pen.Mode := pmXor;
+        Pen.Color := clWhite;
+        Brush.Style := bsClear;
+      end;
+      try
+        DrawSize(FChart.Drawer, APos, Point(HorizSize, VertSize), clTAColor, a);
+      finally
+        if EffectiveDrawingMode = tdmXor then begin
+          Pen.Mode := oldMode;
+          Pen.Color := oldColor;
+          Brush.Style := oldStyle;
+        end;
+      end;
+    end;
+  end;
+
+var
+  p1, p2: TPoint;
   dummy: TPointArray = nil;
 begin
   p1 := FChart.GraphToImage(PointStart.GraphPos);
@@ -1887,19 +1917,18 @@ begin
     cdmOnlyY: p2.X := p1.X;
   end;
   if p1 = p2 then exit;
-  FChart.Drawer.Line(p1, p2);
+  if LinePen.Visible then
+    FChart.Drawer.Line(p1, p2);
   a := ArcTan2(p2.Y - p1.Y, p2.X - p1.X);
-  with PointerStart do
-    if Visible then
-      DrawSize(FChart.Drawer, p1, Point(HorizSize, VertSize), clTAColor, a);
-  with PointerEnd do
-    if Visible then
-      DrawSize(FChart.Drawer, p2, Point(HorizSize, VertSize), clTAColor, a);
-  p1 := (p1 + p2) div 2;
-  if EffectiveDrawingMode = tdmNormal then
-    Marks.DrawLabel(FChart.Drawer, p1, p1, GetDistanceText, dummy)
-  else
-    DrawXorText(FChart.Canvas, p1, GetDistanceText);
+  DrawPointer(PointerStart, p1);
+  DrawPointer(PointerEnd, p2);
+  if Marks.Visible then begin
+    p1 := (p1 + p2) div 2;
+    if EffectiveDrawingMode = tdmNormal then
+      Marks.DrawLabel(FChart.Drawer, p1, p1, GetDistanceText, dummy)
+    else
+      DrawXorText(FChart.Canvas, p1, GetDistanceText);
+  end;
   inherited;
 end;
 
@@ -1979,7 +2008,7 @@ end;
 procedure TDataPointDistanceTool.MouseUp(APoint: TPoint);
 begin
   MouseMove(APoint);
-  if Assigned(OnMeasure) then
+  if Assigned(OnMeasure) and (PointStart.GraphPos <> PointEnd.GraphPos) then
     OnMeasure(Self);
   Deactivate;
 end;
