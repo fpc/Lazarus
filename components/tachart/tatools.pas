@@ -505,6 +505,11 @@ type
   TDataPointDistanceToolMeasureEvent =
     procedure (ASender: TDataPointDistanceTool) of object;
 
+  TDataPointDistanceToolPointer = class(TSeriesPointer)
+  published
+    property Style default psVertBar;
+  end;
+
   TDataPointDistanceTool = class(TDataPointDrawTool)
   published
   type
@@ -515,8 +520,12 @@ type
     FMeasureMode: TChartDistanceMode;
     FOnMeasure: TDataPointDistanceToolMeasureEvent;
     FOptions: TOptions;
+    FPointerEnd: TDataPointDistanceToolPointer;
+    FPointerStart: TDataPointDistanceToolPointer;
     function GetPointEnd: TDataPointTool.TPointRef; inline;
     procedure SetOptions(AValue: TOptions);
+    procedure SetPointerEnd(AValue: TDataPointDistanceToolPointer);
+    procedure SetPointerStart(AValue: TDataPointDistanceToolPointer);
 
   strict protected
     procedure DoDraw; override;
@@ -542,6 +551,10 @@ type
     property MeasureMode: TChartDistanceMode
       read FMeasureMode write FMeasureMode default cdmXY;
     property Options: TOptions read FOptions write SetOptions default [];
+    property PointerEnd: TDataPointDistanceToolPointer
+      read FPointerEnd write SetPointerEnd;
+    property PointerStart: TDataPointDistanceToolPointer
+      read FPointerStart write SetPointerStart;
   published
     property OnMeasure: TDataPointDistanceToolMeasureEvent
       read FOnMeasure write FOnMeasure;
@@ -1737,12 +1750,16 @@ begin
   SetLength(FAnchors, 2);
   FAnchors[0] := TDataPointTool.TPointRef.Create;
   FAnchors[1] := TDataPointTool.TPointRef.Create;
+  FPointerEnd := TDataPointDistanceToolPointer.Create(nil);
+  FPointerStart := TDataPointDistanceToolPointer.Create(nil);
 end;
 
 destructor TDataPointDistanceTool.Destroy;
 begin
   FAnchors[0].Free;
   FAnchors[1].Free;
+  FreeAndNil(FPointerEnd);
+  FreeAndNil(FPointerStart);
   inherited;
 end;
 
@@ -1783,6 +1800,7 @@ end;
 procedure TDataPointDistanceTool.DoDraw;
 var
   p1, p2: TPoint;
+  a: Double;
 begin
   p1 := FChart.GraphToImage(PointStart.GraphPos);
   p2 := FChart.GraphToImage(PointEnd.GraphPos);
@@ -1792,6 +1810,13 @@ begin
   end;
   if p1 = p2 then exit;
   FChart.Drawer.Line(p1, p2);
+  a := ArcTan2(p2.Y - p1.Y, p2.X - p1.X);
+  with PointerStart do
+    if Visible then
+      DrawSize(FChart.Drawer, p1, Point(HorizSize, VertSize), clTAColor, a);
+  with PointerEnd do
+    if Visible then
+      DrawSize(FChart.Drawer, p2, Point(HorizSize, VertSize), clTAColor, a);
 end;
 
 function TDataPointDistanceTool.FindRef(
@@ -1891,6 +1916,20 @@ procedure TDataPointDistanceTool.SetOptions(AValue: TOptions);
 begin
   if FOptions = AValue then exit;
   FOptions := AValue;
+end;
+
+procedure TDataPointDistanceTool.SetPointerEnd(
+  AValue: TDataPointDistanceToolPointer);
+begin
+  if FPointerEnd = AValue then exit;
+  FPointerEnd.Assign(AValue);
+end;
+
+procedure TDataPointDistanceTool.SetPointerStart(
+  AValue: TDataPointDistanceToolPointer);
+begin
+  if FPointerStart = AValue then exit;
+  FPointerStart.Assign(AValue);
 end;
 
 initialization

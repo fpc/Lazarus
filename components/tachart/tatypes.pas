@@ -295,7 +295,8 @@ type
 
     procedure Draw(ADrawer: IChartDrawer; ACenter: TPoint; AColor: TColor);
     procedure DrawSize(
-      ADrawer: IChartDrawer; ACenter, ASize: TPoint; AColor: TColor);
+      ADrawer: IChartDrawer; ACenter, ASize: TPoint; AColor: TColor;
+      AAngle: Double = 0.0);
   published
     property Brush: TBrush read FBrush write SetBrush;
     property HorizSize: Integer read FHorizSize write SetHorizSize default DEF_POINTER_SIZE;
@@ -926,7 +927,7 @@ begin
   InitHelper(FPen, TChartPen);
 
   FHorizSize := DEF_POINTER_SIZE;
-  FStyle := psRectangle;
+  SetPropDefaults(Self, ['Style']);
   FVertSize  := DEF_POINTER_SIZE;
   FVisible := true;
 end;
@@ -944,10 +945,10 @@ begin
   DrawSize(ADrawer, ACenter, Point(HorizSize, VertSize), AColor);
 end;
 
-procedure TSeriesPointer.DrawSize(
-  ADrawer: IChartDrawer; ACenter, ASize: TPoint; AColor: TColor);
+procedure TSeriesPointer.DrawSize(ADrawer: IChartDrawer;
+  ACenter, ASize: TPoint; AColor: TColor; AAngle: Double);
 
-  function PointByIndex(AIndex: Char): TPoint;
+  function PointByIndex(AIndex: Char): TPoint; inline;
   // 7--8--9
   // 4  5  6
   // 1--2--3
@@ -955,9 +956,8 @@ procedure TSeriesPointer.DrawSize(
     V: array ['1'..'9'] of -1..1 = (1, 1, 1, 0, 0, 0, -1, -1, -1);
     H: array ['1'..'9'] of -1..1 = (-1, 0, 1, -1, 0, 1, -1, 0, 1);
   begin
-    Result := ACenter;
-    Result.X += H[AIndex] * ASize.X;
-    Result.Y += V[AIndex] * ASize.Y;
+    Result := ACenter + RotatePoint(
+      Point(H[AIndex] * ASize.X, V[AIndex] * ASize.Y), AAngle);
   end;
 
   procedure DrawByString(const AStr: String);
