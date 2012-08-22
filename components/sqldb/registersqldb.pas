@@ -265,6 +265,7 @@ Var
 begin
   L:=TStringList.Create;
   try
+    GetConnectionList(L);
     for I:=0 to L.Count-1 do
        Proc(L[i]);
   finally

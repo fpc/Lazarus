@@ -1,4 +1,4 @@
-# Massimo Soricetti <notturno@quipo.it>, 2011.
+ Massimo Soricetti <notturno@quipo.it>, 2011.
 msgid ""
 msgstr ""
 "PO-Revision-Date: 2011-04-20 17:47+0200\n"
@@ -18,6 +18,10 @@ msgstr "Archivi Firebird"
 #: registersqldb.sinterbasedatabases
 msgid "Interbase databases"
 msgstr "Archivi Interbase"
+
+#: registersqldb.slibraries
+msgid "Shared libraries"
+msgstr ""
 
 #: registersqldb.ssqlscript
 msgid "SQL Script file"

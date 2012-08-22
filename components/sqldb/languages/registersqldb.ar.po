@@ -1,7 +1,7 @@
-# Arabic translation of Free Pascal Lazarus Project.
-# Copyright (C) 2012 Lazarus Project
-# This file is distributed under the same license as the Lazarus package.
-# Khaled Shagrouni <shagrouni@gmail.com>, 2012.
+ Arabic translation of Free Pascal Lazarus Project.
+ Copyright (C) 2012 Lazarus Project
+ This file is distributed under the same license as the Lazarus package.
+ Khaled Shagrouni <shagrouni@gmail.com>, 2012.
 msgid ""
 msgstr ""
 "Project-Id-Version: Free Pascal Lazarus Project.\n"
@@ -24,6 +24,10 @@ msgstr "قاعدة بيانات فايربيرد"
 #: registersqldb.sinterbasedatabases
 msgid "Interbase databases"
 msgstr "قاعدة بيانات انتربيس"
+
+#: registersqldb.slibraries
+msgid "Shared libraries"
+msgstr ""
 
 #: registersqldb.ssqlscript
 msgid "SQL Script file"

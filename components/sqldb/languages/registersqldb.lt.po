@@ -21,6 +21,10 @@ msgstr "Firebird duomenų bazės"
 msgid "Interbase databases"
 msgstr "Interbase duomenų bazės"
 
+#: registersqldb.slibraries
+msgid "Shared libraries"
+msgstr ""
+
 #: registersqldb.ssqlscript
 msgid "SQL Script file"
 msgstr "SQL scenarijaus failas"

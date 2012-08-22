@@ -20,6 +20,10 @@ msgstr "Firebird数据库"
 msgid "Interbase databases"
 msgstr "Interbase数据库"
 
+#: registersqldb.slibraries
+msgid "Shared libraries"
+msgstr ""
+
 #: registersqldb.ssqlscript
 msgid "SQL Script file"
 msgstr ""

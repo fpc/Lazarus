@@ -17,6 +17,10 @@ msgstr "Базы данных Firebird"
 msgid "Interbase databases"
 msgstr "Базы данных Interbase"
 
+#: registersqldb.slibraries
+msgid "Shared libraries"
+msgstr ""
+
 #: registersqldb.ssqlscript
 msgid "SQL Script file"
 msgstr "Файл сценария SQL"

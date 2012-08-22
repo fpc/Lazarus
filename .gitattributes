@@ -2411,6 +2411,7 @@ components/sqldb/design/toracleconnection.png -text svneol=unset#image/png
 components/sqldb/design/tpqconnection.png -text svneol=unset#image/png
 components/sqldb/design/tpqteventmonitor.png -text
 components/sqldb/design/tsqlconnector.png -text svneol=unset#image/png
+components/sqldb/design/tsqldblibraryloader.png -text svneol=unset#image/png
 components/sqldb/design/tsqlite3connection.png -text svneol=unset#image/png
 components/sqldb/design/tsqlquery.png -text svneol=unset#image/png
 components/sqldb/design/tsqlscript.png -text svneol=unset#image/png

@@ -17,6 +17,10 @@ msgstr "Bancos de dados \"Firebird\""
 msgid "Interbase databases"
 msgstr "Bancos de dados \"Interbase\""
 
+#: registersqldb.slibraries
+msgid "Shared libraries"
+msgstr ""
+
 #: registersqldb.ssqlscript
 msgid "SQL Script file"
 msgstr "Arquivo \"Script SQL\""
