@@ -338,6 +338,22 @@ type
   { TDataPointTool }
 
   TDataPointTool = class(TChartTool)
+  public
+  type
+    TPointRef = class
+    private
+      FGraphPos: TDoublePoint;
+      FIndex: Integer;
+      FSeries: TBasicChartSeries;
+
+      procedure SetGraphPos(const ANewPos: TDoublePoint);
+    public
+      procedure Assign(ASource: TPointRef);
+      property GraphPos: TDoublePoint read FGraphPos;
+      property Index: Integer read FIndex;
+      property Series: TBasicChartSeries read FSeries;
+    end;
+
   strict private
     FAffectedSeries: TPublishedIntegerSet;
     FDistanceMode: TChartDistanceMode;
@@ -484,7 +500,42 @@ type
     property Size: Integer read FSize write FSize default -1;
   end;
 
-  { TReticuleTool }
+  TDataPointDistanceTool = class(TDataPointDrawTool)
+  published
+  type
+    TOptions = set of (dpdoLockToData);
+
+  strict private
+    FAnchors: array of TDataPointTool.TPointRef;
+    FMeasureMode: TChartDistanceMode;
+    FOptions: TOptions;
+    function GetPointEnd: TDataPointTool.TPointRef; inline;
+    procedure SetOptions(AValue: TOptions);
+
+  strict protected
+    procedure DoDraw; override;
+    function FindRef(APoint: TPoint; ADest: TDataPointTool.TPointRef): Boolean;
+    function SameTransformations(ASeries1, ASeries2: TBasicChartSeries): Boolean;
+
+  public
+    constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
+    procedure KeyDown(APoint: TPoint); override;
+    procedure KeyUp(APoint: TPoint); override;
+    procedure MouseDown(APoint: TPoint); override;
+    procedure MouseMove(APoint: TPoint); override;
+    procedure MouseUp(APoint: TPoint); override;
+    property PointEnd: TDataPointTool.TPointRef read GetPointEnd;
+    property PointStart: TDataPointTool.TPointRef read FAnchors[0];
+
+  published
+    property DrawingMode;
+    property GrabRadius default 20;
+    property LinePen: TChartPen read FPen write SetPen;
+    property MeasureMode: TChartDistanceMode
+      read FMeasureMode write FMeasureMode default cdmXY;
+    property Options: TOptions read FOptions write SetOptions default [];
+  end;
 
   TReticuleTool = class(TChartTool)
   public
@@ -502,7 +553,7 @@ implementation
 
 uses
   GraphMath, InterfaceBase, Math, SysUtils,
-  TACustomSeries, TADrawerCanvas, TAEnumerators, TAGeometry, TAMath;
+  TAChartAxis, TACustomSeries, TADrawerCanvas, TAEnumerators, TAGeometry, TAMath;
 
 function InitBuiltinTools(AChart: TChart): TBasicChartToolset;
 var
@@ -531,6 +582,24 @@ procedure RegisterChartToolClass(
 begin
   RegisterClass(AToolClass);
   ToolsClassRegistry.AddObject(ACaption, TObject(AToolClass));
+end;
+
+{ TDataPointTool.TPointRef }
+
+procedure TDataPointTool.TPointRef.Assign(ASource: TPointRef);
+begin
+  with ASource do begin
+    Self.FGraphPos := FGraphPos;
+    Self.FIndex := FIndex;
+    Self.FSeries := FSeries;
+  end;
+end;
+
+procedure TDataPointTool.TPointRef.SetGraphPos(const ANewPos: TDoublePoint);
+begin
+  FGraphPos := ANewPos;
+  FIndex := -1;
+  FSeries := nil;
 end;
 
 { TChartTool }
@@ -1650,6 +1719,134 @@ begin
 end;
 
 
+{ TDataPointDistanceTool }
+
+constructor TDataPointDistanceTool.Create(AOwner: TComponent);
+begin
+  inherited;
+  SetLength(FAnchors, 2);
+  FAnchors[0] := TDataPointTool.TPointRef.Create;
+  FAnchors[1] := TDataPointTool.TPointRef.Create;
+end;
+
+destructor TDataPointDistanceTool.Destroy;
+begin
+  FAnchors[0].Free;
+  FAnchors[1].Free;
+  inherited;
+end;
+
+procedure TDataPointDistanceTool.DoDraw;
+var
+  p1, p2: TPoint;
+begin
+  p1 := FChart.GraphToImage(PointStart.GraphPos);
+  p2 := FChart.GraphToImage(PointEnd.GraphPos);
+  case MeasureMode of
+    cdmOnlyX: p2.Y := p1.Y;
+    cdmOnlyY: p2.X := p1.X;
+  end;
+  if p1 = p2 then exit;
+  FChart.Drawer.Line(p1, p2);
+end;
+
+function TDataPointDistanceTool.FindRef(
+  APoint: TPoint; ADest: TDataPointTool.TPointRef): Boolean;
+begin
+  if dpdoLockToData in Options then begin
+    FindNearestPoint(APoint);
+    if FSeries = nil then exit(false);
+    with ADest do begin
+      FGraphPos := FNearestGraphPoint;
+      FIndex := PointIndex;
+      FSeries := Self.FSeries;
+    end;
+  end
+  else
+    ADest.SetGraphPos(FChart.ImageToGraph(APoint));
+  Result := true;
+end;
+
+function TDataPointDistanceTool.GetPointEnd: TDataPointTool.TPointRef;
+begin
+  Result := FAnchors[High(FAnchors)];
+end;
+
+procedure TDataPointDistanceTool.KeyDown(APoint: TPoint);
+begin
+  MouseDown(APoint);
+end;
+
+procedure TDataPointDistanceTool.KeyUp(APoint: TPoint);
+begin
+  MouseUp(APoint);
+end;
+
+procedure TDataPointDistanceTool.MouseDown(APoint: TPoint);
+begin
+  DoHide;
+  if not FindRef(APoint, PointStart) then exit;
+  Activate;
+  PointEnd.Assign(PointStart);
+  Handled;
+end;
+
+procedure TDataPointDistanceTool.MouseMove(APoint: TPoint);
+var
+  newEnd: TPointRef;
+begin
+  if not IsActive then exit;
+  newEnd := TPointRef.Create;
+  try
+    if
+      not FindRef(APoint, newEnd) or
+      not SameTransformations(PointStart.Series, newEnd.Series)
+    then
+      exit;
+    DoHide;
+    PointEnd.Assign(newEnd);
+    if EffectiveDrawingMode = tdmXor then
+      DoDraw;
+  finally
+    FreeAndNil(newEnd);
+  end;
+  Handled;
+end;
+
+procedure TDataPointDistanceTool.MouseUp(APoint: TPoint);
+begin
+  MouseMove(APoint);
+  Deactivate;
+end;
+
+function TDataPointDistanceTool.SameTransformations(
+  ASeries1, ASeries2: TBasicChartSeries): Boolean;
+
+  function CheckAxis(AAxisIndex1, AAxisIndex2: Integer): Boolean; inline;
+  begin
+    Result :=
+      TransformByAxis(FChart.AxisList, AAxisIndex1) =
+      TransformByAxis(FChart.AxisList, AAxisIndex2);
+  end;
+
+var
+  s1: TCustomChartSeries absolute ASeries1;
+  s2: TCustomChartSeries absolute ASeries2;
+begin
+  Result :=
+    (ASeries1 = ASeries2) or
+    (ASeries1 is TCustomChartSeries) and
+    (ASeries2 is TCustomChartSeries) and
+    ((MeasureMode = cdmOnlyY) or CheckAxis(s1.AxisIndexX, s2.AxisIndexX)) and
+    ((MeasureMode = cdmOnlyX) or CheckAxis(s1.AxisIndexY, s2.AxisIndexY));
+end;
+
+procedure TDataPointDistanceTool.SetOptions(AValue: TOptions);
+begin
+  if FOptions = AValue then exit;
+  FOptions := AValue;
+end;
+
 initialization
 
   ToolsClassRegistry := TStringList.Create;
@@ -1665,6 +1862,7 @@ initialization
   RegisterChartToolClass(TDataPointDragTool, 'Data point drag');
   RegisterChartToolClass(TDataPointHintTool, 'Data point hint');
   RegisterChartToolClass(TDataPointCrosshairTool, 'Data point crosshair');
+  RegisterChartToolClass(TDataPointDistanceTool, 'Distance measurement');
   RegisterChartToolClass(TUserDefinedTool, 'User-defined');
 
 finalization
