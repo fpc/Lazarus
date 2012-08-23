@@ -113,16 +113,18 @@ type
   { TPolarSeries }
 
   TPolarSeries = class(TChartSeries)
-  private
+  strict private
+    FCloseCircle: Boolean;
     FLinePen: TPen;
     FOriginX: Double;
     FOriginY: Double;
     function IsOriginXStored: Boolean;
     function IsOriginYStored: Boolean;
+    procedure SetCloseCircle(AValue: Boolean);
     procedure SetLinePen(AValue: TPen);
     procedure SetOriginX(AValue: Double);
     procedure SetOriginY(AValue: Double);
-  private
+  strict private
     FAngleCache: array of TSinCos;
     function GraphPoint(AIndex: Integer): TDoublePoint;
     procedure PrepareAngleCache;
@@ -136,6 +138,8 @@ type
     procedure Draw(ADrawer: IChartDrawer); override;
     function Extent: TDoubleRect; override;
   published
+    property CloseCircle: Boolean
+      read FCloseCircle write SetCloseCircle default false;
     property LinePen: TPen read FLinePen write SetLinePen;
     property OriginX: Double read FOriginX write SetOriginX stored IsOriginXStored;
     property OriginY: Double read FOriginY write SetOriginY stored IsOriginYStored;
@@ -551,8 +555,12 @@ begin
   for i := 0 to Count - 1 do
     pts[i] := FChart.GraphToImage(GraphPoint(i));
   ADrawer.Pen := LinePen;
-  ADrawer.SetBrushParams(bsClear, clTAColor);
-  ADrawer.Polygon(pts, 0, Length(pts));
+  if CloseCircle then begin
+    ADrawer.SetBrushParams(bsClear, clTAColor);
+    ADrawer.Polygon(pts, 0, Length(pts));
+  end
+  else
+    ADrawer.Polyline(pts, 0, Length(pts));
 end;
 
 function TPolarSeries.Extent: TDoubleRect;
@@ -593,6 +601,13 @@ begin
     FAngleCache[i].FSin := s;
     FAngleCache[i].FCos := c;
   end;
+end;
+
+procedure TPolarSeries.SetCloseCircle(AValue: Boolean);
+begin
+  if FCloseCircle = AValue then exit;
+  FCloseCircle := AValue;
+  UpdateParentChart;
 end;
 
 procedure TPolarSeries.SetLinePen(AValue: TPen);
