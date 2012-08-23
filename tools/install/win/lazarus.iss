@@ -94,7 +94,7 @@ Name: {localappdata}\lazarus\userschemes\*.xml; Type: files; Tasks: delusersetti
 
 [Files]
 Source: {#BuildDir}\*.*; DestDir: {app}; Flags: recursesubdirs
-Source: environmentoptions.xml; DestDir: {app}; Flags: confirmoverwrite; AfterInstall: UpdateEnvironmentOptions; DestName: environmentoptions.xml
+Source: environmentoptions.xml; DestDir: {app}; AfterInstall: UpdateEnvironmentOptions; DestName: environmentoptions.xml
 #if FPCTargetOS=="win32"
 #if IDEWidgetSet=="qt"
 Source: {#QtInfDir}\*.dll; DestDir: {sys}; Flags: sharedfile replacesameversion
