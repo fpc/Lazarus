@@ -54,7 +54,7 @@ uses
   Classes, Graphics, SysUtils, LCLProc, math,
   SynRegExpr, SynEditStrConst, SynEditTypes, SynEditTextBase,
   SynEditHighlighter,
-  {$IFDEF SynDebugMultiHL}LazLoggerBase{$ELSE}LazLoggerDummy{$ENDIF}
+  {$IFDEF SynDebugMultiHL}LazLoggerBase{$ELSE}LazLoggerDummy{$ENDIF}, LazUTF8
   ;
 
 type
@@ -1739,7 +1739,7 @@ end;
 function TSynHighlighterMultiSchemeList.GetConvertedCurrentLine: String;
 begin
   if FConvertedCurrentLine = '' then
-    FConvertedCurrentLine := AnsiUpperCase(FCurrentLine);
+    FConvertedCurrentLine := UTF8UpperCase(FCurrentLine);
   Result := FConvertedCurrentLine;
 end;
 
@@ -1749,6 +1749,7 @@ var
 begin
   if FCurrentLine = AValue then exit;
   FCurrentLine := AValue;
+  FConvertedCurrentLine := '';
   for i := 0 to Count - 1 do
     Items[i].ClearLinesSet;
 end;
@@ -1782,30 +1783,30 @@ end;
 function TSynHighlighterMultiScheme.GetConvertedLine: String;
 begin
   if FCaseSensitive then
-    Result := TSynHighlighterMultiSchemeList(Collection).ConvertedCurrentLine
+    Result := TSynHighlighterMultiSchemeList(Collection).CurrentLine
   else
-    Result := TSynHighlighterMultiSchemeList(Collection).CurrentLine;
+    Result := TSynHighlighterMultiSchemeList(Collection).ConvertedCurrentLine;
 end;
 
 function TSynHighlighterMultiScheme.GetConvertedEndExpr: String;
 begin
-  if not FCaseSensitive then
+  if FCaseSensitive then
     Result := FEndExpr
   else begin
     if FConvertedEndExpr = '' then
-      FConvertedEndExpr := AnsiUpperCase(FEndExpr);
-    Result := FConvertedEndExpr
+      FConvertedEndExpr := Utf8UpperCase(FEndExpr);
+    Result := FConvertedEndExpr;
   end;
 end;
 
 function TSynHighlighterMultiScheme.GetConvertedStartExpr: String;
 begin
-  if not FCaseSensitive then
+  if FCaseSensitive then
     Result := FStartExpr
   else begin
     if FConvertedStartExpr = '' then
-      FConvertedStartExpr := AnsiUpperCase(FStartExpr);
-    Result := FConvertedStartExpr
+      FConvertedStartExpr := Utf8UpperCase(FStartExpr);
+    Result := FConvertedStartExpr;
   end;
 end;
 
@@ -1925,6 +1926,7 @@ begin
     fCaseSensitive := Value;
     FStartExprScanner.Expression := GetConvertedStartExpr;
     FEndExprScanner.Expression := GetConvertedEndExpr;
+    ClearLinesSet;
     FNeedHLScan := True;
     Changed( False );
     FNeedHLScan := False;
