@@ -599,7 +599,8 @@ function ProgressBarWndProc(Window: HWnd; Msg: UInt; WParam: Windows.WParam;
 begin
   // Marquee progress bar on vista/w7 required to call default window proc to
   // setup the timer
-  if (Msg = WM_PAINT) and ThemeServices.ThemesEnabled and
+  if (Msg = WM_PAINT) and
+     (Win32WidgetSet.CommonControlsVersion >= ComCtlVersionIE6) and
      (GetWindowLong(Window, GWL_STYLE) and PBS_MARQUEE = PBS_MARQUEE) then
     CallDefaultWindowProc(Window, Msg, WParam, LParam);
   Result := WindowProc(Window, Msg, WParam, LParam);
@@ -623,7 +624,8 @@ begin
         Flags := Flags or PBS_SMOOTH;
       if (Orientation = pbVertical) or (Orientation = pbTopDown) then
         Flags := Flags or PBS_VERTICAL;
-      if ThemeServices.ThemesEnabled and (Style = pbstMarquee) then
+      if (Win32WidgetSet.CommonControlsVersion >= ComCtlVersionIE6) and
+         (Style = pbstMarquee) then
         Flags := Flags or PBS_MARQUEE;
     end;
     pClassName := PROGRESS_CLASS;
@@ -632,7 +634,7 @@ begin
   // create window
   FinishCreateWindow(AWinControl, Params, False);
   Result := Params.Window;
-  if (ThemeServices.ThemesEnabled) and
+  if (Win32WidgetSet.CommonControlsVersion >= ComCtlVersionIE6) and
      (TCustomProgressBar(AWinControl).Style = pbstMarquee) then
     SendMessage(Result, PBM_SETMARQUEE, WParam(LongBool(True)), DefMarqueeTime);
 end;
@@ -676,7 +678,7 @@ var
 begin
   if not WSCheckHandleAllocated(AProgressBar, 'SetStyle') then
     Exit;
-  if ThemeServices.ThemesEnabled then
+  if (Win32WidgetSet.CommonControlsVersion >= ComCtlVersionIE6) then
   begin
     // Comctl32 >= 6
     Style := GetWindowLong(AProgressBar.Handle, GWL_STYLE);
