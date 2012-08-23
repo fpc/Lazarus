@@ -238,15 +238,16 @@ begin
           IDEMessagesWindow.AddMsg(Format(lisConvDelphiFixedUnitCase,
                                           [OldUnitName, NewUnitName]), '', -1);
         end;
-        // Report Windows specific units as missing if target is MultiPlatform,
-        //  needed if work-platform is Windows (kind of a hack).  'variants' ?
-        if Settings.MultiPlatform and ((LowNU='windows') or (LowNU='shellapi')) then
+        // Report Windows specific units as missing if target is MultiPlatform.
+        //  Needed if work-platform is Windows (kind of a hack).
+        if Settings.MultiPlatform and IsWinSpecificUnit(LowNU) then
           fMissingUnits.Add(s);
       end
       else begin
-        // Omit Windows specific units from the list if target is "Windows only",
-        //  needed if work-platform is different from Windows (kind of a hack).
-        if Settings.MultiPlatform or ((LowNU<>'windows') and (LowNU<>'shellapi')) then
+        // If the unit is not found, add it to fMissingUnits, but don't add
+        //  Windows specific units if target is "Windows only".
+        //  Needed if work-platform is different from Windows (kind of a hack).
+        if Settings.MultiPlatform or not IsWinSpecificUnit(LowNU) then
           fMissingUnits.Add(s);
       end;
       if CodeTool.CurPos.Flag=cafComma then begin

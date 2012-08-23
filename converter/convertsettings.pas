@@ -168,6 +168,9 @@ type
 var
   ConvertSettingsForm: TConvertSettingsForm;
 
+function IsWinSpecificUnit(const ALowercaseUnitName: string): Boolean;
+
+
 implementation
 
 
@@ -331,6 +334,16 @@ begin
     SubPath:=Path+'Item'+IntToStr(i)+'/';
     Config.DeletePath(SubPath);
   end;
+end;
+
+function IsWinSpecificUnit(const ALowercaseUnitName: string): Boolean;
+// These units exist in Windows only.
+// They must be treated as missing units when converting for multi-platform.
+begin
+  Result := (ALowercaseUnitName = 'windows')
+         or (ALowercaseUnitName = 'shellapi')
+         or (ALowercaseUnitName = 'wintypes')
+         or (ALowercaseUnitName = 'winproc') ;
 end;
 
 { TConvertSettings }
