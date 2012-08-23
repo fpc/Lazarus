@@ -149,6 +149,7 @@ type
     function GetChart: TCustomChart; inline;
     function GetTransform: TChartAxisTransformations;
     function IsDefaultPosition: Boolean;
+    function IsPointInside(const APoint: TPoint): Boolean;
     function IsVertical: Boolean; inline;
     procedure Measure(
       const AExtent: TDoubleRect; var AMeasureData: TChartAxisGroup);
@@ -598,6 +599,11 @@ end;
 function TChartAxis.IsDefaultPosition: Boolean;
 begin
   Result := (PositionUnits = cuPercent) and (Position = 0);
+end;
+
+function TChartAxis.IsPointInside(const APoint: TPoint): Boolean;
+begin
+  Result := PtInRect(FTitleRect, APoint) and not PtInRect(FAxisRect, APoint);
 end;
 
 function TChartAxis.IsVertical: Boolean; inline;
