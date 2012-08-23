@@ -180,6 +180,7 @@ function IsWinSpecificUnit(const ALowercaseUnitName: string): Boolean;
 
 implementation
 
+uses ConvertDelphi;
 
 {$R *.lfm}
 
@@ -880,7 +881,7 @@ end;
 
 procedure TConvertSettingsForm.StopScanButtonClick(Sender: TObject);
 begin
-  fCacheUnitsThread.Terminate;
+  (fCacheUnitsThread as TCacheUnitsThread).Searcher.Stop; // Terminate;
 end;
 
 // Edit replacements in grids

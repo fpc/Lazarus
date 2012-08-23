@@ -404,6 +404,5 @@ object ConvertSettingsForm: TConvertSettingsForm
     Caption = 'Stop'
     OnClick = StopScanButtonClick
     TabOrder = 15
-    Visible = False
   end
 end

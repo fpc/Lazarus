@@ -66,12 +66,16 @@ type
   private
     fConverter: TConvertDelphiPBase;
     fPath: string;
-    procedure CacheUnitsInPath(const APath: string);
+    fPasFileList: TStringList;
+    fSearcher: TFileSearcher;
+    procedure CacheUnitsInPath;
   protected
     procedure Execute; override;
   public
     constructor Create(aConverter: TConvertDelphiPBase);
     destructor Destroy; override;
+  public
+    property Searcher: TFileSearcher read fSearcher;
   end;
 
   { TDelphiUnit }
@@ -416,46 +420,40 @@ begin
   inherited Create(True);
   FreeOnTerminate:=True;
   fConverter:=aConverter;    // Will scan one level up from base path.
+  // Create file list and searcher already now. Its Stop method can be called anytime
+  fPasFileList:=TStringList.Create;
+  fSearcher:=TUnitsSearcher.Create(Self, fPasFileList);
+  // The parent directory to be scanned
   fPath:=TrimFilename(fConverter.fSettings.MainPath+'..'+DirectorySeparator);
 end;
 
 destructor TCacheUnitsThread.Destroy;
 begin
+  fSearcher.Free;
+  fPasFileList.Free;
   inherited Destroy;
 end;
 
-procedure TCacheUnitsThread.CacheUnitsInPath(const APath: string);
-// Search all pascal units in APath and store them in fCachedUnitNames
-//  with a path relative to fConverter.fSettings.MainPath.
+procedure TCacheUnitsThread.CacheUnitsInPath;
+// Search all pascal units in fPath and store them in fCachedUnitNames
+//  with a path relative to fSettings.MainPath.
 var
-  PasFileList: TStringList;
   i: Integer;
   PasFile, RelPath, SubPath, sUnitName, FileName: String;
-  Searcher: TFileSearcher;
 begin
-  // ToDo: find a way to stop the search when this thread is terminated.
-  // It maybe means copying TFileSearcher code here
-
-  PasFileList := TStringList.Create;
-  Searcher := TUnitsSearcher.Create(Self, PasFileList);
-  try
-    Searcher.Search(APath, '*.pas');
-    for i:=0 to PasFileList.Count-1 do begin
-      PasFile:=PasFileList[i];
-      RelPath:=FileUtil.CreateRelativePath(PasFile, fConverter.fSettings.MainPath);
-      SubPath:=ExtractFilePath(RelPath);
-      FileName:=ExtractFileName(RelPath);
-      sUnitName:=ExtractFileNameOnly(FileName);
-      if (SubPath<>'') and (sUnitName<>'') then begin
-        // Map path by unit name.
-        fConverter.fCachedUnitNames[sUnitName]:=SubPath;
-        // Map real unit name by uppercase unit name.
-        fConverter.fCachedRealFileNames[UpperCase(sUnitName)]:=FileName;
-      end;
+  fSearcher.Search(fPath, '*.pas');
+  for i:=0 to fPasFileList.Count-1 do begin
+    PasFile:=fPasFileList[i];
+    RelPath:=FileUtil.CreateRelativePath(PasFile, fConverter.fSettings.MainPath);
+    SubPath:=ExtractFilePath(RelPath);
+    FileName:=ExtractFileName(RelPath);
+    sUnitName:=ExtractFileNameOnly(FileName);
+    if (SubPath<>'') and (sUnitName<>'') then begin
+      // Map path by unit name.
+      fConverter.fCachedUnitNames[sUnitName]:=SubPath;
+      // Map real unit name by uppercase unit name.
+      fConverter.fCachedRealFileNames[UpperCase(sUnitName)]:=FileName;
     end;
-  finally
-    Searcher.Free;
-    PasFileList.Free;
   end;
 end;
 
@@ -481,7 +479,7 @@ begin
   if IsRootPath(fPath) then
     Sleep(1)     // Let the main thread execute, avoid possible synchr. problems.
   else
-    CacheUnitsInPath(fPath);            // Scan for unit files.
+    CacheUnitsInPath;            // Scan for unit files.
 end;
 
 { TConvertDelphiUnit }
@@ -940,7 +938,7 @@ begin
 end;
 
 function TConvertDelphiProjPack.Convert: TModalResult;
-// Creates or updates a lazarus project (.lpi+.lpr) or package.
+// Create or update a lazarus project (.lpi+.lpr) or package, convert source files.
 var
   // The initial unit name cache is done in a thread so that GUI shows at once.
   CacheUnitsThread: TCacheUnitsThread;
@@ -955,44 +953,34 @@ begin
   // Start scanning unit files one level above project path. The GUI will appear
   // without delay but then we must wait for the thread before continuing.
   CacheUnitsThread:=TCacheUnitsThread.Create(Self);
-//  try
-    try
-      Result:=fSettings.RunForm(CacheUnitsThread); // Get settings from user.
-      //Screen.Cursor:=crHourGlass;
-      //try
-      //  CacheUnitsThread.WaitFor;     // Make sure the thread has finished.
-      //finally
-      //  Screen.Cursor:=crDefault;
-      //end;
-      if Result=mrOK then begin
-        // create/open lazarus project or package file
-        fLazPFilename:=fSettings.DelphiToLazFilename(fOrigFilename, fLazPSuffix, false);
+  try
+    Result:=fSettings.RunForm(CacheUnitsThread); // Get settings from user.
+    if Result=mrOK then begin
+      // create/open lazarus project or package file
+      fLazPFilename:=fSettings.DelphiToLazFilename(fOrigFilename, fLazPSuffix, false);
 
-        // Find Delphi project / package file name
-        if CompareFileExt(fOrigFilename,fDelphiPSuffix,false)=0 then
-          fDelphiPFilename:=fOrigFilename
-        else
-          fDelphiPFilename:=ChangeFileExt(fOrigFilename,fDelphiPSuffix);
-        if not FileExistsUTF8(fDelphiPFilename) then
-          fDelphiPFilename:=FindDiskFileCaseInsensitive(fOrigFilename);
-  // ? fDelphiPFilename:=CodeToolBoss.DirectoryCachePool.FindDiskFilename(fDelphiPFilename);
+      // Find Delphi project / package file name
+      if CompareFileExt(fOrigFilename,fDelphiPSuffix,false)=0 then
+        fDelphiPFilename:=fOrigFilename
+      else
+        fDelphiPFilename:=ChangeFileExt(fOrigFilename,fDelphiPSuffix);
+      if not FileExistsUTF8(fDelphiPFilename) then
+        fDelphiPFilename:=FindDiskFileCaseInsensitive(fOrigFilename);
+// ? fDelphiPFilename:=CodeToolBoss.DirectoryCachePool.FindDiskFilename(fDelphiPFilename);
 
-        // Actual conversion.
-        Result:=ConvertSub;
-      end;
-    except
-      on e: EDelphiConverterError do begin
-        fErrorMsg:=e.Message;
-      end;
-      else begin
-        fErrorMsg:=CodeToolBoss.ErrorMessage;
-      end;
-      Result:=mrAbort;
+      // Actual conversion.
+      Result:=ConvertSub;
     end;
-    ShowEndingMessage(Result);
-  //finally
-  //  CacheUnitsThread.Free;
-  //end;
+  except
+    on e: EDelphiConverterError do begin
+      fErrorMsg:=e.Message;
+    end;
+    else begin
+      fErrorMsg:=CodeToolBoss.ErrorMessage;
+    end;
+    Result:=mrAbort;
+  end;
+  ShowEndingMessage(Result);
 end;
 
 function TConvertDelphiProjPack.ConvertSub: TModalResult;
@@ -1013,7 +1001,7 @@ begin
 //  AddPackageDependency('LCL');
   // ToDo: make an option to add NoGUI to Project.CompilerOptions.LCLWidgetType.
   if fProjPack is TProject then
-    PkgBoss.OpenProjectDependencies(fProjPack as TProject,true);
+    PkgBoss.OpenProjectDependencies(fProjPack as TProject, true);
   CustomDefinesChanged;
 
   SetCompilerModeForDefineTempl(CustomDefines);

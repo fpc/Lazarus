@@ -9,7 +9,7 @@ uses
 
 type
 
-  TAddUnitEvent = procedure(AUnitName: string) of object;
+  TAddUnitEvent = procedure (AUnitName: string) of object;
   TCheckUnitEvent = function (AUnitName: string): Boolean of object;
 
   { TSrcPropOffset }
