@@ -101,7 +101,11 @@ begin
       begin
         WidgetInfo := GetWidgetInfo(Widget);
         if Assigned(TMenuItem(WidgetInfo^.LCLObject).OnClick) then
+        begin
           gtk_menu_item_activate(PGtkMenuItem(Widget));
+          // must be true because of issue #22616
+          Result := True;
+        end;
       end;
     end;
   end;
