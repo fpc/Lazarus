@@ -169,8 +169,11 @@ end;
 
 function TCustomXMLPropStorage.DoReadString(const Section, Ident,
   TheDefault: string): string;
+var
+  Res: UnicodeString;
 begin
-  Result:=FXML.GetValue(FixPath(Section)+'/'+Ident, TheDefault);
+  Res:=FXML.GetValue(Utf8Decode(FixPath(Section)+'/'+Ident), Utf8Decode(TheDefault));
+  Result := Utf8Encode(Res);
   //debugln('TCustomXMLPropStorage.DoReadString Section="',Section,'" Ident="',Ident,'" Result=',Result);
 end;
 
@@ -178,7 +181,7 @@ procedure TCustomXMLPropStorage.DoWriteString(const Section, Ident,
   Value: string);
 begin
   //debugln('TCustomXMLPropStorage.DoWriteString Section="',Section,'" Ident="',Ident,'" Value="',Value,'"');
-  FXML.SetValue(FixPath(Section)+'/'+Ident, Value);
+  FXML.SetValue(Utf8Decode(FixPath(Section)+'/'+Ident), Utf8Decode(Value));
 end;
 
 procedure TCustomXMLPropStorage.DoEraseSections(const ARootSection: String);
@@ -202,7 +205,7 @@ begin
     i := Pos('/', NodePath);
     if i = 0 then
       I:=Length(NodePath)+1;
-    Child := Node.FindNode(Copy(NodePath,1,i - 1));
+    Child := Node.FindNode(UTF8Decode(Copy(NodePath,1,i - 1)));
     System.Delete(NodePath,1,I);
     Node := Child;
     end;
