@@ -571,6 +571,7 @@ resourcestring
   lisConvTopOff = 'Top offset';
   lisConvLeftOff = 'Left offset';
   lisConvDelphiFunc = 'Delphi Function';
+  lisScanParentDir = 'Scanning parent directory';
   lisReplacement = 'Replacement';
   lisReplacements = 'Replacements';
   lisInteractive = 'Interactive';
@@ -2038,7 +2039,7 @@ resourcestring
   dlgMainViewUnits = 'View Project Units';
   dlgMainViewFrames = 'View Project Frames';
   dlgMultiSelect = 'Multi Select';
-  
+
   // check compiler options dialog
   dlgCCOCaption = 'Checking compiler options';
   dlgCCOTest = 'Test';

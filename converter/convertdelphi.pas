@@ -66,10 +66,11 @@ type
   private
     fConverter: TConvertDelphiPBase;
     fPath: string;
+    procedure CacheUnitsInPath(const APath: string);
   protected
     procedure Execute; override;
   public
-    constructor Create(aConverter: TConvertDelphiPBase; aBasePath: string);
+    constructor Create(aConverter: TConvertDelphiPBase);
     destructor Destroy; override;
   end;
 
@@ -132,8 +133,6 @@ type
     // Missing units that are commented automatically in all units.
     fAllCommentedUnits: TStringList;
     function DoMissingUnits(AUsedUnitsTool: TUsedUnitsTool): integer; virtual;
-    procedure CacheUnitsInPath(const APath, ABasePath: string);
-    procedure CacheUnitsInPath(const APath: string);
     function GetCachedUnitPath(const AUnitName: string): string;
     procedure ShowEndingMessage(AStatus: TModalResult);
   public
@@ -381,18 +380,83 @@ begin
   end;
 end;
 
+type
+
+  { TUnitsSearcher }
+
+  TUnitsSearcher = class(TFileSearcher)
+  private
+    FList: TStrings;
+    FOwnerThread: TThread;
+  protected
+    procedure DoFileFound; override;
+  public
+    constructor Create(AOwnerThread: TThread; AList: TStrings);
+  end;
+
+{ TUnitsSearcher }
+
+procedure TUnitsSearcher.DoFileFound;
+begin
+//  if FOwnerThread.Terminated then  <- Does not work, Terminated is protected
+//    Stop;
+  FList.Add(FileName);
+end;
+
+constructor TUnitsSearcher.Create(AOwnerThread: TThread; AList: TStrings);
+begin
+  FOwnerThread := AOwnerThread;
+  FList := AList;
+end;
+
 { TCacheUnitsThread }
 
-constructor TCacheUnitsThread.Create(aConverter: TConvertDelphiPBase; aBasePath: string);
+constructor TCacheUnitsThread.Create(aConverter: TConvertDelphiPBase);
 begin
   inherited Create(True);
+  FreeOnTerminate:=True;
   fConverter:=aConverter;    // Will scan one level up from base path.
-  fPath:=TrimFilename(aBasePath+'..'+DirectorySeparator);
+  fPath:=TrimFilename(fConverter.fSettings.MainPath+'..'+DirectorySeparator);
 end;
 
 destructor TCacheUnitsThread.Destroy;
 begin
   inherited Destroy;
+end;
+
+procedure TCacheUnitsThread.CacheUnitsInPath(const APath: string);
+// Search all pascal units in APath and store them in fCachedUnitNames
+//  with a path relative to fConverter.fSettings.MainPath.
+var
+  PasFileList: TStringList;
+  i: Integer;
+  PasFile, RelPath, SubPath, sUnitName, FileName: String;
+  Searcher: TFileSearcher;
+begin
+  // ToDo: find a way to stop the search when this thread is terminated.
+  // It maybe means copying TFileSearcher code here
+
+  PasFileList := TStringList.Create;
+  Searcher := TUnitsSearcher.Create(Self, PasFileList);
+  try
+    Searcher.Search(APath, '*.pas');
+    for i:=0 to PasFileList.Count-1 do begin
+      PasFile:=PasFileList[i];
+      RelPath:=FileUtil.CreateRelativePath(PasFile, fConverter.fSettings.MainPath);
+      SubPath:=ExtractFilePath(RelPath);
+      FileName:=ExtractFileName(RelPath);
+      sUnitName:=ExtractFileNameOnly(FileName);
+      if (SubPath<>'') and (sUnitName<>'') then begin
+        // Map path by unit name.
+        fConverter.fCachedUnitNames[sUnitName]:=SubPath;
+        // Map real unit name by uppercase unit name.
+        fConverter.fCachedRealFileNames[UpperCase(sUnitName)]:=FileName;
+      end;
+    end;
+  finally
+    Searcher.Free;
+    PasFileList.Free;
+  end;
 end;
 
 procedure TCacheUnitsThread.Execute;
@@ -414,8 +478,10 @@ procedure TCacheUnitsThread.Execute;
 begin
   //If a project is in a subfolder of the root, fPath will be root path.
   //Do not search the entire drive, or we may find Borland VCL files and convert them too
-  if not IsRootPath(fPath) then
-    fConverter.CacheUnitsInPath(fPath); // Scan for unit files.
+  if IsRootPath(fPath) then
+    Sleep(1)     // Let the main thread execute, avoid possible synchr. problems.
+  else
+    CacheUnitsInPath(fPath);            // Scan for unit files.
 end;
 
 { TConvertDelphiUnit }
@@ -436,7 +502,7 @@ var
 begin
   IDEMessagesWindow.Clear;
   DelphiUnit := TDelphiUnit.Create(Self, fOrigFilename, []);
-  Result:=fSettings.RunForm;
+  Result:=fSettings.RunForm(Nil);
   if Result=mrOK then
     with DelphiUnit do
     try
@@ -485,40 +551,6 @@ end;
 function TConvertDelphiPBase.DoMissingUnits(AUsedUnitsTool: TUsedUnitsTool): integer;
 begin
   Result := 0;
-end;
-
-procedure TConvertDelphiPBase.CacheUnitsInPath(const APath, ABasePath: string);
-// Search all pascal units in APath and store them in fCachedUnitNames
-//  with a path relative to ABasePath.
-var
-  PasFileList: TStringList;
-  i: Integer;
-  PasFile, RelPath, SubPath, sUnitName, FileName: String;
-begin
-  PasFileList:=FindAllFiles(APath,'*.pas',true);
-  try
-    for i:=0 to PasFileList.Count-1 do begin
-      PasFile:=PasFileList[i];
-      RelPath:=FileUtil.CreateRelativePath(PasFile, ABasePath);
-      SubPath:=ExtractFilePath(RelPath);
-      FileName:=ExtractFileName(RelPath);
-      sUnitName:=ExtractFileNameOnly(FileName);
-      if (SubPath<>'') and (sUnitName<>'') then begin
-        // Map path by unit name.
-        fCachedUnitNames[sUnitName]:=SubPath;
-        // Map real unit name by uppercase unit name.
-        fCachedRealFileNames[UpperCase(sUnitName)]:=FileName;
-      end;
-    end;
-  finally
-    PasFileList.Free;
-  end;
-end;
-
-procedure TConvertDelphiPBase.CacheUnitsInPath(const APath: string);
-// Same as above but uses fSettings.MainPath as base path.
-begin
-  CacheUnitsInPath(APath, fSettings.MainPath);
 end;
 
 function TConvertDelphiPBase.GetCachedUnitPath(const AUnitName: string): string;
@@ -765,6 +797,7 @@ function TDelphiUnit.AskUnitPathFromUser: TModalResult;
 // Ask the user what to do with missing units.
 var
   TryAgain: Boolean;
+  CacheUnitsThread: TCacheUnitsThread;
   UnitDirDialog: TSelectDirectoryDialog;
 begin
   with fUsedUnitsTool do
@@ -789,7 +822,11 @@ begin
           if UnitDirDialog.Execute then begin
             fOwnerConverter.fPrevSelectedPath:=ExtractFilePath(UnitDirDialog.Filename);
             // Add the new path to project if missing units are found.
-            fOwnerConverter.CacheUnitsInPath(UnitDirDialog.Filename);
+            // We use a thread here only to reuse its code. No parallel operations now.
+            CacheUnitsThread:=TCacheUnitsThread.Create(fOwnerConverter);
+            CacheUnitsThread.Start;
+            CacheUnitsThread.WaitFor; // Make sure the thread has finished before continuing.
+//            fOwnerConverter.CacheUnitsInPath(UnitDirDialog.Filename);
             TryAgain:=fOwnerConverter.DoMissingUnits(fUsedUnitsTool)>0;
           end
           else
@@ -917,17 +954,16 @@ begin
   IDEMessagesWindow.Clear;
   // Start scanning unit files one level above project path. The GUI will appear
   // without delay but then we must wait for the thread before continuing.
-  CacheUnitsThread:=TCacheUnitsThread.Create(Self, fSettings.MainPath);
-  try
+  CacheUnitsThread:=TCacheUnitsThread.Create(Self);
+//  try
     try
-      CacheUnitsThread.Start;
-      Result:=fSettings.RunForm;      // Get settings from user.
-      Screen.Cursor:=crHourGlass;
-      try
-        CacheUnitsThread.WaitFor;     // Make sure the thread has finished.
-      finally
-        Screen.Cursor:=crDefault;
-      end;
+      Result:=fSettings.RunForm(CacheUnitsThread); // Get settings from user.
+      //Screen.Cursor:=crHourGlass;
+      //try
+      //  CacheUnitsThread.WaitFor;     // Make sure the thread has finished.
+      //finally
+      //  Screen.Cursor:=crDefault;
+      //end;
       if Result=mrOK then begin
         // create/open lazarus project or package file
         fLazPFilename:=fSettings.DelphiToLazFilename(fOrigFilename, fLazPSuffix, false);
@@ -954,9 +990,9 @@ begin
       Result:=mrAbort;
     end;
     ShowEndingMessage(Result);
-  finally
-    CacheUnitsThread.Free;
-  end;
+  //finally
+  //  CacheUnitsThread.Free;
+  //end;
 end;
 
 function TConvertDelphiProjPack.ConvertSub: TModalResult;

@@ -31,7 +31,7 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, IDEProcs,
-  StdCtrls, EditBtn, Buttons, ExtCtrls, DialogProcs, ButtonPanel,
+  StdCtrls, EditBtn, Buttons, ExtCtrls, DialogProcs, ButtonPanel, ComCtrls,
   LazarusIDEStrConsts, CodeToolsStructs, DividerBevel, AVL_Tree, BaseIDEIntf,
   LazConfigStorage, ConverterTypes, ReplaceNamesUnit, ReplaceFuncsUnit;
 
@@ -84,7 +84,7 @@ type
   public
     constructor Create(const ATitle: string);
     destructor Destroy; override;
-    function RunForm: TModalResult;
+    function RunForm(ACacheUnitsThread: TThread): TModalResult;
 
     // Lazarus file name based on Delphi file name, keep suffix.
     function DelphiToLazFilename(const DelphiFilename: string;
@@ -106,7 +106,6 @@ type
     property MainPath: String read fMainPath;
     property BackupPath: String read GetBackupPath;
     property Enabled: Boolean read fEnabled write SetEnabled;
-
     property BackupFiles: boolean read fBackupFiles;
     property KeepFileOpen: boolean read fKeepFileOpen;
     property MultiPlatform: boolean read fMultiPlatform;
@@ -128,7 +127,10 @@ type
   { TConvertSettingsForm }
 
   TConvertSettingsForm = class(TForm)
+    StopScanButton: TBitBtn;
     CoordOffsComboBox: TComboBox;
+    ScanLabel: TLabel;
+    ScanProgressBar: TProgressBar;
     UnitReplaceComboBox: TComboBox;
     MultiPlatformCheckBox: TCheckBox;
     SameDfmCheckBox: TCheckBox;
@@ -150,7 +152,9 @@ type
     UnitReplaceButton: TBitBtn;
     ProjectPathEdit: TLabeledEdit;
     CoordOffsButton: TBitBtn;
+    procedure CancelButtonClick(Sender: TObject);
     procedure SameDfmCheckBoxChange(Sender: TObject);
+    procedure StopScanButtonClick(Sender: TObject);
     procedure SupportDelphiCheckBoxChange(Sender: TObject);
     procedure TypeReplaceButtonClick(Sender: TObject);
     procedure FuncReplaceButtonClick(Sender: TObject);
@@ -160,10 +164,13 @@ type
     procedure FormDestroy(Sender: TObject);
   private
     fSettings: TConvertSettings;
+    fCacheUnitsThread: TThread;
+    procedure ThreadTerminated(Sender: TObject);
   public
     constructor Create(AOwner: TComponent; ASettings: TConvertSettings); reintroduce;
     destructor Destroy; override;
-  end; 
+    property CacheUnitsThread: TThread read fCacheUnitsThread;
+  end;
 
 var
   ConvertSettingsForm: TConvertSettingsForm;
@@ -609,11 +616,19 @@ begin
   inherited Destroy;
 end;
 
-function TConvertSettings.RunForm: TModalResult;
+function TConvertSettings.RunForm(ACacheUnitsThread: TThread): TModalResult;
 begin
   fSettingsForm:=TConvertSettingsForm.Create(nil, Self);
   try
     with fSettingsForm do begin
+      fCacheUnitsThread := ACacheUnitsThread;
+      if Assigned(fCacheUnitsThread) then begin
+        fCacheUnitsThread.OnTerminate:=@ThreadTerminated;
+        ButtonPanel1.OKButton.Enabled := False; // Disabled while thread is running
+        fCacheUnitsThread.Start;
+      end
+      else
+        ThreadTerminated(nil);        // Hide controls dealing with scanning
       Caption:=fTitle + ' - ' + ExtractFileName(fMainFilename);
       ProjectPathEdit.Text:=fMainPath;
       // Settings --> UI. Loaded from ConfigSettings earlier.
@@ -629,8 +644,8 @@ begin
       CoordOffsComboBox.ItemIndex     :=integer(fCoordOffsMode);
       SupportDelphiCheckBoxChange(SupportDelphiCheckBox);
       SameDfmCheckBoxChange(SameDfmCheckBox);
-      Result:=ShowModal;         // Let the user change settings in a form.
-      if Result=mrOK then begin
+      Result:=ShowModal;        // Let the user change settings in a form.
+      if Result=mrOK then begin // The thread will finished before the form closes.
         // UI --> Settings. Will be saved to ConfigSettings later.
         fBackupFiles     :=BackupCheckBox.Checked;
         fKeepFileOpen    :=KeepFileOpenCheckBox.Checked;
@@ -778,6 +793,7 @@ begin
   // Unit Replacements
   UnitReplaceDivider.Caption:=lisConvUnitReplacements;
   UnitReplaceButton.Caption:=lisEdit;    // Recycled string.
+  UnitReplaceButton.LoadGlyphFromLazarusResource('laz_edit');
   UnitReplaceDivider.Hint:=lisConvUnitReplHint;
   UnitReplaceButton.Hint:=lisConvUnitReplHint;
   UnitReplaceComboBox.Items.Add(lisDisabled);    // 'Disabled'
@@ -791,6 +807,7 @@ begin
   // Type Replacements
   TypeReplaceDivider.Caption:=lisConvTypeReplacements;
   TypeReplaceButton.Caption:=lisEdit;
+  TypeReplaceButton.LoadGlyphFromLazarusResource('laz_edit');
   TypeReplaceDivider.Hint:=lisConvTypeReplHint;
   TypeReplaceButton.Hint:=lisConvTypeReplHint;
   TypeReplaceComboBox.Items.Add(lisInteractive);
@@ -798,6 +815,7 @@ begin
   // Func Replacements
   FuncReplaceDivider.Caption:=lisConvFuncReplacements;
   FuncReplaceButton.Caption:=lisEdit;
+  FuncReplaceButton.LoadGlyphFromLazarusResource('laz_edit');
   FuncReplaceDivider.Hint:=lisConvFuncReplHint;
   FuncReplaceButton.Hint:=lisConvFuncReplHint;
   FuncReplaceComboBox.Items.Add(lisDisabled);
@@ -805,10 +823,15 @@ begin
   // Coordinate Offsets
   CoordOffsDivider.Caption:=lisConvCoordOffs;
   CoordOffsButton.Caption:=lisEdit;
+  CoordOffsButton.LoadGlyphFromLazarusResource('laz_edit');
   CoordOffsDivider.Hint:=lisConvCoordHint;
   CoordOffsButton.Hint:=lisConvCoordHint;
   CoordOffsComboBox.Items.Add(lisDisabled);
   CoordOffsComboBox.Items.Add(lisEnabled);
+  // File system scanning
+  ScanLabel.Caption := lisScanParentDir;
+  StopScanButton.Caption:=lisStop;
+  StopScanButton.LoadGlyphFromLazarusResource('menu_stop');
 
   ButtonPanel1.OKButton.Caption:=lisStartConversion;
   ButtonPanel1.HelpButton.Caption:=lisMenuHelp;
@@ -838,6 +861,26 @@ begin
   if Chk then
     CoordOffsComboBox.ItemIndex:=integer(rsDisabled);
   CoordOffsComboBox.Enabled:=not Chk;
+end;
+
+procedure TConvertSettingsForm.CancelButtonClick(Sender: TObject);
+begin
+  if Assigned(fCacheUnitsThread) then
+    fCacheUnitsThread.WaitFor;
+end;
+
+procedure TConvertSettingsForm.ThreadTerminated(Sender: TObject);
+begin
+  ScanLabel.Visible := False;
+  ScanProgressBar.Visible := False;
+  StopScanButton.Visible := False;
+  ButtonPanel1.OKButton.Enabled := True;
+  fCacheUnitsThread := nil;  // Thread frees itself. Make the variable nil, too.
+end;
+
+procedure TConvertSettingsForm.StopScanButtonClick(Sender: TObject);
+begin
+  fCacheUnitsThread.Terminate;
 end;
 
 // Edit replacements in grids
