@@ -1,13 +1,13 @@
 object Form1: TForm1
-  Left = 477
+  Left = 459
   Height = 433
-  Top = 164
+  Top = 346
   Width = 566
   Caption = 'Form1'
   ClientHeight = 433
   ClientWidth = 566
   Position = poScreenCenter
-  LCLVersion = '0.9.31'
+  LCLVersion = '1.1'
   object PageControl1: TPageControl
     Left = 0
     Height = 433
@@ -78,10 +78,10 @@ object Form1: TForm1
           TabOrder = 0
         end
         object lblWords: TLabel
-          Left = 424
-          Height = 14
+          Left = 425
+          Height = 13
           Top = 10
-          Width = 58
+          Width = 57
           Anchors = [akTop, akRight]
           Caption = 'Label words'
           ParentColor = False
@@ -99,10 +99,10 @@ object Form1: TForm1
           TabOrder = 1
         end
         object lblLabelAngle: TLabel
-          Left = 296
-          Height = 14
+          Left = 297
+          Height = 13
           Top = 10
-          Width = 55
+          Width = 54
           Anchors = [akTop, akRight]
           Caption = 'Label angle'
           ParentColor = False
@@ -144,7 +144,7 @@ object Form1: TForm1
         Left = 0
         Height = 407
         Top = 0
-        Width = 558
+        Width = 448
         AxisList = <        
           item
             Minors = <>
@@ -164,6 +164,7 @@ object Form1: TForm1
         Align = alClient
         ParentColor = False
         object ChartPolarSeries1: TPolarSeries
+          CloseCircle = True
           OriginX = -5
           Source = RandomChartSource1
         end
@@ -171,6 +172,25 @@ object Form1: TForm1
           LinePen.Color = clRed
           OriginY = 5
           Source = RandomChartSource1
+        end
+      end
+      object pnlPolar: TPanel
+        Left = 448
+        Height = 407
+        Top = 0
+        Width = 110
+        Align = alRight
+        ClientHeight = 407
+        ClientWidth = 110
+        TabOrder = 1
+        object cbCloseCircle: TCheckBox
+          Left = 14
+          Height = 17
+          Top = 12
+          Width = 52
+          Caption = 'Closed'
+          OnChange = cbCloseCircleChange
+          TabOrder = 0
         end
       end
     end

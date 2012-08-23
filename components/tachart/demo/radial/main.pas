@@ -22,16 +22,19 @@ type
     ChartToolset1: TChartToolset;
     cbRotate: TCheckBox;
     cbMarkPositions: TComboBox;
+    cbCloseCircle: TCheckBox;
     lblWords: TLabel;
     lblLabelAngle: TLabel;
     ListChartSource1: TListChartSource;
     PageControl1: TPageControl;
     Panel1: TPanel;
+    pnlPolar: TPanel;
     RandomChartSource1: TRandomChartSource;
     seWords: TSpinEdit;
     seLabelAngle: TSpinEdit;
     tsPolar: TTabSheet;
     tsPie: TTabSheet;
+    procedure cbCloseCircleChange(Sender: TObject);
     procedure cbMarkPositionsChange(Sender: TObject);
     procedure cbRotateChange(Sender: TObject);
     procedure ChartPieMouseDown(Sender: TObject; Button: TMouseButton;
@@ -48,6 +51,12 @@ implementation
 {$R *.lfm}
 
 { TForm1 }
+
+procedure TForm1.cbCloseCircleChange(Sender: TObject);
+begin
+  ChartPolarSeries1.CloseCircle := cbCloseCircle.Checked;
+  ChartPolarSeries2.CloseCircle := cbCloseCircle.Checked;
+end;
 
 procedure TForm1.cbMarkPositionsChange(Sender: TObject);
 begin
