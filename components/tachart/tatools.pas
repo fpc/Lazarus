@@ -195,12 +195,18 @@ type
 
   TZoomRatioLimit = (zrlNone, zrlProportional, zrlFixedX, zrlFixedY);
 
-  { TZoomDragTool }
-
   TZoomDragTool = class(TBasicZoomTool)
+  published
+  type
+    TRestoreExtentOn = (
+      zreDragTopLeft, zreDragTopRight, zreDragBottomLeft, zreDragBottomRight,
+      zreClick, zreDifferentDrag);
+    TRestoreExtentOnSet = set of TRestoreExtentOn;
   strict private
     FFrame: TChartPen;
+    FPrevDragDir: TRestoreExtentOn;
     FRatioLimit: TZoomRatioLimit;
+    FRestoreExtentOn: TRestoreExtentOnSet;
     FSelectionRect: TRect;
     function GetProportional: Boolean;
     procedure SetFrame(AValue: TChartPen);
@@ -221,6 +227,9 @@ type
       deprecated;
     property RatioLimit: TZoomRatioLimit
       read FRatioLimit write FRatioLimit default zrlNone;
+    property RestoreExtentOn: TRestoreExtentOnSet
+      read FRestoreExtentOn write FRestoreExtentOn
+      default [zreDragTopLeft, zreDragTopRight, zreDragBottomLeft, zreClick];
   end;
 
   TBasicZoomStepTool = class(TBasicZoomTool)
@@ -1081,7 +1090,9 @@ end;
 constructor TZoomDragTool.Create(AOwner: TComponent);
 begin
   inherited;
+  SetPropDefaults(Self, ['RestoreExtentOn']);
   FFrame := TChartPen.Create;
+  FPrevDragDir := zreDifferentDrag;
 end;
 
 destructor TZoomDragTool.Destroy;
@@ -1171,19 +1182,38 @@ var
     end;
   end;
 
+const
+  DRAG_DIR: array [-1..1, -1..1] of TRestoreExtentOn = (
+    (zreDragTopLeft, zreClick, zreDragBottomLeft),
+    (zreClick, zreClick, zreClick),
+    (zreDragTopRight, zreClick, zreDragBottomRight));
+var
+  dragDir: TRestoreExtentOn;
 begin
   Unused(APoint);
 
   PrepareXorPen(FChart.Canvas);
   FChart.Canvas.Rectangle(FSelectionRect);
   with FSelectionRect do begin
-    if (Left >= Right) or (Top >= Bottom) then begin
+    dragDir := DRAG_DIR[Sign(Right - Left), Sign(Bottom - Top)];
+    if
+      (dragDir in RestoreExtentOn) or
+      (zreDifferentDrag in RestoreExtentOn) and
+      (dragDir <> zreClick) and not (FPrevDragDir in [dragDir, zreDifferentDrag])
+    then begin
+      FPrevDragDir := zreDifferentDrag;
       DoZoom(FChart.GetFullExtent, true);
+      exit;
+    end;
+    // If empty rectangle does not cause un-zooming, ignore it to prevent SIGFPE.
+    if dragDir = zreClick then begin
+      Deactivate;
       exit;
     end;
     ext.a := FChart.ImageToGraph(TopLeft);
     ext.b := FChart.ImageToGraph(BottomRight);
   end;
+  FPrevDragDir := dragDir;
   NormalizeRect(ext);
   CheckProportions;
   DoZoom(ext, false);
