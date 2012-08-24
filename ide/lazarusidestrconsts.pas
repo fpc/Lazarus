@@ -5564,6 +5564,7 @@ resourcestring
   lisSavedWithIDESettings = 'Saved with IDE settings';
   lisMoveTo = 'Move to: ';
   lisFailedToSaveFile = 'Failed to save file.';
+  lisEditKey = 'Edit Key';
 
 implementation
 

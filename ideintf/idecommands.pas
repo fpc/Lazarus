@@ -528,6 +528,7 @@ type
     procedure SetShortcutA(const AValue: TIDEShortCut); virtual;
     procedure SetShortcutB(const AValue: TIDEShortCut); virtual;
     procedure Change;
+    procedure Init; virtual;
   public
     function AsShortCut: TShortCut; virtual;
     constructor Create(TheCategory: TIDECommandCategory;
@@ -852,6 +853,11 @@ begin
   if Assigned(OnChange) then OnChange(Self);
 end;
 
+procedure TIDECommand.Init;
+begin
+  //
+end;
+
 function TIDECommand.GetLocalizedName: string;
 begin
   if FLocalizedName<>'' then
@@ -918,6 +924,7 @@ begin
   FOnExecute:=ExecuteMethod;
   FOnExecuteProc:=ExecuteProc;
   //DebugLn('TIDECommand.Create Name=',Name,' ',ShortCutToText(AsShortCut),' ',dbgs(Pointer(Self)));
+  Init;
 end;
 
 constructor TIDECommand.Create(TheCategory: TIDECommandCategory;

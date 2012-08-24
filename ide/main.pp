@@ -1334,7 +1334,6 @@ begin
     Application.ShowButtonGlyphs := ShowButtonGlyphs;
     Application.ShowMenuGlyphs := ShowMenuGlyphs;
   end;
-  EditorMacroListViewer.LoadGlobalInfo;
 
   OldVer:=EnvironmentOptions.OldLazarusVersion;
   NowVer:=GetLazarusVersionString;
@@ -1390,6 +1389,10 @@ begin
   SetupIDECommands;
   SetupIDEMsgQuickFixItems;
   EditorOpts.Load;
+  EditorMacroListViewer.LoadGlobalInfo;
+  // Defered till created
+  //EditorMacroListViewer.OnKeyMapReloaded := @SourceEditorManager.ReloadEditorOptions;
+
 
   ExternalTools.LoadShortCuts(EditorOpts.KeyMap);
 
@@ -1642,6 +1645,7 @@ begin
   FreeThenNil(CodeExplorerOptions);
   FreeThenNil(MiscellaneousOptions);
   FreeThenNil(EditorOpts);
+  IDECommandList := nil;
   FreeThenNil(DebuggerOptions);
   FreeThenNil(EnvironmentOptions);
   FreeThenNil(IDECommandScopes);
@@ -2181,6 +2185,7 @@ begin
   MainIDEBar.itmOpenFileAtCursor.OnClick:=@mnuOpenFileAtCursorClicked;
 
   SourceEditorManager.InitMacros(GlobalMacroList);
+  EditorMacroListViewer.OnKeyMapReloaded := @SourceEditorManager.ReloadEditorOptions;
 end;
 
 procedure TMainIDE.SetupCodeMacros;
@@ -5131,6 +5136,7 @@ begin
   UpdateHighlighters(True);
   SourceEditorManager.ReloadEditorOptions;
   ReloadMenuShortCuts;
+  UpdateMacroListViewer;
 end;
 
 procedure TMainIDE.DoCodetoolsOptionsAfterWrite(Sender: TObject; Restore: boolean);

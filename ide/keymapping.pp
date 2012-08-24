@@ -84,6 +84,7 @@ type
 
   TKeyCommandRelation = class(TIDECommand)
   private
+    FSkipSaving: Boolean;
     procedure SetSingle(NewKeyA: word; NewShiftA: TShiftState;
                         NewKeyB: word; NewShiftB: TShiftState);
     procedure SetSingle(NewKeyA: word; NewShiftA: TShiftState);
@@ -100,8 +101,10 @@ type
     procedure GetDefaultKeyForMacOSXScheme;
     procedure GetDefaultKeyForMacOSXLazScheme;
   protected
+    procedure Init; override;
   public
     function GetLocalizedName: string; override;
+    property SkipSaving: Boolean read FSkipSaving write FSkipSaving;
   end;
 
   { TLoadedKeyCommand
@@ -181,6 +184,7 @@ type
                            const OnExecuteMethod: TNotifyEvent = nil;
                            const OnExecuteProc: TNotifyProcedure = nil
                            ): TIDECommand; override;
+    procedure RemoveCommand(ACommand: TIDECommand);
   public
     property ExtToolCount: integer read fExtToolCount write SetExtToolCount;// in menu
     property Relations[Index:integer]:TKeyCommandRelation read GetRelation; default;
@@ -2423,6 +2427,12 @@ begin
   end;
 end;
 
+procedure TKeyCommandRelation.Init;
+begin
+  inherited;
+  FSkipSaving := False;
+end;
+
 { TKeyCommandRelationList }
 
 constructor TKeyCommandRelationList.Create;
@@ -3287,6 +3297,7 @@ begin
   for a:=0 to FRelations.Count-1 do begin
     Name:=Relations[a].Name;
     if Name='' then continue;
+    if Relations[a].SkipSaving then continue;
     AVLNode:=fLoadedKeyCommands.FindKey(Pointer(Name),
                                         @CompareNameWithLoadedKeyCommand);
     if AVLNode<>nil then begin
@@ -3576,11 +3587,9 @@ begin
   Result:=Categories[AddCategory(CreateUniqueCategoryName(AName),Description,Scope)];
 end;
 
-function TKeyCommandRelationList.CreateCommand(Category: TIDECommandCategory;
-  const AName, Description: string;
-  const TheShortcutA, TheShortcutB: TIDEShortCut;
-  const OnExecuteMethod: TNotifyEvent;
-  const OnExecuteProc: TNotifyProcedure): TIDECommand;
+function TKeyCommandRelationList.CreateCommand(Category: TIDECommandCategory; const AName,
+  Description: string; const TheShortcutA, TheShortcutB: TIDEShortCut;
+  const OnExecuteMethod: TNotifyEvent; const OnExecuteProc: TNotifyProcedure): TIDECommand;
 var
   NewName: String;
   cmd: word;
@@ -3594,6 +3603,11 @@ begin
   SetKeyCommandToLoadedValues(CmdRel);
   FRelations.Add(CmdRel);
   Result:=CmdRel;
+end;
+
+procedure TKeyCommandRelationList.RemoveCommand(ACommand: TIDECommand);
+begin
+  fRelations.Remove(ACommand);
 end;
 
 function TKeyCommandRelationList.GetCategory(Index: integer): TIDECommandCategory;

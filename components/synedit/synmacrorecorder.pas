@@ -257,6 +257,7 @@ type
     fCurrentEditor: TCustomSynEdit;
     fState: TSynMacroState;
     fEvents: TList;
+    procedure SetMacroName(AValue: string); virtual;
     procedure SetShortCut(const Index: Integer; const Value: TShortCut);
     function GetIsEmpty: boolean;
     procedure StateChanged;
@@ -317,7 +318,7 @@ type
     property SaveMarkerPos: boolean read fSaveMarkerPos
       write fSaveMarkerPos default False;
     property AsString : string read GetAsString write SetAsString;
-    property MacroName : string read fMacroName write fMacroName;
+    property MacroName : string read fMacroName write SetMacroName;
     property OnStateChange: TNotifyEvent read fOnStateChange write fOnStateChange;
     property OnUserCommand: TSynUserCommandEvent read fOnUserCommand
       write fOnUserCommand;
@@ -892,6 +893,12 @@ begin
 
   for cEditor := 0 to EditorCount -1 do
     HookEditor(Editors[cEditor], c, AnOldShortCut, fShortCuts[ACmd], []);
+end;
+
+procedure TCustomSynMacroRecorder.SetMacroName(AValue: string);
+begin
+  if fMacroName = AValue then Exit;
+  fMacroName := AValue;
 end;
 
 procedure TCustomSynMacroRecorder.UnHookEditorCmd(ACmd: TSynMacroCommand);

@@ -7,8 +7,9 @@ interface
 uses
   Classes, SysUtils, FileUtil, Laz2_XMLCfg, SynMacroRecorder, SynEdit, SynEditKeyCmds,
   FileProcs, Forms, Controls, Graphics, Dialogs, StdCtrls, ButtonPanel, ComCtrls, ExtCtrls,
-  Spin, Menus, MainBar, IDEWindowIntf, IDEImagesIntf, LazarusIDEStrConsts, ProjectDefs,
-  LazConf, Project, SrcEditorIntf, IDEHelpIntf;
+  Spin, Menus, LCLType, MainBar, IDEWindowIntf, IDEImagesIntf, LazarusIDEStrConsts,
+  ProjectDefs, LazConf, Project, KeyMapping, KeyMapShortCutDlg, SrcEditorIntf, IDEHelpIntf,
+  IDECommands;
 
 type
 
@@ -18,12 +19,20 @@ type
   private
     FHasError: Boolean;
     FFailedText: String;
+    FIdeCmd: TIDECommand;
+    procedure ExecMacro(Sender: TObject);
+    function GetIdeCmd: TKeyCommandRelation;
+  protected
+    procedure SetMacroName(AValue: string); override;
+    property IdeCmd: TKeyCommandRelation read GetIdeCmd;
   public
     constructor Create(aOwner: TComponent); override;
+    destructor Destroy; override;
     function GetAsText: String;
     procedure SetFromText(const AText: String);
     procedure WriteToXmlConf(AConf: TXMLConfig; const APath: String);
     procedure ReadFromXmlConf(AConf: TXMLConfig; const APath: String);
+    function ShortCutAsText: String;
     property  HasError: Boolean read FHasError;
   end;
 
@@ -75,12 +84,19 @@ type
 
   { TEditorMacroList }
 
+  TEditorMacroList = class;
+  TMacroAddedEvent = procedure(AList: TEditorMacroList; AMacro: TEditorMacro) of object;
+
   TEditorMacroList = class
   private
     FList: TList;
+    FOnAdded: TMacroAddedEvent;
     FOnChange: TNotifyEvent;
+    FOnRemove: TMacroAddedEvent;
     function GetMacros(Index: Integer): TEditorMacro;
     procedure DoChanged;
+    procedure DoAdded(AMacro: TEditorMacro);
+    procedure DoRemove(AMacro: TEditorMacro);
   public
     constructor Create;
     destructor Destroy; override;
@@ -94,11 +110,14 @@ type
     procedure Remove(AMacro: TEditorMacro);
     property Macros[Index: Integer]: TEditorMacro read GetMacros;
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
+    property OnAdded: TMacroAddedEvent read FOnAdded write FOnAdded;
+    property OnRemove: TMacroAddedEvent read FOnRemove write FOnRemove;
   end;
 
   { TMacroListView }
 
   TMacroListView = class(TForm)
+    btnSetKeys: TButton;
     btnPlay: TButton;
     btnRecord: TButton;
     btnRecordStop: TButton;
@@ -131,6 +150,7 @@ type
     procedure btnRecordStopClick(Sender: TObject);
     procedure btnRenameClick(Sender: TObject);
     procedure btnSelectClick(Sender: TObject);
+    procedure btnSetKeysClick(Sender: TObject);
     procedure FormActivate(Sender: TObject);
     procedure HelpButtonClick(Sender: TObject);
     procedure lbRecordedViewSelectItem(Sender: TObject; Item: TListItem; Selected: Boolean);
@@ -154,9 +174,11 @@ type
     procedure DoEditorMacroStateChanged;
   public
     constructor Create(TheOwner: TComponent); override;
+    destructor Destroy; override;
   end;
 
 procedure ShowMacroListViewer;
+procedure UpdateMacroListViewer;
 procedure DoEditorMacroStateChanged;
 
 procedure LoadProjectSpecificInfo(XMLConfig: TXMLConfig; Merge: boolean);
@@ -166,6 +188,7 @@ procedure SaveGlobalInfo;
 
 var
   EditorMacroRecorder: TEditorMacro = nil; // set by SourceEditor
+  OnKeyMapReloaded: procedure of object;
 
 implementation
 
@@ -176,6 +199,8 @@ var
   CurrentRecordingMacro: TEditorMacro = nil; // Points to a Macro in the list (copy)
   CurrentActiveMacro: TEditorMacro = nil; // Points to a Macro in the list (copy)
   MacroRecCounter: Integer = 1;
+  KeyCategory: TIDECommandCategory = nil;
+
 const
   GlobalConfFileName = 'EditorMacros.xml';
 
@@ -184,6 +209,12 @@ begin
   if MacroListView = nil then
     MacroListView := TMacroListView.Create(Application);
   IDEWindowCreators.ShowForm(MacroListView, True);
+end;
+
+procedure UpdateMacroListViewer;
+begin
+  if MacroListView <> nil then
+    MacroListView.UpdateDisplay;
 end;
 
 procedure DoEditorMacroStateChanged;
@@ -252,10 +283,70 @@ end;
 
 { TEditorMacro }
 
+procedure TEditorMacro.ExecMacro(Sender: TObject);
+begin
+  if EditorMacroRecorder.State <> msStopped then exit;
+  try
+    EditorMacroRecorder.AssignEventsFrom(Self);
+    EditorMacroRecorder.PlaybackMacro(TCustomSynEdit(SourceEditorManagerIntf.ActiveEditor.EditorControl));
+  finally
+    EditorMacroRecorder.AssignEventsFrom(CurrentActiveMacro);
+  end;
+end;
+
+function TEditorMacro.GetIdeCmd: TKeyCommandRelation;
+begin
+  Result := TKeyCommandRelation(FIdeCmd);
+end;
+
+procedure TEditorMacro.SetMacroName(AValue: string);
+begin
+  inherited SetMacroName(AValue);
+
+  if (IDECommandList = nil) then
+    exit;
+
+  if HasError then begin
+    if FIdeCmd <> nil then begin
+      (IDECommandList as TKeyCommandRelationList).RemoveCommand(FIdeCmd);
+      FreeAndNil(FIdeCmd);
+    end;
+    exit;
+  end;
+
+  if KeyCategory = nil then
+    KeyCategory := IDECommandList.CreateCategory(nil, 'EditorMacros',
+      'Editor Macros', IDECmdScopeSrcEditOnly);
+
+  if FIdeCmd = nil then begin
+    FIdeCmd := (IDECommandList as TKeyCommandRelationList).CreateCommand(
+      KeyCategory,
+      'EdtMacro'+MacroName,
+      MacroName,
+      IDEShortCut(VK_UNKNOWN, [], VK_UNKNOWN, []),
+      IDEShortCut(VK_UNKNOWN, [], VK_UNKNOWN, []),
+      @ExecMacro, nil
+    );
+    TKeyCommandRelation(FIdeCmd).SkipSaving := True;
+  end
+  else
+    FIdeCmd.LocalizedName := MacroName;
+
+end;
+
 constructor TEditorMacro.Create(aOwner: TComponent);
 begin
   inherited Create(aOwner);
   FHasError := False;
+end;
+
+destructor TEditorMacro.Destroy;
+begin
+  inherited Destroy;
+  if (FIdeCmd <> nil) and (IDECommandList <> nil) then begin
+    (IDECommandList as TKeyCommandRelationList).RemoveCommand(FIdeCmd);
+    FreeAndNil(FIdeCmd);
+  end;
 end;
 
 function TEditorMacro.GetAsText: String;
@@ -304,6 +395,7 @@ begin
     if R.HasError then begin
       FHasError := True;
       FFailedText := AText;
+      MacroName := MacroName;
     end;
   finally
     R.Free;
@@ -311,14 +403,55 @@ begin
 end;
 
 procedure TEditorMacro.WriteToXmlConf(AConf: TXMLConfig; const APath: String);
+  procedure Clear(const SubPath: string);
+  begin
+    AConf.DeleteValue(SubPath+'Key1');
+    AConf.DeleteValue(SubPath+'Shift1');
+    AConf.DeleteValue(SubPath+'Key2');
+    AConf.DeleteValue(SubPath+'Shift2');
+  end;
+  procedure Store(const SubPath: string; Key: TIDEShortCut);
+  var
+    s: TShiftState;
+  begin
+    AConf.SetDeleteValue(SubPath+'Key1', key.Key1, VK_UNKNOWN);
+    if key.Key1=VK_UNKNOWN then
+      s:=[]
+    else
+      s:=key.Shift1;
+    AConf.SetDeleteValue(SubPath+'Shift1',ShiftStateToCfgStr(s),ShiftStateToCfgStr([]));
+    AConf.SetDeleteValue(SubPath+'Key2',key.Key2,VK_UNKNOWN);
+    if key.Key2=VK_UNKNOWN then
+      s:=[]
+    else
+      s:=key.Shift2;
+    AConf.SetDeleteValue(SubPath+'Shift2',ShiftStateToCfgStr(s),ShiftStateToCfgStr([]));
+  end;
+
 begin
   AConf.SetValue(APath + 'Name', MacroName);
   AConf.SetValue(APath + 'Code/Value', GetAsText);
+
+  if (FIdeCmd = nil) then begin
+    Clear(APath + 'KeyA/');
+    Clear(APath + 'KeyB/');
+  end else begin
+    Store(APath + 'KeyA/', FIdeCmd.ShortcutA);
+    Store(APath + 'KeyB/', FIdeCmd.ShortcutB);
+  end;
 end;
 
 procedure TEditorMacro.ReadFromXmlConf(AConf: TXMLConfig; const APath: String);
+  procedure Load(SubPath: string; out Key: TIDEShortCut);
+  begin
+    key.Key1   := AConf.GetValue(SubPath+'Key1',VK_UNKNOWN);
+    key.Shift1 := CfgStrToShiftState(AConf.GetValue(SubPath+'Shift1',''));
+    key.Key2   := AConf.GetValue(SubPath+'Key2',VK_UNKNOWN);
+    key.Shift2 := CfgStrToShiftState(AConf.GetValue(SubPath+'Shift2',''));
+  end;
 var
   s: String;
+  SCut: TIDEShortCut;
 begin
   s := AConf.GetValue(APath + 'Name', '');
   if s <> '' then MacroName := s;
@@ -328,6 +461,27 @@ begin
     FHasError := True;
     FFailedText := s;
   end;
+
+  if (FIdeCmd <> nil) then begin
+    Load(APath+'KeyA/', SCut);
+    if (IDECommandList as TKeyCommandRelationList).Find(SCut, TSourceEditorWindowInterface) = nil then
+      FIdeCmd.ShortcutA := SCut;
+
+    Load(APath+'KeyB/', SCut);
+    if (IDECommandList as TKeyCommandRelationList).Find(SCut, TSourceEditorWindowInterface) = nil then
+      FIdeCmd.ShortcutB := SCut;
+  end;
+end;
+
+function TEditorMacro.ShortCutAsText: String;
+begin
+  Result := '';
+  If FIdeCmd = nil then
+    exit;
+  if not IDEShortCutEmpty(FIdeCmd.ShortcutA) then
+    Result := Result + ' (' + KeyAndShiftStateToEditorKeyString(FIdeCmd.ShortcutA) + ')';
+  if not IDEShortCutEmpty(FIdeCmd.ShortcutB) then
+    Result := Result + ' (' + KeyAndShiftStateToEditorKeyString(FIdeCmd.ShortcutB) + ')';
 end;
 
 { TIdeMacroEventReader }
@@ -659,6 +813,24 @@ begin
   UpdateDisplay;
 end;
 
+procedure TMacroListView.btnSetKeysClick(Sender: TObject);
+var
+  i: integer;
+  M: TEditorMacro;
+begin
+  if lbRecordedView.ItemIndex < 0 then exit;
+  M := CurrentEditorMacroList.Macros[lbRecordedView.ItemIndex];
+
+  if M.IdeCmd = nil then // only for error macros
+    exit;
+
+  i := (IDECommandList as TKeyCommandRelationList).IndexOf(M.IdeCmd);
+  if (i >= 0) then
+    ShowKeyMappingEditForm(i, (IDECommandList as TKeyCommandRelationList));
+  UpdateDisplay;
+  if OnKeyMapReloaded <> nil then OnKeyMapReloaded();
+end;
+
 procedure TMacroListView.FormActivate(Sender: TObject);
 begin
   lbRecordedView.HideSelection := Active;
@@ -773,7 +945,7 @@ begin
   for i := 0 to CurrentEditorMacroList.Count - 1 do begin
     M := CurrentEditorMacroList.Macros[i];
     NewItem := lbRecordedView.Items.Add;
-    NewItem.Caption := M.MacroName;
+    NewItem.Caption := M.MacroName + M.ShortCutAsText;
     if M.HasError then
       NewItem.ImageIndex := FImageErr
     else
@@ -809,6 +981,7 @@ begin
 
 
   btnSelect.Enabled := IsStopped and IsSel and (not FIsPlaying) and (not IsErr);
+  btnSetKeys.Enabled := IsStopped and IsSel and (not FIsPlaying) and (not IsErr);
   btnRename.Enabled := IsStopped and IsSel and (not FIsPlaying) and (not IsErr);
   btnDelete.Enabled := IsStopped and IsSel and (not FIsPlaying);
 
@@ -859,6 +1032,7 @@ begin
   lbMoveTo.Caption := lisMoveTo;
 
   btnSelect.Caption := lisMenuSelect;
+  btnSetKeys.Caption := lisEditKey;
   btnRename.Caption := lisRename2;
   btnDelete.Caption := lisDelete;
   btnPlay.Caption := lisPlay;
@@ -881,6 +1055,11 @@ begin
   UpdateDisplay;
 end;
 
+destructor TMacroListView.Destroy;
+begin
+  inherited Destroy;
+end;
+
 { TEditorMacroList }
 
 function TEditorMacroList.GetMacros(Index: Integer): TEditorMacro;
@@ -892,6 +1071,18 @@ procedure TEditorMacroList.DoChanged;
 begin
   if Assigned(FOnChange) then
     FOnChange(Self);
+end;
+
+procedure TEditorMacroList.DoAdded(AMacro: TEditorMacro);
+begin
+  if Assigned(FOnAdded) then
+    FOnAdded(Self, AMacro);
+end;
+
+procedure TEditorMacroList.DoRemove(AMacro: TEditorMacro);
+begin
+  if Assigned(FOnRemove) then
+    FOnRemove(Self, AMacro);
 end;
 
 constructor TEditorMacroList.Create;
@@ -954,17 +1145,20 @@ end;
 function TEditorMacroList.Add(AMacro: TEditorMacro): Integer;
 begin
   Result := FList.Add(AMacro);
+  DoAdded(AMacro);
   DoChanged;
 end;
 
 procedure TEditorMacroList.Delete(AnIndex: Integer);
 begin
+  DoRemove(Macros[AnIndex]);
   FList.Delete(AnIndex);
   DoChanged;
 end;
 
 procedure TEditorMacroList.Remove(AMacro: TEditorMacro);
 begin
+  DoRemove(AMacro);
   FList.Remove(AMacro);
   DoChanged;
 end;
