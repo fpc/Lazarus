@@ -64,11 +64,8 @@ type
 
   TCacheUnitsThread = class(TThread)
   private
-    fConverter: TConvertDelphiPBase;
     fPath: string;
-    fPasFileList: TStringList;
     fSearcher: TFileSearcher;
-    procedure CacheUnitsInPath;
   protected
     procedure Execute; override;
   public
@@ -390,27 +387,34 @@ type
 
   TUnitsSearcher = class(TFileSearcher)
   private
-    FList: TStrings;
-    FOwnerThread: TThread;
+    fConverter: TConvertDelphiPBase;
   protected
     procedure DoFileFound; override;
   public
-    constructor Create(AOwnerThread: TThread; AList: TStrings);
+    constructor Create(aConverter: TConvertDelphiPBase);
   end;
 
 { TUnitsSearcher }
 
 procedure TUnitsSearcher.DoFileFound;
+var
+  RelPath, SubPath, sUnitName, fn: String;
 begin
-//  if FOwnerThread.Terminated then  <- Does not work, Terminated is protected
-//    Stop;
-  FList.Add(FileName);
+  RelPath:=FileUtil.CreateRelativePath(FileName, fConverter.fSettings.MainPath);
+  SubPath:=ExtractFilePath(RelPath);
+  fn:=ExtractFileName(RelPath);
+  sUnitName:=ExtractFileNameOnly(fn);
+  if (SubPath<>'') and (sUnitName<>'') then begin
+    // Map path by unit name.
+    fConverter.fCachedUnitNames[sUnitName]:=SubPath;
+    // Map real unit name by uppercase unit name.
+    fConverter.fCachedRealFileNames[UpperCase(sUnitName)]:=fn;
+  end;
 end;
 
-constructor TUnitsSearcher.Create(AOwnerThread: TThread; AList: TStrings);
+constructor TUnitsSearcher.Create(aConverter: TConvertDelphiPBase);
 begin
-  FOwnerThread := AOwnerThread;
-  FList := AList;
+  fConverter := aConverter;
 end;
 
 { TCacheUnitsThread }
@@ -419,50 +423,24 @@ constructor TCacheUnitsThread.Create(aConverter: TConvertDelphiPBase);
 begin
   inherited Create(True);
   FreeOnTerminate:=True;
-  fConverter:=aConverter;    // Will scan one level up from base path.
-  // Create file list and searcher already now. Its Stop method can be called anytime
-  fPasFileList:=TStringList.Create;
-  fSearcher:=TUnitsSearcher.Create(Self, fPasFileList);
+  // Create searcher already now. Its Stop method can be called anytime.
+  fSearcher:=TUnitsSearcher.Create(aConverter);
   // The parent directory to be scanned
-  fPath:=TrimFilename(fConverter.fSettings.MainPath+'..'+DirectorySeparator);
+  fPath:=TrimFilename(aConverter.fSettings.MainPath+'..'+DirectorySeparator);
 end;
 
 destructor TCacheUnitsThread.Destroy;
 begin
   fSearcher.Free;
-  fPasFileList.Free;
   inherited Destroy;
 end;
 
-procedure TCacheUnitsThread.CacheUnitsInPath;
-// Search all pascal units in fPath and store them in fCachedUnitNames
-//  with a path relative to fSettings.MainPath.
-var
-  i: Integer;
-  PasFile, RelPath, SubPath, sUnitName, FileName: String;
-begin
-  fSearcher.Search(fPath, '*.pas');
-  for i:=0 to fPasFileList.Count-1 do begin
-    PasFile:=fPasFileList[i];
-    RelPath:=FileUtil.CreateRelativePath(PasFile, fConverter.fSettings.MainPath);
-    SubPath:=ExtractFilePath(RelPath);
-    FileName:=ExtractFileName(RelPath);
-    sUnitName:=ExtractFileNameOnly(FileName);
-    if (SubPath<>'') and (sUnitName<>'') then begin
-      // Map path by unit name.
-      fConverter.fCachedUnitNames[sUnitName]:=SubPath;
-      // Map real unit name by uppercase unit name.
-      fConverter.fCachedRealFileNames[UpperCase(sUnitName)]:=FileName;
-    end;
-  end;
-end;
-
 procedure TCacheUnitsThread.Execute;
-// This assumes that cache is not used while updating it.
+// Scan for unit files. This assumes that cache is not used while updating it.
 // The main GUI thread must wait for this thread before starting conversion.
 
   function IsRootPath(APath: String): Boolean;
-  //crude function, it maybe needs support for UNC drives
+  // Crude function, it maybe needs support for UNC drives
   var
     D: String;
     Len: Integer;
@@ -479,7 +457,8 @@ begin
   if IsRootPath(fPath) then
     Sleep(1)     // Let the main thread execute, avoid possible synchr. problems.
   else
-    CacheUnitsInPath;            // Scan for unit files.
+    // Scan for files and store to fCachedUnitNames, path relative to fSettings.MainPath.
+    fSearcher.Search(fPath, '*.pas');
 end;
 
 { TConvertDelphiUnit }
