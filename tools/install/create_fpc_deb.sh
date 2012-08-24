@@ -200,13 +200,46 @@ perl replace_in_files.pl -sR -f '=\d.\d.\d' -r =$CompilerVersionStr -m 'Makefile
 
 
 #------------------------------------------------------------------------------
-# create rulez and files
 
-# change debian files
 mkdir -p $DebianDocDir
 chmod 755 $DebianDocDir
 mkdir -p $DebianRulezDir
 chmod 755 $DebianRulezDir
+
+if [ "$PackageName" = "fpc-src" ]; then
+    # copy fpc sources
+    mkdir -p $DebianSourceDir
+    cp -a $FPCSrcDir/* $DebianSourceDir/
+fi
+
+if [ "$PackageName" = "fpc" ]; then
+  # build fpc
+  mkdir -p $FPCBuildDir/etc
+  cd $FPCSrcDir
+  make clean all ${FPCArch:+FPCArch=$FPCArch} ${OS_TARGET:+OS_TARGET=$OS_TARGET} ${FPC:+FPC=$FPC} ${BINUTILSPREFIX:+BINUTILSPREFIX=$BINUTILSPREFIX} ${CROSSINSTALL:+CROSSINSTALL=$CROSSINSTALL}
+  mkdir -p $DebianInstallDir
+  make install INSTALL_PREFIX=$DebianInstallDir ${FPCArch:+FPCArch=$FPCArch} ${OS_TARGET:+OS_TARGET=$OS_TARGET} ${FPC:+FPC=$FPC} ${BINUTILSPREFIX:+BINUTILSPREFIX=$BINUTILSPREFIX} ${CROSSINSTALL:+CROSSINSTALL=$CROSSINSTALL}
+  if test -z "$BINUTILSPREFIX"
+  then
+    # need up to date samplecfg that chains cross compiler additions
+    grep 'fpc-cross.cfg' $DebianInstallDir/lib/fpc/$FPCVersion/samplecfg &>/dev/null || \
+      sed -i -e "/^FPCPATH=/aFPCPARENT=\"\`dirname \"\$1\"\`\"
+;/^#ENDIF NEEDCROSSBINUTILS/i#include \$FPCPARENT/fpc-cross.cfg"  $DebianInstallDir/lib/fpc/$FPCVersion/samplecfg
+    else cat > $DebianInstallDir/lib/fpc/$FPCVersion/fpc${TARGET_SUFFIX}.cfg <<CROSS
+# Detect $TARGET compiles
+#IF \$fpc-target = $TARGET
+ -XP$BINUTILSPREFIX
+#WRITE Target $TARGET with binutils prefix $BINUTILSPREFIX
+#END
+CROSS
+  fi
+  cd -
+fi
+
+#------------------------------------------------------------------------------
+# create rulez and files
+
+# change debian files
 DEPENDS="$BINUTILS"
 
 if test -n "$CROSSINSTALL"
@@ -214,6 +247,8 @@ then
   DEPENDS="$DEPENDS, fpc (= $FPCVersion)"
 fi
 
+# get installed size in kb
+DebSize=$(du -s $FPCBuildDir | cut -f1)
 
 # create debian control file, which contains the package description
 echo "creating DEBIAN/control file"
@@ -221,6 +256,7 @@ cat $ResourceDir/control \
   | sed -e "s/FPCVERSION/$FPCVersion/g" -e "s/ARCH/$Arch/g" \
         -e "s/^Package: .*/Package: $PackageName$TARGET_SUFFIX/" \
         -e "s/Depends: binutils/Depends: $DEPENDS/" \
+        -e "s/DEBSIZE/$DebSize/" \
   > $DebianRulezDir/control
 
 
@@ -297,38 +333,8 @@ gzip --best $File
 echo "creating copyright file ..."
 cp $ResourceDir/copyright $DebianDocDir/
 
+
 #------------------------------------------------------------------------------
-
-if [ "$PackageName" = "fpc-src" ]; then
-    # copy fpc sources
-    mkdir -p $DebianSourceDir
-    cp -a $FPCSrcDir/* $DebianSourceDir/
-fi
-
-if [ "$PackageName" = "fpc" ]; then
-  # build fpc
-  mkdir -p $FPCBuildDir/etc
-  cd $FPCSrcDir
-  make clean all ${FPCArch:+FPCArch=$FPCArch} ${OS_TARGET:+OS_TARGET=$OS_TARGET} ${FPC:+FPC=$FPC} ${BINUTILSPREFIX:+BINUTILSPREFIX=$BINUTILSPREFIX} ${CROSSINSTALL:+CROSSINSTALL=$CROSSINSTALL}
-  mkdir -p $DebianInstallDir
-  make install INSTALL_PREFIX=$DebianInstallDir ${FPCArch:+FPCArch=$FPCArch} ${OS_TARGET:+OS_TARGET=$OS_TARGET} ${FPC:+FPC=$FPC} ${BINUTILSPREFIX:+BINUTILSPREFIX=$BINUTILSPREFIX} ${CROSSINSTALL:+CROSSINSTALL=$CROSSINSTALL}
-  if test -z "$BINUTILSPREFIX"
-  then
-    # need up to date samplecfg that chains cross compiler additions
-    grep 'fpc-cross.cfg' $DebianInstallDir/lib/fpc/$FPCVersion/samplecfg &>/dev/null || \
-      sed -i -e "/^FPCPATH=/aFPCPARENT=\"\`dirname \"\$1\"\`\"
-;/^#ENDIF NEEDCROSSBINUTILS/i#include \$FPCPARENT/fpc-cross.cfg"  $DebianInstallDir/lib/fpc/$FPCVersion/samplecfg
-    else cat > $DebianInstallDir/lib/fpc/$FPCVersion/fpc${TARGET_SUFFIX}.cfg <<CROSS
-# Detect $TARGET compiles
-#IF \$fpc-target = $TARGET
- -XP$BINUTILSPREFIX
-#WRITE Target $TARGET with binutils prefix $BINUTILSPREFIX
-#END
-CROSS
-  fi
-  cd -
-fi
-
 # fixing permissions
 echo "fixing permissions ..."
 find $FPCBuildDir -type d -print0 | xargs -0 chmod 755  # this is needed, don't ask me why
