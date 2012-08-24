@@ -295,17 +295,21 @@ begin
     GdiObject^.Depth := ImgDepth;
 
     // create Pixmap from data
-    if ImgDepth = 1
-    then begin
+    if ImgDepth = 1 then
+    begin
       // create a GdkBitmap
-      if ImgData <> nil
-      then Drawable := gdk_bitmap_create_from_data(nil, ImgData, ImgWidth, ImgHeight)
-      else Drawable := gdk_pixmap_new(nil, ImgWidth, ImgHeight, 1);
+      if ImgData <> nil then
+      begin
+        Drawable := gdk_bitmap_create_from_data(nil, ImgData, ImgWidth, ImgHeight);
+        //gtk2 crashes if we create mask on gdkbitmap.issue #21673
+        ASkipMask := True;
+      end else
+        Drawable := gdk_pixmap_new(nil, ImgWidth, ImgHeight, 1);
 
       GdiObject^.GDIBitmapObject := Drawable;
       GdiObject^.GDIBitmapType := gbBitmap;
-    end
-    else begin
+    end else
+    begin
       if (ImgData <> nil) and (ImgDepth = 32)
       then begin
         case Desc.LineEnd of
