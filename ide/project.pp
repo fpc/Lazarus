@@ -159,7 +159,8 @@ type
   TUnitInfoFlag = (
     uifComponentUsedByDesigner,
     uifComponentIndirectlyUsedByDesigner,
-    uifMarked
+    uifMarked,
+    uifEditorMacro
     );
   TUnitInfoFlags = set of TUnitInfoFlag;
 

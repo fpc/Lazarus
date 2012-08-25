@@ -9,7 +9,7 @@ uses
   FileProcs, Forms, Controls, Graphics, Dialogs, StdCtrls, ButtonPanel, ComCtrls, ExtCtrls,
   Spin, Menus, LCLType, MainBar, IDEWindowIntf, IDEImagesIntf, LazarusIDEStrConsts,
   ProjectDefs, LazConf, Project, KeyMapping, KeyMapShortCutDlg, SrcEditorIntf, IDEHelpIntf,
-  IDECommands;
+  IDECommands, LazIDEIntf;
 
 type
 
@@ -35,8 +35,6 @@ type
     function ShortCutAsText: String;
     property  HasError: Boolean read FHasError;
   end;
-
-  { TSynMacroEventWriter }
 
   { TIdeMacroEventWriter }
 
@@ -105,6 +103,8 @@ type
     procedure ClearAndFreeMacros;
     function Count: Integer;
     function IndexOf(AMacro: TEditorMacro): Integer;
+    function IndexOfName(AName: String): Integer;
+    function UniqName(AName: String): String;
     function Add(AMacro: TEditorMacro): Integer;
     procedure Delete(AnIndex: Integer);
     procedure Remove(AMacro: TEditorMacro);
@@ -117,6 +117,7 @@ type
   { TMacroListView }
 
   TMacroListView = class(TForm)
+    btnEdit: TButton;
     btnSetKeys: TButton;
     btnPlay: TButton;
     btnRecord: TButton;
@@ -145,6 +146,7 @@ type
     tbMoveProject: TToolButton;
     tbMoveIDE: TToolButton;
     procedure btnDeleteClick(Sender: TObject);
+    procedure btnEditClick(Sender: TObject);
     procedure btnPlayClick(Sender: TObject);
     procedure btnRecordClick(Sender: TObject);
     procedure btnRecordStopClick(Sender: TObject);
@@ -168,15 +170,17 @@ type
     FImageErr: Integer;
     FIsPlaying: Boolean;
     procedure DoOnMacroListChange(Sender: TObject);
-    procedure UpdateDisplay;
     procedure UpdateButtons;
   protected
     procedure DoEditorMacroStateChanged;
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
+    function  MacroByFullName(AName: String): TEditorMacro;
+    procedure UpdateDisplay;
   end;
 
+function MacroListViewer: TMacroListView;
 procedure ShowMacroListViewer;
 procedure UpdateMacroListViewer;
 procedure DoEditorMacroStateChanged;
@@ -204,17 +208,38 @@ var
 const
   GlobalConfFileName = 'EditorMacros.xml';
 
-procedure ShowMacroListViewer;
+function MacroListViewer: TMacroListView;
 begin
   if MacroListView = nil then
     MacroListView := TMacroListView.Create(Application);
-  IDEWindowCreators.ShowForm(MacroListView, True);
+  Result := MacroListView;
+end;
+
+procedure ShowMacroListViewer;
+begin
+  IDEWindowCreators.ShowForm(MacroListViewer, True);
 end;
 
 procedure UpdateMacroListViewer;
 begin
   if MacroListView <> nil then
     MacroListView.UpdateDisplay;
+end;
+
+function MacroListToName(AList: TEditorMacroList): string;
+begin
+  Result := '';
+  if AList = EditorMacroListRec then Result := 'Rec'
+  else if AList = EditorMacroListProj then Result := 'Prj'
+  else if AList = EditorMacroListGlob then Result := 'Ide';
+end;
+
+function NameToMacroList(AName: string): TEditorMacroList;
+begin
+  Result := nil;
+  if AName = 'Rec' then Result := EditorMacroListRec
+  else if AName = 'Prj' then Result := EditorMacroListProj
+  else if AName = 'Ide' then Result := EditorMacroListGlob;
 end;
 
 procedure DoEditorMacroStateChanged;
@@ -383,6 +408,7 @@ var
 begin
   Stop;
   Clear;
+  FHasError := False;
   fEvents := TList.Create;
 
   R := TIdeMacroEventReader.Create(AText);
@@ -726,9 +752,21 @@ begin
   if lbRecordedView.ItemIndex < 0 then exit;
   M := CurrentEditorMacroList.Macros[lbRecordedView.ItemIndex];
   s := M.MacroName;
-  if InputQuery('New Macroname', Format('Enter new mawe for Macro "%s"', [m.MacroName]), s)
+  if InputQuery(lisNewMacroname2, Format(lisEnterNewMaweForMacroS, [m.MacroName]), s)
   then begin
-    M.MacroName := s;
+    while (s <> '') and (CurrentEditorMacroList.IndexOfName(s) >= 0) do begin
+      case MessageDlg(lisDuplicateName, lisAMacroWithThisNameAlreadyExists, mtWarning,
+        mbOKCancel, 0) of
+        mrOK:
+          if not InputQuery(lisNewMacroname2, Format(lisEnterNewMaweForMacroS, [m.MacroName]), s)
+          then s := '';
+        else
+          s := '';
+      end;
+    end;
+
+    if s <> '' then
+      M.MacroName := s;
     UpdateDisplay;
   end;
 end;
@@ -778,6 +816,18 @@ begin
     m.Free;
     UpdateDisplay;
   end;
+end;
+
+procedure TMacroListView.btnEditClick(Sender: TObject);
+var
+  M: TEditorMacro;
+begin
+  if lbRecordedView.ItemIndex < 0 then exit;
+  M := CurrentEditorMacroList.Macros[lbRecordedView.ItemIndex];
+  if M = nil then exit;
+  LazarusIDE.DoOpenEditorFile(
+    '//EMacro:/'+MacroListToName(CurrentEditorMacroList)+'/'+M.MacroName,
+    -1, -1, [ofVirtualFile, ofEditorMacro]);
 end;
 
 procedure TMacroListView.btnRecordClick(Sender: TObject);
@@ -980,10 +1030,11 @@ begin
   IsErr := IsSel and M.HasError;
 
 
-  btnSelect.Enabled := IsStopped and IsSel and (not FIsPlaying) and (not IsErr);
+  btnSelect.Enabled  := IsStopped and IsSel and (not FIsPlaying) and (not IsErr);
+  btnRename.Enabled  := IsStopped and IsSel and (not FIsPlaying) and (not IsErr);
+  btnEdit.Enabled    := IsStopped and IsSel and (not FIsPlaying);
   btnSetKeys.Enabled := IsStopped and IsSel and (not FIsPlaying) and (not IsErr);
-  btnRename.Enabled := IsStopped and IsSel and (not FIsPlaying) and (not IsErr);
-  btnDelete.Enabled := IsStopped and IsSel and (not FIsPlaying);
+  btnDelete.Enabled  := IsStopped and IsSel and (not FIsPlaying);
 
   btnPlay.Enabled := IsStopped and IsSel and (not FIsPlaying) and (not IsErr);
   chkRepeat.Enabled := IsStopped and (not FIsPlaying);
@@ -1006,6 +1057,22 @@ begin
   tbMoveProject.Enabled := IsStopped and IsSel and (not FIsPlaying);
   tbMoveIDE.Visible := CurrentEditorMacroList <> EditorMacroListGlob;
   tbMoveIDE.Enabled := IsStopped and IsSel and (not FIsPlaying);
+end;
+
+function TMacroListView.MacroByFullName(AName: String): TEditorMacro;
+var
+  Alist: TEditorMacroList;
+  i: Integer;
+begin
+  Result := nil;
+  If (copy(AName, 1, 10) <> '//EMacro:/') or
+     (copy(AName, 14, 1) <> '/')
+  then exit;
+  Alist := NameToMacroList(copy(AName, 11, 3));
+  if (Alist = nil) then exit;
+  i := Alist.IndexOfName(copy(AName, 15, length(AName)));
+  if i < 0 then exit;
+  Result := Alist.Macros[i]
 end;
 
 procedure TMacroListView.DoEditorMacroStateChanged;
@@ -1032,8 +1099,9 @@ begin
   lbMoveTo.Caption := lisMoveTo;
 
   btnSelect.Caption := lisMenuSelect;
-  btnSetKeys.Caption := lisEditKey;
   btnRename.Caption := lisRename2;
+  btnSetKeys.Caption := lisEditKey;
+  btnEdit.Caption   := lisEdit;
   btnDelete.Caption := lisDelete;
   btnPlay.Caption := lisPlay;
   chkRepeat.Caption := lisRepeat;
@@ -1142,8 +1210,29 @@ begin
   Result := FList.IndexOf(AMacro);
 end;
 
+function TEditorMacroList.IndexOfName(AName: String): Integer;
+begin
+  Result := Count - 1;
+  while Result >= 0 do
+    if Macros[Result].MacroName = AName
+    then break
+    else dec(Result);
+end;
+
+function TEditorMacroList.UniqName(AName: String): String;
+var
+  i: Integer;
+begin
+  Result := AName;
+  if IndexOfName(AName) < 0 then exit;
+  i := 1;
+  while IndexOfName(AName+'_'+IntToStr(i)) >= 0 do inc(i);
+  Result := AName+'_'+IntToStr(i);
+end;
+
 function TEditorMacroList.Add(AMacro: TEditorMacro): Integer;
 begin
+  AMacro.MacroName := UniqName(AMacro.MacroName);
   Result := FList.Add(AMacro);
   DoAdded(AMacro);
   DoChanged;

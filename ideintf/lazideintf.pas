@@ -41,7 +41,8 @@ type
     ofDoNotLoadResource,// do not open form, datamodule, ... (overriding default)
     ofDoLoadResource,// do open form, datamodule, ... (overriding default)
     ofLoadHiddenResource,// load component hidden
-    ofAddToProject   // add file to project (if exists)
+    ofAddToProject,  // add file to project (if exists)
+    ofEditorMacro    // opening an editor macro (pascal script) from memory
     );
   TOpenFlags = set of TOpenFlag;
 

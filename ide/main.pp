@@ -9286,6 +9286,7 @@ begin
   // do not save a unit which is currently reverting
   if AnUnitInfo.IsReverting then
     exit(mrOk);
+
   WasVirtual:=AnUnitInfo.IsVirtual;
   WasPascalSource:=FilenameIsPascalSource(AnUnitInfo.Filename);
 
@@ -9304,6 +9305,17 @@ begin
   // update codetools cache and collect Modified flags
   if not (sfProjectSaving in Flags) then
     SaveSourceEditorChangesToCodeCache(nil);
+
+  if uifEditorMacro in AnUnitInfo.Flags then begin
+    // save to macros
+    if MacroListViewer.MacroByFullName(AnUnitInfo.Filename) <> nil then
+      MacroListViewer.MacroByFullName(AnUnitInfo.Filename).SetFromText(AEditor.SourceText);
+    MacroListViewer.UpdateDisplay;
+    AnUnitInfo.ClearModifieds;
+    AEditor.Modified:=false;
+    Result := mrOK;
+    exit;
+  end;
 
   // if this is a new unit then a simple Save becomes a SaveAs
   if (not (sfSaveToTestDir in Flags)) and (AnUnitInfo.IsVirtual) then
@@ -9700,6 +9712,50 @@ begin
   // revert: use source editor filename
   if (ofRevert in Flags) and (PageIndex>=0) then
     AFilename := SourceEditorManager.SourceEditorsByPage[WindowIndex, PageIndex].FileName;
+
+  if (ofRevert in Flags) then begin
+    UnitIndex:=Project1.IndexOfFilename(AFilename);
+    if (UnitIndex > 0) then begin
+      NewUnitInfo:=Project1.Units[UnitIndex];
+      if (uifEditorMacro in NewUnitInfo.Flags) then begin
+        if MacroListViewer.MacroByFullName(AFileName) <> nil then
+          NewUnitInfo.Source.Source := MacroListViewer.MacroByFullName(AFileName).GetAsText;
+          Result:=mrOK;
+        exit;
+      end;
+    end;
+  end;
+
+  if (ofEditorMacro in Flags) then begin
+    FilenameNoPath := AFileName;
+
+    UnitIndex:=Project1.IndexOfFilename(AFilename);
+    if (UnitIndex < 0) then begin
+      NewBuf := CodeToolBoss.SourceCache.CreateFile(AFileName);
+      NewBuf.FileName:=AFileName;
+      if MacroListViewer.MacroByFullName(AFileName) <> nil then
+        NewBuf.Source := MacroListViewer.MacroByFullName(AFileName).GetAsText;
+      NewUnitInfo:=TUnitInfo.Create(NewBuf);
+      NewUnitInfo.DefaultSyntaxHighlighter := lshFreePascal;
+      Project1.AddFile(NewUnitInfo,false);
+    end
+    else begin
+      NewUnitInfo:=Project1.Units[UnitIndex];
+    end;
+    NewUnitInfo.Flags := NewUnitInfo.Flags + [uifEditorMacro];
+
+    if NewUnitInfo.OpenEditorInfoCount > 0 then begin
+      NewEditorInfo := NewUnitInfo.OpenEditorInfo[0];
+      SourceEditorManager.ActiveSourceWindowIndex := NewEditorInfo.WindowIndex;
+      SourceEditorManager.ActiveSourceWindow.PageIndex:= NewEditorInfo.PageIndex;
+    end
+    else begin
+      NewEditorInfo := NewUnitInfo.GetClosedOrNewEditorInfo;
+      Result:=DoOpenFileInSourceEditor(NewEditorInfo, PageIndex, WindowIndex, Flags);
+    end;
+    Result:=mrOK;
+    exit;
+  end;
 
   // normalize filename
   AFilename:=TrimFilename(AFilename);

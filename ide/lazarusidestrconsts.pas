@@ -5565,6 +5565,10 @@ resourcestring
   lisMoveTo = 'Move to: ';
   lisFailedToSaveFile = 'Failed to save file.';
   lisEditKey = 'Edit Key';
+  lisDuplicateName = 'Duplicate Name';
+  lisAMacroWithThisNameAlreadyExists = 'A macro with this name already exists.';
+  lisNewMacroname2 = 'New Macroname';
+  lisEnterNewMaweForMacroS = 'Enter new mawe for Macro "%s"';
 
 implementation
 
