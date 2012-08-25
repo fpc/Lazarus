@@ -4221,6 +4221,10 @@ msgstr ""
 msgid "Always ignore"
 msgstr ""
 
+#: lazarusidestrconsts.lisamacrowiththisnamealreadyexists
+msgid "A macro with this name already exists."
+msgstr ""
+
 #: lazarusidestrconsts.lisambiguousfilefound
 msgid "Ambiguous file found"
 msgstr "发现可疑文件"
@@ -7749,6 +7753,10 @@ msgstr ""
 msgid "Duplicate found of value %s%s%s."
 msgstr ""
 
+#: lazarusidestrconsts.lisduplicatename
+msgid "Duplicate Name"
+msgstr ""
+
 #: lazarusidestrconsts.lisduplicatenameacomponentnamedalreadyexistsintheinhe
 msgid "Duplicate name: A component named %s%s%s already exists in the inherited component %s"
 msgstr "重复名称: 组件名称 %s%s%s 已经存在于继承自 %s 的组件"
@@ -7776,6 +7784,10 @@ msgstr "编辑上下文关联帮助"
 
 #: lazarusidestrconsts.lisedithelp
 msgid "Edit help"
+msgstr ""
+
+#: lazarusidestrconsts.liseditkey
+msgid "Edit Key"
 msgstr ""
 
 #: lazarusidestrconsts.liseditorfiletypes
@@ -8029,6 +8041,10 @@ msgstr "编码文件%s%s%s%在磁盘上是%s，新的编码是%s."
 
 #: lazarusidestrconsts.lisendlessloopinmacros
 msgid "Endless loop in macros"
+msgstr ""
+
+#: lazarusidestrconsts.lisenternewnameformacros
+msgid "Enter new name for Macro \"%s\""
 msgstr ""
 
 #: lazarusidestrconsts.lisenvironmentvariablenameasparameter
@@ -12099,6 +12115,10 @@ msgstr ""
 msgid "Macro %d"
 msgstr ""
 
+#: lazarusidestrconsts.lisnewmacroname2
+msgid "New Macroname"
+msgstr ""
+
 #: lazarusidestrconsts.lisnewproject
 #, fuzzy
 #| msgid "%s - (new project)"
@@ -14957,6 +14977,10 @@ msgstr "保存"
 #: lazarusidestrconsts.lisscalingfactor
 msgid "Scaling factor:"
 msgstr "缩放比例:"
+
+#: lazarusidestrconsts.lisscanparentdir
+msgid "Scanning parent directory"
+msgstr ""
 
 #: lazarusidestrconsts.lissearchfor
 msgid "Search For "

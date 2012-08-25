@@ -4139,6 +4139,10 @@ msgstr "Sempre converter nome de arquivo padrão sugerido para minúsculas"
 msgid "Always ignore"
 msgstr "Sempre ignorar"
 
+#: lazarusidestrconsts.lisamacrowiththisnamealreadyexists
+msgid "A macro with this name already exists."
+msgstr ""
+
 #: lazarusidestrconsts.lisambiguousfilefound
 msgid "Ambiguous file found"
 msgstr "Arquivo ambíguo encontrado"
@@ -7651,6 +7655,10 @@ msgstr "Duplicado"
 msgid "Duplicate found of value %s%s%s."
 msgstr "Valor duplicado encontrado %s%s%s."
 
+#: lazarusidestrconsts.lisduplicatename
+msgid "Duplicate Name"
+msgstr ""
+
 #: lazarusidestrconsts.lisduplicatenameacomponentnamedalreadyexistsintheinhe
 msgid "Duplicate name: A component named %s%s%s already exists in the inherited component %s"
 msgstr "Nome duplicado: Um componente chamado %s%s%s já existe no componente herdado %s"
@@ -7679,6 +7687,10 @@ msgstr "Editar ajuda contextual"
 #: lazarusidestrconsts.lisedithelp
 msgid "Edit help"
 msgstr "Ajuda de edição"
+
+#: lazarusidestrconsts.liseditkey
+msgid "Edit Key"
+msgstr ""
 
 #: lazarusidestrconsts.liseditorfiletypes
 msgid "Editor file types"
@@ -7932,6 +7944,10 @@ msgstr "Codificação no arquivo %s%s%s%sno disco é %s. Nova codificação é %
 #: lazarusidestrconsts.lisendlessloopinmacros
 msgid "Endless loop in macros"
 msgstr "Laço infinito em macros"
+
+#: lazarusidestrconsts.lisenternewnameformacros
+msgid "Enter new name for Macro \"%s\""
+msgstr ""
 
 #: lazarusidestrconsts.lisenvironmentvariablenameasparameter
 msgid "Environment variable, name as parameter"
@@ -11885,6 +11901,10 @@ msgstr "Novo grupo - um conjunto de modos"
 msgid "Macro %d"
 msgstr "Macro %d"
 
+#: lazarusidestrconsts.lisnewmacroname2
+msgid "New Macroname"
+msgstr ""
+
 #: lazarusidestrconsts.lisnewproject
 #| msgid "%s - (new project)"
 msgid "(new project)"
@@ -14707,6 +14727,10 @@ msgstr "Salvar "
 #: lazarusidestrconsts.lisscalingfactor
 msgid "Scaling factor:"
 msgstr "Fator de Escala:"
+
+#: lazarusidestrconsts.lisscanparentdir
+msgid "Scanning parent directory"
+msgstr ""
 
 #: lazarusidestrconsts.lissearchfor
 msgid "Search For "

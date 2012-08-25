@@ -4115,6 +4115,10 @@ msgstr "Raides siūlomame numatytame failo pavadinime visada daryti mažosiomis"
 msgid "Always ignore"
 msgstr "Nepaisyti visada"
 
+#: lazarusidestrconsts.lisamacrowiththisnamealreadyexists
+msgid "A macro with this name already exists."
+msgstr ""
+
 #: lazarusidestrconsts.lisambiguousfilefound
 msgid "Ambiguous file found"
 msgstr "Rastas neaiškus failas"
@@ -7621,6 +7625,10 @@ msgstr "Dublikatas"
 msgid "Duplicate found of value %s%s%s."
 msgstr "Rastas vertės %s%s%s dublikatas."
 
+#: lazarusidestrconsts.lisduplicatename
+msgid "Duplicate Name"
+msgstr ""
+
 #: lazarusidestrconsts.lisduplicatenameacomponentnamedalreadyexistsintheinhe
 msgid "Duplicate name: A component named %s%s%s already exists in the inherited component %s"
 msgstr "Pavadinimai dubliuojasi: komponentas, pavadinimu %s%s%s, jau yra paveldėtame komponente %s"
@@ -7649,6 +7657,10 @@ msgstr "Keisti kontekstinį žinyną"
 #: lazarusidestrconsts.lisedithelp
 msgid "Edit help"
 msgstr "Keisti žinyną"
+
+#: lazarusidestrconsts.liseditkey
+msgid "Edit Key"
+msgstr ""
 
 #: lazarusidestrconsts.liseditorfiletypes
 msgid "Editor file types"
@@ -7902,6 +7914,10 @@ msgstr "Failo diske %s%s%s%skoduotė yra %s. Naujoji koduotė yra %s."
 #: lazarusidestrconsts.lisendlessloopinmacros
 msgid "Endless loop in macros"
 msgstr "Makrokomandose begalinis ciklas"
+
+#: lazarusidestrconsts.lisenternewnameformacros
+msgid "Enter new name for Macro \"%s\""
+msgstr ""
 
 #: lazarusidestrconsts.lisenvironmentvariablenameasparameter
 msgid "Environment variable, name as parameter"
@@ -11833,6 +11849,10 @@ msgstr "Nauja grupė – veiksenų rinkinys"
 msgid "Macro %d"
 msgstr "Makrokomanda %d"
 
+#: lazarusidestrconsts.lisnewmacroname2
+msgid "New Macroname"
+msgstr ""
+
 #: lazarusidestrconsts.lisnewproject
 #| msgid "%s - (new project)"
 msgid "(new project)"
@@ -14653,6 +14673,10 @@ msgstr "Įrašyti "
 #: lazarusidestrconsts.lisscalingfactor
 msgid "Scaling factor:"
 msgstr "Santykinis mastelis:"
+
+#: lazarusidestrconsts.lisscanparentdir
+msgid "Scanning parent directory"
+msgstr ""
 
 #: lazarusidestrconsts.lissearchfor
 msgid "Search For "

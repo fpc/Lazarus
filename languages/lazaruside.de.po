@@ -4154,6 +4154,10 @@ msgstr "Immer den vorgeschlagenen Dateinamen in Kleinbuchstaben umwandeln"
 msgid "Always ignore"
 msgstr "Immer ignorieren"
 
+#: lazarusidestrconsts.lisamacrowiththisnamealreadyexists
+msgid "A macro with this name already exists."
+msgstr ""
+
 #: lazarusidestrconsts.lisambiguousfilefound
 msgid "Ambiguous file found"
 msgstr "Mehrdeutige Datei gefunden"
@@ -7671,6 +7675,10 @@ msgstr ""
 msgid "Duplicate found of value %s%s%s."
 msgstr "Duplikat des Werts %s%s%s gefunden."
 
+#: lazarusidestrconsts.lisduplicatename
+msgid "Duplicate Name"
+msgstr ""
+
 #: lazarusidestrconsts.lisduplicatenameacomponentnamedalreadyexistsintheinhe
 msgid "Duplicate name: A component named %s%s%s already exists in the inherited component %s"
 msgstr "Doppelter Name: Eine Komponente namens %s%s%s existiert bereits in der ererbten Komponente %s"
@@ -7699,6 +7707,10 @@ msgstr "Kontexthilfe bearbeiten"
 #: lazarusidestrconsts.lisedithelp
 msgid "Edit help"
 msgstr "Hilfe bearbeiten"
+
+#: lazarusidestrconsts.liseditkey
+msgid "Edit Key"
+msgstr ""
 
 #: lazarusidestrconsts.liseditorfiletypes
 msgid "Editor file types"
@@ -7952,6 +7964,10 @@ msgstr "Kodierung der Datei %s%s%s%saus der Platte ist %s. Die neue Kodierung is
 #: lazarusidestrconsts.lisendlessloopinmacros
 msgid "Endless loop in macros"
 msgstr "Endlosschleife in Makros"
+
+#: lazarusidestrconsts.lisenternewnameformacros
+msgid "Enter new name for Macro \"%s\""
+msgstr ""
 
 #: lazarusidestrconsts.lisenvironmentvariablenameasparameter
 msgid "Environment variable, name as parameter"
@@ -11922,6 +11938,10 @@ msgstr "Neue Gruppe - eine Menge von Modi"
 msgid "Macro %d"
 msgstr "Makro %d"
 
+#: lazarusidestrconsts.lisnewmacroname2
+msgid "New Macroname"
+msgstr ""
+
 #: lazarusidestrconsts.lisnewproject
 #| msgid "%s - (new project)"
 msgid "(new project)"
@@ -14757,6 +14777,10 @@ msgstr "Speichere "
 #: lazarusidestrconsts.lisscalingfactor
 msgid "Scaling factor:"
 msgstr "Skalierungsfaktor:"
+
+#: lazarusidestrconsts.lisscanparentdir
+msgid "Scanning parent directory"
+msgstr ""
 
 #: lazarusidestrconsts.lissearchfor
 msgid "Search For "
@@ -18732,5 +18756,4 @@ msgstr "Schreibgeschützt"
 #: lazarusidestrconsts.versioninfotitle
 msgid "Version Info"
 msgstr "Versionsinformation"
-
 

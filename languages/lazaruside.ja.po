@@ -4252,6 +4252,10 @@ msgstr "提案されたデフォルトのファイル名を常に小文字に変
 msgid "Always ignore"
 msgstr "常に無視"
 
+#: lazarusidestrconsts.lisamacrowiththisnamealreadyexists
+msgid "A macro with this name already exists."
+msgstr ""
+
 #: lazarusidestrconsts.lisambiguousfilefound
 msgid "Ambiguous file found"
 msgstr "曖昧なファイルが見つかりました"
@@ -7817,6 +7821,10 @@ msgstr "重複"
 msgid "Duplicate found of value %s%s%s."
 msgstr "次の重複が見つかりました。 %s%s%s"
 
+#: lazarusidestrconsts.lisduplicatename
+msgid "Duplicate Name"
+msgstr ""
+
 #: lazarusidestrconsts.lisduplicatenameacomponentnamedalreadyexistsintheinhe
 msgid "Duplicate name: A component named %s%s%s already exists in the inherited component %s"
 msgstr "名称重複： %s%s%s という名前のコンポーネントは継承されたコンポーネント %s に既に存在します"
@@ -7845,6 +7853,10 @@ msgstr "状況依存ヘルプを編集"
 #: lazarusidestrconsts.lisedithelp
 msgid "Edit help"
 msgstr "ヘルプを編集"
+
+#: lazarusidestrconsts.liseditkey
+msgid "Edit Key"
+msgstr ""
 
 #: lazarusidestrconsts.liseditorfiletypes
 msgid "Editor file types"
@@ -8098,6 +8110,10 @@ msgstr "ディスクのファイル%s%s%s%sのエンコーディングは%sで�
 #: lazarusidestrconsts.lisendlessloopinmacros
 msgid "Endless loop in macros"
 msgstr "マクロにエンドレスループ"
+
+#: lazarusidestrconsts.lisenternewnameformacros
+msgid "Enter new name for Macro \"%s\""
+msgstr ""
 
 #: lazarusidestrconsts.lisenvironmentvariablenameasparameter
 msgid "Environment variable, name as parameter"
@@ -12215,6 +12231,10 @@ msgstr "新しいグループ - １セットのモード"
 msgid "Macro %d"
 msgstr ""
 
+#: lazarusidestrconsts.lisnewmacroname2
+msgid "New Macroname"
+msgstr ""
+
 #: lazarusidestrconsts.lisnewproject
 #, fuzzy
 #| msgid "%s - (new project)"
@@ -15085,6 +15105,10 @@ msgstr "保存 "
 #: lazarusidestrconsts.lisscalingfactor
 msgid "Scaling factor:"
 msgstr "スケーリング係数："
+
+#: lazarusidestrconsts.lisscanparentdir
+msgid "Scanning parent directory"
+msgstr ""
 
 #: lazarusidestrconsts.lissearchfor
 msgid "Search For "

@@ -4157,6 +4157,10 @@ msgstr "Toujours convertir  en minuscule les noms de fichier proposés par défa
 msgid "Always ignore"
 msgstr "Ignore toujours"
 
+#: lazarusidestrconsts.lisamacrowiththisnamealreadyexists
+msgid "A macro with this name already exists."
+msgstr ""
+
 #: lazarusidestrconsts.lisambiguousfilefound
 msgid "Ambiguous file found"
 msgstr "Fichier litigieux trouvé"
@@ -7706,6 +7710,10 @@ msgstr ""
 msgid "Duplicate found of value %s%s%s."
 msgstr " Reproduction trouvée de la valeur %s%s%s."
 
+#: lazarusidestrconsts.lisduplicatename
+msgid "Duplicate Name"
+msgstr ""
+
 #: lazarusidestrconsts.lisduplicatenameacomponentnamedalreadyexistsintheinhe
 msgid "Duplicate name: A component named %s%s%s already exists in the inherited component %s"
 msgstr "Nom double : Un composant appelé %s%s%s existe déjà dans le composant hérité %s"
@@ -7733,6 +7741,10 @@ msgstr "Editer le contexte d'aide"
 
 #: lazarusidestrconsts.lisedithelp
 msgid "Edit help"
+msgstr ""
+
+#: lazarusidestrconsts.liseditkey
+msgid "Edit Key"
 msgstr ""
 
 #: lazarusidestrconsts.liseditorfiletypes
@@ -7986,6 +7998,10 @@ msgstr "Encodage du fichier %s%s%s%s sur disque est %s. Le nouvel encodage est %
 
 #: lazarusidestrconsts.lisendlessloopinmacros
 msgid "Endless loop in macros"
+msgstr ""
+
+#: lazarusidestrconsts.lisenternewnameformacros
+msgid "Enter new name for Macro \"%s\""
 msgstr ""
 
 #: lazarusidestrconsts.lisenvironmentvariablenameasparameter
@@ -12041,6 +12057,10 @@ msgstr "Confirmez le nouvel ensemble de paquets pour l'EDI"
 msgid "Macro %d"
 msgstr ""
 
+#: lazarusidestrconsts.lisnewmacroname2
+msgid "New Macroname"
+msgstr ""
+
 #: lazarusidestrconsts.lisnewproject
 #| msgid "%s - (new project)"
 msgid "(new project)"
@@ -14888,6 +14908,10 @@ msgstr "Enregistrer "
 #: lazarusidestrconsts.lisscalingfactor
 msgid "Scaling factor:"
 msgstr "Facteur d'ajustement:"
+
+#: lazarusidestrconsts.lisscanparentdir
+msgid "Scanning parent directory"
+msgstr ""
 
 #: lazarusidestrconsts.lissearchfor
 msgid "Search For "

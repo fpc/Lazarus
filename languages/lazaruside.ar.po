@@ -3984,6 +3984,10 @@ msgstr "دائما يتم تحويل إسم ملف افتراضي مقترح إ�
 msgid "Always ignore"
 msgstr "تجاهل دائما"
 
+#: lazarusidestrconsts.lisamacrowiththisnamealreadyexists
+msgid "A macro with this name already exists."
+msgstr ""
+
 #: lazarusidestrconsts.lisambiguousfilefound
 msgid "Ambiguous file found"
 msgstr "وجد ملف غامض"
@@ -7445,6 +7449,10 @@ msgstr "متكرر"
 msgid "Duplicate found of value %s%s%s."
 msgstr "وجدت ازدواجية للقيمة %s%s%s."
 
+#: lazarusidestrconsts.lisduplicatename
+msgid "Duplicate Name"
+msgstr ""
+
 #: lazarusidestrconsts.lisduplicatenameacomponentnamedalreadyexistsintheinhe
 msgid "Duplicate name: A component named %s%s%s already exists in the inherited component %s"
 msgstr "إزدواجية في الإسم: مكون إسمه %s%s%s موجود فعلا في المكون الموروث %s"
@@ -7473,6 +7481,10 @@ msgstr "تحرير مساعدة بالسياق"
 #: lazarusidestrconsts.lisedithelp
 msgid "Edit help"
 msgstr "تحرير المساعدة"
+
+#: lazarusidestrconsts.liseditkey
+msgid "Edit Key"
+msgstr ""
 
 #: lazarusidestrconsts.liseditorfiletypes
 msgid "Editor file types"
@@ -7726,6 +7738,10 @@ msgstr "ترميز الملف %s%s%s%s على القرص هو %s. الترميز
 #: lazarusidestrconsts.lisendlessloopinmacros
 msgid "Endless loop in macros"
 msgstr "دورانية بلانهاية في ماكرو"
+
+#: lazarusidestrconsts.lisenternewnameformacros
+msgid "Enter new name for Macro \"%s\""
+msgstr ""
 
 #: lazarusidestrconsts.lisenvironmentvariablenameasparameter
 msgid "Environment variable, name as parameter"
@@ -11491,6 +11507,10 @@ msgstr "مجموعة جديدة - مجموعة وضعيات"
 msgid "Macro %d"
 msgstr ""
 
+#: lazarusidestrconsts.lisnewmacroname2
+msgid "New Macroname"
+msgstr ""
+
 #: lazarusidestrconsts.lisnewproject
 msgid "(new project)"
 msgstr "(مشروع جديد)"
@@ -14257,6 +14277,10 @@ msgstr "حفظ"
 #: lazarusidestrconsts.lisscalingfactor
 msgid "Scaling factor:"
 msgstr "معامل التقييس:"
+
+#: lazarusidestrconsts.lisscanparentdir
+msgid "Scanning parent directory"
+msgstr ""
 
 #: lazarusidestrconsts.lissearchfor
 msgid "Search For "

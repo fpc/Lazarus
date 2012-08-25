@@ -4225,6 +4225,10 @@ msgstr ""
 msgid "Always ignore"
 msgstr "התעלם תמיד"
 
+#: lazarusidestrconsts.lisamacrowiththisnamealreadyexists
+msgid "A macro with this name already exists."
+msgstr ""
+
 #: lazarusidestrconsts.lisambiguousfilefound
 msgid "Ambiguous file found"
 msgstr "קובץ רב משמעי נמצא"
@@ -7785,6 +7789,10 @@ msgstr ""
 msgid "Duplicate found of value %s%s%s."
 msgstr "נמצאה כפילות בערך s%s%s%."
 
+#: lazarusidestrconsts.lisduplicatename
+msgid "Duplicate Name"
+msgstr ""
+
 #: lazarusidestrconsts.lisduplicatenameacomponentnamedalreadyexistsintheinhe
 msgid "Duplicate name: A component named %s%s%s already exists in the inherited component %s"
 msgstr "כפילות בשם: רכיב בשם s%s%s% כבר קיים ברכיב המורש s%"
@@ -7812,6 +7820,10 @@ msgstr "ערוך עזרה תלויית הקשר"
 
 #: lazarusidestrconsts.lisedithelp
 msgid "Edit help"
+msgstr ""
+
+#: lazarusidestrconsts.liseditkey
+msgid "Edit Key"
 msgstr ""
 
 #: lazarusidestrconsts.liseditorfiletypes
@@ -8065,6 +8077,10 @@ msgstr "הקידוד של הקובץ s%s%s% בדיסק sהוא %. הקידוד �
 
 #: lazarusidestrconsts.lisendlessloopinmacros
 msgid "Endless loop in macros"
+msgstr ""
+
+#: lazarusidestrconsts.lisenternewnameformacros
+msgid "Enter new name for Macro \"%s\""
 msgstr ""
 
 #: lazarusidestrconsts.lisenvironmentvariablenameasparameter
@@ -12169,6 +12185,10 @@ msgstr "קבוצה חדשה - ערכת סגנונות"
 msgid "Macro %d"
 msgstr ""
 
+#: lazarusidestrconsts.lisnewmacroname2
+msgid "New Macroname"
+msgstr ""
+
 #: lazarusidestrconsts.lisnewproject
 #, fuzzy
 #| msgid "%s - (new project)"
@@ -15042,6 +15062,10 @@ msgstr "שמור"
 #: lazarusidestrconsts.lisscalingfactor
 msgid "Scaling factor:"
 msgstr "קנה מידה:"
+
+#: lazarusidestrconsts.lisscanparentdir
+msgid "Scanning parent directory"
+msgstr ""
 
 #: lazarusidestrconsts.lissearchfor
 msgid "Search For "

@@ -3985,6 +3985,10 @@ msgstr "Vždy převést navrhované přednastavené jméno souboru na malá pís
 msgid "Always ignore"
 msgstr "Vždy ignorovat"
 
+#: lazarusidestrconsts.lisamacrowiththisnamealreadyexists
+msgid "A macro with this name already exists."
+msgstr ""
+
 #: lazarusidestrconsts.lisambiguousfilefound
 msgid "Ambiguous file found"
 msgstr "Nalezen nejasný soubor"
@@ -7447,6 +7451,10 @@ msgstr "Duplicitní"
 msgid "Duplicate found of value %s%s%s."
 msgstr "Nalezeno zdvojení hodnoty %s%s%s."
 
+#: lazarusidestrconsts.lisduplicatename
+msgid "Duplicate Name"
+msgstr ""
+
 #: lazarusidestrconsts.lisduplicatenameacomponentnamedalreadyexistsintheinhe
 msgid "Duplicate name: A component named %s%s%s already exists in the inherited component %s"
 msgstr "Zdvojené jméno: Komponenta pojmenovaná %s%s%s již existuje ve zděděné komponentě %s"
@@ -7475,6 +7483,10 @@ msgstr "Upravit kontextovou nápovědu"
 #: lazarusidestrconsts.lisedithelp
 msgid "Edit help"
 msgstr "Upravit nápovědu"
+
+#: lazarusidestrconsts.liseditkey
+msgid "Edit Key"
+msgstr ""
 
 #: lazarusidestrconsts.liseditorfiletypes
 msgid "Editor file types"
@@ -7728,6 +7740,10 @@ msgstr "Kódování souboru %s%s%s%sna disku je %s. Nové kódování je %s."
 #: lazarusidestrconsts.lisendlessloopinmacros
 msgid "Endless loop in macros"
 msgstr "Nekonečná smyčka v makrech"
+
+#: lazarusidestrconsts.lisenternewnameformacros
+msgid "Enter new name for Macro \"%s\""
+msgstr ""
 
 #: lazarusidestrconsts.lisenvironmentvariablenameasparameter
 msgid "Environment variable, name as parameter"
@@ -11493,6 +11509,10 @@ msgstr "Nová skupina - sada režimů"
 msgid "Macro %d"
 msgstr ""
 
+#: lazarusidestrconsts.lisnewmacroname2
+msgid "New Macroname"
+msgstr ""
+
 #: lazarusidestrconsts.lisnewproject
 msgid "(new project)"
 msgstr "(nový projekt)"
@@ -14259,6 +14279,10 @@ msgstr "Uložit "
 #: lazarusidestrconsts.lisscalingfactor
 msgid "Scaling factor:"
 msgstr "Činitel zvětšení:"
+
+#: lazarusidestrconsts.lisscanparentdir
+msgid "Scanning parent directory"
+msgstr ""
 
 #: lazarusidestrconsts.lissearchfor
 msgid "Search For "

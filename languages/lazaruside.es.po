@@ -4231,6 +4231,10 @@ msgstr ""
 msgid "Always ignore"
 msgstr "Siempre ignorar"
 
+#: lazarusidestrconsts.lisamacrowiththisnamealreadyexists
+msgid "A macro with this name already exists."
+msgstr ""
+
 #: lazarusidestrconsts.lisambiguousfilefound
 msgid "Ambiguous file found"
 msgstr "Encontrado archivo ambiguo"
@@ -7789,6 +7793,10 @@ msgstr ""
 msgid "Duplicate found of value %s%s%s."
 msgstr "Se encontró duplicado del valor %s%s%s."
 
+#: lazarusidestrconsts.lisduplicatename
+msgid "Duplicate Name"
+msgstr ""
+
 #: lazarusidestrconsts.lisduplicatenameacomponentnamedalreadyexistsintheinhe
 msgid "Duplicate name: A component named %s%s%s already exists in the inherited component %s"
 msgstr "Nombre duplicado: Un componente llamado %s%s%s ya existe en el componente heredado %s"
@@ -7816,6 +7824,10 @@ msgstr "Editar ayuda contextual"
 
 #: lazarusidestrconsts.lisedithelp
 msgid "Edit help"
+msgstr ""
+
+#: lazarusidestrconsts.liseditkey
+msgid "Edit Key"
 msgstr ""
 
 #: lazarusidestrconsts.liseditorfiletypes
@@ -8069,6 +8081,10 @@ msgstr "La codificación de página del archivo %s%s%s%sen disco es %s. La nueva
 
 #: lazarusidestrconsts.lisendlessloopinmacros
 msgid "Endless loop in macros"
+msgstr ""
+
+#: lazarusidestrconsts.lisenternewnameformacros
+msgid "Enter new name for Macro \"%s\""
 msgstr ""
 
 #: lazarusidestrconsts.lisenvironmentvariablenameasparameter
@@ -12157,6 +12173,10 @@ msgstr "Nuevo grupo - un conjunto de modos"
 msgid "Macro %d"
 msgstr ""
 
+#: lazarusidestrconsts.lisnewmacroname2
+msgid "New Macroname"
+msgstr ""
+
 #: lazarusidestrconsts.lisnewproject
 #| msgid "%s - (new project)"
 msgid "(new project)"
@@ -15023,6 +15043,10 @@ msgstr "Guardar "
 #: lazarusidestrconsts.lisscalingfactor
 msgid "Scaling factor:"
 msgstr "Factor de Escala:"
+
+#: lazarusidestrconsts.lisscanparentdir
+msgid "Scanning parent directory"
+msgstr ""
 
 #: lazarusidestrconsts.lissearchfor
 msgid "Search For "

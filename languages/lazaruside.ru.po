@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2012-08-10 00:23+0400\n"
+"PO-Revision-Date: 2012-08-26 02:03+0400\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -4150,6 +4150,10 @@ msgstr "Всегда преобразовывать предлагаемое п�
 msgid "Always ignore"
 msgstr "Всегда игнорировать"
 
+#: lazarusidestrconsts.lisamacrowiththisnamealreadyexists
+msgid "A macro with this name already exists."
+msgstr "Макрос с таким именем уже имеется."
+
 #: lazarusidestrconsts.lisambiguousfilefound
 msgid "Ambiguous file found"
 msgstr "Найден файл с дублирующимся именем"
@@ -7667,6 +7671,10 @@ msgstr "Дубликат"
 msgid "Duplicate found of value %s%s%s."
 msgstr "Значение %s%s%s уже существует."
 
+#: lazarusidestrconsts.lisduplicatename
+msgid "Duplicate Name"
+msgstr "Имя уже существует"
+
 #: lazarusidestrconsts.lisduplicatenameacomponentnamedalreadyexistsintheinhe
 msgid "Duplicate name: A component named %s%s%s already exists in the inherited component %s"
 msgstr "Дублирующееся имя: Компонент с именем %s%s%s уже существует в унаследованном компоненте %s"
@@ -7695,6 +7703,10 @@ msgstr "Редактировать контекстно-зависимую сп�
 #: lazarusidestrconsts.lisedithelp
 msgid "Edit help"
 msgstr "Редактировать справку"
+
+#: lazarusidestrconsts.liseditkey
+msgid "Edit Key"
+msgstr "Изменить клавиши"
 
 #: lazarusidestrconsts.liseditorfiletypes
 msgid "Editor file types"
@@ -7948,6 +7960,10 @@ msgstr "Файл %s%s%s%sна диске имеет кодировку %s. Но�
 #: lazarusidestrconsts.lisendlessloopinmacros
 msgid "Endless loop in macros"
 msgstr "Порочный круг макросов"
+
+#: lazarusidestrconsts.lisenternewnameformacros
+msgid "Enter new name for Macro \"%s\""
+msgstr "Введите новое имя макроса \"%s\""
 
 #: lazarusidestrconsts.lisenvironmentvariablenameasparameter
 msgid "Environment variable, name as parameter"
@@ -11909,6 +11925,10 @@ msgstr "Новая группа - набор режимов"
 msgid "Macro %d"
 msgstr "Макрос %d"
 
+#: lazarusidestrconsts.lisnewmacroname2
+msgid "New Macroname"
+msgstr "Новое имя макроса"
+
 #: lazarusidestrconsts.lisnewproject
 #| msgid "%s - (new project)"
 msgid "(new project)"
@@ -14736,6 +14756,10 @@ msgstr "Сохранить "
 #: lazarusidestrconsts.lisscalingfactor
 msgid "Scaling factor:"
 msgstr "Коэффициент масштабирования:"
+
+#: lazarusidestrconsts.lisscanparentdir
+msgid "Scanning parent directory"
+msgstr "Просмотр родительского каталога"
 
 #: lazarusidestrconsts.lissearchfor
 msgid "Search For "

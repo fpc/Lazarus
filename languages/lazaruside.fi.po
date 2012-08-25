@@ -3964,6 +3964,10 @@ msgstr "Nimeä aina ehdotettu tiedostonimi pieniksi kirjaimiksi"
 msgid "Always ignore"
 msgstr "Jätä aina huomiotta"
 
+#: lazarusidestrconsts.lisamacrowiththisnamealreadyexists
+msgid "A macro with this name already exists."
+msgstr ""
+
 #: lazarusidestrconsts.lisambiguousfilefound
 msgid "Ambiguous file found"
 msgstr "Ristiriitainen tiedosto löytyi"
@@ -7414,6 +7418,10 @@ msgstr "Päällekkäinen"
 msgid "Duplicate found of value %s%s%s."
 msgstr "Päällekkäinen arvo %s%s%s."
 
+#: lazarusidestrconsts.lisduplicatename
+msgid "Duplicate Name"
+msgstr ""
+
 #: lazarusidestrconsts.lisduplicatenameacomponentnamedalreadyexistsintheinhe
 msgid "Duplicate name: A component named %s%s%s already exists in the inherited component %s"
 msgstr "Päällekkäinen nimi: %s%s%s niminen komponentti on jo olemassa perityssä komponentissa %s"
@@ -7441,6 +7449,10 @@ msgstr "Muokkaa tilannekohtaista ohjetta"
 
 #: lazarusidestrconsts.lisedithelp
 msgid "Edit help"
+msgstr ""
+
+#: lazarusidestrconsts.liseditkey
+msgid "Edit Key"
 msgstr ""
 
 #: lazarusidestrconsts.liseditorfiletypes
@@ -7695,6 +7707,10 @@ msgstr "Merkistö on tiedostossa %s%s%s%skoodattu %s-koodauksella. Koodaukseksi 
 #: lazarusidestrconsts.lisendlessloopinmacros
 msgid "Endless loop in macros"
 msgstr "Ikuinen luuppi makrossa"
+
+#: lazarusidestrconsts.lisenternewnameformacros
+msgid "Enter new name for Macro \"%s\""
+msgstr ""
 
 #: lazarusidestrconsts.lisenvironmentvariablenameasparameter
 msgid "Environment variable, name as parameter"
@@ -11444,6 +11460,10 @@ msgstr ""
 msgid "Macro %d"
 msgstr ""
 
+#: lazarusidestrconsts.lisnewmacroname2
+msgid "New Macroname"
+msgstr ""
+
 #: lazarusidestrconsts.lisnewproject
 msgid "(new project)"
 msgstr "(uusi projekti)"
@@ -14204,6 +14224,10 @@ msgstr "Tallenna "
 #: lazarusidestrconsts.lisscalingfactor
 msgid "Scaling factor:"
 msgstr "Skaalauskerroin:"
+
+#: lazarusidestrconsts.lisscanparentdir
+msgid "Scanning parent directory"
+msgstr ""
 
 #: lazarusidestrconsts.lissearchfor
 msgid "Search For "
