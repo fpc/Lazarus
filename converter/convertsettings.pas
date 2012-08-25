@@ -152,9 +152,9 @@ type
     UnitReplaceButton: TBitBtn;
     ProjectPathEdit: TLabeledEdit;
     CoordOffsButton: TBitBtn;
-    procedure CancelButtonClick(Sender: TObject);
     procedure SameDfmCheckBoxChange(Sender: TObject);
     procedure StopScanButtonClick(Sender: TObject);
+    procedure CancelButtonClick(Sender: TObject);
     procedure SupportDelphiCheckBoxChange(Sender: TObject);
     procedure TypeReplaceButtonClick(Sender: TObject);
     procedure FuncReplaceButtonClick(Sender: TObject);
@@ -864,10 +864,17 @@ begin
   CoordOffsComboBox.Enabled:=not Chk;
 end;
 
+procedure TConvertSettingsForm.StopScanButtonClick(Sender: TObject);
+begin
+  (fCacheUnitsThread as TCacheUnitsThread).Searcher.Stop; // Terminate;
+end;
+
 procedure TConvertSettingsForm.CancelButtonClick(Sender: TObject);
 begin
-  if Assigned(fCacheUnitsThread) then
+  if Assigned(fCacheUnitsThread) then begin
+    (fCacheUnitsThread as TCacheUnitsThread).Searcher.Stop;
     fCacheUnitsThread.WaitFor;
+  end;
 end;
 
 procedure TConvertSettingsForm.ThreadTerminated(Sender: TObject);
@@ -877,11 +884,6 @@ begin
   StopScanButton.Visible := False;
   ButtonPanel1.OKButton.Enabled := True;
   fCacheUnitsThread := nil;  // Thread frees itself. Make the variable nil, too.
-end;
-
-procedure TConvertSettingsForm.StopScanButtonClick(Sender: TObject);
-begin
-  (fCacheUnitsThread as TCacheUnitsThread).Searcher.Stop; // Terminate;
 end;
 
 // Edit replacements in grids
