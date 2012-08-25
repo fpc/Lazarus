@@ -52,14 +52,14 @@ uses
   SynEditLines, SynEditStrConst, SynEditTypes, SynEdit, SynRegExpr,
   SynEditHighlighter, SynEditAutoComplete, SynEditKeyCmds, SynCompletion,
   SynEditMiscClasses, SynEditMarkupHighAll, SynEditMarks,
-  SynBeautifier, SynEditTextBase, LazSynEditText,
+  SynBeautifier, LazSynEditText,
   SynPluginSyncronizedEditBase, SourceSynEditor, SynMacroRecorder,
   SynExportHTML,
   // Intf
   SrcEditorIntf, MenuIntf, LazIDEIntf, PackageIntf, IDEHelpIntf, IDEImagesIntf,
   IDEWindowIntf, ProjectIntf,
   // IDE units
-  IDEDialogs, DialogProcs, LazarusIDEStrConsts, IDECommands, EditorOptions,
+  IDEDialogs, LazarusIDEStrConsts, IDECommands, EditorOptions,
   EnvironmentOpts, WordCompletion, FindReplaceDialog, IDEProcs, IDEOptionDefs,
   IDEHelpManager, MacroPromptDlg, TransferMacros, CodeContextForm,
   SrcEditHintFrm, MsgView, InputHistory,
@@ -949,8 +949,6 @@ type
     FMacroRecorder: TEditorMacro;
     FOnCurrentCodeBufferChanged: TNotifyEvent;
     procedure DoMacroRecorderState(Sender: TObject);
-    procedure DoMacroRecorderUserCommand(aSender: TCustomSynMacroRecorder;
-      aCmd: TSynEditorCommand; var aEvent: TSynMacroEvent);
   public
     property OnCurrentCodeBufferChanged: TNotifyEvent
              read FOnCurrentCodeBufferChanged write FOnCurrentCodeBufferChanged;
@@ -7403,14 +7401,14 @@ begin
       PanelFileMode := PanelFileMode + uepReadonly;
     end;
 
-    if (Manager.MacroRecorder.State = msRecording) and
+    if (Manager.MacroRecorder.State = emRecording) and
        (Manager.MacroRecorder.CurrentEditor = CurEditor)
     then begin
       if PanelFileMode <> '' then
         PanelFileMode := PanelFileMode + lisUEModeSeparator;
       PanelFileMode := PanelFileMode + ueMacroRecording;
     end;
-    if (Manager.MacroRecorder.State = msPaused) and
+    if (Manager.MacroRecorder.State = emPaused) and
        (Manager.MacroRecorder.CurrentEditor = CurEditor)
     then begin
       if PanelFileMode <> '' then
@@ -7436,7 +7434,7 @@ begin
     StatusBar.Panels[2].Text := PanelFileMode;
     Statusbar.Panels[3].Text := PanelCharMode;
     Statusbar.Panels[4].Text := PanelFilename;
-    if (Manager.MacroRecorder.State in [msRecording, msPaused]) and
+    if (Manager.MacroRecorder.State in [emRecording, emPaused]) and
        (Manager.MacroRecorder.CurrentEditor = CurEditor)
     then
       Statusbar.Panels[1].Width := 20
@@ -8205,19 +8203,6 @@ begin
   DoEditorMacroStateChanged;
 end;
 
-procedure TSourceEditorManagerBase.DoMacroRecorderUserCommand(aSender: TCustomSynMacroRecorder;
-  aCmd: TSynEditorCommand; var aEvent: TSynMacroEvent);
-begin
-  case aCmd of
-    ecToggleFormUnit..ecViewThreads, ecViewHistory,
-    ecNextEditor, ecPrevEditor, ecNextWindow, ecPrevWindow,
-    ecGotoEditor1..ecGotoEditor0:
-      aEvent := TSynIgnoredEvent.Create;
-    else
-      ;//
-  end;
-end;
-
 procedure TSourceEditorManagerBase.FreeSourceWindows;
 var
   s: TSourceEditorWindowInterface;
@@ -8644,11 +8629,6 @@ var
 begin
   FMacroRecorder := TEditorMacro.Create(self);
   FMacroRecorder.OnStateChange  := @DoMacroRecorderState;
-  FMacroRecorder.OnUserCommand   := @DoMacroRecorderUserCommand;
-  FMacroRecorder.RecordCommandID := ecSynMacroRecord;
-  FMacroRecorder.PlaybackCommandID := ecSynMacroPlay;
-  FMacroRecorder.RecordShortCut := 0;
-  FMacroRecorder.PlaybackShortCut := 0;
   EditorMacroRecorder := FMacroRecorder;
 
 

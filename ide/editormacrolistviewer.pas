@@ -6,34 +6,63 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, Laz2_XMLCfg, SynMacroRecorder, SynEdit, SynEditKeyCmds,
-  FileProcs, Forms, Controls, Graphics, Dialogs, StdCtrls, ButtonPanel, ComCtrls, ExtCtrls,
-  Spin, Menus, LCLType, MainBar, IDEWindowIntf, IDEImagesIntf, LazarusIDEStrConsts,
+  FileProcs, Forms, Controls, Dialogs, StdCtrls, ButtonPanel, ComCtrls, ExtCtrls,
+  Spin, Menus, LCLType, IDEWindowIntf, IDEImagesIntf, LazarusIDEStrConsts,
   ProjectDefs, LazConf, Project, KeyMapping, KeyMapShortCutDlg, SrcEditorIntf, IDEHelpIntf,
   IDECommands, LazIDEIntf;
 
 type
+  TSynEditorMacro = class(TSynMacroRecorder) end;
+
+  TEditorMacroState = (emStopped, emRecording, emPlaying, emPaused); // msPaused = paused recording
 
   { TEditorMacro }
 
-  TEditorMacro = class(TSynMacroRecorder)
+  TEditorMacro = class
   private
+    FMacroName: String;
     FHasError: Boolean;
     FFailedText: String;
     FIdeCmd: TIDECommand;
-    procedure ExecMacro(Sender: TObject);
-    function GetIdeCmd: TKeyCommandRelation;
+    FOnStateChange: TNotifyEvent;
+    FSynMacro: TSynEditorMacro;
+
+    function  GetCurrentEditor: TCustomSynEdit;
+    function  GetIdeCmd: TKeyCommandRelation;
+    procedure DoMacroRecorderState(Sender: TObject);
+    procedure DoMacroRecorderUserCommand(aSender: TCustomSynMacroRecorder;
+      aCmd: TSynEditorCommand; var aEvent: TSynMacroEvent);
   protected
-    procedure SetMacroName(AValue: string); override;
-    property IdeCmd: TKeyCommandRelation read GetIdeCmd;
+    procedure ExecMacro(Sender: TObject);
+    procedure SetMacroName(AValue: string);
+    function  GetState: TEditorMacroState;
+    property  IdeCmd: TKeyCommandRelation read GetIdeCmd;
   public
-    constructor Create(aOwner: TComponent); override;
+    constructor Create(aOwner: TComponent);
     destructor Destroy; override;
-    function GetAsText: String;
+    procedure AssignEventsFrom(AMacroRecorder: TEditorMacro);
+    function  AddEditor(AValue: TCustomSynEdit): integer;
+
+    procedure RecordMacro(aEditor: TCustomSynEdit);
+    procedure PlaybackMacro(aEditor: TCustomSynEdit);
+    procedure Stop;
+    procedure Pause;
+    procedure Resume;
+    procedure Clear;
+
+    function  GetAsText: String;
     procedure SetFromText(const AText: String);
     procedure WriteToXmlConf(AConf: TXMLConfig; const APath: String);
     procedure ReadFromXmlConf(AConf: TXMLConfig; const APath: String);
-    function ShortCutAsText: String;
+
+    function  ShortCutAsText: String;
+    function  IsEmpty: Boolean;
     property  HasError: Boolean read FHasError;
+    property  MacroName: String read FMacroName write SetMacroName;
+    property  State: TEditorMacroState read GetState;
+    property  CurrentEditor: TCustomSynEdit read GetCurrentEditor; // while recording
+
+    property OnStateChange: TNotifyEvent read FOnStateChange write FOnStateChange;
   end;
 
   { TIdeMacroEventWriter }
@@ -246,10 +275,10 @@ procedure DoEditorMacroStateChanged;
 begin
   if EditorMacroRecorder= nil then exit;
 
-  if not(EditorMacroRecorder.State  in [msRecording, msPaused]) and
+  if not(EditorMacroRecorder.State  in [emRecording, emPaused]) and
     (CurrentRecordingMacro <> nil)
   then begin
-    // finished recarding
+    // finished recording
     if EditorMacroRecorder.IsEmpty then begin
       EditorMacroListRec.Remove(CurrentRecordingMacro);
       FreeAndNil(CurrentRecordingMacro);
@@ -260,7 +289,7 @@ begin
     end;
   end;
 
-  if (EditorMacroRecorder.State = msRecording) and (CurrentRecordingMacro = nil) then begin
+  if (EditorMacroRecorder.State = emRecording) and (CurrentRecordingMacro = nil) then begin
     CurrentRecordingMacro := TEditorMacro.Create(nil);
     CurrentRecordingMacro.MacroName := Format(lisNewMacroName, [MacroRecCounter]);
     inc(MacroRecCounter);
@@ -310,7 +339,7 @@ end;
 
 procedure TEditorMacro.ExecMacro(Sender: TObject);
 begin
-  if EditorMacroRecorder.State <> msStopped then exit;
+  if EditorMacroRecorder.State <> emStopped then exit;
   try
     EditorMacroRecorder.AssignEventsFrom(Self);
     EditorMacroRecorder.PlaybackMacro(TCustomSynEdit(SourceEditorManagerIntf.ActiveEditor.EditorControl));
@@ -324,9 +353,44 @@ begin
   Result := TKeyCommandRelation(FIdeCmd);
 end;
 
+procedure TEditorMacro.DoMacroRecorderState(Sender: TObject);
+begin
+  if Assigned(FOnStateChange) then
+    FOnStateChange(Sender);
+end;
+
+procedure TEditorMacro.DoMacroRecorderUserCommand(aSender: TCustomSynMacroRecorder;
+  aCmd: TSynEditorCommand; var aEvent: TSynMacroEvent);
+begin
+  case aCmd of
+    ecToggleFormUnit..ecViewThreads, ecViewHistory,
+    ecNextEditor, ecPrevEditor, ecNextWindow, ecPrevWindow,
+    ecGotoEditor1..ecGotoEditor0:
+      aEvent := TSynIgnoredEvent.Create;
+    else
+      ;//
+  end;
+end;
+
+function TEditorMacro.GetCurrentEditor: TCustomSynEdit;
+begin
+  Result := FSynMacro.CurrentEditor;
+end;
+
+function TEditorMacro.GetState: TEditorMacroState;
+begin
+  case FSynMacro.state of
+    msStopped:   Result := emStopped;
+    msRecording: Result := emRecording;
+    msPlaying:   Result := emPlaying;
+    msPaused:    Result := emPaused;
+  end;
+end;
+
 procedure TEditorMacro.SetMacroName(AValue: string);
 begin
-  inherited SetMacroName(AValue);
+  FMacroName := AValue;
+  FSynMacro.MacroName := AValue;
 
   if (IDECommandList = nil) then
     exit;
@@ -361,8 +425,15 @@ end;
 
 constructor TEditorMacro.Create(aOwner: TComponent);
 begin
-  inherited Create(aOwner);
+  FSynMacro := TSynEditorMacro.Create(aOwner);
   FHasError := False;
+
+  FSynMacro.OnUserCommand   := @DoMacroRecorderUserCommand;
+  FSynMacro.OnStateChange  := @DoMacroRecorderState;
+  FSynMacro.RecordCommandID := ecSynMacroRecord;
+  FSynMacro.PlaybackCommandID := ecSynMacroPlay;
+  FSynMacro.RecordShortCut := 0;
+  FSynMacro.PlaybackShortCut := 0;
 end;
 
 destructor TEditorMacro.Destroy;
@@ -372,6 +443,50 @@ begin
     (IDECommandList as TKeyCommandRelationList).RemoveCommand(FIdeCmd);
     FreeAndNil(FIdeCmd);
   end;
+  FreeAndNil(FSynMacro);
+end;
+
+procedure TEditorMacro.AssignEventsFrom(AMacroRecorder: TEditorMacro);
+begin
+  if AMacroRecorder = nil then
+    Clear
+  else
+    FSynMacro.AssignEventsFrom(AMacroRecorder.FSynMacro);
+end;
+
+function TEditorMacro.AddEditor(AValue: TCustomSynEdit): integer;
+begin
+  Result := FSynMacro.AddEditor(AValue);
+end;
+
+procedure TEditorMacro.RecordMacro(aEditor: TCustomSynEdit);
+begin
+  FSynMacro.RecordMacro(aEditor);
+end;
+
+procedure TEditorMacro.PlaybackMacro(aEditor: TCustomSynEdit);
+begin
+  FSynMacro.PlaybackMacro(aEditor);
+end;
+
+procedure TEditorMacro.Stop;
+begin
+  FSynMacro.Stop;
+end;
+
+procedure TEditorMacro.Pause;
+begin
+  FSynMacro.Pause;
+end;
+
+procedure TEditorMacro.Resume;
+begin
+  FSynMacro.Resume;
+end;
+
+procedure TEditorMacro.Clear;
+begin
+  FSynMacro.Clear;
 end;
 
 function TEditorMacro.GetAsText: String;
@@ -387,14 +502,11 @@ begin
   W := TIdeMacroEventWriter.Create;
   W.UseLineFeed := True;
   try
-    if Assigned(fEvents) then
+    for i := 0 to FSynMacro.EventCount -1 do
     begin
-      for i := 0 to fEvents.Count -1 do
-      begin
-        W.BeginEvent;
-        Events[i].SaveToWriter(W);
-        W.FinishEvent;
-      end;
+      W.BeginEvent;
+      FSynMacro.Events[i].SaveToWriter(W);
+      W.FinishEvent;
     end;
     Result := w.Text;
   finally
@@ -408,16 +520,15 @@ var
   R: TIdeMacroEventReader;
 begin
   Stop;
-  Clear;
+  FSynMacro.Clear;
   FHasError := False;
-  fEvents := TList.Create;
 
   R := TIdeMacroEventReader.Create(AText);
   try
     while R.ParseNextEvent do begin
-      iEvent := CreateMacroEvent(R.EventCommand);
+      iEvent := FSynMacro.CreateMacroEvent(R.EventCommand);
       iEvent.LoadFromReader(R);
-      fEvents.Add(iEvent);
+      FSynMacro.InsertCustomEvent(FSynMacro.EventCount, iEvent);
     end;
     if R.HasError then begin
       FHasError := True;
@@ -430,7 +541,7 @@ begin
 end;
 
 procedure TEditorMacro.WriteToXmlConf(AConf: TXMLConfig; const APath: String);
-  procedure Clear(const SubPath: string);
+  procedure ClearKey(const SubPath: string);
   begin
     AConf.DeleteValue(SubPath+'Key1');
     AConf.DeleteValue(SubPath+'Shift1');
@@ -460,8 +571,8 @@ begin
   AConf.SetValue(APath + 'Code/Value', GetAsText);
 
   if (FIdeCmd = nil) then begin
-    Clear(APath + 'KeyA/');
-    Clear(APath + 'KeyB/');
+    ClearKey(APath + 'KeyA/');
+    ClearKey(APath + 'KeyB/');
   end else begin
     Store(APath + 'KeyA/', FIdeCmd.ShortcutA);
     Store(APath + 'KeyB/', FIdeCmd.ShortcutB);
@@ -484,7 +595,7 @@ begin
   if s <> '' then MacroName := s;
   s := AConf.GetValue(APath + 'Code/Value', '');
   SetFromText(s);
-  if (not FHasError) and (EventCount = 0) then begin
+  if (not FHasError) and (FSynMacro.EventCount = 0) then begin
     FHasError := True;
     FFailedText := s;
   end;
@@ -509,6 +620,11 @@ begin
     Result := Result + ' (' + KeyAndShiftStateToEditorKeyString(FIdeCmd.ShortcutA) + ')';
   if not IDEShortCutEmpty(FIdeCmd.ShortcutB) then
     Result := Result + ' (' + KeyAndShiftStateToEditorKeyString(FIdeCmd.ShortcutB) + ')';
+end;
+
+function TEditorMacro.IsEmpty: Boolean;
+begin
+  Result := FSynMacro.IsEmpty;
 end;
 
 { TIdeMacroEventReader }
@@ -777,7 +893,7 @@ procedure TMacroListView.btnPlayClick(Sender: TObject);
 var
   i: Integer;
 begin
-  if EditorMacroRecorder.State <> msStopped then exit;
+  if EditorMacroRecorder.State <> emStopped then exit;
   if lbRecordedView.ItemIndex < 0 then exit;
 
   i := 1;
@@ -834,15 +950,15 @@ end;
 
 procedure TMacroListView.btnRecordClick(Sender: TObject);
 begin
-  if EditorMacroRecorder.State = msStopped then begin
+  if EditorMacroRecorder.State = emStopped then begin
     EditorMacroRecorder.RecordMacro(TCustomSynEdit(SourceEditorManagerIntf.ActiveEditor.EditorControl));
   end
   else
-  if EditorMacroRecorder.State = msRecording then begin
+  if EditorMacroRecorder.State = emRecording then begin
     EditorMacroRecorder.Pause;
   end
   else
-  if EditorMacroRecorder.State = msPaused then begin
+  if EditorMacroRecorder.State = emPaused then begin
     EditorMacroRecorder.Resume;
   end;
   SourceEditorManagerIntf.ActiveEditor.EditorControl.SetFocus;
@@ -856,7 +972,7 @@ end;
 
 procedure TMacroListView.btnSelectClick(Sender: TObject);
 begin
-  if EditorMacroRecorder.State <> msStopped then exit;
+  if EditorMacroRecorder.State <> emStopped then exit;
   if lbRecordedView.ItemIndex >= 0 then
     CurrentActiveMacro := CurrentEditorMacroList.Macros[lbRecordedView.ItemIndex]
   else
@@ -927,7 +1043,7 @@ begin
     try
       NewMacro := TEditorMacro.Create(nil);
       NewMacro.ReadFromXmlConf(Conf, 'EditorMacros/Macro1/');
-      if NewMacro.EventCount > 0 then
+      if not NewMacro.IsEmpty then
         CurrentEditorMacroList.Add(NewMacro)
       else
         NewMacro.Free;
@@ -1005,7 +1121,7 @@ begin
       NewItem.ImageIndex := FImageRec
     else
     if (CurrentRecordingMacro = nil) and (m = CurrentActiveMacro)  then begin
-      if (EditorMacroRecorder.State = msPlaying) then
+      if (EditorMacroRecorder.State = emPlaying) then
         NewItem.ImageIndex := FImagePlay
       else
         NewItem.ImageIndex := FImageSel;
@@ -1026,7 +1142,7 @@ var
   M: TEditorMacro;
 begin
   IsSel := (lbRecordedView.ItemIndex >= 0);
-  IsStopped := (EditorMacroRecorder.State = msStopped);
+  IsStopped := (EditorMacroRecorder.State = emStopped);
   if IsSel then
     M := CurrentEditorMacroList.Macros[lbRecordedView.ItemIndex];
   IsErr := IsSel and M.HasError;
@@ -1042,12 +1158,12 @@ begin
   chkRepeat.Enabled := IsStopped and (not FIsPlaying);
   edRepeat.Enabled := IsStopped and (not FIsPlaying);
 
-  btnRecord.Enabled := (EditorMacroRecorder.State in [msStopped, msPaused, msRecording]) and (not FIsPlaying);
+  btnRecord.Enabled := (EditorMacroRecorder.State in [emStopped, emPaused, emRecording]) and (not FIsPlaying);
   btnRecordStop.Enabled := (not IsStopped) or FIsPlaying;
 
-  if (EditorMacroRecorder.State = msRecording) then
+  if (EditorMacroRecorder.State = emRecording) then
     btnRecord.Caption := lisPause
-  else if (EditorMacroRecorder.State = msPaused) then
+  else if (EditorMacroRecorder.State = emPaused) then
     btnRecord.Caption := lisContinue
   else
     btnRecord.Caption := lisRecord;
