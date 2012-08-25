@@ -1189,6 +1189,36 @@ begin
   end;
 end;
 
+// ReadRawImageBits_* routines are called multiple times, once for each channel
+// Therefore Shift means the Shift in the raw image of the channel
+// TheData points to beginning of the image data
+// Position is the position in bytes to the start of the pixel in TheData
+// Prec is the precision of the channel, usually 16 for this format
+// Bits is the value of the channel, which is the output
+procedure ReadRawImageBits_48(TheData: PByte;
+  const Position: TRawImagePosition;
+  Prec, Shift: cardinal;
+  var Bits: word);
+var
+  P: PByte;
+  W1, W2, W3: Word;
+  B1, B2, B3, B4, B5, B6: Byte;
+  PixelData: QWord;
+begin
+  P:=@(TheData[Position.Byte]);
+  B1 := P^;
+  B2 := (P+1)^;
+  B3 := (P+2)^;
+  B4 := (P+3)^;
+  B5 := (P+4)^;
+  B6 := (P+5)^;
+  W1 := B2 + B1 shl 8;
+  W2 := B4 + B3 shl 8;
+  W3 := B6 + B5 shl 8;
+  PixelData := W3 + W2 shl 16 + W1 shl 32;
+  Bits := (PixelData shr Shift);
+end;
+
 procedure WriteRawImageBits_1_2_4_BIO(TheData: PByte;
   const Position: TRawImagePosition;
   Prec, Shift: cardinal; Bits: word);
@@ -1495,6 +1525,12 @@ begin
       ProcReadRawImageBits  := @ReadRawImageBits_ReversedBytes_32;
       ProcWriteRawImageBits := @WriteRawImageBits_ReversedBytes_32;
     end;
+  end;
+
+  48:
+  begin
+    ProcReadRawImageBits  := @ReadRawImageBits_48;
+    ProcWriteRawImageBits := @WriteRawImageBits_NULL;
   end;
 
   else
