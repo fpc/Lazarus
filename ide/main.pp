@@ -9717,10 +9717,14 @@ begin
     UnitIndex:=Project1.IndexOfFilename(AFilename);
     if (UnitIndex > 0) then begin
       NewUnitInfo:=Project1.Units[UnitIndex];
-      if (uifEditorMacro in NewUnitInfo.Flags) then begin
+      if (uifEditorMacro in NewUnitInfo.Flags) and
+         (NewUnitInfo.OpenEditorInfoCount > 0)
+      then begin
+        NewEditorInfo := NewUnitInfo.OpenEditorInfo[0];
         if MacroListViewer.MacroByFullName(AFileName) <> nil then
           NewUnitInfo.Source.Source := MacroListViewer.MacroByFullName(AFileName).GetAsText;
-          Result:=mrOK;
+        Result:=DoOpenFileInSourceEditor(NewEditorInfo, NewEditorInfo.PageIndex,
+          NewEditorInfo.WindowIndex, Flags);
         exit;
       end;
     end;
