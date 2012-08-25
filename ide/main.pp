@@ -8801,7 +8801,10 @@ begin
     SrcNotebook := SourceEditorManager.SourceWindows[WindowIndex];
 
   // get syntax highlighter type
-  AnUnitInfo.UpdateDefaultHighlighter(FilenameToLazSyntaxHighlighter(AFilename));
+  if (uifEditorMacro in AnUnitInfo.Flags) then
+    AnUnitInfo.UpdateDefaultHighlighter(lshFreePascal)
+  else
+    AnUnitInfo.UpdateDefaultHighlighter(FilenameToLazSyntaxHighlighter(AFilename));
 
   SrcNotebook.IncUpdateLock;
   try
