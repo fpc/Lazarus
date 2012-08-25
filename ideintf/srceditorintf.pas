@@ -20,8 +20,8 @@ unit SrcEditorIntf;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, FileUtil, LCLType, Forms, Controls, Graphics,
-  ProjectIntf;
+  Classes, SysUtils, LCLProc, FileUtil, Laz2_XMLCfg, SynEdit, LCLType, Forms, Controls,
+  Graphics, ProjectIntf, IDECommands;
   
 type
   TSourceMarklingType = (
@@ -347,7 +347,89 @@ var
   SourceEditorManagerIntf: TSourceEditorManagerInterface= nil;                      // set by the IDE
 
 type
+  TEditorMacroState = (emStopped, emRecording, emPlaying, emRecPaused); // msPaused = paused recording
+  TEditorMacro = class;
 
+  { TEditorMacroKeyBinding }
+
+  TEditorMacroKeyBinding = class
+  protected
+    FOwner: TEditorMacro;
+    function GetIdeCmd: TIDECommand; virtual;
+  public
+    constructor Create(AOwner: TEditorMacro); virtual;
+    procedure WriteToXmlConf(AConf: TXMLConfig; const APath: String); virtual; abstract;
+    procedure ReadFromXmlConf(AConf: TXMLConfig; const APath: String); virtual; abstract;
+
+    procedure MacroNameChanged; virtual; // must be called by sub-class of TEditorMacro
+    property  IdeCmd: TIDECommand read GetIdeCmd; // TKeyCommandRelation
+    function  ShortCutAsText: String; virtual;
+  end;
+
+  TEditorMacroKeyBindingClass = class of TEditorMacroKeyBinding;
+
+  { TEditorMacro }
+
+  TEditorMacro = class
+  private
+    FOnStateChange: TNotifyEvent;
+    procedure SetMacroNameFull(AValue: String);
+  protected
+    // (Un)setActivated: Must be called, whenever the state changes
+    procedure SetActivated;
+    procedure UnsetActivated;
+    function  IsActivated: Boolean;
+    procedure CheckStateAndActivated;
+
+    function  GetMacroName: String; virtual; abstract;
+    procedure SetMacroName(AValue: string); virtual; abstract;
+    function  GetState: TEditorMacroState; virtual; abstract;
+    function GetDefaultKeyBinding: TEditorMacroKeyBinding;
+    function GetKeyBinding: TEditorMacroKeyBinding; virtual; abstract;
+
+    procedure DoRecordMacro(aEditor: TCustomSynEdit); virtual; abstract;
+    procedure DoPlaybackMacro(aEditor: TCustomSynEdit); virtual; abstract;
+    procedure DoStop; virtual; abstract;
+    procedure DoPause; virtual; abstract;
+    procedure DoResume; virtual; abstract;
+  public
+    constructor Create(aOwner: TComponent); virtual; abstract;
+    procedure AssignEventsFrom(AMacroRecorder: TEditorMacro); virtual; abstract;
+    procedure WriteToXmlConf(AConf: TXMLConfig; const APath: String); virtual; abstract;
+    procedure ReadFromXmlConf(AConf: TXMLConfig; const APath: String); virtual; abstract;
+    function  GetAsSource: String; virtual; abstract;
+    procedure SetFromSource(const AText: String); virtual; abstract;
+
+    procedure RecordMacro(aEditor: TCustomSynEdit);
+    procedure PlaybackMacro(aEditor: TCustomSynEdit);
+    procedure Stop;
+    procedure Pause;
+    procedure Resume;
+
+    procedure Clear; virtual; abstract;
+    function  IsEmpty: Boolean; virtual; abstract;
+    function  IsInvalid: Boolean; virtual; abstract;
+    function  IsRecording(AnEditor: TCustomSynEdit): Boolean; virtual; abstract;
+
+    property  MacroName: String read GetMacroName write SetMacroNameFull;
+    property  State: TEditorMacroState read GetState;
+    property  OnStateChange: TNotifyEvent read FOnStateChange write FOnStateChange;
+    property  KeyBinding: TEditorMacroKeyBinding read GetKeyBinding;
+  end;
+
+  TEditorMacroClass = class of TEditorMacro;
+
+var
+  // EditorMacroForRecording:
+  // Used to record new Macros. On Completion it will be assigned to a player-macro
+  EditorMacroForRecording: TEditorMacro = nil; // set by SourceEditor
+  // ActiveEditorMacro:
+  // Will be set whenever a macro is playing/recording. Ensures only one Macro is active
+  ActiveEditorMacro: TEditorMacro = nil;
+  DefaultBindingClass: TEditorMacroKeyBindingClass;
+  EditorMacroPlayerClass: TEditorMacroClass;
+
+type
   { TIDEInteractiveStringValue }
 
   TIDEInteractiveStringValue = class(TPersistent)
@@ -521,6 +603,102 @@ begin
   Result.OnGetValueExMethod:=OnGetValueMethod;
   IDECodeMacros.Add(Result);
 end;
+
+{ TEditorMacroKeyBinding }
+
+function TEditorMacroKeyBinding.GetIdeCmd: TIDECommand;
+begin
+  Result :=nil;
+end;
+
+procedure TEditorMacroKeyBinding.MacroNameChanged;
+begin
+  //
+end;
+
+constructor TEditorMacroKeyBinding.Create(AOwner: TEditorMacro);
+begin
+  FOwner := AOwner;
+end;
+
+function TEditorMacroKeyBinding.ShortCutAsText: String;
+begin
+  Result := '';
+end;
+
+procedure TEditorMacro.CheckStateAndActivated;
+begin
+  if (State = emStopped) then begin
+    if IsActivated then
+      UnsetActivated;
+  end
+  else
+  if not IsActivated then
+    SetActivated;
+end;
+
+function TEditorMacro.GetDefaultKeyBinding: TEditorMacroKeyBinding;
+begin
+  Result := DefaultBindingClass.Create(Self);
+end;
+
+procedure TEditorMacro.SetMacroNameFull(AValue: String);
+begin
+  SetMacroName(AValue);
+  if KeyBinding <> nil then
+    KeyBinding.MacroNameChanged;
+end;
+
+procedure TEditorMacro.SetActivated;
+begin
+  Assert(ActiveEditorMacro=nil, 'TEditorMacro.SetActivated: There already is an active Macro');
+  ActiveEditorMacro := self;
+end;
+
+procedure TEditorMacro.UnsetActivated;
+begin
+  Assert(ActiveEditorMacro=self, 'TEditorMacro.SetActivated: This is not the active Macro');
+  ActiveEditorMacro := nil;
+end;
+
+function TEditorMacro.IsActivated: Boolean;
+begin
+  Result := ActiveEditorMacro = self;
+end;
+
+procedure TEditorMacro.RecordMacro(aEditor: TCustomSynEdit);
+begin
+  SetActivated;
+  DoRecordMacro(aEditor);
+  CheckStateAndActivated;
+end;
+
+procedure TEditorMacro.PlaybackMacro(aEditor: TCustomSynEdit);
+begin
+  SetActivated;
+  DoPlaybackMacro(aEditor);
+  CheckStateAndActivated;
+end;
+
+procedure TEditorMacro.Stop;
+begin
+  DoStop;
+  CheckStateAndActivated;
+end;
+
+procedure TEditorMacro.Pause;
+begin
+  DoPause;
+  CheckStateAndActivated;
+end;
+
+procedure TEditorMacro.Resume;
+begin
+  DoResume;
+  CheckStateAndActivated;
+end;
+
+{ TEditorMacro }
 
 { TSourceEditorInterface }
 

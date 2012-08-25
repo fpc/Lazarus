@@ -946,13 +946,12 @@ type
     procedure DecUpdateLock;
     procedure ShowActiveWindowOnTop(Focus: Boolean = False);
   private
-    FMacroRecorder: TEditorMacro;
+    FMacroRecorder: TIdeEditorMacro;
     FOnCurrentCodeBufferChanged: TNotifyEvent;
     procedure DoMacroRecorderState(Sender: TObject);
   public
     property OnCurrentCodeBufferChanged: TNotifyEvent
              read FOnCurrentCodeBufferChanged write FOnCurrentCodeBufferChanged;
-    property MacroRecorder: TEditorMacro read FMacroRecorder;
   end;
 
   { TSourceEditorManager }
@@ -3255,6 +3254,27 @@ Begin
   ecLockEditor:
     IsLocked := not IsLocked;
 
+  ecSynMacroPlay: begin
+      If ActiveEditorMacro = EditorMacroForRecording then begin
+        if EditorMacroForRecording.State = emRecording
+        then EditorMacroForRecording.Pause
+        else EditorMacroForRecording.Resume;
+      end
+      else
+        if (SelectedEditorMacro <> nil) and
+           (SelectedEditorMacro.State = emStopped)
+        then
+          SelectedEditorMacro.PlaybackMacro(FEditor);
+    end;
+
+  ecSynMacroRecord: begin
+      If ActiveEditorMacro = nil then
+        EditorMacroForRecording.RecordMacro(FEditor)
+      else
+      If ActiveEditorMacro = EditorMacroForRecording then
+        EditorMacroForRecording.Stop;
+    end;
+
   else
     begin
       Handled:=false;
@@ -4206,7 +4226,7 @@ Begin
       Parent := AParent;
     end;
     Manager.CodeTemplateModul.AddEditor(FEditor);
-    Manager.MacroRecorder.AddEditor(FEditor);
+    Manager.FMacroRecorder.AddEditor(FEditor);
     Manager.NewEditorCreated(self);
     FEditor.TemplateEdit.OnActivate := @EditorActivateSyncro;
     FEditor.TemplateEdit.OnDeactivate := @EditorDeactivateSyncro;
@@ -7204,8 +7224,8 @@ begin
   P := StatusBar.ScreenToClient(Mouse.CursorPos);
   i := StatusBar.GetPanelIndexAt(P.X, P.Y);
 
-  if (i = 1) then
-    Manager.MacroRecorder.Stop;
+  if (i = 1)  then
+    EditorMacroForRecording.Stop;
 end;
 
 procedure TSourceNotebook.ExecuteEditorItemClick(Sender: TObject);
@@ -7401,15 +7421,15 @@ begin
       PanelFileMode := PanelFileMode + uepReadonly;
     end;
 
-    if (Manager.MacroRecorder.State = emRecording) and
-       (Manager.MacroRecorder.CurrentEditor = CurEditor)
+    if (EditorMacroForRecording.State = emRecording) and
+       (EditorMacroForRecording.IsRecording(CurEditor))
     then begin
       if PanelFileMode <> '' then
         PanelFileMode := PanelFileMode + lisUEModeSeparator;
       PanelFileMode := PanelFileMode + ueMacroRecording;
     end;
-    if (Manager.MacroRecorder.State = emPaused) and
-       (Manager.MacroRecorder.CurrentEditor = CurEditor)
+    if (EditorMacroForRecording.State = emRecPaused) and
+       (EditorMacroForRecording.IsRecording(CurEditor))
     then begin
       if PanelFileMode <> '' then
         PanelFileMode := PanelFileMode + lisUEModeSeparator;
@@ -7434,8 +7454,7 @@ begin
     StatusBar.Panels[2].Text := PanelFileMode;
     Statusbar.Panels[3].Text := PanelCharMode;
     Statusbar.Panels[4].Text := PanelFilename;
-    if (Manager.MacroRecorder.State in [emRecording, emPaused]) and
-       (Manager.MacroRecorder.CurrentEditor = CurEditor)
+    if(EditorMacroForRecording.IsRecording(CurEditor))
     then
       Statusbar.Panels[1].Width := 20
     else
@@ -8627,9 +8646,11 @@ var
   i: TsemChangeReason;
   h: TSrcEditMangerHandlerType;
 begin
-  FMacroRecorder := TEditorMacro.Create(self);
-  FMacroRecorder.OnStateChange  := @DoMacroRecorderState;
-  EditorMacroRecorder := FMacroRecorder;
+  FMacroRecorder := TIdeEditorMacro.Create(self);
+  FMacroRecorder.OnStateChange := @DoMacroRecorderState;
+  OnEditorMacroStateChange := @DoMacroRecorderState;
+  if EditorMacroForRecording = nil then
+    EditorMacroForRecording := FMacroRecorder;
 
 
   FUpdateFlags := [];
@@ -8661,7 +8682,8 @@ begin
   FreeCompletionPlugins;
   FreeSourceWindows;
   SrcEditorIntf.SourceEditorManagerIntf := nil; // xx move down
-  EditorMacroRecorder := nil;
+  if EditorMacroForRecording = FMacroRecorder then
+    EditorMacroForRecording := nil;
   FreeAndNil(FMacroRecorder);
   FreeAndNil(FCompletionPlugins);
   FreeAndNil(FSourceWindowList);

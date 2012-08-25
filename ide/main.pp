@@ -9312,7 +9312,7 @@ begin
   if uifEditorMacro in AnUnitInfo.Flags then begin
     // save to macros
     if MacroListViewer.MacroByFullName(AnUnitInfo.Filename) <> nil then
-      MacroListViewer.MacroByFullName(AnUnitInfo.Filename).SetFromText(AEditor.SourceText);
+      MacroListViewer.MacroByFullName(AnUnitInfo.Filename).SetFromSource(AEditor.SourceText);
     MacroListViewer.UpdateDisplay;
     AnUnitInfo.ClearModifieds;
     AEditor.Modified:=false;
@@ -9725,7 +9725,7 @@ begin
       then begin
         NewEditorInfo := NewUnitInfo.OpenEditorInfo[0];
         if MacroListViewer.MacroByFullName(AFileName) <> nil then
-          NewUnitInfo.Source.Source := MacroListViewer.MacroByFullName(AFileName).GetAsText;
+          NewUnitInfo.Source.Source := MacroListViewer.MacroByFullName(AFileName).GetAsSource;
         Result:=DoOpenFileInSourceEditor(NewEditorInfo, NewEditorInfo.PageIndex,
           NewEditorInfo.WindowIndex, Flags);
         exit;
@@ -9741,7 +9741,7 @@ begin
       NewBuf := CodeToolBoss.SourceCache.CreateFile(AFileName);
       NewBuf.FileName:=AFileName;
       if MacroListViewer.MacroByFullName(AFileName) <> nil then
-        NewBuf.Source := MacroListViewer.MacroByFullName(AFileName).GetAsText;
+        NewBuf.Source := MacroListViewer.MacroByFullName(AFileName).GetAsSource;
       NewUnitInfo:=TUnitInfo.Create(NewBuf);
       NewUnitInfo.DefaultSyntaxHighlighter := lshFreePascal;
       Project1.AddFile(NewUnitInfo,false);

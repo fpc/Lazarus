@@ -122,6 +122,9 @@ type
     procedure Playback(aEditor: TCustomSynEdit); override;
   end;
 
+  TSynSkippedEvent = class(TSynIgnoredEvent) // Do not queue
+  end;
+
   { TSynBasicEvent }
 
   TSynBasicEvent = class(TSynMacroEvent)
@@ -581,6 +584,10 @@ var
   iEvent: TSynMacroEvent;
 begin
   iEvent := CreateMacroEvent( aCmd );
+  if iEvent is TSynSkippedEvent then begin
+    iEvent.Free;
+    exit;
+  end;
   try
     iEvent.Initialize( aCmd, aChar, aData );
     InsertCustomEvent( aIndex, iEvent );
@@ -615,9 +622,14 @@ begin
     iCommand := 0;
     aSrc.Read( iCommand, SizeOf(TSynEditorCommand) );
     iEvent := CreateMacroEvent( iCommand );
-    iEvent.Initialize( iCommand, #0, nil );
-    iEvent.LoadFromStream( aSrc );
-    fEvents.Add( iEvent );
+    if iEvent is TSynSkippedEvent then begin
+      iEvent.Free;
+    end
+    else begin
+      iEvent.Initialize( iCommand, #0, nil );
+      iEvent.LoadFromStream( aSrc );
+      fEvents.Add( iEvent );
+    end;
     Inc(i);
   end;
 end;
@@ -673,6 +685,10 @@ begin
   if (Sender = fCurrentEditor) and (State = msRecording) and (Command <> ecNone) then
   begin
     iEvent := CreateMacroEvent( Command );
+    if iEvent is TSynSkippedEvent then begin
+      iEvent.Free;
+      exit;
+    end;
     iEvent.Initialize( Command, aChar, Data );
     fEvents.Add( iEvent );
     if SaveMarkerPos and (Command >= ecSetMarker0) and
@@ -843,11 +859,16 @@ begin
       begin
         Delete(cmdStr, 1, p);
         iEvent := CreateMacroEvent(TSynEditorCommand(Cmd));
-        try
-          fEvents.Add(iEvent);
-          iEvent.InitEventParameters(cmdStr);
-        except
+        if iEvent is TSynSkippedEvent then begin
           iEvent.Free;
+        end
+        else begin
+          try
+            fEvents.Add(iEvent);
+            iEvent.InitEventParameters(cmdStr);
+          except
+            iEvent.Free;
+          end;
         end;
       end;
     end;
