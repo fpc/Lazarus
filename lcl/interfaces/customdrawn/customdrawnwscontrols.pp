@@ -76,6 +76,8 @@ type
     //class procedure AddControl(const AControl: TControl); override;
 
     class function  GetText(const AWinControl: TWinControl; var AText: String): Boolean; override;
+
+
     class procedure SetBounds(const AWinControl: TWinControl; const ALeft, ATop, AWidth, AHeight: Integer); override;
     class procedure SetBorderStyle(const AWinControl: TWinControl; const ABorderStyle: TBorderStyle); override;
     class procedure SetChildZPosition(const AWinControl, AChild: TWinControl;
@@ -301,6 +303,8 @@ end;
 class procedure TCDWSWinControl.SetBounds(const AWinControl: TWinControl;
   const ALeft, ATop, AWidth, AHeight: Integer);
 begin
+  //WriteLn(Format('[TCDWSWinControl.SetBounds Control=%s:%s x=%d y=%d w=%d h=%d',
+  //  [AWinControl.Name, AWinControl.ClassName, ALeft, ATop, AWidth, AHeight]));
   Invalidate(AWinControl);
 end;
 

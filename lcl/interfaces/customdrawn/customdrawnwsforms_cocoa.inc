@@ -160,6 +160,8 @@ begin
   Result:=AWinControl.Handle<>0;
   if not Result then Exit;
   ARect:= TCocoaWindow(AWinControl.Handle).CocoaForm.lclClientFrame;
+  //WriteLn(Format('[TCDWSCustomForm.GetClientBounds x=%d y=%d w=%d h=%d',
+  //  [ARect.Left, ARect.Top, ARect.Right-ARect.Left, ARect.Bottom-ARect.Top]));
 end;
 
 class function TCDWSCustomForm.GetClientRect(const AWinControl: TWinControl; var ARect: TRect): Boolean;
@@ -172,5 +174,7 @@ begin
   x:=0;y:=0;
   TCocoaWindow(AWinControl.Handle).CocoaForm.lclLocalToScreen(x,y);
   MoveRect(ARect, x,y);
+  //WriteLn(Format('[TCDWSCustomForm.GetClientRect x=%d y=%d w=%d h=%d',
+  //  [ARect.Left, ARect.Top, ARect.Right-ARect.Left, ARect.Bottom-ARect.Top]));
 end;
 

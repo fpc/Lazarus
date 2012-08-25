@@ -536,6 +536,8 @@ begin
   end
   else
     Result:=False;
+  //WriteLn(Format('[TCDWidgetSet.BackendGetClientBounds handle=%d x=%d y=%d w=%d h=%d',
+  //  [Handle, ARect.Left, ARect.Top, ARect.Right-ARect.Left, ARect.Bottom-ARect.Top]));
 end;
 
 (*function TCocoaWidgetSet.GetClientRect(handle : HWND; var ARect : TRect) : Boolean;

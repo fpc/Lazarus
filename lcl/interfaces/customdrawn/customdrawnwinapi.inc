@@ -2461,7 +2461,11 @@ begin
   end
   else
   begin
-    ARect := TCDWinControl(lObject).WinControl.BoundsRect;
+    // If we return WinControl.BoundsRect then the controls get a x2 factor
+    // when Align=alClient, strange. Region.GetBoundingRect() works fine.
+    //  ARect := TCDWinControl(lObject).WinControl.BoundsRect; <<-- don't do this
+
+    ARect := TCDWinControl(lObject).Region.GetBoundingRect();
   end;
   {$ifdef VerboseCDWinAPI}
   DebugLn(Format(':<[WinAPI GetClientBounds] ARect.Left=%d ARect.Top=%d'
