@@ -2181,6 +2181,7 @@ var
   WideStr: WideString;
   QtDC: TQtDeviceContext absolute DC;
   B: Boolean;
+  R, R1: TRect;
 begin
   {$ifdef VerboseQtWinAPI}
     WriteLn('[WinAPI ExtTextOut]');
@@ -2188,13 +2189,21 @@ begin
 
   Result := False;
 
-  if ((Options and (ETO_OPAQUE + ETO_CLIPPED)) <> 0) and (Rect = nil) then
-    exit;
-
   if not IsValidDC(DC) then Exit;
 
-   if ((Options and ETO_OPAQUE) <> 0) then
-     QtDC.fillRect(Rect^.Left, Rect^.Top, Rect^.Right - Rect^.Left, Rect^.Bottom - Rect^.Top);
+  if ((Options and (ETO_OPAQUE + ETO_CLIPPED)) <> 0) and (Rect = nil) then
+  begin
+    if Count >= 0 then
+      WideStr := GetUtf8String(Copy(Str, 1, Count))
+    else
+      WideStr := GetUtf8String(Str);
+
+    R := QtDC.getClipRegion.getBoundingRect;
+    QtDC.font.Metrics.boundingRect(@R1, @R, 0, @WideStr);
+    Rect := @R1;
+  end else
+    if ((Options and ETO_OPAQUE) <> 0) and (Rect <> nil) then
+      QtDC.fillRect(Rect^.Left, Rect^.Top, Rect^.Right - Rect^.Left, Rect^.Bottom - Rect^.Top);
 
   if Str <> nil then
   begin

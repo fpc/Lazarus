@@ -3823,6 +3823,7 @@ var
   Foreground, BackgroundColor: PGDKColor;
   CurDx: PInteger;
   CurStr: PChar;
+  R: TRect;
 
   procedure DoTextOut(X,Y : Integer; Str: Pchar; CurCount: Integer);
   var
@@ -3854,12 +3855,14 @@ begin
   
   if DevCtx.GC <> nil then; // create GC
 
-  if ((Options and (ETO_OPAQUE+ETO_CLIPPED)) <> 0)
-  and (Rect=nil)
-  then begin
-    DebugLn('WARNING: [TGtk2WidgetSet.ExtTextOut] Rect=nil');
-    Result := False;
-    exit;
+  if ((Options and (ETO_OPAQUE+ETO_CLIPPED)) <> 0) and
+    (Rect=nil) then
+  begin
+    R := RectFromGdkRect(DevCtx.ClipRect);
+    OffsetRect(R, -R.Left, -R.Top);
+    OffsetRect(R, X, Y);
+    DrawText(DC, Str, Count, R, DT_SINGLELINE or DT_CALCRECT);
+    Rect := @R;
   end;
 
   BackgroundColor := nil;
@@ -3868,12 +3871,12 @@ begin
 
   DCOrigin := DevCtx.Offset;
 
-  if (Options and ETO_CLIPPED) <> 0
-  then begin
+  if (Options and ETO_CLIPPED) <> 0 then
+  begin
     X := Rect^.Left;
     Y := Rect^.Top;
     IntersectClipRect(DC, Rect^.Left, Rect^.Top,
-                      Rect^.Right, Rect^.Bottom);
+      Rect^.Right, Rect^.Bottom);
   end;
 
   if DevCtx.HasTransf then
