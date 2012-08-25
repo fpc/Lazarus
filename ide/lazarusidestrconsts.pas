@@ -5568,7 +5568,7 @@ resourcestring
   lisDuplicateName = 'Duplicate Name';
   lisAMacroWithThisNameAlreadyExists = 'A macro with this name already exists.';
   lisNewMacroname2 = 'New Macroname';
-  lisEnterNewMaweForMacroS = 'Enter new mawe for Macro "%s"';
+  lisEnterNewNameForMacroS = 'Enter new name for Macro "%s"';
 
 implementation
 

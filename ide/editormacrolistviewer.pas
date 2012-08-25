@@ -870,13 +870,13 @@ begin
   if lbRecordedView.ItemIndex < 0 then exit;
   M := CurrentEditorMacroList.Macros[lbRecordedView.ItemIndex];
   s := M.MacroName;
-  if InputQuery(lisNewMacroname2, Format(lisEnterNewMaweForMacroS, [m.MacroName]), s)
+  if InputQuery(lisNewMacroname2, Format(lisEnterNewNameForMacroS, [m.MacroName]), s)
   then begin
     while (s <> '') and (CurrentEditorMacroList.IndexOfName(s) >= 0) do begin
       case MessageDlg(lisDuplicateName, lisAMacroWithThisNameAlreadyExists, mtWarning,
         mbOKCancel, 0) of
         mrOK:
-          if not InputQuery(lisNewMacroname2, Format(lisEnterNewMaweForMacroS, [m.MacroName]), s)
+          if not InputQuery(lisNewMacroname2, Format(lisEnterNewNameForMacroS, [m.MacroName]), s)
           then s := '';
         else
           s := '';
