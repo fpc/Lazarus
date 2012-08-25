@@ -8145,8 +8145,8 @@ begin
     QTextCursor_movePosition(QtCursor, QTextCursorEnd,
         QTextCursorMoveAnchor, 1);
     QTextCursor_insertBlock(QtCursor);
-    QTextCursor_endEditBlock(QtCursor);
     QTextEdit_insertPlainText(QTextEditH(Widget), @AText);
+    QTextCursor_endEditBlock(QtCursor);
   finally
     QTextCursor_destroy(QtCursor);
     setLineWrapMode(WrapMode);
