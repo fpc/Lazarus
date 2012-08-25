@@ -423,7 +423,12 @@ begin
   if Index <= FStringList.Count then
   begin
     FStringList.Insert(Index, S);
-    if TQtTextEdit(FOwner.Handle).getBlockCount - Index <= 1 then
+    // to fix #22715 we must use slower insertLine(). Rewriting
+    // handle from QTextEdit to QPlainTextEdit should fix speed.
+    // Currently we are missing Text alignment in QPlainTextEdit class,
+    // so that's why it's not rewritten yet.
+    if (Index < FStringList.Count - 1) and
+      (TQtTextEdit(FOwner.Handle).getBlockCount - Index <= 1) then
     begin
       if (System.Pos('<', S) > 0) or (System.Pos('>',S) > 0) then
       begin
