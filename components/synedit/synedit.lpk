@@ -1,6 +1,7 @@
 <?xml version="1.0"?>
 <CONFIG>
   <Package Version="4">
+    <PathDelim Value="\"/>
     <Name Value="SynEdit"/>
     <Author Value="Lazarus Team, SynEdit"/>
     <CompilerOptions>
@@ -36,7 +37,7 @@ Alternatively, the contents of these files may be used under the terms of the GN
 If you wish to allow use of your version of these files only under the terms of the GPL and not to allow others to use your version of this file under the MPL, indicate your decision by deleting the provisions above and replace them with the notice and other provisions required by the GPL. If you do not delete the provisions above, a recipient may use your version of this file under either the MPL or the GPL.
 "/>
     <Version Major="1"/>
-    <Files Count="83">
+    <Files Count="78">
       <Item1>
         <Filename Value="synbeautifier.pas"/>
         <UnitName Value="SynBeautifier"/>
@@ -46,8 +47,9 @@ If you wish to allow use of your version of these files only under the terms of 
         <UnitName Value="SynCompletion"/>
       </Item2>
       <Item3>
-        <Filename Value="syndesignstringconstants.pas"/>
-        <UnitName Value="SynDesignStringConstants"/>
+        <Filename Value="lazsynimm.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="LazSynIMM"/>
       </Item3>
       <Item4>
         <Filename Value="synedit.pp"/>
@@ -83,13 +85,12 @@ If you wish to allow use of your version of these files only under the terms of 
         <UnitName Value="SynEditKeyCmds"/>
       </Item11>
       <Item12>
-        <Filename Value="syneditlazdsgn.lrs"/>
-        <Type Value="LRS"/>
+        <Filename Value="lazsyneditmousecmdstypes.pp"/>
+        <UnitName Value="LazSynEditMouseCmdsTypes"/>
       </Item12>
       <Item13>
-        <Filename Value="syneditlazdsgn.pas"/>
-        <HasRegisterProc Value="True"/>
-        <UnitName Value="SynEditLazDsgn"/>
+        <Filename Value="synhighlighterpo.pp"/>
+        <UnitName Value="SynHighlighterPo"/>
       </Item13>
       <Item14>
         <Filename Value="syneditlines.pas"/>
@@ -316,12 +317,12 @@ If you wish to allow use of your version of these files only under the terms of 
         <UnitName Value="SynPluginTemplateEdit"/>
       </Item69>
       <Item70>
-        <Filename Value="synpropertyeditobjectlist.lfm"/>
-        <Type Value="LFM"/>
+        <Filename Value="lazsynedittext.pas"/>
+        <UnitName Value="LazSynEditText"/>
       </Item70>
       <Item71>
-        <Filename Value="synpropertyeditobjectlist.pas"/>
-        <UnitName Value="SynPropertyEditObjectList"/>
+        <Filename Value="lazsyntextarea.pp"/>
+        <UnitName Value="LazSynTextArea"/>
       </Item71>
       <Item72>
         <Filename Value="synregexpr.pas"/>
@@ -332,47 +333,26 @@ If you wish to allow use of your version of these files only under the terms of 
         <UnitName Value="SynTextDrawer"/>
       </Item73>
       <Item74>
+        <Filename Value="syneditmarkupguttermark.pp"/>
+        <UnitName Value="SynEditMarkupGutterMark"/>
+      </Item74>
+      <Item75>
+        <Filename Value="synhighlighterbat.pas"/>
+        <UnitName Value="SynHighlighterBat"/>
+      </Item75>
+      <Item76>
+        <Filename Value="synhighlighterini.pas"/>
+        <UnitName Value="SynHighlighterIni"/>
+      </Item76>
+      <Item77>
+        <Filename Value="syneditmarkupspecialchar.pp"/>
+        <UnitName Value="SynEditMarkupSpecialChar"/>
+      </Item77>
+      <Item78>
         <Filename Value="allsynedit.pas"/>
         <Type Value="Main Unit"/>
         <UnitName Value="allsynedit"/>
-      </Item74>
-      <Item75>
-        <Filename Value="syneditmarkupguttermark.pp"/>
-        <UnitName Value="SynEditMarkupGutterMark"/>
-      </Item75>
-      <Item76>
-        <Filename Value="synhighlighterbat.pas"/>
-        <UnitName Value="SynHighlighterBat"/>
-      </Item76>
-      <Item77>
-        <Filename Value="synhighlighterini.pas"/>
-        <UnitName Value="SynHighlighterIni"/>
-      </Item77>
-      <Item78>
-        <Filename Value="syneditmarkupspecialchar.pp"/>
-        <UnitName Value="SynEditMarkupSpecialChar"/>
       </Item78>
-      <Item79>
-        <Filename Value="lazsynedittext.pas"/>
-        <UnitName Value="LazSynEditText"/>
-      </Item79>
-      <Item80>
-        <Filename Value="lazsyntextarea.pp"/>
-        <UnitName Value="LazSynTextArea"/>
-      </Item80>
-      <Item81>
-        <Filename Value="lazsyneditmousecmdstypes.pp"/>
-        <UnitName Value="LazSynEditMouseCmdsTypes"/>
-      </Item81>
-      <Item82>
-        <Filename Value="synhighlighterpo.pp"/>
-        <UnitName Value="SynHighlighterPo"/>
-      </Item82>
-      <Item83>
-        <Filename Value="lazsynimm.pas"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="LazSynIMM"/>
-      </Item83>
     </Files>
     <LazDoc Paths="docs/xml"/>
     <i18n>
@@ -380,16 +360,13 @@ If you wish to allow use of your version of these files only under the terms of 
       <OutDir Value="languages"/>
     </i18n>
     <Type Value="RunAndDesignTime"/>
-    <RequiredPkgs Count="3">
+    <RequiredPkgs Count="2">
       <Item1>
-        <PackageName Value="IDEIntf"/>
+        <PackageName Value="LCL"/>
       </Item1>
       <Item2>
-        <PackageName Value="LCL"/>
-      </Item2>
-      <Item3>
         <PackageName Value="LazUtils"/>
-      </Item3>
+      </Item2>
     </RequiredPkgs>
     <UsageOptions>
       <UnitPath Value="$(PkgOutDir)"/>
