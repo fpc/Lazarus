@@ -120,8 +120,8 @@ begin
     Result:=rsLanguageArabic
   else if CompareText(ID,'pt_BR')=0 then
     Result:=rsLanguagePortugueseBr
-  else if CompareText(ID,'pt')=0 then
-    Result:=rsLanguagePortuguese
+//  else if CompareText(ID,'pt')=0 then
+//    Result:=rsLanguagePortuguese
   else if CompareText(ID,'uk')=0 then
     Result:=rsLanguageUkrainian
   else if CompareText(ID,'nl')=0 then
