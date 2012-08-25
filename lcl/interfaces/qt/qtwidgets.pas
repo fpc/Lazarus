@@ -8145,7 +8145,7 @@ begin
     QTextCursor_movePosition(QtCursor, QTextCursorEnd,
         QTextCursorMoveAnchor, 1);
     QTextCursor_insertBlock(QtCursor);
-    QTextEdit_insertPlainText(QTextEditH(Widget), @AText);
+    QTextCursor_insertText(QtCursor, @AText);
     QTextCursor_endEditBlock(QtCursor);
   finally
     QTextCursor_destroy(QtCursor);
