@@ -655,6 +655,7 @@ begin
         inc(c);
       end
       else
+      if FText[i] <> ')' then
         exit; // Todo error
 
       SkipSpace(i);
