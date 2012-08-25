@@ -385,6 +385,7 @@ begin
   end;
 
   W := TIdeMacroEventWriter.Create;
+  W.UseLineFeed := True;
   try
     if Assigned(fEvents) then
     begin
