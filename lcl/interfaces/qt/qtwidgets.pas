@@ -818,6 +818,7 @@ type
     function getSelectionStart: Integer;
     function getSelectionEnd: Integer;
     function getSelectionLength: Integer;
+    procedure appendLine(AText: WideString);
     procedure insertLine(const AIndex: integer; AText: WideString);
     function isUndoAvailable: Boolean;
     procedure removeLine(const AIndex: integer);
@@ -8129,6 +8130,29 @@ begin
   {$note implement TQtTextEdit.setMaxLength}
 end;
 
+procedure TQtTextEdit.appendLine(AText: WideString);
+var
+  QtCursor: QTextCursorH;
+  WrapMode: QTextEditLineWrapMode;
+begin
+  WrapMode := QTextEdit_lineWrapMode(QTextEditH(Widget));
+  {we must remove wrapping to get correct line !}
+  setLineWrapMode(QTextEditNoWrap);
+  QtCursor := QTextCursor_create();
+  try
+    QTextEdit_textCursor(QTextEditH(Widget), QtCursor);
+    QTextCursor_beginEditBlock(QtCursor);
+    QTextCursor_movePosition(QtCursor, QTextCursorEnd,
+        QTextCursorMoveAnchor, 1);
+    QTextCursor_insertBlock(QtCursor);
+    QTextCursor_endEditBlock(QtCursor);
+    QTextEdit_insertPlainText(QTextEditH(Widget), @AText);
+  finally
+    QTextCursor_destroy(QtCursor);
+    setLineWrapMode(WrapMode);
+  end;
+end;
+
 procedure TQtTextEdit.insertLine(const AIndex: integer; AText: WideString);
 var
   QtCursor: QTextCursorH;
@@ -8141,15 +8165,33 @@ begin
   try
     QTextEdit_textCursor(QTextEditH(Widget), QtCursor);
     QTextCursor_beginEditBlock(QtCursor);
-    QTextCursor_movePosition(QtCursor, QTextCursorStart,
-      QTextCursorMoveAnchor, 1);
-    QTextCursor_movePosition(QtCursor, QTextCursorStartOfLine,
-      QTextCursorMoveAnchor, 1);
+    // QTextCursor slowness
+    // https://bugreports.qt-project.org/browse/QTBUG-3554
+    // differentiate append vs. insert issue #22715
+    if AIndex >= FList.Count - 1 then
+    begin
+      QTextCursor_movePosition(QtCursor, QTextCursorEnd,
+        QTextCursorMoveAnchor, 1);
+      QTextCursor_insertBlock(QtCursor);
+    end else
+    begin
+      QTextCursor_movePosition(QtCursor, QTextCursorStart,
+        QTextCursorMoveAnchor, 1);
+      QTextCursor_movePosition(QtCursor, QTextCursorStartOfLine,
+        QTextCursorMoveAnchor, 1);
+    end;
+
     QTextCursor_movePosition(QtCursor, QTextCursorDown,
       QTextCursorMoveAnchor, AIndex);
-    QTextCursor_insertBlock(QtCursor);
-    QTextCursor_movePosition(QtCursor, QTextCursorUp,
-      QTextCursorMoveAnchor, 1);
+    // QTextCursor slowness
+    // https://bugreports.qt-project.org/browse/QTBUG-3554
+    // differentiate append vs. insert issue #22715
+    if AIndex < FList.Count - 1 then
+    begin
+      QTextCursor_insertBlock(QtCursor);
+      QTextCursor_movePosition(QtCursor, QTextCursorUp,
+        QTextCursorMoveAnchor, 1);
+    end;
     QTextCursor_insertText(QtCursor, @AText);
     QTextCursor_endEditBlock(QtCursor);
   finally
