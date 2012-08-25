@@ -629,6 +629,13 @@ Name: {app}\components\synedit\units\x86_64-win64\synregexpr.o; Type: files
 Name: {app}\components\synedit\units\x86_64-win64\synregexpr.ppu; Type: files
 Name: {app}\components\synedit\units\x86_64-win64\syntextdrawer.o; Type: files
 Name: {app}\components\synedit\units\x86_64-win64\syntextdrawer.ppu; Type: files
+Name: {app}\components\synedit\units\x86_64-win64\win32\syndesignstringconstants.o
+Name: {app}\components\synedit\units\x86_64-win64\win32\syndesignstringconstants.ppu
+Name: {app}\components\synedit\units\x86_64-win64\win32\syneditlazdsgn.o
+Name: {app}\components\synedit\units\x86_64-win64\win32\syneditlazdsgn.ppu
+Name: {app}\components\synedit\units\x86_64-win64\win32\synpropertyeditobjectlist.lfm
+Name: {app}\components\synedit\units\x86_64-win64\win32\synpropertyeditobjectlist.o
+Name: {app}\components\synedit\units\x86_64-win64\win32\synpropertyeditobjectlist.ppu
 Name: {app}\components\tachart\demo\3d\main.lrs; Type: files
 Name: {app}\components\tachart\demo\basic\unit1.lrs; Type: files
 Name: {app}\components\tachart\demo\chartsource\main.lrs; Type: files
