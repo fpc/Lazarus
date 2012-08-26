@@ -1,0 +1,58 @@
+<?xml version="1.0"?>
+<CONFIG>
+  <Package Version="4">
+    <PathDelim Value="\"/>
+    <Name Value="EditorMacroScript"/>
+    <CompilerOptions>
+      <Version Value="11"/>
+      <PathDelim Value="\"/>
+      <SearchPaths>
+        <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
+      </SearchPaths>
+      <Other>
+        <CompilerMessages>
+          <MsgFileName Value=""/>
+        </CompilerMessages>
+        <CompilerPath Value="$(CompPath)"/>
+      </Other>
+    </CompilerOptions>
+    <Description Value="IDE-Extension: Adds PascalScript to editor-macros"/>
+    <License Value="GPL"/>
+    <Files Count="3">
+      <Item1>
+        <Filename Value="registerems.pas"/>
+        <HasRegisterProc Value="True"/>
+        <UnitName Value="RegisterEMS"/>
+      </Item1>
+      <Item2>
+        <Filename Value="emscriptmacro.pas"/>
+        <UnitName Value="EMScriptMacro"/>
+      </Item2>
+      <Item3>
+        <Filename Value="emscriptclasses.pas"/>
+        <UnitName Value="emscriptclasses"/>
+      </Item3>
+    </Files>
+    <Type Value="RunAndDesignTime"/>
+    <RequiredPkgs Count="3">
+      <Item1>
+        <PackageName Value="IDEIntf"/>
+      </Item1>
+      <Item2>
+        <PackageName Value="pascalscript"/>
+      </Item2>
+      <Item3>
+        <PackageName Value="FCL"/>
+      </Item3>
+    </RequiredPkgs>
+    <UsageOptions>
+      <UnitPath Value="$(PkgOutDir)"/>
+    </UsageOptions>
+    <PublishOptions>
+      <Version Value="2"/>
+    </PublishOptions>
+    <CustomOptions Items="ExternHelp" Version="2">
+      <_ExternHelp Items="Count"/>
+    </CustomOptions>
+  </Package>
+</CONFIG>
