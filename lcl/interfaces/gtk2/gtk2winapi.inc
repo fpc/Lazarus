@@ -9723,7 +9723,11 @@ begin
     (DevCtx.CurrentBackColor.Colormap <> nil) then
   begin
     EnsureGCColor(DC, dccCurrentBackColor, DevCtx.GDIObjects[gdiBrush]^.GDIBrushFill = GDK_SOLID, True);
-    BackGroundColor := @DevCtx.CurrentBackColor.Color;
+    //do not set BackGroundColor if CurrentBrush.Color = CurrentBackColor.
+    //issue #22719
+    if TGDKColorToTColor(DevCtx.CurrentBackColor.Color) <>
+      TGDKColorToTColor(DevCtx.GetBrush^.GDIBrushColor.Color) then
+      BackGroundColor := @DevCtx.CurrentBackColor.Color;
   end;
 
   DevCtx.DrawTextWithColors(Str, Count,
