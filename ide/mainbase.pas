@@ -124,7 +124,6 @@ type
     procedure DoMnuWindowClicked(Sender: TObject);
     procedure mnuWindowItemClick(Sender: TObject); virtual;
     procedure mnuWindowSourceItemClick(Sender: TObject); virtual;
-    procedure OnMainBarDestroy(Sender: TObject); virtual;
 
     procedure ConnectOutputFilter;
 
@@ -219,11 +218,6 @@ begin
   if (i<0) or (i>=SourceEditorManager.SourceEditorCount) then exit;
   SourceEditorManager.ActiveEditor := SourceEditorManager.SourceEditors[i];
   SourceEditorManager.ShowActiveWindowOnTop(True);
-end;
-
-procedure TMainIDEBase.OnMainBarDestroy(Sender: TObject);
-begin
-  //writeln('TMainIDEBase.OnMainBarDestroy');
 end;
 
 procedure TMainIDEBase.ConnectOutputFilter;

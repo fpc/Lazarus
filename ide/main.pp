@@ -1472,7 +1472,6 @@ begin
 
   // build and position the MainIDE form
   Application.CreateForm(TMainIDEBar,MainIDEBar);
-  MainIDEBar.OnDestroy:=@OnMainBarDestroy;
   MainIDEBar.OnActive:=@OnMainBarActive;
 
   AMenuHeight := LCLIntf.GetSystemMetrics(SM_CYMENU);
@@ -1588,8 +1587,10 @@ begin
   DebugLn('[TMainIDE.Destroy] A ');
 
   {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.Destroy A ');{$ENDIF}
-  if Assigned(MainIDEBar) then
+  if Assigned(MainIDEBar) then begin
     MainIDEBar.DisableAutoSizing{$IFDEF DebugDisableAutoSizing}('TMainIDE.Destroy'){$ENDIF};
+    MainIDEBar.OnActive:=nil;
+  end;
 
   if DebugBoss<>nil then DebugBoss.EndDebugging;
 
@@ -17893,8 +17894,8 @@ var
   i, FormCount: integer;
   AForm: TCustomForm;
 begin
-   if EnvironmentOptions.SingleTaskBarButton and not FApplicationIsActivate
-   and (MainIDEBar.WindowState=wsNormal) then
+  if EnvironmentOptions.SingleTaskBarButton and not FApplicationIsActivate
+  and (MainIDEBar.WindowState=wsNormal) then
   begin
     FApplicationIsActivate:=true;
     FormCount:=0;
