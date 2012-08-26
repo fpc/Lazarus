@@ -388,6 +388,7 @@ type
     function  GetMacroName: String; virtual; abstract;
     procedure SetMacroName(AValue: string); virtual; abstract;
     function  GetState: TEditorMacroState; virtual; abstract;
+    function GetErrorMsg: String; virtual;
     function GetDefaultKeyBinding: TEditorMacroKeyBinding;
     function GetKeyBinding: TEditorMacroKeyBinding; virtual; abstract;
 
@@ -417,6 +418,7 @@ type
 
     property  MacroName: String read GetMacroName write SetMacroNameFull;
     property  State: TEditorMacroState read GetState;
+    property  ErrorMsg: String read GetErrorMsg;
     property  OnStateChange: TNotifyEvent read FOnStateChange write FOnStateChange;
     property  OnChange: TNotifyEvent read FOnChange write FOnChange;            // Name, body
     property  KeyBinding: TEditorMacroKeyBinding read GetKeyBinding;
@@ -652,6 +654,11 @@ begin
   SetMacroName(AValue);
   if KeyBinding <> nil then
     KeyBinding.MacroNameChanged;
+end;
+
+function TEditorMacro.GetErrorMsg: String;
+begin
+  Result := '';
 end;
 
 procedure TEditorMacro.DoChanged;

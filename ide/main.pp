@@ -9273,6 +9273,7 @@ var
   Confirm: Boolean;
   SaveProjectFlags: TSaveFlags;
   WasPascalSource: Boolean;
+  EMacro: TEditorMacro;
 begin
   {$IFDEF IDE_VERBOSE}
   writeln('TMainIDE.DoSaveEditorFile A PageIndex=',PageIndex,' Flags=',SaveFlagsToString(Flags));
@@ -9312,8 +9313,12 @@ begin
 
   if uifEditorMacro in AnUnitInfo.Flags then begin
     // save to macros
-    if MacroListViewer.MacroByFullName(AnUnitInfo.Filename) <> nil then
-      MacroListViewer.MacroByFullName(AnUnitInfo.Filename).SetFromSource(AEditor.SourceText);
+    EMacro := MacroListViewer.MacroByFullName(AnUnitInfo.Filename);
+    if EMacro <> nil then begin
+      EMacro.SetFromSource(AEditor.SourceText);
+      if EMacro.IsInvalid and (EMacro.ErrorMsg <> '') then
+        MessagesView.AddMsg(EMacro.ErrorMsg, '', -1);
+    end;
     MacroListViewer.UpdateDisplay;
     AnUnitInfo.ClearModifieds;
     AEditor.Modified:=false;

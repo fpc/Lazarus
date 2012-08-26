@@ -5,7 +5,7 @@ unit EditorMacroListViewer;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, Laz2_XMLCfg, SynMacroRecorder, SynEdit, SynEditKeyCmds,
+  Classes, SysUtils, FileUtil, Laz2_XMLCfg, LazUTF8, SynMacroRecorder, SynEdit, SynEditKeyCmds,
   FileProcs, Forms, Controls, Dialogs, StdCtrls, ButtonPanel, ComCtrls, ExtCtrls, Spin, Menus,
   LCLType, IDEWindowIntf, IDEImagesIntf, LazarusIDEStrConsts, ProjectDefs, LazConf, Project,
   KeyMapping, KeyMapShortCutDlg, MainIntf, SrcEditorIntf, IDEHelpIntf, IDECommands, LazIDEIntf;
@@ -19,6 +19,7 @@ type
   private
     FMacroName: String;
     FHasError: Boolean;
+    FErrorMsg: String;
     FFailedText: String;
     FSynMacro: TSynEditorMacro;
     FKeyBinding: TEditorMacroKeyBinding;
@@ -30,6 +31,7 @@ type
     function  GetMacroName: String; override;
     procedure SetMacroName(AValue: string); override;
     function  GetState: TEditorMacroState; override;
+    function  GetErrorMsg: String; override;
     function  GetKeyBinding: TEditorMacroKeyBinding; override;
 
     procedure DoRecordMacro(aEditor: TCustomSynEdit); override;
@@ -93,9 +95,11 @@ type
 
   TIdeMacroEventReader = class(TSynMacroEventReader)
   private
+    FErrorText: String;
     FEventName: String;
     FHasError: Boolean;
-    FText: String;
+    FText, FOrigText: String;
+    FPos: Integer;
     FEventCommand: TSynEditorCommand;
     FParams: Array of record
         ParamType: TSynEventParamType;
@@ -106,6 +110,8 @@ type
     function GetParamAsInt(Index: Integer): Integer; override;
     function GetParamAsString(Index: Integer): String; override;
     function GetParamType(Index: Integer): TSynEventParamType; override;
+    function PosToXY: TPoint;
+    function AddError(AMsg: string): Boolean;
   public
     constructor Create(const Atext: String);
     function  EventCommand: TSynEditorCommand; override;
@@ -113,6 +119,7 @@ type
     function  ParseNextEvent: Boolean;
     property  EventName: String read FEventName;
     property  HasError: Boolean read FHasError;
+    property  ErrorText: String read FErrorText;
   end;
 
   { TEditorMacroList }
@@ -523,6 +530,11 @@ begin
   end;
 end;
 
+function TIdeEditorMacro.GetErrorMsg: String;
+begin
+  Result := FErrorMsg;
+end;
+
 function TIdeEditorMacro.GetKeyBinding: TEditorMacroKeyBinding;
 begin
   if FKeyBinding = nil then
@@ -650,6 +662,7 @@ begin
     end;
     if R.HasError then begin
       FHasError := True;
+      FErrorMsg := R.ErrorText;
       FFailedText := AText;
       MacroName := MacroName;
     end;
@@ -679,6 +692,7 @@ begin
 
   if (not FHasError) and (FSynMacro.EventCount = 0) then begin
     FHasError := True;
+    FErrorMsg := 'No content found';
     FFailedText := s;
   end;
 
@@ -711,7 +725,8 @@ begin
   if (Index < 0) or (Index >= Length(FParams)) or (ParamType[Index] <> ptInteger)
   then begin
     FHasError := True;
-    exit; // TODO error
+    AddError('Wrong amount of param');
+    exit;
   end;
 
   Result := FParams[Index].Num;
@@ -722,7 +737,8 @@ begin
   if (Index < 0) or (Index >= Length(FParams)) or (ParamType[Index] <> ptString)
   then begin
     FHasError := True;
-    exit; // TODO error
+    AddError('Wrong amount of param');
+    exit;
   end;
 
   Result := FParams[Index].Text;
@@ -732,16 +748,39 @@ function TIdeMacroEventReader.GetParamType(Index: Integer): TSynEventParamType;
 begin
   if (Index < 0) or (Index >= Length(FParams)) then begin
     FHasError := True;
-    exit; // TODO error
+    AddError('Wrong amount of param');
+    exit;
   end;
 
   Result := FParams[Index].ParamType;
 end;
 
+function TIdeMacroEventReader.PosToXY: TPoint;
+var
+  f: TStringList;
+begin
+  f := TStringList.Create;
+  f.Text := copy(FOrigText,1 ,FPos);
+  Result.y := f.Count;
+  Result.x := length(f[f.Count-1])+1;
+  f.Free;
+end;
+
+function TIdeMacroEventReader.AddError(AMsg: string): Boolean;
+var
+  p: TPoint;
+begin
+  p := PosToXY;
+  FErrorText := FErrorText + Format('Error: %s at Line %d, Column %d', [AMsg, p.y, p.x]);
+  Result := False;
+end;
+
 constructor TIdeMacroEventReader.Create(const Atext: String);
 begin
   FText := Atext;
+  FOrigText := Atext;
   FHasError := False;
+  FErrorText := '';
 end;
 
 function TIdeMacroEventReader.EventCommand: TSynEditorCommand;
@@ -772,19 +811,22 @@ begin
   Result := (FText <> '') and (not FHasError);
   if not Result then exit;
   Result := False;
+  FPos := Length(FOrigText) - Length(FText);
+
   FHasError := True; // Assume the worst
 
   i := 1;
   while (i <= Length(FText)) and (FText[i] in ['a'..'z','A'..'Z','0'..'9','_']) do inc (i);
-  if i = 1 then exit; // Todo error
+  if i = 1 then exit(AddError('Expected Command, but found "'+UTF8Copy(FText,1,1)+'"'));
 
   s := Copy(FText, 1, i-1);
-  if not IdentToEditorCommand(s, j) then exit; // Todo error
+  if not IdentToEditorCommand(s, j) then exit(AddError('Unknown Command "'+s+'"'));
   FEventCommand := j;
   FEventName := s;
 
+  FPos := Length(FOrigText) - Length(FText);
   while (i <= Length(FText)) and (FText[i] in [' ', #9]) do inc (i);
-  if (i > Length(FText)) then exit; // Todo error
+  if (i > Length(FText)) then exit(AddError('Expected "(" or ";" bot got end of file'));
 
   SetLength(FParams, 0);
   c := 0;
@@ -793,7 +835,7 @@ begin
     inc(i);
     repeat
       SkipSpace(i);
-      if (i > Length(FText)) then exit; // Todo error
+      if (i > Length(FText)) then exit(AddError('Unexpected end of file in params'));
 
       if FText[i] in ['0'..'9'] then begin
         // Parse number
@@ -814,7 +856,7 @@ begin
                 j := i;
                 SkipNum(i);
                 k := StrToInt(copy(FText, i, j-i));
-                if k > 255 then exit; // TODO error, todo utf8
+                if k > 255 then exit(AddError('Argument to long'));
                 s := s + chr(k);
               end;
             '''':  begin
@@ -850,24 +892,25 @@ begin
       end
       else
       if FText[i] <> ')' then
-        exit; // Todo error
+        exit(AddError('Unknown Arguent'));
 
       SkipSpace(i);
-      if (i >= Length(FText)) then exit; // Todo error
+      if (i >= Length(FText)) then exit(AddError('Missing ")"'));
       if FText[i] = ')' then break;
-      if not(FText[i] = ',') then exit; // Todo error
+      if not(FText[i] = ',') then exit(AddError('Expected ","'));
       inc(i);
     until i > Length(FText);
     inc(i);
   end;
 
-  if (i > Length(FText)) then exit; // Todo error
+  if (i > Length(FText)) then exit(AddError('Missing ";"'));
   if (FText[i] = ';') then begin
     Delete(FText, 1, i);
     Result := True;
     FHasError := False;
     exit;
   end;
+  AddError('Unknown Error');
 end;
 
 { TSynMacroEventWriter }
