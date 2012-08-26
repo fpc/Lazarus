@@ -204,7 +204,9 @@ type
     FImageSel: Integer;
     FImageErr: Integer;
     FIsPlaying: Boolean;
+    FIgnoreMacroChanges: Boolean;
     procedure DoOnMacroListChange(Sender: TObject);
+    procedure DoMacroContentChanged(Sender: TObject);
     procedure DoMacroStateChanged(Sender: TObject);
     procedure UpdateButtons;
   protected
@@ -305,6 +307,7 @@ begin
   if (EditorMacroForRecording.State = emRecording) and (CurrentRecordingMacro = nil) then begin
     CurrentRecordingMacro := EditorMacroPlayerClass.Create(nil);
     CurrentRecordingMacro.OnStateChange := @MacroListViewer.DoMacroStateChanged;
+    CurrentRecordingMacro.OnChange := @MacroListViewer.DoMacroContentChanged;
     CurrentRecordingMacro.MacroName := Format(lisNewMacroName, [MacroRecCounter]);
     inc(MacroRecCounter);
     EditorMacroListRec.Add(CurrentRecordingMacro);
@@ -316,7 +319,12 @@ end;
 
 procedure LoadProjectSpecificInfo(XMLConfig: TXMLConfig; Merge: boolean);
 begin
-  EditorMacroListProj.ReadFromXmlConf(XMLConfig, '');
+  MacroListViewer.FIgnoreMacroChanges := True;
+  try
+    EditorMacroListProj.ReadFromXmlConf(XMLConfig, '');
+  finally
+    MacroListViewer.FIgnoreMacroChanges := False;
+  end;
 end;
 
 procedure SaveProjectSpecificInfo(XMLConfig: TXMLConfig; Flags: TProjectWriteFlags);
@@ -332,10 +340,15 @@ var
   Filename: String;
   XMLConfig: TXMLConfig;
 begin
-  Filename := TrimFilename(AppendPathDelim(GetPrimaryConfigPath)+GlobalConfFileName);
-  XMLConfig := TXMLConfig.Create(Filename);
-  EditorMacroListGlob.ReadFromXmlConf(XMLConfig, '');
-  XMLConfig.Free;
+  MacroListViewer.FIgnoreMacroChanges := True;
+  try
+    Filename := TrimFilename(AppendPathDelim(GetPrimaryConfigPath)+GlobalConfFileName);
+    XMLConfig := TXMLConfig.Create(Filename);
+    EditorMacroListGlob.ReadFromXmlConf(XMLConfig, '');
+    XMLConfig.Free;
+  finally
+    MacroListViewer.FIgnoreMacroChanges := False;
+  end;
 end;
 
 procedure SaveGlobalInfo;
@@ -482,8 +495,7 @@ end;
 
 procedure TIdeEditorMacro.DoMacroRecorderState(Sender: TObject);
 begin
-  if Assigned(OnStateChange) then
-    OnStateChange(Sender);
+  DoStateChanged;
   CheckStateAndActivated;
 end;
 
@@ -522,6 +534,7 @@ procedure TIdeEditorMacro.SetMacroName(AValue: string);
 begin
   FMacroName := AValue;
   FSynMacro.MacroName := AValue;
+  DoChanged;
 end;
 
 constructor TIdeEditorMacro.Create(aOwner: TComponent);
@@ -553,6 +566,8 @@ begin
     FSynMacro.AssignEventsFrom(TIdeEditorMacro(AMacroRecorder).FSynMacro)
   else
     SetFromSource(AMacroRecorder.GetAsSource);
+
+  DoChanged;
 end;
 
 function TIdeEditorMacro.AddEditor(AValue: TCustomSynEdit): integer;
@@ -588,6 +603,8 @@ end;
 procedure TIdeEditorMacro.Clear;
 begin
   FSynMacro.Clear;
+
+  DoChanged;
 end;
 
 function TIdeEditorMacro.GetAsSource: String;
@@ -639,6 +656,7 @@ begin
   finally
     R.Free;
   end;
+  DoChanged;
 end;
 
 procedure TIdeEditorMacro.WriteToXmlConf(AConf: TXMLConfig; const APath: String);
@@ -666,6 +684,8 @@ begin
 
   if (KeyBinding <> nil) then
     KeyBinding.ReadFromXmlConf(AConf, APath);
+
+  DoChanged;
 end;
 
 function TIdeEditorMacro.IsEmpty: Boolean;
@@ -940,11 +960,8 @@ begin
       end;
     end;
 
-    if s <> '' then begin
+    if s <> '' then
       M.MacroName := s;
-      if CurrentEditorMacroList = EditorMacroListProj then Project1.Modified := True;
-      if CurrentEditorMacroList = EditorMacroListGlob then MainIDEInterface.SaveEnvironment(False);
-    end;
     UpdateDisplay;
   end;
 end;
@@ -1113,6 +1130,7 @@ begin
     try
       NewMacro := EditorMacroPlayerClass.Create(nil);
       NewMacro.OnStateChange := @DoMacroStateChanged;
+      NewMacro.OnChange := @DoMacroContentChanged;
       NewMacro.ReadFromXmlConf(Conf, 'EditorMacros/Macro1/');
       if not NewMacro.IsEmpty then begin
         CurrentEditorMacroList.Add(NewMacro);
@@ -1177,6 +1195,16 @@ begin
 
   if Sender = EditorMacroListProj then
     Project1.SessionModified := True;
+end;
+
+procedure TMacroListView.DoMacroContentChanged(Sender: TObject);
+begin
+  if FIgnoreMacroChanges then exit;
+
+  if EditorMacroListProj.IndexOf(Sender as TEditorMacro) >= 0 then
+    Project1.Modified := True;
+  if EditorMacroListGlob.IndexOf(Sender as TEditorMacro) >= 0 then
+    MainIDEInterface.SaveEnvironment(False);
 end;
 
 procedure TMacroListView.UpdateDisplay;
@@ -1291,6 +1319,8 @@ end;
 constructor TMacroListView.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
+  FIgnoreMacroChanges := False;
+
   Caption := lisEditorMacros;
   EditorMacroListRec.OnChange := @DoOnMacroListChange;
   EditorMacroListProj.OnChange := @DoOnMacroListChange;
@@ -1393,6 +1423,7 @@ begin
   for i := 0 to c -1 do begin
     NewMacro := EditorMacroPlayerClass.Create(nil);
     NewMacro.OnStateChange := @MacroListViewer.DoMacroStateChanged;
+    NewMacro.OnChange := @MacroListViewer.DoMacroContentChanged;
     try
       NewMacro.ReadFromXmlConf(AConf, 'EditorMacros/Macro'+IntToStr(i+1)+'/');
     finally
@@ -1466,7 +1497,9 @@ end;
 {$R *.lfm}
 
 initialization
-  EditorMacroPlayerClass := TIdeEditorMacro;
+  if EditorMacroPlayerClass = nil then
+    EditorMacroPlayerClass := TIdeEditorMacro;
+  if DefaultBindingClass = nil then
   DefaultBindingClass := TIdeEditorMacroKeyBinding;
   EditorMacroListRec := TEditorMacroList.Create;
   EditorMacroListProj := TEditorMacroList.Create;

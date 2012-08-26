@@ -372,9 +372,13 @@ type
 
   TEditorMacro = class
   private
+    FOnChange: TNotifyEvent;
     FOnStateChange: TNotifyEvent;
     procedure SetMacroNameFull(AValue: String);
   protected
+     procedure DoChanged;
+     procedure DoStateChanged;
+
     // (Un)setActivated: Must be called, whenever the state changes
     procedure SetActivated;
     procedure UnsetActivated;
@@ -414,6 +418,7 @@ type
     property  MacroName: String read GetMacroName write SetMacroNameFull;
     property  State: TEditorMacroState read GetState;
     property  OnStateChange: TNotifyEvent read FOnStateChange write FOnStateChange;
+    property  OnChange: TNotifyEvent read FOnChange write FOnChange;            // Name, body
     property  KeyBinding: TEditorMacroKeyBinding read GetKeyBinding;
   end;
 
@@ -426,8 +431,8 @@ var
   // ActiveEditorMacro:
   // Will be set whenever a macro is playing/recording. Ensures only one Macro is active
   ActiveEditorMacro: TEditorMacro = nil;
-  DefaultBindingClass: TEditorMacroKeyBindingClass;
-  EditorMacroPlayerClass: TEditorMacroClass;
+  DefaultBindingClass: TEditorMacroKeyBindingClass = nil;
+  EditorMacroPlayerClass: TEditorMacroClass = nil;
 
 type
   { TIDEInteractiveStringValue }
@@ -647,6 +652,18 @@ begin
   SetMacroName(AValue);
   if KeyBinding <> nil then
     KeyBinding.MacroNameChanged;
+end;
+
+procedure TEditorMacro.DoChanged;
+begin
+  if Assigned(FOnChange) then
+    FOnChange(Self);
+end;
+
+procedure TEditorMacro.DoStateChanged;
+begin
+  if Assigned(FOnStateChange) then
+    FOnStateChange(Self);
 end;
 
 procedure TEditorMacro.SetActivated;
