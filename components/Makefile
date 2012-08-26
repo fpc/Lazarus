@@ -1508,11 +1508,13 @@ bigide:
 	$(MAKE) -C externhelp
 	$(MAKE) -C tdbf
 	$(MAKE) -C sqldb
+	$(MAKE) -C synedit/design
 all: bigide
 clean:
 	$(MAKE) -C lazutils clean
 	$(MAKE) -C codetools clean
 	$(MAKE) -C synedit clean
+	$(MAKE) -C synedit/design clean
 	$(MAKE) -C lazcontrols clean
 	$(MAKE) -C rtticontrols clean
 	$(MAKE) -C printers clean
