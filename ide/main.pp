@@ -8802,7 +8802,7 @@ begin
     SrcNotebook := SourceEditorManager.SourceWindows[WindowIndex];
 
   // get syntax highlighter type
-  if (uifEditorMacro in AnUnitInfo.Flags) then
+  if (uifInternalFile in AnUnitInfo.Flags) then
     AnUnitInfo.UpdateDefaultHighlighter(lshFreePascal)
   else
     AnUnitInfo.UpdateDefaultHighlighter(FilenameToLazSyntaxHighlighter(AFilename));
@@ -9311,7 +9311,9 @@ begin
   if not (sfProjectSaving in Flags) then
     SaveSourceEditorChangesToCodeCache(nil);
 
-  if uifEditorMacro in AnUnitInfo.Flags then begin
+  if (uifInternalFile in AnUnitInfo.Flags) and
+     (copy(AnUnitInfo.Filename, 1, length(EditorMacroVirtualDrive)) = EditorMacroVirtualDrive)
+  then begin
     // save to macros
     EMacro := MacroListViewer.MacroByFullName(AnUnitInfo.Filename);
     if EMacro <> nil then begin
@@ -9726,7 +9728,7 @@ begin
     UnitIndex:=Project1.IndexOfFilename(AFilename);
     if (UnitIndex > 0) then begin
       NewUnitInfo:=Project1.Units[UnitIndex];
-      if (uifEditorMacro in NewUnitInfo.Flags) and
+      if (uifInternalFile in NewUnitInfo.Flags) and
          (NewUnitInfo.OpenEditorInfoCount > 0)
       then begin
         NewEditorInfo := NewUnitInfo.OpenEditorInfo[0];
@@ -9739,7 +9741,9 @@ begin
     end;
   end;
 
-  if (ofEditorMacro in Flags) then begin
+  if (ofInternalFile in Flags) and
+     (copy(AFileName, 1, length(EditorMacroVirtualDrive)) = EditorMacroVirtualDrive)
+  then begin
     FilenameNoPath := AFileName;
 
     UnitIndex:=Project1.IndexOfFilename(AFilename);
@@ -9755,7 +9759,7 @@ begin
     else begin
       NewUnitInfo:=Project1.Units[UnitIndex];
     end;
-    NewUnitInfo.Flags := NewUnitInfo.Flags + [uifEditorMacro];
+    NewUnitInfo.Flags := NewUnitInfo.Flags + [uifInternalFile];
 
     if NewUnitInfo.OpenEditorInfoCount > 0 then begin
       NewEditorInfo := NewUnitInfo.OpenEditorInfo[0];

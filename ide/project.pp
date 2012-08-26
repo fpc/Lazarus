@@ -160,7 +160,7 @@ type
     uifComponentUsedByDesigner,
     uifComponentIndirectlyUsedByDesigner,
     uifMarked,
-    uifEditorMacro
+    uifInternalFile    // data from an internal source (e.g. an editor macro (pascal script) from memory)
     );
   TUnitInfoFlags = set of TUnitInfoFlag;
 

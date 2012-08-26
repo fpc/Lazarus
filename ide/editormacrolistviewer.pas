@@ -241,6 +241,9 @@ var
   // SelectedEditorMacro: Selected, for playing with default shortcut
   SelectedEditorMacro: TEditorMacro = nil;
 
+const
+  EditorMacroVirtualDrive = '//EMacro:/';
+
 implementation
 
 var
@@ -1064,8 +1067,8 @@ begin
   M := CurrentEditorMacroList.Macros[lbRecordedView.ItemIndex];
   if M = nil then exit;
   LazarusIDE.DoOpenEditorFile(
-    '//EMacro:/'+MacroListToName(CurrentEditorMacroList)+'/'+M.MacroName,
-    -1, -1, [ofVirtualFile, ofEditorMacro]);
+    EditorMacroVirtualDrive+MacroListToName(CurrentEditorMacroList)+'/'+M.MacroName,
+    -1, -1, [ofVirtualFile, ofInternalFile]);
 end;
 
 procedure TMacroListView.btnRecordClick(Sender: TObject);
