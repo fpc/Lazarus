@@ -8,42 +8,7 @@ unit EMScriptClasses;
 interface
 
 uses
-  Classes, SysUtils, SynEdit, uPSCompiler, uPSRuntime;
-
-//type
-(*
-  { TSrcEdit }
-
-  TSrcEdit = class
-  private
-    FSynEdit: TCustomSynEdit;
-    function GetCaretX: Integer;
-    function GetCaretXY: TPoint;
-    function GetCaretY: Integer;
-    function GetLine(Y: Integer): String;
-    function GetLineAtCaret: String;
-    function GetLogicalCaretX: Integer;
-    function GetLogicalCaretXY: TPoint;
-    procedure SetCaretX(AValue: Integer);
-    procedure SetCaretXY(AValue: TPoint);
-    procedure SetCaretY(AValue: Integer);
-    procedure SetLogicalCaretX(AValue: Integer);
-    procedure SetLogicalCaretXY(AValue: TPoint);
-  public
-    // Method for macro use
-    property CaretXY: TPoint read GetCaretXY write SetCaretXY;
-    property CaretX: Integer read GetCaretX write SetCaretX;
-    property CaretY: Integer read GetCaretY write SetCaretY;
-    property LogicalCaretXY: TPoint read GetLogicalCaretXY write SetLogicalCaretXY;
-    property LogicalCaretX: Integer read GetLogicalCaretX write SetLogicalCaretX;
-    property Line[Y: Integer]: String read GetLine;
-    property LineAtCaret: String read GetLineAtCaret;
-  public
-    // Method  NOT  for macro use
-    constructor Create(ASynEdit: TCustomSynEdit);
-    property SynEdit: TCustomSynEdit read FSynEdit write FSynEdit;
-  end;
-*)
+  Classes, SysUtils, SynEdit, SynEditTypes, uPSCompiler, uPSRuntime;
 
 procedure CompRegisterTSynEdit(Cl: TPSPascalCompiler);
 procedure ExecRegisterTSynEdit(cl: TPSRuntimeClassImporter);
@@ -78,15 +43,52 @@ begin   Self.LogicalCaretXY := Point(I, Self.CaretY);   end;
 procedure TSynEdit_LogicalCaretX_R(Self: TSynEdit; var I: Integer);
 begin   I := Self.LogicalCaretXY.X;   end;
 
+
+procedure TSynEdit_BlockBegin_W(Self: TSynEdit; const P: TPoint);
+begin   Self.BlockBegin := P;   end;
+procedure TSynEdit_BlockBegin_R(Self: TSynEdit; var P: TPoint);
+begin   P := Self.BlockBegin;   end;
+
+procedure TSynEdit_BlockEnd_W(Self: TSynEdit; const P: TPoint);
+begin   Self.BlockEnd := P;   end;
+procedure TSynEdit_BlockEnd_R(Self: TSynEdit; var P: TPoint);
+begin   P := Self.BlockEnd;   end;
+
+procedure TSynEdit_SelAvail_R(Self: TSynEdit; var V: Boolean);
+begin   V := Self.SelAvail;   end;
+
+procedure TSynEdit_SelText_W(Self: TSynEdit; const S: String);
+begin   Self.SelText := S;   end;
+procedure TSynEdit_SelText_R(Self: TSynEdit; var S: String);
+begin   S := Self.SelText;   end;
+
+procedure TSynEdit_SelectionMode_W(Self: TSynEdit; const M: TSynSelectionMode);
+begin   Self.SelectionMode := M;   end;
+procedure TSynEdit_SelectionMode_R(Self: TSynEdit; var M: TSynSelectionMode);
+begin   M := Self.SelectionMode;   end;
+
+
 procedure TSynEdit_Lines_R(Self: TSynEdit; var S: string; I: Longint);
 begin   S := Self.Lines[I];   end;
 
 procedure TSynEdit_LineAtCaret_R(Self: TSynEdit; var S: string);
-begin   S := Self.Lines[Self.CaretY-1];   end;
+begin
+  S := Self.Lines[Self.CaretY-1];
+end;
 
 
 procedure CompRegisterTSynEdit(Cl: TPSPascalCompiler);
 begin
+  cl.AddTypeS('TPoint', 'record x,y: Longint; end;');
+  CL.AddTypeS('TSynSelectionMode', '(smNormal, smLine, smColumn, smCurrent)');
+  CL.AddTypeS('TSynSearchOption',
+              '(ssoMatchCase, ssoWholeWord, ssoBackwards, ssoEntireScope, ' +
+              'ssoSelectedOnly, ssoReplace, ssoReplaceAll, ssoPrompt, ' +
+              'ssoSearchInReplacement, ssoRegExpr, ssoRegExprMultiLine, ssoFindContinue)'
+  );
+  CL.AddTypeS('TSynSearchOptions', 'set of TSynSearchOption');
+
+
   with Cl.AddClassN(cl.FindClass('TOBJECT'), 'TSynEdit') do
   begin
     RegisterProperty('CaretXY', 'TPoint', iptRW);
@@ -94,9 +96,19 @@ begin
     RegisterProperty('CaretY',  'Integer', iptRW);
     RegisterProperty('LogicalCaretXY', 'TPoint', iptRW);
     RegisterProperty('LogicalCaretX',  'Integer', iptRW);
-    RegisterProperty('Lines', 'String Integer', iptR);
 
-    RegisterProperty('LineAtCaret', 'String', iptR);
+    RegisterProperty('BlockBegin', 'TPoint', iptRW);
+    RegisterProperty('BlockEnd',   'TPoint', iptRW);
+    RegisterProperty('SelAvail',   'Boolean', iptR);
+    RegisterProperty('SelText',    'string', iptRW);
+    RegisterProperty('SelectionMode', 'TSynSelectionMode', iptRW);
+
+    RegisterProperty('Lines', 'String Integer', iptR);
+    RegisterProperty('LineAtCaret', 'String', iptR); // LineText
+
+    RegisterMethod('function SearchReplace(const ASearch, AReplace: string; AOptions: TSynSearchOptions): integer;');
+    RegisterMethod('function SearchReplaceEx(const ASearch, AReplace: string; AOptions: TSynSearchOptions; AStart: TPoint): integer;');
+
   end;
 end;
 
@@ -111,83 +123,21 @@ begin
     RegisterPropertyHelper(@TSynEdit_CaretY_R,  @TSynEdit_CaretY_W,  'CARETY');
     RegisterPropertyHelper(@TSynEdit_LogicalCaretXY_R, @TSynEdit_LogicalCaretXY_W, 'LOGICALCARETXY');
     RegisterPropertyHelper(@TSynEdit_LogicalCaretX_R,  @TSynEdit_LogicalCaretX_W,  'LOGICALCARETX');
+
+    RegisterPropertyHelper(@TSynEdit_BlockBegin_R, @TSynEdit_BlockBegin_W, 'BLOCKBEGIN');
+    RegisterPropertyHelper(@TSynEdit_BlockEnd_R,   @TSynEdit_BlockEnd_W,   'BLOCKEND');
+    RegisterPropertyHelper(@TSynEdit_SelAvail_R,   nil,                    'SELAVAIL');
+    RegisterPropertyHelper(@TSynEdit_SelText_R,    @TSynEdit_SelText_W,    'SELTEXT');
+    RegisterPropertyHelper(@TSynEdit_SelectionMode_R, @TSynEdit_SelectionMode_W, 'SELECTIONMODE');
+
     RegisterPropertyHelper(@TSynEdit_Lines_R, nil, 'LINES');
-
     RegisterPropertyHelper(@TSynEdit_LineAtCaret_R, nil, 'LINEATCARET');
+
+    RegisterMethod(@TSynEdit.SearchReplace, 'SEARCHREPLACE');
+    RegisterMethod(@TSynEdit.SearchReplaceEx, 'SEARCHREPLACEEX');
   end;
 end;
 
-{ TSynEdit }
-(*
-function TSynEdit.GetCaretXY: TPoint;
-begin
-  Result := SynEdit.CaretXY;
-end;
-
-function TSynEdit.GetCaretX: Integer;
-begin
-  Result := SynEdit.CaretX;
-end;
-
-function TSynEdit.GetCaretY: Integer;
-begin
-  Result := SynEdit.CaretY;
-end;
-
-function TSynEdit.GetLine(Y: Integer): String;
-begin
-  if Y >= SynEdit.Lines.Count then begin
-    Result := '';
-    exit;
-  end;
-  Result := SynEdit.Lines[Y - 1];
-end;
-
-function TSynEdit.GetLineAtCaret: String;
-begin
-  Result := GetLine(SynEdit.CaretY);
-end;
-
-function TSynEdit.GetLogicalCaretX: Integer;
-begin
-  Result := SynEdit.LogicalCaretXY.X;
-end;
-
-function TSynEdit.GetLogicalCaretXY: TPoint;
-begin
-  Result := SynEdit.LogicalCaretXY;
-end;
-
-procedure TSynEdit.SetCaretX(AValue: Integer);
-begin
-  SynEdit.CaretX := AValue;
-end;
-
-procedure TSynEdit.SetCaretXY(AValue: TPoint);
-begin
-  SynEdit.CaretXY := AValue;
-end;
-
-procedure TSynEdit.SetCaretY(AValue: Integer);
-begin
-  SynEdit.CaretY := AValue;
-end;
-
-procedure TSynEdit.SetLogicalCaretX(AValue: Integer);
-begin
-  SynEdit.LogicalCaretXY := Point(AValue, SynEdit.CaretY);;
-end;
-
-procedure TSynEdit.SetLogicalCaretXY(AValue: TPoint);
-begin
-  SynEdit.LogicalCaretXY := AValue;
-end;
-
-constructor TSynEdit.Create(ASynEdit: TCustomSynEdit);
-begin
-  FSynEdit := ASynEdit;
-end;
-*)
 
 end.
 
