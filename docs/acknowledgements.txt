@@ -1,4 +1,4 @@
-#Lazarus is using following third party libraries and tools
+﻿#Lazarus is using following third party libraries and tools
 
 
 #Component libraries:
@@ -14,3 +14,9 @@ http://www.famfamfam.com/lab/icons/silk/
 
 Tango Icon Library 
 http://tango.freedesktop.org/Tango_Icon_Library
+
+
+#RemObjects Pascal Script 
+Created by Carlo Kok / RemObjects Software
+Fixed for Lazarus by Bogusіaw Brandys
+http://www.remobjects.com/ps.aspx
