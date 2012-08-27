@@ -3,6 +3,7 @@
   <Package Version="4">
     <PathDelim Value="\"/>
     <Name Value="EditorMacroScript"/>
+    <Author Value="M Friebe"/>
     <CompilerOptions>
       <Version Value="11"/>
       <PathDelim Value="\"/>
@@ -16,7 +17,11 @@
         <CompilerPath Value="$(CompPath)"/>
       </Other>
     </CompilerOptions>
-    <Description Value="IDE-Extension: Adds PascalScript to editor-macros"/>
+    <Description Value="IDE-Extension: Adds PascalScript to editor-macros. 
+
+This package requires: PascalScript fron REM Objects (http://www.remobjects.com/ps.aspx)
+
+Extends the Editors macro recorder and player. Macros can be written in pascal script. They also have access to additional properties and methods."/>
     <License Value="GPL"/>
     <Files Count="3">
       <Item1>
