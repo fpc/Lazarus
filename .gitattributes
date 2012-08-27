@@ -2594,6 +2594,7 @@ components/sqlite/tsqlitedataset.png -text
 components/synedit/Makefile.compiled svneol=native#text/plain
 components/synedit/allsynedit.pas svneol=native#text/plain
 components/synedit/design/Makefile svneol=native#text/plain
+components/synedit/design/Makefile.compiled svneol=native#text/plain
 components/synedit/design/Makefile.fpc svneol=native#text/plain
 components/synedit/design/README.txt svneol=native#text/plain
 components/synedit/design/allsyneditdsgn.pas svneol=native#text/pascal
