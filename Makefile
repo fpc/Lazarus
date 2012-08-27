@@ -2805,8 +2805,8 @@ lcl:
 	$(MAKE) -C lcl
 basecomponents:
 	$(MAKE) -C components/lazcontrols
-	$(MAKE) -C ideintf
 	$(MAKE) -C components/synedit
+	$(MAKE) -C ideintf
 bigidecomponents:
 	$(MAKE) -C components bigide
 tools:
@@ -2827,8 +2827,8 @@ lazbuild: registration lazutils codetools
 	$(MAKE) -C lcl LCL_PLATFORM=nogui
 	$(MAKE) -C tools
 	$(MAKE) -C components/lazcontrols LCL_PLATFORM=nogui
-	$(MAKE) -C ideintf LCL_PLATFORM=nogui
 	$(MAKE) -C components/synedit LCL_PLATFORM=nogui
+	$(MAKE) -C ideintf LCL_PLATFORM=nogui
 	$(MAKE) -C ide lazbuilder LCL_PLATFORM=nogui
 lhelp:
 	$(MAKE) -C components/chmhelp/lhelp
