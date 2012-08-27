@@ -2,7 +2,7 @@
 #
 #   Makefile.fpc for TurboPowerIPro 1.0
 #
-#   This file was generated on 9-4-12
+#   This file was generated on 27/08/2012
 
 [package]
 name=turbopoweripro
@@ -10,7 +10,7 @@ version=1.0
 
 [compiler]
 unittargetdir=units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM)
-unitdir=../printers/lib/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../../packager/units/$(CPU_TARGET)-$(OS_TARGET) .
+unitdir=../printers/lib/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) C:/lazarus/lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) C:/lazarus/lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) C:/lazarus/packager/units/$(CPU_TARGET)-$(OS_TARGET) .
 options= -MObjFPC -Scgi -O1 -g -gl -vewni -l -dLCL -dLCL$(LCL_PLATFORM)
 
 [target]
