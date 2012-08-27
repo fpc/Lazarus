@@ -376,8 +376,15 @@ begin
   if HandleAllocated then
   begin
     if ItemIndex <> -1 then
-      Result := Colors[ItemIndex]
-    else
+    begin
+      Result := Colors[ItemIndex];
+      // keep FSelected in sync
+      if FSelected <> Result then
+      begin
+        // DebugLn('WARNING TCustomColorBox: FSelected out of sync with Colors[0]');
+        FSelected := Result;
+      end;
+    end else
       Result := FSelected;
   end
   else
@@ -432,7 +439,7 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCustomColorBox.SetSelected(Value: TColor);
 begin
-  if Selected = Value then
+  if FSelected = Value then
     Exit;
 
   FSelected := Value;
@@ -620,7 +627,7 @@ begin
   if (cbCustomColor in Style) and (ItemIndex = 0) then // custom color has been selected
     PickCustomColor;
   if ItemIndex <> -1 then
-    FSelected := Colors[ItemIndex];
+    Selected := Colors[ItemIndex];
   inherited CloseUp;
 end;
 
