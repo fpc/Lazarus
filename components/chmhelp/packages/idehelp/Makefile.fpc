@@ -2,7 +2,7 @@
 #
 #   Makefile.fpc for ChmHelpPkg 0.2
 #
-#   This file was generated on 27/08/2012
+#   This file was generated on 27-8-12
 
 [package]
 name=chmhelppkg
@@ -10,7 +10,7 @@ version=0.2
 
 [compiler]
 unittargetdir=lib/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM)
-unitdir=C:/lazarus/ideintf/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) ../help/lib/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) C:/lazarus/lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) C:/lazarus/lcl/units/$(CPU_TARGET)-$(OS_TARGET) C:/lazarus/components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) C:/lazarus/packager/units/$(CPU_TARGET)-$(OS_TARGET) .
+unitdir=../../../../ideintf/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) ../../../lazcontrols/lib/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) ../help/lib/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) ../../../../lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) ../../../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../../../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../../../../packager/units/$(CPU_TARGET)-$(OS_TARGET) .
 options= -MObjFPC -Scgi -O1 -g -gl -vewnhi -l -dLCL -dLCL$(LCL_PLATFORM)
 
 [target]

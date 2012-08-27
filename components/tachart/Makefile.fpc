@@ -2,7 +2,7 @@
 #
 #   Makefile.fpc for TAChartLazarusPkg 1.0
 #
-#   This file was generated on 27/08/2012
+#   This file was generated on 27-8-12
 
 [package]
 name=tachartlazaruspkg
@@ -10,7 +10,7 @@ version=1.0
 
 [compiler]
 unittargetdir=lib/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM)
-unitdir=numlib_fix editors C:/lazarus/ideintf/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) C:/lazarus/lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) C:/lazarus/lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) C:/lazarus/packager/units/$(CPU_TARGET)-$(OS_TARGET) .
+unitdir=numlib_fix editors ../../ideintf/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) ../lazcontrols/lib/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../../packager/units/$(CPU_TARGET)-$(OS_TARGET) .
 options= -MObjFPC -Scgi -Cr -O1 -g -gl -vewnhi -l -dLCL -dLCL$(LCL_PLATFORM)
 
 [target]
