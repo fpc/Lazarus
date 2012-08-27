@@ -1986,7 +1986,6 @@ resourcestring
   dlgShowDebugInfo = 'Show debug info';
   dlgShowUsedFiles = 'Show used files';
   dlgShowTriedFiles = 'Show tried files';
-  dlgShowDefinedMacros = 'Show defined macros';
   dlgShowCompiledProcedures = 'Show compiled procedures';
   dlgShowConditionals = 'Show conditionals';
   dlgShowExecutableInfo = 'Show executable info (Win32 only)';

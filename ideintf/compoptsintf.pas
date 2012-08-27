@@ -138,7 +138,6 @@ type
     procedure SetShowCompProc(const AValue: Boolean);
     procedure SetShowCond(const AValue: Boolean);
     procedure SetShowDebugInfo(const AValue: Boolean);
-    procedure SetShowDefMacros(const AValue: Boolean);
     procedure SetShowErrors(const AValue: Boolean);
     procedure SetShowExecInfo(const AValue: Boolean);
     procedure SetShowGenInfo(const AValue: Boolean);
@@ -245,7 +244,6 @@ type
     fShowDebugInfo: Boolean;
     fShowUsedFiles: Boolean;
     fShowTriedFiles: Boolean;
-    fShowDefMacros: Boolean;
     fShowCompProc: Boolean;
     fShowCond: Boolean;
     fShowExecInfo: Boolean;
@@ -407,7 +405,6 @@ type
     property ShowDebugInfo: Boolean read fShowDebugInfo write SetShowDebugInfo;
     property ShowUsedFiles: Boolean read fShowUsedFiles write SetShowUsedFiles;
     property ShowTriedFiles: Boolean read fShowTriedFiles write SetShowTriedFiles;
-    property ShowDefMacros: Boolean read fShowDefMacros write SetShowDefMacros;
     property ShowCompProc: Boolean read fShowCompProc write SetShowCompProc;
     property ShowCond: Boolean read fShowCond write SetShowCond;
     property ShowExecInfo: Boolean read fShowExecInfo write SetShowExecInfo;
@@ -511,13 +508,6 @@ procedure TLazCompilerOptions.SetShowDebugInfo(const AValue: Boolean);
 begin
   if fShowDebugInfo=AValue then exit;
   fShowDebugInfo:=AValue;
-  IncreaseChangeStamp;
-end;
-
-procedure TLazCompilerOptions.SetShowDefMacros(const AValue: Boolean);
-begin
-  if fShowDefMacros=AValue then exit;
-  fShowDefMacros:=AValue;
   IncreaseChangeStamp;
 end;
 
