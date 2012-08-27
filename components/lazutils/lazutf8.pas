@@ -2995,6 +2995,7 @@ procedure LazGetLanguageIDs(var Lang, FallbackLang: String);
         StrRange.location := 0;
         StrRange.length := CFStringGetLength(Ref);
 
+        StrSize:=0;
         CFStringGetBytes(Ref, StrRange, kCFStringEncodingUTF8,
           Ord('?'), False, nil, 0, StrSize);
         SetLength(Lang, StrSize);
