@@ -25,18 +25,10 @@ help:
 	@$(ECHO)
 	@$(ECHO) " Targets"
 	@$(ECHO) "   all         same as bigide"
-	@$(ECHO) "               lazutils, codetools, lazcontrols, synedit are build separately"
+	@$(ECHO) "               lazutils, codetools, lazcontrols, synedit,
+        @$(ECHO) "               ideintf, syneditdsgn are build separately"
 	@$(ECHO) "   clean       deletes output files of base and bigide components"
 	@$(ECHO) "   bigide      build the extra packages for the bigide"
-
-#-----------------------------------------------------------------------------
-# build synedit and lazcontrols, needed by the minimum IDE
-# lazutils is needed by the LCL, do not build it again
-# (otherwise it will alter the date of lazutils.compiled)
-# codetools is built when building lazbuild, do not build it again
-base:
-	$(MAKE) -C synedit
-	$(MAKE) -C lazcontrols
 
 #-----------------------------------------------------------------------------
 # build the extra packages needed by the bigide
@@ -61,7 +53,6 @@ bigide:
 	$(MAKE) -C externhelp
 	$(MAKE) -C tdbf
 	$(MAKE) -C sqldb
-	$(MAKE) -C synedit/design
 
 all: bigide
 

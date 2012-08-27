@@ -1,12 +1,12 @@
 #   File generated automatically by Lazarus Package Manager
 #
-#   Makefile.fpc for lhelpcontrolpkg 0.1
+#   Makefile.fpc for lhelpcontrolpkg 0.2
 #
-#   This file was generated on 9-4-12
+#   This file was generated on 27-8-12
 
 [package]
 name=lhelpcontrolpkg
-version=0.1
+version=0.2
 
 [compiler]
 unittargetdir=lib/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM)
