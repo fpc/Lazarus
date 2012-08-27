@@ -5,8 +5,8 @@ unit EMScriptMacro;
 interface
 
 uses
-  Classes, SysUtils, SrcEditorIntf, SynEdit, SynEditKeyCmds, EMScriptClasses, Laz2_XMLCfg,
-  LazLoggerBase, uPSCompiler, uPSRuntime, uPSUtils, uPSC_std, uPSR_std;
+  Classes, SysUtils, SrcEditorIntf, Controls, SynEdit, SynEditKeyCmds, EMScriptClasses,
+  Laz2_XMLCfg, LazLoggerBase, uPSCompiler, uPSRuntime, uPSUtils, uPSC_std, uPSR_std;
 
 type
 
@@ -27,8 +27,8 @@ type
     function  GetErrorMsg: String; override;
     function  GetKeyBinding: TEditorMacroKeyBinding; override;
 
-    procedure DoRecordMacro(aEditor: TCustomSynEdit); override;
-    procedure DoPlaybackMacro(aEditor: TCustomSynEdit); override;
+    procedure DoRecordMacro(aEditor: TWinControl); override;
+    procedure DoPlaybackMacro(aEditor: TWinControl); override;
     procedure DoStop; override;
     procedure DoPause; override;
     procedure DoResume; override;
@@ -49,7 +49,7 @@ type
 
     function  IsEmpty: Boolean; override;
     function  IsInvalid: Boolean; override;
-    function  IsRecording(AnEditor: TCustomSynEdit): Boolean; override;
+    function  IsRecording(AnEditor: TWinControl): Boolean; override;
   end;
 
 
@@ -210,12 +210,12 @@ begin
   Result := FKeyBinding;
 end;
 
-procedure TEMSEditorMacro.DoRecordMacro(aEditor: TCustomSynEdit);
+procedure TEMSEditorMacro.DoRecordMacro(aEditor: TWinControl);
 begin
   // Not supported
 end;
 
-procedure TEMSEditorMacro.DoPlaybackMacro(aEditor: TCustomSynEdit);
+procedure TEMSEditorMacro.DoPlaybackMacro(aEditor: TWinControl);
 var
   s: tbtString;
 begin
@@ -233,7 +233,7 @@ begin
     if not TheExec.LoadData(s) then // Load the data from the Data string.
       exit;
 
-    TheExec.SynEdit := aEditor;
+    TheExec.SynEdit := aEditor as TCustomSynEdit;
     TheExec.RunScript
 
   finally
@@ -369,7 +369,7 @@ begin
   Result := FHasError;
 end;
 
-function TEMSEditorMacro.IsRecording(AnEditor: TCustomSynEdit): Boolean;
+function TEMSEditorMacro.IsRecording(AnEditor: TWinControl): Boolean;
 begin
   Result := False;
 end;

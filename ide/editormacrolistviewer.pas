@@ -34,8 +34,8 @@ type
     function  GetErrorMsg: String; override;
     function  GetKeyBinding: TEditorMacroKeyBinding; override;
 
-    procedure DoRecordMacro(aEditor: TCustomSynEdit); override;
-    procedure DoPlaybackMacro(aEditor: TCustomSynEdit); override;
+    procedure DoRecordMacro(aEditor: TWinControl); override;
+    procedure DoPlaybackMacro(aEditor: TWinControl); override;
     procedure DoStop; override;
     procedure DoPause; override;
     procedure DoResume; override;
@@ -54,7 +54,7 @@ type
 
     function  IsEmpty: Boolean; override;
     function  IsInvalid: Boolean; override;
-    function  IsRecording(AnEditor: TCustomSynEdit): Boolean; override;
+    function  IsRecording(AnEditor: TWinControl): Boolean; override;
   end;
 
 
@@ -590,14 +590,14 @@ begin
   Result := FSynMacro.AddEditor(AValue);
 end;
 
-procedure TIdeEditorMacro.DoRecordMacro(aEditor: TCustomSynEdit);
+procedure TIdeEditorMacro.DoRecordMacro(aEditor: TWinControl);
 begin
-  FSynMacro.RecordMacro(aEditor);
+  FSynMacro.RecordMacro(aEditor as TCustomSynEdit);
 end;
 
-procedure TIdeEditorMacro.DoPlaybackMacro(aEditor: TCustomSynEdit);
+procedure TIdeEditorMacro.DoPlaybackMacro(aEditor: TWinControl);
 begin
-  FSynMacro.PlaybackMacro(aEditor);
+  FSynMacro.PlaybackMacro(aEditor as TCustomSynEdit);
 end;
 
 procedure TIdeEditorMacro.DoStop;
@@ -715,7 +715,7 @@ begin
   Result := FHasError;
 end;
 
-function TIdeEditorMacro.IsRecording(AnEditor: TCustomSynEdit): Boolean;
+function TIdeEditorMacro.IsRecording(AnEditor: TWinControl): Boolean;
 begin
   Result := (State in [emRecording, emRecPaused]) and
             (FSynMacro.CurrentEditor = AnEditor);

@@ -35,20 +35,23 @@ Extends the Editors macro recorder and player. Macros can be written in pascal s
       </Item2>
       <Item3>
         <Filename Value="emscriptclasses.pas"/>
-        <UnitName Value="emscriptclasses"/>
+        <UnitName Value="EMScriptClasses"/>
       </Item3>
     </Files>
     <Type Value="RunAndDesignTime"/>
-    <RequiredPkgs Count="3">
+    <RequiredPkgs Count="4">
       <Item1>
-        <PackageName Value="IDEIntf"/>
+        <PackageName Value="synedit"/>
       </Item1>
       <Item2>
-        <PackageName Value="pascalscript"/>
+        <PackageName Value="IDEIntf"/>
       </Item2>
       <Item3>
-        <PackageName Value="FCL"/>
+        <PackageName Value="pascalscript"/>
       </Item3>
+      <Item4>
+        <PackageName Value="FCL"/>
+      </Item4>
     </RequiredPkgs>
     <UsageOptions>
       <UnitPath Value="$(PkgOutDir)"/>

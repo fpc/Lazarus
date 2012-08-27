@@ -2,7 +2,7 @@
 #
 #   Makefile.fpc for IDEIntf 1.0
 #
-#   This file was generated on 26/08/2012
+#   This file was generated on 27/08/2012
 
 [package]
 name=ideintf
@@ -10,7 +10,7 @@ version=1.0
 
 [compiler]
 unittargetdir=units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM)
-unitdir=../components/lazcontrols/lib/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) ../components/synedit/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) ../lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) ../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../packager/units/$(CPU_TARGET)-$(OS_TARGET) .
+unitdir=../components/lazcontrols/lib/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) ../lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) ../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../packager/units/$(CPU_TARGET)-$(OS_TARGET) .
 includedir=images
 options= -MObjFPC -Scghi -O1 -g -gl -vew -l -dLCL -dLCL$(LCL_PLATFORM)
 

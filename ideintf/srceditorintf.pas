@@ -20,7 +20,7 @@ unit SrcEditorIntf;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, FileUtil, Laz2_XMLCfg, SynEdit, LCLType, Forms, Controls,
+  Classes, SysUtils, LCLProc, FileUtil, Laz2_XMLCfg, LCLType, Forms, Controls,
   Graphics, ProjectIntf, IDECommands;
   
 type
@@ -368,7 +368,10 @@ type
 
   TEditorMacroKeyBindingClass = class of TEditorMacroKeyBinding;
 
-  { TEditorMacro }
+  { TEditorMacro
+    "aEditor: TWinControl" must be TCustomSynEdit
+
+  }
 
   TEditorMacro = class
   private
@@ -392,8 +395,8 @@ type
     function GetDefaultKeyBinding: TEditorMacroKeyBinding;
     function GetKeyBinding: TEditorMacroKeyBinding; virtual; abstract;
 
-    procedure DoRecordMacro(aEditor: TCustomSynEdit); virtual; abstract;
-    procedure DoPlaybackMacro(aEditor: TCustomSynEdit); virtual; abstract;
+    procedure DoRecordMacro(aEditor: TWinControl); virtual; abstract;
+    procedure DoPlaybackMacro(aEditor: TWinControl); virtual; abstract;
     procedure DoStop; virtual; abstract;
     procedure DoPause; virtual; abstract;
     procedure DoResume; virtual; abstract;
@@ -405,8 +408,8 @@ type
     function  GetAsSource: String; virtual; abstract;
     procedure SetFromSource(const AText: String); virtual; abstract;
 
-    procedure RecordMacro(aEditor: TCustomSynEdit);
-    procedure PlaybackMacro(aEditor: TCustomSynEdit);
+    procedure RecordMacro(aEditor: TWinControl);
+    procedure PlaybackMacro(aEditor: TWinControl);
     procedure Stop;
     procedure Pause;
     procedure Resume;
@@ -414,7 +417,7 @@ type
     procedure Clear; virtual; abstract;
     function  IsEmpty: Boolean; virtual; abstract;
     function  IsInvalid: Boolean; virtual; abstract;
-    function  IsRecording(AnEditor: TCustomSynEdit): Boolean; virtual; abstract;
+    function  IsRecording(AnEditor: TWinControl): Boolean; virtual; abstract;
 
     property  MacroName: String read GetMacroName write SetMacroNameFull;
     property  State: TEditorMacroState read GetState;
@@ -690,14 +693,14 @@ begin
   Result := ActiveEditorMacro = self;
 end;
 
-procedure TEditorMacro.RecordMacro(aEditor: TCustomSynEdit);
+procedure TEditorMacro.RecordMacro(aEditor: TWinControl);
 begin
   SetActivated;
   DoRecordMacro(aEditor);
   CheckStateAndActivated;
 end;
 
-procedure TEditorMacro.PlaybackMacro(aEditor: TCustomSynEdit);
+procedure TEditorMacro.PlaybackMacro(aEditor: TWinControl);
 begin
   SetActivated;
   DoPlaybackMacro(aEditor);
