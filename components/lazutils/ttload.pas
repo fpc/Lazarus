@@ -25,6 +25,7 @@ Unit TTLoad;
 
 interface
 
+{$R-}
 uses TTTypes, TTTables, TTCMap, TTObjs;
 
  function LookUp_TrueType_Table( face : PFace;
@@ -237,7 +238,7 @@ uses TTError, TTMemory, TTFile;
 
     {$IFDEF FREETYPE_DEBUG} Writeln('Tables number : ', tableDir.numTables ); {$ENDIF}
 
-    TT_Forget_Frame;
+    TT_Forget_Frame();
 
     (* Check that we have a 'sfnt' format there *)
     if (tableDir.version <> $10000   ) and     (* MS fonts  *)
@@ -248,25 +249,20 @@ uses TTError, TTMemory, TTFile;
       exit;
     end;
 
-    with face^ do
+    face^.numTables := tableDir.numTables;
+
+    if Alloc( face^.dirTables, face^.numTables * sizeof( TTableDirEntry ) ) or
+       TT_Access_Frame( 16 * face^.numTables ) then exit;
+
+    for n := 0 to face^.numTables-1 do
     begin
+      face^.dirTables^[n].Tag      := GET_ULong;
+      face^.dirTables^[n].Checksum := GET_ULong;
+      face^.dirTables^[n].Offset   := GET_Long;
+      face^.dirTables^[n].Length   := Get_Long;
+    end;
 
-      numTables := tableDir.numTables;
-
-      if Alloc( dirTables, numTables * sizeof( TTableDirEntry ) ) or
-         TT_Access_Frame( 16 * numTables ) then exit;
-
-      for n := 0 to numTables-1 do with dirTables^[n] do
-      begin
-        Tag        := GET_ULong;
-        Checksum   := GET_ULong;
-        Offset     := GET_Long;
-        Length     := Get_Long;
-      end;
-
-      TT_Forget_Frame;
-
-   end;
+   TT_Forget_Frame();
 
    {$IFDEF FREETYPE_DEBUG} Writeln('loaded'); {$ENDIF}
 

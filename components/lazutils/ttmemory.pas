@@ -65,6 +65,7 @@ interface
 uses TTTypes;
 
 {$I TTCONFIG.INC}
+{$R-}
 
 type
   TMarkRecord = record

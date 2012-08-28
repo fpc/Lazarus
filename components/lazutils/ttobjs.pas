@@ -82,6 +82,7 @@ interface
 {$mode Delphi}
 
 {$I TTCONFIG.INC}
+{$R-}
 
 uses LazFreeType,
      TTTypes,

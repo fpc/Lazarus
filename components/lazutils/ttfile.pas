@@ -47,6 +47,7 @@ Unit TTFile;
 interface
 
 {$I TTCONFIG.INC}
+{$R-}
 
 uses TTTypes,
      TTError;
