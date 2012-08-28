@@ -3,10 +3,11 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"PO-Revision-Date: 2012-8-5 20:15+0900\n"
+"PO-Revision-Date: 2012-08-28 18:30+0900\n"
 "Project-Id-Version: lazaruside.ja\n"
-"Last-Translator: Haruyuki Fujimaki, from r36915\n"
+"Last-Translator: Haruyuki Fujimaki <fujimaki_haruyuki@yahoo.co.jp>\n"
 "Language-Team: Japanese Lazarus ML\n"
+"POT-Creation-Date: \n"
 
 #: lazarusidestrconsts.dbgbreakgroupdlgcaptiondisable
 msgctxt "lazarusidestrconsts.dbgbreakgroupdlgcaptiondisable"
@@ -816,7 +817,7 @@ msgstr "カーソル行を中央に"
 
 #: lazarusidestrconsts.dlgcharcasefileact
 msgid "Save As - auto rename pascal files lower case"
-msgstr "Pascalファイル名を自動的に小文字へリネームして保存"
+msgstr "Pascalファイル名を自動的に小文字へ名称変更して保存"
 
 #: lazarusidestrconsts.dlgcheckconsistency
 msgid "Check consistency"
@@ -2601,10 +2602,9 @@ msgid "Naming"
 msgstr "ネーミング"
 
 #: lazarusidestrconsts.dlgnoautomaticrenaming
-#, fuzzy
 #| msgid "no automatic renaming"
 msgid "No automatic renaming"
-msgstr "r \"自動的にリネームしない"
+msgstr "自動的に名称変更しない"
 
 #: lazarusidestrconsts.dlgnoavailableunits
 msgid "No available units to add."
@@ -4358,15 +4358,15 @@ msgstr "プロジェクトのセッションを保存する前に尋ねる"
 
 #: lazarusidestrconsts.lisaskforcomponentnameafterputtingitonform
 msgid "Ask for component name after putting it on a designer form"
-msgstr "デザイナーフォーム上にコンポーネントを置いた後、その名前を尋ねます"
+msgstr "デザイナーフォーム上にコンポーネントを置いた後、その名前を尋ねる"
 
 #: lazarusidestrconsts.lisaskforfilenameonnewfile
 msgid "Ask for file name on new file"
-msgstr "新しいファイルのファイル名を尋ねます"
+msgstr "新しいファイルのファイル名を尋ねる"
 
 #: lazarusidestrconsts.lisasknameoncreate
 msgid "Ask name on create"
-msgstr "作成時に名前を尋ねます"
+msgstr "作成時に名前を尋ねる"
 
 #: lazarusidestrconsts.lisautocompletionoff
 msgid "Auto completion: off"
@@ -9770,7 +9770,7 @@ msgstr "評価/変更"
 
 #: lazarusidestrconsts.liskmexampleprojects
 msgid "Example Projects"
-msgstr "例プロジェクト"
+msgstr "プロジェクトの例"
 
 #: lazarusidestrconsts.liskmexternaltoolssettings
 msgid "External Tools settings"
@@ -14546,10 +14546,9 @@ msgid "Open &Recent Project"
 msgstr "最近扱ったファイルを開く"
 
 #: lazarusidestrconsts.lispwviewexampleprojects
-#, fuzzy
 #| msgid "View Example Projects"
 msgid "View &Example Projects"
-msgstr "例プロジェクトを表示"
+msgstr "プロジェクトの例を表示"
 
 #: lazarusidestrconsts.lisquickfixcreatelocalvariable
 msgid "Create local variable"
@@ -15534,11 +15533,11 @@ msgstr "編集可能なセル"
 
 #: lazarusidestrconsts.listemplateeditparamcellhelp
 msgid "Inserts an editable Cell. Cells can be navigated using the tab key.%0:sThe \"param\" macro takes a list of comma separated arguments.%0:sThe first argument is the default value.%0:sThe 2nd argument (optional) can be used to link the cell to another cell (syncro edit)%0:s%0:s  while param(\"foo\") do param(foo);%0:sInserts 2 independent cells, both with the default text \"foo\"%0:sThe quotes are optional%0:s%0:s  if param(\"foo\") > 0 and param(\"foo\",sync=1) < 99 then%0:sInserts 2 linked cells, editing either one, will change the other one too%0:sThe value \"1\" refers to the position of the other \"param()\", so if there are more params:%0:s  if param(\"bar\") and param(foo) > 0 and param(foo,sync=2) < 99 then%0:sThe 2nd and third are linked. (the 3rd refers to \"2\") %0:s%0:s\"sync can be shortened to \"s\":%0:s  if param(\"foo\") > 0 and param(\"foo\",s=1) < 99 then%0:s%0:s  if param(\"bar\") and param(\"foo\") > 0 and param(\"foo\",sync) < 99 then%0:sThe 2nd and third are linked.%0:sNote: \"Sync has no position and no \"=\", so it syncs to the previous cell with the same default (in this case \"foo\")"
-msgstr "編集可能なセルを挿入します。セル間はタブキーを使って移動できます。%0:s\"param\"マクロはコンマ区切りの引数のリストを取ります。最初の引数はその既定値です。%0:s2番目の引数（選択可能）はセルを他のセルにリンクするのに使えます（同期編集）。%0:s%0:s例えば、 while param(\"foo\") do param(foo);は %0:s デフォルトのテキスト\"fooを持つ２つの独立したセルを挿入します。%0:s引用符は省略可能です。%0:sまた、例えば、 if param(\"foo\") > 0 and param(\"foo\",sync=1) < 99 thenは片方を編集するともう片方も変更される２つのリンクされたセルを挿入します。%0:s値\"1\"は他の\"param()\"の位置を指していますので、より多くのparamsがある場合、例えば、%0:s if param(\"bar\") and param(foo) > 0 and param(foo,sync=2) < 99 then ２つ目と３つ目はリンクされます（３番目が\"2\"です）。 \"sync \"は \"s\"と短縮できます。%0:s%0:s また、例えば、if param(\"foo\") > 0 and param(\"foo\",s=1) < 99 then%0:s%0:s  if param(\"bar\") and param(\"foo\") > 0 and param(\"foo\",sync) < 99 then%0:sとすれば、２つ目と３つ目がリンクされます。%0:s注意：\"sync \"は位置を持たず、\"=\"を持たないので、以前のセルを同じ既定値 (この場合 \"foo\")に同期します。"
+msgstr "編集可能なセルを挿入します。セル間はタブキーを使って移動できます。%0:s\"param\"マクロはコンマ区切りの引数のリストを取ります。最初の引数はその既定値です。%0:s2番目の引数（選択可能）はセルを他のセルにリンクするのに使えます（同期編集）。%0:s%0:s例えば、 while param(\"foo\") do param(foo);は%0:s デフォルトのテキスト\"foo\"を持つ２つの独立したセルを挿入します。%0:s引用符は省略可能です。%0:sまた、例えば、 if param(\"foo\") > 0 and param(\"foo\",sync=1) < 99 thenは、片方を編集するともう片方も変更される、リンクされた２つのセルを挿入します。%0:s値\"1\"は他の\"param()\"の位置を指していますので、より多くのparamsがある場合、例えば、%0:s if param(\"bar\") and param(foo) > 0 and param(foo,sync=2) < 99 then ２つ目と３つ目はリンクされます（３番目が\"2\"です）。 \"sync \"は \"s\"と短縮できます。%0:s%0:s また、例えば、if param(\"foo\") > 0 and param(\"foo\",s=1) < 99 then%0:s%0:s  if param(\"bar\") and param(\"foo\") > 0 and param(\"foo\",sync) < 99 then%0:sとすれば、２つ目と３つ目がリンクされます。%0:s注意：\"sync \"は位置を持たず、\"=\"を持たないので、以前のセルを同じ既定値 (この場合 \"foo\")に同期します。"
 
 #: lazarusidestrconsts.listestdirectory
 msgid "Test directory"
-msgstr ""
+msgstr "テストディレクトリ"
 
 #: lazarusidestrconsts.listheapplicationbundlewascreatedfor
 msgid "The Application Bundle was created for \"%s\""
