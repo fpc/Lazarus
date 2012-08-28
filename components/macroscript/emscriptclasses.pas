@@ -8,15 +8,15 @@ unit EMScriptClasses;
 interface
 
 uses
-  Classes, SysUtils, SynEdit, SynEditTypes, uPSCompiler, uPSRuntime;
+  Classes, SysUtils, SynEdit, SynEditTypes, Clipbrd, uPSCompiler, uPSRuntime;
 
-procedure CompRegisterTSynEdit(Cl: TPSPascalCompiler);
+procedure CompRegisterTSynEdit(AComp: TPSPascalCompiler);
 procedure ExecRegisterTSynEdit(cl: TPSRuntimeClassImporter);
 
+procedure CompRegisterTClipboard(AComp: TPSPascalCompiler);
+procedure ExecRegisterTClipboard(cl: TPSRuntimeClassImporter; AExec: TPSExec);
 
 implementation
-
-
 
 procedure TSynEdit_CaretXY_W(Self: TSynEdit; const P: TPoint);
 begin   Self.CaretXY := P;   end;
@@ -76,26 +76,27 @@ begin
   S := Self.Lines[Self.CaretY-1];
 end;
 
-
-procedure CompRegisterTSynEdit(Cl: TPSPascalCompiler);
+procedure CompRegisterTSynEdit(AComp: TPSPascalCompiler);
 begin
-  cl.AddTypeS('TPoint', 'record x,y: Longint; end;');
-  CL.AddTypeS('TSynSelectionMode', '(smNormal, smLine, smColumn, smCurrent)');
-  CL.AddTypeS('TSynSearchOption',
+  AComp.AddTypeS('TPoint', 'record x,y: Longint; end;');
+  AComp.AddTypeS('TSynSelectionMode', '(smNormal, smLine, smColumn, smCurrent)');
+  AComp.AddTypeS('TSynSearchOption',
               '(ssoMatchCase, ssoWholeWord, ssoBackwards, ssoEntireScope, ' +
               'ssoSelectedOnly, ssoReplace, ssoReplaceAll, ssoPrompt, ' +
               'ssoSearchInReplacement, ssoRegExpr, ssoRegExprMultiLine, ssoFindContinue)'
   );
-  CL.AddTypeS('TSynSearchOptions', 'set of TSynSearchOption');
+  AComp.AddTypeS('TSynSearchOptions', 'set of TSynSearchOption');
+  AComp.AddTypeS('TSynCaretAdjustMode', '(scamIgnore, scamAdjust, scamEnd, scamBegin)');
 
-
-  with Cl.AddClassN(cl.FindClass('TOBJECT'), 'TSynEdit') do
+  with AComp.AddClassN(nil, 'TSynEdit') do
   begin
     RegisterProperty('CaretXY', 'TPoint', iptRW);
     RegisterProperty('CaretX',  'Integer', iptRW);
     RegisterProperty('CaretY',  'Integer', iptRW);
     RegisterProperty('LogicalCaretXY', 'TPoint', iptRW);
     RegisterProperty('LogicalCaretX',  'Integer', iptRW);
+    RegisterMethod('procedure MoveCaretIgnoreEOL(const NewCaret: TPoint);');
+    RegisterMethod('procedure MoveLogicalCaretIgnoreEOL(const NewLogCaret: TPoint);');
 
     RegisterProperty('BlockBegin', 'TPoint', iptRW);
     RegisterProperty('BlockEnd',   'TPoint', iptRW);
@@ -109,6 +110,7 @@ begin
     RegisterMethod('function SearchReplace(const ASearch, AReplace: string; AOptions: TSynSearchOptions): integer;');
     RegisterMethod('function SearchReplaceEx(const ASearch, AReplace: string; AOptions: TSynSearchOptions; AStart: TPoint): integer;');
 
+    RegisterMethod('procedure InsertTextAtCaret(aText: String; aCaretMode : TSynCaretAdjustMode);'); //  = scamEnd
   end;
 end;
 
@@ -116,13 +118,14 @@ procedure ExecRegisterTSynEdit(cl: TPSRuntimeClassImporter);
 begin
   with Cl.Add(TSynEdit) do
   begin
-    //RegisterConstructor(@TSynEdit.CREATE, 'CREATE');
 
     RegisterPropertyHelper(@TSynEdit_CaretXY_R, @TSynEdit_CaretXY_W, 'CARETXY');
     RegisterPropertyHelper(@TSynEdit_CaretX_R,  @TSynEdit_CaretX_W,  'CARETX');
     RegisterPropertyHelper(@TSynEdit_CaretY_R,  @TSynEdit_CaretY_W,  'CARETY');
     RegisterPropertyHelper(@TSynEdit_LogicalCaretXY_R, @TSynEdit_LogicalCaretXY_W, 'LOGICALCARETXY');
     RegisterPropertyHelper(@TSynEdit_LogicalCaretX_R,  @TSynEdit_LogicalCaretX_W,  'LOGICALCARETX');
+    RegisterMethod(@TSynEdit.MoveCaretIgnoreEOL,        'MOVECARETIGNOREEOL');
+    RegisterMethod(@TSynEdit.MoveLogicalCaretIgnoreEOL, 'MOVELOGICALCARETIGNOREEOL');
 
     RegisterPropertyHelper(@TSynEdit_BlockBegin_R, @TSynEdit_BlockBegin_W, 'BLOCKBEGIN');
     RegisterPropertyHelper(@TSynEdit_BlockEnd_R,   @TSynEdit_BlockEnd_W,   'BLOCKEND');
@@ -135,7 +138,45 @@ begin
 
     RegisterMethod(@TSynEdit.SearchReplace, 'SEARCHREPLACE');
     RegisterMethod(@TSynEdit.SearchReplaceEx, 'SEARCHREPLACEEX');
+
+    RegisterMethod(@TSynEdit.InsertTextAtCaret, 'INSERTTEXTATCARET');
+
   end;
+end;
+
+(*   ClipBoard   *)
+
+function HandleGetClipboard(Caller: TPSExec; p: TPSExternalProcRec; Global, Stack: TPSStack): Boolean;
+var
+  e: TPSExec;
+begin
+  e := TPSExec(p.Ext1);
+  Stack.SetClass(-1, Clipboard);
+end;
+
+procedure TClipboard_AsText_W(Self: TClipboard; const S: String);
+begin   Clipboard.AsText := S;   end;
+procedure TClipboard_AsText_R(Self: TClipboard; var S: String);
+begin   S := Clipboard.AsText;   end;
+
+procedure CompRegisterTClipboard(AComp: TPSPascalCompiler);
+begin
+  with AComp.AddClassN(nil, 'TClipboard') do
+  begin
+    RegisterProperty('AsText', 'String', iptRW);
+  end;
+
+  AComp.AddFunction('function Clipboard: TClipboard;');
+end;
+
+procedure ExecRegisterTClipboard(cl: TPSRuntimeClassImporter; AExec: TPSExec);
+begin
+  with Cl.Add(TClipboard) do
+  begin
+    RegisterPropertyHelper(@TClipboard_AsText_R, @TClipboard_AsText_W, 'ASTEXT');
+  end;
+
+  AExec.RegisterFunctionName('CLIPBOARD', @HandleGetClipboard, AExec, nil);
 end;
 
 

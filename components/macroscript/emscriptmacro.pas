@@ -118,6 +118,7 @@ begin
 
     CompRegisterTSynEdit(TheCompiler);
     Sender.AddFunction('function Caller: TSynEdit;');
+    CompRegisterTClipboard(TheCompiler);
 
     Result := True;
   end else
@@ -129,6 +130,7 @@ begin
   GetEditorCommandValues(@TheExec.AddECFuncToExecEnum);
   ExecRegisterTSynEdit(TheCLassImp);
   TheExec.RegisterFunctionName('CALLER', @HandleGetCaller, TheExec, nil);
+  ExecRegisterTClipboard(TheCLassImp, TheExec);
 end;
 
 
