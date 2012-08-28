@@ -8757,7 +8757,7 @@ begin
   //debugln(['TFindDeclarationTool.GetCurrentAtomType ',CurPos.StartPos,' ',CurPos.EndPos,' ',SrcLen,' ',GetAtom]);
   if (CurPos.StartPos=CurPos.EndPos) then
     Result:=vatSpace
-  else if (CurPos.StartPos>SrcLen) then
+  else if (CurPos.StartPos<1) or (CurPos.StartPos>SrcLen) then
     Result:=vatNone
   else if IsIdentStartChar[Src[CurPos.StartPos]] then begin
     if WordIsPredefinedIdentifier.DoItCaseInsensitive(Src,CurPos.StartPos,
