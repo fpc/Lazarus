@@ -6943,10 +6943,26 @@ var
       exit;
     if (not AtEnd)
     and (Context.Node.Desc in [ctnProperty,ctnGlobalProperty])
-    and Context.Tool.PropertyNodeHasParamList(Context.Node)
     then begin
-      // the parameter list is resolved with the [] operators
-      exit;
+      with Context do begin
+        if Tool.PropNodeIsTypeLess(Node)
+        and Tool.MoveCursorToPropName(Node) then begin
+          // typeless property => search in ancestors: it can be property with parameters
+          Params.Save(OldInput);
+          Params.SetIdentifier(Tool,@Tool.Src[Tool.CurPos.StartPos],nil);
+          Params.Flags:=[fdfSearchInAncestors];
+          if Tool.FindIdentifierInAncestors(Node.Parent.Parent,Params) then begin
+            Tool:=Params.NewCodeTool;
+            Node:=Params.NewNode;
+            ExprType.Context:=Context;
+          end;
+          Params.Load(OldInput,true);
+        end;
+      end;
+      if Context.Tool.PropertyNodeHasParamList(Context.Node) then begin
+        // the parameter list is resolved with the [] operators
+        exit;
+      end;
     end;
 
     CurAliasType:=nil;
