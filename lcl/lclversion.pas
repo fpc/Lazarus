@@ -1,4 +1,3 @@
-{  $Id$  }
 {
  /***************************************************************************
                                lclversion.pas
@@ -41,9 +40,9 @@ const
   lcl_major = 1;
   lcl_minor = 0;
   lcl_release = 1;
-  lcl_patch = 2;
+  lcl_patch = 3;
   lcl_fullversion = ((lcl_major *  100 + lcl_minor) * 100 + lcl_release) * 100 + lcl_patch;
-  lcl_version = '1.0.1.2';
+  lcl_version = '1.0.1.3';
 
 implementation
 
