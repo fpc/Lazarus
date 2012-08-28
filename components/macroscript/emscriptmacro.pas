@@ -116,6 +116,7 @@ begin
     if Sender is TEMSPSPascalCompiler then
       GetEditorCommandValues(@TEMSPSPascalCompiler(Sender).AddECFuncToCompEnum);
 
+    CompRegisterBasics(TheCompiler);
     CompRegisterTSynEdit(TheCompiler);
     Sender.AddFunction('function Caller: TSynEdit;');
     CompRegisterTClipboard(TheCompiler);
@@ -128,6 +129,7 @@ end;
 procedure AddECFuncToExec;
 begin
   GetEditorCommandValues(@TheExec.AddECFuncToExecEnum);
+  ExecRegisterBasics(TheExec);
   ExecRegisterTSynEdit(TheCLassImp);
   TheExec.RegisterFunctionName('CALLER', @HandleGetCaller, TheExec, nil);
   ExecRegisterTClipboard(TheCLassImp, TheExec);

@@ -10,6 +10,9 @@ interface
 uses
   Classes, SysUtils, SynEdit, SynEditTypes, Clipbrd, uPSCompiler, uPSRuntime;
 
+procedure CompRegisterBasics(AComp: TPSPascalCompiler);
+procedure ExecRegisterBasics(AExec: TPSExec);
+
 procedure CompRegisterTSynEdit(AComp: TPSPascalCompiler);
 procedure ExecRegisterTSynEdit(cl: TPSRuntimeClassImporter);
 
@@ -17,6 +20,19 @@ procedure CompRegisterTClipboard(AComp: TPSPascalCompiler);
 procedure ExecRegisterTClipboard(cl: TPSRuntimeClassImporter; AExec: TPSExec);
 
 implementation
+
+procedure CompRegisterBasics(AComp: TPSPascalCompiler);
+begin
+  AComp.AddTypeS('TPoint', 'record x,y: Longint; end;');
+  AComp.AddDelphiFunction('function Point(X, Y: Integer): TPoint;');
+end;
+
+procedure ExecRegisterBasics(AExec: TPSExec);
+begin
+  AExec.RegisterDelphiFunction(@Classes.Point, 'POINT', cdRegister);
+end;
+
+{   SynEdit   }
 
 procedure TSynEdit_CaretXY_W(Self: TSynEdit; const P: TPoint);
 begin   Self.CaretXY := P;   end;
@@ -78,7 +94,6 @@ end;
 
 procedure CompRegisterTSynEdit(AComp: TPSPascalCompiler);
 begin
-  AComp.AddTypeS('TPoint', 'record x,y: Longint; end;');
   AComp.AddTypeS('TSynSelectionMode', '(smNormal, smLine, smColumn, smCurrent)');
   AComp.AddTypeS('TSynSearchOption',
               '(ssoMatchCase, ssoWholeWord, ssoBackwards, ssoEntireScope, ' +
