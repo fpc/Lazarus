@@ -1278,7 +1278,6 @@ type
     procedure CMParentShowHintChanged(var Message: TLMessage); message CM_PARENTSHOWHINTCHANGED;
     procedure CMVisibleChanged(var Message: TLMessage); message CM_VISIBLECHANGED;
     procedure CMTextChanged(var Message: TLMessage); message CM_TEXTCHANGED;
-    procedure CMWantSpecialKey(var Message: TLMessage); message CM_WANTSPECIALKEY;
     procedure CMCursorChanged(var Message: TLMessage); message CM_CURSORCHANGED;
   protected
     // drag and drop
@@ -1889,7 +1888,6 @@ type
     procedure SetTabStop(NewTabStop: Boolean);
     procedure SetUseDockManager(const AValue: Boolean);
     procedure UpdateTabOrder(NewTabOrder: TTabOrder);
-    function  WantsKeyBeforeInterface(Key: word; Shift: TShiftState): boolean;
     procedure Insert(AControl: TControl);
     procedure Insert(AControl: TControl; Index: integer);
     procedure Remove(AControl: TControl);

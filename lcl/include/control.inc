@@ -275,7 +275,8 @@ begin
   begin
     FLastSearchIndex := 1;
     FLastSearchInSubcontrols := True;
-    Result := TWinControl(OwnerControl).Controls[0].GetAccessibleObject();
+    if (TWinControl(OwnerControl).ControlCount > 0) then
+      Result := TWinControl(OwnerControl).Controls[0].GetAccessibleObject();
   end;
 end;
 
@@ -295,7 +296,7 @@ begin
   end
   else
   begin
-    if TWinControl(OwnerControl).ControlCount < FLastSearchIndex then
+    if TWinControl(OwnerControl).ControlCount > FLastSearchIndex then
     begin
       Result := TWinControl(OwnerControl).Controls[FLastSearchIndex].GetAccessibleObject();
       Inc(FLastSearchIndex);
@@ -1114,15 +1115,6 @@ end;
 procedure TControl.CMTextChanged(var Message: TLMessage);
 begin
   TextChanged;
-end;
-
-procedure TControl.CMWantSpecialKey(var Message: TLMessage);
-begin
-  // by default control does not want to handle VK_TAB itself
-  if Message.wParam = VK_TAB then
-    Message.Result := 0
-  else
-    Message.Result := 1;
 end;
 
 procedure TControl.CMCursorChanged(var Message: TLMessage);

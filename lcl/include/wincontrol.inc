@@ -5610,46 +5610,6 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Method: TWinControl.WantsKey
-  Params: CharCode - the key to inspect whether it is wanted
-  Returns: true if key is wanted before the interface handles it.
-
-  Checks if control wants the passed key to handle before the interface.
- ------------------------------------------------------------------------------}
-function TWinControl.WantsKeyBeforeInterface(Key: word; Shift: TShiftState
-  ): boolean;
-var
-  lWantKeys: dword;
-{ values for lWantKeys
-           0 - if not wanted
-           1 - if wanted, but is special (arrow)
-           2 - if wanted, but is special (tab)
-           4 - if wanted, but is special (all)
-           8 - if wanted, is normal key
-}
-begin
-  // For Delphi compatibility we send a LM_GETDLGCODE message to the control
-  // asking if it wants to handle the key.
-  // We don't define a default handler for LM_GETDLGCODE,
-  // so the default return is 0.
-  // Note: Contrary to Delphi/win32api, we don't know what keys are special,
-  // different widgetsets may have different sets of special keys;
-  lWantKeys := Perform(LM_GETDLGCODE, 0, 0);
-  if (lWantKeys and DLGC_WANTALLKEYS) <> 0 then
-  begin
-    lWantKeys := DLGC_WANTALLKEYS;
-  end else begin
-    case Key of
-    VK_TAB: 
-      lWantKeys := lWantKeys and DLGC_WANTTAB;
-    VK_UP, VK_LEFT, VK_DOWN, VK_RIGHT:
-      lWantKeys := lWantKeys and DLGC_WANTARROWS;
-    end;
-  end;  
-  Result := (lWantKeys<>0);
-end;
-
-{------------------------------------------------------------------------------
   TWinControl DoKeyDownBeforeInterface
   
   returns true if handled

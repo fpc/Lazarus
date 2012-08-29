@@ -417,6 +417,7 @@ type
     property AutoSize;// Note: windows has a fixed height in some styles
     property BidiMode;
     property BorderSpacing;
+    property BorderStyle;
     property CharCase;
     property Color;
     property Constraints;
@@ -853,8 +854,8 @@ type
     property AutoSize;
     property AutoSelect;
     property BidiMode;
-    property BorderStyle;
     property BorderSpacing;
+    property BorderStyle;
     property CharCase;
     property Color;
     property Constraints;
@@ -1057,7 +1058,6 @@ type
     procedure SetChecked(Value: Boolean); virtual;
     procedure DoOnChange; virtual;
     procedure Click; override;
-    procedure CMWantSpecialKey(var Message: TLMessage); message CM_WANTSPECIALKEY;
   protected
     property Checked: Boolean read GetChecked write SetChecked stored IsCheckedStored default False;
     property ClicksDisabled: Boolean read FClicksDisabled write FClicksDisabled;
