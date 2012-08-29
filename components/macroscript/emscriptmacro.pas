@@ -5,8 +5,9 @@ unit EMScriptMacro;
 interface
 
 uses
-  Classes, SysUtils, SrcEditorIntf, Controls, SynEdit, SynEditKeyCmds, EMScriptClasses,
-  Laz2_XMLCfg, LazLoggerBase, uPSCompiler, uPSRuntime, uPSUtils, uPSC_std, uPSR_std;
+  Classes, SysUtils, SrcEditorIntf, IDECommands, Controls, SynEdit, SynEditKeyCmds,
+  EMScriptClasses, Laz2_XMLCfg, LazLoggerBase, uPSCompiler, uPSRuntime, uPSUtils, uPSC_std,
+  uPSR_std;
 
 type
 
@@ -113,8 +114,10 @@ begin
   begin
     SIRegisterTObject(Sender);
     //SIRegister_Std(Sender);
-    if Sender is TEMSPSPascalCompiler then
+    if Sender is TEMSPSPascalCompiler then begin
       GetEditorCommandValues(@TEMSPSPascalCompiler(Sender).AddECFuncToCompEnum);
+      GetIDEEditorCommandValues(@TEMSPSPascalCompiler(Sender).AddECFuncToCompEnum);
+    end;
 
     CompRegisterBasics(TheCompiler);
     CompRegisterTSynEdit(TheCompiler);
@@ -129,6 +132,7 @@ end;
 procedure AddECFuncToExec;
 begin
   GetEditorCommandValues(@TheExec.AddECFuncToExecEnum);
+  GetIDEEditorCommandValues(@TheExec.AddECFuncToExecEnum);
   ExecRegisterBasics(TheExec);
   ExecRegisterTSynEdit(TheCLassImp);
   TheExec.RegisterFunctionName('CALLER', @HandleGetCaller, TheExec, nil);

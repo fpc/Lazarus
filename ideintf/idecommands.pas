@@ -666,6 +666,7 @@ function CompareIDEShortCutKey1s(Data1, Data2: Pointer): integer;
 
 function IdentToIDECommand(const Ident: string; var Cmd: longint): boolean;
 function IDECommandToIdent(Cmd: longint; var Ident: string): boolean;
+procedure GetIDEEditorCommandValues(Proc: TGetStrProc);
 
 implementation
 
@@ -1577,6 +1578,14 @@ var
   IDECommand: TIDECommand;
 begin
   Result := IntToIdent(Cmd, Ident, IDEEditorCommandStrs);
+end;
+
+procedure GetIDEEditorCommandValues(Proc: TGetStrProc);
+var
+  i: integer;
+begin
+  for i := Low(IDEEditorCommandStrs) to High(IDEEditorCommandStrs) do
+    Proc(IDEEditorCommandStrs[I].Name);
 end;
 
 end.
