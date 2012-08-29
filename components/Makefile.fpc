@@ -26,7 +26,7 @@ help:
 	@$(ECHO) " Targets"
 	@$(ECHO) "   all         same as bigide"
 	@$(ECHO) "               lazutils, codetools, lazcontrols, synedit,
-        @$(ECHO) "               ideintf, syneditdsgn are build separately"
+        @$(ECHO) "               ideintf are build separately"
 	@$(ECHO) "   clean       deletes output files of base and bigide components"
 	@$(ECHO) "   bigide      build the extra packages for the bigide"
 

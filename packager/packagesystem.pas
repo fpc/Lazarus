@@ -127,7 +127,6 @@ type
     FRegistrationFile: TPkgFile;
     FRegistrationPackage: TLazPackage;
     FRegistrationUnitName: string;
-    FSynEditDsgnPackage: TLazPackage;
     FSynEditPackage: TLazPackage;
     FLazControlsPackage: TLazPackage;
     FTree: TAVLTree; // sorted tree of TLazPackage
@@ -358,7 +357,6 @@ type
     property LCLBasePackage: TLazPackage read FLCLBasePackage;
     property LCLPackage: TLazPackage read FLCLPackage;
     property SynEditPackage: TLazPackage read FSynEditPackage;
-    property SynEditDsgnPackage: TLazPackage read FSynEditDsgnPackage;
     property LazControlsPackage: TLazPackage read FLazControlsPackage;
     property LazUtilsPackage: TLazPackage read FLazUtilsPackage;
     property CodeToolsPackage: TLazPackage read FCodeToolsPackage;
@@ -742,8 +740,6 @@ begin
     FIDEIntfPackage:=nil
   else if CurPkg=SynEditPackage then
     FSynEditPackage:=nil
-  else if CurPkg=SynEditDsgnPackage then
-    FSynEditDsgnPackage:=nil
   else if CurPkg=LazControlsPackage then
     FLazControlsPackage:=nil
   else if CurPkg=LazUtilsPackage then
@@ -1573,8 +1569,6 @@ begin
     end
     else if SysUtils.CompareText(APackage.Name,'SynEdit')=0 then
       SetBasePackage(FSynEditPackage)
-    else if SysUtils.CompareText(APackage.Name,'SynEditDsgn')=0 then
-      SetBasePackage(FSynEditDsgnPackage)
     else if SysUtils.CompareText(APackage.Name,'LazControls')=0 then
       SetBasePackage(FLazControlsPackage)
     else if SysUtils.CompareText(APackage.Name,'CodeTools')=0 then
@@ -1682,7 +1676,6 @@ begin
   LoadLazarusBasePackage('LCL');
   LoadLazarusBasePackage('SynEdit');
   LoadLazarusBasePackage('IDEIntf');
-  LoadLazarusBasePackage('SynEditDsgn');
   LoadLazarusBasePackage('LazControls');
   LoadLazarusBasePackage('CodeTools');
   // the default package will be added on demand
@@ -1819,7 +1812,6 @@ begin
        or (PackageName='lclbase')
        or (PackageName='lcl')
        or (PackageName='synedit')
-       or (PackageName='syneditdsgn')
        or (PackageName='ideintf')
        or (PackageName='codetools')
        or (PackageName='lazcontrols');
