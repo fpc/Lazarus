@@ -8,7 +8,8 @@ unit EMScriptClasses;
 interface
 
 uses
-  Classes, SysUtils, SynEdit, SynEditTypes, Clipbrd, uPSCompiler, uPSRuntime;
+  Classes, SysUtils, SynEdit, SynEditTypes, Clipbrd, Dialogs, Controls, uPSCompiler,
+  uPSRuntime, uPSUtils;
 
 procedure CompRegisterBasics(AComp: TPSPascalCompiler);
 procedure ExecRegisterBasics(AExec: TPSExec);
@@ -21,19 +22,68 @@ procedure ExecRegisterTClipboard(cl: TPSRuntimeClassImporter; AExec: TPSExec);
 
 implementation
 
+function EMSInputQuery(const ACaption, APrompt : String; var Value : String) : Boolean;
+begin
+  Result := InputQuery(ACaption, APrompt, Value);
+end;
+
+function EMSMessageDlg(const Msg: string; DlgType: TMsgDlgType;
+  Buttons: TMsgDlgButtons; const HelpKeyword: Longint): Integer;
+begin
+  Result:=MessageDlg(Msg, DlgType, Buttons, HelpKeyword);
+end;
+
+
 procedure CompRegisterBasics(AComp: TPSPascalCompiler);
+  procedure AddConst(const Name, FType: TbtString; I: Integer);
+  begin
+    AComp.AddConstantN(Name, FType).Value^.ts32 := I;
+  end;
+
 begin
   AComp.AddTypeS('TPoint', 'record x,y: Longint; end;');
   AComp.AddDelphiFunction('function Point(X, Y: Integer): TPoint;');
+
+  AddConst('mrNone', 'Integer', mrNone);
+  AddConst('mrOk', 'Integer', mrOK);
+  AddConst('mrCancel', 'Integer', mrCancel);
+  AddConst('mrAbort', 'Integer', mrAbort);
+  AddConst('mrRetry', 'Integer', mrRetry);
+  AddConst('mrIgnore', 'Integer', mrIgnore);
+  AddConst('mrYes', 'Integer', mrYes);
+  AddConst('mrNo', 'Integer', mrNo);
+  AddConst('mrAll', 'Integer', mrAll);
+  AddConst('mrNoToAll', 'Integer', mrNoToAll);
+  AddConst('mrYesToAll', 'Integer', mrYesToAll);
+  AComp.AddTypeS('TMsgDlgType', '( mtWarning, mtError, mtInformation, mtConfirmation, mtCustom )');
+  AComp.AddTypeS('TMsgDlgBtn', '( mbYes, mbNo, mbOK, mbCancel, mbAbort, mbRetry, mbIgnore, mbAll, mbNoToAll, mbYesToAll, mbHelp )');
+  AComp.AddTypeS('TMsgDlgButtons', 'set of TMsgDlgBtn');
+
+  AComp.AddDelphiFunction('Function MessageDlg( const Msg : string; DlgType : TMsgDlgType; Buttons : TMsgDlgButtons; HelpCtx : Longint) : Integer');
+  AComp.AddDelphiFunction('Function MessageDlgPos( const Msg : string; DlgType : TMsgDlgType; Buttons : TMsgDlgButtons; HelpCtx : Longint; X, Y : Integer) : Integer');
+  AComp.AddDelphiFunction('Function MessageDlgPosHelp( const Msg : string; DlgType : TMsgDlgType; Buttons : TMsgDlgButtons; HelpCtx : Longint; X, Y : Integer; const HelpFileName : string) : Integer');
+  AComp.AddDelphiFunction('Procedure ShowMessage( const Msg : string)');
+  AComp.AddDelphiFunction('Procedure ShowMessagePos( const Msg : string; X, Y : Integer)');
+  AComp.AddDelphiFunction('Function InputBox( const ACaption, APrompt, ADefault : string) : string');
+  AComp.AddDelphiFunction('Function InputQuery( const ACaption, APrompt : string; var Value : string) : Boolean');
 end;
 
 procedure ExecRegisterBasics(AExec: TPSExec);
 begin
   AExec.RegisterDelphiFunction(@Classes.Point, 'POINT', cdRegister);
+
+ AExec.RegisterDelphiFunction(@EMSMessageDlg, 'MessageDlg', cdRegister);
+ AExec.RegisterDelphiFunction(@MessageDlgPos, 'MessageDlgPos', cdRegister);
+ AExec.RegisterDelphiFunction(@MessageDlgPosHelp, 'MessageDlgPosHelp', cdRegister);
+ AExec.RegisterDelphiFunction(@ShowMessage, 'ShowMessage', cdRegister);
+ AExec.RegisterDelphiFunction(@ShowMessagePos, 'ShowMessagePos', cdRegister);
+ AExec.RegisterDelphiFunction(@InputBox, 'InputBox', cdRegister);
+ AExec.RegisterDelphiFunction(@EMSInputQuery, 'InputQuery', cdRegister);
 end;
 
 {   SynEdit   }
 
+    // Caret
 procedure TSynEdit_CaretXY_W(Self: TSynEdit; const P: TPoint);
 begin   Self.CaretXY := P;   end;
 procedure TSynEdit_CaretXY_R(Self: TSynEdit; var P: TPoint);
@@ -60,6 +110,7 @@ procedure TSynEdit_LogicalCaretX_R(Self: TSynEdit; var I: Integer);
 begin   I := Self.LogicalCaretXY.X;   end;
 
 
+    // Selection
 procedure TSynEdit_BlockBegin_W(Self: TSynEdit; const P: TPoint);
 begin   Self.BlockBegin := P;   end;
 procedure TSynEdit_BlockBegin_R(Self: TSynEdit; var P: TPoint);
@@ -84,6 +135,7 @@ procedure TSynEdit_SelectionMode_R(Self: TSynEdit; var M: TSynSelectionMode);
 begin   M := Self.SelectionMode;   end;
 
 
+    // Text
 procedure TSynEdit_Lines_R(Self: TSynEdit; var S: string; I: Longint);
 begin   S := Self.Lines[I];   end;
 
@@ -91,6 +143,19 @@ procedure TSynEdit_LineAtCaret_R(Self: TSynEdit; var S: string);
 begin
   S := Self.Lines[Self.CaretY-1];
 end;
+
+procedure TSynEdit_TextBetweenPoints_W(Self: TSynEdit; const M: String; const P1, P2: TPoint);
+begin   Self.TextBetweenPoints[P1, P2] := M;   end;
+procedure TSynEdit_TextBetweenPoints_R(Self: TSynEdit; var M: String; const P1, P2: TPoint);
+begin   M := Self.TextBetweenPoints[P1, P2];   end;
+
+//procedure TSynEdit_TextBetweenPointsEx_W(Self: TSynEdit; var M: String; const P1, P2: TPoint; const C: TSynCaretAdjustMode);
+//begin   Self.TextBetweenPointsEx[P1, P2, C] := M;   end;
+
+    // Clipboard
+procedure TSynEdit_CanPaste_R(Self: TSynEdit; var V: Boolean);
+begin   V := Self.CanPaste;   end;
+
 
 procedure CompRegisterTSynEdit(AComp: TPSPascalCompiler);
 begin
@@ -102,9 +167,13 @@ begin
   );
   AComp.AddTypeS('TSynSearchOptions', 'set of TSynSearchOption');
   AComp.AddTypeS('TSynCaretAdjustMode', '(scamIgnore, scamAdjust, scamEnd, scamBegin)');
+  AComp.AddTypeS('TSynEditTextFlag', '(setSelect);');
+  AComp.AddTypeS('TSynEditTextFlags', 'set of TSynEditTextFlag;');
+  AComp.AddTypeS('TSynMarksAdjustMode', '(smaMoveUp, smaKeep);');
 
   with AComp.AddClassN(nil, 'TSynEdit') do
   begin
+    // Caret
     RegisterProperty('CaretXY', 'TPoint', iptRW);
     RegisterProperty('CaretX',  'Integer', iptRW);
     RegisterProperty('CaretY',  'Integer', iptRW);
@@ -113,19 +182,48 @@ begin
     RegisterMethod('procedure MoveCaretIgnoreEOL(const NewCaret: TPoint);');
     RegisterMethod('procedure MoveLogicalCaretIgnoreEOL(const NewLogCaret: TPoint);');
 
+    // Selection
     RegisterProperty('BlockBegin', 'TPoint', iptRW);
     RegisterProperty('BlockEnd',   'TPoint', iptRW);
     RegisterProperty('SelAvail',   'Boolean', iptR);
     RegisterProperty('SelText',    'string', iptRW);
     RegisterProperty('SelectionMode', 'TSynSelectionMode', iptRW);
+    RegisterMethod('procedure ClearSelection;');
+    RegisterMethod('procedure SelectAll;');
+    RegisterMethod('procedure SelectToBrace;');
+    RegisterMethod('procedure SelectWord;');
+    RegisterMethod('procedure SelectLine(WithLeadSpaces: Boolean);');  //  = True
+    RegisterMethod('procedure SelectParagraph;');
 
-    RegisterProperty('Lines', 'String Integer', iptR);
-    RegisterProperty('LineAtCaret', 'String', iptR); // LineText
-
+    // Search
     RegisterMethod('function SearchReplace(const ASearch, AReplace: string; AOptions: TSynSearchOptions): integer;');
     RegisterMethod('function SearchReplaceEx(const ASearch, AReplace: string; AOptions: TSynSearchOptions; AStart: TPoint): integer;');
 
+    // Text
+    RegisterProperty('Lines', 'String Integer', iptR);
+    RegisterProperty('LineAtCaret', 'String', iptR); // LineText
     RegisterMethod('procedure InsertTextAtCaret(aText: String; aCaretMode : TSynCaretAdjustMode);'); //  = scamEnd
+    RegisterProperty('TextBetweenPoints', 'String TPoint TPoint', iptRW);
+    //RegisterProperty('TextBetweenPointsEx', 'String TPoint TPoint TSynCaretAdjustMode', iptW);
+    RegisterMethod('procedure SetTextBetweenPoints(aStartPoint, aEndPoint: TPoint; ' +
+                   'const AValue: String; aFlags: TSynEditTextFlags; ' + // = []
+                   'aCaretMode: TSynCaretAdjustMode; ' + //  = scamIgnore
+                   'aMarksMode: TSynMarksAdjustMode; ' + //  = smaMoveUp
+                   'aSelectionMode: TSynSelectionMode);'); //  = smNormal
+
+    // Clipboard
+    RegisterMethod('procedure CopyToClipboard;');
+    RegisterMethod('procedure CutToClipboard;');
+    RegisterMethod('procedure PasteFromClipboard;');
+    RegisterProperty('CanPaste', 'Boolean', iptR);
+
+    // Logigal / Physical
+    RegisterMethod('function LogicalToPhysicalPos(const p: TPoint): TPoint;');
+    RegisterMethod('function LogicalToPhysicalCol(const Line: String; Index, LogicalPos : integer): integer;');
+    RegisterMethod('function PhysicalToLogicalPos(const p: TPoint): TPoint;');
+    RegisterMethod('function PhysicalToLogicalCol(const Line: string; Index, PhysicalPos: integer): integer;');
+    RegisterMethod('function PhysicalLineLength(Line: String; Index: integer): integer;');
+
   end;
 end;
 
@@ -133,7 +231,7 @@ procedure ExecRegisterTSynEdit(cl: TPSRuntimeClassImporter);
 begin
   with Cl.Add(TSynEdit) do
   begin
-
+    // Caret
     RegisterPropertyHelper(@TSynEdit_CaretXY_R, @TSynEdit_CaretXY_W, 'CARETXY');
     RegisterPropertyHelper(@TSynEdit_CaretX_R,  @TSynEdit_CaretX_W,  'CARETX');
     RegisterPropertyHelper(@TSynEdit_CaretY_R,  @TSynEdit_CaretY_W,  'CARETY');
@@ -142,20 +240,43 @@ begin
     RegisterMethod(@TSynEdit.MoveCaretIgnoreEOL,        'MOVECARETIGNOREEOL');
     RegisterMethod(@TSynEdit.MoveLogicalCaretIgnoreEOL, 'MOVELOGICALCARETIGNOREEOL');
 
+    // Selection
     RegisterPropertyHelper(@TSynEdit_BlockBegin_R, @TSynEdit_BlockBegin_W, 'BLOCKBEGIN');
     RegisterPropertyHelper(@TSynEdit_BlockEnd_R,   @TSynEdit_BlockEnd_W,   'BLOCKEND');
     RegisterPropertyHelper(@TSynEdit_SelAvail_R,   nil,                    'SELAVAIL');
     RegisterPropertyHelper(@TSynEdit_SelText_R,    @TSynEdit_SelText_W,    'SELTEXT');
     RegisterPropertyHelper(@TSynEdit_SelectionMode_R, @TSynEdit_SelectionMode_W, 'SELECTIONMODE');
+    RegisterMethod(@TSynEdit.ClearSelection, 'CLEARSELECTION');
+    RegisterMethod(@TSynEdit.SelectAll, 'SELECTALL');
+    RegisterMethod(@TSynEdit.SelectToBrace, 'SELECTTOBRACE');
+    RegisterMethod(@TSynEdit.SelectWord, 'SELECTWORD');
+    RegisterMethod(@TSynEdit.SelectLine, 'SELECTLINE');
+    RegisterMethod(@TSynEdit.SelectParagraph, 'SELECTPARAGRAPH');
 
-    RegisterPropertyHelper(@TSynEdit_Lines_R, nil, 'LINES');
-    RegisterPropertyHelper(@TSynEdit_LineAtCaret_R, nil, 'LINEATCARET');
-
+    // Search
     RegisterMethod(@TSynEdit.SearchReplace, 'SEARCHREPLACE');
     RegisterMethod(@TSynEdit.SearchReplaceEx, 'SEARCHREPLACEEX');
 
+    RegisterPropertyHelper(@TSynEdit_Lines_R, nil, 'LINES');
+    RegisterPropertyHelper(@TSynEdit_LineAtCaret_R, nil, 'LINEATCARET');
     RegisterMethod(@TSynEdit.InsertTextAtCaret, 'INSERTTEXTATCARET');
 
+    RegisterPropertyHelper(@TSynEdit_TextBetweenPoints_R, @TSynEdit_TextBetweenPoints_W, 'TEXTBETWEENPOINTS');
+    //RegisterPropertyHelper(nil, @TSynEdit_TextBetweenPointsEx_W, 'TEXTBETWEENPOINTSEX');
+    RegisterMethod(@TSynEdit.SetTextBetweenPoints, 'SETTEXTBETWEENPOINTS');
+
+    // Clipboard
+    RegisterMethod(@TSynEdit.CopyToClipboard, 'COPYTOCLIPBOARD');
+    RegisterMethod(@TSynEdit.CutToClipboard, 'CUTTOCLIPBOARD');
+    RegisterMethod(@TSynEdit.PasteFromClipboard, 'PASTEFROMCLIPBOARD');
+    RegisterPropertyHelper(@TSynEdit_CanPaste_R, nil, 'CANPASTE');
+
+    // Logigal / Physical
+    RegisterMethod(@TSynEdit.LogicalToPhysicalPos, 'LOGICALTOPHYSICALPOS');
+    RegisterMethod(@TSynEdit.LogicalToPhysicalCol, 'LOGICALTOPHYSICALCOL');
+    RegisterMethod(@TSynEdit.PhysicalToLogicalPos, 'PHYSICALTOLOGICALPOS');
+    RegisterMethod(@TSynEdit.PhysicalToLogicalCol, 'PHYSICALTOLOGICALCOL');
+    RegisterMethod(@TSynEdit.PhysicalLineLength, 'PHYSICALLINELENGTH');
   end;
 end;
 
