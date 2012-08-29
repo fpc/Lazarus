@@ -3236,7 +3236,7 @@ procedure TQuickFixIdentifierNotFound_Search.Execute(
 var
   Identifier: String;
   CodeBuf: TCodeBuffer;
-  Filename: string;
+  Filename, KnownFilename: string;
   Caret: TPoint;
 begin
   if Step=imqfoMenuItem then begin
@@ -3264,6 +3264,16 @@ begin
       exit;
     end;
 
+    KnownFilename:= LazarusIDE.FindSourceFile(Filename, Project1.ProjectDirectory,
+                      [fsfSearchForProject, fsfUseIncludePaths, fsfMapTempToVirtualFiles]);
+
+    if (KnownFilename <> '') and (KnownFilename <> Filename) then begin
+      if LazarusIDE.DoOpenFileAndJumpToPos(KnownFilename,Caret,-1,-1,-1,OpnFlagsPlainFile)<>mrOk
+      then
+      if LazarusIDE.DoOpenFileAndJumpToPos(Filename,Caret,-1,-1,-1,OpnFlagsPlainFile)<>mrOk
+      then exit;
+    end
+    else
     if LazarusIDE.DoOpenFileAndJumpToPos(Filename,Caret,-1,-1,-1,OpnFlagsPlainFile
       )<>mrOk
     then exit;
