@@ -683,9 +683,9 @@ begin
     FSectionList.Delete(FRegionScanRangeIndex);
   VDiff := 0;
   {$IFDEF SynDebugMultiHL}
-  DebugLn(SYNDEBUG_MULTIHL, ['***** ', FRegionScanStartRangeIndex, ' cnt ', Count]);
+  DebugLn(SYNDEBUG_MULTIHL, ['***** ', FRegionScanStartRangeIndex, ' cnt ', FSectionList.Count]);
   {$ENDIF}
-  if FRegionScanStartRangeIndex < Count then begin
+  if FRegionScanStartRangeIndex < FSectionList.Count then begin
     // fix virtual lines on sections
     if (FRegionScanStartRangeIndex > 0) then begin
       s := FSectionList.Sections[FRegionScanStartRangeIndex-1];
@@ -1077,6 +1077,7 @@ var
   var
     pt: TPoint;
   begin
+    //debugln(['StartScheme NewScheme=',dbgs(NewScheme),' StartAtLine=',StartAtLine,' StartAtChar=',StartAtChar,' TokenAtChar=',TokenAtChar]);
     pt := Point(TokenAtChar-1, StartAtLine);
     if CurRegStart.y < 0 then
       DefaultVirtualLines.RegionScanUpdateFirstRegionEnd(pt, 0)
@@ -1094,6 +1095,7 @@ var
   var
     pt: TPoint;
   begin
+    //debugln(['EndScheme  EndAtLine=',EndAtLine,' EndAtChar=',EndAtChar,' TokenAtChar=',TokenEndChar]);
     pt := Point(EndAtChar, EndAtLine);
     if CurRegStart.y < 0 then
       FCurScheme.VirtualLines.RegionScanUpdateFirstRegionEnd(pt, TokenEndChar)
