@@ -629,13 +629,13 @@ Name: {app}\components\synedit\units\i386-win32\synregexpr.o; Type: files
 Name: {app}\components\synedit\units\i386-win32\synregexpr.ppu; Type: files
 Name: {app}\components\synedit\units\i386-win32\syntextdrawer.o; Type: files
 Name: {app}\components\synedit\units\i386-win32\syntextdrawer.ppu; Type: files
-Name: {app}\components\synedit\units\i386-win32\win32\syndesignstringconstants.o
-Name: {app}\components\synedit\units\i386-win32\win32\syndesignstringconstants.ppu
-Name: {app}\components\synedit\units\i386-win32\win32\syneditlazdsgn.o
-Name: {app}\components\synedit\units\i386-win32\win32\syneditlazdsgn.ppu
-Name: {app}\components\synedit\units\i386-win32\win32\synpropertyeditobjectlist.lfm
-Name: {app}\components\synedit\units\i386-win32\win32\synpropertyeditobjectlist.o
-Name: {app}\components\synedit\units\i386-win32\win32\synpropertyeditobjectlist.ppu
+Name: {app}\components\synedit\units\i386-win32\win32\syndesignstringconstants.o; Type: files
+Name: {app}\components\synedit\units\i386-win32\win32\syndesignstringconstants.ppu; Type: files
+Name: {app}\components\synedit\units\i386-win32\win32\syneditlazdsgn.o; Type: files
+Name: {app}\components\synedit\units\i386-win32\win32\syneditlazdsgn.ppu; Type: files
+Name: {app}\components\synedit\units\i386-win32\win32\synpropertyeditobjectlist.lfm; Type: files
+Name: {app}\components\synedit\units\i386-win32\win32\synpropertyeditobjectlist.o; Type: files
+Name: {app}\components\synedit\units\i386-win32\win32\synpropertyeditobjectlist.ppu; Type: files
 Name: {app}\components\tachart\demo\3d\main.lrs; Type: files
 Name: {app}\components\tachart\demo\basic\unit1.lrs; Type: files
 Name: {app}\components\tachart\demo\chartsource\main.lrs; Type: files
