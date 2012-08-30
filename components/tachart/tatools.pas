@@ -748,10 +748,8 @@ end;
 procedure TChartTool.PrepareDrawingModePen(
   ADrawer: IChartDrawer; APen: TFPCustomPen);
 begin
-  case EffectiveDrawingMode of
-    tdmXor: ADrawer.SetXorPen(APen);
-    tdmNormal: ADrawer.Pen := APen;
-  end;
+  ADrawer.SetXor(EffectiveDrawingMode = tdmXor);
+  ADrawer.Pen := APen;
 end;
 
 procedure TChartTool.ReadState(Reader: TReader);
@@ -1009,7 +1007,8 @@ begin
   if not IsActive or IsAnimating then exit;
   inherited;
   PrepareDrawingModePen(ADrawer, Frame);
-  FChart.Drawer.Rectangle(FSelectionRect);
+  ADrawer.Rectangle(FSelectionRect);
+  ADrawer.SetXor(false);
 end;
 
 function TZoomDragTool.GetProportional: Boolean;
@@ -1031,10 +1030,12 @@ begin
   if not IsActive or IsAnimating then exit;
   case EffectiveDrawingMode of
     tdmXor: with FChart.Drawer do begin
-      SetXorPen(Frame);
+      SetXor(true);
+      Pen := Frame;
       Rectangle(FSelectionRect);
       FSelectionRect.BottomRight := APoint;
       Rectangle(FSelectionRect);
+      SetXor(false);
     end;
     tdmNormal: begin
       FSelectionRect.BottomRight := APoint;
@@ -1090,8 +1091,8 @@ var
 begin
   Unused(APoint);
 
-  FChart.Drawer.SetXorPen(Frame);
-  FChart.Drawer.Rectangle(FSelectionRect);
+  if EffectiveDrawingMode = tdmXor then
+    Draw(FChart, FChart.Drawer);
   with FSelectionRect do begin
     dragDir := DRAG_DIR[Sign(Right - Left), Sign(Bottom - Top)];
     if
@@ -1637,8 +1638,9 @@ procedure TDataPointDrawTool.DoHide;
 begin
   case EffectiveDrawingMode of
     tdmXor: begin
-      FChart.Drawer.SetXorPen(FPen);
+      FChart.Drawer.SetXor(true);
       DoDraw;
+      FChart.Drawer.SetXor(false);
     end;
     tdmNormal:
       FChart.StyleChanged(Self);
@@ -1650,6 +1652,7 @@ begin
   inherited;
   PrepareDrawingModePen(ADrawer, FPen);
   DoDraw;
+  ADrawer.SetXor(false);
 end;
 
 procedure TDataPointDrawTool.Hide;
@@ -1680,6 +1683,7 @@ procedure TDataPointCrosshairTool.DoDraw;
 var
   p: TPoint;
 begin
+  FChart.Drawer.Pen := CrosshairPen;
   p := FChart.GraphToImage(Position);
   if Shape in [ccsVertical, ccsCross] then
     if Size < 0 then
@@ -1714,8 +1718,9 @@ begin
   if FSeries = nil then exit;
   FPosition := FNearestGraphPoint;
   if EffectiveDrawingMode = tdmXor then begin
-    FChart.Drawer.SetXorPen(FPen);
+    FChart.Drawer.SetXor(true);
     DoDraw;
+    FChart.Drawer.SetXor(false);
   end;
 end;
 

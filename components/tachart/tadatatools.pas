@@ -199,31 +199,10 @@ var
   a: Double;
 
   procedure DrawPointer(APointer: TDataPointDistanceToolPointer; APos: TPoint);
-  var
-    oldMode: TFPPenMode;
-    oldColor: TColor;
-    oldStyle: TFPBrushStyle;
   begin
-    with APointer do begin
-      if not Visible then exit;
-      if EffectiveDrawingMode = tdmXor then begin
-        oldMode := Pen.Mode;
-        oldColor := Pen.Color;
-        oldStyle := Brush.Style;
-        Pen.Mode := pmXor;
-        Pen.Color := clWhite;
-        Brush.Style := bsClear;
-      end;
-      try
+    with APointer do
+      if Visible then
         DrawSize(FChart.Drawer, APos, Point(HorizSize, VertSize), clTAColor, a);
-      finally
-        if EffectiveDrawingMode = tdmXor then begin
-          Pen.Mode := oldMode;
-          Pen.Color := oldColor;
-          Brush.Style := oldStyle;
-        end;
-      end;
-    end;
   end;
 
 var
@@ -237,8 +216,10 @@ begin
     cdmOnlyY: p2.X := p1.X;
   end;
   if p1 = p2 then exit;
-  if LinePen.Visible then
+  if LinePen.Visible then begin
+    FChart.Drawer.Pen := LinePen;
     FChart.Drawer.Line(p1, p2);
+  end;
   a := ArcTan2(p2.Y - p1.Y, p2.X - p1.X);
   DrawPointer(PointerStart, p1);
   DrawPointer(PointerEnd, p2);
@@ -326,8 +307,9 @@ begin
     FreeAndNil(newEnd);
   end;
   if EffectiveDrawingMode = tdmXor then begin
-    FChart.Drawer.SetXorPen(FPen);
+    FChart.Drawer.SetXor(true);
     DoDraw;
+    FChart.Drawer.SetXor(false);
   end;
   Handled;
 end;

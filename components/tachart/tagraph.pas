@@ -837,11 +837,13 @@ end;
 
 procedure TChart.DrawReticule(ADrawer: IChartDrawer);
 begin
-  ADrawer.SetXorPen(nil);
+  ADrawer.SetXor(true);
+  ADrawer.PrepareSimplePen(clTAColor);
   if ReticuleMode in [rmVertical, rmCross] then
     DrawLineVert(ADrawer, FReticulePos.X);
   if ReticuleMode in [rmHorizontal, rmCross] then
     DrawLineHoriz(ADrawer, FReticulePos.Y);
+  ADrawer.SetXor(false);
 end;
 
 procedure TChart.EnableRedrawing;

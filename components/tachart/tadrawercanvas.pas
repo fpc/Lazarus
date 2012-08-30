@@ -34,7 +34,7 @@ type
 
   TCanvasDrawer = class(
     TBasicDrawer, IChartDrawer, IChartTCanvasDrawer)
-  private
+  strict private
     procedure SetBrush(ABrush: TFPCustomBrush);
     procedure SetFont(AFont: TFPCustomFont);
     procedure SetPen(APen: TFPCustomPen);
@@ -71,7 +71,6 @@ type
     procedure SetBrushColor(AColor: TChartColor);
     procedure SetBrushParams(AStyle: TFPBrushStyle; AColor: TChartColor);
     procedure SetPenParams(AStyle: TFPPenStyle; AColor: TChartColor);
-    procedure SetXorPen(APen: TFPCustomPen);
   end;
 
   function CanvasGetFontOrientationFunc(AFont: TFPCustomFont): Integer;
@@ -212,9 +211,15 @@ end;
 procedure TCanvasDrawer.PrepareSimplePen(AColor: TChartColor);
 begin
   with FCanvas.Pen do begin
-    Color := AColor;
+    if FXor then
+      Color := clWhite
+    else
+      Color := AColor;
     Style := psSolid;
-    Mode := pmCopy;
+    if FXor then
+      Mode := pmXor
+    else
+      Mode := pmCopy;
     Width := 1;
   end;
 end;
@@ -245,6 +250,8 @@ end;
 procedure TCanvasDrawer.SetBrush(ABrush: TFPCustomBrush);
 begin
   FCanvas.Brush.Assign(ABrush);
+  if FXor then
+    FCanvas.Brush.Style := bsClear;
 end;
 
 procedure TCanvasDrawer.SetBrushColor(AColor: TChartColor);
@@ -266,27 +273,29 @@ end;
 
 procedure TCanvasDrawer.SetPen(APen: TFPCustomPen);
 begin
-  FCanvas.Pen.Assign(APen);
+  if FXor then
+    with FCanvas do begin
+      Brush.Style := bsClear;
+      if APen = nil then
+        Pen.Style := psSolid
+      else
+        Pen.Style := APen.Style;
+      Pen.Mode := pmXor;
+      Pen.Color := clWhite;
+      if APen = nil then
+        Pen.Width := 1
+      else
+        Pen.Width := APen.Width;
+    end
+  else
+    FCanvas.Pen.Assign(APen);
 end;
 
 procedure TCanvasDrawer.SetPenParams(AStyle: TFPPenStyle; AColor: TChartColor);
 begin
   FCanvas.Pen.Style := AStyle;
-  FCanvas.Pen.Color := AColor;
-end;
-
-procedure TCanvasDrawer.SetXorPen(APen: TFPCustomPen);
-begin
-  with FCanvas do begin
-    Brush.Style := bsClear;
-    Pen.Style := psSolid;
-    Pen.Mode := pmXor;
-    Pen.Color := clWhite;
-    if APen = nil then
-      Pen.Width := 1
-    else
-      Pen.Width := APen.Width;
-  end;
+  if not FXor then
+    FCanvas.Pen.Color := AColor;
 end;
 
 function TCanvasDrawer.SimpleTextExtent(const AText: String): TPoint;

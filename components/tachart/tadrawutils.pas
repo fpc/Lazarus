@@ -103,7 +103,7 @@ type
     procedure SetGetFontOrientationFunc(AValue: TGetFontOrientationFunc);
     procedure SetPen(APen: TFPCustomPen);
     procedure SetPenParams(AStyle: TFPPenStyle; AColor: TChartColor);
-    procedure SetXorPen(APen: TFPCustomPen);
+    procedure SetXor(AXor: Boolean);
     function TextExtent(const AText: String): TPoint;
     function TextExtent(AText: TStrings): TPoint;
     function TextOut: TChartTextOut;
@@ -124,6 +124,7 @@ type
   strict protected
     FChartColorToFPColorFunc: TChartColorToFPColorFunc;
     FGetFontOrientationFunc: TGetFontOrientationFunc;
+    FXor: Boolean;
     function GetFontAngle: Double; virtual; abstract;
     function SimpleTextExtent(const AText: String): TPoint; virtual; abstract;
     procedure SimpleTextOut(AX, AY: Integer; const AText: String); virtual; abstract;
@@ -143,7 +144,7 @@ type
     procedure SetAntialiasingMode(AValue: TChartAntialiasingMode);
     procedure SetDoChartColorToFPColorFunc(AValue: TChartColorToFPColorFunc);
     procedure SetGetFontOrientationFunc(AValue: TGetFontOrientationFunc);
-    procedure SetXorPen(APen: TFPCustomPen);
+    procedure SetXor(AXor: Boolean);
     function TextExtent(const AText: String): TPoint;
     function TextExtent(AText: TStrings): TPoint;
     function TextOut: TChartTextOut;
@@ -343,9 +344,9 @@ begin
   FGetFontOrientationFunc := AValue;
 end;
 
-procedure TBasicDrawer.SetXorPen(APen: TFPCustomPen);
+procedure TBasicDrawer.SetXor(AXor: Boolean);
 begin
-  Unused(APen);
+  FXor := AXor;
 end;
 
 function TBasicDrawer.TextExtent(const AText: String): TPoint;
