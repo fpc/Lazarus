@@ -22,7 +22,7 @@ interface
 {$H+}
 
 uses
-  Classes, Controls, CustomTimer, Forms, Types,
+  Classes, Controls, CustomTimer, Forms, FPCanvas, Types,
   TAChartUtils, TADrawUtils, TAGraph, TATypes;
 
 type
@@ -72,6 +72,7 @@ type
     procedure MouseUp(APoint: TPoint); virtual;
     procedure MouseWheelDown(APoint: TPoint); virtual;
     procedure MouseWheelUp(APoint: TPoint); virtual;
+    procedure PrepareDrawingModePen(ADrawer: IChartDrawer; APen: TFPCustomPen);
     procedure RestoreCursor;
     procedure SetCursor;
     procedure SetIndex(AValue: Integer); override;
@@ -606,7 +607,7 @@ var
 implementation
 
 uses
-  FPCanvas, Graphics, GraphMath, InterfaceBase, LCLIntf, LCLType, Math, SysUtils,
+  Graphics, GraphMath, InterfaceBase, LCLIntf, LCLType, Math, SysUtils,
   TAChartAxis, TACustomSeries, TADrawerCanvas, TAEnumerators, TAGeometry, TAMath;
 
 const
@@ -849,6 +850,15 @@ end;
 procedure TChartTool.MouseWheelUp(APoint: TPoint);
 begin
   Unused(APoint);
+end;
+
+procedure TChartTool.PrepareDrawingModePen(
+  ADrawer: IChartDrawer; APen: TFPCustomPen);
+begin
+  case EffectiveDrawingMode of
+    tdmXor: ADrawer.SetXorPen(APen);
+    tdmNormal: ADrawer.Pen := APen;
+  end;
 end;
 
 procedure TChartTool.ReadState(Reader: TReader);
@@ -1105,12 +1115,7 @@ procedure TZoomDragTool.Draw(AChart: TChart; ADrawer: IChartDrawer);
 begin
   if not IsActive or IsAnimating then exit;
   inherited;
-  case EffectiveDrawingMode of
-    tdmXor:
-      ADrawer.SetXorPen(Frame);
-    tdmNormal:
-      FChart.Drawer.Pen := Frame;
-  end;
+  PrepareDrawingModePen(ADrawer, Frame);
   FChart.Drawer.Rectangle(FSelectionRect);
 end;
 
@@ -1750,12 +1755,7 @@ end;
 procedure TDataPointDrawTool.Draw(AChart: TChart; ADrawer: IChartDrawer);
 begin
   inherited;
-  case EffectiveDrawingMode of
-    tdmXor:
-      FChart.Drawer.SetXorPen(FPen);
-    tdmNormal:
-      FChart.Drawer.Pen := FPen;
-  end;
+  PrepareDrawingModePen(ADrawer, FPen);
   DoDraw;
 end;
 
