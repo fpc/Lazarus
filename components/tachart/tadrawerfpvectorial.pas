@@ -183,6 +183,7 @@ procedure TFPVectorialDrawer.Polygon(
 var
   i: Integer;
 begin
+  if ANumPts <= 0 then exit;
   MoveTo(APoints[AStartIndex]);
   for i := 1 to ANumPts - 1 do
     with APoints[i + AStartIndex] do
@@ -197,6 +198,7 @@ procedure TFPVectorialDrawer.Polyline(
 var
   i: Integer;
 begin
+  if ANumPts <= 0 then exit;
   MoveTo(APoints[AStartIndex]);
   for i := 1 to ANumPts - 1 do
     with APoints[i + AStartIndex] do

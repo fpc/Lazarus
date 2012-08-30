@@ -143,6 +143,7 @@ end;
 procedure TAggPasDrawer.Polygon(
   const APoints: array of TPoint; AStartIndex, ANumPts: Integer);
 begin
+  if ANumPts <= 0 then exit;
   FCanvas.Polygon(APoints, false, AStartIndex, ANumPts);
   FCanvas.Polyline(APoints, AStartIndex, ANumPts);
   FCanvas.Line(APoints[ANumPts - 1], APoints[0])
