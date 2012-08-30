@@ -836,11 +836,8 @@ begin
 end;
 
 procedure TChart.DrawReticule(ADrawer: IChartDrawer);
-var
-  ic: IChartTCanvasDrawer;
 begin
-  if not Supports(ADrawer, IChartTCanvasDrawer, ic) then exit;
-  PrepareXorPen(ic.Canvas);
+  ADrawer.SetXorPen(nil);
   if ReticuleMode in [rmVertical, rmCross] then
     DrawLineVert(ADrawer, FReticulePos.X);
   if ReticuleMode in [rmHorizontal, rmCross] then

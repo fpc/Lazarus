@@ -71,12 +71,11 @@ type
     procedure SetBrushColor(AColor: TChartColor);
     procedure SetBrushParams(AStyle: TFPBrushStyle; AColor: TChartColor);
     procedure SetPenParams(AStyle: TFPPenStyle; AColor: TChartColor);
+    procedure SetXorPen(APen: TFPCustomPen);
   end;
 
   function CanvasGetFontOrientationFunc(AFont: TFPCustomFont): Integer;
   function ChartColorSysToFPColor(AChartColor: TChartColor): TFPColor;
-  procedure PrepareXorPen(ACanvas: TCanvas);
-
 
 implementation
 
@@ -94,17 +93,6 @@ end;
 function ChartColorSysToFPColor(AChartColor: TChartColor): TFPColor;
 begin
   Result := ChartColorToFPColor(ColorToRGB(AChartColor));
-end;
-
-procedure PrepareXorPen(ACanvas: TCanvas);
-begin
-  with ACanvas do begin
-    Brush.Style := bsClear;
-    Pen.Style := psSolid;
-    Pen.Mode := pmXor;
-    Pen.Color := clWhite;
-    Pen.Width := 1;
-  end;
 end;
 
 { TCanvasDrawer }
@@ -260,6 +248,20 @@ procedure TCanvasDrawer.SetPenParams(AStyle: TFPPenStyle; AColor: TChartColor);
 begin
   FCanvas.Pen.Style := AStyle;
   FCanvas.Pen.Color := AColor;
+end;
+
+procedure TCanvasDrawer.SetXorPen(APen: TFPCustomPen);
+begin
+  with FCanvas do begin
+    Brush.Style := bsClear;
+    Pen.Style := psSolid;
+    Pen.Mode := pmXor;
+    Pen.Color := clWhite;
+    if APen = nil then
+      Pen.Width := 1
+    else
+      Pen.Width := APen.Width;
+  end;
 end;
 
 function TCanvasDrawer.SimpleTextExtent(const AText: String): TPoint;

@@ -1107,7 +1107,7 @@ begin
   inherited;
   case EffectiveDrawingMode of
     tdmXor:
-      PrepareXorPen(FChart.Canvas);
+      ADrawer.SetXorPen(Frame);
     tdmNormal:
       FChart.Drawer.Pen := Frame;
   end;
@@ -1133,7 +1133,7 @@ begin
   if not IsActive or IsAnimating then exit;
   case EffectiveDrawingMode of
     tdmXor: begin
-      PrepareXorPen(FChart.Canvas);
+      FChart.Drawer.SetXorPen(Frame);
       FChart.Canvas.Rectangle(FSelectionRect);
       FSelectionRect.BottomRight := APoint;
       FChart.Canvas.Rectangle(FSelectionRect);
@@ -1192,7 +1192,7 @@ var
 begin
   Unused(APoint);
 
-  PrepareXorPen(FChart.Canvas);
+  FChart.Drawer.SetXorPen(Frame);
   FChart.Canvas.Rectangle(FSelectionRect);
   with FSelectionRect do begin
     dragDir := DRAG_DIR[Sign(Right - Left), Sign(Bottom - Top)];
@@ -1739,7 +1739,7 @@ procedure TDataPointDrawTool.DoHide;
 begin
   case EffectiveDrawingMode of
     tdmXor: begin
-      PrepareXorPen(FChart.Canvas);
+      FChart.Drawer.SetXorPen(FPen);
       DoDraw;
     end;
     tdmNormal:
@@ -1752,7 +1752,7 @@ begin
   inherited;
   case EffectiveDrawingMode of
     tdmXor:
-      PrepareXorPen(FChart.Canvas);
+      FChart.Drawer.SetXorPen(FPen);
     tdmNormal:
       FChart.Drawer.Pen := FPen;
   end;
@@ -1821,7 +1821,7 @@ begin
   if FSeries = nil then exit;
   FPosition := FNearestGraphPoint;
   if EffectiveDrawingMode = tdmXor then begin
-    PrepareXorPen(FChart.Canvas);
+    FChart.Drawer.SetXorPen(FPen);
     DoDraw;
   end;
 end;
