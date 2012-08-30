@@ -2996,6 +2996,7 @@ components/tachart/numlib_fix/ipf.pas svneol=native#text/pascal
 components/tachart/numlib_fix/mdt.pas svneol=native#text/pascal
 components/tachart/numlib_fix/sle.pas svneol=native#text/pascal
 components/tachart/numlib_fix/spe.pas svneol=native#text/pascal
+components/tachart/taanimatedsource.pas svneol=native#text/pascal
 components/tachart/tachartaggpas.lpk svneol=native#text/pascal
 components/tachart/tachartaggpas.pas svneol=native#text/pascal
 components/tachart/tachartaxis.pas svneol=native#text/pascal

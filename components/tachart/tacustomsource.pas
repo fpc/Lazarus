@@ -163,9 +163,9 @@ type
     function IsUpdating: Boolean; inline;
   public
     class procedure CheckFormat(const AFormat: String);
-    function Extent: TDoubleRect;
-    function ExtentCumulative: TDoubleRect;
-    function ExtentList: TDoubleRect;
+    function Extent: TDoubleRect; virtual;
+    function ExtentCumulative: TDoubleRect; virtual;
+    function ExtentList: TDoubleRect; virtual;
     procedure FindBounds(AXMin, AXMax: Double; out ALB, AUB: Integer);
     function FormatItem(
       const AFormat: String; AIndex, AYIndex: Integer): String;

@@ -1082,7 +1082,7 @@ destructor TCalculatedChartSource.Destroy;
 begin
   FreeAndNil(FHistory);
   FreeAndNil(FListener);
-  inherited Destroy;
+  inherited;
 end;
 
 function TCalculatedChartSource.EffectiveAccumulationRange: Cardinal;

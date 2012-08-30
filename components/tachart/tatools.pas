@@ -478,7 +478,6 @@ type
     destructor Destroy; override;
     procedure Draw(AChart: TChart; ADrawer: IChartDrawer); override;
     procedure Hide; virtual;
-    procedure KeyDown(APoint: TPoint); override;
   published
     property DrawingMode;
     property GrabRadius default 20;
@@ -500,6 +499,7 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     procedure Draw(AChart: TChart; ADrawer: IChartDrawer); override;
+    procedure KeyDown(APoint: TPoint); override;
     procedure MouseMove(APoint: TPoint); override;
     property Position: TDoublePoint read FPosition;
   published
@@ -1661,11 +1661,6 @@ begin
   Deactivate;
 end;
 
-procedure TDataPointDrawTool.KeyDown(APoint: TPoint);
-begin
-  MouseMove(APoint);
-end;
-
 procedure TDataPointDrawTool.SetPen(AValue: TChartPen);
 begin
   FPen.Assign(AValue);
@@ -1709,6 +1704,11 @@ procedure TDataPointCrosshairTool.Draw(AChart: TChart; ADrawer: IChartDrawer);
 begin
   if FSeries = nil then exit;
   inherited;
+end;
+
+procedure TDataPointCrosshairTool.KeyDown(APoint: TPoint);
+begin
+  MouseMove(APoint);
 end;
 
 procedure TDataPointCrosshairTool.MouseMove(APoint: TPoint);

@@ -13,7 +13,8 @@ uses
   TALegendPanel, TARadialSeries, TACustomSource, TAGeometry, TANavigation, 
   TADrawerCanvas, TADrawerSVG, TAIntervalSources, TAChartAxisUtils, 
   TAChartListbox, TAEnumerators, TADataPointsEditor, TAChartExtentLink, 
-  TAToolEditors, TAMath, TAChartImageList, TADataTools, LazarusPackageIntf;
+  TAToolEditors, TAMath, TAChartImageList, TADataTools, TAAnimatedSource, 
+  LazarusPackageIntf;
 
 implementation
 
