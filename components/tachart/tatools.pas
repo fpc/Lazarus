@@ -525,7 +525,7 @@ implementation
 
 uses
   GraphMath, InterfaceBase, Math, SysUtils,
-  TAChartAxis, TACustomSeries, TADrawerCanvas, TAEnumerators, TAGeometry, TAMath;
+  TACustomSeries, TAEnumerators, TAGeometry, TAMath;
 
 function InitBuiltinTools(AChart: TChart): TBasicChartToolset;
 var
@@ -587,7 +587,7 @@ end;
 
 procedure TChartTool.Activate;
 begin
-  inherited Activate;
+  inherited;
   SetCursor;
 end;
 
@@ -619,7 +619,7 @@ end;
 procedure TChartTool.Deactivate;
 begin
   RestoreCursor;
-  inherited Deactivate;
+  inherited;
 end;
 
 destructor TChartTool.Destroy;
@@ -1030,11 +1030,11 @@ procedure TZoomDragTool.MouseMove(APoint: TPoint);
 begin
   if not IsActive or IsAnimating then exit;
   case EffectiveDrawingMode of
-    tdmXor: begin
-      FChart.Drawer.SetXorPen(Frame);
-      FChart.Canvas.Rectangle(FSelectionRect);
+    tdmXor: with FChart.Drawer do begin
+      SetXorPen(Frame);
+      Rectangle(FSelectionRect);
       FSelectionRect.BottomRight := APoint;
-      FChart.Canvas.Rectangle(FSelectionRect);
+      Rectangle(FSelectionRect);
     end;
     tdmNormal: begin
       FSelectionRect.BottomRight := APoint;
@@ -1091,7 +1091,7 @@ begin
   Unused(APoint);
 
   FChart.Drawer.SetXorPen(Frame);
-  FChart.Canvas.Rectangle(FSelectionRect);
+  FChart.Drawer.Rectangle(FSelectionRect);
   with FSelectionRect do begin
     dragDir := DRAG_DIR[Sign(Right - Left), Sign(Bottom - Top)];
     if
