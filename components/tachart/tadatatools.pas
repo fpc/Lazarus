@@ -113,8 +113,8 @@ type
 implementation
 
 uses
-  FPCanvas, Graphics, GraphMath, LCLIntf, LCLType, Math, SysUtils, Types,
-  TAChartAxis, TACustomSeries, TAGeometry;
+  FPCanvas, Graphics, GraphMath, Math, SysUtils, Types,
+  TAChartAxis, TACustomSeries, TADrawerCanvas, TAGeometry;
 
 const
   DEF_DISTANCE_FORMAT = '%0:.9g';
@@ -136,7 +136,7 @@ constructor TDataPointDistanceToolMarks.Create(AOwner: TCustomChart);
 begin
   inherited Create(AOwner);
   FDistance := DEF_MARKS_DISTANCE;
-  FLabelBrush.Color := clYellow;
+  SetPropDefaults(FLabelBrush, ['Color']);
   Format := DEF_DISTANCE_FORMAT;
 end;
 
@@ -195,29 +195,6 @@ begin
 end;
 
 procedure TDataPointDistanceTool.DoDraw;
-
-  procedure DrawXorText(ACanvas: TCanvas; APoint: TPoint; const AText: String);
-  var
-    bmp: TBitmap;
-    ext: TSize;
-  begin
-    ext := ACanvas.TextExtent(AText);
-    bmp := TBitmap.Create;
-    try
-      bmp.SetSize(ext.cx, ext.cy);
-      bmp.Canvas.Brush.Style := bsClear;
-      bmp.Canvas.Font := ACanvas.Font;
-      bmp.Canvas.Font.Color := clWhite;
-      bmp.Canvas.TextOut(0, 0, AText);
-      APoint -= ext div 2;
-      BitBlt(
-        ACanvas.Handle, APoint.X, APoint.Y, ext.cx, ext.cy,
-        bmp.Canvas.Handle, 0, 0, SRCINVERT);
-    finally
-      bmp.Free;
-    end;
-  end;
-
 var
   a: Double;
 
@@ -348,8 +325,10 @@ begin
   finally
     FreeAndNil(newEnd);
   end;
-  if EffectiveDrawingMode = tdmXor then
+  if EffectiveDrawingMode = tdmXor then begin
+    FChart.Drawer.SetXorPen(FPen);
     DoDraw;
+  end;
   Handled;
 end;
 
