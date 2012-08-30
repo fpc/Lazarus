@@ -1819,7 +1819,7 @@ function TBaseCompilerOptions.CreateTargetFilename(
   var
     Ext: String;
   begin
-    if (ExtractFileName(Result)='') or (ExtractFileExt(Result)<>'') then exit;
+    if (ExtractFileName(Result)='') then exit;
     Ext:=GetTargetFileExt;
     if Ext<>'' then begin
       Result:=Result+Ext;
