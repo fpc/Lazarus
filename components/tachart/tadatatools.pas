@@ -113,8 +113,8 @@ type
 implementation
 
 uses
-  FPCanvas, Graphics, GraphMath, Math, SysUtils, Types,
-  TAChartAxis, TACustomSeries, TADrawerCanvas, TAGeometry;
+  GraphMath, Math, SysUtils, Types,
+  TAChartAxis, TACustomSeries, TAGeometry;
 
 const
   DEF_DISTANCE_FORMAT = '%0:.9g';
@@ -225,10 +225,7 @@ begin
   DrawPointer(PointerEnd, p2);
   if Marks.Visible then begin
     p1 := (p1 + p2) div 2;
-    if EffectiveDrawingMode = tdmNormal then
-      Marks.DrawLabel(FChart.Drawer, p1, p1, GetDistanceText, dummy)
-    else
-      DrawXorText(FChart.Canvas, p1, GetDistanceText);
+    Marks.DrawLabel(FChart.Drawer, p1, p1, GetDistanceText, dummy)
   end;
   inherited;
 end;

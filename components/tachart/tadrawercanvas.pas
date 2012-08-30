@@ -75,7 +75,6 @@ type
 
   function CanvasGetFontOrientationFunc(AFont: TFPCustomFont): Integer;
   function ChartColorSysToFPColor(AChartColor: TChartColor): TFPColor;
-  procedure DrawXorText(ACanvas: TCanvas; APoint: TPoint; const AText: String);
 
 implementation
 
@@ -94,28 +93,6 @@ end;
 function ChartColorSysToFPColor(AChartColor: TChartColor): TFPColor;
 begin
   Result := ChartColorToFPColor(ColorToRGB(AChartColor));
-end;
-
-procedure DrawXorText(ACanvas: TCanvas; APoint: TPoint; const AText: String);
-var
-  bmp: TBitmap;
-  ext: TPoint;
-begin
-  ext := ACanvas.TextExtent(AText);
-  bmp := TBitmap.Create;
-  try
-    bmp.SetSize(ext.X, ext.Y);
-    bmp.Canvas.Brush.Style := bsClear;
-    bmp.Canvas.Font := ACanvas.Font;
-    bmp.Canvas.Font.Color := clWhite;
-    bmp.Canvas.TextOut(0, 0, AText);
-    APoint -= ext div 2;
-    BitBlt(
-      ACanvas.Handle, APoint.X, APoint.Y, ext.X, ext.Y,
-      bmp.Canvas.Handle, 0, 0, SRCINVERT);
-  finally
-    bmp.Free;
-  end;
 end;
 
 { TCanvasDrawer }
@@ -304,8 +281,39 @@ begin
 end;
 
 procedure TCanvasDrawer.SimpleTextOut(AX, AY: Integer; const AText: String);
+
+  procedure DrawXorText;
+  var
+    bmp: TBitmap;
+    p, ext, bmpSize: TPoint;
+    a: Double;
+  begin
+    ext := FCanvas.TextExtent(AText);
+    a := OrientToRad(FCanvas.Font.Orientation);
+    bmpSize := MeasureRotatedRect(ext, a);
+    p := bmpSize div 2 - RotatePoint(ext div 2, -a);
+
+    bmp := TBitmap.Create;
+    try
+      bmp.SetSize(bmpSize.X, bmpSize.Y);
+      bmp.Canvas.Brush.Style := bsClear;
+      bmp.Canvas.Font := FCanvas.Font;
+      bmp.Canvas.Font.Color := clWhite;
+      bmp.Canvas.TextOut(p.X, p.Y, AText);
+      bmp.Canvas.Pen.Color := clWhite;
+      BitBlt(
+        FCanvas.Handle, AX - p.X, AY - p.Y, bmpSize.X, bmpSize.Y,
+        bmp.Canvas.Handle, 0, 0, SRCINVERT);
+    finally
+      bmp.Free;
+    end;
+  end;
+
 begin
-  FCanvas.TextOut(AX, AY, AText);
+  if FXor then
+    DrawXorText
+  else
+    FCanvas.TextOut(AX, AY, AText);
 end;
 
 initialization
