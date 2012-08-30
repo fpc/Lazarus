@@ -34,7 +34,7 @@
  for details about the copyright.
 "/>
     <Version Major="1"/>
-    <Files Count="37">
+    <Files Count="38">
       <Item1>
         <Filename Value="tagraph.pas"/>
         <HasRegisterProc Value="True"/>
@@ -201,6 +201,10 @@
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="TAChartTeeChart"/>
       </Item37>
+      <Item38>
+        <Filename Value="tadatatools.pas"/>
+        <UnitName Value="TADataTools"/>
+      </Item38>
     </Files>
     <LazDoc Paths="$(LazarusDir)\components\tachart\fpdoc"/>
     <Type Value="RunAndDesignTime"/>
