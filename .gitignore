@@ -138,6 +138,9 @@ components/tachart/demo/3d/lib
 components/tachart/demo/aggpas/*.exe
 components/tachart/demo/aggpas/*.lps
 components/tachart/demo/aggpas/lib
+components/tachart/demo/animate/*.exe
+components/tachart/demo/animate/*.lps
+components/tachart/demo/animate/lib
 components/tachart/demo/axis/*.exe
 components/tachart/demo/axis/*.lps
 components/tachart/demo/axis/lib
