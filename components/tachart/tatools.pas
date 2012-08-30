@@ -1658,7 +1658,7 @@ end;
 procedure TDataPointDrawTool.Hide;
 begin
   DoHide;
-  FChart := nil;
+  Deactivate;
 end;
 
 procedure TDataPointDrawTool.KeyDown(APoint: TPoint);

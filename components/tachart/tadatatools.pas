@@ -52,7 +52,8 @@ type
   TDataPointDistanceTool = class(TDataPointDrawTool)
   published
   type
-    TOptions = set of (dpdoLockToData, dpdoRotateLabel, dpdoLabelAbove);
+    TOptions = set of (
+      dpdoLockToData, dpdoRotateLabel, dpdoLabelAbove, dpdoPermanent);
 
   strict private
     // Workaround for FPC 2.6 bug. Remove after migration to 2.8.
@@ -208,6 +209,7 @@ var
   p1, p2: TPoint;
   dummy: TPointArray = nil;
 begin
+  if not (IsActive or (FChart <> nil) and (dpdoPermanent in Options)) then exit;
   p1 := FChart.GraphToImage(PointStart.GraphPos);
   p2 := FChart.GraphToImage(PointEnd.GraphPos);
   case MeasureMode of
@@ -315,11 +317,19 @@ begin
 end;
 
 procedure TDataPointDistanceTool.MouseUp(APoint: TPoint);
+var
+  ch: TChart;
 begin
   MouseMove(APoint);
   if Assigned(OnMeasure) and (PointStart.GraphPos <> PointEnd.GraphPos) then
     OnMeasure(Self);
-  Deactivate;
+  if dpdoPermanent in Options then begin
+    ch := FChart;
+    Deactivate;
+    FChart := ch;
+  end
+  else
+    Hide;
 end;
 
 function TDataPointDistanceTool.SameTransformations(
