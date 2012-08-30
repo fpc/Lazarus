@@ -52,7 +52,7 @@ type
   TDataPointDistanceTool = class(TDataPointDrawTool)
   published
   type
-    TOptions = set of (dpdoLockToData, dpdoRotateLabel);
+    TOptions = set of (dpdoLockToData, dpdoRotateLabel, dpdoLabelAbove);
 
   strict private
     // Workaround for FPC 2.6 bug. Remove after migration to 2.8.
@@ -223,10 +223,12 @@ begin
   DrawPointer(PointerStart, p1);
   DrawPointer(PointerEnd, p2);
   if Marks.Visible then begin
-    p1 := (p1 + p2) div 2;
     if dpdoRotateLabel in Options then
       Marks.SetAdditionalAngle(-a);
-    Marks.DrawLabel(FChart.Drawer, p1, p1, GetDistanceText, dummy)
+    p1 := (p1 + p2) div 2;
+    a += IfThen(dpdoLabelAbove in Options, -Pi / 2, Pi / 2);
+    p2 := p1 + RotatePointX(Marks.Distance, a);
+    Marks.DrawLabel(FChart.Drawer, p1, p2, GetDistanceText, dummy)
   end;
   inherited;
 end;
