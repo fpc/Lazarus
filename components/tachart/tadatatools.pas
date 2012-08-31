@@ -54,7 +54,8 @@ type
   type
     TDataPointMode = (dpmFree, dpmSnap, dpmLock);
 
-    TOptions = set of (dpdoRotateLabel, dpdoLabelAbove, dpdoPermanent);
+    TOptions = set of (
+      dpdoRotateLabel, dpdoLabelAbove, dpdoPermanent, dpdoFlipLabel);
 
   strict private
     // Workaround for FPC 2.6 bug. Remove after migration to 2.8.
@@ -215,6 +216,7 @@ var
 var
   p1, p2: TPoint;
   dummy: TPointArray = nil;
+  flip: Boolean;
 begin
   if not (IsActive or (FChart <> nil) and (dpdoPermanent in Options)) then exit;
   p1 := FChart.GraphToImage(PointStart.GraphPos);
@@ -232,10 +234,11 @@ begin
   DrawPointer(PointerStart, p1);
   DrawPointer(PointerEnd, p2);
   if Marks.Visible then begin
+    flip := (dpdoFlipLabel in Options) and ((a > Pi /2) or (a < -Pi / 2));
     if dpdoRotateLabel in Options then
-      Marks.SetAdditionalAngle(-a);
+      Marks.SetAdditionalAngle(IfThen(flip, Pi - a, -a));
     p1 := (p1 + p2) div 2;
-    a += IfThen(dpdoLabelAbove in Options, -Pi / 2, Pi / 2);
+    a += IfThen((dpdoLabelAbove in Options) xor flip, -Pi / 2, Pi / 2);
     p2 := p1 + RotatePointX(Marks.Distance, a);
     Marks.DrawLabel(FChart.Drawer, p1, p2, GetDistanceText, dummy)
   end;
