@@ -47,6 +47,7 @@ type
     FActive: Boolean;
     FChart: TChart;
     FDepth: TChartDistance;
+    FTransparency: TChartTransparency;
     FZPosition: TChartDistance;
 
     procedure AfterAdd; virtual; abstract;
@@ -60,6 +61,7 @@ type
     function GetShowInLegend: Boolean; virtual; abstract;
     procedure SetActive(AValue: Boolean); virtual; abstract;
     procedure SetDepth(AValue: TChartDistance); virtual; abstract;
+    procedure SetTransparency(AValue: TChartTransparency); virtual; abstract;
     procedure SetZPosition(AValue: TChartDistance); virtual; abstract;
     procedure UpdateMargins(ADrawer: IChartDrawer; var AMargins: TRect); virtual;
     procedure VisitSources(
@@ -83,6 +85,8 @@ type
     property Active: Boolean read FActive write SetActive default true;
     property Depth: TChartDistance read FDepth write SetDepth default 0;
     property ParentChart: TChart read FChart;
+    property Transparency: TChartTransparency
+      read FTransparency write SetTransparency default 0;
     property ZPosition: TChartDistance read FZPosition write SetZPosition default 0;
   end;
 
@@ -689,7 +693,9 @@ begin
           ADrawer.ClippingStart(FClipRect);
           try
             try
+              ADrawer.SetTransparency(Transparency);
               Draw(ADrawer);
+              ADrawer.SetTransparency(0);
             except
               Active := false;
               raise;

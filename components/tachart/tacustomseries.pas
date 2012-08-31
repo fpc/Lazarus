@@ -66,6 +66,7 @@ type
     procedure SetActive(AValue: Boolean); override;
     procedure SetDepth(AValue: TChartDistance); override;
     procedure SetTitle(AValue: String); virtual;
+    procedure SetTransparency(AValue: TChartTransparency); override;
     procedure SetZPosition(AValue: TChartDistance); override;
     procedure StyleChanged(Sender: TObject);
     procedure UpdateParentChart;
@@ -111,6 +112,7 @@ type
 
   published
     property Legend: TChartSeriesLegend read FLegend write SetLegend;
+    property Transparency;
     property ShowInLegend: Boolean
       read GetShowInLegend write SetShowInLegend stored false default true;
       deprecated;
@@ -518,6 +520,13 @@ procedure TCustomChartSeries.SetTitle(AValue: String);
 begin
   if FTitle = AValue then exit;
   FTitle := AValue;
+  UpdateParentChart;
+end;
+
+procedure TCustomChartSeries.SetTransparency(AValue: TChartTransparency);
+begin
+  if FTransparency = AValue then exit;
+  FTransparency := AValue;
   UpdateParentChart;
 end;
 
