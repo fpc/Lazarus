@@ -357,7 +357,7 @@ type
       procedure SetGraphPos(const ANewPos: TDoublePoint);
     public
       procedure Assign(ASource: TPointRef);
-      function AxisPos: TDoublePoint;
+      function AxisPos(ADefaultSeries: TBasicChartSeries = nil): TDoublePoint;
       property GraphPos: TDoublePoint read FGraphPos;
       property Index: Integer read FIndex;
       property Series: TBasicChartSeries read FSeries;
@@ -567,13 +567,18 @@ begin
   end;
 end;
 
-function TDataPointTool.TPointRef.AxisPos: TDoublePoint;
+function TDataPointTool.TPointRef.AxisPos(
+  ADefaultSeries: TBasicChartSeries): TDoublePoint;
+var
+  s: TBasicChartSeries;
 begin
-  if Series = nil then
+  s := Series;
+  if s = nil then
+    s := ADefaultSeries;
+  if s = nil then
     Result := GraphPos
   else
-    with Series do
-      Result := DoublePoint(GraphToAxisX(GraphPos.X), GraphToAxisY(GraphPos.Y));
+    Result := DoublePoint(s.GraphToAxisX(GraphPos.X), s.GraphToAxisY(GraphPos.Y));
 end;
 
 procedure TDataPointTool.TPointRef.SetGraphPos(const ANewPos: TDoublePoint);

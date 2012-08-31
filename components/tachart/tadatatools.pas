@@ -52,12 +52,14 @@ type
   TDataPointDistanceTool = class(TDataPointDrawTool)
   published
   type
-    TOptions = set of (
-      dpdoLockToData, dpdoRotateLabel, dpdoLabelAbove, dpdoPermanent);
+    TDataPointMode = (dpmFree, dpmSnap, dpmLock);
+
+    TOptions = set of (dpdoRotateLabel, dpdoLabelAbove, dpdoPermanent);
 
   strict private
     // Workaround for FPC 2.6 bug. Remove after migration to 2.8.
     FAnchors: array of TObject;
+    FDataPointMode: TDataPointMode;
     FMarks: TDataPointDistanceToolMarks;
     FMeasureMode: TChartDistanceMode;
     FOnGetDistanceText: TDataPointGetDistanceTextEvent;
@@ -74,7 +76,9 @@ type
 
   strict protected
     procedure DoDraw; override;
-    function FindRef(APoint: TPoint; ADest: TDataPointTool.TPointRef): Boolean;
+    function FindRef(
+      APoint: TPoint; ADest: TDataPointTool.TPointRef;
+      AOtherEndSeries: TBasicChartSeries): Boolean;
     function GetDistanceText: String;
     function SameTransformations(ASeries1, ASeries2: TBasicChartSeries): Boolean;
 
@@ -94,6 +98,9 @@ type
     property DrawingMode;
     property GrabRadius default 20;
     property LinePen: TChartPen read FPen write SetPen;
+  published
+    property DataPointMode: TDataPointMode
+      read FDataPointMode write FDataPointMode default dpmFree;
     property Marks: TDataPointDistanceToolMarks read FMarks write SetMarks;
     property MeasureMode: TChartDistanceMode
       read FMeasureMode write FMeasureMode default cdmXY;
@@ -170,8 +177,8 @@ begin
   case AUnits of
     cuPercent: exit(0); // Not implemented.
     cuAxis: begin
-      p1 := PointStart.AxisPos;
-      p2 := PointEnd.AxisPos;
+      p1 := PointStart.AxisPos(PointEnd.Series);
+      p2 := PointEnd.AxisPos(PointStart.Series);
     end;
     cuGraph: begin
       p1 := PointStart.GraphPos;
@@ -236,20 +243,21 @@ begin
 end;
 
 function TDataPointDistanceTool.FindRef(
-  APoint: TPoint; ADest: TDataPointTool.TPointRef): Boolean;
+  APoint: TPoint; ADest: TDataPointTool.TPointRef;
+  AOtherEndSeries: TBasicChartSeries): Boolean;
 begin
-  if dpdoLockToData in Options then begin
+  FSeries := nil;
+  if DataPointMode in [dpmSnap, dpmLock] then begin
     FindNearestPoint(APoint);
-    if FSeries = nil then exit(false);
-    with ADest do begin
-      FGraphPos := FNearestGraphPoint;
-      FIndex := PointIndex;
-      FSeries := Self.FSeries;
-    end;
-  end
-  else
+    ADest.FGraphPos := FNearestGraphPoint;
+    ADest.FIndex := PointIndex;
+    if not SameTransformations(FSeries, AOtherEndSeries) then
+      FSeries := nil;
+  end;
+  ADest.FSeries := FSeries;
+  if FSeries = nil then
     ADest.SetGraphPos(FChart.ImageToGraph(APoint));
-  Result := true;
+  Result := (FSeries <> nil) or (DataPointMode <> dpmLock);
 end;
 
 // Use Marks.Format and/or OnGetDistanceText event handler to create the text
@@ -285,9 +293,11 @@ end;
 
 procedure TDataPointDistanceTool.MouseDown(APoint: TPoint);
 begin
-  DoHide;
-  if not FindRef(APoint, PointStart) then exit;
-  Activate;
+  if dpdoPermanent in Options then
+    DoHide;
+  PointStart.FSeries := nil;
+  if FindRef(APoint, PointStart, nil) then
+    Activate;
   PointEnd.Assign(PointStart);
   Handled;
 end;
@@ -300,10 +310,7 @@ begin
   DoHide;
   newEnd := TPointRef.Create;
   try
-    if
-      FindRef(APoint, newEnd) and
-      SameTransformations(PointStart.Series, newEnd.Series)
-    then
+    if FindRef(APoint, newEnd, PointStart.Series) then
       PointEnd.Assign(newEnd);
   finally
     FreeAndNil(newEnd);
@@ -348,6 +355,7 @@ var
 begin
   Result :=
     (ASeries1 = ASeries2) or
+    (ASeries1 = nil) or (ASeries2 = nil) or
     (ASeries1 is TCustomChartSeries) and
     (ASeries2 is TCustomChartSeries) and
     ((MeasureMode = cdmOnlyY) or CheckAxis(s1.AxisIndexX, s2.AxisIndexX)) and
