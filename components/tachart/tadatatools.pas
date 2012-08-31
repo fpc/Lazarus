@@ -81,7 +81,7 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    function Distance(AUnits: TChartUnits = cuGraph): Double;
+    function Distance(AUnits: TChartUnits = cuAxis): Double;
     procedure KeyDown(APoint: TPoint); override;
     procedure KeyUp(APoint: TPoint); override;
     procedure MouseDown(APoint: TPoint); override;
@@ -258,7 +258,7 @@ end;
 // datetime string.
 function TDataPointDistanceTool.GetDistanceText: String;
 begin
-  Result := Format(Marks.Format, [Distance]);
+  Result := Format(Marks.Format, [Distance(cuAxis), Distance(cuGraph)]);
   if Assigned(OnGetDistanceText) then
     OnGetDistanceText(Self, Result);
 end;
