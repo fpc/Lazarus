@@ -80,6 +80,8 @@ type
                                        Params: TAddToPkgResult): TModalResult;
     function OnPackageEditorCreateMakefile(Sender: TObject;
                                            APackage: TLazPackage): TModalResult;
+    function OnPackageEditorCreateFpmakeFile(Sender: TObject;
+                                           APackage: TLazPackage): TModalResult;
     function OnPackageEditorDeleteAmbiguousFiles(Sender: TObject;
       APackage: TLazPackage; const Filename: string): TModalResult;
     function OnPackageEditorInstallPackage(Sender: TObject;
@@ -300,6 +302,8 @@ type
                               ShowAbort: boolean): TModalResult; override;
     function DoCreatePackageMakefile(APackage: TLazPackage;
                                      ShowAbort: boolean): TModalResult;
+    function DoCreatePackageFpmakefile(APackage: TLazPackage;
+                                       ShowAbort: boolean): TModalResult;
 
     // package installation
     procedure LoadInstalledPackages; override;
@@ -617,6 +621,12 @@ function TPkgManager.OnPackageEditorCreateMakefile(Sender: TObject;
   APackage: TLazPackage): TModalResult;
 begin
   Result:=DoCreatePackageMakefile(APackage,false);
+end;
+
+function TPkgManager.OnPackageEditorCreateFpmakefile(Sender: TObject;
+  APackage: TLazPackage): TModalResult;
+begin
+  Result:=DoCreatePackageFpmakefile(APackage,false);
 end;
 
 function TPkgManager.OnPackageEditorCreateFile(Sender: TObject;
@@ -1545,6 +1555,7 @@ begin
   PackageEditors.OnViewPackageSource:=@OnPackageEditorViewPkgSource;
   PackageEditors.OnDeleteAmbiguousFiles:=@OnPackageEditorDeleteAmbiguousFiles;
   PackageEditors.OnCreateMakefile:=@OnPackageEditorCreateMakefile;
+  PackageEditors.OnCreateFpmakeFile:=@OnPackageEditorCreateFpmakeFile;
 
   // package macros
   CodeToolBoss.DefineTree.MacroFunctions.AddExtended(
@@ -2653,6 +2664,13 @@ function TPkgManager.DoCreatePackageMakefile(APackage: TLazPackage;
 begin
   Result:=DoCompilePackage(APackage,[pcfDoNotCompileDependencies,
                        pcfDoNotCompilePackage,pcfCreateMakefile],ShowAbort);
+end;
+
+function TPkgManager.DoCreatePackageFpmakefile(APackage: TLazPackage;
+  ShowAbort: boolean): TModalResult;
+begin
+  Result:=DoCompilePackage(APackage,[pcfDoNotCompileDependencies,
+                       pcfDoNotCompilePackage,pcfCreateFpmakeFile],ShowAbort);
 end;
 
 function TPkgManager.OnRenameFile(const OldFilename, NewFilename: string;

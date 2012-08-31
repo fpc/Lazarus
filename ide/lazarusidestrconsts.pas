@@ -4116,6 +4116,7 @@ resourcestring
   lisPckEditRecompileClean = 'Recompile Clean';
   lisPckEditRecompileAllRequired = 'Recompile All Required';
   lisPckEditCreateMakefile = 'Create Makefile';
+  lisPckEditCreateFpmakeFile = 'Create fpmake.pp';
   lisPckEditAddToProject = 'Add to Project';
   lisPckEditInstall = 'Install';
   lisPckEditUninstall = 'Uninstall';

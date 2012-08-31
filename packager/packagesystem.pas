@@ -3045,7 +3045,7 @@ begin
   Result:=LoadPackageCompiledState(APackage,false,true);
   if Result<>mrOk then exit; // read error and user aborted
   if not Stats^.StateFileLoaded then begin
-    // package was not compiled via Lazarus nor via Makefile
+    // package was not compiled via Lazarus nor via Makefile/fpmake
     DebugLn('TLazPackageGraph.CheckIfCurPkgOutDirNeedsCompile  Missing state file for ',APackage.IDAsString,': ',StateFilename);
     Note+='Missing state file "'+StateFilename+'".'+LineEnding;
     NeedBuildAllFlag:=true;
@@ -3070,7 +3070,7 @@ begin
   // check compiler and params
   LastParams:=APackage.GetLastCompilerParams(o);
   if Stats^.ViaMakefile then begin
-    // the package was compiled via Makefile
+    // the package was compiled via Makefile/fpmake
     CurPaths:=nil;
     LastPaths:=nil;
     try
@@ -3401,6 +3401,16 @@ begin
         end;
       end;
 
+      // create fpmake.pp
+      if ((pcfCreateFpmakeFile in Flags)
+      or (APackage.CompilerOptions.CreateMakefileOnBuild)) then begin
+        Result:=WriteFpmake(APackage);
+        if Result<>mrOk then begin
+          DebugLn('TLazPackageGraph.CompilePackage DoWriteFpmakeFile failed: ',APackage.IDAsString);
+          exit;
+        end;
+      end;
+
       // run compilation tool 'Before'
       if not (pcfDoNotCompilePackage in Flags) then begin
         Result:=APackage.CompilerOptions.ExecuteBefore.Execute(
@@ -3638,8 +3648,8 @@ begin
   PathDelimNeedsReplace:=PathDelim<>'/';
 
   if not DirectoryIsWritableCached(APackage.Directory) then begin
-    // the Makefile.fpc is only needed for custom building
-    // if the package directory is not writable, then the user does not want to
+    // The Makefile.fpc is only needed for custom building.
+    // If the package directory is not writable, then the user does not want to
     // custom build
     // => silently skip
     DebugLn(['TPkgManager.DoWriteMakefile Skipping, because package directory is not writable: ',APackage.Directory]);
@@ -3915,8 +3925,8 @@ begin
   PathDelimNeedsReplace:=PathDelim<>'/';
 
   if not DirectoryIsWritableCached(APackage.Directory) then begin
-    // the Makefile.fpc is only needed for custom building
-    // if the package directory is not writable, then the user does not want to
+    // The fpmake.pp is only needed for custom building.
+    // If the package directory is not writable, then the user does not want to
     // custom build
     // => silently skip
     DebugLn(['TPkgManager.DoWriteFpmake Skipping, because package directory is not writable: ',APackage.Directory]);
@@ -3934,10 +3944,10 @@ begin
                                                  coptParsedPlatformIndependent);
   CustomOptions:=APackage.CompilerOptions.GetCustomOptions(
                                                  coptParsedPlatformIndependent);
-  debugln('CustomOptions: ',CustomOptions);
+  debugln('CustomOptions (orig): ',CustomOptions);
   OtherOptions:=APackage.CompilerOptions.MakeOptionsString(
                               [ccloDoNotAppendOutFileOption,ccloNoMacroParams]);
-  debugln('OtherOptions: ',OtherOptions);
+  debugln('OtherOptions (orig): ',OtherOptions);
 
 
   //DebugLn('TPkgManager.DoWriteMakefile ',APackage.Name,' makefile UnitPath="',UnitPath,'"');
@@ -3948,10 +3958,10 @@ begin
                                                 ChompPathDelim(UnitOutputPath));
   MainSrcFile:=CreateRelativePath(SrcFilename,APackage.Directory);
   CustomOptions:=ConvertLazarusOptionsToFpmakeOptions(CustomOptions);
-  debugln('CustomOptions2: ',CustomOptions);
+  debugln('CustomOptions (fpmake format): ',CustomOptions);
 
   OtherOptions:=ConvertLazarusOptionsToFpmakeOptions(OtherOptions);
-  debugln('OtherOptions2: ',OtherOptions);
+  debugln('OtherOptions (fpmake format): ',OtherOptions);
 
   e:=LineEnding;
   s:='';
@@ -3983,7 +3993,8 @@ begin
   s:=s+'    P.Version:='''+APackage.Version.AsString+''';'+e;
   s:=s+''+e;
   s:=s+'{$ifdef ALLPACKAGES}'+e;
-  s:=s+'    P.Directory:='''+APackage.Directory+''';'+e;
+  s:=s+'    // when this is part of a meta package, set here the sub directory'+e;
+  s:=s+'    // P.Directory:=''put here the relative path'';'+e;
   s:=s+'{$endif ALLPACKAGES}'+e;
   s:=s+''+e;
 
@@ -4036,7 +4047,7 @@ begin
         // the package source is read only => ignore
         exit(mrOk);
       end;
-      debugln(['TLazPackageGraph.WriteMakeFile unable to create file '+FpmakeFPCFilename]);
+      debugln(['TLazPackageGraph.WriteFpmake unable to create file '+FpmakeFPCFilename]);
       exit(mrCancel);
     end;
   end;
@@ -4059,6 +4070,7 @@ begin
     end;
     exit;
   end;
+  debugln(['TLazPackageGraph.WriteFpmake wrote: ',FpmakeFPCFilename]);
 
   Result:=mrOk;
 end;

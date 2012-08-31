@@ -80,10 +80,13 @@ var
   PkgEditMenuRecompileClean: TIDEMenuCommand;
   PkgEditMenuRecompileAllRequired: TIDEMenuCommand;
   PkgEditMenuCreateMakefile: TIDEMenuCommand;
+  PkgEditMenuCreateFpmakeFile: TIDEMenuCommand;
   PkgEditMenuViewPackageSource: TIDEMenuCommand;
 
 type
   TOnCreatePkgMakefile =
+    function(Sender: TObject; APackage: TLazPackage): TModalResult of object;
+  TOnCreatePkgFpmakeFile =
     function(Sender: TObject; APackage: TLazPackage): TModalResult of object;
   TOnOpenFile =
     function(Sender: TObject; const Filename: string): TModalResult of object;
@@ -175,6 +178,7 @@ type
     procedure CompileBitBtnClick(Sender: TObject);
     procedure CompileCleanClick(Sender: TObject);
     procedure CreateMakefileClick(Sender: TObject);
+    procedure CreateFpmakeFileClick(Sender: TObject);
     procedure DirectoryHierarchyButtonClick(Sender: TObject);
     procedure DisableI18NForLFMCheckBoxChange(Sender: TObject);
     procedure EditVirtualUnitMenuItemClick(Sender: TObject);
@@ -291,7 +295,8 @@ type
     FOnBeforeReadPackage: TNotifyEvent;
     FOnCompilePackage: TOnCompilePackage;
     FOnCreateNewFile: TOnCreateNewPkgFile;
-    FOnCreatePkgMakefile: TOnCreatePkgMakefile;
+    FOnCreateMakefile: TOnCreatePkgMakefile;
+    FOnCreateFpmakeFile: TOnCreatePkgFpmakeFile;
     FOnDeleteAmbiguousFiles: TOnDeleteAmbiguousFiles;
     FOnFreeEditor: TOnFreePkgEditor;
     FOnGetIDEFileInfo: TGetIDEFileStateEvent;
@@ -338,6 +343,7 @@ type
     function AddToProject(APackage: TLazPackage;
                           OnlyTestIfPossible: boolean): TModalResult;
     function CreateMakefile(APackage: TLazPackage): TModalResult;
+    function CreateFpmakeFile(APackage: TLazPackage): TModalResult;
   public
     property Editors[Index: integer]: TPackageEditorForm read GetEditors;
     property OnAddToProject: TOnAddPkgToProject read FOnAddToProject
@@ -348,8 +354,10 @@ type
                                                write FOnBeforeReadPackage;
     property OnCompilePackage: TOnCompilePackage read FOnCompilePackage
                                                  write FOnCompilePackage;
-    property OnCreateMakefile: TOnCreatePkgMakefile read FOnCreatePkgMakefile
-                                                     write FOnCreatePkgMakefile;
+    property OnCreateMakeFile: TOnCreatePkgMakefile read FOnCreateMakefile
+                                                     write FOnCreateMakefile;
+    property OnCreateFpmakeFile: TOnCreatePkgFpmakeFile read FOnCreateFpmakeFile
+                                                     write FOnCreateFpmakeFile;
     property OnCreateNewFile: TOnCreateNewPkgFile read FOnCreateNewFile
                                                   write FOnCreateNewFile;
     property OnDeleteAmbiguousFiles: TOnDeleteAmbiguousFiles
@@ -464,6 +472,7 @@ begin
   PkgEditMenuCompile:=RegisterIDEMenuCommand(AParent,'Compile',lisCompile);
   PkgEditMenuRecompileClean:=RegisterIDEMenuCommand(AParent,'Recompile Clean',lisPckEditRecompileClean);
   PkgEditMenuRecompileAllRequired:=RegisterIDEMenuCommand(AParent,'Recompile All Required',lisPckEditRecompileAllRequired);
+  PkgEditMenuCreateFpmakeFile:=RegisterIDEMenuCommand(AParent,'Create fpmake.pp',lisPckEditCreateFpmakeFile);
   PkgEditMenuCreateMakefile:=RegisterIDEMenuCommand(AParent,'Create Makefile',lisPckEditCreateMakefile);
 
   // register the section for adding to or removing from package
@@ -671,6 +680,7 @@ begin
     SetItem(PkgEditMenuCompile,@CompileBitBtnClick,true,CompileBitBtn.Enabled);
     SetItem(PkgEditMenuRecompileClean,@CompileCleanClick,true,CompileBitBtn.Enabled);
     SetItem(PkgEditMenuRecompileAllRequired,@CompileAllCleanClick,true,CompileBitBtn.Enabled);
+    SetItem(PkgEditMenuCreateFpmakeFile,@CreateFpmakeFileClick,true,CompileBitBtn.Enabled);
     SetItem(PkgEditMenuCreateMakefile,@CreateMakefileClick,true,CompileBitBtn.Enabled);
 
     // under section PkgEditMenuSectionMisc
@@ -1201,6 +1211,12 @@ end;
 procedure TPackageEditorForm.CreateMakefileClick(Sender: TObject);
 begin
   PackageEditors.CreateMakefile(LazPackage);
+end;
+
+procedure TPackageEditorForm.CreateFpmakeFileClick(Sender: TObject);
+begin
+  debugln(['TPackageEditorForm.CreateFpmakeFileClick AAA1']);
+  PackageEditors.CreateFpmakeFile(LazPackage);
 end;
 
 procedure TPackageEditorForm.DirectoryHierarchyButtonClick(Sender: TObject);
@@ -2459,8 +2475,16 @@ end;
 
 function TPackageEditors.CreateMakefile(APackage: TLazPackage): TModalResult;
 begin
-  if Assigned(OnCreateMakefile) then
-    Result:=OnCreateMakefile(Self,APackage)
+  if Assigned(OnCreateMakeFile) then
+    Result:=OnCreateMakeFile(Self,APackage)
+  else
+    Result:=mrCancel;
+end;
+
+function TPackageEditors.CreateFpmakeFile(APackage: TLazPackage): TModalResult;
+begin
+  if Assigned(OnCreateFpmakefile) then
+    Result:=OnCreateFpmakefile(Self,APackage)
   else
     Result:=mrCancel;
 end;

@@ -184,7 +184,8 @@ type
     pcfSkipDesignTimePackages,
     pcfOnlyIfNeeded,
     pcfDoNotSaveEditorFiles,
-    pcfCreateMakefile
+    pcfCreateMakefile,
+    pcfCreateFpmakeFile
     );
   TPkgCompileFlags = set of TPkgCompileFlag;
 
