@@ -37,7 +37,7 @@
         <PackageName Value="LCL"/>
       </Item2>
     </RequiredPackages>
-    <Units Count="3">
+    <Units Count="2">
       <Unit0>
         <Filename Value="distancedemo.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -51,11 +51,6 @@
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="Main"/>
       </Unit1>
-      <Unit2>
-        <Filename Value="tadistancetool.pas"/>
-        <IsPartOfProject Value="True"/>
-        <UnitName Value="TADistanceTool"/>
-      </Unit2>
     </Units>
   </ProjectOptions>
   <CompilerOptions>
