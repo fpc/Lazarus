@@ -20,7 +20,7 @@ unit TADrawerAggPas;
 interface
 
 uses
-  Classes, FPCanvas, Agg_LCL, TAChartUtils, TADrawUtils;
+  Classes, FPCanvas, FPImage, Agg_LCL, TAChartUtils, TADrawUtils;
 
 type
 
@@ -29,6 +29,7 @@ type
   TAggPasDrawer = class(TBasicDrawer, IChartDrawer)
   strict private
     FCanvas: TAggLCLCanvas;
+    function ApplyTransparency(AColor: TFPColor): TFPColor;
     procedure SetBrush(ABrush: TFPCustomBrush);
     procedure SetFont(AFont: TFPCustomFont);
     procedure SetPen(APen: TFPCustomPen);
@@ -76,6 +77,12 @@ procedure TAggPasDrawer.AddToFontOrientation(ADelta: Integer);
 begin
   with FCanvas.Font do
     AggAngle := AggAngle + OrientToRad(ADelta);
+end;
+
+function TAggPasDrawer.ApplyTransparency(AColor: TFPColor): TFPColor;
+begin
+  Result := AColor;
+  Result.alpha := (255 - FTransparency) shl 8;
 end;
 
 procedure TAggPasDrawer.ClippingStart(const AClipRect: TRect);
@@ -158,7 +165,7 @@ end;
 procedure TAggPasDrawer.PrepareSimplePen(AColor: TChartColor);
 begin
   with FCanvas.Pen do begin
-    Color := AColor;
+    FPColor := ApplyTransparency(ChartColorToFPColor(AColor));
     Style := psSolid;
     Mode := pmCopy;
     Width := 1;
@@ -189,19 +196,19 @@ begin
     Style := ABrush.Style;
     Image := ABrush.Image;
     Pattern := ABrush.Pattern;
-    FPColor := ABrush.FPColor;
+    FPColor := ApplyTransparency(ABrush.FPColor);
   end;
 end;
 
 procedure TAggPasDrawer.SetBrushColor(AColor: TChartColor);
 begin
-  FCanvas.Brush.Color := AColor;
+  FCanvas.Brush.FPColor := ApplyTransparency(ChartColorToFPColor(AColor));
 end;
 
 procedure TAggPasDrawer.SetBrushParams(
   AStyle: TFPBrushStyle; AColor: TChartColor);
 begin
-  FCanvas.Brush.Color := AColor;
+  SetBrushColor(AColor);
   FCanvas.Brush.Style := AStyle;
 end;
 
@@ -217,7 +224,7 @@ begin
   // This should be: FCanvas.Font.DoCopyProps(AFont);
   f.LoadFromFile(
     AFont.Name, f.SizeToAggHeight(fontSize), AFont.Bold, AFont.Italic);
-  f.FPColor := AFont.FPColor;
+  f.FPColor := ApplyTransparency(AFont.FPColor);
   f.AggAngle := OrientToRad(-FGetFontOrientationFunc(AFont));
 end;
 
@@ -227,13 +234,13 @@ type
 procedure TAggPasDrawer.SetPen(APen: TFPCustomPen);
 begin
   TAggLCLPenCrack(FCanvas.Pen).DoCopyProps(APen);
-  FCanvas.Pen.FPColor := APen.FPColor;
+  FCanvas.Pen.FPColor := ApplyTransparency(APen.FPColor);
 end;
 
 procedure TAggPasDrawer.SetPenParams(AStyle: TFPPenStyle; AColor: TChartColor);
 begin
   FCanvas.Pen.Style := AStyle;
-  FCanvas.Pen.Color := AColor;
+  FCanvas.Pen.FPColor := ApplyTransparency(ChartColorToFPColor(AColor));
 end;
 
 function TAggPasDrawer.SimpleTextExtent(const AText: String): TPoint;
