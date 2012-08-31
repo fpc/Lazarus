@@ -88,7 +88,9 @@ object ViewUnitDialog: TViewUnitDialog
       ButtonWidth = 23
       NumGlyphs = 0
       Anchors = [akTop, akLeft, akRight]
-      BorderSpacing.Around = 6
+      BorderSpacing.Left = 6
+      BorderSpacing.Top = 6
+      BorderSpacing.Bottom = 6
       Font.Color = clBtnShadow
       MaxLength = 0
       ParentFont = False
