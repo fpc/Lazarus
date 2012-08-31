@@ -305,6 +305,8 @@ type
     function CompilePackage(APackage: TLazPackage; Flags: TPkgCompileFlags;
                             ShowAbort: boolean): TModalResult;
     function ConvertPackageRSTFiles(APackage: TLazPackage): TModalResult;
+    function WriteMakefileCompiled(APackage: TLazPackage;
+      TargetCompiledFile, UnitPath, IncPath, OtherOptions: string): TModalResult;
     function WriteMakeFile(APackage: TLazPackage): TModalResult;
     function WriteFpmake(APackage: TLazPackage): TModalResult;
   public
@@ -3580,6 +3582,48 @@ begin
   Result:=mrOK;
 end;
 
+function TLazPackageGraph.WriteMakefileCompiled(APackage: TLazPackage;
+  TargetCompiledFile, UnitPath, IncPath, OtherOptions: string): TModalResult;
+var
+  XMLConfig: TXMLConfig;
+  s: String;
+begin
+  try
+    XMLConfig:=TXMLConfig.Create(TargetCompiledFile);
+    try
+      XMLConfig.SetValue('Makefile/Value',True);
+      s:=OtherOptions;
+      if UnitPath<>'' then
+        s:=s+' -Fu'+SwitchPathDelims(UnitPath,pdsUnix);
+      if IncPath<>'' then
+        s:=s+' -Fi'+SwitchPathDelims(IncPath,pdsUnix);
+      if OtherOptions<>'' then
+        s:=s+' '+OtherOptions;
+      // do no write the unit output directory
+      // it is not needed because it is the location of the Makefile.compiled
+      s:=s+' '+SwitchPathDelims(CreateRelativePath(APackage.GetSrcFilename,APackage.Directory),pdsUnix);
+
+      //debugln(['TLazPackageGraph.WriteMakefileCompiled IncPath="',IncPath,'" UnitPath="',UnitPath,'" Custom="',CustomOptions,'" Out="',UnitOutputPath,'"']);
+      XMLConfig.SetValue('Params/Value',s);
+      if XMLConfig.Modified then begin
+        InvalidateFileStateCache;
+        XMLConfig.Flush;
+      end;
+    finally
+      XMLConfig.Free;
+    end;
+  except
+    on E: Exception do begin
+      Result:=IDEMessageDialog(lisPkgMangErrorWritingFile,
+        Format(lisPkgMangUnableToWriteStateFileOfPackageError, ['"', TargetCompiledFile,
+          '"', #13, APackage.IDAsString, #13, E.Message]),
+        mtError,[mbCancel],'');
+      exit;
+    end;
+  end;
+  Result:=mrOk;
+end;
+
 function TLazPackageGraph.WriteMakeFile(APackage: TLazPackage): TModalResult;
 var
   PathDelimNeedsReplace: Boolean;
@@ -3641,7 +3685,6 @@ var
   CustomOptions: String;
   IncPath: String;
   MakefileCompiledFilename: String;
-  XMLConfig: TXMLConfig;
   OtherOptions: String;
 begin
   Result:=mrCancel;
@@ -3672,40 +3715,9 @@ begin
   OtherOptions:=APackage.CompilerOptions.MakeOptionsString(
                               [ccloDoNotAppendOutFileOption,ccloNoMacroParams]);
 
-  try
-    XMLConfig:=TXMLConfig.Create(MakefileCompiledFilename);
-    try
-      XMLConfig.SetValue('Makefile/Value',True);
-      s:=OtherOptions;
-      if UnitPath<>'' then
-        s:=s+' -Fu'+SwitchPathDelims(UnitPath,pdsUnix);
-      if IncPath<>'' then
-        s:=s+' -Fi'+SwitchPathDelims(IncPath,pdsUnix);
-      if CustomOptions<>'' then
-        s:=s+' '+CustomOptions;
-      // do no write the unit output directory
-      // it is not needed because it is the location of the Makefile.compiled
-      s:=s+' '+SwitchPathDelims(CreateRelativePath(APackage.GetSrcFilename,APackage.Directory),pdsUnix);
-
-      //debugln(['TLazPackageGraph.WriteMakeFile IncPath="',IncPath,'" UnitPath="',UnitPath,'" Custom="',CustomOptions,'" Out="',UnitOutputPath,'"']);
-      XMLConfig.SetValue('Params/Value',s);
-      if XMLConfig.Modified then begin
-        InvalidateFileStateCache;
-        XMLConfig.Flush;
-      end;
-    finally
-      XMLConfig.Free;
-    end;
-  except
-    on E: Exception do begin
-      Result:=IDEMessageDialog(lisPkgMangErrorWritingFile,
-        Format(lisPkgMangUnableToWriteStateFileOfPackageError, ['"', MakefileCompiledFilename,
-          '"', #13, APackage.IDAsString, #13, E.Message]),
-        mtError,[mbCancel],'');
-      exit;
-    end;
-  end;
-
+  Result:=WriteMakefileCompiled(APackage,MakefileCompiledFilename,UnitPath,
+    IncPath,OtherOptions);
+  if Result<>mrOK then exit;
 
   //DebugLn('TPkgManager.DoWriteMakefile ',APackage.Name,' makefile UnitPath="',UnitPath,'"');
   UnitPath:=ConvertLazarusToMakefileSearchPath(UnitPath);
@@ -3920,6 +3932,7 @@ var
   OtherOptions: String;
   i: Integer;
   ARequirement: TPkgDependency;
+  FPmakeCompiledFilename: String;
 begin
   Result:=mrCancel;
   PathDelimNeedsReplace:=PathDelim<>'/';
@@ -3934,6 +3947,7 @@ begin
     exit;
   end;
   FpmakeFPCFilename:=AppendPathDelim(APackage.Directory)+'fpmake.pp';
+  FPmakeCompiledFilename:=AppendPathDelim(APackage.Directory)+APackage.Name+'.compiled';
 
   SrcFilename:=APackage.GetSrcFilename;
   UnitPath:=APackage.CompilerOptions.GetUnitPath(true,
@@ -3949,6 +3963,10 @@ begin
                               [ccloDoNotAppendOutFileOption,ccloNoMacroParams]);
   debugln('OtherOptions (orig): ',OtherOptions);
 
+  // write compiled file
+  Result:=WriteMakefileCompiled(APackage,FPmakeCompiledFilename,UnitPath,
+    IncPath,OtherOptions);
+  if Result<>mrOK then exit;
 
   //DebugLn('TPkgManager.DoWriteMakefile ',APackage.Name,' makefile UnitPath="',UnitPath,'"');
   UnitPath:=ConvertLazarusToFpmakeSearchPath(UnitPath);
@@ -4025,6 +4043,10 @@ begin
       else
         s:=s+'    P.Sources.AddSrc('''+CreateRelativePath(APackage.Files[i].Filename,APackage.Directory)+''');'+e;
     end;
+
+  s:=s+''+e;
+  s:=s+'    // copy the compiled file, so the IDE knows how the package was compiled'+e;
+  s:=s+'    P.InstallFiles.Add('''+ExtractFileName(FPmakeCompiledFilename)+''',AllOSes,''$(unitinstalldir)'');'+e;
 
   s:=s+''+e;
   s:=s+'    end;'+e;
