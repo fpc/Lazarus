@@ -196,6 +196,8 @@ begin
   FNewInstalledPackages:=TObjectList.Create(true);
   ActiveControl:=AvailableFilterEdit;
   PkgInfoMemo.Clear;
+
+  UpdateButtonStates;
 end;
 
 procedure TInstallPkgSetDialog.InstallButtonClick(Sender: TObject);
