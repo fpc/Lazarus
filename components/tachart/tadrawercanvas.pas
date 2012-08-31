@@ -40,6 +40,7 @@ type
     procedure SetPen(APen: TFPCustomPen);
   strict protected
     FCanvas: TCanvas;
+    FBuffer: TBitmap;
     function GetFontAngle: Double; override;
     function SimpleTextExtent(const AText: String): TPoint; override;
     procedure SimpleTextOut(AX, AY: Integer; const AText: String); override;
@@ -49,6 +50,7 @@ type
     procedure ClippingStart(const AClipRect: TRect);
     procedure ClippingStop;
     constructor Create(ACanvas: TCanvas);
+    destructor Destroy; override;
     procedure Ellipse(AX1, AY1, AX2, AY2: Integer);
     procedure FillRect(AX1, AY1, AX2, AY2: Integer);
     function GetBrushColor: TChartColor;
@@ -71,6 +73,7 @@ type
     procedure SetBrushColor(AColor: TChartColor);
     procedure SetBrushParams(AStyle: TFPBrushStyle; AColor: TChartColor);
     procedure SetPenParams(AStyle: TFPPenStyle; AColor: TChartColor);
+    procedure SetTransparency(ATransparency: TChartTransparency);
   end;
 
   function CanvasGetFontOrientationFunc(AFont: TFPCustomFont): Integer;
@@ -79,7 +82,7 @@ type
 implementation
 
 uses
-  LCLIntf, LCLType,
+  GraphType, LCLIntf, LCLType,
   TAGeometry;
 
 function CanvasGetFontOrientationFunc(AFont: TFPCustomFont): Integer;
@@ -99,95 +102,107 @@ end;
 
 procedure TCanvasDrawer.AddToFontOrientation(ADelta: Integer);
 begin
-  with FCanvas.Font do
+  with GetCanvas.Font do
     Orientation := Orientation + ADelta;
 end;
 
 procedure TCanvasDrawer.ClippingStart(const AClipRect: TRect);
 begin
-  FCanvas.ClipRect := AClipRect;
-  FCanvas.Clipping := true;
+  GetCanvas.ClipRect := AClipRect;
+  GetCanvas.Clipping := true;
 end;
 
 procedure TCanvasDrawer.ClippingStart;
 begin
-  FCanvas.Clipping := true;
+  GetCanvas.Clipping := true;
 end;
 
 procedure TCanvasDrawer.ClippingStop;
 begin
-  FCanvas.Clipping := false;
+  GetCanvas.Clipping := false;
 end;
 
 constructor TCanvasDrawer.Create(ACanvas: TCanvas);
 begin
   FCanvas := ACanvas;
+  FBuffer := TBitmap.Create;
+  FBuffer.PixelFormat := pf32bit;
+end;
+
+destructor TCanvasDrawer.Destroy;
+begin
+  FreeAndNil(FBuffer);
+  inherited;
 end;
 
 procedure TCanvasDrawer.Ellipse(AX1, AY1, AX2, AY2: Integer);
 begin
-  FCanvas.Ellipse(AX1, AY1, AX2, AY2);
+  GetCanvas.Ellipse(AX1, AY1, AX2, AY2);
 end;
 
 procedure TCanvasDrawer.FillRect(AX1, AY1, AX2, AY2: Integer);
 begin
-  FCanvas.FillRect(AX1, AY1, AX2, AY2);
+  GetCanvas.FillRect(AX1, AY1, AX2, AY2);
 end;
 
 function TCanvasDrawer.GetBrushColor: TChartColor;
 begin
-  Result := FCanvas.Brush.Color;
+  Result := GetCanvas.Brush.Color;
 end;
 
 function TCanvasDrawer.GetCanvas: TCanvas;
 begin
-  Result := FCanvas;
+  // When transparency is off, draw directly on canvas for better speed.
+  if FTransparency > 0 then
+    Result := FBuffer.Canvas
+  else
+    Result := FCanvas;
 end;
 
 function TCanvasDrawer.GetFontAngle: Double;
 begin
-  Result := OrientToRad(FCanvas.Font.Orientation);
+  Result := OrientToRad(GetCanvas.Font.Orientation);
 end;
 
 procedure TCanvasDrawer.Line(AX1, AY1, AX2, AY2: Integer);
 begin
-  FCanvas.Line(AX1, AY1, AX2, AY2);
+  GetCanvas.Line(AX1, AY1, AX2, AY2);
 end;
 
 procedure TCanvasDrawer.Line(const AP1, AP2: TPoint);
 begin
-  FCanvas.Line(AP1, AP2);
+  GetCanvas.Line(AP1, AP2);
 end;
 
 procedure TCanvasDrawer.LineTo(AX, AY: Integer);
 begin
-  FCanvas.LineTo(AX, AY);
+  GetCanvas.LineTo(AX, AY);
 end;
 
 procedure TCanvasDrawer.MoveTo(AX, AY: Integer);
 begin
-  FCanvas.MoveTo(AX, AY);
+  GetCanvas.MoveTo(AX, AY);
 end;
 
 procedure TCanvasDrawer.Polygon(
   const APoints: array of TPoint; AStartIndex, ANumPts: Integer);
 begin
-  FCanvas.Polygon(APoints, false, AStartIndex, ANumPts);
+  GetCanvas.Polygon(APoints, false, AStartIndex, ANumPts);
 end;
 
 procedure TCanvasDrawer.Polyline(
   const APoints: array of TPoint; AStartIndex, ANumPts: Integer);
 begin
   if ANumPts <= 0 then exit;
-  FCanvas.Polyline(APoints, AStartIndex, ANumPts);
+  GetCanvas.Polyline(APoints, AStartIndex, ANumPts);
   // TCanvas.Polyline does not draw the end point.
   with APoints[AStartIndex + ANumPts - 1] do
-    FCanvas.Pixels[X, Y] := FCanvas.Pen.Color;
+    GetCanvas.Pixels[X, Y] := GetCanvas.Pen.Color;
 end;
 
 procedure TCanvasDrawer.PrepareSimplePen(AColor: TChartColor);
 begin
-  with FCanvas.Pen do begin
+  with GetCanvas.Pen do begin
     if FXor then
       Color := clWhite
     else
@@ -205,53 +220,53 @@ procedure TCanvasDrawer.RadialPie(
   AX1, AY1, AX2, AY2: Integer;
   AStartAngle16Deg, AAngleLength16Deg: Integer);
 begin
-  FCanvas.RadialPie(
+  GetCanvas.RadialPie(
     AX1, AY1, AX2, AY2, AStartAngle16Deg, AAngleLength16Deg);
 end;
 
 procedure TCanvasDrawer.Rectangle(AX1, AY1, AX2, AY2: Integer);
 begin
-  FCanvas.Rectangle(AX1, AY1, AX2, AY2);
+  GetCanvas.Rectangle(AX1, AY1, AX2, AY2);
 end;
 
 procedure TCanvasDrawer.Rectangle(const ARect: TRect);
 begin
-  FCanvas.Rectangle(ARect);
+  GetCanvas.Rectangle(ARect);
 end;
 
 procedure TCanvasDrawer.SetAntialiasingMode(AValue: TChartAntialiasingMode);
 begin
-  FCanvas.AntialiasingMode := TAntialiasingMode(AValue);
+  GetCanvas.AntialiasingMode := TAntialiasingMode(AValue);
 end;
 
 procedure TCanvasDrawer.SetBrush(ABrush: TFPCustomBrush);
 begin
-  FCanvas.Brush.Assign(ABrush);
+  GetCanvas.Brush.Assign(ABrush);
   if FXor then
-    FCanvas.Brush.Style := bsClear;
+    GetCanvas.Brush.Style := bsClear;
 end;
 
 procedure TCanvasDrawer.SetBrushColor(AColor: TChartColor);
 begin
-  FCanvas.Brush.Color := AColor;
+  GetCanvas.Brush.Color := AColor;
 end;
 
 procedure TCanvasDrawer.SetBrushParams(
   AStyle: TFPBrushStyle; AColor: TChartColor);
 begin
-  FCanvas.Brush.Color := AColor;
-  FCanvas.Brush.Style := AStyle;
+  GetCanvas.Brush.Color := AColor;
+  GetCanvas.Brush.Style := AStyle;
 end;
 
 procedure TCanvasDrawer.SetFont(AFont: TFPCustomFont);
 begin
-  FCanvas.Font.Assign(AFont);
+  GetCanvas.Font.Assign(AFont);
 end;
 
 procedure TCanvasDrawer.SetPen(APen: TFPCustomPen);
 begin
   if FXor then
-    with FCanvas do begin
+    with GetCanvas do begin
       Brush.Style := bsClear;
       if APen = nil then
         Pen.Style := psSolid
@@ -265,19 +280,59 @@ begin
         Pen.Width := APen.Width;
     end
   else
-    FCanvas.Pen.Assign(APen);
+    GetCanvas.Pen.Assign(APen);
 end;
 
 procedure TCanvasDrawer.SetPenParams(AStyle: TFPPenStyle; AColor: TChartColor);
 begin
-  FCanvas.Pen.Style := AStyle;
+  GetCanvas.Pen.Style := AStyle;
   if not FXor then
-    FCanvas.Pen.Color := AColor;
+    GetCanvas.Pen.Color := AColor;
+end;
+
+procedure TCanvasDrawer.SetTransparency(ATransparency: TChartTransparency);
+
+  procedure FillAlpha(AAlpha: Byte);
+  var
+    p: PRGBAQuad;
+    img: TRawImage;
+  begin
+    FBuffer.BeginUpdate;
+    img := FBuffer.RawImage;
+    p := PRGBAQuad(img.Data);
+    while PByte(p) < img.Data + img.DataSize do begin
+      // On the first pass, set all alpha values to AAlpha.
+      // Drawing will reset alpha of changed pixels to zero.
+      // On the second pass, flip unchanged pixels back to zero alpha,
+      // and changed ones to the desired alpha level.
+      p^.Alpha := p^.Alpha xor AAlpha;
+      Inc(p);
+    end;
+    FBuffer.EndUpdate;
+  end;
+
+begin
+  // For each transparency change, create a buffer bitmap, draw on that,
+  // then alpha-blend the bitmap to the canvas.
+  // This is slow, but currently seems the only way.
+  if (FTransparency <> ATransparency) and (FTransparency > 0) then begin
+    FillAlpha(255 - FTransparency);
+    StretchMaskBlt(
+      FCanvas.Handle, 0, 0, FCanvas.Width, FCanvas.Height,
+      FBuffer.Canvas.Handle, 0, 0, FCanvas.Width, FCanvas.Height,
+      0, 0, 0, SRCCOPY);
+  end;
+  inherited;
+  if FTransparency > 0 then begin
+    FBuffer.SetSize(0, 0);
+    FBuffer.SetSize(FCanvas.Width, FCanvas.Height);
+    FillAlpha(255 - FTransparency);
+  end;
 end;
 
 function TCanvasDrawer.SimpleTextExtent(const AText: String): TPoint;
 begin
-  Result := FCanvas.TextExtent(AText);
+  Result := GetCanvas.TextExtent(AText);
 end;
 
 procedure TCanvasDrawer.SimpleTextOut(AX, AY: Integer; const AText: String);
@@ -288,8 +343,8 @@ procedure TCanvasDrawer.SimpleTextOut(AX, AY: Integer; const AText: String);
     p, ext, bmpSize: TPoint;
     a: Double;
   begin
-    ext := FCanvas.TextExtent(AText);
-    a := OrientToRad(FCanvas.Font.Orientation);
+    ext := GetCanvas.TextExtent(AText);
+    a := OrientToRad(GetCanvas.Font.Orientation);
     bmpSize := MeasureRotatedRect(ext, a);
     p := bmpSize div 2 - RotatePoint(ext div 2, -a);
 
@@ -297,12 +352,12 @@ procedure TCanvasDrawer.SimpleTextOut(AX, AY: Integer; const AText: String);
     try
       bmp.SetSize(bmpSize.X, bmpSize.Y);
       bmp.Canvas.Brush.Style := bsClear;
-      bmp.Canvas.Font := FCanvas.Font;
+      bmp.Canvas.Font := GetCanvas.Font;
       bmp.Canvas.Font.Color := clWhite;
       bmp.Canvas.TextOut(p.X, p.Y, AText);
       bmp.Canvas.Pen.Color := clWhite;
       BitBlt(
-        FCanvas.Handle, AX - p.X, AY - p.Y, bmpSize.X, bmpSize.Y,
+        GetCanvas.Handle, AX - p.X, AY - p.Y, bmpSize.X, bmpSize.Y,
         bmp.Canvas.Handle, 0, 0, SRCINVERT);
     finally
       bmp.Free;
@@ -313,7 +368,7 @@ begin
   if FXor then
     DrawXorText
   else
-    FCanvas.TextOut(AX, AY, AText);
+    GetCanvas.TextOut(AX, AY, AText);
 end;
 
 initialization
