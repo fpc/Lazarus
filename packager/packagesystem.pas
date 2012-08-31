@@ -306,6 +306,7 @@ type
                             ShowAbort: boolean): TModalResult;
     function ConvertPackageRSTFiles(APackage: TLazPackage): TModalResult;
     function WriteMakeFile(APackage: TLazPackage): TModalResult;
+    function WriteFpmake(APackage: TLazPackage): TModalResult;
   public
     // installed packages
     FirstAutoInstallDependency: TPkgDependency;
@@ -2476,11 +2477,11 @@ function TLazPackageGraph.GetAutoCompilationOrder(APackage: TLazPackage;
         if not (lpfVisited in RequiredPackage.Flags) then begin
           RequiredPackage.Flags:=RequiredPackage.Flags+[lpfVisited];
           if ord(RequiredPackage.AutoUpdate)>=ord(Policy) then begin
-            // add first all needed packages
-            GetTopologicalOrder(RequiredPackage.FirstRequiredDependency);
-            // then add this package
             if (not SkipDesignTimePackages)
             or (RequiredPackage.PackageType<>lptDesignTime) then begin
+              // add first all needed packages
+              GetTopologicalOrder(RequiredPackage.FirstRequiredDependency);
+              // then add this package
               if Result=nil then Result:=TFPList.Create;
               Result.Add(RequiredPackage);
             end;
@@ -3840,6 +3841,223 @@ begin
   finally
     // clean up
     FPCMakeTool.Free;
+  end;
+
+  Result:=mrOk;
+end;
+
+function TLazPackageGraph.WriteFpmake(APackage: TLazPackage): TModalResult;
+var
+  PathDelimNeedsReplace: Boolean;
+
+  function ConvertPIMacrosToMakefileMacros(const s: string): string;
+  begin
+    result := StringReplace(s,'%(','$(',[rfReplaceAll]);
+  end;
+
+  function ConvertLazarusToFpmakeSearchPath(const s: string): string;
+  begin
+    Result:=ConvertPIMacrosToMakefileMacros(s);
+    Result:=CreateRelativeSearchPath(TrimSearchPath(Result,''),APackage.Directory);
+    if PathDelimNeedsReplace then
+      Result:=StringReplace(Result,PathDelim,'/',[rfReplaceAll]);
+  end;
+
+  function ConvertLazarusToMakefileDirectory(const s: string): string;
+  begin
+    Result:=ConvertPIMacrosToMakefileMacros(s);
+    Result:=CreateRelativePath(TrimFilename(Result),APackage.Directory);
+    if PathDelimNeedsReplace then
+      Result:=StringReplace(Result,PathDelim,'/',[rfReplaceAll]);
+    // trim trailing PathDelim, as windows does not like it
+    Result:=ChompPathDelim(Result);
+  end;
+
+  function StringToFpmakeOptionGroup(const OptionName,Options:string; OptPrefix: string = ''): string;
+  var
+    sl: TStrings;
+    i: Integer;
+  begin
+    result := '';
+    sl := SplitString(Options,';');
+    try
+      for i := 0 to sl.Count-1 do
+        result := result + OptionName+'('''+OptPrefix+sl.Strings[i]+''');'+LineEnding;
+    finally
+      sl.Free;
+    end;
+  end;
+
+  function ConvertLazarusOptionsToFpmakeOptions(const s: string): string;
+  begin
+    Result:=ConvertPIMacrosToMakefileMacros(s);
+    Result := StringReplace(Result,' ',';',[rfReplaceAll]);
+    if PathDelimNeedsReplace then
+      Result:=StringReplace(Result,PathDelim,'/',[rfReplaceAll]);
+  end;
+
+var
+  s: String;
+  e: string;
+  SrcFilename: String;
+  FpmakeFPCFilename: String;
+  UnitOutputPath: String;
+  UnitPath: String;
+  CodeBuffer: TCodeBuffer;
+  MainSrcFile: String;
+  CustomOptions: String;
+  IncPath: String;
+  OtherOptions: String;
+  i: Integer;
+  ARequirement: TPkgDependency;
+begin
+  Result:=mrCancel;
+  PathDelimNeedsReplace:=PathDelim<>'/';
+
+  if not DirectoryIsWritableCached(APackage.Directory) then begin
+    // the Makefile.fpc is only needed for custom building
+    // if the package directory is not writable, then the user does not want to
+    // custom build
+    // => silently skip
+    DebugLn(['TPkgManager.DoWriteFpmake Skipping, because package directory is not writable: ',APackage.Directory]);
+    Result:=mrOk;
+    exit;
+  end;
+  FpmakeFPCFilename:=AppendPathDelim(APackage.Directory)+'fpmake.pp';
+
+  SrcFilename:=APackage.GetSrcFilename;
+  UnitPath:=APackage.CompilerOptions.GetUnitPath(true,
+                                                 coptParsedPlatformIndependent);
+  IncPath:=APackage.CompilerOptions.GetIncludePath(true,
+                                           coptParsedPlatformIndependent,false);
+  UnitOutputPath:=APackage.CompilerOptions.GetUnitOutPath(true,
+                                                 coptParsedPlatformIndependent);
+  CustomOptions:=APackage.CompilerOptions.GetCustomOptions(
+                                                 coptParsedPlatformIndependent);
+  debugln('CustomOptions: ',CustomOptions);
+  OtherOptions:=APackage.CompilerOptions.MakeOptionsString(
+                              [ccloDoNotAppendOutFileOption,ccloNoMacroParams]);
+  debugln('OtherOptions: ',OtherOptions);
+
+
+  //DebugLn('TPkgManager.DoWriteMakefile ',APackage.Name,' makefile UnitPath="',UnitPath,'"');
+  UnitPath:=ConvertLazarusToFpmakeSearchPath(UnitPath);
+  IncPath:=ConvertLazarusToFpmakeSearchPath(IncPath);
+  // remove path delimiter at the end, or else it will fail on windows
+  UnitOutputPath:=ConvertLazarusToMakefileDirectory(
+                                                ChompPathDelim(UnitOutputPath));
+  MainSrcFile:=CreateRelativePath(SrcFilename,APackage.Directory);
+  CustomOptions:=ConvertLazarusOptionsToFpmakeOptions(CustomOptions);
+  debugln('CustomOptions2: ',CustomOptions);
+
+  OtherOptions:=ConvertLazarusOptionsToFpmakeOptions(OtherOptions);
+  debugln('OtherOptions2: ',OtherOptions);
+
+  e:=LineEnding;
+  s:='';
+  s:=s+'{'+e;
+  s:=s+'   File generated automatically by Lazarus Package Manager'+e;
+  s:=s+''+e;
+  s:=s+'   fpmake.pp for '+APackage.IDAsString+e;
+  s:=s+''+e;
+  s:=s+'   This file was generated on '+DateToStr(Now)+''+e;
+  s:=s+'}'+e;
+  s:=s+''+e;
+  s:=s+'{$ifndef ALLPACKAGES} '+e;
+  s:=s+'{$mode objfpc}{$H+}'+e;
+  s:=s+'program fpmake;'+e;
+  s:=s+''+e;
+  s:=s+'uses fpmkunit;'+e;
+  s:=s+'{$endif ALLPACKAGES}'+e;
+  s:=s+''+e;
+  s:=s+'procedure add_'+APackage.Name+';'+e;
+  s:=s+''+e;
+  s:=s+'var'+e;
+  s:=s+'  P : TPackage;'+e;
+  s:=s+'  T : TTarget;'+e;
+  s:=s+''+e;
+  s:=s+'begin'+e;
+  s:=s+'  with Installer do'+e;
+  s:=s+'    begin'+e;
+  s:=s+'    P:=AddPAckage('''+lowercase(APackage.Name)+''');'+e;
+  s:=s+'    P.Version:='''+APackage.Version.AsString+''';'+e;
+  s:=s+''+e;
+  s:=s+'{$ifdef ALLPACKAGES}'+e;
+  s:=s+'    P.Directory:='''+APackage.Directory+''';'+e;
+  s:=s+'{$endif ALLPACKAGES}'+e;
+  s:=s+''+e;
+
+  ARequirement := APackage.FirstRequiredDependency;
+  while assigned(ARequirement) do
+  begin
+    s:=s+'    P.Dependencies.Add('''+lowercase(ARequirement.PackageName)+''');'+e;
+    ARequirement := ARequirement.NextRequiresDependency;
+  end;
+
+  s := s + StringToFpmakeOptionGroup('    P.Options.Add',OtherOptions);
+  s := s + StringToFpmakeOptionGroup('    P.Options.Add',CustomOptions);
+  s := s + StringToFpmakeOptionGroup('    P.IncludePath.Add',IncPath);
+  s := s + StringToFpmakeOptionGroup('    P.Options.Add',UnitPath,'-Fu');
+
+  s:=s+'    T:=P.Targets.AddUnit('''+MainSrcFile+''');'+e;
+  for i := 0 to APackage.FileCount-1 do
+    if (APackage.Files[i].FileType=pftUnit) and (pffAddToPkgUsesSection in APackage.Files[i].Flags) then
+      s:=s+'    t.Dependencies.AddUnit('''+ExtractFileNameOnly(APackage.Files[i].Filename)+''');'+e;
+
+  s:=s+''+e;
+
+  for i := 0 to APackage.FileCount-1 do
+    if (APackage.Files[i].FileType=pftUnit) then
+    begin
+      if (pffAddToPkgUsesSection in APackage.Files[i].Flags) then
+        s:=s+'    T:=P.Targets.AddUnit('''+CreateRelativePath(APackage.Files[i].Filename,APackage.Directory)+''');'+e
+      else
+        s:=s+'    P.Sources.AddSrc('''+CreateRelativePath(APackage.Files[i].Filename,APackage.Directory)+''');'+e;
+    end;
+
+  s:=s+''+e;
+  s:=s+'    end;'+e;
+  s:=s+'end;'+e;
+
+  s:=s+''+e;
+  s:=s+'{$ifndef ALLPACKAGES}'+e;
+  s:=s+'begin'+e;
+  s:=s+'  add_'+APackage.Name+';'+e;
+  s:=s+'  Installer.Run;'+e;
+  s:=s+'end.'+e;
+  s:=s+'{$endif ALLPACKAGES}'+e;
+
+  CodeBuffer:=CodeToolBoss.LoadFile(FpmakeFPCFilename,true,true);
+  if CodeBuffer=nil then begin
+    CodeBuffer:=CodeToolBoss.CreateFile(FpmakeFPCFilename);
+    if CodeBuffer=nil then begin
+      if not DirectoryIsWritableCached(ExtractFilePath(FpmakeFPCFilename))
+      then begin
+        // the package source is read only => ignore
+        exit(mrOk);
+      end;
+      debugln(['TLazPackageGraph.WriteMakeFile unable to create file '+FpmakeFPCFilename]);
+      exit(mrCancel);
+    end;
+  end;
+
+  if ExtractCodeFromMakefile(CodeBuffer.Source)=ExtractCodeFromMakefile(s)
+  then begin
+    // nothing important has changed in fpmake.pp => do not write to disk
+    Result:=mrOk;
+    exit;
+  end;
+  CodeBuffer.Source:=s;
+
+  //debugln('TPkgManager.DoWriteMakefile MakefileFPCFilename="',FpmakeFPCFilename,'"');
+  Result:=SaveCodeBufferToFile(CodeBuffer,FpmakeFPCFilename);
+  if Result<>mrOk then begin
+    if not DirectoryIsWritableCached(ExtractFilePath(FpmakeFPCFilename)) then
+    begin
+      // the package source is read only => skip silently
+      Result:=mrOk;
+    end;
+    exit;
   end;
 
   Result:=mrOk;
