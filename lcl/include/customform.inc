@@ -2915,8 +2915,13 @@ begin
         // set our modalresult to mrCancel before hiding.
         if ModalResult = 0 then
           ModalResult := mrCancel;
-        Hide;
+        // We should always re-enabled the forms before issuing Hide()
+        // Because otherwise we will for a short amount of time have
+        // all forms disabled, and some systems, like WinCE, will interprete this
+        // as a problem in the application and hide it.
+        // See bug 22718
         Screen.EnableForms(DisabledList);
+        Hide;
         RestoreFocusedForm;
       end;
     finally
