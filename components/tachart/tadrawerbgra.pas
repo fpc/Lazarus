@@ -30,6 +30,7 @@ type
     FBitmap: TBGRABitmap;
 
     function Canvas: TBGRACanvas; inline;
+    function Opacity: Byte; inline;
     procedure SetBrush(ABrush: TFPCustomBrush);
     procedure SetFont(AFont: TFPCustomFont);
     procedure SetPen(APen: TFPCustomPen);
@@ -65,6 +66,7 @@ type
     procedure SetBrushColor(AColor: TChartColor);
     procedure SetBrushParams(AStyle: TFPBrushStyle; AColor: TChartColor);
     procedure SetPenParams(AStyle: TFPPenStyle; AColor: TChartColor);
+    procedure SetTransparency(ATransparency: TChartTransparency);
   end;
 
 implementation
@@ -148,6 +150,11 @@ begin
   Canvas.MoveTo(AX, AY);
 end;
 
+function TBGRABitmapDrawer.Opacity: Byte;
+begin
+  Result := 255 - FTransparency;
+end;
+
 procedure TBGRABitmapDrawer.Polygon(
   const APoints: array of TPoint; AStartIndex, ANumPts: Integer);
 begin
@@ -165,6 +172,7 @@ begin
   Canvas.Pen.Color := AColor;
   Canvas.Pen.Style := psSolid;
   Canvas.Pen.Width := 1;
+  Canvas.Pen.Opacity := Opacity;
 end;
 
 procedure TBGRABitmapDrawer.RadialPie(
@@ -195,6 +203,7 @@ procedure TBGRABitmapDrawer.SetBrush(ABrush: TFPCustomBrush);
 begin
   Canvas.Brush.BGRAColor := FPColorToBGRA(ABrush.FPColor);
   Canvas.Brush.Style := ABrush.Style;
+  Canvas.Brush.Opacity := Opacity;
 end;
 
 procedure TBGRABitmapDrawer.SetBrushColor(AColor: TChartColor);
@@ -207,6 +216,7 @@ procedure TBGRABitmapDrawer.SetBrushParams(
 begin
   Canvas.Brush.Style := AStyle;
   Canvas.Brush.Color := AColor;
+  Canvas.Brush.Opacity := Opacity;
 end;
 
 procedure TBGRABitmapDrawer.SetFont(AFont: TFPCustomFont);
@@ -217,6 +227,7 @@ begin
   Canvas.Font.BGRAColor := FPColorToBGRA(AFont.FPColor);
   if AFont is TFont then
     Canvas.Font.Style := (AFont as TFont).Style;
+  Canvas.Font.Opacity := Opacity;
 end;
 
 procedure TBGRABitmapDrawer.SetPen(APen: TFPCustomPen);
@@ -225,6 +236,7 @@ begin
   Canvas.Pen.Width := APen.Width;
   // TODO: JoinStyle
   Canvas.Pen.BGRAColor := FPColorToBGRA(APen.FPColor);
+  Canvas.Pen.Opacity := Opacity;
 end;
 
 procedure TBGRABitmapDrawer.SetPenParams(
@@ -232,6 +244,15 @@ procedure TBGRABitmapDrawer.SetPenParams(
 begin
   Canvas.Pen.Style := AStyle;
   Canvas.Pen.Color := AColor;
+  Canvas.Pen.Opacity := Opacity;
+end;
+
+procedure TBGRABitmapDrawer.SetTransparency(ATransparency: TChartTransparency);
+begin
+  inherited;
+  Canvas.Brush.Opacity := Opacity;
+  Canvas.Font.Opacity := Opacity;
+  Canvas.Pen.Opacity := Opacity;
 end;
 
 function TBGRABitmapDrawer.SimpleTextExtent(const AText: String): TPoint;
