@@ -165,6 +165,7 @@ type
     function CreateWidget(const Params: TCreateParams):QWidgetH; virtual;
     procedure DestroyWidget; virtual;
     procedure SetHasCaret(const AValue: Boolean);
+    function ProcessArrowKeys: Boolean; virtual;
     
     class procedure removeProperty(AObject: QObjectH; APropName: PAnsiChar);
     class procedure setProperty(AObject: QObjectH; APropName: PAnsiChar; APropValue: Int64);
@@ -448,6 +449,7 @@ type
     FViewPortWidget: TQtViewPort;
   protected
     function CreateWidget(const AParams: TCreateParams):QWidgetH; override;
+    function ProcessArrowKeys: Boolean; override;
   public
     destructor Destroy; override;
     function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl; override;
@@ -498,6 +500,8 @@ type
   { TQtAbstractButton }
 
   TQtAbstractButton = class(TQtWidget)
+  protected
+    function ProcessArrowKeys: Boolean; override;
   public
     function CanPaintBackground: Boolean; override;
     function getIconSize: TSize; virtual;
@@ -2110,7 +2114,7 @@ end;
  ------------------------------------------------------------------------------}
 function TQtWidget.CanSendLCLMessage: Boolean;
 begin
-  Result := (LCLObject <> nil) and getVisible and
+  Result := (LCLObject <> nil) and (Widget <> nil) and getVisible and
     not ((csDestroying in LCLObject.ComponentState) or
          (csDestroyingHandle in LCLObject.ControlState));
 end;
@@ -2712,6 +2716,7 @@ var
   AChar: Char;
   AKeyEvent: QKeyEventH;
   GlobalAction: Integer;
+  QtEdit: IQtEdit;
   {$IFDEF VerboseQtKeys}
   s: String;
   s1: String;
@@ -2730,6 +2735,18 @@ var
       ((AQtKey >= QtKey_F1) and (AQtKey <= QtKey_Direction_L)) or
       (AQtKey = QtKey_Direction_R);
   end;
+
+  function EatArrowKeys: Boolean;
+  var
+    AQtKey: Cardinal;
+  begin
+    AQtKey := QKeyEvent_key(QKeyEventH(Event));
+    Result := not ProcessArrowKeys and ((AQtKey = QtKey_Left) or (AQtKey = QtKey_Right)
+      or (AQtKey = QtKey_Up) or (AQtKey = QtKey_Down));
+      // and
+      // Supports(Self, IQtEdit, QtEdit);
+  end;
+
 begin
   {$ifdef VerboseQt}
     DebugLn('TQtWidget.SlotKey ', dbgsname(LCLObject));
@@ -2968,45 +2985,58 @@ begin
   end;
 
   {$ifdef VerboseQt}
-    WriteLn(' message: ', KeyMsg.Msg);
+  WriteLn(' message CN_Keys: ', KeyMsg.Msg);
   {$endif}
   if KeyMsg.CharCode <> VK_UNKNOWN then
   begin
     NotifyApplicationUserInput(LCLObject, KeyMsg.Msg);
+
+    if not CanSendLCLMessage or (Sender = nil) then
+      exit;
+
     if (DeliverMessage(KeyMsg, True) <> 0) or (KeyMsg.CharCode=VK_UNKNOWN) then
     begin
   {$ifdef VerboseQt}
-      WriteLn('handled!');
+      WriteLn('handled CN_Keys');
   {$endif}
       Exit;
     end;
 
+    if not CanSendLCLMessage or (Sender = nil) then
+      exit;
+
     // here we should let widgetset to handle key
     //...
-
     case QEvent_type(Event) of
       QEventKeyPress: KeyMsg.Msg := LM_KeyDownMsgs[IsSysKey];
       QEventKeyRelease: KeyMsg.Msg := LM_KeyUpMsgs[IsSysKey];
     end;
-  {$ifdef VerboseQt}
-    WriteLn(' message: ', KeyMsg.Msg);
-  {$endif}
-    NotifyApplicationUserInput(LCLObject, KeyMsg.Msg);
-    if (DeliverMessage(KeyMsg, True) <> 0) or (KeyMsg.CharCode=VK_UNKNOWN) then
+    {$ifdef VerboseQt}
+    WriteLn(' message LM_Keys: ', KeyMsg.Msg);
+    {$endif}
+    if not EatArrowKeys then
     begin
-      // the LCL handled the key
-  {$ifdef VerboseQt}
-      WriteLn('handled!');
-  {$endif}
-      Result := KeyMsg.CharCode=VK_UNKNOWN;
-      Exit;
+      NotifyApplicationUserInput(LCLObject, KeyMsg.Msg);
+
+      if not CanSendLCLMessage or (Sender = nil) then
+        exit;
+
+      if (DeliverMessage(KeyMsg, True) <> 0) or (KeyMsg.CharCode=VK_UNKNOWN) then
+      begin
+        // the LCL handled the key
+        {$ifdef VerboseQt}
+        WriteLn('handled LM_Keys');
+        {$endif}
+        Result := KeyMsg.CharCode=VK_UNKNOWN;
+        Exit;
+      end;
     end;
   end;
 
   { if our LCLObject dissappeared in the meantime just exit, otherwise
     we'll run into problems.}
-  if (LCLObject = nil) then
-    Exit(False);
+  if not CanSendLCLMessage or (Sender = nil) then
+    exit;
 
 
   { Also sends a utf-8 key event for key down }
@@ -3026,6 +3056,9 @@ begin
       Exit;
     end;
 
+    if not CanSendLCLMessage or (Sender = nil) then
+      exit;
+
     // create the CN_CHAR / CN_SYSCHAR message
     FillChar(CharMsg, SizeOf(CharMsg), 0);
     CharMsg.Msg := CN_CharMsg[IsSysKey];
@@ -3038,6 +3071,10 @@ begin
     WriteLn(' message: ', CharMsg.Msg);
   {$endif}
     NotifyApplicationUserInput(LCLObject, CharMsg.Msg);
+
+    if not CanSendLCLMessage or (Sender = nil) then
+      exit;
+
     if (DeliverMessage(CharMsg, True) <> 0) or (CharMsg.CharCode = VK_UNKNOWN) then
     begin
       // the LCL has handled the key
@@ -3056,14 +3093,23 @@ begin
   {$ifdef VerboseQt}
     WriteLn(' message: ', CharMsg.Msg);
   {$endif}
+    if not CanSendLCLMessage or (Sender = nil) then
+      exit;
+
     NotifyApplicationUserInput(LCLObject, CharMsg.Msg);
+
+    if not CanSendLCLMessage or (Sender = nil) then
+      exit;
+
     DeliverMessage(CharMsg, True);
-    if (LCLObject = nil) then
-      Exit(False);
+    if not CanSendLCLMessage or (Sender = nil) then
+      exit;
   end;
   
   // check if data was changed during key handling
-  if (KeyMsg.CharCode <> ACharCode) or (UTF8Char <> UTF8Text) or (Word(AChar) <> CharMsg.CharCode) then
+  if CanSendLCLMessage and (Sender <> nil) and
+    ((KeyMsg.CharCode <> ACharCode) or (UTF8Char <> UTF8Text) or
+      (Word(AChar) <> CharMsg.CharCode)) then
   begin
     // data was changed
     if UTF8Char <> UTF8Text then
@@ -3184,7 +3230,7 @@ begin
   Result := False; // allow qt to handle message
 
   if not CanSendLCLMessage then
-    exit;
+    exit(True);
 
   if (LCLObject <> nil) and
     (not (csDesigning in LCLObject.ComponentState) and not getEnabled) then
@@ -3215,11 +3261,17 @@ begin
         QtMidButton: Msg.Msg := CheckMouseButtonDown(2);
       end;
       NotifyApplicationUserInput(LCLObject, Msg.Msg);
+
+      if not CanSendLCLMessage or (Sender = nil) then
+        exit(True);
+
       DeliverMessage(Msg, True);
       // Check if our objects exists since LCL can destroy object during
       // mouse events...
       if CanSendLCLMessage and (Sender <> nil) then
-        SetNoMousePropagation(QWidgetH(Sender), True);
+        SetNoMousePropagation(QWidgetH(Sender), True)
+      else
+        exit(True);
     end;
     QEventMouseButtonRelease:
     begin
@@ -3236,17 +3288,24 @@ begin
       end;
 
       NotifyApplicationUserInput(LCLObject, Msg.Msg);
+
+      if not CanSendLCLMessage or (Sender = nil) then
+        exit(True);
+
       DeliverMessage(Msg, True);
 
       // Check if our objects exists since LCL can destroy object during
       // mouse events...
       if CanSendLCLMessage and (Sender <> nil) then
-        SetNoMousePropagation(QWidgetH(Sender), True);
+        SetNoMousePropagation(QWidgetH(Sender), True)
+      else
+        exit(True);
 
       { Clicking on buttons operates differently, because QEventMouseButtonRelease
         is sent if you click a control, drag the mouse out of it and release, but
         buttons should not be clicked on this case. }
-      if (LCLObject <> nil) and not (LCLObject is TCustomButton) then
+      if CanSendLCLMessage and (Sender <> nil) and
+        not (LCLObject is TCustomButton) then
       begin
         Msg.Msg := LM_CLICKED;
         DeliverMessage(Msg, True);
@@ -3356,7 +3415,7 @@ var
 begin
   Result := False;
   if not CanSendLCLMessage then
-    Exit;
+    Exit(True);
 
   if not (csCaptureMouse in LCLObject.ControlStyle) and
     not QWidget_isWindow(Widget) and
@@ -3449,7 +3508,7 @@ var
   {$ENDIF}
 begin
   Result := False;
-  if not CanSendLCLMessage or (LCLObject = nil) then
+  if not CanSendLCLMessage then
     exit;
 
   FillChar(Msg, SizeOf(Msg), #0);
@@ -4587,6 +4646,11 @@ begin
   FHasCaret := AValue;
 end;
 
+function TQtWidget.ProcessArrowKeys: Boolean;
+begin
+  Result := False;
+end;
+
 class procedure TQtWidget.removeProperty(AObject: QObjectH; APropName: PAnsiChar);
 var
   AVariant: QVariantH;
@@ -4976,10 +5040,13 @@ end;
 
 function TQtWidget.DeliverMessage(var Msg;
   const AIsInputEvent: Boolean = False): LRESULT;
+var
+  AEvent: Cardinal;
 begin
   Result := LRESULT(AIsInputEvent);
   if LCLObject = nil then
     Exit;
+  AEvent := TLMessage(Msg).Msg;
   try
     if LCLObject.HandleAllocated then
     begin
@@ -4987,11 +5054,12 @@ begin
       Result := TLMessage(Msg).Result;
     end;
   except
+    Result := 1;
     if AIsInputEvent and (LCLObject = nil) and (PtrUInt(Widget) = 0) and
       QtWidgetSet.IsValidHandle(HWND(Self)) then
     begin
-      raise Exception.CreateFmt('%s.DeliverMessage(): error in input event %d ',
-        [ClassName, TLMessage(Msg).Msg]);
+      DebugLn(Format('WARNING: %s has been destroyed while processing input event %u result %u',
+        [ClassName, AEvent, Result]));
     end else
       Application.HandleException(nil);
   end;
@@ -5097,6 +5165,11 @@ end;
 procedure TQtAbstractButton.SetText(const W: WideString);
 begin
   QAbstractButton_setText(QAbstractButtonH(Widget), @W);
+end;
+
+function TQtAbstractButton.ProcessArrowKeys: Boolean;
+begin
+  Result := True;
 end;
 
 function TQtAbstractButton.CanPaintBackground: Boolean;
@@ -5747,7 +5820,8 @@ begin
       writeln('TQtMDIArea.SubWindowActivated: fallback - ask TCustomForm.ActiveControl ',
         dbgsName(TCustomForm(ActiveChild.LCLObject).ActiveControl));
       {$ENDIF}
-      if Assigned(TCustomForm(ActiveChild.LCLObject).ActiveControl) and
+      if Assigned(ActiveChild.LCLObject) and
+        Assigned(TCustomForm(ActiveChild.LCLObject).ActiveControl) and
         TCustomForm(ActiveChild.LCLObject).ActiveControl.HandleAllocated then
       begin
         WW := TQtWidget(TCustomForm(ActiveChild.LCLObject).ActiveControl.Handle);
@@ -14544,6 +14618,11 @@ begin
     QWidget_setAutoFillBackground(Result, False);
 
   QWidget_setAttribute(Result, QtWA_InputMethodEnabled);
+end;
+
+function TQtCustomControl.ProcessArrowKeys: Boolean;
+begin
+  Result := True;
 end;
 
 {------------------------------------------------------------------------------
