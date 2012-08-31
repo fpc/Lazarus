@@ -61,6 +61,7 @@ type
     // Workaround for FPC 2.6 bug. Remove after migration to 2.8.
     FAnchors: array of TObject;
     FDataPointMode: TDataPointMode;
+    FLastChart: TChart;
     FMarks: TDataPointDistanceToolMarks;
     FMeasureMode: TChartDistanceMode;
     FOnGetDistanceText: TDataPointGetDistanceTextEvent;
@@ -68,6 +69,7 @@ type
     FOptions: TOptions;
     FPointerEnd: TDataPointDistanceToolPointer;
     FPointerStart: TDataPointDistanceToolPointer;
+    procedure Changed(ASender: TObject);
     function GetPointEnd: TDataPointTool.TPointRef; inline;
     function GetPointStart: TDataPointTool.TPointRef;
     procedure SetMarks(AValue: TDataPointDistanceToolMarks);
@@ -86,6 +88,7 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+
     function Distance(AUnits: TChartUnits = cuAxis): Double;
     procedure KeyDown(APoint: TPoint); override;
     procedure KeyUp(APoint: TPoint); override;
@@ -149,6 +152,15 @@ begin
 end;
 
 { TDataPointDistanceTool }
+
+procedure TDataPointDistanceTool.Changed(ASender: TObject);
+begin
+  if not (dpdoPermanent in FOptions) then exit;
+  if FChart <> nil then
+    FChart.StyleChanged(ASender)
+  else if FLastChart <> nil then
+    FLastChart.StyleChanged(ASender);
+end;
 
 constructor TDataPointDistanceTool.Create(AOwner: TComponent);
 begin
@@ -235,12 +247,12 @@ begin
   DrawPointer(PointerEnd, p2);
   if Marks.Visible then begin
     flip := (dpdoFlipLabel in Options) and ((a > Pi /2) or (a < -Pi / 2));
-    if dpdoRotateLabel in Options then
-      Marks.SetAdditionalAngle(IfThen(flip, Pi - a, -a));
+    Marks.SetAdditionalAngle(
+      IfThen(dpdoRotateLabel in Options, IfThen(flip, Pi - a, -a), 0));
     p1 := (p1 + p2) div 2;
     a += IfThen((dpdoLabelAbove in Options) xor flip, -Pi / 2, Pi / 2);
     p2 := p1 + RotatePointX(Marks.Distance, a);
-    Marks.DrawLabel(FChart.Drawer, p1, p2, GetDistanceText, dummy)
+    Marks.DrawLabel(FChart.Drawer, p1, p2, GetDistanceText, dummy);
   end;
   inherited;
 end;
@@ -327,16 +339,13 @@ begin
 end;
 
 procedure TDataPointDistanceTool.MouseUp(APoint: TPoint);
-var
-  ch: TChart;
 begin
   MouseMove(APoint);
   if Assigned(OnMeasure) and (PointStart.GraphPos <> PointEnd.GraphPos) then
     OnMeasure(Self);
   if dpdoPermanent in Options then begin
-    ch := FChart;
-    Deactivate;
-    FChart := ch;
+    FLastChart := FChart;
+    Deactivate
   end
   else
     Hide;
@@ -369,11 +378,13 @@ procedure TDataPointDistanceTool.SetMarks(AValue: TDataPointDistanceToolMarks);
 begin
   if FMarks = AValue then exit;
   FMarks.Assign(AValue);
+  Changed(Self);
 end;
 
 procedure TDataPointDistanceTool.SetOptions(AValue: TOptions);
 begin
   if FOptions = AValue then exit;
+  Changed(Self);
   FOptions := AValue;
 end;
 
@@ -382,6 +393,7 @@ procedure TDataPointDistanceTool.SetPointerEnd(
 begin
   if FPointerEnd = AValue then exit;
   FPointerEnd.Assign(AValue);
+  Changed(Self);
 end;
 
 procedure TDataPointDistanceTool.SetPointerStart(
@@ -389,6 +401,7 @@ procedure TDataPointDistanceTool.SetPointerStart(
 begin
   if FPointerStart = AValue then exit;
   FPointerStart.Assign(AValue);
+  Changed(Self);
 end;
 
 initialization
