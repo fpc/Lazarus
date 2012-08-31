@@ -162,6 +162,9 @@ components/tachart/demo/clone/lib
 components/tachart/demo/db/*.exe
 components/tachart/demo/db/*.lps
 components/tachart/demo/db/lib
+components/tachart/demo/distance/*.exe
+components/tachart/demo/distance/*.lps
+components/tachart/demo/distance/lib
 components/tachart/demo/dragdrop/*.exe
 components/tachart/demo/dragdrop/*.lps
 components/tachart/demo/dragdrop/lib
