@@ -242,7 +242,7 @@ var
   SelectedEditorMacro: TEditorMacro = nil;
 
 const
-  EditorMacroVirtualDrive = '//EMacro:/';
+  EditorMacroVirtualDrive = '%Macro:/';
 
 implementation
 
@@ -1342,19 +1342,22 @@ begin
 end;
 
 function TMacroListView.MacroByFullName(AName: String): TEditorMacro;
+const
+  FolderStart = length(EditorMacroVirtualDrive)+1;
+  NameStart = FolderStart+length('PRJ/');
 var
   Alist: TEditorMacroList;
   i: Integer;
 begin
   Result := nil;
-  If (copy(AName, 1, 10) <> '//EMacro:/') or
-     (copy(AName, 14, 1) <> '/')
+  If (copy(AName, 1, length(EditorMacroVirtualDrive)) <> EditorMacroVirtualDrive) or
+     (copy(AName, NameStart-1, 1) <> '/')
   then exit;
-  Alist := NameToMacroList(copy(AName, 11, 3));
+  Alist := NameToMacroList(copy(AName, FolderStart, 3));
   if (Alist = nil) then exit;
-  i := Alist.IndexOfName(copy(AName, 15, length(AName)));
+  i := Alist.IndexOfName(copy(AName, NameStart, length(AName)));
   if i < 0 then exit;
-  Result := Alist.Macros[i]
+  Result := Alist.Macros[i];
 end;
 
 procedure TMacroListView.DoEditorMacroStateChanged;

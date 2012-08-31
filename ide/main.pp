@@ -9311,21 +9311,25 @@ begin
   if not (sfProjectSaving in Flags) then
     SaveSourceEditorChangesToCodeCache(nil);
 
-  if (uifInternalFile in AnUnitInfo.Flags) and
-     (copy(AnUnitInfo.Filename, 1, length(EditorMacroVirtualDrive)) = EditorMacroVirtualDrive)
-  then begin
-    // save to macros
-    EMacro := MacroListViewer.MacroByFullName(AnUnitInfo.Filename);
-    if EMacro <> nil then begin
-      EMacro.SetFromSource(AEditor.SourceText);
-      if EMacro.IsInvalid and (EMacro.ErrorMsg <> '') then
-        MessagesView.AddMsg(EMacro.ErrorMsg, '', -1);
+  if (uifInternalFile in AnUnitInfo.Flags) then
+  begin
+    if (copy(AnUnitInfo.Filename, 1, length(EditorMacroVirtualDrive)) = EditorMacroVirtualDrive)
+    then begin
+      // save to macros
+      EMacro := MacroListViewer.MacroByFullName(AnUnitInfo.Filename);
+      if EMacro <> nil then begin
+        EMacro.SetFromSource(AEditor.SourceText);
+        if EMacro.IsInvalid and (EMacro.ErrorMsg <> '') then
+          MessagesView.AddMsg(EMacro.ErrorMsg, '', -1);
+      end;
+      MacroListViewer.UpdateDisplay;
+      AnUnitInfo.ClearModifieds;
+      AEditor.Modified:=false;
+      Result := mrOK;
+      exit;
     end;
-    MacroListViewer.UpdateDisplay;
-    AnUnitInfo.ClearModifieds;
-    AEditor.Modified:=false;
-    Result := mrOK;
-    exit;
+    // unknown internal file => skip
+    exit(mrOk);
   end;
 
   // if this is a new unit then a simple Save becomes a SaveAs
@@ -9728,50 +9732,55 @@ begin
     UnitIndex:=Project1.IndexOfFilename(AFilename);
     if (UnitIndex > 0) then begin
       NewUnitInfo:=Project1.Units[UnitIndex];
-      if (uifInternalFile in NewUnitInfo.Flags) and
-         (NewUnitInfo.OpenEditorInfoCount > 0)
-      then begin
-        NewEditorInfo := NewUnitInfo.OpenEditorInfo[0];
-        if MacroListViewer.MacroByFullName(AFileName) <> nil then
-          NewUnitInfo.Source.Source := MacroListViewer.MacroByFullName(AFileName).GetAsSource;
-        Result:=DoOpenFileInSourceEditor(NewEditorInfo, NewEditorInfo.PageIndex,
-          NewEditorInfo.WindowIndex, Flags);
-        exit;
+      if (uifInternalFile in NewUnitInfo.Flags) then
+      begin
+        if (NewUnitInfo.OpenEditorInfoCount > 0) then begin
+          NewEditorInfo := NewUnitInfo.OpenEditorInfo[0];
+          if MacroListViewer.MacroByFullName(AFileName) <> nil then
+            NewUnitInfo.Source.Source := MacroListViewer.MacroByFullName(AFileName).GetAsSource;
+          Result:=DoOpenFileInSourceEditor(NewEditorInfo, NewEditorInfo.PageIndex,
+            NewEditorInfo.WindowIndex, Flags);
+          exit;
+        end;
+        // unknown internal file
+        exit(mrOk);
       end;
     end;
   end;
 
-  if (ofInternalFile in Flags) and
-     (copy(AFileName, 1, length(EditorMacroVirtualDrive)) = EditorMacroVirtualDrive)
-  then begin
-    FilenameNoPath := AFileName;
+  if (ofInternalFile in Flags) then begin
+    if (copy(AFileName, 1, length(EditorMacroVirtualDrive)) = EditorMacroVirtualDrive)
+    then begin
+      FilenameNoPath := AFileName;
 
-    UnitIndex:=Project1.IndexOfFilename(AFilename);
-    if (UnitIndex < 0) then begin
-      NewBuf := CodeToolBoss.SourceCache.CreateFile(AFileName);
-      NewBuf.FileName:=AFileName;
-      if MacroListViewer.MacroByFullName(AFileName) <> nil then
-        NewBuf.Source := MacroListViewer.MacroByFullName(AFileName).GetAsSource;
-      NewUnitInfo:=TUnitInfo.Create(NewBuf);
-      NewUnitInfo.DefaultSyntaxHighlighter := lshFreePascal;
-      Project1.AddFile(NewUnitInfo,false);
-    end
-    else begin
-      NewUnitInfo:=Project1.Units[UnitIndex];
-    end;
-    NewUnitInfo.Flags := NewUnitInfo.Flags + [uifInternalFile];
+      UnitIndex:=Project1.IndexOfFilename(AFilename);
+      if (UnitIndex < 0) then begin
+        NewBuf := CodeToolBoss.SourceCache.CreateFile(AFileName);
+        if MacroListViewer.MacroByFullName(AFileName) <> nil then
+          NewBuf.Source := MacroListViewer.MacroByFullName(AFileName).GetAsSource;
+        NewUnitInfo:=TUnitInfo.Create(NewBuf);
+        NewUnitInfo.DefaultSyntaxHighlighter := lshFreePascal;
+        Project1.AddFile(NewUnitInfo,false);
+      end
+      else begin
+        NewUnitInfo:=Project1.Units[UnitIndex];
+      end;
+      NewUnitInfo.Flags := NewUnitInfo.Flags + [uifInternalFile];
 
-    if NewUnitInfo.OpenEditorInfoCount > 0 then begin
-      NewEditorInfo := NewUnitInfo.OpenEditorInfo[0];
-      SourceEditorManager.ActiveSourceWindowIndex := NewEditorInfo.WindowIndex;
-      SourceEditorManager.ActiveSourceWindow.PageIndex:= NewEditorInfo.PageIndex;
-    end
-    else begin
-      NewEditorInfo := NewUnitInfo.GetClosedOrNewEditorInfo;
-      Result:=DoOpenFileInSourceEditor(NewEditorInfo, PageIndex, WindowIndex, Flags);
+      if NewUnitInfo.OpenEditorInfoCount > 0 then begin
+        NewEditorInfo := NewUnitInfo.OpenEditorInfo[0];
+        SourceEditorManager.ActiveSourceWindowIndex := NewEditorInfo.WindowIndex;
+        SourceEditorManager.ActiveSourceWindow.PageIndex:= NewEditorInfo.PageIndex;
+      end
+      else begin
+        NewEditorInfo := NewUnitInfo.GetClosedOrNewEditorInfo;
+        Result:=DoOpenFileInSourceEditor(NewEditorInfo, PageIndex, WindowIndex, Flags);
+      end;
+      Result:=mrOK;
+      exit;
     end;
-    Result:=mrOK;
-    exit;
+    // unknown internal file => ignore
+    exit(mrOK);
   end;
 
   // normalize filename
