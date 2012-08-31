@@ -33,18 +33,6 @@ uses
 
 type
 
-  // SysUtils.LongRec has unsigned Word for Lo and Hi,
-  //  we need a similar record with signed ShortInt
-  LazLongRec = packed record
-    case Integer of
-{$ifdef FPC_LITTLE_ENDIAN}
-      0 : (Lo,Hi : ShortInt);
-{$else FPC_LITTLE_ENDIAN}
-      0 : (Hi,Lo : ShortInt);
-{$endif FPC_LITTLE_ENDIAN}
-      1 : (Bytes : Array[0..3] of Byte);
-  end;
-
   { TLCLComponent }
 
   TLCLComponent = class(TComponent)

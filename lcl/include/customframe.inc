@@ -40,7 +40,7 @@ var
   Temp: LongInt;
 begin
   Temp:=DesignInfo;
-  LazLongRec(Temp).Lo:=Reader.ReadInteger;
+  LongRec(Temp).Lo:=Word(Reader.ReadInteger);
   DesignInfo:=Temp;
 end;
 
@@ -49,18 +49,18 @@ var
   Temp: LongInt;
 begin
   Temp:=DesignInfo;
-  LazLongRec(Temp).Hi:=Reader.ReadInteger;
+  LongRec(Temp).Hi:=Word(Reader.ReadInteger);
   DesignInfo:=Temp;
 end;
 
 procedure TCustomFrame.WriteDesignLeft(Writer: TWriter);
 begin
-  Writer.WriteInteger(LazLongRec(DesignInfo).Lo);
+  Writer.WriteInteger(LongInt(LongRec(DesignInfo).Lo));
 end;
 
 procedure TCustomFrame.WriteDesignTop(Writer: TWriter);
 begin
-  Writer.WriteInteger(LazLongRec(DesignInfo).Hi);
+  Writer.WriteInteger(LongInt(LongRec(DesignInfo).Hi));
 end;
 
 class procedure TCustomFrame.WSRegisterClass;
@@ -148,9 +148,9 @@ begin
   Ancestor:=TComponent(Filer.Ancestor);
   if Assigned(Ancestor) then Temp:=Ancestor.DesignInfo;
   Filer.Defineproperty('DesignLeft',@ReadDesignLeft,@WriteDesignLeft,
-                       (LazLongRec(DesignInfo).Lo<>LazLongrec(Temp).Lo));
+                       (LongRec(DesignInfo).Lo<>LongRec(Temp).Lo));
   Filer.Defineproperty('DesignTop',@ReadDesignTop,@WriteDesignTop,
-                       (LazLongRec(DesignInfo).Hi<>LazLongrec(Temp).Hi));
+                       (LongRec(DesignInfo).Hi<>LongRec(Temp).Hi));
 end;
 
 procedure TCustomFrame.CalculatePreferredSize(var PreferredWidth,
