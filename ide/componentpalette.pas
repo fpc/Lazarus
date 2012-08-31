@@ -623,8 +623,10 @@ begin
         if PageIndex>=0 then begin
           CurPage:=Pages[PageIndex];
           CurBtn:=TSpeedButton(CurPage.SelectButton);
-          CurPage.SelectButton:=nil;
-          Application.ReleaseComponent(CurBtn);
+          if CurBtn<>nil then begin
+            CurPage.SelectButton:=nil;
+            Application.ReleaseComponent(CurBtn);
+          end;
           Pages[PageIndex].PageComponent:=nil;
         end;
         if FPageControl.Pages[i]=OldActivePage then
