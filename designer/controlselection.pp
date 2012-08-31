@@ -692,8 +692,7 @@ begin
   end else begin
     GetComponentBounds(TComponent(FPersistent),
                        FOldLeft,FOldTop,FOldWidth,FOldHeight);
-    FOldFormRelativeLeftTop:=
-                          GetParentFormRelativeTopLeft(TComponent(FPersistent));
+    FOldFormRelativeLeftTop:=GetParentFormRelativeTopLeft(TComponent(FPersistent));
   end;
 end;
 
@@ -702,8 +701,7 @@ begin
   if not FIsTComponent then exit;
   GetComponentBounds(TComponent(FPersistent),
                      FCachedLeft,FCachedTop,FCachedWidth,FCachedHeight);
-  FCachedFormRelativeLeftTop:=
-                          GetParentFormRelativeTopLeft(TComponent(FPersistent));
+  FCachedFormRelativeLeftTop:= GetParentFormRelativeTopLeft(TComponent(FPersistent));
 end;
 
 function TSelectedControl.IsTopLvl: boolean;
