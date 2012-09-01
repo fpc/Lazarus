@@ -249,6 +249,7 @@ begin
       ' License="',License,'"',
       ' Version="',Version.AsString,'"'
       ]);
+
   finally
     xml.Free;
   end;
