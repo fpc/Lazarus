@@ -292,7 +292,7 @@ end;
 
 procedure TCanvasDrawer.SetTransparency(ATransparency: TChartTransparency);
 
-  procedure FillAlpha(AAlpha: Byte);
+  function FillAlpha(AAlpha: Byte): Byte;
   var
     p: PRGBAQuad;
     img: TRawImage;
@@ -300,12 +300,14 @@ procedure TCanvasDrawer.SetTransparency(ATransparency: TChartTransparency);
     FBuffer.BeginUpdate;
     img := FBuffer.RawImage;
     p := PRGBAQuad(img.Data);
+    Result := 0;
     while PByte(p) < img.Data + img.DataSize do begin
       // On the first pass, set all alpha values to AAlpha.
       // Drawing will reset alpha of changed pixels to zero.
       // On the second pass, flip unchanged pixels back to zero alpha,
       // and changed ones to the desired alpha level.
       p^.Alpha := p^.Alpha xor AAlpha;
+      Result := Result or p^.Alpha;
       Inc(p);
     end;
     FBuffer.EndUpdate;
@@ -316,11 +318,14 @@ begin
   // then alpha-blend the bitmap to the canvas.
   // This is slow, but currently seems the only way.
   if (FTransparency <> ATransparency) and (FTransparency > 0) then begin
-    FillAlpha(255 - FTransparency);
-    StretchMaskBlt(
-      FCanvas.Handle, 0, 0, FCanvas.Width, FCanvas.Height,
-      FBuffer.Canvas.Handle, 0, 0, FCanvas.Width, FCanvas.Height,
-      0, 0, 0, SRCCOPY);
+    // StretchMaskBlt performs alpha blending only if the image contains
+    // at least one non-zero alpha value, so fully transparent image
+    // becomes black box. Workround: do not call StretchMaskBlt in this case.
+    if FillAlpha(255 - FTransparency) > 0 then
+      StretchMaskBlt(
+        FCanvas.Handle, 0, 0, FCanvas.Width, FCanvas.Height,
+        FBuffer.Canvas.Handle, 0, 0, FCanvas.Width, FCanvas.Height,
+        0, 0, 0, SRCCOPY);
   end;
   inherited;
   if FTransparency > 0 then begin
