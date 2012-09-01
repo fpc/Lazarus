@@ -38,6 +38,7 @@ type
     FStream: TStream;
 
     function FontSize: Integer; inline;
+    function OpacityStr: String;
     function PointsToStr(
       const APoints: array of TPoint; AStartIndex, ANumPts: Integer): String;
 
@@ -224,6 +225,19 @@ begin
   FPrevPos := Point(AX, AY);
 end;
 
+function TSVGDrawer.OpacityStr: String;
+var
+  fs: TFormatSettings;
+begin
+  if FTransparency = 0 then
+    Result := ''
+  else begin
+    fs := DefaultFormatSettings;
+    fs.DecimalSeparator := '.';
+    Result := FloatToStr((255 - FTransparency) / 256, fs);
+  end;
+end;
+
 function TSVGDrawer.PointsToStr(
   const APoints: array of TPoint; AStartIndex, ANumPts: Integer): String;
 var
@@ -343,15 +357,18 @@ begin
   p := RotatePoint(Point(0, FontSize), -FFontAngle) + Point(AX, AY);
   WriteFmt(
     '<text x="%d" y="%d" textLength="%d" ' +
-    'style="stroke: none; fill: %s; font-family: %s; font-size: %dpt;">' +
+    'style="stroke:none; fill:%s;%s font-family:%s; font-size:%dpt;">' +
     '%s</text>',
     [p.X, p.Y, SimpleTextExtent(AText).X,
-      ColorToHex(FFont.FPColor), FFont.Name, FontSize, AText]);
+      ColorToHex(FFont.FPColor), FormatIfNotEmpty(' opacity:%s;', OpacityStr),
+      FFont.Name, FontSize, AText]);
 end;
 
 function TSVGDrawer.StyleFill: String;
 begin
-  Result := Format('fill:%s;', [ColorToHex(FBrushColor)]);
+  Result :=
+    Format('fill:%s;', [ColorToHex(FBrushColor)]) +
+    FormatIfNotEmpty('fill-opacity:%s;', OpacityStr);
 end;
 
 function TSVGDrawer.StyleStroke: String;
@@ -364,7 +381,9 @@ begin
   Result := 'stroke:' + ColorToHex(FPen.FPColor) + ';';
   if FPen.Width <> 1 then
     Result += 'stroke-width:' + IntToStr(FPen.Width) + ';';
-  Result += FormatIfNotEmpty('stroke-dasharray:%s;', PEN_DASHARRAY[FPen.Style]);
+  Result +=
+    FormatIfNotEmpty('stroke-dasharray:%s;', PEN_DASHARRAY[FPen.Style]) +
+    FormatIfNotEmpty('stroke-opacity:%s;', OpacityStr);
 end;
 
 procedure TSVGDrawer.WriteFmt(const AFormat: String; AParams: array of const);
