@@ -486,6 +486,7 @@ var
   t: TChartValueText;
 begin
   if not Visible then exit;
+  FHelper.FDrawer.SetTransparency(0);
   if Marks.Visible then
     FHelper.FDrawer.Font := Marks.LabelFont;
   fixedCoord := TChartAxisMargins(FAxisRect)[Alignment];
@@ -647,6 +648,7 @@ var
   var
     sz, fm, lm: Integer;
   begin
+    if not Marks.Visible then exit;
     // Workaround for issue #19780, fix after upgrade to FPC 2.6.
     with Marks.MeasureLabel(d, FMarkValues[AIndex].FText) do
       sz := IfThen(v, cy, cx) div 2;

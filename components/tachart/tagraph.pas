@@ -695,7 +695,6 @@ begin
             try
               ADrawer.SetTransparency(Transparency);
               Draw(ADrawer);
-              ADrawer.SetTransparency(0);
             except
               Active := false;
               raise;
@@ -707,6 +706,7 @@ begin
         end;
     finally
       seriesInZOrder.Free;
+      ADrawer.SetTransparency(0);
     end;
   end;
   if AxisVisible then
