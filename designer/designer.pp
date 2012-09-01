@@ -43,9 +43,9 @@ uses
   ClipBrd, TypInfo, contnrs,
   // IDEIntf
   IDEDialogs, PropEdits, PropEditUtils, ComponentEditors, MenuIntf, IDEImagesIntf,
-  FormEditingIntf,
+  FormEditingIntf, ComponentReg,
   // IDE
-  LazarusIDEStrConsts, EnvironmentOpts, IDECommands, ComponentReg,
+  LazarusIDEStrConsts, EnvironmentOpts, IDECommands,
   NonControlDesigner, FrameDesigner, AlignCompsDlg, SizeCompsDlg, ScaleCompsDlg,
   TabOrderDlg, AnchorEditor, DesignerProcs, CustomFormEditor,  AskCompNameDlg,
   ControlSelection, ChangeClassDialog, EditorOptions;
