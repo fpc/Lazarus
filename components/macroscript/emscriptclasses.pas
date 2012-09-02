@@ -68,9 +68,19 @@ begin
   AComp.AddDelphiFunction('Function InputQuery( const ACaption, APrompt : string; var Value : string) : Boolean');
 end;
 
+function Point(AX, AY: Integer): TPoint;
+
+begin
+  with Result do
+  begin
+    X := AX;
+    Y := AY;
+  end;
+end;
+
 procedure ExecRegisterBasics(AExec: TPSExec);
 begin
-  AExec.RegisterDelphiFunction(@Classes.Point, 'POINT', cdRegister);
+  AExec.RegisterDelphiFunction(@Point, 'POINT', cdRegister);
 
  AExec.RegisterDelphiFunction(@EMSMessageDlg, 'MessageDlg', cdRegister);
  AExec.RegisterDelphiFunction(@MessageDlgPos, 'MessageDlgPos', cdRegister);
