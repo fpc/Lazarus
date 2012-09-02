@@ -234,8 +234,8 @@ const
     MousePoint := GetMousePoint;
     
     Msg^.Msg := LM_MOUSEMOVE;
-    Msg^.XPos := MousePoint.X;
-    Msg^.YPos := MousePoint.Y;
+    Msg^.XPos := SmallInt(MousePoint.X);
+    Msg^.YPos := SmallInt(MousePoint.Y);
     Msg^.Keys := GetCarbonMsgKeyState;
   end;
 
