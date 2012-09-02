@@ -36,6 +36,7 @@ type
   end;
   TAsmDlgLineEntries = Array of TAsmDlgLineEntry;
 
+
   TAssemblerDlg = class(TDebuggerDlg)
     actCurrentInstr: TAction;
     actGotoAddr: TAction;
@@ -507,6 +508,7 @@ var
   Ctrl: Boolean;
 begin
   P := pbAsm.ScreenToClient(Mouse.CursorPos);
+  debugln(['TAssemblerDlg.pbAsmClick ',dbgs(p)]);
   if P.x > FGutterWidth then exit;
   Line := P.Y div FLineHeight;
 
