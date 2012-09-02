@@ -1050,7 +1050,7 @@ begin
   Result:=AdditionsFile;
   IDEMacros.SubstituteMacros(Result);
   if Result='' then begin
-    Result:=FDefaultAdditionsFile;
+    Result:=SetDirSeparators(FDefaultAdditionsFile);
     IDEMacros.SubstituteMacros(Result);
   end;
   Result:=TrimFilename(Result);
