@@ -80,7 +80,7 @@ end;
 
 procedure ExecRegisterBasics(AExec: TPSExec);
 begin
-  AExec.RegisterDelphiFunction(@Point, 'POINT', cdRegister);
+  AExec.RegisterDelphiFunction(@Classes.Point, 'POINT', cdRegister);
 
  AExec.RegisterDelphiFunction(@EMSMessageDlg, 'MessageDlg', cdRegister);
  AExec.RegisterDelphiFunction(@MessageDlgPos, 'MessageDlgPos', cdRegister);

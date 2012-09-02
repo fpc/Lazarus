@@ -889,7 +889,7 @@ var
 begin
   // keep copy of text
   FTextBuffer := UTF8ToUTF16(Text);
-  if Text='' then
+  if FTextBuffer='' then
     FTextBuffer:=#0#0;
   TextStyle := Font.Style;
 
