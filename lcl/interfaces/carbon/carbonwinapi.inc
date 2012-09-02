@@ -2959,24 +2959,18 @@ begin
   {$ENDIF}
 
   if not CheckWidget(Handle, 'ScreenToClient') then Exit;
-  Result := TCarbonWidget(Handle).GetScreenBounds(R{%H-});
+  if not TCarbonWidget(Handle).GetScreenBounds(R{%H-}) then exit;
   // DebugLn('TCarbonWidgetSet.ScreenToClient Control screen bounds: ',dbgs(R));
-  if Result then
-  begin
-    Dec(P.X, R.Left);
-    Dec(P.Y, R.Top);
+  Dec(P.X, R.Left);
+  Dec(P.Y, R.Top);
 
-    Result := TCarbonWidget(Handle).GetClientRect(R);
+  if not TCarbonWidget(Handle).GetClientRect(R) then exit;
 
-    if Result then
-    begin
-      Dec(P.X, R.Left);
-      Dec(P.Y, R.Top);
-      Pt := TCarbonWidget(Handle).ScrollOffset;
-      Inc(P.X, Pt.X);
-      Inc(P.Y, Pt.Y);
-    end;
-  end;
+  Dec(P.X, R.Left);
+  Dec(P.Y, R.Top);
+  Pt := TCarbonWidget(Handle).ScrollOffset;
+  Inc(P.X, Pt.X);
+  Inc(P.Y, Pt.Y);
 end;
 
 {$IFDEF NewScrollWindowEx}
