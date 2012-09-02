@@ -2948,8 +2948,35 @@ begin
 end;
 
 function TCarbonWidgetSet.ScreenToClient(Handle: HWND; var P: TPoint): Integer;
+var
+  R: TRect;
+  Pt: TPoint;
 begin
-  Result:=inherited ScreenToClient(Handle, P);
+  // Result:=inherited ScreenToClient(Handle, P);
+  Result := 0;
+  {$IFDEF VerboseWinAPI}
+    DebugLn('TCarbonWidgetSet.ScreenToClient P: ' + DbgS(P));
+  {$ENDIF}
+
+  if not CheckWidget(Handle, 'ScreenToClient') then Exit;
+  Result := TCarbonWidget(Handle).GetScreenBounds(R{%H-});
+  // DebugLn('TCarbonWidgetSet.ScreenToClient Control screen bounds: ',dbgs(R));
+  if Result then
+  begin
+    Dec(P.X, R.Left);
+    Dec(P.Y, R.Top);
+
+    Result := TCarbonWidget(Handle).GetClientRect(R);
+
+    if Result then
+    begin
+      Dec(P.X, R.Left);
+      Dec(P.Y, R.Top);
+      Pt := TCarbonWidget(Handle).ScrollOffset;
+      Inc(P.X, Pt.X);
+      Inc(P.Y, Pt.Y);
+    end;
+  end;
 end;
 
 {$IFDEF NewScrollWindowEx}
