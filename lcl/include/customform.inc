@@ -2998,7 +2998,6 @@ var
   i: Integer;
   AControl: TControl;
   CtrlCaption: String;
-  p: LongInt;
 begin
   { Show the combined captions of all clients.
     Exclude client to be undocked.
