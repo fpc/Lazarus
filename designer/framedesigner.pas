@@ -164,7 +164,7 @@ begin
     LookupRoot.DesignInfo := LeftTopToDesignInfo(Left, Top);
     // always fill the whole designer form
     TControl(LookupRoot).SetBounds(0, 0, Width, Height);
-    //DebugLn(['TFrameDesignerForm.DoSaveBounds ',Left,',',Top,' ',LongRec(LookupRoot.DesignInfo).Lo,',',LongRec(LookupRoot.DesignInfo).hi]);
+    //DebugLn(['TFrameDesignerForm.DoSaveBounds ',Left,',',Top,' ',LazLongRec(LookupRoot.DesignInfo).Lo,',',LazLongRec(LookupRoot.DesignInfo).hi]);
   end
   else
   if LookupRoot <> nil then

@@ -101,7 +101,7 @@ function FileSetDateUTF8(const FileName: String; Age: Longint): Longint;
  var
   lft : TFileTime;
  begin
-  ADosTimeToWinTime:=DosDateTimeToFileTime(LongRec(DosTime).hi,LongRec(DosTime).lo,@lft) and
+  ADosTimeToWinTime:=DosDateTimeToFileTime(longrec(DosTime).hi,longrec(DosTime).lo,@lft) and
                                            LocalFileTimeToFileTime(lft,Wintime);
  end;
 var
