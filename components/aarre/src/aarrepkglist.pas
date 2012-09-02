@@ -34,7 +34,7 @@ unit AarrePkgList;
 interface
 
 uses
-  Classes, SysUtils, Laz2_XMLCfg, laz2_DOM, LazLogger;
+  Classes, SysUtils, Laz2_XMLCfg, laz2_DOM, LazLogger, laz2_XMLWrite;
 
 type
   TAPackageType = (
@@ -159,6 +159,9 @@ type
     procedure Clear;
     procedure Load(XML: TXMLConfig; Path: string); virtual;
     procedure Save(XML: TXMLConfig; Path: string); virtual;
+    procedure SaveToStream(s: TStream);
+    procedure LoadFromStream(s: TStream);
+    function AsString: string;
     procedure Add(Item: TAarrePkgListItem);
     procedure Insert(Index: integer; Item: TAarrePkgListItem);
     procedure Remove(Item: TAarrePkgListItem);
@@ -453,6 +456,47 @@ begin
   end;
 end;
 
+procedure TAarrePkgList.SaveToStream(s: TStream);
+var
+  xml: TXMLConfig;
+begin
+  xml:=TXMLConfig.Create(nil);
+  try
+    Save(XML,'aarre');
+    xml.WriteToStream(s);
+  finally
+    xml.Free;
+  end;
+end;
+
+procedure TAarrePkgList.LoadFromStream(s: TStream);
+var
+  xml: TXMLConfig;
+begin
+  xml:=TXMLConfig.Create(nil);
+  try
+    xml.ReadFromStream(s);
+    Load(XML,'aarre');
+  finally
+    xml.Free;
+  end;
+end;
+
+function TAarrePkgList.AsString: string;
+var
+  ms: TMemoryStream;
+begin
+  ms:=TMemoryStream.Create;
+  try
+    SaveToStream(ms);
+    SetLength(Result,ms.Size);
+    if Result<>'' then
+      Move(ms.Memory^,Result[1],length(Result));
+  finally
+    ms.Free;
+  end;
+end;
+
 procedure TAarrePkgList.Add(Item: TAarrePkgListItem);
 begin
   if Item=nil then
@@ -472,9 +516,7 @@ end;
 
 procedure TAarrePkgList.Delete(Index: integer);
 begin
-  debugln(['TAarrePkgList.Delete AAA1 ',Index,' ',dbgs(fItems[Index])]);
   TObject(fItems[Index]).Free;
-  debugln(['TAarrePkgList.Delete AAA2 ',Index]);
   fItems.Delete(Index);
 end;
 
