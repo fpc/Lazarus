@@ -59,7 +59,6 @@ type
 
   protected
     procedure AfterAdd; override;
-    procedure GetGraphBounds(var ABounds: TDoubleRect); override;
     procedure GetLegendItems(AItems: TChartLegendItems); virtual; abstract;
     procedure GetLegendItemsBasic(AItems: TChartLegendItems); override;
     function GetShowInLegend: Boolean; override;
@@ -88,6 +87,7 @@ type
     function AxisToGraphY(AY: Double): Double; override;
     function GetAxisX: TChartAxis;
     function GetAxisY: TChartAxis;
+    function GetGraphBounds: TDoubleRect; override;
     function GraphToAxis(APoint: TDoublePoint): TDoublePoint;
     function GraphToAxisX(AX: Double): Double; override;
     function GraphToAxisY(AY: Double): Double; override;
@@ -339,10 +339,11 @@ begin
     Result := FChart.LeftAxis;
 end;
 
-procedure TCustomChartSeries.GetGraphBounds(var ABounds: TDoubleRect);
+function TCustomChartSeries.GetGraphBounds: TDoubleRect;
 begin
-  GetBounds(ABounds);
-  with ABounds do begin
+  Result := EmptyExtent;
+  GetBounds(Result);
+  with Result do begin
     UpdateBoundsByAxisRange(FChart.AxisList, AxisIndexX, a.X, b.X);
     UpdateBoundsByAxisRange(FChart.AxisList, AxisIndexY, a.Y, b.Y);
     TransformByAxis(FChart.AxisList, AxisIndexX).UpdateBounds(a.X, b.X);

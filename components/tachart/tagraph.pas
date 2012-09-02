@@ -56,7 +56,6 @@ type
     // Set series bounds in axis coordinates.
     // Some or all bounds may be left unset, in which case they will be ignored.
     procedure GetBounds(var ABounds: TDoubleRect); virtual; abstract;
-    procedure GetGraphBounds(var ABounds: TDoubleRect); virtual; abstract;
     procedure GetLegendItemsBasic(AItems: TChartLegendItems); virtual; abstract;
     function GetShowInLegend: Boolean; virtual; abstract;
     procedure SetActive(AValue: Boolean); virtual; abstract;
@@ -79,6 +78,7 @@ type
 
   public
     procedure Draw(ADrawer: IChartDrawer); virtual; abstract;
+    function GetGraphBounds: TDoubleRect; virtual; abstract;
     function IsEmpty: Boolean; virtual; abstract;
     procedure MovePoint(var AIndex: Integer; const ANewPos: TPoint); virtual;
 
@@ -947,7 +947,7 @@ function TChart.GetFullExtent: TDoubleRect;
   end;
 
 var
-  seriesBounds, axisBounds: TDoubleRect;
+  axisBounds: TDoubleRect;
   s: TBasicChartSeries;
   a: TChartAxis;
 begin
@@ -960,14 +960,12 @@ begin
   Result := EmptyExtent;
   for s in Series do begin
     if not s.Active then continue;
-    seriesBounds := EmptyExtent;
     try
-      s.GetGraphBounds(seriesBounds);
+      JoinBounds(s.GetGraphBounds);
     except
       s.Active := false;
       raise;
     end;
-    JoinBounds(seriesBounds);
   end;
   for a in AxisList do begin
     axisBounds := EmptyExtent;
