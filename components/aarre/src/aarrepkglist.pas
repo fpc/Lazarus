@@ -34,7 +34,7 @@ unit AarrePkgList;
 interface
 
 uses
-  Classes, SysUtils, Laz2_XMLCfg, laz2_DOM;
+  Classes, SysUtils, Laz2_XMLCfg, laz2_DOM, LazLogger;
 
 type
   TAPackageType = (
@@ -76,9 +76,9 @@ type
   TAPkgDependency = class
   private
     FDefaultFilename: string;
-    FMaxVersion: TPkgVersion;
+    FMaxVersion: TAPkgVersion;
     FMaxVersionValid: boolean;
-    FMinVersion: TPkgVersion;
+    FMinVersion: TAPkgVersion;
     FMinVersionValid: boolean;
     FName: string;
     FPreferDefaultFilename: boolean;
@@ -88,9 +88,9 @@ type
     procedure Load(XML: TXMLConfig; Path: string); virtual;
     procedure Save(XML: TXMLConfig; Path: string); virtual;
     property Name: string read FName write FName;
-    property MinVersion: TPkgVersion read FMinVersion;
+    property MinVersion: TAPkgVersion read FMinVersion;
     property MinVersionValid: boolean read FMinVersionValid write FMinVersionValid;
-    property MaxVersion: TPkgVersion read FMaxVersion;
+    property MaxVersion: TAPkgVersion read FMaxVersion;
     property MaxVersionValid: boolean read FMaxVersionValid write FMaxVersionValid;
     property DefaultFilename: string read FDefaultFilename write FDefaultFilename;
     property PreferDefaultFilename: boolean read FPreferDefaultFilename write FPreferDefaultFilename;
@@ -125,14 +125,17 @@ type
     FLPKFilename: string;
     FName: string;
     FPackageType: TAPackageType;
+    FDependencies: TAPkgDependencies;
     FVersion: TAPkgVersion;
     procedure SetLPKFilename(AValue: string);
     procedure SetName(AValue: string);
   public
     constructor Create;
     destructor Destroy; override;
+    procedure Clear;
     procedure Load(XML: TXMLConfig; Path: string); virtual;
     procedure Save(XML: TXMLConfig; Path: string); virtual;
+    procedure LoadLPK(LPKFilename: string);
     property Name: string read FName write SetName;
     property Version: TAPkgVersion read FVersion;
     property PackageType: TAPackageType read FPackageType write FPackageType;
@@ -141,6 +144,7 @@ type
     property License: String read FLicense write FLicense;
 
     property LPKFilename: string read FLPKFilename write SetLPKFilename;
+    property Dependencies: TAPkgDependencies read FDependencies;
   end;
 
   { TAarrePkgList }
@@ -207,13 +211,30 @@ begin
 end;
 
 procedure TAPkgDependencies.Load(XML: TXMLConfig; Path: string);
+var
+  NewCount: Integer;
+  i: Integer;
+  Dep: TAPkgDependency;
 begin
-
+  Clear;
+  NewCount:=XML.GetValue(Path+'Count',0);
+  for i:=0 to NewCount-1 do begin
+    Dep:=TAPkgDependency.Create;
+    Dep.Load(XML,Path+'Item'+IntToStr(i+1)+'/');
+    if Dep.Name='' then
+      Dep.Free
+    else
+      FItems.Add(Dep);
+  end;
 end;
 
 procedure TAPkgDependencies.Save(XML: TXMLConfig; Path: string);
+var
+  i: Integer;
 begin
-
+  XML.SetValue(Path+'Count',0);
+  for i:=0 to Count-1 do
+    Items[i].Save(XML,Path+'Item'+IntToStr(i+1)+'/');
 end;
 
 procedure TAPkgDependencies.Add(Item: TAPkgDependency);
@@ -286,12 +307,21 @@ end;
 
 constructor TAarrePkgListItem.Create;
 begin
-
+  FVersion:=TAPkgVersion.Create;
+  FDependencies:=TAPkgDependencies.Create;
 end;
 
 destructor TAarrePkgListItem.Destroy;
 begin
+  Clear;
+  FreeAndNil(FDescription);
+  FreeAndNil(FVersion);
   inherited Destroy;
+end;
+
+procedure TAarrePkgListItem.Clear;
+begin
+  FDependencies.Clear;
 end;
 
 procedure TAarrePkgListItem.Load(XML: TXMLConfig; Path: string);
@@ -304,6 +334,7 @@ begin
   Description:=XML.GetValue(Path+'Description/Value','');
   License:=XML.GetValue(Path+'License/Value','');
   LPKFilename:=XML.GetValue(Path+'LPKFilename/Value','');
+  Dependencies.Load(XML,Path+'Dependencies/');
 end;
 
 procedure TAarrePkgListItem.Save(XML: TXMLConfig; Path: string);
@@ -316,6 +347,51 @@ begin
   XML.SetDeleteValue(Path+'Description/Value',Description,'');
   XML.SetDeleteValue(Path+'License/Value',License,'');
   XML.SetDeleteValue(Path+'LPKFilename/Value',LPKFilename,'');
+  Dependencies.Save(XML,Path+'Dependencies/');
+end;
+
+procedure TAarrePkgListItem.LoadLPK(LPKFilename: string);
+var
+  xml: TXMLConfig;
+  Path: String;
+  FileVersion: Integer;
+  i: Integer;
+  NewCount: Integer;
+  PkgDependency: TAPkgDependency;
+begin
+  xml:=TXMLConfig.Create(LPKFilename);
+  try
+    Path:='Package/';
+    FileVersion:=xml.GetValue(Path+'Version',0);
+    if FileVersion=0 then
+      raise Exception.Create('no file version');
+    Name:=xml.GetValue(Path+'Name/Value','');
+    PackageType:=APackageTypeIdentToType(xml.GetValue(Path+'Type/Value',
+                                            APackageTypeIdents[DefaultPackageType]));
+    Author:=xml.GetValue(Path+'Author/Value','');
+    Description:=xml.GetValue(Path+'Description/Value','');
+    License:=xml.GetValue(Path+'License/Value','');
+    Version.Load(xml,Path+'Version/');
+
+    NewCount:=xml.GetValue(Path+'RequiredPkgs/Count',0);
+    Dependencies.Clear;
+    for i:=0 to NewCount-1 do begin
+      PkgDependency:=TAPkgDependency.Create;
+      PkgDependency.Load(xml,Path+'RequiredPkgs/Item'+IntToStr(i+1)+'/');
+      Dependencies.Add(PkgDependency);
+    end;
+
+    DebugLn(['TLPackage.Load Name="',Name,'"',
+      ' Type=',APackageTypeIdents[PackageType],
+      ' Author="',Author,'"',
+      ' Description="',Description,'"',
+      ' License="',License,'"',
+      ' Version="',Version.AsString,'"'
+      ]);
+
+  finally
+    xml.Free;
+  end;
 end;
 
 { TAarrePkgList }
@@ -341,7 +417,9 @@ procedure TAarrePkgList.Clear;
 var
   i: Integer;
 begin
-  for i:=Count-1 downto 0 do Delete(i);
+  debugln(['TAarrePkgList.Clear ',Count]);
+  for i:=Count-1 downto 0 do
+    Delete(i);
 end;
 
 procedure TAarrePkgList.Load(XML: TXMLConfig; Path: string);
@@ -377,6 +455,8 @@ end;
 
 procedure TAarrePkgList.Add(Item: TAarrePkgListItem);
 begin
+  if Item=nil then
+    raise Exception.Create('Item=nil');
   Insert(Count,Item);
 end;
 
@@ -392,7 +472,9 @@ end;
 
 procedure TAarrePkgList.Delete(Index: integer);
 begin
+  debugln(['TAarrePkgList.Delete AAA1 ',Index,' ',dbgs(fItems[Index])]);
   TObject(fItems[Index]).Free;
+  debugln(['TAarrePkgList.Delete AAA2 ',Index]);
   fItems.Delete(Index);
 end;
 
@@ -410,8 +492,8 @@ end;
 
 constructor TAPkgDependency.Create;
 begin
-  FMinVersion:=TPkgVersion.Create;
-  FMaxVersion:=TPkgVersion.Create;
+  FMinVersion:=TAPkgVersion.Create;
+  FMaxVersion:=TAPkgVersion.Create;
 end;
 
 destructor TAPkgDependency.Destroy;
