@@ -7,58 +7,25 @@ object BuildModesEditorFrame: TBuildModesEditorFrame
   ClientWidth = 550
   TabOrder = 0
   DesignLeft = 460
-  DesignTop = 269
-  object BuildMacroValuesGroupBox: TGroupBox
-    Left = 6
-    Height = 234
-    Top = 181
-    Width = 538
-    Align = alClient
-    BorderSpacing.Around = 6
-    Caption = 'BuildMacroValuesGroupBox'
-    ClientHeight = 218
-    ClientWidth = 534
-    TabOrder = 2
-    object BuildMacroValuesStringGrid: TStringGrid
-      Left = 0
-      Height = 218
-      Top = 0
-      Width = 534
-      Align = alClient
-      AutoFillColumns = True
-      ColCount = 2
-      DefaultColWidth = 120
-      FixedCols = 0
-      Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goEditing, goAlwaysShowEditor, goSmoothScroll]
-      RowCount = 2
-      TabOrder = 0
-      OnEditingDone = BuildMacroValuesStringGridEditingDone
-      OnSelectEditor = BuildMacroValuesStringGridSelectEditor
-      OnSelection = BuildMacroValuesStringGridSelection
-      ColWidths = (
-        265
-        265
-      )
-    end
-  end
+  DesignTop = 117
   object BuildModesGroupBox: TGroupBox
     Left = 6
-    Height = 158
+    Height = 250
     Top = 6
     Width = 538
     Align = alTop
     BorderSpacing.Around = 6
     Caption = 'BuildModesGroupBox'
-    ClientHeight = 142
-    ClientWidth = 534
+    ClientHeight = 230
+    ClientWidth = 532
     TabOrder = 0
     object BuildModesStringGrid: TStringGrid
       AnchorSideTop.Control = BuildModeAddSpeedButton
       AnchorSideTop.Side = asrBottom
       Left = 0
-      Height = 120
+      Height = 208
       Top = 22
-      Width = 534
+      Width = 532
       Align = alBottom
       Anchors = [akTop, akLeft, akRight, akBottom]
       AutoFillColumns = True
@@ -68,19 +35,19 @@ object BuildModesEditorFrame: TBuildModesEditorFrame
           ButtonStyle = cbsCheckboxColumn
           MaxSize = 50
           Title.Caption = 'Active'
-          Width = 176
+          Width = 175
         end      
         item
           ButtonStyle = cbsCheckboxColumn
           MaxSize = 50
           Title.Caption = 'InSession'
-          Width = 176
+          Width = 175
         end      
         item
           MaxSize = 500
           SizePriority = 100
           Title.Caption = 'Title'
-          Width = 178
+          Width = 176
         end>
       FixedCols = 0
       Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goEditing, goSmoothScroll]
@@ -90,9 +57,9 @@ object BuildModesEditorFrame: TBuildModesEditorFrame
       OnSelectCell = BuildModesStringGridSelectCell
       OnValidateEntry = BuildModesStringGridValidateEntry
       ColWidths = (
+        175
+        175
         176
-        176
-        178
       )
     end
     object BuildModeAddSpeedButton: TSpeedButton
@@ -102,7 +69,6 @@ object BuildModesEditorFrame: TBuildModesEditorFrame
       Height = 22
       Top = 0
       Width = 23
-      NumGlyphs = 0
       OnClick = BuildModeAddSpeedButtonClick
       ShowHint = True
       ParentShowHint = False
@@ -115,7 +81,6 @@ object BuildModesEditorFrame: TBuildModesEditorFrame
       Height = 22
       Top = 0
       Width = 23
-      NumGlyphs = 0
       OnClick = BuildModeDeleteSpeedButtonClick
       ShowHint = True
       ParentShowHint = False
@@ -128,7 +93,6 @@ object BuildModesEditorFrame: TBuildModesEditorFrame
       Height = 22
       Top = 0
       Width = 23
-      NumGlyphs = 0
       OnClick = BuildModeMoveUpSpeedButtonClick
       ShowHint = True
       ParentShowHint = False
@@ -141,7 +105,6 @@ object BuildModesEditorFrame: TBuildModesEditorFrame
       Height = 22
       Top = 0
       Width = 23
-      NumGlyphs = 0
       OnClick = BuildModeMoveDownSpeedButtonClick
       ShowHint = True
       ParentShowHint = False
@@ -155,20 +118,10 @@ object BuildModesEditorFrame: TBuildModesEditorFrame
       Top = 0
       Width = 23
       BorderSpacing.Left = 10
-      NumGlyphs = 0
       OnClick = BuildModeDiffSpeedButtonClick
       ShowHint = True
       ParentShowHint = False
     end
-  end
-  object Splitter1: TSplitter
-    Cursor = crVSplit
-    Left = 0
-    Height = 5
-    Top = 170
-    Width = 550
-    Align = alTop
-    ResizeAnchor = akTop
   end
   object BuildModesPopupMenu: TPopupMenu
     left = 180

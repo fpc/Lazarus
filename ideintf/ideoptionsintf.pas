@@ -280,9 +280,16 @@ const
     ProjectOptionsI18N        = 600;
     ProjectOptionsMisc        = 700;
 
+  GroupPackage      = 200100;
+    PackageOptionsUsage        = 100;
+    PackageOptionsDescription  = 200;
+    PackageOptionsIntegration  = 300;
+    PackageOptionsProvides     = 400;
+    PackageOptionsI18N         = 500;
+
   GroupCompiler     = 100200;
-    CompilerOptionsSearchPaths    = 0100;
-    CompilerOptionsBuildModes     = 0200;
+    CompilerOptionsBuildModes     = 0100;
+    CompilerOptionsSearchPaths    = 0200;
     CompilerOptionsParsing        = 0300;
     CompilerOptionsCodeGeneration = 0400;
     CompilerOptionsLinking        = 0500;
@@ -290,15 +297,9 @@ const
     CompilerOptionsMessages       = 0700;
     CompilerOptionsOther          = 0800;
     CompilerOptionsConditional    = 0900;
-    CompilerOptionsInherited      = 1000;
-    CompilerOptionsCompilation    = 1100;
-
-  GroupPackage      = 200100;
-    PackageOptionsUsage        = 100;
-    PackageOptionsDescription  = 200;
-    PackageOptionsIntegration  = 300;
-    PackageOptionsProvides     = 400;
-    PackageOptionsI18N         = 500;
+    CompilerOptionsMacroValues    = 1000;
+    CompilerOptionsInherited      = 1100;
+    CompilerOptionsCompilation    = 1200;
 
   GroupPkgCompiler  = 200200;
 

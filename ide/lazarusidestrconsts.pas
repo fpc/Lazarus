@@ -5269,6 +5269,7 @@ resourcestring
     +'not-found errors. This can take a minute.';
   lisActive = 'Active';
   dlgBuildModes = 'Build Modes';
+  dlgIdeMacroValues = 'IDE Macro Values';
   lisBuildModes = 'Build modes';
   lisInSession = 'In session';
   lisThereMustBeAtLeastOneBuildMode = 'There must be at least one build mode.';

@@ -44,8 +44,6 @@ type
 
   TBuildModesEditorFrame = class(TAbstractIDEOptionsEditor)
     BuildModeDiffSpeedButton: TSpeedButton;
-    BuildMacroValuesGroupBox: TGroupBox;
-    BuildMacroValuesStringGrid: TStringGrid;
     BuildModeAddSpeedButton: TSpeedButton;
     BuildModeDeleteSpeedButton: TSpeedButton;
     BuildModeMoveDownSpeedButton: TSpeedButton;
@@ -53,13 +51,7 @@ type
     BuildModesGroupBox: TGroupBox;
     BuildModesPopupMenu: TPopupMenu;
     BuildModesStringGrid: TStringGrid;
-    Splitter1: TSplitter;
     procedure BuildModeDiffSpeedButtonClick(Sender: TObject);
-    procedure BuildMacroValuesStringGridEditingDone(Sender: TObject);
-    procedure BuildMacroValuesStringGridSelectEditor(Sender: TObject; aCol,
-      aRow: Integer; var Editor: TWinControl);
-    procedure BuildMacroValuesStringGridSelection(Sender: TObject; aCol,
-      aRow: Integer);
     procedure BuildModeAddSpeedButtonClick(Sender: TObject);
     procedure BuildModeDeleteSpeedButtonClick(Sender: TObject);
     procedure BuildModeMoveDownSpeedButtonClick(Sender: TObject);
@@ -73,17 +65,13 @@ type
       aRow: Integer; const OldValue: string; var NewValue: String);
   private
     FLoadShowSessionFromProject: boolean;
-    FMacroValues: TProjectBuildMacros;
     FProject: TProject;
     FShowSession: boolean;
     FSwitchingMode: boolean;
     fModeActiveCol: integer;
     fModeInSessionCol: integer;
     fModeNameCol: integer;
-    procedure UpdateMacrosControls;
     function GetAllBuildMacros: TStrings;
-    procedure CleanMacrosGrid;
-    procedure SaveMacros(UpdateControls: boolean);
     procedure UpdateInheritedOptions;
     procedure FillBuildModesGrid;
     procedure UpdateBuildModeButtons;
@@ -102,7 +90,6 @@ type
     procedure WriteSettings(AOptions: TAbstractIDEOptions); override;
     class function SupportedOptionsClass: TAbstractIDEOptionsClass; override;
     property AProject: TProject read FProject;
-    property MacroValues: TProjectBuildMacros read FMacroValues;
     property SwitchingMode: boolean read FSwitchingMode; // the active mode is currently switched
     property ShowSession: boolean read FShowSession write SetShowSession;
     property LoadShowSessionFromProjects: boolean read FLoadShowSessionFromProject
@@ -115,73 +102,6 @@ implementation
 {$R *.lfm}
 
 { TBuildModesEditorFrame }
-
-procedure TBuildModesEditorFrame.BuildMacroValuesStringGridSelectEditor(
-  Sender: TObject; aCol, aRow: Integer; var Editor: TWinControl);
-var
-  PickList: TPickListCellEditor;
-  sl: TStringList;
-  Macros: TStrings;
-  Grid: TStringGrid;
-  MacroName: string;
-  i: LongInt;
-  Macro: TLazBuildMacro;
-begin
-  if MacroValues=nil then exit;
-  Grid:=BuildMacroValuesStringGrid;
-  //debugln(['TBuildModesEditorFrame.BuildMacroValuesStringGridSelectEditor ',acol,',',aRow,' ',DbgSName(Editor)]);
-  if aCol=0 then begin
-    // list all build MacroValues
-    if not (Editor is TPickListCellEditor) then exit;
-    PickList:=TPickListCellEditor(Editor);
-    sl:=TStringList.Create;
-    Macros:=nil;
-    try
-      if aRow=Grid.RowCount-1 then
-        sl.Add('(none)')
-      else
-        sl.Add('(delete)');
-
-      Macros:=GetAllBuildMacros;
-      sl.AddStrings(Macros);
-
-      PickList.Items.Assign(sl);
-    finally
-      Macros.Free;
-      sl.Free;
-    end;
-  end else if aCol=1 then begin
-    // list all possible values of current macro
-
-    if not (Editor is TPickListCellEditor) then exit;
-    PickList:=TPickListCellEditor(Editor);
-
-    MacroName:=Grid.Cells[0,aRow];
-    sl:=TStringList.Create;
-    try
-      Macros:=GetAllBuildMacros;
-      i:=Macros.IndexOf(MacroName);
-      if i>=0 then begin
-        Macro:=TLazBuildMacro(Macros.Objects[i]);
-        sl.AddStrings(Macro.Values);
-      end else begin
-        sl.Add('');
-      end;
-
-      PickList.Items.Assign(sl);
-    finally
-      Macros.Free;
-      sl.Free;
-    end;
-  end;
-end;
-
-procedure TBuildModesEditorFrame.BuildMacroValuesStringGridEditingDone(
-  Sender: TObject);
-begin
-  //debugln(['TBuildModesEditorFrame.BuildMacroValuesStringGridEditingDone ']);
-  SaveMacros(true);
-end;
 
 procedure TBuildModesEditorFrame.BuildModeDiffSpeedButtonClick(Sender: TObject);
 begin
@@ -197,12 +117,6 @@ begin
   finally
     FSwitchingMode:=false;
   end;
-end;
-
-procedure TBuildModesEditorFrame.BuildMacroValuesStringGridSelection(
-  Sender: TObject; aCol, aRow: Integer);
-begin
-  CleanMacrosGrid;
 end;
 
 procedure TBuildModesEditorFrame.BuildModeAddSpeedButtonClick(Sender: TObject);
@@ -283,8 +197,7 @@ begin
     Grid.Row:=i;
 end;
 
-procedure TBuildModesEditorFrame.BuildModeMoveDownSpeedButtonClick(
-  Sender: TObject);
+procedure TBuildModesEditorFrame.BuildModeMoveDownSpeedButtonClick(Sender: TObject);
 var
   i: Integer;
 begin
@@ -370,10 +283,8 @@ var
   b: Boolean;
   i: Integer;
 begin
-  //debugln(['TBuildModesEditorFrame.BuildModesStringGridValidateEntry Row=',aRow,' Col=',aCol,' ',NewValue]);
   i:=aRow-1;
   if (i<0) or (i>=AProject.BuildModes.Count) then exit;
-  //debugln(['TBuildModesEditorFrame.SaveModes ',i]);
   CurMode:=AProject.BuildModes[i];
   if aCol=fModeInSessionCol then
   begin
@@ -399,23 +310,6 @@ begin
     NewValue:=s;
     UpdateDialogCaption;
   end;
-end;
-
-procedure TBuildModesEditorFrame.UpdateMacrosControls;
-var
-  Grid: TStringGrid;
-  i: Integer;
-begin
-  Grid:=BuildMacroValuesStringGrid;
-  Grid.RowCount:=MacroValues.Count+2; // + titles + add button
-
-  for i:=0 to MacroValues.Count-1 do begin
-    Grid.Cells[0,i+1]:=MacroValues.Names[i];
-    Grid.Cells[1,i+1]:=MacroValues.ValueFromIndex(i);
-  end;
-  i:=MacroValues.Count+1;
-  Grid.Cells[0,i]:='(none)';
-  Grid.Cells[1,i]:='';
 end;
 
 procedure TBuildModesEditorFrame.SetShowSession(const AValue: boolean);
@@ -523,67 +417,6 @@ begin
   TStringList(Result).Sort;
 end;
 
-procedure TBuildModesEditorFrame.CleanMacrosGrid;
-var
-  Grid: TStringGrid;
-  aRow: Integer;
-  MacroName: string;
-  NeedNewRow: Boolean;
-begin
-  Grid:=BuildMacroValuesStringGrid;
-  // delete rows
-  for aRow:=Grid.RowCount-2 downto 1 do begin
-    if aRow=Grid.Row then continue; // row is selected
-    MacroName:=Grid.Cells[0,aRow];
-    if (MacroName<>'') and IsValidIdent(MacroName) then continue; // valid macro name
-    // delete row
-    Grid.DeleteColRow(false,aRow);
-  end;
-  NeedNewRow:=Grid.RowCount<2;
-  if (not NeedNewRow) then begin
-    MacroName:=Grid.Cells[0,Grid.RowCount-1];
-    if (MacroName<>'') and IsValidIdent(MacroName) then
-      NeedNewRow:=true;
-  end;
-  if NeedNewRow then begin
-    Grid.RowCount:=Grid.RowCount+1;
-    Grid.Cells[0,Grid.RowCount-1]:='(new)';
-    Grid.Cells[1,Grid.RowCount-1]:='';
-  end;
-end;
-
-procedure TBuildModesEditorFrame.SaveMacros(UpdateControls: boolean);
-var
-  Grid: TStringGrid;
-  aRow: Integer;
-  MacroName: string;
-  Values: TStringList;
-  Value: string;
-begin
-  if MacroValues=nil then exit;
-  Grid:=BuildMacroValuesStringGrid;
-  Values:=TStringList.Create;
-  try
-    for aRow:=1 to Grid.RowCount-1 do begin
-      MacroName:=Grid.Cells[0,aRow];
-      if (MacroName='') or (not IsValidIdent(MacroName)) then continue;
-      Value:=Grid.Cells[1,aRow];
-      Values.Values[MacroName]:=Value;
-    end;
-    //debugln(['TBuildModesEditorFrame.Save changed=',not MacroValues.Equals(Values),' New="',Values.Text,'"']);
-    if not MacroValues.Equals(Values) then begin
-      // has changed
-      MacroValues.Assign(Values);
-      IncreaseBuildMacroChangeStamp;
-      if UpdateControls then begin
-        UpdateInheritedOptions;
-      end;
-    end;
-  finally
-    Values.Free;
-  end;
-end;
-
 procedure TBuildModesEditorFrame.UpdateInheritedOptions;
 var
   InhOptionCtrl: TCompilerInheritedOptionsFrame;
@@ -642,16 +475,13 @@ begin
   else
     CurMode:=nil;
 
-  BuildModeAddSpeedButton.Hint:=Format(lisAddNewBuildModeCopyingSettingsFrom, [
-    Identifier]);
+  BuildModeAddSpeedButton.Hint:=Format(lisAddNewBuildModeCopyingSettingsFrom, [Identifier]);
   BuildModeDeleteSpeedButton.Enabled:=(CurMode<>nil) and (AProject.BuildModes.Count>1);
   BuildModeDeleteSpeedButton.Hint:=Format(lisDeleteMode, [Identifier]);
   BuildModeMoveUpSpeedButton.Enabled:=(CurMode<>nil) and (i>0);
   BuildModeMoveUpSpeedButton.Hint:=Format(lisMoveOnePositionUp, [Identifier]);
-  BuildModeMoveDownSpeedButton.Enabled:=
-                       i<BuildModesStringGrid.RowCount-2;
-  BuildModeMoveDownSpeedButton.Hint:=Format(lisMoveOnePositionDown, [Identifier]
-    );
+  BuildModeMoveDownSpeedButton.Enabled:=i<BuildModesStringGrid.RowCount-2;
+  BuildModeMoveDownSpeedButton.Hint:=Format(lisMoveOnePositionDown, [Identifier]);
   BuildModeDiffSpeedButton.Hint:=lisShowDifferencesBetweenModes;
 end;
 
@@ -696,8 +526,6 @@ begin
 end;
 
 procedure TBuildModesEditorFrame.Setup(ADialog: TAbstractOptionsEditorDialog);
-var
-  Grid: TStringGrid;
 begin
   BuildModesGroupBox.Caption:=lisBuildModes;
   DoShowSession;
@@ -707,15 +535,6 @@ begin
   BuildModeMoveUpSpeedButton.LoadGlyphFromLazarusResource('arrow_up');
   BuildModeMoveDownSpeedButton.LoadGlyphFromLazarusResource('arrow_down');
   BuildModeDiffSpeedButton.LoadGlyphFromLazarusResource('menu_tool_diff');
-
-  BuildMacroValuesGroupBox.Caption:=lisIDEMacroValuesForFPCMacrosUseCustomOptions;
-  Grid:=BuildMacroValuesStringGrid;
-  Grid.Columns.Add;
-  Grid.Columns[0].Title.Caption:=lisMacroName;
-  Grid.Columns[0].ButtonStyle:=cbsPickList;
-  Grid.Columns.Add;
-  Grid.Columns[1].Title.Caption:=lisMacroValue;
-  Grid.Columns[1].ButtonStyle:=cbsPickList;
 end;
 
 procedure TBuildModesEditorFrame.ReadSettings(AOptions: TAbstractIDEOptions);
@@ -726,16 +545,11 @@ begin
   if AOptions is TProjectCompilerOptions then begin
     PCOptions:=TProjectCompilerOptions(AOptions);
     FProject:=PCOptions.LazProject;
-    FMacroValues:=FProject.ActiveBuildMode.MacroValues;
 
     // modes
     UpdateShowSession;
     FillBuildModesGrid;
     UpdateBuildModeButtons;
-
-    // macros
-    MacroValues.Assign(FProject.MacroValues);
-    UpdateMacrosControls;
 
     // options dialog
     UpdateDialogCaption;
@@ -744,9 +558,7 @@ end;
 
 procedure TBuildModesEditorFrame.WriteSettings(AOptions: TAbstractIDEOptions);
 begin
-  if AOptions is TProjectCompilerOptions then begin
-    SaveMacros(false);
-  end;
+  ;  // Do Nothing. Overrides an abstract method.
 end;
 
 class function TBuildModesEditorFrame.SupportedOptionsClass: TAbstractIDEOptionsClass;
