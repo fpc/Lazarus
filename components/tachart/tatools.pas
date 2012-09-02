@@ -1412,6 +1412,30 @@ begin
 end;
 
 procedure TDataPointTool.FindNearestPoint(APoint: TPoint);
+
+  function InBoundaryBox(ASeries: TCustomChartSeries): Boolean;
+  var
+    r, gr: TDoubleRect;
+  begin
+    r := ASeries.GetGraphBounds;
+    if not RectIntersectsRect(r, FChart.CurrentExtent) then exit(false);
+    case DistanceMode of
+      cdmOnlyX: begin
+        gr.a := DoublePoint(FChart.XImageToGraph(APoint.X - GrabRadius), NegInfinity);
+        gr.b := DoublePoint(FChart.XImageToGraph(APoint.X + GrabRadius), SafeInfinity);
+      end;
+      cdmOnlyY: begin
+        gr.a := DoublePoint(NegInfinity, FChart.YImageToGraph(APoint.Y - GrabRadius));
+        gr.b := DoublePoint(SafeInfinity, FChart.YImageToGraph(APoint.Y + GrabRadius));
+      end;
+      cdmXY: begin
+        gr.a := FChart.ImageToGraph(APoint - Point(GrabRadius, GrabRadius));
+        gr.b := FChart.ImageToGraph(APoint + Point(GrabRadius, GrabRadius));
+      end;
+    end;
+    Result := RectIntersectsRect(r, gr);
+  end;
+
 const
   DIST_FUNCS: array [TChartDistanceMode] of TPointDistFunc = (
     @PointDist, @PointDistX, @PointDistY);
@@ -1426,8 +1450,8 @@ begin
   best.FDist := MaxInt;
   for s in CustomSeries(FChart, FAffectedSeries.AsBooleans(FChart.SeriesCount)) do
     if
-      s.GetNearestPoint(p, cur) and PtInRect(FChart.ClipRect, cur.FImg) and
-      (cur.FDist < best.FDist)
+      InBoundaryBox(s) and s.GetNearestPoint(p, cur) and
+      PtInRect(FChart.ClipRect, cur.FImg) and (cur.FDist < best.FDist)
     then begin
       bestS := s;
       best := cur;
