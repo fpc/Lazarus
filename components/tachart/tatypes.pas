@@ -98,6 +98,8 @@ type
     FAlignment: TAlignment;
     procedure AddMargins(ADrawer: IChartDrawer; var ASize: TPoint);
     procedure ApplyLabelFont(ADrawer: IChartDrawer); virtual;
+    procedure DrawLink(
+      ADrawer: IChartDrawer; ADataPoint, ALabelCenter: TPoint); virtual;
     function IsMarginRequired: Boolean;
   strict protected
     function GetFrame: TChartPen; virtual; abstract;
@@ -166,6 +168,8 @@ type
     property Visible default false;
   end;
 
+  TChartArrow = class;
+
   TChartMarkAttachment = (maDefault, maEdge, maCenter);
 
   { TGenericChartMarks }
@@ -178,10 +182,12 @@ type
   {$ENDIF}
   strict private
     FAdditionalAngle: Double;
+    FArrow: TChartArrow;
     FAttachment: TChartMarkAttachment;
     FFrame: _TFramePen;
     FYIndex: Integer;
     function GetDistanceToCenter: Boolean;
+    procedure SetArrow(AValue: TChartArrow);
     procedure SetAttachment(AValue: TChartMarkAttachment);
     procedure SetDistance(AValue: TChartDistance);
     procedure SetDistanceToCenter(AValue: Boolean);
@@ -201,6 +207,8 @@ type
     FStyle: TSeriesMarksStyle;
   strict protected
     procedure ApplyLabelFont(ADrawer: IChartDrawer); override;
+    procedure DrawLink(
+      ADrawer: IChartDrawer; ADataPoint, ALabelCenter: TPoint); override;
     function GetFrame: TChartPen; override;
     function GetLabelAngle: Double; override;
     function GetLabelBrush: TBrush; override;
@@ -215,6 +223,7 @@ type
     function IsMarkLabelsVisible: Boolean;
     procedure SetAdditionalAngle(AAngle: Double);
   public
+    property Arrow: TChartArrow read FArrow write SetArrow;
     property DistanceToCenter: Boolean
       read GetDistanceToCenter write SetDistanceToCenter
       stored false default false;
@@ -257,6 +266,7 @@ type
     procedure Assign(Source: TPersistent); override;
     constructor Create(AOwner: TCustomChart);
   published
+    property Arrow;
     property Distance default DEF_MARKS_DISTANCE;
     property Format;
     property Frame;
@@ -533,10 +543,7 @@ begin
   if not Clipped then
     ADrawer.ClippingStop;
 
-  if (ADataPoint <> ALabelCenter) and GetLinkPen.Visible then begin
-    ADrawer.Pen := GetLinkPen;
-    ADrawer.Line(ADataPoint, ALabelCenter);
-  end;
+  DrawLink(ADrawer, ADataPoint, ALabelCenter);
   ADrawer.Brush := GetLabelBrush;
   if IsMarginRequired then begin
     if GetFrame.Visible then
@@ -550,6 +557,19 @@ begin
   ADrawer.TextOut.Pos(ptText).Alignment(Alignment).Width(w).Text(AText).Done;
   if not Clipped then
     ADrawer.ClippingStart;
+end;
+
+procedure TChartTextElement.DrawLink(
+  ADrawer: IChartDrawer; ADataPoint, ALabelCenter: TPoint);
+var
+  p: TChartPen;
+begin
+  if ADataPoint = ALabelCenter then exit;
+  p := GetLinkPen;
+  if p.Visible then begin
+    ADrawer.Pen := p;
+    ADrawer.Line(ADataPoint, ALabelCenter);
+  end;
 end;
 
 function TChartTextElement.GetLabelAngle: Double;
@@ -752,6 +772,7 @@ end;
 constructor TGenericChartMarks.Create(AOwner: TCustomChart);
 begin
   inherited Create(AOwner);
+  FArrow := TChartArrow.Create(AOwner);
   InitHelper(FFrame, _TFramePen);
   InitHelper(FLabelBrush, _TLabelBrush);
   InitHelper(FLabelFont, TFont);
@@ -762,11 +783,20 @@ end;
 
 destructor TGenericChartMarks.Destroy;
 begin
+  FreeAndNil(FArrow);
   FreeAndNil(FFrame);
   FreeAndNil(FLabelBrush);
   FreeAndNil(FLabelFont);
   FreeAndNil(FLinkPen);
   inherited;
+end;
+
+procedure TGenericChartMarks.DrawLink(
+  ADrawer: IChartDrawer; ADataPoint, ALabelCenter: TPoint);
+begin
+  inherited;
+  with (ADataPoint - ALabelCenter) do
+    Arrow.Draw(ADrawer, ADataPoint, ArcTan2(Y, X), GetLinkPen);
 end;
 
 function TGenericChartMarks.GetDistanceToCenter: Boolean;
@@ -807,6 +837,13 @@ end;
 procedure TGenericChartMarks.SetAdditionalAngle(AAngle: Double);
 begin
   FAdditionalAngle := AAngle;
+end;
+
+procedure TGenericChartMarks.SetArrow(AValue: TChartArrow);
+begin
+  if FArrow = AValue then exit;
+  FArrow.Assign(AValue);
+  StyleChanged(Self);
 end;
 
 procedure TGenericChartMarks.SetAttachment(AValue: TChartMarkAttachment);
