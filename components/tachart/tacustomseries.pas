@@ -603,7 +603,8 @@ end;
 procedure TChartSeries.AfterAdd;
 begin
   inherited;
-  FMarks.SetOwner(FChart);
+  Marks.SetOwner(FChart);
+  Marks.Arrow.SetOwner(FChart);
 end;
 
 procedure TChartSeries.AfterDraw;
