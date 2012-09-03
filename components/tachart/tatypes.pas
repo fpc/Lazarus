@@ -1216,6 +1216,7 @@ procedure TChartArrow.Assign(ASource: TPersistent);
 begin
   if ASource is TChartArrow then
     with TChartArrow(ASource) do begin
+      Self.FBaseLength := FBaseLength;
       Self.FLength := FLength;
       Self.FWidth := FWidth;
     end;
