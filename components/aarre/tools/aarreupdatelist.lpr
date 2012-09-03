@@ -185,7 +185,7 @@ var
   Application: TAarreUpdateList;
 begin
   Application:=TAarreUpdateList.Create(nil);
-  Application.Title:='Aaree update list';
+  Application.Title:='Aarre update list';
   Application.Run;
   Application.Free;
 end.

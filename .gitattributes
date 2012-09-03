@@ -181,6 +181,7 @@ components/README.txt svneol=native#text/plain
 components/aarre/src/aarrebase.lpk svneol=native#text/plain
 components/aarre/src/aarrebase.pas svneol=native#text/plain
 components/aarre/src/aarrepkglist.pas svneol=native#text/plain
+components/aarre/tools/README.txt svneol=native#text/plain
 components/aarre/tools/aarreupdatelist.lpi svneol=native#text/plain
 components/aarre/tools/aarreupdatelist.lpr svneol=native#text/plain
 components/activex/LazActiveX.lpk svneol=native#text/plain
