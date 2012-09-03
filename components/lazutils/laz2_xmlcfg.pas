@@ -47,6 +47,7 @@ type
     FFilename: String;
     FReadFlags: TXMLReaderFlags;
     FWriteFlags: TXMLWriterFlags;
+    procedure CreateConfigNode;
     procedure SetFilename(const AFilename: String);
   protected
     doc: TXMLDocument;
@@ -198,6 +199,8 @@ end;
 
 procedure TXMLConfig.WriteToStream(s: TStream);
 begin
+  if Doc=nil then
+    CreateConfigNode;
   Laz2_XMLWrite.WriteXMLFile(Doc,s,WriteFlags);
 end;
 
@@ -210,9 +213,11 @@ begin
   //CheckHeapWrtMemCnt('TXMLConfig.GetValue A '+APath);
   Result:=ADefault;
 
+  // skip root
   StartPos:=length(APath)+1;
   while (StartPos>1) and (APath[StartPos-1]<>'/') do dec(StartPos);
   if StartPos>length(APath) then exit;
+  // find sub node
   Node:=InternalFindNode(APath,StartPos-1);
   if Node=nil then
     exit;
@@ -264,6 +269,8 @@ begin
   StartPos:=length(APath)+1;
   while (StartPos>1) and (APath[StartPos-1]<>'/') do dec(StartPos);
   if StartPos>length(APath) then exit;
+  if Doc=nil then
+    CreateConfigNode;
   Node:=InternalFindNode(APath,StartPos-1,true);
   if Node=nil then
     exit;
@@ -558,7 +565,6 @@ end;
 
 procedure TXMLConfig.SetFilename(const AFilename: String);
 var
-  cfg: TDOMElement;
   ms: TMemoryStream;
 begin
   {$IFDEF MEM_CHECK}CheckHeapWrtMemCnt('TXMLConfig.SetFilename A '+AFilename);{$ENDIF}
@@ -590,16 +596,22 @@ begin
     end;
   end;
 
+  CreateConfigNode;
+  {$IFDEF MEM_CHECK}CheckHeapWrtMemCnt('TXMLConfig.SetFilename END');{$ENDIF}
+end;
+
+procedure TXMLConfig.CreateConfigNode;
+var
+  cfg: TDOMElement;
+begin
   if not Assigned(doc) then
     doc := TXMLDocument.Create;
 
   cfg :=TDOMElement(doc.FindNode('CONFIG'));
-  //debugln(['TXMLConfig.SetFilename cfg=',DbgSName(cfg),' doc=',DbgSName(doc)]);
   if not Assigned(cfg) then begin
     cfg := doc.CreateElement('CONFIG');
     doc.AppendChild(cfg);
   end;
-  {$IFDEF MEM_CHECK}CheckHeapWrtMemCnt('TXMLConfig.SetFilename END');{$ENDIF}
 end;
 
 { TRttiXMLConfig }
