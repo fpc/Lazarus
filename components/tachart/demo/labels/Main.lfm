@@ -1,5 +1,5 @@
 object Form1: TForm1
-  Left = 1326
+  Left = 1160
   Height = 414
   Top = 177
   Width = 496
@@ -60,6 +60,10 @@ object Form1: TForm1
         Align = alClient
         ParentColor = False
         object Chart1BarSeries1: TBarSeries
+          Marks.Arrow.BaseLength = 3
+          Marks.Arrow.Length = 9
+          Marks.Arrow.Visible = True
+          Marks.Arrow.Width = 4
           Marks.Format = '%1:.2f%%'
           Marks.Style = smsPercent
           BarBrush.Color = clRed
@@ -156,17 +160,17 @@ object Form1: TForm1
       end
       object lblAxisAngle: TLabel
         Left = 6
-        Height = 14
+        Height = 13
         Top = 8
-        Width = 21
+        Width = 20
         Caption = 'Axis'
         ParentColor = False
       end
       object lblSeriesAngle: TLabel
         Left = 98
-        Height = 14
+        Height = 13
         Top = 8
-        Width = 30
+        Width = 29
         Caption = 'Series'
         ParentColor = False
       end
@@ -183,9 +187,9 @@ object Form1: TForm1
       end
       object lblTitleAngle: TLabel
         Left = 202
-        Height = 14
+        Height = 13
         Top = 8
-        Width = 21
+        Width = 20
         Caption = 'Title'
         ParentColor = False
       end
