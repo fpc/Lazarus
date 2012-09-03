@@ -623,10 +623,14 @@ const
   LazTiffSoftware = LazTiffExtraPrefix + 'Software';
 
 type
+  {$IF FPC_FULLVERSION<20601}
+  {$DEFINE OldTiffCreateImageHook}
+  {$ENDIF}
+
   TLazReaderTiff = class(TFPReaderTiff, ILazImageReader)
   private
     FUpdateDescription: Boolean;
-    {$IF FPC_FULLVERSION<20701}
+    {$IFDEF OldTiffCreateImageHook}
     // the OnCreateImage event is "abused" to update the description after the
     // format and before the image is read
     FOrgEvent: TTiffCreateCompatibleImgEvent;
@@ -5963,7 +5967,7 @@ end;
 
 { TLazReaderTiff }
 
-{$IF FPC_FULLVERSION<20701}
+{$IFDEF OldTiffCreateImageHook}
 procedure TLazReaderTiff.CreateImageHook(Sender: TFPReaderTiff; var NewImage: TFPCustomImage);
 begin
   if Assigned(FOrgEvent) then FOrgEvent(Sender, NewImage);
@@ -5973,12 +5977,12 @@ end;
 {$ENDIF}
 
 procedure TLazReaderTiff.DoCreateImage(
-  ImgFileDir: {$IF FPC_FULLVERSION<20701}TTiffIDF{$ELSE}TTiffIFD{$ENDIF});
+  ImgFileDir: {$IFDEF OldTiffCreateImageHook}TTiffIDF{$ELSE}TTiffIFD{$ENDIF});
 var
   Desc: TRawImageDescription;
   IsAlpha, IsGray: Boolean;
 begin
-  {$IF FPC_FULLVERSION>=20701}
+  {$IFNDEF OldTiffCreateImageHook}
   inherited;
   {$ENDIF}
 
@@ -6053,7 +6057,7 @@ end;
 
 procedure TLazReaderTiff.InternalRead(Str: TStream; Img: TFPCustomImage);
 begin
-  {$IF FPC_FULLVERSION<20701}
+  {$IFDEF OldTiffCreateImageHook}
   FOrgEvent := OnCreateImage;
   OnCreateImage := @CreateImageHook;
   inherited InternalRead(Str, Img);
