@@ -6136,7 +6136,16 @@ begin
   FGetLineSymbolsCmdObj.OnExecuted := @DoGetLineSymbolsFinished;
   FGetLineSymbolsCmdObj.OnDestroy   := @DoGetLineSymbolsDestroyed;
   FGetLineSymbolsCmdObj.Priority := GDCMD_PRIOR_LINE_INFO;
-  TGDBMIDebugger(Debugger).QueueCommand(FGetLineSymbolsCmdObj);
+  (* TGDBMIDebugger(Debugger).FCommandQueueExecLock > 0
+     Force queue, if locked. This will set the RunLevel
+     This can be called in AsyncCAll (TApplication), while in QueueExecuteLock (this does not run on unlock)
+     Without ForceQueue, the queue is virtually locked until the current command finishes.
+     But ExecCommand must be able to unlock
+     Reproduce: Trigger Exception in app startup (lfm loading). Stack is not searched.
+  *)
+  TGDBMIDebugger(Debugger).QueueCommand(FGetLineSymbolsCmdObj,
+                                        TGDBMIDebugger(Debugger).FCommandQueueExecLock > 0
+                                       );
   (* DoEvaluationFinished may be called immediately at this point *)
 end;
 
@@ -10995,7 +11004,7 @@ end;
 
 procedure TGDBMIDebuggerCommand.ProcessFrame(const ALocation: TDBGLocationRec);
 begin
-  FTheDebugger.DoCurrent(ALocation);
+  FTheDebugger.DoCurrent(ALocation); // TODO: only selected callers
   FTheDebugger.FCurrentLocation := ALocation;
 end;
 
