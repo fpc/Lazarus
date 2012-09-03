@@ -57,9 +57,6 @@ type
     FProject: TProject;
     FShowSession: boolean;
     FSwitchingMode: boolean;
-    fModeActiveCol: integer;
-    fModeInSessionCol: integer;
-    fModeNameCol: integer;
     procedure UpdateMacrosControls;
     function GetAllIdeMacros: TStrings;
     procedure CleanMacrosGrid;
