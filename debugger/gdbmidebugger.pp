@@ -4310,11 +4310,74 @@ function TGDBMIDebuggerCommandStartDebugging.DoExecute: Boolean;
     //Reason := List.Values['reason'];
     //if Reason = 'breakpoint-hit'
 
+
+    (* *** Find the PID *** *)
+
+    (* Try GDB output. Some of output after the -exec-run.
+
+       Mac GDB 6.3.5
+         ~"[Switching to process 12345 local thread 0x0123]\n"
+
+       FreeBSD 9.0 GDB 6.1 (modified ?, supplied by FreeBSD)
+       PID is not equal to LWP.
+         [New LWP 100229]
+         [New Thread 807407400 (LWP 100229/project1)]
+         [Switching to Thread 807407400 (LWP 100229/project1)]
+
+       Somme linux, GDB 7.1
+       Win GDB 7.0
+         =thread-group-created,id="2125"
+         =thread-created,id="1",group-id="2125"
+         ~"[New Thread 9280.0x24e4]\n"                     // This line is Win only (or gdb 7.0?)
+         ^running
+         *running,thread-id="all"
+         (gdb)
+
+
+       Win GDB 7.4
+       FreeBSD 9.0 GDB 7.3 (from ports)
+         =thread-group-started,id="i1",pid="8876"
+         =thread-created,id="1",group-id="i1"
+         ~"[New Thread 8876.0x21c0]\n"                     // This line is Win only (or gdb 7.0?)
+         ^running
+         *running,thread-id="all"
+         (gdb)
+
+       FreeBSD 9.0 GDB 7.3 (from ports) CONTINUED (LWP is not useable
+         =thread-created,id="1",group-id="i1"
+         ~"[New LWP 100073]\n"
+         *running,thread-id="1"
+         =thread-created,id="2",group-id="i1"
+         ~"[New Thread 807407400 (LWP 100073)]\n"
+         =thread-exited,id="1",group-id="i1"
+         ~"[Switching to Thread 807407400 (LWP 100073)]\n"
+
+    *)
+    s := GetPart(['=thread-group-started,'], [LineEnding], rval, True, False);
+    if s <> '' then
+      s := GetPart(['pid="'], ['"'], s, True, False);
+    if s <> '' then begin
+      Result := StrToIntDef(s, 0);
+      if Result <> 0 then exit;
+    end;
+
     s := GetPart(['process '], [' local', ']'], rval, True);
     Result := StrToIntDef(s, 0);
     if Result <> 0 then exit;
 
-    // try to find PID (if not already found)
+    (* PID via "info program"
+
+       Somme linux, gdb 7.1
+         ~"\tUsing the running image of child Thread 0xb7fd8820 (LWP 2125).\n"
+
+       On FreeBSD LWP may differ from PID
+       FreeBSD 9.0 GDB 6.1 (modified ?, supplied by FreeBSD)
+       PID is not equal to LWP.
+         Using the running image of child Thread 807407400 (LWP 100229/project1).
+
+       Win GDB 7.4
+         ~"\tUsing the running image of child Thread 8876.0x21c0.\n"
+*)
     if ExecuteCommand('info program', [], R, [cfCheckState])
     then begin
       s := GetPart(['child process ', 'child thread ', 'lwp '], [' ', '.', ')'],
@@ -10250,7 +10313,7 @@ var
     t: TThreadEntry;
   begin
     S := GetPart('=', ',', Line, False, False);
-    x := StringCase(S, ['thread-created', 'thread-exited']);
+    x := StringCase(S, ['thread-created', 'thread-exited', 'thread-group-started']);
     case x of // thread-group-exited // thread-group-added,id="i1"
       0,1: begin
           i := StrToIntDef(GetPart(',id="', '"', Line, False, False), -1);
@@ -10279,6 +10342,11 @@ var
             end;
             FTheDebugger.Threads.Changed;
           end;
+        end;
+      2: begin  // thread-group-started // needed in RunToMain
+          // Todo, store in seperate field
+          if self is TGDBMIDebuggerCommandStartDebugging then
+            FLogWarnings := FLogWarnings + Line + LineEnding;
         end;
     end;
 
