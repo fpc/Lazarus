@@ -31,9 +31,9 @@ type
     clrFontColor: TColorButton;
     clrPenColor: TColorButton;
     ctDist: TChartToolset;
-    ctDistDataPointCrosshairTool1: TDataPointCrosshairTool;
-    ctDistDataPointDistanceTool1: TDataPointDistanceTool;
-    ctDistDataPointDistanceTool2: TDataPointDistanceTool;
+    ctCrosshair: TDataPointCrosshairTool;
+    ctDistance1: TDataPointDistanceTool;
+    ctDistance2: TDataPointDistanceTool;
     edEndbarLength: TSpinEdit;
     lblEndBarLength: TLabel;
     mDistanceText: TMemo;
@@ -54,8 +54,8 @@ type
     procedure clrBackgroundColorColorChanged(Sender: TObject);
     procedure clrFontColorColorChanged(Sender: TObject);
     procedure clrPenColorColorChanged(Sender: TObject);
-    procedure ctDistDataPointCrosshairTool1Draw(ASender: TDataPointCrosshairTool);
-    procedure ctDistDataPointDistanceTool1Measure(
+    procedure ctCrosshairDraw(ASender: TDataPointCrosshairTool);
+    procedure ctDistance1Measure(
       ASender: TDataPointDistanceTool);
     procedure edEndbarLengthChange(Sender: TObject);
     procedure FormCreate(Sender: TObject);
@@ -98,8 +98,8 @@ end;
 
 procedure TForm1.cbShowLabelClick(Sender: TObject);
 begin
-  ctDistDataPointDistanceTool1.Marks.Visible := cbShowLabel.Checked;
-  ctDistDataPointDistanceTool2.Marks.Visible := cbShowLabel.Checked;
+  ctDistance1.Marks.Visible := cbShowLabel.Checked;
+  ctDistance2.Marks.Visible := cbShowLabel.Checked;
   UpdateButtons;
 end;
 
@@ -110,18 +110,18 @@ end;
 
 procedure TForm1.clrFontColorColorChanged(Sender: TObject);
 begin
-  ctDistDataPointDistanceTool1.Marks.LabelFont.Color := clrFontColor.ButtonColor;
-  ctDistDataPointDistanceTool2.Marks.LabelFont.Color := clrFontColor.ButtonColor;
+  ctDistance1.Marks.LabelFont.Color := clrFontColor.ButtonColor;
+  ctDistance2.Marks.LabelFont.Color := clrFontColor.ButtonColor;
 end;
 
 procedure TForm1.clrPenColorColorChanged(Sender: TObject);
 begin
-  ctDistDataPointDistanceTool1.LinePen.Color := clrPenColor.ButtonColor;
-  ctDistDataPointDistanceTool2.LinePen.Color := clrPenColor.ButtonColor;
-  ctDistDataPointCrosshairTool1.CrosshairPen.Color := clrPenColor.ButtonColor;
+  ctDistance1.LinePen.Color := clrPenColor.ButtonColor;
+  ctDistance2.LinePen.Color := clrPenColor.ButtonColor;
+  ctCrosshair.CrosshairPen.Color := clrPenColor.ButtonColor;
 end;
 
-procedure TForm1.ctDistDataPointCrosshairTool1Draw(
+procedure TForm1.ctCrosshairDraw(
   ASender: TDataPointCrosshairTool);
 var
   ser: TChartSeries;
@@ -134,7 +134,7 @@ begin
     Statusbar1.SimpleText := '';
 end;
 
-procedure TForm1.ctDistDataPointDistanceTool1Measure(
+procedure TForm1.ctDistance1Measure(
   ASender: TDataPointDistanceTool);
 const
   DIST_TEXT: array [TChartDistanceMode] of String = ('', 'x ', 'y ');
@@ -151,8 +151,8 @@ end;
 
 procedure TForm1.edEndbarLengthChange(Sender: TObject);
 begin
-  ctDistDataPointDistanceTool1.PointerStart.VertSize := edEndbarLength.Value;
-  ctDistDataPointDistanceTool1.PointerEnd.VertSize := edEndbarLength.Value;
+  ctDistance1.PointerStart.VertSize := edEndbarLength.Value;
+  ctDistance1.PointerEnd.VertSize := edEndbarLength.Value;
 end;
 
 procedure TForm1.FormCreate(Sender: TObject);
@@ -171,60 +171,62 @@ begin
   s := mDistanceText.Lines.Text;
   try
     Format(s, [1.0, 1.0]);
-    ctDistDataPointDistanceTool1.Marks.Format := s;
-    ctDistDataPointDistanceTool2.Marks.Format := s;
+    ctDistance1.Marks.Format := s;
+    ctDistance2.Marks.Format := s;
   except
   end;
 end;
 
 procedure TForm1.rgDataPointModeClick(Sender: TObject);
 begin
-  with ctDistDataPointDistanceTool1 do begin
-    DataPointMode := TDataPointDistanceTool.TDataPointMode(rgDataPointMode.ItemIndex);
-    ctDistDataPointDistanceTool2.DataPointMode := DataPointMode;
+  with ctDistance1 do begin
+    DataPointModeStart := TDataPointDistanceTool.TDataPointMode(rgDataPointMode.ItemIndex);
+    DataPointModeEnd := DataPointModeStart;
+    ctDistance2.DataPointModeStart := DataPointModeStart;
+    ctDistance2.DataPointModeEnd := DataPointModeStart;
   end;
   UpdateButtons;
 end;
 
 procedure TForm1.rgDrawingModeClick(Sender: TObject);
 begin
-  ctDistDataPointDistanceTool1.DrawingMode := TChartToolDrawingMode(rgDrawingMode.ItemIndex);
-  ctDistDataPointDistanceTool2.DrawingMode := TChartToolDrawingMode(rgDrawingMode.ItemIndex);
-  ctDistDataPointCrosshairTool1.DrawingMode := TChartToolDrawingMode(rgDrawingMode.ItemIndex);
+  ctDistance1.DrawingMode := TChartToolDrawingMode(rgDrawingMode.ItemIndex);
+  ctDistance2.DrawingMode := TChartToolDrawingMode(rgDrawingMode.ItemIndex);
+  ctCrosshair.DrawingMode := TChartToolDrawingMode(rgDrawingMode.ItemIndex);
   UpdateButtons;
 end;
 
 procedure TForm1.rgMeasureModeClick(Sender: TObject);
 begin
-  ctDistDataPointDistanceTool1.MeasureMode := TChartDistanceMode(rgMeasureMode.ItemIndex);
-  ctDistDataPointDistanceTool2.MeasureMode := TChartDistanceMode(rgMeasureMode.ItemIndex);
+  ctDistance1.MeasureMode := TChartDistanceMode(rgMeasureMode.ItemIndex);
+  ctDistance2.MeasureMode := TChartDistanceMode(rgMeasureMode.ItemIndex);
 end;
 
 procedure TForm1.rgSnapModeClick(Sender: TObject);
 begin
-  ctDistDataPointDistanceTool1.DistanceMode := TChartDistanceMode(rgSnapMode.ItemIndex);
-  ctDistDataPointDistanceTool2.DistanceMode := TChartDistanceMode(rgSnapMode.ItemIndex);
-  ctDistDataPointCrosshairTool1.DistanceMode := TChartDistanceMode(rgSnapMode.ItemIndex);
+  ctDistance1.DistanceMode := TChartDistanceMode(rgSnapMode.ItemIndex);
+  ctDistance2.DistanceMode := TChartDistanceMode(rgSnapMode.ItemIndex);
+  ctCrosshair.DistanceMode := TChartDistanceMode(rgSnapMode.ItemIndex);
 end;
 
 procedure TForm1.SwitchOptions(
   AOptions: TDataPointDistanceTool.TOptions; AOn: Boolean);
 begin
-  with ctDistDataPointDistanceTool1 do begin
+  with ctDistance1 do begin
     if AOn then
       Options := Options + AOptions
     else
       Options := Options - AOptions;
-    ctDistDataPointDistanceTool2.Options := Options;
+    ctDistance2.Options := Options;
   end;
 end;
 
 procedure TForm1.UpdateButtons;
 begin
-  clrPenColor.Enabled := ctDistDataPointDistanceTool1.DrawingMode=tdmNormal;
-  clrFontColor.Enabled := (ctDistDataPointDistanceTool1.DrawingMode=tdmNormal)
-    and ctDistDataPointDistanceTool1.Marks.Visible;
-  rgSnapMode.Enabled := ctDistDataPointDistanceTool1.DataPointMode <> dpmFree;
+  clrPenColor.Enabled := ctDistance1.DrawingMode=tdmNormal;
+  clrFontColor.Enabled := (ctDistance1.DrawingMode=tdmNormal)
+    and ctDistance1.Marks.Visible;
+  rgSnapMode.Enabled := ctDistance1.DataPointModeStart <> dpmFree;
 end;
 
 end.
