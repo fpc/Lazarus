@@ -31,7 +31,7 @@ var
   D, T: TDateTime;
   S: String;
   YY, MM, DD, HH, NN, SS: Integer;
-  {$IF FPC_FULLVERSION>=20701}
+  {$IF FPC_FULLVERSION>=20601}
   IFD: TTiffIFD;
   {$ELSE}
   IFD: TTiffIDF;
