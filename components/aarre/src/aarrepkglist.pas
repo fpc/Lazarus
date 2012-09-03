@@ -34,7 +34,7 @@ unit AarrePkgList;
 interface
 
 uses
-  Classes, SysUtils, Laz2_XMLCfg, laz2_DOM, LazLogger, laz2_XMLWrite;
+  Classes, SysUtils, Laz2_XMLCfg, laz2_DOM, LazLogger, FileProcs;
 
 type
   TAPackageType = (
@@ -121,11 +121,14 @@ type
   private
     FAuthor: String;
     FDescription: String;
+    FIncPath: string;
     FLicense: String;
     FLPKFilename: string;
     FName: string;
     FPackageType: TAPackageType;
     FDependencies: TAPkgDependencies;
+    FSourcesPath: string;
+    FUnitPath: string;
     FVersion: TAPkgVersion;
     procedure SetLPKFilename(AValue: string);
     procedure SetName(AValue: string);
@@ -136,6 +139,9 @@ type
     procedure Load(XML: TXMLConfig; Path: string); virtual;
     procedure Save(XML: TXMLConfig; Path: string); virtual;
     procedure LoadLPK(LPKFilename: string);
+    procedure UpdateSourcesPath;
+
+    // properties saved to packages.gz
     property Name: string read FName write SetName;
     property Version: TAPkgVersion read FVersion;
     property PackageType: TAPackageType read FPackageType write FPackageType;
@@ -145,6 +151,11 @@ type
 
     property LPKFilename: string read FLPKFilename write SetLPKFilename;
     property Dependencies: TAPkgDependencies read FDependencies;
+
+    // properties not saved in packages.gz
+    property UnitPath: string read FUnitPath write FUnitPath;
+    property IncPath: string read FIncPath write FIncPath;
+    property SourcesPath: string read FSourcesPath write FSourcesPath;
   end;
 
   { TAarrePkgList }
@@ -386,16 +397,58 @@ begin
       Dependencies.Add(PkgDependency);
     end;
 
+    UnitPath:=xml.GetValue(Path+'CompilerOptions/SearchPaths/UnitPath/Value','');
+    IncPath:=xml.GetValue(Path+'CompilerOptions/SearchPaths/IncludePath/Value','');
+
     DebugLn(['TLPackage.Load Name="',Name,'"',
       ' Type=',APackageTypeIdents[PackageType],
       ' Author="',Author,'"',
       ' Description="',Description,'"',
       ' License="',License,'"',
-      ' Version="',Version.AsString,'"'
+      ' Version="',Version.AsString,'"',
+      ' UnitPath="',UnitPath,'"',
+      ' IncPath="',IncPath,'"'
       ]);
 
   finally
     xml.Free;
+  end;
+end;
+
+procedure TAarrePkgListItem.UpdateSourcesPath;
+var
+  Path: String;
+  p: Integer;
+  CurPath: String;
+  MacroPos: Integer;
+  NewPath: String;
+begin
+  Path:=UnitPath+';'+IncPath;
+  NewPath:='';
+  p:=1;
+  while p<=length(Path) do begin
+    CurPath:=TrimFilename(SetDirSeparators(GetNextDelimitedItem(Path,';',p)));
+    if CurPath='' then continue;
+    MacroPos:=1;
+    while (MacroPos<length(CurPath)) do begin
+      if CurPath[MacroPos]='$' then begin
+        if CurPath[MacroPos+1]='$' then
+          // $$ not a macro
+          inc(MacroPos,2)
+        else begin
+          // macro found, e.g. lib/prefix$(TargetOS)
+          // => keep only path without macros, e.g. lib
+          while (MacroPos>1) and (CurPath[MacroPos]<>PathDelim) do
+            dec(MacroPos);
+          Delete(CurPath,MacroPos,length(CurPath));
+        end;
+      end;
+      inc(MacroPos);
+    end;
+    if FindPathInSearchPath(PChar(CurPath),length(CurPath),
+      PChar(NewPath),length(NewPath))=nil
+    then;
+      NewPath+=';'+CurPath;
   end;
 end;
 
@@ -464,7 +517,6 @@ begin
   xml:=TXMLConfig.Create(nil);
   try
     Save(XML,'aarre/');
-    debugln(['TAarrePkgList.SaveToStream TTT1']);
     xml.WriteToStream(s);
   finally
     xml.Free;
