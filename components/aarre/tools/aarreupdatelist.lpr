@@ -100,7 +100,6 @@ begin
   end;
 
   ScanDirectory(Directory);
-
   WriteLn(List.AsString);
 
   // stop program loop

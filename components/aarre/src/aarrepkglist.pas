@@ -317,7 +317,7 @@ end;
 destructor TAarrePkgListItem.Destroy;
 begin
   Clear;
-  FreeAndNil(FDescription);
+  FreeAndNil(FDependencies);
   FreeAndNil(FVersion);
   inherited Destroy;
 end;
@@ -369,6 +369,8 @@ begin
     if FileVersion=0 then
       raise Exception.Create('no file version');
     Name:=xml.GetValue(Path+'Name/Value','');
+    if not IsValidIdent(Name) then
+      raise Exception.Create('invalid name ');
     PackageType:=APackageTypeIdentToType(xml.GetValue(Path+'Type/Value',
                                             APackageTypeIdents[DefaultPackageType]));
     Author:=xml.GetValue(Path+'Author/Value','');
@@ -420,7 +422,6 @@ procedure TAarrePkgList.Clear;
 var
   i: Integer;
 begin
-  debugln(['TAarrePkgList.Clear ',Count]);
   for i:=Count-1 downto 0 do
     Delete(i);
 end;
@@ -462,7 +463,8 @@ var
 begin
   xml:=TXMLConfig.Create(nil);
   try
-    Save(XML,'aarre');
+    Save(XML,'aarre/');
+    debugln(['TAarrePkgList.SaveToStream TTT1']);
     xml.WriteToStream(s);
   finally
     xml.Free;
@@ -476,7 +478,7 @@ begin
   xml:=TXMLConfig.Create(nil);
   try
     xml.ReadFromStream(s);
-    Load(XML,'aarre');
+    Load(XML,'aarre/');
   finally
     xml.Free;
   end;
@@ -486,6 +488,7 @@ function TAarrePkgList.AsString: string;
 var
   ms: TMemoryStream;
 begin
+  Result:='';
   ms:=TMemoryStream.Create;
   try
     SaveToStream(ms);
