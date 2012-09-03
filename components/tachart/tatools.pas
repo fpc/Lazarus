@@ -143,6 +143,7 @@ type
 
   TChartToolset = class(TBasicChartToolset)
   strict private
+    FDispatchedShiftState: TShiftState;
     FTools: TChartTools;
     function GetItem(AIndex: Integer): TChartTool;
   private
@@ -160,6 +161,7 @@ type
       AChart: TChart; AEventId: TChartToolEventId;
       AShift: TShiftState; APoint: TPoint): Boolean; override;
     procedure Draw(AChart: TChart; ADrawer: IChartDrawer); override;
+    property DispatchedShiftState: TShiftState read FDispatchedShiftState;
     property Item[AIndex: Integer]: TChartTool read GetItem; default;
   published
     property Tools: TChartTools read FTools;
@@ -875,6 +877,7 @@ begin
     if (i <> ai) and (Item[i].Shift = AShift) then
       AddCandidate(i);
 
+  FDispatchedShiftState := AShift;
   FIsHandled := false;
   for i := 0 to candidateCount - 1 do begin
     candidates[i].Dispatch(AChart, AEventId, APoint);
