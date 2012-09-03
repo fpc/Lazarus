@@ -60,7 +60,8 @@ type
   strict private
     // Workaround for FPC 2.6 bug. Remove after migration to 2.8.
     FAnchors: array of TObject;
-    FDataPointMode: TDataPointMode;
+    FDataPointModeEnd: TDataPointMode;
+    FDataPointModeStart: TDataPointMode;
     FLastChart: TChart;
     FMarks: TDataPointDistanceToolMarks;
     FMeasureMode: TChartDistanceMode;
@@ -80,7 +81,7 @@ type
   strict protected
     procedure DoDraw; override;
     function FindRef(
-      APoint: TPoint; ADest: TDataPointTool.TPointRef;
+      APoint: TPoint; AMode: TDataPointMode; ADest: TDataPointTool.TPointRef;
       AOtherEndSeries: TBasicChartSeries): Boolean;
     function GetDistanceText: String;
     function SameTransformations(ASeries1, ASeries2: TBasicChartSeries): Boolean;
@@ -103,8 +104,10 @@ type
     property GrabRadius default 20;
     property LinePen: TChartPen read FPen write SetPen;
   published
-    property DataPointMode: TDataPointMode
-      read FDataPointMode write FDataPointMode default dpmFree;
+    property DataPointModeEnd: TDataPointMode
+      read FDataPointModeEnd write FDataPointModeEnd default dpmFree;
+    property DataPointModeStart: TDataPointMode
+      read FDataPointModeStart write FDataPointModeStart default dpmFree;
     property Marks: TDataPointDistanceToolMarks read FMarks write SetMarks;
     property MeasureMode: TChartDistanceMode
       read FMeasureMode write FMeasureMode default cdmXY;
@@ -258,11 +261,11 @@ begin
 end;
 
 function TDataPointDistanceTool.FindRef(
-  APoint: TPoint; ADest: TDataPointTool.TPointRef;
+  APoint: TPoint; AMode: TDataPointMode; ADest: TDataPointTool.TPointRef;
   AOtherEndSeries: TBasicChartSeries): Boolean;
 begin
   FSeries := nil;
-  if DataPointMode in [dpmSnap, dpmLock] then begin
+  if AMode in [dpmSnap, dpmLock] then begin
     FindNearestPoint(APoint);
     ADest.FGraphPos := FNearestGraphPoint;
     ADest.FIndex := PointIndex;
@@ -272,7 +275,7 @@ begin
   ADest.FSeries := FSeries;
   if FSeries = nil then
     ADest.SetGraphPos(FChart.ImageToGraph(APoint));
-  Result := (FSeries <> nil) or (DataPointMode <> dpmLock);
+  Result := (FSeries <> nil) or (AMode <> dpmLock);
 end;
 
 // Use Marks.Format and/or OnGetDistanceText event handler to create the text
@@ -311,7 +314,7 @@ begin
   if dpdoPermanent in Options then
     DoHide;
   PointStart.FSeries := nil;
-  if FindRef(APoint, PointStart, nil) then
+  if FindRef(APoint, DataPointModeStart, PointStart, nil) then
     Activate;
   PointEnd.Assign(PointStart);
   Handled;
@@ -325,7 +328,7 @@ begin
   DoHide;
   newEnd := TPointRef.Create;
   try
-    if FindRef(APoint, newEnd, PointStart.Series) then
+    if FindRef(APoint, DataPointModeEnd, newEnd, PointStart.Series) then
       PointEnd.Assign(newEnd);
   finally
     FreeAndNil(newEnd);
