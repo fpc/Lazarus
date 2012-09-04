@@ -1627,10 +1627,6 @@ object CodeToolsDefinesEditor: TCodeToolsDefinesEditor
       object MenuItem18: TMenuItem
         Caption = '-'
       end
-      object InsertLazarusSourceTemplateMenuItem: TMenuItem
-        Caption = 'InsertLazarusSourceTemplateMenuItem'
-        OnClick = InsertLazarusSourceDefinesTemplateMenuItemClick
-      end
       object MenuItem29: TMenuItem
         Caption = '-'
       end

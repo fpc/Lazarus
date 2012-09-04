@@ -141,7 +141,6 @@ type
     InsertFPCProjectDefinesTemplateMenuItem: TMenuItem;
     InsertFPCompilerDefinesTemplateMenuItem: TMenuItem;
     InsertFPCSourceDirTemplateMenuItem: TMenuItem;
-    InsertLazarusSourceTemplateMenuItem: TMenuItem;
     InsertDelphi5CompilerDefinesTemplateMenuItem: TMenuItem;
     InsertDelphi5DirectoryTemplateMenuItem: TMenuItem;
     InsertDelphi5ProjectTemplateMenuItem: TMenuItem;
@@ -213,7 +212,6 @@ type
     procedure InsertFPCProjectDefinesTemplateMenuItemClick(Sender: TObject);
     procedure InsertFPCompilerDefinesTemplateMenuItemClick(Sender: TObject);
     procedure InsertFPCSourceDirDefinesTemplateMenuItemClick(Sender: TObject);
-    procedure InsertLazarusSourceDefinesTemplateMenuItemClick(Sender: TObject);
     procedure InsertDelphiCompilerDefinesTemplateMenuItemClick(Sender: TObject);
     procedure InsertDelphiDirectoryTemplateMenuItemClick(Sender: TObject);
     procedure InsertDelphiProjectTemplateMenuItemClick(Sender: TObject);
@@ -743,35 +741,6 @@ begin
   end;
 end;
 
-procedure TCodeToolsDefinesEditor.InsertLazarusSourceDefinesTemplateMenuItemClick
-  (Sender: TObject);
-var
-  InputFileDlg: TInputFileDialog;
-  LazTemplate: TDefineTemplate;
-begin
-  InputFileDlg:=GetInputFileDialog;
-  InputFileDlg.Macros:=Macros;
-  with InputFileDlg do begin
-    BeginUpdate;
-    Caption:=lisCodeToolsDefsCreateDefinesForLazarusDir;
-    FileCount:=1;
-
-    FileTitles[0]:=lisCodeToolsDefsLazarusDirectory;
-    FileDescs[0]:=lisCodeToolsDefsTheLazarusMainDirectory;
-    FileNames[0]:=IDEProcs.ProgramDirectory(true);
-    FileFlags[0]:=[iftDirectory,iftNotEmpty,iftMustExist];
-
-    EndUpdate;
-    if ShowModal=mrCancel then exit;
-    LazTemplate:=CreateLazarusSourceTemplate(FileNames[0],
-                               '$('+ExternalMacroStart+'LCLWidgetType)','',
-                               CodeToolsOpts);
-    if LazTemplate=nil then exit;
-    LazTemplate.Name:='Lazarus Directory ('+FileNames[0]+')';
-    InsertTemplate(LazTemplate);
-  end;
-end;
-
 procedure TCodeToolsDefinesEditor.InsertDelphiCompilerDefinesTemplateMenuItemClick
   (Sender: TObject);
 var DelphiVersion: integer;
@@ -1040,9 +1009,6 @@ begin
   InsertFPCProjectDefinesTemplateMenuItem.Caption := lisCodeToolsDefsInsertFreePascalProjectTe;
   InsertFPCompilerDefinesTemplateMenuItem.Caption := lisCodeToolsDefsInsertFreePascalCompilerT;
   InsertFPCSourceDirTemplateMenuItem.Caption := lisCodeToolsDefsInsertFreePascalSVNSource;
-
-  // lazarus templates
-  InsertLazarusSourceTemplateMenuItem.Caption := lisCodeToolsDefsInsertLazarusDirectoryTem;
 
   // Delphi 5 templates
   InsertDelphi5CompilerDefinesTemplateMenuItem.Caption := lisCodeToolsDefsInsertDelphi5CompilerTemp;
