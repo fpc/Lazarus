@@ -118,7 +118,7 @@ implementation
 
 const
   MiscOptsFilename = 'miscellaneousoptions.xml';
-  MiscOptsVersion = 2;
+  MiscOptsVersion = 3;
 
 function SortDirectionNameToType(const s: string): TSortDirection;
 begin

@@ -466,7 +466,14 @@ begin
   // Load defines, selected profiles and auto install packages.
   LoadStringList(XMLConfig,fAllDefines,Path+'AllDefines/');
   LoadStringList(XMLConfig,fSelected,Path+'SelectedProfiles/');
+
   LoadStringList(XMLConfig,fStaticAutoInstallPackages,Path+'StaticAutoInstallPackages/');
+  if FileVersion<3 then begin
+    // the IDE part of synedit was split into a new package syneditdsgn
+    fStaticAutoInstallPackages.Add('syneditdsgn');
+  end;
+
+
   // Defines to test.
   if fAllDefines.Count = 0 then begin
     fAllDefines.Add('Debug');
