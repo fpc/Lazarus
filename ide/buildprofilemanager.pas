@@ -234,7 +234,7 @@ begin
   XMLConfig.SetDeleteValue(Path+'TargetCPU/Value',TargetCPU,'');
   XMLConfig.SetDeleteValue(Path+'LCLPlatform/Value',
                            LCLPlatformDirNames[fTargetPlatform],
-                           ''); //LCLPlatformDirNames[GetDefaultLCLWidgetType]
+                           '');
   XMLConfig.SetDeleteValue(Path+'TargetDirectory/Value',
                            FTargetDirectory,DefaultTargetDirectory);
   XMLConfig.SetDeleteValue(Path+'IdeBuildMode/Value',IdeBuildModeToStr(IdeBuildMode),'');
