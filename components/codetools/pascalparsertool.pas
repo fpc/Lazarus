@@ -5109,7 +5109,7 @@ begin
             ScanRange:=lsrImplementationStart
           else if Node.Desc=ctnUsesSection then begin
             if Node.Parent.Desc=ctnImplementation then
-              ScanRange:=lsrInitializationStart
+              ScanRange:=lsrImplementationStart
             else
               ScanRange:=lsrInterfaceStart;
           end else if Node.Desc=ctnImplementation then
