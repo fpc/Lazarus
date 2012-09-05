@@ -43,7 +43,7 @@ uses
   {$IFDEF MEM_CHECK}
   MemCheck,
   {$ENDIF}
-  Classes, SysUtils, FileProcs, CodeToolsStrConsts, CodeTree, CodeAtom,
+  Classes, SysUtils, math, FileProcs, CodeToolsStrConsts, CodeTree, CodeAtom,
   KeywordFuncLists, BasicCodeTools, LinkScanner, CodeCache,
   AVL_Tree;
 
@@ -1972,11 +1972,8 @@ begin
 end;
 
 procedure TCustomCodeTool.ReadTillCommentEnd;
-var
-  EndP: PChar;
 begin
-  EndP:=FindCommentEnd(PChar(Src)+CurPos.StartPos,Scanner.NestedComments);
-  CurPos.StartPos:=EndP-PChar(Src)+1;
+  CurPos.StartPos:=FindCommentEnd(Src,CurPos.StartPos,Scanner.NestedComments);
 end;
 
 procedure TCustomCodeTool.BeginParsing(Range: TLinkScannerRange);
@@ -2796,8 +2793,10 @@ begin
         // -> here starts a comment
         SameArea.StartPos:=SameArea.EndPos;
         MoveCursorToCleanPos(SameArea.StartPos);
+        //debugln(['TCustomCodeTool.GetCleanPosInfo C "',dbgstr(Src,SameArea.StartPos,Max(3,FindCommentEnd(Src,SameArea.StartPos,Scanner.NestedComments)-SameArea.StartPos)),'"']);
         ReadTillCommentEnd;
         SameArea.EndPos:=CurPos.StartPos;
+        //debugln(['TCustomCodeTool.GetCleanPosInfo D "',dbgstr(Src,SameArea.StartPos,SameArea.EndPos-SameArea.StartPos),'"']);
         if (SameArea.StartPos=SameArea.EndPos) then
           // inconsistency: some non space and non comment between two tokens
           RaiseException('TCustomCodeTool.GetCleanPosInfo Internal Error A');
