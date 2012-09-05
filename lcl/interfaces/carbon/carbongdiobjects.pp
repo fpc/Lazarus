@@ -777,10 +777,13 @@ end;
 function TCarbonRegion.GetType: Integer;
 begin
   Result := ERROR;
-  if HIShapeIsEmpty(FShape) then Result := NULLREGION
+  if HIShapeIsEmpty(FShape) then
+    Result := NULLREGION
   else
-    if HIShapeIsRectangular(FShape) then Result := SIMPLEREGION
-    else Result := COMPLEXREGION;
+  if HIShapeIsRectangular(FShape) then
+    Result := SIMPLEREGION
+  else
+    Result := COMPLEXREGION;
 end;
 
 {------------------------------------------------------------------------------
@@ -810,30 +813,44 @@ begin
     Result := LCLType.Error
   else
   begin
-    Result := LCLType.ComplexRegion;
     if (CombineMode in [RGN_AND, RGN_OR, RGN_XOR]) and HIShapeIsEmpty(FShape) then
       CombineMode := RGN_COPY;
       
     case CombineMode of
-      RGN_AND: Shape:=HIShapeCreateIntersection(FShape, ARegion.Shape);
+      RGN_AND:
+        begin
+          Shape := HIShapeCreateIntersection(FShape, ARegion.Shape);
+          Result := GetType;
+        end;
       RGN_XOR:
       begin
         sh1 := HIShapeCreateUnion(FShape, ARegion.Shape);
         sh2 := HIShapeCreateIntersection(FShape, ARegion.Shape);
-        Shape  := HIShapeCreateDifference(sh1, sh2);
-        CFRelease(sh1); CFRelease(sh2);
+        Shape := HIShapeCreateDifference(sh1, sh2);
+        CFRelease(sh1);
+        CFRelease(sh2);
+        Result := GetType;
       end;
-      RGN_OR:   Shape:=HIShapeCreateUnion(FShape, ARegion.Shape);
+      RGN_OR:
+        begin
+          Shape := HIShapeCreateUnion(FShape, ARegion.Shape);
+          Result := GetType;
+        end;
       RGN_DIFF:
       begin
         if HIShapeIsEmpty(FShape) then
           {HIShapeCreateDifference doesn't work properly if original shape is empty}
           {to simulate "emptieness" very big shape is created }
-          Shape:=HIShapeCreateWithRect(GetCGRect(MinCoord,MinCoord,MaxSize,MaxSize)); // create clip nothing.
+          Shape := HIShapeCreateWithRect(GetCGRect(MinCoord, MinCoord, MaxSize, MaxSize)); // create clip nothing.
 
-        Shape:=HIShapeCreateDifference(FShape, ARegion.Shape);
+        Shape := HIShapeCreateDifference(FShape, ARegion.Shape);
+        Result := GetType;
       end;
-      RGN_COPY: Shape:=HIShapeCreateCopy(ARegion.Shape);
+      RGN_COPY:
+        begin
+          Shape := HIShapeCreateCopy(ARegion.Shape);
+          Result := GetType;
+        end
     else
       Result := LCLType.Error;
     end;

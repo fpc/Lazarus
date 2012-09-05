@@ -226,7 +226,7 @@ begin
   TCarbonRegion(Dest).CombineWith(TCarbonRegion(Src1), RGN_COPY);
 
   if fnCombineMode <> RGN_COPY then
-    TCarbonRegion(Dest). CombineWith(TCarbonRegion(Src2), fnCombineMode);
+    Result := TCarbonRegion(Dest).CombineWith(TCarbonRegion(Src2), fnCombineMode);
 end;
 
 {------------------------------------------------------------------------------
