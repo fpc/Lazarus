@@ -4558,6 +4558,7 @@ begin
     FTheDebugger.FRunErrorBreak.SetByAddr(Self);
 
     SetDebuggerState(dsInit); // triggers all breakpoints to be set.
+    Application.ProcessMessages; // workaround, allow source-editor to queue line info request (Async call)
     if FTheDebugger.FBreakAtMain <> nil
     then begin
       CanContinue := False;
