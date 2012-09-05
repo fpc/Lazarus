@@ -224,6 +224,87 @@ function gdk_screen_get_rgba_colormap(screen: PGdkScreen): PGdkColormap; cdecl; 
 procedure gdk_window_move_region(window: PGdkWindow ; region: PGdkRegion; dx, dy: gint);cdecl; external gdklib;
 
 type
+  _PGtkIconViewPrivate = ^_GtkIconViewPrivate; {private struct of GtkIconView, used to fix #22778}
+  _GtkIconViewPrivate = record
+    Width: Gint;
+    Height: Gint;
+    Selection_Mode: PGtkSelectionMode;
+
+    bin_window: PGdkWindow;
+    children: PGList;
+    Model: PGtkTreeModel;
+    Items: PGList;
+
+    hadjustment: PGtkAdjustment;
+    vadjustment: PGtkAdjustment;
+
+    layout_idle_id: guint;
+
+    doing_rubberband: gboolean;
+    rubberband_x1: gint;
+    rubberband_y1: gint;
+    rubberband_x2: gint;
+    rubberband_y2: gint;
+    scroll_timeout_id: guint;
+    scroll_value_diff: gint;
+    event_last_x: gint;
+    event_last_y: gint;
+    anchor_item: Pointer; // PGtkIconViewItem;
+    cursor_item: Pointer; // PGtkIconViewItem;
+    edited_item: Pointer; // PGtkIconViewItem;
+    editable_item: Pointer; // PGtkCellEditable;
+    last_single_clicked: Pointer; // PGtkIconViewItem;
+
+    cell_list: PGList;
+    n_cells: guint;
+    cursor_cell: gint;
+
+
+    orientation: TGtkOrientation;
+
+    columns: gint;
+    item_width: gint;
+    spacing: gint;
+    row_spacing: gint;
+    column_spacing: gint;
+    margin: gint;
+    item_padding: gint;
+    text_column: gint;
+    markup_column: gint;
+    pixbuf_column: gint;
+    pixbuf_cell: gint;
+    text_cell: gint;
+    tooltip_column: gint;
+
+    // * Drag-and-drop. */
+    start_button_mask: TGdkModifierType;
+    pressed_button: gint;
+    press_start_x: gint;
+    press_start_y: gint;
+
+    source_actions: TGdkDragAction;
+    dest_actions: TGdkDragAction;
+
+    dest_item: PGtkTreeRowReference;
+    dest_pos: guint; // TGtkIconViewDropPosition;
+
+    // * scroll to */
+    scroll_to_path: PGtkTreeRowReference;
+    scroll_to_row_align: gfloat;
+    scroll_to_col_align: gfloat;
+    scroll_to_use_align: guint;
+
+    source_set: guint;
+    dest_set: guint;
+    reorderable: guint;
+    empty_view_drop: guint;
+
+    ctrl_pressed: guint;
+    shift_pressed: guint;
+
+    draw_focus: guint;
+  end;
+
   TGtkPackDirection = longint;
   
 const

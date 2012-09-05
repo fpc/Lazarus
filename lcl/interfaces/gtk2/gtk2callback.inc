@@ -2215,6 +2215,24 @@ function gtkMouseBtnRelease(widget: PGtkWidget; event : pgdkEventButton;
 var
   DesignOnlySignal: boolean;
   AForm: TCustomForm;
+
+  procedure FixListViewRubberBand;
+  var
+    Info: PWidgetInfo;
+    IconView: PGtkIconView;
+    Priv: _PGtkIconViewPrivate;
+  begin
+    Info := GetWidgetInfo(Widget);
+    IconView := PGtkIconView(Info^.CoreWidget);
+    Priv := IconView^.priv;
+
+    if Priv^.doing_rubberband then
+    begin
+      Priv^.doing_rubberband := False;
+      gtk_widget_queue_draw(Widget);
+    end;
+  end;
+
 begin
   Result := CallBackDefaultReturn;
   {$IFDEF VerboseMouseBugfix}
@@ -2235,6 +2253,15 @@ begin
   if not (csDesigning in TComponent(Data).ComponentState) then
   begin
     DesignOnlySignal := GetDesignOnlySignalFlag(Widget, dstMouseRelease);
+
+    if (TControl(Data) is TCustomListView) and
+      (TListView(Data).ViewStyle in [vsIcon, vsSmallIcon]) and
+      TListView(Data).MultiSelect then
+    begin
+      // fixed crash.See issue #22778
+      FixListViewRubberBand;
+    end;
+
     ReleaseMouseCapture;
     if DesignOnlySignal or (not ControlGetsMouseUpBefore(TControl(Data))) then
       Exit;
