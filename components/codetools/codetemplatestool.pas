@@ -262,7 +262,7 @@ begin
   Result:=false;
   ProcHead:='';
   BuildTreeAndGetCleanPos(trTillCursor,lsrEnd,CursorPos,CleanCursorPos,
-    [btSetIgnoreErrorPos,btLoadDirtySource,btCursorPosOutAllowed]);
+    [btSetIgnoreErrorPos,btCursorPosOutAllowed]);
   ANode:=FindDeepestNodeAtPos(CleanCursorPos,True);
   while (ANode<>nil) and (ANode.Desc<>ctnProcedure) do
     ANode:=ANode.Parent;

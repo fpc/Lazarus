@@ -1236,7 +1236,6 @@ begin
     {$IFDEF CTDEBUG}
     DebugLn('TFindDeclarationTool.FindDeclarationOfIdentifier A CursorPos=X',dbgs(CursorPos.X),',Y',dbgs(CursorPos.Y));
     {$ENDIF}
-    if DirtySrc<>nil then DirtySrc.Clear;
     BuildTreeAndGetCleanPos(trTillCursor,lsrEnd,CursorPos,CleanCursorPos,
                             [btSetIgnoreErrorPos]);
     {$IFDEF CTDEBUG}
@@ -1410,12 +1409,13 @@ begin
     {$IFDEF CTDEBUG}
     DebugLn('TFindDeclarationTool.FindDeclaration A CursorPos=X',dbgs(CursorPos.X),',Y',dbgs(CursorPos.Y));
     {$ENDIF}
-    if DirtySrc<>nil then DirtySrc.Clear;
     BuildTreeAndGetCleanPos(trTillCursor,lsrEnd,CursorPos,CleanCursorPos,
-                  [btSetIgnoreErrorPos,btLoadDirtySource,btCursorPosOutAllowed]);
+                  [btSetIgnoreErrorPos,btCursorPosOutAllowed]);
     {$IFDEF CTDEBUG}
     DebugLn('TFindDeclarationTool.FindDeclaration C CleanCursorPos=',dbgs(CleanCursorPos));
     {$ENDIF}
+    //debugln(['TFindDeclarationTool.FindDeclaration ',dbgtext(copy(Src,CleanCursorPos-30,30)),'|',dbgtext(copy(Src,CleanCursorPos,30))]);
+
     // find CodeTreeNode at cursor
     if (Tree.Root<>nil) and (Tree.Root.StartPos<=CleanCursorPos) then begin
       CursorNode:=BuildSubTreeAndFindDeepestNodeAtPos(CleanCursorPos,true);
@@ -1444,8 +1444,7 @@ begin
       CleanPosInFront:=1;
       CursorNode:=nil;
     end;
-    if (not IsDirtySrcValid)
-    and IsIncludeDirectiveAtPos(CleanCursorPos,CleanPosInFront,NewPos.Code)
+    if IsIncludeDirectiveAtPos(CleanCursorPos,CleanPosInFront,NewPos.Code)
     then begin
       // include directive
       //DebugLn(['TFindDeclarationTool.FindDeclaration IsIncludeDirectiveAtPos']);
@@ -1464,8 +1463,7 @@ begin
     {$IFDEF CTDEBUG}
     DebugLn('TFindDeclarationTool.FindDeclaration D CursorNode=',NodeDescriptionAsString(CursorNode.Desc),' HasChildren=',dbgs(CursorNode.FirstChild<>nil));
     {$ENDIF}
-    if (not IsDirtySrcValid)
-    and (CursorNode.Desc in [ctnUsesSection,ctnUseUnit]) then begin
+    if (CursorNode.Desc in [ctnUsesSection,ctnUseUnit]) then begin
       // in uses section
       //DebugLn(['TFindDeclarationTool.FindDeclaration IsUsesSection']);
       Result:=FindDeclarationInUsesSection(CursorNode,CleanCursorPos,
@@ -1485,19 +1483,13 @@ begin
     CheckIfCursorInPropertyNode;
     // set cursor on identifier
     MoveCursorToCleanPos(CleanCursorPos);
-    if IsDirtySrcValid then begin
-      DirtySrc.SetCursorToIdentStartEndAtPosition;
-      CursorAtIdentifier:=DirtySrc.CurPos.StartPos<DirtySrc.CurPos.EndPos;
-      IdentifierStart:=DirtySrc.GetCursorSrcPos;
-    end else begin
-      GetIdentStartEndAtPosition(Src,CleanCursorPos,
-                                 CurPos.StartPos,CurPos.EndPos);
-      CursorAtIdentifier:=CurPos.StartPos<CurPos.EndPos;
-      if CursorAtIdentifier then
-        IdentifierStart:=@Src[CurPos.StartPos]
-      else
-        IdentifierStart:=PChar(Src);
-    end;
+    GetIdentStartEndAtPosition(Src,CleanCursorPos,
+                               CurPos.StartPos,CurPos.EndPos);
+    CursorAtIdentifier:=CurPos.StartPos<CurPos.EndPos;
+    if CursorAtIdentifier then
+      IdentifierStart:=@Src[CurPos.StartPos]
+    else
+      IdentifierStart:=PChar(Src);
     if CursorAtIdentifier then begin
       // find declaration of identifier
       Params:=TFindDeclarationParams.Create;
@@ -1510,7 +1502,6 @@ begin
         if fsfSkipClassForward in SearchSmartFlags then
           Include(Params.Flags,fdfSkipClassForward);
         if not DirectSearch then begin
-          // ToDo: DirtySrc
           Result:=FindDeclarationOfIdentAtParam(Params);
         end else begin
           Include(Params.Flags,fdfIgnoreCurContextNode);
@@ -5163,9 +5154,8 @@ begin
   ActivateGlobalWriteLock;
   try
     // build code tree
-    if DirtySrc<>nil then DirtySrc.Clear;
     BuildTreeAndGetCleanPos(trTillCursor,lsrEnd,CursorPos,CleanCursorPos,
-                  [btSetIgnoreErrorPos,btLoadDirtySource,btCursorPosOutAllowed]);
+                  [btSetIgnoreErrorPos,btCursorPosOutAllowed]);
     // find CodeTreeNode at cursor
     if (Tree.Root<>nil) and (Tree.Root.StartPos<=CleanCursorPos) then
       CursorNode := BuildSubTreeAndFindDeepestNodeAtPos(CleanCursorPos, True)
@@ -5182,16 +5172,10 @@ begin
     end;
     // set cursor on identifier
     MoveCursorToCleanPos(CleanCursorPos);
-    if IsDirtySrcValid then begin
-      DirtySrc.SetCursorToIdentStartEndAtPosition;
-      if DirtySrc.CurPos.StartPos >= DirtySrc.CurPos.EndPos then Exit;
-      Identifier := DirtySrc.GetCursorSrcPos;
-    end else begin
-      GetIdentStartEndAtPosition(Src,CleanCursorPos,
-                                 CurPos.StartPos,CurPos.EndPos);
-      if CurPos.StartPos >= CurPos.EndPos then Exit;
-      Identifier := @Src[CurPos.StartPos];
-    end;
+    GetIdentStartEndAtPosition(Src,CleanCursorPos,
+                               CurPos.StartPos,CurPos.EndPos);
+    if CurPos.StartPos >= CurPos.EndPos then Exit;
+    Identifier := @Src[CurPos.StartPos];
     // find declaration of identifier
     Params := TFindDeclarationParams.Create;
     try

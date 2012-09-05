@@ -43,7 +43,7 @@ uses
   MemCheck,
   {$ENDIF}
   Classes, SysUtils, LazUTF8, LazDbgLog, LazFileCache, LazFileUtils,
-  lazutf8classes, AVL_Tree, CodeToolsStrConsts;
+  lazutf8classes, LazLogger, AVL_Tree, CodeToolsStrConsts;
 
 type
   TFPCStreamSeekType = int64;
@@ -289,6 +289,9 @@ function dbgMemRange(P: PByte; Count: integer; Width: integer = 0): string; over
 function DbgS(const i1,i2,i3,i4: integer): string; overload;
 function DbgStr(const StringWithSpecialChars: string): string; overload;
 function DbgStr(const StringWithSpecialChars: string; StartPos, Len: PtrInt): string; overload;
+function DbgText(const StringWithSpecialChars: string;
+                               KeepLines: boolean = true // true = add LineEnding for each line break
+                               ): string; overload;
 
 function MemSizeString(const s: string): PtrUInt; inline;
 function MemSizeFPList(const List: TFPList): PtrUInt; inline;
@@ -2061,15 +2064,15 @@ var
   s: String;
 begin
   Result:=StringWithSpecialChars;
-  i:=1;
-  while (i<=length(Result)) do begin
+  i:=length(Result);
+  while (i>0) do begin
     case Result[i] of
-    ' '..#126: inc(i);
+    ' '..#126: ;
     else
       s:='#'+IntToStr(ord(Result[i]));
-      Result:=copy(Result,1,i-1)+s+copy(Result,i+1,length(Result)-i);
-      inc(i,length(s));
+      ReplaceSubstring(Result,i,1,s);
     end;
+    dec(i);
   end;
 end;
 
@@ -2077,6 +2080,38 @@ function DbgStr(const StringWithSpecialChars: string; StartPos, Len: PtrInt
   ): string;
 begin
   Result:=dbgstr(copy(StringWithSpecialChars,StartPos,Len));
+end;
+
+function DbgText(const StringWithSpecialChars: string; KeepLines: boolean
+  ): string;
+var
+  i: Integer;
+  s: String;
+  LastChar: Char;
+  c: Char;
+begin
+  Result:=StringWithSpecialChars;
+  i:=1;
+  LastChar:=#0;
+  while (i<=length(Result)) do begin
+    c:=Result[i];
+    case c of
+    ' '..#126: inc(i);
+    else
+      s:='#'+IntToStr(ord(c));
+      if (c in [#10,#13]) then begin
+        if ((LastChar in [#10,#13])
+            or (i=length(Result)) or (not (Result[i+1] in [#10,#13])))
+        then begin
+          s+=LineEnding;
+          c:=#0; // line break was handled
+        end;
+      end;
+      ReplaceSubstring(Result,i,1,s);
+      inc(i,length(s));
+    end;
+    LastChar:=c;
+  end;
 end;
 
 function MemSizeString(const s: string): PtrUInt;

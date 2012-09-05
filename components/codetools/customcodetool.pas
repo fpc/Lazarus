@@ -38,7 +38,6 @@ interface
 
 { $DEFINE ShowIgnoreError}
 { $DEFINE VerboseUpdateNeeded}
-{$DEFINE ShowDirtySrc}
 
 uses
   {$IFDEF MEM_CHECK}
@@ -74,41 +73,6 @@ type
   end;
   
   
-  { TDirtySource - class to store a dirty source }
-
-  TDirtySource = class
-  public
-    CursorPos: TCodeXYPosition;
-    Src: string;
-    GapSrc: string;
-    Code: TCodeBuffer;
-    Valid: boolean;
-    CurPos: TAtomPosition;
-    StartPos: integer;
-    GapStart: integer;
-    GapEnd: integer;
-    LockCount: integer;
-    Owner: TCustomCodeTool;
-    procedure BeginUpdate;
-    procedure EndUpdate;
-    procedure SetGap(const NewCursorPos: TCodeXYPosition;
-                   NewDirtyStartPos, NewDirtyGapStart, NewDirtyGapEnd: integer);
-    constructor Create(TheOwner: TCustomCodeTool);
-    procedure Clear;
-    procedure SetCursorToIdentStartEndAtPosition;
-    function GetCursorSrcPos: PChar;
-    function IsPCharInSrc(p: PChar): boolean;
-    procedure MoveCursorToPos(APos: integer);
-    procedure MoveCursorToPos(APos: PChar);
-    function CalcMemSize: PtrUInt;
-  end;
-  
-  THybridCursorType = (
-    hcClean,
-    hcDirty
-    );
-
-
   // types for user aborts
   TOnParserProgress = function(Tool: TCustomCodeTool): boolean of object;
   TCodeTreeChangeEvent = procedure(Tool: TCustomCodeTool;
@@ -169,8 +133,6 @@ type
     procedure RaiseLastError;
     procedure DoProgress; inline;
     procedure NotifyAboutProgress;
-    // dirty/dead source
-    procedure LoadDirtySource(const CursorPos: TCodeXYPosition);
     procedure FetchScannerSource(Range: TLinkScannerRange); virtual;
     function InternalAtomIsIdentifier: boolean; inline;
   public
@@ -190,9 +152,6 @@ type
     JumpCentered: boolean;
     CursorBeyondEOL: boolean;
     
-    DirtySrc: TDirtySource;
-    HybridCursorType: THybridCursorType;
-
     ErrorPosition: TCodeXYPosition;
     ErrorNicePosition: TCodeXYPosition;// if NiceErrorPosition is set, then it is in front of ErrorPosition
 
@@ -243,7 +202,6 @@ type
     procedure BeginParsingAndGetCleanPosOLD(
         OnlyInterfaceNeeded: boolean; CursorPos: TCodeXYPosition;
         out CleanCursorPos: integer);
-    function IsDirtySrcValid: boolean;
 
     function StringIsKeyWord(const Word: string): boolean;
     
@@ -255,9 +213,7 @@ type
     procedure MoveCursorToNearestAtom(ACleanPos: integer);
     procedure MoveCursorToLastNodeAtom(ANode: TCodeTreeNode);
     function IsPCharInSrc(ACleanPos: PChar): boolean;
-    procedure MoveHybridCursorToPos(DirtyPos: PChar);
-    function GetHybridCursorStart: integer;
-    
+
     // read atoms
     procedure ReadNextAtom;
     procedure UndoReadNextAtom;
@@ -417,7 +373,6 @@ begin
   FreeAndNil(LastAtoms);
   FreeAndNil(Tree);
   FreeAndNil(KeyWordFuncList);
-  FreeAndNil(DirtySrc);
   inherited Destroy;
 end;
 
@@ -540,40 +495,6 @@ begin
   end;
 end;
 
-procedure TCustomCodeTool.LoadDirtySource(const CursorPos: TCodeXYPosition);
-// - create the DirtySrc object
-// - load the unparsed source at CursorPos
-// - find the gap bounds
-var
-  NewDirtyStartPos: integer;
-  NewDirtyGapStart: integer;
-  NewDirtyGapEnd: integer;
-  CursorInLink: Boolean;
-  BestLinkIndex: Integer;
-  BestLink: TSourceLink;
-begin
-  DebugLn('TCustomCodeTool.LoadDirtySource X=',dbgs(CursorPos.X),' Y=',dbgs(CursorPos.Y),
-    ' ',ExtractFilename(CursorPos.Code.Filename));
-  if DirtySrc=nil then DirtySrc:=TDirtySource.Create(Self);
-  CursorPos.Code.LineColToPosition(CursorPos.Y,CursorPos.X,NewDirtyStartPos);
-  if NewDirtyStartPos<1 then
-    RaiseCatchableException('NewDirtyStartPos<1');
-  CursorInLink:=false;
-  BestLinkIndex:=Scanner.LinkIndexNearCursorPos(NewDirtyStartPos,
-                                                CursorPos.Code,CursorInLink);
-  if BestLinkIndex<0 then
-    RaiseCatchableException('BestLinkIndex<0');
-  if CursorInLink then
-    RaiseCatchableException('CursorInLink');
-  BestLink:=Scanner.Links[BestLinkIndex];
-  NewDirtyGapStart:=BestLink.SrcPos+Scanner.LinkSize(BestLinkIndex);
-  if BestLinkIndex<Scanner.LinkCount then
-    NewDirtyGapEnd:=Scanner.Links[BestLinkIndex+1].SrcPos
-  else
-    NewDirtyGapEnd:=CursorPos.Code.SourceLength;
-  DirtySrc.SetGap(CursorPos,NewDirtyStartPos,NewDirtyGapStart,NewDirtyGapEnd);
-end;
-
 procedure TCustomCodeTool.FetchScannerSource(Range: TLinkScannerRange);
 begin
   // update scanned code
@@ -590,8 +511,6 @@ begin
     DebugLn(['TCustomCodeTool.BeginParsing ',MainFilename]);
     {$ENDIF}
     FRangeValidTill:=lsrInit;
-    DirtySrc.Free;
-    DirtySrc:=nil;
   end;
 
   // delete nodes
@@ -2101,11 +2020,6 @@ begin
   BeginParsingAndGetCleanPos(Range,CursorPos,CleanCursorPos);
 end;
 
-function TCustomCodeTool.IsDirtySrcValid: boolean;
-begin
-  Result:=(DirtySrc<>nil) and (DirtySrc.Code<>nil);
-end;
-
 function TCustomCodeTool.IgnoreErrorAfterPositionIsInFrontOfLastErrMessage: boolean;
 var
   IgnoreErrorAfterCleanPos: integer;
@@ -2351,7 +2265,6 @@ begin
   LastAtoms.Clear;
   NextPos.StartPos:=-1;
   CurNode:=nil;
-  HybridCursorType:=hcClean;
 end;
 
 procedure TCustomCodeTool.MoveCursorToCleanPos(ACleanPos: PChar);
@@ -2421,23 +2334,6 @@ begin
   NewPos:=PtrInt(PtrUInt(ACleanPos))-PtrInt(PtrUInt(@Src[1]))+1;
   if (NewPos<1) or (NewPos>SrcLen) then exit;
   Result:=true;
-end;
-
-procedure TCustomCodeTool.MoveHybridCursorToPos(DirtyPos: PChar);
-begin
-  if IsDirtySrcValid and (not IsPCharInSrc(DirtyPos)) then begin
-    DirtySrc.MoveCursorToPos(DirtyPos);
-    HybridCursorType:=hcDirty;
-  end else
-    MoveCursorToCleanPos(DirtyPos);
-end;
-
-function TCustomCodeTool.GetHybridCursorStart: integer;
-begin
-  if HybridCursorType=hcDirty then
-    Result:=DirtySrc.CurPos.StartPos
-  else
-    Result:=CurPos.StartPos;
 end;
 
 procedure TCustomCodeTool.CreateChildNode;
@@ -2618,9 +2514,6 @@ begin
   if LastAtoms<>nil then
     Stats.Add('TCustomCodeTool.LastAtoms',
       LastAtoms.CalcMemSize);
-  if DirtySrc<>nil then
-    Stats.Add('TCustomCodeTool.DirtySrc',
-      DirtySrc.CalcMemSize);
 end;
 
 procedure TCustomCodeTool.CheckNodeTool(Node: TCodeTreeNode);
@@ -2850,6 +2743,17 @@ end;
 
 procedure TCustomCodeTool.GetCleanPosInfo(CodePosInFront, CleanPos: integer;
   ResolveComments: boolean; out SameArea: TAtomPosition);
+{ Use this function to safely find out if a position is in a comment,
+  a string constant, an atom or is in space
+
+  CodePosInFront: a position in code, where parsing starts
+                  If -1 it uses FindDeepestNodeAtPos
+  CleanPos: target position
+  ResolveComments: if CleanPos is in a comment, parse again in the comment (not recursive)
+  SameArea: area around CleanPos, either an atom, comment, directive or space
+            if CleanPos<CodePosInFront then CleanAtomPosition
+            if CleanPos>SrcLen then CurPos.StartPos>SrcLen
+}
 var
   ANode: TCodeTreeNode;
 begin
@@ -2858,6 +2762,8 @@ begin
     ANode:=FindDeepestNodeAtPos(CleanPos,True);
     CodePosInFront:=ANode.StartPos;
   end;
+  if CodePosInFront>CleanPos then
+    exit;
   MoveCursorToCleanPos(CodePosInFront);
   repeat
     ReadNextAtom;
@@ -2893,6 +2799,7 @@ begin
         ReadTillCommentEnd;
         SameArea.EndPos:=CurPos.StartPos;
         if (SameArea.StartPos=SameArea.EndPos) then
+          // inconsistency: some non space and non comment between two tokens
           RaiseException('TCustomCodeTool.GetCleanPosInfo Internal Error A');
         if CleanPos<SameArea.EndPos then begin
           // cursor is in comment
@@ -2900,11 +2807,19 @@ begin
             // take comment as normal code and search again
             CodePosInFront:=SameArea.StartPos;
             case Src[CodePosInFront] of
-            '{': inc(CodePosInFront);
+            '{':
+              begin
+                inc(CodePosInFront);
+                if (CodePosInFront<=SrcLen) and (Src[CodePosInFront+1]=#3) then
+                  inc(CodePosInFront);
+              end;
             '(','/': inc(CodePosInFront,2);
             else
               RaiseException('TCustomCodeTool.GetCleanPosInfo Internal Error B '+dbgstr(Src[CodePosInFront])+' at '+CleanPosToStr(CodePosInFront,true));
             end;
+            if CodePosInFront>CleanPos then
+              // CleanPos at start of comment => return comment
+              exit;
             GetCleanPosInfo(CodePosInFront,CleanPos,true,SameArea);
           end;
           exit;
@@ -3207,134 +3122,6 @@ constructor ECodeToolFileNotFound.Create(ASender: TCustomCodeTool;
 begin
   inherited Create(ASender,AMessage);
   Filename:=AFilename;
-end;
-
-{ TDirtySource }
-
-procedure TDirtySource.BeginUpdate;
-begin
-  inc(LockCount);
-end;
-
-procedure TDirtySource.EndUpdate;
-begin
-  if LockCount<=0 then
-    RaiseCatchableException('TDirtySource.EndUpdate');
-  dec(LockCount);
-end;
-
-procedure TDirtySource.SetGap(const NewCursorPos: TCodeXYPosition;
-  NewDirtyStartPos, NewDirtyGapStart, NewDirtyGapEnd: integer);
-begin
-  // check for conflicts
-  if (LockCount>0) then begin
-    if (Code<>nil) and (Code<>NewCursorPos.Code) then
-      RaiseCatchableException('TDirtySource.SetGap Code change');
-    if (GapStart>0) then
-      if (NewDirtyStartPos<>StartPos)
-      or (NewDirtyGapStart<>GapStart)
-      or (NewDirtyGapEnd<>GapEnd) then
-        RaiseCatchableException('TDirtySource.SetGap Gap change');
-  end;
-  if (NewDirtyGapStart>NewDirtyStartPos)
-  or (NewDirtyStartPos>NewDirtyGapEnd) then
-    RaiseCatchableException('TDirtySource.SetGap Gap Bounds');
-
-  // set values
-  CursorPos:=NewCursorPos;
-  Code:=CursorPos.Code;
-  StartPos:=NewDirtyStartPos;
-  GapStart:=NewDirtyGapStart;
-  GapEnd:=NewDirtyGapEnd;
-  CurPos.StartPos:=StartPos;
-  CurPos.EndPos:=StartPos;
-  CurPos.Flag:=cafNone;
-
-  // get source
-  if Code<>nil then
-    Src:=Code.Source
-  else
-    Src:='';
-  if (GapStart>0) then begin
-    GapSrc:=copy(Src,GapStart,GapEnd-GapStart);
-    {$IFDEF ShowDirtySrc}
-    DebugLn('TDirtySource.SetGap Owner=',ExtractFilename(Owner.MainFilename),
-      ' Code=',ExtractFilename(Code.Filename),
-      ' Gap('+dbgs(GapStart)+','+dbgs(StartPos)+','+dbgs(GapEnd)+')',
-      '"',StringToPascalConst(copy(GapSrc,1,20)),'"..',
-      '"',StringToPascalConst(copy(GapSrc,length(GapSrc)-19,20)),'"'
-      );
-    {$ENDIF}
-  end else begin
-    GapSrc:='';
-  end;
-end;
-
-constructor TDirtySource.Create(TheOwner: TCustomCodeTool);
-begin
-  Owner:=TheOwner;
-end;
-
-procedure TDirtySource.Clear;
-begin
-  SetGap(CodeXYPosition(0,0,nil),0,0,0);
-end;
-
-procedure TDirtySource.SetCursorToIdentStartEndAtPosition;
-begin
-  GetIdentStartEndAtPosition(GapSrc,CurPos.StartPos,
-                             CurPos.StartPos,CurPos.EndPos);
-end;
-
-function TDirtySource.GetCursorSrcPos: PChar;
-begin
-  Result:=@Src[CurPos.StartPos];
-end;
-
-function TDirtySource.IsPCharInSrc(p: PChar): boolean;
-var NewPos: integer;
-begin
-  Result:=false;
-  if Src='' then exit;
-  NewPos:=PtrInt(PtrUInt(p))-PtrInt(PtrUInt(@Src[1]))+1;
-  if (NewPos<1) or (NewPos>length(Src)) then exit;
-  Result:=true;
-end;
-
-procedure TDirtySource.MoveCursorToPos(APos: integer);
-begin
-  CurPos.StartPos:=APos;
-  CurPos.EndPos:=APos;
-  CurPos.Flag:=cafNone;
-end;
-
-procedure TDirtySource.MoveCursorToPos(APos: PChar);
-
-  procedure RaiseSrcEmpty;
-  begin
-    RaiseCatchableException('[TDirtySource.MoveCursorToPos - PChar] Src empty');
-  end;
-
-  procedure RaiseNotInSrc;
-  begin
-    RaiseCatchableException('[TDirtySource.MoveCursorToPos - PChar] Pos not in Src');
-  end;
-
-var NewPos: integer;
-begin
-  if Src='' then
-    RaiseSrcEmpty;
-  NewPos:=PtrInt(PtrUInt(APos))-PtrInt(PtrUInt(@Src[1]))+1;
-  if (NewPos<1) or (NewPos>length(Src)) then
-    RaiseNotInSrc;
-  MoveCursorToPos(NewPos);
-end;
-
-function TDirtySource.CalcMemSize: PtrUInt;
-begin
-  Result:=PtrUInt(InstanceSize)
-    +MemSizeString(Src)
-    +MemSizeString(GapSrc);
 end;
 
 { TCodeTreeNodeParseError }

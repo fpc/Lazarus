@@ -816,7 +816,7 @@ begin
     dec(BaseDirLen);
   if BaseDirLen=0 then exit;
 
-  //WriteLn('CreateRelativePath START ',copy(CmpBaseDirectory,1,BaseDirLen),' ',copy(CmpFilename,1,FileNameLength));
+  //DebugLn(['CreateRelativePath START ',copy(CmpBaseDirectory,1,BaseDirLen),' ',copy(CmpFilename,1,FileNameLength)]);
 
   // count shared directories
   p:=1;

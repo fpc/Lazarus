@@ -2347,8 +2347,7 @@ begin
         ReadPriorAtom;
         CurrentIdentifierList.StartAtomInFront:=CurPos;
         if (ilcfStartInStatement in CurrentIdentifierList.ContextFlags)
-        and (not IsDirtySrcValid) then
-        begin
+        then begin
           // check if LValue
           if (CurPos.Flag in [cafSemicolon,cafEnd,cafColon])
           or UpAtomIs('BEGIN')
@@ -2370,7 +2369,7 @@ begin
         end;
       end;
       // context behind
-      if (IdentEndPos<SrcLen) and (not IsDirtySrcValid) then begin
+      if (IdentEndPos<SrcLen) then begin
         MoveCursorToCleanPos(IdentEndPos);
         InFrontOfDirective:=(CurPos.StartPos<SrcLen) and (Src[CurPos.StartPos]='{')
                             and (Src[CurPos.StartPos+1]='$');
