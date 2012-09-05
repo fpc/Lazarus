@@ -100,6 +100,7 @@ type
     function SaveDCData: TCarbonDCData; virtual;
     procedure RestoreDCData(const AData: TCarbonDCData); virtual;
     procedure ExcludeClipRect(Left, Top, Right, Bottom: Integer);
+    procedure ClearClipping;
   public
     constructor Create;
     destructor Destroy; override;
@@ -496,8 +497,7 @@ end;
  ------------------------------------------------------------------------------}
 function TCarbonDeviceContext.SaveDC: Integer;
 begin
-  if isClipped then
-    CGContextRestoreGState(CGContext); // clip rect is on top of the state stack!
+  ClearClipping;
 
   Result := 0;
   if CGContext = nil then
@@ -515,7 +515,7 @@ begin
     DebugLn('TCarbonDeviceContext.SaveDC Result: ', DbgS(Result));
   {$ENDIF}
   
-  if isClipped then 
+  if isClipped then
   begin
     CGContextSaveGState(CGContext);
     FClipRegion.Apply(Self);
@@ -531,8 +531,8 @@ end;
  ------------------------------------------------------------------------------}
 function TCarbonDeviceContext.RestoreDC(ASavedDC: Integer): Boolean;
 begin
-  if isClipped then CGContextRestoreGState(CGContext);
-  
+  ClearClipping;
+
   Result := False;
   if (FSavedDCList = nil) or (ASavedDC <= 0) or (ASavedDC > FSavedDCList.Count) then
   begin
@@ -1552,14 +1552,26 @@ begin
   //  X, Y]));
 end;
 
-function TCarbonDeviceContext.SetClipRegion(AClipRegion: TCarbonRegion; Mode: Integer): Integer;
+procedure TCarbonDeviceContext.ClearClipping;
+var
+  T1, T2: CGAffineTransform;
 begin
   if isClipped  then
   begin
-    isClipped := false;
+    T1 := CGContextGetCTM(CGContext);
     CGContextRestoreGState(CGContext);
+    T2 := CGContextGetCTM(CGContext);
+    // restore old CTM since CTM may changed after the clipping
+    if CGAffineTransformEqualToTransform(T1, T2) = 0 then
+      CGContextTranslateCTM(CGContext, T1.a * T1.tx - T2.a * T2.tx, T1.d * T1.ty - T2.d * T2.ty);
   end;
-  
+end;
+
+function TCarbonDeviceContext.SetClipRegion(AClipRegion: TCarbonRegion; Mode: Integer): Integer;
+begin
+  ClearClipping;
+  isClipped := False;
+
   if not Assigned(AClipRegion) then
   begin
     HIShapeSetEmpty(FClipRegion.Shape);
