@@ -53,7 +53,7 @@ uses
   {$IFDEF MEM_CHECK}
   MemCheck,
   {$ENDIF}
-  Classes, SysUtils, CodeToolsStrConsts, CodeToolMemManager, FileProcs,
+  Classes, SysUtils, math, CodeToolsStrConsts, CodeToolMemManager, FileProcs,
   AVL_Tree, ExprEval, SourceLog, KeywordFuncLists, BasicCodeTools;
 
 const
@@ -754,8 +754,6 @@ begin
   end;
   Result:=true;
 end;
-
-
 
 { TLinkScanner }
 
@@ -1698,11 +1696,13 @@ begin
   end;
   // links
   for i:=0 to LinkCount-1 do begin
-    DebugLn('  Link ',dbgs(i),':'
-        ,' CleanedPos=',dbgs(FLinks[i].CleanedPos)
-        ,' SrcPos=',dbgs(FLinks[i].SrcPos)
+    DebugLn(['  Link ',i,':'
+        ,' CleanedPos=',FLinks[i].CleanedPos
+        ,' SrcPos=',FLinks[i].SrcPos
         ,' Code=',dbgs(FLinks[i].Code)
-      );
+        ,' Kind=',dbgs(FLinks[i].Kind)
+        ,' Src="',dbgstr(CleanedSrc,FLinks[i].CleanedPos,Min(50,LinkSize(i))),'"'
+      ]);
   end;
 end;
 
@@ -3554,6 +3554,20 @@ begin
     inc(CleanedLen);
     FCleanedSrc[CleanedLen]:=#3;
   end else begin
+    if (LinkCount>0) and (FLinks[FLinkCount-1].CleanedPos=CleanedLen+1) then begin
+      // last link is empty
+      dec(FLinkCount);
+      {$IFDEF ShowUpdateCleanedSrc}
+      debugln(['TLinkScanner.AddSkipComment SkipEnd: removing empty link: ',dbgs(FLinks[FLinkCount].Kind)]);
+      {$ENDIF}
+      if (LinkCount>0) and (FLinks[FLinkCount-1].Kind=slkSkipStart) then begin
+        // remove unneeded SkipStart
+        dec(FLinkCount);
+        CleanedLen:=FLinks[FLinkCount].CleanedPos;
+        exit;
+      end;
+    end;
+
     AddLink(1,nil,slkSkipEnd);
     inc(CleanedLen);
     FCleanedSrc[CleanedLen]:=#3;
@@ -3740,6 +3754,7 @@ begin
   {$ENDIF}
   UpdateCleanedSource(SrcPos-1);
   AddSkipComment(true);
+  AddLink(SrcPos,Code);
 
   // parse till $else, $elseif or $endif
   FSkipIfLevel:=IfLevel;

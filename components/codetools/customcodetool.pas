@@ -2649,14 +2649,14 @@ begin
     CleanPos:=0;
     exit(-2);
   end;
-  //DebugLn(['TCustomCodeTool.CaretToCleanPos A ',Caret.Code.Filename,' ',Caret.Y,',',Caret.X,' ',Caret.Code.SourceLength]);
+  //DebugLn(['TCustomCodeTool.CaretToCleanPos A ',Caret.Code.Filename,' ',Caret.Y,',',Caret.X,' SourceLength=',Caret.Code.SourceLength]);
   Caret.Code.LineColToPosition(Caret.Y,Caret.X,CleanPos);
-  //DebugLn(['TCustomCodeTool.CaretToCleanPos B ',CleanPos,',',Caret.Y,',',Caret.X,' ',dbgstr(copy(Caret.Code.Source,CleanPos-20,20)),'|',dbgstr(copy(Caret.Code.Source,CleanPos,20))]);
+  //DebugLn(['TCustomCodeTool.CaretToCleanPos B Clean=',CleanPos,',Y=',Caret.Y,',X=',Caret.X,' ',dbgstr(copy(Caret.Code.Source,CleanPos-20,20)),'|',dbgstr(copy(Caret.Code.Source,CleanPos,20))]);
   if (CleanPos>=1) then
     Result:=Scanner.CursorToCleanPos(CleanPos,Caret.Code,CleanPos)
   else
     Result:=-2; // x,y beyond source
-  //DebugLn('TCustomCodeTool.CaretToCleanPos C CleanPos=',CleanPos,' Result=',Result);
+  //DebugLn(['TCustomCodeTool.CaretToCleanPos C CleanPos=',CleanPos,' Result=',Result]);
 end;
 
 function TCustomCodeTool.CodePosToCleanPos(const CodePos: TCodePosition; out
