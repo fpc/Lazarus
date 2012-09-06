@@ -3133,6 +3133,7 @@ function TStandardCodeTool.ReplaceWords(IdentList: TStrings;
     CurSource: string;
     i: integer;
   begin
+    CurSource:=ACode.Source;
     MaxPos:=length(CurSource);
     StartPos:=1;
     // go through all source parts between compiler directives
