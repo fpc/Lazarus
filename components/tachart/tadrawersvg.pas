@@ -96,6 +96,8 @@ uses
 const
   RECT_FMT =
     '<rect x="%d" y="%d" width="%d" height="%d" style="%s"/>';
+var
+  fmtSettings: TFormatSettings;
 
 function ColorToHex(AColor: TFPColor): String;
 begin
@@ -106,6 +108,16 @@ begin
   else
     with AColor do
       Result := Format('#%.2x%.2x%.2x', [red shr 8, green shr 8, blue shr 8]);
+end;
+
+function DP2S(AValue: TDoublePoint): String;
+begin
+  Result := Format('%g,%g', [AValue.X, AValue.Y], fmtSettings);
+end;
+
+function F2S(AValue: Double): String;
+begin
+  Result := FloatToStr(AValue, fmtSettings);
 end;
 
 { TSVGDrawer }
@@ -226,16 +238,11 @@ begin
 end;
 
 function TSVGDrawer.OpacityStr: String;
-var
-  fs: TFormatSettings;
 begin
   if FTransparency = 0 then
     Result := ''
-  else begin
-    fs := DefaultFormatSettings;
-    fs.DecimalSeparator := '.';
-    Result := FloatToStr((255 - FTransparency) / 256, fs);
-  end;
+  else
+    Result := F2S((255 - FTransparency) / 256);
 end;
 
 function TSVGDrawer.PointsToStr(
@@ -276,10 +283,16 @@ end;
 
 procedure TSVGDrawer.RadialPie(
   AX1, AY1, AX2, AY2: Integer; AStartAngle16Deg, AAngleLength16Deg: Integer);
+var
+  e: TEllipse;
+  p1, p2: TDoublePoint;
 begin
-  Unused(AX1, AY1);
-  Unused(AX2, AY2);
-  Unused(AStartAngle16Deg, AAngleLength16Deg);
+  e.InitBoundingBox(AX1, AY1, AX2, AY2);
+  p1 := e.GetPoint(Deg16ToRad(AStartAngle16Deg));
+  p2 := e.GetPoint(Deg16ToRad(AStartAngle16Deg + AAngleLength16Deg));
+  WriteFmt(
+    '<path d="M%s L%s A%s 0 0,0 %s Z" style="%s"/>',
+    [DP2S(e.FC), DP2S(p1), DP2S(e.FR), DP2S(p2), StyleFill + StyleStroke]);
 end;
 
 procedure TSVGDrawer.Rectangle(AX1, AY1, AX2, AY2: Integer);
@@ -398,6 +411,11 @@ begin
   FStream.WriteBuffer(AString[1], Length(AString));
   FStream.WriteBuffer(le[1], Length(le));
 end;
+
+initialization
+
+  fmtSettings := DefaultFormatSettings;
+  fmtSettings.DecimalSeparator := '.';
 
 end.
 

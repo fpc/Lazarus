@@ -259,6 +259,7 @@ const
 
 function BoundsSize(ALeft, ATop: Integer; ASize: TSize): TRect; inline;
 
+function Deg16ToRad(ADeg16: Integer): Double; inline;
 function DoubleInterval(AStart, AEnd: Double): TDoubleInterval; inline;
 
 procedure Exchange(var A, B: Integer); overload; inline;
@@ -315,6 +316,11 @@ const
 function BoundsSize(ALeft, ATop: Integer; ASize: TSize): TRect; inline;
 begin
   Result := Bounds(ALeft, ATop, ASize.cx, ASize.cy);
+end;
+
+function Deg16ToRad(ADeg16: Integer): Double;
+begin
+  Result := DegToRad(ADeg16 / 16);
 end;
 
 function DoubleInterval(AStart, AEnd: Double): TDoubleInterval;

@@ -29,6 +29,8 @@ type
     FC: TDoublePoint;
     FR: TDoublePoint;
     constructor InitBoundingBox(AX1, AY1, AX2, AY2: Integer);
+  public
+    function GetPoint(AParametricAngle: Double): TDoublePoint;
   end;
 
 function CopyPoints(
@@ -519,6 +521,14 @@ begin
 end;
 
 { TEllipse }
+
+function TEllipse.GetPoint(AParametricAngle: Double): TDoublePoint;
+var
+  s, c: Extended;
+begin
+  SinCos(AParametricAngle, s, c);
+  Result := DoublePoint(c, -s) * FR + FC;
+end;
 
 constructor TEllipse.InitBoundingBox(AX1, AY1, AX2, AY2: Integer);
 begin
