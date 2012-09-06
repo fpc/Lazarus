@@ -120,10 +120,10 @@ end;
 
 procedure TFPVectorialDrawer.Ellipse(AX1, AY1, AX2, AY2: Integer);
 var
-  cx, cy, rx, ry: Integer;
+  e: TEllipse;
 begin
-  BoundingBoxToCenterAndHalfRadius(AX1, AY1, AX2, AY2, cx, cy, rx, ry);
-  FCanvas.AddEllipse(cx, InvertY(cy), rx, ry, 0.0);
+  e.InitBoundingBox(AX1, AY1, AX2, AY2);
+  FCanvas.AddEllipse(e.FC.X, InvertY(Round(e.FC.Y)), e.FR.x, e.FR.Y, 0.0);
 end;
 
 procedure TFPVectorialDrawer.FillRect(AX1, AY1, AX2, AY2: Integer);

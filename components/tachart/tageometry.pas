@@ -23,8 +23,14 @@ interface
 uses
   TAChartUtils, Types;
 
-procedure BoundingBoxToCenterAndHalfRadius(
-  AX1, AY1, AX2, AY2: Integer; out ACX, ACY, ARX, ARY: Integer);
+type
+  TEllipse = object
+  public
+    FC: TDoublePoint;
+    FR: TDoublePoint;
+    constructor InitBoundingBox(AX1, AY1, AX2, AY2: Integer);
+  end;
+
 function CopyPoints(
   APoints: array of TPoint; AStartIndex, ANumPts: Integer): TPointArray;
 function DoublePoint(AX, AY: Double): TDoublePoint; inline;
@@ -84,15 +90,6 @@ uses
   Math, TAMath;
 
 function PointLineSide(AP, A1, A2: TPoint): TValueSign; forward;
-
-procedure BoundingBoxToCenterAndHalfRadius(
-  AX1, AY1, AX2, AY2: Integer; out ACX, ACY, ARX, ARY: Integer);
-begin
-  ACX := (AX1 + AX2) div 2;
-  ACY := (AY1 + AY2) div 2;
-  ARX := Abs(AX1 - AX2) div 2;
-  ARY := Abs(AY1 - AY2) div 2;
-end;
 
 function CopyPoints(
   APoints: array of TPoint; AStartIndex, ANumPts: Integer): TPointArray;
@@ -519,6 +516,16 @@ operator := (const ASize: TSize): TPoint;
 begin
   Result.X := ASize.cx;
   Result.Y := ASize.cy;
+end;
+
+{ TEllipse }
+
+constructor TEllipse.InitBoundingBox(AX1, AY1, AX2, AY2: Integer);
+begin
+  FC.X := (AX1 + AX2) / 2;
+  FC.Y := (AY1 + AY2) / 2;
+  FR.X := Abs(AX1 - AX2) / 2;
+  FR.Y := Abs(AY1 - AY2) / 2;
 end;
 
 end.

@@ -174,12 +174,12 @@ end;
 
 procedure TSVGDrawer.Ellipse(AX1, AY1, AX2, AY2: Integer);
 var
-  cx, cy, rx, ry: Integer;
+  e: TEllipse;
 begin
-  BoundingBoxToCenterAndHalfRadius(AX1, AY1, AX2, AY2, cx, cy, rx, ry);
+  e.InitBoundingBox(AX1, AY1, AX2, AY2);
   WriteFmt(
-    '<ellipse cx="%d" cy="%d" rx="%d" ry="%d" style="%s"/>',
-    [cx, cy, rx, ry, StyleFill + StyleStroke]);
+    '<ellipse cx="%g" cy="%g" rx="%g" ry="%g" style="%s"/>',
+    [e.FC.X, e.FC.Y, e.FR.X, e.FR.Y, StyleFill + StyleStroke]);
 end;
 
 procedure TSVGDrawer.FillRect(AX1, AY1, AX2, AY2: Integer);
