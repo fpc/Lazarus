@@ -1226,14 +1226,15 @@ begin
   DebugLn('TWidgetSet.InitializeCriticalSection Not implemented yet');
 end;
 
-function TWidgetSet.IntersectClipRect(dc: hdc;
-  Left, Top, Right, Bottom: Integer): Integer;
+function TWidgetSet.IntersectClipRect(DC: HDC; Left, Top, Right, Bottom: Integer): Integer;
 var
-  RRGN : hRGN;
+  R: TRect;
+  RRGN: hRGN;
 begin
-  RRGN := CreateRectRgn(Left, Top, Right, Bottom);
-  //DebugLn('TWidgetSet.IntersectClipRect A RGN=',DbgS(RRGN),
-  //  ' ',dbgs(Left),',',dbgs(Top),',',dbgs(Right),',',dbgs(Bottom));
+  R := Rect(Left, Top, Right, Bottom);
+  LPtoDP(DC, R, 2);
+  with R do
+    RRGN := CreateRectRgn(Left, Top, Right, Bottom);
   if not DCClipRegionValid(DC) then
     Result := SelectClipRGN(DC, RRGN)
   else

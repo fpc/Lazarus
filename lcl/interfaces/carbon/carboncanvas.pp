@@ -85,8 +85,8 @@ type
     
     FSavedDCList: TFPObjectList;
     FTextFractional: Boolean;
-    fViewPortOfs: TPoint;
-    fWindowOfs: TPoint;
+    FViewPortOfs,
+    FWindowOfs: TPoint;
 
     isClipped : Boolean;
 
@@ -150,6 +150,7 @@ type
     procedure UpdateContextOfs(const AWindowOfs, AViewOfs: TPoint);
     procedure SetWindowOfs(const AWindowOfs: TPoint);
     procedure SetViewPortOfs(const AViewOfs: TPoint);
+    function GetLogicalOffset: TPoint; override;
   public
     property Size: TPoint read GetSize;
 
@@ -169,8 +170,8 @@ type
     property PenPos: TPoint read FPenPos write FPenPos;
     
     property TextFractional: Boolean read FTextFractional write FTextFractional;
-    property WindowOfs: TPoint read fWindowOfs write SetWindowOfs;
-    property ViewPortOfs: TPoint read fViewPortOfs write SetViewPortOfs;
+    property WindowOfs: TPoint read FWindowOfs write SetWindowOfs;
+    property ViewPortOfs: TPoint read FViewPortOfs write SetViewPortOfs;
   end;
 
   { TCarbonScreenContext }
@@ -1605,10 +1606,10 @@ begin
     else Result := LCLType.Error;
 end;
 
-procedure GetWindowViewTranslate(const AWindowOfs, AViewOfs: TPoint; var dx, dy: Integer); inline;
+procedure GetWindowViewTranslate(const AWindowOfs, AViewOfs: TPoint; out dx, dy: Integer); inline;
 begin
-  dx:=AViewOfs.x-AWindowOfs.x;
-  dy:=AViewOfs.y-AWindowOfs.y;
+  dx := AViewOfs.x - AWindowOfs.x;
+  dy := AViewOfs.y - AWindowOfs.y;
 end;
 
 function isSamePoint(const p1, p2: TPoint): Boolean;
@@ -1621,12 +1622,12 @@ var
   dx, dy: Integer;
 begin
   if isSamePoint(AWindowOfs, fWindowOfs) and isSamePoint(AViewOfs, fViewPortOfs) then Exit;
-  GetWindowViewTranslate(fWindowOfs, fViewPortOfs, dx{%H-}, dy{%H-});
+  GetWindowViewTranslate(FWindowOfs, FViewPortOfs, dx{%H-}, dy{%H-});
   CGContextTranslateCTM(CGContext, -dx, -dy);
 
-  fWindowOfs:=AWindowOfs;
-  fViewPortOfs:=AViewOfs;
-  GetWindowViewTranslate(fWindowOfs, fViewPortOfs, dx, dy);
+  FWindowOfs := AWindowOfs;
+  FViewPortOfs := AViewOfs;
+  GetWindowViewTranslate(FWindowOfs, FViewPortOfs, dx, dy);
   CGContextTranslateCTM(CGContext, dx, dy);
 end;
 
@@ -1638,6 +1639,11 @@ end;
 procedure TCarbonDeviceContext.SetViewPortOfs(const AViewOfs: TPoint);
 begin
   UpdateContextOfs(WindowOfs, AViewOfs);
+end;
+
+function TCarbonDeviceContext.GetLogicalOffset: TPoint;
+begin
+  GetWindowViewTranslate(WindowOfs, ViewportOfs, Result.X, Result.Y);
 end;
 
 { TCarbonScreenContext }

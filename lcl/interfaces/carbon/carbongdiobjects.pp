@@ -75,6 +75,7 @@ type
     function CombineWith(ARegion: TCarbonRegion; CombineMode: Integer): Integer;
     procedure Offset(dx, dy: Integer);
     function GetShapeCopy: HIShapeRef;
+    procedure MakeMutable;
   public
     property Shape: HIShapeRef read FShape write SetShape;
   end;
@@ -746,12 +747,21 @@ end;
   Note: Clipping region is only reducing
  ------------------------------------------------------------------------------}
 procedure TCarbonRegion.Apply(ADC: TCarbonContext);
+var
+  DeviceShape: HIShapeRef;
 begin
   if ADC = nil then Exit;
   if ADC.CGContext = nil then Exit;
-  if HIShapeIsEmpty(FShape) or OSError(HIShapeReplacePathInCGContext(FShape, ADC.CGContext),
-    Self, 'Apply', 'HIShapeReplacePathInCGContext') then Exit;
-  CGContextClip(ADC.CGContext);
+  DeviceShape := HIShapeCreateMutableCopy(Shape);
+  try
+    with ADC.GetLogicalOffset do
+      HIShapeOffset(DeviceShape, -X, -Y);
+    if HIShapeIsEmpty(DeviceShape) or OSError(HIShapeReplacePathInCGContext(DeviceShape, ADC.CGContext),
+      Self, 'Apply', 'HIShapeReplacePathInCGContext') then Exit;
+    CGContextClip(ADC.CGContext);
+  finally
+    CFRelease(DeviceShape);
+  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -860,12 +870,18 @@ end;
 
 procedure TCarbonRegion.Offset(dx, dy: Integer);
 begin
+  MakeMutable;
   HIShapeOffset(FShape, dx, dy);
 end;
 
 function TCarbonRegion.GetShapeCopy: HIShapeRef;
 begin
   Result := HIShapeCreateCopy(Shape);
+end;
+
+procedure TCarbonRegion.MakeMutable;
+begin
+  Shape := HIShapeCreateMutableCopy(Shape);
 end;
 
 { TCarbonTextLayout }

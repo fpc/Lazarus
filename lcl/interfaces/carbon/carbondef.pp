@@ -53,6 +53,7 @@ type
   public
     CGContext : CGContextRef;
     procedure Reset; virtual; abstract;
+    function GetLogicalOffset: TPoint; virtual;
   end;
 
   { TCarbonWidget }
@@ -311,6 +312,14 @@ type
 
 var
   UPPTree: TAVLTree = nil;
+
+{ TCarbonContext }
+
+function TCarbonContext.GetLogicalOffset: TPoint;
+begin
+  Result.X := 0;
+  Result.Y := 0;
+end;
 
 procedure TUPPAVLTreeNode.Clear;
 begin
