@@ -590,6 +590,8 @@ begin
     ecStepIntoContext         : Result:= lisMenuStepIntoContext;
     ecStepOverContext         : Result:= lisMenuStepOverContext;
     ecStepOut                 : Result:= lisMenuStepOut;
+    ecAttach                  : Result:= srkmecAttach;
+    ecDetach                  : Result:= srkmecDetach;
     ecRunToCursor             : Result:= lisMenuRunToCursor;
     ecStopProgram             : Result:= srkmecStopProgram;
     ecResetDebugger           : Result:= srkmecResetDebugger;
@@ -2903,6 +2905,8 @@ begin
   AddDefault(C, 'Stop program', lisKMStopProgram, ecStopProgram);
   AddDefault(C, 'Reset debugger', lisMenuResetDebugger, ecResetDebugger);
   AddDefault(C, 'Run parameters', dlgRunParameters, ecRunParameters);
+  AddDefault(C, 'Attach to program', srkmecAttach, ecAttach);
+  AddDefault(C, 'Detach from program', srkmecDetach, ecDetach);
   AddDefault(C, 'Build File', lisMenuBuildFile, ecBuildFile);
   AddDefault(C, 'Run File', lisMenuRunFile, ecRunFile);
   AddDefault(C, 'Config "Build File"', Format(lisKMConfigBuildFile, ['"', '"']), ecConfigBuildFile);

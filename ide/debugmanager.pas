@@ -122,6 +122,7 @@ type
     FHiddenDebugEventsLog: TStringList;
 
     FRunTimer: TTimer;
+    FAttachToID: String;
 
     procedure SetDebugger(const ADebugger: TDebugger);
 
@@ -149,6 +150,9 @@ type
 
     procedure FreeDebugger;
     procedure ResetDebugger;
+
+    function GetLaunchPathAndExe(out LaunchingCmdLine, LaunchingApplication,
+                                     LaunchingParams: String): Boolean;
   protected
     function  GetState: TDBGState; override;
     function  GetCommands: TDBGCommands; override;
@@ -157,6 +161,7 @@ type
     function GetDebugger: TDebugger; override;
     {$ENDIF}
     function GetCurrentDebuggerClass: TDebuggerClass; override;    (* TODO: workaround for http://bugs.freepascal.org/view.php?id=21834   *)
+    function AttachDebugger: TModalResult;
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
@@ -176,7 +181,7 @@ type
     procedure ClearDebugOutputLog;
     procedure ClearDebugEventsLog;
 
-    function InitDebugger: Boolean; override;
+    function InitDebugger(AFlags: TDbgInitFlags = []): Boolean; override;
 
     function DoPauseProject: TModalResult; override;
     function DoShowExecutionPoint: TModalResult; override;
@@ -200,6 +205,10 @@ type
     function StartDebugging: TModalResult; override; // returns immediately
     function RunDebugger: TModalResult; override; // waits till program ends
     procedure EndDebugging; override;
+
+    procedure Attach(AProcessID: String); override;
+    procedure Detach; override;
+
     function Evaluate(const AExpression: String; var AResult: String;
                       var ATypeInfo: TDBGType;
                       EvalFlags: TDBGEvaluateFlags = []): Boolean; override;
@@ -792,7 +801,10 @@ procedure TDebugManager.OnRunTimer(Sender: TObject);
 begin
   FRunTimer.Enabled:=false;
   if dmsWaitForRun in FManagerStates then
-    RunDebugger;
+    RunDebugger
+  else
+  if dmsWaitForAttach in FManagerStates then
+    AttachDebugger;
 end;
 
 procedure TDebugManager.DebuggerBreakPointHit(ADebugger: TDebugger;
@@ -1811,6 +1823,11 @@ begin
     // Stop
     itmRunMenuStop.Enabled := CanRun and DebuggerIsValid;
     StopSpeedButton.Enabled := itmRunMenuStop.Enabled;
+
+    //Attach / Detach
+    itmRunMenuAttach.Enabled := (not DebuggerIsValid) or (dcAttach in FDebugger.Commands);
+    itmRunMenuDetach.Enabled := (DebuggerIsValid)    and (dcDetach in FDebugger.Commands);
+
     // Evaluate
     itmRunMenuEvaluate.Enabled := CanRun and DebuggerIsValid
             and (dcEvaluate in FDebugger.Commands);
@@ -2000,7 +2017,71 @@ begin
 //  InitDebugger;
 end;
 
-function TDebugManager.InitDebugger: Boolean;
+function TDebugManager.GetLaunchPathAndExe(out LaunchingCmdLine,
+  LaunchingApplication, LaunchingParams: String): Boolean;
+var
+  NewDebuggerClass: TDebuggerClass;
+begin
+  Result := False;
+  NewDebuggerClass := GetDebuggerClass;
+  LaunchingCmdLine := BuildBoss.GetRunCommandLine;
+  SplitCmdLine(LaunchingCmdLine, LaunchingApplication, LaunchingParams);
+
+  (* TODO: workaround for http://bugs.freepascal.org/view.php?id=21834
+     Se Debugger.RequiresLocalExecutable
+  *)
+  if NewDebuggerClass.RequiresLocalExecutable then begin
+
+    if BuildBoss.GetProjectUsesAppBundle then
+    begin
+      // it is Application Bundle (darwin only)
+
+      if not DirectoryExistsUTF8(LaunchingApplication) then
+      begin
+        if MessageDlg(lisLaunchingApplicationInvalid,
+          Format(lisTheLaunchingApplicationBundleDoesNotExists,
+            [LaunchingCmdLine, #13, #13, #13, #13]),
+          mtError, [mbYes, mbNo, mbCancel], 0) = mrYes then
+        begin
+          if not BuildBoss.CreateProjectApplicationBundle then Exit;
+        end
+        else
+          Exit;
+      end;
+
+      if NewDebuggerClass = TProcessDebugger then
+      begin // use executable path inside Application Bundle (darwin only)
+        LaunchingApplication := LaunchingApplication + '/Contents/MacOS/' +
+          ExtractFileNameOnly(LaunchingApplication);
+        LaunchingParams := LaunchingParams;
+      end;
+    end
+    else
+      if not FileIsExecutable(LaunchingApplication)
+      then begin
+        MessageDlg(lisLaunchingApplicationInvalid,
+          Format(lisTheLaunchingApplicationDoesNotExistsOrIsNotExecuta, ['"',
+            LaunchingCmdLine, '"', #13, #13, #13]),
+          mtError, [mbOK],0);
+        Exit;
+      end;
+
+    //todo: this check depends on the debugger class
+    if (NewDebuggerClass <> TProcessDebugger)
+    and not FileIsExecutable(EnvironmentOptions.GetParsedDebuggerFilename)
+    then begin
+      MessageDlg(lisDebuggerInvalid,
+        Format(lisTheDebuggerDoesNotExistsOrIsNotExecutableSeeEnviro, ['"',
+          EnvironmentOptions.DebuggerFilename, '"', #13, #13, #13]),
+        mtError,[mbOK],0);
+      Exit;
+    end;
+
+  end; // if NewDebuggerClass.RequiresLocalExecutable then
+  Result := True;
+end;
+
+function TDebugManager.InitDebugger(AFlags: TDbgInitFlags): Boolean;
 var
   LaunchingCmdLine, LaunchingApplication, LaunchingParams: String;
   NewWorkingDir: String;
@@ -2015,67 +2096,17 @@ begin
     DebugLn('[TDebugManager.DoInitDebugger] *** Re-Entered');
     exit;
   end;
-  if (Project1.MainUnitID < 0) or Destroying then Exit;
+
+  if not(difInitForAttach in AFlags) then begin
+    if (Project1.MainUnitID < 0) or Destroying then Exit;
+    if not GetLaunchPathAndExe(LaunchingCmdLine, LaunchingApplication, LaunchingParams) then
+      exit;
+  end;
 
   FUnitInfoProvider.Clear;
   FIsInitializingDebugger:= True;
   try
     NewDebuggerClass := GetDebuggerClass;
-    LaunchingCmdLine := BuildBoss.GetRunCommandLine;
-
-    SplitCmdLine(LaunchingCmdLine, LaunchingApplication, LaunchingParams);
-
-    (* TODO: workaround for http://bugs.freepascal.org/view.php?id=21834
-       Se Debugger.RequiresLocalExecutable
-    *)
-    if NewDebuggerClass.RequiresLocalExecutable then begin
-
-      if BuildBoss.GetProjectUsesAppBundle then
-      begin
-        // it is Application Bundle (darwin only)
-
-        if not DirectoryExistsUTF8(LaunchingApplication) then
-        begin
-          if MessageDlg(lisLaunchingApplicationInvalid,
-            Format(lisTheLaunchingApplicationBundleDoesNotExists,
-              [LaunchingCmdLine, #13, #13, #13, #13]),
-            mtError, [mbYes, mbNo, mbCancel], 0) = mrYes then
-          begin
-            if not BuildBoss.CreateProjectApplicationBundle then Exit;
-          end
-          else
-            Exit;
-        end;
-
-        if NewDebuggerClass = TProcessDebugger then
-        begin // use executable path inside Application Bundle (darwin only)
-          LaunchingApplication := LaunchingApplication + '/Contents/MacOS/' +
-            ExtractFileNameOnly(LaunchingApplication);
-          LaunchingParams := LaunchingParams;
-        end;
-      end
-      else
-        if not FileIsExecutable(LaunchingApplication)
-        then begin
-          MessageDlg(lisLaunchingApplicationInvalid,
-            Format(lisTheLaunchingApplicationDoesNotExistsOrIsNotExecuta, ['"',
-              LaunchingCmdLine, '"', #13, #13, #13]),
-            mtError, [mbOK],0);
-          Exit;
-        end;
-
-      //todo: this check depends on the debugger class
-      if (NewDebuggerClass <> TProcessDebugger)
-      and not FileIsExecutable(EnvironmentOptions.GetParsedDebuggerFilename)
-      then begin
-        MessageDlg(lisDebuggerInvalid,
-          Format(lisTheDebuggerDoesNotExistsOrIsNotExecutableSeeEnviro, ['"',
-            EnvironmentOptions.DebuggerFilename, '"', #13, #13, #13]),
-          mtError,[mbOK],0);
-        Exit;
-      end;
-
-    end; // if NewDebuggerClass.RequiresLocalExecutable then
 
     if (dmsDebuggerObjectBroken in FManagerStates)
     then begin
@@ -2136,44 +2167,46 @@ begin
       end;
     end;
 
-    Project1.RunParameterOptions.AssignEnvironmentTo(FDebugger.Environment);
-    NewWorkingDir:=Project1.RunParameterOptions.WorkingDirectory;
-    GlobalMacroList.SubstituteStr(NewWorkingDir);
-    if NewDebuggerClass.RequiresLocalExecutable  and     (* TODO: workaround for http://bugs.freepascal.org/view.php?id=21834   *)
-       (NewWorkingDir<>'') and (not DirectoryExistsUTF8(NewWorkingDir))
-    then begin
-      MessageDlg(lisUnableToRun,
-        Format(lisTheWorkingDirectoryDoesNotExistPleaseCheckTheWorki, ['"',
-          NewWorkingDir, '"', #13]),
-        mtError,[mbCancel],0);
-      exit;
-    end;
-    if NewWorkingDir='' then begin
-      NewWorkingDir:=ExtractFilePath(BuildBoss.GetProjectTargetFilename(Project1));
+    if not(difInitForAttach in AFlags) then begin
+      Project1.RunParameterOptions.AssignEnvironmentTo(FDebugger.Environment);
+      NewWorkingDir:=Project1.RunParameterOptions.WorkingDirectory;
+      GlobalMacroList.SubstituteStr(NewWorkingDir);
       if NewDebuggerClass.RequiresLocalExecutable  and     (* TODO: workaround for http://bugs.freepascal.org/view.php?id=21834   *)
          (NewWorkingDir<>'') and (not DirectoryExistsUTF8(NewWorkingDir))
       then begin
         MessageDlg(lisUnableToRun,
-          Format(lisTheDestinationDirectoryDoesNotExistPleaseCheckTheP, ['"',
+          Format(lisTheWorkingDirectoryDoesNotExistPleaseCheckTheWorki, ['"',
             NewWorkingDir, '"', #13]),
           mtError,[mbCancel],0);
         exit;
       end;
+      if NewWorkingDir='' then begin
+        NewWorkingDir:=ExtractFilePath(BuildBoss.GetProjectTargetFilename(Project1));
+        if NewDebuggerClass.RequiresLocalExecutable  and     (* TODO: workaround for http://bugs.freepascal.org/view.php?id=21834   *)
+           (NewWorkingDir<>'') and (not DirectoryExistsUTF8(NewWorkingDir))
+        then begin
+          MessageDlg(lisUnableToRun,
+            Format(lisTheDestinationDirectoryDoesNotExistPleaseCheckTheP, ['"',
+              NewWorkingDir, '"', #13]),
+            mtError,[mbCancel],0);
+          exit;
+        end;
+      end;
+
+      // The following commands may call ProcessMessages, and FDebugger can be nil after each
+
+      if (FDebugger <> nil) and not NewDebuggerClass.RequiresLocalExecutable
+      then FDebugger.WorkingDir:=NewWorkingDir;
+      if (FDebugger <> nil) and NewDebuggerClass.RequiresLocalExecutable
+      then FDebugger.WorkingDir:=CleanAndExpandDirectory(NewWorkingDir);
+      // set filename after workingdir
+      if FDebugger <> nil
+      then FDebugger.FileName := LaunchingApplication;
+      if FDebugger <> nil
+      then FDebugger.Arguments := LaunchingParams;
+      if FDebugger <> nil
+      then FDebugger.ShowConsole := not Project1.CompilerOptions.Win32GraphicApp;
     end;
-
-    // The following commands may call ProcessMessages, and FDebugger can be nil after each
-
-    if (FDebugger <> nil) and not NewDebuggerClass.RequiresLocalExecutable
-    then FDebugger.WorkingDir:=NewWorkingDir;
-    if (FDebugger <> nil) and NewDebuggerClass.RequiresLocalExecutable
-    then FDebugger.WorkingDir:=CleanAndExpandDirectory(NewWorkingDir);
-    // set filename after workingdir
-    if FDebugger <> nil
-    then FDebugger.FileName := LaunchingApplication;
-    if FDebugger <> nil
-    then FDebugger.Arguments := LaunchingParams;
-    if FDebugger <> nil
-    then FDebugger.ShowConsole := not Project1.CompilerOptions.Win32GraphicApp;
 
     // check if debugging needs restart
     // mwe: can this still happen ?
@@ -2311,6 +2344,7 @@ begin
 
   FRunTimer.Enabled:=false;
   Exclude(FManagerStates,dmsWaitForRun);
+  Exclude(FManagerStates,dmsWaitForAttach);
 
   SourceEditorManager.ClearExecutionLines;
   if (MainIDE.ToolStatus=itDebugger) and (FDebugger<>nil) and (not Destroying)
@@ -2398,7 +2432,7 @@ begin
   {$endif}
   Result:=mrCancel;
   if Destroying then exit;
-  if dmsWaitForRun in FManagerStates then exit;
+  if FManagerStates*[dmsWaitForRun, dmsWaitForAttach] <> [] then exit;
   if (FDebugger <> nil) then
   begin
     // dmsRunning + dsPause => evaluating stack+watches after run
@@ -2462,9 +2496,49 @@ procedure TDebugManager.EndDebugging;
 begin
   FRunTimer.Enabled:=false;
   Exclude(FManagerStates,dmsWaitForRun);
+  Exclude(FManagerStates,dmsWaitForAttach);
   if FDebugger <> nil then FDebugger.Done;
   // if not already freed
   FreeDebugger;
+end;
+
+procedure TDebugManager.Attach(AProcessID: String);
+begin
+  if Destroying then exit;
+  if FManagerStates*[dmsWaitForRun, dmsWaitForAttach, dmsRunning] <> [] then exit;
+  if (FDebugger <> nil) then
+  begin
+    // check if debugging needs restart
+    if (dmsDebuggerObjectBroken in FManagerStates)
+    and (MainIDE.ToolStatus=itDebugger) then begin
+      MainIDE.ToolStatus:=itNone;
+      exit;
+    end;
+    FAttachToID := AProcessID;
+    Include(FManagerStates,dmsWaitForAttach);
+    FRunTimer.Enabled:=true;
+  end;
+end;
+
+procedure TDebugManager.Detach;
+begin
+  FRunTimer.Enabled:=false;
+  Exclude(FManagerStates,dmsWaitForRun);
+  Exclude(FManagerStates,dmsWaitForAttach);
+
+  SourceEditorManager.ClearExecutionLines;
+  if (MainIDE.ToolStatus=itDebugger) and (FDebugger<>nil) and (not Destroying)
+  then begin
+    FDebugger.Detach;
+  end;
+  if (dmsDebuggerObjectBroken in FManagerStates) then begin
+    if (MainIDE.ToolStatus=itDebugger) then
+      MainIDE.ToolStatus:=itNone;
+  end;
+
+  FUnitInfoProvider.Clear; // Maybe keep locations? But clear "not found"/"not loadable" flags?
+  if FDebugger <> nil
+  then FDebugger.UnitInfoProvider.Clear;
 end;
 
 function TDebugManager.Evaluate(const AExpression: String;
@@ -2668,6 +2742,33 @@ begin
   Result := GetDebuggerClass;
 end;
 
+function TDebugManager.AttachDebugger: TModalResult;
+begin
+  Result:=mrCancel;
+  if Destroying then exit;
+  Exclude(FManagerStates,dmsWaitForAttach);
+  if dmsRunning in FManagerStates then exit;
+  if MainIDE.ToolStatus<>itDebugger then exit;
+  if (FDebugger <> nil) then
+  begin
+    // check if debugging needs restart
+    if (dmsDebuggerObjectBroken in FManagerStates)
+    and (MainIDE.ToolStatus=itDebugger) then begin
+      MainIDE.ToolStatus:=itNone;
+      Result:=mrCancel;
+      exit;
+    end;
+    Include(FManagerStates,dmsRunning);
+    FStepping:=False;
+    try
+      FDebugger.Attach(FAttachToID);
+    finally
+      Exclude(FManagerStates,dmsRunning);
+    end;
+    Result:=mrOk;
+  end;
+end;
+
 function TDebugManager.ShowBreakPointProperties(const ABreakpoint: TIDEBreakPoint): TModalresult;
 begin
   Result := TBreakPropertyDlg.Create(Self, ABreakpoint).ShowModal;
@@ -2684,6 +2785,7 @@ begin
 
   FRunTimer.Enabled:=false;
   Exclude(FManagerStates,dmsWaitForRun);
+  Exclude(FManagerStates,dmsWaitForAttach);
 
   if FDebugger <> nil then begin
     FDebugger.OnBreakPointHit := nil;

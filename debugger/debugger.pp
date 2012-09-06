@@ -62,6 +62,8 @@ type
     dcStepOut,
     dcRunTo,
     dcJumpto,
+    dcAttach,
+    dcDetach,
     dcBreak,
     dcWatch,
     dcLocal,
@@ -2838,6 +2840,8 @@ type
     procedure StepOut;
     procedure RunTo(const ASource: String; const ALine: Integer);                // Executes til a certain point
     procedure JumpTo(const ASource: String; const ALine: Integer);               // No execute, only set exec point
+    procedure Attach(AProcessID: String);
+    procedure Detach;
     procedure SendConsoleInput(AText: String);
     function  Evaluate(const AExpression: String; var AResult: String;
                        var ATypeInfo: TDBGType;
@@ -2905,6 +2909,8 @@ const
     'StepOut',
     'RunTo',
     'Jumpto',
+    'Attach',
+    'Detach',
     'Break',
     'Watch',
     'Local',
@@ -2973,15 +2979,15 @@ const
   {dsNone } [],
   {dsIdle } [dcEnvironment],
   {dsStop } [dcRun, dcStepOver, dcStepInto, dcStepOverInstr, dcStepIntoInstr,
-             dcStepOut, dcRunTo, dcJumpto, dcBreak, dcWatch, dcEvaluate, dcEnvironment,
+             dcStepOut, dcRunTo, dcJumpto, dcAttach, dcBreak, dcWatch, dcEvaluate, dcEnvironment,
              dcSendConsoleInput],
   {dsPause} [dcRun, dcStop, dcStepOver, dcStepInto, dcStepOverInstr, dcStepIntoInstr,
-             dcStepOut, dcRunTo, dcJumpto, dcBreak, dcWatch, dcLocal, dcEvaluate, dcModify,
+             dcStepOut, dcRunTo, dcJumpto, dcDetach, dcBreak, dcWatch, dcLocal, dcEvaluate, dcModify,
              dcEnvironment, dcSetStackFrame, dcDisassemble, dcSendConsoleInput],
   {dsInternalPause} // same as run, so not really used
             [dcStop, dcBreak, dcWatch, dcEnvironment, dcSendConsoleInput],
   {dsInit } [],
-  {dsRun  } [dcPause, dcStop, dcBreak, dcWatch, dcEnvironment, dcSendConsoleInput],
+  {dsRun  } [dcPause, dcStop, dcDetach, dcBreak, dcWatch, dcEnvironment, dcSendConsoleInput],
   {dsError} [dcStop],
   {dsDestroying} []
   );
@@ -6431,6 +6437,17 @@ begin
   ReqCmd(dcJumpTo, [ASource, ALine]);
 end;
 
+procedure TDebugger.Attach(AProcessID: String);
+begin
+  if State = dsIdle then SetState(dsStop);  // Needed, because no filename was set
+  ReqCmd(dcAttach, [AProcessID]);
+end;
+
+procedure TDebugger.Detach;
+begin
+  ReqCmd(dcDetach, []);
+end;
+
 procedure TDebugger.SendConsoleInput(AText: String);
 begin
   ReqCmd(dcSendConsoleInput, [AText]);
@@ -6514,7 +6531,10 @@ begin
     // TODO: Why?
     if  (FFilename <> '') and (FState = dsIdle) and ChangeFileName
     then SetState(dsStop);
-  end;
+  end
+  else
+  if FileName = '' then
+    ResetStateToIdle;
 end;
 
 procedure TDebugger.ResetStateToIdle;

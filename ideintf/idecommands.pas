@@ -265,6 +265,8 @@ const
   ecAddBpSource             = ecFirstLazarus + 449;
   ecAddBpAddress            = ecFirstLazarus + 450;
   ecAddBpDataWatch          = ecFirstLazarus + 451;
+  ecAttach                  = ecFirstLazarus + 452;
+  ecDetach                  = ecFirstLazarus + 453;
 
   // 460++ : used for ecViewHistory (debugger) / ecViewMacroList
 
@@ -1216,7 +1218,7 @@ begin
 end;
 
 const
-  IDEEditorCommandStrs: array[0..293] of TIdentMapEntry = (
+  IDEEditorCommandStrs: array[0..295] of TIdentMapEntry = (
   // search
     (Value: ecFind;                                   Name: 'ecFind'),
     (Value: ecFindAgain;                              Name: 'ecFindAgain'),
@@ -1428,6 +1430,8 @@ const
     (Value: ecAddBpSource;                            Name: 'ecAddBpSource'),
     (Value: ecAddBpAddress;                           Name: 'ecAddBpAddress'),
     (Value: ecAddBpDataWatch;                         Name: 'ecAddBpDataWatch'),
+    (Value: ecAttach;                                 Name: 'ecAttach'),
+    (Value: ecDetach;                                 Name: 'ecDetach'),
 
   // 460++ : used for ecViewHistory (debugger) / ecViewMacroList
 

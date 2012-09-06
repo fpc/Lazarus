@@ -2842,6 +2842,8 @@ resourcestring
   srkmecResetDebugger             = 'reset debugger';
   srkmecToggleBreakPoint          = 'toggle breakpoint';
   srkmecRemoveBreakPoint          = 'remove breakpoint';
+  srkmecAttach                    = 'Attach to program';
+  srkmecDetach                    = 'Detach from program';
   srkmecRunParameters             = 'run parameters';
   srkmecCompilerOptions           = 'compiler options';
   srkmecBuildFile                 = 'build file';
@@ -5570,6 +5572,8 @@ resourcestring
   lisAMacroWithThisNameAlreadyExists = 'A macro with this name already exists.';
   lisNewMacroname2 = 'New Macroname';
   lisEnterNewNameForMacroS = 'Enter new name for Macro "%s"';
+  rsAttachTo = 'Attach to';
+  rsEnterPID = 'Enter PID';
 
 implementation
 

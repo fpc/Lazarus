@@ -336,6 +336,8 @@ type
     procedure mnuStepOutProjectClicked(Sender: TObject);
     procedure mnuRunToCursorProjectClicked(Sender: TObject);
     procedure mnuStopProjectClicked(Sender: TObject);
+    procedure mnuAttachDebuggerClicked(Sender: TObject);
+    procedure mnuDetachDebuggerClicked(Sender: TObject);
     procedure mnuRunParametersClicked(Sender: TObject);
     procedure mnuBuildFileClicked(Sender: TObject);
     procedure mnuRunFileClicked(Sender: TObject);
@@ -2707,6 +2709,8 @@ begin
     itmRunMenuStepOut.OnClick := @mnuStepOutProjectClicked;
     itmRunMenuRunToCursor.OnClick := @mnuRunToCursorProjectClicked;
     itmRunMenuStop.OnClick := @mnuStopProjectClicked;
+    itmRunMenuAttach.OnClick := @mnuAttachDebuggerClicked;
+    itmRunMenuDetach.OnClick := @mnuDetachDebuggerClicked;
     itmRunMenuRunParameters.OnClick := @mnuRunParametersClicked;
     itmRunMenuBuildFile.OnClick := @mnuBuildFileClicked;
     itmRunMenuRunFile.OnClick := @mnuRunFileClicked;
@@ -3319,6 +3323,7 @@ var
   ASrcEdit: TSourceEditor;
   AnUnitInfo: TUnitInfo;
   IDECmd: TIDECommand;
+  s: String;
 begin
   //debugln('TMainIDE.OnProcessIDECommand ',dbgs(Command));
 
@@ -3377,6 +3382,21 @@ begin
         DoRunFile
       else
         DoRunProject;
+    end;
+
+  ecAttach:
+    if ToolStatus = itNone then begin
+      if DebugBoss.InitDebugger([difInitForAttach]) then begin
+        s := '';
+        if InputQuery(rsAttachTo, rsEnterPID, s) then begin
+          ToolStatus := itDebugger;
+          DebugBoss.Attach(s);
+        end;
+      end;
+    end;
+  ecDetach:
+    begin
+      DebugBoss.Detach;
     end;
 
   ecBuildFile:
@@ -4615,6 +4635,20 @@ end;
 procedure TMainIDE.mnuStopProjectClicked(Sender: TObject);
 begin
   DebugBoss.DoStopProject;
+end;
+
+procedure TMainIDE.mnuAttachDebuggerClicked(Sender: TObject);
+var
+  H: boolean;
+begin
+  OnProcessIDECommand(nil, ecAttach, H);
+end;
+
+procedure TMainIDE.mnuDetachDebuggerClicked(Sender: TObject);
+var
+  H: boolean;
+begin
+  OnProcessIDECommand(nil, ecDetach, H);
 end;
 
 procedure TMainIDE.mnuBuildFileClicked(Sender: TObject);

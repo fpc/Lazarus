@@ -293,6 +293,8 @@ type
         itmRunMenuStepOut: TIDEMenuCommand;
         itmRunMenuRunToCursor: TIDEMenuCommand;
         itmRunMenuStop: TIDEMenuCommand;
+        itmRunMenuAttach: TIDEMenuCommand;
+        itmRunMenuDetach: TIDEMenuCommand;
         itmRunMenuRunParameters: TIDEMenuCommand;
         itmRunMenuResetDebugger: TIDEMenuCommand;
       //itmRunBuildingFile: TIDEMenuSection;

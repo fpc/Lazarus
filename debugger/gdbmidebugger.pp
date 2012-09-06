@@ -203,7 +203,7 @@ type
     FTheDebugger: TGDBMIDebugger; // Set during Execute
     FLastExecCommand: String;
     FLastExecResult: TGDBMIExecResult;
-    FLogWarnings: String;
+    FLogWarnings, FFullCmdReply: String;
     function GetDebuggerProperties: TGDBMIDebuggerProperties;
     function GetDebuggerState: TDBGState;
     function GetTargetInfo: PGDBMITargetInfo;
@@ -411,6 +411,8 @@ type
     function  GDBStepOut: Boolean;
     function  GDBRunTo(const ASource: String; const ALine: Integer): Boolean;
     function  GDBJumpTo(const ASource: String; const ALine: Integer): Boolean;
+    function  GDBAttach(AProcessID: String): Boolean;
+    function  GDBDetach: Boolean;
     function  GDBDisassemble(AAddr: TDbgPtr; ABackward: Boolean; out ANextAddr: TDbgPtr;
                              out ADump, AStatement, AFile: String; out ALine: Integer): Boolean;
               deprecated;
@@ -690,9 +692,20 @@ type
     function ParseBreakInsertError(var AText: String; out AnId: Integer): Boolean;
   end;
 
+  { TGDBMIDebuggerCommandStartBase }
+
+  TGDBMIDebuggerCommandStartBase = class(TGDBMIDebuggerCommandExecuteBase)
+  protected
+    procedure SetTargetInfo(const AFileType: String);
+    function  CheckFunction(const AFunction: String): Boolean;
+    procedure RetrieveRegcall;
+    procedure CheckAvailableTypes;
+    procedure DetectForceableBreaks;
+  end;
+
   { TGDBMIDebuggerCommandStartDebugging }
 
-  TGDBMIDebuggerCommandStartDebugging = class(TGDBMIDebuggerCommandExecuteBase)
+  TGDBMIDebuggerCommandStartDebugging = class(TGDBMIDebuggerCommandStartBase)
   private
     FContinueCommand: TGDBMIDebuggerCommand;
     FSuccess: Boolean;
@@ -704,6 +717,27 @@ type
     function  DebugText: String; override;
     property ContinueCommand: TGDBMIDebuggerCommand read FContinueCommand;
     property Success: Boolean read FSuccess;
+  end;
+
+  { TGDBMIDebuggerCommandAttach }
+
+  TGDBMIDebuggerCommandAttach = class(TGDBMIDebuggerCommandStartBase)
+  private
+    FProcessID: String;
+    FSuccess: Boolean;
+  protected
+    function  DoExecute: Boolean; override;
+  public
+    constructor Create(AOwner: TGDBMIDebugger; AProcessID: String);
+    function  DebugText: String; override;
+    property Success: Boolean read FSuccess;
+  end;
+
+  { TGDBMIDebuggerCommandDetach }
+
+  TGDBMIDebuggerCommandDetach = class(TGDBMIDebuggerCommand)
+  protected
+    function  DoExecute: Boolean; override;
   end;
 
   { TGDBMIDebuggerCommandExecute }
@@ -1581,6 +1615,237 @@ begin
   Result := 4;
   if (LowerCase(CpuName) = 'ia64') or (LowerCase(CpuName) = 'x86_64')
   then Result := 8;
+end;
+
+{ TGDBMIDebuggerCommandStartBase }
+
+procedure TGDBMIDebuggerCommandStartBase.SetTargetInfo(const AFileType: String);
+var
+  FoundPtrSize, UseWin64ABI: Boolean;
+begin
+  UseWin64ABI := False;
+  // assume some defaults
+  TargetInfo^.TargetPtrSize := GetIntValue('sizeof(%s)', [PointerTypeCast]);
+  FoundPtrSize := (FLastExecResult.State <> dsError) and (TargetInfo^.TargetPtrSize > 0);
+  if not FoundPtrSize
+  then TargetInfo^.TargetPtrSize := 4;
+  TargetInfo^.TargetIsBE := False;
+
+  case StringCase(AFileType, [
+    'efi-app-ia32', 'elf32-i386', 'pei-i386', 'elf32-i386-freebsd',
+    'elf64-x86-64', 'pei-x86-64',
+    'mach-o-be',
+    'mach-o-le',
+    'pei-arm-little',
+    'pei-arm-big'
+  ], True, False) of
+    0..3: TargetInfo^.TargetCPU := 'x86';
+    4: TargetInfo^.TargetCPU := 'x86_64'; //TODO: should we check, PtrSize must be 8, but what if not?
+    5: begin
+      TargetInfo^.TargetCPU := 'x86_64'; //TODO: should we check, PtrSize must be 8, but what if not?
+      UseWin64ABI := True;
+    end;
+    6: begin
+       //mach-o-be
+      TargetInfo^.TargetIsBE := True;
+      if FTheDebugger.FGDBCPU <> ''
+      then TargetInfo^.TargetCPU := FTheDebugger.FGDBCPU
+      else TargetInfo^.TargetCPU := 'powerpc'; // guess
+    end;
+    7: begin
+      //mach-o-le
+      if FoundPtrSize then begin
+        if FTheDebugger.FGDBPtrSize = TargetInfo^.TargetPtrSize
+        then TargetInfo^.TargetCPU := FTheDebugger.FGDBCPU
+        else // guess
+          case TargetInfo^.TargetPtrSize of
+            4: TargetInfo^.TargetCPU := 'x86'; // guess
+            8: TargetInfo^.TargetCPU := 'x86_64'; // guess
+            else TargetInfo^.TargetCPU := 'x86'; // guess
+          end
+      end
+      else begin
+        if FTheDebugger.FGDBCPU <> ''
+        then TargetInfo^.TargetCPU := FTheDebugger.FGDBCPU
+        else TargetInfo^.TargetCPU := 'x86'; // guess
+      end;
+    end;
+    8: begin
+      TargetInfo^.TargetCPU := 'arm';
+    end;
+    9: begin
+      TargetInfo^.TargetIsBE := True;
+      TargetInfo^.TargetCPU := 'arm';
+    end;
+  else
+    // Unknown filetype, use GDB cpu
+    DebugLn(DBG_WARNINGS, '[WARNING] [Debugger.TargetInfo] Unknown FileType: %s, using GDB cpu', [AFileType]);
+
+    TargetInfo^.TargetCPU := FTheDebugger.FGDBCPU;
+    // Todo: check PtrSize and downgrade 64 bit cpu to 32 bit cpu, if required
+  end;
+
+  if not FoundPtrSize
+  then TargetInfo^.TargetPtrSize := CpuNameToPtrSize(TargetInfo^.TargetCPU);
+
+  case StringCase(TargetInfo^.TargetCPU, [
+    'x86', 'i386', 'i486', 'i586', 'i686',
+    'ia64', 'x86_64', 'powerpc',
+    'sparc', 'arm'
+  ], True, False) of
+    0..4: begin // x86
+      TargetInfo^.TargetRegisters[0] := '$eax';
+      TargetInfo^.TargetRegisters[1] := '$edx';
+      TargetInfo^.TargetRegisters[2] := '$ecx';
+    end;
+    5, 6: begin // ia64, x86_64
+      if TargetInfo^.TargetPtrSize = 4
+      then begin
+        TargetInfo^.TargetRegisters[0] := '$eax';
+        TargetInfo^.TargetRegisters[1] := '$edx';
+        TargetInfo^.TargetRegisters[2] := '$ecx';
+      end
+      else if UseWin64ABI
+      then begin
+        TargetInfo^.TargetRegisters[0] := '$rcx';
+        TargetInfo^.TargetRegisters[1] := '$rdx';
+        TargetInfo^.TargetRegisters[2] := '$r8';
+      end else
+      begin
+        TargetInfo^.TargetRegisters[0] := '$rdi';
+        TargetInfo^.TargetRegisters[1] := '$rsi';
+        TargetInfo^.TargetRegisters[2] := '$rdx';
+      end;
+    end;
+    7: begin // powerpc
+      TargetInfo^.TargetIsBE := True;
+      // alltough darwin can start with r2, it seems that all OS start with r3
+//        if UpperCase(FTargetInfo.TargetOS) = 'DARWIN'
+//        then begin
+//          FTargetInfo.TargetRegisters[0] := '$r2';
+//          FTargetInfo.TargetRegisters[1] := '$r3';
+//          FTargetInfo.TargetRegisters[2] := '$r4';
+//        end
+//        else begin
+        TargetInfo^.TargetRegisters[0] := '$r3';
+        TargetInfo^.TargetRegisters[1] := '$r4';
+        TargetInfo^.TargetRegisters[2] := '$r5';
+//        end;
+    end;
+    8: begin // sparc
+      TargetInfo^.TargetIsBE := True;
+      TargetInfo^.TargetRegisters[0] := '$g1';
+      TargetInfo^.TargetRegisters[1] := '$o0';
+      TargetInfo^.TargetRegisters[2] := '$o1';
+    end;
+    9: begin // arm
+      TargetInfo^.TargetRegisters[0] := '$r0';
+      TargetInfo^.TargetRegisters[1] := '$r1';
+      TargetInfo^.TargetRegisters[2] := '$r2';
+    end;
+  else
+    TargetInfo^.TargetRegisters[0] := '';
+    TargetInfo^.TargetRegisters[1] := '';
+    TargetInfo^.TargetRegisters[2] := '';
+    DebugLn(DBG_WARNINGS, '[WARNING] [Debugger] Unknown target CPU: ', TargetInfo^.TargetCPU);
+  end;
+end;
+
+function TGDBMIDebuggerCommandStartBase.CheckFunction(const AFunction: String
+  ): Boolean;
+var
+  R: TGDBMIExecResult;
+  idx: Integer;
+begin
+  ExecuteCommand('info functions %s', [AFunction], R, [cfCheckState]);
+  idx := Pos(AFunction, R.Values);
+  if idx <> 0
+  then begin
+    // Strip first
+    Delete(R.Values, 1, idx + Length(AFunction) - 1);
+    idx := Pos(AFunction, R.Values);
+  end;
+  Result := idx <> 0;
+end;
+
+procedure TGDBMIDebuggerCommandStartBase.RetrieveRegcall;
+var
+  R: TGDBMIExecResult;
+begin
+  // Assume it is
+  Include(TargetInfo^.TargetFlags, tfRTLUsesRegCall);
+
+  ExecuteCommand('-data-evaluate-expression FPC_THREADVAR_RELOCATE_PROC', R);
+  if R.State <> dsError then Exit; // guessed right
+
+  // next attempt, posibly no symbols, try functions
+  if CheckFunction('FPC_CPUINIT') then Exit; // function present --> not 1.0
+
+  // this runerror is only defined for < 1.1 ?
+  if not CheckFunction('$$_RUNERROR$') then Exit;
+
+  // We are here in 2 cases
+  // 1) there are no symbols at all
+  //    We do not have to know the calling convention
+  // 2) target is compiled with an earlier version than 1.9.2
+  //    params are passes by stack
+  Exclude(TargetInfo^.TargetFlags, tfRTLUsesRegCall);
+end;
+
+procedure TGDBMIDebuggerCommandStartBase.CheckAvailableTypes;
+var
+  HadTimeout: Boolean;
+  R: TGDBMIExecResult;
+begin
+  // collect timeouts
+  HadTimeout := False;
+  // check whether we need class cast dereference
+  R := CheckHasType('TObject', tfFlagHasTypeObject);
+  HadTimeout := HadTimeout and LastExecwasTimeOut;
+  if R.State <> dsError
+  then begin
+    if UpperCase(LeftStr(R.Values, 15)) = UpperCase('type = ^TOBJECT')
+    then include(TargetInfo^.TargetFlags, tfClassIsPointer);
+  end;
+  R := CheckHasType('Exception', tfFlagHasTypeException);
+  HadTimeout := HadTimeout and LastExecwasTimeOut;
+  if R.State <> dsError
+  then begin
+    if UpperCase(LeftStr(R.Values, 17)) = UpperCase('type = ^EXCEPTION')
+    then include(TargetInfo^.TargetFlags, tfExceptionIsPointer);
+  end;
+  CheckHasType('Shortstring', tfFlagHasTypeShortstring);
+  HadTimeout := HadTimeout and LastExecwasTimeOut;
+  //CheckHasType('PShortstring', tfFlagHasTypePShortString);
+  //HadTimeout := HadTimeout and LastExecwasTimeOut;
+  CheckHasType('pointer', tfFlagHasTypePointer);
+  HadTimeout := HadTimeout and LastExecwasTimeOut;
+  CheckHasType('byte', tfFlagHasTypeByte);
+  HadTimeout := HadTimeout and LastExecwasTimeOut;
+  //CheckHasType('char', tfFlagHasTypeChar);
+  //HadTimeout := HadTimeout and LastExecwasTimeOut;
+
+  if HadTimeout then DoTimeoutFeedback;
+end;
+
+procedure TGDBMIDebuggerCommandStartBase.DetectForceableBreaks;
+var
+  R: TGDBMIExecResult;
+  List: TGDBMINameValueList;
+begin
+  if not (dfForceBreakDetected in FTheDebugger.FDebuggerFlags) then begin
+    // detect if we can insert a not yet known break
+    ExecuteCommand('-break-insert -f foo', R);
+    if R.State <> dsError
+    then begin
+      Include(FTheDebugger.FDebuggerFlags, dfForceBreak);
+      List := TGDBMINameValueList.Create(R, ['bkpt']);
+      ExecuteCommand('-break-delete ' + List.Values['number']);
+      List.Free;
+    end
+    else Exclude(FTheDebugger.FDebuggerFlags, dfForceBreak);
+    Include(FTheDebugger.FDebuggerFlags, dfForceBreakDetected);
+  end;
 end;
 
 { TGDBMIDebuggerCommandExecuteBase }
@@ -3921,179 +4186,6 @@ end;
 
 function TGDBMIDebuggerCommandStartDebugging.DoExecute: Boolean;
 
-  function CheckFunction(const AFunction: String): Boolean;
-  var
-    R: TGDBMIExecResult;
-    idx: Integer;
-  begin
-    ExecuteCommand('info functions %s', [AFunction], R, [cfCheckState]);
-    idx := Pos(AFunction, R.Values);
-    if idx <> 0
-    then begin
-      // Strip first
-      Delete(R.Values, 1, idx + Length(AFunction) - 1);
-      idx := Pos(AFunction, R.Values);
-    end;
-    Result := idx <> 0;
-  end;
-
-  procedure RetrieveRegcall;
-  var
-    R: TGDBMIExecResult;
-  begin
-    // Assume it is
-    Include(TargetInfo^.TargetFlags, tfRTLUsesRegCall);
-
-    ExecuteCommand('-data-evaluate-expression FPC_THREADVAR_RELOCATE_PROC', R);
-    if R.State <> dsError then Exit; // guessed right
-
-    // next attempt, posibly no symbols, try functions
-    if CheckFunction('FPC_CPUINIT') then Exit; // function present --> not 1.0
-
-    // this runerror is only defined for < 1.1 ?
-    if not CheckFunction('$$_RUNERROR$') then Exit;
-
-    // We are here in 2 cases
-    // 1) there are no symbols at all
-    //    We do not have to know the calling convention
-    // 2) target is compiled with an earlier version than 1.9.2
-    //    params are passes by stack
-    Exclude(TargetInfo^.TargetFlags, tfRTLUsesRegCall);
-  end;
-
-  procedure SetTargetInfo(const AFileType: String);
-  var
-    FoundPtrSize, UseWin64ABI: Boolean;
-  begin
-    UseWin64ABI := False;
-    // assume some defaults
-    TargetInfo^.TargetPtrSize := GetIntValue('sizeof(%s)', [PointerTypeCast]);
-    FoundPtrSize := (FLastExecResult.State <> dsError) and (TargetInfo^.TargetPtrSize > 0);
-    if not FoundPtrSize
-    then TargetInfo^.TargetPtrSize := 4;
-    TargetInfo^.TargetIsBE := False;
-
-    case StringCase(AFileType, [
-      'efi-app-ia32', 'elf32-i386', 'pei-i386', 'elf32-i386-freebsd',
-      'elf64-x86-64', 'pei-x86-64',
-      'mach-o-be',
-      'mach-o-le',
-      'pei-arm-little',
-      'pei-arm-big'
-    ], True, False) of
-      0..3: TargetInfo^.TargetCPU := 'x86';
-      4: TargetInfo^.TargetCPU := 'x86_64'; //TODO: should we check, PtrSize must be 8, but what if not?
-      5: begin
-        TargetInfo^.TargetCPU := 'x86_64'; //TODO: should we check, PtrSize must be 8, but what if not?
-        UseWin64ABI := True;
-      end;
-      6: begin
-         //mach-o-be
-        TargetInfo^.TargetIsBE := True;
-        if FTheDebugger.FGDBCPU <> ''
-        then TargetInfo^.TargetCPU := FTheDebugger.FGDBCPU
-        else TargetInfo^.TargetCPU := 'powerpc'; // guess
-      end;
-      7: begin
-        //mach-o-le
-        if FoundPtrSize then begin
-          if FTheDebugger.FGDBPtrSize = TargetInfo^.TargetPtrSize
-          then TargetInfo^.TargetCPU := FTheDebugger.FGDBCPU
-          else // guess
-            case TargetInfo^.TargetPtrSize of
-              4: TargetInfo^.TargetCPU := 'x86'; // guess
-              8: TargetInfo^.TargetCPU := 'x86_64'; // guess
-              else TargetInfo^.TargetCPU := 'x86'; // guess
-            end
-        end
-        else begin
-          if FTheDebugger.FGDBCPU <> ''
-          then TargetInfo^.TargetCPU := FTheDebugger.FGDBCPU
-          else TargetInfo^.TargetCPU := 'x86'; // guess
-        end;
-      end;
-      8: begin
-        TargetInfo^.TargetCPU := 'arm';
-      end;
-      9: begin
-        TargetInfo^.TargetIsBE := True;
-        TargetInfo^.TargetCPU := 'arm';
-      end;
-    else
-      // Unknown filetype, use GDB cpu
-      DebugLn(DBG_WARNINGS, '[WARNING] [Debugger.TargetInfo] Unknown FileType: %s, using GDB cpu', [AFileType]);
-
-      TargetInfo^.TargetCPU := FTheDebugger.FGDBCPU;
-      // Todo: check PtrSize and downgrade 64 bit cpu to 32 bit cpu, if required
-    end;
-
-    if not FoundPtrSize
-    then TargetInfo^.TargetPtrSize := CpuNameToPtrSize(TargetInfo^.TargetCPU);
-
-    case StringCase(TargetInfo^.TargetCPU, [
-      'x86', 'i386', 'i486', 'i586', 'i686',
-      'ia64', 'x86_64', 'powerpc',
-      'sparc', 'arm'
-    ], True, False) of
-      0..4: begin // x86
-        TargetInfo^.TargetRegisters[0] := '$eax';
-        TargetInfo^.TargetRegisters[1] := '$edx';
-        TargetInfo^.TargetRegisters[2] := '$ecx';
-      end;
-      5, 6: begin // ia64, x86_64
-        if TargetInfo^.TargetPtrSize = 4
-        then begin
-          TargetInfo^.TargetRegisters[0] := '$eax';
-          TargetInfo^.TargetRegisters[1] := '$edx';
-          TargetInfo^.TargetRegisters[2] := '$ecx';
-        end
-        else if UseWin64ABI
-        then begin
-          TargetInfo^.TargetRegisters[0] := '$rcx';
-          TargetInfo^.TargetRegisters[1] := '$rdx';
-          TargetInfo^.TargetRegisters[2] := '$r8';
-        end else
-        begin
-          TargetInfo^.TargetRegisters[0] := '$rdi';
-          TargetInfo^.TargetRegisters[1] := '$rsi';
-          TargetInfo^.TargetRegisters[2] := '$rdx';
-        end;
-      end;
-      7: begin // powerpc
-        TargetInfo^.TargetIsBE := True;
-        // alltough darwin can start with r2, it seems that all OS start with r3
-//        if UpperCase(FTargetInfo.TargetOS) = 'DARWIN'
-//        then begin
-//          FTargetInfo.TargetRegisters[0] := '$r2';
-//          FTargetInfo.TargetRegisters[1] := '$r3';
-//          FTargetInfo.TargetRegisters[2] := '$r4';
-//        end
-//        else begin
-          TargetInfo^.TargetRegisters[0] := '$r3';
-          TargetInfo^.TargetRegisters[1] := '$r4';
-          TargetInfo^.TargetRegisters[2] := '$r5';
-//        end;
-      end;
-      8: begin // sparc
-        TargetInfo^.TargetIsBE := True;
-        TargetInfo^.TargetRegisters[0] := '$g1';
-        TargetInfo^.TargetRegisters[1] := '$o0';
-        TargetInfo^.TargetRegisters[2] := '$o1';
-      end;
-      9: begin // arm
-        TargetInfo^.TargetRegisters[0] := '$r0';
-        TargetInfo^.TargetRegisters[1] := '$r1';
-        TargetInfo^.TargetRegisters[2] := '$r2';
-      end;
-    else
-      TargetInfo^.TargetRegisters[0] := '';
-      TargetInfo^.TargetRegisters[1] := '';
-      TargetInfo^.TargetRegisters[2] := '';
-      DebugLn(DBG_WARNINGS, '[WARNING] [Debugger] Unknown target CPU: ', TargetInfo^.TargetCPU);
-    end;
-
-  end;
-
   {$IF defined(UNIX) or defined(DBG_ENABLE_TERMINAL)}
   procedure InitConsole;
   var
@@ -4411,7 +4503,7 @@ var
   R: TGDBMIExecResult;
   FileType, EntryPoint: String;
   List: TGDBMINameValueList;
-  CanContinue, HadTimeout: Boolean;
+  CanContinue: Boolean;
 begin
   Result := True;
   FSuccess := False;
@@ -4450,35 +4542,7 @@ begin
 
     ExecuteCommand('-gdb-set language pascal', [cfCheckError]);
 
-    // collect timeouts
-    HadTimeout := False;
-    // check whether we need class cast dereference
-    R := CheckHasType('TObject', tfFlagHasTypeObject);
-    HadTimeout := HadTimeout and LastExecwasTimeOut;
-    if R.State <> dsError
-    then begin
-      if UpperCase(LeftStr(R.Values, 15)) = UpperCase('type = ^TOBJECT')
-      then include(TargetInfo^.TargetFlags, tfClassIsPointer);
-    end;
-    R := CheckHasType('Exception', tfFlagHasTypeException);
-    HadTimeout := HadTimeout and LastExecwasTimeOut;
-    if R.State <> dsError
-    then begin
-      if UpperCase(LeftStr(R.Values, 17)) = UpperCase('type = ^EXCEPTION')
-      then include(TargetInfo^.TargetFlags, tfExceptionIsPointer);
-    end;
-    CheckHasType('Shortstring', tfFlagHasTypeShortstring);
-    HadTimeout := HadTimeout and LastExecwasTimeOut;
-    //CheckHasType('PShortstring', tfFlagHasTypePShortString);
-    //HadTimeout := HadTimeout and LastExecwasTimeOut;
-    CheckHasType('pointer', tfFlagHasTypePointer);
-    HadTimeout := HadTimeout and LastExecwasTimeOut;
-    CheckHasType('byte', tfFlagHasTypeByte);
-    HadTimeout := HadTimeout and LastExecwasTimeOut;
-    //CheckHasType('char', tfFlagHasTypeChar);
-    //HadTimeout := HadTimeout and LastExecwasTimeOut;
-
-    if HadTimeout then DoTimeoutFeedback;
+    CheckAvailableTypes;
 
     TargetInfo^.TargetCPU := '';
     TargetInfo^.TargetOS := FTheDebugger.FGDBOS; // try to detect ??
@@ -4503,29 +4567,13 @@ begin
       DebugLn(DBG_VERBOSE, '[Debugger] File type: ', FileType);
       DebugLn(DBG_VERBOSE, '[Debugger] Entry point: ', EntryPoint);
     end;
-
     SetTargetInfo(FileType);
 
-    (* Set breakpoints *)
-
-    if not (dfForceBreakDetected in FTheDebugger.FDebuggerFlags) then begin
-      // detect if we can insert a not yet known break
-      ExecuteCommand('-break-insert -f foo', R);
-      if R.State <> dsError
-      then begin
-        Include(FTheDebugger.FDebuggerFlags, dfForceBreak);
-        List := TGDBMINameValueList.Create(R, ['bkpt']);
-        ExecuteCommand('-break-delete ' + List.Values['number']);
-        List.Free;
-      end
-      else Exclude(FTheDebugger.FDebuggerFlags, dfForceBreak);
-      Include(FTheDebugger.FDebuggerFlags, dfForceBreakDetected);
-    end;
+    DetectForceableBreaks;
 
     (* We need a breakpoint at entry-point or main, to continue initialization
        "main" could map to more than one location, so we try entry point first
     *)
-
     TargetInfo^.TargetPID := RunToMain(EntryPoint);
 
     if DebuggerState = dsStop
@@ -4606,6 +4654,162 @@ begin
   if FContinueCommand <> nil
   then s := FContinueCommand.DebugText;
   Result := Format('%s: ContinueCommand= %s', [ClassName, s]);
+end;
+
+{ TGDBMIDebuggerCommandAttach }
+
+function TGDBMIDebuggerCommandAttach.DoExecute: Boolean;
+var
+  R: TGDBMIExecResult;
+  StoppedParams, FileType, CmdResp, s: String;
+  List: TGDBMINameValueList;
+  NewPID: Integer;
+begin
+  Result := True;
+  FSuccess := False;
+
+  // Tnit (StartDebugging)
+  TargetInfo^.TargetFlags := [tfHasSymbols]; // Set until proven otherwise
+  ExecuteCommand('-gdb-set language pascal', [cfCheckError]);
+
+  //{$IF defined(UNIX) or defined(DBG_ENABLE_TERMINAL)}
+  //InitConsole;
+  //{$ENDIF}
+
+  SetDebuggerState(dsInit); // triggers all breakpoints to be set.
+  Application.ProcessMessages; // workaround, allow source-editor to queue line info request (Async call)
+
+
+  // Attach
+  if not ExecuteCommand('attach %s', [FProcessID], R) then
+    R.State := dsError;
+  if R.State = dsError then begin
+    ExecuteCommand('detach', [], R);
+    SetDebuggerErrorState('Attach failed');
+    exit;
+  end;
+  CmdResp := FFullCmdReply;
+
+  if (R.State <> dsNone)
+  then SetDebuggerState(R.State);
+
+  if R.State = dsRun then begin
+    ProcessRunning(StoppedParams, R);;
+    if (R.State = dsError) then begin
+      ExecuteCommand('detach', [], R);
+      SetDebuggerErrorState('Attach failed');
+      exit;
+    end;
+  end;
+  CmdResp := CmdResp + StoppedParams + R.Values;
+
+  // Get PID
+  NewPID := 0;
+
+  s := GetPart(['Attaching to process '], [LineEnding], CmdResp, True, False);
+  if s <> '' then
+    NewPID := StrToIntDef(s, 0);
+
+  if NewPID = 0 then begin
+    s := GetPart(['=thread-group-started,'], [LineEnding], CmdResp, True, False);
+    if s <> '' then
+      s := GetPart(['pid="'], ['"'], s, True, False);
+    if s <> '' then
+      NewPID := StrToIntDef(s, 0);
+  end;
+
+  if NewPID = 0 then begin
+    s := GetPart(['process '], [' local', ']'], CmdResp, True);
+    if s <> '' then
+      NewPID := StrToIntDef(s, 0);
+  end;
+
+  // "info program" may crash after attach
+  if NewPID = 0 then begin
+    if ExecuteCommand('info pid', [], R, [cfCheckState]) and (R.State <> dsError)
+    then begin
+      List := TGDBMINameValueList.Create(R);
+      NewPID := StrToIntDef(List.Values['process-id'], 0);
+      List.Free;
+    end;
+  end;
+
+  if NewPID = 0 then begin
+    if ExecuteCommand('info threads', [], R, [cfCheckState]) and (R.State <> dsError)
+    then begin
+      s := GetPart(['of process '], [' '], R.Values, True);
+      NewPID := StrToIntDef(s, 0);
+    end;
+  end;
+
+  if NewPID = 0 then begin
+    ExecuteCommand('detach', [], R);
+    SetDebuggerErrorState(Format(gdbmiCommandStartMainRunNoPIDError, [LineEnding]));
+    exit;
+  end;
+
+  TargetInfo^.TargetPID := NewPID;
+
+
+  // Tnit (StartDebugging)
+  //   check if the exe is compiled with FPC >= 1.9.2
+  //   then the rtl is compiled with regcalls
+  RetrieveRegCall;
+  CheckAvailableTypes;
+  DetectForceableBreaks;
+
+  FileType := '';
+  if ExecuteCommand('info file', R)
+  then begin
+    if rfNoMI in R.Flags
+    then begin
+      FileType := GetPart('file type ', '.', R.Values);
+    end
+    else begin
+      // OS X gdb has mi output here
+      List := TGDBMINameValueList.Create(R, ['section-info']);
+      FileType := List.Values['filetype'];
+      List.Free;
+    end;
+    DebugLn(DBG_VERBOSE, '[Debugger] File type: ', FileType);
+  end;
+  SetTargetInfo(FileType);
+
+
+  if not(DebuggerState in [dsPause]) then
+    SetDebuggerState(dsPause);
+  ProcessFrame; // Includes DoLocation
+  FSuccess := True;
+end;
+
+constructor TGDBMIDebuggerCommandAttach.Create(AOwner: TGDBMIDebugger;
+  AProcessID: String);
+begin
+  inherited Create(AOwner);
+  FSuccess := False;
+  FProcessID := AProcessID;
+end;
+
+function TGDBMIDebuggerCommandAttach.DebugText: String;
+begin
+  Result := Format('%s: ProcessID= %s', [ClassName, FProcessID]);
+end;
+
+{ TGDBMIDebuggerCommandDetach }
+
+function TGDBMIDebuggerCommandDetach.DoExecute: Boolean;
+var
+  R: TGDBMIExecResult;
+begin
+  Result := True;
+  if not ExecuteCommand('detach', R) then
+    R.State := dsError;
+  if R.State = dsError then begin
+    SetDebuggerErrorState('Detach failed');
+    exit;
+  end;
+
+  SetDebuggerState(dsStop);
 end;
 
 { TGDBMIDebuggerCommandExecute }
@@ -7076,6 +7280,34 @@ begin
   Result := False;
 end;
 
+function TGDBMIDebugger.GDBAttach(AProcessID: String): Boolean;
+var
+  Cmd: TGDBMIDebuggerCommandAttach;
+begin
+  Result := False;
+  if State <> dsStop then exit;
+
+  Cmd := TGDBMIDebuggerCommandAttach.Create(Self, AProcessID);
+  Cmd.AddReference;
+  QueueCommand(Cmd);
+  Result := Cmd.Success;
+  if not Result
+  then Cmd.Cancel;
+  Cmd.ReleaseReference;
+end;
+
+function TGDBMIDebugger.GDBDetach: Boolean;
+begin
+  Result := False;
+
+  if State = dsRun
+  then GDBPause(True);
+
+  CancelAllQueued;
+  QueueCommand(TGDBMIDebuggerCommandDetach.Create(Self));
+  Result := True;
+end;
+
 function TGDBMIDebugger.GDBPause(const AInternal: Boolean): Boolean;
 begin
   if FInProcessStopped then exit;
@@ -7332,7 +7564,7 @@ end;
 function TGDBMIDebugger.GetSupportedCommands: TDBGCommands;
 begin
   Result := [dcRun, dcPause, dcStop, dcStepOver, dcStepInto, dcStepOut,
-             dcStepOverInstr, dcStepIntoInstr, dcRunTo, dcJumpto,
+             dcStepOverInstr, dcStepIntoInstr, dcRunTo, dcAttach, dcDetach, dcJumpto,
              dcBreak, dcWatch, dcLocal, dcEvaluate, dcModify, dcEnvironment,
              dcSetStackFrame, dcDisassemble
              {$IFDEF DBG_ENABLE_TERMINAL}, dcSendConsoleInput{$ENDIF}
@@ -7525,6 +7757,8 @@ begin
       dcStepOut:     Result := GDBStepOut;
       dcRunTo:       Result := GDBRunTo(String(AParams[0].VAnsiString), AParams[1].VInteger);
       dcJumpto:      Result := GDBJumpTo(String(AParams[0].VAnsiString), AParams[1].VInteger);
+      dcAttach:      Result := GDBAttach(String(AParams[0].VAnsiString));
+      dcDetach:      Result := GDBDetach;
       dcEvaluate:    begin
                        EvalFlags := [];
                        if high(AParams) >= 3 then
@@ -10377,9 +10611,11 @@ begin
   AResult.Flags := [];
   AResult.State := dsNone;
   InLogWarning := False;
-  FLogWarnings := '';
+  FLogWarnings := '';  // TODO: Do not clear in time-out handling
+  FFullCmdReply := ''; // TODO: Do not clear in time-out handling
   repeat
     S := FTheDebugger.ReadLine(ATimeOut);
+    FFullCmdReply := FFullCmdReply + s + LineEnding;
     if S = '(gdb) ' then Break;
 
     if s <> ''

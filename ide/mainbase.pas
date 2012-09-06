@@ -681,6 +681,10 @@ begin
     CreateMenuItem(ParentMI,itmRunMenuStepOut,'itmRunMenuStepOut',lisMenuStepOut,'menu_stepout');
     CreateMenuItem(ParentMI,itmRunMenuRunToCursor,'itmRunMenuRunToCursor',lisMenuRunToCursor,'menu_run_cursor');
     CreateMenuItem(ParentMI,itmRunMenuStop,'itmRunMenuStop',lisStop,'menu_stop', False);
+
+    CreateMenuItem(ParentMI,itmRunMenuAttach,'itmRunMenuAttach',srkmecAttach,'', False);
+    CreateMenuItem(ParentMI,itmRunMenuDetach,'itmRunMenuDetach',srkmecDetach,'', False);
+
     CreateMenuItem(ParentMI,itmRunMenuRunParameters,'itmRunMenuRunParameters',lisMenuRunParameters, 'menu_run_parameters');
     CreateMenuItem(ParentMI,itmRunMenuResetDebugger,'itmRunMenuResetDebugger',lisMenuResetDebugger, 'menu_reset_debugger');
 
@@ -992,6 +996,8 @@ begin
     itmRunMenuStepOut.Command:=GetCommand(ecStepOut);
     itmRunMenuRunToCursor.Command:=GetCommand(ecRunToCursor);
     itmRunMenuStop.Command:=GetCommand(ecStopProgram);
+    itmRunMenuAttach.Command:=GetCommand(ecAttach);
+    itmRunMenuDetach.Command:=GetCommand(ecDetach);
     itmRunMenuResetDebugger.Command:=GetCommand(ecResetDebugger);
     itmRunMenuRunParameters.Command:=GetCommand(ecRunParameters);
     itmRunMenuBuildFile.Command:=GetCommand(ecBuildFile);

@@ -88,9 +88,13 @@ type
     dmsInitializingDebuggerObjectFailed,
     dmsDebuggerObjectBroken,  // the debugger entered the error state
     dmsWaitForRun, // waiting for call to RunDebugger, set by StartDebugging
+    dmsWaitForAttach,
     dmsRunning  // set by RunDebugger
     );
   TDebugManagerStates = set of TDebugManagerState;
+
+  TDbgInitFlag = (difInitForAttach);
+  TDbgInitFlags = set of TDbgInitFlag;
 
   { TDebuggerOptions }
 
@@ -143,7 +147,7 @@ type
 
     procedure DoRestoreDebuggerMarks(AnUnitInfo: TUnitInfo); virtual; abstract;
 
-    function InitDebugger: Boolean; virtual; abstract;
+    function InitDebugger(AFlags: TDbgInitFlags = []): Boolean; virtual; abstract;
     
     function DoPauseProject: TModalResult; virtual; abstract;
     function DoShowExecutionPoint: TModalResult; virtual; abstract;
@@ -164,6 +168,9 @@ type
     function StartDebugging: TModalResult; virtual; abstract; // set ToolStatus to itDebugger, but do not run debugger yet
     function RunDebugger: TModalResult; virtual; abstract; // run program, wait until program ends
     procedure EndDebugging; virtual; abstract;
+
+    procedure Attach(AProcessID: String); virtual; abstract;
+    procedure Detach; virtual; abstract;
 
     function Evaluate(const AExpression: String; var AResult: String;
                       var ATypeInfo: TDBGType;
