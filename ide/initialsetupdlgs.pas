@@ -947,7 +947,7 @@ begin
 
     // check PATH
     AFilename:=DebuggerFileName+GetExecutableExt;
-    if CheckFile(FindDefaultExecutablePath(AFilename),Result) then exit;
+    if CheckFile(AFilename,Result) then exit;
 
     // There are no common directories apart from the PATH
     // where gdb would be installed. Otherwise we could do something similar as
