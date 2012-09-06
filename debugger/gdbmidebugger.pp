@@ -4719,9 +4719,7 @@ begin
   end;
 
   if NewPID = 0 then begin
-    s := GetPart(['process '], [' local', ']'], CmdResp, True);
-    if s <> '' then
-      NewPID := StrToIntDef(s, 0);
+    NewPID := StrToIntDef(FProcessID, 0);
   end;
 
   // "info program" may crash after attach
