@@ -426,41 +426,42 @@ var
   Profile: TBuildLazarusProfile;
 begin
   Clear;
-  if FileVersion<1 then
-  begin
-    // Invalid config file.
-    ProfInd:=CreateDefaults;
-  end else if FileVersion=1 then
-  begin
+  case FileVersion of
     // Older config file version.
-    CreateDefaults;         // Only one profile saved, create defaults always.
-    // Then create MyProfile.
-    Profile:=TBuildLazarusProfile.Create(Self, 'MyProfile');
-    Profile.Load(XMLConfig, Path);
-    Add(Profile);
-    FRestartAfterBuild:=XMLConfig.GetValue(Path+'RestartAfterBuild/Value',true);
-    FConfirmBuild     :=XMLConfig.GetValue(Path+'ConfirmBuild/Value',true);
-    ProfInd:=Count-1;       // Go to last MyProfile.
-  end else begin
-    // Latest config file version.
-    ProfCount:=XMLConfig.GetValue(Path+'Profiles/Count',0);
-    if ProfCount = 0 then
-      ProfInd:=CreateDefaults    // No saved profiles were found, use defaults.
-    else begin
-      // Load list of profiles.
-      for i:=0 to ProfCount-1 do begin
-        ProfPath:=Path+'Profiles/Profile'+IntToStr(i)+'/';
-        ProfName:=XMLConfig.GetValue(ProfPath+'Name','Unknown');
-        Profile:=TBuildLazarusProfile.Create(Self, ProfName);
-        Profile.Load(XMLConfig, ProfPath);
-        Add(Profile);
-      end;
-      // Current profile ItemIndex.
-      ProfInd:=XMLConfig.GetValue(Path+'ProfileIndex/Value',0);
-      // Other global build values.
+    1: begin
+      CreateDefaults;         // Only one profile saved, create defaults always.
+      // Then create MyProfile.
+      Profile:=TBuildLazarusProfile.Create(Self, 'MyProfile');
+      Profile.Load(XMLConfig, Path);
+      Add(Profile);
       FRestartAfterBuild:=XMLConfig.GetValue(Path+'RestartAfterBuild/Value',true);
       FConfirmBuild     :=XMLConfig.GetValue(Path+'ConfirmBuild/Value',true);
-    end
+      ProfInd:=Count-1;       // Go to last MyProfile.
+    end;
+    // Latest config file version.
+    2: begin
+      ProfCount:=XMLConfig.GetValue(Path+'Profiles/Count',0);
+      if ProfCount = 0 then
+        ProfInd:=CreateDefaults    // No saved profiles were found, use defaults.
+      else begin
+        // Load list of profiles.
+        for i:=0 to ProfCount-1 do begin
+          ProfPath:=Path+'Profiles/Profile'+IntToStr(i)+'/';
+          ProfName:=XMLConfig.GetValue(ProfPath+'Name','Unknown');
+          Profile:=TBuildLazarusProfile.Create(Self, ProfName);
+          Profile.Load(XMLConfig, ProfPath);
+          Add(Profile);
+        end;
+        // Current profile ItemIndex.
+        ProfInd:=XMLConfig.GetValue(Path+'ProfileIndex/Value',0);
+        // Other global build values.
+        FRestartAfterBuild:=XMLConfig.GetValue(Path+'RestartAfterBuild/Value',true);
+        FConfirmBuild     :=XMLConfig.GetValue(Path+'ConfirmBuild/Value',true);
+      end
+    end;
+    // Invalid config file.
+    else
+      ProfInd:=CreateDefaults;
   end;
   // Load defines, selected profiles and auto install packages.
   LoadStringList(XMLConfig,fAllDefines,Path+'AllDefines/');

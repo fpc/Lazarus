@@ -229,7 +229,7 @@ type
           WithCommentBounds, CaseSensitive, IgnoreSpaces,
           CompareOnlyStart: boolean;
           out CommentStart, CommentEnd: TCodeXYPosition): boolean;
-    function FindCommentInFront(const StartPos: integer;
+    function FindCommentInFront(StartPos: integer;
           const CommentText: string; SearchInParentNode,
           WithCommentBounds, CaseSensitive, IgnoreSpaces,
           CompareOnlyStart: boolean;
@@ -2843,7 +2843,7 @@ begin
           and CleanPosToCaret(CommentCleanEnd,CommentEnd);
 end;
 
-function TPascalReaderTool.FindCommentInFront(const StartPos: integer;
+function TPascalReaderTool.FindCommentInFront(StartPos: integer;
   const CommentText: string;
   SearchInParentNode, WithCommentBounds, CaseSensitive,
   IgnoreSpaces, CompareOnlyStart: boolean;
@@ -2869,7 +2869,12 @@ var
       // chomp comment boundaries
       case Src[CompareStartPos] of
       '/','(': inc(CompareStartPos,2);
-      '{': inc(CompareStartPos,1);
+      '{':
+        if (CompareStartPos<SrcLen) and (Src[CompareStartPos+1]=#3) then
+          // the codetools skip comment is no real comment
+          exit
+        else
+          inc(CompareStartPos,1);
       end;
       case Src[CompareEndPos-1] of
       '}': dec(CompareEndPos);
@@ -2883,6 +2888,8 @@ var
         end;
       end;
     end;
+    if CompareStartPos>CompareEndPos then exit;
+
     if IgnoreSpaces then begin
       while (CompareStartPos<=CompareEndPos)
       and IsSpaceChar[Src[CompareStartPos]]
@@ -2916,10 +2923,11 @@ var
 var
   ANode: TCodeTreeNode;
   p: LongInt;
-  CommentLvl: Integer;
   CommentStartPos: LongInt;
 begin
   Result:=false;
+  if StartPos>SrcLen then
+    StartPos:=SrcLen+1;
   if CommentText='' then exit;
 
   {debugln('TPascalReaderTool.FindCommentInFront A CommentText="',CommentText,'" ',
@@ -2962,91 +2970,19 @@ begin
     //DebugLn('TPascalReaderTool.FindCommentInFront Aode=',ANode.DescAsString);
     MoveCursorToCleanPos(ANode.StartPos);
   end;
+  p:=CurPos.EndPos;
 
   //debugln('TPascalReaderTool.FindCommentInFront B Area="',copy(Src,CurPos.StartPos,StartPos-CurPos.StartPos),'"');
 
   FoundStartPos:=-1;
   repeat
-    p:=CurPos.EndPos;
     //debugln('TPascalReaderTool.FindCommentInFront Atom=',GetAtom);
-
-    // read space and comment till next atom
-    CommentLvl:=0;
-    while true do begin
-      case Src[p] of
-      #0:
-        if p>SrcLen then
-          break
-        else
-          inc(p);
-      #1..#32:
-        inc(p);
-      '{':
-        begin
-          CommentStartPos:=p;
-          if (p<SrcLen) and (Src[p+1]=#3) then begin
-            // codetools skip comment
-            inc(p,2);
-            while p<=SrcLen do begin
-              if (Src[p]=#3) and (p<SrcLen) and (Src[p+1]='}') then begin
-                inc(p,2);
-              end;
-              inc(p);
-            end;
-          end else begin
-            // pascal comment
-            CommentLvl:=1;
-            inc(p);
-            while p<=SrcLen do begin
-              case Src[p] of
-              '{': if Scanner.NestedComments then inc(CommentLvl);
-              '}':
-                begin
-                  dec(CommentLvl);
-                  if CommentLvl=0 then begin
-                    inc(p);
-                    break;
-                  end;
-                end;
-              end;
-              inc(p);
-            end;
-          end;
-          CompareComment(CommentStartPos,p);
-        end;
-      '/':  // Delphi comment
-        if (Src[p+1]<>'/') then begin
-          break;
-        end else begin
-          CommentStartPos:=p;
-          inc(p,2);
-          while (not (Src[p] in [#10,#13,#0])) do
-            inc(p);
-          inc(p);
-          if (p<=SrcLen) and (Src[p] in [#10,#13])
-          and (Src[p-1]<>Src[p]) then
-            inc(p);
-          CompareComment(CommentStartPos,p);
-        end;
-      '(': // old turbo pascal comment
-        if (Src[p+1]<>'*') then begin
-          break;
-        end else begin
-          CommentStartPos:=p;
-          inc(p,3);
-          while (p<=SrcLen)
-          and ((Src[p-1]<>'*') or (Src[p]<>')')) do
-            inc(p);
-          inc(p);
-          CompareComment(CommentStartPos,p);
-        end;
-      else
-        break;
-      end;
-    end;
-    ReadNextAtom;
-    //DebugLn('TPascalReaderTool.FindCommentInFront NextAtom=',GetAtom);
-  until (CurPos.StartPos>=StartPos) or (CurPos.EndPos>=SrcLen);
+    CommentStartPos:=FindNextComment(Src,p,StartPos);
+    if CommentStartPos>=StartPos then break;
+    p:=FindCommentEnd(Src,CommentStartPos,Scanner.NestedComments);
+    if p>StartPos then break;
+    CompareComment(CommentStartPos,p);
+  until false;
 
   Result:=(FoundStartPos>=1);
   CommentStart:=FoundStartPos;
