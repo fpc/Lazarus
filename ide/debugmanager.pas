@@ -152,7 +152,7 @@ type
     procedure ResetDebugger;
 
     function GetLaunchPathAndExe(out LaunchingCmdLine, LaunchingApplication,
-                                     LaunchingParams: String): Boolean;
+                                     LaunchingParams: String; PromptOnError: Boolean = True): Boolean;
   protected
     function  GetState: TDBGState; override;
     function  GetCommands: TDBGCommands; override;
@@ -2018,7 +2018,16 @@ begin
 end;
 
 function TDebugManager.GetLaunchPathAndExe(out LaunchingCmdLine,
-  LaunchingApplication, LaunchingParams: String): Boolean;
+  LaunchingApplication, LaunchingParams: String; PromptOnError: Boolean
+  ): Boolean;
+
+  procedure ClearPathAndExe;
+  begin
+    LaunchingApplication := '';
+    LaunchingParams := '';
+    LaunchingCmdLine := '';
+  end;
+
 var
   NewDebuggerClass: TDebuggerClass;
 begin
@@ -2038,43 +2047,53 @@ begin
 
       if not DirectoryExistsUTF8(LaunchingApplication) then
       begin
-        if MessageDlg(lisLaunchingApplicationInvalid,
-          Format(lisTheLaunchingApplicationBundleDoesNotExists,
-            [LaunchingCmdLine, #13, #13, #13, #13]),
-          mtError, [mbYes, mbNo, mbCancel], 0) = mrYes then
-        begin
-          if not BuildBoss.CreateProjectApplicationBundle then Exit;
-        end
+        if not PromptOnError then
+          ClearPathAndExe
         else
-          Exit;
+          if MessageDlg(lisLaunchingApplicationInvalid,
+            Format(lisTheLaunchingApplicationBundleDoesNotExists,
+              [LaunchingCmdLine, #13, #13, #13, #13]),
+            mtError, [mbYes, mbNo, mbCancel], 0) = mrYes then
+          begin
+            if not BuildBoss.CreateProjectApplicationBundle then Exit;
+          end
+          else
+            Exit;
       end;
 
-      if NewDebuggerClass = TProcessDebugger then
+      if (NewDebuggerClass = TProcessDebugger) and (LaunchingApplication <> '') then
       begin // use executable path inside Application Bundle (darwin only)
         LaunchingApplication := LaunchingApplication + '/Contents/MacOS/' +
           ExtractFileNameOnly(LaunchingApplication);
-        LaunchingParams := LaunchingParams;
       end;
     end
     else
       if not FileIsExecutable(LaunchingApplication)
       then begin
-        MessageDlg(lisLaunchingApplicationInvalid,
-          Format(lisTheLaunchingApplicationDoesNotExistsOrIsNotExecuta, ['"',
-            LaunchingCmdLine, '"', #13, #13, #13]),
-          mtError, [mbOK],0);
-        Exit;
+        if not PromptOnError then
+          ClearPathAndExe
+        else begin
+          MessageDlg(lisLaunchingApplicationInvalid,
+            Format(lisTheLaunchingApplicationDoesNotExistsOrIsNotExecuta, ['"',
+              LaunchingCmdLine, '"', #13, #13, #13]),
+            mtError, [mbOK],0);
+          Exit;
+        end;
       end;
 
     //todo: this check depends on the debugger class
     if (NewDebuggerClass <> TProcessDebugger)
     and not FileIsExecutable(EnvironmentOptions.GetParsedDebuggerFilename)
     then begin
-      MessageDlg(lisDebuggerInvalid,
-        Format(lisTheDebuggerDoesNotExistsOrIsNotExecutableSeeEnviro, ['"',
-          EnvironmentOptions.DebuggerFilename, '"', #13, #13, #13]),
-        mtError,[mbOK],0);
-      Exit;
+      if not PromptOnError then
+        ClearPathAndExe
+      else begin
+        MessageDlg(lisDebuggerInvalid,
+          Format(lisTheDebuggerDoesNotExistsOrIsNotExecutableSeeEnviro, ['"',
+            EnvironmentOptions.DebuggerFilename, '"', #13, #13, #13]),
+          mtError,[mbOK],0);
+        Exit;
+      end;
     end;
 
   end; // if NewDebuggerClass.RequiresLocalExecutable then
@@ -2097,11 +2116,14 @@ begin
     exit;
   end;
 
+  if Destroying then Exit;
   if not(difInitForAttach in AFlags) then begin
-    if (Project1.MainUnitID < 0) or Destroying then Exit;
+    if (Project1.MainUnitID < 0) then Exit;
     if not GetLaunchPathAndExe(LaunchingCmdLine, LaunchingApplication, LaunchingParams) then
       exit;
-  end;
+  end
+  else
+    GetLaunchPathAndExe(LaunchingCmdLine, LaunchingApplication, LaunchingParams, False);
 
   FUnitInfoProvider.Clear;
   FIsInitializingDebugger:= True;
@@ -2206,6 +2228,11 @@ begin
       then FDebugger.Arguments := LaunchingParams;
       if FDebugger <> nil
       then FDebugger.ShowConsole := not Project1.CompilerOptions.Win32GraphicApp;
+    end
+    else begin
+      // attach
+      if (FDebugger <> nil) and (LaunchingApplication <> '')
+      then FDebugger.FileName := LaunchingApplication;
     end;
 
     // check if debugging needs restart

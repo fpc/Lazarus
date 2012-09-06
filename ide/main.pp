@@ -3391,7 +3391,10 @@ begin
         if InputQuery(rsAttachTo, rsEnterPID, s) then begin
           ToolStatus := itDebugger;
           DebugBoss.Attach(s);
-        end;
+        end
+        else
+          if ToolStatus = itDebugger then
+            ToolStatus := itNone;
       end;
     end;
   ecDetach:

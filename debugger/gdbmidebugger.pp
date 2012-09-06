@@ -4668,6 +4668,16 @@ begin
   Result := True;
   FSuccess := False;
 
+  if not ExecuteCommand('-file-exec-and-symbols %s',
+                        [FTheDebugger.ConvertToGDBPath(UTF8ToSys(''), cgptExeName)], R)
+  then
+    R.State := dsError;
+  if R.State = dsError then begin
+    SetDebuggerErrorState('Attach failed');
+    exit;
+  end;
+
+
   // Tnit (StartDebugging)
   TargetInfo^.TargetFlags := [tfHasSymbols]; // Set until proven otherwise
   ExecuteCommand('-gdb-set language pascal', [cfCheckError]);
@@ -4748,6 +4758,14 @@ begin
 
   TargetInfo^.TargetPID := NewPID;
 
+debugln(['XXXXXXXXXXXXXX ',FTheDebugger.FileName, ' -- ', pos('Reading symbols from', CmdResp)]);
+  if (FTheDebugger.FileName <> '') and (pos('READING SYMBOLS FROM', UpperCase(CmdResp)) < 1) then begin
+    ExecuteCommand('ptype TObject', [], R);
+    if pos('NO SYMBOL TABLE IS LOADED', UpperCase(FFullCmdReply)) > 0 then begin
+      ExecuteCommand('-file-exec-and-symbols %s',
+                     [FTheDebugger.ConvertToGDBPath(UTF8ToSys(FTheDebugger.FileName), cgptExeName)], R);
+    end;
+  end;
 
   // Tnit (StartDebugging)
   //   check if the exe is compiled with FPC >= 1.9.2
