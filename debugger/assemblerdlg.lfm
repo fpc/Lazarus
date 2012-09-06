@@ -39,6 +39,7 @@ inherited AssemblerDlg: TAssemblerDlg
     Top = 217
     Width = 674
     Anchors = [akLeft, akRight, akBottom]
+    Max = 1000
     PageSize = 200
     TabOrder = 0
     OnChange = sbHorizontalChange
@@ -56,7 +57,9 @@ inherited AssemblerDlg: TAssemblerDlg
     Anchors = [akTop, akRight, akBottom]
     Kind = sbVertical
     LargeChange = 10
-    PageSize = 200
+    Max = 1000
+    PageSize = 50
+    Position = 475
     TabOrder = 1
     OnChange = sbVerticalChange
     OnScroll = sbVerticalScroll
@@ -110,7 +113,7 @@ inherited AssemblerDlg: TAssemblerDlg
     end
     object pnlToolAddr: TPanel
       Left = 113
-      Height = 22
+      Height = 23
       Top = 2
       Width = 80
       AutoSize = True
@@ -120,12 +123,12 @@ inherited AssemblerDlg: TAssemblerDlg
       ChildSizing.ShrinkHorizontal = crsHomogenousChildResize
       ChildSizing.Layout = cclLeftToRightThenTopToBottom
       ChildSizing.ControlsPerLine = 1
-      ClientHeight = 22
+      ClientHeight = 23
       ClientWidth = 80
       TabOrder = 0
       object EditGotoAddr: TEdit
         Left = 0
-        Height = 22
+        Height = 23
         Top = 0
         Width = 80
         OnChange = EditGotoAddrChange
