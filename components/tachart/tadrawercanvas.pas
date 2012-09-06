@@ -190,6 +190,7 @@ end;
 procedure TCanvasDrawer.Polyline(
   const APoints: array of TPoint; AStartIndex, ANumPts: Integer);
 begin
+  if ANumPts <= 0 then exit;
   FCanvas.Polyline(APoints, AStartIndex, ANumPts);
   // TCanvas.Polyline does not draw the end point.
   with APoints[AStartIndex + ANumPts - 1] do

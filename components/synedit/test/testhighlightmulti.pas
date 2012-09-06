@@ -905,7 +905,63 @@ var
   end;
 begin
   TSynEditStringList(SynEdit.TextBuffer).AddChangeHandler(senrHighlightChanged, @DoHighlightChanged);
+  {%region Issue 0022745}
+    PushBaseName('Insert at end, create new section at end');   // Issue 0022745
+    SynEdit.ClearAll;
+    InitMultiXmlPasHl;
 
+    SynEdit.TestTypeText(1, 1,  '<html>'+#13);
+    SynEdit.TestTypeText(  ''+#13);
+    SynEdit.TestTypeText(  '<pas>'+#13);
+    SynEdit.TestTypeText(  '</pas>'+#13);
+    SynEdit.TestTypeText(  '<pas>'+#13);
+    SynEdit.TestTypeText(  '</pas>'+#13);
+    SynEdit.TestTypeText(  '<pas>'+#13);
+    SynEdit.TestTypeText(  '</pas>'+#13);
+    SynEdit.TestTypeText(  '<pas>'+#13);
+    SynEdit.TestTypeText(  '</pas>'+#13);
+    SynEdit.TestTypeText(  ''+#13);
+    SynEdit.TestTypeText(  '<pas>'+#13);
+    SynEdit.TestTypeText(  '</pas>'+#13);
+    SynEdit.TestTypeText(  '<pas>'+#13);
+    SynEdit.TestTypeText(  '</pas>'+#13);
+    SynEdit.TestTypeText(  '<pas>'+#13);
+    SynEdit.TestTypeText(  ''+#13);
+    SynEdit.TestTypeText(  '</pas>'+#13);
+    SynEdit.TestTypeText(  '<pas>'+#13);
+    SynEdit.TestTypeText(  '</pas>'+#13);
+//DumpAll(MultiHl);
+
+    FinishMultiXmlPasHl;
+    PopBaseName;
+
+
+
+
+    PushBaseName('0022745');   // Issue 0022745
+    SynEdit.ClearAll;
+    InitMultiXmlPasHl;
+
+    SynEdit.TestTypeText(1, 1,
+      '<html>'+#13+
+      ''+#13+
+      '<pas>'+#13+
+      '</pas>'+#13+
+      '<pas>'+#13+
+      '</pas>'+#13,
+      True
+      );
+
+      //PushBaseName('Insert "<pas>"');
+      //  CheckTokensForLine('1st line=html', MultiHl, 0, [AtPasMark]);
+      //  CheckTokensForLine('2nd line=html', MultiHl, 1, [AtPasMark]);
+      //  AssertEquals(BaseTestName + 'Section Count def', 0, MultiHl.DefaultVirtualLines.SectionList.Count);
+      //  AssertEquals(BaseTestName + 'Section Count pas', 1, PasScheme.VirtualLines.SectionList.Count);
+
+    FinishMultiXmlPasHl;
+    PopBaseName;
+
+  {%endregion}
 
   {%region Issue 0022519}
     PushBaseName('append after EOT (default scheme)');   // Issue 0022519
