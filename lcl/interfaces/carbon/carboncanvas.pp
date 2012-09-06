@@ -56,6 +56,9 @@ type
 
     ROP2: Integer;
     PenPos: TPoint;
+
+    isClipped: Boolean;
+    ClipShape: HIShapeRef;
   end;
   
   TCarbonBitmapContext = class;
@@ -100,6 +103,7 @@ type
     function SaveDCData: TCarbonDCData; virtual;
     procedure RestoreDCData(const AData: TCarbonDCData); virtual;
     procedure ExcludeClipRect(Left, Top, Right, Bottom: Integer);
+    procedure ApplyTransform(Trans: CGAffineTransform);
     procedure ClearClipping;
   public
     constructor Create;
@@ -564,14 +568,10 @@ begin
   {$ENDIF}
   
   if FSavedDCList.Count = 0 then FreeAndNil(FSavedDCList);
-  
-  
-  if isClipped then 
-  begin
-    // should clip be restored?
-    isClipped:=false;
-    FClipRegion.Shape := HIShapeCreateEmpty;
-  end;
+
+
+  if isClipped then
+    CGContextSaveGState(CGContext);
 end;
 
 {------------------------------------------------------------------------------
@@ -596,6 +596,9 @@ begin
 
   Result.ROP2 := FROP2;
   Result.PenPos := FPenPos;
+
+  Result.isClipped := isClipped;
+  Result.ClipShape := FClipRegion.GetShapeCopy;
 end;
 
 {------------------------------------------------------------------------------
@@ -651,6 +654,9 @@ begin
 
   FROP2 := AData.ROP2;
   FPenPos := AData.PenPos;
+
+  isClipped := AData.isClipped;
+  FClipRegion.Shape := AData.ClipShape;
 end;
 
 {------------------------------------------------------------------------------
@@ -885,6 +891,17 @@ begin
     else
       CGContextClipToRect(CGContext, CGRectZero);
   end;
+end;
+
+procedure TCarbonDeviceContext.ApplyTransform(Trans: CGAffineTransform);
+var
+  T2: CGAffineTransform;
+begin
+  T2 := CGContextGetCTM(CGContext);
+  // restore old CTM since CTM may changed after the clipping
+  if CGAffineTransformEqualToTransform(Trans, T2) = 0 then
+    CGContextTranslateCTM(CGContext, Trans.a * Trans.tx - T2.a * T2.tx,
+       Trans.d * Trans.ty - T2.d * T2.ty);
 end;
 
 {------------------------------------------------------------------------------
@@ -1554,16 +1571,13 @@ end;
 
 procedure TCarbonDeviceContext.ClearClipping;
 var
-  T1, T2: CGAffineTransform;
+  Trans: CGAffineTransform;
 begin
   if isClipped  then
   begin
-    T1 := CGContextGetCTM(CGContext);
+    Trans := CGContextGetCTM(CGContext);
     CGContextRestoreGState(CGContext);
-    T2 := CGContextGetCTM(CGContext);
-    // restore old CTM since CTM may changed after the clipping
-    if CGAffineTransformEqualToTransform(T1, T2) = 0 then
-      CGContextTranslateCTM(CGContext, T1.a * T1.tx - T2.a * T2.tx, T1.d * T1.ty - T2.d * T2.ty);
+    ApplyTransform(Trans);
   end;
 end;
 
@@ -1573,18 +1587,15 @@ begin
   isClipped := False;
 
   if not Assigned(AClipRegion) then
-  begin
-    HIShapeSetEmpty(FClipRegion.Shape);
-    Result := LCLType.NullRegion;
-  end
+    HIShapeSetEmpty(FClipRegion.Shape)
   else
   begin
     CGContextSaveGState(CGContext);
     FClipRegion.CombineWith(AClipRegion, Mode);
     FClipRegion.Apply(Self);
     isClipped := true;
-    Result := LCLType.ComplexRegion;
   end;
+  Result := FClipRegion.GetType;
 end;
 
 function TCarbonDeviceContext.CopyClipRegion(ADstRegion: TCarbonRegion): Integer;

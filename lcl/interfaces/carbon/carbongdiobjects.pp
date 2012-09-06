@@ -74,6 +74,7 @@ type
     procedure SetShape(AShape: HIShapeRef);
     function CombineWith(ARegion: TCarbonRegion; CombineMode: Integer): Integer;
     procedure Offset(dx, dy: Integer);
+    function GetShapeCopy: HIShapeRef;
   public
     property Shape: HIShapeRef read FShape write SetShape;
   end;
@@ -862,6 +863,10 @@ begin
   HIShapeOffset(FShape, dx, dy);
 end;
 
+function TCarbonRegion.GetShapeCopy: HIShapeRef;
+begin
+  Result := HIShapeCreateCopy(Shape);
+end;
 
 { TCarbonTextLayout }
 
