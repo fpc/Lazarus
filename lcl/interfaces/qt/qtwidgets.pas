@@ -12870,19 +12870,8 @@ begin
 end;
 
 function TQtTreeWidget.getClientBounds: TRect;
-var
-  Offset: Integer;
-  AOrientation: QtOrientation;
 begin
   Result := inherited getClientBounds;
-  Offset := getHeaderHeight(AOrientation);
-  if Offset > 0 then
-  begin
-    if AOrientation = QtHorizontal then
-      Inc(Result.Top, Offset)
-    else
-      Inc(Result.Left, Offset);
-  end;
 end;
 
 function TQtTreeWidget.getClientOffset: TPoint;
