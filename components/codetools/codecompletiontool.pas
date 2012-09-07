@@ -941,7 +941,7 @@ begin
   // find variable name
   GetIdentStartEndAtPosition(Src,CleanCursorPos,
     VarNameAtom.StartPos,VarNameAtom.EndPos);
-  debugln('TCodeCompletionCodeTool.CheckLocalVarForInSyntax A ',GetAtom(VarNameAtom),' "',copy(Src,CleanCursorPos,10),'"');
+  //debugln('TCodeCompletionCodeTool.CheckLocalVarForInSyntax A ',GetAtom(VarNameAtom),' "',copy(Src,CleanCursorPos,10),'"');
   if VarNameAtom.StartPos=VarNameAtom.EndPos then begin
     {$IFDEF VerboseForInCompletion}
     debugln('TCodeCompletionCodeTool.CheckLocalVarForInSyntax no identifier at cursor ',GetAtom(VarNameAtom),' "',copy(Src,CleanCursorPos,10),'"');

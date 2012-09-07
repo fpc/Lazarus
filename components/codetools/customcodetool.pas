@@ -724,7 +724,7 @@ begin
     exit(false);
   p1:=@Src[CleanStartPos1];
   p2:=@Src[CleanStartPos2];
-  while (CleanStartPos1<=SrcLen) and IsIdentChar[p1^] do begin
+  while IsIdentChar[p1^] do begin
     if (UpChars[p1^]<>UpChars[p2^]) then
       exit(false);
     inc(CleanStartPos1);

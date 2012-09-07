@@ -16648,23 +16648,20 @@ begin
     writeln('');
     writeln('[TMainIDE.DoCompleteCodeAtCursor] ************');
     {$ENDIF}
-    if CodeToolBoss.CompleteCode(ActiveUnitInfo.Source,
+    CodeToolBoss.CompleteCode(ActiveUnitInfo.Source,
       ActiveSrcEdit.EditorComponent.CaretX,
       ActiveSrcEdit.EditorComponent.CaretY,
       ActiveSrcEdit.EditorComponent.TopLine,
-      NewSource,NewX,NewY,NewTopLine) then
-    begin
-      ApplyCodeToolChanges;
-      if NewSource<>nil then
-        DoJumpToCodePosition(ActiveSrcEdit, ActiveUnitInfo,
-          NewSource, NewX, NewY, NewTopLine, [jfAddJumpPoint, jfFocusEditor]);
-    end else begin
-      // error: probably a syntax error or just not in a procedure head/body
-      // or not in a class
-      // -> there are enough events to handle everything, so it can be ignored here
-      ApplyCodeToolChanges;
+      NewSource,NewX,NewY,NewTopLine);
+    if (CodeToolBoss.ErrorMessage='')
+    and (CodeToolBoss.SourceChangeCache.BuffersToModifyCount=0) then
+      CodeToolBoss.SetError(nil,0,0,'there is no completion for this code');
+    ApplyCodeToolChanges;
+    if (CodeToolBoss.ErrorMessage='') and (NewSource<>nil) then
+      DoJumpToCodePosition(ActiveSrcEdit, ActiveUnitInfo,
+        NewSource, NewX, NewY, NewTopLine, [jfAddJumpPoint, jfFocusEditor])
+    else
       DoJumpToCodeToolBossError;
-    end;
   finally
     OpenEditorsOnCodeToolChange:=OldChange;
   end;
