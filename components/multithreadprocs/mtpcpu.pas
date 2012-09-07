@@ -46,7 +46,7 @@ function GetSystemThreadCount: integer;
 //returns total number of processors available to system including logical hyperthreaded processors
 var
   i: Integer;
-  ProcessAffinityMask, SystemAffinityMask: DWORD;
+  ProcessAffinityMask, SystemAffinityMask: DWORD_PTR;
   Mask: DWORD;
   SystemInfo: SYSTEM_INFO;
 begin
