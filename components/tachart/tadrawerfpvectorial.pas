@@ -233,11 +233,14 @@ end;
 
 procedure TFPVectorialDrawer.RadialPie(
   AX1, AY1, AX2, AY2: Integer; AStartAngle16Deg, AAngleLength16Deg: Integer);
+var
+  e: TEllipse;
+  p: TPointArray;
 begin
-  // Not implemented.
-  Unused(AX1, AY1);
-  Unused(AX2, AY2);
-  Unused(AStartAngle16Deg, AAngleLength16Deg);
+  e.InitBoundingBox(AX1, AY1, AX2, AY2);
+  p := e.TesselateRadialPie(
+    Deg16ToRad(AStartAngle16Deg), Deg16ToRad(AAngleLength16Deg), 4);
+  Polygon(p, 0, Length(p));
 end;
 
 procedure TFPVectorialDrawer.Rectangle(AX1, AY1, AX2, AY2: Integer);

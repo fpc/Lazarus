@@ -31,6 +31,8 @@ type
     constructor InitBoundingBox(AX1, AY1, AX2, AY2: Integer);
   public
     function GetPoint(AParametricAngle: Double): TDoublePoint;
+    function TesselateRadialPie(
+      AAngleStart, AAngleLength: Double; AStep: Integer): TPointArray;
   end;
 
 function CopyPoints(
@@ -68,6 +70,7 @@ function RotatePoint(const APoint: TDoublePoint; AAngle: Double): TDoublePoint; 
 function RotatePoint(const APoint: TPoint; AAngle: Double): TPoint; overload;
 function RotatePointX(AX, AAngle: Double): TPoint;
 function RotateRect(const ASize: TPoint; AAngle: Double): TPointArray;
+function RoundPoint(APoint: TDoublePoint): TPoint;
 
 operator +(const A: TPoint; B: TSize): TPoint; overload; inline;
 operator +(const A, B: TPoint): TPoint; overload; inline;
@@ -89,7 +92,7 @@ operator :=(const ASize: TSize): TPoint; inline;
 implementation
 
 uses
-  Math, TAMath;
+  GraphMath, Math, TAMath;
 
 function PointLineSide(AP, A1, A2: TPoint): TValueSign; forward;
 
@@ -427,6 +430,12 @@ begin
     Result[i] := RotatePoint(Result[i], AAngle);
 end;
 
+function RoundPoint(APoint: TDoublePoint): TPoint;
+begin
+  Result.X := Round(APoint.X);
+  Result.Y := Round(APoint.Y);
+end;
+
 operator + (const A: TPoint; B: TSize): TPoint;
 begin
   Result.X := A.X + B.cx;
@@ -536,6 +545,80 @@ begin
   FC.Y := (AY1 + AY2) / 2;
   FR.X := Abs(AX1 - AX2) / 2;
   FR.Y := Abs(AY1 - AY2) / 2;
+end;
+
+// Represent the ellipse sector with a polygon on an integer grid.
+// Polygon vertices are no more then AStep pixels apart.
+function TEllipse.TesselateRadialPie(
+  AAngleStart, AAngleLength: Double; AStep: Integer): TPointArray;
+var
+  resultPoints: TPointArray = nil;
+  cnt: Integer = 0;
+  lastAngle: Double;
+
+  procedure AddPoint(APoint: TPoint);
+  begin
+    if cnt > High(resultPoints) then
+      SetLength(resultPoints, 2 * cnt);
+    resultPoints[cnt] := Point(APoint.X, APoint.Y);
+    cnt += 1;
+  end;
+
+  procedure SafeAddPoint(APoint: TPoint; AAngle: Double);
+  begin
+    if resultPoints[cnt - 1] <> APoint then begin
+      AddPoint(APoint);
+      lastAngle := AAngle;
+    end;
+  end;
+
+  procedure Rec(ALo, AHi: Double);
+  var
+    pt: TPoint;
+  begin
+    pt := RoundPoint(GetPoint(AHi));
+    if PointDist(resultPoints[cnt - 1], pt) <= Sqr(AStep) then
+      SafeAddPoint(pt, AHi)
+    else begin
+      Rec(ALo, (ALo + AHi) / 2);
+      Rec(lastAngle, AHi)
+    end;
+  end;
+
+  procedure Add(AAngle: Double);
+  begin
+    SafeAddPoint(RoundPoint(GetPoint(AAngle)), AAngle)
+  end;
+
+const
+  HalfPi = Pi / 2;
+var
+  t, tprev, tlast: Double;
+begin
+  tprev := AAngleStart;
+  tlast := AAngleStart + AAngleLength;
+  if (FR.X < 1) or (FR.Y < 1) then begin
+    // Ellipse has degenerated into a line.
+    SetLength(resultPoints, 2);
+    AddPoint(RoundPoint(GetPoint(tprev)));
+    Add(tlast);
+    exit(resultPoints);
+  end;
+  SetLength(resultPoints, 32);
+  AddPoint(RoundPoint(GetPoint(tprev)));
+  lastAngle := tprev;
+  t := Ceil(tprev / HalfPi) * HalfPi;
+  while t < tlast do begin
+    Add(tprev);
+    Rec(tprev, t);
+    tprev := t;
+    t += HalfPi;
+  end;
+  Rec(tprev, tlast);
+  Add(tlast);
+  SafeAddPoint(RoundPoint(FC), 0);
+  SetLength(resultPoints, cnt);
+  Result := resultPoints;
 end;
 
 end.
