@@ -97,6 +97,8 @@ type
     procedure GUITestRunnerShow(Sender: TObject);
     procedure MenuItem3Click(Sender: TObject);
     procedure SaveAsToolButtonClick(Sender: TObject);
+    procedure TestTreeCreateNodeClass(Sender: TCustomTreeView;
+      var NodeClass: TTreeNodeClass);
     procedure TestTreeMouseDown(Sender: TOBject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
     procedure TestTreeSelectionChanged(Sender: TObject);
@@ -183,6 +185,17 @@ type
 
   TTreeNodeState=(tsUnChecked, tsChecked);
 
+type
+
+  { TMessageTreeNode }
+
+  TMessageTreeNode = class(TTreeNode)
+  private
+    FMessage: string;
+  public
+    property Message: string read FMessage write FMessage;
+  end;
+
 function FirstLine(const s: string): string;
 var
   NewLinePos: integer;
@@ -207,7 +220,6 @@ begin
   Clipboard.AsText := XMLSynEdit.Lines.Text;
   XMLSynEdit.Lines.Clear;
 end;
-
 
 procedure TGUITestRunner.GUITestRunnerCreate(Sender: TObject);
 begin
@@ -326,6 +338,12 @@ begin
     XMLSynEdit.Lines.SaveToFile(UTF8ToSys(SaveDialog.FileName));
 end;
 
+procedure TGUITestRunner.TestTreeCreateNodeClass(Sender: TCustomTreeView;
+  var NodeClass: TTreeNodeClass);
+begin
+  NodeClass := TMessageTreeNode;
+end;
+
 procedure TGUITestRunner.TestTreeMouseDown(Sender: TOBject;
   Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 
@@ -380,7 +398,7 @@ end;
 
 procedure TGUITestRunner.actCopyErrorMsgExecute(Sender: TObject);
 begin
-  ClipBoard.AsText := Copy(TestTree.Selected.text, 10, MaxInt)
+  ClipBoard.AsText := (TestTree.Selected as TMessageTreeNode).Message;
 end;
 
 
@@ -578,17 +596,20 @@ end;
 
 procedure TGUITestRunner.AddFailure(ATest: TTest; AFailure: TTestFailure);
 var
-  FailureNode, node: TTreeNode;
+  FailureNode: TTreeNode;
+  node: TMessageTreeNode;
 begin
   FailureNode := FindNode(ATest);
   if Assigned(FailureNode) then
   begin
-    node := TestTree.Items.AddChild(FailureNode, Format(rsMessage, [
-      FirstLine(AFailure.ExceptionMessage)]));
+    node := TestTree.Items.AddChild(FailureNode,
+      Format(rsMessage, [FirstLine(AFailure.ExceptionMessage)]))
+      as TMessageTreeNode;
+    node.Message := AFailure.ExceptionMessage;
     node.ImageIndex := 4;
     node.SelectedIndex := 4;
-    node := TestTree.Items.AddChild(FailureNode, Format(rsException, [
-      AFailure.ExceptionClassName]));
+    node := TestTree.Items.AddChild(FailureNode,
+      Format(rsException, [AFailure.ExceptionClassName])) as TMessageTreeNode;
     node.ImageIndex := 4;
     node.SelectedIndex := 4;
     PaintNodeFailure(FailureNode);
@@ -602,14 +623,17 @@ end;
 procedure TGUITestRunner.AddError(ATest: TTest; AError: TTestFailure);
 var
   ErrorNode, node: TTreeNode;
+  MessageNode: TMessageTreeNode;
 begin
   ErrorNode := FindNode(ATest);
   if Assigned(ErrorNode) then
   begin
-    node := TestTree.Items.AddChild(ErrorNode, Format(rsExceptionMes, [
-      FirstLine(AError.ExceptionMessage)]));
-    node.ImageIndex := 4;
-    node.SelectedIndex := 4;
+    MessageNode := TestTree.Items.AddChild(ErrorNode,
+      Format(rsExceptionMes, [FirstLine(AError.ExceptionMessage)]))
+      as TMessageTreeNode;
+    MessageNode.Message := AError.ExceptionMessage;
+    MessageNode.ImageIndex := 4;
+    MessageNode.SelectedIndex := 4;
     node := TestTree.Items.AddChild(ErrorNode, Format(rsExceptionCla, [
       AError.ExceptionClassName]));
     node.ImageIndex := 4;
