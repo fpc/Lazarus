@@ -39,7 +39,7 @@
         <PackageName Value="CodeTools"/>
       </Item4>
     </RequiredPackages>
-    <Units Count="12">
+    <Units Count="13">
       <Unit0>
         <Filename Value="runtestsgui.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -100,16 +100,21 @@
         <IsPartOfProject Value="True"/>
         <UnitName Value="lclsemiautotests"/>
       </Unit11>
+      <Unit12>
+        <Filename Value="lazutils\testlazutils.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="TestLazUtils"/>
+      </Unit12>
     </Units>
   </ProjectOptions>
   <CompilerOptions>
-    <Version Value="10"/>
+    <Version Value="11"/>
     <PathDelim Value="\"/>
     <Target>
       <Filename Value="runtestsgui"/>
     </Target>
     <SearchPaths>
-      <OtherUnitFiles Value="bugs;codetoolstests;lcltests;semiauto"/>
+      <OtherUnitFiles Value="bugs;codetoolstests;lcltests;semiauto;lazutils"/>
       <UnitOutputDirectory Value="units\$(TargetCPU)-$(TargetOS)"/>
     </SearchPaths>
     <Parsing>
