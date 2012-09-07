@@ -692,34 +692,6 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Method:  DrawFrameControl
-  Params:  DC     - Handle to device context
-           Rect   - Bounding rectangle
-           UType  - Frame-control type
-           UState - Frame-control state
-  Returns: If the function succeeds
-
-  Draws a frame control of the specified type and style.
- ------------------------------------------------------------------------------}
-function TCarbonWidgetSet.DrawFrameControl(DC: HDC; const Rect: TRect; UType,
-  UState: Cardinal): Boolean;
-begin
-  Result := inherited DrawFrameControl(DC, Rect, UType, UState);
-end;
-
-function TCarbonWidgetSet.DrawEdge(DC: HDC; var ARect: TRect; Edge: Cardinal;
-  grfFlags: Cardinal): Boolean;
-begin
-  Result:=inherited DrawEdge(DC, ARect, Edge, grfFlags);
-end;
-
-function TCarbonWidgetSet.DrawText(DC: HDC; Str: PChar; Count: Integer;
-  var Rect: TRect; Flags: Cardinal): Integer;
-begin
-  Result:=inherited DrawText(DC, Str, Count, Rect, Flags);
-end;
-
-{------------------------------------------------------------------------------
   Method:  Ellipse
   Params:
            DC - Handle to device context
