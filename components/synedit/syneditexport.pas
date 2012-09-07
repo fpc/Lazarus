@@ -49,8 +49,8 @@ interface
 uses
   Classes,
   SysUtils,
-  SynEditHighlighter,
-  FileUtil, FPCAdds, LCLIntf, LCLType,
+  SynEditHighlighter, SynEditTextBase, SynEditTextBuffer,
+  FileUtil, LazUTF8, FPCAdds, LCLType,
   Graphics, Clipbrd;
 
 type
@@ -282,55 +282,87 @@ end;
 
 procedure TSynCustomExporter.ExportRange(ALines: TStrings; Start, Stop: TPoint);
 var
-  i: integer;
-  Line, Token: string;
+  i, X, l: integer;
+  Token: string;
   IsSpace: boolean;
   Attri: TSynHighlighterAttributes;
+  TheLines: TSynEditStringsBase;
 begin
   // abort if not all necessary conditions are met
   if not Assigned(ALines) or not Assigned(Highlighter) or (ALines.Count = 0)
     or (Start.Y > ALines.Count) or (Start.Y > Stop.Y)
   then
     Abort;
+
   Stop.Y := Max(1, Min(Stop.Y, ALines.Count));
   Stop.X := Max(1, Min(Stop.X, Length(ALines[Stop.Y - 1]) + 1));
   Start.X := Max(1, Min(Start.X, Length(ALines[Start.Y - 1]) + 1));
   if (Start.Y = Stop.Y) and (Start.X >= Stop.X) then
     Abort;
-  // initialization
-  fBuffer.Position := 0;
-  // Size is ReadOnly in Delphi 2
-  fBuffer.SetSize(Max($1000, (Stop.Y - Start.Y) * 128));
-  Highlighter.ResetRange;
-  // export all the lines into fBuffer
-  fFirstAttribute := TRUE;
-  for i := Start.Y to Stop.Y do begin
-    Line := ALines[i - 1];
-    // order is important, since Start.Y might be equal to Stop.Y
-    if i = Stop.Y then
-      Delete(Line, Stop.X, MaxInt);
-    if (i = Start.Y) and (Start.X > 1) then
-      Delete(Line, 1, Start.X - 1);
-    // export the line
-    Highlighter.SetLine(Line, i);
-    while not Highlighter.GetEOL do begin
-      Attri := Highlighter.GetTokenAttribute;
-      Token := ReplaceReservedChars(Highlighter.GetToken, IsSpace);
-      SetTokenAttribute(IsSpace, Attri);
-      FormatToken(Token);
-      Highlighter.Next;
-    end;
-    FormatNewLine;
+
+  if ALines is TSynEditStringsBase then
+    TheLines := TSynEditStringsBase(ALines)
+  else begin
+    TheLines := TSynEditStringList.Create();
+    TheLines.Assign(ALines);
   end;
-  if not fFirstAttribute then
-    FormatAfterLastAttribute;
-  // insert header
-  fBuffer.SetSize(integer(fBuffer.Position));
-  InsertData(0, GetHeader);
-  // add footer
-  AddData(GetFooter);
-  // Size is ReadOnly in Delphi 2
-  fBuffer.SetSize(integer(fBuffer.Position));
+
+  Highlighter.AttachToLines(TheLines);
+  try
+    Highlighter.CurrentLines := TheLines;
+    Highlighter.ScanRanges;
+
+    // initialization
+    fBuffer.Position := 0;
+    fBuffer.SetSize(Max($1000, (Stop.Y - Start.Y) * 128));
+
+    // export all the lines into fBuffer
+    fFirstAttribute := TRUE;
+
+    for i := Start.Y to Stop.Y do begin
+      Highlighter.StartAtLineIndex(i - 1);
+      X := 1;
+      while not Highlighter.GetEOL do begin
+        Attri := Highlighter.GetTokenAttribute;
+        Token := Highlighter.GetToken;
+        l := UTF8Length(Token);
+
+        if (i = Start.Y) and (X < Start.X) then
+          UTF8Delete(Token, 1, Start.X - X);
+
+        X := X + l; // TODO: combound chars
+        if Token = '' then
+          continue;
+
+        if (i = Stop.Y) and (X >= Stop.X) then begin
+          UTF8Delete(Token, 1 + X - Stop.X, MaxInt);
+          if Token = '' then
+            continue;
+        end;
+
+        Token := ReplaceReservedChars(Token, IsSpace);
+        SetTokenAttribute(IsSpace, Attri);
+        FormatToken(Token);
+        Highlighter.Next;
+      end;
+
+      FormatNewLine;
+    end;
+
+    if not fFirstAttribute then
+      FormatAfterLastAttribute;
+    // insert header
+    fBuffer.SetSize(integer(fBuffer.Position));
+    InsertData(0, GetHeader);
+    // add footer
+    AddData(GetFooter);
+    // Size is ReadOnly in Delphi 2
+    fBuffer.SetSize(integer(fBuffer.Position));
+  finally
+    Highlighter.DetachFromLines(TheLines);
+    if TheLines <> ALines then
+      TheLines.Free;
+  end;
 end;
 
 procedure TSynCustomExporter.FormatToken(Token: string);
