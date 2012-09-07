@@ -3098,7 +3098,7 @@ const
 var
   ACtl: TCarbonControl;
   R, R1: CGRect;
-  RR: TRect;
+  {%H-}RR: TRect;
 begin
   {$IFDEF VerboseWinAPI}
   DebugLn('TCarbonWidgetSet.ScrollWindowEx() HWnd=',dbgs(hWnd),' prcScroll ',prcScroll <> nil,

@@ -43,7 +43,7 @@ function TPrintDialog.Execute: Boolean;
 var
   CarbonPrinter: TCarbonPrinter;
   DialogSettings: PMPrintSettings;
-  U, V: UInt32;
+  V: UInt32;
   B: Boolean;
   PMin, PMax, PFrom, PTo: Integer;
 begin
@@ -54,7 +54,8 @@ begin
 
   CarbonPrinter := Printer as TCarbonPrinter;
   //DebugLn('TPrintDialog.Execute ' + CarbonPrinter.CurrentPrinterName);
-  
+
+  DialogSettings:=nil;
   if OSError(PMCreatePrintSettings(DialogSettings),
     Self, SExecute, 'PMCreatePrintSettings') then Exit;
   try

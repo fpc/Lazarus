@@ -15,6 +15,7 @@ begin
   Result.Y := 0;
 
   if Printer = nil then Exit;
+  R:=CleanPMRect;
   if OSError(PMGetAdjustedPaperRect((Printer as TCarbonPrinter).PageFormat, R),
     Self, 'GetSize', 'PMGetUnadjustedPaperRect') then Exit;
     
@@ -80,6 +81,7 @@ begin
   try
     if I < 0 then
     begin
+      Result:=nil;
       if OSError(PMCreatePageFormat(Result), Self, SName, 'PMCreatePageFormat') then
         raise EPrinter.Create('Error initializing printing for Carbon: Unable to create page format!');
 
@@ -117,6 +119,7 @@ end;
 
 function TCarbonPrinter.GetCurrentPrinter: PMPrinter;
 begin
+  Result:=nil;
   OSError(PMSessionGetCurrentPrinter(PrintSession, Result), Self, 'GetCurrentPrinter', 'PMSessionGetCurrentPrinter');
 end;
 
@@ -168,6 +171,7 @@ var
   I, C: CFIndex;
   pa: CFArrayRef;
 begin
+  pa:=nil;
   if OSError(PMServerCreatePrinterList(kPMServerLocal, pa),
     Self, 'DoEnumPrinters', 'PMServerCreatePrinterList') then Exit;
 
@@ -232,6 +236,7 @@ begin
   for I := 0 to C - 1 do
   begin
     P := CFArrayGetValueAtIndex(FPaperArray, I);
+    CFString:=nil;
     if OSError(PMPaperGetName(P, CFString), Self, SName, 'PMPaperGetName') then Continue;
     PaperName := CFStringToStr(CFString);
     //MacOSX 10.4 returns wrong paper name in case of US Letter.
@@ -389,8 +394,10 @@ const
   SName = 'DoGetPaperName';
 begin
   Result := '';
-  
+
+  P:=nil;
   if OSError(PMGetPageFormatPaper(PageFormat, P), Self, SName, 'PMGetPageFormatPaper') then Exit;
+  CFString:=nil;
   if OSError(PMPaperGetName(P, CFString), Self, SName, 'PMPaperGetName') then Exit;
   
   Result := CFStringToStr(CFString);
@@ -440,18 +447,22 @@ begin
   T := CreatePageFormat(AName);
   try
     // copy scale
+    S:=0.0;
     OSError(PMGetScale(PageFormat, S), Self, SName, 'PMGetScale');
     OSError(PMSetScale(T, S), Self, SName, 'PMSetScale');
     
     // copy orientation
+    O:=CleanPMOrientation;
     OSError(PMGetOrientation(PageFormat, O), Self, SName, 'PMGetOrientation');
     OSError(PMSetOrientation(T, O, False), Self, SName, 'PMSetOrientation');
     
     // update
     OSError(PMSessionValidatePageFormat(PrintSession, T, nil),
       Self, SName, 'PMSessionValidatePageFormat');
-      
+
+    PaperRect:=CleanPMRect;
     OSError(PMGetAdjustedPaperRect(T, PaperRect), Self, SName, 'PMGetAdjustedPaperRect');
+    PageRect:=CleanPMRect;
     OSError(PMGetAdjustedPageRect(T, PageRect),  Self, SName, 'PMGetAdjustedPageRect');
   finally
     PMRelease(PMObject(T));
@@ -502,6 +513,7 @@ var
   C: UInt32;
 begin
   Result := inherited DoGetCopies;
+  C:=0;
   if OSError(PMGetCopies(PrintSettings, C), Self, 'DoGetCopies', 'PMGetCopies') then Exit;
   Result := C;
 end;
@@ -519,6 +531,7 @@ var
   O: PMOrientation;
 begin
   Result := inherited DoGetOrientation;
+  O:=CleanPMOrientation;
   if OSError(PMGetOrientation(PageFormat, O), Self, 'DoGetOrientation', 'PMGetOrientation') then Exit;
   
   case O of
@@ -551,6 +564,7 @@ var
   IsRemote: Boolean;
 begin
   Result := ptLocal;
+  IsRemote:=false;
   OSError(PMPrinterIsRemote(GetCurrentPrinter,IsRemote), Self, 'GetPrinterType', 'PMPrinterIsRemote');
   if IsRemote then Result := ptNetwork
 end;
@@ -561,7 +575,8 @@ var
   State: PMPrinterState;
 begin
   Result := psNoDefine;
-  
+
+  State:=0;
   if OSError(PMPrinterGetState(GetCurrentPrinter, State), Self, 'DoGetPrinterState', 'PMPrinterGetState') then Exit;
   
   case State of

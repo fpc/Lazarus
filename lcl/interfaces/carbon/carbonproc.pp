@@ -38,6 +38,10 @@ uses
   Classes, SysUtils, Types, LCLType, LCLProc,
   Controls, Forms, Graphics, Math, GraphType;
 
+const
+  CleanPMRect: PMRect = (top: 0; left: 0; bottom: 0; right: 0);
+  CleanPMOrientation: PMOrientation = 0;
+
 function OSError(AResult: OSStatus; const AMethodName, ACallName: String;
   const AText: String = ''): Boolean;
 function OSError(AResult: OSStatus; const AObject: TObject; const AMethodName, ACallName: String;

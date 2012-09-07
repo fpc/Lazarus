@@ -81,7 +81,7 @@ type
   public
     constructor Create; override;
     destructor Destroy; override;
-    function Write(const Buffer; Count:Integer; var Written: Integer): Boolean; override;
+    function Write(const {%H-}Buffer; {%H-}Count:Integer; var {%H-}Written: Integer): Boolean; override;
     // Warning not portable functions here
     property CurrentPrinterName: String read GetCurrentPrinterName;
     property PrintSession: PMPrintSession read FPrintSession;
