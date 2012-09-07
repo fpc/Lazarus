@@ -57,6 +57,9 @@ type
     ROP2: Integer;
     PenPos: TPoint;
 
+    WindowOfs: TPoint;
+    ViewportOfs: TPoint;
+
     isClipped: Boolean;
     ClipShape: HIShapeRef;
   end;
@@ -572,7 +575,10 @@ begin
 
 
   if isClipped then
+  begin
     CGContextSaveGState(CGContext);
+    FClipRegion.Apply(Self);
+  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -597,6 +603,9 @@ begin
 
   Result.ROP2 := FROP2;
   Result.PenPos := FPenPos;
+
+  Result.WindowOfs := FWindowOfs;
+  Result.ViewportOfs := FViewportOfs;
 
   Result.isClipped := isClipped;
   Result.ClipShape := FClipRegion.GetShapeCopy;
@@ -655,6 +664,9 @@ begin
 
   FROP2 := AData.ROP2;
   FPenPos := AData.PenPos;
+
+  FWindowOfs := AData.WindowOfs;
+  FViewportOfs := AData.ViewportOfs;
 
   isClipped := AData.isClipped;
   FClipRegion.Shape := AData.ClipShape;
