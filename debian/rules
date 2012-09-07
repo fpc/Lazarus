@@ -224,7 +224,7 @@ build-doc: patch debian-files build-doc-stamp
 build-doc-stamp:
 	@echo "--- Building Documentation"
 	dh_testdir
-	$(MAKE) -C docs/html ${CONVERTER}
+#	$(MAKE) -C docs/html ${CONVERTER}
 	touch build-doc-stamp
 
 install-doc: build-doc install-doc-stamp
@@ -232,7 +232,8 @@ install-doc-stamp:
 	@echo "--- Installing Documentation"
 	dh_testdir
 	dh_testroot
-	${MAKE} -C docs/html ${DOCTYPE}install INSTALL_PREFIX=${INSTALL_DIR}/usr INSTALL_DOCDIR=${DOC_DIR}
+#	${MAKE} -C docs/html ${DOCTYPE}install INSTALL_PREFIX=${INSTALL_DIR}/usr INSTALL_DOCDIR=${DOC_DIR}
+	mkdir -p ${DOC_DIR}
 	cd docs ; ${CP} --parents -t ${DOC_DIR} \
 	  index.html \
 	  images/laztitle.png
