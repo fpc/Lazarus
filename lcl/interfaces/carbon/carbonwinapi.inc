@@ -1097,11 +1097,12 @@ begin
   {$ENDIF}
   
   if not CheckDC(DC, 'FrameRect') then Exit;
+  if not CheckGDIObject(hBr, 'FrameRect') then Exit;
 
   // Create a new Pen with default values and the color of the brush
   NewPen := TCarbonPen.Create(False);
   try
-    NewPen.SetColor(CarbonDC.CurrentBrush.ColorRef, True);
+    NewPen.SetColor(TCarbonBrush(hBr).ColorRef, True);
 
     OldPen := CarbonDC.CurrentPen;
     CarbonDC.CurrentPen := NewPen;
