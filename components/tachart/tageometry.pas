@@ -29,6 +29,7 @@ type
     FC: TDoublePoint;
     FR: TDoublePoint;
     constructor InitBoundingBox(AX1, AY1, AX2, AY2: Integer);
+    constructor InitRadius(ARX, ARY: Double);
   public
     function GetPoint(AParametricAngle: Double): TDoublePoint;
     function TesselateRadialPie(
@@ -545,6 +546,12 @@ begin
   FC.Y := (AY1 + AY2) / 2;
   FR.X := Abs(AX1 - AX2) / 2;
   FR.Y := Abs(AY1 - AY2) / 2;
+end;
+
+constructor TEllipse.InitRadius(ARX, ARY: Double);
+begin
+  FC := ZeroDoublePoint;
+  FR := DoublePoint(ARX, ARY);
 end;
 
 // Represent the ellipse sector with a polygon on an integer grid.
