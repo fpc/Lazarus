@@ -967,6 +967,7 @@ begin
   Result:=TAVLTree.Create(@ComparePointers);
   for i:=0 to LinkCount-1 do begin
     CurCode:=FLinks[i].Code;
+    if CurCode=nil then continue;
     if Result.Find(CurCode)=nil then
       Result.Add(CurCode);
   end;
@@ -1667,7 +1668,7 @@ begin
     RaiseCatchableException('');
   if FLinks<>nil then begin
     for i:=0 to FLinkCount-1 do begin
-      if FLinks[i].Code=nil then
+      if (FLinks[i].Code=nil) and (FLinks[i].Kind=slkCode) then
         RaiseCatchableException('');
       if (FLinks[i].CleanedPos<1) or (FLinks[i].CleanedPos>SrcLen) then
         RaiseCatchableException('');
@@ -2319,6 +2320,7 @@ begin
   Result:=false;
   EndCursorPos:=0;
   EndCode:=nil;
+  if StartCode=nil then exit;
   
   // search link before start position
   LinkID:=-1;
@@ -2346,6 +2348,7 @@ begin
       repeat
         inc(LinkID);
         if LinkID>=LinkCount then exit;
+        if FLinks[LinkID].Code=nil then continue;
       until (FLinks[LinkID].Code<>LastCode)
       and (SearchedCodes.IndexOf(FLinks[LinkID].Code)<0);
     end;
@@ -3900,10 +3903,12 @@ var
   SkippedPos: boolean;
   Link: PSourceLink;
 begin
+  ACleanPos:=0;
+  if ACode=nil then exit(1);
+
   i:=0;
   SkippedPos:=false;
   SkippedCleanPos:=-1;
-  ACleanPos:=0;
   while i<LinkCount do begin
     Link:=@FLinks[i];
     //DebugLn(['[TLinkScanner.CursorToCleanPos] A ACursorPos=',ACursorPos,', Code=',Link^.Code=ACode,', Link^.SrcPos=',Link^.SrcPos,', Link^.CleanedPos=',Link^.CleanedPos]);
@@ -4051,10 +4056,12 @@ begin
     end;
     if ACode<>FLinks[LinkIndex].Code then begin
       ACode:=FLinks[LinkIndex].Code;
-      FOnGetSourceStatus(Self,ACode,CodeIsReadOnly);
-      if CodeIsReadOnly then begin
-        EditError(ctsfileIsReadOnly, ACode);
-        exit;
+      if ACode<>nil then begin
+        FOnGetSourceStatus(Self,ACode,CodeIsReadOnly);
+        if CodeIsReadOnly then begin
+          EditError(ctsfileIsReadOnly, ACode);
+          exit;
+        end;
       end;
     end;
   until false;
@@ -4071,7 +4078,8 @@ begin
   LinkIndex:=LinkIndexAtCleanPos(CleanStartPos);
   if LinkIndex<0 then exit;
   ACode:=FLinks[LinkIndex].Code;
-  AddCodeToUniqueList(ACode,UniqueSortedCodeList);
+  if ACode<>nil then
+    AddCodeToUniqueList(ACode,UniqueSortedCodeList);
   repeat
     inc(LinkIndex);
     if (LinkIndex>=LinkCount) then
@@ -4079,9 +4087,10 @@ begin
     Link:=@FLinks[LinkIndex];
     if (Link^.CleanedPos>CleanEndPos) then
       exit;
-    if (ACode<>Link^.Code) and (Link^.Code<>nil) then begin
+    if (ACode<>Link^.Code) then begin
       ACode:=Link^.Code;
-      AddCodeToUniqueList(ACode,UniqueSortedCodeList);
+      if ACode<>nil then
+        AddCodeToUniqueList(ACode,UniqueSortedCodeList);
     end;
   until false;
 end;
@@ -4096,7 +4105,9 @@ procedure TLinkScanner.DeleteRange(CleanStartPos,CleanEndPos: integer);
     
   ToDo: keep include directives
 }
-var LinkIndex, StartPos, Len, aLinkSize: integer;
+var
+  LinkIndex, StartPos, Len, aLinkSize: integer;
+  ACode: Pointer;
 begin
   if CleanStartPos<1 then CleanStartPos:=1;
   if CleanEndPos>CleanedLen then CleanEndPos:=CleanedLen+1;
@@ -4113,7 +4124,9 @@ begin
     dec(Len,StartPos);
     inc(StartPos,FLinks[LinkIndex].SrcPos);
     //DebugLn(['[TLinkScanner.DeleteRange] Pos=',StartPos,'-',StartPos+Len,' ',dbgstr(copy(Src,StartPos,Len))]);
-    FOnDeleteSource(Self,FLinks[LinkIndex].Code,StartPos,Len);
+    ACode:=FLinks[LinkIndex].Code;
+    if ACode<>nil then
+      FOnDeleteSource(Self,ACode,StartPos,Len);
     if FLinks[LinkIndex].CleanedPos<=CleanStartPos then break;
     dec(LinkIndex);
   end;

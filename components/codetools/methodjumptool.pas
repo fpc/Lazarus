@@ -1091,8 +1091,9 @@ begin
     while (i<Scanner.LinkCount) do begin
       Link:=Scanner.Links[i];
       LinkCode:=TCodeBuffer(Link.Code);
-      if CompareFilenames(ExtractFilename(LinkCode.Filename),ASrcFilename)=0 then
-      begin
+      if (LinkCode<>nil)
+      and (CompareFilenames(ExtractFilename(LinkCode.Filename),ASrcFilename)=0)
+      then begin
         BestPos:=Link.CleanedPos;
         if (SourceLine>0) and (SourceLine<=LinkCode.LineCount) then begin
           // there is a SourceLine => use that

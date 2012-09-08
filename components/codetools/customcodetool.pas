@@ -2195,6 +2195,7 @@ begin
           NearestScanPos:=0;
           for i:=0 to Scanner.LinkCount-1 do begin
             Link:=Scanner.Links[i];
+            if Link.Code=nil then continue;
             if Link.Code<>Pointer(CursorPos.Code) then continue;
             if Link.SrcPos>p then continue;
             NearestScanPos:=Link.SrcPos+Scanner.LinkSize(i);
