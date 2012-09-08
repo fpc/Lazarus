@@ -1,0 +1,9 @@
+  add_LCLBase;
+  add_LazUtils;
+  add_FCL;
+  add_LCL;
+  add_LazControls;
+  add_IDEIntf;
+  add_CodeTools;
+  add_SynEdit;
+  add_ide;
