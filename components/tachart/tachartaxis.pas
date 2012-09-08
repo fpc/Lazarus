@@ -988,6 +988,7 @@ begin
     g := @FGroups[i];
     g^.FFirstMark := 0;
     g^.FLastMark := 0;
+    g^.FMargin := 0;
     g^.FSize := 0;
     g^.FTitleSize := 0;
     for j := 0 to g^.FCount - 1 do begin
