@@ -376,6 +376,7 @@
         <Filename Value="frames/buildmodeseditor.pas"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="BuildModesEditorFrame"/>
+        <HasResources Value="True"/>
         <ResourceBaseClass Value="Frame"/>
         <UnitName Value="BuildModesEditor"/>
       </Unit45>

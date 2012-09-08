@@ -736,7 +736,7 @@ begin
     btnLoadSave.LoadGlyphFromLazarusResource('laz_save');
 
   chkUseAsDefault := TCheckBox(ADialog.AddControl(TCheckBox));
-  chkUseAsDefault.Caption := dlgCOUseAsDefault;
+  chkUseAsDefault.Caption := dlgCOSetAsDefault;
   chkUseAsDefault.ShowHint := True;
   chkUseAsDefault.Hint := lisWhenEnabledTheCurrentOptionsAreSavedToTheTemplateW;
 end;

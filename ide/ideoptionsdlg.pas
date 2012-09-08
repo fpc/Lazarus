@@ -34,7 +34,7 @@ uses
   Buttons, ButtonPanel, ExtCtrls,
   IDEWindowIntf, IDEOptionsIntf, IDECommands, IDEHelpIntf,
   EnvironmentOpts, LazarusIDEStrConsts,
-  EditorOptions, TreeFilterEdit, EditBtn;
+  EditorOptions, TreeFilterEdit, EditBtn, StdCtrls;
 
 type
   TIDEOptsDlgAction = (
@@ -48,11 +48,19 @@ type
   { TIDEOptionsDialog }
 
   TIDEOptionsDialog = class(TAbstractOptionsEditorDialog)
+    BuildModeComboBox: TComboBox;
+    BuildModeManageButton: TButton;
+    BuildModeLabel: TLabel;
     ButtonPanel: TButtonPanel;
     CategoryTree: TTreeView;
     CatTVSplitter: TSplitter;
-    Panel1: TPanel;
+    CategoryPanel: TPanel;
+    EditorsPanel: TScrollBox;
     FilterEdit: TTreeFilterEdit;
+    BuildModeSelectPanel: TPanel;
+    Label1: TLabel;
+    SettingsPanel: TPanel;
+    procedure BuildModeManageButtonClick(Sender: TObject);
     procedure CategoryTreeChange(Sender: TObject; Node: TTreeNode);
     procedure CategoryTreeCollapsed(Sender: TObject; Node: TTreeNode);
     procedure CategoryTreeExpanded(Sender: TObject; Node: TTreeNode);
@@ -117,6 +125,7 @@ begin
   PrevEditor := nil;
   FEditorsCreated := False;
   FEditorToOpen := nil;
+  SettingsPanel.Constraints.MinHeight:=0;
 
   IDEDialogLayoutList.ApplyLayout(Self, Width, Height);
   Caption := dlgIDEOptions;
@@ -175,14 +184,19 @@ begin
     NewLastSelected := AEditor.Rec;
   if (AEditor <> PrevEditor) then begin
     if Assigned(PrevEditor) then
-      PrevEditor.Visible := False; //PrevEditor.Parent := nil;
+      PrevEditor.Visible := False;
     if Assigned(AEditor) then begin
       AEditor.Align := alClient;
-      AEditor.BorderSpacing.Around := 6; //AEditor.Parent := Self;
+      AEditor.BorderSpacing.Around := 6;
       AEditor.Visible := True;
     end;
     PrevEditor := AEditor;
   end;
+end;
+
+procedure TIDEOptionsDialog.BuildModeManageButtonClick(Sender: TObject);
+begin
+  ;
 end;
 
 procedure TIDEOptionsDialog.CategoryTreeCollapsed(Sender: TObject; Node: TTreeNode);
@@ -262,8 +276,9 @@ var
     begin
       if Node.Data <> nil then
         with TAbstractIDEOptionsEditor(Node.Data) do
-          if ((ClassTypeForCompare = nil) and (SupportedOptionsClass = nil)) or
-             ((SupportedOptionsClass <> nil) and ClassTypeForCompare.InheritsFrom(SupportedOptionsClass)) then
+          if ((ClassTypeForCompare = nil) and (SupportedOptionsClass = nil))
+          or ((SupportedOptionsClass <> nil)
+          and ClassTypeForCompare.InheritsFrom(SupportedOptionsClass)) then
           begin
             case anAction of
             iodaRead: ReadSettings(AOptions);
@@ -456,7 +471,7 @@ begin
         Instance.Setup(Self);
         Instance.Tag := Rec^.Items[j]^.Index;
         Instance.Visible := False;
-        Instance.Parent := Self;
+        Instance.Parent := EditorsPanel;
         instance.Rec := Rec^.Items[j];
 
         if Rec^.Items[j]^.Parent = NoParent then
@@ -580,8 +595,8 @@ end;
 function TIDEOptionsDialog.AddControl(AControlClass: TControlClass): TControl;
 begin
   Result := AControlClass.Create(Self);
-  Result.Parent := Self;
-  Result.Align:=alBottom;
+  Result.Parent := SettingsPanel;
+  Result.Align := alBottom;
   Result.BorderSpacing.Around := 6;
 end;
 

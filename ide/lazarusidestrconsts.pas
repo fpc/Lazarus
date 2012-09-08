@@ -1867,7 +1867,7 @@ resourcestring
   
   // compiler options
   dlgCompilerOptions = 'Compiler Options';
-  dlgCOUseAsDefault = 'Use these compiler options as default for new projects';
+  dlgCOSetAsDefault = 'Set compiler options as default';
   lisWhenEnabledTheCurrentOptionsAreSavedToTheTemplateW = 'When enabled the '
     +'current options are saved to the template, which is used when creating '
     +'new projects';
@@ -5273,6 +5273,7 @@ resourcestring
   dlgBuildModes = 'Build Modes';
   dlgIdeMacroValues = 'IDE Macro Values';
   lisBuildModes = 'Build modes';
+  lisManageBuildModes = 'Manage build modes';
   lisInSession = 'In session';
   lisThereMustBeAtLeastOneBuildMode = 'There must be at least one build mode.';
   lisTheFirstBuildModeIsTheDefaultModeAndMustBeStoredIn = 'The first build '
