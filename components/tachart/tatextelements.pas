@@ -263,8 +263,11 @@ begin
   if ASource is TChartTextElement then
     with TChartTextElement(ASource) do begin
       Self.FAlignment := Alignment;
+      Self.FCalloutAngle := FCalloutAngle;
       Self.FClipped := FClipped;
+      Self.FMargins.Assign(FMargins);
       Self.FOverlapPolicy := FOverlapPolicy;
+      Self.FShape := FShape;
     end;
   inherited Assign(ASource);
 end;
@@ -560,6 +563,7 @@ procedure TGenericChartMarks.Assign(ASource: TPersistent);
 begin
   if ASource is Self.ClassType then
     with TGenericChartMarks(ASource) do begin
+      Self.FArrow.Assign(FArrow);
       Self.FAttachment := FAttachment;
       Self.FDistance := FDistance;
       Self.FFormat := FFormat;
