@@ -51,7 +51,8 @@ type
 
 function CopyPoints(
   APoints: array of TPoint; AStartIndex, ANumPts: Integer): TPointArray;
-function DoublePoint(AX, AY: Double): TDoublePoint; inline;
+function DoublePoint(AX, AY: Double): TDoublePoint; inline; overload;
+function DoublePoint(const AP: TPoint): TDoublePoint; inline; overload;
 function DoubleRect(AX1, AY1, AX2, AY2: Double): TDoubleRect; inline;
 procedure ExpandRect(var ARect: TDoubleRect; const APoint: TDoublePoint); inline;
 procedure ExpandRect(var ARect: TRect; const APoint: TPoint); inline;
@@ -71,6 +72,9 @@ function LineIntersectsRect(
 procedure NormalizeRect(var ARect: TRect); overload;
 procedure NormalizeRect(var ARect: TDoubleRect); overload;
 function MakeSquare(const ARect: TRect): TRect;
+function MakeCallout(
+  const AShape: TPointArray; const ACenter, ATarget: TPoint;
+  AAngle: Double): TPointArray;
 function MaxPoint(const A, B: TPoint): TPoint; inline;
 function MeasureRotatedRect(const ASize: TPoint; AAngle: Double): TSize;
 function PointDist(const A, B: TPoint): Integer; inline;
@@ -127,6 +131,12 @@ function DoublePoint(AX, AY: Double): TDoublePoint; inline;
 begin
   Result.X := AX;
   Result.Y := AY;
+end;
+
+function DoublePoint(const AP: TPoint): TDoublePoint;
+begin
+  Result.X := AP.X;
+  Result.Y := AP.Y;
 end;
 
 function DoubleRect(AX1, AY1, AX2, AY2: Double): TDoubleRect; inline;
@@ -322,6 +332,150 @@ begin
     Result.Top := c.Y - w div 2;
     Result.Bottom := c.Y + w div 2;
   end;
+end;
+
+function MakeCallout(
+  const AShape: TPointArray; const ACenter, ATarget: TPoint;
+  AAngle: Double): TPointArray;
+var
+  AVector: TPoint;
+
+  function Next(AIndex, ADir: Integer): Integer; inline;
+  begin
+    Result := (AIndex + Length(AShape) + ADir) mod Length(AShape);
+  end;
+
+  function NearestSide: Integer;
+  begin
+    for Result := 0 to High(AShape) do
+      if
+        IsLineIntersectsLine(
+          ACenter, ATarget, AShape[Result], AShape[Next(Result, 1)])
+      then
+        exit;
+    Result := -1;
+  end;
+
+  function ScalarProduct(const AP1, AP2: TPoint): Double; inline;
+  begin
+    Result := Double(AP1.X) * AP2.X + Double(AP1.Y) * AP2.Y;
+  end;
+
+  function CrossProductSign(const AP1, AP2: TPoint): Integer; inline;
+  begin
+    Result := Sign(Double(AP1.X) * AP2.Y - Double(AP1.Y) * AP2.X);
+  end;
+
+  function CrossProductSignByIndex(AIndex: Integer): Integer; inline;
+  begin
+    Result := CrossProductSign(AVector, AShape[AIndex] - ATarget);
+  end;
+
+  function CosVector(AIndex: Integer): Double;
+  begin
+    Result :=
+      ScalarProduct(AShape[AIndex] - ATarget, AVector) /
+      Sqrt(Double(PointDist(AShape[AIndex], ATarget)) * PointDist(ACenter, ATarget));
+  end;
+
+  function LineIntersectsRay(
+    const AFrom: TPoint; const ARay: TDoublePoint; const AA, AB: TPoint): TPoint;
+  var
+    line: TDoublePoint;
+    det, t: Double;
+  begin
+    line := DoublePoint(AB - AA);
+    // x = t * ARay.X + AFrom.X; y = t * ARay.Y + AFrom.Y;
+    // (x - AA.X) * line.Y = (y - AA.Y) * line.X
+    // t * ARay.X * line.Y + (AFrom.X - AA.X) * line.Y =
+    // t * ARay.Y * line.X + (AFrom.Y - AA.Y) * line.X
+    det := ARay.X * line.Y - ARay.Y * line.X;
+    if det = 0 then exit(AB);
+    with (AFrom - AA) do // Workaround for issue #17005.
+      t := (Y * line.X - X * line.Y) / det;
+    if t <= 0 then exit(AB);
+    Result := RoundPoint(DoublePoint(t, t) * ARay) + AFrom;
+  end;
+
+  procedure PointOnAngle(ADir: Integer; var AIndex: Integer; out APt: TPoint);
+  var
+    targetCos, c, maxCos: Double;
+    this, prev: TPoint;
+    ray: TDoublePoint;
+    s, n: Integer;
+  begin
+    targetCos := Cos(AAngle / 2);
+    maxCos := 2.0;
+    while true do begin
+      // Central vector of the callout passes exactly through the shape vertex.
+      s := CrossProductSignByIndex(AIndex);
+      if s <> 0 then break;
+      AIndex := Next(AIndex, ADir);
+    end;
+    prev := AShape[Next(AIndex, -ADir)];
+    while true do begin
+      this := AShape[AIndex];
+      c := CosVector(AIndex);
+      n := Next(AIndex, ADir);
+      if
+        (CrossProductSignByIndex(AIndex) <> s) or (c > maxCos) and
+        // Imprecision of integer grid may result in short concave segments on
+        // a convex figure. Skip them by a single-point lookahead.
+        ((CrossProductSignByIndex(n) <> s) or (CosVector(n) > maxCos))
+      then begin
+        APt := prev;
+        AIndex := Next(AIndex, -ADir);
+        exit;
+      end;
+      if c <= targetCos then begin
+        ray := RotatePoint(DoublePoint(AVector), s * AAngle / 2);
+        APt := LineIntersectsRay(ATarget, ray, prev, this);
+        exit;
+      end;
+      AIndex := Next(AIndex, ADir);
+      maxCos := c;
+      prev := this;
+    end;
+  end;
+
+var
+  cnt: Integer = 0;
+
+  procedure Add(const APoint: TPoint);
+  begin
+    if (cnt = 0) or (Result[cnt - 1] <> APoint) then begin
+      Result[cnt] := APoint;
+      cnt += 1;
+    end;
+  end;
+
+var
+  ni, li, ri, i: Integer;
+  lp, rp: TPoint;
+begin
+  if
+    (Length(AShape) < 3) or
+    IsPointInPolygon(ATarget, AShape) or not IsPointInPolygon(ACenter, AShape)
+  then
+    exit(AShape);
+  ni := NearestSide;
+  if ni < 0 then exit(AShape);
+  AVector := ACenter - ATarget;
+  li := ni;
+  PointOnAngle(-1, li, lp);
+  ri := Next(ni, 1);
+  PointOnAngle(+1, ri, rp);
+  SetLength(Result, Length(AShape) + 3);
+  i := ri;
+  while i <> li do begin
+    Add(AShape[i]);
+    i := Next(i, 1);
+  end;
+  Add(AShape[li]);
+  Add(lp);
+  Add(ATarget);
+  Add(rp);
+  SetLength(Result, cnt);
 end;
 
 function MaxPoint(const A, B: TPoint): TPoint;

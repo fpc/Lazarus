@@ -43,11 +43,13 @@ type
 
   TChartTextElement = class(TChartElement)
   strict private
+    FCalloutAngle: Cardinal;
     FClipped: Boolean;
     FMargins: TChartLabelMargins;
     FOverlapPolicy: TChartMarksOverlapPolicy;
     FShape: TChartLabelShape;
     procedure SetAlignment(AValue: TAlignment);
+    procedure SetCalloutAngle(AValue: Cardinal);
     procedure SetClipped(AValue: Boolean);
     procedure SetMargins(AValue: TChartLabelMargins);
     procedure SetOverlapPolicy(AValue: TChartMarksOverlapPolicy);
@@ -78,6 +80,8 @@ type
       ADrawer: IChartDrawer; ASize: TPoint): TPointArray;
     function MeasureLabel(ADrawer: IChartDrawer; const AText: String): TSize;
   public
+    property CalloutAngle: Cardinal
+      read FCalloutAngle write SetCalloutAngle default 0;
     // If false, labels may overlap axises and legend.
     property Clipped: Boolean read FClipped write SetClipped default true;
     property OverlapPolicy: TChartMarksOverlapPolicy
@@ -230,6 +234,7 @@ type
     constructor Create(AOwner: TCustomChart);
   published
     property Arrow;
+    property CalloutAngle;
     property Distance default DEF_MARKS_DISTANCE;
     property Format;
     property Frame;
@@ -292,6 +297,9 @@ begin
   labelPoly := GetLabelPolygon(ADrawer, ptText);
   for i := 0 to High(labelPoly) do
     labelPoly[i] += ALabelCenter;
+  if CalloutAngle > 0 then
+    labelPoly := MakeCallout(
+      labelPoly, ALabelCenter, ADataPoint, OrientToRad(CalloutAngle));
 
   if
     (OverlapPolicy = opHideNeighbour) and
@@ -397,6 +405,13 @@ procedure TChartTextElement.SetAlignment(AValue: TAlignment);
 begin
   if FAlignment = AValue then exit;
   FAlignment := AValue;
+  StyleChanged(Self);
+end;
+
+procedure TChartTextElement.SetCalloutAngle(AValue: Cardinal);
+begin
+  if FCalloutAngle = AValue then exit;
+  FCalloutAngle := AValue;
   StyleChanged(Self);
 end;
 
