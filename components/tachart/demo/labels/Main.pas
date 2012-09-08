@@ -45,7 +45,7 @@ implementation
 {$R *.lfm}
 
 uses
-  TATypes;
+  TATextElements;
 
 { TForm1 }
 

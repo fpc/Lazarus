@@ -23,7 +23,7 @@ interface
 uses
   Classes, Graphics,
   TAChartUtils, TACustomSource, TADrawUtils, TAIntervalSources, TAStyles,
-  TATypes;
+  TATypes, TATextElements;
 
 const
   DEF_TITLE_DISTANCE = 4;

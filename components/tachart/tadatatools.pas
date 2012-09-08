@@ -22,7 +22,7 @@ unit TADataTools;
 interface
 
 uses
-  Classes, TAChartUtils, TAGraph, TATools, TATypes;
+  Classes, TAChartUtils, TAGraph, TATools, TATextElements, TATypes;
 
 type
   TDataPointDistanceTool = class;

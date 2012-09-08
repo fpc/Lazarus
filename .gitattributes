@@ -3059,6 +3059,7 @@ components/tachart/taradialseries.pas svneol=native#text/pascal
 components/tachart/taseries.pas svneol=native#text/plain
 components/tachart/tasources.pas svneol=native#text/pascal
 components/tachart/tastyles.pas svneol=native#text/pascal
+components/tachart/tatextelements.pas svneol=native#text/pascal
 components/tachart/tatools.pas svneol=native#text/pascal
 components/tachart/tatransformations.pas svneol=native#text/pascal
 components/tachart/tatypes.pas svneol=native#text/plain

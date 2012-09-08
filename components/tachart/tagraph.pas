@@ -29,7 +29,8 @@ interface
 
 uses
   Graphics, Classes, Controls, LCLType, SysUtils,
-  TAChartAxis, TAChartAxisUtils, TAChartUtils, TADrawUtils, TALegend, TATypes;
+  TAChartAxis, TAChartAxisUtils, TAChartUtils, TADrawUtils, TALegend,
+  TATextElements, TATypes;
 
 type
   TChart = class;
