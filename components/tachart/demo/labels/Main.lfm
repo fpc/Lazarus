@@ -1,31 +1,31 @@
 object Form1: TForm1
   Left = 1160
-  Height = 414
+  Height = 430
   Top = 177
-  Width = 496
+  Width = 592
   Caption = 'Form1'
-  ClientHeight = 414
-  ClientWidth = 496
+  ClientHeight = 430
+  ClientWidth = 592
   Position = poScreenCenter
   LCLVersion = '1.1'
   object pcMain: TPageControl
     Left = 0
-    Height = 364
+    Height = 368
     Top = 0
-    Width = 496
+    Width = 592
     ActivePage = tsBar
     Align = alClient
     TabIndex = 0
     TabOrder = 0
     object tsBar: TTabSheet
       Caption = 'Bar'
-      ClientHeight = 338
-      ClientWidth = 488
+      ClientHeight = 342
+      ClientWidth = 584
       object Chart1: TChart
         Left = 0
-        Height = 338
+        Height = 342
         Top = 0
-        Width = 488
+        Width = 584
         AxisList = <        
           item
             TickLength = 0
@@ -60,12 +60,17 @@ object Form1: TForm1
         Align = alClient
         ParentColor = False
         object Chart1BarSeries1: TBarSeries
-          Marks.Shape = cmsEllipse
+          Marks.Margins.Left = 8
+          Marks.Margins.Top = 5
+          Marks.Margins.Right = 8
+          Marks.Margins.Bottom = 5
           Marks.Arrow.BaseLength = 3
           Marks.Arrow.Length = 9
           Marks.Arrow.Visible = True
           Marks.Arrow.Width = 4
           Marks.Format = '%1:.2f%%'
+          Marks.Frame.Color = 31097
+          Marks.Frame.Width = 2
           Marks.Style = smsPercent
           BarBrush.Color = clRed
           Source = RandomChartSource1
@@ -75,12 +80,12 @@ object Form1: TForm1
     object Multiline: TTabSheet
       Caption = 'Multiline'
       ClientHeight = 338
-      ClientWidth = 488
+      ClientWidth = 584
       object ChartMulti: TChart
         Left = 0
         Height = 338
         Top = 0
-        Width = 488
+        Width = 584
         AxisList = <        
           item
             Marks.Alignment = taCenter
@@ -121,18 +126,18 @@ object Form1: TForm1
   end
   object pnlControls: TPanel
     Left = 0
-    Height = 50
-    Top = 364
-    Width = 496
+    Height = 62
+    Top = 368
+    Width = 592
     Align = alBottom
     BevelOuter = bvNone
-    ClientHeight = 50
-    ClientWidth = 496
+    ClientHeight = 62
+    ClientWidth = 592
     TabOrder = 1
     object cbHideOverlapping: TCheckBox
-      Left = 352
+      Left = 336
       Height = 17
-      Top = 16
+      Top = 12
       Width = 130
       Caption = 'Hide overlapping labels'
       OnChange = cbHideOverlappingChange
@@ -140,12 +145,12 @@ object Form1: TForm1
     end
     object gbAngles: TGroupBox
       Left = 0
-      Height = 50
+      Height = 62
       Top = 0
       Width = 312
       Align = alLeft
       Caption = ' Angles '
-      ClientHeight = 32
+      ClientHeight = 44
       ClientWidth = 308
       TabOrder = 1
       object seAxisAngle: TSpinEdit
@@ -205,6 +210,24 @@ object Form1: TForm1
         OnChange = seTitleAngleChange
         TabOrder = 2
       end
+    end
+    object cbShape: TComboBox
+      Left = 336
+      Height = 21
+      Top = 32
+      Width = 160
+      ItemHeight = 13
+      ItemIndex = 0
+      Items.Strings = (
+        'Rectangle'
+        'Ellipse'
+        'Rounded corners'
+        'Rounded sides'
+      )
+      OnChange = cbShapeChange
+      Style = csDropDownList
+      TabOrder = 2
+      Text = 'Rectangle'
     end
   end
   object RandomChartSource1: TRandomChartSource

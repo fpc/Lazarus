@@ -18,6 +18,7 @@ type
     cbHideOverlapping: TCheckBox;
     ChartMulti: TChart;
     ChartMultiLineSeries1: TLineSeries;
+    cbShape: TComboBox;
     gbAngles: TGroupBox;
     lblAxisAngle: TLabel;
     lblSeriesAngle: TLabel;
@@ -31,6 +32,7 @@ type
     Multiline: TTabSheet;
     tsBar: TTabSheet;
     procedure cbHideOverlappingChange(Sender: TObject);
+    procedure cbShapeChange(Sender: TObject);
     procedure ChartMultiAxisList1MarkToText(var AText: String; AMark: Double);
     procedure seAxisAngleChange(Sender: TObject);
     procedure seSeriesAngleChange(Sender: TObject);
@@ -62,6 +64,16 @@ begin
   ChartMulti.LeftAxis.Marks.OverlapPolicy := op;
   ChartMulti.BottomAxis.Marks.OverlapPolicy := op;
   Chart1BarSeries1.Marks.OverlapPolicy := op;
+end;
+
+procedure TForm1.cbShapeChange(Sender: TObject);
+var
+  s: TChartLabelShape;
+begin
+  s := TChartLabelShape(cbShape.ItemIndex);
+  Chart1BarSeries1.Marks.Shape := s;
+  ChartMulti.LeftAxis.Marks.Shape := s;
+  ChartMulti.BottomAxis.Marks.Shape := s;
 end;
 
 procedure TForm1.ChartMultiAxisList1MarkToText(
