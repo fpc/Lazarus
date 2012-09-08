@@ -7,7 +7,7 @@ object Form1: TForm1
   ClientHeight = 494
   ClientWidth = 585
   Position = poScreenCenter
-  LCLVersion = '0.9.31'
+  LCLVersion = '1.1'
   object Chart1: TChart
     Left = 0
     Height = 392
@@ -72,41 +72,41 @@ object Form1: TForm1
     TabOrder = 0
     object lblAdd: TLabel
       Left = 13
-      Height = 14
+      Height = 13
       Top = 10
-      Width = 24
+      Width = 23
       Caption = 'Add:'
       ParentColor = False
     end
     object lblClear: TLabel
       Left = 13
-      Height = 14
+      Height = 13
       Top = 40
-      Width = 30
+      Width = 29
       Caption = 'Clear:'
       ParentColor = False
     end
     object lblAddCount: TLabel
       Left = 288
-      Height = 14
+      Height = 13
       Top = 8
-      Width = 58
+      Width = 57
       Caption = 'Multiple add'
       ParentColor = False
     end
     object lblMarkStyle: TLabel
       Left = 48
-      Height = 14
+      Height = 13
       Top = 80
-      Width = 78
+      Width = 77
       Caption = 'Add with marks:'
       ParentColor = False
     end
     object lblReticule: TLabel
       Left = 360
-      Height = 14
+      Height = 13
       Top = 80
-      Width = 43
+      Width = 42
       Caption = 'Reticule:'
       ParentColor = False
     end
