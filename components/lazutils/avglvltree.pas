@@ -68,6 +68,7 @@ type
     FTree: TAvgLvlTree;
   public
     constructor Create(Tree: TAvgLvlTree; aLowToHigh: boolean = true);
+    function GetEnumerator: TAvgLvlTreeNodeEnumerator;
     function MoveNext: Boolean;
     property Current: TAvgLvlTreeNode read FCurrent;
     property LowToHigh: boolean read FLowToHigh;
@@ -467,6 +468,11 @@ constructor TAvgLvlTreeNodeEnumerator.Create(Tree: TAvgLvlTree;
 begin
   FTree:=Tree;
   FLowToHigh:=aLowToHigh;
+end;
+
+function TAvgLvlTreeNodeEnumerator.GetEnumerator: TAvgLvlTreeNodeEnumerator;
+begin
+  Result:=Self;
 end;
 
 function TAvgLvlTreeNodeEnumerator.MoveNext: Boolean;
