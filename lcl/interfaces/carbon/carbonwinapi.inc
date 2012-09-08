@@ -1934,8 +1934,6 @@ begin
   
   Depth := CGDisplayBitsPerPixel(CGMainDisplayID);
   case NIndex of
-  //COLOR_GRADIENTACTIVECAPTION, COLOR_ACTIVECAPTION:
-  //COLOR_GRADIENTINACTIVECAPTION, COLOR_INACTIVECAPTION:
   COLOR_MENU:
     R := GetThemeBrushAsColor(kThemeBrushMenuBackground, Depth, True, C{%H-});
   COLOR_MENUTEXT:
@@ -1976,9 +1974,11 @@ begin
   COLOR_BACKGROUND,
   COLOR_WINDOW, COLOR_FORM:
     R := GetThemeBrushAsColor(kThemeBrushDocumentWindowBackground, Depth, True, C);
-  COLOR_ACTIVECAPTION:
+  COLOR_ACTIVECAPTION,
+  COLOR_GRADIENTACTIVECAPTION:
     R := GetThemeBrushAsColor(kThemeBrushAlternatePrimaryHighlightColor, Depth, True, C);
-  COLOR_INACTIVECAPTION:
+  COLOR_INACTIVECAPTION,
+  COLOR_GRADIENTINACTIVECAPTION:
     R := GetThemeBrushAsColor(kThemeBrushSecondaryHighlightColor, Depth, True, C);
   COLOR_MENUBAR:
     R := GetThemeBrushAsColor(kThemeBrushMenuBackground, Depth, True, C);
