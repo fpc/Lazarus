@@ -1655,6 +1655,7 @@ begin
   CommaPos:=System.Pos(',',CurFilename);
   CurTargetOS:='';
   if CommaPos>1 then begin
+    // makeexe(targetos,filename)
     CurTargetOS:=UTF8LowerCase(LeftStr(CurFilename,CommaPos-1));
     if IsValidIdent(CurTargetOS) then begin
       if CurTargetOS='ide' then
