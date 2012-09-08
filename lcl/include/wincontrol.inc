@@ -6227,6 +6227,16 @@ begin
   end;
 end;
 
+function TWinControl.GetEnumeratorControls: TWinControlEnumerator;
+begin
+  Result:=TWinControlEnumerator.Create(Self,true);
+end;
+
+function TWinControl.GetEnumeratorControlsReverse: TWinControlEnumerator;
+begin
+  Result:=TWinControlEnumerator.Create(Self,false);
+end;
+
 {------------------------------------------------------------------------------
   TWinControl AlignControl
 ------------------------------------------------------------------------------}
@@ -8343,6 +8353,45 @@ end;
 procedure TWinControl.ShowControl(AControl: TControl);
 begin
   if Parent <> nil then Parent.ShowControl(Self);
+end;
+
+{ TWinControlEnumerator }
+
+function TWinControlEnumerator.GetCurrent: TControl;
+begin
+  if (FIndex>=0) and (FIndex<FParent.ControlCount) then
+    Result:=FParent.Controls[FIndex]
+  else
+    Result:=nil;
+end;
+
+constructor TWinControlEnumerator.Create(Parent: TWinControl;
+  aLowToHigh: boolean);
+begin
+  FParent:=Parent;
+  FLowToHigh:=aLowToHigh;
+  if FLowToHigh then
+    FIndex:=-1
+  else
+    FIndex:=FParent.ControlCount;
+end;
+
+function TWinControlEnumerator.GetEnumerator: TWinControlEnumerator;
+begin
+  Result:=Self;
+end;
+
+function TWinControlEnumerator.MoveNext: Boolean;
+begin
+  if FLowToHigh then
+  begin
+    inc(FIndex);
+    Result:=FIndex<FParent.ControlCount;
+  end
+  else begin
+    dec(FIndex);
+    Result:=FIndex>=0
+  end;
 end;
 
 { $UNDEF CHECK_POSITION}

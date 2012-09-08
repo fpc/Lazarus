@@ -1828,6 +1828,21 @@ type
                                    var NewLeft, NewTop, NewWidth, NewHeight: Integer;
                                    var AlignRect: TRect; AlignInfo: TAlignInfo) of object;
 
+  { TWinControlEnumerator }
+
+  TWinControlEnumerator = class
+  protected
+    FIndex: integer;
+    FLowToHigh: boolean;
+    FParent: TWinControl;
+    function GetCurrent: TControl;
+  public
+    constructor Create(Parent: TWinControl; aLowToHigh: boolean = true);
+    function GetEnumerator: TWinControlEnumerator;
+    function MoveNext: Boolean;
+    property Current: TControl read GetCurrent;
+  end;
+
   TWinControl = class(TControl)
   private
     FAlignOrder: TFPList; // list of TControl. Last moved (SetBounds) comes first. Used by AlignControls.
@@ -2143,9 +2158,14 @@ type
     function  GetTextLen: Integer; override;
     procedure Invalidate; override;
     procedure AddControl; virtual; // tell widgetset
+
     procedure InsertControl(AControl: TControl);
     procedure InsertControl(AControl: TControl; Index: integer); virtual;
     procedure RemoveControl(AControl: TControl); virtual;
+    // enumerators
+    function GetEnumeratorControls: TWinControlEnumerator;
+    function GetEnumeratorControlsReverse: TWinControlEnumerator;
+
     procedure Repaint; override;
     procedure Update; override;
     procedure SetFocus; virtual;
