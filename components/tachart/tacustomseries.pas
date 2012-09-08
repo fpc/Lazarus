@@ -605,6 +605,7 @@ begin
   inherited;
   Marks.SetOwner(FChart);
   Marks.Arrow.SetOwner(FChart);
+  Marks.Margins.SetOwner(FChart);
 end;
 
 procedure TChartSeries.AfterDraw;

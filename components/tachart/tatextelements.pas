@@ -25,18 +25,28 @@ uses
   TAChartUtils, TADrawUtils, TATypes;
 
 const
-  MARKS_MARGIN_X = 4;
-  MARKS_MARGIN_Y = 2;
+  DEF_LABEL_MARGIN_X = 4;
+  DEF_LABEL_MARGIN_Y = 2;
 
 type
   TChartMarksOverlapPolicy = (opIgnore, opHideNeighbour);
 
+  TChartLabelMargins = class(TChartMargins)
+  published
+    property Bottom default DEF_LABEL_MARGIN_Y;
+    property Left default DEF_LABEL_MARGIN_X;
+    property Right default DEF_LABEL_MARGIN_X;
+    property Top default DEF_LABEL_MARGIN_Y;
+  end;
+
   TChartTextElement = class(TChartElement)
   strict private
     FClipped: Boolean;
+    FMargins: TChartLabelMargins;
     FOverlapPolicy: TChartMarksOverlapPolicy;
     procedure SetAlignment(AValue: TAlignment);
     procedure SetClipped(AValue: Boolean);
+    procedure SetMargins(AValue: TChartLabelMargins);
     procedure SetOverlapPolicy(AValue: TChartMarksOverlapPolicy);
   strict protected
     FAlignment: TAlignment;
@@ -54,6 +64,7 @@ type
     function GetLinkPen: TChartPen; virtual;
   public
     constructor Create(AOwner: TCustomChart);
+    destructor Destroy; override;
   public
     procedure Assign(ASource: TPersistent); override;
     procedure DrawLabel(
@@ -70,6 +81,7 @@ type
   published
     property Alignment: TAlignment
       read FAlignment write SetAlignment;
+    property Margins: TChartLabelMargins read FMargins write SetMargins;
   end;
 
   TChartTitleFramePen = class(TChartPen)
@@ -256,7 +268,14 @@ constructor TChartTextElement.Create(AOwner: TCustomChart);
 begin
   inherited Create(AOwner);
   FClipped := true;
+  FMargins := TChartLabelMargins.Create(AOwner);
   FOverlapPolicy := opIgnore;
+end;
+
+destructor TChartTextElement.Destroy;
+begin
+  FreeAndNil(FMargins);
+  inherited;
 end;
 
 procedure TChartTextElement.DrawLabel(
@@ -319,8 +338,7 @@ begin
   Result := ZeroRect;
   InflateRect(Result, ATextSize.X div 2, ATextSize.Y div 2);
   if IsMarginRequired then
-    with ADrawer do
-      InflateRect(Result, Scale(MARKS_MARGIN_X), Scale(MARKS_MARGIN_Y));
+    Margins.ExpandRectScaled(ADrawer, Result);
 end;
 
 function TChartTextElement.GetLabelAngle: Double;
@@ -365,6 +383,13 @@ procedure TChartTextElement.SetClipped(AValue: Boolean);
 begin
   if FClipped = AValue then exit;
   FClipped := AValue;
+  StyleChanged(Self);
+end;
+
+procedure TChartTextElement.SetMargins(AValue: TChartLabelMargins);
+begin
+  if FMargins = AValue then exit;
+  FMargins.Assign(AValue);
   StyleChanged(Self);
 end;
 

@@ -189,6 +189,7 @@ type
     procedure SetValue(AIndex: Integer; AValue: TChartDistance);
   public
     procedure Assign(Source: TPersistent); override;
+    procedure ExpandRectScaled(ADrawer: IChartDrawer; var ARect: TRect);
     property Data: TRect read FData.FRect;
   published
     property Left: TChartDistance index 1 read GetValue write SetValue default DEF_MARGIN;
@@ -547,7 +548,14 @@ end;
 constructor TChartMargins.Create(AOwner: TCustomChart);
 begin
   inherited Create(AOwner);
-  FData.FRect := Rect(DEF_MARGIN, DEF_MARGIN, DEF_MARGIN, DEF_MARGIN);
+  SetPropDefaults(Self, ['Left', 'Top', 'Right', 'Bottom']);
+end;
+
+procedure TChartMargins.ExpandRectScaled(
+  ADrawer: IChartDrawer; var ARect: TRect);
+begin
+  ARect.TopLeft -= Point(ADrawer.Scale(Left), ADrawer.Scale(Top));
+  ARect.BottomRight += Point(ADrawer.Scale(Right), ADrawer.Scale(Bottom));
 end;
 
 function TChartMargins.GetValue(AIndex: Integer): Integer;
