@@ -23,6 +23,7 @@ type
     lblAxisAngle: TLabel;
     lblSeriesAngle: TLabel;
     lblTitleAngle: TLabel;
+    lblCalloutAngle: TLabel;
     pcMain: TPageControl;
     pnlControls: TPanel;
     RandomChartSource1: TRandomChartSource;
@@ -30,11 +31,13 @@ type
     seSeriesAngle: TSpinEdit;
     seTitleAngle: TSpinEdit;
     Multiline: TTabSheet;
+    seCalloutAngle: TSpinEdit;
     tsBar: TTabSheet;
     procedure cbHideOverlappingChange(Sender: TObject);
     procedure cbShapeChange(Sender: TObject);
     procedure ChartMultiAxisList1MarkToText(var AText: String; AMark: Double);
     procedure seAxisAngleChange(Sender: TObject);
+    procedure seCalloutAngleChange(Sender: TObject);
     procedure seSeriesAngleChange(Sender: TObject);
     procedure seTitleAngleChange(Sender: TObject);
   end;
@@ -88,6 +91,15 @@ begin
   Chart1.BottomAxis.Marks.LabelFont.Orientation := seAxisAngle.Value * 10;
   ChartMulti.LeftAxis.Marks.LabelFont.Orientation := 900 + seAxisAngle.Value * 10;
   ChartMulti.BottomAxis.Marks.LabelFont.Orientation := seAxisAngle.Value * 10;
+end;
+
+procedure TForm1.seCalloutAngleChange(Sender: TObject);
+begin
+  with Chart1BarSeries1.Marks do begin
+    CalloutAngle := seCalloutAngle.Value * 10;
+    LinkPen.Visible := seCalloutAngle.Value = 0;
+    Arrow.Visible := seCalloutAngle.Value = 0;
+  end;
 end;
 
 procedure TForm1.seSeriesAngleChange(Sender: TObject);

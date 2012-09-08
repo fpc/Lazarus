@@ -72,18 +72,18 @@ object Form1: TForm1
           Marks.Frame.Color = 31097
           Marks.Frame.Width = 2
           Marks.Style = smsPercent
-          BarBrush.Color = clRed
+          BarBrush.Color = 1410280
           Source = RandomChartSource1
         end
       end
     end
     object Multiline: TTabSheet
       Caption = 'Multiline'
-      ClientHeight = 338
+      ClientHeight = 342
       ClientWidth = 584
       object ChartMulti: TChart
         Left = 0
-        Height = 338
+        Height = 342
         Top = 0
         Width = 584
         AxisList = <        
@@ -135,7 +135,7 @@ object Form1: TForm1
     ClientWidth = 592
     TabOrder = 1
     object cbHideOverlapping: TCheckBox
-      Left = 336
+      Left = 412
       Height = 17
       Top = 12
       Width = 130
@@ -147,11 +147,11 @@ object Form1: TForm1
       Left = 0
       Height = 62
       Top = 0
-      Width = 312
+      Width = 392
       Align = alLeft
       Caption = ' Angles '
       ClientHeight = 44
-      ClientWidth = 308
+      ClientWidth = 388
       TabOrder = 1
       object seAxisAngle: TSpinEdit
         Left = 32
@@ -181,7 +181,7 @@ object Form1: TForm1
         ParentColor = False
       end
       object seSeriesAngle: TSpinEdit
-        Left = 134
+        Left = 132
         Height = 21
         Top = 4
         Width = 50
@@ -192,7 +192,7 @@ object Form1: TForm1
         TabOrder = 1
       end
       object lblTitleAngle: TLabel
-        Left = 202
+        Left = 206
         Height = 13
         Top = 8
         Width = 20
@@ -200,7 +200,7 @@ object Form1: TForm1
         ParentColor = False
       end
       object seTitleAngle: TSpinEdit
-        Left = 226
+        Left = 232
         Height = 21
         Top = 4
         Width = 50
@@ -210,9 +210,27 @@ object Form1: TForm1
         OnChange = seTitleAngleChange
         TabOrder = 2
       end
+      object seCalloutAngle: TSpinEdit
+        Left = 332
+        Height = 21
+        Top = 4
+        Width = 50
+        Increment = 5
+        MaxValue = 120
+        OnChange = seCalloutAngleChange
+        TabOrder = 3
+      end
+      object lblCalloutAngle: TLabel
+        Left = 294
+        Height = 13
+        Top = 8
+        Width = 33
+        Caption = 'Callout'
+        ParentColor = False
+      end
     end
     object cbShape: TComboBox
-      Left = 336
+      Left = 412
       Height = 21
       Top = 32
       Width = 160
