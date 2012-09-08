@@ -39,15 +39,19 @@ type
     property Top default DEF_LABEL_MARGIN_Y;
   end;
 
+  TChartLabelShape = (clsRectangle, clsEllipse);
+
   TChartTextElement = class(TChartElement)
   strict private
     FClipped: Boolean;
     FMargins: TChartLabelMargins;
     FOverlapPolicy: TChartMarksOverlapPolicy;
+    FShape: TChartLabelShape;
     procedure SetAlignment(AValue: TAlignment);
     procedure SetClipped(AValue: Boolean);
     procedure SetMargins(AValue: TChartLabelMargins);
     procedure SetOverlapPolicy(AValue: TChartMarksOverlapPolicy);
+    procedure SetShape(AValue: TChartLabelShape);
   strict protected
     FAlignment: TAlignment;
     procedure ApplyLabelFont(ADrawer: IChartDrawer); virtual;
@@ -71,13 +75,15 @@ type
       ADrawer: IChartDrawer; const ADataPoint, ALabelCenter: TPoint;
       const AText: String; var APrevLabelPoly: TPointArray);
     function GetLabelPolygon(
-      ADrawer: IChartDrawer; ASize: TPoint): TPointArray; virtual;
+      ADrawer: IChartDrawer; ASize: TPoint): TPointArray;
     function MeasureLabel(ADrawer: IChartDrawer; const AText: String): TSize;
   public
     // If false, labels may overlap axises and legend.
     property Clipped: Boolean read FClipped write SetClipped default true;
     property OverlapPolicy: TChartMarksOverlapPolicy
       read FOverlapPolicy write SetOverlapPolicy default opIgnore;
+    property Shape: TChartLabelShape
+      read FShape write SetShape default clsRectangle;
   published
     property Alignment: TAlignment
       read FAlignment write SetAlignment;
@@ -127,7 +133,6 @@ type
   end;
 
   TChartMarkAttachment = (maDefault, maEdge, maCenter);
-  TChartMarkLabelShape = (cmsRectangle, cmsEllipse);
 
   { TGenericChartMarks }
 
@@ -142,7 +147,6 @@ type
     FArrow: TChartArrow;
     FAttachment: TChartMarkAttachment;
     FFrame: _TFramePen;
-    FShape: TChartMarkLabelShape;
     FYIndex: Integer;
     function GetDistanceToCenter: Boolean;
     procedure SetArrow(AValue: TChartArrow);
@@ -154,7 +158,6 @@ type
     procedure SetLabelBrush(AValue: _TLabelBrush);
     procedure SetLabelFont(AValue: TFont);
     procedure SetLinkPen(AValue: _TLinkPen);
-    procedure SetShape(AValue: TChartMarkLabelShape);
     procedure SetStyle(AValue: TSeriesMarksStyle);
     procedure SetYIndex(AValue: Integer);
   strict protected
@@ -179,8 +182,6 @@ type
   public
     procedure Assign(ASource: TPersistent); override;
     function CenterOffset(ADrawer: IChartDrawer; const AText: String): TSize;
-    function GetLabelPolygon(
-      ADrawer: IChartDrawer; ASize: TPoint): TPointArray; override;
     function IsMarkLabelsVisible: Boolean;
     procedure SetAdditionalAngle(AAngle: Double);
   public
@@ -202,8 +203,7 @@ type
     property Clipped;
     property Distance: TChartDistance read FDistance write SetDistance;
     property LabelFont: TFont read FLabelFont write SetLabelFont;
-    property Shape: TChartMarkLabelShape
-      read FShape write SetShape default cmsRectangle;
+    property Shape;
     property Visible default true;
   end;
 
@@ -349,8 +349,25 @@ end;
 
 function TChartTextElement.GetLabelPolygon(
   ADrawer: IChartDrawer; ASize: TPoint): TPointArray;
+var
+  e: TEllipse;
+  a: Double;
+  i: Integer;
+  b: TRect;
 begin
-  Result := RotateRect(GetBoundingBox(ADrawer, ASize), GetLabelAngle);
+  a := GetLabelAngle;
+  b := GetBoundingBox(ADrawer, ASize);
+  case Shape of
+    clsRectangle:
+      Result := RotateRect(b, a);
+    clsEllipse: begin
+      e.InitBoundingBox(b.Left, b.Top, b.Right, b.Bottom);
+      Result := e.TesselateRadialPie(0, 2 * Pi, 3);
+      SetLength(Result, Length(Result) - 1);
+      for i := 0 to High(Result) do
+        Result[i] := RotatePoint(Result[i], a);
+    end;
+  end;
 end;
 
 function TChartTextElement.GetLinkPen: TChartPen;
@@ -397,6 +414,13 @@ procedure TChartTextElement.SetOverlapPolicy(AValue: TChartMarksOverlapPolicy);
 begin
   if FOverlapPolicy = AValue then exit;
   FOverlapPolicy := AValue;
+  StyleChanged(Self);
+end;
+
+procedure TChartTextElement.SetShape(AValue: TChartLabelShape);
+begin
+  if FShape = AValue then exit;
+  FShape := AValue;
   StyleChanged(Self);
 end;
 
@@ -596,28 +620,6 @@ begin
   Result := LabelFont;
 end;
 
-function TGenericChartMarks.GetLabelPolygon(ADrawer: IChartDrawer;
-  ASize: TPoint): TPointArray;
-var
-  e: TEllipse;
-  a: Double;
-  i: Integer;
-begin
-  case Shape of
-    cmsRectangle:
-      Result := RotateRect(GetBoundingBox(ADrawer, ASize), GetLabelAngle);
-    cmsEllipse: begin
-      with GetBoundingBox(ADrawer, ASize) do
-        e.InitBoundingBox(Left, Top, Right, Bottom);
-      Result := e.TesselateRadialPie(0, 2 * Pi, 3);
-      SetLength(Result, Length(Result) - 1);
-      a := GetLabelAngle;
-      for i := 0 to High(Result) do
-        Result[i] := RotatePoint(Result[i], a);
-    end;
-  end;
-end;
-
 function TGenericChartMarks.GetLinkPen: TChartPen;
 begin
   Result := LinkPen;
@@ -698,13 +700,6 @@ procedure TGenericChartMarks.SetLinkPen(AValue: _TLinkPen);
 begin
   if FLinkPen = AValue then exit;
   FLinkPen.Assign(AValue);
-  StyleChanged(Self);
-end;
-
-procedure TGenericChartMarks.SetShape(AValue: TChartMarkLabelShape);
-begin
-  if FShape = AValue then exit;
-  FShape := AValue;
   StyleChanged(Self);
 end;
 
