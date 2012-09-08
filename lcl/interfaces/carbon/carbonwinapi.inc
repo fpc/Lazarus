@@ -2272,9 +2272,204 @@ end;
 function TCarbonWidgetSet.GradientFill(DC: HDC; Vertices: PTriVertex;
   NumVertices: Longint; Meshes: Pointer; NumMeshes: Longint; Mode: Longint
   ): Boolean;
+
+  function DoFillTriangle: Boolean; inline;
+  begin
+    Result := (Mode and GRADIENT_FILL_TRIANGLE) = GRADIENT_FILL_TRIANGLE;
+  end;
+
+  function DoFillVRect: Boolean; inline;
+  begin
+    Result := (Mode and GRADIENT_FILL_RECT_V) = GRADIENT_FILL_RECT_V;
+  end;
+
+  function VertexToColor(AVertex: tagTRIVERTEX): CGColorRef;
+  var
+    TheAlpha: Byte;
+    F: array[0..3] of Single;
+  begin
+    TheAlpha := AVertex.Alpha shr 8;
+    if TheAlpha = 0 then
+      TheAlpha := 255;
+    with AVertex do
+    begin
+      F[0] := (Red shr 8) / 255;
+      F[1] := (Green shr 8) / 255;
+      F[2] := (Blue shr 8 )/ 255;
+      F[3] := TheAlpha / 255;
+    end;
+    Result := CGColorCreate(RGBColorSpace, @F[0]);
+  end;
+
+  function FillTriMesh(Mesh: tagGradientTriangle) : Boolean;
+{
+  var
+    V1, V2, V3: tagTRIVERTEX;
+    C1, C2, C3: CGColorRef;
+    R: CGRect;
+    Context: CGContextRef;
+    Path: CGPathRef;
+    Shading: CGShadingRef;
+    ShadingFunction: CGFunctionRef;
+}
+  begin
+    Result := False;
+    // on carbon the next gradients are availble:
+    // Linear gradient, Radial gradient, Axial shading, Radial shading
+    // look like no one can repeat exacly what GdiGradientFill do
+    // so for now return False but if someone later will be able to implement this
+    // the next code may become useful
+{
+    with Mesh do
+    begin
+      Result :=
+        (Vertex1 < Cardinal(NumVertices)) and (Vertex2 >= 0) and
+        (Vertex2 < Cardinal(NumVertices)) and (Vertex2 >= 0) and
+        (Vertex3 < Cardinal(NumVertices)) and (Vertex3 >= 0);
+
+      if (Vertex1 = Vertex2) or
+        (Vertex1 = Vertex3) or
+        (Vertex2 = Vertex3) or not Result then
+        Exit;
+
+      V1 := Vertices[Vertex1];
+      V2 := Vertices[Vertex2];
+      V3 := Vertices[Vertex3];
+
+      Context := TCarbonDeviceContext(DC).CGContext;
+      CGContextSaveGState(Context);
+      // create a triangle path
+      Path := CGPathCreateMutable;
+      CGPathMoveToPoint(Path, nil, V1.x, V1.y);
+      CGPathAddLineToPoint(Path, nil, V2.x, V2.y);
+      CGPathAddLineToPoint(Path, nil, V3.x, V3.y);
+      CGPathCloseSubpath(Path);
+      // get a bouding box of the path
+      R := CGPathGetBoundingBox(Path);
+      // clip the context by the path
+      CGContextAddPath(Context, Path);
+      CGContextClip(Context);
+
+      // get 3 colors of Tri-Vertex
+      C1 := VertexToColor(V1);
+      C2 := VertexToColor(V2);
+      C3 := VertexToColor(V3);
+
+      // create axial shading
+
+      Shading := CGShadingCreateAxial(RGBColorSpace, R.origin,
+        CGPointMake(R.origin.x + R.size.width, R.origin.y + R.size.height),
+        ShadingFunction, False, False);
+      // draw the shading
+      CGContextDrawShading(Context, Shading);
+
+      CGShadingRelease(Shading);
+      CGFunctionRelease(ShadingFunction);
+      CGPathRelease(Path);
+      // remove the applied clipping
+      CGContextRestoreGState(Context);
+    end;
+}
+  end;
+
+  function FillRectMesh(Mesh: tagGradientRect) : boolean;
+  var
+    TL,BR: tagTRIVERTEX;
+    Colors: array[0..2] of CGColorRef;
+    ColArray: CFArrayRef;
+    Swap: Longint;
+    SwapColors: Boolean;
+    Grad: CGGradientRef;
+    Context: CGContextRef;
+  begin
+    with Mesh do
+    begin
+      Result :=
+        (UpperLeft < Cardinal(NumVertices)) and (UpperLeft >= 0) and
+        (LowerRight < Cardinal(NumVertices)) and (LowerRight >= 0);
+      if (LowerRight = UpperLeft) or not Result then
+        Exit;
+
+      TL := Vertices[UpperLeft];
+      BR := Vertices[LowerRight];
+      SwapColors := (BR.Y < TL.Y) and (BR.X < TL.X);
+      if BR.X < TL.X then
+      begin
+        Swap := BR.X;
+        BR.X := TL.X;
+        TL.X := Swap;
+      end;
+      if BR.Y < TL.Y then
+      begin
+        Swap := BR.Y;
+        BR.Y := TL.Y;
+        TL.Y := Swap;
+      end;
+      Colors[0] := VertexToColor(TL);
+      Colors[1] := VertexToColor(BR);
+      if SwapColors then
+      begin
+        Colors[3] := Colors[0];
+        Colors[0] := Colors[1];
+        Colors[1] := Colors[3];
+      end;
+      // create array of colors which is needed for CGGradientRef
+      ColArray := CFArrayCreate(nil, @Colors[0], 2, nil);
+      Grad := CGGradientCreateWithColors(RGBColorSpace, ColArray, nil);
+      CFRelease(ColArray);
+      // to draw a gradient in a rectangle we need to first clip it by that
+      // rectangle and only then draw the gradient
+      Context := TCarbonDeviceContext(DC).CGContext;
+      CGContextSaveGState(Context);
+      CGContextAddRect(Context, CGRectMake(TL.X, TL.Y, BR.X - TL.X, BR.Y - TL.Y));
+      CGContextClip(Context);
+      if DoFillVRect then
+        CGContextDrawLinearGradient(Context, Grad, CGPointMake(TL.X, TL.Y), CGPointMake(TL.X, BR.Y), 0)
+      else
+        CGContextDrawLinearGradient(Context, Grad, CGPointMake(TL.X, TL.Y), CGPointMake(BR.X, TL.Y), 0);
+      CGGradientRelease(Grad);
+      CGContextRestoreGState(Context);
+    end;
+  end;
+
+const
+  MeshSize: Array[Boolean] of Integer = (
+    SizeOf(tagGradientRect), SizeOf(tagGradientTriangle));
+var
+  i: Integer;
 begin
-  Result:=inherited GradientFill(DC, Vertices, NumVertices, Meshes, NumMeshes,
-    Mode);
+  if not CheckDC(DC, 'GradientFill') then Exit(False);
+  Result := (Meshes <> nil) and (NumMeshes >= 1) and (NumVertices >= 2)
+          and (Vertices <> nil);
+  if Result and DoFillTriangle then
+    Result := NumVertices >= 3;
+  if Result then
+  begin
+    Result := False;
+
+    //Sanity Checks For Vertices Size vs. Count
+    if MemSize(Vertices) < PtrUInt(SizeOf(tagTRIVERTEX)*NumVertices) then
+      exit;
+
+    //Sanity Checks For Meshes Size vs. Count
+    if MemSize(Meshes) < PtrUInt(MeshSize[DoFillTriangle]*NumMeshes) then
+      exit;
+
+    for I := 0 to NumMeshes - 1 do
+    begin
+      if DoFillTriangle then
+      begin
+        if not FillTriMesh(PGradientTriangle(Meshes)[I]) then
+          exit;
+      end
+      else
+      begin
+        if not FillRectMesh(PGradientRect(Meshes)[I]) then
+          exit;
+      end;
+    end;
+    Result := True;
+  end;
 end;
 
 {------------------------------------------------------------------------------
