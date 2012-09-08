@@ -39,7 +39,7 @@ type
     property Top default DEF_LABEL_MARGIN_Y;
   end;
 
-  TChartLabelShape = (clsRectangle, clsEllipse);
+  TChartLabelShape = (clsRectangle, clsEllipse, clsRoundRect, clsRoundSide);
 
   TChartTextElement = class(TChartElement)
   strict private
@@ -349,25 +349,29 @@ end;
 
 function TChartTextElement.GetLabelPolygon(
   ADrawer: IChartDrawer; ASize: TPoint): TPointArray;
+const
+  STEP = 3;
 var
-  e: TEllipse;
   a: Double;
-  i: Integer;
   b: TRect;
+  i: Integer;
 begin
-  a := GetLabelAngle;
   b := GetBoundingBox(ADrawer, ASize);
   case Shape of
     clsRectangle:
-      Result := RotateRect(b, a);
-    clsEllipse: begin
-      e.InitBoundingBox(b.Left, b.Top, b.Right, b.Bottom);
-      Result := e.TesselateRadialPie(0, 2 * Pi, 3);
-      SetLength(Result, Length(Result) - 1);
-      for i := 0 to High(Result) do
-        Result[i] := RotatePoint(Result[i], a);
-    end;
+      Result := TesselateRect(b);
+    clsEllipse:
+      Result := TesselateEllipse(b, STEP);
+    clsRoundRect:
+      Result := TesselateRoundRect(
+        b, Min(b.Right - b.Left, b.Bottom - b.Top) div 3, STEP);
+    clsRoundSide:
+      Result := TesselateRoundRect(
+        b, Min(b.Right - b.Left, b.Bottom - b.Top) div 2, STEP);
   end;
+  a := GetLabelAngle;
+  for i := 0 to High(Result) do
+    Result[i] := RotatePoint(Result[i], a);
 end;
 
 function TChartTextElement.GetLinkPen: TChartPen;

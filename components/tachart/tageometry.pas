@@ -31,6 +31,7 @@ type
   public
     constructor Init;
     procedure Add(const APoint: TPoint);
+    procedure AddNoDup(const APoint: TPoint); inline;
     function LastPoint: TPoint; inline;
     function Purge: TPointArray; inline;
   end;
@@ -42,7 +43,7 @@ type
     constructor InitBoundingBox(AX1, AY1, AX2, AY2: Integer);
   public
     function GetPoint(AParametricAngle: Double): TDoublePoint;
-    procedure RadialPieToPolygon(
+    procedure SliceToPolygon(
       AAngleStart, AAngleLength: Double; AStep: Integer; var APoly: TPolygon);
     function TesselateRadialPie(
       AAngleStart, AAngleLength: Double; AStep: Integer): TPointArray;
@@ -82,8 +83,10 @@ function RectIntersectsRect(
 function RotatePoint(const APoint: TDoublePoint; AAngle: Double): TDoublePoint; overload;
 function RotatePoint(const APoint: TPoint; AAngle: Double): TPoint; overload;
 function RotatePointX(AX, AAngle: Double): TPoint;
-function RotateRect(const ARect: TRect; AAngle: Double): TPointArray;
 function RoundPoint(APoint: TDoublePoint): TPoint;
+function TesselateRect(const ARect: TRect): TPointArray;
+function TesselateEllipse(const ABounds: TRect; AStep: Integer): TPointArray;
+function TesselateRoundRect(const ARect: TRect; ARadius, AStep: Integer): TPointArray;
 
 operator +(const A: TPoint; B: TSize): TPoint; overload; inline;
 operator +(const A, B: TPoint): TPoint; overload; inline;
@@ -430,9 +433,13 @@ begin
   Result.Y := Round(sa * AX);
 end;
 
-function RotateRect(const ARect: TRect; AAngle: Double): TPointArray;
-var
-  i: Integer;
+function RoundPoint(APoint: TDoublePoint): TPoint;
+begin
+  Result.X := Round(APoint.X);
+  Result.Y := Round(APoint.Y);
+end;
+
+function TesselateRect(const ARect: TRect): TPointArray;
 begin
   SetLength(Result, 4);
   with ARect do begin
@@ -441,14 +448,54 @@ begin
     Result[2] := BottomRight;
     Result[3] := Point(Right, Top);
   end;
-  for i := 0 to High(Result) do
-    Result[i] := RotatePoint(Result[i], AAngle);
 end;
 
-function RoundPoint(APoint: TDoublePoint): TPoint;
+function TesselateEllipse(const ABounds: TRect; AStep: Integer): TPointArray;
+var
+  e: TEllipse;
+  p: TPolygon;
 begin
-  Result.X := Round(APoint.X);
-  Result.Y := Round(APoint.Y);
+  with ABounds do
+    e.InitBoundingBox(Left, Top, Right, Bottom);
+  p.Init;
+  e.SliceToPolygon(0, 2 * Pi, AStep, p);
+  Result := p.Purge;
+end;
+
+function TesselateRoundRect(
+  const ARect: TRect; ARadius, AStep: Integer): TPointArray;
+var
+  e: TEllipse;
+  p: TPolygon;
+begin
+  with ARect do begin
+    if Min(Right - Left, Bottom - Top) < 2 * ARadius then exit(nil);
+
+    p.Init;
+    e.FR := DoublePoint(ARadius, ARadius);
+
+    p.AddNoDup(Point(Right, Bottom - ARadius));
+    p.AddNoDup(Point(Right, Top + ARadius));
+    e.FC := DoublePoint(Right - ARadius, Top + ARadius);
+    e.SliceToPolygon(0, Pi / 2, AStep, p);
+
+    p.AddNoDup(Point(Right - ARadius, Top));
+    p.AddNoDup(Point(Left + ARadius, Top));
+    e.FC := DoublePoint(Left + ARadius, Top + ARadius);
+    e.SliceToPolygon(Pi / 2, Pi / 2, AStep, p);
+
+    p.AddNoDup(Point(Left, Top + ARadius));
+    p.AddNoDup(Point(Left, Bottom - ARadius));
+    e.FC := DoublePoint(Left + ARadius, Bottom - ARadius);
+    e.SliceToPolygon(Pi, Pi / 2, AStep, p);
+
+    p.AddNoDup(Point(Left + ARadius, Bottom));
+    p.AddNoDup(Point(Right - ARadius, Bottom));
+    e.FC := DoublePoint(Right - ARadius, Bottom - ARadius);
+    e.SliceToPolygon(Pi * 3/2, Pi / 2, AStep, p);
+  end;
+
+  Result := p.Purge;
 end;
 
 operator + (const A: TPoint; B: TSize): TPoint;
@@ -554,6 +601,12 @@ begin
   FCount += 1;
 end;
 
+procedure TPolygon.AddNoDup(const APoint: TPoint);
+begin
+  if (FCount = 0) or (LastPoint <> APoint) then
+    Add(APoint);
+end;
+
 constructor TPolygon.Init;
 begin
   FCount := 0;
@@ -589,7 +642,7 @@ begin
   FR.Y := Abs(AY1 - AY2) / 2;
 end;
 
-procedure TEllipse.RadialPieToPolygon(
+procedure TEllipse.SliceToPolygon(
   AAngleStart, AAngleLength: Double; AStep: Integer; var APoly: TPolygon);
 var
   lastAngle: Double;
@@ -644,7 +697,6 @@ begin
   end;
   Rec(tprev, tlast);
   Add(tlast);
-  SafeAddPoint(RoundPoint(FC), 0);
 end;
 
 // Represent the ellipse sector with a polygon on an integer grid.
@@ -655,7 +707,8 @@ var
   resultPoly: TPolygon;
 begin
   resultPoly.Init;
-  RadialPieToPolygon(AAngleStart, AAngleLength, AStep, resultPoly);
+  SliceToPolygon(AAngleStart, AAngleLength, AStep, resultPoly);
+  resultPoly.AddNoDup(RoundPoint(FC));
   Result := resultPoly.Purge;
 end;
 
