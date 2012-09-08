@@ -24,6 +24,17 @@ uses
   TAChartUtils, Types;
 
 type
+  TPolygon = object
+  public
+    FPoints: TPointArray;
+    FCount: Integer;
+  public
+    constructor Init;
+    procedure Add(const APoint: TPoint);
+    function LastPoint: TPoint; inline;
+    function Purge: TPointArray; inline;
+  end;
+
   TEllipse = object
   public
     FC: TDoublePoint;
@@ -31,6 +42,8 @@ type
     constructor InitBoundingBox(AX1, AY1, AX2, AY2: Integer);
   public
     function GetPoint(AParametricAngle: Double): TDoublePoint;
+    procedure RadialPieToPolygon(
+      AAngleStart, AAngleLength: Double; AStep: Integer; var APoly: TPolygon);
     function TesselateRadialPie(
       AAngleStart, AAngleLength: Double; AStep: Integer): TPointArray;
   end;
@@ -531,6 +544,33 @@ begin
   Result.Y := ASize.cy;
 end;
 
+{ TPolygon }
+
+procedure TPolygon.Add(const APoint: TPoint);
+begin
+  if FCount > High(FPoints) then
+    SetLength(FPoints, Max(2 * FCount, 16));
+  FPoints[FCount] := APoint;
+  FCount += 1;
+end;
+
+constructor TPolygon.Init;
+begin
+  FCount := 0;
+  FPoints := nil;
+end;
+
+function TPolygon.LastPoint: TPoint;
+begin
+  Result := FPoints[FCount - 1];
+end;
+
+function TPolygon.Purge: TPointArray;
+begin
+  SetLength(FPoints, FCount);
+  Result := FPoints;
+end;
+
 { TEllipse }
 
 function TEllipse.GetPoint(AParametricAngle: Double): TDoublePoint;
@@ -549,27 +589,15 @@ begin
   FR.Y := Abs(AY1 - AY2) / 2;
 end;
 
-// Represent the ellipse sector with a polygon on an integer grid.
-// Polygon vertices are no more then AStep pixels apart.
-function TEllipse.TesselateRadialPie(
-  AAngleStart, AAngleLength: Double; AStep: Integer): TPointArray;
+procedure TEllipse.RadialPieToPolygon(
+  AAngleStart, AAngleLength: Double; AStep: Integer; var APoly: TPolygon);
 var
-  resultPoints: TPointArray = nil;
-  cnt: Integer = 0;
   lastAngle: Double;
-
-  procedure AddPoint(APoint: TPoint);
-  begin
-    if cnt > High(resultPoints) then
-      SetLength(resultPoints, 2 * cnt);
-    resultPoints[cnt] := Point(APoint.X, APoint.Y);
-    cnt += 1;
-  end;
 
   procedure SafeAddPoint(APoint: TPoint; AAngle: Double);
   begin
-    if resultPoints[cnt - 1] <> APoint then begin
-      AddPoint(APoint);
+    if APoly.LastPoint <> APoint then begin
+      APoly.Add(APoint);
       lastAngle := AAngle;
     end;
   end;
@@ -579,7 +607,7 @@ var
     pt: TPoint;
   begin
     pt := RoundPoint(GetPoint(AHi));
-    if PointDist(resultPoints[cnt - 1], pt) <= Sqr(AStep) then
+    if PointDist(APoly.LastPoint, pt) <= Sqr(AStep) then
       SafeAddPoint(pt, AHi)
     else begin
       Rec(ALo, (ALo + AHi) / 2);
@@ -599,15 +627,13 @@ var
 begin
   tprev := AAngleStart;
   tlast := AAngleStart + AAngleLength;
+  APoly.Add(RoundPoint(GetPoint(tprev)));
   if (FR.X < 1) or (FR.Y < 1) then begin
     // Ellipse has degenerated into a line.
-    SetLength(resultPoints, 2);
-    AddPoint(RoundPoint(GetPoint(tprev)));
     Add(tlast);
-    exit(resultPoints);
+    exit;
   end;
-  SetLength(resultPoints, 32);
-  AddPoint(RoundPoint(GetPoint(tprev)));
+  APoly.Add(RoundPoint(GetPoint(tprev)));
   lastAngle := tprev;
   t := Ceil(tprev / HalfPi) * HalfPi;
   while t < tlast do begin
@@ -619,8 +645,18 @@ begin
   Rec(tprev, tlast);
   Add(tlast);
   SafeAddPoint(RoundPoint(FC), 0);
-  SetLength(resultPoints, cnt);
-  Result := resultPoints;
+end;
+
+// Represent the ellipse sector with a polygon on an integer grid.
+// Polygon vertices are no more then AStep pixels apart.
+function TEllipse.TesselateRadialPie(
+  AAngleStart, AAngleLength: Double; AStep: Integer): TPointArray;
+var
+  resultPoly: TPolygon;
+begin
+  resultPoly.Init;
+  RadialPieToPolygon(AAngleStart, AAngleLength, AStep, resultPoly);
+  Result := resultPoly.Purge;
 end;
 
 end.
