@@ -2385,14 +2385,20 @@ end;
  ------------------------------------------------------------------------------}
 function TQtWidgetSet.FrameRect(DC: HDC; const ARect: TRect;
   hBr: HBRUSH): Integer;
+var
+  W: QBrushH;
 begin
   Result := 0;
 
   if not IsValidDC(DC) then Exit;
 
-  TQtDeviceContext(DC).qDrawPLainRect(ARect.Left, ARect.Top,
-   ARect.Right - ARect.Left, ARect.Bottom - ARect.Top);
+  if IsValidGDIObject(hBr) then
+    W := TQtBrush(Hbr).FHandle
+  else
+    W := nil;
 
+  TQtDeviceContext(DC).qDrawPLainRect(ARect.Left, ARect.Top,
+    ARect.Right - ARect.Left, ARect.Bottom - ARect.Top, nil, 1, W);
   Result := 1;
 end;
 
