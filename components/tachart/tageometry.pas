@@ -29,7 +29,6 @@ type
     FC: TDoublePoint;
     FR: TDoublePoint;
     constructor InitBoundingBox(AX1, AY1, AX2, AY2: Integer);
-    constructor InitRadius(ARX, ARY: Double);
   public
     function GetPoint(AParametricAngle: Double): TDoublePoint;
     function TesselateRadialPie(
@@ -70,7 +69,7 @@ function RectIntersectsRect(
 function RotatePoint(const APoint: TDoublePoint; AAngle: Double): TDoublePoint; overload;
 function RotatePoint(const APoint: TPoint; AAngle: Double): TPoint; overload;
 function RotatePointX(AX, AAngle: Double): TPoint;
-function RotateRect(const ASize: TPoint; AAngle: Double): TPointArray;
+function RotateRect(const ARect: TRect; AAngle: Double): TPointArray;
 function RoundPoint(APoint: TDoublePoint): TPoint;
 
 operator +(const A: TPoint; B: TSize): TPoint; overload; inline;
@@ -418,15 +417,17 @@ begin
   Result.Y := Round(sa * AX);
 end;
 
-function RotateRect(const ASize: TPoint; AAngle: Double): TPointArray;
+function RotateRect(const ARect: TRect; AAngle: Double): TPointArray;
 var
   i: Integer;
 begin
   SetLength(Result, 4);
-  Result[0] := -ASize div 2;
-  Result[2] := Result[0] + ASize;
-  Result[1] := Point(Result[2].X, Result[0].Y);
-  Result[3] := Point(Result[0].X, Result[2].Y);
+  with ARect do begin
+    Result[0] := TopLeft;
+    Result[1] := Point(Left, Bottom);
+    Result[2] := BottomRight;
+    Result[3] := Point(Right, Top);
+  end;
   for i := 0 to High(Result) do
     Result[i] := RotatePoint(Result[i], AAngle);
 end;
@@ -546,12 +547,6 @@ begin
   FC.Y := (AY1 + AY2) / 2;
   FR.X := Abs(AX1 - AX2) / 2;
   FR.Y := Abs(AY1 - AY2) / 2;
-end;
-
-constructor TEllipse.InitRadius(ARX, ARY: Double);
-begin
-  FC := ZeroDoublePoint;
-  FR := DoublePoint(ARX, ARY);
 end;
 
 // Represent the ellipse sector with a polygon on an integer grid.

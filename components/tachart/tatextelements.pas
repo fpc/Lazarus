@@ -40,10 +40,11 @@ type
     procedure SetOverlapPolicy(AValue: TChartMarksOverlapPolicy);
   strict protected
     FAlignment: TAlignment;
-    procedure AddMargins(ADrawer: IChartDrawer; var ASize: TPoint);
     procedure ApplyLabelFont(ADrawer: IChartDrawer); virtual;
     procedure DrawLink(
       ADrawer: IChartDrawer; ADataPoint, ALabelCenter: TPoint); virtual;
+    function GetBoundingBox(
+      ADrawer: IChartDrawer; const ATextSize: TPoint): TRect;
     function IsMarginRequired: Boolean;
   strict protected
     function GetFrame: TChartPen; virtual; abstract;
@@ -235,14 +236,6 @@ uses
 
 { TChartTextElement }
 
-procedure TChartTextElement.AddMargins(
-  ADrawer: IChartDrawer; var ASize: TPoint);
-begin
-  if not IsMarginRequired then exit;
-  with ADrawer do
-    ASize += Point(Scale(MARKS_MARGIN_X), Scale(MARKS_MARGIN_Y)) * 2;
-end;
-
 procedure TChartTextElement.ApplyLabelFont(ADrawer: IChartDrawer);
 begin
   ADrawer.Font := GetLabelFont;
@@ -320,6 +313,16 @@ begin
   end;
 end;
 
+function TChartTextElement.GetBoundingBox(
+  ADrawer: IChartDrawer; const ATextSize: TPoint): TRect;
+begin
+  Result := ZeroRect;
+  InflateRect(Result, ATextSize.X div 2, ATextSize.Y div 2);
+  if IsMarginRequired then
+    with ADrawer do
+      InflateRect(Result, Scale(MARKS_MARGIN_X), Scale(MARKS_MARGIN_Y));
+end;
+
 function TChartTextElement.GetLabelAngle: Double;
 begin
   // Negate to take into account top-down Y axis.
@@ -329,8 +332,7 @@ end;
 function TChartTextElement.GetLabelPolygon(
   ADrawer: IChartDrawer; ASize: TPoint): TPointArray;
 begin
-  AddMargins(ADrawer, ASize);
-  Result := RotateRect(ASize, GetLabelAngle);
+  Result := RotateRect(GetBoundingBox(ADrawer, ASize), GetLabelAngle);
 end;
 
 function TChartTextElement.GetLinkPen: TChartPen;
@@ -346,13 +348,10 @@ end;
 
 function TChartTextElement.MeasureLabel(
   ADrawer: IChartDrawer; const AText: String): TSize;
-var
-  sz: TPoint;
 begin
   ApplyLabelFont(ADrawer);
-  sz := ADrawer.TextExtent(AText);
-  AddMargins(ADrawer, sz);
-  Result := MeasureRotatedRect(sz, GetLabelAngle);
+  with GetBoundingBox(ADrawer, ADrawer.TextExtent(AText)) do
+    Result := MeasureRotatedRect(Point(Right - Left, Bottom - Top), GetLabelAngle);
 end;
 
 procedure TChartTextElement.SetAlignment(AValue: TAlignment);
@@ -579,11 +578,12 @@ var
   a: Double;
   i: Integer;
 begin
-  AddMargins(ADrawer, ASize);
   case Shape of
-    cmsRectangle: Result := RotateRect(ASize, GetLabelAngle);
+    cmsRectangle:
+      Result := RotateRect(GetBoundingBox(ADrawer, ASize), GetLabelAngle);
     cmsEllipse: begin
-      e.InitRadius(ASize.X / 2, ASize.Y / 2);
+      with GetBoundingBox(ADrawer, ASize) do
+        e.InitBoundingBox(Left, Top, Right, Bottom);
       Result := e.TesselateRadialPie(0, 2 * Pi, 3);
       SetLength(Result, Length(Result) - 1);
       a := GetLabelAngle;

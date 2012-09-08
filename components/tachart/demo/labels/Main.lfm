@@ -60,6 +60,7 @@ object Form1: TForm1
         Align = alClient
         ParentColor = False
         object Chart1BarSeries1: TBarSeries
+          Marks.Shape = cmsEllipse
           Marks.Arrow.BaseLength = 3
           Marks.Arrow.Length = 9
           Marks.Arrow.Visible = True
