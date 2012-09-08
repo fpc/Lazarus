@@ -240,19 +240,19 @@ begin
     chkChecksStack.Checked := StackChecks;
     chkVerifyObjMethodCall.Checked := VerifyObjMethodCall;
 
-    grpHeapStackSize.Enabled := NeedsLinkerOpts;
+    grpHeapStackSize.Visible := NeedsLinkerOpts;
     edtHeapSize.Text := IntToStr(HeapSize);
     edtStackSize.Text := IntToStr(StackSize);
 
     if fIsPackage then begin
-      grpTargetPlatform.Enabled:=false;
+      grpTargetPlatform.Visible:=false;
       TargetOSComboBox.ItemIndex := 0;
       TargetOSComboBox.Text := 'default';
       TargetCPUComboBox.ItemIndex := 0;
       TargetCPUComboBox.Text := 'default';
       TargetProcessorProcComboBox.Text := 'default';
     end else begin
-      grpTargetPlatform.Enabled:=true;
+      grpTargetPlatform.Visible:=true;
       i := TargetOSComboBox.Items.IndexOf(TargetOS);
       if i < 0 then
         i := 0;  // 0 is default
