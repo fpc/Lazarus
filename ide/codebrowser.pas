@@ -1649,6 +1649,7 @@ procedure TCodeBrowserView.WorkUpdateUnit(AnUnit: TCodeBrowserUnit);
     for i:=0 to Tool.Scanner.LinkCount-1 do begin
       Link:=Tool.Scanner.Links[i];
       CodeBuf:=TCodeBuffer(Link.Code);
+      if CodeBuf=nil then continue;
       if CodeBuf<>LastCode then begin
         inc(LineCnt,CodeBuf.LineCount);
         inc(ByteCnt,CodeBuf.SourceLength);
