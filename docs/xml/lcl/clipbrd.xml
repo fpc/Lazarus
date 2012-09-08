@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0"?>
 <fpdoc-descriptions>
   <package name="lcl">
     <!--
@@ -414,10 +414,13 @@
         <short/>
       </element>
       <!-- function Visibility: public -->
-      <element name="TClipboard.AddFormat" link="#LCL.Clipbrd.TClipboard.AddFormat">
-        <descr/>
+      <element name="TClipboard.AddFormat">
+        <descr>If not already done this functions aquires ownership of the clipboard. Aquiring ownership clears the clipbaord.
+If the format already exists it replaces the old content otherwise it is added.
+The format CF_TEXT is handled by AsText and SetTextBuf. Use those functions instead.</descr>
         <errors/>
         <seealso/>
+      <short>Aquires ownership of the Clipboard and adds a format</short>
       </element>
       <!-- function result Visibility: default -->
       <element name="TClipboard.AddFormat.Result">
@@ -430,13 +433,6 @@
       <!-- argument Visibility: default -->
       <element name="TClipboard.AddFormat.Stream">
         <short/>
-      </element>
-      <!-- function Visibility: public -->
-      <element name="TClipboard.AddFormat">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
       </element>
       <!-- function result Visibility: default -->
       <element name="TClipboard.AddFormat.Result">
