@@ -35,6 +35,7 @@ type
     FPenStyle: TFPPenStyle;
     FPenWidth: Integer;
     FPos: TPoint;
+    procedure ChartGLColor(AColor: TFPColor);
     procedure InternalPolyline(
       const APoints: array of TPoint; AStartIndex, ANumPts, AMode: Integer);
     procedure SetBrush(ABrush: TFPCustomBrush);
@@ -70,21 +71,22 @@ type
     procedure SetBrushColor(AColor: TChartColor);
     procedure SetBrushParams(AStyle: TFPBrushStyle; AColor: TChartColor);
     procedure SetPenParams(AStyle: TFPPenStyle; AColor: TChartColor);
+    procedure SetTransparency(ATransparency: TChartTransparency);
   end;
 
 implementation
-
-procedure ChartGLColor(AColor: TFPColor);
-begin
-  with AColor do
-    glColor4us(red, green, blue, alpha);
-end;
 
 { TOpenGLDrawer }
 
 procedure TOpenGLDrawer.AddToFontOrientation(ADelta: Integer);
 begin
   Unused(ADelta);
+end;
+
+procedure TOpenGLDrawer.ChartGLColor(AColor: TFPColor);
+begin
+  with AColor do
+    glColor4us(red, green, blue, (255 - FTransparency) shl 8);
 end;
 
 procedure TOpenGLDrawer.ClippingStart(const AClipRect: TRect);
@@ -289,6 +291,17 @@ procedure TOpenGLDrawer.SetPenParams(AStyle: TFPPenStyle; AColor: TChartColor);
 begin
   FPenStyle := AStyle;
   FPenColor := FChartColorToFPColorFunc(AColor);
+end;
+
+procedure TOpenGLDrawer.SetTransparency(ATransparency: TChartTransparency);
+begin
+  inherited;
+  if FTransparency > 0 then begin
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+  end
+  else
+    glDisable(GL_BLEND);
 end;
 
 function TOpenGLDrawer.SimpleTextExtent(const AText: String): TPoint;
