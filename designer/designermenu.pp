@@ -1434,6 +1434,7 @@ var
   InvalidateNeeded: Boolean;
   DesignerMenuItem: TDesignerMenuItem;
 begin
+  if not (Sender is TPropertyEditor) then Exit;
   for i := 0 to TPropertyEditor(Sender).PropCount - 1 do
   begin
     Instance := TPropertyEditor(Sender).GetComponent(i);
