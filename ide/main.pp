@@ -11781,10 +11781,8 @@ begin
     ProjInspector.OnAddUnitToProject:=@ProjInspectorAddUnitToProject;
     ProjInspector.OnAddDependency:=@PkgBoss.OnProjectInspectorAddDependency;
     ProjInspector.OnRemoveFile:=@ProjInspectorRemoveFile;
-    ProjInspector.OnRemoveDependency:=
-                                    @PkgBoss.OnProjectInspectorRemoveDependency;
-    ProjInspector.OnReAddDependency:=
-                                    @PkgBoss.OnProjectInspectorReAddDependency;
+    ProjInspector.OnRemoveDependency:=@PkgBoss.OnProjectInspectorRemoveDependency;
+    ProjInspector.OnReAddDependency:=@PkgBoss.OnProjectInspectorReAddDependency;
 
     ProjInspector.LazProject:=Project1;
   end;

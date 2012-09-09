@@ -4149,7 +4149,6 @@ resourcestring
   lisUse = 'Use >>';
   lisClickToSeeThePossibleUses = 'Click to see the possible uses';
   lisPckEditEditGeneralOptions = 'Edit General Options';
-  lisPckEditCompOpts = 'Compiler Options';
   lisPkgEdThereAreMoreFunctionsInThePopupmenu = 'There are more functions in '
     +'the popupmenu';
   lisPckEditMore = 'More >>';
