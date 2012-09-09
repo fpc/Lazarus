@@ -55,8 +55,10 @@ object SelectPropertiesForm: TSelectPropertiesForm
         MultiSelect = True
         OnClick = LBPropertiesClick
         OnDblClick = LBPropertiesDblClick
+        ScrollWidth = 238
         Sorted = True
         TabOrder = 0
+        TopIndex = -1
       end
     end
     object PComponents: TPanel
@@ -91,8 +93,10 @@ object SelectPropertiesForm: TSelectPropertiesForm
         BorderSpacing.Around = 6
         ItemHeight = 0
         OnSelectionChange = LBComponentsSelectionChange
+        ScrollWidth = 215
         Sorted = True
         TabOrder = 0
+        TopIndex = -1
       end
     end
     object VSplitter: TSplitter
@@ -128,25 +132,29 @@ object SelectPropertiesForm: TSelectPropertiesForm
       Left = 10
       Height = 15
       Top = 3
-      Width = 99
+      Width = 109
       BorderSpacing.Around = 6
       Caption = '&Selected Properties'
       ParentColor = False
     end
     object LBSelected: TListBox
       AnchorSideLeft.Control = PBottom
+      AnchorSideTop.Control = LLBSelected
+      AnchorSideTop.Side = asrBottom
       AnchorSideRight.Control = BAdd
       AnchorSideBottom.Control = PBottom
       AnchorSideBottom.Side = asrBottom
       Left = 6
-      Height = 112
-      Top = 92
+      Height = 180
+      Top = 24
       Width = 392
       Anchors = [akTop, akLeft, akRight, akBottom]
       BorderSpacing.Around = 6
       ItemHeight = 0
       MultiSelect = True
+      ScrollWidth = 390
       TabOrder = 0
+      TopIndex = -1
     end
     object BAdd: TButton
       AnchorSideTop.Control = LBSelected
@@ -154,7 +162,7 @@ object SelectPropertiesForm: TSelectPropertiesForm
       AnchorSideRight.Side = asrBottom
       Left = 404
       Height = 25
-      Top = 92
+      Top = 24
       Width = 75
       Anchors = [akTop, akRight]
       BorderSpacing.Right = 6
@@ -170,7 +178,7 @@ object SelectPropertiesForm: TSelectPropertiesForm
       AnchorSideRight.Side = asrBottom
       Left = 404
       Height = 25
-      Top = 123
+      Top = 55
       Width = 75
       Anchors = [akTop, akLeft, akRight]
       BorderSpacing.Top = 6
@@ -186,7 +194,7 @@ object SelectPropertiesForm: TSelectPropertiesForm
       AnchorSideRight.Side = asrBottom
       Left = 404
       Height = 25
-      Top = 154
+      Top = 86
       Width = 75
       Anchors = [akTop, akLeft, akRight]
       BorderSpacing.Top = 6
