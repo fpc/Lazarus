@@ -4247,7 +4247,8 @@ resourcestring
   lisPckExplInstalled = 'Installed';
   lisPckExplInstallOnNextStart = 'Install on next start';
   lisPckExplUninstallOnNextStart = 'Uninstall on next start';
-  
+  lisPckExplBase = 'Base, can not be uninstalled';
+
   // project inspector
   lisProjInspConfirmDeletingDependency = 'Confirm deleting dependency';
   lisProjInspConfirmRemovingFile = 'Confirm removing file';
