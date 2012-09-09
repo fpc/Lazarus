@@ -1432,7 +1432,7 @@ type
     property ShowOverviewGutter: boolean
       read FShowOverviewGutter write FShowOverviewGutter default True;
     property TopInfoView: boolean
-      read FTopInfoView write FTopInfoView default False;
+      read FTopInfoView write FTopInfoView default True;
     // Code Folding
     property ReverseFoldPopUpOrder: Boolean
         read FReverseFoldPopUpOrder write FReverseFoldPopUpOrder default True;
@@ -3719,7 +3719,7 @@ begin
   fEditorFontSize := SynDefaultFontSize;
   fDisableAntialiasing := DefaultEditorDisableAntiAliasing;
   FShowOverviewGutter := True;
-  FTopInfoView := False;
+  FTopInfoView := True;
 
   // Key Mappings
   fKeyMappingScheme := KeyMapSchemeNames[kmsLazarus];

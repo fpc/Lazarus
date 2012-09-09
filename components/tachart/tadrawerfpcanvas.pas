@@ -215,7 +215,7 @@ begin
   Unused(AX1, AY1);
   Unused(AX2, AY2);
   Unused(AStartAngle16Deg, AAngleLength16Deg);
-  raise EChartError.Create('TOpenGLDrawer.RadialPie not implemented');
+  raise EChartError.Create('TFPCanvasDrawer.RadialPie not implemented');
 end;
 
 procedure TFPCanvasDrawer.Rectangle(AX1, AY1, AX2, AY2: Integer);
