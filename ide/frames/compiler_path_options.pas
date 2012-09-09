@@ -284,7 +284,7 @@ end;
 
 procedure TCompilerPathOptionsFrame.LCLWidgetTypeLabelClick(Sender: TObject);
 begin
-  FDialog.OpenEditor(GroupCompiler,CompilerOptionsBuildModes);
+  FDialog.OpenEditor(GroupCompiler,CompilerOptionsMacroValues);
 end;
 
 procedure TCompilerPathOptionsFrame.LCLWidgetTypeLabelMouseEnter(Sender: TObject);
