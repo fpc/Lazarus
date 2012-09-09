@@ -154,7 +154,7 @@ inherited EvaluateDlg: TEvaluateDlg
     BorderSpacing.Right = 6
     BorderSpacing.Bottom = 6
     ScrollBars = ssAutoVertical
-    TabOrder = 1
+    TabOrder = 3
   end
   object cmbNewValue: TComboBox[6]
     AnchorSideLeft.Control = Owner
@@ -172,7 +172,7 @@ inherited EvaluateDlg: TEvaluateDlg
     BorderSpacing.Bottom = 6
     ItemHeight = 13
     OnKeyDown = cmbNewValueKeyDown
-    TabOrder = 3
+    TabOrder = 4
   end
   object chkTypeCast: TCheckBox[7]
     AnchorSideTop.Control = Label1
@@ -188,7 +188,7 @@ inherited EvaluateDlg: TEvaluateDlg
     Caption = 'chkTypeCast'
     Checked = True
     State = cbChecked
-    TabOrder = 4
+    TabOrder = 1
   end
   object mnuHistory: TPopupMenu[8]
     left = 72
