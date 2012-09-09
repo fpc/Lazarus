@@ -1017,7 +1017,7 @@ begin
   end;
 
   // compiler and parameters are the same
-  // quick compile is possible
+  // => it is possible to quick compile without -B
   NeedBuildAllFlag:=false;
 
   if not AProject.LastCompileComplete then begin
@@ -1079,6 +1079,9 @@ begin
     end;
     AnUnitInfo:=AnUnitInfo.NextUnitWithEditorIndex;
   end;
+
+  // check project resources
+  // ToDo
 
   Result:=mrNo;
 end;

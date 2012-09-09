@@ -834,7 +834,7 @@ resourcestring
   lisInfoBuildWarning = 'Warnings:';
   lisInfoBuildProject   = 'Project:';
   listInfoBuildCompiling = 'Compiling:';
-  lisInfoBuildComplile = 'Compiling ...';
+  lisInfoBuildCompile = 'Compiling ...';
   lisFPCTooOld = 'FPC too old';
   lisTheProjectUsesTheNewFPCResourcesWhichRequiresAtLea = 'The project uses '
     +'the new FPC resources, which requires at least FPC 2.4';

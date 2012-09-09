@@ -12294,7 +12294,7 @@ begin
       end;
     end;
 
-    CompileProgress.CreateDialog(OwningComponent, Project1.MainFilename, lisInfoBuildComplile);
+    CompileProgress.CreateDialog(OwningComponent, Project1.MainFilename, lisInfoBuildCompile);
 
     // clear old error lines
     SourceEditorManager.ClearErrorLines;
@@ -12570,15 +12570,24 @@ begin
 
   Result := mrCancel;
 
-  // Check if we can run this project
-  debugln('TMainIDE.DoInitProjectRun Check if project can run: ',dbgs(pfRunnable in Project1.Flags),' ',dbgs(Project1.MainUnitID));
+  // Check if this project is runnable
   if not ( ((Project1.CompilerOptions.ExecutableType=cetProgram) or
             (Project1.RunParameterOptions.HostApplicationFilename<>''))
-          and (pfRunnable in Project1.Flags) and (Project1.MainUnitID >= 0) ) then Exit;
+          and (pfRunnable in Project1.Flags) and (Project1.MainUnitID >= 0) )
+  then begin
+    debugln(['TMainIDE.DoInitProjectRun Project can not run:',
+      ' pfRunnable=',pfRunnable in Project1.Flags,
+      ' MainUnitID=',Project1.MainUnitID,
+      ' Launchable=',(Project1.CompilerOptions.ExecutableType=cetProgram) or
+            (Project1.RunParameterOptions.HostApplicationFilename<>'')
+      ]);
+    Exit;
+  end;
 
-  debugln('TMainIDE.DoInitProjectRun Check build ...');
   // Build project first
-  if DoBuildProject(crRun,[pbfOnlyIfNeeded]) <> mrOk then Exit;
+  debugln('TMainIDE.DoInitProjectRun Check build ...');
+  if DoBuildProject(crRun,[pbfOnlyIfNeeded]) <> mrOk then
+    Exit;
 
   // Check project build
   ProgramFilename := MainBuildBoss.GetProjectTargetFilename(Project1);
