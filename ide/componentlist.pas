@@ -22,8 +22,8 @@
   Modified by Juha Manninen
 
   Abstract:
-    A dialog to quickly find components and create the found components
-    directly on the designed form.
+    A dialog to quickly find components and to add the found component
+    to the designed form.
 }
 unit ComponentList;
 
@@ -60,17 +60,15 @@ type
     TreeFilterEd: TTreeFilterEdit;
     procedure ButtonPanelOKButtonClick(Sender: TObject);
     procedure CloseButtonClick(Sender: TObject);
-    procedure ComponentsListboxDblClick(Sender: TObject);
+    procedure ComponentsDblClick(Sender: TObject);
     procedure ComponentsListboxDrawItem(Control: TWinControl; Index: Integer;
       ARect: TRect; State: TOwnerDrawState);
     procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
     procedure TreeCustomDrawItem(Sender: TCustomTreeView;
       Node: TTreeNode; State: TCustomDrawState; var DefaultDraw: Boolean);
     procedure ComponentsListboxKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
-    procedure InheritanceTreeDblClick ( Sender: TObject ) ;
     procedure InheritanceTreeKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure PageControlChange(Sender: TObject);
-    procedure PalletteTreeDblClick(Sender: TObject);
     procedure PalletteTreeKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure UpdateComponentSelection(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
@@ -137,16 +135,16 @@ begin
   if ComponentsListbox.IsVisible then
   begin
     i:=ComponentsListbox.ItemIndex;
-    if i<0 then exit;
-    Result:=TRegisteredComponent(ComponentsListbox.Items.Objects[i]);
+    if i>=0 then
+      Result:=TRegisteredComponent(ComponentsListbox.Items.Objects[i]);
   end else if PalletteTree.IsVisible then
   begin
-    if not Assigned(PalletteTree.Selected) then exit;
-    Result := TRegisteredComponent(PalletteTree.Selected.Data);
+    if Assigned(PalletteTree.Selected) then
+      Result := TRegisteredComponent(PalletteTree.Selected.Data);
   end else if InheritanceTree.IsVisible then
   begin
-    if not Assigned(InheritanceTree.Selected) then exit;
-    Result := TRegisteredComponent(InheritanceTree.Selected.Data);
+    if Assigned(InheritanceTree.Selected) then
+      Result := TRegisteredComponent(InheritanceTree.Selected.Data);
   end;
 end;
 
@@ -306,27 +304,6 @@ begin
   end;
 end;
 
-procedure TComponentListForm.ComponentsListboxDblClick(Sender: TObject);
-begin
-  AddSelectedComponent(GetSelectedComponent);
-end;
-
-procedure TComponentListForm.ButtonPanelOKButtonClick(Sender: TObject);
-var
-  AComponent: TRegisteredComponent;
-begin
-  AComponent:=GetSelectedComponent;
-  if AComponent<>nil then begin
-    IDEComponentPalette.Selected:=AComponent;
-    Close;
-  end;
-end;
-
-procedure TComponentListForm.CloseButtonClick(Sender: TObject);
-begin
-  Close;
-end;
-
 procedure TComponentListForm.ComponentsListboxDrawItem(Control: TWinControl;
   Index: Integer; ARect: TRect; State: TOwnerDrawState);
 var
@@ -355,25 +332,6 @@ begin
     end;
     TextOut(ARect.Left+25,
             ARect.Top+(ARect.Bottom-ARect.Top-TxtH) div 2, CurStr);
-  end;
-end;
-
-procedure TComponentListForm.FormClose(Sender: TObject;
-  var CloseAction: TCloseAction);
-begin
-  // Using a dock manager...
-  if Parent<>nil then
-  begin
-    CloseAction := caNone;
-    //todo: helper function in DockManager or IDEDockMaster for closing forms.
-    // Only close the window if it's floating.
-    // AnchorDocking doesn't seem to initialize 'FloatingDockSiteClass' so we can't just check 'Floating'.
-    // Also, AnchorDocking use nested forms, so the check for HostDockSite.Parent.
-    if Assigned(HostDockSite) and (HostDockSite.DockClientCount <= 1)
-      and (HostDockSite is TCustomForm) and (HostDockSite.Parent = nil) then
-    begin
-      TCustomForm(HostDockSite).Close;
-    end;
   end;
 end;
 
@@ -422,36 +380,32 @@ begin
   end;
 end;
 
+procedure TComponentListForm.ComponentsDblClick(Sender: TObject);
+// This is used for all 3 lists / treeviews
+begin
+  AddSelectedComponent(GetSelectedComponent);
+end;
+
 procedure TComponentListForm.ComponentsListboxKeyDown(Sender: TObject;
   var Key: Word; Shift: TShiftState);
 begin
   if Key = VK_RETURN then
     if (ComponentsListbox.ItemIndex >= 0) then
-      ComponentsListboxDblClick(Sender);
-end;
-
-procedure TComponentListForm.PalletteTreeDblClick(Sender: TObject);
-begin
-  AddSelectedComponent(GetSelectedComponent);
+      ComponentsDblClick(Sender);
 end;
 
 procedure TComponentListForm.PalletteTreeKeyDown(Sender: TObject;
   var Key: Word; Shift: TShiftState);
 begin
   if Key = VK_RETURN then
-    PalletteTreeDblClick(Sender);
-end;
-
-procedure TComponentListForm.InheritanceTreeDblClick(Sender:TObject);
-begin
-  AddSelectedComponent(GetSelectedComponent);
+    ComponentsDblClick(Sender);
 end;
 
 procedure TComponentListForm.InheritanceTreeKeyDown(Sender: TObject;
   var Key: Word; Shift: TShiftState);
 begin
   if Key = VK_RETURN then
-    InheritanceTreeDblClick(Sender);
+    ComponentsDblClick(Sender);
 end;
 
 procedure TComponentListForm.PageControlChange(Sender: TObject);
@@ -489,11 +443,46 @@ begin
   PrevPageIndex := PageControl.PageIndex;
 end;
 
+procedure TComponentListForm.FormClose(Sender: TObject;
+  var CloseAction: TCloseAction);
+begin
+  // Using a dock manager...
+  if Parent<>nil then
+  begin
+    CloseAction := caNone;
+    //todo: helper function in DockManager or IDEDockMaster for closing forms.
+    // Only close the window if it's floating.
+    // AnchorDocking doesn't seem to initialize 'FloatingDockSiteClass' so we can't just check 'Floating'.
+    // Also, AnchorDocking use nested forms, so the check for HostDockSite.Parent.
+    if Assigned(HostDockSite) and (HostDockSite.DockClientCount <= 1)
+      and (HostDockSite is TCustomForm) and (HostDockSite.Parent = nil) then
+    begin
+      TCustomForm(HostDockSite).Close;
+    end;
+  end;
+end;
+
 procedure TComponentListForm.FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
 //Close the form on escape key like every other IDE dialog does
 begin
   if (Key=VK_ESCAPE) and (Parent=nil) then
     Close;
+end;
+
+procedure TComponentListForm.ButtonPanelOKButtonClick(Sender: TObject);
+var
+  AComponent: TRegisteredComponent;
+begin
+  AComponent:=GetSelectedComponent;
+  if AComponent<>nil then begin
+    IDEComponentPalette.Selected:=AComponent;
+    Close;
+  end;
+end;
+
+procedure TComponentListForm.CloseButtonClick(Sender: TObject);
+begin
+  Close;
 end;
 
 end.
