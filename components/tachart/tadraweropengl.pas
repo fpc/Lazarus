@@ -20,7 +20,7 @@ unit TADrawerOpenGL;
 interface
 
 uses
-  Classes, FPCanvas, FPImage, GL, GLu, Glut,
+  Classes, FPCanvas, FPImage,
   TAChartUtils, TADrawUtils;
 
 type
@@ -76,6 +76,10 @@ type
 
 implementation
 
+uses
+  GL, GLu, Glut,
+  TAGeometry;
+
 { TOpenGLDrawer }
 
 procedure TOpenGLDrawer.AddToFontOrientation(ADelta: Integer);
@@ -128,10 +132,11 @@ begin
 end;
 
 procedure TOpenGLDrawer.Ellipse(AX1, AY1, AX2, AY2: Integer);
+var
+  p: TPointArray;
 begin
-  Unused(AX1, AY1);
-  Unused(AX2, AY2);
-  raise EChartError.Create('TOpenGLDrawer.Ellipse not implemented');
+  p := TesselateEllipse(Rect(AX1, AY1, AX2, AY2), 4);
+  Polygon(p, 0, Length(p));
 end;
 
 procedure TOpenGLDrawer.FillRect(AX1, AY1, AX2, AY2: Integer);
@@ -218,11 +223,14 @@ end;
 
 procedure TOpenGLDrawer.RadialPie(
   AX1, AY1, AX2, AY2: Integer; AStartAngle16Deg, AAngleLength16Deg: Integer);
+var
+  e: TEllipse;
+  p: TPointArray;
 begin
-  Unused(AX1, AY1);
-  Unused(AX2, AY2);
-  Unused(AStartAngle16Deg, AAngleLength16Deg);
-  raise EChartError.Create('TOpenGLDrawer.RadialPie not implemented');
+  e.InitBoundingBox(AX1, AY1, AX2, AY2);
+  p := e.TesselateRadialPie(
+    Deg16ToRad(AStartAngle16Deg), Deg16ToRad(AAngleLength16Deg), 4);
+  Polygon(p, 0, Length(p));
 end;
 
 procedure TOpenGLDrawer.Rectangle(AX1, AY1, AX2, AY2: Integer);
