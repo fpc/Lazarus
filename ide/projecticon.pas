@@ -159,7 +159,7 @@ end;
 
 procedure TProjectIcon.WriteToProjectFile(AConfig: TObject; Path: String);
 begin
-  TXMLConfig(AConfig).SetDeleteValue(Path+'General/Icon/Value', BoolToStr(IsEmpty), '-1');
+  TXMLConfig(AConfig).SetDeleteValue(Path+'General/Icon/Value', BoolToStr(IsEmpty), BoolToStr(true));
 end;
 
 procedure TProjectIcon.ReadFromProjectFile(AConfig: TObject; Path: String);
@@ -167,7 +167,7 @@ begin
   with TXMLConfig(AConfig) do
   begin
     IcoFileName := ChangeFileExt(FileName, '.ico');
-    IsEmpty := StrToBoolDef(GetValue(Path+'General/Icon/Value', '-1'), False);
+    IsEmpty := StrToBoolDef(GetValue(Path+'General/Icon/Value', BoolToStr(true)), False);
   end;
 end;
 

@@ -46,7 +46,7 @@ uses
   LazarusIDEStrConsts, DialogProcs, IDEProcs, CodeToolsOptions, InputHistory,
   EditDefineTree, ProjectResources, MiscOptions, LazConf, EnvironmentOpts,
   TransferMacros, CompilerOptions, OutputFilter, Compiler, FPCSrcScan,
-  PackageDefs, PackageSystem, Project,
+  PackageDefs, PackageSystem, Project, ProjectIcon,
   BaseBuildManager, ApplicationBundle;
   
 type
@@ -926,6 +926,7 @@ var
   StateFileAge: LongInt;
   AnUnitInfo: TUnitInfo;
   LFMFilename: String;
+  IcoRes: TProjectIcon;
 begin
   NeedBuildAllFlag:=false;
 
@@ -1081,7 +1082,19 @@ begin
   end;
 
   // check project resources
-  // ToDo
+  IcoRes:=TProjectIcon(AProject.ProjResources[TProjectIcon]);
+  if (IcoRes<>nil) and (not IcoRes.IsEmpty)
+  and FilenameIsAbsolute(IcoRes.IcoFileName)
+  and FileExistsCached(IcoRes.IcoFileName)
+  and (StateFileAge<FileAgeCached(IcoRes.IcoFileName)) then begin
+    debugln(['TBuildManager.DoCheckIfProjectNeedsCompilation icon has changed ',
+      AProject.IDAsString,' "',IcoRes.IcoFileName,'"']);
+    Note+='Project''s ico file "'+IcoRes.IcoFileName+'" is newer than state file:'+LineEnding
+      +'  File age="'+FileAgeToStr(FileAgeCached(IcoRes.IcoFileName))+'"'+LineEnding
+      +'  State file age="'+FileAgeToStr(StateFileAge)+'"'+LineEnding
+      +'  State file='+StateFilename+LineEnding;
+    exit(mrYes);
+  end;
 
   Result:=mrNo;
 end;
