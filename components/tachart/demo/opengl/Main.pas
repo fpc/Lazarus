@@ -16,6 +16,7 @@ type
     Chart1: TChart;
     Chart1BarSeries1: TBarSeries;
     Chart1LineSeries1: TLineSeries;
+    Chart1PieSeries1: TPieSeries;
     OpenGLControl1: TOpenGLControl;
     RandomChartSource1: TRandomChartSource;
     procedure Chart1AfterPaint(ASender: TChart);
@@ -30,7 +31,7 @@ implementation
 {$R *.lfm}
 
 uses
-  TADrawUtils, TADrawerOpenGL, TADrawerCanvas;
+  TADrawUtils, TADrawerOpenGL in '..\..\TADrawerOpenGL.pas', TADrawerCanvas;
 
 procedure TForm1.Chart1AfterPaint(ASender: TChart);
 begin
