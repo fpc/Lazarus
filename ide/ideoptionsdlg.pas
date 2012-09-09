@@ -34,7 +34,7 @@ uses
   Buttons, ButtonPanel, ExtCtrls,
   IDEWindowIntf, IDEOptionsIntf, IDECommands, IDEHelpIntf,
   EnvironmentOpts, LazarusIDEStrConsts,
-  EditorOptions, TreeFilterEdit, EditBtn, StdCtrls;
+  CompOptsIntf, EditorOptions, TreeFilterEdit, EditBtn, StdCtrls;
 
 type
   TIDEOptsDlgAction = (
@@ -82,6 +82,7 @@ type
     SelectNode: TTreeNode;
     NewLastSelected: PIDEOptionsEditorRec;
 
+    function FindGroupClass(Node: TTreeNode): TAbstractIDEOptionsClass;
     procedure TraverseSettings(AOptions: TAbstractIDEOptions; anAction: TIDEOptsDlgAction);
     function CheckValues: boolean;
     procedure DoOpenEditor(EditorToOpen: TAbstractIDEOptionsEditorClass);
@@ -126,6 +127,7 @@ begin
   FEditorsCreated := False;
   FEditorToOpen := nil;
   SettingsPanel.Constraints.MinHeight:=0;
+  BuildModeSelectPanel.Height:=0;
 
   IDEDialogLayoutList.ApplyLayout(Self, Width, Height);
   Caption := dlgIDEOptions;
@@ -155,31 +157,33 @@ end;
 
 procedure TIDEOptionsDialog.CategoryTreeChange(Sender: TObject; Node: TTreeNode);
 var
+  GroupClass: TAbstractIDEOptionsClass;
   AEditor: TAbstractIDEOptionsEditor;
-  SelNode: TTreeNode;
 begin
   if Assigned(Node) then begin
+    // The GUI filter can hide nodes. Get a visible node.
     if not Node.Visible then
       Node := Node.GetPrevVisible;
-    while Assigned(Node) do begin
-      if Assigned(Node.Data) then
-        break;
+    // Group category node Has Data=nil. Get the first sub-item.
+    while Assigned(Node) and not Assigned(Node.Data) do
       Node := Node.GetFirstVisibleChild;
-    end;
   end;
+  AEditor := nil;
+  GroupClass := nil;
   if Assigned(Node) and Assigned(Node.Data) then begin
-    Assert(TObject(Node.Data) is TAbstractIDEOptionsEditor, 'Node.Data is not TAbstractIDEOptionsEditor');
-    SelNode:=CategoryTree.Selected;
-    if SelNode=nil then
-      Node.Selected:=True
-    else begin
-      //DebugLn('TIDEOptionsDialog.CategoryTreeChange: Selected Node=', SelNode.Text);
-    end;
+    Assert(TObject(Node.Data) is TAbstractIDEOptionsEditor,
+      'TIDEOptionsDialog.CategoryTreeChange: Node.Data is not TAbstractIDEOptionsEditor');
+    if CategoryTree.Selected = nil then
+      Node.Selected := True;
     AEditor := TAbstractIDEOptionsEditor(Node.Data);
-    //DebugLn('TIDEOptionsDialog.CategoryTreeChange: Editor=', AEditor.Name);
-  end
+    GroupClass := FindGroupClass(Node);
+  end;
+  // Show the Build Mode panel for Compiler Options
+  if (GroupClass <> nil) and (GroupClass.InheritsFrom(TLazCompilerOptions)) then
+    BuildModeSelectPanel.Height:=40
   else
-    AEditor:=nil;
+    BuildModeSelectPanel.Height:=0;
+  // Hide the old and show the new editor frame
   if Assigned(AEditor) then
     NewLastSelected := AEditor.Rec;
   if (AEditor <> PrevEditor) then begin
@@ -263,6 +267,21 @@ procedure TIDEOptionsDialog.CancelButtonClick(Sender: TObject);
 begin
   IDEDialogLayoutList.SaveLayout(Self);
   ModalResult := mrCancel;
+end;
+
+function TIDEOptionsDialog.FindGroupClass(Node: TTreeNode): TAbstractIDEOptionsClass;
+// Find the group category class where this node belongs to.
+begin
+  while Assigned(Node) do begin
+    if Assigned(Node.Parent) then
+      Node := Node.Parent
+    else
+      Break;
+  end;
+  // GroupRec is stored in the first child editor
+  Result := nil;
+  if Assigned(Node) then
+    Result := TAbstractIDEOptionsEditor(Node.GetFirstChild.Data).GroupRec^.GroupClass;
 end;
 
 procedure TIDEOptionsDialog.TraverseSettings(AOptions: TAbstractIDEOptions;
@@ -474,10 +493,8 @@ begin
         Instance.Parent := EditorsPanel;
         instance.Rec := Rec^.Items[j];
 
-        if Rec^.Items[j]^.Parent = NoParent then
-          ItemParent := GroupNode
-        else
-        begin
+        ItemParent := GroupNode;
+        if Rec^.Items[j]^.Parent <> NoParent then begin
           ItemParent := SearchNode(GroupNode.GetFirstChild, Rec^.Items[j]^.Parent);
           if ItemParent = nil then
             ItemParent := GroupNode;
@@ -496,7 +513,6 @@ begin
       if (GroupNode.GetFirstChild <> nil) and (GroupNode.GetFirstChild.Data <> nil) then
         TAbstractIDEOptionsEditor(GroupNode.GetFirstChild.Data).GroupRec := Rec;
       GroupNode.Expanded := not Rec^.Collapsed;
-      //GroupNode.Data := Rec;
     end;
   end;
   if SelectNode <> nil then
@@ -528,14 +544,11 @@ var
   i: Integer;
 begin
   if (ARec^.GroupClass = nil) then
-    if Length(OptionsFilter) <> 0 then
-      Exit(False)
-    else
-      Exit(True);
+    Exit(Length(OptionsFilter) = 0);
 
   for i := 0 to Length(OptionsFilter) - 1 do
-   if ARec^.GroupClass.InheritsFrom(OptionsFilter[i]) then
-    Exit(True);
+    if ARec^.GroupClass.InheritsFrom(OptionsFilter[i]) then
+      Exit(True);
 
   Result := False;
 end;
