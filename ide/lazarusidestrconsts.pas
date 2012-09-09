@@ -264,6 +264,7 @@ resourcestring
   lisKMSelectLineEnd = 'Select Line End';
   lisKMSelectPageTop = 'Select Page Top';
   lisKMSelectPageBottom = 'Select Page Bottom';
+  lisUseSelected = 'Use Selected';
   lisMenuSelect = 'Select';
   lisMenuSelectAll = 'Select All';
   lisCheckAll = 'Check All';

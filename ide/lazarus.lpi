@@ -473,6 +473,7 @@
         <Filename Value="frames/compiler_path_options.pas"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="CompilerPathOptionsFrame"/>
+        <HasResources Value="True"/>
         <ResourceBaseClass Value="Frame"/>
         <UnitName Value="compiler_path_options"/>
       </Unit59>

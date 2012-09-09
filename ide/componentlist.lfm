@@ -51,6 +51,7 @@ object ComponentListForm: TComponentListForm
           Width = 328
           Align = alClient
           ItemHeight = 0
+          OnClick = ComponentsClick
           OnDblClick = ComponentsDblClick
           OnDrawItem = ComponentsListboxDrawItem
           OnKeyDown = ComponentsListboxKeyDown
@@ -187,14 +188,15 @@ object ComponentListForm: TComponentListForm
     Width = 326
     OKButton.Name = 'OKButton'
     OKButton.DefaultCaption = True
+    OKButton.OnClick = OKButtonClick
     HelpButton.Name = 'HelpButton'
     HelpButton.DefaultCaption = True
     CloseButton.Name = 'CloseButton'
     CloseButton.DefaultCaption = True
-    CloseButton.OnClick = CloseButtonClick
     CancelButton.Name = 'CancelButton'
     CancelButton.DefaultCaption = True
+    CancelButton.OnClick = CancelButtonClick
     TabOrder = 2
-    ShowButtons = [pbOK, pbClose]
+    ShowButtons = [pbOK, pbCancel]
   end
 end
