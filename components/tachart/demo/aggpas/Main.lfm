@@ -8,7 +8,7 @@ object Form1: TForm1
   ClientWidth = 613
   OnCreate = FormCreate
   OnDestroy = FormDestroy
-  LCLVersion = '0.9.31'
+  LCLVersion = '1.1'
   object Chart1: TChart
     Left = 0
     Height = 316
@@ -16,12 +16,14 @@ object Form1: TForm1
     Width = 316
     AxisList = <    
       item
-        Title.LabelFont.Orientation = 900
         Visible = False
+        Minors = <>
+        Title.LabelFont.Orientation = 900
       end    
       item
-        Alignment = calBottom
         Visible = False
+        Alignment = calBottom
+        Minors = <>
       end>
     BackColor = clSkyBlue
     Foot.Brush.Color = clBtnFace
@@ -62,6 +64,7 @@ object Form1: TForm1
       Source = RandomChartSource1
     end
     object Chart1LineSeries1: TLineSeries
+      Transparency = 128
       Marks.Format = '%2:s %1:.2f%%'
       Marks.Style = smsLabelPercent
       Title = 'Line'
