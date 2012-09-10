@@ -160,6 +160,7 @@ type
   public
     procedure Assign(ASource: TPersistent); override;
     procedure CheckBoundsOrder;
+    procedure FixTo(const ABounds: TDoubleRect);
   published
     property UseXMax: Boolean index 3 read GetUseBounds write SetUseBounds default false;
     property UseXMin: Boolean index 1 read GetUseBounds write SetUseBounds default false;
@@ -507,6 +508,13 @@ begin
     UseYMax := false;
     raise EExtentError.Create('ChartExtent: YMin >= YMax');
   end;
+end;
+
+procedure TChartExtent.FixTo(const ABounds: TDoubleRect);
+begin
+  FExtent := ABounds;
+  FillChar(FUseBounds, SizeOf(FUseBounds), true);
+  StyleChanged(Self);
 end;
 
 function TChartExtent.GetBounds(AIndex: Integer): Double;
