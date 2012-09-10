@@ -40,9 +40,9 @@ interface
 uses
   Classes, SysUtils, contnrs, LCLProc, Forms, Controls, Graphics, Dialogs,
   KeywordFuncLists, StdCtrls, Buttons, FileUtil, ExtCtrls, ComCtrls, EditBtn,
-  LCLType, AVL_Tree, Laz2_XMLCfg, TreeFilterEdit, PackageIntf, IDEImagesIntf,
-  IDEHelpIntf, IDEDialogs, LazarusIDEStrConsts, EnvironmentOpts, InputHistory,
-  LazConf, IDEProcs, PackageDefs, PackageSystem, PackageLinks,
+  LCLType, ImgList, AVL_Tree, Laz2_XMLCfg, TreeFilterEdit, PackageIntf,
+  IDEImagesIntf, IDEHelpIntf, IDEDialogs, LazarusIDEStrConsts, EnvironmentOpts,
+  InputHistory, LazConf, IDEProcs, PackageDefs, PackageSystem, PackageLinks,
   IDEContextHelpEdit;
 
 type
@@ -57,6 +57,7 @@ type
     LPKFilename: string;
     InLazSrc: boolean; // lpk is in lazarus source directory
     Installed: TPackageInstallType;
+    Base: boolean; // is base package, can not be uninstalled
 
     LPKParsed: boolean;
     Author: string;
@@ -90,6 +91,9 @@ type
     SaveAndRebuildButton: TBitBtn;
     UninstallButton: TBitBtn;
     procedure AddToInstallButtonClick(Sender: TObject);
+    procedure TreeViewAdvancedCustomDrawItem(Sender: TCustomTreeView;
+      Node: TTreeNode; State: TCustomDrawState; Stage: TCustomDrawStage;
+      var PaintImages, DefaultDraw: Boolean);
     procedure AvailableTreeViewDblClick(Sender: TObject);
     procedure AvailableTreeViewKeyPress(Sender: TObject; var Key: char);
     procedure AvailableTreeViewSelectionChanged(Sender: TObject);
@@ -337,6 +341,39 @@ begin
   AddToInstall;
 end;
 
+procedure TInstallPkgSetDialog.TreeViewAdvancedCustomDrawItem(
+  Sender: TCustomTreeView; Node: TTreeNode; State: TCustomDrawState;
+  Stage: TCustomDrawStage; var PaintImages, DefaultDraw: Boolean);
+var
+  Info: TIPSPkgInfo;
+  NodeRect: TRect;
+  x: Integer;
+  Images: TCustomImageList;
+  CurCanvas: TCanvas;
+  y: Integer;
+  Tree: TTreeView;
+begin
+  Tree:=Sender as TTreeView;
+  if Stage=cdPostPaint then begin
+    Info:=FindPkgInfo(Node.Text);
+    if Info=nil then exit;
+    Images:=Tree.Images;
+    CurCanvas:=Tree.Canvas;
+
+    NodeRect:=Node.DisplayRect(False);
+    x:=Node.DisplayIconLeft+1;
+    y:=(NodeRect.Top+NodeRect.Bottom-Images.Height) div 2;
+    if Info.InLazSrc then
+      Images.Draw(CurCanvas,x,y,ImgIndexOverlayLazarusPackage);
+    if Info.Base then
+      Images.Draw(CurCanvas,x,y,ImgIndexOverlayBasePackage);
+    if Info.PkgType=lptRunTimeOnly then
+      Images.Draw(CurCanvas,x,y,ImgIndexOverlayRuntimePackage);
+    if Info.PkgType=lptDesignTime then
+      Images.Draw(CurCanvas,x,y,ImgIndexOverlayDesigntimePackage);
+  end;
+end;
+
 procedure TInstallPkgSetDialog.AvailableTreeViewDblClick(Sender: TObject);
 begin
   AddToInstall;
@@ -561,7 +598,6 @@ begin
     Info.LPKFilename:=Link.GetEffectiveFilename;
   end else
     exit;
-  Info.InLazSrc:=FileIsInPath(Info.LPKFilename,EnvironmentOptions.GetParsedLazarusDirectory);
 
   if OldInfo<>nil then begin
     if Info.LPKParsed
@@ -574,6 +610,10 @@ begin
       exit;
     end;
   end;
+
+  Info.InLazSrc:=FileIsInPath(Info.LPKFilename,EnvironmentOptions.GetParsedLazarusDirectory);
+  Info.Base:=PackageGraph.IsStaticBasePackage(Info.ID.Name);
+
   fAvailablePackages.Add(Info);
 end;
 
@@ -672,7 +712,7 @@ begin
     AddState(lisInstalled)
   else
     AddState(lisNotInstalled);
-  if PackageGraph.IsStaticBasePackage(FSelectedPkg.ID.Name) then
+  if FSelectedPkg.Base then
     AddState(lisPckExplBase);
   AddState(LazPackageTypeIdents[FSelectedPkg.PkgType]);
   PkgInfoMemo.Lines.Add(InfoStr);

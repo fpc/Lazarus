@@ -69,6 +69,7 @@ object InstallPkgSetDialog: TInstallPkgSetDialog
       ShowLines = False
       ShowRoot = False
       TabOrder = 0
+      OnAdvancedCustomDrawItem = TreeViewAdvancedCustomDrawItem
       OnDblClick = InstallTreeViewDblClick
       OnSelectionChanged = InstallTreeViewSelectionChanged
       Options = [tvoAllowMultiselect, tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoToolTips, tvoThemedDraw]
@@ -123,6 +124,7 @@ object InstallPkgSetDialog: TInstallPkgSetDialog
       ShowLines = False
       ShowRoot = False
       TabOrder = 1
+      OnAdvancedCustomDrawItem = TreeViewAdvancedCustomDrawItem
       OnDblClick = AvailableTreeViewDblClick
       OnKeyPress = AvailableTreeViewKeyPress
       OnSelectionChanged = AvailableTreeViewSelectionChanged
