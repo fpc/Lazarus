@@ -22,7 +22,11 @@ interface
 
 uses
   Classes, Graphics, Types,
-  TAChartUtils, TADrawUtils, TATypes;
+  TAChartUtils, TADrawUtils, TATypes,
+
+  // Workaround for issue #22850.
+  GraphMath, Math, SysUtils,
+  TACustomSource, TAGeometry;
 
 const
   DEF_LABEL_MARGIN_X = 4;
@@ -246,10 +250,6 @@ type
   end;
 
 implementation
-
-uses
-  GraphMath, Math, SysUtils,
-  TACustomSource, TAGeometry;
 
 { TChartTextElement }
 
