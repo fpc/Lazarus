@@ -2200,13 +2200,11 @@ var
       CharLen := UTF8CharacterLength(CurStr);
       if AClipped then
       begin
-        W := StrPas(CurStr);
-        W := UTF8Copy(W, 1, CharLen);
+        W := GetUTF8String(Copy(CurStr, 1, CharLen));
         QtDC.drawText(CurX, Y, Rect^.Right - Rect^.Left, Rect^.Bottom - Rect^.Top, 0, @W);
       end else
       begin
-        W := StrPas(CurStr);
-        W := UTF8Copy(W, 1, CharLen);
+        W := GetUTF8String(Copy(CurStr, 1, CharLen));
         QtDC.drawText(CurX, Y, @W);
       end;
       inc(CurX, CurDx^);
