@@ -4758,7 +4758,6 @@ begin
 
   TargetInfo^.TargetPID := NewPID;
 
-debugln(['XXXXXXXXXXXXXX ',FTheDebugger.FileName, ' -- ', pos('Reading symbols from', CmdResp)]);
   if (FTheDebugger.FileName <> '') and (pos('READING SYMBOLS FROM', UpperCase(CmdResp)) < 1) then begin
     ExecuteCommand('ptype TObject', [], R);
     if pos('NO SYMBOL TABLE IS LOADED', UpperCase(FFullCmdReply)) > 0 then begin
@@ -4791,6 +4790,9 @@ debugln(['XXXXXXXXXXXXXX ',FTheDebugger.FileName, ' -- ', pos('Reading symbols f
   end;
   SetTargetInfo(FileType);
 
+  FTheDebugger.FExceptionBreak.SetByAddr(Self);
+  FTheDebugger.FBreakErrorBreak.SetByAddr(Self);
+  FTheDebugger.FRunErrorBreak.SetByAddr(Self);
 
   if not(DebuggerState in [dsPause]) then
     SetDebuggerState(dsPause);
