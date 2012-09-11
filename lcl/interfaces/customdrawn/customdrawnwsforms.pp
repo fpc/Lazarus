@@ -34,7 +34,8 @@ uses
   SysUtils, Classes, types, ctypes,
   {$ifdef CD_Windows}Windows, customdrawn_WinProc,{$endif}
   {$ifdef CD_Cocoa}MacOSAll, CocoaAll, customdrawn_cocoaproc, CocoaUtils, CocoaGDIObjects,{$endif}
-  {$ifdef CD_X11}XShm, X, XLib, XUtil, XAtom, customdrawn_x11proc,{unitxft, Xft font support}{$endif}
+  {$ifdef CD_X11}XShm, X, XLib, XUtil, XAtom, customdrawn_x11proc,
+    {$ifdef CD_X11_UseATK}atk, {$endif} {unitxft, Xft font support}{$endif}
   {$ifdef CD_Android}customdrawn_androidproc,{$endif}
   // LazUtils
   lazutf8sysutils,

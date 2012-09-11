@@ -26,7 +26,7 @@ uses
   Graphics, Controls, LCLType, LCLIntf, LCLMessageGlue,
   LMessages, Messages, LCLProc, Forms,
   // Other LCL units are only for types
-  StdCtrls, ExtCtrls, ComCtrls,
+  StdCtrls, ExtCtrls, ComCtrls, Buttons,
   //
   customdrawndrawers;
 
@@ -131,10 +131,17 @@ type
 
   TCDButton = class(TCDButtonControl)
   private
+    FShortCut: TShortcut;
+    FShortCutKey2: TShortcut;
     FGlyph: TBitmap;
+    FKind: TBitBtnKind;
+    FModalResult: TModalResult;
+    procedure SetModalResult(const AValue: TModalResult);
     procedure SetGlyph(AValue: TBitmap);
-  protected
+    procedure SetKind(AKind: TBitBtnKind);
+ protected
     FBState: TCDButtonStateEx;
+    procedure Click; override;
     function GetControlId: TCDControlID; override;
     procedure CreateControlStateEx; override;
     procedure PrepareControlStateEx; override;
@@ -153,7 +160,9 @@ type
     property Enabled;
     property Font;
     property Glyph: TBitmap read FGlyph write SetGlyph;
+    property Kind: TBitBtnKind read FKind write SetKind default bkCustom;
 //    property IsToggleBox: Boolean read FGlyph write SetGlyph;
+    property ModalResult: TModalResult read FModalResult write SetModalResult default mrNone;
     property OnChangeBounds;
     property OnClick;
     property OnContextPopup;
@@ -2021,11 +2030,79 @@ end;
 
 { TCDButton }
 
+procedure TCDButton.SetModalResult(const AValue: TModalResult);
+begin
+  if AValue=FModalResult then exit;
+  FModalResult:=AValue;
+end;
+
 procedure TCDButton.SetGlyph(AValue: TBitmap);
 begin
   if FGlyph=AValue then Exit;
   FGlyph.Assign(AValue);
   Invalidate;
+end;
+
+procedure TCDButton.SetKind(AKind: TBitBtnKind);
+var
+  ACaption: string;
+  Shortcutpos: Integer;
+  ShortcutVal: char;
+  BitBtnImage: Integer;
+  C: TCustomBitmap;
+begin
+  if AKind <> FKind then begin
+    FKind:= AKind;
+    if FKind = bkCustom then exit; // if changed to custom, don't touch other settings
+    ModalResult:= BitBtnModalResults[AKind];
+    ACaption:= GetButtonCaption(BitBtnImages[AKind]);
+    Shortcutpos:= DeleteAmpersands(ACaption);
+    Caption:= ACaption;
+    if Shortcutpos > 0 then begin
+      ShortcutVal:= ACaption[Shortcutpos];
+      end;
+    BitBtnImage:= BitBtnImages[AKind];
+    if BitBtnImage <> idButtonBase then begin
+      C := CreateBitmapFromLazarusResource(BitBtnResNames[BitBtnImage]);
+      try
+        Glyph.Assign(C);
+      finally
+        C.Free;
+      end;
+    end;
+  end;
+end;
+
+procedure TCDButton.Click;
+var
+  Form : TCustomForm;
+begin
+  Form := GetParentForm(Self);
+
+  { First we mimic the TBitBtn behavior
+    A TBitBtn with Kind = bkClose should
+    - Close the ParentForm if ModalResult = mrNone.
+      It should not set ParentForm.ModalResult in this case
+    - Close a non-modal ParentForm if ModalResult in [mrNone, mrClose]
+    - In all other cases it should behave like any other TBitBtn
+  }
+  if (FKind = bkClose) then
+  begin
+    if (Form <> nil) then
+    begin
+      if (FModalResult = mrNone) or
+         ((FModalResult = mrClose) and not (fsModal in Form.FormState)) then
+      begin
+        Form.Close;
+        Exit;
+      end;
+    end;
+  end;
+  if ModalResult <> mrNone
+  then begin
+    if Form <> nil then Form.ModalResult := ModalResult;
+  end;
+  inherited Click;
 end;
 
 function TCDButton.GetControlId: TCDControlID;

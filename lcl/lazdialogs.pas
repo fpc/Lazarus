@@ -1,15 +1,15 @@
 unit lazdialogs;
 
-{$mode delphi}
+{$mode objfpc}{$H+}
 
 interface
 
 uses
   // RTL
-  Classes, SysUtils,
+  Classes, SysUtils, math,
   // LCL
   Forms, ShellCtrls, Buttons, StdCtrls, ExtCtrls, FileCtrl, ComCtrls,
-  Dialogs, ButtonPanel, lclstrconsts, FileUtil, Controls;
+  Dialogs, ButtonPanel, LCLStrConsts, FileUtil, Controls;
 
 type
   TLazFileDialogKind = (
@@ -71,7 +71,28 @@ type
     procedure DoInitialize; override;
   end;
 
+  { TLazMessageDialog }
+  TLazMessageDialog = class(TForm)
+  private
+    Image1: TImage;
+    Label1: TStaticText;
+    btnList: array [0..11] of TBitBtn;
+    NumButtons: Integer;
+  public
+    constructor CreateNew(TheOwner: TComponent; Num: Integer = 0); override;
+  end;
+
+  function LazMessageDlg(const aCaption, aMsg: string; DlgType: TMsgDlgType;
+              Buttons: TMsgDlgButtons; HelpCtx: Longint): Integer;
+  function LazMessageDlg(const aMsg: string; DlgType: TMsgDlgType;
+              Buttons: TMsgDlgButtons; HelpCtx: Longint): Integer;
+
+
 implementation
+
+var
+  { Declared here for the time being to make it possibly work with LCLCustodrawn}
+  LazMessageDialog: TLazMessageDialog;
 
 { TLazarusFileDialogForm }
 
@@ -107,8 +128,8 @@ begin
   ButtonPanel.Width := Width;
   ButtonPanel.Align := alBottom;
   ButtonPanel.ShowButtons := [pbOK, pbCancel];
-  ButtonPanel.OKButton.OnClick := HandleOkClick;
-  ButtonPanel.CancelButton.OnClick := HandleCancelClick;
+  ButtonPanel.OKButton.OnClick := @HandleOkClick;
+  ButtonPanel.CancelButton.OnClick := @HandleCancelClick;
 
   if AKind in [ldkOpenDesktop, ldkSaveDesktop, ldkOpenPDA, ldkSavePDA] then
   begin
@@ -131,7 +152,7 @@ begin
     ShellListView.Align := alClient;
     ShellListView.ShellTreeView := ShellTreeView;
     ShellListView.ScrollBars := ssVertical;
-    ShellListView.OnSelectItem := HandleSelectItem;
+    ShellListView.OnSelectItem := @HandleSelectItem;
 
     // TEdit for save dialog
     if AKind in [ldkSaveDesktop, ldkSavePDA] then
@@ -144,7 +165,7 @@ begin
       SaveEdit.Width := Width;
       SaveEdit.Align := alBottom;
       SaveEdit.Text := SysUtils.ExtractFileName(FileName);
-      SaveEdit.OnChange := HandleEditChange;
+      SaveEdit.OnChange := @HandleEditChange;
     end;
 
     // TFilterComboBox
@@ -175,13 +196,13 @@ begin
     ShellTreeView.Left := 0;
     ShellTreeView.Top := 0;
     ShellTreeView.Align := alClient;
-    ShellTreeView.OnSelectionChanged := HandleTreeViewSelectionChanged;
+    ShellTreeView.OnSelectionChanged := @HandleTreeViewSelectionChanged;
 
     ButtonPanel.OKButton.Enabled := False;
   end;
 
   // Form events
-  OnCloseQuery := HandleCloseQuery;
+  OnCloseQuery := @HandleCloseQuery;
 end;
 
 // The Ok button code should be only a simple mrOk,
@@ -305,6 +326,186 @@ procedure TLazSelectDirectoryDialog.DoInitialize;
 begin
   FForm.Initialize(ldkSelectDirectory);
 end;
+{ Dialog Functions }
+
+function LazMessageDlg(const aCaption, aMsg: string; DlgType: TMsgDlgType;
+  Buttons: TMsgDlgButtons; HelpCtx: Longint): Integer;
+Var
+  I: Integer;
+  textWidth: Integer;
+  ButtonPos: Integer;
+  RequiredWidth: Integer;
+
+begin
+  {$ifdef LCLCustomdrawn} if not assigned(LazMessageDialog) then {$endif}
+  LazMessageDialog:= TLazMessageDialog.CreateNew(Application);
+  with LazMessageDialog do begin
+    Label1.Caption:= aMsg;
+    Label1.Parent:= LazMessageDialog;
+    {Select Image (and Caption) from DlgType}
+    case DlgType of
+      mtWarning: begin
+        Caption:= rsMtWarning;
+        image1.Picture.LoadFromLazarusResource('dialog_warning');
+      end;
+      mtError: begin
+        Caption:= rsMtError;
+        image1.Picture.LoadFromLazarusResource('dialog_error');
+      end;
+      mtConfirmation: begin
+        Caption:= rsMtConfirmation;
+        image1.Picture.LoadFromLazarusResource('dialog_confirmation');
+      end;
+      mtInformation: begin
+        Caption:= rsMtInformation;
+        image1.Picture.LoadFromLazarusResource('dialog_information');
+      end;
+      mtCustom: begin
+        Caption:= ApplicationName;
+        Image1.Width:= 8;
+        Image1.Hide;
+      end;
+    end;
+    Image1.Parent := LazMessageDialog;
+
+    if aCaption <> '' then  //A custom dialog caption has been required
+      Caption:= aCaption;
+    Label1.Left:= Image1.Left + Image1.Width + 8;
+
+    {Select Buttons from Buttons}
+    if (Buttons = []) or (Buttons = [mbHelp]) then
+      Buttons:= Buttons + [mbOK]; // the dialog must provide a modal result
+    NumButtons:= 0;
+    { The order of Buttons is the same as in Qt - Totally different from GTK2}
+    if mbHelp in Buttons then begin
+      btnList[NumButtons] := TBitBtn.Create(LazMessageDialog);
+      btnList[NumButtons].Parent := LazMessageDialog;
+      btnList[NumButtons].Kind:= bkHelp;
+      inc(NumButtons);
+    end;
+    if mbYes in Buttons then begin
+      btnList[NumButtons] := TBitBtn.Create(LazMessageDialog);
+      btnList[NumButtons].Parent := LazMessageDialog;
+      btnList[NumButtons].Kind:= bkYes;
+      inc(NumButtons);
+    end;
+    if mbYesToAll in Buttons then begin
+      btnList[NumButtons] := TBitBtn.Create(LazMessageDialog);
+      btnList[NumButtons].Parent := LazMessageDialog;
+      btnList[NumButtons].Kind:= bkYesToAll;
+      inc(NumButtons);
+    end;
+    if mbNo in Buttons then begin
+      btnList[NumButtons] := TBitBtn.Create(LazMessageDialog);
+      btnList[NumButtons].Parent := LazMessageDialog;
+      btnList[NumButtons].Kind:= bkNo;
+      inc(NumButtons);
+    end;
+    if mbNoToAll in Buttons then begin
+      btnList[NumButtons] := TBitBtn.Create(LazMessageDialog);
+      btnList[NumButtons].Parent := LazMessageDialog;
+      btnList[NumButtons].Kind:= bkNoToAll;
+      inc(NumButtons);
+    end;
+    if mbAll in Buttons then begin
+      btnList[NumButtons] := TBitBtn.Create(LazMessageDialog);
+      btnList[NumButtons].Parent := LazMessageDialog;
+      btnList[NumButtons].Kind:= bkAll;
+      inc(NumButtons);
+    end;
+    if mbOK in Buttons then begin
+      btnList[NumButtons] := TBitBtn.Create(LazMessageDialog);
+      btnList[NumButtons].Parent := LazMessageDialog;
+      btnList[NumButtons].Kind:= bkOK;
+      inc(NumButtons);
+    end;
+    if mbRetry in Buttons then begin
+      btnList[NumButtons] := TBitBtn.Create(LazMessageDialog);
+      btnList[NumButtons].Parent := LazMessageDialog;
+      btnList[NumButtons].Kind:= bkRetry;
+      inc(NumButtons);
+    end;
+    if mbIgnore in Buttons then begin
+      btnList[NumButtons] := TBitBtn.Create(LazMessageDialog);
+      btnList[NumButtons].Parent := LazMessageDialog;
+      btnList[NumButtons].Kind:= bkIgnore;
+      inc(NumButtons);
+    end;
+    if mbCancel in Buttons then begin
+      btnList[NumButtons] := TBitBtn.Create(LazMessageDialog);
+      btnList[NumButtons].Parent := LazMessageDialog;
+      btnList[NumButtons].Kind:= bkCancel;
+      inc(NumButtons);
+    end;
+    if mbAbort in Buttons then begin
+      btnList[NumButtons] := TBitBtn.Create(LazMessageDialog);
+      btnList[NumButtons].Parent := LazMessageDialog;
+      btnList[NumButtons].Kind:= bkAbort;
+      inc(NumButtons);
+    end;
+    if mbClose in Buttons then begin
+      btnList[NumButtons] := TBitBtn.Create(LazMessageDialog);
+      btnList[NumButtons].Parent := LazMessageDialog;
+      btnList[NumButtons].Kind:= bkClose;
+      inc(NumButtons);
+    end;
+
+    ButtonPos:= Image1.Left;
+    for I:= 0 to NumButtons -1 do begin
+      btnList[I].Constraints.MinHeight:= 25;
+      btnList[I].Constraints.MinWidth:= 75;
+      //btnList[I].DefaultCaption:= True;
+      //btnList[I].AutoSize:= True;
+      btnList[I].Left:= ButtonPos;
+      btnList[I].Top:= Image1.Top + Image1.Height + 10;
+      // next line is required until Autosize is implemented
+      {btnList[I].Width:= label1.Canvas.TextExtent(btnList[I].Caption).cx
+      + btnList[I].Glyph.Width + 16;}
+      btnList[I].AutoSize := True;
+      btnList[I].Visible:= True;
+      //Application.ProcessMessages; currently not required. It may become
+      //necessary if Autosize is set, and width computed automagically. Maybe
+      //outside the loop (run just once)
+      ButtonPos:= ButtonPos + btnList[I].Width + 8;
+    end;
+  //textWidth:= label1.Canvas.TextExtent(Label1.Caption).cx;
+  //Label1.Width:= textWidth;
+  label1.AutoSize := True;
+  textWidth:= label1.Left + label1.Width;
+  RequiredWidth:= Max(textWidth,ButtonPos);
+  Width := RequiredWidth + 10;
+  Height:= btnList[0].Top + btnList[0].Height + 10;
+  end;
+  result := LazMessageDialog.ShowModal;
+  {$ifndef LCLCustomdrawn}LazMessageDialog.Release;{$endif}
+end;
+
+function LazMessageDlg(const aMsg: string; DlgType: TMsgDlgType;
+  Buttons: TMsgDlgButtons; HelpCtx: Longint): Integer;
+begin
+  result := LazMessageDlg('',aMsg,DlgType,Buttons,HelpCtx);
+end;
+
+{ TLazMessageDialog }
+
+constructor TLazMessageDialog.CreateNew(TheOwner: TComponent; Num: Integer = 0);
+begin
+  inherited CreateNew(TheOwner);
+  FormStyle:= fsStayOnTop;
+  Position:= poMainFormCenter;
+  Image1 := TImage.Create(Self);
+  Image1.Top:= 10;
+  Image1.Left:= 10;
+  Image1.Width:= 48;
+  Image1.Height:= 48;
+  Label1 := TStaticText.Create(Self);
+  Label1.Top:= Image1.Top;
+  Label1.Left:= Image1.Left + Image1.Width + 10;
+  Label1.Caption:= 'Label1';
+  Width:= Image1.Width + Label1.Width + 20;
+  Height:= Image1.Height + 20;
+end;
+
 
 end.
 

@@ -433,11 +433,6 @@ function dbgs(Kind: TBitBtnKind): string; overload;
 
 procedure Register;
 
-implementation
-
-uses
-  WSButtons;
-
 const
   BitBtnModalResults: array[TBitBtnKind] of TModalResult = (
     0, mrOK, mrCancel, 0, mrYes, mrNo,
@@ -464,6 +459,11 @@ const
 {idButtonYesToAll} 'btn_all',
 {idButtonNoToAll } 'btn_no'
   );
+
+implementation
+
+uses
+  WSButtons;
 
 function GetLCLDefaultBtnGlyph(Kind: TBitBtnKind): TGraphic;
 begin

@@ -455,7 +455,9 @@ begin
      end;
      X.MotionNotify:
      begin
-       TCDWSCustomForm.EvMouseMove(WindowEntry, CurWindowInfo, XEvent.xmotion);
+       repeat
+       until not XCheckTypedWindowEvent(FDisplay, XEvent.xmotion.window, X.MotionNotify, @XEvent);
+         TCDWSCustomForm.EvMouseMove(WindowEntry, CurWindowInfo, XEvent.xmotion);
      end;
      X.FocusIn:
      begin
@@ -499,7 +501,9 @@ begin
      end;
      X.ConfigureNotify:
      begin
-       TCDWSCustomForm.EvConfigureNotify(WindowEntry, CurWindowInfo, XEvent.xconfigure);
+       repeat
+       until not XCheckTypedWindowEvent(FDisplay, XEvent.xconfigure.window, X.NotifyPointer, @XEvent);
+         TCDWSCustomForm.EvConfigureNotify(WindowEntry, CurWindowInfo, XEvent.xconfigure);
      end;
      X.ClientMessage:
      begin

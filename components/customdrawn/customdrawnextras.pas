@@ -16,7 +16,7 @@ interface
 uses
   Classes, SysUtils, Graphics, Controls, LCLType, LCLIntf, IntfGraphics,
   Math, types, contnrs, componenteditors, LMessages, Messages,
-  LCLProc, PropEdits, ExtCtrls, ImgList, Forms, Menus,
+  LCLProc, PropEdits, ExtCtrls, ImgList, Forms, Menus, LResources,
   customdrawncontrols,
   // fpimage
   fpcanvas, fpimgcanv, fpimage
@@ -182,6 +182,7 @@ resourcestring
 
 procedure Register;
 begin
+  {$i paletteimg.lrs}
   RegisterComponents('Custom Drawn', [
     // Standard tab
     TCDButton, TCDEdit, TCDCheckBox, TCDRadioButton, TCDComboBox, TCDScrollBar, TCDGroupBox,
