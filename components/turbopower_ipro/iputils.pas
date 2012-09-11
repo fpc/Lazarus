@@ -41,7 +41,7 @@ uses
   GraphType,
   LCLIntf,
   LMessages,
-  FileUtil,
+  FileUtil, lazutf8classes,
   LCLProc,
   {$ELSE}
   Messages,
@@ -789,9 +789,9 @@ end;
 { Calculates the MD5 Digest of a file }
 function MD5SumOfFile(const FileName : string) : string;
 var
-  FileSt : TFileStream;
+  FileSt : TFileStreamUTF8;
 begin
-  FileSt := TFileStream.Create(UTF8ToSys(FileName), CrcFileMode);
+  FileSt := TFileStreamUTF8.Create(FileName, CrcFileMode);
   try
     Result := MD5SumOfStream(FileSt);
   finally
