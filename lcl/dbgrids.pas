@@ -2400,6 +2400,7 @@ end;
 procedure TCustomDBGrid.SelectEditor;
 var
   aEditor: TWinControl;
+  aMaxLen: integer;
 begin
   {$ifdef dbgDBGrid}
   DebugLn('TCustomDBGrid.SelectEditor INIT Editor=',dbgsname(editor));
@@ -2407,13 +2408,16 @@ begin
   if (FDatalink<>nil) and FDatalink.Active then begin
     inherited SelectEditor;
 
-    if (SelectedField is TStringField) then begin
-      if (Editor is TCustomEdit) then
-        TCustomEdit(Editor).MaxLength := SelectedField.Size
-      else
-      if (Editor is TCompositeCellEditor) then
-        TCompositeCellEditor(Editor).MaxLength := SelectedField.Size;
-    end;
+    if (SelectedField is TStringField) then
+      aMaxLen := SelectedField.Size
+    else
+      aMaxLen := 0;
+
+    if (Editor is TCustomEdit) then
+      TCustomEdit(Editor).MaxLength := aMaxLen
+    else
+    if (Editor is TCompositeCellEditor) then
+      TCompositeCellEditor(Editor).MaxLength := aMaxLen;
 
     if Assigned(OnSelectEditor) then begin
       aEditor:=Editor;
