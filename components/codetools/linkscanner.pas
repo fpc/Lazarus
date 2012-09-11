@@ -3972,6 +3972,26 @@ function TLinkScanner.CleanedPosToCursor(ACleanedPos: integer;
       'TLinkScanner.CleanedPosToCursor Consistency-Error '+IntToStr(i));
   end;
 
+  procedure ConsistencyCheckStart;
+  begin
+    raise Exception.Create(
+      'TLinkScanner.CleanedPosToCursor Consistency-Error no start link with code found');
+  end;
+
+  procedure Found(LinkID: integer);
+  begin
+    ACode:=FLinks[LinkID].Code;
+    if ACode=nil then begin
+      repeat
+        dec(LinkID);
+        if LinkID<0 then
+          ConsistencyCheckStart;
+        ACode:=FLinks[LinkID].Code;
+      until ACode<>nil;
+    end;
+    ACursorPos:=ACleanedPos-FLinks[LinkID].CleanedPos+FLinks[LinkID].SrcPos;
+  end;
+
 var l,r,m: integer;
 begin
   Result:=(ACleanedPos>=1) and (ACleanedPos<=CleanedLen);
@@ -3987,14 +4007,12 @@ begin
         else if ACleanedPos>=FLinks[m+1].CleanedPos then
           l:=m+1
         else begin
-          ACode:=FLinks[m].Code;
-          ACursorPos:=ACleanedPos-FLinks[m].CleanedPos+FLinks[m].SrcPos;
+          Found(m);
           exit;
         end;
       end else begin
         if ACleanedPos>=FLinks[m].CleanedPos then begin
-          ACode:=FLinks[m].Code;
-          ACursorPos:=ACleanedPos-FLinks[m].CleanedPos+FLinks[m].SrcPos;
+          Found(m);
           exit;
         end else
           ConsistencyCheckI(2);

@@ -775,10 +775,6 @@ begin
   // clear old items
   CurFile.Clear;
 
-  // Display file name being processed
-  //StatusBar.SimpleText := aFileName;
-  //StatusBar.Repaint;
-
   Src:=Tool.Src;
   p:=1;
   NestedComment:=CodeToolBoss.GetNestedCommentsFlagForFile(Code.Filename);
