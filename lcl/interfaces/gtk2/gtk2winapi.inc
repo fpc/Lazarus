@@ -6079,7 +6079,7 @@ function TGtk2WidgetSet.GetWindowLong(Handle: HWND; int: Integer): PtrInt;
 
   function GetObjectData(Name: PChar): PtrInt;
   begin
-    Result := PtrInt(PtrUInt({%H-}g_object_get_data(PGObject(Handle),Name)));
+    Result := PtrInt({%H-}PtrUInt({%H-}g_object_get_data(PGObject(Handle),Name)));
   end;
 var
   WidgetInfo: PWidgetInfo;
@@ -7467,7 +7467,7 @@ begin
   RadioGroup := GetGroup;
 
   // Set new group
-  g_object_set_data({%H-}Pointer(hndMenu), GROUPIDX_DATANAME, Pointer(PtrInt(GroupIndex)));
+  g_object_set_data({%H-}Pointer(hndMenu), GROUPIDX_DATANAME, {%H-}Pointer(PtrInt(GroupIndex)));
   if RadioGroup = nil
   then begin
     // We're the only member, get a group
