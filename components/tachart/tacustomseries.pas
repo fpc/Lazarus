@@ -1014,8 +1014,8 @@ var
   pt: TPoint;
   sp: TDoublePoint;
 begin
-  Result := Count > 0;
-  AResults.FDist := MaxInt;
+  AResults.FDist := Sqr(AParams.FRadius) + 1;
+  AResults.FIndex := -1;
   for i := 0 to Count - 1 do begin
     sp := Source[i]^.Point;
     if IsNan(sp) then continue;
@@ -1024,12 +1024,13 @@ begin
     // an integer overflow, so ADistFunc should use saturation arithmetics.
     pt := ParentChart.GraphToImage(AxisToGraph(sp));
     dist := AParams.FDistFunc(AParams.FPoint, pt);
-    if (dist >= AResults.FDist) or (dist > Sqr(AParams.FRadius)) then continue;
+    if dist >= AResults.FDist then continue;
     AResults.FDist := dist;
     AResults.FIndex := i;
     AResults.FImg := pt;
-    AResults.FValue := DoublePoint(GetXValue(i), GetYValue(i));
+    AResults.FValue := sp;
   end;
+  Result := AResults.FIndex >= 0;
 end;
 
 function TBasicPointSeries.GetXRange(AX: Double; AIndex: Integer): Double;
