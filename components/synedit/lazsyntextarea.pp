@@ -1644,11 +1644,12 @@ var
       end;
     end;
 
-
+    {$IFnDEF LCLGTK2}
     if (ATokenInfo.PhysicalStart <> ATokenInfo.PhysicalPaintStart) or
        (ATokenInfo.PhysicalEnd <> ATokenInfo.PhysicalPaintEnd)
     then
       TxtFlags := TxtFlags + ETO_CLIPPED;
+    {$ENDIF}
 
     tok := rcToken;
     if rcToken.Right > nRightEdge + 1 then
