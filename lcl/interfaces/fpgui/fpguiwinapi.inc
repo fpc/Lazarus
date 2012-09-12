@@ -469,6 +469,65 @@ begin
   Result:=true;
 end;
 
+{ Most of the functionality is implemented. As described in MSDN:
+  http://msdn.microsoft.com/en-us/library/windows/desktop/ms645505%28v=vs.85%29.aspx }
+function TFpGuiWidgetSet.MessageBox(hWnd: HWND; lpText, lpCaption: PChar;
+  uType: Cardinal): integer;
+var
+  Str: AnsiString;
+  TitleStr: AnsiString;
+  Buttons : TfpgMsgDlgButtons;
+  BtnType: Cardinal;
+  DlgType: Cardinal;
+begin
+  BtnType := (uType and $0000000F); { mask the button type }
+
+  if (BtnType = MB_OKCANCEL) then
+    Buttons := mbOKCancel
+  else
+  if (BtnType = MB_ABORTRETRYIGNORE) then
+    Buttons := mbAbortRetryIgnore
+  else
+  if (BtnType = MB_YESNOCANCEL) then
+    Buttons := mbYesNoCancel
+  else
+  if (BtnType = MB_YESNO) then
+    Buttons := mbYesNo
+  else
+  if (BtnType = MB_RETRYCANCEL) then
+    Buttons := [mbRetry, mbCancel]
+  else
+  if (BtnType = MB_CANCELTRYCONTINUE) then
+    Buttons := mbAbortRetryIgnore
+  else
+    Buttons := [mbOK];
+
+  { shoud we had a Help button too? - again as per MSDN }
+  if (uType and MB_HELP) = MB_HELP then
+    Include(Buttons, mbHelp);
+
+  Str := lpText;
+  TitleStr := lpCaption;
+  if lpCaption = nil then
+    TitleStr := 'Error'; // as per MSDN
+
+  DlgType := (uType and $000000F0); { mask the dialog type }
+
+  if (DlgType and MB_ICONINFORMATION) = MB_ICONINFORMATION then
+    TfpgMessageDialog.Information(TitleStr, Str, Buttons)
+  else
+  if (DlgType and MB_ICONWARNING) = MB_ICONWARNING then
+    TfpgMessageDialog.Warning(TitleStr, Str, Buttons)
+  else
+  if (DlgType and MB_ICONQUESTION) = MB_ICONQUESTION then
+    TfpgMessageDialog.Question(TitleStr, Str, Buttons)
+  else
+  if (DlgType and MB_ICONERROR) = MB_ICONERROR then
+    TfpgMessageDialog.Critical(TitleStr, Str, Buttons)
+  else
+    TfpgMessageDialog.Information(TitleStr, Str, Buttons);
+end;
+
 function TFpGuiWidgetSet.Rectangle(DC: HDC; X1, Y1, X2, Y2: Integer): Boolean;
 var
   ADC: TFpGuiDeviceContext absolute DC;
