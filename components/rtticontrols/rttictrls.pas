@@ -892,6 +892,7 @@ Type
     FLink: TPropertyLink;
     procedure SetLink(const AValue: TPropertyLink);
   protected
+    function GetLabelText: string; override;
     procedure LinkLoadFromProperty(Sender: TObject); virtual;
   public
     constructor Create(TheOwner: TComponent); override;
@@ -2581,6 +2582,20 @@ procedure TTICustomLabel.SetLink(const AValue: TPropertyLink);
 begin
   if FLink=AValue then exit;
   FLink.Assign(AValue);
+end;
+
+function TTICustomLabel.GetLabelText: string;
+begin
+  Result := inherited GetLabelText;
+  if csDesigning in ComponentState then begin
+    // At design-time show PropertyName or Name in caption,
+    // otherwise it would stay empty when TIObject is not set.
+    if Result = '' then begin
+      Result := FLink.TIPropertyName;      // FLink.GetAsText gives an error
+      if Result = '' then
+        Result := Name;
+    end;
+  end;
 end;
 
 procedure TTICustomLabel.LinkLoadFromProperty(Sender: TObject);
