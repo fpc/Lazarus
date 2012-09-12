@@ -90,6 +90,7 @@ begin
   CleanDirectoryDialog.LoadSettings;
   AddToRecentList(DefaultDirectory,CleanDirectoryDialog.DirCombobox.Items,20,rltFile);
   CleanDirectoryDialog.DirComboBox.ItemIndex:=0;
+  CleanDirectoryDialog.DirComboBox.Text:=DefaultDirectory;
   Result:=CleanDirectoryDialog.ShowModal;
   CleanDirectoryDialog.Free;
 end;
