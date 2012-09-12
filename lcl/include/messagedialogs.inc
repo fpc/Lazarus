@@ -86,7 +86,10 @@ const
     idButtonClose);
 
   DialogResults : Array[idButtonOK..idButtonNoToAll] of TModalResult = (
-    mrOk, mrCancel, mrNone{Help}, mrYes, mrNo, mrClose, mrAbort, mrRetry,
+    mrOk, mrCancel,
+    mrNone{Help - when a mbHelp button is pressed the help system is started,
+                  the dialog does not close },
+    mrYes, mrNo, mrClose, mrAbort, mrRetry,
     mrIgnore, mrAll, mrYesToAll, mrNoToAll);
 
   ButtonResults : Array[mrNone..mrClose] of Longint = (
