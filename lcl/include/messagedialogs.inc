@@ -128,7 +128,7 @@ begin
 end;
 
 function MessageDlg(const aMsg: string; DlgType: TMsgDlgType;
-  Buttons: TMsgDlgButtons; HelpCtx: Longint): Integer;
+  Buttons: TMsgDlgButtons; HelpCtx: Longint): TModalResult;
 var
   DefaultIndex,
   CancelValue,
@@ -143,7 +143,7 @@ begin
 end;
 
 function MessageDlg(const aCaption, aMsg: string; DlgType: TMsgDlgType;
-  Buttons: TMsgDlgButtons; HelpCtx: Longint): Integer;
+  Buttons: TMsgDlgButtons; HelpCtx: Longint): TModalResult;
 var
   DefaultIndex,
   CancelValue,
@@ -158,7 +158,7 @@ begin
 end;
 
 function MessageDlg(const aCaption, aMsg: string; DlgType: TMsgDlgType;
-            Buttons: TMsgDlgButtons; HelpCtx: Longint; DefaultButton: TMsgDlgBtn): Integer;
+  Buttons: TMsgDlgButtons; HelpCtx: Longint; DefaultButton: TMsgDlgBtn): TModalResult;
 var
   DefaultIndex,
   CancelValue,
@@ -173,14 +173,14 @@ begin
 end;
 
 function MessageDlg(const aCaption, aMsg: string; DlgType: TMsgDlgType;
-  Buttons: TMsgDlgButtons; const HelpKeyword: string): Integer;
+  Buttons: TMsgDlgButtons; const HelpKeyword: string): TModalResult;
 begin
   // TODO: handle HelpKeyword
   Result:=MessageDlg(aCaption, aMsg, DlgType, Buttons, 0);
 end;
 
 function MessageDlgPos(const aMsg: String; DlgType: TMsgDlgType;
-  Buttons: TMsgDlgButtons; Helpctx : Longint; X,Y : Integer): Integer;
+  Buttons: TMsgDlgButtons; Helpctx : Longint; X,Y : Integer): TModalResult;
 var
   DefaultIndex,
   CancelValue,
@@ -196,7 +196,7 @@ end;
 
 function MessageDlgPosHelp(const aMsg: string; DlgType: TMsgDlgType;
   Buttons: TMsgDlgButtons; HelpCtx: Longint; X, Y: Integer;
-  const HelpFileName: string): Integer;
+  const HelpFileName: string): TModalResult;
 begin
   DebugLn ('MessageDlgPosHelp ****** NOT YET FULLY IMPLEMENTED ********');
 //TODO: set helpcontext and helpfile

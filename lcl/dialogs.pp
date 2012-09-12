@@ -492,18 +492,18 @@ var
 { MessageDlg }
 
 function MessageDlg(const aMsg: string; DlgType: TMsgDlgType;
-            Buttons: TMsgDlgButtons; HelpCtx: Longint): Integer;
+            Buttons: TMsgDlgButtons; HelpCtx: Longint): TModalResult;
 function MessageDlg(const aCaption, aMsg: string; DlgType: TMsgDlgType;
-            Buttons: TMsgDlgButtons; HelpCtx: Longint): Integer;
+            Buttons: TMsgDlgButtons; HelpCtx: Longint): TModalResult;
 function MessageDlg(const aCaption, aMsg: string; DlgType: TMsgDlgType;
-            Buttons: TMsgDlgButtons; HelpCtx: Longint; DefaultButton: TMsgDlgBtn): Integer;
+            Buttons: TMsgDlgButtons; HelpCtx: Longint; DefaultButton: TMsgDlgBtn): TModalResult;
 function MessageDlg(const aCaption, aMsg: string; DlgType: TMsgDlgType;
-            Buttons: TMsgDlgButtons; const HelpKeyword: string): Integer;
+            Buttons: TMsgDlgButtons; const HelpKeyword: string): TModalResult;
 function MessageDlgPos(const aMsg: string; DlgType: TMsgDlgType;
-            Buttons: TMsgDlgButtons; HelpCtx: Longint; X, Y: Integer): Integer;
+            Buttons: TMsgDlgButtons; HelpCtx: Longint; X, Y: Integer): TModalResult;
 function MessageDlgPosHelp(const aMsg: string; DlgType: TMsgDlgType;
             Buttons: TMsgDlgButtons; HelpCtx: Longint; X, Y: Integer;
-            const HelpFileName: string): Integer;
+            const HelpFileName: string): TModalResult;
 function CreateMessageDialog(const Msg: string; DlgType: TMsgDlgType;
             Buttons: TMsgDlgButtons): TForm;
 function QuestionDlg(const aCaption, aMsg: string; DlgType: TMsgDlgType;
