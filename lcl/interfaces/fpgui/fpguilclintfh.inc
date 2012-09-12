@@ -47,7 +47,11 @@ function FontCanUTF8(Font: HFont): boolean; override;
 
 {function GetAcceleratorString(const AVKey: Byte; const AShiftState: TShiftState): String; override;
 function GetControlConstraints(Constraints: TObject): boolean; override;
-
+}
+function PromptUser(const DialogCaption, DialogMessage: String; DialogType: longint;
+   Buttons: PLongint; ButtonCount, DefaultIndex, EscapeResult: Longint): Longint;
+   override;
+{
 function RawImage_CreateBitmaps(const ARawImage: TRawImage; out ABitmap, AMask: HBitmap; ASkipMask: Boolean = False): Boolean; override;
 function RawImage_DescriptionFromBitmap(ABitmap: HBITMAP; out ADesc: TRawImageDescription): Boolean; override;
 function RawImage_DescriptionFromDevice(ADC: HDC; out ADesc: TRawImageDescription): Boolean; override;

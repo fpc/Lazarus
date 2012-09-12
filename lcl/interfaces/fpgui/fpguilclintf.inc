@@ -29,6 +29,26 @@
 
 //##apiwiz##sps##   // Do not remove
 
+const
+  IdButtonToFPGuiStandardButton: array[idButtonOK..idButtonShield] of TfpgMsgDlgBtn = (
+ { idButtonOk       } mbOK,
+ { idButtonCancel   } mbCancel,
+ { idButtonHelp     } mbHelp,
+ { idButtonYes      } mbYes,
+ { idButtonNo       } mbNo,
+ { idButtonClose    } mbClose,
+ { idButtonAbort    } mbAbort,
+ { idButtonRetry    } mbRetry,
+ { idButtonIgnore   } mbIgnore,
+ { idButtonAll      } mbAll,
+ { idButtonYesToAll } mbYesToAll,
+ { idButtonNoToAll  } mbNoToAll,
+ { idButtonOpen     } mbNoButton,
+ { idButtonSave     } mbNoButton,
+ { idButtonShield   } mbNoButton
+  );
+
+
 {------------------------------------------------------------------------------
   function FontCanUTF8(Font: HFont): boolean;
 
@@ -39,6 +59,65 @@
 function TFpGuiWidgetSet.FontCanUTF8(Font: HFont): boolean;
 begin
   Result := True;
+end;
+
+function TFpGuiWidgetSet.PromptUser(const DialogCaption, DialogMessage: String;
+  DialogType: longint; Buttons: PLongint; ButtonCount, DefaultIndex,
+  EscapeResult: Longint): Longint;
+var
+  btns: TfpgMsgDlgButtons;
+  BtnIdx, BtnID: LongInt;
+  ResultBtn: TfpgMsgDlgBtn;
+
+  function ResponseMappingfpGUItoLCL(const AResultBtn: TfpgMsgDlgBtn): Integer;
+  begin
+    { LCL is so confusing with modal results, button types, button results and
+      Integer/LongInt as possible return results in various location is the
+      LCL. I based the following mapping on trial-and-error with LCL-GTK2, and
+      a best guess. }
+    case AResultBtn of
+      mbNoButton:   Result := idButtonBase; // ???
+      mbOK:         Result := idButtonOK;
+      mbCancel:     Result := idButtonCancel;
+      mbYes:        Result := idButtonYes;
+      mbNo:         Result := idButtonNo;
+      mbAbort:      Result := idButtonAbort;
+      mbRetry:      Result := idButtonRetry;
+      mbIgnore:     Result := idButtonIgnore;
+      mbAll:        Result := idButtonAll;
+      mbNoToAll:    Result := idButtonNoToAll;
+      mbYesToAll:   Result := idButtonYesToAll;
+      mbHelp:       Result := idButtonHelp;
+      mbClose:      Result := idButtonClose;
+    end;
+  end;
+
+begin
+  ResultBtn := mbOK;
+  btns := [];
+  for BtnIdx := 0 to ButtonCount-1 do
+  begin
+    BtnID := Buttons[BtnIdx];
+    if (BtnID >= Low(IdButtonToFPGuiStandardButton)) and
+       (BtnID <= High(IdButtonToFPGuiStandardButton)) and
+       (IdButtonToFPGuiStandardButton[BtnID] <> mbNoButton) then
+      Include(btns, IdButtonToFPGuiStandardButton[BtnID])
+    else
+      btns := [mbOK];
+  end;
+
+  case DialogType of
+    idDialogWarning: ResultBtn := TfpgMessageDialog.Warning(DialogCaption, DialogMessage, btns);
+    idDialogError: ResultBtn := TfpgMessageDialog.Critical(DialogCaption, DialogMessage, btns);
+    idDialogInfo: ResultBtn :=TfpgMessageDialog.Information(DialogCaption, DialogMessage, btns);
+    idDialogConfirm: ResultBtn := TfpgMessageDialog.Question(DialogCaption, DialogMessage, btns);
+    else
+    begin
+      fpg_dialogs.ShowMessage(DialogMessage, DialogCaption);
+    end;
+  end;
+
+  Result := ResponseMappingfpGUItoLCL(ResultBtn);
 end;
 
 {------------------------------------------------------------------------------
