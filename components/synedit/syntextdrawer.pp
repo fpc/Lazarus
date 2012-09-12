@@ -67,8 +67,8 @@ unit SynTextDrawer;
 interface
 
 uses
-  LCLProc, LCLType, LCLIntf, GraphType,
-  SysUtils, Classes, Graphics, GraphUtil, Types, SynEditTypes, SynEditMiscProcs;
+  LCLProc, LCLType, LCLIntf, GraphType, SysUtils, Classes, Graphics, GraphUtil, Types,
+  SynEditTypes, SynEditMiscProcs, LazSynEditText;
 
 type
   TheStockFontPatterns = 0..(1 shl (1 + Ord(High(TFontStyle))));
@@ -173,6 +173,16 @@ type
     property IsTrueType: Boolean read GetIsTrueType;
   end;
 
+  { TEtoBuffer }
+
+  TEtoBuffer = class
+  public
+    EtoData: Array of Integer;
+    function  Eto: PInteger;
+    function  Len: Integer;
+    procedure Clear;
+    procedure SetMinLength(ALen: Integer);
+  end;
   { TheTextDrawer }
   EheTextDrawerException = class(Exception);
 
@@ -190,8 +200,8 @@ type
 
     // current font and properties
     FCrntFont: HFONT;
-    FETODist: Pointer;
-    FETOSizeInChar: Integer;
+    FEtoInitLen: Integer;
+    FEto: TEtoBuffer;
 
     // current font attributes
     FColor: TColor;
@@ -206,6 +216,7 @@ type
 
     FOnFontChangedHandlers: TMethodList;
     FOnFontChangedLock: Integer;
+    function GetEto: TEtoBuffer;
   protected
     procedure ReleaseETODist; virtual;
     procedure AfterStyleSet; virtual;
@@ -227,8 +238,13 @@ type
     procedure TextOut(X, Y: Integer; Text: PChar; Length: Integer); virtual;
     procedure ExtTextOut(X, Y: Integer; fuOptions: UINT; const ARect: TRect;
       Text: PChar; Length: Integer; FrameBottom: Integer = -1); virtual;
+    procedure NewTextOut(X, Y: Integer; fuOptions: UINT; const ARect: TRect;
+      Text: PChar; Length: Integer; AnEto: TEtoBuffer);
+    procedure DrawFrame(const ARect: TRect);
     procedure ForceNextTokenWithEto;
+    function  NeedsEto: boolean;
     procedure DrawLine(X, Y, X2, Y2: Integer; AColor: TColor);
+    procedure FillRect(const aRect: TRect);
     procedure SetBaseFont(Value: TFont); virtual;
     procedure SetBaseStyle(const Value: TFontStyles); virtual;
     procedure SetStyle(Value: TFontStyles); virtual;
@@ -246,6 +262,7 @@ type
     procedure RegisterOnFontChangeHandler(AHandlerProc: TNotifyEvent);
     procedure UnRegisterOnFontChangeHandler(AHandlerProc: TNotifyEvent);
 
+    property Eto: TEtoBuffer read GetEto;
     property CharWidth: Integer read GetCharWidth;
     property CharHeight: Integer read GetCharHeight;
     property BaseFont: TFont write SetBaseFont;
@@ -366,6 +383,34 @@ begin
   for item := low (TFontStyle) to high(TFontStyle) do
     if item in Value then
       result := result + 1 shl ord(item);
+end;
+
+{ TEtoBuffer }
+
+function TEtoBuffer.Eto: PInteger;
+begin
+  if Length(EtoData) > 0 then
+    Result := PInteger(@EtoData[0])
+  else
+    Result := nil;
+end;
+
+function TEtoBuffer.Len: Integer;
+begin
+  Result := Length(EtoData);
+end;
+
+procedure TEtoBuffer.Clear;
+begin
+  SetLength(EtoData, 0);
+end;
+
+procedure TEtoBuffer.SetMinLength(ALen: Integer);
+const
+  EtoBlockSize = $80;
+begin
+  if Length(EtoData) >= ALen then exit;
+  SetLength(EtoData, ((not (EtoBlockSize - 1)) and ALen) + EtoBlockSize);
 end;
 
 { TheFontsInfoManager }
@@ -889,6 +934,7 @@ var
 begin
   inherited Create;
 
+  FEto := TEtoBuffer.Create;
   FFontStock := TheFontStock.Create(ABaseFont);
   FCalcExtentBaseStyle := CalcExtentBaseStyle;
   SetBaseFont(ABaseFont);
@@ -910,6 +956,7 @@ begin
   FreeANdNil(FOnFontChangedHandlers);
   FFontStock.Free;
   ReleaseETODist;
+  FreeAndNil(FEto);
 
   inherited;
 end;
@@ -957,14 +1004,15 @@ end;
 //    SetFrameStyle(Side, AValue);
 //end;
 
+function TheTextDrawer.GetEto: TEtoBuffer;
+begin
+  Result := FEto;
+  FEtoInitLen := 0;
+end;
+
 procedure TheTextDrawer.ReleaseETODist;
 begin
-  if Assigned(FETODist) then
-  begin
-    FETOSizeInChar := 0;
-    FreeMem(FETODist);
-    FETODist := nil;
-  end;
+  FEto.Clear;
 end;
 
 procedure TheTextDrawer.BeginDrawing(DC: HDC);
@@ -1118,7 +1166,7 @@ begin
   if FCharExtra <> Value then
   begin
     FCharExtra := Value;
-    FETOSizeInChar := 0;
+    FEtoInitLen := 0;
   end;
 end;
 
@@ -1132,24 +1180,13 @@ procedure TheTextDrawer.ExtTextOut(X, Y: Integer; fuOptions: UINT;
   const ARect: TRect; Text: PChar; Length: Integer; FrameBottom: Integer = -1);
 
   procedure InitETODist(InitValue: Integer);
-  const
-    EtoBlockSize = $40;
   var
-    NewSize: Integer;
-    TmpLen: Integer;
-    p: PInteger;
     i: Integer;
   begin
-    TmpLen := ((not (EtoBlockSize - 1)) and Length) + EtoBlockSize;
-    NewSize := TmpLen * SizeOf(Integer);
-    ReallocMem(FETODist, NewSize);
-    p := PInteger(FETODist + (FETOSizeInChar * SizeOf(Integer)));
-    for i := 1 to TmpLen - FETOSizeInChar do
-    begin
-      p^ := InitValue;
-      Inc(p);
-    end;
-    FETOSizeInChar := TmpLen;
+    FEto.SetMinLength(Length);
+    for i := FEtoInitLen to FEto.Len-1 do
+      FEto.EtoData[i] := InitValue;
+    FEtoInitLen := FEto.Len;
   end;
 
   function HasFrame: Boolean;
@@ -1162,23 +1199,10 @@ procedure TheTextDrawer.ExtTextOut(X, Y: Integer; fuOptions: UINT;
     Result := False;
   end;
 
-const
-  WaveRadius = 3;
-const
-  PenStyle: array[TSynLineStyle] of LongWord = (
- { slsSolid  } PS_SOLID,
- { slsDashed } PS_DASH,
- { slsDotted } PS_DOT,
- { slsWaved  } PS_SOLID // we draw a wave using solid pen
-  );
 var
   NeedDistArray: Boolean;
   DistArray: PInteger;
-  Pen, OldPen: HPen;
-  old: TPoint;
-  Side: TLazSynBorderSide;
-  LastColor: TColor;
-  LastStyle: LongWord;
+  RectFrame: TRect;
 begin
   if HasFrame then // draw background // TODO: only if not default bg color
   begin
@@ -1187,75 +1211,10 @@ begin
       fuOptions := fuOptions - ETO_OPAQUE;
     fuOptions := 0;
 
-    if FrameBottom < 0 then
-      FrameBottom := ARect.Bottom;
-
-    OldPen := 0;
-    LastColor := clNone;
-    LastStyle := PS_NULL;
-    for Side := Low(TLazSynBorderSide) to High(TLazSynBorderSide) do
-    begin
-      if FFrameColor[Side] <> clNone then
-      begin
-        if (OldPen = 0) or (FFrameColor[Side] <> LastColor) or
-           (PenStyle[FFrameStyle[Side]] <> LastStyle) then
-        begin
-          LastColor := FFrameColor[Side];
-          LastStyle := PenStyle[FFrameStyle[Side]];
-          if OldPen <> 0 then
-            DeleteObject(SelectObject(FDC, OldPen));
-          Pen := CreateColorPen(LastColor, LastStyle);
-          OldPen := SelectObject(FDC, Pen);
-        end;
-
-        case Side of
-          bsLeft:
-            begin
-              MoveToEx(FDC, ARect.Left, ARect.Top, @old);
-              if FFrameStyle[Side] = slsWaved then
-                WaveTo(FDC, ARect.Left, FrameBottom, WaveRadius)
-              else
-                LineTo(FDC, ARect.Left, FrameBottom);
-            end;
-          bsTop:
-            begin
-              MoveToEx(FDC, ARect.Left, ARect.Top, @old);
-              if FFrameStyle[Side] = slsWaved then
-                WaveTo(FDC, ARect.Right, ARect.Top, WaveRadius)
-              else
-                LineTo(FDC, ARect.Right, ARect.Top);
-            end;
-          bsRight:
-            begin
-              if FFrameStyle[Side] = slsWaved then
-              begin
-                MoveToEx(FDC, ARect.Right - WaveRadius, ARect.Top, @old);
-                WaveTo(FDC, ARect.Right - WaveRadius, FrameBottom, WaveRadius)
-              end
-              else
-              begin
-                MoveToEx(FDC, ARect.Right - 1, ARect.Top, @old);
-                LineTo(FDC, ARect.Right - 1, FrameBottom);
-              end;
-            end;
-          bsBottom:
-            begin
-              if FFrameStyle[Side] = slsWaved then
-              begin
-                MoveToEx(FDC, ARect.Left, FrameBottom - WaveRadius, @old);
-                WaveTo(FDC, ARect.Right, FrameBottom - WaveRadius, WaveRadius)
-              end
-              else
-              begin
-                MoveToEx(FDC, ARect.Left, FrameBottom - 1, @old);
-                LineTo(FDC, ARect.Right, FrameBottom - 1);
-              end;
-            end;
-        end;
-        MoveToEx(FDC, ARect.Left, ARect.Top, @old);
-      end;
-    end;
-    DeleteObject(SelectObject(FDC, OldPen));
+    RectFrame := ARect;
+    if FrameBottom >= 0 then
+      RectFrame.Bottom := FrameBottom;
+    DrawFrame(RectFrame);
   end;
 
   NeedDistArray:= ForceEto or (FCharExtra <> 0) or
@@ -1263,9 +1222,9 @@ begin
   ForceEto := False;
   //DebugLn(['TheTextDrawer.ExtTextOut NeedDistArray=',NeedDistArray]);
   if NeedDistArray then begin
-    if (FETOSizeInChar < Length) then
+    if (FEtoInitLen < Length) then
      InitETODist(GetCharWidth);
-    DistArray:=PInteger(FETODist);
+    DistArray := FEto.Eto;
   end else begin
     DistArray:=nil;
   end;
@@ -1275,9 +1234,115 @@ begin
     LCLIntf.ExtTextOut(FDC, X, Y, fuOptions, @ARect, Text, Length, DistArray);
 end;
 
+procedure TheTextDrawer.NewTextOut(X, Y: Integer; fuOptions: UINT; const ARect: TRect;
+  Text: PChar; Length: Integer; AnEto: TEtoBuffer);
+var
+  EtoArray: PInteger;
+begin
+  if AnEto <> nil then
+    EtoArray := AnEto.Eto
+  else
+    EtoArray := nil;
+
+  if UseUTF8 then
+    LCLIntf.ExtUTF8Out(FDC, X, Y, fuOptions, @ARect, Text, Length, EtoArray)
+  else
+    LCLIntf.ExtTextOut(FDC, X, Y, fuOptions, @ARect, Text, Length, EtoArray);
+
+end;
+
+procedure TheTextDrawer.DrawFrame(const ARect: TRect);
+const
+  WaveRadius = 3;
+  PenStyle: array[TSynLineStyle] of LongWord = (
+ { slsSolid  } PS_SOLID,
+ { slsDashed } PS_DASH,
+ { slsDotted } PS_DOT,
+ { slsWaved  } PS_SOLID // we draw a wave using solid pen
+  );
+var
+  Pen, OldPen: HPen;
+  old: TPoint;
+  Side: TLazSynBorderSide;
+  LastColor: TColor;
+  LastStyle: LongWord;
+begin
+  OldPen := 0;
+  LastColor := clNone;
+  LastStyle := PS_NULL;
+  for Side := Low(TLazSynBorderSide) to High(TLazSynBorderSide) do
+  begin
+    if FFrameColor[Side] <> clNone then
+    begin
+      if (OldPen = 0) or (FFrameColor[Side] <> LastColor) or
+         (PenStyle[FFrameStyle[Side]] <> LastStyle) then
+      begin
+        LastColor := FFrameColor[Side];
+        LastStyle := PenStyle[FFrameStyle[Side]];
+        if OldPen <> 0 then
+          DeleteObject(SelectObject(FDC, OldPen));
+        Pen := CreateColorPen(LastColor, LastStyle);
+        OldPen := SelectObject(FDC, Pen);
+      end;
+
+      case Side of
+        bsLeft:
+          begin
+            MoveToEx(FDC, ARect.Left, ARect.Top, @old);
+            if FFrameStyle[Side] = slsWaved then
+              WaveTo(FDC, ARect.Left, ARect.Bottom, WaveRadius)
+            else
+              LineTo(FDC, ARect.Left, ARect.Bottom);
+          end;
+        bsTop:
+          begin
+            MoveToEx(FDC, ARect.Left, ARect.Top, @old);
+            if FFrameStyle[Side] = slsWaved then
+              WaveTo(FDC, ARect.Right, ARect.Top, WaveRadius)
+            else
+              LineTo(FDC, ARect.Right, ARect.Top);
+          end;
+        bsRight:
+          begin
+            if FFrameStyle[Side] = slsWaved then
+            begin
+              MoveToEx(FDC, ARect.Right - WaveRadius, ARect.Top, @old);
+              WaveTo(FDC, ARect.Right - WaveRadius, ARect.Bottom, WaveRadius)
+            end
+            else
+            begin
+              MoveToEx(FDC, ARect.Right - 1, ARect.Top, @old);
+              LineTo(FDC, ARect.Right - 1, ARect.Bottom);
+            end;
+          end;
+        bsBottom:
+          begin
+            if FFrameStyle[Side] = slsWaved then
+            begin
+              MoveToEx(FDC, ARect.Left, ARect.Bottom - WaveRadius, @old);
+              WaveTo(FDC, ARect.Right, ARect.Bottom - WaveRadius, WaveRadius)
+            end
+            else
+            begin
+              MoveToEx(FDC, ARect.Left, ARect.Bottom - 1, @old);
+              LineTo(FDC, ARect.Right, ARect.Bottom - 1);
+            end;
+          end;
+      end;
+      MoveToEx(FDC, ARect.Left, ARect.Top, @old);
+    end;
+  end;
+  DeleteObject(SelectObject(FDC, OldPen));
+end;
+
 procedure TheTextDrawer.ForceNextTokenWithEto;
 begin
   ForceEto := True;
+end;
+
+function TheTextDrawer.NeedsEto: boolean;
+begin
+  Result := (FCharExtra <> 0) or (FBaseCharWidth <> FFontStock.CharAdvance) or FFontStock.NeedETO;
 end;
 
 procedure TheTextDrawer.DrawLine(X, Y, X2, Y2: Integer; AColor: TColor);
@@ -1290,6 +1355,11 @@ begin
   MoveToEx(FDC, X, Y, @old);
   LineTo(FDC, X2, Y2);
   DeleteObject(SelectObject(FDC, OldPen));
+end;
+
+procedure TheTextDrawer.FillRect(const aRect: TRect);
+begin
+  InternalFillRect(FDC, aRect);
 end;
 
 procedure TheTextDrawer.ReleaseTemporaryResources;

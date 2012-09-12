@@ -2,6 +2,8 @@ unit LazSynTextArea;
 
 {$mode objfpc}{$H+}
 
+{off $DEFINE SynUseOldDrawer}
+
 interface
 
 uses
@@ -11,6 +13,57 @@ uses
 
 
 type
+
+  TLazSynDisplayTokenInfoEx = record
+    Tk: TLazSynDisplayTokenInfo;
+    LogicalStart: Integer;  // 1 based. First char in line starts at 1 (This is Bytes not Chars)
+    LogicalEnd: Integer;    // 1 based. First char in line ends after char // NextChar-Start
+    PhysicalStart: Integer; // 1 based Includes any half (from double-width) char, that overlaps, the PhysPaint borders
+    PhysicalEnd: Integer;   // 1 based
+    PhysicalPaintStart: Integer; // 1 based
+    PhysicalPaintEnd: Integer;   // 1 based
+    ExpandedExtraBytes: Integer;   // tab and space expansion
+    HasDoubleWidth: Boolean;
+    Attr: TSynSelectedColor;
+  end;
+
+  { TLazSynPaintTokenBreaker }
+
+  TLazSynPaintTokenBreaker = class
+  private
+    FBackgroundColor: TColor;
+    FDisplayView: TLazSynDisplayView;
+    FForegroundColor: TColor;
+    FLinesView:  TSynEditStrings;
+    FMarkupManager: TSynEditMarkupManager;
+    FCharWidths: TPhysicalCharWidths;
+    FFirstCol, FLastCol: integer;
+    FCurTxtLineIdx : Integer;
+
+    FCurViewToken: TLazSynDisplayTokenInfoEx;
+
+    FCurMarkupPhysPos, FNextMarkupPhysPos: Integer; // 1, -1
+    FMarkupTokenAttr: TSynSelectedColor;
+    FSpaceExtraByteCount: Integer;
+    FTabExtraByteCount: Integer;
+  public
+    constructor Create;
+    destructor Destroy; override;
+    procedure Prepare(ADisplayView: TLazSynDisplayView; ALinesView:  TSynEditStrings;
+                      AMarkupManager: TSynEditMarkupManager;
+                      AFirstCol, ALastCol: integer
+                     );
+    procedure SetHighlighterTokensLine(ALine: TLineIdx; out ARealLine: TLineIdx);
+    function  GetNextHighlighterTokenFromView(out ATokenInfo: TLazSynDisplayTokenInfoEx;
+                                              AMaxPhysEnd: Integer
+                                             ): Boolean;
+    function  GetNextHighlighterTokenEx(out ATokenInfo: TLazSynDisplayTokenInfoEx): Boolean;
+    property  CharWidths: TPhysicalCharWidths read FCharWidths;
+    property ForegroundColor: TColor read FForegroundColor write FForegroundColor;
+    property BackgroundColor: TColor read FBackgroundColor write FBackgroundColor;
+    property SpaceExtraByteCount: Integer read FSpaceExtraByteCount write FSpaceExtraByteCount;
+    property TabExtraByteCount: Integer read FTabExtraByteCount write FTabExtraByteCount;
+  end;
 
   { TLazSynTextArea }
 
@@ -27,6 +80,7 @@ type
     FTheLinesView: TSynEditStrings;
     FHighlighter: TSynCustomHighlighter;
     FMarkupManager: TSynEditMarkupManager;
+    FTokenBreaker: TLazSynPaintTokenBreaker;
     FPaintLineColor, FPaintLineColor2: TSynSelectedColor;
     FForegroundColor: TColor;
     FBackgroundColor: TColor;
@@ -156,6 +210,222 @@ type
 
 
 implementation
+
+{ TLazSynPaintTokenBreaker }
+
+constructor TLazSynPaintTokenBreaker.Create;
+begin
+  FCurViewToken.Attr := TSynSelectedColor.Create;
+  FMarkupTokenAttr := TSynSelectedColor.Create;
+  FTabExtraByteCount := 0;
+  FSpaceExtraByteCount := 0;
+end;
+
+destructor TLazSynPaintTokenBreaker.Destroy;
+begin
+  FreeAndNil(FCurViewToken.Attr);
+  FreeAndNil(FMarkupTokenAttr);
+  inherited Destroy;
+end;
+
+procedure TLazSynPaintTokenBreaker.Prepare(ADisplayView: TLazSynDisplayView;
+  ALinesView: TSynEditStrings; AMarkupManager: TSynEditMarkupManager; AFirstCol,
+  ALastCol: integer);
+begin
+  FDisplayView   := ADisplayView;
+  FLinesView     := ALinesView;
+  FMarkupManager := AMarkupManager;
+  FFirstCol      := AFirstCol;
+  FLastCol       := ALastCol;
+end;
+
+procedure TLazSynPaintTokenBreaker.SetHighlighterTokensLine(ALine: TLineIdx; out
+  ARealLine: TLineIdx);
+begin
+  FDisplayView.SetHighlighterTokensLine(ALine, ARealLine);
+  FCharWidths := FLinesView.GetPhysicalCharWidths(ARealLine);
+
+  FCurViewToken.Tk.TokenLength     := 0;
+  FCurViewToken.LogicalStart       := 1;
+  FCurViewToken.PhysicalStart      := 1;
+  FCurViewToken.PhysicalPaintStart := FFirstCol;
+
+  FCurMarkupPhysPos  := FFirstCol;
+  FNextMarkupPhysPos := -1;
+  FCurTxtLineIdx := ARealLine;
+end;
+
+function TLazSynPaintTokenBreaker.GetNextHighlighterTokenEx(out
+  ATokenInfo: TLazSynDisplayTokenInfoEx): Boolean;
+begin
+  if FCurMarkupPhysPos >= FNextMarkupPhysPos then
+    FNextMarkupPhysPos := FMarkupManager.GetNextMarkupColAfterRowCol(FCurTxtLineIdx+1, FCurMarkupPhysPos);
+
+  Result := GetNextHighlighterTokenFromView(ATokenInfo, FNextMarkupPhysPos);
+  if not Result then exit;
+
+  FCurMarkupPhysPos := ATokenInfo.PhysicalPaintEnd;
+
+
+  FMarkupTokenAttr.Assign(ATokenInfo.Attr);
+  FMarkupTokenAttr.CurrentStartX := ATokenInfo.PhysicalPaintStart; // current sub-token
+  FMarkupTokenAttr.CurrentEndX   := ATokenInfo.PhysicalPaintEnd-1;
+
+  fMarkupManager.MergeMarkupAttributeAtRowCol(FCurTxtLineIdx + 1,
+    ATokenInfo.PhysicalPaintStart, ATokenInfo.PhysicalPaintEnd-1, FMarkupTokenAttr);
+
+  ATokenInfo.Attr := FMarkupTokenAttr;
+  // Deal with equal colors
+  if (FMarkupTokenAttr.Background = FMarkupTokenAttr.Foreground) then begin // or if diff(gb,fg) < x
+    if FMarkupTokenAttr.Background = BackgroundColor then
+      FMarkupTokenAttr.Foreground := not(FMarkupTokenAttr.Background) and $00ffffff // or maybe ForegroundColor ?
+    else
+      FMarkupTokenAttr.Foreground := BackgroundColor;
+  end;
+
+  // Todo merge attribute
+
+end;
+
+function TLazSynPaintTokenBreaker.GetNextHighlighterTokenFromView(out
+  ATokenInfo: TLazSynDisplayTokenInfoEx; AMaxPhysEnd: Integer): Boolean;
+
+  procedure InitSynAttr(var ATarget: TSynSelectedColor; ASource: TSynHighlighterAttributes;
+    AnAttrStartX: Integer);
+  begin
+    ATarget.Clear;
+    if Assigned(ASource) then begin
+      ATarget.Assign(ASource);
+      if ATarget.Foreground = clNone then
+        ATarget.Foreground := ForegroundColor;
+      if ATarget.Background = clNone then
+        ATarget.Background := BackgroundColor;
+    end else
+    begin
+      ATarget.Foreground := ForegroundColor;
+      ATarget.Background := BackgroundColor;
+      ATarget.Style :=  []; // Font.Style; // currently always cleared
+    end;
+    ATarget.MergeFinalStyle := True;
+    ATarget.StyleMask  := [];
+    FCurViewToken.Attr.StartX := AnAttrStartX;
+    ATarget.EndX   := -1; //PhysicalStartPos + TokenCharLen - 1;
+  end;
+
+var
+  i, j, CharWidthsLen: Integer;
+  c: Char;
+  LogicIdx, LogicEnd, PhysPos: Integer;
+  PrevLogicIdx, PrevPhysPos: Integer;
+  TabExtra: Integer;
+  HasDouble: Boolean;
+begin
+  if (AMaxPhysEnd > FLastCol) or (AMaxPhysEnd < 0) then
+    AMaxPhysEnd := FLastCol;
+
+  Result := AMaxPhysEnd > FCurViewToken.PhysicalPaintStart;
+  if not Result then exit;
+
+  while True do begin
+    if FCurViewToken.Tk.TokenLength = 0 then begin
+      Result := FDisplayView.GetNextHighlighterToken(FCurViewToken.Tk);
+      if not Result then exit;
+      if FCurViewToken.Tk.TokenLength = 0 then continue; // // Todo: is SyncroEd-test a zero size token is returned
+      InitSynAttr(FCurViewToken.Attr, FCurViewToken.Tk.TokenAttr, FCurViewToken.PhysicalStart);
+      // Todo: concatenate with next token, if possible
+    end;
+
+    CharWidthsLen := Length(FCharWidths);
+    LogicIdx      := FCurViewToken.LogicalStart - 1;
+    LogicEnd := LogicIdx + FCurViewToken.Tk.TokenLength;
+
+    // SKip out of screen
+    while (LogicIdx < LogicEnd) and (FCurViewToken.PhysicalStart < FFirstCol) do begin
+      if LogicIdx >= CharWidthsLen
+      then j := 1
+      else j := FCharWidths[LogicIdx];
+
+      if FCurViewToken.PhysicalStart + j > FFirstCol then break;
+
+      inc(FCurViewToken.PhysicalStart, j);
+      repeat
+        inc(LogicIdx);
+      until (LogicIdx >= CharWidthsLen) or (FCharWidths[LogicIdx] <> 0);
+    end;
+
+    if LogicIdx <> FCurViewToken.LogicalStart - 1 then begin
+      j := (LogicIdx + 1 - FCurViewToken.LogicalStart);
+      FCurViewToken.Tk.TokenLength := FCurViewToken.Tk.TokenLength - j;
+      FCurViewToken.Tk.TokenStart  := FCurViewToken.Tk.TokenStart + j;
+      FCurViewToken.LogicalStart   := LogicIdx + 1;
+
+      if FCurViewToken.Tk.TokenLength = 0 then
+        continue;
+      assert(FCurViewToken.Tk.TokenLength > 0, 'FCurViewToken.Tk.TokenLength > 0');
+    end;
+
+    // Find end according to AMaxPhysEnd
+    LogicEnd := LogicIdx + FCurViewToken.Tk.TokenLength;
+    PhysPos       := FCurViewToken.PhysicalStart;
+    PrevLogicIdx := LogicIdx;
+    PrevPhysPos  := PhysPos;
+    HasDouble := False;
+    TabExtra      := 0; // Extra bytes needed for expanded Tab/Space(utf8 visible space/dot)
+    i := 0;
+
+    while (LogicIdx < LogicEnd) and (PhysPos < AMaxPhysEnd) do begin
+      if LogicIdx >= CharWidthsLen
+      then j := 1
+      else j := FCharWidths[LogicIdx];
+
+      PrevLogicIdx := LogicIdx;
+      PrevPhysPos  := PhysPos;
+      inc(PhysPos, j);
+      if j <> 0 then begin
+        c := (FCurViewToken.Tk.TokenStart + i)^;
+        if c = #9  then
+          inc(TabExtra, j-1 + FTabExtraByteCount)
+        else
+        if j > 1 then
+          HasDouble := True;
+        if c = ' ' then
+          inc(TabExtra, FSpaceExtraByteCount);
+      end;
+
+      repeat
+        inc(LogicIdx);
+        inc(i);
+      until (LogicIdx >= CharWidthsLen) or (FCharWidths[LogicIdx] <> 0);
+    end;
+    Assert(PhysPos > FCurViewToken.PhysicalStart, 'PhysPos > FCurViewToken.PhysicalStart');
+
+    ATokenInfo := FCurViewToken;
+    ATokenInfo.Tk.TokenLength   := LogicIdx + 1 - ATokenInfo.LogicalStart;
+    ATokenInfo.LogicalEnd       := LogicIdx + 1;
+    ATokenInfo.PhysicalEnd      := PhysPos;
+    ATokenInfo.PhysicalPaintEnd := Min(PhysPos, AMaxPhysEnd);
+    ATokenInfo.ExpandedExtraBytes := TabExtra;
+    ATokenInfo.HasDoubleWidth   := HasDouble;
+
+    if PhysPos > AMaxPhysEnd then begin      // Last char goes over paint boundary
+      LogicIdx := PrevLogicIdx;
+      PhysPos  := PrevPhysPos;
+    end
+    else
+      AMaxPhysEnd := PhysPos;
+    j := LogicIdx + 1 - FCurViewToken.LogicalStart;
+    FCurViewToken.Tk.TokenLength  := FCurViewToken.Tk.TokenLength - j;
+    FCurViewToken.Tk.TokenStart   := FCurViewToken.Tk.TokenStart + j;
+    FCurViewToken.LogicalStart    := LogicIdx + 1;
+    FCurViewToken.PhysicalStart   := PhysPos;
+    FCurViewToken.PhysicalPaintStart := AMaxPhysEnd;
+    assert(FCurViewToken.Tk.TokenLength >= 0, 'FCurViewToken.Tk.TokenLength >= 0');
+
+    if FCurViewToken.Tk.TokenLength = 0 then
+      ATokenInfo.Attr.EndX := PhysPos-1;
+    break;
+  end;
+end;
 
 { TLazSynSurfaceManager }
 
@@ -422,6 +692,7 @@ var
   i: TLazSynBorderSide;
 begin
   inherited Create(AOwner);
+  FTokenBreaker := TLazSynPaintTokenBreaker.Create;
   FTextDrawer := ATextDrawer;
   FTextDrawer.RegisterOnFontChangeHandler(@DoDrawerFontChanged);
   FPaintLineColor := TSynSelectedColor.Create;
@@ -438,6 +709,7 @@ end;
 
 destructor TLazSynTextArea.Destroy;
 begin
+  FreeAndNil(FTokenBreaker);
   FTextDrawer.UnRegisterOnFontChangeHandler(@DoDrawerFontChanged);
   FreeAndNil(FPaintLineColor);
   FreeAndNil(FPaintLineColor2);
@@ -621,6 +893,7 @@ var
   ExpandedPaintToken: string; // used to create the string sent to TextDrawer
   CharWidths: TPhysicalCharWidths;
 
+  {$IFDEF SynUseOldDrawer}
 { local procedures }
 
   procedure SetTokenAccuLength;
@@ -1191,13 +1464,311 @@ var
     DrawHiLightMarkupToken(nil, PChar(Pointer(Txt)), Length(Txt));
   end;
   {$ENDIF}
+  {$ENDIF}
+
+  {$IFnDEF SynUseOldDrawer}
+  var
+    LineBuffer: PChar;
+    LineBufferLen: Integer;
+
+  procedure DrawHiLightMarkupToken(ATokenInfo: TLazSynDisplayTokenInfoEx);
+  var
+    HasFrame: Boolean;
+    s: TLazSynBorderSide;
+    Attr: TSynSelectedColor;
+    TxtFlags: Integer;
+    tok: TRect;
+    NeedExpansion: Boolean;
+    c, i, j, k, e, Len, CWLen: Integer;
+    pl, pt: PChar;
+    Eto: TEtoBuffer;
+    TxtLeft: Integer;
+  begin
+    Attr := ATokenInfo.Attr;
+    FTextDrawer.SetForeColor(Attr.Foreground);
+    FTextDrawer.SetBackColor(Attr.Background);
+    FTextDrawer.SetStyle    (Attr.Style);
+    HasFrame := False;
+    for s := low(TLazSynBorderSide) to high(TLazSynBorderSide) do begin
+      HasFrame := HasFrame or (Attr.FrameSideColors[s] <> clNone);
+      FTextDrawer.FrameColor[s] := Attr.FrameSideColors[s];
+      FTextDrawer.FrameStyle[s] := Attr.FrameSideStyles[s];
+    end;
+
+    rcToken.Right := ScreenColumnToXValue(ATokenInfo.PhysicalPaintEnd); // +1
+    if rcToken.Right > AClip.Right then begin
+      rcToken.Right := AClip.Right;
+      FTextDrawer.FrameColor[bsRight] := clNone; // right side of char is not painted
+    end;
+
+    if (rcToken.Right <= rcToken.Left) then exit;
+    rcToken.Left := ScreenColumnToXValue(ATokenInfo.PhysicalPaintStart); // because for the first token, this can be middle of a char, and lead to wrong frame
+    TxtLeft := ScreenColumnToXValue(ATokenInfo.PhysicalStart); // because for the first token, this can be middle of a char, and lead to wrong frame
+
+    (* rcToken.Bottom may be less that crLine.Bottom. If a Divider was drawn, then RcToken will not contain it *)
+    TxtFlags := ETO_OPAQUE;
+
+    (* If token includes RightEdge, draw background, and edge first *)
+    if bDoRightEdge and (nRightEdge<rcToken.Right) and (nRightEdge>=rcToken.Left)
+    then begin
+      TxtFlags := 0;
+      if rcToken.Left < nRightEdge then begin
+        // draw background left of edge (use rcToken, so we do not delete the divider-draw-line)
+        tok := rcToken;
+        tok.Right := nRightEdge;
+        FTextDrawer.FillRect(tok);
+      end;
+      if rcToken.Right > nRightEdge then begin
+        // draw background right of edge (use rcLine, full height)
+        tok := rcToken;
+        tok.Left   := nRightEdge;
+        tok.Bottom := rcLine.Bottom;
+        FTextDrawer.FillRect(tok);
+      end;
+      // draw edge (use rcLine / rcToken may be reduced)
+      LCLIntf.MoveToEx(dc, nRightEdge, rcLine.Top, nil);
+      LCLIntf.LineTo  (dc, nRightEdge, rcLine.Bottom + 1);
+    end
+    else
+    if HasFrame then begin
+      (* Draw background for frame *)
+      TxtFlags := 0;
+      tok := rcToken;
+      if rcToken.Right > nRightEdge + 1 then
+        tok.Bottom := rcLine.Bottom;
+      FTextDrawer.FillRect(tok);
+    end;
+
+    if HasFrame then begin
+      // draw frame
+      tok := rcToken;
+      if rcToken.Right > nRightEdge + 1 then
+        tok.Bottom := rcLine.Bottom;
+      FTextDrawer.DrawFrame(tok);
+    end;
+
+    NeedExpansion := ATokenInfo.ExpandedExtraBytes > 0;
+    Len := ATokenInfo.Tk.TokenLength;
+    Eto := nil;
+    If FTextDrawer.NeedsEto or ATokenInfo.HasDoubleWidth or NeedExpansion then begin
+      // prepare LineBuffer
+      if NeedExpansion then begin
+        if (LineBufferLen < Len + ATokenInfo.ExpandedExtraBytes + 1) then begin
+          LineBufferLen := Len + ATokenInfo.ExpandedExtraBytes + 1 + 128;
+          ReAllocMem(LineBuffer, LineBufferLen);
+        end;
+        pl := LineBuffer;
+        pt := ATokenInfo.Tk.TokenStart;
+      end;
+
+      // Prepare ETO
+      if FTextDrawer.NeedsEto or ATokenInfo.HasDoubleWidth then begin
+        Eto := FTextDrawer.Eto;
+        Eto.SetMinLength(Len + ATokenInfo.ExpandedExtraBytes + 1);
+        c := FTextDrawer.GetCharWidth;
+        e := 0;
+      end;
+
+      CWLen := Length(CharWidths);
+
+      // Copy to LineBuffer (and maybe eto
+      if NeedExpansion then begin
+        j := ATokenInfo.LogicalStart - 1;
+        for i := 0 to Len - 1 do begin
+          if j < CWLen
+          then k := CharWidths[j]
+          else k := 1;
+          if (k <> 0) and (eto <> nil) then begin
+            Eto.EtoData[e] := k * c;
+            inc(e);
+          end;
+
+          case pt^ of
+            #9: begin
+                if (vscTabAtFirst in FVisibleSpecialChars) then begin
+                  pl^ := #194; inc(pl);
+                  pl^ := #187; inc(pl);
+                  dec(k);
+                  if eto <> nil then Eto.EtoData[e] := c;
+                  inc(e);
+                end;
+                while k > 0 do begin
+                  pl^ := ' '; inc(pl);
+                  dec(k);
+                  if eto <> nil then Eto.EtoData[e] := c;
+                  inc(e);
+                end;
+                if (vscTabAtLast in FVisibleSpecialChars) and ((pl-1)^=' ') then begin
+                  (pl-1)^ := #194;
+                  pl^ := #187; inc(pl);
+                end;
+              end;
+            ' ': begin
+                if (vscSpace in FVisibleSpecialChars) then begin
+                  pl^ := #194; inc(pl);
+                  pl^ := #183; inc(pl);
+                end
+                else begin
+                  pl^ := pt^;
+                  inc(pl);
+                end;
+              end;
+            else begin
+                pl^ := pt^;
+                inc(pl);
+              end;
+          end;
+          inc(pt);
+          inc(j);
+        end;
+        pl^ := #0;
+
+      // Finish linebuffer
+      ATokenInfo.Tk.TokenStart  := LineBuffer;
+      ATokenInfo.Tk.TokenLength := Len + ATokenInfo.ExpandedExtraBytes;
+      // TODO skip expanded half tab
+
+      end
+      else
+      // ETO only
+      begin
+        for j := ATokenInfo.LogicalStart - 1 to ATokenInfo.LogicalStart - 1 + Len do begin
+          if j < CWLen
+          then k := CharWidths[j]
+          else k := 1;
+          if k <> 0 then begin
+            Eto.EtoData[e] := k * c;
+            inc(e);
+          end;
+        end;
+      end;
+    end;
+
+
+    if (ATokenInfo.PhysicalStart <> ATokenInfo.PhysicalPaintStart) or
+       (ATokenInfo.PhysicalEnd <> ATokenInfo.PhysicalPaintEnd)
+    then
+      TxtFlags := TxtFlags + ETO_CLIPPED;
+
+    tok := rcToken;
+    if rcToken.Right > nRightEdge + 1 then
+      tok.Bottom := rcLine.Bottom;
+    fTextDrawer.NewTextOut(TxtLeft, rcToken.Top, TxtFlags, tok,
+      ATokenInfo.Tk.TokenStart, ATokenInfo.Tk.TokenLength, Eto);
+
+
+    rcToken.Left := rcToken.Right;
+  end;
+
+  procedure DrawEndOfLine(APhysEndPos: Integer);
+  var
+    Spaces: String = '  ';
+    nX1, eolx: integer;
+    NextPos, CurPos: Integer;
+    MarkupInfo: TSynSelectedColor;
+    tok: TRect;
+    Attr: TSynHighlighterAttributes;
+    s: TLazSynBorderSide;
+    HasFrame: Boolean;
+  begin
+    if (rcToken.Left >= rcLine.Right) then exit;
+
+    eolx := rcToken.Left; // remeber end of actual line, so we can decide to draw the right edge
+    NextPos := Min(LastCol, APhysEndPos);
+    MarkupInfo := TSynSelectedColor.Create;
+    if Assigned(fHighlighter) then
+      Attr := fHighlighter.GetEndOfLineAttribute
+    else
+      Attr := nil;
+
+    repeat
+      CurPos := NextPos;
+      NextPos := fMarkupManager.GetNextMarkupColAfterRowCol(CurTextIndex+1, NextPos);
+
+      if Assigned(Attr) then
+        MarkupInfo.Assign(Attr)
+      else
+        MarkupInfo.Clear;
+      MarkupInfo.MergeFinalStyle := True;
+      MarkupInfo.StyleMask  := [];
+      if MarkupInfo.Background = clNone then
+        MarkupInfo.Background := colEditorBG;
+      if MarkupInfo.Foreground = clNone then
+        MarkupInfo.Foreground := ForegroundColor;
+      MarkupInfo.StartX := CurPos;
+      MarkupInfo.EndX   := NextPos;
+
+      fMarkupManager.MergeMarkupAttributeAtRowCol(CurTextIndex+1,
+        CurPos, NextPos, MarkupInfo);
+
+      if NextPos < 1
+      then nX1 := rcLine.Right
+      else begin
+        nX1 := ScreenColumnToXValue(NextPos);
+        if nX1 > rcLine.Right
+        then nX1 := rcLine.Right;
+      end;
+
+      HasFrame := False;
+      with fTextDrawer do
+      begin
+        SetBackColor(MarkupInfo.Background);
+        SetForeColor(MarkupInfo.Foreground);
+        SetStyle(MarkupInfo.Style);
+        for s := low(TLazSynBorderSide) to high(TLazSynBorderSide) do begin
+          HasFrame := HasFrame or (MarkupInfo.FrameSideColors[s] <> clNone);
+          FrameColor[s] := MarkupInfo.FrameSideColors[s];
+          FrameStyle[s] := MarkupInfo.FrameSideStyles[s];
+        end;
+      end;
+      // Paint the chars
+      rcToken.Right := ScreenColumnToXValue(APhysEndPos);
+      if nX1 > AClip.Right then begin
+        fTextDrawer.FrameColor[bsRight] := clNone; // right side of char is not painted
+      end;
+
+
+      if nX1 > nRightEdge then begin
+        if rcToken.Left < nRightEdge then begin
+          tok := rcToken;
+          tok.Right := nRightEdge;
+          if (fsUnderline in MarkupInfo.Style) or (HasFrame) then
+            fTextDrawer.ExtTextOut(tok.Right, tok.Top, ETO_OPAQUE, tok,
+                               @Spaces, 1, rcLine.Bottom)
+          else
+            InternalFillRect(dc, tok);
+          rcToken.Left := nRightEdge;
+        end;
+        rcToken.Bottom := rcLine.Bottom;
+      end;
+      rcToken.Right := nX1;
+
+      if (fsUnderline in MarkupInfo.Style) or (HasFrame) then
+        fTextDrawer.ExtTextOut(rcToken.Right, rcToken.Top, ETO_OPAQUE, rcToken,
+                           @Spaces, 1, rcLine.Bottom)
+      else
+        InternalFillRect(dc, rcToken);
+      rcToken.Left := nX1;
+    until nX1 >= rcLine.Right;
+
+    // Draw the right edge if necessary.
+    if bDoRightEdge
+    and (nRightEdge >= eolx) then begin // xx rc Token
+      LCLIntf.MoveToEx(dc, nRightEdge, rcLine.Top, nil);
+      LCLIntf.LineTo(dc, nRightEdge, rcLine.Bottom + 1);
+    end;
+    FreeAndNil(MarkupInfo);
+
+  end;
+  {$ENDIF}
 
   procedure PaintLines;
   var
-    ypos: Integer;
+    ypos, xpos: Integer;
     DividerInfo: TSynDividerDrawConfigSetting;
     TV, cl: Integer;
     TokenInfo: TLazSynDisplayTokenInfo;
+    TokenInfoEx: TLazSynDisplayTokenInfoEx;
     MaxLine: Integer;
   begin
     // Initialize rcLine for drawing. Note that Top and Bottom are updated
@@ -1231,9 +1802,15 @@ var
       rcLine.Left := DrawLeft;
       ForceEto := False;
 
+      {$IFDEF SynUseOldDrawer}
       DisplayView.SetHighlighterTokensLine(TV + CurLine, CurTextIndex);
+      {$ELSE}
+      FTokenBreaker.SetHighlighterTokensLine(TV + CurLine, CurTextIndex);
+      {$ENDIF}
       CharWidths := FTheLinesView.GetPhysicalCharWidths(CurTextIndex);
       fMarkupManager.PrepareMarkupForRow(CurTextIndex+1);
+      //TokenInfo.LogicalEnd := 1;
+      //TokenInfo.PhysicalEnd := 1;
 
       DividerInfo := DisplayView.GetDrawDividerInfo;
       if (DividerInfo.Color <> clNone) and (nRightEdge >= FTextBounds.Left) then
@@ -1246,13 +1823,26 @@ var
         dec(rcToken.Bottom);
       end;
 
+      {$IFDEF SynUseOldDrawer}
       while DisplayView.GetNextHighlighterToken(TokenInfo) do begin
         DrawHiLightMarkupToken(TokenInfo.TokenAttr, TokenInfo.TokenStart, TokenInfo.TokenLength);
       end;
-
       // Draw anything that's left in the TokenAccu record. Fill to the end
       // of the invalid area with the correct colors.
       PaintHighlightToken(TRUE);
+      {$ELSE}
+      xpos := FirstCol;
+      while FTokenBreaker.GetNextHighlighterTokenEx(TokenInfoEx) do begin
+        xpos := TokenInfoEx.PhysicalPaintEnd;
+//if CurLine < 4 then begin
+// debugln(['P#', CurLine, ' PtPStart=', TokenInfoEx.PhysicalPaintStart, ' PtPEnd=', TokenInfoEx.PhysicalPaintEnd,
+//  ' PStart=', TokenInfoEx.PhysicalStart, ' PEnd=', TokenInfoEx.PhysicalEnd,
+//  ' LStart=', TokenInfoEx.LogicalStart, ' LEnd=', TokenInfoEx.LogicalEnd, ' len=', TokenInfoEx.Tk.TokenLength  ]);
+//end;
+        DrawHiLightMarkupToken(TokenInfoEx);
+      end;
+      DrawEndOfLine(xpos);
+      {$ENDIF}
 
       fMarkupManager.FinishMarkupForRow(CurTextIndex+1);
     end;
@@ -1263,6 +1853,17 @@ var
 { end local procedures }
 
 begin
+  FTokenBreaker.Prepare(DisplayView, FTheLinesView, FMarkupManager, FirstCol, LastCol);
+  FTokenBreaker.ForegroundColor := ForegroundColor;
+  FTokenBreaker.BackgroundColor := BackgroundColor;
+  FTokenBreaker.SpaceExtraByteCount := 0;
+  FTokenBreaker.TabExtraByteCount := 0;
+  if (vscSpace in FVisibleSpecialChars) then
+    FTokenBreaker.SpaceExtraByteCount := 1;
+  if (vscTabAtFirst in FVisibleSpecialChars) then
+    FTokenBreaker.TabExtraByteCount := FTokenBreaker.TabExtraByteCount + 1;
+  if (vscTabAtLast in FVisibleSpecialChars) then
+    FTokenBreaker.TabExtraByteCount := FTokenBreaker.TabExtraByteCount + 1;
   //if (AClip.Right < TextLeftPixelOffset(False)) then exit;
   //if (AClip.Left > ClientWidth - TextRightPixelOffset) then exit;
 
@@ -1302,11 +1903,17 @@ begin
     // Moved to two local procedures to make it easier to read.
 
     FillChar(TokenAccu,SizeOf(TokenAccu),0);
+    {$IFnDEF SynUseOldDrawer}
+    LineBufferLen := 0;
+    LineBuffer := nil;
+    {$ENDIF}
     if Assigned(fHighlighter) then begin
       fHighlighter.CurrentLines := FTheLinesView;
       // Make sure the token accumulator string doesn't get reassigned to often.
       TokenAccu.MaxLen := Max(128, fCharsInWindow * 4);
+      {$IFDEF SynUseOldDrawer}
       SetTokenAccuLength;
+      {$ENDIF}
     end;
 
     DisplayView.InitHighlighterTokens(FHighlighter);
@@ -1318,6 +1925,9 @@ begin
       fTextDrawer.EndDrawing;
       DisplayView.FinishHighlighterTokens;
       ReAllocMem(TokenAccu.p,0);
+      {$IFnDEF SynUseOldDrawer}
+      ReAllocMem(LineBuffer, 0);
+      {$ENDIF}
     end;
   end;
 

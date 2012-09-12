@@ -109,7 +109,7 @@ type
   TLazSynDisplayTokenInfo = record
     TokenStart: PChar;
     TokenLength: integer;
-    TokenAttr: TSynHighlighterAttributes
+    TokenAttr: TSynHighlighterAttributes;
   end;
 
   TLineRange = record

@@ -5,9 +5,10 @@ program SynTest;
 uses
   Interfaces, Forms, GuiTestRunner, TestBase,
   TestBasicSynEdit, TestSynSelection, TestBlockIndent, TestBookMarks,
-  TestSearch, TestSynBeautifier, TestTrimSpace, TestSyncroEdit,
+  TestSearch, TestSynBeautifier, TestTrimSpace, TestSyncroEdit, TestSynTextArea,
   TestHighlightPas, TestHighlightXml, TestHighlightMulti,
-  TestMarkupwordGroup, TestFoldedView, TestSynSharedEdits;
+  TestMarkupwordGroup, TestFoldedView, TestSynSharedEdits, TestHighlighterLfm,
+  TestHighlightFoldBase;
 
 {$IFDEF WINDOWS}{  $R SynTest.rc}{$ENDIF}
 

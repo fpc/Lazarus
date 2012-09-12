@@ -7,7 +7,7 @@ interface
 
 uses
   Classes, SysUtils, Forms, fpcunit, SynEdit, LCLType, LCLProc, math,
-  SynEditTypes, SynEditPointClasses, SynEditKeyCmds, Clipbrd;
+  SynEditTypes, SynEditPointClasses, SynEditKeyCmds, LazSynTextArea, Clipbrd;
 
 type
 
@@ -25,8 +25,8 @@ type
   TTestSynEdit = class(TSynEdit)
   public
     procedure TestKeyPress(Key: Word; Shift: TShiftState);
-    procedure TestTypeText(ALogCaretX, ALogCaretY: Integer; Input: String);
-    procedure TestTypeText(Input: String);
+    procedure TestTypeText(ALogCaretX, ALogCaretY: Integer; Input: String; WithSimulatedPaint: Boolean = False);
+    procedure TestTypeText(Input: String; WithSimulatedPaint: Boolean = False);
     function  TestFullText: String;
     procedure TestSetSelText(Value: String;
                              PasteMode: TSynSelectionMode = smNormal;
@@ -37,6 +37,7 @@ type
     property TextBuffer;
     property TextView; // foldedview
     property CaretObj: TSynEditCaret read GetCaretObj;
+    property TextArea: TLazSynTextArea read FTextArea;
   end;
 
   { TTestBase }
@@ -162,17 +163,19 @@ begin
   {$IFDEF WITH_APPMSG}Application.ProcessMessages;{$ENDIF}
 end;
 
-procedure TTestSynEdit.TestTypeText(ALogCaretX, ALogCaretY: Integer; Input: String);
+procedure TTestSynEdit.TestTypeText(ALogCaretX, ALogCaretY: Integer; Input: String; WithSimulatedPaint: Boolean = False);
 begin
   LogicalCaretXY := Point(ALogCaretX, ALogCaretY);
-  TestTypeText(Input);
+  TestTypeText(Input, WithSimulatedPaint);
 end;
 
-procedure TTestSynEdit.TestTypeText(Input: String);
+procedure TTestSynEdit.TestTypeText(Input: String; WithSimulatedPaint: Boolean = False);
 var
   l: Integer;
 begin
   while Input <> '' do begin
+    if WithSimulatedPaint then SimulatePaintText;
+
     if Input[1] = #13 then begin
       CommandProcessor(ecLineBreak, '', nil);
       delete(Input, 1, 1);
@@ -188,6 +191,7 @@ begin
     CommandProcessor(ecChar, copy(Input, 1, l), nil);
     delete(Input, 1, l);
   end;
+  if WithSimulatedPaint then SimulatePaintText;
 end;
 
 function TTestSynEdit.TestFullText: String;

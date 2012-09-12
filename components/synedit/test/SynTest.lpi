@@ -45,7 +45,7 @@
         <PackageName Value="FCL"/>
       </Item5>
     </RequiredPackages>
-    <Units Count="15">
+    <Units Count="18">
       <Unit0>
         <Filename Value="SynTest.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -121,6 +121,21 @@
         <IsPartOfProject Value="True"/>
         <UnitName Value="TestBlockIndent"/>
       </Unit14>
+      <Unit15>
+        <Filename Value="testhighlighterlfm.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="TestHighlighterLfm"/>
+      </Unit15>
+      <Unit16>
+        <Filename Value="testhighlightfoldbase.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="TestHighlightFoldBase"/>
+      </Unit16>
+      <Unit17>
+        <Filename Value="testsyntextarea.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="TestSynTextArea"/>
+      </Unit17>
     </Units>
   </ProjectOptions>
   <CompilerOptions>
