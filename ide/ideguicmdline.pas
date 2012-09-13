@@ -29,6 +29,9 @@
 
   This unit manages the command line parameters for lazarus and startlazarus,
   but not lazbuild.
+
+ ToDo:
+   Linux: try pidof
 }
 unit IDEGuiCmdLine;
 
@@ -41,10 +44,10 @@ uses
   LazarusIDEStrConsts, IDECmdLine;
 
 procedure ParseGuiCmdLineParams(var SkipAutoLoadingLastProject,
-                                      StartedByStartLazarus,
-                                      EnableRemoteControl,
-                                      ShowSplashScreen,
-                                      Setup: Boolean);
+                                    StartedByStartLazarus,
+                                    EnableRemoteControl,
+                                    ShowSplashScreen,
+                                    Setup: Boolean);
 
 // remote control
 const
@@ -74,6 +77,7 @@ uses MacOSAll, CarbonProc;
 
 function IsLazarusPIDRunning(aPID: int64): boolean;
 
+  {$IFDEF UseProcFileSystem}
   function CheckProcFileSystem: boolean;
   var
     sl: TStringList;
@@ -95,6 +99,7 @@ function IsLazarusPIDRunning(aPID: int64): boolean;
       sl.Free;
     end;
   end;
+  {$ENDIF}
 
   {$IFDEF UseFreeBSDKernProc}
   function CheckFreeBSDKernProc: boolean;

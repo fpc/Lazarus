@@ -38,6 +38,7 @@ type
   TBitBtnWidgetInfo = record
     ImageWidget: Pointer;
     LabelWidget: Pointer;
+    SetLayoutCalled: boolean;
   end;
 
   { TGtk2WSBitBtn }
@@ -93,9 +94,6 @@ const
   
 type
   TCustomBitBtnAccess = class(TCustomBitBtn)
-  end;
-
-  TWinControlAccess = class(TWinControl)
   end;
 
 procedure GtkWSBitBtn_StateChanged(AWidget: PGtkWidget; {%H-}AState: TGtkStateType; AInfo: PWidgetInfo); cdecl;
@@ -233,8 +231,7 @@ begin
   WidgetInfo := GetWidgetInfo(MainWidget);
   BitBtnInfo := WidgetInfo^.UserData;
   BuildNeeded := UpdateGlyph(ABitBtn, BitBtnInfo, AValue, GtkStateToButtonState[GTK_WIDGET_STATE(MainWidget)]);
-  // at initialization widget will be built in SetLayout
-  if not (wcfInitializing in {%H-}TWinControlAccess(ABitBtn).FWinControlFlags) and BuildNeeded then
+  if BuildNeeded and BitBtnInfo^.SetLayoutCalled then
     BuildWidget(ABitBtn, MainWidget, BitBtnInfo, ABitBtn.Caption);
 end;
 
@@ -250,6 +247,7 @@ begin
   MainWidget := {%H-}Pointer(ABitBtn.Handle);
   WidgetInfo := GetWidgetInfo(MainWidget);
   BitBtnInfo := WidgetInfo^.UserData;
+  BitBtnInfo^.SetLayoutCalled:=true;
   BuildWidget(ABitBtn, MainWidget, BitBtnInfo, ABitBtn.Caption);
 end;
 
@@ -294,13 +292,12 @@ var
   BitBtnInfo: PBitBtnWidgetInfo;
   BuildNeeded: Boolean;
 begin
-  // at initialization widget will be built in SetLayout
-  if (wcfInitializing in TWinControlAccess(AWinControl).FWinControlFlags)
-    or not WSCheckHandleAllocated(AWincontrol, 'SetText') then
-    Exit;
   MainWidget := {%H-}Pointer(AWinControl.Handle);
   WidgetInfo := GetWidgetInfo(MainWidget);
   BitBtnInfo := WidgetInfo^.UserData;
+  if (not BitBtnInfo^.SetLayoutCalled)
+  or not WSCheckHandleAllocated(AWincontrol, 'SetText') then
+    Exit;
   LabelWidget := BitBtnInfo^.LabelWidget;
   BuildNeeded := (LabelWidget = nil) xor (AText = '');
   if BuildNeeded then
