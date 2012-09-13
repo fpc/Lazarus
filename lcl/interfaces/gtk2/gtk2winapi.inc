@@ -3903,12 +3903,10 @@ begin
   end;
 
 
-  if (DevCtx.GDIObjects[gdiBrush] <> nil) and
-   ((Options and ETO_OPAQUE) = 0) and (DevCtx.BkMode = OPAQUE) then
-  //  (Rect = nil) then TODO: see if Rect<> nil is needed
+  if (DevCtx.BkMode = OPAQUE) then
   begin
-    EnsureGCColor(DC, dccGDIBrushColor, DevCtx.GDIObjects[gdiBrush]^.GDIBrushFill = GDK_SOLID, True);
-    BackGroundColor := @DevCtx.GDIObjects[gdiBrush]^.GDIBrushColor.Color;
+    EnsureGCColor(DC, dccCurrentBackColor, True, True);
+    BackGroundColor := @DevCtx.CurrentBackColor.Color;
   end;
 
   EnsureGCColor(DC, dccCurrentTextColor, True, False);
