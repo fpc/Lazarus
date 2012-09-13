@@ -1487,7 +1487,7 @@ begin
     end;
   end;
 
-  FillBg := not Assigned(Rect) and ((Options and ETO_OPAQUE) <> 0);
+  FillBg := BkMode = OPAQUE;
   if FillBg then
     FText.BackgroundColor := BkBrush.ColorRef;
   FText.SetText(UTF8Chars, Count);
