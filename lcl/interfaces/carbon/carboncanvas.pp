@@ -958,7 +958,7 @@ begin
     if CurrentFont.LineRotation = 0 then // TODO: fill rotated text background
     begin
       // fill drawed text background
-      if (Rect = nil) and ((Options and ETO_OPAQUE) > 0) then
+      if BkMode = OPAQUE then
       begin
         BrushSolid := BkBrush.Solid; // must ignore BkMode
         BkBrush.Solid := True;
