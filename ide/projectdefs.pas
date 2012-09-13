@@ -321,6 +321,17 @@ type
     function CreateStartFiles({%H-}AProject: TLazProject): TModalResult; override;
   end;
 
+  { TProjectSimpleProgramDescriptor }
+
+  TProjectSimpleProgramDescriptor = class(TProjectDescriptor)
+  public
+    constructor Create; override;
+    function GetLocalizedName: string; override;
+    function GetLocalizedDescription: string; override;
+    function InitProject(AProject: TLazProject): TModalResult; override;
+    function CreateStartFiles(AProject: TLazProject): TModalResult; override;
+  end;
+
   { TProjectProgramDescriptor }
 
   TProjectProgramDescriptor = class(TProjectDescriptor)
@@ -1244,69 +1255,6 @@ begin
   Descriptor.Release;
 end;
 
-{ TProjectProgramDescriptor }
-
-constructor TProjectProgramDescriptor.Create;
-begin
-  inherited Create;
-  Name:=ProjDescNameProgram;
-  Flags:=Flags-[pfMainUnitHasCreateFormStatements,pfMainUnitHasTitleStatement]
-              +[pfUseDefaultCompilerOptions];
-end;
-
-function TProjectProgramDescriptor.GetLocalizedName: string;
-begin
-  Result:=lisProgram;
-end;
-
-function TProjectProgramDescriptor.GetLocalizedDescription: string;
-begin
-  Result:=Format(lisProgramAFreepascalProgramTheProgramFileIsAutomatic, [#13]);
-end;
-
-function TProjectProgramDescriptor.InitProject(AProject: TLazProject
-  ): TModalResult;
-var
-  le: String;
-  NewSource: String;
-  MainFile: TLazProjectFile;
-begin
-  Result:=inherited InitProject(AProject);
-
-  MainFile:=AProject.CreateProjectFile('project1.lpr');
-  MainFile.IsPartOfProject:=true;
-  AProject.AddFile(MainFile,false);
-  AProject.MainFileID:=0;
-
-  // create program source
-  le:=LineEnding;
-  NewSource:='program Project1;'+le
-    +le
-    +'{$mode objfpc}{$H+}'+le
-    +le
-    +'uses'+le
-    +'  {$IFDEF UNIX}{$IFDEF UseCThreads}'+le
-    +'  cthreads,'+le
-    +'  {$ENDIF}{$ENDIF}'+le
-    +'  Classes'+le
-    +'  { you can add units after this };'+le
-    +le
-    +'begin'+le
-    +'end.'+le
-    +le;
-  AProject.MainFile.SetSourceText(NewSource);
-
-  AProject.LazCompilerOptions.UnitOutputDirectory:='lib'+PathDelim+'$(TargetCPU)-$(TargetOS)';
-  AProject.LazCompilerOptions.TargetFilename:='project1';
-end;
-
-function TProjectProgramDescriptor.CreateStartFiles(AProject: TLazProject
-  ): TModalResult;
-begin
-  Result:=LazarusIDE.DoOpenEditorFile(AProject.MainFile.Filename,-1,-1,
-                                      [ofProjectLoading,ofRegularFile]);
-end;
-
 { TProjectApplicationDescriptor }
 
 constructor TProjectApplicationDescriptor.Create;
@@ -1377,6 +1325,119 @@ function TProjectApplicationDescriptor.CreateStartFiles(AProject: TLazProject
 begin
   Result:=LazarusIDE.DoNewEditorFile(FileDescriptorForm,'','',
                          [nfIsPartOfProject,nfOpenInEditor,nfCreateDefaultSrc]);
+end;
+
+{ TProjectSimpleProgramDescriptor }
+
+constructor TProjectSimpleProgramDescriptor.Create;
+begin
+  inherited Create;
+  Name:=ProjDescNameSimpleProgram;
+  Flags:=Flags-[pfMainUnitHasCreateFormStatements,pfMainUnitHasTitleStatement]
+              +[pfUseDefaultCompilerOptions];
+end;
+
+function TProjectSimpleProgramDescriptor.GetLocalizedName: string;
+begin
+  Result:=lisSimpleProgram;
+end;
+
+function TProjectSimpleProgramDescriptor.GetLocalizedDescription: string;
+begin
+  Result:=Format(lisProgramAFreepascalSimpleProgram, [#13]);
+end;
+
+function TProjectSimpleProgramDescriptor.InitProject(AProject: TLazProject): TModalResult;
+var
+  le: String;
+  NewSource: String;
+  MainFile: TLazProjectFile;
+begin
+  Result:=inherited InitProject(AProject);
+
+  MainFile:=AProject.CreateProjectFile('project1.lpr');
+  MainFile.IsPartOfProject:=true;
+  AProject.AddFile(MainFile,false);
+  AProject.MainFileID:=0;
+
+  // create program source
+  le:=LineEnding;
+  NewSource:='program Project1;'+le
+    +le
+    +'begin'+le
+    +'end.'+le
+    +le;
+  AProject.MainFile.SetSourceText(NewSource);
+
+  AProject.LazCompilerOptions.UnitOutputDirectory:='lib'+PathDelim+'$(TargetCPU)-$(TargetOS)';
+  AProject.LazCompilerOptions.TargetFilename:='project1';
+end;
+
+function TProjectSimpleProgramDescriptor.CreateStartFiles(AProject: TLazProject): TModalResult;
+begin
+  Result:=LazarusIDE.DoOpenEditorFile(AProject.MainFile.Filename,-1,-1,
+                                      [ofProjectLoading,ofRegularFile]);
+end;
+
+{ TProjectProgramDescriptor }
+
+constructor TProjectProgramDescriptor.Create;
+begin
+  inherited Create;
+  Name:=ProjDescNameProgram;
+  Flags:=Flags-[pfMainUnitHasCreateFormStatements,pfMainUnitHasTitleStatement]
+              +[pfUseDefaultCompilerOptions];
+end;
+
+function TProjectProgramDescriptor.GetLocalizedName: string;
+begin
+  Result:=lisProgram;
+end;
+
+function TProjectProgramDescriptor.GetLocalizedDescription: string;
+begin
+  Result:=Format(lisProgramAFreepascalProgramTheProgramFileIsAutomatic, [#13]);
+end;
+
+function TProjectProgramDescriptor.InitProject(AProject: TLazProject): TModalResult;
+var
+  le: String;
+  NewSource: String;
+  MainFile: TLazProjectFile;
+begin
+  Result:=inherited InitProject(AProject);
+
+  MainFile:=AProject.CreateProjectFile('project1.lpr');
+  MainFile.IsPartOfProject:=true;
+  AProject.AddFile(MainFile,false);
+  AProject.MainFileID:=0;
+
+  // create program source
+  le:=LineEnding;
+  NewSource:='program Project1;'+le
+    +le
+    +'{$mode objfpc}{$H+}'+le
+    +le
+    +'uses'+le
+    +'  {$IFDEF UNIX}{$IFDEF UseCThreads}'+le
+    +'  cthreads,'+le
+    +'  {$ENDIF}{$ENDIF}'+le
+    +'  Classes'+le
+    +'  { you can add units after this };'+le
+    +le
+    +'begin'+le
+    +'end.'+le
+    +le;
+  AProject.MainFile.SetSourceText(NewSource);
+
+  AProject.LazCompilerOptions.UnitOutputDirectory:='lib'+PathDelim+'$(TargetCPU)-$(TargetOS)';
+  AProject.LazCompilerOptions.TargetFilename:='project1';
+end;
+
+function TProjectProgramDescriptor.CreateStartFiles(AProject: TLazProject): TModalResult;
+begin
+  Result:=LazarusIDE.DoOpenEditorFile(AProject.MainFile.Filename,-1,-1,
+                                      [ofProjectLoading,ofRegularFile]);
 end;
 
 { TProjectManualProgramDescriptor }
@@ -1450,69 +1511,6 @@ constructor TProjectEmptyProgramDescriptor.Create;
 begin
   inherited Create;
   FAddMainSource:=false;
-end;
-
-{ TProjectLibraryDescriptor }
-
-constructor TProjectLibraryDescriptor.Create;
-begin
-  inherited Create;
-  Name:=ProjDescNameLibrary;
-  Flags:=Flags-[pfMainUnitHasCreateFormStatements,pfMainUnitHasTitleStatement]
-              +[pfUseDefaultCompilerOptions];
-end;
-
-function TProjectLibraryDescriptor.GetLocalizedName: string;
-begin
-  Result:=lisPckOptsLibrary;
-end;
-
-function TProjectLibraryDescriptor.GetLocalizedDescription: string;
-begin
-  Result:= Format(lisLibraryAFreepascalLibraryDllUnderWindowsSoUnderLin, [#13]);
-end;
-
-function TProjectLibraryDescriptor.InitProject(AProject: TLazProject
-  ): TModalResult;
-var
-  le: String;
-  NewSource: String;
-  MainFile: TLazProjectFile;
-begin
-  Result:=inherited InitProject(AProject);
-
-  MainFile:=AProject.CreateProjectFile('project1.lpr');
-  MainFile.IsPartOfProject:=true;
-  AProject.AddFile(MainFile,false);
-  AProject.MainFileID:=0;
-  AProject.LazCompilerOptions.ExecutableType:=cetLibrary;
-
-  // create program source
-  le:=LineEnding;
-  NewSource:='library Project1;'+le
-    +le
-    +'{$mode objfpc}{$H+}'+le
-    +le
-    +'uses'+le
-    +'  Classes'+le
-    +'  { you can add units after this };'+le
-    +le
-    +'begin'+le
-    +'end.'+le
-    +le;
-  AProject.MainFile.SetSourceText(NewSource);
-
-  AProject.LazCompilerOptions.UnitOutputDirectory:='lib'+PathDelim+'$(TargetCPU)-$(TargetOS)';
-  AProject.LazCompilerOptions.TargetFilename:='project1';
-  AProject.LazCompilerOptions.Win32GraphicApp:=false;
-  AProject.LazCompilerOptions.RelocatableUnit:=true;
-end;
-
-function TProjectLibraryDescriptor.CreateStartFiles(AProject: TLazProject
-  ): TModalResult;
-begin
-  Result:=LazarusIDE.DoOpenEditorFile(AProject.MainFile.Filename,-1,-1,
-                                      [ofProjectLoading,ofRegularFile]);
 end;
 
 { TProjectConsoleApplicationDescriptor }
@@ -1680,6 +1678,69 @@ end;
 
 function TProjectConsoleApplicationDescriptor.CreateStartFiles(
   AProject: TLazProject): TModalResult;
+begin
+  Result:=LazarusIDE.DoOpenEditorFile(AProject.MainFile.Filename,-1,-1,
+                                      [ofProjectLoading,ofRegularFile]);
+end;
+
+{ TProjectLibraryDescriptor }
+
+constructor TProjectLibraryDescriptor.Create;
+begin
+  inherited Create;
+  Name:=ProjDescNameLibrary;
+  Flags:=Flags-[pfMainUnitHasCreateFormStatements,pfMainUnitHasTitleStatement]
+              +[pfUseDefaultCompilerOptions];
+end;
+
+function TProjectLibraryDescriptor.GetLocalizedName: string;
+begin
+  Result:=lisPckOptsLibrary;
+end;
+
+function TProjectLibraryDescriptor.GetLocalizedDescription: string;
+begin
+  Result:= Format(lisLibraryAFreepascalLibraryDllUnderWindowsSoUnderLin, [#13]);
+end;
+
+function TProjectLibraryDescriptor.InitProject(AProject: TLazProject
+  ): TModalResult;
+var
+  le: String;
+  NewSource: String;
+  MainFile: TLazProjectFile;
+begin
+  Result:=inherited InitProject(AProject);
+
+  MainFile:=AProject.CreateProjectFile('project1.lpr');
+  MainFile.IsPartOfProject:=true;
+  AProject.AddFile(MainFile,false);
+  AProject.MainFileID:=0;
+  AProject.LazCompilerOptions.ExecutableType:=cetLibrary;
+
+  // create program source
+  le:=LineEnding;
+  NewSource:='library Project1;'+le
+    +le
+    +'{$mode objfpc}{$H+}'+le
+    +le
+    +'uses'+le
+    +'  Classes'+le
+    +'  { you can add units after this };'+le
+    +le
+    +'begin'+le
+    +'end.'+le
+    +le;
+  AProject.MainFile.SetSourceText(NewSource);
+
+  AProject.LazCompilerOptions.UnitOutputDirectory:='lib'+PathDelim+'$(TargetCPU)-$(TargetOS)';
+  AProject.LazCompilerOptions.TargetFilename:='project1';
+  AProject.LazCompilerOptions.Win32GraphicApp:=false;
+  AProject.LazCompilerOptions.RelocatableUnit:=true;
+end;
+
+function TProjectLibraryDescriptor.CreateStartFiles(AProject: TLazProject
+  ): TModalResult;
 begin
   Result:=LazarusIDE.DoOpenEditorFile(AProject.MainFile.Filename,-1,-1,
                                       [ofProjectLoading,ofRegularFile]);

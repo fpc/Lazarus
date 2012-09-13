@@ -2504,6 +2504,7 @@ begin
   // project descriptors
   LazProjectDescriptors:=TLazProjectDescriptors.Create;
   RegisterProjectDescriptor(TProjectApplicationDescriptor.Create);
+  RegisterProjectDescriptor(TProjectSimpleProgramDescriptor.Create);
   RegisterProjectDescriptor(TProjectProgramDescriptor.Create);
   RegisterProjectDescriptor(TProjectConsoleApplicationDescriptor.Create);
   RegisterProjectDescriptor(TProjectLibraryDescriptor.Create);

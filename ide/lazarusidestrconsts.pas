@@ -2172,9 +2172,6 @@ resourcestring
   dlgProjectOptions = 'Project Options';
   dlgProjectOptionsFor = 'Options for Project: %s';
   dlgPOApplication = 'Application';
-  lisApplicationAGraphicalLclFreepascalProgramTheProgra = 'Application%sA '
-    +'graphical LCL/Free Pascal program. The program source is automatically '
-    +'maintained by Lazarus.';
   dlgPOFroms = 'Forms';
   dlgPOMisc = 'Miscellaneous';
   dlgPOI18n = 'i18n';
@@ -4447,16 +4444,22 @@ resourcestring
   lisTabOrderConfirmSort = 'Sort tab orders of all child controls of "%s" by their positions?';
 
   lisCustomProgram = 'Custom Program';
+  lisSimpleProgram = 'Simple Program';
   lisProgram = 'Program';
   lisConsoleApplication = 'Console application';
+  lisApplicationAGraphicalLclFreepascalProgramTheProgra = 'Application%sA '
+    +'graphical LCL/Free Pascal program. The program source is automatically '
+    +'maintained by Lazarus.';
   lisFreepascalProgramUsingTCustomApplicationToEasilyCh = 'Free Pascal program '
     +'using TCustomApplication to easily check command line options, handling '
     +'exceptions, etc. The program source is automatically maintained by Lazarus.';
-  lisProgramAFreepascalProgramTheProgramFileIsAutomatic = 'Program%sA '
-    +'Free Pascal program. The program source is automatically maintained by Lazarus.';
+  lisProgramAFreepascalSimpleProgram = 'Simple Program%sA most simple Free Pascal program.'+
+    ' The program source is automatically maintained by Lazarus.';
+  lisProgramAFreepascalProgramTheProgramFileIsAutomatic = 'Program%sA Free Pascal program.'+
+    ' The program source is automatically maintained by Lazarus.';
   lisCustomProgramAFreepascalProgram = 'Custom Program%sA Free Pascal program.';
-  lisLibraryAFreepascalLibraryDllUnderWindowsSoUnderLin = 'Library%sA '
-    +'Free Pascal library (.dll under Windows, .so under Linux, .dylib under '
+  lisLibraryAFreepascalLibraryDllUnderWindowsSoUnderLin = 'Library%s'
+    +'A Free Pascal library (.dll under Windows, .so under Linux, .dylib under '
     +'MacOS X). The library source is automatically maintained by Lazarus.';
   lisNPSelectAProjectType = 'Select a project type';
   lisNPCreateANewProject = 'Create a new project';
