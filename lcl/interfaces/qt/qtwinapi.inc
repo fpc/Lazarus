@@ -2180,7 +2180,6 @@ function TQtWidgetSet.ExtTextOut(DC: HDC; X, Y: Integer; Options: Longint;
 var
   WideStr: WideString;
   QtDC: TQtDeviceContext absolute DC;
-  B: Boolean;
   R, R1: TRect;
 
   procedure DoDrawCharByChar(const AClipped: Boolean);
