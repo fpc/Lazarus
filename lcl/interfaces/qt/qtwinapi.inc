@@ -2200,7 +2200,8 @@ var
       if AClipped then
       begin
         W := GetUTF8String(Copy(CurStr, 1, CharLen));
-        QtDC.drawText(CurX, Y, Rect^.Right - Rect^.Left, Rect^.Bottom - Rect^.Top, 0, @W);
+        QtDC.drawText(CurX, Y, Rect^.Right - Rect^.Left, Rect^.Bottom - Rect^.Top,
+          QtTextDontClip, @W);
       end else
       begin
         W := GetUTF8String(Copy(CurStr, 1, CharLen));
@@ -2251,7 +2252,8 @@ begin
         if Dx <> nil then
           DoDrawCharByChar(True)
         else
-          QtDC.drawText(X, Y, Rect^.Right - Rect^.Left, Rect^.Bottom - Rect^.Top, 0, @WideStr);
+          QtDC.drawText(X, Y, Rect^.Right - Rect^.Left, Rect^.Bottom - Rect^.Top,
+            QtTextDontClip, @WideStr);
       finally
         QtDC.Restore;
       end;

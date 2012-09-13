@@ -263,6 +263,19 @@ const
    // used by TQtTabWidget
    LCLQt_DelayLayoutRequest = QEventType(Ord(QEventUser) + $1009);
 
+
+   QtTextSingleLine            = $0100;
+   QtTextDontClip              = $0200;
+   QtTextExpandTabs            = $0400;
+   QtTextShowMnemonic          = $0800;
+   QtTextWordWrap              = $1000;
+   QtTextWrapAnywhere          = $2000;
+   QtTextHideMnemonic          = $8000;
+   QtTextDontPrint             = $4000;
+   QtTextIncludeTrailingSpaces =	$08000000;
+   QtTextJustificationForced   = $10000;
+
+
 var
   QtWidgetSet: TQtWidgetSet;
 
@@ -287,17 +300,6 @@ uses
   qtprivate, qtwidgets, qtobjects;
 
 function DTFlagsToQtFlags(const Flags: Cardinal): Integer;
-const
-  QtTextSingleLine            = $0100;
-  QtTextDontClip              = $0200;
-  QtTextExpandTabs            = $0400;
-  QtTextShowMnemonic          = $0800;
-  QtTextWordWrap              = $1000;
-  QtTextWrapAnywhere          = $2000;
-  QtTextHideMnemonic          = $8000;
-  QtTextDontPrint             = $4000;
-  QtTextIncludeTrailingSpaces =	$08000000;
-  QtTextJustificationForced   = $10000;
 begin
   Result := 0;
   // horizontal alignment
