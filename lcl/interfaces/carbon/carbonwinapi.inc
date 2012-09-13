@@ -907,6 +907,8 @@ end;
  ------------------------------------------------------------------------------}
 function TCarbonWidgetSet.ExtTextOut(DC: HDC; X, Y: Integer; Options: Longint;
   Rect: PRect; Str: PChar; Count: Longint; Dx: PInteger): Boolean;
+var
+  SavedDC: Integer;
 begin
   Result := False;
 
@@ -916,10 +918,19 @@ begin
   {$ENDIF}
   
   if not CheckDC(DC, 'ExtTextOut') then Exit;
-  
+
+  if ((Options and ETO_CLIPPED) > 0) and Assigned(Rect) then
+  begin
+    SavedDC := SaveDC(DC);
+    with Rect^ do
+      IntersectClipRect(DC, Left, Top, Right, Bottom);
+  end;
+
   Result :=
     TCarbonDeviceContext(DC).ExtTextOut(X, Y, Options, Rect, Str, Count, Dx);
   
+  if ((Options and ETO_CLIPPED) > 0) and Assigned(Rect) then
+    RestoreDC(DC, SavedDC);
   {$IFDEF VerboseWinAPI}
     DebugLn('TCarbonWidgetSet.ExtTextOut Result: ' + DbgS(Result));
   {$ENDIF}

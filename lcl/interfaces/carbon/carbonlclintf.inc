@@ -75,12 +75,6 @@ begin
   TCarbonDeviceContext(DC).DrawGrid(R, DX, DY);
 end;
 
-function TCarbonWidgetSet.ExtUTF8Out(DC: HDC; X, Y: Integer; Options: Longint;
-  Rect: PRect; Str: PChar; Count: Longint; Dx: PInteger): Boolean;
-begin
-  Result:=inherited ExtUTF8Out(DC, X, Y, Options, Rect, Str, Count, Dx);
-end;
-
 function TCarbonWidgetSet.FontCanUTF8(Font: HFont): boolean;
 begin
   Result := True;

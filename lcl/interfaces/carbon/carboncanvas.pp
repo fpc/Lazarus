@@ -940,7 +940,7 @@ begin
   //DebugLn('TCarbonDeviceContext.ExtTextOut ' + DbgS(X) + ', ' + DbgS(Y) + ' R: ' + DbgS(Rect^) +
   //  ' S: ' + Str + ' C: ' + DbgS(Count));
 
-  if Rect <> nil then
+  if Assigned(Rect) then
   begin
     // fill background
     if (Options and ETO_OPAQUE) > 0 then
