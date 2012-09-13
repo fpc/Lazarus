@@ -853,8 +853,8 @@ begin
     end else if not FoundSystemPPU then begin
       // system.ppu is missing
       IDEMessageDialog(lisCCOErrorCaption,
-        Format(lisTheProjectUsesTargetOSAndCPUTheSystemPpuForThisTar, [
-          TargetOS, TargetCPU, #13, #13]),
+        Format(lisTheProjectUsesTargetOSAndCPUTheSystemPpuForThisTar,
+               [TargetOS, TargetCPU, LineEnding, LineEnding]),
         mtError,[mbOk]);
     end;
   end;
@@ -1120,8 +1120,8 @@ function TBuildManager.CheckAmbiguousSources(const AFilename: string;
     if not FileProcs.RenameFileUTF8(AmbiguousFilename,NewFilename) then
     begin
       Result:=IDEMessageDialog(lisErrorRenamingFile,
-       Format(lisUnableToRenameAmbiguousFileTo, ['"', AmbiguousFilename, '"',
-         #13, '"', NewFilename, '"']),
+       Format(lisUnableToRenameAmbiguousFileTo,
+             ['"', AmbiguousFilename, '"', LineEnding, '"', NewFilename, '"']),
        mtError,[mbOk,mbAbort]);
     end else
       Result:=mrOk;
@@ -1150,8 +1150,8 @@ function TBuildManager.CheckAmbiguousSources(const AFilename: string;
     afaAsk:
       begin
         Result:=IDEMessageDialog(lisAmbiguousFileFound,
-          Format(lisThereIsAFileWithTheSameNameAndASimilarExtension, [#13,
-            AFilename, #13, AmbiguousFilename, #13, #13]),
+          Format(lisThereIsAFileWithTheSameNameAndASimilarExtension, [LineEnding,
+               AFilename, LineEnding, AmbiguousFilename, LineEnding, LineEnding]),
           mtWarning,[mbYes,mbIgnore,mbAbort]);
         case Result of
         mrYes:    Result:=DeleteAmbiguousFile(AmbiguousFilename);
@@ -1234,7 +1234,7 @@ begin
         if EnvironmentOptions.AmbiguousFileAction=afaAsk then begin
           if IDEMessageDialog(lisDeleteAmbiguousFile,
             Format(lisAmbiguousFileFoundThisFileCanBeMistakenWithDelete, ['"',
-              CurFilename, '"', #13, '"', ShortFilename, '"', #13, #13]),
+              CurFilename, '"', LineEnding, '"', ShortFilename, '"', LineEnding, LineEnding]),
             mtConfirmation,[mbYes,mbNo])=mrNo
           then continue;
         end;
@@ -1317,8 +1317,7 @@ begin
       while (EndPos<=length(UnitPath)) and (UnitPath[EndPos]<>';') do
         inc(EndPos);
       if EndPos>StartPos then begin
-        CurDir:=AppendPathDelim(TrimFilename(copy(
-                                             UnitPath,StartPos,EndPos-StartPos)));
+        CurDir:=AppendPathDelim(TrimFilename(copy(UnitPath,StartPos,EndPos-StartPos)));
         FileInfoNeedClose:=true;
         if FindFirstUTF8(CurDir+GetAllFilesMask,faAnyFile,FileInfo)=0 then begin
           IgnoreAll:=false;
@@ -1345,11 +1344,11 @@ begin
               Result:=IDEQuestionDialog(lisAmbiguousUnitFound2,
                 Format(lisTheUnitExistsTwiceInTheUnitPathOfThe, [CurUnitName,
                   ContextDescription])
-                +#13
-                +#13
-                +'1. "'+PUnitFile(ANode.Data)^.Filename+'"'#13
-                +'2. "'+CurFilename+'"'#13
-                +#13
+                +LineEnding
+                +LineEnding
+                +'1. "'+PUnitFile(ANode.Data)^.Filename+'"'+LineEnding
+                +'2. "'+CurFilename+'"'+LineEnding
+                +LineEnding
                 +lisHintCheckIfTwoPackagesContainAUnitWithTheSameName,
                 mtWarning, [mrIgnore, mrYesToAll, lisIgnoreAll, mrAbort]);
               case Result of

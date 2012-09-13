@@ -135,9 +135,9 @@ begin
     CurEdit.Text:=CurEdit.Text;
     if not FilenameIsValidForFileIndex(CurEdit.Text,i) then begin
       if IDEMessageDialog(lisA2PInvalidFile,
-        Format(lisCodeToolsDefsValueIsInvalid, [GetGroupBox(i).Caption, #13,
-          CurEdit.Text]), mtInformation,
-        [mbCancel,mbAbort])=mrAbort
+        Format(lisCodeToolsDefsValueIsInvalid,
+               [GetGroupBox(i).Caption, LineEnding, CurEdit.Text]),
+        mtInformation, [mbCancel,mbAbort])=mrAbort
       then
         ModalResult:=mrCancel
       else

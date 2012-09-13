@@ -2839,8 +2839,8 @@ begin
         on E: Exception do begin
           DebugLn('Error: ', E.Message);
           IDEMessageDialog(lisCodeToolsDefsWriteError,
-            Format(lisUnableToWriteTheProjectInfoFileError, [#13, '"',
-              ProjectInfoFile, '"', #13, E.Message])
+            Format(lisUnableToWriteTheProjectInfoFileError,
+                   [LineEnding, '"', ProjectInfoFile, '"', LineEnding, E.Message])
             ,mtError,[mbOk]);
           Result:=mrCancel;
           exit;
@@ -2964,8 +2964,8 @@ begin
         on E: Exception do begin
           DebugLn('ERROR: ',E.Message);
           IDEMessageDialog(lisCodeToolsDefsWriteError,
-            Format(lisUnableToWriteTheProjectSessionFileError, [#13,
-              ProjectSessionFile, #13, E.Message])
+            Format(lisUnableToWriteTheProjectSessionFileError,
+                   [LineEnding, ProjectSessionFile, LineEnding, E.Message])
             ,mtError,[mbOk]);
           Result:=mrCancel;
           exit;
@@ -3361,9 +3361,9 @@ begin
       except
         on E: Exception do begin
           IDEMessageDialog(lisUnableToReadLpi,
-               Format(lisUnableToReadTheProjectInfoFile, [#13, '"',NewProjectInfoFile, '"'])+#13
-               +E.Message
-              ,mtError,[mbOk]);
+               Format(lisUnableToReadTheProjectInfoFile,
+                      [LineEnding, '"',NewProjectInfoFile, '"'])+LineEnding
+               +E.Message, mtError, [mbOk]);
           Result:=mrCancel;
           exit;
         end;
@@ -3388,9 +3388,9 @@ begin
       except
         on E: Exception do begin
           IDEMessageDialog(lisUnableToReadLpi,
-               Format(lisUnableToReadTheProjectInfoFile, [#13, '"',ProjectInfoFile, '"'])+#13
-               +E.Message
-              ,mtError,[mbOk]);
+               Format(lisUnableToReadTheProjectInfoFile,
+                      [LineEnding, '"',ProjectInfoFile, '"'])+LineEnding
+               +E.Message, mtError, [mbOk]);
           Result:=mrCancel;
           exit;
         end;
@@ -3540,10 +3540,10 @@ begin
             OnLoadProjectInfo(Self,XMLConfig,true);
           end;
         except
-          IDEMessageDialog(lisCCOErrorCaption, Format(
-            lisUnableToReadTheProjectInfoFile2, [#13, '"',
-            ProjectInfoFile, '"'])
-              ,mtError,[mbOk]);
+          IDEMessageDialog(lisCCOErrorCaption,
+            Format(lisUnableToReadTheProjectInfoFile2,
+                   [LineEnding, '"', ProjectInfoFile, '"']),
+            mtError,[mbOk]);
           Result:=mrCancel;
           exit;
         end;
@@ -5017,8 +5017,8 @@ begin
           Result:=mrOk;
         end else begin
           Result:=IDEMessageDialog(lisPkgMangErrorReadingFile,
-            Format(lisProjMangUnableToReadStateFileOfProjectError, [StateFile,
-              IDAsString, #13, E.Message]),
+            Format(lisProjMangUnableToReadStateFileOfProjectError,
+                   [StateFile, IDAsString, LineEnding, E.Message]),
             mtError,[mbAbort]);
         end;
         exit;
@@ -5061,8 +5061,8 @@ begin
   except
     on E: Exception do begin
       Result:=IDEMessageDialog(lisPkgMangErrorWritingFile,
-        Format(lisProjMangUnableToWriteStateFileForProjectError, [IDAsString,
-          #13, E.Message]),
+        Format(lisProjMangUnableToWriteStateFileForProjectError,
+               [IDAsString, LineEnding, E.Message]),
         mtError,[mbAbort,mbCancel]);
       exit;
     end;

@@ -562,7 +562,7 @@ begin
         CurControl.AnchorSide[Kind].Control:=NewSibling;
       except
         on E: Exception do begin
-          MessageDlg('Error', lisUnableToSetAnchorSideControl+#13 +E.Message,
+          MessageDlg('Error', lisUnableToSetAnchorSideControl+LineEnding+E.Message,
             mtError,[mbCancel],0);
         end;
       end;

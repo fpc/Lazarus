@@ -257,7 +257,7 @@ begin
     except
       on E: Exception do begin
         MessageDlg(lisInvalidFilter,
-          Format(lisInvalidExpression, [#13, Expr, #13, E.Message]), mtError, [
+          Format(lisInvalidExpression, [LineEnding, Expr, LineEnding, E.Message]), mtError, [
             mbCancel], 0);
       end;
     end;
@@ -274,8 +274,8 @@ begin
     except
       on E: Exception do begin
         MessageDlg(lisInvalidFilter,
-          Format(lisInvalidExpression, [#13, Expr, #13, E.Message]), mtError, [
-            mbCancel], 0);
+          Format(lisInvalidExpression, [LineEnding, Expr, LineEnding, E.Message]),
+          mtError, [mbCancel], 0);
       end;
     end;
     if not Result then exit;

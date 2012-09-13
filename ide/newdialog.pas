@@ -417,9 +417,9 @@ end;
 function TNewLazIDEItemCategory.Description: string;
 begin
   if Name = 'File' then
-    Result := Format(lisNewDlgCreateANewEditorFileChooseAType, [#13])
+    Result := Format(lisNewDlgCreateANewEditorFileChooseAType, [LineEnding])
   else if Name = 'Project' then
-    Result := Format(lisNewDlgCreateANewProjectChooseAType, [#13])
+    Result := Format(lisNewDlgCreateANewProjectChooseAType, [LineEnding])
   else
     Result := '';
 end;

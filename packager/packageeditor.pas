@@ -881,7 +881,8 @@ begin
   and (not LazPackage.ReadOnly) and LazPackage.Modified then begin
 
     MsgResult:=MessageDlg(lisPkgMangSavePackage,
-      Format(lisPckEditPackageHasChangedSavePackage,['"',LazPackage.IDAsString,'"',#13]),
+      Format(lisPckEditPackageHasChangedSavePackage,
+             ['"',LazPackage.IDAsString,'"',LineEnding]),
       mtConfirmation,[mbYes,mbNo,mbAbort],0);
     case MsgResult of
       mrYes:
@@ -959,13 +960,13 @@ begin
       s:='';
       mt:=mtConfirmation;
       if CurFile.FileType=pftMainUnit then begin
-        s:=Format(lisWarningThisIsTheMainUnitTheNewMainUnitWillBePas, [#13#13,
-          lowercase(LazPackage.Name)]);
+        s:=Format(lisWarningThisIsTheMainUnitTheNewMainUnitWillBePas,
+                  [LineEnding+LineEnding, lowercase(LazPackage.Name)]);
         mt:=mtWarning;
       end;
       if MessageDlg(lisPckEditRemoveFile2,
         Format(lisPckEditRemoveFileFromPackage, ['"', CurFile.Filename, '"',
-          #13, '"', LazPackage.IDAsString, '"'])+s,
+          LineEnding, '"', LazPackage.IDAsString, '"'])+s,
         mt,[mbYes,mbNo],0)=mrNo
       then
         exit;
@@ -979,7 +980,7 @@ begin
       // confirm deletion
       if MessageDlg(lisPckEditRemoveDependency2,
         Format(lisPckEditRemoveDependencyFromPackage, ['"',
-          CurDependency.AsString, '"', #13, '"', LazPackage.IDAsString, '"']),
+          CurDependency.AsString, '"', LineEnding, '"', LazPackage.IDAsString, '"']),
         mtConfirmation,[mbYes,mbNo],0)=mrNo
       then
         exit;
@@ -1122,7 +1123,7 @@ begin
       if not NewDependency.MinVersion.ReadString(MinVersionEdit.Text) then begin
         MessageDlg(lisPckEditInvalidMinimumVersion,
           Format(lisPckEditTheMinimumVersionIsNotAValidPackageVersion, ['"',
-            MinVersionEdit.Text, '"', #13]),
+            MinVersionEdit.Text, '"', LineEnding]),
           mtError,[mbCancel],0);
         exit;
       end;
@@ -1136,7 +1137,7 @@ begin
       if not NewDependency.MaxVersion.ReadString(MaxVersionEdit.Text) then begin
         MessageDlg(lisPckEditInvalidMaximumVersion,
           Format(lisPckEditTheMaximumVersionIsNotAValidPackageVersion, ['"',
-            MaxVersionEdit.Text, '"', #13]),
+            MaxVersionEdit.Text, '"', LineEnding]),
           mtError,[mbCancel],0);
         exit;
       end;
@@ -2022,7 +2023,7 @@ begin
     then exit;
     if MessageDlg(lisPkgEditNewUnitNotInUnitpath,
         Format(lisPkgEditTheFileIsCurrentlyNotInTheUnitpathOfThePackage, ['"',
-          AnUnitFilename, '"', #13, #13, #13, '"', ShortDirectory, '"']),
+          AnUnitFilename,'"',LineEnding,LineEnding,LineEnding,'"',ShortDirectory,'"']),
         mtConfirmation,[mbYes,mbNo],0)<>mrYes
     then begin
       if IgnoreUnitPaths=nil then
@@ -2066,7 +2067,7 @@ begin
   then exit;
   if MessageDlg(lisPENewFileNotInIncludePath,
      Format(lisPETheFileIsCurrentlyNotInTheIncludePathOfThePackageA, [
-       AnIncludeFile, #13, ShortDirectory]),
+       AnIncludeFile, LineEnding, ShortDirectory]),
       mtConfirmation,[mbYes,mbNo],0)<>mrYes
   then begin
     if IgnoreIncPaths=nil then
@@ -2420,7 +2421,7 @@ begin
   if ShouldNotBeInstalled(APackage) then begin
     if IDEQuestionDialog(lisNotAnInstallPackage,
       Format(lisThePackageDoesNotHaveAnyRegisterProcedureWhichTypi, [APackage.
-        Name, #13, #13]),
+        Name, LineEnding, LineEnding]),
       mtWarning,
       [mrIgnore, lisInstallItILikeTheFat, mrCancel, lisCancel], '')<>mrIgnore
     then exit(mrCancel);

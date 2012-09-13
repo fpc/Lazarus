@@ -1143,7 +1143,7 @@ begin
 
     TOIHintWindow(FHintWindow).OnMouseDown := @HintMouseDown;
     FHIntWindow.Visible := False;
-    FHintWindow.Caption := 'This is a hint window'#13#10'Neat huh?';
+    FHintWindow.Caption := 'This is a hint window'+LineEnding+'Neat huh?';
     FHintWindow.HideInterval := 4000;
     FHintWindow.AutoHide := True;
   end

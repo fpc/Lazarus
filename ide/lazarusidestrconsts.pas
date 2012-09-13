@@ -3420,8 +3420,8 @@ resourcestring
   lisErrorOpeningComponent = 'Error opening component';
   lisUnableToOpenAncestorComponent = 'Unable to open ancestor component';
   lisNewDlgPleaseSelectAnItemFirst = 'Please select an item first.';
-  lisNewDlgCreateANewEditorFileChooseAType = 'Create a new editor file.%'
-    +'sChoose a type.';
+  lisNewDlgCreateANewEditorFileChooseAType = 'Create a new editor file.%s'
+    +'Choose a type.';
   lisNewDlgCreateANewProjectChooseAType = 'Create a new project.%sChoose a type.';
   lisChooseOneOfTheseItemsToCreateANewFile = 'Choose one of these items to '
     +'create a new File';
@@ -3724,8 +3724,8 @@ resourcestring
   lisPkgMangDeleteOldPackageFile2 = 'Delete old package file %s%s%s?';
   lisPkgMangDeleteFailed = 'Delete failed';
   lisAmbiguousUnitFound = 'Ambiguous Unit found';
-  lisTheFileWasFoundInOneOfTheSourceDirectoriesOfThePac = 'The file %s%s%s%'
-    +'swas found in one of the source directories of the package %s and looks '
+  lisTheFileWasFoundInOneOfTheSourceDirectoriesOfThePac = 'The file %s%s%s%s'
+    +'was found in one of the source directories of the package %s and looks '
     +'like a compiled unit. Compiled units must be in the output directory of '
     +'the package, otherwise other packages can get problems using this '
     +'package.%s%sDelete ambiguous file?';

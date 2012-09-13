@@ -123,7 +123,7 @@ var
   procedure ShowAbortMessage(const Msg: string);
   begin
     MessageDlg('Error',
-      Format(lisUnableToChangeClassOfTo, [Msg, #13, PersistentName,
+      Format(lisUnableToChangeClassOfTo, [Msg, LineEnding, PersistentName,
         NewClass.ClassName]),
       mtError,[mbCancel],0);
   end;
@@ -186,7 +186,8 @@ var
         MainIDEInterface.DoJumpToCodeToolBossError
       else begin
         Msg:=lisErrorParsingLfmComponentStream;
-        if LFMTree<>nil then Msg:=Msg+#13#13+LFMTree.FirstErrorAsString+#13;
+        if LFMTree<>nil then
+          Msg:=Msg+LineEnding+LineEnding+LFMTree.FirstErrorAsString+LineEnding;
         ShowAbortMessage(Msg);
       end;
       exit;

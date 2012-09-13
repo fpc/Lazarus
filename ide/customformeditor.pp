@@ -351,8 +351,8 @@ Begin
         ' "'+OldName+':'+OldClassName+'" ',E.Message);
       DumpExceptionBackTrace;
       MessageDlg(lisCCOErrorCaption,
-        Format(lisCFEAnExceptionOccuredDuringDeletionOf, [#13, OldName,
-          OldClassName, #13, E.Message]),
+        Format(lisCFEAnExceptionOccuredDuringDeletionOf,
+               [LineEnding, OldName, OldClassName, LineEnding, E.Message]),
         mtError,[mbOk],0);
     end;
   end;
@@ -590,8 +590,8 @@ begin
   except
     on E: Exception do begin
       MessageDlg(lisCCOErrorCaption,
-        Format(lisCFEUnableToClearTheFormEditingSelection, [#13, E.Message]),
-          mtError, [mbCancel], 0);
+        Format(lisCFEUnableToClearTheFormEditingSelection, [LineEnding, E.Message]),
+        mtError, [mbCancel], 0);
     end;
   end;
   ASelection.Free;
@@ -990,9 +990,9 @@ begin
         DebugLn(['TCustomFormEditor.SaveUnitComponentToBinStream ',E.Message]);
         DumpExceptionBackTrace;
         Result:=MessageDlg(lisStreamingError,
-            Format(lisUnableToStreamT, [AnUnitInfo.ComponentName,
-                              AnUnitInfo.ComponentName])+#13
-                              +E.Message,
+            Format(lisUnableToStreamT,
+                   [AnUnitInfo.ComponentName, AnUnitInfo.ComponentName])+LineEnding
+            +E.Message,
             mtError,[mbAbort, mbRetry, mbIgnore], 0);
         if Result=mrAbort then exit;
         if Result=mrIgnore then Result:=mrOk;
@@ -1188,8 +1188,8 @@ begin
         on e: Exception do begin
           DumpExceptionBackTrace;
           MessageDlg(lisCFEErrorCreatingComponent,
-            Format(lisCFEErrorCreatingComponent2, [TypeClass.ClassName, #13, E.
-              Message]),
+            Format(lisCFEErrorCreatingComponent2,
+                   [TypeClass.ClassName, LineEnding, E.Message]),
             mtError,[mbCancel],0);
           exit;
         end;
@@ -1372,8 +1372,8 @@ begin
         FreeAndNil(Mediator);
       except
         on E: Exception do begin
-          s:=Format(lisCFEErrorDestroyingMediatorOfUnit, [Mediator.ClassName,
-            AUnitName, #13, E.Message]);
+          s:=Format(lisCFEErrorDestroyingMediatorOfUnit,
+                    [Mediator.ClassName, AUnitName, LineEnding, E.Message]);
           DebugLn(['TCustomFormEditor.CreateComponent ',UTF8ToConsole(s)]);
           DumpExceptionBackTrace;
           MessageDlg(lisCFEErrorDestroyingMediator, s, mtError, [mbCancel], 0);
@@ -1387,8 +1387,8 @@ begin
           NewComponent:=nil;
         except
           on E: Exception do begin
-            s:=Format(lisCFEErrorDestroyingComponentOfTypeOfUnit, [TypeClass.
-              ClassName, AUnitName, #13, E.Message]);
+            s:=Format(lisCFEErrorDestroyingComponentOfTypeOfUnit,
+                      [TypeClass.ClassName, AUnitName, LineEnding, E.Message]);
             DebugLn(['TCustomFormEditor.CreateComponent ',UTF8ToConsole(s)]);
             DumpExceptionBackTrace;
             MessageDlg(lisCFEErrorDestroyingComponent, s, mtError, [mbCancel], 0
@@ -1867,16 +1867,16 @@ begin
       aMsg:=Format(lisCFERoot, [aMsg, CurReadJITComponent.Name,
         CurReadJITComponent.ClassName]);
     if CurReadChild<>nil then
-      aMsg:=Format(lisCFEComponent, [aMsg, #13, CurReadChild.Name, CurReadChild.
-        ClassName])
+      aMsg:=Format(lisCFEComponent,
+                   [aMsg, LineEnding, CurReadChild.Name, CurReadChild.ClassName])
     else if CurReadChildClass<>nil then
-      aMsg:=Format(lisCFEComponentClass, [aMsg, #13, CurReadChildClass.ClassName
-        ]);
-    aMsg:=aMsg+#13+CurReadErrorMsg;
+      aMsg:=Format(lisCFEComponentClass,
+                   [aMsg, LineEnding, CurReadChildClass.ClassName]);
+    aMsg:=aMsg+LineEnding+CurReadErrorMsg;
   end;
   if (Reader<>nil) and (Reader.Driver is TLRSObjectReader) then begin
     ErrorBinPos:=TLRSObjectReader(Reader.Driver).Stream.Position;
-    aMsg:=Format(lisCFEStreamPosition, [aMsg, #13, dbgs(ErrorBinPos)]);
+    aMsg:=Format(lisCFEStreamPosition, [aMsg, LineEnding, dbgs(ErrorBinPos)]);
   end;
 
   case ErrorType of
@@ -1886,8 +1886,8 @@ begin
       end;
     jfeUnknownComponentClass:
       begin
-        aMsg:=Format(lisCFEClassNotFound, [aMsg, #13, JITComponentList.
-          CurUnknownClass]);
+        aMsg:=Format(lisCFEClassNotFound,
+                     [aMsg, LineEnding, JITComponentList.CurUnknownClass]);
       end;
   end;
   if Buttons=[mbIgnore,mbCancel] then begin
@@ -1937,10 +1937,10 @@ begin
     LFMFilename:=ChangeFileExt(TUnitInfo(List.ContextObject).Filename,'.lfm');
   end;
   if LFMFilename<>'' then
-    Msg:=Format(lisCFEInFile, [Msg, LFMFilename, #13]);
+    Msg:=Format(lisCFEInFile, [Msg, LFMFilename, LineEnding]);
 
   if List.CurReadErrorMsg<>'' then
-    Msg:=Msg+List.CurReadErrorMsg+#13;
+    Msg:=Msg+List.CurReadErrorMsg+LineEnding;
   if E is EReadError then;
   MessageDlg(lisCodeToolsDefsReadError, Msg, mtError, [mbCancel], 0);
 end;
@@ -1964,7 +1964,8 @@ begin
     on E: Exception do begin
       DebugLn('TCustomFormEditor.OnDesignerMenuItemClick ERROR on CompEditor.Edit: ',E.Message);
       MessageDlg(Format(lisErrorIn, [CompClassName]),
-        Format(lisCFETheComponentEditorOfClassHasCreatedTheError, [CompClassName, #13, E.Message]),
+        Format(lisCFETheComponentEditorOfClassHasCreatedTheError,
+               [CompClassName, LineEnding, E.Message]),
         mtError,[mbOk],0);
     end;
   end;
@@ -1974,7 +1975,8 @@ begin
     on E: Exception do begin
       DebugLn('TCustomFormEditor.OnDesignerMenuItemClick ERROR on CompEditor.Free: ',E.Message);
       MessageDlg(Format(lisErrorIn, [CompClassName]),
-        Format(lisCFETheComponentEditorOfClassHasCreatedTheError, [CompClassName, #13, E.Message]),
+        Format(lisCFETheComponentEditorOfClassHasCreatedTheError,
+               [CompClassName, LineEnding, E.Message]),
         mtError,[mbOk],0);
     end;
   end;

@@ -205,8 +205,8 @@ function TPackageIntegrationOptionsFrame.ShowMsgPackageTypeMustBeDesign: boolean
 begin
   if MessageDlg(lisPckOptsInvalidPackageType,
     Format(lisPckOptsThePackageHasTheAutoInstallFlagThisMeans,
-    ['"', FLazPackage.IDAsString, '"', #13, #13]), mtWarning,
-    [mbIgnore, mbCancel], 0) <> mrIgnore then
+           ['"', FLazPackage.IDAsString, '"', LineEnding, LineEnding]),
+    mtWarning, [mbIgnore, mbCancel], 0) <> mrIgnore then
   begin
     Result := True;
     PkgTypeRadioGroup.ItemIndex := FStoredPkgType;

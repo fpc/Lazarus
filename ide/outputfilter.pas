@@ -1569,7 +1569,7 @@ begin
   except
     on E: Exception do begin
       MsgResult:=IDEMessageDialog('Scanner creation failed',
-        'Failed to create scanner "'+ScannerName+'":'#13
+        'Failed to create scanner "'+ScannerName+'":'+LineEnding
         +E.Message,
         mtError,[mbCancel]);
     end;

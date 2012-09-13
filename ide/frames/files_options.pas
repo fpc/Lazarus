@@ -414,8 +414,8 @@ begin
   if Quality<>sddqCompatible then
   begin
     if IDEMessageDialog(lisCCOWarningCaption,
-      Format(lisTheLazarusDirectoryDoesNotLookCorrect, [NewLazarusDir, #13, Note
-        ]),
+      Format(lisTheLazarusDirectoryDoesNotLookCorrect,
+             [NewLazarusDir, LineEnding, Note]),
       mtWarning, Buttons)<>mrIgnore
     then
       exit;
@@ -442,8 +442,8 @@ begin
   if Quality<>sddqCompatible then
   begin
     if IDEMessageDialog(lisCCOWarningCaption,
-      Format(lisTheFPCSourceDirectoryDoesNotLookCorrect, [NewFPCSrcDir, #13,
-        Note]),
+      Format(lisTheFPCSourceDirectoryDoesNotLookCorrect,
+             [NewFPCSrcDir, LineEnding, Note]),
       mtWarning, Buttons)<>mrIgnore
     then
       exit;
@@ -466,8 +466,8 @@ begin
   if Quality<>sddqCompatible then
   begin
     if IDEMessageDialog(lisCCOWarningCaption,
-      Format(lisTheCompilerFileDoesNotLookCorrect, [NewCompilerFilename, #13,
-        Note]),
+      Format(lisTheCompilerFileDoesNotLookCorrect,
+             [NewCompilerFilename, LineEnding, Note]),
       mtWarning, Buttons)<>mrIgnore
     then
       exit;

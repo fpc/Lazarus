@@ -200,7 +200,7 @@ begin
     except
       on E: Exception do begin
         Result:=QuestionDlg(lisCodeToolsDefsReadError, Format(
-          lisUnableToReadFileError, ['"', aFilename, '"', #13, E.Message]),
+          lisUnableToReadFileError, ['"', aFilename, '"', LineEnding, E.Message]),
           mtError,[mrIgnore,mrAbort],0);
         if Result=mrIgnore then // The caller will continue like nothing happened.
           Result:=mrOk;
@@ -213,7 +213,7 @@ begin
     except
       on E: Exception do begin
         Result:=QuestionDlg(lisFormatError,
-          Format(lisUnableToConvertFileError, ['"',aFilename,'"',#13,E.Message]),
+          Format(lisUnableToConvertFileError, ['"',aFilename,'"',LineEnding,E.Message]),
           mtError,[mrIgnore,mrAbort],0);
         if Result=mrIgnore then
           Result:=mrOk;
@@ -226,7 +226,7 @@ begin
     except
       on E: Exception do begin
         Result:=MessageDlg(lisCodeToolsDefsWriteError,
-          Format(lisUnableToWriteFileError, ['"',aFilename,'"',#13,E.Message]),
+          Format(lisUnableToWriteFileError, ['"',aFilename,'"',LineEnding,E.Message]),
           mtError,[mbIgnore,mbAbort],0);
         if Result=mrIgnore then
           Result:=mrOk;

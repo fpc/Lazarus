@@ -1044,8 +1044,9 @@ begin
   except
     on E: Exception do begin
       MessageDlg(lisCodeToolsDefsWriteError,
-        Format(lisErrorWritingPackageListToFile, [#13, AFilename, #13, E.Message
-          ]), mtError, [mbCancel], 0);
+        Format(lisErrorWritingPackageListToFile,
+              [LineEnding, AFilename, LineEnding, E.Message]),
+        mtError, [mbCancel], 0);
     end;
   end;
 end;
@@ -1112,8 +1113,9 @@ begin
   except
     on E: Exception do begin
       MessageDlg(lisCodeToolsDefsReadError,
-        Format(lisErrorReadingPackageListFromFile, [#13, AFilename, #13,
-          E.Message]), mtError, [mbCancel], 0);
+        Format(lisErrorReadingPackageListFromFile,
+               [LineEnding, AFilename, LineEnding, E.Message]),
+        mtError, [mbCancel], 0);
     end;
   end;
 end;

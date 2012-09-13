@@ -438,7 +438,7 @@ begin
   Msg:='This is a demonstration how to get help for a pascal identifier. See package '+IDEHelpPkgName;
 
   IDEMessageDialog('My pascal source help',
-    'ToDo: implement me:'#13#13
+    'ToDo: implement me:'+LineEnding+LineEnding
     +Msg,mtInformation,[mbOk]);
   Result:=shrSuccess;
 end;
@@ -483,7 +483,7 @@ begin
   Msg:='This is a demonstration how to get help for a class. See package '+IDEHelpPkgName;
 
   IDEMessageDialog('My class help',
-    'The class "'+ClassQuery.TheClass.ClassName+'":'#13#13
+    'The class "'+ClassQuery.TheClass.ClassName+'":'+LineEnding+LineEnding
     +Msg,mtInformation,[mbOk]);
   Result:=shrSuccess;
 end;
@@ -696,7 +696,7 @@ begin
   Msg:=ContextToMessage.Values[IntToStr(Context.Context)];
 
   IDEMessageDialog('My context help',
-    'The context "'+IntToStr(Context.Context)+'":'#13#13
+    'The context "'+IntToStr(Context.Context)+'":'+LineEnding+LineEnding
     +Msg,mtInformation,[mbOk]);
   Result:=shrSuccess;
 end;
@@ -764,7 +764,7 @@ begin
   if Msg.MessageParts.Values['Message']<>'User defined: Test' then exit;
 
   IDEMessageDialog('My message help',
-    'The message "$'+Msg.WholeMessage+'":'#13#13
+    'The message "$'+Msg.WholeMessage+'":'+LineEnding+LineEnding
     +'Success. Message recognized by TMyMessagesHelpDatabase',mtInformation,[mbOk]);
   Result:=shrSuccess;
 end;
@@ -859,7 +859,7 @@ begin
     // directive is now 'mode'
     Txt:=FPCDirectiveToText.Values[lowercase(Directive)];
     IDEMessageDialog('My fpc directive help',
-      'Free Pascal compiler directive "$'+Directive+'":'#13#13
+      'Free Pascal compiler directive "$'+Directive+'":'+LineEnding+LineEnding
       +Txt,mtInformation,[mbOk]);
   end else if (IDEDirectiveHelpPrefix<>'')
   and (LeftStr(Directive,length(IDEDirectiveHelpPrefix))=IDEDirectiveHelpPrefix)
@@ -868,7 +868,7 @@ begin
     Directive:=copy(Directive,length(IDEDirectiveHelpPrefix)+2,length(Directive));
     Txt:=IDEDirectiveToText.Values[lowercase(Directive)];
     IDEMessageDialog('My Lazarus IDE directive help',
-      'Lazarus IDE directive "%'+Directive+'":'#13#13
+      'Lazarus IDE directive "%'+Directive+'":'+LineEnding+LineEnding
       +Txt,mtInformation,[mbOk]);
   end;
   Result:=shrSuccess;
@@ -954,7 +954,7 @@ begin
   KeyWord:=copy(KeywordQuery.Keyword,length(FPCKeyWordHelpPrefix)+1,length(KeywordQuery.Keyword));
   Txt:=KeywordToText.Values[lowercase(KeyWord)];
   IDEMessageDialog('My fpc keyword help',
-    'The keyword "'+KeyWord+'":'#13#13
+    'The keyword "'+KeyWord+'":'+LineEnding+LineEnding
     +Txt,mtInformation,[mbOk]);
   Result:=shrSuccess;
 end;

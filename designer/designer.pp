@@ -977,7 +977,7 @@ begin
         on E: Exception do begin
           MessageDlg(lisUnableToStreamSelectedComponents,
             Format(lisThereWasAnErrorDuringWritingTheSelectedComponent, [
-              CurComponent.Name, CurComponent.ClassName, #13, E.Message]),
+              CurComponent.Name, CurComponent.ClassName, LineEnding, E.Message]),
             mtError,[mbOk],0);
           exit;
         end;
@@ -990,7 +990,7 @@ begin
         on E: Exception do begin
           MessageDlg(lisUnableConvertBinaryStreamToText,
             Format(lisThereWasAnErrorWhileConvertingTheBinaryStreamOfThe, [
-              CurComponent.Name, CurComponent.ClassName, #13, E.Message]),
+              CurComponent.Name, CurComponent.ClassName, LineEnding, E.Message]),
             mtError,[mbOk],0);
           exit;
         end;
@@ -1037,8 +1037,8 @@ begin
     except
       on E: Exception do begin
         MessageDlg(lisUnableCopyComponentsToClipboard,
-          Format(lisThereWasAnErrorWhileCopyingTheComponentStreamToCli, [#13,
-            E.Message]),
+          Format(lisThereWasAnErrorWhileCopyingTheComponentStreamToCli,
+                 [LineEnding, E.Message]),
           mtError,[mbOk],0);
         exit;
       end;
@@ -1369,7 +1369,7 @@ begin
       DebugLn('TDesigner.InvokeComponentEditor ERROR: ',E.Message);
       MessageDlg(Format(lisErrorIn, [CompEditor.ClassName]),
         Format(lisTheComponentEditorOfClassHasCreatedTheError, ['"',
-          CompEditor.ClassName, '"', #13, '"', E.Message, '"']),
+          CompEditor.ClassName, '"', LineEnding, '"', E.Message, '"']),
         mtError,[mbOk],0);
     end;
   end;
@@ -1930,7 +1930,7 @@ var
     begin
       IDEMessageDialog(lisA2PInvalidCircularDependency,
         Format(lisIsAThisCircularDependencyIsNotAllowed, [dbgsName(LookupRoot),
-          dbgsName(NewComponentClass), #13]),
+          dbgsName(NewComponentClass), LineEnding]),
         mtError,[mbOk],'');
       exit;
     end;
@@ -2445,7 +2445,7 @@ begin
     if AncestorRoot<>nil then begin
       MessageDlg(lisInvalidDelete,
        Format(lisTheComponentIsInheritedFromToDeleteAnInheritedComp, [dbgsName(
-         ControlSelection[i].Persistent), dbgsName(AncestorRoot), #13]),
+         ControlSelection[i].Persistent), dbgsName(AncestorRoot), LineEnding]),
        mtInformation, [mbOk],0);
       exit;
     end;
@@ -2798,8 +2798,8 @@ begin
       DebugLn('TDesigner.OnComponentEditorVerbMenuItemClick ERROR: ',E.Message);
       MessageDlg(Format(lisErrorIn, [PopupMenuComponentEditor.ClassName]),
         Format(lisTheComponentEditorOfClassInvokedWithVerbHasCreated, ['"',
-          PopupMenuComponentEditor.ClassName, '"', #13, IntToStr(Verb), '"',
-          VerbCaption, '"', #13, #13, '"', E.Message, '"']),
+          PopupMenuComponentEditor.ClassName, '"', LineEnding, IntToStr(Verb), '"',
+          VerbCaption, '"', LineEnding, LineEnding, '"', E.Message, '"']),
         mtError,[mbOk],0);
     end;
   end;

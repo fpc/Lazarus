@@ -133,7 +133,7 @@ begin
     end;
   except
     on E: Exception do begin
-      MessageDlg('Read error','Error reading file '+Filename+#13+E.Message,
+      MessageDlg('Read error','Error reading file '+Filename+LineEnding+E.Message,
         mtError,[mbOk],0);
     end;
   end;
@@ -157,7 +157,7 @@ begin
     end;
   except
     on E: Exception do begin
-      MessageDlg('Write error','Error writing file '+Filename+#13+E.Message,
+      MessageDlg('Write error','Error writing file '+Filename+LineEnding+E.Message,
         mtError,[mbOk],0);
     end;
   end;

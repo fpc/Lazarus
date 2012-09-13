@@ -503,7 +503,7 @@ var
     Msg: String;
     i: Integer;
   begin
-    Msg:='TBlockResourceCache.AddResource Descriptor Already Added '#13;
+    Msg:='TBlockResourceCache.AddResource Descriptor Already Added '+LineEnding;
     for i:=0 to DataSize-1 do
       Msg:=Msg+HexStr(ord(PChar(DescPtr)[i]),2);
     raise Exception.Create(Msg);

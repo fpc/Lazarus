@@ -2463,11 +2463,11 @@ begin
   end else if NodeData is TCodeBrowserUnit then begin
     CurUnit:=TCodeBrowserUnit(NodeData);
     if CurUnit.Filename<>'' then
-      Result:=TVNode.Text+#13+CurUnit.Filename;
+      Result:=TVNode.Text+LineEnding+CurUnit.Filename;
   end else if NodeData is TCodeBrowserNode then begin
     Node:=TCodeBrowserNode(NodeData);
     if Node.CodePos.Code<>nil then begin
-      Result:=TVNode.Text+#13+Node.CodePos.Code.Filename;
+      Result:=TVNode.Text+LineEnding+Node.CodePos.Code.Filename;
       Node.CodePos.Code.AbsoluteToLineCol(Node.CodePos.P,Line,Column);
       if Line>0 then
         Result:=Result+' ('+IntToStr(Line)+','+IntToStr(Column)+')';

@@ -654,7 +654,7 @@ begin
       if Verbose then begin
         IDEMessageDialog(lisPkgMangUnableToCreateDirectory,
           Format(lisPkgMangUnableToCreateOutputDirectoryForPackage, ['"',
-            Directory, '"', #13, APackage.IDAsString]),
+            Directory, '"', LineEnding, APackage.IDAsString]),
           mtError,[mbCancel]);
       end;
       debugln(['TLazPackageGraph.OutputDirectoryIsWritable unable to create directory "',Directory,'"']);
@@ -1373,7 +1373,7 @@ begin
         if FRegistrationFile=nil then begin
           RegistrationError(Format(
             lisPkgSysUnitWasNotFoundInTheLpkFileProbablyThisLpkFileWasN, [
-            FRegistrationUnitName, #13]));
+            FRegistrationUnitName, LineEnding]));
         end else begin
           if not (pffReportedAsRemoved in FRegistrationFile.Flags) then begin
             RegistrationError(
@@ -1469,22 +1469,22 @@ begin
   end else begin
     ErrorMsg:='Package: "'+FRegistrationPackage.IDAsString+'"';
     if FRegistrationPackage.AutoCreated then
-      ErrorMsg:=Format(lisPkgSysTheLpkFileWasNotFound, [ErrorMsg, #13])
+      ErrorMsg:=Format(lisPkgSysTheLpkFileWasNotFound, [ErrorMsg, LineEnding])
     else
-      ErrorMsg:=Format(lisPkgSysLPKFilename, [ErrorMsg, #13, '"',
+      ErrorMsg:=Format(lisPkgSysLPKFilename, [ErrorMsg, LineEnding, '"',
         FRegistrationPackage.Filename, '"']);
     // current unitname
     if FRegistrationUnitName<>'' then
-      ErrorMsg:=Format(lisPkgSysUnitName, [ErrorMsg, #13, '"',
+      ErrorMsg:=Format(lisPkgSysUnitName, [ErrorMsg, LineEnding, '"',
         FRegistrationUnitName, '"']);
     // current file
     if FRegistrationFile<>nil then
-      ErrorMsg:=Format(lisPkgSysFileName, [ErrorMsg, #13, '"',
+      ErrorMsg:=Format(lisPkgSysFileName, [ErrorMsg, LineEnding, '"',
         FRegistrationFile.Filename, '"']);
   end;
   // append message
   if Msg<>'' then
-    ErrorMsg:=ErrorMsg+#13#13+Msg;
+    ErrorMsg:=ErrorMsg+LineEnding+LineEnding+Msg;
   debugln(['TLazPackageGraph.RegistrationError ',dbgstr(ErrorMsg)]);
 
   if AbortRegistration or QuietRegistration then exit;
@@ -1710,7 +1710,7 @@ begin
     Dependency.AddToList(FirstAutoInstallDependency,pdlRequires);
     if OpenDependency(Dependency,false)<>lprSuccess then begin
       IDEMessageDialog(lisPkgMangUnableToLoadPackage,
-        Format(lisPkgMangUnableToOpenThePackage, ['"', PackageName, '"', #13]),
+        Format(lisPkgMangUnableToOpenThePackage, ['"', PackageName, '"', LineEnding]),
         mtWarning,[mbOk]);
       continue;
     end;
@@ -2684,7 +2684,7 @@ begin
     on E: Exception do begin
       Result:=IDEMessageDialogAb(lisPkgMangErrorWritingFile,
         Format(lisPkgMangUnableToWriteStateFileOfPackageError, ['"', StateFile,
-          '"', #13, APackage.IDAsString, #13, E.Message]),
+          '"', LineEnding, APackage.IDAsString, LineEnding, E.Message]),
         mtError,[mbCancel],ShowAbort);
       exit;
     end;
@@ -2744,7 +2744,7 @@ begin
         end else begin
           Result:=IDEMessageDialogAb(lisPkgMangErrorReadingFile,
             Format(lisPkgMangUnableToReadStateFileOfPackageError, ['"',
-              StateFile, '"', #13, APackage.IDAsString, #13, E.Message]),
+              StateFile, '"', LineEnding, APackage.IDAsString, LineEnding, E.Message]),
             mtError,[mbCancel],ShowAbort);
         end;
         exit;
@@ -3437,7 +3437,7 @@ begin
             DebugLn(['TLazPackageGraph.CompilePackage ',APackage.IDAsString,' ',e.Message]);
             Result:=IDEMessageDialog(lisPkgManginvalidCompilerFilename,
               Format(lisPkgMangTheCompilerFileForPackageIsNotAValidExecutable, [
-                APackage.IDAsString, #13, E.Message]),
+                APackage.IDAsString, LineEnding, E.Message]),
               mtError,[mbCancel,mbAbort]);
             exit;
           end;
@@ -3529,9 +3529,8 @@ begin
           // list
           MsgResult:=IDEQuestionDialog(lisInstallationFailed,
             Format(lisPkgMangThePackageFailedToCompileRemoveItFromTheInstallati,
-              ['"', APackage.IDAsString, '"', #13]), mtConfirmation,
-              [mrYes, lisRemoveFromInstallList, mrIgnore, lisKeepInInstallList
-                ]);
+              ['"', APackage.IDAsString, '"', LineEnding]), mtConfirmation,
+              [mrYes, lisRemoveFromInstallList, mrIgnore, lisKeepInInstallList]);
           if MsgResult=mrIgnore then
             IgnoreQuestions.Add(GetIgnoreIdentifier,iiid24H)
           else if MsgResult=mrYes then
@@ -3616,7 +3615,7 @@ begin
     on E: Exception do begin
       Result:=IDEMessageDialog(lisPkgMangErrorWritingFile,
         Format(lisPkgMangUnableToWriteStateFileOfPackageError, ['"', TargetCompiledFile,
-          '"', #13, APackage.IDAsString, #13, E.Message]),
+          '"', LineEnding, APackage.IDAsString, LineEnding, E.Message]),
         mtError,[mbCancel],'');
       exit;
     end;
@@ -4151,7 +4150,7 @@ begin
   if FileExistsUTF8(StateFile) and not DeleteFileUTF8(StateFile) then begin
     Result:=IDEMessageDialog(lisPkgMangUnableToDeleteFilename,
       Format(lisPkgMangUnableToDeleteOldStateFileForPackage, ['"', StateFile,
-        '"', #13, APackage.IDAsString]),
+        '"', LineEnding, APackage.IDAsString]),
       mtError,[mbCancel,mbAbort]);
     exit;
   end;
@@ -4162,7 +4161,7 @@ begin
   if not ForceDirectoriesUTF8(PkgSrcDir) then begin
     Result:=IDEMessageDialog(lisPkgMangUnableToCreateDirectory,
       Format(lisPkgMangUnableToCreatePackageSourceDirectoryForPackage, ['"',
-        PkgSrcDir, '"', #13, APackage.IDAsString]),
+        PkgSrcDir, '"', LineEnding, APackage.IDAsString]),
       mtError,[mbCancel,mbAbort]);
     exit;
   end;
@@ -4250,7 +4249,7 @@ var
       if not YesToAll then
         Result:=IDEMessageDialog(lisAmbiguousUnitFound,
           Format(lisTheFileWasFoundInOneOfTheSourceDirectoriesOfThePac, ['"',
-            AmbiguousFilename, '"', #13, APackage.IDAsString, #13, #13]),
+            AmbiguousFilename, '"', LineEnding, APackage.IDAsString, LineEnding, LineEnding]),
           mtWarning,[mbYes,mbYesToAll,mbNo,mbAbort])
       else
         Result:=mrYesToAll;
@@ -5005,7 +5004,7 @@ begin
       // tell the user
       CurResult:=IDEQuestionDialog(lisPkgSysPackageFileNotFound,
         Format(lisPkgSysThePackageIsInstalledButNoValidPackageFileWasFound, ['"',
-          BrokenPackage.Name, '"', #13]),
+          BrokenPackage.Name, '"', LineEnding]),
         mtError,[mrOk,mrYesToAll,'Skip these warnings']);
       if CurResult=mrYesToAll then
         Quiet:=true;

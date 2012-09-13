@@ -877,7 +877,7 @@ begin
   Result:=PrevResult;
   if Result=mrCancel then begin
     Result:=QuestionDlg(lisConvDelphiFailedConvertingUnit,
-        Format(lisConvDelphiFailedToConvertUnit, [#13,fOrigUnitFilename, #13]),
+        Format(lisConvDelphiFailedToConvertUnit, [LineEnding,fOrigUnitFilename,LineEnding]),
         mtWarning, [mrIgnore, lisIgnoreAndContinue, mrAbort], 0);
     case Result  of
       mrIgnore : Result:=mrOK;
@@ -1417,7 +1417,7 @@ begin
         if CurUnitInfo<>nil then begin
           Result:=QuestionDlg(lisConvDelphiUnitnameExistsTwice,
             Format(lisConvDelphiThereAreTwoUnitsWithTheSameUnitname,
-                   [#13, CurUnitInfo.Filename, #13, AFileName, #13]),
+                   [LineEnding, CurUnitInfo.Filename, LineEnding, AFileName, LineEnding]),
             mtWarning, [mrYes,lisConvDelphiRemoveFirst,mrNo,lisConvDelphiRemoveSecond,
                         mrIgnore,lisConvDelphiKeepBoth,mrAbort], 0);
           case Result of
@@ -1670,7 +1670,7 @@ begin
       // ... but it is not the package file we want -> stop
       MessageDlg(lisConvDelphiPackageNameExists,
         Format(lisConvDelphiThereIsAlreadyAPackageWithTheNamePleaseCloseThisPa,
-               [PkgName, #13]), mtError, [mbAbort], 0);
+               [PkgName, LineEnding]), mtError, [mbAbort], 0);
       PackageEditingInterface.DoOpenPackageFile(LazPackage.Filename,[pofAddToRecent],true);
       fErrorMsg:='Stopped because there already is a package with the same name';
       exit(mrAbort);
@@ -1772,7 +1772,7 @@ begin
             if OffendingUnit<>nil then begin
               Result:=QuestionDlg(lisConvDelphiUnitnameExistsTwice,
                 Format(lisConvDelphiThereAreTwoUnitsWithTheSameUnitname,
-                       [#13, OffendingUnit.Filename, #13, CurFilename, #13]),
+                       [LineEnding, OffendingUnit.Filename, LineEnding, CurFilename, LineEnding]),
                 mtWarning, [mrNo, lisConvDelphiRemoveSecond, mrAbort], 0);
               case Result of
                 mrNo:  continue;
@@ -1827,7 +1827,7 @@ begin
   if not FileExistsCached(DPKFilename) then begin
     Result:=MessageDlg(lisFileNotFound,
       Format(lisConvDelphiDelphiPackageMainSourceDpkFileNotFoundForPackage,
-             [#13, LazPackage.Filename]), mtError, [mbAbort], 0);
+             [LineEnding, LazPackage.Filename]), mtError, [mbAbort], 0);
     exit;
   end;
   Result:=LoadCodeBuffer(fDpkCode,DPKFilename,[],true);

@@ -507,7 +507,7 @@ begin
           // the inherited entry already contains a description.
           // ask if it should be really replaced
           if IDEQuestionDialog(lisCodeHelpConfirmreplace,
-            GetContextTitle(Element)+' already contains the help:'+#13
+            GetContextTitle(Element)+' already contains the help:'+LineEnding
             +ShortDescr,
             mtConfirmation,[mrYes,lisReplace,mrCancel])<>mrYes then exit;
         end;
@@ -1410,8 +1410,7 @@ var
       else
         CurName:=Element.ElementName;
       MessageDlg(lisCodeToolsDefsWriteError,
-        Format(lisFPDocErrorWriting, [CurName, #13, Msg]), mtError, [mbCancel],
-          0);
+        Format(lisFPDocErrorWriting, [CurName, LineEnding, Msg]), mtError, [mbCancel], 0);
     end;
   end;
 
@@ -1433,7 +1432,7 @@ var
         JumpToError(Item,E.LineCol);
         MessageDlg(lisFPDocFPDocSyntaxError,
           Format(lisFPDocThereIsASyntaxErrorInTheFpdocElement, [FPDocItemNames
-            [Item], #13#13, E.Message]), mtError, [mbOk], '');
+            [Item], LineEnding+LineEnding, E.Message]), mtError, [mbOk], '');
       end;
     end;
   end;
@@ -1595,7 +1594,7 @@ begin
   //DebugLn(['TFPDocEditForm.CopyFromInheritedButtonClick ']);
   if ShortEdit.Text<>'' then begin
     if IDEQuestionDialog('Confirm replace',
-      GetContextTitle(fChain[0])+' already contains the help:'+#13
+      GetContextTitle(fChain[0])+' already contains the help:'+LineEnding
       +ShortEdit.Text,
       mtConfirmation,[mrYes,'Replace',mrCancel])<>mrYes then exit;
   end;

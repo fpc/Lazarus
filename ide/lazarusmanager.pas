@@ -150,14 +150,14 @@ begin
     begin
       if FileExistsUTF8(BackupFileName) then
         if not DeleteFileUTF8(BackupFileName) then begin
-          MessageDlg(format('Can''t delete "%s"'#13'%s',
+          MessageDlg(format('Can''t delete "%s"'+LineEnding+'%s',
             [BackupFileName, SysErrorMessageUTF8(GetLastOSError)]),
             mtError, [mbOK], 0);
           Result := mrAbort;
           exit;
         end;
       if not FileProcs.RenameFileUTF8(CurFilename, BackupFileName) then begin
-        MessageDlg(format('Can''t rename "%s" to "%s"'#13'%s',
+        MessageDlg(format('Can''t rename "%s" to "%s"'+LineEnding+'%s',
           [CurFilename, BackupFileName, SysErrorMessageUTF8(GetLastOSError)]),
           mtError, [mbOK], 0);
         Result := mrAbort;
@@ -166,7 +166,7 @@ begin
       InvalidateFileStateCache;
     end;
     if not FileProcs.RenameFileUTF8(NewFileName, CurFilename) then begin
-      MessageDlg(format('Can''t rename "%s" to "%s"'#13'%s',
+      MessageDlg(format('Can''t rename "%s" to "%s"'+LineEnding+'%s',
         [NewFileName, CurFilename, SysErrorMessageUTF8(GetLastOSError)]),
         mtError, [mbOK], 0);
       Result := mrAbort;
@@ -306,15 +306,15 @@ begin
             // the custom exe is older => let user choose
             MsgResult:=QuestionDlg{NOTE: Do not use IDEQuestionDialog!!!}(
               'Multiple lazarus found',
-              'Which Lazarus should be started?'#13
-              +#13
-              +'The system default executable'#13
-              +DefaultExe+#13
-              +'(date: '+DateTimeToStr(FileDateToDateTimeDef(FileAgeUTF8(DefaultExe)))+')'#13
-              +#13
-              +'Or your custom executable'#13
-              +CustomExe+#13
-              +'(date: '+DateTimeToStr(FileDateToDateTimeDef(FileAgeUTF8(CustomExe)))+')'#13
+              'Which Lazarus should be started?'+LineEnding
+              +LineEnding
+              +'The system default executable'+LineEnding
+              +DefaultExe+LineEnding
+              +'(date: '+DateTimeToStr(FileDateToDateTimeDef(FileAgeUTF8(DefaultExe)))+')'+LineEnding
+              +LineEnding
+              +'Or your custom executable'+LineEnding
+              +CustomExe+LineEnding
+              +'(date: '+DateTimeToStr(FileDateToDateTimeDef(FileAgeUTF8(CustomExe)))+')'+LineEnding
               ,mtConfirmation,
               [mrYes,'Start system default',mrNo,'Start my custom',mrAbort],'');
             case MsgResult of
@@ -332,8 +332,8 @@ begin
           // only the custom exists => warn user
           MessageDlg('System default is missing',
             'The system default lazarus executable "'+DefaultExe+'" is missing, but your custom'
-            +'executable is still there:'#13
-            +CustomExe+#13
+            +'executable is still there:'+LineEnding
+            +CustomExe+LineEnding
             +'This will be started ...'
             ,mtInformation,[mbOk],0);
           FLazarusPath:=CustomExe;

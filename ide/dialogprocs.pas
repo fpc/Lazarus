@@ -138,8 +138,8 @@ begin
     end else begin
       DlgButtons:=[mbCancel,mbRetry]+ExtraButtons;
       Result:=IDEMessageDialog(lisUnableToRenameFile,
-        Format(lisUnableToRenameFileTo2, ['"', SrcFilename, '"', #13, '"',
-          DestFilename, '"']),
+        Format(lisUnableToRenameFileTo2,
+               ['"', SrcFilename, '"', LineEnding, '"', DestFilename, '"']),
         mtError,DlgButtons);
       if (Result<>mrRetry) then exit;
     end;
@@ -155,8 +155,8 @@ begin
   if CompareFilenames(SrcFilename,DestFilename)=0 then begin
     Result:=mrAbort;
     IDEMessageDialog(lisUnableToCopyFile,
-      Format(lisSourceAndDestinationAreTheSame, [#13, SrcFilename]), mtError, [
-        mbAbort]);
+      Format(lisSourceAndDestinationAreTheSame, [LineEnding, SrcFilename]),
+      mtError, [mbAbort]);
     exit;
   end;
   repeat
@@ -165,8 +165,8 @@ begin
     end else begin
       DlgButtons:=[mbCancel,mbRetry]+ExtraButtons;
       Result:=IDEMessageDialog(lisUnableToCopyFile,
-        Format(lisUnableToCopyFileTo2, ['"', SrcFilename, '"', #13, '"',
-          DestFilename, '"']),
+        Format(lisUnableToCopyFileTo2,
+               ['"', SrcFilename, '"', LineEnding, '"', DestFilename, '"']),
         mtError,DlgButtons);
       if (Result<>mrRetry) then exit;
     end;
@@ -205,8 +205,8 @@ begin
         Result:=mrCancel;
       end else begin
         ACaption:=lisFileNotText;
-        AText:=Format(lisFileDoesNotLookLikeATextFileOpenItAnyway2, ['"',
-          AFilename, '"', #13, #13]);
+        AText:=Format(lisFileDoesNotLookLikeATextFileOpenItAnyway2,
+                      ['"', AFilename, '"', LineEnding, LineEnding]);
         Result:=IDEMessageDialogAb(ACaption, AText, mtConfirmation,
                            [mbOk, mbIgnore],ShowAbort);
       end;
@@ -297,8 +297,10 @@ begin
     Result:=mrOk;
   except
     on E: Exception do begin
-      IDEMessageDialog(lisCCOErrorCaption, Format(lisErrorLoadingFrom, [
-        ListTitle, #13, Filename, #13#13, E.Message]), mtError, [mbOk]);
+      IDEMessageDialog(lisCCOErrorCaption,
+        Format(lisErrorLoadingFrom,
+              [ListTitle, LineEnding, Filename, LineEnding+LineEnding, E.Message]),
+        mtError, [mbOk]);
     end;
   end;
 end;
@@ -315,7 +317,7 @@ begin
   except
     on E: Exception do begin
       IDEMessageDialog(lisCCOErrorCaption, Format(lisErrorSavingTo, [ListTitle,
-        #13, Filename, #13#13, E.Message]), mtError, [mbOk]);
+        LineEnding, Filename, LineEnding+LineEnding, E.Message]), mtError, [mbOk]);
     end;
   end;
 end;
@@ -345,7 +347,7 @@ begin
           Result:=mrCancel;
         end else begin
           Result:=MessageDlg(lisXMLError,
-            Format(lisXMLParserErrorInFileError, [Filename, #13, E.Message]),
+            Format(lisXMLParserErrorInFileError, [Filename, LineEnding, E.Message]),
               mtError, [mbCancel], 0);
         end;
       end;
@@ -376,7 +378,7 @@ begin
     except
       on E: Exception do begin
         Result:=MessageDlg(lisXMLError,
-          Format(lisUnableToWriteXmlStreamToError, [Filename, #13, E.Message]),
+          Format(lisUnableToWriteXmlStreamToError, [Filename, LineEnding, E.Message]),
             mtError, [mbCancel], 0);
       end;
     end;
@@ -440,7 +442,7 @@ begin
     // file already exists
     if WarnOverwrite then begin
       Result:=IDEQuestionDialog(lisOverwriteFile,
-        Format(lisAFileAlreadyExistsReplaceIt, ['"', AFilename, '"', #13]),
+        Format(lisAFileAlreadyExistsReplaceIt, ['"', AFilename, '"', LineEnding]),
         mtConfirmation,
         [mrYes, lisOverwriteFileOnDisk, mbCancel]);
       if Result=mrCancel then exit;
@@ -513,8 +515,8 @@ begin
     TargetFilename:=ReadAllLinks(Filename,true);
     if TargetFilename<>Filename then begin
       case IDEQuestionDialog(lisFileIsSymlink,
-        Format(lisTheFileIsASymlinkOpenInstead, ['"', Filename, '"', #13, #13,
-          '"', TargetFilename, '"']),
+        Format(lisTheFileIsASymlinkOpenInstead,
+          ['"', Filename, '"', LineEnding, LineEnding, '"', TargetFilename, '"']),
         mtConfirmation, [mbYes, lisOpenTarget, mbNo, lisOpenSymlink, mbCancel])
       of
       mrYes: Filename:=TargetFilename;
@@ -624,7 +626,7 @@ begin
   except
     on E: Exception do begin
       Result:=IDEMessageDialog(lisCodeToolsDefsWriteError,
-         Format(lisWriteErrorFile, [E.Message, #13, Filename, #13, Context]),
+         Format(lisWriteErrorFile, [E.Message, LineEnding, Filename, LineEnding, Context]),
          mtError,[mbAbort]+ErrorButtons);
     end;
   end;
@@ -667,7 +669,7 @@ begin
         DebugLn('LFMtoLRSstream ',E.Message);
         {$ENDIF}
         Result:=IDEMessageDialogAb('Error',
-          'Error while converting '+LFMFilename+' to '+LRSFilename+':'#13
+          'Error while converting '+LFMFilename+' to '+LRSFilename+':'+LineEnding
           +E.Message,mtError,[mbCancel,mbIgnore],ShowAbort);
         exit;
       end;
@@ -709,7 +711,7 @@ begin
   LazarusIDE.DoJumpToCodeToolBossError;
   if Ask then begin
     Result:=IDEQuestionDialog(lisCCOErrorCaption,
-      Format(lisTheCodetoolsFoundAnError, [#13, ErrMsg, #13]),
+      Format(lisTheCodetoolsFoundAnError, [LineEnding, ErrMsg, LineEnding]),
       mtWarning, [mrIgnore, lisIgnoreAndContinue, mrAbort]);
     if Result=mrIgnore then Result:=mrCancel;
   end else begin
@@ -719,8 +721,8 @@ end;
 
 procedure NotImplementedDialog(const Feature: string);
 begin
-  IDEMessageDialog(lisNotImplemented, Format(lisNotImplementedYet, [#13, Feature]),
-                   mtError, [mbCancel]);
+  IDEMessageDialog(lisNotImplemented,
+    Format(lisNotImplementedYet, [LineEnding, Feature]), mtError, [mbCancel]);
 end;
 
 end.

@@ -185,7 +185,7 @@ begin
       else
         Msg:=Format(lisIWonderHowYouDidThatErrorInThe, [EnumToStr(o)]);
       end;
-      Msg:=Msg+#13+FCompilerOpts.ParsedOpts.ParsedErrorMsg+#13
+      Msg:=Msg+LineEnding+FCompilerOpts.ParsedOpts.ParsedErrorMsg+LineEnding
         +lisValue3+dbgstr(FCompilerOpts.ParsedOpts.Values[o].UnparsedValue);
       IDEMessageDialog(lisCCOErrorCaption, Msg, mtError, [mbCancel]);
       exit;
@@ -315,7 +315,7 @@ begin
     if System.Pos('*', ExpandedPath) > 0 then
     begin
       if MessageDlg(lisHint, Format(
-        lisTheContainsAStarCharacterLazarusUsesThisAsNormalCh, [Context, #13]),
+        lisTheContainsAStarCharacterLazarusUsesThisAsNormalCh, [Context, LineEnding]),
         mtWarning, [mbOK, mbCancel], 0) <> mrOk then
         exit;
     end;
@@ -334,7 +334,7 @@ begin
         if not DirPathExistsCached(CurPath) then
         begin
           if MessageDlg(lisCCOWarningCaption, Format(
-            lisTheContainsANotExistingDirectory, [Context, #13, CurPath]),
+            lisTheContainsANotExistingDirectory, [Context, LineEnding, CurPath]),
             mtWarning, [mbIgnore, mbCancel], 0) <> mrIgnore then
             Exit;
         end;
@@ -354,8 +354,8 @@ begin
         ErrorMsg := SpecialCharsToStr(HasChars);
       if ErrorMsg <> '' then
       begin
-        if MessageDlg(lisCCOWarningCaption, Context + #13 + ErrorMsg, mtWarning,
-          [mbOK, mbCancel], 0) <> mrOk then
+        if MessageDlg(lisCCOWarningCaption, Context + LineEnding + ErrorMsg,
+          mtWarning, [mbOK, mbCancel], 0) <> mrOk then
           exit;
       end;
     end;
@@ -408,10 +408,9 @@ begin
       Duplicates.Delimiter:=#13;
       Duplicates.StrictDelimiter:=true;
       if IDEQuestionDialog(lisDuplicateSearchPath,
-        Format(lisTheOtherSourcesContainsADirectoryWhichIsAlreadyInT, [#13#13,
-          Duplicates.DelimitedText]),
-        mtError,
-        [mrCancel, mrYes, lisRemoveThePathsFromOtherSources, 'IsDefault']
+        Format(lisTheOtherSourcesContainsADirectoryWhichIsAlreadyInT,
+              [LineEnding+LineEnding, Duplicates.DelimitedText]),
+        mtError, [mrCancel, mrYes, lisRemoveThePathsFromOtherSources, 'IsDefault']
         )=mrYes
       then begin
         // remove paths from SrcPath

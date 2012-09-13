@@ -146,7 +146,7 @@ begin
     CodeToolBoss.FreeListOfPCodeXYPosition(ListOfPCodeXYPosition);
     if ErrMsg<>'' then begin
       MessageDlg(lisCCOErrorCaption,
-        lisSAMUnableToShowAbstractMethodsOfTheCurrentClassBecaus+#13
+        lisSAMUnableToShowAbstractMethodsOfTheCurrentClassBecaus+LineEnding
         +ErrMsg,mtError,[mbCancel],0);
     end;
   end;
@@ -383,12 +383,12 @@ begin
   // note
   NoteStr:='';
   if BelongsToStartClassCnt>0 then begin
-    NoteStr:=Format(lisSAMIsAnAbstractClassItHasAbstractMethods, [
-      StartClassName, IntToStr(BelongsToStartClassCnt)])+#13;
+    NoteStr:=Format(lisSAMIsAnAbstractClassItHasAbstractMethods,
+                  [StartClassName, IntToStr(BelongsToStartClassCnt)])+LineEnding;
   end;
   NoteStr:=NoteStr+
     Format(lisSAMThereAreAbstractMethodsToOverrideSelectTheMethodsF,
-           [IntToStr(FItems.Count-BelongsToStartClassCnt), #13]);
+           [IntToStr(FItems.Count-BelongsToStartClassCnt), LineEnding]);
   NoteLabel.Caption:=NoteStr;
   
   UpdateButtons;

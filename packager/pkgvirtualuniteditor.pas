@@ -110,7 +110,7 @@ begin
   NewFilenameOnly:=ExtractFilenameOnly(NewFilename);
   if CompareText(NewUnitName,NewFilenameOnly)<>0 then begin
     MessageDlg(lisPEInvalidUnitname,
-      Format(lisPVUUnitnameAndFilenameDoNotMatchExampleUnit1PasAndUni, [#13]),
+      Format(lisPVUUnitnameAndFilenameDoNotMatchExampleUnit1PasAndUni, [LineEnding]),
       mtError,[mbCancel],0);
     exit;
   end;
@@ -125,7 +125,7 @@ begin
     ConflictUnit:=LazPackage.FindUnit(NewUnitName,true,PkgFile);
     if ConflictUnit<>nil then begin
       MessageDlg(lisPEConflictFound,
-        Format(lisPVUThereIsAlreadyAnUnitWithThisNameFile, [#13,
+        Format(lisPVUThereIsAlreadyAnUnitWithThisNameFile, [LineEnding,
           ConflictUnit.Filename]),
         mtError,[mbCancel],0);
       exit;

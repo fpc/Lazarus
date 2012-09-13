@@ -99,8 +99,8 @@ begin
   IpHtmlPanel1.PrintPreview;
   {$else}
   ShowMessage(
-    'In order to use this feature, please read instructions'#13+
-    'contained in the readme file included in this project'#13+
+    'In order to use this feature, please read instructions'+LineEnding+
+    'contained in the readme file included in this project'+LineEnding+
     'directory');
   {$endif}
 end;
@@ -123,7 +123,7 @@ begin
   except
     on E: Exception do begin
       MessageDlg('Unable to open HTML file',
-        'HTML File: '+Filename+#13
+        'HTML File: '+Filename+LineEnding
         +'Error: '+E.Message,mtError,[mbCancel],0);
     end;
   end;

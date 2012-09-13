@@ -1568,10 +1568,10 @@ begin
   begin
     DisableIdleHandler;
     try
-      MsgResult:=MessageBox(PChar(Format(
-        rsPressOkToIgnoreAndRiskDataCorruptionPressCancelToK, [Msg, #13#13, #13]
-        )), PChar(GetTitle),
-                            MB_OKCANCEL + MB_ICONERROR);
+      MsgResult:=MessageBox(PChar(
+        Format(rsPressOkToIgnoreAndRiskDataCorruptionPressCancelToK,
+               [Msg, LineEnding+LineEnding, LineEnding])),
+        PChar(GetTitle), MB_OKCANCEL + MB_ICONERROR);
     finally
       EnableIdleHandler;
     end;

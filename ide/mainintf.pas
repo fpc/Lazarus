@@ -506,26 +506,23 @@ end;
 
 function TFileDescSimplePascalProgram.GetLocalizedDescription: string;
 begin
-  Result:=Format(lisASimplePascalProgramFileThisCanBeUsedForQuickAndDi, [#13,
-    #13]);
+  Result:=Format(lisASimplePascalProgramFileThisCanBeUsedForQuickAndDi,
+                 [LineEnding, LineEnding]);
 end;
 
 function TFileDescSimplePascalProgram.CreateSource(const Filename, SourceName,
   ResourceName: string): string;
-var
-  LE: String;
 begin
-  LE:=LineEnding;
-  Result:='program '+SourceName+';'+LE
-         +LE
-         +'{$mode objfpc}{$H+}'+LE
-         +LE
-         +'uses'+LE
-         +'  Classes, SysUtils;'+LE
-         +LE
-         +'begin'+LE
-         +'end.'+LE
-         +LE;
+  Result:='program '+SourceName+';'+LineEnding
+         +LineEnding
+         +'{$mode objfpc}{$H+}'+LineEnding
+         +LineEnding
+         +'uses'+LineEnding
+         +'  Classes, SysUtils;'+LineEnding
+         +LineEnding
+         +'begin'+LineEnding
+         +'end.'+LineEnding
+         +LineEnding;
 end;
 
 { TFileDescPascalUnitWithFrame }

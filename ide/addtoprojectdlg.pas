@@ -167,8 +167,8 @@ begin
   // check packagename
   if (NewPkgName='') or (not IsValidIdent(NewPkgName)) then begin
     MessageDlg(lisProjAddInvalidPackagename,
-      Format(lisProjAddThePackageNameIsInvalidPlaseChooseAnExistingPackag, [
-        '"', NewPkgName, '"', #13]),
+      Format(lisProjAddThePackageNameIsInvalidPlaseChooseAnExistingPackag,
+             ['"', NewPkgName, '"', LineEnding]),
       mtError,[mbCancel],0);
     exit;
   end;
@@ -185,8 +185,8 @@ begin
   if not PackageGraph.DependencyExists(NewDependency,fpfSearchAllExisting)
   then begin
     MessageDlg(lisProjAddPackageNotFound,
-      Format(lisProjAddTheDependencyWasNotFound, ['"', NewDependency.AsString,
-        '"', #13]),
+      Format(lisProjAddTheDependencyWasNotFound,
+             ['"', NewDependency.AsString, '"', LineEnding]),
       mtError,[mbCancel],0);
     exit;
   end;
@@ -259,8 +259,8 @@ begin
       if not NewDependency.MinVersion.ReadString(DependMinVersionEdit.Text) then
       begin
         MessageDlg(lisProjAddInvalidVersion,
-          Format(lisProjAddTheMinimumVersionIsInvalid, ['"',
-            DependMinVersionEdit.Text, '"', #13, #13]),
+          Format(lisProjAddTheMinimumVersionIsInvalid,
+                 ['"', DependMinVersionEdit.Text, '"', LineEnding, LineEnding]),
           mtError,[mbCancel],0);
         exit;
       end;
@@ -271,8 +271,8 @@ begin
       if not NewDependency.MaxVersion.ReadString(DependMaxVersionEdit.Text) then
       begin
         MessageDlg(lisProjAddInvalidVersion,
-          Format(lisProjAddTheMaximumVersionIsInvalid, ['"',
-            DependMaxVersionEdit.Text, '"', #13, #13]),
+          Format(lisProjAddTheMaximumVersionIsInvalid,
+                 ['"', DependMaxVersionEdit.Text, '"', LineEnding, LineEnding]),
           mtError,[mbCancel],0);
         exit;
       end;
@@ -577,8 +577,8 @@ begin
     ConflictFile:=TheProject.UnitWithUnitname(NewUnitName);
     if ConflictFile<>nil then begin
       MessageDlg(lisProjAddUnitNameAlreadyExists,
-        Format(lisProjAddTheUnitNameAlreadyExistsInTheProject, ['"',
-          NewUnitName, '"', #13, '"', ConflictFile.Filename, '"']),
+        Format(lisProjAddTheUnitNameAlreadyExistsInTheProject,
+               ['"', NewUnitName, '"', LineEnding, '"', ConflictFile.Filename, '"']),
         mtWarning, [mbCancel, mbIgnore], 0);
       exit;
     end;
@@ -589,8 +589,8 @@ begin
         OtherUnitName:=ExtractFileNameOnly(OtherFile);
         if CompareText(OtherUnitName, NewUnitName)=0 then begin
           MessageDlg(lisProjAddUnitNameAlreadyExists,
-            Format(lisProjAddTheUnitNameAlreadyExistsInTheSelection, ['"',
-              NewUnitName, '"', #13, '"', OtherFile, '"']),
+            Format(lisProjAddTheUnitNameAlreadyExistsInTheSelection,
+                   ['"', NewUnitName, '"', LineEnding, '"', OtherFile, '"']),
             mtWarning, [mbCancel], 0);
           exit;
         end;

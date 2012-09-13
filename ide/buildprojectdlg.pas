@@ -524,8 +524,9 @@ begin
     end;
     if SourceFiles.Count>0 then begin
       Result:=IDEMessageDialog(lisCCOWarningCaption,
-        Format(lisCBPReallyDeleteSourceFiles, [IntToStr(SourceFiles.Count), #13
-          +#13, copy(SourceFiles.Text, 1, 1000)]), mtWarning, [mbYes, mbNo]);
+        Format(lisCBPReallyDeleteSourceFiles, [IntToStr(SourceFiles.Count),
+          LineEnding+LineEnding, copy(SourceFiles.Text, 1, 1000)]),
+        mtWarning, [mbYes, mbNo]);
       if Result<>mrYes then exit(mrCancel);
     end;
 

@@ -701,7 +701,8 @@ var
   begin
     debugln(['InvalidPathError Path="',Path,'" Msg="',Msg,'"']);
     IDEMessageDialog('Unable to open fpdoc help',
-      'The fpdoc path "'+Path+'" is invalid.'#13+Msg,mtError,[mbCancel]);
+      'The fpdoc path "'+Path+'" is invalid.'+LineEnding+Msg,
+      mtError,[mbCancel]);
   end;
 
 var

@@ -4981,12 +4981,12 @@ begin
   ErrorFlag := True;
   ErrorStr := sErrorOccured;
   for i := 0 to CurView.Memo.Count - 1 do
-    ErrorStr := ErrorStr + #13 + CurView.Memo[i];
-  ErrorStr := ErrorStr + #13 +
-    sDoc + ' ' + CurReport.Name + #13 +
+    ErrorStr := ErrorStr + LineEnding + CurView.Memo[i];
+  ErrorStr := ErrorStr + LineEnding +
+    sDoc + ' ' + CurReport.Name + LineEnding +
     sCurMemo + ' ' + CurView.Name;
   if Assigned(CurView.Parent) then
-    ErrorStr := ErrorStr + #13 +
+    ErrorStr := ErrorStr + LineEnding +
       sBand + ' ' + CurView.Parent.Name;  //frBandNames[Integer(CurView.Parent.Typ)];
   MasterReport.Terminated := True;
 end;

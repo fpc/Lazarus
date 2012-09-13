@@ -311,7 +311,7 @@ begin
             on E: Exception do
               MessageDlg(oisError,
                 Format(oisUnableToChangeParentOfControlToNewParent, ['"',
-                  DbgSName(AControl), '"', '"', DbgSName(AContainer), '"', #13,
+                  DbgSName(AControl), '"', '"', DbgSName(AContainer), '"', LineEnding,
                   E.Message]), mtError, [mbOk], 0);
           end;
           if not ok then break;

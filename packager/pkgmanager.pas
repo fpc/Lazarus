@@ -683,8 +683,8 @@ begin
     except
       on E: Exception do begin
         MessageDlg(lisCCOErrorCaption,
-          Format(lisErrorLoadingFile2, [Params.IconFile, #13, E.Message]), mtError, [
-            mbCancel], 0);
+          Format(lisErrorLoadingFile2, [Params.IconFile, LineEnding, E.Message]),
+        mtError, [mbCancel], 0);
       end;
     end;
   end;
@@ -1059,7 +1059,7 @@ begin
       if (NewPkgName='') or (not IsValidUnitName(NewPkgName)) then begin
         Result:=IDEMessageDialog(lisPkgMangInvalidPackageName,
           Format(lisPkgMangThePackageNameIsNotAValidPackageNamePleaseChooseAn, [
-            '"', NewPkgName, '"', #13]),
+            '"', NewPkgName, '"', LineEnding]),
           mtInformation,[mbRetry,mbAbort]);
         if Result=mrAbort then exit;
         continue; // try again
@@ -1073,8 +1073,8 @@ begin
         if EnvironmentOptions.CharcaseFileAction = ccfaAsk then
         begin
           if IDEMessageDialog(lisPkgMangRenameFileLowercase,
-            Format(lisPkgMangShouldTheFileRenamedLowercaseTo, [#13, '"',
-              LowerFilename, '"']),
+            Format(lisPkgMangShouldTheFileRenamedLowercaseTo,
+                   [LineEnding, '"', LowerFilename, '"']),
             mtConfirmation,[mbYes,mbNo])=mrYes
           then
             NewFileName:=LowerFilename;
@@ -1103,7 +1103,7 @@ begin
       if ConflictPkg<>nil then begin
         Result:=IDEMessageDialog(lisPkgMangPackageNameAlreadyExists,
           Format(lisPkgMangThereIsAlreadyAnotherPackageWithTheName, ['"',
-            NewPkgName, '"', #13, '"', ConflictPkg.IDAsString, '"', #13, '"',
+            NewPkgName, '"', LineEnding, '"', ConflictPkg.IDAsString, '"', LineEnding, '"',
             ConflictPkg.Filename, '"']),
           mtInformation,[mbRetry,mbAbort,mbIgnore]);
         if Result=mrAbort then exit;
@@ -1115,7 +1115,7 @@ begin
       and (Project1.ProjectUnitWithFilename(NewMainUnitFileName)<>nil) then begin
         Result:=IDEMessageDialog(lisPkgMangFilenameIsUsedByProject,
           Format(lisPkgMangTheFileNameIsPartOfTheCurrentProject, ['"',
-            NewFilename, '"', #13]),
+            NewFilename, '"', LineEnding]),
           mtInformation,[mbRetry,mbAbort]);
         if Result=mrAbort then exit;
         continue; // try again
@@ -1128,8 +1128,8 @@ begin
         if PkgFile<>nil then begin
           Result:=IDEMessageDialog(lisPkgMangFilenameIsUsedByOtherPackage,
             Format(lisPkgMangTheFileNameIsUsedByThePackageInFile, ['"',
-              NewFilename, '"', #13, '"', PkgFile.LazPackage.IDAsString, '"',
-              #13, '"', PkgFile.LazPackage.Filename, '"']),
+              NewFilename, '"', LineEnding, '"', PkgFile.LazPackage.IDAsString, '"',
+              LineEnding, '"', PkgFile.LazPackage.Filename, '"']),
             mtWarning,[mbRetry,mbAbort]);
           if Result=mrAbort then exit;
           continue; // try again
@@ -1250,8 +1250,8 @@ begin
           if Dependency.Owner is TProject then begin
             MainIDE.DoShowProjectInspector(true);
             Result:=IDEMessageDialogAb(lisPkgMangBrokenDependency,
-              Format(lisPkgMangTheProjectRequiresThePackageButItWasNotFound, [
-                '"', Dependency.AsString, '"', #13]),
+              Format(lisPkgMangTheProjectRequiresThePackageButItWasNotFound,
+                    ['"', Dependency.AsString, '"', LineEnding]),
               mtError,Btns,ShowAbort);
             if not ShowAbort then
               Result := mrCancel; // User confirmed error, implicitly cancel the action
@@ -1287,8 +1287,8 @@ begin
       DoShowPackageGraphPathList(PathList);
       Result:=IDEMessageDialogAb(lisPkgMangCircularDependencies,
         Format(lisPkgMangThePackageIsCompiledAutomaticallyAndItsOutputDirec, [
-          ConflictPkg.Name, ConflictPkg.GetOutputDirectory, #13#13, #13, #13,
-          #13]),
+          ConflictPkg.Name, ConflictPkg.GetOutputDirectory, LineEnding+LineEnding,
+          LineEnding, LineEnding, LineEnding]),
         mtError,Btns,ShowAbort);
       if not ShowAbort then
         Result := mrCancel; // User confirmed error, implicitly cancel the action
@@ -1300,17 +1300,17 @@ begin
       PkgFile1,PkgFile2,ConflictPkg)
     then begin
       if (PkgFile1<>nil) and (PkgFile2<>nil) then begin
-        s:=Format(lisPkgMangThereAreTwoUnitsWithTheSameName1From2From, [#13,
-          #13, '"', PkgFile1.Filename, '"', PkgFile1.LazPackage.IDAsString,
-          #13, '"', PkgFile2.Filename, '"', PkgFile2.LazPackage.IDAsString,
-          #13, #13]);
+        s:=Format(lisPkgMangThereAreTwoUnitsWithTheSameName1From2From, [LineEnding,
+          LineEnding, '"', PkgFile1.Filename, '"', PkgFile1.LazPackage.IDAsString,
+          LineEnding, '"', PkgFile2.Filename, '"', PkgFile2.LazPackage.IDAsString,
+          LineEnding, LineEnding]);
       end else if (PkgFile1<>nil) and (ConflictPkg<>nil) then begin
-        s:=Format(lisPkgMangThereIsAUnitWithTheSameNameAsAPackage1From2, [#13,
-          #13, '"', PkgFile1.Filename, '"', PkgFile1.LazPackage.IDAsString,
-          #13, '"', ConflictPkg.IDAsString, #13, #13]);
+        s:=Format(lisPkgMangThereIsAUnitWithTheSameNameAsAPackage1From2, [LineEnding,
+          LineEnding, '"', PkgFile1.Filename, '"', PkgFile1.LazPackage.IDAsString,
+          LineEnding, '"', ConflictPkg.IDAsString, LineEnding, LineEnding]);
       end else
         s:='Internal inconsistency FindAmbiguousUnits: '
-          +'Please report this bug and how you got here.'#13;
+          +'Please report this bug and how you got here.'+LineEnding;
       Result:=IDEMessageDialogAb(lisPkgMangAmbiguousUnitsFound, Format(
         lisPkgMangBothPackagesAreConnectedThisMeansEitherOnePackageU, [s]),
           mtError,Btns,ShowAbort);
@@ -1324,14 +1324,14 @@ begin
       @PackageGraphFindFPCUnit,PkgFile1,ConflictPkg)
     then begin
       if (ConflictPkg<>nil) then begin
-        s:=Format(lisPkgMangThereIsAFPCUnitWithTheSameNameAsAPackage, [#13,
-          #13, '"', ConflictPkg.IDAsString, #13, #13]);
+        s:=Format(lisPkgMangThereIsAFPCUnitWithTheSameNameAsAPackage, [LineEnding,
+          LineEnding, '"', ConflictPkg.IDAsString, LineEnding, LineEnding]);
       end else if (PkgFile1<>nil) then begin
-        s:=Format(lisPkgMangThereIsAFPCUnitWithTheSameNameFrom, [#13, #13, '"',
-          PkgFile1.Filename, '"', PkgFile1.LazPackage.IDAsString, #13, #13]);
+        s:=Format(lisPkgMangThereIsAFPCUnitWithTheSameNameFrom, [LineEnding, LineEnding, '"',
+          PkgFile1.Filename, '"', PkgFile1.LazPackage.IDAsString, LineEnding, LineEnding]);
       end else
         s:='Internal inconsistency FindFPCConflictUnits: '
-          +'Please report this bug and how you got here.'#13;
+          +'Please report this bug and how you got here.'+LineEnding;
       Result:=IDEMessageDialogAb(lisPkgMangAmbiguousUnitsFound, s,
           mtError,Btns,ShowAbort);
       if not ShowAbort then
@@ -1858,7 +1858,7 @@ begin
   if (APackage.Name='') or (not IsValidUnitName(APackage.Name)) then begin
     Result:=IDEMessageDialog(lisPkgMangInvalidPackageName2,
       Format(lisPkgMangThePackageNameOfTheFileIsInvalid, ['"', APackage.Name,
-        '"', #13, '"', APackage.Filename, '"']),
+        '"', LineEnding, '"', APackage.Filename, '"']),
       mtError,[mbCancel,mbAbort]);
     exit;
   end;
@@ -1869,8 +1869,8 @@ begin
     if not PackageGraph.PackageCanBeReplaced(ConflictPkg,APackage) then begin
       Result:=IDEMessageDialog(lisPkgMangPackageConflicts,
         Format(lisPkgMangThereIsAlreadyAPackageLoadedFromFile, ['"',
-          ConflictPkg.IDAsString, '"', #13, '"', ConflictPkg.Filename, '"',
-          #13, #13]),
+          ConflictPkg.IDAsString, '"', LineEnding, '"', ConflictPkg.Filename, '"',
+          LineEnding, LineEnding]),
         mtError,[mbCancel,mbAbort]);
       exit;
     end;
@@ -1878,8 +1878,8 @@ begin
     if ConflictPkg.Modified and (not ConflictPkg.ReadOnly) then begin
       Result:=IDEMessageDialog(lisPkgMangSavePackage,
         Format(lisPkgMangLoadingPackageWillReplacePackage, [
-          APackage.IDAsString, ConflictPkg.IDAsString, #13,
-          ConflictPkg.Filename, #13, #13, #13, ConflictPkg.Filename]),
+          APackage.IDAsString, ConflictPkg.IDAsString, LineEnding,
+          ConflictPkg.Filename, LineEnding, LineEnding, LineEnding, ConflictPkg.Filename]),
         mtConfirmation,[mbYes,mbNo,mbCancel,mbAbort]);
       if Result=mrNo then Result:=mrOk;
       if Result=mrYes then begin
@@ -2040,8 +2040,8 @@ begin
                                               AProject.FirstRequiredDependency);
   if MissingUnits<>nil then begin
     if Interactive then begin 
-      Msg:=Format(lisProbablyYouNeedToInstallSomePackagesForBeforeConti, [#13,
-        #13, #13, #13, #13, #13, #13, #13, #13]);
+      Msg:=Format(lisProbablyYouNeedToInstallSomePackagesForBeforeConti, [LineEnding,
+        LineEnding, LineEnding, LineEnding, LineEnding, LineEnding, LineEnding]);
       PkgList:=TObjectList.Create(false);
       try
         for i:=0 to MissingUnits.Count-1 do begin
@@ -2049,7 +2049,7 @@ begin
           if PkgList.IndexOf(PkgFile.LazPackage)<0 then
             PkgList.Add(PkgFile.LazPackage);
           Msg:=Format(lisUnitInPackage, [Msg, PkgFile.Unit_Name,
-            PkgFile.LazPackage.IDAsString, #13]);
+            PkgFile.LazPackage.IDAsString, LineEnding]);
         end;
         Result:=IDEQuestionDialog(lisPackageNeedsInstallation,
           Msg,mtWarning,[mrIgnore,'Continue without install',mrYes,'Install these packages',mrCancel,'Cancel','IsDefault']);
@@ -2203,7 +2203,7 @@ begin
   then begin
     DoQuestionDlg(lisPkgMangInvalidPackageFilename,
       Format(lisPkgMangThePackageFileNameInIsNotAValidLazarusPackageName, ['"',
-        AlternativePkgName, '"', #13, '"', AFilename, '"']));
+        AlternativePkgName, '"', LineEnding, '"', AFilename, '"']));
     RemoveFromRecentList(AFilename,EnvironmentOptions.RecentPackageFiles,rltFile);
     SetRecentPackagesMenu;
     exit;
@@ -2259,7 +2259,7 @@ begin
         on E: Exception do begin
           DoQuestionDlg(lisPkgMangErrorReadingPackage,
             Format(lisPkgUnableToReadPackageFileError, ['"', AFilename, '"',
-              #13, E.Message]));
+              LineEnding, E.Message]));
           exit;
         end;
       end;
@@ -2271,7 +2271,7 @@ begin
       if (SysUtils.CompareText(AlternativePkgName,APackage.Name)<>0) then begin
         Result:=IDEMessageDialog(lisPkgMangFilenameDiffersFromPackagename,
           Format(lisPkgMangTheFilenameDoesNotCorrespondToThePackage, ['"',
-            ExtractFileName(AFilename), '"', '"', APackage.Name, '"', #13, '"',
+            ExtractFileName(AFilename), '"', '"', APackage.Name, '"', LineEnding, '"',
             AlternativePkgName, '"']),
           mtConfirmation,[mbYes,mbCancel,mbAbort]);
         if Result<>mrYes then exit;
@@ -2384,7 +2384,7 @@ begin
     on E: Exception do begin
       Result:=IDEMessageDialog(lisPkgMangErrorWritingPackage,
         Format(lisPkgMangUnableToWritePackageToFileError, ['"',
-          APackage.IDAsString, '"', #13, '"', APackage.Filename, '"', #13,
+          APackage.IDAsString, '"', LineEnding, '"', APackage.Filename, '"', LineEnding,
           E.Message]),
         mtError,[mbAbort,mbCancel]);
       exit;
@@ -2445,10 +2445,10 @@ begin
     Msg:=lisPkgMangTheFollowingPackageFailedToLoad
   else
     Msg:=lisPkgMangTheFollowingPackagesFailedToLoad;
-  Msg:=Msg+#13#13;
+  Msg:=Msg+LineEnding+LineEnding;
   for i:=0 to Dependencies.Count-1 do begin
     ADependency:=TPkgDependency(Dependencies[i]);
-    Msg:=Msg+ADependency.AsString+#13;
+    Msg:=Msg+ADependency.AsString+LineEnding;
   end;
   
   // give some hints
@@ -2855,11 +2855,11 @@ var
         if UnitOwner is TProject then begin
           PackageAdditions:=Format(
             lisPkgMangAddingNewDependencyForProjectPackage, [PackageAdditions,
-            TProject(UnitOwner).GetTitle, RequiredPackage.Name, #13#13]);
+            TProject(UnitOwner).GetTitle, RequiredPackage.Name, LineEnding+LineEnding]);
         end else if UnitOwner is TLazPackage then begin
           PackageAdditions:=Format(
             lisPkgMangAddingNewDependencyForPackagePackage, [PackageAdditions,
-            TLazPackage(UnitOwner).Name, RequiredPackage.Name, #13#13]);
+            TLazPackage(UnitOwner).Name, RequiredPackage.Name, LineEnding+LineEnding]);
         end;
       end;
     end;
@@ -2867,7 +2867,7 @@ var
     Msg:='';
     if UsesAdditions<>'' then begin
       Msg:=Format(lisPkgMangTheFollowingUnitsWillBeAddedToTheUsesSectionOf, [
-        Msg, #13, UnitFilename, #13, UsesAdditions, #13#13]);
+        Msg, LineEnding, UnitFilename, LineEnding, UsesAdditions, LineEnding+LineEnding]);
     end;
     if PackageAdditions<>'' then begin
       Msg:=Msg+PackageAdditions;
@@ -3465,7 +3465,7 @@ begin
   if ActiveUnitInfo.IsPartOfProject then begin
     Result:=IDEMessageDialog(lisPkgMangFileIsInProject,
       Format(lisPkgMangWarningTheFileBelongsToTheCurrentProject,
-             ['"', Filename, '"', #13])
+             ['"', Filename, '"', LineEnding])
       ,mtWarning,[mbIgnore,mbCancel]);
     if Result<>mrIgnore then exit;
   end;
@@ -3475,7 +3475,7 @@ begin
   if PkgFile<>nil then begin
     Result:=IDEMessageDialog(lisPkgMangFileIsAlreadyInPackage,
       Format(lisPkgMangTheFileIsAlreadyInThePackage,
-             ['"', Filename, '"', #13, PkgFile.LazPackage.IDAsString]),
+             ['"', Filename, '"', LineEnding, PkgFile.LazPackage.IDAsString]),
       mtWarning,[mbIgnore,mbCancel]);
     if Result<>mrIgnore then exit;
   end;
@@ -3649,7 +3649,7 @@ var
       begin
         Result:=IDEQuestionDialog(lisSuspiciousIncludePath,
           Format(lisThePackageAddsThePathToTheIncludePathOfTheIDEThisI, [
-            APackage.IDAsString, dbgstr(APackage.UsageOptions.IncludePath), #13]
+            APackage.IDAsString, dbgstr(APackage.UsageOptions.IncludePath), LineEnding]
             ),
           mtWarning, [mrYes, lisContinue, mrYesToAll, lisContinueAndDoNotAskAgain, mrCancel]);
         case Result of
@@ -3674,7 +3674,7 @@ var
       begin
         Result:=IDEQuestionDialog(lisSuspiciousUnitPath,
           Format(lisThePackageAddsThePathToTheUnitPathOfTheIDEThisIsPr, [
-            APackage.IDAsString, dbgstr(APackage.UsageOptions.UnitPath), #13]),
+            APackage.IDAsString, dbgstr(APackage.UsageOptions.UnitPath), LineEnding]),
           mtWarning, [mrYes, lisContinue, mrYesToAll, lisContinueAndDoNotAskAgain, mrCancel]);
         case Result of
         mrYes: ;
@@ -3711,7 +3711,7 @@ begin
         Include(Btns,mbIgnore);
       Result:=IDEMessageDialog(lisPkgMangPackageIsNoDesigntimePackage,
         Format(lisPkgMangThePackageIsARuntimeOnlyPackageRuntimeOnlyPackages,
-               [APackage.IDAsString, #13]),
+               [APackage.IDAsString, LineEnding]),
         mtError,Btns);
       if Result<>mrIgnore then exit;
     end;
@@ -3757,7 +3757,7 @@ begin
       s:='';
       for i:=0 to PkgList.Count-1 do begin
         RequiredPackage:=TLazPackage(PkgList[i]);
-        s:=s+RequiredPackage.IDAsString+#13;
+        s:=s+RequiredPackage.IDAsString+LineEnding;
       end;
       if PkgList.Count=0 then
         Msg:=Format(lisPkgMangInstallingThePackageWillAutomaticallyInstallThePac,
@@ -3766,7 +3766,7 @@ begin
         Msg:=Format(lisPkgMangInstallingThePackageWillAutomaticallyInstallThePac2,
                     [APackage.IDAsString]);
       Result:=IDEMessageDialog(lisPkgMangAutomaticallyInstalledPackages,
-        Msg+#13+s,mtConfirmation,[mbOk,mbCancel]);
+        Msg+LineEnding+s,mtConfirmation,[mbOk,mbCancel]);
       if Result<>mrOk then exit;
     end;
 
@@ -3811,7 +3811,7 @@ begin
   // ask user to rebuild Lazarus now
   Result:=IDEMessageDialog(lisPkgMangRebuildLazarus,
     Format(lisPkgMangThePackageWasMarkedForInstallationCurrentlyLazarus,
-           ['"', APackage.IDAsString, '"', #13, #13, #13]),
+           ['"', APackage.IDAsString, '"', LineEnding, LineEnding, LineEnding]),
     mtConfirmation,[mbYes,mbNo]);
   if Result<>mrYes then begin
     Result:=mrOk;
@@ -3842,7 +3842,7 @@ begin
     ParentPackage:=TLazPackage(DependencyPath[0]);
     Result:=IDEMessageDialogAb(lisPkgMangPackageIsRequired,
       Format(lisPkgMangThePackageIsRequiredByWhichIsMarkedForInstallation,
-             [APackage.IDAsString, ParentPackage.IDAsString, #13]),
+             [APackage.IDAsString, ParentPackage.IDAsString, LineEnding]),
       mtError,[mbCancel],ShowAbort);
     exit;
   end;
@@ -3893,7 +3893,7 @@ begin
       // ask user to rebuilt Lazarus now
       Result:=IDEMessageDialog(lisPkgMangRebuildLazarus,
         Format(lisPkgMangThePackageWasMarkedCurrentlyLazarus,
-               ['"', APackage.IDAsString, '"', #13, #13, #13]),
+               ['"', APackage.IDAsString, '"', LineEnding, LineEnding, LineEnding]),
         mtConfirmation,[mbYes,mbNo]);
       if Result=mrNo then begin
         Result:=mrOk;
@@ -4246,7 +4246,7 @@ begin
         if not AutoRemove then begin
           Result:=IDEMessageDialog(lisProjAddPackageNotFound,
             Format(lisPkgMangThePackageIsMarkedForInstallationButCanNotBeFound, [
-              '"', OldDependency.AsString, '"', #13]),
+              '"', OldDependency.AsString, '"', LineEnding]),
             mtError,[mbYes,mbYesToAll,mbAbort]);
           case Result of
           mrYes: ;
@@ -4299,8 +4299,8 @@ begin
   TargetDir:=TrimFilename(TargetDir);
   if not ForceDirectory(TargetDir) then begin
     Result:=IDEMessageDialog(lisPkgMangUnableToCreateDirectory,
-      Format(lisPkgMangUnableToCreateTargetDirectoryForLazarus, [#13, '"',
-        TargetDir, '"', #13]),
+      Format(lisPkgMangUnableToCreateTargetDirectoryForLazarus, [LineEnding, '"',
+        TargetDir, '"', LineEnding]),
       mtError,[mbCancel,mbAbort]);
     exit;
   end;
@@ -4804,7 +4804,7 @@ end;
 function TPackageDescriptorStd.GetLocalizedDescription: string;
 begin
   Result:=Format(lisNewDlgCreateANewStandardPackageAPackageIsACollectionOfUn,
-                 [#13]);
+                 [LineEnding]);
 end;
 
 end.

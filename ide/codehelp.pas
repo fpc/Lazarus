@@ -1267,8 +1267,9 @@ begin
             , mtError, [mbCancel], 0)
       else
         MessageDlg(lisLDNoValidFPDocPath,
-          Format(lisLDDoesNotHaveAnyValidFPDocPathUnableToCreateTheFpdo, [
-            FPDocPackageName, #13, SrcFilename]), mtError, [mbCancel], 0);
+          Format(lisLDDoesNotHaveAnyValidFPDocPathUnableToCreateTheFpdo,
+                 [FPDocPackageName, LineEnding, SrcFilename]),
+          mtError, [mbCancel], 0);
       exit;
     end;
     // fpdoc directory found
@@ -1459,8 +1460,8 @@ begin
         DebugLn(['TCodeHelpManager.LoadFPDocFile '+ADocFile.DocErrorMsg]);
         if not (chofQuiet in Flags) then begin
           MessageDlg(lisErrorReadingXML,
-            Format(lisErrorReadingXmlFile, ['"', CurFilename,
-              '"', #13, E.Message]), mtError, [mbCancel], 0);
+            Format(lisErrorReadingXmlFile, ['"', CurFilename, '"', LineEnding, E.Message]),
+            mtError, [mbCancel], 0);
         end;
       end;
     end;

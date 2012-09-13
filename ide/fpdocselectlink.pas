@@ -193,7 +193,7 @@ begin
   Caption:=lisChooseAFPDocLink;
   LinkLabel.Caption:=lisLinkTarget;
   LinkLabel.Hint:=Format(lisExamplesIdentifierTMyEnumEnumUnitnameIdentifierPac,
-    [#13, #13, #13, #13]);
+                         [LineEnding, LineEnding, LineEnding, LineEnding]);
   TitleLabel.Caption:=lisTitleLeaveEmptyForDefault;
   
   LinkEdit.Text:='';

@@ -129,7 +129,7 @@ begin
     then begin
       if CodeToolBoss.ErrorMessage='' then begin
         MessageDlg(lisInvalidSelection,
-          Format(lisThisStatementCanNotBeExtractedPleaseSelectSomeCode, [#13]),
+          Format(lisThisStatementCanNotBeExtractedPleaseSelectSomeCode, [LineEnding]),
         mtInformation,[mbCancel],0);
       end;
       exit;

@@ -74,7 +74,7 @@ begin
       if MessageDlg(lisCOAmbiguousAdditionalCompilerConfigFile,
         Format(lisCOClickOKIfAreSureToDoThat,
         [BreakString(lisCOWarningTheAdditionalCompilerConfigFileHasTheSameNa,
-        60, 0), #13#13]), mtWarning, [mbOK, mbCancel], 0) <> mrOk then
+        60, 0), LineEnding+LineEnding]), mtWarning, [mbOK, mbCancel], 0) <> mrOk then
       begin
         Result := False;
         exit;

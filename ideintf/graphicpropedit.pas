@@ -136,7 +136,7 @@ begin
     except
       on E: Exception do begin
         MessageDlg(oisErrorLoadingImage,
-          Format(oisErrorLoadingImage2, ['"', FileName, '"', #13, E.Message]),
+          Format(oisErrorLoadingImage2, ['"', FileName, '"', LineEnding, E.Message]),
           mtError, [mbOk], 0);
         exit;
       end;

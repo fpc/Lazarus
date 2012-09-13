@@ -166,8 +166,8 @@ begin
     PkgFile:=APackage.FindPkgFile(aFilename,true,false);
     if PkgFile<>nil then begin
       MessageDlg(lisPkgMangFileIsAlreadyInPackage,
-        Format(lisAF2PTheFileIsAlreadyInThePackage, ['"', aFilename, '"', #13,
-          APackage.IDAsString]),
+        Format(lisAF2PTheFileIsAlreadyInThePackage,
+               ['"', aFilename, '"', LineEnding, APackage.IDAsString]),
         mtError,[mbCancel],0);
       exit;
     end;

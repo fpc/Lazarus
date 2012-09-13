@@ -1195,7 +1195,7 @@ begin
   else begin
     // then try to give a visible warning
     MessageDlg('Read error',
-      Context+#13
+      Context+LineEnding
        +'Error: '+FCurReadErrorMsg,mtError,[mbCancel],0);
   end;
 end;

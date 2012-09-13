@@ -2863,8 +2863,8 @@ begin
   CenterCursor(True);
   CenterCursorHoriz(hcmSoftKeepEOL);
 
-  AText:=Format(lisUEReplaceThisOccurrenceOfWith, ['"', ASearch, '"', #13, '"',
-    AReplace, '"']);
+  AText:=Format(lisUEReplaceThisOccurrenceOfWith,
+                ['"', ASearch, '"', LineEnding, '"', AReplace, '"']);
 
   GetDialogPosition(300,150,X,Y);
   a:=MessageDlgPos(AText,mtconfirmation,
@@ -5478,18 +5478,18 @@ begin
           else
             CurResult:=IDEQuestionDialog(lisChangeEncoding,
               Format(lisEncodingOfFileOnDiskIsNewEncodingIs, ['"',
-                SrcEdit.CodeBuffer.Filename, '"', #13, OldEncoding, NewEncoding]),
+                SrcEdit.CodeBuffer.Filename, '"', LineEnding, OldEncoding, NewEncoding]),
               mtConfirmation, [mrOk, lisReopenWithAnotherEncoding, mrCancel], '');
         end else begin
           if SrcEdit.CodeBuffer.IsVirtual then
             CurResult:=IDEQuestionDialog(lisChangeEncoding,
               Format(lisEncodingOfFileOnDiskIsNewEncodingIs, ['"',
-                SrcEdit.CodeBuffer.Filename, '"', #13, OldEncoding, NewEncoding]),
+                SrcEdit.CodeBuffer.Filename, '"', LineEnding, OldEncoding, NewEncoding]),
               mtConfirmation, [mrYes, lisChangeFile, mrCancel], '')
           else
             CurResult:=IDEQuestionDialog(lisChangeEncoding,
               Format(lisEncodingOfFileOnDiskIsNewEncodingIs2, ['"',
-                SrcEdit.CodeBuffer.Filename, '"', #13, OldEncoding, NewEncoding]),
+                SrcEdit.CodeBuffer.Filename, '"', LineEnding, OldEncoding, NewEncoding]),
               mtConfirmation, [mrYes, lisChangeFile, mrOk,
                 lisReopenWithAnotherEncoding, mrCancel], '');
         end;
@@ -5509,8 +5509,8 @@ begin
           // reopen with another encoding
           if SrcEdit.Modified then begin
             if IDEQuestionDialog(lisAbandonChanges,
-              Format(lisAllYourModificationsToWillBeLostAndTheFileReopened, [
-                '"', SrcEdit.CodeBuffer.Filename, '"', #13]),
+              Format(lisAllYourModificationsToWillBeLostAndTheFileReopened,
+                     ['"', SrcEdit.CodeBuffer.Filename, '"', LineEnding]),
               mtConfirmation,[mbOk,mbAbort],'')<>mrOk
             then begin
               exit;
@@ -7796,7 +7796,7 @@ begin
   then begin
     {$IFDEF HasMonoSpaceFonts}
     DummyResult:=IDEQuestionDialog(lisUEFontWith,
-      Format(lisUETheCurre, [#13, #13]),
+      Format(lisUETheCurre, [LineEnding, LineEnding]),
       mtWarning, [mrIgnore, mrYesToAll, lisUEDoNotSho]);
     {$ELSE}
     DummyResult:=mrYesToAll;

@@ -213,7 +213,7 @@ function MakeLazarus(Profile: TBuildLazarusProfile;
     Result:=false;
     IDEMessageDialog(lisBuildingLazarusFailed,
                Format(lisThisSetOfOptionsToBuildLazarusIsNotSupportedByThis,
-                      [#13, '"', Dir, '"', #13]),
+                      [LineEnding, '"', Dir, '"', LineEnding]),
                mtError,[mbCancel]);
   end;
 
@@ -320,7 +320,7 @@ begin
       if (Tool.Filename='') or (not FileExistsUTF8(Tool.Filename)) then begin
         IDEMessageDialog(lisMakeNotFound,
                    Format(lisTheProgramMakeWasNotFoundThisToolIsNeededToBuildLa,
-                          ['"', '"', #13, #13]),
+                          ['"', '"', LineEnding, LineEnding]),
                    mtError,[mbCancel]);
         exit;
       end;
@@ -801,7 +801,7 @@ begin
   except
     on E: Exception do begin
       Result:=IDEMessageDialog(lisLazBuildErrorWritingFile,
-        Format(lisLazBuildUnableToWriteFile, [Filename, #13])
+        Format(lisLazBuildUnableToWriteFile, [Filename, LineEnding])
         +E.Message,
         mtError,[mbCancel,mbAbort]);
       exit;

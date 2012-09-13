@@ -112,8 +112,8 @@ begin
     on E: Exception do
     begin
       Result:=MessageDlg(lisIECOErrorLoadingXml,
-        Format(lisIECOErrorLoadingXmlFile, ['"', Filename, '"', #13, E.Message]
-          ), mtError, [mbCancel], 0);
+        Format(lisIECOErrorLoadingXmlFile, ['"', Filename, '"', LineEnding, E.Message]),
+        mtError, [mbCancel], 0);
     end;
   end;
   try
@@ -144,8 +144,9 @@ begin
     on E: Exception do
     begin
       Result:=MessageDlg(lisIECOErrorAccessingXml,
-        Format(lisIECOErrorAccessingXmlFile, ['"', Filename, '"', #13,
-          E.Message]), mtError, [mbCancel], 0);
+        Format(lisIECOErrorAccessingXmlFile,
+               ['"', Filename, '"', LineEnding, E.Message]),
+        mtError, [mbCancel], 0);
     end;
   end;
 end;
@@ -344,8 +345,8 @@ begin
   Filename:=AFilename;
   if FileExistsUTF8(AFilename) then begin
     MsgResult:=MessageDlg(lisIECOExportFileExists,
-      Format(lisIECOExportFileExistsOpenFileAndReplaceOnlyCompilerOpti, ['"',
-        AFilename, '"', #13, #13]),
+      Format(lisIECOExportFileExistsOpenFileAndReplaceOnlyCompilerOpti,
+             ['"', AFilename, '"', LineEnding, LineEnding]),
       mtConfirmation,[mbYes,mbCancel],0);
     if MsgResult<>mrYes then exit;
   end;

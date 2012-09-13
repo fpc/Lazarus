@@ -1271,13 +1271,13 @@ end;
 
 function TProjectApplicationDescriptor.GetLocalizedDescription: string;
 begin
-  Result:=Format(lisApplicationAGraphicalLclFreepascalProgramTheProgra, [#13]);
+  Result:=Format(lisApplicationAGraphicalLclFreepascalProgramTheProgra,
+                [LineEnding+LineEnding]);
 end;
 
 function TProjectApplicationDescriptor.InitProject(
   AProject: TLazProject): TModalResult;
 var
-  le: string;
   NewSource: String;
   MainFile: TLazProjectFile;
 begin
@@ -1292,25 +1292,24 @@ begin
   AProject.LoadDefaultIcon;
 
   // create program source
-  le:=LineEnding;
-  NewSource:='program Project1;'+le
-    +le
-    +'{$mode objfpc}{$H+}'+le
-    +le
-    +'uses'+le
-    +'  {$IFDEF UNIX}{$IFDEF UseCThreads}'+le
-    +'  cthreads,'+le
-    +'  {$ENDIF}{$ENDIF}'+le
-    +'  Interfaces, // this includes the LCL widgetset'+le
-    +'  Forms'+le
-    +'  { you can add units after this };'+le
-    +le
-    +'begin'+le
-    +'  RequireDerivedFormResource := True;'+le
-    +'  Application.Initialize;'+le
-    +'  Application.Run;'+le
-    +'end.'+le
-    +le;
+  NewSource:='program Project1;'+LineEnding
+    +LineEnding
+    +'{$mode objfpc}{$H+}'+LineEnding
+    +LineEnding
+    +'uses'+LineEnding
+    +'  {$IFDEF UNIX}{$IFDEF UseCThreads}'+LineEnding
+    +'  cthreads,'+LineEnding
+    +'  {$ENDIF}{$ENDIF}'+LineEnding
+    +'  Interfaces, // this includes the LCL widgetset'+LineEnding
+    +'  Forms'+LineEnding
+    +'  { you can add units after this };'+LineEnding
+    +LineEnding
+    +'begin'+LineEnding
+    +'  RequireDerivedFormResource := True;'+LineEnding
+    +'  Application.Initialize;'+LineEnding
+    +'  Application.Run;'+LineEnding
+    +'end.'+LineEnding
+    +LineEnding;
   AProject.MainFile.SetSourceText(NewSource);
 
   // add lcl pp/pas dirs to source search path
@@ -1344,12 +1343,11 @@ end;
 
 function TProjectSimpleProgramDescriptor.GetLocalizedDescription: string;
 begin
-  Result:=Format(lisProgramAFreepascalSimpleProgram, [#13]);
+  Result:=Format(lisProgramAFreepascalSimpleProgram, [LineEnding+LineEnding]);
 end;
 
 function TProjectSimpleProgramDescriptor.InitProject(AProject: TLazProject): TModalResult;
 var
-  le: String;
   NewSource: String;
   MainFile: TLazProjectFile;
 begin
@@ -1361,12 +1359,11 @@ begin
   AProject.MainFileID:=0;
 
   // create program source
-  le:=LineEnding;
-  NewSource:='program Project1;'+le
-    +le
-    +'begin'+le
-    +'end.'+le
-    +le;
+  NewSource:='program Project1;'+LineEnding
+    +LineEnding
+    +'begin'+LineEnding
+    +'end.'+LineEnding
+    +LineEnding;
   AProject.MainFile.SetSourceText(NewSource);
 
   AProject.LazCompilerOptions.UnitOutputDirectory:='lib'+PathDelim+'$(TargetCPU)-$(TargetOS)';
@@ -1396,12 +1393,12 @@ end;
 
 function TProjectProgramDescriptor.GetLocalizedDescription: string;
 begin
-  Result:=Format(lisProgramAFreepascalProgramTheProgramFileIsAutomatic, [#13]);
+  Result:=Format(lisProgramAFreepascalProgramTheProgramFileIsAutomatic,
+                [LineEnding+LineEnding]);
 end;
 
 function TProjectProgramDescriptor.InitProject(AProject: TLazProject): TModalResult;
 var
-  le: String;
   NewSource: String;
   MainFile: TLazProjectFile;
 begin
@@ -1413,21 +1410,20 @@ begin
   AProject.MainFileID:=0;
 
   // create program source
-  le:=LineEnding;
-  NewSource:='program Project1;'+le
-    +le
-    +'{$mode objfpc}{$H+}'+le
-    +le
-    +'uses'+le
-    +'  {$IFDEF UNIX}{$IFDEF UseCThreads}'+le
-    +'  cthreads,'+le
-    +'  {$ENDIF}{$ENDIF}'+le
-    +'  Classes'+le
-    +'  { you can add units after this };'+le
-    +le
-    +'begin'+le
-    +'end.'+le
-    +le;
+  NewSource:='program Project1;'+LineEnding
+    +LineEnding
+    +'{$mode objfpc}{$H+}'+LineEnding
+    +LineEnding
+    +'uses'+LineEnding
+    +'  {$IFDEF UNIX}{$IFDEF UseCThreads}'+LineEnding
+    +'  cthreads,'+LineEnding
+    +'  {$ENDIF}{$ENDIF}'+LineEnding
+    +'  Classes'+LineEnding
+    +'  { you can add units after this };'+LineEnding
+    +LineEnding
+    +'begin'+LineEnding
+    +'end.'+LineEnding
+    +LineEnding;
   AProject.MainFile.SetSourceText(NewSource);
 
   AProject.LazCompilerOptions.UnitOutputDirectory:='lib'+PathDelim+'$(TargetCPU)-$(TargetOS)';
@@ -1461,13 +1457,12 @@ end;
 
 function TProjectManualProgramDescriptor.GetLocalizedDescription: string;
 begin
-  Result:=Format(lisCustomProgramAFreepascalProgram, [#13]);
+  Result:=Format(lisCustomProgramAFreepascalProgram, [LineEnding+LineEnding]);
 end;
 
 function TProjectManualProgramDescriptor.InitProject(AProject: TLazProject
   ): TModalResult;
 var
-  le: string;
   NewSource: String;
   MainFile: TLazProjectFile;
 begin
@@ -1480,18 +1475,17 @@ begin
     AProject.MainFileID:=0;
 
     // create program source
-    le:=LineEnding;
-    NewSource:='program Project1;'+le
-      +le
-      +'{$mode objfpc}{$H+}'+le
-      +le
-      +'uses'+le
-      +'  Classes, SysUtils'+le
-      +'  { you can add units after this };'+le
-      +le
-      +'begin'+le
-      +'end.'+le
-      +le;
+    NewSource:='program Project1;'+LineEnding
+      +LineEnding
+      +'{$mode objfpc}{$H+}'+LineEnding
+      +LineEnding
+      +'uses'+LineEnding
+      +'  Classes, SysUtils'+LineEnding
+      +'  { you can add units after this };'+LineEnding
+      +LineEnding
+      +'begin'+LineEnding
+      +'end.'+LineEnding
+      +LineEnding;
     AProject.MainFile.SetSourceText(NewSource);
     AProject.LazCompilerOptions.Win32GraphicApp:=false;
   end;
@@ -1530,7 +1524,8 @@ end;
 
 function TProjectConsoleApplicationDescriptor.GetLocalizedDescription: string;
 begin
-  Result:=GetLocalizedName+#13+lisFreepascalProgramUsingTCustomApplicationToEasilyCh;
+  Result:=GetLocalizedName+LineEnding+LineEnding+
+    lisFreepascalProgramUsingTCustomApplicationToEasilyCh;
 end;
 
 function TProjectConsoleApplicationDescriptor.InitProject(AProject: TLazProject
@@ -1700,13 +1695,13 @@ end;
 
 function TProjectLibraryDescriptor.GetLocalizedDescription: string;
 begin
-  Result:= Format(lisLibraryAFreepascalLibraryDllUnderWindowsSoUnderLin, [#13]);
+  Result:= Format(lisLibraryAFreepascalLibraryDllUnderWindowsSoUnderLin,
+                  [LineEnding+LineEnding]);
 end;
 
 function TProjectLibraryDescriptor.InitProject(AProject: TLazProject
   ): TModalResult;
 var
-  le: String;
   NewSource: String;
   MainFile: TLazProjectFile;
 begin
@@ -1719,18 +1714,17 @@ begin
   AProject.LazCompilerOptions.ExecutableType:=cetLibrary;
 
   // create program source
-  le:=LineEnding;
-  NewSource:='library Project1;'+le
-    +le
-    +'{$mode objfpc}{$H+}'+le
-    +le
-    +'uses'+le
-    +'  Classes'+le
-    +'  { you can add units after this };'+le
-    +le
-    +'begin'+le
-    +'end.'+le
-    +le;
+  NewSource:='library Project1;'+LineEnding
+    +LineEnding
+    +'{$mode objfpc}{$H+}'+LineEnding
+    +LineEnding
+    +'uses'+LineEnding
+    +'  Classes'+LineEnding
+    +'  { you can add units after this };'+LineEnding
+    +LineEnding
+    +'begin'+LineEnding
+    +'end.'+LineEnding
+    +LineEnding;
   AProject.MainFile.SetSourceText(NewSource);
 
   AProject.LazCompilerOptions.UnitOutputDirectory:='lib'+PathDelim+'$(TargetCPU)-$(TargetOS)';

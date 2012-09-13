@@ -142,8 +142,8 @@ begin
     CodeToolBoss.FreeListOfPCodeXYPosition(ListOfPCodeXYPosition);
     if ErrMsg<>'' then begin
       MessageDlg(lisCCOErrorCaption,
-        Format(lisEMDUnableToShowEmptyMethodsOfTheCurrentClassBecause, [#13,
-          ErrMsg]), mtError, [mbCancel], 0);
+        Format(lisEMDUnableToShowEmptyMethodsOfTheCurrentClassBecause,
+               [LineEnding, ErrMsg]), mtError, [mbCancel], 0);
     end;
   end;
 end;

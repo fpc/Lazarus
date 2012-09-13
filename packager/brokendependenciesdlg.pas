@@ -148,7 +148,7 @@ begin
     Parent:=Self;
     WordWrap:=true;
     Caption:=Format(lisBDDChangingThePackageNameOrVersionBreaksDependencies, [
-      #13, #13]);
+      LineEnding, LineEnding]);
   end;
 
   DependencyListView:=TListView.Create(Self);

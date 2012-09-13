@@ -270,7 +270,7 @@ begin
   except
     on e: Exception do begin
       Result:=IDEQuestionDialog(lisCCOInvalidCompiler,
-        Format(lisCCOCompilerNotAnExe,[CompilerFilename,#13,E.Message]),
+        Format(lisCCOCompilerNotAnExe,[CompilerFilename,LineEnding,E.Message]),
         mtError,[mrIgnore,lisCCOSkip,mrAbort]);
       exit;
     end;
@@ -284,7 +284,8 @@ begin
     RemoveDoubles(CompilerFiles);
     if (CompilerFiles<>nil) and (CompilerFiles.Count>1) then begin
       Result:=MessageDlg(lisCCOAmbiguousCompiler,
-        Format(lisCCOSeveralCompilers,[#13#13,CompilerFiles.Text,#13]),
+        Format(lisCCOSeveralCompilers,
+              [LineEnding+LineEnding,CompilerFiles.Text,LineEnding]),
         mtWarning,[mbAbort,mbIgnore],0);
       if Result<>mrIgnore then exit;
     end;
@@ -311,7 +312,7 @@ begin
   TestDir:=AppendPathDelim(LazarusIDE.GetTestBuildDirectory);
   if not DirPathExists(TestDir) then begin
     MessageDlg(lisCCOInvalidTestDir,
-      Format(lisCCOCheckTestDir,[#13]),
+      Format(lisCCOCheckTestDir,[LineEnding]),
       mtError,[mbCancel],0);
     Result:=mrCancel;
     exit;
@@ -493,7 +494,7 @@ function TCheckCompilerOptsDlg.CheckMissingFPCPPUs(
     Result:=ord(Severity)>=ord(ccmlError);
     if not Result then begin
       if MessageDlg(lisCCOMissingUnit,
-        Format(lisCCOPPUNotFoundDetailed,[TheUnitname, #13]),
+        Format(lisCCOPPUNotFoundDetailed,[TheUnitname, LineEnding]),
         mtError,[mbIgnore,mbAbort],0)=mrIgnore then
           Result:=true;
     end;
@@ -582,7 +583,7 @@ begin
     if MaxPPUDate-MinPPUDate>3600 then begin
       // the FPC .ppu files dates differ more than one hour
       Result:=MessageDlg(lisCCOWarningCaption,
-        Format(lisCCODatesDiffer,[#13,#13,MinPPU,#13,MaxPPU]),
+        Format(lisCCODatesDiffer,[LineEnding,LineEnding,MinPPU,LineEnding,MaxPPU]),
         mtError,[mbIgnore,mbAbort],0);
       if Result<>mrIgnore then
         exit;
@@ -604,7 +605,8 @@ begin
   if MinPPU<>'' then begin
     if CompilerDate-MinPPUDate>300 then begin
       // the compiler is more than 5 minutes newer than one of the ppu files
-      Result:=MessageDlg(lisCCOWarningCaption,Format(lisCCOPPUOlderThanCompiler,[#13,MinPPU]),
+      Result:=MessageDlg(lisCCOWarningCaption,
+        Format(lisCCOPPUOlderThanCompiler, [LineEnding, MinPPU]),
         mtError,[mbIgnore,mbAbort],0);
       if Result<>mrIgnore then
         exit;

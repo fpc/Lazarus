@@ -663,8 +663,8 @@ begin
   then begin
 
     if MessageDlg(lisFileNotFound,
-      Format(lisTheFileWasNotFoundDoYouWantToLocateItYourself, ['"',
-        SrcFile, '"', #13, #13, #13])
+      Format(lisTheFileWasNotFoundDoYouWantToLocateItYourself,
+             ['"', SrcFile, '"', LineEnding, LineEnding, LineEnding])
       ,mtConfirmation, [mbYes, mbNo], 0) <> mrYes
     then Exit;
 
@@ -2052,7 +2052,7 @@ begin
         else
           if MessageDlg(lisLaunchingApplicationInvalid,
             Format(lisTheLaunchingApplicationBundleDoesNotExists,
-              [LaunchingCmdLine, #13, #13, #13, #13]),
+              [LaunchingCmdLine, LineEnding, LineEnding, LineEnding, LineEnding]),
             mtError, [mbYes, mbNo, mbCancel], 0) = mrYes then
           begin
             if not BuildBoss.CreateProjectApplicationBundle then Exit;
@@ -2074,8 +2074,8 @@ begin
           ClearPathAndExe
         else begin
           MessageDlg(lisLaunchingApplicationInvalid,
-            Format(lisTheLaunchingApplicationDoesNotExistsOrIsNotExecuta, ['"',
-              LaunchingCmdLine, '"', #13, #13, #13]),
+            Format(lisTheLaunchingApplicationDoesNotExistsOrIsNotExecuta,
+                   ['"', LaunchingCmdLine, '"', LineEnding, LineEnding, LineEnding]),
             mtError, [mbOK],0);
           Exit;
         end;
@@ -2090,7 +2090,7 @@ begin
       else begin
         MessageDlg(lisDebuggerInvalid,
           Format(lisTheDebuggerDoesNotExistsOrIsNotExecutableSeeEnviro, ['"',
-            EnvironmentOptions.DebuggerFilename, '"', #13, #13, #13]),
+            EnvironmentOptions.DebuggerFilename, '"', LineEnding, LineEnding, LineEnding]),
           mtError,[mbOK],0);
         Exit;
       end;
@@ -2197,8 +2197,8 @@ begin
          (NewWorkingDir<>'') and (not DirectoryExistsUTF8(NewWorkingDir))
       then begin
         MessageDlg(lisUnableToRun,
-          Format(lisTheWorkingDirectoryDoesNotExistPleaseCheckTheWorki, ['"',
-            NewWorkingDir, '"', #13]),
+          Format(lisTheWorkingDirectoryDoesNotExistPleaseCheckTheWorki,
+                 ['"', NewWorkingDir, '"', LineEnding]),
           mtError,[mbCancel],0);
         exit;
       end;
@@ -2208,8 +2208,8 @@ begin
            (NewWorkingDir<>'') and (not DirectoryExistsUTF8(NewWorkingDir))
         then begin
           MessageDlg(lisUnableToRun,
-            Format(lisTheDestinationDirectoryDoesNotExistPleaseCheckTheP, ['"',
-              NewWorkingDir, '"', #13]),
+            Format(lisTheDestinationDirectoryDoesNotExistPleaseCheckTheP,
+                   ['"', NewWorkingDir, '"', LineEnding]),
             mtError,[mbCancel],0);
           exit;
         end;
@@ -2622,7 +2622,8 @@ begin
     or (not FileIsExecutableCached(EnvironmentOptions.GetParsedDebuggerFilename)))
   then begin
     if IDEQuestionDialog(lisDbgMangNoDebuggerSpecified,
-      Format(lisDbgMangThereIsNoDebuggerSpecifiedSettingBreakpointsHaveNo, [#13]),
+      Format(lisDbgMangThereIsNoDebuggerSpecifiedSettingBreakpointsHaveNo,
+             [LineEnding]),
       mtWarning, [mrCancel, mrIgnore, lisDbgMangSetTheBreakpointAnyway])
       <>mrIgnore
     then
@@ -2642,9 +2643,9 @@ begin
     or (not FileIsExecutableCached(EnvironmentOptions.GetParsedDebuggerFilename)))
   then begin
     if IDEQuestionDialog(lisDbgMangNoDebuggerSpecified,
-      Format(lisDbgMangThereIsNoDebuggerSpecifiedSettingBreakpointsHaveNo, [#13]),
-      mtWarning, [mrCancel, mrIgnore, lisDbgMangSetTheBreakpointAnyway])
-      <>mrIgnore
+      Format(lisDbgMangThereIsNoDebuggerSpecifiedSettingBreakpointsHaveNo,
+             [LineEnding]),
+      mtWarning, [mrCancel, mrIgnore, lisDbgMangSetTheBreakpointAnyway])<>mrIgnore
     then
       exit;
   end;

@@ -335,8 +335,7 @@ begin
   if CommandLine='' then begin
     if (HelpDatabases<>nil)
     and (CompareText(HelpDatabases.ClassName,'TIDEHelpDatabases')=0) then
-      ErrMsg:=Format(hhsHelpNoHTMLBrowserFoundPleaseDefineOne,
-        [ #13])
+      ErrMsg:=Format(hhsHelpNoHTMLBrowserFoundPleaseDefineOne,[LineEnding])
     else
       ErrMsg:=hhsHelpNoHTMLBrowserFound;
     exit;
@@ -380,7 +379,7 @@ begin
     Result:=shrSuccess;
   except
     on E: Exception do begin
-      ErrMsg:=Format(hhsHelpErrorWhileExecuting, ['"', CommandLine, '"', #13,
+      ErrMsg:=Format(hhsHelpErrorWhileExecuting, ['"', CommandLine, '"', LineEnding,
         E.Message]);
     end;
   end;

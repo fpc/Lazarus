@@ -312,10 +312,10 @@ begin
   if (WorkingDir<>'')
   and (not DirPathExists(WorkingDir)) then begin
     Result:=IDEMessageDialogAb(lisExtToolFailedToRunTool,
-      Format(lisExtToolUnableToRunTheTool, ['"', Title, '"', #13,
+      Format(lisExtToolUnableToRunTheTool, ['"', Title, '"', LineEnding,
         Format(lisWorkingDirectoryNotFound, [WorkingDir])]),
       mtError,[mbCancel],ShowAbort);
-    CompileProgress.Ready(lisExtToolUnableToRunTheTool, ['"', Title, '"', #13,
+    CompileProgress.Ready(lisExtToolUnableToRunTheTool, ['"', Title, '"', LineEnding,
         Format(lisWorkingDirectoryNotFound, [WorkingDir])]);
     exit;
   end;
@@ -325,10 +325,10 @@ begin
     NewFilename:=FindProgram(Filename,GetCurrentDirUTF8,false);
     if NewFilename='' then begin
       Result:=IDEMessageDialogAb(lisExtToolFailedToRunTool,
-        Format(lisExtToolUnableToRunTheTool, ['"', Title, '"', #13,
+        Format(lisExtToolUnableToRunTheTool, ['"', Title, '"', LineEnding,
           Format(lisProgramNotFound, [Filename])]),
         mtError,[mbCancel],ShowAbort);
-      CompileProgress.Ready(lisExtToolUnableToRunTheTool, ['"', Title, '"', #13,
+      CompileProgress.Ready(lisExtToolUnableToRunTheTool, ['"', Title, '"', LineEnding,
           Format(lisProgramNotFound, [Filename])]);
       exit;
     end;
@@ -422,10 +422,10 @@ begin
       DebugLn('TExternalToolList.Run ',lisExtToolFailedToRunTool, ' ', E.Message);
       DumpExceptionBackTrace;
       Result:=IDEMessageDialogAb(lisExtToolFailedToRunTool,
-        Format(lisExtToolUnableToRunTheTool, ['"', Title, '"', #13, e.Message]
-          ),
+        Format(lisExtToolUnableToRunTheTool, ['"', Title, '"', LineEnding, e.Message]),
         mtError,[mbCancel],ShowAbort);
-      CompileProgress.Ready(lisExtToolUnableToRunTheTool, ['"', Title, '"', #13, e.Message]);
+      CompileProgress.Ready(lisExtToolUnableToRunTheTool,
+                            ['"', Title, '"', LineEnding, e.Message]);
     end;
   end;
 end;

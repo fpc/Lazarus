@@ -121,7 +121,7 @@ function CheckCreateVarFromIdentifierInSrcEdit(
   procedure ErrorNotAtAnIdentifier;
   begin
     IDEMessageDialog(crsCWError,
-      Format(crsPleasePlaceTheCursorOfTheSourceEditorAtAnIdentifie, [#13, #13]),
+      Format(crsPleasePlaceTheCursorOfTheSourceEditorAtAnIdentifie, [LineEnding, LineEnding]),
       mtError,[mbCancel]);
   end;
 

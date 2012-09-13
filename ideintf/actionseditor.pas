@@ -809,8 +809,8 @@ begin
     except
       on E: Exception do begin
         MessageDlg(oisErrorDeletingAction,
-          Format(oisErrorWhileDeletingAction, [#13, E.Message]), mtError, [mbOk
-            ], 0);
+          Format(oisErrorWhileDeletingAction, [LineEnding, E.Message]), mtError,
+          [mbOk], 0);
       end;
     end;
   end;

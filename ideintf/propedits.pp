@@ -2522,12 +2522,11 @@ begin
   Result:=oisUnknown;
 end;
 
-function TPropertyEditor.GetHint(HintType: TPropEditHint; x, y: integer
-  ): string;
+function TPropertyEditor.GetHint(HintType: TPropEditHint; x, y: integer): string;
 var
   TypeHint: String;
 begin
-  Result := GetName + #13 + oisValue + ' ' + GetVisualValue;
+  Result := GetName + LineEnding + oisValue + ' ' + GetVisualValue;
   case GetPropType^.Kind of
    tkInteger : TypeHint:=oisInteger;
    tkInt64 : TypeHint:=oisInt64;
@@ -2550,7 +2549,7 @@ begin
     TypeHint:='';
   end;
   if TypeHint<>'' then
-    Result:=Result+#13+TypeHint;
+    Result:=Result+LineEnding+TypeHint;
 end;
 
 function TPropertyEditor.GetDefaultValue: ansistring;
@@ -4068,27 +4067,27 @@ begin
     if not NewIdentIsMethod then
     begin
       if MessageDlg(oisIncompatibleIdentifier,
-        Format(oisTheIdentifierIsNotAMethodPressCancelToUndoPressIgn, ['"',
-          NewValue, '"', #13, #13]), mtWarning, [mbCancel, mbIgnore], 0)<>
-          mrIgnore
+        Format(oisTheIdentifierIsNotAMethodPressCancelToUndoPressIgn,
+               ['"', NewValue, '"', LineEnding, LineEnding]),
+        mtWarning, [mbCancel, mbIgnore], 0)<>mrIgnore
       then
         exit;
     end;
     if not NewMethodIsPublished then
     begin
       if MessageDlg(oisIncompatibleMethod,
-        Format(oisTheMethodIsNotPublishedPressCancelToUndoPressIgnor, ['"',
-          NewValue, '"', #13, #13]), mtWarning, [mbCancel, mbIgnore], 0)<>
-          mrIgnore
+        Format(oisTheMethodIsNotPublishedPressCancelToUndoPressIgnor,
+               ['"', NewValue, '"', LineEnding, LineEnding]),
+        mtWarning, [mbCancel, mbIgnore], 0)<>mrIgnore
       then
         exit;
     end;
     if not NewMethodIsCompatible then
     begin
       if MessageDlg(oisIncompatibleMethod,
-        Format(oisTheMethodIsIncompatibleToThisEventPressCancelToUnd, ['"',
-          NewValue, '"', GetName, #13, #13]), mtWarning, [mbCancel, mbIgnore], 0
-          )<>mrIgnore
+        Format(oisTheMethodIsIncompatibleToThisEventPressCancelToUnd,
+               ['"', NewValue, '"', GetName, LineEnding, LineEnding]),
+          mtWarning, [mbCancel, mbIgnore], 0)<>mrIgnore
       then
         exit;
     end;

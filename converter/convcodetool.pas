@@ -156,7 +156,7 @@ begin
   LazarusIDE.DoJumpToCodeToolBossError;
   if fAskAboutError then begin
     Result:=QuestionDlg(lisCCOErrorCaption,
-      Format(CodetoolsFoundError, [ExtractFileName(fCode.Filename), #13, ErrMsg, #13]),
+      Format(CodetoolsFoundError, [ExtractFileName(fCode.Filename), LineEnding, ErrMsg, LineEnding]),
       mtWarning, [mrIgnore, lisIgnoreAndContinue, mrAbort], 0);
     if Result=mrIgnore then Result:=mrOK;
   end else begin

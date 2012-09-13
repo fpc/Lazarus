@@ -936,7 +936,8 @@ begin
   begin
     CurBreakPoint:=TIDEBreakPoint(Item.Data);
     case CurBreakPoint.Kind of
-      bpkSource: Msg := Format(lisDeleteBreakpointAtLine, [#13, CurBreakPoint.Source, CurBreakPoint.Line]);
+      bpkSource: Msg := Format(lisDeleteBreakpointAtLine,
+                           [LineEnding, CurBreakPoint.Source, CurBreakPoint.Line]);
       bpkAddress: Msg := Format(lisDeleteBreakpointForAddress, ['$' + IntToHex(CurBreakPoint.Address, 8)]);
       bpkData: Msg := Format(lisDeleteBreakpointForWatch, [CurBreakPoint.WatchData]);
     end;

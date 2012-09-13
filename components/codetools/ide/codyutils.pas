@@ -184,7 +184,7 @@ begin
     Code.Filename:=Filename;
     Code.OnDecodeLoaded:=@Cody.DecodeLoaded;
     if not Code.LoadFromFile(Filename) then begin
-      IDEMessageDialog(crsCWError, Format(crsCUUnableToLoadFile, [Filename, #13
+      IDEMessageDialog(crsCWError, Format(crsCUUnableToLoadFile, [Filename, LineEnding
         , Code.LastError]),
         mtError,[mbCancel]);
       exit;
@@ -595,7 +595,7 @@ begin
     if not ReadFromClipboard(AClipBoard,SrcEdit,ALogStartPos,AText) then exit;
   except
     on E: Exception do begin
-      IDEMessageDialog('Error','Unable to paste Cody data.'#13+E.Message,
+      IDEMessageDialog('Error','Unable to paste Cody data.'+LineEnding+E.Message,
         mtError,[mbCancel]);
     end;
   end;

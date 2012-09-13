@@ -227,7 +227,7 @@ begin
     DebugLn('GetMsgLineFilename Msg.Parts=nil');
     if not Quiet then begin
       MessageDlg(lisCCOErrorCaption,
-        Format(lisMessageContainsNoFilePositionInformation, [#13, Msg.Msg]),
+        Format(lisMessageContainsNoFilePositionInformation, [LineEnding, Msg.Msg]),
           mtError, [mbCancel], 0);
     end;
     exit;
@@ -246,7 +246,7 @@ begin
     DebugLn('GetMsgLineFilename Filename "',Filename,'" not found.');
     if not Quiet then begin
       MessageDlg(lisCCOErrorCaption,
-        Format(lisUnableToLoadFile, [#13, Filename]), mtError, [mbCancel], 0);
+        Format(lisUnableToLoadFile, [LineEnding, Filename]), mtError, [mbCancel], 0);
     end;
     exit;
   end;
@@ -936,8 +936,8 @@ begin
 
     if not IsIdentifierInCode(CodeXY.Code,CodeXY.X,CodeXY.Y,Identifier,
       Identifier+' not found in '+CodeBuf.Filename
-         +' at line '+IntToStr(Caret.Y)+', column '+IntToStr(Caret.X)+'.'#13
-         +'Maybe the message is outdated.')
+         +' at line '+IntToStr(Caret.Y)+', column '+IntToStr(Caret.X)+'.'
+         +LineEnding+'Maybe the message is outdated.')
     then exit;
 
     if not CodeToolBoss.CreateVariableForIdentifier(CodeXY.Code,CodeXY.X,CodeXY.Y,-1,
@@ -1089,7 +1089,7 @@ begin
     // check if the variable is at that position
     if not IsIdentifierInCode(CodeBuf,Caret.X,Caret.Y,Variable,
       Variable+' not found in '+CodeBuf.Filename
-         +' at line '+IntToStr(Caret.Y)+', column '+IntToStr(Caret.X)+'.'#13
+         +' at line '+IntToStr(Caret.Y)+', column '+IntToStr(Caret.X)+'.'+LineEnding
          +'Maybe the message is outdated.')
     then exit;
 
@@ -1150,8 +1150,8 @@ begin
     if p<1 then begin
       DebugLn(['TQuickFixHint_Hide.Execute failed because invalid line, column']);
       MessageDlg(lisCCOErrorCaption,
-        Format(lisInvalidLineColumnInMessage, [#13, Msg.Msg]), mtError, [
-          mbCancel], 0);
+        Format(lisInvalidLineColumnInMessage, [LineEnding, Msg.Msg]),
+        mtError, [mbCancel], 0);
       exit;
     end;
 

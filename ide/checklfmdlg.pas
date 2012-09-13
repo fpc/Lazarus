@@ -337,7 +337,7 @@ begin
           Continue;
       end;
       CurMethodName := GlobalDesignHook.GetMethodName(CurMethod, p^.Instance);
-      s := s + DbgSName(p^.Instance) + ' ' + p^.PropInfo^.Name + '=' + CurMethodName + #13;
+      s := s + DbgSName(p^.Instance) + ' ' + p^.PropInfo^.Name + '=' + CurMethodName + LineEnding;
     end;
     //debugln('RemoveDanglingEvents ',s);
 
@@ -346,7 +346,7 @@ begin
 
     MsgResult:=IDEQuestionDialog(lisMissingEvents,
       Format(lisTheFollowingMethodsUsedByAreNotInTheSourceRemoveTh, [DbgSName(
-        RootComponent), #13, PascalBuffer.Filename, #13, #13, s, #13])
+        RootComponent), LineEnding, PascalBuffer.Filename, LineEnding, LineEnding, s, LineEnding])
        ,mtConfirmation,
        [mrYes, lisRemoveThem, mrIgnore, lisKeepThemAndContinue, mrCancel]);
      if MsgResult=mrYes then begin

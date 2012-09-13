@@ -1088,10 +1088,10 @@ begin
     [IntToStr(CodyUnitDictionary.UnitGroupsByFilename.Count),
      IntToStr(CodyUnitDictionary.UnitsByFilename.Count),
      IntToStr(CodyUnitDictionary.Identifiers.Count),
-     #13#10,
+     LineEnding,
      CodyUnitDictionary.GetFilename]);
   if CodyUnitDictionary.LoadSaveError<>'' then
-    s:=s+#13#10+Format(crsError, [CodyUnitDictionary.LoadSaveError]);
+    s:=s+LineEnding+Format(crsError, [CodyUnitDictionary.LoadSaveError]);
   InfoLabel.Caption:=s;
 end;
 
@@ -1279,7 +1279,7 @@ begin
   then begin
     // another unit with same name
     IDEMessageDialog(crsUnitNameClash,
-      Format(crsTheTargetUnitHasTheSameNameAsTheCurrentUnitFreePas, [#13]),
+      Format(crsTheTargetUnitHasTheSameNameAsTheCurrentUnitFreePas, [LineEnding]),
       mtError,[mbCancel]);
     exit;
   end;
@@ -1330,14 +1330,14 @@ begin
       begin
         if Pkg=CurOwner then begin
           IDEMessageDialog(crsImpossibleDependency,
-            Format(crsTheUnitIsPartOfItCanNotUseAnotherPackageWithTheSam, [
-              CurMainFilename, #13, Pkg.Filename, #13, #13, NewGroupFilename]),
-              mtError, [mbCancel]);
+            Format(crsTheUnitIsPartOfItCanNotUseAnotherPackageWithTheSam, [CurMainFilename,
+                LineEnding, Pkg.Filename, LineEnding, LineEnding, NewGroupFilename]),
+            mtError, [mbCancel]);
           exit;
         end;
         if IDEQuestionDialog(crsPackageWithSameName,
-          Format(crsThereIsAlreadyAnotherPackageLoadedWithTheSameNameO, [#13,
-            Pkg.Filename, #13, NewGroupFilename, #13]),
+          Format(crsThereIsAlreadyAnotherPackageLoadedWithTheSameNameO, [LineEnding,
+            Pkg.Filename, LineEnding, NewGroupFilename, LineEnding]),
           mtConfirmation, [mrCancel, crsBTNCancel, mrOk,
             crsCloseOtherPackageAndOpenNew])<> mrOk
         then exit;
