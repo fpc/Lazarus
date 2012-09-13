@@ -348,7 +348,8 @@ begin
         begin
           curUnit := IdentifierList.FilteredItems[i].Identifier;
           if  not FMainUsedUnits.Find(curUnit, x)
-          and not FImplUsedUnits.Find(curUnit, x) then
+          and not FImplUsedUnits.Find(curUnit, x)
+          and not FProjUnits.Find(curUnit, x) then
             FOtherUnits.AddObject(IdentifierList.FilteredItems[i].Identifier,
                                   IdentifierList.FilteredItems[i]);
         end;
