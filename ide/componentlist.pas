@@ -132,9 +132,9 @@ begin
   Result:=nil;
   if ComponentsListbox.IsVisible then
   begin
-    i:=ComponentsListbox.ItemIndex;
+    i := ComponentsListbox.ItemIndex;
     if i>=0 then
-      Result:=TRegisteredComponent(ComponentsListbox.Items.Objects[i]);
+      Result := TRegisteredComponent(ComponentsListbox.Items.Objects[i]);
   end
   else if PalletteTree.IsVisible then
   begin
@@ -161,7 +161,7 @@ begin
     begin
       APage := IDEComponentPalette.Pages[i];
       if APage.Visible then
-        for j :=  0 to APage.Count-1 do
+        for j := 0 to APage.Count-1 do
         begin
           AComponent := APage.Items[j];
           if AComponent.Visible and (AComponent.PageName<>'') then
@@ -220,7 +220,7 @@ begin
 
     //Third tabsheet (component inheritence)
     List := TStringlist.Create;
-    AClassList:= TStringlist.Create;
+    AClassList := TStringlist.Create;
     InheritanceTree.Items.BeginUpdate;
     try
       InheritanceTree.Items.Clear;
@@ -313,7 +313,7 @@ var
 begin
   DefaultDraw := False;
   Indent := (Sender as TTreeView).Indent;
-  Comp:=TRegisteredComponent(Node.Data);
+  Comp := TRegisteredComponent(Node.Data);
   with Sender.Canvas do
   begin
     if cdsSelected in State then
@@ -330,13 +330,13 @@ begin
     //Brush.Style := bsClear;     //don't paint over the background bitmap.
     ARect.Left := ARect.Left + (Node.Level * Indent);
     // ARect.Left now points to the left of the image, or text if no image
-    CurIcon:=nil;
+    CurIcon := nil;
     if Comp is TPkgComponent then
-      CurIcon:=TPkgComponent(Comp).Icon;
+      CurIcon := TPkgComponent(Comp).Icon;
     if CurIcon<>nil then
     begin
-      IconWidth:=CurIcon.Width;
-      IconHeight:=CurIcon.Height;
+      IconWidth := CurIcon.Width;
+      IconHeight := CurIcon.Height;
       ARect.Left := ARect.Left + Indent;
       //ARect.Left is now the leftmost portion of the image.
       Draw(ARect.Left+(25-IconWidth) div 2,
@@ -448,6 +448,7 @@ begin
 end;
 
 procedure TComponentListForm.OKButtonClick(Sender: TObject);
+// Select component from palette and close this form. User can insert the component.
 var
   AComponent: TRegisteredComponent;
 begin
@@ -460,7 +461,7 @@ end;
 
 procedure TComponentListForm.CancelButtonClick(Sender: TObject);
 begin
-  IDEComponentPalette.Selected := nil;
+  IDEComponentPalette.Selected := nil; // Remove component selection from palette.
   Close;
 end;
 
