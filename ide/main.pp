@@ -2507,7 +2507,6 @@ begin
   RegisterProjectDescriptor(TProjectProgramDescriptor.Create);
   RegisterProjectDescriptor(TProjectConsoleApplicationDescriptor.Create);
   RegisterProjectDescriptor(TProjectLibraryDescriptor.Create);
-  RegisterProjectDescriptor(TProjectManualProgramDescriptor.Create);
 end;
 
 procedure TMainIDE.SetRecentFilesMenu;
