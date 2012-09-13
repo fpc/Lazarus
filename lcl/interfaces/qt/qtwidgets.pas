@@ -1472,6 +1472,7 @@ type
 
   TQtMenu = class(TQtWidget)
   private
+    FLastTick: QWord; // issue #22872
     FActions: TFPList;
     FIcon: QIconH;
     FTriggeredHook: QAction_hookH;
@@ -13276,6 +13277,7 @@ var
   Parent: QWidgetH;
 begin
   FTrackButton := QtNoButton;
+  FLastTick := 0;
   FIcon := nil;
   if AParams.WndParent <> 0 then
     Parent := TQtWidget(AParams.WndParent).GetContainerWidget
@@ -13690,13 +13692,18 @@ begin
             SlotTriggered();
         end;
       end;
-    QEventShowtoParent:
+    QEventHideToParent: FLastTick := GetTickCount64; // issue #22872
+    QEventShowToParent:
       begin
         if Assigned(FMenuItem) and Assigned(FMenuItem.OnClick)
            and not (FMenuItem.Menu is TPopupMenu) then
         begin
-          SlotTriggered();
-          Result:=True;
+          // issue #22872
+          if GetTickCount64 - FLastTick > 50 then
+          begin
+            FLastTick := GetTickCount64;
+            SlotTriggered();
+          end;
         end;
       end;
   end;
