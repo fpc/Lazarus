@@ -3438,9 +3438,6 @@ resourcestring
   lisNewDlgCreateANewUnitWithADataModule = 'Create a new unit with a datamodule.';
   lisNewDlgCreateANewUnitWithAFrame = 'Create a new unit with a frame.';
   lisNewDlgCreateANewEmptyTextFile = 'Create a new empty text file.';
-  lisASimplePascalProgramFileThisCanBeUsedForQuickAndDi = 'A simple Pascal '
-    +'Program file.%sThis can be used for quick and dirty testing.%sBetter '
-    +'create a new project.';
   lisNewDlgCreateANewGraphicalApplication = 'Create a new '
     +'graphical application.%sThe application source is maintained by Lazarus.';
   lisNewDlgCreateANewProgram = 'Create a new '
@@ -4447,20 +4444,17 @@ resourcestring
   lisSimpleProgram = 'Simple Program';
   lisProgram = 'Program';
   lisConsoleApplication = 'Console application';
-  lisApplicationAGraphicalLclFreepascalProgramTheProgra = 'Application%sA '
-    +'graphical LCL/Free Pascal program. The program source is automatically '
-    +'maintained by Lazarus.';
-  lisFreepascalProgramUsingTCustomApplicationToEasilyCh = 'Free Pascal program '
-    +'using TCustomApplication to easily check command line options, handling '
-    +'exceptions, etc. The program source is automatically maintained by Lazarus.';
-  lisProgramAFreepascalSimpleProgram = 'Simple Program%sA most simple Free Pascal program.'+
-    ' The program source is automatically maintained by Lazarus.';
-  lisProgramAFreepascalProgramTheProgramFileIsAutomatic = 'Program%sA Free Pascal program.'+
-    ' The program source is automatically maintained by Lazarus.';
-  lisCustomProgramAFreepascalProgram = 'Custom Program%sA Free Pascal program.';
-  lisLibraryAFreepascalLibraryDllUnderWindowsSoUnderLin = 'Library%s'
-    +'A Free Pascal library (.dll under Windows, .so under Linux, .dylib under '
-    +'MacOS X). The library source is automatically maintained by Lazarus.';
+
+  lisApplicationProgramDescriptor = 'A graphical Free Pascal application using'
+    +' the cross-platform LCL library for its GUI.';
+  lisSimpleProgramProgramDescriptor = 'A most simple Free Pascal command line program.';
+  lisProgramProgramDescriptor = 'A Free Pascal command line program with some useful settings added.';
+  lisConsoleApplicationProgramDescriptor = 'A Free Pascal command line program using'
+    +' TCustomApplication to easily check command line options, handling exceptions, etc.';
+  lisCustomProgramProgramDescriptor = 'A Custom Free Pascal program.';
+  lisLibraryProgramDescriptor = 'A Free Pascal shared library (.dll under Windows,'
+    +' .so under Linux, .dylib under MacOS X).';
+
   lisNPSelectAProjectType = 'Select a project type';
   lisNPCreateANewProject = 'Create a new project';
   lisNPCreate = 'Create';

@@ -1271,8 +1271,7 @@ end;
 
 function TProjectApplicationDescriptor.GetLocalizedDescription: string;
 begin
-  Result:=Format(lisApplicationAGraphicalLclFreepascalProgramTheProgra,
-                [LineEnding+LineEnding]);
+  Result := GetLocalizedName + LineEnding+LineEnding + lisApplicationProgramDescriptor;
 end;
 
 function TProjectApplicationDescriptor.InitProject(
@@ -1343,7 +1342,7 @@ end;
 
 function TProjectSimpleProgramDescriptor.GetLocalizedDescription: string;
 begin
-  Result:=Format(lisProgramAFreepascalSimpleProgram, [LineEnding+LineEnding]);
+  Result := GetLocalizedName + LineEnding+LineEnding + lisSimpleProgramProgramDescriptor;
 end;
 
 function TProjectSimpleProgramDescriptor.InitProject(AProject: TLazProject): TModalResult;
@@ -1393,8 +1392,7 @@ end;
 
 function TProjectProgramDescriptor.GetLocalizedDescription: string;
 begin
-  Result:=Format(lisProgramAFreepascalProgramTheProgramFileIsAutomatic,
-                [LineEnding+LineEnding]);
+  Result := GetLocalizedName + LineEnding+LineEnding + lisProgramProgramDescriptor;
 end;
 
 function TProjectProgramDescriptor.InitProject(AProject: TLazProject): TModalResult;
@@ -1457,7 +1455,7 @@ end;
 
 function TProjectManualProgramDescriptor.GetLocalizedDescription: string;
 begin
-  Result:=Format(lisCustomProgramAFreepascalProgram, [LineEnding+LineEnding]);
+  Result := GetLocalizedName + LineEnding+LineEnding + lisCustomProgramProgramDescriptor;
 end;
 
 function TProjectManualProgramDescriptor.InitProject(AProject: TLazProject
@@ -1524,8 +1522,7 @@ end;
 
 function TProjectConsoleApplicationDescriptor.GetLocalizedDescription: string;
 begin
-  Result:=GetLocalizedName+LineEnding+LineEnding+
-    lisFreepascalProgramUsingTCustomApplicationToEasilyCh;
+  Result := GetLocalizedName + LineEnding+LineEnding + lisConsoleApplicationProgramDescriptor;
 end;
 
 function TProjectConsoleApplicationDescriptor.InitProject(AProject: TLazProject
@@ -1695,12 +1692,10 @@ end;
 
 function TProjectLibraryDescriptor.GetLocalizedDescription: string;
 begin
-  Result:= Format(lisLibraryAFreepascalLibraryDllUnderWindowsSoUnderLin,
-                  [LineEnding+LineEnding]);
+  Result := GetLocalizedName + LineEnding+LineEnding + lisLibraryProgramDescriptor;
 end;
 
-function TProjectLibraryDescriptor.InitProject(AProject: TLazProject
-  ): TModalResult;
+function TProjectLibraryDescriptor.InitProject(AProject: TLazProject): TModalResult;
 var
   NewSource: String;
   MainFile: TLazProjectFile;
@@ -1733,8 +1728,7 @@ begin
   AProject.LazCompilerOptions.RelocatableUnit:=true;
 end;
 
-function TProjectLibraryDescriptor.CreateStartFiles(AProject: TLazProject
-  ): TModalResult;
+function TProjectLibraryDescriptor.CreateStartFiles(AProject: TLazProject): TModalResult;
 begin
   Result:=LazarusIDE.DoOpenEditorFile(AProject.MainFile.Filename,-1,-1,
                                       [ofProjectLoading,ofRegularFile]);

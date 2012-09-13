@@ -2495,7 +2495,6 @@ begin
   RegisterProjectFileDescriptor(TFileDescPascalUnitWithForm.Create);
   RegisterProjectFileDescriptor(TFileDescPascalUnitWithDataModule.Create);
   RegisterProjectFileDescriptor(TFileDescPascalUnitWithFrame.Create);
-  RegisterProjectFileDescriptor(TFileDescSimplePascalProgram.Create);
   RegisterProjectFileDescriptor(TFileDescText.Create);
 
   RegisterProjectFileDescriptor(TFileDescInheritedComponent.Create, InheritedItemsGroupName);

@@ -291,17 +291,6 @@ type
     property InheritedUnit: TUnitInfo read FInheritedUnit write SetInheritedUnit;
   end;
 
-  { TFileDescSimplePascalProgram }
-
-  TFileDescSimplePascalProgram = class(TFileDescPascalUnit)
-  public
-    constructor Create; override;
-    function GetLocalizedName: string; override;
-    function GetLocalizedDescription: string; override;
-    function CreateSource(const Filename, SourceName,
-                          ResourceName: string): string; override;
-  end;
-
   { TFileDescText }
 
   TFileDescText = class(TProjectFileDescriptor)
@@ -487,42 +476,6 @@ end;
 function TFileDescText.GetLocalizedDescription: string;
 begin
   Result:=lisNewDlgCreateANewEmptyTextFile;
-end;
-
-{ TFileDescSimplePascalProgram }
-
-constructor TFileDescSimplePascalProgram.Create;
-begin
-  inherited Create;
-  Name:='custom program';
-  DefaultFilename:='project.pas';
-  IsPascalUnit:=false;
-end;
-
-function TFileDescSimplePascalProgram.GetLocalizedName: string;
-begin
-  Result:=lisCustomProgram;
-end;
-
-function TFileDescSimplePascalProgram.GetLocalizedDescription: string;
-begin
-  Result:=Format(lisASimplePascalProgramFileThisCanBeUsedForQuickAndDi,
-                 [LineEnding, LineEnding]);
-end;
-
-function TFileDescSimplePascalProgram.CreateSource(const Filename, SourceName,
-  ResourceName: string): string;
-begin
-  Result:='program '+SourceName+';'+LineEnding
-         +LineEnding
-         +'{$mode objfpc}{$H+}'+LineEnding
-         +LineEnding
-         +'uses'+LineEnding
-         +'  Classes, SysUtils;'+LineEnding
-         +LineEnding
-         +'begin'+LineEnding
-         +'end.'+LineEnding
-         +LineEnding;
 end;
 
 { TFileDescPascalUnitWithFrame }
