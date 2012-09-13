@@ -2246,18 +2246,16 @@ begin
 
     if (Options and ETO_CLIPPED <> 0) then
     begin
-      B := QtDC.getClipping;
-      if not B then
-      begin
-        QtDC.save;
+      QtDC.save;
+      try
         QtDC.setClipRect(Rect^);
+        if Dx <> nil then
+          DoDrawCharByChar(True)
+        else
+          QtDC.drawText(X, Y, Rect^.Right - Rect^.Left, Rect^.Bottom - Rect^.Top, 0, @WideStr);
+      finally
+        QtDC.Restore;
       end;
-      if Dx <> nil then
-        DoDrawCharByChar(True)
-      else
-        QtDC.drawText(X, Y, Rect^.Right - Rect^.Left, Rect^.Bottom - Rect^.Top, 0, @WideStr);
-      if not B then
-        QtDC.restore;
     end else
     begin
       if Dx <> nil then
