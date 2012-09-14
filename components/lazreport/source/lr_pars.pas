@@ -109,7 +109,7 @@ begin
     j := i;
     case s[i] of
       '+':
-        nm[st - 2] := nm[st - 2] + nm[st - 1]; //SumOrConcat(nm[st - 2], nm[st - 1]);
+        nm[st - 2] := SumOrConcat(nm[st - 2], nm[st - 1]);
       ttOr:
         nm[st - 2] := nm[st - 2] or nm[st - 1];
       '-':
