@@ -233,6 +233,25 @@ type
     property IsSet[AIndex: Integer]: Boolean read GetIsSet write SetIsSet;
   end;
 
+  // A limited capacity stack desighed to store 'undo'-like history.
+  generic THistory<TElem> = class
+  strict private
+    FCount: Cardinal;
+    FData: array of TElem;
+
+    function GetCapacity: Cardinal; inline;
+    function GetItem(AIndex: Integer): TElem;
+    procedure SetCapacity(AValue: Cardinal);
+    procedure DeleteOld(ACount: Integer);
+  public
+    procedure Add(const AItem: TElem);
+    function Pop: TElem; inline;
+
+    property Capacity: Cardinal read GetCapacity write SetCapacity;
+    property Count: Cardinal read FCount;
+    property Item[AIndex: Integer]: TElem read GetItem; default;
+  end;
+
 const
   PUB_INT_SET_ALL = '';
   PUB_INT_SET_EMPTY = '-';
@@ -491,6 +510,49 @@ end;
 operator = (const A, B: TMethod): Boolean;
 begin
   Result := (A.Code = B.Code) and (A.Data = B.Data);
+end;
+
+{ THistory }
+
+procedure THistory.Add(const AItem: TElem);
+begin
+  if Capacity = 0 then exit;
+  if FCount = Capacity then
+    DeleteOld(1);
+  FData[FCount] := AItem;
+  FCount += 1;
+end;
+
+procedure THistory.DeleteOld(ACount: Integer);
+begin
+  FCount -= ACount;
+  Move(FData[ACount], FData[0], SizeOf(FData[0]) * FCount);
+end;
+
+function THistory.GetCapacity: Cardinal;
+begin
+  Result := Length(FData);
+end;
+
+function THistory.GetItem(AIndex: Integer): TElem;
+begin
+  if AIndex < 0 then
+    AIndex += Integer(FCount);
+  Result := FData[AIndex];
+end;
+
+function THistory.Pop: TElem;
+begin
+  Result := GetItem(-1);
+  FCount -= 1;
+end;
+
+procedure THistory.SetCapacity(AValue: Cardinal);
+begin
+  if Capacity = AValue then exit;
+  if AValue < FCount then
+    DeleteOld(FCount - AValue);
+  SetLength(FData, AValue);
 end;
 
 { TTypedFPListEnumerator }

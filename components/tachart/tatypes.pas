@@ -172,6 +172,8 @@ type
     property YMin: Double index 2 read GetBounds write SetBounds stored IsBoundsStored;
   end;
 
+  TChartExtentHistory = specialize THistory<TDoubleRect>;
+
   TRectArray = array [1..4] of Integer;
 
   { TChartMargins }
