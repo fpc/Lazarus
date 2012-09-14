@@ -55,6 +55,7 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure Connect(Doc: Pointer);
+    procedure Clear;
     procedure OnePage;
     procedure TwoPages;
     procedure PageWidth;
@@ -243,6 +244,11 @@ begin
   FWindow.Connect(Doc);
   Page := 1;
   FWindow.RedrawAll;
+end;
+
+procedure TfrPreview.Clear;
+begin
+  FWindow.PreviewPanel.Parent := nil;
 end;
 
 function TfrPreview.GetPage: Integer;
