@@ -80,6 +80,12 @@ type
     procedure TestIsSet;
   end;
 
+type
+  THistoryTest = class(TTestCase)
+  published
+    procedure TestHistory;
+  end;
+
 implementation
 
 uses
@@ -452,11 +458,57 @@ begin
   AssertEquals(PUB_INT_SET_EMPTY, FISet.AsString);
 end;
 
+// Workaround: FPC 2.6 fails if this type is made local to TestHistory.
+type
+  TCharHistory = specialize THistory<Char>;
+
+{ THistoryTest }
+
+procedure THistoryTest.TestHistory;
+var
+  h: TCharHistory;
+
+  procedure Check(AMessage, AExpected: String);
+  var
+    actual: String = '';
+    i: Integer;
+  begin
+    for i := 0 to h.Count - 1 do
+      actual += h.Item[i];
+    AssertEquals(AMessage, AExpected, actual);
+  end;
+
+begin
+  h := TCharHistory.Create;
+  try
+    AssertEquals('Initial capacity', 0, h.Capacity);
+    Check('Initial state', '');
+    h.Add('a');
+    Check('Zero capacity', '');
+    h.Capacity := 3;
+    h.Add('a');
+    h.Add('b');
+    Check('Normal', 'ab');
+    h.Add('c');
+    h.Add('d');
+    Check('Overflow', 'bcd');
+    h.Capacity := 2;
+    Check('Reduce capacity 1', 'cd');
+    h.Add('e');
+    Check('Reduce capacity 2', 'de');
+    AssertEquals('Item[-1]', 'e', h[-1]);
+    AssertEquals('Pop', 'e', h.Pop);
+    Check('After pop', 'd');
+  finally
+    FreeAndNil(h);
+  end;
+end;
+
 initialization
 
   RegisterTests([
     TIntervalListTest, TMathTest, TGeometryTest, TColorTest, TRTTITest,
-    TPublishedIntegerSetTest]);
+    TPublishedIntegerSetTest, THistoryTest]);
 
 end.
 
