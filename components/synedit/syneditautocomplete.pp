@@ -243,7 +243,7 @@ var
   i, j, Len, IndentLen, TokenStartX: integer;
   s: string;
   IdxMaybe, NumMaybe: integer;
-  p: TPoint;
+  p, p2: TPoint;
   NewCaretPos: boolean;
   Temp: TStringList;
 begin
@@ -369,7 +369,9 @@ begin
             Temp.Free;
           end;
           // replace the selected text and position the caret
-          AEditor.SelText := s;
+          p2 := AEditor.BlockBegin;
+          AEditor.SelText := '';
+          AEditor.SetTextBetweenPoints(p2, p2, s, [], scamEnd);
           if NewCaretPos then
             AEditor.CaretXY := p;
           AEditor.EnsureCursorPosVisible;
