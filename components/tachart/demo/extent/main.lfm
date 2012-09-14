@@ -7,7 +7,7 @@ object Form1: TForm1
   ClientHeight = 397
   ClientWidth = 396
   OnCreate = FormCreate
-  LCLVersion = '0.9.31'
+  LCLVersion = '1.1'
   object Chart1: TChart
     Left = 0
     Height = 307
@@ -16,16 +16,18 @@ object Form1: TForm1
     AxisList = <    
       item
         Grid.Visible = False
+        Minors = <>
         Title.LabelFont.Orientation = 900
       end    
       item
-        Alignment = calBottom
         Grid.Visible = False
+        Alignment = calBottom
+        Minors = <>
       end>
-    Extent.XMin = -1.7
-    Extent.YMin = -1.7
     Extent.XMax = 1.7
+    Extent.XMin = -1.7
     Extent.YMax = 1.7
+    Extent.YMin = -1.7
     Foot.Brush.Color = clBtnFace
     Foot.Font.Color = clBlue
     Title.Brush.Color = clBtnFace
@@ -34,6 +36,7 @@ object Form1: TForm1
       'TAChart'
     )
     Toolset = ChartToolset1
+    OnExtentChanged = Chart1ExtentChanged
     Align = alClient
     ParentColor = False
     object Chart1LineSeries: TLineSeries
@@ -81,9 +84,9 @@ object Form1: TForm1
     TabOrder = 1
     object lblBoundValue: TLabel
       Left = 160
-      Height = 14
+      Height = 13
       Top = 21
-      Width = 27
+      Width = 26
       Caption = 'Value'
       ParentColor = False
     end
@@ -103,6 +106,8 @@ object Form1: TForm1
       ChildSizing.ShrinkVertical = crsScaleChilds
       ChildSizing.Layout = cclLeftToRightThenTopToBottom
       ChildSizing.ControlsPerLine = 1
+      ClientHeight = 70
+      ClientWidth = 143
       Items.Strings = (
         'Left'
         'Right'
@@ -127,6 +132,23 @@ object Form1: TForm1
       TabOrder = 1
       Value = 1.7
     end
+    object btnPrevExtent: TButton
+      Left = 159
+      Height = 25
+      Top = 49
+      Width = 95
+      Caption = 'Previous extent'
+      OnClick = btnPrevExtentClick
+      TabOrder = 2
+    end
+    object lblHistory: TLabel
+      Left = 264
+      Height = 13
+      Top = 57
+      Width = 44
+      Caption = 'lblHistory'
+      ParentColor = False
+    end
   end
   object RandomChartSource1: TRandomChartSource
     PointsNumber = 20
@@ -139,8 +161,8 @@ object Form1: TForm1
     top = 118
   end
   object ChartToolset1: TChartToolset
-    left = 328
-    top = 332
+    left = 336
+    top = 320
     object ChartToolset1PanDragTool1: TPanDragTool
       Shift = [ssRight]
       LimitToExtent = [pdLeft, pdUp, pdRight, pdDown]
