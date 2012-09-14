@@ -977,6 +977,9 @@ var
   Range: NSRange;
   Pt: NSPoint;
   Context: NSGraphicsContext;
+  Locations: array of NSPoint;
+  Indexes: array of NSUInteger;
+  I, Count: NSUInteger;
 begin
   if not ctx.isFlipped then
     Context := NSGraphicsContext.graphicsContextWithGraphicsPort_flipped(ctx.graphicsPort, True)
@@ -988,6 +991,21 @@ begin
   Range := FLayout.glyphRangeForTextContainer(FTextContainer);
   Pt.x := X;
   Pt.y := Y;
+  if Assigned(DX) then
+  begin
+    Count := Range.length;
+    SetLength(Locations, Count);
+    SetLength(Indexes, Count);
+    Locations[0] := FLayout.locationForGlyphAtIndex(0);
+    Indexes[0] := 0;
+    for I := 1 to Count - 1 do
+    begin
+      Locations[I] := Locations[I - 1];
+      Locations[I].x := Locations[I].x + DX[I - 1];
+      Indexes[I] := I;
+    end;
+    FLayout.setLocations_startingGlyphIndexes_count_forGlyphRange(@Locations[0], @Indexes[0], Count, Range);
+  end;
   if FillBackground then
     FLayout.drawBackgroundForGlyphRange_atPoint(Range, Pt);
   FLayout.drawGlyphsForGlyphRange_atPoint(Range, Pt);
