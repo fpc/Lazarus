@@ -233,7 +233,7 @@ type
     property IsSet[AIndex: Integer]: Boolean read GetIsSet write SetIsSet;
   end;
 
-  // A limited capacity stack desighed to store 'undo'-like history.
+  // A limited capacity stack to store 'undo'-like history.
   generic THistory<TElem> = class
   strict private
     FCount: Cardinal;
