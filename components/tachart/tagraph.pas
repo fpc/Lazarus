@@ -334,6 +334,7 @@ type
     property LogicalExtent: TDoubleRect read FLogicalExtent write SetLogicalExtent;
     property OnChartPaint: TChartPaintEvent
       read FOnChartPaint write SetOnChartPaint; experimental;
+    property PrevLogicalExtent: TDoubleRect read FPrevLogicalExtent;
     property RenderingParams: TChartRenderingParams
       read GetRenderingParams write SetRenderingParams;
     property ReticulePos: TPoint read FReticulePos write SetReticulePos;
