@@ -742,6 +742,8 @@ begin
 end;
 
 procedure TTestBasicSynEdit.TestCaretDeleteWord_LastWord;
+var
+  AllowPastEOL: Boolean;
 
   function TestLines: TStringArray;
   begin
@@ -779,6 +781,9 @@ procedure TTestBasicSynEdit.TestCaretDeleteWord_LastWord;
     TrimEnabled := False;;
     ReCreateEdit;
 
+    if AllowPastEOL
+    then SynEdit.Options := SynEdit.Options + [eoScrollPastEol]
+    else SynEdit.Options := SynEdit.Options - [eoScrollPastEol];
     SynEdit.TabWidth := 7;
             // 1    6    11 14
     SetLines(TestLines);
@@ -823,6 +828,7 @@ procedure TTestBasicSynEdit.TestCaretDeleteWord_LastWord;
   end;
 
 begin
+  AllowPastEOL := True;
   {%region word left}
   TestWordLeft('simple "te|st"',                   16, 1,   14, 1, [1,'Some text to st'],
                                                             11, 1, [1,'Some text st']);
@@ -933,6 +939,8 @@ begin
                                                               8, 6, [6, 'umlaute in text']);
   TestWordRight('After Umlaut > EOL, next line',    18, 6,   18, 6, [6, 'umlaute äää in te'],
                                                              18, 6, [6, 6, 'umlaute äää in te'+TestLines[6]]);
+  // past eol
+  TestWordRight('Umlaut EOW "äää in text |"',                21, 6,   21, 6, [6, 6, 'umlaute äää in text normal line']);
 
   //TestWordRight('Before untrimmed > next',           12, 7,   4, 8,
   //                                                           14, 8);
