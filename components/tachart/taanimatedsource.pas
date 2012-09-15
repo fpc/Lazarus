@@ -92,6 +92,7 @@ uses
 
 procedure TCustomAnimatedChartSource.Changed(ASender: TObject);
 begin
+  Unused(ASender);
   Notify;
 end;
 
@@ -217,6 +218,9 @@ begin
   if ACallEvent and Assigned(OnStop) then
     OnStop(Self);
 end;
+
+initialization
+  if ZeroValue = 0 then; // Workaround for an incorrect "unused unit" hint.
 
 end.
 
