@@ -812,7 +812,7 @@ end;
 procedure TSynEditStringList.DoGetPhysicalCharWidths(Line: PChar;
   LineLen, Index: Integer; PWidths: PPhysicalCharWidth);
 var
-  i, j: Integer;
+  i: Integer;
 begin
   if not IsUtf8 then begin
     for i := 0 to LineLen-1 do
@@ -820,37 +820,46 @@ begin
     exit;
   end;
 
-  j := 0;
   for i := 0 to LineLen-1 do begin
-    if j = 0 then begin
-      PWidths^ := 1;
-      j := UTF8CharacterLength(Line);
-      inc(Line, j);
-    end else begin
-      PWidths^ := 0;
+    case Line^ of
+      #$80..#$BF:
+        PWidths^ := 0;
+      #$CC:
+        if ((Line+1)^ in [#$80..#$FF]) and (i>0)
+        then PWidths^ := 0  // Combining Diacritical Marks (belongs to previos char)
+        else PWidths^ := 1;
+      #$CD:
+        if ((Line+1)^ in [#$00..#$AF]) and (i>0)
+        then PWidths^ := 0  // Combining Diacritical Marks
+        else PWidths^ := 1;
+      #$E1:
+        if (   (((Line+1)^ = #$B7) and ((Line+2)^ in [#$80..#$FF]))
+            or  ((Line+1)^ in [#$B8..#$B9])
+            or (((Line+1)^ = #$BA) and ((Line+2)^ in [#$80..#$BF]))
+           ) and (i>0)
+        then PWidths^ := 0  // Combining Diacritical Marks Supplement
+        else PWidths^ := 1;
+      #$E2:
+        if (   (((Line+1)^ = #$83) and ((Line+2)^ in [#$90..#$FF]))
+            or  ((Line+1)^ in [#$84..#$86])
+            or (((Line+1)^ = #$87) and ((Line+2)^ in [#$80..#$8F]))
+           ) and (i>0)
+        then PWidths^ := 0  // Combining Diacritical Marks for Symbols
+        else PWidths^ := 1;
+      #$EF:
+        if (   (((Line+1)^ = #$B8) and ((Line+2)^ in [#$A0..#$FF]))
+            or  ((Line+1)^ in [#$B9..#$BB])
+            or (((Line+1)^ = #$BC) and ((Line+2)^ in [#$80..#$9F]))
+           ) and (i>0)
+        then PWidths^ := 0  // Combining half Marks
+        else PWidths^ := 1;
+      else
+        PWidths^ := 1;
     end;
-    dec(j);
     inc(PWidths);
+    inc(Line);
   end;
 
-  //j := 0;
-  //for i := 0 to LineLen-1 do begin
-  //  if j = 0 then begin
-  //    j := UTF8CharacterLength(Line);
-  //    if (j=2) and
-  //       ( ( (Line^ = #$CC) and ((Line+1)^ in [#$80..#$FF]) ) or
-  //         ( (Line^ = #$CD) and ((Line+1)^ in [#$00..#$AF]) ) )
-  //    then
-  //      PWidths^ := 0 // Combining Diacritical Marks
-  //    else
-  //      PWidths^ := 1;
-  //    inc(Line, j);
-  //  end else begin
-  //    PWidths^ := 0;
-  //  end;
-  //  dec(j);
-  //  inc(PWidths);
-  //end;
 end;
 
 function TSynEditStringList.GetDisplayView: TLazSynDisplayView;
