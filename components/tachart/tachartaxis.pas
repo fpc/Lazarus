@@ -118,6 +118,8 @@ type
     FZPosition: TChartDistance;
 
     function GetMarks: TChartAxisMarks; inline;
+    function GetValue(AIndex: Integer): TChartValueText; inline;
+    function GetValueCount: Integer; inline;
     function PositionIsStored: Boolean;
     procedure SetAxisPen(AValue: TChartAxisPen);
     procedure SetGroup(AValue: Integer);
@@ -158,6 +160,8 @@ type
       ADrawer: IChartDrawer; const ATransf: ICoordTransformer;
       AClipRect: PRect; AMaxZPosition: Integer);
     procedure UpdateBounds(var AMin, AMax: Double);
+    property Value[AIndex: Integer]: TChartValueText read GetValue;
+    property ValueCount: Integer read GetValueCount;
   published
     property Alignment default calLeft;
     property Arrow;
@@ -595,6 +599,16 @@ begin
   Result := Transformations;
   if Result = nil then
     Result := VIdentityTransform;
+end;
+
+function TChartAxis.GetValue(AIndex: Integer): TChartValueText;
+begin
+  Result := FMarkValues[AIndex];
+end;
+
+function TChartAxis.GetValueCount: Integer;
+begin
+  Result := Length(FMarkValues);
 end;
 
 function TChartAxis.IsDefaultPosition: Boolean;
