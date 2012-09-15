@@ -3201,7 +3201,8 @@ begin
 
     NeedSave := 0;
     for i := 0 to ActiveSrcNoteBook.EditorCount - 1 do begin
-      if CheckEditorNeedsSave(ActiveSrcNoteBook.Editors[i], True) then begin
+      //no need for CheckEditorNeedsSave ActiveSourcenoteBook (i = PageIndex)
+      if (i <> PageIndex) and CheckEditorNeedsSave(ActiveSrcNoteBook.Editors[i], True) then begin
         inc(NeedSave);
         if NeedSave = 1 then Idx := i;
       end;
