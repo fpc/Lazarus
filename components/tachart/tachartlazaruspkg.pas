@@ -14,7 +14,7 @@ uses
   TADrawerCanvas, TADrawerSVG, TAIntervalSources, TAChartAxisUtils, 
   TAChartListbox, TAEnumerators, TADataPointsEditor, TAChartExtentLink, 
   TAToolEditors, TAMath, TAChartImageList, TADataTools, TAAnimatedSource, 
-  TATextElements, TAAxisSource, LazarusPackageIntf;
+  TATextElements, TAAxisSource, TASeriesPropEditors, LazarusPackageIntf;
 
 implementation
 
@@ -35,6 +35,7 @@ begin
   RegisterUnit('TAChartExtentLink', @TAChartExtentLink.Register);
   RegisterUnit('TAToolEditors', @TAToolEditors.Register);
   RegisterUnit('TAChartImageList', @TAChartImageList.Register);
+  RegisterUnit('TASeriesPropEditors', @TASeriesPropEditors.Register);
 end;
 
 initialization

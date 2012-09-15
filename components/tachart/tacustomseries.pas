@@ -44,16 +44,18 @@ type
     FValue: TDoublePoint;
   end;
 
+  TChartAxisIndex = -1..MaxInt;
+
   { TCustomChartSeries }
 
   TCustomChartSeries = class(TBasicChartSeries)
   strict private
-    FAxisIndexX: Integer;
-    FAxisIndexY: Integer;
+    FAxisIndexX: TChartAxisIndex;
+    FAxisIndexY: TChartAxisIndex;
     FLegend: TChartSeriesLegend;
     FTitle: String;
-    procedure SetAxisIndexX(AValue: Integer);
-    procedure SetAxisIndexY(AValue: Integer);
+    procedure SetAxisIndexX(AValue: TChartAxisIndex);
+    procedure SetAxisIndexY(AValue: TChartAxisIndex);
     procedure SetLegend(AValue: TChartSeriesLegend);
     procedure SetShowInLegend(AValue: Boolean);
 
@@ -104,9 +106,9 @@ type
     procedure GetSingleLegendItem(AItems: TChartLegendItems);
     function HasParent: Boolean; override;
 
-    property AxisIndexX: Integer
+    property AxisIndexX: TChartAxisIndex
       read FAxisIndexX write SetAxisIndexX default DEF_AXIS_INDEX;
-    property AxisIndexY: Integer
+    property AxisIndexY: TChartAxisIndex
       read FAxisIndexY write SetAxisIndexY default DEF_AXIS_INDEX;
     property Title: String read FTitle write SetTitle stored TitleIsStored;
 
@@ -472,14 +474,14 @@ begin
   UpdateParentChart;
 end;
 
-procedure TCustomChartSeries.SetAxisIndexX(AValue: Integer);
+procedure TCustomChartSeries.SetAxisIndexX(AValue: TChartAxisIndex);
 begin
   if FAxisIndexX = AValue then exit;
   FAxisIndexX := AValue;
   UpdateParentChart;
 end;
 
-procedure TCustomChartSeries.SetAxisIndexY(AValue: Integer);
+procedure TCustomChartSeries.SetAxisIndexY(AValue: TChartAxisIndex);
 begin
   if FAxisIndexY = AValue then exit;
   FAxisIndexY := AValue;

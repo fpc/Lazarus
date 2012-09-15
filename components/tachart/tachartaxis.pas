@@ -160,6 +160,7 @@ type
       ADrawer: IChartDrawer; const ATransf: ICoordTransformer;
       AClipRect: PRect; AMaxZPosition: Integer);
     procedure UpdateBounds(var AMin, AMax: Double);
+    property DisplayName: String read GetDisplayName;
     property Value[AIndex: Integer]: TChartValueText read GetValue;
     property ValueCount: Integer read GetValueCount;
   published
@@ -538,7 +539,7 @@ begin
   Result := Collection.Owner as TCustomChart;
 end;
 
-function TChartAxis.GetDisplayName: string;
+function TChartAxis.GetDisplayName: String;
 const
   SIDE_NAME: array [TChartAxisAlignment] of String =
     ('Left', 'Top', 'Right', 'Bottom');

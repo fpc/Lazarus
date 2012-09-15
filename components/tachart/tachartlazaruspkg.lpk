@@ -34,7 +34,7 @@
  for details about the copyright.
 "/>
     <Version Major="1"/>
-    <Files Count="41">
+    <Files Count="42">
       <Item1>
         <Filename Value="tagraph.pas"/>
         <HasRegisterProc Value="True"/>
@@ -217,6 +217,11 @@
         <Filename Value="taaxissource.pas"/>
         <UnitName Value="TAAxisSource"/>
       </Item41>
+      <Item42>
+        <Filename Value="editors\taseriespropeditors.pas"/>
+        <HasRegisterProc Value="True"/>
+        <UnitName Value="TASeriesPropEditors"/>
+      </Item42>
     </Files>
     <LazDoc Paths="$(LazarusDir)\components\tachart\fpdoc"/>
     <Type Value="RunAndDesignTime"/>

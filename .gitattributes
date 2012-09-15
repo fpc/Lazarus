@@ -2979,6 +2979,7 @@ components/tachart/demo/wmf/wmfdemo.lpr svneol=native#text/pascal
 components/tachart/editors/tadatapointseditor.lfm svneol=native#text/plain
 components/tachart/editors/tadatapointseditor.pas svneol=native#text/pascal
 components/tachart/editors/taserieseditor.pas svneol=native#text/plain
+components/tachart/editors/taseriespropeditors.pas svneol=native#text/pascal
 components/tachart/editors/tasubcomponentseditor.lfm svneol=native#text/plain
 components/tachart/editors/tasubcomponentseditor.pas svneol=native#text/pascal
 components/tachart/editors/tatooleditors.pas svneol=native#text/pascal
