@@ -1190,7 +1190,7 @@ var
             tok.Right := nRightEdge;
             if (fsUnderline in MarkupInfo.Style) or (HasFrame) then
               fTextDrawer.ExtTextOut(tok.Right, tok.Top, ETOOptions, tok,
-                                 @Spaces, 1, rcLine.Bottom)
+                                 @Spaces[1], 1, rcLine.Bottom)
             else
               InternalFillRect(dc, tok);
             rcToken.Left := nRightEdge;
@@ -1201,7 +1201,7 @@ var
 
         if (fsUnderline in MarkupInfo.Style) or (HasFrame) then
           fTextDrawer.ExtTextOut(rcToken.Right, rcToken.Top, ETOOptions, rcToken,
-                             @Spaces, 1, rcLine.Bottom)
+                             @Spaces[1], 1, rcLine.Bottom)
         else
           InternalFillRect(dc, rcToken);
         rcToken.Left := nX1;
@@ -1733,7 +1733,7 @@ var
           tok.Right := nRightEdge;
           if (fsUnderline in MarkupInfo.Style) or (HasFrame) then
             fTextDrawer.ExtTextOut(tok.Right, tok.Top, ETO_OPAQUE, tok,
-                               @Spaces, 1, rcLine.Bottom)
+                               @Spaces[1], 1, rcLine.Bottom)
           else
             InternalFillRect(dc, tok);
           rcToken.Left := nRightEdge;
@@ -1744,7 +1744,7 @@ var
 
       if (fsUnderline in MarkupInfo.Style) or (HasFrame) then
         fTextDrawer.ExtTextOut(rcToken.Right, rcToken.Top, ETO_OPAQUE, rcToken,
-                           @Spaces, 1, rcLine.Bottom)
+                           @Spaces[1], 1, rcLine.Bottom)
       else
         InternalFillRect(dc, rcToken);
       rcToken.Left := nX1;
