@@ -116,6 +116,7 @@ type
 
     function CountToStep(ACount: Integer): Double; inline;
     function IsAcceptableStep(AStep: Integer): Boolean; inline;
+    procedure RoundToImage(var AValue: Double);
     function ToImage(AX: Double): Integer; inline;
   end;
 
@@ -168,7 +169,9 @@ type
     function ExtentList: TDoubleRect; virtual;
     procedure FindBounds(AXMin, AXMax: Double; out ALB, AUB: Integer);
     function FormatItem(
-      const AFormat: String; AIndex, AYIndex: Integer): String;
+      const AFormat: String; AIndex, AYIndex: Integer): String; inline;
+    function FormatItemXYText(
+      const AFormat: String; AX, AY: Double; const AText: String): String;
     function GetEnumerator: TCustomChartSourceEnumerator;
     function IsSorted: Boolean; virtual;
     procedure ValuesInRange(
@@ -256,6 +259,31 @@ begin
     Result := not (
       (aipUseMinLength in Options) and (AStep < FScale(MinLength)) or
       (aipUseMaxLength in Options) and (AStep > FScale(MaxLength)));
+end;
+
+procedure TValuesInRangeParams.RoundToImage(var AValue: Double);
+
+  function A2I(AX: Double): Integer; inline;
+  begin
+    Result := FGraphToImage(FAxisToGraph(AX));
+  end;
+
+var
+  p, rv: Double;
+  x: Int64;
+begin
+  if
+    (FIntervals.Tolerance = 0) or (AValue = 0) or IsInfinite(AValue) or IsNan(AValue)
+  then
+    exit;
+  x := A2I(AValue);
+  p := Power(10, Floor(Log10(Abs(AValue)) - Log10(High(Int64)) + 1));
+  while AValue <> 0 do begin
+    rv := Round(AValue / p) * p;
+    if Abs(A2I(rv) - x) >= FIntervals.Tolerance then break;
+    AValue := rv;
+    p *= 10;
+  end;
 end;
 
 function TValuesInRangeParams.ToImage(AX: Double): Integer;
@@ -672,20 +700,24 @@ end;
 
 function TCustomChartSource.FormatItem(
   const AFormat: String; AIndex, AYIndex: Integer): String;
+begin
+  with Item[AIndex]^ do
+    Result := FormatItemXYText(AFormat, X, GetY(AYIndex), Text);
+end;
+
+function TCustomChartSource.FormatItemXYText(
+  const AFormat: String; AX, AY: Double; const AText: String): String;
 const
   TO_PERCENT = 100;
 var
-  total, percent, vy: Double;
+  total, percent: Double;
 begin
   total := ValuesTotal;
   if total = 0 then
     percent := 0
   else
     percent := TO_PERCENT / total;
-  with Item[AIndex]^ do begin
-    vy := GetY(AYIndex);
-    Result := Format(AFormat, [vy, vy * percent, Text, total, X]);
-  end;
+  Result := Format(AFormat, [AY, AY * percent, AText, total, AX]);
 end;
 
 function TCustomChartSource.GetEnumerator: TCustomChartSourceEnumerator;
@@ -755,9 +787,22 @@ procedure TCustomChartSource.ValuesInRange(
 
   procedure Put(
     out ADest: TChartValueText; AValue: Double; AIndex: Integer); inline;
+  var
+    nx, ny: Double;
   begin
+    AParams.RoundToImage(AValue);
     ADest.FValue := AValue;
-    ADest.FText := FormatItem(AParams.FFormat, AIndex, 0);
+    with Item[AIndex]^ do begin
+      if AParams.FUseY then begin
+        nx := X;
+        ny := AValue;
+      end
+      else begin
+        nx := AValue;
+        ny := Y;
+      end;
+      ADest.FText := FormatItemXYText(AParams.FFormat, nx, ny, Text);
+    end;
   end;
 
 var
