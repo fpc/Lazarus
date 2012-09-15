@@ -227,7 +227,6 @@ begin
   InstallPkgSetDialog:=TInstallPkgSetDialog.Create(nil);
   try
     InstallPkgSetDialog.OldInstalledPackages:=OldInstalledPackages;
-//    InstallPkgSetDialog.UpdateAvailablePackages;
     InstallPkgSetDialog.UpdateButtonStates;
     InstallPkgSetDialog.OnCheckInstallPackageList:=CheckInstallPackageList;
     Result:=InstallPkgSetDialog.ShowModal;
@@ -798,14 +797,12 @@ begin
   end;
   InstallTreeView.EndUpdate;
   sl.Free;
-  UpdateAvailablePackages;
 end;
 
 procedure TInstallPkgSetDialog.PkgInfosChanged;
-// called in mainthread after helper thread finished
+// called in mainthread after package parser helper thread finished
 begin
-  AvailableTreeView.Invalidate;
-  InstallTreeView.Invalidate;
+  UpdateAvailablePackages;
 end;
 
 procedure TInstallPkgSetDialog.ChangePkgVersion(PkgInfo: TIPSPkgInfo;
@@ -1204,6 +1201,7 @@ begin
       FNewInstalledPackages.Add(Additions[i]);
     Additions.Clear;
     UpdateNewInstalledPackages;
+    UpdateAvailablePackages;
     UpdateButtonStates;
   finally
     // clean up
@@ -1268,6 +1266,7 @@ begin
     end;
 
     UpdateNewInstalledPackages;
+    UpdateAvailablePackages;
     UpdateButtonStates;
   finally
     OldPackageID.Free;
