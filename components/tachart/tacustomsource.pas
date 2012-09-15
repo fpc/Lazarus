@@ -903,7 +903,9 @@ begin
   if FValuesTotalIsValid then exit(FValuesTotal);
   FValuesTotal := 0;
   for i := 0 to Count - 1 do
-    FValuesTotal += Item[i]^.Y;
+    with Item[i]^ do
+      if not IsNan(Y) then
+        FValuesTotal += Y;
   FValuesTotalIsValid := true;
   Result := FValuesTotal;
 end;
