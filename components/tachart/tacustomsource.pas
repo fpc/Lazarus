@@ -776,8 +776,23 @@ var
       prevImagePos := imagePos;
   end;
 
+  function EnsureMinLength(AStart, AEnd: Integer): Integer;
+  var
+    i: Integer;
+    v: Double;
+  begin
+    prevImagePos := MaxInt;
+    Result := AStart;
+    for i := AStart to AEnd do begin
+      v := AValues[i].FValue;
+      if InRange(v, AParams.FMin, AParams.FMax) and IsTooClose(v) then continue;
+      AValues[Result] := AValues[i];
+      Result += 1;
+    end;
+  end;
+
 var
-  i, j, cnt, start: Integer;
+  i, cnt, start: Integer;
   v: Double;
   lo, hi: TChartValueText;
 begin
@@ -827,21 +842,13 @@ begin
     AValues[cnt] := hi;
     cnt += 1;
   end;
-  SetLength(AValues, cnt);
 
-  if IsSorted or IsValueTextsSorted(AValues, start, cnt - 1) then exit;
-  SortValuesInRange(AValues, start, cnt - 1);
-  if aipUseMinLength in AParams.FIntervals.Options then begin
-    prevImagePos := MaxInt;
-    j := start;
-    for i := start to cnt - 1 do begin
-      v := AValues[i].FValue;
-      if InRange(v, AParams.FMin, AParams.FMax) and IsTooClose(v) then continue;
-      AValues[j] := AValues[i];
-      j += 1;
-    end;
-    SetLength(AValues, j);
+  if not IsSorted and not IsValueTextsSorted(AValues, start, cnt - 1) then begin
+    SortValuesInRange(AValues, start, cnt - 1);
+    if aipUseMinLength in AParams.FIntervals.Options then
+      cnt := EnsureMinLength(start, cnt - 1);
   end;
+  SetLength(AValues, cnt);
 end;
 
 function TCustomChartSource.ValuesTotal: Double;
