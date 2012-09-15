@@ -5,8 +5,9 @@ unit Main;
 interface
 
 uses
-  ComCtrls, ExtCtrls, Forms, Spin, StdCtrls, TAFuncSeries, TAGraph,
-  TASeries, TASources, TAStyles, TATools, TATransformations, Classes;
+  ComCtrls, ExtCtrls, Forms, Spin, StdCtrls, Classes,
+  TAAxisSource, TAFuncSeries, TAGraph, TASeries, TASources, TAStyles, TATools,
+  TATransformations;
 
 type
 
@@ -65,6 +66,7 @@ type
     pnlIndependentControls: TPanel;
     pnlLogControls: TPanel;
     pnlAutoControls: TPanel;
+    rgSyncAxisMarks: TRadioGroup;
     rcsUser: TRandomChartSource;
     rcsTSummer: TRandomChartSource;
     rcsTWinter: TRandomChartSource;
@@ -87,8 +89,10 @@ type
     procedure fseIndependent1Change(Sender: TObject);
     procedure fseIndependent2Change(Sender: TObject);
     procedure rgRandDistrClick(Sender: TObject);
+    procedure rgSyncAxisMarksClick(Sender: TObject);
     procedure seToleranceChange(Sender: TObject);
   private
+    FAxisSource: TCustomAxisChartSource;
     procedure FillIndependentSource;
     procedure FillCumulNormDistrSource;
   end;
@@ -99,7 +103,7 @@ var
 implementation
 
 uses
-  Math, StrUtils, SysUtils, TAChartAxis, TAChartUtils;
+  Math, StrUtils, SysUtils, TAChartAxis, TAChartAxisUtils, TAChartUtils;
 
 {$R *.lfm}
 
@@ -246,6 +250,7 @@ begin
   FillIndependentSource;
   FillCumulNormDistrSource;
   seTolerance.Value := ChartLog.LeftAxis.Intervals.Tolerance;
+  FAxisSource := TCustomAxisChartSource.Create(Self);
 end;
 
 procedure TForm1.fseIndependent1Change(Sender: TObject);
@@ -261,6 +266,29 @@ end;
 procedure TForm1.rgRandDistrClick(Sender: TObject);
 begin
   FillCumulNormDistrSource;
+end;
+
+procedure TForm1.rgSyncAxisMarksClick(Sender: TObject);
+var
+  la, ra: TChartAxis;
+begin
+  la := ChartIndependent.LeftAxis;
+  ra := ChartIndependent.AxisList.GetAxisByAlign(calRight);
+  la.Marks.Source := nil;
+  ra.Marks.Source := nil;
+  case rgSyncAxisMarks.ItemIndex of
+    0: begin
+      FAxisSource.AxisFrom := ra;
+      FAxisSource.AxisTo := la;
+      la.Marks.Source := FAxisSource;
+    end;
+    2: begin
+      FAxisSource.AxisFrom := la;
+      FAxisSource.AxisTo := ra;
+      ra.Marks.Source := FAxisSource;
+    end;
+  end;
+  la.Grid.Visible := rgSyncAxisMarks.ItemIndex <> 1;
 end;
 
 procedure TForm1.seToleranceChange(Sender: TObject);
