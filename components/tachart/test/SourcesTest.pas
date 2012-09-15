@@ -504,6 +504,7 @@ var
 
 begin
   p := VDummyTransform.PrepareValuesInRangeParams;
+  p.FFormat := '%4:g';
   src := TListChartSource.Create(nil);
   for i := 1 to 10 do
     src.Add(10 * i, i);
@@ -526,6 +527,11 @@ begin
     p.FIntervals.Options := p.FIntervals.Options + [aipUseMinLength];
     p.FMax := 50;
     Check([8, 30, 50, 60]);
+    AssertEquals('Lower bound not first in-range value', '8', r[0].FText);
+    src.Sort;
+    Check([8, 30, 50, 60]);
+    p.FIntervals.Tolerance := 3;
+    Check([10, 30, 50, 60]);
   finally
     p.FIntervals.Free;
     src.Free;
