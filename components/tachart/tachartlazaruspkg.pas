@@ -14,7 +14,7 @@ uses
   TADrawerCanvas, TADrawerSVG, TAIntervalSources, TAChartAxisUtils, 
   TAChartListbox, TAEnumerators, TADataPointsEditor, TAChartExtentLink, 
   TAToolEditors, TAMath, TAChartImageList, TADataTools, TAAnimatedSource, 
-  TATextElements, LazarusPackageIntf;
+  TATextElements, TAAxisSource, LazarusPackageIntf;
 
 implementation
 
