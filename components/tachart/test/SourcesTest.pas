@@ -40,6 +40,7 @@ type
     procedure TearDown; override;
   published
     procedure Basic;
+    procedure Cache;
     procedure DataPoint;
     procedure DataPointSeparator;
     procedure Enum;
@@ -279,6 +280,24 @@ begin
   finally
     srcDest.Free;
   end;
+end;
+
+procedure TListSourceTest.Cache;
+begin
+  FSource.Clear;
+  FSource.Add(5, 6);
+  FSource.Add(7, 8);
+  AssertEquals(14, FSource.ValuesTotal);
+  FSource.Add(8, SafeNan);
+  AssertEquals(14, FSource.ValuesTotal);
+  FSource.Delete(2);
+  AssertEquals(14, FSource.ValuesTotal);
+  FSource.Delete(1);
+  AssertEquals(6, FSource.ValuesTotal);
+  FSource.SetYValue(0, SafeNan);
+  AssertEquals(0, FSource.ValuesTotal);
+  FSource.SetYValue(0, 5);
+  AssertEquals(5, FSource.ValuesTotal);
 end;
 
 procedure TListSourceTest.DataPoint;
