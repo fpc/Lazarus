@@ -927,11 +927,22 @@ var
     Add(GLX_RED_SIZE);  Add(1);
     Add(GLX_GREEN_SIZE);  Add(1);
     Add(GLX_BLUE_SIZE);  Add(1);
-    Add(GLX_ALPHA_SIZE);  Add(AlphaBits);
-    Add(GLX_DEPTH_SIZE);  Add(DepthBits);
-    Add(GLX_STENCIL_SIZE);  Add(StencilBits);
-    Add(GLX_AUX_BUFFERS);  Add(AUXBuffers);
-
+    if AlphaBits>0 then
+    begin
+      Add(GLX_ALPHA_SIZE);  Add(AlphaBits);
+    end;
+    if DepthBits>0 then
+    begin
+      Add(GLX_DEPTH_SIZE);  Add(DepthBits);
+    end;
+    if StencilBits>0 then
+    begin
+      Add(GLX_STENCIL_SIZE);  Add(StencilBits);
+    end;
+    if AUXBuffers>0 then
+    begin
+      Add(GLX_AUX_BUFFERS);  Add(AUXBuffers);
+    end;
     if MultiSampling > 1 then
     begin
       Add(GLX_SAMPLE_BUFFERS_ARB); Add(1);
