@@ -5,8 +5,9 @@ unit Main;
 interface
 
 uses
-  Classes, ComCtrls, ExtCtrls, Spin, StdCtrls, SysUtils, FileUtil, Forms,
-  Controls, Graphics, Dialogs, TAGraph, TASeries, TASources, TAChartAxis;
+  Classes, ComCtrls, ExtCtrls, Spin, StdCtrls, SysUtils, FileUtil, Forms, Types,
+  Controls, Graphics, Dialogs, TAGraph, TASeries, TASources, TAChartAxis,
+  TAChartUtils, TATextElements;
 
 type
 
@@ -35,6 +36,8 @@ type
     tsBar: TTabSheet;
     procedure cbHideOverlappingChange(Sender: TObject);
     procedure cbShapeChange(Sender: TObject);
+    procedure Chart1BarSeries1MarksGetShape(ASender: TChartTextElement;
+      const ABoundingBox: TRect; var APolygon: TPointArray);
     procedure ChartMultiAxisList1MarkToText(var AText: String; AMark: Double);
     procedure seAxisAngleChange(Sender: TObject);
     procedure seCalloutAngleChange(Sender: TObject);
@@ -50,7 +53,7 @@ implementation
 {$R *.lfm}
 
 uses
-  TATextElements;
+  Math, TAGeometry;
 
 { TForm1 }
 
@@ -77,6 +80,36 @@ begin
   Chart1BarSeries1.Marks.Shape := s;
   ChartMulti.LeftAxis.Marks.Shape := s;
   ChartMulti.BottomAxis.Marks.Shape := s;
+  with Chart1BarSeries1.Marks do
+    if s = clsUserDefined then
+      OnGetShape := @Chart1BarSeries1MarksGetShape
+    else
+      OnGetShape := nil;
+end;
+
+procedure TForm1.Chart1BarSeries1MarksGetShape(
+  ASender: TChartTextElement; const ABoundingBox: TRect;
+  var APolygon: TPointArray);
+const
+  N = 24;
+var
+  i: Integer;
+  a, b, k: Double;
+  cp: TPoint;
+  s, c: Extended;
+begin
+  Unused(ASender);
+  SetLength(APolygon, N);
+  with ABoundingBox do begin
+    a := (Right - Left) / 2;
+    b := (Bottom - Top) / 2;
+  end;
+  cp := CenterPoint(ABoundingBox);
+  for i := 0 to High(APolygon) do begin
+    SinCos(i * 2 * Pi / N, s, c);
+    k := (i mod 2) * 0.5 + 1;
+    APolygon[i] := cp + Point(Round(a * c * k), Round(b * s * k));
+  end;
 end;
 
 procedure TForm1.ChartMultiAxisList1MarkToText(

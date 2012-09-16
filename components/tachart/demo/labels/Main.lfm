@@ -241,6 +241,7 @@ object Form1: TForm1
         'Ellipse'
         'Rounded corners'
         'Rounded sides'
+        'User-defined'
       )
       OnChange = cbShapeChange
       Style = csDropDownList
