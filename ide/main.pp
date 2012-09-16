@@ -723,7 +723,6 @@ type
     procedure StartIDE; override;
     destructor Destroy; override;
     procedure CreateOftenUsedForms; override;
-    procedure UpdateDefaultPascalFileExtensions;
     function DoResetToolStatus(AFlags: TResetToolFlags): boolean; override;
     function DoCallProjectChangedHandler(
         HandlerType: TLazarusIDEHandlerType): TModalResult;
@@ -1296,7 +1295,7 @@ begin
 
   ExternalTools.OnNeedsOutputFilter := @OnExtToolNeedsOutputFilter;
   ExternalTools.OnFreeOutputFilter := @OnExtToolFreeOutputFilter;
-  UpdateDefaultPascalFileExtensions;
+  UpdateDefaultPasFileExt;
   LoadFileDialogFilter;
 
   EditorOpts := TEditorOptions.Create;
@@ -4676,16 +4675,6 @@ begin
     TheEnvironmentOptions.ObjectInspectorOptions.AssignTo(ObjectInspector1);
 end;
 
-procedure TMainIDE.UpdateDefaultPascalFileExtensions;
-var
-  DefPasExt: string;
-begin
-  // change default pascal file extensions
-  DefPasExt:=PascalExtension[EnvironmentOptions.PascalFileExtension];
-  if LazProjectFileDescriptors<>nil then
-    LazProjectFileDescriptors.DefaultPascalFileExt:=DefPasExt;
-end;
-
 procedure TMainIDE.OnLoadIDEOptions(Sender: TObject; AOptions: TAbstractIDEOptions);
 begin
   if AOptions is TEnvironmentOptions then
@@ -4816,7 +4805,7 @@ begin
   // invalidate cached substituted macros
   IncreaseCompilerParseStamp;
   CompileProgress.SetEnabled(EnvironmentOptions.ShowCompileDialog);
-  UpdateDefaultPascalFileExtensions;
+  UpdateDefaultPasFileExt;
   if OldLanguage <> EnvironmentOptions.LanguageID then
   begin
     TranslateResourceStrings(EnvironmentOptions.GetParsedLazarusDirectory,

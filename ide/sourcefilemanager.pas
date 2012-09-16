@@ -36,7 +36,7 @@ uses
   LCLIntf, LCLType, LCLProc, FileProcs, FileUtil, IDEProcs, DialogProcs, IDEDialogs,
   LConvEncoding, LResources, PropEdits, DefineTemplates, IDEMsgIntf, IDEProtocol,
   LazIDEIntf, MainBase, MainBar, MainIntf, MenuIntf, LazarusIDEStrConsts,
-  ProjectIntf, Project, ProjectInspector, CompilerOptions,
+  ProjectIntf, Project, ProjectDefs, ProjectInspector, CompilerOptions,
   BasePkgManager, PackageIntf, PackageDefs, PackageSystem,
   SrcEditorIntf, SourceEditor, EditorOptions, CustomFormEditor, FormEditor,
   EmptyMethodsDlg, BaseDebugManager, ControlSelection, TransferMacros,
@@ -168,6 +168,7 @@ type
 
   function CreateSrcEditPageName(const AnUnitName, AFilename: string;
     IgnoreEditor: TSourceEditor): string;
+  procedure UpdateDefaultPasFileExt;
 
 
 implementation
@@ -195,6 +196,16 @@ begin
   else
     Result:=ExtractFileName(Result);
   Result:=SourceEditorManager.FindUniquePageName(Result,IgnoreEditor);
+end;
+
+procedure UpdateDefaultPasFileExt;
+var
+  DefPasExt: string;
+begin
+  // change default pascal file extensions
+  DefPasExt:=PascalExtension[EnvironmentOptions.PascalFileExtension];
+  if LazProjectFileDescriptors<>nil then
+    LazProjectFileDescriptors.DefaultPascalFileExt:=DefPasExt;
 end;
 
 
