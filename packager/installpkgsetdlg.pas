@@ -743,9 +743,8 @@ begin
         if (Info.LPKParsed in [ipisNotParsed,ipisParsingHelperThread])
         or (Info.PkgType in [lptDesignTime,lptRunAndDesignTime])
         then begin
-          if (not PackageInInstallList(Info.ID.Name)) then begin
+          if (not PackageInInstallList(Info.ID.Name)) then
             List.Add(Info.ID.IDAsString);
-          end;
         end;
         ANode:=fAvailablePackages.FindSuccessor(ANode);
       end;

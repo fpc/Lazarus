@@ -88,9 +88,8 @@ var
 
 function FindInFilesDialog: TLazFindInFilesDialog;
 begin
-  Result := FindInFilesDialogSingleton;
-  if FindInFilesDialogSingleton <> nil then exit;
-  FindInFilesDialogSingleton := TLazFindInFilesDialog.Create(Application);
+  if FindInFilesDialogSingleton = nil then
+    FindInFilesDialogSingleton := TLazFindInFilesDialog.Create(Application);
   Result := FindInFilesDialogSingleton;
 end;
 

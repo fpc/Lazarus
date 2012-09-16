@@ -8652,7 +8652,6 @@ begin
   if EditorMacroForRecording = nil then
     EditorMacroForRecording := FMacroRecorder;
 
-
   FUpdateFlags := [];
   FAutoFocusLock := 0;
   for i := low(TsemChangeReason) to high(TsemChangeReason) do
