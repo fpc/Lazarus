@@ -568,6 +568,7 @@ begin
   FAntialiasingMode := amDontCare;
   FAxisVisible := true;
   FDrawer := TCanvasDrawer.Create(Canvas);
+  FScale := DoublePoint(1, 1);
 
   Width := DEFAULT_CHART_WIDTH;
   Height := DEFAULT_CHART_HEIGHT;
