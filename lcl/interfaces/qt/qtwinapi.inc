@@ -5502,7 +5502,7 @@ begin
     {$ifdef VerboseQtWinAPI}
       WriteLn('[WinAPI SetCapture] Capture = ', Result, ' New capture = ', AHandle);
     {$endif}
-    if Result <> 0 then
+    if (Result <> 0) and IsValidHandle(AHandle) then
     begin
       Message.Msg := 0;
       FillChar(Message, SizeOf(Message), 0);
