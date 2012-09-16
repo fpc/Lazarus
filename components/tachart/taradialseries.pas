@@ -544,15 +544,36 @@ end;
 procedure TPolarSeries.Draw(ADrawer: IChartDrawer);
 var
   i: Integer;
+  cnt: Integer = 0;
   pts: TPointArray;
+  gp: TDoublePoint;
+  firstPoint, lastPoint: TPoint;
+  firstPointSet: Boolean = false;
 begin
   PrepareAngleCache;
   SetLength(pts, Count);
-  for i := 0 to Count - 1 do
-    pts[i] := FChart.GraphToImage(GraphPoint(i));
   ADrawer.Pen := LinePen;
-  ADrawer.SetBrushParams(bsClear, clTAColor);
-  ADrawer.Polygon(pts, 0, Length(pts));
+  for i := 0 to Count - 1 do begin
+    gp := GraphPoint(i);
+    if IsNan(gp) then begin
+      if cnt > 0 then
+        ADrawer.Polyline(pts, 0, cnt);
+      cnt := 0;
+    end
+    else begin
+      lastPoint := FChart.GraphToImage(gp);
+      pts[cnt] := lastPoint;
+      cnt += 1;
+      if not firstPointSet then begin
+        firstPoint := lastPoint;
+        firstPointSet := true;
+      end;
+    end;
+  end;
+  if cnt > 0 then
+    ADrawer.Polyline(pts, 0, cnt);
+  if firstPointSet then
+    ADrawer.Line(lastPoint, firstPoint);
 end;
 
 function TPolarSeries.Extent: TDoubleRect;
