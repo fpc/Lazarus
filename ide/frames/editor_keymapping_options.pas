@@ -286,7 +286,7 @@ end;
 
 procedure TEditorKeymappingOptionsFrame.TreeViewKeyPress(Sender: TObject; var Key: char);
 begin
-  if Key = char(VK_RETURN) then
+  if (Key = char(VK_RETURN)) and (TreeView.Selected<>nil) then
     EditCommandMapping(TreeView.Selected);
 end;
 
