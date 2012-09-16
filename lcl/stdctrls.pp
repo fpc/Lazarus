@@ -1323,6 +1323,7 @@ type
     property OnMouseUp;
     property OnStartDrag;
     property ParentBidiMode;
+    property ParentColor;
     property ParentFont;
     property ParentShowHint;
     property PopupMenu;
