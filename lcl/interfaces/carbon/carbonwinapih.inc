@@ -70,9 +70,6 @@ function DestroyCaret({%H-}Handle : HWND): Boolean; override;
 function DestroyIcon(Handle: HICON): Boolean; override;
 function DPtoLP(DC: HDC; var Points; Count: Integer): BOOL; override;
 function DrawFocusRect(DC: HDC; const Rect: TRect): boolean; override;
-function DrawFrameControl(DC: HDC; const Rect: TRect; UType, UState: Cardinal) : Boolean; override;
-function DrawEdge(DC: HDC; var ARect: TRect; Edge: Cardinal; grfFlags: Cardinal): Boolean; override;
-function DrawText(DC: HDC; Str: PChar; Count: Integer; var Rect: TRect; Flags: Cardinal): Integer; Override;
 
 function Ellipse(DC: HDC; x1,y1,x2,y2: Integer): Boolean; override;
 function EnableScrollBar(Wnd: HWND; wSBflags, wArrows: Cardinal): Boolean; override;
