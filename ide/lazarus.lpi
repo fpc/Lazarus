@@ -63,7 +63,7 @@
         <PackageName Value="SynEdit"/>
       </Item6>
     </RequiredPackages>
-    <Units Count="91">
+    <Units Count="92">
       <Unit0>
         <Filename Value="lazarus.pp"/>
         <IsPartOfProject Value="True"/>
@@ -687,6 +687,11 @@
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="IDEInfoNeedBuild"/>
       </Unit90>
+      <Unit91>
+        <Filename Value="sourcefilemanager.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="SourceFileManager"/>
+      </Unit91>
     </Units>
   </ProjectOptions>
   <CompilerOptions>

@@ -84,6 +84,9 @@ type
   private
     FToolStatus: TIDEToolStatus;
     FWindowMenuActiveForm: TCustomForm;
+    FDisplayState: TDisplayState;
+    // used to find the last form so you can display the correct tab
+    FLastFormActivated: TCustomForm;
   protected
     FNeedUpdateHighlighters: boolean;
     FLastWindowMenuUpdate: TDateTime;
@@ -128,7 +131,6 @@ type
     procedure ConnectOutputFilter;
 
   public
-    property ToolStatus: TIDEToolStatus read FToolStatus write SetToolStatus;
     function DoResetToolStatus(AFlags: TResetToolFlags): boolean; virtual; abstract;
 
     constructor Create(TheOwner: TComponent); override;
@@ -158,17 +160,20 @@ type
           var ActiveSourceEditor: TSourceEditor; var ActiveUnitInfo: TUnitInfo); virtual; abstract;
     procedure DoShowComponentList(Show: boolean); virtual; abstract;
 
-    function DoOpenMacroFile(Sender: TObject; const AFilename: string
-                             ): TModalResult; override;
+    function DoOpenMacroFile(Sender: TObject; const AFilename: string): TModalResult; override;
 
     procedure UpdateWindowMenu(Immediately: boolean = false); override;
-    property  WindowMenuActiveForm: TCustomForm read FWindowMenuActiveForm write FWindowMenuActiveForm;
     procedure SetRecentSubMenu(Section: TIDEMenuSection; FileList: TStringList;
                                OnClickEvent: TNotifyEvent); override;
     procedure UpdateHighlighters(Immediately: boolean = false); override;
 
     procedure FindInFilesPerDialog(AProject: TProject); override;
     procedure FindInFiles(AProject: TProject; const FindText: string); override;
+  public
+    property ToolStatus: TIDEToolStatus read FToolStatus write SetToolStatus;
+    property WindowMenuActiveForm: TCustomForm read FWindowMenuActiveForm write FWindowMenuActiveForm;
+    property DisplayState: TDisplayState read FDisplayState write FDisplayState;
+    property LastFormActivated: TCustomForm read FLastFormActivated write FLastFormActivated;
   end;
 
 function  GetMainIde: TMainIDEBase;
