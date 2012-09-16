@@ -727,6 +727,7 @@ procedure TGenericChartMarks.Assign(ASource: TPersistent);
 begin
   if ASource is Self.ClassType then
     with TGenericChartMarks(ASource) do begin
+      Self.FAttachment := FAttachment;
       Self.FDistance := FDistance;
       Self.FFormat := FFormat;
       Self.FFrame.Assign(FFrame);
@@ -736,6 +737,7 @@ begin
       // Self.FLabelFont.Assign(FLabelFont);
       // Self.FLinkPen.Assign(FLinkPen);
       Self.FStyle := FStyle;
+      Self.FYIndex := FYIndex;
     end;
   inherited Assign(ASource);
 end;
