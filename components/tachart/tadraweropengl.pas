@@ -32,6 +32,7 @@ type
     FBrushColor: TFPColor;
     FFontColor: TFPColor;
     FPenColor: TFPColor;
+    FPenStyle: TFPPenStyle;
     FPenWidth: Integer;
     FPos: TPoint;
     procedure InternalPolyline(
@@ -152,6 +153,7 @@ procedure TOpenGLDrawer.InternalPolyline(
 var
   i: Integer;
 begin
+  if FPenStyle = psClear then exit;
   glBegin(AMode);
   ChartGLColor(FPenColor);
   glLineWidth(FPenWidth);
@@ -162,6 +164,7 @@ end;
 
 procedure TOpenGLDrawer.Line(AX1, AY1, AX2, AY2: Integer);
 begin
+  if FPenStyle = psClear then exit;
   glBegin(GL_LINES);
   ChartGLColor(FPenColor);
   glLineWidth(FPenWidth);
@@ -208,6 +211,7 @@ procedure TOpenGLDrawer.PrepareSimplePen(AColor: TChartColor);
 begin
   FPenWidth := 1;
   FPenColor := FChartColorToFPColorFunc(AColor);
+  FPenStyle := psSolid;
 end;
 
 procedure TOpenGLDrawer.RadialPie(
@@ -223,6 +227,7 @@ procedure TOpenGLDrawer.Rectangle(AX1, AY1, AX2, AY2: Integer);
 begin
   ChartGLColor(FBrushColor);
   glRecti(AX1, AY1, AX2, AY2);
+  if FPenStyle = psClear then exit;
   ChartGLColor(FPenColor);
   glBegin(GL_LINE_LOOP);
   glVertex2i(AX1, AY1);
@@ -277,11 +282,12 @@ procedure TOpenGLDrawer.SetPen(APen: TFPCustomPen);
 begin
   FPenWidth := APen.Width;
   FPenColor := APen.FPColor;
+  FPenStyle := APen.Style;
 end;
 
 procedure TOpenGLDrawer.SetPenParams(AStyle: TFPPenStyle; AColor: TChartColor);
 begin
-  Unused(AStyle);
+  FPenStyle := AStyle;
   FPenColor := FChartColorToFPColorFunc(AColor);
 end;
 
