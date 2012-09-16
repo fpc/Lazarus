@@ -441,7 +441,10 @@ function TCustomPieSeries.TryRadius(ADrawer: IChartDrawer): TRect;
       end;
       b := a;
     end;
-    Result := Norm([tmin * ca, tmin * sa]);
+    if tmin = ALMOST_INF then // Should never happen.
+      Result := 0
+    else
+      Result := Norm([tmin * ca, tmin * sa]);
   end;
 
   procedure PrepareLabel(
@@ -451,8 +454,13 @@ function TCustomPieSeries.TryRadius(ADrawer: IChartDrawer): TRect;
     p: TPointArray;
 
     function Ofs(AAngle: Double): TPoint;
+    var
+      d: Double;
     begin
-      Result := EndPoint(AAngle, Marks.Distance + LabelExtraDist(p, AAngle));
+      d := Marks.Distance;
+      if not Marks.DistanceToCenter then
+        d += LabelExtraDist(p, AAngle);
+      Result := EndPoint(AAngle, d);
     end;
 
   begin
