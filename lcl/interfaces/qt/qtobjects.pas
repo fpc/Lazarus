@@ -440,6 +440,7 @@ type
     procedure fillRect(x, y, w, h: Integer; ABrush: QBrushH); overload;
     procedure fillRect(x, y, w, h: Integer); overload;
 
+    function getBKMode: Integer;
     procedure getBrushOrigin(retval: PPoint);
     function getClipping: Boolean;
     function getCompositionMode: QPainterCompositionMode;
@@ -2961,6 +2962,14 @@ end;
 procedure TQtDeviceContext.fillRect(x, y, w, h: Integer);
 begin
   fillRect(x, y, w, h, BackgroundBrush.FHandle);
+end;
+
+function TQtDeviceContext.getBKMode: Integer;
+begin
+  if QPainter_BackgroundMode(Widget) = QtOpaqueMode then
+    Result := OPAQUE
+  else
+    Result := TRANSPARENT;
 end;
 
 {------------------------------------------------------------------------------

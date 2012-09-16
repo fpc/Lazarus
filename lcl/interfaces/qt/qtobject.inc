@@ -512,6 +512,9 @@ var
   AObject: TQtObject;
   W: TQtMainWindow;
   LCLEvent: QLCLMessageEventH;
+  ASequence: QKeySequenceH;
+  AKey: WideString;
+  AParent: QWidgetH;
 
   function IsAnyWindowActive: Boolean;
   begin
@@ -523,6 +526,25 @@ var
 begin
   Result := False;
   case QEvent_type(Event) of
+
+    QEventShortcutOverride: // issue #22827
+    begin
+      QKeyEvent_text(QKeyEventH(Event), @AKey);
+      if (QKeyEvent_modifiers(QKeyEventH(Event)) = QtAltModifier) and
+       (AKey <> '') then
+      begin
+        ASequence := QKeySequence_create(QKeyEvent_modifiers(QKeyEventH(Event))
+          or QKeyEvent_Key(QKeyEventH(Event)));
+        try
+          AParent := QWidget_parentWidget(QWidgetH(Sender));
+          if AParent <> nil then
+            Result := QApplication_notify(App, AParent, Event);
+        finally
+          QKeySequence_destroy(ASequence);
+        end;
+      end;
+    end;
+
     QEventApplicationFontChange: SetDefaultAppFontName;
     QEventStyleChange:
       begin

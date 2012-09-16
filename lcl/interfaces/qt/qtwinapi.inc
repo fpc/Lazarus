@@ -2180,7 +2180,39 @@ function TQtWidgetSet.ExtTextOut(DC: HDC; X, Y: Integer; Options: Longint;
 var
   WideStr: WideString;
   QtDC: TQtDeviceContext absolute DC;
-  B: Boolean;
+
+  procedure DoDrawCharByChar(const AClipped: Boolean);
+  var
+    CurX, CharLen: Integer;
+    CurCount: LongInt;
+    CurDx: PInteger;
+    CurStr: PChar;
+    W: WideString;
+  begin
+    CurDx := Dx;
+    CurStr := Str;
+    CurCount := Count;
+    CurX := X;
+    while CurCount > 0 do
+    begin
+      CharLen := UTF8CharacterLength(CurStr);
+      if AClipped then
+      begin
+        W := GetUTF8String(Copy(CurStr, 1, CharLen));
+        QtDC.drawText(CurX, Y, Rect^.Right - Rect^.Left, Rect^.Bottom - Rect^.Top,
+          QtTextDontClip, @W);
+      end else
+      begin
+        W := GetUTF8String(Copy(CurStr, 1, CharLen));
+        QtDC.drawText(CurX, Y, @W);
+      end;
+      inc(CurX, CurDx^);
+      inc(CurDx);
+      inc(CurStr, CharLen);
+      dec(CurCount, CharLen);
+    end;
+  end;
+
 begin
   {$ifdef VerboseQtWinAPI}
     WriteLn('[WinAPI ExtTextOut]');
@@ -2205,17 +2237,24 @@ begin
 
     if (Options and ETO_CLIPPED <> 0) then
     begin
-      B := QtDC.getClipping;
-      if not B then
-      begin
-        QtDC.save;
+      QtDC.save;
+      try
         QtDC.setClipRect(Rect^);
+        if Dx <> nil then
+          DoDrawCharByChar(True)
+        else
+          QtDC.drawText(X, Y, Rect^.Right - Rect^.Left, Rect^.Bottom - Rect^.Top,
+            QtTextDontClip, @WideStr);
+      finally
+        QtDC.Restore;
       end;
-      QtDC.drawText(X, Y, Rect^.Right - Rect^.Left, Rect^.Bottom - Rect^.Top, 0, @WideStr);
-      if not B then
-        QtDC.restore;
     end else
-      QtDC.drawText(X, Y, @WideStr);
+    begin
+      if Dx <> nil then
+        DoDrawCharByChar(False)
+      else
+        QtDC.drawText(X, Y, @WideStr);
+    end;
   end;
 
   Result := True;
@@ -2334,14 +2373,20 @@ end;
  ------------------------------------------------------------------------------}
 function TQtWidgetSet.FrameRect(DC: HDC; const ARect: TRect;
   hBr: HBRUSH): Integer;
+var
+  AColor: PQColor;
 begin
   Result := 0;
 
   if not IsValidDC(DC) then Exit;
 
-  TQtDeviceContext(DC).qDrawPLainRect(ARect.Left, ARect.Top,
-   ARect.Right - ARect.Left, ARect.Bottom - ARect.Top);
+  if IsValidGDIObject(hBr) then
+    AColor := TQtBrush(HBR).getColor
+  else
+    AColor := nil;
 
+  TQtDeviceContext(DC).qDrawPLainRect(ARect.Left, ARect.Top,
+    ARect.Right - ARect.Left, ARect.Bottom - ARect.Top, AColor);
   Result := 1;
 end;
 
