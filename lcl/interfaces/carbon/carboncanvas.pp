@@ -56,6 +56,12 @@ type
 
     ROP2: Integer;
     PenPos: TPoint;
+
+    WindowOfs: TPoint;
+    ViewportOfs: TPoint;
+
+    isClipped: Boolean;
+    ClipShape: HIShapeRef;
   end;
   
   TCarbonBitmapContext = class;
@@ -82,8 +88,8 @@ type
     
     FSavedDCList: TFPObjectList;
     FTextFractional: Boolean;
-    fViewPortOfs: TPoint;
-    fWindowOfs: TPoint;
+    FViewPortOfs,
+    FWindowOfs: TPoint;
 
     isClipped : Boolean;
 
@@ -100,6 +106,8 @@ type
     function SaveDCData: TCarbonDCData; virtual;
     procedure RestoreDCData(const AData: TCarbonDCData); virtual;
     procedure ExcludeClipRect(Left, Top, Right, Bottom: Integer);
+    procedure ApplyTransform(Trans: CGAffineTransform);
+    procedure ClearClipping;
   public
     constructor Create;
     destructor Destroy; override;
@@ -145,6 +153,7 @@ type
     procedure UpdateContextOfs(const AWindowOfs, AViewOfs: TPoint);
     procedure SetWindowOfs(const AWindowOfs: TPoint);
     procedure SetViewPortOfs(const AViewOfs: TPoint);
+    function GetLogicalOffset: TPoint; override;
   public
     property Size: TPoint read GetSize;
 
@@ -164,8 +173,8 @@ type
     property PenPos: TPoint read FPenPos write FPenPos;
     
     property TextFractional: Boolean read FTextFractional write FTextFractional;
-    property WindowOfs: TPoint read fWindowOfs write SetWindowOfs;
-    property ViewPortOfs: TPoint read fViewPortOfs write SetViewPortOfs;
+    property WindowOfs: TPoint read FWindowOfs write SetWindowOfs;
+    property ViewPortOfs: TPoint read FViewPortOfs write SetViewPortOfs;
   end;
 
   { TCarbonScreenContext }
@@ -496,8 +505,7 @@ end;
  ------------------------------------------------------------------------------}
 function TCarbonDeviceContext.SaveDC: Integer;
 begin
-  if isClipped then
-    CGContextRestoreGState(CGContext); // clip rect is on top of the state stack!
+  ClearClipping;
 
   Result := 0;
   if CGContext = nil then
@@ -515,7 +523,7 @@ begin
     DebugLn('TCarbonDeviceContext.SaveDC Result: ', DbgS(Result));
   {$ENDIF}
   
-  if isClipped then 
+  if isClipped then
   begin
     CGContextSaveGState(CGContext);
     FClipRegion.Apply(Self);
@@ -531,8 +539,8 @@ end;
  ------------------------------------------------------------------------------}
 function TCarbonDeviceContext.RestoreDC(ASavedDC: Integer): Boolean;
 begin
-  if isClipped then CGContextRestoreGState(CGContext);
-  
+  ClearClipping;
+
   Result := False;
   if (FSavedDCList = nil) or (ASavedDC <= 0) or (ASavedDC > FSavedDCList.Count) then
   begin
@@ -564,13 +572,12 @@ begin
   {$ENDIF}
   
   if FSavedDCList.Count = 0 then FreeAndNil(FSavedDCList);
-  
-  
-  if isClipped then 
+
+
+  if isClipped then
   begin
-    // should clip be restored?
-    isClipped:=false;
-    FClipRegion.Shape := HIShapeCreateEmpty;
+    CGContextSaveGState(CGContext);
+    FClipRegion.Apply(Self);
   end;
 end;
 
@@ -596,6 +603,12 @@ begin
 
   Result.ROP2 := FROP2;
   Result.PenPos := FPenPos;
+
+  Result.WindowOfs := FWindowOfs;
+  Result.ViewportOfs := FViewportOfs;
+
+  Result.isClipped := isClipped;
+  Result.ClipShape := FClipRegion.GetShapeCopy;
 end;
 
 {------------------------------------------------------------------------------
@@ -651,6 +664,12 @@ begin
 
   FROP2 := AData.ROP2;
   FPenPos := AData.PenPos;
+
+  FWindowOfs := AData.WindowOfs;
+  FViewportOfs := AData.ViewportOfs;
+
+  isClipped := AData.isClipped;
+  FClipRegion.Shape := AData.ClipShape;
 end;
 
 {------------------------------------------------------------------------------
@@ -885,6 +904,17 @@ begin
     else
       CGContextClipToRect(CGContext, CGRectZero);
   end;
+end;
+
+procedure TCarbonDeviceContext.ApplyTransform(Trans: CGAffineTransform);
+var
+  T2: CGAffineTransform;
+begin
+  T2 := CGContextGetCTM(CGContext);
+  // restore old CTM since CTM may changed after the clipping
+  if CGAffineTransformEqualToTransform(Trans, T2) = 0 then
+    CGContextTranslateCTM(CGContext, Trans.a * Trans.tx - T2.a * T2.tx,
+       Trans.d * Trans.ty - T2.d * T2.ty);
 end;
 
 {------------------------------------------------------------------------------
@@ -1552,27 +1582,33 @@ begin
   //  X, Y]));
 end;
 
-function TCarbonDeviceContext.SetClipRegion(AClipRegion: TCarbonRegion; Mode: Integer): Integer;
+procedure TCarbonDeviceContext.ClearClipping;
+var
+  Trans: CGAffineTransform;
 begin
   if isClipped  then
   begin
-    isClipped := false;
+    Trans := CGContextGetCTM(CGContext);
     CGContextRestoreGState(CGContext);
+    ApplyTransform(Trans);
   end;
-  
+end;
+
+function TCarbonDeviceContext.SetClipRegion(AClipRegion: TCarbonRegion; Mode: Integer): Integer;
+begin
+  ClearClipping;
+  isClipped := False;
+
   if not Assigned(AClipRegion) then
-  begin
-    HIShapeSetEmpty(FClipRegion.Shape);
-    Result := LCLType.NullRegion;
-  end
+    HIShapeSetEmpty(FClipRegion.Shape)
   else
   begin
     CGContextSaveGState(CGContext);
     FClipRegion.CombineWith(AClipRegion, Mode);
     FClipRegion.Apply(Self);
     isClipped := true;
-    Result := LCLType.ComplexRegion;
   end;
+  Result := FClipRegion.GetType;
 end;
 
 function TCarbonDeviceContext.CopyClipRegion(ADstRegion: TCarbonRegion): Integer;
@@ -1582,10 +1618,10 @@ begin
     else Result := LCLType.Error;
 end;
 
-procedure GetWindowViewTranslate(const AWindowOfs, AViewOfs: TPoint; var dx, dy: Integer); inline;
+procedure GetWindowViewTranslate(const AWindowOfs, AViewOfs: TPoint; out dx, dy: Integer); inline;
 begin
-  dx:=AViewOfs.x-AWindowOfs.x;
-  dy:=AViewOfs.y-AWindowOfs.y;
+  dx := AViewOfs.x - AWindowOfs.x;
+  dy := AViewOfs.y - AWindowOfs.y;
 end;
 
 function isSamePoint(const p1, p2: TPoint): Boolean;
@@ -1598,12 +1634,12 @@ var
   dx, dy: Integer;
 begin
   if isSamePoint(AWindowOfs, fWindowOfs) and isSamePoint(AViewOfs, fViewPortOfs) then Exit;
-  GetWindowViewTranslate(fWindowOfs, fViewPortOfs, dx{%H-}, dy{%H-});
+  GetWindowViewTranslate(FWindowOfs, FViewPortOfs, dx{%H-}, dy{%H-});
   CGContextTranslateCTM(CGContext, -dx, -dy);
 
-  fWindowOfs:=AWindowOfs;
-  fViewPortOfs:=AViewOfs;
-  GetWindowViewTranslate(fWindowOfs, fViewPortOfs, dx, dy);
+  FWindowOfs := AWindowOfs;
+  FViewPortOfs := AViewOfs;
+  GetWindowViewTranslate(FWindowOfs, FViewPortOfs, dx, dy);
   CGContextTranslateCTM(CGContext, dx, dy);
 end;
 
@@ -1615,6 +1651,11 @@ end;
 procedure TCarbonDeviceContext.SetViewPortOfs(const AViewOfs: TPoint);
 begin
   UpdateContextOfs(WindowOfs, AViewOfs);
+end;
+
+function TCarbonDeviceContext.GetLogicalOffset: TPoint;
+begin
+  GetWindowViewTranslate(WindowOfs, ViewportOfs, Result.X, Result.Y);
 end;
 
 { TCarbonScreenContext }

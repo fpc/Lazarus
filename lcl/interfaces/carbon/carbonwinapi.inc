@@ -226,7 +226,7 @@ begin
   TCarbonRegion(Dest).CombineWith(TCarbonRegion(Src1), RGN_COPY);
 
   if fnCombineMode <> RGN_COPY then
-    TCarbonRegion(Dest). CombineWith(TCarbonRegion(Src2), fnCombineMode);
+    Result := TCarbonRegion(Dest).CombineWith(TCarbonRegion(Src2), fnCombineMode);
 end;
 
 {------------------------------------------------------------------------------
@@ -648,6 +648,24 @@ begin
   if (TObject(Handle) is TCarbonBitmap) or
      (TObject(Handle) is TCarbonCursor) then 
     TObject(Handle).Free;
+end;
+
+function TCarbonWidgetSet.DPtoLP(DC: HDC; var Points; Count: Integer): BOOL;
+var
+  P: PPoint;
+begin
+  Result := False;
+  if not CheckDC(DC, 'LPtoDP') then Exit;
+  P := @Points;
+  with TCarbonDeviceContext(DC).GetLogicalOffset do
+    while Count > 0 do
+    begin
+      Dec(Count);
+      dec(P^.X, X);
+      dec(P^.Y, Y);
+      inc(P);
+    end;
+  Result := True;
 end;
 
 {------------------------------------------------------------------------------
@@ -2522,6 +2540,24 @@ begin
   Result := True;
 end;
 
+function TCarbonWidgetSet.LPtoDP(DC: HDC; var Points; Count: Integer): BOOL;
+var
+  P: PPoint;
+begin
+  Result := False;
+  if not CheckDC(DC, 'LPtoDP') then Exit;
+  P := @Points;
+  with TCarbonDeviceContext(DC).GetLogicalOffset do
+    while Count > 0 do
+    begin
+      Dec(Count);
+      inc(P^.X, X);
+      inc(P^.Y, Y);
+      inc(P);
+    end;
+  Result := True;
+end;
+
 function TCarbonWidgetSet.MessageBox(hWnd: HWND; lpText, lpCaption: PChar;
   uType: Cardinal): integer;
 begin
@@ -3634,16 +3670,13 @@ end;
 function TCarbonWidgetSet.SetViewPortOrgEx(DC: HDC; NewX, NewY: Integer;
   OldPoint: PPoint): Boolean;
 begin
-  Result:=False;
-  {$IFDEF VerboseWinAPI}
-    DebugLn('TCarbonWidgetSet.SetViewPortOrgEx DC: ' + DbgS(DC) +
-      ' NewX: ' + DbgS(NewX) + ' NewY: '+DbgS(NewY));
-  {$ENDIF}
+  Result := False;
   if not CheckDC(DC, 'SetViewPortOrgEx') then Exit;
 
-  if Assigned(OldPoint) then OldPoint^:=TCarbonDeviceContext(DC).ViewPortOfs;
-  TCarbonDeviceContext(DC).ViewPortOfs:=Types.Point(NewX, NewY);
-  Result:=True;
+  if Assigned(OldPoint) then
+    OldPoint^ := TCarbonDeviceContext(DC).ViewPortOfs;
+  TCarbonDeviceContext(DC).ViewPortOfs := Types.Point(NewX, NewY);
+  Result := True;
 end;
 
 function TCarbonWidgetSet.SetWindowLong(Handle: HWND; Idx: Integer;
@@ -3664,15 +3697,12 @@ function TCarbonWidgetSet.SetWindowOrgEx(DC: HDC; NewX, NewY: Integer;
   OldPoint: PPoint): Boolean;
 begin
   Result  := False;
-  {$IFDEF VerboseWinAPI}
-    DebugLn('TCarbonWidgetSet.SetWindowOrgEx DC: ' + DbgS(DC) + ' X: ' + DbgS(NewX) +
-	  ' Y: ' + DbgS(NewY));
-  {$ENDIF}
-
   if not CheckDC(DC, 'SetWindowOrgEx') then Exit;
 
-  if Assigned(OldPoint) then OldPoint^:=TCarbonDeviceContext(DC).WindowOfs;
-  TCarbonDeviceContext(DC).WindowOfs:=Types.Point(NewX, NewY);
+  if Assigned(OldPoint) then
+    OldPoint^ := TCarbonDeviceContext(DC).WindowOfs;
+  TCarbonDeviceContext(DC).WindowOfs := Types.Point(NewX, NewY);
+  Result := True;
 end;
 
 function TCarbonWidgetSet.SetWindowPos(hWnd: HWND; hWndInsertAfter: HWND; X, Y,
