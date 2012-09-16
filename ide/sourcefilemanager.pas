@@ -75,6 +75,8 @@ type
     function OpenEditorFile(AFileName:string; PageIndex, WindowIndex: integer;
                               AEditorInfo: TUnitEditorInfo;
                               Flags: TOpenFlags): TModalResult;
+    function OpenFileAtCursor(ActiveSrcEdit: TSourceEditor;
+      ActiveUnitInfo: TUnitInfo): TModalResult;
     function InitNewProject(ProjectDesc: TProjectDescriptor): TModalResult;
     function InitOpenedProjectFile(AFileName: string; Flags: TOpenFlags): TModalResult;
     function SaveProject(Flags: TSaveFlags): TModalResult;
@@ -1297,6 +1299,198 @@ begin
   Result:=mrOk;
   //writeln('TLazSourceFileManager.OpenEditorFile END "',AFilename,'"');
   {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TLazSourceFileManager.OpenEditorFile END');{$ENDIF}
+end;
+
+function TLazSourceFileManager.OpenFileAtCursor(ActiveSrcEdit: TSourceEditor;
+  ActiveUnitInfo: TUnitInfo): TModalResult;
+var
+  FName,SPath: String;
+
+  function FindFile(var FName: String; SPath: String): Boolean;
+  //  Searches for FName in SPath
+  //  If FName is not found, we'll check extensions pp and pas too
+  //  Returns true if found. FName contains the full file+path in that case
+  var TempFile,TempPath,CurPath,FinalFile, Ext: String;
+      p,c: Integer;
+      PasExt: TPascalExtType;
+  begin
+    if SPath='' then SPath:='.';
+    Result:=true;
+    TempPath:=SPath;
+    while TempPath<>'' do begin
+      p:=pos(';',TempPath);
+      if p=0 then p:=length(TempPath)+1;
+      CurPath:=copy(TempPath,1,p-1);
+      Delete(TempPath,1,p);
+      if CurPath='' then continue;
+      CurPath:=AppendPathDelim(CurPath);
+      if not FilenameIsAbsolute(CurPath) then begin
+        if ActiveUnitInfo.IsVirtual then
+          CurPath:=AppendPathDelim(Project1.ProjectDirectory)+CurPath
+        else
+          CurPath:=AppendPathDelim(ExtractFilePath(ActiveUnitInfo.Filename))
+                   +CurPath;
+      end;
+      for c:=0 to 2 do begin
+        // FPC searches first lowercase, then keeping case, then uppercase
+        case c of
+          0: TempFile:=LowerCase(FName);
+          1: TempFile:=FName;
+          2: TempFile:=UpperCase(FName);
+        end;
+        if ExtractFileExt(TempFile)='' then begin
+          for PasExt:=Low(TPascalExtType) to High(TPascalExtType) do begin
+            Ext:=PascalExtension[PasExt];
+            FinalFile:=ExpandFileNameUTF8(CurPath+TempFile+Ext);
+            if FileExistsUTF8(FinalFile) then begin
+              FName:=FinalFile;
+              exit;
+            end;
+          end;
+        end else begin
+          FinalFile:=ExpandFileNameUTF8(CurPath+TempFile);
+          if FileExistsUTF8(FinalFile) then begin
+            FName:=FinalFile;
+            exit;
+          end;
+        end;
+      end;
+    end;
+    Result:=false;
+  end;
+
+  function CheckIfIncludeDirectiveInFront(const Line: string;
+    X: integer): boolean;
+  var
+    DirectiveEnd, DirectiveStart: integer;
+    Directive: string;
+  begin
+    Result:=false;
+    DirectiveEnd:=X;
+    while (DirectiveEnd>1) and (Line[DirectiveEnd-1] in [' ',#9]) do
+      dec(DirectiveEnd);
+    DirectiveStart:=DirectiveEnd-1;
+    while (DirectiveStart>0) and (Line[DirectiveStart]<>'$') do
+      dec(DirectiveStart);
+    Directive:=uppercase(copy(Line,DirectiveStart,DirectiveEnd-DirectiveStart));
+    if (Directive='$INCLUDE') or (Directive='$I') then begin
+      if ((DirectiveStart>1) and (Line[DirectiveStart-1]='{'))
+      or ((DirectiveStart>2)
+        and (Line[DirectiveStart-2]='(') and (Line[DirectiveStart-1]='*'))
+      then begin
+        Result:=true;
+      end;
+    end;
+  end;
+
+  function GetFilenameAtRowCol(XY: TPoint; var IsIncludeDirective: boolean): string;
+  var
+    Line: string;
+    Len, Stop: integer;
+    StopChars: set of char;
+  begin
+    Result := '';
+    IsIncludeDirective:=false;
+    if (XY.Y >= 1) and (XY.Y <= ActiveSrcEdit.EditorComponent.Lines.Count) then
+    begin
+      Line := ActiveSrcEdit.EditorComponent.Lines.Strings[XY.Y - 1];
+      Len := Length(Line);
+      if (XY.X >= 1) and (XY.X <= Len + 1) then begin
+        StopChars := [',',';',':','[',']','{','}','(',')',' ','''','"','`'
+                     ,'#','%','=','>'];
+        Stop := XY.X;
+        while (Stop <= Len) and (not (Line[Stop] in StopChars)) do
+          Inc(Stop);
+        while (XY.X > 1) and (not (Line[XY.X - 1] in StopChars)) do
+          Dec(XY.X);
+        if Stop > XY.X then begin
+          Result := Copy(Line, XY.X, Stop - XY.X);
+          IsIncludeDirective:=CheckIfIncludeDirectiveInFront(Line,XY.X);
+        end;
+      end;
+    end;
+  end;
+
+var
+  IsIncludeDirective: boolean;
+  BaseDir: String;
+  NewFilename: string;
+  Found: Boolean;
+  AUnitName: String;
+  InFilename: String;
+begin
+  Result:=mrCancel;
+  if (ActiveSrcEdit=nil) or (ActiveUnitInfo=nil) then exit;
+  BaseDir:=ExtractFilePath(ActiveUnitInfo.Filename);
+
+  // parse filename at cursor
+  IsIncludeDirective:=false;
+  Found:=false;
+  FName:=GetFilenameAtRowCol(ActiveSrcEdit.EditorComponent.LogicalCaretXY,
+                             IsIncludeDirective);
+  if FName='' then exit;
+
+  // check if absolute filename
+  if FilenameIsAbsolute(FName) then begin
+    if FileExistsUTF8(FName) then
+      Found:=true
+    else
+      exit;
+  end;
+
+  if (not Found) then begin
+    if IsIncludeDirective then begin
+      // search include file
+      SPath:='.;'+CodeToolBoss.DefineTree.GetIncludePathForDirectory(BaseDir);
+      if FindFile(FName,SPath) then
+        Found:=true;
+    end else if FilenameIsPascalSource(FName) or (ExtractFileExt(FName)='') then
+    begin
+      // search pascal unit
+      AUnitName:=ExtractFileNameOnly(FName);
+      InFilename:=FName;
+      if ExtractFileExt(FName)='' then InFilename:='';
+      NewFilename:=CodeToolBoss.DirectoryCachePool.FindUnitSourceInCompletePath(
+                           BaseDir,AUnitName,InFilename,true);
+      if NewFilename<>'' then begin
+        Found:=true;
+        FName:=NewFilename;
+      end;
+    end;
+  end;
+
+  if (not Found) then begin
+    // simple search relative to current unit
+    InFilename:=AppendPathDelim(BaseDir)+FName;
+    if FileExistsCached(InFilename) then begin
+      Found:=true;
+      FName:=InFilename;
+    end;
+  end;
+
+  if (not Found) and (System.Pos('.',FName)>0) and (not IsIncludeDirective) then
+  begin
+    // for example 'SysUtils.CompareText'
+    FName:=ActiveSrcEdit.EditorComponent.GetWordAtRowCol(
+      ActiveSrcEdit.EditorComponent.LogicalCaretXY);
+    if (FName<>'') and IsValidIdent(FName) then begin
+      // search pascal unit
+      AUnitName:=FName;
+      InFilename:='';
+      NewFilename:=CodeToolBoss.DirectoryCachePool.FindUnitSourceInCompletePath(
+                           BaseDir,AUnitName,InFilename,true);
+      if NewFilename<>'' then begin
+        Found:=true;
+        FName:=NewFilename;
+      end;
+    end;
+  end;
+
+  if Found then begin
+    // open
+    InputHistories.SetFileDialogSettingsInitialDir(ExtractFilePath(FName));
+    Result:=OpenEditorFile(FName, -1, -1, nil, [ofAddToRecent]);
+  end;
 end;
 
 function TLazSourceFileManager.InitNewProject(ProjectDesc: TProjectDescriptor): TModalResult;
