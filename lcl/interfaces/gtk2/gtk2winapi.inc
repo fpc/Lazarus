@@ -3846,8 +3846,7 @@ begin
   
   if DevCtx.GC <> nil then; // create GC
 
-  if ((Options and (ETO_OPAQUE+ETO_CLIPPED)) <> 0)
-  and (Rect=nil)
+  if ((Options and (ETO_OPAQUE + ETO_CLIPPED)) <> 0) and (Rect=nil)
   then begin
     DebugLn('WARNING: [TGtk2WidgetSet.ExtTextOut] Rect=nil');
     Result := False;
