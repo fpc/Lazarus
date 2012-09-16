@@ -107,6 +107,8 @@ begin
 end;
 
 class function TQtWSMenuItem.CreateMenuFromMenuItem(const AMenuItem: TMenuItem): TQtMenu;
+var
+  ImgList: TImageList;
 begin
   Result := TQtMenu.Create(AMenuItem);
   Result.FDeleteLater := False;
@@ -122,7 +124,18 @@ begin
     Result.EndUpdate;
     Result.setShortcut(AMenuItem.ShortCut, AMenuItem.ShortCutKey2);
     if AMenuItem.HasIcon then
-      Result.setImage(TQtImage(AMenuItem.Bitmap.Handle));
+    begin
+      ImgList := TImageList(AMenuItem.GetImageList);
+      // we must check so because AMenuItem.HasIcon can return true
+      // if Bitmap is setted up but not ImgList.
+      if (ImgList <> nil) and (AMenuItem.ImageIndex >= 0) and
+        (AMenuItem.ImageIndex < ImgList.Count) then
+      begin
+        ImgList.GetBitmap(AMenuItem.ImageIndex, AMenuItem.Bitmap);
+        Result.setImage(TQtImage(AMenuItem.Bitmap.Handle));
+      end;
+    end else
+      Result.setImage(nil);
   end;
 end;
 {------------------------------------------------------------------------------
