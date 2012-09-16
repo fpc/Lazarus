@@ -29,7 +29,11 @@ interface
 
 uses
   Classes, SysUtils, Graphics, Controls, FPCanvas, Types,
-  TAChartUtils, TADrawUtils;
+  TAChartUtils, TADrawUtils,
+
+  // Workaround for issue #22850.
+  GraphMath, Math,
+  TACustomSource, TAGeometry;
 
 const
   MARKS_MARGIN_X = 4;
@@ -405,10 +409,6 @@ type
   end;
 
 implementation
-
-uses
-  GraphMath, Math,
-  TACustomSource, TAGeometry;
 
 { TChartPen }
 
