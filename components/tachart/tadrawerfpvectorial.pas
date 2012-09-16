@@ -34,8 +34,12 @@ type
     FCanvas: TvVectorialPage;
     FFontSize: Integer;
     FPenColor: TFPColor;
+    FPenStyle: TFPPenStyle;
+    FPenWidth: Integer;
 
     procedure AddLine(AX, AY: Integer);
+    procedure ApplyBrush;
+    procedure ApplyPen;
     function InvertY(AY: Integer): Integer; inline;
   strict protected
     function GetFontAngle: Double; override;
@@ -90,6 +94,19 @@ procedure TFPVectorialDrawer.AddToFontOrientation(ADelta: Integer);
 begin
   // Not implemented.
   Unused(ADelta);
+end;
+
+procedure TFPVectorialDrawer.ApplyBrush;
+begin
+  FCanvas.SetBrushColor(FBrushColor);
+  FCanvas.SetBrushStyle(FBrushStyle);
+end;
+
+procedure TFPVectorialDrawer.ApplyPen;
+begin
+  FCanvas.SetPenColor(FPenColor);
+  FCanvas.SetPenStyle(FPenStyle);
+  FCanvas.SetPenWidth(FPenWidth);
 end;
 
 procedure TFPVectorialDrawer.ClippingStart(const AClipRect: TRect);
@@ -188,8 +205,8 @@ begin
   for i := 1 to ANumPts - 1 do
     with APoints[i + AStartIndex] do
       AddLine(X, Y);
-  FCanvas.SetBrushColor(FBrushColor);
-  FCanvas.SetPenColor(FPenColor);
+  ApplyBrush;
+  ApplyPen;
   FCanvas.EndPath();
 end;
 
@@ -203,13 +220,15 @@ begin
   for i := 1 to ANumPts - 1 do
     with APoints[i + AStartIndex] do
       AddLine(X, Y);
-  FCanvas.SetPenColor(FPenColor);
+  ApplyPen;
   FCanvas.EndPath();
 end;
 
 procedure TFPVectorialDrawer.PrepareSimplePen(AColor: TChartColor);
 begin
   FPenColor := FChartColorToFPColorFunc(AColor);
+  FPenStyle := psSolid;
+  FPenWidth := 1;
 end;
 
 procedure TFPVectorialDrawer.RadialPie(
@@ -228,9 +247,8 @@ begin
   AddLine(AX2, AY2);
   AddLine(AX1, AY2);
   AddLine(AX1, AY1);
-  FCanvas.SetBrushColor(FBrushColor);
-  FCanvas.SetBrushStyle(FBrushStyle);
-  FCanvas.SetPenColor(FPenColor);
+  ApplyBrush;
+  ApplyPen;
   FCanvas.EndPath();
 end;
 
@@ -266,12 +284,14 @@ end;
 procedure TFPVectorialDrawer.SetPen(APen: TFPCustomPen);
 begin
   FPenColor := APen.FPColor;
+  FPenStyle := APen.Style;
+  FPenWidth := APen.Width;
 end;
 
 procedure TFPVectorialDrawer.SetPenParams(
   AStyle: TFPPenStyle; AColor: TChartColor);
 begin
-  Unused(AStyle);
+  FPenStyle := AStyle;
   FPenColor := FChartColorToFPColorFunc(AColor);
 end;
 
