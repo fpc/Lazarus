@@ -940,7 +940,7 @@ begin
   //DebugLn('TCarbonDeviceContext.ExtTextOut ' + DbgS(X) + ', ' + DbgS(Y) + ' R: ' + DbgS(Rect^) +
   //  ' S: ' + Str + ' C: ' + DbgS(Count));
 
-  if Rect <> nil then
+  if Assigned(Rect) then
   begin
     // fill background
     if (Options and ETO_OPAQUE) > 0 then
@@ -958,7 +958,7 @@ begin
     if CurrentFont.LineRotation = 0 then // TODO: fill rotated text background
     begin
       // fill drawed text background
-      if (Rect = nil) and ((Options and ETO_OPAQUE) > 0) then
+      if BkMode = OPAQUE then
       begin
         BrushSolid := BkBrush.Solid; // must ignore BkMode
         BkBrush.Solid := True;
