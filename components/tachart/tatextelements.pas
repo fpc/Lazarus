@@ -43,19 +43,28 @@ type
     property Top default DEF_LABEL_MARGIN_Y;
   end;
 
-  TChartLabelShape = (clsRectangle, clsEllipse, clsRoundRect, clsRoundSide);
+  TChartLabelShape = (
+    clsRectangle, clsEllipse, clsRoundRect, clsRoundSide, clsUserDefined);
+
+  TChartTextElement = class;
+
+  TChartGetShapeEvent = procedure (
+    ASender: TChartTextElement; const ABoundingBox: TRect;
+    var APolygon: TPointArray) of object;
 
   TChartTextElement = class(TChartElement)
   strict private
     FCalloutAngle: Cardinal;
     FClipped: Boolean;
     FMargins: TChartLabelMargins;
+    FOnGetShape: TChartGetShapeEvent;
     FOverlapPolicy: TChartMarksOverlapPolicy;
     FShape: TChartLabelShape;
     procedure SetAlignment(AValue: TAlignment);
     procedure SetCalloutAngle(AValue: Cardinal);
     procedure SetClipped(AValue: Boolean);
     procedure SetMargins(AValue: TChartLabelMargins);
+    procedure SetOnGetShape(AValue: TChartGetShapeEvent);
     procedure SetOverlapPolicy(AValue: TChartMarksOverlapPolicy);
     procedure SetShape(AValue: TChartLabelShape);
   strict protected
@@ -90,6 +99,8 @@ type
     property Clipped: Boolean read FClipped write SetClipped default true;
     property OverlapPolicy: TChartMarksOverlapPolicy
       read FOverlapPolicy write SetOverlapPolicy default opIgnore;
+    property OnGetShape: TChartGetShapeEvent
+      read FOnGetShape write SetOnGetShape;
     property Shape: TChartLabelShape
       read FShape write SetShape default clsRectangle;
   published
@@ -211,6 +222,7 @@ type
     property Clipped;
     property Distance: TChartDistance read FDistance write SetDistance;
     property LabelFont: TFont read FLabelFont write SetLabelFont;
+    property OnGetShape;
     property Shape;
     property Visible default true;
   end;
@@ -379,7 +391,10 @@ begin
     clsRoundSide:
       Result := TesselateRoundRect(
         b, Min(b.Right - b.Left, b.Bottom - b.Top) div 2, STEP);
+    clsUserDefined: ;
   end;
+  if Assigned(OnGetShape) then
+    OnGetShape(Self, b, Result);
   a := GetLabelAngle;
   for i := 0 to High(Result) do
     Result[i] := RotatePoint(Result[i], a);
@@ -429,6 +444,13 @@ procedure TChartTextElement.SetMargins(AValue: TChartLabelMargins);
 begin
   if FMargins = AValue then exit;
   FMargins.Assign(AValue);
+  StyleChanged(Self);
+end;
+
+procedure TChartTextElement.SetOnGetShape(AValue: TChartGetShapeEvent);
+begin
+  if TMethod(FOnGetShape) = TMethod(AValue) then exit;
+  FOnGetShape := AValue;
   StyleChanged(Self);
 end;
 
