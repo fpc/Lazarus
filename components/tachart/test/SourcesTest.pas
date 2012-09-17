@@ -40,6 +40,7 @@ type
     procedure TearDown; override;
   published
     procedure Basic;
+    procedure Bounds;
     procedure Cache;
     procedure DataPoint;
     procedure DataPointSeparator;
@@ -280,6 +281,41 @@ begin
   finally
     srcDest.Free;
   end;
+end;
+
+procedure TListSourceTest.Bounds;
+
+  procedure Check(AExpectedLB, AExpectedUB: Integer; AValue: Double);
+  var
+    lb, ub: Integer;
+  begin
+    FSource.FindBounds(AValue, AValue, lb, ub);
+    AssertEquals(AExpectedLB, lb);
+    AssertEquals(AExpectedUB, ub);
+  end;
+
+  procedure CheckAll;
+  begin
+    Check(1, 1, 2);
+    Check(1, 0, 1.9);
+    Check(0, -1, 0.9);
+    Check(5, 4, 5.1);
+    Check(4, 3, 4.9);
+  end;
+
+begin
+  FSource.Clear;
+  FSource.Add(1, 2);
+  FSource.Add(2, 3);
+  FSource.Add(3, 4);
+  FSource.Add(4, 5);
+  FSource.Add(5, 6);
+  FSource.Sorted := true;
+  CheckAll;
+  FSource.Sorted := false;
+  CheckAll;
+  FSource.SetXValue(1, SafeNan);
+  Check(2, 0, 2);
 end;
 
 procedure TListSourceTest.Cache;
