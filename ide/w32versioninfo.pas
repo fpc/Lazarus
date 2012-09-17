@@ -229,7 +229,7 @@ begin
   fHexLanguages.Add('0814');
   fLanguages.Add('Polish');
   fHexLanguages.Add('0415');
-  fLanguages.Add('Portugese - Brazil');
+  fLanguages.Add('Portuguese - Brazil');
   fHexLanguages.Add('0416');
   fLanguages.Add('Rhaeto-Romanic');
   fHexLanguages.Add('0417');
@@ -255,6 +255,8 @@ begin
   fHexLanguages.Add('0421');
   fLanguages.Add('Ukrainian');
   fHexLanguages.Add('0422');
+  fLanguages.Add('Lithuanian');
+  fHexLanguages.Add('0427');
   fLanguages.Add('Chinese - People''s Republic of China');
   fHexLanguages.Add('0804');
   fLanguages.Add('German - Switzerland');
