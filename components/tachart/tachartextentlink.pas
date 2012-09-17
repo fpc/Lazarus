@@ -84,7 +84,7 @@ end;
 constructor TLinkedChart.Create(ACollection: TCollection);
 begin
   inherited Create(ACollection);
-  FListener := TListener.Create(@FListener, @OnExtentChanged);
+  FListener := TListener.Create(@FChart, @OnExtentChanged);
 end;
 
 destructor TLinkedChart.Destroy;
