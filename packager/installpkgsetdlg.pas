@@ -164,6 +164,7 @@ type
     ImgIndexUninstallPackage: integer;
     ImgIndexCirclePackage: integer;
     ImgIndexMissingPackage: integer;
+    ImgIndexOverlayUnknown: integer;
     ImgIndexOverlayBasePackage: integer;
     ImgIndexOverlayFPCPackage: integer;
     ImgIndexOverlayLazarusPackage: integer;
@@ -375,6 +376,7 @@ begin
   ImgIndexUninstallPackage := IDEImages.LoadImage(16, 'pkg_package_uninstall');
   ImgIndexCirclePackage := IDEImages.LoadImage(16, 'pkg_package_circle');
   ImgIndexMissingPackage := IDEImages.LoadImage(16, 'pkg_conflict');
+  ImgIndexOverlayUnknown := IDEImages.LoadImage(16, 'state_unknown');
   ImgIndexOverlayBasePackage := IDEImages.LoadImage(16, 'pkg_core_overlay');
   ImgIndexOverlayFPCPackage := IDEImages.LoadImage(16, 'pkg_fpc_overlay');
   ImgIndexOverlayLazarusPackage := IDEImages.LoadImage(16, 'pkg_lazarus_overlay');
@@ -404,6 +406,7 @@ begin
   FNewInstalledPackages:=TObjectList.Create(true);
   PkgInfoMemo.Clear;
 
+  UpdateAvailablePackages;
   UpdateButtonStates;
 
   ActiveControl:=AvailableFilterEdit;
@@ -499,6 +502,7 @@ var
   Installed: TPackageInstallType;
   PkgName: String;
   ImgIndex: Integer;
+  Unknown: Boolean;
 begin
   Tree:=Sender as TTreeView;
   if Stage=cdPostPaint then begin
@@ -507,6 +511,7 @@ begin
       Info:=FindPkgInfo(Node.Text);
       if Info=nil then exit;
       PkgName:=Info.ID.Name;
+      Unknown:=not (Info.LPKParsed in [ipisParsed,ipisParsedError]);
       InLazSrc:=Info.InLazSrc;
       IsBase:=Info.Base;
       PkgType:=Info.PkgType;
@@ -532,6 +537,8 @@ begin
       Images.Draw(CurCanvas,x,y,ImgIndexOverlayRuntimePackage);
     if PkgType=lptDesignTime then
       Images.Draw(CurCanvas,x,y,ImgIndexOverlayDesigntimePackage);
+    if Unknown then
+      Images.Draw(CurCanvas,x,y,ImgIndexOverlayUnknown);
   end;
 end;
 
