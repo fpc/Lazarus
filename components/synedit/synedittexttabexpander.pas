@@ -247,7 +247,7 @@ begin
     CharWidths := GetPhysicalCharWidths(Pchar(Line), length(Line), Index);
     l := 0;
     for i := 0 to length(CharWidths)-1 do
-      l := l + CharWidths[i];
+      l := l + (CharWidths[i] and PCWMask);
     SetLength(Result, l);
 
     l := 1;
@@ -256,7 +256,7 @@ begin
         Result[l] := Line[i];
         inc(l);
       end else begin
-        for j := 1 to CharWidths[i-1] do begin
+        for j := 1 to (CharWidths[i-1] and PCWMask) do begin
           Result[l] := ' ';
           inc(l);
         end;
@@ -282,7 +282,7 @@ begin
     DoGetPhysicalCharWidths(Pchar(Line), i, Index, @CharWidths[0]);
     Result := 0;
     for i := 0 to length(CharWidths)-1 do
-      Result := Result + CharWidths[i];
+      Result := Result + (CharWidths[i] and PCWMask);
 
     if FLastLineHasTab then // FLastLineHasTab is set by GetPhysicalCharWidths
       FTabData[Index] := Result
@@ -312,12 +312,12 @@ begin
   HasTab := False;
   j := 0;
   for i := 0 to LineLen - 1 do begin
-    if PWidths^ <> 0 then begin
+    if (PWidths^ and PCWMask) <> 0 then begin
       if Line^ = #9 then begin
-        PWidths^ := FTabWidth - (j mod FTabWidth);
+        PWidths^ := (FTabWidth - (j mod FTabWidth) and PCWMask) or (PWidths^  and (not PCWMask));
         HasTab := True;
       end;
-      j := j + PWidths^;
+      j := j + (PWidths^ and PCWMask);
     end;
     inc(Line);
     inc(PWidths);

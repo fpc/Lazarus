@@ -94,7 +94,7 @@ uses
   // Gutter
   SynGutterBase, SynGutter, SynGutterCodeFolding, SynGutterChanges,
   SynGutterLineNumber, SynGutterMarks, SynGutterLineOverview,
-  SynEditMiscClasses, SynEditHighlighter, LazSynTextArea, SynTextDrawer,
+  SynEditMiscClasses, SynEditHighlighter, LazSynTextArea, SynTextDrawer, SynEditTextBidiChars,
   LResources, Clipbrd, StdActns;
 
 const
@@ -471,6 +471,7 @@ type
     FVisibleSpecialChars: TSynVisibleSpecialChars;
     FTrimmedLinesView: TSynEditStringTrimmingList;
     FDoubleWidthChrLinesView: SynEditStringDoubleWidthChars;
+    FBidiChrLinesView: TSynEditStringBidiChars;
     FTabbedLinesView:  TSynEditStringTabExpander;
     FTheLinesView: TSynEditStrings;
     FLines: TSynEditStrings;          // The real (un-mapped) line-buffer
@@ -630,7 +631,7 @@ type
     procedure SetSpecialLineMarkup(const AValue : TSpecialLineMarkupEvent);
     function GetHookedCommandHandlersCount: integer;
     function GetLineText: string;
-    function GetCharLen(const Line: string; CharStartPos: integer): integer;
+    function GetCharLen(const Line: string; CharStartPos: integer): integer; // TODO: deprecated
     function GetLogicalCaretXY: TPoint;
     procedure SetLogicalCaretXY(const NewLogCaretXY: TPoint);
     procedure SetBeautifier(NewBeautifier: TSynCustomBeautifier);
@@ -1877,8 +1878,16 @@ begin
   FDoubleWidthChrLinesView := SynEditStringDoubleWidthChars.Create
                                                             (FTrimmedLinesView);
 
+  {$IFDEF WithSynBiDi }
+  FBidiChrLinesView := TSynEditStringBidiChars.Create(FDoubleWidthChrLinesView);
+  {$ENDIF}
+
   // ftab, currently has LengthOfLongestLine, therefore must be after DoubleWidthChar
+  {$IFDEF WithSynBiDi }
+  FTabbedLinesView := TSynEditStringTabExpander.Create(FBidiChrLinesView);
+  {$ELSE}
   FTabbedLinesView := TSynEditStringTabExpander.Create(FDoubleWidthChrLinesView);
+  {$ENDIF}
 
   // Pointer to the First/Lowest View
   // TODO: this should be Folded...
@@ -2339,6 +2348,9 @@ begin
   FreeAndNil(FStrings);
   FreeAndNil(FTabbedLinesView);
   FreeAndNil(FTrimmedLinesView); // has reference to caret
+  {$IFDEF WithSynBiDi }
+  FreeAndNil(FBidiChrLinesView);
+  {$ENDIF}
   FreeAndNil(FDoubleWidthChrLinesView);
   TSynEditStringList(FLines).DetachSynEdit(Self);
   if TSynEditStringList(FLines).AttachedSynEditCount = 0 then
@@ -3711,7 +3723,7 @@ begin
           repeat
             r := r and (Line[j] = ULine[j]);
             inc(j);
-          until (j > i) or (CWidth[j-1] <> 0);
+          until (j > i) or ((CWidth[j-1] and PCWMask) <> 0);
           if not r then break;
           CX := j;
         end;
@@ -3723,7 +3735,7 @@ begin
           repeat
             r := r and (Line[j] = ULine[j]);
             inc(j);
-          until (j > i) or (CWidth[j-1] <> 0);
+          until (j > i) or ((CWidth[j-1] and PCWMask) <> 0);
           if not r then break;
           CX := j;
         end;
@@ -3812,7 +3824,7 @@ begin
           repeat
             dec(j);
             r := r and (Line[j] = ULine[j]);
-          until (j < 1) or (CWidth[j-1] <> 0);
+          until (j < 1) or ((CWidth[j-1] and PCWMask) <> 0);
           if not r then break;
           CX := j;
         end;
@@ -3823,7 +3835,7 @@ begin
           repeat
             dec(j);
             r := r and (Line[j] = ULine[j]);
-          until (j < 1) or (CWidth[j-1] <> 0);
+          until (j < 1) or ((CWidth[j-1] and PCWMask) <> 0);
           r := r or not( (CX = OX) or (Line[CX - 1] <> '_') or ((CX <= i) and (Line[CX] = '_')) );
           if r then break;
           CX := j;

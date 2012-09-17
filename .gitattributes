@@ -2738,6 +2738,7 @@ components/synedit/syneditregexsearch.pas svneol=native#text/pascal
 components/synedit/syneditsearch.pp svneol=native#text/pascal
 components/synedit/syneditstrconst.pp svneol=native#text/pascal
 components/synedit/synedittextbase.pas svneol=native#text/plain
+components/synedit/synedittextbidichars.pas svneol=native#text/pascal
 components/synedit/synedittextbuffer.pp svneol=native#text/pascal
 components/synedit/synedittextdoublewidthchars.pas svneol=native#text/plain
 components/synedit/synedittexttabexpander.pas svneol=native#text/plain

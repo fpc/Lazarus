@@ -513,15 +513,15 @@ begin
 
   while LogPos < LogLen do begin
     if ScreenPos = FCharPos then exit;
-    if ScreenPos + CharWidths[LogPos] > FCharPos then begin
+    if ScreenPos + (CharWidths[LogPos] and PCWMask) > FCharPos then begin
       if (L[LogPos+1] = #9) and (not FSkipTabs) then exit;
       if FAdjustToNextChar or (FForceAdjustToNextChar > 0) then
-        FCharPos := ScreenPos + CharWidths[LogPos]
+        FCharPos := ScreenPos + (CharWidths[LogPos] and PCWMask)
       else
         FCharPos := ScreenPos;
       exit;
     end;
-    ScreenPos := ScreenPos + CharWidths[LogPos];
+    ScreenPos := ScreenPos + (CharWidths[LogPos] and PCWMask);
     inc(LogPos);
   end;
 end;

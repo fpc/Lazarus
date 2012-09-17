@@ -343,14 +343,14 @@ begin
     while (LogicIdx < LogicEnd) and (FCurViewToken.PhysicalStart < FFirstCol) do begin
       if LogicIdx >= CharWidthsLen
       then j := 1
-      else j := FCharWidths[LogicIdx];
+      else j := (FCharWidths[LogicIdx] and PCWMask);
 
       if FCurViewToken.PhysicalStart + j > FFirstCol then break;
 
       inc(FCurViewToken.PhysicalStart, j);
       repeat
         inc(LogicIdx);
-      until (LogicIdx >= CharWidthsLen) or (FCharWidths[LogicIdx] <> 0);
+      until (LogicIdx >= CharWidthsLen) or ((FCharWidths[LogicIdx] and PCWMask) <> 0);
     end;
 
     if LogicIdx <> FCurViewToken.LogicalStart - 1 then begin
@@ -376,7 +376,7 @@ begin
     while (LogicIdx < LogicEnd) and (PhysPos < AMaxPhysEnd) do begin
       if LogicIdx >= CharWidthsLen
       then j := 1
-      else j := FCharWidths[LogicIdx];
+      else j := (FCharWidths[LogicIdx] and PCWMask);
 
       PrevLogicIdx := LogicIdx;
       PrevPhysPos  := PhysPos;
@@ -395,7 +395,7 @@ begin
       repeat
         inc(LogicIdx);
         inc(i);
-      until (LogicIdx >= CharWidthsLen) or (FCharWidths[LogicIdx] <> 0);
+      until (LogicIdx >= CharWidthsLen) or ((FCharWidths[LogicIdx] and PCWMask) <> 0);
     end;
     Assert(PhysPos > FCurViewToken.PhysicalStart, 'PhysPos > FCurViewToken.PhysicalStart');
 
@@ -933,9 +933,9 @@ var
     HasTabs := False;
     SrcPos:=0;
     for i := CurLogIndex to CurLogIndex + Count -1 do begin
-      Result := Result + CharWidths[i];
-      if CharWidths[i] > 1 then
-        LengthNeeded := LengthNeeded + CharWidths[i] - 1;
+      Result := Result + (CharWidths[i] and PCWMask);
+      if (CharWidths[i] and PCWMask) > 1 then
+        LengthNeeded := LengthNeeded + (CharWidths[i] and PCWMask) - 1;
       if p[SrcPos] = #9 then HasTabs := True;
       inc(SrcPos);
     end;
@@ -957,7 +957,7 @@ var
     if fTextDrawer.UseUTF8 then begin
       while SrcPos<Count do begin
         c:=p[SrcPos];
-        Fill := CharWidths[CurLogIndex + SrcPos] - 1;
+        Fill := (CharWidths[CurLogIndex + SrcPos] and PCWMask) - 1;
         if c = #9 then begin
           // tab char, fill with spaces
           if SpecialTab1 then begin
@@ -1016,7 +1016,7 @@ var
       // non UTF-8
       while SrcPos<Count do begin
         c:=p[SrcPos];
-        Fill := CharWidths[CurLogIndex + SrcPos] - 1;
+        Fill := (CharWidths[CurLogIndex + SrcPos] and PCWMask) - 1;
         if c = #9 then // tab char
           Dest[DestPos] := ' '
         else begin
@@ -1576,7 +1576,7 @@ var
         j := ATokenInfo.LogicalStart - 1;
         for i := 0 to Len - 1 do begin
           if j < CWLen
-          then k := CharWidths[j]
+          then k := (CharWidths[j] and PCWMask)
           else k := 1;
           if (k <> 0) and (eto <> nil) then begin
             Eto.EtoData[e] := k * c;
@@ -1634,7 +1634,7 @@ var
       begin
         for j := ATokenInfo.LogicalStart - 1 to ATokenInfo.LogicalStart - 1 + Len do begin
           if j < CWLen
-          then k := CharWidths[j]
+          then k := (CharWidths[j] and PCWMask)
           else k := 1;
           if k <> 0 then begin
             Eto.EtoData[e] := k * c;

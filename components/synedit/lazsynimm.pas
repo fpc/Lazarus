@@ -477,7 +477,7 @@ begin
         i := cp^.dwCharPos;
         while (i > 0) and (x < length(CWidth)) do begin
           inc(x);
-          while (x < length(CWidth)) and (CWidth[x] = 0) do
+          while (x < length(CWidth)) and ((CWidth[x] and PCWMask) = 0) do
             inc(x);
           dec(i);
         end;
@@ -536,7 +536,7 @@ var
     Result := AStart;
     while (AChars > 0) and (Result < length(CWidth)) do begin
       inc(Result);
-      while (Result < length(CWidth)) and (CWidth[Result] = 0) do
+      while (Result < length(CWidth)) and ((CWidth[Result] and PCWMask) = 0) do
         inc(Result);
       dec(AChars);
     end;

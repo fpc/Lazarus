@@ -13,7 +13,7 @@ interface
 
 uses
   Classes, SysUtils, testregistry, LCLProc, LCLType, Forms, TestBase,
-  SynEdit, SynEditTextTrimmer, SynEditKeyCmds;
+  SynEdit, SynEditTextTrimmer, SynEditKeyCmds, LazSynEditText;
 
 type
 
@@ -182,77 +182,185 @@ end;
 
 procedure TTestBasicSynEdit.TestEditPhysicalLogical;
 
-  procedure TestPhysLog(name: string; y, x, expX: integer);
-  var gotX: Integer;
+  procedure TestPhysLog(name: string; y, x, expX: integer; expCol: integer = -1;
+    expCsRightX: integer = -1; expCSRCol: integer = -1);
+  var
+    gotX, gotCol: Integer;
   begin
     name := name + ' y='+inttostr(y)+' x='+inttostr(x);
+
     gotX := SynEdit.PhysicalToLogicalPos(Point(x, y)).x;
     AssertEquals(name+'  PhysicalToLogicalPos', expX, gotX);
+
     gotX := SynEdit.PhysicalToLogicalCol(SynEdit.Lines[y-1], y-1, x);
     AssertEquals(name+'  PhysicalToLogicalCol', expX, gotX);
+
+
+    gotX := SynEdit.ViewedTextBuffer.LogPhysConvertor.PhysicalToLogical
+      (y-1, x, gotCol, csPhysLeft);
+    AssertEquals(name+'  c.PhysicalToLogical', expX, gotX);
+    if expCol >= 0 then
+      AssertEquals(name+'  c.PhysicalToLogical  COL', expCol, gotCol);
+
+    if expCsRightX >= 0 then begin
+      gotX := SynEdit.ViewedTextBuffer.LogPhysConvertor.PhysicalToLogical
+        (y-1, x, gotCol, csPhysRight);
+      AssertEquals(name+'  c.PhysicalToLogical csRight', expCsRightX, gotX);
+      if expCSRCol >= 0 then
+        AssertEquals(name+'  c.PhysicalToLogical csRight COL', expCSRCol, gotCol);
+    end;
   end;
 
-  procedure TestLogPhys(name: string; y, x, expX: integer);
+  procedure TestLogPhys(name: string; y, x, aCol, expX: integer; expCsRightX: integer = -1);
   var gotX: Integer;
   begin
-    name := name + ' y='+inttostr(y)+' x='+inttostr(x);
-    gotX := SynEdit.LogicalToPhysicalPos(Point(x, y)).x;
-    AssertEquals(name+'  LogicalToPhysicalPos', expX, gotX);
-    gotX := SynEdit.LogicalToPhysicalCol(SynEdit.Lines[y-1], y-1, x);
-    AssertEquals(name+'  LogicalToPhysicalCol', expX, gotX);
+    name := name + ' y='+inttostr(y)+' x='+inttostr(x)+' c='+IntToStr(aCol);
+
+    if aCol = 0 then begin
+      gotX := SynEdit.LogicalToPhysicalPos(Point(x, y)).x;
+      AssertEquals(name+'  LogicalToPhysicalPos', expX, gotX);
+
+      gotX := SynEdit.LogicalToPhysicalCol(SynEdit.Lines[y-1], y-1, x);
+      AssertEquals(name+'  LogicalToPhysicalCol', expX, gotX);
+    end;
+
+    gotX := SynEdit.ViewedTextBuffer.LogPhysConvertor.LogicalToPhysical
+      (y-1, x, aCol, csLogLeft);
+    AssertEquals(name+'  c.LogicalToPhysical', expX, gotX);
+
+    if expCsRightX >= 0 then begin
+      gotX := SynEdit.ViewedTextBuffer.LogPhysConvertor.LogicalToPhysical
+        (y-1, x, aCol, csLogRight);
+      AssertEquals(name+'  c.LogicalToPhysical csRight', expCsRightX, gotX);
+    end;
   end;
 
 begin
   ReCreateEdit;
   SynEdit.TabWidth := 6;
 
-  SetLines(['abc', ' ääX', #9'mn', 'abc'#9'de', #9'Xää.']);
+  // Todo Log2Phys: test column is cut off
 
-  TestLogPhys('simple line (abc)', 1, 1, 1);
-  TestLogPhys('simple line (abc)', 1, 2, 2);
-  TestLogPhys('simple line (abc)', 1, 4, 4);
-  TestLogPhys('simple line (abc)', 1, 5, 5);
-  TestLogPhys('simple line (abc)', 1, 6, 6);
-  TestLogPhys('line with 2byte-char', 2, 1, 1);
-  TestLogPhys('line with 2byte-char', 2, 2, 2);
-  TestLogPhys('line with 2byte-char', 2, 4, 3); // after ae
-  TestLogPhys('line with 2byte-char', 2, 6, 4);
-  TestLogPhys('line with 2byte-char', 2, 7, 5);
-  TestLogPhys('line with 2byte-char', 2, 8, 6);
-  TestLogPhys('line with 2byte-char', 2, 11, 9);
-  TestLogPhys('line with tab (start)', 3, 1, 1);
-  TestLogPhys('line with tab (start)', 3, 2, 7);
-  TestLogPhys('line with tab (middle)', 4, 3, 3);
-  TestLogPhys('line with tab (middle)', 4, 4, 4); // before tab
-  TestLogPhys('line with tab (middle)', 4, 5, 7); // after tab
-  TestLogPhys('line with tab (middle)', 4, 6, 8);
-  TestLogPhys('line with tab (middle)', 4, 9, 11);
-  TestLogPhys('line with tab (start) + 2bc', 5, 1, 1);
-  TestLogPhys('line with tab (start) + 2bc', 5, 2, 7);
-  TestLogPhys('line with tab (start) + 2bc', 5, 3, 8);
-  TestLogPhys('line with tab (start) + 2bc', 5, 5, 9);
+  SetLines(['abc',  ' ääX',  #9'mn',  'abc'#9'de',  #9'Xää.',  'ab'#9,  'あ吾' ]);
 
-  TestPhysLog('simple line (abc)', 1, 1, 1);
-  TestPhysLog('simple line (abc)', 1, 2, 2);
-  TestPhysLog('simple line (abc)', 1, 4, 4);
-  TestPhysLog('simple line (abc)', 1, 5, 5);
-  TestPhysLog('simple line (abc)', 1, 6, 6);
-  TestPhysLog('line with 2byte-char', 2, 1, 1);
-  TestPhysLog('line with 2byte-char', 2, 2, 2);
-  TestPhysLog('line with 2byte-char', 2, 3, 4);
-  TestPhysLog('line with 2byte-char', 2, 4, 6);
-  TestPhysLog('line with 2byte-char', 2, 5, 7);
-  TestPhysLog('line with 2byte-char', 2, 6, 8);
-  TestPhysLog('line with 2byte-char', 2, 7, 9);
-  TestPhysLog('line with tab (start)', 3, 1, 1);
-  TestPhysLog('line with tab (start)', 3, 2, 1);
-  TestPhysLog('line with tab (start)', 3, 5, 1);
-  TestPhysLog('line with tab (start)', 3, 6, 1);
-  TestPhysLog('line with tab (start)', 3, 7, 2);
-  TestPhysLog('line with tab (start)', 3, 8, 3);
-  TestPhysLog('line with tab (start)', 3, 9, 4);
-  TestPhysLog('line with tab (start)', 3, 11, 6);
+  TestLogPhys('simple line (abc)',           1,  1, 0,    1);
+  TestLogPhys('simple line (abc)',           1,  2, 0,    2);
+  TestLogPhys('simple line (abc)',           1,  4, 0,    4);
+  TestLogPhys('simple line (abc)',           1,  5, 0,    5);
+  TestLogPhys('simple line (abc)',           1,  6, 0,    6);
+  TestLogPhys('line with 2byte-char',        2,  1, 0,    1);
+  TestLogPhys('line with 2byte-char',        2,  2, 0,    2);
+  TestLogPhys('line with 2byte-char',        2,  4, 0,    3); // after ae
+  TestLogPhys('line with 2byte-char',        2,  6, 0,    4);
+  TestLogPhys('line with 2byte-char',        2,  7, 0,    5);
+  TestLogPhys('line with 2byte-char',        2,  8, 0,    6);
+  TestLogPhys('line with 2byte-char',        2, 11, 0,    9);
+  TestLogPhys('line with tab (start)',       3,  1, 0,    1);
+  TestLogPhys('line with tab (start)',       3,  2, 0,    7);
+  TestLogPhys('line with tab (middle)',      4,  3, 0,    3);
+  TestLogPhys('line with tab (middle)',      4,  4, 0,    4); // before tab
+  TestLogPhys('line with tab (middle)',      4,  4, 1,    5); // inside tab
+  TestLogPhys('line with tab (middle)',      4,  4, 2,    6); // inside tab
+  TestLogPhys('line with tab (middle)',      4,  5, 0,    7); // after tab
+  TestLogPhys('line with tab (middle)',      4,  6, 0,    8);
+  TestLogPhys('line with tab (middle)',      4,  9, 0,   11);
+  TestLogPhys('line with tab (start) + 2bc', 5,  1, 0,    1);
+  TestLogPhys('line with tab (start) + 2bc', 5,  2, 0,    7);
+  TestLogPhys('line with tab (start) + 2bc', 5,  3, 0,    8);
+  TestLogPhys('line with tab (start) + 2bc', 5,  5, 0,    9);
+  TestLogPhys('line with tab (end)',         6,  3, 0,    3);
+  TestLogPhys('line with tab (end)',         6,  4, 0,    7);
+  TestLogPhys('line with tab (end)',         6,  5, 0,    8);
+  TestLogPhys('line with tab (end)',         6,  3, 1,    4);
+  TestLogPhys('line with tab (end)',         6,  3, 2,    5);
+  TestLogPhys('line with tab (end)',         6,  3, 3,    6);
+  TestLogPhys('line with double-width/3byte',7,  1, 0,    1);
+  TestLogPhys('line with double-width/3byte',7,  1, 1,    2);
+  TestLogPhys('line with double-width/3byte',7,  4, 0,    3);
+  TestLogPhys('line with double-width/3byte',7,  4, 1,    4);
+  TestLogPhys('line with double-width/3byte',7,  7, 0,    5);
 
+  TestPhysLog('simple line (abc)',     1,  1,   1);
+  TestPhysLog('simple line (abc)',     1,  2,   2);
+  TestPhysLog('simple line (abc)',     1,  4,   4);
+  TestPhysLog('simple line (abc)',     1,  5,   5);
+  TestPhysLog('simple line (abc)',     1,  6,   6);
+  TestPhysLog('line with 3byte-char',  2,  1,   1);
+  TestPhysLog('line with 3byte-char',  2,  2,   2);
+  TestPhysLog('line with 3byte-char',  2,  3,   4);
+  TestPhysLog('line with 3byte-char',  2,  4,   6);
+  TestPhysLog('line with 3byte-char',  2,  5,   7);
+  TestPhysLog('line with 3byte-char',  2,  6,   8);
+  TestPhysLog('line with 3byte-char',  2,  7,   9);
+  TestPhysLog('line with tab (start)', 3,  1,   1);
+  TestPhysLog('line with tab (start)', 3,  2,   1);
+  TestPhysLog('line with tab (start)', 3,  5,   1);
+  TestPhysLog('line with tab (start)', 3,  6,   1);
+  TestPhysLog('line with tab (start)', 3,  7,   2);
+  TestPhysLog('line with tab (start)', 3,  8,   3);
+  TestPhysLog('line with tab (start)', 3,  9,   4);
+  TestPhysLog('line with tab (start)', 3, 11,   6);
+  TestPhysLog('line with double-width/3byte', 7,  1,   1, 0);
+  TestPhysLog('line with double-width/3byte', 7,  2,   1, 1);
+  TestPhysLog('line with double-width/3byte', 7,  3,   4, 0);
+  TestPhysLog('line with double-width/3byte', 7,  4,   4, 1);
+  TestPhysLog('line with double-width/3byte', 7,  5,   7, 0);
+
+  {$IFDEF WithSynBiDi }
+  //abc def ghi // 2bytes per char
+
+  (*  Order in String "123" / Order on Screen "321"
+    LogicalToPhys
+      Log = 1
+      <|321    L2p (csLeft)  => 1 // Log 1 is after  it's LEFT  neighbour (BOL)
+        321<|  L2p (csRight) => 4 // Log 1 is before it's RIGHT neighbour (char "1") // logical right, byte order in string
+      Log = 4
+      |>321    L2p (csLeft)  => 1 // Log 4 is after  it's LEFT  neighbour (char "3") // logical left, byte order in string
+        321|>  L2p (csRight) => 4 // Log 4 is before it's RIGHT neighbour (EOL)
+
+    PhysToLog:
+      Phys = 1
+      <|321    L2p (csLeft)  => 1
+      |>321    L2p (csRight) => 4
+      Phys = 4
+        321<|  L2p (csLeft)  => 1
+        321|>  L2p (csRight) => 4
+
+  *)
+
+  SetLines(['شىه ايغ عتل', 'ABCشىه ايغ عتلDEF', 'abcشىه ايغ عتل', 'شىه ايغ عتلdef']);
+  TestLogPhys('bidi line (arab only)', 1,   1, 0,   1, 12);
+  TestLogPhys('bidi line (arab only)', 1,   3, 0,  11, 11);
+  TestLogPhys('bidi line (arab only)', 1,   5, 0,  10, 10);
+  TestLogPhys('bidi line (arab only)', 1,   7, 0,   9,  9);
+  TestLogPhys('bidi line (arab only)', 1,   8, 0,   8,  8); // after space
+  TestLogPhys('bidi line (arab only)', 1,  15, 0,   4,  4); // after space
+  TestLogPhys('bidi line (arab only)', 1,  19, 0,   2,  2);
+  TestLogPhys('bidi line (arab only)', 1,  21, 0,   1, 12); // at EOL
+  TestLogPhys('bidi line (arab only)', 1,  22, 0,  13, 13); // past eol
+  TestLogPhys('bidi line (arab only)', 1,  23, 0,  14, 14);
+
+  TestLogPhys('bidi line (mixed arab/latin)', 2,   1, 0,   1,  1);
+  TestLogPhys('bidi line (mixed arab/latin)', 2,   4, 0,   4, 15); // after C
+  TestLogPhys('bidi line (mixed arab/latin)', 2,   6, 0,  14, 14); // 1 into arabic
+  TestLogPhys('bidi line (mixed arab/latin)', 2,  22, 0,   5,  5); // 1 before end arabic
+  TestLogPhys('bidi line (mixed arab/latin)', 2,  24, 0,   4, 15); // at end arabic
+  TestLogPhys('bidi line (mixed arab/latin)', 2,  25, 0,  16, 16); // after D
+  TestLogPhys('bidi line (mixed arab/latin)', 2,  27, 0,  18, 18); // at eol
+  TestLogPhys('bidi line (mixed arab/latin)', 2,  28, 0,  19, 19); // after eol
+
+  TestPhysLog('bidi line (arab only)',  1,   1,   1, 0,  21, 0);
+  TestPhysLog('bidi line (arab only)',  1,   2,  19, 0,  19, 0);
+  TestPhysLog('bidi line (arab only)',  1,   3,  17, 0,  17, 0);
+  TestPhysLog('bidi line (arab only)',  1,   4,  15, 0,  15, 0); // before space
+  TestPhysLog('bidi line (arab only)',  1,   5,  14, 0,  14, 0); // after space
+  TestPhysLog('bidi line (arab only)',  1,  10,   5, 0,   5, 0);
+  TestPhysLog('bidi line (arab only)',  1,  11,   3, 0,   3, 0);
+  TestPhysLog('bidi line (arab only)',  1,  12,   1, 0,  21, 0); // at eol
+  TestPhysLog('bidi line (arab only)',  1,  13,  22, 0,  22, 0);
+  TestPhysLog('bidi line (arab only)',  1,  14,  23, 0,  23, 0);
+
+  {$ENDIF}
 end;
 
 procedure TTestBasicSynEdit.TestCaretAutoMove;

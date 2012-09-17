@@ -37,7 +37,7 @@ Alternatively, the contents of these files may be used under the terms of the GN
 If you wish to allow use of your version of these files only under the terms of the GPL and not to allow others to use your version of this file under the MPL, indicate your decision by deleting the provisions above and replace them with the notice and other provisions required by the GPL. If you do not delete the provisions above, a recipient may use your version of this file under either the MPL or the GPL.
 "/>
     <Version Major="1"/>
-    <Files Count="78">
+    <Files Count="79">
       <Item1>
         <Filename Value="synbeautifier.pas"/>
         <UnitName Value="SynBeautifier"/>
@@ -169,8 +169,8 @@ If you wish to allow use of your version of these files only under the terms of 
         <UnitName Value="SynEditTextBuffer"/>
       </Item32>
       <Item33>
-        <Filename Value="synedittextdoublewidthchars.pas"/>
-        <UnitName Value="SynEditTextDoubleWidthChars"/>
+        <Filename Value="synedittextbidichars.pas"/>
+        <UnitName Value="synedittextbidichars"/>
       </Item33>
       <Item34>
         <Filename Value="synedittexttabexpander.pas"/>
@@ -353,6 +353,10 @@ If you wish to allow use of your version of these files only under the terms of 
         <Type Value="Main Unit"/>
         <UnitName Value="allsynedit"/>
       </Item78>
+      <Item79>
+        <Filename Value="synedittextdoublewidthchars.pas"/>
+        <UnitName Value="SynEditTextDoubleWidthChars"/>
+      </Item79>
     </Files>
     <LazDoc Paths="docs/xml"/>
     <i18n>
