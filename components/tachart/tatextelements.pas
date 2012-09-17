@@ -147,6 +147,8 @@ type
     property Frame: TChartTitleFramePen read FFrame write SetFrame;
     property Margin: TChartDistance
       read FMargin write SetMargin default DEF_MARGIN;
+    property OnGetShape;
+    property Shape;
     property Text: TStrings read FText write SetText;
     property Visible default false;
   end;
