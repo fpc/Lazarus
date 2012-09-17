@@ -281,7 +281,8 @@ end;
 constructor TPOTranslator.Create(POFileName: string);
 begin
   inherited Create;
-  FPOFile := TPOFile.Create(UTF8ToSys(POFileName));
+  // TPOFile expects AFileName in UTF-8 encoding, no conversion required
+  FPOFile := TPOFile.Create(POFileName);
 end;
 
 destructor TPOTranslator.Destroy;
