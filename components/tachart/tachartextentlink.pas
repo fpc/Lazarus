@@ -28,6 +28,7 @@ type
     function GetOwner: TPersistent; override;
   public
     constructor Create(AOwner: TComponent);
+    function Add: TLinkedChart; // Should be inline, but FPC 2.6 miscompiles it.
   end;
 
   TChartExtendLinkMode = (elmXY, elmOnlyX, elmOnlyY);
@@ -61,6 +62,11 @@ begin
 end;
 
 { TLinkedCharts }
+
+function TLinkedCharts.Add: TLinkedChart;
+begin
+  Result := TLinkedChart(inherited Add);
+end;
 
 constructor TLinkedCharts.Create(AOwner: TComponent);
 begin
