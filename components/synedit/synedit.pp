@@ -6218,10 +6218,8 @@ begin
             FInternalBlockSelection.StartLineBytePos := WP;
             FInternalBlockSelection.EndLineBytePos := LogicalCaretXY;
             FInternalBlockSelection.ActiveSelectionMode := smNormal;
-            FInternalBlockSelection.SetSelTextPrimitive(smNormal, nil);
-            if Helper <> '' then
-              FTabbedLinesView.EditInsert(CaretX, CaretY, Helper);
-            FCaret.BytePos := FInternalBlockSelection.StartBytePos + length(Helper);
+            FInternalBlockSelection.SetSelTextPrimitive(smNormal, PChar(Helper));
+            FCaret.BytePos := FInternalBlockSelection.StartBytePos;
           end;
         end;
       ecDeleteLastWord, ecDeleteBOL:
