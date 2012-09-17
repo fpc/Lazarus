@@ -1585,7 +1585,7 @@ var
 
           case pt^ of
             #9: begin
-                if (vscTabAtFirst in FVisibleSpecialChars) then begin
+                if (vscTabAtFirst in FVisibleSpecialChars) and (j < CWLen) then begin
                   pl^ := #194; inc(pl);
                   pl^ := #187; inc(pl);
                   dec(k);
@@ -1598,13 +1598,13 @@ var
                   if eto <> nil then Eto.EtoData[e] := c;
                   inc(e);
                 end;
-                if (vscTabAtLast in FVisibleSpecialChars) and ((pl-1)^=' ') then begin
+                if (vscTabAtLast in FVisibleSpecialChars) and ((pl-1)^=' ') and (j < CWLen) then begin
                   (pl-1)^ := #194;
                   pl^ := #187; inc(pl);
                 end;
               end;
             ' ': begin
-                if (vscSpace in FVisibleSpecialChars) then begin
+                if (vscSpace in FVisibleSpecialChars) and (j < CWLen) then begin
                   pl^ := #194; inc(pl);
                   pl^ := #183; inc(pl);
                 end
