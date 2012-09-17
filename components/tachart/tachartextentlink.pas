@@ -128,23 +128,24 @@ procedure TChartExtentLink.SyncWith(AChart: TChart);
 
 var
   c: TCollectionItem;
+  ch: TChart;
 begin
   if not FEnabled or (AChart = nil) then exit;
-  for c in LinkedCharts do
-    with TLinkedChart(c).Chart do begin
-      // Do not sync if the chart was never drawn yet.
-      if LogicalExtent = EmptyExtent then continue;
-      // An event loop will be broken since setting LogicalExtent to
-      // the same value does not initiale the extent broadcast.
-      case Mode of
-        elmXY:
-          LogicalExtent := AChart.LogicalExtent;
-        elmOnlyX:
-          LogicalExtent := CombineXY(AChart.LogicalExtent, LogicalExtent);
-        elmOnlyY:
-          LogicalExtent := CombineXY(LogicalExtent, AChart.LogicalExtent);
-      end;
+  for c in LinkedCharts do begin
+    ch := TLinkedChart(c).Chart;
+    // Do not sync if the chart was never drawn yet.
+    if (ch = nil) or (ch.LogicalExtent = EmptyExtent) then continue;
+    // An event loop will be broken since setting LogicalExtent to
+    // the same value does not initiale the extent broadcast.
+    case Mode of
+      elmXY:
+        ch.LogicalExtent := AChart.LogicalExtent;
+      elmOnlyX:
+        ch.LogicalExtent := CombineXY(AChart.LogicalExtent, ch.LogicalExtent);
+      elmOnlyY:
+        ch.LogicalExtent := CombineXY(ch.LogicalExtent, AChart.LogicalExtent);
     end;
+  end;
 end;
 
 end.
