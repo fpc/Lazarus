@@ -83,6 +83,8 @@ type
     FTextChangeStamp, FViewChangeStamp: Int64;
     // TODOtab-width
     procedure PrepareWidthsForLine(AIndex: Integer; AForce: Boolean = False);
+  protected
+    procedure SetWidthsForLine(AIndex: Integer; ANewWidths: TPhysicalCharWidths);
   public
     constructor Create(ALines: TSynEditStrings);
     destructor Destroy; override;
@@ -162,6 +164,7 @@ type
   private
     FSenderUpdateCount: Integer;
     FLogPhysConvertor :TSynLogicalPhysicalConvertor;
+    FLogPhysConvertorTmp :TSynLogicalPhysicalConvertor; // used by none buffered lines
   protected
     FIsUtf8: Boolean;
     function  GetIsUtf8 : Boolean; virtual;
@@ -502,6 +505,18 @@ begin
   FCurrentLine := AIndex;
 end;
 
+procedure TSynLogicalPhysicalConvertor.SetWidthsForLine(AIndex: Integer;
+  ANewWidths: TPhysicalCharWidths);
+begin
+  FCurrentWidths := ANewWidths;
+  FCurrentWidthsLen := length(ANewWidths);
+  FCurrentWidthsAlloc := FCurrentWidthsLen;
+  FCurrentLine := AIndex;
+
+  FViewChangeStamp := FLines.ViewChangeStamp;
+  FTextChangeStamp := FLines.TextChangeStamp;
+end;
+
 constructor TSynLogicalPhysicalConvertor.Create(ALines: TSynEditStrings);
 begin
   FLines := ALines;
@@ -591,6 +606,7 @@ end;
 constructor TSynEditStrings.Create;
 begin
   FLogPhysConvertor := TSynLogicalPhysicalConvertor.Create(self);
+  FLogPhysConvertorTmp := TSynLogicalPhysicalConvertor.Create(self);
   inherited Create;
   IsUtf8 := True;
 end;
@@ -598,6 +614,7 @@ end;
 destructor TSynEditStrings.Destroy;
 begin
   FreeAndNil(FLogPhysConvertor);
+  FreeAndNil(FLogPhysConvertorTmp);
   inherited Destroy;
 end;
 
@@ -763,22 +780,12 @@ end;
 function TSynEditStrings.LogicalToPhysicalCol(const Line : String;
   Index, LogicalPos: integer) : integer;
 var
-  i, ByteLen: integer;
   CharWidths: TPhysicalCharWidths;
 begin
   CharWidths := GetPhysicalCharWidths(Pchar(Line), length(Line), Index);
-  ByteLen := length(Line);
-  dec(LogicalPos);
 
-  if LogicalPos > ByteLen then begin
-    Result := 1 + LogicalPos - ByteLen;
-    LogicalPos := ByteLen;
-  end
-  else
-    Result := 1;
-
-  for i := 0 to LogicalPos - 1 do
-    Result := Result + CharWidths[i];
+  FLogPhysConvertorTmp.SetWidthsForLine(-9, CharWidths);
+  Result := FLogPhysConvertorTmp.LogicalToPhysical(-9 , LogicalPos);
 end;
 
 function TSynEditStrings.PhysicalToLogicalPos(const p : TPoint) : TPoint;
@@ -797,18 +804,9 @@ var
   CharWidths: TPhysicalCharWidths;
 begin
   CharWidths := GetPhysicalCharWidths(PChar(Line), length(Line), Index);
-  ByteLen := Length(Line);
-  ScreenPos := 1;
-  BytePos := 0;
 
-  while BytePos < ByteLen do begin
-    if ScreenPos + CharWidths[BytePos] > PhysicalPos then
-      exit(BytePos+1);
-    ScreenPos := ScreenPos + CharWidths[BytePos];
-    inc(BytePos);
-  end;
-
-  Result := BytePos + 1 + PhysicalPos - ScreenPos;
+  FLogPhysConvertorTmp.SetWidthsForLine(-9, CharWidths);
+  Result := FLogPhysConvertorTmp.PhysicalToLogical(-9 , PhysicalPos);
 end;
 
 { TSynEditStringsLinked }
