@@ -699,7 +699,6 @@ type
     function DoNewFile(NewFileDescriptor: TProjectFileDescriptor;
         var NewFilename: string; NewSource: string;
         NewFlags: TNewFlags; NewOwner: TObject): TModalResult; override;
-    function DoNewOther: TModalResult;
     procedure CreateFileDialogFilterForSourceEditorFiles(Filter: string;
         out AllEditorMask, AllMask: string);
 
@@ -2726,53 +2725,25 @@ procedure TMainIDE.mnuNewUnitClicked(Sender: TObject);
 var
   Category: TNewIDEItemCategory;
   Template: TNewIDEItemTemplate;
-  Desc: TProjectFileDescriptor;
-  Flags: TNewFlags;
 begin
   Category:=NewIDEItems.FindByName(FileDescGroupName);
   Template:=Category.FindTemplateByName(EnvironmentOptions.NewUnitTemplate);
-  if (Template is TNewItemProjectFile) and Template.VisibleInNewDialog then
-    Desc:=TNewItemProjectFile(Template).Descriptor
-  else
-    Desc:=FileDescriptorUnit;
-  Flags:=[nfOpenInEditor,nfCreateDefaultSrc];
-  if (not Project1.IsVirtual) and EnvironmentOptions.AskForFilenameOnNewFile then
-    Flags:=Flags+[nfAskForFilename,nfSave];
-  Desc.Owner:=Project1;
-  try
-    DoNewEditorFile(Desc,'','',Flags);
-  finally
-    Desc.Owner:=nil;
-  end;
+  SourceFileMgr.NewUnitOrForm(Template, FileDescriptorUnit);
 end;
 
 procedure TMainIDE.mnuNewFormClicked(Sender: TObject);
 var
   Category: TNewIDEItemCategory;
   Template: TNewIDEItemTemplate;
-  Desc: TProjectFileDescriptor;
-  Flags: TNewFlags;
 begin
   Category:=NewIDEItems.FindByName(FileDescGroupName);
   Template:=Category.FindTemplateByName(EnvironmentOptions.NewFormTemplate);
-  if (Template is TNewItemProjectFile) and Template.VisibleInNewDialog then
-    Desc:=TNewItemProjectFile(Template).Descriptor
-  else
-    Desc:=FileDescriptorForm;
-  Flags:=[nfOpenInEditor,nfCreateDefaultSrc];
-  if (not Project1.IsVirtual) and EnvironmentOptions.AskForFilenameOnNewFile then
-    Flags:=Flags+[nfAskForFilename,nfSave];
-  Desc.Owner:=Project1;
-  try
-    DoNewEditorFile(Desc,'','',Flags);
-  finally
-    Desc.Owner:=nil;
-  end;
+  SourceFileMgr.NewUnitOrForm(Template, FileDescriptorForm);
 end;
 
 procedure TMainIDE.mnuNewOtherClicked(Sender: TObject);
 begin
-  DoNewOther;
+  SourceFileMgr.NewOther;
 end;
 
 procedure TMainIDE.mnuOpenClicked(Sender: TObject);
@@ -5573,39 +5544,6 @@ function TMainIDE.DoNewFile(NewFileDescriptor: TProjectFileDescriptor;
 begin
   Result := SourceFileMgr.NewFile(NewFileDescriptor, NewFilename, NewSource,
                                   NewFlags, NewOwner);
-end;
-
-function TMainIDE.DoNewOther: TModalResult;
-var
-  NewIDEItem: TNewIDEItemTemplate;
-  NewFile: TNewItemProjectFile;
-begin
-  Result:=ShowNewIDEItemDialog(NewIDEItem);
-  if Result<>mrOk then exit;
-  if NewIDEItem is TNewItemProjectFile then begin
-    // file
-    NewFile:=TNewItemProjectFile(NewIDEItem);
-    if NewFile.Descriptor<>nil then
-      NewFile.Descriptor.Owner:=Project1;
-    try
-      Result:=DoNewEditorFile(NewFile.Descriptor,
-                                     '','',[nfOpenInEditor,nfCreateDefaultSrc]);
-    finally
-      if NewFile.Descriptor<>nil then
-        NewFile.Descriptor.Owner:=nil;
-    end;
-  end else if NewIDEItem is TNewItemProject then begin
-    // project
-    //debugln('TMainIDE.DoNewOther ',dbgsName(TNewItemProject(NewIDEItem).Descriptor));
-    Result:=DoNewProject(TNewItemProject(NewIDEItem).Descriptor);
-  end else if NewIDEItem is TNewItemPackage then begin
-    // packages
-    PkgBoss.DoNewPackage;
-  end else begin
-    IDEMessageDialog(ueNotImplCap,
-               lisSorryThisTypeIsNotYetImplemented,
-      mtInformation,[mbOk]);
-  end;
 end;
 
 procedure TMainIDE.CreateFileDialogFilterForSourceEditorFiles(Filter: string;
@@ -14354,5 +14292,4 @@ initialization
   ShowSplashScreen:=true;
   DebugLogger.ParamForEnabledLogGroups := '--debug-enable=';
 end.
-
 

@@ -35,7 +35,8 @@ uses
   Classes, SysUtils, Controls, Forms, Dialogs,
   LCLIntf, LCLType, LCLProc, FileProcs, FileUtil, IDEProcs, DialogProcs, IDEDialogs,
   LConvEncoding, LResources, PropEdits, DefineTemplates, IDEMsgIntf, IDEProtocol,
-  LazIDEIntf, MainBase, MainBar, MainIntf, MenuIntf, LazarusIDEStrConsts,
+  LazarusIDEStrConsts, LazIDEIntf, MainBase, MainBar, MainIntf, MenuIntf,
+  NewItemIntf, NewDialog,
   ProjectIntf, Project, ProjectDefs, ProjectInspector, CompilerOptions,
   BasePkgManager, PackageIntf, PackageDefs, PackageSystem,
   SrcEditorIntf, SourceEditor, EditorOptions, CustomFormEditor, FormEditor,
@@ -63,6 +64,9 @@ type
     function NewFile(NewFileDescriptor: TProjectFileDescriptor;
       var NewFilename: string; NewSource: string;
       NewFlags: TNewFlags; NewOwner: TObject): TModalResult;
+    function NewOther: TModalResult;
+    function NewUnitOrForm(Template: TNewIDEItemTemplate;
+      DefaultDesc: TProjectFileDescriptor): TModalResult;
     procedure CreateFileDialogFilterForSourceEditorFiles(Filter: string;
         out AllEditorMask, AllMask: string);
     function SaveEditorFile(AEditor: TSourceEditorInterface;
@@ -561,6 +565,54 @@ begin
   Result:=mrOk;
   //DebugLn('TLazSourceFileManager.NewEditorFile END ',NewUnitInfo.Filename);
   {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TLazSourceFileManager.NewUnit end');{$ENDIF}
+end;
+
+function TLazSourceFileManager.NewOther: TModalResult;
+var
+  NewIDEItem: TNewIDEItemTemplate;
+  NewProjFile: TNewItemProjectFile;
+begin
+  Result:=ShowNewIDEItemDialog(NewIDEItem);
+  if Result<>mrOk then exit;
+  if NewIDEItem is TNewItemProjectFile then begin
+    // file
+    NewProjFile:=TNewItemProjectFile(NewIDEItem);
+    if NewProjFile.Descriptor<>nil then
+      NewProjFile.Descriptor.Owner:=Project1;
+    try
+      Result:=MainIDE.DoNewEditorFile(NewProjFile.Descriptor,
+                                      '','',[nfOpenInEditor,nfCreateDefaultSrc]);
+    finally
+      if NewProjFile.Descriptor<>nil then
+        NewProjFile.Descriptor.Owner:=nil;
+    end;
+  end else if NewIDEItem is TNewItemProject then       // project
+    Result:=MainIDE.DoNewProject(TNewItemProject(NewIDEItem).Descriptor)
+  else if NewIDEItem is TNewItemPackage then           // packages
+    PkgBoss.DoNewPackage
+  else
+    IDEMessageDialog(ueNotImplCap, lisSorryThisTypeIsNotYetImplemented, mtInformation,[mbOk]);
+end;
+
+function TLazSourceFileManager.NewUnitOrForm(Template: TNewIDEItemTemplate;
+  DefaultDesc: TProjectFileDescriptor): TModalResult;
+var
+  Desc: TProjectFileDescriptor;
+  Flags: TNewFlags;
+begin
+  if (Template is TNewItemProjectFile) and Template.VisibleInNewDialog then
+    Desc:=TNewItemProjectFile(Template).Descriptor
+  else
+    Desc:=DefaultDesc;
+  Flags:=[nfOpenInEditor,nfCreateDefaultSrc];
+  if (not Project1.IsVirtual) and EnvironmentOptions.AskForFilenameOnNewFile then
+    Flags:=Flags+[nfAskForFilename,nfSave];
+  Desc.Owner:=Project1;
+  try
+    Result := MainIDE.DoNewEditorFile(Desc,'','',Flags);
+  finally
+    Desc.Owner:=nil;
+  end;
 end;
 
 procedure TLazSourceFileManager.CreateFileDialogFilterForSourceEditorFiles(Filter: string;
