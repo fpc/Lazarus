@@ -42,8 +42,7 @@ uses
   EmptyMethodsDlg, BaseDebugManager, ControlSelection, TransferMacros,
   EnvironmentOpts, BuildManager, Designer, EditorMacroListViewer, KeywordFuncLists,
   FindRenameIdentifier, MsgView, InputHistory, CheckLFMDlg, LCLMemManager,
-  CodeToolManager, CodeToolsStructs, CodeCompletionTool, ConvCodeTool,
-  CodeCache;
+  CodeToolManager, CodeToolsStructs, ConvCodeTool, CodeCache;
 
 
 type
