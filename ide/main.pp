@@ -59,36 +59,40 @@ uses
   MemCheck,
 {$ENDIF}
   // fpc packages
-  Math, Classes, SysUtils, TypInfo, types, AVL_Tree,
+  Math, Classes, SysUtils, Process, AsyncProcess, TypInfo, types, AVL_Tree,
   // lazutils
   LazUTF8, Laz2_XMLCfg, AvgLvlTree,
   // lcl
-  LCLProc, LCLType, LCLIntf, LConvEncoding, ComCtrls,
-  FileUtil, LResources, Forms, Buttons, Menus, Controls, GraphType,
+  LCLProc, LCLMemManager, LCLType, LCLIntf, LConvEncoding, LMessages, ComCtrls,
+  FileUtil, LResources, StdCtrls, Forms, Buttons, Menus, Controls, GraphType,
   HelpIntfs, Graphics, ExtCtrls, Dialogs, InterfaceBase, UTF8Process, LazLogger,
   lazutf8classes,
   // codetools
-  FileProcs, FindDeclarationTool, LinkScanner, BasicCodeTools, CodeToolsStructs,
-  CodeToolManager, CodeCache, DefineTemplates, KeywordFuncLists, CodeTree,
+  FileProcs, CodeBeautifier, FindDeclarationTool, LinkScanner, BasicCodeTools,
+  CodeToolsStructs, CodeToolManager, CodeCache, DefineTemplates,
+  KeywordFuncLists, CodeTree,
   // synedit
-  SynEditKeyCmds, SynBeautifier, SynEditMarks,
+  AllSynEdit, SynEditKeyCmds, SynBeautifier, SynEditMarks,
   // IDE interface
-  ObjectInspector, PropEdits, PropEditUtils, MacroIntf, IDECommands, IDEWindowIntf,
-  ComponentReg, SrcEditorIntf, NewItemIntf, IDEExternToolIntf, IDEMsgIntf,
+  IDEIntf, BaseIDEIntf, ObjectInspector, PropEdits, PropEditUtils,
+  MacroIntf, IDECommands, IDEWindowIntf, ComponentReg, FormEditingIntf,
+  SrcEditorIntf, NewItemIntf, IDEExternToolIntf, IDEMsgIntf,
   PackageIntf, ProjectIntf, CompOptsIntf, MenuIntf, LazIDEIntf, IDEDialogs,
   IDEOptionsIntf, IDEImagesIntf, ComponentEditors,
   // protocol
   IDEProtocol,
   // compile
-  CompilerOptions, CheckCompilerOpts, BuildProjectDlg,
+  Compiler, CompilerOptions, CheckCompilerOpts, BuildProjectDlg,
   ApplicationBundle, ImExportCompilerOpts, InfoBuild,
   // projects
-  Project, ProjectDefs, NewProjectDlg, PublishProjectDlg, ProjectInspector, PackageDefs,
+  ProjectResources, Project, ProjectDefs, NewProjectDlg, 
+  PublishProjectDlg, ProjectInspector, PackageDefs,
   // help manager
-  IDEContextHelpEdit, IDEHelpIntf, IDEHelpManager, CodeHelp,
+  IDEContextHelpEdit, IDEHelpIntf, IDEHelpManager, CodeHelp, HelpOptions,
   // designer
   JITForms, ComponentPalette, ComponentList,
-  ObjInspExt, Designer, FormEditor, ControlSelection, AnchorEditor, TabOrderDlg,
+  ObjInspExt, Designer, FormEditor, CustomFormEditor,
+  ControlSelection, AnchorEditor, TabOrderDlg, MenuEditorForm,
   // LRT stuff
   Translations,
   // debugger
@@ -100,24 +104,54 @@ uses
   CodeToolsDefines, DiffDialog, DiskDiffsDialog, UnitInfoDlg, EditorOptions,
   SourceEditProcs, MsgQuickFixes, ViewUnit_dlg, FPDocEditWindow,
   // converter
-  ChgEncodingDlg, ConvertDelphi, MissingPropertiesDlg, LazXMLForms,
+  ChgEncodingDlg, ConvertDelphi, ConvCodeTool, MissingPropertiesDlg, LazXMLForms,
   // environment option frames
   editor_general_options, formed_options, OI_options,
-  codeexplorer_update_options, env_file_filters, BuildModesEditor,
+  files_options, desktop_options, window_options,
+  Backup_Options, naming_options, fpdoc_options,
+  editor_display_options, editor_keymapping_options, editor_mouseaction_options,
+  editor_mouseaction_options_advanced, editor_color_options, editor_markup_options,
+  editor_codetools_options, editor_codefolding_options,
+  editor_general_misc_options, editor_dividerdraw_options,
+  editor_multiwindow_options,
+  codetools_general_options, codetools_codecreation_options,
+  codetools_classcompletion_options, atom_checkboxes_options,
+  codetools_wordpolicy_options, codetools_linesplitting_options,
+  codetools_space_options, codetools_identifiercompletion_options,
+  debugger_general_options, debugger_eventlog_options,
+  debugger_language_exceptions_options, debugger_signals_options,
+  codeexplorer_update_options, codeexplorer_categories_options,
+  codeobserver_options,
+  help_general_options,
+  env_file_filters,
+  // project option frames
+  project_application_options, project_forms_options, project_lazdoc_options,
+  project_save_options, project_versioninfo_options, project_i18n_options,
+  project_misc_options,
+  // project compiler option frames
+  compiler_path_options, compiler_parsing_options, compiler_codegen_options,
+  compiler_linking_options, compiler_verbosity_options, compiler_messages_options,
+  compiler_other_options, compiler_inherited_options, compiler_compilation_options,
+  BuildModesEditor, compiler_buildmacro_options, IdeMacroValues,
+  // package option frames
+  package_usage_options, package_description_options, package_integration_options,
+  package_provides_options, package_i18n_options,
   // rest of the ide
   Splash, IDEDefs, LazarusIDEStrConsts, LazConf, MsgView, SearchResultView,
   CodeTemplatesDlg, CodeBrowser, FindUnitDlg, InspectChksumChangedDlg,
   IdeOptionsDlg, EditDefineTree, PublishModule, EnvironmentOpts, TransferMacros,
-  IDETranslations, IDEProcs, ExtToolDialog, ExtToolEditDlg,
-  OutputFilter, JumpHistoryView, ManageExamples, BuildLazDialog, BuildProfileManager,
-  BuildManager, CheckCompOptsForNewUnitDlg, MiscOptions, InputHistory, UnitDependencies,
+  KeyMapping, IDETranslations, IDEProcs, ExtToolDialog, ExtToolEditDlg,
+  OutputFilter, JumpHistoryView, ManageExamples,
+  BuildLazDialog, BuildProfileManager, BuildManager, CheckCompOptsForNewUnitDlg,
+  MiscOptions, InputHistory, UnitDependencies, ClipBoardHistory,
   IDEFPCInfo, IDEInfoDlg, IDEInfoNeedBuild, ProcessList, InitialSetupDlgs,
   NewDialog, MakeResStrDlg, DialogProcs, FindReplaceDialog, FindInFilesDlg,
   CodeExplorer, BuildFileDlg, ProcedureList, ExtractProcDlg,
   FindRenameIdentifier, AbstractsMethodsDlg, EmptyMethodsDlg, UnusedUnitsDlg,
-  UseUnitDlg, FindOverloadsDlg, EditorFileManager,  CleanDirDlg, CodeContextForm,
-  AboutFrm, CompatibilityRestrictions, RestrictionBrowser, ProjectWizardDlg,
-  IDECmdLine, IDEGuiCmdLine, CodeExplOpts, EditorMacroListViewer, SourceFileManager,
+  UseUnitDlg, FindOverloadsDlg, EditorFileManager,
+  CleanDirDlg, CodeContextForm, AboutFrm, CompatibilityRestrictions,
+  RestrictionBrowser, ProjectWizardDlg, IDECmdLine, IDEGuiCmdLine, CodeExplOpts,
+  EditorMacroListViewer, SourceFileManager,
   // main ide
   MainBar, MainIntf, MainBase;
 
