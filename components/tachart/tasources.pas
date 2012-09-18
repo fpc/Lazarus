@@ -61,6 +61,7 @@ type
     procedure CopyFrom(ASource: TCustomChartSource);
     procedure Delete(AIndex: Integer);
     function IsSorted: Boolean; override;
+    procedure SetText(AIndex: Integer; AValue: String);
     function SetXValue(AIndex: Integer; AValue: Double): Integer;
     procedure SetYList(AIndex: Integer; const AYList: array of Double);
     procedure SetYValue(AIndex: Integer; AValue: Double);
@@ -519,6 +520,15 @@ begin
     Sort;
     Notify;
   end;
+end;
+
+procedure TListChartSource.SetText(AIndex: Integer; AValue: String);
+begin
+  with Item[AIndex]^ do begin
+    if Text = AValue then exit;
+    Text := AValue;
+  end;
+  Notify;
 end;
 
 function TListChartSource.SetXValue(AIndex: Integer; AValue: Double): Integer;

@@ -176,6 +176,7 @@ type
     function  GetYMin: Double;
     function  GetYValue(AIndex: Integer): Double;
     procedure SetColor(AIndex: Integer; AColor: TColor);
+    procedure SetText(AIndex: Integer; AValue: String); inline;
     procedure SetXValue(AIndex: Integer; AValue: Double); inline;
     procedure SetYValue(AIndex: Integer; AValue: Double); inline;
   public
@@ -852,6 +853,11 @@ begin
   if Styles <> nil then
     Styles.Broadcaster.Subscribe(FStylesListener);
   UpdateParentChart;
+end;
+
+procedure TChartSeries.SetText(AIndex: Integer; AValue: String);
+begin
+  ListSource.SetText(AIndex, AValue);
 end;
 
 procedure TChartSeries.SetXValue(AIndex: Integer; AValue: Double); inline;
