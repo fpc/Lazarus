@@ -250,6 +250,10 @@ begin
   MenuItem1.Caption:= smiCopy;
   MenuItem2.Caption:= smiCut;
   MenuItem3.Caption:= smiCopyClipbrd;
+  // Select the first entry in the tree in order to immediately activate the 
+  // Run All tests button:
+  if TestTree.Items.Count>0 then
+    TestTree.Items.SelectOnlyThis(TestTree.Items[0]);
 end;
 
 procedure TGUITestRunner.RunExecute(Sender: TObject);
