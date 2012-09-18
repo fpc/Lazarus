@@ -279,7 +279,6 @@ type
     FWidget: PGtkWidget;     // the owner (in case of a windowDC)
 
     FWithChildWindows: boolean;// this DC covers sub gdkwindows
-    FOrigin: TPoint;
 
     FFlags: TDeviceContextsFlags;
     FSelectedColors: TDevContextSelectedColorsType;
@@ -291,6 +290,7 @@ type
     FViewPortExt: TPoint; // current viewport extent
     FViewPortOrg: TPoint; // current viewport origin
     FWindowExt: TPoint; // current window extent
+    FWindowOrg: TPoint; // current window origin
 
     function GetClipRectangle: TGdkRectangle;
     function GetGDIObjects(ID: TGDIType): PGdiObject;
@@ -388,7 +388,6 @@ type
     function FillRect(ARect: TRect; ABrush: HBrush; SkipRop: Boolean): Boolean;
 
     // origins
-    property Origin: TPoint read FOrigin write FOrigin;
     property Offset: TPoint read GetOffset;
     // drawing settings
     property CurrentBitmap: PGdiObject read FCurrentBitmap write SetCurrentBitmap;
@@ -406,6 +405,7 @@ type
     property ViewPortExt: TPoint read FViewPortExt write SetViewPortExt;
     property ViewPortOrg: TPoint read FViewPortOrg write SetViewPortOrg;
     property WindowExt: TPoint read FWindowExt write SetWindowExt;
+    property WindowOrg: TPoint read FWindowOrg write FWindowOrg;
     // control
     property SelectedColors: TDevContextSelectedColorsType read FSelectedColors write SetSelectedColors;
     property Flags: TDeviceContextsFlags read FFlags write FFlags;

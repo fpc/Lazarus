@@ -77,7 +77,7 @@ begin
     Exit;
   end;
 
-  Result := FOrigin;
+  Result := WindowOrg;
   if Assigned(FWidget) then
   begin
     Fixed := GetFixedWidget(FWidget);
@@ -569,6 +569,7 @@ begin
   FViewPortExt := Point(1, 1);
   FViewPortOrg := Point(0, 0);
   FWindowExt := Point(1, 1);
+  FWindowOrg := Point(0, 0);
   FMapMode := MM_TEXT;
   if FHasTransf then
   begin
@@ -577,11 +578,7 @@ begin
     TransfUpdatePen;
   end;
 
-  FOrigin.X := 0;
-  FOrigin.Y := 0;
-
-  PenPos.X := 0;
-  PenPos.Y := 0;
+  PenPos := Point(0, 0);
 
   CurrentBitmap:=nil;
   CurrentFont:=nil;
@@ -661,9 +658,6 @@ begin
     Exclude(FFlags, dcfPenSelected);
   end;
 
-  FOrigin := ASource.FOrigin;
-  PenPos := ASource.PenPos;
-
   if dcfTextMetricsValid in ASource.Flags then
   begin
     Include(FFlags, dcfTextMetricsValid);
@@ -698,6 +692,8 @@ begin
   CopyGDIColor(ASource.CurrentBackColor, CurrentBackColor);
 
   SelectedColors := dcscCustom;
+  FWindowOrg := ASource.FWindowOrg;
+  PenPos := ASource.PenPos;
 
   if FHasTransf then
   begin

@@ -6865,10 +6865,10 @@ begin
   if Result then
     with TGtkDeviceContext(DC) do
     begin
-      NewOrigin := Origin;
+      NewOrigin := WindowOrg;
       inc(NewOrigin.X, dX);
       inc(NewOrigin.Y, dY);
-      Origin := NewOrigin;
+      WindowOrg := NewOrigin;
     end;
 end;
 
