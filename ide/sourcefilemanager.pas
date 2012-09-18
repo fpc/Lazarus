@@ -31,19 +31,18 @@ unit SourceFileManager;
 interface
 
 uses
-  AVL_Tree, typinfo, math,
-  Classes, SysUtils, Controls, Forms, Dialogs,
-  LCLIntf, LCLType, LCLProc, FileProcs, FileUtil, IDEProcs, DialogProcs, IDEDialogs,
-  LConvEncoding, LResources, PropEdits, DefineTemplates, IDEMsgIntf, IDEProtocol,
-  LazarusIDEStrConsts, LazIDEIntf, MainBase, MainBar, MainIntf, MenuIntf,
-  NewItemIntf, NewDialog,
-  ProjectIntf, Project, ProjectDefs, ProjectInspector, CompilerOptions,
-  BasePkgManager, PackageIntf, PackageDefs, PackageSystem,
-  SrcEditorIntf, SourceEditor, EditorOptions, CustomFormEditor, FormEditor,
-  EmptyMethodsDlg, BaseDebugManager, ControlSelection, TransferMacros,
-  EnvironmentOpts, BuildManager, Designer, EditorMacroListViewer, KeywordFuncLists,
-  FindRenameIdentifier, MsgView, InputHistory, CheckLFMDlg, LCLMemManager,
-  CodeToolManager, CodeToolsStructs, ConvCodeTool, CodeCache;
+  AVL_Tree, typinfo, math, Classes, SysUtils, Controls, Forms, Dialogs, LCLIntf,
+  LCLType, LCLProc, FileProcs, FileUtil, IDEProcs, DialogProcs, IDEDialogs,
+  LConvEncoding, LResources, PropEdits, DefineTemplates, IDEMsgIntf,
+  IDEProtocol, LazarusIDEStrConsts, LazIDEIntf, MainBase, MainBar, MainIntf,
+  MenuIntf, NewItemIntf, NewDialog, ProjectIntf, Project, ProjectDefs,
+  ProjectInspector, CompilerOptions, BasePkgManager, PackageIntf, PackageDefs,
+  PackageSystem, SrcEditorIntf, IDEWindowIntf, SourceEditor, EditorOptions,
+  CustomFormEditor, FormEditor, EmptyMethodsDlg, BaseDebugManager,
+  ControlSelection, TransferMacros, EnvironmentOpts, BuildManager, Designer,
+  EditorMacroListViewer, KeywordFuncLists, FindRenameIdentifier, MsgView,
+  InputHistory, CheckLFMDlg, LCLMemManager, CodeToolManager, CodeToolsStructs,
+  ConvCodeTool, CodeCache;
 
 
 type
@@ -176,6 +175,7 @@ type
 
 implementation
 
+// ToDo: break this cycle
 uses Main;
 
 var
@@ -228,7 +228,7 @@ end;
 procedure TLazSourceFileManager.AddRecentProjectFileToEnvironment(const AFilename: string);
 begin
   EnvironmentOptions.AddToRecentProjectFiles(AFilename);
-  TMainIDE(MainIDE).SetRecentProjectFilesMenu;
+  MainIDE.SetRecentProjectFilesMenu;
   MainIDE.SaveEnvironment;
 end;
 
@@ -1786,6 +1786,7 @@ var
   i: integer;
   AnUnitInfo: TUnitInfo;
   SaveFileFlags: TSaveFlags;
+  SrcEdit: TSourceEditor;
 begin
   Result:=mrCancel;
   if not (MainIDE.ToolStatus in [itNone,itDebugger]) then begin
@@ -1835,7 +1836,8 @@ begin
 
   // save all editor files
   for i:=0 to SourceEditorManager.SourceEditorCount-1 do begin
-    AnUnitInfo:=Project1.UnitWithEditorComponent(SourceEditorManager.SourceEditors[i]);
+    SrcEdit:=SourceEditorManager.SourceEditors[i];
+    AnUnitInfo:=Project1.UnitWithEditorComponent(SrcEdit);
     if (Project1.MainUnitID>=0) and (Project1.MainUnitInfo = AnUnitInfo) then
       continue;
     SaveFileFlags:=[sfProjectSaving]
@@ -1843,7 +1845,7 @@ begin
     if AnUnitInfo = nil
     then begin
       // consistency check
-      DebugLn('TLazSourceFileManager.SaveProject - unit not found for page %d', [i]);
+      DebugLn(['TLazSourceFileManager.SaveProject - unit not found for page ',i,' File="',SrcEdit.FileName,'"']);
       DumpStack;
     end else begin
       if AnUnitInfo.IsVirtual

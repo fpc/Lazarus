@@ -81,6 +81,7 @@ type
   { TMainIDEBase }
 
   TMainIDEBase = class(TMainIDEInterface)
+    procedure mnuOpenProjectClicked(Sender: TObject); virtual; abstract;
   private
     FToolStatus: TIDEToolStatus;
     FWindowMenuActiveForm: TCustomForm;
@@ -138,6 +139,7 @@ type
     destructor Destroy; override;
     procedure CreateOftenUsedForms; virtual; abstract;
     function GetMainBar: TComponent; override;
+    procedure SetRecentProjectFilesMenu;
 
     procedure GetUnitInfoForDesigner(ADesigner: TIDesigner;
                               out ActiveSourceEditor: TSourceEditorInterface;
@@ -284,6 +286,13 @@ end;
 function TMainIDEBase.GetMainBar: TComponent;
 begin
   Result:=MainIDEBar;
+end;
+
+procedure TMainIDEBase.SetRecentProjectFilesMenu;
+begin
+  SetRecentSubMenu(itmProjectRecentOpen,
+                   EnvironmentOptions.RecentProjectFiles,
+                   @mnuOpenProjectClicked);
 end;
 
 procedure TMainIDEBase.DoMnuWindowClicked(Sender: TObject);

@@ -306,7 +306,7 @@ type
     // project menu
     procedure mnuNewProjectClicked(Sender: TObject);
     procedure mnuNewProjectFromFileClicked(Sender: TObject);
-    procedure mnuOpenProjectClicked(Sender: TObject);
+    procedure mnuOpenProjectClicked(Sender: TObject); override;
     procedure mnuCloseProjectClicked(Sender: TObject);
     procedure mnuSaveProjectClicked(Sender: TObject);
     procedure mnuSaveProjectAsClicked(Sender: TObject);
@@ -727,7 +727,6 @@ type
     function DoCallProjectChangedHandler(
         HandlerType: TLazarusIDEHandlerType): TModalResult;
     procedure SetRecentFilesMenu;
-    procedure SetRecentProjectFilesMenu;
 
     // files/units
     function DoNewFile(NewFileDescriptor: TProjectFileDescriptor;
@@ -2431,13 +2430,6 @@ begin
   SetRecentSubMenu(itmFileRecentOpen,
                    EnvironmentOptions.RecentOpenFiles,
                    @mnuOpenRecentClicked);
-end;
-
-procedure TMainIDE.SetRecentProjectFilesMenu;
-begin
-  SetRecentSubMenu(itmProjectRecentOpen,
-                   EnvironmentOptions.RecentProjectFiles,
-                   @mnuOpenProjectClicked);
 end;
 
 procedure TMainIDE.SetupFileMenu;
