@@ -28,6 +28,7 @@ type
     Chart1YAxis: TConstantLine;
     catSpline: TChartAxisTransformations;
     catSplineLogarithmAxisTransform: TLogarithmAxisTransform;
+    chAutoExtentY: TChart;
     ChartSpline: TChart;
     ChartColorMap: TChart;
     ChartColorMapColorMapSeries1: TColorMapSeries;
@@ -35,6 +36,8 @@ type
     ChartSplineCubicSplineSeries1: TCubicSplineSeries;
     ChartSplineLineSeries1: TLineSeries;
     ChartSplineBSplineSeries1: TBSplineSeries;
+    cbAutoExtentY: TCheckBox;
+    chAutoExtentYFuncSeries1: TFuncSeries;
     chtsColorMap: TChartToolset;
     chtsColorMapPanDragTool1: TPanDragTool;
     chtsColorMapZoomDragTool1: TZoomDragTool;
@@ -42,16 +45,20 @@ type
     ListChartSource1: TListChartSource;
     PageControl1: TPageControl;
     Panel1: TPanel;
+    pnlAutoExtentY: TPanel;
     pnSpline: TPanel;
     RandomChartSource1: TRandomChartSource;
     iseSplineDegree: TTISpinEdit;
     icbSplineRandomX: TTICheckBox;
     cbCubic: TTICheckBox;
+    Timer1: TTimer;
+    tsAutoExtentY: TTabSheet;
     tsSpline: TTabSheet;
     tsDomain: TTabSheet;
     tsColorMap: TTabSheet;
     Splitter1: TSplitter;
     UserDefinedChartSource1: TUserDefinedChartSource;
+    procedure cbAutoExtentYChange(Sender: TObject);
     procedure cbDomainChange(Sender: TObject);
     procedure cbInterpolateChange(Sender: TObject);
     procedure cbMultLegendChange(Sender: TObject);
@@ -60,7 +67,11 @@ type
     procedure Chart1UserDrawnSeries1Draw(ACanvas: TCanvas; const ARect: TRect);
     procedure ChartColorMapColorMapSeries1Calculate(const AX, AY: Double; out
       AZ: Double);
+    procedure chAutoExtentYFuncSeries1Calculate(const AX: Double; out
+      AY: Double);
     procedure iseSplineDegreeChange(Sender: TObject);
+    procedure PageControl1Change(Sender: TObject);
+    procedure Timer1Timer(Sender: TObject);
     procedure UserDefinedChartSource1GetChartDataItem(
       ASource: TUserDefinedChartSource; AIndex: Integer;
       var AItem: TChartDataItem);
@@ -77,6 +88,11 @@ uses
 {$R *.lfm}
 
 { TForm1 }
+
+procedure TForm1.cbAutoExtentYChange(Sender: TObject);
+begin
+  chAutoExtentYFuncSeries1.ExtentAutoY := cbAutoExtentY.Checked;
+end;
 
 procedure TForm1.cbDomainChange(Sender: TObject);
 var
@@ -130,6 +146,7 @@ var
   b: TDoublePoint = (X: 1; Y: 1);
   r: TRect;
 begin
+  Unused(ARect);
   r.TopLeft := Chart1.GraphToImage(a);
   r.BottomRight := Chart1.GraphToImage(b);
   ACanvas.Pen.Mode := pmCopy;
@@ -145,9 +162,28 @@ begin
   AZ := Sin(10 * Sqr(AX) + 17 * Sqr(AY));
 end;
 
+procedure TForm1.chAutoExtentYFuncSeries1Calculate(
+  const AX: Double; out AY: Double);
+begin
+  AY := Sin(AX * 2) + 3 * Cos(AX * 3) + 2 * Cos(AX * AX * 5);
+end;
+
 procedure TForm1.iseSplineDegreeChange(Sender: TObject);
 begin
   (Sender as TTISpinEdit).EditingDone;
+end;
+
+procedure TForm1.PageControl1Change(Sender: TObject);
+begin
+  Timer1.Enabled := PageControl1.ActivePage = tsAutoExtentY;
+end;
+
+procedure TForm1.Timer1Timer(Sender: TObject);
+begin
+  with chAutoExtentYFuncSeries1.Extent do begin
+    XMin := XMin + 0.05;
+    XMax := XMax + 0.05;
+  end;
 end;
 
 procedure TForm1.UserDefinedChartSource1GetChartDataItem(
