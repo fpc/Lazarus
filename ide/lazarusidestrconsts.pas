@@ -5271,7 +5271,6 @@ resourcestring
   dlgBuildModes = 'Build Modes';
   dlgIdeMacroValues = 'IDE Macro Values';
   lisBuildModes = 'Build modes';
-  lisManageBuildModes = 'Manage build modes';
   lisInSession = 'In session';
   lisThereMustBeAtLeastOneBuildMode = 'There must be at least one build mode.';
   lisTheFirstBuildModeIsTheDefaultModeAndMustBeStoredIn = 'The first build '
