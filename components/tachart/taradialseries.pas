@@ -491,19 +491,22 @@ var
   i, j: Integer;
   di: PChartDataItem;
   prevAngle: Double = 0;
-  a: Double;
+  a, total: Double;
 begin
   Result.TopLeft := FCenter;
   Result.BottomRight := FCenter;
   SetLength(FSlices, Count);
   j := 0;
+  // This is a workaround for db source invalidating the cache due to
+  // unnecessary "dataset changed" events.
+  total := Source.ValuesTotal;
   for i := 0 to Count - 1 do begin
     di := Source[i];
     if IsNan(di^.Y) then continue;
     with FSlices[j] do begin
       FOrigIndex := i;
       FPrevAngle := prevAngle;
-      FNextAngle := FPrevAngle + CycleToRad(di^.Y / Source.ValuesTotal);
+      FNextAngle := FPrevAngle + CycleToRad(di^.Y / total);
       FVisible := not IsNan(di^.X);
       if FVisible then begin
         FBase := FCenter;
