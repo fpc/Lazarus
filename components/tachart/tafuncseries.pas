@@ -65,16 +65,19 @@ type
   TFuncSeries = class(TBasicFuncSeries)
   strict private
     FDomainExclusions: TIntervalList;
+    FExtentAutoY: Boolean;
     FOnCalculate: TFuncCalculateEvent;
     FPen: TChartPen;
     FStep: TFuncSeriesStep;
 
     function DoCalcIdentity(AX: Double): Double;
     function DoCalculate(AX: Double): Double;
+    procedure SetExtentAutoY(AValue: Boolean);
     procedure SetOnCalculate(AValue: TFuncCalculateEvent);
     procedure SetPen(AValue: TChartPen);
     procedure SetStep(AValue: TFuncSeriesStep);
   protected
+    procedure GetBounds(var ABounds: TDoubleRect); override;
     procedure GetLegendItems(AItems: TChartLegendItems); override;
 
   public
@@ -94,6 +97,8 @@ type
     property AxisIndexY;
     property OnCalculate: TFuncCalculateEvent
       read FOnCalculate write SetOnCalculate;
+    property ExtentAutoY: Boolean
+      read FExtentAutoY write SetExtentAutoY default false;
     property Pen: TChartPen read FPen write SetPen;
     property Step: TFuncSeriesStep
       read FStep write SetStep default DEF_FUNC_STEP;
@@ -374,6 +379,8 @@ type
     FDomainExclusions: TIntervalList;
     FDrawer: IChartDrawer;
     FExtent: TDoubleRect;
+    FExtentYMax: PDouble;
+    FExtentYMin: PDouble;
     FGraphStep: Double;
     FImageToGraph: TImageToGraph;
     FNearestPointParams: ^TNearestPointParams;
@@ -388,11 +395,13 @@ type
     procedure ForEachPoint(AXg, AXMax: Double; AOnMoveTo, AOnLineTo: TOnPoint);
     procedure LineTo(AXg, AXa: Double);
     procedure MoveTo(AXg, AXa: Double);
+    procedure UpdateExtent(AXg, AXa: Double);
     function XRange: TDoubleInterval;
   public
     constructor Create(
       ASeries: TCustomChartSeries; ADomainExclusions:
       TIntervalList; ACalc: TTransformFunc; AStep: Integer);
+    procedure CalcAxisExtentY(AMinX, AMaxX: Double; var AMinY, AMaxY: Double);
     procedure DrawFunction(ADrawer: IChartDrawer);
     function GetNearestPoint(
       const AParams: TNearestPointParams;
@@ -539,6 +548,15 @@ begin
   AIn := (FExtent.a <= APt) and (APt <= FExtent.b);
 end;
 
+procedure TDrawFuncHelper.CalcAxisExtentY(
+  AMinX, AMaxX: Double; var AMinY, AMaxY: Double);
+begin
+  FExtentYMin := @AMinY;
+  FExtentYMax := @AMaxY;
+  with XRange do
+    ForEachPoint(AMinX, AMaxX, @UpdateExtent, @UpdateExtent);
+end;
+
 procedure TDrawFuncHelper.CheckForNearestPoint(AXg, AXa: Double);
 var
   inExtent: Boolean;
@@ -668,6 +686,12 @@ begin
     FDrawer.MoveTo(FChart.GraphToImage(FPrev));
 end;
 
+procedure TDrawFuncHelper.UpdateExtent(AXg, AXa: Double);
+begin
+  Unused(AXg);
+  UpdateMinMax(FCalc(AXa), FExtentYMin^, FExtentYMax^);
+end;
+
 function TDrawFuncHelper.XRange: TDoubleInterval;
 begin
   if FSeries.IsRotated then
@@ -728,6 +752,7 @@ begin
   if ASource is TFuncSeries then
     with TFuncSeries(ASource) do begin
       Self.FDomainExclusions.Assign(FDomainExclusions);
+      Self.FExtentAutoY := FExtentAutoY;
       Self.FOnCalculate := FOnCalculate;
       Self.Pen := FPen;
       Self.FStep := FStep;
@@ -781,6 +806,30 @@ begin
     end;
 end;
 
+procedure TFuncSeries.GetBounds(var ABounds: TDoubleRect);
+var
+  ymin, ymax: Double;
+begin
+  inherited GetBounds(ABounds);
+  if
+    not Extent.UseXMin or not Extent.UseXMax or not ExtentAutoY
+    or not Assigned(OnCalculate)
+  then
+    exit;
+  ymin := SafeInfinity;
+  ymax := NegInfinity;
+  with TDrawFuncHelper.Create(Self, DomainExclusions, @DoCalculate, Step) do
+    try
+      CalcAxisExtentY(ABounds.a.X, ABounds.b.X, ymin, ymax);
+      if not Extent.UseYMin or (ymin > Extent.YMin) then
+        ABounds.a.Y := ymin;
+      if not Extent.UseYMax or (ymax < Extent.YMax) then
+        ABounds.b.Y := ymax;
+    finally
+      Free;
+    end;
+end;
+
 procedure TFuncSeries.GetLegendItems(AItems: TChartLegendItems);
 begin
   AItems.Add(TLegendItemLine.Create(Pen, LegendTextSingle));
@@ -804,6 +853,13 @@ end;
 function TFuncSeries.IsEmpty: Boolean;
 begin
   Result := not Assigned(OnCalculate);
+end;
+
+procedure TFuncSeries.SetExtentAutoY(AValue: Boolean);
+begin
+  if FExtentAutoY = AValue then exit;
+  FExtentAutoY := AValue;
+  UpdateParentChart;
 end;
 
 procedure TFuncSeries.SetOnCalculate(AValue: TFuncCalculateEvent);
