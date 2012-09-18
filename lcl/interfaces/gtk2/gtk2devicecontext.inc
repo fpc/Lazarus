@@ -78,7 +78,7 @@ begin
   end;
 
   Result := FOrigin;
-  if (FWidget <> nil) then
+  if Assigned(FWidget) then
   begin
     Fixed := GetFixedWidget(FWidget);
     if GTK_WIDGET_NO_WINDOW(FWidget) and
@@ -89,9 +89,6 @@ begin
       Inc(Result.y, FWidget^.Allocation.y);
     end;
   end;
-
-  if not FSpecialOrigin then Exit;
-  if FWidget = nil then Exit;
 end;
 
 function TGtkDeviceContext.GetOwnedGDIObjects(ID: TGDIType): PGdiObject;
@@ -542,7 +539,6 @@ begin
         ClientWidget := AWidget;
       end;
 
-      FSpecialOrigin := GtkWidgetIsA(ClientWidget, GTK_LAYOUT_GET_TYPE);
       FDrawable := AWindow;
       // GC is created on demand
     end;
@@ -583,9 +579,9 @@ begin
 
   FOrigin.X := 0;
   FOrigin.Y := 0;
-  FSpecialOrigin := False;
-  PenPos.X:=0;
-  PenPos.Y:=0;
+
+  PenPos.X := 0;
+  PenPos.Y := 0;
 
   CurrentBitmap:=nil;
   CurrentFont:=nil;
@@ -666,7 +662,6 @@ begin
   end;
 
   FOrigin := ASource.FOrigin;
-  FSpecialOrigin := ASource.FSpecialOrigin;
   PenPos := ASource.PenPos;
 
   if dcfTextMetricsValid in ASource.Flags then

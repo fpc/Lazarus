@@ -280,7 +280,6 @@ type
 
     FWithChildWindows: boolean;// this DC covers sub gdkwindows
     FOrigin: TPoint;
-    FSpecialOrigin: Boolean;
 
     FFlags: TDeviceContextsFlags;
     FSelectedColors: TDevContextSelectedColorsType;

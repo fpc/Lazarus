@@ -6861,16 +6861,15 @@ function TGtk2WidgetSet.MoveWindowOrgEx(DC: HDC; dX, dY: Integer): Boolean;
 var
   NewOrigin: TPoint;
 begin
-  Result:=IsValidDC(DC);
+  Result := IsValidDC(DC);
   if Result then
-  with TGtkDeviceContext(DC) do begin
-    //DebugLn(['[TGtk2WidgetSet.MoveWindowOrgEx] B DC=',DbgS(DC),
-    //  ' Old=',Origin.X,',',Origin.Y,' d=',dX,',',dY,' ']);
-    NewOrigin:=Origin;
-    inc(NewOrigin.X,dX);
-    inc(NewOrigin.Y,dY);
-    Origin:=NewOrigin;
-  end;
+    with TGtkDeviceContext(DC) do
+    begin
+      NewOrigin := Origin;
+      inc(NewOrigin.X, dX);
+      inc(NewOrigin.Y, dY);
+      Origin := NewOrigin;
+    end;
 end;
 
 function TGtk2WidgetSet.OffsetRgn(RGN: HRGN; nXOffset, nYOffset: Integer): Integer;
@@ -7902,7 +7901,7 @@ end;
       ComplexRegion
 
  ------------------------------------------------------------------------------}
-function TGtk2WidgetSet.SelectClipRGN(DC : hDC; RGN : HRGN) : Longint;
+function TGtk2WidgetSet.SelectClipRGN(DC: hDC; RGN: HRGN): Longint;
 var
   DevCtx: TGtkDeviceContext absolute DC;
 
@@ -7911,7 +7910,6 @@ var
   OldClipRegion: PGDIObject;
 begin
   if not IsValidDC(DC) then Exit(ERROR);
-
 
   // clear old clipregion
   if DevCtx.ClipRegion <> nil
@@ -7934,6 +7932,7 @@ begin
     DevCtx.OwnedGDIObjects[gdiRegion] := DevCtx.ClipRegion;
     RegObj := DevCtx.ClipRegion^.GDIRegionObject;
     DCOrigin := DevCtx.Offset;
+
     gdk_region_offset(RegObj, DCOrigin.x, DCOrigin.Y);
     DevCtx.SelectRegion;
 
