@@ -14,6 +14,8 @@ type
     FListener: TListener;
     procedure OnExtentChanged(ASender: TObject);
     procedure SetChart(AValue: TChart);
+  protected
+    function GetDisplayName: String; override;
   public
     constructor Create(ACollection: TCollection); override;
     destructor Destroy; override;
@@ -91,6 +93,13 @@ destructor TLinkedChart.Destroy;
 begin
   FreeAndNil(FListener);
   inherited;
+end;
+
+function TLinkedChart.GetDisplayName: String;
+begin
+  Result := inherited GetDisplayName;
+  if Chart <> nil then
+    Result += ' -> ' + Chart.Name;
 end;
 
 procedure TLinkedChart.OnExtentChanged(ASender: TObject);
