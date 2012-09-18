@@ -10667,7 +10667,9 @@ begin
 
   // don't use ' as end terminator, there might be one as part of the text
   // since ' will be the last char, simply strip it.
-  S := GetPart(['\t '], [], S);
+  if pos('\t ', s) > 0
+  then S := GetPart(['\t '], [], S)
+  else S := GetPart(['\t'],  [], S); // GDB 7.5 no longer has the space
 
   // Scan the string
   len := Length(S);

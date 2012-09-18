@@ -407,6 +407,7 @@ begin
     // 7.2.x seems to always pass
     070300..070399: IgnoreRes:= 'gdb 7.3.x may or may not fail';
     070400..070499: IgnoreRes:= 'gdb 7.4.x may or may not fail';
+    070500..070599: IgnoreRes:= 'gdb 7.5.x may or may not fail';
   end;
   TestEquals('Passed none-pause run', '', Err, 0, IgnoreRes);
 
