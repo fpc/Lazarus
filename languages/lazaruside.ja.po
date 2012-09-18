@@ -1099,6 +1099,10 @@ msgstr "範囲"
 msgid "Relocatable"
 msgstr "再配置可能"
 
+#: lazarusidestrconsts.dlgcosetasdefault
+msgid "Set compiler options as default"
+msgstr ""
+
 #: lazarusidestrconsts.dlgcoshowerr
 #, fuzzy
 #| msgid "Show Errors"
@@ -1169,12 +1173,6 @@ msgstr "スタブ"
 #| msgid "Unit Style"
 msgid "Unit style"
 msgstr "ユニットスタイル"
-
-#: lazarusidestrconsts.dlgcouseasdefault
-#, fuzzy
-#| msgid "Use these settings as default for new projects"
-msgid "Use these compiler options as default for new projects"
-msgstr "新しいプロジェクトのデフォルト(既定値)として、これらの設定を使う"
 
 #: lazarusidestrconsts.dlgcovalgrind
 msgid "Generate code for valgrind"
@@ -1969,6 +1967,10 @@ msgstr "ホームキーで最も近い開始点に移動"
 #: lazarusidestrconsts.dlghostapplication
 msgid "Host application"
 msgstr "ホストアプリケーション"
+
+#: lazarusidestrconsts.dlgidemacrovalues
+msgid "IDE Macro Values"
+msgstr ""
 
 #: lazarusidestrconsts.dlgidentifiercompletion
 #, fuzzy
@@ -3107,10 +3109,6 @@ msgstr "条件を表示"
 #: lazarusidestrconsts.dlgshowdebuginfo
 msgid "Show debug info"
 msgstr "デバッグ情報を表示"
-
-#: lazarusidestrconsts.dlgshowdefinedmacros
-msgid "Show defined macros"
-msgstr "定義されたマクロを表示"
 
 #: lazarusidestrconsts.dlgshowedrhints
 msgid "Show editor hints"
@@ -4328,15 +4326,13 @@ msgstr "最近の%s!%s%sの読み込み時に起動時にエラーが起こり�
 msgid "Append short description to long description"
 msgstr "短い説明を長い説明に補足"
 
-#: lazarusidestrconsts.lisapplicationagraphicallclfreepascalprogramtheprogra
-#, fuzzy
-#| msgid "Application%sA graphical lcl/freepascal program. The program file is automatically maintained by lazarus."
-msgid "Application%sA graphical LCL/Free Pascal program. The program source is automatically maintained by Lazarus."
-msgstr "アプリケーション%sグラフィカルなlcl/freepascalプログラム。プログラムファイルはlazarusにより自動的に管理されます。"
-
 #: lazarusidestrconsts.lisapplicationclassname
 msgid "&Application class name"
 msgstr "アプリケーションクラス名(&A)"
+
+#: lazarusidestrconsts.lisapplicationprogramdescriptor
+msgid "A graphical Free Pascal application using the cross-platform LCL library for its GUI."
+msgstr ""
 
 #: lazarusidestrconsts.lisapplybuildflagsbtodependenciestoo
 msgid "apply build flags (-B) to dependencies too"
@@ -4353,10 +4349,6 @@ msgstr "あるプロジェクのトユニットを他のパッケージやプロ
 #: lazarusidestrconsts.lisaroundborderspacehint
 msgid "Borderspace around the control. The other four borderspaces are added to this value."
 msgstr "コントロールの周辺の境界間隔。他の4つの境界スペースはこの値に加算されます。"
-
-#: lazarusidestrconsts.lisasimplepascalprogramfilethiscanbeusedforquickanddi
-msgid "A simple Pascal Program file.%sThis can be used for quick and dirty testing.%sBetter create a new project."
-msgstr "簡単なPascalプログラムファイルです。%s これは迅速で荒削りなテストに使用できます。%s新しいプロジェクトを作成した方がいいでしょう。"
 
 #: lazarusidestrconsts.lisaskbeforereplacingeachfoundtext
 msgid "Ask before replacing each found text"
@@ -6423,6 +6415,10 @@ msgstr "衝突"
 msgid "Console application"
 msgstr "コンソールアプリケーション"
 
+#: lazarusidestrconsts.lisconsoleapplicationprogramdescriptor
+msgid "A Free Pascal command line program using TCustomApplication to easily check command line options, handling exceptions, etc."
+msgstr ""
+
 #: lazarusidestrconsts.lisconstructorcode
 msgid "Constructor code"
 msgstr "コンストラクタコード"
@@ -6993,11 +6989,9 @@ msgstr "カスタムオプション"
 msgid "Custom Program"
 msgstr "カスタムプログラム"
 
-#: lazarusidestrconsts.liscustomprogramafreepascalprogram
-#, fuzzy
-#| msgid "Custom Program%sA freepascal program."
-msgid "Custom Program%sA Free Pascal program."
-msgstr "Custom Program%sFreePascalプログラム"
+#: lazarusidestrconsts.liscustomprogramprogramdescriptor
+msgid "A Custom Free Pascal program."
+msgstr ""
 
 #: lazarusidestrconsts.liscut
 msgctxt "lazarusidestrconsts.liscut"
@@ -8818,12 +8812,6 @@ msgstr "Free Pascal"
 msgid "Free Pascal Compiler not found"
 msgstr "Free Pascalコンパイラが見つかりません"
 
-#: lazarusidestrconsts.lisfreepascalprogramusingtcustomapplicationtoeasilych
-#, fuzzy
-#| msgid "freepascal program using TCustomApplication to easily check command line options, handling exceptions, etc. The program file is automatically maintained by lazarus."
-msgid "Free Pascal program using TCustomApplication to easily check command line options, handling exceptions, etc. The program source is automatically maintained by Lazarus."
-msgstr "コマンドラインオプションを簡単にチェックし、例外を扱うなどのためのTCustomApplicationを用いたfreepascalプログラム。プログラムファイルはlazarusにより自動的に維持管理されます。"
-
 #: lazarusidestrconsts.lisfreepascalsourcedirectory
 #, fuzzy
 #| msgid "Freepascal source directory"
@@ -9295,9 +9283,10 @@ msgstr "中止しました.."
 msgid "Compile Project"
 msgstr "プロジェクトをコンパイル"
 
-#: lazarusidestrconsts.lisinfobuildcomplile
+#: lazarusidestrconsts.lisinfobuildcompile
 #, fuzzy
 #| msgid "Compiling..."
+msgctxt "lazarusidestrconsts.lisinfobuildcompile"
 msgid "Compiling ..."
 msgstr "コンパイル中.."
 
@@ -10614,15 +10603,13 @@ msgstr "LFMはOK"
 msgid "<description>%sCopyright (C) <year> <name of author> <contact>%sThis library is free software; you can redistribute it and/or modify it under the terms of the GNU Library General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version. %sThis program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Library General Public License for more details. %sYou should have received a copy of the GNU Library General Public License along with this library; if not, write to the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA."
 msgstr "<説明>%s著作権(C)<年><作者名><連絡先>%sこのライブラリはフリーソフトです。あなたは、Free Software Foundationが公表したGNU一般公有使用許諾の「バージョン2」或いはそれ以降の各バージョンの中からいずれかを選択し、そのバージョンが定める条項に従って本プログラムを再頒布または変更することができます。%s本プログラムは有用とは思いますが、頒布にあたっては、市場性及び特定目的適合性についての暗黙の保証を含めて、いかなる保証も行ないません。%s詳細についてはGNU一般公衆使用許諾書をお読みください。%sGNU一般公衆使用許諾書はこのライブラリとともに配布されているはずですが、もしなければ、次の住所に手紙でリクエストすることによって入手できます：Free Software Foundation Inc., 59 Temple Place - Suite 330, Boston, MA "
 
-#: lazarusidestrconsts.lislibraryafreepascallibrarydllunderwindowssounderlin
-#, fuzzy
-#| msgid "Library%sA freepascal library (.dll under windows, .so under linux, .dylib under macosx). The library source file is automatically maintained by Lazarus."
-msgid "Library%sA Free Pascal library (.dll under Windows, .so under Linux, .dylib under MacOS X). The library source is automatically maintained by Lazarus."
-msgstr "ライブラリ%sFreePascalライブラリ（Windowsでは.dll、Linuxでは.so、MacOSXでは.dylib）。ライブラリソースファイルはLazarusが自動的に管理します。"
-
 #: lazarusidestrconsts.lislibrarypath
 msgid "library path"
 msgstr "ライブラリパス"
+
+#: lazarusidestrconsts.lislibraryprogramdescriptor
+msgid "A Free Pascal shared library (.dll under Windows, .so under Linux, .dylib under MacOS X)."
+msgstr ""
 
 #: lazarusidestrconsts.lisline
 msgid "Line:"
@@ -12884,10 +12871,9 @@ msgstr "パッケージをコンパイル"
 msgid "Compiler Options for Package %s"
 msgstr "パッケージ %s のコンパイラオプション"
 
-#: lazarusidestrconsts.lispckeditcompopts
-msgctxt "lazarusidestrconsts.lispckeditcompopts"
-msgid "Compiler Options"
-msgstr "コンパイラオプション"
+#: lazarusidestrconsts.lispckeditcreatefpmakefile
+msgid "Create fpmake.pp"
+msgstr ""
 
 #: lazarusidestrconsts.lispckeditcreatemakefile
 msgctxt "lazarusidestrconsts.lispckeditcreatemakefile"
@@ -13087,6 +13073,10 @@ msgstr "パッケージソースを表示"
 #: lazarusidestrconsts.lispckexplautocreated
 msgid "AutoCreated"
 msgstr "自動生成されたもの"
+
+#: lazarusidestrconsts.lispckexplbase
+msgid "Base, can not be uninstalled"
+msgstr ""
 
 #: lazarusidestrconsts.lispckexplinstalled
 msgid "Installed"
@@ -14204,12 +14194,6 @@ msgctxt "lazarusidestrconsts.lisprogram"
 msgid "Program"
 msgstr "プログラム"
 
-#: lazarusidestrconsts.lisprogramafreepascalprogramtheprogramfileisautomatic
-#, fuzzy
-#| msgid "Program%sA freepascal program. The program file is automatically maintained by lazarus."
-msgid "Program%sA Free Pascal program. The program source is automatically maintained by Lazarus."
-msgstr "プログラム%s freepascalプログラム。プログラムソースはLazarusにより自動的に管理されます。"
-
 #: lazarusidestrconsts.lisprogramdetected
 msgid "Program detected"
 msgstr "プログラムが削除されました。"
@@ -14217,6 +14201,10 @@ msgstr "プログラムが削除されました。"
 #: lazarusidestrconsts.lisprogramnotfound
 msgid "Program %s not found"
 msgstr "プログラム %s は見つかりません"
+
+#: lazarusidestrconsts.lisprogramprogramdescriptor
+msgid "A Free Pascal command line program with some useful settings added."
+msgstr ""
 
 #: lazarusidestrconsts.lisprogramsourcemusthaveapascalextensionlikepaspporlp
 msgid "Program source must have a pascal extension like .pas, .pp or .lpr"
@@ -15315,6 +15303,14 @@ msgstr "最小に縮小"
 #: lazarusidestrconsts.lissibling
 msgid "Sibling"
 msgstr "兄弟"
+
+#: lazarusidestrconsts.lissimpleprogram
+msgid "Simple Program"
+msgstr ""
+
+#: lazarusidestrconsts.lissimpleprogramprogramdescriptor
+msgid "A most simple Free Pascal command line program."
+msgstr ""
 
 #: lazarusidestrconsts.lissimplesyntax
 #, fuzzy
@@ -16941,6 +16937,10 @@ msgstr "パッケージをプロジェクトで使用"
 msgid "User's home directory"
 msgstr "ユーザーのhomeディレクトリ"
 
+#: lazarusidestrconsts.lisuseselected
+msgid "Use Selected"
+msgstr ""
+
 #: lazarusidestrconsts.lisuseunit
 msgctxt "lazarusidestrconsts.lisuseunit"
 msgid "Add Unit to Uses Section"
@@ -17279,6 +17279,10 @@ msgstr "生"
 msgid "Add Inverse"
 msgstr "逆を追加"
 
+#: lazarusidestrconsts.rsattachto
+msgid "Attach to"
+msgstr ""
+
 #: lazarusidestrconsts.rsautomaticallyincreasebuildnumber
 msgid "Automatically increase build number"
 msgstr "ビルド番号を自動的に増やす"
@@ -17324,6 +17328,10 @@ msgstr "シンボリックリンクの作成はこのプラットフォームで
 #: lazarusidestrconsts.rsenablei18n
 msgid "Enable i18n"
 msgstr "国際化を有効に"
+
+#: lazarusidestrconsts.rsenterpid
+msgid "Enter PID"
+msgstr ""
 
 #: lazarusidestrconsts.rsfilterthelistwithstring
 msgid "Filter the lines in list with a string"
@@ -17672,6 +17680,10 @@ msgstr "移動先を追加"
 msgid "add watch"
 msgstr "監視を追加"
 
+#: lazarusidestrconsts.srkmecattach
+msgid "Attach to program"
+msgstr ""
+
 #: lazarusidestrconsts.srkmecautocompletion
 msgid "Code template completion"
 msgstr "コードテンプレートの補完"
@@ -17878,6 +17890,10 @@ msgstr "現在の行を削除"
 #: lazarusidestrconsts.srkmecdeleteword
 msgid "Delete to end of word"
 msgstr "単語の末尾まで削除"
+
+#: lazarusidestrconsts.srkmecdetach
+msgid "Detach from program"
+msgstr ""
 
 #: lazarusidestrconsts.srkmecdiff
 msgctxt "lazarusidestrconsts.srkmecdiff"

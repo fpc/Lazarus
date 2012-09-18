@@ -19,7 +19,7 @@ msgstr "Базы данных Interbase"
 
 #: registersqldb.slibraries
 msgid "Shared libraries"
-msgstr "Разделяемые библиотеки"
+msgstr "Динамические библиотеки"
 
 #: registersqldb.ssqlscript
 msgid "SQL Script file"

@@ -1074,6 +1074,10 @@ msgstr "Rėžį"
 msgid "Relocatable"
 msgstr "Kėlusis"
 
+#: lazarusidestrconsts.dlgcosetasdefault
+msgid "Set compiler options as default"
+msgstr ""
+
 #: lazarusidestrconsts.dlgcoshowerr
 #| msgid "Show Errors"
 msgid "Show errors"
@@ -1137,10 +1141,6 @@ msgstr "Stabs"
 #| msgid "Unit Style"
 msgid "Unit style"
 msgstr "Modulio stilius"
-
-#: lazarusidestrconsts.dlgcouseasdefault
-msgid "Use these compiler options as default for new projects"
-msgstr "Šias kompiliatoriaus parinktis taikyti naujiems projektams"
 
 #: lazarusidestrconsts.dlgcovalgrind
 msgid "Generate code for valgrind"
@@ -1917,6 +1917,10 @@ msgstr "Spustelėjus „Home“, žymeklis peršoks į artimiausią pradžią"
 #: lazarusidestrconsts.dlghostapplication
 msgid "Host application"
 msgstr "Programa-šeimininkė"
+
+#: lazarusidestrconsts.dlgidemacrovalues
+msgid "IDE Macro Values"
+msgstr ""
 
 #: lazarusidestrconsts.dlgidentifiercompletion
 #| msgid "Identifier completion"
@@ -3004,10 +3008,6 @@ msgstr "Rodyti sąlygines instrukcijas"
 #: lazarusidestrconsts.dlgshowdebuginfo
 msgid "Show debug info"
 msgstr "Rodyti derinimo informaciją"
-
-#: lazarusidestrconsts.dlgshowdefinedmacros
-msgid "Show defined macros"
-msgstr "Rodyti "
 
 #: lazarusidestrconsts.dlgshowedrhints
 msgid "Show editor hints"
@@ -4191,14 +4191,13 @@ msgstr "Paskutinio starto metu įkeliant projektą %s įvyko klaida!%s%sVėl įk
 msgid "Append short description to long description"
 msgstr "Ilgąjį aprašą papildyti trumpuoju aprašu"
 
-#: lazarusidestrconsts.lisapplicationagraphicallclfreepascalprogramtheprogra
-#| msgid "Application%sA graphical lcl/freepascal program. The program file is automatically maintained by lazarus."
-msgid "Application%sA graphical LCL/Free Pascal program. The program source is automatically maintained by Lazarus."
-msgstr "Taikomoji programa%sVizualinė LCL/Free Pascal programa. Programos failu automatiškai rūpinsis Lazarus."
-
 #: lazarusidestrconsts.lisapplicationclassname
 msgid "&Application class name"
 msgstr "&Programos klasės pavadinimas"
+
+#: lazarusidestrconsts.lisapplicationprogramdescriptor
+msgid "A graphical Free Pascal application using the cross-platform LCL library for its GUI."
+msgstr ""
 
 #: lazarusidestrconsts.lisapplybuildflagsbtodependenciestoo
 msgid "apply build flags (-B) to dependencies too"
@@ -4217,10 +4216,6 @@ msgid "Borderspace around the control. The other four borderspaces are added to 
 msgstr ""
 "Pagrindinis kraštinės plotis apie komponentę.\n"
 "Ši vertė bus pridedama prie kitų kraštinių pločių.\n"
-
-#: lazarusidestrconsts.lisasimplepascalprogramfilethiscanbeusedforquickanddi
-msgid "A simple Pascal Program file.%sThis can be used for quick and dirty testing.%sBetter create a new project."
-msgstr "Įprastas Paskalio programos failas.%sŠitai galite naudoti greitam bei grubiam testui.%sGeriau kurkite naują projektą."
 
 #: lazarusidestrconsts.lisaskbeforereplacingeachfoundtext
 msgid "Ask before replacing each found text"
@@ -6259,6 +6254,10 @@ msgstr "Konfliktas"
 msgid "Console application"
 msgstr "Terminalo programa"
 
+#: lazarusidestrconsts.lisconsoleapplicationprogramdescriptor
+msgid "A Free Pascal command line program using TCustomApplication to easily check command line options, handling exceptions, etc."
+msgstr ""
+
 #: lazarusidestrconsts.lisconstructorcode
 msgid "Constructor code"
 msgstr "Konstruktoriaus kodas"
@@ -6811,10 +6810,9 @@ msgstr "Naudotojo parinktys"
 msgid "Custom Program"
 msgstr "naudotojo programa"
 
-#: lazarusidestrconsts.liscustomprogramafreepascalprogram
-#| msgid "Custom Program%sA freepascal program."
-msgid "Custom Program%sA Free Pascal program."
-msgstr "Naudotojo programa%sFree Pascal programa."
+#: lazarusidestrconsts.liscustomprogramprogramdescriptor
+msgid "A Custom Free Pascal program."
+msgstr ""
 
 #: lazarusidestrconsts.liscut
 msgctxt "lazarusidestrconsts.liscut"
@@ -8617,11 +8615,6 @@ msgstr "Free Pascal"
 msgid "Free Pascal Compiler not found"
 msgstr "Nerastas Free Pascal kompiliatorius"
 
-#: lazarusidestrconsts.lisfreepascalprogramusingtcustomapplicationtoeasilych
-#| msgid "freepascal program using TCustomApplication to easily check command line options, handling exceptions, etc. The program file is automatically maintained by lazarus."
-msgid "Free Pascal program using TCustomApplication to easily check command line options, handling exceptions, etc. The program source is automatically maintained by Lazarus."
-msgstr "Free Pascal programa, naudojanti TCustomApplication, skirta lengvam komandinės eilutės parinkčių tikrinimui, išskirtinių situacijų apdorojimui ir kt. Programos pirminiu kodu automatiškai rūpinsis Lazarus."
-
 #: lazarusidestrconsts.lisfreepascalsourcedirectory
 #| msgid "Freepascal source directory"
 msgid "Free Pascal source directory"
@@ -9085,8 +9078,8 @@ msgstr "Nutraukta…"
 msgid "Compile Project"
 msgstr "Kompiliuoti projektą"
 
-#: lazarusidestrconsts.lisinfobuildcomplile
-#| msgid "Compiling..."
+#: lazarusidestrconsts.lisinfobuildcompile
+msgctxt "lazarusidestrconsts.lisinfobuildcompile"
 msgid "Compiling ..."
 msgstr "Kompiliuojama…"
 
@@ -10366,14 +10359,13 @@ msgstr "LFM tinkamas"
 msgid "<description>%sCopyright (C) <year> <name of author> <contact>%sThis library is free software; you can redistribute it and/or modify it under the terms of the GNU Library General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version. %sThis program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Library General Public License for more details. %sYou should have received a copy of the GNU Library General Public License along with this library; if not, write to the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA."
 msgstr "<aprašymas>%sCopyright (C) <metai> <autoriaus vardas> <kontaktai>%sThis library is free software; you can redistribute it and/or modify it under the terms of the GNU Library General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version. %sThis program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Library General Public License for more details. %sYou should have received a copy of the GNU Library General Public License along with this library; if not, write to the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA."
 
-#: lazarusidestrconsts.lislibraryafreepascallibrarydllunderwindowssounderlin
-#| msgid "Library%sA freepascal library (.dll under windows, .so under linux, .dylib under macosx). The library source file is automatically maintained by Lazarus."
-msgid "Library%sA Free Pascal library (.dll under Windows, .so under Linux, .dylib under MacOS X). The library source is automatically maintained by Lazarus."
-msgstr "Biblioteka%sFree Pascal biblioteka (.dll Windows aplinkoje, .so Linux aplinkoje, .dylib MacOS X aplinkoje). Lazarus automatiškai rūpinsis bibliotekos pirminiu kodu."
-
 #: lazarusidestrconsts.lislibrarypath
 msgid "library path"
 msgstr "kelias iki bibliotekos"
+
+#: lazarusidestrconsts.lislibraryprogramdescriptor
+msgid "A Free Pascal shared library (.dll under Windows, .so under Linux, .dylib under MacOS X)."
+msgstr ""
 
 #: lazarusidestrconsts.lisline
 msgid "Line:"
@@ -12489,10 +12481,9 @@ msgstr "Kompiliuoti paketą"
 msgid "Compiler Options for Package %s"
 msgstr "Paketo %s kompiliavimo parinktys"
 
-#: lazarusidestrconsts.lispckeditcompopts
-msgctxt "lazarusidestrconsts.lispckeditcompopts"
-msgid "Compiler Options"
-msgstr "Kompiliatoriaus parinktys"
+#: lazarusidestrconsts.lispckeditcreatefpmakefile
+msgid "Create fpmake.pp"
+msgstr ""
 
 #: lazarusidestrconsts.lispckeditcreatemakefile
 msgctxt "lazarusidestrconsts.lispckeditcreatemakefile"
@@ -12688,6 +12679,10 @@ msgstr "Rodyti paketo pirminį kodą"
 #: lazarusidestrconsts.lispckexplautocreated
 msgid "AutoCreated"
 msgstr "sukurtas automatiškai"
+
+#: lazarusidestrconsts.lispckexplbase
+msgid "Base, can not be uninstalled"
+msgstr ""
 
 #: lazarusidestrconsts.lispckexplinstalled
 msgid "Installed"
@@ -13793,11 +13788,6 @@ msgctxt "lazarusidestrconsts.lisprogram"
 msgid "Program"
 msgstr "Programa"
 
-#: lazarusidestrconsts.lisprogramafreepascalprogramtheprogramfileisautomatic
-#| msgid "Program%sA freepascal program. The program file is automatically maintained by lazarus."
-msgid "Program%sA Free Pascal program. The program source is automatically maintained by Lazarus."
-msgstr "Programa%sFree Pascal programa. Lazarus automatiškai rūpinsis programos pirminiu kodu."
-
 #: lazarusidestrconsts.lisprogramdetected
 msgid "Program detected"
 msgstr "Aptikta programa"
@@ -13805,6 +13795,10 @@ msgstr "Aptikta programa"
 #: lazarusidestrconsts.lisprogramnotfound
 msgid "Program %s not found"
 msgstr "Programa „%s“ nerasta"
+
+#: lazarusidestrconsts.lisprogramprogramdescriptor
+msgid "A Free Pascal command line program with some useful settings added."
+msgstr ""
 
 #: lazarusidestrconsts.lisprogramsourcemusthaveapascalextensionlikepaspporlp
 msgid "Program source must have a pascal extension like .pas, .pp or .lpr"
@@ -14883,6 +14877,14 @@ msgstr "Sutraukti iki mažiausio"
 #: lazarusidestrconsts.lissibling
 msgid "Sibling"
 msgstr "Kaimynas"
+
+#: lazarusidestrconsts.lissimpleprogram
+msgid "Simple Program"
+msgstr ""
+
+#: lazarusidestrconsts.lissimpleprogramprogramdescriptor
+msgid "A most simple Free Pascal command line program."
+msgstr ""
 
 #: lazarusidestrconsts.lissimplesyntax
 #| msgid "Simple Syntax"
@@ -16491,6 +16493,10 @@ msgstr "Paketą naudoti projekte"
 msgid "User's home directory"
 msgstr "Naudotojo pradžios aplankas"
 
+#: lazarusidestrconsts.lisuseselected
+msgid "Use Selected"
+msgstr ""
+
 #: lazarusidestrconsts.lisuseunit
 msgctxt "lazarusidestrconsts.lisuseunit"
 msgid "Add Unit to Uses Section"
@@ -16825,6 +16831,10 @@ msgstr "Neapdorotas"
 msgid "Add Inverse"
 msgstr "Pridėti atvirkščiai"
 
+#: lazarusidestrconsts.rsattachto
+msgid "Attach to"
+msgstr ""
+
 #: lazarusidestrconsts.rsautomaticallyincreasebuildnumber
 msgid "Automatically increase build number"
 msgstr "Automatiškai didinti darymo numerį"
@@ -16869,6 +16879,10 @@ msgstr "Šioje platformoje neįmanoma kurti simbolinių nuorodų!"
 #: lazarusidestrconsts.rsenablei18n
 msgid "Enable i18n"
 msgstr "Įgalinti internacionalizaciją"
+
+#: lazarusidestrconsts.rsenterpid
+msgid "Enter PID"
+msgstr ""
 
 #: lazarusidestrconsts.rsfilterthelistwithstring
 msgid "Filter the lines in list with a string"
@@ -17215,6 +17229,10 @@ msgstr "Pridėti peršokimo tašką"
 msgid "add watch"
 msgstr "stebėti"
 
+#: lazarusidestrconsts.srkmecattach
+msgid "Attach to program"
+msgstr ""
+
 #: lazarusidestrconsts.srkmecautocompletion
 msgid "Code template completion"
 msgstr "Kodo šablono užbaigimas"
@@ -17420,6 +17438,10 @@ msgstr "Pašalinti šią veikiamąją eilutę"
 #: lazarusidestrconsts.srkmecdeleteword
 msgid "Delete to end of word"
 msgstr "Pašalinti iki žodžio pabaigos"
+
+#: lazarusidestrconsts.srkmecdetach
+msgid "Detach from program"
+msgstr ""
 
 #: lazarusidestrconsts.srkmecdiff
 msgctxt "lazarusidestrconsts.srkmecdiff"

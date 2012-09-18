@@ -1091,6 +1091,10 @@ msgstr "Rozsah"
 msgid "Relocatable"
 msgstr ""
 
+#: lazarusidestrconsts.dlgcosetasdefault
+msgid "Set compiler options as default"
+msgstr ""
+
 #: lazarusidestrconsts.dlgcoshowerr
 #, fuzzy
 #| msgid "Show Errors"
@@ -1161,10 +1165,6 @@ msgstr ""
 #| msgid "Unit Style"
 msgid "Unit style"
 msgstr "Štýl jednotky:"
-
-#: lazarusidestrconsts.dlgcouseasdefault
-msgid "Use these compiler options as default for new projects"
-msgstr ""
 
 #: lazarusidestrconsts.dlgcovalgrind
 msgid "Generate code for valgrind"
@@ -1952,6 +1952,10 @@ msgstr "Home posúva na najbližší začiatok"
 #: lazarusidestrconsts.dlghostapplication
 msgid "Host application"
 msgstr "Hosťovská aplikácia"
+
+#: lazarusidestrconsts.dlgidemacrovalues
+msgid "IDE Macro Values"
+msgstr ""
 
 #: lazarusidestrconsts.dlgidentifiercompletion
 #, fuzzy
@@ -3060,10 +3064,6 @@ msgstr "Zobraziť podmienky"
 #: lazarusidestrconsts.dlgshowdebuginfo
 msgid "Show debug info"
 msgstr "Zobraziť ladiace informácie"
-
-#: lazarusidestrconsts.dlgshowdefinedmacros
-msgid "Show defined macros"
-msgstr "Zobraziť definované makrá"
 
 #: lazarusidestrconsts.dlgshowedrhints
 msgid "Show editor hints"
@@ -4273,15 +4273,13 @@ msgstr "Pri poslednom štarte nastala chyba pri otváraní %s!%s%sOtvoriť proje
 msgid "Append short description to long description"
 msgstr ""
 
-#: lazarusidestrconsts.lisapplicationagraphicallclfreepascalprogramtheprogra
-#, fuzzy
-#| msgid "Application%sA graphical lcl/freepascal program. The program file is automatically maintained by lazarus."
-msgid "Application%sA graphical LCL/Free Pascal program. The program source is automatically maintained by Lazarus."
-msgstr "Aplkácia%sGrafický lcl/freepascal program. Súbor programu je automaticky spravovaný Lazarom."
-
 #: lazarusidestrconsts.lisapplicationclassname
 msgid "&Application class name"
 msgstr "Meno triedy &Aplikácie"
+
+#: lazarusidestrconsts.lisapplicationprogramdescriptor
+msgid "A graphical Free Pascal application using the cross-platform LCL library for its GUI."
+msgstr ""
 
 #: lazarusidestrconsts.lisapplybuildflagsbtodependenciestoo
 msgid "apply build flags (-B) to dependencies too"
@@ -4298,10 +4296,6 @@ msgstr ""
 #: lazarusidestrconsts.lisaroundborderspacehint
 msgid "Borderspace around the control. The other four borderspaces are added to this value."
 msgstr "Okraj okolo prvku. Ostatné štyri okraje sú pridané k tejto hodnote."
-
-#: lazarusidestrconsts.lisasimplepascalprogramfilethiscanbeusedforquickanddi
-msgid "A simple Pascal Program file.%sThis can be used for quick and dirty testing.%sBetter create a new project."
-msgstr "Súbor s jednoduchým programom Pascalu.%sMôže byť použitý na rýchle a nečisté testovanie.%sLepšie je vytvoriť nový projekt."
 
 #: lazarusidestrconsts.lisaskbeforereplacingeachfoundtext
 msgid "Ask before replacing each found text"
@@ -6358,6 +6352,10 @@ msgstr ""
 msgid "Console application"
 msgstr "Konzolová aplikácia"
 
+#: lazarusidestrconsts.lisconsoleapplicationprogramdescriptor
+msgid "A Free Pascal command line program using TCustomApplication to easily check command line options, handling exceptions, etc."
+msgstr ""
+
 #: lazarusidestrconsts.lisconstructorcode
 msgid "Constructor code"
 msgstr "Kód konštruktora"
@@ -6911,11 +6909,9 @@ msgstr "Vlastné voľby"
 msgid "Custom Program"
 msgstr "Vlastný program"
 
-#: lazarusidestrconsts.liscustomprogramafreepascalprogram
-#, fuzzy
-#| msgid "Custom Program%sA freepascal program."
-msgid "Custom Program%sA Free Pascal program."
-msgstr "Vlastný program%sProgram FreePascal."
+#: lazarusidestrconsts.liscustomprogramprogramdescriptor
+msgid "A Custom Free Pascal program."
+msgstr ""
 
 #: lazarusidestrconsts.liscut
 msgctxt "lazarusidestrconsts.liscut"
@@ -8724,12 +8720,6 @@ msgstr "Free Pascal"
 msgid "Free Pascal Compiler not found"
 msgstr "Nenájdený prekladač Free Pascal"
 
-#: lazarusidestrconsts.lisfreepascalprogramusingtcustomapplicationtoeasilych
-#, fuzzy
-#| msgid "freepascal program using TCustomApplication to easily check command line options, handling exceptions, etc. The program file is automatically maintained by lazarus."
-msgid "Free Pascal program using TCustomApplication to easily check command line options, handling exceptions, etc. The program source is automatically maintained by Lazarus."
-msgstr "Program FreePascal používajúci TCustomApplication pre ľahšie zisťovanie volieb príkazového riadka, obsluhu výnimiek, atď. Súbor programu je automaticky spravovaný Lazarom."
-
 #: lazarusidestrconsts.lisfreepascalsourcedirectory
 #, fuzzy
 #| msgid "Freepascal source directory"
@@ -9197,9 +9187,10 @@ msgstr "Zrušené..."
 msgid "Compile Project"
 msgstr "Preloži projekt"
 
-#: lazarusidestrconsts.lisinfobuildcomplile
+#: lazarusidestrconsts.lisinfobuildcompile
 #, fuzzy
 #| msgid "Compiling..."
+msgctxt "lazarusidestrconsts.lisinfobuildcompile"
 msgid "Compiling ..."
 msgstr "Prekladanie ..."
 
@@ -10500,15 +10491,13 @@ msgstr ""
 msgid "<description>%sCopyright (C) <year> <name of author> <contact>%sThis library is free software; you can redistribute it and/or modify it under the terms of the GNU Library General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version. %sThis program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Library General Public License for more details. %sYou should have received a copy of the GNU Library General Public License along with this library; if not, write to the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA."
 msgstr "<popis>%sCopyright (C) <rok> <meno autora> <kontakt>%sToto je slobodný program;môžete ho distribuovať a/alebo upravovať za podmienok GNU Library General Public License, tak ako ju zverejnila Free Software Foundation; buď verzie 2 Licencie alebo (podľa Vašej voľby) akejkoľvek novšej verzie. %sTento program je distribuovaný v nádeji, že bude užitočný, ale BEZ AKEJKOĽVEK ZÁRUKY; dokonca aj bbez záruky MERCHANTABILITY alebo FITNESS FOR A PARTICULAR PURPOSE. Ďalšie podrobnosti hľadajte v GNU Library General Public License. %sKópi GNU Library General Public License máte získať spolu s touto knižnicou, ak nie napíšte Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA."
 
-#: lazarusidestrconsts.lislibraryafreepascallibrarydllunderwindowssounderlin
-#, fuzzy
-#| msgid "Library%sA freepascal library (.dll under windows, .so under linux, .dylib under macosx). The library source file is automatically maintained by Lazarus."
-msgid "Library%sA Free Pascal library (.dll under Windows, .so under Linux, .dylib under MacOS X). The library source is automatically maintained by Lazarus."
-msgstr "Knižnica%sKnižnica Free Pascal (.dll vo Windows, .so v Linuxe, .dylib v MacOS X). Súbor zdrojového kódu knižnice je automaticky spravovaný Lazarom."
-
 #: lazarusidestrconsts.lislibrarypath
 msgid "library path"
 msgstr "cesta knižnice"
+
+#: lazarusidestrconsts.lislibraryprogramdescriptor
+msgid "A Free Pascal shared library (.dll under Windows, .so under Linux, .dylib under MacOS X)."
+msgstr ""
 
 #: lazarusidestrconsts.lisline
 msgid "Line:"
@@ -12734,10 +12723,9 @@ msgstr "Preložiť balíček"
 msgid "Compiler Options for Package %s"
 msgstr "Voľby prekladača pre balíček %s"
 
-#: lazarusidestrconsts.lispckeditcompopts
-msgctxt "lazarusidestrconsts.lispckeditcompopts"
-msgid "Compiler Options"
-msgstr "Voľby prekladača"
+#: lazarusidestrconsts.lispckeditcreatefpmakefile
+msgid "Create fpmake.pp"
+msgstr ""
 
 #: lazarusidestrconsts.lispckeditcreatemakefile
 msgctxt "lazarusidestrconsts.lispckeditcreatemakefile"
@@ -12937,6 +12925,10 @@ msgstr "Zobraziť zdrojový kód balíčka"
 #: lazarusidestrconsts.lispckexplautocreated
 msgid "AutoCreated"
 msgstr "Automaticky vytvorené"
+
+#: lazarusidestrconsts.lispckexplbase
+msgid "Base, can not be uninstalled"
+msgstr ""
 
 #: lazarusidestrconsts.lispckexplinstalled
 msgid "Installed"
@@ -14054,18 +14046,16 @@ msgctxt "lazarusidestrconsts.lisprogram"
 msgid "Program"
 msgstr "Program"
 
-#: lazarusidestrconsts.lisprogramafreepascalprogramtheprogramfileisautomatic
-#, fuzzy
-#| msgid "Program%sA freepascal program. The program file is automatically maintained by lazarus."
-msgid "Program%sA Free Pascal program. The program source is automatically maintained by Lazarus."
-msgstr "Program%sFreePascal program. Súbor programu je automaticky spravovaný Lazarom."
-
 #: lazarusidestrconsts.lisprogramdetected
 msgid "Program detected"
 msgstr "Program zistený"
 
 #: lazarusidestrconsts.lisprogramnotfound
 msgid "Program %s not found"
+msgstr ""
+
+#: lazarusidestrconsts.lisprogramprogramdescriptor
+msgid "A Free Pascal command line program with some useful settings added."
 msgstr ""
 
 #: lazarusidestrconsts.lisprogramsourcemusthaveapascalextensionlikepaspporlp
@@ -15157,6 +15147,14 @@ msgstr "Skrátiť na najmenšie"
 #: lazarusidestrconsts.lissibling
 msgid "Sibling"
 msgstr "Súrodenec"
+
+#: lazarusidestrconsts.lissimpleprogram
+msgid "Simple Program"
+msgstr ""
+
+#: lazarusidestrconsts.lissimpleprogramprogramdescriptor
+msgid "A most simple Free Pascal command line program."
+msgstr ""
 
 #: lazarusidestrconsts.lissimplesyntax
 #, fuzzy
@@ -16777,6 +16775,10 @@ msgstr ""
 msgid "User's home directory"
 msgstr "Domovský adresár používateľa"
 
+#: lazarusidestrconsts.lisuseselected
+msgid "Use Selected"
+msgstr ""
+
 #: lazarusidestrconsts.lisuseunit
 msgctxt "lazarusidestrconsts.lisuseunit"
 msgid "Add Unit to Uses Section"
@@ -17109,6 +17111,10 @@ msgstr ""
 msgid "Add Inverse"
 msgstr "Pridať obrátene"
 
+#: lazarusidestrconsts.rsattachto
+msgid "Attach to"
+msgstr ""
+
 #: lazarusidestrconsts.rsautomaticallyincreasebuildnumber
 msgid "Automatically increase build number"
 msgstr "Automaticky zvyšovať číslo vybudovania"
@@ -17154,6 +17160,10 @@ msgstr ""
 #: lazarusidestrconsts.rsenablei18n
 msgid "Enable i18n"
 msgstr "Zapnúť i18n"
+
+#: lazarusidestrconsts.rsenterpid
+msgid "Enter PID"
+msgstr ""
 
 #: lazarusidestrconsts.rsfilterthelistwithstring
 msgid "Filter the lines in list with a string"
@@ -17502,6 +17512,10 @@ msgstr "Pridať bod skoku"
 msgid "add watch"
 msgstr "pridať pozorovanie"
 
+#: lazarusidestrconsts.srkmecattach
+msgid "Attach to program"
+msgstr ""
+
 #: lazarusidestrconsts.srkmecautocompletion
 msgid "Code template completion"
 msgstr "Šablóny dokončovania kódu"
@@ -17708,6 +17722,10 @@ msgstr "Zmazať aktuálny riadok"
 #: lazarusidestrconsts.srkmecdeleteword
 msgid "Delete to end of word"
 msgstr "Zmazať do konca slova"
+
+#: lazarusidestrconsts.srkmecdetach
+msgid "Detach from program"
+msgstr ""
 
 #: lazarusidestrconsts.srkmecdiff
 msgctxt "lazarusidestrconsts.srkmecdiff"

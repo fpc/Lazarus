@@ -1032,6 +1032,10 @@ msgstr "Alue"
 msgid "Relocatable"
 msgstr ""
 
+#: lazarusidestrconsts.dlgcosetasdefault
+msgid "Set compiler options as default"
+msgstr ""
+
 #: lazarusidestrconsts.dlgcoshowerr
 msgid "Show errors"
 msgstr "Näytä virheet"
@@ -1088,10 +1092,6 @@ msgstr ""
 #: lazarusidestrconsts.dlgcounitstyle
 msgid "Unit style"
 msgstr "Käännösyksikön tyyli"
-
-#: lazarusidestrconsts.dlgcouseasdefault
-msgid "Use these compiler options as default for new projects"
-msgstr "Käytä näitä kääntäjän asetuksia oletuksena uusissa projekteissa"
 
 #: lazarusidestrconsts.dlgcovalgrind
 msgid "Generate code for valgrind"
@@ -1850,6 +1850,10 @@ msgstr "Home-näppäin huomioi sisennyksen siirryttäessä koodirivin alkuun"
 #: lazarusidestrconsts.dlghostapplication
 msgid "Host application"
 msgstr "Isäntäsovellus"
+
+#: lazarusidestrconsts.dlgidemacrovalues
+msgid "IDE Macro Values"
+msgstr ""
 
 #: lazarusidestrconsts.dlgidentifiercompletion
 msgid "Identifier Completion"
@@ -2890,10 +2894,6 @@ msgstr "Näytä ehdolliset"
 #: lazarusidestrconsts.dlgshowdebuginfo
 msgid "Show debug info"
 msgstr "Näytä virheenjäljitystieto"
-
-#: lazarusidestrconsts.dlgshowdefinedmacros
-msgid "Show defined macros"
-msgstr "Näytä määritellyt makrot"
 
 #: lazarusidestrconsts.dlgshowedrhints
 msgid "Show editor hints"
@@ -4040,13 +4040,13 @@ msgstr "Virhe esiintyi kun avattiin projektia %s!%s%sAvataanko tämä projekti u
 msgid "Append short description to long description"
 msgstr "Lisää lyhyt selitys pitkään selitykseen"
 
-#: lazarusidestrconsts.lisapplicationagraphicallclfreepascalprogramtheprogra
-msgid "Application%sA graphical LCL/Free Pascal program. The program source is automatically maintained by Lazarus."
-msgstr "Sovellus %sGraafinen LCL/Free Pascal ohjelma. Lazarus pitää yllä ohjelman koodia automaattisesti."
-
 #: lazarusidestrconsts.lisapplicationclassname
 msgid "&Application class name"
 msgstr "Sovelluksen luokan nimi"
+
+#: lazarusidestrconsts.lisapplicationprogramdescriptor
+msgid "A graphical Free Pascal application using the cross-platform LCL library for its GUI."
+msgstr ""
 
 #: lazarusidestrconsts.lisapplybuildflagsbtodependenciestoo
 msgid "apply build flags (-B) to dependencies too"
@@ -4063,10 +4063,6 @@ msgstr "Projektin käännösyksikköä ei voi käyttää muihin projekteihin/pak
 #: lazarusidestrconsts.lisaroundborderspacehint
 msgid "Borderspace around the control. The other four borderspaces are added to this value."
 msgstr "Reuna-alue kontrollin ympärillä. Muut neljä reuna-aluetta lisätään tähän arvoon."
-
-#: lazarusidestrconsts.lisasimplepascalprogramfilethiscanbeusedforquickanddi
-msgid "A simple Pascal Program file.%sThis can be used for quick and dirty testing.%sBetter create a new project."
-msgstr "Perus Pascal-ohjelma tiedosto.%sTämä on tarkoitettu lähinnä testaamiseen.%sYleisesti olisi parempi valita jokin uusi projekti kuten esim. sovellus."
 
 #: lazarusidestrconsts.lisaskbeforereplacingeachfoundtext
 msgid "Ask before replacing each found text"
@@ -6066,6 +6062,10 @@ msgstr ""
 msgid "Console application"
 msgstr "Komentorivisovellus"
 
+#: lazarusidestrconsts.lisconsoleapplicationprogramdescriptor
+msgid "A Free Pascal command line program using TCustomApplication to easily check command line options, handling exceptions, etc."
+msgstr ""
+
 #: lazarusidestrconsts.lisconstructorcode
 msgid "Constructor code"
 msgstr ""
@@ -6607,9 +6607,9 @@ msgstr "Mukautetut optiot"
 msgid "Custom Program"
 msgstr "Mukautettu ohjelma"
 
-#: lazarusidestrconsts.liscustomprogramafreepascalprogram
-msgid "Custom Program%sA Free Pascal program."
-msgstr "Mukautettu ohjelma%sFree Pascal ohjelma."
+#: lazarusidestrconsts.liscustomprogramprogramdescriptor
+msgid "A Custom Free Pascal program."
+msgstr ""
 
 #: lazarusidestrconsts.liscut
 msgctxt "lazarusidestrconsts.liscut"
@@ -8405,10 +8405,6 @@ msgstr ""
 msgid "Free Pascal Compiler not found"
 msgstr "Free Pascal kääntäjää ei löydy"
 
-#: lazarusidestrconsts.lisfreepascalprogramusingtcustomapplicationtoeasilych
-msgid "Free Pascal program using TCustomApplication to easily check command line options, handling exceptions, etc. The program source is automatically maintained by Lazarus."
-msgstr "Free Pascal ohjelma joka käyttää TCustomApplication luokkaa. Sillä on helppo tarkastaa komentoriviltä annetut parametrit ja poikkeukset. Lazarus pitää yllä ohjelman koodia automaattisesti."
-
 #: lazarusidestrconsts.lisfreepascalsourcedirectory
 msgid "Free Pascal source directory"
 msgstr "Free Pascal lähdekoodihakemisto"
@@ -8865,7 +8861,8 @@ msgstr "Keskeytetty ..."
 msgid "Compile Project"
 msgstr "Tietoja projektin käännöksestä"
 
-#: lazarusidestrconsts.lisinfobuildcomplile
+#: lazarusidestrconsts.lisinfobuildcompile
+msgctxt "lazarusidestrconsts.lisinfobuildcompile"
 msgid "Compiling ..."
 msgstr "Käännetään ..."
 
@@ -10104,13 +10101,13 @@ msgstr ""
 msgid "<description>%sCopyright (C) <year> <name of author> <contact>%sThis library is free software; you can redistribute it and/or modify it under the terms of the GNU Library General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version. %sThis program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Library General Public License for more details. %sYou should have received a copy of the GNU Library General Public License along with this library; if not, write to the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA."
 msgstr ""
 
-#: lazarusidestrconsts.lislibraryafreepascallibrarydllunderwindowssounderlin
-msgid "Library%sA Free Pascal library (.dll under Windows, .so under Linux, .dylib under MacOS X). The library source is automatically maintained by Lazarus."
-msgstr "Kirjasto%sFree Pascal kirjasto (.dll windows:ssa, .so linux:ssa, .dylib MacOSX:ssa). Lazarus pitää yllä kirjaston koodia automaattisesti."
-
 #: lazarusidestrconsts.lislibrarypath
 msgid "library path"
 msgstr "kirjastopolku"
+
+#: lazarusidestrconsts.lislibraryprogramdescriptor
+msgid "A Free Pascal shared library (.dll under Windows, .so under Linux, .dylib under MacOS X)."
+msgstr ""
 
 #: lazarusidestrconsts.lisline
 msgid "Line:"
@@ -12087,10 +12084,9 @@ msgstr "Käännä komponenttipaketti"
 msgid "Compiler Options for Package %s"
 msgstr "Paketin %s käännösasetukset"
 
-#: lazarusidestrconsts.lispckeditcompopts
-msgctxt "lazarusidestrconsts.lispckeditcompopts"
-msgid "Compiler Options"
-msgstr "Kääntäjän asetukset"
+#: lazarusidestrconsts.lispckeditcreatefpmakefile
+msgid "Create fpmake.pp"
+msgstr ""
 
 #: lazarusidestrconsts.lispckeditcreatemakefile
 msgctxt "lazarusidestrconsts.lispckeditcreatemakefile"
@@ -12281,6 +12277,10 @@ msgstr "Näytä paketin lähdekoodi"
 #: lazarusidestrconsts.lispckexplautocreated
 msgid "AutoCreated"
 msgstr "Automaattisesti luotu"
+
+#: lazarusidestrconsts.lispckexplbase
+msgid "Base, can not be uninstalled"
+msgstr ""
 
 #: lazarusidestrconsts.lispckexplinstalled
 msgid "Installed"
@@ -13372,10 +13372,6 @@ msgctxt "lazarusidestrconsts.lisprogram"
 msgid "Program"
 msgstr "Ohjelma"
 
-#: lazarusidestrconsts.lisprogramafreepascalprogramtheprogramfileisautomatic
-msgid "Program%sA Free Pascal program. The program source is automatically maintained by Lazarus."
-msgstr "Ohjelma%s Free Pascal ohjelma. Lazarus pitää yllä ohjelman koodia automaattisesti."
-
 #: lazarusidestrconsts.lisprogramdetected
 msgid "Program detected"
 msgstr "Tunnistettiin ohjelmaksi"
@@ -13383,6 +13379,10 @@ msgstr "Tunnistettiin ohjelmaksi"
 #: lazarusidestrconsts.lisprogramnotfound
 msgid "Program %s not found"
 msgstr "Ohjelmaa %s ei löydy"
+
+#: lazarusidestrconsts.lisprogramprogramdescriptor
+msgid "A Free Pascal command line program with some useful settings added."
+msgstr ""
 
 #: lazarusidestrconsts.lisprogramsourcemusthaveapascalextensionlikepaspporlp
 msgid "Program source must have a pascal extension like .pas, .pp or .lpr"
@@ -14433,6 +14433,14 @@ msgstr "Kutista pienimpään"
 #: lazarusidestrconsts.lissibling
 msgid "Sibling"
 msgstr "Sisarus"
+
+#: lazarusidestrconsts.lissimpleprogram
+msgid "Simple Program"
+msgstr ""
+
+#: lazarusidestrconsts.lissimpleprogramprogramdescriptor
+msgid "A most simple Free Pascal command line program."
+msgstr ""
 
 #: lazarusidestrconsts.lissimplesyntax
 msgid "Simple syntax"
@@ -16014,6 +16022,10 @@ msgstr "Käytä pakettia projektissa"
 msgid "User's home directory"
 msgstr "Käyttäjän kotihakemisto"
 
+#: lazarusidestrconsts.lisuseselected
+msgid "Use Selected"
+msgstr ""
+
 #: lazarusidestrconsts.lisuseunit
 msgid "Add Unit to Uses Section"
 msgstr "Lisää käännösyksikkö uses-lauseeseen"
@@ -16343,6 +16355,10 @@ msgstr "Raaka"
 msgid "Add Inverse"
 msgstr "Lisää käänteinen"
 
+#: lazarusidestrconsts.rsattachto
+msgid "Attach to"
+msgstr ""
+
 #: lazarusidestrconsts.rsautomaticallyincreasebuildnumber
 msgid "Automatically increase build number"
 msgstr "Lisää koonnan numeroa automaattisesti"
@@ -16386,6 +16402,10 @@ msgstr "Tämä alusta ei tue symbolisia linkkejä"
 #: lazarusidestrconsts.rsenablei18n
 msgid "Enable i18n"
 msgstr "Salli kansainvälistäminen"
+
+#: lazarusidestrconsts.rsenterpid
+msgid "Enter PID"
+msgstr ""
 
 #: lazarusidestrconsts.rsfilterthelistwithstring
 msgid "Filter the lines in list with a string"
@@ -16730,6 +16750,10 @@ msgstr "Lisää hyppypiste"
 msgid "add watch"
 msgstr "lisää vahti"
 
+#: lazarusidestrconsts.srkmecattach
+msgid "Attach to program"
+msgstr ""
+
 #: lazarusidestrconsts.srkmecautocompletion
 msgid "Code template completion"
 msgstr ""
@@ -16934,6 +16958,10 @@ msgstr "Poista tämä rivi"
 #: lazarusidestrconsts.srkmecdeleteword
 msgid "Delete to end of word"
 msgstr "Poista seuraava sana"
+
+#: lazarusidestrconsts.srkmecdetach
+msgid "Detach from program"
+msgstr ""
 
 #: lazarusidestrconsts.srkmecdiff
 msgctxt "lazarusidestrconsts.srkmecdiff"

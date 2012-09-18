@@ -1109,6 +1109,10 @@ msgstr "Zakres"
 msgid "Relocatable"
 msgstr ""
 
+#: lazarusidestrconsts.dlgcosetasdefault
+msgid "Set compiler options as default"
+msgstr ""
+
 #: lazarusidestrconsts.dlgcoshowerr
 #, fuzzy
 #| msgid "Show Errors"
@@ -1179,10 +1183,6 @@ msgstr ""
 #| msgid "Unit Style"
 msgid "Unit style"
 msgstr "Rodzaj modułu:"
-
-#: lazarusidestrconsts.dlgcouseasdefault
-msgid "Use these compiler options as default for new projects"
-msgstr "Użyj tych opcji jako domyślne przy tworzeniu nowych projektów"
 
 #: lazarusidestrconsts.dlgcovalgrind
 msgid "Generate code for valgrind"
@@ -1983,6 +1983,10 @@ msgstr ""
 #: lazarusidestrconsts.dlghostapplication
 msgid "Host application"
 msgstr "Główna aplikacja"
+
+#: lazarusidestrconsts.dlgidemacrovalues
+msgid "IDE Macro Values"
+msgstr ""
 
 #: lazarusidestrconsts.dlgidentifiercompletion
 #, fuzzy
@@ -3106,10 +3110,6 @@ msgstr ""
 
 #: lazarusidestrconsts.dlgshowdebuginfo
 msgid "Show debug info"
-msgstr ""
-
-#: lazarusidestrconsts.dlgshowdefinedmacros
-msgid "Show defined macros"
 msgstr ""
 
 #: lazarusidestrconsts.dlgshowedrhints
@@ -4314,12 +4314,12 @@ msgstr ""
 msgid "Append short description to long description"
 msgstr ""
 
-#: lazarusidestrconsts.lisapplicationagraphicallclfreepascalprogramtheprogra
-msgid "Application%sA graphical LCL/Free Pascal program. The program source is automatically maintained by Lazarus."
-msgstr ""
-
 #: lazarusidestrconsts.lisapplicationclassname
 msgid "&Application class name"
+msgstr ""
+
+#: lazarusidestrconsts.lisapplicationprogramdescriptor
+msgid "A graphical Free Pascal application using the cross-platform LCL library for its GUI."
 msgstr ""
 
 #: lazarusidestrconsts.lisapplybuildflagsbtodependenciestoo
@@ -4336,10 +4336,6 @@ msgstr ""
 
 #: lazarusidestrconsts.lisaroundborderspacehint
 msgid "Borderspace around the control. The other four borderspaces are added to this value."
-msgstr ""
-
-#: lazarusidestrconsts.lisasimplepascalprogramfilethiscanbeusedforquickanddi
-msgid "A simple Pascal Program file.%sThis can be used for quick and dirty testing.%sBetter create a new project."
 msgstr ""
 
 #: lazarusidestrconsts.lisaskbeforereplacingeachfoundtext
@@ -6373,6 +6369,10 @@ msgstr ""
 msgid "Console application"
 msgstr ""
 
+#: lazarusidestrconsts.lisconsoleapplicationprogramdescriptor
+msgid "A Free Pascal command line program using TCustomApplication to easily check command line options, handling exceptions, etc."
+msgstr ""
+
 #: lazarusidestrconsts.lisconstructorcode
 msgid "Constructor code"
 msgstr ""
@@ -6922,8 +6922,8 @@ msgstr "Opcje niestandardowe"
 msgid "Custom Program"
 msgstr ""
 
-#: lazarusidestrconsts.liscustomprogramafreepascalprogram
-msgid "Custom Program%sA Free Pascal program."
+#: lazarusidestrconsts.liscustomprogramprogramdescriptor
+msgid "A Custom Free Pascal program."
 msgstr ""
 
 #: lazarusidestrconsts.liscut
@@ -8729,10 +8729,6 @@ msgstr ""
 msgid "Free Pascal Compiler not found"
 msgstr ""
 
-#: lazarusidestrconsts.lisfreepascalprogramusingtcustomapplicationtoeasilych
-msgid "Free Pascal program using TCustomApplication to easily check command line options, handling exceptions, etc. The program source is automatically maintained by Lazarus."
-msgstr ""
-
 #: lazarusidestrconsts.lisfreepascalsourcedirectory
 #, fuzzy
 #| msgid "Freepascal source directory"
@@ -9192,9 +9188,10 @@ msgstr ""
 msgid "Compile Project"
 msgstr "Kompilowanie projektu"
 
-#: lazarusidestrconsts.lisinfobuildcomplile
+#: lazarusidestrconsts.lisinfobuildcompile
 #, fuzzy
 #| msgid "Compiling..."
+msgctxt "lazarusidestrconsts.lisinfobuildcompile"
 msgid "Compiling ..."
 msgstr "Kompilowanie..."
 
@@ -10463,12 +10460,12 @@ msgstr ""
 msgid "<description>%sCopyright (C) <year> <name of author> <contact>%sThis library is free software; you can redistribute it and/or modify it under the terms of the GNU Library General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version. %sThis program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Library General Public License for more details. %sYou should have received a copy of the GNU Library General Public License along with this library; if not, write to the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA."
 msgstr ""
 
-#: lazarusidestrconsts.lislibraryafreepascallibrarydllunderwindowssounderlin
-msgid "Library%sA Free Pascal library (.dll under Windows, .so under Linux, .dylib under MacOS X). The library source is automatically maintained by Lazarus."
-msgstr ""
-
 #: lazarusidestrconsts.lislibrarypath
 msgid "library path"
+msgstr ""
+
+#: lazarusidestrconsts.lislibraryprogramdescriptor
+msgid "A Free Pascal shared library (.dll under Windows, .so under Linux, .dylib under MacOS X)."
 msgstr ""
 
 #: lazarusidestrconsts.lisline
@@ -12692,10 +12689,9 @@ msgstr "Kompiluj pakiet"
 msgid "Compiler Options for Package %s"
 msgstr "Opcje kompilatora dla pakietu %s"
 
-#: lazarusidestrconsts.lispckeditcompopts
-msgctxt "lazarusidestrconsts.lispckeditcompopts"
-msgid "Compiler Options"
-msgstr "Opcje kompilatora"
+#: lazarusidestrconsts.lispckeditcreatefpmakefile
+msgid "Create fpmake.pp"
+msgstr ""
 
 #: lazarusidestrconsts.lispckeditcreatemakefile
 msgctxt "lazarusidestrconsts.lispckeditcreatemakefile"
@@ -12895,6 +12891,10 @@ msgstr "Pokaż źródło pakietu"
 #: lazarusidestrconsts.lispckexplautocreated
 msgid "AutoCreated"
 msgstr "Automatycznie utworzony"
+
+#: lazarusidestrconsts.lispckexplbase
+msgid "Base, can not be uninstalled"
+msgstr ""
 
 #: lazarusidestrconsts.lispckexplinstalled
 msgid "Installed"
@@ -14010,16 +14010,16 @@ msgctxt "lazarusidestrconsts.lisprogram"
 msgid "Program"
 msgstr "Program"
 
-#: lazarusidestrconsts.lisprogramafreepascalprogramtheprogramfileisautomatic
-msgid "Program%sA Free Pascal program. The program source is automatically maintained by Lazarus."
-msgstr ""
-
 #: lazarusidestrconsts.lisprogramdetected
 msgid "Program detected"
 msgstr "Wykryłem program"
 
 #: lazarusidestrconsts.lisprogramnotfound
 msgid "Program %s not found"
+msgstr ""
+
+#: lazarusidestrconsts.lisprogramprogramdescriptor
+msgid "A Free Pascal command line program with some useful settings added."
 msgstr ""
 
 #: lazarusidestrconsts.lisprogramsourcemusthaveapascalextensionlikepaspporlp
@@ -15100,6 +15100,14 @@ msgstr ""
 
 #: lazarusidestrconsts.lissibling
 msgid "Sibling"
+msgstr ""
+
+#: lazarusidestrconsts.lissimpleprogram
+msgid "Simple Program"
+msgstr ""
+
+#: lazarusidestrconsts.lissimpleprogramprogramdescriptor
+msgid "A most simple Free Pascal command line program."
 msgstr ""
 
 #: lazarusidestrconsts.lissimplesyntax
@@ -16689,6 +16697,10 @@ msgstr ""
 msgid "User's home directory"
 msgstr ""
 
+#: lazarusidestrconsts.lisuseselected
+msgid "Use Selected"
+msgstr ""
+
 #: lazarusidestrconsts.lisuseunit
 msgctxt "lazarusidestrconsts.lisuseunit"
 msgid "Add Unit to Uses Section"
@@ -17021,6 +17033,10 @@ msgstr ""
 msgid "Add Inverse"
 msgstr ""
 
+#: lazarusidestrconsts.rsattachto
+msgid "Attach to"
+msgstr ""
+
 #: lazarusidestrconsts.rsautomaticallyincreasebuildnumber
 msgid "Automatically increase build number"
 msgstr "Automatycznie zwiększ numer budowania"
@@ -17065,6 +17081,10 @@ msgstr "Tworzenie linku symbolicznego nie jest wspierane na tej platformie!"
 
 #: lazarusidestrconsts.rsenablei18n
 msgid "Enable i18n"
+msgstr ""
+
+#: lazarusidestrconsts.rsenterpid
+msgid "Enter PID"
 msgstr ""
 
 #: lazarusidestrconsts.rsfilterthelistwithstring
@@ -17414,6 +17434,10 @@ msgstr "Dodaj punkt skoku"
 msgid "add watch"
 msgstr "dodaj czujkę"
 
+#: lazarusidestrconsts.srkmecattach
+msgid "Attach to program"
+msgstr ""
+
 #: lazarusidestrconsts.srkmecautocompletion
 msgid "Code template completion"
 msgstr "Dokańczenie szablonu kodu"
@@ -17620,6 +17644,10 @@ msgstr "Usuń bieżący wiersz"
 #: lazarusidestrconsts.srkmecdeleteword
 msgid "Delete to end of word"
 msgstr "Usuń do końca słowa"
+
+#: lazarusidestrconsts.srkmecdetach
+msgid "Detach from program"
+msgstr ""
 
 #: lazarusidestrconsts.srkmecdiff
 msgctxt "lazarusidestrconsts.srkmecdiff"

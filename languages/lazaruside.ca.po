@@ -1084,6 +1084,10 @@ msgstr "Abast"
 msgid "Relocatable"
 msgstr ""
 
+#: lazarusidestrconsts.dlgcosetasdefault
+msgid "Set compiler options as default"
+msgstr ""
+
 #: lazarusidestrconsts.dlgcoshowerr
 #, fuzzy
 #| msgid "Show Errors"
@@ -1154,10 +1158,6 @@ msgstr ""
 #| msgid "Unit Style"
 msgid "Unit style"
 msgstr "Estil de la unitat:"
-
-#: lazarusidestrconsts.dlgcouseasdefault
-msgid "Use these compiler options as default for new projects"
-msgstr ""
 
 #: lazarusidestrconsts.dlgcovalgrind
 msgid "Generate code for valgrind"
@@ -1941,6 +1941,10 @@ msgstr "La tecla d'inici salta al començament més proper"
 #: lazarusidestrconsts.dlghostapplication
 msgid "Host application"
 msgstr "Aplicació de l'amfitrió"
+
+#: lazarusidestrconsts.dlgidemacrovalues
+msgid "IDE Macro Values"
+msgstr ""
 
 #: lazarusidestrconsts.dlgidentifiercompletion
 #, fuzzy
@@ -3031,10 +3035,6 @@ msgstr "Mostra els condicionals"
 #: lazarusidestrconsts.dlgshowdebuginfo
 msgid "Show debug info"
 msgstr "Mostra l'informació de la depuració"
-
-#: lazarusidestrconsts.dlgshowdefinedmacros
-msgid "Show defined macros"
-msgstr "Mostra les macroinstruccions definides"
 
 #: lazarusidestrconsts.dlgshowedrhints
 msgid "Show editor hints"
@@ -4236,14 +4236,12 @@ msgstr "Va ocorrer un error durant l'ultima execució mentre s'hi carregava %s!%
 msgid "Append short description to long description"
 msgstr ""
 
-#: lazarusidestrconsts.lisapplicationagraphicallclfreepascalprogramtheprogra
-#, fuzzy
-#| msgid "Application%sA graphical lcl/freepascal program. The program file is automatically maintained by lazarus."
-msgid "Application%sA graphical LCL/Free Pascal program. The program source is automatically maintained by Lazarus."
-msgstr "Aplicació%sUn programa gràfic lcl/freepascal. El Lazarus manté automàticament el fitxer del programa"
-
 #: lazarusidestrconsts.lisapplicationclassname
 msgid "&Application class name"
+msgstr ""
+
+#: lazarusidestrconsts.lisapplicationprogramdescriptor
+msgid "A graphical Free Pascal application using the cross-platform LCL library for its GUI."
 msgstr ""
 
 #: lazarusidestrconsts.lisapplybuildflagsbtodependenciestoo
@@ -4260,10 +4258,6 @@ msgstr ""
 
 #: lazarusidestrconsts.lisaroundborderspacehint
 msgid "Borderspace around the control. The other four borderspaces are added to this value."
-msgstr ""
-
-#: lazarusidestrconsts.lisasimplepascalprogramfilethiscanbeusedforquickanddi
-msgid "A simple Pascal Program file.%sThis can be used for quick and dirty testing.%sBetter create a new project."
 msgstr ""
 
 #: lazarusidestrconsts.lisaskbeforereplacingeachfoundtext
@@ -6291,6 +6285,10 @@ msgstr ""
 msgid "Console application"
 msgstr ""
 
+#: lazarusidestrconsts.lisconsoleapplicationprogramdescriptor
+msgid "A Free Pascal command line program using TCustomApplication to easily check command line options, handling exceptions, etc."
+msgstr ""
+
 #: lazarusidestrconsts.lisconstructorcode
 msgid "Constructor code"
 msgstr ""
@@ -6840,11 +6838,9 @@ msgstr "Opcions personalitzades"
 msgid "Custom Program"
 msgstr "Programa personalitzat"
 
-#: lazarusidestrconsts.liscustomprogramafreepascalprogram
-#, fuzzy
-#| msgid "Custom Program%sA freepascal program."
-msgid "Custom Program%sA Free Pascal program."
-msgstr "Programa personalitzat%sUn programa FreePascal."
+#: lazarusidestrconsts.liscustomprogramprogramdescriptor
+msgid "A Custom Free Pascal program."
+msgstr ""
 
 #: lazarusidestrconsts.liscut
 msgctxt "lazarusidestrconsts.liscut"
@@ -8645,10 +8641,6 @@ msgstr ""
 msgid "Free Pascal Compiler not found"
 msgstr "No s'ha trobat el compilador Free Pascal"
 
-#: lazarusidestrconsts.lisfreepascalprogramusingtcustomapplicationtoeasilych
-msgid "Free Pascal program using TCustomApplication to easily check command line options, handling exceptions, etc. The program source is automatically maintained by Lazarus."
-msgstr ""
-
 #: lazarusidestrconsts.lisfreepascalsourcedirectory
 #, fuzzy
 #| msgid "Freepascal source directory"
@@ -9110,7 +9102,8 @@ msgstr ""
 msgid "Compile Project"
 msgstr ""
 
-#: lazarusidestrconsts.lisinfobuildcomplile
+#: lazarusidestrconsts.lisinfobuildcompile
+msgctxt "lazarusidestrconsts.lisinfobuildcompile"
 msgid "Compiling ..."
 msgstr ""
 
@@ -10359,15 +10352,13 @@ msgstr ""
 msgid "<description>%sCopyright (C) <year> <name of author> <contact>%sThis library is free software; you can redistribute it and/or modify it under the terms of the GNU Library General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version. %sThis program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Library General Public License for more details. %sYou should have received a copy of the GNU Library General Public License along with this library; if not, write to the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA."
 msgstr ""
 
-#: lazarusidestrconsts.lislibraryafreepascallibrarydllunderwindowssounderlin
-#, fuzzy
-#| msgid "Library%sA freepascal library (.dll under windows, .so under linux, .dylib under macosx). The library source file is automatically maintained by Lazarus."
-msgid "Library%sA Free Pascal library (.dll under Windows, .so under Linux, .dylib under MacOS X). The library source is automatically maintained by Lazarus."
-msgstr "Llibreria%sUna llibreria freepascal (.dll en windoze, .so en linux, .dylib en macosx). El font de la llibreria es mantingut automàticament per Lazarus."
-
 #: lazarusidestrconsts.lislibrarypath
 msgid "library path"
 msgstr "trajectòria de les biblioteques"
+
+#: lazarusidestrconsts.lislibraryprogramdescriptor
+msgid "A Free Pascal shared library (.dll under Windows, .so under Linux, .dylib under MacOS X)."
+msgstr ""
 
 #: lazarusidestrconsts.lisline
 msgid "Line:"
@@ -12567,10 +12558,9 @@ msgstr "Compila el paquet"
 msgid "Compiler Options for Package %s"
 msgstr "Opcions del compilador pel paquet %s"
 
-#: lazarusidestrconsts.lispckeditcompopts
-msgctxt "lazarusidestrconsts.lispckeditcompopts"
-msgid "Compiler Options"
-msgstr "Opcions del compilador"
+#: lazarusidestrconsts.lispckeditcreatefpmakefile
+msgid "Create fpmake.pp"
+msgstr ""
 
 #: lazarusidestrconsts.lispckeditcreatemakefile
 msgctxt "lazarusidestrconsts.lispckeditcreatemakefile"
@@ -12770,6 +12760,10 @@ msgstr "Mostra les fonts dels paquets"
 #: lazarusidestrconsts.lispckexplautocreated
 msgid "AutoCreated"
 msgstr "Creat automàticament"
+
+#: lazarusidestrconsts.lispckexplbase
+msgid "Base, can not be uninstalled"
+msgstr ""
 
 #: lazarusidestrconsts.lispckexplinstalled
 msgid "Installed"
@@ -13883,18 +13877,16 @@ msgctxt "lazarusidestrconsts.lisprogram"
 msgid "Program"
 msgstr "programa"
 
-#: lazarusidestrconsts.lisprogramafreepascalprogramtheprogramfileisautomatic
-#, fuzzy
-#| msgid "Program%sA freepascal program. The program file is automatically maintained by lazarus."
-msgid "Program%sA Free Pascal program. The program source is automatically maintained by Lazarus."
-msgstr "Programa%sUn programa FreePascal. El Lazarus manté automàticament el fitxer del programa."
-
 #: lazarusidestrconsts.lisprogramdetected
 msgid "Program detected"
 msgstr "S'ha detectat el programa"
 
 #: lazarusidestrconsts.lisprogramnotfound
 msgid "Program %s not found"
+msgstr ""
+
+#: lazarusidestrconsts.lisprogramprogramdescriptor
+msgid "A Free Pascal command line program with some useful settings added."
 msgstr ""
 
 #: lazarusidestrconsts.lisprogramsourcemusthaveapascalextensionlikepaspporlp
@@ -14969,6 +14961,14 @@ msgstr ""
 
 #: lazarusidestrconsts.lissibling
 msgid "Sibling"
+msgstr ""
+
+#: lazarusidestrconsts.lissimpleprogram
+msgid "Simple Program"
+msgstr ""
+
+#: lazarusidestrconsts.lissimpleprogramprogramdescriptor
+msgid "A most simple Free Pascal command line program."
 msgstr ""
 
 #: lazarusidestrconsts.lissimplesyntax
@@ -16578,6 +16578,10 @@ msgstr ""
 msgid "User's home directory"
 msgstr ""
 
+#: lazarusidestrconsts.lisuseselected
+msgid "Use Selected"
+msgstr ""
+
 #: lazarusidestrconsts.lisuseunit
 msgctxt "lazarusidestrconsts.lisuseunit"
 msgid "Add Unit to Uses Section"
@@ -16908,6 +16912,10 @@ msgstr ""
 msgid "Add Inverse"
 msgstr ""
 
+#: lazarusidestrconsts.rsattachto
+msgid "Attach to"
+msgstr ""
+
 #: lazarusidestrconsts.rsautomaticallyincreasebuildnumber
 msgid "Automatically increase build number"
 msgstr ""
@@ -16950,6 +16958,10 @@ msgstr ""
 
 #: lazarusidestrconsts.rsenablei18n
 msgid "Enable i18n"
+msgstr ""
+
+#: lazarusidestrconsts.rsenterpid
+msgid "Enter PID"
 msgstr ""
 
 #: lazarusidestrconsts.rsfilterthelistwithstring
@@ -17297,6 +17309,10 @@ msgstr "Afegeix un punt de salt"
 msgid "add watch"
 msgstr "afegeix un control"
 
+#: lazarusidestrconsts.srkmecattach
+msgid "Attach to program"
+msgstr ""
+
 #: lazarusidestrconsts.srkmecautocompletion
 msgid "Code template completion"
 msgstr "Completa la plantilla del codi"
@@ -17503,6 +17519,10 @@ msgstr "Elimina la línia actual"
 #: lazarusidestrconsts.srkmecdeleteword
 msgid "Delete to end of word"
 msgstr "Elimina fins al final de la paraula"
+
+#: lazarusidestrconsts.srkmecdetach
+msgid "Detach from program"
+msgstr ""
 
 #: lazarusidestrconsts.srkmecdiff
 msgctxt "lazarusidestrconsts.srkmecdiff"

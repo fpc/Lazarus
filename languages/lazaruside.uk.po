@@ -1071,6 +1071,10 @@ msgstr "Діапазон"
 msgid "Relocatable"
 msgstr "Переміщуваний"
 
+#: lazarusidestrconsts.dlgcosetasdefault
+msgid "Set compiler options as default"
+msgstr ""
+
 #: lazarusidestrconsts.dlgcoshowerr
 #| msgid "Show Errors"
 msgid "Show errors"
@@ -1133,10 +1137,6 @@ msgstr "Удари"
 #| msgid "Unit Style"
 msgid "Unit style"
 msgstr "Стиль модуля"
-
-#: lazarusidestrconsts.dlgcouseasdefault
-msgid "Use these compiler options as default for new projects"
-msgstr "Використовувати ці параметри компілятора як типові для нових проектів"
 
 #: lazarusidestrconsts.dlgcovalgrind
 msgid "Generate code for valgrind"
@@ -1910,6 +1910,10 @@ msgstr "Home переводить до найближчого старту"
 #: lazarusidestrconsts.dlghostapplication
 msgid "Host application"
 msgstr "Основна програма"
+
+#: lazarusidestrconsts.dlgidemacrovalues
+msgid "IDE Macro Values"
+msgstr ""
 
 #: lazarusidestrconsts.dlgidentifiercompletion
 #| msgid "Identifier completion"
@@ -2990,10 +2994,6 @@ msgstr "Показувати умови"
 #: lazarusidestrconsts.dlgshowdebuginfo
 msgid "Show debug info"
 msgstr "Показувати налагоджувальну інф-ю"
-
-#: lazarusidestrconsts.dlgshowdefinedmacros
-msgid "Show defined macros"
-msgstr "Показувати означені макроси"
 
 #: lazarusidestrconsts.dlgshowedrhints
 msgid "Show editor hints"
@@ -4169,13 +4169,13 @@ msgstr "При останньому запуску виникла помилка
 msgid "Append short description to long description"
 msgstr "Додати короткий опис до повного опису"
 
-#: lazarusidestrconsts.lisapplicationagraphicallclfreepascalprogramtheprogra
-msgid "Application%sA graphical LCL/Free Pascal program. The program source is automatically maintained by Lazarus."
-msgstr "Програма%sГрафічна програма на LCL/Free Pascal. Джерело програми автоматично підтримується Lazarus."
-
 #: lazarusidestrconsts.lisapplicationclassname
 msgid "&Application class name"
 msgstr "&Ім'я класу програми"
+
+#: lazarusidestrconsts.lisapplicationprogramdescriptor
+msgid "A graphical Free Pascal application using the cross-platform LCL library for its GUI."
+msgstr ""
 
 #: lazarusidestrconsts.lisapplybuildflagsbtodependenciestoo
 msgid "apply build flags (-B) to dependencies too"
@@ -4192,10 +4192,6 @@ msgstr "Модуль проекту не може бути використан�
 #: lazarusidestrconsts.lisaroundborderspacehint
 msgid "Borderspace around the control. The other four borderspaces are added to this value."
 msgstr "Ширина бордюру навколо контролу. Інші чотири бордюри додаються до цієї величини."
-
-#: lazarusidestrconsts.lisasimplepascalprogramfilethiscanbeusedforquickanddi
-msgid "A simple Pascal Program file.%sThis can be used for quick and dirty testing.%sBetter create a new project."
-msgstr "Простий програмний файл на Паскалі.%sМоже бути використаний для швидкого і чорнового тестування.%sА краще створіть новий проект."
 
 #: lazarusidestrconsts.lisaskbeforereplacingeachfoundtext
 msgid "Ask before replacing each found text"
@@ -6220,6 +6216,10 @@ msgstr "Конфлікт"
 msgid "Console application"
 msgstr "Консольна програма"
 
+#: lazarusidestrconsts.lisconsoleapplicationprogramdescriptor
+msgid "A Free Pascal command line program using TCustomApplication to easily check command line options, handling exceptions, etc."
+msgstr ""
+
 #: lazarusidestrconsts.lisconstructorcode
 msgid "Constructor code"
 msgstr "Код конструктора"
@@ -6772,9 +6772,9 @@ msgstr "Спеціальні параметри"
 msgid "Custom Program"
 msgstr "Спеціальна програма"
 
-#: lazarusidestrconsts.liscustomprogramafreepascalprogram
-msgid "Custom Program%sA Free Pascal program."
-msgstr "Спеціальна програма%sПрограма мовою FreePascal."
+#: lazarusidestrconsts.liscustomprogramprogramdescriptor
+msgid "A Custom Free Pascal program."
+msgstr ""
 
 #: lazarusidestrconsts.liscut
 msgctxt "lazarusidestrconsts.liscut"
@@ -8580,10 +8580,6 @@ msgstr "Free Pascal"
 msgid "Free Pascal Compiler not found"
 msgstr "Компілятор FreePascal не знайдений"
 
-#: lazarusidestrconsts.lisfreepascalprogramusingtcustomapplicationtoeasilych
-msgid "Free Pascal program using TCustomApplication to easily check command line options, handling exceptions, etc. The program source is automatically maintained by Lazarus."
-msgstr "Програма Free Pascal легко перевіряє параметри командного рядка, обробляє винятки і т.д. за допомогою TCustomApplication. Джерело програми автоматично підтримується Lazarus."
-
 #: lazarusidestrconsts.lisfreepascalsourcedirectory
 msgid "Free Pascal source directory"
 msgstr "Тека кодів Free Pascal"
@@ -9043,7 +9039,8 @@ msgstr "Перервано ..."
 msgid "Compile Project"
 msgstr "Компілювати Проект"
 
-#: lazarusidestrconsts.lisinfobuildcomplile
+#: lazarusidestrconsts.lisinfobuildcompile
+msgctxt "lazarusidestrconsts.lisinfobuildcompile"
 msgid "Compiling ..."
 msgstr "Компілюю ..."
 
@@ -10319,13 +10316,13 @@ msgstr "LFM справний"
 msgid "<description>%sCopyright (C) <year> <name of author> <contact>%sThis library is free software; you can redistribute it and/or modify it under the terms of the GNU Library General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version. %sThis program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Library General Public License for more details. %sYou should have received a copy of the GNU Library General Public License along with this library; if not, write to the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA."
 msgstr "<description>%sCopyright (C) <year> <name of author> <contact>%sЦя бібліотека є відкритим програмним забезпеченням; ви можете поширювати її та змінювати на умовах ліцензії GNU Library General Public License v2 або (на ваш розсуд) новішої версії, що видана Free Software Foundation. %sЦя програма поширюється поширюється з надією бути корисною БЕЗ БУДЬ-ЯКИХ ГАРАНТІЙ, у тому числі не гарантується його придатність до певної мети. Докладнішу інформацію дивіться у ліцензії GNU LGPL. %sВи повинні були отримати копію ліцензії GNU LGPL разом з бібліотекою; якщо ви її не отримали, напишіть листа до Free Software Foundation, Inc. за адресою 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA."
 
-#: lazarusidestrconsts.lislibraryafreepascallibrarydllunderwindowssounderlin
-msgid "Library%sA Free Pascal library (.dll under Windows, .so under Linux, .dylib under MacOS X). The library source is automatically maintained by Lazarus."
-msgstr "Бібліотека%sБібліотека Free Pascal (.dll під Windows, .so під Linux, .dylib під MacOS X. Джерело бібліотеки автоматично підтримується Lazarus."
-
 #: lazarusidestrconsts.lislibrarypath
 msgid "library path"
 msgstr "шлях до бібліотек"
+
+#: lazarusidestrconsts.lislibraryprogramdescriptor
+msgid "A Free Pascal shared library (.dll under Windows, .so under Linux, .dylib under MacOS X)."
+msgstr ""
 
 #: lazarusidestrconsts.lisline
 msgid "Line:"
@@ -12415,10 +12412,9 @@ msgstr "Побудувати пакунок"
 msgid "Compiler Options for Package %s"
 msgstr "Параметри компілятора для пакунку %s"
 
-#: lazarusidestrconsts.lispckeditcompopts
-msgctxt "lazarusidestrconsts.lispckeditcompopts"
-msgid "Compiler Options"
-msgstr "Параметри компілятора"
+#: lazarusidestrconsts.lispckeditcreatefpmakefile
+msgid "Create fpmake.pp"
+msgstr ""
 
 #: lazarusidestrconsts.lispckeditcreatemakefile
 msgctxt "lazarusidestrconsts.lispckeditcreatemakefile"
@@ -12613,6 +12609,10 @@ msgstr "Продивитись код пакунку"
 #: lazarusidestrconsts.lispckexplautocreated
 msgid "AutoCreated"
 msgstr "Автостворення"
+
+#: lazarusidestrconsts.lispckexplbase
+msgid "Base, can not be uninstalled"
+msgstr ""
 
 #: lazarusidestrconsts.lispckexplinstalled
 msgid "Installed"
@@ -13717,10 +13717,6 @@ msgctxt "lazarusidestrconsts.lisprogram"
 msgid "Program"
 msgstr "Програма"
 
-#: lazarusidestrconsts.lisprogramafreepascalprogramtheprogramfileisautomatic
-msgid "Program%sA Free Pascal program. The program source is automatically maintained by Lazarus."
-msgstr "Програма%sПрограма freepascal. Джерело програми автоматично підтримується Lazarus."
-
 #: lazarusidestrconsts.lisprogramdetected
 msgid "Program detected"
 msgstr "Виявлена програма"
@@ -13728,6 +13724,10 @@ msgstr "Виявлена програма"
 #: lazarusidestrconsts.lisprogramnotfound
 msgid "Program %s not found"
 msgstr "Програма %s не знайдена"
+
+#: lazarusidestrconsts.lisprogramprogramdescriptor
+msgid "A Free Pascal command line program with some useful settings added."
+msgstr ""
 
 #: lazarusidestrconsts.lisprogramsourcemusthaveapascalextensionlikepaspporlp
 msgid "Program source must have a pascal extension like .pas, .pp or .lpr"
@@ -14797,6 +14797,14 @@ msgstr "Зменшити до найменшого"
 #: lazarusidestrconsts.lissibling
 msgid "Sibling"
 msgstr "Рівень"
+
+#: lazarusidestrconsts.lissimpleprogram
+msgid "Simple Program"
+msgstr ""
+
+#: lazarusidestrconsts.lissimpleprogramprogramdescriptor
+msgid "A most simple Free Pascal command line program."
+msgstr ""
 
 #: lazarusidestrconsts.lissimplesyntax
 #| msgid "Simple Syntax"
@@ -16383,6 +16391,10 @@ msgstr "Використати пакунок в проекті"
 msgid "User's home directory"
 msgstr "Домашня тека користувача"
 
+#: lazarusidestrconsts.lisuseselected
+msgid "Use Selected"
+msgstr ""
+
 #: lazarusidestrconsts.lisuseunit
 msgctxt "lazarusidestrconsts.lisuseunit"
 msgid "Add Unit to Uses Section"
@@ -16716,6 +16728,10 @@ msgstr "Сирі дані"
 msgid "Add Inverse"
 msgstr "Додати Зворотнє"
 
+#: lazarusidestrconsts.rsattachto
+msgid "Attach to"
+msgstr ""
+
 #: lazarusidestrconsts.rsautomaticallyincreasebuildnumber
 msgid "Automatically increase build number"
 msgstr "Автоматично збільшувати номер білду"
@@ -16759,6 +16775,10 @@ msgstr "Створення симв посилань недоступне на �
 #: lazarusidestrconsts.rsenablei18n
 msgid "Enable i18n"
 msgstr "Ввімкнути i18n"
+
+#: lazarusidestrconsts.rsenterpid
+msgid "Enter PID"
+msgstr ""
 
 #: lazarusidestrconsts.rsfilterthelistwithstring
 msgid "Filter the lines in list with a string"
@@ -17105,6 +17125,10 @@ msgstr "Додати Точку Переходу"
 msgid "add watch"
 msgstr "додати спостереження"
 
+#: lazarusidestrconsts.srkmecattach
+msgid "Attach to program"
+msgstr ""
+
 #: lazarusidestrconsts.srkmecautocompletion
 msgid "Code template completion"
 msgstr "Завершення шаблонів коду"
@@ -17310,6 +17334,10 @@ msgstr "Видалити поточний рядок"
 #: lazarusidestrconsts.srkmecdeleteword
 msgid "Delete to end of word"
 msgstr "Видалити до кінця слова"
+
+#: lazarusidestrconsts.srkmecdetach
+msgid "Detach from program"
+msgstr ""
 
 #: lazarusidestrconsts.srkmecdiff
 msgctxt "lazarusidestrconsts.srkmecdiff"

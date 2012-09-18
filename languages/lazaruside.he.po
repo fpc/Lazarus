@@ -1102,6 +1102,10 @@ msgstr "טווח"
 msgid "Relocatable"
 msgstr ""
 
+#: lazarusidestrconsts.dlgcosetasdefault
+msgid "Set compiler options as default"
+msgstr ""
+
 #: lazarusidestrconsts.dlgcoshowerr
 #, fuzzy
 #| msgid "Show Errors"
@@ -1170,10 +1174,6 @@ msgstr ""
 #| msgid "Unit Style"
 msgid "Unit style"
 msgstr "סגנון היחידה:"
-
-#: lazarusidestrconsts.dlgcouseasdefault
-msgid "Use these compiler options as default for new projects"
-msgstr "השתמש באפשרויות מהדר אלו כברירת מחדל לפרוייקט חדש"
 
 #: lazarusidestrconsts.dlgcovalgrind
 msgid "Generate code for valgrind"
@@ -1965,6 +1965,10 @@ msgstr "מקש home קופץ להתחלה הקרובה ביותר"
 #: lazarusidestrconsts.dlghostapplication
 msgid "Host application"
 msgstr "יישום מארח"
+
+#: lazarusidestrconsts.dlgidemacrovalues
+msgid "IDE Macro Values"
+msgstr ""
 
 #: lazarusidestrconsts.dlgidentifiercompletion
 #, fuzzy
@@ -3092,10 +3096,6 @@ msgstr "הראה מותנים"
 #: lazarusidestrconsts.dlgshowdebuginfo
 msgid "Show debug info"
 msgstr "הראה מידע ניפוי שגיאות"
-
-#: lazarusidestrconsts.dlgshowdefinedmacros
-msgid "Show defined macros"
-msgstr "הראה מאקרו מוגדרים"
 
 #: lazarusidestrconsts.dlgshowedrhints
 msgid "Show editor hints"
@@ -4301,14 +4301,13 @@ msgstr "ארעה שגיאה באיתחול האחרון בזמן טעינת s!%s
 msgid "Append short description to long description"
 msgstr "הוסף תאור קצר אחרי תאור מפורט"
 
-#: lazarusidestrconsts.lisapplicationagraphicallclfreepascalprogramtheprogra
-#| msgid "Application%sA graphical lcl/freepascal program. The program file is automatically maintained by lazarus."
-msgid "Application%sA graphical LCL/Free Pascal program. The program source is automatically maintained by Lazarus."
-msgstr "יישום s% גרפי של תוכנית lcl/freepascal . התכנית מתוחזקת אוטומטית ע\"י לזארוס."
-
 #: lazarusidestrconsts.lisapplicationclassname
 msgid "&Application class name"
 msgstr "שם המחלקה של היישום"
+
+#: lazarusidestrconsts.lisapplicationprogramdescriptor
+msgid "A graphical Free Pascal application using the cross-platform LCL library for its GUI."
+msgstr ""
 
 #: lazarusidestrconsts.lisapplybuildflagsbtodependenciestoo
 msgid "apply build flags (-B) to dependencies too"
@@ -4325,10 +4324,6 @@ msgstr "יחידה של פרוייקט אינה יכולה לשמש לפרויי
 #: lazarusidestrconsts.lisaroundborderspacehint
 msgid "Borderspace around the control. The other four borderspaces are added to this value."
 msgstr "רווח מסביב לפקד. שאר ארבעת הרווחים מתוספים אליו."
-
-#: lazarusidestrconsts.lisasimplepascalprogramfilethiscanbeusedforquickanddi
-msgid "A simple Pascal Program file.%sThis can be used for quick and dirty testing.%sBetter create a new project."
-msgstr "קובץ פשוט של תכנית פסקל. הוא יכול לשמש לבדיקה מהירה ולא נקייה. עדיף ליצור פרוייקט חדש."
 
 #: lazarusidestrconsts.lisaskbeforereplacingeachfoundtext
 msgid "Ask before replacing each found text"
@@ -6390,6 +6385,10 @@ msgstr ""
 msgid "Console application"
 msgstr "יישום מסוף"
 
+#: lazarusidestrconsts.lisconsoleapplicationprogramdescriptor
+msgid "A Free Pascal command line program using TCustomApplication to easily check command line options, handling exceptions, etc."
+msgstr ""
+
 #: lazarusidestrconsts.lisconstructorcode
 msgid "Constructor code"
 msgstr "קוד הפונקציה הבונה"
@@ -6961,9 +6960,9 @@ msgstr "אפשרויות מותאמות אישית"
 msgid "Custom Program"
 msgstr "תכנית של המשתמש"
 
-#: lazarusidestrconsts.liscustomprogramafreepascalprogram
-msgid "Custom Program%sA Free Pascal program."
-msgstr "תכנית של המשתמש s%. תוכנית ב Free Pascal "
+#: lazarusidestrconsts.liscustomprogramprogramdescriptor
+msgid "A Custom Free Pascal program."
+msgstr ""
 
 #: lazarusidestrconsts.liscut
 msgctxt "lazarusidestrconsts.liscut"
@@ -8786,10 +8785,6 @@ msgstr "Free Pascal"
 msgid "Free Pascal Compiler not found"
 msgstr "מהדר Free Pascal לא נמצא"
 
-#: lazarusidestrconsts.lisfreepascalprogramusingtcustomapplicationtoeasilych
-msgid "Free Pascal program using TCustomApplication to easily check command line options, handling exceptions, etc. The program source is automatically maintained by Lazarus."
-msgstr "תכנית FPC המשתמשת ב TCustomApplication כדי לסמן בקלות אפשרויות של שורת הפקודה,טפול בחריגות, וכו. קוד התכנית מתוחזק אוטומטית ע\"י לזארוס."
-
 #: lazarusidestrconsts.lisfreepascalsourcedirectory
 #, fuzzy
 #| msgid "Freepascal source directory"
@@ -9259,9 +9254,10 @@ msgstr "מבוטל ..."
 msgid "Compile Project"
 msgstr "הדר פרויקט"
 
-#: lazarusidestrconsts.lisinfobuildcomplile
+#: lazarusidestrconsts.lisinfobuildcompile
 #, fuzzy
 #| msgid "Compiling..."
+msgctxt "lazarusidestrconsts.lisinfobuildcompile"
 msgid "Compiling ..."
 msgstr "מהדר..."
 
@@ -10574,13 +10570,13 @@ msgstr "קובץ LFM תקין"
 msgid "<description>%sCopyright (C) <year> <name of author> <contact>%sThis library is free software; you can redistribute it and/or modify it under the terms of the GNU Library General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version. %sThis program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Library General Public License for more details. %sYou should have received a copy of the GNU Library General Public License along with this library; if not, write to the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA."
 msgstr "<תאור> s% זכויות יוצרים (C) <שנה> <שם המחבר> <התקשרות> s% קוד זה הוא תכנה חפשית; אתה רשאי להפיץ ו/או לשנות אותה בהתאם לתנאים של GNU GPL כמו שפורסמו ע\"י הקרן למען תכנה חפשית; לפי גרסה 2 או לפי גרסה מאוחרת יותר (לפי בחירתך)  של הרשיון. קוד זה מופץ בתקווה שיהיה שימושי, אבל ללא אחריות כלשהי; אפילו לא אחריות שיווקית או התאמה לתכלית מסוימת. ראה GNU GPL לפרטים נוספים. ניתן למצוא ברשת את הרשיון בכתובת <http://www.gnu.org/copyleft/gpl.html>.או לקבל אותו ע\"י כתיבה ל the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA."
 
-#: lazarusidestrconsts.lislibraryafreepascallibrarydllunderwindowssounderlin
-msgid "Library%sA Free Pascal library (.dll under Windows, .so under Linux, .dylib under MacOS X). The library source is automatically maintained by Lazarus."
-msgstr "ספריה s% ספריית Free Pascal (תחת ווינדוס dll. , תחת לינוקס so. תחת מאק dylib.). קוד הספריה מתוחזק אוטומטית ע\"י לזארוס."
-
 #: lazarusidestrconsts.lislibrarypath
 msgid "library path"
 msgstr "נתיב הספריה"
+
+#: lazarusidestrconsts.lislibraryprogramdescriptor
+msgid "A Free Pascal shared library (.dll under Windows, .so under Linux, .dylib under MacOS X)."
+msgstr ""
 
 #: lazarusidestrconsts.lisline
 msgid "Line:"
@@ -12838,10 +12834,9 @@ msgstr "הדר חבילה"
 msgid "Compiler Options for Package %s"
 msgstr "אפשרויות מהדר לחבילה %s"
 
-#: lazarusidestrconsts.lispckeditcompopts
-msgctxt "lazarusidestrconsts.lispckeditcompopts"
-msgid "Compiler Options"
-msgstr "אפשרויות מהדר"
+#: lazarusidestrconsts.lispckeditcreatefpmakefile
+msgid "Create fpmake.pp"
+msgstr ""
 
 #: lazarusidestrconsts.lispckeditcreatemakefile
 msgctxt "lazarusidestrconsts.lispckeditcreatemakefile"
@@ -13041,6 +13036,10 @@ msgstr "הצג בקוד החבילה"
 #: lazarusidestrconsts.lispckexplautocreated
 msgid "AutoCreated"
 msgstr "נוצר אוטומטית"
+
+#: lazarusidestrconsts.lispckexplbase
+msgid "Base, can not be uninstalled"
+msgstr ""
 
 #: lazarusidestrconsts.lispckexplinstalled
 msgid "Installed"
@@ -14164,17 +14163,16 @@ msgctxt "lazarusidestrconsts.lisprogram"
 msgid "Program"
 msgstr "תוכנה"
 
-#: lazarusidestrconsts.lisprogramafreepascalprogramtheprogramfileisautomatic
-#| msgid "Program%sA freepascal program. The program file is automatically maintained by lazarus."
-msgid "Program%sA Free Pascal program. The program source is automatically maintained by Lazarus."
-msgstr "התוכנה %s היא תוכנת freepascal. קוד התוכנה מנוהל בצורה אוטומטית על ידי לזרוס."
-
 #: lazarusidestrconsts.lisprogramdetected
 msgid "Program detected"
 msgstr "תוכנית התגלתה"
 
 #: lazarusidestrconsts.lisprogramnotfound
 msgid "Program %s not found"
+msgstr ""
+
+#: lazarusidestrconsts.lisprogramprogramdescriptor
+msgid "A Free Pascal command line program with some useful settings added."
 msgstr ""
 
 #: lazarusidestrconsts.lisprogramsourcemusthaveapascalextensionlikepaspporlp
@@ -15273,6 +15271,14 @@ msgstr "כווץ לקטן ביותר"
 #: lazarusidestrconsts.lissibling
 msgid "Sibling"
 msgstr "אח"
+
+#: lazarusidestrconsts.lissimpleprogram
+msgid "Simple Program"
+msgstr ""
+
+#: lazarusidestrconsts.lissimpleprogramprogramdescriptor
+msgid "A most simple Free Pascal command line program."
+msgstr ""
 
 #: lazarusidestrconsts.lissimplesyntax
 #, fuzzy
@@ -16896,6 +16902,10 @@ msgstr "השתמש בחבילה בפרוייקט"
 msgid "User's home directory"
 msgstr "תיקיית הבית של המשתמש"
 
+#: lazarusidestrconsts.lisuseselected
+msgid "Use Selected"
+msgstr ""
+
 #: lazarusidestrconsts.lisuseunit
 #, fuzzy
 #| msgid "Add unit to uses section"
@@ -17238,6 +17248,10 @@ msgstr ""
 msgid "Add Inverse"
 msgstr "הוסף הפוך"
 
+#: lazarusidestrconsts.rsattachto
+msgid "Attach to"
+msgstr ""
+
 #: lazarusidestrconsts.rsautomaticallyincreasebuildnumber
 msgid "Automatically increase build number"
 msgstr "הגדל אוטומטית את מספר הבנייה"
@@ -17282,6 +17296,10 @@ msgstr "צירת קישור סימבולי אינה נתמכת במערכת זא
 #: lazarusidestrconsts.rsenablei18n
 msgid "Enable i18n"
 msgstr "אפשר i18n"
+
+#: lazarusidestrconsts.rsenterpid
+msgid "Enter PID"
+msgstr ""
 
 #: lazarusidestrconsts.rsfilterthelistwithstring
 msgid "Filter the lines in list with a string"
@@ -17632,6 +17650,10 @@ msgstr "הוסף נקודת קפיצה"
 msgid "add watch"
 msgstr "הוסף משגיח"
 
+#: lazarusidestrconsts.srkmecattach
+msgid "Attach to program"
+msgstr ""
+
 #: lazarusidestrconsts.srkmecautocompletion
 msgid "Code template completion"
 msgstr "השלמת תבנית קוד"
@@ -17838,6 +17860,10 @@ msgstr "מחק שורה נוכחית"
 #: lazarusidestrconsts.srkmecdeleteword
 msgid "Delete to end of word"
 msgstr "מחק עד סוף המילה"
+
+#: lazarusidestrconsts.srkmecdetach
+msgid "Detach from program"
+msgstr ""
 
 #: lazarusidestrconsts.srkmecdiff
 msgctxt "lazarusidestrconsts.srkmecdiff"
