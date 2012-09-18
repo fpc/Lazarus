@@ -171,7 +171,7 @@ type
     function FormatItem(
       const AFormat: String; AIndex, AYIndex: Integer): String; inline;
     function FormatItemXYText(
-      const AFormat: String; AX, AY: Double; const AText: String): String;
+      const AFormat: String; AX, AY: Double; AText: String): String;
     function GetEnumerator: TCustomChartSourceEnumerator;
     function IsSorted: Boolean; virtual;
     procedure ValuesInRange(
@@ -709,7 +709,7 @@ begin
 end;
 
 function TCustomChartSource.FormatItemXYText(
-  const AFormat: String; AX, AY: Double; const AText: String): String;
+  const AFormat: String; AX, AY: Double; AText: String): String;
 const
   TO_PERCENT = 100;
 var
