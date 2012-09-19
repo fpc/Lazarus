@@ -4070,6 +4070,7 @@ var
   DevCtx: TGtkDeviceContext absolute DC;
   DCOrigin: TPoint;
   R: TRect;
+  OldBrush: HBrush;
 begin
   Result:=0;
   if not IsValidDC(DC) then Exit;
@@ -4079,7 +4080,8 @@ begin
   Result := 1;
   if {%H-}PGdiObject(hBr)^.IsNullBrush then Exit;
 
-  DevCtx.SelectedColors:= dcscCustom;
+  OldBrush := SelectObject(DC, hBr);
+  DevCtx.SelectedColors := dcscCustom;
   EnsureGCColor(DC, dccGDIBrushColor, True, False);//Brush Color
 
   R := ARect;
@@ -4089,6 +4091,7 @@ begin
   gdk_draw_rectangle(DevCtx.Drawable, DevCtx.GC, 0,
                      R.Left + DCOrigin.X, R.Top + DCOrigin.Y,
                      R.Right-R.Left-1, R.Bottom-R.Top-1);
+  SelectObject(DC, OldBrush);
 end;
 
 {------------------------------------------------------------------------------
