@@ -856,7 +856,7 @@ function TCustomCodeTool.AtomIsStringConstant: boolean;
 var
   p: PChar;
 begin
-  if CurPos.StartPos>SrcLen then exit(false);
+  if (CurPos.StartPos<1) or (CurPos.StartPos>SrcLen) then exit(false);
   p:=@Src[CurPos.StartPos];
   Result:=(p^ in ['''','#']) or ((p^='^') and (p[1] in ['A'..'Z']));
 end;
