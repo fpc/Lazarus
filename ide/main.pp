@@ -6685,6 +6685,7 @@ begin
 
   // switch codetools to virtual project directory
   CodeToolBoss.GlobalValues.Variables[ExternalMacroStart+'ProjPath']:=VirtualDirectory;
+  EnvironmentOptions.LastSavedProjectFile:='';
 
   // create new project
   Project1:=CreateProjectObject(ProjectDesc,ProjectDescriptorProgram);
