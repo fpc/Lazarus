@@ -61,23 +61,11 @@ begin
     gdk_region_get_clipbox(FClipRegion^.GDIRegionObject, @Result);
 end;
 
-{------------------------------------------------------------------------------
-  function GetOffset
-
-  Returns the DC offset for the DC Origin.
- ------------------------------------------------------------------------------}
 function TGtkDeviceContext.GetOffset: TPoint;
 var
   Fixed: Pointer;
 begin
-  if Self = nil then
-  begin
-    Result.X := 0;
-    Result.Y := 0;
-    Exit;
-  end;
-
-  Result := WindowOrg;
+  Result := Point(0, 0);
   if Assigned(FWidget) then
   begin
     Fixed := GetFixedWidget(FWidget);
@@ -181,7 +169,12 @@ begin
     end;
     FMapMode := AValue;
     // to do: combine with affine transformations here when they get implemented
-    FHasTransf :=  (FMapMode <> MM_TEXT) or (FViewPortOrg.x <> 0) or (FViewPortOrg.y <> 0);
+    FHasTransf :=
+      (FMapMode <> MM_TEXT) or
+      (FViewPortOrg.x <> 0) or
+      (FViewPortOrg.y <> 0) or
+      (FWindowOrg.x <> 0) or
+      (FWindowOrg.y <> 0);
     if not (FMapMode in [MM_TEXT, MM_ANISOTROPIC, MM_ISOTROPIC]) then
     begin
       FViewPortExt.X := Gtk2WidgetSet.GetDeviceCaps(HDC(Self), LOGPIXELSX);
@@ -281,6 +274,16 @@ begin
   end;
 end;
 
+procedure TGtkDeviceContext.SetWindowOrg(AValue: TPoint);
+begin
+  if (FWindowOrg.x <> AValue.x) or
+     (FWindowOrg.y <> AValue.y) then
+  begin
+    FWindowOrg := AValue;
+    FHasTransf := True;
+  end;
+end;
+
 procedure TGtkDeviceContext.SetSelectedColors(AValue: TDevContextSelectedColorsType);
 begin
   if FSelectedColors = AValue then Exit;
@@ -303,31 +306,31 @@ end;
 
 procedure TGtkDeviceContext.InvTransfPoint(var X1, Y1: Integer);
 begin
-  X1 := MulDiv(X1 - FViewPortOrg.x, FWindowExt.x, FViewPortExt.x);
-  Y1 := MulDiv(Y1 - FViewPortOrg.y, FWindowExt.y, FViewPortExt.y);
+  X1 := MulDiv(X1 + FWindowOrg.x - FViewPortOrg.x, FWindowExt.x, FViewPortExt.x);
+  Y1 := MulDiv(Y1 + FWindowOrg.y - FViewPortOrg.y, FWindowExt.y, FViewPortExt.y);
   // to do: put affine inverse transformation here (for all Inv.. methods)
 end;
 
 function TGtkDeviceContext.InvTransfPointIndirect(const P: TPoint): TPoint;
 begin
-  Result.X := MulDiv(P.X - FViewPortOrg.x, FWindowExt.x, FViewPortExt.x);
-  Result.Y := MulDiv(P.Y - FViewPortOrg.y, FWindowExt.y, FViewPortExt.y);
+  Result.X := MulDiv(P.X + FWindowOrg.x - FViewPortOrg.x, FWindowExt.x, FViewPortExt.x);
+  Result.Y := MulDiv(P.Y + FWindowOrg.y - FViewPortOrg.y, FWindowExt.y, FViewPortExt.y);
 end;
 
 procedure TGtkDeviceContext.InvTransfRect(var X1, Y1, X2, Y2: Integer);
 begin
-  X1 := MulDiv(X1 - FViewPortOrg.x, FWindowExt.x, FViewPortExt.x);
-  Y1 := MulDiv(Y1 - FViewPortOrg.y, FWindowExt.y, FViewPortExt.y);
-  X2 := MulDiv(X2 - FViewPortOrg.x, FWindowExt.x, FViewPortExt.x);
-  Y2 := MulDiv(Y2 - FViewPortOrg.y, FWindowExt.y, FViewPortExt.y);
+  X1 := MulDiv(X1 + FWindowOrg.x - FViewPortOrg.x, FWindowExt.x, FViewPortExt.x);
+  Y1 := MulDiv(Y1 + FWindowOrg.y - FViewPortOrg.y, FWindowExt.y, FViewPortExt.y);
+  X2 := MulDiv(X2 + FWindowOrg.x - FViewPortOrg.x, FWindowExt.x, FViewPortExt.x);
+  Y2 := MulDiv(Y2 + FWindowOrg.y - FViewPortOrg.y, FWindowExt.y, FViewPortExt.y);
 end;
 
 function TGtkDeviceContext.InvTransfRectIndirect(const R: TRect): TRect;
 begin
-  Result.Left := MulDiv(R.Left - FViewPortOrg.x, FWindowExt.x, FViewPortExt.x);
-  Result.Top := MulDiv(R.Top - FViewPortOrg.y, FWindowExt.y, FViewPortExt.y);
-  Result.Right := MulDiv(R.Right - FViewPortOrg.x, FWindowExt.x, FViewPortExt.x);
-  Result.Bottom := MulDiv(R.Bottom - FViewPortOrg.y, FWindowExt.y, FViewPortExt.y);
+  Result.Left := MulDiv(R.Left + FWindowOrg.x - FViewPortOrg.x, FWindowExt.x, FViewPortExt.x);
+  Result.Top := MulDiv(R.Top + FWindowOrg.y - FViewPortOrg.y, FWindowExt.y, FViewPortExt.y);
+  Result.Right := MulDiv(R.Right + FWindowOrg.x - FViewPortOrg.x, FWindowExt.x, FViewPortExt.x);
+  Result.Bottom := MulDiv(R.Bottom + FWindowOrg.y - FViewPortOrg.y, FWindowExt.y, FViewPortExt.y);
 end;
 
 procedure TGtkDeviceContext.InvTransfExtent(var ExtX, ExtY: Integer);
@@ -373,30 +376,30 @@ end;
 procedure TGtkDeviceContext.TransfPoint(var X1, Y1: Integer);
 begin
   // to do: put affine transformation here (for all Transf.. methods)
-  X1 := MulDiv(X1, FViewPortExt.x, FWindowExt.x) + FViewPortOrg.x;
-  Y1 := MulDiv(Y1, FViewPortExt.y, FWindowExt.y) + FViewPortOrg.y;
+  X1 := MulDiv(X1, FViewPortExt.x, FWindowExt.x) + FViewPortOrg.x - FWindowOrg.x;
+  Y1 := MulDiv(Y1, FViewPortExt.y, FWindowExt.y) + FViewPortOrg.y - FWindowOrg.y;
 end;
 
 function TGtkDeviceContext.TransfPointIndirect(const P: TPoint): TPoint;
 begin
-  Result.x := MulDiv(P.x, FViewPortExt.x, FWindowExt.x) + FViewPortOrg.x;
-  Result.Y := MulDiv(P.y, FViewPortExt.y, FWindowExt.y) + FViewPortOrg.y;
+  Result.x := MulDiv(P.x, FViewPortExt.x, FWindowExt.x) + FViewPortOrg.x - FWindowOrg.x;
+  Result.Y := MulDiv(P.y, FViewPortExt.y, FWindowExt.y) + FViewPortOrg.y - FWindowOrg.y;
 end;
 
 procedure TGtkDeviceContext.TransfRect(var X1, Y1, X2, Y2: Integer);
 begin
-  X1 := MulDiv(X1, FViewPortExt.x, FWindowExt.x) + FViewPortOrg.x;
-  Y1 := MulDiv(Y1, FViewPortExt.y, FWindowExt.y) + FViewPortOrg.y;
-  X2 := MulDiv(X2, FViewPortExt.x, FWindowExt.x) + FViewPortOrg.x;
-  Y2 := MulDiv(Y2, FViewPortExt.y, FWindowExt.y) + FViewPortOrg.y;
+  X1 := MulDiv(X1, FViewPortExt.x, FWindowExt.x) + FViewPortOrg.x - FWindowOrg.x;
+  Y1 := MulDiv(Y1, FViewPortExt.y, FWindowExt.y) + FViewPortOrg.y - FWindowOrg.y;
+  X2 := MulDiv(X2, FViewPortExt.x, FWindowExt.x) + FViewPortOrg.x - FWindowOrg.x;
+  Y2 := MulDiv(Y2, FViewPortExt.y, FWindowExt.y) + FViewPortOrg.y - FWindowOrg.y;
 end;
 
 function TGtkDeviceContext.TransfRectIndirect(const R: TRect): TRect;
 begin
-  Result.Left := MulDiv(R.Left, FViewPortExt.x, FWindowExt.x) + FViewPortOrg.x;
-  Result.Top := MulDiv(R.Top, FViewPortExt.y, FWindowExt.y) + FViewPortOrg.y;
-  Result.Right := MulDiv(R.Right, FViewPortExt.x, FWindowExt.x) + FViewPortOrg.x;
-  Result.Bottom := MulDiv(R.Bottom, FViewPortExt.y, FWindowExt.y) + FViewPortOrg.y;
+  Result.Left := MulDiv(R.Left, FViewPortExt.x, FWindowExt.x) + FViewPortOrg.x - FWindowOrg.x;
+  Result.Top := MulDiv(R.Top, FViewPortExt.y, FWindowExt.y) + FViewPortOrg.y - FWindowOrg.y;
+  Result.Right := MulDiv(R.Right, FViewPortExt.x, FWindowExt.x) + FViewPortOrg.x - FWindowOrg.x;
+  Result.Bottom := MulDiv(R.Bottom, FViewPortExt.y, FWindowExt.y) + FViewPortOrg.y - FWindowOrg.y;
 end;
 
 procedure TGtkDeviceContext.TransfExtent(var ExtX, ExtY: Integer);
@@ -430,7 +433,10 @@ begin
       if FCurrentFont^.LogFont.lfHeight > 0 then
         AHeight := 1
       else
-        AHeight := -1;
+      if FCurrentFont^.LogFont.lfHeight < 0 then
+        AHeight := -1
+      else
+        AHeight := 0;
     if FCurrentFont^.LogFont.lfHeight <> AHeight then
     begin
       FontCache.Unreference(FCurrentFont^.GDIFontObject);
@@ -438,6 +444,7 @@ begin
       TmpObj := {%H-}PGdiObject(PtrUInt(GTK2WidgetSet.CreateFontIndirect(FCurrentFont^.LogFont)));
       FCurrentFont^.GDIFontObject := TmpObj^.GDIFontObject;
       TmpObj^.GDIFontObject := nil;
+      TmpObj^.RefCount := 0;
       GTK2WidgetSet.DisposeGDIObject(TmpObj);
     end;
   end;
@@ -624,7 +631,7 @@ var
   g: TGDIType;
   CurGDIObject: PGDIObject;
 begin
-  Result := (Self <> nil) and (ASource <> nil);
+  Result := Assigned(Self) and Assigned(ASource);
   if not Result then Exit;
 
   if ARestore then
@@ -633,7 +640,7 @@ begin
       RaiseRestoreDifferentWidget;
   end else
   begin
-    if FWidget <> nil then
+    if Assigned(FWidget) then
       RaiseWidgetAlreadySet;
     FWidget := ASource.FWidget;
   end;
@@ -642,7 +649,7 @@ begin
   FDrawable := ASource.FDrawable;
   FOriginalDrawable := ASource.FOriginalDrawable;
 
-  if FGC <> nil then
+  if Assigned(FGC) then
   begin
     // free old GC
     gdk_gc_unref(FGC);
@@ -650,7 +657,7 @@ begin
     Exclude(FFlags, dcfPenSelected);
   end;
 
-  if (ASource.FGC <> nil) and (FDrawable <> nil) then
+  if Assigned(ASource.FGC) and Assigned(FDrawable) then
   begin
     gdk_gc_get_values(ASource.FGC, @FGCValues);
     FGC := gdk_gc_new_with_values(FDrawable, @FGCValues,
@@ -666,7 +673,7 @@ begin
   else
     Exclude(FFlags, dcfTextMetricsValid);
 
-  for g:=Low(TGDIType) to High(TGDIType) do
+  for g := Low(TGDIType) to High(TGDIType) do
   begin
     GDIObjects[g] := ASource.GDIObjects[g];
     if AClearSource then
@@ -674,14 +681,12 @@ begin
 
     if AMoveGDIOwnerShip then
     begin
-      if OwnedGDIObjects[g]<>nil then
-      begin
+      if Assigned(OwnedGDIObjects[g]) then
         DeleteObject(HGDIOBJ({%H-}PtrUInt(OwnedGDIObjects[g])));
-      end;
 
       CurGDIObject := ASource.OwnedGDIObjects[g];
 
-      if CurGDIObject<>nil then
+      if Assigned(CurGDIObject) then
       begin
         ASource.OwnedGDIObjects[g] := nil;
         OwnedGDIObjects[g] := CurGDIObject;
@@ -692,7 +697,6 @@ begin
   CopyGDIColor(ASource.CurrentBackColor, CurrentBackColor);
 
   SelectedColors := dcscCustom;
-  FWindowOrg := ASource.FWindowOrg;
   PenPos := ASource.PenPos;
 
   if FHasTransf then
@@ -702,6 +706,7 @@ begin
     FViewPortExt := Point(1, 1);
     FViewPortOrg := Point(0, 0);
     FWindowExt := Point(1, 1);
+    FWindowOrg := Point(0, 0);
     TransfUpdateFont;
     TransfUpdatePen;
   end;
@@ -713,6 +718,7 @@ begin
     FViewPortExt := ASource.ViewPortExt;
     FViewPortOrg := ASource.ViewPortOrg;
     FWindowExt := ASource.WindowExt;
+    FWindowOrg := ASource.WindowOrg;
     TransfUpdateFont;
     TransfUpdatePen;
   end;
@@ -1061,6 +1067,7 @@ end;
 
 constructor TGtkDeviceContext.Create;
 begin
+  Clear;
   BkMode := OPAQUE;
 end;
 
@@ -1221,24 +1228,22 @@ begin
   Result := FCurrentBitmap;
 end;
 
+function TGtkDeviceContext.GetFunction: TGdkFunction;
+begin
+  Result := GCValues._function;
+end;
+
 
 procedure SetLayoutText(ALayout: PPangoLayout; AText: PChar; ALength: PtrInt);
 var
   OldStr: PChar;
 begin
   OldStr := pango_layout_get_text(ALayout);
-  if (strlcomp(AText, OldStr, ALength) <> 0) or (strlen(OldStr)<>ALength) then
+  if (strlen(OldStr)<>ALength) or (strlcomp(AText, OldStr, ALength) <> 0) then
     pango_layout_set_text(ALayout, AText, ALength);
 end;
 
-{ TGtk2DeviceContext }
-
-function TGtk2DeviceContext.GetFunction: TGdkFunction;
-begin
-  Result := GCValues._function;
-end;
-
-procedure TGtk2DeviceContext.DrawTextWithColors(AText: PChar; ALength: LongInt;
+procedure TGtkDeviceContext.DrawTextWithColors(AText: PChar; ALength: LongInt;
   X, Y: Integer; FGColor, BGColor: PGdkColor);
 var
   WidgetCont: PPangoContext;

@@ -317,6 +317,7 @@ type
     procedure SetViewPortExt(const AValue: TPoint);
     procedure SetViewPortOrg(const AValue: TPoint);
     procedure SetWindowExt(const AValue: TPoint);
+    procedure SetWindowOrg(AValue: TPoint);
   protected
     function CreateGC: PGdkGC; virtual;
 
@@ -361,7 +362,7 @@ type
     function GetBrush: PGdiObject;
     function GetPen: PGdiObject;
     function GetBitmap: PGdiObject;
-    function GetFunction: TGdkFunction; virtual; abstract;
+    function GetFunction: TGdkFunction;
     function IsNullBrush: boolean;
     function IsNullPen: boolean;
     function SelectObject(AGdiObject: PGdiObject): PGdiObject;
@@ -386,8 +387,9 @@ type
     // help functions
     function CopyDataFrom(ASource: TGtkDeviceContext; AClearSource, AMoveGDIOwnerShip, ARestore: Boolean): Boolean;
     function FillRect(ARect: TRect; ABrush: HBrush; SkipRop: Boolean): Boolean;
+    procedure DrawTextWithColors(AText: PChar; ALength: LongInt; X, Y: Integer; FGColor, BGColor: PGdkColor);
 
-    // origins
+    // device origin
     property Offset: TPoint read GetOffset;
     // drawing settings
     property CurrentBitmap: PGdiObject read FCurrentBitmap write SetCurrentBitmap;
@@ -405,7 +407,7 @@ type
     property ViewPortExt: TPoint read FViewPortExt write SetViewPortExt;
     property ViewPortOrg: TPoint read FViewPortOrg write SetViewPortOrg;
     property WindowExt: TPoint read FWindowExt write SetWindowExt;
-    property WindowOrg: TPoint read FWindowOrg write FWindowOrg;
+    property WindowOrg: TPoint read FWindowOrg write SetWindowOrg;
     // control
     property SelectedColors: TDevContextSelectedColorsType read FSelectedColors write SetSelectedColors;
     property Flags: TDeviceContextsFlags read FFlags write FFlags;
@@ -603,16 +605,7 @@ function dbgs(g: TGDIType): string; overload;
 function dbgs(const r: TGDKRectangle): string; overload;
 function dbgs(r: PGDKRectangle): string; overload;
 
-type
-  { TGtk2DeviceContext }
-
-  TGtk2DeviceContext = class(TGtkDeviceContext)
-  public
-    procedure DrawTextWithColors(AText: PChar; ALength: LongInt; X, Y: Integer; FGColor, BGColor: PGdkColor);
-    function GetFunction: TGdkFunction; override;
-  end;
-  
-  procedure SetLayoutText(ALayout: PPangoLayout; AText: PChar; ALength: PtrInt);
+procedure SetLayoutText(ALayout: PPangoLayout; AText: PChar; ALength: PtrInt);
 
 implementation
 

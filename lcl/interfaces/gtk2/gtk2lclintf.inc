@@ -769,14 +769,13 @@ begin
   DebugLn('TGtk2WidgetSet.GetRawImageFromDevice A DCOrigin=',dbgs(DCOrigin.X),',',dbgs(DCOrigin.Y),' SrcRect=',dbgs(ARect.Left),',',dbgs(ARect.Top),',',dbgs(ARect.Right),',',dbgs(ARect.Bottom));
   {$ENDIF}
   R := ARect;
+  LPtoDP(ADC, R, 2);
   OffSetRect(R, DCOrigin.x, DCOrigin.y);
 
   Drawable := DevCtx.Drawable;
-  if Drawable = nil
-  then begin
+  if Drawable = nil then
     // get screen shot
     Drawable := gdk_screen_get_root_window(gdk_screen_get_default);
-  end;
   Result := RawImage_FromDrawable(ARawImage, Drawable, nil, @R);
 end;
 

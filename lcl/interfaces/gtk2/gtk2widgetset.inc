@@ -246,13 +246,6 @@ begin
 end;
 {$EndIf}
 
-{ TGtk2WidgetSet }
-
-function TGtk2WidgetSet.GetDeviceContextClass: TGtkDeviceContextClass;
-begin
-  Result := TGtk2DeviceContext;
-end;
-
 {------------------------------------------------------------------------------
   Function: TGtk2WidgetSet._SetCallbackEx
 
@@ -4030,6 +4023,9 @@ begin
     SrcDevContext.TransfPoint(XSrc, YSrc);
     SrcDevContext.TransfExtent(SrcWidth, SrcHeight);
   end;
+  SrcDCOrigin := SrcDevContext.Offset;
+  Inc(XSrc, SrcDCOrigin.X);
+  Inc(YSrc, SrcDCOrigin.Y);
 
   if DstDevContext.HasTransf then
   begin
@@ -4037,6 +4033,9 @@ begin
     DstDevContext.TransfPoint(X, Y);
     DstDevContext.TransfExtent(Width, Height);
   end;
+  DstDCOrigin := DstDevContext.Offset;
+  Inc(X, DstDCOrigin.X);
+  Inc(Y, DstDCOrigin.Y);
 
   FlipHorz := Width < 0;
   if FlipHorz then
@@ -4058,16 +4057,10 @@ begin
   SizeChange := (Width <> SrcWidth) or (Height <> SrcHeight) or FlipVert or FlipHorz;
   ROpIsSpecial := (Rop <> SRCCOPY);
 
-  SrcDCOrigin := SrcDevContext.Offset;
-  Inc(XSrc, SrcDCOrigin.X);
-  Inc(YSrc, SrcDCOrigin.Y);
   if SrcDevContext.Drawable = nil then RaiseSrcDrawableNil;
   gdk_window_get_size(PGdkWindow(SrcDevContext.Drawable), @SrcWholeWidth, @SrcWholeHeight);
 
 
-  DstDCOrigin := DstDevContext.Offset;
-  Inc(X, DstDCOrigin.X);
-  Inc(Y, DstDCOrigin.Y);
   if DstDevContext.Drawable = nil then RaiseDestDrawableNil;
   gdk_window_get_size(PGdkWindow(DstDevContext.Drawable), @DstWholeWidth, @DstWholeHeight);
 
@@ -5092,9 +5085,9 @@ var
 begin
   if (DC = nil) or (DC.Drawable = nil) then exit;
 
-  DCOrigin := DC.Offset;
-  inc(X,DCOrigin.X);
-  inc(Y,DCOrigin.Y);
+  DCOrigin := DC.TransfPointIndirect(DC.Offset);
+  inc(X, DCOrigin.X);
+  inc(Y, DCOrigin.Y);
 
   DC.SelectedColors := dcscCustom;
   GDKColor := AllocGDKColor(ColorToRGB(AColor));
@@ -5153,9 +5146,9 @@ begin
   Result := clNone;
   if (DC = nil) or (DC.Drawable = nil) then Exit;
 
-  DCOrigin := DC.Offset;
-  inc(X,DCOrigin.X);
-  inc(Y,DCOrigin.Y);
+  DCOrigin := DC.TransfPointIndirect(DC.Offset);
+  inc(X, DCOrigin.X);
+  inc(Y, DCOrigin.Y);
 
   gdk_drawable_get_size(DC.Drawable, @MaxX, @MaxY);
   if (X<0) or (Y<0) or (X>=MaxX) or (Y>=MaxY) then exit;
@@ -5247,7 +5240,7 @@ begin
 
   if FDCManager = nil
   then begin
-    FDCManager := TDeviceContextMemManager.Create(GetDeviceContextClass);
+    FDCManager := TDeviceContextMemManager.Create(TGtkDeviceContext);
     FDCManager.MinimumFreeCount := 1000;
   end;
   Result := FDCManager.NewDeviceContext;

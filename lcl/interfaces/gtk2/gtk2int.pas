@@ -84,7 +84,6 @@ type
     procedure SetAppActive(const AValue: Boolean);
   protected
     function CreateThemeServices: TThemeServices; override;
-    function GetDeviceContextClass: TGtkDeviceContextClass;
   protected
     FKeyStateList_: TFPList; // Keeps track of which keys are pressed
     FDeviceContexts: TDynHashArray;// hasharray of HDC
