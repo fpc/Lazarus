@@ -195,7 +195,7 @@ type
     procedure SetLineType(AValue: TLineType);
     procedure SetSeriesColor(AValue: TColor);
     procedure SetShowLines(Value: Boolean);
-    procedure SetShowPoints(Value: Boolean);
+    procedure SetShowPoints(AValue: Boolean);
   protected
     procedure AfterDrawPointer(
       ADrawer: IChartDrawer; AIndex: Integer; const APos: TPoint); override;
@@ -604,9 +604,10 @@ begin
   UpdateParentChart;
 end;
 
-procedure TLineSeries.SetShowPoints(Value: Boolean);
+procedure TLineSeries.SetShowPoints(AValue: Boolean);
 begin
-  FShowPoints := Value;
+  if ShowPoints = AValue then exit;
+  FShowPoints := AValue;
   UpdateParentChart;
 end;
 
