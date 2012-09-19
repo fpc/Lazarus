@@ -856,10 +856,9 @@ begin
   Result := False;
 end;
 
-function TWidgetSet.ExtSelectClipRGN(dc: hdc; rgn: hrgn; Mode: Longint
-  ): Integer;
+function TWidgetSet.ExtSelectClipRGN(dc: hdc; rgn: hrgn; Mode: Longint): Integer;
 var
-  OldC, Clip : hRGN;
+  OldC, Clip: hRGN;
 begin
   OldC := CreateEmptyRegion;
   GetClipRGN(DC, OldC);
