@@ -133,6 +133,7 @@ var
   {$IFDEF DARWIN}
   ClipR: TRect; // fix branch indicators (treeviews)
   {$ENDIF}
+  dx, dy: integer;
 begin
   if (Context <> nil) then
   begin
@@ -195,14 +196,26 @@ begin
           begin
             opt := QStyleOptionViewItemV4_create();
             QStyleOptionViewItem_setShowDecorationSelected(QStyleOptionViewItemV4H(opt), True);
-          end else
+          end
+          else
+          if (Element.ControlElement = QStyleCE_SizeGrip) then
+          begin
+            opt := QStyleOptionSizeGrip_create();
+            QStyleOptionSizeGrip_setCorner(QStyleOptionSizeGripH(opt), QtBottomRightCorner);
+            QStyleOption_setDirection(QStyleOptionH(opt), QtLeftToRight);
+          end
+          else
             opt := QStyleOptionComplex_create(LongInt(QStyleOptionVersion), LongInt(QStyleOptionSO_Default));
 
           QStyleOption_setState(opt, StyleState);
+          dx := ARect.Left;
+          dy := ARect.Top;
+          Context.translate(dx, dy);
+          OffsetRect(ARect, -dx, -dy);
           QStyleOption_setRect(opt, @ARect);
 
-          QStyle_drawControl(Style, Element.ControlElement, opt, Context.Widget,
-            Context.Parent);
+          QStyle_drawControl(Style, Element.ControlElement, opt, Context.Widget, Context.Parent);
+          Context.translate(-dx, -dy);
           QStyleOption_Destroy(opt);
         end;
         qdvComplexControl:
