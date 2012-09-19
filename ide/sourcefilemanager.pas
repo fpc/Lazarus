@@ -2862,7 +2862,7 @@ begin
   and (ObjectInspector1.PropertyEditorHook.LookupRoot=AnUnitInfo.Component) then
   begin
     ObjectInspector1.EventGrid.ItemIndex:=-1;
-    ObjectInspector1.FavouriteGrid.ItemIndex:=-1;
+    ObjectInspector1.FavoriteGrid.ItemIndex:=-1;
   end;
   //debugln('TLazSourceFileManager.RemoveDanglingEvents ',AnUnitInfo.Filename,' ',dbgsName(AnUnitInfo.Component));
   // remove dangling methods
@@ -2874,7 +2874,7 @@ begin
   and (ObjectInspector1.PropertyEditorHook.LookupRoot=AnUnitInfo.Component) then
   begin
     ObjectInspector1.EventGrid.RefreshPropertyValues;
-    ObjectInspector1.FavouriteGrid.RefreshPropertyValues;
+    ObjectInspector1.FavoriteGrid.RefreshPropertyValues;
   end;
 end;
 

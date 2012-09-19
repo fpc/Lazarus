@@ -4458,10 +4458,10 @@ resourcestring
   lisNPSelectAProjectType = 'Select a project type';
   lisNPCreateANewProject = 'Create a new project';
   lisNPCreate = 'Create';
-  lisOIFChooseABaseClassForTheFavouriteProperty = 'Choose a base class for '
-    +'the favourite property %s%s%s.';
-  lisOIFAddToFavouriteProperties = 'Add to favourite properties';
-  lisOIFRemoveFromFavouriteProperties = 'Remove from favourite properties';
+  lisOIFChooseABaseClassForTheFavoriteProperty = 'Choose a base class for '
+    +'the favorite property %s%s%s.';
+  lisOIFAddToFavoriteProperties = 'Add to favorite properties';
+  lisOIFRemoveFromFavoriteProperties = 'Remove from favorite properties';
   lisReplacingSelectionFailed = 'Replacing selection failed.';
   lisUnableToFindInLFMStream = 'Unable to find %s in LFM Stream.';
   lisErrorParsingLfmComponentStream = 'Error parsing lfm component stream.';

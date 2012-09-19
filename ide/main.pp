@@ -483,8 +483,8 @@ type
     procedure OIOnAutoShow(Sender: TObject);
     procedure OIRemainingKeyDown(Sender: TObject; var Key: Word;
        Shift: TShiftState);
-    procedure OIOnAddToFavourites(Sender: TObject);
-    procedure OIOnRemoveFromFavourites(Sender: TObject);
+    procedure OIOnAddToFavorites(Sender: TObject);
+    procedure OIOnRemoveFromFavorites(Sender: TObject);
     procedure OIOnFindDeclarationOfProperty(Sender: TObject);
     procedure OIOnSelectionChange(Sender: TObject);
     function OIOnPropertyHint(Sender: TObject; PointedRow: TOIPropertyGridRow;
@@ -1650,16 +1650,16 @@ begin
   OnExecuteIDEShortCut(Sender,Key,Shift,nil);
 end;
 
-procedure TMainIDE.OIOnAddToFavourites(Sender: TObject);
+procedure TMainIDE.OIOnAddToFavorites(Sender: TObject);
 begin
   if ObjectInspector1=nil then exit;
-  ShowAddRemoveFavouriteDialog(ObjectInspector1,true);
+  ShowAddRemoveFavoriteDialog(ObjectInspector1,true);
 end;
 
-procedure TMainIDE.OIOnRemoveFromFavourites(Sender: TObject);
+procedure TMainIDE.OIOnRemoveFromFavorites(Sender: TObject);
 begin
   if ObjectInspector1=nil then exit;
-  ShowAddRemoveFavouriteDialog(ObjectInspector1,false);
+  ShowAddRemoveFavoriteDialog(ObjectInspector1,false);
 end;
 
 procedure TMainIDE.OIOnFindDeclarationOfProperty(Sender: TObject);
@@ -5015,9 +5015,9 @@ begin
   SaveDesktopSettings(EnvironmentOptions);
   EnvironmentOptions.Save(false);
   EditorMacroListViewer.SaveGlobalInfo;
-  //debugln('TMainIDE.SaveEnvironment A ',dbgsName(ObjectInspector1.Favourites));
-  if (ObjectInspector1<>nil) and (ObjectInspector1.Favourites<>nil) then
-    SaveOIFavouriteProperties(ObjectInspector1.Favourites);
+  //debugln('TMainIDE.SaveEnvironment A ',dbgsName(ObjectInspector1.Favorites));
+  if (ObjectInspector1<>nil) and (ObjectInspector1.Favorites<>nil) then
+    SaveOIFavoriteProperties(ObjectInspector1.Favorites);
 end;
 
 function TMainIDE.DoOpenComponent(const UnitFilename: string;
@@ -9895,7 +9895,7 @@ begin
   if EnvironmentOptions.CreateComponentFocusNameProperty
   and (ObjectInspector1<>nil) then begin
     if (ObjectInspector1.ShowFavorites) and (EnvironmentOptions.SwitchToFavoritesOITab) then
-      Grid:=ObjectInspector1.FavouriteGrid
+      Grid:=ObjectInspector1.FavoriteGrid
     else
       Grid:=ObjectInspector1.PropertyGrid;
      ObjectInspector1.ActivateGrid(Grid);
@@ -12751,13 +12751,13 @@ begin
   ObjectInspector1.Name:=DefaultObjectInspectorName;
   ObjectInspector1.ShowFavorites:=True;
   ObjectInspector1.ShowRestricted:=True;
-  ObjectInspector1.Favourites:=LoadOIFavouriteProperties;
+  ObjectInspector1.Favorites:=LoadOIFavoriteProperties;
   ObjectInspector1.FindDeclarationPopupmenuItem.Visible:=true;
-  ObjectInspector1.OnAddToFavourites:=@OIOnAddToFavourites;
+  ObjectInspector1.OnAddToFavorites:=@OIOnAddToFavorites;
   ObjectInspector1.OnFindDeclarationOfProperty:=@OIOnFindDeclarationOfProperty;
   ObjectInspector1.OnUpdateRestricted := @OIOnUpdateRestricted;
   ObjectInspector1.OnRemainingKeyDown:=@OIRemainingKeyDown;
-  ObjectInspector1.OnRemoveFromFavourites:=@OIOnRemoveFromFavourites;
+  ObjectInspector1.OnRemoveFromFavorites:=@OIOnRemoveFromFavorites;
   ObjectInspector1.OnSelectPersistentsInOI:=@OIOnSelectPersistents;
   ObjectInspector1.OnShowOptions:=@OIOnShowOptions;
   ObjectInspector1.OnViewRestricted:=@OIOnViewRestricted;

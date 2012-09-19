@@ -71,7 +71,7 @@ type
   TObjectInspectorPage = (
     oipgpProperties,
     oipgpEvents,
-    oipgpFavourite,
+    oipgpFavorite,
     oipgpRestricted
     );
   TObjectInspectorPages = set of TObjectInspectorPage;
@@ -277,7 +277,7 @@ type
     FDragging: boolean;
     FExpandedProperties: TStringList;// used to restore expanded state when switching selected component(s)
     FExpandingRow: TOIPropertyGridRow;
-    FFavourites: TOIFavouriteProperties;
+    FFavorites: TOIFavoriteProperties;
     FFilter: TTypeKinds;
     FIndent: integer;
     FItemIndex: integer;
@@ -326,7 +326,7 @@ type
     procedure SetColumn(const AValue: TOICustomPropertyGridColumn);
     procedure SetCurrentEditValue(const NewValue: string);
     procedure SetDrawHorzGridLines(const AValue: Boolean);
-    procedure SetFavourites(const AValue: TOIFavouriteProperties);
+    procedure SetFavorites(const AValue: TOIFavoriteProperties);
     procedure SetFilter(const AValue: TTypeKinds);
     procedure SetGutterColor(const AValue: TColor);
     procedure SetGutterEdgeColor(const AValue: TColor);
@@ -498,8 +498,8 @@ type
     property ShowGutter: Boolean read FShowGutter write SetShowGutter default True;
     property SplitterX: integer read FSplitterX write SetSplitterX default 100;
     property TopY: integer read FTopY write SetTopY default 0;
-    property Favourites: TOIFavouriteProperties read FFavourites
-                                                write SetFavourites;
+    property Favorites: TOIFavoriteProperties read FFavorites
+                                                write SetFavorites;
     property Filter : TTypeKinds read FFilter write SetFilter;
   end;
 
@@ -590,7 +590,7 @@ type
     CutPopupmenuItem: TMenuItem;
     DeletePopupmenuItem: TMenuItem;
     EventGrid: TOICustomPropertyGrid;
-    FavouriteGrid: TOICustomPropertyGrid;
+    FavoriteGrid: TOICustomPropertyGrid;
     RestrictedGrid: TOICustomPropertyGrid;
     RestrictedPanel: TPanel;
     RestrictedInnerPanel: TPanel;
@@ -643,17 +643,17 @@ type
     procedure DoViewRestricted;
   private
     FAutoShow: Boolean;
-    FFavourites: TOIFavouriteProperties;
+    FFavorites: TOIFavoriteProperties;
     FInfoBoxHeight: integer;
     FOnPropertyHint: TOIPropertyHint;
     FOnSelectionChange: TNotifyEvent;
     FRestricted: TOIRestrictedProperties;
-    FOnAddToFavourites: TNotifyEvent;
+    FOnAddToFavorites: TNotifyEvent;
     FOnFindDeclarationOfProperty: TNotifyEvent;
     FOnOIKeyDown: TKeyEvent;
     FOnRemainingKeyDown: TKeyEvent;
     FOnRemainingKeyUp: TKeyEvent;
-    FOnRemoveFromFavourites: TNotifyEvent;
+    FOnRemoveFromFavorites: TNotifyEvent;
     FOnUpdateRestricted: TNotifyEvent;
     FOnViewRestricted: TNotifyEvent;
     FSelection: TPersistentSelectionList;
@@ -675,7 +675,7 @@ type
     FComponentEditor: TBaseComponentEditor;
     function GetGridControl(Page: TObjectInspectorPage): TOICustomPropertyGrid;
     procedure SetComponentEditor(const AValue: TBaseComponentEditor);
-    procedure SetFavourites(const AValue: TOIFavouriteProperties);
+    procedure SetFavorites(const AValue: TOIFavoriteProperties);
     procedure SetComponentTreeHeight(const AValue: integer);
     procedure SetDefaultItemHeight(const AValue: integer);
     procedure SetInfoBoxHeight(const AValue: integer);
@@ -747,14 +747,14 @@ type
                                         write SetDefaultItemHeight;
     property EnableHookGetSelection: boolean read FEnableHookGetSelection
                                              write SetEnableHookGetSelection;
-    property Favourites: TOIFavouriteProperties read FFavourites write SetFavourites;
+    property Favorites: TOIFavoriteProperties read FFavorites write SetFavorites;
     property GridControl[Page: TObjectInspectorPage]: TOICustomPropertyGrid
                                                             read GetGridControl;
     property InfoBoxHeight: integer read GetInfoBoxHeight write SetInfoBoxHeight;
     property OnAddAvailPersistent: TOnAddAvailablePersistent
                  read FOnAddAvailablePersistent write FOnAddAvailablePersistent;
-    property OnAddToFavourites: TNotifyEvent read FOnAddToFavourites
-                                             write FOnAddToFavourites;
+    property OnAddToFavorites: TNotifyEvent read FOnAddToFavorites
+                                             write FOnAddToFavorites;
     property OnAutoShow: TNotifyEvent read FOnAutoShow write FOnAutoShow;
     property OnFindDeclarationOfProperty: TNotifyEvent
            read FOnFindDeclarationOfProperty write FOnFindDeclarationOfProperty;
@@ -765,8 +765,8 @@ type
                                          write FOnRemainingKeyDown;
     property OnRemainingKeyUp: TKeyEvent read FOnRemainingKeyUp
                                          write FOnRemainingKeyUp;
-    property OnRemoveFromFavourites: TNotifyEvent read FOnRemoveFromFavourites
-                                                  write FOnRemoveFromFavourites;
+    property OnRemoveFromFavorites: TNotifyEvent read FOnRemoveFromFavorites
+                                                  write FOnRemoveFromFavorites;
     property OnSelectionChange: TNotifyEvent read FOnSelectionChange write FOnSelectionChange;
     property OnSelectPersistentsInOI: TNotifyEvent
                    read FOnSelectPersistentsInOI write FOnSelectPersistentsInOI;
@@ -810,13 +810,13 @@ const
   DefaultOIPageNames: array[TObjectInspectorPage] of shortstring = (
     'PropertyPage',
     'EventPage',
-    'FavouritePage',
+    'FavoritePage',
     'RestrictedPage'
     );
   DefaultOIGridNames: array[TObjectInspectorPage] of shortstring = (
     'PropertyGrid',
     'EventGrid',
-    'FavouriteGrid',
+    'FavoriteGrid',
     'RestrictedGrid'
     );
 
@@ -1689,11 +1689,11 @@ var
   WidgetSets: TLCLPlatforms;
 begin
   WidgetSets := [];
-  if Favourites<>nil then begin
+  if Favorites<>nil then begin
     //debugln('TOICustomPropertyGrid.AddPropertyEditor A ',PropEditor.GetName);
-    if Favourites is TOIRestrictedProperties then
+    if Favorites is TOIRestrictedProperties then
     begin
-      WidgetSets := (Favourites as TOIRestrictedProperties).AreRestricted(
+      WidgetSets := (Favorites as TOIRestrictedProperties).AreRestricted(
                                                   Selection,PropEditor.GetName);
       if WidgetSets = [] then
       begin
@@ -1702,7 +1702,7 @@ begin
       end;
     end
     else
-      if not Favourites.AreFavourites(Selection,PropEditor.GetName) then begin
+      if not Favorites.AreFavorites(Selection,PropEditor.GetName) then begin
         PropEditor.Free;
         exit;
       end;
@@ -2951,12 +2951,12 @@ begin
   Invalidate;
 end;
 
-procedure TOICustomPropertyGrid.SetFavourites(
-  const AValue: TOIFavouriteProperties);
+procedure TOICustomPropertyGrid.SetFavorites(
+  const AValue: TOIFavoriteProperties);
 begin
-  //debugln('TOICustomPropertyGrid.SetFavourites ',dbgsName(Self));
-  if FFavourites=AValue then exit;
-  FFavourites:=AValue;
+  //debugln('TOICustomPropertyGrid.SetFavorites ',dbgsName(Self));
+  if FFavorites=AValue then exit;
+  FFavorites:=AValue;
   BuildPropertyList;
 end;
 
@@ -4048,7 +4048,7 @@ begin
   FreeAndNil(FSelection);
   FreeAndNil(FComponentEditor);
   inherited Destroy;
-  FreeAndNil(FFavourites);
+  FreeAndNil(FFavorites);
 end;
 
 procedure TObjectInspectorDlg.SetPropertyEditorHook(NewValue:TPropertyEditorHook);
@@ -4148,7 +4148,7 @@ begin
   if FRestricted = AValue then exit;
   //DebugLn('TObjectInspectorDlg.SetRestricted Count: ', DbgS(AValue.Count));
   FRestricted := AValue;
-  RestrictedGrid.Favourites := FRestricted;
+  RestrictedGrid.Favorites := FRestricted;
 end;
 
 procedure TObjectInspectorDlg.SetOnShowOptions(const AValue: TNotifyEvent);
@@ -4253,7 +4253,7 @@ begin
   case NoteBook.PageIndex of
   0: Result:=PropertyGrid;
   1: Result:=EventGrid;
-  2: Result:=FavouriteGrid;
+  2: Result:=FavoriteGrid;
   3: Result:=RestrictedGrid;
   end;
 end;
@@ -4544,14 +4544,14 @@ end;
 
 procedure TObjectInspectorDlg.OnAddToFavoritesPopupmenuItemClick(Sender: TObject);
 begin
-  //debugln('TObjectInspectorDlg.OnAddToFavouritePopupmenuItemClick');
-  if Assigned(OnAddToFavourites) then OnAddToFavourites(Self);
+  //debugln('TObjectInspectorDlg.OnAddToFavoritePopupmenuItemClick');
+  if Assigned(OnAddToFavorites) then OnAddToFavorites(Self);
 end;
 
 procedure TObjectInspectorDlg.OnRemoveFromFavoritesPopupmenuItemClick(
   Sender: TObject);
 begin
-  if Assigned(OnRemoveFromFavourites) then OnRemoveFromFavourites(Self);
+  if Assigned(OnRemoveFromFavorites) then OnRemoveFromFavorites(Self);
 end;
 
 procedure TObjectInspectorDlg.OnViewRestrictionsPopupmenuItemClick(Sender: TObject);
@@ -4866,7 +4866,7 @@ begin
     NoteBook.Visible:=false;
   FreeAndNil(PropertyGrid);
   FreeAndNil(EventGrid);
-  FreeAndNil(FavouriteGrid);
+  FreeAndNil(FavoriteGrid);
   FreeAndNil(RestrictedGrid);
   FreeAndNil(NoteBook);
 end;
@@ -4928,7 +4928,7 @@ begin
 
   AddPage(DefaultOIPageNames[oipgpEvents],oisEvents);
 
-  APage:=AddPage(DefaultOIPageNames[oipgpFavourite],oisFavorites);
+  APage:=AddPage(DefaultOIPageNames[oipgpFavorite],oisFavorites);
   APage.TabVisible := ShowFavorites;
 
   APage:=AddPage(DefaultOIPageNames[oipgpRestricted],oisRestricted);
@@ -4939,8 +4939,8 @@ begin
 
   PropertyGrid := CreateGrid(PROPS, oipgpProperties, 0);
   EventGrid := CreateGrid([tkMethod], oipgpEvents, 1);
-  FavouriteGrid := CreateGrid(PROPS + [tkMethod], oipgpFavourite, 2);
-  FavouriteGrid.Favourites := FFavourites;
+  FavoriteGrid := CreateGrid(PROPS + [tkMethod], oipgpFavorite, 2);
+  FavoriteGrid.Favorites := FFavorites;
   RestrictedGrid := CreateGrid(PROPS + [tkMethod], oipgpRestricted, 3);
 
   RestrictedPanel := TPanel.Create(Self);
@@ -5195,17 +5195,17 @@ begin
       SetDefaultPopupMenuItem.Caption := oisSetToDefaultValue;
 
     AddToFavoritesPopupMenuItem.Visible :=
-      (Favourites <> nil) and
+      (Favorites <> nil) and
       ShowFavorites and
-      (GetActivePropertyGrid <> FavouriteGrid) and
-      Assigned(OnAddToFavourites) and
+      (GetActivePropertyGrid <> FavoriteGrid) and
+      Assigned(OnAddToFavorites) and
       (GetActivePropertyRow <> nil);
 
     RemoveFromFavoritesPopupMenuItem.Visible :=
-      (Favourites<>nil) and
+      (Favorites<>nil) and
       ShowFavorites and
-      (GetActivePropertyGrid = FavouriteGrid) and
-      Assigned(OnRemoveFromFavourites) and
+      (GetActivePropertyGrid = FavoriteGrid) and
+      Assigned(OnRemoveFromFavorites) and
       (GetActivePropertyRow <> nil);
 
     CurGrid := GetActivePropertyGrid;
@@ -5339,7 +5339,7 @@ procedure TObjectInspectorDlg.ActivateGrid(Grid: TOICustomPropertyGrid);
 begin
   if Grid=PropertyGrid then NoteBook.PageIndex:=0
   else if Grid=EventGrid then NoteBook.PageIndex:=1
-  else if Grid=FavouriteGrid then NoteBook.PageIndex:=2
+  else if Grid=FavoriteGrid then NoteBook.PageIndex:=2
   else if Grid=RestrictedGrid then NoteBook.PageIndex:=3;
 end;
 
@@ -5364,7 +5364,7 @@ function TObjectInspectorDlg.GetGridControl(Page: TObjectInspectorPage
   ): TOICustomPropertyGrid;
 begin
   case Page of
-  oipgpFavourite: Result:=FavouriteGrid;
+  oipgpFavorite: Result:=FavoriteGrid;
   oipgpEvents: Result:=EventGrid;
   oipgpRestricted: Result:=RestrictedGrid;
   else  Result:=PropertyGrid;
@@ -5380,12 +5380,12 @@ begin
   end;
 end;
 
-procedure TObjectInspectorDlg.SetFavourites(const AValue: TOIFavouriteProperties);
+procedure TObjectInspectorDlg.SetFavorites(const AValue: TOIFavoriteProperties);
 begin
-  //debugln('TObjectInspectorDlg.SetFavourites ',dbgsName(Self));
-  if FFavourites=AValue then exit;
-  FFavourites:=AValue;
-  FavouriteGrid.Favourites:=FFavourites;
+  //debugln('TObjectInspectorDlg.SetFavorites ',dbgsName(Self));
+  if FFavorites=AValue then exit;
+  FFavorites:=AValue;
+  FavoriteGrid.Favorites:=FFavorites;
 end;
 
 { TCustomPropertiesGrid }

@@ -14,7 +14,7 @@
 
   Abstract:
     Extension for the Object Inspector.
-    - Favourites properties
+    - Favorites properties
 }
 unit ObjInspExt;
 
@@ -31,9 +31,9 @@ uses
   LazarusIDEStrConsts;
   
 type
-  { TOIAddRemoveFavouriteDlg }
+  { TOIAddRemoveFavoriteDlg }
 
-  TOIAddRemoveFavouriteDlg = class(TForm)
+  TOIAddRemoveFavoriteDlg = class(TForm)
     NoteLabel: TLabel;
     ClassCombobox: TComboBox;
     OkButton: TButton;
@@ -58,17 +58,17 @@ type
   end;
 
 const
-  DefaultOIFavouriteConfigFilename = 'objectinspectorfavourites.xml';
+  DefaultOIFavoriteConfigFilename = 'objectinspectorfavorites.xml';
 
 var
-  DefaultOIFavouriteProperties: TOIFavouriteProperties;
+  DefaultOIFavoriteProperties: TOIFavoriteProperties;
 
-function ShowAddRemoveFavouriteDialog(ObjInspector: TObjectInspectorDlg;
+function ShowAddRemoveFavoriteDialog(ObjInspector: TObjectInspectorDlg;
   Add: Boolean): TModalResult;
-function CreateDefaultOIFavouriteProperties: TOIFavouriteProperties;
-function LoadOIFavouriteProperties: TOIFavouriteProperties;
-procedure SaveOIFavouriteProperties(Favourites: TOIFavouriteProperties);
-function GetOIFavouriteConfigFilename: string;
+function CreateDefaultOIFavoriteProperties: TOIFavoriteProperties;
+function LoadOIFavoriteProperties: TOIFavoriteProperties;
+procedure SaveOIFavoriteProperties(Favorites: TOIFavoriteProperties);
+function GetOIFavoriteConfigFilename: string;
 
 function FindDeclarationOfOIProperty(AnInspector: TObjectInspectorDlg;
   Row: TOIPropertyGridRow; out Code: TCodeBuffer; out Caret: TPoint;
@@ -77,15 +77,15 @@ function FindDeclarationOfOIProperty(AnInspector: TObjectInspectorDlg;
 
 implementation
 
-function CreateDefaultOIFavouriteProperties: TOIFavouriteProperties;
+function CreateDefaultOIFavoriteProperties: TOIFavoriteProperties;
 
   procedure Add(ABaseClass: TPersistentClass; const APropertyName: string);
   begin
-    Result.Add(TOIFavouriteProperty.Create(ABaseClass,APropertyName,true));
+    Result.Add(TOIFavoriteProperty.Create(ABaseClass,APropertyName,true));
   end;
 
 begin
-  Result:=TOIFavouriteProperties.Create;
+  Result:=TOIFavoriteProperties.Create;
   // TControl
   Add(TComponent,'Name');
   Add(TComponent,'Caption');
@@ -130,88 +130,88 @@ begin
   Result.DeleteDoubles;
 end;
 
-function ShowAddRemoveFavouriteDialog(ObjInspector: TObjectInspectorDlg;
+function ShowAddRemoveFavoriteDialog(ObjInspector: TObjectInspectorDlg;
   Add: Boolean): TModalResult;
 var
-  OIAddRemoveFavouriteDlg: TOIAddRemoveFavouriteDlg;
+  OIAddRemoveFavoriteDlg: TOIAddRemoveFavoriteDlg;
 begin
-  OIAddRemoveFavouriteDlg:=TOIAddRemoveFavouriteDlg.Create(nil);
-  OIAddRemoveFavouriteDlg.ObjectInspector:=ObjInspector;
-  OIAddRemoveFavouriteDlg.AddMode:=Add;
-  Result:=OIAddRemoveFavouriteDlg.ShowModal;
-  OIAddRemoveFavouriteDlg.Free;
+  OIAddRemoveFavoriteDlg:=TOIAddRemoveFavoriteDlg.Create(nil);
+  OIAddRemoveFavoriteDlg.ObjectInspector:=ObjInspector;
+  OIAddRemoveFavoriteDlg.AddMode:=Add;
+  Result:=OIAddRemoveFavoriteDlg.ShowModal;
+  OIAddRemoveFavoriteDlg.Free;
 end;
 
-function LoadOIFavouriteProperties: TOIFavouriteProperties;
+function LoadOIFavoriteProperties: TOIFavoriteProperties;
 var
   ConfigStore: TConfigStorage;
 begin
-  Result:=DefaultOIFavouriteProperties.CreateCopy;
-  {$IFDEF DebugFavouriteroperties}
-  debugln('LoadOIFavouriteProperties A FileExistsUTF8(GetOIFavouriteConfigFilename)=',dbgs(FileExistsUTF8(GetOIFavouriteConfigFilename)));
+  Result:=DefaultOIFavoriteProperties.CreateCopy;
+  {$IFDEF DebugFavoriteroperties}
+  debugln('LoadOIFavoriteProperties A FileExistsUTF8(GetOIFavoriteConfigFilename)=',dbgs(FileExistsUTF8(GetOIFavoriteConfigFilename)));
   Result.WriteDebugReport;
   {$ENDIF}
-  if not FileExistsUTF8(GetOIFavouriteConfigFilename) then exit;
+  if not FileExistsUTF8(GetOIFavoriteConfigFilename) then exit;
   try
-    ConfigStore:=DefaultConfigClass.Create(GetOIFavouriteConfigFilename,true);
+    ConfigStore:=DefaultConfigClass.Create(GetOIFavoriteConfigFilename,true);
     try
-      Result.MergeConfig(ConfigStore,'ObjectInspector/Favourites/');
+      Result.MergeConfig(ConfigStore,'ObjectInspector/Favorites/');
       Result.Modified:=false;
     finally
       ConfigStore.Free;
     end;
   except
     on E: Exception do begin
-      debugln('Error: LoadOIFavouriteProperties: unable to read ',
-              GetOIFavouriteConfigFilename);
+      debugln('Error: LoadOIFavoriteProperties: unable to read ',
+              GetOIFavoriteConfigFilename);
     end;
   end;
 end;
 
-procedure SaveOIFavouriteProperties(Favourites: TOIFavouriteProperties);
+procedure SaveOIFavoriteProperties(Favorites: TOIFavoriteProperties);
 var
   ConfigStore: TConfigStorage;
-  DefaultFavourites: TOIFavouriteProperties;
+  DefaultFavorites: TOIFavoriteProperties;
 begin
-  {$IFDEF DebugFavouriteroperties}
-  debugln('SaveOIFavouriteProperties Favourites.Modified=',dbgs(Favourites.Modified),
-    ' FileExistsUTF8(GetOIFavouriteConfigFilename)=',dbgs(FileExistsUTF8(GetOIFavouriteConfigFilename)));
+  {$IFDEF DebugFavoriteroperties}
+  debugln('SaveOIFavoriteProperties Favorites.Modified=',dbgs(Favorites.Modified),
+    ' FileExistsUTF8(GetOIFavoriteConfigFilename)=',dbgs(FileExistsUTF8(GetOIFavoriteConfigFilename)));
   {$ENDIF}
-  if (not Favourites.Modified) and FileExistsUTF8(GetOIFavouriteConfigFilename)
+  if (not Favorites.Modified) and FileExistsUTF8(GetOIFavoriteConfigFilename)
   then
     exit;
-  DefaultFavourites:=CreateDefaulTOIFavouriteProperties;
+  DefaultFavorites:=CreateDefaulTOIFavoriteProperties;
   try
-    if DefaultFavourites.IsEqual(Favourites) then exit;
-    {$IFDEF DebugFavouriteroperties}
-    debugln('SaveOIFavouriteProperties is not default');
-    DefaultFavourites.WriteDebugReport;
-    Favourites.WriteDebugReport;
+    if DefaultFavorites.IsEqual(Favorites) then exit;
+    {$IFDEF DebugFavoriteroperties}
+    debugln('SaveOIFavoriteProperties is not default');
+    DefaultFavorites.WriteDebugReport;
+    Favorites.WriteDebugReport;
     {$ENDIF}
     try
-      ConfigStore:=DefaultConfigClass.Create(GetOIFavouriteConfigFilename,false);
+      ConfigStore:=DefaultConfigClass.Create(GetOIFavoriteConfigFilename,false);
       try
-        Favourites.SaveNewItemsToConfig(ConfigStore,'ObjectInspector/Favourites/',
-                                        DefaultFavourites);
+        Favorites.SaveNewItemsToConfig(ConfigStore,'ObjectInspector/Favorites/',
+                                        DefaultFavorites);
         ConfigStore.WriteToDisk;
-        Favourites.Modified:=false;
+        Favorites.Modified:=false;
       finally
         ConfigStore.Free;
       end;
     except
       on E: Exception do begin
-        debugln('Error: LoadOIFavouriteProperties: unable to write ',
-                GetOIFavouriteConfigFilename);
+        debugln('Error: LoadOIFavoriteProperties: unable to write ',
+                GetOIFavoriteConfigFilename);
       end;
     end;
   finally
-    DefaultFavourites.Free;
+    DefaultFavorites.Free;
   end;
 end;
 
-function GetOIFavouriteConfigFilename: string;
+function GetOIFavoriteConfigFilename: string;
 begin
-  Result:=AppendPathDelim(GetPrimaryConfigPath)+DefaultOIFavouriteConfigFilename;
+  Result:=AppendPathDelim(GetPrimaryConfigPath)+DefaultOIFavoriteConfigFilename;
 end;
 
 function FindDeclarationOfOIProperty(AnInspector: TObjectInspectorDlg;
@@ -312,13 +312,13 @@ begin
   Result:=true;
 end;
 
-{ TOIAddRemoveFavouriteDlg }
+{ TOIAddRemoveFavoriteDlg }
 
-procedure TOIAddRemoveFavouriteDlg.OkButtonClick(Sender: TObject);
+procedure TOIAddRemoveFavoriteDlg.OkButtonClick(Sender: TObject);
 var
   NewClassName: String;
   CurClass: TClass;
-  NewFavourite: TOIFavouriteProperty;
+  NewFavorite: TOIFavoriteProperty;
 begin
   NewClassName:=ClassCombobox.Text;
   if (ObjectInspector<>nil) and (ObjectInspector.Selection<>nil)
@@ -326,11 +326,11 @@ begin
     CurClass:=ObjectInspector.Selection[0].ClassType;
     while CurClass.InheritsFrom(TPersistent) do begin
       if CompareText(NewClassName,CurClass.ClassName)=0 then begin
-        NewFavourite:=TOIFavouriteProperty.Create(TPersistentClass(CurClass),
+        NewFavorite:=TOIFavoriteProperty.Create(TPersistentClass(CurClass),
                                                   PropertyName,AddMode);
-        ObjectInspector.Favourites.DeleteConstraints(NewFavourite);
-        ObjectInspector.Favourites.Add(NewFavourite);
-        ObjectInspector.FavouriteGrid.BuildPropertyList;
+        ObjectInspector.Favorites.DeleteConstraints(NewFavorite);
+        ObjectInspector.Favorites.Add(NewFavorite);
+        ObjectInspector.FavoriteGrid.BuildPropertyList;
         ModalResult:=mrOk;
         exit;
       end;
@@ -342,7 +342,7 @@ begin
              [mbOk],0);
 end;
 
-procedure TOIAddRemoveFavouriteDlg.SetObjectInspector(const AValue: TObjectInspectorDlg);
+procedure TOIAddRemoveFavoriteDlg.SetObjectInspector(const AValue: TObjectInspectorDlg);
 var
   CurRow: TOIPropertyGridRow;
 begin
@@ -355,20 +355,20 @@ begin
   UpdateComboBox;
 end;
 
-procedure TOIAddRemoveFavouriteDlg.SetAddMode(const AValue: Boolean);
+procedure TOIAddRemoveFavoriteDlg.SetAddMode(const AValue: Boolean);
 begin
   if FAddMode=AValue then exit;
   FAddMode:=AValue;
   UpdateMode;
 end;
 
-procedure TOIAddRemoveFavouriteDlg.UpdateLabel;
+procedure TOIAddRemoveFavoriteDlg.UpdateLabel;
 begin
-  NoteLabel.Caption:=Format(lisOIFChooseABaseClassForTheFavouriteProperty, [
+  NoteLabel.Caption:=Format(lisOIFChooseABaseClassForTheFavoriteProperty, [
     '"', PropertyName, '"']);
 end;
 
-procedure TOIAddRemoveFavouriteDlg.UpdateComboBox;
+procedure TOIAddRemoveFavoriteDlg.UpdateComboBox;
 var
   CurClass: TClass;
   NewItems: TStringList;
@@ -391,22 +391,22 @@ begin
   NewItems.Free;
 end;
 
-procedure TOIAddRemoveFavouriteDlg.UpdateMode;
+procedure TOIAddRemoveFavoriteDlg.UpdateMode;
 begin
   if AddMode then begin
-    Caption:=lisOIFAddToFavouriteProperties;
+    Caption:=lisOIFAddToFavoriteProperties;
     OkButton.Caption:=lisAdd;
   end else begin
-    Caption:=lisOIFRemoveFromFavouriteProperties;
+    Caption:=lisOIFRemoveFromFavoriteProperties;
     OkButton.Caption:=lisRemove;
   end;
 end;
 
-constructor TOIAddRemoveFavouriteDlg.Create(TheOwner: TComponent);
+constructor TOIAddRemoveFavoriteDlg.Create(TheOwner: TComponent);
 begin
   inherited CreateNew(TheOwner);
   
-  Name:='OIAddToFavouriteDlg';
+  Name:='OIAddToFavoriteDlg';
   Width:=300;
   Height:=150;
   Position:=poScreenCenter;
@@ -450,10 +450,10 @@ begin
 end;
 
 initialization
-  DefaultOIFavouriteProperties:=CreateDefaultOIFavouriteProperties;
+  DefaultOIFavoriteProperties:=CreateDefaultOIFavoriteProperties;
   
 finalization
-  FreeAndNil(DefaultOIFavouriteProperties)
+  FreeAndNil(DefaultOIFavoriteProperties)
 
 end.
 

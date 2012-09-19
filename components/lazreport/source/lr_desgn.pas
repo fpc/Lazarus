@@ -2387,7 +2387,7 @@ begin
   ObjInsp := TObjectInspector.Create(Self);
   ObjInsp.SetInitialBounds(10,10,220,400);
   ObjInsp.ShowComponentTree := False;
-  ObjInsp.ShowFavouritePage := False;
+  ObjInsp.ShowFavoritePage := False;
   ObjInsp.PropertyEditorHook := PropHook;
   {$ELSE}
   ObjInsp := TFrObjectInspector.Create(Self);

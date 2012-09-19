@@ -88,7 +88,7 @@ begin
     t.Dependencies.AddUnit('newitemintf');
     t.Dependencies.AddUnit('objectinspector');
     t.Dependencies.AddUnit('objinspstrconsts');
-    t.Dependencies.AddUnit('oifavouriteproperties');
+    t.Dependencies.AddUnit('oifavoriteproperties');
     t.Dependencies.AddUnit('packageintf');
     t.Dependencies.AddUnit('projectintf');
     t.Dependencies.AddUnit('projectresourcesintf');
@@ -140,7 +140,7 @@ begin
     T:=P.Targets.AddUnit('newitemintf.pas');
     T:=P.Targets.AddUnit('objectinspector.pp');
     T:=P.Targets.AddUnit('objinspstrconsts.pas');
-    T:=P.Targets.AddUnit('oifavouriteproperties.pas');
+    T:=P.Targets.AddUnit('oifavoriteproperties.pas');
     T:=P.Targets.AddUnit('packageintf.pas');
     T:=P.Targets.AddUnit('projectintf.pas');
     T:=P.Targets.AddUnit('projectresourcesintf.pas');
