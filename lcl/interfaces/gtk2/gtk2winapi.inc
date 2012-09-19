@@ -2328,9 +2328,6 @@ end;
 function TGtk2WidgetSet.DrawEdge(DC: HDC; var ARect: TRect; Edge: Cardinal;
   grfFlags: Cardinal): Boolean;
 
-var
-  DevCtx: TGtkDeviceContext absolute DC;
-
   procedure DrawEdges(var R: TRect; GC: pgdkGC; Drawable:PGdkDrawable;
     const TopLeftColor, BottomRightColor: TGDKColor);
   begin
@@ -6648,8 +6645,6 @@ end;
 function TGtk2WidgetSet.LineTo(DC: HDC; X, Y: Integer): Boolean;
 var
   DevCtx: TGtkDeviceContext absolute DC;
-
-  DCOrigin: TPoint;
   FromPt: TPoint;
   ToPt: TPoint;
 begin
@@ -6827,8 +6822,6 @@ end;
 
  ------------------------------------------------------------------------------}
 function TGtk2WidgetSet.MoveToEx(DC: HDC; X, Y: Integer; OldPoint: PPoint): Boolean;
-var
-  DevCtx: TGtkDeviceContext absolute DC;
 begin
   Result := IsValidDC(DC);
   if Result then
