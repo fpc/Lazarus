@@ -3279,7 +3279,9 @@ type
 
   function GetCurrentTokenType: TStrConstTokenType;
   begin
-    if AtomIsStringConstant then
+    if (CurPos.StartPos<1) or (CurPos.StartPos>SrcLen) then
+      Result:=scatNone
+    else if AtomIsStringConstant then
       Result:=scatStrConst
     else if AtomIsChar('+') then
       Result:=scatPlus
