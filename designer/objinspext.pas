@@ -26,7 +26,7 @@ uses
   Classes, SysUtils, LCLProc, Forms, Controls, Buttons, StdCtrls, TypInfo,
   ExtCtrls, Dialogs, Menus, ComCtrls, Grids, CustomTimer,
   DirectoryCacher, CodeToolManager, CodeCache, PropEdits,
-  LazIDEIntf, ProjectIntf, ObjectInspector, OIFavouriteProperties,
+  LazIDEIntf, ProjectIntf, ObjectInspector, OIFavoriteProperties,
   DialogProcs, FileUtil, LazConf, BaseIDEIntf, LazConfigStorage,
   LazarusIDEStrConsts;
   

@@ -2,7 +2,7 @@
   This source is only used to compile and install the package.
  }
 
-unit IDEIntf; 
+unit IDEIntf;
 
 interface
 
@@ -15,19 +15,18 @@ uses
   IDEExternToolIntf, IDEHelpIntf, IDEImagesIntf, IDEMsgIntf, IDEOptionsIntf, 
   IDETextConverter, IDEWindowIntf, ImageListEditor, LazIDEIntf, 
   LazStringGridEdit, ListViewPropEdit, MacroIntf, MaskPropEdit, MenuIntf, 
-  newfield, NewItemIntf, ObjectInspector, ObjInspStrConsts, 
-  OIFavouriteProperties, PackageIntf, ProjectIntf, ProjectResourcesIntf, 
-  PropEdits, PropEditUtils, SrcEditorIntf, StatusBarPropEdit, 
-  StringsPropEditDlg, TextTools, TreeViewPropEdit, CompOptsIntf, 
-  LazarusPackageIntf;
+  newfield, NewItemIntf, ObjectInspector, ObjInspStrConsts, PackageIntf, 
+  ProjectIntf, ProjectResourcesIntf, PropEdits, PropEditUtils, SrcEditorIntf, 
+  StatusBarPropEdit, StringsPropEditDlg, TextTools, TreeViewPropEdit, 
+  CompOptsIntf, OIFavoriteProperties, LazarusPackageIntf;
 
 implementation
 
-procedure Register; 
+procedure Register;
 begin
-  RegisterUnit('IDEWindowIntf', @IDEWindowIntf.Register); 
-end; 
+  RegisterUnit('IDEWindowIntf', @IDEWindowIntf.Register);
+end;
 
 initialization
-  RegisterPackage('IDEIntf', @Register); 
+  RegisterPackage('IDEIntf', @Register);
 end.

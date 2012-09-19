@@ -10,7 +10,7 @@
  *                                                                           *
  *****************************************************************************
 }
-unit OIFavouriteProperties;
+unit OIFavoriteProperties;
 
 {$MODE OBJFPC}{$H+}
 

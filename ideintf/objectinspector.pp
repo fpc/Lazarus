@@ -43,7 +43,7 @@ uses
   LCLType, LCLIntf, Controls, ComCtrls, ExtCtrls, LMessages, LResources,
   LazConfigStorage, Menus, Dialogs, Themes, TreeFilterEdit, ObjInspStrConsts,
   PropEdits, GraphPropEdits, ListViewPropEdit, ImageListEditor,
-  ComponentTreeView, ComponentEditors, IDEImagesIntf, OIFavouriteProperties,
+  ComponentTreeView, ComponentEditors, IDEImagesIntf, OIFavoriteProperties,
   PropEditUtils;
 
 const

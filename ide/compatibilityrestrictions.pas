@@ -36,7 +36,7 @@ interface
 uses
   Classes, SysUtils, Forms, LCLProc, InterfaceBase, StringHashList,
   Laz2_DOM, Laz2_XMLRead, Laz2_XMLWrite,
-  ObjectInspector, OIFavouriteProperties, PackageIntf,
+  ObjectInspector, OIFavoriteProperties, PackageIntf,
   PackageSystem, PackageDefs, ComponentReg, LazConf;
 
 type

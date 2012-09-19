@@ -241,64 +241,64 @@
         <UnitName Value="ObjInspStrConsts"/>
       </Item54>
       <Item55>
-        <Filename Value="oifavouriteproperties.pas"/>
-        <UnitName Value="OIFavouriteProperties"/>
-      </Item55>
-      <Item56>
         <Filename Value="packageintf.pas"/>
         <UnitName Value="PackageIntf"/>
-      </Item56>
-      <Item57>
+      </Item55>
+      <Item56>
         <Filename Value="projectintf.pas"/>
         <UnitName Value="ProjectIntf"/>
-      </Item57>
-      <Item58>
+      </Item56>
+      <Item57>
         <Filename Value="projectresourcesintf.pas"/>
         <UnitName Value="ProjectResourcesIntf"/>
-      </Item58>
-      <Item59>
+      </Item57>
+      <Item58>
         <Filename Value="propedits.pp"/>
         <UnitName Value="PropEdits"/>
-      </Item59>
-      <Item60>
+      </Item58>
+      <Item59>
         <Filename Value="propeditutils.pp"/>
         <UnitName Value="PropEditUtils"/>
-      </Item60>
-      <Item61>
+      </Item59>
+      <Item60>
         <Filename Value="srceditorintf.pas"/>
         <UnitName Value="SrcEditorIntf"/>
-      </Item61>
-      <Item62>
+      </Item60>
+      <Item61>
         <Filename Value="statusbarpropedit.pp"/>
         <UnitName Value="StatusBarPropEdit"/>
-      </Item62>
-      <Item63>
+      </Item61>
+      <Item62>
         <Filename Value="stringspropeditdlg.lfm"/>
         <Type Value="LFM"/>
-      </Item63>
-      <Item64>
+      </Item62>
+      <Item63>
         <Filename Value="stringspropeditdlg.pas"/>
         <UnitName Value="StringsPropEditDlg"/>
-      </Item64>
-      <Item65>
+      </Item63>
+      <Item64>
         <Filename Value="texttools.pas"/>
         <UnitName Value="TextTools"/>
-      </Item65>
-      <Item66>
+      </Item64>
+      <Item65>
         <Filename Value="treeviewpropedit.lfm"/>
         <Type Value="LFM"/>
-      </Item66>
-      <Item67>
+      </Item65>
+      <Item66>
         <Filename Value="treeviewpropedit.pas"/>
         <UnitName Value="TreeViewPropEdit"/>
-      </Item67>
-      <Item68>
+      </Item66>
+      <Item67>
         <Filename Value="compoptsintf.pas"/>
         <UnitName Value="CompOptsIntf"/>
-      </Item68>
-      <Item69>
+      </Item67>
+      <Item68>
         <Filename Value="images/ideintf_images.lrs"/>
         <Type Value="LRS"/>
+      </Item68>
+      <Item69>
+        <Filename Value="oifavoriteproperties.pas"/>
+        <UnitName Value="OIFavouriteProperties"/>
       </Item69>
     </Files>
     <LazDoc Paths="docs"/>
