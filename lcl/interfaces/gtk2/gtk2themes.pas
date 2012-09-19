@@ -241,7 +241,7 @@ begin
     Result.Style := gtk_widget_get_style(Result.Widget);
   end;
   Result.Window := DevCtx.Drawable;
-  Result.Origin := DevCtx.TransfPointIndirect(DevCtx.Offset);
+  Result.Origin := DevCtx.Offset;
 
   Result.Painter := gptDefault;
   Result.State := GTK_STATE_NORMAL;
