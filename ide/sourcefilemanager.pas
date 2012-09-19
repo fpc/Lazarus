@@ -1906,6 +1906,8 @@ begin
   FreeThenNil(Project1);
   if IDEMessagesWindow<>nil then IDEMessagesWindow.Clear;
 
+  EnvironmentOptions.LastSavedProjectFile:=RestoreProjectClosed;
+
   {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TLazSourceFileManager.CloseProject C');{$ENDIF}
   Result:=mrOk;
   //writeln('TLazSourceFileManager.CloseProject end ',CodeToolBoss.ConsistencyCheck);

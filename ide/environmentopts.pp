@@ -60,6 +60,8 @@ const
     {$ENDIF}
   {$ENDIF}
 
+  RestoreProjectClosed = '-';
+
   //----------------------------------------------------------------------------
   
   { Backup }
@@ -562,7 +564,8 @@ type
     property MaxRecentPackageFiles: integer read FMaxRecentPackageFiles
                                          write FMaxRecentPackageFiles;
     property LastSavedProjectFile: string read FLastSavedProjectFile
-                                          write FLastSavedProjectFile;
+                     write FLastSavedProjectFile; // if empty then create new project,
+    // if '-'=RestoreProjectClosed then do not load/create any project
     property OpenLastProjectAtStart: boolean read FOpenLastProjectAtStart
                                              write FOpenLastProjectAtStart;
     property FileDialogFilter: string read FFileDialogFilter write FFileDialogFilter;

@@ -2193,7 +2193,10 @@ begin
     if (not ProjectLoaded)
     and (not SkipAutoLoadingLastProject)
     and (EnvironmentOptions.OpenLastProjectAtStart)
-    and (FileExistsUTF8(EnvironmentOptions.LastSavedProjectFile)) then begin
+    and (EnvironmentOptions.LastSavedProjectFile<>'')
+    and (EnvironmentOptions.LastSavedProjectFile<>RestoreProjectClosed)
+    and (FileExistsCached(EnvironmentOptions.LastSavedProjectFile))
+    then begin
       if (not IDEProtocolOpts.LastProjectLoadingCrashed)
       or AskIfLoadLastFailingProject then begin
         // protocol that the IDE is trying to load the last project and did not
@@ -2213,10 +2216,16 @@ begin
     end;
     {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.SetupStartProject B');{$ENDIF}
 
-    if not ProjectLoaded then
-      // create new project
-      DoNewProject(ProjectDescriptorApplication);
-
+    if (not ProjectLoaded) then
+    begin
+      if EnvironmentOptions.OpenLastProjectAtStart
+      and (EnvironmentOptions.LastSavedProjectFile=RestoreProjectClosed) then begin
+        // IDE was closed without a project => restore that state
+      end else begin
+        // create new project
+        DoNewProject(ProjectDescriptorApplication);
+      end;
+    end;
     UpdateWindowMenu(true);
 
     // load the cmd line files
@@ -2224,6 +2233,15 @@ begin
       for i:=0 to CmdLineFiles.Count-1 do
         Begin
           AFilename:=CleanAndExpandFilename(CmdLineFiles.Strings[i]);
+          if not FileExistsCached(AFilename) then begin
+            debugln(['WARNING: command line file not found: "',AFilename,'"']);
+            continue;
+          end;
+          if Project1=nil then begin
+            // to open a file a project is needed
+            // => create a project
+            DoNewProject(ProjectDescriptorEmptyProject);
+          end;
           if CompareFileExt(AFilename,'.lpk',false)=0 then begin
             if PkgBoss.DoOpenPackageFile(AFilename,[pofAddToRecent,pofMultiOpen],true)
               =mrAbort
