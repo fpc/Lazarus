@@ -394,16 +394,25 @@ type
     property GrabRadius: Integer read FGrabRadius write FGrabRadius default 4;
   end;
 
+  TDataPointDragTool = class;
+  TDataPointDragEvent = procedure (
+    ASender: TDataPointDragTool; var APoint: TPoint) of object;
+
   { TDataPointDragTool }
 
   TDataPointDragTool = class(TDataPointTool)
+  strict private
+    FOnDrag: TDataPointDragEvent;
+    FOrigin: TPoint;
   public
     constructor Create(AOwner: TComponent); override;
     procedure MouseDown(APoint: TPoint); override;
     procedure MouseMove(APoint: TPoint); override;
     procedure MouseUp(APoint: TPoint); override;
+    property Origin: TPoint read FOrigin;
   published
     property ActiveCursor default crSizeAll;
+    property OnDrag: TDataPointDragEvent read FOnDrag write FOnDrag;
   end;
 
   { TDataPointClickTool }
@@ -1498,14 +1507,20 @@ procedure TDataPointDragTool.MouseDown(APoint: TPoint);
 begin
   FindNearestPoint(APoint);
   if FSeries = nil then exit;
+  FOrigin := FChart.GraphToImage(NearestGraphPoint);
   Activate;
   Handled;
 end;
 
 procedure TDataPointDragTool.MouseMove(APoint: TPoint);
 begin
-  if FSeries <> nil then
-    FSeries.MovePoint(FPointIndex, APoint);
+  if FSeries = nil then exit;
+  if Assigned(OnDrag) then begin
+    OnDrag(Self, APoint);
+    if Toolset.FIsHandled then exit;
+  end;
+  FSeries.MovePoint(FPointIndex, APoint);
+  Handled;
 end;
 
 procedure TDataPointDragTool.MouseUp(APoint: TPoint);
