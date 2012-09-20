@@ -506,10 +506,10 @@ var
   end;
   
 begin
+  Result := '';
+  if Project1=nil then exit;
   if Project1.RunParameterOptions.UseLaunchingApplication then
-    Result := Project1.RunParameterOptions.LaunchingApplicationPathPlusParams
-  else
-    Result := '';
+    Result := Project1.RunParameterOptions.LaunchingApplicationPathPlusParams;
 
   if Result=''
   then begin
@@ -529,10 +529,9 @@ end;
 
 function TBuildManager.GetProjectPublishDir: string;
 begin
-  if Project1=nil then begin
-    Result:='';
+  Result:='';
+  if Project1=nil then
     exit;
-  end;
   Result:=Project1.PublishOptions.DestinationDirectory;
   if GlobalMacroList.SubstituteStr(Result) then begin
     if FilenameIsAbsolute(Result) then begin
@@ -565,8 +564,9 @@ end;
 
 function TBuildManager.GetProjectUsesAppBundle: Boolean;
 begin
-  Result := (Project1.RunParameterOptions.HostApplicationFilename = '') and
-    (GetTargetOS = 'darwin') and Project1.UseAppBundle;
+  Result := (Project1<>nil)
+    and (Project1.RunParameterOptions.HostApplicationFilename = '')
+    and (GetTargetOS = 'darwin') and Project1.UseAppBundle;
 end;
 
 function TBuildManager.GetTestProjectFilename(aProject: TProject): string;
@@ -610,7 +610,7 @@ var
   TestDir: string;
 begin
   Result:=false;
-  if Project1.IsVirtual then begin
+  if (Project1<>nil) and Project1.IsVirtual then begin
     TestDir:=GetTestBuildDirectory;
     Result:=FileIsInPath(AFilename,TestDir);
   end;

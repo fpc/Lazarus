@@ -808,6 +808,7 @@ type
     function DoNewProject(ProjectDesc: TProjectDescriptor): TModalResult; override;
     function DoSaveProject(Flags: TSaveFlags): TModalResult; override;
     function DoCloseProject: TModalResult; override;
+    procedure DoNoProjectWizard(Sender: TObject);
     function DoOpenProjectFile(AFileName: string;
                                Flags: TOpenFlags): TModalResult; override;
     function DoPublishProject(Flags: TSaveFlags;
@@ -1043,6 +1044,7 @@ var
   AnUnitInfo: TUnitInfo;
 begin
   Result:=nil;
+  if Project1=nil then exit;
   AnUnitInfo:=Project1.FirstUnitWithComponent;
   while AnUnitInfo<>nil do begin
     if SysUtils.CompareText(aName,AnUnitInfo.Component.Name)=0 then begin
@@ -1486,6 +1488,10 @@ begin
   IDEWindowCreators.ShowForm(MainIDEBar,false);
   DebugBoss.UpdateButtonsAndMenuItems; // Disable Stop-button (and some others).
   SetupStartProject;                   // Now load a project
+  if Project1=nil then begin
+    Application.Terminate;
+    exit;
+  end;
   DoShowMessagesView(false);           // reopen extra windows
   fUserInputSinceLastIdle:=true; // Idle work gets done initially before user action.
   FApplicationIsActivate:=true;
@@ -2258,6 +2264,9 @@ begin
         end;
     end;
 
+    if Project1=nil then
+      DoNoProjectWizard(nil);
+
     {$IFDEF IDE_DEBUG}
     writeln('TMainIDE.Create B');
     {$ENDIF}
@@ -2996,6 +3005,7 @@ end;
 
 procedure TMainIDE.mnuCleanDirectoryClicked(Sender: TObject);
 begin
+  if Project1=nil then exit;
   ShowCleanDirectoryDialog(Project1.ProjectDirectory,GlobalMacroList);
 end;
 
@@ -3527,7 +3537,7 @@ var
       aMenu.Items.Add(AMenuItem);
     end;
     AMenuItem.Caption := CurMode.GetCaption;
-    AMenuItem.Checked:=Project1.ActiveBuildMode=CurMode;
+    AMenuItem.Checked:=(Project1<>nil) and (Project1.ActiveBuildMode=CurMode);
     AMenuItem.ShowAlwaysCheckable:=true;
     inc(CurIndex);
   end;
@@ -3633,6 +3643,7 @@ var
   AnUnitInfo: TUnitInfo;
   CurDesignerForm: TCustomForm;
 begin
+  if Project1=nil then exit;
   AnUnitInfo:=Project1.FirstUnitWithComponent;
   while AnUnitInfo<>nil do begin
     if AnUnitInfo.Component<>nil then begin
@@ -4035,8 +4046,9 @@ end;
 procedure TMainIDE.mnuCloseProjectClicked(Sender: TObject);
 var
   DlgResult: TModalResult;
-  ARecentProject: String;
 begin
+  if Project1=nil then exit;
+
   // stop debugging/compiling/...
   if not DoResetToolStatus([rfInteractive, rfSuccessOnTrigger]) then exit;
 
@@ -4061,33 +4073,7 @@ begin
   DoCloseProject;
 
   // ask what to do next
-  while (Project1 = nil) do
-  begin
-    case ShowProjectWizardDlg(ARecentProject) of
-    tpws_new:
-      mnuNewProjectClicked(Sender);
-    tpws_open:
-      mnuOpenProjectClicked(Sender);
-      tpws_openRecent:
-        begin
-          ARecentProject := ExpandFileNameUTF8(ARecentProject);
-          if DoOpenProjectFile(ARecentProject, [ofAddToRecent]) <> mrOk then
-          begin
-            // open failed
-            if not FileExistsUTF8(ARecentProject) then
-              EnvironmentOptions.RemoveFromRecentProjectFiles(ARecentProject)
-            else
-              SourceFileMgr.AddRecentProjectFileToEnvironment(ARecentProject);
-          end;
-        end;
-    tpws_examples:
-      mnuToolManageExamplesClicked(Sender);
-    tpws_convert:
-      mnuToolConvertDelphiProjectClicked(Sender);
-    tpws_closeIDE:
-      if QuitIDE then exit;
-    end;
-  end;
+  DoNoProjectWizard(Sender);
 end;
 
 procedure TMainIDE.mnuSaveProjectClicked(Sender: TObject);
@@ -4127,6 +4113,7 @@ end;
 
 procedure TMainIDE.mnuProjectOptionsClicked(Sender: TObject);
 begin
+  if Project1=nil then exit;
   DoOpenIDEOptions(nil, Format(dlgProjectOptionsFor, [Project1.GetTitleOrName]),
     [TAbstractIDEProjectOptions, TProjectCompilerOptions], []);
 end;
@@ -4252,6 +4239,7 @@ end;
 
 procedure TMainIDE.mnuCleanUpCompiledProjectClicked(Sender: TObject);
 begin
+  if Project1=nil then exit;
   if Project1.MainUnitInfo=nil then begin
     // this project has no source to compile
     IDEMessageDialog(lisCanNotCompileProject,
@@ -4359,6 +4347,7 @@ end;
 
 procedure TMainIDE.mnuRunParametersClicked(Sender: TObject);
 begin
+  if Project1=nil then exit;
   if ShowRunParamsOptsDlg(Project1.RunParameterOptions)=mrOK then
     Project1.Modified:=true;
 end;
@@ -4754,6 +4743,7 @@ var
     AnUnitInfo: TUnitInfo;
     ADesigner: TDesigner;
   begin
+    if Project1=nil then exit;
     AnUnitInfo := Project1.FirstUnitWithComponent;
     while AnUnitInfo <> nil do
     begin
@@ -4823,13 +4813,15 @@ end;
 procedure TMainIDE.DoEditorOptionsBeforeRead(Sender: TObject);
 begin
   // update editor options?
+  if Project1=nil then exit;
   Project1.UpdateAllCustomHighlighter;
 end;
 
 procedure TMainIDE.DoEditorOptionsAfterWrite(Sender: TObject; Restore: boolean);
 begin
   if Restore then exit;
-  Project1.UpdateAllSyntaxHighlighter;
+  if Project1<>nil then
+    Project1.UpdateAllSyntaxHighlighter;
   UpdateHighlighters(True);
   SourceEditorManager.ReloadEditorOptions;
   ReloadMenuShortCuts;
@@ -5048,6 +5040,7 @@ var
   LFMCode: TCodeBuffer;
   AFilename: String;
 begin
+  if Project1=nil then exit(mrCancel);
   // try to find a unit name without expaning the path. this is required if unit is virtual
   // in other case file name will be expanded with the wrong path
   AFilename := UnitFilename;
@@ -5317,6 +5310,8 @@ var
 begin
   //debugln(['TMainIDE.DoFixupComponentReferences START']);
   Result:=mrOk;
+  if Project1=nil then exit;
+
   CurRoot:=RootComponent;
   while CurRoot.Owner<>nil do
     CurRoot:=CurRoot.Owner;
@@ -5520,8 +5515,7 @@ begin
   if TheProject=Project1 then
     DebugBoss.LoadProjectSpecificInfo(XMLConfig,Merge);
 
-  if (TheProject=Project1)
-  then
+  if (TheProject=Project1) then
     EditorMacroListViewer.LoadProjectSpecificInfo(XMLConfig, Merge);
 end;
 
@@ -5545,8 +5539,8 @@ end;
 
 procedure TMainIDE.OnProjectChangeInfoFile(TheProject: TProject);
 begin
-  if TheProject<>Project1 then exit;
-  if TheProject.IsVirtual then
+  if (Project1=nil) or (TheProject<>Project1) then exit;
+  if Project1.IsVirtual then
     CodeToolBoss.SetGlobalValue(ExternalMacroStart+'ProjPath',VirtualDirectory)
   else
     CodeToolBoss.SetGlobalValue(ExternalMacroStart+'ProjPath',
@@ -5672,7 +5666,7 @@ begin
   debugln(['[TMainIDE.DoOpenMainUnit] A ProjectLoading=',ofProjectLoading in Flags,' MainUnitID=',Project1.MainUnitID]);
   {$ENDIF}
   Result:=mrCancel;
-  if Project1.MainUnitID<0 then exit;
+  if (Project1=nil) or (Project1.MainUnitID<0) then exit;
   MainUnitInfo:=Project1.MainUnitInfo;
 
   // check if main unit is already open in source editor
@@ -5727,6 +5721,7 @@ var
   LFMClassName: String;
   anUnitName: String;
 begin
+  if Project1=nil then exit(mrCancel);
   GetCurrentUnit(ActiveSourceEditor, ActiveUnitInfo);
   for i := 0 to Project1.UnitCount - 1 do
   begin
@@ -6041,6 +6036,7 @@ var
   AForm: TCustomForm;
   AnUnitInfo: TUnitInfo;
 begin
+  if Project1=nil then exit(mrCancel);
   UnitList := TStringList.Create;
   UnitList.Sorted := True;
   try
@@ -6562,7 +6558,8 @@ end;
 function TMainIDE.LoadIDECodeBuffer(var ACodeBuffer: TCodeBuffer;
   const AFilename: string; Flags: TLoadBufferFlags; ShowAbort: boolean): TModalResult;
 begin
-  if Project1.UnitInfoWithFilename(AFilename,[pfsfOnlyEditorFiles])<>nil then
+  if (Project1<>nil)
+  and (Project1.UnitInfoWithFilename(AFilename,[pfsfOnlyEditorFiles])<>nil) then
     Exclude(Flags,lbfUpdateFromDisk);
   Result:=LoadCodeBuffer(ACodeBuffer,AFilename,Flags,ShowAbort);
 end;
@@ -6631,14 +6628,13 @@ var
   AnUnitInfo: TUnitInfo;
 begin
   Result:=mrCancel;
-  if (Project1<>nil) then begin
-    AnUnitInfo:=Project1.UnitInfoWithFilename(Filename,[]);
-    if (AnUnitInfo<>nil) and (AnUnitInfo.OpenEditorInfoCount > 0) then
-      Result:=DoOpenEditorFile(AnUnitInfo.Filename,
-                               AnUnitInfo.OpenEditorInfo[0].PageIndex,
-                               AnUnitInfo.OpenEditorInfo[0].WindowIndex,
-                               [ofRevert]); // Reverting one will revert all
-  end;
+  if (Project1=nil) then exit;
+  AnUnitInfo:=Project1.UnitInfoWithFilename(Filename,[]);
+  if (AnUnitInfo<>nil) and (AnUnitInfo.OpenEditorInfoCount > 0) then
+    Result:=DoOpenEditorFile(AnUnitInfo.Filename,
+                             AnUnitInfo.OpenEditorInfo[0].PageIndex,
+                             AnUnitInfo.OpenEditorInfo[0].WindowIndex,
+                             [ofRevert]); // Reverting one will revert all
 end;
 
 procedure TMainIDE.DoMergeDefaultProjectOptions(AProject: TProject);
@@ -6700,6 +6696,39 @@ end;
 function TMainIDE.DoCloseProject: TModalResult;
 begin
   Result:=SourceFileMgr.CloseProject;
+end;
+
+procedure TMainIDE.DoNoProjectWizard(Sender: TObject);
+var
+  ARecentProject: String;
+begin
+  while (Project1 = nil) do
+  begin
+    case ShowProjectWizardDlg(ARecentProject) of
+    tpws_new:
+      mnuNewProjectClicked(Sender);
+    tpws_open:
+      mnuOpenProjectClicked(Sender);
+      tpws_openRecent:
+        begin
+          ARecentProject := ExpandFileNameUTF8(ARecentProject);
+          if DoOpenProjectFile(ARecentProject, [ofAddToRecent]) <> mrOk then
+          begin
+            // open failed
+            if not FileExistsUTF8(ARecentProject) then
+              EnvironmentOptions.RemoveFromRecentProjectFiles(ARecentProject)
+            else
+              SourceFileMgr.AddRecentProjectFileToEnvironment(ARecentProject);
+          end;
+        end;
+    tpws_examples:
+      mnuToolManageExamplesClicked(Sender);
+    tpws_convert:
+      mnuToolConvertDelphiProjectClicked(Sender);
+    tpws_closeIDE:
+      if QuitIDE then exit;
+    end;
+  end;
 end;
 
 function TMainIDE.DoOpenProjectFile(AFileName: string; Flags: TOpenFlags): TModalResult;
@@ -6786,6 +6815,8 @@ end;
 function TMainIDE.DoPublishProject(Flags: TSaveFlags;
   ShowDialog: boolean): TModalResult;
 begin
+  if Project1=nil then exit(mrCancel);
+
   // show the publish project dialog
   if ShowDialog then begin
     Result:=ShowPublishProjectDialog(Project1.PublishOptions);
@@ -7033,6 +7064,7 @@ var
 const
   MultiSelectCheckedState: Boolean = true;
 Begin
+  if Project1=nil then exit(mrCancel);
   ViewUnitEntries := TStringList.Create;
   ViewUnitEntries.Sorted := True;
   UnitInfos:=nil;
@@ -7110,6 +7142,8 @@ end;
 
 function TMainIDE.DoSaveForBuild(AReason: TCompileReason): TModalResult;
 begin
+  if Project1=nil then exit(mrOk);
+
   Result:=mrCancel;
   if not (ToolStatus in [itNone,itDebugger]) then begin
     {$IFDEF VerboseSaveForBuild}
@@ -7295,7 +7329,7 @@ var
   FPCVersion, FPCRelease, FPCPatch: integer;
   Note: String;
 begin
-  if Project1.MainUnitInfo=nil then begin
+  if (Project1=nil) or (Project1.MainUnitInfo=nil) then begin
     // this project has no source to compile
     IDEMessageDialog(lisCanNotCompileProject,
       lisTheProjectHasNoMainSourceFile, mtError, [mbCancel], '');
@@ -7619,6 +7653,8 @@ begin
   Result := mrCancel;
 
   // Check if this project is runnable
+  if Project1=nil then exit(mrCancel);
+
   if not ( ((Project1.CompilerOptions.ExecutableType=cetProgram) or
             (Project1.RunParameterOptions.HostApplicationFilename<>''))
           and (pfRunnable in Project1.Flags) and (Project1.MainUnitID >= 0) )
@@ -8738,7 +8774,7 @@ end;
 procedure TMainIDE.GetUnitWithPersistent(APersistent: TPersistent;
   var ActiveSourceEditor: TSourceEditor; var ActiveUnitInfo: TUnitInfo);
 begin
-  if APersistent<>nil then begin
+  if (APersistent<>nil) and (Project1<>nil) then begin
     ActiveUnitInfo:=Project1.FirstUnitWithComponent;
     while ActiveUnitInfo<>nil do begin
       if ActiveUnitInfo.Component=APersistent then begin
@@ -9138,6 +9174,7 @@ var
   AnUnitInfo: TUnitInfo;
   NextUnitInfo: TUnitInfo;
 begin
+  if Project1=nil then exit;
   AnUnitInfo:=Project1.FirstUnitWithComponent;
   while AnUnitInfo<>nil do begin
     NextUnitInfo:=AnUnitInfo.NextUnitWithComponent;
@@ -9255,7 +9292,9 @@ var
   AnUnitInfo: TUnitInfo;
 begin
   ResultFlags:=[];
-  AnUnitInfo:=Project1.UnitInfoWithFilename(AFilename);
+  AnUnitInfo:=nil;
+  if Project1<>nil then
+    AnUnitInfo:=Project1.UnitInfoWithFilename(AFilename);
   if AnUnitInfo<>nil then begin
     // readonly
     if (ifsReadOnly in NeededFlags) and AnUnitInfo.ReadOnly then
@@ -9273,7 +9312,8 @@ begin
   end;
 end;
 
-function GetFPCMessage(ALine: TLazMessageLine; var FileName: String; var CaretPos: TPoint; var ErrType: TFPCErrorType): Boolean;
+function GetFPCMessage(ALine: TLazMessageLine; var FileName: String;
+  var CaretPos: TPoint; var ErrType: TFPCErrorType): Boolean;
 begin
   Result := Assigned(ALine.Parts);
   if Result and (ALine.Filename = '') then
@@ -9349,7 +9389,9 @@ begin
 
     if SearchedFilename<>'' then begin
       // open the file in the source editor
-      AnUnitInfo := Project1.UnitInfoWithFilename(SearchedFilename);
+      AnUnitInfo := nil;
+      if Project1<>nil then
+        AnUnitInfo:=Project1.UnitInfoWithFilename(SearchedFilename);
       AnEditorInfo := nil;
       if AnUnitInfo <> nil then
         AnEditorInfo := GetAvailableUnitEditorInfo(AnUnitInfo, LogCaretXY);
@@ -9459,7 +9501,9 @@ begin
     end;
     if SearchedFilename<>'' then begin
       // open the file in the source editor
-      AnUnitInfo := Project1.UnitInfoWithFilename(SearchedFilename);
+      AnUnitInfo := nil;
+      if Project1<>nil then
+        AnUnitInfo := Project1.UnitInfoWithFilename(SearchedFilename);
       AnEditorInfo := nil;
       if AnUnitInfo <> nil then
         AnEditorInfo := GetAvailableUnitEditorInfo(AnUnitInfo, LogCaretXY);
@@ -9811,7 +9855,7 @@ begin
     and FileIsInPath(AFilename,BaseDir) then
     begin
       Result:=CreateRelativePath(AFilename,BaseDir);
-      if Project1.UnitInfoWithFilename(Result)<>nil then
+      if (Project1<>nil) and (Project1.UnitInfoWithFilename(Result)<>nil) then
         exit;
     end;
   end;
@@ -9894,7 +9938,7 @@ function TMainIDE.FileExistsInIDE(const Filename: string;
   SearchFlags: TProjectFileSearchFlags): boolean;
 begin
   Result:=FileExistsCached(Filename)
-          or (Project1.UnitInfoWithFilename(Filename,SearchFlags)<>nil);
+          or ((Project1<>nil) and (Project1.UnitInfoWithFilename(Filename,SearchFlags)<>nil));
 end;
 
 //------------------------------------------------------------------------------
@@ -10152,7 +10196,7 @@ end;
 
 function TMainIDE.UnitDependenciesViewGetProjectMainFilename(Sender: TObject): string;
 begin
-  if Project1.MainUnitID>=0 then
+  if (Project1<>nil) and (Project1.MainUnitID>=0) then
     Result:=Project1.MainUnitInfo.Filename
   else
     Result:='';
@@ -10390,7 +10434,9 @@ var
 begin
   for i:=0 to CodeToolBoss.SourceChangeCache.BuffersToModifyCount-1 do begin
     SrcBuf:=CodeToolBoss.SourceChangeCache.BuffersToModify[i];
-    AnUnitInfo:=Project1.UnitInfoWithFilename(SrcBuf.Filename);
+    AnUnitInfo:=nil;
+    if Project1<>nil then
+      AnUnitInfo:=Project1.UnitInfoWithFilename(SrcBuf.Filename);
     if AnUnitInfo<>nil then
       AnUnitInfo.Modified:=true;
 
@@ -10413,6 +10459,7 @@ var
 begin
   Result:=nil;
   // check if SrcFilename is project file
+  if Project1=nil then exit;
   AnUnitInfo:=Project1.ProjectUnitWithFilename(SrcFilename);
   if AnUnitInfo=nil then exit;
   // SrcFilename is a project file
@@ -10669,7 +10716,7 @@ function TMainIDE.BeginCodeTool(ADesigner: TDesigner;
   Flags: TCodeToolsFlags): boolean;
 begin
   Result:=false;
-  if ctfUseGivenSourceEditor in Flags then begin
+  if (ctfUseGivenSourceEditor in Flags) and (Project1<>nil) then begin
     ActiveUnitInfo := Project1.EditorInfoWithEditorComponent(ActiveSrcEdit).UnitInfo;
   end
   else begin
