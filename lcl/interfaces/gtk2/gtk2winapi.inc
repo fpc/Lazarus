@@ -3898,7 +3898,7 @@ begin
 
   if (DevCtx.BkMode = OPAQUE) then
   begin
-    EnsureGCColor(DC, dccCurrentBackColor, True, True);
+    AllocGDIColor(DC, @DevCtx.CurrentBackColor);
     BackGroundColor := @DevCtx.CurrentBackColor.Color;
   end;
 
