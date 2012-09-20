@@ -12052,21 +12052,21 @@ msgstr "Paklausus komponentės pavadinimo, pereiti į objektų inspektoriaus kor
 msgid "? (Off)"
 msgstr "? (Pasyvus)"
 
-#: lazarusidestrconsts.lisoifaddtofavouriteproperties
-msgid "Add to favourite properties"
-msgstr "Pridėti prie mėgstamiausiųjų savybių"
+#: lazarusidestrconsts.lisoifaddtofavoriteproperties
+msgid "Add to favorite properties"
+msgstr ""
 
-#: lazarusidestrconsts.lisoifchooseabaseclassforthefavouriteproperty
-msgid "Choose a base class for the favourite property %s%s%s."
-msgstr "Mėgstamiausiąjai savybei %s%s%s parinkite bazinę klasę."
+#: lazarusidestrconsts.lisoifchooseabaseclassforthefavoriteproperty
+msgid "Choose a base class for the favorite property %s%s%s."
+msgstr ""
 
 #: lazarusidestrconsts.lisoifclassnotfound
 msgid "Class %s%s%s not found."
 msgstr "Klasė %s%s%s nerasta."
 
-#: lazarusidestrconsts.lisoifremovefromfavouriteproperties
-msgid "Remove from favourite properties"
-msgstr "Pašalinti iš mėgstamiausiųjų savybių"
+#: lazarusidestrconsts.lisoifremovefromfavoriteproperties
+msgid "Remove from favorite properties"
+msgstr ""
 
 #: lazarusidestrconsts.lisoipautoinstalldynamic
 msgid "auto install dynamic"

@@ -11665,21 +11665,21 @@ msgstr "Siirry komponenttimuokkaimen suosikit-lehdelle komponentin nimen antamis
 msgid "? (Off)"
 msgstr "? (Pois)"
 
-#: lazarusidestrconsts.lisoifaddtofavouriteproperties
-msgid "Add to favourite properties"
-msgstr "Lisää ominaisuus suosikiksi"
+#: lazarusidestrconsts.lisoifaddtofavoriteproperties
+msgid "Add to favorite properties"
+msgstr ""
 
-#: lazarusidestrconsts.lisoifchooseabaseclassforthefavouriteproperty
-msgid "Choose a base class for the favourite property %s%s%s."
-msgstr "Valitse kantaluokka suosikkiominaisuudelle %s%s%s."
+#: lazarusidestrconsts.lisoifchooseabaseclassforthefavoriteproperty
+msgid "Choose a base class for the favorite property %s%s%s."
+msgstr ""
 
 #: lazarusidestrconsts.lisoifclassnotfound
 msgid "Class %s%s%s not found."
 msgstr "Luokkaa (Class) %s%s%s ei löydy."
 
-#: lazarusidestrconsts.lisoifremovefromfavouriteproperties
-msgid "Remove from favourite properties"
-msgstr "Poista ominaisuus suosikeista"
+#: lazarusidestrconsts.lisoifremovefromfavoriteproperties
+msgid "Remove from favorite properties"
+msgstr ""
 
 #: lazarusidestrconsts.lisoipautoinstalldynamic
 msgid "auto install dynamic"

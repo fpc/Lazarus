@@ -12163,21 +12163,21 @@ msgstr ""
 msgid "? (Off)"
 msgstr ""
 
-#: lazarusidestrconsts.lisoifaddtofavouriteproperties
-msgid "Add to favourite properties"
-msgstr "Voeg aan favoriete properties toe"
+#: lazarusidestrconsts.lisoifaddtofavoriteproperties
+msgid "Add to favorite properties"
+msgstr ""
 
-#: lazarusidestrconsts.lisoifchooseabaseclassforthefavouriteproperty
-msgid "Choose a base class for the favourite property %s%s%s."
-msgstr "Kies een basisklasse voor de favoriete eigenschap %s%s%s."
+#: lazarusidestrconsts.lisoifchooseabaseclassforthefavoriteproperty
+msgid "Choose a base class for the favorite property %s%s%s."
+msgstr ""
 
 #: lazarusidestrconsts.lisoifclassnotfound
 msgid "Class %s%s%s not found."
 msgstr "Klasse %s%s%s niet gevonden."
 
-#: lazarusidestrconsts.lisoifremovefromfavouriteproperties
-msgid "Remove from favourite properties"
-msgstr "Uit favoriete properties verwijderen"
+#: lazarusidestrconsts.lisoifremovefromfavoriteproperties
+msgid "Remove from favorite properties"
+msgstr ""
 
 #: lazarusidestrconsts.lisoipautoinstalldynamic
 msgid "auto install dynamic"

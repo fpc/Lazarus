@@ -12432,21 +12432,21 @@ msgstr "コンポーネント名を尋ねてからオブジェクトインスペ
 msgid "? (Off)"
 msgstr "? (Off)"
 
-#: lazarusidestrconsts.lisoifaddtofavouriteproperties
-msgid "Add to favourite properties"
-msgstr "お気に入りプロパティを追加"
+#: lazarusidestrconsts.lisoifaddtofavoriteproperties
+msgid "Add to favorite properties"
+msgstr ""
 
-#: lazarusidestrconsts.lisoifchooseabaseclassforthefavouriteproperty
-msgid "Choose a base class for the favourite property %s%s%s."
-msgstr "お気に入りのプロパティの基本クラスを選択してください"
+#: lazarusidestrconsts.lisoifchooseabaseclassforthefavoriteproperty
+msgid "Choose a base class for the favorite property %s%s%s."
+msgstr ""
 
 #: lazarusidestrconsts.lisoifclassnotfound
 msgid "Class %s%s%s not found."
 msgstr "クラス %s%s%s がありません"
 
-#: lazarusidestrconsts.lisoifremovefromfavouriteproperties
-msgid "Remove from favourite properties"
-msgstr "お気に入りのプロパティから削除"
+#: lazarusidestrconsts.lisoifremovefromfavoriteproperties
+msgid "Remove from favorite properties"
+msgstr ""
 
 #: lazarusidestrconsts.lisoipautoinstalldynamic
 msgid "auto install dynamic"

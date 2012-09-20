@@ -11714,21 +11714,21 @@ msgstr "Přepnout na záložku Oblíbené v Inspektoru Objektů po dotazu na jm�
 msgid "? (Off)"
 msgstr "? (Vypnuto)"
 
-#: lazarusidestrconsts.lisoifaddtofavouriteproperties
-msgid "Add to favourite properties"
-msgstr "Přidat do oblíbených vlastností"
+#: lazarusidestrconsts.lisoifaddtofavoriteproperties
+msgid "Add to favorite properties"
+msgstr ""
 
-#: lazarusidestrconsts.lisoifchooseabaseclassforthefavouriteproperty
-msgid "Choose a base class for the favourite property %s%s%s."
-msgstr "Vyberte základní třídu pro oblíbené vlastnosti %s%s%s."
+#: lazarusidestrconsts.lisoifchooseabaseclassforthefavoriteproperty
+msgid "Choose a base class for the favorite property %s%s%s."
+msgstr ""
 
 #: lazarusidestrconsts.lisoifclassnotfound
 msgid "Class %s%s%s not found."
 msgstr "Třída %s%s%s nenalezena,"
 
-#: lazarusidestrconsts.lisoifremovefromfavouriteproperties
-msgid "Remove from favourite properties"
-msgstr "Odebrat z oblíbených vlastností"
+#: lazarusidestrconsts.lisoifremovefromfavoriteproperties
+msgid "Remove from favorite properties"
+msgstr ""
 
 #: lazarusidestrconsts.lisoipautoinstalldynamic
 msgid "auto install dynamic"
