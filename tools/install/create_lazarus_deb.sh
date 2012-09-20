@@ -68,18 +68,20 @@ echo "FPCVersion=$FPCVersion"
 
 Arch=`dpkg --print-architecture`
 echo "debian architecture=$Arch"
-if [  "$Arch" = i386 ]; then 
-  ppcbin=ppc386 
-else 
+targetos=$Arch
+if [  "$Arch" = i386 ]; then
+  ppcbin=ppc386
+else
   if [ "$Arch" = amd64 ]; then 
     ppcbin=ppcx64 
-  else   
+    targetos=x86_64
+  else
     if [  "$Arch" = powerpc ]; then 
       ppcbin=ppcppc 
-    else 
+    else
       if [  "$Arch" = sparc ]; then 
         ppcbin=ppcsparc 
-      else 
+      else
         echo "$Arch is not supported." 
         exit -1 
       fi 
@@ -147,6 +149,8 @@ echo "MAKEOPTS=$MAKEOPTS"
 # build
 export LCL_PLATFORM=$LCLWidgetset
 make bigide PP=$ppcbin OPT="$MAKEOPTS"
+# create directories for building alternative widgetsets
+mkdir -p units/${targetos}-linux/qt
 
 export LCL_PLATFORM=
 
