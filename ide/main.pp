@@ -7273,6 +7273,8 @@ end;
 function TMainIDE.QuitIDE: boolean;
 begin
   Result:=true;
+  if Project1=nil then
+    EnvironmentOptions.LastSavedProjectFile:=RestoreProjectClosed;
   MainIDEBar.OnCloseQuery(Self, Result);
   {$IFDEF IDE_DEBUG}
   writeln('TMainIDE.QuitIDE 1');
