@@ -182,6 +182,7 @@ var
   SourceFileMgrSingleton: TLazSourceFileManager = nil;
 
 function SourceFileMgr: TLazSourceFileManager;
+// Return always the same instance of SourceFileManager. Create at the first time.
 begin
   if SourceFileMgrSingleton = nil then
     SourceFileMgrSingleton := TLazSourceFileManager.Create;
@@ -945,7 +946,7 @@ begin
     and (not (cfProjectClosing in Flags)) then
     begin
       EnvironmentOptions.AddToRecentOpenFiles(AnUnitInfo.Filename);
-      TMainIDE(MainIDE).SetRecentFilesMenu;
+      MainIDE.SetRecentFilesMenu;
     end;
 
     // close form soft (keep it if used by another component)
@@ -2951,7 +2952,7 @@ begin
     NewFilePath:=ExtractFilePath(NewFilename);
     EnvironmentOptions.RemoveFromRecentOpenFiles(OldFilename);
     EnvironmentOptions.AddToRecentOpenFiles(NewFilename);
-    TMainIDE(MainIDE).SetRecentFilesMenu;   // Must refer to mainwindow
+    MainIDE.SetRecentFilesMenu;
 
     // add new path to unit path
     if AnUnitInfo.IsPartOfProject

@@ -82,6 +82,7 @@ type
 
   TMainIDEBase = class(TMainIDEInterface)
     procedure mnuOpenProjectClicked(Sender: TObject); virtual; abstract;
+    procedure mnuOpenRecentClicked(Sender: TObject); virtual; abstract;
   private
     FToolStatus: TIDEToolStatus;
     FWindowMenuActiveForm: TCustomForm;
@@ -140,6 +141,7 @@ type
     procedure CreateOftenUsedForms; virtual; abstract;
     function GetMainBar: TComponent; override;
     procedure SetRecentProjectFilesMenu;
+    procedure SetRecentFilesMenu;
 
     procedure GetUnitInfoForDesigner(ADesigner: TIDesigner;
                               out ActiveSourceEditor: TSourceEditorInterface;
@@ -293,6 +295,13 @@ begin
   SetRecentSubMenu(itmProjectRecentOpen,
                    EnvironmentOptions.RecentProjectFiles,
                    @mnuOpenProjectClicked);
+end;
+
+procedure TMainIDEBase.SetRecentFilesMenu;
+begin
+  SetRecentSubMenu(itmFileRecentOpen,
+                   EnvironmentOptions.RecentOpenFiles,
+                   @mnuOpenRecentClicked);
 end;
 
 procedure TMainIDEBase.DoMnuWindowClicked(Sender: TObject);

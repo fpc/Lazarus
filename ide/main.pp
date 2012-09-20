@@ -190,7 +190,7 @@ type
     procedure mnuNewFormClicked(Sender: TObject);
     procedure mnuNewOtherClicked(Sender: TObject);
     procedure mnuOpenClicked(Sender: TObject);
-    procedure mnuOpenRecentClicked(Sender: TObject);
+    procedure mnuOpenRecentClicked(Sender: TObject); override;
     procedure mnuRevertClicked(Sender: TObject);
     procedure mnuSaveClicked(Sender: TObject);
     procedure mnuSaveAsClicked(Sender: TObject);
@@ -726,7 +726,6 @@ type
     function DoResetToolStatus(AFlags: TResetToolFlags): boolean; override;
     function DoCallProjectChangedHandler(
         HandlerType: TLazarusIDEHandlerType): TModalResult;
-    procedure SetRecentFilesMenu;
 
     // files/units
     function DoNewFile(NewFileDescriptor: TProjectFileDescriptor;
@@ -2450,13 +2449,6 @@ end;
 function TMainIDE.DoCallProjectChangedHandler(HandlerType: TLazarusIDEHandlerType): TModalResult;
 begin
   Result := inherited DoCallProjectChangedHandler(HandlerType, Project1);
-end;
-
-procedure TMainIDE.SetRecentFilesMenu;
-begin
-  SetRecentSubMenu(itmFileRecentOpen,
-                   EnvironmentOptions.RecentOpenFiles,
-                   @mnuOpenRecentClicked);
 end;
 
 procedure TMainIDE.SetupFileMenu;
@@ -5452,7 +5444,7 @@ begin
     MainIDEBar.itmFileSaveAll.Enabled := MainIDEBar.itmProjectSave.Enabled;
   // toolbar buttons
   MainIDEBar.BuildModeSpeedButton.Visible:=(Project1<>nil)
-                                           and (Project1.BuildModes.Count>1);
+                                       and (Project1.BuildModes.Count>1);
   MainIDEBar.SaveSpeedBtn.Enabled := MainIDEBar.itmFileSave.Enabled;
   if UpdateSaveAll then
     MainIDEBar.SaveAllSpeedBtn.Enabled := MainIDEBar.itmFileSaveAll.Enabled;
