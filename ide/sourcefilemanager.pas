@@ -1903,7 +1903,8 @@ begin
   {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TLazSourceFileManager.CloseProject B');{$ENDIF}
   IncreaseCompilerParseStamp;
   // close Project
-  if ProjInspector<>nil then ProjInspector.LazProject:=nil;
+  if ProjInspector<>nil then
+    ProjInspector.LazProject:=nil;
   FreeThenNil(Project1);
   if IDEMessagesWindow<>nil then IDEMessagesWindow.Clear;
 
@@ -2857,7 +2858,7 @@ var
 begin
   Result:=mrOk;
   if (AnUnitInfo.Component=nil) then exit;
-  if not TMainIDE(MainIDE).BeginCodeTool(ActiveSrcEdit,ActiveUnitInfo,[]) then exit;
+  if not MainIDE.BeginCodeTool(ActiveSrcEdit,ActiveUnitInfo,[]) then exit;
   // unselect methods in ObjectInspector1
   if (ObjectInspector1<>nil)
   and (ObjectInspector1.PropertyEditorHook.LookupRoot=AnUnitInfo.Component) then
@@ -4962,7 +4963,7 @@ begin
     // set new project filename
     Project1.ProjectInfoFile:=NewLPIFilename;
     EnvironmentOptions.AddToRecentProjectFiles(NewLPIFilename);
-    TMainIDE(MainIDE).SetRecentProjectFilesMenu;
+    MainIDE.SetRecentProjectFilesMenu;
 
     // change main source
     if (Project1.MainUnitID >= 0) then

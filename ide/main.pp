@@ -593,7 +593,6 @@ type
     procedure OnAfterCodeToolBossApplyChanges(Manager: TCodeToolManager);
     function OnCodeToolBossSearchUsedUnit(const SrcFilename: string;
                      const TheUnitName, TheUnitInFilename: string): TCodeBuffer;
-    function OnCodeToolBossCheckAbort: boolean;
     procedure CodeToolBossGetVirtualDirectoryAlias(Sender: TObject;
                                                    var RealDir: string);
     procedure CodeToolBossGetVirtualDirectoryDefines(DefTree: TDefineTree;
@@ -903,10 +902,6 @@ type
     procedure AbortBuild; override;
 
     // useful frontend methods
-    procedure DoSwitchToFormSrc(var ActiveSourceEditor:TSourceEditor;
-      var ActiveUnitInfo:TUnitInfo);
-    procedure DoSwitchToFormSrc(ADesigner: TDesigner;
-      var ActiveSourceEditor:TSourceEditor; var ActiveUnitInfo:TUnitInfo);
     procedure UpdateCaption; override;
     procedure HideIDE; override;
     procedure HideUnmodifiedDesigners;
@@ -914,15 +909,7 @@ type
 
     // methods for codetools
     function InitCodeToolBoss: boolean;
-    procedure ActivateCodeToolAbortableMode;
     function BeginCodeTools: boolean; override;
-    function BeginCodeTool(var ActiveSrcEdit: TSourceEditor;
-                           out ActiveUnitInfo: TUnitInfo;
-                           Flags: TCodeToolsFlags): boolean;
-    function BeginCodeTool(ADesigner: TDesigner;
-                           var ActiveSrcEdit: TSourceEditor;
-                           out ActiveUnitInfo: TUnitInfo;
-                           Flags: TCodeToolsFlags): boolean;
     function DoJumpToSourcePosition(const Filename: string;
                                NewX, NewY, NewTopLine: integer;
                                Flags: TJumpToCodePosFlags = [jfFocusEditor]): TModalResult; override;
@@ -10364,15 +10351,6 @@ begin
   {$ENDIF}
 end;
 
-procedure TMainIDE.ActivateCodeToolAbortableMode;
-begin
-  if ToolStatus=itNone then
-    RaiseException('TMainIDE.ActivateCodeToolAbortableMode Error 1');
-  ToolStatus:=itCodeTools;
-  CodeToolBoss.OnCheckAbort:=@OnCodeToolBossCheckAbort;
-  CodeToolBoss.Abortable:=true;
-end;
-
 function TMainIDE.BeginCodeTools: boolean;
 var
   ActiveSrcEdit: TSourceEditor;
@@ -10462,14 +10440,6 @@ begin
   if AnUnitInfo=nil then exit;
   // virtual unit found
   Result:=AnUnitInfo.Source;
-end;
-
-function TMainIDE.OnCodeToolBossCheckAbort: boolean;
-begin
-  Result:=true;
-  if ToolStatus<>itCodeTools then exit;
-  Application.ProcessMessages;
-  Result:=ToolStatus<>itCodeTools;
 end;
 
 procedure TMainIDE.CodeToolBossGetVirtualDirectoryAlias(Sender: TObject;
@@ -10697,67 +10667,6 @@ function TMainIDE.SaveSourceEditorChangesToCodeCache(AEditor: TSourceEditorInter
 // save all open sources to code tools cache
 begin
   Result:=SourceFileMgr.SaveSourceEditorChangesToCodeCache(AEditor);
-end;
-
-function TMainIDE.BeginCodeTool(var ActiveSrcEdit: TSourceEditor;
-  out ActiveUnitInfo: TUnitInfo; Flags: TCodeToolsFlags): boolean;
-begin
-  Result:=BeginCodeTool(nil,ActiveSrcEdit,ActiveUnitInfo,Flags);
-end;
-
-function TMainIDE.BeginCodeTool(ADesigner: TDesigner;
-  var ActiveSrcEdit: TSourceEditor; out ActiveUnitInfo: TUnitInfo;
-  Flags: TCodeToolsFlags): boolean;
-begin
-  Result:=false;
-  if (ctfUseGivenSourceEditor in Flags) and (Project1<>nil) then begin
-    ActiveUnitInfo := Project1.EditorInfoWithEditorComponent(ActiveSrcEdit).UnitInfo;
-  end
-  else begin
-    ActiveSrcEdit:=nil;
-    ActiveUnitInfo:=nil;
-  end;
-
-  // check global stati
-  if (ToolStatus in [itCodeTools,itCodeToolAborting]) then begin
-    debugln('TMainIDE.BeginCodeTool impossible ',dbgs(ord(ToolStatus)));
-    exit;
-  end;
-  if (not (ctfSourceEditorNotNeeded in Flags)) and (SourceEditorManager.SourceEditorCount=0)
-  then begin
-    DebugLn('TMainIDE.BeginCodeTool no source editor');
-    exit;
-  end;
-
-  // check source editor
-  if not (ctfUseGivenSourceEditor in Flags) then begin
-    if ctfSwitchToFormSource in Flags then
-      DoSwitchToFormSrc(ADesigner,ActiveSrcEdit,ActiveUnitInfo)
-    else if ADesigner<>nil then
-      GetDesignerUnit(ADesigner,ActiveSrcEdit,ActiveUnitInfo)
-    else
-      GetCurrentUnit(ActiveSrcEdit,ActiveUnitInfo);
-  end;
-  if (not (ctfSourceEditorNotNeeded in Flags)) and
-     ((ActiveSrcEdit=nil) or (ActiveUnitInfo=nil))
-  then exit;
-
-  // init codetools
-  SaveSourceEditorChangesToCodeCache(nil);
-  if ActiveSrcEdit<>nil then begin
-    CodeToolBoss.VisibleEditorLines:=ActiveSrcEdit.EditorComponent.LinesInWindow;
-    CodeToolBoss.TabWidth:=ActiveSrcEdit.EditorComponent.TabWidth;
-    CodeToolBoss.IndentSize:=ActiveSrcEdit.EditorComponent.BlockIndent;
-  end else begin
-    CodeToolBoss.VisibleEditorLines:=25;
-    CodeToolBoss.TabWidth:=EditorOpts.TabWidth;
-    CodeToolBoss.IndentSize:=EditorOpts.BlockIndent;
-  end;
-
-  if ctfActivateAbortMode in Flags then
-    ActivateCodeToolAbortableMode;
-
-  Result:=true;
 end;
 
 function TMainIDE.DoJumpToSourcePosition(const Filename: string; NewX, NewY,
@@ -13432,31 +13341,6 @@ begin
     HelpControl.Color := clForm;
   end;
   Result := FOIHelpProvider;
-end;
-
-procedure TMainIDE.DoSwitchToFormSrc(var ActiveSourceEditor: TSourceEditor;
-  var ActiveUnitInfo: TUnitInfo);
-begin
-  DoSwitchToFormSrc(nil,ActiveSourceEditor,ActiveUnitInfo);
-end;
-
-procedure TMainIDE.DoSwitchToFormSrc(ADesigner: TDesigner;
-  var ActiveSourceEditor: TSourceEditor; var ActiveUnitInfo: TUnitInfo);
-begin
-  ActiveSourceEditor:=nil;
-  ActiveUnitInfo:=nil;
-  if (ADesigner<>nil) then
-    ActiveUnitInfo:=Project1.UnitWithComponent(ADesigner.LookupRoot)
-  else if (GlobalDesignHook.LookupRoot<>nil)
-  and (GlobalDesignHook.LookupRoot is TComponent) then
-    ActiveUnitInfo:=Project1.UnitWithComponent(TComponent(GlobalDesignHook.LookupRoot))
-  else
-    ActiveUnitInfo:=nil;
-  if (ActiveUnitInfo<>nil) and (ActiveUnitInfo.OpenEditorInfoCount > 0) then begin
-    ActiveSourceEditor := TSourceEditor(ActiveUnitInfo.OpenEditorInfo[0].EditorComponent);
-    SourceEditorManagerIntf.ActiveEditor := ActiveSourceEditor;
-    exit;
-  end;
 end;
 
 function TMainIDE.GetDesignerFormOfSource(AnUnitInfo: TUnitInfo; LoadForm: boolean

@@ -142,11 +142,24 @@ type
     function GetMainBar: TComponent; override;
     procedure SetRecentProjectFilesMenu;
     procedure SetRecentFilesMenu;
+    function BeginCodeTool(var ActiveSrcEdit: TSourceEditor;
+                           out ActiveUnitInfo: TUnitInfo;
+                           Flags: TCodeToolsFlags): boolean;
+    function BeginCodeTool(ADesigner: TDesigner;
+                           var ActiveSrcEdit: TSourceEditor;
+                           out ActiveUnitInfo: TUnitInfo;
+                           Flags: TCodeToolsFlags): boolean;
+    procedure ActivateCodeToolAbortableMode;
+    function OnCodeToolBossCheckAbort: boolean;
+
+    procedure DoSwitchToFormSrc(var ActiveSourceEditor:TSourceEditor;
+      var ActiveUnitInfo:TUnitInfo);
+    procedure DoSwitchToFormSrc(ADesigner: TDesigner;
+      var ActiveSourceEditor:TSourceEditor; var ActiveUnitInfo:TUnitInfo);
 
     procedure GetUnitInfoForDesigner(ADesigner: TIDesigner;
                               out ActiveSourceEditor: TSourceEditorInterface;
                               out ActiveUnitInfo: TUnitInfo); override;
-
     procedure GetCurrentUnitInfo(out ActiveSourceEditor: TSourceEditorInterface;
                               out ActiveUnitInfo: TUnitInfo); override;
     procedure GetCurrentUnit(out ActiveSourceEditor: TSourceEditor;
@@ -302,6 +315,109 @@ begin
   SetRecentSubMenu(itmFileRecentOpen,
                    EnvironmentOptions.RecentOpenFiles,
                    @mnuOpenRecentClicked);
+end;
+
+function TMainIDEBase.BeginCodeTool(var ActiveSrcEdit: TSourceEditor;
+  out ActiveUnitInfo: TUnitInfo; Flags: TCodeToolsFlags): boolean;
+begin
+  Result:=BeginCodeTool(nil,ActiveSrcEdit,ActiveUnitInfo,Flags);
+end;
+
+function TMainIDEBase.BeginCodeTool(ADesigner: TDesigner;
+  var ActiveSrcEdit: TSourceEditor; out ActiveUnitInfo: TUnitInfo;
+  Flags: TCodeToolsFlags): boolean;
+begin
+  Result:=false;
+  if (ctfUseGivenSourceEditor in Flags) and (Project1<>nil) then begin
+    ActiveUnitInfo := Project1.EditorInfoWithEditorComponent(ActiveSrcEdit).UnitInfo;
+  end
+  else begin
+    ActiveSrcEdit:=nil;
+    ActiveUnitInfo:=nil;
+  end;
+
+  // check global stati
+  if (ToolStatus in [itCodeTools,itCodeToolAborting]) then begin
+    debugln('TMainIDE.BeginCodeTool impossible ',dbgs(ord(ToolStatus)));
+    exit;
+  end;
+  if (not (ctfSourceEditorNotNeeded in Flags)) and (SourceEditorManager.SourceEditorCount=0)
+  then begin
+    DebugLn('TMainIDE.BeginCodeTool no source editor');
+    exit;
+  end;
+
+  // check source editor
+  if not (ctfUseGivenSourceEditor in Flags) then begin
+    if ctfSwitchToFormSource in Flags then
+      DoSwitchToFormSrc(ADesigner,ActiveSrcEdit,ActiveUnitInfo)
+    else if ADesigner<>nil then
+      GetDesignerUnit(ADesigner,ActiveSrcEdit,ActiveUnitInfo)
+    else
+      GetCurrentUnit(ActiveSrcEdit,ActiveUnitInfo);
+  end;
+  if (not (ctfSourceEditorNotNeeded in Flags)) and
+     ((ActiveSrcEdit=nil) or (ActiveUnitInfo=nil))
+  then exit;
+
+  // init codetools
+  SaveSourceEditorChangesToCodeCache(nil);
+  if ActiveSrcEdit<>nil then begin
+    CodeToolBoss.VisibleEditorLines:=ActiveSrcEdit.EditorComponent.LinesInWindow;
+    CodeToolBoss.TabWidth:=ActiveSrcEdit.EditorComponent.TabWidth;
+    CodeToolBoss.IndentSize:=ActiveSrcEdit.EditorComponent.BlockIndent;
+  end else begin
+    CodeToolBoss.VisibleEditorLines:=25;
+    CodeToolBoss.TabWidth:=EditorOpts.TabWidth;
+    CodeToolBoss.IndentSize:=EditorOpts.BlockIndent;
+  end;
+
+  if ctfActivateAbortMode in Flags then
+    ActivateCodeToolAbortableMode;
+
+  Result:=true;
+end;
+
+procedure TMainIDEBase.ActivateCodeToolAbortableMode;
+begin
+  if ToolStatus=itNone then
+    RaiseException('TMainIDEBase.ActivateCodeToolAbortableMode Error 1');
+  ToolStatus:=itCodeTools;
+  CodeToolBoss.OnCheckAbort:=@OnCodeToolBossCheckAbort;
+  CodeToolBoss.Abortable:=true;
+end;
+
+function TMainIDEBase.OnCodeToolBossCheckAbort: boolean;
+begin
+  Result:=true;
+  if ToolStatus<>itCodeTools then exit;
+  Application.ProcessMessages;
+  Result:=ToolStatus<>itCodeTools;
+end;
+
+procedure TMainIDEBase.DoSwitchToFormSrc(var ActiveSourceEditor: TSourceEditor;
+  var ActiveUnitInfo: TUnitInfo);
+begin
+  DoSwitchToFormSrc(nil,ActiveSourceEditor,ActiveUnitInfo);
+end;
+
+procedure TMainIDEBase.DoSwitchToFormSrc(ADesigner: TDesigner;
+  var ActiveSourceEditor: TSourceEditor; var ActiveUnitInfo: TUnitInfo);
+begin
+  ActiveSourceEditor:=nil;
+  ActiveUnitInfo:=nil;
+  if (ADesigner<>nil) then
+    ActiveUnitInfo:=Project1.UnitWithComponent(ADesigner.LookupRoot)
+  else if (GlobalDesignHook.LookupRoot<>nil)
+  and (GlobalDesignHook.LookupRoot is TComponent) then
+    ActiveUnitInfo:=Project1.UnitWithComponent(TComponent(GlobalDesignHook.LookupRoot))
+  else
+    ActiveUnitInfo:=nil;
+  if (ActiveUnitInfo<>nil) and (ActiveUnitInfo.OpenEditorInfoCount > 0) then begin
+    ActiveSourceEditor := TSourceEditor(ActiveUnitInfo.OpenEditorInfo[0].EditorComponent);
+    SourceEditorManagerIntf.ActiveEditor := ActiveSourceEditor;
+    exit;
+  end;
 end;
 
 procedure TMainIDEBase.DoMnuWindowClicked(Sender: TObject);
