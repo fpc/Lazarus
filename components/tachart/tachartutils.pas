@@ -66,6 +66,8 @@ type
   TPointDistFunc = function (const A, B: TPoint): Integer;
 
   TTransformFunc = function (A: Double): Double of object;
+  TImageToGraphFunc = function (AX: Integer): Double of object;
+  TGraphToImageFunc = function (AX: Double): Integer of object;
 
   TChartUnits = (cuPercent, cuAxis, cuGraph, cuPixel);
 

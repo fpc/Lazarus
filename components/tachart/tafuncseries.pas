@@ -371,7 +371,6 @@ type
   strict private
   type
     TOnPoint = procedure (AXg, AXa: Double) of object;
-    TImageToGraph = function (AX: Integer): Double of object;
   var
     FAxisToGraphXr, FAxisToGraphYr, FGraphToAxisXr: TTransformFunc;
     FCalc: TTransformFunc;
@@ -382,7 +381,7 @@ type
     FExtentYMax: PDouble;
     FExtentYMin: PDouble;
     FGraphStep: Double;
-    FImageToGraph: TImageToGraph;
+    FImageToGraph: TImageToGraphFunc;
     FNearestPointParams: ^TNearestPointParams;
     FNearestPointResults: ^TNearestPointResults;
     FMakeDP: TMakeDoublePoint;
