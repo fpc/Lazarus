@@ -262,7 +262,7 @@ type
     function GetNearestPoint(
       const AParams: TNearestPointParams;
       out AResults: TNearestPointResults): Boolean; override;
-    procedure MovePoint(var AIndex: Integer; const ANewPos: TPoint); override;
+    procedure MovePoint(var AIndex: Integer; const ANewPos: TDoublePoint); override;
     property MarkPositions: TLinearMarkPositions
       read FMarkPositions write SetMarkPositions default lmpOutside;
     property UseReticule: Boolean
@@ -1055,15 +1055,12 @@ begin
 end;
 
 procedure TBasicPointSeries.MovePoint(
-  var AIndex: Integer; const ANewPos: TPoint);
-var
-  p: TDoublePoint;
+  var AIndex: Integer; const ANewPos: TDoublePoint);
 begin
   if not InRange(AIndex, 0, Count - 1) then exit;
-  p := FChart.ImageToGraph(ANewPos);
   with ListSource do begin
-    AIndex := SetXValue(AIndex, p.X);
-    SetYValue(AIndex, p.Y);
+    AIndex := SetXValue(AIndex, ANewPos.X);
+    SetYValue(AIndex, ANewPos.Y);
   end;
 end;
 

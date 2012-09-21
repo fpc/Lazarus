@@ -81,7 +81,8 @@ type
     procedure Draw(ADrawer: IChartDrawer); virtual; abstract;
     function GetGraphBounds: TDoubleRect; virtual; abstract;
     function IsEmpty: Boolean; virtual; abstract;
-    procedure MovePoint(var AIndex: Integer; const ANewPos: TPoint); virtual;
+    procedure MovePoint(var AIndex: Integer; const ANewPos: TPoint); overload; inline;
+    procedure MovePoint(var AIndex: Integer; const ANewPos: TDoublePoint); overload; virtual;
 
     property Active: Boolean read FActive write SetActive default true;
     property Depth: TChartDistance read FDepth write SetDepth default 0;
@@ -1581,9 +1582,15 @@ begin
 end;
 
 procedure TBasicChartSeries.MovePoint(
-  var AIndex: Integer; const ANewPos: TPoint);
+  var AIndex: Integer; const ANewPos: TDoublePoint);
 begin
   Unused(AIndex, ANewPos)
+end;
+
+procedure TBasicChartSeries.MovePoint(
+  var AIndex: Integer; const ANewPos: TPoint);
+begin
+  MovePoint(AIndex, FChart.ImageToGraph(ANewPos));
 end;
 
 procedure TBasicChartSeries.UpdateMargins(

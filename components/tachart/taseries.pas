@@ -269,7 +269,7 @@ type
     function GetNearestPoint(
       const AParams: TNearestPointParams;
       out AResults: TNearestPointResults): Boolean; override;
-    procedure MovePoint(var AIndex: Integer; const ANewPos: TPoint); override;
+    procedure MovePoint(var AIndex: Integer; const ANewPos: TDoublePoint); override;
 
   published
     property Active default true;
@@ -710,21 +710,17 @@ begin
   Result := FPen.Color;
 end;
 
-procedure TConstantLine.MovePoint(var AIndex: Integer; const ANewPos: TPoint);
+procedure TConstantLine.MovePoint(
+  var AIndex: Integer; const ANewPos: TDoublePoint);
 begin
   Unused(AIndex);
-  if LineStyle = lsVertical then
-    Position := GraphToAxisX(FChart.XImageToGraph(ANewPos.X))
-  else
-    Position := GraphToAxisX(FChart.YImageToGraph(ANewPos.Y));
+  Position :=
+    GraphToAxisX(TDoublePointBoolArr(ANewPos)[LineStyle = lsHorizontal]);
 end;
 
 procedure TConstantLine.SavePosToCoord(var APoint: TDoublePoint);
 begin
-  if LineStyle = lsVertical then
-    APoint.X := Position
-  else
-    APoint.Y := Position;
+  TDoublePointBoolArr(APoint)[LineStyle = lsHorizontal] := Position;
 end;
 
 procedure TConstantLine.SetArrow(AValue: TChartArrow);
