@@ -17,18 +17,10 @@ msgstr ""
 "Plural-Forms: nplurals=1; plural=0\n"
 "X-Generator: Easy Po 0.9.4.2\n"
 
-#: installerstrconsts.wiseditform
-msgid "&Edit form"
-msgstr "تحرير نموذج"
+#: frmtemplatesettings.sdirect
+msgid "&Directory with templates:"
+msgstr "دليل  القوالب:"
 
-#: installerstrconsts.wiseditsource
-msgid "&Edit source"
-msgstr "تحرير مصدر"
-
-#: installerstrconsts.wisopenpackage
-msgid "&Open package"
-msgstr "فتح حزمة"
-
-#: installerstrconsts.wisopenproject
-msgid "&Open project"
-msgstr "فتح مشروع"
+#: frmtemplatesettings.stitle
+msgid "Project templates settings"
+msgstr "توصيف قوالب المشروع"

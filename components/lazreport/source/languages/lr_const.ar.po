@@ -1,25 +1,25 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: \n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: \n"
-"PO-Revision-Date: 2012-08-05 23:29+0100\n"
-"Last-Translator: \n"
-"Language-Team: \n"
-"Language: \n"
+"Project-Id-Version: Free Pascal Lazarus Project.\n"
+"Report-Msgid-Bugs-To: BUG-EMAIL-ADDR <EMAIL@ADDRESS\n"
+"POT-Creation-Date: yyyy-mm-dd hh:mm+0000\n"
+"PO-Revision-Date: 2012-09-01 23:15+0100\n"
+"Last-Translator: Khaled Shagrouni <shagrouni@gmail.com>\n"
+"Language-Team: Arabic\n"
+"Language: arabic\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: \n"
-"X-Generator: Easy Po 0.9.4.2 (Development release)\n"
+"Plural-Forms: nplurals=1; plural=0\n"
+"X-Generator: Easy Po 0.9.4.2\n"
 
 #: lr_const.saboutformcapt
 msgid "About FastReport"
-msgstr ""
+msgstr "عن فاست ريبورت"
 
 #: lr_const.saggregatecategory
 msgid "Aggregate"
-msgstr ""
+msgstr "التجميع"
 
 #: lr_const.sallfiles
 msgid "All files"
@@ -31,7 +31,7 @@ msgstr "التحجيم الآلي"
 
 #: lr_const.sband
 msgid "Band:"
-msgstr ""
+msgstr "الشريط:"
 
 #: lr_const.sband1
 msgid "Report title"
@@ -43,19 +43,19 @@ msgstr "تذييلة التفاصيل"
 
 #: lr_const.sband11
 msgid "Subdetail header"
-msgstr ""
+msgstr "ترويسة التفاصيل الفرعية"
 
 #: lr_const.sband12
 msgid "Subdetail data"
-msgstr ""
+msgstr "بيانات التفاصيل الفرعية"
 
 #: lr_const.sband13
 msgid "Subdetail footer"
-msgstr ""
+msgstr "تذييل التفاصيل الفرعية"
 
 #: lr_const.sband14
 msgid "Overlay"
-msgstr ""
+msgstr "الغشاء"
 
 #: lr_const.sband15
 msgid "Column header"
@@ -75,19 +75,19 @@ msgstr "تذييلة مجموعة"
 
 #: lr_const.sband19
 msgid "Cross header"
-msgstr ""
+msgstr "الترويسة المتقاطعة"
 
 #: lr_const.sband2
 msgid "Report summary"
-msgstr ""
+msgstr "ملخص التقرير"
 
 #: lr_const.sband20
 msgid "Cross data"
-msgstr ""
+msgstr "البيانات المتقاطعة"
 
 #: lr_const.sband21
 msgid "Cross footer"
-msgstr ""
+msgstr "التذييل المتقاطع"
 
 #: lr_const.sband22
 msgid "None"
@@ -95,35 +95,35 @@ msgstr "لاشيء"
 
 #: lr_const.sband3
 msgid "Page header"
-msgstr ""
+msgstr "ترويسة الصفحة"
 
 #: lr_const.sband4
 msgid "Page footer"
-msgstr ""
+msgstr "تذييل الصفحة"
 
 #: lr_const.sband5
 msgid "Master header"
-msgstr ""
+msgstr "الترويسة الرئيسية"
 
 #: lr_const.sband6
 msgid "Master data"
-msgstr ""
+msgstr "البيانات الرئيسية"
 
 #: lr_const.sband7
 msgid "Master footer"
-msgstr ""
+msgstr "التذييل الرئيسي"
 
 #: lr_const.sband8
 msgid "Detail header"
-msgstr ""
+msgstr "ترويسة التفاصيل"
 
 #: lr_const.sband9
 msgid "Detail data"
-msgstr ""
+msgstr "بيانات التفاصيل"
 
 #: lr_const.sbandeditorformcapt
 msgid "Band data source"
-msgstr ""
+msgstr "مصدر بيانات الشريط"
 
 #: lr_const.sbandeditorformdatasrc
 msgctxt "lr_const.sbandeditorformdatasrc"
@@ -137,19 +137,19 @@ msgstr "عدد التسجيلات"
 
 #: lr_const.sbandtypesformbtype
 msgid "Band type"
-msgstr ""
+msgstr "نوع الشريط"
 
 #: lr_const.sbandtypesformcapt
 msgid "Insert new band"
-msgstr ""
+msgstr "إدراج شريط جديد"
 
 #: lr_const.sbarcodeerror
 msgid "Error in barcode"
-msgstr ""
+msgstr "خطأ في الباركود"
 
 #: lr_const.sbarcodeformchksum
 msgid "Check&sum"
-msgstr ""
+msgstr "حا&صل التحقّق"
 
 #: lr_const.sbarcodeformcode
 msgid "&Code"
@@ -158,7 +158,7 @@ msgstr "الكود"
 #: lr_const.sbarcodeformdbfld
 msgctxt "lr_const.sbarcodeformdbfld"
 msgid "Insert DB field"
-msgstr ""
+msgstr "إدراج حقل DB"
 
 #: lr_const.sbarcodeformopts
 msgctxt "lr_const.sbarcodeformopts"
@@ -167,11 +167,11 @@ msgstr "خيارات"
 
 #: lr_const.sbarcodeformreadable
 msgid "&Human readable"
-msgstr ""
+msgstr "مقروء ب&شريا"
 
 #: lr_const.sbarcodeformrotate
 msgid "Rotation"
-msgstr ""
+msgstr "تدوير"
 
 #: lr_const.sbarcodeformtitle
 msgid "Barcode editor"
@@ -183,7 +183,7 @@ msgstr ""
 
 #: lr_const.sbarcodeformvar
 msgid "Insert variable"
-msgstr ""
+msgstr "إدراج متغيّر"
 
 #: lr_const.sbarcodezoom
 msgid "Zoom"
@@ -191,11 +191,11 @@ msgstr "تقريب"
 
 #: lr_const.sbmpfile
 msgid "Bitmap file"
-msgstr ""
+msgstr "ملف صورة نقشية"
 
 #: lr_const.sbreaked
 msgid "Breaked"
-msgstr ""
+msgstr "تم وقفه"
 
 #: lr_const.scancel
 msgid "Cancel"
@@ -226,11 +226,11 @@ msgstr "منطقي"
 
 #: lr_const.scharset
 msgid "0"
-msgstr ""
+msgstr "0"
 
 #: lr_const.sclassobjectnotfound
 msgid "Class Object \"%s\" not found"
-msgstr ""
+msgstr "كائن صنفية \"%s\" لم يتم إيجاده"
 
 #: lr_const.sconfirm
 msgid "Confirm"
@@ -238,19 +238,19 @@ msgstr "التأكيد"
 
 #: lr_const.scsvfile
 msgid "CSV File"
-msgstr ""
+msgstr "ملف CSV"
 
 #: lr_const.scurmemo
 msgid "Memo:"
-msgstr ""
+msgstr "المذكرة:"
 
 #: lr_const.sdatetimecategory
 msgid "Date and time"
-msgstr ""
+msgstr "التاريخ والوقت"
 
 #: lr_const.sdefaultprinter
 msgid "Default printer"
-msgstr ""
+msgstr "الطابعة الإفتراضية"
 
 #: lr_const.sdescriptionavg
 msgid "AVG(<Expression> [,BandName [,1]])/Calculates the average of <Expression> for [BandName] row given. If [1] parameter is used, calculates average for non-visible rows too."
@@ -258,7 +258,7 @@ msgstr ""
 
 #: lr_const.sdescriptioncopy
 msgid "COPY(<String>, <Position>, <Length>)/Returns <Length> characters from <String> starting at <Position>."
-msgstr ""
+msgstr "COPY(<سلسلة حرفية>،<الموقع>،<الطول>)/يرجع <طول> الأحرف من <سلسلة حرفية> بدأ من <الموقع>."
 
 #: lr_const.sdescriptioncount
 msgid "COUNT(<BandName>)/Returns count of data-rows given in the <BandName>. "
@@ -366,7 +366,7 @@ msgstr "YEAROF(<تاريخ>)/يرجع سنة ما يعطى من <تاريخ>."
 
 #: lr_const.sdesignreport
 msgid "Design report"
-msgstr ""
+msgstr "تصمي تقرير"
 
 #: lr_const.sdesoptionsform18pix
 msgid "&18 pixels (5mm)"
@@ -382,11 +382,11 @@ msgstr ""
 
 #: lr_const.sdesoptionsformaligngrd
 msgid "Align to &grid"
-msgstr ""
+msgstr "المحاداة مع التشبيك"
 
 #: lr_const.sdesoptionsformcoloredbutton
 msgid "Colored &buttons"
-msgstr ""
+msgstr "الأزرار الملوّنة"
 
 #: lr_const.sdesoptionsformcontents
 msgid "&Contents"
@@ -395,7 +395,7 @@ msgstr "م&حتويات"
 #: lr_const.sdesoptionsformdes
 msgctxt "lr_const.sdesoptionsformdes"
 msgid "Designer"
-msgstr ""
+msgstr "المصمّم"
 
 #: lr_const.sdesoptionsformediting
 msgid "&Editing after insert"
@@ -403,7 +403,7 @@ msgstr "التح&رير بعد الادراج"
 
 #: lr_const.sdesoptionsformgrdsize
 msgid "Grid size"
-msgstr ""
+msgstr "حجم التشبيك"
 
 #: lr_const.sdesoptionsformgrid
 msgctxt "lr_const.sdesoptionsformgrid"
@@ -412,15 +412,15 @@ msgstr "التشبيك"
 
 #: lr_const.sdesoptionsforminch
 msgid "&Inches"
-msgstr ""
+msgstr "ال&بوصات"
 
 #: lr_const.sdesoptionsformmm
 msgid "&MM"
-msgstr ""
+msgstr "&مم"
 
 #: lr_const.sdesoptionsformobj
 msgid "Object moving"
-msgstr ""
+msgstr "تحريك الكائن"
 
 #: lr_const.sdesoptionsformopt
 msgctxt "lr_const.sdesoptionsformopt"
@@ -438,7 +438,7 @@ msgstr ""
 
 #: lr_const.sdesoptionsformshape
 msgid "S&hape"
-msgstr ""
+msgstr "ال&شكل"
 
 #: lr_const.sdesoptionsformshowband
 msgid "Show band &titles"
@@ -458,7 +458,7 @@ msgstr "التقرير:"
 
 #: lr_const.sdocautor
 msgid "Autor"
-msgstr ""
+msgstr "المؤلّف"
 
 #: lr_const.sdocbuild
 msgid "Build"
@@ -482,11 +482,11 @@ msgstr "التعليقات"
 
 #: lr_const.sdocoptformkeywords
 msgid "Keys words"
-msgstr ""
+msgstr "كلمات مقتاحية"
 
 #: lr_const.sdocoptformopt
 msgid "Report options"
-msgstr ""
+msgstr "خيارات التقرير"
 
 #: lr_const.sdocoptformother
 msgctxt "lr_const.sdocoptformother"
@@ -500,11 +500,11 @@ msgstr "الطابعة"
 
 #: lr_const.sdocoptformselect
 msgid "&Select when report loaded"
-msgstr ""
+msgstr "ال&اختيار عندما يتم تحميل التقرير"
 
 #: lr_const.sdocoptformsubject
 msgid "Subject"
-msgstr ""
+msgstr "الموضوع"
 
 #: lr_const.sdocoptformtitle
 msgid "Title"
@@ -520,11 +520,11 @@ msgstr "الإصدارة"
 
 #: lr_const.sduplicatedobjectname
 msgid "An object named \"%s\" already exists"
-msgstr ""
+msgstr "الكائن المسمّى \"%s\" موجود بالفعل"
 
 #: lr_const.seditorformbig
 msgid "&Big font"
-msgstr ""
+msgstr "خطّ &كبير"
 
 #: lr_const.seditorformcapt
 msgid "Text editor"
@@ -532,7 +532,7 @@ msgstr "محرر نصّ"
 
 #: lr_const.seditorformfield
 msgid "&DB field"
-msgstr ""
+msgstr "حقل &DB"
 
 #: lr_const.seditorformformat
 msgctxt "lr_const.seditorformformat"
@@ -546,15 +546,15 @@ msgstr "الدالة"
 #: lr_const.seditorformmemo
 msgctxt "lr_const.seditorformmemo"
 msgid "&Memo"
-msgstr ""
+msgstr "&مذكرة"
 
 #: lr_const.seditorformscr
 msgid "S&cript"
-msgstr ""
+msgstr "م&خطوط"
 
 #: lr_const.seditorformscript
 msgid "&Script"
-msgstr ""
+msgstr "م&خطوط"
 
 #: lr_const.seditorformvar
 msgctxt "lr_const.seditorformvar"
@@ -571,15 +571,15 @@ msgstr "خطأ"
 
 #: lr_const.serroroccured
 msgid "An error occured during calculating"
-msgstr ""
+msgstr "حدث خطأ أثناء احساب"
 
 #: lr_const.sevformcapt
 msgid "Variables editor"
-msgstr ""
+msgstr "محرّر المتغيّرات"
 
 #: lr_const.sevformcopy
 msgid "Copy variables"
-msgstr ""
+msgstr "نسخ المتعيّرات"
 
 #: lr_const.sevformexp
 msgid "&Expression"
@@ -587,7 +587,7 @@ msgstr "الت&عبير"
 
 #: lr_const.sevformpaste
 msgid "Paste variables"
-msgstr ""
+msgstr "لصق المتغيّرات"
 
 #: lr_const.sevformvalue
 msgid "Va&lue"
@@ -604,7 +604,7 @@ msgstr "المت&غيرات ..."
 
 #: lr_const.sexportfilterindexerror
 msgid "Export filter index out of range"
-msgstr ""
+msgstr "فهرس مصفّي التوريد خار النطاق"
 
 #: lr_const.sfieldsformaviabledb
 msgid "&Available DB's"
@@ -613,15 +613,15 @@ msgstr ""
 #: lr_const.sfieldsforminsert
 msgctxt "lr_const.sfieldsforminsert"
 msgid "Insert DB field"
-msgstr ""
+msgstr "إدراج حقل DB"
 
 #: lr_const.sfilter
 msgid "Filter properties"
-msgstr ""
+msgstr "خصائص التصفية"
 
 #: lr_const.sfilterparam
 msgid "Average font height:"
-msgstr ""
+msgstr "متوسط ارتفاع الخطّ"
 
 #: lr_const.sfindtextcaption
 msgctxt "lr_const.sfindtextcaption"
@@ -635,15 +635,15 @@ msgstr "&حساسية لحالة الأحرف"
 #: lr_const.sfindtextcurrentpg
 msgctxt "lr_const.sfindtextcurrentpg"
 msgid "Current &page"
-msgstr ""
+msgstr "ال&صفحة الحالية"
 
 #: lr_const.sfindtextfirstpg
 msgid "&1st page"
-msgstr ""
+msgstr "&أوّل صفحة"
 
 #: lr_const.sfindtextnotfound
 msgid "Search text not found."
-msgstr ""
+msgstr "لم يتم إيجاد نصّ البحث."
 
 #: lr_const.sfindtextoptions
 msgctxt "lr_const.sfindtextoptions"
@@ -677,11 +677,11 @@ msgstr "الهي&ئة"
 
 #: lr_const.sfmtformfrmtvar
 msgid "Variable formatting"
-msgstr ""
+msgstr "تشكيل المتغيّر"
 
 #: lr_const.sfmtformvarfmt
 msgid "Variable format"
-msgstr ""
+msgstr "هيئة المتغير"
 
 #: lr_const.sfont
 msgid "Font ..."
@@ -694,7 +694,7 @@ msgstr "[بلا]"
 
 #: lr_const.sformat21
 msgid "1234,5"
-msgstr ""
+msgstr "1234,5"
 
 #: lr_const.sformat22
 msgid "1234,50"
@@ -702,7 +702,7 @@ msgstr "1234,50"
 
 #: lr_const.sformat23
 msgid "1 234,5"
-msgstr ""
+msgstr "1 234,5"
 
 #: lr_const.sformat24
 msgid "1 234,50"
@@ -715,19 +715,19 @@ msgstr "مخصص"
 
 #: lr_const.sformat31
 msgid "11.15.98"
-msgstr ""
+msgstr "11.15.98"
 
 #: lr_const.sformat32
 msgid "11.15.1998"
-msgstr ""
+msgstr "11.15.1998"
 
 #: lr_const.sformat33
 msgid "15 nov 1998"
-msgstr ""
+msgstr "15 nov 1998"
 
 #: lr_const.sformat34
 msgid "15 november 1998"
-msgstr ""
+msgstr "15 november 1998"
 
 #: lr_const.sformat35
 msgctxt "lr_const.sformat35"
@@ -736,19 +736,19 @@ msgstr "مخصص"
 
 #: lr_const.sformat41
 msgid "02:43:35"
-msgstr ""
+msgstr "02:43:35"
 
 #: lr_const.sformat42
 msgid "2:43:35"
-msgstr ""
+msgstr "2:43:35"
 
 #: lr_const.sformat43
 msgid "02:43"
-msgstr ""
+msgstr "02:43"
 
 #: lr_const.sformat44
 msgid "2:43"
-msgstr ""
+msgstr "2:43"
 
 #: lr_const.sformat45
 msgctxt "lr_const.sformat45"
@@ -757,11 +757,11 @@ msgstr "مخصص"
 
 #: lr_const.sformat51
 msgid "0;1"
-msgstr ""
+msgstr "0;1"
 
 #: lr_const.sformat52
 msgid "No;Yes"
-msgstr ""
+msgstr "لا؛نعم"
 
 #: lr_const.sformat53
 msgid "_;x"
@@ -795,19 +795,19 @@ msgstr "محاداة"
 
 #: lr_const.sfrdesignerformalignbottoms
 msgid "Align bottoms"
-msgstr ""
+msgstr "محاذاة السفليات"
 
 #: lr_const.sfrdesignerformalignetop
 msgid "Align tops"
-msgstr ""
+msgstr "محاذاة العلويات"
 
 #: lr_const.sfrdesignerformalignhorzcenter
 msgid "Align horizontal centers"
-msgstr ""
+msgstr "محاداة المراكز الأفقية"
 
 #: lr_const.sfrdesignerformalignleftedge
 msgid "Align left edges"
-msgstr ""
+msgstr "محاداة الأطراف اليسرى"
 
 #: lr_const.sfrdesignerformalignrightedge
 msgid "Align right edges"
@@ -848,7 +848,7 @@ msgstr ""
 #: lr_const.sfrdesignerformcapt
 msgctxt "lr_const.sfrdesignerformcapt"
 msgid "Designer"
-msgstr ""
+msgstr "المصمّم"
 
 #: lr_const.sfrdesignerformceneralign
 msgid "Center align"
@@ -1011,7 +1011,7 @@ msgstr ""
 
 #: lr_const.sfrdesignerformselectall
 msgid "Select all"
-msgstr "إختيار الكل"
+msgstr "اختيار الكل"
 
 #: lr_const.sfrdesignerformselectsameclass
 msgid "Select same class objects"
@@ -1023,11 +1023,11 @@ msgstr ""
 
 #: lr_const.sfrdesignerformspace
 msgid "Space equally, horizontally"
-msgstr ""
+msgstr "تساوي الفراغات، أفقيا"
 
 #: lr_const.sfrdesignerformspaceeqvert
 msgid "Space equally, vertically"
-msgstr ""
+msgstr "تساوي الفراغات، عموديا"
 
 #: lr_const.sfrdesignerformstd
 msgid "Standard"
@@ -1044,11 +1044,11 @@ msgstr "أدوات"
 
 #: lr_const.sfrdesignerformtopalign
 msgid "Top align"
-msgstr ""
+msgstr "المحاداة العليا"
 
 #: lr_const.sfrdesignerformtopframe
 msgid "Top frame line"
-msgstr ""
+msgstr "خط الإطار الأعلى"
 
 #: lr_const.sfrdesignerformunderline
 msgid "Underline"
@@ -1182,7 +1182,7 @@ msgstr ""
 
 #: lr_const.sfrdesignerform_rptopt
 msgid "&Report options ..."
-msgstr ""
+msgstr "&خيارات التقرير ..."
 
 #: lr_const.sfrdesignerform_save
 msgid "&Save"
@@ -1194,7 +1194,7 @@ msgstr "حفظ بإ&سم..."
 
 #: lr_const.sfrdesignerform_selectall
 msgid "Select &all"
-msgstr "إختيار ال&كل"
+msgstr "اختيار ال&كل"
 
 #: lr_const.sfrdesignerform_std
 msgid "&Standard"
@@ -1257,7 +1257,7 @@ msgstr "ت&حميل..."
 #: lr_const.sgeditorformmemo
 msgctxt "lr_const.sgeditorformmemo"
 msgid "&Memo"
-msgstr ""
+msgstr "&مذكرة"
 
 #: lr_const.sgeditorformstretch
 msgid "&Stretch"
@@ -1266,7 +1266,7 @@ msgstr "تم&طيط"
 #: lr_const.sgroupeditorformadddbfield
 msgctxt "lr_const.sgroupeditorformadddbfield"
 msgid "Insert DB field"
-msgstr ""
+msgstr "إدراج حقل DB"
 
 #: lr_const.sgroupeditorformcapt
 msgid "Group"
@@ -1563,11 +1563,11 @@ msgstr ""
 
 #: lr_const.spaper16
 msgid "10 x 14\""
-msgstr ""
+msgstr "10 x 14\""
 
 #: lr_const.spaper17
 msgid "11 x 17\""
-msgstr ""
+msgstr "11 x 17\""
 
 #: lr_const.spaper18
 msgid "Note, 8 1/2 x 11\""
@@ -1684,23 +1684,23 @@ msgstr ""
 
 #: lr_const.spaper42
 msgid "B4 (ISO) 250 x 353 mm"
-msgstr ""
+msgstr "B4 (ISO) 250 x 353 mm"
 
 #: lr_const.spaper43
 msgid "Japanese Postcard 100 x 148 mm"
-msgstr ""
+msgstr "بطاقة بريدية يايانية 100 x 148 مم"
 
 #: lr_const.spaper44
 msgid "9 x 11\""
-msgstr ""
+msgstr "9 x 11\""
 
 #: lr_const.spaper45
 msgid "10 x 11\""
-msgstr ""
+msgstr "10 x 11\""
 
 #: lr_const.spaper46
 msgid "15 x 11\""
-msgstr ""
+msgstr "15 x 11\""
 
 #: lr_const.spaper47
 msgid "Envelope Invite 220 x 220 mm"
@@ -1768,7 +1768,7 @@ msgstr ""
 
 #: lr_const.spaper63
 msgid "A3 Extra 322 x 445 mm"
-msgstr ""
+msgstr "A3 إضافي 322 x 445 مم"
 
 #: lr_const.spaper64
 msgid "A5 Extra 174 x 235 mm"
@@ -1780,7 +1780,7 @@ msgstr ""
 
 #: lr_const.spaper66
 msgid "A2 420 x 594 mm"
-msgstr ""
+msgstr "A2ـ 420 x 594 مم"
 
 #: lr_const.spaper67
 msgid "A3 Transverse 297 x 420 mm"
@@ -1840,7 +1840,7 @@ msgstr ""
 
 #: lr_const.spaper8
 msgid "A3 297 x 420 mm"
-msgstr ""
+msgstr "A3ـ 297 x 420 مم"
 
 #: lr_const.spaper80
 msgid "DMPAPER_B5_JIS_ROTATED 257X182"
@@ -2115,19 +2115,19 @@ msgstr ""
 #: lr_const.sprintformcurpg
 msgctxt "lr_const.sprintformcurpg"
 msgid "Current &page"
-msgstr ""
+msgstr "ال&صفحة الحالية"
 
 #: lr_const.sprintforminfo
 msgid "Enter page numbers and/or page ranges, separated by commas. For example, 1,3,5-12"
-msgstr ""
+msgstr "أدخل أرقام الصفحات و/أو مدى الصفحات، مفصولة بعلامة فاصلة. مثال: 1,3,5-12"
 
 #: lr_const.sprintformnumber
 msgid "&Numbers:"
-msgstr ""
+msgstr "الأ&رقام"
 
 #: lr_const.sprintformpgrange
 msgid "Page range"
-msgstr ""
+msgstr "مدى الصقحات"
 
 #: lr_const.sprintformprint
 msgid "Print"
@@ -2144,39 +2144,39 @@ msgstr "الخصائص"
 
 #: lr_const.sprintifsubsetempty
 msgid "Print if detail empty"
-msgstr ""
+msgstr "الطباعة لو كان الافتراضي خاليا"
 
 #: lr_const.sremovepg
 msgid "Remove this page?"
-msgstr ""
+msgstr "إزالة هذه الصفحة"
 
 #: lr_const.srepeatheader
 msgid "Show on all pages"
-msgstr ""
+msgstr "العرض على جميع الصفحات"
 
 #: lr_const.srepfile
 msgid "Report file"
-msgstr ""
+msgstr "ملف التقرير"
 
 #: lr_const.sreportcreatedate
 msgid "Report create date"
-msgstr ""
+msgstr "تاريخ إنشاء التقرير"
 
 #: lr_const.sreportlastmodifydate
 msgid "Report last modify date"
-msgstr ""
+msgstr "تاريخ آخر تعديل للتقرير"
 
 #: lr_const.sreportpreparing
 msgid "Report preparing"
-msgstr ""
+msgstr "إعداد التقرير"
 
 #: lr_const.sroundrectformbegincolor
 msgid "Begin color"
-msgstr ""
+msgstr "لون الابتداء"
 
 #: lr_const.sroundrectformcaption
 msgid "Property editor"
-msgstr ""
+msgstr "محرّر الخصائص"
 
 #: lr_const.sroundrectformcolor
 msgid "Color"
@@ -2184,7 +2184,7 @@ msgstr "اللون"
 
 #: lr_const.sroundrectformcurve
 msgid "Curve"
-msgstr ""
+msgstr "منحنى"
 
 #: lr_const.sroundrectformdata
 msgid "Data .."
@@ -2192,27 +2192,27 @@ msgstr "بيانات ..."
 
 #: lr_const.sroundrectformendcolor
 msgid "End Color"
-msgstr ""
+msgstr "لون الانتهاء"
 
 #: lr_const.sroundrectformframed
 msgid "Framed zone"
-msgstr ""
+msgstr "منطقة مؤطّرة"
 
 #: lr_const.sroundrectformgradian
 msgid "Gradian"
-msgstr ""
+msgstr "متدرّج"
 
 #: lr_const.sroundrectformhint
 msgid "Click here to define the shadow color or gradian colors"
-msgstr ""
+msgstr "التقر هنا لتحديد لو الظل ولون التدريج"
 
 #: lr_const.sroundrectformsample
 msgid "Sample :"
-msgstr ""
+msgstr "مثال :"
 
 #: lr_const.sroundrectformshadow
 msgid "Shadow width"
-msgstr ""
+msgstr "عرض الظل"
 
 #: lr_const.sroundrectformstyle
 msgid "Style"
@@ -2228,11 +2228,11 @@ msgstr "المتغيرات ..."
 
 #: lr_const.sroundrectsqrcorners
 msgid "Squared corners"
-msgstr ""
+msgstr "زوايا مربّعة"
 
 #: lr_const.srtffile
 msgid "Rich Text file"
-msgstr ""
+msgstr "ملف نص ثريّ"
 
 #: lr_const.ssavechanges
 msgid "Save changes"
@@ -2241,35 +2241,35 @@ msgstr "حفظ التغييرات"
 #: lr_const.sshape1
 msgctxt "lr_const.sshape1"
 msgid "Rectangle"
-msgstr ""
+msgstr "مستطيل"
 
 #: lr_const.sshape2
 msgid "Rounded rectangle"
-msgstr ""
+msgstr "مربع مدوّر"
 
 #: lr_const.sshape3
 msgid "Ellipse"
-msgstr ""
+msgstr "دائري"
 
 #: lr_const.sshape4
 msgid "Triangle"
-msgstr ""
+msgstr "مثلث"
 
 #: lr_const.sshape5
 msgid "Diagonal1"
-msgstr ""
+msgstr "قُطري1"
 
 #: lr_const.sshape6
 msgid "Diagonal2"
-msgstr ""
+msgstr "قُطري2"
 
 #: lr_const.sshapeformcaption
 msgid "Shape"
-msgstr ""
+msgstr "الشكل"
 
 #: lr_const.sshapeformkind
 msgid "Shape kind"
-msgstr ""
+msgstr "نوع الشكل"
 
 #: lr_const.sspecval
 msgctxt "lr_const.sspecval"
@@ -2278,7 +2278,7 @@ msgstr "أخرى"
 
 #: lr_const.sstretched
 msgid "Stretched"
-msgstr ""
+msgstr "مشدود"
 
 #: lr_const.sstringcategory
 msgid "String"
@@ -2286,19 +2286,19 @@ msgstr "أحرف"
 
 #: lr_const.ssubreportonpage
 msgid "SubReport on page"
-msgstr ""
+msgstr "تقرير فرعي على الصفحة"
 
 #: lr_const.stemplemptydesc
 msgid "New report based on empty template"
-msgstr ""
+msgstr "تقرير جديد مبني على قالب فارغ"
 
 #: lr_const.stemplemtpyrp
 msgid "Empty template"
-msgstr ""
+msgstr "قالب فارغ"
 
 #: lr_const.stemplfile
 msgid "FastReport template"
-msgstr ""
+msgstr "قالب فاست ريبورت"
 
 #: lr_const.stemplformdesc
 msgid "Description"
@@ -2311,7 +2311,7 @@ msgstr "تقرير جديد"
 
 #: lr_const.stextfile
 msgid "ASCII Text file"
-msgstr ""
+msgstr "ملف نص أسكي"
 
 #: lr_const.sto
 msgid "to"
@@ -2319,7 +2319,7 @@ msgstr "إلى"
 
 #: lr_const.stransparent
 msgid "Transparent"
-msgstr ""
+msgstr "شفّاف"
 
 #: lr_const.suntitled
 msgid "Untitled"
@@ -2349,31 +2349,31 @@ msgstr "السطر#"
 
 #: lr_const.svar6
 msgid "Line through#"
-msgstr ""
+msgstr "خلال السطر#"
 
 #: lr_const.svar7
 msgid "Column#"
-msgstr ""
+msgstr "العمود#"
 
 #: lr_const.svar8
 msgid "Current line#"
-msgstr ""
+msgstr "السطر الحالي#"
 
 #: lr_const.svar9
 msgid "TotalPages"
-msgstr ""
+msgstr "إجمالي الصفحات"
 
 #: lr_const.svaredformcapt
 msgid "Variables list"
-msgstr ""
+msgstr "قائمة المتغيرات"
 
 #: lr_const.svaredformcat
 msgid "&Categories and variables"
-msgstr ""
+msgstr "التصنيفات و المتغيرات"
 
 #: lr_const.svarformat
 msgid "Variable format ..."
-msgstr ""
+msgstr "هيئة المتغيرات"
 
 #: lr_const.svarformcapt
 msgid "Variables"
@@ -2385,11 +2385,11 @@ msgstr "التصنيف"
 
 #: lr_const.svbandeditorformbnd
 msgid "Bands"
-msgstr ""
+msgstr "الأشرطة"
 
 #: lr_const.svbandeditorformcapt
 msgid "Band data sources"
-msgstr ""
+msgstr "مصادر بيانات الشريط"
 
 #: lr_const.svbandeditorformdatasource
 msgctxt "lr_const.svbandeditorformdatasource"

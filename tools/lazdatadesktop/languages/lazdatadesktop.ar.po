@@ -1,9 +1,13 @@
+ Arabic translation of Free Pascal Lazarus Project.
+ Copyright (C) 2012 Lazarus Project
+ This file is distributed under the same license as the Lazarus package.
+ Khaled Shagrouni <shagrouni@gmail.com>, 2012.
 msgid ""
 msgstr ""
 "Project-Id-Version: Free Pascal Lazarus Project.\n"
 "Report-Msgid-Bugs-To: BUG-EMAIL-ADDR <EMAIL@ADDRESS\n"
 "POT-Creation-Date: yyyy-mm-dd hh:mm+0000\n"
-"PO-Revision-Date: 2012-05-10 00:27+0100\n"
+"PO-Revision-Date: 2012-09-01 23:23+0100\n"
 "Last-Translator: Khaled Shagrouni <shagrouni@gmail.com>\n"
 "Language-Team: Arabic\n"
 "Language: arabic\n"
@@ -11,39 +15,39 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0\n"
-"X-Generator: Easy Po 0.9.2\n"
+"X-Generator: Easy Po 0.9.4.2\n"
 
 #: lazdatadeskstr.eoaddterminator
 msgid "Add terminator"
-msgstr ""
+msgstr "إضافة قاطع"
 
 #: lazdatadeskstr.eoandtermsinbrackets
 msgid "Put brackets around AND Terms"
-msgstr ""
+msgstr "وضع أقواس حول مصطلحات AND"
 
 #: lazdatadeskstr.eolinefeedafterandterm
 msgid "Linefeed after AND terms"
-msgstr ""
+msgstr "تغذية سطرية بعد مصطلحات AND"
 
 #: lazdatadeskstr.eolinefeedafterfield
 msgid "Linefeed after each field"
-msgstr ""
+msgstr "تغذية سطرية بعد كل حقل"
 
 #: lazdatadeskstr.eoquotefieldnames
 msgid "Quote field names"
-msgstr ""
+msgstr "تنصيص أسماء حقول"
 
 #: lazdatadeskstr.eoskipforeignkeys
 msgid "Skip foreign keys"
-msgstr ""
+msgstr "تخطّي  المفاتيح الخارجية"
 
 #: lazdatadeskstr.eouseoldinwhereparams
 msgid "Use OLD prefix in where parameters"
-msgstr ""
+msgstr "استخدام البادئة OLD في ضوابط where"
 
 #: lazdatadeskstr.sclose
 msgid "Close result"
-msgstr ""
+msgstr "غلق  الناتج"
 
 #: lazdatadeskstr.scolfields
 msgctxt "lazdatadeskstr.scolfields"
@@ -70,7 +74,7 @@ msgstr "النوع"
 
 #: lazdatadeskstr.sconfirmclose
 msgid "Confirm close"
-msgstr ""
+msgstr "تأكيد الإغلاق"
 
 #: lazdatadeskstr.sconnectiondescription
 msgid "Enter a descriptive name for the connection"
@@ -81,24 +85,28 @@ msgid ""
 "There is already a connection named \"%s\"\n"
 "Would you like to override the connection data ?\n"
 msgstr ""
+"يوجد بالفعل ارتابط اسمه \"%s\"\n"
+"هل ترغب في مجاوزة بيانات الارتباط ؟\n"
 
 #: lazdatadeskstr.screatecode
 msgid "Create code"
-msgstr ""
+msgstr "إنشاء كود "
 
 #: lazdatadeskstr.screateconnection
 msgid "Would you like to create a new connection for this database ?"
-msgstr ""
+msgstr "هل ترغب في إنشاء ارتباط جديد لقاعدة البيانات هذه؟"
 
 #: lazdatadeskstr.sddmodified
 msgid ""
 "Data dictionary \"%s\" has changed.\n"
 "What do you want to do with the changes?\n"
 msgstr ""
+"موس البيانات \"%s\" تم تغييره.\n"
+"مالذي تريد فعله مع هذه التغييرات؟\n"
 
 #: lazdatadeskstr.sdeleteobject
 msgid "Delete this %s"
-msgstr ""
+msgstr "إلغاء هذا %s"
 
 #: lazdatadeskstr.sdescription
 msgctxt "lazdatadeskstr.sdescription"
@@ -111,7 +119,7 @@ msgstr "النطاق"
 
 #: lazdatadeskstr.sdontclose
 msgid "Do not close editor"
-msgstr ""
+msgstr "عدم إغلاق المحرّر"
 
 #: lazdatadeskstr.sdontsave
 msgid "Discard changes"
@@ -119,75 +127,75 @@ msgstr "إهمال التغييرات"
 
 #: lazdatadeskstr.senginetype
 msgid "Engine"
-msgstr ""
+msgstr "محرّك"
 
 #: lazdatadeskstr.serrnoengine
 msgid "No database engine !"
-msgstr ""
+msgstr "لا وجود لمحرّك قواعد بيانات !"
 
 #: lazdatadeskstr.serrselectfields
 msgid "No fields selected. Please select some fields"
-msgstr ""
+msgstr "لا توجد حقول مختارة. يرجى اختيار بعض الحقول"
 
 #: lazdatadeskstr.serrselecttable
 msgid "No table selected. Please select a table"
-msgstr ""
+msgstr "لا يوجد جدولا مختارا. يرجى اختيار جدول"
 
 #: lazdatadeskstr.serrunknowntype
 msgid "Unknown object type: %d"
-msgstr ""
+msgstr "نوع كائن غير معروف: %d"
 
 #: lazdatadeskstr.sexecute
 msgid "Execute SQL"
-msgstr ""
+msgstr " تنفيذ SQL "
 
 #: lazdatadeskstr.sexport
 msgid "Export data"
-msgstr ""
+msgstr "تصدير بيانات "
 
 #: lazdatadeskstr.sfield
 msgid "Field"
-msgstr ""
+msgstr "الحقل"
 
 #: lazdatadeskstr.sforeignkey
 msgid "Foreign key"
-msgstr ""
+msgstr "المفتاح الخارجي"
 
 #: lazdatadeskstr.shintclose
 msgid "Close query result data panel"
-msgstr ""
+msgstr "غلق صفيحة الحاوية لبيانات ناتج الاستعلام"
 
 #: lazdatadeskstr.shintcreatecode
 msgid "Create pascal code for this data"
-msgstr ""
+msgstr "إنشاء كود باسكال لهذه البيانات"
 
 #: lazdatadeskstr.shintexecute
 msgid "Execute SQL statement"
-msgstr ""
+msgstr "تنفيذ جملة SQL"
 
 #: lazdatadeskstr.shintexport
 msgid "Export this data"
-msgstr ""
+msgstr "تصدير هذه البيانات"
 
 #: lazdatadeskstr.shintload
 msgid "Load SQL statement from file"
-msgstr ""
+msgstr "تحميل جملة SQL من ملف"
 
 #: lazdatadeskstr.shintnext
 msgid "Next SQL statement"
-msgstr ""
+msgstr "جملة SQL التالية"
 
 #: lazdatadeskstr.shintprevious
 msgid "Previous SQL statement"
-msgstr ""
+msgstr "جملة SQL السابقة"
 
 #: lazdatadeskstr.shintsave
 msgid "Save SQL statement to file"
-msgstr ""
+msgstr "حفظ جملة SQL في ملف"
 
 #: lazdatadeskstr.simportdictinto
 msgid "Import datadictionary"
-msgstr ""
+msgstr "توريد قاموس بيانات"
 
 #: lazdatadeskstr.sindex
 msgid "Index"
@@ -195,27 +203,27 @@ msgstr "الفهرسة"
 
 #: lazdatadeskstr.sld_actionadddomain
 msgid "New domain"
-msgstr ""
+msgstr "نطاق جديد"
 
 #: lazdatadeskstr.sld_actionadddomainh
 msgid "Add a domain to the data dictionary"
-msgstr ""
+msgstr "إضافة نطاق لقاموس البيانات"
 
 #: lazdatadeskstr.sld_actionaddforeignkey
 msgid "New Foreign Key"
-msgstr ""
+msgstr "مفتاح خارجي جديد"
 
 #: lazdatadeskstr.sld_actionaddforeignkeyh
 msgid "Add a foreign key to the table"
-msgstr ""
+msgstr "إضافة مفتاح خارجي لجدول"
 
 #: lazdatadeskstr.sld_actionaddsequence
 msgid "New sequence"
-msgstr ""
+msgstr "تتابع جديد"
 
 #: lazdatadeskstr.sld_actionaddsequenceh
 msgid "Add a sequence"
-msgstr ""
+msgstr "إضافة تتابع"
 
 #: lazdatadeskstr.sld_actionclose
 msgid "&Close"
@@ -227,19 +235,19 @@ msgstr "غلق الكل"
 
 #: lazdatadeskstr.sld_actioncloseallh
 msgid "Close all Data Dictionaries"
-msgstr ""
+msgstr "غلق كل قواميس البيانات"
 
 #: lazdatadeskstr.sld_actioncloseh
 msgid "Close current Data Dictionary"
-msgstr ""
+msgstr "غلق قاموس البيانات الحالي"
 
 #: lazdatadeskstr.sld_actioncopy
 msgid "&Copy"
-msgstr "%نسخ"
+msgstr "&نسخ"
 
 #: lazdatadeskstr.sld_actioncopyconnection
 msgid "&Copy connection"
-msgstr ""
+msgstr "&نسخ الاتصال"
 
 #: lazdatadeskstr.sld_actioncopyh
 msgid "Copy"
@@ -247,11 +255,11 @@ msgstr "نسخ"
 
 #: lazdatadeskstr.sld_actioncreatecode
 msgid "Create &code"
-msgstr ""
+msgstr "إنشاء كود "
 
 #: lazdatadeskstr.sld_actioncreatecodeh
 msgid "Create code from definition or data"
-msgstr ""
+msgstr "إنشاء كود من التعريف أو من البيانات"
 
 #: lazdatadeskstr.sld_actioncut
 msgid "Cu&t"
@@ -263,15 +271,15 @@ msgstr "قص"
 
 #: lazdatadeskstr.sld_actiondeleteconnection
 msgid "&Delete connection"
-msgstr ""
+msgstr "إل&غاء الارتباط"
 
 #: lazdatadeskstr.sld_actiondeleteobject
 msgid "Delete &Object"
-msgstr ""
+msgstr "إلغاء &كائن "
 
 #: lazdatadeskstr.sld_actiondeleteobjecth
 msgid "Delete the currently selected object"
-msgstr ""
+msgstr "إلغاء الكائن المختار حاليا"
 
 #: lazdatadeskstr.sld_actiondeleterecentdatadict
 msgctxt "lazdatadeskstr.sld_actiondeleterecentdatadict"
@@ -284,15 +292,15 @@ msgstr "&خروج"
 
 #: lazdatadeskstr.sld_actionexith
 msgid "Quit this program"
-msgstr ""
+msgstr "الخروج من هذا البرنامج"
 
 #: lazdatadeskstr.sld_actiongeneratesql
 msgid "&Generate SQL"
-msgstr ""
+msgstr "ت&وليد SQL"
 
 #: lazdatadeskstr.sld_actiongeneratesqlh
 msgid "Generate SQL statements for the current table"
-msgstr ""
+msgstr "إنشاء جمل SQL للجدول الحالي"
 
 #: lazdatadeskstr.sld_actionnew
 msgid "&New"
@@ -308,11 +316,11 @@ msgstr "&حقل جديد"
 
 #: lazdatadeskstr.sld_actionnewfieldh
 msgid "Create a new field in the current table"
-msgstr ""
+msgstr "إنشاء حقل جديد في الجدول الحالي"
 
 #: lazdatadeskstr.sld_actionnewh
 msgid "Create a new Data Dictionary"
-msgstr ""
+msgstr "إنشاء قاموس بيانات جديد"
 
 #: lazdatadeskstr.sld_actionnewindex
 msgid "New index"
@@ -328,7 +336,7 @@ msgstr "ج&دول جديد"
 
 #: lazdatadeskstr.sld_actionnewtableh
 msgid "Create a new table"
-msgstr ""
+msgstr "إنشاء جدول جديد"
 
 #: lazdatadeskstr.sld_actionopen
 msgid "&Open ..."
@@ -336,15 +344,15 @@ msgstr "&فتح ..."
 
 #: lazdatadeskstr.sld_actionopenconnection
 msgid "&Open connection"
-msgstr ""
+msgstr "&فتح الإتصال"
 
 #: lazdatadeskstr.sld_actionopenconnectionh
 msgid "Open selected recent connection"
-msgstr ""
+msgstr "فتح الارتباط الحديث المختار"
 
 #: lazdatadeskstr.sld_actionopenh
 msgid "Open a new Data Dictionary"
-msgstr ""
+msgstr "فتح قاموس بيانات جديد"
 
 #: lazdatadeskstr.sld_actionopenrecentdatadict
 msgid "Open"
@@ -352,7 +360,7 @@ msgstr "فتح"
 
 #: lazdatadeskstr.sld_actionopenrecentdatadicth
 msgid "Open selected recent datadictionary"
-msgstr ""
+msgstr "فتح قاموس البيانات الحديث المختار"
 
 #: lazdatadeskstr.sld_actionpaste
 msgid "&Paste"
@@ -372,11 +380,11 @@ msgstr "حفظ بإ&سم"
 
 #: lazdatadeskstr.sld_actionsaveash
 msgid "Save datadictionary as"
-msgstr ""
+msgstr "حفظ قاموس البيانات بإسم"
 
 #: lazdatadeskstr.sld_actionsaveh
 msgid "Save Data Dictionary"
-msgstr ""
+msgstr "حفط قاموس البيانات"
 
 #: lazdatadeskstr.sld_cancel
 msgid "&Cancel"
@@ -384,7 +392,7 @@ msgstr "إل&غاء الأمر"
 
 #: lazdatadeskstr.sld_charset
 msgid "Charset"
-msgstr ""
+msgstr "مجموعة أحرف"
 
 #: lazdatadeskstr.sld_connectionlv1
 msgctxt "lazdatadeskstr.sld_connectionlv1"
@@ -393,11 +401,11 @@ msgstr "الإسم"
 
 #: lazdatadeskstr.sld_connectionlv2
 msgid "Driver"
-msgstr ""
+msgstr "مسيّر"
 
 #: lazdatadeskstr.sld_connectionlv3
 msgid "Last used"
-msgstr ""
+msgstr "آخر استخدام"
 
 #: lazdatadeskstr.sld_connectionlv4
 msgctxt "lazdatadeskstr.sld_connectionlv4"
@@ -407,19 +415,19 @@ msgstr "الوصف"
 #: lazdatadeskstr.sld_connections
 msgctxt "lazdatadeskstr.sld_connections"
 msgid "Connections"
-msgstr ""
+msgstr "وصلات"
 
 #: lazdatadeskstr.sld_connecttoadatabase
 msgid "Connect to a database"
-msgstr ""
+msgstr "الربط مع قاعدة بيانات"
 
 #: lazdatadeskstr.sld_createfulltablecreationsql
 msgid "Create full table creation SQL"
-msgstr ""
+msgstr "إنشاء SQL لإنشاء جدول تام"
 
 #: lazdatadeskstr.sld_createtable
 msgid "Create table"
-msgstr ""
+msgstr "إنشاء جدول"
 
 #: lazdatadeskstr.sld_database
 msgctxt "lazdatadeskstr.sld_database"
@@ -433,27 +441,27 @@ msgstr "إل&غاء"
 
 #: lazdatadeskstr.sld_dictionaries
 msgid "Dictionaries"
-msgstr ""
+msgstr "القواميس"
 
 #: lazdatadeskstr.sld_fromconnection
 msgid "From connection"
-msgstr ""
+msgstr "من الارتباط"
 
 #: lazdatadeskstr.sld_generatesql
 msgid "Generate SQL"
-msgstr ""
+msgstr "توليد SQL"
 
 #: lazdatadeskstr.sld_generatesqlstatements
 msgid "Generate SQL statements"
-msgstr ""
+msgstr "جملة SQL عامة"
 
 #: lazdatadeskstr.sld_host
 msgid "Host"
-msgstr ""
+msgstr "المضيف"
 
 #: lazdatadeskstr.sld_importupdatedatadictionary
 msgid "Import/Update datadictionary"
-msgstr ""
+msgstr "توريد/تحديث قاموس بيانات"
 
 #: lazdatadeskstr.sld_indent
 msgid "I&ndent"
@@ -469,7 +477,7 @@ msgstr "الحقول المفتا&حية"
 
 #: lazdatadeskstr.sld_lazarusdatabasedesktop
 msgid "Lazarus Database Desktop"
-msgstr ""
+msgstr "برنامج لازروس لقواعد البيانات"
 
 #: lazdatadeskstr.sld_linelength
 msgid "Line Length"
@@ -478,11 +486,11 @@ msgstr "طول السطر"
 #: lazdatadeskstr.sld_menuconnections
 msgctxt "lazdatadeskstr.sld_menuconnections"
 msgid "Connections"
-msgstr ""
+msgstr "وصلات"
 
 #: lazdatadeskstr.sld_menudictionary
 msgid "&Dictionary"
-msgstr ""
+msgstr "ال&قاموس"
 
 #: lazdatadeskstr.sld_menudictionaryimport
 msgid "&Import"
@@ -503,11 +511,11 @@ msgstr "&موافق"
 #: lazdatadeskstr.sld_opendatadictionaryfilter
 msgctxt "lazdatadeskstr.sld_opendatadictionaryfilter"
 msgid "Data dictionary files|*.fpd|Ini files|*.ini|All files|*.*"
-msgstr ""
+msgstr "ملفات قواميس بيانات|*.fpd|ملفات Ini|*.ini|كل الملفات|*.*"
 
 #: lazdatadeskstr.sld_opendatadictionarytitle
 msgid "Open data dictionary"
-msgstr ""
+msgstr "فتح قاموس بيانات"
 
 #: lazdatadeskstr.sld_options
 msgctxt "lazdatadeskstr.sld_options"
@@ -516,7 +524,7 @@ msgstr "خيارات"
 
 #: lazdatadeskstr.sld_password
 msgid "Password"
-msgstr ""
+msgstr "كلمة المرور"
 
 #: lazdatadeskstr.sld_recentlv1
 msgctxt "lazdatadeskstr.sld_recentlv1"
@@ -529,12 +537,12 @@ msgstr "إسم الملف"
 
 #: lazdatadeskstr.sld_recentlv3
 msgid "Last used on"
-msgstr ""
+msgstr "آخر استخدام في"
 
 #: lazdatadeskstr.sld_savefileasfilter
 msgctxt "lazdatadeskstr.sld_savefileasfilter"
 msgid "Data dictionary files|*.fpd|Ini files|*.ini|All files|*.*"
-msgstr ""
+msgstr "ملفات قواميس بيانات|*.fpd|ملفات Ini|*.ini|كل الملفات|*.*"
 
 #: lazdatadeskstr.sld_savefileastitle
 msgid "Save file as"
@@ -542,15 +550,15 @@ msgstr "حفظ الملف بإسم"
 
 #: lazdatadeskstr.sld_select
 msgid "&Select"
-msgstr "إ&ختيار"
+msgstr "ا&ختيار"
 
 #: lazdatadeskstr.sld_selectaconnectiontype
 msgid "Select a conection type"
-msgstr ""
+msgstr "اختيار نوع الارتباط"
 
 #: lazdatadeskstr.sld_selectall
 msgid "Select &all"
-msgstr "إختيار ال&كل"
+msgstr "اختيار ال&كل"
 
 #: lazdatadeskstr.sld_selectnone
 msgid "Select &none"
@@ -558,7 +566,7 @@ msgstr "&عدم اختيار"
 
 #: lazdatadeskstr.sld_selectupdateinsertfields
 msgid "Select/Update/Insert fields"
-msgstr ""
+msgstr "اختيار/ تعديل/إدراج حقول"
 
 #: lazdatadeskstr.sld_separator
 msgid "-"
@@ -570,7 +578,7 @@ msgstr "الج&دول"
 
 #: lazdatadeskstr.sld_tableandfields
 msgid "Tables and &Fields"
-msgstr ""
+msgstr "الجداول و ال&حقول"
 
 #: lazdatadeskstr.sld_update
 msgid "&Update"
@@ -578,7 +586,7 @@ msgstr "ت&حديث"
 
 #: lazdatadeskstr.sld_updateexistingtables
 msgid "Update existing tables"
-msgstr ""
+msgstr "تجديد الجداول الحالية"
 
 #: lazdatadeskstr.sld_username
 msgid "Username"
@@ -606,11 +614,11 @@ msgstr "قاعدة بيانات جديدة"
 
 #: lazdatadeskstr.snewdomain
 msgid "Create new domain"
-msgstr ""
+msgstr "إنشاء نطاق جديد"
 
 #: lazdatadeskstr.snewdomainname
 msgid "Enter a name for the new domain:"
-msgstr ""
+msgstr "أدخل إسما للنطاق الجديد:"
 
 #: lazdatadeskstr.snewfield
 msgid "Create new field in table %s"
@@ -622,7 +630,7 @@ msgstr "أدخل إسما للحقل الجديد:"
 
 #: lazdatadeskstr.snewforeignkey
 msgid "Create new foreign key in table %s"
-msgstr ""
+msgstr "إنشاء مفتاح خارجي جديد في جدول %s"
 
 #: lazdatadeskstr.snewforeignkeyname
 msgid "Enter a name for the new foreign key:"
@@ -642,19 +650,19 @@ msgstr "إنشاء %s جديد"
 
 #: lazdatadeskstr.snewsequence
 msgid "Create new sequence"
-msgstr ""
+msgstr "إنشاء تتابع جديد"
 
 #: lazdatadeskstr.snewsequencename
 msgid "Enter a name for the new sequence:"
-msgstr ""
+msgstr "أدخل إسما للتتابع الجديد:"
 
 #: lazdatadeskstr.snewtable
 msgid "Create new table"
-msgstr ""
+msgstr "إنشاء جدول جديد"
 
 #: lazdatadeskstr.snewtablename
 msgid "Enter a name for the new table:"
-msgstr ""
+msgstr "أدخل إسما للجدول الجديد:"
 
 #: lazdatadeskstr.snext
 msgid "Next"
@@ -671,7 +679,7 @@ msgstr "قاموس البيانات"
 
 #: lazdatadeskstr.snodedomains
 msgid "Domains"
-msgstr ""
+msgstr "مجالات"
 
 #: lazdatadeskstr.snodefields
 msgctxt "lazdatadeskstr.snodefields"
@@ -696,7 +704,7 @@ msgstr "خيارات الفهرسة:"
 
 #: lazdatadeskstr.snodesequences
 msgid "Sequences"
-msgstr ""
+msgstr "التتابع"
 
 #: lazdatadeskstr.snodetabledata
 msgid "Table Data"
@@ -776,5 +784,5 @@ msgstr "القيمة"
 
 #: lazdatadeskstr.swhichcurrentdicttouse
 msgid "A data dictionary is active.Would you like to import into this data dictionary ?"
-msgstr ""
+msgstr "يوجد قاموس بيانات فعّال. هل ترغب في توريد هذه البيانات إليه؟"
 

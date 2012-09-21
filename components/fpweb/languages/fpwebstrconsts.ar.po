@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: Free Pascal Lazarus Project.\n"
 "Report-Msgid-Bugs-To: BUG-EMAIL-ADDR <EMAIL@ADDRESS\n"
 "POT-Creation-Date: yyyy-mm-dd hh:mm+0000\n"
-"PO-Revision-Date: 2012-05-10 08:51+0100\n"
+"PO-Revision-Date: 2012-08-25 18:02+0100\n"
 "Last-Translator: Khaled Shagrouni <shagrouni@gmail.com>\n"
 "Language-Team: Arabic\n"
 "Language: arabic\n"
@@ -27,7 +27,7 @@ msgstr "إنشاء ملف CSS جديد ..."
 
 #: fpwebstrconsts.scsssource
 msgid "Enter your classes/style definitions here"
-msgstr ""
+msgstr "أدخل تعريفاتك لصنفيات/أنماط هنا"
 
 #: fpwebstrconsts.sdocumentlocation
 msgid "&Location"
@@ -43,15 +43,15 @@ msgstr "أدخل نصك ..."
 
 #: fpwebstrconsts.shtmlautor
 msgid "Html &author - <meta name=\"author\">"
-msgstr ""
+msgstr "Html &المؤلّف - <meta name=\"author\">"
 
 #: fpwebstrconsts.shtmlcharset
 msgid "HTML chars&et"
-msgstr ""
+msgstr "مجموعة أ&حرف HTML"
 
 #: fpwebstrconsts.shtmlcopyright
 msgid "Html cop&yright - meta name=\"copyright\">"
-msgstr ""
+msgstr "Html حقو&ق ملكية - meta name=\"copyright\">"
 
 #: fpwebstrconsts.shtmlcssfile
 msgid "&CSS file"
@@ -71,7 +71,7 @@ msgstr "إنشاء ملف HTML جديد ..."
 
 #: fpwebstrconsts.shtmlinputformaccesskey
 msgid "Access key"
-msgstr ""
+msgstr "مفتاح الولوج"
 
 #: fpwebstrconsts.shtmlinputformalign
 msgid "Align"
@@ -83,7 +83,7 @@ msgstr "Alt"
 
 #: fpwebstrconsts.shtmlinputformcaption
 msgid "Tag property: INPUT"
-msgstr ""
+msgstr "خاصية الوسم: INPUT"
 
 #: fpwebstrconsts.shtmlinputformimagesrc
 msgid "Image src"
@@ -103,7 +103,7 @@ msgstr "الحجم"
 
 #: fpwebstrconsts.shtmlinputformtabindex
 msgid "Tab Index"
-msgstr ""
+msgstr "فهرسة الجدولة"
 
 #: fpwebstrconsts.shtmlinputformtype
 msgid "Type"
@@ -127,11 +127,11 @@ msgstr "ملف HTML جديد..."
 
 #: fpwebstrconsts.shtmltableformcellpadding
 msgid "Cell padding"
-msgstr ""
+msgstr "توسيد الخلية"
 
 #: fpwebstrconsts.shtmltableformcellspacing
 msgid "Cell spacing"
-msgstr ""
+msgstr "فراغات الخلية"
 
 #: fpwebstrconsts.shtmltableformcolumncount
 msgid "Column count"
@@ -147,7 +147,7 @@ msgstr "عدد الأسطر"
 
 #: fpwebstrconsts.shtmltableformuseheader
 msgid "Use header row"
-msgstr ""
+msgstr "استخدام سطر الترويسة"
 
 #: fpwebstrconsts.shtmltableformwidth
 msgid "Width"
@@ -155,7 +155,7 @@ msgstr "العرض"
 
 #: fpwebstrconsts.shtmltagcaptionreset
 msgid "Reset"
-msgstr ""
+msgstr "تصفير"
 
 #: fpwebstrconsts.shtmltagcaptionsubmit
 msgid "Submit"
@@ -163,15 +163,15 @@ msgstr "تقديم"
 
 #: fpwebstrconsts.shtmltagproperty
 msgid "Tag property: %s"
-msgstr ""
+msgstr "خاصية Tag الوسم: %s"
 
 #: fpwebstrconsts.shtmltitle
 msgid "Html &title - <title>"
-msgstr ""
+msgstr "Html &عنوان - <title>"
 
 #: fpwebstrconsts.shttpport
 msgid "&Port to listen for requests:"
-msgstr ""
+msgstr "ال&بوّابة للتصنّت للطلبيات:"
 
 #: fpwebstrconsts.sjsfile
 msgid "Javascript file"
@@ -179,11 +179,11 @@ msgstr "ملف &جافا سكريبت"
 
 #: fpwebstrconsts.sjsfiledesc
 msgid "Create new javascript file ..."
-msgstr ""
+msgstr "إنشاء ملف javascript جديد ..."
 
 #: fpwebstrconsts.sjssource
 msgid "Enter your javascript code here"
-msgstr ""
+msgstr "أدخل كود جافاسكريبت الخاصّ بك هنا"
 
 #: fpwebstrconsts.smihtmleditor
 msgid "HTML Editor"
@@ -195,19 +195,19 @@ msgstr "إدراج متحكم لزرّ"
 
 #: fpwebstrconsts.smihtmlformcheckbox
 msgid "Insert CheckBox control"
-msgstr ""
+msgstr "أدخل متحكم مربع تعليم"
 
 #: fpwebstrconsts.smihtmlformfieldset
 msgid "Insert HTML FIELDSET tag"
-msgstr ""
+msgstr "أدخل وسم FIELDSET ل HTML"
 
 #: fpwebstrconsts.smihtmlformlegend
 msgid "Insert HTML LEGEND tag"
-msgstr ""
+msgstr "أدخل وسم LEGEND ل HTML"
 
 #: fpwebstrconsts.smihtmlformradiobtn
 msgid "Insert RadioBtn control"
-msgstr ""
+msgstr "أدخل متحكم زرّ خيارات"
 
 #: fpwebstrconsts.smihtmlforms
 msgid "Forms"
@@ -215,103 +215,103 @@ msgstr "تماذج"
 
 #: fpwebstrconsts.smihtmlformselect
 msgid "Insert Select control"
-msgstr ""
+msgstr "إدراج اختيار المتحكّم"
 
 #: fpwebstrconsts.smihtmlformselectopt
 msgid "Insert Select options"
-msgstr ""
+msgstr "إدراج اختيار الخيارات"
 
 #: fpwebstrconsts.smihtmlformselectoptwd
 msgid "Insert Select options with dialog"
-msgstr ""
+msgstr "إدراج اختيار الخيارات مع مربع حوار"
 
 #: fpwebstrconsts.smihtmlinsertbr
 msgid "Insert new line"
-msgstr ""
+msgstr "إدراج سطر جديد"
 
 #: fpwebstrconsts.smihtmlinsertcolor
 msgid "Insert HTML color value"
-msgstr ""
+msgstr "إدراج قيمة لون HYML"
 
 #: fpwebstrconsts.smihtmlinsertcomment
 msgid "Insert HTML comment"
-msgstr ""
+msgstr "إدراج ملاحظة HTML"
 
 #: fpwebstrconsts.smihtmlinsertdivblock
 msgid "Insert HTML DIV tag"
-msgstr ""
+msgstr "إدراج وسم DIV"
 
 #: fpwebstrconsts.smihtmlinsertform
 msgid "Insert HTML Form"
-msgstr ""
+msgstr "إدراج نموذج HTML"
 
 #: fpwebstrconsts.smihtmlinsertheader1level
 msgid "Insert HTML level 1 header"
-msgstr ""
+msgstr "إدراج ترويسة HTML مستوى 1"
 
 #: fpwebstrconsts.smihtmlinsertheader2level
 msgid "Insert HTML level 2 header"
-msgstr ""
+msgstr "إدراج ترويسة HTML مستوى 2"
 
 #: fpwebstrconsts.smihtmlinsertheader3level
 msgid "Insert HTML level 3 header"
-msgstr ""
+msgstr "إدراج ترويسة HTML مستوى 3"
 
 #: fpwebstrconsts.smihtmlinsertheader4level
 msgid "Insert HTML level 4 header"
-msgstr ""
+msgstr "إدراج ترويسة HTML مستوى 4"
 
 #: fpwebstrconsts.smihtmlinsertheader5level
 msgid "Insert HTML level 5 header"
-msgstr ""
+msgstr "إدراج ترويسة HTML مستوى 5"
 
 #: fpwebstrconsts.smihtmlinserthr
 msgid "Insert horizontal line"
-msgstr ""
+msgstr "إدراج خط أفقي"
 
 #: fpwebstrconsts.smihtmlinsertimg
 msgid "Insert image"
-msgstr ""
+msgstr "إدراج صورة"
 
 #: fpwebstrconsts.smihtmlinsertinput
 msgid "Insert HTML INPUT tag"
-msgstr ""
+msgstr "إدراج وسم INPUT"
 
 #: fpwebstrconsts.smihtmlinsertinputreset
 msgid "Insert \"Reset\" button"
-msgstr ""
+msgstr "إدراج زرّ \"Reset\""
 
 #: fpwebstrconsts.smihtmlinsertinputsubmit
 msgid "Insert \"Submit\" button "
-msgstr ""
+msgstr "إدراج زرّ \"Submit\""
 
 #: fpwebstrconsts.smihtmlinsertlink
 msgid "Insert link (HREF)"
-msgstr ""
+msgstr "إدخال رابط (HREF)"
 
 #: fpwebstrconsts.smihtmlinsertlist
 msgid "Insert HTML list"
-msgstr ""
+msgstr "إدراج قائمة HTML"
 
 #: fpwebstrconsts.smihtmlinsertnbsp
 msgid "Insert Non Breaking Space"
-msgstr ""
+msgstr "إدراج فراغ بدون فصل"
 
 #: fpwebstrconsts.smihtmlinsertpre
 msgid "Insert HTML PRE tag"
-msgstr ""
+msgstr "إدراج وسم PRE"
 
 #: fpwebstrconsts.smihtmlinsertspantext
 msgid "Insert HTML SPAN tag"
-msgstr ""
+msgstr "إدراج وسم SPAN"
 
 #: fpwebstrconsts.smihtmlinsertsub
 msgid "Insert Subscript"
-msgstr ""
+msgstr "إدراج حرف سفلي"
 
 #: fpwebstrconsts.smihtmlinsertsuper
 msgid "Insert Superscript"
-msgstr ""
+msgstr "إدراج حرق فوفي"
 
 #: fpwebstrconsts.smihtmlinserttable
 msgid "Insert HTML table"
@@ -319,15 +319,15 @@ msgstr "إدراج جدول HTML"
 
 #: fpwebstrconsts.smihtmlinserttabledata
 msgid "Insert HTML table data"
-msgstr ""
+msgstr "إدراج بيانات جدول HTML"
 
 #: fpwebstrconsts.smihtmlinserttabledatawd
 msgid "Insert HTML table data with dialog"
-msgstr ""
+msgstr "إدراج بيانات جدول HTML مع نافذة حوار"
 
 #: fpwebstrconsts.smihtmlinserttablerow
 msgid "Insert HTML table row"
-msgstr ""
+msgstr "إدراج سطر جدول HTML"
 
 #: fpwebstrconsts.smihtmlinserttablerowwd
 msgid "Insert HTML table row with dialog"
@@ -355,19 +355,19 @@ msgstr "الجداول"
 
 #: fpwebstrconsts.smihtmltextaligncenter
 msgid "Text align center"
-msgstr ""
+msgstr "محاداة النص مركز"
 
 #: fpwebstrconsts.smihtmltextalignjustify
 msgid "Text align justify"
-msgstr ""
+msgstr "محاداة النص موزّع"
 
 #: fpwebstrconsts.smihtmltextalignleft
 msgid "Text align left"
-msgstr ""
+msgstr "محاداة النص يسار"
 
 #: fpwebstrconsts.smihtmltextalignright
 msgid "Text align right"
-msgstr ""
+msgstr "محاداة النص يمين"
 
 #: fpwebstrconsts.smihtmltextbold
 msgid "Bold"
@@ -387,16 +387,16 @@ msgstr "إدراج إسم ملف"
 
 #: fpwebstrconsts.snewhtmlfileprops
 msgid "New Html file properties"
-msgstr ""
+msgstr "خصائص ملف HTML الجديد"
 
 #: fpwebstrconsts.snewhttpapp
 msgid "New HTTP application"
-msgstr ""
+msgstr "تطبيق HTTP جديد"
 
 #: fpwebstrconsts.sregisterfiles
 msgid "&Register location to serve files from"
-msgstr ""
+msgstr "موقع السجّل لخدمة الملفات منه"
 
 #: fpwebstrconsts.susethreads
 msgid "Use &threads to serve requests in"
-msgstr ""
+msgstr "استخدام أسلاك لخدمة الطلبيات فيها"

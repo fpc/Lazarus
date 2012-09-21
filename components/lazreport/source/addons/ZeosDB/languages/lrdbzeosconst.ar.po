@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: Free Pascal Lazarus Project.\n"
 "Report-Msgid-Bugs-To: BUG-EMAIL-ADDR <EMAIL@ADDRESS\n"
 "POT-Creation-Date: yyyy-mm-dd hh:mm+0000\n"
-"PO-Revision-Date: 2012-08-05 02:08+0100\n"
+"PO-Revision-Date: 2012-09-01 23:13+0100\n"
 "Last-Translator: Khaled Shagrouni <shagrouni@gmail.com>\n"
 "Language-Team: Arabic\n"
 "Language: arabic\n"
@@ -17,18 +17,22 @@ msgstr ""
 "Plural-Forms: nplurals=1; plural=0\n"
 "X-Generator: Easy Po 0.9.4.2\n"
 
-#: installerstrconsts.wiseditform
-msgid "&Edit form"
-msgstr "تحرير نموذج"
+#: lrdbzeosconst.slreditparamsform_caption
+msgid "Edit query param list"
+msgstr "تحرير قائمة ضوابط الاستعلام"
 
-#: installerstrconsts.wiseditsource
-msgid "&Edit source"
-msgstr "تحرير مصدر"
+#: lrdbzeosconst.slreditparamsform_paramslist
+msgid "Params list"
+msgstr "قائمة الضوابط"
 
-#: installerstrconsts.wisopenpackage
-msgid "&Open package"
-msgstr "فتح حزمة"
+#: lrdbzeosconst.slreditparamsform_paramtype
+msgid "Param type"
+msgstr "نوع الضابط"
 
-#: installerstrconsts.wisopenproject
-msgid "&Open project"
-msgstr "فتح مشروع"
+#: lrdbzeosconst.slreditparamsform_paramvalue
+msgid "Param value"
+msgstr "قيمة الضابط"
+
+#: lrdbzeosconst.slreditparamsform_selectexpresion
+msgid "Select expresion"
+msgstr "اختيار التعبير"

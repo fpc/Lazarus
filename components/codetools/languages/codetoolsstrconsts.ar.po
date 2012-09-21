@@ -1,21 +1,21 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: \n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: \n"
-"PO-Revision-Date: 2012-08-05 23:30+0100\n"
-"Last-Translator: \n"
-"Language-Team: \n"
-"Language: \n"
+"Project-Id-Version: Free Pascal Lazarus Project.\n"
+"Report-Msgid-Bugs-To: BUG-EMAIL-ADDR <EMAIL@ADDRESS\n"
+"POT-Creation-Date: yyyy-mm-dd hh:mm+0000\n"
+"PO-Revision-Date: 2012-08-05 02:08+0100\n"
+"Last-Translator: Khaled Shagrouni <shagrouni@gmail.com>\n"
+"Language-Team: Arabic\n"
+"Language: arabic\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: \n"
-"X-Generator: Easy Po 0.9.4.2 (Development release)\n"
+"Plural-Forms: nplurals=1; plural=0\n"
+"X-Generator: Easy Po 0.9.4.2\n"
 
 #: codetoolsstrconsts.crsbracketnotfound
 msgid "bracket ) not found"
-msgstr "القوس  غير موجود"
+msgstr "القوس ) غير موجود"
 
 #: codetoolsstrconsts.crsbracketnotfound2
 msgid "bracket ] not found"
@@ -27,7 +27,7 @@ msgstr "قفل القوس عير موجود"
 
 #: codetoolsstrconsts.crsfoundunexpectedat
 msgid "%s, found unexpected %s at %s"
-msgstr "%s، غير متوقع وجد في %s "
+msgstr "%s، %s غير متوقع وجد في %s "
 
 #: codetoolsstrconsts.crsrecordendnotfound
 msgid "record end not found"
@@ -71,7 +71,7 @@ msgstr "معامل ثنائي"
 
 #: codetoolsstrconsts.ctsbracketcloseexpectedbutatomfound
 msgid "bracket close expected, but %s found"
-msgstr "متوقغ قفل للقوس، لكن %s قد وجد"
+msgstr "متوقع قفل للقوس، لكن %s قد وجد"
 
 #: codetoolsstrconsts.ctsbracketnotfound
 msgid "bracket %s not found"
@@ -123,7 +123,7 @@ msgstr "نهاية التعليق غير موجودة"
 
 #: codetoolsstrconsts.ctscompiledsrcpath
 msgid "Compiled SrcPath"
-msgstr ""
+msgstr "SrcPath مسار المصادر المترجمة"
 
 #: codetoolsstrconsts.ctscompiler
 msgid "Compiler"
@@ -159,7 +159,7 @@ msgstr "دليل المنقّح"
 
 #: codetoolsstrconsts.ctsdefaultancestornotfound
 msgid "default ancestor %s not found"
-msgstr ""
+msgstr "السلف الافتراضي %s لم يتم إيجاده"
 
 #: codetoolsstrconsts.ctsdefaultclassancestortobjectnotfound
 msgid "default class ancestor TObject not found"
@@ -167,7 +167,7 @@ msgstr "سلف الصنفية الافتراضي TObject لم يتم إيجاد�
 
 #: codetoolsstrconsts.ctsdefaultdispinterfaceancestoridispatchnotfound
 msgid "default dispinterface ancestor IDispatch not found"
-msgstr ""
+msgstr "سلف dispinterface الإفتراضي IDispatch لم يتم إيجاده"
 
 #: codetoolsstrconsts.ctsdefaultfpcsource2operatingsystem
 msgid "Default fpc source Operating System 2"
@@ -195,7 +195,7 @@ msgstr "لم يتم إسجاد سلف الواجهة الافتراضية IInter
 
 #: codetoolsstrconsts.ctsdefaultjavaclassancestorjlobjectnotfound
 msgid "default java class ancestor JLObject not found"
-msgstr ""
+msgstr "صنفية جافا سلف الإفتراضية JLObject لم يتم إيجادها."
 
 #: codetoolsstrconsts.ctsdefaultparameterexpectedbutatomfound
 msgid "default parameter expected, but %s found"
@@ -299,7 +299,7 @@ msgstr "لم يتم إيجاد نهاية تسحيلة"
 
 #: codetoolsstrconsts.ctsendoffile
 msgid "end of file"
-msgstr ""
+msgstr "نهاية ملف"
 
 #: codetoolsstrconsts.ctsendofsourceexpectedbutatomfound
 msgid "expected end., but %s found"
@@ -311,35 +311,35 @@ msgstr "لم يتم إيجاد نهاية المصدر."
 
 #: codetoolsstrconsts.ctsenumerationtype
 msgid "enumeration type"
-msgstr ""
+msgstr "نوع النعداد"
 
 #: codetoolsstrconsts.ctserrorduringcreationofnewprocbodies
 msgid "error during creation of new proc bodies"
-msgstr ""
+msgstr "حطأ عند إنشاء أجسام إجرائية جديدة"
 
 #: codetoolsstrconsts.ctserrorduringinsertingnewclassparts
 msgid "error during inserting new class parts"
-msgstr ""
+msgstr "خطأ عند إدراج أجزاء صنفية جديدة"
 
 #: codetoolsstrconsts.ctserrorduringinsertingnewusessection
 msgid "error during inserting new units to the main uses section"
-msgstr ""
+msgstr "خطأ عند إدراج وحدات جديدة لقسم الاستخدامات الرئيسي"
 
 #: codetoolsstrconsts.ctserrorindirectiveexpression
 msgid "error in directive expression"
-msgstr ""
+msgstr "خطأ في تعبير الموجّه"
 
 #: codetoolsstrconsts.ctserrorinparamlist
 msgid "error in paramlist"
-msgstr ""
+msgstr "خطأ في ضائمة الضوابط paramlist"
 
 #: codetoolsstrconsts.ctsexecuteaccessdeniedforfile
 msgid "execute access denied for %s"
-msgstr ""
+msgstr "ولوج التنفيذ مرفوض ل %s"
 
 #: codetoolsstrconsts.ctsexpected
 msgid "\"%s\" expected"
-msgstr ""
+msgstr "متوقّع \"%s\""
 
 #: codetoolsstrconsts.ctsexpectedbutfound
 msgid "expected (, but found %s"
@@ -359,19 +359,19 @@ msgstr "متوقع معرّف، لكن وجد %s"
 
 #: codetoolsstrconsts.ctsexpectedsemicolonofstatementbutfound
 msgid "expected ; of statement, but found %s"
-msgstr ""
+msgstr "متوقع ; للتعليمة، لكن وجد %s"
 
 #: codetoolsstrconsts.ctsexportsclauseonlyallowedinlibraries
 msgid "exports clause only allowed in libraries"
-msgstr ""
+msgstr "قسم التصدير exports مسموح به فقط المكتبات"
 
 #: codetoolsstrconsts.ctsexprtypemustbeclassorrecord
 msgid "expression type must be class or record type"
-msgstr ""
+msgstr "نوع التعبير يجب أن يكون من نوع صنفية أو تسجيلة"
 
 #: codetoolsstrconsts.ctsfilehascircularsymlink
 msgid "%s has a circular symbolic link"
-msgstr ""
+msgstr "%s لديها رابط رمزي دوّار"
 
 #: codetoolsstrconsts.ctsfileisreadonly
 msgid "file is read only"
@@ -383,15 +383,15 @@ msgstr "للأمام"
 
 #: codetoolsstrconsts.ctsforwardclassdefinitionnotresolved
 msgid "Forward class definition not resolved: %s"
-msgstr ""
+msgstr "تعريف متقدم لصنفية لم يتم تفريرها: %s"
 
 #: codetoolsstrconsts.ctsfpdocsystemon
 msgid "enable FPDocSystem"
-msgstr ""
+msgstr "تمكين FPDocSystem"
 
 #: codetoolsstrconsts.ctsfreepascalcompilerinitialmacros
 msgid "Free Pascal Compiler initial macros"
-msgstr ""
+msgstr "الماكرو التمهيدية لمترجم فري باسكال"
 
 #: codetoolsstrconsts.ctsfreepascalcomponentlibrary
 msgid "Free Pascal Component Library"
@@ -408,12 +408,12 @@ msgstr "مصادر فري باسكال، %s"
 #: codetoolsstrconsts.ctsfunctiongetenumeratornotfoundinthisclass
 msgctxt "codetoolsstrconsts.ctsfunctiongetenumeratornotfoundinthisclass"
 msgid "function GetEnumerator not found in this class"
-msgstr ""
+msgstr "الدالة GetEnumerator لم يتم إيجادها في هذه الصنفية"
 
 #: codetoolsstrconsts.ctsfunctiongetenumeratornotfoundinthisclass2
 msgctxt "codetoolsstrconsts.ctsfunctiongetenumeratornotfoundinthisclass2"
 msgid "function GetEnumerator not found in this class"
-msgstr ""
+msgstr "الدالة GetEnumerator لم يتم إيجادها في هذه الصنفية"
 
 #: codetoolsstrconsts.ctsgenericidentifier
 msgid "generic identifier"
@@ -421,31 +421,31 @@ msgstr "معرّف عام"
 
 #: codetoolsstrconsts.ctsgtk2intfdirectory
 msgid "gtk2 interface directory"
-msgstr ""
+msgstr "دليل واجهة gtk2"
 
 #: codetoolsstrconsts.ctshaserror
 msgid "HasError"
-msgstr ""
+msgstr "HasError"
 
 #: codetoolsstrconsts.ctsidedirectory
 msgid "IDE Directory"
-msgstr ""
+msgstr "دليل بيئة التطوير "
 
 #: codetoolsstrconsts.ctsideintfdirectory
 msgid "IDEIntf Directory"
-msgstr ""
+msgstr "دليل IDEIntf"
 
 #: codetoolsstrconsts.ctsidentexpectedbutatomfound
 msgid "identifier expected, but %s found"
-msgstr ""
+msgstr "متوقع معرّف، لكن وجد %s"
 
 #: codetoolsstrconsts.ctsidentexpectedbuteoffound
 msgid "unexpected end of file (identifier expected)"
-msgstr ""
+msgstr "نهاية ملف عير متوقّعة (المتوقّع معرّف)"
 
 #: codetoolsstrconsts.ctsidentexpectedbutkeywordfound
 msgid "identifier expected, but keyword %s found"
-msgstr ""
+msgstr "متوقع معرّف، لكن وجدت كلمة مفتاحية %s"
 
 #: codetoolsstrconsts.ctsidentifier
 msgid "identifier"
@@ -457,107 +457,107 @@ msgstr "المعرّف %s سبق تحديده بالفعل"
 
 #: codetoolsstrconsts.ctsidentifiernotfound
 msgid "identifier not found: %s"
-msgstr ""
+msgstr "لم يتمّ إيجاد معرّف: %s"
 
 #: codetoolsstrconsts.ctsifdefdarwin
 msgid "IfDef Darwin"
-msgstr ""
+msgstr "IfDef Darwin"
 
 #: codetoolsstrconsts.ctsifdeflinux
 msgid "IfDef Linux"
-msgstr ""
+msgstr "IfDef Linux"
 
 #: codetoolsstrconsts.ctsifdefwindows
 msgid "IfDef Windows"
-msgstr ""
+msgstr "IfDef Windows"
 
 #: codetoolsstrconsts.ctsiflclwidgettypeequalsgtk2
 msgid "If LCLWidgetType=gtk2 then"
-msgstr ""
+msgstr "If LCLWidgetType=gtk2 then"
 
 #: codetoolsstrconsts.ctsiftargetosisnotsrcos
 msgid "If TargetOS<>SrcOS"
-msgstr ""
+msgstr "If TargetOS<>SrcOS"
 
 #: codetoolsstrconsts.ctsiftargetosisnotsrcos2
 msgid "If TargetOS<>SrcOS2"
-msgstr ""
+msgstr "If TargetOS<>SrcOS2"
 
 #: codetoolsstrconsts.ctsiftargetosisnotwin32
 msgid "If TargetOS<>win32 then"
-msgstr ""
+msgstr "If TargetOS<>win32 then"
 
 #: codetoolsstrconsts.ctsillegalcircleinusedunits
 msgid "illegal circle using unit: %s"
-msgstr ""
+msgstr "دورانية غير شرعية باستخدام وحدة: %s"
 
 #: codetoolsstrconsts.ctsillegalqualifier
 msgid "illegal qualifier %s found"
-msgstr ""
+msgstr "وجد تأهيل غير شرعي %s"
 
 #: codetoolsstrconsts.ctsimplementationnodenotfound
 msgid "implementation node not found"
-msgstr ""
+msgstr "لم يتم إيجاد عقدة التنفيذ"
 
 #: codetoolsstrconsts.ctsincludecircledetected
 msgid "Include circle detected"
-msgstr ""
+msgstr "وجد تضمين دوراتي"
 
 #: codetoolsstrconsts.ctsincludedirectoriesplusdirs
 msgid "include directories: %s"
-msgstr ""
+msgstr "أدلة التضمين: %s "
 
 #: codetoolsstrconsts.ctsincludefilenotfound
 msgid "include file not found \"%s\""
-msgstr ""
+msgstr "لم يتم إيجاد ملف تضمين \"%s\""
 
 #: codetoolsstrconsts.ctsincompatibletypesgotexpected
 msgid "incompatibles types: expected \"%s\" but got \"%s\""
-msgstr ""
+msgstr "أنواع غير متوافقة: المتوقّع \"%s\" لكن وجد \"%s\""
 
 #: codetoolsstrconsts.ctsindexparameterexpectedbutatomfound
 msgid "index parameter expected, but %s found"
-msgstr ""
+msgstr "متوقّع ضايط فهرسة، لكن وجد %s"
 
 #: codetoolsstrconsts.ctsindexspecifierredefined
 msgid "index specifier redefined"
-msgstr ""
+msgstr "محدّد فهرس مُعاد تحديده"
 
 #: codetoolsstrconsts.ctsinheritedkeywordonlyallowedinmethods
 msgid "inherited keyword only allowed in methods"
-msgstr ""
+msgstr "الكلمة المفتاحية الموروثة مسموح بها فقط في النهجيات"
 
 #: codetoolsstrconsts.ctsinstalldirectory
 msgid "Install Directory"
-msgstr ""
+msgstr "دليل التركيب"
 
 #: codetoolsstrconsts.ctsinstallerdirectories
 msgid "Installer directories"
-msgstr ""
+msgstr "أدلّة المركّب"
 
 #: codetoolsstrconsts.ctsinsufficientmemory
 msgid "insufficient memory"
-msgstr ""
+msgstr "ذاكرة غير كافية"
 
 #: codetoolsstrconsts.ctsinterfacesectionnotfound
 msgid "interface section not found"
-msgstr ""
+msgstr "لم يتم إيجاد قسم واجهة"
 
 #: codetoolsstrconsts.ctsintfdirectory
 msgid "interface directory"
-msgstr ""
+msgstr "دليل واجهة"
 
 #: codetoolsstrconsts.ctsinvalidclassname
 msgid "invalid class name=%s%s%s"
-msgstr ""
+msgstr "إسم صنفية غير صالحة=%s%s%s"
 
 #: codetoolsstrconsts.ctsinvalidclassname2
 msgid "invalid class name %s%s%s"
-msgstr ""
+msgstr "إسم صنفية غير صالح %s%s%s"
 
 #: codetoolsstrconsts.ctsinvalidflagvaluefordirective
 msgid "invalid flag value \"%s\" for directive %s"
-msgstr ""
+msgstr "قيمة علامة غير سليمة \"%s\" للموجّه %s"
 
 #: codetoolsstrconsts.ctsinvalidmode
 msgid "invalid mode \"%s\""
@@ -565,7 +565,7 @@ msgstr "وضعية غير صالحة %s"
 
 #: codetoolsstrconsts.ctsinvalidmodeswitch
 msgid "invalid mode switch \"%s\""
-msgstr ""
+msgstr "تحويلة وضعية غير سليمة \"%s\""
 
 #: codetoolsstrconsts.ctsinvalidoperator
 msgid "invalid operator %s"
@@ -573,7 +573,7 @@ msgstr "معامل غير صالح %s"
 
 #: codetoolsstrconsts.ctsinvalidsubrange
 msgid "invalid subrange"
-msgstr ""
+msgstr "مدى فرعي غير صالح"
 
 #: codetoolsstrconsts.ctsinvalidtype
 msgid "invalid type"
@@ -581,15 +581,15 @@ msgstr "نوع غير صالح"
 
 #: codetoolsstrconsts.ctsinvalidvariablename
 msgid "invalid variable name %s%s%s"
-msgstr ""
+msgstr "إسم متغير غير سليم %s%s%s"
 
 #: codetoolsstrconsts.ctsinvalidvariabletype
 msgid "invalid variable type %s%s%s"
-msgstr ""
+msgstr "نوع متغيّر غير صالح %s%s%s"
 
 #: codetoolsstrconsts.ctsjitformdirectory
 msgid "JITForm Directory"
-msgstr ""
+msgstr "دليل JITForm"
 
 #: codetoolsstrconsts.ctskeyword
 msgid "keyword"
@@ -597,7 +597,7 @@ msgstr "كلمة مفتاحية"
 
 #: codetoolsstrconsts.ctskeywordexampleexpectedbutatomfound
 msgid "keyword (e.g. %s) expected, but %s found"
-msgstr ""
+msgstr "كلمة مفتاحية (مثل %s) متوقّعة، لكن وجد %s"
 
 #: codetoolsstrconsts.ctskeywordin
 msgid "keyword \"in\""
@@ -617,11 +617,11 @@ msgstr "إسم نهجية"
 
 #: codetoolsstrconsts.ctsmethodsignaturesnotfoundinclass
 msgid "Method signature %s not found in class"
-msgstr ""
+msgstr "توقيغة نهجية %s لم يتم إيجادها في صنفية"
 
 #: codetoolsstrconsts.ctsmethodtypedefinitionnotfound
 msgid "method type definition not found"
-msgstr ""
+msgstr "تحديد غير موجود لنوع نهجية"
 
 #: codetoolsstrconsts.ctsmissing
 msgid "missing :="
@@ -649,89 +649,89 @@ msgstr "%s المشروع"
 
 #: codetoolsstrconsts.ctsnesteddefinitionsarenotallowed
 msgid "Nested %s definitions are not allowed"
-msgstr ""
+msgstr "تحديدات %s المتشعبة غير مسموح بها"
 
 #: codetoolsstrconsts.ctsnewprocbodynotfound
 msgid "new proc body not found"
-msgstr ""
+msgstr "جسم إجرائية جديدة غير موجود"
 
 #: codetoolsstrconsts.ctsnocontextnodefoundatcursor
 msgid "no context node found at cursor"
-msgstr ""
+msgstr "لم يتم إيجاد عقدة في السياق على المؤشر"
 
 #: codetoolsstrconsts.ctsnodefaultspecifierdefinedtwice
 msgid "nodefault specifier defined twice"
-msgstr ""
+msgstr "تم تعريف محدّد nodefault مرّتين"
 
 #: codetoolsstrconsts.ctsnopascalcodefound
 msgid "no pascal code found (first token is %s)"
-msgstr ""
+msgstr "لا يوجد كود باسكال (المفردة الأولى هي %s)"
 
 #: codetoolsstrconsts.ctsnoscanneravailable
 msgid "No scanner available"
-msgstr ""
+msgstr "لا توجد ماسحات متاحة"
 
 #: codetoolsstrconsts.ctsnoscannerfound
 msgid "No scanner found for \"%s\". If this is an include file, please open the main source first."
-msgstr ""
+msgstr "لم يتمّ إيجاد ماسحة ل \"%s\". إذا كان هذا ملفّ تصمين، يرجى فتح ملف المصدر الرئيسي أولا."
 
 #: codetoolsstrconsts.ctsnotenoughgenparams
 msgid "Not enough actual generic parameters"
-msgstr ""
+msgstr "ضوابط عمومية فعلية غير كافية"
 
 #: codetoolsstrconsts.ctsoldmethodnotfound
 msgid "old method not found: %s"
-msgstr ""
+msgstr "نهجية قديمة لم يتم إيجادها:%s"
 
 #: codetoolsstrconsts.ctsoperandexpectedbutfound
 msgid "operand expected but %s found"
-msgstr ""
+msgstr "متوقّع معامل، لكن وجد %s"
 
 #: codetoolsstrconsts.ctsoperandexpectedbutfound2
 msgid "operand expected, but %s found"
-msgstr ""
+msgstr "متوقّع معامل، لكن وجد %s"
 
 #: codetoolsstrconsts.ctsoperatorexpectedbutatomfound
 msgctxt "codetoolsstrconsts.ctsoperatorexpectedbutatomfound"
 msgid "operator expected, but %s found"
-msgstr ""
+msgstr "متوقّع عامل، لكن وجد %s"
 
 #: codetoolsstrconsts.ctsoperatorexpectedbuteoffound
 msgid "unexpected end of file (operator expected)"
-msgstr ""
+msgstr "انتهاء غير متوقّع لملف (متوقّع معامل)"
 
 #: codetoolsstrconsts.ctsoperatorexpectedbutfound
 msgid "operator expected but %s found"
-msgstr ""
+msgstr "متوقّع معامل، لكن وجد %s"
 
 #: codetoolsstrconsts.ctsoperatorexpectedbutfound2
 msgctxt "codetoolsstrconsts.ctsoperatorexpectedbutfound2"
 msgid "operator expected, but %s found"
-msgstr ""
+msgstr "متوقّع عامل، لكن وجد %s"
 
 #: codetoolsstrconsts.ctsothercompilerdefines
 msgid "%s Compiler Defines"
-msgstr ""
+msgstr "مترجم %s يحدّد"
 
 #: codetoolsstrconsts.ctspackagedirectories
 msgid "Package directories"
-msgstr ""
+msgstr "دليل المكوّنات"
 
 #: codetoolsstrconsts.ctspackagerdirectory
 msgid "Packager Directory"
-msgstr ""
+msgstr "أدلّة المكوّنات"
 
 #: codetoolsstrconsts.ctspackagerregistrationdirectory
 msgid "Packager Registration Directory"
-msgstr ""
+msgstr "دليل تسجيل الحزم"
 
 #: codetoolsstrconsts.ctspackagerunitsdirectory
 msgid "Packager Units Directory"
-msgstr ""
+msgstr "دليل وحدات المحزّم"
 
 #: codetoolsstrconsts.ctspointhintprocstartat
 msgid ".  Hint: proc start at "
-msgstr ""
+msgstr ". تلميحة: إجرائية تبدأ في"
 
 #: codetoolsstrconsts.ctspointstartat
 msgid ". start at "
@@ -743,15 +743,15 @@ msgstr "الموصع غي المصدر"
 
 #: codetoolsstrconsts.ctsprocedureorfunctionorconstructorordestructor
 msgid "procedure or function or constructor or destructor"
-msgstr ""
+msgstr "إجرائية أو دالّة، أو منشئ أو هادم"
 
 #: codetoolsstrconsts.ctsprocessorspecific
 msgid "processor specific"
-msgstr ""
+msgstr "خاص بمعالج"
 
 #: codetoolsstrconsts.ctsproperttypeexpectedbutatomfound
 msgid "property type expected, but %s found"
-msgstr ""
+msgstr "متوقّع نوع خاصّية، لكن وجد %s"
 
 #: codetoolsstrconsts.ctspropertycurrentnotfound
 msgid "property Current not found"
@@ -759,11 +759,11 @@ msgstr "لم يتم إيجاد خاصية Current"
 
 #: codetoolsstrconsts.ctspropertyspecifieralreadydefined
 msgid "property specifier already defined: %s"
-msgstr ""
+msgstr "محدّد خاصّية موجود بالفعل %s"
 
 #: codetoolsstrconsts.ctsqualifierexpectedbutatomfound
 msgid "qualifier expected but %s found"
-msgstr ""
+msgstr "متوقّع تأهيل لكن الذي وجد %s"
 
 #: codetoolsstrconsts.ctsresetalldefines
 msgid "Reset all defines"
@@ -783,19 +783,19 @@ msgstr "الملفات المفحوصة: %s"
 
 #: codetoolsstrconsts.ctssemicolonafterpropspecmissing
 msgid "; expected after \"%s\" property specifier, but %s found"
-msgstr ""
+msgstr "; متوقعة بعد محدّد الخاصيو \"%s\" ، لكن وجد %s"
 
 #: codetoolsstrconsts.ctssemicolonnotfound
 msgid "semicolon not found"
-msgstr ""
+msgstr "لم يتم إيجاد فاصلة منقوطة"
 
 #: codetoolsstrconsts.ctssetsincpathto
 msgid "sets IncPath to %s"
-msgstr ""
+msgstr "يحدّد IncPath ب %s"
 
 #: codetoolsstrconsts.ctssetssrcpathto
 msgid "sets SrcPath to %s"
-msgstr ""
+msgstr "يقوم بتحديد SrcPath إلى %s"
 
 #: codetoolsstrconsts.ctssourcefilenamesforstandardfpcunits
 msgid "Source filenames for the standard fpc units"
@@ -811,15 +811,15 @@ msgstr "لم يتم إيجاد المصدر: وحدة %s"
 
 #: codetoolsstrconsts.ctssourceofunitnotfound
 msgid "source of unit not found: %s"
-msgstr ""
+msgstr "لم يتم إيجاد مصدر أو وحدة: %s"
 
 #: codetoolsstrconsts.ctssrcpathforcompiledunits
 msgid "src path for compiled units"
-msgstr ""
+msgstr "مسار مصدر لوحدة مترجمة"
 
 #: codetoolsstrconsts.ctssrcpathinitialization
 msgid "SrcPath Initialization"
-msgstr ""
+msgstr "تمهيد SrcPath"
 
 #: codetoolsstrconsts.ctsstrexpectedbutatomfound
 msgid "%s expected, but %s found"
@@ -831,19 +831,19 @@ msgstr "تابث نصي"
 
 #: codetoolsstrconsts.ctssyntaxerrorinexpr
 msgid "Syntax Error in expression \"%s\""
-msgstr ""
+msgstr "خطأ نحوي في تعبير \"%s\""
 
 #: codetoolsstrconsts.ctstcodetoolmanagerconsistencycheck
 msgid "TCodeToolManager.ConsistencyCheck=%d"
-msgstr ""
+msgstr "TCodeToolManager.ConsistencyCheck=%d"
 
 #: codetoolsstrconsts.ctstermnotsimple
 msgid "Term has no simple type"
-msgstr ""
+msgstr "المصلح ليس لديه نوع مبسّط"
 
 #: codetoolsstrconsts.ctsthenexpectedbutfound
 msgid "then expected, but %s found"
-msgstr ""
+msgstr "متوقّع then ، لكن وجد %s"
 
 #: codetoolsstrconsts.ctstoolsdirectory
 msgid "Tools Directory"
@@ -855,15 +855,15 @@ msgstr "النوع"
 
 #: codetoolsstrconsts.ctstypeidentifier
 msgid "type identifier"
-msgstr ""
+msgstr "معرّف نوع"
 
 #: codetoolsstrconsts.ctstypeisonlyallowedingenericsendofclassnotfound
 msgid "type is only allowed in generics, end of class not found"
-msgstr ""
+msgstr "type مسموح به بقط في العموميات generics، إنتهاء الصنفية غير موجودة"
 
 #: codetoolsstrconsts.ctstypesectionofclassnotfound
 msgid "type section of class not found"
-msgstr ""
+msgstr "لم يتم إيجاد قسم النوع type في الصنفية"
 
 #: codetoolsstrconsts.ctsunabletoapplychanges
 msgid "unable to apply changes"
@@ -879,31 +879,31 @@ msgstr "تحته خط"
 
 #: codetoolsstrconsts.ctsunexpectedendofsource
 msgid "unexpected end of source"
-msgstr ""
+msgstr "انتهاء غير متوقع لمصدر"
 
 #: codetoolsstrconsts.ctsunexpectedkeyword
 msgid "unexpected keyword \"%s\""
-msgstr ""
+msgstr "كلمة مفتاحية غير متوقّعة \"%s\""
 
 #: codetoolsstrconsts.ctsunexpectedkeyword2
 msgid "unexpected keyword %s"
-msgstr ""
+msgstr "كلمة مفتاحية غير متوقّعة %s"
 
 #: codetoolsstrconsts.ctsunexpectedkeywordinasmblock
 msgid "unexpected keyword \"%s\" in asm block found"
-msgstr ""
+msgstr "كلمة مفتاحية غير متوقّعة \"%s\" وجدت في كتلة asm"
 
 #: codetoolsstrconsts.ctsunexpectedkeywordinbeginendblock
 msgid "unexpected keyword \"%s\" in begin..end found"
-msgstr ""
+msgstr "كلمة مفتاحية غير متوقّعة \"%s\" وجدت في begin..end"
 
 #: codetoolsstrconsts.ctsunexpectedkeywordwhilereadingbackwards
 msgid "unexpected keyword \"%s\" found while reading blocks backwards"
-msgstr ""
+msgstr "كلمة مفتاحية غير متوقّعة \"%s\" وجدت عندة قراءة الكتل للخلف"
 
 #: codetoolsstrconsts.ctsunexpectedsubrangeoperatorfound
 msgid "unexpected subrange operator '..' found"
-msgstr ""
+msgstr "معمل مجى فرعي غير متوقّع '..' قد وجد"
 
 #: codetoolsstrconsts.ctsunitnotfound
 msgid "unit not found: %s"
@@ -911,27 +911,27 @@ msgstr "الوحدة لم يتم إيجادها: %s"
 
 #: codetoolsstrconsts.ctsunitpathinitialization
 msgid "UnitPath Initialization"
-msgstr ""
+msgstr "تمهيد مسار وحدة"
 
 #: codetoolsstrconsts.ctsunknownfunction
 msgid "Unknown function %s"
-msgstr ""
+msgstr "دالّة غير معروفو %s"
 
 #: codetoolsstrconsts.ctsunknownmainfilename
 msgid "(unknown mainfilename)"
-msgstr ""
+msgstr "(إسم ملف رئيسي غير معروق)"
 
 #: codetoolsstrconsts.ctsunknownsectionkeyword
 msgid "unknown section keyword %s found"
-msgstr ""
+msgstr "وجدت كلمة مفتاحية غير معروفة %s"
 
 #: codetoolsstrconsts.ctsunknownsubdescriptor
 msgid "(unknown subdescriptor %s)"
-msgstr ""
+msgstr "(واصفة فرعية غير معروفة %s)"
 
 #: codetoolsstrconsts.ctsunparsed
 msgid "Unparsed"
-msgstr ""
+msgstr "لم يتمّ إعرابه"
 
 #: codetoolsstrconsts.ctsusedunitisnotapascalunit
 msgid "used unit is not a pascal unit"
@@ -943,7 +943,7 @@ msgstr "أدلة الأدوات"
 
 #: codetoolsstrconsts.ctsvarisonlyallowedingenericsendofclassnotfound
 msgid "var is only allowed in generics, end of class not found"
-msgstr "var مسموح بها بقط في العموميات generics، نهاية الصنفية غير موجودة"
+msgstr "var مسموح بها فقط في العموميات generics، إنتهاء صنفية غير موجودة"
 
 #: codetoolsstrconsts.ctswidgetdirectory
 msgid "Widget Directory"
