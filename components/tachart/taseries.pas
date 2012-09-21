@@ -79,6 +79,7 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   public
+    function GetBarWidth(AIndex: Integer): Integer;
     procedure Draw(ADrawer: IChartDrawer); override;
     function Extent: TDoubleRect; override;
   published
@@ -901,11 +902,11 @@ begin
     z := AxisToGraphY(ZeroLevel);
   SetLength(heights, Source.YCount + 1);
   for pointIndex := FLoBound to FUpBound do begin
-    BarOffsetWidth(GetGraphPointX(pointIndex), pointIndex, ofs, w);
     p := FGraphPoints[pointIndex - FLoBound];
     if IsRotated then
       Exchange(p.X, p.Y);
     if IsNan(p.X) then continue;
+    BarOffsetWidth(p.X, pointIndex, ofs, w);
     p.X += ofs;
     heights[0] := z;
     heights[1] := NumberOr(p.Y, z);
@@ -944,6 +945,19 @@ begin
     BarOffsetWidth(x, i, ofs, w);
     Result.b.X := Max(Result.b.X, x + ofs + w);
   end;
+end;
+
+function TBarSeries.GetBarWidth(AIndex: Integer): Integer;
+var
+  ofs, w: Double;
+  f: TGraphToImageFunc;
+begin
+  BarOffsetWidth(GetGraphPointX(AIndex), AIndex, ofs, w);
+  if IsRotated then
+    f := @FChart.YGraphToImage
+  else
+    f := @FChart.XGraphToImage;
+  Result := Abs(f(2 * w) - f(0));
 end;
 
 procedure TBarSeries.GetLegendItems(AItems: TChartLegendItems);
