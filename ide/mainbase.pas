@@ -151,7 +151,11 @@ type
                            Flags: TCodeToolsFlags): boolean;
     procedure ActivateCodeToolAbortableMode;
     function OnCodeToolBossCheckAbort: boolean;
+    procedure CreateObjectInspector; virtual; abstract;
+    procedure DoShowDesignerFormOfCurrentSrc; virtual; abstract;
+    procedure UpdateSaveMenuItemsAndButtons(UpdateSaveAll: boolean); virtual; abstract;
 
+    procedure DoMergeDefaultProjectOptions(AProject: TProject);
     procedure DoSwitchToFormSrc(var ActiveSourceEditor:TSourceEditor;
       var ActiveUnitInfo:TUnitInfo);
     procedure DoSwitchToFormSrc(ADesigner: TDesigner;
@@ -338,12 +342,12 @@ begin
 
   // check global stati
   if (ToolStatus in [itCodeTools,itCodeToolAborting]) then begin
-    debugln('TMainIDE.BeginCodeTool impossible ',dbgs(ord(ToolStatus)));
+    debugln('TMainIDEBase.BeginCodeTool impossible ',dbgs(ord(ToolStatus)));
     exit;
   end;
   if (not (ctfSourceEditorNotNeeded in Flags)) and (SourceEditorManager.SourceEditorCount=0)
   then begin
-    DebugLn('TMainIDE.BeginCodeTool no source editor');
+    DebugLn('TMainIDEBase.BeginCodeTool no source editor');
     exit;
   end;
 
@@ -393,6 +397,29 @@ begin
   if ToolStatus<>itCodeTools then exit;
   Application.ProcessMessages;
   Result:=ToolStatus<>itCodeTools;
+end;
+
+procedure TMainIDEBase.DoMergeDefaultProjectOptions(AProject: TProject);
+var
+  AFilename: String;
+begin
+  // load default project options if exists
+  AFilename:=AppendPathDelim(GetPrimaryConfigPath)+DefaultProjectOptionsFilename;
+  if not FileExistsUTF8(AFilename) then
+    CopySecondaryConfigFile(DefaultProjectOptionsFilename);
+  if FileExistsUTF8(AFilename) then begin
+    if AProject.ReadProject(AFilename,[prfLoadParts,prfLoadPartBuildModes])<>mrOk then
+      DebugLn(['TMainIDEBase.DoLoadDefaultCompilerOptions failed']);
+  end else begin
+    // old way (<0.9.31)
+    // load default compiler options if exists
+    AFilename:=AppendPathDelim(GetPrimaryConfigPath)+DefaultProjectCompilerOptionsFilename;
+    if not FileExistsUTF8(AFilename) then
+      CopySecondaryConfigFile(DefaultProjectCompilerOptionsFilename);
+    if not FileExistsUTF8(AFilename) then exit;
+    if AProject.CompilerOptions.LoadFromFile(AFilename)<>mrOk then
+      DebugLn(['TMainIDEBase.DoLoadDefaultCompilerOptions failed']);
+  end;
 end;
 
 procedure TMainIDEBase.DoSwitchToFormSrc(var ActiveSourceEditor: TSourceEditor;

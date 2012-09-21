@@ -34,10 +34,11 @@ uses
   AVL_Tree, typinfo, math, Classes, SysUtils, Controls, Forms, Dialogs, LCLIntf,
   LCLType, LCLProc, FileProcs, FileUtil, IDEProcs, DialogProcs, IDEDialogs,
   LConvEncoding, LResources, PropEdits, DefineTemplates, IDEMsgIntf,
-  IDEProtocol, LazarusIDEStrConsts, LazIDEIntf, MainBase, MainBar, MainIntf,
-  MenuIntf, NewItemIntf, NewDialog, ProjectIntf, Project, ProjectDefs,
-  ProjectInspector, CompilerOptions, BasePkgManager, PackageIntf, PackageDefs,
-  PackageSystem, SrcEditorIntf, IDEWindowIntf, SourceEditor, EditorOptions,
+  IDEProtocol, LazarusIDEStrConsts, NewDialog,
+  LazIDEIntf, MainBase, MainBar, MainIntf, MenuIntf, NewItemIntf,
+  ProjectIntf, Project, ProjectDefs, ProjectInspector, CompilerOptions,
+  BasePkgManager, PackageIntf, PackageDefs, PackageSystem,
+  SrcEditorIntf, IDEWindowIntf, SourceEditor, EditorOptions,
   CustomFormEditor, FormEditor, EmptyMethodsDlg, BaseDebugManager,
   ControlSelection, TransferMacros, EnvironmentOpts, BuildManager, Designer,
   EditorMacroListViewer, KeywordFuncLists, FindRenameIdentifier, MsgView,
@@ -50,6 +51,8 @@ type
   { TLazSourceFileManager }
 
   TLazSourceFileManager = class
+  private
+    function CheckMainSrcLCLInterfaces(Silent: boolean): TModalResult;
   public
     constructor Create;
     destructor Destroy; override;
@@ -127,6 +130,8 @@ type
                            var AComponentClass: TComponentClass;
                            var ComponentUnitInfo: TUnitInfo): TModalResult;
   public
+    function DoOpenMainUnit(PageIndex, WindowIndex: integer; Flags: TOpenFlags): TModalResult;
+    function DoRevertMainUnit: TModalResult;
     function OpenFileInSourceEditor(AnEditorInfo: TUnitEditorInfo;
         PageIndex, WindowIndex: integer; Flags: TOpenFlags): TModalResult;
     function LoadLFM(AnUnitInfo: TUnitInfo; OpenFlags: TOpenFlags;
@@ -225,6 +230,55 @@ begin
   inherited Destroy;
 end;
 
+
+function TLazSourceFileManager.CheckMainSrcLCLInterfaces(Silent: boolean): TModalResult;
+var
+  MainUnitInfo: TUnitInfo;
+  MainUsesSection,ImplementationUsesSection: TStrings;
+  MsgResult: TModalResult;
+begin
+  Result:=mrOk;
+  if (Project1=nil) then exit;
+  if Project1.SkipCheckLCLInterfaces then exit;
+  MainUnitInfo:=Project1.MainUnitInfo;
+  if (MainUnitInfo=nil) or (MainUnitInfo.Source=nil) then exit;
+  if PackageGraph.FindDependencyRecursively(Project1.FirstRequiredDependency,
+    PackageGraph.LCLBasePackage)=nil
+  then
+    exit; // project does not use LCLBase
+  // project uses LCLBase
+  MainUsesSection:=nil;
+  ImplementationUsesSection:=nil;
+  try
+    if not CodeToolBoss.FindUsedUnitNames(MainUnitInfo.Source,
+      MainUsesSection,ImplementationUsesSection) then exit;
+    if (UTF8SearchInStringList(MainUsesSection,'forms')<0)
+    and (UTF8SearchInStringList(ImplementationUsesSection,'forms')<0) then
+      exit;
+    // project uses lcl unit Forms
+    if (UTF8SearchInStringList(MainUsesSection,'interfaces')>=0)
+    or (UTF8SearchInStringList(ImplementationUsesSection,'interfaces')>=0) then
+      exit;
+    // project uses lcl unit Forms, but not unit interfaces
+    // this will result in strange linker error
+    if not Silent then
+    begin
+      MsgResult:=IDEQuestionDialog(lisCCOWarningCaption,
+        Format(lisTheProjectDoesNotUseTheLCLUnitInterfacesButItSeems, [LineEnding]),
+        mtWarning, [mrYes, lisAddUnitInterfaces, mrNo, dlgIgnoreVerb,
+                    mrNoToAll, lisAlwaysIgnore, mrCancel]);
+      case MsgResult of
+        mrNo: exit;
+        mrNoToAll: begin Project1.SkipCheckLCLInterfaces:=true; exit; end;
+        mrCancel: exit(mrCancel);
+      end;
+    end;
+    CodeToolBoss.AddUnitToMainUsesSection(MainUnitInfo.Source,'Interfaces','');
+  finally
+    MainUsesSection.Free;
+    ImplementationUsesSection.Free;
+  end;
+end;
 
 procedure TLazSourceFileManager.AddRecentProjectFileToEnvironment(const AFilename: string);
 begin
@@ -513,8 +567,8 @@ begin
     // show form and select form
     if NewUnitInfo.Component<>nil then begin
       // show form
-      TMainIDE(MainIDE).CreateObjectInspector;
-      TMainIDE(MainIDE).DoShowDesignerFormOfCurrentSrc;
+      MainIDE.CreateObjectInspector;
+      MainIDE.DoShowDesignerFormOfCurrentSrc;
     end else begin
       MainIDE.DisplayState:= dsSource;
     end;
@@ -839,7 +893,7 @@ begin
   if not (sfSaveToTestDir in Flags) then begin
     AnUnitInfo.ClearModifieds;
     AEditor.Modified:=false;
-    TMainIDE(MainIDE).UpdateSaveMenuItemsAndButtons(not (sfProjectSaving in Flags));
+    MainIDE.UpdateSaveMenuItemsAndButtons(not (sfProjectSaving in Flags));
   end;
   TSourceEditor(AEditor).SourceNotebook.UpdateStatusBar;
 
@@ -1181,7 +1235,7 @@ begin
   and (CompareFilenames(Project1.MainFilename,AFilename,
        not (ofVirtualFile in Flags))=0)
   then begin
-    Result:=TMainIDE(MainIDE).DoOpenMainUnit(PageIndex,WindowIndex,Flags);
+    Result:=DoOpenMainUnit(PageIndex,WindowIndex,Flags);
     exit;
   end;
 
@@ -1566,7 +1620,7 @@ begin
     try
       Project1.CompilerOptions.CompilerPath:='$(CompPath)';
       if pfUseDefaultCompilerOptions in Project1.Flags then begin
-        TMainIDE(MainIDE).DoMergeDefaultProjectOptions(Project1);
+        MainIDE.DoMergeDefaultProjectOptions(Project1);
         Project1.Flags:=Project1.Flags-[pfUseDefaultCompilerOptions];
       end;
       Project1.AutoAddOutputDirToIncPath;
@@ -1596,7 +1650,7 @@ begin
       then begin
         // the project has not created any secondary files
         // or the project main source is not auto updated by the IDE
-        TMainIDE(MainIDE).DoOpenMainUnit(-1,-1,[]);
+        DoOpenMainUnit(-1,-1,[]);
       end;
 
       // init resource files
@@ -1799,7 +1853,7 @@ begin
   Result:=MainIDE.DoCheckFilesOnDisk(true);
   if Result in [mrCancel,mrAbort] then exit;
 
-  if TMainIDE(MainIDE).CheckMainSrcLCLInterfaces(sfQuietUnitCheck in Flags)<>mrOk then
+  if CheckMainSrcLCLInterfaces(sfQuietUnitCheck in Flags)<>mrOk then
     exit(mrCancel);
 
   // if this is a virtual project then save first the project info file
@@ -3371,6 +3425,54 @@ begin
   Result:=mrOk;
 end;
 
+function TLazSourceFileManager.DoOpenMainUnit(PageIndex, WindowIndex: integer;
+  Flags: TOpenFlags): TModalResult;
+var
+  MainUnitInfo: TUnitInfo;
+begin
+  {$IFDEF IDE_VERBOSE}
+  debugln(['[TLazSourceFileManager.DoOpenMainUnit] A ProjectLoading=',ofProjectLoading in Flags,' MainUnitID=',Project1.MainUnitID]);
+  {$ENDIF}
+  Result:=mrCancel;
+  if (Project1=nil) or (Project1.MainUnitID<0) then exit;
+  MainUnitInfo:=Project1.MainUnitInfo;
+
+  // check if main unit is already open in source editor
+  if (MainUnitInfo.OpenEditorInfoCount > 0) and (not (ofProjectLoading in Flags)) then
+  begin
+    // already loaded -> switch to source editor
+    SourceEditorManager.ActiveEditor := TSourceEditor(MainUnitInfo.OpenEditorInfo[0].EditorComponent);
+    SourceEditorManager.ShowActiveWindowOnTop(True);
+    Result:=mrOk;
+    exit;
+  end;
+
+  // open file in source notebook
+  Result:=SourceFileMgr.OpenFileInSourceEditor(MainUnitInfo.GetClosedOrNewEditorInfo,
+                                                 PageIndex,WindowIndex,Flags);
+  if Result<>mrOk then exit;
+
+  Result:=mrOk;
+  {$IFDEF IDE_VERBOSE}
+  writeln('[TLazSourceFileManager.DoOpenMainUnit] END');
+  {$ENDIF}
+end;
+
+function TLazSourceFileManager.DoRevertMainUnit: TModalResult;
+begin
+  Result:=mrOk;
+  if Project1.MainUnitID<0 then exit;
+  if Project1.MainUnitInfo.OpenEditorInfoCount > 0 then
+    // main unit is loaded, so we can just revert
+    Result:=OpenEditorFile('',Project1.MainUnitInfo.EditorInfo[0].PageIndex,
+      Project1.MainUnitInfo.EditorInfo[0].WindowIndex, nil, [ofRevert])
+  else begin
+    // main unit is only loaded in background
+    // -> just reload the source and update the source name
+    Result:=Project1.MainUnitInfo.ReadUnitSource(true,true);
+  end;
+end;
+
 function TLazSourceFileManager.OpenFileInSourceEditor(AnEditorInfo: TUnitEditorInfo;
   PageIndex, WindowIndex: integer; Flags: TOpenFlags): TModalResult;
 var
@@ -3831,7 +3933,7 @@ begin
     MainIDE.DisplayState := dsForm;
     GlobalDesignHook.LookupRoot := NewComponent;
     TheControlSelection.AssignPersistent(NewComponent);
-    TMainIDE(MainIDE).CreateObjectInspector;
+    MainIDE.CreateObjectInspector;
   end;
 
   // show new form

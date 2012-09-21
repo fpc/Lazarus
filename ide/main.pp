@@ -475,7 +475,7 @@ type
     procedure OnSrcNoteBookCloseQuery(Sender: TObject; var CloseAction: TCloseAction);
 
     // ObjectInspector + PropertyEditorHook events
-    procedure CreateObjectInspector;
+    procedure CreateObjectInspector; override;
     procedure OIOnSelectPersistents(Sender: TObject);
     procedure OIOnShowOptions(Sender: TObject);
     procedure OIOnViewRestricted(Sender: TObject);
@@ -779,8 +779,6 @@ type
     procedure EndFixupComponentReferences;
     procedure DoRestart;
     procedure DoExecuteRemoteControl;
-    function DoOpenMainUnit(PageIndex, WindowIndex: integer; Flags: TOpenFlags): TModalResult;
-    function DoRevertMainUnit: TModalResult;
     function DoViewUnitsAndForms(OnlyForms: boolean): TModalResult;
     function DoSelectFrame: TComponentClass;
     procedure DoViewUnitDependencies(Show: boolean);
@@ -802,7 +800,6 @@ type
       ACaretPoint: TPoint; WantedTopLine: integer = -1): TUnitEditorInfo;
 
     // project(s)
-    procedure DoMergeDefaultProjectOptions(AProject: TProject);
     function DoNewProject(ProjectDesc: TProjectDescriptor): TModalResult; override;
     function DoSaveProject(Flags: TSaveFlags): TModalResult; override;
     function DoCloseProject: TModalResult; override;
@@ -829,7 +826,6 @@ type
     function DoCreateProjectForProgram(ProgramBuf: TCodeBuffer): TModalResult;
     function DoSaveProjectIfChanged: TModalResult;
     function DoSaveProjectToTestDirectory(Flags: TSaveFlags): TModalResult;
-    function CheckMainSrcLCLInterfaces(Silent: boolean): TModalResult;
     function QuitIDE: boolean;
 
     // edit menu
@@ -877,7 +873,7 @@ type
           var ActiveSourceEditor: TSourceEditor; var ActiveUnitInfo: TUnitInfo); override;
     function GetAncestorUnit(AnUnitInfo: TUnitInfo): TUnitInfo;
     function GetAncestorLookupRoot(AnUnitInfo: TUnitInfo): TComponent;
-    procedure UpdateSaveMenuItemsAndButtons(UpdateSaveAll: boolean);
+    procedure UpdateSaveMenuItemsAndButtons(UpdateSaveAll: boolean); override;
 
     // useful file methods
     function FindUnitFile(const AFilename: string; TheOwner: TObject = nil;
@@ -990,7 +986,7 @@ type
     // form editor and designer
     procedure DoBringToFrontFormOrUnit;
     procedure DoBringToFrontFormOrInspector(ForceInspector: boolean);
-    procedure DoShowDesignerFormOfCurrentSrc;
+    procedure DoShowDesignerFormOfCurrentSrc; override;
     procedure DoShowSourceOfActiveDesignerForm;
     procedure SetDesigning(AComponent: TComponent; Value: Boolean);
     procedure SetDesignInstance(AComponent: TComponent; Value: Boolean);
@@ -4087,7 +4083,7 @@ end;
 
 procedure TMainIDE.mnuViewProjectSourceClicked(Sender: TObject);
 begin
-  DoOpenMainUnit(-1,-1,[]);
+  SourceFileMgr.DoOpenMainUnit(-1,-1,[]);
 end;
 
 procedure TMainIDE.mnuProjectOptionsClicked(Sender: TObject);
@@ -5618,70 +5614,22 @@ begin
   UpdateSaveMenuItemsAndButtons(true);
 end;
 
-function TMainIDE.DoOpenEditorFile(AFileName:string;
-  PageIndex: integer; Flags: TOpenFlags):TModalResult;
+function TMainIDE.DoOpenEditorFile(AFileName:string; PageIndex: integer;
+  Flags: TOpenFlags):TModalResult;
 begin
-  Result := DoOpenEditorFile(AFileName, PageIndex,
-    SourceEditorManager.ActiveSourceWindowIndex, Flags);
+  Result := DoOpenEditorFile(AFileName, PageIndex, SourceEditorManager.ActiveSourceWindowIndex, Flags);
 end;
 
-function TMainIDE.DoOpenEditorFile(AFileName: string; PageIndex,
-  WindowIndex: integer; Flags: TOpenFlags): TModalResult;
+function TMainIDE.DoOpenEditorFile(AFileName: string; PageIndex, WindowIndex: integer;
+  Flags: TOpenFlags): TModalResult;
 begin
   Result := DoOpenEditorFile(AFileName, PageIndex, WindowIndex, nil, Flags);
 end;
 
-function TMainIDE.DoOpenEditorFile(AFileName: string; PageIndex,
-  WindowIndex: integer; AEditorInfo: TUnitEditorInfo; Flags: TOpenFlags): TModalResult;
+function TMainIDE.DoOpenEditorFile(AFileName: string; PageIndex, WindowIndex: integer;
+  AEditorInfo: TUnitEditorInfo; Flags: TOpenFlags): TModalResult;
 begin
   Result:=SourceFileMgr.OpenEditorFile(AFileName, PageIndex, WindowIndex, AEditorInfo, Flags);
-end;
-
-function TMainIDE.DoOpenMainUnit(PageIndex, WindowIndex: integer;
-  Flags: TOpenFlags): TModalResult;
-var MainUnitInfo: TUnitInfo;
-begin
-  {$IFDEF IDE_VERBOSE}
-  debugln(['[TMainIDE.DoOpenMainUnit] A ProjectLoading=',ofProjectLoading in Flags,' MainUnitID=',Project1.MainUnitID]);
-  {$ENDIF}
-  Result:=mrCancel;
-  if (Project1=nil) or (Project1.MainUnitID<0) then exit;
-  MainUnitInfo:=Project1.MainUnitInfo;
-
-  // check if main unit is already open in source editor
-  if (MainUnitInfo.OpenEditorInfoCount > 0) and (not (ofProjectLoading in Flags)) then
-  begin
-    // already loaded -> switch to source editor
-    SourceEditorManager.ActiveEditor := TSourceEditor(MainUnitInfo.OpenEditorInfo[0].EditorComponent);
-    SourceEditorManager.ShowActiveWindowOnTop(True);
-    Result:=mrOk;
-    exit;
-  end;
-
-  // open file in source notebook
-  Result:=SourceFileMgr.OpenFileInSourceEditor(MainUnitInfo.GetClosedOrNewEditorInfo,
-                                                 PageIndex,WindowIndex,Flags);
-  if Result<>mrOk then exit;
-
-  Result:=mrOk;
-  {$IFDEF IDE_VERBOSE}
-  writeln('[TMainIDE.DoOpenMainUnit] END');
-  {$ENDIF}
-end;
-
-function TMainIDE.DoRevertMainUnit: TModalResult;
-begin
-  Result:=mrOk;
-  if Project1.MainUnitID<0 then exit;
-  if Project1.MainUnitInfo.OpenEditorInfoCount > 0 then
-    // main unit is loaded, so we can just revert
-    Result:=DoOpenEditorFile('',Project1.MainUnitInfo.EditorInfo[0].PageIndex,
-      Project1.MainUnitInfo.EditorInfo[0].WindowIndex, [ofRevert])
-  else begin
-    // main unit is only loaded in background
-    // -> just reload the source and update the source name
-    Result:=Project1.MainUnitInfo.ReadUnitSource(true,true);
-  end;
 end;
 
 function TMainIDE.SelectProjectItems(ItemList: TStringList;
@@ -6035,7 +5983,7 @@ begin
           end else
           begin
             if Project1.MainUnitInfo = AnUnitInfo then
-              Result:=DoOpenMainUnit(-1,-1,[])
+              Result:=SourceFileMgr.DoOpenMainUnit(-1,-1,[])
             else
               Result:=DoOpenEditorFile(AnUnitInfo.Filename,-1,-1,[ofOnlyIfExists]);
             if Result=mrAbort then exit;
@@ -6616,29 +6564,6 @@ begin
                              [ofRevert]); // Reverting one will revert all
 end;
 
-procedure TMainIDE.DoMergeDefaultProjectOptions(AProject: TProject);
-var
-  AFilename: String;
-begin
-  // load default project options if exists
-  AFilename:=AppendPathDelim(GetPrimaryConfigPath)+DefaultProjectOptionsFilename;
-  if not FileExistsUTF8(AFilename) then
-    CopySecondaryConfigFile(DefaultProjectOptionsFilename);
-  if FileExistsUTF8(AFilename) then begin
-    if AProject.ReadProject(AFilename,[prfLoadParts,prfLoadPartBuildModes])<>mrOk then
-      DebugLn(['TMainIDE.DoLoadDefaultCompilerOptions failed']);
-  end else begin
-    // old way (<0.9.31)
-    // load default compiler options if exists
-    AFilename:=AppendPathDelim(GetPrimaryConfigPath)+DefaultProjectCompilerOptionsFilename;
-    if not FileExistsUTF8(AFilename) then
-      CopySecondaryConfigFile(DefaultProjectCompilerOptionsFilename);
-    if not FileExistsUTF8(AFilename) then exit;
-    if AProject.CompilerOptions.LoadFromFile(AFilename)<>mrOk then
-      DebugLn(['TMainIDE.DoLoadDefaultCompilerOptions failed']);
-  end;
-end;
-
 function TMainIDE.DoNewProject(ProjectDesc: TProjectDescriptor): TModalResult;
 begin
   //DebugLn('TMainIDE.DoNewProject A');
@@ -7197,55 +7122,6 @@ begin
     Result:=CheckCompilerOptsDlg.ShowModal;
   finally
     FreeThenNil(CheckCompilerOptsDlg);
-  end;
-end;
-
-function TMainIDE.CheckMainSrcLCLInterfaces(Silent: boolean): TModalResult;
-var
-  MainUnitInfo: TUnitInfo;
-  MainUsesSection,ImplementationUsesSection: TStrings;
-  MsgResult: TModalResult;
-begin
-  Result:=mrOk;
-  if (Project1=nil) then exit;
-  if Project1.SkipCheckLCLInterfaces then exit;
-  MainUnitInfo:=Project1.MainUnitInfo;
-  if (MainUnitInfo=nil) or (MainUnitInfo.Source=nil) then exit;
-  if PackageGraph.FindDependencyRecursively(Project1.FirstRequiredDependency,
-    PackageGraph.LCLBasePackage)=nil
-  then
-    exit; // project does not use LCLBase
-  // project uses LCLBase
-  MainUsesSection:=nil;
-  ImplementationUsesSection:=nil;
-  try
-    if not CodeToolBoss.FindUsedUnitNames(MainUnitInfo.Source,
-      MainUsesSection,ImplementationUsesSection) then exit;
-    if (UTF8SearchInStringList(MainUsesSection,'forms')<0)
-    and (UTF8SearchInStringList(ImplementationUsesSection,'forms')<0) then
-      exit;
-    // project uses lcl unit Forms
-    if (UTF8SearchInStringList(MainUsesSection,'interfaces')>=0)
-    or (UTF8SearchInStringList(ImplementationUsesSection,'interfaces')>=0) then
-      exit;
-    // project uses lcl unit Forms, but not unit interfaces
-    // this will result in strange linker error
-    if not Silent then
-    begin
-      MsgResult:=IDEQuestionDialog(lisCCOWarningCaption,
-        Format(lisTheProjectDoesNotUseTheLCLUnitInterfacesButItSeems, [LineEnding]),
-        mtWarning, [mrYes, lisAddUnitInterfaces, mrNo, dlgIgnoreVerb,
-                    mrNoToAll, lisAlwaysIgnore, mrCancel]);
-      case MsgResult of
-        mrNo: exit;
-        mrNoToAll: begin Project1.SkipCheckLCLInterfaces:=true; exit; end;
-        mrCancel: exit(mrCancel);
-      end;
-    end;
-    CodeToolBoss.AddUnitToMainUsesSection(MainUnitInfo.Source,'Interfaces','');
-  finally
-    MainUsesSection.Free;
-    ImplementationUsesSection.Free;
   end;
 end;
 
@@ -8891,7 +8767,7 @@ begin
               CurUnit.OpenEditorInfo[0].WindowIndex, [ofRevert]);
             //DebugLn(['TMainIDE.DoCheckFilesOnDisk DoOpenEditorFile=',Result]);
           end else if CurUnit.IsMainUnit then begin
-            Result:=DoRevertMainUnit;
+            Result:=SourceFileMgr.DoRevertMainUnit;
             //DebugLn(['TMainIDE.DoCheckFilesOnDisk DoRevertMainUnit=',Result]);
           end else
             Result:=mrIgnore;
