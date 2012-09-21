@@ -1418,7 +1418,7 @@ function TWidgetSet.GradientFill(DC: HDC; Vertices: PTriVertex; NumVertices: Lon
     StartColor, EndColor, CurColor: TFPColor;
     I, J: Longint;
     SwapColors: Boolean;
-    Steps, MaxSteps: Integer;
+    Steps: Integer;
     Image: TLazIntfImage;
     R: TRect;
   begin
@@ -1450,14 +1450,6 @@ function TWidgetSet.GradientFill(DC: HDC; Vertices: PTriVertex; NumVertices: Lon
         StartColor := EndColor;
         EndColor := CurColor;
       end;
-      MaxSteps := GetDeviceCaps(DC, BITSPIXEL);
-      if MaxSteps >= 32 then
-        MaxSteps := High(Integer)
-      else
-      if MaxSteps >= 4 then
-        MaxSteps := 1 shl MaxSteps
-      else
-        MaxSteps := 256;
 
       R := Rect(TL.X, TL.Y, BR.X, BR.Y);
       dec(BR.X, TL.X);
@@ -1468,7 +1460,7 @@ function TWidgetSet.GradientFill(DC: HDC; Vertices: PTriVertex; NumVertices: Lon
 
       if DoFillVRect then
       begin
-        Steps := Min(BR.Y, MaxSteps);
+        Steps := BR.Y;
         for I := 0 to Steps - 1 do
         begin
           CurColor := GetRectangleGradientColor(StartColor, EndColor, I, Steps);
@@ -1478,7 +1470,7 @@ function TWidgetSet.GradientFill(DC: HDC; Vertices: PTriVertex; NumVertices: Lon
       end
       else
       begin
-        Steps := Min(BR.X, MaxSteps);
+        Steps := BR.X;
         for I := 0 to Steps - 1 do
         begin
           CurColor := GetRectangleGradientColor(StartColor, EndColor, I, Steps);
