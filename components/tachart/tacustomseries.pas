@@ -1056,11 +1056,14 @@ end;
 
 procedure TBasicPointSeries.MovePoint(
   var AIndex: Integer; const ANewPos: TDoublePoint);
+var
+  p: TDoublePoint;
 begin
   if not InRange(AIndex, 0, Count - 1) then exit;
+  p := GraphToAxis(ANewPos);
   with ListSource do begin
-    AIndex := SetXValue(AIndex, ANewPos.X);
-    SetYValue(AIndex, ANewPos.Y);
+    AIndex := SetXValue(AIndex, p.X);
+    SetYValue(AIndex, p.Y);
   end;
 end;
 
