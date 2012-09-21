@@ -1549,32 +1549,16 @@ begin
   Result := IntersectRect(R, ARect, CGRectToRect(ClipBox));
 end;
 
-function TCocoaWidgetSet.MoveWindowOrgEx(DC: HDC; dX, dY: Integer): Boolean;
+function TCocoaWidgetSet.GetWindowOrgEx(dc: hdc; P: PPoint): Integer;
 var
-  ctx : TCocoaContext;
+  ctx: TCocoaContext;
 begin
-  Result := False;
-  ctx:=CheckDC(DC);
-  if not Assigned(ctx) then Exit;
-
-  {$IFDEF VerboseWinAPI}
-  DebugLn('TCarbonWidgetSet.MoveWindowOrgEx DC: ' + DbgS(DC) + ' ' + DbgS(DX) + ', ' + DbgS(DY));
-  {$ENDIF}
-  ctx.SetOrigin(dX, dY);
-  Result := True;
-end;
-
-function TCocoaWidgetSet.GetWindowOrgEx(dc : hdc; P : PPoint): Integer;
-var
-  ctx : TCocoaContext;
-begin
-  ctx:=CheckDC(dc);
-  if not Assigned(ctx) or not Assigned(P) then
-    Result:=0
-  else begin
-    ctx.GetOrigin(p^.X, p^.Y);
-    Result:=1;
-  end;
+  ctx := CheckDC(dc);
+  if not Assigned(ctx) then
+    Exit(0);
+  if Assigned(P) then
+    P^ := ctx.WindowOfs;
+  Result:=1;
 end;
 
 function TCocoaWidgetSet.SetCursor(ACursor: HCURSOR): HCURSOR;
@@ -1650,6 +1634,36 @@ begin
   end
   else
     Result := CLR_INVALID;
+end;
+
+function TCocoaWidgetSet.SetViewPortOrgEx(DC: HDC; NewX, NewY: Integer;
+  OldPoint: PPoint): Boolean;
+var
+  ctx: TCocoaContext;
+begin
+  Result := False;
+  ctx := CheckDC(DC);
+  if not Assigned(ctx) then Exit;
+
+  if Assigned(OldPoint) then
+    OldPoint^ := ctx.ViewportOfs;
+  ctx.ViewportOfs := Types.Point(NewX, NewY);
+  Result := True;
+end;
+
+function TCocoaWidgetSet.SetWindowOrgEx(DC: HDC; NewX, NewY: Integer;
+  OldPoint: PPoint): Boolean;
+var
+  ctx: TCocoaContext;
+begin
+  Result := False;
+  ctx := CheckDC(DC);
+  if not Assigned(ctx) then Exit;
+
+  if Assigned(OldPoint) then
+    OldPoint^ := ctx.WindowOfs;
+  ctx.WindowOfs := Types.Point(NewX, NewY);
+  Result := True;
 end;
 
 function TCocoaWidgetSet.ShowCaret(Handle: HWND): Boolean;
@@ -1777,6 +1791,18 @@ var
 begin
   ctx := CheckDC(DC);
   Result := Assigned(ctx) and ctx.GetTextMetrics(TM);
+end;
+
+function TCocoaWidgetSet.GetViewPortOrgEx(DC: HDC; P: PPoint): Integer;
+var
+  ctx: TCocoaContext;
+begin
+  ctx := CheckDC(dc);
+  if not Assigned(ctx) then
+    Exit(0);
+  if Assigned(P) then
+    P^ := ctx.ViewportOfs;
+  Result:=1;
 end;
 
 function TCocoaWidgetSet.TextOut(DC: HDC; X,Y: Integer; Str: Pchar; Count: Integer) : Boolean;

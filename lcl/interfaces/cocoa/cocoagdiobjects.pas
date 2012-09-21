@@ -275,6 +275,11 @@ type
 
     ROP2: Integer;
     PenPos: TPoint;
+    WindowOfs: TPoint;
+    ViewportOfs: TPoint;
+
+//    isClipped: Boolean;
+//    ClipShape: HIShapeRef;
   end;
 
   TGlyphArray = array of NSGlyph;
@@ -327,6 +332,8 @@ type
     FSavedDCList: TFPObjectList;
     FPenPos: TPoint;
     FSize: TSize;
+    FViewPortOfs: TPoint;
+    FWindowOfs: TPoint;
     function GetFont: TCocoaFont;
     function GetTextColor: TColor;
     procedure SetBitmap(const AValue: TCocoaBitmap);
@@ -338,6 +345,10 @@ type
     procedure SetRegion(const AValue: TCocoaRegion);
     procedure SetROP2(AValue: Integer);
     procedure SetTextColor(AValue: TColor);
+
+    procedure UpdateContextOfs(const AWindowOfs, AViewOfs: TPoint);
+    procedure SetViewPortOfs(AValue: TPoint);
+    procedure SetWindowOfs(AValue: TPoint);
   protected
     function SaveDCData: TCocoaDCData; virtual;
     procedure RestoreDCData(const AData: TCocoaDCData); virtual;
@@ -374,8 +385,6 @@ type
 
     function GetTextExtentPoint(AStr: PChar; ACount: Integer; var Size: TSize): Boolean;
     function GetTextMetrics(var TM: TTextMetric): Boolean;
-    procedure SetOrigin(X, Y: Integer);
-    procedure GetOrigin(var X,Y: Integer);
 
     function CGContext: CGContextRef; virtual;
     procedure SetAntialiasing(AValue: Boolean);
@@ -388,6 +397,8 @@ type
     property PenPos: TPoint read FPenPos write FPenPos;
     property ROP2: Integer read FROP2 write SetROP2;
     property Size: TSize read FSize;
+    property WindowOfs: TPoint read FWindowOfs write SetWindowOfs;
+    property ViewPortOfs: TPoint read FViewPortOfs write SetViewPortOfs;
 
     property BkColor: TColor read FBkColor write SetBkColor;
     property BkMode: Integer read FBkMode write SetBkMode;
@@ -1142,6 +1153,41 @@ begin
   FText.ForegroundColor := TColor(ColorToRGB(AValue));
 end;
 
+procedure GetWindowViewTranslate(const AWindowOfs, AViewOfs: TPoint; out dx, dy: Integer); inline;
+begin
+  dx := AViewOfs.x - AWindowOfs.x;
+  dy := AViewOfs.y - AWindowOfs.y;
+end;
+
+function isSamePoint(const p1, p2: TPoint): Boolean; inline;
+begin
+  Result:=(p1.x=p2.x) and (p1.y=p2.y);
+end;
+
+procedure TCocoaContext.UpdateContextOfs(const AWindowOfs, AViewOfs: TPoint);
+var
+  dx, dy: Integer;
+begin
+  if isSamePoint(AWindowOfs, FWindowOfs) and isSamePoint(AViewOfs, FViewPortOfs) then Exit;
+  GetWindowViewTranslate(FWindowOfs, FViewPortOfs, dx{%H-}, dy{%H-});
+  CGContextTranslateCTM(CGContext, -dx, -dy);
+
+  FWindowOfs := AWindowOfs;
+  FViewPortOfs := AViewOfs;
+  GetWindowViewTranslate(FWindowOfs, FViewPortOfs, dx, dy);
+  CGContextTranslateCTM(CGContext, dx, dy);
+end;
+
+procedure TCocoaContext.SetViewPortOfs(AValue: TPoint);
+begin
+  UpdateContextOfs(WindowOfs, AValue);
+end;
+
+procedure TCocoaContext.SetWindowOfs(AValue: TPoint);
+begin
+  UpdateContextOfs(AValue, ViewPortOfs);
+end;
+
 function TCocoaContext.SaveDCData: TCocoaDCData;
 begin
   Result := TCocoaDCData.Create;
@@ -1159,6 +1205,12 @@ begin
 
   Result.ROP2 := FROP2;
   Result.PenPos := FPenPos;
+
+  Result.WindowOfs := FWindowOfs;
+  Result.ViewportOfs := FViewportOfs;
+
+//  Result.isClipped := isClipped;
+//  Result.ClipShape := FClipRegion.GetShapeCopy;
 end;
 
 procedure TCocoaContext.RestoreDCData(const AData: TCocoaDCData);
@@ -1207,6 +1259,12 @@ begin
 
   FROP2 := AData.ROP2;
   FPenPos := AData.PenPos;
+
+  FWindowOfs := AData.WindowOfs;
+  FViewportOfs := AData.ViewportOfs;
+
+//  isClipped := AData.isClipped;
+//  FClipRegion.Shape := AData.ClipShape;
 end;
 
 constructor TCocoaContext.Create;
@@ -1811,30 +1869,6 @@ begin
   InflateRect(ARect, -AOutSet, -AOutSet);
   HIThemeDrawFocusRect(RectToCGRect(ARect), True, CGContext, kHIThemeOrientationNormal);
 end;
-
-procedure TCocoaContext.SetOrigin(X, Y:Integer);
-var
-  cg: CGContextRef;
-begin
-  cg := CGContext;
-  if Assigned(cg) then
-    CGContextTranslateCTM(cg, X, Y);
-end;
-
-procedure TCocoaContext.GetOrigin(var X, Y: Integer);
-var
-  cg: CGContextRef;
-  t: CGAffineTransform;
-begin
-  cg := CGContext;
-  if Assigned(cg) then
-  begin
-    t := CGContextGetCTM(cg);
-    X := Round(t.tx);
-    Y := Size.cy - Round(t.ty);
-  end;
-end;
-
 
 { TCocoaRegion }
 
