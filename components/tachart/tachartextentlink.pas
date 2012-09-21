@@ -44,6 +44,7 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
 
+    procedure AddChart(AChart: TChart);
     procedure SyncWith(AChart: TChart);
   published
     property Enabled: Boolean read FEnabled write FEnabled default true;
@@ -119,6 +120,15 @@ begin
 end;
 
 { TChartExtentLink }
+
+procedure TChartExtentLink.AddChart(AChart: TChart);
+var
+  i: TCollectionItem;
+begin
+  for i in LinkedCharts do
+    if TLinkedChart(i).Chart = AChart then exit;
+  LinkedCharts.Add.Chart := AChart;
+end;
 
 constructor TChartExtentLink.Create(AOwner: TComponent);
 begin
