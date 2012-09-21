@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: Free Pascal Lazarus Project.\n"
 "Report-Msgid-Bugs-To: BUG-EMAIL-ADDR <EMAIL@ADDRESS\n"
 "POT-Creation-Date: yyyy-mm-dd hh:mm+0000\n"
-"PO-Revision-Date: 2012-08-05 02:08+0100\n"
+"PO-Revision-Date: 2012-09-01 23:06+0100\n"
 "Last-Translator: Khaled Shagrouni <shagrouni@gmail.com>\n"
 "Language-Team: Arabic\n"
 "Language: arabic\n"
@@ -17,18 +17,18 @@ msgstr ""
 "Plural-Forms: nplurals=1; plural=0\n"
 "X-Generator: Easy Po 0.9.4.2\n"
 
-#: installerstrconsts.wiseditform
-msgid "&Edit form"
-msgstr "تحرير نموذج"
+#: instantfpcregisterlaz.rsinstantfpcpr
+msgid "InstantFPC program"
+msgstr "برنامج InstantFPC"
 
-#: installerstrconsts.wiseditsource
-msgid "&Edit source"
-msgstr "تحرير مصدر"
+#: instantfpcregisterlaz.rsinstantfpcsc
+msgid "InstantFPC script"
+msgstr "مخطوط InstantFPC"
 
-#: installerstrconsts.wisopenpackage
-msgid "&Open package"
-msgstr "فتح حزمة"
+#: instantfpcregisterlaz.rssinglefilefr
+msgid "%s%sSingle file Free Pascal program executed by InstantFPC"
+msgstr "%s%sبرنامج فري باسكال بملف واحد منفّذ بواسطة InstantFPC"
 
-#: installerstrconsts.wisopenproject
-msgid "&Open project"
-msgstr "فتح مشروع"
+#: instantfpcregisterlaz.rssinglefilepr
+msgid "%s%sSingle file program using InstantFPC to compile and execute"
+msgstr "%s%sبرنامج بملف واحد يستخدم InstantFPC للترجنة والتنفيذ"

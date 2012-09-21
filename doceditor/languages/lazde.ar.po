@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: Free Pascal Lazarus Project.\n"
 "Report-Msgid-Bugs-To: BUG-EMAIL-ADDR <EMAIL@ADDRESS\n"
 "POT-Creation-Date: yyyy-mm-dd hh:mm+0000\n"
-"PO-Revision-Date: 2012-05-03 10:59+0100\n"
+"PO-Revision-Date: 2012-08-05 02:08+0100\n"
 "Last-Translator: Khaled Shagrouni <shagrouni@gmail.com>\n"
 "Language-Team: Arabic\n"
 "Language: arabic\n"
@@ -11,7 +11,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0\n"
-"X-Generator: Easy Po 0.9.2\n"
+"X-Generator: Easy Po 0.9.4.2\n"
 
 #: lazdemsg.saboutformcaption
 msgid "About this application"
@@ -69,7 +69,7 @@ msgstr "المعالج"
 
 #: lazdemsg.screatecontentfile
 msgid "Create cont&ent file"
-msgstr "إنشاء ملف &محنوى"
+msgstr "إنشاء ملف &محتوى"
 
 #: lazdemsg.sdataforelement
 msgid "Documentation for element \"%s\":"
@@ -81,15 +81,15 @@ msgstr "إل&غاء"
 
 #: lazdemsg.sdeletemodule
 msgid "Are you sure you want to delete module \"%s\" ?"
-msgstr ""
+msgstr "هل أنت متأكّد من رغبتك في إلغاء أنموذج \"%s\" ؟"
 
 #: lazdemsg.sdeletepackage
 msgid "Are you sure you want to delete package \"%s\" ?"
-msgstr ""
+msgstr "هل أنت متأكّد من رغبتك في إلغاء حزمة \"%s\" ؟"
 
 #: lazdemsg.sdeletetopic
 msgid "Are you sure you want to delete topic \"%s\" ?"
-msgstr ""
+msgstr "هل أنت متأكّد من رغبتك في إلغاء موضوع \"%s\" ؟"
 
 #: lazdemsg.sdescription
 msgid "Description"
@@ -101,31 +101,31 @@ msgstr "تحرير"
 
 #: lazdemsg.seditdescriptionfile
 msgid "Change description file"
-msgstr ""
+msgstr "تغيير ملف الوصف"
 
 #: lazdemsg.serrfpdoc
 msgid "Building failed with exit code %d. Please check log."
-msgstr ""
+msgstr "البناء قد أخفق مع رمز خروج %d. يرجى فحص سجل الأحداث."
 
 #: lazdemsg.serrnomoduleforelement
 msgid "No module found to insert element \"%s\""
-msgstr ""
+msgstr "لم يتم إيجاد أنموذج لإدراج عنصر \"%s\""
 
 #: lazdemsg.serrnonodeformodule
 msgid "No node found for module \"%s\""
-msgstr ""
+msgstr "لم يتم إيجاد عقدة للأنموذج \"%s\""
 
 #: lazdemsg.serrnonodeforpackage
 msgid "No node found for package \"%s\""
-msgstr ""
+msgstr "لم يتم إيجاد عقدة للحزمة \"%s\""
 
 #: lazdemsg.serrnonodefortopic
 msgid "No parent node found to insert topic \"%s\""
-msgstr ""
+msgstr "لم يتم إيجاد عقدة أب لإدراج موضوع \"%s\""
 
 #: lazdemsg.serrnopackageformodule
 msgid "No package found to insert module \"%s\""
-msgstr ""
+msgstr "لم يتم إيجاد حزمة لإدراج أنموذج \"%s\""
 
 #: lazdemsg.serrors
 msgid "Errors"
@@ -133,19 +133,19 @@ msgstr "الأخطاء"
 
 #: lazdemsg.serrunknowndomelement
 msgid "Unknwon DOM element as parent for selected element: \"%s\""
-msgstr ""
+msgstr "عنصر DOM غير معروف كأب للعنصر المختار: \"%s\""
 
 #: lazdemsg.sfilemodified
 msgid "Document \"%s\" was modified, would you like to save it?"
-msgstr ""
+msgstr "تمّ تعديل الوثيقة \"%s\" ، هل ترغب في حفظها؟"
 
 #: lazdemsg.sfilestructure
 msgid "Documentation structure"
-msgstr ""
+msgstr "هيكل التوثيق"
 
 #: lazdemsg.sfiletemplate
 msgid "template.xml"
-msgstr ""
+msgstr "template.xml"
 
 #: lazdemsg.sforfile
 msgid " in file "
@@ -153,35 +153,35 @@ msgstr "في ملف"
 
 #: lazdemsg.sformat
 msgid "&Format"
-msgstr ""
+msgstr "ال&هيئة"
 
 #: lazdemsg.sformodule
 msgid " in module "
-msgstr ""
+msgstr "في أنموذج"
 
 #: lazdemsg.sforpackage
 msgid " in package "
-msgstr ""
+msgstr "في حزمة"
 
 #: lazdemsg.sfortopic
 msgid " in topic"
-msgstr ""
+msgstr "في موضوع"
 
 #: lazdemsg.shideprotectedmethods
 msgid "&Hide protected methods"
-msgstr ""
+msgstr "إ&خفاء النهجيات المحمية"
 
 #: lazdemsg.shinteditelementlink
 msgid "Edit element link"
-msgstr ""
+msgstr "رابط عنصر التحرير"
 
 #: lazdemsg.shintfileclose
 msgid "Close current file"
-msgstr ""
+msgstr "غلق ملف حالي"
 
 #: lazdemsg.shintfileexit
 msgid "Close doc editor"
-msgstr ""
+msgstr "غلق محرّر وثيقة"
 
 #: lazdemsg.shintfilenew
 msgctxt "lazdemsg.shintfilenew"
@@ -194,7 +194,7 @@ msgstr "فتح ملف"
 
 #: lazdemsg.shintfilesave
 msgid "Save file"
-msgstr ""
+msgstr "حفظ ملف"
 
 #: lazdemsg.shintfilesaveas
 msgid "Save file as"
@@ -218,7 +218,7 @@ msgstr "مائل"
 
 #: lazdemsg.shintformatremark
 msgid "Remark"
-msgstr ""
+msgstr "ملاحظة"
 
 #: lazdemsg.shintformatunderline
 msgid "Underline"
@@ -241,7 +241,7 @@ msgstr "ادراج رابط"
 #: lazdemsg.shintinsertmodule
 msgctxt "lazdemsg.shintinsertmodule"
 msgid "New module"
-msgstr ""
+msgstr "أنموذج جديد"
 
 #: lazdemsg.shintinsertpackage
 msgctxt "lazdemsg.shintinsertpackage"
@@ -250,7 +250,7 @@ msgstr "حزمة جديدة"
 
 #: lazdemsg.shintinsertprintshortlink
 msgid "Insert a short description link"
-msgstr ""
+msgstr "إدراج رابط لوصف مختصر"
 
 #: lazdemsg.shintinserttable
 msgctxt "lazdemsg.shintinserttable"
@@ -281,15 +281,15 @@ msgstr "تحرير"
 
 #: lazdemsg.shmenuextraoptions
 msgid "Show options dialog"
-msgstr ""
+msgstr "عرض شاشة حوار الخيارات"
 
 #: lazdemsg.shmenuhelpabout
 msgid "About this program"
-msgstr ""
+msgstr "عن هذا البرنامج"
 
 #: lazdemsg.simportcontentfile
 msgid "Import content file"
-msgstr ""
+msgstr "توريدء ملف محتوى"
 
 #: lazdemsg.sinsertlink
 msgctxt "lazdemsg.sinsertlink"
@@ -298,7 +298,7 @@ msgstr "ادراج رابط"
 
 #: lazdemsg.sinsertprintshortlink
 msgid "Insert short description link"
-msgstr ""
+msgstr "إدراج رابط لوصف مختصر"
 
 #: lazdemsg.sinserttable
 msgctxt "lazdemsg.sinserttable"
@@ -307,11 +307,11 @@ msgstr "ادراج جدول"
 
 #: lazdemsg.slazdoceditor
 msgid "Lazarus Documentation Editor"
-msgstr ""
+msgstr "محرّر لازروش للتوثيق"
 
 #: lazdemsg.slinksto
 msgid " links to "
-msgstr ""
+msgstr "بربط ب"
 
 #: lazdemsg.sload
 msgid "&Load"
@@ -319,15 +319,15 @@ msgstr "تحميل"
 
 #: lazdemsg.smakeskelfromsource
 msgid "Make new document from source file"
-msgstr ""
+msgstr "صنع وثيقة جديدة من ملف مصدر"
 
 #: lazdemsg.smarkselection
 msgid "Mark selection %s"
-msgstr ""
+msgstr "تعليم اختيار %s"
 
 #: lazdemsg.smenucollapseall
 msgid "Collapse All"
-msgstr ""
+msgstr "ضم الكل"
 
 #: lazdemsg.smenudelete
 msgctxt "lazdemsg.smenudelete"
@@ -336,20 +336,20 @@ msgstr "إلغاء"
 
 #: lazdemsg.smenuexpandall
 msgid "Expand All"
-msgstr ""
+msgstr "توسيع الكلّ"
 
 #: lazdemsg.smenuextra
 msgid "&Extra"
-msgstr ""
+msgstr "&زيادة"
 
 #: lazdemsg.smenuextrabuild
 msgctxt "lazdemsg.smenuextrabuild"
 msgid "&Build"
-msgstr "&بناء"
+msgstr "&داكن"
 
 #: lazdemsg.smenuextraoptions
 msgid "&Options"
-msgstr ""
+msgstr "ال&خيارات"
 
 #: lazdemsg.smenufile
 msgctxt "lazdemsg.smenufile"
@@ -367,11 +367,11 @@ msgstr "&جديد"
 
 #: lazdemsg.smenufilenewfromfile
 msgid "New from fi&le"
-msgstr ""
+msgstr "جديد من م&لف"
 
 #: lazdemsg.smenufileopen
 msgid "&Open"
-msgstr ""
+msgstr "&فتح"
 
 #: lazdemsg.smenufilequit
 msgid "&Quit"
@@ -379,7 +379,7 @@ msgstr "&خروج"
 
 #: lazdemsg.smenufilerecent
 msgid "&Recent"
-msgstr ""
+msgstr "&حالي"
 
 #: lazdemsg.smenufilesave
 msgctxt "lazdemsg.smenufilesave"
@@ -388,19 +388,19 @@ msgstr "حفظ"
 
 #: lazdemsg.smenufilesaveas
 msgid "Save &as"
-msgstr ""
+msgstr "حفظ بإ&سم"
 
 #: lazdemsg.smenuformat
 msgid "Format"
-msgstr ""
+msgstr "الهيئة"
 
 #: lazdemsg.smenuformatbold
 msgid "&Bold"
-msgstr ""
+msgstr "&داكن"
 
 #: lazdemsg.smenuformatcode
 msgid "&Code"
-msgstr ""
+msgstr "ال&كود"
 
 #: lazdemsg.smenuformatfile
 msgctxt "lazdemsg.smenuformatfile"
@@ -409,23 +409,23 @@ msgstr "&ملف"
 
 #: lazdemsg.smenuformatitalics
 msgid "&Italic"
-msgstr ""
+msgstr "&مائل"
 
 #: lazdemsg.smenuformatparagraph
 msgid "&Paragraph"
-msgstr ""
+msgstr "ال&فقرة"
 
 #: lazdemsg.smenuformatremark
 msgid "&Remark"
-msgstr ""
+msgstr "&ملاحظة"
 
 #: lazdemsg.smenuformatunderline
 msgid "&Underline"
-msgstr ""
+msgstr "ت&حته خط"
 
 #: lazdemsg.smenuformatvariable
 msgid "&Variable"
-msgstr ""
+msgstr "المت&غير"
 
 #: lazdemsg.smenuhelp
 msgid "&Help"
@@ -433,23 +433,23 @@ msgstr "مساعدة"
 
 #: lazdemsg.smenuhelpabout
 msgid "&About..."
-msgstr ""
+msgstr "&عن"
 
 #: lazdemsg.smenuinsert
 msgid "&Insert"
-msgstr ""
+msgstr "&ادراج"
 
 #: lazdemsg.smenuinsertelement
 msgid "&Element"
-msgstr ""
+msgstr "ال&نصر"
 
 #: lazdemsg.smenuinsertlink
 msgid "&Link"
-msgstr ""
+msgstr "ال&رابط"
 
 #: lazdemsg.smenuinsertmodule
 msgid "&Module"
-msgstr ""
+msgstr "الأ&نموذج"
 
 #: lazdemsg.smenuinsertpackage
 msgctxt "lazdemsg.smenuinsertpackage"
@@ -458,23 +458,23 @@ msgstr "حزمة"
 
 #: lazdemsg.smenuinsertprintshort
 msgid "Insert short desc link"
-msgstr ""
+msgstr "إدراج رابط لوصف مختصر"
 
 #: lazdemsg.smenuinsertquicklink
 msgid "&Quick Link"
-msgstr ""
+msgstr "رابط &سريع"
 
 #: lazdemsg.smenuinsertshortdesclink
 msgid "&Short description link"
-msgstr ""
+msgstr "&رابط وصف مختصر"
 
 #: lazdemsg.smenuinserttable
 msgid "&Table"
-msgstr ""
+msgstr "ال&جدول"
 
 #: lazdemsg.smenuinserttopic
 msgid "T&opic"
-msgstr ""
+msgstr "المو&ضوع"
 
 #: lazdemsg.smenurename
 msgid "Rename"
@@ -482,7 +482,7 @@ msgstr "إعادة تسمية"
 
 #: lazdemsg.smoduleelements
 msgid "Elements for selected node"
-msgstr ""
+msgstr "العناصر للعقدة المختارة"
 
 #: lazdemsg.snew
 msgid "New"
@@ -490,7 +490,7 @@ msgstr "جديد"
 
 #: lazdemsg.snewdocument
 msgid "New document"
-msgstr ""
+msgstr "وثيقة جديدة"
 
 #: lazdemsg.snewelement
 msgctxt "lazdemsg.snewelement"
@@ -505,7 +505,7 @@ msgstr "ملف جديد"
 #: lazdemsg.snewmodule
 msgctxt "lazdemsg.snewmodule"
 msgid "New module"
-msgstr ""
+msgstr "أنموذج جديد"
 
 #: lazdemsg.snewpackage
 msgctxt "lazdemsg.snewpackage"
@@ -519,23 +519,23 @@ msgstr "موضوع جديد"
 
 #: lazdemsg.snoelement
 msgid "No element selected"
-msgstr ""
+msgstr "لم يتم اختيار عنصر"
 
 #: lazdemsg.soptdlgbackupextension
 msgid "Backup extension"
-msgstr ""
+msgstr "امتداد لنسخ احتياطي"
 
 #: lazdemsg.soptdlgconfirmdeletes
 msgid "C&onfirm deletes"
-msgstr ""
+msgstr "التأ&كيد على الإلغاء"
 
 #: lazdemsg.soptdlgcreatebackups
 msgid "Create &backups"
-msgstr ""
+msgstr "إنشاء &نُسخ احتياطية"
 
 #: lazdemsg.soptdlgdefaultextension
 msgid "Default extension"
-msgstr ""
+msgstr "الامتداد الإفتراضي"
 
 #: lazdemsg.soptdlgdesktop
 msgid "Desktop"
@@ -543,7 +543,7 @@ msgstr "سطح المكتب"
 
 #: lazdemsg.soptdlgfpdocprogram
 msgid "fpdoc program"
-msgstr ""
+msgstr "برمامج fpdoc"
 
 #: lazdemsg.soptdlggeneral
 msgid "General"
@@ -551,11 +551,11 @@ msgstr "عام"
 
 #: lazdemsg.soptdlgmakeskelprogram
 msgid "makeskel program"
-msgstr ""
+msgstr "برنامج makeske"
 
 #: lazdemsg.soptdlgmaxrecentused
 msgid "Max. recent used"
-msgstr ""
+msgstr "الحد الأقصى لآخر مستعملات"
 
 #: lazdemsg.soptdlgoptions
 msgid "Options"
@@ -563,7 +563,7 @@ msgstr "خيارات"
 
 #: lazdemsg.soptdlgreopenlastfile
 msgid "Reopen last file on startup"
-msgstr ""
+msgstr "إعادة فتح آخر ملف عند البدء"
 
 #: lazdemsg.soptdlgshowhints
 msgid "Show hints"
@@ -571,11 +571,11 @@ msgstr "عرض التلميحات"
 
 #: lazdemsg.soptdlgskipemptynodes
 msgid "&Skip empty nodes when saving"
-msgstr ""
+msgstr "ت&خطّي العقد الفارغة عند الحفظ"
 
 #: lazdemsg.soptdlgstartmaximized
 msgid "Start maximized"
-msgstr ""
+msgstr "البدأ بأقصى توسع"
 
 #: lazdemsg.sotheroptions
 msgid "Other options"
@@ -596,19 +596,19 @@ msgstr "الحزم"
 
 #: lazdemsg.srenameelement
 msgid "Rename element"
-msgstr ""
+msgstr "إعادة تسمية عنصر"
 
 #: lazdemsg.srenamemodule
 msgid "Rename module"
-msgstr ""
+msgstr "إعادة تسمية أنموذج"
 
 #: lazdemsg.srenamepackage
 msgid "Rename package"
-msgstr ""
+msgstr "إعادة تسمية حزمة"
 
 #: lazdemsg.srenametopic
 msgid "Rename topic"
-msgstr ""
+msgstr "إعادة تسمية موضوع"
 
 #: lazdemsg.ssave
 msgctxt "lazdemsg.ssave"
@@ -621,39 +621,39 @@ msgstr "أنظر ايضا"
 
 #: lazdemsg.sselectoutputdirectory
 msgid "Select output directory"
-msgstr ""
+msgstr "اختر دليل المخرجات"
 
 #: lazdemsg.sselectoutputfile
 msgid "Select output file name"
-msgstr ""
+msgstr "اختر أسم ملف المخرجات"
 
 #: lazdemsg.sselectsometext
 msgid "Select some text"
-msgstr ""
+msgstr "اختر بعص الجمل النصية"
 
 #: lazdemsg.sshortdescription
 msgid "Short"
-msgstr ""
+msgstr "قصير"
 
 #: lazdemsg.sshowprivatemethods
 msgid "Show p&rivate methods"
-msgstr ""
+msgstr "عرض النهجيات ال&خاصة"
 
 #: lazdemsg.sskelerrorwithfile
 msgid "makeskel reported an error (%d). Try to load produced file anyway ?"
-msgstr ""
+msgstr "أبلغ makeskel عن خطأ (%d). هل يتم محاولة تحميل الملف الناتج على أي حال؟"
 
 #: lazdemsg.sskelerrorwithoutfile
 msgid "makeskel reported an error (%d) and produced no file."
-msgstr ""
+msgstr "أبلغ makeskel عن خطأ (%d). ولم ينتج أي ملف."
 
 #: lazdemsg.ssourcescapt
 msgid "Sources"
-msgstr ""
+msgstr "المصادر"
 
 #: lazdemsg.sstartnodenotfound
 msgid "Start element \"%s\" could not be found"
-msgstr ""
+msgstr "عنصر البدء \"%s\" لم يتم إيجاده"
 
 #: lazdemsg.stargetos
 msgid "Target OS"
@@ -661,9 +661,9 @@ msgstr "نظام التشغيل المستهدف"
 
 #: lazdemsg.susingcommand
 msgid "Building docs using command: "
-msgstr ""
+msgstr "بناء الوثائق باستخدام الأمر:"
 
 #: lazdemsg.swarnifnodocumentationnodefound
 msgid "Warn if no documentation node found"
-msgstr ""
+msgstr "إطلاق تحذير إذا لم يتم إيجاد عقدة توثيق"
 

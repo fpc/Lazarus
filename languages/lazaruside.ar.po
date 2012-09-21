@@ -1,17 +1,17 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: \n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: \n"
-"PO-Revision-Date: 2012-08-05 01:52+0100\n"
-"Last-Translator: \n"
-"Language-Team: \n"
-"Language: \n"
+"Project-Id-Version: Free Pascal Lazarus Project.\n"
+"Report-Msgid-Bugs-To: BUG-EMAIL-ADDR <EMAIL@ADDRESS\n"
+"POT-Creation-Date: yyyy-mm-dd hh:mm+0000\n"
+"PO-Revision-Date: 2012-09-21 08:35+0100\n"
+"Last-Translator: Khaled Shagrouni <shagrouni@gmail.com>\n"
+"Language-Team: Arabic\n"
+"Language: arabic\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: \n"
-"X-Generator: Easy Po 0.9.4.2 (Development release)\n"
+"Plural-Forms: nplurals=1; plural=0\n"
+"X-Generator: Easy Po 0.9.4.2\n"
 
 #: lazarusidestrconsts.dbgbreakgroupdlgcaptiondisable
 msgctxt "lazarusidestrconsts.dbgbreakgroupdlgcaptiondisable"
@@ -103,15 +103,15 @@ msgstr "استمرار %0:s"
 
 #: lazarusidestrconsts.dlfmousesimplebuttonselect
 msgid "Select text"
-msgstr "إختيار نص"
+msgstr "اختيار نص"
 
 #: lazarusidestrconsts.dlfmousesimplebuttonselectcolumn
 msgid "Select text (Columns)"
-msgstr "إختيار نص (أعمدة)"
+msgstr "اختيار نص (أعمدة)"
 
 #: lazarusidestrconsts.dlfmousesimplebuttonselectline
 msgid "Select text (Lines)"
-msgstr "إختيار نص (أسطر)"
+msgstr "اختيار نص (أسطر)"
 
 #: lazarusidestrconsts.dlfmousesimplebuttonsetfreebookmark
 msgid "Set free bookmark"
@@ -119,19 +119,19 @@ msgstr "تحديد علامة مرجعية متوفرة"
 
 #: lazarusidestrconsts.dlfmousesimplebuttonsetlinefull
 msgid "Select current Line (Full)"
-msgstr "إختيار السطر الحالي (بالكامل)"
+msgstr "اختيار السطر الحالي (بالكامل)"
 
 #: lazarusidestrconsts.dlfmousesimplebuttonsetlinesmart
 msgid "Select current Line (Text)"
-msgstr "إختيار السطر الحالي (النص)"
+msgstr "اختيار السطر الحالي (النص)"
 
 #: lazarusidestrconsts.dlfmousesimplebuttonsetpara
 msgid "Select current Paragraph"
-msgstr "إختيار الفقرة الحالية"
+msgstr "اختيار الفقرة الحالية"
 
 #: lazarusidestrconsts.dlfmousesimplebuttonsetword
 msgid "Select current Word"
-msgstr "إختيار الكلمة الحالية"
+msgstr "اختيار الكلمة الحالية"
 
 #: lazarusidestrconsts.dlfmousesimplebuttonzoomreset
 msgid "Reset zoom"
@@ -152,7 +152,7 @@ msgstr "قياسي، كل الإجراءات (نقطة إيقاف، الضم) ع
 
 #: lazarusidestrconsts.dlfmousesimplegutterleftup
 msgid "Extended, Actions (breakpoint, fold) on mouse up. Selection on mouse down and move"
-msgstr "موسع، الإجراءات (نقطة إيقاف، الضم) عند ضغط الفأرة لفوق، الإختيار عند الضغط لتحت و التحريك"
+msgstr "موسع، الإجراءات (نقطة إيقاف، الضم) عند ضغط الفأرة لفوق، الاختيار عند الضغط لتحت و التحريك"
 
 #: lazarusidestrconsts.dlfmousesimpleguttersect
 msgctxt "lazarusidestrconsts.dlfmousesimpleguttersect"
@@ -1028,7 +1028,7 @@ msgstr "أخرى"
 
 #: lazarusidestrconsts.dlgcooverflow
 msgid "Overflow"
-msgstr "تدفق فائض"
+msgstr "تدفّق فائض"
 
 #: lazarusidestrconsts.dlgcoparsing
 msgid "Parsing"
@@ -1137,7 +1137,7 @@ msgstr "المؤشر"
 
 #: lazarusidestrconsts.dlgcursorskipsselection
 msgid "Cursor skips selection"
-msgstr "المؤشر يتخطّى التضليل"
+msgstr "المؤشر يتخطّى التظليل"
 
 #: lazarusidestrconsts.dlgcursorskipstab
 msgid "Cursor skips tabs"
@@ -2400,7 +2400,7 @@ msgstr "نص"
 #: lazarusidestrconsts.dlgmouseoptnodeselect
 msgctxt "lazarusidestrconsts.dlgmouseoptnodeselect"
 msgid "Selection"
-msgstr "الإختيار"
+msgstr "الاختيار"
 
 #: lazarusidestrconsts.dlgmouseoptopt2label
 msgid "Opt"
@@ -2430,7 +2430,7 @@ msgstr "الرسائل"
 
 #: lazarusidestrconsts.dlgmultiselect
 msgid "Multi Select"
-msgstr "إختيار متعدد"
+msgstr "اختيار متعدد"
 
 #: lazarusidestrconsts.dlgmultiwinaccessgroup
 msgid "Find Editor for Jump Targets"
@@ -2623,7 +2623,7 @@ msgstr "الأيقونة:"
 
 #: lazarusidestrconsts.dlgpoicondesc
 msgid "(size: %d:%d, bpp: %d)"
-msgstr "الأيقونة"
+msgstr "(حجم: %d:%d, bpp: %d)"
 
 #: lazarusidestrconsts.dlgpoicondescnone
 msgctxt "lazarusidestrconsts.dlgpoicondescnone"
@@ -2766,7 +2766,7 @@ msgstr "دليل العمل"
 
 #: lazarusidestrconsts.dlgrubberbandselectsgrandchildren
 msgid "Select grandchildren"
-msgstr "إختيار الأحفاد"
+msgstr "اختيار الأحفاد"
 
 #: lazarusidestrconsts.dlgruberbandcreationcolor
 msgid "Rubberband Creation"
@@ -2775,7 +2775,7 @@ msgstr "إنشاء خيوط الربط"
 #: lazarusidestrconsts.dlgruberbandselectioncolor
 msgctxt "lazarusidestrconsts.dlgruberbandselectioncolor"
 msgid "Rubberband Selection"
-msgstr "إختيار خيوط الربط"
+msgstr "اختيار خيوط الربط"
 
 #: lazarusidestrconsts.dlgrunodisplay
 msgid "Display (not for win32, e.g. 198.112.45.11:0, x.org:1, hydra:0.1)"
@@ -3287,7 +3287,7 @@ msgstr "محاذاة ..."
 
 #: lazarusidestrconsts.fdmdeleteselection
 msgid "Delete Selection"
-msgstr "إلغاء الإختيار"
+msgstr "إلغاء الاختيار"
 
 #: lazarusidestrconsts.fdmmirrorhorizontal
 msgid "Mirror Horizontal"
@@ -3333,7 +3333,7 @@ msgstr "مقاس"
 #: lazarusidestrconsts.fdmselectall
 msgctxt "lazarusidestrconsts.fdmselectall"
 msgid "Select All"
-msgstr "إختيار الكل"
+msgstr "اختيار الكل"
 
 #: lazarusidestrconsts.fdmsizemenu
 msgid "Size ..."
@@ -3603,7 +3603,7 @@ msgstr "نوع السلف %s%s%s ليس معرّف باسكال صالح"
 
 #: lazarusidestrconsts.lisa2ptheclassnameandancestortypearethesame
 msgid "The class name %s%s%s and ancestor type %s%s%s are the same."
-msgstr "إسم الصنفية %s%s%s ونوع السلف متساويان."
+msgstr "إسم الصنفية %s%s%s ونوع السلف %s%s%s متساويان."
 
 #: lazarusidestrconsts.lisa2ptheclassnameexistsalreadyinpackagefile
 msgid "The class name %s%s%s exists already in%sPackage %s%sFile: %s%s%s"
@@ -3666,7 +3666,7 @@ msgstr "إسم الوحدة %s%s%s موجود فعلا في الحزمة."
 
 #: lazarusidestrconsts.lisa2ptheunitnameandfilenamediffer
 msgid "The unit name %s%s%s%sand filename %s%s%s differ."
-msgstr "إسم الوحدة %s%s%s  وإسم الملف %s%s%s  يختلفان."
+msgstr "إسم الوحدة %s%s%s%sوإسم الملف %s%s%s  يختلفان."
 
 #: lazarusidestrconsts.lisa2ptheunitnamedoesnotcorrespondtothefilename
 msgid "The unit name %s%s%s does not correspond to the filename."
@@ -4272,7 +4272,7 @@ msgstr "خصائص نقطة الإيقاف"
 
 #: lazarusidestrconsts.lisbrowseforcompiler
 msgid "Browse for Compiler (%s)"
-msgstr "استعراض "
+msgstr "استعراض للمترجم (%s)"
 
 #: lazarusidestrconsts.lisbtnadd
 msgctxt "lazarusidestrconsts.lisbtnadd"
@@ -4537,7 +4537,7 @@ msgstr "يوجد ملف .ppu أقدم من المترجم نفسه:%s%s"
 
 #: lazarusidestrconsts.lisccorelunitpathfoundincfg
 msgid "relative unit path found in fpc cfg: %s"
-msgstr "وجد مسار وحدة ذو علاقة في fpc cfg: %s"
+msgstr "وجد مسار وحدة بالتناسب في fpc cfg: %s"
 
 #: lazarusidestrconsts.lisccoseveralcompilers
 msgid "There are several Free Pascal Compilers in your path.%s%s%sMaybe you forgot to delete an old compiler?"
@@ -4784,7 +4784,7 @@ msgstr "تهميش خاطئ"
 
 #: lazarusidestrconsts.liscfeanexceptionoccuredduringdeletionof
 msgid "An exception occured during deletion of%s\"%s:%s\"%s%s"
-msgstr "قد طرأ اعتراض خلال الإلغاء"
+msgstr "قد طرأ اعتراض عند إلغاء%s\"%s:%s\"%s%s"
 
 #: lazarusidestrconsts.liscfecancelloadingthisresource
 msgid "Cancel loading this resource"
@@ -4961,7 +4961,7 @@ msgstr "تحقق من الخيارات"
 
 #: lazarusidestrconsts.lischeckthetargetoscpulclwidgettypemaybeyouhavetoreco
 msgid "%s Check the target (OS, CPU, LCL widget type). Maybe you have to recompile the package for this target or set another target for the project."
-msgstr "تحقّق من المستهدف (نظام التشغيل، المعالج، نوع تكوينة LCL). ربما عليك إعادة ترجمة الحزمة لهذه المستهدف أو تحديد مستهدف آخر للمشروع."
+msgstr "%s تحقّق من المستهدف (نظام التشغيل، المعالج، نوع تكوينة LCL). ربما عليك إعادة ترجمة الحزمة لهذه المستهدف أو تحديد مستهدف آخر للمشروع."
 
 #: lazarusidestrconsts.lischooseadifferentname
 msgid "Choose a different name"
@@ -5512,11 +5512,11 @@ msgstr "إلغاء بند"
 
 #: lazarusidestrconsts.liscodetoolsdefsdelphimaindirectorydesc
 msgid "The %s main directory,%swhere Borland has installed all %s sources.%sFor example: C:/Programme/Borland/Delphi%s"
-msgstr "الدليل الرئيسي ل %s ، %sحيث فامت بورلاند بتنصيب كل مصادر %s.%s مثلا:C:/Programme/Borland/Delphi%s"
+msgstr "الدليل الرئيسي ل %s ، %sحيث فامت بورلاند بتنصيب كل مصادر %s.%sمثلا: C:/Programme/Borland/Delphi%s"
 
 #: lazarusidestrconsts.liscodetoolsdefsdelphimaindirectoryforproject
 msgid "The %s main directory,%swhere Borland has installed all %s sources,%swhich are used by this %s project.%sFor example: C:/Programme/Borland/Delphi%s"
-msgstr "الدليل الرئيسي ل %s ، %sحيث فامت بورلاند بتنصيب كل مصادر %s.%s والمستخدم منقبل مشروع %sمثلا:C:/Programme/Borland/Delphi%s"
+msgstr "الدليل الرئيسي ل %s، %sحيث فامت بورلاند بتنصيب كل مصادر %s، %sوالتي تستخدم من قبل مشروع %s هذا. %s مثلا: C:/Programme/Borland/Delphi%s"
 
 #: lazarusidestrconsts.liscodetoolsdefsdescription
 msgid "Description:"
@@ -5774,7 +5774,7 @@ msgstr "المسار لمترجم فري باسكال لهذا المصدر.%sي
 
 #: lazarusidestrconsts.liscodetoolsdefstheprojectdirectory
 msgid "The %s project directory,%swhich contains the .dpr, dpk file."
-msgstr "دليل مشروع %s، الذي يحوي ملف dpr أو dpk."
+msgstr "دليل مشروع %s، %sالذي يحوي ملف dpr أو dpk."
 
 #: lazarusidestrconsts.liscodetoolsdefsundefine
 msgid "Undefine"
@@ -5798,7 +5798,7 @@ msgstr "القيمة كنص"
 
 #: lazarusidestrconsts.liscodetoolsdefsvalueisinvalid
 msgid "%s:%svalue \"%s\" is invalid."
-msgstr "%s:%قيمة \"%s\" غير صالحة."
+msgstr "%s:%sقيمة \"%s\" غير صالحة."
 
 #: lazarusidestrconsts.liscodetoolsdefsvariable
 msgid "Variable:"
@@ -6054,7 +6054,7 @@ msgstr "التأكيد على الإلغاء"
 
 #: lazarusidestrconsts.lisconfirmlazarusrebuild
 msgid "Do you want to rebuild Lazarus with profile: %s ?"
-msgstr "هل يتم إعادة بناء لازروس"
+msgstr "هل يتم إعادة بناء لازروس بملمح: %s ؟"
 
 #: lazarusidestrconsts.lisconfirmnewpackagesetfortheide
 msgid "Confirm new package set for the IDE"
@@ -6213,7 +6213,7 @@ msgstr "الاحتفاظ بكليهما"
 
 #: lazarusidestrconsts.lisconvdelphimissingincludefile
 msgid "%s(%s,%s) missing include file"
-msgstr "ملف التضمين مفقود"
+msgstr "%s(%s,%s) ملف التضمين مفقود"
 
 #: lazarusidestrconsts.lisconvdelphiname
 msgid "Delphi Name"
@@ -6590,7 +6590,7 @@ msgstr "يرجى اختيار ماكرو"
 
 #: lazarusidestrconsts.lisctselectcodemacro
 msgid "Select Code Macro"
-msgstr "إختيار ماكرو لكود"
+msgstr "اختيار ماكرو لكود"
 
 #: lazarusidestrconsts.liscurrent
 msgctxt "lazarusidestrconsts.liscurrent"
@@ -7845,7 +7845,7 @@ msgstr "خطأ فتح مكون"
 
 #: lazarusidestrconsts.liserrorparsinglfmcomponentstream
 msgid "Error parsing lfm component stream."
-msgstr "خطأ عند تحليل تدفق مكون lfm"
+msgstr "خطأ عند تحليل تدفّق مكون lfm"
 
 #: lazarusidestrconsts.liserrorreadingpackagelistfromfile
 msgid "Error reading package list from file%s%s%s%s"
@@ -8073,7 +8073,7 @@ msgstr "فشل تحميل وصعية الطيّ"
 
 #: lazarusidestrconsts.lisfailedtosavefile
 msgid "Failed to save file."
-msgstr ""
+msgstr "عملية حفظ الملف قد فشلت."
 
 #: lazarusidestrconsts.lisfepaintdesigneritemsonidle
 msgid "Reduce designer painting"
@@ -8280,7 +8280,7 @@ msgstr "إيجاد توليغة مفاتيح"
 
 #: lazarusidestrconsts.lisfindmissingunit
 msgid "Find missing unit"
-msgstr "إسجاد وحدة مفقودة"
+msgstr "إيجاد وحدة مفقودة"
 
 #: lazarusidestrconsts.lisfirst
 msgid "First"
@@ -9548,22 +9548,22 @@ msgstr "اختيار بداية سطر"
 #: lazarusidestrconsts.liskmselectpagebottom
 msgctxt "lazarusidestrconsts.liskmselectpagebottom"
 msgid "Select Page Bottom"
-msgstr "إختيار أسفل الصفحة"
+msgstr "اختيار أسفل الصفحة"
 
 #: lazarusidestrconsts.liskmselectpagetop
 msgctxt "lazarusidestrconsts.liskmselectpagetop"
 msgid "Select Page Top"
-msgstr "إختيار أعلى الصفحة"
+msgstr "اختيار أعلى الصفحة"
 
 #: lazarusidestrconsts.liskmselectwordleft
 msgctxt "lazarusidestrconsts.liskmselectwordleft"
 msgid "Select Word Left"
-msgstr "إختيار كلمة يسارا"
+msgstr "اختيار كلمة يسارا"
 
 #: lazarusidestrconsts.liskmselectwordright
 msgctxt "lazarusidestrconsts.liskmselectwordright"
 msgid "Select Word Right"
-msgstr "إختيار كلمة يمينا"
+msgstr "اختيار كلمة يمينا"
 
 #: lazarusidestrconsts.liskmsetfreebookmark
 msgid "Set free Bookmark"
@@ -9991,7 +9991,7 @@ msgstr "إعادة تشغيل لازروس آليا بعد بناء بيئة ا�
 
 #: lazarusidestrconsts.lislazbuildselectprofilestobuild
 msgid "Select profiles to build"
-msgstr "إختيار الملامح للبناء"
+msgstr "اختيار الملامح للبناء"
 
 #: lazarusidestrconsts.lislazbuildshowconfirmationdialogwhenbuilding
 msgctxt "lazarusidestrconsts.lislazbuildshowconfirmationdialogwhenbuilding"
@@ -10359,7 +10359,7 @@ msgstr "إضافة نقطة مراقبة"
 
 #: lazarusidestrconsts.lismenubeaklinesinselection
 msgid "Break Lines in Selection"
-msgstr "فصل الأسطر في التضليل"
+msgstr "فصل الأسطر في التظليل"
 
 #: lazarusidestrconsts.lismenubuildfile
 msgid "Build File"
@@ -10399,7 +10399,7 @@ msgstr "محرر نعريفات Codetools ..."
 
 #: lazarusidestrconsts.lismenucommentselection
 msgid "Comment Selection"
-msgstr "تعليق الإختيار"
+msgstr "تعليق الاختيار"
 
 #: lazarusidestrconsts.lismenucompileroptions
 msgid "Compiler Options ..."
@@ -10642,7 +10642,7 @@ msgstr "بحث تزايدي"
 
 #: lazarusidestrconsts.lismenuindentselection
 msgid "Indent Selection"
-msgstr "تهميش التضليل"
+msgstr "تهميش التظليل"
 
 #: lazarusidestrconsts.lismenuinsertchangelogentry
 msgid "ChangeLog Entry"
@@ -10929,24 +10929,24 @@ msgstr "بحث"
 
 #: lazarusidestrconsts.lismenuselect
 msgid "Select"
-msgstr "إختيار"
+msgstr "اختيار"
 
 #: lazarusidestrconsts.lismenuselectall
 msgctxt "lazarusidestrconsts.lismenuselectall"
 msgid "Select All"
-msgstr "إختيار الكلّ"
+msgstr "اختيار الكلّ"
 
 #: lazarusidestrconsts.lismenuselectcodeblock
 msgid "Select Code Block"
-msgstr "إختيار كتلة الكود"
+msgstr "اختيار كتلة الكود"
 
 #: lazarusidestrconsts.lismenuselectline
 msgid "Select Line"
-msgstr "إختيار سطر"
+msgstr "اختيار سطر"
 
 #: lazarusidestrconsts.lismenuselectparagraph
 msgid "Select Paragraph"
-msgstr "إختيار فقرة"
+msgstr "اختيار فقرة"
 
 #: lazarusidestrconsts.lismenuselecttobrace
 msgid "Select to Brace"
@@ -10954,7 +10954,7 @@ msgstr "الاختيار للتقويس"
 
 #: lazarusidestrconsts.lismenuselectword
 msgid "Select Word"
-msgstr "إختيار كلمة"
+msgstr "اختيار كلمة"
 
 #: lazarusidestrconsts.lismenusetfreebookmark
 msgctxt "lazarusidestrconsts.lismenusetfreebookmark"
@@ -11019,7 +11019,7 @@ msgstr "تبديل حالة الأحرف في الاختيار"
 
 #: lazarusidestrconsts.lismenutabstospacesselection
 msgid "Tabs to Spaces in Selection"
-msgstr "جدولة إلى فراغات داخل التضليل"
+msgstr "جدولة إلى فراغات داخل التظليل"
 
 #: lazarusidestrconsts.lismenutemplateabout
 msgid "About"
@@ -11305,7 +11305,7 @@ msgstr "تجاوز هذه الوحدة"
 
 #: lazarusidestrconsts.lismitnotice
 msgid "<description>%sCopyright (c) <year> <copyright holders>%sPermission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the \"Software\"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:%sThe above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.%sTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE."
-msgstr ""
+msgstr "<وصف>%sحقوق الطبع (ن) <سنة> <حاملوا حقوق النسخ>%sبهذا يتم منح الترخيص، بدون مقابل، لأي فرد يتحصّل على نسخة من هذا البرنامج وملفات التوثيق المرافقة (ال \"Software\"), للتعامل مع البرنامج بدون قيد متضمنا بلا حدود الحقوق للاستخدام، والنسخ، والتعديل، والدمج، والنشر، والتوزيع، والترخيص الفرعي، و/أو بيع نسخ من البرنامج، والسماح للأفراد الذين زؤّدوا بالبرنامج بالتصرّف بالمثل، مع الخضوع للشروط التالية: %sيجب تضمين إشعار حقوق الملكية أعلاه وإشعار الإذن هذا في كل نسخ البرنامج أو أجزاءه المهمة. %sالبرنامج مقدّم \"AS IS\"، بدون ضمانة من أي نوع، صراحة كانت أو تضمينا، بما في ذلك و بلا حدّ ضمانات الصلاحية السوقية، والملائمة لغرض معين، وعدم الاخلال. تحت أي طارئ لا يتحمّل المؤلفون أو حاملو حقوق الملكية مسؤولية أي ادّعاء، أو ضرر أو أية مسؤوليات أخرى، سواء كانت جرّاء عقد، أو خطأ أو غير ذلك، تنتج من، أو عن أو بالارتباط بالبرنامج أو الاستخدام أو أية تعاملات أخرى تخصّ البرنامج."
 
 #: lazarusidestrconsts.lismodifiedlgplnotice
 msgid "<description>%sCopyright (C) <year> <name of author> <contact>%sThis library is free software; you can redistribute it and/or modify it under the terms of the GNU Library General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version with the following modification:%sAs a special exception, the copyright holders of this library give you permission to link this library with independent modules to produce an executable, regardless of the license terms of these independent modules,and to copy and distribute the resulting executable under terms of your choice, provided that you also meet, for each linked independent module, the terms and conditions of the license of that module. An independent module is a module which is not derived from or based on this library. If you modify this library, you may extend this exception to your version of the library, but you are not obligated to do so. If you do not wish to do so, delete this exception statement from your version.%sThis program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Library General Public License for more details. %sYou should have received a copy of the GNU Library General Public License along with this library; if not, write to the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA."
@@ -11525,7 +11525,7 @@ msgstr "لاشيء"
 
 #: lazarusidestrconsts.lisnoneclicktochooseone
 msgid "none, click to choose one"
-msgstr "لاشيء، النقر لإختيار واحد"
+msgstr "لاشيء، النقر لاختيار واحد"
 
 #: lazarusidestrconsts.lisnonodeselected
 msgid "no node selected"
@@ -11874,7 +11874,7 @@ msgstr "%sتعدّي وضعية بناء المشروع أو بيئة التطو
 
 #: lazarusidestrconsts.lisoverridetheprojectcpuegi386x86_64powerpcpowerpc_64
 msgid "%soverride the project cpu. e.g. i386 x86_64 powerpc powerpc_64 etc. default: %s"
-msgstr "%تعدّي معالج المشروع. مثل i386 x86_64 powerpc powerpc_64 إلخ. الافتراضي هو: %s"
+msgstr "%sتعدّي معالج المشروع. مثل i386 x86_64 powerpc powerpc_64 إلخ. الافتراضي هو: %s"
 
 #: lazarusidestrconsts.lisoverridetheprojectoperatingsystemegwin32linuxdefau
 msgid "%soverride the project operating system. e.g. win32 linux. default: %s"
@@ -12938,7 +12938,7 @@ msgstr "%sالوحدات التالية سوف يتم إضافتها إلى قس
 
 #: lazarusidestrconsts.lispkgmangthepackagefailedtocompileremoveitfromtheinstallati
 msgid "The package %s%s%s failed to compile.%sRemove it from the installation list?"
-msgstr "الحزمة %s أخفقت في الترجمة.%sهل يتم إزالتها من قائمة التنصيب؟"
+msgstr "الحزمة %s%s%s أخفقت في الترجمة.%sهل يتم إزالتها من قائمة التنصيب؟"
 
 #: lazarusidestrconsts.lispkgmangthepackagefilenameinisnotavalidlazaruspackagename
 msgid "The package file name %s%s%s in%s%s%s%s is not a valid lazarus package name."
@@ -12958,7 +12958,7 @@ msgstr "الحزمة %s%s%s تم تعليمها للتتنصيب، لكن لم �
 
 #: lazarusidestrconsts.lispkgmangthepackageisrequiredbywhichismarkedforinstallation
 msgid "The package %s is required by %s, which is marked for installation.%sSee package graph."
-msgstr "الحزمة %s مطلوبة من قبل %s، والتي تم تعليمها للتنصيب، $sأنظر مخطط الحزم."
+msgstr "الحزمة %s مطلوبة من قبل %s، والتي تم تعليمها للتنصيب، %sأنظر مخطط الحزم."
 
 #: lazarusidestrconsts.lispkgmangthepackagenameisnotavalidpackagenamepleasechoosean
 msgid "The package name %s%s%s is not a valid package name%sPlease choose another name (e.g. package1.lpk)"
@@ -12970,7 +12970,7 @@ msgstr "إسم الحزمة %s%s%s في%sالملف %s%s%sغير سليم."
 
 #: lazarusidestrconsts.lispkgmangthepackagewasmarkedcurrentlylazarus
 msgid "The package %s%s%s was marked.%sCurrently lazarus only supports static linked packages. The real un-installation needs rebuilding and restarting of lazarus.%s%sDo you want to rebuild Lazarus now?"
-msgstr "الحزمة %s%s سبق تعليمها. %s حاليا لازروس تدعم فقط الحزم ذات الربط الساكن. إزالة التركيب الفعلي تحتاج لإعادة بناء وتشغيل لازروس. %s%s هل ترغب في إعادة بناء لازروس الآن؟  "
+msgstr "الحزمة %s%s%s سبق تعليمها. %s حاليا لازروس تدعم فقط الحزم ذات الربط الساكن. إزالة التركيب الفعلي تحتاج لإعادة بناء وتشغيل لازروس. %s%sهل ترغب في إعادة بناء لازروس الآن؟  "
 
 #: lazarusidestrconsts.lispkgmangthepackagewasmarkedforinstallationcurrentlylazarus
 msgid "The package %s%s%s was marked for installation.%sCurrently lazarus only supports static linked packages. The real installation needs rebuilding and restarting of lazarus.%s%sDo you want to rebuild Lazarus now?"
@@ -13267,7 +13267,7 @@ msgstr "فرز بما يوافق بداية النهجية"
 
 #: lazarusidestrconsts.lisplistjumptoselection
 msgid "Jump To Selection"
-msgstr "القفز للإختيار"
+msgstr "القفز للاختيار"
 
 #: lazarusidestrconsts.lisplistnone
 msgid "<None>"
@@ -13288,7 +13288,7 @@ msgstr "النوع"
 
 #: lazarusidestrconsts.lispochoosepofiledirectory
 msgid "Choose .po file directory"
-msgstr "إختيار دليل ملف .po"
+msgstr "اختيار دليل ملف .po"
 
 #: lazarusidestrconsts.lispodonotsaveanysessioninfo
 msgid "Do not save any session info"
@@ -13457,7 +13457,7 @@ msgstr "المشروع لديه فعلا اعتمادية للحزمة %s%s%s."
 
 #: lazarusidestrconsts.lisprojaddtheunitnamealreadyexistsintheproject
 msgid "The unit name %s%s%s already exists in the project%swith file: %s%s%s."
-msgstr "إسم الوحدة %s%s%s موجود بالفعل في المشروع%لملف: %s%s%s."
+msgstr "إسم الوحدة %s%s%s موجود بالفعل في المشروع%sمع ملف: %s%s%s."
 
 #: lazarusidestrconsts.lisprojaddtheunitnamealreadyexistsintheselection
 msgid "The unit name %s%s%s already exists in the selection%swith file: %s%s%s."
@@ -13798,7 +13798,7 @@ msgstr "تعبير نظامي"
 
 #: lazarusidestrconsts.lisrelativepaths
 msgid "Relative paths"
-msgstr "مسارات مقاربة"
+msgstr "مسارات بالتناسب"
 
 #: lazarusidestrconsts.lisremove
 msgctxt "lazarusidestrconsts.lisremove"
@@ -14225,11 +14225,11 @@ msgstr "اختيار عقدة"
 
 #: lazarusidestrconsts.lisselectanotherlclwidgetsetmacrolclwidgettype
 msgid "Select another LCL widget set (macro LCLWidgetType)"
-msgstr "إختيار طاقم تكوينات LCL آخر (ماكرو نوع LCLWidget)"
+msgstr "اختيار طاقم تكوينات LCL آخر (ماكرو نوع LCLWidget)"
 
 #: lazarusidestrconsts.lisselectdfmfiles
 msgid "Select Delphi form files (*.dfm)"
-msgstr "إختيار ملفات نماذج دلفي (*.dfm)"
+msgstr "اختيار ملفات نماذج دلفي (*.dfm)"
 
 #: lazarusidestrconsts.lisselected
 msgctxt "lazarusidestrconsts.lisselected"
@@ -14568,11 +14568,11 @@ msgstr "ملف lpi غريب"
 
 #: lazarusidestrconsts.lisstreamerror
 msgid "Stream Error"
-msgstr "خطأ تدفق"
+msgstr "خطأ تدفّق"
 
 #: lazarusidestrconsts.lisstreamingerror
 msgid "Streaming error"
-msgstr "خطأ عملية التدفق"
+msgstr "خطأ عملية التدفّق"
 
 #: lazarusidestrconsts.lisstring
 msgid "String"
@@ -14702,7 +14702,7 @@ msgstr "خلية قابلة للكتابة"
 
 #: lazarusidestrconsts.listemplateeditparamcellhelp
 msgid "Inserts an editable Cell. Cells can be navigated using the tab key.%0:sThe \"param\" macro takes a list of comma separated arguments.%0:sThe first argument is the default value.%0:sThe 2nd argument (optional) can be used to link the cell to another cell (syncro edit)%0:s%0:s  while param(\"foo\") do param(foo);%0:sInserts 2 independent cells, both with the default text \"foo\"%0:sThe quotes are optional%0:s%0:s  if param(\"foo\") > 0 and param(\"foo\",sync=1) < 99 then%0:sInserts 2 linked cells, editing either one, will change the other one too%0:sThe value \"1\" refers to the position of the other \"param()\", so if there are more params:%0:s  if param(\"bar\") and param(foo) > 0 and param(foo,sync=2) < 99 then%0:sThe 2nd and third are linked. (the 3rd refers to \"2\") %0:s%0:s\"sync can be shortened to \"s\":%0:s  if param(\"foo\") > 0 and param(\"foo\",s=1) < 99 then%0:s%0:s  if param(\"bar\") and param(\"foo\") > 0 and param(\"foo\",sync) < 99 then%0:sThe 2nd and third are linked.%0:sNote: \"Sync has no position and no \"=\", so it syncs to the previous cell with the same default (in this case \"foo\")"
-msgstr "ادخل خلية قابلة للكتابة. يمكن التنقل بين الخلايا من خلال مفتاح الجدولة.%0الماكرو \"param\" يأخذ قائمة بمعطيات مفصولة بفاصلة؟%0:sالمعطى الأول هي القيمة الافتراضية.%0:sالمعطى الثاني (اختياري) ممكن استخدامه لربط الخلية مع أخرى (syncro edit)%0:s%0:s  بينما param(\"foo\") do param(foo);%0:sبقوم بادراج خليتين مستقلتين، كلاهما بنص افتراضي \"foo\"%0:sعلامات التنصيص اختيارية%0:s%0:s  إذا param(\"foo\") > 0 و param(\"foo\",sync=1) < 99 إذن%0:sتقوم بادراج خليتان مرتبطتان، بالكتابة في إحداها سوف تغيّر الأخرى أيضا%0:sالقيمة \"1\" تشير إلى موقع \"param()\" الأخرى، إذن إذا وجدت معطيات أكثر::%0:s إذا param(\"bar\") و param(foo) > 0 و param(foo,sync=2) < 99 إذا %0:sالثاني والثالث مرتبطتان. (الثالث يشير إلى \"2\") %0:s%0:s\"sync can be shortened to \"s\":%0:s إذا param(\"foo\") > 0 و param(\"foo\",s=1) < 99 إذا %0:s%0:s  إذا param(\"bar\") و param(\"foo\") > 0 و param(\"foo\",sync) < 99 إذا%0:sالثاني والثالث مرتبطان.%0:sملاحظة: \"Sync has no position and no \"=\", فيتم مزامنتها مع الخلية السابقة بنفس الافتراضي (في هذه الحالة \"foo\")"
+msgstr "ادخل خلية قابلة للكتابة. يمكن التنقل بين الخلايا من خلال مفتاح الجدولة.%0:sالماكرو \"param\" يأخذ قائمة بمعطيات مفصولة بفاصلة؟%0:sالمعطى الأول هي القيمة الافتراضية.%0:sالمعطى الثاني (اختياري) ممكن استخدامه لربط الخلية مع أخرى (syncro edit)%0:s%0:s  بينما param(\"foo\") do param(foo);%0:sبقوم بادراج خليتين مستقلتين، كلاهما بنص افتراضي \"foo\"%0:sعلامات التنصيص اختيارية%0:s%0:s  إذا param(\"foo\") > 0 و param(\"foo\",sync=1) < 99 إذن%0:sتقوم بادراج خليتان مرتبطتان، بالكتابة في إحداها سوف تغيّر الأخرى أيضا%0:sالقيمة \"1\" تشير إلى موقع \"param()\" الأخرى، إذن إذا وجدت معطيات أكثر::%0:s إذا param(\"bar\") و param(foo) > 0 و param(foo,sync=2) < 99 إذا %0:sالثاني والثالث مرتبطتان. (الثالث يشير إلى \"2\") %0:s%0:s\"sync can be shortened to \"s\":%0:s إذا param(\"foo\") > 0 و param(\"foo\",s=1) < 99 إذا %0:s%0:s  إذا param(\"bar\") و param(\"foo\") > 0 و param(\"foo\",sync) < 99 إذا%0:sالثاني والثالث مرتبطان.%0:sملاحظة: \"Sync has no position and no \"=\", فيتم مزامنتها مع الخلية السابقة بنفس الافتراضي (في هذه الحالة \"foo\")"
 
 #: lazarusidestrconsts.listestdirectory
 msgid "Test directory"
@@ -14742,7 +14742,7 @@ msgstr "محرر المكونات لصنفية %s%s%s تسبّب في إنشاء
 
 #: lazarusidestrconsts.listhecomponenteditorofclassinvokedwithverbhascreated
 msgid "The component editor of class %s%s%s%sinvoked with verb #%s %s%s%s%shas created the error:%s%s%s%s"
-msgstr "محرر المكونات لصنفية %s%s%sالذي تم النفاذ إليه بالمتغير #%s %s%s%s%sتسبّب في إنشاء الخطأ:%s%s%s%s"
+msgstr "محرر المكونات لصنفية %s%s%s%sالذي تم النفاذ إليه بالمتغير #%s %s%s%s%sتسبّب في إنشاء الخطأ:%s%s%s%s"
 
 #: lazarusidestrconsts.listhecomponentisinheritedfromtodeleteaninheritedcomp
 msgid "The component %s is inherited from %s.%sTo delete an inherited component open the ancestor and delete it there."
@@ -14782,19 +14782,19 @@ msgstr "مترجم فري باسكال الحالي ليس لديه ملف تو�
 
 #: lazarusidestrconsts.listhecurrentfreepascalsourcedirectorydoesnotlookcorr
 msgid "The current Free Pascal source directory %s%s%s%sdoes not look correct.%sChoose Ok to choose the default %s%s%s.%sOtherwise check Tools -> Options -> Files"
-msgstr "دليل لازروس الحالي %s is a %s.%sلا يبدو سليما.%sاختر موافق لاختيار الافتراصي  %s%s%s.%sوإلا تفقّد أدوات -> خيارات -> الملفات"
+msgstr "دليل لازروس الحالي %s%s%s%sلا يبدو سليما.%sاختر موافق لاختيار الافتراصي %s%s%s.%sوإلا تفقّد أدوات -> خيارات -> الملفات"
 
 #: lazarusidestrconsts.listhecurrentfreepascalsourcedirectorydoesnotlookcorr2
 msgid "The current Free Pascal source directory %s%s%s%sdoes not look correct.%sCheck Tools -> Options -> Files"
-msgstr "دليل لازروس الحالي %s is a %s.%sلا يبدو سليما.%sتفقّد أدوات -> خيارات -> الملفات"
+msgstr "دليل لازروس الحالي %s%s%s%sلا يبدو سليما.%sتفقّد أدوات -> خيارات -> الملفات"
 
 #: lazarusidestrconsts.listhecurrentlazarusdirectorydoesnotlookcorrectwithou
 msgid "The current Lazarus directory %s%s%s%sdoes not look correct.%sWithout it You will not be able to create LCL applications.%sChoose Ok to choose the default %s%s%s.%sOtherwise check Tools -> Options -> Files"
-msgstr "دليل لازروس الحالي %s is a %s.%sلا يبدو سليما.%sبدونه لا يمكنك إنشاء تطبيقات lcl.%sاختر موافق لاختيار الافتراصي  %s%s%s.%sوإلا تفقّد أدوات -> خيارات -> الملفات"
+msgstr "دليل لازروس الحالي %s%s%s%sلا يبدو سليما.%sبدونه لا يمكنك إنشاء تطبيقات lcl.%sاختر موافق لاختيار الافتراصي  %s%s%s.%sوإلا تفقّد أدوات -> خيارات -> الملفات"
 
 #: lazarusidestrconsts.listhecurrentlazarusdirectorydoesnotlookcorrectwithou2
 msgid "The current Lazarus directory %s%s%s%sdoes not look correct.%sWithout it You will not be able to create LCL applications.%sCheck Tools -> Options -> Files"
-msgstr "دليل لازروس الحالي %s is a %s.%sلا يبدو سليما.%sبدونه لا يمكنك إنشاء تطبيقات LCL.%sتفقّد أدوات -> خيارات -> الملفات"
+msgstr "دليل لازروس الحالي %s%s%s%sلا يبدو سليما.%sبدونه لا يمكنك إنشاء تطبيقات LCL.%sتفقّد أدوات -> خيارات -> الملفات"
 
 #: lazarusidestrconsts.listhedebuggerdoesnotexistsorisnotexecutableseeenviro
 msgid "The debugger %s%s%s%sdoes not exist or is not executable.%s%sSee Tools -> Options -> Debugger options"
@@ -14818,7 +14818,7 @@ msgstr "الدليل \"%s\" لم يعد يحتوي على وحدات تضمين 
 
 #: lazarusidestrconsts.listhedirectoryisnolongerneededintheunitpathremoveit
 msgid "The directory %s%s%s is no longer needed in the unit path.%sRemove it?"
-msgstr "الدليل %s%s%s لم يعد مطلوبا في مسار الوحدة.%هل يتم إزالته؟"
+msgstr "الدليل %s%s%s لم يعد مطلوبا في مسار الوحدة.%sهل يتم إزالته؟"
 
 #: lazarusidestrconsts.listhedirectoryisnotwritable
 msgid "The directory %s%s%s is not writable."
@@ -14923,7 +14923,7 @@ msgstr "رزمة التطبيق %s%sالمطلوبة للتنفيذ غير مو�
 
 #: lazarusidestrconsts.listhelaunchingapplicationdoesnotexistsorisnotexecuta
 msgid "The launching application %s%s%s%sdoes not exist or is not executable.%s%sSee Run -> Run parameters -> Local"
-msgstr "تطبيق الإطلاق %s%s%s%غير موجود أو أنه غير تنفيذي.%s%sأنظر تشغيل -> ضوابط التشغيل -> محلي"
+msgstr "التطبيق المرفوع %s%s%s%sغير موجود أو أنه غير تنفيذي.%s%sأنظر تشغيل -> ضوابط التشغيل -> محلي"
 
 #: lazarusidestrconsts.listhelazarusdirectorycontainsthesourcesoftheideandth
 msgid "The Lazarus directory contains the sources of the IDE and the package files of LCL and many standard packages. For example it contains the file \"ide%slazarus.lpi\". The translation files are located there too."
@@ -15119,7 +15119,7 @@ msgstr "وجد خطأ خلال كتابة المكوّن المختار %s:%s:%s
 
 #: lazarusidestrconsts.listherewasanerrorwhileconvertingthebinarystreamofthe
 msgid "There was an error while converting the binary stream of the selected component %s:%s:%s%s"
-msgstr "وجد خطأ عند تحويل التدفق الثنائي للمكوّن المختار %s:%s:%s%s"
+msgstr "وجد خطأ عند تحويل التدفّق الثنائي للمكوّن المختار %s:%s:%s%s"
 
 #: lazarusidestrconsts.listherewasanerrorwhilecopyingthecomponentstreamtocli
 msgid "There was an error while copying the component stream to clipboard:%s%s"
@@ -15151,7 +15151,7 @@ msgstr "دليل الاختبارات لم يتم إيجاده:%s%s%s%s%s(أنظ
 
 #: lazarusidestrconsts.listheunitalreadyexistsignorewillforcetherenaming
 msgid "The unit %s%s%s already exists.%sIgnore will force the renaming,%sCancel will cancel the saving of this source and%sAbort will abort the whole saving."
-msgstr ""
+msgstr "الوحدة %s%s%s موجودة بالفعل"
 
 #: lazarusidestrconsts.listheunitbelongstopackage
 msgid "The unit belongs to package %s."
@@ -15167,7 +15167,7 @@ msgstr "الوحدة لديها هذا الإسم"
 
 #: lazarusidestrconsts.listheunitisnotlowercasethefreepascalcompiler
 msgid "The unit filename %s%s%s is not lowercase.%sThe Free Pascal compiler does not search for all cases. It is recommended to use lowercase filename.%s%sRename file lowercase?"
-msgstr "إسم ملف الوحدة %s%s%s ليست كأحرف منخغضة. %sمترجم فري باسكال لايقوم بالبحث بكل حالات الأحرف. من المستحست استخدام إسم ملف بأحرف منخفضة.%s"
+msgstr "إسم ملف الوحدة %s%s%s ليست كأحرف منخغضة.%sمترجم فري باسكال لايقوم بالبحث بكل حالات الأحرف. من المستحسن استخدام إسم ملف بأحرف منخفضة.%s%sهل يتم تغييرها لأحرف منخفضة؟"
 
 #: lazarusidestrconsts.listheunitispartofthefpcsourcesbutthecorrespondingfpd
 msgid "The unit %s is part of the FPC sources, but the corresponding fpdoc xml file was not found.%sEither you have not yet added the fpcdocs directory to the search path or the unit is not yet documented.%sThe fpdoc files for the FPC sources can be downloaded from: %s%sPlease add the directory in the fpdoc editor options.%sIn order to create a new file the directory must be writable."
@@ -15313,7 +15313,7 @@ msgstr "المسار:"
 
 #: lazarusidestrconsts.listoggleshowingfilenameswithfullpathorwithrelativepa
 msgid "Toggle showing filenames with full path or with relative path"
-msgstr "تبديل عرض أسماء الملفات بكامل المسار أو بمسار ذو علاقة"
+msgstr "تبديل عرض أسماء الملفات بكامل المسار أو بمسار بالتناسب"
 
 #: lazarusidestrconsts.listoinstallyoumustcompileandrestarttheide
 msgid "To install you must compile and restart the IDE"
@@ -15452,7 +15452,7 @@ msgstr "عرض قيم CodeTools"
 
 #: lazarusidestrconsts.lisunableconvertbinarystreamtotext
 msgid "Unable convert binary stream to text"
-msgstr "عدم التمكن من تحويل تدفق ثنائي إلى نصّ"
+msgstr "عدم التمكن من تحويل تدفّق ثنائي إلى نصّ"
 
 #: lazarusidestrconsts.lisunablecopycomponentstoclipboard
 msgid "Unable copy components to clipboard"
@@ -15520,7 +15520,7 @@ msgstr "عدم التمكن من تحويل lfm إلى lrs وكتابة ملف l
 
 #: lazarusidestrconsts.lisunabletoconverttextformdataoffileintobinarystream
 msgid "Unable to convert text form data of file %s%s%s%s%sinto binary stream. (%s)"
-msgstr "عدم التمكن من تحويل بيانات بهيئة نصية والخاصة بملف %s%s%s%s%s إلى تدفق ثنائي. (%s)"
+msgstr "عدم التمكن من تحويل بيانات بهيئة نصية والخاصة بملف %s%s%s%s%s إلى تدفّق ثنائي. (%s)"
 
 #: lazarusidestrconsts.lisunabletocopyfile
 msgid "Unable to copy file"
@@ -15604,7 +15604,7 @@ msgstr "عدم التمكن من إيجاد الملف %s%s%s.%sإذا كان ي
 
 #: lazarusidestrconsts.lisunabletofindinlfmstream
 msgid "Unable to find %s in LFM Stream."
-msgstr "عدم التمكن من ايجاد %s في تدفق LFM."
+msgstr "عدم التمكن من ايجاد %s في تدفّق LFM."
 
 #: lazarusidestrconsts.lisunabletofindmethod
 msgid "Unable to find method."
@@ -15636,7 +15636,7 @@ msgstr "عدم التمكن من تحميل ملف:%s%s"
 
 #: lazarusidestrconsts.lisunabletoloadoldresourcefiletheresourcefileis
 msgid "Unable to load old resource file.%sThe resource file is the first include file in the%sinitialization section.%sFor example {$I %s.lrs}.%sProbably a syntax error."
-msgstr "عدم التمكن من تحميل ملف مورد قديم.%sملف المورد هو أول ملف تضمين في قسم الاستهلال ل%.%sمثلا {$I %s.lrs}.%sيحتمل أن يكون خطأ نحويا."
+msgstr "عدم التمكن من تحميل ملف مورد قديم.%sملف المورد هو أول ملف تضمين في قسم الاستهلال ل%s.%sمثلا {$I %s.lrs}.%sيحتمل أن يكون خطأ نحويا."
 
 #: lazarusidestrconsts.lisunabletoloadpackage
 msgid "Unable to load package %s%s%s"
@@ -15794,7 +15794,7 @@ msgstr "عدم التمكن من الكتابة في ملف \"%s\"."
 
 #: lazarusidestrconsts.lisunabletowritexmlstreamtoerror
 msgid "Unable to write xml stream to %s%sError: %s"
-msgstr "عدم التمكن من كتابة تندفق xml ل %s%sخطأ: %s"
+msgstr "عدم التمكن من كتابة تدفّق xml ل %s%sخطأ: %s"
 
 #: lazarusidestrconsts.lisuncheckall
 msgid "Uncheck All"
@@ -16471,7 +16471,7 @@ msgstr "الروسية"
 
 #: lazarusidestrconsts.rslanguageselection
 msgid "Language selection:"
-msgstr "إختيار اللعة:"
+msgstr "اختيار اللعة:"
 
 #: lazarusidestrconsts.rslanguageslovak
 msgid "Slovak"
@@ -17324,7 +17324,7 @@ msgstr "اختيار الكل"
 
 #: lazarusidestrconsts.srkmecselectiontabs2spaces
 msgid "Convert tabs to spaces in selection"
-msgstr "تحويل الجدولة لفراغات في التضليل"
+msgstr "تحويل الجدولة لفراغات في التظليل"
 
 #: lazarusidestrconsts.srkmecseleditorbottom
 msgid "Select to absolute end"
@@ -17350,7 +17350,7 @@ msgstr "اختيلر نصف كلمية يمين"
 #, fuzzy
 #| msgid "Select Left"
 msgid "SelLeft"
-msgstr "الاختيار يسار"
+msgstr "الاختيار لليسار"
 
 #: lazarusidestrconsts.srkmecsellineend
 msgctxt "lazarusidestrconsts.srkmecsellineend"
@@ -17364,12 +17364,12 @@ msgstr "اختيار بداية السطر"
 
 #: lazarusidestrconsts.srkmecsellinetextstart
 msgid "Select to text start in line"
-msgstr "إختيار ختى بداية النص في السطر"
+msgstr "اختيار ختى بداية النص في السطر"
 
 #: lazarusidestrconsts.srkmecselpagebottom
 msgctxt "lazarusidestrconsts.srkmecselpagebottom"
 msgid "Select Page Bottom"
-msgstr "إختيار أسفل الصفحة"
+msgstr "اختيار أسفل الصفحة"
 
 #: lazarusidestrconsts.srkmecselpagedown
 msgid "Select Page Down"
@@ -17386,7 +17386,7 @@ msgstr "اختيار صفحة يمين"
 #: lazarusidestrconsts.srkmecselpagetop
 msgctxt "lazarusidestrconsts.srkmecselpagetop"
 msgid "Select Page Top"
-msgstr "إختيار أعلى الصفحة"
+msgstr "اختيار أعلى الصفحة"
 
 #: lazarusidestrconsts.srkmecselpageup
 msgid "Select Page Up"
@@ -17396,11 +17396,11 @@ msgstr "اختيار صفحة أعلى"
 #, fuzzy
 #| msgid "Select Right"
 msgid "SelRight"
-msgstr "اختيار يمين"
+msgstr "الاختيار لليمين"
 
 #: lazarusidestrconsts.srkmecselup
 msgid "Select Up"
-msgstr "إختيار فوق"
+msgstr "اختيار فوق"
 
 #: lazarusidestrconsts.srkmecselwordendleft
 msgid "Select word-end left"
@@ -17413,12 +17413,12 @@ msgstr "اختيار نهاية كلمة لليمين"
 #: lazarusidestrconsts.srkmecselwordleft
 msgctxt "lazarusidestrconsts.srkmecselwordleft"
 msgid "Select Word Left"
-msgstr "إختيار كلمة يسارا"
+msgstr "اختيار كلمة يسارا"
 
 #: lazarusidestrconsts.srkmecselwordright
 msgctxt "lazarusidestrconsts.srkmecselwordright"
 msgid "Select Word Right"
-msgstr "إختيار كلمة يمينا"
+msgstr "اختيار كلمة يمينا"
 
 #: lazarusidestrconsts.srkmecsetfreebookmark
 msgctxt "lazarusidestrconsts.srkmecsetfreebookmark"
@@ -17745,7 +17745,7 @@ msgstr "طي التعليقات في الاختيار"
 
 #: lazarusidestrconsts.synfhidecommentsinselection
 msgid "Hide comments in selection"
-msgstr "إخفاء التعليقات في الإختيار"
+msgstr "إخفاء التعليقات في الاختيار"
 
 #: lazarusidestrconsts.synfunfoldallinselection
 msgid "Unfold all in selection"

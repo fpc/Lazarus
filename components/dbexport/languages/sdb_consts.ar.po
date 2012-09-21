@@ -15,7 +15,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0\n"
-"X-Generator: Easy Po 0.9.4.2 (Development release)\n"
+"X-Generator: Easy Po 0.9.4.2\n"
 
 #: sdb_consts.scancelrecordsexported
 msgid "Exported %d before user canceled."

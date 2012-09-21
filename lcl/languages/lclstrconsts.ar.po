@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: Free Pascal Lazarus Project.\n"
 "Report-Msgid-Bugs-To: BUG-EMAIL-ADDR <EMAIL@ADDRESS\n"
 "POT-Creation-Date: yyyy-mm-dd hh:mm+0000\n"
-"PO-Revision-Date: 2012-05-10 01:32+0100\n"
+"PO-Revision-Date: 2012-09-01 23:22+0100\n"
 "Last-Translator: Khaled Shagrouni <shagrouni@gmail.com>\n"
 "Language-Team: Arabic\n"
 "Language: arabic\n"
@@ -11,7 +11,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0\n"
-"X-Generator: Easy Po 0.9.2\n"
+"X-Generator: Easy Po 0.9.4.2\n"
 
 #: lclstrconsts.hhshelpbrowsernotexecutable
 msgid "Browser %s%s%s not executable."
@@ -163,7 +163,7 @@ msgstr "لائحة الأوامر"
 
 #: lclstrconsts.ifsvk_meta
 msgid "Meta"
-msgstr ""
+msgstr "وصفي"
 
 #: lclstrconsts.ifsvk_modechange
 msgid "Mode Change"
@@ -176,7 +176,7 @@ msgstr "التا&لي"
 
 #: lclstrconsts.ifsvk_nonconvert
 msgid "Nonconvert"
-msgstr ""
+msgstr "غير متحول"
 
 #: lclstrconsts.ifsvk_numlock
 msgid "Numlock"
@@ -222,7 +222,7 @@ msgstr "تدوير"
 
 #: lclstrconsts.ifsvk_select
 msgid "Select"
-msgstr "إختيار"
+msgstr "اختيار"
 
 #: lclstrconsts.ifsvk_shift
 msgid "Shift"
@@ -269,7 +269,7 @@ msgstr "لم يتم إيجاد المورد %s"
 
 #: lclstrconsts.lisprogramfilenotfound
 msgid "program file not found %s"
-msgstr "لم يتم ايجاد ملف برنامج %"
+msgstr "لم يتم ايجاد ملف برنامج %s"
 
 #: lclstrconsts.rs3ddkshadowcolorcaption
 msgid "3D Dark Shadow"
@@ -552,11 +552,11 @@ msgstr "نموذج"
 
 #: lclstrconsts.rsformresourcesnotfoundforresourcelessformscreatenew
 msgid "Form resource %s not found. For resourceless forms CreateNew constructor must be used. See the global variable RequireDerivedFormResource."
-msgstr ""
+msgstr "لم يتم إيجاد مورد النموذج %s. يجب استخدام الباني CreateNew بالنسبة للنماذج بدون مورد. أنظر للمتغيّر العام RequireDerivedFormResource."
 
 #: lclstrconsts.rsformstreamingerror
 msgid "Form streaming \"%s\" error: %s"
-msgstr "من التدفق \"%s\" خطأ: %s"
+msgstr "من التدفّق \"%s\" خطأ: %s"
 
 #: lclstrconsts.rsforward
 msgid "Forward"
@@ -568,7 +568,7 @@ msgstr "أرجواني"
 
 #: lclstrconsts.rsgdkoptiondebug
 msgid "--gdk-debug flags     Turn on specific GDK trace/debug messages."
-msgstr "--gdk-debug flags     تفعيل رسائل مخصوصة لتنقيح/تتبع GDK"
+msgstr "وسوم --gdk-debug     تفعيل رسائل مخصوصة لتنقيح/تتبع GDK"
 
 #: lclstrconsts.rsgdkoptionnodebug
 msgid "--gdk-no-debug flags  Turn off specific GDK trace/debug messages."
@@ -628,39 +628,39 @@ msgstr "السرد التاريخي"
 
 #: lclstrconsts.rsgtkoptionclass
 msgid "--class classname     Following Xt conventions, the class of a program is the program name with the initial character capitalized. For example, the classname for gimp is \"Gimp\". If --class is specified, the class of the program will be set to \"classname\"."
-msgstr ""
+msgstr "--class classname     باتّباع أعراف Xt، صنفية البرنامج هي إسم البرنامج مع تعلية الحرف الابتدائي. مثال ذلك، إسم الصنقية ل gimp هو \"Gimp\". إذا تم تحديد --class ، فإن صنفية البرنامج سيكون  تحديدها \"classname\"."
 
 #: lclstrconsts.rsgtkoptiondebug
 msgid "--gtk-debug flags     Turn on specific Gtk+ trace/debug messages."
-msgstr ""
+msgstr "وسوم --gtk-debug     تفعيل رسائل مخصوصة لتنقيح/تتبع Gtk"
 
 #: lclstrconsts.rsgtkoptiondisplay
 msgid "--display h:s:d       Connect to the specified X server, where \"h\" is the hostname, \"s\" is the server number (usually 0), and \"d\" is the display number (typically omitted). If --display is not specified, the DISPLAY environment variable is used."
-msgstr ""
+msgstr "--display h:s:d       الربط مع الخادم ْ المحدّد، حيث \"h\" هو إسم المضيف، و \"s\" هو رقم الخادم (عادة 0)، و \"d\" هو الرقم الظاهر (يُحذف عادة). إذا لم يتم تحديد --display ، يتم استخدام متغيّر البيئة DISPLAY."
 
 #: lclstrconsts.rsgtkoptionmodule
 msgid "--gtk-module module   Load the specified module at startup."
-msgstr ""
+msgstr "أنموذج --gtk-module   يقوم بتحميل أتموذج محدّد عند بدء التشغيل."
 
 #: lclstrconsts.rsgtkoptionname
 msgid "--name programe       Set program name to \"progname\". If not specified, program name will be set to ParamStrUTF8(0)."
-msgstr ""
+msgstr "--name programe       قم بتحديد إسم برنامج ب \"progname\". إذا لم يتم تحديده، فإن إسم البرنامج سيتم تحديده ب ParamStrUTF8(0)."
 
 #: lclstrconsts.rsgtkoptionnodebug
 msgid "--gtk-no-debug flags  Turn off specific Gtk+ trace/debug messages."
-msgstr ""
+msgstr "--gtk-no-debug flags تعطيل رسائل محدّدة خاصة ب تتبّع/تنقيح Gtk+"
 
 #: lclstrconsts.rsgtkoptionnotransient
 msgid "--lcl-no-transient    Do not set transient order for modal forms"
-msgstr ""
+msgstr "--lcl-no-transient عدم تحديد الترتيب المؤقت للنماذج/الشاشات العرضية"
 
 #: lclstrconsts.rsgtkoptionnoxshm
 msgid "--no-xshm             Disable use of the X Shared Memory Extension."
-msgstr ""
+msgstr "--no-xshm             تعطيل استخدام الذاكرة المشتركة المضافة X"
 
 #: lclstrconsts.rsgtkoptionsync
 msgid "--sync                Call XSynchronize (display, True) after the Xserver connection has been established. This makes debugging X protocol errors easier, because X request buffering will be disabled and X errors will be received immediately after the protocol request that generated the error has been processed by the X server."
-msgstr ""
+msgstr "--sync                تزامن، استدعاء XSynchronize (display, True) بعد تأسيس وصلة Xserver . هذا يجعل من تنقيح أخطاء بروتوكول X أكثر سهولة، لأن طلب X للحواجز سيتم تعطيلها وأخطاء X سوف يتم استقبالها حالا بعد أن يكون طلب البروتوكول الذي ولّد الخطأ قد تم  معالجته من قبل خادم X ."
 
 #: lclstrconsts.rshelpalreadyregistered
 msgid "%s: Already registered"
@@ -668,7 +668,7 @@ msgstr "%s: مسجلة بالفعل"
 
 #: lclstrconsts.rshelpcontextnotfound
 msgid "A help database was found for this topic, but this topic was not found"
-msgstr ""
+msgstr "وجدت قاعدة بيانات المساعدة لهذا الموضوع، لكن هذا الموضوع لم يتم إيجاده"
 
 #: lclstrconsts.rshelpdatabasenotfound
 msgid "There is no help database installed for this topic"
@@ -696,11 +696,11 @@ msgstr "قاعدة بيانات المساعدة %s%s%s لم يتم إيجاده
 
 #: lclstrconsts.rshelphelpfordirectivenotfound
 msgid "Help for directive %s%s%s not found."
-msgstr ""
+msgstr "لم يتم إيجاد المساعدة للموجّه %s%s%s."
 
 #: lclstrconsts.rshelphelpfordirectivenotfoundindatabase
 msgid "Help for directive %s%s%s not found in Database %s%s%s."
-msgstr ""
+msgstr "لم يتم إيجاد المساعدة للموجّه %s%s%s في قاعدة بيانات %s%s%s."
 
 #: lclstrconsts.rshelphelpkeywordnotfound
 msgid "Help keyword %s%s%s not found."
@@ -712,7 +712,7 @@ msgstr "الكلمة المفتاحية للمساعدة %s%s%s لم يتم إي
 
 #: lclstrconsts.rshelphelpnodehasnohelpdatabase
 msgid "Help node %s%s%s has no Help Database"
-msgstr ""
+msgstr "عقدة المساعدة %s%s%s ليس لديها قاعدة بيانات مساعدة."
 
 #: lclstrconsts.rshelpnohelpfoundforsource
 msgid "No help found for line %d, column %d of %s."
@@ -728,11 +728,11 @@ msgstr "لم يتم إيجاد مساعدة لهذا الموضوع"
 
 #: lclstrconsts.rshelpnotregistered
 msgid "%s: Not registered"
-msgstr ""
+msgstr "%s: غير مسجّل"
 
 #: lclstrconsts.rshelpselectorerror
 msgid "Help Selector Error"
-msgstr ""
+msgstr "خطأ في القائم باختيار المساعدة"
 
 #: lclstrconsts.rshelpthereisnoviewerforhelptype
 msgid "There is no viewer for help type %s%s%s"
@@ -740,7 +740,7 @@ msgstr "لا يوجد مستعرض لنوع مساعدة %s%s%s"
 
 #: lclstrconsts.rshelpviewererror
 msgid "Help Viewer Error"
-msgstr ""
+msgstr "خطأ في عارض المساعدة"
 
 #: lclstrconsts.rshelpviewernotfound
 msgid "No viewer was found for this type of help content"
@@ -748,15 +748,15 @@ msgstr "لم يتم إيجاد مستعرض لهذا النوع من محتوي�
 
 #: lclstrconsts.rshighlightcolorcaption
 msgid "Highlight"
-msgstr ""
+msgstr "إبراز"
 
 #: lclstrconsts.rshighlighttextcolorcaption
 msgid "Highlight Text"
-msgstr ""
+msgstr "النصّ البارز"
 
 #: lclstrconsts.rshotlightcolorcaption
 msgid "Hot Light"
-msgstr ""
+msgstr "إضاءة ساخنة"
 
 #: lclstrconsts.rsicns
 msgid "Mac OS X Icon"
@@ -835,7 +835,7 @@ msgstr "تاريخ غير صالح: %s. يجب أن يكون بين %s و %s"
 
 #: lclstrconsts.rsinvalidformobjectstream
 msgid "invalid Form object stream"
-msgstr "تدفق كينونة أنموذج غير صالح"
+msgstr "تدفّق كينونة أنموذج غير صالح"
 
 #: lclstrconsts.rsinvalidpropertyvalue
 msgid "Invalid property value"
@@ -843,7 +843,7 @@ msgstr "قيمة خاصية غير صالحة"
 
 #: lclstrconsts.rsinvalidstreamformat
 msgid "Invalid stream format"
-msgstr "هيئة تدفق غير صالحة"
+msgstr "هيئة تدفّق غير صالحة"
 
 #: lclstrconsts.rsisalreadyassociatedwith
 msgid "%s is already associated with %s"
@@ -1064,75 +1064,75 @@ msgstr "أرجواني"
 
 #: lclstrconsts.rsqtoptiondograb
 msgid "-dograb (only under X11), running under a debugger can cause an implicit -nograb, use -dograb to override. Need QT_DEBUG."
-msgstr ""
+msgstr "-dograb (فقط تحت X11)، التشغيل تحت المنقّح قد يسبّب وضعية -nograb ضمنيا، استخدم -dograb لتعديلها. تحتاج ل QT_DEBUG."
 
 #: lclstrconsts.rsqtoptiongraphicsstyle
 msgid "-graphicssystem param, sets the backend to be used for on-screen widgets and QPixmaps. Available options are native, raster and opengl. OpenGL is still unstable."
-msgstr ""
+msgstr "-graphicssystem param ، يحدّد نوع المساندة التي تُستخدم للتكوينات و QPixmaps على الشاشة. الخيارات المتاحة هي native و raster و opengl . لا تزال OpenGl غير مستقرة."
 
 #: lclstrconsts.rsqtoptionnograb
 msgid "-nograb, tells Qt that it must never grab the mouse or the keyboard. Need QT_DEBUG."
-msgstr ""
+msgstr "-nograb ، يخير Qt بأنه يجب أن لا يتّم أبدا قبض الفأرة أو لوحة المفاتيح. يحتاج ل QT_DEBUG ."
 
 #: lclstrconsts.rsqtoptionreverse
 msgid "-reverse, sets the application's layout direction to Qt::RightToLeft."
-msgstr ""
+msgstr "-reverse ، وضع اتجاه مخطط التطبيق إلى Qt::RightToLeft ."
 
 #: lclstrconsts.rsqtoptionsession
 msgid "-session session, restores the application from an earlier session."
-msgstr ""
+msgstr "-session session ، يقوم بإستعادة التطبيق من جلسة سابقة."
 
 #: lclstrconsts.rsqtoptionstyle
 msgid "-style style or -style=style, sets the application GUI style. Possible values are motif, windows, and platinum. If you compiled Qt with additional styles or have additional styles as plugins these will be available to the -style  command line option. NOTE: Not all styles are available on all platforms. If style param does not exist Qt will start an application with default common style (windows)."
-msgstr ""
+msgstr "-style style أو -style=style ، يقوم بتحديد نمط واجهة الإستخدام الرسومية للتطبيق. القيم الممكنة هي motif و windows و platinum . إذا قمت بترجمة Qt مع أنماط إضافية أو لديك أنماط إضافية كملحقات سيكون هذا متوفرا كخيار في سطر الأمر. ملاحظة: ليس كلّ الأنماط متوفرة في كل المنصّات. إذا كان النمط المعطى غير موجود سينقوم Qt ببدء التطبيق بالنمط الإفتراضي الشائع (ويندوز) ."
 
 #: lclstrconsts.rsqtoptionstylesheet
 msgid "-stylesheet stylesheet or -stylesheet=stylesheet, sets the application Style Sheet. The value must be a path to a file that contains the Style Sheet. Note: Relative URLs in the Style Sheet file are relative to the Style Sheet file's path."
-msgstr ""
+msgstr "-stylesheet stylesheet أو -stylesheet=stylesheet ، يحدّد جدول الأنماط للتطبيق. القيمة يجب أن تكون المسار للملف الذي يحوي جدول الأنماط. ملاحظة: المسارات داحل ملف جدول الأنماط تتناسب مع مسار ملف جدول الأنماط."
 
 #: lclstrconsts.rsqtoptionsync
 msgid "-sync (only under X11), switches to synchronous mode for debugging."
-msgstr ""
+msgstr "-sync (فقط تحت X11)، التحوّل لوضعية المزامنة لأجل التنقيح."
 
 #: lclstrconsts.rsqtoptionwidgetcount
 msgid "-widgetcount, prints debug message at the end about number of widgets left undestroyed and maximum number of widgets existed at the same time."
-msgstr ""
+msgstr "-widgetcount ، يقوم بطباعة رسائل تنقيح في النهاية حول عدد التكوينات التي تركت بدون إتلاف والعدد الأقصى للتكوينات الموجودة في نفس الوقت."
 
 #: lclstrconsts.rsqtoptionx11bgcolor
 msgid "-bg or -background color, sets the default background color and an application palette (light and dark shades are calculated)."
-msgstr ""
+msgstr "-bg color أو -background color, ، يحدّد اللون الافتراضي للخلفية و تشكيلة التطبيق (الإضاءة والظلال الداكنة يتم حسابها)."
 
 #: lclstrconsts.rsqtoptionx11btncolor
 msgid "-btn or -button color, sets the default button color."
-msgstr ""
+msgstr "-btn color أو -button color، يحدد اللون الافتراضي للزرّ."
 
 #: lclstrconsts.rsqtoptionx11cmap
 msgid "-cmap, causes the application to install a private color map on an 8-bit display."
-msgstr ""
+msgstr "-cmap ، يجعل التطبيق يقوم بتركيب تخريط لون خاص على شاشة 8-بت."
 
 #: lclstrconsts.rsqtoptionx11display
 msgid "-display display, sets the X display (default is $DISPLAY)."
-msgstr ""
+msgstr "-display display ،يحدد X للعرض (الافتراضي هو $DISPLAY)."
 
 #: lclstrconsts.rsqtoptionx11fgcolor
 msgid "-fg or -foreground color, sets the default foreground color."
-msgstr ""
+msgstr "-fg color أو -foreground color، يحدد اللون الأمامي الإافتراضي."
 
 #: lclstrconsts.rsqtoptionx11font
 msgid "-fn or -font font, defines the application font. The font should be specified using an X logical font description."
-msgstr ""
+msgstr "-fn font أو -font font ، يعيّن نوع خطّ التطبيق. نوع الخطّ يجب أن يحدّد باستخدام وصف الخطوط X المنطقي."
 
 #: lclstrconsts.rsqtoptionx11geometry
 msgid "-geometry geometry, sets the client geometry of the first window that is shown."
-msgstr ""
+msgstr "-geometry geometry ، يقوم بتحديد مساحة أبعاد الزبون لأول نافذة يتم إظهارها."
 
 #: lclstrconsts.rsqtoptionx11im
 msgid "-im, sets the input method server (equivalent to setting the XMODIFIERS environment variable)."
-msgstr ""
+msgstr "-im ، يحدّد خادم طريقة الإدخال (يماثل تحديد متغير البيئة XMODIFIERS)"
 
 #: lclstrconsts.rsqtoptionx11inputstyle
 msgid "-inputstyle, defines how the input is inserted into the given widget, e.g. onTheSpot makes the input appear directly in the widget, while overTheSpot makes the input appear in a box floating over the widget and is not inserted until the editing is done."
-msgstr ""
+msgstr "-inputstyle ، يحدّد كيفية إدراج المدخلات للتكوينة المعطاة ، مثال: onTheSpot يجعل من المدخلات تظهر مباشرة في التكوينة، بينما overTheSpot تجعل المدخلات تظهر في مربع يطفو فوق التكوينة ولا يتّم إدراجها حتى الإنتهاء من التحرير."
 
 #: lclstrconsts.rsqtoptionx11name
 msgid "-name name, sets the application name."
@@ -1235,7 +1235,7 @@ msgstr "صفيحة"
 #: lclstrconsts.rstsplitteraccessibilitydescription
 msgctxt "lclstrconsts.rstsplitteraccessibilitydescription"
 msgid "A grip to control how much size to give two parts of an area"
-msgstr ""
+msgstr "ممسك للمتحكم، كم الحجم المعطى لقسمين من مساحة"
 
 #: lclstrconsts.rsttreeviewaccessibilitydescription
 msgctxt "lclstrconsts.rsttreeviewaccessibilitydescription"
@@ -1268,23 +1268,23 @@ msgstr "هيئة لوحة ملصفات غير مدعومة:%s"
 
 #: lclstrconsts.rswarningunreleaseddcsdump
 msgid " WARNING: There are %d unreleased DCs, a detailed dump follows:"
-msgstr ""
+msgstr "تحذير: يوجد عدد %d من DC غير المحرّرة، فيما يلي تفريغ مفصّل:"
 
 #: lclstrconsts.rswarningunreleasedgdiobjectsdump
 msgid " WARNING: There are %d unreleased GDIObjects, a detailed dump follows:"
-msgstr ""
+msgstr "تحذير: يوجد عدد %d من GDIObjects غير المحرّرة، فيما يلي تفريغ مفصّل:"
 
 #: lclstrconsts.rswarningunreleasedmessagesinqueue
 msgid " WARNING: There are %d messages left in the queue! I'll free them"
-msgstr ""
+msgstr "تحذير: يوجد عدد %d من الرسائل متروكة في الانتظار! سأقوم بتحريرها"
 
 #: lclstrconsts.rswarningunreleasedtimerinfos
 msgid " WARNING: There are %d TimerInfo structures left, I'll free them"
-msgstr ""
+msgstr "تحذير: يوجد عدد %d من هياكل TimeInfo متروكة، سأقوم بتحريرها"
 
 #: lclstrconsts.rswarningunremovedpaintmessages
 msgid " WARNING: There are %s unremoved LM_PAINT/LM_GtkPAINT message links left."
-msgstr ""
+msgstr "تحذير: يوجد %s غير مزال من رسائل الربط LM_PAINT/LM_GtkPAINT ."
 
 #: lclstrconsts.rswhitecolorcaption
 msgid "White"
@@ -1420,7 +1420,7 @@ msgstr "الأيسر"
 
 #: lclstrconsts.smkcmeta
 msgid "Meta+"
-msgstr ""
+msgstr "وصفي+"
 
 #: lclstrconsts.smkcpgdn
 msgid "PgDn"
@@ -1475,7 +1475,7 @@ msgstr "عدد صحيح غير سليم: %s"
 
 #: lclstrconsts.sparlocinfo
 msgid " (at %d,%d, stream offset %d)"
-msgstr ""
+msgstr " (في %d,%d، موقع الدّفق %d)"
 
 #: lclstrconsts.sparunterminatedbinvalue
 msgid "Unterminated byte value"

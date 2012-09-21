@@ -17,26 +17,10 @@ msgstr ""
 "Plural-Forms: nplurals=1; plural=0\n"
 "X-Generator: Easy Po 0.9.4.2\n"
 
-#: registersqldb.sfirebirddatabases
-msgid "Firebird databases"
-msgstr "قاعدة بيانات فايربيرد"
+#: frmtemplatesettings.sdirect
+msgid "&Directory with templates:"
+msgstr "دليل  القوالب:"
 
-#: registersqldb.sinterbasedatabases
-msgid "Interbase databases"
-msgstr "قاعدة بيانات انتربيس"
-
-#: registersqldb.ssqlscript
-msgid "SQL Script file"
-msgstr "ملف نعليمات SQL"
-
-#: registersqldb.ssqlscriptdesc
-msgid "Create a new SQL Script file"
-msgstr "إنشاء ملف جديد لتعليمات SQL"
-
-#: registersqldb.ssqlsource
-msgid "Insert your SQL statements here"
-msgstr "قم بادخال تعليمة SQL هنا"
-
-#: registersqldb.ssqlstringspropertyeditordlgtitle
-msgid "Editing %s"
-msgstr "جاري تحرير %s"
+#: frmtemplatesettings.stitle
+msgid "Project templates settings"
+msgstr "توصيف قوالب المشروع"

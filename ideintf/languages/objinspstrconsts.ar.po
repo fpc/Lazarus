@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: Free Pascal Lazarus Project.\n"
 "Report-Msgid-Bugs-To: BUG-EMAIL-ADDR <EMAIL@ADDRESS\n"
 "POT-Creation-Date: yyyy-mm-dd hh:mm+0000\n"
-"PO-Revision-Date: 2012-05-06 13:29+0100\n"
+"PO-Revision-Date: 2012-09-01 23:17+0100\n"
 "Last-Translator: Khaled Shagrouni <shagrouni@gmail.com>\n"
 "Language-Team: Arabic\n"
 "Language: arabic\n"
@@ -11,7 +11,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0\n"
-"X-Generator: Easy Po 0.9.2\n"
+"X-Generator: Easy Po 0.9.4.2\n"
 
 #: objinspstrconsts.cactionlisteditorallcategory
 msgid "(All)"
@@ -185,15 +185,15 @@ msgstr "الحقول المفتا&حية:"
 
 #: objinspstrconsts.feslookup
 msgid "&Lookup"
-msgstr ""
+msgstr "الب&حث"
 
 #: objinspstrconsts.feslookupdef
 msgid "Lookup definition"
-msgstr ""
+msgstr "تحديد البحث"
 
 #: objinspstrconsts.feslookupkeys
 msgid "L&ookup keys:"
-msgstr ""
+msgstr "مفاتيح ال&بحث:"
 
 #: objinspstrconsts.fesname
 msgid "&Name:"
@@ -417,7 +417,7 @@ msgstr "التأكيد على الإلغاء"
 #: objinspstrconsts.oiscopycomponents
 msgctxt "objinspstrconsts.oiscopycomponents"
 msgid "&Copy"
-msgstr "%نسخ"
+msgstr "&نسخ"
 
 #: objinspstrconsts.oiscreateanewpascalunit
 msgid "Create a new pascal unit."
@@ -540,7 +540,7 @@ msgstr "%s%s%s ليس اسما صالحا لنهجية."
 
 #: objinspstrconsts.oisitemsselected
 msgid "%u items selected"
-msgstr ""
+msgstr "%u بند تم اختياره"
 
 #: objinspstrconsts.oisjumptodeclarationof
 msgid "Jump to declaration of %s"
@@ -560,11 +560,11 @@ msgstr "تحميل صورة"
 
 #: objinspstrconsts.oismasks
 msgid "Masks ..."
-msgstr ""
+msgstr "الأقنعة ..."
 
 #: objinspstrconsts.oismethod
 msgid "Method"
-msgstr ""
+msgstr "النهجية"
 
 #: objinspstrconsts.oismovedown
 msgid "Move &Down"
@@ -609,7 +609,7 @@ msgstr "موافق"
 
 #: objinspstrconsts.oisopenmaskfile
 msgid "Open masks file (*.dem)"
-msgstr ""
+msgstr "فتح ملف أقنعة (*dem)"
 
 #: objinspstrconsts.oisoptions
 msgid "Options"
@@ -670,7 +670,7 @@ msgstr "المقيّدة"
 
 #: objinspstrconsts.oissamplemasks
 msgid "Sample Masks:"
-msgstr ""
+msgstr "أمثلة أقنعة:"
 
 #: objinspstrconsts.oissave
 msgid "&Save"
@@ -678,7 +678,7 @@ msgstr "&حفظ"
 
 #: objinspstrconsts.oissaveliteralcharacters
 msgid "Save Literal Characters"
-msgstr ""
+msgstr "حفظ الرموز الحروفية"
 
 #: objinspstrconsts.oissavepicture
 msgid "Save picture"
@@ -686,19 +686,19 @@ msgstr "حفظ الصورة"
 
 #: objinspstrconsts.oisselectafile
 msgid "Select a file"
-msgstr "إختيار ملف"
+msgstr "اختيار ملف"
 
 #: objinspstrconsts.oisselectall
 msgid "&Select all"
-msgstr "إختيار الكل"
+msgstr "ا&ختيار الكل"
 
 #: objinspstrconsts.oisselectallhint
 msgid "Select All Fields"
-msgstr "إختيار كل الحقول"
+msgstr "اختيار كل الحقول"
 
 #: objinspstrconsts.oisselectshortcut
 msgid "Select short cut"
-msgstr "إختيار مفتاح الإختصار"
+msgstr "اختيار مفتاح الاختصار"
 
 #: objinspstrconsts.oisset
 msgid "Set"
@@ -738,15 +738,15 @@ msgstr "أحرف"
 
 #: objinspstrconsts.oisstringseditordialog
 msgid "Strings Editor Dialog"
-msgstr ""
+msgstr "نافذة محرر الجمل النصّية"
 
 #: objinspstrconsts.oistdactcolorselect1headline
 msgid "Select &Color ..."
-msgstr ""
+msgstr "اختيار الل&ون ..."
 
 #: objinspstrconsts.oistdactcolorselecthint
 msgid "Color Select"
-msgstr ""
+msgstr "اختيار اللون"
 
 #: objinspstrconsts.oistdactdatasetcancel1hint
 msgctxt "objinspstrconsts.oistdactdatasetcancel1hint"
@@ -813,11 +813,11 @@ msgstr "التالي"
 
 #: objinspstrconsts.oistdactdatasetpostheadline
 msgid "P&ost"
-msgstr ""
+msgstr "إ&رسال"
 
 #: objinspstrconsts.oistdactdatasetposthint
 msgid "Post"
-msgstr ""
+msgstr "إرسال"
 
 #: objinspstrconsts.oistdactdatasetpriorheadline
 msgid "&Prior"
@@ -839,7 +839,7 @@ msgstr "إنعاش"
 #: objinspstrconsts.oistdacteditcopyheadline
 msgctxt "objinspstrconsts.oistdacteditcopyheadline"
 msgid "&Copy"
-msgstr "%نسخ"
+msgstr "&نسخ"
 
 #: objinspstrconsts.oistdacteditcopyshortcut
 msgid "Ctrl+C"
@@ -891,7 +891,7 @@ msgstr "لصق"
 
 #: objinspstrconsts.oistdacteditselectallheadline
 msgid "Select &All"
-msgstr "إختيار ال&كل"
+msgstr "اختيار ال&كل"
 
 #: objinspstrconsts.oistdacteditselectallshortcut
 msgid "Ctrl+A"
@@ -957,7 +957,7 @@ msgstr "إختبار خ&ط"
 
 #: objinspstrconsts.oistdactfontedithint
 msgid "Font Select"
-msgstr "إختيار خط"
+msgstr "اختيار خط"
 
 #: objinspstrconsts.oistdacthelpcontentsheadline
 msgid "&Contents"
@@ -1033,15 +1033,15 @@ msgstr "مدخلات الاختبار"
 
 #: objinspstrconsts.oistheidentifierisnotamethodpresscanceltoundopressign
 msgid "The identifier %s%s%s is not a method.%sPress Cancel to undo,%spress Ignore to force it."
-msgstr ""
+msgstr "المعرّف %s%s%s ليس نهجية.%sاضغط على إلغاء الأمر للتراجع,%sأضغط على تجاهل لفرضها."
 
 #: objinspstrconsts.oisthemethodisincompatibletothiseventpresscanceltound
 msgid "The method %s%s%s is incompatible to this event (%s).%sPress Cancel to undo,%spress Ignore to force it."
-msgstr ""
+msgstr "النهجية %s%s%s ليست متوافقة مع هذا الحدث (%s).%sاضغط إلغاء الأمر للتراجع،%sأضغط تجاهل لفرضها."
 
 #: objinspstrconsts.oisthemethodisnotpublishedpresscanceltoundopressignor
 msgid "The method %s%s%s is not published.%sPress Cancel to undo,%spress Ignore to force it."
-msgstr ""
+msgstr "النهجية %s%s%s ليست منشورة.%sاضغط على إلغاء الأمر للتراجع,%sأضغط على تجاهل لفرضها."
 
 #: objinspstrconsts.oisunabletochangeparentofcontroltonewparent
 msgid "Unable to change parent of control %s%s%s to new parent %s%s%s.%s%s"
@@ -1083,7 +1083,7 @@ msgstr "القيود العامة لمجموعة المكونات: "
 
 #: objinspstrconsts.oisword
 msgid "Word"
-msgstr ""
+msgstr "الكلمة"
 
 #: objinspstrconsts.oiszorder
 msgid "Z-order"
@@ -1306,15 +1306,15 @@ msgstr "عنصر فرعي جديد"
 
 #: objinspstrconsts.sccsmaskeditor
 msgid "Edit Mask Editor ..."
-msgstr ""
+msgstr "محرر قناع الكتابة ..."
 
 #: objinspstrconsts.sccssbeditpanels
 msgid "Panels Editor ..."
-msgstr ""
+msgstr "تحرير القواطع"
 
 #: objinspstrconsts.sccssgedt
 msgid "Edit StringGrid ..."
-msgstr ""
+msgstr "تحرير StringGrid ..."
 
 #: objinspstrconsts.sccssgedtapply
 msgctxt "objinspstrconsts.sccssgedtapply"
