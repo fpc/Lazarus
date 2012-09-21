@@ -1537,7 +1537,7 @@ begin
   if Assigned(ctx) then
   begin
     Result := ctx.BkColor;
-    ctx.BkColor := Color;
+    ctx.BkColor := TColor(Color);
   end
   else
     Result := CLR_INVALID;

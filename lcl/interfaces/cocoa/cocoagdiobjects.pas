@@ -1271,8 +1271,8 @@ begin
   FWindowOfs := AData.WindowOfs;
   FViewportOfs := AData.ViewportOfs;
 
-//  isClipped := AData.isClipped;
-//  FClipRegion.Shape := AData.ClipShape;
+  FClipped := AData.isClipped;
+  FClipRegion.Shape := AData.ClipShape;
 end;
 
 constructor TCocoaContext.Create;
