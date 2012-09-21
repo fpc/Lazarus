@@ -66,7 +66,7 @@ function DeleteDC(hDC: HDC): Boolean; override;
 function DeleteObject(GDIObject: HGDIOBJ): Boolean; override;
 function DestroyCaret(Handle : HWND): Boolean; override;
 function DestroyIcon(Handle: HICON): Boolean; override;
-{function DPtoLP(DC: HDC; var Points; Count: Integer): BOOL; override;}
+function DPtoLP(DC: HDC; var Points; Count: Integer): BOOL; override;
 function DrawFocusRect(DC: HDC; const Rect: TRect): boolean; override;
 function DrawEdge(DC: HDC; var Rect: TRect; edge: Cardinal; grfFlags: Cardinal): Boolean; override;
 //function DrawText(DC: HDC; Str: PChar; Count: Integer; var ARect: TRect; Flags: Cardinal): Integer; override;
@@ -79,7 +79,7 @@ procedure EnterCriticalSection(var CritSection: TCriticalSection); override;
 function EnumFontFamiliesEx(DC: HDC; lpLogFont: PLogFont; Callback: FontEnumExProc; Lparam: LParam; Flags: dword): longint; override;
 function EnumDisplayMonitors(hdc: HDC; lprcClip: PRect; lpfnEnum: MonitorEnumProc; dwData: LPARAM): LongBool; override;
 {function ExcludeClipRect(dc: hdc; Left, Top, Right, Bottom : Integer) : Integer; override;}
-function ExtSelectClipRGN(dc: hdc; rgn : hrgn; Mode : Longint) : Integer;  override;
+function ExtSelectClipRGN(dc: hdc; rgn : hrgn; Mode : Longint): Integer;  override;
 function ExtCreatePen(dwPenStyle, dwWidth: DWord; const lplb: TLogBrush; dwStyleCount: DWord; lpStyle: PDWord): HPEN; override;
 function ExtTextOut(DC: HDC; X, Y: Integer; Options: Longint; Rect: PRect; Str: PChar; Count: Longint; Dx: PInteger): Boolean; override;
 
@@ -139,6 +139,9 @@ function IsWindowVisible(Handle: HWND): boolean; override;
 
 procedure LeaveCriticalSection(var CritSection: TCriticalSection); override;
 function LineTo(DC: HDC; X, Y: Integer): Boolean; override;
+function LPtoDP(DC: HDC; var Points; Count: Integer): BOOL; override;
+
+function OffsetRgn(RGN: HRGN; nXOffset, nYOffset: Integer): Integer; override;
 
 {function MessageBox(hWnd: HWND; lpText, lpCaption: PChar; uType: Cardinal): integer; override;}
 function MoveToEx(DC: HDC; X, Y: Integer; OldPoint: PPoint): Boolean; override;

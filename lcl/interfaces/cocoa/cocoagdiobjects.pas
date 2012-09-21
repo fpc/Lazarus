@@ -85,7 +85,10 @@ type
     function ContainsPoint(const P: TPoint): Boolean;
     procedure SetShape(AShape: HIShapeRef);
     procedure Clear;
-    function CombineWith(ARegion: TCocoaRegion; CombineMode: TCocoaCombine): Boolean;
+    function CombineWith(ARegion: TCocoaRegion; CombineMode: TCocoaCombine): TCocoaRegionType;
+    procedure Offset(dx, dy: Integer);
+    function GetShapeCopy: HIShapeRef;
+    procedure MakeMutable;
   public
     property Shape: HIShapeRef read FShape write SetShape;
   end;
@@ -278,8 +281,8 @@ type
     WindowOfs: TPoint;
     ViewportOfs: TPoint;
 
-//    isClipped: Boolean;
-//    ClipShape: HIShapeRef;
+    isClipped: Boolean;
+    ClipShape: HIShapeRef;
   end;
 
   TGlyphArray = array of NSGlyph;
@@ -354,6 +357,8 @@ type
     procedure RestoreDCData(const AData: TCocoaDCData); virtual;
     procedure SetCGFillping(Ctx: CGContextRef; Width, Height: Integer);
     procedure RestoreCGFillping(Ctx: CGContextRef; Width, Height: Integer);
+    procedure ApplyTransform(Trans: CGAffineTransform);
+    procedure ClearClipping;
   public
     ctx: NSGraphicsContext;
     constructor Create;
@@ -389,6 +394,7 @@ type
     function CGContext: CGContextRef; virtual;
     procedure SetAntialiasing(AValue: Boolean);
 
+    function GetLogicalOffset: TPoint;
     function GetClipRect: TRect;
     function SetClipRegion(AClipRegion: TCocoaRegion; Mode: TCocoaCombine): TCocoaRegionType;
     function CopyClipRegion(ADstRegion: TCocoaRegion): TCocoaRegionType;
@@ -449,6 +455,17 @@ end;
 function CheckBitmap(ABitmap: HBITMAP; AStr: string): Boolean;
 begin
   Result := ABitmap <> 0;
+end;
+
+procedure GetWindowViewTranslate(const AWindowOfs, AViewOfs: TPoint; out dx, dy: Integer); inline;
+begin
+  dx := AViewOfs.x - AWindowOfs.x;
+  dy := AViewOfs.y - AWindowOfs.y;
+end;
+
+function isSamePoint(const p1, p2: TPoint): Boolean; inline;
+begin
+  Result:=(p1.x=p2.x) and (p1.y=p2.y);
 end;
 
 { TCocoaBitmap }
@@ -1038,6 +1055,11 @@ begin
   ctx.setShouldAntialias(AValue);
 end;
 
+function TCocoaContext.GetLogicalOffset: TPoint;
+begin
+  GetWindowViewTranslate(WindowOfs, ViewportOfs, Result.X, Result.Y);
+end;
+
 function TCocoaContext.GetClipRect: TRect;
 begin
   Result := CGRectToRect(CGContextGetClipBoundingBox(CGContext));
@@ -1045,11 +1067,8 @@ end;
 
 function TCocoaContext.SetClipRegion(AClipRegion: TCocoaRegion; Mode: TCocoaCombine): TCocoaRegionType;
 begin
-  if FClipped then
-  begin
-    FClipped := False;
-    ctx.restoreGraphicsState;
-  end;
+  ClearClipping;
+  FClipped := False;
 
   if not Assigned(AClipRegion) then
     FClipRegion.Clear
@@ -1065,8 +1084,8 @@ end;
 
 function TCocoaContext.CopyClipRegion(ADstRegion: TCocoaRegion): TCocoaRegionType;
 begin
-  if Assigned(ADstRegion) and ADstRegion.CombineWith(FClipRegion, cc_Copy) then
-    Result := ADstRegion.GetType
+  if Assigned(ADstRegion) then
+    Result := ADstRegion.CombineWith(FClipRegion, cc_Copy)
   else
     Result := crt_Error;
 end;
@@ -1153,17 +1172,6 @@ begin
   FText.ForegroundColor := TColor(ColorToRGB(AValue));
 end;
 
-procedure GetWindowViewTranslate(const AWindowOfs, AViewOfs: TPoint; out dx, dy: Integer); inline;
-begin
-  dx := AViewOfs.x - AWindowOfs.x;
-  dy := AViewOfs.y - AWindowOfs.y;
-end;
-
-function isSamePoint(const p1, p2: TPoint): Boolean; inline;
-begin
-  Result:=(p1.x=p2.x) and (p1.y=p2.y);
-end;
-
 procedure TCocoaContext.UpdateContextOfs(const AWindowOfs, AViewOfs: TPoint);
 var
   dx, dy: Integer;
@@ -1209,8 +1217,8 @@ begin
   Result.WindowOfs := FWindowOfs;
   Result.ViewportOfs := FViewportOfs;
 
-//  Result.isClipped := isClipped;
-//  Result.ClipShape := FClipRegion.GetShapeCopy;
+  Result.isClipped := FClipped;
+  Result.ClipShape := FClipRegion.GetShapeCopy;
 end;
 
 procedure TCocoaContext.RestoreDCData(const AData: TCocoaDCData);
@@ -1302,8 +1310,7 @@ end;
 
 function TCocoaContext.SaveDC: Integer;
 begin
-  if FClipped then
-    ctx.restoreGraphicsState;
+  ClearClipping;
 
   Result := 0;
 
@@ -1322,8 +1329,7 @@ end;
 
 function TCocoaContext.RestoreDC(ASavedDC: Integer): Boolean;
 begin
-  if FClipped then
-    ctx.restoreGraphicsState;
+  ClearClipping;
 
   Result := False;
   if (FSavedDCList = nil) or (ASavedDC <= 0) or (ASavedDC > FSavedDCList.Count) then
@@ -1344,8 +1350,8 @@ begin
 
   if FClipped then
   begin
-    FClipped := False;
-    FClipRegion.Shape := HIShapeCreateEmpty;
+    ctx.saveGraphicsState;
+    FClipRegion.Apply(Self);
   end;
 
 end;
@@ -1637,6 +1643,29 @@ begin
   begin
     CGContextScaleCTM(Ctx, -1, 1);
     CGContextTranslateCTM(Ctx, Width, 0);
+  end;
+end;
+
+procedure TCocoaContext.ApplyTransform(Trans: CGAffineTransform);
+var
+  T2: CGAffineTransform;
+begin
+  T2 := CGContextGetCTM(CGContext);
+  // restore old CTM since CTM may changed after the clipping
+  if CGAffineTransformEqualToTransform(Trans, T2) = 0 then
+    CGContextTranslateCTM(CGContext, Trans.a * Trans.tx - T2.a * T2.tx,
+       Trans.d * Trans.ty - T2.d * T2.ty);
+end;
+
+procedure TCocoaContext.ClearClipping;
+var
+  Trans: CGAffineTransform;
+begin
+  if FClipped  then
+  begin
+    Trans := CGContextGetCTM(CGContext);
+    ctx.RestoreGraphicsState;
+    ApplyTransform(Trans);
   end;
 end;
 
@@ -2038,12 +2067,21 @@ end;
   Note: Clipping region is only reducing
  ------------------------------------------------------------------------------}
 procedure TCocoaRegion.Apply(ADC: TCocoaContext);
+var
+  DeviceShape: HIShapeRef;
 begin
   if ADC = nil then Exit;
   if ADC.CGContext = nil then Exit;
-  if HIShapeIsEmpty(FShape) or (HIShapeReplacePathInCGContext(FShape, ADC.CGContext) <> noErr) then
-    Exit;
-  CGContextClip(ADC.CGContext);
+  DeviceShape := HIShapeCreateMutableCopy(Shape);
+  try
+    with ADC.GetLogicalOffset do
+      HIShapeOffset(DeviceShape, -X, -Y);
+    if HIShapeIsEmpty(DeviceShape) or (HIShapeReplacePathInCGContext(DeviceShape, ADC.CGContext) <> noErr) then
+      Exit;
+    CGContextClip(ADC.CGContext);
+  finally
+    CFRelease(DeviceShape);
+  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -2101,42 +2139,75 @@ begin
   HIShapeSetEmpty(FShape)
 end;
 
-function TCocoaRegion.CombineWith(ARegion: TCocoaRegion; CombineMode: TCocoaCombine): Boolean;
+function TCocoaRegion.CombineWith(ARegion: TCocoaRegion; CombineMode: TCocoaCombine): TCocoaRegionType;
 var
   sh1, sh2: HIShapeRef;
 const
   MinCoord=-35000;
   MaxSize=65000;
 begin
-  Result:=Assigned(ARegion);
-  if not Assigned(ARegion) then Exit;
-
-  if (CombineMode in [cc_AND, cc_OR, cc_XOR]) and HIShapeIsEmpty(FShape) then
-    CombineMode := cc_COPY;
-
-  case CombineMode of
-    cc_AND: Shape:=HIShapeCreateIntersection(FShape, ARegion.Shape);
-    cc_XOR:
-    begin
-      sh1 := HIShapeCreateUnion(FShape, ARegion.Shape);
-      sh2 := HIShapeCreateIntersection(FShape, ARegion.Shape);
-      Shape  := HIShapeCreateDifference(sh1, sh2);
-      CFRelease(sh1); CFRelease(sh2);
-    end;
-    cc_OR:   Shape:=HIShapeCreateUnion(FShape, ARegion.Shape);
-    cc_DIFF:
-    begin
-      if HIShapeIsEmpty(FShape) then
-        {HIShapeCreateDifference doesn't work properly if original shape is empty}
-        {to simulate "emptieness" very big shape is created }
-        Shape:=HIShapeCreateWithRect(GetCGRect(MinCoord,MinCoord,MaxSize,MaxSize)); // create clip nothing.
-
-      Shape:=HIShapeCreateDifference(FShape, ARegion.Shape);
-    end;
-    cc_COPY: Shape:=HIShapeCreateCopy(ARegion.Shape);
+  if not Assigned(ARegion) then
+    Result := crt_Error
   else
-    Result := false;
+  begin
+    if (CombineMode in [cc_AND, cc_OR, cc_XOR]) and HIShapeIsEmpty(FShape) then
+      CombineMode := cc_Copy;
+
+    case CombineMode of
+      cc_AND:
+        begin
+          Shape := HIShapeCreateIntersection(FShape, ARegion.Shape);
+          Result := GetType;
+        end;
+      cc_XOR:
+      begin
+        sh1 := HIShapeCreateUnion(FShape, ARegion.Shape);
+        sh2 := HIShapeCreateIntersection(FShape, ARegion.Shape);
+        Shape := HIShapeCreateDifference(sh1, sh2);
+        CFRelease(sh1);
+        CFRelease(sh2);
+        Result := GetType;
+      end;
+      cc_OR:
+        begin
+          Shape := HIShapeCreateUnion(FShape, ARegion.Shape);
+          Result := GetType;
+        end;
+      cc_DIFF:
+      begin
+        if HIShapeIsEmpty(FShape) then
+          {HIShapeCreateDifference doesn't work properly if original shape is empty}
+          {to simulate "emptieness" very big shape is created }
+          Shape := HIShapeCreateWithRect(GetCGRect(MinCoord, MinCoord, MaxSize, MaxSize)); // create clip nothing.
+
+        Shape := HIShapeCreateDifference(FShape, ARegion.Shape);
+        Result := GetType;
+      end;
+      cc_COPY:
+        begin
+          Shape := HIShapeCreateCopy(ARegion.Shape);
+          Result := GetType;
+        end
+    else
+      Result := crt_Error;
+    end;
   end;
+end;
+
+procedure TCocoaRegion.Offset(dx, dy: Integer);
+begin
+  MakeMutable;
+  HIShapeOffset(FShape, dx, dy);
+end;
+
+function TCocoaRegion.GetShapeCopy: HIShapeRef;
+begin
+  Result := HIShapeCreateCopy(Shape);
+end;
+
+procedure TCocoaRegion.MakeMutable;
+begin
+  Shape := HIShapeCreateMutableCopy(Shape);
 end;
 
 { TCocoaPen }

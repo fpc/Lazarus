@@ -94,10 +94,10 @@ begin
   if (Dest = 0) or (Src1 = 0) or (fnCombineMode<RGN_AND) or (fnCombineMode>RGN_COPY) then Exit;
   if (fnCombineMode <> RGN_COPY) and (Src2 = 0) then Exit;
 
-  TCocoaRegion(Dest).CombineWith(TCocoaRegion(Src1), cc_Copy);
+  Result := CocoaRegionTypeToWin32Map[TCocoaRegion(Dest).CombineWith(TCocoaRegion(Src1), cc_Copy)];
 
   if fnCombineMode <> RGN_COPY then
-    TCocoaRegion(Dest). CombineWith(TCocoaRegion(Src2), CocoaCombineMode(fnCombineMode));
+    Result := CocoaRegionTypeToWin32Map[TCocoaRegion(Dest).CombineWith(TCocoaRegion(Src2), CocoaCombineMode(fnCombineMode))];
 end;
 
 {------------------------------------------------------------------------------
@@ -329,6 +329,26 @@ begin
   Result := (Ico is TCocoaBitmap) or (Ico is TCocoaCursor);
   if Result then
     Ico.Destroy;
+end;
+
+function TCocoaWidgetSet.DPtoLP(DC: HDC; var Points; Count: Integer): BOOL;
+var
+  ctx: TCocoaContext;
+  P: PPoint;
+begin
+  Result := False;
+  ctx := CheckDC(DC);
+  if not Assigned(ctx) then Exit;
+  P := @Points;
+  with ctx.GetLogicalOffset do
+    while Count > 0 do
+    begin
+      Dec(Count);
+      dec(P^.X, X);
+      dec(P^.Y, Y);
+      inc(P);
+    end;
+  Result := True;
 end;
 
 function TCocoaWidgetSet.DrawFocusRect(DC: HDC; const Rect: TRect): boolean;
@@ -1152,6 +1172,34 @@ begin
   Result := Assigned(ctx);
   if Result then
     ctx.LineTo(X, Y);
+end;
+
+function TCocoaWidgetSet.LPtoDP(DC: HDC; var Points; Count: Integer): BOOL;
+var
+  ctx: TCocoaContext;
+  P: PPoint;
+begin
+  Result := False;
+  ctx := CheckDC(DC);
+  if not Assigned(ctx) then Exit;
+  P := @Points;
+  with ctx.GetLogicalOffset do
+    while Count > 0 do
+    begin
+      Dec(Count);
+      inc(P^.X, X);
+      inc(P^.Y, Y);
+      inc(P);
+    end;
+  Result := True;
+end;
+
+function TCocoaWidgetSet.OffsetRgn(RGN: HRGN; nXOffset, nYOffset: Integer): Integer;
+begin
+  if not (TObject(RGN) is TCocoaRegion) then
+    Exit(ERROR);
+  TCocoaRegion(RGN).Offset(nXOffset, nYOffset);
+  Result := CocoaRegionTypeToWin32Map[TCocoaRegion(RGN).GetType];
 end;
 
 function TCocoaWidgetSet.MoveToEx(DC: HDC; X, Y: Integer; OldPoint: PPoint): Boolean;
