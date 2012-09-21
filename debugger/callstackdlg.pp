@@ -237,11 +237,11 @@ end;
 procedure TCallStackDlg.ColSizeSetter(AColId: Integer; ASize: Integer);
 begin
   case AColId of
-    COL_STACK_BRKPOINT:  lvCallStack.Column[0].Width := ASize;
-    COL_STACK_INDEX:     lvCallStack.Column[1].Width := ASize;
-    COL_STACK_SOURCE:    lvCallStack.Column[2].Width := ASize;
-    COL_STACK_LINE:      lvCallStack.Column[3].Width := ASize;
-    COL_STACK_FUNC:      lvCallStack.Column[4].Width := ASize;
+    COL_STACK_BRKPOINT:  lvCallStack.Column[0].Width := TWidth(ASize);
+    COL_STACK_INDEX:     lvCallStack.Column[1].Width := TWidth(ASize);
+    COL_STACK_SOURCE:    lvCallStack.Column[2].Width := TWidth(ASize);
+    COL_STACK_LINE:      lvCallStack.Column[3].Width := TWidth(ASize);
+    COL_STACK_FUNC:      lvCallStack.Column[4].Width := TWidth(ASize);
   end;
 end;
 
