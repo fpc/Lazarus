@@ -403,6 +403,7 @@ type
   TDataPointDragTool = class(TDataPointTool)
   strict private
     FOnDrag: TDataPointDragEvent;
+    FOnDragStart: TDataPointDragEvent;
     FOrigin: TDoublePoint;
   public
     constructor Create(AOwner: TComponent); override;
@@ -413,6 +414,8 @@ type
   published
     property ActiveCursor default crSizeAll;
     property OnDrag: TDataPointDragEvent read FOnDrag write FOnDrag;
+    property OnDragStart: TDataPointDragEvent
+      read FOnDragStart write FOnDragStart;
   end;
 
   { TDataPointClickTool }
@@ -1504,10 +1507,17 @@ begin
 end;
 
 procedure TDataPointDragTool.MouseDown(APoint: TPoint);
+var
+  p: TDoublePoint;
 begin
   FindNearestPoint(APoint);
   if FSeries = nil then exit;
   FOrigin := NearestGraphPoint;
+  if Assigned(OnDragStart) then begin
+    p := FChart.ImageToGraph(APoint);
+    OnDragStart(Self, p);
+    if Toolset.FIsHandled then exit;
+  end;
   Activate;
   Handled;
 end;
@@ -1516,7 +1526,7 @@ procedure TDataPointDragTool.MouseMove(APoint: TPoint);
 var
   p: TDoublePoint;
 begin
-  if FSeries = nil then exit;
+  if not IsActive or (FSeries = nil) then exit;
   p := FChart.ImageToGraph(APoint);
   if Assigned(OnDrag) then begin
     OnDrag(Self, p);
