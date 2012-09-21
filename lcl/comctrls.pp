@@ -695,7 +695,6 @@ type
     FTabControlCreating: Boolean;
     FTabs: TStrings;// this is a TTabControlNoteBookStrings
     FCanvas: TCanvas;
-    FOnPaint: TNotifyEvent;
     procedure AdjustDisplayRect(var ARect: TRect);
     function GetDisplayRect: TRect;
     function GetHotTrack: Boolean;
