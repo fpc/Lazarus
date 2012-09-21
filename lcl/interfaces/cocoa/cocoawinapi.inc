@@ -361,12 +361,6 @@ begin
     ctx.DrawFocusRect(Rect);
 end;
 
-function TCocoaWidgetSet.DrawEdge(DC: HDC; var Rect: TRect; edge: Cardinal;
-  grfFlags: Cardinal): Boolean;
-begin
-  Result := inherited DrawEdge(DC, Rect, edge, grfFlags);
-end;
-
 function TCocoaWidgetSet.Ellipse(DC: HDC; x1, y1, x2, y2: Integer): Boolean;
 var
   ctx: TCocoaContext;
