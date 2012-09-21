@@ -374,7 +374,6 @@ begin
 
   Result := True;
 end;
-
 {------------------------------------------------------------------------------
   Function: RawImage_DescriptionFromBitmap
   Params: ABitmap:
@@ -384,13 +383,13 @@ end;
   Describes the inner format utilized by Carbon and specific information
   for the specified bitmap
  ------------------------------------------------------------------------------}
-(*function TCarbonWidgetSet.RawImage_DescriptionFromBitmap(ABitmap: HBITMAP; out ADesc: TRawImageDescription): Boolean;
+
+function TCocoaWidgetSet.RawImage_DescriptionFromBitmap(ABitmap: HBITMAP; out ADesc: TRawImageDescription): Boolean;
 begin
   if CheckBitmap(ABitmap, 'RawImage_DescriptionFromBitmap')
-  then Result := RawImage_DescriptionFromCarbonBitmap(ADesc, TCarbonBitmap(ABitmap))
+  then Result := RawImage_DescriptionFromCocoaBitmap(ADesc, TCocoaBitmap(ABitmap))
   else Result := False;
 end;
-*)
 
 {------------------------------------------------------------------------------
   Function: RawImage_DescriptionFromDevice
