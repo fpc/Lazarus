@@ -479,7 +479,8 @@ end;
  ------------------------------------------------------------------------------}
 function TCocoaWidgetSet.RawImage_DescriptionFromCocoaBitmap(out ADesc: TRawImageDescription; ABitmap: TCocoaBitmap): Boolean;
 var
-  Prec, Shift, BPR: Byte;
+  Prec, Shift: Byte;
+  BPR: Integer;
 begin
   ADesc.Init;
 

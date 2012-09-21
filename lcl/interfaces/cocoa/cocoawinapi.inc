@@ -1646,7 +1646,7 @@ begin
   if Assigned(ctx) then
   begin
     Result := ctx.TextColor;
-    ctx.TextColor := Color
+    ctx.TextColor := TColor(Color);
   end
   else
     Result := CLR_INVALID;
