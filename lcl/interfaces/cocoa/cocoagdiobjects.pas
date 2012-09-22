@@ -215,8 +215,8 @@ type
     FHeight: Integer;
     FType: TCocoaBitmapType;
     // Cocoa information
-    FbitsPerSample: NSInteger;  // How many bits in each color component
-    FsamplesPerPixel: NSInteger;// How many color components
+    FBitsPerSample: NSInteger;  // How many bits in each color component
+    FSamplesPerPixel: NSInteger;// How many color components
     FImage: NSImage;
     FImagerep: NSBitmapImageRep;
     function GetColorSpace: NSString;
@@ -225,6 +225,7 @@ type
     constructor Create(AWidth, AHeight, ADepth, ABitsPerPixel: Integer;
       AAlignment: TCocoaBitmapAlignment; AType: TCocoaBitmapType;
       AData: Pointer; ACopyData: Boolean = True);
+    constructor CreateDefault;
     destructor Destroy; override;
     procedure SetInfo(AWidth, AHeight, ADepth, ABitsPerPixel: Integer;
       AAlignment: TCocoaBitmapAlignment; AType: TCocoaBitmapType);
@@ -319,6 +320,7 @@ type
 
   { TCocoaContext }
 
+  TCocoaBitmapContext = class;
   TCocoaContext = class(TObject)
   private
     FBkBrush: TCocoaBrush;
@@ -329,7 +331,6 @@ type
     FBrush  : TCocoaBrush;
     FPen    : TCocoaPen;
     FRegion : TCocoaRegion;
-    FBitmap : TCocoaBitmap;
     FClipped: Boolean;
     FClipRegion: TCocoaRegion;
     FSavedDCList: TFPObjectList;
@@ -339,7 +340,6 @@ type
     FWindowOfs: TPoint;
     function GetFont: TCocoaFont;
     function GetTextColor: TColor;
-    procedure SetBitmap(const AValue: TCocoaBitmap);
     procedure SetBkColor(AValue: TColor);
     procedure SetBkMode(AValue: Integer);
     procedure SetBrush(const AValue: TCocoaBrush);
@@ -359,9 +359,10 @@ type
     procedure RestoreCGFillping(Ctx: CGContextRef; Width, Height: Integer);
     procedure ApplyTransform(Trans: CGAffineTransform);
     procedure ClearClipping;
+    function GetSize: TSize; virtual;
   public
     ctx: NSGraphicsContext;
-    constructor Create;
+    constructor Create; virtual;
     destructor Destroy; override;
 
     function SaveDC: Integer;
@@ -384,7 +385,7 @@ type
     procedure Frame3d(var ARect: TRect; const FrameWidth: integer; const Style: TBevelCut);
     procedure FrameRect(const ARect: TRect; const ABrush: TCocoaBrush);
     function DrawCGImage(X, Y, Width, Height: Integer; CGImage: CGImageRef): Boolean;
-    function StretchDraw(X, Y, Width, Height: Integer; SrcDC: TCocoaContext;
+    function StretchDraw(X, Y, Width, Height: Integer; SrcDC: TCocoaBitmapContext;
       XSrc, YSrc, SrcWidth, SrcHeight: Integer; Msk: TCocoaBitmap; XMsk,
       YMsk: Integer; Rop: DWORD): Boolean;
 
@@ -402,7 +403,7 @@ type
     property Clipped: Boolean read FClipped;
     property PenPos: TPoint read FPenPos write FPenPos;
     property ROP2: Integer read FROP2 write SetROP2;
-    property Size: TSize read FSize;
+    property Size: TSize read GetSize;
     property WindowOfs: TPoint read FWindowOfs write SetWindowOfs;
     property ViewPortOfs: TPoint read FViewPortOfs write SetViewPortOfs;
 
@@ -417,6 +418,20 @@ type
     property Pen: TCocoaPen read FPen write SetPen;
     property Font: TCocoaFont read GetFont write SetFont;
     property Region: TCocoaRegion read FRegion write SetRegion;
+  end;
+
+  { TCocoaBitmapContext }
+
+  TCocoaBitmapContext = class(TCocoaContext)
+  private
+    FBitmap : TCocoaBitmap;
+    procedure SetBitmap(const AValue: TCocoaBitmap);
+  protected
+    function GetSize: TSize; override;
+  public
+    constructor Create; override;
+    destructor Destroy; override;
+
     property Bitmap: TCocoaBitmap read FBitmap write SetBitmap;
   end;
 
@@ -424,6 +439,7 @@ var
   DefaultBrush: TCocoaBrush;
   DefaultPen: TCocoaPen;
   DefaultFont: TCocoaFont;
+  DefaultBitmap: TCocoaBitmap;
 
 function CheckDC(dc: HDC): TCocoaContext;
 function CheckDC(dc: HDC; Str: string): Boolean;
@@ -726,8 +742,8 @@ begin
     @FData, // planes, BitmapDataPlanes
     FWidth, // width, pixelsWide
     FHeight,// height, PixelsHigh
-    FbitsPerSample,// bitsPerSample, bps
-    FsamplesPerPixel, // samplesPerPixel, sps
+    FBitsPerSample,// bitsPerSample, bps
+    FSamplesPerPixel, // samplesPerPixel, spp
     HasAlpha, // hasAlpha
     False, // isPlanar
     GetColorSpace, // colorSpaceName
@@ -739,6 +755,11 @@ begin
   // Create the associated NSImage
   FImage := NSImage.alloc.initWithSize(NSMakeSize(AWidth, AHeight));
   Image.addRepresentation(Imagerep);
+end;
+
+constructor TCocoaBitmap.CreateDefault;
+begin
+  Create(1, 1, 32, 32, cbaDQWord, cbtARGB, nil);
 end;
 
 destructor TCocoaBitmap.Destroy;
@@ -780,31 +801,34 @@ begin
     // Strangely, this might appear
     0:
     begin
-      FbitsPerSample := 0;
-      FsamplesPerPixel := 0;
+      FBitsPerSample := 0;
+      FSamplesPerPixel := 0;
     end;
     // Mono
     1:
     begin
-      FbitsPerSample := 1;
-      FsamplesPerPixel := 1;
+      FBitsPerSample := 1;
+      FSamplesPerPixel := 1;
     end;
     // Gray scale
     8:
     begin
-      FbitsPerSample := 8;
-      FsamplesPerPixel := 1;
+      FBitsPerSample := 8;
+      FSamplesPerPixel := 1;
     end;
     // ARGB
     32:
     begin
-      FbitsPerSample := 8;
-      FsamplesPerPixel := 4;
+      FBitsPerSample := 8;
+      if AType in [cbtRGB, cbtBGR] then
+        FSamplesPerPixel := 3
+      else
+        FSamplesPerPixel := 4;
     end;
   else
     // Other RGB
-    FbitsPerSample := ABitsPerPixel div 3;
-    FsamplesPerPixel := 3;
+    FBitsPerSample := ABitsPerPixel div 3;
+    FSamplesPerPixel := 3;
   end;
 end;
 
@@ -1090,13 +1114,43 @@ begin
     Result := crt_Error;
 end;
 
-procedure TCocoaContext.SetBitmap(const AValue: TCocoaBitmap);
+procedure TCocoaBitmapContext.SetBitmap(const AValue: TCocoaBitmap);
 begin
   if FBitmap <> AValue then
   begin
-    FBitmap:=AValue;
+    FBitmap := AValue;
+    if Assigned(ctx) then
+    begin
+      ctx.release;
+      ctx := nil;
+    end;
 
+    ctx := NSGraphicsContext.graphicsContextWithBitmapImageRep(AValue.ImageRep);
   end;
+end;
+
+function TCocoaBitmapContext.GetSize: TSize;
+begin
+  if Assigned(Bitmap) then
+  begin
+    Result.cx := Bitmap.Width;
+    Result.cy := Bitmap.Height;
+  end
+  else
+    Result := inherited GetSize;
+end;
+
+constructor TCocoaBitmapContext.Create;
+begin
+  inherited Create;
+  FBitmap := DefaultBitmap;
+end;
+
+destructor TCocoaBitmapContext.Destroy;
+begin
+  if Assigned(ctx) then
+    ctx.release;
+  inherited Destroy;
 end;
 
 function TCocoaContext.GetTextColor: TColor;
@@ -1669,6 +1723,11 @@ begin
   end;
 end;
 
+function TCocoaContext.GetSize: TSize;
+begin
+  Result := FSize;
+end;
+
 function TCocoaContext.DrawCGImage(X, Y, Width, Height: Integer;
   CGImage: CGImageRef): Boolean;
 begin
@@ -1676,7 +1735,6 @@ begin
 
   // save dest context
   ctx.saveGraphicsState;
-
   CGContextSetBlendMode(CGContext, kCGBlendModeNormal);
   try
     SetCGFillping(CGContext, Width, Height);
@@ -1690,7 +1748,7 @@ begin
 end;
 
 function TCocoaContext.StretchDraw(X, Y, Width, Height: Integer;
-  SrcDC: TCocoaContext; XSrc, YSrc, SrcWidth, SrcHeight: Integer;
+  SrcDC: TCocoaBitmapContext; XSrc, YSrc, SrcWidth, SrcHeight: Integer;
   Msk: TCocoaBitmap; XMsk, YMsk: Integer; Rop: DWORD): Boolean;
 var
   Image, MskImage: CGImageRef;
@@ -2629,9 +2687,11 @@ initialization
   DefaultBrush := TCocoaBrush.CreateDefault;
   DefaultPen := TCocoaPen.CreateDefault;
   DefaultFont := TCocoaFont.CreateDefault;
+  DefaultBitmap := TCocoaBitmap.CreateDefault;
 
 finalization
   DefaultBrush.Free;
   DefaultPen.Free;
   DefaultFont.Free;
+  DefaultBitmap.Free;
 end.

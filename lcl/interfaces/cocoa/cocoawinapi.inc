@@ -173,7 +173,7 @@ end;
  ------------------------------------------------------------------------------}
 function TCocoaWidgetSet.CreateCompatibleDC(DC: HDC): HDC;
 begin
-  Result := HDC(TCocoaContext.Create);
+  Result := HDC(TCocoaBitmapContext.Create);
 end;
 
 //todo:
@@ -602,8 +602,15 @@ begin
   if not Result then
     Exit;
 
+  if not (SrcCtx is TCocoaBitmapContext) then
+  begin
+    DebugLn('StretchMaskBlt Error - invalid source device context ', SrcCtx.ClassName,
+      ', expected TCocoaBitmapContext!');
+    Exit;
+  end;
+
   Result := DestCtx.StretchDraw(X, Y, Width, Height,
-    SrcCtx, XSrc, YSrc, SrcWidth, SrcHeight,
+    TCocoaBitmapContext(SrcCtx), XSrc, YSrc, SrcWidth, SrcHeight,
     TCocoaBitmap(Mask), XMask, YMask, Rop);
 end;
 
@@ -1478,14 +1485,13 @@ begin
     dc.Region := TCocoaRegion(gdi);
   end else if gdi is TCocoaBitmap then
   begin // select bitmap
-    {if not (ADC is TCarbonBitmapContext) then
+    if not (dc is TCocoaBitmapContext) then
     begin
       DebugLn(SName + ' Error - The specified device context is not bitmap context!');
       Exit;
-    end;}
-    Result := HBITMAP(dc.Bitmap);
-    dc.Bitmap:=TCocoaBitmap(gdi);
-    //TCarbonBitmapContext(ADC).Bitmap := TCarbonBitmap(GDIObj);
+    end;
+    Result := HBITMAP(TCocoaBitmapContext(dc).Bitmap);
+    TCocoaBitmapContext(dc).Bitmap := TCocoaBitmap(gdi);
   end;
 
   if Result<>0 then TCocoaGDIObject(Result).Release;
