@@ -357,11 +357,26 @@ begin
           S4:=Copy(S3, 1, n-1);
           Delete(S3, 1, n);
           Owner:=Owner.FindComponent(S2);
-          if Assigned(Owner)then
-            DataSet := TfrTDataSet(Owner.FindComponent(s4));
+          Component := frFindComponent(Owner, s4);
+          if Assigned(Component) then
+            begin
+              if Component is TDataSet then
+                DataSet := TfrTDataSet(Component)
+              else if Component is TDataSource then
+                DataSet := TfrTDataSet(TDataSource(Component).DataSet);
+            end;
         end
         else
-          DataSet := TfrTDataSet(Owner.FindComponent(s2));
+          begin
+            Component := frFindComponent(Owner, s2);
+            if Assigned(Component) then
+              begin
+                if Component is TDataSet then
+                  DataSet := TfrTDataSet(Component)
+                else if Component is TDataSource then
+                  DataSet := TfrTDataSet(TDataSource(Component).DataSet);
+              end;
+          end;
         RemoveQuotes(s3);
         if DataSet <> nil then
           Field := TfrTField(DataSet.FindField(s3));
