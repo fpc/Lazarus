@@ -39,7 +39,7 @@ type
 
   TfrPrintGrid = class(TComponent)
   private
-    FDBGrid               : TDBGrid;
+    FDBGrid               : TCustomDBGrid;
     FOnGetValue: TDetailEvent;
     FOnSetUpColumn: TSetupColumnEvent;
     FReport               : TfrReport;
@@ -57,7 +57,7 @@ type
 
     procedure OnEnterRect(Memo: TStringList; View: TfrView);
     procedure OnPrintColumn(ColNo: Integer; var Width: Integer);
-    procedure SetDBGrid(const AValue: TDBGrid);
+    procedure SetDBGrid(const AValue: TCustomDBGrid);
   protected
     { Protected declarations }
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
@@ -71,7 +71,7 @@ type
 
     procedure PreviewReport;
   published
-    property DBGrid: TDBGrid read FDBGrid write SetDBGrid;
+    property DBGrid: TCustomDBGrid read FDBGrid write SetDBGrid;
     property Orientation: TPrinterOrientation read FOrientation write FOrientation default poPortrait;
     property Font: TFont read FFont write FFont;
     property TitleFont : TFont read FTitleFont write FTitleFont;
@@ -126,13 +126,13 @@ var
   i,j,ColumnWidth: Integer;
 begin
   SetLength(FColumnsInfo, 0);
-  for i:=0 to DbGrid.Columns.Count-1 do begin
+  for i:=0 to TDBGrid(DbGrid).Columns.Count-1 do begin
 
-    PrintColumn := DbGrid.Columns[i].Visible;
-    ColumnWidth := DbGrid.Columns[i].Width;
+    PrintColumn := TDBGrid(DbGrid).Columns[i].Visible;
+    ColumnWidth := TDBGrid(DbGrid).Columns[i].Width;
 
     if Assigned(FOnSetupColumn) then
-      FOnSetupColumn(Self, TColumn(DbGrid.Columns[i]), PrintColumn, ColumnWidth);
+      FOnSetupColumn(Self, TColumn(TDBGrid(DbGrid).Columns[i]), PrintColumn, ColumnWidth);
 
     if PrintColumn then begin
       j:=Length(FColumnsInfo);
@@ -213,13 +213,13 @@ begin
   end;
 end;
 
-procedure TfrPrintGrid.SetDBGrid(const AValue: TDBGrid);
+procedure TfrPrintGrid.SetDBGrid(const AValue: TCustomDBGrid);
 begin
   fDBGrid:=aValue;
   if (csDesigning in ComponentState) and Assigned(fDBGrid) then
   begin
     fFont.Assign(fDBGrid.Font);
-    FTitleFont.Assign(fDBGrid.TitleFont);
+    FTitleFont.Assign(TDBGrid(fDBGrid).TitleFont);
   end;
 end;
 
@@ -231,8 +231,8 @@ var
   BM  : TBookMark;
   XPos,YPos: Integer;
 begin
-  if (FDBGrid = nil) or (DBGrid.Datasource = nil) or
-     (DBGrid.Datasource.Dataset = nil) then Exit;
+  if (FDBGrid = nil) or (TDBGrid(DBGrid).Datasource = nil) or
+     (TDBGrid(DBGrid).Datasource.Dataset = nil) then Exit;
 
   if (FTemplate<>'') and not FileExists(FTemplate) then
       raise Exception.CreateFmt('Template file %s does not exists',[FTemplate]);
@@ -241,7 +241,7 @@ begin
   if FTemplate<>'' then
     FReport.LoadFromFile(FTemplate);
 
-  FDataSet := DBGrid.Datasource.Dataset;
+  FDataSet := TDBGrid(DBGrid).Datasource.Dataset;
 
   FReport.OnEnterRect  :=@OnEnterRect;
   FReport.OnPrintColumn:=@OnPrintColumn;
@@ -260,7 +260,7 @@ begin
   FColumnDataSet.RangeEndCount := Length(FColumnsInfo);
 
   try
-    FReportDataSet.DataSource := DBGrid.DataSource;
+    FReportDataSet.DataSource := TDBGrid(DBGrid).DataSource;
     if FReport.Pages.Count=0 then
       FReport.Pages.add;
     Page := FReport.Pages[FReport.Pages.Count-1];
@@ -304,6 +304,7 @@ begin
     if self.fShowHdOnAllPage then
       b.Flags:=b.Flags+flBandRepeatHeader;
     b.SetBounds(XPos, YPos, 1000, 20);
+    b.Flags:=b.Flags or flStretched;
     Page.Objects.Add(b);
 
     v := frCreateObject(gtMemo, '', Page);
@@ -312,7 +313,7 @@ begin
     TfrMemoView(v).FillColor := clSilver;
     TfrMemoView(v).Font.Assign(FTitleFont);
     TfrMemoView(v).Frames:=frAllFrames;
-    TfrMemoView(v).Layout:=tlCenter;
+    TfrMemoView(v).Layout:=tlTop;
     v.Memo.Add('[Header]');
     Page.Objects.Add(v);
 
@@ -322,6 +323,7 @@ begin
     b.BandType := btMasterData;
     b.Dataset := FReportDataSet.Name;
     b.SetBounds(0, YPos, 1000, 18);
+    b.Flags:=b.Flags or flStretched;
     Page.Objects.Add(b);
 
     b := TfrBandView(frCreateObject(gtBand, '', Page));
@@ -333,9 +335,10 @@ begin
     v := frCreateObject(gtMemo, '', Page);
     v.SetBounds(XPos, YPos, 20, 18);
     v.Memo.Add('[Cell]');
+    V.Flags:=V.Flags or flStretched;
     TfrMemoView(v).Font.Assign(FFont);
     TfrMemoView(v).Frames:=frAllFrames;
-    TfrMemoView(v).Layout:=tlCenter;
+    TfrMemoView(v).Layout:=tlTop;
     Page.Objects.Add(v);
 
     FDataSet.DisableControls;
@@ -364,7 +367,7 @@ begin
   if (i<0) or (i>Length(FColumnsInfo)-1) then
     exit;
 
-  C := TColumn(DbGrid.Columns[FColumnsInfo[i].Column]);
+  C := TColumn(TDBGrid(DbGrid).Columns[FColumnsInfo[i].Column]);
   if (C<>nil)and(Memo.Count>0) then
   begin
     if (Memo[0]='[Cell]') and (C.Field<>nil) then
