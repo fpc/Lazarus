@@ -6521,6 +6521,7 @@ packager/frames/package_provides_options.pas svneol=native#text/pascal
 packager/frames/package_usage_options.lfm svneol=native#text/plain
 packager/frames/package_usage_options.pas svneol=native#text/pascal
 packager/globallinks/README.txt svneol=native#text/plain
+packager/globallinks/aarrebase-0.lpl svneol=native#text/plain
 packager/globallinks/aggpaslcl-1.lpl svneol=native#text/plain
 packager/globallinks/anchordocking-0.6.lpl svneol=native#text/plain
 packager/globallinks/anchordockingdsgn-0.5.lpl svneol=native#text/plain
