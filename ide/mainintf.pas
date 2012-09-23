@@ -135,8 +135,6 @@ type
     function GetToolStatus: TIDEToolStatus; virtual; abstract;
     function GetActiveProject: TLazProject; override;
 
-    function CreateProjectObject(ProjectDesc,
-                             FallbackProjectDesc: TProjectDescriptor): TProject; virtual; abstract;
   public
     HiddenWindowsOnRun: TList; // list of forms, that were automatically hidden
                                // and will be shown when debugged program stops
@@ -150,6 +148,7 @@ type
     procedure UpdateCaption; virtual; abstract;
     procedure HideIDE; virtual; abstract;
     procedure UnhideIDE; virtual; abstract;
+    procedure SaveIncludeLinks; virtual; abstract;
 
     procedure GetCurrentUnitInfo(out ActiveSourceEditor: TSourceEditorInterface;
                               out ActiveUnitInfo: TUnitInfo); virtual; abstract;
@@ -163,6 +162,8 @@ type
                         NeededFlags: TIDEFileStateFlags;
                         out ResultFlags: TIDEFileStateFlags); virtual; abstract;
 
+    function CreateProjectObject(ProjectDesc,
+          FallbackProjectDesc: TProjectDescriptor): TProject; virtual; abstract;
     function DoInitProjectRun: TModalResult; virtual; abstract;
     function DoOpenMacroFile(Sender: TObject;
         const AFilename: string): TModalResult; virtual; abstract;

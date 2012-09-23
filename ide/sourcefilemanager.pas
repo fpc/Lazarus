@@ -34,7 +34,7 @@ uses
   AVL_Tree, typinfo, math, Classes, SysUtils, Controls, Forms, Dialogs, LCLIntf,
   LCLType, LCLProc, FileProcs, FileUtil, IDEProcs, DialogProcs, IDEDialogs,
   LConvEncoding, LResources, PropEdits, DefineTemplates, IDEMsgIntf,
-  IDEProtocol, LazarusIDEStrConsts, NewDialog,
+  IDEProtocol, LazarusIDEStrConsts, NewDialog, NewProjectDlg,
   LazIDEIntf, MainBase, MainBar, MainIntf, MenuIntf, NewItemIntf,
   ProjectIntf, Project, ProjectDefs, ProjectInspector, CompilerOptions,
   BasePkgManager, PackageIntf, PackageDefs, PackageSystem,
@@ -53,6 +53,8 @@ type
   TLazSourceFileManager = class
   private
     function CheckMainSrcLCLInterfaces(Silent: boolean): TModalResult;
+    function FileExistsInIDE(const Filename: string;
+                             SearchFlags: TProjectFileSearchFlags): boolean;
   public
     constructor Create;
     destructor Destroy; override;
@@ -61,8 +63,10 @@ type
     procedure UpdateSourceNames;
     function CheckEditorNeedsSave(AEditor: TSourceEditorInterface;
         IgnoreSharedEdits: Boolean): Boolean;
+    procedure ArrangeSourceEditorAndMessageView(PutOnTop: boolean);
 
     // files/units/projects
+    function SomethingOfProjectIsModified(Verbose: boolean = false): boolean;
     function NewFile(NewFileDescriptor: TProjectFileDescriptor;
       var NewFilename: string; NewSource: string;
       NewFlags: TNewFlags; NewOwner: TObject): TModalResult;
@@ -84,7 +88,11 @@ type
       ActiveUnitInfo: TUnitInfo): TModalResult;
     function InitNewProject(ProjectDesc: TProjectDescriptor): TModalResult;
     function InitOpenedProjectFile(AFileName: string; Flags: TOpenFlags): TModalResult;
+    procedure NewProjectFromFile;
+    function CreateProjectForProgram(ProgramBuf: TCodeBuffer): TModalResult;
+    function InitProjectForProgram(ProgramBuf: TCodeBuffer): TModalResult;
     function SaveProject(Flags: TSaveFlags): TModalResult;
+    function SaveProjectIfChanged: TModalResult;
     function CloseProject: TModalResult;
     procedure OpenProject(aMenuItem: TIDEMenuItem);
     procedure CloseAll;
@@ -117,21 +125,19 @@ type
     function LoadResourceFile(AnUnitInfo: TUnitInfo; var LFMCode, LRSCode: TCodeBuffer;
         IgnoreSourceErrors, AutoCreateResourceCode, ShowAbort: boolean): TModalResult;
     function FindBaseComponentClass(const AComponentClassName,
-                                    DescendantClassName: string;
-                                    out AComponentClass: TComponentClass): boolean;
+        DescendantClassName: string; out AComponentClass: TComponentClass): boolean;
     function LoadAncestorDependencyHidden(AnUnitInfo: TUnitInfo;
-                           const DescendantClassName: string;
-                           OpenFlags: TOpenFlags;
-                           out AncestorClass: TComponentClass;
-                           out AncestorUnitInfo: TUnitInfo): TModalResult;
+        const DescendantClassName: string; OpenFlags: TOpenFlags;
+        out AncestorClass: TComponentClass; out AncestorUnitInfo: TUnitInfo): TModalResult;
     function LoadComponentDependencyHidden(AnUnitInfo: TUnitInfo;
-                           const AComponentClassName: string; Flags: TOpenFlags;
-                           MustHaveLFM: boolean;
-                           var AComponentClass: TComponentClass;
-                           var ComponentUnitInfo: TUnitInfo): TModalResult;
+        const AComponentClassName: string; Flags: TOpenFlags; MustHaveLFM: boolean;
+        var AComponentClass: TComponentClass; var ComponentUnitInfo: TUnitInfo): TModalResult;
+    function LoadIDECodeBuffer(var ACodeBuffer: TCodeBuffer;
+        const AFilename: string; Flags: TLoadBufferFlags; ShowAbort: boolean): TModalResult;
   public
-    function DoOpenMainUnit(PageIndex, WindowIndex: integer; Flags: TOpenFlags): TModalResult;
-    function DoRevertMainUnit: TModalResult;
+    function OpenMainUnit(PageIndex, WindowIndex: integer; Flags: TOpenFlags): TModalResult;
+    function RevertMainUnit: TModalResult;
+    function CheckLFMInEditor(LFMUnitInfo: TUnitInfo; Quiet: boolean): TModalResult;
     function OpenFileInSourceEditor(AnEditorInfo: TUnitEditorInfo;
         PageIndex, WindowIndex: integer; Flags: TOpenFlags): TModalResult;
     function LoadLFM(AnUnitInfo: TUnitInfo; OpenFlags: TOpenFlags;
@@ -139,6 +145,8 @@ type
     function LoadLFM(AnUnitInfo: TUnitInfo; LFMBuf: TCodeBuffer;
                        OpenFlags: TOpenFlags;
                        CloseFlags: TCloseFlags): TModalResult;
+    function OpenComponent(const UnitFilename: string; OpenFlags: TOpenFlags;
+        CloseFlags: TCloseFlags; out Component: TComponent): TModalResult;
 
     // methods for 'close unit'
     procedure FreeDesigner(AnUnitInfo: TUnitInfo; ADesigner: TDesigner;
@@ -162,6 +170,7 @@ type
         var MainUnitSrcEdit: TSourceEditor; UpdateModified: boolean);
     procedure SaveSrcEditorProjectSpecificSettings(AnEditorInfo: TUnitEditorInfo);
     procedure SaveSourceEditorProjectSpecificSettings;
+    procedure UpdateProjectResourceInfo;
   public
     function AskSaveProject(const ContinueText, ContinueBtn: string): TModalResult;
     function SaveSourceEditorChangesToCodeCache(AEditor: TSourceEditorInterface): boolean;
@@ -179,9 +188,6 @@ type
 
 
 implementation
-
-// ToDo: break this cycle
-uses Main;
 
 var
   SourceFileMgrSingleton: TLazSourceFileManager = nil;
@@ -328,6 +334,42 @@ begin
   SaveSrcEditorProjectSpecificSettings(AnEditorInfo);
 
   Result := (AEditor.Modified) or (AnUnitInfo.Modified);
+end;
+
+procedure TLazSourceFileManager.ArrangeSourceEditorAndMessageView(PutOnTop: boolean);
+var
+  SrcNoteBook: TSourceNotebook;
+  Layout: TSimpleWindowLayout;
+begin
+  MainIDE.DoShowMessagesView(PutOnTop);
+  if SourceEditorManager.SourceWindowCount = 0 then exit;
+  SrcNoteBook := SourceEditorManager.SourceWindows[0];
+
+  Layout:=IDEWindowCreators.SimpleLayoutStorage.ItemByFormID(SrcNoteBook.Name);
+  if (Layout<>nil) and (Layout.WindowPlacement=iwpDefault)
+  and ((SrcNoteBook.Top + SrcNoteBook.Height) > MessagesView.Top)
+  and (MessagesView.Parent = nil) then
+    SrcNoteBook.Height := Max(50,Min(SrcNoteBook.Height,
+       MessagesView.Top-SrcNoteBook.Top));
+  if PutOnTop then
+  begin
+    IDEWindowCreators.ShowForm(MessagesView,true);
+    SourceEditorManager.ShowActiveWindowOnTop(False);
+  end;
+end;
+
+function TLazSourceFileManager.SomethingOfProjectIsModified(Verbose: boolean): boolean;
+begin
+  Result:=(Project1<>nil)
+      and (Project1.SomethingModified(true,true,Verbose)
+           or SourceEditorManager.SomethingModified(Verbose));
+end;
+
+function TLazSourceFileManager.FileExistsInIDE(const Filename: string;
+  SearchFlags: TProjectFileSearchFlags): boolean;
+begin
+  Result:=FileExistsCached(Filename)
+          or ((Project1<>nil) and (Project1.UnitInfoWithFilename(Filename,SearchFlags)<>nil));
 end;
 
 function TLazSourceFileManager.NewFile(NewFileDescriptor: TProjectFileDescriptor;
@@ -1235,7 +1277,7 @@ begin
   and (CompareFilenames(Project1.MainFilename,AFilename,
        not (ofVirtualFile in Flags))=0)
   then begin
-    Result:=DoOpenMainUnit(PageIndex,WindowIndex,Flags);
+    Result:=OpenMainUnit(PageIndex,WindowIndex,Flags);
     exit;
   end;
 
@@ -1650,7 +1692,7 @@ begin
       then begin
         // the project has not created any secondary files
         // or the project main source is not auto updated by the IDE
-        DoOpenMainUnit(-1,-1,[]);
+        OpenMainUnit(-1,-1,[]);
       end;
 
       // init resource files
@@ -1667,7 +1709,7 @@ begin
       Project1.Units[i].ClearModifieds;
     Project1.Modified:=false;
     // call handlers
-    HandlerResult:=TMainIDE(MainIDE).DoCallProjectChangedHandler(lihtProjectOpened);
+    HandlerResult:=MainIDE.DoCallProjectChangedHandler(lihtProjectOpened, Project1);
     if not (HandlerResult in [mrOk,mrCancel,mrAbort]) then
       HandlerResult:=mrCancel;
     if (Result=mrOk) then
@@ -1825,7 +1867,7 @@ begin
       end;
     end;
     // call handlers
-    HandlerResult:=TMainIDE(MainIDE).DoCallProjectChangedHandler(lihtProjectOpened);
+    HandlerResult:=MainIDE.DoCallProjectChangedHandler(lihtProjectOpened, Project1);
     if not (HandlerResult in [mrOk,mrCancel,mrAbort]) then
       HandlerResult:=mrCancel;
     if (Result=mrOk) then
@@ -1834,6 +1876,107 @@ begin
   if Result=mrAbort then exit;
   //debugln('TLazSourceFileManager.OpenProjectFile end  CodeToolBoss.ConsistencyCheck=',IntToStr(CodeToolBoss.ConsistencyCheck));
   {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TLazSourceFileManager.OpenProjectFile end');{$ENDIF}
+end;
+
+procedure TLazSourceFileManager.NewProjectFromFile;
+var
+  OpenDialog:TOpenDialog;
+  AFilename: string;
+  PreReadBuf: TCodeBuffer;
+  Filter: String;
+Begin
+  OpenDialog:=TOpenDialog.Create(nil);
+  try
+    InputHistories.ApplyFileDialogSettings(OpenDialog);
+    OpenDialog.Title:=lisChooseProgramSourcePpPasLpr;
+    OpenDialog.Options:=OpenDialog.Options+[ofPathMustExist,ofFileMustExist];
+    Filter := lisLazarusUnit + ' (*.pas;*.pp;*.p)|*.pas;*.pp;*.p'
+      + '|' + lisLazarusProjectSource + ' (*.lpr)|*.lpr';
+    Filter:=Filter+ '|' + dlgAllFiles + ' (' + GetAllFilesMask + ')|' + GetAllFilesMask;
+    OpenDialog.Filter := Filter;
+    if OpenDialog.Execute then begin
+      AFilename:=ExpandFileNameUTF8(OpenDialog.Filename);
+      if not FilenameIsPascalSource(AFilename) then begin
+        IDEMessageDialog(lisPkgMangInvalidFileExtension,
+          lisProgramSourceMustHaveAPascalExtensionLikePasPpOrLp,
+          mtError,[mbOk],'');
+        exit;
+      end;
+      if mrOk<>LoadCodeBuffer(PreReadBuf,AFileName,
+                              [lbfCheckIfText,lbfUpdateFromDisk,lbfRevert],false)
+      then
+        exit;
+      if CreateProjectForProgram(PreReadBuf)=mrOk then begin
+        exit;
+      end;
+    end;
+  finally
+    InputHistories.StoreFileDialogSettings(OpenDialog);
+    OpenDialog.Free;
+  end;
+end;
+
+function TLazSourceFileManager.CreateProjectForProgram(ProgramBuf: TCodeBuffer): TModalResult;
+var
+  NewProjectDesc: TProjectDescriptor;
+  MainUnitInfo: TUnitInfo;
+begin
+  //writeln('[TLazSourceFileManager.DoCreateProjectForProgram] A ',ProgramBuf.Filename);
+  if (Project1 <> nil)
+  and (not MainIDE.DoResetToolStatus([rfInteractive, rfSuccessOnTrigger])) then exit;
+
+  Result:=SaveProjectIfChanged;
+  if Result=mrAbort then exit;
+
+  // let user choose the program type
+  NewProjectDesc:=nil;
+  if ChooseNewProject(NewProjectDesc)<>mrOk then exit;
+
+  // close old project
+  If Project1<>nil then begin
+    if CloseProject=mrAbort then begin
+      Result:=mrAbort;
+      exit;
+    end;
+  end;
+
+  // reload file (if the file was open in the IDE, closeproject unloaded it)
+  ProgramBuf.Reload;
+
+  // switch codetools to new project directory
+  CodeToolBoss.GlobalValues.Variables[ExternalMacroStart+'ProjPath']:=
+    ExpandFileNameUTF8(ExtractFilePath(ProgramBuf.Filename));
+
+  // create a new project
+  Project1:=MainIDE.CreateProjectObject(NewProjectDesc,ProjectDescriptorProgram);
+  Result:=InitProjectForProgram(ProgramBuf);
+  //writeln('[TLazSourceFileManager.DoCreateProjectForProgram] END');
+end;
+
+function TLazSourceFileManager.InitProjectForProgram(ProgramBuf: TCodeBuffer): TModalResult;
+var
+  MainUnitInfo: TUnitInfo;
+begin
+  Project1.BeginUpdate(true);
+  try
+    if ProjInspector<>nil then ProjInspector.LazProject:=Project1;
+    MainUnitInfo:=Project1.MainUnitInfo;
+    MainUnitInfo.Source:=ProgramBuf;
+    Project1.ProjectInfoFile:=ChangeFileExt(ProgramBuf.Filename,'.lpi');
+    MainIDE.DoMergeDefaultProjectOptions(Project1);
+    MainIDE.UpdateCaption;
+    IncreaseCompilerParseStamp;
+    // add and load default required packages
+    PkgBoss.OpenProjectDependencies(Project1,true);
+    Result:=CompleteLoadingProjectInfo;
+    if Result<>mrOk then exit;
+  finally
+    Project1.EndUpdate;
+  end;
+  // show program unit
+  Result:=OpenEditorFile(ProgramBuf.Filename,-1,-1, nil, [ofAddToRecent,ofRegularFile]);
+  if Result=mrAbort then exit;
+  Result:=mrOk;
 end;
 
 function TLazSourceFileManager.SaveProject(Flags: TSaveFlags):TModalResult;
@@ -1925,8 +2068,24 @@ begin
   // everything went well => clear all modified flags
   Project1.ClearModifieds(true);
   // update menu and buttons state
-  TMainIDE(MainIDE).UpdateSaveMenuItemsAndButtons(true);
+  MainIDE.UpdateSaveMenuItemsAndButtons(true);
   //DebugLn('TLazSourceFileManager.SaveProject End');
+  Result:=mrOk;
+end;
+
+function TLazSourceFileManager.SaveProjectIfChanged: TModalResult;
+begin
+  if SomethingOfProjectIsModified then begin
+    if IDEMessageDialog(lisProjectChanged, Format(lisSaveChangesToProject,
+      [Project1.GetTitleOrName]),
+      mtconfirmation, [mbYes, mbNo, mbCancel])=mrYes then
+    begin
+      if SaveProject([])=mrAbort then begin
+        Result:=mrAbort;
+        exit;
+      end;
+    end;
+  end;
   Result:=mrOk;
 end;
 
@@ -1941,7 +2100,7 @@ begin
   end;
 
   // call handlers
-  Result:=TMainIDE(MainIDE).DoCallProjectChangedHandler(lihtProjectClose);
+  Result:=MainIDE.DoCallProjectChangedHandler(lihtProjectClose, Project1);
   if Result=mrAbort then exit;
 
     // close all loaded files
@@ -2030,7 +2189,7 @@ begin
                 mtConfirmation, [mrYes, lisCreateProject, mrCancel])<>mrYes
               then
                 exit;
-              TMainIDE(MainIDE).DoCreateProjectForProgram(PreReadBuf);
+              CreateProjectForProgram(PreReadBuf);
               exit;
             end;
           end;
@@ -2221,7 +2380,7 @@ begin
   and (csSetCaption in TControl(NewComponent).ControlStyle) then
     TControl(NewComponent).Caption:=NewComponent.Name;
   NewUnitInfo.Component := NewComponent;
-  TMainIDE(MainIDE).CreateDesignerForComponent(NewUnitInfo,NewComponent);
+  MainIDE.CreateDesignerForComponent(NewUnitInfo,NewComponent);
 
   NewUnitInfo.ComponentName:=NewComponent.Name;
   NewUnitInfo.ComponentResourceName:=NewUnitInfo.ComponentName;
@@ -3384,15 +3543,13 @@ begin
       NewProgramName:=CodeToolBoss.GetSourceName(PreReadBuf,false);
       if NewProgramName<>'' then begin
         // source is a program
-        // either this is a lazarus project
-        // or it is not yet a lazarus project ;)
+        // either this is a lazarus project or it is not yet a lazarus project ;)
         LPIFilename:=ChangeFileExt(AFilename,'.lpi');
         if FileExistsUTF8(LPIFilename) then begin
           if IDEQuestionDialog(lisProjectInfoFileDetected,
-            Format(lisTheFileSeemsToBeTheProgramFileOfAnExistingLazarusP, [
-              AFilename]), mtConfirmation,
-              [mrOk, lisOpenProject2, mrCancel, lisOpenTheFileAsNormalSource])
-            =mrOk then
+            Format(lisTheFileSeemsToBeTheProgramFileOfAnExistingLazarusP,
+                   [AFilename]), mtConfirmation,
+              [mrOk, lisOpenProject2, mrCancel, lisOpenTheFileAsNormalSource])=mrOk then
           begin
             Result:=InitOpenedProjectFile(LPIFilename,[]);
             Handled:=true;
@@ -3405,7 +3562,7 @@ begin
           if IDEMessageDialog(ACaption, AText, mtConfirmation,
               [mbYes, mbNo])=mrYes then
           begin
-            Result:=TMainIDE(MainIDE).DoCreateProjectForProgram(PreReadBuf);
+            Result:=CreateProjectForProgram(PreReadBuf);
             Handled:=true;
             exit;
           end;
@@ -3425,7 +3582,7 @@ begin
   Result:=mrOk;
 end;
 
-function TLazSourceFileManager.DoOpenMainUnit(PageIndex, WindowIndex: integer;
+function TLazSourceFileManager.OpenMainUnit(PageIndex, WindowIndex: integer;
   Flags: TOpenFlags): TModalResult;
 var
   MainUnitInfo: TUnitInfo;
@@ -3448,8 +3605,8 @@ begin
   end;
 
   // open file in source notebook
-  Result:=SourceFileMgr.OpenFileInSourceEditor(MainUnitInfo.GetClosedOrNewEditorInfo,
-                                                 PageIndex,WindowIndex,Flags);
+  Result:=OpenFileInSourceEditor(MainUnitInfo.GetClosedOrNewEditorInfo,
+                                 PageIndex,WindowIndex,Flags);
   if Result<>mrOk then exit;
 
   Result:=mrOk;
@@ -3458,7 +3615,7 @@ begin
   {$ENDIF}
 end;
 
-function TLazSourceFileManager.DoRevertMainUnit: TModalResult;
+function TLazSourceFileManager.RevertMainUnit: TModalResult;
 begin
   Result:=mrOk;
   if Project1.MainUnitID<0 then exit;
@@ -3471,6 +3628,84 @@ begin
     // -> just reload the source and update the source name
     Result:=Project1.MainUnitInfo.ReadUnitSource(true,true);
   end;
+end;
+
+function TLazSourceFileManager.CheckLFMInEditor(
+  LFMUnitInfo: TUnitInfo; Quiet: boolean): TModalResult;
+var
+  LFMChecker: TLFMChecker;
+  UnitFilename: String;
+  PascalBuf: TCodeBuffer;
+  i: integer;
+begin
+  // check, if a .lfm file is opened in the source editor
+  if (LFMUnitInfo=nil) or
+    ((CompareFileExt(LFMUnitInfo.Filename,'.lfm',false)<>0) and
+     (CompareFileExt(LFMUnitInfo.Filename,'.dfm',false)<>0)) then
+  begin
+    if not Quiet then
+    begin
+      IDEMessageDialog(lisNoLFMFile,
+        lisThisFunctionNeedsAnOpenLfmFileInTheSourceEditor,
+        mtError,[mbCancel]);
+    end;
+    Result:=mrCancel;
+    exit;
+  end;
+  // try to find the pascal unit
+  for i:=Low(PascalFileExt) to High(PascalFileExt) do begin
+    UnitFilename:=ChangeFileExt(LFMUnitInfo.Filename,PascalFileExt[i]);
+    if FileExistsUTF8(UnitFilename) then
+      break
+    else
+      UnitFilename:='';
+  end;
+  if UnitFilename='' then begin
+    IDEMessageDialog(lisNoPascalFile,
+      Format(lisUnableToFindPascalUnitPasPpForLfmFile,
+             [LineEnding, '"', LFMUnitInfo.Filename, '"']),
+      mtError,[mbCancel]);
+    Result:=mrCancel;
+    exit;
+  end;
+
+  if MainIDE.ToolStatus<>itNone then begin
+    DebugLn(['TLazSourceFileManager.DoCheckLFMInEditor ToolStatus<>itNone']);
+    Result:=mrCancel;
+    exit;
+  end;
+  // load the pascal unit
+  SaveSourceEditorChangesToCodeCache(nil);
+  Result:=LoadCodeBuffer(PascalBuf,UnitFilename,[],false);
+  if Result<>mrOk then exit;
+
+  // open messages window
+  SourceEditorManager.ClearErrorLines;
+  if MessagesView<>nil then
+    MessagesView.Clear;
+  ArrangeSourceEditorAndMessageView(false);
+
+  // parse the LFM file and the pascal unit
+  LFMChecker:=TLFMChecker.Create(PascalBuf,LFMUnitInfo.Source,@MessagesView.AddMsg);
+  try
+    LFMChecker.RootMustBeClassInUnit:=true;
+    LFMChecker.RootMustBeClassInIntf:=true;
+    LFMChecker.ObjectsMustExist:=true;
+    if LFMChecker.Repair=mrOk then begin
+      if not Quiet then begin
+        IDEMessageDialog(lisLFMIsOk,
+          lisClassesAndPropertiesExistValuesWereNotChecked,
+          mtInformation,[mbOk],'');
+      end;
+    end else begin
+      MainIDE.DoJumpToCompilerMessage(-1,true);
+      Result:=mrAbort;
+      exit;
+    end;
+  finally
+    LFMChecker.Free;
+  end;
+  Result:=mrOk;
 end;
 
 function TLazSourceFileManager.OpenFileInSourceEditor(AnEditorInfo: TUnitEditorInfo;
@@ -3654,10 +3889,10 @@ begin
 
   // Note: think about virtual and normal .lfm files.
   LFMFilename:=ChangeFileExt(AnUnitInfo.Filename,'.lfm');
-  if not TMainIDE(MainIDE).FileExistsInIDE(LFMFilename,[pfsfOnlyEditorFiles]) then
+  if not FileExistsInIDE(LFMFilename,[pfsfOnlyEditorFiles]) then
     LFMFilename:=ChangeFileExt(AnUnitInfo.Filename,'.dfm');
   LFMBuf:=nil;
-  if not TMainIDE(MainIDE).FileExistsInIDE(LFMFilename,[pfsfOnlyEditorFiles]) then begin
+  if not FileExistsInIDE(LFMFilename,[pfsfOnlyEditorFiles]) then begin
     // there is no LFM file -> ok
     {$IFDEF IDE_DEBUG}
     debugln('TLazSourceFileManager.LoadLFM there is no LFM file for "',AnUnitInfo.Filename,'"');
@@ -3667,7 +3902,7 @@ begin
   end;
 
   // there is a lazarus form text file -> load it
-  Result:=TMainIDE(MainIDE).LoadIDECodeBuffer(LFMBuf,LFMFilename,[lbfUpdateFromDisk],CanAbort);
+  Result:=LoadIDECodeBuffer(LFMBuf,LFMFilename,[lbfUpdateFromDisk],CanAbort);
   if Result<>mrOk then begin
     DebugLn(['TLazSourceFileManager.LoadLFM LoadIDECodeBuffer failed']);
     exit;
@@ -3693,7 +3928,7 @@ var
   LFMType: String;
   ACaption, AText: String;
   NewUnitName: String;
-  AncestorUnitInfo: TUnitInfo;
+  AncestorUnitInfo, NestedUnitInfo, LFMUnitInfo: TUnitInfo;
   ReferencesLocked: Boolean;
   LCLVersion: string;
   MissingClasses: TStrings;
@@ -3701,7 +3936,6 @@ var
   i: Integer;
   NestedClassName: string;
   NestedClass: TComponentClass;
-  NestedUnitInfo: TUnitInfo;
   DisableAutoSize: Boolean;
   NewControl: TControl;
 begin
@@ -3714,8 +3948,7 @@ begin
   NewComponent:=nil;
   try
     if (ofRevert in OpenFlags) and (AnUnitInfo.Component<>nil) then begin
-      // the component must be destroyed and recreated
-      // => store references
+      // the component must be destroyed and recreated => store references
       ReferencesLocked:=true;
       Project1.LockUnitComponentDependencies;
       Project1.UpdateUnitComponentDependencies;
@@ -3731,7 +3964,7 @@ begin
     // check installed packages
     if EnvironmentOptions.CheckPackagesOnFormCreate and
        (AnUnitInfo.Component = nil) and
-       AnUnitInfo.IsPartOfProject and
+        AnUnitInfo.IsPartOfProject and
        (not (ofProjectLoading in OpenFlags)) then
     begin
       // opening a form of the project -> check installed packages
@@ -3868,7 +4101,7 @@ begin
           AnUnitInfo.AddRequiresComponentDependency(AncestorUnitInfo,[ucdtAncestor]);
         if NewComponent<>nil then begin
           // component loaded, now load the referenced units
-          Result:=TMainIDE(MainIDE).DoFixupComponentReferences(AnUnitInfo.Component,OpenFlags);
+          Result:=MainIDE.DoFixupComponentReferences(AnUnitInfo.Component,OpenFlags);
           if Result<>mrOk then begin
             DebugLn(['TLazSourceFileManager.LoadLFM DoFixupComponentReferences failed']);
             exit;
@@ -3889,7 +4122,8 @@ begin
             DebugLn(['TLazSourceFileManager.LoadLFM DoOpenEditorFile failed']);
             exit;
           end;
-          Result:=TMainIDE(MainIDE).DoCheckLFMInEditor(true);
+          LFMUnitInfo:=Project1.UnitWithEditorComponent(SourceEditorManager.ActiveEditor);
+          Result:=CheckLFMInEditor(LFMUnitInfo, true);
           if Result=mrOk then Result:=mrCancel;
           exit;
         end;
@@ -3923,7 +4157,7 @@ begin
   begin
     DesignerForm := FormEditor1.GetDesignerForm(NewComponent);
     if (DesignerForm=nil) or (DesignerForm.Designer=nil) then
-      DesignerForm := TMainIDE(MainIDE).CreateDesignerForComponent(AnUnitInfo,NewComponent);
+      DesignerForm := MainIDE.CreateDesignerForComponent(AnUnitInfo,NewComponent);
   end;
 
   // select the new form (object inspector, formeditor, control selection)
@@ -3950,6 +4184,80 @@ begin
   debugln('[TLazSourceFileManager.LoadLFM] LFM end');
   {$ENDIF}
   Result:=mrOk;
+end;
+
+function TLazSourceFileManager.OpenComponent(const UnitFilename: string;
+  OpenFlags: TOpenFlags; CloseFlags: TCloseFlags; out Component: TComponent): TModalResult;
+var
+  AnUnitInfo: TUnitInfo;
+  LFMFilename: String;
+  UnitCode: TCodeBuffer;
+  LFMCode: TCodeBuffer;
+  AFilename: String;
+begin
+  if Project1=nil then exit(mrCancel);
+  // try to find a unit name without expaning the path. this is required if unit is virtual
+  // in other case file name will be expanded with the wrong path
+  AFilename := UnitFilename;
+  AnUnitInfo:=Project1.UnitInfoWithFilename(AFilename);
+  if AnUnitInfo = nil then
+  begin
+    AFilename:=TrimAndExpandFilename(UnitFilename);
+    if (AFilename='') or (not FileExistsInIDE(AFilename,[])) then begin
+      DebugLn(['TLazSourceFileManager.DoOpenComponent file not found ',AFilename]);
+      exit(mrCancel);
+    end;
+    AnUnitInfo:=Project1.UnitInfoWithFilename(AFilename);
+  end;
+  if (not (ofRevert in OpenFlags))
+  and (AnUnitInfo<>nil) and (AnUnitInfo.Component<>nil) then begin
+    // already open
+    Component:=AnUnitInfo.Component;
+    Result:=mrOk;
+    exit;
+  end;
+
+  LFMFilename:=ChangeFileExt(AFilename,'.lfm');
+  if not FileExistsInIDE(LFMFilename,[]) then
+    LFMFilename:=ChangeFileExt(AFilename,'.dfm');
+  if not FileExistsInIDE(LFMFilename,[]) then begin
+    DebugLn(['TLazSourceFileManager.DoOpenComponent file not found ',LFMFilename]);
+    exit(mrCancel);
+  end;
+
+  // load unit source
+  Result:=LoadCodeBuffer(UnitCode,AFilename,[lbfCheckIfText],true);
+  if Result<>mrOk then begin
+    debugln('TLazSourceFileManager.DoOpenComponent Failed loading ',AFilename);
+    exit;
+  end;
+
+  // create unit info
+  if AnUnitInfo=nil then begin
+    AnUnitInfo:=TUnitInfo.Create(UnitCode);
+    AnUnitInfo.ReadUnitNameFromSource(true);
+    Project1.AddFile(AnUnitInfo,false);
+  end;
+
+  // load lfm source
+  Result:=LoadCodeBuffer(LFMCode,LFMFilename,[lbfCheckIfText],true);
+  if Result<>mrOk then begin
+    debugln('TLazSourceFileManager.DoOpenComponent Failed loading ',LFMFilename);
+    exit;
+  end;
+
+  // load resource
+  Result:=LoadLFM(AnUnitInfo,LFMCode,OpenFlags,CloseFlags);
+  if Result<>mrOk then begin
+    debugln('TLazSourceFileManager.DoOpenComponent DoLoadLFM failed ',LFMFilename);
+    exit;
+  end;
+
+  Component:=AnUnitInfo.Component;
+  if Component<>nil then
+    Result:=mrOk
+  else
+    Result:=mrCancel;
 end;
 
 function TLazSourceFileManager.FindBaseComponentClass(const AComponentClassName,
@@ -4324,6 +4632,15 @@ begin
   finally
     AnUnitInfo.LoadingComponent:=false;
   end;
+end;
+
+function TLazSourceFileManager.LoadIDECodeBuffer(var ACodeBuffer: TCodeBuffer;
+  const AFilename: string; Flags: TLoadBufferFlags; ShowAbort: boolean): TModalResult;
+begin
+  if (Project1<>nil)
+  and (Project1.UnitInfoWithFilename(AFilename,[pfsfOnlyEditorFiles])<>nil) then
+    Exclude(Flags,lbfUpdateFromDisk);
+  Result:=LoadCodeBuffer(ACodeBuffer,AFilename,Flags,ShowAbort);
 end;
 
 procedure TLazSourceFileManager.FreeDesigner(AnUnitInfo: TUnitInfo;
@@ -4797,7 +5114,7 @@ begin
   end;
 
   // update HasResources information
-  TMainIDE(MainIDE).DoUpdateProjectResourceInfo;
+  UpdateProjectResourceInfo;
 
   // save project info file
   if (not (sfSaveToTestDir in Flags))
@@ -4807,7 +5124,7 @@ begin
     EnvironmentOptions.LastSavedProjectFile:=Project1.ProjectInfoFile;
     IDEProtocolOpts.LastProjectLoadingCrashed := False;
     AddRecentProjectFileToEnvironment(Project1.ProjectInfoFile);
-    TMainIDE(MainIDE).SaveIncludeLinks;
+    MainIDE.SaveIncludeLinks;
     MainIDE.UpdateCaption;
     if Result=mrAbort then exit;
   end;
@@ -4886,6 +5203,25 @@ var
 begin
   for i := 0 to Project1.AllEditorsInfoCount - 1 do
     SaveSrcEditorProjectSpecificSettings(Project1.AllEditorsInfo[i]);
+end;
+
+procedure TLazSourceFileManager.UpdateProjectResourceInfo;
+var
+  AnUnitInfo: TUnitInfo;
+  LFMFilename: String;
+begin
+  AnUnitInfo:=Project1.FirstPartOfProject;
+  while AnUnitInfo<>nil do begin
+    if (not AnUnitInfo.HasResources)
+    and (not AnUnitInfo.IsVirtual) and FilenameIsPascalUnit(AnUnitInfo.Filename)
+    then begin
+      LFMFilename:=ChangeFileExt(AnUnitInfo.Filename,'.lfm');
+      if not FileExistsUTF8(LFMFilename) then
+        LFMFilename:=ChangeFileExt(AnUnitInfo.Filename,'.dfm');
+      AnUnitInfo.HasResources:=FileExistsUTF8(LFMFilename);
+    end;
+    AnUnitInfo:=AnUnitInfo.NextPartOfProject;
+  end;
 end;
 
 function TLazSourceFileManager.ShowSaveProjectAsDialog(UseMainSourceFile: boolean): TModalResult;
@@ -5147,8 +5483,7 @@ var
   SrcModified: Boolean;
 begin
   if Project1=nil then exit(mrOk);
-  //debugln(['TLazSourceFileManager.AskSaveProject SomethingOfProjectIsModified=',SomethingOfProjectIsModified,' Project1.SomeDataModified(false)=',Project1.SomeDataModified(false)]);
-  if not TMainIDE(MainIDE).SomethingOfProjectIsModified then exit(mrOk);
+  if not SomethingOfProjectIsModified then exit(mrOk);
 
   DataModified:=Project1.SomeDataModified(false);
   SrcModified:=SourceEditorManager.SomethingModified(false);
@@ -5183,7 +5518,7 @@ begin
     if Project1.SessionStorage=pssNone then
       // session is not saved => skip
       exit(mrOk)
-    else if not TMainIDE(MainIDE).SomethingOfProjectIsModified then
+    else if not SomethingOfProjectIsModified then
       // no change
       exit(mrOk)
     else begin

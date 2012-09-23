@@ -176,8 +176,6 @@ type
     procedure DoCallNotifyHandler(HandlerType: TLazarusIDEHandlerType);
     function DoCallModalFunctionHandler(HandlerType: TLazarusIDEHandlerType
                                         ): TModalResult;
-    function DoCallProjectChangedHandler(HandlerType: TLazarusIDEHandlerType;
-                                         AProject: TLazProject): TModalResult;
     function DoCallModalHandledHandler(HandlerType: TLazarusIDEHandlerType;
                                        var Handled: boolean): TModalResult;
     procedure SetMainBarSubTitle(const AValue: string); virtual;
@@ -250,6 +248,8 @@ type
     function DoBuildProject(const AReason: TCompileReason;
                             Flags: TProjectBuildFlags): TModalResult; virtual; abstract;
     function GetProjectFileForProjectEditor(AEditor: TSourceEditorInterface): TLazProjectFile; virtual; abstract;
+    function DoCallProjectChangedHandler(HandlerType: TLazarusIDEHandlerType;
+                                         AProject: TLazProject): TModalResult;
 
     // configs
     class function GetPrimaryConfigPath: String; virtual; abstract;

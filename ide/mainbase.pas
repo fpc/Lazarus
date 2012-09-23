@@ -153,6 +153,8 @@ type
     function OnCodeToolBossCheckAbort: boolean;
     procedure CreateObjectInspector; virtual; abstract;
     procedure DoShowDesignerFormOfCurrentSrc; virtual; abstract;
+    function CreateDesignerForComponent(AnUnitInfo: TUnitInfo;
+                        AComponent: TComponent): TCustomForm; virtual; abstract;
     procedure UpdateSaveMenuItemsAndButtons(UpdateSaveAll: boolean); virtual; abstract;
 
     procedure DoMergeDefaultProjectOptions(AProject: TProject);
