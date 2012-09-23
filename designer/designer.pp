@@ -43,7 +43,7 @@ uses
   ClipBrd, TypInfo, contnrs,
   // IDEIntf
   IDEDialogs, PropEdits, PropEditUtils, ComponentEditors, MenuIntf, IDEImagesIntf,
-  FormEditingIntf, ComponentReg,
+  FormEditingIntf, ComponentReg, //MainBase,
   // IDE
   LazarusIDEStrConsts, EnvironmentOpts, IDECommands,
   NonControlDesigner, FrameDesigner, AlignCompsDlg, SizeCompsDlg, ScaleCompsDlg,
@@ -3413,8 +3413,6 @@ begin
       Images := IDEImages.Images_16;
     end;
   end;
-  
-
   // assign the root TMenuItem to the registered menu root.
   // This will automatically create all registered items
   {$IFDEF VerboseMenuIntf}
@@ -3471,7 +3469,9 @@ var
   MultiCompsAreSelected: boolean;
   OneControlSelected: Boolean;
   SelectionVisible: Boolean;
-  
+  //ActiveSourceEditor: TSourceEditor;
+  //ActiveUnitInfo: TUnitInfo;
+
   procedure UpdateChangeParentMenu;
   var
     Candidates: TFPList;
@@ -3526,7 +3526,7 @@ var
   
 begin
   ControlSelIsNotEmpty:=(ControlSelection.Count>0)
-                        and (ControlSelection.SelectionForm=Form);
+                    and (ControlSelection.SelectionForm=Form);
   LookupRootIsSelected:=ControlSelection.LookupRootSelected;
   OnlyNonVisualsAreSelected := ControlSelection.OnlyNonVisualPersistentsSelected;
   SelectionVisible:=not ControlSelection.OnlyInvisiblePersistentsSelected;
@@ -3557,6 +3557,9 @@ begin
   DesignerMenuDeleteSelection.Enabled := CompsAreSelected;
   
   DesignerMenuChangeClass.Enabled := CompsAreSelected and (ControlSelection.Count = 1);
+  // ToDo: Disable ViewLFM menu item for virtual units. There is no form file yet.
+  //MainIDE.GetUnitWithPersistent(FLookupRoot, ActiveSourceEditor, ActiveUnitInfo);
+  //DesignerMenuViewLFM.Enabled := not ActiveUnitInfo.IsVirtual;
   UpdateChangeParentMenu;
 
   DesignerMenuSnapToGridOption.Checked := EnvironmentOptions.SnapToGrid;
