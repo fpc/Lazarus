@@ -36,28 +36,22 @@ begin
   //debugln('FindApplicationComponent ComponentName="',ComponentName,'" Result=',DbgSName(Result));
 end;
 
-function GetHintControl(Control: TControl): TControl;
-// Returns control that provides hint text for the specified Control, or nil if no hint.
-// If Hint='' and ParentShowHint=True, hint text comes from the closest parent that has it.
+function GetControlShortHint(Control: TControl): String;
 begin
-  // The control or one of its parents must have ShowHint=True.
-  Result := Control;
-  while (Result <> nil) and not Result.ShowHint do begin
-    if not Result.IsParentShowHint then // No ShowHint nor ParentShowHint.
-      exit(nil);
-    Result := Result.Parent;            // A level up in parent tree.
+  Result := '';
+  while (Control <> nil) and (Result = '') do
+  begin
+    Result := GetShortHint(Control.Hint);
+    Control := Control.Parent;
   end;
-  if (Result = nil) then                // None of parents has ShowHint=True
-    exit;
+end;
 
-  // Find control that actually provides the hint = first parent with a hint text.
+function GetHintControl(Control: TControl): TControl;
+begin
   Result := Control;
-  while (Result <> nil) and (Result.Hint = '') and (Result.OnShowHint = nil)
-  and (Result.ShowHint or Result.IsParentShowHint) do
+  while (Result <> nil) and (not Result.ShowHint) do
     Result := Result.Parent;
-
-  // Show hint only when program is running in normal state
-  if (Result <> nil) and
+  if (Result <> nil)and
      ([csDesigning, csDestroying, csLoading] * Result.ComponentState <> []) then
     Result := nil;
 end;
@@ -814,7 +808,7 @@ begin
   OffsetRect(HintInfo.CursorRect, ParentOrigin.X - ClientOrigin.X,
     ParentOrigin.Y - ClientOrigin.Y);
   HintInfo.CursorPos := FHintControl.ScreenToClient(Info.MousePos);
-  HintInfo.HintStr := GetShortHint(Info.Control.Hint);
+  HintInfo.HintStr := GetControlShortHint(Info.Control);
   HintInfo.ReshowTimeout := 0;
   HintInfo.HideTimeout := FHintHidePause
                           +FHintHidePausePerChar*length(HintInfo.HintStr);

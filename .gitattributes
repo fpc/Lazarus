@@ -3926,6 +3926,11 @@ examples/componentstreaming/componentstreaming.lpi svneol=native#text/plain
 examples/componentstreaming/componentstreaming.lpr svneol=native#text/plain
 examples/componentstreaming/mainunit.lfm svneol=native#text/plain
 examples/componentstreaming/mainunit.pas svneol=native#text/plain
+examples/controlhint/Project1.lpi svneol=native#text/plain
+examples/controlhint/Project1.lpr svneol=native#text/plain
+examples/controlhint/Project1.res -text
+examples/controlhint/Unit1.lfm svneol=native#text/plain
+examples/controlhint/Unit1.pas svneol=native#text/plain
 examples/cursors/car.cur -text svneol=unset#image/x-cursor
 examples/cursors/car.lrs svneol=native#text/pascal
 examples/cursors/project1.lpi svneol=native#text/plain
