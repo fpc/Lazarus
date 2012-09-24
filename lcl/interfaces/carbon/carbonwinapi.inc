@@ -2280,6 +2280,80 @@ begin
   {$ENDIF}
 end;
 
+type
+  TColorComponents = array[0..3] of CGFloat;
+
+  PLinearGradientInfo = ^TLinearGradientInfo;
+  TLinearGradientInfo = record
+    colors: array[0..1] of TColorComponents;
+  end;
+
+function VertexToColor(AVertex: tagTRIVERTEX): TColorComponents;
+var
+  TheAlpha: Byte;
+begin
+  TheAlpha := AVertex.Alpha shr 8;
+  if TheAlpha = 0 then
+    TheAlpha := 255;
+  with AVertex do
+  begin
+    Result[0] := (Red shr 8) / 255;
+    Result[1] := (Green shr 8) / 255;
+    Result[2] := (Blue shr 8 )/ 255;
+    Result[3] := TheAlpha / 255;
+  end;
+end;
+
+function LinearGradientCreateInfo(TL, BR: tagTRIVERTEX): UnivPtr;
+var
+  Swap: Longint;
+  SwapColors: Boolean;
+  Info: PLinearGradientInfo;
+  Tmp: TColorComponents;
+begin
+  GetMem(Info, SizeOf(TLinearGradientInfo));
+  SwapColors := (BR.Y < TL.Y) and (BR.X < TL.X);
+  if BR.X < TL.X then
+  begin
+    Swap := BR.X;
+    BR.X := TL.X;
+    TL.X := Swap;
+  end;
+  if BR.Y < TL.Y then
+  begin
+    Swap := BR.Y;
+    BR.Y := TL.Y;
+    TL.Y := Swap;
+  end;
+  Info^.colors[0] := VertexToColor(TL);
+  Info^.colors[1] := VertexToColor(BR);
+  if SwapColors then
+  begin
+    Tmp := Info^.colors[0];
+    Info^.colors[0] := Info^.colors[1];
+    Info^.colors[1] := Tmp;
+  end;
+end;
+
+procedure LinearGradientReleaseInfo(info: UnivPtr); mwpascal;
+begin
+  FreeMem(info);
+end;
+
+procedure LinearGradientEvaluate(info: UnivPtr; inputValue: CGFloatPtr; outputValue: CGFloatPtr); mwpascal;
+var
+  GradientInfo: PLinearGradientInfo absolute info;
+  Position: CGFloat;
+  I: Integer;
+begin
+  Position := inputValue^;
+  if Position = 0 then
+    System.Move(GradientInfo^.colors[0], outputValue^, SizeOf(TColorComponents))
+  else
+    for I := 0 to 3 do
+      outputValue[I] := GradientInfo^.colors[0][I] + Position * (GradientInfo^.colors[1][I] - GradientInfo^.colors[0][I]);
+end;
+
 function TCarbonWidgetSet.GradientFill(DC: HDC; Vertices: PTriVertex;
   NumVertices: Longint; Meshes: Pointer; NumMeshes: Longint; Mode: Longint
   ): Boolean;
@@ -2292,24 +2366,6 @@ function TCarbonWidgetSet.GradientFill(DC: HDC; Vertices: PTriVertex;
   function DoFillVRect: Boolean; inline;
   begin
     Result := (Mode and GRADIENT_FILL_RECT_V) = GRADIENT_FILL_RECT_V;
-  end;
-
-  function VertexToColor(AVertex: tagTRIVERTEX): CGColorRef;
-  var
-    TheAlpha: Byte;
-    F: array[0..3] of Single;
-  begin
-    TheAlpha := AVertex.Alpha shr 8;
-    if TheAlpha = 0 then
-      TheAlpha := 255;
-    with AVertex do
-    begin
-      F[0] := (Red shr 8) / 255;
-      F[1] := (Green shr 8) / 255;
-      F[2] := (Blue shr 8 )/ 255;
-      F[3] := TheAlpha / 255;
-    end;
-    Result := CGColorCreate(RGBColorSpace, @F[0]);
   end;
 
   function FillTriMesh(Mesh: tagGradientTriangle) : Boolean;
@@ -2385,13 +2441,14 @@ function TCarbonWidgetSet.GradientFill(DC: HDC; Vertices: PTriVertex;
 
   function FillRectMesh(Mesh: tagGradientRect) : boolean;
   var
-    TL,BR: tagTRIVERTEX;
-    Colors: array[0..2] of CGColorRef;
-    ColArray: CFArrayRef;
-    Swap: Longint;
-    SwapColors: Boolean;
-    Grad: CGGradientRef;
+    TL, BR: tagTRIVERTEX;
+    Shading: CGShadingRef;
+    ShadingFunction: CGFunctionRef;
+    ShadingCallbacks: CGFunctionCallbacks;
     Context: CGContextRef;
+    domain: array[0..1] of CGFloat;
+    range: array[0..7] of CGFloat;
+    info: UnivPtr;
   begin
     with Mesh do
     begin
@@ -2403,42 +2460,35 @@ function TCarbonWidgetSet.GradientFill(DC: HDC; Vertices: PTriVertex;
 
       TL := Vertices[UpperLeft];
       BR := Vertices[LowerRight];
-      SwapColors := (BR.Y < TL.Y) and (BR.X < TL.X);
-      if BR.X < TL.X then
-      begin
-        Swap := BR.X;
-        BR.X := TL.X;
-        TL.X := Swap;
-      end;
-      if BR.Y < TL.Y then
-      begin
-        Swap := BR.Y;
-        BR.Y := TL.Y;
-        TL.Y := Swap;
-      end;
-      Colors[0] := VertexToColor(TL);
-      Colors[1] := VertexToColor(BR);
-      if SwapColors then
-      begin
-        Colors[2] := Colors[0];
-        Colors[0] := Colors[1];
-        Colors[1] := Colors[2];
-      end;
-      // create array of colors which is needed for CGGradientRef
-      ColArray := CFArrayCreate(nil, @Colors[0], 2, nil);
-      Grad := CGGradientCreateWithColors(RGBColorSpace, ColArray, nil);
-      CFRelease(ColArray);
-      // to draw a gradient in a rectangle we need to first clip it by that
-      // rectangle and only then draw the gradient
+      info := LinearGradientCreateInfo(TL, BR);
       Context := TCarbonDeviceContext(DC).CGContext;
       CGContextSaveGState(Context);
+      // to draw a gradient in a rectangle we need to first clip it by that
+      // rectangle and only then draw the gradient
       CGContextAddRect(Context, CGRectMake(TL.X, TL.Y, BR.X - TL.X, BR.Y - TL.Y));
       CGContextClip(Context);
+
+      ShadingCallbacks.version := 0;
+      ShadingCallbacks.evaluate := @LinearGradientEvaluate;
+      ShadingCallbacks.releaseInfo := @LinearGradientReleaseInfo;
+      domain[0] := 0;
+      domain[1] := 1;
+      range[0] := 0;
+      range[1] := 1;
+      range[2] := 0;
+      range[3] := 1;
+      range[4] := 0;
+      range[5] := 1;
+      range[6] := 0;
+      range[7] := 1;
+      ShadingFunction := CGFunctionCreate(Info, 1, @domain[0], 4, @range[0], ShadingCallbacks);
       if DoFillVRect then
-        CGContextDrawLinearGradient(Context, Grad, CGPointMake(TL.X, TL.Y), CGPointMake(TL.X, BR.Y), 0)
+        Shading := CGShadingCreateAxial(RGBColorSpace, CGPointMake(TL.X, TL.Y), CGPointMake(TL.X, BR.Y), ShadingFunction, 0, 0)
       else
-        CGContextDrawLinearGradient(Context, Grad, CGPointMake(TL.X, TL.Y), CGPointMake(BR.X, TL.Y), 0);
-      CGGradientRelease(Grad);
+        Shading := CGShadingCreateAxial(RGBColorSpace, CGPointMake(TL.X, TL.Y), CGPointMake(BR.X, TL.Y), ShadingFunction, 0, 0);
+
+      CGContextDrawShading(Context, Shading);
+      CGShadingRelease(Shading);
       CGContextRestoreGState(Context);
     end;
   end;
