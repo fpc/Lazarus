@@ -285,13 +285,18 @@ end;
 
 procedure TListSourceTest.Bounds;
 
-  procedure Check(AExpectedLB, AExpectedUB: Integer; AValue: Double);
+  procedure Check2(AExpectedLB, AExpectedUB: Integer; AXMin, AXMax: Double);
   var
     lb, ub: Integer;
   begin
-    FSource.FindBounds(AValue, AValue, lb, ub);
+    FSource.FindBounds(AXMin, AXMax, lb, ub);
     AssertEquals(AExpectedLB, lb);
     AssertEquals(AExpectedUB, ub);
+  end;
+
+  procedure Check(AExpectedLB, AExpectedUB: Integer; AValue: Double);
+  begin
+    Check2(AExpectedLB, AExpectedUB, AValue, AValue)
   end;
 
   procedure CheckAll;
@@ -301,6 +306,8 @@ procedure TListSourceTest.Bounds;
     Check(0, -1, 0.9);
     Check(5, 4, 5.1);
     Check(4, 3, 4.9);
+    Check2(2, 4, 3, 1e100);
+    Check2(0, 1, -1e100, 2);
   end;
 
 begin
@@ -316,6 +323,9 @@ begin
   CheckAll;
   FSource.SetXValue(1, SafeNan);
   Check(2, 0, 2);
+  FSource.SetXValue(0, SafeNan);
+  Check2(2, 2, -1e100, 3);
+  Check2(2, 2, NegInfinity, 3);
 end;
 
 procedure TListSourceTest.Cache;
@@ -334,6 +344,13 @@ begin
   AssertEquals(0, FSource.ValuesTotal);
   FSource.SetYValue(0, 5);
   AssertEquals(5, FSource.ValuesTotal);
+
+  FSource.Clear;
+  AssertEquals(0, FSource.ValuesTotal);
+  FSource.Add(NaN, NaN);
+  FSource.BeginUpdate;
+  FSource.EndUpdate;
+  AssertEquals(0, FSource.ValuesTotal);
 end;
 
 procedure TListSourceTest.DataPoint;
