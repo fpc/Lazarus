@@ -1919,7 +1919,6 @@ end;
 function TLazSourceFileManager.CreateProjectForProgram(ProgramBuf: TCodeBuffer): TModalResult;
 var
   NewProjectDesc: TProjectDescriptor;
-  MainUnitInfo: TUnitInfo;
 begin
   //writeln('[TLazSourceFileManager.DoCreateProjectForProgram] A ',ProgramBuf.Filename);
   if (Project1 <> nil)
