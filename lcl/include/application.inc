@@ -2183,7 +2183,7 @@ begin
     begin
       // show the splash form and handle the paint message
       AForm.Show;
-      AForm.Paint;
+      AForm.Invalidate;
       ProcessMessages;
     end;
   end;
