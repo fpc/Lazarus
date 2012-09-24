@@ -149,8 +149,6 @@ type
         CloseFlags: TCloseFlags; out Component: TComponent): TModalResult;
 
     // methods for 'close unit'
-    procedure FreeDesigner(AnUnitInfo: TUnitInfo; ADesigner: TDesigner;
-                           AFreeComponent: boolean);
     function CloseUnitComponent(AnUnitInfo: TUnitInfo; Flags: TCloseFlags): TModalResult;
     function CloseDependingUnitComponents(AnUnitInfo: TUnitInfo;
                                           Flags: TCloseFlags): TModalResult;
@@ -177,6 +175,8 @@ type
     function ReplaceUnitUse(OldFilename, OldUnitName,
                               NewFilename, NewUnitName: string;
                               IgnoreErrors, Quiet, Confirm: boolean): TModalResult;
+    // related to Designer
+    function DesignerUnitIsVirtual(aLookupRoot: TComponent): Boolean;
   end;
 
 
@@ -4642,16 +4642,17 @@ begin
   Result:=LoadCodeBuffer(ACodeBuffer,AFilename,Flags,ShowAbort);
 end;
 
-procedure TLazSourceFileManager.FreeDesigner(AnUnitInfo: TUnitInfo;
-                                   ADesigner: TDesigner; AFreeComponent: boolean);
-begin
-  AnUnitInfo.LoadedDesigner:=false;
-  ADesigner.PrepareFreeDesigner(AFreeComponent);
-  ADesigner.FinalizeFreeDesigner;
-end;
-
 function TLazSourceFileManager.CloseUnitComponent(AnUnitInfo: TUnitInfo;
   Flags: TCloseFlags): TModalResult;
+var
+  OldDesigner: TDesigner;
+
+  procedure FreeDesigner(AFreeComponent: boolean);
+  begin
+    AnUnitInfo.LoadedDesigner:=false;
+    OldDesigner.PrepareFreeDesigner(AFreeComponent);
+    OldDesigner.FinalizeFreeDesigner;
+  end;
 
   procedure FreeUnusedComponents;
   var
@@ -4673,7 +4674,6 @@ function TLazSourceFileManager.CloseUnitComponent(AnUnitInfo: TUnitInfo;
 
 var
   AForm: TCustomForm;
-  OldDesigner: TDesigner;
   LookupRoot: TComponent;
   ComponentStillUsed: Boolean;
 begin
@@ -4746,14 +4746,14 @@ begin
         {$IFDEF VerboseIDEMultiForm}
         DebugLn(['TLazSourceFileManager.CloseUnitComponent hiding component and freeing designer: ',AnUnitInfo.Filename,' ',DbgSName(AnUnitInfo.Component)]);
         {$ENDIF}
-        FreeDesigner(AnUnitInfo, OldDesigner, false);
+        FreeDesigner(false);
       end else begin
         // free designer and design form
         {$IFDEF VerboseIDEMultiForm}
         DebugLn(['TLazSourceFileManager.CloseUnitComponent freeing component and designer: ',AnUnitInfo.Filename,' ',DbgSName(AnUnitInfo.Component)]);
         {$ENDIF}
         try
-          FreeDesigner(AnUnitInfo, OldDesigner, true);
+          FreeDesigner(true);
         finally
           AnUnitInfo.Component:=nil;
         end;
@@ -5702,6 +5702,15 @@ begin
   Result:=mrOk;
 end;
 
+function TLazSourceFileManager.DesignerUnitIsVirtual(aLookupRoot: TComponent): Boolean;
+var
+  ActiveSourceEditor: TSourceEditor;
+  ActiveUnitInfo: TUnitInfo;
+begin
+  Assert(Assigned(aLookupRoot),'SourceFileMgr.DesignerUnitIsVirtual: aLookupRoot is not assigned');
+  MainIDE.GetUnitWithPersistent(aLookupRoot, ActiveSourceEditor, ActiveUnitInfo);
+  Result := ActiveUnitInfo.IsVirtual;
+end;
 
 finalization
   SourceFileMgrSingleton.Free;

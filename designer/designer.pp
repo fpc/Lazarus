@@ -43,7 +43,7 @@ uses
   ClipBrd, TypInfo, contnrs,
   // IDEIntf
   IDEDialogs, PropEdits, PropEditUtils, ComponentEditors, MenuIntf, IDEImagesIntf,
-  FormEditingIntf, ComponentReg, //MainBase,
+  FormEditingIntf, ComponentReg,
   // IDE
   LazarusIDEStrConsts, EnvironmentOpts, IDECommands,
   NonControlDesigner, FrameDesigner, AlignCompsDlg, SizeCompsDlg, ScaleCompsDlg,
@@ -398,6 +398,8 @@ procedure RegisterStandardDesignerMenuItems;
 
 
 implementation
+
+uses SourceFileManager;
 
 type
   TCustomFormAccess = class(TCustomForm);
@@ -3469,8 +3471,6 @@ var
   MultiCompsAreSelected: boolean;
   OneControlSelected: Boolean;
   SelectionVisible: Boolean;
-  //ActiveSourceEditor: TSourceEditor;
-  //ActiveUnitInfo: TUnitInfo;
 
   procedure UpdateChangeParentMenu;
   var
@@ -3555,11 +3555,10 @@ begin
   DesignerMenuCopy.Enabled := CanCopy;
   DesignerMenuPaste.Enabled := CanPaste;
   DesignerMenuDeleteSelection.Enabled := CompsAreSelected;
-  
+
   DesignerMenuChangeClass.Enabled := CompsAreSelected and (ControlSelection.Count = 1);
-  // ToDo: Disable ViewLFM menu item for virtual units. There is no form file yet.
-  //MainIDE.GetUnitWithPersistent(FLookupRoot, ActiveSourceEditor, ActiveUnitInfo);
-  //DesignerMenuViewLFM.Enabled := not ActiveUnitInfo.IsVirtual;
+  // Disable ViewLFM menu item for virtual units. There is no form file yet.
+  DesignerMenuViewLFM.Enabled := not SourceFileMgr.DesignerUnitIsVirtual(FLookupRoot);
   UpdateChangeParentMenu;
 
   DesignerMenuSnapToGridOption.Checked := EnvironmentOptions.SnapToGrid;
