@@ -1,7 +1,3 @@
- Arabic translation of Free Pascal Lazarus Project.
- Copyright (C) 2012 Lazarus Project
- This file is distributed under the same license as the Lazarus package.
- Khaled Shagrouni <shagrouni@gmail.com>, 2012.
 msgid ""
 msgstr ""
 "Project-Id-Version: Free Pascal Lazarus Project.\n"
@@ -807,7 +803,6 @@ msgstr "التحقق من التوافق"
 msgid "Check packages on form create"
 msgstr "التحقق من الحزم عند نشأة النموذج"
 
- للتعديل
 #: lazarusidestrconsts.dlgchscodetempl
 msgid "Choose code template file (*.dci)"
 msgstr "إختر ملف قالب كود (*.dci)"
@@ -909,7 +904,6 @@ msgstr "طي"
 msgid "Hide"
 msgstr "إخفاء"
 
- ?
 #: lazarusidestrconsts.dlgcodefoldingmouse
 msgctxt "lazarusidestrconsts.dlgcodefoldingmouse"
 msgid "Mouse"
@@ -1072,7 +1066,6 @@ msgstr "كود أصغر"
 msgid "Smart linkable"
 msgstr "ربط ذكي"
 
- نضاد
 #: lazarusidestrconsts.dlgcosources
 msgid "Other sources (.pp/.pas files, used only by IDE not by compiler)"
 msgstr "مصادر أخرى (ملفات .pp/.pas، المستخدمة فقط من قبل بيئة التطوير وليس المترجم)"
@@ -1817,8 +1810,6 @@ msgstr "عرض القناة"
 msgid "Half page scroll"
 msgstr "التقليب بنصف صفحة"
 
- ربوة
- كومة
 #: lazarusidestrconsts.dlgheapandstacksize
 msgid "Heap and stack sizes"
 msgstr "أحجام الركام و الكداس"
@@ -1936,7 +1927,6 @@ msgstr "ادراج نهجيات"
 msgid "Insert into Uses section of"
 msgstr "إدراج داخل قسم الاستخدام لـ"
 
- front of = after ?
 #: lazarusidestrconsts.dlginsspaceafter
 msgid "Insert space after"
 msgstr "إدراج فراغ بعد"
@@ -7370,7 +7360,6 @@ msgstr "لا يتم غلق بيئة التطوير"
 msgid "Do not close the project"
 msgstr "لا يتم إغلاق المشروع"
 
- ??
 #: lazarusidestrconsts.lisdonotcompiledependencies
 msgid "do not compile dependencies"
 msgstr "لا يتم ترجمة الإعتماديات"
@@ -13877,7 +13866,6 @@ msgctxt "lazarusidestrconsts.lisregisters"
 msgid "Registers"
 msgstr "السجلات"
 
- مقاربة
 #: lazarusidestrconsts.lisregularexpression
 msgid "Regular expression"
 msgstr "تعبير نظامي"
