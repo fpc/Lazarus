@@ -2420,9 +2420,9 @@ function TCarbonWidgetSet.GradientFill(DC: HDC; Vertices: PTriVertex;
       Colors[1] := VertexToColor(BR);
       if SwapColors then
       begin
-        Colors[3] := Colors[0];
+        Colors[2] := Colors[0];
         Colors[0] := Colors[1];
-        Colors[1] := Colors[3];
+        Colors[1] := Colors[2];
       end;
       // create array of colors which is needed for CGGradientRef
       ColArray := CFArrayCreate(nil, @Colors[0], 2, nil);
