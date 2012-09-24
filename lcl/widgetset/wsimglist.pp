@@ -120,7 +120,7 @@ begin
     RawImg.PerformEffect(ADrawEffect, True);
 
     ABitmap := TBitmap.Create;
-    if not RawImage_CreateBitmaps(RawImg, ImgHandle, MskHandle, True)
+    if not CreateCompatibleBitmaps(RawImg, ImgHandle, MskHandle, True)
     then begin
       // bummer, the widgetset doesn't support our 32bit format, try device
       ListImg := TLazIntfImage.Create(RawImg, False);
@@ -149,7 +149,8 @@ begin
   RawImg.DataSize := AWidth * AHeight * SizeOF(AData[0]);
   RawImg.Data := PByte(AData);
 
-  RawImage_CreateBitmaps(RawImg, hbmImage, hbmMask);
+  CreateCompatibleBitmaps(RawImg, hbmImage, hbmMask);
+  //RawImage_CreateBitmaps(RawImg, hbmImage, hbmMask);
   Result := TBitmap.Create;
   Result.SetHandles(hbmImage, hbmMask);
 end;
