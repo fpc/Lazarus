@@ -578,7 +578,7 @@ var
 begin
   oldX := Item[AIndex]^.X;
   Result := AIndex;
-  if oldX = AValue then exit;
+  if IsEquivalent(oldX, AValue) then exit;
   Item[AIndex]^.X := AValue;
   UpdateExtent;
   if Sorted then begin
@@ -650,7 +650,7 @@ var
 
 begin
   oldY := Item[AIndex]^.Y;
-  if oldY = AValue then exit;
+  if IsEquivalent(oldY, AValue) then exit;
   Item[AIndex]^.Y := AValue;
   if FValuesTotalIsValid then
     FValuesTotal += NumberOr(AValue) - NumberOr(oldY);
