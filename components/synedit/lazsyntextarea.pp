@@ -877,8 +877,11 @@ var
   EraseLeft, DrawLeft: Integer;  // LeftSide for EraseBackground, Text
   CurLine: integer;         // Screen-line index for the loop
   CurTextIndex: Integer;    // Current Index in text
+  {$IFDEF SynUseOldDrawer}
+  ExpandedPaintToken: string; // used to create the string sent to TextDrawer
   CurPhysPos, CurLogIndex : Integer; // Physical Start Position of next token in current Line
   ForceEto: Boolean;
+  {$ENDIF}
   TokenAccu: record
     Len, MaxLen: integer;
     PhysicalStartPos, PhysicalEndPos: integer;
@@ -890,7 +893,6 @@ var
   end;
   dc: HDC;
 
-  ExpandedPaintToken: string; // used to create the string sent to TextDrawer
   CharWidths: TPhysicalCharWidths;
 
   {$IFDEF SynUseOldDrawer}
@@ -1766,7 +1768,9 @@ var
     ypos, xpos: Integer;
     DividerInfo: TSynDividerDrawConfigSetting;
     TV, cl: Integer;
+    {$IFDEF SynUseOldDrawer}
     TokenInfo: TLazSynDisplayTokenInfo;
+    {$ENDIF}
     TokenInfoEx: TLazSynDisplayTokenInfoEx;
     MaxLine: Integer;
   begin
@@ -1791,15 +1795,17 @@ var
       rcToken := rcLine;
       TokenAccu.Len := 0;
       TokenAccu.PhysicalEndPos := FirstCol - 1; // in case of an empty line
+      {$IFDEF SynUseOldDrawer}
       CurPhysPos := 1;
       CurLogIndex := 0;
+      ForceEto := False;
+      {$ENDIF}
       // Delete the whole Line
       fTextDrawer.BackColor := colEditorBG;
       SetBkColor(dc, ColorToRGB(colEditorBG));
       rcLine.Left := EraseLeft;
       InternalFillRect(dc, rcLine);
       rcLine.Left := DrawLeft;
-      ForceEto := False;
 
       {$IFDEF SynUseOldDrawer}
       DisplayView.SetHighlighterTokensLine(TV + CurLine, CurTextIndex);
