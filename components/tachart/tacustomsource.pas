@@ -693,11 +693,17 @@ begin
   end
   else begin
     ALB := 0;
-    while (ALB < Count) and (NumberOr(Item[ALB]^.X, AXMin - 1) < AXMin) do
-      Inc(ALB);
+    while ALB < Count do begin
+      with Item[ALB]^ do
+        if not IsNan(X) and (X >= AXMin) then break;
+      ALB += 1;
+    end;
     AUB := Count - 1;
-    while (AUB >= 0) and (NumberOr(Item[AUB]^.X, AXMax + 1) > AXMax) do
-      Dec(AUB);
+    while AUB >= 0 do begin
+      with Item[AUB]^ do
+        if not IsNan(X) and (X <= AXMax) then break;
+      AUB -= 1;
+    end;
   end;
 end;
 
