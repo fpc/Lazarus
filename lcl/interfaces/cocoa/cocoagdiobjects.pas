@@ -27,9 +27,7 @@ type
     cbtGray,  // grayscale bitmap
     cbtRGB,   // color bitmap 8-8-8 R-G-B
     cbtARGB,  // color bitmap with alpha channel first 8-8-8-8 A-R-G-B
-    cbtRGBA,  // color bitmap with alpha channel last 8-8-8-8 R-G-B-A
-    cbtBGR,   // color bitmap 8-8-8 B-G-R (windows compatible)
-    cbtBGRA   // color bitmap with alpha channel 8-8-8-8 B-G-R-A (windows compatible)
+    cbtRGBA   // color bitmap with alpha channel last 8-8-8-8 R-G-B-A
   );
 
 const
@@ -728,15 +726,14 @@ begin
     FFreeData := False;
   end;
 
-  HasAlpha := AType in [cbtARGB, cbtRGBA, cbtBGRA];
-  BitmapFormat := NSAlphaNonpremultipliedBitmapFormat;
-  if AType = cbtARGB then
+  HasAlpha := AType in [cbtARGB, cbtRGBA];
+  if HasAlpha then
+    BitmapFormat := NSAlphaNonpremultipliedBitmapFormat
+  else
+    BitmapFormat := 0;
+  if AType in [cbtARGB, cbtRGB] then
     BitmapFormat := BitmapFormat or NSAlphaFirstBitmapFormat;
 
-  {$ifdef VerboseBitmaps}
-  DebugLn(Format('[TCocoaBitmap.Create] NSBitmapImageRep.alloc HasAlpha=%d',
-    [Integer(HasAlpha)]));
-  {$endif}
   // Create the associated NSImageRep
   FImagerep := NSBitmapImageRep(NSBitmapImageRep.alloc.initWithBitmapDataPlanes_pixelsWide_pixelsHigh__colorSpaceName_bitmapFormat_bytesPerRow_bitsPerPixel(
     @FData, // planes, BitmapDataPlanes
@@ -820,7 +817,7 @@ begin
     32:
     begin
       FBitsPerSample := 8;
-      if AType in [cbtRGB, cbtBGR] then
+      if AType = cbtRGB then
         FSamplesPerPixel := 3
       else
         FSamplesPerPixel := 4;
@@ -2484,7 +2481,6 @@ end;
 
 procedure TCocoaBrush.SetImage(AImage: NSImage);
 var
-  AWidth, AHeight: Single;
   ACallBacks: CGPatternCallbacks;
   Rect: CGRect;
 begin

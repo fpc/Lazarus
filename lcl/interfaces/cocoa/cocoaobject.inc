@@ -527,7 +527,7 @@ begin
   if ADesc.Format = ricfGray then Exit;
 
   // alpha
-  if ABitmap.BitmapType in [cbtARGB, cbtRGBA, cbtBGRA] then
+  if ABitmap.BitmapType in [cbtARGB, cbtRGBA] then
     ADesc.AlphaPrec := Prec;
 
   case ABitmap.BitmapType of
@@ -538,14 +538,6 @@ begin
       ADesc.GreenShift := Shift;
       Dec(Shift, Prec);
       ADesc.BlueShift := Shift;
-    end;
-    cbtBGR: begin
-      Shift := 32 - Prec;
-      ADesc.BlueShift := Shift;
-      Dec(Shift, Prec);
-      ADesc.GreenShift := Shift;
-      Dec(Shift, Prec);
-      ADesc.RedShift := Shift;
     end;
     cbtARGB: begin
       Shift := 32 - Prec;
@@ -564,16 +556,6 @@ begin
       ADesc.GreenShift := Shift;
       Dec(Shift, Prec);
       ADesc.BlueShift := Shift;
-      Dec(Shift, Prec);
-      ADesc.AlphaShift := Shift;
-    end;
-    cbtBGRA: begin
-      Shift := 32 - Prec;
-      ADesc.BlueShift := Shift;
-      Dec(Shift, Prec);
-      ADesc.GreenShift := Shift;
-      Dec(Shift, Prec);
-      ADesc.RedShift := Shift;
       Dec(Shift, Prec);
       ADesc.AlphaShift := Shift;
     end;
@@ -646,21 +628,9 @@ begin
       and (ADesc.GreenShift = 16 )
       and (ADesc.BlueShift  = 8 )
       then bmpType := cbtRGBA
-      else
-      if  (ADesc.AlphaShift = 0 )
-      and (ADesc.RedShift   = 8 )
-      and (ADesc.GreenShift = 16)
-      and (ADesc.BlueShift  = 24)
-      then bmpType := cbtBGRA
       else Exit;
     end
     else begin
-      if  (ADesc.AlphaShift = 24)
-      and (ADesc.RedShift   = 16)
-      and (ADesc.GreenShift = 8 )
-      and (ADesc.BlueShift  = 0 )
-      then bmpType := cbtBGRA
-      else
       if  (ADesc.AlphaShift = 0 )
       and (ADesc.RedShift   = 8 )
       and (ADesc.GreenShift = 16)

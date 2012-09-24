@@ -433,7 +433,84 @@ begin
   then Result := RawImage_FromCocoaBitmap(ARawImage, TCocoaBitmap(ABitmap), TCocoaBitmap(AMask), ARect)
   else Result := False;
 end;
-(*
+
+{------------------------------------------------------------------------------
+  Method:  TCocoaWidgetSet.GetImagePixelData
+
+  Used by RawImage_FromDevice. Copies the data from a CGImageRef into a local
+  buffer.
+
+  The buffer is created using GetMem, and the caller is responsible for using
+  FreeMem to free the returned pointer.
+
+  This function throws exceptions in case of errors and may return a nil pointer.
+ ------------------------------------------------------------------------------}
+function TCocoaWidgetSet.GetImagePixelData(AImage: CGImageRef; out bitmapByteCount: PtrUInt): Pointer;
+var
+  bitmapData: Pointer;
+  context: CGContextRef = nil;
+  colorSpace: CGColorSpaceRef;
+  bitmapBytesPerRow, pixelsWide, pixelsHigh: PtrUInt;
+  imageRect: CGRect;
+begin
+  Result := nil;
+
+   // Get image width, height. The entire image is used.
+  pixelsWide := CGImageGetWidth(AImage);
+  pixelsHigh := CGImageGetHeight(AImage);
+  imageRect.origin.x := 0.0;
+  imageRect.origin.y := 0.0;
+  imageRect.size.width := pixelsWide;
+  imageRect.size.height := pixelsHigh;
+
+  // The target format is fixed in ARGB, DQWord alignment, with 32-bits depth and
+  // 8-bits per channel, the default image format on the LCL
+  bitmapBytesPerRow   := ((pixelsWide * 4) + $F) and not PtrUInt($F);
+  bitmapByteCount     := (bitmapBytesPerRow * pixelsHigh);
+
+  // Use the generic RGB color space.
+  colorSpace := CGColorSpaceCreateWithName(kCGColorSpaceGenericRGB);
+  if (colorSpace = nil) then
+    raise Exception.Create('Unable to create CGColorSpaceRef');
+
+  // Allocate memory for image data. This is the destination in memory
+  // where any drawing to the bitmap context will be rendered.
+  bitmapData := System.GetMem( bitmapByteCount );
+  if (bitmapData = nil) then
+    raise Exception.Create('Unable to allocate memory');
+
+  { Creates the bitmap context.
+
+    Regardless of what the source image format is, it will be converted
+    over to the format specified here by CGBitmapContextCreate. }
+  context := CGBitmapContextCreate(bitmapData,
+                                   pixelsWide,
+                                   pixelsHigh,
+                                   8,      // bits per component
+                                   bitmapBytesPerRow,
+                                   colorSpace,
+                                   kCGImageAlphaNoneSkipFirst); // The function fails with kCGImageAlphaFirst
+  if (context = nil) then
+  begin
+    System.FreeMem(bitmapData);
+    raise Exception.Create('Unable to create CGContextRef');
+  end;
+
+  // Draw the image to the bitmap context. Once we draw, the memory
+  // allocated for the context for rendering will then contain the
+  // raw image data in the specified color space.
+  CGContextDrawImage(context, imageRect, AImage);
+
+  // Now we can get a pointer to the image data associated with the context.
+  // ToDo: Verify if we should copy this data to a new buffer
+  Result := CGBitmapContextGetData(context);
+
+  { Clean-up }
+  CGColorSpaceRelease(colorSpace);
+  CGContextRelease(context);
+end;
+
+
 {------------------------------------------------------------------------------
   Function: RawImage_FromDevice
   Params: ARawImage: Image to create
@@ -458,9 +535,9 @@ end;
 
  http://developer.apple.com/qa/qa2007/qa1509.html
  ------------------------------------------------------------------------------}
-function TCarbonWidgetSet.RawImage_FromDevice(out ARawImage: TRawImage; ADC: HDC; const ARect: TRect): Boolean;
+function TCocoaWidgetSet.RawImage_FromDevice(out ARawImage: TRawImage; ADC: HDC; const ARect: TRect): Boolean;
 var
-  CBC: TCarbonBitmapContext absolute ADC;
+  CBC: TCocoaBitmapContext absolute ADC;
   Desc: TRawImageDescription absolute ARawImage.Description;
   displayID: CGDirectDisplayID;
   ScreenImage: CGImageRef;
@@ -469,9 +546,9 @@ begin
 
   // Verifies if we are getting the rawimage from a normal DC as opposed to a
   // desktop DC
-  if CheckDC(ADC, 'RawImage_FromDevice') and (CBC is TCarbonBitmapContext) then
+  if CheckDC(ADC, 'RawImage_FromDevice') and (CBC is TCocoaBitmapContext) then
   begin
-    Result := RawImage_FromCarbonBitmap(ARawImage, CBC.Bitmap, nil, @ARect);
+    Result := RawImage_FromCocoaBitmap(ARawImage, CBC.Bitmap, nil, @ARect);
     Exit;
   end;
 
@@ -479,8 +556,7 @@ begin
 
   { Get's a screenshot }
   displayID := CGMainDisplayID();
-  ScreenImage := grabViaOpenGL(displayID, CGDisplayBounds(displayID));
-  //dataProvider := CGImageGetDataProvider(ScreenImage);
+  ScreenImage := CGDisplayCreateImage(displayID);
 
   { Fills the image description }
   ARawImage.Init;
@@ -509,7 +585,7 @@ end;
 //begin
 //  // override only when queried formats are different from screen description
 //end;
-
+(*
 {------------------------------------------------------------------------------
   Method:  ReleaseDesignerDC
   Params:  Window - handle of window
