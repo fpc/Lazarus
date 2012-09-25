@@ -170,7 +170,6 @@ function LPtoDP(DC: HDC; var Points; Count: Integer): BOOL; override;
 
 function MessageBox({%H-}hWnd: HWND; lpText, lpCaption: PChar; uType: Cardinal): integer; override;
 function MoveToEx(DC: HDC; X, Y: Integer; OldPoint: PPoint): Boolean; override;
-function MoveWindowOrgEx(DC: HDC; dX, dY: Integer): Boolean; override;
 
 function OffsetRgn(RGN: HRGN; nXOffset, nYOffset: Integer): Integer; override;
 
@@ -195,7 +194,7 @@ function RoundRect(DC : hDC; X1, Y1, X2, Y2: Integer; RX,RY : Integer): Boolean;
 function SaveDC(DC: HDC): Integer; override;
 function ScreenToClient(Handle : HWND; var P : TPoint) : Integer; override;
 function ScrollWindowEx(hWnd: HWND; dx, dy: Integer; prcScroll, prcClip: PRect; {%H-}hrgnUpdate: HRGN; prcUpdate: PRect; flags: UINT): Boolean; override;
-function SelectClipRGN(DC : hDC; RGN : HRGN) : Longint; override;
+function SelectClipRGN(DC: hDC; RGN: HRGN): Longint; override;
 function SelectObject(DC: HDC; GDIObj: HGDIOBJ): HGDIOBJ;  override;
 function SelectPalette({%H-}DC: HDC; {%H-}Palette: HPALETTE; {%H-}ForceBackground: Boolean): HPALETTE; override;
 function SendMessage(HandleWnd: HWND; Msg: Cardinal; wParam: WParam; lParam: LParam): LResult; override;

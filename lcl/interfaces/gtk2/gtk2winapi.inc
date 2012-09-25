@@ -1868,12 +1868,12 @@ end;
       ComplexRegion
 
  ------------------------------------------------------------------------------}
-function TGtk2WidgetSet.CombineRgn(Dest, Src1, Src2 : HRGN;
-  fnCombineMode : Longint) : Longint;
+function TGtk2WidgetSet.CombineRgn(Dest, Src1, Src2: HRGN;
+  fnCombineMode: Longint): Longint;
 var
-  Continue : Boolean;
-  D, S1, S2 : PGDKRegion;
-  DObj, S1Obj, S2Obj : PGDIObject;
+  Continue: Boolean;
+  D, S1, S2: PGDKRegion;
+  DObj, S1Obj, S2Obj: PGDIObject;
 begin
   Result := SIMPLEREGION;
   DObj := {%H-}PGdiObject(Dest);
@@ -1905,7 +1905,7 @@ begin
         D := nil;
       end;
     end;
-    if DObj^.GDIRegionObject <> nil then
+    if Assigned(DObj^.GDIRegionObject) then
       gdk_region_destroy(DObj^.GDIRegionObject);
     DObj^.GDIRegionObject := D;
     Result := RegionType(D);
@@ -2273,8 +2273,10 @@ var
   R: TRect;
 begin
   Result := False;
-  if IsValidDC(DC) then begin
-    with LogPen do begin
+  if IsValidDC(DC) then
+  begin
+    with LogPen do
+    begin
       lopnStyle   := PS_DOT;
       lopnWidth.X := 2;
       lopnColor   := clWhite;
@@ -2290,8 +2292,8 @@ begin
     
     Origin := DevCtx.Offset;
     try
-
-      with R do begin
+      with R do
+      begin
         DrawHorzLine(Left, Top, Right-1);
         DrawVertLine(Right-1, Top, Bottom-1);
         DrawHorzLine(Right-1, Bottom-1, Left);
@@ -2317,9 +2319,6 @@ end;
  ------------------------------------------------------------------------------}
 function TGtk2WidgetSet.DrawEdge(DC: HDC; var ARect: TRect; Edge: Cardinal;
   grfFlags: Cardinal): Boolean;
-
-var
-  DevCtx: TGtkDeviceContext absolute DC;
 
   procedure DrawEdges(var R: TRect; GC: pgdkGC; Drawable:PGdkDrawable;
     const TopLeftColor, BottomRightColor: TGDKColor);
@@ -2354,85 +2353,80 @@ var
 begin
   //DebugLn('TGtk2WidgetSet.DrawEdge Edge=',DbgS(Edge),8),' grfFlags=',DbgS(Cardinal(grfFlags));
   Result := IsValidDC(DC);
-  if Result
-  then with TGtkDeviceContext(DC) do
-  begin
-    R := ARect;
-
-    if DevCtx.HasTransf then
+  if Result then
+    with TGtkDeviceContext(DC) do
     begin
-      R := DevCtx.TransfRectIndirect(R);
-      TransfNormalize(R.Left, R.Right);
-      TransfNormalize(R.Top, R.Bottom);
+      R := ARect;
+
+      LPtoDP(DC, R, 2);
+
+      DCOrigin := Offset;
+      OffsetRect(R, DCOrigin.X, DCOrigin.Y);
+
+      // try to use the gdk functions, so that the current theme is used
+      BInner := False;
+      BOuter := False;
+
+      // TODO: change this to real colors
+      if (edge and BDR_RAISEDINNER) = BDR_RAISEDINNER
+      then begin
+        InnerTL := AllocGDKColor(GetSysColor(COLOR_BTNHIGHLIGHT));
+        InnerBR := AllocGDKColor(GetSysColor(COLOR_BTNSHADOW));
+        BInner := True;
+      end;
+      if (edge and BDR_SUNKENINNER) = BDR_SUNKENINNER
+      then begin
+        InnerTL := AllocGDKColor(GetSysColor(COLOR_BTNSHADOW));
+        InnerBR := AllocGDKColor(GetSysColor(COLOR_BTNHIGHLIGHT));
+        BInner := True;
+      end;
+      if (edge and BDR_RAISEDOUTER) = BDR_RAISEDOUTER
+      then begin
+        OuterTL := AllocGDKColor(GetSysColor(COLOR_BTNHIGHLIGHT));
+        OuterBR := AllocGDKColor(GetSysColor(COLOR_BTNSHADOW));
+        BOuter := True;
+      end;
+      if (edge and BDR_SUNKENOUTER) = BDR_SUNKENOUTER
+      then begin
+        OuterTL := AllocGDKColor(GetSysColor(COLOR_BTNSHADOW));
+        OuterBR := AllocGDKColor(GetSysColor(COLOR_BTNHIGHLIGHT));
+        BOuter := True;
+      end;
+
+      gdk_gc_set_fill(GC, GDK_SOLID);
+      SelectedColors := dcscCustom;
+
+      // Draw outer rect
+      if BOuter then
+        DrawEdges(R, GC,Drawable,OuterTL,OuterBR);
+
+      // Draw inner rect
+      if BInner then
+        DrawEdges(R,GC,Drawable,InnerTL,InnerBR);
+
+  //      gdk_colormap_free_colors(gdk_colormap_get_system, @OuterTL, 1);
+  //      gdk_colormap_free_colors(gdk_colormap_get_system, @OuterBR, 1);
+  //      gdk_colormap_free_colors(gdk_colormap_get_system, @InnerTL, 1);
+  //      gdk_colormap_free_colors(gdk_colormap_get_system, @InnerBR, 1);
+
+      //Draw interiour
+      if ((grfFlags and BF_MIDDLE) = BF_MIDDLE) then
+      begin
+        MiddleColor := AllocGDKColor(GetSysColor(COLOR_BTNFACE));
+        gdk_gc_set_foreground(GC, @MiddleColor);
+        gdk_draw_rectangle(Drawable, GC, 1, R.Left, R.Top,
+          R.Right - R.Left, R.Bottom - R.Top);
+      end;
+
+      // adjust rect if needed
+      if (grfFlags and BF_ADJUST) = BF_ADJUST then
+      begin
+        ARect := R;
+        OffsetRect(ARect, -DCOrigin.X, -DCOrigin.Y);
+        DPtoLP(DC, ARect, 2);
+      end;
+      Result := True;
     end;
-
-    DCOrigin := Offset;
-    OffsetRect(R,DCOrigin.X,DCOrigin.Y);
-
-
-    // try to use the gdk functions, so that the current theme is used
-    BInner := False;
-    BOuter := False;
-
-    // TODO: change this to real colors
-    if (edge and BDR_RAISEDINNER) = BDR_RAISEDINNER
-    then begin
-      InnerTL := AllocGDKColor(GetSysColor(COLOR_BTNHIGHLIGHT));
-      InnerBR := AllocGDKColor(GetSysColor(COLOR_BTNSHADOW));
-      BInner := True;
-    end;
-    if (edge and BDR_SUNKENINNER) = BDR_SUNKENINNER
-    then begin
-      InnerTL := AllocGDKColor(GetSysColor(COLOR_BTNSHADOW));
-      InnerBR := AllocGDKColor(GetSysColor(COLOR_BTNHIGHLIGHT));
-      BInner := True;
-    end;
-    if (edge and BDR_RAISEDOUTER) = BDR_RAISEDOUTER
-    then begin
-      OuterTL := AllocGDKColor(GetSysColor(COLOR_BTNHIGHLIGHT));
-      OuterBR := AllocGDKColor(GetSysColor(COLOR_BTNSHADOW));
-      BOuter := True;
-    end;
-    if (edge and BDR_SUNKENOUTER) = BDR_SUNKENOUTER
-    then begin
-      OuterTL := AllocGDKColor(GetSysColor(COLOR_BTNSHADOW));
-      OuterBR := AllocGDKColor(GetSysColor(COLOR_BTNHIGHLIGHT));
-      BOuter := True;
-    end;
-
-    gdk_gc_set_fill(GC, GDK_SOLID);
-    SelectedColors := dcscCustom;
-
-    // Draw outer rect
-    if BOuter then
-      DrawEdges(R, GC,Drawable,OuterTL,OuterBR);
-
-    // Draw inner rect
-    if BInner then
-      DrawEdges(R,GC,Drawable,InnerTL,InnerBR);
-
-//      gdk_colormap_free_colors(gdk_colormap_get_system, @OuterTL, 1);
-//      gdk_colormap_free_colors(gdk_colormap_get_system, @OuterBR, 1);
-//      gdk_colormap_free_colors(gdk_colormap_get_system, @InnerTL, 1);
-//      gdk_colormap_free_colors(gdk_colormap_get_system, @InnerBR, 1);
-
-    //Draw interiour
-    if ((grfFlags and BF_MIDDLE) = BF_MIDDLE) then
-    begin
-      MiddleColor := AllocGDKColor(GetSysColor(COLOR_BTNFACE));
-      gdk_gc_set_foreground(GC, @MiddleColor);
-      gdk_draw_rectangle(Drawable, GC, 1, R.Left, R.Top,
-        R.Right - R.Left, R.Bottom - R.Top);
-    end;
-
-    // adjust rect if needed
-    if (grfFlags and BF_ADJUST) = BF_ADJUST then
-    begin
-      OffsetRect(R, -DCOrigin.X, -DCOrigin.Y);
-      ARect := R;
-    end;
-    Result := True;
-  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -2623,7 +2617,7 @@ var
   function NeedOffsetCalc: Boolean;
   begin
 
-    Result := (TGtk2DeviceContext(DC).CurrentFont^.LogFont.lfOrientation <> 0) and
+    Result := (TGtkDeviceContext(DC).CurrentFont^.LogFont.lfOrientation <> 0) and
         (Flags and DT_SINGLELINE <> 0) and
         (Flags and DT_VCENTER = 0) and (Flags and DT_CENTER = 0) and
         (Flags and DT_RIGHT = 0) and (Flags and  DT_BOTTOM = 0) and
@@ -2657,7 +2651,7 @@ var
     begin
       Pt.X := SavedRect.Left;
       Pt.Y := SavedRect.Top;
-      CalculateOffsetWithAngle(TGtk2DeviceContext(DC).CurrentFont^.LogFont.lfOrientation, Pt.X, Pt.Y);
+      CalculateOffsetWithAngle(TGtkDeviceContext(DC).CurrentFont^.LogFont.lfOrientation, Pt.X, Pt.Y);
     end;
     TextUtf8Out(DC, LeftPos + Pt.X, TopPos + Pt.Y, theLine, lineLength);
   end;
@@ -2690,7 +2684,7 @@ var
     begin
       Pt.X := SavedRect.Left;
       Pt.Y := SavedRect.Top;
-      CalculateOffsetWithAngle(TGtk2DeviceContext(DC).CurrentFont^.LogFont.lfOrientation, Pt.X, Pt.Y);
+      CalculateOffsetWithAngle(TGtkDeviceContext(DC).CurrentFont^.LogFont.lfOrientation, Pt.X, Pt.Y);
     end;
     // Draw line of Text
     TextUtf8Out(DC, LeftPos + Pt.X, TopPos + Pt.Y, theLine, LineLength);
@@ -3749,7 +3743,6 @@ var
   Clip,
   Tmp : hRGN;
   X, Y : Longint;
-  DCOrigin: TPoint;
 begin
   Result := SIMPLEREGION;
   if not IsValidDC(DC) then
@@ -3758,7 +3751,8 @@ begin
   begin
     //DebugLn('TGtk2WidgetSet.ExtSelectClipRGN A ClipRegValid=',dbgs(DCClipRegionValid(DC)),
     //  ' Mode=',dbgs(Mode),' RGN=',GDKRegionAsString(PGdiObject(RGN)^.GDIRegionObject));
-    if ClipRegion=nil then begin
+    if ClipRegion = nil then
+    begin
       // there is no clipping region in the DC
       case Mode of
         RGN_COPY:
@@ -3774,8 +3768,7 @@ begin
           begin
             // get existing clip
             GDK_Window_Get_Size(Drawable, @X, @Y);
-            DCOrigin:= Offset;
-            Clip := CreateRectRGN(-DCOrigin.X,-DCOrigin.Y,X-DCOrigin.X,Y-DCOrigin.Y);
+            Clip := CreateRectRGN(0, 0, X, Y);
             // create target clip
             Tmp := CreateEmptyRegion;
             // combine
@@ -3805,7 +3798,7 @@ end;
 function TGtk2WidgetSet.ExtTextOut(DC: HDC; X, Y: Integer; Options: Longint;
   Rect: PRect; Str: PChar; Count: Longint; Dx: PInteger): Boolean;
 var
-  DevCtx: TGtk2DeviceContext absolute DC;
+  DevCtx: TGtkDeviceContext absolute DC;
   
   LineStart, LineEnd, StrEnd: PChar;
   Width, Height: Integer;
@@ -3869,7 +3862,7 @@ begin
 
   if DevCtx.HasTransf then
   begin
-    if Rect <> nil then
+    if Assigned(Rect) then
       Rect^ := DevCtx.TransfRectIndirect(Rect^);
     DevCtx.TransfPoint(X, Y);
   end;
@@ -4065,6 +4058,7 @@ var
   DevCtx: TGtkDeviceContext absolute DC;
   DCOrigin: TPoint;
   R: TRect;
+  OldBrush: HBrush;
 begin
   Result:=0;
   if not IsValidDC(DC) then Exit;
@@ -4074,21 +4068,18 @@ begin
   Result := 1;
   if {%H-}PGdiObject(hBr)^.IsNullBrush then Exit;
 
-  DevCtx.SelectedColors:= dcscCustom;
+  OldBrush := SelectObject(DC, hBr);
+  DevCtx.SelectedColors := dcscCustom;
   EnsureGCColor(DC, dccGDIBrushColor, True, False);//Brush Color
 
-  if DevCtx.HasTransf then
-  begin
-    R := DevCtx.TransfRectIndirect(ARect);
-    DevCtx.TransfNormalize(R.Left, R.Right);
-    DevCtx.TransfNormalize(R.Top, R.Bottom);
-  end else
-    R := ARect;
+  R := ARect;
+  LPtoDP(DC, R, 2);
 
   DCOrigin := DevCtx.Offset;
   gdk_draw_rectangle(DevCtx.Drawable, DevCtx.GC, 0,
-                     R.Left+DCOrigin.X, R.Top+DCOrigin.Y,
+                     R.Left + DCOrigin.X, R.Top + DCOrigin.Y,
                      R.Right-R.Left-1, R.Bottom-R.Top-1);
+  SelectObject(DC, OldBrush);
 end;
 
 {------------------------------------------------------------------------------
@@ -4469,28 +4460,31 @@ begin
   end;
   
   DCOrigin := DevCtx.Offset;
-  if DevCtx.ClipRegion = nil
-  then begin
+  if DevCtx.ClipRegion = nil then
+  begin
     if (DevCtx.PaintRectangle.Left<>0)
     or (DevCtx.PaintRectangle.Top<>0)
     or (DevCtx.PaintRectangle.Right<>0)
-    or (DevCtx.PaintRectangle.Bottom<>0) then begin
-      lpRect^:=DevCtx.PaintRectangle;
-    end else begin
+    or (DevCtx.PaintRectangle.Bottom<>0) then
+      lpRect^ := DevCtx.PaintRectangle
+    else
+    begin
       gdk_window_get_size(DevCtx.Drawable, @X, @Y);
       lpRect^ := Rect(0,0,X,Y);
     end;
-    OffsetRect(lpRect^,-DCOrigin.X, -DCOrigin.Y);
     Result := SIMPLEREGION;
   end
-  else begin
+  else
+  begin
     Result := RegionType(DevCtx.ClipRegion^.GDIRegionObject);
     gdk_region_get_clipbox(DevCtx.ClipRegion^.GDIRegionObject, @CRect);
-    lpRect^.Left   := CRect.X-DCOrigin.X;
-    lpRect^.Top    := CRect.Y-DCOrigin.Y;
+    lpRect^.Left   := CRect.X;
+    lpRect^.Top    := CRect.Y;
     lpRect^.Right  := lpRect^.Left + CRect.Width;
     lpRect^.Bottom := lpRect^.Top + CRect.Height;
   end;
+  DPtoLP(DC, lpRect^, 2);
+  OffsetRect(lpRect^, -DCOrigin.X, -DCOrigin.Y);
 end;
 
 {------------------------------------------------------------------------------
@@ -4562,35 +4556,40 @@ begin
   Result := SIMPLEREGION;
   If (not IsValidDC(DC)) then
     Result := ERROR
-  else If Not IsValidGDIObject(RGN) then begin
+  else
+  if Not IsValidGDIObject(RGN) then
+  begin
     Result := ERROR;
     DebugLn('WARNING: [TGtk2WidgetSet.GetClipRGN] Invalid HRGN');
   end
-  else if (TGtkDeviceContext(DC).ClipRegion<>nil)
-  and (not IsValidGDIObject(HGDIOBJ({%H-}PtrUInt(TGtkDeviceContext(DC).ClipRegion)))) then
+  else
+  if Assigned(TGtkDeviceContext(DC).ClipRegion) and
+    not IsValidGDIObject(HGDIOBJ({%H-}PtrUInt(TGtkDeviceContext(DC).ClipRegion))) then
     Result := ERROR
   else with TGtkDeviceContext(DC) do
   begin
-    CurRegionObject:=nil;
-    if ClipRegion<>nil then
-      CurRegionObject:=ClipRegion^.GDIRegionObject;
-    ARect:=Rect(0,0,0,0);
-    if CurRegionObject<>nil then begin
+    CurRegionObject := nil;
+    if Assigned(ClipRegion) then
+      CurRegionObject := ClipRegion^.GDIRegionObject;
+    ARect := Rect(0, 0, 0, 0);
+    if Assigned(CurRegionObject) then
       // create a copy of the current clipregion
-      ClipRegionWithDCOffset:=gdk_region_copy(CurRegionObject);
-      // move it to the DC offset
-      // Example: if the ClipRegion is at 10,10 and the DCOrigin is at 10,10,
-      //          then the ClipRegion must be moved to 0,0
-      DCOrigin := Offset;
-      //debugln('TGtk2WidgetSet.GetClipRGN DCOrigin=',dbgs(DCOrigin),' CurRegionObject=',dbgs(CurRegionObject),' ',dbgs(ARect));
-      gdk_region_offset(ClipRegionWithDCOffset,-DCOrigin.x,-DCOrigin.Y);
-    end else begin
+      ClipRegionWithDCOffset := gdk_region_copy(CurRegionObject)
+    else
+    begin
       // create a default clipregion
-      GetClipBox(DC,@ARect);
-      ClipRegionWithDCOffset:=CreateRectGDKRegion(ARect);
+      GetClipBox(DC, @ARect);
+      LPtoDP(DC, ARect, 2);
+      ClipRegionWithDCOffset := CreateRectGDKRegion(ARect);
     end;
+    // move it to the DC offset
+    // Example: if the ClipRegion is at 10,10 and the DCOrigin is at 10,10,
+    //          then the ClipRegion must be moved to 0,0
+    DCOrigin := Offset;
+    gdk_region_offset(ClipRegionWithDCOffset, -DCOrigin.x, -DCOrigin.Y);
+
     // free the old region in RGN
-    if {%H-}PGdiObject(RGN)^.GDIRegionObject<>nil then
+    if Assigned({%H-}PGdiObject(RGN)^.GDIRegionObject) then
       gdk_region_destroy({%H-}PGdiObject(RGN)^.GDIRegionObject);
     // set the new region in RGN
     {%H-}PGdiObject(RGN)^.GDIRegionObject := ClipRegionWithDCOffset;
@@ -4648,7 +4647,7 @@ end;
 
 function TGtk2WidgetSet.GetCurrentObject(DC: HDC; uObjectType: UINT): HGDIOBJ;
 var
-  Gtk2DC: TGtk2DeviceContext absolute DC;
+  Gtk2DC: TGtkDeviceContext absolute DC;
 begin
   Result := 0;
   if not GTK2WidgetSet.IsValidDC(DC) then
@@ -4828,25 +4827,25 @@ var
   DCWindow: PGdkWindow;
 begin
   Result := false;
-  OriginDiff := Point(0,0);
+  OriginDiff := Point(0, 0);
   if not IsValidDC(PaintDC) then exit;
   
   DCOrigin := DevCtx.Offset;
 
-  DCWindow:=PGdkWindow(DevCtx.Drawable);
+  DCWindow := PGdkWindow(DevCtx.Drawable);
   gdk_window_get_origin(DCWindow, @(DCScreenOrigin.X), @(DCScreenOrigin.Y));
   inc(DCScreenOrigin.X, DCOrigin.X);
   inc(DCScreenOrigin.Y, DCOrigin.Y);
 
   Widget := GetFixedWidget({%H-}PGtkWidget(WindowHandle));
-  if Widget = nil
-  then Widget := {%H-}PGtkWidget(WindowHandle);
+  if Widget = nil then
+    Widget := {%H-}PGtkWidget(WindowHandle);
   
   gdk_window_get_origin(PGdkWindow(Widget^.window), @(WindowScreenOrigin.X), @(WindowScreenOrigin.Y));
 
-  OriginDiff.X := DCScreenOrigin.X-WindowScreenOrigin.X;
-  OriginDiff.Y := DCScreenOrigin.Y-WindowScreenOrigin.Y;
-  Result := true;
+  OriginDiff.X := DCScreenOrigin.X - WindowScreenOrigin.X;
+  OriginDiff.Y := DCScreenOrigin.Y - WindowScreenOrigin.Y;
+  Result := True;
   //DebugLn(['TGtk2WidgetSet.GetDCOriginRelativeToWindow DCScreenOrigin=',dbgs(DCScreenOrigin),' WindowScreenOrigin=',dbgs(WindowScreenOrigin),' OriginDiff=',dbgs(OriginDiff)]);
 end;
 
@@ -5971,7 +5970,7 @@ end;
 function TGtk2WidgetSet.GetTextExtentPoint(DC: HDC; Str: PChar; Count: Integer;
   var Size: TSize): Boolean;
 var
-  DevCtx: TGtk2DeviceContext absolute DC;
+  DevCtx: TGtkDeviceContext absolute DC;
   UseFont : PPangoLayout;
 begin
   Result := IsValidDC(DC);
@@ -6141,7 +6140,7 @@ end;
 
   Returns the current offset of the DC.
  ------------------------------------------------------------------------------}
-function TGtk2WidgetSet.GetWindowOrgEx(dc : hdc; P : PPoint): Integer;
+function TGtk2WidgetSet.GetWindowOrgEx(dc: hdc; P: PPoint): Integer;
 var
   DevCtx: TGtkDeviceContext absolute DC;
 begin
@@ -6149,8 +6148,8 @@ begin
   P^ := Point(0,0);
   if not IsValidDC(DC) then exit(0);
   
-  P^ := DevCtx.Offset;
-  Result:=1;
+  P^ := DevCtx.WindowOrg;
+  Result := 1;
 end;
 
 {------------------------------------------------------------------------------
@@ -6635,12 +6634,8 @@ end;
 function TGtk2WidgetSet.LineTo(DC: HDC; X, Y: Integer): Boolean;
 var
   DevCtx: TGtkDeviceContext absolute DC;
-
-  DCOrigin: TPoint;
-  FromX: Integer;
-  FromY: Integer;
-  ToX: Integer;
-  ToY: Integer;
+  FromPt: TPoint;
+  ToPt: TPoint;
 begin
   if not IsValidDC(DC) then Exit(False);
 
@@ -6649,21 +6644,16 @@ begin
   
   if DevCtx.IsNullPen then Exit(True);
 
-  if DevCtx.HasTransf then
-    DevCtx.TransfPoint(X, Y);
-
-  DCOrigin := DevCtx.Offset;
-
-  FromX:=DevCtx.PenPos.X+DCOrigin.X;
-  FromY:=DevCtx.PenPos.Y+DCOrigin.Y;
-  ToX:=X+DCOrigin.X;
-  ToY:=Y+DCOrigin.Y;
+  FromPt := DevCtx.PenPos;
+  LPtoDP(DC, FromPt, 1);
+  ToPt := Point(X, Y);
+  LPToDP(DC, ToPt, 1);
   
   {$IFDEF DebugGDK}BeginGDKErrorTrap;{$ENDIF}
-  gdk_draw_line(DevCtx.Drawable, DevCtx.GC, FromX, FromY, ToX, ToY);
+  gdk_draw_line(DevCtx.Drawable, DevCtx.GC, FromPt.X, FromPt.Y, ToPt.X, ToPt.Y);
   {$IFDEF DebugGDK}EndGDKErrorTrap;{$ENDIF}
 
-  DevCtx.PenPos:= Point(X, Y);
+  DevCtx.PenPos := Point(X, Y);
 
   Result := True;
 end;
@@ -6820,46 +6810,17 @@ end;
 
 
  ------------------------------------------------------------------------------}
-function TGtk2WidgetSet.MoveToEx(DC: HDC; X, Y: Integer;
-  OldPoint: PPoint): Boolean;
-var
-  DevCtx: TGtkDeviceContext absolute DC;
+function TGtk2WidgetSet.MoveToEx(DC: HDC; X, Y: Integer; OldPoint: PPoint): Boolean;
 begin
   Result := IsValidDC(DC);
-  if Result
-  then with TGtkDeviceContext(DC) do
-  begin
-    if OldPoint <> nil then OldPoint^ := PenPos;
-
-    if DevCtx.HasTransf then
-      DevCtx.TransfPoint(X, Y);
-
-    PenPos := Point(X, Y);
-  end;
-end;
-
-{------------------------------------------------------------------------------
-  function MoveWindowOrgEx(DC: HDC; dX, dY: Integer): Boolean; override;
-
-  Move the origin of all operations of a DeviceContext.
-  For example:
-  Moving the Origin to 10,20 and drawing a point to 50,50, results in
-  drawing a point to 60,70.
- ------------------------------------------------------------------------------}
-function TGtk2WidgetSet.MoveWindowOrgEx(DC: HDC; dX, dY: Integer): Boolean;
-var
-  NewOrigin: TPoint;
-begin
-  Result:=IsValidDC(DC);
   if Result then
-  with TGtkDeviceContext(DC) do begin
-    //DebugLn(['[TGtk2WidgetSet.MoveWindowOrgEx] B DC=',DbgS(DC),
-    //  ' Old=',Origin.X,',',Origin.Y,' d=',dX,',',dY,' ']);
-    NewOrigin:=Origin;
-    inc(NewOrigin.X,dX);
-    inc(NewOrigin.Y,dY);
-    Origin:=NewOrigin;
-  end;
+    with TGtkDeviceContext(DC) do
+    begin
+      if Assigned(OldPoint) then
+        OldPoint^ := PenPos;
+
+      PenPos := Point(X, Y);
+    end;
 end;
 
 function TGtk2WidgetSet.OffsetRgn(RGN: HRGN; nXOffset, nYOffset: Integer): Integer;
@@ -7061,8 +7022,8 @@ begin
   begin
     if DevCtx.HasTransf then
       Points[I] := DevCtx.TransfPointIndirect(Points[I]);
-    PointArray[i].x:=Points[i].x+DCOrigin.X;
-    PointArray[i].y:=Points[i].y+DCOrigin.Y;
+    PointArray[i].x := Points[i].x + DCOrigin.X;
+    PointArray[i].y := Points[i].y + DCOrigin.Y;
   end;
 
   // draw line
@@ -7891,7 +7852,7 @@ end;
       ComplexRegion
 
  ------------------------------------------------------------------------------}
-function TGtk2WidgetSet.SelectClipRGN(DC : hDC; RGN : HRGN) : Longint;
+function TGtk2WidgetSet.SelectClipRGN(DC: hDC; RGN: HRGN): Longint;
 var
   DevCtx: TGtkDeviceContext absolute DC;
 
@@ -7901,9 +7862,8 @@ var
 begin
   if not IsValidDC(DC) then Exit(ERROR);
 
-
   // clear old clipregion
-  if DevCtx.ClipRegion <> nil
+  if Assigned(DevCtx.ClipRegion)
   then begin
     OldClipRegion := DevCtx.ClipRegion;
     DevCtx.ClipRegion := nil;// decrease DCCount
@@ -7923,6 +7883,7 @@ begin
     DevCtx.OwnedGDIObjects[gdiRegion] := DevCtx.ClipRegion;
     RegObj := DevCtx.ClipRegion^.GDIRegionObject;
     DCOrigin := DevCtx.Offset;
+
     gdk_region_offset(RegObj, DCOrigin.x, DCOrigin.Y);
     DevCtx.SelectRegion;
 
@@ -9140,16 +9101,17 @@ end;
 
   Sets the DC offset for the specified device context.
  ------------------------------------------------------------------------------}
-function TGtk2WidgetSet.SetWindowOrgEx(DC : HDC; NewX, NewY : Integer;
-  OldPoint: PPoint) : Boolean;
+function TGtk2WidgetSet.SetWindowOrgEx(DC: HDC; NewX, NewY: Integer; OldPoint: PPoint): Boolean;
 var
-  OldP: TPoint;
+  DevCtx: TGtkDeviceContext absolute DC;
 begin
-  //DebugLn('[TGtk2WidgetSet.SetWindowOrgEx] ',NewX,' ',NewY);
-  GetWindowOrgEx(DC, @OldP);
-  Result := MoveWindowOrgEx(DC, -NewX - OldP.X, -NewY - OldP.Y);
-  if OldPoint <> nil then
-    OldPoint^ := OldP;
+  if Assigned(OldPoint) then
+    GetWindowOrgEx(DC, OldPoint);
+
+  if not IsValidDC(DC) then exit(False);
+
+  DevCtx.WindowOrg := Point(NewX, NewY);
+  Result := True;
 end;
 
 {------------------------------------------------------------------------------
@@ -9611,10 +9573,10 @@ end;
   Returns:
 
  ------------------------------------------------------------------------------}
-function TGtk2WidgetSet.TextOut(DC: HDC; X,Y : Integer; Str : Pchar;
+function TGtk2WidgetSet.TextOut(DC: HDC; X, Y: Integer; Str: Pchar;
   Count: Integer) : Boolean;
 var
-  DevCtx: TGtk2DeviceContext absolute DC;
+  DevCtx: TGtkDeviceContext absolute DC;
   DCOrigin: TPoint;
   yOffset: integer;
   BackGroundColor: PGdkColor;
@@ -9622,7 +9584,6 @@ begin
   Result := IsValidDC(DC);
   if not Result then Exit;
   if Count <= 0 then Exit;
-
 
   if DevCtx.HasTransf then
     DevCtx.TransfPoint(X, Y);
@@ -9639,8 +9600,8 @@ begin
   EnsureGCColor(DC, dccCurrentTextColor, True, False);
 
   BackGroundColor := nil;
-  if (DevCtx.GDIObjects[gdiBrush] <> nil) and (DevCtx.BkMode = OPAQUE) and
-    (DevCtx.CurrentBackColor.Colormap <> nil) then
+  if Assigned(DevCtx.GDIObjects[gdiBrush]) and (DevCtx.BkMode = OPAQUE) and
+    Assigned(DevCtx.CurrentBackColor.Colormap) then
   begin
     EnsureGCColor(DC, dccCurrentBackColor, DevCtx.GDIObjects[gdiBrush]^.GDIBrushFill = GDK_SOLID, True);
     BackGroundColor := @DevCtx.CurrentBackColor.Color;
