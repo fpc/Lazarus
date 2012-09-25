@@ -2368,77 +2368,6 @@ function TCarbonWidgetSet.GradientFill(DC: HDC; Vertices: PTriVertex;
     Result := (Mode and GRADIENT_FILL_RECT_V) = GRADIENT_FILL_RECT_V;
   end;
 
-  function FillTriMesh(Mesh: tagGradientTriangle) : Boolean;
-{
-  var
-    V1, V2, V3: tagTRIVERTEX;
-    C1, C2, C3: CGColorRef;
-    R: CGRect;
-    Context: CGContextRef;
-    Path: CGPathRef;
-    Shading: CGShadingRef;
-    ShadingFunction: CGFunctionRef;
-}
-  begin
-    Result := False;
-    // on carbon the next gradients are availble:
-    // Linear gradient, Radial gradient, Axial shading, Radial shading
-    // look like no one can repeat exacly what GdiGradientFill do
-    // so for now return False but if someone later will be able to implement this
-    // the next code may become useful
-{
-    with Mesh do
-    begin
-      Result :=
-        (Vertex1 < Cardinal(NumVertices)) and (Vertex2 >= 0) and
-        (Vertex2 < Cardinal(NumVertices)) and (Vertex2 >= 0) and
-        (Vertex3 < Cardinal(NumVertices)) and (Vertex3 >= 0);
-
-      if (Vertex1 = Vertex2) or
-        (Vertex1 = Vertex3) or
-        (Vertex2 = Vertex3) or not Result then
-        Exit;
-
-      V1 := Vertices[Vertex1];
-      V2 := Vertices[Vertex2];
-      V3 := Vertices[Vertex3];
-
-      Context := TCarbonDeviceContext(DC).CGContext;
-      CGContextSaveGState(Context);
-      // create a triangle path
-      Path := CGPathCreateMutable;
-      CGPathMoveToPoint(Path, nil, V1.x, V1.y);
-      CGPathAddLineToPoint(Path, nil, V2.x, V2.y);
-      CGPathAddLineToPoint(Path, nil, V3.x, V3.y);
-      CGPathCloseSubpath(Path);
-      // get a bouding box of the path
-      R := CGPathGetBoundingBox(Path);
-      // clip the context by the path
-      CGContextAddPath(Context, Path);
-      CGContextClip(Context);
-
-      // get 3 colors of Tri-Vertex
-      C1 := VertexToColor(V1);
-      C2 := VertexToColor(V2);
-      C3 := VertexToColor(V3);
-
-      // create axial shading
-
-      Shading := CGShadingCreateAxial(RGBColorSpace, R.origin,
-        CGPointMake(R.origin.x + R.size.width, R.origin.y + R.size.height),
-        ShadingFunction, False, False);
-      // draw the shading
-      CGContextDrawShading(Context, Shading);
-
-      CGShadingRelease(Shading);
-      CGFunctionRelease(ShadingFunction);
-      CGPathRelease(Path);
-      // remove the applied clipping
-      CGContextRestoreGState(Context);
-    end;
-}
-  end;
-
   function FillRectMesh(Mesh: tagGradientRect) : boolean;
   var
     TL, BR: tagTRIVERTEX;
@@ -2503,7 +2432,11 @@ begin
   Result := (Meshes <> nil) and (NumMeshes >= 1) and (NumVertices >= 2)
           and (Vertices <> nil);
   if Result and DoFillTriangle then
-    Result := NumVertices >= 3;
+  begin
+    Result := inherited;
+    Exit;
+  end;
+
   if Result then
   begin
     Result := False;
@@ -2512,22 +2445,10 @@ begin
     if MemSize(Vertices) < PtrUInt(SizeOf(tagTRIVERTEX)*NumVertices) then
       exit;
 
-    //Sanity Checks For Meshes Size vs. Count
-    if MemSize(Meshes) < PtrUInt(MeshSize[DoFillTriangle]*NumMeshes) then
-      exit;
-
     for I := 0 to NumMeshes - 1 do
     begin
-      if DoFillTriangle then
-      begin
-        if not FillTriMesh(PGradientTriangle(Meshes)[I]) then
-          exit;
-      end
-      else
-      begin
-        if not FillRectMesh(PGradientRect(Meshes)[I]) then
-          exit;
-      end;
+      if not FillRectMesh(PGradientRect(Meshes)[I]) then
+        exit;
     end;
     Result := True;
   end;

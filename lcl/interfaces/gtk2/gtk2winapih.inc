@@ -153,8 +153,6 @@ function GetWindowOrgEx(dc : hdc; P: PPoint): Integer;  override;
 function GetWindowRect(Handle : hwnd; var ARect: TRect): Integer; override;
 function GetWindowRelativePosition(Handle : hwnd; var Left, Top: integer): boolean; override;
 function GetWindowSize(Handle : hwnd; var Width, Height: integer): boolean; override;
-function GradientFill(DC: HDC; Vertices: PTriVertex; NumVertices : Longint;
-  Meshes: Pointer; NumMeshes : Longint; Mode : Longint): Boolean; override;
 
 procedure InitializeCriticalSection(var CritSection: TCriticalSection); override;
 function InvalidateRect(aHandle : HWND; Rect : pRect; bErase : Boolean) : Boolean; override;

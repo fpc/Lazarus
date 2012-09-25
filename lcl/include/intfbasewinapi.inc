@@ -1198,11 +1198,330 @@ begin
   Result := 0;
 end;
 
-function TWidgetSet.GradientFill(DC: HDC; Vertices: PTriVertex;
-  NumVertices : Longint; Meshes: Pointer; NumMeshes : Longint;
-  Mode : Longint): Boolean;
+{------------------------------------------------------------------------------
+  Function: GradientFill
+  Params: DC - DeviceContext to perform on
+          Vertices - array of Points W/Color & Alpha
+          NumVertices - Number of Vertices
+          Meshes - array of Triangle or Rectangle Meshes,
+                   each mesh representing one Gradient Fill
+          NumMeshes - Number of Meshes
+          Mode - Gradient Type, either Triangle,
+                 Vertical Rect, Horizontal Rect
+
+  Returns: true on success
+
+  Performs multiple Gradient Fills, either a Three way Triangle Gradient,
+  or a two way Rectangle Gradient, each Vertex point also supports optional
+  Alpha/Transparency for more advanced Gradients.
+ ------------------------------------------------------------------------------}
+function TWidgetSet.GradientFill(DC: HDC; Vertices: PTriVertex; NumVertices: Longint;
+  Meshes: Pointer; NumMeshes: Longint; Mode: Longint): Boolean;
+
+  function DoFillTriangle: Boolean; inline;
+  begin
+    Result := (Mode and GRADIENT_FILL_TRIANGLE) = GRADIENT_FILL_TRIANGLE;
+  end;
+
+  function DoFillVRect: Boolean; inline;
+  begin
+    Result := (Mode and GRADIENT_FILL_RECT_V) = GRADIENT_FILL_RECT_V;
+  end;
+
+  function CreateIntfImage(W, H: Integer; Clear: Boolean): TLazIntfImage;
+  begin
+    Result := TLazIntfImage.Create(W, H, [riqfRGB, riqfAlpha, riqfUpdate]);
+    Result.CreateData;
+    if Clear then
+      Result.FillPixels(FPColor(0, 0, 0, $0000));
+  end;
+
+  procedure DrawIntfImage(Image: TLazIntfImage; R: TRect);
+  var
+    Bmp, Mask, Old: HBitmap;
+    BmpDC: HDC;
+  begin
+    Image.CreateBitmaps(Bmp, Mask, True);
+    BmpDC := CreateCompatibleDC(0);
+    Old := SelectObject(BmpDC, Bmp);
+    MaskBlt(DC, R.Left, R.Top, R.Right - R.Left, R.Bottom - R.Top, BmpDC, 0, 0, Mask, 0, 0);
+    DeleteObject(SelectObject(BmpDC, Old));
+    if Mask <> 0 then
+      DeleteObject(Mask);
+    DeleteDC(BmpDC);
+  end;
+
+  function GetRectangleGradientColor(const BeginColor, EndColor: TFPColor; const Position, TotalSteps: Longint): TFPColor; inline;
+  var
+    A1: Word absolute BeginColor.alpha;
+    R1: Word absolute BeginColor.red;
+    G1: Word absolute BeginColor.green;
+    B1: Word absolute BeginColor.blue;
+    A2: Word absolute Endcolor.alpha;
+    R2: Word absolute Endcolor.red;
+    G2: Word absolute Endcolor.green;
+    B2: Word absolute Endcolor.blue;
+  begin
+    Result.alpha := (A1 + (Position * (A2 - A1) div TotalSteps));
+    Result.red := (R1 + (Position * (R2 - R1) div TotalSteps));
+    Result.green := (G1 + (Position * (G2 - G1) div TotalSteps));
+    Result.blue := (B1 + (Position * (B2 - B1) div TotalSteps));
+  end;
+
+  function GetTriangleBounds(const v1, v2, v3: TTriVertex): TRect;
+  begin
+    with v1, Result do
+    begin
+      Left := x;
+      Top := y;
+      BottomRight := TopLeft;
+    end;
+    with v2, Result do
+    begin
+      if x < Left then
+        Left := x;
+      if x > Right then
+        Right := x;
+      if y < Top then
+        Top := y;
+      if y > Bottom then
+        Bottom := y;
+    end;
+    with v3, Result do
+    begin
+      if x < Left then
+        Left := x;
+      if x > Right then
+        Right := x;
+      if y < Top then
+        Top := y;
+      if y > Bottom then
+        Bottom := y;
+    end;
+  end;
+
+  {
+    implementation of Arjen Nienhuis:
+    http://www.winehq.org/pipermail/wine-patches/2003-June/006544.html
+    Arjen has granted us the rights to include this code with our modified LGPL2 license
+  }
+
+  procedure GradientFillTriangle(Image: TLazIntfImage; v1, v2, v3: TTriVertex);
+  var
+    t, v: TTriVertex;
+    y, y2, dy, dy2: Integer;
+    x, x1, x2, r1, r2, g1, g2, b1, b2: Integer;
+    dx: Integer;
+  begin
+    if (v1.y > v2.y) then
+    begin
+      t := v1;
+      v1 := v2;
+      v2 := t;
+    end;
+
+    if (v2.y > v3.y) then
+    begin
+      t := v2;
+      v2 := v3;
+      v3 := t;
+      if (v1.y > v2.y) then
+      begin
+        t := v1;
+        v1 := v2;
+        v2 := t;
+      end;
+    end;
+    // v1.y <= v2.y <= v3.y
+    dy := v3.y - v1.y;
+    for y := 0 to dy - 1 do
+    begin
+      // v1.y <= y < v3.y
+      if y < (v2.y - v1.y) then
+        v :=  v1
+      else
+        v := v3;
+      // (v.y <= y < v2.y) || (v2.y <= y < v.y)
+      dy2 := v2.y - v.y;
+      y2 := y + v1.y - v.y;
+      x1 := (v3.x     * y  + v1.x     * (dy  - y )) div dy;
+      x2 := (v2.x     * y2 + v. x     * (dy2 - y2)) div dy2;
+      r1 := (v3.Red   * y  + v1.Red   * (dy  - y )) div dy;
+      r2 := (v2.Red   * y2 + v. Red   * (dy2 - y2)) div dy2;
+      g1 := (v3.Green * y  + v1.Green * (dy  - y )) div dy;
+      g2 := (v2.Green * y2 + v. Green * (dy2 - y2)) div dy2;
+      b1 := (v3.Blue  * y  + v1.Blue  * (dy  - y )) div dy;
+      b2 := (v2.Blue  * y2 + v. Blue  * (dy2 - y2)) div dy2;
+      if (x1 < x2) then
+      begin
+        dx := x2 - x1;
+        for x := 0 to dx - 1 do
+          Image.Colors[x + x1, y + v1.y] := FPColor(
+            (r1 * (dx - x) + r2 * x) div dx,
+            (g1 * (dx - x) + g2 * x) div dx,
+            (b1 * (dx - x) + b2 * x) div dx);
+      end
+      else
+      begin
+        dx := x1 - x2;
+        for x := 0 to dx - 1 do
+          Image.Colors[x + x2, y + v1.y] := FPColor(
+            (r2 * (dx - x) + r1 * x) div dx,
+            (g2 * (dx - x) + g1 * x) div dx,
+            (b2 * (dx - x) + b1 * x) div dx);
+      end;
+    end;
+  end;
+
+
+  function FillTriMesh(Mesh: TGradientTriangle): Boolean;
+  var
+    v1, v2, v3: TTriVertex;
+    R: TRect;
+    Image: TLazIntfImage;
+  begin
+    with Mesh do
+    begin
+      Result :=
+        (Vertex1 < Cardinal(NumVertices)) and (Vertex1 >= 0) and
+        (Vertex2 < Cardinal(NumVertices)) and (Vertex2 >= 0) and
+        (Vertex3 < Cardinal(NumVertices)) and (Vertex3 >= 0);
+
+      if (Vertex1 = Vertex2) or (Vertex1 = Vertex3) or (Vertex2 = Vertex3) or not Result then
+        Exit;
+    end;
+
+    v1 := Vertices[Mesh.Vertex1];
+    v2 := Vertices[Mesh.Vertex2];
+    v3 := Vertices[Mesh.Vertex3];
+    R := GetTriangleBounds(v1, v2, v3);
+    with R do
+    begin
+      dec(v1.x, Left);
+      dec(v2.x, Left);
+      dec(v3.x, Left);
+
+      dec(v1.y, Top);
+      dec(v2.y, Top);
+      dec(v3.y, Top);
+    end;
+
+    Image := CreateIntfImage(R.Right - R.Left, R.Bottom - R.Top, True);
+    GradientFillTriangle(Image, v1, v2, v3);
+    DrawIntfImage(Image, R);
+    Image.Free;
+    Result := True;
+  end;
+
+  function FillRectMesh(Mesh: TGradientRect): Boolean;
+  var
+    TL, BR: TTriVertex;
+    StartColor, EndColor, CurColor: TFPColor;
+    I, J: Longint;
+    SwapColors: Boolean;
+    Steps: Integer;
+    Image: TLazIntfImage;
+    R: TRect;
+  begin
+    with Mesh do
+    begin
+      Result := (UpperLeft < Cardinal(NumVertices)) and (LowerRight < Cardinal(NumVertices));
+      if (LowerRight = UpperLeft) or not Result then
+        Exit;
+      TL := Vertices[UpperLeft];
+      BR := Vertices[LowerRight];
+      SwapColors := (BR.Y < TL.Y) and (BR.X < TL.X);
+      if BR.X < TL.X then
+      begin
+        I := BR.X;
+        BR.X := TL.X;
+        TL.X := I;
+      end;
+      if BR.Y < TL.Y then
+      begin
+        I := BR.Y;
+        BR.Y := TL.Y;
+        TL.Y := I;
+      end;
+      StartColor := FPColor(TL.Red, TL.Green, TL.Blue);
+      EndColor := FPColor(BR.Red, BR.Green, BR.Blue);
+      if SwapColors then
+      begin
+        CurColor := StartColor;
+        StartColor := EndColor;
+        EndColor := CurColor;
+      end;
+
+      R := Rect(TL.X, TL.Y, BR.X, BR.Y);
+      dec(BR.X, TL.X);
+      dec(BR.Y, TL.Y);
+      TL.X := 0;
+      TL.Y := 0;
+      Image := CreateIntfImage(BR.X, BR.Y, False);
+
+      if DoFillVRect then
+      begin
+        Steps := BR.Y;
+        for I := 0 to Steps - 1 do
+        begin
+          CurColor := GetRectangleGradientColor(StartColor, EndColor, I, Steps);
+          for J := TL.X to BR.X - 1 do
+            Image.Colors[J, I] := CurColor;
+        end
+      end
+      else
+      begin
+        Steps := BR.X;
+        for I := 0 to Steps - 1 do
+        begin
+          CurColor := GetRectangleGradientColor(StartColor, EndColor, I, Steps);
+          for J := TL.Y to BR.Y - 1 do
+            Image.Colors[I, J] := CurColor;
+        end;
+      end;
+      DrawIntfImage(Image, R);
+      Image.Free;
+    end;
+  end;
+
+const
+  MeshSize: array[Boolean] of PtrUInt = (
+    SizeOf(tagGradientRect),
+    SizeOf(tagGradientTriangle)
+  );
+var
+  I : Integer;
 begin
-  Result := False;
+  Result := Assigned(Meshes) and (NumMeshes >= 1) and (NumVertices >= 2) and Assigned(Vertices);
+  if Result and DoFillTriangle then
+    Result := NumVertices >= 3;
+  if Result then
+  begin
+    Result := False;
+
+    //Sanity Checks For Vertices Size vs. Count
+    if MemSize(Vertices) < PtrUInt(SizeOf(TTriVertex) * NumVertices) then
+      Exit;
+
+    //Sanity Checks For Meshes Size vs. Count
+    if MemSize(Meshes) < (MeshSize[DoFillTriangle] * Cardinal(NumMeshes)) then
+      Exit;
+
+    for I := 0 to NumMeshes - 1 do
+    begin
+      if DoFillTriangle then
+      begin
+        if not FillTriMesh(PGradientTriangle(Meshes)[I]) then
+          exit;
+      end
+      else
+      begin
+        if not FillRectMesh(PGradientRect(Meshes)[I]) then
+          exit;
+      end;
+    end;
+    Result := True;
+  end;
 end;
 
 function TWidgetSet.HideCaret(hWnd: HWND): Boolean;
