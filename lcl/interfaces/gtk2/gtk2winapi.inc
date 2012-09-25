@@ -3809,7 +3809,7 @@ var
   
   LineStart, LineEnd, StrEnd: PChar;
   Width, Height: Integer;
-  TopY, LineLen, LineHeight: Integer;
+  TopY, LineLen, LineHeight, SavedDC: Integer;
   TxtPt: TPoint;
   DCOrigin: TPoint;
   Foreground, BackgroundColor: PGDKColor;
@@ -3846,11 +3846,13 @@ begin
   
   if DevCtx.GC <> nil then; // create GC
 
-  if ((Options and (ETO_OPAQUE + ETO_CLIPPED)) <> 0) and (Rect=nil)
-  then begin
-    DebugLn('WARNING: [TGtk2WidgetSet.ExtTextOut] Rect=nil');
-    Result := False;
-    exit;
+  if ((Options and (ETO_OPAQUE + ETO_CLIPPED)) <> 0) and (Rect = nil) then
+  begin
+    R := RectFromGdkRect(DevCtx.ClipRect);
+    OffsetRect(R, -R.Left, -R.Top);
+    OffsetRect(R, X, Y);
+    DrawText(DC, Str, Count, R, DT_SINGLELINE or DT_CALCRECT);
+    Rect := @R;
   end;
 
   BackgroundColor := nil;
@@ -3861,10 +3863,8 @@ begin
 
   if (Options and ETO_CLIPPED) <> 0
   then begin
-    X := Rect^.Left;
-    Y := Rect^.Top;
-    IntersectClipRect(DC, Rect^.Left, Rect^.Top,
-                      Rect^.Right, Rect^.Bottom);
+    SavedDC := SaveDC(DC);
+    IntersectClipRect(DC, Rect^.Left, Rect^.Top, Rect^.Right, Rect^.Bottom);
   end;
 
   if DevCtx.HasTransf then
@@ -3894,12 +3894,10 @@ begin
   end;
 
 
-  if (DevCtx.GDIObjects[gdiBrush] <> nil) and
-   ((Options and ETO_OPAQUE) = 0) and (DevCtx.BkMode = OPAQUE) then
-  //  (Rect = nil) then TODO: see if Rect<> nil is needed
+  if (DevCtx.BkMode = OPAQUE) then
   begin
-    EnsureGCColor(DC, dccGDIBrushColor, DevCtx.GDIObjects[gdiBrush]^.GDIBrushFill = GDK_SOLID, True);
-    BackGroundColor := @DevCtx.GDIObjects[gdiBrush]^.GDIBrushColor.Color;
+    EnsureGCColor(DC, dccCurrentBackColor, True, True);
+    BackGroundColor := @DevCtx.CurrentBackColor.Color;
   end;
 
   EnsureGCColor(DC, dccCurrentTextColor, True, False);
@@ -3934,6 +3932,8 @@ begin
     end;
   end;
 
+  if (Options and ETO_CLIPPED) <> 0 then
+    RestoreDC(DC, SavedDC);
   Result := True;
   //DebugLn(Format('trace:< [TGtk2WidgetSet.ExtTextOut] DC:0x%x, X:%d, Y:%d, Options:%d, Str:''%s'', Count: %d', [DC, X, Y, Options, Str, Count]));
 end;
@@ -6454,39 +6454,6 @@ begin
   end
   else DebugLn('WARNING: [TGtk2WidgetSet.HideCaret] Got null HWND');
 
-end;
-
-{------------------------------------------------------------------------------
-  Function: IntersectClipRect
-  Params:  dc: hdc; Left, Top, Right, Bottom: Integer
-  Returns: Integer
-
-  Shrinks the clipping region in the device context dc to a region of all
-  intersecting points between the boundary defined by Left, Top, Right,
-  Bottom , and the Current clipping region.
-
-  The result can be one of the following constants
-      Error
-      NullRegion
-      SimpleRegion
-      ComplexRegion
-
- ------------------------------------------------------------------------------}
-function TGtk2WidgetSet.IntersectClipRect(dc: hdc;
-  Left, Top, Right, Bottom: Integer): Integer;
-var
-  DevCtx: TGtkDeviceContext absolute DC;
-begin
-  if not IsValidDC(DC) then Exit;
-
-  if DevCtx.HasTransf then
-  begin
-    DevCtx.TransfRect(Left, Top, Right, Bottom);
-    DevCtx.TransfNormalize(Left, Right);
-    DevCtx.TransfNormalize(Top, Bottom);
-  end;
-
-  Result := inherited IntersectClipRect(DC, Left, Top, Right, Bottom);
 end;
 
 {------------------------------------------------------------------------------

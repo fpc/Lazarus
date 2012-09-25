@@ -157,7 +157,6 @@ function GradientFill(DC: HDC; Vertices: PTriVertex; NumVertices : Longint;
   Meshes: Pointer; NumMeshes : Longint; Mode : Longint): Boolean; override;
 
 procedure InitializeCriticalSection(var CritSection: TCriticalSection); override;
-function IntersectClipRect(dc: hdc; Left, Top, Right, Bottom: Integer): Integer; override;
 function InvalidateRect(aHandle : HWND; Rect : pRect; bErase : Boolean) : Boolean; override;
 function IsIconic(handle: HWND): boolean; override;
 function IsWindow(handle: HWND): boolean; override;
