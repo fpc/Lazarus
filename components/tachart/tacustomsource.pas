@@ -627,6 +627,9 @@ begin
         UpdateMinMax(YList[j], Result.a.Y, Result.b.Y);
 end;
 
+// ALB -> leftmost item where X >= AXMin, or Count if no such item
+// ALB -> rightmost item where X <= AXMax, or -1 if no such item
+// If the source is sorted, performs binary search. Otherwise, skips NaNs.
 procedure TCustomChartSource.FindBounds(
   AXMin, AXMax: Double; out ALB, AUB: Integer);
 
@@ -662,10 +665,10 @@ begin
   end
   else begin
     ALB := 0;
-    while (ALB < Count) and (IsNan(Item[ALB]^.X) or (Item[ALB]^.X < AXMin)) do
+    while (ALB < Count) and (NumberOr(Item[ALB]^.X, AXMin - 1) < AXMin) do
       Inc(ALB);
     AUB := Count - 1;
-    while (AUB >= 0) and (IsNan(Item[AUB]^.X) or (Item[AUB]^.X > AXMax)) do
+    while (AUB >= 0) and (NumberOr(Item[AUB]^.X, AXMax + 1) > AXMax) do
       Dec(AUB);
   end;
 end;
@@ -851,7 +854,8 @@ begin
   if FValuesTotalIsValid then exit(FValuesTotal);
   FValuesTotal := 0;
   for i := 0 to Count - 1 do
-    FValuesTotal += Item[i]^.Y;
+    with Item[i]^ do
+      FValuesTotal += NumberOr(Y);
   FValuesTotalIsValid := true;
   Result := FValuesTotal;
 end;

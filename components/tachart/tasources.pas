@@ -446,7 +446,7 @@ begin
       (FExtent.a.X < X) and (X < FExtent.b.X) and
       (FExtent.a.Y < Y) and (Y < FExtent.b.Y);
     if FValuesTotalIsValid then
-      FValuesTotal -= Y;
+      FValuesTotal -= NumberOr(Y);
   end;
   Dispose(Item[AIndex]);
   FData.Delete(AIndex);
@@ -611,12 +611,8 @@ var
 begin
   oldY := Item[AIndex]^.Y;
   Item[AIndex]^.Y := AValue;
-  if FValuesTotalIsValid then begin
-    if not IsNan(AValue) then
-      FValuesTotal += AValue;
-    if not IsNan(oldY) then
-      FValuesTotal -= oldY;
-  end;
+  if FValuesTotalIsValid then
+    FValuesTotal += NumberOr(AValue) - NumberOr(oldY);
   UpdateExtent;
   Notify;
 end;
@@ -638,7 +634,7 @@ begin
     UpdateMinMax(AY, FExtent.a.Y, FExtent.b.Y);
   end;
   if FValuesTotalIsValid then
-    FValuesTotal += AY;
+    FValuesTotal += NumberOr(AY);
   Notify;
 end;
 

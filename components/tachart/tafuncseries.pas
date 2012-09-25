@@ -325,6 +325,9 @@ type
 
   TDrawFuncHelper = class
   strict private
+  type
+    TOnPoint = procedure (AXg, AXa: Double) of object;
+  var
     FAxisToGraphXr, FAxisToGraphYr, FGraphToAxisXr: TTransformFunc;
     FCalc: TTransformFunc;
     FChart: TChart;
@@ -332,12 +335,16 @@ type
     FDrawer: IChartDrawer;
     FExtent: TDoubleRect;
     FGraphStep: Double;
+    FNearestPointParams: ^TNearestPointParams;
+    FNearestPointResults: ^TNearestPointResults;
     FMakeDP: TMakeDoublePoint;
     FPrev: TDoublePoint;
     FPrevInExtent: Boolean;
     FSeries: TCustomChartSeries;
 
     procedure CalcAt(AXg, AXa: Double; out APt: TDoublePoint; out AIn: Boolean);
+    procedure CheckForNearestPoint(AXg, AXa: Double);
+    procedure ForEachPoint(AXg, AXMax: Double; AOnMoveTo, AOnLineTo: TOnPoint);
     procedure LineTo(AXg, AXa: Double);
     procedure MoveTo(AXg, AXa: Double);
   public
@@ -417,6 +424,23 @@ begin
   AIn := (FExtent.a <= APt) and (APt <= FExtent.b);
 end;
 
+procedure TDrawFuncHelper.CheckForNearestPoint(AXg, AXa: Double);
+var
+  inExtent: Boolean;
+  gp: TDoublePoint;
+  ip: TPoint;
+  d: Integer;
+begin
+  CalcAt(AXg, AXa, gp, inExtent);
+  if not inExtent then exit;
+  ip := FChart.GraphToImage(gp);
+  d := FNearestPointParams^.FDistFunc(FNearestPointParams^.FPoint, ip);
+  if d >= FNearestPointResults^.FDist then exit;
+  FNearestPointResults^.FDist := d;
+  FNearestPointResults^.FImg := ip;
+  FNearestPointResults^.FValue.X := AXa;
+end;
+
 constructor TDrawFuncHelper.Create(
   ASeries: TCustomChartSeries; ADomainExclusions: TIntervalList;
   ACalc: TTransformFunc; AStep: Integer);
@@ -446,11 +470,8 @@ end;
 
 procedure TDrawFuncHelper.DrawFunction(ADrawer: IChartDrawer);
 var
-  hint: Integer;
-  xg, xa, xg1, xa1, xmax: Double;
+  xg, xmax: Double;
 begin
-  if FGraphStep = 0 then exit;
-
   FDrawer := ADrawer;
   with FSeries do
     if IsRotated then begin
@@ -461,25 +482,35 @@ begin
       xg := FExtent.a.X;
       xmax := FExtent.b.X;
     end;
+  ForEachPoint(xg, xmax, @MoveTo, @LineTo);
+end;
+
+procedure TDrawFuncHelper.ForEachPoint(
+  AXg, AXMax: Double; AOnMoveTo, AOnLineTo: TOnPoint);
+var
+  hint: Integer;
+  xa, xg1, xa1: Double;
+begin
+  if FGraphStep = 0 then exit;
 
   hint := 0;
-  xa := FGraphToAxisXr(xg);
+  xa := FGraphToAxisXr(AXg);
   if FDomainExclusions.Intersect(xa, xa, hint) then
-    xg := FAxisToGraphXr(xa);
+    AXg := FAxisToGraphXr(xa);
 
-  MoveTo(xg, xa);
+  AOnMoveTo(AXg, xa);
 
-  while xg < xmax do begin
-    xg1 := xg + FGraphStep;
+  while AXg < AXMax do begin
+    xg1 := AXg + FGraphStep;
     xa1 := FGraphToAxisXr(xg1);
     if FDomainExclusions.Intersect(xa, xa1, hint) then begin
-      LineTo(FAxisToGraphXr(xa), xa);
+      AOnLineTo(FAxisToGraphXr(xa), xa);
       xg1 := FAxisToGraphXr(xa1);
-      MoveTo(xg1, xa1);
+      AOnMoveTo(xg1, xa1);
     end
     else
-      LineTo(xg1, xa1);
-    xg := xg1;
+      AOnLineTo(xg1, xa1);
+    AXg := xg1;
     xa := xa1;
   end;
 end;
@@ -487,32 +518,11 @@ end;
 function TDrawFuncHelper.GetNearestPoint(
   const AParams: TNearestPointParams;
   out AResults: TNearestPointResults): Boolean;
-
-  procedure CheckPoint(AXg, AXa: Double);
-  var
-    inExtent: Boolean;
-    gp: TDoublePoint;
-    ip: TPoint;
-    d: Integer;
-  begin
-    CalcAt(AXg, AXa, gp, inExtent);
-    if not inExtent then exit;
-    ip := FChart.GraphToImage(gp);
-    d := AParams.FDistFunc(AParams.FPoint, ip);
-    if (d >= AResults.FDist) or (d > Sqr(AParams.FRadius)) then exit;
-    AResults.FDist := d;
-    AResults.FImg := ip;
-    AResults.FValue.X := AXa;
-    Result := true;
-  end;
-
 var
-  hint: Integer;
-  xg, xa, xg1, xa1, xmax: Double;
+  xg, xmax: Double;
 begin
   AResults.FIndex := -1;
-  AResults.FDist := MaxInt;
-  Result := false;
+  AResults.FDist := Sqr(AParams.FRadius) + 1;
 
   with AParams do
     if FSeries.IsRotated then begin
@@ -524,26 +534,11 @@ begin
       xmax := Min(FExtent.b.X, FChart.XImageToGraph(FPoint.X + FRadius));
     end;
 
-  hint := 0;
-  xa := FGraphToAxisXr(xg);
-  if FDomainExclusions.Intersect(xa, xa, hint) then
-    xg := FAxisToGraphXr(xa);
+  FNearestPointParams := @AParams;
+  FNearestPointResults := @AResults;
+  ForEachPoint(xg, xmax, @CheckForNearestPoint, @CheckForNearestPoint);
 
-  CheckPoint(xg, xa);
-
-  while xg < xmax do begin
-    xg1 := xg + FGraphStep;
-    xa1 := FGraphToAxisXr(xg1);
-    if FDomainExclusions.Intersect(xa, xa1, hint) then begin
-      CheckPoint(FAxisToGraphXr(xa), xa);
-      xg1 := FAxisToGraphXr(xa1);
-      CheckPoint(xg1, xa1);
-    end
-    else
-      CheckPoint(xg1, xa1);
-    xg := xg1;
-    xa := xa1;
-  end;
+  Result := AResults.FDist < Sqr(AParams.FRadius) + 1;
 end;
 
 procedure TDrawFuncHelper.LineTo(AXg, AXa: Double);
