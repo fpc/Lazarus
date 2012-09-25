@@ -327,6 +327,7 @@ type
   strict private
   type
     TOnPoint = procedure (AXg, AXa: Double) of object;
+    TImageToGraph = function (AX: Integer): Double of object;
   var
     FAxisToGraphXr, FAxisToGraphYr, FGraphToAxisXr: TTransformFunc;
     FCalc: TTransformFunc;
@@ -335,6 +336,7 @@ type
     FDrawer: IChartDrawer;
     FExtent: TDoubleRect;
     FGraphStep: Double;
+    FImageToGraph: TImageToGraph;
     FNearestPointParams: ^TNearestPointParams;
     FNearestPointResults: ^TNearestPointResults;
     FMakeDP: TMakeDoublePoint;
@@ -347,6 +349,7 @@ type
     procedure ForEachPoint(AXg, AXMax: Double; AOnMoveTo, AOnLineTo: TOnPoint);
     procedure LineTo(AXg, AXa: Double);
     procedure MoveTo(AXg, AXa: Double);
+    function XRange: TDoubleInterval;
   public
     constructor Create(
       ASeries: TCustomChartSeries; ADomainExclusions:
@@ -457,32 +460,24 @@ begin
       FAxisToGraphYr := @AxisToGraphX;
       FGraphToAxisXr := @GraphToAxisY;
       FMakeDP := @DoublePointRotated;
-      FGraphStep := FChart.YImageToGraph(-AStep) - FChart.YImageToGraph(0);
+      FImageToGraph := @FChart.YImageToGraph;
+      AStep := -AStep;
     end
     else begin
       FAxisToGraphXr := @AxisToGraphX;
       FAxisToGraphYr := @AxisToGraphY;
       FGraphToAxisXr := @GraphToAxisX;
       FMakeDP := @DoublePoint;
-      FGraphStep := FChart.XImageToGraph(AStep) - FChart.XImageToGraph(0);
+      FImageToGraph := @FChart.XImageToGraph;
     end;
+  FGraphStep := FImageToGraph(AStep) - FImageToGraph(0);
 end;
 
 procedure TDrawFuncHelper.DrawFunction(ADrawer: IChartDrawer);
-var
-  xg, xmax: Double;
 begin
   FDrawer := ADrawer;
-  with FSeries do
-    if IsRotated then begin
-      xg := FExtent.a.Y;
-      xmax := FExtent.b.Y;
-    end
-    else begin
-      xg := FExtent.a.X;
-      xmax := FExtent.b.X;
-    end;
-  ForEachPoint(xg, xmax, @MoveTo, @LineTo);
+  with XRange do
+    ForEachPoint(FStart, FEnd, @MoveTo, @LineTo);
 end;
 
 procedure TDrawFuncHelper.ForEachPoint(
@@ -519,24 +514,20 @@ function TDrawFuncHelper.GetNearestPoint(
   const AParams: TNearestPointParams;
   out AResults: TNearestPointResults): Boolean;
 var
-  xg, xmax: Double;
+  x, r: Integer;
 begin
   AResults.FIndex := -1;
   AResults.FDist := Sqr(AParams.FRadius) + 1;
-
-  with AParams do
-    if FSeries.IsRotated then begin
-      xg := Max(FExtent.a.Y, FChart.YImageToGraph(FPoint.Y - FRadius));
-      xmax := Min(FExtent.b.Y, FChart.YImageToGraph(FPoint.Y + FRadius));
-    end
-    else begin
-      xg := Max(FExtent.a.X, FChart.XImageToGraph(FPoint.X - FRadius));
-      xmax := Min(FExtent.b.X, FChart.XImageToGraph(FPoint.X + FRadius));
-    end;
-
   FNearestPointParams := @AParams;
   FNearestPointResults := @AResults;
-  ForEachPoint(xg, xmax, @CheckForNearestPoint, @CheckForNearestPoint);
+
+  x := TPointBoolArr(AParams.FPoint)[FSeries.IsRotated];
+  r := IfThen(FSeries.IsRotated, -1, 1) * AParams.FRadius;
+  with XRange do
+    ForEachPoint(
+      Max(FImageToGraph(x - r), FStart),
+      Min(FImageToGraph(x + r), FEnd),
+      @CheckForNearestPoint, @CheckForNearestPoint);
 
   Result := AResults.FDist < Sqr(AParams.FRadius) + 1;
 end;
@@ -563,6 +554,14 @@ begin
   CalcAt(AXg, AXa, FPrev, FPrevInExtent);
   if FPrevInExtent then
     FDrawer.MoveTo(FChart.GraphToImage(FPrev));
+end;
+
+function TDrawFuncHelper.XRange: TDoubleInterval;
+begin
+  if FSeries.IsRotated then
+    Result := DoubleInterval(FExtent.a.Y, FExtent.b.Y)
+  else
+    Result := DoubleInterval(FExtent.a.X, FExtent.b.X);
 end;
 
 { TBasicFuncSeries }
@@ -679,9 +678,8 @@ function TFuncSeries.GetNearestPoint(
   const AParams: TNearestPointParams;
   out AResults: TNearestPointResults): Boolean;
 begin
-  Result := false;
   AResults.FIndex := -1;
-  if not Assigned(OnCalculate) then exit;
+  if not Assigned(OnCalculate) then exit(false);
 
   with TDrawFuncHelper.Create(Self, DomainExclusions, @DoCalculate, Step) do
     try
