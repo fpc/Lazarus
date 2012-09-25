@@ -3808,6 +3808,7 @@ var
   Foreground, BackgroundColor: PGDKColor;
   CurDx: PInteger;
   CurStr: PChar;
+  R: TRect;
 
   procedure DoTextOut(X,Y : Integer; Str: Pchar; CurCount: Integer);
   var
@@ -3854,8 +3855,8 @@ begin
 
   DCOrigin := DevCtx.Offset;
 
-  if (Options and ETO_CLIPPED) <> 0
-  then begin
+  if (Options and ETO_CLIPPED) <> 0 then
+  begin
     SavedDC := SaveDC(DC);
     IntersectClipRect(DC, Rect^.Left, Rect^.Top, Rect^.Right, Rect^.Bottom);
   end;
