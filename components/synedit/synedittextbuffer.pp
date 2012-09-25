@@ -826,32 +826,23 @@ begin
         PWidths^ := 0;
       #$CC:
         if ((Line+1)^ in [#$80..#$FF]) and (i>0)
-        then PWidths^ := 0  // Combining Diacritical Marks (belongs to previos char)
+        then PWidths^ := 0  // Combining Diacritical Marks (belongs to previos char) 0300-036F
         else PWidths^ := 1;
       #$CD:
         if ((Line+1)^ in [#$00..#$AF]) and (i>0)
         then PWidths^ := 0  // Combining Diacritical Marks
         else PWidths^ := 1;
       #$E1:
-        if (   (((Line+1)^ = #$B7) and ((Line+2)^ in [#$80..#$FF]))
-            or  ((Line+1)^ in [#$B8..#$B9])
-            or (((Line+1)^ = #$BA) and ((Line+2)^ in [#$80..#$BF]))
-           ) and (i>0)
-        then PWidths^ := 0  // Combining Diacritical Marks Supplement
+        if (((Line+1)^ = #$B7) and ((Line+2)^ in [#$80..#$BF])) and (i>0)
+        then PWidths^ := 0  // Combining Diacritical Marks Supplement 1DC0-1DFF
         else PWidths^ := 1;
       #$E2:
-        if (   (((Line+1)^ = #$83) and ((Line+2)^ in [#$90..#$FF]))
-            or  ((Line+1)^ in [#$84..#$86])
-            or (((Line+1)^ = #$87) and ((Line+2)^ in [#$80..#$8F]))
-           ) and (i>0)
-        then PWidths^ := 0  // Combining Diacritical Marks for Symbols
+        if (((Line+1)^ = #$83) and ((Line+2)^ in [#$90..#$FF])) and (i>0)
+        then PWidths^ := 0  // Combining Diacritical Marks for Symbols 20D0-20FF
         else PWidths^ := 1;
       #$EF:
-        if (   (((Line+1)^ = #$B8) and ((Line+2)^ in [#$A0..#$FF]))
-            or  ((Line+1)^ in [#$B9..#$BB])
-            or (((Line+1)^ = #$BC) and ((Line+2)^ in [#$80..#$9F]))
-           ) and (i>0)
-        then PWidths^ := 0  // Combining half Marks
+        if (((Line+1)^ = #$B8) and ((Line+2)^ in [#$A0..#$AF])) and (i>0)
+        then PWidths^ := 0  // Combining half Marks FE20-FE2F
         else PWidths^ := 1;
       else
         PWidths^ := 1;
