@@ -9034,6 +9034,8 @@ begin
   {$IFDEF DebugLR}
   DebugLnEnter('TfrReport.PrepareReport INIT');
   {$ENDIF}
+
+  AggrBand:= nil;
   DocMode := dmPrinting;
   CurDate := Date;
   CurTime := Time;
