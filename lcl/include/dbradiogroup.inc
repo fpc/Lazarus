@@ -104,8 +104,7 @@ end;
 procedure TDBRadioGroup.DataChange(Sender: TObject);
 begin
   if FDataLink.Field<>nil then
-    // ToDo: Use Field.Text
-    Value:=FDataLink.Field.DisplayText
+    Value:=FDataLink.Field.Text
   else
     Value:='';
 end;
@@ -113,8 +112,7 @@ end;
 procedure TDBRadioGroup.UpdateData(Sender: TObject);
 begin
   if FDataLink.Field<>nil then
-    // ToDo: Use Field.Text
-    FDataLink.Field.AsString:=Value;
+    FDataLink.Field.Text:=Value;
 end;
 
 function TDBRadioGroup.GetButtonValue(Index: Integer): string;
