@@ -395,7 +395,7 @@ begin
       repeat
         inc(LogicIdx);
         inc(i);
-      until (LogicIdx >= CharWidthsLen) or ((FCharWidths[LogicIdx] and PCWMask) <> 0);
+      until (LogicIdx >= CharWidthsLen) or (LogicIdx >= LogicEnd) or ((FCharWidths[LogicIdx] and PCWMask) <> 0);
     end;
     Assert(PhysPos > FCurViewToken.PhysicalStart, 'PhysPos > FCurViewToken.PhysicalStart');
 
