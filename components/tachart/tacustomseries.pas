@@ -170,7 +170,7 @@ type
     function  GetYMax: Double;
     function  GetYMin: Double;
     function  GetYValue(AIndex: Integer): Double;
-    procedure SetColor(AIndex: Integer; AColor: TColor);
+    procedure SetColor(AIndex: Integer; AColor: TColor); inline;
     procedure SetXValue(AIndex: Integer; AValue: Double); inline;
     procedure SetYValue(AIndex: Integer; AValue: Double); inline;
   public
@@ -760,11 +760,7 @@ end;
 
 procedure TChartSeries.SetColor(AIndex: Integer; AColor: TColor);
 begin
-  with Source[AIndex]^ do begin
-    if Color = AColor then exit;
-    Color := AColor;
-    UpdateParentChart;
-  end;
+  ListSource.SetColor(AIndex, AColor);
 end;
 
 procedure TChartSeries.SetMarks(AValue: TChartMarks);

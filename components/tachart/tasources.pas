@@ -55,9 +55,12 @@ type
     procedure CopyFrom(ASource: TCustomChartSource);
     procedure Delete(AIndex: Integer);
     function IsSorted: Boolean; override;
+
+    procedure SetColor(AIndex: Integer; AColor: TChartColor);
     function SetXValue(AIndex: Integer; AValue: Double): Integer;
     procedure SetYList(AIndex: Integer; const AYList: array of Double);
     procedure SetYValue(AIndex: Integer; AValue: Double);
+
     procedure Sort;
   published
     property DataPoints: TStrings read FDataPoints write SetDataPoints;
@@ -480,6 +483,15 @@ function TListChartSource.NewItem: PChartDataItem;
 begin
   New(Result);
   SetLength(Result^.YList, Max(YCount - 1, 0));
+end;
+
+procedure TListChartSource.SetColor(AIndex: Integer; AColor: TChartColor);
+begin
+  with Item[AIndex]^ do begin
+    if Color = AColor then exit;
+    Color := AColor;
+  end;
+  Notify;
 end;
 
 procedure TListChartSource.SetDataPoints(AValue: TStrings);
