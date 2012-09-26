@@ -78,7 +78,7 @@ type
     fToIdent: PChar;
     fTokenPos: Integer;
     FTokenID: TtkTokenKind;
-    fIdentFuncTable: array[0..255] of TIdentFuncTableFunc;
+    fIdentFuncTable: array[0..293] of TIdentFuncTableFunc;
     fCommentAttri: TSynHighlighterAttributes;
     fIdentifierAttri: TSynHighlighterAttributes;
     fKeyAttri: TSynHighlighterAttributes;
@@ -101,10 +101,12 @@ type
     function Func36: TtkTokenKind;
     function Func39: TtkTokenKind;
     function Func40: TtkTokenKind;
+    function Func41: TtkTokenKind;
     function Func43: TtkTokenKind;
     function Func45: TtkTokenKind;
     function Func51: TtkTokenKind;
     function Func52: TtkTokenKind;
+    function Func53: TtkTokenKind;
     function Func54: TtkTokenKind;
     function Func55: TtkTokenKind;
     function Func56: TtkTokenKind;
@@ -120,6 +122,7 @@ type
     function Func67: TtkTokenKind;
     function Func69: TtkTokenKind;
     function Func70: TtkTokenKind;
+    function Func71: TtkTokenKind;
     function Func72: TtkTokenKind;    
     function Func74: TtkTokenKind;
     function Func76: TtkTokenKind;
@@ -133,8 +136,10 @@ type
     function Func86: TtkTokenKind;
     function Func87: TtkTokenKind;
     function Func88: TtkTokenKind;
+    function Func89: TtkTokenKind;
     function Func90: TtkTokenKind;
     function Func91: TtkTokenKind;
+    function Func92: TtkTokenKind;
     function Func93: TtkTokenKind;
     function Func94: TtkTokenKind;
     function Func95: TtkTokenKind;
@@ -150,6 +155,7 @@ type
     function Func106: TtkTokenKind;
     function Func107: TtkTokenKind;
     function Func108: TtkTokenKind;
+    function Func109: TtkTokenKind;
     function Func110: TtkTokenKind;
     function Func111: TtkTokenKind;
     function Func112: TtkTokenKind;
@@ -159,15 +165,19 @@ type
     function Func116: TtkTokenKind;
     function Func117: TtkTokenKind;
     function Func118: TtkTokenKind;
+    function Func119: TtkTokenKind;
     function Func120: TtkTokenKind;
     function Func121: TtkTokenKind;
     function Func122: TtkTokenKind;
+    function Func123: TtkTokenKind;
     function Func124: TtkTokenKind;
     function Func126: TtkTokenKind;
+    function Func127: TtkTokenKind;
     function Func128: TtkTokenKind;
     function Func129: TtkTokenKind;
     function Func130: TtkTokenKind;
     function Func131: TtkTokenKind;
+    function Func132: TtkTokenKind;
     function Func134: TtkTokenKind;
     function Func136: TtkTokenKind;
     function Func137: TtkTokenKind;
@@ -175,35 +185,50 @@ type
     function Func139: TtkTokenKind;
     function Func140: TtkTokenKind;
     function Func141: TtkTokenKind;
+    function Func142: TtkTokenKind;
     function Func144: TtkTokenKind;
+    function Func146: TtkTokenKind;
     function Func148: TtkTokenKind;
     function Func149: TtkTokenKind;
     function Func150: TtkTokenKind;
     function Func151: TtkTokenKind;
-    function Func152: TtkTokenKind;    
+    function Func152: TtkTokenKind;
+    function Func153: TtkTokenKind;
     function Func154: TtkTokenKind;
     function Func156: TtkTokenKind;
     function Func158: TtkTokenKind;
+    function Func159: TtkTokenKind;
     function Func160: TtkTokenKind;
     function Func164: TtkTokenKind;
     function Func166: TtkTokenKind;
     function Func167: TtkTokenKind;
     function Func169: TtkTokenKind;
+    function Func171: TtkTokenKind;
     function Func172: TtkTokenKind;
     function Func173: TtkTokenKind;
     function Func174: TtkTokenKind;
+    function Func177: TtkTokenKind;
     function Func178: TtkTokenKind;
+    function Func179: TtkTokenKind;
     function Func182: TtkTokenKind;
+    function Func186: TtkTokenKind;
     function Func187: TtkTokenKind;
     function Func190: TtkTokenKind;
+    function Func191: TtkTokenKind;
     function Func194: TtkTokenKind;
     function Func195: TtkTokenKind;
     function Func199: TtkTokenKind;
     function Func200: TtkTokenKind;
+    function Func205: TtkTokenKind;
     function Func210: TtkTokenKind;
     function Func213: TtkTokenKind;
     function Func220: TtkTokenKind;
+    function Func222: TtkTokenKind;
+    function Func224: TtkTokenKind;
+    function Func242: TtkTokenKind;
     function Func250: TtkTokenKind;
+    function Func253: TtkTokenKind;
+    function Func293: TtkTokenKind;
     procedure AsciiCharProc;
     procedure CRProc;
     procedure CStyleCommentProc;
@@ -277,12 +302,12 @@ var
 begin
   for I := #0 to #255 do begin
     case I of
-      'a'..'z', 'A'..'Z', '-', '_', '0'..'9': Identifiers[I] := True;
+      'a'..'z', 'A'..'Z', '-', '_', '0'..'9','@': Identifiers[I] := True;
     else
       Identifiers[I] := False;
     end;
     J := UpCase(I);
-    if I in ['a'..'z', 'A'..'Z', '-', '_'] then
+    if I in ['a'..'z', 'A'..'Z', '-', '_','@'] then
       mHashTable[I] := Ord(J) - 64
     else
       mHashTable[I] := 0;
@@ -312,10 +337,12 @@ begin
   FIdentFuncTable[36] := @Func36;
   FIdentFuncTable[39] := @Func39;
   FIdentFuncTable[40] := @Func40;
+  FIdentFuncTable[41] := @Func41;
   FIdentFuncTable[43] := @Func43;
   FIdentFuncTable[45] := @Func45;
   FIdentFuncTable[51] := @Func51;
   FIdentFuncTable[52] := @Func52;
+  FIdentFuncTable[53] := @Func53;
   FIdentFuncTable[54] := @Func54;
   FIdentFuncTable[55] := @Func55;
   FIdentFuncTable[56] := @Func56;
@@ -331,6 +358,7 @@ begin
   FIdentFuncTable[67] := @Func67;
   FIdentFuncTable[69] := @Func69;
   FIdentFuncTable[70] := @Func70;
+  FIdentFuncTable[71] := @Func71;
   FIdentFuncTable[72] := @Func72;
   FIdentFuncTable[74] := @Func74;
   FIdentFuncTable[76] := @Func76;
@@ -344,8 +372,10 @@ begin
   FIdentFuncTable[86] := @Func86;
   FIdentFuncTable[87] := @Func87;
   FIdentFuncTable[88] := @Func88;
+  FIdentFuncTable[89] := @Func89;
   FIdentFuncTable[90] := @Func90;
   FIdentFuncTable[91] := @Func91;
+  FIdentFuncTable[92] := @Func92;
   FIdentFuncTable[93] := @Func93;
   FIdentFuncTable[94] := @Func94;
   FIdentFuncTable[95] := @Func95;
@@ -361,6 +391,7 @@ begin
   FIdentFuncTable[106] := @Func106;
   FIdentFuncTable[107] := @Func107;
   FIdentFuncTable[108] := @Func108;
+  FIdentFuncTable[109] := @Func109;
   FIdentFuncTable[110] := @Func110;
   FIdentFuncTable[111] := @Func111;
   FIdentFuncTable[112] := @Func112;
@@ -370,15 +401,19 @@ begin
   FIdentFuncTable[116] := @Func116;
   FIdentFuncTable[117] := @Func117;
   FIdentFuncTable[118] := @Func118;
+  FIdentFuncTable[119] := @Func119;
   FIdentFuncTable[120] := @Func120;
   FIdentFuncTable[121] := @Func121;
   FIdentFuncTable[122] := @Func122;
+  FIdentFuncTable[123] := @Func123;
   FIdentFuncTable[124] := @Func124;
   FIdentFuncTable[126] := @Func126;
+  FIdentFuncTable[127] := @Func127;
   FIdentFuncTable[128] := @Func128;
   FIdentFuncTable[129] := @Func129;
   FIdentFuncTable[130] := @Func130;
   FIdentFuncTable[131] := @Func131;
+  FIdentFuncTable[132] := @Func132;
   FIdentFuncTable[134] := @Func134;
   FIdentFuncTable[136] := @Func136;
   FIdentFuncTable[137] := @Func137;
@@ -386,41 +421,56 @@ begin
   FIdentFuncTable[139] := @Func139;
   FIdentFuncTable[140] := @Func140;
   FIdentFuncTable[141] := @Func141;
+  FIdentFuncTable[142] := @Func142;
   FIdentFuncTable[144] := @Func144;
+  FIdentFuncTable[146] := @Func146;
   FIdentFuncTable[148] := @Func148;
   FIdentFuncTable[149] := @Func149;
   FIdentFuncTable[150] := @Func150;
   FIdentFuncTable[151] := @Func151;
   FIdentFuncTable[152] := @Func152;
+  FIdentFuncTable[153] := @Func153;
   FIdentFuncTable[154] := @Func154;
   FIdentFuncTable[156] := @Func156;
   FIdentFuncTable[158] := @Func158;
+  FIdentFuncTable[159] := @Func159;
   FIdentFuncTable[160] := @Func160;
   FIdentFuncTable[164] := @Func164;
   FIdentFuncTable[166] := @Func166;
   FIdentFuncTable[167] := @Func167;
   FIdentFuncTable[169] := @Func169;
+  FIdentFuncTable[171] := @Func171;
   FIdentFuncTable[172] := @Func172;
   FIdentFuncTable[173] := @Func173;
   FIdentFuncTable[174] := @Func174;
+  FIdentFuncTable[177] := @Func177;
   FIdentFuncTable[178] := @Func178;
+  FIdentFuncTable[179] := @Func179;
   FIdentFuncTable[182] := @Func182;
+  FIdentFuncTable[186] := @Func186;
   FIdentFuncTable[187] := @Func187;
   FIdentFuncTable[190] := @Func190;
+  FIdentFuncTable[191] := @Func191;
   FIdentFuncTable[194] := @Func194;
   FIdentFuncTable[195] := @Func195;
   FIdentFuncTable[199] := @Func199;
   FIdentFuncTable[200] := @Func200;
+  FIdentFuncTable[205] := @Func205;
   FIdentFuncTable[210] := @Func210;
   FIdentFuncTable[213] := @Func213;
   FIdentFuncTable[220] := @Func220;
+  FIdentFuncTable[222] := @Func222;
+  FIdentFuncTable[224] := @Func224;
+  FIdentFuncTable[242] := @Func242;
   FIdentFuncTable[250] := @Func250;
+  FIdentFuncTable[253] := @Func253;
+  FIdentFuncTable[293] := @Func293;
 end;
 
 function TSynCssSyn.KeyHash(ToHash: PChar): Integer;
 begin
   Result := 0;
-  while ToHash^ in ['a'..'z', 'A'..'Z', '0'..'9', '-', '_'] do begin
+  while ToHash^ in ['a'..'z', 'A'..'Z', '0'..'9', '-', '_','@'] do begin
     Inc(Result, mHashTable[ToHash^]);
     Inc(ToHash);
   end;
@@ -445,7 +495,6 @@ begin
   end else
     Result := False;
 end;
-
 
 function TSynCssSyn.Func16: TtkTokenKind;
 begin
@@ -513,7 +562,7 @@ end;
 
 function TSynCssSyn.Func32: TtkTokenKind;
 begin
-  if KeyComp('ms') then
+  if KeyComp('ms') or KeyComp('@media') then
     Result := tkKey
   else
     Result := tkIdentifier;
@@ -551,6 +600,14 @@ begin
     Result := tkIdentifier;
 end;
 
+function TSynCssSyn.Func41: TtkTokenKind;
+begin
+  if KeyComp('icon') then
+    Result := tkKey
+  else
+    Result := tkIdentifier;
+end;
+
 function TSynCssSyn.Func43: TtkTokenKind;
 begin
   if KeyComp('left') then
@@ -569,7 +626,7 @@ end;
 
 function TSynCssSyn.Func51: TtkTokenKind;
 begin
-  if KeyComp('top') or KeyComp('panose-1') then
+  if KeyComp('top') or KeyComp('panose-1') or KeyComp('@font-face') then
     Result := tkKey
   else
     Result := tkIdentifier;
@@ -578,6 +635,14 @@ end;
 function TSynCssSyn.Func52: TtkTokenKind;
 begin
   if KeyComp('speak') then
+    Result := tkKey
+  else
+    Result := tkIdentifier;
+end;
+
+function TSynCssSyn.Func53: TtkTokenKind;
+begin
+  if KeyComp('box-pack') then
     Result := tkKey
   else
     Result := tkIdentifier;
@@ -593,7 +658,7 @@ end;
 
 function TSynCssSyn.Func55: TtkTokenKind;
 begin
-  if KeyComp('font') or KeyComp('padding') then
+  if KeyComp('font') or KeyComp('padding') or KeyComp('nav-up') then
     Result := tkKey
   else
     Result := tkIdentifier;
@@ -641,7 +706,7 @@ end;
 
 function TSynCssSyn.Func61: TtkTokenKind;
 begin
-  if KeyComp('cue-before') then
+  if KeyComp('cue-before') or KeyComp('nav-left') then
     Result := tkKey
   else
     Result := tkIdentifier;
@@ -667,7 +732,7 @@ end;
 
 function TSynCssSyn.Func64: TtkTokenKind;
 begin
-  if KeyComp('width') then
+  if KeyComp('width')then
     Result := tkKey
   else
     Result := tkIdentifier;
@@ -675,7 +740,7 @@ end;
 
 function TSynCssSyn.Func65: TtkTokenKind;
 begin
-  if KeyComp('stemh') then
+  if KeyComp('stemh') or KeyComp('box-align')  then
     Result := tkKey
   else
     Result := tkIdentifier;
@@ -691,7 +756,7 @@ end;
 
 function TSynCssSyn.Func69: TtkTokenKind;
 begin
-  if KeyComp('zoom') then
+  if KeyComp('zoom') or KeyComp('box-flex') then
     Result := tkKey
   else
     Result := tkIdentifier;
@@ -700,6 +765,14 @@ end;
 function TSynCssSyn.Func70: TtkTokenKind;
 begin
   if KeyComp('filter') or KeyComp('descent') then
+    Result := tkKey
+  else
+    Result := tkIdentifier;
+end;
+
+function TSynCssSyn.Func71: TtkTokenKind;
+begin
+  if KeyComp('target') then
     Result := tkKey
   else
     Result := tkIdentifier;
@@ -715,7 +788,8 @@ end;
 
 function TSynCssSyn.Func74: TtkTokenKind;
 begin
-  if KeyComp('speak-header') or KeyComp('min-height') then
+  if KeyComp('speak-header') or KeyComp('min-height') or KeyComp('nav-down')
+    or KeyComp('nav-index') then
     Result := tkKey
   else
     Result := tkIdentifier;
@@ -731,7 +805,7 @@ end;
 
 function TSynCssSyn.Func78: TtkTokenKind;
 begin
-  if KeyComp('page-break-after') or KeyComp('word-break') or
+  if KeyComp('page-break-after') or KeyComp('word-break') or KeyComp('border-image') or
     KeyComp('line-height') then
     Result := tkKey
   else
@@ -749,7 +823,7 @@ end;
 
 function TSynCssSyn.Func80: TtkTokenKind;
 begin
-  if KeyComp('behavior') then
+  if KeyComp('behavior') or KeyComp('appearance') or KeyComp('nav-right') then
     Result := tkKey
   else
     Result := tkIdentifier;
@@ -757,7 +831,7 @@ end;
 
 function TSynCssSyn.Func81: TtkTokenKind;
 begin
-  if KeyComp('speech-rate') or KeyComp('min-width') then
+  if KeyComp('speech-rate') or KeyComp('min-width')  or KeyComp('box-lines') then
     Result := tkKey
   else
     Result := tkIdentifier;
@@ -765,7 +839,7 @@ end;
 
 function TSynCssSyn.Func82: TtkTokenKind;
 begin
-  if KeyComp('pitch-range') or KeyComp('mathline') then
+  if KeyComp('pitch-range') or KeyComp('mathline') or KeyComp('resize') then
     Result := tkKey
   else
     Result := tkIdentifier;
@@ -773,7 +847,7 @@ end;
 
 function TSynCssSyn.Func83: TtkTokenKind;
 begin
-  if KeyComp('max-width') or KeyComp('widths') then
+  if KeyComp('max-width') or KeyComp('widths') or KeyComp('column-gap') then
     Result := tkKey
   else
     Result := tkIdentifier;
@@ -781,7 +855,7 @@ end;
 
 function TSynCssSyn.Func85: TtkTokenKind;
 begin
-  if KeyComp('bottom') then
+  if KeyComp('bottom') or KeyComp('target-name') then
     Result := tkKey
   else
     Result := tkIdentifier;
@@ -811,6 +885,14 @@ begin
     Result := tkIdentifier;
 end;
 
+function TSynCssSyn.Func89: TtkTokenKind;
+begin
+  if KeyComp('opacity') then
+    Result := tkKey
+  else
+    Result := tkIdentifier;
+end;
+
 function TSynCssSyn.Func90: TtkTokenKind;
 begin
   if KeyComp('white-space') or KeyComp('ruby-align') then
@@ -821,7 +903,15 @@ end;
 
 function TSynCssSyn.Func91: TtkTokenKind;
 begin
-  if KeyComp('orphans') or KeyComp('content') then
+  if KeyComp('orphans') or KeyComp('content') or KeyComp('@import') then
+    Result := tkKey
+  else
+    Result := tkIdentifier;
+end;
+
+function TSynCssSyn.Func92: TtkTokenKind;
+begin
+  if KeyComp('box-shadow') then
     Result := tkKey
   else
     Result := tkIdentifier;
@@ -838,7 +928,7 @@ end;
 function TSynCssSyn.Func94: TtkTokenKind;
 begin
   if KeyComp('margin-top') or KeyComp('border-top') or KeyComp('pause-before') or
-    KeyComp('cursor') then
+    KeyComp('cursor') or KeyComp('grid-rows') or KeyComp('target-new') then
     Result := tkKey
   else
     Result := tkIdentifier;
@@ -855,7 +945,7 @@ end;
 function TSynCssSyn.Func96: TtkTokenKind;
 begin
   if KeyComp('background') or KeyComp('caption-side') or KeyComp('counter') or
-    KeyComp('outline') then
+    KeyComp('outline') or KeyComp('animation')  then
     Result := tkKey
   else
     Result := tkIdentifier;
@@ -863,7 +953,8 @@ end;
 
 function TSynCssSyn.Func97: TtkTokenKind;
 begin
-  if KeyComp('quotes') or KeyComp('direction') or KeyComp('unicode-range') then
+  if KeyComp('quotes') or KeyComp('direction') or KeyComp('unicode-range')
+    or KeyComp('columns') then
     Result := tkKey
   else
     Result := tkIdentifier;
@@ -871,7 +962,7 @@ end;
 
 function TSynCssSyn.Func98: TtkTokenKind;
 begin
-  if KeyComp('padding-right') or KeyComp('azimuth') then
+  if KeyComp('padding-right') or KeyComp('azimuth') or KeyComp('column-fill') then
     Result := tkKey
   else
     Result := tkIdentifier;
@@ -911,7 +1002,7 @@ end;
 
 function TSynCssSyn.Func103: TtkTokenKind;
 begin
-  if KeyComp('elevation') then
+  if KeyComp('elevation') or KeyComp('@keyframes') or KeyComp('box-orient') then
     Result := tkKey
   else
     Result := tkIdentifier;
@@ -928,7 +1019,7 @@ end;
 
 function TSynCssSyn.Func106: TtkTokenKind;
 begin
-  if KeyComp('border-color') then
+  if KeyComp('border-color') or KeyComp('box-sizing')  then
     Result := tkKey
   else
     Result := tkIdentifier;
@@ -936,7 +1027,7 @@ end;
 
 function TSynCssSyn.Func107: TtkTokenKind;
 begin
-  if KeyComp('border-width') then
+  if KeyComp('border-width') or KeyComp('border-image-slice') then
     Result := tkKey
   else
     Result := tkIdentifier;
@@ -944,7 +1035,15 @@ end;
 
 function TSynCssSyn.Func108: TtkTokenKind;
 begin
-  if KeyComp('font-weight') or KeyComp('play-during') then
+  if KeyComp('font-weight') or KeyComp('play-during') or KeyComp('text-wrap') then
+    Result := tkKey
+  else
+    Result := tkIdentifier;
+end;
+
+function TSynCssSyn.Func109: TtkTokenKind;
+begin
+  if KeyComp('column-span') then
     Result := tkKey
   else
     Result := tkIdentifier;
@@ -952,7 +1051,7 @@ end;
 
 function TSynCssSyn.Func110: TtkTokenKind;
 begin
-  if KeyComp('word-spacing') then
+  if KeyComp('word-spacing') or KeyComp('animation-name') then
     Result := tkKey
   else
     Result := tkIdentifier;
@@ -968,7 +1067,7 @@ end;
 
 function TSynCssSyn.Func112: TtkTokenKind;
 begin
-  if KeyComp('background-image') or KeyComp('border-spacing') then
+  if KeyComp('background-image') or KeyComp('border-spacing') or KeyComp('rotation') then
     Result := tkKey
   else
     Result := tkIdentifier;
@@ -992,7 +1091,7 @@ end;
 
 function TSynCssSyn.Func115: TtkTokenKind;
 begin
-  if KeyComp('table-layout') then
+  if KeyComp('table-layout') or KeyComp('border-radius') or KeyComp('column-rule') then
     Result := tkKey
   else
     Result := tkIdentifier;
@@ -1000,7 +1099,7 @@ end;
 
 function TSynCssSyn.Func116: TtkTokenKind;
 begin
-  if KeyComp('text-indent') or KeyComp('overflow') then
+  if KeyComp('text-indent') or KeyComp('overflow') or KeyComp('grid-columns') then
     Result := tkKey
   else
     Result := tkIdentifier;
@@ -1008,7 +1107,8 @@ end;
 
 function TSynCssSyn.Func117: TtkTokenKind;
 begin
-  if KeyComp('font-style') or KeyComp('position') or KeyComp('speak-numeral') then
+  if KeyComp('font-style') or KeyComp('position') or KeyComp('speak-numeral')
+  Or KeyComp('background-clip') then
     Result := tkKey
   else
     Result := tkIdentifier;
@@ -1017,6 +1117,14 @@ end;
 function TSynCssSyn.Func118: TtkTokenKind;
 begin
   if KeyComp('marker-offset') or KeyComp('writing-mode') then
+    Result := tkKey
+  else
+    Result := tkIdentifier;
+end;
+
+function TSynCssSyn.Func119: TtkTokenKind;
+begin
+  if KeyComp('box-direction') then
     Result := tkKey
   else
     Result := tkIdentifier;
@@ -1046,10 +1154,18 @@ begin
     Result := tkIdentifier;
 end;
 
+function TSynCssSyn.Func123: TtkTokenKind;
+begin
+  if KeyComp('border-image-width') or KeyComp('column-width') then
+    Result := tkKey
+  else
+    Result := tkIdentifier;
+end;
+
 function TSynCssSyn.Func124: TtkTokenKind;
 begin
-  if KeyComp('border-style') then
-    Result := tkKey
+  if KeyComp('border-style') or KeyComp('border-image-repeat') or KeyComp('animation-delay')
+     or KeyComp('transform') then Result := tkKey
   else
     Result := tkIdentifier;
 end;
@@ -1057,6 +1173,14 @@ end;
 function TSynCssSyn.Func126: TtkTokenKind;
 begin
   if KeyComp('border-collapse') or KeyComp('definition-src') then
+    Result := tkKey
+  else
+    Result := tkIdentifier;
+end;
+
+function TSynCssSyn.Func127: TtkTokenKind;
+begin
+  if KeyComp('box-flex-group') then
     Result := tkKey
   else
     Result := tkIdentifier;
@@ -1095,6 +1219,14 @@ begin
     Result := tkIdentifier;
 end;
 
+function TSynCssSyn.Func132: TtkTokenKind;
+begin
+  if KeyComp('column-count') then
+    Result := tkKey
+  else
+    Result := tkIdentifier;
+end;
+
 function TSynCssSyn.Func134: TtkTokenKind;
 begin
   if KeyComp('layout-grid-line') then
@@ -1105,7 +1237,7 @@ end;
 
 function TSynCssSyn.Func136: TtkTokenKind;
 begin
-  if KeyComp('visibility') then
+  if KeyComp('visibility') or KeyComp('background-size') then
     Result := tkKey
   else
     Result := tkIdentifier;
@@ -1121,7 +1253,7 @@ end;
 
 function TSynCssSyn.Func138: TtkTokenKind;
 begin
-  if KeyComp('border-top-color') or KeyComp('list-style-image') then
+  if KeyComp('border-top-color') or KeyComp('list-style-image') or KeyComp('perspective') then
     Result := tkKey
   else
     Result := tkIdentifier;
@@ -1129,7 +1261,7 @@ end;
 
 function TSynCssSyn.Func139: TtkTokenKind;
 begin
-  if KeyComp('border-top-width') then
+  if KeyComp('border-top-width') or KeyComp('transition') then
     Result := tkKey
   else
     Result := tkIdentifier;
@@ -1137,8 +1269,8 @@ end;
 
 function TSynCssSyn.Func140: TtkTokenKind;
 begin
-  if KeyComp('background-color') or KeyComp('outline-color') or
-    KeyComp('scrollbar-face-color') then
+  if KeyComp('background-color') or KeyComp('outline-color') or KeyComp('text-emphasis') or
+    KeyComp('scrollbar-face-color') or KeyComp('border-image-source') then
     Result := tkKey
   else
     Result := tkIdentifier;
@@ -1152,6 +1284,14 @@ begin
     Result := tkIdentifier;
 end;
 
+function TSynCssSyn.Func142: TtkTokenKind;
+begin
+  if KeyComp('background-repeat') then
+    Result := tkKey
+  else
+    Result := tkIdentifier;
+end;
+
 function TSynCssSyn.Func144: TtkTokenKind;
 begin
   if KeyComp('counter-reset') then
@@ -1160,9 +1300,17 @@ begin
     Result := tkIdentifier;
 end;
 
+function TSynCssSyn.Func146: TtkTokenKind;
+begin
+  if KeyComp('text-outline') then
+    Result := tkKey
+  else
+    Result := tkIdentifier;
+end;
+
 function TSynCssSyn.Func148: TtkTokenKind;
 begin
-  if KeyComp('border-left-style') then
+  if KeyComp('border-left-style') or KeyComp('outline-offset') then
     Result := tkKey
   else
     Result := tkIdentifier;
@@ -1170,7 +1318,8 @@ end;
 
 function TSynCssSyn.Func149: TtkTokenKind;
 begin
-  if KeyComp('border-right-color') then
+  if KeyComp('border-right-color') or KeyComp('background-origin')
+    or KeyComp('backface-visibility') then
     Result := tkKey
   else
     Result := tkIdentifier;
@@ -1200,6 +1349,14 @@ begin
     Result := tkIdentifier;
 end;
 
+function TSynCssSyn.Func153: TtkTokenKind;
+begin
+  if KeyComp('box-ordinal-group') then
+    Result := tkKey
+  else
+    Result := tkIdentifier;
+end;
+
 function TSynCssSyn.Func154: TtkTokenKind;
 begin
   if KeyComp('text-decoration') then
@@ -1224,9 +1381,17 @@ begin
     Result := tkIdentifier;
 end;
 
+function TSynCssSyn.Func159: TtkTokenKind;
+begin
+  if KeyComp('border-image-outset') or KeyComp('column-rule-color') then
+    Result := tkKey
+  else
+    Result := tkIdentifier;
+end;
+
 function TSynCssSyn.Func160: TtkTokenKind;
 begin
-  if KeyComp('layout-grid-type') or KeyComp('text-justify') then
+  if KeyComp('layout-grid-type') or KeyComp('text-justify') or KeyComp('column-rule-width') then
     Result := tkKey
   else
     Result := tkIdentifier;
@@ -1242,7 +1407,7 @@ end;
 
 function TSynCssSyn.Func166: TtkTokenKind;
 begin
-  if KeyComp('scrollbar-3d-light-color') then
+  if KeyComp('scrollbar-3d-light-color') or KeyComp('text-overflow') then
     Result := tkKey
   else
     Result := tkIdentifier;
@@ -1250,7 +1415,7 @@ end;
 
 function TSynCssSyn.Func167: TtkTokenKind;
 begin
-  if KeyComp('border-right-style') then
+  if KeyComp('border-right-style') or KeyComp('rotation-point') or KeyComp('transition-delay') then
     Result := tkKey
   else
     Result := tkIdentifier;
@@ -1258,7 +1423,15 @@ end;
 
 function TSynCssSyn.Func169: TtkTokenKind;
 begin
-  if KeyComp('list-style-type') then
+  if KeyComp('list-style-type') or KeyComp('target-position') then
+    Result := tkKey
+  else
+    Result := tkIdentifier;
+end;
+
+function TSynCssSyn.Func171: TtkTokenKind;
+begin
+  if KeyComp('border-top-left-radius') then
     Result := tkKey
   else
     Result := tkIdentifier;
@@ -1282,7 +1455,15 @@ end;
 
 function TSynCssSyn.Func174: TtkTokenKind;
 begin
-  if KeyComp('text-transform') then
+  if KeyComp('text-transform') or KeyComp('animation-direction') then
+    Result := tkKey
+  else
+    Result := tkIdentifier;
+end;
+
+function TSynCssSyn.Func177: TtkTokenKind;
+begin
+  if KeyComp('animation-play-state') or KeyComp('column-rule-style') or KeyComp('transform-origin') then
     Result := tkKey
   else
     Result := tkIdentifier;
@@ -1290,7 +1471,15 @@ end;
 
 function TSynCssSyn.Func178: TtkTokenKind;
 begin
-  if KeyComp('counter-increment') then
+  if KeyComp('counter-increment') or KeyComp('overflow-style') then
+    Result := tkKey
+  else
+    Result := tkIdentifier;
+end;
+
+function TSynCssSyn.Func179: TtkTokenKind;
+begin
+  if KeyComp('animation-duration') then
     Result := tkKey
   else
     Result := tkIdentifier;
@@ -1299,6 +1488,14 @@ end;
 function TSynCssSyn.Func182: TtkTokenKind;
 begin
   if KeyComp('background-attachment') then
+    Result := tkKey
+  else
+    Result := tkIdentifier;
+end;
+
+function TSynCssSyn.Func186: TtkTokenKind;
+begin
+  if KeyComp('transform-style') then
     Result := tkKey
   else
     Result := tkIdentifier;
@@ -1314,7 +1511,15 @@ end;
 
 function TSynCssSyn.Func190: TtkTokenKind;
 begin
-  if KeyComp('border-bottom-style') then
+  if KeyComp('border-bottom-style') or KeyComp('border-top-right-radius') then
+    Result := tkKey
+  else
+    Result := tkIdentifier;
+end;
+
+function TSynCssSyn.Func191: TtkTokenKind;
+begin
+  if KeyComp('perspective-origin') then
     Result := tkKey
   else
     Result := tkIdentifier;
@@ -1330,7 +1535,8 @@ end;
 
 function TSynCssSyn.Func195: TtkTokenKind;
 begin
-  if KeyComp('scrollbar-shadow-color') then
+  if KeyComp('scrollbar-shadow-color') or KeyComp('hanging-punctuation')
+    or KeyComp('punctuation-trim') then
     Result := tkKey
   else
     Result := tkIdentifier;
@@ -1347,6 +1553,14 @@ end;
 function TSynCssSyn.Func200: TtkTokenKind;
 begin
   if KeyComp('background-position-y') or KeyComp('scrollbar-arrow-color') then
+    Result := tkKey
+  else
+    Result := tkIdentifier;
+end;
+
+function TSynCssSyn.Func205: TtkTokenKind;
+begin
+  if KeyComp('border-bottom-left-radius') then
     Result := tkKey
   else
     Result := tkIdentifier;
@@ -1376,9 +1590,49 @@ begin
     Result := tkIdentifier;
 end;
 
+function TSynCssSyn.Func222: TtkTokenKind;
+begin
+  if KeyComp('transition-duration') then
+    Result := tkKey
+  else
+    Result := tkIdentifier;
+end;
+
+function TSynCssSyn.Func224: TtkTokenKind;
+begin
+  if KeyComp('border-bottom-right-radius') then
+    Result := tkKey
+  else
+    Result := tkIdentifier;
+end;
+
+function TSynCssSyn.Func242: TtkTokenKind;
+begin
+  if KeyComp('animation-iteration-count') then
+    Result := tkKey
+  else
+    Result := tkIdentifier;
+end;
+
 function TSynCssSyn.Func250: TtkTokenKind;
 begin
-  if KeyComp('text-underline-position') then
+  if KeyComp('text-underline-position') or KeyComp('animation-triming-function') then
+    Result := tkKey
+  else
+    Result := tkIdentifier;
+end;
+
+function TSynCssSyn.Func253: TtkTokenKind;
+begin
+  if KeyComp('transition-property') then
+    Result := tkKey
+  else
+    Result := tkIdentifier;
+end;
+
+function TSynCssSyn.Func293: TtkTokenKind;
+begin
+  if KeyComp('transition-triming-function') then
     Result := tkKey
   else
     Result := tkIdentifier;
@@ -1395,7 +1649,7 @@ var
 begin
   FToIdent := MayBe;
   HashKey := KeyHash(MayBe);
-  if (HashKey >= 16) and (HashKey <= 250) then
+  if (HashKey >= 16) and (HashKey <= 293) then
     Result := fIdentFuncTable[HashKey]()
   else
     Result := tkIdentifier;
@@ -1410,7 +1664,7 @@ begin
       '{', '}'                    : FProcTable[chI] := @AsciiCharProc;
       #13                         : FProcTable[chI] := @CRProc;
       '-'                         : FProcTable[chI] := @DashProc;
-      'A'..'Z', 'a'..'z', '_'     : FProcTable[chI] := @IdentProc;
+      'A'..'Z', 'a'..'z', '_','@' : FProcTable[chI] := @IdentProc;
       '#', '$'                    : FProcTable[chI] := @IntegerProc;
       #10                         : FProcTable[chI] := @LFProc;
       #0                          : FProcTable[chI] := @NullProc;
