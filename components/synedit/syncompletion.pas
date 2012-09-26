@@ -814,6 +814,7 @@ end;
 procedure TSynBaseCompletionForm.Paint;
 var
   i: integer;
+  PaintWidth: Integer;
 
   function Min(a, b: integer): integer;
   begin
@@ -842,6 +843,8 @@ begin
     Scroll.Max := 0;
   end;
 
+  PaintWidth:=Width-Scroll.Width;
+
   //DebugLn(['TSynBaseCompletionForm.Paint NbLinesInWindow=',NbLinesInWindow,' ItemList.Count=',ItemList.Count]);
   for i := 0 to min(NbLinesInWindow - 1, ItemList.Count - Scroll.Position - 1) do
   begin
@@ -850,7 +853,8 @@ begin
       Canvas.Brush.Color := clSelect;
       Canvas.Pen.Color := clSelect;
       Canvas.Rectangle(DrawBorderWidth, DrawBorderWidth+(FFontHeight * i),
-                      Width-2*DrawBorderWidth, (FFontHeight * (i + 1))+1);
+                       PaintWidth-2*DrawBorderWidth,
+                       (FFontHeight * (i + 1))+1);
       Canvas.Pen.Color := clBlack;
       Canvas.Font.Color := TextSelectedColor;
       Hint := ItemList[Position];
@@ -860,7 +864,8 @@ begin
       Canvas.Brush.Color := BackgroundColor;
       Canvas.Font.Color := TextColor;
       Canvas.FillRect(Rect(DrawBorderWidth, DrawBorderWidth+(FFontHeight * i),
-                           Width-2*DrawBorderWidth, (FFontHeight * (i + 1))+1));
+                           PaintWidth-2*DrawBorderWidth,
+                           (FFontHeight * (i + 1))+1));
     end;
 
     //DebugLn(['TSynBaseCompletionForm.Paint ',i,' ',ItemList[Scroll.Position + i]]);
@@ -878,7 +883,7 @@ begin
   begin
     Canvas.brush.color := color;
     i:=(FFontHeight * ItemList.Count)+1;
-    Canvas.FillRect(Rect(0, i, Width, Height));
+    Canvas.FillRect(Rect(0, i, PaintWidth, Height));
   end;
   // draw a rectangle around the window
   if DrawBorderWidth > 0 then begin
