@@ -989,28 +989,38 @@ end;
   function CopyFile(const SrcFilename, DestFilename: string PreserveTime:
     boolean): boolean;
  ------------------------------------------------------------------------------}
-function CopyFile(const SrcFilename, DestFilename: String; PreserveTime: Boolean): Boolean;
+function CopyFile(const SrcFilename, DestFilename: String;
+                  PreserveTime: Boolean): Boolean;
 var
-  SrcFS: TFileStream;
-  DestFS: TFileStream;
+  SrcHandle: THandle;
+  DestHandle: THandle;
+  Buffer: array[1..4096] of byte;
+  ReadCount, WriteCount: LongInt;
 begin
+  Result := False;
+  SrcHandle := FileOpenUTF8(SrcFilename, fmOpenRead or fmShareDenyWrite);
+  if (THandle(SrcHandle)=feInvalidHandle) then
+    raise EFOpenError.Createfmt({SFOpenError}'Unable to open file "%s"', [SrcFilename]);
   try
-    SrcFS := TFileStream.Create(UTF8ToSys(SrcFilename), fmOpenRead or fmShareDenyWrite);
+    DestHandle := FileCreateUTF8(DestFileName);
+    if (THandle(DestHandle)=feInvalidHandle) then
+      raise EFCreateError.createfmt({SFCreateError}'Unable to create file "%s"',[DestFileName]);
     try
-      DestFS := TFileStream.Create(UTF8ToSys(DestFilename), fmCreate);
-      try
-        DestFS.CopyFrom(SrcFS, SrcFS.Size);
-      finally
-        DestFS.Free;
-      end;
-      if PreserveTime then
-        FileSetDateUTF8(DestFilename, FileGetDate(SrcFS.Handle));
+      repeat
+        ReadCount:=FileRead(SrcHandle,Buffer[1],High(Buffer));
+        if ReadCount<=0 then break;
+        WriteCount:=FileWrite(DestHandle,Buffer[1],ReadCount);
+        if WriteCount<ReadCount then
+          raise EWriteError.createfmt({SFCreateError}'Unable to write to file "%s"',[DestFileName])
+      until false;
     finally
-      SrcFS.Free;
+      FileClose(DestHandle);
     end;
+    if PreserveTime then
+      FileSetDateUTF8(DestFilename, FileGetDate(SrcHandle));
     Result := True;
-  except
-    Result := False;
+  finally
+    FileClose(SrcHandle);
   end;
 end;
 
@@ -1491,20 +1501,28 @@ end;
  ------------------------------------------------------------------------------}
 function ReadFileToString(const Filename: String): String;
 var
-  fs: TFileStream;
+  SrcHandle: THandle;
+  ReadCount: LongInt;
+  s: String;
 begin
   Result := '';
+  s:='';
   try
-    fs := TFileStream.Create(UTF8ToSys(Filename), fmOpenRead or fmShareDenyWrite);
+    Setlength(s, FileSize(Filename));
+    if s='' then exit;
+    SrcHandle := FileOpenUTF8(Filename, fmOpenRead or fmShareDenyWrite);
+    if (THandle(SrcHandle)=feInvalidHandle) then
+      exit;
     try
-      Setlength(Result, fs.Size);
-      if Result <> '' then
-        fs.Read(Result[1], Length(Result));
+      ReadCount:=FileRead(SrcHandle,s[1],length(s));
+      if ReadCount<length(s) then
+        exit;
     finally
-      fs.Free;
+      FileClose(SrcHandle);
     end;
+    Result:=s;
   except
-    Result := '';
+    // ignore errors, Result string will be empty
   end;
 end;
 
