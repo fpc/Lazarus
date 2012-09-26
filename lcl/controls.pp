@@ -1499,7 +1499,6 @@ type
     function IsEnabled: Boolean; // checks parent too
     function IsParentColor: Boolean; // checks protected ParentColor, needed by widgetsets
     function IsParentFont: Boolean; // checks protected ParentFont, needed by widgetsets
-    function IsParentShowHint: Boolean; // checks protected ParentShowHint prop.
     function FormIsUpdating: boolean; virtual;
     function IsProcessingPaintMsg: boolean;
     procedure Hide;
