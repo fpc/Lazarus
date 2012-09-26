@@ -1291,6 +1291,7 @@ type
   protected
     class procedure WSRegisterClass; override;
     procedure CreateParams(var Params: TCreateParams); override;
+    property ParentColor default false;
   public
     constructor Create(TheOwner: TComponent); override;
   published

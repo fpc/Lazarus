@@ -262,8 +262,7 @@ begin
           BP_PUSHBUTTON:
             begin
               Result.Widget := GetStyleWidget(lgsButton);
-              if Result.Style = nil then
-                Result.Style := GetStyle(lgsButton);
+              Result.Style := GetStyle(lgsButton);
               Result.State := GtkButtonMap[Details.State];
               if Details.State = PBS_PRESSED then
                 Result.Shadow := GTK_SHADOW_IN

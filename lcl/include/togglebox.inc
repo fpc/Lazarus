@@ -33,6 +33,7 @@ begin
   inherited Create(TheOwner);
   fCompStyle := csToggleBox;
   TabStop := True;
+  ParentColor := False;
 end;
 
 {------------------------------------------------------------------------------}
