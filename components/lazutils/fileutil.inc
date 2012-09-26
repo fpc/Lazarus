@@ -1491,15 +1491,15 @@ end;
  ------------------------------------------------------------------------------}
 function ReadFileToString(const Filename: String): String;
 var
-  fs: TFileStreamUTF8;
+  fs: TFileStream;
 begin
   Result := '';
   try
-    fs := TFileStreamUTF8.Create(Filename, fmOpenRead or fmShareDenyWrite);
+    fs := TFileStream.Create(UTF8ToSys(Filename), fmOpenRead or fmShareDenyWrite);
     try
       Setlength(Result, fs.Size);
       if Result <> '' then
-        fs.Read(Result[1], UTF8Length(Result));
+        fs.Read(Result[1], Length(Result));
     finally
       fs.Free;
     end;
