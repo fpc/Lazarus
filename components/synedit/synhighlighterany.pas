@@ -895,9 +895,9 @@ end;
 
 function TSynAnySyn.LoadFromRegistry(RootKey: HKEY; Key: string): boolean;
 var
-  r: TBetterRegistry;
+  r: TRegistry;
 begin
-  r:= TBetterRegistry.Create;
+  r:= TRegistry.Create;
   try
     r.RootKey := RootKey;
     if r.OpenKeyReadOnly(Key) then begin
@@ -910,9 +910,9 @@ end;
 
 function TSynAnySyn.SaveToRegistry(RootKey: HKEY; Key: string): boolean;
 var
-  r: TBetterRegistry;
+  r: TRegistry;
 begin
-  r:= TBetterRegistry.Create;
+  r:= TRegistry.Create;
   try
     r.RootKey := RootKey;
     if r.OpenKey(Key,true) then begin

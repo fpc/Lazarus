@@ -36,17 +36,7 @@ uses
   Graphics, FileUtil, LCLProc, LCLIntf, LCLType, Registry, IniFiles,
   SynEditTypes, SynEditTextBase;
 
-{$DEFINE _Gp_MustEnhanceRegistry}
-{$IFDEF SYN_COMPILER_4_UP}
-  {$UNDEF _Gp_MustEnhanceRegistry}
-{$ENDIF}
 type
-  TBetterRegistry = class(TRegistry)
-  {$IFDEF _Gp_MustEnhanceRegistry}
-    function OpenKeyReadOnly(const Key: string): Boolean;
-  {$ENDIF}
-  end;
-
   { TSynHighlighterRangeList }
 
   TSynHighlighterRangeList = class(TSynManagedStorageMem)
@@ -176,8 +166,8 @@ type
     procedure InternalSaveDefaultValues;
     function  LoadFromBorlandRegistry(rootKey: HKEY; attrKey, attrName: string;
                                       oldStyle: boolean): boolean; virtual;
-    function  LoadFromRegistry(Reg: TBetterRegistry): boolean;
-    function  SaveToRegistry(Reg: TBetterRegistry): boolean;
+    function  LoadFromRegistry(Reg: TRegistry): boolean;
+    function  SaveToRegistry(Reg: TRegistry): boolean;
     function  LoadFromFile(Ini : TIniFile): boolean;
     function  SaveToFile(Ini : TIniFile): boolean;
   public
@@ -831,7 +821,7 @@ const
     fgIndex16: string;
     bgIndex16: string;
     {$ENDIF}
-    reg      : TBetterRegistry;
+    reg      : TRegistry;
 
     function Get(var name: string): string;
     var
@@ -846,7 +836,7 @@ const
   begin { LoadOldStyle }
     Result := false;
     try
-      reg := TBetterRegistry.Create;
+      reg := TRegistry.Create;
       reg.RootKey := rootKey;
       try
         with reg do begin
@@ -894,7 +884,7 @@ const
     fgDefault    : string;
     bgDefault    : string;
     {$ENDIF}
-    reg          : TBetterRegistry;
+    reg          : TRegistry;
 
     function IsTrue(value: string): boolean;
     begin
@@ -904,7 +894,7 @@ const
   begin
     Result := false;
     try
-      reg := TBetterRegistry.Create;
+      reg := TRegistry.Create;
       reg.RootKey := rootKey;
       try
         with reg do begin
@@ -957,7 +947,7 @@ begin
               else Result := LoadNewStyle(rootKey, attrKey, attrName);
 end; { TSynHighlighterAttributes.LoadFromBorlandRegistry }
 
-function TSynHighlighterAttributes.LoadFromRegistry(Reg: TBetterRegistry): boolean;
+function TSynHighlighterAttributes.LoadFromRegistry(Reg: TRegistry): boolean;
 {$IFNDEF SYN_LAZARUS}
 var
   key: string;
@@ -984,7 +974,7 @@ begin
   {$ENDIF}
 end;
 
-function TSynHighlighterAttributes.SaveToRegistry(Reg: TBetterRegistry): boolean;
+function TSynHighlighterAttributes.SaveToRegistry(Reg: TRegistry): boolean;
 var
   key: string;
 begin
@@ -1190,12 +1180,12 @@ end;
 function TSynCustomHighlighter.LoadFromRegistry(RootKey: HKEY;
   Key: string): boolean;
 var
-  r: TBetterRegistry;
+  r: TRegistry;
   {$IFNDEF FPC}
   i: integer;
   {$ENDIF}
 begin
-  r := TBetterRegistry.Create;
+  r := TRegistry.Create;
   try
     r.RootKey := RootKey;
     {$IFNDEF FPC}
@@ -1214,10 +1204,10 @@ end;
 function TSynCustomHighlighter.SaveToRegistry(RootKey: HKEY;
   Key: string): boolean;
 var
-  r: TBetterRegistry;
+  r: TRegistry;
   i: integer;
 begin
-  r := TBetterRegistry.Create;
+  r := TRegistry.Create;
   try
     r.RootKey := RootKey;
     if r.OpenKey(Key,true) then begin

@@ -1528,7 +1528,7 @@ end;
 procedure TSynCppSyn.EnumUserSettings(settings: TStrings);
 begin
   { returns the user settings that exist in the registry }
-  with TBetterRegistry.Create do
+  with TRegistry.Create do
   begin
     try
       RootKey := HKEY_LOCAL_MACHINE;
