@@ -140,7 +140,7 @@ procedure TDbChartSource.BeforeDraw;
 begin
   inherited BeforeDraw;
   VLockedDatasets.Add(FDataLink.DataSet);
-  if FDataLink.Active then
+  if FDataLink.Active and (FBookmark = nil) then
     FBookmark := FDataLink.DataSet.GetBookmark;
 end;
 

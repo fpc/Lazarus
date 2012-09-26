@@ -10,7 +10,7 @@ object ComponentListEditorForm: TComponentListEditorForm
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   Position = poScreenCenter
-  LCLVersion = '0.9.29'
+  LCLVersion = '1.1'
   object ChildrenListBox: TListBox
     Left = 0
     Height = 198

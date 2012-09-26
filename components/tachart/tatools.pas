@@ -440,6 +440,7 @@ type
     procedure Draw(AChart: TChart; ADrawer: IChartDrawer); override;
     procedure Hide;
     procedure KeyDown(APoint: TPoint); override;
+    procedure MouseDown(APoint: TPoint); override;
     procedure MouseMove(APoint: TPoint); override;
     property Position: TDoublePoint read FPosition;
   published
@@ -1512,6 +1513,11 @@ begin
 end;
 
 procedure TDataPointCrosshairTool.KeyDown(APoint: TPoint);
+begin
+  MouseMove(APoint);
+end;
+
+procedure TDataPointCrosshairTool.MouseDown(APoint: TPoint);
 begin
   MouseMove(APoint);
 end;

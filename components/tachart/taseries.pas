@@ -195,7 +195,7 @@ type
     procedure SetLineType(AValue: TLineType);
     procedure SetSeriesColor(AValue: TColor);
     procedure SetShowLines(Value: Boolean);
-    procedure SetShowPoints(Value: Boolean);
+    procedure SetShowPoints(AValue: Boolean);
   protected
     procedure AfterDrawPointer(
       ADrawer: IChartDrawer; AIndex: Integer; const APos: TPoint); override;
@@ -269,7 +269,7 @@ type
     function GetNearestPoint(
       const AParams: TNearestPointParams;
       out AResults: TNearestPointResults): Boolean; override;
-    procedure MovePoint(var AIndex: Integer; const ANewPos: TPoint); override;
+    procedure MovePoint(var AIndex: Integer; const ANewPos: TDoublePoint); override;
 
   published
     property Active default true;
@@ -598,9 +598,10 @@ begin
   UpdateParentChart;
 end;
 
-procedure TLineSeries.SetShowPoints(Value: Boolean);
+procedure TLineSeries.SetShowPoints(AValue: Boolean);
 begin
-  FShowPoints := Value;
+  if ShowPoints = AValue then exit;
+  FShowPoints := AValue;
   UpdateParentChart;
 end;
 
@@ -703,21 +704,17 @@ begin
   Result := FPen.Color;
 end;
 
-procedure TConstantLine.MovePoint(var AIndex: Integer; const ANewPos: TPoint);
+procedure TConstantLine.MovePoint(
+  var AIndex: Integer; const ANewPos: TDoublePoint);
 begin
   Unused(AIndex);
-  if LineStyle = lsVertical then
-    Position := GraphToAxisX(FChart.XImageToGraph(ANewPos.X))
-  else
-    Position := GraphToAxisX(FChart.YImageToGraph(ANewPos.Y));
+  Position :=
+    GraphToAxisX(TDoublePointBoolArr(ANewPos)[LineStyle = lsHorizontal]);
 end;
 
 procedure TConstantLine.SavePosToCoord(var APoint: TDoublePoint);
 begin
-  if LineStyle = lsVertical then
-    APoint.X := Position
-  else
-    APoint.Y := Position;
+  TDoublePointBoolArr(APoint)[LineStyle = lsHorizontal] := Position;
 end;
 
 procedure TConstantLine.SetArrow(AValue: TChartArrow);

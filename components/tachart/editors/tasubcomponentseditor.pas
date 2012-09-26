@@ -328,10 +328,14 @@ end;
 procedure TComponentListEditorForm.OnPersistentDeleting(
   APersistent: TPersistent);
 var
-  i: Integer;
+  i, wasSelected: Integer;
 begin
-  if FindChild(APersistent, i) then
-    ChildrenListBox.Items.Delete(i);
+  if not FindChild(APersistent, i) then exit;
+  with ChildrenListBox do begin
+    wasSelected := ItemIndex;
+    Items.Delete(i);
+    ItemIndex := Min(wasSelected, Count - 1);
+  end;
 end;
 
 procedure TComponentListEditorForm.OnSetSelection(
@@ -383,19 +387,9 @@ begin
 end;
 
 procedure TComponentListEditorForm.tbDeleteClick(Sender: TObject);
-var
-  i: Integer;
-  s: TComponent;
 begin
   if ChildrenListBox.SelCount = 0 then exit;
-  for i := ChildrenListBox.Items.Count - 1 downto 0 do
-    if ChildrenListBox.Selected[i] then begin
-      s := TComponent(ChildrenListBox.Items.Objects[i]);
-      ChildrenListBox.Items.Delete(i);
-      FDesigner.PropertyEditorHook.PersistentDeleting(s);
-      s.Free;
-    end;
-  FDesigner.Modified;
+  FDesigner.DeleteSelection;
   SelectionChanged;
 end;
 

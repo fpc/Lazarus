@@ -550,9 +550,10 @@ var
 
 begin
   oldX := Item[AIndex]^.X;
+  Result := AIndex;
+  if oldX = AValue then exit;
   Item[AIndex]^.X := AValue;
   UpdateExtent;
-  Result := AIndex;
   if Sorted then begin
     if IsNan(AValue) then
       raise EChartError.Create('X = NaN in a sorted source');
@@ -622,6 +623,7 @@ var
 
 begin
   oldY := Item[AIndex]^.Y;
+  if oldY = AValue then exit;
   Item[AIndex]^.Y := AValue;
   if FValuesTotalIsValid then
     FValuesTotal += NumberOr(AValue) - NumberOr(oldY);
