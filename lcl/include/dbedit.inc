@@ -121,7 +121,6 @@ begin
        //cancel out of editing by reset on esc
        FDataLink.Reset;
        SelectAll;
-       Key := VK_UNKNOWN;
       end;
     VK_DELETE, VK_BACK:
       begin
