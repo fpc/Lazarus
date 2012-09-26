@@ -329,7 +329,7 @@ procedure TChartNavPanel.Paint;
       a := a * FScale + FOffset;
       b := b * FScale + FOffset;
       Result := Rect(
-        Round(a.X), Height - Round(a.Y), Round(b.X), Height - Round(b.Y));
+        Round(a.X), Height - Round(b.Y), Round(b.X), Height - Round(a.Y));
     end;
   end;
 
