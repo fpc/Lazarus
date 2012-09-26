@@ -5373,7 +5373,9 @@ end;
 procedure TWinControl.DoRemoveDockClient(Client: TControl);
 begin
   // empty (this method exists for descendent overrides)
+  {$IFDEF VerboseDocking}
   DebugLn(['TWinControl.DoRemoveDockClient ',DbgSName(Self),' ',DbgSName(Client)]);
+  {$ENDIF}
 end;
 
 {------------------------------------------------------------------------------
@@ -5385,7 +5387,9 @@ function TWinControl.DoUnDock(NewTarget: TWinControl; Client: TControl;
 var
   NewBounds: TRect;
 begin
+  {$IFDEF VerboseDocking}
   DebugLn('TWinControl.DoUnDock ',Name,' NewTarget=',DbgSName(NewTarget),' Client=',DbgSName(Client));
+  {$ENDIF}
   Result := True;
   if Assigned(FOnUnDock) then
   begin
@@ -7816,7 +7820,9 @@ begin
     DestRect := DockRect;
     DisableAlign;
     try
-      debugln(['TWinControl.DoDockClientMsg ',DbgSName(Self),' Control=',DbgSName(DragDockObject.Control),' DestRect=',dbgs(DestRect)]);
+      {$IFDEF VerboseDocking}
+      Debugln(['TWinControl.DoDockClientMsg ',DbgSName(Self),' Control=',DbgSName(DragDockObject.Control),' DestRect=',dbgs(DestRect)]);
+      {$ENDIF}
       DragDockObject.Control.Dock(Self, DestRect);
       if FUseDockManager and (DockManager <> nil) then
         DockManager.InsertControl(DragDockObject);
@@ -7832,7 +7838,9 @@ end;
 function TWinControl.DoUnDockClientMsg(NewTarget, Client: TControl): boolean;
 begin
   Result := True;
+  {$IFDEF VerboseDocking}
   DebugLn(['TWinControl.DoUnDockClientMsg ',DbgSName(Self),' Client=',DbgSName(Client),' Client.Parent=',DbgSName(Client.Parent)]);
+  {$ENDIF}
   if FUseDockManager and (DockManager <> nil) then
     DockManager.RemoveControl(Client);
 end;
