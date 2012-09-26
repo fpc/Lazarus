@@ -13653,10 +13653,14 @@ begin
            and not (FMenuItem.Menu is TPopupMenu) then
         begin
           // issue #22872
-          if GetTickCount64 - FLastTick > 50 then
+          if GetTickCount64 - FLastTick > 10 then
           begin
             FLastTick := GetTickCount64;
-            SlotTriggered();
+            FillChar(Msg, SizeOf(Msg), 0);
+            Msg.msg := LM_ACTIVATE;
+            if Assigned(FMenuItem) then
+              FMenuItem.Dispatch(Msg);
+            FLastTick := GetTickCount64;
           end;
         end;
       end;

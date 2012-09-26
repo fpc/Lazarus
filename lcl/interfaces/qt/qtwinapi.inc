@@ -6052,7 +6052,8 @@ var
       // ScrollBar.setSliderPosition(ScrollInfo.nTrackPos);
     end;
 
-    Result := ScrollBar.getValue;
+    Result := ScrollBar.getSliderPosition;
+
   end;
 
 begin
