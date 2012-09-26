@@ -244,14 +244,13 @@ implementation
 
 uses
 {$IFDEF windows}
-  Windows,
+  Windows;
 {$ELSE}
   {$IFDEF darwin}
   MacOSAll,
   {$ENDIF}
-  Unix, BaseUnix,
+  Unix, BaseUnix;
 {$ENDIF}
- lazutf8classes;
 
 {$I fileutil.inc}
 {$IFDEF windows}

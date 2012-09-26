@@ -980,29 +980,43 @@ end;
 function CopyFile(const SrcFilename, DestFilename: String;
                   Flags: TCopyFileFlags=[cffOverwriteFile]): Boolean;
 var
-  SrcFS: TFileStreamUTF8;
-  DestFS: TFileStreamUTF8;
+  SrcHandle: THandle;
+  DestHandle: THandle;
+  Buffer: array[1..4096] of byte;
+  ReadCount, WriteCount: LongInt;
 begin
   Result := False;
-  SrcFS := TFileStreamUTF8.Create(SrcFilename, fmOpenRead or fmShareDenyWrite);
+  // check overwrite
+  if (not (cffOverwriteFile in Flags)) and FileExistsUTF8(DestFileName) then
+    exit;
+  // check directory
+  if (cffCreateDestDirectory in Flags)
+  and (not DirectoryExistsUTF8(ExtractFilePath(DestFileName)))
+  and (not ForceDirectoriesUTF8(ExtractFilePath(DestFileName))) then
+    exit;
+  SrcHandle := FileOpenUTF8(SrcFilename, fmOpenRead or fmShareDenyWrite);
+  if (THandle(SrcHandle)=feInvalidHandle) then
+    raise EFOpenError.Createfmt({SFOpenError}'Unable to open file "%s"', [SrcFilename]);
   try
-    if (not (cffOverwriteFile in Flags)) and FileExistsUTF8(DestFileName) then
-      exit;
-    if (cffCreateDestDirectory in Flags)
-    and (not DirectoryExistsUTF8(ExtractFilePath(DestFileName)))
-    and (not ForceDirectoriesUTF8(ExtractFilePath(DestFileName))) then
-      exit;
-    DestFS := TFileStreamUTF8.Create(DestFilename, fmCreate);
+    DestHandle := FileCreateUTF8(DestFileName);
+    if (THandle(DestHandle)=feInvalidHandle) then
+      raise EFCreateError.createfmt({SFCreateError}'Unable to create file "%s"',[DestFileName]);
     try
-      DestFS.CopyFrom(SrcFS, SrcFS.Size);
+      repeat
+        ReadCount:=FileRead(SrcHandle,Buffer[1],High(Buffer));
+        if ReadCount<=0 then break;
+        WriteCount:=FileWrite(DestHandle,Buffer[1],ReadCount);
+        if WriteCount<ReadCount then
+          raise EWriteError.createfmt({SFCreateError}'Unable to write to file "%s"',[DestFileName])
+      until false;
     finally
-      DestFS.Free;
+      FileClose(DestHandle);
     end;
     if (cffPreserveTime in Flags) then
-      FileSetDateUTF8(DestFilename, FileGetDate(SrcFS.Handle));
+      FileSetDateUTF8(DestFilename, FileGetDate(SrcHandle));
     Result := True;
   finally
-    SrcFS.Free;
+    FileClose(SrcHandle);
   end;
 end;
 
@@ -1543,20 +1557,28 @@ end;
  ------------------------------------------------------------------------------}
 function ReadFileToString(const Filename: String): String;
 var
-  fs: TFileStreamUTF8;
+  SrcHandle: THandle;
+  ReadCount: LongInt;
+  s: String;
 begin
   Result := '';
+  s:='';
   try
-    fs := TFileStreamUTF8.Create(Filename, fmOpenRead or fmShareDenyWrite);
+    Setlength(s, FileSize(Filename));
+    if s='' then exit;
+    SrcHandle := FileOpenUTF8(Filename, fmOpenRead or fmShareDenyWrite);
+    if (THandle(SrcHandle)=feInvalidHandle) then
+      exit;
     try
-      Setlength(Result, fs.Size);
-      if Result <> '' then
-        fs.Read(Result[1], UTF8Length(Result));
+      ReadCount:=FileRead(SrcHandle,s[1],length(s));
+      if ReadCount<length(s) then
+        exit;
     finally
-      fs.Free;
+      FileClose(SrcHandle);
     end;
+    Result:=s;
   except
-    Result := '';
+    // ignore errors, Result string will be empty
   end;
 end;
 
