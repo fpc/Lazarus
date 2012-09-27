@@ -33,6 +33,7 @@ const
 type
   TNearestPointParams = record
     FDistFunc: TPointDistFunc;
+    FOptimizeX: Boolean;
     FPoint: TPoint;
     FRadius: Integer;
   end;
@@ -1013,14 +1014,32 @@ end;
 function TBasicPointSeries.GetNearestPoint(
   const AParams: TNearestPointParams;
   out AResults: TNearestPointResults): Boolean;
+
+  function GetGrabBound(ARadius: Integer): Double;
+  begin
+    if IsRotated then
+      Result := ParentChart.YImageToGraph(AParams.FPoint.Y + ARadius)
+    else
+      Result := ParentChart.XImageToGraph(AParams.FPoint.X + ARadius);
+    Result := GraphToAxisX(Result);
+  end;
+
 var
-  dist, i: Integer;
+  dist, i, lb, ub: Integer;
   pt: TPoint;
   sp: TDoublePoint;
 begin
   AResults.FDist := Sqr(AParams.FRadius) + 1;
   AResults.FIndex := -1;
-  for i := 0 to Count - 1 do begin
+  if AParams.FOptimizeX then
+    Source.FindBounds(
+      GetGrabBound(-AParams.FRadius),
+      GetGrabBound( AParams.FRadius), lb, ub)
+  else begin
+    lb := 0;
+    ub := Count - 1;
+  end;
+  for i := lb to ub do begin
     sp := Source[i]^.Point;
     if IsNan(sp) then continue;
     // Since axis transformation may be non-linear, the distance should be

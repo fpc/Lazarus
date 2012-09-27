@@ -644,19 +644,25 @@ function TDrawFuncHelper.GetNearestPoint(
   const AParams: TNearestPointParams;
   out AResults: TNearestPointResults): Boolean;
 var
-  x, r: Integer;
+  x: Integer;
+  r: TDoubleInterval;
 begin
   AResults.FIndex := -1;
   AResults.FDist := Sqr(AParams.FRadius) + 1;
   FNearestPointParams := @AParams;
   FNearestPointResults := @AResults;
 
-  x := TPointBoolArr(AParams.FPoint)[FSeries.IsRotated];
-  r := IfThen(FSeries.IsRotated, -1, 1) * AParams.FRadius;
+  with AParams do
+    if FOptimizeX then begin
+      x := TPointBoolArr(FPoint)[FSeries.IsRotated];
+      r := DoubleInterval(FImageToGraph(x - FRadius), FImageToGraph(x + FRadius));
+      EnsureOrder(r.FStart, r.FEnd);
+    end
+    else
+      r := DoubleInterval(NegInfinity, SafeInfinity);
   with XRange do
     ForEachPoint(
-      Max(FImageToGraph(x - r), FStart),
-      Min(FImageToGraph(x + r), FEnd),
+      Max(r.FStart, FStart), Min(r.FEnd, FEnd),
       @CheckForNearestPoint, @CheckForNearestPoint);
 
   Result := AResults.FDist < Sqr(AParams.FRadius) + 1;
