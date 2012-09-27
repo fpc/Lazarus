@@ -3622,7 +3622,22 @@ begin
 end;
 
 procedure TMainIDE.ShowDesignerForm(AForm: TCustomForm);
+var
+  ARestoreVisible: Boolean;
 begin
+  {$IFDEF IDE_DEBUG}
+  DebugLn('TMainIDE.ShowDesignerForm(',dbgsName(AForm),')');
+  {$ENDIF}
+  if (csDesigning in AForm.ComponentState) and (AForm.Designer <> nil) and
+    (AForm.WindowState in [wsMinimized]) then
+  begin
+    ARestoreVisible := AForm.Visible;
+    AForm.Visible := False;
+    AForm.ShowOnTop;
+    AForm.Visible := ARestoreVisible;
+    AForm.WindowState := wsMinimized;
+    exit;
+  end;
   // do not call 'AForm.Show', because it will set Visible to true
   AForm.BringToFront;
   LCLIntf.ShowWindow(AForm.Handle,SW_SHOWNORMAL);

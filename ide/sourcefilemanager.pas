@@ -3937,6 +3937,7 @@ var
   NestedClass: TComponentClass;
   DisableAutoSize: Boolean;
   NewControl: TControl;
+  ARestoreVisible: Boolean;
 begin
   {$IFDEF IDE_DEBUG}
   debugln('TLazSourceFileManager.LoadLFM A ',AnUnitInfo.Filename,' IsPartOfProject=',dbgs(AnUnitInfo.IsPartOfProject),' ');
@@ -4175,7 +4176,15 @@ begin
     DesignerForm.ControlStyle := DesignerForm.ControlStyle - [csNoDesignVisible];
     if NewComponent is TControl then
       TControl(NewComponent).ControlStyle:= TControl(NewComponent).ControlStyle - [csNoDesignVisible];
-    LCLIntf.ShowWindow(DesignerForm.Handle, ShowCommands[AnUnitInfo.ComponentState]);
+    if (DesignerForm.WindowState in [wsMinimized]) then
+    begin
+      ARestoreVisible := DesignerForm.Visible;
+      DesignerForm.Visible := False;
+      DesignerForm.ShowOnTop;
+      DesignerForm.Visible := ARestoreVisible;
+      DesignerForm.WindowState := wsMinimized;
+    end else
+      LCLIntf.ShowWindow(DesignerForm.Handle, ShowCommands[AnUnitInfo.ComponentState]);
     MainIDE.LastFormActivated := DesignerForm;
   end;
 
