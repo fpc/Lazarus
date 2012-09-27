@@ -896,7 +896,9 @@ begin
     if cfs_Underline in FFont.Style then
       FTextStorage.addAttribute_value_range(NSUnderlineStyleAttributeName, NSNumber.numberWithInteger(UnderlineStyle), Range);
     if cfs_Strikeout in FFont.Style then
-      FTextStorage.addAttribute_value_range(NSStrikethroughStyleAttributeName, NSNumber.numberWithInteger(UnderlineStyle), Range);
+      FTextStorage.addAttribute_value_range(NSStrikethroughStyleAttributeName, NSNumber.numberWithInteger(UnderlineStyle), Range)
+    else
+      FTextStorage.removeAttribute_range(NSStrikethroughStyleAttributeName, Range);
   end;
 end;
 
