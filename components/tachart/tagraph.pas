@@ -194,6 +194,7 @@ type
 
   private
     FActiveToolIndex: Integer;
+    FAutoFocus: Boolean;
     FBroadcaster: TBroadcaster;
     FBuiltinToolset: TBasicChartToolset;
     FClipRect: TRect;
@@ -346,6 +347,7 @@ type
     property YGraphMin: Double read FCurrentExtent.a.Y;
 
   published
+    property AutoFocus: Boolean read FAutoFocus write FAutoFocus default false;
     property AllowZoom: Boolean read FAllowZoom write FAllowZoom default true;
     property AntialiasingMode: TChartAntialiasingMode
       read FAntialiasingMode write SetAntialiasingMode default amDontCare;
@@ -1099,6 +1101,8 @@ end;
 
 procedure TChart.MouseMove(Shift: TShiftState; X, Y: Integer);
 begin
+  if AutoFocus then
+    SetFocus;
   if GetToolset.Dispatch(Self, evidMouseMove, Shift, Point(X, Y)) then exit;
   inherited;
 end;
