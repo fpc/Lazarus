@@ -2180,6 +2180,8 @@ function TQtWidgetSet.ExtTextOut(DC: HDC; X, Y: Integer; Options: Longint;
 var
   WideStr: WideString;
   QtDC: TQtDeviceContext absolute DC;
+  R, R1: TRect;
+  Pt: TPoint;
 
   procedure DoDrawCharByChar(const AClipped: Boolean);
   var
@@ -2213,7 +2215,6 @@ var
     end;
   end;
 
-  R, R1: TRect;
 begin
   {$ifdef VerboseQtWinAPI}
     WriteLn('[WinAPI ExtTextOut]');
@@ -2233,9 +2234,35 @@ begin
     R := QtDC.getClipRegion.getBoundingRect;
     QtDC.font.Metrics.boundingRect(@R1, @R, 0, @WideStr);
     Rect := @R1;
+  end;
+
+  if ((Options and ETO_OPAQUE) <> 0) and (Rect <> nil) then
+  begin
+    // Qt-4.8 bug
+    if (QtVersionMajor = 4) and (QtVersionMinor = 8) and (QtVersionMicro < 3) and
+      QPaintEngine_testDirty(QtDC.PaintEngine, QPaintEngineDirtyBrushOrigin) then
+    begin
+      // couldn't find way to fix it.
+    end;
+    QtDC.fillRect(Rect^.Left, Rect^.Top, Rect^.Right - Rect^.Left, Rect^.Bottom - Rect^.Top);
   end else
-    if ((Options and ETO_OPAQUE) <> 0) and (Rect <> nil) then
-      QtDC.fillRect(Rect^.Left, Rect^.Top, Rect^.Right - Rect^.Left, Rect^.Bottom - Rect^.Top);
+  if ((Options and ETO_OPAQUE) = 0) and (Rect <> nil) and (QtDC.getBKMode = OPAQUE) then
+  begin
+    // Qt-4.8 bug
+    {$warning workaround for Qt-4.8.XX bug (test with 4.8.3 release) !}
+    if (QtVersionMajor = 4) and (QtVersionMinor = 8) and (QtVersionMicro < 3) and
+      QPaintEngine_testDirty(QtDC.PaintEngine, QPaintEngineDirtyBrushOrigin) then
+    begin
+      R := Rect^;
+      QtDC.font.Metrics.boundingRect(@R1, @R, QtTextSingleLine, @WideStr);
+      if Options and ETO_CLIPPED = 0 then
+        Pt := Point(Rect^.Left - X, Rect^.Top - Y)
+      else
+        Pt := Point(0, 0);
+      QtDC.fillRect(Rect^.Left - Pt.X, Rect^.Top - Pt.Y + 1, Rect^.Right - Rect^.Left + Pt.X,
+        R1.Bottom - R1.Top + Pt.Y, QtDC.BackgroundBrush.FHandle);
+    end;
+  end;
 
   if Str <> nil then
   begin
