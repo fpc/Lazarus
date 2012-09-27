@@ -269,6 +269,7 @@ function FormatIfNotEmpty(AFormat, AStr: String): String; inline;
 
 function InterpolateRGB(AColor1, AColor2: Integer; ACoeff: Double): Integer;
 function IntToColorHex(AColor: Integer): String; inline;
+function IsEquivalent(const A1, A2: Double): Boolean; inline;
 function IsNan(const APoint: TDoublePoint): Boolean; overload; inline;
 function NumberOr(ANum: Double; ADefault: Double = 0.0): Double; inline;
 
@@ -385,6 +386,11 @@ begin
     Result := '?'
   else
     Result := '$' + IntToHex(AColor, 6);
+end;
+
+function IsEquivalent(const A1, A2: Double): Boolean;
+begin
+  Result := CompareDWord(A1, A2, SizeOf(A1) div SizeOf(DWord)) = 0;
 end;
 
 function IsNan(const APoint: TDoublePoint): Boolean;

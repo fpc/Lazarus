@@ -501,7 +501,8 @@ begin
     if FDomainExclusions.Intersect(xa, xa1, hint) then begin
       AOnLineTo(FAxisToGraphXr(xa), xa);
       xg1 := FAxisToGraphXr(xa1);
-      AOnMoveTo(xg1, xa1);
+      if xg1 < AXMax then
+        AOnMoveTo(xg1, xa1);
     end
     else
       AOnLineTo(xg1, xa1);
