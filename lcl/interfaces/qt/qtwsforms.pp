@@ -420,7 +420,7 @@ begin
       {$endif}
 
       {$ifdef HASX11}
-      if IsOldKDEInstallation then
+      if (GetWindowManager = 'kwin') and IsOldKDEInstallation then
       begin
         W := nil;
         ActiveWin := GetActiveWindow;
@@ -443,12 +443,15 @@ begin
         QWidget_setParent(Widget.Widget, QApplication_desktop());
       {$endif}
 
-      QWidget_setWindowFlags(Widget.Widget, QtDialog or
-        {$ifdef darwin}
-        QtWindowSystemMenuHint or
-        {$endif}
-        GetQtBorderIcons(TCustomForm(AWinControl).BorderStyle,
-          TCustomForm(AWinControl).BorderIcons));
+      if TCustomForm(AWinControl).BorderStyle <> bsNone then
+      begin
+        QWidget_setWindowFlags(Widget.Widget, QtDialog or
+          {$ifdef darwin}
+          QtWindowSystemMenuHint or
+          {$endif}
+          GetQtBorderIcons(TCustomForm(AWinControl).BorderStyle,
+            TCustomForm(AWinControl).BorderIcons));
+      end;
 
       Widget.setWindowModality(QtApplicationModal);
     end;
@@ -495,7 +498,8 @@ begin
         Flags := Flags or QtWindowStaysOnTopHint;
         Widget.setWindowFlags(Flags);
       end;
-      if not (fsModal in TForm(AWinControl).FormState) and
+      if not Assigned(AWinControl.Parent) and
+        not (fsModal in TForm(AWinControl).FormState) and
         (TForm(AWinControl).FormStyle <> fsMDIChild) and
         (QApplication_activeModalWidget() <> nil) then
           TQtMainWindow(Widget).setPopupParent(pmExplicit,

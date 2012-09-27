@@ -1341,7 +1341,8 @@ begin
   QtComboBox.FList.Assign(TCustomComboBox(AWinControl).Items);
   QtComboBox.setCurrentIndex(ItemIndex);
   QtComboBox.setText(GetUTF8String(Text));
-  QtComboBox.setEditable(AParams.Style and CBS_DROPDOWN <> 0);
+  QtComboBox.setEditable((AParams.Style and CBS_DROPDOWN <> 0) or
+    (AParams.Style and CBS_SIMPLE <> 0));
 
   QtComboBox.AttachEvents;
   QtComboBox.OwnerDrawn := (AParams.Style and CBS_OWNERDRAWFIXED <> 0) or
@@ -1566,7 +1567,7 @@ end;
 class procedure TQtWSCustomComboBox.SetStyle(
   const ACustomComboBox: TCustomComboBox; NewStyle: TComboBoxStyle);
 begin
-  TQtComboBox(ACustomComboBox.Handle).setEditable(NewStyle = csDropDown);
+  TQtComboBox(ACustomComboBox.Handle).setEditable(NewStyle in [csDropDown, csSimple]);
   TQtComboBox(ACustomComboBox.Handle).OwnerDrawn := NewStyle in
                                                    [csOwnerDrawFixed,
                                                     csOwnerDrawVariable];

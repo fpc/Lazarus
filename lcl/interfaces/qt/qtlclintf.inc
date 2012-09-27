@@ -402,9 +402,11 @@ begin
       if (BtnID >= Low(IdButtonToQtStandardButton)) and
          (BtnID <= High(IdButtonToQtStandardButton)) and
          (IdButtonToQtStandardButton[BtnID] <> QMessageBoxNoButton) then
-        QtMessageBox.AddButton(GetButtonCaption(BtnID), IdButtonToQtStandardButton[BtnID], BtnID, BtnIdx = DefaultIndex, BtnId = EscapeResult)
+        QtMessageBox.AddButton(GetButtonCaption(BtnID), IdButtonToQtStandardButton[BtnID], BtnID,
+          BtnIdx = DefaultIndex, (EscapeResult = mrCancel) and (BtnId = EscapeResult))
       else
-        QtMessageBox.AddButton(GetButtonCaption(BtnID), BtnID, BtnIdx = DefaultIndex, BtnId = EscapeResult);
+        QtMessageBox.AddButton(GetButtonCaption(BtnID), BtnID, BtnIdx = DefaultIndex,
+          (EscapeResult = mrCancel) and (BtnId = EscapeResult));
     end;
 
     if DialogCaption <> '' then

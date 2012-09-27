@@ -818,6 +818,7 @@ type
     function getSelectionStart: Integer;
     function getSelectionEnd: Integer;
     function getSelectionLength: Integer;
+    procedure appendLine(AText: WideString);
     procedure insertLine(const AIndex: integer; AText: WideString);
     function isUndoAvailable: Boolean;
     procedure removeLine(const AIndex: integer);
@@ -3414,20 +3415,24 @@ var
   W: QWidgetH;
   FrameBorder: Integer;
   TitleBarHeight: Integer;
+  SenderWidget: QWidgetH;
 begin
   Result := False;
-  if not CanSendLCLMessage then
+  if not CanSendLCLMessage or (Sender = nil) or
+    not QObject_isWidgetType(Sender) then
     Exit(True);
 
+  SenderWidget := QWidgetH(Sender);
+
   if not (csCaptureMouse in LCLObject.ControlStyle) and
-    not QWidget_isWindow(Widget) and
+    not QWidget_isWindow(SenderWidget) and
     not DragManager.IsDragging then
   begin
     MousePos := QMouseEvent_pos(QMouseEventH(Event))^;
     GlobPos := QMouseEvent_globalPos(QMouseEventH(Event))^;
 
     // get parent form, so check if mouse is out of parent form first.
-    W := QWidget_window(Widget);
+    W := QWidget_window(SenderWidget);
 
     if W <> nil then
     begin
@@ -3446,13 +3451,13 @@ begin
       if not PtInRect(R, P) then
         MousePos := QtPoint(-1, -1);
 
-      if not QWidget_underMouse(Widget) then
+      if not QWidget_underMouse(SenderWidget) then
       begin
         if (MousePos.X >= 0) and (MousePos.Y >= 0) then
         begin
-          QWidget_setAttribute(Widget, QtWA_UnderMouse, True);
+          QWidget_setAttribute(SenderWidget, QtWA_UnderMouse, True);
           NewEvent := QEvent_create(QEventEnter);
-          QCoreApplication_postEvent(Widget, NewEvent, 100);
+          QCoreApplication_postEvent(SenderWidget, NewEvent, 100);
         end;
       end;
     end;
@@ -3462,11 +3467,11 @@ begin
       (((MousePos.X < 0) or (MousePos.Y < 0)) or
       ((MousePos.X > getWidth) or (MousePos.Y > getHeight))) then
     begin
-      if not QWidget_underMouse(Widget) then
+      if not QWidget_underMouse(SenderWidget) then
         exit;
       setCursor(FDefaultCursor);
       NewEvent := QEvent_create(QEventLeave);
-      QCoreApplication_postEvent(Widget, NewEvent, 100);
+      QCoreApplication_postEvent(SenderWidget, NewEvent, 100);
       exit;
     end;
   end;
@@ -3479,14 +3484,14 @@ begin
   Msg.XPos := SmallInt(MousePos.X);
   Msg.YPos := SmallInt(MousePos.Y);
   
-  Msg.Keys := QtButtonsToLCLButtons(QmouseEvent_Buttons(QMouseEventH(Event)))
+  Msg.Keys := QtButtonsToLCLButtons(QMouseEvent_Buttons(QMouseEventH(Event)))
     or QtKeyModifiersToKeyState(QInputEvent_modifiers(QInputEventH(Event)), False, nil);
 
   Msg.Msg := LM_MOUSEMOVE;
 
   NotifyApplicationUserInput(LCLObject, Msg.Msg);
   DeliverMessage(Msg);
-  SetNoMousePropagation(QWidgetH(Sender), True);
+  SetNoMousePropagation(SenderWidget, True);
 end;
 
 {------------------------------------------------------------------------------
@@ -8127,6 +8132,29 @@ begin
   {$note implement TQtTextEdit.setMaxLength}
 end;
 
+procedure TQtTextEdit.appendLine(AText: WideString);
+var
+  QtCursor: QTextCursorH;
+  WrapMode: QTextEditLineWrapMode;
+begin
+  WrapMode := QTextEdit_lineWrapMode(QTextEditH(Widget));
+  {we must remove wrapping to get correct line !}
+  setLineWrapMode(QTextEditNoWrap);
+  QtCursor := QTextCursor_create();
+  try
+    QTextEdit_textCursor(QTextEditH(Widget), QtCursor);
+    QTextCursor_beginEditBlock(QtCursor);
+    QTextCursor_movePosition(QtCursor, QTextCursorEnd,
+        QTextCursorMoveAnchor, 1);
+    QTextCursor_insertBlock(QtCursor);
+    QTextCursor_insertText(QtCursor, @AText);
+    QTextCursor_endEditBlock(QtCursor);
+  finally
+    QTextCursor_destroy(QtCursor);
+    setLineWrapMode(WrapMode);
+  end;
+end;
+
 procedure TQtTextEdit.insertLine(const AIndex: integer; AText: WideString);
 var
   QtCursor: QTextCursorH;
@@ -8139,15 +8167,33 @@ begin
   try
     QTextEdit_textCursor(QTextEditH(Widget), QtCursor);
     QTextCursor_beginEditBlock(QtCursor);
-    QTextCursor_movePosition(QtCursor, QTextCursorStart,
-      QTextCursorMoveAnchor, 1);
-    QTextCursor_movePosition(QtCursor, QTextCursorStartOfLine,
-      QTextCursorMoveAnchor, 1);
+    // QTextCursor slowness
+    // https://bugreports.qt-project.org/browse/QTBUG-3554
+    // differentiate append vs. insert issue #22715
+    if AIndex >= FList.Count - 1 then
+    begin
+      QTextCursor_movePosition(QtCursor, QTextCursorEnd,
+        QTextCursorMoveAnchor, 1);
+      QTextCursor_insertBlock(QtCursor);
+    end else
+    begin
+      QTextCursor_movePosition(QtCursor, QTextCursorStart,
+        QTextCursorMoveAnchor, 1);
+      QTextCursor_movePosition(QtCursor, QTextCursorStartOfLine,
+        QTextCursorMoveAnchor, 1);
+    end;
+
     QTextCursor_movePosition(QtCursor, QTextCursorDown,
       QTextCursorMoveAnchor, AIndex);
-    QTextCursor_insertBlock(QtCursor);
-    QTextCursor_movePosition(QtCursor, QTextCursorUp,
-      QTextCursorMoveAnchor, 1);
+    // QTextCursor slowness
+    // https://bugreports.qt-project.org/browse/QTBUG-3554
+    // differentiate append vs. insert issue #22715
+    if AIndex < FList.Count - 1 then
+    begin
+      QTextCursor_insertBlock(QtCursor);
+      QTextCursor_movePosition(QtCursor, QTextCursorUp,
+        QTextCursorMoveAnchor, 1);
+    end;
     QTextCursor_insertText(QtCursor, @AText);
     QTextCursor_endEditBlock(QtCursor);
   finally
@@ -14734,7 +14780,8 @@ begin
       MouseEventTyp := (QEvent_type(Event) = QEventMouseButtonPress) or
         (QEvent_type(Event) = QEventMouseButtonRelease) or
         (QEvent_type(Event) = QEventMouseButtonDblClick) or
-        (QEvent_type(Event) = QEventWheel);
+        (QEvent_type(Event) = QEventWheel) or
+        (QEvent_type(Event) = QEventMouseMove);
 
       if (QEvent_type(Event) = QEventWheel) and
         (QtVersionMajor = 4) and (QtVersionMinor > 6) then
@@ -14742,7 +14789,8 @@ begin
 
       retval^ := True;
 
-      Viewport.EventFilter(ViewPort.Widget, Event);
+      if FViewPortWidget <> nil then
+        Viewport.EventFilter(ViewPortWidget, Event);
 
       // do not allow qt to call notifications on user input events (mouse)
       // otherwise we can crash since our object maybe does not exist
@@ -16750,7 +16798,29 @@ begin
   Result := False;
   QEvent_accept(Event);
   if LCLObject <> nil then
-    Result := inherited EventFilter(Sender, Event);
+    Result := inherited EventFilter(Sender, Event)
+  else
+  begin
+    case QEvent_type(Event) of
+      QEventKeyPress:
+      begin
+        if (QKeyEvent_key(QKeyEventH(Event)) = QtKey_Escape) and
+          (QMessageBox_escapeButton(QMessageBoxH(Sender)) = nil) then
+        begin
+          QDialog_done(QDialogH(Sender), Ord(QDialogRejected));
+          Result := True;
+        end;
+      end;
+      QEventClose:
+      begin
+        if QMessageBox_escapeButton(QMessageBoxH(Sender)) = nil then
+        begin
+          QDialog_done(QDialogH(Sender), Ord(QDialogRejected));
+          Result := True;
+        end;
+      end;
+    end;
+  end;
 end;
 
 procedure TQtMessageBox.SetButtonProps(ABtn: QPushButtonH; AResult: Int64; const ADefaultBtn: Boolean; const AEscapeBtn: Boolean);
@@ -16799,7 +16869,7 @@ var
   ok: Boolean;
   QResult: Int64;
 begin
-  Result := QMessageBoxNoButton;
+  Result := mrCancel;
   {$IFDEF QTDIALOGS_USES_QT_LOOP}
   QDialog_exec(QMessageBoxH(Widget));
   {$ELSE}

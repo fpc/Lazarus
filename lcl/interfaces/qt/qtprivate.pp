@@ -412,6 +412,20 @@ end;
 procedure TQtMemoStrings.Insert(Index: integer; const S: string);
 var
   W: WideString;
+  QtCursor: QTextCursorH;
+
+
+  function WorkaroundNeeded: Boolean;
+  var
+    HaveLt: Boolean;
+    HaveGt: Boolean;
+    S1: String;
+  begin
+    HaveLt := System.Pos('<', S) > 0;
+    HaveGt := System.Pos('>', S) > 0;
+    Result := HaveLt or HaveGt;
+  end;
+
 begin
   if FTextChanged then InternalUpdate;
   if Index < 0 then Index := 0;
@@ -423,13 +437,16 @@ begin
   if Index <= FStringList.Count then
   begin
     FStringList.Insert(Index, S);
-    if TQtTextEdit(FOwner.Handle).getBlockCount - Index <= 1 then
+    if (TQtTextEdit(FOwner.Handle).getBlockCount - Index <= 1) then
     begin
-      if (System.Pos('<', S) > 0) or (System.Pos('>',S) > 0) then
+      // workaround for qt richtext parser bug. issues #17170 and #22715
+      if WorkaroundNeeded then
       begin
-        // workaround for qt richtext parser bug
         W := GetUTF8String(S);
-        TQtTextEdit(FOwner.Handle).insertLine(Index, W);
+        if (Index >= FStringList.Count - 1) then
+          TQtTextEdit(FOwner.Handle).appendLine(W)
+        else
+          TQtTextEdit(FOwner.Handle).insertLine(Index, W);
       end else
       begin
         // append is much faster in case when we add strings
