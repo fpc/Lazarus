@@ -481,6 +481,7 @@ function TCocoaWidgetSet.RawImage_DescriptionFromCocoaBitmap(out ADesc: TRawImag
 var
   Prec, Shift: Byte;
   BPR: Integer;
+  HasAlpha: Boolean;
 begin
   ADesc.Init;
 
@@ -530,9 +531,11 @@ begin
   if ABitmap.BitmapType in [cbtARGB, cbtRGBA] then
     ADesc.AlphaPrec := Prec;
 
+  HasAlpha := ABitmap.ImageRep.hasAlpha;
+
   case ABitmap.BitmapType of
     cbtRGB: begin
-      Shift := 32 - Prec;
+      Shift := 24 - Prec;
       ADesc.RedShift := Shift;
       Dec(Shift, Prec);
       ADesc.GreenShift := Shift;
