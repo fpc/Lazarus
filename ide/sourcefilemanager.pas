@@ -1292,7 +1292,7 @@ begin
           [mrYes, lisOpenProject2, mrNoToAll, lisOpenAsXmlFile, mrCancel])
       of
         mrYes: begin
-          Result:=InitOpenedProjectFile(AFilename,[ofAddToRecent]);
+          Result:=MainIDE.DoOpenProjectFile(AFilename,[ofAddToRecent]);
           exit;
         end;
         mrNoToAll: include(Flags, ofRegularFile);
