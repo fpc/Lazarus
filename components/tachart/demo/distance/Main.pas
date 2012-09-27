@@ -8,7 +8,7 @@ uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, ExtCtrls,
   StdCtrls, Spin, ComCtrls,
   TAChartUtils, TATransformations, TAGraph, TASources, TASeries,
-  TATools, TADataTools;
+  TATools, TADataTools, types;
 
 type
 
@@ -55,6 +55,8 @@ type
     procedure clrFontColorColorChanged(Sender: TObject);
     procedure clrPenColorColorChanged(Sender: TObject);
     procedure ctCrosshairDraw(ASender: TDataPointCrosshairTool);
+    procedure ctDistance1BeforeKeyDown(ATool: TChartTool; APoint: TPoint);
+    procedure ctDistance1BeforeKeyUp(ATool: TChartTool; APoint: TPoint);
     procedure ctDistance1Measure(
       ASender: TDataPointDistanceTool);
     procedure edEndbarLengthChange(Sender: TObject);
@@ -132,6 +134,33 @@ begin
       Statusbar1.SimpleText := Format('Cursor at (%f; %f)', [X, Y]);
   end else
     Statusbar1.SimpleText := '';
+end;
+
+procedure TForm1.ctDistance1BeforeKeyDown(ATool: TChartTool; APoint: TPoint);
+const
+  ZOOM_FACTOR = 2;
+var
+  ext: TDoubleRect;
+  x, sz, ratio: Double;
+begin
+  if not (ssShift in ATool.Toolset.DispatchedShiftState) then exit;
+  ext := Chart1.LogicalExtent;
+  if ext.b.x - ext.a.x >= 10 then begin
+    x := Chart1.XImageToGraph(APoint.X);
+    sz := ext.b.x - ext.a.x;
+    ratio := (x - ext.a.x) / sz;
+    ext.a.x := x - sz * ratio / ZOOM_FACTOR;
+    ext.b.x := x + sz * (1 - ratio) / ZOOM_FACTOR;
+    Chart1.LogicalExtent := ext;
+  end;
+  ATool.Handled;
+end;
+
+procedure TForm1.ctDistance1BeforeKeyUp(ATool: TChartTool; APoint: TPoint);
+begin
+  Unused(APoint);
+  Chart1.ZoomFull;
+  ATool.Handled;
 end;
 
 procedure TForm1.ctDistance1Measure(

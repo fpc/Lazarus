@@ -13,6 +13,7 @@ object Form1: TForm1
     Height = 367
     Top = 0
     Width = 800
+    AutoFocus = True
     AxisList = <    
       item
         TickColor = clBlue
@@ -315,7 +316,7 @@ object Form1: TForm1
     Width = 800
     Align = alBottom
     BevelOuter = bvNone
-    Caption = 'Left-drag --> measure 1st distance         Ctrl+left-drag --> measure 2nd distance          Right-drag --> show values'
+    Caption = 'Left-drag --> measure 1st distance, Shift to zoom while dragging         Ctrl+left-drag --> measure 2nd distance          Right-drag --> show values'
     Color = clGray
     Font.Color = clWhite
     ParentColor = False
@@ -352,6 +353,8 @@ object Form1: TForm1
     end
     object ctDistance1: TDataPointDistanceTool
       Shift = [ssLeft]
+      OnBeforeKeyDown = ctDistance1BeforeKeyDown
+      OnBeforeKeyUp = ctDistance1BeforeKeyUp
       LinePen.Width = 2
       Marks.Distance = 30
       Marks.Format = 'dist='#13#10'%0:.9g / %1:.9g'
