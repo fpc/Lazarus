@@ -503,6 +503,7 @@ var
     SetLength(points, pointCount);
     SetLength(breaks, breakCount);
 
+    ADrawer.SetBrushParams(bsClear, clTAColor);
     ADrawer.Pen := LinePen;
     if Styles <> nil then
       Styles.Apply(ADrawer, AIndex);
