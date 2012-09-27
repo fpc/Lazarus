@@ -42,6 +42,7 @@ type
     FActiveCursor: TCursor;
     FDrawingMode: TChartToolDrawingMode;
     FEnabled: Boolean;
+    FEscapeCancels: Boolean;
     FEventsAfter: array [TChartToolEventId] of TChartToolEvent;
     FEventsBefore: array [TChartToolEventId] of TChartToolEvent;
     FOldCursor: TCursor;
@@ -61,6 +62,7 @@ type
       read FDrawingMode write SetDrawingMode default tdmDefault;
   strict protected
     procedure Activate; override;
+    procedure Cancel; virtual;
     procedure Deactivate; override;
     function EffectiveDrawingMode: TChartToolEffectiveDrawingMode;
     function GetIndex: Integer; override;
@@ -76,6 +78,8 @@ type
     procedure RestoreCursor;
     procedure SetCursor;
     procedure SetIndex(AValue: Integer); override;
+    property EscapeCancels: Boolean
+      read FEscapeCancels write FEscapeCancels default false;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -409,6 +413,8 @@ type
     FOnDrag: TDataPointDragEvent;
     FOnDragStart: TDataPointDragEvent;
     FOrigin: TDoublePoint;
+  strict protected
+    procedure Cancel; override;
   public
     constructor Create(AOwner: TComponent); override;
     procedure MouseDown(APoint: TPoint); override;
@@ -417,6 +423,7 @@ type
     property Origin: TDoublePoint read FOrigin;
   published
     property ActiveCursor default crSizeAll;
+    property EscapeCancels default true;
     property OnDrag: TDataPointDragEvent read FOnDrag write FOnDrag;
     property OnDragStart: TDataPointDragEvent
       read FOnDragStart write FOnDragStart;
@@ -543,7 +550,7 @@ var
 implementation
 
 uses
-  GraphMath, InterfaceBase, Math, SysUtils,
+  GraphMath, InterfaceBase, LCLType, LCLIntf, Math, SysUtils,
   TACustomSeries, TAEnumerators, TAGeometry, TAMath;
 
 function InitBuiltinTools(AChart: TChart): TBasicChartToolset;
@@ -636,6 +643,11 @@ begin
     end
   else
     inherited Assign(Source);
+end;
+
+procedure TChartTool.Cancel;
+begin
+  // Empty.
 end;
 
 constructor TChartTool.Create(AOwner: TComponent);
@@ -742,6 +754,8 @@ end;
 procedure TChartTool.KeyDown(APoint: TPoint);
 begin
   Unused(APoint);
+  if EscapeCancels and ((GetKeyState(VK_ESCAPE) and $8000) <> 0) then
+    Cancel;
 end;
 
 procedure TChartTool.KeyUp(APoint: TPoint);
@@ -1522,10 +1536,20 @@ end;
 
 { TDataPointDragTool }
 
+procedure TDataPointDragTool.Cancel;
+begin
+  if FSeries <> nil then
+    FSeries.MovePoint(FPointIndex, Origin);
+  if IsActive then
+    Deactivate;
+  Handled;
+end;
+
 constructor TDataPointDragTool.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   ActiveCursor := crSizeAll;
+  EscapeCancels := true;
 end;
 
 procedure TDataPointDragTool.MouseDown(APoint: TPoint);
