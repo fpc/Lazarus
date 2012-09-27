@@ -6,8 +6,9 @@ object Form1: TForm1
   Caption = 'Form1'
   ClientHeight = 351
   ClientWidth = 479
+  OnCreate = FormCreate
   Position = poScreenCenter
-  LCLVersion = '0.9.31'
+  LCLVersion = '1.1'
   object Chart1: TChart
     Left = 0
     Height = 249
@@ -39,6 +40,9 @@ object Form1: TForm1
     OnExtentChanged = Chart1ExtentChanged
     Align = alClient
     ParentColor = False
+    object Chart1BarSeries1: TBarSeries
+      BarBrush.Color = clSkyBlue
+    end
     object Chart1LineSeries1: TLineSeries
       Source = RandomChartSource1
     end

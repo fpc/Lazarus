@@ -14,6 +14,7 @@ type
 
   TForm1 = class(TForm)
     Chart1: TChart;
+    Chart1BarSeries1: TBarSeries;
     Chart1LineSeries1: TLineSeries;
     ChartNavPanel1: TChartNavPanel;
     ChartToolset1: TChartToolset;
@@ -28,6 +29,7 @@ type
     StatusBar1: TStatusBar;
     procedure cbMiniMapChange(Sender: TObject);
     procedure Chart1ExtentChanged(ASender: TChart);
+    procedure FormCreate(Sender: TObject);
   end;
 
 var
@@ -49,6 +51,14 @@ begin
   with ASender.LogicalExtent do
     StatusBar1.Panels[0].Text :=
       Format('(%.3g;%.3g) - (%.3g;%.3g)', [a.X, a.Y, b.X, b.Y]);
+end;
+
+procedure TForm1.FormCreate(Sender: TObject);
+var
+  i: Integer;
+begin
+  for i := 1 to 10 do
+    Chart1BarSeries1.AddXY(i * 10, i * i / 5);
 end;
 
 end.
