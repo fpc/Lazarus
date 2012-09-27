@@ -353,11 +353,10 @@ type
   protected
     function SaveDCData: TCocoaDCData; virtual;
     procedure RestoreDCData(const AData: TCocoaDCData); virtual;
-    procedure SetCGFillping(Ctx: CGContextRef; Width, Height: Integer);
-    procedure RestoreCGFillping(Ctx: CGContextRef; Width, Height: Integer);
+    procedure SetCGFillping(Ctx: CGContextRef; Width, Height: CGFloat);
+    procedure RestoreCGFillping(Ctx: CGContextRef; Width, Height: CGFloat);
     procedure ApplyTransform(Trans: CGAffineTransform);
     procedure ClearClipping;
-    function GetSize: TSize; virtual;
   public
     ctx: NSGraphicsContext;
     constructor Create; virtual;
@@ -369,7 +368,6 @@ type
     function InitDraw(width, height: Integer): Boolean;
 
     // drawing functions
-    procedure DrawBitmap(X, Y: Integer; ABitmap: TCocoaBitmap);
     procedure DrawFocusRect(ARect: TRect);
     procedure InvertRectangle(X1, Y1, X2, Y2: Integer);
     procedure MoveTo(X, Y: Integer);
@@ -382,7 +380,8 @@ type
     procedure Frame(const R: TRect);
     procedure Frame3d(var ARect: TRect; const FrameWidth: integer; const Style: TBevelCut);
     procedure FrameRect(const ARect: TRect; const ABrush: TCocoaBrush);
-    function DrawCGImage(X, Y, Width, Height: Integer; CGImage: CGImageRef): Boolean;
+    procedure DrawBitmap(X, Y: Integer; ABitmap: TCocoaBitmap);
+    function DrawImageRep(dstRect: NSRect; const srcRect: NSRect; ImageRep: NSBitmapImageRep): Boolean;
     function StretchDraw(X, Y, Width, Height: Integer; SrcDC: TCocoaBitmapContext;
       XSrc, YSrc, SrcWidth, SrcHeight: Integer; Msk: TCocoaBitmap; XMsk,
       YMsk: Integer; Rop: DWORD): Boolean;
@@ -401,7 +400,7 @@ type
     property Clipped: Boolean read FClipped;
     property PenPos: TPoint read FPenPos write FPenPos;
     property ROP2: Integer read FROP2 write SetROP2;
-    property Size: TSize read GetSize;
+    property Size: TSize read FSize;
     property WindowOfs: TPoint read FWindowOfs write SetWindowOfs;
     property ViewPortOfs: TPoint read FViewPortOfs write SetViewPortOfs;
 
@@ -424,8 +423,6 @@ type
   private
     FBitmap : TCocoaBitmap;
     procedure SetBitmap(const AValue: TCocoaBitmap);
-  protected
-    function GetSize: TSize; override;
   public
     constructor Create; override;
     destructor Destroy; override;
@@ -1035,6 +1032,7 @@ begin
   else
     Context := ctx;
 
+  ctx.saveGraphicsState;
   ctx.setCurrentContext(Context);
   ctx.setShouldAntialias(FFont.Antialiased);
   Range := FLayout.glyphRangeForTextContainer(FTextContainer);
@@ -1058,6 +1056,7 @@ begin
   if FillBackground then
     FLayout.drawBackgroundForGlyphRange_atPoint(Range, Pt);
   FLayout.drawGlyphsForGlyphRange_atPoint(Range, Pt);
+  ctx.restoreGraphicsState;
 end;
 
 { TCocoaContext }
@@ -1112,6 +1111,8 @@ begin
 end;
 
 procedure TCocoaBitmapContext.SetBitmap(const AValue: TCocoaBitmap);
+var
+  I: Boolean;
 begin
   if FBitmap <> AValue then
   begin
@@ -1123,18 +1124,8 @@ begin
     end;
 
     ctx := NSGraphicsContext.graphicsContextWithBitmapImageRep(AValue.ImageRep);
+    InitDraw(Bitmap.Width, Bitmap.Height);
   end;
-end;
-
-function TCocoaBitmapContext.GetSize: TSize;
-begin
-  if Assigned(Bitmap) then
-  begin
-    Result.cx := Bitmap.Width;
-    Result.cy := Bitmap.Height;
-  end
-  else
-    Result := inherited GetSize;
 end;
 
 constructor TCocoaBitmapContext.Create;
@@ -1667,7 +1658,7 @@ begin
     Brush.Apply(Self);
 end;
 
-procedure TCocoaContext.SetCGFillping(Ctx: CGContextRef; Width, Height: Integer);
+procedure TCocoaContext.SetCGFillping(Ctx: CGContextRef; Width, Height: CGFloat);
 begin
   if Width < 0 then
   begin
@@ -1682,7 +1673,7 @@ begin
   end;
 end;
 
-procedure TCocoaContext.RestoreCGFillping(Ctx: CGContextRef; Width, Height: Integer);
+procedure TCocoaContext.RestoreCGFillping(Ctx: CGContextRef; Width, Height: CGFloat);
 begin
   if Height < 0 then
   begin
@@ -1720,134 +1711,50 @@ begin
   end;
 end;
 
-function TCocoaContext.GetSize: TSize;
+function TCocoaContext.DrawImageRep(dstRect: NSRect; const srcRect: NSRect;
+  ImageRep: NSBitmapImageRep): Boolean;
+var
+  Context: NSGraphicsContext;
 begin
-  Result := FSize;
-end;
-
-function TCocoaContext.DrawCGImage(X, Y, Width, Height: Integer;
-  CGImage: CGImageRef): Boolean;
-begin
-  Result := False;
-
-  // save dest context
   ctx.saveGraphicsState;
+
+  // we flip the context on it initialization (see InitDraw) so to draw
+  // a bitmap correctly we need to create a flipped context and to draw onto it
+
+  if not ctx.isFlipped then
+    Context := NSGraphicsContext.graphicsContextWithGraphicsPort_flipped(ctx.graphicsPort, True)
+  else
+    Context := ctx;
+  ctx.setCurrentContext(Context);
   CGContextSetBlendMode(CGContext, kCGBlendModeNormal);
   try
-    SetCGFillping(CGContext, Width, Height);
-    CGContextDrawImage(CGContext, GetCGRectSorted(X, Y, X + Width, Y + Height), CGImage);
-    RestoreCGFillping(CGContext, Width, Height);
+    Result := ImageRep.drawInRect_fromRect_operation_fraction_respectFlipped_hints(
+      dstRect, srcRect, NSCompositeSourceOver, 1.0, True, nil
+      );
   finally
     ctx.restoreGraphicsState;
   end;
-
-  Result := True;
 end;
 
 function TCocoaContext.StretchDraw(X, Y, Width, Height: Integer;
   SrcDC: TCocoaBitmapContext; XSrc, YSrc, SrcWidth, SrcHeight: Integer;
   Msk: TCocoaBitmap; XMsk, YMsk: Integer; Rop: DWORD): Boolean;
 var
-  Image, MskImage: CGImageRef;
-  SubImage, SubMask: Boolean;
   Bmp: TCocoaBitmap;
-  LayRect, DstRect: CGRect;
-  ImgRect: CGRect;
-  LayerContext: CGContextRef;
-  Layer: CGLayerRef;
-  UseLayer: Boolean;
 begin
   Result := False;
 
   Bmp := SrcDC.Bitmap;
-  if Assigned(Bmp) then
-    Image := Bmp.ImageRep.CGImage
-  else
-    Image := nil;
+  if not Assigned(Bmp) then
+    Exit;
 
-  if Image = nil then Exit;
+// TODO: mask clipping
+//  if Assigned(MskImage) then
+//    CGContextClipToMask(LayerContext, ImgRect, MskImage);
 
-  DstRect := CGRectMake(X, Y, Abs(Width), Abs(Height));
-
-  SubMask := (Msk <> nil)
-         and (Msk.Image <> nil)
-         and (  (XMsk <> 0)
-             or (YMsk <> 0)
-             or (Msk.Width <> SrcWidth)
-             or (Msk.Height <> SrcHeight));
-
-  SubImage := ((Msk <> nil) and (Msk.Image <> nil))
-           or (XSrc <> 0)
-           or (YSrc <> 0)
-           or (SrcWidth <> Bmp.Width)
-           or (SrcHeight <> Bmp.Height);
-
-
-  if SubMask then
-    MskImage := Msk.CreateSubImage(Bounds(XMsk, YMsk, SrcWidth, SrcHeight))
-  else
-    if Assigned(Msk) then
-      MskImage := Msk.ImageRep.CGImage
-    else
-      MskImage := nil;
-
-  if SubImage then
-    Image := Bmp.CreateSubImage(Bounds(XSrc, YSrc, SrcWidth, SrcHeight));
-
-
-  UseLayer:=Assigned(MskImage)
-            or (CGImageGetWidth(Image)<>SrcWidth)
-            or (CGImageGetHeight(Image)<>SrcHeight);
-
-  try
-    if not UseLayer then
-    begin
-      // Normal drawing
-      Result := DrawCGImage(X, Y, Width, Height, Image);
-    end
-    else
-    begin
-      // use temp layer to mask source image
-      // todo find a way to mask "hard" when stretching, now some soft remains are visible
-      LayRect := CGRectMake(0, 0, SrcWidth, SrcHeight);
-      Layer := CGLayerCreateWithContext(SrcDC.CGContext, LayRect.size, nil);
-
-      // the sub-image is out of edges
-      if (CGImageGetWidth(Image)<>SrcWidth) or (CGImageGetHeight(Image)<>SrcHeight) then
-      begin
-        with ImgRect do
-          if XSrc<0 then origin.x:=SrcWidth-CGImageGetWidth(Image) else origin.x:=0;
-        with ImgRect do
-          if YSrc<0 then origin.y:=0 else origin.y:=SrcHeight-CGImageGetHeight(Image);
-
-        ImgRect.size.width:=CGImageGetWidth(Image);
-        ImgRect.size.height:=CGImageGetHeight(Image);
-      end
-      else
-        ImgRect:=LayRect;
-
-      try
-        LayerContext := CGLayerGetContext(Layer);
-        CGContextScaleCTM(LayerContext, 1, -1);
-        CGContextTranslateCTM(LayerContext, 0, -SrcHeight);
-
-        SetCGFillping(LayerContext, Width, Height);
-        if Assigned(MskImage) then
-          CGContextClipToMask(LayerContext, ImgRect, MskImage);
-        CGContextDrawImage(LayerContext, ImgRect, Image);
-
-        CGContextDrawLayerInRect(CGContext, DstRect, Layer);
-
-        Result := True;
-      finally
-        CGLayerRelease(Layer);
-      end;
-    end;
-
-  finally
-    if SubImage then CGImageRelease(Image);
-    if SubMask then CGImageRelease(MskImage);
-  end;
+  Result := DrawImageRep(
+    GetNSRect(X, Y, Width, Height),
+    GetNSRect(XSrc, YSrc, SrcWidth, SrcHeight), Bmp.ImageRep);
 end;
 
 {------------------------------------------------------------------------------
