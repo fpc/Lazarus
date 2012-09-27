@@ -7,12 +7,13 @@ object Form1: TForm1
   ClientHeight = 518
   ClientWidth = 554
   Position = poScreenCenter
-  LCLVersion = '0.9.31'
+  LCLVersion = '1.1'
   object Chart1: TChart
     Left = 0
     Height = 374
     Top = 0
     Width = 554
+    AutoFocus = True
     AxisList = <    
       item
         Minors = <>
@@ -222,7 +223,6 @@ object Form1: TForm1
     object ChartToolset1DataPointCrosshairTool1: TDataPointCrosshairTool
       Shift = [ssCtrl]
       OnAfterKeyUp = ChartToolset1DataPointCrosshairTool1AfterKeyUp
-      OnAfterMouseMove = ChartToolset1DataPointCrosshairTool1AfterMouseMove
       GrabRadius = 200
       OnDraw = ChartToolset1DataPointCrosshairTool1Draw
     end

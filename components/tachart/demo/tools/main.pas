@@ -42,8 +42,6 @@ type
     procedure Chart1FuncSeries1Calculate(const AX: Double; out AY: Double);
     procedure ChartToolset1DataPointCrosshairTool1AfterKeyUp(ATool: TChartTool;
       APoint: TPoint);
-    procedure ChartToolset1DataPointCrosshairTool1AfterMouseMove(
-      ATool: TChartTool; APoint: TPoint);
     procedure ChartToolset1DataPointCrosshairTool1Draw(
       ASender: TDataPointCrosshairTool);
     procedure ChartToolset1DataPointDragTool1BeforeMouseMove(ATool: TChartTool;
@@ -92,13 +90,6 @@ procedure TForm1.ChartToolset1DataPointCrosshairTool1AfterKeyUp(
 begin
   Unused(ATool, APoint);
   ChartToolset1DataPointCrosshairTool1.Hide;
-end;
-
-procedure TForm1.ChartToolset1DataPointCrosshairTool1AfterMouseMove(
-  ATool: TChartTool; APoint: TPoint);
-begin
-  Unused(ATool, APoint);
-  Chart1.SetFocus;
 end;
 
 procedure TForm1.ChartToolset1DataPointCrosshairTool1Draw(

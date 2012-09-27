@@ -42,9 +42,7 @@ type
       APoint: TPoint);
     procedure ctPointsDataPointHintTool1Hint(ATool: TDataPointHintTool;
       const APoint: TPoint; var AHint: String);
-    procedure FormActivate(Sender: TObject);
     procedure FormCreate(Sender: TObject);
-    procedure PageControl1Change(Sender: TObject);
   end;
 
 var
@@ -62,7 +60,6 @@ uses
 procedure TForm1.cbSortedChange(Sender: TObject);
 begin
   chPointsLineSeries1.ListSource.Sorted := cbSorted.Checked;
-  chPoints.SetFocus;
 end;
 
 procedure TForm1.chPointsLineSeries1GetMark(
@@ -119,11 +116,6 @@ begin
   AHint := 'Custom hint for point ' + IntToStr(ATool.PointIndex);
 end;
 
-procedure TForm1.FormActivate(Sender: TObject);
-begin
-  PageControl1Change(nil);
-end;
-
 procedure TForm1.FormCreate(Sender: TObject);
 var
   i: Integer;
@@ -132,12 +124,6 @@ begin
   for i := 1 to 10 do
     chPointsLineSeries1.AddXY(i, Random(20) - 10);
   chBarsBarSeries1.ListSource.CopyFrom(RandomChartSource1);
-end;
-
-procedure TForm1.PageControl1Change(Sender: TObject);
-begin
-  if PageControl1.ActivePage = tsPoints then
-    chPoints.SetFocus;
 end;
 
 end.

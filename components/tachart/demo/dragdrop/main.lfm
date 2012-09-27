@@ -6,7 +6,6 @@ object Form1: TForm1
   Caption = 'Form1'
   ClientHeight = 550
   ClientWidth = 539
-  OnActivate = FormActivate
   OnCreate = FormCreate
   Position = poScreenCenter
   LCLVersion = '1.1'
@@ -19,7 +18,6 @@ object Form1: TForm1
     Align = alClient
     TabIndex = 0
     TabOrder = 0
-    OnChange = PageControl1Change
     object tsPoints: TTabSheet
       Caption = 'Points'
       ClientHeight = 524
@@ -29,6 +27,7 @@ object Form1: TForm1
         Height = 490
         Top = 34
         Width = 531
+        AutoFocus = True
         AxisList = <        
           item
             Minors = <>
