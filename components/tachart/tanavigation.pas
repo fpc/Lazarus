@@ -406,14 +406,14 @@ end;
 procedure TChartNavPanel.SetFullExtentPen(AValue: TPen);
 begin
   if FFullExtentPen = AValue then exit;
-  FFullExtentPen := AValue;
+  FFullExtentPen.Assign(AValue);
   Invalidate;
 end;
 
 procedure TChartNavPanel.SetLogicalExtentPen(AValue: TPen);
 begin
   if FLogicalExtentPen = AValue then exit;
-  FLogicalExtentPen := AValue;
+  FLogicalExtentPen.Assign(AValue);
   Invalidate;
 end;
 
