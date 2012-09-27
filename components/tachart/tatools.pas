@@ -302,6 +302,9 @@ type
   strict private
     FDirections: TPanDirectionSet;
     FOrigin: TPoint;
+    FPrev: TPoint;
+  strict protected
+    procedure Cancel; override;
   public
     constructor Create(AOwner: TComponent); override;
     procedure MouseDown(APoint: TPoint); override;
@@ -311,6 +314,7 @@ type
     property ActiveCursor default crSizeAll;
     property Directions: TPanDirectionSet
       read FDirections write FDirections default PAN_DIRECTIONS_ALL;
+    property EscapeCancels;
   end;
 
   { TPanClickTool }
@@ -1323,6 +1327,13 @@ end;
 
 { TPanDragTool }
 
+procedure TPanDragTool.Cancel;
+begin
+  if not IsActive then exit;
+  MouseMove(FOrigin);
+  Deactivate;
+end;
+
 constructor TPanDragTool.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
@@ -1333,6 +1344,7 @@ procedure TPanDragTool.MouseDown(APoint: TPoint);
 begin
   Activate;
   FOrigin := APoint;
+  FPrev := APoint;
   Handled;
 end;
 
@@ -1340,8 +1352,9 @@ procedure TPanDragTool.MouseMove(APoint: TPoint);
 var
   d: TPoint;
 begin
-  d := FOrigin - APoint;
-  FOrigin := APoint;
+  if not IsActive then exit;
+  d := FPrev - APoint;
+  FPrev := APoint;
 
   if not (pdLeft in Directions) then d.X := Max(d.X, 0);
   if not (pdRight in Directions) then d.X := Min(d.X, 0);
