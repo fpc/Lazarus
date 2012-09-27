@@ -1728,7 +1728,7 @@
       <!-- procedure Visibility: protected -->
       <element name="TCustomTabControl.DoCreateWnd">
         <short>
-          <var>DoCreateWnd</var> - perform th ecode for method <var>CreateWnd</var>
+          <var>DoCreateWnd</var> - perform the code for method <var>CreateWnd</var>
         </short>
         <descr/>
         <errors/>
@@ -10715,7 +10715,7 @@
       <!-- property Visibility: published -->
       <element name="TToolBar.EdgeBorders">
         <short>
-          <var>EdgeBorders</var> - which borders form th eedge</short>
+          <var>EdgeBorders</var> - which borders form the edge</short>
         <descr/>
         <seealso/>
       </element>
@@ -13614,7 +13614,7 @@ the comparision is case sensitive.
 </descr>
         <example file="comctrls/ttreenode_data.pas"/>
         <short>
-          <var>Data</var> - pointer to th eNode's data</short>
+          <var>Data</var> - pointer to the Node's data</short>
       </element>
       <!-- property Visibility: public -->
       <element name="TTreeNode.Deleting">
@@ -16844,7 +16844,7 @@ the comparision is case sensitive.
       <!-- property Visibility: protected -->
       <element name="TCustomTreeView.ScrolledTop">
         <short>
-          <var>ScrolledTop</var> - th eposition of th etree when fully scrolled to the top</short>
+          <var>ScrolledTop</var> - the position of the tree when fully scrolled to the top</short>
         <descr/>
         <seealso/>
       </element>
