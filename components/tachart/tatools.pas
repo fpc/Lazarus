@@ -606,7 +606,12 @@ end;
 { TChartTool }
 
 procedure TChartTool.Activate;
+var
+  i: Integer;
 begin
+  i := FChart.ActiveToolIndex;
+  if (i <> Index) and InRange(i, 0, Toolset.Tools.Count) then
+    Toolset[i].Deactivate;
   inherited;
   SetCursor;
 end;
