@@ -220,6 +220,8 @@ type
     function GetProportional: Boolean;
     procedure SetFrame(AValue: TChartPen);
     procedure SetProportional(AValue: Boolean);
+  strict protected
+    procedure Cancel; override;
   public
     procedure MouseDown(APoint: TPoint); override;
     procedure MouseMove(APoint: TPoint); override;
@@ -230,6 +232,7 @@ type
     procedure Draw(AChart: TChart; ADrawer: IChartDrawer); override;
   published
     property DrawingMode;
+    property EscapeCancels;
     property Frame: TChartPen read FFrame write SetFrame;
     property Proportional: Boolean
       read GetProportional write SetProportional stored false default false;
@@ -1038,6 +1041,17 @@ end;
 
 { TZoomDragTool }
 
+procedure TZoomDragTool.Cancel;
+begin
+  if not IsActive then exit;
+  if EffectiveDrawingMode = tdmXor then
+    Draw(FChart, FChart.Drawer)
+  else
+    FChart.StyleChanged(Self);
+  Deactivate;
+  Handled;
+end;
+
 constructor TZoomDragTool.Create(AOwner: TComponent);
 begin
   inherited;
@@ -1140,6 +1154,7 @@ var
   dragDir: TRestoreExtentOn;
 begin
   Unused(APoint);
+  if not IsActive then exit;
 
   if EffectiveDrawingMode = tdmXor then
     Draw(FChart, FChart.Drawer);
