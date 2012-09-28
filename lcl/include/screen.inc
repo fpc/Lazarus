@@ -275,7 +275,7 @@ var
   DC: HDC;
 begin
   DC := GetDC(0);
-  FPixelsPerInch := GetDeviceCaps(DC,LOGPIXELSX);
+  FPixelsPerInch := GetDeviceCaps(DC, LOGPIXELSX);
   ReleaseDC(0, DC);
 end;
 

@@ -167,13 +167,12 @@ var
 begin
   if not Assigned(AMenuItem) then Exit;
 
-  if AMenuItem.Caption='-' then
-    item:=NSMenuItem.separatorItem
+  if AMenuItem.Caption = '-' then
+    item := NSMenuItem.separatorItem
   else
   begin
     ns := NSStringUtf8(AMenuItem.Caption);
-    item:=TCocoaMenuItem.alloc.initWithTitle_action_keyEquivalent(
-      NSStringUtf8(AMenuItem.Caption),
+    item := TCocoaMenuItem.alloc.initWithTitle_action_keyEquivalent(ns,
       objcselector('lclItemSelected:'), NSString.alloc.init);
     ns.release;
     item.setTarget(item);

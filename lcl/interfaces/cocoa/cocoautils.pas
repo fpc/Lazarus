@@ -153,7 +153,7 @@ begin
   Result := NSColor.colorWithCalibratedRed_green_blue_alpha(
     (Color and $FF) / $FF,
     ((Color shr 8) and $FF) / $FF,
-    ((Color shr 16) and $FF) / $FF, 1)
+    ((Color shr 16) and $FF) / $FF, 1);
 end;
 
 function CFStringToStr(AString: CFStringRef; Encoding: CFStringEncoding = DEFAULT_CFSTRING_ENCODING): String;
@@ -190,7 +190,7 @@ end;
 
 function GetNSObjectView(obj: NSObject): NSView;
 begin
-  Result:=nil;
+  Result := nil;
   if not Assigned(obj) then Exit;
   if obj.isKindOfClass_(NSView) then Result:=NSView(obj)
   else if obj.isKindOfClass_(NSWindow) then Result:=NSWindow(obj).contentView;
@@ -198,9 +198,9 @@ end;
 
 procedure AddViewToNSObject(ctrl: NSView; obj: NSObject);
 var
-  view : NSView;
+  view: NSView;
 begin
-  view:=GetNSObjectView(obj);
+  view := GetNSObjectView(obj);
   if not Assigned(view) then Exit;
   view.addSubView(ctrl);
 end;
@@ -213,8 +213,8 @@ end;
 
 function GetNSPoint(x, y: single): NSPoint;
 begin
-  Result.x:=x;
-  Result.y:=y;
+  Result.x := x;
+  Result.y := y;
 end;
 
 function GetNSRect(x, y, width, height: Integer): NSRect;
@@ -270,7 +270,7 @@ begin
     Result := GetCGRect(Left, Top, Right, Bottom);
 end;
 
-function CGRectToRect(const c:CGRect):TRect;
+function CGRectToRect(const c: CGRect): TRect;
 begin
   with Result do
   begin
@@ -333,20 +333,21 @@ end;
 
 function NSStringUtf8(s: PChar): NSString;
 var
-  cf : CFStringRef;
+  cf: CFStringRef;
+  r: Integer;
 begin
   {NSString and CFStringRef are interchangable}
-  cf:=CFStringCreateWithCString(nil, S, kCFStringEncodingUTF8);
-  Result:=NSString(cf);
+  cf := CFStringCreateWithCString(nil, S, kCFStringEncodingUTF8);
+  Result := NSString(cf);
 end;
 
 function NSStringUtf8(const s: String): NSString;
 var
-  cf : CFStringRef;
+  cf: CFStringRef;
 begin
   {NSString and CFStringRef are interchangable}
-  cf:=CFStringCreateWithCString(nil, Pointer(PChar(S)), kCFStringEncodingUTF8);
-  Result:=NSString(cf);
+  cf := CFStringCreateWithCString(nil, Pointer(PChar(S)), kCFStringEncodingUTF8);
+  Result := NSString(cf);
 end;
 
 function NSStringToString(ns: NSString): String;

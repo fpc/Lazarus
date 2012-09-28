@@ -1227,7 +1227,7 @@ end;
 
 function LCLViewExtension.lclFrame: TRect;
 var
-  v : NSView;
+  v: NSView;
 begin
   v := superview;
   if Assigned(v) then
@@ -1238,7 +1238,7 @@ end;
 
 procedure LCLViewExtension.lclSetFrame(const r: TRect);
 var
-  ns : NSRect;
+  ns: NSRect;
 begin
   if Assigned(superview)  then
     LCLToNSRect(r, superview.frame.size.height, ns)

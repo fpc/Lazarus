@@ -915,7 +915,7 @@ begin
   end;
 end;
 
-function TCocoaWidgetSet.InvalidateRect(aHandle : HWND; Rect : pRect; bErase : Boolean): Boolean;
+function TCocoaWidgetSet.InvalidateRect(aHandle: HWND; Rect: pRect; bErase: Boolean): Boolean;
 begin
   Result := aHandle <> 0;
   if Result then

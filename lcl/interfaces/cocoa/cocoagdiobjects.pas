@@ -782,7 +782,7 @@ begin
   FAlignment := AAlignment;
 
   if (FType in [cbtMono, cbtGray]) and (FDepth=0) then
-    FDepth:=FBitsPerPixel;
+    FDepth := FBitsPerPixel;
 
   FBytesPerRow := ((AWidth * ABitsPerPixel) + 7) shr 3;
   M := FBytesPerRow and ALIGNBITS[AAlignment];
@@ -960,7 +960,7 @@ end;
 destructor TCocoaTextLayout.Destroy;
 begin
   FTextStorage.release;
-  FFont.release;
+  FFont.Release;
   inherited Destroy;
 end;
 
@@ -1113,8 +1113,6 @@ begin
 end;
 
 procedure TCocoaBitmapContext.SetBitmap(const AValue: TCocoaBitmap);
-var
-  I: Boolean;
 begin
   if FBitmap <> AValue then
   begin

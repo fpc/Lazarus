@@ -199,7 +199,7 @@ begin
   if NSApp.dockTile.respondsToSelector_(objcselector('setBadgeLabel:')) then
   begin
     ns := NSStringUtf8(ATitle);
-    NSApp.dockTile.setBadgeLabel(NSStringUtf8(ATitle));
+    NSApp.dockTile.setBadgeLabel(ns);
     ns.release;
   end;
 end;
