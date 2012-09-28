@@ -2311,6 +2311,7 @@ var
   Info: PLinearGradientInfo;
   Tmp: TColorComponents;
 begin
+  Result:=nil;
   GetMem(Info, SizeOf(TLinearGradientInfo));
   SwapColors := (BR.Y < TL.Y) and (BR.X < TL.X);
   if BR.X < TL.X then
@@ -2422,9 +2423,6 @@ function TCarbonWidgetSet.GradientFill(DC: HDC; Vertices: PTriVertex;
     end;
   end;
 
-const
-  MeshSize: Array[Boolean] of Integer = (
-    SizeOf(tagGradientRect), SizeOf(tagGradientTriangle));
 var
   i: Integer;
 begin
