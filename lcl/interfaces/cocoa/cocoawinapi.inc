@@ -1303,11 +1303,8 @@ function TCocoaWidgetSet.GetDC(hWnd: HWND): HDC;
 var
   ctx: TCocoaContext;
 begin
-  if hWnd=0 then
-  begin
-    if not Assigned(ScreenContext) then ScreenContext:=TCocoaContext.Create;
-    Result:=HDC(ScreenContext);
-  end
+  if hWnd = 0 then
+    Result := HDC(ScreenContext)
   else
   begin
     // ToDo: Not finished yet

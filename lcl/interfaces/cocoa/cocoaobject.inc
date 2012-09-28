@@ -448,7 +448,6 @@ end;
 
 procedure InternalFinal;
 begin
-  if Assigned(ScreenContext) then ScreenContext.Free;
 end;
 
 

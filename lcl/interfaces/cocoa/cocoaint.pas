@@ -141,9 +141,6 @@ implementation
 uses
   CocoaCaret;
 
-var
-  ScreenContext : TCocoaContext = nil;
-
 // the implementation of the utility methods
 {$I cocoaobject.inc}
 // the implementation of the winapi compatibility methods

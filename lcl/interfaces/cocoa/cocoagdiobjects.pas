@@ -435,6 +435,7 @@ var
   DefaultPen: TCocoaPen;
   DefaultFont: TCocoaFont;
   DefaultBitmap: TCocoaBitmap;
+  ScreenContext: TCocoaContext;
 
 function CheckDC(dc: HDC): TCocoaContext;
 function CheckDC(dc: HDC; Str: string): Boolean;
@@ -1330,6 +1331,7 @@ begin
   FRegion := TCocoaRegion.CreateDefault;
   FRegion.AddRef;
   FClipRegion := FRegion;
+  FSavedDCList := nil;
   FText := TCocoaTextLayout.Create;
   FClipped := False;
 end;
@@ -2591,10 +2593,13 @@ initialization
   DefaultPen := TCocoaPen.CreateDefault;
   DefaultFont := TCocoaFont.CreateDefault;
   DefaultBitmap := TCocoaBitmap.CreateDefault;
+  ScreenContext := TCocoaContext.Create;
 
 finalization
+  ScreenContext.Free;
   DefaultBrush.Free;
   DefaultPen.Free;
   DefaultFont.Free;
   DefaultBitmap.Free;
+
 end.
