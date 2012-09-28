@@ -940,17 +940,20 @@ end;
 constructor TCocoaTextLayout.Create;
 var
   S: NSString;
+  LocalPool: NSAutoReleasePool;
 begin
+  inherited Create;
+  LocalPool := NSAutoReleasePool.alloc.init;
+  FTextStorage := NSTextStorage.alloc.initWithString(NSSTR(''));
   FLayout := NSLayoutManager.alloc.init;
+  FTextStorage.addLayoutManager(FLayout);
   FTextContainer := NSTextContainer.alloc.init;
   FTextContainer.setLineFragmentPadding(0);
   FLayout.addTextContainer(FTextContainer);
-  FTextContainer.release;
-  S := NSSTR('');
-  FTextStorage := NSTextStorage.alloc.initWithString(S);
-  S.release;
-  FTextStorage.addLayoutManager(FLayout);
-  FLayout.release;
+
+  FTextStorage.retain;
+  LocalPool.release;
+
   FFont := DefaultFont;
   FFont.AddRef;
   FText := '';
@@ -969,7 +972,9 @@ procedure TCocoaTextLayout.SetFont(AFont: TCocoaFont);
 begin
   if FFont <> AFont then
   begin
+    FFont.Release;
     FFont := AFont;
+    FFont.AddRef;
     FTextStorage.beginEditing;
     updateFont;
     FTextStorage.endEditing;
@@ -1719,17 +1724,15 @@ var
   Context: NSGraphicsContext;
 begin
   ctx.saveGraphicsState;
-
-  // we flip the context on it initialization (see InitDraw) so to draw
-  // a bitmap correctly we need to create a flipped context and to draw onto it
-
-  if not ctx.isFlipped then
-    Context := NSGraphicsContext.graphicsContextWithGraphicsPort_flipped(ctx.graphicsPort, True)
-  else
-    Context := ctx;
-  ctx.setCurrentContext(Context);
-  CGContextSetBlendMode(CGContext, kCGBlendModeNormal);
   try
+    // we flip the context on it initialization (see InitDraw) so to draw
+    // a bitmap correctly we need to create a flipped context and to draw onto it
+
+    if not ctx.isFlipped then
+      Context := NSGraphicsContext.graphicsContextWithGraphicsPort_flipped(ctx.graphicsPort, True)
+    else
+      Context := ctx;
+    ctx.setCurrentContext(Context);
     Result := ImageRep.drawInRect_fromRect_operation_fraction_respectFlipped_hints(
       dstRect, srcRect, NSCompositeSourceOver, 1.0, True, nil
       );
