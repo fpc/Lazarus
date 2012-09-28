@@ -2605,11 +2605,22 @@ end;*)
 function TCDWidgetSet.MessageBox(HWnd: HWND; LPText, LPCaption: PChar; UType: Cardinal): Integer;
 var
   WideLPText, WideLPCaption: widestring;
+  lWindowInfo: TWindowInfo;
+  lHandle: HWND;
 begin
+  if HWnd = 0 then
+  begin
+    lHandle := 0;
+  end
+  else
+  begin
+    lWindowInfo := TWindowInfo(HWnd);
+    lHandle := lWindowInfo.NativeHandle;
+  end;
   WideLPText := UTF8ToUTF16(string(LPText));
   WideLPCaption := UTF8ToUTF16(string(LPCaption));
 
-  Result := Windows.MessageBoxW(HWnd, PWideChar(WideLPText),
+  Result := Windows.MessageBoxW(lHandle, PWideChar(WideLPText),
     PWideChar(WideLPCaption), UType);
 end;
 

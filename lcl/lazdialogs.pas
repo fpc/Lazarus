@@ -75,18 +75,17 @@ type
   TLazMessageDialog = class(TForm)
   private
     Image1: TImage;
-    Label1: TStaticText;
+    Label1: TLabel; // we need a TLabel to be able to resize it properly
     btnList: array [0..11] of TBitBtn;
     NumButtons: Integer;
   public
     constructor CreateNew(TheOwner: TComponent; Num: Integer = 0); override;
   end;
 
-  function LazMessageDlg(const aCaption, aMsg: string; DlgType: TMsgDlgType;
-              Buttons: TMsgDlgButtons; HelpCtx: Longint): Integer;
-  function LazMessageDlg(const aMsg: string; DlgType: TMsgDlgType;
-              Buttons: TMsgDlgButtons; HelpCtx: Longint): Integer;
-
+function LazMessageDlg(const aCaption, aMsg: string; DlgType: TMsgDlgType;
+  Buttons: TMsgDlgButtons; HelpCtx: Longint): Integer;
+function LazMessageDlg(const aMsg: string; DlgType: TMsgDlgType;
+  Buttons: TMsgDlgButtons; HelpCtx: Longint): Integer;
 
 implementation
 
@@ -335,7 +334,7 @@ Var
   textWidth: Integer;
   ButtonPos: Integer;
   RequiredWidth: Integer;
-
+  BlankRight: Integer; // blank space at the right of last button
 begin
   {$ifdef LCLCustomdrawn} if not assigned(LazMessageDialog) then {$endif}
   LazMessageDialog:= TLazMessageDialog.CreateNew(Application);
@@ -454,27 +453,34 @@ begin
     for I:= 0 to NumButtons -1 do begin
       btnList[I].Constraints.MinHeight:= 25;
       btnList[I].Constraints.MinWidth:= 75;
-      //btnList[I].DefaultCaption:= True;
-      //btnList[I].AutoSize:= True;
       btnList[I].Left:= ButtonPos;
       btnList[I].Top:= Image1.Top + Image1.Height + 10;
-      // next line is required until Autosize is implemented
-      {btnList[I].Width:= label1.Canvas.TextExtent(btnList[I].Caption).cx
-      + btnList[I].Glyph.Width + 16;}
-      btnList[I].AutoSize := True;
+      {next line is required because even if Auyosize is true,
+       width property is changed only when the button is
+       painted. Either we wait (but Application.ProcessMessages is not enough)
+       or we force the actual width. We may safely use form canvas, because our
+       components inherit the font from the form (ParentFont = true by default)}
+      btnList[I].Width:= LazMessageDialog.Canvas.TextExtent(btnList[I].Caption).cx
+      + btnList[I].Glyph.Width + 20;
+
       btnList[I].Visible:= True;
-      //Application.ProcessMessages; currently not required. It may become
-      //necessary if Autosize is set, and width computed automagically. Maybe
-      //outside the loop (run just once)
       ButtonPos:= ButtonPos + btnList[I].Width + 8;
     end;
-  //textWidth:= label1.Canvas.TextExtent(Label1.Caption).cx;
-  //Label1.Width:= textWidth;
-  label1.AutoSize := True;
+
+  { See comment above for width property. Static Text apparently doesn't behave
+  properly when Text is changed at run time. The width is set as appropriate, but
+  the text is written only up to the previous width. Therefore we must use a TLabel}
+  textWidth:= LazMessageDialog.Canvas.TextExtent(Label1.Caption).cx;
+
+  Label1.Width:= textWidth;
   textWidth:= label1.Left + label1.Width;
   RequiredWidth:= Max(textWidth,ButtonPos);
   Width := RequiredWidth + 10;
   Height:= btnList[0].Top + btnList[0].Height + 10;
+  // now let's move our buttons to the right side of dialog, if appropriate
+  BlankRight:= Width - ButtonPos;
+  if BlankRight > 10 then
+    for I:= 0 to NumButtons-1 do btnList[I].Left:= btnList[I].Left+BlankRight ;
   end;
   result := LazMessageDialog.ShowModal;
   {$ifndef LCLCustomdrawn}LazMessageDialog.Release;{$endif}
@@ -498,7 +504,7 @@ begin
   Image1.Left:= 10;
   Image1.Width:= 48;
   Image1.Height:= 48;
-  Label1 := TStaticText.Create(Self);
+  Label1 := TLabel.Create(Self);
   Label1.Top:= Image1.Top;
   Label1.Left:= Image1.Left + Image1.Width + 10;
   Label1.Caption:= 'Label1';
