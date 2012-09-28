@@ -731,8 +731,8 @@ var
 begin
   Result := (lpmi <> nil) and (lpmi^.cbSize >= SizeOf(TMonitorInfo));
   if not Result then Exit;
-  NSToLCLRect(ScreenID.frame, lpmi^.rcMonitor);
-  NSToLCLRect(ScreenID.visibleFrame, lpmi^.rcWork);
+  lpmi^.rcMonitor := NSRectToRect(ScreenID.frame);
+  lpmi^.rcWork := NSRectToRect(ScreenID.visibleFrame);
   if ScreenID = NSScreen.mainScreen then
     lpmi^.dwFlags := MONITORINFOF_PRIMARY
   else

@@ -34,12 +34,10 @@ function CGRectToRect(const c: CGRect): TRect;
 
 function GetNSRect(x, y, width, height: Integer): NSRect; inline;
 function RectToNSRect(const r: TRect): NSRect;
+function NSRectToRect(const NS: NSRect): TRect;
 
-procedure NSToLCLRect(const ns: NSRect; out lcl: TRect); overload;
-procedure NSToLCLRect(const ns: NSRect; ParentHeight: Single; out lcl: TRect); overload;
-
-procedure LCLToNSRect(const lcl: TRect; var ns: NSRect); overload;
-procedure LCLToNSRect(const lcl: TRect; ParentHeight: Single; var ns: NSRect); overload;
+procedure NSToLCLRect(const ns: NSRect; ParentHeight: Single; out lcl: TRect);
+procedure LCLToNSRect(const lcl: TRect; ParentHeight: Single; var ns: NSRect);
 
 function CreateParamsToNSRect(const params: TCreateParams): NSRect;
 
@@ -287,9 +285,9 @@ begin
     Result := GetNSRect(Left, Top, Right - Left, Bottom - Top);
 end;
 
-procedure NSToLCLRect(const ns: NSRect; out lcl: TRect);
+function NSRectToRect(const NS: NSRect): TRect;
 begin
-  with lcl do
+  with Result do
   begin
     Left := Round(ns.origin.x);
     Top := Round(ns.origin.y);
@@ -309,15 +307,7 @@ begin
   end;
 end;
 
-procedure LCLToNSRect(const lcl: TRect; var ns: NSRect); overload;
-begin
-  ns.origin.x:=lcl.Left;
-  ns.origin.y:=lcl.Top;
-  ns.size.width:=lcl.Right-lcl.Left;
-  ns.size.height:=lcl.Bottom-lcl.Top;
-end;
-
-procedure LCLToNSRect(const lcl: TRect; ParentHeight: Single; var ns: NSRect); overload;
+procedure LCLToNSRect(const lcl: TRect; ParentHeight: Single; var ns: NSRect);
 begin
   ns.origin.x:=lcl.left;
   ns.origin.y:=ParentHeight-(lcl.bottom-lcl.Top)-lcl.Top;

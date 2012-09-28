@@ -816,7 +816,7 @@ begin
     begin
       FillChar(struct, SizeOf(TPaintStruct), 0);
       struct.hdc := HDC(FContext);
-      NSToLCLRect(dirty, struct.rcPaint);
+      struct.rcPaint := NSRectToRect(dirty);
       LCLSendPaintMsg(Target, HDC(FContext), @struct);
       if FHasCaret then
         DrawCaret;

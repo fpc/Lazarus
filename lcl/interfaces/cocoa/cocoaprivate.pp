@@ -1120,6 +1120,9 @@ var
   p: NSView;
   ns: NSRect;
 begin
+  Result := initWithFrame(ns);
+  if not Assigned(Result) then
+    Exit;
   p := nil;
   setHidden(AParams.Style and WS_VISIBLE = 0);
   if (AParams.WndParent <> 0) then
@@ -1134,15 +1137,11 @@ begin
     if Assigned(p) then
       LCLToNSRect(Types.Bounds(X,Y,Width, Height), p.frame.size.height, ns)
     else
-      LCLToNSRect(Types.Bounds(X,Y,Width, Height), ns);
-
-  Result := initWithFrame(ns);
-  if not Assigned(Result) then
-    Exit;
+      ns := GetNSRect(X, Y, Width, Height);
 
   if Assigned(p) then
-    p.addSubview(Self);
-  SetViewDefaults(Self);
+    p.addSubview(Result);
+  SetViewDefaults(Result);
 end;
 
 function LCLViewExtension.lclIsVisible: Boolean;
@@ -1233,7 +1232,7 @@ begin
   if Assigned(v) then
     NSToLCLRect(frame, v.frame.size.height, Result)
   else
-    NSToLCLRect(frame, Result);
+    Result := NSRectToRect(frame);
 end;
 
 procedure LCLViewExtension.lclSetFrame(const r: TRect);
@@ -1243,7 +1242,7 @@ begin
   if Assigned(superview)  then
     LCLToNSRect(r, superview.frame.size.height, ns)
   else
-    LCLToNSRect(r, ns);
+    ns := RectToNSRect(r);
   setFrame(ns);
 end;
 
@@ -1367,7 +1366,7 @@ begin
   if Assigned(screen) then
     NSToLCLRect(frame, screen.frame.size.height, Result)
   else
-    NSToLCLRect(frame, Result);
+    Result := NSRectToRect(frame);
 end;
 
 procedure LCLWindowExtension.lclSetFrame(const r:TRect);
@@ -1377,7 +1376,7 @@ begin
   if Assigned(screen) then
     LCLToNSRect(r, screen.frame.size.height, ns)
   else
-    LCLToNSRect(r, ns);
+    ns := RectToNSRect(r);
   setFrame_display(ns, isVisible);
 end;
 
