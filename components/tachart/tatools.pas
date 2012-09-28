@@ -570,6 +570,10 @@ begin
     Shift := [ssLeft];
     Toolset := ts;
   end;
+  with TPanDragTool.Create(AChart) do begin
+    Shift := [ssRight];
+    Toolset := ts;
+  end;
   TReticuleTool.Create(AChart).Toolset := ts;
 end;
 
