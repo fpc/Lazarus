@@ -1812,7 +1812,7 @@ begin
     // create CGBitmapContext
     
     Info := FBitmap.Info;
-    // convert kCGImageAlphaFirst -> kCGImageAlphaNoneSkipFirst
+    // convert kCGImageAlphaFirst -> kCGImageAlphaPremultipliedFirst
     if (Info and kCGImageAlphaFirst > 0) then
       Info := (Info and (not kCGImageAlphaFirst)) or kCGImageAlphaPremultipliedFirst;
     
