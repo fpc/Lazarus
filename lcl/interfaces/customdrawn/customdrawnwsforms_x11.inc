@@ -1,4 +1,4 @@
-{$MainForm customdrawnwsforms.pp}
+{%MainUnit customdrawnwsforms.pp}
 
 // redefines:
 // The version from FreePascal crash except in FPC 2.7.1+ from 10 Dec 2011 +
