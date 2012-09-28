@@ -311,6 +311,7 @@ end;
 
 procedure TDataPointDistanceTool.MouseDown(APoint: TPoint);
 begin
+  if IsActive then exit;
   if dpdoPermanent in Options then
     DoHide;
   PointStart.FSeries := nil;
