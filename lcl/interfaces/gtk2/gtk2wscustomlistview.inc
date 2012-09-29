@@ -1055,8 +1055,11 @@ var
   ItemRect: TGdkRectangle;
   Column: PGtkTreeViewColumn;
   Path: PGtkTreePath;
-  L, T, W, H: GInt;
+  X, Y, L, T, W, H: GInt;
   ARect: TGdkRectangle;
+  R: TRect;
+  ANewCell: PGtkCellRenderer;
+  ANewPath: PGtkTreePath;
 begin
   Result := Rect(0, 0, 0, 0);
   if not WSCheckHandleAllocated(ALV, 'ItemDisplayRect') then
@@ -1083,11 +1086,46 @@ begin
       else
       if GTK_IS_ICON_VIEW(MainView) then
       begin
-        // TODO: iconview
         ItemRect.x := 0;
         ItemRect.y := 0;
         ItemRect.width := gtk_icon_view_get_item_width(PGtkIconView(MainView));
         ItemRect.height := 0;
+        if Path <> nil then
+        begin
+          ANewPath := nil;
+          ANewCell := nil;
+          R := ALV.ClientRect;
+          l := 0;
+          t := 0;
+          Result := Rect(0, 0, 0, 0);
+          while t < R.Bottom - 1 do
+          begin
+            l := 0;
+            while l < R.Right - 1 do
+            begin
+              if gtk_icon_view_get_item_at_pos(PGtkIconView(MainView), l, t, ANewPath, ANewCell) then
+              begin
+                if (ANewPath <> nil) and (gtk_tree_path_compare(Path, ANewPath) = 0) then
+                begin
+                  gtk_cell_renderer_get_size(ANewCell, PGtkWidget(MainView), @ItemRect, @x,@y,@w,@h);
+                  Result := Rect(l, t, w + l, h + t);
+                  ItemRect := GdkRectFromRect(Result);
+                  if ANewPath <> nil then
+                    gtk_tree_path_free(ANewPath);
+                  break;
+                end;
+                if ANewPath <> nil then
+                  gtk_tree_path_free(ANewPath);
+              end;
+              inc(l, 1);
+            end;
+
+            inc(t, 1);
+
+            if not IsRectEmpty(Result) then
+              break;
+          end;
+        end;
       end;
     finally
       gtk_tree_path_free(Path);

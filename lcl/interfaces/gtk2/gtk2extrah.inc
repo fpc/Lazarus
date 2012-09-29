@@ -323,6 +323,7 @@ function gtk_icon_view_get_cursor(icon_view: PGtkIconView; var path: PGtkTreePat
 procedure gtk_icon_view_set_cursor(icon_view: PGtkIconView; path: PGtkTreePath; cell: PGtkCellRenderer; start_editing: gboolean); cdecl; external gtklib;
 function gtk_tree_view_get_visible_range(tree_view: PGtkTreeView; out start_path, endpath: PGtkTreePath): gboolean; cdecl; external gtklib;
 function gtk_icon_view_get_visible_range(tree_view: PGtkTreeView; out start_path, endpath: PGtkTreePath): gboolean; cdecl; external gtklib;
+function gtk_icon_view_get_item_at_pos(icon_view: PGtkIconView; x: gint; y: gint; var path: PGtkTreePath; var cell: PGtkCellRenderer): gboolean; cdecl; external gtklib;
 
 procedure gtk_tree_view_column_queue_resize(tree_column: PGtkTreeViewColumn); cdecl; external gtklib;
 
