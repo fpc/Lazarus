@@ -434,6 +434,8 @@ begin
   // Map Delphi units to Lazarus units.
   TheMap:=fReplaceUnits;
   MapReplacement('Windows',             'LCLIntf, LCLType, LMessages');
+  MapReplacement('WinTypes',            'LCLIntf, LCLType, LMessages');
+  MapReplacement('WinProcs',            'LCLIntf, LCLType, LMessages');
   MapReplacement('Mask',                'MaskEdit');
   MapReplacement('TabNotBk',            'ComCtrls');
   MapReplacement('OpenGL',              'GL, GLu');
@@ -457,8 +459,6 @@ begin
   MapReplacement('pngImage',            '');
   MapReplacement('Jpeg',                '');
   MapReplacement('gifimage',            '');
-  MapReplacement('WinTypes',            '');
-  MapReplacement('WinProcs',            '');
   MapReplacement('^FastMM.*',           '');           // External memory manager.
   MapReplacement('MMSystem',            '');
   MapReplacement('.*dll.*',             '');
