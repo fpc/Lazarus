@@ -11033,6 +11033,14 @@ begin
       NMLV.uChanged := LVIF_STATE;
       Msg.NMHdr := @NMLV.hdr;
       DeliverMessage(Msg);
+
+      // send focused msg
+      NMLV.uOldState := 0;
+      NMLV.uNewState := LVIS_FOCUSED;
+      NMLV.uChanged := LVIF_STATE;
+      Msg.NMHdr := @NMLV.hdr;
+      DeliverMessage(Msg);
+
     end;
 
     if Previous <> nil then
@@ -12939,11 +12947,11 @@ begin
   NMLV.iItem := getRow(Item);
 
   NMLV.iSubItem := Column;
+  NMLV.uOldState := 0;
   NMLV.uNewState := LVIS_FOCUSED;
   NMLV.uChanged := LVIF_STATE;
 
   Msg.NMHdr := @NMLV.hdr;
-
   DeliverMessage( Msg);
 end;
 
@@ -13048,6 +13056,21 @@ begin
       Msg.NMHdr := @NMLV.hdr;
       if not B then
         DeliverMessage(Msg);
+
+
+      // send focused msg
+      NMLV.uNewState := 0;
+      NMLV.uOldState := 0;
+      NMLV.iSubItem := -1;
+      if (FSelection.Count > 0) and (FSelection.IndexOf(Current) <> -1) then
+        NMLV.uNewState := LVIS_FOCUSED
+      else
+        NMLV.uOldState := LVIS_FOCUSED;
+      NMLV.uChanged := LVIF_STATE;
+      Msg.NMHdr := @NMLV.hdr;
+      if not B then
+        DeliverMessage(Msg);
+
     end;
 
     if (Previous <> nil) then
