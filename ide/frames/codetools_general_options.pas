@@ -91,8 +91,7 @@ begin
   end;
 end;
 
-procedure TCodetoolsGeneralOptionsFrame.IndentOnPasteCheckBoxChange(
-  Sender: TObject);
+procedure TCodetoolsGeneralOptionsFrame.IndentOnPasteCheckBoxChange(Sender: TObject);
 begin
   VisualizeIndentEnabled;
 end;
@@ -102,9 +101,7 @@ begin
   with TPathEditorDialog.Create(Self) do
   try
     Path := SrcPathEdit.Text;
-    Templates:=SetDirSeparators(
-        '/home/username/buggypackage'
-      );
+    Templates:=SetDirSeparators('/home/username/buggypackage');
     if (ShowModal = mrOK) then
       SrcPathEdit.Text := Path;
   finally
@@ -123,8 +120,7 @@ begin
   IndentContextSensitiveCheckBox.Enabled:=e;
 end;
 
-procedure TCodetoolsGeneralOptionsFrame.IndentOnLineBreakCheckBoxChange(
-  Sender: TObject);
+procedure TCodetoolsGeneralOptionsFrame.IndentOnLineBreakCheckBoxChange(Sender: TObject);
 begin
   VisualizeIndentEnabled;
 end;
@@ -134,8 +130,7 @@ begin
   FDialog.OpenEditor(GroupEditor,EdtOptionsGeneral);
 end;
 
-procedure TCodetoolsGeneralOptionsFrame.GeneralAutoIndentMouseEnter(
-  Sender: TObject);
+procedure TCodetoolsGeneralOptionsFrame.GeneralAutoIndentMouseEnter(Sender: TObject);
 begin
   (Sender as TLabel).Font.Underline := True;
   (Sender as TLabel).Font.Color := clRed;
@@ -176,8 +171,7 @@ begin
     lisImitateIndentationOfCurrentUnitProjectOrPackage;
 end;
 
-procedure TCodetoolsGeneralOptionsFrame.ReadSettings(
-  AOptions: TAbstractIDEOptions);
+procedure TCodetoolsGeneralOptionsFrame.ReadSettings(AOptions: TAbstractIDEOptions);
 begin
   with AOptions as TCodeToolsOptions do
   begin
@@ -194,8 +188,7 @@ begin
   VisualizeIndentEnabled;
 end;
 
-procedure TCodetoolsGeneralOptionsFrame.WriteSettings(
-  AOptions: TAbstractIDEOptions);
+procedure TCodetoolsGeneralOptionsFrame.WriteSettings(AOptions: TAbstractIDEOptions);
 begin
   with AOptions as TCodeToolsOptions do
   begin
