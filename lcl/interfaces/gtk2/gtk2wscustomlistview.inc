@@ -190,7 +190,25 @@ begin
   NM.uChanged := LVIF_STATE;
   msg.NMHdr := @NM.hdr;
   if g_object_get_data({%H-}PGObject(TWinControl(Target).Handle),'lcl_gtkwidget_in_update') = nil then
+  begin
     DeliverMessage(Target, msg);
+    if TLVHack(Target).Selected = TLVHack(Target).Items[AIndex] then
+    begin
+      NM.uOldState := 0;
+      NM.uNewState := LVIS_FOCUSED;
+      NM.uChanged := LVIF_STATE;
+      msg.NMHdr := @NM.hdr;
+      DeliverMessage(Target, msg);
+    end else
+    if TLVHack(Target).Selected = nil then
+    begin
+      NM.uOldState := LVIS_FOCUSED;
+      NM.uNewState := 0;
+      NM.uChanged := LVIF_STATE;
+      msg.NMHdr := @NM.hdr;
+      DeliverMessage(Target, msg);
+    end;
+  end;
 end;
 
 procedure Gtk2_ItemSelectionChanged(selection: PGtkTreeSelection; WidgetInfo: PWidgetInfo); cdecl;
