@@ -270,6 +270,7 @@ begin
               Widgets^.ItemCache.Objects[ListIndex] := TObject(0);
           end;
         end;
+        g_list_free(List);
       end else
       begin
         // complete selection is clear !
@@ -329,6 +330,7 @@ begin
       begin
         Path := PGtkTreePath(g_list_first(List)^.data);
         Widgets^.ItemCache.Add(gtk_tree_path_to_string(Path));
+        g_list_free(List);
       end else
         exit;
     end else
@@ -1901,8 +1903,11 @@ begin
       AList := gtk_icon_view_get_selected_items(PGtkIconView(MainView))
     else
       Exit;
-    Result := g_list_length(AList);
-    g_list_free(AList);
+    if AList <> nil then
+    begin
+      Result := g_list_length(AList);
+      g_list_free(AList);
+    end;
   end;
 end;
 
@@ -1929,8 +1934,10 @@ begin
     begin
       AList := gtk_icon_view_get_selected_items(PGtkIconView(MainView));
       if AList <> nil then
-        Path := g_list_first(AList)^.data
-      else
+      begin
+        Path := g_list_first(AList)^.data;
+        g_list_free(AList);
+      end else
         Path := nil;
     end;
     Path := gtk_tree_model_get_path(TreeModel, @Iter);
