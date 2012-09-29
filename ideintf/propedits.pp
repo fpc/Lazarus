@@ -446,6 +446,7 @@ type
   TBoolPropertyEditor = class(TEnumPropertyEditor)
   public
     function OrdValueToVisualValue(OrdValue: longint): string; override;
+    function GetAttributes: TPropertyAttributes; override;
     procedure GetValues(Proc: TGetStrProc); override;
     procedure SetValue(const NewValue: ansistring); override;
     {$IFDEF UseOICheckBox}
@@ -2274,7 +2275,7 @@ begin
   Result:=True;
 end;
 
-function TPropertyEditor.GetAttributes:TPropertyAttributes;
+function TPropertyEditor.GetAttributes: TPropertyAttributes;
 begin
   Result:=[paMultiSelect,paRevertable];
 end;
@@ -3082,6 +3083,11 @@ begin
     Result := 'False'
   else
     Result := 'True';
+end;
+
+function TBoolPropertyEditor.GetAttributes: TPropertyAttributes;
+begin
+  Result:= Inherited GetAttributes + [paPickList];
 end;
 
 procedure TBoolPropertyEditor.GetValues(Proc: TGetStrProc);
