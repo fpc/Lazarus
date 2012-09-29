@@ -1188,6 +1188,9 @@ begin
       (dragDir <> zreClick) and not (FPrevDragDir in [dragDir, zreDifferentDrag])
     then begin
       FPrevDragDir := zreDifferentDrag;
+      if not Chart.IsZoomed and (EffectiveDrawingMode = tdmNormal) then
+        // ZoomFull will not cause redraw, force it to erase the tool.
+        Chart.StyleChanged(Self);
       DoZoom(FChart.GetFullExtent, true);
       exit;
     end;
