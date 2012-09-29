@@ -746,10 +746,6 @@ var
 begin
   Prepare;
 
-  ADrawer.DrawingBegin(ARect);
-  ADrawer.SetAntialiasingMode(AntialiasingMode);
-  Clear(ADrawer, ARect);
-
   FClipRect := ARect;
   with MarginsExternal do begin
     FClipRect.Left += Left;
@@ -759,8 +755,8 @@ begin
   end;
 
   with ClipRect do begin;
-    FTitle.Draw(ADrawer, 1, Left, Right, Top);
-    FFoot.Draw(ADrawer, -1, Left, Right, Bottom);
+    FTitle.Measure(ADrawer, 1, Left, Right, Top);
+    FFoot.Measure(ADrawer, -1, Left, Right, Bottom);
   end;
 
   ldd.FItems := nil;
@@ -768,6 +764,12 @@ begin
     ldd := PrepareLegend(ADrawer, FClipRect);
   try
     PrepareAxis(ADrawer);
+
+    ADrawer.DrawingBegin(ARect);
+    ADrawer.SetAntialiasingMode(AntialiasingMode);
+    Clear(ADrawer, ARect);
+    FTitle.Draw(ADrawer);
+    FFoot.Draw(ADrawer);
     DrawBackWall(ADrawer);
     DisplaySeries(ADrawer);
     if Legend.Visible then
