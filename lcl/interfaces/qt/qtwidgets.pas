@@ -5039,10 +5039,7 @@ end;
 
 function TQtWidget.GetWidget: QWidgetH;
 begin
-  if TheObject <> nil then
-    Result := QWidgetH(TheObject)
-  else
-    Result := nil;
+  Result := QWidgetH(TheObject);
 end;
 
 function TQtWidget.DeliverMessage(var Msg;
