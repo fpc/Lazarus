@@ -22,7 +22,7 @@ interface
 {$H+}
 
 uses
-  Classes, Controls, CustomTimer, Forms, FPCanvas, Types,
+  Classes, Controls, CustomTimer, Forms, FPCanvas, Graphics, Types,
   TAChartUtils, TADrawUtils, TAGraph, TATypes;
 
 type
@@ -212,12 +212,14 @@ type
       zreClick, zreDifferentDrag);
     TRestoreExtentOnSet = set of TRestoreExtentOn;
   strict private
+    FBrush: TBrush;
     FFrame: TChartPen;
     FPrevDragDir: TRestoreExtentOn;
     FRatioLimit: TZoomRatioLimit;
     FRestoreExtentOn: TRestoreExtentOnSet;
     FSelectionRect: TRect;
     function GetProportional: Boolean;
+    procedure SetBrush(AValue: TBrush);
     procedure SetFrame(AValue: TChartPen);
     procedure SetProportional(AValue: Boolean);
   strict protected
@@ -231,6 +233,7 @@ type
     destructor Destroy; override;
     procedure Draw(AChart: TChart; ADrawer: IChartDrawer); override;
   published
+    property Brush: TBrush read FBrush write SetBrush;
     property DrawingMode;
     property EscapeCancels;
     property Frame: TChartPen read FFrame write SetFrame;
@@ -1064,12 +1067,14 @@ constructor TZoomDragTool.Create(AOwner: TComponent);
 begin
   inherited;
   SetPropDefaults(Self, ['RestoreExtentOn']);
+  FBrush := TBrush.Create;
   FFrame := TChartPen.Create;
   FPrevDragDir := zreDifferentDrag;
 end;
 
 destructor TZoomDragTool.Destroy;
 begin
+  FreeAndNil(FBrush);
   FreeAndNil(FFrame);
   inherited;
 end;
@@ -1079,6 +1084,7 @@ begin
   if not IsActive or IsAnimating then exit;
   inherited;
   PrepareDrawingModePen(ADrawer, Frame);
+  ADrawer.SetBrush(Brush);
   ADrawer.Rectangle(FSelectionRect);
   ADrawer.SetXor(false);
 end;
@@ -1104,6 +1110,7 @@ begin
     tdmXor: with FChart.Drawer do begin
       SetXor(true);
       Pen := Frame;
+      Brush := Self.Brush;
       Rectangle(FSelectionRect);
       FSelectionRect.BottomRight := APoint;
       Rectangle(FSelectionRect);
@@ -1190,6 +1197,12 @@ begin
   CheckProportions;
   DoZoom(ext, false);
   Handled;
+end;
+
+procedure TZoomDragTool.SetBrush(AValue: TBrush);
+begin
+  if FBrush = AValue then exit;
+  FBrush.Assign(AValue);
 end;
 
 procedure TZoomDragTool.SetFrame(AValue: TChartPen);
