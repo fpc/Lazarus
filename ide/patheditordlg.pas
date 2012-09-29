@@ -59,6 +59,7 @@ type
     procedure DirectoryEditChange(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormResize(Sender: TObject);
+    procedure FormShow(Sender: TObject);
     procedure MoveDownButtonClick(Sender: TObject);
     procedure MoveUpButtonClick(Sender: TObject);
     procedure PathListBoxDrawItem(Control: TWinControl; Index: Integer;
@@ -234,8 +235,8 @@ begin
       FullPath := Items[ItemIndex];
       IDEMacros.SubstituteMacros(FullPath);
       DirectoryEdit.Directory:=PathAsAbsolute(FullPath);
-      UpdateButtons;
     end;
+  UpdateButtons;
 end;
 
 procedure TPathEditorDialog.TemplatesListBoxSelectionChange(Sender: TObject; User: boolean);
@@ -276,9 +277,6 @@ begin
   DeleteButton.LoadGlyphFromLazarusResource('laz_delete');
   DeleteInvalidPathsButton.LoadGlyphFromLazarusResource('menu_clean');
   AddTemplateButton.LoadGlyphFromLazarusResource('laz_add');
-
-  PathListBox.ItemIndex:=-1;
-  TemplatesListBox.ItemIndex:=-1;
 end;
 
 procedure TPathEditorDialog.FormResize(Sender: TObject);
@@ -289,6 +287,12 @@ begin
   if PathGroupBoxHeight<10 then
     PathGroupBoxHeight:=10;
   PathGroupBox.Height:=PathGroupBoxHeight;
+end;
+
+procedure TPathEditorDialog.FormShow(Sender: TObject);
+begin
+  PathListBox.ItemIndex:=-1;
+  TemplatesListBox.ItemIndex:=-1;
   UpdateButtons;
 end;
 
@@ -441,7 +445,7 @@ begin
   ReplaceButton.Enabled:=(DirectoryEdit.Text<>'') and (DirectoryEdit.Text<>FEffectiveBaseDirectory)
       and (PathListBox.Items.IndexOf(BaseRelative(DirectoryEdit.Text))=-1);
   AddButton.Enabled:=ReplaceButton.Enabled;
-  DeleteButton.Enabled:=PathListBox.ItemIndex>-1;
+  DeleteButton.Enabled:=PathListBox.SelCount=1; // or ItemIndex>-1; ?
   AddTemplateButton.Enabled:=(TemplatesListBox.SelCount>1) or ((TemplatesListBox.ItemIndex>-1)
       and (PathListBox.Items.IndexOf(TemplatesListBox.Items[TemplatesListBox.ItemIndex])=-1));
   // Delete non-existent paths button. Check if there are any.

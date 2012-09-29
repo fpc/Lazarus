@@ -11,11 +11,12 @@ object PathEditorDialog: TPathEditorDialog
   Constraints.MinWidth = 500
   OnCreate = FormCreate
   OnResize = FormResize
+  OnShow = FormShow
   Position = poScreenCenter
   LCLVersion = '1.1'
   object PathGroupBox: TGroupBox
     Left = 6
-    Height = 221
+    Height = 216
     Top = 6
     Width = 541
     Align = alClient
@@ -23,8 +24,8 @@ object PathEditorDialog: TPathEditorDialog
     AutoSize = True
     BorderSpacing.Around = 6
     Caption = 'PathGroupBox'
-    ClientHeight = 203
-    ClientWidth = 537
+    ClientHeight = 195
+    ClientWidth = 533
     Constraints.MinHeight = 194
     Constraints.MinWidth = 488
     TabOrder = 0
@@ -34,9 +35,9 @@ object PathEditorDialog: TPathEditorDialog
       AnchorSideRight.Side = asrBottom
       AnchorSideBottom.Control = PathGroupBox
       AnchorSideBottom.Side = asrBottom
-      Left = 506
+      Left = 502
       Height = 25
-      Top = 47
+      Top = 45
       Width = 25
       Anchors = [akRight]
       BorderSpacing.Around = 6
@@ -53,9 +54,9 @@ object PathEditorDialog: TPathEditorDialog
       AnchorSideTop.Side = asrBottom
       AnchorSideBottom.Control = PathGroupBox
       AnchorSideBottom.Side = asrBottom
-      Left = 506
+      Left = 502
       Height = 25
-      Top = 86
+      Top = 84
       Width = 25
       BorderSpacing.Around = 14
       GlyphShowMode = gsmAlways
@@ -69,10 +70,10 @@ object PathEditorDialog: TPathEditorDialog
       AnchorSideLeft.Side = asrBottom
       AnchorSideBottom.Control = PathGroupBox
       AnchorSideBottom.Side = asrBottom
-      Left = 191
-      Height = 23
-      Top = 174
-      Width = 89
+      Left = 206
+      Height = 28
+      Top = 161
+      Width = 99
       Anchors = [akLeft, akBottom]
       AutoSize = True
       BorderSpacing.Around = 6
@@ -88,9 +89,9 @@ object PathEditorDialog: TPathEditorDialog
       AnchorSideTop.Control = PathGroupBox
       AnchorSideRight.Control = MoveUpButton
       Left = 6
-      Height = 135
+      Height = 127
       Top = 6
-      Width = 494
+      Width = 490
       Anchors = [akTop, akLeft, akRight, akBottom]
       BorderSpacing.Around = 6
       ItemHeight = 0
@@ -105,9 +106,9 @@ object PathEditorDialog: TPathEditorDialog
       AnchorSideBottom.Control = PathGroupBox
       AnchorSideBottom.Side = asrBottom
       Left = 6
-      Height = 23
-      Top = 174
-      Width = 96
+      Height = 28
+      Top = 161
+      Width = 106
       Anchors = [akLeft, akBottom]
       AutoSize = True
       BorderSpacing.Around = 6
@@ -123,10 +124,10 @@ object PathEditorDialog: TPathEditorDialog
       AnchorSideLeft.Side = asrBottom
       AnchorSideBottom.Control = PathGroupBox
       AnchorSideBottom.Side = asrBottom
-      Left = 108
-      Height = 23
-      Top = 174
-      Width = 77
+      Left = 118
+      Height = 28
+      Top = 161
+      Width = 82
       Anchors = [akLeft, akBottom]
       AutoSize = True
       BorderSpacing.Around = 6
@@ -142,10 +143,10 @@ object PathEditorDialog: TPathEditorDialog
       AnchorSideLeft.Side = asrBottom
       AnchorSideBottom.Control = PathGroupBox
       AnchorSideBottom.Side = asrBottom
-      Left = 286
-      Height = 23
-      Top = 174
-      Width = 148
+      Left = 311
+      Height = 28
+      Top = 161
+      Width = 174
       Anchors = [akLeft, akBottom]
       AutoSize = True
       BorderSpacing.Around = 6
@@ -161,9 +162,9 @@ object PathEditorDialog: TPathEditorDialog
       AnchorSideRight.Side = asrBottom
       AnchorSideBottom.Control = ReplaceButton
       Left = 6
-      Height = 21
-      Top = 147
-      Width = 494
+      Height = 25
+      Top = 130
+      Width = 490
       OnAcceptDirectory = DirectoryEditAcceptDirectory
       ShowHidden = False
       ButtonWidth = 23
@@ -178,14 +179,14 @@ object PathEditorDialog: TPathEditorDialog
     AnchorSideTop.Side = asrBottom
     Left = 6
     Height = 164
-    Top = 244
+    Top = 239
     Width = 541
     Align = alBottom
     Anchors = []
     BorderSpacing.Around = 6
     Caption = 'TemplateGroupBox'
-    ClientHeight = 146
-    ClientWidth = 537
+    ClientHeight = 143
+    ClientWidth = 533
     TabOrder = 1
     object TemplatesListBox: TListBox
       AnchorSideLeft.Control = TemplateGroupBox
@@ -194,9 +195,9 @@ object PathEditorDialog: TPathEditorDialog
       AnchorSideRight.Side = asrBottom
       AnchorSideBottom.Control = AddTemplateButton
       Left = 6
-      Height = 105
+      Height = 97
       Top = 6
-      Width = 525
+      Width = 521
       Anchors = [akTop, akLeft, akRight, akBottom]
       BorderSpacing.Around = 6
       ItemHeight = 0
@@ -210,9 +211,9 @@ object PathEditorDialog: TPathEditorDialog
       AnchorSideBottom.Control = TemplateGroupBox
       AnchorSideBottom.Side = asrBottom
       Left = 6
-      Height = 23
-      Top = 117
-      Width = 121
+      Height = 28
+      Top = 109
+      Width = 140
       Anchors = [akLeft, akBottom]
       AutoSize = True
       BorderSpacing.Around = 6
@@ -225,8 +226,8 @@ object PathEditorDialog: TPathEditorDialog
   end
   object ButtonPanel1: TButtonPanel
     Left = 6
-    Height = 26
-    Top = 414
+    Height = 31
+    Top = 409
     Width = 541
     OKButton.Name = 'OKButton'
     OKButton.DefaultCaption = True
@@ -244,7 +245,7 @@ object PathEditorDialog: TPathEditorDialog
     Cursor = crVSplit
     Left = 0
     Height = 5
-    Top = 233
+    Top = 228
     Width = 553
     Align = alBottom
     ResizeAnchor = akBottom
