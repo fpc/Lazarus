@@ -60,6 +60,11 @@ type
     property Visible: Boolean read FVisible write SetVisible default true;
   end;
 
+  TClearBrush = class(TBrush)
+  published
+    property Style default bsClear;
+  end;
+
   TFPCanvasHelperClass = class of TFPCanvasHelper;
 
   { TChartElement }

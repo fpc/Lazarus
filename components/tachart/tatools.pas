@@ -22,7 +22,7 @@ interface
 {$H+}
 
 uses
-  Classes, Controls, CustomTimer, Forms, FPCanvas, Graphics, Types,
+  Classes, Controls, CustomTimer, Forms, FPCanvas, Types,
   TAChartUtils, TADrawUtils, TAGraph, TATypes;
 
 type
@@ -207,6 +207,8 @@ type
 
   TZoomRatioLimit = (zrlNone, zrlProportional, zrlFixedX, zrlFixedY);
 
+  TZoomDragBrush = TClearBrush;
+
   TZoomDragTool = class(TBasicZoomTool)
   published
   type
@@ -215,14 +217,14 @@ type
       zreClick, zreDifferentDrag);
     TRestoreExtentOnSet = set of TRestoreExtentOn;
   strict private
-    FBrush: TBrush;
+    FBrush: TZoomDragBrush;
     FFrame: TChartPen;
     FPrevDragDir: TRestoreExtentOn;
     FRatioLimit: TZoomRatioLimit;
     FRestoreExtentOn: TRestoreExtentOnSet;
     FSelectionRect: TRect;
     function GetProportional: Boolean;
-    procedure SetBrush(AValue: TBrush);
+    procedure SetBrush(AValue: TZoomDragBrush);
     procedure SetFrame(AValue: TChartPen);
     procedure SetProportional(AValue: Boolean);
   strict protected
@@ -236,7 +238,7 @@ type
     destructor Destroy; override;
     procedure Draw(AChart: TChart; ADrawer: IChartDrawer); override;
   published
-    property Brush: TBrush read FBrush write SetBrush;
+    property Brush: TZoomDragBrush read FBrush write SetBrush;
     property DrawingMode;
     property EscapeCancels;
     property Frame: TChartPen read FFrame write SetFrame;
@@ -1071,7 +1073,8 @@ constructor TZoomDragTool.Create(AOwner: TComponent);
 begin
   inherited;
   SetPropDefaults(Self, ['RestoreExtentOn']);
-  FBrush := TBrush.Create;
+  FBrush := TZoomDragBrush.Create;
+  FBrush.Style := bsClear;
   FFrame := TChartPen.Create;
   FPrevDragDir := zreDifferentDrag;
 end;
@@ -1209,7 +1212,7 @@ begin
   Handled;
 end;
 
-procedure TZoomDragTool.SetBrush(AValue: TBrush);
+procedure TZoomDragTool.SetBrush(AValue: TZoomDragBrush);
 begin
   if FBrush = AValue then exit;
   FBrush.Assign(AValue);
