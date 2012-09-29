@@ -206,6 +206,7 @@ type
     FOffset: TDoublePoint;   // Coordinates transformation
     FOnAfterPaint: TChartEvent;
     FOnExtentChanged: TChartEvent;
+    FOnExtentChanging: TChartEvent;
     FPrevLogicalExtent: TDoubleRect;
     FReticuleMode: TReticuleMode;
     FReticulePos: TPoint;
@@ -388,7 +389,10 @@ type
       read FOnBeforeDrawBackWall write SetOnBeforeDrawBackWall;
     property OnDrawReticule: TDrawReticuleEvent
       read FOnDrawReticule write SetOnDrawReticule;
-    property OnExtentChanged: TChartEvent read FOnExtentChanged write FOnExtentChanged;
+    property OnExtentChanged: TChartEvent
+      read FOnExtentChanged write FOnExtentChanged;
+    property OnExtentChanging: TChartEvent
+      read FOnExtentChanging write FOnExtentChanging;
 
   published
     property Align;
@@ -764,6 +768,8 @@ begin
     ldd := PrepareLegend(ADrawer, FClipRect);
   try
     PrepareAxis(ADrawer);
+    if (FPrevLogicalExtent <> FLogicalExtent) and Assigned(OnExtentChanging) then
+      OnExtentChanging(Self);
 
     ADrawer.DrawingBegin(ARect);
     ADrawer.SetAntialiasingMode(AntialiasingMode);
