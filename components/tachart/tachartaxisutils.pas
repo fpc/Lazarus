@@ -29,10 +29,7 @@ const
   DEF_TITLE_DISTANCE = 4;
 
 type
-  TChartAxisBrush = class(TBrush)
-  published
-    property Style default bsClear;
-  end;
+  TChartAxisBrush = TClearBrush;
 
   TChartAxisFramePen = class(TChartPen)
   published
