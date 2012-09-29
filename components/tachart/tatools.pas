@@ -223,6 +223,8 @@ type
     FRatioLimit: TZoomRatioLimit;
     FRestoreExtentOn: TRestoreExtentOnSet;
     FSelectionRect: TRect;
+    function CalculateNewExtent: TDoubleRect;
+    function CalculateDrawRect: TRect;
     function GetProportional: Boolean;
     procedure SetBrush(AValue: TZoomDragBrush);
     procedure SetFrame(AValue: TChartPen);
@@ -1058,6 +1060,58 @@ end;
 
 { TZoomDragTool }
 
+function TZoomDragTool.CalculateDrawRect: TRect;
+begin
+  if RatioLimit = zrlNone then exit(FSelectionRect);
+  with CalculateNewExtent do begin
+    Result.TopLeft := Chart.GraphToImage(a);
+    Result.BottomRight := Chart.GraphToImage(b);
+  end;
+end;
+
+function TZoomDragTool.CalculateNewExtent: TDoubleRect;
+
+  procedure CheckProportions;
+  var
+    newSize, oldSize: TDoublePoint;
+    coeff: Double;
+  begin
+    case RatioLimit of
+      zrlNone: exit;
+      zrlProportional: begin
+        newSize := Result.b - Result.a;
+        oldSize := FChart.LogicalExtent.b - FChart.LogicalExtent.a;
+        coeff := newSize.Y * oldSize.X;
+        if coeff = 0 then exit;
+        coeff := newSize.X * oldSize.Y / coeff;
+        if coeff = 0 then exit;
+        if coeff > 1 then
+          ExpandRange(Result.a.Y, Result.b.Y, (coeff - 1) / 2)
+        else
+          ExpandRange(Result.a.X, Result.b.X, (1 / coeff - 1) / 2);
+      end;
+      zrlFixedX:
+        with FChart.GetFullExtent do begin
+          Result.a.X := a.X;
+          Result.b.X := b.X;
+        end;
+      zrlFixedY:
+        with FChart.GetFullExtent do begin
+          Result.a.Y := a.Y;
+          Result.b.Y := b.Y;
+        end;
+    end;
+  end;
+
+begin
+  with FSelectionRect do begin
+    Result.a := Chart.ImageToGraph(TopLeft);
+    Result.b := Chart.ImageToGraph(BottomRight);
+  end;
+  NormalizeRect(Result);
+  CheckProportions;
+end;
+
 procedure TZoomDragTool.Cancel;
 begin
   if not IsActive then exit;
@@ -1094,7 +1148,7 @@ begin
     ADrawer.SetTransparency(Transparency);
   PrepareDrawingModePen(ADrawer, Frame);
   ADrawer.SetBrush(Brush);
-  ADrawer.Rectangle(FSelectionRect);
+  ADrawer.Rectangle(CalculateDrawRect);
   ADrawer.SetXor(false);
   ADrawer.SetTransparency(0);
 end;
@@ -1121,9 +1175,9 @@ begin
       SetXor(true);
       Pen := Frame;
       Brush := Self.Brush;
-      Rectangle(FSelectionRect);
+      Rectangle(CalculateDrawRect);
       FSelectionRect.BottomRight := APoint;
-      Rectangle(FSelectionRect);
+      Rectangle(CalculateDrawRect);
       SetXor(false);
     end;
     tdmNormal: begin
@@ -1135,41 +1189,6 @@ begin
 end;
 
 procedure TZoomDragTool.MouseUp(APoint: TPoint);
-var
-  ext: TDoubleRect;
-
-  procedure CheckProportions;
-  var
-    newSize, oldSize: TDoublePoint;
-    coeff: Double;
-  begin
-    case RatioLimit of
-      zrlNone: exit;
-      zrlProportional: begin
-        newSize := ext.b - ext.a;
-        oldSize := FChart.LogicalExtent.b - FChart.LogicalExtent.a;
-        coeff := newSize.Y * oldSize.X;
-        if coeff = 0 then exit;
-        coeff := newSize.X * oldSize.Y / coeff;
-        if coeff = 0 then exit;
-        if coeff > 1 then
-          ExpandRange(ext.a.Y, ext.b.Y, (coeff - 1) / 2)
-        else
-          ExpandRange(ext.a.X, ext.b.X, (1 / coeff - 1) / 2);
-      end;
-      zrlFixedX:
-        with FChart.GetFullExtent do begin
-          ext.a.X := a.X;
-          ext.b.X := b.X;
-        end;
-      zrlFixedY:
-        with FChart.GetFullExtent do begin
-          ext.a.Y := a.Y;
-          ext.b.Y := b.Y;
-        end;
-    end;
-  end;
-
 const
   DRAG_DIR: array [-1..1, -1..1] of TRestoreExtentOn = (
     (zreDragTopLeft, zreClick, zreDragBottomLeft),
@@ -1183,32 +1202,29 @@ begin
 
   if EffectiveDrawingMode = tdmXor then
     Draw(FChart, FChart.Drawer);
-  with FSelectionRect do begin
+
+  with FSelectionRect do
     dragDir := DRAG_DIR[Sign(Right - Left), Sign(Bottom - Top)];
-    if
-      (dragDir in RestoreExtentOn) or
-      (zreDifferentDrag in RestoreExtentOn) and
-      (dragDir <> zreClick) and not (FPrevDragDir in [dragDir, zreDifferentDrag])
-    then begin
-      FPrevDragDir := zreDifferentDrag;
-      if not Chart.IsZoomed and (EffectiveDrawingMode = tdmNormal) then
-        // ZoomFull will not cause redraw, force it to erase the tool.
-        Chart.StyleChanged(Self);
-      DoZoom(FChart.GetFullExtent, true);
-      exit;
-    end;
-    // If empty rectangle does not cause un-zooming, ignore it to prevent SIGFPE.
-    if dragDir = zreClick then begin
-      Deactivate;
-      exit;
-    end;
-    ext.a := FChart.ImageToGraph(TopLeft);
-    ext.b := FChart.ImageToGraph(BottomRight);
+  if
+    (dragDir in RestoreExtentOn) or
+    (zreDifferentDrag in RestoreExtentOn) and
+    (dragDir <> zreClick) and not (FPrevDragDir in [dragDir, zreDifferentDrag])
+  then begin
+    FPrevDragDir := zreDifferentDrag;
+    if not Chart.IsZoomed and (EffectiveDrawingMode = tdmNormal) then
+      // ZoomFull will not cause redraw, force it to erase the tool.
+      Chart.StyleChanged(Self);
+    DoZoom(FChart.GetFullExtent, true);
+    exit;
+  end;
+  // If empty rectangle does not cause un-zooming, ignore it to prevent SIGFPE.
+  if dragDir = zreClick then begin
+    Deactivate;
+    exit;
   end;
   FPrevDragDir := dragDir;
-  NormalizeRect(ext);
-  CheckProportions;
-  DoZoom(ext, false);
+
+  DoZoom(CalculateNewExtent, false);
   Handled;
 end;
 
