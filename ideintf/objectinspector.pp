@@ -5415,7 +5415,7 @@ begin
   if PropertyEditorHook=nil then
     PropertyEditorHook:=TPropertyEditorHook.Create;
   PropertyEditorHook.LookupRoot:=AValue;
-  if (AValue<>nil) and ((Selection.Count<>1) or (Selection[0]<>AValue)) then
+  if (AValue=nil) or (Selection.Count<>1) or (Selection[0]<>AValue) then
   begin
     NewSelection:=TPersistentSelectionList.Create;
     try
