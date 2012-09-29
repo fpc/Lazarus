@@ -117,7 +117,8 @@ type
     fIsConsoleApp: Boolean;
     fMainUsedUnits: TUsedUnits;
     fImplUsedUnits: TUsedUnits;
-    fCheckPackageDependencyEvent: TCheckUnitEvent;
+    fOnCheckPackageDependency: TCheckUnitEvent;
+    fOnCheckUnitForConversion: TCheckUnitEvent;
     function GetMissingUnitCount: integer;
   public
     constructor Create(ACTLink: TCodeToolLink; AFilename: string);
@@ -134,8 +135,10 @@ type
     property MainUsedUnits: TUsedUnits read fMainUsedUnits;
     property ImplUsedUnits: TUsedUnits read fImplUsedUnits;
     property MissingUnitCount: integer read GetMissingUnitCount;
-    property CheckPackDepEvent: TCheckUnitEvent read fCheckPackageDependencyEvent
-                                               write fCheckPackageDependencyEvent;
+    property OnCheckPackageDependency: TCheckUnitEvent
+            read fOnCheckPackageDependency write fOnCheckPackageDependency;
+    property OnCheckUnitForConversion: TCheckUnitEvent
+            read fOnCheckUnitForConversion write fOnCheckUnitForConversion;
   end;
 
 
@@ -233,8 +236,8 @@ begin
       if AFilename<>'' then begin                         // unit found
         if (NewUnitName<>OldUnitName) and not Settings.OmitProjUnits.Find(NewUnitName,x)
         then begin
-          // Character case differs and it will not be replaced.
-          fUnitsToFixCase[OldUnitName]:=NewUnitName;      // fix case
+          // Character case differs, fix it.
+          fUnitsToFixCase[OldUnitName]:=NewUnitName;
           IDEMessagesWindow.AddMsg(Format(lisConvDelphiFixedUnitCase,
                                           [OldUnitName, NewUnitName]), '', -1);
         end;
@@ -242,6 +245,9 @@ begin
         //  Needed if work-platform is Windows (kind of a hack).
         if Settings.MultiPlatform and IsWinSpecificUnit(LowNU) then
           fMissingUnits.Add(s);
+        // Check if the unit is not part of project and needs conversion, too.
+        if Assigned(fOwnerTool.OnCheckUnitForConversion) then
+          fOwnerTool.OnCheckUnitForConversion(AFilename);
       end
       else begin
         // If the unit is not found, add it to fMissingUnits, but don't add
@@ -277,8 +283,8 @@ begin
     // If the unit is not found, open the package containing it.
     UnitInFileName:='';
     if fCTLink.CodeTool.FindUnitCaseInsensitive(ANewName,UnitInFileName) = '' then
-      if Assigned(fOwnerTool.CheckPackDepEvent) then
-        if not fOwnerTool.CheckPackDepEvent(ANewName) then
+      if Assigned(fOwnerTool.OnCheckPackageDependency) then
+        if not fOwnerTool.OnCheckPackageDependency(ANewName) then
           ;
   end
   else begin
@@ -686,8 +692,8 @@ begin
     // If the unit is not found, open the package containing it.
     UnitInFileName:='';
     if fCTLink.CodeTool.FindUnitCaseInsensitive(AUnitName,UnitInFileName) = '' then
-      if Assigned(fCheckPackageDependencyEvent) then
-        if not fCheckPackageDependencyEvent(AUnitName) then
+      if Assigned(fOnCheckPackageDependency) then
+        if not fOnCheckPackageDependency(AUnitName) then
           ;
   end;
 end;

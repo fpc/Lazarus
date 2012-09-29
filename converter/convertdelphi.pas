@@ -181,6 +181,7 @@ type
     function ExtractOptionsFromDOF(const DOFFilename: string): TModalResult;
     function ExtractOptionsFromCFG(const CFGFilename: string): TModalResult;
     function DoMissingUnits(AUsedUnitsTool: TUsedUnitsTool): integer; override;
+    function CheckPackageDependency(AUnitName: string): Boolean;
   protected
     function CreateInstance: TModalResult; virtual; abstract;
     function CreateMainSourceFile: TModalResult; virtual;
@@ -202,7 +203,6 @@ type
     constructor Create(const AFilename, ADescription: string);
     destructor Destroy; override;
     function Convert: TModalResult;
-    function CheckPackageDependency(AUnitName: string): Boolean;
   public
     property CompOpts: TBaseCompilerOptions read GetCompOpts;
     property CustomDefines: TDefineTemplate read GetCustomDefines;
@@ -218,6 +218,7 @@ type
     // Resource code
     fMainUnitConverter: TDelphiUnit;
     function AddUnit(AFileName: string; out OutUnitInfo: TUnitInfo): TModalResult;
+    function CheckUnitForConversion(aFileName: string): Boolean;
     function GetLazProject: TProject;
     procedure SetLazProject(const AValue: TProject);
   protected
@@ -619,13 +620,16 @@ begin
   // Fix include file names.
   Result:=FixIncludeFiles;
   if Result<>mrOk then exit;
-  // Create a toold for missing units.
+  // Create a tool for missing units.
   fUsedUnitsTool:=TUsedUnitsTool.Create(fCTLink, fOrigUnitFilename);
   if fOwnerConverter is TConvertDelphiProjPack then
-    with fOwnerConverter as TConvertDelphiProjPack do begin
-      fUsedUnitsTool.CheckPackDepEvent:=@CheckPackageDependency;
+    with TConvertDelphiProjPack(fOwnerConverter) do begin
+      fUsedUnitsTool.OnCheckPackageDependency:=@CheckPackageDependency;
       fUsedUnitsTool.IsConsoleApp:=fIsConsoleApp;
     end;
+  if fOwnerConverter is TConvertDelphiProject then
+    with TConvertDelphiProject(fOwnerConverter) do
+      fUsedUnitsTool.OnCheckUnitForConversion:=@CheckUnitForConversion;
 end;
 
 function TDelphiUnit.FixLfmFilenameAndLoad(ADfmFilename: string): TModalResult;
@@ -1213,30 +1217,6 @@ begin
   Options.SrcPath:=CleanProjectSearchPath(Options.SrcPath);
 end;
 
-function TConvertDelphiProjPack.CheckPackageDependency(AUnitName: string): Boolean;
-var
-  Pack: TPkgFile;
-  Dep: TPkgDependency;
-  s: String;
-begin
-  Result:=False;
-  Pack:=PackageGraph.FindUnitInAllPackages(AUnitName, True);
-  if Assigned(Pack) then begin
-    // Found from package: add package to project dependencies and open it.
-    s:=Pack.LazPackage.Name;
-    if s='LCLBase' then
-      s:='LCL';
-    AddPackageDependency(s);
-    IDEMessagesWindow.AddMsg(Format(lisConvDelphiAddedPackageRequirement, [s]), '', -1);
-    Dep:=FindDependencyByName(s);
-    if Assigned(Dep) then
-      PackageGraph.OpenDependency(Dep,false);
-    Result:=True;
-  end else begin;
-    // ToDo: Install the required package automatically from a repository...
-  end;
-end;
-
 function TConvertDelphiProjPack.DoMissingUnits(AUsedUnitsTool: TUsedUnitsTool): integer;
 // Locate unit names from earlier cached list or from packages.
 // Return the number of units still missing.
@@ -1273,6 +1253,30 @@ begin
   DoMissingSub(AUsedUnitsTool.MainUsedUnits);
   DoMissingSub(AUsedUnitsTool.ImplUsedUnits);
   Result:=AUsedUnitsTool.MissingUnitCount;
+end;
+
+function TConvertDelphiProjPack.CheckPackageDependency(AUnitName: string): Boolean;
+var
+  Pack: TPkgFile;
+  Dep: TPkgDependency;
+  s: String;
+begin
+  Result:=False;
+  Pack:=PackageGraph.FindUnitInAllPackages(AUnitName, True);
+  if Assigned(Pack) then begin
+    // Found from package: add package to project dependencies and open it.
+    s:=Pack.LazPackage.Name;
+    if s='LCLBase' then
+      s:='LCL';
+    AddPackageDependency(s);
+    IDEMessagesWindow.AddMsg(Format(lisConvDelphiAddedPackageRequirement, [s]), '', -1);
+    Dep:=FindDependencyByName(s);
+    if Assigned(Dep) then
+      PackageGraph.OpenDependency(Dep,false);
+    Result:=True;
+  end else begin;
+    // ToDo: Install the required package automatically from a repository...
+  end;
 end;
 
 function TConvertDelphiProjPack.CreateMainSourceFile: TModalResult;
@@ -1444,6 +1448,21 @@ begin
   end;
 end;
 
+function TConvertDelphiProject.CheckUnitForConversion(aFileName: string): Boolean;
+var
+  UnitInfo: TUnitInfo;
+  Path: string;
+begin
+  // Units in project directory but not part of the project are not reported
+  //  as missing and would not be converted. Now add them to the project.
+  if ExtractFilePath(aFileName)=LazProject.ProjectDirectory then begin
+    UnitInfo:=LazProject.UnitInfoWithFilename(aFileName);
+    Result:=Assigned(UnitInfo);
+    if not Result then
+      fUnitsToAddToProject.Add(aFileName);  // Will be added later to project.
+  end;
+end;
+
 function TConvertDelphiProject.FindAllUnits: TModalResult;
 var
   FoundUnits, MisUnits, NormalUnits: TStrings;
@@ -1523,7 +1542,7 @@ var
   i: Integer;
 begin
   Result:=mrOk;
-  ConvUnits:=TObjectList.create;
+  ConvUnits:=TObjectList.Create;
   try
     // convert all units and fix .lfm files
     IDEMessagesWindow.AddMsg(lisConvDelphiConvertingUnitFiles, '', -1);
