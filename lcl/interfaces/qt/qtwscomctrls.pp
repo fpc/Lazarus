@@ -291,8 +291,8 @@ const
 
   IconArngToQListFlow: array[TIconArrangement] of QListViewFlow =
   (
-{iaTop} QListViewTopToBottom,
-{iaLeft} QListViewLeftToRight
+{iaTop} QListViewLeftToRight,
+{iaLeft}QListViewTopToBottom
   );
 
 { TQtWSToolBar }
