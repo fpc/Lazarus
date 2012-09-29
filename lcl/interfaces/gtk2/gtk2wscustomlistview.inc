@@ -616,9 +616,10 @@ begin
   else begin // No Column Needed
     if GtkColumn <> nil then
     begin
-      if GTK_IS_TREE_VIEW(Widgets^.MainView) then
+      if GTK_IS_TREE_VIEW(Widgets^.MainView) and GTK_IS_TREE_VIEW_COLUMN(GtkColumn) then
         gtk_tree_view_remove_column(PGtkTreeView(Widgets^.MainView), GtkColumn)
       else
+      if GTK_IS_TREE_VIEW_COLUMN(GtkColumn) and G_IS_OBJECT(GtkColumn) then
         g_object_unref(GtkColumn);
       g_object_set_data(G_OBJECT(Widgets^.MainView), 'LCL_DEFAULT_COLUMN', nil);
     end;
@@ -731,7 +732,7 @@ begin
     Exit;
 
   GtkColumn := gtk_tree_view_get_column(PGtkTreeView(Widgets^.MainView), AIndex);
-  if GtkColumn<>nil then
+  if (GtkColumn<>nil) and GTK_IS_TREE_VIEW_COLUMN(GtkColumn) then
     gtk_tree_view_remove_column(PGtkTreeView(Widgets^.MainView), GtkColumn);
 end;
 
