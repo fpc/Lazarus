@@ -1009,7 +1009,8 @@ var
   Converter: TDelphiUnit;
   i: Integer;
 begin
-  IDEMessagesWindow.AddMsg(lisConvDelphiRepairingFormFiles, '', -1);
+  if not fSettings.SameDfmFile then
+    IDEMessagesWindow.AddMsg(lisConvDelphiRepairingFormFiles, '', -1);
   Application.ProcessMessages;
   Screen.Cursor:=crHourGlass;
   try
