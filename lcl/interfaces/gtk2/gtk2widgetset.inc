@@ -1499,15 +1499,10 @@ end;
 {$ifdef TraceGdiCalls}
 procedure DumpBackTrace(BackTrace: TCallBacksArray);
 var
-  func,source: shortString;
-  line: longint;
-  i: integer;
+  i: Integer;
 begin
-  for i:=0 to MaxCallBacks do begin
-    LineInfo.GetLineInfo(longWord(BackTrace[i]), Func, source, line);
-    DebugLn('$', Hexstr(LongInt(BackTrace[i]),8),'  ', Func, ',  line ',
-      dbgs(line),' of ',Source);
-  end;
+  for i:=0 to MaxCallBacks do
+    Debugln(GetLineInfo(BackTrace[i], false));
 end;
 
 procedure FillStackAddrs(bp: pointer; BackTraces: PCallBacksArray);
