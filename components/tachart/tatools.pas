@@ -48,6 +48,7 @@ type
     FOldCursor: TCursor;
     FShift: TShiftState;
     FToolset: TChartToolset;
+    FTransparency: TChartTransparency;
     function GetAfterEvent(AIndex: Integer): TChartToolEvent;
     function GetBeforeEvent(AIndex: Integer): TChartToolEvent;
     procedure SetActiveCursor(AValue: TCursor);
@@ -80,6 +81,8 @@ type
     procedure SetIndex(AValue: Integer); override;
     property EscapeCancels: Boolean
       read FEscapeCancels write FEscapeCancels default false;
+    property Transparency: TChartTransparency
+      read FTransparency write FTransparency default 0;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -245,6 +248,7 @@ type
     property RestoreExtentOn: TRestoreExtentOnSet
       read FRestoreExtentOn write FRestoreExtentOn
       default [zreDragTopLeft, zreDragTopRight, zreDragBottomLeft, zreClick];
+    property Transparency;
   end;
 
   TBasicZoomStepTool = class(TBasicZoomTool)
@@ -1083,10 +1087,13 @@ procedure TZoomDragTool.Draw(AChart: TChart; ADrawer: IChartDrawer);
 begin
   if not IsActive or IsAnimating then exit;
   inherited;
+  if EffectiveDrawingMode = tdmNormal then
+    ADrawer.SetTransparency(Transparency);
   PrepareDrawingModePen(ADrawer, Frame);
   ADrawer.SetBrush(Brush);
   ADrawer.Rectangle(FSelectionRect);
   ADrawer.SetXor(false);
+  ADrawer.SetTransparency(0);
 end;
 
 function TZoomDragTool.GetProportional: Boolean;
