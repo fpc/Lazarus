@@ -3655,6 +3655,7 @@ docs/xml/lcl/filectrl.xml svneol=LF#text/xml eol=lf
 docs/xml/lcl/forms.xml svneol=LF#text/xml eol=lf
 docs/xml/lcl/forms/tapplication_queueasynccall.pas svneol=native#text/plain
 docs/xml/lcl/fpcadds.xml svneol=LF#text/xml eol=lf
+docs/xml/lcl/fpmake.xml svneol=native#text/plain
 docs/xml/lcl/graphics.xml svneol=LF#text/xml eol=lf
 docs/xml/lcl/graphmath.xml svneol=LF#text/xml eol=lf
 docs/xml/lcl/graphtype.xml svneol=LF#text/xml eol=lf
