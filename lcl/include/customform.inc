@@ -2334,6 +2334,10 @@ function TCustomForm.SetFocusedControl(Control: TWinControl): Boolean;
       // calling of CM_EXIT can cause other focus changes - so FLastFocusedControl can change after the call
       // therefore we need to change it before the call
       Tmp := FLastFocusedControl;
+      if Assigned(Tmp.Parent) and
+        ((csDestroying in Tmp.Parent.ComponentState) or
+        (csDestroyingHandle in Tmp.Parent.ControlState)) then
+        Exit(False);
       SetLastFocusedControl(Tmp.Parent);
       Tmp.Perform(CM_EXIT, 0, 0);
       if SaveFocusState <> LastState then
