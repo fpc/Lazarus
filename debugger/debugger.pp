@@ -9218,7 +9218,7 @@ procedure TCallStackEntry.MakeCurrent;
 begin
   if FOwner = nil then Exit;
   if IsCurrent then exit;
-  FOwner.CurrentIndex := self.Index;
+  FOwner.ChangeCurrentIndex(Self.Index);
 end;
 
 function TCallStackEntry.GetArgumentCount: Integer;
