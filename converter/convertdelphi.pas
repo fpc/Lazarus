@@ -116,7 +116,8 @@ type
   { TConvertDelphiPBase }
 
   // Takes care of error handling.
-  // TConvertDelphiProjPack ja TConvertDelphixxx periytyvät tästä.
+  // TConvertDelphiUnit ja TConvertDelphiProjPack inherit from this,
+  //  wrapping either one unit or whole project / package conversion.
   TConvertDelphiPBase = class
   private
     // Original unit's, project's or package's file name, .pas .lpi .lpk .dpr .dpk
@@ -462,93 +463,6 @@ begin
     fSearcher.Search(fPath, '*.pas');
 end;
 
-{ TConvertDelphiUnit }
-
-constructor TConvertDelphiUnit.Create(const AFilename: string);
-begin
-  inherited Create(AFilename, lisConvDelphiConvertDelphiUnit);
-end;
-
-destructor TConvertDelphiUnit.Destroy;
-begin
-  inherited Destroy;
-end;
-
-function TConvertDelphiUnit.Convert: TModalResult;
-var
-  DelphiUnit: TDelphiUnit;
-begin
-  IDEMessagesWindow.Clear;
-  DelphiUnit := TDelphiUnit.Create(Self, fOrigFilename, []);
-  Result:=fSettings.RunForm(Nil);
-  if Result=mrOK then
-    with DelphiUnit do
-    try
-      Result:=CopyAndLoadFile;
-      if Result=mrOK then begin
-        Result:=ConvertUnitFile;
-        if Result=mrOk then begin
-          Result:=SaveCodeBufferToFile(fPascalBuffer,fLazUnitFilename);
-          if Result=mrOk then begin
-            Result:=LazarusIDE.DoOpenEditorFile(fLazUnitFilename,0,0,
-                                                [ofAddToRecent,ofQuiet]);
-            if Result=mrOk then begin
-              Result:=ConvertFormFile;
-            end;
-          end;
-        end;
-      end;
-    except
-      on e: EDelphiConverterError do begin
-        fErrorMsg:=e.Message;
-      end;
-      else begin
-        fErrorMsg:=CodeToolBoss.ErrorMessage;
-      end;
-      Result:=mrAbort;
-    end;
-  ShowEndingMessage(Result);
-end;
-
-{ TConvertDelphiPBase }
-
-constructor TConvertDelphiPBase.Create(const AFilename, ADescription: string);
-begin
-  inherited Create;
-  fOrigFilename:=AFilename;
-  fSettings:=TConvertSettings.Create(ADescription);
-  fSettings.MainFilename:=fOrigFilename;
-  fIsConsoleApp:=False;                   // Default = GUI app.
-end;
-
-destructor TConvertDelphiPBase.Destroy;
-begin
-  inherited Destroy;
-end;
-
-function TConvertDelphiPBase.DoMissingUnits(AUsedUnitsTool: TUsedUnitsTool): integer;
-begin
-  Result := 0;
-end;
-
-function TConvertDelphiPBase.GetCachedUnitPath(const AUnitName: string): string;
-begin
-  Result:=fCachedUnitNames[AUnitName];
-end;
-
-procedure TConvertDelphiPBase.ShowEndingMessage(AStatus: TModalResult);
-begin
-  if AStatus=mrOk then
-    IDEMessagesWindow.AddMsg(lisConvDelphiConversionReady, '', -1)
-  else begin
-    if fErrorMsg<>'' then
-      IDEMessagesWindow.AddMsg(Format(lisConvDelphiError,[fErrorMsg]),'',-1)
-    else if CodeToolBoss.ErrorMessage<>'' then
-      IDEMessagesWindow.AddMsg(Format(lisConvDelphiError,[CodeToolBoss.ErrorMessage]),'',-1);
-    IDEMessagesWindow.AddMsg(lisConvDelphiConversionAborted, '', -1);
-  end;
-end;
-
 { TDelphiUnit }
 
 constructor TDelphiUnit.Create(AOwnerConverter: TConvertDelphiPBase;
@@ -891,6 +805,93 @@ begin
   end;
 end;
 
+
+{ TConvertDelphiPBase }
+
+constructor TConvertDelphiPBase.Create(const AFilename, ADescription: string);
+begin
+  inherited Create;
+  fOrigFilename:=AFilename;
+  fSettings:=TConvertSettings.Create(ADescription);
+  fSettings.MainFilename:=fOrigFilename;
+  fIsConsoleApp:=False;                   // Default = GUI app.
+end;
+
+destructor TConvertDelphiPBase.Destroy;
+begin
+  inherited Destroy;
+end;
+
+function TConvertDelphiPBase.DoMissingUnits(AUsedUnitsTool: TUsedUnitsTool): integer;
+begin
+  Result := 0;
+end;
+
+function TConvertDelphiPBase.GetCachedUnitPath(const AUnitName: string): string;
+begin
+  Result:=fCachedUnitNames[AUnitName];
+end;
+
+procedure TConvertDelphiPBase.ShowEndingMessage(AStatus: TModalResult);
+begin
+  if AStatus=mrOk then
+    IDEMessagesWindow.AddMsg(lisConvDelphiConversionReady, '', -1)
+  else begin
+    if fErrorMsg<>'' then
+      IDEMessagesWindow.AddMsg(Format(lisConvDelphiError,[fErrorMsg]),'',-1)
+    else if CodeToolBoss.ErrorMessage<>'' then
+      IDEMessagesWindow.AddMsg(Format(lisConvDelphiError,[CodeToolBoss.ErrorMessage]),'',-1);
+    IDEMessagesWindow.AddMsg(lisConvDelphiConversionAborted, '', -1);
+  end;
+end;
+
+{ TConvertDelphiUnit }
+
+constructor TConvertDelphiUnit.Create(const AFilename: string);
+begin
+  inherited Create(AFilename, lisConvDelphiConvertDelphiUnit);
+end;
+
+destructor TConvertDelphiUnit.Destroy;
+begin
+  inherited Destroy;
+end;
+
+function TConvertDelphiUnit.Convert: TModalResult;
+var
+  DelphiUnit: TDelphiUnit;
+begin
+  IDEMessagesWindow.Clear;
+  DelphiUnit := TDelphiUnit.Create(Self, fOrigFilename, []);
+  Result:=fSettings.RunForm(Nil);
+  if Result=mrOK then
+    with DelphiUnit do
+    try
+      Result:=CopyAndLoadFile;
+      if Result=mrOK then begin
+        Result:=ConvertUnitFile;
+        if Result=mrOk then begin
+          Result:=SaveCodeBufferToFile(fPascalBuffer,fLazUnitFilename);
+          if Result=mrOk then begin
+            Result:=LazarusIDE.DoOpenEditorFile(fLazUnitFilename,0,0,
+                                                [ofAddToRecent,ofQuiet]);
+            if Result=mrOk then begin
+              Result:=ConvertFormFile;
+            end;
+          end;
+        end;
+      end;
+    except
+      on e: EDelphiConverterError do begin
+        fErrorMsg:=e.Message;
+      end;
+      else begin
+        fErrorMsg:=CodeToolBoss.ErrorMessage;
+      end;
+      Result:=mrAbort;
+    end;
+  ShowEndingMessage(Result);
+end;
 
 { TConvertDelphiProjPack }
 
@@ -1452,7 +1453,6 @@ end;
 function TConvertDelphiProject.CheckUnitForConversion(aFileName: string): Boolean;
 var
   UnitInfo: TUnitInfo;
-  Path: string;
 begin
   // Units in project directory but not part of the project are not reported
   //  as missing and would not be converted. Now add them to the project.
