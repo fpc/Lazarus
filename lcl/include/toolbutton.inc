@@ -204,7 +204,7 @@ procedure TToolButton.Paint;
     begin
       if FToolBar.IsVertical then
       begin
-        if (ARect.Bottom - ARect.Top) > 10 then
+        if (ARect.Bottom - ARect.Top) >= 10 then
         begin
           ARect.Top := (ARect.Top + ARect.Bottom) div 2 - 5;
           ARect.Bottom := ARect.Top + 5;
@@ -217,7 +217,7 @@ procedure TToolButton.Paint;
       end
       else
       begin
-        if (ARect.Right - ARect.Left) > 10 then
+        if (ARect.Right - ARect.Left) >= 10 then
         begin
           ARect.Left := (ARect.Left + ARect.Right) div 2 - 5;
           ARect.Right := ARect.Left + 5;
