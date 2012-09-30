@@ -8476,6 +8476,8 @@ begin
         end else begin
           //DebugLn(['TMainIDE.DoCheckFilesOnDisk IgnoreCurrentFileDateOnDisk']);
           CurUnit.IgnoreCurrentFileDateOnDisk;
+          CurUnit.Modified:=True;
+          CurUnit.OpenEditorInfo[0].EditorComponent.Modified:=True;
         end;
       end;
     end;
