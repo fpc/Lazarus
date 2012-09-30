@@ -207,8 +207,6 @@ type
 
   TZoomRatioLimit = (zrlNone, zrlProportional, zrlFixedX, zrlFixedY);
 
-  TZoomDragBrush = TClearBrush;
-
   TZoomDragTool = class(TBasicZoomTool)
   published
   type
@@ -216,7 +214,9 @@ type
       zreDragTopLeft, zreDragTopRight, zreDragBottomLeft, zreDragBottomRight,
       zreClick, zreDifferentDrag);
     TRestoreExtentOnSet = set of TRestoreExtentOn;
+    TZoomDragBrush = TClearBrush;
   strict private
+    FAdjustSelection: Boolean;
     FBrush: TZoomDragBrush;
     FFrame: TChartPen;
     FPrevDragDir: TRestoreExtentOn;
@@ -240,6 +240,8 @@ type
     destructor Destroy; override;
     procedure Draw(AChart: TChart; ADrawer: IChartDrawer); override;
   published
+    property AdjustSelection: Boolean
+      read FAdjustSelection write FAdjustSelection default true;
     property Brush: TZoomDragBrush read FBrush write SetBrush;
     property DrawingMode;
     property EscapeCancels;
@@ -1062,7 +1064,7 @@ end;
 
 function TZoomDragTool.CalculateDrawRect: TRect;
 begin
-  if RatioLimit = zrlNone then exit(FSelectionRect);
+  if not AdjustSelection or (RatioLimit = zrlNone) then exit(FSelectionRect);
   with CalculateNewExtent do begin
     Result.TopLeft := Chart.GraphToImage(a);
     Result.BottomRight := Chart.GraphToImage(b);
@@ -1127,6 +1129,7 @@ constructor TZoomDragTool.Create(AOwner: TComponent);
 begin
   inherited;
   SetPropDefaults(Self, ['RestoreExtentOn']);
+  FAdjustSelection := true;
   FBrush := TZoomDragBrush.Create;
   FBrush.Style := bsClear;
   FFrame := TChartPen.Create;
