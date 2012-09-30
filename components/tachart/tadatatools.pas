@@ -116,6 +116,7 @@ type
       read FPointerEnd write SetPointerEnd;
     property PointerStart: TDataPointDistanceToolPointer
       read FPointerStart write SetPointerStart;
+    property Transparency;
   published
     property OnGetDistanceText: TDataPointGetDistanceTextEvent
       read FOnGetDistanceText write FOnGetDistanceText;
@@ -241,6 +242,7 @@ begin
     cdmOnlyY: p2.X := p1.X;
   end;
   if p1 = p2 then exit;
+  StartTransparency;
   if LinePen.Visible then begin
     FChart.Drawer.Pen := LinePen;
     FChart.Drawer.Line(p1, p2);
@@ -258,6 +260,7 @@ begin
     Marks.DrawLabel(FChart.Drawer, p1, p2, GetDistanceText, dummy);
   end;
   inherited;
+  Chart.Drawer.SetTransparency(0);
 end;
 
 function TDataPointDistanceTool.FindRef(

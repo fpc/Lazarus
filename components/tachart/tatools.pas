@@ -79,6 +79,8 @@ type
     procedure RestoreCursor;
     procedure SetCursor;
     procedure SetIndex(AValue: Integer); override;
+    procedure StartTransparency;
+
     property EscapeCancels: Boolean
       read FEscapeCancels write FEscapeCancels default false;
     property Transparency: TChartTransparency
@@ -886,6 +888,12 @@ begin
     FToolset.Tools.Add(Self);
 end;
 
+procedure TChartTool.StartTransparency;
+begin
+  if EffectiveDrawingMode = tdmNormal then
+    Chart.Drawer.SetTransparency(Transparency);
+end;
+
 { TChartTools }
 
 function TChartTools.GetEnumerator: TChartToolsEnumerator;
@@ -1147,8 +1155,7 @@ procedure TZoomDragTool.Draw(AChart: TChart; ADrawer: IChartDrawer);
 begin
   if not IsActive or IsAnimating then exit;
   inherited;
-  if EffectiveDrawingMode = tdmNormal then
-    ADrawer.SetTransparency(Transparency);
+  StartTransparency;
   PrepareDrawingModePen(ADrawer, Frame);
   ADrawer.SetBrush(Brush);
   ADrawer.Rectangle(CalculateDrawRect);
