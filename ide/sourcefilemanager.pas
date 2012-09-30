@@ -2208,6 +2208,7 @@ var
   r: TModalResult;
   Ed: TSourceEditor;
 begin
+  // Close editor files
   NeedSave := 0;
   for i := 0 to SourceEditorManager.UniqueSourceEditorCount - 1 do begin
     if CheckEditorNeedsSave(SourceEditorManager.UniqueSourceEditors[i], False) then begin
@@ -2226,7 +2227,6 @@ begin
       mrNo: ; // don't save
       mrAbort: exit;
     end;
-
   end
   else if NeedSave > 1 then begin
     for i := 0 to SourceEditorManager.UniqueSourceEditorCount - 1 do begin
@@ -2252,7 +2252,6 @@ begin
       end;
     end;
   end;
-
   SourceEditorManager.IncUpdateLock;
   try
     while (SourceEditorManager.SourceEditorCount > 0) and
@@ -2261,6 +2260,9 @@ begin
   finally
     SourceEditorManager.DecUpdateLock;
   end;
+
+  // Close packages
+  PkgBoss.DoCloseAllPackageEditors;
 end;
 
 function TLazSourceFileManager.CreateNewCodeBuffer(Descriptor: TProjectFileDescriptor;

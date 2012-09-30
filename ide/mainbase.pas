@@ -545,7 +545,7 @@ begin
     CreateMenuItem(ParentMI,itmFileSaveAs,'itmFileSaveAs',lisMenuSaveAs,'menu_saveas');
     CreateMenuItem(ParentMI,itmFileSaveAll,'itmFileSaveAll',lisSaveAll,'menu_save_all');
     CreateMenuItem(ParentMI,itmFileExportHtml,'itmFileExportHtml',lisExportHtml);
-    CreateMenuItem(ParentMI,itmFileClose,'itmFileClose',lisClose,'menu_close',false);
+    CreateMenuItem(ParentMI,itmFileClose,'itmFileClose',lisMenuCloseEditorFile,'menu_close',false);
     CreateMenuItem(ParentMI,itmFileCloseAll,'itmFileCloseAll',lisMenuCloseAll,'menu_close_all',false);
 
     CreateMenuSeparatorSection(mnuFile,itmFileDirectories,'itmFileDirectories');

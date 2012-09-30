@@ -240,7 +240,8 @@ resourcestring
   lisPLDShowUserLinks = 'Show user links';
   lisPLDGlobal = 'Global';
   lisCTDefDefineTemplates = 'Define templates';
-  lisMenuCloseAll = 'Close A&ll Editor Files';
+  lisMenuCloseAll = 'Close A&ll';
+  lisMenuCloseEditorFile = '&Close Editor File';
   lisMenuCleanDirectory = 'Clean Directory ...';
 
   lisMenuIndentSelection = 'Indent Selection';
