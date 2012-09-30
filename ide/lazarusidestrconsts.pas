@@ -3682,6 +3682,7 @@ resourcestring
   lisFindFileWhere = 'Where';
   lisFindFilesearchAllFilesInProject = 'search all files in &project';
   lisFindFilesearchAllOpenFiles = 'search all &open files';
+  lisFindFilesearchInActiveFile = 'search in &active file';
   lisFindFilesearchInDirectories = 'search in &directories';
   lisFindFileDirectoryOptions = 'Directory options';
   lisFindFileDirectory = 'D&irectory';

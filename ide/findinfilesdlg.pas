@@ -83,6 +83,12 @@ function FindInFilesDialog: TLazFindInFilesDialog;
 
 implementation
 
+const  // WhereRadioGroup's ItemIndex in a more informative form.
+  ItemIndProject     = 0;
+  ItemIndOpenFiles   = 1;
+  ItemIndDirectories = 2;
+  ItemIndActiveFile  = 3;
+
 var
   FindInFilesDialogSingleton: TLazFindInFilesDialog = nil;
 
@@ -116,7 +122,7 @@ end;
 
 procedure TLazFindInFilesDialog.WhereRadioGroupClick(Sender: TObject);
 begin
-  DirectoryOptionsGroupBox.Enabled := (WhereRadioGroup.ItemIndex = 2)
+  DirectoryOptionsGroupBox.Enabled := (WhereRadioGroup.ItemIndex = ItemIndDirectories)
 end;
 
 procedure TLazFindInFilesDialog.DirectoryBrowseClick(Sender: TObject);
@@ -154,9 +160,10 @@ begin
   OptionsCheckGroupBox.Items[3] := lisFindFileMultiLinePattern;
 
   WhereRadioGroup.Caption:=lisFindFileWhere;
-  WhereRadioGroup.Items[0] := lisFindFilesearchAllFilesInProject;
-  WhereRadioGroup.Items[1] := lisFindFilesearchAllOpenFiles;
-  WhereRadioGroup.Items[2] := lisFindFilesearchInDirectories;
+  WhereRadioGroup.Items[ItemIndProject]     := lisFindFilesearchAllFilesInProject;
+  WhereRadioGroup.Items[ItemIndOpenFiles]   := lisFindFilesearchAllOpenFiles;
+  WhereRadioGroup.Items[ItemIndDirectories] := lisFindFilesearchInDirectories;
+  WhereRadioGroup.Items[ItemIndActiveFile]  := lisFindFilesearchInActiveFile;
 
   DirectoryOptionsGroupBox.Caption := lisFindFileDirectoryOptions;
   DirectoryLabel.Caption := lisFindFileDirectory;
@@ -170,7 +177,7 @@ begin
   ReplaceCheckBox.Enabled:=true;
 
   UpdateReplaceCheck;
-  DirectoryOptionsGroupBox.Enabled:=WhereRadioGroup.ItemIndex=2;
+  DirectoryOptionsGroupBox.Enabled:=WhereRadioGroup.ItemIndex=ItemIndDirectories;
 
   AutoSize:=IDEDialogLayoutList.Find(Self,false)=nil;
   IDEDialogLayoutList.ApplyLayout(Self);
@@ -186,7 +193,7 @@ var
   Dir: String;
 begin
   Dir:=GetResolvedDirectory;
-  if (WhereRadioGroup.ItemIndex=2) and (not DirectoryExistsUTF8(Dir)) then
+  if (WhereRadioGroup.ItemIndex=ItemIndDirectories) and not DirectoryExistsUTF8(Dir) then
   begin
     MessageDlg(lisEnvOptDlgDirectoryNotFound,
                Format(dlgSeachDirectoryNotFound,[Dir]),
@@ -210,9 +217,10 @@ begin
   IncludeSubDirsCheckBox.Checked := fifIncludeSubDirs in NewOptions;
   ReplaceCheckBox.Checked := [fifReplace,fifReplaceAll]*NewOptions<>[];
   
-  if fifSearchProject in NewOptions then WhereRadioGroup.ItemIndex := 0;
-  if fifSearchOpen in NewOptions then WhereRadioGroup.ItemIndex := 1;
-  if fifSearchDirectories in NewOptions then WhereRadioGroup.ItemIndex := 2;
+  if fifSearchProject     in NewOptions then WhereRadioGroup.ItemIndex := ItemIndProject;
+  if fifSearchOpen        in NewOptions then WhereRadioGroup.ItemIndex := ItemIndOpenFiles;
+  if fifSearchDirectories in NewOptions then WhereRadioGroup.ItemIndex := ItemIndDirectories;
+  if fifSearchActive      in NewOptions then WhereRadioGroup.ItemIndex := ItemIndActiveFile;
 
   UpdateReplaceCheck;
 end;
@@ -228,9 +236,10 @@ begin
   if ReplaceCheckBox.Checked then Include(Result, fifReplace);
 
   case WhereRadioGroup.ItemIndex of
-    0: Include(Result, fifSearchProject);
-    1: Include(Result, fifSearchOpen);
-    2: Include(Result, fifSearchDirectories);
+    ItemIndProject    : Include(Result, fifSearchProject);
+    ItemIndOpenFiles  : Include(Result, fifSearchOpen);
+    ItemIndDirectories: Include(Result, fifSearchDirectories);
+    ItemIndActiveFile : Include(Result, fifSearchActive);
   end;//case
 end;
 
@@ -373,8 +382,7 @@ begin
   FileMaskComboBox.Text:= TLazSearch(Sender).SearchMask;
 end;
 
-procedure TLazFindInFilesDialog.FindInFiles(AProject: TProject;
-  const AFindText: string);
+procedure TLazFindInFilesDialog.FindInFiles(AProject: TProject; const AFindText: string);
 var
   SearchForm:  TSearchProgressForm;
 begin
@@ -392,22 +400,23 @@ begin
   begin
     SaveHistory;
 
-  SearchForm:= TSearchProgressForm.Create(SearchResultsView);
-  with SearchForm do begin
-    SearchOptions   := self.Options;
-    SearchText      := self.FindText;
-    ReplaceText     := self.ReplaceText;
-    SearchMask      := self.FileMaskComboBox.Text;
-    SearchDirectory := self.GetResolvedDirectory;
-  end;
+    SearchForm:= TSearchProgressForm.Create(SearchResultsView);
+    with SearchForm do begin
+      SearchOptions   := self.Options;
+      SearchText      := self.FindText;
+      ReplaceText     := self.ReplaceText;
+      SearchMask      := self.FileMaskComboBox.Text;
+      SearchDirectory := self.GetResolvedDirectory;
+    end;
 
     try
       if FindText <> '' then
       begin
         case WhereRadioGroup.ItemIndex of
-          0: SearchForm.DoSearchProject(AProject);
-          1: SearchForm.DoSearchOpenFiles;
-          2: SearchForm.DoSearchDir;
+          ItemIndProject    : SearchForm.DoSearchProject(AProject);
+          ItemIndOpenFiles  : SearchForm.DoSearchOpenFiles;
+          ItemIndDirectories: SearchForm.DoSearchDir;
+          ItemIndActiveFile : SearchForm.DoSearchActiveFile;
         end;
       end;
     finally

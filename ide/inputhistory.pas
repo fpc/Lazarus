@@ -166,9 +166,10 @@ type
     fifMultiLine,
     fifSearchProject,    // search in all project files
     fifSearchOpen,       // search in all open files in editor
+    fifSearchActive,     // search in active open file in editor
     fifSearchDirectories,// search in directories
     fifIncludeSubDirs,
-    fifReplace,  // replace and ask user before each replace
+    fifReplace,   // replace and ask user before each replace
     fifReplaceAll // replace without asking user
     );
   TLazFindInFileSearchOptions = set of TLazFindInFileSearchOption;

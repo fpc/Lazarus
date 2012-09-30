@@ -75,9 +75,10 @@ type
     fSearchFileList: TStringList;
     fSearchFiles: boolean;
     fSearchFor: String;
-    fSearchOpen: boolean;
-    fSearchProject: boolean;
     fTheDirectory: string;
+    fSearchOpen: boolean;
+    fSearchActive: boolean;
+    fSearchProject: boolean;
     fAborting: boolean;
     fLastUpdateProgress: DWORD;
     procedure DoFindInFiles(ADirectory: string);
@@ -94,6 +95,7 @@ type
     function DoSearch: integer;
   public
     procedure DoSearchOpenFiles;
+    procedure DoSearchActiveFile;
     procedure DoSearchDir;
     procedure DoSearchProject(AProject: TProject);
   public
@@ -675,6 +677,7 @@ begin
   fRecursive:= (fifIncludeSubDirs in TheOptions);
   fSearchProject:= (fifSearchProject in TheOptions);
   fSearchOpen:= (fifSearchOpen in TheOptions);
+  fSearchActive:= (fifSearchActive in TheOptions);
   fSearchFiles:= (fifSearchDirectories in TheOptions);
 end;//SetOptions
 
@@ -690,6 +693,7 @@ begin
   if fRecursive then include(Result,fifIncludeSubDirs);
   if fSearchProject then include(Result, fifSearchProject);
   if fSearchOpen then include(Result,fifSearchOpen);
+  if fSearchActive then include(Result,fifSearchActive);
   if fSearchFiles then include(Result,fifSearchDirectories);
 end;//GetOptions
 
@@ -711,7 +715,7 @@ begin
     try
       if fSearchFiles then
         DoFindInFiles(fTheDirectory);
-      if fSearchProject or fSearchOpen then
+      if fSearchProject or fSearchOpen or fSearchActive then
         DoFindInSearchList;
       if Assigned(fResultsList) then begin
         Result:=fResultsList.Count;     // Return the real item count.
@@ -942,11 +946,24 @@ begin
       //only if file exists on disk
       SrcEdit := SourceEditorManagerIntf.UniqueSourceEditors[i];
       if FilenameIsAbsolute(SrcEdit.FileName)
-        and (not FileExistsCached(SrcEdit.FileName))
-      then
+      and (not FileExistsCached(SrcEdit.FileName)) then
         continue;
       TheFileList.Add(SrcEdit.FileName);
     end;
+    SearchFileList:= TheFileList;
+    DoSearchAndAddToSearchResults;
+  finally
+    FreeAndNil(TheFileList);
+  end;
+end;
+
+procedure TSearchProgressForm.DoSearchActiveFile;
+var
+  TheFileList: TStringList;
+begin
+  try
+    TheFileList:= TStringList.Create;      // Add a single file to the list
+    TheFileList.Add(SourceEditorManagerIntf.ActiveEditor.FileName);
     SearchFileList:= TheFileList;
     DoSearchAndAddToSearchResults;
   finally
