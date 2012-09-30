@@ -2496,10 +2496,8 @@ procedure TUnitInfo.SetModified(const AValue: boolean);
 begin
   if Modified=AValue then exit;
   fModified:=AValue;
-  if not fModified then begin
-    if Source<>nil then
-      fSourceChangeStep:=Source.ChangeStep;
-  end;
+  if (not fModified) and Assigned(Source) then
+    fSourceChangeStep:=Source.ChangeStep;
 end;
 
 procedure TUnitInfo.SetProject(const AValue: TProject);
