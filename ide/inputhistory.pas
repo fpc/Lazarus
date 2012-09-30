@@ -164,8 +164,8 @@ type
     fifWholeWord,
     fifRegExpr,
     fifMultiLine,
-    fifSearchProject, // search in all project files
-    fifSearchOpen,    // search in all open files in editor
+    fifSearchProject,    // search in all project files
+    fifSearchOpen,       // search in all open files in editor
     fifSearchDirectories,// search in directories
     fifIncludeSubDirs,
     fifReplace,  // replace and ask user before each replace
@@ -345,7 +345,7 @@ const
     'RegExprMultiLine',
     'ssoFindContinue'
     );
-  LazFindInFileSearchOptionsDefault = [fifSearchOpen];
+  LazFindInFileSearchOptionsDefault = [fifSearchOpen, fifIncludeSubDirs];
   LazFindInFileSearchOptionNames: array[TLazFindInFileSearchOption] of string =(
     'MatchCase',
     'WholeWord',
@@ -353,6 +353,7 @@ const
     'MultiLine',
     'SearchProject',
     'SearchOpen',
+    'SearchCurrent',
     'SearchDirectories',
     'IncludeSubDirs',
     'Replace',
@@ -506,8 +507,7 @@ begin
   LoadRecentList(XMLConfig,FFindInFilesMaskHistory,Path+
                                           'FindInFiles/History/Masks/',rltFile);
   FFindInFilesSearchOptions:=[];
-  for FIFOption:=Low(TLazFindInFileSearchOption) to
-    High(TLazFindInFileSearchOption)
+  for FIFOption:=Low(TLazFindInFileSearchOption) to High(TLazFindInFileSearchOption)
   do begin
     if XMLConfig.GetValue(
       Path+'FindInFiles/Options/'+LazFindInFileSearchOptionNames[FIFOption],
