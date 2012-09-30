@@ -3418,9 +3418,6 @@ var
   SenderWidget: QWidgetH;
 begin
   Result := False;
-  {$IFDEF TestMouseMoveCrash}
-  DebugLn('TQtWidget.SlotMouseMove: start');
-  {$ENDIF}
   if not CanSendLCLMessage or (Sender = nil) or
     not QObject_isWidgetType(Sender) then
     Exit(True);
@@ -3436,9 +3433,11 @@ begin
 
     // get parent form, so check if mouse is out of parent form first.
     W := QWidget_window(SenderWidget);
+
     if W <> nil then
     begin
       QWidget_frameGeometry(W, @R);
+
       // exclude borders from frame
       FrameBorder := GetPixelMetric(QStylePM_DefaultFrameWidth, nil, W);
       TitleBarHeight := GetPixelMetric(QStylePM_TitleBarHeight, nil, W);
@@ -3478,18 +3477,9 @@ begin
   end;
 
   FillChar(Msg, SizeOf(Msg), #0);
-
-  {$IFDEF TestMouseMoveCrash}
-  DebugLn('TQtWidget.SlotMouseMove: before QMouseEvent_pos');
-  {$ENDIF}
+  
   MousePos := QMouseEvent_pos(QMouseEventH(Event))^;
-  {$IFDEF TestMouseMoveCrash}
-  DebugLn('TQtWidget.SlotMouseMove: after QMouseEvent_pos');
-  {$ENDIF}
   OffsetMousePos(@MousePos);
-  {$IFDEF TestMouseMoveCrash}
-  DebugLn('TQtWidget.SlotMouseMove: after OffsetMousePos');
-  {$ENDIF}
 
   Msg.XPos := SmallInt(MousePos.X);
   Msg.YPos := SmallInt(MousePos.Y);
@@ -3502,9 +3492,6 @@ begin
   NotifyApplicationUserInput(LCLObject, Msg.Msg);
   DeliverMessage(Msg);
   SetNoMousePropagation(SenderWidget, True);
-  {$IFDEF TestMouseMoveCrash}
-  DebugLn('TQtWidget.SlotMouseMove: end');
-  {$ENDIF}
 end;
 
 {------------------------------------------------------------------------------
