@@ -6029,7 +6029,7 @@ var
       ScrollBar.setMinimum(ScrollInfo.nMin);
 
       // we must recount ScrollBar.Max since invalid value raises AV
-      iRecountMax := ScrollInfo.nMax - ScrollInfo.nPage;
+      iRecountMax := ScrollInfo.nMax - Integer(ScrollInfo.nPage);
       if iRecountMax < ScrollInfo.nMin then
         iRecountMax := ScrollInfo.nMin;
 
@@ -6041,7 +6041,7 @@ var
       // segfaults if we don't check Enabled property
       if ScrollBar.getEnabled then
       begin
-        ScrollBar.setPageStep(ScrollInfo.nPage);
+        ScrollBar.setPageStep(Integer(ScrollInfo.nPage));
         WheelLines := QApplication_wheelScrollLines();
         with Scrollbar do
         begin
