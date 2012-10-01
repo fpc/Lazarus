@@ -243,7 +243,7 @@ end;
 
 function TToolBar.IsVertical: Boolean;
 begin
-  if Align = alNone then
+  if Align in [alNone, alClient, alCustom] then
     Result := Height > Width
   else
     Result := Align in [alLeft, alRight];
