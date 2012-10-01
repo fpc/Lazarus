@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2012-08-15 17:02+0100\n"
+"PO-Revision-Date: 2012-09-30 23:24+0100\n"
 "Last-Translator: Swen Heinig <swen.heinig@freenet.de>\n"
 "Language-Team: Deutsch <lazarus@miraclec.com>\n"
 "MIME-Version: 1.0\n"
@@ -1084,7 +1084,7 @@ msgstr "Verschiebbar"
 
 #: lazarusidestrconsts.dlgcosetasdefault
 msgid "Set compiler options as default"
-msgstr ""
+msgstr " Diese Compilereinst. als Vorgabe"
 
 #: lazarusidestrconsts.dlgcoshowerr
 #| msgid "Show Errors"
@@ -1440,13 +1440,11 @@ msgid "This option will open a new Tab in an existing or new Window, if no unloc
 msgstr "Diese Option öffnet einen neuen Reiter in einem vorhandenen oder neuen Fenster falls kein entsperrter Reiter gefunden wurde. Diese Option hat immer Erfolg und es werden keine weiteren Optionen mehr geprüft."
 
 #: lazarusidestrconsts.dlgeditaccessdescunlockedopennewinnewwin
-#, fuzzy
 #| msgid "If no unlocked tab is found, then this option will open a new Tab in a new  Window (even if other existing windows could be used for the new tab). This option will always succeed, further options are never tested."
 msgid "If no unlocked tab is found, then this option will open a new Tab in a new Window (even if other existing windows could be used for the new tab). This option will always succeed, further options are never tested."
 msgstr "Diese Option öffnet einen neuen Reiter immer in einem neuen Fenster falls kein entsperrter Reiter gefunden wurde. Diese Option hat immer Erfolg und es werden keine weiteren Optionen geprüft."
 
 #: lazarusidestrconsts.dlgeditaccessdescunlockedopennewinoldwin
-#, fuzzy
 #| msgid "This option will open a new Tab in an existing (and only in an existing) Window, if no unlocked tab is found. A tab is only opened if a window exists, that has not yet an editor for the target file."
 msgid "If no unlocked tab is found, then this option will open a new Tab in an existing (and only in an existing) Window. A tab is only opened if a window exists, that has not yet an editor for the target file."
 msgstr "Diese Option öffnet einen neuen Reiter in einem vorhandenen Fenster, falls kein entsperrter Reiter gefunden wird. Ein Reiter wird nur geöffnet, wenn ein Fenster verfügbar ist, das noch keinen Editor für die Zieldatei enthält."
@@ -1941,7 +1939,7 @@ msgstr "Hostapplikation"
 
 #: lazarusidestrconsts.dlgidemacrovalues
 msgid "IDE Macro Values"
-msgstr ""
+msgstr "IDE-Makrowerte"
 
 #: lazarusidestrconsts.dlgidentifiercompletion
 #| msgid "Identifier completion"
@@ -4155,7 +4153,7 @@ msgstr "Immer ignorieren"
 
 #: lazarusidestrconsts.lisamacrowiththisnamealreadyexists
 msgid "A macro with this name already exists."
-msgstr ""
+msgstr "Ein Makro mit diesem Namen existiert bereits."
 
 #: lazarusidestrconsts.lisambiguousfilefound
 msgid "Ambiguous file found"
@@ -4235,7 +4233,7 @@ msgstr "&Anwendungsklassenname"
 
 #: lazarusidestrconsts.lisapplicationprogramdescriptor
 msgid "A graphical Free Pascal application using the cross-platform LCL library for its GUI."
-msgstr ""
+msgstr "Eine grafische Free-Pascal-Anwendung mit einer GUI unter Verwendung der plattformübergreifenden LCL-Bibliothek."
 
 #: lazarusidestrconsts.lisapplybuildflagsbtodependenciestoo
 msgid "apply build flags (-B) to dependencies too"
@@ -5331,7 +5329,7 @@ msgstr "Lazarus-Quelltext aufräumen"
 
 #: lazarusidestrconsts.liscleanonlyonce
 msgid "Switch after building to automatically"
-msgstr "Nach Neukompilierung zu automatisch wechseln"
+msgstr "Nach Neukompilierung zu Automatisch wechseln"
 
 #: lazarusidestrconsts.liscleanup
 msgid "Clean up"
@@ -7964,7 +7962,7 @@ msgstr "Endlosschleife in Makros"
 
 #: lazarusidestrconsts.lisenternewnameformacros
 msgid "Enter new name for Macro \"%s\""
-msgstr ""
+msgstr "Neuen Namen für Makro \"%s\" eingeben"
 
 #: lazarusidestrconsts.lisenvironmentvariablenameasparameter
 msgid "Environment variable, name as parameter"
@@ -8340,7 +8338,7 @@ msgstr "Laden des Status des Faltens fehlgeschlagen"
 
 #: lazarusidestrconsts.lisfailedtosavefile
 msgid "Failed to save file."
-msgstr ""
+msgstr "Speichern der Datei fehlgeschlagen."
 
 #: lazarusidestrconsts.lisfepaintdesigneritemsonidle
 msgid "Reduce designer painting"
@@ -11208,10 +11206,9 @@ msgid "Open &Recent"
 msgstr "Wieder öffnen ..."
 
 #: lazarusidestrconsts.lismenuopenrecentpkg
-#, fuzzy
 #| msgid "Open recent package"
 msgid "Open Recent Package"
-msgstr "Letztes Package wieder öffnen ..."
+msgstr "Letzte Packages ..."
 
 #: lazarusidestrconsts.lismenuopenrecentproject
 #| msgid "Open Recent Project ..."
@@ -11931,7 +11928,7 @@ msgstr "Makro %d"
 
 #: lazarusidestrconsts.lisnewmacroname2
 msgid "New Macroname"
-msgstr ""
+msgstr "Neuer Makroname"
 
 #: lazarusidestrconsts.lisnewproject
 #| msgid "%s - (new project)"
@@ -13857,7 +13854,7 @@ msgstr "Primärer Konfigurationspfad"
 
 #: lazarusidestrconsts.lisprior
 msgid "prior %s"
-msgstr ""
+msgstr "vor %s"
 
 #: lazarusidestrconsts.lisprivate
 msgid "Private"
@@ -13897,7 +13894,7 @@ msgstr "Programm %s nicht gefunden"
 
 #: lazarusidestrconsts.lisprogramprogramdescriptor
 msgid "A Free Pascal command line program with some useful settings added."
-msgstr ""
+msgstr "Ein Free-Pascal-Kommandozeilenprogramm mit einigen hilfreichen Einstellungen."
 
 #: lazarusidestrconsts.lisprogramsourcemusthaveapascalextensionlikepaspporlp
 msgid "Program source must have a pascal extension like .pas, .pp or .lpr"
@@ -14983,11 +14980,11 @@ msgstr "Geschwister"
 
 #: lazarusidestrconsts.lissimpleprogram
 msgid "Simple Program"
-msgstr ""
+msgstr "Einfaches Programm"
 
 #: lazarusidestrconsts.lissimpleprogramprogramdescriptor
 msgid "A most simple Free Pascal command line program."
-msgstr ""
+msgstr "Ein einfachstes Free-Pascal-Kommandozeilenprogramm."
 
 #: lazarusidestrconsts.lissimplesyntax
 #| msgid "Simple Syntax"
@@ -16525,7 +16522,7 @@ msgstr ""
 
 #: lazarusidestrconsts.lisupgradeconfiguration
 msgid "Upgrade configuration"
-msgstr ""
+msgstr "Konfiguration aktualisieren"
 
 #: lazarusidestrconsts.lisuppercasestring
 msgid "uppercase string"
@@ -16988,7 +16985,7 @@ msgstr "i18n einschalten"
 
 #: lazarusidestrconsts.rsenterpid
 msgid "Enter PID"
-msgstr ""
+msgstr "Geben Sie die PID ein:"
 
 #: lazarusidestrconsts.rsfilterthelistwithstring
 msgid "Filter the lines in list with a string"
