@@ -354,7 +354,6 @@ begin
   if not AButton.HandleAllocated then
     Exit;
   cf := NSStringUtf8(DefEq[ADefault]);
-
   NSButton(AButton.Handle).setKeyEquivalent(cf);
   cf.release;
 end;

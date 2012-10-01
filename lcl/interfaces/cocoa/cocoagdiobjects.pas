@@ -725,9 +725,10 @@ begin
   end;
 
   HasAlpha := AType in [cbtARGB, cbtRGBA];
-  if HasAlpha then
-    BitmapFormat := NSAlphaNonpremultipliedBitmapFormat
-  else
+  // Non premultiplied bitmaps can't be used for bitmap context
+  //if HasAlpha then
+  //  BitmapFormat := NSAlphaNonpremultipliedBitmapFormat
+  //else
     BitmapFormat := 0;
   if AType in [cbtARGB, cbtRGB] then
     BitmapFormat := BitmapFormat or NSAlphaFirstBitmapFormat;
@@ -754,7 +755,7 @@ end;
 
 constructor TCocoaBitmap.CreateDefault;
 begin
-  Create(1, 1, 32, 32, cbaDQWord, cbtARGB, nil);
+  Create(1, 1, 32, 32, cbaByte, cbtARGB, nil);
 end;
 
 destructor TCocoaBitmap.Destroy;
@@ -2534,6 +2535,9 @@ var
   BaseSpace: CGColorSpaceRef;
 begin
   if ADC = nil then Exit;
+
+  if ADC.CGContext = nil then
+    Exit;
 
   if UseROP2 then
     AROP2 := ADC.ROP2
