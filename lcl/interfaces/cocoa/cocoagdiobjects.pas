@@ -359,7 +359,7 @@ type
     procedure ClearClipping;
   public
     ctx: NSGraphicsContext;
-    constructor Create; virtual;
+    constructor Create(AGraphicsContext: NSGraphicsContext); virtual;
     destructor Destroy; override;
 
     function SaveDC: Integer;
@@ -424,7 +424,7 @@ type
     FBitmap : TCocoaBitmap;
     procedure SetBitmap(const AValue: TCocoaBitmap);
   public
-    constructor Create; override;
+    constructor Create;
     destructor Destroy; override;
 
     property Bitmap: TCocoaBitmap read FBitmap write SetBitmap;
@@ -1137,7 +1137,7 @@ end;
 
 constructor TCocoaBitmapContext.Create;
 begin
-  inherited Create;
+  inherited Create(nil);
   FBitmap := DefaultBitmap;
 end;
 
@@ -1324,9 +1324,11 @@ begin
   FClipRegion.Shape := AData.ClipShape;
 end;
 
-constructor TCocoaContext.Create;
+constructor TCocoaContext.Create(AGraphicsContext: NSGraphicsContext);
 begin
   inherited Create;
+
+  ctx := AGraphicsContext;
 
   FBkBrush := TCocoaBrush.CreateDefault;
 
@@ -2600,7 +2602,7 @@ initialization
   DefaultPen := TCocoaPen.CreateDefault;
   DefaultFont := TCocoaFont.CreateDefault;
   DefaultBitmap := TCocoaBitmap.CreateDefault;
-  ScreenContext := TCocoaContext.Create;
+  ScreenContext := TCocoaContext.Create(nil);
 
 finalization
   ScreenContext.Free;

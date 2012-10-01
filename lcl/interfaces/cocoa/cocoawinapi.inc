@@ -1310,16 +1310,10 @@ begin
     // ToDo: Not finished yet
     Result := 0;
 
-{    if NSObject(hWnd) is TCocoaGroupBox then ctx := TCocoaGroupBox(hWnd).Context;
+    ctx := NSObject(hWnd).lclGetCallback.GetContext;
 
-    if ctx <> nil then
-      Result := HDC(ctx)
-    // use dummy context if we are outside paint event
-    else
-    begin}
-      ctx := TCocoaContext.Create({NSObject(HWnd)});
-      Result := HDC(ctx);
-{    end;}
+    // todo: use dummy context if we are outside paint event
+    Result := HDC(ctx);
   end;
 
   {$IFDEF VerboseWinAPI}
