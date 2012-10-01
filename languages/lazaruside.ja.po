@@ -8683,6 +8683,10 @@ msgstr "プロジェクト内のファイルをすべて検索(&p)"
 msgid "search all &open files"
 msgstr "すべて検索し、ファイルを開く(&o)"
 
+#: lazarusidestrconsts.lisfindfilesearchinactivefile
+msgid "search in &active file"
+msgstr ""
+
 #: lazarusidestrconsts.lisfindfilesearchindirectories
 msgid "search in &directories"
 msgstr "ディレクトリ内を検索(&d)"
@@ -10916,9 +10920,13 @@ msgstr "構築ファイルを掃除 ..."
 
 #: lazarusidestrconsts.lismenucloseall
 #, fuzzy
-#| msgid "Close a&ll editor files"
-msgid "Close A&ll Editor Files"
+#| msgid "Close A&ll Editor Files"
+msgid "Close A&ll"
 msgstr "全ファイルを閉じる"
+
+#: lazarusidestrconsts.lismenucloseeditorfile
+msgid "&Close Editor File"
+msgstr ""
 
 #: lazarusidestrconsts.lismenucloseproject
 msgid "Close Project"

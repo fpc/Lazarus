@@ -8512,6 +8512,10 @@ msgstr ""
 msgid "search all &open files"
 msgstr ""
 
+#: lazarusidestrconsts.lisfindfilesearchinactivefile
+msgid "search in &active file"
+msgstr ""
+
 #: lazarusidestrconsts.lisfindfilesearchindirectories
 msgid "search in &directories"
 msgstr ""
@@ -10657,9 +10661,13 @@ msgstr ""
 
 #: lazarusidestrconsts.lismenucloseall
 #, fuzzy
-#| msgid "Close a&ll editor files"
-msgid "Close A&ll Editor Files"
+#| msgid "Close A&ll Editor Files"
+msgid "Close A&ll"
 msgstr "Tanca tots els fitxers de l'editor"
+
+#: lazarusidestrconsts.lismenucloseeditorfile
+msgid "&Close Editor File"
+msgstr ""
 
 #: lazarusidestrconsts.lismenucloseproject
 msgid "Close Project"

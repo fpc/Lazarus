@@ -8486,6 +8486,10 @@ msgstr "Visuose &projekto failuose"
 msgid "search all &open files"
 msgstr "Visuose &atvertuose failuose"
 
+#: lazarusidestrconsts.lisfindfilesearchinactivefile
+msgid "search in &active file"
+msgstr ""
+
 #: lazarusidestrconsts.lisfindfilesearchindirectories
 msgid "search in &directories"
 msgstr "Aplan&kuose"
@@ -10656,9 +10660,14 @@ msgid "Clean up Build Files ..."
 msgstr "Apvalyti darymo failus"
 
 #: lazarusidestrconsts.lismenucloseall
-#| msgid "Close a&ll editor files"
-msgid "Close A&ll Editor Files"
+#, fuzzy
+#| msgid "Close A&ll Editor Files"
+msgid "Close A&ll"
 msgstr "Užverti &visus rengyklės failus"
+
+#: lazarusidestrconsts.lismenucloseeditorfile
+msgid "&Close Editor File"
+msgstr ""
 
 #: lazarusidestrconsts.lismenucloseproject
 msgid "Close Project"

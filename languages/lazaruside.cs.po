@@ -8309,6 +8309,10 @@ msgstr "hledat všechny soubory v &projektu"
 msgid "search all &open files"
 msgstr "hledat všechny &otevřené soubory"
 
+#: lazarusidestrconsts.lisfindfilesearchinactivefile
+msgid "search in &active file"
+msgstr ""
+
 #: lazarusidestrconsts.lisfindfilesearchindirectories
 msgid "search in &directories"
 msgstr "hledat v &adresářích"
@@ -10425,8 +10429,14 @@ msgid "Clean up Build Files ..."
 msgstr "Vyčistit sestavené soubory ..."
 
 #: lazarusidestrconsts.lismenucloseall
-msgid "Close A&ll Editor Files"
+#, fuzzy
+#| msgid "Close A&ll Editor Files"
+msgid "Close A&ll"
 msgstr "Zavřít &všechny soubory editoru"
+
+#: lazarusidestrconsts.lismenucloseeditorfile
+msgid "&Close Editor File"
+msgstr ""
 
 #: lazarusidestrconsts.lismenucloseproject
 msgid "Close Project"

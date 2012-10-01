@@ -8656,6 +8656,10 @@ msgstr "חפש את כל הקבצים בפרוי&יקט"
 msgid "search all &open files"
 msgstr "חפש את כל הקבצים הפתוחים&"
 
+#: lazarusidestrconsts.lisfindfilesearchinactivefile
+msgid "search in &active file"
+msgstr ""
+
 #: lazarusidestrconsts.lisfindfilesearchindirectories
 msgid "search in &directories"
 msgstr "חפש בס&פריות"
@@ -10883,9 +10887,13 @@ msgstr ""
 
 #: lazarusidestrconsts.lismenucloseall
 #, fuzzy
-#| msgid "Close a&ll editor files"
-msgid "Close A&ll Editor Files"
+#| msgid "Close A&ll Editor Files"
+msgid "Close A&ll"
 msgstr "סגור את כל הקבצים בעורך"
+
+#: lazarusidestrconsts.lismenucloseeditorfile
+msgid "&Close Editor File"
+msgstr ""
 
 #: lazarusidestrconsts.lismenucloseproject
 msgid "Close Project"

@@ -8451,6 +8451,10 @@ msgstr "шукати в усіх файлах &проекту"
 msgid "search all &open files"
 msgstr "шукати в усіх від&критих файлах"
 
+#: lazarusidestrconsts.lisfindfilesearchinactivefile
+msgid "search in &active file"
+msgstr ""
+
 #: lazarusidestrconsts.lisfindfilesearchindirectories
 msgid "search in &directories"
 msgstr "шукати в &директоріях"
@@ -10611,9 +10615,14 @@ msgid "Clean up Build Files ..."
 msgstr "Очистити файли побудови ..."
 
 #: lazarusidestrconsts.lismenucloseall
-#| msgid "Close a&ll editor files"
-msgid "Close A&ll Editor Files"
+#, fuzzy
+#| msgid "Close A&ll Editor Files"
+msgid "Close A&ll"
 msgstr "Закрити В&сі файли Редактора"
+
+#: lazarusidestrconsts.lismenucloseeditorfile
+msgid "&Close Editor File"
+msgstr ""
 
 #: lazarusidestrconsts.lismenucloseproject
 msgid "Close Project"

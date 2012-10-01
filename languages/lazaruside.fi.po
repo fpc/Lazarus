@@ -8276,6 +8276,10 @@ msgstr "Hae projektin kaikista tiedostoista"
 msgid "search all &open files"
 msgstr "Hae kaikista avoinna olevista tiedostoista"
 
+#: lazarusidestrconsts.lisfindfilesearchinactivefile
+msgid "search in &active file"
+msgstr ""
+
 #: lazarusidestrconsts.lisfindfilesearchindirectories
 msgid "search in &directories"
 msgstr "Etsi kansioista"
@@ -10385,8 +10389,14 @@ msgid "Clean up Build Files ..."
 msgstr "Siivoa kootut tiedostot ..."
 
 #: lazarusidestrconsts.lismenucloseall
-msgid "Close A&ll Editor Files"
+#, fuzzy
+#| msgid "Close A&ll Editor Files"
+msgid "Close A&ll"
 msgstr "Sulje kaikki editorin tiedostot"
+
+#: lazarusidestrconsts.lismenucloseeditorfile
+msgid "&Close Editor File"
+msgstr ""
 
 #: lazarusidestrconsts.lismenucloseproject
 msgid "Close Project"

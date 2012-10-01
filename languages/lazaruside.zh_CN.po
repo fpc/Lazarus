@@ -8615,6 +8615,10 @@ msgstr "搜索工程中的所有文件(&p)"
 msgid "search all &open files"
 msgstr "搜索所有打开的文件(&o)"
 
+#: lazarusidestrconsts.lisfindfilesearchinactivefile
+msgid "search in &active file"
+msgstr ""
+
 #: lazarusidestrconsts.lisfindfilesearchindirectories
 msgid "search in &directories"
 msgstr "在目录中搜索(&d)"
@@ -10824,9 +10828,13 @@ msgstr ""
 
 #: lazarusidestrconsts.lismenucloseall
 #, fuzzy
-#| msgid "Close a&ll editor files"
-msgid "Close A&ll Editor Files"
+#| msgid "Close A&ll Editor Files"
+msgid "Close A&ll"
 msgstr "关闭所有编辑器中的文件"
+
+#: lazarusidestrconsts.lismenucloseeditorfile
+msgid "&Close Editor File"
+msgstr ""
 
 #: lazarusidestrconsts.lismenucloseproject
 msgid "Close Project"

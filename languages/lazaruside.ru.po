@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2012-09-26 02:45+0400\n"
+"PO-Revision-Date: 2012-10-02 00:07+0400\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -8534,6 +8534,10 @@ msgstr "искать во всех &файлах проекта"
 msgid "search all &open files"
 msgstr "искать во всех &открытых файлах"
 
+#: lazarusidestrconsts.lisfindfilesearchinactivefile
+msgid "search in &active file"
+msgstr "искать в теку&щем файле"
+
 #: lazarusidestrconsts.lisfindfilesearchindirectories
 msgid "search in &directories"
 msgstr "искать в &каталогах"
@@ -10715,9 +10719,13 @@ msgid "Clean up Build Files ..."
 msgstr "Очистить файлы сборки ..."
 
 #: lazarusidestrconsts.lismenucloseall
-#| msgid "Close a&ll editor files"
-msgid "Close A&ll Editor Files"
-msgstr "&Закрыть все файлы редактора"
+#| msgid "Close A&ll Editor Files"
+msgid "Close A&ll"
+msgstr "&Закрыть все"
+
+#: lazarusidestrconsts.lismenucloseeditorfile
+msgid "&Close Editor File"
+msgstr "Закрыть файл &редактора"
 
 #: lazarusidestrconsts.lismenucloseproject
 msgid "Close Project"
