@@ -424,7 +424,7 @@ type
     FBitmap : TCocoaBitmap;
     procedure SetBitmap(const AValue: TCocoaBitmap);
   public
-    constructor Create;
+    constructor Create; reintroduce;
     destructor Destroy; override;
 
     property Bitmap: TCocoaBitmap read FBitmap write SetBitmap;

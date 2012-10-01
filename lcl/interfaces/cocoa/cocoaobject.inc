@@ -36,7 +36,7 @@ begin
     DebugLn('TCocoaWidgetSet.AppInit');
   {$ENDIF}
 
-  delegate:=TCocoaAppDelegate.alloc;
+  delegate := TCocoaAppDelegate.alloc.init;
 
   { Creates the application NSApp object }
   FNsApp := NSApplication.sharedApplication;

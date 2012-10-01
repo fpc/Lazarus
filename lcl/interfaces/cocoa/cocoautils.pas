@@ -37,7 +37,7 @@ function RectToNSRect(const r: TRect): NSRect;
 function NSRectToRect(const NS: NSRect): TRect;
 
 procedure NSToLCLRect(const ns: NSRect; ParentHeight: Single; out lcl: TRect);
-procedure LCLToNSRect(const lcl: TRect; ParentHeight: Single; var ns: NSRect);
+procedure LCLToNSRect(const lcl: TRect; ParentHeight: Single; out ns: NSRect);
 
 function CreateParamsToNSRect(const params: TCreateParams): NSRect;
 
@@ -290,7 +290,7 @@ begin
   end;
 end;
 
-procedure LCLToNSRect(const lcl: TRect; ParentHeight: Single; var ns: NSRect);
+procedure LCLToNSRect(const lcl: TRect; ParentHeight: Single; out ns: NSRect);
 begin
   ns.origin.x:=lcl.left;
   ns.origin.y:=ParentHeight-(lcl.bottom-lcl.Top)-lcl.Top;
