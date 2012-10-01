@@ -2106,7 +2106,9 @@ begin
   SourceEditorManager.IncUpdateLock;
   try
     while SourceEditorManager.SourceEditorCount > 0 do begin
-      Result:=CloseEditorFile(SourceEditorManager.SourceEditors[0],[cfProjectClosing]);
+      Result:=CloseEditorFile(
+        SourceEditorManager.SourceEditors[SourceEditorManager.SourceEditorCount-1],
+        [cfProjectClosing]);
       if Result=mrAbort then exit;
     end;
   finally
@@ -2114,6 +2116,7 @@ begin
   end;
   {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TLazSourceFileManager.CloseProject B');{$ENDIF}
   IncreaseCompilerParseStamp;
+
   // close Project
   if ProjInspector<>nil then
     ProjInspector.LazProject:=nil;
