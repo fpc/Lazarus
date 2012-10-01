@@ -133,6 +133,7 @@ type
   private
   protected
   public
+  published
     class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
   end;
 
@@ -165,6 +166,7 @@ class function TCocoaWSHintWindow.CreateHandle(const AWinControl: TWinControl;
 var
   win: TCocoaPanel;
   cnt: TCocoaCustomControl;
+  R: NSRect;
 const
   WinMask = NSBorderlessWindowMask or NSUtilityWindowMask;
 begin
@@ -176,13 +178,16 @@ begin
     Exit;
   end;
 
-  win := TCocoaPanel(win.initWithContentRect_styleMask_backing_defer(CreateParamsToNSRect(AParams), WinMask, NSBackingStoreBuffered, False));
+  R := CreateParamsToNSRect(AParams);
+  win := TCocoaPanel(win.initWithContentRect_styleMask_backing_defer(R, WinMask, NSBackingStoreBuffered, False));
   win.enableCursorRects;
   TCocoaPanel(win).callback := TLCLWindowCallback.Create(win, AWinControl);
   win.setDelegate(win);
   win.setAcceptsMouseMovedEvents(True);
 
-  cnt := TCocoaCustomControl.alloc.init;
+  R.origin.x := 0;
+  R.origin.y := 0;
+  cnt := TCocoaCustomControl.alloc.initWithFrame(R);
   cnt.callback := TCocoaPanel(win).callback;
   win.setContentView(cnt);
 
@@ -289,6 +294,7 @@ var
   win: TCocoaPanel;
   cnt: TCocoaCustomControl;
   ns: NSString;
+  R: NSRect;
 const
   WinMask= NSTitledWindowMask or NSClosableWindowMask or NSMiniaturizableWindowMask or NSResizableWindowMask;
 begin
@@ -300,7 +306,8 @@ begin
     Exit;
   end;
 
-  win := TCocoaPanel(win.initWithContentRect_styleMask_backing_defer(CreateParamsToNSRect(AParams), WinMask, NSBackingStoreBuffered, False));
+  R := CreateParamsToNSRect(AParams);
+  win := TCocoaPanel(win.initWithContentRect_styleMask_backing_defer(R, WinMask, NSBackingStoreBuffered, False));
   win.enableCursorRects;
   TCocoaPanel(win).callback := TLCLWindowCallback.Create(win, AWinControl);
   win.setDelegate(win);
@@ -309,7 +316,10 @@ begin
   ns.release;
   win.setAcceptsMouseMovedEvents(True);
 
-  cnt := TCocoaCustomControl.alloc.init;
+  R.origin.x := 0;
+  R.origin.y := 0;
+
+  cnt := TCocoaCustomControl.alloc.initWithFrame(R);
   cnt.callback := TCocoaPanel(win).callback;
   win.setContentView(cnt);
 
