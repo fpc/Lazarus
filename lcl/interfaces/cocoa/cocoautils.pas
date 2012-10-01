@@ -46,8 +46,6 @@ function NSStringUtf8(const s: String): NSString;
 function NSStringToString(ns: NSString): String;
 
 function GetNSObjectView(obj: NSObject): NSView;
-procedure AddViewToNSObject(ctrl: NSView; obj: NSObject);
-procedure AddViewToNSObject(ctrl: NSView; obj: NSObject; X,Y: integer);
 
 procedure SetNSText(text: NSText; const s: String); inline;
 function GetNSText(text: NSText): string; inline;
@@ -192,21 +190,6 @@ begin
   if not Assigned(obj) then Exit;
   if obj.isKindOfClass_(NSView) then Result:=NSView(obj)
   else if obj.isKindOfClass_(NSWindow) then Result:=NSWindow(obj).contentView;
-end;
-
-procedure AddViewToNSObject(ctrl: NSView; obj: NSObject);
-var
-  view: NSView;
-begin
-  view := GetNSObjectView(obj);
-  if not Assigned(view) then Exit;
-  view.addSubView(ctrl);
-end;
-
-procedure AddViewToNSObject(ctrl: NSView; obj: NSObject; X,Y: integer);
-begin
-  AddViewToNSObject(ctrl, obj);
-  //SetViewFramePos(ctrl, x,y);
 end;
 
 function GetNSPoint(x, y: single): NSPoint;
