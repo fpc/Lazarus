@@ -29,7 +29,7 @@ interface
 {.$I cocoadefines.inc}
 
 uses
-//  MacOSAll,
+  MacOSAll,
   Classes, SysUtils, Types, LCLType, LCLProc, LCLClasses, LMessages,
   Controls, Forms, Graphics, Math, GraphType;
 
@@ -68,9 +68,8 @@ function FontStyleToQDStyle(const AStyle: TFontStyles): MacOSAll.Style;
 function QDStyleToFontStyle(QDStyle: Integer): TFontStyles;}
 
 procedure FillStandardDescription(out Desc: TRawImageDescription);
-
-{function GetCarbonThemeMetric(Metric: ThemeMetric; DefaultValue: Integer = 0): Integer;
-
+function GetHiThemeMetric(Metric: ThemeMetric; DefaultValue: Integer = 0): Integer;
+{
 function CreateCustomHIView(const ARect: HIRect; ControlStyle: TControlStyle = []): HIViewRef;
 
 procedure SetControlViewStyle(Control: ControlRef; TinySize, SmallSize, NormalSize: Integer; ControlHeight: Boolean = True);
@@ -618,19 +617,19 @@ begin
   Desc.MaskLineEnd := rileByteBoundary;
   Desc.MaskShift := 0;
 end;
-(*
+
 {------------------------------------------------------------------------------
-  Name:    GetCarbonThemeMetric
+  Name:    GetHiThemeMetric
   Params:  Metric       - Theme metric
            DefaultValue
   Returns: Theme metric value or default value if fails
  ------------------------------------------------------------------------------}
-function GetCarbonThemeMetric(Metric: ThemeMetric; DefaultValue: Integer): Integer;
+function GetHiThemeMetric(Metric: ThemeMetric; DefaultValue: Integer): Integer;
 begin
-  if OSError(GetThemeMetric(Metric, Result),
-    'GetCarbonThemeMetric', 'GetThemeMetric') then Result := DefaultValue;
+  if GetThemeMetric(Metric, Result) <> noErr then
+    Result := DefaultValue;
 end;
-
+(*
 {------------------------------------------------------------------------------
   Name:    CreateCustomHIView
   Params:  ARect - Bounds rect

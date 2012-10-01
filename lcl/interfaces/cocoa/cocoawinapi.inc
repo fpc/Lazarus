@@ -1745,11 +1745,11 @@ begin
   {$ENDIF}
 
   case NIndex of
-{    SM_CXHSCROLL,
+    SM_CXHSCROLL,
     SM_CYHSCROLL,
     SM_CXVSCROLL,
     SM_CYVSCROLL:
-      Result := 10;//GetCarbonThemeMetric(kThemeMetricScrollBarWidth);}
+      Result := GetHiThemeMetric(kThemeMetricScrollBarWidth);
     SM_CXSCREEN,
     SM_CXVIRTUALSCREEN: Result := Round(NSScreen.mainScreen.frame.size.width);
     SM_CYSCREEN,
@@ -1769,12 +1769,12 @@ begin
           Result := 64 else}
           Result := 16;
       end;
-{    SM_CXHTHUMB:
-      Result := 16;//GetCarbonThemeMetric(kThemeMetricScrollBarMinThumbWidth);
+    SM_CXHTHUMB:
+      Result := GetHiThemeMetric(kThemeMetricScrollBarMinThumbWidth);
     SM_CYVTHUMB:
-      Result := 16;//GetCarbonThemeMetric(kThemeMetricScrollBarMinThumbHeight);}
+      Result := GetHiThemeMetric(kThemeMetricScrollBarMinThumbHeight);
     SM_SWSCROLLBARSPACING:
-      Result:=0;
+      Result := 0;
   else
     DebugLn('TCocoaWidgetSet.GetSystemMetrics TODO ', DbgS(NIndex));;
   end;
