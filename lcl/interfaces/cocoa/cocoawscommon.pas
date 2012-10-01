@@ -101,7 +101,6 @@ const
 
 // Utility WS functions
 
-function AllocCustomControl(const AWinControl: TWinControl): TCocoaCustomControl;
 function EmbedInScrollView(AView: NSView): TCocoaScrollView;
 
 implementation
@@ -110,14 +109,6 @@ uses
   CocoaInt;
 
 {$I mackeycodes.inc}
-
-function AllocCustomControl(const AWinControl: TWinControl): TCocoaCustomControl;
-begin
-  if not Assigned(AWinControl) then
-    Exit(nil);
-  Result := TCocoaCustomControl(TCocoaCustomControl.alloc).init;
-  Result.callback := TLCLCommonCallback.Create(Result, AWinControl);
-end;
 
 function EmbedInScrollView(AView: NSView): TCocoaScrollView;
 var
@@ -804,22 +795,26 @@ end;
 procedure TLCLCommonCallback.Draw(ControlContext: NSGraphicsContext;
   const bounds, dirty: NSRect);
 var
-  struct: TPaintStruct;
+  PS: PPaintStruct;
 begin
   // todo: think more about draw call while previous draw still active
   if Assigned(FContext) then
     Exit;
-  FContext := TCocoaContext.Create;
+  FContext := TCocoaContext.Create(ControlContext);
   try
-    FContext.ctx := ControlContext;
     if FContext.InitDraw(Round(bounds.size.width), Round(bounds.size.height)) then
     begin
-      FillChar(struct, SizeOf(TPaintStruct), 0);
-      struct.hdc := HDC(FContext);
-      struct.rcPaint := NSRectToRect(dirty);
-      LCLSendPaintMsg(Target, HDC(FContext), @struct);
-      if FHasCaret then
-        DrawCaret;
+      New(PS);
+      try
+        FillChar(PS^, SizeOf(TPaintStruct), 0);
+        PS^.hdc := HDC(FContext);
+        PS^.rcPaint := NSRectToRect(dirty);
+        LCLSendPaintMsg(Target, HDC(FContext), PS);
+        if FHasCaret then
+          DrawCaret;
+      finally
+        Dispose(PS);
+      end;
     end;
   finally
     FreeAndNil(FContext);
