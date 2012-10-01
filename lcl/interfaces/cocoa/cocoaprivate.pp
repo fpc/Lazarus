@@ -1120,11 +1120,7 @@ var
   p: NSView;
   ns: NSRect;
 begin
-  Result := initWithFrame(ns);
-  if not Assigned(Result) then
-    Exit;
   p := nil;
-  setHidden(AParams.Style and WS_VISIBLE = 0);
   if (AParams.WndParent <> 0) then
   begin
     if (NSObject(AParams.WndParent).isKindOfClass_(NSView)) then
@@ -1138,6 +1134,12 @@ begin
       LCLToNSRect(Types.Bounds(X,Y,Width, Height), p.frame.size.height, ns)
     else
       ns := GetNSRect(X, Y, Width, Height);
+
+  Result := initWithFrame(ns);
+  if not Assigned(Result) then
+    Exit;
+
+  setHidden(AParams.Style and WS_VISIBLE = 0);
 
   if Assigned(p) then
     p.addSubview(Result);
