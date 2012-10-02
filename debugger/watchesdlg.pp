@@ -352,6 +352,7 @@ begin
     actAddWatchPoint.Enabled := False;
     actEvaluate.Enabled := False;
     actInspect.Enabled := False;
+    UpdateInspectPane;
     exit;
   end;
 
@@ -911,6 +912,8 @@ begin
   then WatchAdd(ASender, AWatch)
   else UpdateItem(Item, AWatch);
 
+  // TODO: if AWatch <> Selected, then prevent UpdateInspectPane
+  // Selected may update later, and calling UpdateInspectPane will schedule an unsucesful attemptn to fetch data
   if not FUpdatingAll
   then lvWatchesSelectItem(nil, nil, False);
   finally DebugLnExit(DBG_DATA_MONITORS, ['DebugDataWindow: TWatchesDlg.WatchUpdate']); end;
