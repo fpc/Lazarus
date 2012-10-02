@@ -1041,6 +1041,7 @@ begin
   p.FDistFunc := DIST_FUNCS[FChart.ReticuleMode];
   p.FPoint := APoint;
   p.FRadius := Trunc(Sqrt(MaxInt));
+  p.FOptimizeX := false;
   for s in CustomSeries(FChart) do
     if
       (not (s is TBasicPointSeries) or TBasicPointSeries(s).UseReticule) and
@@ -1311,6 +1312,7 @@ begin
   p.FDistFunc := DIST_FUNCS[DistanceMode];
   p.FPoint := APoint;
   p.FRadius := GrabRadius;
+  p.FOptimizeX := DistanceMode <> cdmOnlyY;
   best.FDist := MaxInt;
   for s in CustomSeries(FChart, FAffectedSeries.AsBooleans(FChart.SeriesCount)) do
     if
