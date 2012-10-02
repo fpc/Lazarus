@@ -470,6 +470,8 @@ function Gtk2TreeViewEditorEvent(widget: PGtkWidget; event: PGdkEvent; data: GPo
 var
   R: TRect;
   Alloc: TGtkAllocation;
+  w: PGtkWidget;
+  AOrientation: TGtkOrientation;
 begin
   Result := CallBackDefaultReturn;
   case event^._type of
@@ -489,6 +491,20 @@ begin
             Alloc.height := Bottom - Top;
           end;
           gtk_widget_size_allocate(Widget, @Alloc);
+        end;
+      end else
+      begin
+        w := gtk_widget_get_parent(Widget);
+        if Assigned(w) and GTK_IS_ICON_VIEW(w) then
+        begin
+          //gtk2 does not layout items correctly when iconArrangement is iaTop.
+          //so we force it to do so.
+          AOrientation := gtk_icon_view_get_orientation(PGtkIconView(w));
+          if AOrientation = GTK_ORIENTATION_HORIZONTAL then
+            gtk_icon_view_set_orientation(PGtkIconView(w), GTK_ORIENTATION_VERTICAL)
+          else
+            gtk_icon_view_set_orientation(PGtkIconView(w), GTK_ORIENTATION_HORIZONTAL);
+          gtk_icon_view_set_orientation(PGtkIconView(w), AOrientation)
         end;
       end;
     end;
@@ -520,8 +536,7 @@ begin
 
     // gtk2 is pretty tricky about adding editor into control
     if (AParent.FCompStyle = csListView) and
-      (TWinControl(AControl).FCompStyle = csEdit) and
-      GTK_IS_TREE_VIEW(gtk_bin_get_child(PGtkBin(PFixed))) then
+      (TWinControl(AControl).FCompStyle = csEdit) then
     begin
       ChildWidget := {%H-}PGtkWidget(TWinControl(AControl).Handle);
       ParentWidget := gtk_bin_get_child(PGtkBin(PFixed)); // treeview

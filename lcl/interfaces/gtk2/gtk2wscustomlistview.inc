@@ -190,7 +190,25 @@ begin
   NM.uChanged := LVIF_STATE;
   msg.NMHdr := @NM.hdr;
   if gtk_object_get_data({%H-}PGtkObject(TWinControl(Target).Handle),'lcl_gtkwidget_in_update') = nil then
+  begin
     DeliverMessage(Target, msg);
+    if TLVHack(Target).Selected = TLVHack(Target).Items[AIndex] then
+    begin
+      NM.uOldState := 0;
+      NM.uNewState := LVIS_FOCUSED;
+      NM.uChanged := LVIF_STATE;
+      msg.NMHdr := @NM.hdr;
+      DeliverMessage(Target, msg);
+    end else
+    if TLVHack(Target).Selected = nil then
+    begin
+      NM.uOldState := LVIS_FOCUSED;
+      NM.uNewState := 0;
+      NM.uChanged := LVIF_STATE;
+      msg.NMHdr := @NM.hdr;
+      DeliverMessage(Target, msg);
+    end;
+  end;
 end;
 
 procedure Gtk2_ItemSelectionChanged(selection: PGtkTreeSelection; WidgetInfo: PWidgetInfo); cdecl;
@@ -252,6 +270,7 @@ begin
               Widgets^.ItemCache.Objects[ListIndex] := TObject(0);
           end;
         end;
+        g_list_free(List);
       end else
       begin
         // complete selection is clear !
@@ -311,6 +330,7 @@ begin
       begin
         Path := PGtkTreePath(g_list_first(List)^.data);
         Widgets^.ItemCache.Add(gtk_tree_path_to_string(Path));
+        g_list_free(List);
       end else
         exit;
     end else
@@ -598,9 +618,10 @@ begin
   else begin // No Column Needed
     if GtkColumn <> nil then
     begin
-      if GTK_IS_TREE_VIEW(Widgets^.MainView) then
+      if GTK_IS_TREE_VIEW(Widgets^.MainView) and GTK_IS_TREE_VIEW_COLUMN(GtkColumn) then
         gtk_tree_view_remove_column(PGtkTreeView(Widgets^.MainView), GtkColumn)
       else
+      if GTK_IS_TREE_VIEW_COLUMN(GtkColumn) and G_IS_OBJECT(GtkColumn) then
         g_object_unref(GtkColumn);
       g_object_set_data(G_OBJECT(Widgets^.MainView), 'LCL_DEFAULT_COLUMN', nil);
     end;
@@ -713,7 +734,7 @@ begin
     Exit;
 
   GtkColumn := gtk_tree_view_get_column(PGtkTreeView(Widgets^.MainView), AIndex);
-  if GtkColumn<>nil then
+  if (GtkColumn<>nil) and GTK_IS_TREE_VIEW_COLUMN(GtkColumn) then
     gtk_tree_view_remove_column(PGtkTreeView(Widgets^.MainView), GtkColumn);
 end;
 
@@ -1036,8 +1057,11 @@ var
   ItemRect: TGdkRectangle;
   Column: PGtkTreeViewColumn;
   Path: PGtkTreePath;
-  L, T, W, H: GInt;
+  X, Y, L, T, W, H: GInt;
   ARect: TGdkRectangle;
+  R: TRect;
+  ANewCell: PGtkCellRenderer;
+  ANewPath: PGtkTreePath;
 begin
   Result := Rect(0, 0, 0, 0);
   if not WSCheckHandleAllocated(ALV, 'ItemDisplayRect') then
@@ -1064,11 +1088,46 @@ begin
       else
       if GTK_IS_ICON_VIEW(MainView) then
       begin
-        // TODO: iconview
         ItemRect.x := 0;
         ItemRect.y := 0;
         ItemRect.width := gtk_icon_view_get_item_width(PGtkIconView(MainView));
         ItemRect.height := 0;
+        if Path <> nil then
+        begin
+          ANewPath := nil;
+          ANewCell := nil;
+          R := ALV.ClientRect;
+          l := 0;
+          t := 0;
+          Result := Rect(0, 0, 0, 0);
+          while t < R.Bottom - 1 do
+          begin
+            l := 0;
+            while l < R.Right - 1 do
+            begin
+              if gtk_icon_view_get_item_at_pos(PGtkIconView(MainView), l, t, ANewPath, ANewCell) then
+              begin
+                if (ANewPath <> nil) and (gtk_tree_path_compare(Path, ANewPath) = 0) then
+                begin
+                  gtk_cell_renderer_get_size(ANewCell, PGtkWidget(MainView), @ItemRect, @x,@y,@w,@h);
+                  Result := Rect(l, t, w + l, h + t);
+                  ItemRect := GdkRectFromRect(Result);
+                  if ANewPath <> nil then
+                    gtk_tree_path_free(ANewPath);
+                  break;
+                end;
+                if ANewPath <> nil then
+                  gtk_tree_path_free(ANewPath);
+              end;
+              inc(l, 1);
+            end;
+
+            inc(t, 1);
+
+            if not IsRectEmpty(Result) then
+              break;
+          end;
+        end;
       end;
     finally
       gtk_tree_path_free(Path);
@@ -1846,8 +1905,11 @@ begin
       AList := gtk_icon_view_get_selected_items(PGtkIconView(MainView))
     else
       Exit;
-    Result := g_list_length(AList);
-    g_list_free(AList);
+    if AList <> nil then
+    begin
+      Result := g_list_length(AList);
+      g_list_free(AList);
+    end;
   end;
 end;
 
@@ -1874,8 +1936,10 @@ begin
     begin
       AList := gtk_icon_view_get_selected_items(PGtkIconView(MainView));
       if AList <> nil then
-        Path := g_list_first(AList)^.data
-      else
+      begin
+        Path := g_list_first(AList)^.data;
+        g_list_free(AList);
+      end else
         Path := nil;
     end;
     Path := gtk_tree_model_get_path(TreeModel, @Iter);
