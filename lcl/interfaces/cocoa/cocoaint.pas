@@ -42,7 +42,7 @@ uses
   CocoaProc,
   // LCL
   LCLStrConsts, LMessages, LCLMessageGlue, LCLProc, LCLIntf, LCLType,
-  Controls,
+  Controls, Forms,
   IntfGraphics, Graphics, CocoaWSFactory;
 
 type

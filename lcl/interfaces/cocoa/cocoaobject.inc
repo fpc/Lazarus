@@ -43,16 +43,30 @@ begin
   FNSApp.setDelegate(delegate);
 end;
 
+type
+  CFRunLoopObserverContextRef = ^CFRunLoopObserverContext;
+function CFRunLoopObserverCreate(allocator: CFAllocatorRef; activities: CFOptionFlags; repeats: Boolean; order: CFIndex; callout: CFRunLoopObserverCallBack; context: CFRunLoopObserverContextRef): CFRunLoopObserverRef; mwpascal; external name '_CFRunLoopObserverCreate';
+
+procedure RunLoopObserverCallback(observer: CFRunLoopObserverRef; activity: CFRunLoopActivity; info: UnivPtr); mwpascal;
+begin
+  if activity = kCFRunLoopBeforeWaiting then
+    Application.Idle(False);
+end;
+
 {------------------------------------------------------------------------------
   Method:  TCocoaWidgetSet.AppRun
   Params:  ALoop
  ------------------------------------------------------------------------------}
 procedure TCocoaWidgetSet.AppRun(const ALoop: TApplicationMainLoop);
+var
+  Observer: CFRunLoopObserverRef;
 begin
   {$IFDEF VerboseObject}
     DebugLn('TCocoaWidgetSet.AppRun');
   {$ENDIF}
 
+  Observer := CFRunLoopObserverCreate(kCFAllocatorDefault, kCFRunLoopBeforeWaiting, True, 0, @RunLoopObserverCallBack, nil);
+  CFRunLoopAddObserver(CFRunLoopGetCurrent, Observer, kCFRunLoopCommonModes);
   { Enters main message loop }
   NSApp.run;
 end;
