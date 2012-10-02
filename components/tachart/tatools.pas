@@ -231,6 +231,7 @@ type
     procedure SetBrush(AValue: TZoomDragBrush);
     procedure SetFrame(AValue: TChartPen);
     procedure SetProportional(AValue: Boolean);
+    procedure SetSelectionRect(AValue: TRect);
   strict protected
     procedure Cancel; override;
   public
@@ -241,6 +242,7 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure Draw(AChart: TChart; ADrawer: IChartDrawer); override;
+    property SelectionRect: TRect read FSelectionRect write SetSelectionRect;
   published
     property AdjustSelection: Boolean
       read FAdjustSelection write FAdjustSelection default true;
@@ -1179,22 +1181,7 @@ end;
 
 procedure TZoomDragTool.MouseMove(APoint: TPoint);
 begin
-  if not IsActive or IsAnimating then exit;
-  case EffectiveDrawingMode of
-    tdmXor: with FChart.Drawer do begin
-      SetXor(true);
-      Pen := Frame;
-      Brush := Self.Brush;
-      Rectangle(CalculateDrawRect);
-      FSelectionRect.BottomRight := APoint;
-      Rectangle(CalculateDrawRect);
-      SetXor(false);
-    end;
-    tdmNormal: begin
-      FSelectionRect.BottomRight := APoint;
-      FChart.StyleChanged(Self);
-    end;
-  end;
+  SelectionRect := Rect(SelectionRect.Left, SelectionRect.Top, APoint.X, APoint.Y);
   Handled;
 end;
 
@@ -1255,6 +1242,26 @@ begin
     RatioLimit := zrlProportional
   else
     RatioLimit := zrlNone;
+end;
+
+procedure TZoomDragTool.SetSelectionRect(AValue: TRect);
+begin
+  if (FSelectionRect = AValue) or not IsActive or IsAnimating then exit;
+  case EffectiveDrawingMode of
+    tdmXor: with FChart.Drawer do begin
+      SetXor(true);
+      Pen := Frame;
+      Brush := Self.Brush;
+      Rectangle(CalculateDrawRect);
+      FSelectionRect := AValue;
+      Rectangle(CalculateDrawRect);
+      SetXor(false);
+    end;
+    tdmNormal: begin
+      FSelectionRect := AValue;
+      FChart.StyleChanged(Self);
+    end;
+  end;
 end;
 
 { TReticuleTool }
