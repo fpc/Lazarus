@@ -1278,25 +1278,13 @@ begin
 end;
 
 function LCLWindowExtension.lclIsEnabled: Boolean;
-var
-  Callback: ICommonCallback;
 begin
-  Callback := lclGetCallback;
-  if Assigned(Callback) then
-    Result := IWindowCallback(Callback).Enabled
-  else
-    Result := contentView.lclIsEnabled;
+  Result := contentView.lclIsEnabled;
 end;
 
 procedure LCLWindowExtension.lclSetEnabled(AEnabled: Boolean);
-var
-  Callback: ICommonCallback;
 begin
-  Callback := lclGetCallback;
-  if Assigned(Callback) then
-    IWindowCallback(Callback).Enabled := AEnabled
-  else
-    contentView.lclSetEnabled(AEnabled);
+  contentView.lclSetEnabled(AEnabled);
 end;
 
 function LCLWindowExtension.lclWindowState: Integer;
