@@ -757,6 +757,10 @@ begin
   if not WSCheckHandleAllocated(AWinControl, 'SetColor')
   then Exit;
 
+  // do not change color of scrollbar. issue #22996
+  if (AWinControl.FCompStyle = csScrollBar) then
+    exit;
+
   if ((csOpaque in AWinControl.ControlStyle) and
       GtkWidgetIsA({%H-}pGtkWidget(AWinControl.handle),GTKAPIWidget_GetType)) then
     Exit;

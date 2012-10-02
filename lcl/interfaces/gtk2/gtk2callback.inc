@@ -1344,6 +1344,23 @@ begin
         'lclnotebookdragging', gpointer(PtrInt(1)));
 end;
 
+procedure FixListViewRubberBand(AWidget: PGtkWidget);
+var
+  Info: PWidgetInfo;
+  IconView: PGtkIconView;
+  Priv: _PGtkIconViewPrivate;
+begin
+  Info := GetWidgetInfo(AWidget);
+  IconView := PGtkIconView(Info^.CoreWidget);
+  Priv := IconView^.priv;
+
+  if Priv^.doing_rubberband then
+  begin
+    Priv^.doing_rubberband := False;
+    gtk_widget_queue_draw(AWidget);
+  end;
+end;
+
 {-------------------------------------------------------------------------------
   function ControlGetsMouseMoveBefore(AControl: TControl): boolean;
 
@@ -1385,6 +1402,17 @@ begin
         end;
       end;
     end;
+  end else
+  if (Event <> nil) and not (csDesigning in AControl.ComponentState) and
+    (AControl is TWinControl) and
+    (TWinControl(AControl).FCompStyle = csListView) and
+    (TListView(AControl).ViewStyle in [vsIcon, vsSmallIcon]) and
+    TListView(AControl).MultiSelect then
+  begin
+    ShiftState := GTKEventStateToShiftState(Event^.State);
+    // issue #22991 - this fixes rubberbanding
+    if [ssShift, ssAlt, ssCtrl, ssLeft, ssRight, ssMiddle, ssDouble] * ShiftState = [] then
+      FixListViewRubberBand(PGtkWidget(TWinControl(AControl).Handle));
   end;
 end;
 
@@ -1652,6 +1680,18 @@ begin
         end;
       end;
     end;
+  end else
+  if not (csDesigning in AControl.ComponentState) and
+    (Event^.button = 1) and
+    (gdk_event_get_type(Event) = GDK_BUTTON_PRESS) and
+    (AControl is TWinControl) and
+    (TWinControl(AControl).FCompStyle = csListView) and
+    (TListView(AControl).ViewStyle in [vsIcon, vsSmallIcon]) and
+    TListView(AControl).MultiSelect then
+  begin
+    // issue #22991 - this fixes crash after click on listview when modal form
+    // is closed
+    FixListViewRubberBand(PGtkWidget(TWinControl(AControl).Handle));
   end;
 end;
 
@@ -2215,24 +2255,6 @@ function gtkMouseBtnRelease(widget: PGtkWidget; event : pgdkEventButton;
 var
   DesignOnlySignal: boolean;
   AForm: TCustomForm;
-
-  procedure FixListViewRubberBand;
-  var
-    Info: PWidgetInfo;
-    IconView: PGtkIconView;
-    Priv: _PGtkIconViewPrivate;
-  begin
-    Info := GetWidgetInfo(Widget);
-    IconView := PGtkIconView(Info^.CoreWidget);
-    Priv := IconView^.priv;
-
-    if Priv^.doing_rubberband then
-    begin
-      Priv^.doing_rubberband := False;
-      gtk_widget_queue_draw(Widget);
-    end;
-  end;
-
 begin
   Result := CallBackDefaultReturn;
   {$IFDEF VerboseMouseBugfix}
@@ -2259,7 +2281,7 @@ begin
       TListView(Data).MultiSelect then
     begin
       // fixed crash.See issue #22778
-      FixListViewRubberBand;
+      FixListViewRubberBand(Widget);
     end;
 
     ReleaseMouseCapture;

@@ -1611,6 +1611,10 @@ begin
     begin
       MainView := gtk_icon_view_new_with_model(TreeModel);
       TreeSelection := nil;
+      if TLVHack(AWinControl).IconOptions.Arrangement = iaTop then
+        gtk_icon_view_set_columns(PGtkIconView(MainView), -1)
+      else
+        gtk_icon_view_set_columns(PGtkIconView(MainView), 1);
     end
     else
     begin
