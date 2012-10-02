@@ -1382,9 +1382,9 @@ function TWidgetSet.GradientFill(DC: HDC; Vertices: PTriVertex; NumVertices: Lon
     with Mesh do
     begin
       Result :=
-        (Vertex1 < Cardinal(NumVertices)) and (Vertex1 >= 0) and
-        (Vertex2 < Cardinal(NumVertices)) and (Vertex2 >= 0) and
-        (Vertex3 < Cardinal(NumVertices)) and (Vertex3 >= 0);
+        (Vertex1 < Cardinal(NumVertices)) and
+        (Vertex2 < Cardinal(NumVertices)) and
+        (Vertex3 < Cardinal(NumVertices));
 
       if (Vertex1 = Vertex2) or (Vertex1 = Vertex3) or (Vertex2 = Vertex3) or not Result then
         Exit;
