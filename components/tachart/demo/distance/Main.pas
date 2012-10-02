@@ -7,7 +7,7 @@ interface
 uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, ExtCtrls,
   StdCtrls, Spin, ComCtrls,
-  TAChartUtils, TATransformations, TAGraph, TASources, TASeries,
+  TAChartUtils, TAFuncSeries, TATransformations, TAGraph, TASources, TASeries,
   TATools, TADataTools, types;
 
 type
@@ -27,6 +27,9 @@ type
     ChartAxisTransformations1LogarithmAxisTransform1: TLogarithmAxisTransform;
     ChartAxisTransformations3: TChartAxisTransformations;
     ChartAxisTransformations3AutoScaleAxisTransform1: TAutoScaleAxisTransform;
+    chFit: TChart;
+    chFitFitSeries1: TFitSeries;
+    chFitLineSeries1: TLineSeries;
     clrBackgroundColor: TColorButton;
     clrFontColor: TColorButton;
     clrPenColor: TColorButton;
@@ -34,11 +37,18 @@ type
     ctCrosshair: TDataPointCrosshairTool;
     ctDistance1: TDataPointDistanceTool;
     ctDistance2: TDataPointDistanceTool;
+    ctFit: TChartToolset;
+    ctFitDataPointDistanceTool1: TDataPointDistanceTool;
+    ctFitZoomDragTool1: TZoomDragTool;
     edEndbarLength: TSpinEdit;
+    lblFit: TLabel;
     lblEndBarLength: TLabel;
     mDistanceText: TMemo;
+    PageControl1: TPageControl;
     Panel1: TPanel;
     Panel2: TPanel;
+    pnlFit: TPanel;
+    rgFitParamCount: TRadioGroup;
     RandomChartSource1: TRandomChartSource;
     RandomChartSource2: TRandomChartSource;
     RandomChartSource3: TRandomChartSource;
@@ -47,6 +57,8 @@ type
     rgMeasureMode: TRadioGroup;
     rgSnapMode: TRadioGroup;
     StatusBar1: TStatusBar;
+    tsMain: TTabSheet;
+    tsFit: TTabSheet;
     procedure cbFlipLabelClick(Sender: TObject);
     procedure cbHideClick(Sender: TObject);
     procedure cbRotateLabelClick(Sender: TObject);
@@ -59,14 +71,20 @@ type
     procedure ctDistance1BeforeKeyUp(ATool: TChartTool; APoint: TPoint);
     procedure ctDistance1Measure(
       ASender: TDataPointDistanceTool);
+    procedure ctFitDataPointDistanceTool1GetDistanceText(
+      ASender: TDataPointDistanceTool; var AText: String);
+    procedure ctFitDataPointDistanceTool1Measure(
+      ASender: TDataPointDistanceTool);
     procedure edEndbarLengthChange(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure mDistanceTextChange(Sender: TObject);
+    procedure rgFitParamCountClick(Sender: TObject);
     procedure rgDataPointModeClick(Sender: TObject);
     procedure rgDrawingModeClick(Sender: TObject);
     procedure rgMeasureModeClick(Sender: TObject);
     procedure rgSnapModeClick(Sender: TObject);
   private
+    procedure PrepareFitData;
     procedure SwitchOptions(AOptions: TDataPointDistanceTool.TOptions; AOn: Boolean);
     procedure UpdateButtons;
   end;
@@ -79,7 +97,7 @@ implementation
 {$R *.lfm}
 
 uses
-  TACustomSeries;
+  TACustomSeries, TAMath;
 
 { TForm1 }
 
@@ -178,6 +196,40 @@ begin
     ]);
 end;
 
+procedure TForm1.ctFitDataPointDistanceTool1GetDistanceText(
+  ASender: TDataPointDistanceTool; var AText: String);
+var
+  xmin, xmax: Double;
+begin
+  xmin := ASender.PointStart.AxisPos.X;
+  xmax := ASender.PointEnd.AxisPos.X;
+  EnsureOrder(xmin, xmax);
+  with chFitFitSeries1.FitRange do begin
+    Min := xmin;
+    Max := xmax;
+  end;
+  case rgFitParamCount.ItemIndex of
+    0: AText := Format('Mean value: %f', [chFitFitSeries1.Param[0]]);
+    1: AText := Format('Slope: %f', [chFitFitSeries1.Param[1]]);
+    2:
+      with chFitFitSeries1 do
+        AText := Format('Peak at x=%f y=%f', [
+          -Param[1] / (2 * Param[2]),
+          Param[0] - Sqr(Param[1])/(4 * Param[2])
+        ]);
+  end;
+  chFitFitSeries1.Active := true;
+
+  lblFit.Visible := true;
+  lblFit.Caption := AText;
+end;
+
+procedure TForm1.ctFitDataPointDistanceTool1Measure(
+  ASender: TDataPointDistanceTool);
+begin
+  chFitFitSeries1.Active := false;
+end;
+
 procedure TForm1.edEndbarLengthChange(Sender: TObject);
 begin
   ctDistance1.PointerStart.VertSize := edEndbarLength.Value;
@@ -191,6 +243,8 @@ begin
   mDistanceTextChange(nil);
   rgDataPointModeClick(nil);
   rgDrawingModeClick(nil);
+
+  PrepareFitData;
 end;
 
 procedure TForm1.mDistanceTextChange(Sender: TObject);
@@ -204,6 +258,27 @@ begin
     ctDistance2.Marks.Format := s;
   except
   end;
+end;
+
+procedure TForm1.PrepareFitData;
+const
+  N = 50;
+  NOISE = 0.5;
+var
+  i: Integer;
+  x, y: Double;
+begin
+  for i := 0 to N - 1 do begin
+    x := -10 + 10 * i / (N - 1);
+    y := Sqr(x) * 0.1 + 1;
+    chFitLineSeries1.AddXY(x, y + (Random - 1) * NOISE);
+  end;
+  for i := 0 to N - 1 do begin
+    x := 0 + 10 * i / (N - 1);
+    y := Cos(x) + x;
+    chFitLineSeries1.AddXY(x, y + (Random - 1) * NOISE);
+  end;
+  chFitFitSeries1.Source := chFitLineSeries1.Source;
 end;
 
 procedure TForm1.rgDataPointModeClick(Sender: TObject);
@@ -223,6 +298,11 @@ begin
   ctDistance2.DrawingMode := TChartToolDrawingMode(rgDrawingMode.ItemIndex);
   ctCrosshair.DrawingMode := TChartToolDrawingMode(rgDrawingMode.ItemIndex);
   UpdateButtons;
+end;
+
+procedure TForm1.rgFitParamCountClick(Sender: TObject);
+begin
+  chFitFitSeries1.ParamCount := rgFitParamCount.ItemIndex + 1;
 end;
 
 procedure TForm1.rgMeasureModeClick(Sender: TObject);
