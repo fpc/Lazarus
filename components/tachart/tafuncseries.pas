@@ -493,7 +493,8 @@ begin
   if FDomainExclusions.Intersect(xa, xa, hint) then
     AXg := FAxisToGraphXr(xa);
 
-  AOnMoveTo(AXg, xa);
+  if AXg < AXMax then
+    AOnMoveTo(AXg, xa);
 
   while AXg < AXMax do begin
     xg1 := AXg + FGraphStep;

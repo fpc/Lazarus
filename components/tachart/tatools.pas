@@ -186,6 +186,8 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+  public
+    procedure Deactivate; override;
   published
     property AnimationInterval: Cardinal
       read FAnimationInterval write FAnimationInterval default 0;
@@ -306,6 +308,8 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+  public
+    procedure Deactivate; override;
     procedure MouseDown(APoint: TPoint); override;
     procedure MouseMove(APoint: TPoint); override;
     procedure MouseUp(APoint: TPoint); override;
@@ -849,6 +853,12 @@ begin
   FTimer.OnTimer := @OnTimer;
 end;
 
+procedure TBasicZoomTool.Deactivate;
+begin
+  FTimer.Enabled := false;
+  inherited;
+end;
+
 destructor TBasicZoomTool.Destroy;
 begin
   FreeAndNil(FTimer);
@@ -1203,6 +1213,12 @@ begin
   FTimer.OnTimer := @OnTimer;
 end;
 
+procedure TPanClickTool.Deactivate;
+begin
+  FTimer.Enabled := false;
+  inherited;
+end;
+
 destructor TPanClickTool.Destroy;
 begin
   FreeAndNil(FMargins);
@@ -1254,7 +1270,6 @@ end;
 procedure TPanClickTool.MouseUp(APoint: TPoint);
 begin
   Unused(APoint);
-  FTimer.Enabled := false;
   Deactivate;
   Handled;
 end;
