@@ -435,6 +435,7 @@ var
   DefaultPen: TCocoaPen;
   DefaultFont: TCocoaFont;
   DefaultBitmap: TCocoaBitmap;
+  DefaultContext: TCocoaBitmapContext;
   ScreenContext: TCocoaContext;
 
 function CheckDC(dc: HDC): TCocoaContext;
@@ -1121,16 +1122,16 @@ end;
 
 procedure TCocoaBitmapContext.SetBitmap(const AValue: TCocoaBitmap);
 begin
-  if FBitmap <> AValue then
+  if Assigned(ctx) then
+  begin
+    ctx.release;
+    ctx := nil;
+  end;
+
+  if FBitmap <> nil then
   begin
     FBitmap := AValue;
-    if Assigned(ctx) then
-    begin
-      ctx.release;
-      ctx := nil;
-    end;
-
-    ctx := NSGraphicsContext.graphicsContextWithBitmapImageRep(AValue.ImageRep);
+    ctx := NSGraphicsContext.graphicsContextWithBitmapImageRep(Bitmap.ImageRep);
     InitDraw(Bitmap.Width, Bitmap.Height);
   end;
 end;
@@ -2602,10 +2603,15 @@ initialization
   DefaultPen := TCocoaPen.CreateDefault;
   DefaultFont := TCocoaFont.CreateDefault;
   DefaultBitmap := TCocoaBitmap.CreateDefault;
-  ScreenContext := TCocoaContext.Create(nil);
+  DefaultContext := TCocoaBitmapContext.Create;
+  DefaultContext.Bitmap := DefaultBitmap;
+
+  ScreenContext := TCocoaContext.Create(DefaultContext.ctx);
 
 finalization
   ScreenContext.Free;
+  DefaultContext.Free;
+
   DefaultBrush.Free;
   DefaultPen.Free;
   DefaultFont.Free;

@@ -152,8 +152,8 @@ function PostMessage(Handle: HWND; Msg: Cardinal; wParam: WParam; lParam: LParam
 
 function Rectangle(DC: HDC; X1, Y1, X2, Y2: Integer): Boolean; override;
 function RectVisible(dc : hdc; const ARect: TRect) : Boolean; override;
-{function ReleaseCapture : Boolean; override;
-function ReleaseDC(hWnd: HWND; DC: HDC): Integer; override;}
+{function ReleaseCapture : Boolean; override;}
+function ReleaseDC(hWnd: HWND; DC: HDC): Integer; override;
 function RestoreDC(DC: HDC; SavedDC: Integer): Boolean; override;
 function RoundRect(DC: HDC; X1, Y1, X2, Y2: Integer; RX, RY : Integer): Boolean; override;
 

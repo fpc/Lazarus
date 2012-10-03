@@ -1307,13 +1307,15 @@ begin
     Result := HDC(ScreenContext)
   else
   begin
-    // ToDo: Not finished yet
-    Result := 0;
-
     ctx := NSObject(hWnd).lclGetCallback.GetContext;
 
-    // todo: use dummy context if we are outside paint event
-    Result := HDC(ctx);
+    if ctx = nil then
+    begin
+      ctx := TCocoaContext.Create(DefaultContext.ctx);
+      with DefaultContext.size do
+        ctx.InitDraw(cx, cy);
+    end;
+    Result := HDC(ctx)
   end;
 
   {$IFDEF VerboseWinAPI}
@@ -1586,6 +1588,19 @@ begin
 
   ClipBox := CGContextGetClipBoundingBox(ctx.CGContext);
   Result := IntersectRect(R, ARect, CGRectToRect(ClipBox));
+end;
+
+function TCocoaWidgetSet.ReleaseDC(hWnd: HWND; DC: HDC): Integer;
+var
+  ctx: TCocoaContext;
+begin
+  Result := 0;
+  ctx := CheckDC(DC);
+  if not Assigned(ctx) then
+    Exit;
+  if (ctx <> DefaultContext) and (ctx.ctx <> DefaultContext.ctx) then
+    ctx.Free;
+  Result := 1;
 end;
 
 function TCocoaWidgetSet.GetWindowOrgEx(dc: hdc; P: PPoint): Integer;
