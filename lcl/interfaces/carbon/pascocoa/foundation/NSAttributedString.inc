@@ -7,6 +7,8 @@
 {$ifndef NSATTRIBUTEDSTRING_PAS_H}
 {$define NSATTRIBUTEDSTRING_PAS_H}
 
+var
+  NSFontAttributeName: CFStringRef; external name '_NSFontAttributeName'; // NSFont, default Helvetica 12
 
 //#import <Foundation/NSString.h>
 //#import <Foundation/NSDictionary.h>
