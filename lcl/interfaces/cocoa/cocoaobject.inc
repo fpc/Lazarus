@@ -43,32 +43,15 @@ begin
   FNSApp.setDelegate(delegate);
 end;
 
-type
-  CFRunLoopObserverContextRef = ^CFRunLoopObserverContext;
-function CFRunLoopObserverCreate(allocator: CFAllocatorRef; activities: CFOptionFlags; repeats: Boolean; order: CFIndex; callout: CFRunLoopObserverCallBack; context: CFRunLoopObserverContextRef): CFRunLoopObserverRef; mwpascal; external name '_CFRunLoopObserverCreate';
-
-procedure RunLoopObserverCallback(observer: CFRunLoopObserverRef; activity: CFRunLoopActivity; info: UnivPtr); mwpascal;
-begin
-  if activity = kCFRunLoopBeforeWaiting then
-    Application.Idle(False);
-end;
-
 {------------------------------------------------------------------------------
   Method:  TCocoaWidgetSet.AppRun
   Params:  ALoop
  ------------------------------------------------------------------------------}
 procedure TCocoaWidgetSet.AppRun(const ALoop: TApplicationMainLoop);
-var
-  Observer: CFRunLoopObserverRef;
 begin
-  {$IFDEF VerboseObject}
-    DebugLn('TCocoaWidgetSet.AppRun');
-  {$ENDIF}
-
-  Observer := CFRunLoopObserverCreate(kCFAllocatorDefault, kCFRunLoopBeforeWaiting, True, 0, @RunLoopObserverCallBack, nil);
-  CFRunLoopAddObserver(CFRunLoopGetCurrent, Observer, kCFRunLoopCommonModes);
-  { Enters main message loop }
-  NSApp.run;
+  NSApp.finishLaunching;
+  if Assigned(ALoop) then
+    ALoop;
 end;
 
 {------------------------------------------------------------------------------
@@ -80,16 +63,9 @@ procedure TCocoaWidgetSet.AppProcessMessages;
 var
   event: NSEvent;
 begin
-  {$IFDEF VerboseObject}
-    DebugLn('TCocoaWidgetSet.AppProcessMessages');
-  {$ENDIF}
-
   event := NSApp.nextEventMatchingMask_untilDate_inMode_dequeue(NSAnyEventMask, nil, NSDefaultRunLoopMode, true);
   NSApp.sendEvent(event);
-
-  {$IFDEF VerboseObject}
-    DebugLn('TCocoaWidgetSet.AppProcessMessages END');
-  {$ENDIF}
+  NSApp.updateWindows;
 end;
 
 {------------------------------------------------------------------------------
@@ -101,9 +77,6 @@ procedure TCocoaWidgetSet.AppWaitMessage;
 var
   event : NSEvent;
 begin
-  {$IFDEF VerboseObject}
-    DebugLn('TCocoaWidgetSet.AppWaitMessage');
-  {$ENDIF}
   event := NSApp.nextEventMatchingMask_untilDate_inMode_dequeue(NSAnyEventMask, NSDate.distantFuture, NSDefaultRunLoopMode, true);
   NSApp.sendEvent(event);
 end;
