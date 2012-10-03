@@ -1,13 +1,13 @@
 msgid ""
 msgstr ""
-"MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: 8bit\n"
-"Last-Translator: August Klein\n"
-"PO-Revision-Date: 2011-03-08 06:21+0100\n"
-"Project-Id-Version: \n"
+"Project-Id-Version: lazaruside\n"
 "POT-Creation-Date: \n"
+"PO-Revision-Date: 2012-10-02 20:21+0100\n"
+"Last-Translator: Lucas Martin <codedeep@hotmail.com>\n"
 "Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Transfer-Encoding: 8bit\n"
 
 #: objinspstrconsts.cactionlisteditorallcategory
 msgid "(All)"
@@ -391,7 +391,7 @@ msgstr "Categoría"
 
 #: objinspstrconsts.oiscdelete
 msgid "Delete?"
-msgstr ""
+msgstr "Borrar?"
 
 #: objinspstrconsts.oischar
 msgid "Char"
