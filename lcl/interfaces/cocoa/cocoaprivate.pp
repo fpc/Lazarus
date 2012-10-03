@@ -412,6 +412,7 @@ type
   end;
 
 procedure SetViewDefaults(AView: NSView);
+function CheckMainThread: Boolean;
 
 implementation
 
@@ -419,6 +420,11 @@ procedure SetViewDefaults(AView: NSView);
 begin
   if not Assigned(AView) then Exit;
   AView.setAutoresizingMask(NSViewMinYMargin or NSViewMaxXMargin);
+end;
+
+function CheckMainThread: Boolean;
+begin
+  Result := NSThread.currentThread.isMainThread;
 end;
 
 { TCocoaPanel }
@@ -893,7 +899,8 @@ end;
 procedure TCocoaCustomControl.drawRect(dirtyRect: NSRect);
 begin
   inherited drawRect(dirtyRect);
-  callback.Draw(NSGraphicsContext.currentContext, bounds, dirtyRect);
+  if CheckMainThread then
+    callback.Draw(NSGraphicsContext.currentContext, bounds, dirtyRect);
 end;
 
 function TCocoaCustomControl.lclGetCallback: ICommonCallback;

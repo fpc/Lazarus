@@ -777,7 +777,6 @@ end;
 
 function TLCLCommonCallback.DeliverMessage(var Msg): LRESULT;
 begin
-//  WriteLn('Delivering message to target: ', PtrInt(Target), ' ', Target.ClassName);
   Result := LCLMessageGlue.DeliverMessage(Target, Msg);
 end;
 
