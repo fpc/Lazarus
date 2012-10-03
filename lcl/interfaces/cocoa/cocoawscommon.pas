@@ -41,6 +41,7 @@ type
     function GetPropStorage: TStringList;
     function GetContext: TCocoaContext;
     function GetTarget: TObject;
+    function GetCallbackObject: TObject;
     function MouseUpDownEvent(Event: NSEvent): Boolean; virtual;
     function KeyEvent(Event: NSEvent): Boolean; virtual;
     procedure MouseClick; virtual;
@@ -223,6 +224,11 @@ end;
 function TLCLCommonCallback.GetTarget: TObject;
 begin
   Result := Target;
+end;
+
+function TLCLCommonCallback.GetCallbackObject: TObject;
+begin
+  Result := Self;
 end;
 
 function TLCLCommonCallback.MouseUpDownEvent(Event: NSEvent): Boolean;
@@ -858,12 +864,26 @@ end;
 class procedure TCocoaWSWinControl.DestroyHandle(const AWinControl: TWinControl);
 var
   obj: NSObject;
+  Callback: ICommonCallback;
+  CallbackObject: TObject;
 begin
   if not AWinControl.HandleAllocated then
     Exit;
   obj := NSObject(AWinControl.Handle);
   if obj.isKindOfClass_(NSView) then
-    NSView(obj).removeFromSuperview;
+    NSView(obj).removeFromSuperview
+  else
+  if obj.isKindOfClass_(NSWindow) then
+    NSWindow(obj).close;
+  // destroy the callback
+  Callback := obj.lclGetCallback;
+  if Assigned(Callback) then
+  begin
+    CallbackObject := Callback.GetCallbackObject;
+    Callback := nil;
+    obj.lclClearCallback;
+    CallbackObject.Free;
+  end;
   obj.release;
 end;
 

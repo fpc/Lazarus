@@ -44,7 +44,7 @@ type
     procedure MouseClick;
     function MouseMove(Event: NSEvent): Boolean;
     function KeyEvent(Event: NSEvent): Boolean;
-    // size,pos events
+    // size, pos events
     procedure frameDidChange;
     procedure boundsDidChange;
     // misc events
@@ -58,6 +58,7 @@ type
     function GetContext: TCocoaContext;
     function GetTarget: TObject;
     function GetHasCaret: Boolean;
+    function GetCallbackObject: TObject;
     procedure SetHasCaret(AValue: Boolean);
 
     // properties
@@ -84,6 +85,7 @@ type
     procedure lclSetFrame(const r: TRect); message 'lclSetFrame:';
     function lclClientFrame: TRect; message 'lclClientFrame';
     function lclGetCallback: ICommonCallback; message 'lclGetCallback';
+    procedure lclClearCallback; message 'lclClearCallback';
     function lclGetPropStorage: TStringList; message 'lclGetPropStorage';
     function lclGetTarget: TObject; message 'lclGetTarget';
     function lclDeliverMessage(Msg: Cardinal; WParam: WParam; LParam: LParam): LResult; message 'lclDeliverMessage:::';
@@ -191,6 +193,7 @@ type
     function becomeFirstResponder: Boolean; override;
     function resignFirstResponder: Boolean; override;
     function lclGetCallback: ICommonCallback; override;
+    procedure lclClearCallback; override;
     // mouse
     procedure mouseDown(event: NSEvent); override;
     procedure mouseUp(event: NSEvent); override;
@@ -214,6 +217,7 @@ type
     function becomeFirstResponder: Boolean; override;
     function resignFirstResponder: Boolean; override;
     function lclGetCallback: ICommonCallback; override;
+    procedure lclClearCallback; override;
     procedure resetCursorRects; override;
   end;
 
@@ -238,6 +242,7 @@ type
     function becomeFirstResponder: Boolean; override;
     function resignFirstResponder: Boolean; override;
     function lclGetCallback: ICommonCallback; override;
+    procedure lclClearCallback; override;
     procedure resetCursorRects; override;
   end;
 
@@ -258,6 +263,7 @@ type
     function becomeFirstResponder: Boolean; override;
     function resignFirstResponder: Boolean; override;
     function lclGetCallback: ICommonCallback; override;
+    procedure lclClearCallback; override;
     // mouse
     procedure mouseDown(event: NSEvent); override;
     procedure mouseUp(event: NSEvent); override;
@@ -282,6 +288,7 @@ type
     function resignFirstResponder: Boolean; override;
     procedure drawRect(dirtyRect: NSRect); override;
     function lclGetCallback: ICommonCallback; override;
+    procedure lclClearCallback; override;
     // mouse
     procedure mouseDown(event: NSEvent); override;
     procedure mouseUp(event: NSEvent); override;
@@ -310,6 +317,7 @@ type
     function becomeFirstResponder: Boolean; override;
     function resignFirstResponder: Boolean; override;
     function lclGetCallback: ICommonCallback; override;
+    procedure lclClearCallback; override;
     procedure resetCursorRects; override;
   end;
 
@@ -349,6 +357,7 @@ type
     function numberOfItemsInComboBox(combo: TCocoaComboBox): NSInteger; message 'numberOfItemsInComboBox:';
     procedure dealloc; override;
     function lclGetCallback: ICommonCallback; override;
+    procedure lclClearCallback; override;
     procedure resetCursorRects; override;
     procedure comboBoxWillPopUp(notification: NSNotification); message 'comboBoxWillPopUp:';
     procedure comboBoxWillDismiss(notification: NSNotification); message 'comboBoxWillDismiss:';
@@ -365,6 +374,7 @@ type
     function becomeFirstResponder: Boolean; override;
     function resignFirstResponder: Boolean; override;
     function lclGetCallback: ICommonCallback; override;
+    procedure lclClearCallback; override;
     procedure resetCursorRects; override;
   end;
 
@@ -391,6 +401,7 @@ type
     function becomeFirstResponder: Boolean; override;
     function resignFirstResponder: Boolean; override;
     function lclGetCallback: ICommonCallback; override;
+    procedure lclClearCallback; override;
     function numberOfRowsInTableView(aTableView: NSTableView): NSInteger; message 'numberOfRowsInTableView:';
     function tableView_objectValueForTableColumn_row(tableView: NSTableView;
       objectValueForTableColumn: NSTableColumn; row: NSInteger):id;
@@ -408,6 +419,7 @@ type
     function becomeFirstResponder: Boolean; override;
     function resignFirstResponder: Boolean; override;
     function lclGetCallback: ICommonCallback; override;
+    procedure lclClearCallback; override;
     procedure resetCursorRects; override;
   end;
 
@@ -434,33 +446,39 @@ var
   canClose: Boolean;
 begin
   canClose := True;
-  callback.CloseQuery(canClose);
+  if Assigned(callback) then
+    callback.CloseQuery(canClose);
   Result := canClose;
 end;
 
 procedure TCocoaPanel.windowWillClose(notification: NSNotification);
 begin
-  callback.Close;
+  if Assigned(callback) then
+    callback.Close;
 end;
 
 procedure TCocoaPanel.windowDidBecomeKey(notification: NSNotification);
 begin
-  callback.Activate;
+  if Assigned(callback) then
+    callback.Activate;
 end;
 
 procedure TCocoaPanel.windowDidResignKey(notification: NSNotification);
 begin
-  callback.Deactivate;
+  if Assigned(callback) then
+    callback.Deactivate;
 end;
 
 procedure TCocoaPanel.windowDidResize(notification: NSNotification);
 begin
-  callback.Resize;
+  if Assigned(callback) then
+    callback.Resize;
 end;
 
 procedure TCocoaPanel.windowDidMove(notification: NSNotification);
 begin
-  callback.Move;
+  if Assigned(callback) then
+    callback.Move;
 end;
 
 function TCocoaPanel.acceptsFirstResponder: Boolean;
@@ -470,19 +488,21 @@ end;
 
 function TCocoaPanel.canBecomeKeyWindow: Boolean;
 begin
-  Result := callback.CanActivate;
+  Result := Assigned(callback) and callback.CanActivate;
 end;
 
 function TCocoaPanel.becomeFirstResponder: Boolean;
 begin
   Result := inherited becomeFirstResponder;
-  callback.BecomeFirstResponder;
+  if Assigned(callback) then
+    callback.BecomeFirstResponder;
 end;
 
 function TCocoaPanel.resignFirstResponder: Boolean;
 begin
   Result := inherited resignFirstResponder;
-  callback.ResignFirstResponder;
+  if Assigned(callback) then
+    callback.ResignFirstResponder;
 end;
 
 function TCocoaPanel.lclGetCallback: ICommonCallback;
@@ -490,45 +510,51 @@ begin
   Result := callback;
 end;
 
+procedure TCocoaPanel.lclClearCallback;
+begin
+  callback := nil;
+  contentView.lclClearCallback;
+end;
+
 procedure TCocoaPanel.mouseDown(event: NSEvent);
 begin
-  if not callback.MouseUpDownEvent(event) then
+  if not Assigned(callback) or not callback.MouseUpDownEvent(event) then
     inherited mouseDown(event);
 end;
 
 procedure TCocoaPanel.mouseUp(event: NSEvent);
 begin
-  if not callback.MouseUpDownEvent(event) then
+  if not Assigned(callback) or not callback.MouseUpDownEvent(event) then
     inherited mouseUp(event);
 end;
 
 procedure TCocoaPanel.rightMouseDown(event: NSEvent);
 begin
-  if not callback.MouseUpDownEvent(event) then
+  if not Assigned(callback) or not callback.MouseUpDownEvent(event) then
     inherited rightMouseUp(event);
 end;
 
 procedure TCocoaPanel.rightMouseUp(event: NSEvent);
 begin
-  if not callback.MouseUpDownEvent(event) then
+  if not Assigned(callback) or not callback.MouseUpDownEvent(event) then
     inherited rightMouseDown(event);
 end;
 
 procedure TCocoaPanel.otherMouseDown(event: NSEvent);
 begin
-  if not callback.MouseUpDownEvent(event) then
+  if not Assigned(callback) or not callback.MouseUpDownEvent(event) then
     inherited otherMouseDown(event);
 end;
 
 procedure TCocoaPanel.otherMouseUp(event: NSEvent);
 begin
-  if not callback.MouseUpDownEvent(event) then
+  if not Assigned(callback) or not callback.MouseUpDownEvent(event) then
     inherited otherMouseUp(event);
 end;
 
 procedure TCocoaPanel.mouseDragged(event: NSEvent);
 begin
-  if not callback.MouseMove(event) then
+  if not Assigned(callback) or not callback.MouseMove(event) then
     inherited mouseDragged(event);
 end;
 
@@ -544,7 +570,7 @@ end;
 
 procedure TCocoaPanel.mouseMoved(event: NSEvent);
 begin
-  if not callback.MouseMove(event) then
+  if not Assigned(callback) or not callback.MouseMove(event) then
     inherited mouseMoved(event);
 end;
 
@@ -591,13 +617,15 @@ end;
 function TCocoaScrollView.becomeFirstResponder: Boolean;
 begin
   Result := inherited becomeFirstResponder;
-  callback.BecomeFirstResponder;
+  if Assigned(callback) then
+    callback.BecomeFirstResponder;
 end;
 
 function TCocoaScrollView.resignFirstResponder: Boolean;
 begin
   Result := inherited resignFirstResponder;
-  callback.ResignFirstResponder;
+  if Assigned(callback) then
+    callback.ResignFirstResponder;
 end;
 
 function TCocoaScrollView.lclGetCallback: ICommonCallback;
@@ -605,9 +633,14 @@ begin
   Result := callback;
 end;
 
+procedure TCocoaScrollView.lclClearCallback;
+begin
+  callback := nil;
+end;
+
 procedure TCocoaScrollView.resetCursorRects;
 begin
-  if not callback.resetCursorRects then
+  if not Assigned(callback) or not callback.resetCursorRects then
     inherited resetCursorRects;
 end;
 
@@ -621,13 +654,15 @@ end;
 function TCocoaScrollBar.becomeFirstResponder: Boolean;
 begin
   Result := inherited becomeFirstResponder;
-  callback.BecomeFirstResponder;
+  if Assigned(callback) then
+    callback.BecomeFirstResponder;
 end;
 
 function TCocoaScrollBar.resignFirstResponder: Boolean;
 begin
   Result := inherited resignFirstResponder;
-  callback.ResignFirstResponder;
+  if Assigned(callback) then
+    callback.ResignFirstResponder;
 end;
 
 function TCocoaScrollBar.lclGetCallback: ICommonCallback;
@@ -635,9 +670,14 @@ begin
   Result := callback;
 end;
 
+procedure TCocoaScrollBar.lclClearCallback;
+begin
+  callback := nil;
+end;
+
 procedure TCocoaScrollBar.resetCursorRects;
 begin
-  if not callback.resetCursorRects then
+  if not Assigned(callback) or not callback.resetCursorRects then
     inherited resetCursorRects;
 end;
 
@@ -651,13 +691,15 @@ end;
 function TCocoaGroupBox.becomeFirstResponder: Boolean;
 begin
   Result := inherited becomeFirstResponder;
-  callback.BecomeFirstResponder;
+  if Assigned(callback) then
+    callback.BecomeFirstResponder;
 end;
 
 function TCocoaGroupBox.resignFirstResponder: Boolean;
 begin
   Result := inherited resignFirstResponder;
-  callback.ResignFirstResponder;
+  if Assigned(callback) then
+    callback.ResignFirstResponder;
 end;
 
 function TCocoaGroupBox.lclGetCallback: ICommonCallback;
@@ -665,9 +707,14 @@ begin
   Result := callback;
 end;
 
+procedure TCocoaGroupBox.lclClearCallback;
+begin
+  callback := nil;
+end;
+
 procedure TCocoaGroupBox.resetCursorRects;
 begin
-  if not callback.resetCursorRects then
+  if not Assigned(callback) or not callback.resetCursorRects then
     inherited resetCursorRects;
 end;
 
@@ -676,17 +723,20 @@ end;
 procedure TCocoaButton.actionButtonClick(sender: NSObject);
 begin
   // this is the action handler of button
-  callback.ButtonClick;
+  if Assigned(callback) then
+    callback.ButtonClick;
 end;
 
 procedure TCocoaButton.boundsDidChange(sender: NSNotification);
 begin
-  callback.boundsDidChange;
+  if Assigned(callback) then
+    callback.boundsDidChange;
 end;
 
 procedure TCocoaButton.frameDidChange(sender: NSNotification);
 begin
-  callback.frameDidChange;
+  if Assigned(callback) then
+    callback.frameDidChange;
 end;
 
 function TCocoaButton.initWithFrame(frameRect: NSRect): id;
@@ -711,18 +761,25 @@ end;
 function TCocoaButton.becomeFirstResponder: Boolean;
 begin
   Result := inherited becomeFirstResponder;
-  callback.BecomeFirstResponder;
+  if Assigned(callback) then
+    callback.BecomeFirstResponder;
 end;
 
 function TCocoaButton.resignFirstResponder: Boolean;
 begin
   Result := inherited resignFirstResponder;
-  callback.ResignFirstResponder;
+  if Assigned(callback) then
+    callback.ResignFirstResponder;
 end;
 
 function TCocoaButton.lclGetCallback: ICommonCallback;
 begin
   Result := callback;
+end;
+
+procedure TCocoaButton.lclClearCallback;
+begin
+  callback := nil;
 end;
 
 procedure TCocoaButton.mouseUp(event: NSEvent);
@@ -813,6 +870,11 @@ begin
   Result := callback;
 end;
 
+procedure TCocoaTextField.lclClearCallback;
+begin
+  callback := nil;
+end;
+
 procedure TCocoaTextField.resetCursorRects;
 begin
   // this will not work well because
@@ -844,6 +906,11 @@ end;
 function TCocoaTextView.lclGetCallback: ICommonCallback;
 begin
   Result := callback;
+end;
+
+procedure TCocoaTextView.lclClearCallback;
+begin
+  callback := nil;
 end;
 
 procedure TCocoaTextView.resetCursorRects;
@@ -887,19 +954,21 @@ end;
 function TCocoaCustomControl.becomeFirstResponder: Boolean;
 begin
   Result := inherited becomeFirstResponder;
-  callback.BecomeFirstResponder;
+  if Assigned(callback) then
+    callback.BecomeFirstResponder;
 end;
 
 function TCocoaCustomControl.resignFirstResponder: Boolean;
 begin
   Result := inherited resignFirstResponder;
-  callback.ResignFirstResponder;
+  if Assigned(callback) then
+    callback.ResignFirstResponder;
 end;
 
 procedure TCocoaCustomControl.drawRect(dirtyRect: NSRect);
 begin
   inherited drawRect(dirtyRect);
-  if CheckMainThread then
+  if CheckMainThread and ASsigned(callback) then
     callback.Draw(NSGraphicsContext.currentContext, bounds, dirtyRect);
 end;
 
@@ -908,9 +977,14 @@ begin
   Result := callback;
 end;
 
+procedure TCocoaCustomControl.lclClearCallback;
+begin
+  callback := nil;
+end;
+
 procedure TCocoaCustomControl.mouseDown(event: NSEvent);
 begin
-  if not callback.MouseUpDownEvent(event) then
+  if not Assigned(callback) or not callback.MouseUpDownEvent(event) then
     inherited mouseDown(event);
 end;
 
@@ -936,55 +1010,55 @@ end;
 
 procedure TCocoaCustomControl.keyDown(event: NSEvent);
 begin
-  if not callback.KeyEvent(event) then
+  if not Assigned(callback) or not callback.KeyEvent(event) then
     inherited keyDown(event);
 end;
 
 procedure TCocoaCustomControl.keyUp(event: NSEvent);
 begin
-  if not callback.KeyEvent(event) then
+  if not Assigned(callback) or not callback.KeyEvent(event) then
     inherited keyUp(event);
 end;
 
 procedure TCocoaCustomControl.flagsChanged(event: NSEvent);
 begin
-  if not callback.KeyEvent(event) then
+  if not Assigned(callback) or not callback.KeyEvent(event) then
     inherited flagsChanged(event);
 end;
 
 procedure TCocoaCustomControl.mouseUp(event: NSEvent);
 begin
-  if not callback.MouseUpDownEvent(event) then
+  if not Assigned(callback) or not callback.MouseUpDownEvent(event) then
     inherited mouseUp(event);
 end;
 
 procedure TCocoaCustomControl.rightMouseDown(event: NSEvent);
 begin
-  if not callback.MouseUpDownEvent(event) then
+  if not Assigned(callback) or not callback.MouseUpDownEvent(event) then
     inherited rightMouseDown(event);
 end;
 
 procedure TCocoaCustomControl.rightMouseUp(event: NSEvent);
 begin
-  if not callback.MouseUpDownEvent(event) then
+  if not Assigned(callback) or not callback.MouseUpDownEvent(event) then
     inherited rightMouseUp(event);
 end;
 
 procedure TCocoaCustomControl.otherMouseDown(event: NSEvent);
 begin
-  if not callback.MouseUpDownEvent(event) then
+  if not Assigned(callback) or not callback.MouseUpDownEvent(event) then
     inherited otherMouseDown(event);
 end;
 
 procedure TCocoaCustomControl.otherMouseUp(event: NSEvent);
 begin
-  if not callback.MouseUpDownEvent(event) then
+  if not Assigned(callback) or not callback.MouseUpDownEvent(event) then
     inherited otherMouseUp(event);
 end;
 
 procedure TCocoaCustomControl.resetCursorRects;
 begin
-  if not callback.resetCursorRects then
+  if not Assigned(callback) or not callback.resetCursorRects then
     inherited resetCursorRects;
 end;
 
@@ -1060,6 +1134,10 @@ end;
 function LCLObjectExtension.lclGetCallback: ICommonCallback;
 begin
   Result := nil;
+end;
+
+procedure LCLObjectExtension.lclClearCallback;
+begin
 end;
 
 function LCLObjectExtension.lclGetPropStorage: TStringList;
@@ -1408,6 +1486,11 @@ begin
   Result := callback;
 end;
 
+procedure TCocoaListView.lclClearCallback;
+begin
+  callback := nil;
+end;
+
 function TCocoaListView.numberOfRowsInTableView(aTableView:NSTableView): NSInteger;
 begin
   if Assigned(list) then
@@ -1519,6 +1602,11 @@ end;
 function TCocoaComboBox.lclGetCallback: ICommonCallback;
 begin
   Result := callback;
+end;
+
+procedure TCocoaComboBox.lclClearCallback;
+begin
+  callback := nil;
 end;
 
 procedure TCocoaComboBox.resetCursorRects;
