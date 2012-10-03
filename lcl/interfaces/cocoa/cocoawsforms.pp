@@ -95,7 +95,9 @@ type
   TCocoaWSCustomFormClass = class of TCocoaWSCustomForm;
   TCocoaWSCustomForm = class(TWSCustomForm)
   private
-    class procedure SetStyleMaskFor(AWindow: NSWindow; ABorderStyle: TFormBorderStyle; ABorderIcons: TBorderIcons; ADesigning: Boolean);
+    class function GetStyleMaskFor(ABorderStyle: TFormBorderStyle; ABorderIcons: TBorderIcons): NSUInteger;
+    class procedure UpdateWindowIcons(AWindow: NSWindow; ABorderStyle: TFormBorderStyle; ABorderIcons: TBorderIcons);
+    class procedure UpdateWindowMask(AWindow: NSWindow; ABorderStyle: TFormBorderStyle; ABorderIcons: TBorderIcons);
   published
     class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
 
@@ -158,6 +160,14 @@ implementation
 
 uses
   CocoaInt;
+
+function GetDesigningBorderStyle(const AForm: TCustomForm): TFormBorderStyle;
+begin
+  if csDesigning in AForm.ComponentState then
+    Result := bsSizeable
+  else
+    Result := AForm.BorderStyle;
+end;
 
 { TCocoaWSHintWindow }
 
@@ -245,9 +255,27 @@ end;
 
 { TCocoaWSCustomForm }
 
-class procedure TCocoaWSCustomForm.SetStyleMaskFor(AWindow: NSWindow;
-  ABorderStyle: TFormBorderStyle; ABorderIcons: TBorderIcons;
-  ADesigning: Boolean);
+class function TCocoaWSCustomForm.GetStyleMaskFor(
+  ABorderStyle: TFormBorderStyle; ABorderIcons: TBorderIcons): NSUInteger;
+begin
+  case ABorderStyle of
+    bsSizeable, bsSizeToolWin:
+      Result := NSTitledWindowMask or NSResizableWindowMask;
+    bsSingle, bsDialog, bsToolWindow:
+      Result := NSTitledWindowMask;
+  else
+    Result := NSBorderlessWindowMask;
+  end;
+  if biSystemMenu in ABorderIcons then
+  begin
+    Result := Result or NSClosableWindowMask;
+    if biMinimize in ABorderIcons then
+      Result := Result or NSMiniaturizableWindowMask;
+  end;
+end;
+
+class procedure TCocoaWSCustomForm.UpdateWindowIcons(AWindow: NSWindow;
+  ABorderStyle: TFormBorderStyle; ABorderIcons: TBorderIcons);
 
   procedure SetWindowButtonState(AButton: NSWindowButton; AEnabled, AVisible: Boolean);
   var
@@ -261,42 +289,30 @@ class procedure TCocoaWSCustomForm.SetStyleMaskFor(AWindow: NSWindow;
     end;
   end;
 
-var
-  StyleMask: NSUInteger;
 begin
-  if ADesigning then
-    ABorderStyle := bsSingle;
-
-  case ABorderStyle of
-    bsSizeable, bsSizeToolWin:
-      StyleMask := NSTitledWindowMask or NSResizableWindowMask;
-    bsSingle, bsDialog, bsToolWindow:
-      StyleMask := NSTitledWindowMask;
-  else
-    StyleMask := NSBorderlessWindowMask;
-  end;
-  if biSystemMenu in ABorderIcons then
-  begin
-    StyleMask := StyleMask or NSClosableWindowMask;
-    if biMinimize in ABorderIcons then
-      StyleMask := StyleMask or NSMiniaturizableWindowMask;
-  end;
-  AWindow.setStyleMask(StyleMask);
-  // also change enable state for standard window buttons
   SetWindowButtonState(NSWindowMiniaturizeButton, biMinimize in ABorderIcons, (ABorderStyle in [bsSingle, bsSizeable]) and (biSystemMenu in ABorderIcons));
   SetWindowButtonState(NSWindowZoomButton, (biMaximize in ABorderIcons) and (ABorderStyle in [bsSizeable, bsSizeToolWin]), (ABorderStyle in [bsSingle, bsSizeable]) and (biSystemMenu in ABorderIcons));
   SetWindowButtonState(NSWindowCloseButton, True, (ABorderStyle <> bsNone) and (biSystemMenu in ABorderIcons));
 end;
 
+class procedure TCocoaWSCustomForm.UpdateWindowMask(AWindow: NSWindow;
+  ABorderStyle: TFormBorderStyle; ABorderIcons: TBorderIcons);
+var
+  StyleMask: NSUInteger;
+begin
+  StyleMask := GetStyleMaskFor(ABorderStyle, ABorderIcons);
+  AWindow.setStyleMask(StyleMask);
+  UpdateWindowIcons(AWindow, ABorderStyle, ABorderIcons);
+end;
+
 class function TCocoaWSCustomForm.CreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): TLCLIntfHandle;
 var
+  Form: TCustomForm absolute AWinControl;
   win: TCocoaPanel;
   cnt: TCocoaCustomControl;
   ns: NSString;
   R: NSRect;
-const
-  WinMask= NSTitledWindowMask or NSClosableWindowMask or NSMiniaturizableWindowMask or NSResizableWindowMask;
 begin
   win := TCocoaPanel(TCocoaPanel.alloc);
 
@@ -307,7 +323,8 @@ begin
   end;
 
   R := CreateParamsToNSRect(AParams);
-  win := TCocoaPanel(win.initWithContentRect_styleMask_backing_defer(R, WinMask, NSBackingStoreBuffered, False));
+  win := TCocoaPanel(win.initWithContentRect_styleMask_backing_defer(R, GetStyleMaskFor(GetDesigningBorderStyle(Form), Form.BorderIcons), NSBackingStoreBuffered, False));
+  UpdateWindowIcons(win, GetDesigningBorderStyle(Form), Form.BorderIcons);
   win.enableCursorRects;
   TCocoaPanel(win).callback := TLCLWindowCallback.Create(win, AWinControl);
   win.setDelegate(win);
@@ -385,14 +402,14 @@ class procedure TCocoaWSCustomForm.SetBorderIcons(const AForm: TCustomForm;
   const ABorderIcons: TBorderIcons);
 begin
   if AForm.HandleAllocated then
-    SetStyleMaskFor(NSWindow(AForm.Handle), AForm.BorderStyle, ABorderIcons, csDesigning in AForm.ComponentState);
+    UpdateWindowMask(NSWindow(AForm.Handle), GetDesigningBorderStyle(AForm), ABorderIcons);
 end;
 
 class procedure TCocoaWSCustomForm.SetFormBorderStyle(const AForm: TCustomForm;
   const AFormBorderStyle: TFormBorderStyle);
 begin
   if AForm.HandleAllocated then
-    SetStyleMaskFor(NSWindow(AForm.Handle), AFormBorderStyle, AForm.BorderIcons, csDesigning in AForm.ComponentState);
+    UpdateWindowMask(NSWindow(AForm.Handle), AFormBorderStyle, AForm.BorderIcons);
 end;
 
 class procedure TCocoaWSCustomForm.SetFormStyle(const AForm: TCustomform;
