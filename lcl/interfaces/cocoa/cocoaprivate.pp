@@ -1200,14 +1200,10 @@ begin
   P.x := X;
   P.y := Y;
   P := convertPoint_ToView(P, nil);
-  // 2. convert to screen
-  with window.frame.origin do
-  begin
-    P.x := P.x + x;
-    P.y := P.y + y;
-  end;
-  X := Round(P.x);
-  Y := Round(window.screen.frame.size.height - P.y);
+  X := Round(P.X);
+  Y := Round(P.Y);
+  // 2. convert window to screen
+  window.lclLocalToScreen(X, Y);
 end;
 
 procedure LCLViewExtension.lclScreenToLocal(var X, Y: Integer);
@@ -1215,13 +1211,9 @@ var
   P: NSPoint;
 begin
   // 1. convert from screen to window
+  window.lclScreenToLocal(X, Y);
   P.x := X;
-  P.y := window.screen.frame.size.height - Y;
-  with window.frame.origin do
-  begin
-    P.x := P.x - x;
-    P.y := P.y - y;
-  end;
+  P.y := Y;
   // 2. convert from window to local
   P := convertPoint_FromView(P, nil);
   X := Round(P.x);
@@ -1358,7 +1350,7 @@ begin
   end;
 end;
 
-function LCLWindowExtension.lclFrame:TRect;
+function LCLWindowExtension.lclFrame: TRect;
 begin
   if Assigned(screen) then
     NSToLCLRect(frame, screen.frame.size.height, Result)
@@ -1366,7 +1358,7 @@ begin
     Result := NSRectToRect(frame);
 end;
 
-procedure LCLWindowExtension.lclSetFrame(const r:TRect);
+procedure LCLWindowExtension.lclSetFrame(const r: TRect);
 var
   ns: NSREct;
 begin

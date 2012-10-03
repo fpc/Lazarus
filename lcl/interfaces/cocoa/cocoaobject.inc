@@ -79,6 +79,7 @@ var
 begin
   event := NSApp.nextEventMatchingMask_untilDate_inMode_dequeue(NSAnyEventMask, NSDate.distantFuture, NSDefaultRunLoopMode, true);
   NSApp.sendEvent(event);
+  NSApp.updateWindows;
 end;
 
 {------------------------------------------------------------------------------
