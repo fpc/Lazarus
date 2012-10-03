@@ -24,12 +24,12 @@ begin
   if Win32Platform = VER_PLATFORM_WIN32_NT then
   begin
     ws := UTF8Decode(AURL);
-    Result := ShellExecuteW(0, 'open', PWideChar(ws), nil, nil, SW_SHOWNORMAL) > 32;
+    Result := ShellExecuteW(0, nil, PWideChar(ws), nil, nil, SW_SHOWNORMAL) > 32;
   end
   else
   begin
     ans := Utf8ToAnsi(AURL); // utf8 must be converted to Windows Ansi-codepage
-    Result := ShellExecute(0, 'open', PAnsiChar(ans), nil, nil, SW_SHOWNORMAL) > 32;
+    Result := ShellExecute(0, nil, PAnsiChar(ans), nil, nil, SW_SHOWNORMAL) > 32;
   end;
   {$ENDIF}
 end;
