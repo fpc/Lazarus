@@ -1,4 +1,4 @@
-﻿#Lazarus is using following third party libraries and tools
+#Lazarus is using following third party libraries and tools
 
 
 #Component libraries:
