@@ -1,7 +1,7 @@
 unit LazSynTextArea;
 
 {$mode objfpc}{$H+}
-{x $INLINE OFF}
+{$INLINE OFF}
 
 {off $DEFINE SynUseOldDrawer}
 
@@ -23,10 +23,14 @@ type
     PhysicalEnd: Integer;   // 1 based
     PhysicalPaintStart: Integer; // 1 based
     PhysicalPaintEnd: Integer;   // 1 based
+    IsRtl: boolean;
     ExpandedExtraBytes: Integer;   // tab and space expansion
     HasDoubleWidth: Boolean;
     Attr: TSynSelectedColor;
-    NextPhysicalStart: Integer; // 1 based - Next toxen, may be BIDI
+    NextPhysicalPaintStart: Integer; // 1 based - Next toxen, may be BIDI
+    NextLogicStart: Integer;         // 1 based - Next toxen, may be BIDI
+    NextLogicStartPhysOffs: Integer;     // default 0. MultiWidth (e.g. Tab), if token starts in the middle of char
+    NextIsRtl: boolean;
   end;
 
   { TLazSynPaintTokenBreaker }
@@ -63,7 +67,8 @@ type
                      );
     procedure SetHighlighterTokensLine(ALine: TLineIdx; out ARealLine: TLineIdx);
     function  GetNextHighlighterTokenFromView(out ATokenInfo: TLazSynDisplayTokenInfoEx;
-                                              APhysEnd: Integer
+                                              APhysEnd: Integer = -1;
+                                              ALogEnd: Integer = -1
                                              ): Boolean;
     function  GetNextHighlighterTokenEx(out ATokenInfo: TLazSynDisplayTokenInfoEx): Boolean;
     property  CharWidths: TPhysicalCharWidths read FCharWidths;
@@ -257,7 +262,7 @@ begin
   FCurViewToken.Tk.TokenLength     := 0;
   FCurViewToken.LogicalStart       := 1;
   FCurViewToken.PhysicalStart      := 1;
-  FCurViewToken.NextPhysicalStart  := 1;
+  FCurViewToken.NextPhysicalPaintStart  := 1;
   FCurViewToken.PhysicalPaintStart := FFirstCol;
   FCurViewinRTL := False;
 
@@ -299,7 +304,7 @@ begin
 end;
 
 function TLazSynPaintTokenBreaker.GetNextHighlighterTokenFromView(out
-  ATokenInfo: TLazSynDisplayTokenInfoEx; APhysEnd: Integer): Boolean;
+  ATokenInfo: TLazSynDisplayTokenInfoEx; APhysEnd: Integer; ALogEnd: Integer): Boolean;
 
   procedure InitSynAttr(var ATarget: TSynSelectedColor; ASource: TSynHighlighterAttributes;
     AnAttrStartX: Integer);
@@ -533,6 +538,9 @@ begin
           TabExtra      := 0; // Extra bytes needed for expanded Tab/Space(utf8 visible space/dot)
           i := 0;
 
+          if (ALogEnd > 0) and (LogicEnd >= ALogEnd) then
+            LogicEnd := ALogEnd - 1;
+
           pcw := GetCharWidthData(LogicIdx);
           while (LogicIdx < LogicEnd) and (PhysPos < PhysTokenStop) and
                 (pcw and PCWFlagRTL = 0)
@@ -560,7 +568,7 @@ begin
                   (LogicIdx >= LogicEnd) or ((FCharWidths[LogicIdx] and PCWMask) <> 0);
             pcw := GetCharWidthData(LogicIdx);
           end;
-          Assert(PhysPos > FCurViewToken.PhysicalStart, 'PhysPos > FCurViewToken.PhysicalStart');
+          Assert((PhysPos > FCurViewToken.PhysicalStart) or (ALogEnd > 0), 'PhysPos > FCurViewToken.PhysicalStart');
 
           ATokenInfo := FCurViewToken;
           ATokenInfo.Tk.TokenLength   := LogicIdx + 1 - ATokenInfo.LogicalStart;
@@ -569,6 +577,7 @@ begin
           ATokenInfo.PhysicalPaintEnd := Min(PhysPos, PhysTokenStop);
           ATokenInfo.ExpandedExtraBytes := TabExtra;
           ATokenInfo.HasDoubleWidth   := HasDouble;
+          ATokenInfo.IsRtl            := False;
 
           if PhysPos > PhysTokenStop then begin      // Last char goes over paint boundary
             LogicIdx := PrevLogicIdx;
@@ -578,16 +587,25 @@ begin
             PhysTokenStop := PhysPos;
           AdjustCurTokenLogStart(LogicIdx + 1);
           FCurViewToken.PhysicalStart   := PhysPos;
-          FCurViewToken.PhysicalPaintStart := PhysTokenStop;
+          if PhysTokenStop > FCurViewToken.PhysicalPaintStart  then
+            FCurViewToken.PhysicalPaintStart := PhysTokenStop;
 
           assert(FCurViewToken.Tk.TokenLength >= 0, 'FCurViewToken.Tk.TokenLength >= 0');
           if FCurViewToken.Tk.TokenLength = 0 then
             ATokenInfo.Attr.EndX := PhysPos-1;
 
-          //MaybeFetchToken;
-          MaybeChangeToRtl(LogicIdx, LogicEnd); // get NextTokenPhysStart
+          MaybeFetchToken;
+          if MaybeChangeToRtl(LogicIdx, LogicEnd) then begin // get NextTokenPhysStart
+            SkipRtlOffScreen(LogicIdx, LogicEnd);
+            while FCurViewToken.Tk.TokenLength = 0 do
+              if MaybeFetchToken then
+                SkipRtlOffScreen(LogicIdx, LogicEnd);
+          end;
 
-          ATokenInfo.NextPhysicalStart := FCurViewToken.PhysicalStart;
+          ATokenInfo.NextPhysicalPaintStart := FCurViewToken.PhysicalPaintStart;
+          ATokenInfo.NextLogicStart         := FCurViewToken.LogicalStart;
+          ATokenInfo.NextLogicStartPhysOffs := FCurViewToken.PhysicalPaintStart - FCurViewToken.PhysicalStart;
+          ATokenInfo.NextIsRtl              := FCurViewinRTL;
 
           break;
         end; // case FCurViewinRTL = False;
@@ -616,6 +634,9 @@ begin
           TabExtra      := 0; // Extra bytes needed for expanded Tab/Space(utf8 visible space/dot)
           i := 0;
 
+          if (ALogEnd > 0) and (LogicEnd >= ALogEnd) then
+            LogicEnd := ALogEnd - 1;
+
           pcw := GetCharWidthData(LogicIdx);
           while (LogicIdx < LogicEnd) and (PhysPos > PhysTokenStop) and
                 (pcw and PCWFlagRTL <> 0)
@@ -643,7 +664,7 @@ begin
                   (LogicIdx >= LogicEnd) or ((FCharWidths[LogicIdx] and PCWMask) <> 0);
             pcw := GetCharWidthData(LogicIdx);
           end;
-          Assert(PhysPos < FCurViewToken.PhysicalStart, 'PhysPos > FCurViewToken.PhysicalStart');
+          Assert((PhysPos < FCurViewToken.PhysicalStart) or (ALogEnd > 0), 'PhysPos > FCurViewToken.PhysicalStart');
 
           ATokenInfo := FCurViewToken;
           ATokenInfo.Tk.TokenLength     := LogicIdx + 1 - ATokenInfo.LogicalStart;
@@ -654,25 +675,34 @@ begin
           ATokenInfo.PhysicalPaintStart := Max(PhysPos, PhysTokenStop);
           ATokenInfo.ExpandedExtraBytes := TabExtra;
           ATokenInfo.HasDoubleWidth     := HasDouble;
+          ATokenInfo.IsRtl              := True;
 
           if PhysPos < PhysTokenStop then begin      // Last char goes over paint boundary
             LogicIdx := PrevLogicIdx;
             PhysPos  := PrevPhysPos;
           end;
-          //else
-          //  AMaxPhysEnd := PhysPos;
+          PhysTokenStop := Max(PhysPos, PhysTokenStop);
+
           AdjustCurTokenLogStart(LogicIdx + 1);
           FCurViewToken.PhysicalStart   := PhysPos;
-          FCurViewToken.PhysicalPaintStart := Max(PhysPos, PhysTokenStop);
+          if PhysTokenStop < FCurViewToken.PhysicalPaintStart then
+            FCurViewToken.PhysicalPaintStart := PhysTokenStop;
 
           assert(FCurViewToken.Tk.TokenLength >= 0, 'FCurViewToken.Tk.TokenLength >= 0');
           if FCurViewToken.Tk.TokenLength = 0 then
             ATokenInfo.Attr.EndX := PhysPos-1;
 
-          //MaybeFetchToken;
-          MaybeChangeToLtr(LogicIdx, LogicEnd); // get NextTokenPhysStart
+          MaybeFetchToken;
+          SkipRtlOffScreen(LogicIdx, LogicEnd);
+          while FCurViewToken.Tk.TokenLength = 0 do
+            if MaybeFetchToken then
+              SkipRtlOffScreen(LogicIdx, LogicEnd);
+          MaybeChangeToLtr(LogicIdx, LogicEnd);  // get NextTokenPhysStart
 
-          ATokenInfo.NextPhysicalStart := FCurViewToken.PhysicalStart;
+          ATokenInfo.NextPhysicalPaintStart := FCurViewToken.PhysicalPaintStart;
+          ATokenInfo.NextLogicStart         := FCurViewToken.LogicalStart;
+          ATokenInfo.NextLogicStartPhysOffs := FCurViewToken.PhysicalStart - FCurViewToken.PhysicalPaintStart;
+          ATokenInfo.NextIsRtl              := FCurViewinRTL;
 
           break;
         end; // case FCurViewinRTL = True;
