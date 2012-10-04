@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
-"Last-Translator: August Klein\n"
-"PO-Revision-Date: 2011-03-08 06:22+0100\n"
+"Last-Translator: Lucas Martin <codedeep@hotmail.com>\n"
+"PO-Revision-Date: 2012-10-02 20:21+0100\n"
 "Language-Team: \n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -27,7 +27,7 @@ msgstr "No se pudo encontrar un visor HTML"
 
 #: lclstrconsts.hhshelpnohtmlbrowserfoundpleasedefineone
 msgid "No HTML Browser found.%sPlease define one in Tools -> Options -> Help -> Help Options"
-msgstr ""
+msgstr "No encontrado un Navegador HTML.%sPor favor definir uno en Herramientas -> Opciones -> Ayuda -> Opciones de ayuda"
 
 #: lclstrconsts.hhshelpthehelpdatabasewasunabletofindfile
 msgid "The help database %s%s%s was unable to find file %s%s%s."
@@ -72,7 +72,7 @@ msgstr "Limpiar"
 
 #: lclstrconsts.ifsvk_cmd
 msgid "Cmd"
-msgstr ""
+msgstr "Cmd"
 
 #: lclstrconsts.ifsvk_control
 msgid "Control"
@@ -159,7 +159,7 @@ msgstr "Menú"
 
 #: lclstrconsts.ifsvk_meta
 msgid "Meta"
-msgstr ""
+msgstr "Meta"
 
 #: lclstrconsts.ifsvk_modechange
 msgid "Mode Change"
@@ -234,7 +234,7 @@ msgstr "Tecla espaciadora"
 
 #: lclstrconsts.ifsvk_super
 msgid "Super"
-msgstr ""
+msgstr "Super"
 
 #: lclstrconsts.ifsvk_tab
 msgctxt "lclstrconsts.ifsvk_tab"
@@ -256,7 +256,7 @@ msgstr "no se puede ejecutar %s"
 
 #: lclstrconsts.liscefilter
 msgid "(filter)"
-msgstr ""
+msgstr "(filtro)"
 
 #: lclstrconsts.lislclresourcesnotfound
 msgctxt "lclstrconsts.lislclresourcesnotfound"
@@ -375,7 +375,7 @@ msgstr "El control '%s' no tiene ventana padre"
 
 #: lclstrconsts.rscontrolisnotaparent
 msgid "'%s' is not a parent of '%s'"
-msgstr ""
+msgstr "'%s' no es un padre de '%s'"
 
 #: lclstrconsts.rscreamcolorcaption
 msgid "Cream"
@@ -698,11 +698,11 @@ msgstr "Base de datos de ayuda %s%s%s no encotrada"
 
 #: lclstrconsts.rshelphelpfordirectivenotfound
 msgid "Help for directive %s%s%s not found."
-msgstr ""
+msgstr "Ayuda para directiva %s%s%s no encontrado."
 
 #: lclstrconsts.rshelphelpfordirectivenotfoundindatabase
 msgid "Help for directive %s%s%s not found in Database %s%s%s."
-msgstr ""
+msgstr "Ayuda para directiva %s%s%s no encontrada en la base de datos %s%s%s."
 
 #: lclstrconsts.rshelphelpkeywordnotfound
 msgid "Help keyword %s%s%s not found."
@@ -819,7 +819,7 @@ msgstr "%s Índice %d fuera de límites 0 .. %d"
 
 #: lclstrconsts.rsindexoutofrange
 msgid "Index Out of range Cell[Col=%d Row=%d]"
-msgstr "Índice fuera de rango Celda[Col=%s Línea=%d]"
+msgstr "Índice Fuera de rango Celda[Col=%d Línea=%d]"
 
 #: lclstrconsts.rsinfobkcolorcaption
 msgid "Info Background"
@@ -1062,7 +1062,7 @@ msgstr "Anterior"
 
 #: lclstrconsts.rspromptonreplace
 msgid "Prompt on replace"
-msgstr ""
+msgstr "Preguntar al sustituir"
 
 #: lclstrconsts.rspropertydoesnotexist
 msgid "Property %s does not exist"
@@ -1223,7 +1223,7 @@ msgstr "Cielo azul"
 
 #: lclstrconsts.rstcustomtabcontrolaccessibilitydescription
 msgid "A control with tabs"
-msgstr ""
+msgstr "Un control con pestañas"
 
 #: lclstrconsts.rstealcolorcaption
 msgid "Teal"
@@ -1240,17 +1240,17 @@ msgstr "Formato de Archivo de Imagen Etiquetado"
 #: lclstrconsts.rstpanelaccessibilitydescription
 msgctxt "lclstrconsts.rstpanelaccessibilitydescription"
 msgid "Panel"
-msgstr ""
+msgstr "Panel"
 
 #: lclstrconsts.rstsplitteraccessibilitydescription
 msgctxt "lclstrconsts.rstsplitteraccessibilitydescription"
 msgid "A grip to control how much size to give two parts of an area"
-msgstr ""
+msgstr "Un agarre para controlar cuanto tamaño para dar dos partes de un área"
 
 #: lclstrconsts.rsttreeviewaccessibilitydescription
 msgctxt "lclstrconsts.rsttreeviewaccessibilitydescription"
 msgid "A tree of items"
-msgstr ""
+msgstr "Un árbol de items"
 
 #: lclstrconsts.rsunabletoloaddefaultfont
 msgid "Unable to load default font"
@@ -1366,7 +1366,7 @@ msgstr "Índice de ImageList Inválido"
 
 #: lclstrconsts.smaskeditnomatch
 msgid "The current text does not match the specified mask."
-msgstr ""
+msgstr "El texto actual no coincide con la máscara especificada."
 
 #: lclstrconsts.smenuindexerror
 msgid "Menu index out of range"
@@ -1487,7 +1487,7 @@ msgstr "Número entero no válido: %s"
 #, fuzzy
 #| msgid " (at %d,%d, stream offset %.8x)"
 msgid " (at %d,%d, stream offset %d)"
-msgstr " (en %d,%d, flujo de desplazamiento %.8x)"
+msgstr " (en %d,%d, flujo de desplazamiento %d)"
 
 #: lclstrconsts.sparunterminatedbinvalue
 msgid "Unterminated byte value"
