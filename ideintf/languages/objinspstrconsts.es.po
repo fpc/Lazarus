@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
-"Project-Id-Version: lazaruside\n"
+"Project-Id-Version: ideintf\n"
 "POT-Creation-Date: \n"
 "PO-Revision-Date: 2012-10-02 20:21+0100\n"
 "Last-Translator: Lucas Martin <codedeep@hotmail.com>\n"
@@ -1070,15 +1070,15 @@ msgstr "Probar entrada"
 
 #: objinspstrconsts.oistheidentifierisnotamethodpresscanceltoundopressign
 msgid "The identifier %s%s%s is not a method.%sPress Cancel to undo,%spress Ignore to force it."
-msgstr "El identificador %s%s% no es un método.%sPresiona Cancelar para deshacer,%Presiona Ignorar para forzar."
+msgstr "El identificador %s%s%s no es un método.%sPresiona Cancelar para deshacer,%spresiona Ignorar para forzar."
 
 #: objinspstrconsts.oisthemethodisincompatibletothiseventpresscanceltound
 msgid "The method %s%s%s is incompatible to this event (%s).%sPress Cancel to undo,%spress Ignore to force it."
-msgstr "El método %s%s%s no es compatible con este evento (%s).%sPresiona Cancelar para deshacer,%s presiona Ignorar para forzar."
+msgstr "El método %s%s%s no es compatible con este evento (%s).%sPresiona Cancelar para deshacer,%spresiona Ignorar para forzar."
 
 #: objinspstrconsts.oisthemethodisnotpublishedpresscanceltoundopressignor
 msgid "The method %s%s%s is not published.%sPress Cancel to undo,%spress Ignore to force it."
-msgstr "El método %s%s%s no es de tipo publicado.%sPresiona Cancelar para deshacer,%s presiona Ignorar para forzar."
+msgstr "El método %s%s%s no es de tipo publicado.%sPresiona Cancelar para deshacer,%spresiona Ignorar para forzar."
 
 #: objinspstrconsts.oisunabletochangeparentofcontroltonewparent
 msgid "Unable to change parent of control %s%s%s to new parent %s%s%s.%s%s"

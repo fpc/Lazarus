@@ -1,12 +1,14 @@
 Quick Start for translators:
 
-For example finnish translation:
-Search for all *.fi.po files. They are simple text files, with an easy format.
-Edit them with programs like kbabel.
-Run 'sh localize.sh' to update translations.
+For example Finnish translation:
+Search for all *.fi.po files. They are simple text files with an easy format.
+Edit them with programs like poEdit (www.poedit.net) or KBabel. Do not edit them manually.
+Run 'sh localize.sh' (Linux) or 'localize.bat'(Windows) to update translations.
 
-Send the updated xxx.fi.po files to patch@dommelstein.net.
-Do not send diffs for .po files.
+Check your translated .po files with PoChecker tool (lazarus/components/pochecker/) and fix all reported errors.
+
+Post the updated xxx.fi.po files to bug tracker (http://bugs.freepascal.org).
+Do NOT post diffs for .po files.
 
 
 Now the background:

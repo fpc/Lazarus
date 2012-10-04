@@ -819,7 +819,7 @@ msgstr "%s Índice %d fuera de límites 0 .. %d"
 
 #: lclstrconsts.rsindexoutofrange
 msgid "Index Out of range Cell[Col=%d Row=%d]"
-msgstr "Índice fuera de rango Celda[Col=%s Línea=%d]"
+msgstr "Índice Fuera de rango Celda[Col=%d Línea=%d]"
 
 #: lclstrconsts.rsinfobkcolorcaption
 msgid "Info Background"
@@ -1487,7 +1487,7 @@ msgstr "Número entero no válido: %s"
 #, fuzzy
 #| msgid " (at %d,%d, stream offset %.8x)"
 msgid " (at %d,%d, stream offset %d)"
-msgstr " (en %d,%d, flujo de desplazamiento %.8x)"
+msgstr " (en %d,%d, flujo de desplazamiento %d)"
 
 #: lclstrconsts.sparunterminatedbinvalue
 msgid "Unterminated byte value"

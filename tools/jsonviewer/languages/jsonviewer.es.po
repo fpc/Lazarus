@@ -1,0 +1,309 @@
+﻿msgid ""
+msgstr ""
+"Last-Translator: Lucas Martin <codedeep@hotmail.com>\n"
+"PO-Revision-Date: 2012-10-02 20:21+0100\n"
+"Language-Team: \n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Project-Id-Version: jsonviewer\n"
+"POT-Creation-Date: \n"
+"MIME-Version: 1.0\n"
+
+#: msgjsonviewer.sarray
+msgid "Array (%d elements)"
+msgstr ""
+
+#: msgjsonviewer.scancelclose
+msgid "Do not close the window"
+msgstr "No cierre la ventana"
+
+#: msgjsonviewer.scancelpaste
+msgid "Do not paste the new data"
+msgstr "No pegar los nuevos datos"
+
+#: msgjsonviewer.scaption
+msgctxt "msgjsonviewer.scaption"
+msgid "JSON Viewer"
+msgstr "Visor de JSON"
+
+#: msgjsonviewer.sdiscard
+msgid "Discard changes"
+msgstr "Descartar cambios"
+
+#: msgjsonviewer.sdocumentmodified
+msgid "JSON document modified"
+msgstr "Documento JSON modificado"
+
+#: msgjsonviewer.sdocumentmodifiedaction
+msgid ""
+"The JSON data was changed but not saved.\n"
+"What do want to do ?\n"
+msgstr ""
+"Los datos JSON fue cambiados pero no guardados.\n"
+"¿Quieres hacer?\n"
+
+#: msgjsonviewer.sduplicatemembername
+msgid "Duplicate member name \"%s\"."
+msgstr "Nombre de miembro duplicado \"%s\"."
+
+#: msgjsonviewer.selement
+msgid "Element nr. %d"
+msgstr "Elemento num. %d"
+
+#: msgjsonviewer.sempty
+msgid "Empty document"
+msgstr "Documento vacío"
+
+#: msgjsonviewer.serrcreatingconfigdir
+msgid "Could not create the configuration files directory \"s\""
+msgstr "No se pudo crear el directorio de archivos de configuración \"s\""
+
+#: msgjsonviewer.serrinvalidvalue
+msgid "Invalid value or wrong type: \"%s\""
+msgstr "Valor no válido o tipo incorrecto: \"%s\""
+
+#: msgjsonviewer.serrnovalidjsonclipboard
+msgid "The clipboard does not contain valid JSON data"
+msgstr "El Portapapeles no contiene datos válidos de JSON"
+
+#: msgjsonviewer.snewmember
+msgid "New object member"
+msgstr "Nuevo miembro de objeto"
+
+#: msgjsonviewer.snewmembername
+msgid "Enter a name for the new member (type: %s)"
+msgstr "Introduzca un nombre para el nuevo miembro (tipo: %s)"
+
+#: msgjsonviewer.snomorematches
+msgid "No nodes match the criterium"
+msgstr "Ningún nodo coincide con el criterio"
+
+#: msgjsonviewer.snull
+msgid "null"
+msgstr "nulo"
+
+#: msgjsonviewer.sobject
+msgid "Object (%d members)"
+msgstr "Objeto (%d miembros)"
+
+#: msgjsonviewer.ssavedata
+msgid "Save the changes"
+msgstr "Guardar los cambios"
+
+#: TMAINFORM.ACOPY.CAPTION
+msgid "&Copy"
+msgstr "&Copiar"
+
+#: TMAINFORM.ACOPY.HINT
+msgid "Copy selected node to clipboard as JSON"
+msgstr "Copia el nodo seleccionado en el Portapapeles como JSON"
+
+#: TMAINFORM.ACUT.CAPTION
+msgid "C&ut"
+msgstr "Cortar"
+
+#: TMAINFORM.ACUT.HINT
+msgid "Cut selected node to clipboard as JSON"
+msgstr "Cortar el nodo seleccionado en el Portapapeles como JSON"
+
+#: TMAINFORM.ADELETEVALUE.CAPTION
+msgid "&Delete value"
+msgstr "&Eliminar valor"
+
+#: TMAINFORM.ADELETEVALUE.HINT
+msgid "Delete the selected value"
+msgstr "Eliminar el valor seleccionado"
+
+#: TMAINFORM.AEXPANDALL.CAPTION
+msgid "E&xpand all nodes"
+msgstr "E&xpandir todos los nodos"
+
+#: TMAINFORM.AEXPANDALL.HINT
+msgid "Expand all nodes in the document"
+msgstr "Expandir todos los nodos del documento"
+
+#: TMAINFORM.AEXPANDCURRENTCONTAINER.CAPTION
+msgid "Expand &current object/array"
+msgstr "Expandir a&ctual objeto/matriz"
+
+#: TMAINFORM.AEXPANDCURRENTCONTAINER.HINT
+msgid "Expand all nodes in the current object/array"
+msgstr "Expandir todos los nodos en el actual objeto/matriz"
+
+#: TMAINFORM.AFIND.CAPTION
+msgid "&Find"
+msgstr "Buscar"
+
+#: TMAINFORM.AFINDNEXT.CAPTION
+msgid "Find &next occurrence"
+msgstr "Buscar siguiente ocurrencia"
+
+#: TMAINFORM.ANEW.CAPTION
+msgid "&New"
+msgstr "&Nuevo"
+
+#: TMAINFORM.ANEW.HINT
+msgid "Create new JSON document"
+msgstr "Crear nuevo documento JSON"
+
+#: TMAINFORM.ANEWARRAY.CAPTION
+msgid "New &Array"
+msgstr "Nuevo M&atriz"
+
+#: TMAINFORM.ANEWARRAY.HINT
+msgid "Add a new JSON array"
+msgstr "Agregar una nueva matriz JSON"
+
+#: TMAINFORM.ANEWBOOLEANVALUE.CAPTION
+msgid "New &boolean value"
+msgstr "Valor &booleano nuevo"
+
+#: TMAINFORM.ANEWBOOLEANVALUE.HINT
+msgid "Add a new boolean value"
+msgstr "Agregar un nuevo valor booleano"
+
+#: TMAINFORM.ANEWNULLVALUE.CAPTION
+msgid "New N&ull value"
+msgstr "Nuevo valor de N&ulo"
+
+#: TMAINFORM.ANEWNULLVALUE.HINT
+msgid "Add a new null value"
+msgstr "Agregar un nuevo valor nulo"
+
+#: TMAINFORM.ANEWNUMBERVALUE.CAPTION
+msgid "&New numerical Value"
+msgstr "&Nuevo valor numérico"
+
+#: TMAINFORM.ANEWNUMBERVALUE.HINT
+msgid "Add a new number value"
+msgstr "Agregar un nuevo valor de número"
+
+#: TMAINFORM.ANEWOBJECT.CAPTION
+msgid "New &Object"
+msgstr "Nuevo &Objeto"
+
+#: TMAINFORM.ANEWOBJECT.HINT
+msgid "Add a new JSON object"
+msgstr "Agregar un nuevo objeto JSON"
+
+#: TMAINFORM.ANEWSTRINGVALUE.CAPTION
+msgid "New &string value"
+msgstr "Nuevo valor de cadena"
+
+#: TMAINFORM.ANEWSTRINGVALUE.HINT
+msgid "Add a new string value"
+msgstr "Agregar un nuevo valor de cadena"
+
+#: TMAINFORM.AOPEN.CAPTION
+msgid "&Open"
+msgstr "Abrir"
+
+#: TMAINFORM.AOPEN.HINT
+msgid "Open JSON document from file"
+msgstr "Abrir documento JSON desde archivo"
+
+#: TMAINFORM.APASTE.CAPTION
+msgid "&Paste"
+msgstr "&Pegar"
+
+#: TMAINFORM.APASTE.HINT
+msgid "Paste JSON data in clipboard as new member"
+msgstr "Pegar datos JSON en el Portapapeles como nuevo miembro"
+
+#: TMAINFORM.APASTEASDOCUMENT.CAPTION
+msgid "Paste as new document"
+msgstr "Pegar como nuevo documento"
+
+#: TMAINFORM.APASTEASDOCUMENT.HINT
+msgid "Paste JSON data in clipboard as new document"
+msgstr "Pegar datos JSON en el Portapapeles como nuevo documento"
+
+#: TMAINFORM.AQUIT.CAPTION
+msgid "&Quit"
+msgstr "Salir"
+
+#: TMAINFORM.AQUIT.HINT
+msgid "Exit the program"
+msgstr "Salir del programa"
+
+#: TMAINFORM.ASAVE.CAPTION
+msgid "&Save"
+msgstr "Guardar"
+
+#: TMAINFORM.ASAVE.HINT
+msgid "Save the JSON document to file"
+msgstr "Guardar el documento JSON en archivo"
+
+#: TMAINFORM.ASAVEAS.CAPTION
+msgid "Save &as"
+msgstr "Guard&ar como"
+
+#: TMAINFORM.ASAVEAS.HINT
+msgid "Save JSON document with a new name"
+msgstr "Guardar documento JSON con un nuevo nombre"
+
+#: TMAINFORM.MAINFORM.CAPTION
+msgctxt "TMAINFORM.MAINFORM.CAPTION"
+msgid "JSON Viewer"
+msgstr "Visor de JSON"
+
+#: TMAINFORM.MEDIT.CAPTION
+msgid "&Edit"
+msgstr "&Editar"
+
+#: TMAINFORM.MENUITEM1.CAPTION
+msgctxt "TMAINFORM.MENUITEM1.CAPTION"
+msgid "-"
+msgstr "-"
+
+#: TMAINFORM.MENUITEM2.CAPTION
+msgctxt "TMAINFORM.MENUITEM2.CAPTION"
+msgid "-"
+msgstr "-"
+
+#: TMAINFORM.MENUITEM3.CAPTION
+msgctxt "TMAINFORM.MENUITEM3.CAPTION"
+msgid "-"
+msgstr "-"
+
+#: TMAINFORM.MENUITEM8.CAPTION
+msgctxt "TMAINFORM.MENUITEM8.CAPTION"
+msgid "-"
+msgstr "-"
+
+#: TMAINFORM.MFILE.CAPTION
+msgid "&File"
+msgstr "Archivo"
+
+#: TMAINFORM.MIDOCUMENT.CAPTION
+msgid "&New document with object"
+msgstr "&Nuevo documento con objeto"
+
+#: TMAINFORM.MIINSERT.CAPTION
+msgid "&Values"
+msgstr "&Valores"
+
+#: TMAINFORM.MISORTMEMBERS.CAPTION
+msgid "Sort object members"
+msgstr "Ordenar objetos miembros"
+
+#: TMAINFORM.MISTRICT.CAPTION
+msgid "&Strict JSON"
+msgstr "JSON e&stricto"
+
+#: TMAINFORM.MOPTIONS.CAPTION
+msgid "&Options"
+msgstr "&Opciones"
+
+#: TMAINFORM.TBJSON.CAPTION
+msgid "TBJSON"
+msgstr "TBJSON"
+
+#: TMAINFORM.TOOLBUTTON1.CAPTION
+msgid "ToolButton1"
+msgstr "ToolButton1"
+
+#: TMAINFORM.TOOLBUTTON4.CAPTION
+msgid "ToolButton4"
+msgstr "ToolButton4"
+

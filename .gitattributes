@@ -2298,6 +2298,7 @@ components/pochecker/Proj/pochecker.lpr svneol=native#text/plain
 components/pochecker/README.txt svneol=native#text/plain
 components/pochecker/languages/pocheckerconsts.ar.po svneol=native#text/plain
 components/pochecker/languages/pocheckerconsts.de.po svneol=native#text/plain
+components/pochecker/languages/pocheckerconsts.es.po svneol=native#text/plain
 components/pochecker/languages/pocheckerconsts.lt.po svneol=native#text/plain
 components/pochecker/languages/pocheckerconsts.po svneol=native#text/plain
 components/pochecker/languages/pocheckerconsts.pt_BR.po svneol=native#text/plain
@@ -3516,6 +3517,7 @@ doceditor/images/treenode_add24.bmp -text
 doceditor/images/underline_blue24.bmp -text
 doceditor/languages/lazde.ar.po svneol=native#text/plain
 doceditor/languages/lazde.de.po svneol=native#text/plain
+doceditor/languages/lazde.es.po svneol=native#text/plain
 doceditor/languages/lazde.it.po svneol=native#text/plain
 doceditor/languages/lazde.lt.po svneol=native#text/plain
 doceditor/languages/lazde.po svneol=native#text/plain
@@ -5478,11 +5480,13 @@ install/man/man1/svn2revisioninc.1 svneol=native#text/plain
 install/man/man1/updatepofiles.1 svneol=native#text/plain
 languages/README.txt svneol=native#text/plain
 languages/debuggerstrconst.ar.po svneol=native#text/plain
+languages/debuggerstrconst.es.po svneol=native#text/plain
 languages/debuggerstrconst.lt.po svneol=native#text/plain
 languages/debuggerstrconst.po svneol=native#text/plain
 languages/debuggerstrconst.ru.po svneol=native#text/plain
 languages/debuggerstrconst.uk.po svneol=native#text/plain
 languages/gdbmidebugger.ar.po svneol=native#text/plain
+languages/gdbmidebugger.es.po svneol=native#text/plain
 languages/gdbmidebugger.ja.po svneol=native#text/plain
 languages/gdbmidebugger.lt.po svneol=native#text/plain
 languages/gdbmidebugger.po svneol=native#text/plain
@@ -6937,6 +6941,7 @@ tools/jsonviewer/jsonviewer.lpr svneol=native#text/plain
 tools/jsonviewer/jsonviewer.res -text
 tools/jsonviewer/languages/jsonviewer.ar.po svneol=native#text/plain
 tools/jsonviewer/languages/jsonviewer.de.po svneol=native#text/plain
+tools/jsonviewer/languages/jsonviewer.es.po svneol=native#text/plain
 tools/jsonviewer/languages/jsonviewer.it.po svneol=native#text/plain
 tools/jsonviewer/languages/jsonviewer.lt.po svneol=native#text/plain
 tools/jsonviewer/languages/jsonviewer.po svneol=native#text/plain
