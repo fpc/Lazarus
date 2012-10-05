@@ -81,7 +81,7 @@ begin
   // changed), only the unit paths have changed and so FPC rebuilds only the
   // lazarus.pp.
   // Any flag that should work with quick build must be set here.
-  KeepInstalledPackages:={$IFDEF BigIDE}True{$ELSE}False{$ENDIF};
+  KeepInstalledPackages:={$IF defined(BigIDE) or defined(KeepInstalledPackages)}True{$ELSE}False{$ENDIF};
 
   // end of build flags
   
