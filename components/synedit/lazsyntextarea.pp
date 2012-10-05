@@ -594,13 +594,13 @@ begin
           if FCurViewToken.Tk.TokenLength = 0 then
             ATokenInfo.Attr.EndX := PhysPos-1;
 
-          MaybeFetchToken;
-          if MaybeChangeToRtl(LogicIdx, LogicEnd) then begin // get NextTokenPhysStart
-            SkipRtlOffScreen(LogicIdx, LogicEnd);
-            while FCurViewToken.Tk.TokenLength = 0 do
-              if MaybeFetchToken then
-                SkipRtlOffScreen(LogicIdx, LogicEnd);
-          end;
+          //MaybeFetchToken;
+          //if MaybeChangeToRtl(LogicIdx, LogicEnd) then begin // get NextTokenPhysStart
+          //  SkipRtlOffScreen(LogicIdx, LogicEnd);
+          //  while FCurViewToken.Tk.TokenLength = 0 do
+          //    if MaybeFetchToken then
+          //      SkipRtlOffScreen(LogicIdx, LogicEnd);
+          //end;
 
           ATokenInfo.NextPhysicalPaintStart := FCurViewToken.PhysicalPaintStart;
           ATokenInfo.NextLogicStart         := FCurViewToken.LogicalStart;
@@ -692,12 +692,12 @@ begin
           if FCurViewToken.Tk.TokenLength = 0 then
             ATokenInfo.Attr.EndX := PhysPos-1;
 
-          MaybeFetchToken;
-          SkipRtlOffScreen(LogicIdx, LogicEnd);
-          while FCurViewToken.Tk.TokenLength = 0 do
-            if MaybeFetchToken then
-              SkipRtlOffScreen(LogicIdx, LogicEnd);
-          MaybeChangeToLtr(LogicIdx, LogicEnd);  // get NextTokenPhysStart
+          //MaybeFetchToken;
+          //SkipRtlOffScreen(LogicIdx, LogicEnd);
+          //while FCurViewToken.Tk.TokenLength = 0 do
+          //  if MaybeFetchToken then
+          //    SkipRtlOffScreen(LogicIdx, LogicEnd);
+          //MaybeChangeToLtr(LogicIdx, LogicEnd);  // get NextTokenPhysStart
 
           ATokenInfo.NextPhysicalPaintStart := FCurViewToken.PhysicalPaintStart;
           ATokenInfo.NextLogicStart         := FCurViewToken.LogicalStart;
