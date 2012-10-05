@@ -14,21 +14,28 @@ uses
 
 
 type
+  //TLazSynDisplayTokenBound = record
+  //  Physical: Integer;      // 1 based
+  //  Logical: Integer;       // 1 based
+  //  Offset: Integer;        // default 0. MultiWidth (e.g. Tab), if token starts in the middle of char
+  //end;
 
   TLazSynDisplayTokenInfoEx = record
     Tk: TLazSynDisplayTokenInfo;
-    LogicalStart: Integer;  // 1 based. First char in line starts at 1 (This is Bytes not Chars)
-    LogicalEnd: Integer;    // 1 based. First char in line ends after char // NextChar-Start
-    PhysicalStart: Integer; // 1 based Includes any half (from double-width) char, that overlaps, the PhysPaint borders
-    PhysicalEnd: Integer;   // 1 based
-    PhysicalPaintStart: Integer; // 1 based
-    PhysicalPaintEnd: Integer;   // 1 based
+    //StartPos: TLazSynDisplayTokenBound;
+    //EndPos: TLazSynDisplayTokenBound;
+    LogicalStart: Integer;               // 1 based. First char in line starts at 1 (This is Bytes not Chars)
+    LogicalEnd: Integer;                 // 1 based. First char in line ends after char // NextChar-Start
+    PhysicalStart: Integer;              // 1 based Includes any half (from double-width) char, that overlaps, the PhysPaint borders
+    PhysicalEnd: Integer;                // 1 based
+    PhysicalPaintStart: Integer;         // 1 based
+    PhysicalPaintEnd: Integer;           // 1 based
     IsRtl: boolean;
-    ExpandedExtraBytes: Integer;   // tab and space expansion
+    ExpandedExtraBytes: Integer;         // tab and space expansion
     HasDoubleWidth: Boolean;
     Attr: TSynSelectedColor;
-    NextPhysicalPaintStart: Integer; // 1 based - Next toxen, may be BIDI
-    NextLogicStart: Integer;         // 1 based - Next toxen, may be BIDI
+    NextPhysicalPaintStart: Integer;     // 1 based - Next toxen, may be BIDI
+    NextLogicStart: Integer;             // 1 based - Next toxen, may be BIDI
     NextLogicStartPhysOffs: Integer;     // default 0. MultiWidth (e.g. Tab), if token starts in the middle of char
     NextIsRtl: boolean;
   end;
@@ -52,6 +59,7 @@ type
     FCurTxtLineIdx : Integer;
 
     FCurViewToken: TLazSynDisplayTokenInfoEx;
+    FCurViewTokenViewPhysStart: Integer;
     FCurViewinRTL: Boolean;
     FCurViewRtlPhysEnd: integer;
     FCurViewRtlLogEnd: integer;
@@ -332,6 +340,7 @@ function TLazSynPaintTokenBreaker.GetNextHighlighterTokenFromView(out
   begin
     Result := FCurViewToken.Tk.TokenLength > 0;
     if Result or (FCurViewToken.Tk.TokenLength < 0) then exit;
+    FCurViewTokenViewPhysStart := FCurViewToken.PhysicalStart;
     while FCurViewToken.Tk.TokenLength = 0 do begin // Todo: is SyncroEd-test a zero size token is returned
       Result := FDisplayView.GetNextHighlighterToken(FCurViewToken.Tk);
       if not Result then begin
@@ -340,8 +349,6 @@ function TLazSynPaintTokenBreaker.GetNextHighlighterTokenFromView(out
       end;
       // Todo: concatenate with next token, if possible (only, if reaching token end)
     end;
-    // TODO: wait with attr, if skipping none painted
-    InitSynAttr(FCurViewToken.Attr, FCurViewToken.Tk.TokenAttr, FCurViewToken.PhysicalStart);
   end;
 
   function GetCharWidthData(AIdx: Integer): TPhysicalCharWidth; inline;
@@ -591,16 +598,18 @@ begin
             FCurViewToken.PhysicalPaintStart := PhysTokenStop;
 
           assert(FCurViewToken.Tk.TokenLength >= 0, 'FCurViewToken.Tk.TokenLength >= 0');
+
+          InitSynAttr(FCurViewToken.Attr, FCurViewToken.Tk.TokenAttr, FCurViewTokenViewPhysStart);
           if FCurViewToken.Tk.TokenLength = 0 then
             ATokenInfo.Attr.EndX := PhysPos-1;
 
-          //MaybeFetchToken;
-          //if MaybeChangeToRtl(LogicIdx, LogicEnd) then begin // get NextTokenPhysStart
-          //  SkipRtlOffScreen(LogicIdx, LogicEnd);
-          //  while FCurViewToken.Tk.TokenLength = 0 do
-          //    if MaybeFetchToken then
-          //      SkipRtlOffScreen(LogicIdx, LogicEnd);
-          //end;
+          MaybeFetchToken;
+          if MaybeChangeToRtl(LogicIdx, LogicEnd) then begin // get NextTokenPhysStart
+            SkipRtlOffScreen(LogicIdx, LogicEnd);
+            while FCurViewToken.Tk.TokenLength = 0 do
+              if MaybeFetchToken then
+                SkipRtlOffScreen(LogicIdx, LogicEnd);
+          end;
 
           ATokenInfo.NextPhysicalPaintStart := FCurViewToken.PhysicalPaintStart;
           ATokenInfo.NextLogicStart         := FCurViewToken.LogicalStart;
@@ -689,15 +698,17 @@ begin
             FCurViewToken.PhysicalPaintStart := PhysTokenStop;
 
           assert(FCurViewToken.Tk.TokenLength >= 0, 'FCurViewToken.Tk.TokenLength >= 0');
+
+          InitSynAttr(FCurViewToken.Attr, FCurViewToken.Tk.TokenAttr, FCurViewTokenViewPhysStart);
           if FCurViewToken.Tk.TokenLength = 0 then
             ATokenInfo.Attr.EndX := PhysPos-1;
 
-          //MaybeFetchToken;
-          //SkipRtlOffScreen(LogicIdx, LogicEnd);
-          //while FCurViewToken.Tk.TokenLength = 0 do
-          //  if MaybeFetchToken then
-          //    SkipRtlOffScreen(LogicIdx, LogicEnd);
-          //MaybeChangeToLtr(LogicIdx, LogicEnd);  // get NextTokenPhysStart
+          MaybeFetchToken;
+          SkipRtlOffScreen(LogicIdx, LogicEnd);
+          while FCurViewToken.Tk.TokenLength = 0 do
+            if MaybeFetchToken then
+              SkipRtlOffScreen(LogicIdx, LogicEnd);
+          MaybeChangeToLtr(LogicIdx, LogicEnd);  // get NextTokenPhysStart
 
           ATokenInfo.NextPhysicalPaintStart := FCurViewToken.PhysicalPaintStart;
           ATokenInfo.NextLogicStart         := FCurViewToken.LogicalStart;
