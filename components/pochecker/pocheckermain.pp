@@ -25,9 +25,11 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs,
-  StdCtrls, LCLProc, CheckLst, Buttons, ExtCtrls, IDEIntf, MenuIntf,
+  StdCtrls, LCLProc, CheckLst, Buttons, ExtCtrls,
   {$IFDEF POCHECKERSTANDALONE}
   Translations,
+  {$ELSE}
+  IDEIntf, MenuIntf,
   {$ENDIF}
   SimplePoFiles, PoFamilies, ResultDlg, pocheckerconsts;
 
@@ -356,7 +358,9 @@ end;
 
 procedure Register;
 begin
+  {$IFNDEF POCHECKERSTANDALONE}
   RegisterIDEMenuCommand(itmSecondaryTools, 'mnuPoChecker', rsPoChecker, nil, @IDEMenuClicked);
+  {$ENDIF}
 end;
 
 end.
