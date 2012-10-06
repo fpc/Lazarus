@@ -30,6 +30,12 @@ uses
   SynEditMiscClasses, Controls, SynEditHighlighter, LCLProc;
 
 type
+  TLazSynDisplayTokenBound = record
+    Physical: Integer;      // 1 based - May be in middle of char
+    Logical: Integer;       // 1 based
+    Offset: Integer;        // default 0. MultiWidth (e.g. Tab), if token starts in the middle of char
+  end;
+
   TSynEditMarkupClass = class of TSynEditMarkup;
 
   { TSynEditMarkup }
@@ -91,7 +97,10 @@ type
     Procedure EndMarkup; virtual;
     Function GetMarkupAttributeAtRowCol(const aRow, aCol : Integer) : TSynSelectedColor; virtual; abstract;
     Function GetNextMarkupColAfterRowCol(const aRow, aCol : Integer) : Integer; virtual; abstract;
-    procedure MergeMarkupAttributeAtRowCol(const aRow, aCol, AEndCol : Integer; AMarkup: TSynSelectedColor); virtual;
+    procedure MergeMarkupAttributeAtRowCol(const aRow: Integer;
+                                           const aStartCol, AEndCol :TLazSynDisplayTokenBound;
+                                           const AnIsRTL: Boolean;
+                                           AMarkup: TSynSelectedColor); virtual;
 
     // Notifications about Changes to the text
     Procedure TextChanged(aFirstCodeLine, aLastCodeLine: Integer); virtual;
@@ -147,7 +156,10 @@ type
     Procedure EndMarkup; override;
     Function  GetMarkupAttributeAtRowCol(const aRow, aCol : Integer) : TSynSelectedColor; override;
     Function  GetNextMarkupColAfterRowCol(const aRow, aCol : Integer) : Integer; override;
-    procedure MergeMarkupAttributeAtRowCol(const aRow, aCol, AEndCol : Integer; AMarkup: TSynSelectedColor); override;
+    procedure MergeMarkupAttributeAtRowCol(const aRow: Integer;
+                                           const aStartCol, AEndCol :TLazSynDisplayTokenBound;
+                                           const AnIsRTL: Boolean;
+                                           AMarkup: TSynSelectedColor); override;
 
     // Notifications about Changes to the text
     Procedure TextChanged(aFirstCodeLine, aLastCodeLine: Integer); override;
@@ -357,14 +369,14 @@ procedure TSynEditMarkup.EndMarkup;
 begin
 end;
 
-procedure TSynEditMarkup.MergeMarkupAttributeAtRowCol(const aRow, aCol, AEndCol: Integer;
-  AMarkup: TSynSelectedColor);
+procedure TSynEditMarkup.MergeMarkupAttributeAtRowCol(const aRow: Integer; const aStartCol,
+  AEndCol: TLazSynDisplayTokenBound; const AnIsRTL: Boolean; AMarkup: TSynSelectedColor);
 var
   c: TSynSelectedColor;
 begin
-  c := GetMarkupAttributeAtRowCol(aRow, aCol);
+  c := GetMarkupAttributeAtRowCol(aRow, aStartCol.Physical);
   if assigned(c) then
-    AMarkup.Merge(c, aCol, AEndCol);
+    AMarkup.Merge(c, aStartCol.Physical, AEndCol.Physical - 1);
 end;
 
 procedure TSynEditMarkup.TextChanged(aFirstCodeLine, aLastCodeLine: Integer);
@@ -491,23 +503,25 @@ begin
       TSynEditMarkup(fMarkUpList[i]).PrepareMarkupForRow(aRow);
 end;
 
-procedure TSynEditMarkupManager.MergeMarkupAttributeAtRowCol
-  (const aRow, aCol, AEndCol: Integer; AMarkup: TSynSelectedColor);
+procedure TSynEditMarkupManager.MergeMarkupAttributeAtRowCol(const aRow: Integer;
+  const aStartCol, AEndCol: TLazSynDisplayTokenBound; const AnIsRTL: Boolean;
+  AMarkup: TSynSelectedColor);
 var
   i : integer;
 begin
   for i := 0 to fMarkUpList.Count-1 do begin
     if TSynEditMarkup(fMarkUpList[i]).Enabled then
       TSynEditMarkup(fMarkUpList[i]).MergeMarkupAttributeAtRowCol
-        (aRow, aCol, AEndCol, AMarkup);
+        (aRow, aStartCol, AEndCol, AnIsRTL, AMarkup);
   end;
 end;
 
 function TSynEditMarkupManager.GetMarkupAttributeAtRowCol(const aRow, aCol : Integer) : TSynSelectedColor;
 begin
-  Result := MarkupInfo;
-  Result.Clear;
-  MergeMarkupAttributeAtRowCol(aRow, aCol, GetNextMarkupColAfterRowCol(aRow, aCol) - 1, Result);
+  assert(false);
+  //Result := MarkupInfo;
+  //Result.Clear;
+  //MergeMarkupAttributeAtRowCol(aRow, aCol, GetNextMarkupColAfterRowCol(aRow, aCol) - 1, Result);
 end;
 
 function TSynEditMarkupManager.GetNextMarkupColAfterRowCol(const aRow, aCol : Integer) : Integer;

@@ -62,7 +62,6 @@ type
     procedure PrepareMarkupForRow(ARow: Integer); override;
     function GetMarkupAttributeAtRowCol(const ARow, ACol: Integer): TSynSelectedColor; override;
     function GetNextMarkupColAfterRowCol(const ARow, ACol: Integer): Integer; override;
-    //procedure MergeMarkupAttributeAtRowCol(const aRow, aCol, AEndCol : Integer; AMarkup: TSynSelectedColor); override;
   end;
 
 implementation
