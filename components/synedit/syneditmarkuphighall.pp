@@ -122,9 +122,10 @@ type
     function GetMarkupAttributeAtRowCol(const aRow: Integer;
                                         const aStartCol: TLazSynDisplayTokenBound;
                                         const AnIsRTL: Boolean): TSynSelectedColor; override;
-    function GetNextMarkupColAfterRowCol(const aRow: Integer;
+    procedure GetNextMarkupColAfterRowCol(const aRow: Integer;
                                          const aStartCol: TLazSynDisplayTokenBound;
-                                         const AnIsRTL: Boolean): Integer; override;
+                                         const AnIsRTL: Boolean;
+                                         out   ANextPhys, ANextLog: Integer); override;
 
     Procedure Invalidate(RePaint: Boolean = True);
     Procedure SendLineInvalidation;
@@ -511,12 +512,14 @@ begin
   result := MarkupInfo;
 end;
 
-function TSynEditMarkupHighlightAll.GetNextMarkupColAfterRowCol(const aRow: Integer;
-  const aStartCol: TLazSynDisplayTokenBound; const AnIsRTL: Boolean): Integer;
+procedure TSynEditMarkupHighlightAll.GetNextMarkupColAfterRowCol(const aRow: Integer;
+  const aStartCol: TLazSynDisplayTokenBound; const AnIsRTL: Boolean; out ANextPhys,
+  ANextLog: Integer);
 var
   Pos: Integer;
 begin
-  result := -1;
+  ANextLog := -1;
+  ANextPhys := -1;
   if (fSearchString = '') then
   exit;
 
@@ -536,8 +539,8 @@ begin
   if fMatches.Point[Pos].y <> aRow
   then exit;
 
-  Result := fMatches.Point[Pos].x;
-  //debugLN('--->NEXT POS ',dbgs(result),' / ',dbgs(ARow), ' at index ', dbgs(Pos));
+  ANextPhys := fMatches.Point[Pos].x;
+  //debugLN('--->NEXT POS ',dbgs(ANextPhys),' / ',dbgs(ARow), ' at index ', dbgs(Pos));
 end;
 
 { TSynEditMarkupHighlightAllCaret }

@@ -59,9 +59,10 @@ type
     function GetMarkupAttributeAtRowCol(const aRow: Integer;
                                         const aStartCol: TLazSynDisplayTokenBound;
                                         const AnIsRTL: Boolean): TSynSelectedColor; override;
-    function GetNextMarkupColAfterRowCol(const aRow: Integer;
+    procedure GetNextMarkupColAfterRowCol(const aRow: Integer;
                                          const aStartCol: TLazSynDisplayTokenBound;
-                                         const AnIsRTL: Boolean): Integer; override;
+                                         const AnIsRTL: Boolean;
+                                         out   ANextPhys, ANextLog: Integer); override;
 
     procedure InvalidateBracketHighlight;
     property HighlightStyle: TSynEditBracketHighlightStyle read FHighlightStyle write SetHighlightStyle;
@@ -239,23 +240,25 @@ begin
   end;
 end;
 
-function TSynEditMarkupBracket.GetNextMarkupColAfterRowCol(const aRow: Integer;
-  const aStartCol: TLazSynDisplayTokenBound; const AnIsRTL: Boolean): Integer;
+procedure TSynEditMarkupBracket.GetNextMarkupColAfterRowCol(const aRow: Integer;
+  const aStartCol: TLazSynDisplayTokenBound; const AnIsRTL: Boolean; out ANextPhys,
+  ANextLog: Integer);
 begin
-  Result := -1;
+  ANextLog := -1;
+  ANextPhys := -1;
   if (FBracketHighlightPos.y = aRow) then begin
     if  (FBracketHighlightPos.x > aStartCol.Physical )
-    then Result := FBracketHighlightPos.x
+    then ANextPhys := FBracketHighlightPos.x
     else if  (FBracketHighlightPos.x + 1 > aStartCol.Physical )
-    then Result := FBracketHighlightPos.x + 1; // end of bracket
+    then ANextPhys := FBracketHighlightPos.x + 1; // end of bracket
   end;
   if (FBracketHighlightAntiPos.y = aRow) then begin
     if  (FBracketHighlightAntiPos.x > aStartCol.Physical )
-    and ((FBracketHighlightAntiPos.x < Result) or (Result < 0))
-    then Result := FBracketHighlightAntiPos.x
+    and ((FBracketHighlightAntiPos.x < ANextPhys) or (ANextPhys < 0))
+    then ANextPhys := FBracketHighlightAntiPos.x
     else if  (FBracketHighlightAntiPos.x + 1 > aStartCol.Physical )
-    and ((FBracketHighlightAntiPos.x + 1 < Result) or (Result < 0))
-    then Result := FBracketHighlightAntiPos.x + 1;
+    and ((FBracketHighlightAntiPos.x + 1 < ANextPhys) or (ANextPhys < 0))
+    then ANextPhys := FBracketHighlightAntiPos.x + 1;
   end
 end;
 

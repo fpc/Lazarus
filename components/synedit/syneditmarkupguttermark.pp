@@ -63,9 +63,10 @@ type
     function GetMarkupAttributeAtRowCol(const aRow: Integer;
                                         const aStartCol: TLazSynDisplayTokenBound;
                                         const AnIsRTL: Boolean): TSynSelectedColor; override;
-    function GetNextMarkupColAfterRowCol(const aRow: Integer;
+    procedure GetNextMarkupColAfterRowCol(const aRow: Integer;
                                          const aStartCol: TLazSynDisplayTokenBound;
-                                         const AnIsRTL: Boolean): Integer; override;
+                                         const AnIsRTL: Boolean;
+                                         out   ANextPhys, ANextLog: Integer); override;
   end;
 
 implementation
@@ -144,19 +145,21 @@ begin
   end;
 end;
 
-function TSynEditMarkupGutterMark.GetNextMarkupColAfterRowCol(const aRow: Integer;
-  const aStartCol: TLazSynDisplayTokenBound; const AnIsRTL: Boolean): Integer;
+procedure TSynEditMarkupGutterMark.GetNextMarkupColAfterRowCol(const aRow: Integer;
+  const aStartCol: TLazSynDisplayTokenBound; const AnIsRTL: Boolean; out ANextPhys,
+  ANextLog: Integer);
 var
   i: Integer;
 begin
-  Result := -1;
+  ANextLog := -1;
+  ANextPhys := -1;
   if length(FRowData) = 0 then
     exit;
   for i := 0 to length(FRowData) - 1 do begin
-    if FRowData[i].StartX < Result then
-      Result := FRowData[0].StartX;;
-    if FRowData[i].EndX < Result then
-      Result := FRowData[0].EndX;;
+    if FRowData[i].StartX < ANextPhys then
+      ANextPhys := FRowData[0].StartX;;
+    if FRowData[i].EndX < ANextPhys then
+      ANextPhys := FRowData[0].EndX;;
   end;
 end;
 

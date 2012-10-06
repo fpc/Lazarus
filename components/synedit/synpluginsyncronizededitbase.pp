@@ -118,9 +118,10 @@ type
     function GetMarkupAttributeAtRowCol(const aRow: Integer;
                                         const aStartCol: TLazSynDisplayTokenBound;
                                         const AnIsRTL: Boolean): TSynSelectedColor; override;
-    function GetNextMarkupColAfterRowCol(const aRow: Integer;
+    procedure GetNextMarkupColAfterRowCol(const aRow: Integer;
                                          const aStartCol: TLazSynDisplayTokenBound;
-                                         const AnIsRTL: Boolean): Integer; override;
+                                         const AnIsRTL: Boolean;
+                                         out   ANextPhys, ANextLog: Integer); override;
     Procedure PrepareMarkupForRow(aRow : Integer); override;
     Procedure EndMarkup; override;
 
@@ -139,9 +140,10 @@ type
     function GetMarkupAttributeAtRowCol(const aRow: Integer;
                                         const aStartCol: TLazSynDisplayTokenBound;
                                         const AnIsRTL: Boolean): TSynSelectedColor; override;
-    function GetNextMarkupColAfterRowCol(const aRow: Integer;
+    procedure GetNextMarkupColAfterRowCol(const aRow: Integer;
                                          const aStartCol: TLazSynDisplayTokenBound;
-                                         const AnIsRTL: Boolean): Integer; override;
+                                         const AnIsRTL: Boolean;
+                                         out   ANextPhys, ANextLog: Integer); override;
 
     property CellGroupForArea: Integer read FCellIdForArea write FCellIdForArea;
   end;
@@ -558,26 +560,28 @@ begin
   end;
 end;
 
-function TSynPluginSyncronizedEditMarkup.GetNextMarkupColAfterRowCol(const aRow: Integer;
-  const aStartCol: TLazSynDisplayTokenBound; const AnIsRTL: Boolean): Integer;
+procedure TSynPluginSyncronizedEditMarkup.GetNextMarkupColAfterRowCol(const aRow: Integer;
+  const aStartCol: TLazSynDisplayTokenBound; const AnIsRTL: Boolean; out ANextPhys,
+  ANextLog: Integer);
 var
   i, col: Integer;
 begin
   col := PhysicalToLogicalPos(Point(aStartCol.Physical, aRow)).x;
-  Result := -1;
+  ANextLog := -1;
+  ANextPhys := -1;
   for i := FPreparedCellFrom to FPreparedCellTo do begin
     if Cells[i].Group < 0 then continue;
     if (Cells[i].LogStart.y = aRow) and (Cells[i].LogStart.x > Col) and
-       ( (Cells[i].LogStart.x < Result) or (Result < 0) )
+       ( (Cells[i].LogStart.x < ANextPhys) or (ANextPhys < 0) )
     then
-      Result := Cells[i].LogStart.x;
+      ANextPhys := Cells[i].LogStart.x;
     if (Cells[i].LogEnd.y = aRow) and (Cells[i].LogEnd.x > Col) and
-       ( (Cells[i].LogEnd.x < Result) or (Result < 0) )
+       ( (Cells[i].LogEnd.x < ANextPhys) or (ANextPhys < 0) )
     then
-      Result := Cells[i].LogEnd.x;
+      ANextPhys := Cells[i].LogEnd.x;
   end;
-  if Result >= 0 then
-    Result := LogicalToPhysicalPos(Point(Result, aRow)).x;
+  if ANextPhys >= 0 then
+    ANextPhys := LogicalToPhysicalPos(Point(ANextPhys, aRow)).x;
 end;
 
 procedure TSynPluginSyncronizedEditMarkup.PrepareMarkupForRow(aRow: Integer);
@@ -647,23 +651,25 @@ begin
   end;
 end;
 
-function TSynPluginSyncronizedEditMarkupArea.GetNextMarkupColAfterRowCol(const aRow: Integer;
-  const aStartCol: TLazSynDisplayTokenBound; const AnIsRTL: Boolean): Integer;
+procedure TSynPluginSyncronizedEditMarkupArea.GetNextMarkupColAfterRowCol(const aRow: Integer;
+  const aStartCol: TLazSynDisplayTokenBound; const AnIsRTL: Boolean; out ANextPhys,
+  ANextLog: Integer);
 var
   ac: TSynPluginSyncronizedEditCell;
 begin
-  Result := -1;
+  ANextLog := -1;
+  ANextPhys := -1;
   if MarkupInfo.IsEnabled then begin
     ac := Cells.GroupCell[CellGroupForArea, 0];
     if ac <> nil then begin
       if (ac.LogStart.y = aRow) and (ac.LogStart.x > aStartCol.Physical) and
-         ( (ac.LogStart.x < Result) or (Result < 0) )
+         ( (ac.LogStart.x < ANextPhys) or (ANextPhys < 0) )
       then
-        Result := ac.LogStart.x;
+        ANextPhys := ac.LogStart.x;
       if (ac.LogEnd.y = aRow) and (ac.LogEnd.x > aStartCol.Physical) and
-         ( (ac.LogEnd.x < Result) or (Result < 0) )
+         ( (ac.LogEnd.x < ANextPhys) or (ANextPhys < 0) )
       then
-        Result := ac.LogEnd.x;
+        ANextPhys := ac.LogEnd.x;
     end;
   end;
 end;

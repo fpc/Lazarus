@@ -63,9 +63,10 @@ type
     function GetMarkupAttributeAtRowCol(const aRow: Integer;
                                         const aStartCol: TLazSynDisplayTokenBound;
                                         const AnIsRTL: Boolean): TSynSelectedColor; override;
-    function GetNextMarkupColAfterRowCol(const aRow: Integer;
+    procedure GetNextMarkupColAfterRowCol(const aRow: Integer;
                                          const aStartCol: TLazSynDisplayTokenBound;
-                                         const AnIsRTL: Boolean): Integer; override;
+                                         const AnIsRTL: Boolean;
+                                         out   ANextPhys, ANextLog: Integer); override;
 
     property CtrlMouseLine : Integer read FCtrlMouseLine write FCtrlMouseLine;
     property CtrlMouseX1 : Integer read FCtrlMouseX1 write FCtrlMouseX1;
@@ -253,17 +254,19 @@ begin
   MarkupInfo.EndX := FCurX2;
 end;
 
-function TSynEditMarkupCtrlMouseLink.GetNextMarkupColAfterRowCol(const aRow: Integer;
-  const aStartCol: TLazSynDisplayTokenBound; const AnIsRTL: Boolean): Integer;
+procedure TSynEditMarkupCtrlMouseLink.GetNextMarkupColAfterRowCol(const aRow: Integer;
+  const aStartCol: TLazSynDisplayTokenBound; const AnIsRTL: Boolean; out ANextPhys,
+  ANextLog: Integer);
 begin
-  Result := -1;
+  ANextLog := -1;
+  ANextPhys := -1;
   if FCtrlMouseLine <> aRow
   then exit;
 
   if aStartCol.Physical < FCurX1
-  then Result := FCurX1;
+  then ANextPhys := FCurX1;
   if (aStartCol.Physical < FCurX2) and (aStartCol.Physical >= FCurX1)
-  then Result := FCurX2;
+  then ANextPhys := FCurX2;
 end;
 
 end.

@@ -64,9 +64,10 @@ type
     function GetMarkupAttributeAtRowCol(const aRow: Integer;
                                         const aStartCol: TLazSynDisplayTokenBound;
                                         const AnIsRTL: Boolean): TSynSelectedColor; override;
-    function GetNextMarkupColAfterRowCol(const aRow: Integer;
+    procedure GetNextMarkupColAfterRowCol(const aRow: Integer;
                                          const aStartCol: TLazSynDisplayTokenBound;
-                                         const AnIsRTL: Boolean): Integer; override;
+                                         const AnIsRTL: Boolean;
+                                         out   ANextPhys, ANextLog: Integer); override;
 
     property  Highlighter: TSynCustomHighlighter
       read FHighlighter write SetHighlighter;
@@ -420,26 +421,28 @@ begin
   end;
 end;
 
-function TSynEditMarkupWordGroup.GetNextMarkupColAfterRowCol(const aRow: Integer;
-  const aStartCol: TLazSynDisplayTokenBound; const AnIsRTL: Boolean): Integer;
+procedure TSynEditMarkupWordGroup.GetNextMarkupColAfterRowCol(const aRow: Integer;
+  const aStartCol: TLazSynDisplayTokenBound; const AnIsRTL: Boolean; out ANextPhys,
+  ANextLog: Integer);
   Procedure CheckCol(Column: Integer; var Result: Integer);
   begin
     if (Column <= aStartCol.Physical) or ((Result >= 0) and (Result < Column)) then exit;
     Result := Column;
   end;
 begin
-  Result := -1;
+  ANextLog := -1;
+  ANextPhys := -1;
   if (FHighlightPos1.y = aRow) then begin
-    CheckCol(FHighlightPos1.X, Result);
-    CheckCol(FHighlightPos1.X2, Result);
+    CheckCol(FHighlightPos1.X, ANextPhys);
+    CheckCol(FHighlightPos1.X2, ANextPhys);
   end;
   if (FHighlightPos3.y = aRow) then begin
-    CheckCol(FHighlightPos3.X, Result);
-    CheckCol(FHighlightPos3.X2, Result);
+    CheckCol(FHighlightPos3.X, ANextPhys);
+    CheckCol(FHighlightPos3.X2, ANextPhys);
   end;
   if (FHighlightPos2.y = aRow) then begin
-    CheckCol(FHighlightPos2.X, Result);
-    CheckCol(FHighlightPos2.X2, Result);
+    CheckCol(FHighlightPos2.X, ANextPhys);
+    CheckCol(FHighlightPos2.X2, ANextPhys);
   end;
 end;
 

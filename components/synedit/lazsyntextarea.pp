@@ -55,7 +55,7 @@ type
     FCurViewRtlPhysEnd: integer;
     FCurViewRtlLogEnd: integer;
 
-    FNextMarkupPhysPos: Integer;
+    FNextMarkupPhysPos, FNextMarkupLogPos: Integer;
     FCurMarkupNextStart: TLazSynDisplayTokenBound;
     FCurMarkupNextIsRtl: Boolean;
     FCurMarkupEOL: Boolean;
@@ -282,6 +282,7 @@ begin
     FCurMarkupNextIsRtl := False;
   end;
   FNextMarkupPhysPos := -1;
+  FNextMarkupLogPos  := -1;
   FCurMarkupEOL := False;
   FCurTxtLineIdx := ARealLine;
 end;
@@ -293,19 +294,24 @@ const
 begin
   if (FNextMarkupPhysPos < 0) or
      (FCurMarkupNextIsRtl       and (FNextMarkupPhysPos >= FCurMarkupNextStart.Physical)) or
-     ((not FCurMarkupNextIsRtl) and (FNextMarkupPhysPos <= FCurMarkupNextStart.Physical))
+     ((not FCurMarkupNextIsRtl) and (FNextMarkupPhysPos <= FCurMarkupNextStart.Physical)) or
+     (FNextMarkupLogPos < 0) or
+     (FCurMarkupNextIsRtl       and (FNextMarkupLogPos >= FCurMarkupNextStart.Logical)) or
+     ((not FCurMarkupNextIsRtl) and (FNextMarkupLogPos <= FCurMarkupNextStart.Logical))
   then begin
-    FNextMarkupPhysPos := FMarkupManager.GetNextMarkupColAfterRowCol
-                          (FCurTxtLineIdx+1, FCurMarkupNextStart, FCurMarkupNextIsRtl);
+    FMarkupManager.GetNextMarkupColAfterRowCol(FCurTxtLineIdx+1,
+      FCurMarkupNextStart, FCurMarkupNextIsRtl, FNextMarkupPhysPos, FNextMarkupLogPos);
     if FNextMarkupPhysPos < 1 then
       if FCurMarkupNextIsRtl
       then FNextMarkupPhysPos := 1
       else FNextMarkupPhysPos := MaxInt;
+    if FNextMarkupLogPos < 1 then
+      FNextMarkupLogPos := MaxInt;
   end;
 
   if FCurMarkupEOL
   then Result := False
-  else Result := GetNextHighlighterTokenFromView(ATokenInfo, FNextMarkupPhysPos);
+  else Result := GetNextHighlighterTokenFromView(ATokenInfo, FNextMarkupPhysPos, FNextMarkupLogPos);
 
   if (not Result) then begin
     // the first run StartPos is set by GetNextHighlighterTokenFromView
@@ -333,9 +339,19 @@ begin
     else ATokenInfo.EndPos.Physical    := FLastCol;
     ATokenInfo.EndPos.Offset      := 0;
     ATokenInfo.EndPos.Logical     := ATokenInfo.StartPos.Logical + (ATokenInfo.EndPos.Physical - ATokenInfo.StartPos.Physical);
+
+    if (FNextMarkupLogPos > 0) and (FNextMarkupLogPos < ATokenInfo.EndPos.Logical) then begin
+      ATokenInfo.EndPos.Physical := ATokenInfo.EndPos.Physical - (ATokenInfo.EndPos.Logical - FNextMarkupLogPos);
+      ATokenInfo.EndPos.Logical  := FNextMarkupLogPos;
+    end;
+    assert(ATokenInfo.EndPos.Physical > ATokenInfo.StartPos.Physical, 'ATokenInfo.EndPos.Physical > ATokenInfo.StartPos.Physical');
+    assert(ATokenInfo.EndPos.Logical > ATokenInfo.StartPos.Logical, 'ATokenInfo.EndPos.Logical > ATokenInfo.StartPos.Logical');
+
     FCurMarkupNextStart := ATokenInfo.EndPos;
-    if FCurMarkupNextIsRtl then
+    if FCurMarkupNextIsRtl then begin
       FNextMarkupPhysPos := -1;
+      FNextMarkupLogPos  := -1;
+    end;
     FCurMarkupNextIsRtl := False;
 
     ATokenInfo.PhysicalCharStart  := ATokenInfo.StartPos.Physical;
@@ -352,8 +368,10 @@ begin
     //exit;
   end
   else begin
-    if ATokenInfo.NextIsRtl <> FCurMarkupNextIsRtl then
+    if ATokenInfo.NextIsRtl <> FCurMarkupNextIsRtl then begin
       FNextMarkupPhysPos := -1;
+      FNextMarkupLogPos  := -1;
+    end;
     FCurMarkupNextStart := ATokenInfo.NextPos;
     FCurMarkupNextIsRtl := ATokenInfo.NextIsRtl;
 

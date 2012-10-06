@@ -51,9 +51,10 @@ type
     function GetMarkupAttributeAtRowCol(const aRow: Integer;
                                         const aStartCol: TLazSynDisplayTokenBound;
                                         const AnIsRTL: Boolean): TSynSelectedColor; override;
-    function GetNextMarkupColAfterRowCol(const aRow: Integer;
+    procedure GetNextMarkupColAfterRowCol(const aRow: Integer;
                                          const aStartCol: TLazSynDisplayTokenBound;
-                                         const AnIsRTL: Boolean): Integer; override;
+                                         const AnIsRTL: Boolean;
+                                         out   ANextPhys, ANextLog: Integer); override;
 
     property VisibleSpecialChars: TSynVisibleSpecialChars read FVisibleSpecialChars write SetVisibleSpecialChars;
   end;
@@ -118,24 +119,32 @@ begin
   end;
 end;
 
-function TSynEditMarkupSpecialChar.GetNextMarkupColAfterRowCol(const aRow: Integer;
-  const aStartCol: TLazSynDisplayTokenBound; const AnIsRTL: Boolean): Integer;
+procedure TSynEditMarkupSpecialChar.GetNextMarkupColAfterRowCol(const aRow: Integer;
+  const aStartCol: TLazSynDisplayTokenBound; const AnIsRTL: Boolean; out ANextPhys,
+  ANextLog: Integer);
 var
   s: Boolean;
   i, LogCol: Integer;
 begin
-  Result := -1;
+  ANextLog := -1;
+  ANextPhys := -1;
   if (FCurLine='') or (not (FHasMarkup and (FVisibleSpecialChars <> []))) then exit;
 
-  if aStartCol.Physical < FCurStart then exit(FCurStart);
-  if aStartCol.Physical < FCurEnd then exit(FCurEnd);
+  if aStartCol.Physical < FCurStart then begin
+    ANextPhys := FCurStart;
+    exit;
+  end;
+  if aStartCol.Physical < FCurEnd then begin
+    ANextPhys := FCurEnd;
+    exit;
+  end;
 
   LogCol := PhysicalToLogicalPos(Point(aStartCol.Physical, aRow)).x;
   if LogCol > Length(FCurLine) then exit;
   if (LogCol = Length(FCurLine)) then begin
     if IsSpecial(LogCol) then
-      Result := LogicalToPhysicalPos(Point(Length(FCurLine)+1, aRow)).x;
-      FCurEnd := Result;
+      ANextPhys := LogicalToPhysicalPos(Point(Length(FCurLine)+1, aRow)).x;
+      FCurEnd := ANextPhys;
     exit;
   end;
 
@@ -152,8 +161,14 @@ begin
   while (i <= Length(FCurLine)) and (IsSpecial(i)) do inc(i);
   FCurEnd := LogicalToPhysicalPos(Point(i, aRow)).x;
 
-  if aStartCol.Physical < FCurStart then exit(FCurStart);
-  if aStartCol.Physical < FCurEnd then exit(FCurEnd);
+  if aStartCol.Physical < FCurStart then begin
+    ANextPhys := FCurStart;
+    exit;
+  end;
+  if aStartCol.Physical < FCurEnd then begin
+    ANextPhys := FCurEnd;
+    exit;
+  end;
 end;
 
 end.

@@ -60,9 +60,10 @@ type
     function GetMarkupAttributeAtRowCol(const aRow: Integer;
                                         const aStartCol: TLazSynDisplayTokenBound;
                                         const AnIsRTL: Boolean): TSynSelectedColor; override;
-    function GetNextMarkupColAfterRowCol(const aRow: Integer;
+    procedure GetNextMarkupColAfterRowCol(const aRow: Integer;
                                          const aStartCol: TLazSynDisplayTokenBound;
-                                         const AnIsRTL: Boolean): Integer; override;
+                                         const AnIsRTL: Boolean;
+                                         out   ANextPhys, ANextLog: Integer); override;
 
     procedure InvalidateLineHighlight;
 
@@ -185,10 +186,12 @@ begin
     Result := MarkupInfo;
 end;
 
-function TSynEditMarkupSpecialLine.GetNextMarkupColAfterRowCol(const aRow: Integer;
-  const aStartCol: TLazSynDisplayTokenBound; const AnIsRTL: Boolean): Integer;
+procedure TSynEditMarkupSpecialLine.GetNextMarkupColAfterRowCol(const aRow: Integer;
+  const aStartCol: TLazSynDisplayTokenBound; const AnIsRTL: Boolean; out ANextPhys,
+  ANextLog: Integer);
 begin
-  Result := -1; // always valid for the whole line
+  ANextLog := -1;
+  ANextPhys := -1; // always valid for the whole line
 end;
 
 procedure TSynEditMarkupSpecialLine.InvalidateLineHighlight;
