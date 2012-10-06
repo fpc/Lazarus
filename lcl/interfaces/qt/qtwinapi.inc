@@ -5544,7 +5544,7 @@ begin
       FillChar(Message, SizeOf(Message), 0);
       Message.msg := LM_CAPTURECHANGED;
       Message.wParam := 0;
-      Message.lParam := Result;
+      Message.lParam := PtrInt(Result);
       LCLMessageGlue.DeliverMessage(TQtWidget(AHandle).LCLObject, Message);
     end;
   end;
