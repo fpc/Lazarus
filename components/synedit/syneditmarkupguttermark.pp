@@ -60,8 +60,12 @@ type
     constructor Create(ASynEdit: TSynEditBase; AWordBreaker: TSynWordBreaker);
 
     procedure PrepareMarkupForRow(ARow: Integer); override;
-    function GetMarkupAttributeAtRowCol(const ARow, ACol: Integer): TSynSelectedColor; override;
-    function GetNextMarkupColAfterRowCol(const ARow, ACol: Integer): Integer; override;
+    function GetMarkupAttributeAtRowCol(const aRow: Integer;
+                                        const aStartCol: TLazSynDisplayTokenBound;
+                                        const AnIsRTL: Boolean): TSynSelectedColor; override;
+    function GetNextMarkupColAfterRowCol(const aRow: Integer;
+                                         const aStartCol: TLazSynDisplayTokenBound;
+                                         const AnIsRTL: Boolean): Integer; override;
   end;
 
 implementation
@@ -121,15 +125,15 @@ begin
   SetLength(FRowData, j);
 end;
 
-function TSynEditMarkupGutterMark.GetMarkupAttributeAtRowCol(const ARow,
-  ACol: Integer): TSynSelectedColor;
+function TSynEditMarkupGutterMark.GetMarkupAttributeAtRowCol(const aRow: Integer;
+  const aStartCol: TLazSynDisplayTokenBound; const AnIsRTL: Boolean): TSynSelectedColor;
 var
   i, FoundPri: Integer;
 begin
   FoundPri := 0;
   Result := nil;
   for i := 0 to length(FRowData) - 1 do begin
-    if (FRowData[i].StartX <= ACol) and (FRowData[i].EndX > ACol) and
+    if (FRowData[i].StartX <= aStartCol.Physical) and (FRowData[i].EndX > aStartCol.Physical) and
        ( (FRowData[i].Priority < FoundPri) or (i = 0) )
     then begin
       Result := FRowData[i].Markup;
@@ -140,8 +144,8 @@ begin
   end;
 end;
 
-function TSynEditMarkupGutterMark.GetNextMarkupColAfterRowCol(const ARow,
-  ACol: Integer): Integer;
+function TSynEditMarkupGutterMark.GetNextMarkupColAfterRowCol(const aRow: Integer;
+  const aStartCol: TLazSynDisplayTokenBound; const AnIsRTL: Boolean): Integer;
 var
   i: Integer;
 begin

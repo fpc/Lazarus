@@ -61,8 +61,12 @@ type
     constructor Create(ASynEdit: TSynEditBase);
     procedure DecPaintLock; override;
 
-    function GetMarkupAttributeAtRowCol(const aRow, aCol: Integer): TSynSelectedColor; override;
-    function GetNextMarkupColAfterRowCol(const aRow, aCol: Integer): Integer; override;
+    function GetMarkupAttributeAtRowCol(const aRow: Integer;
+                                        const aStartCol: TLazSynDisplayTokenBound;
+                                        const AnIsRTL: Boolean): TSynSelectedColor; override;
+    function GetNextMarkupColAfterRowCol(const aRow: Integer;
+                                         const aStartCol: TLazSynDisplayTokenBound;
+                                         const AnIsRTL: Boolean): Integer; override;
 
     property  Highlighter: TSynCustomHighlighter
       read FHighlighter write SetHighlighter;
@@ -387,11 +391,12 @@ begin
 //  DebugLn('TCustomSynEdit.InvalidateCurrentHighlight C P=',dbgs(NewPos),' A=',dbgs(NewAntiPos), ' LP=',dbgs(fLogicalPos),' LA',dbgs(fLogicalAntiPos));
 end;
 
-function TSynEditMarkupWordGroup.GetMarkupAttributeAtRowCol(const aRow, aCol: Integer) : TSynSelectedColor;
+function TSynEditMarkupWordGroup.GetMarkupAttributeAtRowCol(const aRow: Integer;
+  const aStartCol: TLazSynDisplayTokenBound; const AnIsRTL: Boolean): TSynSelectedColor;
 begin
   Result := nil;
   if (FHighlightPos1.y = aRow) and
-   (aCol >= FHighlightPos1.x) and (aCol < FHighlightPos1.X2) then
+   (aStartCol.Physical >= FHighlightPos1.x) and (aStartCol.Physical < FHighlightPos1.X2) then
   begin
     Result := MarkupInfo;
     MarkupInfo.StartX := FHighlightPos1.x;
@@ -399,7 +404,7 @@ begin
   end
   else
   if (FHighlightPos3.y = aRow) and
-   (aCol >= FHighlightPos3.x) and (aCol < FHighlightPos3.X2) then
+   (aStartCol.Physical >= FHighlightPos3.x) and (aStartCol.Physical < FHighlightPos3.X2) then
   begin
     Result := MarkupInfo;
     MarkupInfo.StartX := FHighlightPos3.x;
@@ -407,7 +412,7 @@ begin
   end
   else
   if (FHighlightPos2.y = aRow) and
-   (aCol >= FHighlightPos2.x) and (aCol < FHighlightPos2.X2) then
+   (aStartCol.Physical >= FHighlightPos2.x) and (aStartCol.Physical < FHighlightPos2.X2) then
   begin
     Result := MarkupInfo;
     MarkupInfo.StartX := FHighlightPos2.x;
@@ -415,10 +420,11 @@ begin
   end;
 end;
 
-function TSynEditMarkupWordGroup.GetNextMarkupColAfterRowCol(const aRow, aCol: Integer) : Integer;
+function TSynEditMarkupWordGroup.GetNextMarkupColAfterRowCol(const aRow: Integer;
+  const aStartCol: TLazSynDisplayTokenBound; const AnIsRTL: Boolean): Integer;
   Procedure CheckCol(Column: Integer; var Result: Integer);
   begin
-    if (Column <= aCol) or ((Result >= 0) and (Result < Column)) then exit;
+    if (Column <= aStartCol.Physical) or ((Result >= 0) and (Result < Column)) then exit;
     Result := Column;
   end;
 begin

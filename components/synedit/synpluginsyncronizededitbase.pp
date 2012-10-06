@@ -115,8 +115,12 @@ type
   public
     constructor Create(ASynEdit: TSynEditBase);
     destructor Destroy; override;
-    function GetMarkupAttributeAtRowCol(const aRow, aCol: Integer): TSynSelectedColor; override;
-    function GetNextMarkupColAfterRowCol(const aRow, aCol: Integer): Integer; override;
+    function GetMarkupAttributeAtRowCol(const aRow: Integer;
+                                        const aStartCol: TLazSynDisplayTokenBound;
+                                        const AnIsRTL: Boolean): TSynSelectedColor; override;
+    function GetNextMarkupColAfterRowCol(const aRow: Integer;
+                                         const aStartCol: TLazSynDisplayTokenBound;
+                                         const AnIsRTL: Boolean): Integer; override;
     Procedure PrepareMarkupForRow(aRow : Integer); override;
     Procedure EndMarkup; override;
 
@@ -132,8 +136,12 @@ type
   protected
     procedure CellChanged(aIndex: Integer; aOldVal, aNewVal: TSynPluginSyncronizedEditCell); override;
   public
-    function GetMarkupAttributeAtRowCol(const aRow, aCol: Integer): TSynSelectedColor; override;
-    function GetNextMarkupColAfterRowCol(const aRow, aCol: Integer): Integer; override;
+    function GetMarkupAttributeAtRowCol(const aRow: Integer;
+                                        const aStartCol: TLazSynDisplayTokenBound;
+                                        const AnIsRTL: Boolean): TSynSelectedColor; override;
+    function GetNextMarkupColAfterRowCol(const aRow: Integer;
+                                         const aStartCol: TLazSynDisplayTokenBound;
+                                         const AnIsRTL: Boolean): Integer; override;
 
     property CellGroupForArea: Integer read FCellIdForArea write FCellIdForArea;
   end;
@@ -517,12 +525,12 @@ begin
   inherited Destroy;
 end;
 
-function TSynPluginSyncronizedEditMarkup.GetMarkupAttributeAtRowCol(const aRow,
-  aCol: Integer): TSynSelectedColor;
+function TSynPluginSyncronizedEditMarkup.GetMarkupAttributeAtRowCol(const aRow: Integer;
+  const aStartCol: TLazSynDisplayTokenBound; const AnIsRTL: Boolean): TSynSelectedColor;
 var
   i, col: Integer;
 begin
-  col := PhysicalToLogicalPos(Point(aCol, aRow)).x;
+  col := PhysicalToLogicalPos(Point(aStartCol.Physical, aRow)).x;
   Result := nil;
   for i := FPreparedCellFrom to FPreparedCellTo do begin
     if ( ((Cells[i].LogStart.y = aRow) and (Cells[i].LogStart.x <= Col)) or
@@ -550,12 +558,12 @@ begin
   end;
 end;
 
-function TSynPluginSyncronizedEditMarkup.GetNextMarkupColAfterRowCol(const aRow,
-  aCol: Integer): Integer;
+function TSynPluginSyncronizedEditMarkup.GetNextMarkupColAfterRowCol(const aRow: Integer;
+  const aStartCol: TLazSynDisplayTokenBound; const AnIsRTL: Boolean): Integer;
 var
   i, col: Integer;
 begin
-  col := PhysicalToLogicalPos(Point(aCol, aRow)).x;
+  col := PhysicalToLogicalPos(Point(aStartCol.Physical, aRow)).x;
   Result := -1;
   for i := FPreparedCellFrom to FPreparedCellTo do begin
     if Cells[i].Group < 0 then continue;
@@ -623,8 +631,8 @@ begin
     InvalidateSynLines(aNewVal.LogStart.Y, aNewVal.LogEnd.Y);
 end;
 
-function TSynPluginSyncronizedEditMarkupArea.GetMarkupAttributeAtRowCol(const aRow,
-  aCol: Integer): TSynSelectedColor;
+function TSynPluginSyncronizedEditMarkupArea.GetMarkupAttributeAtRowCol(const aRow: Integer;
+  const aStartCol: TLazSynDisplayTokenBound; const AnIsRTL: Boolean): TSynSelectedColor;
 var
   ac: TSynPluginSyncronizedEditCell;
 begin
@@ -632,15 +640,15 @@ begin
   if MarkupInfo.IsEnabled then begin
     ac := Cells.GroupCell[CellGroupForArea, 0];
     if (ac <> nil) and
-       ( ((ac.LogStart.y = aRow) and (ac.LogStart.x <= aCol)) or (ac.LogStart.y < aRow)) and
-       ( ((ac.LogEnd.y = aRow) and (ac.LogEnd.x > aCol)) or (ac.LogEnd.y > aRow))
+       ( ((ac.LogStart.y = aRow) and (ac.LogStart.x <= aStartCol.Physical)) or (ac.LogStart.y < aRow)) and
+       ( ((ac.LogEnd.y = aRow) and (ac.LogEnd.x > aStartCol.Physical)) or (ac.LogEnd.y > aRow))
     then
       Result := MarkupInfo;
   end;
 end;
 
-function TSynPluginSyncronizedEditMarkupArea.GetNextMarkupColAfterRowCol(const aRow,
-  aCol: Integer): Integer;
+function TSynPluginSyncronizedEditMarkupArea.GetNextMarkupColAfterRowCol(const aRow: Integer;
+  const aStartCol: TLazSynDisplayTokenBound; const AnIsRTL: Boolean): Integer;
 var
   ac: TSynPluginSyncronizedEditCell;
 begin
@@ -648,11 +656,11 @@ begin
   if MarkupInfo.IsEnabled then begin
     ac := Cells.GroupCell[CellGroupForArea, 0];
     if ac <> nil then begin
-      if (ac.LogStart.y = aRow) and (ac.LogStart.x > aCol) and
+      if (ac.LogStart.y = aRow) and (ac.LogStart.x > aStartCol.Physical) and
          ( (ac.LogStart.x < Result) or (Result < 0) )
       then
         Result := ac.LogStart.x;
-      if (ac.LogEnd.y = aRow) and (ac.LogEnd.x > aCol) and
+      if (ac.LogEnd.y = aRow) and (ac.LogEnd.x > aStartCol.Physical) and
          ( (ac.LogEnd.x < Result) or (Result < 0) )
       then
         Result := ac.LogEnd.x;

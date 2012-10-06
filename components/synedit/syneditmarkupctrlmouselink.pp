@@ -60,8 +60,12 @@ type
     destructor Destroy; override;
 
     Procedure PrepareMarkupForRow(aRow: Integer); override;
-    Function GetMarkupAttributeAtRowCol(const aRow, aCol: Integer) : TSynSelectedColor; override;
-    Function GetNextMarkupColAfterRowCol(const aRow, aCol: Integer) : Integer; override;
+    function GetMarkupAttributeAtRowCol(const aRow: Integer;
+                                        const aStartCol: TLazSynDisplayTokenBound;
+                                        const AnIsRTL: Boolean): TSynSelectedColor; override;
+    function GetNextMarkupColAfterRowCol(const aRow: Integer;
+                                         const aStartCol: TLazSynDisplayTokenBound;
+                                         const AnIsRTL: Boolean): Integer; override;
 
     property CtrlMouseLine : Integer read FCtrlMouseLine write FCtrlMouseLine;
     property CtrlMouseX1 : Integer read FCtrlMouseX1 write FCtrlMouseX1;
@@ -237,26 +241,28 @@ begin
   end;
 end;
 
-function TSynEditMarkupCtrlMouseLink.GetMarkupAttributeAtRowCol(const aRow, aCol: Integer) : TSynSelectedColor;
+function TSynEditMarkupCtrlMouseLink.GetMarkupAttributeAtRowCol(const aRow: Integer;
+  const aStartCol: TLazSynDisplayTokenBound; const AnIsRTL: Boolean): TSynSelectedColor;
 begin
   Result := nil;
   if (not FCtrlLinkable) or (aRow <> FCtrlMouseLine) or
-     ((aCol < FCurX1) or (aCol >= FCurX2))
+     ((aStartCol.Physical < FCurX1) or (aStartCol.Physical >= FCurX2))
   then exit;
   Result := MarkupInfo;
   MarkupInfo.StartX := FCurX1;
   MarkupInfo.EndX := FCurX2;
 end;
 
-function TSynEditMarkupCtrlMouseLink.GetNextMarkupColAfterRowCol(const aRow, aCol: Integer) : Integer;
+function TSynEditMarkupCtrlMouseLink.GetNextMarkupColAfterRowCol(const aRow: Integer;
+  const aStartCol: TLazSynDisplayTokenBound; const AnIsRTL: Boolean): Integer;
 begin
   Result := -1;
   if FCtrlMouseLine <> aRow
   then exit;
 
-  if aCol < FCurX1
+  if aStartCol.Physical < FCurX1
   then Result := FCurX1;
-  if (aCol < FCurX2) and (aCol >= FCurX1)
+  if (aStartCol.Physical < FCurX2) and (aStartCol.Physical >= FCurX1)
   then Result := FCurX2;
 end;
 

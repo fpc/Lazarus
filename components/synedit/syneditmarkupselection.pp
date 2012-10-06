@@ -47,8 +47,12 @@ type
     destructor Destroy; override;
 
     Procedure PrepareMarkupForRow(aRow : Integer); override;
-    Function GetMarkupAttributeAtRowCol(const aRow, aCol : Integer) : TSynSelectedColor; override;
-    Function GetNextMarkupColAfterRowCol(const aRow, aCol : Integer) : Integer; override;
+    function GetMarkupAttributeAtRowCol(const aRow: Integer;
+                                        const aStartCol: TLazSynDisplayTokenBound;
+                                        const AnIsRTL: Boolean): TSynSelectedColor; override;
+    function GetNextMarkupColAfterRowCol(const aRow: Integer;
+                                         const aStartCol: TLazSynDisplayTokenBound;
+                                         const AnIsRTL: Boolean): Integer; override;
 
     property UseIncrementalColor : Boolean read FUseIncrementalColor write SetUseIncrementalColor;
     property MarkupInfoSeletion : TSynSelectedColor read FMarkupInfoSelection;
@@ -133,19 +137,21 @@ begin
   MarkupInfo.EndX := nSelEnd-1;
 end;
 
-function TSynEditMarkupSelection.GetMarkupAttributeAtRowCol(const aRow, aCol : Integer) : TSynSelectedColor;
+function TSynEditMarkupSelection.GetMarkupAttributeAtRowCol(const aRow: Integer;
+  const aStartCol: TLazSynDisplayTokenBound; const AnIsRTL: Boolean): TSynSelectedColor;
 begin
   result := nil;
-  if (aCol >= nSelStart) and ((aCol < nSelEnd) or (nSelEnd < 0))
+  if (aStartCol.Physical >= nSelStart) and ((aStartCol.Physical < nSelEnd) or (nSelEnd < 0))
   then Result := MarkupInfo;
 end;
 
-function TSynEditMarkupSelection.GetNextMarkupColAfterRowCol(const aRow, aCol : Integer) : Integer;
+function TSynEditMarkupSelection.GetNextMarkupColAfterRowCol(const aRow: Integer;
+  const aStartCol: TLazSynDisplayTokenBound; const AnIsRTL: Boolean): Integer;
 begin
   result := -1;
-  if (aCol < nSelStart)
+  if (aStartCol.Physical < nSelStart)
   then Result := nSelStart;
-  if (aCol < nSelEnd) and (aCol >= nSelStart)
+  if (aStartCol.Physical < nSelEnd) and (aStartCol.Physical >= nSelStart)
   then result := nSelEnd;
 end;
 

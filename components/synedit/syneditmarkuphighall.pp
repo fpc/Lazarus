@@ -119,8 +119,12 @@ type
     constructor Create(ASynEdit : TSynEditBase);
     destructor Destroy; override;
 
-    Function GetMarkupAttributeAtRowCol(const aRow, aCol : Integer) : TSynSelectedColor; override;
-    Function GetNextMarkupColAfterRowCol(const aRow, aCol : Integer) : Integer; override;
+    function GetMarkupAttributeAtRowCol(const aRow: Integer;
+                                        const aStartCol: TLazSynDisplayTokenBound;
+                                        const AnIsRTL: Boolean): TSynSelectedColor; override;
+    function GetNextMarkupColAfterRowCol(const aRow: Integer;
+                                         const aStartCol: TLazSynDisplayTokenBound;
+                                         const AnIsRTL: Boolean): Integer; override;
 
     Procedure Invalidate(RePaint: Boolean = True);
     Procedure SendLineInvalidation;
@@ -472,7 +476,8 @@ begin
   end;
 end;
 
-function TSynEditMarkupHighlightAll.GetMarkupAttributeAtRowCol(const aRow, aCol : Integer) : TSynSelectedColor;
+function TSynEditMarkupHighlightAll.GetMarkupAttributeAtRowCol(const aRow: Integer;
+  const aStartCol: TLazSynDisplayTokenBound; const AnIsRTL: Boolean): TSynSelectedColor;
 var
   Pos: Integer;
 begin
@@ -485,7 +490,7 @@ begin
   Pos:= 0;
   while (Pos < fMatches.PointCount)
   and ( (fMatches.Point[Pos].y < aRow)
-       or ((fMatches.Point[Pos].y = aRow) and (fMatches.Point[Pos].x <= aCol)) )
+       or ((fMatches.Point[Pos].y = aRow) and (fMatches.Point[Pos].x <= aStartCol.Physical)) )
   do inc(Pos);
 
   if Pos = fMatches.PointCount // last point was EndPoint => no markup
@@ -506,7 +511,8 @@ begin
   result := MarkupInfo;
 end;
 
-function TSynEditMarkupHighlightAll.GetNextMarkupColAfterRowCol(const aRow, aCol : Integer) : Integer;
+function TSynEditMarkupHighlightAll.GetNextMarkupColAfterRowCol(const aRow: Integer;
+  const aStartCol: TLazSynDisplayTokenBound; const AnIsRTL: Boolean): Integer;
 var
   Pos: Integer;
 begin
@@ -519,7 +525,7 @@ begin
   Pos:= 0;
   while (Pos < fMatches.PointCount)
   and ( (fMatches.Point[Pos].y < aRow)
-       or ((fMatches.Point[Pos].y = aRow) and (fMatches.Point[Pos].x <= aCol)) )
+       or ((fMatches.Point[Pos].y = aRow) and (fMatches.Point[Pos].x <= aStartCol.Physical)) )
   do inc(Pos);
 
   // what is ifthe next is an END, with a start at the same pos?

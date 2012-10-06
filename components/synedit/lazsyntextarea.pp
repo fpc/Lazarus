@@ -55,9 +55,10 @@ type
     FCurViewRtlPhysEnd: integer;
     FCurViewRtlLogEnd: integer;
 
-    FCurMarkupPhysPos, FNextMarkupPhysPos: Integer; // 1, -1
-    FCurMarkupEOL: Boolean;
+    FNextMarkupPhysPos: Integer;
     FCurMarkupNextStart: TLazSynDisplayTokenBound;
+    FCurMarkupNextIsRtl: Boolean;
+    FCurMarkupEOL: Boolean;
     FMarkupTokenAttr: TSynSelectedColor;
   public
     constructor Create;
@@ -255,6 +256,8 @@ end;
 
 procedure TLazSynPaintTokenBreaker.SetHighlighterTokensLine(ALine: TLineIdx; out
   ARealLine: TLineIdx);
+var
+  TmpTokenInfo: TLazSynDisplayTokenInfoEx;
 begin
   FDisplayView.SetHighlighterTokensLine(ALine, ARealLine);
   FCharWidths := FLinesView.GetPhysicalCharWidths(ARealLine);
@@ -262,13 +265,22 @@ begin
 
   FCurViewToken.Tk.TokenLength     := 0;
   FCurViewToken.StartPos.Logical   := 1;
-  FCurViewToken.StartPos.Physical  := 1; //FFirstCol;
+  FCurViewToken.StartPos.Physical  := 1;
   FCurViewToken.StartPos.Offset    := 0;
   FCurViewToken.PhysicalCharStart  := 1;
   FCurViewToken.NextPos.Physical   := 1;
   FCurViewinRTL := False;
 
-  FCurMarkupPhysPos  := FFirstCol;
+  if GetNextHighlighterTokenFromView(TmpTokenInfo, -1, 1) then begin
+    FCurMarkupNextStart := TmpTokenInfo.NextPos;
+    FCurMarkupNextIsRtl := TmpTokenInfo.NextIsRtl;
+  end else begin
+    // past eol
+    FCurMarkupNextStart := TmpTokenInfo.StartPos;
+    FCurMarkupNextStart.Logical  := FCurMarkupNextStart.Logical + (FFirstCol - FCurMarkupNextStart.Physical);
+    FCurMarkupNextStart.Physical := FFirstCol;
+    FCurMarkupNextIsRtl := False;
+  end;
   FNextMarkupPhysPos := -1;
   FCurMarkupEOL := False;
   FCurTxtLineIdx := ARealLine;
@@ -279,10 +291,17 @@ function TLazSynPaintTokenBreaker.GetNextHighlighterTokenEx(out
 const
   Space = '  ';
 begin
-  //GetNextHighlighterTokenFromView(ATokenInfo, -1, 1);
-
-  if FCurMarkupPhysPos >= FNextMarkupPhysPos then
-    FNextMarkupPhysPos := FMarkupManager.GetNextMarkupColAfterRowCol(FCurTxtLineIdx+1, FCurMarkupPhysPos);
+  if (FNextMarkupPhysPos < 0) or
+     (FCurMarkupNextIsRtl       and (FNextMarkupPhysPos >= FCurMarkupNextStart.Physical)) or
+     ((not FCurMarkupNextIsRtl) and (FNextMarkupPhysPos <= FCurMarkupNextStart.Physical))
+  then begin
+    FNextMarkupPhysPos := FMarkupManager.GetNextMarkupColAfterRowCol
+                          (FCurTxtLineIdx+1, FCurMarkupNextStart, FCurMarkupNextIsRtl);
+    if FNextMarkupPhysPos < 1 then
+      if FCurMarkupNextIsRtl
+      then FNextMarkupPhysPos := 1
+      else FNextMarkupPhysPos := MaxInt;
+  end;
 
   if FCurMarkupEOL
   then Result := False
@@ -315,6 +334,9 @@ begin
     ATokenInfo.EndPos.Offset      := 0;
     ATokenInfo.EndPos.Logical     := ATokenInfo.StartPos.Logical + (ATokenInfo.EndPos.Physical - ATokenInfo.StartPos.Physical);
     FCurMarkupNextStart := ATokenInfo.EndPos;
+    if FCurMarkupNextIsRtl then
+      FNextMarkupPhysPos := -1;
+    FCurMarkupNextIsRtl := False;
 
     ATokenInfo.PhysicalCharStart  := ATokenInfo.StartPos.Physical;
     ATokenInfo.PhysicalClipStart  := ATokenInfo.StartPos.Physical;
@@ -330,12 +352,15 @@ begin
     //exit;
   end
   else begin
+    if ATokenInfo.NextIsRtl <> FCurMarkupNextIsRtl then
+      FNextMarkupPhysPos := -1;
+    FCurMarkupNextStart := ATokenInfo.NextPos;
+    FCurMarkupNextIsRtl := ATokenInfo.NextIsRtl;
+
     FMarkupTokenAttr.Assign(ATokenInfo.Attr);
     FMarkupTokenAttr.CurrentStartX := ATokenInfo.StartPos.Physical; // current sub-token
     FMarkupTokenAttr.CurrentEndX   := ATokenInfo.EndPos.Physical-1;
   end;
-
-  FCurMarkupPhysPos := ATokenInfo.EndPos.Physical;
 
   fMarkupManager.MergeMarkupAttributeAtRowCol(FCurTxtLineIdx + 1,
     ATokenInfo.StartPos, ATokenInfo.EndPos, ATokenInfo.IsRtl, FMarkupTokenAttr);
@@ -443,7 +468,9 @@ function TLazSynPaintTokenBreaker.GetNextHighlighterTokenFromView(out
 
     if FCurViewToken.PhysicalCharStart > FCurViewToken.StartPos.Physical then
       FCurViewToken.StartPos.Physical := FCurViewToken.PhysicalCharStart;
-    if (FCurViewToken.StartPos.Physical < FFirstCol) and (ALogicIdx < FCharWidthsLen) then
+    if (FCurViewToken.StartPos.Physical < FFirstCol) and
+       (FCurViewToken.StartPos.Physical + j > FFirstCol)
+    then
       FCurViewToken.StartPos.Physical := FFirstCol;
   end;
 

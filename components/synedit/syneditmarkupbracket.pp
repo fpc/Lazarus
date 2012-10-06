@@ -56,8 +56,12 @@ type
     constructor Create(ASynEdit: TSynEditBase);
     procedure DecPaintLock; override;
 
-    function GetMarkupAttributeAtRowCol(const aRow, aCol: Integer): TSynSelectedColor; override;
-    function GetNextMarkupColAfterRowCol(const aRow, aCol: Integer): Integer; override;
+    function GetMarkupAttributeAtRowCol(const aRow: Integer;
+                                        const aStartCol: TLazSynDisplayTokenBound;
+                                        const AnIsRTL: Boolean): TSynSelectedColor; override;
+    function GetNextMarkupColAfterRowCol(const aRow: Integer;
+                                         const aStartCol: TLazSynDisplayTokenBound;
+                                         const AnIsRTL: Boolean): Integer; override;
 
     procedure InvalidateBracketHighlight;
     property HighlightStyle: TSynEditBracketHighlightStyle read FHighlightStyle write SetHighlightStyle;
@@ -222,32 +226,34 @@ begin
 //  DebugLn('TCustomSynEdit.InvalidateBracketHighlight C P=',dbgs(NewPos),' A=',dbgs(NewAntiPos), ' LP=',dbgs(fLogicalPos),' LA',dbgs(fLogicalAntiPos));
 end;
 
-function TSynEditMarkupBracket.GetMarkupAttributeAtRowCol(const aRow, aCol: Integer) : TSynSelectedColor;
+function TSynEditMarkupBracket.GetMarkupAttributeAtRowCol(const aRow: Integer;
+  const aStartCol: TLazSynDisplayTokenBound; const AnIsRTL: Boolean): TSynSelectedColor;
 begin
   Result := nil;
-  if ((FBracketHighlightPos.y = aRow) and  (FBracketHighlightPos.x = aCol))
-  or ((FBracketHighlightAntiPos.y = aRow) and  (FBracketHighlightAntiPos.x = aCol))
+  if ((FBracketHighlightPos.y = aRow) and  (FBracketHighlightPos.x = aStartCol.Physical))
+  or ((FBracketHighlightAntiPos.y = aRow) and  (FBracketHighlightAntiPos.x = aStartCol.Physical))
   then begin
     Result := MarkupInfo;
-    MarkupInfo.StartX := aCol;
-    MarkupInfo.EndX := aCol;
+    MarkupInfo.StartX := aStartCol.Physical;
+    MarkupInfo.EndX := aStartCol.Physical;
   end;
 end;
 
-function TSynEditMarkupBracket.GetNextMarkupColAfterRowCol(const aRow, aCol: Integer) : Integer;
+function TSynEditMarkupBracket.GetNextMarkupColAfterRowCol(const aRow: Integer;
+  const aStartCol: TLazSynDisplayTokenBound; const AnIsRTL: Boolean): Integer;
 begin
   Result := -1;
   if (FBracketHighlightPos.y = aRow) then begin
-    if  (FBracketHighlightPos.x > aCol)
+    if  (FBracketHighlightPos.x > aStartCol.Physical )
     then Result := FBracketHighlightPos.x
-    else if  (FBracketHighlightPos.x + 1 > aCol)
+    else if  (FBracketHighlightPos.x + 1 > aStartCol.Physical )
     then Result := FBracketHighlightPos.x + 1; // end of bracket
   end;
   if (FBracketHighlightAntiPos.y = aRow) then begin
-    if  (FBracketHighlightAntiPos.x > aCol)
+    if  (FBracketHighlightAntiPos.x > aStartCol.Physical )
     and ((FBracketHighlightAntiPos.x < Result) or (Result < 0))
     then Result := FBracketHighlightAntiPos.x
-    else if  (FBracketHighlightAntiPos.x + 1 > aCol)
+    else if  (FBracketHighlightAntiPos.x + 1 > aStartCol.Physical )
     and ((FBracketHighlightAntiPos.x + 1 < Result) or (Result < 0))
     then Result := FBracketHighlightAntiPos.x + 1;
   end

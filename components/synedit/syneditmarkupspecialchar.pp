@@ -48,8 +48,12 @@ type
     destructor Destroy; override;
 
     Procedure PrepareMarkupForRow(aRow : Integer); override;
-    Function GetMarkupAttributeAtRowCol(const aRow, aCol: Integer) : TSynSelectedColor; override;
-    Function GetNextMarkupColAfterRowCol(const aRow, aCol: Integer) : Integer; override;
+    function GetMarkupAttributeAtRowCol(const aRow: Integer;
+                                        const aStartCol: TLazSynDisplayTokenBound;
+                                        const AnIsRTL: Boolean): TSynSelectedColor; override;
+    function GetNextMarkupColAfterRowCol(const aRow: Integer;
+                                         const aStartCol: TLazSynDisplayTokenBound;
+                                         const AnIsRTL: Boolean): Integer; override;
 
     property VisibleSpecialChars: TSynVisibleSpecialChars read FVisibleSpecialChars write SetVisibleSpecialChars;
   end;
@@ -101,19 +105,21 @@ begin
   FCurLine := Lines[aRow-1];
 end;
 
-function TSynEditMarkupSpecialChar.GetMarkupAttributeAtRowCol(const aRow, aCol: Integer) : TSynSelectedColor;
+function TSynEditMarkupSpecialChar.GetMarkupAttributeAtRowCol(const aRow: Integer;
+  const aStartCol: TLazSynDisplayTokenBound; const AnIsRTL: Boolean): TSynSelectedColor;
 begin
   Result := nil;
   if (FCurLine='') or (not (FHasMarkup and (FVisibleSpecialChars <> []))) then exit;
 
-  if (aCol >= FCurStart) and (aCol < FCurEnd) then begin
+  if (aStartCol.Physical >= FCurStart) and (aStartCol.Physical < FCurEnd) then begin
     Result := MarkupInfo;
     Result.StartX := FCurStart;
     Result.EndX := FCurEnd - 1;
   end;
 end;
 
-function TSynEditMarkupSpecialChar.GetNextMarkupColAfterRowCol(const aRow, aCol: Integer) : Integer;
+function TSynEditMarkupSpecialChar.GetNextMarkupColAfterRowCol(const aRow: Integer;
+  const aStartCol: TLazSynDisplayTokenBound; const AnIsRTL: Boolean): Integer;
 var
   s: Boolean;
   i, LogCol: Integer;
@@ -121,10 +127,10 @@ begin
   Result := -1;
   if (FCurLine='') or (not (FHasMarkup and (FVisibleSpecialChars <> []))) then exit;
 
-  if aCol < FCurStart then exit(FCurStart);
-  if aCol < FCurEnd then exit(FCurEnd);
+  if aStartCol.Physical < FCurStart then exit(FCurStart);
+  if aStartCol.Physical < FCurEnd then exit(FCurEnd);
 
-  LogCol := PhysicalToLogicalPos(Point(aCol, aRow)).x;
+  LogCol := PhysicalToLogicalPos(Point(aStartCol.Physical, aRow)).x;
   if LogCol > Length(FCurLine) then exit;
   if (LogCol = Length(FCurLine)) then begin
     if IsSpecial(LogCol) then
@@ -137,7 +143,7 @@ begin
   i := LogCol;
   s := IsSpecial(LogCol);
   if s then
-    FCurStart := aCol
+    FCurStart := aStartCol.Physical
   else begin
     while (i <= Length(FCurLine)) and (not IsSpecial(i)) do inc(i);
     FCurStart := LogicalToPhysicalPos(Point(i, aRow)).x;
@@ -146,8 +152,8 @@ begin
   while (i <= Length(FCurLine)) and (IsSpecial(i)) do inc(i);
   FCurEnd := LogicalToPhysicalPos(Point(i, aRow)).x;
 
-  if aCol < FCurStart then exit(FCurStart);
-  if aCol < FCurEnd then exit(FCurEnd);
+  if aStartCol.Physical < FCurStart then exit(FCurStart);
+  if aStartCol.Physical < FCurEnd then exit(FCurEnd);
 end;
 
 end.

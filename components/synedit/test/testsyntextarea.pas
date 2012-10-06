@@ -304,6 +304,10 @@ type
         TestStart('Cut off start 1.5 tok',   2,  11, 100,   2);
         TestNext([100],    b(11,11),  b(12,12),   11,12,  11,12,   False, '/',   b(12,12, 0), False);
         TestEnd(b(12,12, 0));
+
+        TestStart('Cut off entire line',   2,  20, 50,   2);
+        AssertFalse(Name + 'Got NO Token', FTokenBreaker.GetNextHighlighterTokenFromView(Token, -1, 1));
+        TestBound(Name + ' Start(BOL)', Token.StartPos, b(12,12, 0));
       {%endregion}
 
       {%region  cut off both}

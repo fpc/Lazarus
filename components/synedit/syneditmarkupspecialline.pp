@@ -57,8 +57,12 @@ type
     destructor Destroy; override;
 
     procedure PrepareMarkupForRow(ARow: Integer); override;
-    function GetMarkupAttributeAtRowCol(const ARow, ACol: Integer): TSynSelectedColor; override;
-    function GetNextMarkupColAfterRowCol(const ARow, ACol: Integer): Integer; override;
+    function GetMarkupAttributeAtRowCol(const aRow: Integer;
+                                        const aStartCol: TLazSynDisplayTokenBound;
+                                        const AnIsRTL: Boolean): TSynSelectedColor; override;
+    function GetNextMarkupColAfterRowCol(const aRow: Integer;
+                                         const aStartCol: TLazSynDisplayTokenBound;
+                                         const AnIsRTL: Boolean): Integer; override;
 
     procedure InvalidateLineHighlight;
 
@@ -171,7 +175,8 @@ begin
   end;
 end;
 
-function TSynEditMarkupSpecialLine.GetMarkupAttributeAtRowCol(const ARow, ACol : Integer): TSynSelectedColor;
+function TSynEditMarkupSpecialLine.GetMarkupAttributeAtRowCol(const aRow: Integer;
+  const aStartCol: TLazSynDisplayTokenBound; const AnIsRTL: Boolean): TSynSelectedColor;
 begin
   Result := nil;
   MarkupInfo.StartX := 1;
@@ -180,7 +185,8 @@ begin
     Result := MarkupInfo;
 end;
 
-function TSynEditMarkupSpecialLine.GetNextMarkupColAfterRowCol(const ARow, ACol : Integer): Integer;
+function TSynEditMarkupSpecialLine.GetNextMarkupColAfterRowCol(const aRow: Integer;
+  const aStartCol: TLazSynDisplayTokenBound; const AnIsRTL: Boolean): Integer;
 begin
   Result := -1; // always valid for the whole line
 end;
