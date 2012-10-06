@@ -34,7 +34,6 @@
 
 
 { $define DebugSimplePoFiles}
-{$define ReadPoTextPChar}  //define this to use the old ReadPoText method which uses PChars
 
 
 unit SimplePoFiles;
@@ -93,11 +92,7 @@ type
     //procedure RemoveUntaggedModules;
     function GetCount: Integer;
     procedure SetCharSet(const AValue: String);
-    {$ifdef ReadPoTextPChar}
-    procedure ReadPOText(const Txt: string);
-    {$else}
     procedure ReadPOText(AStream: TStream);
-    {$endif ReadPoTextPChar}
     function GetPoItem(Index: Integer): TPoFileItem;
   protected
     property Items: TFPList read FItems;
@@ -154,28 +149,6 @@ const
   tgHasDup = $01;
 
 implementation
-
-{$IFDEF ReadPoTextPChar}
-function IsKey(Txt, Key: PChar): boolean;
-begin
-  if Txt=nil then exit(false);
-  if Key=nil then exit(true);
-  repeat
-    if Key^=#0 then exit(true);
-    if Txt^<>Key^ then exit(false);
-    inc(Key);
-    inc(Txt);
-  until false;
-end;
-
-function GetUTF8String(TxtStart, TxtEnd: PChar): string; inline;
-begin
-  SetLength(Result,TxtEnd-TxtStart);
-  if Result<>'' then
-    Move(TxtStart^,Result[1],length(Result));
-  //Result:=UTF8CStringToUTF8String(TxtStart,TxtEnd-TxtStart);
-end;
-{$ENDIF}
 
 {$ifdef DebugSimplePoFiles}
 var
@@ -427,9 +400,6 @@ end;
 constructor TSimplePOFile.Create(AStream: TStream; const Full: Boolean = True);
 var
   Size: Integer;
-  {$ifdef ReadPoTextPChar}
-  S: String;
-  {$endif ReadPoTextPChar}
 begin
   inherited Create;
   FAllEntries:=true;
@@ -440,13 +410,7 @@ begin
   FAllEntries := Full;
   Size:=AStream.Size-AStream.Position;
   if Size<=0 then exit;
-  {$ifdef ReadPoTextPChar}
-  SetLength(s,Size);
-  AStream.Read(S[1],Size);
-  ReadPOText(S);
-  {$else}
   ReadPoText(AStream);
-  {$endif ReadPoTextPChar}
 end;
 
 
@@ -479,209 +443,6 @@ begin
   System.Move(SourceStart^, Dest^, SourceLen);
 end;
 
-
-{$ifdef ReadPoTextPChar}
-procedure TSimplePOFile.ReadPOText(const Txt: string);
-{ Read a .po file. Structure:
-
-Example
-#: lazarusidestrconsts:lisdonotshowsplashscreen
-msgid "Do not show splash screen"
-msgstr ""
-
-}
-type
-  TMsg = (
-    mid,
-    mstr,
-    mctx
-    );
-var
-  l: Integer;
-  LineLen: Integer;
-  p: PChar;
-  LineStart: PChar;
-  LineEnd: PChar;
-  Identifier: String;
-  PrevMsgID: String;
-  Comments: String;
-  Flags: string;
-  TextEnd: PChar;
-  i: Integer;
-  //OldLineStartPos: PtrUInt;
-  //NewSrc: String;
-  s: String;
-  Handled: Boolean;
-  CurMsg: TMsg;
-  Msg: array[TMsg] of string;
-
-  procedure ResetVars;
-  begin
-    CurMsg:=mid;
-    Msg[mid]:='';
-    Msg[mstr]:='';
-    Msg[mctx]:='';
-    Identifier := '';
-    Comments := '';
-    Flags := '';
-    PrevMsgID := '';
-  end;
-
-  procedure AddEntry;
-  //var
-  //  Item: TPOFileItem;
-  begin
-    if Identifier<>'' then begin
-      // check for unresolved duplicates in po file
-      {Item := TPOFileItem(FOriginalToItem.Data[Msg[mid]]);
-      if (Item<>nil) then begin
-        // fix old duplicate context
-        if Item.Context='' then
-          Item.Context:=Item.IdentifierLow;
-        // set context of new duplicate
-        if Msg[mctx]='' then
-          Msg[mctx] := Identifier;
-        // if old duplicate was translated and
-        // new one is not, provide a initial translation
-        if Msg[mstr]='' then
-          Msg[mstr] := Item.Translation;
-      end;}
-      Add(Identifier,Msg[mid],Msg[mstr],Comments,Msg[mctx],Flags,PrevMsgID,0);
-      ResetVars;
-    end else
-    if (Msg[CurMsg]<>'') and (FHeader=nil) then begin
-      FHeader := TPOFileItem.Create('',Msg[mid],Msg[CurMsg]);
-      FHeader.Comments:=Comments;
-      ResetVars;
-    end
-  end;
-
-begin
-  {$ifdef DebugSimplePoFiles}
-  T0 := GetTickCount;
-  {$endif}
-  s:=Txt;
-  l:=length(s);
-  p:=PChar(s);
-  LineStart:=p;
-  TextEnd:=p+l;
-
-  ResetVars;
-
-  while LineStart<TextEnd do begin
-    LineEnd:=LineStart;
-    while (not (LineEnd^ in [#0,#10,#13])) do inc(LineEnd);
-    LineLen:=LineEnd-LineStart;
-    if LineLen>0 then begin
-      Handled:=false;
-      case LineStart^ of
-      '#':
-        begin
-          case LineStart[1] of
-          ':':
-            if LineStart[2]=' ' then begin
-              // '#: '
-              AddEntry;
-              Identifier:=copy(s,LineStart-p+4,LineLen-3);
-              // the RTL creates identifier paths with point instead of colons
-              // fix it:
-              for i:=1 to length(Identifier) do
-                if Identifier[i]=':' then
-                  Identifier[i]:='.';
-              Handled:=true;
-            end;
-          '|':
-            if IsKey(LineStart,'#| msgid "') then begin
-              PrevMsgID:=PrevMsgID+GetUTF8String(LineStart+length('#| msgid "'),LineEnd-1);
-              Handled:=true;
-            end else if IsKey(LineStart, '#| "') then begin
-              Msg[CurMsg] := Msg[CurMsg] + GetUTF8String(LineStart+length('#| "'),LineEnd-1);
-              Handled:=true;
-            end;
-          ',':
-            if LineStart[2]=' ' then begin
-              // '#, '
-              Flags := GetUTF8String(LineStart+3,LineEnd);
-              Handled:=true;
-            end;
-          end;
-          if not Handled then begin
-            // '#'
-            if Comments<>'' then
-              Comments := Comments + LineEnding;
-            Comments := Comments + GetUTF8String(LineStart+1,LineEnd);
-            Handled:=true;
-          end;
-        end;
-      'm':
-        if (LineStart[1]='s') and (LineStart[2]='g') then begin
-          case LineStart[3] of
-          'i':
-            if IsKey(LineStart,'msgid "') then begin
-              CurMsg:=mid;
-              Msg[CurMsg]:=Msg[CurMsg]+GetUTF8String(LineStart+length('msgid "'),LineEnd-1);
-              Handled:=true;
-            end;
-          's':
-            if IsKey(LineStart,'msgstr "') then begin
-              CurMsg:=mstr;
-              Msg[CurMsg]:=Msg[CurMsg]+GetUTF8String(LineStart+length('msgstr "'),LineEnd-1);
-              Handled:=true;
-            end;
-          'c':
-            if IsKey(LineStart, 'msgctxt "') then begin
-              CurMsg:=mctx;
-              Msg[CurMsg]:=Msg[CurMsg]+GetUTF8String(LineStart+length('msgctxt "'), LineEnd-1);
-              Handled:=true;
-            end;
-          end;
-        end;
-      '"':
-        begin
-          if (Msg[mid]='')
-          and IsKey(LineStart,'"Content-Type: text/plain; charset=') then
-          begin
-            FCharSet:=GetUTF8String(LineStart+length('"Content-Type: text/plain; charset='),LineEnd);
-            if SysUtils.CompareText(FCharSet,'UTF-8')<>0 then begin
-              // convert encoding to UTF-8
-              {OldLineStartPos:=PtrUInt(LineStart-PChar(s))+1;
-              NewSrc:=ConvertEncoding(copy(s,OldLineStartPos,length(s)),
-                                      FCharSet,EncodingUTF8);
-              // replace text and update all pointers
-              s:=copy(s,1,OldLineStartPos-1)+NewSrc;
-              l:=length(s);
-              p:=PChar(s);
-              TextEnd:=p+l;
-              LineStart:=p+(OldLineStartPos-1);
-              LineEnd:=LineStart;
-              while (not (LineEnd^ in [#0,#10,#13])) do inc(LineEnd);
-              LineLen:=LineEnd-LineStart;}
-            end;
-          end;
-          // continuation
-          Msg[CurMsg]:=Msg[CurMsg]+GetUTF8String(LineStart+1,LineEnd-1);
-          Handled:=true;
-        end;
-      end;
-      if not Handled then
-        AddEntry;
-    end;
-    LineStart:=LineEnd+1;
-    while (LineStart^ in [#10,#13]) do inc(LineStart);
-  end;
-  AddEntry;
-
-  {$ifdef DebugSimplePoFiles}
-  T1 := gettickcount;
-  debugln('T1 = ',dbgs(t1-t0));
-  debugln('Count = ',DbgS(Count));
-  //debugln('T2 = ',dbgs(t2-t1));
-  //debugln('T3 = ',dbgs(t3-t2));
-  {$endif}
-
-end;
-
-{$else}
 
 procedure TSimplePOFile.ReadPOText(AStream: TStream);
 { Read a .po file. Structure:
@@ -936,7 +697,6 @@ begin
   {$endif}
 end;
 
-{$endif ReadPoTextPChar}
 
 procedure TSimplePOFile.Add(const Identifier, OriginalValue, TranslatedValue,
   Comments, Context, Flags, PreviousID: string; LineNr: Integer);
