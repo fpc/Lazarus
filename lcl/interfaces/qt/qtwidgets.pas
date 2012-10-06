@@ -3541,7 +3541,7 @@ begin
   Msg.X := SmallInt(MousePos.X);
   Msg.Y := SmallInt(MousePos.Y);
 
-  Msg.WheelDelta := QWheelEvent_delta(QWheelEventH(Event));
+  Msg.WheelDelta := SmallInt(QWheelEvent_delta(QWheelEventH(Event)));
 
   {$IFDEF DARWIN}
   // LCL expects delta +-120, we must fix it. issue #20888
@@ -3630,8 +3630,8 @@ begin
   end;
   {$ENDIF}
 
-  Msg.XPos := APos.x - (WindowRect.Left - FrameRect.Left);
-  Msg.YPos := APos.y - (WindowRect.Top - FrameRect.Top);
+  Msg.XPos := SmallInt(APos.x - (WindowRect.Left - FrameRect.Left));
+  Msg.YPos := SmallInt(APos.y - (WindowRect.Top - FrameRect.Top));
 
   DeliverMessage(Msg);
 end;
@@ -3805,8 +3805,8 @@ begin
 
   Msg.SizeType := Msg.SizeType or Size_SourceIsInterface;
 
-  Msg.Width := NewSize.cx;
-  Msg.Height := NewSize.cy;
+  Msg.Width := Word(NewSize.cx);
+  Msg.Height := Word(NewSize.cy);
 
   DeliverMessage(Msg);
 end;
@@ -3887,11 +3887,11 @@ var
   MessageEvent: QLCLMessageEventH absolute Event;
   Msg: TLMessage;
 begin
-  Msg.msg := QLCLMessageEvent_getMsg(MessageEvent);
-  Msg.wParam := QLCLMessageEvent_getWParam(MessageEvent);
-  Msg.lParam := QLCLMessageEvent_getLParam(MessageEvent);
+  Msg.msg := Cardinal(QLCLMessageEvent_getMsg(MessageEvent));
+  Msg.wParam := PtrInt(QLCLMessageEvent_getWParam(MessageEvent));
+  Msg.lParam := PtrInt(QLCLMessageEvent_getLParam(MessageEvent));
   Msg.Result := 0;
-  QLCLMessageEvent_setMsgResult(MessageEvent, DeliverMessage(Msg));
+  QLCLMessageEvent_setMsgResult(MessageEvent, PtrUInt(DeliverMessage(Msg)));
 end;
 
 procedure TQtWidget.Activate;
@@ -6457,8 +6457,8 @@ begin
 
   Msg.SizeType := Msg.SizeType or Size_SourceIsInterface;
 
-  Msg.Width := getWidth;
-  Msg.Height := getHeight;
+  Msg.Width := Word(getWidth);
+  Msg.Height := Word(getHeight);
   
   DeliverMessage(Msg);
 end;
@@ -11709,7 +11709,7 @@ begin
     exit;
   FillChar(Msg, SizeOf(Msg), #0);
   Msg.Msg := LM_CHANGED;
-  Msg.WParam := QListWidget_row(QListWidgetH(Widget), Item);
+  Msg.WParam := PtrInt(QListWidget_row(QListWidgetH(Widget), Item));
   DeliverMessage(Msg);
 end;
 
