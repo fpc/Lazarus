@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2012-09-30 23:24+0100\n"
+"PO-Revision-Date: 2012-10-06 20:13+0100\n"
 "Last-Translator: Swen Heinig <swen.heinig@freenet.de>\n"
 "Language-Team: Deutsch <lazarus@miraclec.com>\n"
 "MIME-Version: 1.0\n"
@@ -5717,7 +5717,7 @@ msgstr "Das %s Hauptverzeichnis,%sin dem Borland alle %s Quellen installiert hat
 
 #: lazarusidestrconsts.liscodetoolsdefsdelphimaindirectoryforproject
 msgid "The %s main directory,%swhere Borland has installed all %s sources,%swhich are used by this %s project.%sFor example: C:/Programme/Borland/Delphi%s"
-msgstr "Das %s Hauptverzeichnis%sin dem Borland alle %s Quellen installiert hat,%sdie von diesem Projekt verwendet werden%sBeispielsweise C:/Programme/Borland/Delphi%s"
+msgstr "Das %s Hauptverzeichnis,%sin dem Borland alle %s Quellen installiert hat,%sdie von diesem %s Projekt verwendet werden.%sBeispielsweise C:/Programme/Borland/Delphi%s"
 
 #: lazarusidestrconsts.liscodetoolsdefsdescription
 msgid "Description:"
@@ -7705,7 +7705,7 @@ msgstr "Hilfe bearbeiten"
 
 #: lazarusidestrconsts.liseditkey
 msgid "Edit Key"
-msgstr ""
+msgstr "Taste zuweisen"
 
 #: lazarusidestrconsts.liseditorfiletypes
 msgid "Editor file types"
@@ -8950,7 +8950,7 @@ msgstr "WARNUNG: Unit-Name ungültig %s, Package=%s"
 
 #: lazarusidestrconsts.lisidemacros
 msgid "IDE Macros"
-msgstr "IDE Makros"
+msgstr "IDE-Makros"
 
 #: lazarusidestrconsts.lisidemacrovaluesforfpcmacrosusecustomoptions
 msgid "IDE macro values (for FPC macros use custom options)"
@@ -10735,7 +10735,7 @@ msgstr "A&lle Editorfenster schließen"
 
 #: lazarusidestrconsts.lismenucloseeditorfile
 msgid "&Close Editor File"
-msgstr ""
+msgstr "Editordatei s&chließen"
 
 #: lazarusidestrconsts.lismenucloseproject
 msgid "Close Project"
@@ -13524,7 +13524,7 @@ msgstr "Es gibt bereits ein Package mit dem Namen %s%s%s.%sPackage-Konflikt: %s%
 #: lazarusidestrconsts.lispkgmangthereisalreadyapackageloadedfromfile
 #| msgid "There is already a package %s%s%s loaded%sfrom file %s%s%s.%sSee Components -> Package Graph.%sReplace is impossible."
 msgid "There is already a package %s%s%s loaded%sfrom file %s%s%s.%sSee Package -> Package Graph.%sReplace is impossible."
-msgstr "Es ist bereits ein Package %s%s%s aus der Datei %s%s%s geladen.%sSiehe Package->Package-Graph.%sErsetzen ist nicht möglich."
+msgstr "Es ist bereits ein Package %s%s%s geladen%saus der Datei %s%s%s.%sSiehe Package->Package-Graph.%sErsetzen ist nicht möglich."
 
 #: lazarusidestrconsts.lispkgmangthereisanunsavedpackageintherequiredpackages
 msgid "There is an unsaved package in the required packages. See package graph."
@@ -13874,10 +13874,9 @@ msgid "Private Method"
 msgstr "Private Methode"
 
 #: lazarusidestrconsts.lisprobablyyouneedtoinstallsomepackagesforbeforeconti
-#, fuzzy
 #| msgid "Probably you need to install some packages for before continuing.%s%sWarning:%sThe following units belong to packages which are not yet installed in the IDE. If you try to open a form in the IDE, that uses such components, you will get errors about missing components and the form loading will probably create very unpleasant results.%s%sThis has no impact on opening the project or any of its sources.%s%sIt only means: It is a bad idea to open the forms for designing, before installing the missing packages.%s%s"
 msgid "Probably you need to install some packages before continuing.%s%sWarning:%sThe project uses the following design time packages, which might be needed to open the form in the designer. If you continue, you might get errors about missing components and the form loading will probably create very unpleasant results.%s%sIt is recommended to cancel and install these packages first.%s%s"
-msgstr "Möglicherweise müssen sie einige Package installieren, um fortfahren zu können.%s%sWarnung:%sDas Projekt bezieht sich auf Packages, die Units mit Register-Prozeduren enthalten. Die Register-Prozedur dient normalerweise dazu, Komponenten in der IDE zu installieren. Aber die folgenden Units gehören zu Packages, die noch nicht in der IDE installiert sind. Wenn Sie versuchen, ein Form in der IDE zu öffnen, das solche Komponenten einbindet, werden Sie Fehlermeldungen wegen nicht gefundener Komponenten erhalten und der Ladeprozeß des Forms wird mit möglicherweise unschönen Ergebnissen enden.%s%sDas hat keinen Einfluß auf das Öffnen des Projekts oder beliebiger zugehörigen Quellen.%s%sEs bedeutet nur, daß es keine gute Idee ist, das Form für das Design zu öffnen bevor die bemängelten Packages installiert wurden.%s%s"
+msgstr "Möglicherweise müssen sie einige Packages installieren, um fortfahren zu können.%s%sWarnung:%sDas Projekt bezieht sich auf Packages, die Units mit Register-Prozeduren enthalten. Die Register-Prozedur dient normalerweise dazu, Komponenten in der IDE zu installieren. Aber die folgenden Units gehören zu Packages, die noch nicht in der IDE installiert sind. Wenn Sie versuchen, ein Form in der IDE zu öffnen, das solche Komponenten einbindet, werden Sie Fehlermeldungen wegen nicht gefundener Komponenten erhalten und der Ladeprozeß des Forms wird mit möglicherweise unschönen Ergebnissen enden.%s%sDas hat keinen Einfluß auf das Öffnen des Projekts oder beliebiger zugehörigen Quellen. Es bedeutet nur, daß es keine gute Idee ist, das Form für das Design zu öffnen bevor die bemängelten Packages installiert wurden.%s%s"
 
 #: lazarusidestrconsts.lisprocedure
 msgctxt "lazarusidestrconsts.lisprocedure"
