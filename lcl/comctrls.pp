@@ -1457,6 +1457,21 @@ type
     function FindData(StartIndex: Integer; Value: Pointer;  Inclusive, Wrap: Boolean): TListItem;
     function GetHitTestInfoAt(X, Y: Integer): THitTests;
     function GetItemAt(x,y: integer): TListItem;
+
+
+    {GetNearestItem is used to locate a list item from a position specified in
+     pixel coordinates relative to the top left corner of the list view.
+     It starts looking at the position specified by the Point parameter,
+     and moves in the direction indicated by the Direction parameter
+     until it locates a list item.If no item is found Nil is returned.}
+    function GetNearestItem(APoint: TPoint; Direction: TSearchDirection): TListItem;
+
+    {Used to find the next list item after StartItem in the direction
+     given by the Direction parameter.
+     Only items in the state indicated by the States parameter are considered.
+     If no item is found Nil is returned.}
+    function GetNextItem(StartItem: TListItem; Direction: TSearchDirection; States: TListItemStates): TListItem;
+
     function IsEditing: Boolean; // Delphi compatibile function which returns if our listview editor is active
     property BoundingRect: TRect read GetBoundingRect;
     property BorderStyle default bsSingle;

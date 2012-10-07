@@ -1142,6 +1142,81 @@ begin
   end;
 end;
 
+function TCustomListView.GetNearestItem(APoint: TPoint;
+  Direction: TSearchDirection): TListItem;
+var
+  AItem: TListItem;
+  AIndex: Integer;
+begin
+  Result := nil;
+  AItem := GetItemAt(APoint.x, APoint.y);
+  if Assigned(AItem) then
+  begin
+    AIndex := AItem.Index;
+    case Direction of
+      sdAbove: if AIndex - 1 >= 0 then Result := Items[AIndex - 1];
+      sdBelow: if AIndex - 1 < Items.Count then
+        Result := Items[AIndex + 1];
+    end;
+  end;
+end;
+
+function TCustomListView.GetNextItem(StartItem: TListItem;
+  Direction: TSearchDirection; States: TListItemStates): TListItem;
+var
+  ACount: Integer;
+  AIndex: Integer;
+
+  {TODO: create public property States which reads states of item}
+  function GetItemStatesInternal(AItem: TListItem): TListItemStates;
+  begin
+    Result := [];
+    if AItem.GetState(Ord(lisCut)) then
+      ;
+    if AItem.GetState(Ord(lisDropTarget)) then
+      ;
+    if AItem.GetState(Ord(lisSelected)) then
+      ;
+    if AItem.GetState(Ord(lisFocused)) then
+      ;
+    Result := AItem.FStates;
+  end;
+
+begin
+  Result := nil;
+  if Assigned(StartItem) then
+  begin
+    AIndex := StartItem.Index;
+    ACount := Items.Count;
+    case Direction of
+      sdAbove: if (AIndex -1) >= 0 then Result := Items[AIndex - 1];
+      sdBelow: if (Aindex + 1) < ACount then Result := Items[AIndex + 1];
+      sdAll:
+        while True do
+        begin
+          inc(AIndex);
+          if AIndex = StartItem.Index then
+          begin
+            Result := nil;
+            Exit;
+          end;
+          if AIndex >= ACount then
+            AIndex := -1;
+          if (AIndex >= 0) and (AIndex < ACount) then
+          begin
+            Result := Items[AIndex];
+            if GetItemStatesInternal(Result) - States = [] then
+              Exit;
+          end;
+        end;
+    end;
+    if Result = nil then
+      exit;
+    if (GetItemStatesInternal(Result) * States = []) then
+      Result := nil;
+  end
+end;
+
 function TCustomListView.IsEditing: Boolean;
 begin
   Result := Assigned(Self.FEditor) and FEditor.Visible;
