@@ -1551,7 +1551,7 @@ var
   c1, c2: TColor;
   v1, v2: Double;
 begin
-  if ColorSource = nil then exit(clTAColor);
+  if (ColorSource = nil) or (ColorSource.Count = 0) then exit(clTAColor);
   ColorSource.FindBounds(AValue, SafeInfinity, lb, ub);
   if Interpolate and InRange(lb, 1, ColorSource.Count - 1) then begin
     with ColorSource[lb - 1]^ do begin
