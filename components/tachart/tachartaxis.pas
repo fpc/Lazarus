@@ -318,7 +318,7 @@ end;
 
 function TChartMinorAxis.GetAlignment: TChartAxisAlignment;
 begin
-  Result := (Collection.Owner as TChartAxis).GetAlignment;
+  Result := (Collection.Owner as TChartAxis).Alignment;
 end;
 
 function TChartMinorAxis.GetDisplayName: String;
