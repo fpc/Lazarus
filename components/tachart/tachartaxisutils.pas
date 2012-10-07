@@ -153,6 +153,7 @@ type
     FArrow: TChartArrow;
     FGrid: TChartAxisGridPen;
     FTickColor: TColor;
+    FTickInnerLength: Integer;
     FTickLength: Integer;
     FVisible: Boolean;
     function GetIntervals: TChartAxisIntervalParams;
@@ -160,6 +161,7 @@ type
     procedure SetGrid(AValue: TChartAxisGridPen);
     procedure SetIntervals(AValue: TChartAxisIntervalParams);
     procedure SetTickColor(AValue: TColor);
+    procedure SetTickInnerLength(AValue: Integer);
     procedure SetTickLength(AValue: Integer);
     procedure SetVisible(AValue: Boolean);
   strict protected
@@ -185,6 +187,8 @@ type
     property Intervals: TChartAxisIntervalParams
       read GetIntervals write SetIntervals;
     property TickColor: TColor read FTickColor write SetTickColor default clBlack;
+    property TickInnerLength: Integer
+      read FTickInnerLength write SetTickInnerLength default 0;
     property TickLength: Integer read FTickLength write SetTickLength;
     property Visible: Boolean read FVisible write SetVisible default true;
   end;
@@ -212,6 +216,7 @@ type
     FClipRect: ^TRect;
     FDrawer: IChartDrawer;
     FPrevCoord: Integer;
+    FScaledTickInnerLength: Integer;
     FScaledTickLength: Integer;
     FStripeIndex: Cardinal;
     FTransf: ICoordTransformer;
@@ -288,6 +293,7 @@ end;
 
 procedure TAxisDrawHelper.BeginDrawing;
 begin
+  FScaledTickInnerLength := FDrawer.Scale(FAxis.TickInnerLength);
   FScaledTickLength := FDrawer.Scale(FAxis.TickLength);
 end;
 
@@ -389,14 +395,16 @@ end;
 procedure TAxisDrawHelperX.DrawLabelAndTick(
   ACoord, AFixedCoord: Integer; const AText: String);
 var
-  d: Integer;
+  d, up, down: Integer;
 begin
   d := FScaledTickLength + FAxis.Marks.CenterOffset(FDrawer, AText).cy;
-  if FAxis.Alignment = calTop then
+  up := FScaledTickInnerLength;
+  down := FScaledTickLength;
+  if FAxis.Alignment = calTop then begin
     d := -d;
-  LineZ(
-    Point(ACoord, AFixedCoord - FScaledTickLength),
-    Point(ACoord, AFixedCoord + FScaledTickLength));
+    Exchange(up, down);
+  end;
+  LineZ(Point(ACoord, AFixedCoord - up), Point(ACoord, AFixedCoord + down));
   DrawLabel(Point(ACoord, AFixedCoord + d), AText);
 end;
 
@@ -445,14 +453,16 @@ end;
 procedure TAxisDrawHelperY.DrawLabelAndTick(
   ACoord, AFixedCoord: Integer; const AText: String);
 var
-  d: Integer;
+  d, left, right: Integer;
 begin
   d := FScaledTickLength + FAxis.Marks.CenterOffset(FDrawer, AText).cx;
-  if FAxis.Alignment = calLeft then
+  left := FScaledTickInnerLength;
+  right := FScaledTickLength;
+  if FAxis.Alignment = calLeft then begin
     d := -d;
-  LineZ(
-    Point(AFixedCoord - FScaledTickLength, ACoord),
-    Point(AFixedCoord + FScaledTickLength, ACoord));
+    Exchange(left, right);
+  end;
+  LineZ(Point(AFixedCoord - left, ACoord), Point(AFixedCoord + right, ACoord));
   DrawLabel(Point(AFixedCoord + d, ACoord), AText);
 end;
 
@@ -628,6 +638,7 @@ begin
       Self.FMarks.Assign(Marks);
       Self.FTickColor := TickColor;
       Self.FTickLength := TickLength;
+      Self.FTickInnerLength := TickInnerLength;
       Self.FVisible := Visible;
     end
   else
@@ -686,6 +697,13 @@ procedure TChartBasicAxis.SetTickColor(AValue: TColor);
 begin
   if FTickColor = AValue then exit;
   FTickColor := AValue;
+  StyleChanged(Self);
+end;
+
+procedure TChartBasicAxis.SetTickInnerLength(AValue: Integer);
+begin
+  if FTickInnerLength = AValue then exit;
+  FTickInnerLength := AValue;
   StyleChanged(Self);
 end;
 
