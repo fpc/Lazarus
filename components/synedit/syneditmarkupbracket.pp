@@ -130,6 +130,8 @@ begin
     begin
       StartBracket := PhysCaret;
       EndBracket := TCustomSynEdit(SynEdit).FindMatchingBracket(PhysCaret, False, False, False, False);
+      if EndBracket.y < 0 then
+        StartBracket.y := -1;
       Exit;
     end;
     // check for bracket after caret
@@ -144,6 +146,8 @@ begin
     begin
       StartBracket := PhysCaret;
       EndBracket := TCustomSynEdit(SynEdit).FindMatchingBracket(PhysCaret, False, False, False, False);
+      if EndBracket.y < 0 then
+        StartBracket.y := -1;
     end;
   end;
 end;
