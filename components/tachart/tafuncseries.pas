@@ -1633,7 +1633,7 @@ begin
       if ColorSource <> nil then
         ADrawer.BrushColor := ColorByValue(v);
       ADrawer.Rectangle(
-        Max(pt.X, r.Left), Max(pt.Y, r.Top),
+        Max(pt.X, r.Left + 1), Max(pt.Y, r.Top + 1),
         Min(next.X, r.Right) + 1, Min(next.Y, r.Bottom) + 1);
       pt.X := next.X;
     end;
