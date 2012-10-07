@@ -1012,7 +1012,11 @@ type
     function FindMatchingBracket(PhysStartBracket: TPoint;
                                  StartIncludeNeighborChars, MoveCaret,
                                  SelectBrackets, OnlyVisible: Boolean
-                                 ): TPoint; virtual;
+                                ): TPoint; virtual; // Returns Physical
+    function FindMatchingBracketLogical(LogicalStartBracket: TPoint;
+                                        StartIncludeNeighborChars, MoveCaret,
+                                        SelectBrackets, OnlyVisible: Boolean
+                                       ): TPoint; virtual; // Returns Logical
     //code fold
     procedure CodeFoldAction(iLine: integer); deprecated;
     procedure UnfoldAll;
@@ -8096,8 +8100,17 @@ begin
 end;
 
 function TCustomSynEdit.FindMatchingBracket(PhysStartBracket: TPoint;
-  StartIncludeNeighborChars, MoveCaret, SelectBrackets, OnlyVisible: boolean
-  ): TPoint;
+  StartIncludeNeighborChars, MoveCaret, SelectBrackets, OnlyVisible: Boolean): TPoint;
+begin
+  Result := FindMatchingBracketLogical(PhysicalToLogicalPos(PhysStartBracket),
+                                       StartIncludeNeighborChars, MoveCaret,
+                                       SelectBrackets, OnlyVisible);
+  if Result.Y > 0 then
+    Result := LogicalToPhysicalPos(Result);
+end;
+
+function TCustomSynEdit.FindMatchingBracketLogical(LogicalStartBracket: TPoint;
+  StartIncludeNeighborChars, MoveCaret, SelectBrackets, OnlyVisible: Boolean): TPoint;
 // returns physical (screen) position of end bracket
 const
   // keep the ' last
@@ -8108,7 +8121,6 @@ var
   Line, s1: string;
   PosX, PosY: integer;
   StartPt: TPoint;
-  LogicalStart: TPoint;
   // for ContextMatch
   BracketKind, TmpStart: Integer;
   TmpAttr : TSynHighlighterAttributes;
@@ -8343,10 +8355,8 @@ begin
   Result.X:=-1;
   Result.Y:=-1;
 
-  // get char at caret
-  LogicalStart:=PhysicalToLogicalPos(PhysStartBracket);
-  PosX := LogicalStart.X;
-  PosY := LogicalStart.Y;
+  PosX := LogicalStartBracket.X;
+  PosY := LogicalStartBracket.Y;
   if (PosY<1) or (PosY>FTheLinesView.Count) then exit;
   if OnlyVisible
   and ((PosY<TopLine) or (PosY >= ScreenRowToRow(LinesInWindow)))
@@ -8354,27 +8364,21 @@ begin
    exit;
 
   Line := FTheLinesView[PosY - 1];
-  try
-    DoCheckBracket;
-    if Result.Y>0 then exit;
-    if StartIncludeNeighborChars then begin
-      if PosX>1 then begin
-        // search in front
-        dec(PosX);
-        DoCheckBracket;
-        if Result.Y>0 then exit;
-        inc(PosX);
-      end;
-      if PosX<Length(Line) then begin
-        // search behind
-        inc(PosX);
-        DoCheckBracket;
-        if Result.Y>0 then exit;
-      end;
+  DoCheckBracket;
+  if Result.Y>0 then exit;
+  if StartIncludeNeighborChars then begin
+    if PosX>1 then begin
+      // search in front
+      dec(PosX);
+      DoCheckBracket;
+      if Result.Y>0 then exit;
+      inc(PosX);
     end;
-  finally
-    if Result.Y>0 then begin
-      Result:=LogicalToPhysicalPos(Result);
+    if PosX<Length(Line) then begin
+      // search behind
+      inc(PosX);
+      DoCheckBracket;
+      if Result.Y>0 then exit;
     end;
   end;
 end;

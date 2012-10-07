@@ -62,10 +62,10 @@ type
     procedure PrepareMarkupForRow(ARow: Integer); override;
     function GetMarkupAttributeAtRowCol(const aRow: Integer;
                                         const aStartCol: TLazSynDisplayTokenBound;
-                                        const AnIsRTL: Boolean): TSynSelectedColor; override;
+                                        const AnRtlInfo: TLazSynDisplayRtlInfo): TSynSelectedColor; override;
     procedure GetNextMarkupColAfterRowCol(const aRow: Integer;
                                          const aStartCol: TLazSynDisplayTokenBound;
-                                         const AnIsRTL: Boolean;
+                                         const AnRtlInfo: TLazSynDisplayRtlInfo;
                                          out   ANextPhys, ANextLog: Integer); override;
   end;
 
@@ -127,7 +127,7 @@ begin
 end;
 
 function TSynEditMarkupGutterMark.GetMarkupAttributeAtRowCol(const aRow: Integer;
-  const aStartCol: TLazSynDisplayTokenBound; const AnIsRTL: Boolean): TSynSelectedColor;
+  const aStartCol: TLazSynDisplayTokenBound; const AnRtlInfo: TLazSynDisplayRtlInfo): TSynSelectedColor;
 var
   i, FoundPri: Integer;
 begin
@@ -146,7 +146,7 @@ begin
 end;
 
 procedure TSynEditMarkupGutterMark.GetNextMarkupColAfterRowCol(const aRow: Integer;
-  const aStartCol: TLazSynDisplayTokenBound; const AnIsRTL: Boolean; out ANextPhys,
+  const aStartCol: TLazSynDisplayTokenBound; const AnRtlInfo: TLazSynDisplayRtlInfo; out ANextPhys,
   ANextLog: Integer);
 var
   i: Integer;

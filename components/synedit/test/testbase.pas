@@ -291,7 +291,6 @@ end;
 procedure TTestBase.TestCompareString(Name, Expect, Value: String; DbgInfo: String);
 var
   i, j, x, y: Integer;
-  s: String;
 begin
   if Value = Expect then exit;
 

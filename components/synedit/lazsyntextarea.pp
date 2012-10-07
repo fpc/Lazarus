@@ -21,14 +21,14 @@ type
     PhysicalClipStart: Integer;          // 1 based - PaintStart
     PhysicalCharEnd: Integer;            // 1 based - Full char bound (After EndPos.Physical (PaintEnd))
     PhysicalClipEnd: Integer;            // 1 based - PaintEnd
-    IsRtl: boolean;
+    RtlInfo: TLazSynDisplayRtlInfo;
     Attr: TSynSelectedColor;
 
     ExpandedExtraBytes: Integer;         // tab and space expansion
     HasDoubleWidth: Boolean;
 
     NextPos: TLazSynDisplayTokenBound;   // Next toxen, may be BIDI
-    NextIsRtl: boolean;
+    NextRtlInfo: TLazSynDisplayRtlInfo;
   end;
 
   { TLazSynPaintTokenBreaker }
@@ -52,12 +52,13 @@ type
     FCurViewToken: TLazSynDisplayTokenInfoEx;
     FCurViewTokenViewPhysStart: Integer;
     FCurViewinRTL: Boolean;
+    FCurViewRtlPhysStart: integer;
     FCurViewRtlPhysEnd: integer;
     FCurViewRtlLogEnd: integer;
 
     FNextMarkupPhysPos, FNextMarkupLogPos: Integer;
     FCurMarkupNextStart: TLazSynDisplayTokenBound;
-    FCurMarkupNextIsRtl: Boolean;
+    FCurMarkupNextRtlInfo: TLazSynDisplayRtlInfo;
     FCurMarkupEOL: Boolean;
     FMarkupTokenAttr: TSynSelectedColor;
   public
@@ -272,19 +273,19 @@ begin
   FCurViewinRTL := False;
 
   if GetNextHighlighterTokenFromView(TmpTokenInfo, -1, 1) then begin
-    FCurMarkupNextStart := TmpTokenInfo.NextPos;
-    FCurMarkupNextIsRtl := TmpTokenInfo.NextIsRtl;
+    FCurMarkupNextStart   := TmpTokenInfo.NextPos;
+    FCurMarkupNextRtlInfo := TmpTokenInfo.NextRtlInfo;
   end else begin
     // past eol
-    FCurMarkupNextStart := TmpTokenInfo.StartPos;
+    FCurMarkupNextStart          := TmpTokenInfo.StartPos;
     FCurMarkupNextStart.Logical  := FCurMarkupNextStart.Logical + (FFirstCol - FCurMarkupNextStart.Physical);
     FCurMarkupNextStart.Physical := FFirstCol;
-    FCurMarkupNextIsRtl := False;
+    FCurMarkupNextRtlInfo.IsRtl  := False;
   end;
   FNextMarkupPhysPos := -1;
   FNextMarkupLogPos  := -1;
-  FCurMarkupEOL := False;
-  FCurTxtLineIdx := ARealLine;
+  FCurMarkupEOL      := False;
+  FCurTxtLineIdx     := ARealLine;
 end;
 
 function TLazSynPaintTokenBreaker.GetNextHighlighterTokenEx(out
@@ -293,16 +294,17 @@ const
   Space = '  ';
 begin
   if (FNextMarkupPhysPos < 0) or
-     (FCurMarkupNextIsRtl       and (FNextMarkupPhysPos >= FCurMarkupNextStart.Physical)) or
-     ((not FCurMarkupNextIsRtl) and (FNextMarkupPhysPos <= FCurMarkupNextStart.Physical)) or
+     (FCurMarkupNextRtlInfo.IsRtl       and (FNextMarkupPhysPos >= FCurMarkupNextStart.Physical)) or
+     ((not FCurMarkupNextRtlInfo.IsRtl) and (FNextMarkupPhysPos <= FCurMarkupNextStart.Physical)) or
      (FNextMarkupLogPos < 0) or
-     (FCurMarkupNextIsRtl       and (FNextMarkupLogPos >= FCurMarkupNextStart.Logical)) or
-     ((not FCurMarkupNextIsRtl) and (FNextMarkupLogPos <= FCurMarkupNextStart.Logical))
+     (FCurMarkupNextRtlInfo.IsRtl       and (FNextMarkupLogPos >= FCurMarkupNextStart.Logical)) or
+     ((not FCurMarkupNextRtlInfo.IsRtl) and (FNextMarkupLogPos <= FCurMarkupNextStart.Logical))
   then begin
     FMarkupManager.GetNextMarkupColAfterRowCol(FCurTxtLineIdx+1,
-      FCurMarkupNextStart, FCurMarkupNextIsRtl, FNextMarkupPhysPos, FNextMarkupLogPos);
+      FCurMarkupNextStart, FCurMarkupNextRtlInfo, FNextMarkupPhysPos, FNextMarkupLogPos);
+
     if FNextMarkupPhysPos < 1 then
-      if FCurMarkupNextIsRtl
+      if FCurMarkupNextRtlInfo.IsRtl
       then FNextMarkupPhysPos := 1
       else FNextMarkupPhysPos := MaxInt;
     if FNextMarkupLogPos < 1 then
@@ -348,32 +350,31 @@ begin
     assert(ATokenInfo.EndPos.Logical > ATokenInfo.StartPos.Logical, 'ATokenInfo.EndPos.Logical > ATokenInfo.StartPos.Logical');
 
     FCurMarkupNextStart := ATokenInfo.EndPos;
-    if FCurMarkupNextIsRtl then begin
+    if FCurMarkupNextRtlInfo.IsRtl then begin
       FNextMarkupPhysPos := -1;
       FNextMarkupLogPos  := -1;
     end;
-    FCurMarkupNextIsRtl := False;
+    FCurMarkupNextRtlInfo.IsRtl := False;
 
     ATokenInfo.PhysicalCharStart  := ATokenInfo.StartPos.Physical;
     ATokenInfo.PhysicalClipStart  := ATokenInfo.StartPos.Physical;
     ATokenInfo.PhysicalCharEnd    := ATokenInfo.EndPos.Physical;
     ATokenInfo.PhysicalClipEnd    := ATokenInfo.EndPos.Physical;
-    ATokenInfo.IsRtl              := False;
+    ATokenInfo.RtlInfo.IsRtl      := False;
     FMarkupTokenAttr.Clear;
     FMarkupTokenAttr.Foreground := FForegroundColor;
     FMarkupTokenAttr.Background := FBackgroundColor;
 
     ATokenInfo.ExpandedExtraBytes := 0;
     ATokenInfo.HasDoubleWidth     := False; // TODO: True, but needs charwidth for painter
-    //exit;
   end
   else begin
-    if ATokenInfo.NextIsRtl <> FCurMarkupNextIsRtl then begin
+    if ATokenInfo.NextRtlInfo.IsRtl <> FCurMarkupNextRtlInfo.IsRtl then begin
       FNextMarkupPhysPos := -1;
       FNextMarkupLogPos  := -1;
     end;
-    FCurMarkupNextStart := ATokenInfo.NextPos;
-    FCurMarkupNextIsRtl := ATokenInfo.NextIsRtl;
+    FCurMarkupNextStart   := ATokenInfo.NextPos;
+    FCurMarkupNextRtlInfo := ATokenInfo.NextRtlInfo;
 
     FMarkupTokenAttr.Assign(ATokenInfo.Attr);
     FMarkupTokenAttr.CurrentStartX := ATokenInfo.StartPos.Physical; // current sub-token
@@ -381,10 +382,12 @@ begin
   end;
 
   fMarkupManager.MergeMarkupAttributeAtRowCol(FCurTxtLineIdx + 1,
-    ATokenInfo.StartPos, ATokenInfo.EndPos, ATokenInfo.IsRtl, FMarkupTokenAttr);
+    ATokenInfo.StartPos, ATokenInfo.EndPos, ATokenInfo.RtlInfo, FMarkupTokenAttr);
+
 
   ATokenInfo.Attr := FMarkupTokenAttr;
   // Deal with equal colors
+  // TODO: Map to RGB first
   if (FMarkupTokenAttr.Background = FMarkupTokenAttr.Foreground) then begin // or if diff(gb,fg) < x
     if FMarkupTokenAttr.Background = BackgroundColor then
       FMarkupTokenAttr.Foreground := not(FMarkupTokenAttr.Background) and $00ffffff // or maybe ForegroundColor ?
@@ -568,6 +571,7 @@ function TLazSynPaintTokenBreaker.GetNextHighlighterTokenFromView(out
 
     FCurViewinRTL := True;
     FCurViewRTLLogEnd  := ALogicIdx;
+    FCurViewRtlPhysStart := FCurViewToken.PhysicalCharStart;
     FCurViewRtlPhysEnd := FCurViewToken.PhysicalCharStart + RtlRunPhysWidth;
     FCurViewToken.PhysicalCharStart      := FCurViewRtlPhysEnd;
     FCurViewToken.StartPos.Physical := FCurViewRtlPhysEnd;
@@ -694,7 +698,9 @@ begin
           ATokenInfo.PhysicalClipStart  := ATokenInfo.StartPos.Physical;
           ATokenInfo.PhysicalCharEnd    := PhysPos;
           ATokenInfo.PhysicalClipEnd    := ATokenInfo.EndPos.Physical;
-          ATokenInfo.IsRtl              := False;
+          ATokenInfo.RtlInfo.IsRtl      := False;
+          //ATokenInfo.RtlInfo.PhysLeft   := FCurViewRtlPhysStart;
+          //ATokenInfo.RtlInfo.PhysRight  := FCurViewRtlPhysEnd;
           ATokenInfo.Attr               := FCurViewToken.Attr;
 
           ATokenInfo.ExpandedExtraBytes := TabExtra;
@@ -727,10 +733,12 @@ begin
                 SkipRtlOffScreen(LogicIdx, LogicEnd);
           end;
 
-          ATokenInfo.NextPos.Physical := FCurViewToken.StartPos.Physical;
-          ATokenInfo.NextPos.Logical  := FCurViewToken.StartPos.Logical;
-          ATokenInfo.NextPos.Offset   := FCurViewToken.StartPos.Physical - FCurViewToken.PhysicalCharStart;
-          ATokenInfo.NextIsRtl        := FCurViewinRTL;
+          ATokenInfo.NextPos.Physical      := FCurViewToken.StartPos.Physical;
+          ATokenInfo.NextPos.Logical       := FCurViewToken.StartPos.Logical;
+          ATokenInfo.NextPos.Offset        := FCurViewToken.StartPos.Physical - FCurViewToken.PhysicalCharStart;
+          ATokenInfo.NextRtlInfo.IsRtl     := FCurViewinRTL;
+          ATokenInfo.NextRtlInfo.PhysLeft  := FCurViewRtlPhysStart;
+          ATokenInfo.NextRtlInfo.PhysRight := FCurViewRtlPhysEnd;
 
           break;
         end; // case FCurViewinRTL = False;
@@ -807,7 +815,9 @@ begin
           ATokenInfo.PhysicalClipStart  := ATokenInfo.EndPos.Physical;
           ATokenInfo.PhysicalCharEnd    := FCurViewToken.PhysicalCharStart;
           ATokenInfo.PhysicalClipEnd    := ATokenInfo.StartPos.Physical;
-          ATokenInfo.IsRtl              := True;
+          ATokenInfo.RtlInfo.IsRtl      := True;
+          ATokenInfo.RtlInfo.PhysLeft   := FCurViewRtlPhysStart;
+          ATokenInfo.RtlInfo.PhysRight  := FCurViewRtlPhysEnd;
           ATokenInfo.Attr               := FCurViewToken.Attr;
 
           ATokenInfo.ExpandedExtraBytes := TabExtra;
@@ -841,10 +851,12 @@ begin
           MaybeChangeToLtr(LogicIdx, LogicEnd);  // get NextTokenPhysStart
 
           // If the next token is RTL, then NextPos is the next EndPos
-          ATokenInfo.NextPos.Physical := FCurViewToken.StartPos.Physical;
-          ATokenInfo.NextPos.Logical  := FCurViewToken.StartPos.Logical;
-          ATokenInfo.NextPos.Offset   := FCurViewToken.PhysicalCharStart - FCurViewToken.StartPos.Physical;
-          ATokenInfo.NextIsRtl        := FCurViewinRTL;
+          ATokenInfo.NextPos.Physical      := FCurViewToken.StartPos.Physical;
+          ATokenInfo.NextPos.Logical       := FCurViewToken.StartPos.Logical;
+          ATokenInfo.NextPos.Offset        := FCurViewToken.PhysicalCharStart - FCurViewToken.StartPos.Physical;
+          ATokenInfo.NextRtlInfo.IsRtl     := FCurViewinRTL;
+          ATokenInfo.NextRtlInfo.PhysLeft  := FCurViewRtlPhysStart;
+          ATokenInfo.NextRtlInfo.PhysRight := FCurViewRtlPhysEnd;
 
           break;
         end; // case FCurViewinRTL = True;
@@ -1341,7 +1353,7 @@ var
       FTextDrawer.FrameColor[bsRight] := clNone; // right side of char is not painted
     end;
 
-    if (rcToken.Right <= rcToken.Left) then exit;
+    //if (rcToken.Right <= rcToken.Left) then exit;
     rcToken.Left := ScreenColumnToXValue(ATokenInfo.PhysicalClipStart); // because for the first token, this can be middle of a char, and lead to wrong frame
     TxtLeft := ScreenColumnToXValue(ATokenInfo.PhysicalCharStart); // because for the first token, this can be middle of a char, and lead to wrong frame
 
@@ -1501,7 +1513,7 @@ var
 
   procedure PaintLines;
   var
-    ypos, xpos: Integer;
+    ypos: Integer;
     DividerInfo: TSynDividerDrawConfigSetting;
     TV, cl: Integer;
     TokenInfoEx: TLazSynDisplayTokenInfoEx;
@@ -1548,9 +1560,7 @@ var
         dec(rcToken.Bottom);
       end;
 
-      xpos := FirstCol;
       while FTokenBreaker.GetNextHighlighterTokenEx(TokenInfoEx) do begin
-        xpos := TokenInfoEx.EndPos.Physical;
         DrawHiLightMarkupToken(TokenInfoEx);
       end;
 

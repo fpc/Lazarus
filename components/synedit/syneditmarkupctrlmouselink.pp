@@ -62,10 +62,10 @@ type
     Procedure PrepareMarkupForRow(aRow: Integer); override;
     function GetMarkupAttributeAtRowCol(const aRow: Integer;
                                         const aStartCol: TLazSynDisplayTokenBound;
-                                        const AnIsRTL: Boolean): TSynSelectedColor; override;
+                                        const AnRtlInfo: TLazSynDisplayRtlInfo): TSynSelectedColor; override;
     procedure GetNextMarkupColAfterRowCol(const aRow: Integer;
                                          const aStartCol: TLazSynDisplayTokenBound;
-                                         const AnIsRTL: Boolean;
+                                         const AnRtlInfo: TLazSynDisplayRtlInfo;
                                          out   ANextPhys, ANextLog: Integer); override;
 
     property CtrlMouseLine : Integer read FCtrlMouseLine write FCtrlMouseLine;
@@ -243,7 +243,7 @@ begin
 end;
 
 function TSynEditMarkupCtrlMouseLink.GetMarkupAttributeAtRowCol(const aRow: Integer;
-  const aStartCol: TLazSynDisplayTokenBound; const AnIsRTL: Boolean): TSynSelectedColor;
+  const aStartCol: TLazSynDisplayTokenBound; const AnRtlInfo: TLazSynDisplayRtlInfo): TSynSelectedColor;
 begin
   Result := nil;
   if (not FCtrlLinkable) or (aRow <> FCtrlMouseLine) or
@@ -255,7 +255,7 @@ begin
 end;
 
 procedure TSynEditMarkupCtrlMouseLink.GetNextMarkupColAfterRowCol(const aRow: Integer;
-  const aStartCol: TLazSynDisplayTokenBound; const AnIsRTL: Boolean; out ANextPhys,
+  const aStartCol: TLazSynDisplayTokenBound; const AnRtlInfo: TLazSynDisplayRtlInfo; out ANextPhys,
   ANextLog: Integer);
 begin
   ANextLog := -1;

@@ -233,6 +233,11 @@ type
       write SetFlags;
     property Modified: Boolean read FModified write SetModified;
   public
+    // Char bounds // 1 based (1 is the 1st char in the line)
+    function LogicPosAddChars(const ALine: String; ALogicalPos, ACount: integer): Integer; override;
+    function LogicPosIsAtChar(const ALine: String; ALogicalPos: integer): Boolean; override;
+    function LogicPosAdjustToChar(const ALine: String; ALogicalPos: integer;
+                                  ANext: Boolean = False): Integer; override;
     property UndoList: TSynEditUndoList read GetUndoList write fUndoList;
     property RedoList: TSynEditUndoList read GetRedoList write fRedoList;
     procedure EditInsert(LogX, LogY: Integer; AText: String); override;
@@ -1034,12 +1039,63 @@ begin
   end;
 end;
 
+function TSynEditStringList.LogicPosAddChars(const ALine: String; ALogicalPos,
+  ACount: integer): Integer;
+begin
+  // UTF8 handing of chars
+  Result := ALogicalPos;
+  if (ALogicalPos < 1) or (ALogicalPos > length(ALine)) then begin
+    Result := Result + ACount;
+    exit;
+  end;
+  if ACount > 0 then begin;
+    while (Result < length(ALine)) and (ACount > 0) do begin
+      inc(Result);
+      if ALine[Result] in [#0..#127, #192..#255] then
+        dec(ACount);
+    end;
+    while (Result > 1) and not(ALine[Result] in [#0..#127, #192..#255])  do
+      dec(Result);
+  end else begin
+    while (Result > 1) and (ACount < 0) do begin
+      dec(Result);
+      if ALine[Result] in [#0..#127, #192..#255] then
+        inc(ACount);
+    end;
+  end;
+end;
+
+function TSynEditStringList.LogicPosIsAtChar(const ALine: String;
+  ALogicalPos: integer): Boolean;
+begin
+  // UTF8 handing of chars
+  Result := False;
+  if (ALogicalPos < 1) or (ALogicalPos > length(ALine)) then exit;
+  Result := ALine[ALogicalPos] in [#0..#127, #192..#255];
+end;
+
+function TSynEditStringList.LogicPosAdjustToChar(const ALine: String; ALogicalPos: integer;
+  ANext: Boolean): Integer;
+begin
+  // UTF8 handing of chars
+  Result := ALogicalPos;
+  if (ALogicalPos < 1) or (ALogicalPos > length(ALine)) then exit;
+
+  if ANext then begin
+    while (Result < length(ALine)) and not(ALine[Result] in [#0..#127, #192..#255])  do
+      inc(Result);
+  end;
+
+  while (Result > 1) and not(ALine[Result] in [#0..#127, #192..#255])  do
+    dec(Result);
+end;
+
 procedure TSynEditStringList.MarkModified(AFirst, ALast: Integer);
 var
   Index: Integer;
 begin
   for Index := AFirst - 1 to ALast - 1 do
-    if (Index >= 0) and (Index < Count) then
+    if (Index >= 0) or (Index < Count) then
       Flags[Index] := Flags[Index] + [sfModified] - [sfSaved];
 end;
 

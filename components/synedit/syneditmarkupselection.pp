@@ -49,10 +49,10 @@ type
     Procedure PrepareMarkupForRow(aRow : Integer); override;
     function GetMarkupAttributeAtRowCol(const aRow: Integer;
                                         const aStartCol: TLazSynDisplayTokenBound;
-                                        const AnIsRTL: Boolean): TSynSelectedColor; override;
+                                        const AnRtlInfo: TLazSynDisplayRtlInfo): TSynSelectedColor; override;
     procedure GetNextMarkupColAfterRowCol(const aRow: Integer;
                                          const aStartCol: TLazSynDisplayTokenBound;
-                                         const AnIsRTL: Boolean;
+                                         const AnRtlInfo: TLazSynDisplayRtlInfo;
                                          out   ANextPhys, ANextLog: Integer); override;
 
     property UseIncrementalColor : Boolean read FUseIncrementalColor write SetUseIncrementalColor;
@@ -115,11 +115,11 @@ begin
     if (p1.y > aRow) or (p2.y < aRow) or not (FSelection.SelAvail) then
       exit;
 
-    p1 := LogicalToPhysicalPos(p1);
-    p2 := LogicalToPhysicalPos(p2);
     nSelStart := 1;
     nSelEnd := -1; // line end
     if (FSelection.ActiveSelectionMode = smColumn) then begin
+      p1 := LogicalToPhysicalPos(p1);
+      p2 := LogicalToPhysicalPos(p2);
       if (p1.X < p2.X) then begin
         nSelStart := p1.X;
         nSelEnd := p2.X;
@@ -128,10 +128,14 @@ begin
         nSelEnd := p1.X;
       end;
     end else if (FSelection.ActiveSelectionMode = smNormal) then begin
-      if p1.y = aRow
-      then nSelStart := p1.x;
-      if p2.y = aRow
-      then nSelEnd := p2.x;
+      if p1.y = aRow then begin
+        p1 := LogicalToPhysicalPos(p1);
+        nSelStart := p1.x;
+      end;
+      if p2.y = aRow then begin
+        p2 := LogicalToPhysicalPos(p2);
+        nSelEnd := p2.x;
+      end;
     end;
   end;
   MarkupInfo.StartX := nSelStart;
@@ -139,23 +143,45 @@ begin
 end;
 
 function TSynEditMarkupSelection.GetMarkupAttributeAtRowCol(const aRow: Integer;
-  const aStartCol: TLazSynDisplayTokenBound; const AnIsRTL: Boolean): TSynSelectedColor;
+  const aStartCol: TLazSynDisplayTokenBound; const AnRtlInfo: TLazSynDisplayRtlInfo): TSynSelectedColor;
 begin
   result := nil;
-  if (aStartCol.Physical >= nSelStart) and ((aStartCol.Physical < nSelEnd) or (nSelEnd < 0))
-  then Result := MarkupInfo;
+  if AnRtlInfo.IsRtl then begin
+    if ( ((nSelStart >= aStartCol.Physical) and (nSelStart < AnRtlInfo.PhysRight) ) or
+          (nSelStart <= AnRtlInfo.PhysLeft)
+       ) and
+       ( ((nSelEnd < aStartCol.Physical) and (nSelEnd > AnRtlInfo.PhysLeft)) or
+          (nSelEnd > AnRtlInfo.PhysRight) or (nSelEnd < 0))
+    then
+      Result := MarkupInfo;
+  end else begin
+    if (nSelStart <= aStartCol.Physical) and
+      ((nSelEnd > aStartCol.Physical) or (nSelEnd < 0))
+    then
+      Result := MarkupInfo;
+  end;
 end;
 
 procedure TSynEditMarkupSelection.GetNextMarkupColAfterRowCol(const aRow: Integer;
-  const aStartCol: TLazSynDisplayTokenBound; const AnIsRTL: Boolean; out ANextPhys,
+  const aStartCol: TLazSynDisplayTokenBound; const AnRtlInfo: TLazSynDisplayRtlInfo; out ANextPhys,
   ANextLog: Integer);
 begin
   ANextLog := -1;
   ANextPhys := -1;
-  if (aStartCol.Physical < nSelStart)
-  then ANextPhys := nSelStart;
-  if (aStartCol.Physical < nSelEnd) and (aStartCol.Physical >= nSelStart)
-  then ANextPhys := nSelEnd;
+  if AnRtlInfo.IsRtl then begin
+    if (nSelStart < aStartCol.Physical) then
+      ANextPhys := nSelStart;
+    if (nSelEnd < aStartCol.Physical) and (nSelEnd > 0)  and
+       (  (nSelStart >= aStartCol.Physical) or
+         ((nSelStart < AnRtlInfo.PhysLeft) and (nSelStart > 0))  )
+    then
+      ANextPhys := nSelEnd;
+  end else begin
+    if (nSelStart > aStartCol.Physical) then
+      ANextPhys := nSelStart;
+    if (nSelEnd > aStartCol.Physical) and (nSelStart <= aStartCol.Physical) then
+      ANextPhys := nSelEnd;
+  end;
 end;
 
 end.

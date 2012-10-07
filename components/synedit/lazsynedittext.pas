@@ -242,6 +242,12 @@ type
                 ASender: TObject); virtual; abstract;
    procedure FlushNotificationCache; virtual; abstract;
   public
+    // Char bounds // 1 based (1 is the 1st char in the line)
+    function LogicPosAddChars(const ALine: String; ALogicalPos, ACount: integer): Integer; virtual; abstract;
+    function LogicPosIsAtChar(const ALine: String; ALogicalPos: integer): Boolean; virtual; abstract;
+    function LogicPosAdjustToChar(const ALine: String; ALogicalPos: integer;
+                                  ANext: Boolean = False): Integer; virtual; abstract;
+    // CharWidths
     function GetPhysicalCharWidths(Index: Integer): TPhysicalCharWidths;
     function GetPhysicalCharWidths(Line: PChar; LineLen, Index: Integer): TPhysicalCharWidths;
     // Byte to Char
@@ -358,6 +364,11 @@ type
     //function GetPhysicalCharWidths(Line: PChar; LineLen, Index: Integer): TPhysicalCharWidths; override;
     property NextLines: TSynEditStrings read fSynStrings write SetSynStrings;
   public
+    // Char bounds // 1 based (1 is the 1st char in the line)
+    function LogicPosAddChars(const ALine: String; ALogicalPos, ACount: integer): Integer; override;
+    function LogicPosIsAtChar(const ALine: String; ALogicalPos: integer): Boolean; override;
+    function LogicPosAdjustToChar(const ALine: String; ALogicalPos: integer;
+                                  ANext: Boolean = False): Integer; override;
     // LogX, LogY are 1-based
     procedure EditInsert(LogX, LogY: Integer; AText: String); override;
     function  EditDelete(LogX, LogY, ByteLen: Integer): String; override;
@@ -1220,6 +1231,24 @@ end;
 procedure TSynEditStringsLinked.FlushNotificationCache;
 begin
   fSynStrings.FlushNotificationCache;
+end;
+
+function TSynEditStringsLinked.LogicPosAddChars(const ALine: String; ALogicalPos,
+  ACount: integer): Integer;
+begin
+  Result := fSynStrings.LogicPosAddChars(ALine, ALogicalPos, ACount);
+end;
+
+function TSynEditStringsLinked.LogicPosIsAtChar(const ALine: String;
+  ALogicalPos: integer): Boolean;
+begin
+  Result := fSynStrings.LogicPosIsAtChar(ALine, ALogicalPos);
+end;
+
+function TSynEditStringsLinked.LogicPosAdjustToChar(const ALine: String; ALogicalPos: integer;
+  ANext: Boolean): Integer;
+begin
+  Result := fSynStrings.LogicPosAdjustToChar(ALine, ALogicalPos, ANext);
 end;
 
 procedure TSynEditStringsLinked.IgnoreSendNotification(AReason: TSynEditNotifyReason;

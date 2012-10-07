@@ -159,7 +159,7 @@ type
 
     AssertTrue(Name + 'Got Token', R);
     TestBound(Name + ' Next(BOL)', Token.NextPos, ExpNext);
-    AssertEquals(Name + 'Nxt IsRtl',  ExpNxtIsRtl,  Token.NextIsRtl);
+    AssertEquals(Name + 'Nxt IsRtl',  ExpNxtIsRtl,  Token.NextRtlInfo.IsRtl);
   end;
 
   procedure TestNext(ALimits: Array of Integer);
@@ -193,7 +193,7 @@ type
     AssertEquals(Name + ' PhysicalCharEnd',   ExpCharEnd,   Token.PhysicalCharEnd);
     AssertEquals(Name + ' PhysicalClipStart', ExpClipStart, Token.PhysicalClipStart);
     AssertEquals(Name + ' PhysicalClipEnd',   ExpClipEnd,   Token.PhysicalClipEnd);
-    AssertEquals(Name + ' ExpIsRtl',  ExpIsRtl,   Token.IsRtl);
+    AssertEquals(Name + ' ExpIsRtl',  ExpIsRtl,   Token.RtlInfo.IsRtl);
     AssertEquals(Name + ' Text',   ExpText,  copy(Token.Tk.TokenStart, 1, Token.Tk.TokenLength));
   end;
 
@@ -219,7 +219,7 @@ type
       ExpClipEnd, ExpIsRtl, ExpText);
 
     TestBound(Name + ' Next', Token.NextPos, ExpNext);
-    AssertEquals(Name + 'Nxt IsRtl',  ExpNxtIsRtl,  Token.NextIsRtl);
+    AssertEquals(Name + 'Nxt IsRtl',  ExpNxtIsRtl,  Token.NextRtlInfo.IsRtl);
   end;
 
   procedure TestNext(ALimits: Array of Integer;
@@ -248,8 +248,6 @@ type
   end;
 
   procedure TestEnd(ExpStart: TBoundExpectation);
-  var
-    R: Boolean;
   begin
     TestEnd;
     TestBound(Name + ' Start(EOL)', Token.StartPos, ExpStart);
@@ -741,6 +739,15 @@ type
         TestNext([],    b( 3, 5, 0),  b(90,92, 0),    3,90,   3,90,   False, ' ',    clBlack);
         TestEnd;
 
+        SynEdit.BlockBegin := Point(3,12); // 2nd logical char
+        SynEdit.BlockEnd   := Point(5,12);
+        TestStart('Scan full line',  12,   1, 90,   12);
+        TestPreFirst(b( 5, 1, 0), True);
+        TestNext([],    b( 5, 1, 0),  b( 4, 3, 0),    4, 5,   4, 5,   True,  'ش',    clBlack);
+        TestNext([],    b( 4, 3, 0),  b( 3, 5, 0),    3, 4,   3, 4,   True,  'س',    clPurple);
+        TestNext([],    b( 3, 5, 0),  b( 1, 8, 0),    1, 3,   1, 3,   True,  ' ي',   clBlack);
+        TestNext([],    b( 5, 8, 0),  b(90,93, 0),    5,90,   5,90,   False, ' ',    clBlack);
+        TestEnd;
       {%endregion}
       PopBaseName;
     {%endregion}
