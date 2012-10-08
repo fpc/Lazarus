@@ -642,8 +642,8 @@ begin
   if MarkupInfo.IsEnabled then begin
     ac := Cells.GroupCell[CellGroupForArea, 0];
     if (ac <> nil) and
-       ( ((ac.LogStart.y = aRow) and (ac.LogStart.x <= aStartCol.Physical)) or (ac.LogStart.y < aRow)) and
-       ( ((ac.LogEnd.y = aRow) and (ac.LogEnd.x > aStartCol.Physical)) or (ac.LogEnd.y > aRow))
+       ( ((ac.LogStart.y = aRow) and (ac.LogStart.x <= aStartCol.Logical)) or (ac.LogStart.y < aRow)) and
+       ( ((ac.LogEnd.y = aRow) and (ac.LogEnd.x > aStartCol.Logical)) or (ac.LogEnd.y > aRow))
     then
       Result := MarkupInfo;
   end;
@@ -660,14 +660,14 @@ begin
   if MarkupInfo.IsEnabled then begin
     ac := Cells.GroupCell[CellGroupForArea, 0];
     if ac <> nil then begin
-      if (ac.LogStart.y = aRow) and (ac.LogStart.x > aStartCol.Physical) and
-         ( (ac.LogStart.x < ANextPhys) or (ANextPhys < 0) )
+      if (ac.LogStart.y = aRow) and (ac.LogStart.x > aStartCol.Logical) and
+         ( (ac.LogStart.x < ANextLog) or (ANextLog < 0) )
       then
-        ANextPhys := ac.LogStart.x;
-      if (ac.LogEnd.y = aRow) and (ac.LogEnd.x > aStartCol.Physical) and
-         ( (ac.LogEnd.x < ANextPhys) or (ANextPhys < 0) )
+        ANextLog := ac.LogStart.x;
+      if (ac.LogEnd.y = aRow) and (ac.LogEnd.x > aStartCol.Logical) and
+         ( (ac.LogEnd.x < ANextLog) or (ANextLog < 0) )
       then
-        ANextPhys := ac.LogEnd.x;
+        ANextLog := ac.LogEnd.x;
     end;
   end;
 end;
