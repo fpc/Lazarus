@@ -480,7 +480,7 @@ end;
 function TSynEditMarkupHighlightAll.GetMarkupAttributeAtRowCol(const aRow: Integer;
   const aStartCol: TLazSynDisplayTokenBound; const AnRtlInfo: TLazSynDisplayRtlInfo): TSynSelectedColor;
 var
-  Pos: Integer;
+  Pos, s, e: Integer;
 begin
   result := nil;
   if (fSearchString = '') then
@@ -502,13 +502,14 @@ begin
   
   //debugLN('+++>MARUP *ON* ',dbgs(@result),' / ',dbgs(ARow), ' at index ', dbgs(Pos));
   if fMatches.Point[Pos-1].y < aRow then
-    MarkupInfo.StartX := -1
+    s := -1
   else
-    MarkupInfo.StartX := fMatches.Point[Pos-1].x;
+    s := fMatches.Point[Pos-1].x;
   if fMatches.Point[Pos].y > aRow then
-    MarkupInfo.EndX := -1
+    e := -1
   else
-    MarkupInfo.EndX := fMatches.Point[Pos].x-1;
+    e := fMatches.Point[Pos].x;
+  MarkupInfo.SetFrameBoundsPhys(s, e);
   result := MarkupInfo;
 end;
 

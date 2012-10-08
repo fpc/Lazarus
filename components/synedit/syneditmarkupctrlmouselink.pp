@@ -237,8 +237,7 @@ begin
   if (aRow = FCtrlMouseLine) and FCtrlLinkable then begin
     FCurX1 := LogicalToPhysicalPos(Point(FCtrlMouseX1, FCtrlMouseLine)).x;
     FCurX2 := LogicalToPhysicalPos(Point(FCtrlMouseX2, FCtrlMouseLine)).x;
-    MarkupInfo.StartX := FCurX1;
-    MarkupInfo.EndX := FCurX2;
+    MarkupInfo.SetFrameBoundsPhys(FCurX1, FCurX2);
   end;
 end;
 
@@ -250,8 +249,7 @@ begin
      ((aStartCol.Physical < FCurX1) or (aStartCol.Physical >= FCurX2))
   then exit;
   Result := MarkupInfo;
-  MarkupInfo.StartX := FCurX1;
-  MarkupInfo.EndX := FCurX2;
+  MarkupInfo.SetFrameBoundsPhys(FCurX1, FCurX2);
 end;
 
 procedure TSynEditMarkupCtrlMouseLink.GetNextMarkupColAfterRowCol(const aRow: Integer;

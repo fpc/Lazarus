@@ -138,8 +138,7 @@ begin
        ( (FRowData[i].Priority < FoundPri) or (i = 0) )
     then begin
       Result := FRowData[i].Markup;
-      Result.StartX := FRowData[i].StartX;
-      Result.EndX := FRowData[i].EndX-1;
+      MarkupInfo.SetFrameBoundsPhys(FRowData[i].StartX, FRowData[i].EndX);
       FoundPri := FRowData[i].Priority;
     end;
   end;

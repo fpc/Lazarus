@@ -234,8 +234,7 @@ begin
   or ((FBracketHighlightAntiPos.y = aRow) and  (FBracketHighlightAntiPos.x = aStartCol.Logical))
   then begin
     Result := MarkupInfo;
-    MarkupInfo.StartX := aStartCol.Logical;
-    MarkupInfo.EndX := aStartCol.Logical;
+    MarkupInfo.SetFrameBoundsLog(aStartCol.Logical, aStartCol.Logical + 1); // bracket is alvays 1 byte
   end;
 end;
 

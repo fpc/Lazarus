@@ -400,24 +400,21 @@ begin
    (aStartCol.Physical >= FHighlightPos1.x) and (aStartCol.Physical < FHighlightPos1.X2) then
   begin
     Result := MarkupInfo;
-    MarkupInfo.StartX := FHighlightPos1.x;
-    MarkupInfo.EndX := FHighlightPos1.X2 - 1;
+    MarkupInfo.SetFrameBoundsPhys(FHighlightPos1.x, FHighlightPos1.x2);
   end
   else
   if (FHighlightPos3.y = aRow) and
    (aStartCol.Physical >= FHighlightPos3.x) and (aStartCol.Physical < FHighlightPos3.X2) then
   begin
     Result := MarkupInfo;
-    MarkupInfo.StartX := FHighlightPos3.x;
-    MarkupInfo.EndX := FHighlightPos3.X2 - 1;
+    MarkupInfo.SetFrameBoundsPhys(FHighlightPos3.x, FHighlightPos3.x2);
   end
   else
   if (FHighlightPos2.y = aRow) and
    (aStartCol.Physical >= FHighlightPos2.x) and (aStartCol.Physical < FHighlightPos2.X2) then
   begin
     Result := MarkupInfo;
-    MarkupInfo.StartX := FHighlightPos2.x;
-    MarkupInfo.EndX := FHighlightPos2.X2 - 1;
+    MarkupInfo.SetFrameBoundsPhys(FHighlightPos2.x, FHighlightPos2.x2);
   end;
 end;
 

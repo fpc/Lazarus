@@ -530,14 +530,14 @@ end;
 function TSynPluginSyncronizedEditMarkup.GetMarkupAttributeAtRowCol(const aRow: Integer;
   const aStartCol: TLazSynDisplayTokenBound; const AnRtlInfo: TLazSynDisplayRtlInfo): TSynSelectedColor;
 var
-  i, col: Integer;
+  i: Integer;
+  s, e: Integer;
 begin
-  col := PhysicalToLogicalPos(Point(aStartCol.Physical, aRow)).x;
   Result := nil;
   for i := FPreparedCellFrom to FPreparedCellTo do begin
-    if ( ((Cells[i].LogStart.y = aRow) and (Cells[i].LogStart.x <= Col)) or
+    if ( ((Cells[i].LogStart.y = aRow) and (Cells[i].LogStart.x <= aStartCol.Logical)) or
          (Cells[i].LogStart.y < aRow) ) and
-       ( ((Cells[i].LogEnd.y = aRow) and (Cells[i].LogEnd.x > Col)) or
+       ( ((Cells[i].LogEnd.y = aRow) and (Cells[i].LogEnd.x > aStartCol.Logical)) or
          (Cells[i].LogEnd.y > aRow) ) and
        (Cells[i].Group >= 0) // do not't display negative groups
     then begin
@@ -549,12 +549,13 @@ begin
       else
         Result := MarkupInfo;
 
-      Result.StartX := LogicalToPhysicalPos(Cells[i].LogStart).x;
+      s := Cells[i].LogStart.x;
       if Cells[i].LogStart.y < aRow then
-        Result.StartX := -1;
-      Result.EndX := LogicalToPhysicalPos(Cells[i].LogEnd).x - 1;
+        s := -1;
+      e := Cells[i].LogEnd.x;
       if Cells[i].LogEnd.y > aRow then
-        Result.EndX := -1;
+        e := -1;
+      Result.SetFrameBoundsLog(s, e);
       break;
     end;
   end;
@@ -564,24 +565,21 @@ procedure TSynPluginSyncronizedEditMarkup.GetNextMarkupColAfterRowCol(const aRow
   const aStartCol: TLazSynDisplayTokenBound; const AnRtlInfo: TLazSynDisplayRtlInfo; out ANextPhys,
   ANextLog: Integer);
 var
-  i, col: Integer;
+  i: Integer;
 begin
-  col := PhysicalToLogicalPos(Point(aStartCol.Physical, aRow)).x;
   ANextLog := -1;
   ANextPhys := -1;
   for i := FPreparedCellFrom to FPreparedCellTo do begin
     if Cells[i].Group < 0 then continue;
-    if (Cells[i].LogStart.y = aRow) and (Cells[i].LogStart.x > Col) and
-       ( (Cells[i].LogStart.x < ANextPhys) or (ANextPhys < 0) )
+    if (Cells[i].LogStart.y = aRow) and (Cells[i].LogStart.x > aStartCol.Logical) and
+       ( (Cells[i].LogStart.x < ANextLog) or (ANextLog < 0) )
     then
-      ANextPhys := Cells[i].LogStart.x;
-    if (Cells[i].LogEnd.y = aRow) and (Cells[i].LogEnd.x > Col) and
-       ( (Cells[i].LogEnd.x < ANextPhys) or (ANextPhys < 0) )
+      ANextLog := Cells[i].LogStart.x;
+    if (Cells[i].LogEnd.y = aRow) and (Cells[i].LogEnd.x > aStartCol.Logical) and
+       ( (Cells[i].LogEnd.x < ANextLog) or (ANextLog < 0) )
     then
-      ANextPhys := Cells[i].LogEnd.x;
+      ANextLog := Cells[i].LogEnd.x;
   end;
-  if ANextPhys >= 0 then
-    ANextPhys := LogicalToPhysicalPos(Point(ANextPhys, aRow)).x;
 end;
 
 procedure TSynPluginSyncronizedEditMarkup.PrepareMarkupForRow(aRow: Integer);

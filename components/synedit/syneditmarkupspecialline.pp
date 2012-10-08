@@ -180,8 +180,7 @@ function TSynEditMarkupSpecialLine.GetMarkupAttributeAtRowCol(const aRow: Intege
   const aStartCol: TLazSynDisplayTokenBound; const AnRtlInfo: TLazSynDisplayRtlInfo): TSynSelectedColor;
 begin
   Result := nil;
-  MarkupInfo.StartX := 1;
-  MarkupInfo.EndX := MaxInt;
+  MarkupInfo.SetFrameBoundsPhys(1, MaxInt);
   if FSpecialLine then
     Result := MarkupInfo;
 end;

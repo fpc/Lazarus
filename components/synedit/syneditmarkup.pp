@@ -30,12 +30,6 @@ uses
   SynEditMiscClasses, Controls, SynEditHighlighter, LCLProc;
 
 type
-  TLazSynDisplayTokenBound = record
-    Physical: Integer;      // 1 based - May be in middle of char
-    Logical: Integer;       // 1 based
-    Offset: Integer;        // default 0. MultiWidth (e.g. Tab), if token starts in the middle of char
-  end;
-
   TLazSynDisplayRtlInfo = record
     IsRtl: Boolean;
     PhysLeft: integer;  // 1-based
@@ -392,7 +386,7 @@ var
 begin
   c := GetMarkupAttributeAtRowCol(aRow, aStartCol, AnRtlInfo);
   if assigned(c) then
-    AMarkup.Merge(c, aStartCol.Physical, AEndCol.Physical - 1);
+    AMarkup.Merge(c, aStartCol, AEndCol);
 end;
 
 procedure TSynEditMarkup.TextChanged(aFirstCodeLine, aLastCodeLine: Integer);

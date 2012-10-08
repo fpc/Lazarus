@@ -50,7 +50,7 @@ type
     FCurTxtLineIdx : Integer;
 
     FCurViewToken: TLazSynDisplayTokenInfoEx;
-    FCurViewTokenViewPhysStart: Integer;
+    FCurViewTokenViewPhysStart: TLazSynDisplayTokenBound;
     FCurViewinRTL: Boolean;
     FCurViewRtlPhysStart: integer;
     FCurViewRtlPhysEnd: integer;
@@ -377,8 +377,8 @@ begin
     FCurMarkupNextRtlInfo := ATokenInfo.NextRtlInfo;
 
     FMarkupTokenAttr.Assign(ATokenInfo.Attr);
-    FMarkupTokenAttr.CurrentStartX := ATokenInfo.StartPos.Physical; // current sub-token
-    FMarkupTokenAttr.CurrentEndX   := ATokenInfo.EndPos.Physical-1;
+    FMarkupTokenAttr.CurrentStartX := ATokenInfo.StartPos; // current sub-token
+    FMarkupTokenAttr.CurrentEndX   := ATokenInfo.EndPos;
   end;
 
   fMarkupManager.MergeMarkupAttributeAtRowCol(FCurTxtLineIdx + 1,
@@ -402,8 +402,10 @@ end;
 function TLazSynPaintTokenBreaker.GetNextHighlighterTokenFromView(out
   ATokenInfo: TLazSynDisplayTokenInfoEx; APhysEnd: Integer; ALogEnd: Integer): Boolean;
 
-  procedure InitSynAttr(var ATarget: TSynSelectedColor; ASource: TSynHighlighterAttributes;
-    AnAttrStartX: Integer);
+  procedure InitSynAttr(var ATarget: TSynSelectedColor; const ASource: TSynHighlighterAttributes;
+    const AnAttrStartX: TLazSynDisplayTokenBound);
+  const
+    NoEnd: TLazSynDisplayTokenBound = (Physical: -1; Logical: -1; Offset: 0);
   begin
     ATarget.Clear;
     if Assigned(ASource) then begin
@@ -420,15 +422,15 @@ function TLazSynPaintTokenBreaker.GetNextHighlighterTokenFromView(out
     end;
     ATarget.MergeFinalStyle := True;
     ATarget.StyleMask  := [];
-    FCurViewToken.Attr.StartX := AnAttrStartX;
-    ATarget.EndX   := -1; //PhysicalStartPos + TokenCharLen - 1;
+    ATarget.StartX := AnAttrStartX;
+    ATarget.EndX   := NoEnd;
   end;
 
   function MaybeFetchToken: Boolean; inline;
   begin
     Result := FCurViewToken.Tk.TokenLength > 0;
     if Result or (FCurViewToken.Tk.TokenLength < 0) then exit;
-    FCurViewTokenViewPhysStart := FCurViewToken.PhysicalCharStart;
+    FCurViewTokenViewPhysStart := FCurViewToken.StartPos;
     while FCurViewToken.Tk.TokenLength = 0 do begin // Todo: is SyncroEd-test a zero size token is returned
       Result := FDisplayView.GetNextHighlighterToken(FCurViewToken.Tk);
       if not Result then begin
@@ -723,7 +725,7 @@ begin
 
           InitSynAttr(FCurViewToken.Attr, FCurViewToken.Tk.TokenAttr, FCurViewTokenViewPhysStart);
           if FCurViewToken.Tk.TokenLength = 0 then
-            ATokenInfo.Attr.EndX := PhysPos-1;
+            ATokenInfo.Attr.EndX := ATokenInfo.EndPos; // PhysPos-1;
 
           MaybeFetchToken;
           if MaybeChangeToRtl(LogicIdx, LogicEnd) then begin // get NextTokenPhysStart
@@ -841,7 +843,7 @@ begin
 
           InitSynAttr(FCurViewToken.Attr, FCurViewToken.Tk.TokenAttr, FCurViewTokenViewPhysStart);
           if FCurViewToken.Tk.TokenLength = 0 then
-            ATokenInfo.Attr.EndX := PhysPos-1;
+            ATokenInfo.Attr.EndX := ATokenInfo.EndPos; // PhysPos-1;
 
           MaybeFetchToken;
           SkipRtlOffScreen(LogicIdx, LogicEnd);

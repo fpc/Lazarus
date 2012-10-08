@@ -114,8 +114,7 @@ begin
 
   if (aStartCol.Physical >= FCurStart) and (aStartCol.Physical < FCurEnd) then begin
     Result := MarkupInfo;
-    Result.StartX := FCurStart;
-    Result.EndX := FCurEnd - 1;
+    MarkupInfo.SetFrameBoundsPhys(FCurStart, FCurEnd);
   end;
 end;
 

@@ -7,7 +7,8 @@ interface
 
 uses
   Classes, SysUtils, fpcunit, testregistry, TestBase, LazSynTextArea, SynEditTypes,
-  SynEditMarkupBracket, SynEdit, SynHighlighterPosition, SynEditMarkup, Graphics, Forms;
+  SynEditMarkupBracket, SynEdit, SynHighlighterPosition, SynEditMarkup, SynEditMiscClasses,
+  Graphics, Forms;
 
 type
 
@@ -89,6 +90,7 @@ begin
             'ABشس يCD',
             #9'i'#9'12'#9,
             'ي'#9'شس',                        // 15
+            #9'('#9')',
             ''
            ]);
 end;
@@ -727,6 +729,29 @@ type
         TestEnd;
 
       {%endregion}
+
+      {%region}
+        SynEdit.Options :=SynEdit.Options + [eoBracketHighlight];
+        SynEdit.BracketHighlightStyle := sbhsBoth;
+        SynEdit.BracketMatchColor.Foreground := clMaroon;
+        SynEdit.BracketMatchColor.FrameColor := clBlack;
+        SynEdit.BracketMatchColor.FrameEdges := sfeAround;
+        SynEdit.BracketMatchColor.FrameStyle := slsSolid;
+
+        SynEdit.LogicalCaretXY := point(2, 16);
+        TestStart('Scan full line / hl-token',   16,  1, 10,   16);
+        TestNext([],    b( 1, 1, 0),  b( 5, 2, 0),   1, 5,   1, 5,   False, #9,         clBlack);
+        AssertEquals(Name + ' #9 No-Frame l',   clNone,  Token.Attr.FrameSideColors[bsLeft]);
+        AssertEquals(Name + ' #9 No-Frame r',   clNone,  Token.Attr.FrameSideColors[bsRight]);
+        TestNext([],    b( 5, 2, 0),  b( 6, 3, 0),   5, 6,   5, 6,   False, '(',        clMaroon);
+        AssertEquals(Name + ' "(" Frame t',   clBlack,  Token.Attr.FrameSideColors[bsTop]);
+        AssertEquals(Name + ' "(" Frame l',   clBlack,  Token.Attr.FrameSideColors[bsLeft]);
+        AssertEquals(Name + ' "(" Frame r',   clBlack,  Token.Attr.FrameSideColors[bsRight]);
+        TestNext([],    b( 6, 3, 0),  b( 9, 4, 0),   6, 9,   6, 9,   False, #9,         clBlack);
+      {%endregion}
+
+
+
     {%endregion}
 
     {%region  RTL only }

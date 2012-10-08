@@ -138,8 +138,7 @@ begin
       end;
     end;
   end;
-  MarkupInfo.StartX := nSelStart;
-  MarkupInfo.EndX := nSelEnd-1;
+  MarkupInfo.SetFrameBoundsPhys(nSelStart, nSelEnd);
 end;
 
 function TSynEditMarkupSelection.GetMarkupAttributeAtRowCol(const aRow: Integer;
