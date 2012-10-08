@@ -486,6 +486,8 @@ object Form1: TForm1
       PointerStart.VertSize = 8
       OnMeasure = ctDistance1Measure
     end
+    object ctDistPanMouseWheelTool1: TPanMouseWheelTool
+    end
   end
   object ChartAxisTransformations1: TChartAxisTransformations
     left = 260

@@ -37,6 +37,7 @@ type
     ctCrosshair: TDataPointCrosshairTool;
     ctDistance1: TDataPointDistanceTool;
     ctDistance2: TDataPointDistanceTool;
+    ctDistPanMouseWheelTool1: TPanMouseWheelTool;
     ctFit: TChartToolset;
     ctFitDataPointDistanceTool1: TDataPointDistanceTool;
     ctFitZoomDragTool1: TZoomDragTool;
