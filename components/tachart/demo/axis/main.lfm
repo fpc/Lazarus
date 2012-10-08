@@ -30,6 +30,7 @@ object Form1: TForm1
         Width = 525
         AxisList = <        
           item
+            TickLength = 0
             Marks.Distance = 0
             Marks.Format = '$%0:.9g'
             Marks.Frame.Style = psSolid
@@ -44,20 +45,32 @@ object Form1: TForm1
             Grid.Visible = False
             TickLength = 0
             Alignment = calBottom
-            AxisPen.Color = clRed
-            AxisPen.Style = psDot
-            AxisPen.Width = 5
+            AxisPen.Color = clGreen
+            AxisPen.Width = 3
             AxisPen.Visible = True
             Marks.LabelFont.Height = -13
             Marks.LabelFont.Style = [fsBold]
             Marks.Format = '%2:s'
             Marks.Source = lcsMarks
             Marks.Style = smsLabel
-            Minors = <>
+            Minors = <            
+              item
+                Grid.Visible = False
+                Intervals.Count = 2
+                Intervals.MinLength = 5
+                Intervals.Options = [aipUseCount]
+                TickColor = clGreen
+                TickLength = 10
+              end>
             OnMarkToText = ChartCustomMarksAxisList1MarkToText
           end>
         Foot.Brush.Color = clBtnFace
         Foot.Font.Color = clBlue
+        Frame.Visible = False
+        Margins.Left = 10
+        Margins.Top = 10
+        Margins.Right = 10
+        Margins.Bottom = 0
         MarginsExternal.Left = 0
         Title.Brush.Color = clBtnFace
         Title.Font.Color = clBlue
