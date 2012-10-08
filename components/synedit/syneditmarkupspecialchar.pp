@@ -112,9 +112,9 @@ begin
   Result := nil;
   if (FCurLine='') or (not (FHasMarkup and (FVisibleSpecialChars <> []))) then exit;
 
-  if (aStartCol.Physical >= FCurStart) and (aStartCol.Physical < FCurEnd) then begin
+  if (aStartCol.Logical >= FCurStart) and (aStartCol.Logical < FCurEnd) then begin
     Result := MarkupInfo;
-    MarkupInfo.SetFrameBoundsPhys(FCurStart, FCurEnd);
+    MarkupInfo.SetFrameBoundsLog(FCurStart, FCurEnd);
   end;
 end;
 
@@ -129,21 +129,22 @@ begin
   ANextPhys := -1;
   if (FCurLine='') or (not (FHasMarkup and (FVisibleSpecialChars <> []))) then exit;
 
-  if aStartCol.Physical < FCurStart then begin
-    ANextPhys := FCurStart;
+  if aStartCol.Logical < FCurStart then begin
+    ANextLog := FCurStart;
     exit;
   end;
-  if aStartCol.Physical < FCurEnd then begin
-    ANextPhys := FCurEnd;
+  if aStartCol.Logical < FCurEnd then begin
+    ANextLog := FCurEnd;
     exit;
   end;
 
-  LogCol := PhysicalToLogicalPos(Point(aStartCol.Physical, aRow)).x;
+  LogCol := aStartCol.Logical;
   if LogCol > Length(FCurLine) then exit;
   if (LogCol = Length(FCurLine)) then begin
-    if IsSpecial(LogCol) then
-      ANextPhys := LogicalToPhysicalPos(Point(Length(FCurLine)+1, aRow)).x;
-      FCurEnd := ANextPhys;
+    if IsSpecial(LogCol) then begin
+      ANextLog := Length(FCurLine)+1;
+      FCurEnd := ANextLog;
+    end;
     exit;
   end;
 
@@ -151,21 +152,21 @@ begin
   i := LogCol;
   s := IsSpecial(LogCol);
   if s then
-    FCurStart := aStartCol.Physical
+    FCurStart := aStartCol.Logical
   else begin
     while (i <= Length(FCurLine)) and (not IsSpecial(i)) do inc(i);
-    FCurStart := LogicalToPhysicalPos(Point(i, aRow)).x;
+    FCurStart := i;
   end;
 
   while (i <= Length(FCurLine)) and (IsSpecial(i)) do inc(i);
-  FCurEnd := LogicalToPhysicalPos(Point(i, aRow)).x;
+  FCurEnd := i;
 
-  if aStartCol.Physical < FCurStart then begin
-    ANextPhys := FCurStart;
+  if aStartCol.Logical < FCurStart then begin
+    ANextLog := FCurStart;
     exit;
   end;
-  if aStartCol.Physical < FCurEnd then begin
-    ANextPhys := FCurEnd;
+  if aStartCol.Logical < FCurEnd then begin
+    ANextLog := FCurEnd;
     exit;
   end;
 end;
