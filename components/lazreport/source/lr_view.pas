@@ -927,18 +927,19 @@ end;
 procedure TfrPreviewForm.VScrollBarChange(Sender: TObject);
 var
   {$IFDEF WIN32}
-  p, pp: Integer;
   r: TRect;
+  pp: Integer;
   {$ENDIF}
+  p: Integer;
   i: integer;
   Pages: TfrEMFPages;
 begin
   if EMFPages = nil then Exit;
-  {$IFDEF WIN32}
   p := VScrollBar.Position;
+  ofy := -p;
+  {$IFDEF WIN32}
   pp := OldV - p;
   OldV := p;
-  ofy := -p;
   r := Rect(0, 0, PBox.Width, PBox.Height);
   ScrollWindowEx(PBox.Handle, 0, pp, @r, @r, 0, nil, SW_INVALIDATE);
   UpdateWindow(Pbox.Handle);
@@ -957,18 +958,19 @@ begin
 end;
 
 procedure TfrPreviewForm.HScrollBarChange(Sender: TObject);
-{$IFDEF WIN32}
 var
-  p, pp: Integer;
+  p: Integer;
+{$IFDEF WIN32}
+  pp: Integer;
   r: TRect;
 {$ENDIF}
 begin
   if EMFPages = nil then Exit;
-  {$IFDEF WIN32}
   p := HScrollBar.Position;
+  ofx := -p;
+  {$IFDEF WIN32}
   pp := OldH - p;
   OldH := p;
-  ofx := -p;
   r := Rect(0, 0, PBox.Width, PBox.Height);
   ScrollWindowEx(PBox.Handle, pp, 0, @r, @r, 0, nil, SW_INVALIDATE);
   UpdateWindow(Pbox.Handle);
