@@ -528,7 +528,7 @@ msgstr "Editor de texto"
 
 #: lr_const.seditorformfield
 msgid "&DB field"
-msgstr "Campo de& DB"
+msgstr "Campo de &DB"
 
 #: lr_const.seditorformformat
 msgctxt "lr_const.seditorformformat"
