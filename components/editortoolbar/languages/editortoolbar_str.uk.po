@@ -13,6 +13,10 @@ msgstr ""
 msgid "Add Divider"
 msgstr "Додати Роздільник"
 
+#: editortoolbar_str.rsaddselected
+msgid "Add selected item to toolbar"
+msgstr ""
+
 #: editortoolbar_str.rscancel
 msgid "Cancel"
 msgstr "Скасувати"
@@ -30,15 +34,31 @@ msgid "Jump To"
 msgstr "Перейти До"
 
 #: editortoolbar_str.rsmenutree
-msgid "Menu Tree"
+#, fuzzy
+#| msgid "Menu Tree"
+msgid "Available Menu Items"
 msgstr "Дерево Меню"
+
+#: editortoolbar_str.rsmoveselecteddown
+msgid "Move selected toolbar item down"
+msgstr ""
+
+#: editortoolbar_str.rsmoveselectedup
+msgid "Move selected toolbar item up"
+msgstr ""
 
 #: editortoolbar_str.rsok
 msgid "OK"
 msgstr "Гаразд"
 
+#: editortoolbar_str.rsremoveselected
+msgid "Remove selected item from toolbar"
+msgstr ""
+
 #: editortoolbar_str.rstoolbar
-msgid "Toolbar"
+#, fuzzy
+#| msgid "Toolbar"
+msgid "Toolbar Items"
 msgstr "Панель Інструментів"
 
 #: editortoolbar_str.serrcouldnotfind

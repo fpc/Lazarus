@@ -1,7 +1,7 @@
-# Arabic translation of Free Pascal Lazarus Project.
-# Copyright (C) 2012 Lazarus Project
-# This file is distributed under the same license as the Lazarus package.
-# Khaled Shagrouni <shagrouni@gmail.com>, 2012.
+ Arabic translation of Free Pascal Lazarus Project.
+ Copyright (C) 2012 Lazarus Project
+ This file is distributed under the same license as the Lazarus package.
+ Khaled Shagrouni <shagrouni@gmail.com>, 2012.
 msgid ""
 msgstr ""
 "Project-Id-Version: Free Pascal Lazarus Project.\n"
@@ -68,3 +68,4 @@ msgstr "عناصر شريط الأدوات"
 #: editortoolbar_str.serrcouldnotfind
 msgid "Could not find <%s>"
 msgstr "عدم التمكن من إيجاد الملف <%s>"
+
