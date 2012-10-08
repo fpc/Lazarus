@@ -1339,9 +1339,8 @@ begin
       ComponentIconSpeedButton.Glyph.Assign(Image.Picture.Graphic);
       ShortFilename:=AFilename;
       LazPackage.ShortenFilename(ShortFilename,true);
-      ComponentIconSpeedButton.Hint:=
-        ShortFilename+' ('+IntToStr(ComponentIconSpeedButton.Glyph.Width)
-                         +'x'+IntToStr(ComponentIconSpeedButton.Glyph.Height)+')';
+      with ComponentIconSpeedButton do
+        Hint:=Format('%s (%dx%d)', [ShortFilename, Glyph.Width, Glyph.Height]);
       FComponentIconFilename:=AFilename;
     finally
       Image.Free;

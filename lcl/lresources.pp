@@ -1226,8 +1226,7 @@ begin
   InitByteToStr;
 
   Indent:='';
-  s:=Indent+'LazarusResources.Add('''+ResourceName+''','''+ResourceType+''',['
-    +LineEnd;
+  s:=Indent+'LazarusResources.Add('''+ResourceName+''','''+ResourceType+''',['+LineEnd;
   WriteString(s);
   Indent:='  '+Indent;
   WriteString(Indent);
