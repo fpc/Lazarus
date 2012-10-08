@@ -49,7 +49,7 @@ type
     FForceInvalidate: Boolean;
     procedure SetHighlighter(const AValue: TSynCustomHighlighter);
   protected
-    procedure FindMatchingWords(PhysCaret: TPoint;
+    procedure FindMatchingWords(LogCaret: TPoint;
       out Word1, Word2, Word3: TWordPoint);
     procedure DoCaretChanged(Sender: TObject); override;
     procedure DoTopLineChanged(OldTopLine : Integer); override;
@@ -119,7 +119,7 @@ begin
   FHighlighter := AValue;
 end;
 
-procedure TSynEditMarkupWordGroup.FindMatchingWords(PhysCaret: TPoint;
+procedure TSynEditMarkupWordGroup.FindMatchingWords(LogCaret: TPoint;
   out Word1, Word2, Word3: TWordPoint);
 var
   LCnt: Integer;
@@ -211,7 +211,6 @@ var
   end;
 
 var
-  LogCaretXY: TPoint;
   i, y: integer;
   StartNode, CloseNode, Node3, TmpNode: TSynFoldNodeInfo;
 begin
@@ -219,15 +218,14 @@ begin
   Word2.Y := -1;
   Word3.Y := -1;
   if (not assigned(Lines)) or (not MarkupInfo.IsEnabled) or
-     (PhysCaret.Y < 1) or (PhysCaret.Y > Lines.Count)  or (PhysCaret.X < 1)
+     (LogCaret.Y < 1) or (LogCaret.Y > Lines.Count)  or (LogCaret.X < 1)
   then
     Exit;
   if not (FHighlighter is TSynCustomFoldHighlighter) then
     exit;
 
   hl := TSynCustomFoldHighlighter(FHighlighter);
-  LogCaretXY := Lines.PhysicalToLogicalPos(PhysCaret);
-  y := LogCaretXY.Y - 1;
+  y := LogCaret.Y - 1;
   LCnt := Lines.Count;
   HL.CurrentLines := Lines;
   HL.FoldNodeInfo[y].ClearFilter; // only needed once, in case the line was already used
@@ -242,12 +240,12 @@ begin
   try
     NodeList.ActionFilter := [sfaMarkup];
     TmpNode := NodeList[i];
-    while not(sfaInvalid in TmpNode.FoldAction) and (TmpNode.LogXEnd < LogCaretXY.X-1) do
+    while not(sfaInvalid in TmpNode.FoldAction) and (TmpNode.LogXEnd < LogCaret.X-1) do
     begin
       inc(i);
       TmpNode := NodeList[i];
     end;
-    if (TmpNode.LogXStart > LogCaretXY.X - 1) or (sfaInvalid in TmpNode.FoldAction) then
+    if (TmpNode.LogXStart > LogCaret.X - 1) or (sfaInvalid in TmpNode.FoldAction) then
       exit;
 
     (* Find other end *)
@@ -297,19 +295,6 @@ begin
     Word3.X  := Node3.LogXStart + 1;
     Word3.X2 := Node3.LogXEnd + 1;
   end;
-
-  if Word1.Y > 0 then begin
-    Word1.X  := Lines.LogicalToPhysicalPos(Point(Word1.X, Word1.Y)).X;
-    Word1.X2 := Lines.LogicalToPhysicalPos(Point(Word1.X2, Word1.Y)).X;
-  end;
-  if Word2.Y > 0 then begin
-    Word2.X  := Lines.LogicalToPhysicalPos(Point(Word2.X, Word2.Y)).X;
-    Word2.X2 := Lines.LogicalToPhysicalPos(Point(Word2.X2, Word2.Y)).X;
-  end;
-  if Word3.Y > 0 then begin
-    Word3.X  := Lines.LogicalToPhysicalPos(Point(Word3.X, Word3.Y)).X;
-    Word3.X2 := Lines.LogicalToPhysicalPos(Point(Word3.X2, Word3.Y)).X;
-  end;
 end;
 
 procedure TSynEditMarkupWordGroup.DoCaretChanged(Sender: TObject);
@@ -353,7 +338,7 @@ begin
     exit;
 
   FNeedInvalidate := False;
-  FindMatchingWords(Caret.LineCharPos, NewPos, NewAntiPos, NewMiddlePos);
+  FindMatchingWords(Caret.LineBytePos, NewPos, NewAntiPos, NewMiddlePos);
 
   // invalidate old highlighting, if changed
   if (FHighlightPos1.Y > 0)
@@ -397,24 +382,24 @@ function TSynEditMarkupWordGroup.GetMarkupAttributeAtRowCol(const aRow: Integer;
 begin
   Result := nil;
   if (FHighlightPos1.y = aRow) and
-   (aStartCol.Physical >= FHighlightPos1.x) and (aStartCol.Physical < FHighlightPos1.X2) then
+   (aStartCol.Logical >= FHighlightPos1.x) and (aStartCol.Logical < FHighlightPos1.X2) then
   begin
     Result := MarkupInfo;
-    MarkupInfo.SetFrameBoundsPhys(FHighlightPos1.x, FHighlightPos1.x2);
+    MarkupInfo.SetFrameBoundsLog(FHighlightPos1.x, FHighlightPos1.x2);
   end
   else
   if (FHighlightPos3.y = aRow) and
-   (aStartCol.Physical >= FHighlightPos3.x) and (aStartCol.Physical < FHighlightPos3.X2) then
+   (aStartCol.Logical >= FHighlightPos3.x) and (aStartCol.Logical < FHighlightPos3.X2) then
   begin
     Result := MarkupInfo;
-    MarkupInfo.SetFrameBoundsPhys(FHighlightPos3.x, FHighlightPos3.x2);
+    MarkupInfo.SetFrameBoundsLog(FHighlightPos3.x, FHighlightPos3.x2);
   end
   else
   if (FHighlightPos2.y = aRow) and
-   (aStartCol.Physical >= FHighlightPos2.x) and (aStartCol.Physical < FHighlightPos2.X2) then
+   (aStartCol.Logical >= FHighlightPos2.x) and (aStartCol.Logical < FHighlightPos2.X2) then
   begin
     Result := MarkupInfo;
-    MarkupInfo.SetFrameBoundsPhys(FHighlightPos2.x, FHighlightPos2.x2);
+    MarkupInfo.SetFrameBoundsLog(FHighlightPos2.x, FHighlightPos2.x2);
   end;
 end;
 
@@ -423,23 +408,23 @@ procedure TSynEditMarkupWordGroup.GetNextMarkupColAfterRowCol(const aRow: Intege
   ANextLog: Integer);
   Procedure CheckCol(Column: Integer; var Result: Integer);
   begin
-    if (Column <= aStartCol.Physical) or ((Result >= 0) and (Result < Column)) then exit;
+    if (Column <= aStartCol.Logical) or ((Result >= 0) and (Result < Column)) then exit;
     Result := Column;
   end;
 begin
   ANextLog := -1;
   ANextPhys := -1;
   if (FHighlightPos1.y = aRow) then begin
-    CheckCol(FHighlightPos1.X, ANextPhys);
-    CheckCol(FHighlightPos1.X2, ANextPhys);
+    CheckCol(FHighlightPos1.X, ANextLog);
+    CheckCol(FHighlightPos1.X2, ANextLog);
   end;
   if (FHighlightPos3.y = aRow) then begin
-    CheckCol(FHighlightPos3.X, ANextPhys);
-    CheckCol(FHighlightPos3.X2, ANextPhys);
+    CheckCol(FHighlightPos3.X, ANextLog);
+    CheckCol(FHighlightPos3.X2, ANextLog);
   end;
   if (FHighlightPos2.y = aRow) then begin
-    CheckCol(FHighlightPos2.X, ANextPhys);
-    CheckCol(FHighlightPos2.X2, ANextPhys);
+    CheckCol(FHighlightPos2.X, ANextLog);
+    CheckCol(FHighlightPos2.X2, ANextLog);
   end;
 end;
 
