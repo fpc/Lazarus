@@ -40,10 +40,10 @@ type
     FCtrlMouseX2: Integer;
     FCtrlLinkable: Boolean;
     FCursor: TCursor;
-    FCurX1, FCurX2: Integer;
 
     FLastControlIsPressed: boolean;
     FLastMouseCaret: TPoint;
+    FLastMouseCaretLogical: TPoint;
     function GetIsMouseOverLink: Boolean;
     procedure SetLastMouseCaret(const AValue: TPoint);
     Procedure LinesChanged(Sender: TSynEditStrings; AIndex, ACount : Integer);
@@ -59,7 +59,6 @@ type
     constructor Create(ASynEdit: TSynEditBase);
     destructor Destroy; override;
 
-    Procedure PrepareMarkupForRow(aRow: Integer); override;
     function GetMarkupAttributeAtRowCol(const aRow: Integer;
                                         const aStartCol: TLazSynDisplayTokenBound;
                                         const AnRtlInfo: TLazSynDisplayRtlInfo): TSynSelectedColor; override;
@@ -84,6 +83,9 @@ procedure TSynEditMarkupCtrlMouseLink.SetLastMouseCaret(const AValue: TPoint);
 begin
   if (FLastMouseCaret.X = AValue.X) and (FLastMouseCaret.Y = AValue.Y) then exit;
   FLastMouseCaret := AValue;
+  if LastMouseCaret.y > 0
+  then FLastMouseCaretLogical := Lines.PhysicalToLogicalPos(LastMouseCaret)
+  else FLastMouseCaretLogical := LastMouseCaret;
   UpdateCtrlMouse;
 end;
 
@@ -144,7 +146,7 @@ begin
   if FLastControlIsPressed and (LastMouseCaret.X>0) and (LastMouseCaret.Y>0) then begin
     // show link
     NewY := LastMouseCaret.Y;
-    TCustomSynEdit(SynEdit).GetWordBoundsAtRowCol(Lines.PhysicalToLogicalPos(LastMouseCaret),NewX1,NewX2);
+    TCustomSynEdit(SynEdit).GetWordBoundsAtRowCol(FLastMouseCaretLogical,NewX1,NewX2);
     if (NewY = CtrlMouseLine) and
        (NewX1 = CtrlMouseX1) and
        (NewX2 = CtrlMouseX2)
@@ -231,25 +233,15 @@ begin
   end;
 end;
 
-procedure TSynEditMarkupCtrlMouseLink.PrepareMarkupForRow(aRow: Integer);
-begin
-  inherited PrepareMarkupForRow(aRow);
-  if (aRow = FCtrlMouseLine) and FCtrlLinkable then begin
-    FCurX1 := LogicalToPhysicalPos(Point(FCtrlMouseX1, FCtrlMouseLine)).x;
-    FCurX2 := LogicalToPhysicalPos(Point(FCtrlMouseX2, FCtrlMouseLine)).x;
-    MarkupInfo.SetFrameBoundsPhys(FCurX1, FCurX2);
-  end;
-end;
-
 function TSynEditMarkupCtrlMouseLink.GetMarkupAttributeAtRowCol(const aRow: Integer;
   const aStartCol: TLazSynDisplayTokenBound; const AnRtlInfo: TLazSynDisplayRtlInfo): TSynSelectedColor;
 begin
   Result := nil;
   if (not FCtrlLinkable) or (aRow <> FCtrlMouseLine) or
-     ((aStartCol.Physical < FCurX1) or (aStartCol.Physical >= FCurX2))
+     ((aStartCol.Logical < CtrlMouseX1) or (aStartCol.Logical >= CtrlMouseX2))
   then exit;
   Result := MarkupInfo;
-  MarkupInfo.SetFrameBoundsPhys(FCurX1, FCurX2);
+  MarkupInfo.SetFrameBoundsLog(CtrlMouseX1, CtrlMouseX2);
 end;
 
 procedure TSynEditMarkupCtrlMouseLink.GetNextMarkupColAfterRowCol(const aRow: Integer;
@@ -261,10 +253,10 @@ begin
   if FCtrlMouseLine <> aRow
   then exit;
 
-  if aStartCol.Physical < FCurX1
-  then ANextPhys := FCurX1;
-  if (aStartCol.Physical < FCurX2) and (aStartCol.Physical >= FCurX1)
-  then ANextPhys := FCurX2;
+  if aStartCol.Logical < CtrlMouseX1
+  then ANextLog := CtrlMouseX1;
+  if (aStartCol.Logical < CtrlMouseX2) and (aStartCol.Logical >= CtrlMouseX1)
+  then ANextLog := CtrlMouseX2;
 end;
 
 end.
