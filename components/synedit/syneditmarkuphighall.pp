@@ -431,8 +431,8 @@ begin
     then break;
     ptStart := ptFoundEnd;
 
-    fMatches.StartPoint[Pos] := LogicalToPhysicalPos(ptFoundStart);
-    fMatches.EndPoint[Pos]:= LogicalToPhysicalPos(ptFoundEnd);
+    fMatches.StartPoint[Pos] := ptFoundStart;
+    fMatches.EndPoint[Pos]   := ptFoundEnd;
 
     if ptFoundStart.Y > LastLine
     then break;
@@ -491,7 +491,7 @@ begin
   Pos:= 0;
   while (Pos < fMatches.PointCount)
   and ( (fMatches.Point[Pos].y < aRow)
-       or ((fMatches.Point[Pos].y = aRow) and (fMatches.Point[Pos].x <= aStartCol.Physical)) )
+       or ((fMatches.Point[Pos].y = aRow) and (fMatches.Point[Pos].x <= aStartCol.Logical)) )
   do inc(Pos);
 
   if Pos = fMatches.PointCount // last point was EndPoint => no markup
@@ -509,7 +509,7 @@ begin
     e := -1
   else
     e := fMatches.Point[Pos].x;
-  MarkupInfo.SetFrameBoundsPhys(s, e);
+  MarkupInfo.SetFrameBoundsLog(s, e);
   result := MarkupInfo;
 end;
 
@@ -529,7 +529,7 @@ begin
   Pos:= 0;
   while (Pos < fMatches.PointCount)
   and ( (fMatches.Point[Pos].y < aRow)
-       or ((fMatches.Point[Pos].y = aRow) and (fMatches.Point[Pos].x <= aStartCol.Physical)) )
+       or ((fMatches.Point[Pos].y = aRow) and (fMatches.Point[Pos].x <= aStartCol.Logical)) )
   do inc(Pos);
 
   // what is ifthe next is an END, with a start at the same pos?
@@ -540,8 +540,8 @@ begin
   if fMatches.Point[Pos].y <> aRow
   then exit;
 
-  ANextPhys := fMatches.Point[Pos].x;
-  //debugLN('--->NEXT POS ',dbgs(ANextPhys),' / ',dbgs(ARow), ' at index ', dbgs(Pos));
+  ANextLog := fMatches.Point[Pos].x;
+  //debugLN('--->NEXT POS ',dbgs(ANextLog),' / ',dbgs(ARow), ' at index ', dbgs(Pos));
 end;
 
 { TSynEditMarkupHighlightAllCaret }
