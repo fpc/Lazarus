@@ -4519,10 +4519,6 @@ msgstr "IDE mit allen Packages kompilieren"
 msgid "Building Lazarus failed"
 msgstr "Neukompilieren von Lazarus fehlgeschlagen"
 
-#: lazarusidestrconsts.lisbuildmode
-msgid "Build mode"
-msgstr "Modus für Neukompilieren"
-
 #: lazarusidestrconsts.lisbuildmodediffdifferencesbetweenbuildmodes
 msgid "Differences between build modes"
 msgstr "Unterschiede zwischen den Erstellmodi"

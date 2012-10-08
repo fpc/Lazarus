@@ -4347,10 +4347,6 @@ msgstr "بناء بيئة التطوير مع الحزم"
 msgid "Building Lazarus failed"
 msgstr "فشل بناء لازروس"
 
-#: lazarusidestrconsts.lisbuildmode
-msgid "Build mode"
-msgstr "وضعية البناء"
-
 #: lazarusidestrconsts.lisbuildmodediffdifferencesbetweenbuildmodes
 msgid "Differences between build modes"
 msgstr "الاختلافات بين وضعيات البناء"

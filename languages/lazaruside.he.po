@@ -4598,10 +4598,6 @@ msgstr "בנה את ה IDE עם חבילות"
 msgid "Building Lazarus failed"
 msgstr "בניית לזארוס נכשלה"
 
-#: lazarusidestrconsts.lisbuildmode
-msgid "Build mode"
-msgstr "מוד בנייה"
-
 #: lazarusidestrconsts.lisbuildmodediffdifferencesbetweenbuildmodes
 msgid "Differences between build modes"
 msgstr "הבדלים בין אופני בניה"

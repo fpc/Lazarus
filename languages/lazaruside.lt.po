@@ -4489,10 +4489,6 @@ msgstr "kartu su IKA daryti ir paketus"
 msgid "Building Lazarus failed"
 msgstr "Lazarus darymas nepavyko"
 
-#: lazarusidestrconsts.lisbuildmode
-msgid "Build mode"
-msgstr "Darymo veiksena"
-
 #: lazarusidestrconsts.lisbuildmodediffdifferencesbetweenbuildmodes
 msgid "Differences between build modes"
 msgstr "Darymo veiksenų skirtumai"

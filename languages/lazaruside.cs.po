@@ -4348,10 +4348,6 @@ msgstr "sestavit IDE s balíčky"
 msgid "Building Lazarus failed"
 msgstr "Sestavení Lazarusu selhalo"
 
-#: lazarusidestrconsts.lisbuildmode
-msgid "Build mode"
-msgstr "Režim sestavení"
-
 #: lazarusidestrconsts.lisbuildmodediffdifferencesbetweenbuildmodes
 msgid "Differences between build modes"
 msgstr "Rozdíly mezi sestavovacími módy"

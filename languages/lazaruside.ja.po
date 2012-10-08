@@ -4625,10 +4625,6 @@ msgstr "パッケージ付きのIDEを構築"
 msgid "Building Lazarus failed"
 msgstr "Lazarusの構築の失敗"
 
-#: lazarusidestrconsts.lisbuildmode
-msgid "Build mode"
-msgstr "構築モード"
-
 #: lazarusidestrconsts.lisbuildmodediffdifferencesbetweenbuildmodes
 msgid "Differences between build modes"
 msgstr "構築モード間の違い"

@@ -4460,10 +4460,6 @@ msgstr "будувати IDE з пакунками"
 msgid "Building Lazarus failed"
 msgstr "Побудова Lazarus не вдалась"
 
-#: lazarusidestrconsts.lisbuildmode
-msgid "Build mode"
-msgstr "Режим побудови"
-
 #: lazarusidestrconsts.lisbuildmodediffdifferencesbetweenbuildmodes
 msgid "Differences between build modes"
 msgstr "Відмінності між режимами побудови"

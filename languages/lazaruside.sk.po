@@ -4572,10 +4572,6 @@ msgstr "vybudovať IDE aj s balíčkami"
 msgid "Building Lazarus failed"
 msgstr ""
 
-#: lazarusidestrconsts.lisbuildmode
-msgid "Build mode"
-msgstr ""
-
 #: lazarusidestrconsts.lisbuildmodediffdifferencesbetweenbuildmodes
 msgid "Differences between build modes"
 msgstr ""

@@ -4327,10 +4327,6 @@ msgstr "kokoa IDE paketteineen"
 msgid "Building Lazarus failed"
 msgstr "Lazaruksen kokoaminen epäonnistui"
 
-#: lazarusidestrconsts.lisbuildmode
-msgid "Build mode"
-msgstr "Koontamoodi"
-
 #: lazarusidestrconsts.lisbuildmodediffdifferencesbetweenbuildmodes
 msgid "Differences between build modes"
 msgstr "Koontamoodien erot"
