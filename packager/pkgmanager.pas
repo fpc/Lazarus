@@ -640,8 +640,8 @@ var
   BinFileStream: TFileStreamUTF8;
   BinMemStream: TMemoryStream;
   BinExt: String;
-  ResourceType: String;
-  ResourceName: String;
+  ResType: String;
+  ResName: String;
   ResMemStream: TMemoryStream;
   CodeBuf: TCodeBuffer;
 begin
@@ -665,10 +665,9 @@ begin
           BinMemStream.CopyFrom(BinFileStream,BinFileStream.Size);
           BinMemStream.Position:=0;
           BinExt:=uppercase(ExtractFileExt(Params.IconFile));
-          ResourceType:=copy(BinExt,2,length(BinExt)-1);
-          ResourceName:=ExtractFileNameOnly(Params.IconFile);
-          BinaryToLazarusResourceCode(BinMemStream,ResMemStream
-             ,ResourceName,ResourceType);
+          ResType:=copy(BinExt,2,length(BinExt)-1);
+          ResName:=ExtractFileNameOnly(Params.NewClassName);
+          BinaryToLazarusResourceCode(BinMemStream,ResMemStream,ResName,ResType);
           ResMemStream.Position:=0;
           CodeBuf.LoadFromStream(ResMemStream);
           Result:=SaveCodeBuffer(CodeBuf);
