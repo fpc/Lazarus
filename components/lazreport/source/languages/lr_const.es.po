@@ -5,8 +5,8 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2012-04-01 05:10-0600\n"
-"Last-Translator: Jesus Reyes Aguilar <jesusrmx@yahoo.com.mx>\n"
+"PO-Revision-Date: 2012-10-07 10:10-0600\n"
+"Last-Translator: Lucas Martin <codedeep@hotmail.com>\n"
 "Language-Team: \n"
 
 #: lr_const.saboutformcapt
@@ -222,7 +222,7 @@ msgstr "Booleano"
 
 #: lr_const.scharset
 msgid "0"
-msgstr ""
+msgstr "0"
 
 #: lr_const.sclassobjectnotfound
 msgid "Class Object \"%s\" not found"
@@ -238,7 +238,7 @@ msgstr "Archivo CSV"
 
 #: lr_const.scurmemo
 msgid "Memo:"
-msgstr ""
+msgstr "Texto:"
 
 #: lr_const.sdatetimecategory
 msgid "Date and time"
@@ -254,7 +254,7 @@ msgstr "AVG(<Expresión> [,NombreDeBanda [,1]])/Calcula el promedio de <Expresi�
 
 #: lr_const.sdescriptioncopy
 msgid "COPY(<String>, <Position>, <Length>)/Returns <Length> characters from <String> starting at <Position>."
-msgstr ""
+msgstr "COPY(<String>, <Position>, <Length>)/Devuelve <Length> caracteres desde <String> empezando en <Position>."
 
 #: lr_const.sdescriptioncount
 msgid "COUNT(<BandName>)/Returns count of data-rows given in the <BandName>. "
@@ -278,7 +278,7 @@ msgstr "FORMATTEXT(<Máscara>, <Cadena>)/Aplica la <Máscara> a la <Cadena> dada
 
 #: lr_const.sdescriptionfrac
 msgid "FRAC(<Value>)/Returns the fractional part of floating point <Value>."
-msgstr ""
+msgstr "FRAC(<Value>)/Devuelve la parte fraccionaria de punto flotante <Value>."
 
 #: lr_const.sdescriptioninput
 msgid "INPUT(<Caption> [,Default])/Shows dialog window with headstring <Caption> and edit box. If [Default] parameter is set, puts this string in edit box. After user clicks OK, returns input string."
@@ -286,7 +286,7 @@ msgstr "INPUT(<Encabezado> [,Default])/Muestra una ventana de diálogo con encab
 
 #: lr_const.sdescriptionint
 msgid "INT(<Value>)/Returns the integer part of floating point <Value>."
-msgstr ""
+msgstr "INT(<Value>)/Devuelve la parte entera de punto flotante <Value>."
 
 #: lr_const.sdescriptionlength
 msgid "LENGTH(<String>)/Returns length of <String>."
@@ -330,11 +330,11 @@ msgstr "POS(<Subcadena>, <Cadena>)/Regresa la posición de <Subcadena> en <Caden
 
 #: lr_const.sdescriptionround
 msgid "ROUND(<Value>)/Rounds the floating point <Value> to nearest integer number."
-msgstr ""
+msgstr "ROUND(<Value>)/Redondea el punto flotante <Value> al número entero más cercano."
 
 #: lr_const.sdescriptionstr
 msgid "STR(<Value>)/Converts the given (numeric) <Value> in string."
-msgstr ""
+msgstr "STR(<Value>)/Convierte el (numeric) dado <Value> en cadena."
 
 #: lr_const.sdescriptionstrtodate
 msgid "STRTODATE(<String>)/Converts <String> to date."
@@ -412,7 +412,7 @@ msgstr "&Pulgadas"
 
 #: lr_const.sdesoptionsformmm
 msgid "&MM"
-msgstr ""
+msgstr "&MM"
 
 #: lr_const.sdesoptionsformobj
 msgid "Object moving"
@@ -454,7 +454,7 @@ msgstr "Reporte:"
 
 #: lr_const.sdocautor
 msgid "Autor"
-msgstr ""
+msgstr "Autor"
 
 #: lr_const.sdocbuild
 msgid "Build"
@@ -555,7 +555,7 @@ msgstr "&Código"
 #: lr_const.seditorformvar
 msgctxt "lr_const.seditorformvar"
 msgid "&Variable"
-msgstr ""
+msgstr "&Variable"
 
 #: lr_const.seditorformword
 msgid "&Word wrap"
@@ -563,7 +563,7 @@ msgstr "&Plegar palabras"
 
 #: lr_const.serror
 msgid "Error"
-msgstr ""
+msgstr "Error"
 
 #: lr_const.serroroccured
 msgid "An error occured during calculating"
@@ -592,15 +592,15 @@ msgstr "Va&lor"
 #: lr_const.sevformvar
 msgctxt "lr_const.sevformvar"
 msgid "&Variable"
-msgstr ""
+msgstr "&Variable"
 
 #: lr_const.sevformvars
 msgid "Va&riables ..."
-msgstr ""
+msgstr "Va&riables ..."
 
 #: lr_const.sexportfilterindexerror
 msgid "Export filter index out of range"
-msgstr ""
+msgstr "Índice de filtro de exportación fuera de rango"
 
 #: lr_const.sfieldsformaviabledb
 msgid "&Available DB's"
@@ -639,7 +639,7 @@ msgstr "&1ra página"
 
 #: lr_const.sfindtextnotfound
 msgid "Search text not found."
-msgstr ""
+msgstr "No se encontró el texto de búsqueda."
 
 #: lr_const.sfindtextoptions
 msgctxt "lr_const.sfindtextoptions"
@@ -683,7 +683,7 @@ msgstr "Formato de variable"
 #, fuzzy
 #| msgid "Font..."
 msgid "Font ..."
-msgstr "Fuente..."
+msgstr "Fuente ..."
 
 #: lr_const.sformat11
 msgctxt "lr_const.sformat11"
@@ -692,36 +692,36 @@ msgstr "[Ninguno]"
 
 #: lr_const.sformat21
 msgid "1234,5"
-msgstr ""
+msgstr "1234,5"
 
 #: lr_const.sformat22
 msgid "1234,50"
-msgstr ""
+msgstr "1234,50"
 
 #: lr_const.sformat23
 msgid "1 234,5"
-msgstr ""
+msgstr "1 234,5"
 
 #: lr_const.sformat24
 msgid "1 234,50"
-msgstr ""
+msgstr "1 234,50"
 
 #: lr_const.sformat25
 msgctxt "lr_const.sformat25"
 msgid "Custom"
-msgstr ""
+msgstr "Personalizado"
 
 #: lr_const.sformat31
 msgid "11.15.98"
-msgstr ""
+msgstr "11.15.98"
 
 #: lr_const.sformat32
 msgid "11.15.1998"
-msgstr ""
+msgstr "11.15.1998"
 
 #: lr_const.sformat33
 msgid "15 nov 1998"
-msgstr ""
+msgstr "15 nov 1998"
 
 #: lr_const.sformat34
 msgid "15 november 1998"
@@ -734,19 +734,19 @@ msgstr "Personalizado"
 
 #: lr_const.sformat41
 msgid "02:43:35"
-msgstr ""
+msgstr "02:43:35"
 
 #: lr_const.sformat42
 msgid "2:43:35"
-msgstr ""
+msgstr "2:43:35"
 
 #: lr_const.sformat43
 msgid "02:43"
-msgstr ""
+msgstr "02:43"
 
 #: lr_const.sformat44
 msgid "2:43"
-msgstr ""
+msgstr "2:43"
 
 #: lr_const.sformat45
 msgctxt "lr_const.sformat45"
@@ -755,7 +755,7 @@ msgstr "Personalizado"
 
 #: lr_const.sformat51
 msgid "0;1"
-msgstr ""
+msgstr "0;1"
 
 #: lr_const.sformat52
 msgid "No;Yes"
@@ -763,7 +763,7 @@ msgstr "No;Si"
 
 #: lr_const.sformat53
 msgid "_;x"
-msgstr ""
+msgstr "_;x"
 
 #: lr_const.sformat54
 msgid "False;True"
@@ -916,7 +916,7 @@ msgstr "Alineacion a la rejilla"
 #: lr_const.sfrdesignerformhightlight
 msgctxt "lr_const.sfrdesignerformhightlight"
 msgid "Highlight attributes"
-msgstr ""
+msgstr "Resaltar atributos"
 
 #: lr_const.sfrdesignerforminsband
 msgid "Insert band"
@@ -1068,7 +1068,7 @@ msgstr "Alineación a lo ancho"
 #, fuzzy
 #| msgid "&About..."
 msgid "&About ..."
-msgstr "&Acerca de..."
+msgstr "&Acerca de ..."
 
 #: lr_const.sfrdesignerform_addpg
 msgid "&Add page"
@@ -1103,7 +1103,7 @@ msgstr "&Eliminar"
 #| msgid "&Edit..."
 msgctxt "lr_const.sfrdesignerform_edit"
 msgid "&Edit ..."
-msgstr "&Edición..."
+msgstr "&Edición ..."
 
 #: lr_const.sfrdesignerform_edit2
 msgid "&Edit"
@@ -1114,7 +1114,7 @@ msgstr "&Editar"
 #| msgid "&Edit..."
 msgctxt "lr_const.sfrdesignerform_editp"
 msgid "&Edit ..."
-msgstr "&Edición..."
+msgstr "&Edición ..."
 
 #: lr_const.sfrdesignerform_exit
 msgid "E&xit"
@@ -1142,13 +1142,13 @@ msgstr "Estilo de línea"
 
 #: lr_const.sfrdesignerform_modified
 msgid "Modified"
-msgstr ""
+msgstr "Modificado"
 
 #: lr_const.sfrdesignerform_new
 #, fuzzy
 #| msgid "&New..."
 msgid "&New ..."
-msgstr "&Nuevo..."
+msgstr "&Nuevo ..."
 
 #: lr_const.sfrdesignerform_obj
 msgid "&Objects"
@@ -1158,13 +1158,13 @@ msgstr "&Objetos"
 #, fuzzy
 #| msgid "&Open..."
 msgid "&Open ..."
-msgstr "&Abrir..."
+msgstr "&Abrir ..."
 
 #: lr_const.sfrdesignerform_opts
 #, fuzzy
 #| msgid "&Options..."
 msgid "&Options ..."
-msgstr "&Opciones..."
+msgstr "&Opciones ..."
 
 #: lr_const.sfrdesignerform_paste
 msgid "&Paste"
@@ -1174,7 +1174,7 @@ msgstr "&Pegar"
 #, fuzzy
 #| msgid "&Page options..."
 msgid "&Page options ..."
-msgstr "&Opciones de Página..."
+msgstr "&Opciones de Página ..."
 
 #: lr_const.sfrdesignerform_preview
 msgid "Pre&view"
@@ -1196,7 +1196,7 @@ msgstr "&Eliminar Página"
 #, fuzzy
 #| msgid "&Report options..."
 msgid "&Report options ..."
-msgstr "Opciones del &Reporte..."
+msgstr "Opciones del &Reporte ..."
 
 #: lr_const.sfrdesignerform_save
 msgid "&Save"
@@ -1206,7 +1206,7 @@ msgstr "&Guardar"
 #, fuzzy
 #| msgid "Save &as..."
 msgid "Save &as ..."
-msgstr "Guardar &como..."
+msgstr "Guardar &como ..."
 
 #: lr_const.sfrdesignerform_selectall
 msgid "Select &all"
@@ -1246,7 +1246,7 @@ msgstr "&Deshacer"
 #, fuzzy
 #| msgid "Variables &list..."
 msgid "Variables &list ..."
-msgstr "&Lista de variables"
+msgstr "&Lista de variables ..."
 
 #: lr_const.sfrferror
 msgid "Unsupported FRF format"
@@ -1272,7 +1272,7 @@ msgstr "&Limpiar"
 #, fuzzy
 #| msgid "&Load..."
 msgid "&Load ..."
-msgstr "&Cargar..."
+msgstr "&Cargar ..."
 
 #: lr_const.sgeditorformmemo
 msgctxt "lr_const.sgeditorformmemo"
@@ -1299,7 +1299,7 @@ msgstr "Condición"
 
 #: lr_const.shidezerovalues
 msgid "Hide zero values"
-msgstr ""
+msgstr "Ocultar los valores cero"
 
 #: lr_const.shilightformback
 msgid "Background"
@@ -1311,11 +1311,11 @@ msgstr "&Negrita"
 
 #: lr_const.shilightformcolor
 msgid "C&olor ..."
-msgstr ""
+msgstr "C&olor ..."
 
 #: lr_const.shilightformcolor2
 msgid "Co&lor ..."
-msgstr ""
+msgstr "Co&lor ..."
 
 #: lr_const.shilightformcond
 msgctxt "lr_const.shilightformcond"
@@ -1389,7 +1389,7 @@ msgstr "&Incluir Encabezados"
 
 #: lr_const.sinsertfieldsformhorz
 msgid "&Horizontal"
-msgstr ""
+msgstr "&Horizontal"
 
 #: lr_const.sinsertfieldsformplace
 msgid "Placement"
@@ -1397,7 +1397,7 @@ msgstr "Colocación"
 
 #: lr_const.sinsertfieldsformvert
 msgid "&Vertical"
-msgstr ""
+msgstr "&Vertical"
 
 #: lr_const.sinsroundrect
 msgid "Insert an RoundRect with shadow area"
@@ -1417,7 +1417,7 @@ msgstr "Formulario de LazReport"
 
 #: lr_const.slaztemplatefile
 msgid "LazReport template"
-msgstr ""
+msgstr "Plantilla de LazReport"
 
 #: lr_const.smathcategory
 msgid "Math"
@@ -1425,7 +1425,7 @@ msgstr "Matemáticas"
 
 #: lr_const.smm
 msgid "MM"
-msgstr ""
+msgstr "MM"
 
 #: lr_const.snewtemplate
 msgid "New template"
@@ -1433,7 +1433,7 @@ msgstr "Nueva plantilla"
 
 #: lr_const.sno
 msgid "No"
-msgstr ""
+msgstr "No"
 
 #: lr_const.snotassigned
 msgctxt "lr_const.snotassigned"
@@ -1446,7 +1446,7 @@ msgstr "Inspector de objetos"
 
 #: lr_const.sobjectnotfound
 msgid "Object \"%s\" not found"
-msgstr ""
+msgstr "Objeto \"%s\" no se encontró"
 
 #: lr_const.sok
 msgid "Ok"
@@ -1464,7 +1464,7 @@ msgstr "En la última página"
 #, fuzzy
 #| msgid "Other..."
 msgid "Other ..."
-msgstr "Otro..."
+msgstr "Otro ..."
 
 #: lr_const.sothercategory
 msgctxt "lr_const.sothercategory"
@@ -1481,7 +1481,7 @@ msgstr "Imprimiendo página:"
 
 #: lr_const.spaper1
 msgid "Letter, 8 1/2 x 11\""
-msgstr ""
+msgstr "Carta, 8 1/2 x 11\""
 
 #: lr_const.spaper10
 msgid "A4 small sheet, 210 x 297 mm"
@@ -1489,95 +1489,95 @@ msgstr "A4 Hoja pequeña, 210 x 297 mm"
 
 #: lr_const.spaper100
 msgid "DMPAPER_PENV_5 110X220"
-msgstr ""
+msgstr "DMPAPER_PENV_5 110X220"
 
 #: lr_const.spaper101
 msgid "DMPAPER_PENV_6 120X230"
-msgstr ""
+msgstr "DMPAPER_PENV_6 120X230"
 
 #: lr_const.spaper102
 msgid "DMPAPER_PENV_7 160X230"
-msgstr ""
+msgstr "DMPAPER_PENV_7 160X230"
 
 #: lr_const.spaper103
 msgid "DMPAPER_PENV_8 120X309"
-msgstr ""
+msgstr "DMPAPER_PENV_8 120X309"
 
 #: lr_const.spaper104
 msgid "DMPAPER_PENV_9 229X324"
-msgstr ""
+msgstr "DMPAPER_PENV_9 229X324"
 
 #: lr_const.spaper105
 msgid "DMPAPER_PENV_10 324X458"
-msgstr ""
+msgstr "DMPAPER_PENV_10 324X458"
 
 #: lr_const.spaper106
 msgid "DMPAPER_P16K_ROTATED 215X146"
-msgstr ""
+msgstr "DMPAPER_P16K_ROTATED 215X146"
 
 #: lr_const.spaper107
 msgid "DMPAPER_P32K_ROTATED 151X97"
-msgstr ""
+msgstr "DMPAPER_P32K_ROTATED 151X97"
 
 #: lr_const.spaper108
 msgid "DMPAPER_P32KBIG_ROTATED 151X97"
-msgstr ""
+msgstr "DMPAPER_P32KBIG_ROTATED 151X97"
 
 #: lr_const.spaper109
 msgid "DMPAPER_PENV_1_ROTATED 165X102"
-msgstr ""
+msgstr "DMPAPER_PENV_1_ROTATED 165X102"
 
 #: lr_const.spaper11
 msgid "A5 148 x 210 mm"
-msgstr ""
+msgstr "A5 148 x 210 mm"
 
 #: lr_const.spaper110
 msgid "DMPAPER_PENV_2_ROTATED 176X102"
-msgstr ""
+msgstr "DMPAPER_PENV_2_ROTATED 176X102"
 
 #: lr_const.spaper111
 msgid "DMPAPER_PENV_3_ROTATED 176X125"
-msgstr ""
+msgstr "DMPAPER_PENV_3_ROTATED 176X125"
 
 #: lr_const.spaper112
 msgid "DMPAPER_PENV_4_ROTATED 208X110"
-msgstr ""
+msgstr "DMPAPER_PENV_4_ROTATED 208X110"
 
 #: lr_const.spaper113
 msgid "DMPAPER_PENV_5_ROTATED 220X110"
-msgstr ""
+msgstr "DMPAPER_PENV_5_ROTATED 220X110"
 
 #: lr_const.spaper114
 msgid "DMPAPER_PENV_6_ROTATED 230X120"
-msgstr ""
+msgstr "DMPAPER_PENV_6_ROTATED 230X120"
 
 #: lr_const.spaper115
 msgid "DMPAPER_PENV_7_ROTATED 230X160"
-msgstr ""
+msgstr "DMPAPER_PENV_7_ROTATED 230X160"
 
 #: lr_const.spaper116
 msgid "DMPAPER_PENV_8_ROTATED 309X120"
-msgstr ""
+msgstr "DMPAPER_PENV_8_ROTATED 309X120"
 
 #: lr_const.spaper117
 msgid "DMPAPER_PENV_9_ROTATED 324X229"
-msgstr ""
+msgstr "DMPAPER_PENV_9_ROTATED 324X229"
 
 #: lr_const.spaper118
 msgid "DMPAPER_PENV_10_ROTATED 458X324"
-msgstr ""
+msgstr "DMPAPER_PENV_10_ROTATED 458X324"
 
 #: lr_const.spaper12
 msgid "B4 250 x 354 mm"
-msgstr ""
+msgstr "B4 250 x 354 mm"
 
 #: lr_const.spaper13
 msgid "B5 182 x 257 mm"
-msgstr ""
+msgstr "B5 182 x 257 mm"
 
 #: lr_const.spaper14
 msgid "Folio, 8 1/2 x 13\""
-msgstr ""
+msgstr "Folio, 8 1/2 x 13\""
 
 #: lr_const.spaper15
 msgid "Quarto Sheet, 215 x 275 mm"
@@ -1585,11 +1585,11 @@ msgstr "Hoja Quarto, 215 x 275 mm"
 
 #: lr_const.spaper16
 msgid "10 x 14\""
-msgstr ""
+msgstr "10 x 14\""
 
 #: lr_const.spaper17
 msgid "11 x 17\""
-msgstr ""
+msgstr "11 x 17\""
 
 #: lr_const.spaper18
 msgid "Note, 8 1/2 x 11\""
@@ -1601,7 +1601,7 @@ msgstr "Sobre 9, 3 7/8 x 8 7/8\""
 
 #: lr_const.spaper2
 msgid "Letter small, 8 1/2 x 11\""
-msgstr ""
+msgstr "Sobre pequeño, 8 1/2 x 11\""
 
 #: lr_const.spaper20
 msgid "#10 Envelope, 4 1/8  x 9 1/2\""
@@ -1650,7 +1650,7 @@ msgstr "Sobre C3,  324 x 458 mm"
 
 #: lr_const.spaper3
 msgid "Tabloid, 11 x 17\""
-msgstr ""
+msgstr "Gazeta, 11 x 17\""
 
 #: lr_const.spaper30
 msgid "C4 Envelope,  229 x 324 mm"
@@ -1690,7 +1690,7 @@ msgstr "Sobre 6 3/4, 3 5/8 x 6 1/2\""
 
 #: lr_const.spaper39
 msgid "US Std Fanfold, 14 7/8 x 11\""
-msgstr ""
+msgstr "US Std Fanfold, 14 7/8 x 11\""
 
 #: lr_const.spaper4
 msgid "Ledger, 17 x 11\""
@@ -1698,7 +1698,7 @@ msgstr "Ledger, 17 x 11\""
 
 #: lr_const.spaper40
 msgid "German Std Fanfold, 8 1/2 x 12\""
-msgstr "Hoja Std pleagable , 8 1/2 x 12\""
+msgstr "Hoja Std pleagable alemana, 8 1/2 x 12\""
 
 #: lr_const.spaper41
 msgid "German Legal Fanfold, 8 1/2 x 13\""
@@ -1706,7 +1706,7 @@ msgstr "Hoja oficio plegable alemana, 8 1/2 x 13\""
 
 #: lr_const.spaper42
 msgid "B4 (ISO) 250 x 353 mm"
-msgstr ""
+msgstr "B4 (ISO) 250 x 353 mm"
 
 #: lr_const.spaper43
 msgid "Japanese Postcard 100 x 148 mm"
@@ -1714,15 +1714,15 @@ msgstr "Tarjeta postal japonesa 100 x 148 mm"
 
 #: lr_const.spaper44
 msgid "9 x 11\""
-msgstr ""
+msgstr "9 x 11\""
 
 #: lr_const.spaper45
 msgid "10 x 11\""
-msgstr ""
+msgstr "10 x 11\""
 
 #: lr_const.spaper46
 msgid "15 x 11\""
-msgstr ""
+msgstr "15 x 11\""
 
 #: lr_const.spaper47
 msgid "Envelope Invite 220 x 220 mm"
@@ -1730,27 +1730,27 @@ msgstr "Sobre de invitación 220 x 220 mm"
 
 #: lr_const.spaper5
 msgid "Legal, 8 1/2 x 14\""
-msgstr ""
+msgstr "Legal, 8 1/2 x 14\""
 
 #: lr_const.spaper50
 msgid "Letter Extra 9/275 x 12\""
-msgstr ""
+msgstr "Sobre Extra 9/275 x 12\""
 
 #: lr_const.spaper51
 msgid "Legal Extra 9/275 x 15\""
-msgstr ""
+msgstr "Legal Extra 9/275 x 15\""
 
 #: lr_const.spaper52
 msgid "Tabloid Extra 11.69 x 18\""
-msgstr ""
+msgstr "Gaceta Extra 11.69 x 18\""
 
 #: lr_const.spaper53
 msgid "A4 Extra 9.27 x 12.69\""
-msgstr ""
+msgstr "A4 Extra 9.27 x 12.69\""
 
 #: lr_const.spaper54
 msgid "Letter Transverse 8/275 x 11\""
-msgstr ""
+msgstr "Sobre Transversal 8/275 x 11\""
 
 #: lr_const.spaper55
 msgid "A4 Transverse 210 x 297 mm"
@@ -1758,27 +1758,27 @@ msgstr "A4 Transversal 210 x 297 mm"
 
 #: lr_const.spaper56
 msgid "Letter Extra Transverse 9/275 x 12\""
-msgstr ""
+msgstr "Sobre Extra Transversal 9/275 x 12\""
 
 #: lr_const.spaper57
 msgid "SuperASuperAA4 227 x 356 mm"
-msgstr ""
+msgstr "SuperASuperAA4 227 x 356 mm"
 
 #: lr_const.spaper58
 msgid "SuperBSuperBA3 305 x 487 mm"
-msgstr ""
+msgstr "SuperBSuperBA3 305 x 487 mm"
 
 #: lr_const.spaper59
 msgid "Letter Plus 8.5 x 12.69\""
-msgstr ""
+msgstr "Sobre Plus 8.5 x 12.69\""
 
 #: lr_const.spaper6
 msgid "Statement, 5 1/2 x 8 1/2\""
-msgstr ""
+msgstr "Sentencia, 5 1/2 x 8 1/2\""
 
 #: lr_const.spaper60
 msgid "A4 Plus 210 x 330 mm"
-msgstr ""
+msgstr "A4 Plus 210 x 330 mm"
 
 #: lr_const.spaper61
 msgid "A5 Transverse 148 x 210 mm"
@@ -1790,19 +1790,19 @@ msgstr "B5 (JIS) Transversal 182 x 257 mm"
 
 #: lr_const.spaper63
 msgid "A3 Extra 322 x 445 mm"
-msgstr ""
+msgstr "A3 Extra 322 x 445 mm"
 
 #: lr_const.spaper64
 msgid "A5 Extra 174 x 235 mm"
-msgstr ""
+msgstr "A5 Extra 174 x 235 mm"
 
 #: lr_const.spaper65
 msgid "B5 (ISO) Extra 201 x 276 mm"
-msgstr ""
+msgstr "B5 (ISO) Extra 201 x 276 mm"
 
 #: lr_const.spaper66
 msgid "A2 420 x 594 mm"
-msgstr ""
+msgstr "A2 420 x 594 mm"
 
 #: lr_const.spaper67
 msgid "A3 Transverse 297 x 420 mm"
@@ -1822,131 +1822,131 @@ msgstr "Ejecutivo, 7 1/4 x 10 1/2\""
 
 #: lr_const.spaper70
 msgid "A6 105x148 mm"
-msgstr ""
+msgstr "A6 105x148 mm"
 
 #: lr_const.spaper71
 msgid "DMPAPER_JENV_KAKU2 240X132"
-msgstr ""
+msgstr "DMPAPER_JENV_KAKU2 240X132"
 
 #: lr_const.spaper72
 msgid "DMPAPER_JENV_KAKU3 216X277"
-msgstr ""
+msgstr "DMPAPER_JENV_KAKU3 216X277"
 
 #: lr_const.spaper73
 msgid "DMPAPER_JENV_CHOU3 120X235"
-msgstr ""
+msgstr "DMPAPER_JENV_CHOU3 120X235"
 
 #: lr_const.spaper74
 msgid "DMPAPER_JENV_CHOU4 90X205"
-msgstr ""
+msgstr "DMPAPER_JENV_CHOU4 90X205"
 
 #: lr_const.spaper75
 msgid "DMPAPER_LETTER_ROTATED 279.4x215.9"
-msgstr ""
+msgstr "DMPAPER_LETTER_ROTATED 279.4x215.9"
 
 #: lr_const.spaper76
 msgid "DMPAPER_A3_ROTATED 420x297"
-msgstr ""
+msgstr "DMPAPER_A3_ROTATED 420x297"
 
 #: lr_const.spaper77
 msgid "DMPAPER_A4_ROTATED 297X210"
-msgstr ""
+msgstr "DMPAPER_A4_ROTATED 297X210"
 
 #: lr_const.spaper78
 msgid "DMPAPER_A5_ROTATED 210X148"
-msgstr ""
+msgstr "DMPAPER_A5_ROTATED 210X148"
 
 #: lr_const.spaper79
 msgid "DMPAPER_B4_JIS_ROTATED 364X257"
-msgstr ""
+msgstr "DMPAPER_B4_JIS_ROTATED 364X257"
 
 #: lr_const.spaper8
 msgid "A3 297 x 420 mm"
-msgstr ""
+msgstr "A3 297 x 420 mm"
 
 #: lr_const.spaper80
 msgid "DMPAPER_B5_JIS_ROTATED 257X182"
-msgstr ""
+msgstr "DMPAPER_B5_JIS_ROTATED 257X182"
 
 #: lr_const.spaper81
 msgid "DMPAPER_JAPANESE_POSTCARD_ROTATED 148X100"
-msgstr ""
+msgstr "DMPAPER_JAPANESE_POSTCARD_ROTATED 148X100"
 
 #: lr_const.spaper82
 msgid "DMPAPER_DBL_JAPANESE_POSTCARD_ROTATED 148X200"
-msgstr ""
+msgstr "DMPAPER_DBL_JAPANESE_POSTCARD_ROTATED 148X200"
 
 #: lr_const.spaper83
 msgid "DMPAPER_A6_ROTATED 148X105"
-msgstr ""
+msgstr "DMPAPER_A6_ROTATED 148X105"
 
 #: lr_const.spaper84
 msgid "DMPAPER_JENV_KAKU2_ROTATED 332X240"
-msgstr ""
+msgstr "DMPAPER_JENV_KAKU2_ROTATED 332X240"
 
 #: lr_const.spaper85
 msgid "DMPAPER_JENV_KAKU3_ROTATED 277X216"
-msgstr ""
+msgstr "DMPAPER_JENV_KAKU3_ROTATED 277X216"
 
 #: lr_const.spaper86
 msgid "DMPAPER_JENV_CHOU3_ROTATED 235X120"
-msgstr ""
+msgstr "DMPAPER_JENV_CHOU3_ROTATED 235X120"
 
 #: lr_const.spaper87
 msgid "DMPAPER_JENV_CHOU4_ROTATED 205X90"
-msgstr ""
+msgstr "DMPAPER_JENV_CHOU4_ROTATED 205X90"
 
 #: lr_const.spaper88
 msgid "DMPAPER_B6_JIS 128X122"
-msgstr ""
+msgstr "DMPAPER_B6_JIS 128X122"
 
 #: lr_const.spaper89
 msgid "DMPAPER_B6_JIS_ROTATED 182X128"
-msgstr ""
+msgstr "DMPAPER_B6_JIS_ROTATED 182X128"
 
 #: lr_const.spaper9
 msgid "A4 210 x 297 mm"
-msgstr ""
+msgstr "A4 210 x 297 mm"
 
 #: lr_const.spaper90
 msgid "DMPAPER_12X11 304.8X279.4"
-msgstr ""
+msgstr "DMPAPER_12X11 304.8X279.4"
 
 #: lr_const.spaper91
 msgid "DMPAPER_JENV_YOU4 105X235"
-msgstr ""
+msgstr "DMPAPER_JENV_YOU4 105X235"
 
 #: lr_const.spaper92
 msgid "DMPAPER_JENV_YOU4_ROTATED 235X105"
-msgstr ""
+msgstr "DMPAPER_JENV_YOU4_ROTATED 235X105"
 
 #: lr_const.spaper93
 msgid "DMPAPER_P16K 146X215"
-msgstr ""
+msgstr "DMPAPER_P16K 146X215"
 
 #: lr_const.spaper94
 msgid "DMPAPER_P32K 97X151"
-msgstr ""
+msgstr "DMPAPER_P32K 97X151"
 
 #: lr_const.spaper95
 msgid "DMPAPER_P32KBIG 97X151"
-msgstr ""
+msgstr "DMPAPER_P32KBIG 97X151"
 
 #: lr_const.spaper96
 msgid "DMPAPER_PENV_1 102X165"
-msgstr ""
+msgstr "DMPAPER_PENV_1 102X165"
 
 #: lr_const.spaper97
 msgid "DMPAPER_PENV_2 102X176"
-msgstr ""
+msgstr "DMPAPER_PENV_2 102X176"
 
 #: lr_const.spaper98
 msgid "DMPAPER_PENV_3 125X176"
-msgstr ""
+msgstr "DMPAPER_PENV_3 125X176"
 
 #: lr_const.spaper99
 msgid "DMPAPER_PENV_4 110X208"
-msgstr ""
+msgstr "DMPAPER_PENV_4 110X208"
 
 #: lr_const.spg
 msgid "Page"
@@ -1971,7 +1971,7 @@ msgstr "Opciones de página"
 
 #: lr_const.spgoptformcolgap
 msgid "&Column gap, mm"
-msgstr "Espacio entre %Columnas, mm"
+msgstr "Espacio entre &Columnas, mm"
 
 #: lr_const.spgoptformcolumn
 msgid "Columns"
@@ -2182,11 +2182,11 @@ msgstr "Archivo de reporte"
 
 #: lr_const.sreportcreatedate
 msgid "Report create date"
-msgstr ""
+msgstr "Fecha de creación del informe"
 
 #: lr_const.sreportlastmodifydate
 msgid "Report last modify date"
-msgstr ""
+msgstr "Fecha última modificación del informe"
 
 #: lr_const.sreportpreparing
 msgid "Report preparing"
@@ -2202,7 +2202,7 @@ msgstr "Editor de propiedades"
 
 #: lr_const.sroundrectformcolor
 msgid "Color"
-msgstr ""
+msgstr "Color"
 
 #: lr_const.sroundrectformcurve
 msgid "Curve"
@@ -2246,7 +2246,7 @@ msgstr "Vertical,Horizontal,Elíptica,Rectángulo,Centro_Horiz.,Centro_Vert."
 
 #: lr_const.sroundrectformvar
 msgid "Variables ..."
-msgstr ""
+msgstr "Variables ..."
 
 #: lr_const.sroundrectsqrcorners
 msgid "Squared corners"
@@ -2279,11 +2279,11 @@ msgstr "Triángulo"
 
 #: lr_const.sshape5
 msgid "Diagonal1"
-msgstr ""
+msgstr "Diagonal1"
 
 #: lr_const.sshape6
 msgid "Diagonal2"
-msgstr ""
+msgstr "Diagonal2"
 
 #: lr_const.sshapeformcaption
 msgid "Shape"
@@ -2312,11 +2312,11 @@ msgstr "SubReporte en página"
 
 #: lr_const.stemplemptydesc
 msgid "New report based on empty template"
-msgstr ""
+msgstr "Nuevo informe basado en la plantilla vacía"
 
 #: lr_const.stemplemtpyrp
 msgid "Empty template"
-msgstr ""
+msgstr "Plantilla vacía"
 
 #: lr_const.stemplfile
 msgid "FastReport template"
@@ -2397,11 +2397,11 @@ msgstr "&Categorias y variables"
 #, fuzzy
 #| msgid "Variable format..."
 msgid "Variable format ..."
-msgstr "Formato de variable..."
+msgstr "Formato de variable ..."
 
 #: lr_const.svarformcapt
 msgid "Variables"
-msgstr ""
+msgstr "Variables"
 
 #: lr_const.svarformcat
 msgid "&Category:"
