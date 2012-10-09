@@ -10,7 +10,7 @@ version=1.0
 
 [compiler]
 unittargetdir=lib/$(CPU_TARGET)-$(OS_TARGET)
-unitdir=../../../lazarus/packager/units/$(CPU_TARGET)-$(OS_TARGET) .
+unitdir=../../packager/units/$(CPU_TARGET)-$(OS_TARGET) .
 options= -MObjFPC -Scghi -O1 -g -gl -vewnhi -l
 
 [target]
