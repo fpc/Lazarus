@@ -7316,6 +7316,7 @@ begin
     and Editor.Visible then
   begin
     FEditorMode:=False;
+    FGridState := gsNormal;
     {$ifdef dbgGrid}DebugLn('EditorHide [',Editor.ClassName,'] INIT FCol=',IntToStr(FCol),' FRow=',IntToStr(FRow));{$endif}
     LockEditor;
     try
