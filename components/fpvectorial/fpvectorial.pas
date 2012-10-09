@@ -491,15 +491,21 @@ type
     function GetNextEntity: TvEntity;
     procedure AddEntity(AEntity: TvEntity);
     procedure Clear;
+    //
+    // Never add a Render() procedure to TvBlock, because blocks are invisible!
   end;
 
   {@@
     A "Insert" inserts a block into the drawing in the specified position
   }
 
+  { TvInsert }
+
   TvInsert = class(TvEntity)
   public
     Block: TvBlock; // The block to be inserted
+    procedure Render(ADest: TFPCustomCanvas; ADestX: Integer = 0;
+      ADestY: Integer = 0; AMulX: Double = 1.0; AMulY: Double = 1.0); override;
   end;
 
   { TvVectorialDocument }
@@ -2253,6 +2259,31 @@ procedure TvBlock.Clear;
 begin
   FElements.ForEachCall(CallbackDeleteElement, nil);
   FElements.Clear;
+end;
+
+{ TvInsert }
+
+procedure TvInsert.Render(ADest: TFPCustomCanvas; ADestX: Integer;
+  ADestY: Integer; AMulX: Double; AMulY: Double);
+var
+  lEntity: TvEntity;
+begin
+  inherited Render(ADest, ADestX, ADestY, AMulX, AMulY);
+  if Block = nil then Exit;
+  lEntity := Block.GetFirstEntity();
+  while lEntity <> nil do
+  begin
+    // Alter the position of the elements to consider the positioning of the BLOCK and of the INSERT
+    lEntity.X := lEntity.X + Block.X + X;
+    lEntity.Y := lEntity.Y + Block.Y + Y;
+    // Render
+    lEntity.Render(ADest, ADestX, ADestY, AMulX, AMuly);
+    // Change them back
+    lEntity.X := lEntity.X - Block.X - X;
+    lEntity.Y := lEntity.Y - Block.Y - Y;
+
+    lEntity := Block.GetNextEntity();
+  end;
 end;
 
 { TvVectorialPage }
