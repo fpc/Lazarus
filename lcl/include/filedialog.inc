@@ -105,7 +105,8 @@ begin
       then
         exit(MaskStart-PChar(aFilter)+1);
       if p^='|' then break;
-    until p^=#0;
+      if p^=#0 then exit;
+    until false;
     inc(p);
   end;
 end;
