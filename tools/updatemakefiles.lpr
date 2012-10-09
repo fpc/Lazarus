@@ -151,7 +151,7 @@ begin
   writeln(LPKFiles.Text);
   LPKFiles.StrictDelimiter:=true;
   LPKFiles.Delimiter:=' ';
-  LazbuildOut:=RunTool(SetDirSeparators('./lazbuild'+ExeExt),'--create-makefile '+LPKFiles.DelimitedText,LazarusDir);
+  LazbuildOut:=RunTool(SetDirSeparators('./lazbuild'+ExeExt),'--lazarusdir='+LazarusDir+' --create-makefile '+LPKFiles.DelimitedText,LazarusDir);
   writeln(LazbuildOut.Text);
   LPKFiles.Free;
 end.
