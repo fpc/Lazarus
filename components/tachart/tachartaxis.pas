@@ -729,8 +729,11 @@ begin
   if minc < MaxInt then begin
     UpdateFirstLast(minc, mini, rmin, rmax);
     UpdateFirstLast(maxc, maxi, rmin, rmax);
-    FTitlePos := (maxc + minc) div 2;
-  end
+  end;
+  if not Title.PositionOnMarks then
+    FTitlePos := (rmin + rmax) div 2
+  else if minc < MaxInt then
+    FTitlePos := (maxc + minc) div 2
   else
     FTitlePos := MaxInt;
 

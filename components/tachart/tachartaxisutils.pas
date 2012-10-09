@@ -46,10 +46,12 @@ type
   TChartAxisTitle = class(TCustomChartAxisTitle)
   strict private
     FCaption: String;
+    FPositionOnMarks: Boolean;
 
     function GetFont: TFont;
     procedure SetCaption(AValue: String);
     procedure SetFont(AValue: TFont);
+    procedure SetPositionOnMarks(AValue: Boolean);
   public
     constructor Create(AOwner: TCustomChart);
 
@@ -62,6 +64,8 @@ type
     property Font: TFont read GetFont write SetFont stored false; deprecated;
     property Frame;
     property LabelBrush;
+    property PositionOnMarks: Boolean
+      read FPositionOnMarks write SetPositionOnMarks default false;
     property Visible default false;
   end;
 
@@ -527,6 +531,13 @@ end;
 procedure TChartAxisTitle.SetFont(AValue: TFont);
 begin
   LabelFont := AValue;
+end;
+
+procedure TChartAxisTitle.SetPositionOnMarks(AValue: Boolean);
+begin
+  if FPositionOnMarks = AValue then exit;
+  FPositionOnMarks := AValue;
+  StyleChanged(Self);
 end;
 
 { TCustomChartAxisMarks }
