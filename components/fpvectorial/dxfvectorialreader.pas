@@ -102,7 +102,7 @@ type
     procedure ReadENTITIES_DIMENSION(ATokens: TDXFTokens; AData: TvVectorialPage; ADoc: TvVectorialDocument);
     procedure ReadENTITIES_ELLIPSE(ATokens: TDXFTokens; AData: TvVectorialPage; ADoc: TvVectorialDocument);
     function  ReadENTITIES_INSERT(ATokens: TDXFTokens; AData: TvVectorialPage; ADoc: TvVectorialDocument): TvInsert;
-    function  ReadENTITIES_TEXT(ATokens: TDXFTokens; AData: TvVectorialPage; ADoc: TvVectorialDocument): TvText;
+    function  ReadENTITIES_TEXT(ATokens: TDXFTokens; ADoc: TvVectorialDocument): TvText;
     procedure ReadENTITIES_LWPOLYLINE(ATokens: TDXFTokens; AData: TvVectorialPage; ADoc: TvVectorialDocument);
     procedure ReadENTITIES_SPLINE(ATokens: TDXFTokens; AData: TvVectorialPage; ADoc: TvVectorialDocument);
     procedure ReadENTITIES_POLYLINE(ATokens: TDXFTokens; AData: TvVectorialPage; ADoc: TvVectorialDocument);
@@ -847,7 +847,7 @@ begin
           'DIMENSION': lEntity := ReadENTITIES_DIMENSION(CurToken.Childs, nil, ADoc);
           'ELLIPSE':   lEntity := ReadENTITIES_ELLIPSE(CurToken.Childs, nil, ADoc);}
           'LINE':      lEntity := ReadENTITIES_LINE(CurToken.Childs, nil, ADoc);
-          'TEXT':      lEntity := ReadENTITIES_TEXT(CurToken.Childs, nil, ADoc);
+          'TEXT':      lEntity := ReadENTITIES_TEXT(CurToken.Childs, ADoc);
           {'LWPOLYLINE':lEntity := ReadENTITIES_LWPOLYLINE(CurToken.Childs, nil, ADoc);
           'SPLINE':    lEntity := ReadENTITIES_SPLINE(CurToken.Childs, nil, ADoc);
           'POINT':     lEntity := ReadENTITIES_POINT(CurToken.Childs, nil, ADoc);
@@ -872,40 +872,42 @@ procedure TvDXFVectorialReader.ReadENTITIES(ATokens: TDXFTokens; AData: TvVector
 var
   i: Integer;
   CurToken: TDXFToken;
+  lEntity: TvEntity;
 begin
   IsReadingPolyline := False;
 
   for i := 0 to ATokens.Count - 1 do
   begin
+    lEntity := nil;
     CurToken := TDXFToken(ATokens.Items[i]);
-    if CurToken.StrValue = 'ARC' then ReadENTITIES_ARC(CurToken.Childs, AData, ADoc)
-    else if CurToken.StrValue = 'CIRCLE' then ReadENTITIES_CIRCLE(CurToken.Childs, AData, ADoc)
-    else if CurToken.StrValue = 'DIMENSION' then ReadENTITIES_DIMENSION(CurToken.Childs, AData, ADoc)
-    else if CurToken.StrValue = 'ELLIPSE' then ReadENTITIES_ELLIPSE(CurToken.Childs, AData, ADoc)
-    else if CurToken.StrValue = 'INSERT' then ReadENTITIES_INSERT(CurToken.Childs, AData, ADoc)
-    else if CurToken.StrValue = 'LINE' then ReadENTITIES_LINE(CurToken.Childs, AData, ADoc)
-    else if CurToken.StrValue = 'TEXT' then ReadENTITIES_TEXT(CurToken.Childs, AData, ADoc)
-    else if CurToken.StrValue = 'LWPOLYLINE' then ReadENTITIES_LWPOLYLINE(CurToken.Childs, AData, ADoc)
-    else if CurToken.StrValue = 'SPLINE' then ReadENTITIES_SPLINE(CurToken.Childs, AData, ADoc)
-    else if CurToken.StrValue = 'POINT' then ReadENTITIES_POINT(CurToken.Childs, AData, ADoc)
-    else if CurToken.StrValue = 'MTEXT' then ReadENTITIES_MTEXT(CurToken.Childs, AData, ADoc)
-    else if CurToken.StrValue = 'LEADER' then ReadENTITIES_LEADER(CurToken.Childs, AData, ADoc)
-    // A Polyline can have multiple child objects
-    else if CurToken.StrValue = 'POLYLINE' then
-    begin
-      IsReadingPolyline := True;
-      ReadENTITIES_POLYLINE(CurToken.Childs, AData, ADoc);
-    end
-    else if CurToken.StrValue = 'VERTEX' then ReadENTITIES_VERTEX(CurToken.Childs, AData, ADoc)
-    else if CurToken.StrValue = 'SEQEND' then
-    begin
-      ReadENTITIES_SEQEND(CurToken.Childs, AData, ADoc);
-      IsReadingPolyline := False;
-    end
-    else
-    begin
-      // ...
+    case CurToken.StrValue of
+      'ARC': ReadENTITIES_ARC(CurToken.Childs, AData, ADoc);
+      'CIRCLE': ReadENTITIES_CIRCLE(CurToken.Childs, AData, ADoc);
+      'DIMENSION': ReadENTITIES_DIMENSION(CurToken.Childs, AData, ADoc);
+      'ELLIPSE': ReadENTITIES_ELLIPSE(CurToken.Childs, AData, ADoc);
+      'INSERT': lEntity := ReadENTITIES_INSERT(CurToken.Childs, AData, ADoc);
+      'LINE': ReadENTITIES_LINE(CurToken.Childs, AData, ADoc);
+      'TEXT': lEntity := ReadENTITIES_TEXT(CurToken.Childs, ADoc);
+      'LWPOLYLINE': ReadENTITIES_LWPOLYLINE(CurToken.Childs, AData, ADoc);
+      'SPLINE': ReadENTITIES_SPLINE(CurToken.Childs, AData, ADoc);
+      'POINT': ReadENTITIES_POINT(CurToken.Childs, AData, ADoc);
+      'MTEXT': ReadENTITIES_MTEXT(CurToken.Childs, AData, ADoc);
+      'LEADER': ReadENTITIES_LEADER(CurToken.Childs, AData, ADoc);
+      // A Polyline can have multiple child objects
+      'POLYLINE':
+      begin
+        IsReadingPolyline := True;
+        ReadENTITIES_POLYLINE(CurToken.Childs, AData, ADoc);
+      end;
+      'VERTEX': ReadENTITIES_VERTEX(CurToken.Childs, AData, ADoc);
+      'SEQEND':
+      begin
+        ReadENTITIES_SEQEND(CurToken.Childs, AData, ADoc);
+        IsReadingPolyline := False;
+      end;
     end;
+
+    if lEntity <> nil then AData.AddEntity(lEntity);
   end;
 end;
 
@@ -1296,10 +1298,79 @@ begin
   AData.AddEllipse(CenterX, CenterY, MajorHalfAxis, MinorHalfAxis, Angle);
 end;
 
+{
+The following group codes apply to insert (block reference) entities. In addition to the group codes described here, see "Common Group Codes for Entities." For information about abbreviations and formatting used in this table, see "Formatting Conventions in This Reference."
+Insert group codes Group codes	Description
+
+100 Subclass marker (AcDbBlockReference)
+66 Variable attributes-follow flag (optional; default = 0); if the value of attributes-follow flag is 1, a series of attribute entities is expected to follow the insert, terminated by a seqend entity
+2 Block name
+10 Insertion point (in OCS)
+  DXF: X value; APP: 3D point
+20, 30 DXF: Y and Z values of insertion point (in OCS)
+41 X scale factor (optional; default = 1)
+42 Y scale factor (optional; default = 1)
+43 Z scale factor (optional; default = 1)
+50 Rotation angle (optional; default = 0)
+70 Column count (optional; default = 1)
+71 Row count (optional; default = 1)
+44 Column spacing (optional; default = 0)
+45 Row spacing (optional; default = 0)
+210 Extrusion direction (optional; default = 0, 0, 1)
+  DXF: X value; APP: 3D vector
+220, 230 DXF: Y and Z values of extrusion direction (optional)
+}
 function TvDXFVectorialReader.ReadENTITIES_INSERT(ATokens: TDXFTokens;
   AData: TvVectorialPage; ADoc: TvVectorialDocument): TvInsert;
+var
+  CurToken: TDXFToken;
+  i: Integer;
+  lName: string;
+  lBlock: TvBlock;
+  PosX, PosY, PosZ: Double;
+  lCurEntity: TvEntity;
 begin
+  PosX := 0.0;
+  PosY := 0.0;
+  PosZ := 0.0;
 
+  for i := 0 to ATokens.Count - 1 do
+  begin
+    // Now read and process the item name
+    CurToken := TDXFToken(ATokens.Items[i]);
+
+    // Avoid an exception by previously checking if the conversion can be made
+    if CurToken.GroupCode in [10, 20, 30] then
+    begin
+      CurToken.FloatValue :=  StrToFloat(Trim(CurToken.StrValue), FPointSeparator);
+    end;
+
+    case CurToken.GroupCode of
+      2: lName := CurToken.StrValue;
+      10: PosX := CurToken.FloatValue;
+      20: PosY := CurToken.FloatValue;
+      30: PosZ := CurToken.FloatValue;
+    end;
+  end;
+
+  // Find the block by its name
+  for i := 0 to AData.GetEntitiesCount()-1 do
+  begin
+    lCurEntity := AData.GetEntity(i);
+    if (lCurEntity is TvBlock) and (TvBlock(lCurEntity).Name = lName) then
+    begin
+      lBlock := TvBlock(lCurEntity);
+      Break;
+    end;
+  end;
+  if lBlock = nil then Exit;
+
+  // write the data
+  Result := TvInsert.Create;
+  Result.X := PosX;
+  Result.Y := PosY;
+  Result.Z := PosZ;
+  Result.Block := lBlock;
 end;
 
 {
@@ -1335,7 +1406,7 @@ end;
   See the Group 72 and 73 integer codes table for clarification.
 }
 function TvDXFVectorialReader.ReadENTITIES_TEXT(ATokens: TDXFTokens;
-  AData: TvVectorialPage; ADoc: TvVectorialDocument): TvText;
+  ADoc: TvVectorialDocument): TvText;
 var
   CurToken: TDXFToken;
   i: Integer;
@@ -1373,16 +1444,11 @@ begin
   Str := ConvertDXFStringToUTF8(Str);
 
   //
-  if AData = nil then
-  begin
-    Result := TvText.Create;
-    Result.Value.Text := Str;
-    Result.X := PosX;
-    Result.Y := PosY;
-    Result.Font.Size := Round(FontSize);
-  end
-  else
-    Result := AData.AddText(PosX, PosY, 0, '', Round(FontSize), Str);
+  Result := TvText.Create;
+  Result.Value.Text := Str;
+  Result.X := PosX;
+  Result.Y := PosY;
+  Result.Font.Size := Round(FontSize);
 end;
 
 {.$define FPVECTORIALDEBUG_LWPOLYLINE}
