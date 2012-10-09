@@ -71,6 +71,7 @@ type
     constructor Create;
     Destructor Destroy; override;
     procedure ReadFromStrings(AStrings: TStrings);
+    function  IsBLOCKS_Subsection(AStr: string): Boolean;
     function  IsENTITIES_Subsection(AStr: string): Boolean;
   end;
 
@@ -91,13 +92,17 @@ type
     Polyline: array of TPolylineElement;
     //
     procedure ReadHEADER(ATokens: TDXFTokens; AData: TvVectorialPage; ADoc: TvVectorialDocument);
+    procedure ReadBLOCKS(ATokens: TDXFTokens; AData: TvVectorialPage; ADoc: TvVectorialDocument);
+    procedure ReadBLOCKS_BLOCK(ATokens: TDXFTokens; AData: TvVectorialPage; ADoc: TvVectorialDocument);
+    procedure ReadBLOCKS_ENDBLK(ATokens: TDXFTokens; AData: TvVectorialPage; ADoc: TvVectorialDocument);
     procedure ReadENTITIES(ATokens: TDXFTokens; AData: TvVectorialPage; ADoc: TvVectorialDocument);
-    procedure ReadENTITIES_LINE(ATokens: TDXFTokens; AData: TvVectorialPage; ADoc: TvVectorialDocument);
+    function  ReadENTITIES_LINE(ATokens: TDXFTokens; AData: TvVectorialPage; ADoc: TvVectorialDocument): TPath;
     procedure ReadENTITIES_ARC(ATokens: TDXFTokens; AData: TvVectorialPage; ADoc: TvVectorialDocument);
     procedure ReadENTITIES_CIRCLE(ATokens: TDXFTokens; AData: TvVectorialPage; ADoc: TvVectorialDocument);
     procedure ReadENTITIES_DIMENSION(ATokens: TDXFTokens; AData: TvVectorialPage; ADoc: TvVectorialDocument);
     procedure ReadENTITIES_ELLIPSE(ATokens: TDXFTokens; AData: TvVectorialPage; ADoc: TvVectorialDocument);
-    procedure ReadENTITIES_TEXT(ATokens: TDXFTokens; AData: TvVectorialPage; ADoc: TvVectorialDocument);
+    function  ReadENTITIES_INSERT(ATokens: TDXFTokens; AData: TvVectorialPage; ADoc: TvVectorialDocument): TvInsert;
+    function  ReadENTITIES_TEXT(ATokens: TDXFTokens; AData: TvVectorialPage; ADoc: TvVectorialDocument): TvText;
     procedure ReadENTITIES_LWPOLYLINE(ATokens: TDXFTokens; AData: TvVectorialPage; ADoc: TvVectorialDocument);
     procedure ReadENTITIES_SPLINE(ATokens: TDXFTokens; AData: TvVectorialPage; ADoc: TvVectorialDocument);
     procedure ReadENTITIES_POLYLINE(ATokens: TDXFTokens; AData: TvVectorialPage; ADoc: TvVectorialDocument);
@@ -486,7 +491,7 @@ var
   i: Integer;
   StrSectionGroupCode, StrSectionName: string;
   IntSectionGroupCode: Integer;
-  CurTokenBase, NextTokenBase, SectionTokenBase: TDXFTokens;
+  CurTokenBase, NextTokenBase, SectionTokenBase, LastBlockToken: TDXFTokens;
   NewToken: TDXFToken;
   ParserState: Integer;
 begin
@@ -535,11 +540,15 @@ begin
       if (StrSectionName = 'HEADER') or
         (StrSectionName = 'CLASSES') or
         (StrSectionName = 'TABLES') or
-        (StrSectionName = 'BLOCKS') or
         (StrSectionName = 'OBJECTS') or
         (StrSectionName = 'THUMBNAILIMAGE') then
       begin
         ParserState := 2;
+        SectionTokenBase := CurTokenBase;
+      end
+      else if (StrSectionName = 'BLOCKS') then
+      begin
+        ParserState := 4;
         SectionTokenBase := CurTokenBase;
       end
       else if (StrSectionName = 'ENTITIES') then
@@ -577,12 +586,42 @@ begin
         CurTokenBase := SectionTokenBase;
         NextTokenBase := Tokens;
       end;
+    end
+    // Reading the BLOCKS section
+    else if ParserState = 4 then
+    begin
+      // This orders the blocks themselves
+      if IsBLOCKS_Subsection(StrSectionName) then
+      begin
+        CurTokenBase := SectionTokenBase;
+        NextTokenBase := NewToken.Childs;
+        LastBlockToken := NewToken.Childs;
+      end
+      // This orders the entities inside blocks
+      else if IsENTITIES_Subsection(StrSectionName) and (LastBlockToken <> nil) then
+      begin
+        CurTokenBase := LastBlockToken;
+        NextTokenBase := NewToken.Childs;
+      end
+      else if StrSectionName = 'ENDSEC' then
+      begin
+        ParserState := 0;
+        CurTokenBase := SectionTokenBase;
+        NextTokenBase := Tokens;
+      end;
     end;
 
     CurTokenBase.Add(NewToken);
 
     Inc(i, 2);
   end;
+end;
+
+function TDXFTokenizer.IsBLOCKS_Subsection(AStr: string): Boolean;
+begin
+  Result :=
+    (AStr = 'BLOCK') or
+    (AStr = 'ENDBLK');
 end;
 
 function TDXFTokenizer.IsENTITIES_Subsection(AStr: string): Boolean;
@@ -723,6 +762,112 @@ begin
   end;
 end;
 
+procedure TvDXFVectorialReader.ReadBLOCKS(ATokens: TDXFTokens;
+  AData: TvVectorialPage; ADoc: TvVectorialDocument);
+var
+  i: Integer;
+  CurToken: TDXFToken;
+begin
+  for i := 0 to ATokens.Count - 1 do
+  begin
+    CurToken := TDXFToken(ATokens.Items[i]);
+    if CurToken.StrValue = 'BLOCK' then ReadBLOCKS_BLOCK(CurToken.Childs, AData, ADoc)
+    else if CurToken.StrValue = 'ENDBLK' then ReadBLOCKS_ENDBLK(CurToken.Childs, AData, ADoc)
+    else
+    begin
+      // ...
+    end;
+  end;
+end;
+
+(*
+The following group codes apply to block entities. For information about abbreviations and formatting used in this table, see "Formatting Conventions in This Reference."
+Block group codes Group codes	Description
+0 Entity type (BLOCK)
+5 Handle
+102 (optional) Start of application-defined group "{application_name". For example, "{ACAD_REACTORS" indicates the start of the AutoCAD persistent reactors group.
+application-defined codes (optional) Codes and values within the 102 groups are application defined
+102 (optional) End of group, "}"
+330 Soft-pointer ID/handle to owner object
+100 Subclass marker (AcDbEntity)
+8 Layer name
+100 Subclass marker (AcDbBlockBegin)
+2 Block name
+70 Block-type flags (bit coded values, may be combined):
+1 = This is an anonymous block generated by hatching, associative dimensioning, other internal operations, or an application.
+2 = This block has non-constant attribute definitions (this bit is not set if the block has any attribute definitions that are constant, or has no attribute definitions at all).
+4 = This block is an external reference (xref).
+8 = This block is an xref overlay.
+16 = This block is externally dependent.
+32 = This is a resolved external reference, or dependent of an external reference (ignored on input).
+64 = This definition is a referenced external reference (ignored
+on input).
+10 Base point DXF: X value; APP: 3D point
+20, 30 DXF: Y and Z values of base point
+3 Block name
+1 Xref path name
+4 Block description (optional)
+*)
+procedure TvDXFVectorialReader.ReadBLOCKS_BLOCK(ATokens: TDXFTokens;
+  AData: TvVectorialPage; ADoc: TvVectorialDocument);
+var
+  CurToken: TDXFToken;
+  i: Integer;
+  // BLOCK data
+  lName: string;
+  PosX, PosY, PosZ: Double;
+  lBlock: TvBlock = nil;
+  lEntity: TvEntity = nil;
+begin
+  for i := 0 to ATokens.Count - 1 do
+  begin
+    // Now read and process the item name
+    CurToken := TDXFToken(ATokens.Items[i]);
+
+    // Avoid an exception by previously checking if the conversion can be made
+    if CurToken.GroupCode in [10, 20, 30] then
+    begin
+      CurToken.FloatValue :=  StrToFloat(Trim(CurToken.StrValue), FPointSeparator);
+    end;
+
+    case CurToken.GroupCode of
+      2: lName := CurToken.StrValue;
+      10: PosX := CurToken.FloatValue;
+      20: PosY := CurToken.FloatValue;
+      30: PosZ := CurToken.FloatValue;
+      0:
+      begin
+        if lBlock = nil then
+          lBlock := AData.AddBlock(lName, PosX, PosY, PosZ);
+        lEntity := nil;
+
+        case CurToken.StrValue of
+          {'ARC':       lEntity := ReadENTITIES_ARC(CurToken.Childs, nil, ADoc);
+          'CIRCLE':    lEntity := ReadENTITIES_CIRCLE(CurToken.Childs, nil, ADoc);
+          'DIMENSION': lEntity := ReadENTITIES_DIMENSION(CurToken.Childs, nil, ADoc);
+          'ELLIPSE':   lEntity := ReadENTITIES_ELLIPSE(CurToken.Childs, nil, ADoc);}
+          'LINE':      lEntity := ReadENTITIES_LINE(CurToken.Childs, nil, ADoc);
+          'TEXT':      lEntity := ReadENTITIES_TEXT(CurToken.Childs, nil, ADoc);
+          {'LWPOLYLINE':lEntity := ReadENTITIES_LWPOLYLINE(CurToken.Childs, nil, ADoc);
+          'SPLINE':    lEntity := ReadENTITIES_SPLINE(CurToken.Childs, nil, ADoc);
+          'POINT':     lEntity := ReadENTITIES_POINT(CurToken.Childs, nil, ADoc);
+          'MTEXT':     lEntity := ReadENTITIES_MTEXT(CurToken.Childs, nil, ADoc);
+          'LEADER':    lEntity := ReadENTITIES_LEADER(CurToken.Childs, nil, ADoc);}
+        end;
+
+        if lEntity <> nil then
+          lBlock.AddEntity(lEntity);
+      end;
+    end;
+  end;
+end;
+
+procedure TvDXFVectorialReader.ReadBLOCKS_ENDBLK(ATokens: TDXFTokens;
+  AData: TvVectorialPage; ADoc: TvVectorialDocument);
+begin
+
+end;
+
 procedure TvDXFVectorialReader.ReadENTITIES(ATokens: TDXFTokens; AData: TvVectorialPage; ADoc: TvVectorialDocument);
 var
   i: Integer;
@@ -737,6 +882,7 @@ begin
     else if CurToken.StrValue = 'CIRCLE' then ReadENTITIES_CIRCLE(CurToken.Childs, AData, ADoc)
     else if CurToken.StrValue = 'DIMENSION' then ReadENTITIES_DIMENSION(CurToken.Childs, AData, ADoc)
     else if CurToken.StrValue = 'ELLIPSE' then ReadENTITIES_ELLIPSE(CurToken.Childs, AData, ADoc)
+    else if CurToken.StrValue = 'INSERT' then ReadENTITIES_INSERT(CurToken.Childs, AData, ADoc)
     else if CurToken.StrValue = 'LINE' then ReadENTITIES_LINE(CurToken.Childs, AData, ADoc)
     else if CurToken.StrValue = 'TEXT' then ReadENTITIES_TEXT(CurToken.Childs, AData, ADoc)
     else if CurToken.StrValue = 'LWPOLYLINE' then ReadENTITIES_LWPOLYLINE(CurToken.Childs, AData, ADoc)
@@ -763,7 +909,7 @@ begin
   end;
 end;
 
-procedure TvDXFVectorialReader.ReadENTITIES_LINE(ATokens: TDXFTokens; AData: TvVectorialPage; ADoc: TvVectorialDocument);
+function TvDXFVectorialReader.ReadENTITIES_LINE(ATokens: TDXFTokens; AData: TvVectorialPage; ADoc: TvVectorialDocument): TPath;
 var
   CurToken: TDXFToken;
   i: Integer;
@@ -772,6 +918,8 @@ var
   LineEndX, LineEndY, LineEndZ: Double;
   LLineColor: TFPColor;
 begin
+  Result := nil;
+
   // Initial values
   LineStartX := 0;
   LineStartY := 0;
@@ -813,9 +961,18 @@ begin
   {$ifdef FPVECTORIALDEBUG}
  // WriteLn(Format('Adding Line from %f,%f to %f,%f', [LineStartX, LineStartY, LineEndX, LineEndY]));
   {$endif}
-  AData.StartPath(LineStartX, LineStartY);
-  AData.AddLineToPath(LineEndX, LineEndY, LLineColor);
-  AData.EndPath();
+  if AData = nil then
+  begin
+    Result := TPath.Create;
+    Result.AppendMoveToSegment(LineStartX, LineStartY);
+    Result.AppendLineToSegment(LineEndX, LineEndY);
+  end
+  else
+  begin
+    AData.StartPath(LineStartX, LineStartY);
+    AData.AddLineToPath(LineEndX, LineEndY, LLineColor);
+    AData.EndPath();
+  end;
 end;
 
 {
@@ -1139,6 +1296,12 @@ begin
   AData.AddEllipse(CenterX, CenterY, MajorHalfAxis, MinorHalfAxis, Angle);
 end;
 
+function TvDXFVectorialReader.ReadENTITIES_INSERT(ATokens: TDXFTokens;
+  AData: TvVectorialPage; ADoc: TvVectorialDocument): TvInsert;
+begin
+
+end;
+
 {
 100 Subclass marker (AcDbText)
 39 Thickness (optional; default = 0)
@@ -1171,8 +1334,8 @@ end;
   0 = Baseline; 1 = Bottom; 2 = Middle; 3 = Top
   See the Group 72 and 73 integer codes table for clarification.
 }
-procedure TvDXFVectorialReader.ReadENTITIES_TEXT(ATokens: TDXFTokens;
-  AData: TvVectorialPage; ADoc: TvVectorialDocument);
+function TvDXFVectorialReader.ReadENTITIES_TEXT(ATokens: TDXFTokens;
+  AData: TvVectorialPage; ADoc: TvVectorialDocument): TvText;
 var
   CurToken: TDXFToken;
   i: Integer;
@@ -1210,7 +1373,16 @@ begin
   Str := ConvertDXFStringToUTF8(Str);
 
   //
-  AData.AddText(PosX, PosY, 0, '', Round(FontSize), Str);
+  if AData = nil then
+  begin
+    Result := TvText.Create;
+    Result.Value.Text := Str;
+    Result.X := PosX;
+    Result.Y := PosY;
+    Result.Font.Size := Round(FontSize);
+  end
+  else
+    Result := AData.AddText(PosX, PosY, 0, '', Round(FontSize), Str);
 end;
 
 {.$define FPVECTORIALDEBUG_LWPOLYLINE}
@@ -1617,6 +1789,8 @@ begin
 
     if CurTokenFirstChild.StrValue = 'HEADER' then
       ReadHEADER(CurToken.Childs, lPage, AData)
+    else if CurTokenFirstChild.StrValue = 'BLOCKS' then
+      ReadBLOCKS(CurToken.Childs, lPage, AData)
     else if CurTokenFirstChild.StrValue = 'ENTITIES' then
       ReadENTITIES(CurToken.Childs, lPage, AData);
   end;

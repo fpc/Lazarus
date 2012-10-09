@@ -249,6 +249,8 @@ type
     function Next(): TPathSegment;
     procedure CalculateBoundingBox(ADest: TFPCustomCanvas; var ALeft, ATop, ARight, ABottom: Double); override;
     procedure AppendSegment(ASegment: TPathSegment);
+    procedure AppendMoveToSegment(AX, AY: Double);
+    procedure AppendLineToSegment(AX, AY: Double);
     procedure Render(ADest: TFPCustomCanvas; ADestX: Integer = 0;
       ADestY: Integer = 0; AMulX: Double = 1.0; AMulY: Double = 1.0); override;
   end;
@@ -467,6 +469,39 @@ type
     function GenerateDebugTree(ADestRoutine: TvDebugAddItemProc; APageItem: Pointer): Pointer; override;
   end;
 
+  {@@
+    A block is a group of other elements. It is not rendered directly into the drawing,
+    but instead is rendered via another item, called TvInsert
+  }
+
+  { TvBlock }
+
+  TvBlock = class(TvEntity)
+  private
+    FCurIndex: Integer;
+    procedure CallbackDeleteElement(data,arg:pointer);
+  protected
+    FElements: TFPList; // of TvEntity
+  public
+    Name: string;
+    constructor Create; override;
+    destructor Destroy; override;
+    //
+    function GetFirstEntity: TvEntity;
+    function GetNextEntity: TvEntity;
+    procedure AddEntity(AEntity: TvEntity);
+    procedure Clear;
+  end;
+
+  {@@
+    A "Insert" inserts a block into the drawing in the specified position
+  }
+
+  TvInsert = class(TvEntity)
+  public
+    Block: TvBlock; // The block to be inserted
+  end;
+
   { TvVectorialDocument }
 
   TvVectorialDocument = class
@@ -563,12 +598,14 @@ type
     procedure SetPenWidth(AWidth: Integer);
     procedure SetClipPath(AClipPath: TPath; AClipMode: TvClipMode);
     procedure EndPath();
-    procedure AddText(AX, AY, AZ: Double; FontName: string; FontSize: integer; AText: utf8string); overload;
-    procedure AddText(AX, AY: Double; AStr: utf8string); overload;
-    procedure AddText(AX, AY, AZ: Double; AStr: utf8string); overload;
+    function  AddText(AX, AY, AZ: Double; FontName: string; FontSize: integer; AText: utf8string): TvText; overload;
+    function  AddText(AX, AY: Double; AStr: utf8string): TvText; overload;
+    function  AddText(AX, AY, AZ: Double; AStr: utf8string): TvText; overload;
     procedure AddCircle(ACenterX, ACenterY, ARadius: Double);
     procedure AddCircularArc(ACenterX, ACenterY, ARadius, AStartAngle, AEndAngle: Double; AColor: TFPColor);
     procedure AddEllipse(CenterX, CenterY, HorzHalfAxis, VertHalfAxis, Angle: Double);
+    function AddBlock(AName: string; AX, AY, AZ: Double): TvBlock;
+    function AddInsert(AX, AY, AZ: Double; ABlock: TvBlock): TvInsert;
     // Dimensions
     procedure AddAlignedDimension(BaseLeft, BaseRight, DimLeft, DimRight: T3DPoint);
     //
@@ -959,6 +996,28 @@ begin
   PointsEnd.Next := ASegment;
   ASegment.Previous := PointsEnd;
   PointsEnd := ASegment;
+end;
+
+procedure TPath.AppendMoveToSegment(AX, AY: Double);
+var
+  segment: T2DSegment;
+begin
+  segment := T2DSegment.Create;
+  segment.SegmentType := stMoveTo;
+  segment.X := AX;
+  segment.Y := AY;
+  AppendSegment(segment);
+end;
+
+procedure TPath.AppendLineToSegment(AX, AY: Double);
+var
+  segment: T2DSegment;
+begin
+  segment := T2DSegment.Create;
+  segment.SegmentType := st2DLine;
+  segment.X := AX;
+  segment.Y := AY;
+  AppendSegment(segment);
 end;
 
 procedure TPath.Render(ADest: TFPCustomCanvas; ADestX: Integer;
@@ -2152,6 +2211,50 @@ begin
   end;
 end;
 
+{ TvBlock }
+
+procedure TvBlock.CallbackDeleteElement(data, arg: pointer);
+begin
+  TvFormulaElement(data).Free;
+end;
+
+constructor TvBlock.Create;
+begin
+  inherited Create;
+  FElements := TFPList.Create;
+end;
+
+destructor TvBlock.Destroy;
+begin
+  FElements.Free;
+  inherited Destroy;
+end;
+
+function TvBlock.GetFirstEntity: TvEntity;
+begin
+  if FElements.Count = 0 then Exit(nil);
+  Result := FElements.Items[0];
+  FCurIndex := 1;
+end;
+
+function TvBlock.GetNextEntity: TvEntity;
+begin
+  if FElements.Count <= FCurIndex then Exit(nil);
+  Result := FElements.Items[FCurIndex];
+  Inc(FCurIndex);
+end;
+
+procedure TvBlock.AddEntity(AEntity: TvEntity);
+begin
+  FElements.Add(AEntity);
+end;
+
+procedure TvBlock.Clear;
+begin
+  FElements.ForEachCall(CallbackDeleteElement, nil);
+  FElements.Clear;
+end;
+
 { TvVectorialPage }
 
 procedure TvVectorialPage.ClearTmpPath;
@@ -2495,8 +2598,8 @@ begin
   ClearTmpPath();
 end;
 
-procedure TvVectorialPage.AddText(AX, AY, AZ: Double; FontName: string;
-  FontSize: integer; AText: utf8string);
+function TvVectorialPage.AddText(AX, AY, AZ: Double; FontName: string;
+  FontSize: integer; AText: utf8string): TvText;
 var
   lText: TvText;
 begin
@@ -2508,16 +2611,17 @@ begin
   lText.Font.Name := FontName;
   lText.Font.Size := FontSize;
   AddEntity(lText);
+  Result := lText;
 end;
 
-procedure TvVectorialPage.AddText(AX, AY: Double; AStr: utf8string);
+function TvVectorialPage.AddText(AX, AY: Double; AStr: utf8string): TvText;
 begin
-  AddText(AX, AY, 0, '', 10, AStr);
+  Result := AddText(AX, AY, 0, '', 10, AStr);
 end;
 
-procedure TvVectorialPage.AddText(AX, AY, AZ: Double; AStr: utf8string);
+function TvVectorialPage.AddText(AX, AY, AZ: Double; AStr: utf8string): TvText;
 begin
-  AddText(AX, AY, AZ, '', 10, AStr);
+  Result := AddText(AX, AY, AZ, '', 10, AStr);
 end;
 
 procedure TvVectorialPage.AddCircle(ACenterX, ACenterY, ARadius: Double);
@@ -2558,6 +2662,30 @@ begin
   lEllipse.VertHalfAxis := VertHalfAxis;
   lEllipse.Angle := Angle;
   AddEntity(lEllipse);
+end;
+
+function TvVectorialPage.AddBlock(AName: string; AX, AY, AZ: Double): TvBlock;
+var
+  lBlock: TvBlock;
+begin
+  lBlock := TvBlock.Create;
+  lBlock.X := AX;
+  lBlock.Y := AY;
+  lBlock.Name := AName;
+  AddEntity(lBlock);
+  Result := lBlock;
+end;
+
+function TvVectorialPage.AddInsert(AX, AY, AZ: Double; ABlock: TvBlock): TvInsert;
+var
+  lInsert: TvInsert;
+begin
+  lInsert := TvInsert.Create;
+  lInsert.X := AX;
+  lInsert.Y := AY;
+  lInsert.Block := ABlock;
+  AddEntity(lInsert);
+  Result := lInsert;
 end;
 
 

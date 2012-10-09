@@ -136,6 +136,7 @@ type
     {$endif}
     procedure ReadVariableLengthRecords(AStream: TStream);
     procedure DoProgress(AProgress: Byte; AData: TvVectorialDocument);
+    function ReadLAZPoint0(AStream: TStream): TLASPointDataRecordFormat0;
   public
     // Public Header
     PublicHeaderBlock_1_0: TLASPublicHeaderBlock_1_0;
@@ -355,6 +356,12 @@ begin
   if @AData.OnProgress <> nil then AData.OnProgress(AProgress);
 end;
 
+function TvLASVectorialReader.ReadLAZPoint0(AStream: TStream
+  ): TLASPointDataRecordFormat0;
+begin
+
+end;
+
 procedure TvLASVectorialReader.ReadFromStream(AStream: TStream;
   AData: TvVectorialDocument);
 var
@@ -421,6 +428,15 @@ begin
       lClassification := lRecord1.Classification;
       lPoint := lPage.AddPoint(lRecord1.X, lRecord1.Y, lRecord1.Z);
     end;
+    130:
+    begin
+      lRecord0 := ReadLAZPoint0(AStream);
+      lClassification := lRecord0.Classification;
+      lPoint := lPage.AddPoint(lRecord0.X, lRecord0.Y, lRecord0.Z);
+    end;
+    else
+      raise Exception.Create('[TvLASVectorialReader.ReadFromStream] Error reading LAS point: Unknown point type number='
+       + IntToStr(PublicHeaderBlock_1_0.PointDataFormatID));
     end;
 
     // Correct the min and max
@@ -477,6 +493,7 @@ initialization
 
   RegisterVectorialReader(TvLASVectorialReader, vfLAS);
   RegisterVectorialWriter(TvLASVectorialWriter, vfLAS);
+  RegisterVectorialReader(TvLASVectorialReader, vfLAZ);
 
 end.
 

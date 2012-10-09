@@ -42,12 +42,12 @@ type
   TvLAZVectorialReader = class(TvLASVectorialReader)
   public
     { General reading methods }
-    procedure ReadFromStream(AStream: TStream; AData: TvVectorialDocument); override;
+    //procedure ReadFromStream(AStream: TStream; AData: TvVectorialDocument); override;
   end;
 
 implementation
 
-procedure TvLAZVectorialReader.ReadFromStream(AStream: TStream;
+(*procedure TvLAZVectorialReader.ReadFromStream(AStream: TStream;
   AData: TvVectorialDocument);
 var
   lPage: TvVectorialPage;
@@ -162,12 +162,12 @@ begin
     end;
 
     lPoint.Pen.Color := lColor;
-  end;*)
-end;
+  end;
+end;*)
 
 initialization
 
-  RegisterVectorialReader(TvLAZVectorialReader, vfLAZ);
+//  RegisterVectorialReader(TvLAZVectorialReader, vfLAZ);
 //  RegisterVectorialWriter(TvLAZVectorialWriter, vfLAZ);
 
 end.
