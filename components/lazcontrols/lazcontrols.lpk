@@ -18,7 +18,7 @@
     </CompilerOptions>
     <Description Value="Some extra LCL controls needed by the IDE."/>
     <License Value="modified LGPL-2"/>
-    <Version Major="1" Release="1"/>
+    <Version Major="1" Release="2"/>
     <Files Count="4">
       <Item1>
         <Filename Value="dividerbevel.pas"/>

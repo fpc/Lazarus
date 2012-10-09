@@ -2,7 +2,7 @@
 #
 #   Makefile.fpc for CodeTools 1.0.1
 #
-#   This file was generated on 9-4-12
+#   This file was generated on 9-10-12
 
 [package]
 name=codetools
@@ -10,7 +10,7 @@ version=1.0.1
 
 [compiler]
 unittargetdir=units/$(CPU_TARGET)-$(OS_TARGET)
-unitdir=../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../../packager/units/$(CPU_TARGET)-$(OS_TARGET) .
+unitdir=../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../../../lazarus/packager/units/$(CPU_TARGET)-$(OS_TARGET) .
 options= -MObjFPC -Sci -O1 -g -gl -vewni -l
 
 [target]
