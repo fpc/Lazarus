@@ -42,18 +42,20 @@ implementation
 
 procedure TForm1.Button1Click(Sender: TObject);
 begin
-  OpenDialog1.Execute;
-  frReport1.FileName := OpenDialog1.FileName;
-  frReport1.LoadFromFile(OpenDialog1.Filename);
-  frReport1.DesignReport;
+  if OpenDialog1.Execute then begin
+    frReport1.FileName := OpenDialog1.FileName;
+    frReport1.LoadFromFile(OpenDialog1.Filename);
+    frReport1.DesignReport;
+  end;
 end;
 
 procedure TForm1.Button2Click(Sender: TObject);
 begin
-  OpenDialog1.Execute;
-  frReport1.FileName := OpenDialog1.FileName;
-  frReport1.LoadFromFile(OpenDialog1.Filename);
-  frReport1.ShowReport;
+  if OpenDialog1.Execute then begin
+    frReport1.FileName := OpenDialog1.FileName;
+    frReport1.LoadFromFile(OpenDialog1.Filename);
+    frReport1.ShowReport;
+  end;
 end;
 
 procedure TForm1.FormCreate(Sender: TObject);
