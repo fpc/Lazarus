@@ -32,8 +32,8 @@ uses
 type
   TLazSynDisplayRtlInfo = record
     IsRtl: Boolean;
-    PhysLeft: integer;  // 1-based
-    PhysRight: integer;
+    PhysLeft, PhysRight: integer;  // 1-based
+    LogFirst, LogLast: integer;
   end;
 
   TSynEditMarkupClass = class of TSynEditMarkup;

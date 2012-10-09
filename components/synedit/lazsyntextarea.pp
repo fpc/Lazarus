@@ -14,6 +14,7 @@ uses
 type
   TLazSynDisplayTokenInfoEx = record
     Tk: TLazSynDisplayTokenInfo;
+    Attr: TSynSelectedColor;
     StartPos: TLazSynDisplayTokenBound;  // Start according to Logical flow. Left for LTR, or Right for RTL
     EndPos: TLazSynDisplayTokenBound;    // End according to Logical flow.
     // SreenRect Bounds. Ltr/RTL independent. Start is always left. End Always right
@@ -22,7 +23,8 @@ type
     PhysicalCharEnd: Integer;            // 1 based - Full char bound (After EndPos.Physical (PaintEnd))
     PhysicalClipEnd: Integer;            // 1 based - PaintEnd
     RtlInfo: TLazSynDisplayRtlInfo;
-    Attr: TSynSelectedColor;
+    RtlExpandedExtraBytes: Integer;         // tab and space expansion
+    RtlHasDoubleWidth: Boolean;
 
     ExpandedExtraBytes: Integer;         // tab and space expansion
     HasDoubleWidth: Boolean;
@@ -59,9 +61,10 @@ type
     FCurViewScannerPhysCharPos: Integer;           // 1 based - Full char bound (Before FCurViewScannerPos.Physical (PaintStart))
     // RTL Run
     FCurViewinRTL: Boolean;
-    FCurViewRtlPhysStart: integer;
-    FCurViewRtlPhysEnd: integer;
-    FCurViewRtlLogEnd: integer;
+    FCurViewRtlPhysStart, FCurViewRtlPhysEnd: integer;
+    FCurViewRtlLogStart,  FCurViewRtlLogEnd: integer;
+    FCurViewRtlExpExtraBytes: Integer;         // tab and space expansion for entire RTL run
+    FCurViewRtlHasDoubleWidth: Boolean;
 
     FNextMarkupPhysPos, FNextMarkupLogPos: Integer;
     FCurMarkupNextStart: TLazSynDisplayTokenBound;
@@ -100,6 +103,7 @@ type
 
     FCanvas: TCanvas;
     FTextDrawer: TheTextDrawer;
+    FEtoBuf: TEtoBuffer;
     FTheLinesView: TSynEditStrings;
     FHighlighter: TSynCustomHighlighter;
     FMarkupManager: TSynEditMarkupManager;
@@ -559,17 +563,36 @@ function TLazSynPaintTokenBreaker.GetNextHighlighterTokenFromView(out
 
   procedure ChangeToRtl(ALogicIdx, ALogicEnd: Integer);
   var
-    RtlRunPhysWidth, j: Integer;
+    RtlRunPhysWidth, TabExtra, i, j: Integer;
     pcw: TPhysicalCharWidth;
+    HasDouble: Boolean;
+    c: Char;
   begin
+    FCurViewRtlLogStart := ALogicIdx;
     pcw := GetCharWidthData(ALogicIdx);
 
     RtlRunPhysWidth := 0;
+    i         := 0;
+    HasDouble := False;
+    TabExtra  := 0; // Extra bytes needed for expanded Tab/Space(utf8 visible space/dot)
     j := (pcw and PCWMask);
     while (ALogicIdx < ALogicEnd) and (pcw and PCWFlagRTL <> 0) do begin
       inc(RtlRunPhysWidth, j);
+
+      if j <> 0 then begin
+        c := (FCurViewToken.TokenStart + i)^;
+        if c = #9  then
+          inc(TabExtra, j-1 + FTabExtraByteCount)
+        else
+        if j > 1 then
+          HasDouble := True;
+        if c = ' ' then
+          inc(TabExtra, FSpaceExtraByteCount);
+      end;
+
       repeat
         inc(ALogicIdx);
+        inc(i);
       until (ALogicIdx >= ALogicEnd) or
             (ALogicIdx >= FCharWidthsLen) or ((FCharWidths[ALogicIdx] and PCWMask) <> 0);
 
@@ -577,12 +600,14 @@ function TLazSynPaintTokenBreaker.GetNextHighlighterTokenFromView(out
       j := pcw and PCWMask;
     end;
 
-    FCurViewinRTL := True;
-    FCurViewRTLLogEnd  := ALogicIdx;
-    FCurViewRtlPhysStart := FCurViewScannerPhysCharPos;
-    FCurViewRtlPhysEnd := FCurViewScannerPhysCharPos + RtlRunPhysWidth;
-    FCurViewScannerPhysCharPos      := FCurViewRtlPhysEnd;
+    FCurViewinRTL               := True;
+    FCurViewRTLLogEnd           := ALogicIdx;
+    FCurViewRtlPhysStart        := FCurViewScannerPhysCharPos;
+    FCurViewRtlPhysEnd          := FCurViewScannerPhysCharPos + RtlRunPhysWidth;
+    FCurViewScannerPhysCharPos  := FCurViewRtlPhysEnd;
     FCurViewScannerPos.Physical := FCurViewRtlPhysEnd;
+    FCurViewRtlExpExtraBytes    := TabExtra;
+    FCurViewRtlHasDoubleWidth   := HasDouble;
   end;
 
   function MaybeChangeToRtl(ALogicIdx, ALogicEnd: Integer): boolean; inline;
@@ -709,6 +734,10 @@ begin
           ATokenInfo.RtlInfo.IsRtl      := False;
           //ATokenInfo.RtlInfo.PhysLeft   := FCurViewRtlPhysStart;
           //ATokenInfo.RtlInfo.PhysRight  := FCurViewRtlPhysEnd;
+          //ATokenInfo.RtlInfo.LogFirst   := FCurViewRtlLogStart + 1;
+          //ATokenInfo.RtlInfo.LogLast    := FCurViewRtlLogEnd + 1;
+          //ATokenInfo.RtlExpandedExtraBytes := FCurViewRtlExpExtraBytes;
+          //ATokenInfo.RtlHasDoubleWidth  := FCurViewRtlHasDoubleWidth;
           ATokenInfo.Attr               := FCurViewAttr;
 
           ATokenInfo.ExpandedExtraBytes := TabExtra;
@@ -747,6 +776,8 @@ begin
           ATokenInfo.NextRtlInfo.IsRtl     := FCurViewinRTL;
           ATokenInfo.NextRtlInfo.PhysLeft  := FCurViewRtlPhysStart;
           ATokenInfo.NextRtlInfo.PhysRight := FCurViewRtlPhysEnd;
+          ATokenInfo.NextRtlInfo.LogFirst  := FCurViewRtlLogStart + 1;
+          ATokenInfo.NextRtlInfo.LogLast   := FCurViewRtlLogEnd + 1;
 
           break;
         end; // case FCurViewinRTL = False;
@@ -826,6 +857,10 @@ begin
           ATokenInfo.RtlInfo.IsRtl      := True;
           ATokenInfo.RtlInfo.PhysLeft   := FCurViewRtlPhysStart;
           ATokenInfo.RtlInfo.PhysRight  := FCurViewRtlPhysEnd;
+          ATokenInfo.RtlInfo.LogFirst   := FCurViewRtlLogStart + 1;
+          ATokenInfo.RtlInfo.LogLast    := FCurViewRtlLogEnd + 1;
+          ATokenInfo.RtlExpandedExtraBytes := FCurViewRtlExpExtraBytes;
+          ATokenInfo.RtlHasDoubleWidth  := FCurViewRtlHasDoubleWidth;
           ATokenInfo.Attr               := FCurViewAttr;
 
           ATokenInfo.ExpandedExtraBytes := TabExtra;
@@ -865,6 +900,8 @@ begin
           ATokenInfo.NextRtlInfo.IsRtl     := FCurViewinRTL;
           ATokenInfo.NextRtlInfo.PhysLeft  := FCurViewRtlPhysStart;
           ATokenInfo.NextRtlInfo.PhysRight := FCurViewRtlPhysEnd;
+          ATokenInfo.NextRtlInfo.LogFirst  := FCurViewRtlLogStart + 1;
+          ATokenInfo.NextRtlInfo.LogLast   := FCurViewRtlLogEnd + 1;
 
           break;
         end; // case FCurViewinRTL = True;
@@ -1330,6 +1367,7 @@ var
   var
     LineBuffer: PChar;
     LineBufferLen: Integer;
+    LineBufferRtlLogPos: Integer;
 
   procedure DrawHiLightMarkupToken(ATokenInfo: TLazSynDisplayTokenInfoEx);
   var
@@ -1338,11 +1376,10 @@ var
     Attr: TSynSelectedColor;
     TxtFlags: Integer;
     tok: TRect;
-    NeedExpansion: Boolean;
     c, i, j, k, e, Len, CWLen: Integer;
     pl, pt: PChar;
-    Eto: TEtoBuffer;
     TxtLeft: Integer;
+    NeedExpansion, NeedTransform: Boolean;
   begin
     Attr := ATokenInfo.Attr;
     FTextDrawer.SetForeColor(Attr.Foreground);
@@ -1363,7 +1400,6 @@ var
 
     //if (rcToken.Right <= rcToken.Left) then exit;
     rcToken.Left := ScreenColumnToXValue(ATokenInfo.PhysicalClipStart); // because for the first token, this can be middle of a char, and lead to wrong frame
-    TxtLeft := ScreenColumnToXValue(ATokenInfo.PhysicalCharStart); // because for the first token, this can be middle of a char, and lead to wrong frame
 
     (* rcToken.Bottom may be less that crLine.Bottom. If a Divider was drawn, then RcToken will not contain it *)
     TxtFlags := ETO_OPAQUE;
@@ -1407,10 +1443,39 @@ var
       FTextDrawer.DrawFrame(tok);
     end;
 
+    if ATokenInfo.RtlInfo.IsRtl then begin
+      j :=  (ATokenInfo.StartPos.Logical - ATokenInfo.RtlInfo.LogFirst); // bytes in rtl-run, before TokenStart
+      i :=  (ATokenInfo.RtlInfo.LogLast - ATokenInfo.EndPos.Logical);    // bytes in rtl-run, after TokenEnd
+      ATokenInfo.Tk.TokenStart  := ATokenInfo.Tk.TokenStart - j;
+      ATokenInfo.Tk.TokenLength := ATokenInfo.Tk.TokenLength + j + i;
+
+      j :=  (ATokenInfo.EndPos.Physical - ATokenInfo.RtlInfo.PhysLeft);
+      i :=  (ATokenInfo.RtlInfo.PhysRight - ATokenInfo.StartPos.Physical);
+      ATokenInfo.PhysicalCharStart := ATokenInfo.PhysicalCharStart - j;
+      ATokenInfo.PhysicalCharEnd   := ATokenInfo.PhysicalCharEnd + i;
+
+      ATokenInfo.StartPos.Logical   := ATokenInfo.RtlInfo.LogFirst;
+      ATokenInfo.ExpandedExtraBytes := ATokenInfo.RtlExpandedExtraBytes;
+      ATokenInfo.HasDoubleWidth     := ATokenInfo.RtlHasDoubleWidth;
+    end;
+
     NeedExpansion := ATokenInfo.ExpandedExtraBytes > 0;
+    NeedTransform := FTextDrawer.NeedsEto or ATokenInfo.HasDoubleWidth or NeedExpansion;
     Len := ATokenInfo.Tk.TokenLength;
-    Eto := nil;
-    If FTextDrawer.NeedsEto or ATokenInfo.HasDoubleWidth or NeedExpansion then begin
+    if (not ATokenInfo.RtlInfo.IsRtl) or (LineBufferRtlLogPos <> ATokenInfo.RtlInfo.LogFirst) then
+      FEtoBuf := nil;
+
+    If NeedTransform and ATokenInfo.RtlInfo.IsRtl and (LineBufferRtlLogPos = ATokenInfo.RtlInfo.LogFirst)
+    then begin
+      // allready done
+      if NeedExpansion then begin
+        ATokenInfo.Tk.TokenStart  := LineBuffer;
+        ATokenInfo.Tk.TokenLength := Len + ATokenInfo.ExpandedExtraBytes;
+      end;
+    end
+    else
+    If NeedTransform then begin
+      LineBufferRtlLogPos := ATokenInfo.RtlInfo.LogFirst;
       // prepare LineBuffer
       if NeedExpansion then begin
         if (LineBufferLen < Len + ATokenInfo.ExpandedExtraBytes + 1) then begin
@@ -1421,25 +1486,25 @@ var
         pt := ATokenInfo.Tk.TokenStart;
       end;
 
-      // Prepare ETO
+      // Prepare FETOBuf
       if FTextDrawer.NeedsEto or ATokenInfo.HasDoubleWidth then begin
-        Eto := FTextDrawer.Eto;
-        Eto.SetMinLength(Len + ATokenInfo.ExpandedExtraBytes + 1);
+        FEtoBuf := FTextDrawer.Eto;
+        FEtoBuf.SetMinLength(Len + ATokenInfo.ExpandedExtraBytes + 1);
         c := FTextDrawer.GetCharWidth;
         e := 0;
       end;
 
       CWLen := Length(CharWidths);
 
-      // Copy to LineBuffer (and maybe eto
+      // Copy to LineBuffer (and maybe FetoBuf
       if NeedExpansion then begin
         j := ATokenInfo.StartPos.Logical - 1;
         for i := 0 to Len - 1 do begin
           if j < CWLen
           then k := (CharWidths[j] and PCWMask)
           else k := 1;
-          if (k <> 0) and (eto <> nil) then begin
-            Eto.EtoData[e] := k * c;
+          if (k <> 0) and (FetoBuf <> nil) then begin
+            FEtoBuf.EtoData[e] := k * c;
             inc(e);
           end;
 
@@ -1449,13 +1514,13 @@ var
                   pl^ := #194; inc(pl);
                   pl^ := #187; inc(pl);
                   dec(k);
-                  if eto <> nil then Eto.EtoData[e] := c;
+                  if FetoBuf <> nil then FEtoBuf.EtoData[e] := c;
                   inc(e);
                 end;
                 while k > 0 do begin
                   pl^ := ' '; inc(pl);
                   dec(k);
-                  if eto <> nil then Eto.EtoData[e] := c;
+                  if FetoBuf <> nil then FEtoBuf.EtoData[e] := c;
                   inc(e);
                 end;
                 if (vscTabAtLast in FVisibleSpecialChars) and ((pl-1)^=' ') and (j < CWLen) then begin
@@ -1490,14 +1555,14 @@ var
 
       end
       else
-      // ETO only
+      // FETOBuf only
       begin
         for j := ATokenInfo.StartPos.Logical - 1 to ATokenInfo.StartPos.Logical - 1 + Len do begin
           if j < CWLen
           then k := (CharWidths[j] and PCWMask)
           else k := 1;
           if k <> 0 then begin
-            Eto.EtoData[e] := k * c;
+            FEtoBuf.EtoData[e] := k * c;
             inc(e);
           end;
         end;
@@ -1512,8 +1577,9 @@ var
     tok := rcToken;
     if rcToken.Right > nRightEdge + 1 then
       tok.Bottom := rcLine.Bottom;
+    TxtLeft := ScreenColumnToXValue(ATokenInfo.PhysicalCharStart); // because for the first token, this can be middle of a char, and lead to wrong frame
     fTextDrawer.NewTextOut(TxtLeft, rcToken.Top, TxtFlags, tok,
-      ATokenInfo.Tk.TokenStart, ATokenInfo.Tk.TokenLength, Eto);
+      ATokenInfo.Tk.TokenStart, ATokenInfo.Tk.TokenLength, FEtoBuf);
 
 
     rcToken.Left := rcToken.Right;
@@ -1632,6 +1698,7 @@ begin
 
     LineBufferLen := 0;
     LineBuffer := nil;
+    LineBufferRtlLogPos := -1;
     if Assigned(fHighlighter) then begin
       fHighlighter.CurrentLines := FTheLinesView;
     end;
