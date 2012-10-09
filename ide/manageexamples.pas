@@ -208,7 +208,7 @@ begin
     try
       for i:=0 to AllDirs.Count-1 do begin
         LastDir:=ExtractFileName(AllDirs[i]);
-        if (ExamplesCheckBox.Checked and (LastDir='examples'))
+        if (ExamplesCheckBox.Checked and ((LastDir='examples') or (LastDir='samples')))
         or (TestCaseCheckBox.Checked and (LastDir='tests')) then
           DirectoryComboBox.Items.Add(AllDirs[i]);
       end;
