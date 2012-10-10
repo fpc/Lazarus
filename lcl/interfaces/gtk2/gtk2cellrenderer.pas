@@ -124,6 +124,7 @@ begin
       exit;
 
   ItemIndex := GetItemIndex(PLCLIntfCellRenderer(cell), Widget);
+
   if ItemIndex < 0 then
     ItemIndex := 0;
 
@@ -180,6 +181,7 @@ begin
     AreaRect := Bounds(background_area^.x, background_area^.y,
                      background_area^.Width, background_area^.Height);
 
+
     ItemIndex := GetItemIndex(PLCLIntfCellRenderer(cell), Widget);
 
     if ItemIndex < 0 then
@@ -189,7 +191,10 @@ begin
       LVTarget := dtSubItem
     else
       LVTarget := dtItem;
-    LVSubItem := ColumnIndex-1;
+    if AWinControl.FCompStyle = csListView then
+      LVSubItem := ColumnIndex
+    else
+      LVSubItem := ColumnIndex - 1;
     LVStage := cdPrePaint;
     LVState := GtkCellRendererStateToListViewDrawState(flags);
     DCWidget:=Widget;
