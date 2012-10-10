@@ -6471,7 +6471,7 @@ begin
   gdk_draw_line(DevCtx.Drawable, DevCtx.GC, FromPt.X, FromPt.Y, ToPt.X, ToPt.Y);
   {$IFDEF DebugGDK}EndGDKErrorTrap;{$ENDIF}
 
-  DevCtx.PenPos := Point(X+DevCtx.Offset.X, Y+DevCtx.Offset.Y);
+  DevCtx.PenPos := Point(X, Y);
 
   Result := True;
 end;
