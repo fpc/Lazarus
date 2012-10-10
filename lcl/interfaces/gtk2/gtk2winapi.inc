@@ -6462,7 +6462,7 @@ begin
   
   if DevCtx.IsNullPen then Exit(True);
 
-  FromPt := DevCtx.PenPos;
+  FromPt := Point(DevCtx.PenPos.X + DevCtx.Offset.X, DevCtx.PenPos.Y + DevCtx.Offset.Y);
   LPtoDP(DC, FromPt, 1);
   ToPt := Point(X+DevCtx.Offset.X, Y+DevCtx.Offset.Y);
   LPToDP(DC, ToPt, 1);
@@ -6638,7 +6638,7 @@ begin
     begin
       if Assigned(OldPoint) then
         OldPoint^ := PenPos;
-      PenPos := Point(X+DevCtx.Offset.X, Y+DevCtx.Offset.Y)
+      PenPos := Point(X, Y)
     end;
 end;
 
