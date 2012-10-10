@@ -409,7 +409,7 @@ begin
   if not CanEdit(Item) then
     exit;
 
-  R := Item.DisplayRect(drLabel);
+  R := Item.DisplayRect(drBounds);
   if LCLIntf.IsRectEmpty(R) then
     exit;
   S := Item.Caption;
