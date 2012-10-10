@@ -302,7 +302,7 @@ var
   C: TPoint;
 begin
   if Caret = nil then exit;
-  C := Caret.LineCharPos;
+  C := Caret.LineBytePos;
   if ( (C.Y = FHighlightPos1.Y) and (C.X >= FHighlightPos1.X) and (C.X <= FHighlightPos1.X2) ) or
      ( (C.Y = FHighlightPos2.Y) and (C.X >= FHighlightPos2.X) and (C.X <= FHighlightPos2.X2) ) or
      ( (C.Y = FHighlightPos3.Y) and (C.X >= FHighlightPos3.X) and (C.X <= FHighlightPos3.X2) ) then
