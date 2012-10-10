@@ -1818,8 +1818,8 @@ begin
             and (dcStepOut in FDebugger.Commands) and (FDebugger.State = dsPause);
     itmRunMenuStepOut.Enabled := StepOutSpeedButton.Enabled;
     // Run to cursor
-    itmRunMenuRunToCursor.Enabled := CanRun and (not DebuggerIsValid
-            or (dcRunTo in FDebugger.Commands));
+    itmRunMenuRunToCursor.Enabled := CanRun and DebuggerIsValid
+            and (dcRunTo in FDebugger.Commands);
     // Stop
     itmRunMenuStop.Enabled := CanRun and DebuggerIsValid;
     StopSpeedButton.Enabled := itmRunMenuStop.Enabled;
@@ -2352,6 +2352,12 @@ end;
 
 function TDebugManager.DoStepOutProject: TModalResult;
 begin
+  if (FDebugger = nil) or not(dcRunTo in FDebugger.Commands)
+  then begin
+    Result := mrAbort;
+    Exit;
+  end;
+
   if (MainIDE.DoInitProjectRun <> mrOK)
   or (MainIDE.ToolStatus <> itDebugger)
   or (FDebugger = nil) or Destroying
@@ -2699,6 +2705,12 @@ begin
 {$ifdef VerboseDebugger}
   DebugLn('TDebugManager.DoRunToCursor A');
 {$endif}
+  if (FDebugger = nil) or not(dcRunTo in FDebugger.Commands)
+  then begin
+    Result := mrAbort;
+    Exit;
+  end;
+
   if (MainIDE.DoInitProjectRun <> mrOK)
   or (MainIDE.ToolStatus <> itDebugger)
   or (FDebugger = nil) or Destroying

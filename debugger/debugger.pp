@@ -2979,7 +2979,7 @@ const
   {dsNone } [],
   {dsIdle } [dcEnvironment],
   {dsStop } [dcRun, dcStepOver, dcStepInto, dcStepOverInstr, dcStepIntoInstr,
-             dcStepOut, dcRunTo, dcJumpto, dcAttach, dcBreak, dcWatch, dcEvaluate, dcEnvironment,
+             dcAttach, dcBreak, dcWatch, dcEvaluate, dcEnvironment,
              dcSendConsoleInput],
   {dsPause} [dcRun, dcStop, dcStepOver, dcStepInto, dcStepOverInstr, dcStepIntoInstr,
              dcStepOut, dcRunTo, dcJumpto, dcDetach, dcBreak, dcWatch, dcLocal, dcEvaluate, dcModify,
