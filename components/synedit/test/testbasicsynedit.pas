@@ -29,7 +29,7 @@ type
   published
     procedure TestEditEmpty;
     procedure TestEditTabs;
-    procedure TestEditPhysicalLogical;
+    procedure TestPhysicalLogical;
     procedure TestCaretAutoMove;
     procedure TestEditHomeEnd;
     procedure TestCaretMoveLeftRightWord;
@@ -180,58 +180,99 @@ begin
 
 end;
 
-procedure TTestBasicSynEdit.TestEditPhysicalLogical;
+procedure TTestBasicSynEdit.TestPhysicalLogical;
 
-  procedure TestPhysLog(name: string; y, x, expX: integer; expCol: integer = -1;
-    expCsRightX: integer = -1; expCSRCol: integer = -1);
+  function LogPhysConv: TSynLogicalPhysicalConvertor;
+  begin
+    Result := SynEdit.ViewedTextBuffer.LogPhysConvertor;
+  end;
+
+  procedure TestPhysLog(name: string; y, x: integer;
+    expX: integer; expCol: integer = -1;
+    expXcsRight: integer = -1; expColCsRight: integer = -1;
+    expXcsLtr: integer = -1; expColCsLtr: integer = -1;
+    expXcsRtl: integer = -1; expColCsRtl: integer = -1);
   var
     gotX, gotCol: Integer;
+    expDef, expColDef: Integer;
   begin
     name := name + ' y='+inttostr(y)+' x='+inttostr(x);
 
+    expDef := expX;
+    if expXcsLtr >= 0 then expDef := expXcsLtr;
+
     gotX := SynEdit.PhysicalToLogicalPos(Point(x, y)).x;
-    AssertEquals(name+'  PhysicalToLogicalPos', expX, gotX);
+    AssertEquals(name+'  PhysicalToLogicalPos', expDef, gotX);
 
     gotX := SynEdit.PhysicalToLogicalCol(SynEdit.Lines[y-1], y-1, x);
-    AssertEquals(name+'  PhysicalToLogicalCol', expX, gotX);
+    AssertEquals(name+'  PhysicalToLogicalCol', expDef, gotX);
 
 
-    gotX := SynEdit.ViewedTextBuffer.LogPhysConvertor.PhysicalToLogical
-      (y-1, x, gotCol, csPhysLeft);
+
+    gotX := LogPhysConv.PhysicalToLogical(y-1, x, gotCol, cspLeft);
     AssertEquals(name+'  c.PhysicalToLogical', expX, gotX);
     if expCol >= 0 then
       AssertEquals(name+'  c.PhysicalToLogical  COL', expCol, gotCol);
 
-    if expCsRightX >= 0 then begin
-      gotX := SynEdit.ViewedTextBuffer.LogPhysConvertor.PhysicalToLogical
-        (y-1, x, gotCol, csPhysRight);
-      AssertEquals(name+'  c.PhysicalToLogical csRight', expCsRightX, gotX);
-      if expCSRCol >= 0 then
-        AssertEquals(name+'  c.PhysicalToLogical csRight COL', expCSRCol, gotCol);
+
+    if expXcsRight >= 0 then begin
+      gotX := LogPhysConv.PhysicalToLogical(y-1, x, gotCol, cspRight);
+      AssertEquals(name+'  c.PhysicalToLogical csRight', expXcsRight, gotX);
+      if expColCsRight >= 0 then
+        AssertEquals(name+'  c.PhysicalToLogical csRight COL', expColCsRight, gotCol);
+    end;
+
+
+    if expXcsLtr >= 0 then begin
+      gotX := LogPhysConv.PhysicalToLogical(y-1, x, gotCol, cspFollowLtr);
+      AssertEquals(name+'  c.PhysicalToLogical csLtr', expXcsLtr, gotX);
+      if expColCsLtr >= 0 then
+        AssertEquals(name+'  c.PhysicalToLogical csLtr COL', expColCsLtr, gotCol);
+    end;
+
+
+    if expXcsRtl >= 0 then begin
+      gotX := LogPhysConv.PhysicalToLogical(y-1, x, gotCol, cspFollowRtl);
+      AssertEquals(name+'  c.PhysicalToLogical csRtl', expXcsRtl, gotX);
+      if expColCsRtl >= 0 then
+        AssertEquals(name+'  c.PhysicalToLogical csRtl COL', expColCsRtl, gotCol);
     end;
   end;
 
-  procedure TestLogPhys(name: string; y, x, aCol, expX: integer; expCsRightX: integer = -1);
+  procedure TestLogPhys(name: string; y, x, aCol: integer;
+    expX: integer; expXcsAfter: integer = -1; expXcsLtr: integer = -1; expXcsRtl: integer = -1);
   var gotX: Integer;
+    expDef: Integer;
   begin
     name := name + ' y='+inttostr(y)+' x='+inttostr(x)+' c='+IntToStr(aCol);
 
     if aCol = 0 then begin
+      expDef := expX;
+      if expXcsLtr >= 0 then expDef := expXcsLtr; // default is now cslFollowLtr
+
       gotX := SynEdit.LogicalToPhysicalPos(Point(x, y)).x;
-      AssertEquals(name+'  LogicalToPhysicalPos', expX, gotX);
+      AssertEquals(name+'  LogicalToPhysicalPos', expDef, gotX);
 
       gotX := SynEdit.LogicalToPhysicalCol(SynEdit.Lines[y-1], y-1, x);
-      AssertEquals(name+'  LogicalToPhysicalCol', expX, gotX);
+      AssertEquals(name+'  LogicalToPhysicalCol', expDef, gotX);
     end;
 
-    gotX := SynEdit.ViewedTextBuffer.LogPhysConvertor.LogicalToPhysical
-      (y-1, x, aCol, csLogLeft);
+    gotX := LogPhysConv.LogicalToPhysical(y-1, x, aCol, cslBefore);
     AssertEquals(name+'  c.LogicalToPhysical', expX, gotX);
 
-    if expCsRightX >= 0 then begin
-      gotX := SynEdit.ViewedTextBuffer.LogPhysConvertor.LogicalToPhysical
-        (y-1, x, aCol, csLogRight);
-      AssertEquals(name+'  c.LogicalToPhysical csRight', expCsRightX, gotX);
+    if expXcsAfter >= 0 then begin
+      gotX := LogPhysConv.LogicalToPhysical(y-1, x, aCol, cslAfter);
+      AssertEquals(name+'  c.LogicalToPhysical cslAfter', expXcsAfter, gotX);
+    end;
+
+    if expXcsLtr >= 0 then begin
+      gotX := LogPhysConv.LogicalToPhysical(y-1, x, aCol, cslFollowLtr);
+      AssertEquals(name+'  c.LogicalToPhysical cslFollowLtr', expXcsLtr, gotX);
+    end;
+
+    if expXcsRtl >= 0 then begin
+      gotX := LogPhysConv.LogicalToPhysical(y-1, x, aCol, cslFollowRtl);
+      AssertEquals(name+'  c.LogicalToPhysical cslFollowRtl', expXcsRtl, gotX);
     end;
   end;
 
@@ -328,38 +369,50 @@ begin
 
   *)
 
-  SetLines(['شىه ايغ عتل', 'ABCشىه ايغ عتلDEF', 'abcشىه ايغ عتل', 'شىه ايغ عتلdef']);
-  TestLogPhys('bidi line (arab only)', 1,   1, 0,   1, 12);
-  TestLogPhys('bidi line (arab only)', 1,   3, 0,  11, 11);
-  TestLogPhys('bidi line (arab only)', 1,   5, 0,  10, 10);
-  TestLogPhys('bidi line (arab only)', 1,   7, 0,   9,  9);
-  TestLogPhys('bidi line (arab only)', 1,   8, 0,   8,  8); // after space
-  TestLogPhys('bidi line (arab only)', 1,  15, 0,   4,  4); // after space
-  TestLogPhys('bidi line (arab only)', 1,  19, 0,   2,  2);
-  TestLogPhys('bidi line (arab only)', 1,  21, 0,   1, 12); // at EOL
-  TestLogPhys('bidi line (arab only)', 1,  22, 0,  13, 13); // past eol
-  TestLogPhys('bidi line (arab only)', 1,  23, 0,  14, 14);
+  SetLines(['شىه ايغ عتل', 'ABCشىه ايغ عتلDEF', 'abcشىه ايغ عتل', 'شىه ايغ عتلdef', '']);
 
-  TestLogPhys('bidi line (mixed arab/latin)', 2,   1, 0,   1,  1);
-  TestLogPhys('bidi line (mixed arab/latin)', 2,   4, 0,   4, 15); // after C
-  TestLogPhys('bidi line (mixed arab/latin)', 2,   6, 0,  14, 14); // 1 into arabic
-  TestLogPhys('bidi line (mixed arab/latin)', 2,  22, 0,   5,  5); // 1 before end arabic
-  TestLogPhys('bidi line (mixed arab/latin)', 2,  24, 0,   4, 15); // at end arabic
-  TestLogPhys('bidi line (mixed arab/latin)', 2,  25, 0,  16, 16); // after D
-  TestLogPhys('bidi line (mixed arab/latin)', 2,  27, 0,  18, 18); // at eol
-  TestLogPhys('bidi line (mixed arab/latin)', 2,  28, 0,  19, 19); // after eol
+  //                                                           B,  A,  L,  R
+  TestLogPhys('empty line',                   5,   1, 0,       1,  1,  1,  1);
+  TestLogPhys('empty line',                   5,   2, 0,       2,  2,  2,  2);
 
-  TestPhysLog('bidi line (arab only)',  1,   1,   1, 0,  21, 0);
-  TestPhysLog('bidi line (arab only)',  1,   2,  19, 0,  19, 0);
-  TestPhysLog('bidi line (arab only)',  1,   3,  17, 0,  17, 0);
-  TestPhysLog('bidi line (arab only)',  1,   4,  15, 0,  15, 0); // before space
-  TestPhysLog('bidi line (arab only)',  1,   5,  14, 0,  14, 0); // after space
-  TestPhysLog('bidi line (arab only)',  1,  10,   5, 0,   5, 0);
-  TestPhysLog('bidi line (arab only)',  1,  11,   3, 0,   3, 0);
-  TestPhysLog('bidi line (arab only)',  1,  12,   1, 0,  21, 0); // at eol
-  TestPhysLog('bidi line (arab only)',  1,  13,  22, 0,  22, 0);
-  TestPhysLog('bidi line (arab only)',  1,  14,  23, 0,  23, 0);
+  TestLogPhys('bidi line (arab only)',        1,   1, 0,       1, 12,  1, 12);
+  TestLogPhys('bidi line (arab only)',        1,   3, 0,      11, 11, 11, 11);
+  TestLogPhys('bidi line (arab only)',        1,   5, 0,      10, 10, 10, 10);
+  TestLogPhys('bidi line (arab only)',        1,   7, 0,       9,  9,  9,  9);
+  TestLogPhys('bidi line (arab only)',        1,   8, 0,       8,  8,  8,  8); // after space
+  TestLogPhys('bidi line (arab only)',        1,  15, 0,       4,  4,  4,  4); // after space
+  TestLogPhys('bidi line (arab only)',        1,  19, 0,       2,  2,  2,  2);
+  TestLogPhys('bidi line (arab only)',        1,  21, 0,       1, 12, 12,  1); // at EOL
+  TestLogPhys('bidi line (arab only)',        1,  22, 0,      13, 13, 13, 13); // past eol
+  TestLogPhys('bidi line (arab only)',        1,  23, 0,      14, 14, 14, 14);
 
+  TestLogPhys('bidi line (mixed arab/latin)', 2,   1, 0,       1,  1,  1,  1);
+  TestLogPhys('bidi line (mixed arab/latin)', 2,   4, 0,       4, 15,  4, 15); // after C
+  TestLogPhys('bidi line (mixed arab/latin)', 2,   6, 0,      14, 14, 14, 14); // 1 into arabic
+  TestLogPhys('bidi line (mixed arab/latin)', 2,  22, 0,       5,  5,  5,  5); // 1 before end arabic
+  TestLogPhys('bidi line (mixed arab/latin)', 2,  24, 0,       4, 15, 15,  4); // at end arabic
+  TestLogPhys('bidi line (mixed arab/latin)', 2,  25, 0,      16, 16, 16, 16); // after D
+  TestLogPhys('bidi line (mixed arab/latin)', 2,  27, 0,      18, 18, 18, 18); // at eol
+  TestLogPhys('bidi line (mixed arab/latin)', 2,  28, 0,      19, 19, 19, 19); // after eol
+
+  //                                                     Lft      Rght     LTR      RTL
+  TestPhysLog('empty line',                 5,   1,      1, 0,    1, 0,    1, 0,    1, 0);
+  TestPhysLog('empty line',                 5,   2,      2, 0,    2, 0,    2, 0,    2, 0);
+
+  TestPhysLog('bidi line (arab only)',      1,   1,      1, 0,   21, 0,    1, 0,   21, 0);
+  TestPhysLog('bidi line (arab only)',      1,   2,     19, 0,   19, 0,   19, 0,   19, 0);
+  TestPhysLog('bidi line (arab only)',      1,   3,     17, 0,   17, 0,   17, 0,   17, 0);
+  TestPhysLog('bidi line (arab only)',      1,   4,     15, 0,   15, 0,   15, 0,   15, 0); // before space
+  TestPhysLog('bidi line (arab only)',      1,   5,     14, 0,   14, 0,   14, 0,   14, 0); // after space
+  TestPhysLog('bidi line (arab only)',      1,  10,      5, 0,    5, 0,    5, 0,    5, 0);
+  TestPhysLog('bidi line (arab only)',      1,  11,      3, 0,    3, 0,    3, 0,    3, 0);
+  TestPhysLog('bidi line (arab only)',      1,  12,      1, 0,   21, 0,   21, 0,    1, 0); // at eol
+  TestPhysLog('bidi line (arab only)',      1,  13,     22, 0,   22, 0,   22, 0,   22, 0);
+  TestPhysLog('bidi line (arab only)',      1,  14,     23, 0,   23, 0,   23, 0,   23, 0);
+
+  TestPhysLog('bidi line (mixed arab/latin)',2,  1,      1, 0,    1, 0,    1, 0,    1, 0);
+  TestPhysLog('bidi line (mixed arab/latin)',2,  4,      4, 0,   24, 0,    4, 0,   24, 0);
+  TestPhysLog('bidi line (mixed arab/latin)',2, 15,      4, 0,   24, 0,   24, 0,    4, 0);
   {$ENDIF}
 end;
 

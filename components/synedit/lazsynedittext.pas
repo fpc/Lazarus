@@ -79,8 +79,48 @@ const
 
 type
 
-  TSynLogCharSide  = (csLogLeft, csLogRight); // Logical Pos between LTR and RTL, follows char to logical-left/right
-  TSynPhysCharSide = (csPhysLeft, csPhysRight); // Physical Pos between LTR and RTL
+  TSynLogCharSide  = (cslBefore, cslAfter,  cslFollowLtr, cslFollowRtl);
+  TSynPhysCharSide = (cspLeft,  cspRight, cspFollowLtr, cspFollowRtl);
+
+(** LRL    // L=Ltr-Char / R=RTl-Char
+
+   * LogToPhys
+   Log pos 1, is the pos between BOL and the first L.
+   cslBefore binds it to BOL / cslAfter binds it to "L"
+
+   cslBefore, cslAfter can not be mapped back, because the map 2 logical positions into the same phys pos
+
+   (1, cslBefore) => 1 // behind the BOL     = Phys 2
+   (2, cslBefore) => 2 // behind the first L = Phys 2
+   (3, cslBefore) => 2 // behind the R       = Phys 2 (logical behind the R, on screen that is to the left of R, because R is RTL)
+   (4, cslBefore) => 4 // behind the 2nd L   = Phys 4
+
+   (1, cslAfter) => 1 // before the first L = Phys 1
+   (2, cslAfter) => 3 // before the R       = Phys 3
+   (3, cslAfter) => 3 // before the 2nd L   = Phys 3
+   (4, cslAfter) => 4 // before the EOL     = Phys 4
+
+   (1, cslFollowLtr) => 1 // between BOL ant the 1st L     = Phys 1
+   (2, cslFollowLtr) => 2 // follows Ltr, after the 1st L  = Phys 2
+   (3, cslFollowLtr) => 3 // follows Ltr, before the 2nd L = Phys 3
+   (4, cslFollowLtr) => 4 // between the 2nd L and EOL     = Phys 4
+
+   (1, cslFollowRtl) => 1 // between BOL ant the 1st L     = Phys 1
+   (2, cslFollowRtl) => 3 // follows Rtl, before the R     = Phys 3
+   (3, cslFollowRtl) => 2 // follows Rtl, after the R      = Phys 2
+   (4, cslFollowRtl) => 4 // between the 2nd L and EOL     = Phys 4
+
+   * PhysToLog
+   Phys pos 1, is the pos between BOL and the first L.
+   cspLeft binds it to BOL / cspRight binds it to "L"
+
+   (2, cspLeft)  => 2 // looking to the left, using the first L = Log 2
+   (3, cspLeft)  => 2 // looking to the left, using the R       = Log 2 (Pysh 3 is logical before the R / between 1st L and R)
+
+   (2, cspRight) => 3 // looking to the right, using R       = Log 3 (Pysh 2 is logical after the R / between R and 2nd L)
+   (3, cspRight) => 3 // looking to the right, using 2nd L   = Log 3
+*)
+
 
   TSynLogicalPhysicalConvertor = class
   private
@@ -99,11 +139,11 @@ type
     // Line is 0-based // Column is 1-based
     function PhysicalToLogical(AIndex, AColumn: Integer): Integer;
     function PhysicalToLogical(AIndex, AColumn: Integer; out AColOffset: Integer;
-                               ACharSide: TSynPhysCharSide= csPhysLeft): Integer;
+                               ACharSide: TSynPhysCharSide= cspFollowLtr): Integer;
     // ACharPos 1=before 1st char
     function LogicalToPhysical(AIndex, ABytePos: Integer): Integer;
     function LogicalToPhysical(AIndex, ABytePos: Integer; var AColOffset: Integer;
-                               ACharSide: TSynLogCharSide = csLogLeft): Integer;
+                               ACharSide: TSynLogCharSide = cslFollowLtr): Integer;
   end;
 
   (*
@@ -581,7 +621,8 @@ begin
       continue;
     end;
 
-    if (ScreenPos = AColumn) and (ACharSide = csPhysLeft) then begin
+    // currently Ltr
+    if (ScreenPos = AColumn) and (ACharSide in [cspLeft, cspFollowLtr]) then begin
       AColOffset := 0;
       exit(BytePos+1);
     end;
@@ -604,7 +645,7 @@ begin
 
       // RtlScreen is now the screen width of the RTL run
       ScreenPos := ScreenPos + RtlScreen;
-      if (ScreenPos = AColumn) and (ACharSide = csPhysLeft) then begin
+      if (ScreenPos = AColumn) and (ACharSide in [cspLeft, cspFollowRtl]) then begin
         AColOffset := 0;
         exit(BytePos+1);
       end
@@ -693,8 +734,9 @@ begin
     raise Exception.Create(Format('Bad Bytpos for PhystoLogical BytePos=%d ColOffs= %d idx= %d',[ABytePos, AColOffset, AIndex]));
   {$ENDIF}
 
+  assert(ABytePos > 0, 'What uses abytepos = 0 ?');
   {$IFDEF WithSynBiDi }
-  if (ABytePos = 0) or ((ABytePos = 1) and (AColOffset=0) and (ACharSide = csLogLeft)) then
+  if (ABytePos = 0) or ((ABytePos = 1) and (AColOffset=0) and (ACharSide in [cslBefore, cslFollowLtr])) then
     exit(ABytePos);
   {$ELSE}
   if (ABytePos = 0) or ((ABytePos = 1) and (AColOffset=0)) then
@@ -707,7 +749,7 @@ begin
   begin
     Result := 1 + ABytePos - FCurrentWidthsLen;
     if Result > 1 then
-      ACharSide := csLogRight;
+      ACharSide := cslAfter;
     ABytePos := FCurrentWidthsLen;
     AColOffset := 0;
   end
@@ -716,6 +758,7 @@ begin
     assert((FCurrentWidths[ABytePos] and PCWMask) <> 0, 'LogicalToPhysical at char');
     Result := 1 + AColOffset;
   end;
+
 
   {$IFDEF WithSynBiDi }
   RtlLen := 0;
@@ -735,11 +778,15 @@ begin
     {$ENDIF}
   end;
   {$IFDEF WithSynBiDi }
+
   if (ABytePos < FCurrentWidthsLen) and
-     ((FCurrentWidths[ABytePos] and PCWFlagRTL) <> 0) and
-     ( (RtlLen > 0) or (ACharSide = csLogRight) )
+     ((FCurrentWidths[ABytePos] and PCWFlagRTL) <> 0) and // Next Char is Rtl
+     ( (RtlLen > 0) or                           // char is in the middle of the RTL run
+       (ACharSide in [cslAfter, cslFollowRtl])   // may be before rtl run, but want to include entire run (1st log rtl-char is phys at other end)
+     )
   then begin
     i := ABytePos;
+    // Add the remaining RTL chars
     while (i < FCurrentWidthsLen) and
           ( ((FCurrentWidths[i] and PCWFlagRTL) <> 0) or ((FCurrentWidths[i] and PCWMask) = 0) )
     do begin
@@ -749,10 +796,10 @@ begin
   end
   else
   if   (ABytePos > FCurrentWidthsLen) or
-    (ACharSide = csLogRight) and
+    (ACharSide in [cslAfter, cslFollowLtr]) and
     (  (ABytePos = FCurrentWidthsLen) or
      ( (ABytePos < FCurrentWidthsLen) and ((FCurrentWidths[ABytePos] and PCWFlagRTL) = 0) )
-    )
+    ) // next char is LTR
   then
     Result := Result + RtlLen;
   {$ENDIF}

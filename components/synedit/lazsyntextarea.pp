@@ -1444,6 +1444,8 @@ var
     end;
 
     if ATokenInfo.RtlInfo.IsRtl then begin
+      // Always draw the entire RTL run, to keep weak chars in context.
+      // Alternatively, could use ETO_RTLREADING
       j :=  (ATokenInfo.StartPos.Logical - ATokenInfo.RtlInfo.LogFirst); // bytes in rtl-run, before TokenStart
       i :=  (ATokenInfo.RtlInfo.LogLast - ATokenInfo.EndPos.Logical);    // bytes in rtl-run, after TokenEnd
       ATokenInfo.Tk.TokenStart  := ATokenInfo.Tk.TokenStart - j;
