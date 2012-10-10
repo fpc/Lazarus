@@ -216,11 +216,10 @@ begin
   CellClass := PLCLIntfCellRendererClass(gtk_object_get_class(cell));
 
   // do not call DefaultGtkRender when we are custom drawn listbox.issue #23093
-  AWinControl := nil;
   if ColumnIndex < 0 then
   begin
     AWinControl := GetControl(cell, widget);
-    if [csDestroying,csLoading]*AWinControl.ComponentState<>[] then
+    if [csDestroying,csLoading,csDesigning]*AWinControl.ComponentState<>[] then
       AWinControl := nil;
     if AWinControl is TCustomListbox then
       if TCustomListbox(AWinControl).Style = lbStandard then
@@ -229,7 +228,7 @@ begin
       AWinControl := nil;
   end;
   // do default draw only if we are customdrawn.
-  if (AWinControl = nil) then
+  if (ColumnIndex > -1) or ((ColumnIndex < 0) and (AWinControl = nil)) then
     CellClass^.DefaultGtkRender(cell, Window, Widget, background_area, cell_area,
       expose_area, flags);
   
