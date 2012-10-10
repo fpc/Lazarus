@@ -6464,14 +6464,14 @@ begin
 
   FromPt := DevCtx.PenPos;
   LPtoDP(DC, FromPt, 1);
-  ToPt := Point(X, Y);
+  ToPt := Point(X+DevCtx.Offset.X, Y+DevCtx.Offset.Y);
   LPToDP(DC, ToPt, 1);
   
   {$IFDEF DebugGDK}BeginGDKErrorTrap;{$ENDIF}
   gdk_draw_line(DevCtx.Drawable, DevCtx.GC, FromPt.X, FromPt.Y, ToPt.X, ToPt.Y);
   {$IFDEF DebugGDK}EndGDKErrorTrap;{$ENDIF}
 
-  DevCtx.PenPos := Point(X, Y);
+  DevCtx.PenPos := Point(X+DevCtx.Offset.X, Y+DevCtx.Offset.Y);
 
   Result := True;
 end;
@@ -6629,15 +6629,16 @@ end;
 
  ------------------------------------------------------------------------------}
 function TGtk2WidgetSet.MoveToEx(DC: HDC; X, Y: Integer; OldPoint: PPoint): Boolean;
+var
+  DevCtx: TGtkDeviceContext absolute DC;
 begin
   Result := IsValidDC(DC);
   if Result then
-    with TGtkDeviceContext(DC) do
+    with DevCtx do
     begin
       if Assigned(OldPoint) then
         OldPoint^ := PenPos;
-
-      PenPos := Point(X, Y);
+      PenPos := Point(X+DevCtx.Offset.X, Y+DevCtx.Offset.Y)
     end;
 end;
 
