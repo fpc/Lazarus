@@ -255,6 +255,7 @@ type
     function GetModifiedStyle(aStyle: TFontStyles): TFontStyles;
     procedure ModifyColors(var AForeground, ABackground, AFrameColor: TColor;
       var AStyle: TFontStyles; var AFrameStyle: TSynLineStyle);
+    procedure SetAllPriorities(ANewPriority: Integer);
     property OnChange: TNotifyEvent read fOnChange write fOnChange;
   published
     property Background default clHighLight;
@@ -635,6 +636,17 @@ begin
   end;
 
   AStyle := GetModifiedStyle(AStyle);
+end;
+
+procedure TSynSelectedColor.SetAllPriorities(ANewPriority: Integer);
+var
+  i: TFontStyle;
+begin
+  BackPriority  := ANewPriority;
+  ForePriority  := ANewPriority;
+  FramePriority := ANewPriority;
+  for i := low(TFontStyle) to high(TFontStyle) do
+    StylePriority[i] := ANewPriority;
 end;
 
 function TSynSelectedColor.GetFrameSideColors(Side: TLazSynBorderSide): TColor;
