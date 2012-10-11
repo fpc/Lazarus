@@ -91,6 +91,10 @@ begin
             #9'i'#9'12'#9,
             'ي'#9'شس',                        // 15
             #9'('#9')',
+            '//شس يشس ي(شس ي',
+            'a     ''شس''b',
+            'a     ''شسقف',
+            'a     ''شسقف',                  // 20
             ''
            ]);
 end;
@@ -267,6 +271,22 @@ type
     FTheHighLighter.AddToken(7-1,  2, FtkGreen);  // i
     FTheHighLighter.AddToken(7-1,  3, FtkRed);    // =
     FTheHighLighter.AddToken(7-1,  6, FtkGreen);  // 123
+    FTheHighLighter.AddToken(17-1, 2, FtkBlue);   // //
+
+    FTheHighLighter.AddToken(18-1, 6, FtkGreen);   // '      ' 6 spaces
+    FTheHighLighter.AddToken(18-1, 7, FtkYellow);  // '
+    FTheHighLighter.AddToken(18-1,11, FtkBlue);    // شس
+    FTheHighLighter.AddToken(18-1,12, FtkYellow);  // '
+    FTheHighLighter.AddToken(18-1,13, FtkRed);  // ,
+
+    FTheHighLighter.AddToken(19-1, 6, FtkGreen);   // '      ' 6 spaces
+    FTheHighLighter.AddToken(19-1, 7, FtkYellow);  // '
+    FTheHighLighter.AddToken(19-1,15, FtkBlue);    // شس
+
+    FTheHighLighter.AddToken(20-1, 6, FtkGreen);   // '      ' 6 spaces
+    FTheHighLighter.AddToken(20-1, 7, FtkYellow);  // '
+    FTheHighLighter.AddToken(20-1,13, FtkRed);    // شس 3 chars, ekcept last will be red
+    FTheHighLighter.AddToken(20-1,15, FtkBlue);    // شس
 
     {%region  LTR only }
       PushBaseName('LTR-Only');
@@ -439,9 +459,6 @@ type
       PopBaseName;
     {%endregion}
 
-    SynEdit.ViewedTextBuffer.DisplayView.FinishHighlighterTokens;
-    SynEdit.Highlighter := nil;
-    SynEdit.ViewedTextBuffer.DisplayView.InitHighlighterTokens(SynEdit.Highlighter);
     {%region  RTL only }
       PushBaseName('RTL-Only');
       {%region  full line}
@@ -661,8 +678,20 @@ type
         TestNext([],    b( 1, 1),  b( 2, 2),    1, 2,   1, 2,   False, 'A');
         TestEnd;
 
+      {%endregion}
+
+
+      {%region}
+        TestStart('Scan full line 18 / hl-token',   20,   9, 30,   20);
+        TestNext([],    b(12, 8, 0),  b( 9,14, 0),    9,12,   9,12,   True,  'شسق', clRed,   b(12, 16, 0), False);
+        TestEnd(b(12, 16, 0));
+
+        TestStart('Scan full line 18 / hl-token',   20,  10, 30,   20);
+        TestNext([],    b(12, 8, 0),  b(10,12, 0),   10,12,  10,12,   True,  'شس', clRed,   b(12, 16, 0), False);
+        TestEnd(b(12, 16, 0));
 
       {%endregion}
+
 
       PopBaseName;
     {%endregion}
@@ -727,7 +756,6 @@ type
         TestNext([],    b(25,25, 0),  b(30,30, 0),   25,30,  25,30,   False, ' ',         clPurple);
         TestNext([],    b(30,30, 0),  b(99,99, 0),   30,99,  30,99,   False, ' ',         clBlack);
         TestEnd;
-
       {%endregion}
 
       {%region}
@@ -776,6 +804,312 @@ type
       {%endregion}
       PopBaseName;
     {%endregion}
+
+
+        // HL token ends exactly at LTR to RTL change
+
+        SynEdit.BlockBegin := Point(1,1);
+        TestStart('Scan full line 17 / hl-token',   17,   1, 30,   17);
+        TestNext([],    b( 1, 1, 0),  b( 3, 3, 0),    1, 3,   1, 3,   False, '//',            clBlue);
+        TestNext([],    b(16, 3, 0),  b( 3,25, 0),    3,16,   3,16,   True,  'شس يشس ي(شس ي', clBlack);
+        TestNext([],    b(16,25, 0),  b(30,39, 0),   16,30,  16,30,   False, ' ',             clBlack);
+        TestEnd;
+
+        SynEdit.BlockBegin := Point( 3,17);
+        SynEdit.BlockEnd   := Point(25,17);
+        TestStart('Scan full line 17 / hl-token',   17,   1, 30,   17);
+        TestNext([],    b( 1, 1, 0),  b( 3, 3, 0),    1, 3,   1, 3,   False, '//',            clBlue);
+        TestNext([],    b(16, 3, 0),  b( 3,25, 0),    3,16,   3,16,   True,  'شس يشس ي(شس ي', clPurple);
+        TestNext([],    b(16,25, 0),  b(30,39, 0),   16,30,  16,30,   False, ' ',             clBlack);
+        TestEnd;
+
+        SynEdit.BlockBegin := Point( 3,17);
+        SynEdit.BlockEnd   := Point(22,17); // 2 chars off
+        TestStart('Scan full line 17 / hl-token',   17,   1, 30,   17);
+        TestNext([],    b( 1, 1, 0),  b( 3, 3, 0),    1, 3,   1, 3,   False, '//',          clBlue);
+        TestNext([],    b(16, 3, 0),  b( 5,22, 0),    5,16,   5,16,   True,  'شس يشس ي(شس', clPurple);
+        TestNext([],    b( 5,22, 0),  b( 3,25, 0),    3, 5,   3, 5,   True,  ' ي',          clBlack);
+        TestNext([],    b(16,25, 0),  b(30,39, 0),   16,30,  16,30,   False, ' ',           clBlack);
+        TestEnd;
+
+        SynEdit.BlockBegin := Point( 7,17); // 2 chars off
+        SynEdit.BlockEnd   := Point(25,17);
+        TestStart('Scan full line 17 / hl-token',   17,   1, 30,   17);
+        TestNext([],    b( 1, 1, 0),  b( 3, 3, 0),    1, 3,   1, 3,   False, '//',          clBlue);
+        TestNext([],    b(16, 3, 0),  b(14, 7, 0),   14,16,  14,16,   True,  'شس',          clBlack);
+        TestNext([],    b(14, 7, 0),  b( 3,25, 0),    3,14,   3,14,   True,  ' يشس ي(شس ي', clPurple);
+        TestNext([],    b(16,25, 0),  b(30,39, 0),   16,30,  16,30,   False, ' ',           clBlack);
+        TestEnd;
+
+        SynEdit.BlockBegin := Point( 7,17);
+        SynEdit.BlockEnd   := Point(22,17);
+        TestStart('Scan full line 17 / hl-token',   17,   1, 30,   17);
+        TestNext([],    b( 1, 1, 0),  b( 3, 3, 0),    1, 3,   1, 3,   False, '//',          clBlue);
+        TestNext([],    b(16, 3, 0),  b(14, 7, 0),   14,16,  14,16,   True,  'شس',          clBlack);
+        TestNext([],    b(14, 7, 0),  b( 5,22, 0),    5,14,   5,14,   True,  ' يشس ي(شس', clPurple);
+        TestNext([],    b( 5,22, 0),  b( 3,25, 0),    3, 5,   3, 5,   True,  ' ي',          clBlack);
+        TestNext([],    b(16,25, 0),  b(30,39, 0),   16,30,  16,30,   False, ' ',           clBlack);
+        TestEnd;
+
+        // Mixed RTL (and weak)
+        // increase LeftChar
+        SynEdit.BlockBegin := Point(1,1);
+        TestStart('Scan full line 18 / hl-token',   18,   1, 30,   18);
+        TestNext([],    b( 1, 1, 0),  b( 7, 7, 0),    1, 7,   1, 7,   False, 'a     ',  clGreen);
+        TestNext([],    b( 7, 7, 0),  b( 8, 8, 0),    7, 8,   7, 8,   False, '''',      clYellow);
+        TestNext([],    b(10, 8, 0),  b( 8,12, 0),    8,10,   8,10,   True,  'شس',      clBlue);
+        TestNext([],    b(10,12, 0),  b(11,13, 0),   10,11,  10,11,   False, '''',      clYellow);
+        TestNext([],    b(11,13, 0),  b(12,14, 0),   11,12,  11,12,   False, 'b',       clRed);
+        TestNext([],    b(12,14, 0),  b(30,32, 0),   12,30,  12,30,   False, ' ',       clBlack);
+        TestEnd;
+
+        TestStart('Scan full line 18 / hl-token',   18,   2, 30,   18);
+        TestNext([],    b( 2, 2, 0),  b( 7, 7, 0),    2, 7,   2, 7,   False, '     ',   clGreen);
+        TestNext([],    b( 7, 7, 0),  b( 8, 8, 0),    7, 8,   7, 8,   False, '''',      clYellow);
+        TestNext([],    b(10, 8, 0),  b( 8,12, 0),    8,10,   8,10,   True,  'شس',      clBlue);
+        TestNext([],    b(10,12, 0),  b(11,13, 0),   10,11,  10,11,   False, '''',      clYellow);
+        TestNext([],    b(11,13, 0),  b(12,14, 0),   11,12,  11,12,   False, 'b',       clRed);
+        TestNext([],    b(12,14, 0),  b(30,32, 0),   12,30,  12,30,   False, ' ',       clBlack);
+        TestEnd;
+
+        TestStart('Scan full line 18 / hl-token',   18,   3, 30,   18);
+        TestNext([],    b( 3, 3, 0),  b( 7, 7, 0),    3, 7,   3, 7,   False, '    ',    clGreen);
+        TestNext([],    b( 7, 7, 0),  b( 8, 8, 0),    7, 8,   7, 8,   False, '''',      clYellow);
+        TestNext([],    b(10, 8, 0),  b( 8,12, 0),    8,10,   8,10,   True,  'شس',      clBlue);
+        TestNext([],    b(10,12, 0),  b(11,13, 0),   10,11,  10,11,   False, '''',      clYellow);
+        TestNext([],    b(11,13, 0),  b(12,14, 0),   11,12,  11,12,   False, 'b',       clRed);
+        TestNext([],    b(12,14, 0),  b(30,32, 0),   12,30,  12,30,   False, ' ',       clBlack);
+        TestEnd;
+
+        TestStart('Scan full line 18 / hl-token',   18,   4, 30,   18);
+        TestNext([],    b( 4, 4, 0),  b( 7, 7, 0),    4, 7,   4, 7,   False, '   ',     clGreen);
+        TestNext([],    b( 7, 7, 0),  b( 8, 8, 0),    7, 8,   7, 8,   False, '''',      clYellow);
+        TestNext([],    b(10, 8, 0),  b( 8,12, 0),    8,10,   8,10,   True,  'شس',      clBlue);
+        TestNext([],    b(10,12, 0),  b(11,13, 0),   10,11,  10,11,   False, '''',      clYellow);
+        TestNext([],    b(11,13, 0),  b(12,14, 0),   11,12,  11,12,   False, 'b',       clRed);
+        TestNext([],    b(12,14, 0),  b(30,32, 0),   12,30,  12,30,   False, ' ',       clBlack);
+        TestEnd;
+
+        TestStart('Scan full line 18 / hl-token',   18,   5, 30,   18);
+        TestNext([],    b( 5, 5, 0),  b( 7, 7, 0),    5, 7,   5, 7,   False, '  ',      clGreen);
+        TestNext([],    b( 7, 7, 0),  b( 8, 8, 0),    7, 8,   7, 8,   False, '''',      clYellow);
+        TestNext([],    b(10, 8, 0),  b( 8,12, 0),    8,10,   8,10,   True,  'شس',      clBlue);
+        TestNext([],    b(10,12, 0),  b(11,13, 0),   10,11,  10,11,   False, '''',      clYellow);
+        TestNext([],    b(11,13, 0),  b(12,14, 0),   11,12,  11,12,   False, 'b',       clRed);
+        TestNext([],    b(12,14, 0),  b(30,32, 0),   12,30,  12,30,   False, ' ',       clBlack);
+        TestEnd;
+
+        TestStart('Scan full line 18 / hl-token',   18,   6, 30,   18);
+        TestNext([],    b( 6, 6, 0),  b( 7, 7, 0),    6, 7,   6, 7,   False, ' ',       clGreen);
+        TestNext([],    b( 7, 7, 0),  b( 8, 8, 0),    7, 8,   7, 8,   False, '''',      clYellow);
+        TestNext([],    b(10, 8, 0),  b( 8,12, 0),    8,10,   8,10,   True,  'شس',      clBlue);
+        TestNext([],    b(10,12, 0),  b(11,13, 0),   10,11,  10,11,   False, '''',      clYellow);
+        TestNext([],    b(11,13, 0),  b(12,14, 0),   11,12,  11,12,   False, 'b',       clRed);
+        TestNext([],    b(12,14, 0),  b(30,32, 0),   12,30,  12,30,   False, ' ',       clBlack);
+        TestEnd;
+
+        TestStart('Scan full line 18 / hl-token',   18,   7, 30,   18);
+        TestNext([],    b( 7, 7, 0),  b( 8, 8, 0),    7, 8,   7, 8,   False, '''',      clYellow);
+        TestNext([],    b(10, 8, 0),  b( 8,12, 0),    8,10,   8,10,   True,  'شس',      clBlue);
+        TestNext([],    b(10,12, 0),  b(11,13, 0),   10,11,  10,11,   False, '''',      clYellow);
+        TestNext([],    b(11,13, 0),  b(12,14, 0),   11,12,  11,12,   False, 'b',       clRed);
+        TestNext([],    b(12,14, 0),  b(30,32, 0),   12,30,  12,30,   False, ' ',       clBlack);
+        TestEnd;
+
+        TestStart('Scan full line 18 / hl-token',   18,   8, 30,   18);
+        TestNext([],    b(10, 8, 0),  b( 8,12, 0),    8,10,   8,10,   True,  'شس',      clBlue);
+        TestNext([],    b(10,12, 0),  b(11,13, 0),   10,11,  10,11,   False, '''',      clYellow);
+        TestNext([],    b(11,13, 0),  b(12,14, 0),   11,12,  11,12,   False, 'b',       clRed);
+        TestNext([],    b(12,14, 0),  b(30,32, 0),   12,30,  12,30,   False, ' ',       clBlack);
+        TestEnd;
+
+        TestStart('Scan full line 18 / hl-token',   18,   9, 30,   18);
+        TestNext([],    b(10, 8, 0),  b( 9,10, 0),    9,10,   9,10,   True,  'ش',      clBlue);
+        TestNext([],    b(10,12, 0),  b(11,13, 0),   10,11,  10,11,   False, '''',      clYellow);
+        TestNext([],    b(11,13, 0),  b(12,14, 0),   11,12,  11,12,   False, 'b',       clRed);
+        TestNext([],    b(12,14, 0),  b(30,32, 0),   12,30,  12,30,   False, ' ',       clBlack);
+        TestEnd;
+
+        TestStart('Scan full line 18 / hl-token',   18,  10, 30,   18);
+        TestNext([],    b(10,12, 0),  b(11,13, 0),   10,11,  10,11,   False, '''',      clYellow);
+        TestNext([],    b(11,13, 0),  b(12,14, 0),   11,12,  11,12,   False, 'b',       clRed);
+        TestNext([],    b(12,14, 0),  b(30,32, 0),   12,30,  12,30,   False, ' ',       clBlack);
+        TestEnd;
+
+        TestStart('Scan full line 18 / hl-token',   18,  11, 30,   18);
+        TestNext([],    b(11,13, 0),  b(12,14, 0),   11,12,  11,12,   False, 'b',       clRed);
+        TestNext([],    b(12,14, 0),  b(30,32, 0),   12,30,  12,30,   False, ' ',       clBlack);
+        TestEnd;
+
+        // Mixed RTL (and weak), end in RTL
+        // increase LeftChar
+        SynEdit.BlockBegin := Point(1,1);
+        TestStart('Scan full line 18 / hl-token',   19,   1, 30,   19);
+        TestNext([],    b( 1, 1, 0),  b( 7, 7, 0),    1, 7,   1, 7,   False, 'a     ',  clGreen);
+        TestNext([],    b( 7, 7, 0),  b( 8, 8, 0),    7, 8,   7, 8,   False, '''',      clYellow);
+        TestNext([],    b(12, 8, 0),  b( 8,16, 0),    8,12,   8,12,   True,  'شسقف',      clBlue);
+        TestNext([],    b(12,16, 0),  b(30,34, 0),   12,30,  12,30,   False, ' ',       clBlack);
+        TestEnd;
+
+        TestStart('Scan full line 18 / hl-token',   19,   2, 30,   19);
+        TestNext([],    b( 2, 2, 0),  b( 7, 7, 0),    2, 7,   2, 7,   False, '     ',   clGreen);
+        TestNext([],    b( 7, 7, 0),  b( 8, 8, 0),    7, 8,   7, 8,   False, '''',      clYellow);
+        TestNext([],    b(12, 8, 0),  b( 8,16, 0),    8,12,   8,12,   True,  'شسقف',      clBlue);
+        TestNext([],    b(12,16, 0),  b(30,34, 0),   12,30,  12,30,   False, ' ',       clBlack);
+        TestEnd;
+
+        TestStart('Scan full line 18 / hl-token',   19,   3, 30,   19);
+        TestNext([],    b( 3, 3, 0),  b( 7, 7, 0),    3, 7,   3, 7,   False, '    ',    clGreen);
+        TestNext([],    b( 7, 7, 0),  b( 8, 8, 0),    7, 8,   7, 8,   False, '''',      clYellow);
+        TestNext([],    b(12, 8, 0),  b( 8,16, 0),    8,12,   8,12,   True,  'شسقف',      clBlue);
+        TestNext([],    b(12,16, 0),  b(30,34, 0),   12,30,  12,30,   False, ' ',       clBlack);
+        TestEnd;
+
+        TestStart('Scan full line 18 / hl-token',   19,   4, 30,   19);
+        TestNext([],    b( 4, 4, 0),  b( 7, 7, 0),    4, 7,   4, 7,   False, '   ',     clGreen);
+        TestNext([],    b( 7, 7, 0),  b( 8, 8, 0),    7, 8,   7, 8,   False, '''',      clYellow);
+        TestNext([],    b(12, 8, 0),  b( 8,16, 0),    8,12,   8,12,   True,  'شسقف',      clBlue);
+        TestNext([],    b(12,16, 0),  b(30,34, 0),   12,30,  12,30,   False, ' ',       clBlack);
+        TestEnd;
+
+        TestStart('Scan full line 18 / hl-token',   19,   5, 30,   19);
+        TestNext([],    b( 5, 5, 0),  b( 7, 7, 0),    5, 7,   5, 7,   False, '  ',      clGreen);
+        TestNext([],    b( 7, 7, 0),  b( 8, 8, 0),    7, 8,   7, 8,   False, '''',      clYellow);
+        TestNext([],    b(12, 8, 0),  b( 8,16, 0),    8,12,   8,12,   True,  'شسقف',      clBlue);
+        TestNext([],    b(12,16, 0),  b(30,34, 0),   12,30,  12,30,   False, ' ',       clBlack);
+        TestEnd;
+
+        TestStart('Scan full line 18 / hl-token',   19,   6, 30,   19);
+        TestNext([],    b( 6, 6, 0),  b( 7, 7, 0),    6, 7,   6, 7,   False, ' ',       clGreen);
+        TestNext([],    b( 7, 7, 0),  b( 8, 8, 0),    7, 8,   7, 8,   False, '''',      clYellow);
+        TestNext([],    b(12, 8, 0),  b( 8,16, 0),    8,12,   8,12,   True,  'شسقف',      clBlue);
+        TestNext([],    b(12,16, 0),  b(30,34, 0),   12,30,  12,30,   False, ' ',       clBlack);
+        TestEnd;
+
+        TestStart('Scan full line 18 / hl-token',   19,   7, 30,   19);
+        TestNext([],    b( 7, 7, 0),  b( 8, 8, 0),    7, 8,   7, 8,   False, '''',      clYellow);
+        TestNext([],    b(12, 8, 0),  b( 8,16, 0),    8,12,   8,12,   True,  'شسقف',      clBlue);
+        TestNext([],    b(12,16, 0),  b(30,34, 0),   12,30,  12,30,   False, ' ',       clBlack);
+        TestEnd;
+
+        TestStart('Scan full line 18 / hl-token',   19,   8, 30,   19);
+        TestNext([],    b(12, 8, 0),  b( 8,16, 0),    8,12,   8,12,   True,  'شسقف',      clBlue);
+        TestNext([],    b(12,16, 0),  b(30,34, 0),   12,30,  12,30,   False, ' ',       clBlack);
+        TestEnd;
+
+        TestStart('Scan full line 18 / hl-token',   19,   9, 30,   19);
+        TestNext([],    b(12, 8, 0),  b( 9,14, 0),    9,12,   9,12,   True,  'شسق',      clBlue);
+        TestNext([],    b(12,16, 0),  b(30,34, 0),   12,30,  12,30,   False, ' ',       clBlack);
+        TestEnd;
+
+        TestStart('Scan full line 18 / hl-token',   19,  10, 30,   19);
+        TestNext([],    b(12, 8, 0),  b(10,12, 0),   10,12,  10,12,   True,  'شس',      clBlue);
+        TestNext([],    b(12,16, 0),  b(30,34, 0),   12,30,  12,30,   False, ' ',       clBlack);
+        TestEnd;
+
+        TestStart('Scan full line 18 / hl-token',   19,  11, 30,   19);
+        TestNext([],    b(12, 8, 0),  b(11,10, 0),   11,12,  11,12,   True,  'ش',      clBlue);
+        TestNext([],    b(12,16, 0),  b(30,34, 0),   12,30,  12,30,   False, ' ',       clBlack);
+        TestEnd;
+
+        TestStart('Scan full line 18 / hl-token',   19,  12, 30,   19);
+        TestNext([],    b(12,16, 0),  b(30,34, 0),   12,30,  12,30,   False, ' ',       clBlack);
+        TestEnd;
+
+        TestStart('Scan full line 18 / hl-token',   19,  13, 30,   19);
+        TestNext([],    b(13,17, 0),  b(30,34, 0),   13,30,  13,30,   False, ' ',       clBlack);
+        TestEnd;
+
+    // Change highlight, so last char is diff color
+
+        SynEdit.BlockBegin := Point(1,1);
+        TestStart('Scan full line 18 / hl-token',   20,   1, 30,   20);
+        TestNext([],    b( 1, 1, 0),  b( 7, 7, 0),    1, 7,   1, 7,   False, 'a     ',  clGreen);
+        TestNext([],    b( 7, 7, 0),  b( 8, 8, 0),    7, 8,   7, 8,   False, '''',      clYellow);
+        TestNext([],    b(12, 8, 0),  b( 9,14, 0),    9,12,   9,12,   True,  'شسق',      clRed);
+        TestNext([],    b( 9,14, 0),  b( 8,16, 0),    8, 9,   8, 9,   True,  'ف',      clBlue);
+        TestNext([],    b(12,16, 0),  b(30,34, 0),   12,30,  12,30,   False, ' ',       clBlack);
+        TestEnd;
+
+        TestStart('Scan full line 18 / hl-token',   20,   2, 30,   20);
+        TestNext([],    b( 2, 2, 0),  b( 7, 7, 0),    2, 7,   2, 7,   False, '     ',   clGreen);
+        TestNext([],    b( 7, 7, 0),  b( 8, 8, 0),    7, 8,   7, 8,   False, '''',      clYellow);
+        TestNext([],    b(12, 8, 0),  b( 9,14, 0),    9,12,   9,12,   True,  'شسق',      clRed);
+        TestNext([],    b( 9,14, 0),  b( 8,16, 0),    8, 9,   8, 9,   True,  'ف',      clBlue);
+        TestNext([],    b(12,16, 0),  b(30,34, 0),   12,30,  12,30,   False, ' ',       clBlack);
+        TestEnd;
+
+        TestStart('Scan full line 18 / hl-token',   20,   3, 30,   20);
+        TestNext([],    b( 3, 3, 0),  b( 7, 7, 0),    3, 7,   3, 7,   False, '    ',    clGreen);
+        TestNext([],    b( 7, 7, 0),  b( 8, 8, 0),    7, 8,   7, 8,   False, '''',      clYellow);
+        TestNext([],    b(12, 8, 0),  b( 9,14, 0),    9,12,   9,12,   True,  'شسق',      clRed);
+        TestNext([],    b( 9,14, 0),  b( 8,16, 0),    8, 9,   8, 9,   True,  'ف',      clBlue);
+        TestNext([],    b(12,16, 0),  b(30,34, 0),   12,30,  12,30,   False, ' ',       clBlack);
+        TestEnd;
+
+        TestStart('Scan full line 18 / hl-token',   20,   4, 30,   20);
+        TestNext([],    b( 4, 4, 0),  b( 7, 7, 0),    4, 7,   4, 7,   False, '   ',     clGreen);
+        TestNext([],    b( 7, 7, 0),  b( 8, 8, 0),    7, 8,   7, 8,   False, '''',      clYellow);
+        TestNext([],    b(12, 8, 0),  b( 9,14, 0),    9,12,   9,12,   True,  'شسق',      clRed);
+        TestNext([],    b( 9,14, 0),  b( 8,16, 0),    8, 9,   8, 9,   True,  'ف',      clBlue);
+        TestNext([],    b(12,16, 0),  b(30,34, 0),   12,30,  12,30,   False, ' ',       clBlack);
+        TestEnd;
+
+        TestStart('Scan full line 18 / hl-token',   20,   5, 30,   20);
+        TestNext([],    b( 5, 5, 0),  b( 7, 7, 0),    5, 7,   5, 7,   False, '  ',      clGreen);
+        TestNext([],    b( 7, 7, 0),  b( 8, 8, 0),    7, 8,   7, 8,   False, '''',      clYellow);
+        TestNext([],    b(12, 8, 0),  b( 9,14, 0),    9,12,   9,12,   True,  'شسق',      clRed);
+        TestNext([],    b( 9,14, 0),  b( 8,16, 0),    8, 9,   8, 9,   True,  'ف',      clBlue);
+        TestNext([],    b(12,16, 0),  b(30,34, 0),   12,30,  12,30,   False, ' ',       clBlack);
+        TestEnd;
+
+        TestStart('Scan full line 18 / hl-token',   20,   6, 30,   20);
+        TestNext([],    b( 6, 6, 0),  b( 7, 7, 0),    6, 7,   6, 7,   False, ' ',       clGreen);
+        TestNext([],    b( 7, 7, 0),  b( 8, 8, 0),    7, 8,   7, 8,   False, '''',      clYellow);
+        TestNext([],    b(12, 8, 0),  b( 9,14, 0),    9,12,   9,12,   True,  'شسق',      clRed);
+        TestNext([],    b( 9,14, 0),  b( 8,16, 0),    8, 9,   8, 9,   True,  'ف',      clBlue);
+        TestNext([],    b(12,16, 0),  b(30,34, 0),   12,30,  12,30,   False, ' ',       clBlack);
+        TestEnd;
+
+        TestStart('Scan full line 18 / hl-token',   20,   7, 30,   20);
+        TestNext([],    b( 7, 7, 0),  b( 8, 8, 0),    7, 8,   7, 8,   False, '''',      clYellow);
+        TestNext([],    b(12, 8, 0),  b( 9,14, 0),    9,12,   9,12,   True,  'شسق',      clRed);
+        TestNext([],    b( 9,14, 0),  b( 8,16, 0),    8, 9,   8, 9,   True,  'ف',      clBlue);
+        TestNext([],    b(12,16, 0),  b(30,34, 0),   12,30,  12,30,   False, ' ',       clBlack);
+        TestEnd;
+
+        TestStart('Scan full line 18 / hl-token',   20,   8, 30,   20);
+        TestNext([],    b(12, 8, 0),  b( 9,14, 0),    9,12,   9,12,   True,  'شسق',      clRed);
+        TestNext([],    b( 9,14, 0),  b( 8,16, 0),    8, 9,   8, 9,   True,  'ف',      clBlue);
+        TestNext([],    b(12,16, 0),  b(30,34, 0),   12,30,  12,30,   False, ' ',       clBlack);
+        TestEnd;
+
+        TestStart('Scan full line 18 / hl-token',   20,   9, 30,   20);
+        TestNext([],    b(12, 8, 0),  b( 9,14, 0),    9,12,   9,12,   True,  'شسق',      clRed);
+        TestNext([],    b(12,16, 0),  b(30,34, 0),   12,30,  12,30,   False, ' ',       clBlack);
+        TestEnd;
+
+        TestStart('Scan full line 18 / hl-token',   20,  10, 30,   20);
+        TestNext([],    b(12, 8, 0),  b(10,12, 0),   10,12,  10,12,   True,  'شس',      clRed);
+        TestNext([],    b(12,16, 0),  b(30,34, 0),   12,30,  12,30,   False, ' ',       clBlack);
+        TestEnd;
+
+        TestStart('Scan full line 18 / hl-token',   20,  11, 30,   20);
+        TestNext([],    b(12, 8, 0),  b(11,10, 0),   11,12,  11,12,   True,  'ش',      clRed);
+        TestNext([],    b(12,16, 0),  b(30,34, 0),   12,30,  12,30,   False, ' ',       clBlack);
+        TestEnd;
+
+        TestStart('Scan full line 18 / hl-token',   20,  12, 30,   20);
+        TestNext([],    b(12,16, 0),  b(30,34, 0),   12,30,  12,30,   False, ' ',       clBlack);
+        TestEnd;
+
+        TestStart('Scan full line 18 / hl-token',   20,  13, 30,   20);
+        TestNext([],    b(13,17, 0),  b(30,34, 0),   13,30,  13,30,   False, ' ',       clBlack);
+        TestEnd;
+
+
+
+
 
 
 

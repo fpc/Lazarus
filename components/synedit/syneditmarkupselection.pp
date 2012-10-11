@@ -150,7 +150,7 @@ begin
           (nSelStart <= AnRtlInfo.PhysLeft)
        ) and
        ( ((nSelEnd < aStartCol.Physical) and (nSelEnd > AnRtlInfo.PhysLeft)) or
-          (nSelEnd > AnRtlInfo.PhysRight) or (nSelEnd < 0))
+          (nSelEnd >= AnRtlInfo.PhysRight) or (nSelEnd < 0))
     then
       Result := MarkupInfo;
   end else begin
@@ -172,7 +172,7 @@ begin
       ANextPhys := nSelStart;
     if (nSelEnd < aStartCol.Physical) and (nSelEnd > 0)  and
        (  (nSelStart >= aStartCol.Physical) or
-         ((nSelStart < AnRtlInfo.PhysLeft) and (nSelStart > 0))  )
+         ((nSelStart <= AnRtlInfo.PhysLeft) and (nSelStart > 0))  )
     then
       ANextPhys := nSelEnd;
   end else begin

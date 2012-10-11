@@ -516,6 +516,7 @@ function TLazSynPaintTokenBreaker.GetNextHighlighterTokenFromView(out
 // TODO: end, if FCurViewRtlPhysEnd >= FLastCol;
       if ALogicIdx + FCurViewToken.TokenLength < FCurViewRtlLogEnd then begin
         if FCurViewToken.TokenLength > 0 then begin
+          ALogicIdx := ALogicIdx + FCurViewToken.TokenLength;
           FCurViewScannerPos.Logical := FCurViewScannerPos.Logical + FCurViewToken.TokenLength;
           FCurViewToken.TokenLength := 0;
         end;
@@ -576,7 +577,9 @@ function TLazSynPaintTokenBreaker.GetNextHighlighterTokenFromView(out
     HasDouble := False;
     TabExtra  := 0; // Extra bytes needed for expanded Tab/Space(utf8 visible space/dot)
     j := (pcw and PCWMask);
-    while (ALogicIdx < ALogicEnd) and (pcw and PCWFlagRTL <> 0) do begin
+    // must go over token bounds
+    //while (ALogicIdx < ALogicEnd) and (pcw and PCWFlagRTL <> 0) do begin
+    while (ALogicIdx < FCharWidthsLen) and (pcw and PCWFlagRTL <> 0) do begin
       inc(RtlRunPhysWidth, j);
 
       if j <> 0 then begin
@@ -593,7 +596,7 @@ function TLazSynPaintTokenBreaker.GetNextHighlighterTokenFromView(out
       repeat
         inc(ALogicIdx);
         inc(i);
-      until (ALogicIdx >= ALogicEnd) or
+      until //(ALogicIdx >= ALogicEnd) or
             (ALogicIdx >= FCharWidthsLen) or ((FCharWidths[ALogicIdx] and PCWMask) <> 0);
 
       pcw := GetCharWidthData(ALogicIdx);
@@ -630,11 +633,6 @@ function TLazSynPaintTokenBreaker.GetNextHighlighterTokenFromView(out
     if Result then
       ChangeToLtr(ALogicIdx, ALogicEnd);
   end;
-
-  //procedure SetEOLResult;
-  //begin
-  //        ATokenInfo.StartPos           := FCurViewScannerPos;
-  //end;
 
 var
   i, j: Integer;
