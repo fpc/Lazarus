@@ -474,6 +474,7 @@ begin
   end;
 
   if (AIndex < 0) or (AIndex >= FLines.Count) then begin
+    FCurrentLine := -1;
     FCurrentWidthsLen := 0;
     FViewChangeStamp := FLines.ViewChangeStamp;
     FTextChangeStamp := FLines.TextChangeStamp;

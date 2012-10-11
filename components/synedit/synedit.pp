@@ -1967,6 +1967,8 @@ begin
   fMarkupSelection := TSynEditMarkupSelection.Create(self, FBlockSelection);
   fMarkupSpecialChar := TSynEditMarkupSpecialChar.Create(self);
 
+  fMarkupSelection.MarkupInfoSeletion.SetAllPriorities(50);
+
   fMarkupManager := TSynEditMarkupManager.Create(self);
   fMarkupManager.AddMarkUp(fMarkupSpecialChar);
   fMarkupManager.AddMarkUp(fMarkupSpecialLine);
