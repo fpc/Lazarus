@@ -147,6 +147,14 @@ begin
     end;
 
   end;
+
+  if (WeakStart <> nil) and (lbidi = bRtl) then begin
+    while WeakStart < PWidths do begin
+      WeakStart^ := WeakStart^ and (not PCWFlagRTL);
+      inc(WeakStart);
+    end;
+  end;
+
 end;
 
 (*
