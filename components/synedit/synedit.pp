@@ -6402,16 +6402,11 @@ begin
                 Temp := '' *)
               FTheLinesView.EditInsert(CaretX, LogCaretXY.Y, (*Temp +*) AChar);
               {$ELSE}
-              (*if Len < LogCaretXY.X - 1 then begin
-                Temp := StringOfChar(' ', LogCaretXY.X - 1 - Len);
-                LogCaretXY.X := Len + 1;
-              end
-              else
-                temp := '';*)
               FTheLinesView.EditInsert(LogCaretXY.X, LogCaretXY.Y, (*Temp +*) AChar);
               {$ENDIF}
 
-              CaretX := CaretX + 1;
+              //CaretX := CaretX + 1;
+              FCaret.BytePos := LogCaretXY.X + 1;
               if CaretX >= LeftChar + CharsInWindow then
                 LeftChar := LeftChar + Min(25, CharsInWindow - 1);
             finally
