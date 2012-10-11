@@ -623,13 +623,13 @@ begin
       // Add more units meant for only LCL.
       with fMainUsedUnits do begin
         for i:=0 to fUnitsToAddForLCL.Count-1 do
-          if not CodeTool.AddUnitToSpecificUsesSection(
-                            fUsesSection, fUnitsToAddForLCL[i], '', SrcCache) then exit;
+          if not CodeTool.AddUnitToSpecificUsesSection(fUsesSection,
+                                   fUnitsToAddForLCL[i], '', SrcCache) then exit;
       end;
       with fImplUsedUnits do begin
         for i:=0 to fUnitsToAddForLCL.Count-1 do
-          if not CodeTool.AddUnitToSpecificUsesSection(
-                            fUsesSection, fUnitsToAddForLCL[i], '', SrcCache) then exit;
+          if not CodeTool.AddUnitToSpecificUsesSection(fUsesSection,
+                                   fUnitsToAddForLCL[i], '', SrcCache) then exit;
       end;
     end;
   end;
@@ -666,27 +666,29 @@ begin
 end;
 
 procedure TUsedUnitsTool.AddUnitIfNeeded(AUnitName: string);
+
+  // Return True if the rename (target) value contains AUnitName.
+  // The rename value can have many comma separated unit names.
+  function RenameValHasUnit(aUsedUnits: TUsedUnits): Boolean;
+  var
+    i: Integer;
+  begin
+    Result := False;
+    for i := 0 to aUsedUnits.fUnitsToRenameVals.Count-1 do
+      if Pos(AUnitName, aUsedUnits.fUnitsToRenameVals[i]) > 0 then
+        Exit(True);
+  end;
+
 var
-  i: Integer;
   UnitInFileName: String;
-  RenameValFound: Boolean;
+  x: Integer;
 begin
-  RenameValFound:=false;
-  for i := 0 to fMainUsedUnits.fUnitsToRenameVals.Count-1 do
-    if Pos(AUnitName, fMainUsedUnits.fUnitsToRenameVals[i]) > 0 then begin
-      RenameValFound:=true;
-      Break;
-    end;
-  if not RenameValFound then
-    for i := 0 to fImplUsedUnits.fUnitsToRenameVals.Count-1 do
-      if Pos(AUnitName, fImplUsedUnits.fUnitsToRenameVals[i]) > 0 then begin
-        RenameValFound:=true;
-        Break;
-      end;
-  if not ( fMainUsedUnits.fExistingUnits.Find(AUnitName, i) or
-           fImplUsedUnits.fExistingUnits.Find(AUnitName, i) or
-          (fMainUsedUnits.fUnitsToAdd.IndexOf(AUnitName) > -1) or RenameValFound)
-  then begin
+  if not ( fMainUsedUnits.fExistingUnits.Find(AUnitName, x)
+        or fImplUsedUnits.fExistingUnits.Find(AUnitName, x)
+        or (fMainUsedUnits.fUnitsToAdd.IndexOf(AUnitName) > -1)
+        or RenameValHasUnit(fMainUsedUnits)
+        or RenameValHasUnit(fImplUsedUnits) ) then
+  begin
     fMainUsedUnits.fUnitsToAdd.Add(AUnitName);
     IDEMessagesWindow.AddMsg('Added unit '+AUnitName+ ' to uses section', '', -1);
     // If the unit is not found, open the package containing it.
