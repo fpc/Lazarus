@@ -64,6 +64,13 @@ end;
 function TGtkDeviceContext.GetOffset: TPoint;
 var
   Fixed: Pointer;
+  AChild: PGtkWidget;
+  AColumn: PGtkTreeViewColumn;
+  Area: TGdkRectangle;
+  h: gint;
+  w: gint;
+  yoffs: gint;
+  xoffs: gint;
 begin
   Result := Point(0, 0);
   if Assigned(FWidget) then
@@ -75,6 +82,20 @@ begin
     begin
       Inc(Result.X, FWidget^.Allocation.x);
       Inc(Result.y, FWidget^.Allocation.y);
+    end;
+    if (GTK_IS_SCROLLED_WINDOW(FWidget) and GTK_IS_BIN(FWidget)) or (GTK_IS_TREE_VIEW(FWidget)) then
+    begin
+      if GTK_IS_TREE_VIEW(FWidget) then
+        AChild := FWidget
+      else
+        AChild := gtk_bin_get_child(PGtkBin(FWidget));
+      if GTK_IS_TREE_VIEW(AChild) and gtk_tree_view_get_headers_visible(PGtkTreeView(AChild)) then
+      begin
+        AColumn := gtk_tree_view_get_column(PGtkTreeView(AChild), 0);
+        gtk_tree_view_column_cell_get_size(AColumn, @Area, @xoffs, @yoffs, @w, @h);
+        // borders are 2px
+        dec(Result.y, h - 2);
+      end;
     end;
   end;
 end;

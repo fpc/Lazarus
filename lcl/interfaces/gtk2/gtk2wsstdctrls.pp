@@ -1957,7 +1957,6 @@ var
   Entry: PGtkWidget;
 begin
   WidgetInfo := GetWidgetInfo({%H-}Pointer(ACustomComboBox.Handle));
-
   if gtk_is_combo_box_entry(WidgetInfo^.CoreWidget) then
   begin
     Entry := GTK_BIN(WidgetInfo^.CoreWidget)^.child;
@@ -1969,9 +1968,13 @@ begin
     else
     if (PGtkEntry(Entry)^.flag0 and $1) = Ord(NewReadOnly) then
       ReCreateCombo(ACustomCombobox, not NewReadOnly, WidgetInfo);
-  end
-  else
-    ReCreateCombo(ACustomCombobox, not NewReadOnly, WidgetInfo);
+  end else
+  begin
+    if ACustomComboBox.Style in [csOwnerDrawFixed, csOwnerDrawVariable] then
+      ReCreateCombo(ACustomCombobox, False, WidgetInfo)
+    else
+      ReCreateCombo(ACustomCombobox, not NewReadOnly, WidgetInfo);
+  end;
 end;
 
 class function TGtk2WSCustomComboBox.GetItems(

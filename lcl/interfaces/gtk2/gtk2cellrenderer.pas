@@ -124,6 +124,7 @@ begin
       exit;
 
   ItemIndex := GetItemIndex(PLCLIntfCellRenderer(cell), Widget);
+
   if ItemIndex < 0 then
     ItemIndex := 0;
 
@@ -180,6 +181,7 @@ begin
     AreaRect := Bounds(background_area^.x, background_area^.y,
                      background_area^.Width, background_area^.Height);
 
+
     ItemIndex := GetItemIndex(PLCLIntfCellRenderer(cell), Widget);
 
     if ItemIndex < 0 then
@@ -189,7 +191,10 @@ begin
       LVTarget := dtSubItem
     else
       LVTarget := dtItem;
-    LVSubItem := ColumnIndex-1;
+    if AWinControl.FCompStyle = csListView then
+      LVSubItem := ColumnIndex
+    else
+      LVSubItem := ColumnIndex - 1;
     LVStage := cdPrePaint;
     LVState := GtkCellRendererStateToListViewDrawState(flags);
     DCWidget:=Widget;
@@ -209,8 +214,23 @@ begin
 
   // draw default
   CellClass := PLCLIntfCellRendererClass(gtk_object_get_class(cell));
-  CellClass^.DefaultGtkRender(cell, Window, Widget, background_area, cell_area,
-                              expose_area, flags);
+
+  // do not call DefaultGtkRender when we are custom drawn listbox.issue #23093
+  if ColumnIndex < 0 then
+  begin
+    AWinControl := GetControl(cell, widget);
+    if [csDestroying,csLoading,csDesigning]*AWinControl.ComponentState<>[] then
+      AWinControl := nil;
+    if AWinControl is TCustomListbox then
+      if TCustomListbox(AWinControl).Style = lbStandard then
+        AWinControl := nil;
+    if AWinControl is TCustomCombobox then
+      AWinControl := nil;
+  end;
+  // do default draw only if we are customdrawn.
+  if (ColumnIndex > -1) or ((ColumnIndex < 0) and (AWinControl = nil)) then
+    CellClass^.DefaultGtkRender(cell, Window, Widget, background_area, cell_area,
+      expose_area, flags);
   
   if ColumnIndex < 0 then  // is a listbox or combobox
   begin
