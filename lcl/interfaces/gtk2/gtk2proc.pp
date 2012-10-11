@@ -465,6 +465,7 @@ procedure UpdateNotebookTabFont(APage: TWinControl; AFont: TFont);
 // coordinate transformation
 function GetWidgetOrigin(TheWidget: PGtkWidget): TPoint;
 function GetWidgetClientOrigin(TheWidget: PGtkWidget): TPoint;
+function GetWidgetClientRect(TheWidget: PGtkWidget): TRect;
 function TranslateGdkPointToClientArea(SourceWindow: PGdkWindow;
   SourcePos: TPoint;  DestinationWidget: PGtkWidget): TPoint;
 function SubtractScoll(AWidget: PGtkWidget; APosition: TPoint): TPoint;

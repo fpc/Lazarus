@@ -1078,9 +1078,7 @@ begin
       begin
         Column := gtk_tree_view_get_column(PGtkTreeView(MainView), ASubItem);
          gtk_tree_view_get_cell_area(PGtkTreeView(MainView), Path, Column, @ItemRect);
-        // do not make any offset for drLabel and drIcon. issue #23094
-        if not (ACode in [drIcon, drLabel]) and
-          gtk_tree_view_get_headers_visible(PGtkTreeView(MainView)) then
+        if gtk_tree_view_get_headers_visible(PGtkTreeView(MainView)) then
         begin
           gtk_tree_view_column_cell_get_size(gtk_tree_view_get_column(PGtkTreeView(MainView), 0),
             @ARect, @L, @T, @W, @H);

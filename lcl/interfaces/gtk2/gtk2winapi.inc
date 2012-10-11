@@ -4359,79 +4359,11 @@ end;
   child controls are visible.
  ------------------------------------------------------------------------------}
 function TGtk2WidgetSet.GetClientRect(handle : HWND; var ARect : TRect) : Boolean;
-var
-  Widget, ClientWidget: PGtkWidget;
-  
-  procedure GetNoteBookClientRect(NBWidget: PGtkNotebook);
-  var
-    PageIndex: LongInt;
-    PageWidget: PGtkWidget;
-    FrameBorders: TRect;
-    aWidth: LongInt;
-    aHeight: LongInt;
-  begin
-    // get current page
-    PageIndex:=gtk_notebook_get_current_page(NBWidget);
-    if PageIndex>=0 then
-      PageWidget:=gtk_notebook_get_nth_page(NBWidget,PageIndex)
-    else
-      PageWidget:=nil;
-    if (PageWidget<>nil) and GTK_WIDGET_RC_STYLE(PageWidget)
-    and ((PageWidget^.Allocation.Width>1) or (PageWidget^.Allocation.Height>1))
-    then begin
-      // get the size of the current page
-      ARect.Right:=PageWidget^.Allocation.Width;
-      ARect.Bottom:=PageWidget^.Allocation.Height;
-      //DebugLn(['GetNoteBookClientRect using pagewidget: ',GetWidgetDebugReport(Widget),' ARect=',dbgs(aRect)]);
-    end else begin
-      // use defaults
-      FrameBorders:=GetStyleNotebookFrameBorders;
-      aWidth:=Widget^.allocation.width;
-      aHeight:=Widget^.allocation.height;
-      ARect:=Rect(0,0,
-         Max(0,AWidth-FrameBorders.Left-FrameBorders.Right),
-         Max(0,aHeight-FrameBorders.Top-FrameBorders.Bottom));
-      //DebugLn(['GetNoteBookClientRect using defaults: ',GetWidgetDebugReport(Widget),' ARect=',dbgs(aRect),' Frame=',dbgs(FrameBorders)]);
-    end;
-  end;
-
 begin
   Result := false;
   if Handle = 0 then Exit;
-  ARect.Left := 0;
-  ARect.Top := 0;
-  Widget := {%H-}PGtkWidget(Handle);
-  ClientWidget := GetFixedWidget(Widget);
-  if (ClientWidget <> nil) then
-    Widget := ClientWidget;
-  if (Widget <> nil) then begin
-    ARect.Right:=Widget^.Allocation.Width;
-    ARect.Bottom:=Widget^.Allocation.Height;
-    if GtkWidgetIsA(Widget,gtk_notebook_get_type) then
-      GetNoteBookClientRect(PGtkNoteBook(Widget));
-  end else begin
-    ARect.Right:=0;
-    ARect.Bottom:=0;
-  end;
-  {$IfDef VerboseGetClientRect}
-  if ClientWidget<>nil then begin
-    DebugLn('GetClientRect  Widget=',GetWidgetDebugReport(PgtkWidget(Handle)),
-       ' Client=',DbgS(ClientWidget),WidgetFlagsToString(ClientWidget),
-       ' WindowSize=',dbgs(ARect.Right),',',dbgs(ARect.Bottom),
-       ' Allocation=',dbgs(ClientWidget^.Allocation.Width),',',dbgs(ClientWidget^.Allocation.Height)
-       );
-  end else begin
-    DebugLn('GetClientRect  Widget=',GetWidgetDebugReport(PgtkWidget(Handle)),
-       ' Client=',DbgS(ClientWidget),WidgetFlagsToString(ClientWidget),
-       ' WindowSize=',dbgs(ARect.Right),',',dbgs(ARect.Bottom),
-       ' Allocation=',dbgs(Widget^.Allocation.Width),',',dbgs(Widget^.Allocation.Height)
-       );
-  end;
-  if GetLCLObject(Widget) is TCustomPage then begin
-    DebugLn(['TGtk2WidgetSet.GetClientRect Rect=',dbgs(aRect),' ',GetWidgetDebugReport(Widget)]);
-  end;
-  {$EndIf}
-  Result:=true;
+  ARect := GetWidgetClientRect(PGtkWidget(Handle));
+  Result := True;
 end;
 
 {------------------------------------------------------------------------------
