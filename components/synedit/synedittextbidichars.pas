@@ -142,14 +142,14 @@ begin
       bWeak: begin
           if WeakStart = nil then WeakStart := PWidths;
           if lbidi = bRtl then
-          PWidths^ := PWidths^ or PCWFlagRTL;
+            PWidths^ := PWidths^ or PCWFlagRTL;
         end;
     end;
 
   end;
 
   if (WeakStart <> nil) and (lbidi = bRtl) then begin
-    while WeakStart < PWidths do begin
+    while WeakStart <= PWidths do begin
       WeakStart^ := WeakStart^ and (not PCWFlagRTL);
       inc(WeakStart);
     end;
