@@ -2074,8 +2074,6 @@ resourcestring
   dlgCCOTestToolCompilingEmptyFile = 'Test: Compiling an empty file';
   lisCCORelUnitPathFoundInCfg = 'relative unit path found in fpc cfg: %s';
   dlgCCOTestCheckingCompilerConfig = 'Test: Checking compiler configuration ...';
-  lisCCOEnglishMessageFileMissing = 'english message file for fpc is missing:'
-    +'components/codetools/fpc.errore.msg';
   lisCCOMsgPPUNotFound = 'compiled FPC unit not found: %s.ppu';
   lisCCOMissingUnit = 'Missing unit';
   lisCCOPPUNotFoundDetailed = 'The compiled FPC unit %s.ppu was not found.%s'
@@ -2489,9 +2487,7 @@ resourcestring
   lisCenterForm = 'Center Form';
   fdmSaveFormAsXML = 'Save Form as XML';
 
-  //-----------------------
   // keyMapping
-  //
   srkmEditKeys ='Edit Keys';
   srkmCommand  = 'Command:';
   lisKeyOr2KeySequence = 'Key (or 2 key sequence)';
