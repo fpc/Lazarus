@@ -395,9 +395,9 @@ type
     function FindHash(AIndex: integer):TCompilerMessageConfig ; 
 
     function GetMsgConfigByIndex(AIndex: Integer): TCompilerMessageConfig; 
-    function GetMsgConfig(i: Integer): TCompilerMessageConfig; virtual;
-    procedure SetMsgState(i: Integer; const AValue: TCompilerMessageState); virtual;
-    function GetMsgState(i: Integer): TCompilerMessageState; virtual;
+    function GetMsgConfig(i: Integer): TCompilerMessageConfig;
+    procedure SetMsgState(i: Integer; const AValue: TCompilerMessageState);
+    function GetMsgState(i: Integer): TCompilerMessageState;
 
     procedure GetStateArray(var b: array of TCompilerMessageState);    // array must be large enough
     procedure SetStateArray(const b: array of TCompilerMessageState);  // to store b[MaxMsgIndex], or function fail
@@ -405,26 +405,27 @@ type
     function GetCount: Integer; 
     function GetErrorNames(errtype: TFPCErrorType): string;
 
-    property ChangeStamp: int64 read FChangeStamp;
     procedure IncreaseChangeStamp;
+    property ChangeStamp: int64 read FChangeStamp;
     property OnChanged: TNotifyEvent read FOnChanged write FOnChanged;
   public
     constructor Create; 
     destructor Destroy; override;
-    procedure Clear; virtual; 
+    procedure Clear;
 
-    procedure Assign(Src: TCompilerMessagesList);  virtual; 
+    procedure Assign(Src: TCompilerMessagesList);
 
-    procedure BeginUpdate; virtual; 
-    procedure EndUpdate; virtual; 
+    procedure BeginUpdate;
+    procedure EndUpdate;
 
-    function LoadMsgFile(const FileName: string): Boolean; virtual;
+    function LoadMsgFile(const FileName: string): Boolean;
 
-    function Add(AMsgIndex: Integer; AMsgType: TFPCErrorType; const AMsgText: string; DefIgnored: Boolean = false; AState: TCompilerMessageState = msDefault): TCompilerMessageConfig; virtual;
+    function Add(AMsgIndex: Integer; AMsgType: TFPCErrorType; const AMsgText: string;
+      DefIgnored: Boolean = false; AState: TCompilerMessageState = msDefault): TCompilerMessageConfig;
 
-    procedure SetDefault(KeepState: Boolean=true); virtual;
-    function GetParams(MsgIndex: Integer; var prms: array of string; out PrmCount: Integer): Integer; virtual;
-    function Equals(Obj: TObject): boolean; {$ifndef ver2_4_0}override;{$endif}
+    procedure SetDefault(KeepState: Boolean=true);
+    function GetParams(MsgIndex: Integer; var prms: array of string; out PrmCount: Integer): Integer;
+    function Equals(Obj: TObject): boolean; override;
 
     property Msg[i: Integer]: TCompilerMessageConfig read GetMsgConfig;
     property MsgByIndex[AIndex: Integer]:  TCompilerMessageConfig read GetMsgConfigByIndex;
@@ -1519,7 +1520,7 @@ begin
   Win32GraphicApp := aXMLConfig.GetValue(p+'Options/Win32/GraphicApplication/Value', false);
   ExecutableType := CompilationExecutableTypeNameToType(
                     aXMLConfig.GetValue(p+'Options/ExecutableType/Value',''));
-  //DebugLn('TBaseCompilerOptions.LoadTheCompilerOptions ',CompilationExecutableTypeNames[ExecutableType]);
+  //DebugLn('TBaseCompilerOptions.LoadFromXMLConfig ',CompilationExecutableTypeNames[ExecutableType]);
 
   { Messages }
   p:=Path+'Other/';
@@ -1564,11 +1565,11 @@ begin
     with aXMLConfig do begin
       // ErrorNames should be stored, because the Message file is not read (or parsed)
       // on project opening. So errors needs to be initialized properly from the CompilerOptions.xml
-      CompilerMessages.fErrorNames[etHint]:=GetValue(p+'CompilerMessages/ErrorNames/Hint', FPCErrorTypeNames[etHint]);
-      CompilerMessages.fErrorNames[etNote]:=GetValue(p+'CompilerMessages/ErrorNames/Note', FPCErrorTypeNames[etNote]);
-      CompilerMessages.fErrorNames[etWarning]:=GetValue(p+'CompilerMessages/ErrorNames/Warning', FPCErrorTypeNames[etWarning]);
-      CompilerMessages.fErrorNames[etError]:=GetValue(p+'CompilerMessages/ErrorNames/Error', FPCErrorTypeNames[etError]);
-      CompilerMessages.fErrorNames[etFatal]:=GetValue(p+'CompilerMessages/ErrorNames/Fatal', FPCErrorTypeNames[etFatal]);
+      fCompilerMessages.fErrorNames[etHint]:=GetValue(p+'fCompilerMessages/ErrorNames/Hint', FPCErrorTypeNames[etHint]);
+      fCompilerMessages.fErrorNames[etNote]:=GetValue(p+'fCompilerMessages/ErrorNames/Note', FPCErrorTypeNames[etNote]);
+      fCompilerMessages.fErrorNames[etWarning]:=GetValue(p+'fCompilerMessages/ErrorNames/Warning', FPCErrorTypeNames[etWarning]);
+      fCompilerMessages.fErrorNames[etError]:=GetValue(p+'fCompilerMessages/ErrorNames/Error', FPCErrorTypeNames[etError]);
+      fCompilerMessages.fErrorNames[etFatal]:=GetValue(p+'fCompilerMessages/ErrorNames/Fatal', FPCErrorTypeNames[etFatal]);
     end;
   
   
@@ -4386,46 +4387,45 @@ end;
 
 { TCompilerMessagesList }
 
-procedure TCompilerMessagesList.ClearHash; 
+procedure TCompilerMessagesList.ClearHash;
 var
-  i : integer; 
+  i : integer;
 begin
-  for i := 0 to length(fHash) - 1 do SetLength(fHash[i], 0); 
+  for i := 0 to length(fHash) - 1 do
+    SetLength(fHash[i], 0);
 end;
 
-procedure TCompilerMessagesList.AddHash(Msg: TCompilerMessageConfig); 
+procedure TCompilerMessagesList.AddHash(Msg: TCompilerMessageConfig);
 var
-  idx : Integer; 
-  sub : Integer; 
+  idx : Integer;
+  sub : Integer;
 begin
   idx := Msg.MsgIndex div 1000;
   sub := Msg.MsgIndex mod 1000;
-  while length(fHash) <= idx do 
-    if length(FHash) = 0 
+  while length(fHash) <= idx do
+    if length(FHash) = 0
       then SetLength(fHash, 16)
-      else SetLength(fHash, length(fHash)*2); 
+      else SetLength(fHash, length(fHash)*2);
 
-  while length(fHash[idx]) <= sub do 
-    if length(fHash[idx]) = 0 
+  while length(fHash[idx]) <= sub do
+    if length(fHash[idx]) = 0
       then SetLength(fHash[idx], 16)
-      else SetLength(fHash[idx], length(fHash[idx])*2); 
+      else SetLength(fHash[idx], length(fHash[idx])*2);
 
-  fHash[idx][sub] := Msg; 
+  fHash[idx][sub] := Msg;
 end;
 
-function TCompilerMessagesList.FindHash(AIndex: integer): TCompilerMessageConfig; 
-var 
-  idx : Integer; 
-  sub : Integer; 
+function TCompilerMessagesList.FindHash(AIndex: integer): TCompilerMessageConfig;
+var
+  idx : Integer;
+  sub : Integer;
 begin
   idx := AIndex div 1000;
   sub := AIndex mod 1000;
-  Result := nil; 
-  if (idx >= 0) and (idx < length(fHash)) then begin
+  Result := nil;
+  if (idx >= 0) and (idx < length(fHash)) then
     if (sub >= 0) and (sub < length(fHash[idx])) then
-      Result := fHash[idx][sub]; 
-  end; 
-   
+      Result := fHash[idx][sub];
 end;
 
 function TCompilerMessagesList.GetMsgConfigByIndex(AIndex: Integer): TCompilerMessageConfig; 
@@ -4450,32 +4450,32 @@ end;
 
 procedure TCompilerMessagesList.GetStateArray(var b: array of TCompilerMessageState);
 var
-  i   : Integer; 
-  idx : Integer; 
+  i   : Integer;
+  idx : Integer;
 begin
   FillChar(b[0], length(b)*sizeof(TCompilerMessageState), 0);
-  for i := 0 to Count - 1 do begin 
-    idx := msg[i].MsgIndex; 
-    if (idx >= 0) and (idx < length(b)) then  
+  for i := 0 to Count - 1 do begin
+    idx := msg[i].MsgIndex;
+    if (idx >= 0) and (idx < length(b)) then
       b[idx] := msg[i].State;
-  end; 
+  end;
 end;
 
 procedure TCompilerMessagesList.SetStateArray(const b: array of TCompilerMessageState);
 var
-  i   : Integer; 
-  idx : Integer; 
+  i   : Integer;
+  idx : Integer;
 begin
-  for i := 0 to Count - 1 do begin 
-    idx := msg[i].MsgIndex; 
+  for i := 0 to Count - 1 do begin
+    idx := msg[i].MsgIndex;
     if (idx >= 0) and (idx < length(b)) then
       msg[i].State := b[idx];
-  end; 
+  end;
 end;
 
-function TCompilerMessagesList.GetCount: Integer; 
+function TCompilerMessagesList.GetCount: Integer;
 begin
-  Result := fItems.Count; 
+  Result := fItems.Count;
 end;
 
 function TCompilerMessagesList.GetErrorNames(errtype: TFPCErrorType): string;
@@ -4489,16 +4489,16 @@ begin
   if assigned(OnChanged) then OnChanged(Self);
 end;
 
-constructor TCompilerMessagesList.Create; 
+constructor TCompilerMessagesList.Create;
 begin
-  inherited Create; 
+  inherited Create;
   FChangeStamp:=CTInvalidChangeStamp;
   fItems := TFPList.Create;
 end;
 
 destructor TCompilerMessagesList.Destroy;
 begin
-  Clear; 
+  Clear;
   FreeAndNil(fItems);
   inherited Destroy;
 end;
@@ -4512,14 +4512,14 @@ begin
     obj := TCompilerMessageConfig(fItems[i]);
     if Assigned(obj) then obj.Free;
   end;
-  fItems.Clear; 
-  ClearHash; 
+  fItems.Clear;
+  ClearHash;
 end;
 
-procedure TCompilerMessagesList.Assign(Src: TCompilerMessagesList); 
+procedure TCompilerMessagesList.Assign(Src: TCompilerMessagesList);
 var
-  i   : Integer; 
-  m   : TCompilerMessageConfig; 
+  i   : Integer;
+  m   : TCompilerMessageConfig;
   err : TFPCErrorType;
 begin
   if Equals(Src) then
@@ -4527,7 +4527,7 @@ begin
   BeginUpdate;
   try
     Clear;
-    fUsedMsgFile := Src.fUsedMsgFile; 
+    fUsedMsgFile := Src.fUsedMsgFile;
     for i := 0 to Src.Count - 1 do begin
       with Src.Msg[i]do begin
         m := TCompilerMessageConfig.Create(Self);
@@ -4539,22 +4539,22 @@ begin
         fItems.Add(m);
         AddHash(m);
       end;
-    end; 
+    end;
     for err := Low(err) to High(err) do  FErrorNames[err] := Src.FErrorNames[err];
   finally
-    EndUpdate; 
+    EndUpdate;
   end;
   IncreaseChangeStamp;
-end; 
-
-procedure TCompilerMessagesList.BeginUpdate; 
-begin
-  inc(fUpdating); 
 end;
 
-procedure TCompilerMessagesList.EndUpdate; 
+procedure TCompilerMessagesList.BeginUpdate;
 begin
-  dec(fUpdating); 
+  inc(fUpdating);
+end;
+
+procedure TCompilerMessagesList.EndUpdate;
+begin
+  dec(fUpdating);
 end;
 
 function TCompilerMessagesList.LoadMsgFile(const FileName: string): Boolean;
@@ -4562,14 +4562,14 @@ function TCompilerMessagesList.LoadMsgFile(const FileName: string): Boolean;
   function IsMsgLine(const s: string; out msgIdx: Integer; out msgType, msgText: string;
     out Ignore: Boolean; out isMultiLine: Boolean): Boolean;
   var
-    i   : Integer; 
-    p   : Integer; 
-    err : Integer; 
-    sub : string; 
+    i   : Integer;
+    p   : Integer;
+    err : Integer;
+    sub : string;
   begin
     Result := (s <> '')  and not(s[1] in ['#',';','%']);
     if not Result then Exit;
-        
+
     p := Pos('=', s);
     Result := p > 0;
     if not Result then Exit;
@@ -4580,14 +4580,14 @@ function TCompilerMessagesList.LoadMsgFile(const FileName: string): Boolean;
      
     val( sub, msgIdx, err);
     Result := err = 0;
-    if not Result then Exit; 
+    if not Result then Exit;
   
-    inc(p, 6); 
+    inc(p, 6);
     Result := s[p] = '_';
     if not Result then Exit;
-    inc(p); 
-    i := p; 
-    while (p <= length(s)) and (s[p] <> '_') do inc(p); 
+    inc(p);
+    i := p;
+    while (p <= length(s)) and (s[p] <> '_') do inc(p);
     msgType := Copy(s, i, p-i);
     Ignore := (Length(msgType) >= 2) and (msgType[1] = '-');
     isMultiLine := msgType = '[';
@@ -4598,16 +4598,16 @@ function TCompilerMessagesList.LoadMsgFile(const FileName: string): Boolean;
       Delete(msgType, 1, 1);
 
     inc(p);
-    msgText := Copy(s, p, length(s) - p + 1); 
-    Result := true; 
-  end;         
-  
+    msgText := Copy(s, p, length(s) - p + 1);
+    Result := true;
+  end;
+
   function GetNextMultiLine(const s: string; var EndOfMultiLine: Boolean): string;
   begin
     EndOfMultiLine := s = ']';
     if EndOfMultiLine then Result := ''
-    else Result := s; 
-  end; 
+    else Result := s;
+  end;
 
   function StrToErrType(const msgtype: String): TFPCErrorType;
   begin
@@ -4626,14 +4626,14 @@ function TCompilerMessagesList.LoadMsgFile(const FileName: string): Boolean;
   end;
 
 var
-  temp    : TStringList; 
-  isMln   : Boolean; 
+  temp    : TStringList;
+  isMln   : Boolean;
   midx    : Integer;
   mtype   : string;
   mtext   : string;
   mignore : Boolean;
-  i       : Integer; 
-  lst     : Boolean; 
+  i       : Integer;
+  lst     : Boolean;
   b       : array of TCompilerMessageState;
   err     : TFPCErrorType;
 const
@@ -4643,25 +4643,25 @@ const
   idxNote    = 01015;
   idxHint    = 01016;
 begin
-  BeginUpdate; 
+  BeginUpdate;
   try
     SetLength(b, MaxMsgIndex);
     GetStateArray(b);
-    
+
     SetDefault(false);
-     
+
     temp := TStringList.Create;
-    try 
-      temp.LoadFromFile(FileName); 
+    try
+      temp.LoadFromFile(FileName);
       i := 0;
       while i < temp.Count do begin
         if IsMsgLine(temp[i], midx, mtype, mtext, mignore, isMln) then begin
           if isMln then begin
-            lst := false; 
+            lst := false;
             while (i < temp.Count) and (not lst) do begin
-              inc(i); 
+              inc(i);
               mtext:=mtext+#10+GetNextMultiLine(temp[i], lst);
-            end; 
+            end;
           end;
 
           Add(midx, StrToErrType(mtype), mtext, mignore, b[midx]);
@@ -4687,38 +4687,38 @@ begin
 
         end;
         inc(i);
-      end; 
-      Result := true; 
-      fUsedMsgFile := FileName;    
+      end;
+      Result := true;
+      fUsedMsgFile := FileName;
     finally
-      temp.Free; 
+      temp.Free;
       SetStateArray(b);
-      EndUpdate; 
-    end;  
+      EndUpdate;
+    end;
   except
-    Result := false; 
-  end; 
+    Result := false;
+  end;
 end;
 
 function IntToStrLen(i:Integer; len: integer; FillCh: Char = '0'): string;
 var
-  s : string; 
-  j : integer; 
+  s : string;
+  j : integer;
 begin
   if len <= 0 then begin
-    Result := ''; 
+    Result := '';
     Exit;
-  end; 
+  end;
   s := IntToStr(i);
-  if length(s)>= len then 
+  if length(s)>= len then
     Result := s
-  else begin 
+  else begin
     SetLength(Result, len);
-    FillChar(Result[1], len, FillCh); 
-    j := (len - length(s)) + 1; 
-    Move(s[1], Result[j], length(s)); 
-  end; 
-end; 
+    FillChar(Result[1], len, FillCh);
+    j := (len - length(s)) + 1;
+    Move(s[1], Result[j], length(s));
+  end;
+end;
 
 function TCompilerMessagesList.Add(AMsgIndex: Integer;
   AMsgType: TFPCErrorType; const AMsgText: string; DefIgnored: Boolean = false;
@@ -4726,73 +4726,22 @@ function TCompilerMessagesList.Add(AMsgIndex: Integer;
 var
   msgconf : TCompilerMessageConfig;
   prm   : array of string;
-  cnt   : Integer;   
+  cnt   : Integer;
 begin
-  msgconf := FindHash(AMsgIndex); 
-  if not Assigned(msgConf) then begin 
+  msgconf := FindHash(AMsgIndex);
+  if not Assigned(msgConf) then begin
     msgconf := TCompilerMessageConfig.Create(Self);
     msgconf.MsgIndex := AMsgIndex;
     fItems.Add(msgconf);
-    AddHash(msgconf); 
-  end; 
+    AddHash(msgconf);
+  end;
   msgconf.MsgType := AMsgType;
   msgconf.MsgText := AMsgText;
   msgconf.DefIgnored := DefIgnored;
   msgconf.State := AState;
-  SetLength(prm, MaxMsgParams); 
-  GetParams(AMsgIndex, prm, cnt); 
-  Result := msgconf; 
-end;
-
-function GetNextNumber(const s: string; var index: Integer; var Num : Integer): Boolean; 
-var
-  i : integer; 
-  err:Integer; 
-begin
-  i := index;
-  while (i <= length(s)) and (s[i] in ['0'..'9']) do inc (i); 
-  Result := i - index > 0;
-  if Result then begin 
-    Val(Copy(s, Index, i - Index), Num, err);
-    if err=0 then ;
-    index := i;
-  end; 
-end; 
-
-function ReplaceParamsArray(const ACompilerMsg: string;
-  const ReplaceParams: array of string): string;
-var
-  j   : Integer; 
-  i   : Integer; 
-  nm  : Integer; 
-  p   : Integer; 
-begin
-  if length(ReplaceParams)=0 then begin
-    Result:=ACompilerMsg;
-    Exit;
-  end;
-  i := 1;
-  p := 1;
-  Result := '';
-  while i <= length(ACompilerMsg) do begin 
-    if ACompilerMsg[i] = '$' then begin
-      j := i + 1; 
-      nm := 0; 
-      if GetNextNumber(ACompilerMsg, j, nm) then begin
-        Result := Result + Copy(ACompilerMsg, p, i - p);
-        if nm <= length(ReplaceParams) then
-          Result := Result + ReplaceParams[nm-1]
-        else
-          Result:=Result+'$'+IntToStr(nm);
-        p := j;
-        i := p; 
-      end else
-        inc(i); 
-    end else 
-      inc(i); 
-  end; 
-  if p < length(ACompilerMsg) then
-    Result := Result + Copy(ACompilerMsg, p, length(ACompilerMsg) - p + 1);
+  SetLength(prm, MaxMsgParams);
+  GetParams(AMsgIndex, prm, cnt);
+  Result := msgconf;
 end;
 
 procedure TCompilerMessagesList.SetDefault(KeepState: Boolean);
@@ -4801,12 +4750,12 @@ var
   err : TFPCErrorType;
 begin
   if KeepState then begin
-    SetLength(b, MaxMsgIndex); 
+    SetLength(b, MaxMsgIndex);
     GetStateArray(b)
-  end; 
+  end;
   BeginUpdate;
-  try 
-    Clear; 
+  try
+    Clear;
     for err := low(TFPCErrorType) to High(TFPCErrorType) do
       FErrorNames[err]:=FPCErrorTypeNames[err];
 
@@ -4948,8 +4897,10 @@ function TCompilerMessagesList.GetParams(MsgIndex: Integer;
     i : integer;
   begin
     PrmCount := length(src);
-    if PrmCount > length(prms) then Result := length(Prms)
-    else Result := PrmCount;
+    if PrmCount > length(prms) then
+      Result := length(Prms)
+    else
+      Result := PrmCount;
     for i := 0 to PrmCount - 1 do
       Prms[i] := Src[i];
   end;
@@ -5009,28 +4960,78 @@ end;
 
 { TCompilerMessageConfig }
 
-constructor TCompilerMessageConfig.Create(AOwner: TCompilerMessagesList); 
+constructor TCompilerMessageConfig.Create(AOwner: TCompilerMessagesList);
 begin
-  fOwner:=AOwner; 
+  fOwner:=AOwner;
 end;
 
 function TCompilerMessageConfig.GetUserText(const ReplaceParams: array of string): string;
+
+  function GetNextNumber(var index: Integer; var Num : Integer): Boolean;
+  var
+    i : integer;
+    err:Integer;
+  begin
+    i := index;
+    while (i <= length(MsgText)) and (MsgText[i] in ['0'..'9']) do inc (i);
+    Result := i - index > 0;
+    if Result then begin
+      Val(Copy(MsgText, Index, i - Index), Num, err);
+      if err=0 then ;
+      index := i;
+    end;
+  end;
+
+var
+  j   : Integer;
+  i   : Integer;
+  nm  : Integer;
+  p   : Integer;
 begin
-  Result := ReplaceParamsArray(MsgText, ReplaceParams);
+  DebugLn(['TCompilerMessageConfig.GetUserText: MsgIndex=', MsgIndex, ', ReplaceParamCnt=', Length(ReplaceParams)]);
+  if length(ReplaceParams)=0 then begin
+    Result:=MsgText;
+    Exit;
+  end;
+  i := 1;
+  p := 1;
+  Result := '';
+  while i <= length(MsgText) do begin
+    if MsgText[i] = '$' then begin
+      j := i + 1;
+      nm := 0;
+      if GetNextNumber(j, nm) then begin
+        Result := Result + Copy(MsgText, p, i - p);
+        if nm <= length(ReplaceParams) then begin
+          Result := Result + ReplaceParams[nm-1];
+          DebugLn(['TCompilerMessageConfig.GetUserText: param ', nm-1, ' =', ReplaceParams[nm-1]]);
+        end
+        else
+          Result:=Result+'$'+IntToStr(nm);
+        p := j;
+        i := p;
+      end else
+        inc(i);
+    end else
+      inc(i);
+  end;
+  if p < length(MsgText) then
+    Result := Result + Copy(MsgText, p, length(MsgText) - p + 1);
 end;
 
-function TCompilerMessageConfig.GetUserText: string; 
+function TCompilerMessageConfig.GetUserText: string;
 var
-  prm : array of string; 
-  cnt : Integer; 
+  prm : array of string;
+  cnt : Integer;
 begin
+  raise Exception.Create('TCompilerMessageConfig.GetUserText is called after all!');
   if Assigned(fOwner) then begin
     SetLength(prm, MaxMsgParams);
     fOwner.GetParams(MsgIndex, prm, cnt);
     SetLength(prm, cnt);
-    Result := GetUserText(prm); 
+    Result := GetUserText(prm);
   end else
-    Result := GetUserText([]); 
+    Result := GetUserText([]);
 end;
 
 initialization
