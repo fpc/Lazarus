@@ -148,7 +148,7 @@ begin
     m := TempMessages.Msg[i];
     if m.MsgType in [etNote, etHint, etWarning] then
     begin
-      s := Format('(%s) %s', [MsgTypeStr[m.MsgType], m.GetUserText([])]);
+      s := Format('(%s) %s', [MsgTypeStr[m.MsgType], m.MsgText]);
       editMsgFilter.Items.AddObject(s, m);
     end;
   end;

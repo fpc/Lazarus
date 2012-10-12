@@ -373,8 +373,8 @@ type
     State    : TCompilerMessageState;  // user state of the message
     MsgType  : TFPCErrorType; // type of message (error, warning, etc)
     constructor Create(AOwner: TCompilerMessagesList); 
-    function GetUserText: string; overload;
-    function GetUserText(const ReplaceParams: array of string): string; overload; 
+//    function GetUserText: string; overload;
+//    function GetUserText(const ReplaceParams: array of string): string; overload;
   end;
 
   { TCompilerMessagesList }
@@ -412,19 +412,16 @@ type
     constructor Create; 
     destructor Destroy; override;
     procedure Clear;
-
     procedure Assign(Src: TCompilerMessagesList);
-
     procedure BeginUpdate;
     procedure EndUpdate;
-
     function LoadMsgFile(const FileName: string): Boolean;
 
     function Add(AMsgIndex: Integer; AMsgType: TFPCErrorType; const AMsgText: string;
       DefIgnored: Boolean = false; AState: TCompilerMessageState = msDefault): TCompilerMessageConfig;
 
     procedure SetDefault(KeepState: Boolean=true);
-    function GetParams(MsgIndex: Integer; var prms: array of string; out PrmCount: Integer): Integer;
+//    function GetParams(MsgIndex: Integer; var prms: array of string; out PrmCount: Integer): Integer;
     function Equals(Obj: TObject): boolean; override;
 
     property Msg[i: Integer]: TCompilerMessageConfig read GetMsgConfig;
@@ -4725,8 +4722,8 @@ function TCompilerMessagesList.Add(AMsgIndex: Integer;
   AState: TCompilerMessageState = msDefault): TCompilerMessageConfig;
 var
   msgconf : TCompilerMessageConfig;
-  prm   : array of string;
-  cnt   : Integer;
+//  prm   : array of string;
+//  cnt   : Integer;
 begin
   msgconf := FindHash(AMsgIndex);
   if not Assigned(msgConf) then begin
@@ -4739,8 +4736,8 @@ begin
   msgconf.MsgText := AMsgText;
   msgconf.DefIgnored := DefIgnored;
   msgconf.State := AState;
-  SetLength(prm, MaxMsgParams);
-  GetParams(AMsgIndex, prm, cnt);
+//  SetLength(prm, MaxMsgParams);
+//  GetParams(AMsgIndex, prm, cnt);
   Result := msgconf;
 end;
 
@@ -4888,7 +4885,7 @@ begin
       SetStateArray(b);
   end; 
 end;
-
+{
 function TCompilerMessagesList.GetParams(MsgIndex: Integer;
   var prms: array of string; out PrmCount: Integer): Integer;
 
@@ -4936,9 +4933,8 @@ begin
     PrmCount := 0;
     Result := 0;
   end;
-
 end;
-
+}
 function TCompilerMessagesList.Equals(Obj: TObject): boolean;
 var
   ObjList: TCompilerMessagesList absolute Obj;
@@ -4964,7 +4960,7 @@ constructor TCompilerMessageConfig.Create(AOwner: TCompilerMessagesList);
 begin
   fOwner:=AOwner;
 end;
-
+{
 function TCompilerMessageConfig.GetUserText(const ReplaceParams: array of string): string;
 
   function GetNextNumber(var index: Integer; var Num : Integer): Boolean;
@@ -5033,7 +5029,7 @@ begin
   end else
     Result := GetUserText([]);
 end;
-
+}
 initialization
   CompilerParseStamp:=1;
   CompilerParseStampIncreased:=nil;
