@@ -589,11 +589,7 @@ begin
   if FilenameIsAbsolute(AFilename) then begin
     if Result=nil then begin
       // load new buffer
-      {$IFnDEF FixCodeCacheLoadFileBug}
-      // This line is wrong. The file is not in cache and we should not exit here.
-      // For some reason removing the line breaks debugger, that's why the IFnDEF
       if (not FileExistsCached(AFilename)) then exit;
-      {$ENDIF}
       if DirectoryCachePool<>nil then
         DiskFilename:=DirectoryCachePool.FindDiskFilename(AFilename)
       else
