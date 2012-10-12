@@ -310,7 +310,7 @@ begin
                  '{$ELSE}'+LineEnding+
                  '  {$R *.lfm}'+LineEnding+
                  '{$ENDIF}';
-              Result:=fCTLink.SrcCache.Replace(gtNone,gtNone,ACleanPos,ParamPos+6,s);
+              if not fCTLink.SrcCache.Replace(gtNone,gtNone,ACleanPos,ParamPos+6,s) then exit;
             end;
           end
           else       // Change .dfm to .lfm.
@@ -321,8 +321,7 @@ begin
           NewKey:=LowKey;
         // Change a single resource name.
         if NewKey<>'' then begin
-          if not fCTLink.SrcCache.Replace(gtNone,gtNone,ParamPos+2,ParamPos+5,NewKey) then
-            exit;
+          if not fCTLink.SrcCache.Replace(gtNone,gtNone,ParamPos+2,ParamPos+5,NewKey) then exit;
         end;
       end;
       ACleanPos:=FindCommentEnd(Src, ACleanPos, Scanner.NestedComments);
