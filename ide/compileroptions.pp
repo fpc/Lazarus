@@ -4756,6 +4756,38 @@ begin
     for err := low(TFPCErrorType) to High(TFPCErrorType) do
       FErrorNames[err]:=FPCErrorTypeNames[err];
 
+    Add(02005,etWarning,'Comment level $1 found');
+    Add(02008,etNote,'Ignored compiler switch "$1"');
+    Add(02009,etWarning,'Illegal compiler switch "$1"');
+    Add(02010,etWarning,'Misplaced global compiler switch');
+    Add(02020,etWarning,'Macro contents are limited to 255 characters in length');
+    Add(02030,etWarning,'Expanding of macros exceeds a depth of 16.');
+    Add(02031,etWarning,'compiler switches aren'#039't supported in // styled comments');
+    Add(02041,etWarning,'Unsupported switch "$1"');
+    Add(02042,etWarning,'Illegal compiler directive "$1"');
+    Add(02044,etWarning,'Unsupported application type: "$1"');
+    Add(02045,etWarning,'APPTYPE is not supported by the target OS');
+    Add(02046,etWarning,'DESCRIPTION is not supported by the target OS');
+    Add(02047,etNote,'VERSION is not supported by target OS');
+    Add(02048,etNote,'VERSION only for exes or DLLs');
+    Add(02049,etWarning,'Wrong format for VERSION directive "$1"');
+    Add(02051,etWarning,'ASM reader switch is not possible inside asm statement, "$1" will be effective only for next');
+    Add(02057,etWarning,'Macro support has been turned off');
+    Add(02059,etWarning,'APPID is only supported for PalmOS');
+    Add(02060,etWarning,'APPNAME is only supported for PalmOS');
+    Add(02073,etNote,'APPTYPE is not supported by the target OS');
+    Add(02075,etWarning,'SETPEFLAGS is not supported by the target OS');
+    Add(02076,etWarning,'IMAGEBASE is not supported by the target OS');
+    Add(02077,etWarning,'MINSTACKSIZE is not supported by the target OS');
+    Add(02078,etWarning,'MAXSTACKSIZE is not supported by the target OS');
+    Add(02081,etWarning,'PIC directive or switch ignored');
+    Add(02082,etWarning,'The switch "$1" is not supported by the currently selected target');
+    Add(02084,etWarning,'Framework-related options are only supported for Darwin/Mac OS X');
+    Add(02086,etWarning,'Overriding name of "main" procedure multiple times, was previously set to "$1"');
+    Add(02087,etWarning,'Illegal identifier "$1" for $WARN directive');
+    Add(02090,etWarning,'Directive "$1" is ignored for the the current target platform');
+    Add(02091,etWarning,'Current system codepage "$1" is not available for the compiler. Switching default codepage back to "$2".');
+
     Add(03005,etWarning,'Procedure type "$1" ignored');
     Add(03011,etWarning,'Relocatable DLL or executable $1 debug info does not work, disabled.');
     Add(03012,etWarning,'To allow debugging for win32 code you need to disable relocation with -WN option');
@@ -4790,7 +4822,10 @@ begin
     Add(03218,etWarning,'Overridden methods must have a related return type. This code may crash, it depends on a Delphi parser bug ("$2" is overridden by "$1" which has another return type)');
     Add(03226,etWarning,'Don'#39't load LINEINFO unit manually, Use the -gl compiler switch instead');
     Add(03237,etWarning,'Register list is ignored for pure assembler routines');
-  
+    Add(03270,etHint,'Defining a new Objective-C root class. To derive from another root class (e.g., NSObject), specify it as the parent class.');
+    Add(03274,etHint,'Inherited methods can only be overridden in Objective-C and Java, add "override" (inherited method defined in $1).');
+    Add(03280,etHint,'Replaced methods can only be reintroduced in Objective-C, add "reintroduce" (replaced method defined in $1).');
+
     Add(04014,etWarning,'Automatic type conversion from floating type to COMP which is an integer type');
     Add(04015,etHint,'use DIV instead to get an integer result');
     Add(04022,etWarning,'lo/hi(dword/qword) returns the upper/lower word/dword');
@@ -4812,7 +4847,16 @@ begin
     Add(04080,etHint,'Converting the operands to "$1" before doing the subtract could prevent overflow errors.');
     Add(04081,etHint,'Converting the operands to "$1" before doing the multiply could prevent overflow errors.');
     Add(04082,etWarning,'Converting pointers to signed integers may result in wrong comparison results and range errors, use an unsigned type instead.');
-  
+    Add(04090,etWarning,'Converting 0 to NIL');
+    Add(04095,etWarning,'Coerced univ parameter type in procedural variable may cause crash or memory corruption: $1 to $2');
+    Add(04104,etWarning,'Implicit string type conversion from "$1" to "$2"');
+    Add(04105,etWarning,'Implicit string type conversion with potential data loss from "$1" to "$2"');
+    Add(04106,etWarning,'Explicit string typecast from "$1" to "$2"');
+    Add(04107,etWarning,'Explicit string typecast with potential data loss from "$1" to "$2"');
+    Add(04108,etWarning,'Unicode constant cast with potential data loss');
+    Add(04110,etWarning,'range check error while evaluating constants ($1 must be between $2 and $3)');
+    Add(04116,etWarning,'The interface method "$1" raises the visibility of "$2" to public when accessed via an interface instance');
+
     Add(05003,etHint,'Identifier already defined in $1 at line $2');
     Add(05014,etWarning,'Label not defined "$1"');
     Add(05023,etHint,'Unit "$1" not used in $2');
@@ -4840,7 +4884,19 @@ begin
     Add(05062,etHint,'Found abstract method: $1');
     Add(05063,etWarning,'Symbol "$1" is experimental');
     Add(05064,etWarning,'Forward declaration "$1" not resolved, assumed external');
-  
+    Add(05065,etWarning,'Symbol "$1" is belongs to a library');
+    Add(05066,etWarning,'Symbol "$1" is deprecated: "$2"');
+    Add(05071,etNote,'Private type "$1.$2" never used');
+    Add(05072,etNote,'Private const "$1.$2" never used');
+    Add(05073,etNote,'Private property "$1.$2" never used');
+    Add(05074,etWarning,'Unit "$1" is deprecated');
+    Add(05075,etWarning,'Unit "$1" is deprecated: "$2"');
+    Add(05076,etWarning,'Unit "$1" is not portable');
+    Add(05077,etWarning,'Unit "$1" is belongs to a library');
+    Add(05078,etWarning,'Unit "$1" is not implemented');
+    Add(05079,etWarning,'Unit "$1" is experimental');
+    Add(05084,etWarning,'Possible library conflict: symbol "$1" from library "$2" also found in library "$3"');
+
     Add(06016,etWarning,'Possible illegal call of constructor or destructor');
     Add(06017,etNote,'Inefficient code');
     Add(06018,etWarning,'unreachable code');
@@ -4875,10 +4931,39 @@ begin
     Add(07103,etWarning,'Use of +offset(%ebp) is not compatible with regcall convention');
     Add(07104,etWarning,'Use of -offset(%ebp) is not recommended for local variable access');
     Add(07105,etWarning,'Use of -offset(%esp), access may cause a crash or value may be lost');
-  
+    Add(07110,etWarning,'@GOTPCREL is useless and potentially dangereous for local symbols');
+    Add(07111,etWarning,'Constant with general purpose segment register');
+    Add(07119,etWarning,'Exported/global symbols should accessed via the GOT');
+
     Add(09000,etWarning,'Source operating system redefined');
     Add(09011,etWarning,'Object $1 not found, Linking may fail !');
     Add(09012,etWarning,'Library $1 not found, Linking may fail !');
+    Add(09201,etWarning,'Object file "$1" contains 32-bit absolute relocation to symbol "$2".');
+
+    Add(10023,etWarning,'Unit $1 was not found but $2 exists');
+    Add(10025,etWarning,'Compiling the system unit requires the -Us switch');
+    Add(10040,etWarning,'Can'#039't recompile unit $1, but found modifed include files');
+
+    Add(11001,etWarning,'Only one source file supported, changing source file to compile from "$1" into "$2"');
+    Add(11002,etWarning,'DEF file can be created only for OS/2');
+    Add(11007,etHint,'-? writes help pages');
+    Add(11011,etWarning,'Target is already set to: $1');
+    Add(11012,etWarning,'Shared libs not supported on DOS platform, reverting to static');
+    Add(11017,etHint,'Try recompiling with -dGDB');
+    Add(11018,etWarning,'You are using the obsolete switch $1');
+    Add(11019,etWarning,'You are using the obsolete switch $1, please use $2');
+    Add(11020,etNote,'Switching assembler to default source writing assembler');
+    Add(11021,etWarning,'Assembler output selected "$1" is not compatible with "$2"');
+    Add(11022,etWarning,'"$1" assembler use forced');
+    Add(11041,etWarning,'Assembler output selected "$1" cannot generate debug info, debugging disabled');
+    Add(11042,etWarning,'Use of ppc386.cfg is deprecated, please use fpc.cfg instead');
+    Add(11046,etNote,'DWARF debug information cannot be used with smart linking on this target, switching to static linking');
+    Add(11047,etWarning,'Option "$1" is ignored for the current target platform.');
+    Add(11048,etWarning,'Disabling external debug information because it is unsupported for the selected target/debug format combination.');
+    Add(11049,etNote,'DWARF debug information cannot be used with smart linking with external assembler, disabling static library creation.');
+    Add(12004,etWarning,'No handler registered for whole program optimization section "$2" at line $1 of wpo feedback file, ignoring');
+    Add(12012,etWarning,'Overriding previously read information for "$1" from feedback input file using information in section "$2"');
+
   finally
     EndUpdate; 
     if KeepState then
