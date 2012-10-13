@@ -78,6 +78,9 @@ type
     procedure SetParentComponent(AParent: TComponent); override;
 
   strict protected
+    // Set series bounds in axis coordinates.
+    // Some or all bounds may be left unset, in which case they will be ignored.
+    procedure GetBounds(var ABounds: TDoubleRect); virtual; abstract;
     function GetIndex: Integer; override;
     function LegendTextSingle: String;
     function LegendTextStyle(AStyle: TChartStyle): String;

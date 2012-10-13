@@ -54,9 +54,6 @@ type
     procedure AfterAdd; virtual; abstract;
     procedure AfterDraw; virtual;
     procedure BeforeDraw; virtual;
-    // Set series bounds in axis coordinates.
-    // Some or all bounds may be left unset, in which case they will be ignored.
-    procedure GetBounds(var ABounds: TDoubleRect); virtual; abstract;
     procedure GetLegendItemsBasic(AItems: TChartLegendItems); virtual; abstract;
     function GetShowInLegend: Boolean; virtual; abstract;
     procedure SetActive(AValue: Boolean); virtual; abstract;
