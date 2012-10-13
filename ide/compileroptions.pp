@@ -150,16 +150,16 @@ type
     icoCustomOptions
     );
   TInheritedCompilerOptions = set of TInheritedCompilerOption;
-  
+
   TInheritedCompOptsStrings = array[TInheritedCompilerOption] of string;
 
 const
   icoAllSearchPaths = [icoUnitPath,icoIncludePath,icoObjectPath,icoLibraryPath,
                        icoSrcPath];
-  
+
 type
   { TParsedCompilerOptions }
-  
+
   TParsedCompilerOptString = (
     pcosNone,
     pcosBaseDir,      // the base directory for the relative paths (only auto created packages can have macros in the BaseDir)
@@ -186,7 +186,7 @@ const
   ParsedCompilerOutDirectories = [pcosOutputDir];
   ParsedCompilerFiles =
     ParsedCompilerSearchPaths+ParsedCompilerFilenames+ParsedCompilerDirectories;
-    
+
   ParsedCompilerOptsVars: array[TParsedCompilerOptString] of string = (
     '',
     '',
@@ -228,7 +228,7 @@ const
       pcosLinkerOptions, // icoLinkerOptions,
       pcosCustomOptions  // icoCustomOptions
       );
-      
+
   CompilerOptionMacroNormal = 0;
   CompilerOptionMacroPlatformIndependent = 1;
 
@@ -300,7 +300,7 @@ type
 
 
   { TBaseCompilerOptions }
-  
+
   TCompilerCmdLineOption = (
     ccloNoLinkerOpts,  // exclude linker options
     ccloAddVerboseAll,  // add -va
@@ -309,7 +309,7 @@ type
     ccloNoMacroParams // no search paths, no linker options, no custom options
     );
   TCompilerCmdLineOptions = set of TCompilerCmdLineOption;
-  
+
   { TCompilationToolOptions }
 
   TCompilationToolOptions = class
@@ -360,25 +360,25 @@ type
     msOn,
     msOff
   );
-  
+
   { TCompilerMessageConfig }
-  
+
   TCompilerMessageConfig = class
   private
-    fOwner  : TCompilerMessagesList; 
+    fOwner  : TCompilerMessagesList;
   public
     MsgIndex : integer;       // message index
     MsgText  : String;        // message text
     DefIgnored : Boolean;     // is message ignored by default (based on the message file)
     State    : TCompilerMessageState;  // user state of the message
     MsgType  : TFPCErrorType; // type of message (error, warning, etc)
-    constructor Create(AOwner: TCompilerMessagesList); 
+    constructor Create(AOwner: TCompilerMessagesList);
 //    function GetUserText: string; overload;
 //    function GetUserText(const ReplaceParams: array of string): string; overload;
   end;
 
   { TCompilerMessagesList }
-  
+
   TCompilerMessagesList = class
   private
     fItems      : TFPList;
@@ -386,40 +386,34 @@ type
     FChangeStamp: int64;
     FOnChanged  : TNotifyEvent;
   protected
-    fUsedMsgFile  : string; 
-    fUpdating     : Integer; 
-    FErrorNames   : array [TFPCErrorType] of string;
+    fUsedMsgFile: string;
+    fUpdating   : Integer;
+    FErrorNames : array [TFPCErrorType] of string;
 
     procedure ClearHash;
     procedure AddHash(Msg: TCompilerMessageConfig);
-    function FindHash(AIndex: integer):TCompilerMessageConfig ; 
-
-    function GetMsgConfigByIndex(AIndex: Integer): TCompilerMessageConfig; 
+    function FindHash(AIndex: integer):TCompilerMessageConfig ;
+    function GetMsgConfigByIndex(AIndex: Integer): TCompilerMessageConfig;
     function GetMsgConfig(i: Integer): TCompilerMessageConfig;
     procedure SetMsgState(i: Integer; const AValue: TCompilerMessageState);
     function GetMsgState(i: Integer): TCompilerMessageState;
-
     procedure GetStateArray(var b: array of TCompilerMessageState);    // array must be large enough
     procedure SetStateArray(const b: array of TCompilerMessageState);  // to store b[MaxMsgIndex], or function fail
-
-    function GetCount: Integer; 
+    function GetCount: Integer;
     function GetErrorNames(errtype: TFPCErrorType): string;
-
     procedure IncreaseChangeStamp;
     property ChangeStamp: int64 read FChangeStamp;
     property OnChanged: TNotifyEvent read FOnChanged write FOnChanged;
   public
-    constructor Create; 
+    constructor Create;
     destructor Destroy; override;
     procedure Clear;
     procedure Assign(Src: TCompilerMessagesList);
     procedure BeginUpdate;
     procedure EndUpdate;
     function LoadMsgFile(const FileName: string): Boolean;
-
     function Add(AMsgIndex: Integer; AMsgType: TFPCErrorType; const AMsgText: string;
       DefIgnored: Boolean = false; AState: TCompilerMessageState = msDefault): TCompilerMessageConfig;
-
     procedure SetDefault(KeepState: Boolean=true);
 //    function GetParams(MsgIndex: Integer; var prms: array of string; out PrmCount: Integer): Integer;
     function Equals(Obj: TObject): boolean; override;
@@ -427,11 +421,11 @@ type
     property Msg[i: Integer]: TCompilerMessageConfig read GetMsgConfig;
     property MsgByIndex[AIndex: Integer]:  TCompilerMessageConfig read GetMsgConfigByIndex;
     property MsgState[i: Integer]: TCompilerMessageState read GetMsgState write SetMsgState;
-    property Count: Integer read GetCount; 
-    property UsedMsgFile : string read fUsedMsgFile; 
+    property Count: Integer read GetCount;
+    property UsedMsgFile : string read fUsedMsgFile;
     property ErrorNames[errtype: TFPCErrorType]: string read GetErrorNames;
   end;
-  
+
   { TBaseCompilerOptions }
 
   TBaseCompilerOptions = class(TLazCompilerOptions)
@@ -446,11 +440,11 @@ type
     fExecuteBefore: TCompilationToolOptions;
     fExecuteAfter: TCompilationToolOptions;
     FCreateMakefileOnBuild: boolean;
-    
+
     // Compiler Messags
-    fUseCustomMessages: Boolean; // use messages customization 
-    fUseMsgFile: Boolean;  // use specified file for messages 
-    fMsgFileName: String;  // messages file name 
+    fUseCustomMessages: Boolean; // use messages customization
+    fUseMsgFile: Boolean;  // use specified file for messages
+    fMsgFileName: String;  // messages file name
     fCompilerMessages: TCompilerMessagesList;
 
     procedure OnItemChanged(Sender: TObject);
@@ -499,7 +493,7 @@ type
 
     procedure LoadFromXMLConfig(AXMLConfig: TXMLConfig; const Path: string); virtual;
     procedure SaveToXMLConfig(AXMLConfig: TXMLConfig; const Path: string); virtual;
-    
+
     function LoadFromFile(AFilename: string): TModalResult;
     function SaveToFile(AFilename: string): TModalResult;
     procedure Assign(Source: TPersistent); override;
@@ -592,17 +586,17 @@ type
     property ExecuteAfter: TCompilationToolOptions read fExecuteAfter;
     property CreateMakefileOnBuild: boolean read FCreateMakefileOnBuild
                                             write SetCreateMakefileOnBuild;
-                                            
+
     // compiler messages
     property CompilerMessages: TCompilerMessagesList read fCompilerMessages;
     property UseMsgFile: Boolean read fUseMsgFile write SetUseMsgFile;
     property MsgFileName: String read fMsgFileName write SetMsgFileName;
   end;
-  
+
   TBaseCompilerOptionsClass = class of TBaseCompilerOptions;
 
   { TAdditionalCompilerOptions
-  
+
     Additional Compiler options are used by packages to define, what a project
     or a package or the IDE needs to use the package.
   }
@@ -700,8 +694,8 @@ procedure SaveXMLCompileReasons(const AConfig: TXMLConfig; const APath: String;
   const AFlags, DefaultFlags: TCompileReasons);
 
 const
-  MaxMsgParams = 4; 
-  MaxMsgIndex = 20000; 
+  MaxMsgParams = 4;
+  MaxMsgIndex = 20000;
 
   symFile   = '$FileName';
   symClass  = '$Class';
@@ -826,7 +820,7 @@ begin
         do begin
           UnparsedOption:=AddOptions.GetOption(o);
           if UnparsedOption<>'' then begin
-          
+
             CurOptions:=InheritedOptionStrings[o];
             case o of
             icoNone: ;
@@ -865,7 +859,7 @@ var
   CurCustomOptions: String;
 begin
   Result:='';
-  
+
   // inherited Linker options
   if (not (ccloNoLinkerOpts in Flags)) then begin
     CurLinkerOpts:=InheritedOptionStrings[icoLinkerOptions];
@@ -1358,7 +1352,7 @@ var
   begin
     Result:=SwitchPathDelims(Filename,PathDelimChange);
   end;
-  
+
   function sp(const SearchPath: string): string;
   begin
     Result:=SwitchPathDelims(SearchPath,PathDelimChange);
@@ -1376,7 +1370,7 @@ var
     end else
       SmallerCode:=aXMLConfig.GetValue(p+'SmallerCode/Value',false);
   end;
-  
+
   procedure ReadSmartLinkUnit;
   begin
     if FileVersion<3 then
@@ -1384,7 +1378,7 @@ var
     else
       SmartLinkUnit := aXMLConfig.GetValue(p+'SmartLinkUnit/Value', false);
   end;
-  
+
   procedure ReadLinkSmart;
   begin
     if FileVersion<3 then
@@ -1421,7 +1415,7 @@ begin
   { Parsing }
   p:=Path+'Parsing/';
   AssemblerStyle := aXMLConfig.GetValue(p+'Style/Value', 0);
-  
+
   { Syntax Options }
   if FileVersion>=5 then
     p:=Path+'Parsing/SyntaxOptions/'
@@ -1543,7 +1537,7 @@ begin
   StopAfterErrCount := aXMLConfig.GetValue(p+'ConfigFile/StopAfterErrCount/Value', 1);
 
   // messages
-  if fCompilerMessages.Count = 0 then fCompilerMessages.SetDefault; 
+  if fCompilerMessages.Count = 0 then fCompilerMessages.SetDefault;
   UseMsgFile := aXMLConfig.GetValue(p+'CompilerMessages/UseMsgFile/Value', False);
   MsgFileName := aXMLConfig.GetValue(p+'CompilerMessages/MsgFileName/Value', '$(FPCMsgFile)');
   if UseMsgFile and FileExistsCached(GetParsedMsgFilename) then
@@ -1558,7 +1552,7 @@ begin
         State := msOn;
   end;
 
-  if UseMsgFile then 
+  if UseMsgFile then
     with aXMLConfig do begin
       // ErrorNames should be stored, because the Message file is not read (or parsed)
       // on project opening. So errors needs to be initialized properly from the CompilerOptions.xml
@@ -1568,8 +1562,8 @@ begin
       fCompilerMessages.fErrorNames[etError]:=GetValue(p+'fCompilerMessages/ErrorNames/Error', FPCErrorTypeNames[etError]);
       fCompilerMessages.fErrorNames[etFatal]:=GetValue(p+'fCompilerMessages/ErrorNames/Fatal', FPCErrorTypeNames[etFatal]);
     end;
-  
-  
+
+
   { Other }
   p:=Path+'Other/';
   DontUseConfigFile := aXMLConfig.GetValue(p+'ConfigFile/DontUseConfigFile/Value', false);
@@ -1658,7 +1652,7 @@ begin
   { Parsing }
   p:=Path+'Parsing/';
   aXMLConfig.SetDeleteValue(p+'Style/Value', AssemblerStyle,0);
-  
+
   { Syntax Options }
   p:=Path+'Parsing/SyntaxOptions/';
   aXMLConfig.SetDeleteValue(p+'SyntaxMode/Value', SyntaxMode,'ObjFPC');
@@ -1746,7 +1740,7 @@ begin
   end;
   aXMLConfig.SetDeleteValue(p+'CompilerMessages/UseMsgFile/Value', UseMsgFile, False);
   aXMLConfig.SetDeleteValue(p+'CompilerMessages/MsgFileName/Value', MsgFileName, '$(FPCMsgFile)');
-  
+
   aXMLConfig.SetDeleteValue(p+'CompilerMessages/ErrorNames/Hint',    CompilerMessages.ErrorNames[etHint],    FPCErrorTypeNames[etHint]);
   aXMLConfig.SetDeleteValue(p+'CompilerMessages/ErrorNames/Note',    CompilerMessages.ErrorNames[etNote],    FPCErrorTypeNames[etNote]);
   aXMLConfig.SetDeleteValue(p+'CompilerMessages/ErrorNames/Warning', CompilerMessages.ErrorNames[etWarning], FPCErrorTypeNames[etWarning]);
@@ -1812,7 +1806,7 @@ end;
 ------------------------------------------------------------------------------}
 function TBaseCompilerOptions.CreateTargetFilename(
   const MainSourceFileName: string): string;
-  
+
   procedure AppendDefaultExt;
   var
     Ext: String;
@@ -2346,11 +2340,11 @@ var
 begin
   Result := '';
   if not Assigned(msglist) then Exit;
-  for i := 0 to msglist.Count - 1 do 
+  for i := 0 to msglist.Count - 1 do
     if msglist.Msg[i].State = State then begin
-      if Result <> '' then 
+      if Result <> '' then
         Result := Result + Separator + IntToStr(msglist.Msg[i].MsgIndex)
-      else 
+      else
         Result := IntToStr(msglist.Msg[i].MsgIndex);
     end;
 end;
@@ -2649,7 +2643,7 @@ begin
     2: switches := switches + '-Ratt';
     3: switches := switches + '-Rdirect';
   end;
-  
+
   // Syntax Options
   tempsw:=GetSyntaxOptionsString;
   if (tempsw <> '') then
@@ -2745,7 +2739,7 @@ begin
   CurSrcOS:=GetDefaultSrcOSForTargetOS(CurTargetOS);
 
   { --------------- Linking Tab ------------------- }
-  
+
   { Debugging }
   { Debug Info for GDB }
   if (GenerateDebugInfo) then begin
@@ -2831,7 +2825,7 @@ begin
       r = Rhide/GCC compatibility mode
   }
   tempsw := '';
-    
+
   if (ShowErrors) then
     tempsw := tempsw + 'e';
   if (ShowWarn) then
@@ -2944,7 +2938,7 @@ begin
           be added to the dialog. }
 {
   -P = Use pipes instead of files when assembling
-      
+
 
   -a = Delete generated assembler files
   -al = Include source code lines in assembler files as comments
@@ -2956,14 +2950,14 @@ begin
        nasmonj = obj file using nasm assembler
        masm = obj file using Microsoft masm assembler
        tasm = obj file using Borland tasm assembler
-       
+
   -B = Recompile all units even if they didn't change  ->  implemented by compiler.pp
   -b = Generate browser info
   -bl = Generate browser info, including local variables, types and procedures
 
   -dxxx = Define symbol name xxx (Used for conditional compiles)
   -uxxx = Undefine symbol name xxx
-  
+
   -Ce        Compilation with emulated floating point opcodes
   -CR        verify object method call validity
 
@@ -2973,7 +2967,7 @@ begin
   -V     write fpcdebug.txt file with lots of debugging info
 
   -Xc = Link with C library (LINUX only)
-       
+
 }
   // append -o Option if neccessary
   {   * -o to define the target file name.
@@ -3154,7 +3148,7 @@ begin
   fUncertainOpt := false;
   fOptLevel := 1;
   fTargetOS := '';
-    
+
   // linking
   fGenDebugInfo := True;
   fDebugInfoType := dsAuto;
@@ -3168,7 +3162,7 @@ begin
   LinkerOptions := '';
   Win32GraphicApp := false;
   ExecutableType := cetProgram;
-    
+
   // messages
   fShowErrors := true;
   fShowWarn := true;
@@ -3190,17 +3184,17 @@ begin
   fShowHintsForSenderNotUsed := false;
   fWriteFPCLogo := true;
   fStopAfterErrCount := 1;
-  
-  fUseCustomMessages := false;  
-  fCompilerMessages.Clear; 
-  fCompilerMessages.SetDefault; 
+
+  fUseCustomMessages := false;
+  fCompilerMessages.Clear;
+  fCompilerMessages.SetDefault;
 
   // other
   fDontUseConfigFile := false;
   fCustomConfigFile := false;
   fConfigFilePath := 'extrafpc.cfg';
   CustomOptions := '';
-  
+
   // inherited
   ClearInheritedOptions;
 
@@ -3622,12 +3616,12 @@ end;
 
 procedure TAdditionalCompilerOptions.LoadFromXMLConfig(XMLConfig: TXMLConfig;
   const Path: string; AdjustPathDelims: boolean);
-  
+
   function f(const Filename: string): string;
   begin
     Result:=SwitchPathDelims(Filename,AdjustPathDelims);
   end;
-  
+
 begin
   Clear;
   CustomOptions:=f(XMLConfig.GetValue(Path+'CustomOptions/Value',''));
@@ -4425,7 +4419,7 @@ begin
       Result := fHash[idx][sub];
 end;
 
-function TCompilerMessagesList.GetMsgConfigByIndex(AIndex: Integer): TCompilerMessageConfig; 
+function TCompilerMessagesList.GetMsgConfigByIndex(AIndex: Integer): TCompilerMessageConfig;
 begin
   Result := FindHash(Aindex);
 end;

@@ -290,7 +290,7 @@ begin
   else begin
     i:=Pos(' in ',AOldName);
     if i>1 then
-      AOldName:=Copy(AOldName, 1 ,i-1);  // Strip the file name part.
+      AOldName:=Copy(AOldName, 1, i-1);  // Strip the file name part.
     if fUnitsToRemove.IndexOf(AOldName)=-1 then
       fUnitsToRemove.Add(AOldName);
     IDEMessagesWindow.AddMsg(Format(lisConvDelphiRemovedUnitInUsesSection,
