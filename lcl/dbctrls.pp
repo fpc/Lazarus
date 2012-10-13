@@ -39,7 +39,7 @@ uses
   Types, Classes, SysUtils, DB,
   LCLStrConsts, LCLProc, LMessages, LCLType, LResources, GraphType,
   Forms, Controls, Graphics, Dialogs, StdCtrls, Buttons, MaskEdit, ExtCtrls,
-  Calendar, Variants;
+  Calendar, Variants, ImgList;
 
 Type
   { TFieldDataLink }
@@ -1138,6 +1138,8 @@ type
     FConfirmDelete: Boolean;
     FUpdateButtonsNeeded: boolean;
     FShowButtonHints: boolean;
+    FImages: TCustomImageList;
+    FImageChangeLink: TChangeLink;
     procedure DefaultHintsChanged(Sender: TObject);
     function GetDataSource: TDataSource;
     function GetHints: TStrings;
@@ -1145,10 +1147,12 @@ type
     procedure SetDirection(const AValue: TDBNavButtonDirection);
     procedure SetFlat(const AValue: Boolean);
     procedure SetHints(const AValue: TStrings);
+    procedure SetImages(AValue: TCustomImageList);
     procedure SetOptions(AValue: TDBNavigatorOptions);
     procedure SetShowButtonHints(const AValue: boolean);
     procedure SetVisibleButtons(const AValue: TDBNavButtonSet);
     procedure CMGetDataLink(var Message: TLMessage); message CM_GETDATALINK;
+    procedure ImageListChange(Sender: TObject);
   protected
     Buttons: array[TDBNavButtonType] of TDBNavButton;
     FocusableButtons: array[TDBNavButtonType] of TDBNavFocusableButton;
@@ -1182,6 +1186,7 @@ type
     property VisibleButtons: TDBNavButtonSet read FVisibleButtons
                              write SetVisibleButtons default DefaultDBNavigatorButtons;
     property ShowButtonHints: boolean read FShowButtonHints write SetShowButtonHints default true;
+    property Images: TCustomImageList read FImages write SetImages;
   end;
   
   
@@ -1276,6 +1281,7 @@ type
     property TabStop default False;
     property Visible;
     property VisibleButtons;
+    property Images;
   end;
   
 

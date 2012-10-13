@@ -116,6 +116,20 @@ begin
     FHints.Assign(AValue);
 end;
 
+procedure TDBCustomNavigator.SetImages(AValue: TCustomImageList);
+begin
+  if FImages = AValue then Exit;
+  if FImages <> nil then
+    FImages.UnRegisterChanges(FImageChangeLink);
+  FImages := AValue;
+  if FImages <> nil then
+  begin
+    FImages.RegisterChanges(FImageChangeLink);
+    FImages.FreeNotification(Self);
+  end;
+  UpdateButtons;   //?????
+end;
+
 procedure TDBCustomNavigator.SetOptions(AValue: TDBNavigatorOptions);
 begin
   if FOptions=AValue then Exit;
@@ -150,6 +164,11 @@ end;
 procedure TDBCustomNavigator.CMGetDataLink(var Message: TLMessage);
 begin
   Message.Result := PtrUInt(FDataLink);
+end;
+
+procedure TDBCustomNavigator.ImageListChange(Sender: TObject);
+begin
+  UpdateButtons; //????
 end;
 
 procedure TDBCustomNavigator.DataChanged;
@@ -266,7 +285,11 @@ begin
       Buttons[CurButtonType]:=CurButton;
       if CurButtonType in [nbPrior,nbNext] then
         CurButton.NavStyle:=CurButton.NavStyle+[nsAllowTimer];
+      //Load default images
       CurButton.LoadGlyphFromLazarusResource(DBNavButtonResourceName[CurButtonType]);
+      //Apply custom images if available
+      if Assigned(FImages) and (Ord(CurButtontype) < FImages.Count) then
+        FImages.GetBitmap(Ord(CurButtonType), CurButton.Glyph);
       CurButton.NumGlyphs:=1;
       CurButton.Parent:=Self;
       CurButton.OnClick:=@ButtonClickHandler;
@@ -295,7 +318,11 @@ begin
       FocusableButtons[CurButtonType]:=CurFocusableButton;
       if CurButtonType in [nbPrior,nbNext] then
         CurFocusableButton.NavStyle:=CurFocusableButton.NavStyle+[nsAllowTimer];
+      //Load default images
       CurFocusableButton.LoadGlyphFromLazarusResource(DBNavButtonResourceName[CurButtonType]);
+      //Apply custom images if available
+      if Assigned(FImages) and (Ord(CurButtontype) < FImages.Count) then
+        FImages.GetBitmap(Ord(CurButtonType), CurFocusableButton.Glyph);
       CurFocusableButton.NumGlyphs:=1;
       CurFocusableButton.TabStop := True;
       CurFocusableButton.Parent:=Self;
@@ -421,6 +448,8 @@ begin
   FShowButtonHints:=true;
   TStringList(FHints).OnChange:=@HintsChanged;
   FDefaultHints:=TStringList.Create;
+  FImageChangeLink := TChangeLink.Create;
+  FImageChangeLink.OnChange := @ImageListChange;
   BevelOuter:=bvNone;
   BevelInner:=bvNone;
   FConfirmDelete:=True;
@@ -436,6 +465,7 @@ begin
   FDataLink.Destroy;
   FHints.Destroy;
   FDefaultHints.Destroy;
+  FImageChangeLink.Destroy;
   inherited Destroy;
 end;
 
