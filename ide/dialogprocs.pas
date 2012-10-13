@@ -134,6 +134,8 @@ begin
   end;
   repeat
     if FileProcs.RenameFileUTF8(SrcFilename,DestFilename) then begin
+      InvalidateFileStateCache(SrcFilename);
+      InvalidateFileStateCache(DestFilename);
       break;
     end else begin
       DlgButtons:=[mbCancel,mbRetry]+ExtraButtons;
@@ -161,6 +163,7 @@ begin
   end;
   repeat
     if CopyFile(SrcFilename,DestFilename) then begin
+      InvalidateFileStateCache(DestFilename);
       break;
     end else begin
       DlgButtons:=[mbCancel,mbRetry]+ExtraButtons;
