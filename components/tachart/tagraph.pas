@@ -192,6 +192,7 @@ type
     FTitle: TChartTitle;
     FToolset: TBasicChartToolset;
 
+    function ClipRectWithoutFrame(AZPosition: TChartDistance): TRect;
   private
     FActiveToolIndex: Integer;
     FAutoFocus: Boolean;
@@ -542,6 +543,16 @@ begin
   StyleChanged(Self);
 end;
 
+function TChart.ClipRectWithoutFrame(AZPosition: TChartDistance): TRect;
+begin
+  Result := FClipRect;
+  if (AZPosition > 0) or not Frame.Visible or (Frame.Style = psClear) then exit;
+  Result.Left += (Frame.Width + 1) div 2;
+  Result.Top += (Frame.Width + 1) div 2;
+  Result.Bottom -= Frame.Width div 2;
+  Result.Right -= Frame.Width div 2;
+end;
+
 function TChart.Clone: TChart;
 var
   ms: TMemoryStream;
@@ -700,7 +711,7 @@ begin
           if AxisVisible then
             AxisList.Draw(ZPosition, axisIndex);
           OffsetDrawArea(Min(ZPosition, d), Min(Depth, d));
-          ADrawer.ClippingStart(FClipRect);
+          ADrawer.ClippingStart(ClipRectWithoutFrame(ZPosition));
           try
             try
               ADrawer.SetTransparency(Transparency);
