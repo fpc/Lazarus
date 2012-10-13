@@ -4723,10 +4723,6 @@ msgstr "复制输出到剪贴板"
 msgid "The dates of the .ppu files of FPC differ more than one hour.%sThis can mean, they are from two different installations.%sFile1: %s%sFile2: %s"
 msgstr "FPC的 .ppu 文件日期不同.%s这可能说明它们来自两个不同版本的FPC安装.%sFile1: %s%sFile2: %s"
 
-#: lazarusidestrconsts.lisccoenglishmessagefilemissing
-msgid "english message file for fpc is missing:components/codetools/fpc.errore.msg"
-msgstr "缺少FPC的英文信息文件:components/codetools/fpc.errore.msg"
-
 #: lazarusidestrconsts.lisccoerrorcaption
 msgctxt "lazarusidestrconsts.lisccoerrorcaption"
 msgid "Error"

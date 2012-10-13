@@ -4470,10 +4470,6 @@ msgstr "نسخ المخرجات للوحة الملصقات"
 msgid "The dates of the .ppu files of FPC differ more than one hour.%sThis can mean, they are from two different installations.%sFile1: %s%sFile2: %s"
 msgstr "تواريخ ملفات .ppu لمترجم فري باسكال تختلف بفارق أكثر من ساعة.%sهذا قد يعني، أنها من تنصيبين مختلفين.%sملف1: %s%sملف2: %s"
 
-#: lazarusidestrconsts.lisccoenglishmessagefilemissing
-msgid "english message file for fpc is missing:components/codetools/fpc.errore.msg"
-msgstr "ملف الرسائل الإنكليزية لمترجم فري باسكال مفقود:components/codetools/fpc.errore.msg"
-
 #: lazarusidestrconsts.lisccoerrorcaption
 msgctxt "lazarusidestrconsts.lisccoerrorcaption"
 msgid "Error"

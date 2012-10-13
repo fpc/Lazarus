@@ -4476,10 +4476,6 @@ msgstr ""
 msgid "The dates of the .ppu files of FPC differ more than one hour.%sThis can mean, they are from two different installations.%sFile1: %s%sFile2: %s"
 msgstr ""
 
-#: lazarusidestrconsts.lisccoenglishmessagefilemissing
-msgid "english message file for fpc is missing:components/codetools/fpc.errore.msg"
-msgstr ""
-
 #: lazarusidestrconsts.lisccoerrorcaption
 msgctxt "lazarusidestrconsts.lisccoerrorcaption"
 msgid "Error"

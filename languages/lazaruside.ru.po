@@ -4643,10 +4643,6 @@ msgstr "Копировать вывод в буфер обмена"
 msgid "The dates of the .ppu files of FPC differ more than one hour.%sThis can mean, they are from two different installations.%sFile1: %s%sFile2: %s"
 msgstr "Даты файлов .ppu FPC отличаются больше, чем на один час.%sЭто может означать, что они принадлежат разным установкам.%sФайл1: %s%sФайл2: %s"
 
-#: lazarusidestrconsts.lisccoenglishmessagefilemissing
-msgid "english message file for fpc is missing:components/codetools/fpc.errore.msg"
-msgstr "отсутствует файл английских сообщений для FPC: components/codetools/fpc.errore.msg"
-
 #: lazarusidestrconsts.lisccoerrorcaption
 msgctxt "lazarusidestrconsts.lisccoerrorcaption"
 msgid "Error"
