@@ -173,7 +173,6 @@ type
     FExtentSizeLimit: TChartExtent;
     FFoot: TChartTitle;
     FFrame: TChartPen;
-    FGraphBrush: TBrush;
     FLegend: TChartLegend;
     FLogicalExtent: TDoubleRect;
     FMargins: TChartMargins;
@@ -232,7 +231,6 @@ type
     procedure SetExtentSizeLimit(AValue: TChartExtent);
     procedure SetFoot(Value: TChartTitle);
     procedure SetFrame(Value: TChartPen);
-    procedure SetGraphBrush(Value: TBrush);
     procedure SetLegend(Value: TChartLegend);
     procedure SetLogicalExtent(const AValue: TDoubleRect);
     procedure SetMargins(AValue: TChartMargins);
@@ -361,7 +359,6 @@ type
     property ExtentSizeLimit: TChartExtent read FExtentSizeLimit write SetExtentSizeLimit;
     property Foot: TChartTitle read FFoot write SetFoot;
     property Frame: TChartPen read FFrame write SetFrame;
-    property GraphBrush: TBrush read FGraphBrush write SetGraphBrush;
     property LeftAxis: TChartAxis index calLeft read GetAxisByAlign write SetAxisByAlign stored false;
     property Legend: TChartLegend read FLegend write SetLegend;
     property Margins: TChartMargins read FMargins write SetMargins;
@@ -607,9 +604,6 @@ begin
 
   FIsZoomed := false;
 
-  FGraphBrush := TBrush.Create;
-  FGraphBrush.OnChange := @StyleChanged;
-
   FLegend := TChartLegend.Create(Self);
   FTitle := TChartTitle.Create(Self);
   FTitle.Alignment := taCenter;
@@ -654,7 +648,6 @@ end;
 destructor TChart.Destroy;
 begin
   FreeAndNil(FSeries);
-  FreeAndNil(FGraphBrush);
 
   FreeAndNil(FLegend);
   FreeAndNil(FTitle);
@@ -1358,11 +1351,6 @@ procedure TChart.SetFrame(Value: TChartPen);
 begin
   FFrame.Assign(Value);
   StyleChanged(Self);
-end;
-
-procedure TChart.SetGraphBrush(Value: TBrush);
-begin
-  FGraphBrush.Assign(Value);
 end;
 
 procedure TChart.SetLegend(Value: TChartLegend);
