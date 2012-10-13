@@ -693,9 +693,14 @@ begin
 end;
 
 procedure TChartSeries.GetBounds(var ABounds: TDoubleRect);
+var
+  i: Integer;
 begin
   if not Active or (Count = 0) then exit;
-  ABounds := Extent;
+  with Extent do
+    for i := Low(coords) to High(coords) do
+      if not IsInfinite(coords[i]) then
+        ABounds.coords[i] := coords[i];
 end;
 
 function TChartSeries.GetColor(AIndex: Integer): TColor;
