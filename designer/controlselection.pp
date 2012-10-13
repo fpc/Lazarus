@@ -1397,42 +1397,23 @@ begin
   end;
 end;
 
-procedure TControlSelection.FindNearestGridY(var NearestInt: TNearestInt);
-var GridSizeY, NearestGridY: integer;
-begin
-  if not EnvironmentOptions.SnapToGrid then exit;
-  GridSizeY:=CleanGridSizeY;
-  // add half GridSizeY, so that rounding is correct
-  if NearestInt.Level>=0 then
-    NearestGridY:=NearestInt.Level+(GridSizeY div 2)
-  else
-    NearestGridY:=NearestInt.Level-(GridSizeY div 2);
-  // round
-  dec(NearestGridY,NearestGridY mod GridSizeY);
-  ImproveNearestInt(NearestInt,NearestGridY);
-end;
-
-procedure TControlSelection.FindNearestClientLeftRight(
-  var NearestInt: TNearestInt);
+procedure TControlSelection.FindNearestClientLeftRight(var NearestInt: TNearestInt);
 var MaxDist: integer;
 begin
   MaxDist:=(CleanGridSizeX+1) div 2;
-  if Abs(NearestInt.Level-0)<MaxDist then
+  if NearestInt.Level<MaxDist then
     ImproveNearestInt(NearestInt,0);
-  if (FForm<>nil)
-  and (Abs(NearestInt.Level-FForm.ClientWidth)<MaxDist) then
+  if (FForm<>nil) and (Abs(NearestInt.Level-FForm.ClientWidth)<MaxDist) then
     ImproveNearestInt(NearestInt,FForm.ClientWidth);
 end;
 
-procedure TControlSelection.FindNearestClientTopBottom(
-  var NearestInt: TNearestInt);
+procedure TControlSelection.FindNearestClientTopBottom(var NearestInt: TNearestInt);
 var MaxDist: integer;
 begin
   MaxDist:=(CleanGridSizeY+1) div 2;
-  if Abs(NearestInt.Level-0)<MaxDist then
+  if NearestInt.Level<MaxDist then
     ImproveNearestInt(NearestInt,0);
-  if (FForm<>nil)
-  and (Abs(NearestInt.Level-FForm.ClientHeight)<MaxDist) then
+  if (FForm<>nil) and (Abs(NearestInt.Level-FForm.ClientHeight)<MaxDist) then
     ImproveNearestInt(NearestInt,FForm.ClientHeight);
 end;
 
@@ -1893,14 +1874,17 @@ var GridSizeX, NearestGridX: integer;
 begin
   if not EnvironmentOptions.SnapToGrid then exit;
   GridSizeX:=CleanGridSizeX;
-  // add half GridSizeX, so that rounding is correct
-  if NearestInt.Level>=0 then
-    NearestGridX:=NearestInt.Level+(GridSizeX div 2)
-  else
-    NearestGridX:=NearestInt.Level-(GridSizeX div 2);
-  // round
-  dec(NearestGridX,NearestGridX mod GridSizeX);
+  NearestGridX := ((NearestInt.Level + GridSizeX div 2) div GridSizeX) * GridSizeX;
   ImproveNearestInt(NearestInt,NearestGridX);
+end;
+
+procedure TControlSelection.FindNearestGridY(var NearestInt: TNearestInt);
+var GridSizeY, NearestGridY: integer;
+begin
+  if not EnvironmentOptions.SnapToGrid then exit;
+  GridSizeY:=CleanGridSizeY;
+  NearestGridY := ((NearestInt.Level + GridSizeY div 2) div GridSizeY) * GridSizeY;
+  ImproveNearestInt(NearestInt,NearestGridY);
 end;
 
 procedure TControlSelection.DoChange(ForceUpdate: Boolean = False);
