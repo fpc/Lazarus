@@ -4690,7 +4690,7 @@ begin
     Result := false;
   end;
 end;
-
+{
 function IntToStrLen(i:Integer; len: integer; FillCh: Char = '0'): string;
 var
   s : string;
@@ -4710,7 +4710,7 @@ begin
     Move(s[1], Result[j], length(s));
   end;
 end;
-
+}
 function TCompilerMessagesList.Add(AMsgIndex: Integer;
   AMsgType: TFPCErrorType; const AMsgText: string; DefIgnored: Boolean = false;
   AState: TCompilerMessageState = msDefault): TCompilerMessageConfig;
