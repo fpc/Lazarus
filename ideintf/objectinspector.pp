@@ -1252,8 +1252,7 @@ begin
   end;
 end;
 
-function TOICustomPropertyGrid.GetRowByPath(
-  const PropPath: string): TOIPropertyGridRow;
+function TOICustomPropertyGrid.GetRowByPath(const PropPath: string): TOIPropertyGridRow;
 // searches PropPath. Expands automatically parent rows
 var CurName:string;
   s,e:integer;
@@ -1355,7 +1354,6 @@ var
   CurRow:TOIPropertyGridRow;
   OldChangeStep: integer;
 begin
-  //writeln('#################### TOICustomPropertyGrid.DoCallEdit ...');
   if not CanEditRowValue then exit;
 
   OldChangeStep:=fChangeStep;
@@ -1364,7 +1362,8 @@ begin
     {$IFNDEF DoNotCatchOIExceptions}
     try
     {$ENDIF}
-      DebugLn(['#################### TOICustomPropertyGrid.DoCallEdit for ',CurRow.Editor.ClassName,' Edit=',Edit=oiqeEdit]);
+      DebugLn(['#################### TOICustomPropertyGrid.DoCallEdit for ',
+               CurRow.Editor.ClassName,' Edit=',Edit=oiqeEdit]);
       Include(FStates,pgsApplyingValue);
       try
         if Edit=oiqeShowValue then

@@ -350,8 +350,8 @@ type
     procedure SetOrdValue(const NewValue: Longint);
     procedure SetPtrValue(const NewValue: Pointer);
     procedure SetStrValue(const NewValue: AnsiString);
-    procedure SetVarValue(const NewValue: Variant);
     procedure SetWideStrValue(const NewValue: WideString);
+    procedure SetVarValue(const NewValue: Variant);
     procedure Modified;
     function ValueAvailable: Boolean;
     procedure ListMeasureWidth(const AValue: ansistring; Index:integer;
@@ -2119,13 +2119,11 @@ begin
       PropEditor.SetPropEntry(0, Instance, PropInfo);
       PropEditor.Initialize;
       // check for multiselection, ValueAvailable and customfilter
-      if ((SelCount > 1)
-          and not (paMultiSelect in PropEditor.GetAttributes))
+      if ((SelCount > 1) and not (paMultiSelect in PropEditor.GetAttributes))
       or not PropEditor.ValueAvailable
       or (Assigned(AEditorFilterFunc) and not AEditorFilterFunc(PropEditor))
-      then begin
+      then
         Candidates.Delete(I);
-      end;
       PropEditor.Free;
     end;
 
@@ -2155,14 +2153,12 @@ begin
         for J := 0 to SelCount - 1 do
         begin
           if (ASelection[J].ClassType <> ClassTyp) and
-            (GetEditorClass(TPropInfoList(PropLists[J])[I],
-              ASelection[J]) <> EdClass) then
+            (GetEditorClass(TPropInfoList(PropLists[J])[I], ASelection[J])<>EdClass) then
           begin
             AddEditor := False;
             Break;
           end;
-          PropEditor.SetPropEntry(J, ASelection[J],
-            TPropInfoList(PropLists[J])[I]);
+          PropEditor.SetPropEntry(J, ASelection[J], TPropInfoList(PropLists[J])[I]);
         end;
         if AddEditor then
         begin
@@ -2590,6 +2586,15 @@ begin
     PropertyHook.Modified(Self);
 end;
 
+procedure TPropertyEditor.SetPropEntry(Index:Integer;
+  AnInstance:TPersistent; APropInfo:PPropInfo);
+begin
+  with FPropList^[Index] do begin
+    Instance:=AnInstance;
+    PropInfo:=APropInfo;
+  end;
+end;
+
 procedure TPropertyEditor.SetFloatValue(const NewValue:Extended);
 var
   I:Integer;
@@ -2621,6 +2626,22 @@ begin
   if Changed then begin
     for I:=0 to FPropCount-1 do
       with FPropList^[I] do LazSetMethodProp(Instance,PropInfo,NewValue);
+    Modified;
+  end;
+end;
+
+procedure TPropertyEditor.SetInt64Value(const NewValue:Int64);
+var
+  I:Integer;
+  Changed: boolean;
+begin
+  Changed:=false;
+  for I:=0 to FPropCount-1 do
+    with FPropList^[I] do
+      Changed:=Changed or (GetInt64Prop(Instance,PropInfo)<>NewValue);
+  if Changed then begin
+    for I:=0 to FPropCount-1 do
+      with FPropList^[I] do SetInt64Prop(Instance,PropInfo,NewValue);
     Modified;
   end;
 end;
@@ -2658,15 +2679,6 @@ begin
   end;
 end;
 
-procedure TPropertyEditor.SetPropEntry(Index:Integer;
-  AnInstance:TPersistent; APropInfo:PPropInfo);
-begin
-  with FPropList^[Index] do begin
-    Instance:=AnInstance;
-    PropInfo:=APropInfo;
-  end;
-end;
-
 procedure TPropertyEditor.SetStrValue(const NewValue:AnsiString);
 var
   I:Integer;
@@ -2683,22 +2695,6 @@ begin
   end;
 end;
 
-procedure TPropertyEditor.SetVarValue(const NewValue:Variant);
-var
-  I:Integer;
-  Changed: boolean;
-begin
-  Changed:=false;
-  for I:=0 to FPropCount-1 do
-    with FPropList^[I] do
-      Changed:=Changed or (GetVariantProp(Instance,PropInfo)<>NewValue);
-  if Changed then begin
-    for I:=0 to FPropCount-1 do
-      with FPropList^[I] do SetVariantProp(Instance,PropInfo,NewValue);
-    Modified;
-  end;
-end;
-
 procedure TPropertyEditor.SetWideStrValue(const NewValue: WideString);
 var
   I:Integer;
@@ -2711,6 +2707,22 @@ begin
   if Changed then begin
     for I:=0 to FPropCount-1 do
       with FPropList^[I] do SetWideStrProp(Instance,PropInfo,NewValue);
+    Modified;
+  end;
+end;
+
+procedure TPropertyEditor.SetVarValue(const NewValue:Variant);
+var
+  I:Integer;
+  Changed: boolean;
+begin
+  Changed:=false;
+  for I:=0 to FPropCount-1 do
+    with FPropList^[I] do
+      Changed:=Changed or (GetVariantProp(Instance,PropInfo)<>NewValue);
+  if Changed then begin
+    for I:=0 to FPropCount-1 do
+      with FPropList^[I] do SetVariantProp(Instance,PropInfo,NewValue);
     Modified;
   end;
 end;
@@ -2756,22 +2768,6 @@ end;
 function TPropertyEditor.GetInt64ValueAt(Index:Integer):Int64;
 begin
   with FPropList^[Index] do Result:=GetInt64Prop(Instance,PropInfo);
-end;
-
-procedure TPropertyEditor.SetInt64Value(const NewValue:Int64);
-var
-  I:Integer;
-  Changed: boolean;
-begin
-  Changed:=false;
-  for I:=0 to FPropCount-1 do
-    with FPropList^[I] do
-      Changed:=Changed or (GetInt64Prop(Instance,PropInfo)<>NewValue);
-  if Changed then begin
-    for I:=0 to FPropCount-1 do
-      with FPropList^[I] do SetInt64Prop(Instance,PropInfo,NewValue);
-    Modified;
-  end;
 end;
 
 { these three procedures implement the default render behavior of the
@@ -6208,8 +6204,7 @@ begin
   TCollectionPropertyEditor.ShowCollectionEditor(ACollection, AComponent, APropertyName);
 end;
 
-function IsInteresting(
-  const AEditor: TPropertyEditor; const AFilter: TTypeKinds): Boolean;
+function IsInteresting(const AEditor: TPropertyEditor; const AFilter: TTypeKinds): Boolean;
 var
   visited: TFPList;
 
