@@ -2820,6 +2820,7 @@ components/synedit/test/testhighlightmulti.pas svneol=native#text/pascal
 components/synedit/test/testhighlightpas.pas svneol=native#text/pascal
 components/synedit/test/testhighlightxml.pas svneol=native#text/pascal
 components/synedit/test/testmarkupwordgroup.pas svneol=native#text/pascal
+components/synedit/test/testnavigation.pas svneol=native#text/pascal
 components/synedit/test/testsearch.pas svneol=native#text/pascal
 components/synedit/test/testsynbeautifier.pas svneol=native#text/pascal
 components/synedit/test/testsyncroedit.pas svneol=native#text/pascal
