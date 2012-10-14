@@ -3067,16 +3067,19 @@ begin
     ShowContextHelpEditor(Sender);
 
   ecSave:
-    if (Sender is TDesigner) then begin
-      GetDesignerUnit(TDesigner(Sender),ASrcEdit,AnUnitInfo);
-      if (AnUnitInfo<>nil) and (AnUnitInfo.OpenEditorInfoCount > 0) then
-        DoSaveEditorFile(ASrcEdit, [sfCheckAmbiguousFiles]);
-    end else if (Sender is TObjectInspectorDlg) then begin
-      GetObjectInspectorUnit(ASrcEdit,AnUnitInfo);
-      if (AnUnitInfo<>nil) and (AnUnitInfo.OpenEditorInfoCount > 0) then
-        DoSaveEditorFile(ASrcEdit, [sfCheckAmbiguousFiles]);
-    end else if Sender is TSourceNotebook then
-      mnuSaveClicked(Self);
+    begin
+      ObjectInspector1.GetActivePropertyGrid.SaveChanges;
+      if (Sender is TDesigner) or (Sender is TObjectInspectorDlg) then begin
+        if (Sender is TDesigner) then
+          GetDesignerUnit(TDesigner(Sender),ASrcEdit,AnUnitInfo)
+        else
+          GetObjectInspectorUnit(ASrcEdit,AnUnitInfo);
+        if (AnUnitInfo<>nil) and (AnUnitInfo.OpenEditorInfoCount > 0) then
+          DoSaveEditorFile(ASrcEdit, [sfCheckAmbiguousFiles]);
+      end
+      else if Sender is TSourceNotebook then
+        mnuSaveClicked(Self);
+    end;
 
   ecOpen:
     mnuOpenClicked(Self);
@@ -8180,14 +8183,16 @@ function TMainIDE.PrepareForCompile: TModalResult;
 begin
   Result:=mrOk;
   if ToolStatus=itDebugger then begin
-    Result:=IDEQuestionDialog(lisStopDebugging2,
-      lisStopCurrentDebuggingAndRebuildProject,
-      mtConfirmation,[mrYes, mrCancel, lisNo],'');
+    Result:=IDEQuestionDialog(lisStopDebugging2, lisStopCurrentDebuggingAndRebuildProject,
+                              mtConfirmation,[mrYes, mrCancel, lisNo],'');
     if Result<>mrYes then exit;
 
     Result:=DebugBoss.DoStopProject;
     if Result<>mrOk then exit;
   end;
+
+  // Save the property editor value in Object Inspector
+  ObjectInspector1.GetActivePropertyGrid.SaveChanges;
 
   if MainBuildBoss.CompilerOnDiskChanged then
     MainBuildBoss.RescanCompilerDefines(false,false,false,false);
