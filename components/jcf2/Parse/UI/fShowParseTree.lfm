@@ -15,7 +15,7 @@ object frmShowParseTree: TfrmShowParseTree
   OnCreate = FormCreate
   OnKeyUp = FormKeyUp
   OnShow = FormShow
-  Position = poOwnerFormCenter
+  Position = poScreenCenter
   LCLVersion = '0.9.27'
   object StatusBar1: TStatusBar
     Left = 0
