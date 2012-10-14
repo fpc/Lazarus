@@ -25,11 +25,13 @@ unit frmmain;
 interface
 
 uses
-  LCLIntf,SysUtils, Classes, Graphics, Controls, Forms, FileUtil,
-  Dialogs, StdCtrls, ComCtrls, ExtCtrls, ActnList, Menus,
-  LResources, LCLType;
+  LCLIntf, SysUtils, Classes, Graphics, Controls, Forms, FileUtil,
+  Dialogs, StdCtrls, ComCtrls, ExtCtrls, ActnList, Menus, LCLType;
 
 type
+
+  { TMainForm }
+
   TMainForm = class(TForm)
     MainMenu1: TMainMenu;
     ToolBar1: TToolBar;
@@ -69,6 +71,7 @@ type
     PreviousImage1: TMenuItem;
     Nextimagedirectory1: TMenuItem;
     Previousimagedirectory1: TMenuItem;
+    ToolButton1: TToolButton;
     ToolButton4: TToolButton;
     TBPRev: TToolButton;
     TBNext: TToolButton;
@@ -87,27 +90,26 @@ type
     procedure AClearExecute(Sender: TObject);
     procedure ADoubleSizeExecute(Sender: TObject);
     procedure AHalfSizeExecute(Sender: TObject);
-    procedure FormKeyDown(Sender: TObject; var Key: Word;
-      Shift: TShiftState);
+    procedure FormKeyDown(Sender: TObject; var Key: word; Shift: TShiftState);
     procedure FormShow(Sender: TObject);
     procedure ANextImageExecute(Sender: TObject);
     procedure APreviousImageExecute(Sender: TObject);
     procedure ANextImageDirExecute(Sender: TObject);
     procedure APrevImageDirExecute(Sender: TObject);
   private
-    FImageScale : Double;
-    procedure AddFile(FileName: String; ShowFile: Boolean);
-    procedure ShowFile(Index: Integer);
-    procedure AddDir(Directory: String; Recurse: Boolean);
-    procedure RescaleImage(NewScale: Double);
+    FImageScale: double;
+    procedure AddFile(FileName: string; ShowFile: boolean);
+    procedure ShowFile(Index: integer);
+    procedure AddDir(Directory: string; Recurse: boolean);
+    procedure RescaleImage(NewScale: double);
     procedure NextImage;
     procedure PreviousImage;
     procedure NextImageDir;
     procedure PreviousImageDir;
-    Function NextDirIndex(Direction : Integer) : Integer;
-    procedure ShiftImageIndex(MoveBy: Integer);
+    function NextDirIndex(Direction: integer): integer;
+    procedure ShiftImageIndex(MoveBy: integer);
     procedure ProcessCommandLine;
-    procedure DoError(Msg: String; Args: array of const);
+    procedure DoError(Msg: string; Args: array of const);
     { Private declarations }
   public
     { Public declarations }
@@ -120,77 +122,77 @@ implementation
 
 {$R *.lfm}
 
-Const
+const
   ImageTypes = '.jpg.jpeg.bmp.xpm.png';
 
 resourcestring
   SSelectImageDir = 'Select directory to add images from';
   SSelectImageDirRec = 'Select directory to recursively add images from';
   SImageViewer = 'Image viewer';
-  SErrNeedArgument        = 'Option at position%d (%s) needs an argument';
+  SErrNeedArgument = 'Option at position%d (%s) needs an argument';
 
 { [] }
 procedure TMainForm.AOpenExecute(Sender: TObject);
 
-Var
-  I : Integer;
+var
+  I: integer;
 
 begin
-  With ODImage do
-    begin
-    If Execute then
-      for I:=0 to Files.Count-1 do
-        AddFile(Files[I],(I=0))
-    end;
+  with ODImage do
+  begin
+    if Execute then
+      for I := 0 to Files.Count - 1 do
+        AddFile(Files[I], (I = 0));
+  end;
 end;
 
-procedure TMainForm.AddFile(FileName :String; ShowFile : Boolean);
+procedure TMainForm.AddFile(FileName: string; ShowFile: boolean);
 
-Var
-  Index : Integer;
+var
+  Index: integer;
 
 begin
-  ShowFile:=ShowFile or (LBFiles.Items.Count=0);
-  Index:=LBFiles.Items.Add(FileName);
-  If ShowFile then
+  ShowFile := ShowFile or (LBFiles.Items.Count = 0);
+  Index := LBFiles.Items.Add(FileName);
+  if ShowFile then
     self.ShowFile(Index);
 end;
 
-procedure TMainForm.ShowFile(Index : Integer);
+procedure TMainForm.ShowFile(Index: integer);
 
-Var
-  LoadOK : Boolean;
+var
+  LoadOK: boolean;
 
 begin
-  If Index=-1 then
-    begin
-    IMain.Picture:=Nil;
-    Caption:=SImageViewer;
-    end
+  if Index = -1 then
+  begin
+    IMain.Picture := nil;
+    Caption := SImageViewer;
+  end
   else
-    Repeat
-      Try
-        LoadOK:=False;
-        IMain.Align:=AlClient;
-        Imain.Stretch:=False;
-        FImageScale:=1.0;
+    repeat
+      try
+        LoadOK := false;
+        IMain.Align := AlClient;
+        Imain.Stretch := false;
+        FImageScale := 1.0;
         IMain.Picture.LoadFromFile(LBFiles.Items[Index]);
-        Caption:=SImageViewer+'('+LBFiles.Items[Index]+')';
-        LoadOK:=True;
-      Except
-        If Index<LBFiles.Items.Count-1 then
-          inc(Index)
+        Caption := SImageViewer + '(' + LBFiles.Items[Index] + ')';
+        LoadOK := true;
+      except
+        if Index < LBFiles.Items.Count - 1 then
+          Inc(Index)
         else
-          Index:=-1;
+          Index := -1;
       end
-    Until LoadOK or (Index=-1);
-  With LBFiles do
-    begin
-    If Index<>ItemIndex then
-      LBFiles.Itemindex:=Index;
+    until LoadOK or (Index = -1);
+  with LBFiles do
+  begin
+    if Index <> ItemIndex then
+      LBFiles.ItemIndex := Index;
 {    If Not ItemVisible(ItemIndex) then
       MakeCurrentVisible;}
-    end;
+  end;
 end;
 
 procedure TMainForm.LBFilesClick(Sender: TObject);
@@ -199,50 +201,54 @@ begin
 end;
 
 procedure TMainForm.AOpenDirExecute(Sender: TObject);
-
-Var
-  Dir : String;
-
+// Open a single directory (non recursively)
+var
+  Dir: string;
+  WasSorted: boolean;
 begin
-  if SelectDirectory(SSelectImageDir,'/',Dir) then
-
-//  if SelectDirectory(SSelectImageDir,'/',Dir,True) then
-    AddDir(Dir,False);
+  if SelectDirectory(SSelectImageDir, '/', Dir, true) then
+  begin
+    Screen.Cursor := crHourglass; //Show user he may have to wait for big directories
+    try
+      LBFiles.Items.BeginUpdate; //Indicate to the listbox that we're doing a lengthy operation
+      WasSorted:=LBFiles.Sorted;
+      LBFiles.Sorted:=true;
+      AddDir(Dir, false);
+      LBFiles.Sorted:=WasSorted;
+    finally
+      LBFiles.Items.EndUpdate;
+      Screen.Cursor := crDefault;
+    end;
+  end;
 end;
 
-procedure TMainForm.AddDir(Directory :String; Recurse : Boolean);
+procedure TMainForm.AddDir(Directory: string; Recurse: boolean);
 
-Var
-  Info : TSearchRec;
-  Ext : String;
+var
+  Info: TSearchRec;
+  Ext: string;
 begin
-  LBFiles.Items.BeginUpdate;
-  Try
-    Directory:=IncludeTrailingBackslash(Directory);
-    if FindFirstUTF8(Directory+'*.*',0,Info)=0 then
+  Directory := IncludeTrailingBackslash(Directory);
+  if FindFirstUTF8(Directory + '*.*', 0, Info) = 0 then
+    try
+      repeat
+        Ext := ExtractFileExt(Info.Name);
+        if Pos(Ext, ImageTypes) <> 0 then
+          AddFile(Directory + Info.Name, false);
+      until (FindNextUTF8(Info) <> 0)
+    finally
+      FindCloseUTF8(Info);
+    end;
+  if Recurse then
+    if FindFirstUTF8(Directory + '*', faDirectory, Info) = 0 then
       try
-        Repeat
-          Ext:=ExtractFileExt(Info.Name);
-          If Pos(Ext,ImageTypes)<>0 then
-            AddFile(Directory+Info.Name,False);
-        until (FindNextUTF8(Info)<>0)
-      Finally
+        repeat
+          if (Info.Name <> '.') and (Info.Name <> '') and (info.Name <> '..') and ((Info.Attr and faDirectory) <> 0) then
+            AddDir(Directory + Info.Name, true);
+        until (FindNextUTF8(Info) <> 0)
+      finally
         FindCloseUTF8(Info);
       end;
-    If Recurse then
-      if FindFirstUTF8(Directory+'*',faDirectory,Info)=0 then
-        try
-          Repeat
-          If (Info.Name<>'.') and (Info.Name<>'') and (info.name<>'..') and
-             ((Info.Attr and faDirectory)<>0) then
-            AddDir(Directory+Info.name,True);
-          until (FindNextUTF8(Info)<>0)
-        finally
-          FindCloseUTF8(Info);
-        end;
-  Finally
-    LBFiles.Items.EndUpdate;
-  end;
 end;
 
 procedure TMainForm.AExitExecute(Sender: TObject);
@@ -251,18 +257,30 @@ begin
 end;
 
 procedure TMainForm.OpenDirRecursivelyExecute(Sender: TObject);
-
-Var
-  Dir : String;
-
+// Open a directory recursively
+var
+  Dir: string;
+  WasSorted: boolean;
 begin
-  if SelectDirectory(SSelectImageDirRec,'/',Dir) then
-    AddDir(Dir,True);
+  if SelectDirectory(SSelectImageDirRec, '/', Dir, true) then
+  begin
+    Screen.Cursor := crHourglass; //Show user he may have to wait for big directories
+    try
+      LBFiles.Items.BeginUpdate; //Indicate to the listbox that we're doing a lengthy operation
+      WasSorted:=LBFiles.Sorted;
+      LBFiles.Sorted:=true;
+      AddDir(Dir, true);
+      LBFiles.Sorted:=WasSorted;
+    finally
+      LBFiles.Items.EndUpdate;
+      Screen.Cursor := crDefault;
+    end;
+  end;
 end;
 
 procedure TMainForm.AClearExecute(Sender: TObject);
 begin
-  LBFiles.ItemIndex:=-1;
+  LBFiles.ItemIndex := -1;
   ShowFile(-1);
   LBFiles.Items.Clear;
 end;
@@ -273,22 +291,22 @@ begin
   RescaleImage(2.0);
 end;
 
-procedure TMainForm.RescaleImage(NewScale : Double);
+procedure TMainForm.RescaleImage(NewScale: double);
 
-Var
-  OrgWidth,OrgHeight : Integer;
-  Rect : TRect;
+var
+  OrgWidth, OrgHeight: integer;
+  Rect: TRect;
 
 begin
-  OrgWidth:=IMain.Picture.Bitmap.Width;
-  OrgHeight:=IMain.Picture.Bitmap.Height;
-  FImageScale:=FImageScale*NewScale;
-  Rect:=IMain.BoundsRect;
-  Rect.Right:=Rect.Left+Round(OrgWidth*FImageScale);
-  Rect.Bottom:=Rect.Top+Round(OrgHeight*FImageScale);
-  Imain.Align:=AlNone;
-  IMain.BoundsRect:=Rect;
-  Imain.Stretch:=True;
+  OrgWidth := IMain.Picture.Bitmap.Width;
+  OrgHeight := IMain.Picture.Bitmap.Height;
+  FImageScale := FImageScale * NewScale;
+  Rect := IMain.BoundsRect;
+  Rect.Right := Rect.Left + Round(OrgWidth * FImageScale);
+  Rect.Bottom := Rect.Top + Round(OrgHeight * FImageScale);
+  Imain.Align := AlNone;
+  IMain.BoundsRect := Rect;
+  Imain.Stretch := true;
 end;
 
 procedure TMainForm.AHalfSizeExecute(Sender: TObject);
@@ -308,128 +326,146 @@ begin
   ShiftImageIndex(-1);
 end;
 
-procedure TMainForm.ShiftImageIndex(MoveBy : Integer);
+procedure TMainForm.ShiftImageIndex(MoveBy: integer);
 
-Var
-  ImageIndex : Integer;
+var
+  ImageIndex: integer;
 
 begin
-  ImageIndex:=LBFiles.ItemIndex;
-  ImageIndex:=ImageIndex+MoveBy;
-  If ImageIndex<0 then
-    ImageIndex:=LBFiles.Items.Count-1;
-  If ImageIndex>=LBFiles.Items.Count then
-    begin
-    ImageIndex:=0;
-    If LBFiles.Items.Count=0 then
-      ImageIndex:=-1;
-    end;
+  ImageIndex := LBFiles.ItemIndex;
+  ImageIndex := ImageIndex + MoveBy;
+  if ImageIndex < 0 then
+    ImageIndex := LBFiles.Items.Count - 1;
+  if ImageIndex >= LBFiles.Items.Count then
+  begin
+    ImageIndex := 0;
+    if LBFiles.Items.Count = 0 then
+      ImageIndex := -1;
+  end;
   ShowFile(ImageIndex);
 end;
 
-procedure TMainForm.FormKeyDown(Sender: TObject; var Key: Word;
-  Shift: TShiftState);
+procedure TMainForm.FormKeyDown(Sender: TObject; var Key: word; Shift: TShiftState);
 begin
-  if (shift=[ssShift]) or (shift=[ssAlt]) then
+  // todo: write help about with at least key combinations!
+  if (shift = [ssShift]) or (shift = [ssAlt]) then
+  begin
+    if (key = VK_Prior) then
     begin
-    if (key=VK_Prior) then
-      begin
+      // Page Up
       RescaleImage(2.0);
-      Key:=0;
-      end
-    else if (key=VK_Next) then
-      begin
-      RescaleImage(0.5);
-      Key:=0;
-      end
-    else if (key=VK_Left) then
-      begin
-      PreviousImage;
-      Key:=0;
-      end
-    else if (key=VK_right) then
-      begin
-      NextImage;
-      Key:=0;
-      end
+      Key := 0;
     end
-  else if (shift=[]) then
+    else if (key = VK_Next) then
     begin
-    if Key=VK_UP then
-      Previousimage
-    else if Key=VK_DOWN then
+      // Page Down
+      RescaleImage(0.5);
+      Key := 0;
+    end
+    else if (key = VK_Left) then
+    begin
+      // Left
+      PreviousImage;
+      Key := 0;
+    end
+    else if (key = VK_right) then
+    begin
+      // Right
       NextImage;
+      Key := 0;
     end;
+  end
+  else if (shift = []) then
+  begin
+    if Key = VK_UP then
+    begin
+      // Up
+      Previousimage;
+      Key := 0;
+    end
+    else if Key = VK_DOWN then
+    begin
+      // Down
+      NextImage;
+      Key := 0;
+    end;
+  end;
 end;
-procedure TMainForm.DoError(Msg : String; Args : Array Of const);
+
+procedure TMainForm.DoError(Msg: string; Args: array of const);
 
 begin
-  ShowMessage(Format(Msg,Args));
+  ShowMessage(Format(Msg, Args));
 end;
 
 procedure TMainForm.ProcessCommandLine;
 
-  Function CheckOption(Index : Integer;Short,Long : String): Boolean;
+  function CheckOption(Index: integer; Short, Long: string): boolean;
 
   var
-    O : String;
+    O: string;
 
   begin
-    O:=ParamStrUTF8(Index);
-    Result:=(O='-'+short) or (copy(O,1,Length(Long)+3)=('--'+long+'='));
+    O := ParamStrUTF8(Index);
+    Result := (O = '-' + short) or (copy(O, 1, Length(Long) + 3) = ('--' + long + '='));
   end;
 
-  Function OptionArg(Var Index : Integer) : String;
+  function OptionArg(var Index: integer): string;
 
-  Var
-    P : Integer;
+  var
+    P: integer;
 
   begin
-    if (Length(ParamStrUTF8(Index))>1) and (ParamStrUTF8(Index)[2]<>'-') then
-      begin
-      If Index<ParamCount then
-        begin
-        Inc(Index);
-        Result:=ParamStrUTF8(Index);
-        end
-      else
-        DoError(SErrNeedArgument,[Index,ParamStrUTF8(Index)]);
-      end
-    else If length(ParamStrUTF8(Index))>2 then
-      begin
-      P:=Pos('=',ParamStrUTF8(Index));
-      If (P=0) then
-        DoError(SErrNeedArgument,[Index,ParamStrUTF8(Index)])
-      else
-        begin
-        Result:=ParamStrUTF8(Index);
-        Delete(Result,1,P);
-        end;
-      end;
-  end;
-
-Var
-  I : Integer;
-  S : String;
-  FRecursive : Boolean;
-
-begin
-  FRecursive:=False;
-  I:=0;
-  While (I<ParamCount) do
+    if (Length(ParamStrUTF8(Index)) > 1) and (ParamStrUTF8(Index)[2] <> '-') then
     begin
-    Inc(I);
-    If CheckOption(I,'r','recursive') then
-      FRecursive:=True
-    else
+      if Index < ParamCount then
       begin
-      S:=ParamStrUTF8(I);
-      If DirectoryExistsUTF8(S) then
-        AddDir(ExpandFileNameUTF8(S),FRecursive)
-      else if FileExistsUTF8(S) then
-        AddFile(ExpandFileNameUTF8(S),LBFiles.Items.Count=0);
+        Inc(Index);
+        Result := ParamStrUTF8(Index);
+      end
+      else
+        DoError(SErrNeedArgument, [Index, ParamStrUTF8(Index)]);
+    end
+    else if length(ParamStrUTF8(Index)) > 2 then
+    begin
+      P := Pos('=', ParamStrUTF8(Index));
+      if (P = 0) then
+        DoError(SErrNeedArgument, [Index, ParamStrUTF8(Index)])
+      else
+      begin
+        Result := ParamStrUTF8(Index);
+        Delete(Result, 1, P);
       end;
     end;
+  end;
+
+var
+  I: integer;
+  S: string;
+  FRecursive: boolean;
+
+begin
+  FRecursive := false;
+  I := 0;
+  while (I < ParamCount) do
+  begin
+    Inc(I);
+    if CheckOption(I, 'r', 'recursive') then
+      FRecursive := true
+    else
+    begin
+      S := ParamStrUTF8(I);
+      Screen.Cursor := crHourglass; //Show user he may have to wait
+      try
+        if DirectoryExistsUTF8(S) then
+          AddDir(ExpandFileNameUTF8(S), FRecursive)
+        else if FileExistsUTF8(S) then
+          AddFile(ExpandFileNameUTF8(S), LBFiles.Items.Count = 0);
+      finally
+        Screen.Cursor := crDefault;
+      end;
+    end;
+  end;
 end;
 
 procedure TMainForm.FormShow(Sender: TObject);
@@ -439,41 +475,39 @@ end;
 
 procedure TMainForm.NextImageDir;
 
-Var
-  Index : Integer;
+var
+  Index: integer;
 
 begin
-  Index:=NextDirIndex(1);
-  If (Index<>-1) then
-    ShowFile(Index);
+  Index := NextDirIndex(1);
+  ShowFile(Index);
 end;
 
-Function TMainForm.NextDirIndex(Direction: Integer) : integer;
+function TMainForm.NextDirIndex(Direction: integer): integer;
 
-Var
-  Dir : String;
+var
+  Dir: string;
 
 begin
-  Result:=-1;
-  If LBFiles.Itemindex=-1 then
+  Result := -1;
+  if LBFiles.ItemIndex = -1 then
     Exit;
-  Result:=LBFiles.Itemindex;
-  Dir:=ExtractFilePath(LBFiles.Items[Result]);
-  Repeat
-    Result:=Result+Direction;
-  Until ((Result=-1) or (Result>=LBFiles.Items.Count)) or (Dir<>ExtractFilePath(LBFiles.Items[Result]));
-  If Result>=LBFiles.Items.Count then
-    Result:=-1;
+  Result := LBFiles.ItemIndex;
+  Dir := ExtractFilePath(LBFiles.Items[Result]);
+  repeat
+    Result := Result + Direction;
+  until ((Result = -1) or (Result >= LBFiles.Items.Count)) or (Dir <> ExtractFilePath(LBFiles.Items[Result]));
+  if Result >= LBFiles.Items.Count then
+    Result := -1;
 end;
 
 procedure TMainForm.PreviousImageDir;
-Var
-  Index : Integer;
+var
+  Index: integer;
 
 begin
-  Index:=NextDirIndex(-1);
-  If (Index<>-1) then
-    ShowFile(Index);
+  Index := NextDirIndex(-1);
+  ShowFile(Index);
 end;
 
 procedure TMainForm.ANextImageExecute(Sender: TObject);
@@ -483,7 +517,7 @@ end;
 
 procedure TMainForm.APreviousImageExecute(Sender: TObject);
 begin
-  PreviousImage
+  PreviousImage;
 end;
 
 procedure TMainForm.ANextImageDirExecute(Sender: TObject);

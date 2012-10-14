@@ -4262,6 +4262,7 @@ examples/imgviewer/imgview.dpr svneol=native#text/pascal
 examples/imgviewer/imgview.lpi svneol=native#text/plain
 examples/imgviewer/imgview.lpr svneol=native#text/pascal
 examples/imgviewer/imgview.res svneol=native#unset
+examples/imgviewer/readme.txt svneol=native#text/plain
 examples/jpeg/jpegexample.lpi svneol=native#text/plain
 examples/jpeg/jpegexample.lpr svneol=native#text/pascal
 examples/jpeg/lazarus.jpg -text svneol=unset#image/jpeg
