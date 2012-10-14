@@ -5073,7 +5073,7 @@ begin
   try
     Filter:=GetStrProp(GetComponent(0), 'Filter');
     if ShowModal=mrOk then begin
-      SetStrProp(GetComponent(0), 'Filter', Filter);
+      SetStrValue(Filter);
       Modified;
     end;
   finally
