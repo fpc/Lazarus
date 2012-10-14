@@ -151,6 +151,11 @@ type
   TLegendColumnCount = 1..MaxInt;
   TLegendItemFillOrder = (lfoColRow, lfoRowCol);
 
+  TChartLegendGridPen = class(TChartPen)
+  published
+    property Visible default false;
+  end;
+
   { TChartLegend }
 
   TChartLegend = class(TChartElement)
@@ -160,6 +165,8 @@ type
     FColumnCount: TLegendColumnCount;
     FFont: TFont;
     FFrame: TChartPen;
+    FGridHorizontal: TChartLegendGridPen;
+    FGridVertical: TChartLegendGridPen;
     FGroupFont: TFont;
     FGroupTitles: TStrings;
     FItemFillOrder: TLegendItemFillOrder;
@@ -178,6 +185,8 @@ type
     procedure SetColumnCount(AValue: TLegendColumnCount);
     procedure SetFont(AValue: TFont);
     procedure SetFrame(AValue: TChartPen);
+    procedure SetGridHorizontal(AValue: TChartLegendGridPen);
+    procedure SetGridVertical(AValue: TChartLegendGridPen);
     procedure SetGroupFont(AValue: TFont);
     procedure SetGroupTitles(AValue: TStrings);
     procedure SetItemFillOrder(AValue: TLegendItemFillOrder);
@@ -207,6 +216,10 @@ type
       read FColumnCount write SetColumnCount default 1;
     property Font: TFont read FFont write SetFont;
     property Frame: TChartPen read FFrame write SetFrame;
+    property GridHorizontal: TChartLegendGridPen
+      read FGridHorizontal write SetGridHorizontal;
+    property GridVertical: TChartLegendGridPen
+      read FGridVertical write SetGridVertical;
     property GroupFont: TFont read FGroupFont write SetGroupFont;
     property GroupTitles: TStrings read FGroupTitles write SetGroupTitles;
     property ItemFillOrder: TLegendItemFillOrder
@@ -472,6 +485,10 @@ begin
   inherited Create(AOwner);
   FAlignment := laTopRight;
   FColumnCount := 1;
+  FGridHorizontal := TChartLegendGridPen.Create;
+  FGridHorizontal.OnChange := @StyleChanged;
+  FGridVertical := TChartLegendGridPen.Create;
+  FGridVertical.OnChange := @StyleChanged;
   FGroupTitles := TStringList.Create;
   FMarginX := DEF_LEGEND_MARGIN;
   FMarginY := DEF_LEGEND_MARGIN;
@@ -492,6 +509,8 @@ begin
   FreeAndNil(FBackgroundBrush);
   FreeAndNil(FFont);
   FreeAndNil(FFrame);
+  FreeAndNil(FGridHorizontal);
+  FreeAndNil(FGridVertical);
   FreeAndNil(FGroupFont);
   FreeAndNil(FGroupTitles);
   FreeAndNil(FSymbolFrame);
@@ -540,6 +559,22 @@ begin
         SymbolWidth, FItemSize.Y);
       FItems[i].Draw(drawer, r);
       OffsetRect(r, 0, FItemSize.Y + Spacing);
+    end;
+    if GridHorizontal.Visible and (GridHorizontal.Style <> psClear) then begin
+      drawer.Pen := GridHorizontal;
+      drawer.SetBrushParams(bsClear, clTAColor);
+      for i := 1 to FRowCount - 1 do begin
+        y := FBounds.Top + Spacing div 2 + i * (FItemSize.Y + Spacing);
+        drawer.Line(FBounds.Left, y, FBounds.Right, y);
+      end;
+    end;
+    if GridVertical.Visible and (GridVertical.Style <> psClear) then begin
+      drawer.Pen := GridVertical;
+      drawer.SetBrushParams(bsClear, clTAColor);
+      for i := 1 to FColCount - 1 do begin
+        x := FBounds.Left + Spacing div 2 + i * (FItemSize.X + Spacing);
+        drawer.Line(x, FBounds.Top, x, FBounds.Bottom);
+      end;
     end;
   finally
     drawer.ClippingStop;
@@ -650,6 +685,20 @@ end;
 procedure TChartLegend.SetFrame(AValue: TChartPen);
 begin
   FFrame.Assign(AValue);
+  StyleChanged(Self);
+end;
+
+procedure TChartLegend.SetGridHorizontal(AValue: TChartLegendGridPen);
+begin
+  if FGridHorizontal = AValue then exit;
+  FGridHorizontal.Assign(AValue);
+  StyleChanged(Self);
+end;
+
+procedure TChartLegend.SetGridVertical(AValue: TChartLegendGridPen);
+begin
+  if FGridVertical = AValue then exit;
+  FGridVertical.Assign(AValue);
   StyleChanged(Self);
 end;
 
