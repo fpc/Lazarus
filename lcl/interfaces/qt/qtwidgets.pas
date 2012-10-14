@@ -3490,7 +3490,7 @@ begin
   Msg.Msg := LM_MOUSEMOVE;
 
   NotifyApplicationUserInput(LCLObject, Msg.Msg);
-  DeliverMessage(Msg);
+  DeliverMessage(Msg, True);
   SetNoMousePropagation(SenderWidget, True);
 end;
 
@@ -3569,7 +3569,7 @@ begin
   {$ENDIF}
 
   NotifyApplicationUserInput(LCLObject, Msg.Msg);
-  Result := DeliverMessage(Msg) <> 0;
+  Result := DeliverMessage(Msg, True) <> 0;
 
   SetNoMousePropagation(QWidgetH(Sender), False);
 
