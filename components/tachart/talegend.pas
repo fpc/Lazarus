@@ -480,6 +480,8 @@ begin
       Self.FColumnCount := ColumnCount;
       Self.FFont.Assign(Font);
       Self.FFrame.Assign(Frame);
+      Self.FGridHorizontal.Assign(GridHorizontal);
+      Self.FGridVertical.Assign(GridVertical);
       Self.FGroupFont.Assign(GroupFont);
       Self.FGroupTitles.Assign(GroupTitles);
       Self.FMarginX := MarginX;
