@@ -14,6 +14,7 @@ type
 
   TForm1 = class(TForm)
     cbByRows: TCheckBox;
+    cbGrid: TCheckBox;
     Chart1: TChart;
     Chart1AreaSeries1: TAreaSeries;
     Chart1FuncSeries1: TFuncSeries;
@@ -37,6 +38,7 @@ type
     seSymbolWidth: TSpinEdit;
     seMarginY: TSpinEdit;
     procedure cbByRowsChange(Sender: TObject);
+    procedure cbGridChange(Sender: TObject);
     procedure cbSeriesDrawItem(Control: TWinControl; Index: Integer;
       ARect: TRect; State: TOwnerDrawState);
     procedure cbUseSidebarChange(Sender: TObject);
@@ -65,7 +67,7 @@ implementation
 {$R *.lfm}
 
 uses
-  SysUtils, TADrawerCanvas, TADrawUtils;
+  SysUtils, TAChartUtils, TADrawerCanvas, TADrawUtils;
 
 { TForm1 }
 
@@ -78,12 +80,19 @@ begin
       ItemFillOrder := lfoColRow;
 end;
 
+procedure TForm1.cbGridChange(Sender: TObject);
+begin
+  Chart1.Legend.GridHorizontal.Visible := cbGrid.Checked;
+  Chart1.Legend.GridVertical.Visible := cbGrid.Checked;
+end;
+
 procedure TForm1.cbSeriesDrawItem(
   Control: TWinControl; Index: Integer; ARect: TRect; State: TOwnerDrawState);
 var
   id: IChartDrawer;
   r: TRect;
 begin
+  Unused(Control, State);
   id := TCanvasDrawer.Create(cbSeries.Canvas);
   r := Bounds(
     ARect.Left + 2, ARect.Top, Chart1.Legend.SymbolWidth, cbSeries.ItemHeight);
@@ -114,6 +123,7 @@ procedure TForm1.Chart1FuncSeries1DrawLegend(
 var
   x, y0, w: Integer;
 begin
+  Unused(AIndex, AItem);
   ACanvas.Pen := Chart1FuncSeries1.Pen;
   y0 := (ARect.Top + ARect.Bottom) div 2;
   ACanvas.MoveTo(ARect.Left, y0);

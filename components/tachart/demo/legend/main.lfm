@@ -1,18 +1,18 @@
 object Form1: TForm1
   Left = 1322
-  Height = 429
+  Height = 438
   Top = 181
   Width = 510
   Caption = 'Form1'
-  ClientHeight = 429
+  ClientHeight = 438
   ClientWidth = 510
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   Position = poScreenCenter
-  LCLVersion = '0.9.31'
+  LCLVersion = '1.1'
   object Chart1: TChart
     Left = 0
-    Height = 312
+    Height = 304
     Top = 0
     Width = 510
     AxisList = <    
@@ -30,6 +30,8 @@ object Form1: TForm1
     Foot.Brush.Color = clBtnFace
     Foot.Font.Color = clBlue
     Legend.BackgroundBrush.Color = clMoneyGreen
+    Legend.GridHorizontal.Style = psDot
+    Legend.GridVertical.Style = psDot
     Legend.GroupFont.Style = [fsBold]
     Legend.GroupTitles.Strings = (
       'Pie'
@@ -80,18 +82,18 @@ object Form1: TForm1
   end
   object pnControls: TPanel
     Left = 0
-    Height = 117
-    Top = 312
+    Height = 134
+    Top = 304
     Width = 510
     Align = alBottom
-    ClientHeight = 117
+    ClientHeight = 134
     ClientWidth = 510
     TabOrder = 1
     object lblMarginY: TLabel
       Left = 8
-      Height = 14
+      Height = 13
       Top = 33
-      Width = 42
+      Width = 41
       Caption = 'Y margin'
       ParentColor = False
     end
@@ -117,15 +119,15 @@ object Form1: TForm1
     end
     object lblSymbolWidth: TLabel
       Left = 128
-      Height = 14
+      Height = 13
       Top = 8
-      Width = 64
+      Width = 63
       Caption = 'Symbol width'
       ParentColor = False
     end
     object rgAlignment: TRadioGroup
       Left = 264
-      Height = 115
+      Height = 132
       Top = 1
       Width = 245
       Align = alRight
@@ -139,7 +141,7 @@ object Form1: TForm1
       ChildSizing.ShrinkVertical = crsScaleChilds
       ChildSizing.Layout = cclTopToBottomThenLeftToRight
       ChildSizing.ControlsPerLine = 3
-      ClientHeight = 97
+      ClientHeight = 114
       ClientWidth = 241
       Columns = 3
       ItemIndex = 6
@@ -170,9 +172,9 @@ object Form1: TForm1
     end
     object lblSpacing: TLabel
       Left = 128
-      Height = 14
+      Height = 13
       Top = 33
-      Width = 38
+      Width = 37
       Caption = 'Spacing'
       ParentColor = False
     end
@@ -188,9 +190,9 @@ object Form1: TForm1
     end
     object lblMarginX: TLabel
       Left = 8
-      Height = 14
+      Height = 13
       Top = 8
-      Width = 42
+      Width = 41
       Caption = 'X margin'
       ParentColor = False
     end
@@ -217,9 +219,9 @@ object Form1: TForm1
     end
     object lblColumnCount: TLabel
       Left = 128
-      Height = 14
+      Height = 13
       Top = 60
-      Width = 41
+      Width = 40
       Caption = 'Columns'
       ParentColor = False
     end
@@ -241,6 +243,15 @@ object Form1: TForm1
       Caption = 'By rows'
       OnChange = cbByRowsChange
       TabOrder = 8
+    end
+    object cbGrid: TCheckBox
+      Left = 8
+      Height = 17
+      Top = 108
+      Width = 39
+      Caption = 'Grid'
+      OnChange = cbGridChange
+      TabOrder = 9
     end
   end
   object RandomChartSource1: TRandomChartSource
