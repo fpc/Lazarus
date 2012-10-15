@@ -235,7 +235,7 @@ type
     property Modified: Boolean read FModified write SetModified;
   public
     // Char bounds // 1 based (1 is the 1st char in the line)
-    function LogicPosAddChars(const ALine: String; ALogicalPos, ACount: integer): Integer; override;
+    function LogicPosAddChars(const ALine: String; ALogicalPos, ACount: integer; AllowPastEOL: Boolean = False): Integer; override;
     function LogicPosIsAtChar(const ALine: String; ALogicalPos: integer): Boolean; override;
     function LogicPosAdjustToChar(const ALine: String; ALogicalPos: integer;
                                   ANext: Boolean = False): Integer; override;
@@ -1056,7 +1056,7 @@ begin
 end;
 
 function TSynEditStringList.LogicPosAddChars(const ALine: String; ALogicalPos,
-  ACount: integer): Integer;
+  ACount: integer; AllowPastEOL: Boolean): Integer;
 begin
   // UTF8 handing of chars
   Result := ALogicalPos;
@@ -1070,10 +1070,14 @@ begin
       if (ALine[Result] in [#0..#127, #192..#255]) and (not LogicPosIsCombining(ALine, Result)) then
         dec(ACount);
     end;
-    while (Result > 1) and
-          ( (not(ALine[Result] in [#0..#127, #192..#255])) or LogicPosIsCombining(ALine, Result) )
-    do
-      dec(Result);
+    if AllowPastEOL then
+      Result := Result + ACount;
+
+    if (Result <= length(ALine)) then
+      while (Result > 1) and
+            ( (not(ALine[Result] in [#0..#127, #192..#255])) or LogicPosIsCombining(ALine, Result) )
+      do
+        dec(Result);
   end else begin
     while (Result > 1) and (ACount < 0) do begin
       dec(Result);

@@ -283,7 +283,7 @@ type
    procedure FlushNotificationCache; virtual; abstract;
   public
     // Char bounds // 1 based (1 is the 1st char in the line)
-    function LogicPosAddChars(const ALine: String; ALogicalPos, ACount: integer): Integer; virtual; abstract;
+    function LogicPosAddChars(const ALine: String; ALogicalPos, ACount: integer; AllowPastEOL: Boolean = False): Integer; virtual; abstract;
     function LogicPosIsAtChar(const ALine: String; ALogicalPos: integer): Boolean; virtual; abstract;
     function LogicPosAdjustToChar(const ALine: String; ALogicalPos: integer;
                                   ANext: Boolean = False): Integer; virtual; abstract;
@@ -405,7 +405,7 @@ type
     property NextLines: TSynEditStrings read fSynStrings write SetSynStrings;
   public
     // Char bounds // 1 based (1 is the 1st char in the line)
-    function LogicPosAddChars(const ALine: String; ALogicalPos, ACount: integer): Integer; override;
+    function LogicPosAddChars(const ALine: String; ALogicalPos, ACount: integer; AllowPastEOL: Boolean = False): Integer; override;
     function LogicPosIsAtChar(const ALine: String; ALogicalPos: integer): Boolean; override;
     function LogicPosAdjustToChar(const ALine: String; ALogicalPos: integer;
                                   ANext: Boolean = False): Integer; override;
@@ -1281,8 +1281,8 @@ begin
   fSynStrings.FlushNotificationCache;
 end;
 
-function TSynEditStringsLinked.LogicPosAddChars(const ALine: String; ALogicalPos,
-  ACount: integer): Integer;
+function TSynEditStringsLinked.LogicPosAddChars(const ALine: String;
+  ALogicalPos, ACount: integer; AllowPastEOL: Boolean): Integer;
 begin
   Result := fSynStrings.LogicPosAddChars(ALine, ALogicalPos, ACount);
 end;

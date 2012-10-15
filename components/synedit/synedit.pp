@@ -2497,7 +2497,7 @@ end;
 
 function TCustomSynEdit.GetCharLen(const Line: string; CharStartPos: integer): integer;
 begin
-  Result := FLines.LogicPosAddChars(Line, CharStartPos, 1) - CharStartPos;
+  Result := FLines.LogicPosAddChars(Line, CharStartPos, 1, True) - CharStartPos;
 end;
 
 function TCustomSynEdit.GetLogicalCaretXY: TPoint;
