@@ -193,6 +193,7 @@ type
     procedure UndoEditLinesDelete(LogY, ACount: Integer);
     procedure IncreaseTextChangeStamp;
     procedure DoGetPhysicalCharWidths(Line: PChar; LineLen, Index: Integer; PWidths: PPhysicalCharWidth); override;
+    function  LogicPosIsCombining(const ALine: String; ALogicalPos: integer): Boolean; inline;
 
     function GetDisplayView: TLazSynDisplayView; override;
   public
@@ -858,6 +859,21 @@ begin
 
 end;
 
+function TSynEditStringList.LogicPosIsCombining(const ALine: String;
+  ALogicalPos: integer): Boolean;
+begin
+  Result := (ALogicalPos > 1) and (
+     ( (ALine[ALogicalPos] = #$CC) {and (ALine[ALogicalPos+1] in [#$80..#$FF])} ) or  // Combining Diacritical Marks (belongs to previos char) 0300-036F
+     ( (ALine[ALogicalPos] = #$CD) and (ALine[ALogicalPos+1] in [#$80..#$AF]) ) or  // Combining Diacritical Marks
+     ( (ALine[ALogicalPos] = #$E1) and (ALine[ALogicalPos+1] = #$B7) ) or           // Combining Diacritical Marks Supplement 1DC0-1DFF
+                                    // (ALine[ALogicalPos+2] in [#$80..#$BF])
+     ( (ALine[ALogicalPos] = #$E2) and (ALine[ALogicalPos+1] = #$83) and
+       (ALine[ALogicalPos+2] in [#$90..#$FF]) ) or                                  // Combining Diacritical Marks for Symbols 20D0-20FF
+     ( (ALine[ALogicalPos] = #$EF) and (ALine[ALogicalPos+1] = #$B8) and
+       (ALine[ALogicalPos+2] in [#$A0..#$AF]) )                                     // Combining half Marks FE20-FE2F
+  );
+end;
+
 function TSynEditStringList.GetDisplayView: TLazSynDisplayView;
 begin
   Result := FDisplayView;
@@ -1051,15 +1067,17 @@ begin
   if ACount > 0 then begin;
     while (Result < length(ALine)) and (ACount > 0) do begin
       inc(Result);
-      if ALine[Result] in [#0..#127, #192..#255] then
+      if (ALine[Result] in [#0..#127, #192..#255]) and (not LogicPosIsCombining(ALine, Result)) then
         dec(ACount);
     end;
-    while (Result > 1) and not(ALine[Result] in [#0..#127, #192..#255])  do
+    while (Result > 1) and
+          ( (not(ALine[Result] in [#0..#127, #192..#255])) or LogicPosIsCombining(ALine, Result) )
+    do
       dec(Result);
   end else begin
     while (Result > 1) and (ACount < 0) do begin
       dec(Result);
-      if ALine[Result] in [#0..#127, #192..#255] then
+      if (ALine[Result] in [#0..#127, #192..#255]) and (not LogicPosIsCombining(ALine, Result)) then
         inc(ACount);
     end;
   end;
@@ -1072,6 +1090,9 @@ begin
   Result := False;
   if (ALogicalPos < 1) or (ALogicalPos > length(ALine)) then exit;
   Result := ALine[ALogicalPos] in [#0..#127, #192..#255];
+
+  if Result then
+    Result := not LogicPosIsCombining(ALine, ALogicalPos);
 end;
 
 function TSynEditStringList.LogicPosAdjustToChar(const ALine: String; ALogicalPos: integer;
@@ -1082,11 +1103,15 @@ begin
   if (ALogicalPos < 1) or (ALogicalPos > length(ALine)) then exit;
 
   if ANext then begin
-    while (Result < length(ALine)) and not(ALine[Result] in [#0..#127, #192..#255])  do
+    while (Result < length(ALine)) and
+      ( (not(ALine[Result] in [#0..#127, #192..#255])) or LogicPosIsCombining(ALine, Result) )
+    do
       inc(Result);
   end;
 
-  while (Result > 1) and not(ALine[Result] in [#0..#127, #192..#255])  do
+  while (Result > 1) and
+    ( (not(ALine[Result] in [#0..#127, #192..#255])) or LogicPosIsCombining(ALine, Result) )
+  do
     dec(Result);
 end;
 

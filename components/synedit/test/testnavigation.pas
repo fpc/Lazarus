@@ -326,6 +326,7 @@ procedure TTestSynNavigation.TestCaretLeftRight;
                'abc def ü'#9'üü xyz',                          //  7: utf8 multibyte + tabs
                'abc あdefあ123',                               //  8: Double withs
                'abc あdef'#9'あ'#9'123',                       //  9: Double withs + tabs
+               'Aa'#$CC#$81'B',                                // 10: a-accent, in 2 (combining) codepoints)
                ''
            ]);
   end;
@@ -577,6 +578,7 @@ begin
 
   TestLeftRight('Umlaut right',        6,  9, ecRight, 10,11,   11,13);
   TestLeftRight('Double W right',      8,  5, ecRight,  7, 8,    8, 9);
+  TestLeftRight('combining right',    10,  2, ecRight,  3, 5,    4, 6);
 
   TestLeftRight('at EOL right',        5, 10, ecRight,  1, 1,    2, 2, True, True, -1 , 6);
 
@@ -618,6 +620,7 @@ begin
 
   TestLeftRight('Umlaut left',        6, 10, ecLeft,  9, 9,    8, 8);
   TestLeftRight('Double W left',      8,  7, ecLeft,  5, 5,    4, 4);
+  TestLeftRight('combining left',    10,  3, ecLeft,  2, 2,    1, 1);
 
   TestLeftRight('at BOL left',       6,  1, ecLeft, 10, 8,    9, 7, True, True, -1 , 5);
 
