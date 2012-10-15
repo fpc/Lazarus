@@ -3068,7 +3068,8 @@ begin
 
   ecSave:
     begin
-      ObjectInspector1.GetActivePropertyGrid.SaveChanges;
+      if Assigned(ObjectInspector1) then
+        ObjectInspector1.GetActivePropertyGrid.SaveChanges;
       if (Sender is TDesigner) or (Sender is TObjectInspectorDlg) then begin
         if (Sender is TDesigner) then
           GetDesignerUnit(TDesigner(Sender),ASrcEdit,AnUnitInfo)
@@ -8192,7 +8193,8 @@ begin
   end;
 
   // Save the property editor value in Object Inspector
-  ObjectInspector1.GetActivePropertyGrid.SaveChanges;
+  if Assigned(ObjectInspector1) then
+    ObjectInspector1.GetActivePropertyGrid.SaveChanges;
 
   if MainBuildBoss.CompilerOnDiskChanged then
     MainBuildBoss.RescanCompilerDefines(false,false,false,false);
