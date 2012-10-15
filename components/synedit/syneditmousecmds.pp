@@ -127,7 +127,7 @@ type
   published
     property Shift: TShiftState read FShift write SetShift                      default [];
     property ShiftMask: TShiftState read FShiftMask write SetShiftMask          default [];
-    property Button: TSynMouseButton read FButton write SetButton                  default mbXLeft;
+    property Button: TSynMouseButton read FButton write SetButton               default mbXLeft;
     property ClickCount: TSynMAClickCount read FClickCount write SetClickCount  default ccSingle;
     property ClickDir: TSynMAClickDir read FClickDir write SetClickDir          default cdUp;
     property Command: TSynEditorMouseCommand read FCommand write SetCommand;

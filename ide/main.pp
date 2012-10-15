@@ -10408,8 +10408,7 @@ begin
   {$ENDIF}
   LogCaret:=ActiveSrcEdit.EditorComponent.LogicalCaretXY;
   if CodeToolBoss.JumpToMethod(ActiveUnitInfo.Source,
-    LogCaret.X,LogCaret.Y,
-    NewSource,NewX,NewY,NewTopLine,RevertableJump) then
+    LogCaret.X,LogCaret.Y,NewSource,NewX,NewY,NewTopLine,RevertableJump) then
   begin
     Flags := [jfFocusEditor];
     if not RevertableJump then include(Flags, jfAddJumpPoint);
@@ -10517,9 +10516,7 @@ begin
   if CodeToolsOpts.SkipForwardDeclarations then
     Include(FindFlags, fsfSkipClassForward);
   if CodeToolBoss.FindDeclaration(ActiveUnitInfo.Source,
-    LogCaretXY.X,LogCaretXY.Y,
-    NewSource,NewX,NewY,NewTopLine,FindFlags
-    )
+    LogCaretXY.X, LogCaretXY.Y, NewSource, NewX, NewY, NewTopLine, FindFlags )
   then begin
     //debugln(['TMainIDE.DoFindDeclarationAtCaret ',NewSource.Filename,' NewX=',Newx,',y=',NewY,' ',NewTopLine]);
     DoJumpToCodePosition(ActiveSrcEdit, ActiveUnitInfo,
@@ -10643,8 +10640,7 @@ begin
     // create the file list
     Files:=TStringList.Create;
     Files.Add(TargetUnitInfo.Filename);
-    if CompareFilenames(DeclarationUnitInfo.Filename,TargetUnitInfo.Filename)<>0
-    then
+    if CompareFilenames(DeclarationUnitInfo.Filename,TargetUnitInfo.Filename)<>0 then
       Files.Add(DeclarationUnitInfo.Filename);
 
     Options:=MiscellaneousOptions.FindRenameIdentifierOptions;
@@ -11212,8 +11208,7 @@ begin
     Project1.UpdateVisibleUnit(ASrcEdit,
       SourceEditorManager.IndexOfSourceWindow(ASrcEdit.SourceNotebook));
 
-  ActiveUnitInfo :=
-    Project1.UnitWithEditorComponent(SourceEditorManager.ActiveEditor);
+  ActiveUnitInfo := Project1.UnitWithEditorComponent(SourceEditorManager.ActiveEditor);
   if ActiveUnitInfo = nil then Exit;
   ActiveUnitInfo.SetLastUsedEditor(SourceEditorManager.ActiveEditor);
 
@@ -11737,8 +11732,7 @@ var
         end;
 
         // rename inherited component
-        InheritedComponent:=
-                         DependingUnit.Component.FindComponent(AComponent.Name);
+        InheritedComponent:=DependingUnit.Component.FindComponent(AComponent.Name);
         if InheritedComponent<>nil then begin
           // inherited component found
           if FRenamingComponents=nil then
@@ -12225,8 +12219,7 @@ begin
   DoViewJumpHistory(true);
 end;
 
-procedure TMainIDE.OnSrcNoteBookPopupMenu(
-  const AddMenuItemProc: TAddMenuItemProc);
+procedure TMainIDE.OnSrcNoteBookPopupMenu(const AddMenuItemProc: TAddMenuItemProc);
 begin
   PkgBoss.OnSourceEditorPopupMenu(AddMenuItemProc);
 end;
@@ -12931,8 +12924,7 @@ begin
   Result:=nil;
 end;
 
-function TMainIDE.GetProjectFileWithDesigner(ADesigner: TIDesigner
-  ): TLazProjectFile;
+function TMainIDE.GetProjectFileWithDesigner(ADesigner: TIDesigner): TLazProjectFile;
 var
   TheDesigner: TDesigner;
   AComponent: TComponent;
@@ -12944,8 +12936,7 @@ begin
   Result:=GetProjectFileWithRootComponent(AComponent);
 end;
 
-function TMainIDE.OnPropHookMethodExists(const AMethodName: String;
-  TypeData: PTypeData;
+function TMainIDE.OnPropHookMethodExists(const AMethodName: String; TypeData: PTypeData;
   var MethodIsCompatible,MethodIsPublished,IdentIsMethod: boolean): boolean;
 var
   ActiveSrcEdit: TSourceEditor;
@@ -12970,7 +12961,7 @@ end;
 function TMainIDE.OnPropHookCreateMethod(const AMethodName: ShortString;
   ATypeInfo: PTypeInfo;
   APersistent: TPersistent; const APropertyPath: string): TMethod;
-{ APersistent is the intance that gets the new method, not the lookuproot.
+{ APersistent is the instance that gets the new method, not the lookuproot.
   For example assign 'Button1Click' to Form1.Button1.OnClick:
     APersistent = APersistent
     AMethodName = 'Button1Click'
@@ -13296,8 +13287,7 @@ begin
   end;
 
   if (ADesigner<>nil) and ((RegComp<>nil) or (ClassUnitInfo<>nil)) then begin
-    if not BeginCodeTool(ADesigner,ActiveSrcEdit,ActiveUnitInfo,
-      [ctfSwitchToFormSource])
+    if not BeginCodeTool(ADesigner,ActiveSrcEdit,ActiveUnitInfo,[ctfSwitchToFormSource])
     then exit;
 
     // remember cursor position
@@ -13320,8 +13310,7 @@ begin
 
     // add component definitions to form source
     Ancestor:=GetAncestorLookupRoot(ActiveUnitInfo);
-    CodeToolBoss.CompleteComponent(ActiveUnitInfo.Source,ADesigner.LookupRoot,
-                                   Ancestor);
+    CodeToolBoss.CompleteComponent(ActiveUnitInfo.Source,ADesigner.LookupRoot,Ancestor);
   end;
 
   if ObjectInspector1<>nil then

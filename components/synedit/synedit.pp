@@ -623,8 +623,7 @@ type
     function GetBracketMatchColor : TSynSelectedColor;
     function GetMouseLinkColor : TSynSelectedColor;
     function GetTrimSpaceType: TSynEditStringTrimmingType;
-    procedure SetBracketHighlightStyle(
-      const AValue: TSynEditBracketHighlightStyle);
+    procedure SetBracketHighlightStyle(const AValue: TSynEditBracketHighlightStyle);
     procedure SetOnGutterClick(const AValue : TGutterClickEvent);
     procedure SetSelectedColor(const AValue : TSynSelectedColor);
     procedure SetSpecialLineColors(const AValue : TSpecialLineColorsEvent);
@@ -967,8 +966,7 @@ type
     function ScreenRowToRow(ScreenRow: integer; LimitToLines: Boolean = True): integer;
     function RowToScreenRow(PhysicalRow: integer): integer;
 
-    procedure Notification(AComponent: TComponent;
-      Operation: TOperation); override;
+    procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     procedure RegisterCommandHandler(AHandlerProc: THookedCommandEvent;
       AHandlerData: pointer; AFlags: THookedCommandFlags = [hcfPreExec, hcfPostExec]);
     procedure UnregisterCommandHandler(AHandlerProc: THookedCommandEvent);
@@ -1031,8 +1029,7 @@ type
     property LeftChar: Integer read GetLeftChar write SetLeftChar;
     property LineHeight: integer read GetLineHeight;
     property LinesInWindow: Integer read GetLinesInWindow;
-    property MaxLeftChar: integer read fMaxLeftChar write SetMaxLeftChar
-      default 1024;
+    property MaxLeftChar: integer read fMaxLeftChar write SetMaxLeftChar default 1024;
     property TopLine: Integer read GetTopLine write SetTopLine;
 
     property UseIncrementalColor : Boolean write SetUseIncrementalColor;
@@ -1049,10 +1046,8 @@ type
     property Plugin[Index: Integer]: TLazSynEditPlugin read GetPlugin;
     function MarkupCount: Integer;
     property Markup[Index: integer]: TSynEditMarkup read GetMarkup;
-    property MarkupByClass[Index: TSynEditMarkupClass]: TSynEditMarkup
-      read GetMarkupByClass;
-    property TrimSpaceType: TSynEditStringTrimmingType
-      read GetTrimSpaceType write SetTrimSpaceType;
+    property MarkupByClass[Index: TSynEditMarkupClass]: TSynEditMarkup read GetMarkupByClass;
+    property TrimSpaceType: TSynEditStringTrimmingType read GetTrimSpaceType write SetTrimSpaceType;
   public
     // Caret
     property InsertCaret: TSynEditCaretType read FInsertCaret write SetInsertCaret default ctVerticalLine;
@@ -1082,21 +1077,16 @@ type
     property Highlighter: TSynCustomHighlighter read fHighlighter write SetHighlighter;
     property Gutter: TSynGutter read FLeftGutter write SetGutter;
     property RightGutter: TSynGutter read FRightGutter write SetRightGutter;
-    property InsertMode: boolean read fInserting write SetInsertMode
-      default true;
-    property Keystrokes: TSynEditKeyStrokes
-      read FKeystrokes write SetKeystrokes;
-    property MouseActions: TSynEditMouseActions
-      read GetMouseActions write SetMouseActions;
-    property MouseTextActions: TSynEditMouseActions
-      read GetMouseTextActions write SetMouseTextActions;
-    property MouseSelActions: TSynEditMouseActions // Mouseactions, if mouse is over selection => fallback to normal
-      read GetMouseSelActions write SetMouseSelActions;
+    property InsertMode: boolean read fInserting write SetInsertMode default true;
+    property Keystrokes: TSynEditKeyStrokes read FKeystrokes write SetKeystrokes;
+    property MouseActions: TSynEditMouseActions read GetMouseActions write SetMouseActions;
+    property MouseTextActions: TSynEditMouseActions read GetMouseTextActions write SetMouseTextActions;
+    // Mouseactions, if mouse is over selection => fallback to normal
+    property MouseSelActions: TSynEditMouseActions read GetMouseSelActions write SetMouseSelActions;
     property MaxUndo: Integer read GetMaxUndo write SetMaxUndo default 1024;
-    property Options: TSynEditorOptions read FOptions write SetOptions          // See SYNEDIT_UNIMPLEMENTED_OPTIONS for deprecated Values
-      default SYNEDIT_DEFAULT_OPTIONS;
-    property Options2: TSynEditorOptions2 read FOptions2 write SetOptions2
-      default SYNEDIT_DEFAULT_OPTIONS2;
+    // See SYNEDIT_UNIMPLEMENTED_OPTIONS for deprecated Values
+    property Options: TSynEditorOptions read FOptions write SetOptions default SYNEDIT_DEFAULT_OPTIONS;
+    property Options2: TSynEditorOptions2 read FOptions2 write SetOptions2 default SYNEDIT_DEFAULT_OPTIONS2;
     property MouseOptions: TSynEditorMouseOptions read FMouseOptions write SetMouseOptions
       default SYNEDIT_DEFAULT_MOUSE_OPTIONS;
     property ShareOptions: TSynEditorShareOptions read FShareOptions write SetShareOptions
@@ -1105,8 +1095,7 @@ type
     property ReadOnly: Boolean read GetReadOnly write SetReadOnly default FALSE;
     property RightEdge: Integer read GetRightEdge write SetRightEdge default 80;
     property RightEdgeColor: TColor read GetRightEdgeColor write SetRightEdgeColor default clSilver;
-    property ScrollBars: TScrollStyle
-      read FScrollBars write SetScrollBars default ssBoth;
+    property ScrollBars: TScrollStyle read FScrollBars write SetScrollBars default ssBoth;
     property BracketHighlightStyle: TSynEditBracketHighlightStyle
       read GetBracketHighlightStyle write SetBracketHighlightStyle;
     property TabWidth: integer read fTabWidth write SetTabWidth default 8;
@@ -2491,8 +2480,7 @@ begin
   Result := FFoldedLinesView;
 end;
 
-procedure TCustomSynEdit.SetBracketHighlightStyle(
-  const AValue: TSynEditBracketHighlightStyle);
+procedure TCustomSynEdit.SetBracketHighlightStyle(const AValue: TSynEditBracketHighlightStyle);
 begin
   fMarkupBracket.HighlightStyle := AValue;
 end;
@@ -2507,8 +2495,7 @@ begin
   fMarkupSelection.UseIncrementalColor:=AValue;
 end;
 
-function TCustomSynEdit.GetCharLen(const Line: string; CharStartPos: integer
-  ): integer;
+function TCustomSynEdit.GetCharLen(const Line: string; CharStartPos: integer): integer;
 begin
   if UseUTF8 and (length(Line)>=CharStartPos) then
     Result:=UTF8CharacterLength(@Line[CharStartPos])
@@ -5751,8 +5738,7 @@ begin
   end;
 end;
 
-procedure TCustomSynEdit.Notification(AComponent: TComponent;
-  Operation: TOperation);
+procedure TCustomSynEdit.Notification(AComponent: TComponent; Operation: TOperation);
 begin
   inherited Notification(AComponent, Operation);
   if Operation = opRemove then begin
