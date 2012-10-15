@@ -9703,12 +9703,9 @@ end;
 
 procedure TMainIDE.OnControlSelectionPropsChanged(Sender: TObject);
 begin
-  if (TheControlSelection=nil) or (FormEditor1=nil) then exit;
-  if ObjectInspector1<>nil then begin
-    if not TheControlSelection.Equals(ObjectInspector1.Selection) then
-      ObjectInspector1.SaveChanges;
-    ObjectInspector1.RefreshPropertyValues;
-  end;
+  if (TheControlSelection=nil) or (FormEditor1=nil) or (ObjectInspector1=nil) then exit;
+  ObjectInspector1.SaveChanges; // Save in any case, PropEditor value may have changed
+  ObjectInspector1.RefreshPropertyValues;
 end;
 
 procedure TMainIDE.OnControlSelectionFormChanged(Sender: TObject; OldForm,
