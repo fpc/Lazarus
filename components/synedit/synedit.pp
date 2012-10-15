@@ -2497,10 +2497,7 @@ end;
 
 function TCustomSynEdit.GetCharLen(const Line: string; CharStartPos: integer): integer;
 begin
-  if UseUTF8 and (length(Line)>=CharStartPos) then
-    Result:=UTF8CharacterLength(@Line[CharStartPos])
-  else
-    Result:=1;
+  Result := FLines.LogicPosAddChars(Line, CharStartPos, 1) - CharStartPos;
 end;
 
 function TCustomSynEdit.GetLogicalCaretXY: TPoint;
