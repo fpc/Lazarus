@@ -3490,7 +3490,8 @@ begin
   Msg.Msg := LM_MOUSEMOVE;
 
   NotifyApplicationUserInput(LCLObject, Msg.Msg);
-  DeliverMessage(Msg, True);
+  if (Widget <> nil) and QtWidgetSet.IsValidHandle(HWND(Self)) then
+    DeliverMessage(Msg, True);
   SetNoMousePropagation(SenderWidget, True);
 end;
 
