@@ -1776,36 +1776,35 @@ begin
         CompIndex:=ControlSelection.IndexOf(MouseDownComponent);
         if ssCtrl in Shift then begin
           // child selection
-        end else begin
-          if (ssShift in Shift) then begin
-            // shift key pressed (multiselection)
+        end
+        else if (ssShift in Shift) then begin
+          // shift key pressed (multiselection)
 
-            if CompIndex<0 then begin
-              // not selected
-              // add component to selection
-              if (ControlSelection.SelectionForm<>nil)
-              and (ControlSelection.SelectionForm<>Form)
-              then begin
-                MessageDlg(lisInvalidMultiselection,
-                  fdInvalidMultiselectionText,
-                  mtInformation,[mbOk],0);
-              end else begin
-                ControlSelection.Add(MouseDownComponent);
-              end;
+          if CompIndex<0 then begin
+            // not selected
+            // add component to selection
+            if (ControlSelection.SelectionForm<>nil)
+            and (ControlSelection.SelectionForm<>Form)
+            then begin
+              MessageDlg(lisInvalidMultiselection,
+                fdInvalidMultiselectionText,
+                mtInformation,[mbOk],0);
             end else begin
-              // remove from multiselection
-              ControlSelection.Delete(CompIndex);
+              ControlSelection.Add(MouseDownComponent);
             end;
           end else begin
-            // no shift key (single selection or keeping multiselection)
-
-            if (CompIndex<0) then begin
-              // select only this component
-              ControlSelection.AssignPersistent(MouseDownComponent);
-            end else
-              // sync with the interface
-              ControlSelection.UpdateBounds;
+            // remove from multiselection
+            ControlSelection.Delete(CompIndex);
           end;
+        end else begin
+          // no shift key (single selection or keeping multiselection)
+
+          if (CompIndex<0) then begin
+            // select only this component
+            ControlSelection.AssignPersistent(MouseDownComponent);
+          end else
+            // sync with the interface
+            ControlSelection.UpdateBounds;
         end;
       end else begin
         // mouse down on grabber -> begin sizing

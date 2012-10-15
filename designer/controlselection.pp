@@ -2069,8 +2069,7 @@ begin
   DoChange;
 end;
 
-function TControlSelection.Equals(const ASelection: TPersistentSelectionList
-  ): boolean;
+function TControlSelection.Equals(const ASelection: TPersistentSelectionList): boolean;
 var
   i: Integer;
   Instance: TPersistent;

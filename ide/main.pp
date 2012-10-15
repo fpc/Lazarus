@@ -9721,13 +9721,11 @@ begin
   UpdateIDEComponentPalette;
 end;
 
-procedure TMainIDE.OnGetDesignerSelection(
-  const ASelection: TPersistentSelectionList);
+procedure TMainIDE.OnGetDesignerSelection(const ASelection: TPersistentSelectionList);
 begin
   if TheControlSelection=nil then exit;
   TheControlSelection.GetSelection(ASelection);
 end;
-
 
 // -----------------------------------------------------------------------------
 
