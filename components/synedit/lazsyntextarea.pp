@@ -69,8 +69,9 @@ type
     FNextMarkupPhysPos, FNextMarkupLogPos: Integer;
     FCurMarkupNextStart: TLazSynDisplayTokenBound;
     FCurMarkupNextRtlInfo: TLazSynDisplayRtlInfo;
-    FCurMarkupEOL: Boolean;
+    FCurMarkupState: (cmPreInit, cmLine, cmPastEOL);
     FMarkupTokenAttr: TSynSelectedColor;
+    procedure InitCurMarkup;
   public
     constructor Create;
     destructor Destroy; override;
@@ -240,6 +241,24 @@ implementation
 
 { TLazSynPaintTokenBreaker }
 
+procedure TLazSynPaintTokenBreaker.InitCurMarkup;
+var
+  TmpTokenInfo: TLazSynDisplayTokenInfoEx;
+begin
+  FCurMarkupState := cmLine;
+
+  if GetNextHighlighterTokenFromView(TmpTokenInfo, -1, 1) then begin
+    FCurMarkupNextStart   := TmpTokenInfo.NextPos;
+    FCurMarkupNextRtlInfo := TmpTokenInfo.NextRtlInfo;
+  end else begin
+    // past eol
+    FCurMarkupNextStart          := TmpTokenInfo.StartPos;
+    FCurMarkupNextStart.Logical  := FCurMarkupNextStart.Logical + (FFirstCol - FCurMarkupNextStart.Physical);
+    FCurMarkupNextStart.Physical := FFirstCol;
+    FCurMarkupNextRtlInfo.IsRtl  := False;
+  end;
+end;
+
 constructor TLazSynPaintTokenBreaker.Create;
 begin
   FCurViewAttr := TSynSelectedColor.Create;
@@ -268,8 +287,6 @@ end;
 
 procedure TLazSynPaintTokenBreaker.SetHighlighterTokensLine(ALine: TLineIdx; out
   ARealLine: TLineIdx);
-var
-  TmpTokenInfo: TLazSynDisplayTokenInfoEx;
 begin
   FDisplayView.SetHighlighterTokensLine(ALine, ARealLine);
   FCharWidths := FLinesView.GetPhysicalCharWidths(ARealLine);
@@ -282,19 +299,9 @@ begin
   FCurViewScannerPhysCharPos  := 1;
   FCurViewinRTL := False;
 
-  if GetNextHighlighterTokenFromView(TmpTokenInfo, -1, 1) then begin
-    FCurMarkupNextStart   := TmpTokenInfo.NextPos;
-    FCurMarkupNextRtlInfo := TmpTokenInfo.NextRtlInfo;
-  end else begin
-    // past eol
-    FCurMarkupNextStart          := TmpTokenInfo.StartPos;
-    FCurMarkupNextStart.Logical  := FCurMarkupNextStart.Logical + (FFirstCol - FCurMarkupNextStart.Physical);
-    FCurMarkupNextStart.Physical := FFirstCol;
-    FCurMarkupNextRtlInfo.IsRtl  := False;
-  end;
   FNextMarkupPhysPos := -1;
   FNextMarkupLogPos  := -1;
-  FCurMarkupEOL      := False;
+  FCurMarkupState      := cmPreInit;
   FCurTxtLineIdx     := ARealLine;
 end;
 
@@ -303,6 +310,9 @@ function TLazSynPaintTokenBreaker.GetNextHighlighterTokenEx(out
 const
   Space = '  ';
 begin
+  if FCurMarkupState = cmPreInit then
+    InitCurMarkup;
+
   if (FNextMarkupPhysPos < 0) or
      (FCurMarkupNextRtlInfo.IsRtl       and (FNextMarkupPhysPos >= FCurMarkupNextStart.Physical)) or
      ((not FCurMarkupNextRtlInfo.IsRtl) and (FNextMarkupPhysPos <= FCurMarkupNextStart.Physical)) or
@@ -321,13 +331,13 @@ begin
       FNextMarkupLogPos := MaxInt;
   end;
 
-  if FCurMarkupEOL
+  if FCurMarkupState = cmPastEOL
   then Result := False
   else Result := GetNextHighlighterTokenFromView(ATokenInfo, FNextMarkupPhysPos, FNextMarkupLogPos);
 
   if (not Result) then begin
     // the first run StartPos is set by GetNextHighlighterTokenFromView
-    if FCurMarkupEOL then begin
+    if FCurMarkupState = cmPastEOL then begin
       ATokenInfo.StartPos   := FCurMarkupNextStart
     end
     else
@@ -336,7 +346,7 @@ begin
       ATokenInfo.StartPos.Physical := FFirstCol;
     end;
 
-    FCurMarkupEOL := True;
+    FCurMarkupState := cmPastEOL;
 
     Result := (ATokenInfo.StartPos.Physical < FLastCol);
     if not Result then
@@ -1623,7 +1633,7 @@ var
       CharWidths := FTheLinesView.GetPhysicalCharWidths(CurTextIndex);
       fMarkupManager.PrepareMarkupForRow(CurTextIndex+1);
 
-      DividerInfo := DisplayView.GetDrawDividerInfo;
+      DividerInfo := DisplayView.GetDrawDividerInfo;  // May call HL.SetRange
       if (DividerInfo.Color <> clNone) and (nRightEdge >= FTextBounds.Left) then
       begin
         ypos := rcToken.Bottom - 1;
