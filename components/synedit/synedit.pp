@@ -6091,11 +6091,13 @@ begin
         end;
       ecPageLeft, ecSelPageLeft, ecColSelPageLeft:
         begin
-          MoveCaretHorz(-Max(1, CharsInWindow));
+          FCaret.CharPos := Max(1, FCaret.CharPos - Max(1, CharsInWindow));
         end;
       ecPageRight, ecSelPageRight, ecColSelPageRight:
         begin
-          MoveCaretHorz(Max(1, CharsInWindow));
+          FCaret.IncForceAdjustToNextChar;
+          FCaret.CharPos := FCaret.CharPos + Max(1, CharsInWindow);
+          FCaret.DecForceAdjustToNextChar;
         end;
       ecLineStart, ecSelLineStart, ecColSelLineStart:
         begin
@@ -6236,10 +6238,11 @@ begin
               CaretX := CaretX - 1;
               FTheLinesView.EditDelete(CaretX, LogCaretXY.Y, 1);
               {$ELSE USE_UTF8BIDI_LCL}
-              LogCaretXY.X:=PhysicalToLogicalCol(Temp, CaretY-1, CaretX - 1);
-              LogCounter:=GetCharLen(Temp,LogCaretXY.X);
-              CaretX := LogicalToPhysicalCol(Temp, CaretY-1, LogCaretXY.X);
-              FTheLinesView.EditDelete(FCaret.BytePos, LogCaretXY.Y, LogCounter);
+              LogCounter := LogCaretXY.X;
+              LogCaretXY.X := FTheLinesView.LogicPosAddChars(Temp, LogCaretXY.X, -1);
+              LogCounter := LogCounter - LogCaretXY.X;
+              FTheLinesView.EditDelete(LogCaretXY.X, LogCaretXY.Y, LogCounter);
+              FCaret.BytePos := LogCaretXY.X;
               {$ENDIF USE_UTF8BIDI_LCL}
               //end;
             end;
@@ -7431,38 +7434,37 @@ procedure TCustomSynEdit.MoveCaretHorz(DX: integer);
 var
   NewCaret: TPoint;
   s: String;
-  PhysicalLineLen: Integer;
 begin
-  NewCaret:=Point(CaretX+DX,CaretY);
-  if NewCaret.X<1 then begin
-    if (eoScrollPastEol in fOptions) or (NewCaret.Y=1) then
-      NewCaret.X:=1
-    else begin
-      // move to end of prev line
-      NewCaret.Y:= FFoldedLinesView.TextPosAddLines(NewCaret.Y, -1);
-      s:=FTheLinesView[NewCaret.Y-1];
-      PhysicalLineLen:=LogicalToPhysicalPos(Point(length(s)+1,NewCaret.Y)).X-1;
-      NewCaret.X:=PhysicalLineLen+1;
-    end;
-  end
-  else if not (eoScrollPastEol in fOptions) then begin
-    s:=LineText;
-    PhysicalLineLen:=LogicalToPhysicalPos(Point(length(s)+1,CaretY)).X-1;
-    if (NewCaret.X > PhysicalLineLen+1) and (DX > 0) then begin
-      // move to start of next line (if it was a move to the right)
-      NewCaret.X := 1;
-      NewCaret.Y := FFoldedLinesView.TextPosAddLines(NewCaret.Y, +1);
-    end;
-  end;
+  // char or halfchar left/right
+
   DoIncPaintLock(Self);  // No editing is taking place
-  FCaret.IncForcePastEOL;
-  if DX > 0 then
-    FCaret.IncForceAdjustToNextChar;
-  FCaret.LineCharPos := NewCaret;
-  FCaret.DecForcePastEOL;
-  if DX > 0 then
-    FCaret.DecForceAdjustToNextChar;
-  DoDecPaintLock(Self);
+  try
+    if not FCaret.MoveHoriz(DX) then begin
+      if DX < 0 then begin
+        if (FCaret.LinePos > 1) and not(eoScrollPastEol in fOptions) then begin
+          // move to end of prev line
+          NewCaret.Y:= FFoldedLinesView.TextPosAddLines(FCaret.LinePos, -1);
+          if NewCaret.Y <> FCaret.LinePos then begin
+            s:=FTheLinesView[NewCaret.Y-1];
+            NewCaret.X := length(s) + 1;
+            FCaret.LineBytePos := NewCaret;
+          end;
+        end;
+      end
+      else begin
+        if not(eoScrollPastEol in fOptions) then begin
+          // move to begin of next line
+          NewCaret.Y:= FFoldedLinesView.TextPosAddLines(FCaret.LinePos, +1);
+          if NewCaret.Y <= FFoldedLinesView.ViewPosToTextIndex(FFoldedLinesView.Count)+1 then begin
+            NewCaret.X := 1;
+            FCaret.LineBytePos := NewCaret;
+          end;
+        end
+      end;
+    end;
+  finally
+    DoDecPaintLock(Self);
+  end;
 end;
 
 procedure TCustomSynEdit.MoveCaretVert(DY: integer);
