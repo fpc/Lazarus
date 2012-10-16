@@ -530,8 +530,8 @@ function TSynEditMarkupManager.GetMarkupAttributeAtRowCol(const aRow: Integer;
   const aStartCol: TLazSynDisplayTokenBound; const AnRtlInfo: TLazSynDisplayRtlInfo) : TSynSelectedColor;
 begin
   assert(false);
-  //Result := MarkupInfo;
-  //Result.Clear;
+  Result := MarkupInfo;
+  Result.Clear;
   //MergeMarkupAttributeAtRowCol(aRow, aCol, GetNextMarkupColAfterRowCol(aRow, aCol) - 1, Result);
 end;
 

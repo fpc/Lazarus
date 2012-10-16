@@ -1057,15 +1057,14 @@ end;
 
 function TSynEditStringList.LogicPosAddChars(const ALine: String; ALogicalPos,
   ACount: integer; AllowPastEOL: Boolean): Integer;
+var
+  l: Integer;
 begin
   // UTF8 handing of chars
   Result := ALogicalPos;
-  if (ALogicalPos < 1) or (ALogicalPos > length(ALine)) then begin
-    Result := Result + ACount;
-    exit;
-  end;
+  l := length(ALine);
   if ACount > 0 then begin;
-    while (Result < length(ALine)) and (ACount > 0) do begin
+    while (Result < l) and (ACount > 0) do begin
       inc(Result);
       if (ALine[Result] in [#0..#127, #192..#255]) and (not LogicPosIsCombining(ALine, Result)) then
         dec(ACount);
@@ -1073,7 +1072,7 @@ begin
     if AllowPastEOL then
       Result := Result + ACount;
 
-    if (Result <= length(ALine)) then
+    if (Result <= l) then
       while (Result > 1) and
             ( (not(ALine[Result] in [#0..#127, #192..#255])) or LogicPosIsCombining(ALine, Result) )
       do
@@ -1081,7 +1080,9 @@ begin
   end else begin
     while (Result > 1) and (ACount < 0) do begin
       dec(Result);
-      if (ALine[Result] in [#0..#127, #192..#255]) and (not LogicPosIsCombining(ALine, Result)) then
+      if (Result > l) or
+         ( (ALine[Result] in [#0..#127, #192..#255]) and (not LogicPosIsCombining(ALine, Result)) )
+      then
         inc(ACount);
     end;
   end;

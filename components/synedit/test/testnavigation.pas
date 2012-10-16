@@ -558,7 +558,7 @@ procedure TTestSynNavigation.TestCaretLeftRight;
 
   end;
 
-begin
+begin  // TODO EOL/BOL at first/last (visible) line (with folding)
   SetTextLeftRight;
 
   {%region ecRight}

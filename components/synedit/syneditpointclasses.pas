@@ -232,6 +232,7 @@ type
     function WasAtLineChar(aPoint: TPoint): Boolean;
     function WasAtLineByte(aPoint: TPoint): Boolean;
     function IsAtPos(aCaret: TSynEditCaret): Boolean;
+    function MoveHoriz(ACount: Integer): Boolean; // Logical
 
     property OldLinePos: Integer read FOldLinePos;
     property OldCharPos: Integer read FOldCharPos;
@@ -490,6 +491,67 @@ end;
 function TSynEditCaret.IsAtPos(aCaret: TSynEditCaret): Boolean;
 begin
   Result := IsAtLineChar(aCaret.LineCharPos);
+end;
+
+function TSynEditCaret.MoveHoriz(ACount: Integer): Boolean;
+var
+  L: String;
+  CharWidths: TPhysicalCharWidths;
+  GotCharWidths: Boolean;
+  MaxOffs: Integer;
+
+  function GetMaxOffs(AlogPos: Integer): Integer;
+  begin
+    if not GotCharWidths then
+      CharWidths := FLines.GetPhysicalCharWidths(Pchar(L), length(L), FLinePos-1);
+    GotCharWidths := True;
+    Result := CharWidths[AlogPos-1];
+  end;
+
+begin
+  GotCharWidths := False;
+  L := LineText;
+  UpdateBytePos;
+
+  If ACount > 0 then begin
+    if (FBytePos <= length(L)) and (L[FBytePos] = #9) and (not FSkipTabs) then
+      MaxOffs := GetMaxOffs(FBytePos) - 1
+    else
+      MaxOffs := 0;
+
+    while ACount > 0 do begin
+      if FBytePosOffset < MaxOffs then
+        inc(FBytePosOffset)
+      else begin
+        FBytePos := FLines.LogicPosAddChars(L, FBytePos, 1, True);
+        FBytePosOffset := 0;
+        if (FBytePos <= length(L)) and (L[FBytePos] = #9) and (not FSkipTabs) then
+          MaxOffs := GetMaxOffs(FBytePos) - 1
+        else
+          MaxOffs := 0;
+      end;
+      dec(ACount);
+    end;
+    Result := FBytePos <= length(L) + 1;
+  end
+  else begin
+    while ACount < 0 do begin
+      if FBytePosOffset > 0 then
+        dec(FBytePosOffset)
+      else begin
+        if FBytePos = 1 then
+          break;
+        FBytePos := FLines.LogicPosAddChars(L, FBytePos, -1, True);
+        if (FBytePos <= length(L)) and (L[FBytePos] = #9) and (not FSkipTabs) then
+          FBytePosOffset := GetMaxOffs(FBytePos) - 1
+        else
+          FBytePosOffset := 0;
+      end;
+      inc(ACount);
+    end;
+    Result := ACount = 0;
+  end;
+  CharPos := FLines.LogPhysConvertor.LogicalToPhysical(FLinePos - 1, FBytePos, FBytePosOffset);
 end;
 
 procedure TSynEditCaret.setLinePos(const AValue : Integer);
