@@ -83,7 +83,7 @@ type
     Added: boolean;
   end;
 
-  TGetCollectionProc = procedure(ACollection: TCollection) of object;
+  TGetPersistentProc = procedure(APersistent: TPersistent) of object;
 
   { TComponentWalker }
 
@@ -93,14 +93,14 @@ type
     FRootComponent: TComponent;
     FNode: TTreeNode;
   protected
-    procedure GetCollections(AComponent: TComponent; AProc: TGetCollectionProc);
+    procedure GetOwnedPersistents(AComponent: TComponent; AProc: TGetPersistentProc);
   public
     constructor Create(
       ATreeView: TComponentTreeView; ACandidates: TAvgLvlTree;
       ARootComponent: TComponent; ANode: TTreeNode);
 
     procedure Walk(AComponent: TComponent);
-    procedure AddCollection(ACollection: TCollection);
+    procedure AddOwnedPersistent(APersistent: TPersistent);
   end;
 
   TComponentAccessor = class(TComponent);
@@ -119,21 +119,27 @@ end;
 
 { TComponentWalker }
 
-procedure TComponentWalker.GetCollections(AComponent: TComponent; AProc: TGetCollectionProc);
+procedure TComponentWalker.GetOwnedPersistents(AComponent: TComponent;
+  AProc: TGetPersistentProc);
 var
   PropList: PPropList;
   i, PropCount: Integer;
-  Obj: TObject;
+  Pers: TPersistent;
+  PropInfo: PPropInfo;
+  PropEdit: TPropertyEditorClass;
 begin
   PropCount := GetPropList(AComponent, PropList);
   try
-    for i := 0 to PropCount - 1 do
-      if (PropList^[i]^.PropType^.Kind = tkClass) then
-      begin
-        Obj := GetObjectProp(AComponent, PropList^[i], TCollection);
-        if Assigned(Obj) then
-          AProc(TCollection(Obj));
-      end;
+    for i := 0 to PropCount - 1 do begin
+      PropInfo:=PropList^[i];
+      if (PropInfo^.PropType^.Kind <> tkClass) then continue;
+      Pers := TPersistent(GetObjectProp(AComponent, PropInfo, TPersistent));
+      if Pers=nil then continue;
+      if GetLookupRootForComponent(Pers)<>FRootComponent then continue;
+      PropEdit:=GetEditorClass(PropInfo,AComponent);
+      if (PropEdit=nil) then continue;
+      AProc(Pers);
+    end;
   finally
     FreeMem(PropList);
   end;
@@ -172,7 +178,7 @@ begin
   FNode.SelectedIndex := FNode.ImageIndex;
   FNode.MultiSelected := FTreeView.Selection.IndexOf(AComponent) >= 0;
 
-  GetCollections(AComponent, @AddCollection);
+  GetOwnedPersistents(AComponent, @AddOwnedPersistent);
 
   if (csInline in AComponent.ComponentState) or (AComponent.Owner = nil) then
     Root := AComponent
@@ -185,30 +191,35 @@ begin
   FNode.Expanded := True;
 end;
 
-procedure TComponentWalker.AddCollection(ACollection: TCollection);
+procedure TComponentWalker.AddOwnedPersistent(APersistent: TPersistent);
 var
-  CollectionNode, ItemNode: TTreeNode;
+  TVNode, ItemNode: TTreeNode;
   i: integer;
   Item: TCollectionItem;
+  ACollection: TCollection;
 begin
-  if GetLookupRootForComponent(ACollection) <> FRootComponent then Exit;
+  if GetLookupRootForComponent(APersistent) <> FRootComponent then Exit;
 
-  CollectionNode := FTreeView.Items.AddChild(FNode, FTreeView.CreateNodeCaption(ACollection));
-  CollectionNode.Data := ACollection;
-  CollectionNode.ImageIndex := FTreeView.GetImageFor(ACollection);
-  CollectionNode.SelectedIndex := CollectionNode.ImageIndex;
-  CollectionNode.MultiSelected := FTreeView.Selection.IndexOf(ACollection) >= 0;
+  TVNode := FTreeView.Items.AddChild(FNode, FTreeView.CreateNodeCaption(APersistent));
+  TVNode.Data := APersistent;
+  TVNode.ImageIndex := FTreeView.GetImageFor(APersistent);
+  TVNode.SelectedIndex := TVNode.ImageIndex;
+  TVNode.MultiSelected := FTreeView.Selection.IndexOf(APersistent) >= 0;
 
-  for i := 0 to ACollection.Count - 1 do
+  if APersistent is TCollection then
   begin
-    Item := ACollection.Items[i];
-    ItemNode := FTreeView.Items.AddChild(CollectionNode, FTreeView.CreateNodeCaption(Item));
-    ItemNode.Data := Item;
-    ItemNode.ImageIndex := FTreeView.GetImageFor(Item);
-    ItemNode.SelectedIndex := ItemNode.ImageIndex;
-    ItemNode.MultiSelected := FTreeView.Selection.IndexOf(Item) >= 0;
+    ACollection := TCollection(APersistent);
+    for i := 0 to ACollection.Count - 1 do
+    begin
+      Item := ACollection.Items[i];
+      ItemNode := FTreeView.Items.AddChild(TVNode, FTreeView.CreateNodeCaption(Item));
+      ItemNode.Data := Item;
+      ItemNode.ImageIndex := FTreeView.GetImageFor(Item);
+      ItemNode.SelectedIndex := ItemNode.ImageIndex;
+      ItemNode.MultiSelected := FTreeView.Selection.IndexOf(Item) >= 0;
+    end;
   end;
-  
+
   FNode.Expanded := True;
 end;
   

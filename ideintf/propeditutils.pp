@@ -97,7 +97,6 @@ begin
   Result := APersistent;
   if Result = nil then
     Exit;
-
   repeat
     AOwner := TPersistentAccess(Result).GetOwner;
     if AOwner <> nil then
