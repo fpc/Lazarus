@@ -203,6 +203,7 @@ type
     procedure setLinePos(const AValue: Integer);
     function  GetLineCharPos: TPoint;
     procedure SetLineCharPos(AValue: TPoint);
+    function  GetBytePosOffset: Integer;
     function  GetBytePos: Integer;
     procedure SetBytePos(const AValue: Integer);
     function  GetLineBytePos: TPoint;
@@ -243,6 +244,7 @@ type
     property CharPos: Integer read fCharPos write setCharPos;
     property LineCharPos: TPoint read GetLineCharPos write SetLineCharPos;
     property BytePos: Integer read GetBytePos write SetBytePos;
+    property BytePosOffset: Integer read GetBytePosOffset;
     property LineBytePos: TPoint read GetLineBytePos write SetLineBytePos;
     property LineText: string read GetLineText write SetLineText;
 
@@ -451,7 +453,7 @@ end;
 procedure TSynEditCaret.IncAutoMoveOnEdit;
 begin
   if FAutoMoveOnEdit =0 then
-    UpdateBytePos;;
+    UpdateBytePos;
   inc(FAutoMoveOnEdit);
 end;
 
@@ -588,6 +590,14 @@ begin
   end;
 end;
 
+function TSynEditCaret.GetBytePosOffset: Integer;
+begin
+  FLines.LogPhysConvertor.PhysicalToLogical(FLinePos-1, FCharPos, Result);
+  // TODO: the below, will interfere with auto-move caret
+  //UpdateBytePos;
+  //Result := FBytePosOffset;
+end;
+
 procedure TSynEditCaret.UpdateBytePos;
 begin
   FBytePos := FLines.LogPhysConvertor.PhysicalToLogical(FLinePos-1, FCharPos, FBytePosOffset);
@@ -694,6 +704,9 @@ end;
 function TSynEditCaret.GetLineBytePos: TPoint;
 begin
   Result := FLines.PhysicalToLogicalPos(LineCharPos);
+  // TODO: the below, will interfere with auto-move caret
+  //UpdateBytePos;
+  //Result := Point(FBytePos, FLinePos);
 end;
 
 procedure TSynEditCaret.SetLineBytePos(const AValue: TPoint);

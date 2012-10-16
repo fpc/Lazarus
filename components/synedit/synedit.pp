@@ -1871,12 +1871,12 @@ begin
   FDoubleWidthChrLinesView := SynEditStringDoubleWidthChars.Create
                                                             (FTrimmedLinesView);
 
-  {$IFDEF WithSynBiDi }
+  {$IFnDEF WithOutSynBiDi}
   FBidiChrLinesView := TSynEditStringBidiChars.Create(FDoubleWidthChrLinesView);
   {$ENDIF}
 
   // ftab, currently has LengthOfLongestLine, therefore must be after DoubleWidthChar
-  {$IFDEF WithSynBiDi }
+  {$IFnDEF WithOutSynBiDi }
   FTabbedLinesView := TSynEditStringTabExpander.Create(FBidiChrLinesView);
   {$ELSE}
   FTabbedLinesView := TSynEditStringTabExpander.Create(FDoubleWidthChrLinesView);
@@ -2343,7 +2343,7 @@ begin
   FreeAndNil(FStrings);
   FreeAndNil(FTabbedLinesView);
   FreeAndNil(FTrimmedLinesView); // has reference to caret
-  {$IFDEF WithSynBiDi }
+  {$IFnDEF WithOutSynBiDi}
   FreeAndNil(FBidiChrLinesView);
   {$ENDIF}
   FreeAndNil(FDoubleWidthChrLinesView);
@@ -6215,7 +6215,7 @@ begin
           else begin
             Temp := LineText;
             Len := Length(Temp);
-            LogCaretXY:=LogicalCaretXY;
+            LogCaretXY := FCaret.LineBytePos;
             Caret := CaretXY;
             //debugln('ecDeleteLastChar B Temp="',DbgStr(Temp),'" CaretX=',dbgs(CaretX),' LogCaretXY=',dbgs(LogCaretXY));
             if LogCaretXY.X > Len +1
@@ -6239,8 +6239,12 @@ begin
               FTheLinesView.EditDelete(CaretX, LogCaretXY.Y, 1);
               {$ELSE USE_UTF8BIDI_LCL}
               LogCounter := LogCaretXY.X;
-              LogCaretXY.X := FTheLinesView.LogicPosAddChars(Temp, LogCaretXY.X, -1);
-              LogCounter := LogCounter - LogCaretXY.X;
+              if FCaret.BytePosOffset = 0 then begin
+                LogCaretXY.X := FTheLinesView.LogicPosAddChars(Temp, LogCaretXY.X, -1);
+                LogCounter := LogCounter - LogCaretXY.X;
+              end
+              else
+                LogCounter :=  GetCharLen(Temp, LogCaretXY.X);
               FTheLinesView.EditDelete(LogCaretXY.X, LogCaretXY.Y, LogCounter);
               FCaret.BytePos := LogCaretXY.X;
               {$ENDIF USE_UTF8BIDI_LCL}

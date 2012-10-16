@@ -343,7 +343,6 @@ begin
   TestPhysLog('line with double-width/3byte', 7,  4,   4, 1);
   TestPhysLog('line with double-width/3byte', 7,  5,   7, 0);
 
-  {$IFDEF WithSynBiDi }
   //abc def ghi // 2bytes per char
 
   (*  Order in String "123" / Order on Screen "321"
@@ -409,7 +408,6 @@ begin
   TestPhysLog('bidi line (mixed arab/latin)',2,  1,      1, 0,    1, 0,    1, 0,    1, 0);
   TestPhysLog('bidi line (mixed arab/latin)',2,  4,      4, 0,   24, 0,    4, 0,   24, 0);
   TestPhysLog('bidi line (mixed arab/latin)',2, 15,      4, 0,   24, 0,   24, 0,    4, 0);
-  {$ENDIF}
 end;
 
 procedure TTestBasicSynEdit.TestCaretAutoMove;
