@@ -2681,7 +2681,13 @@ begin
 
   with EditorComponent do begin
     if EditorOpts.FindTextAtCursor then begin
-      if SelAvail and (BlockBegin.Y = BlockEnd.Y) then begin
+      if SelAvail and (BlockBegin.Y = BlockEnd.Y) and
+         (  ((ComparePoints(BlockBegin, LogicalCaretXY) <= 0) and
+             (ComparePoints(BlockEnd, LogicalCaretXY) >= 0))  or
+            ((ComparePoints(BlockBegin, LogicalCaretXY) >= 0) and
+             (ComparePoints(BlockEnd, LogicalCaretXY) <= 0))
+         )
+       then begin
         //debugln('TSourceEditor.StartFindAndReplace B FindTextAtCursor SelAvail');
         LazFindReplaceDialog.FindText := SelText
       end else begin
