@@ -5140,6 +5140,8 @@ var
   CurGrid: TOICustomPropertyGrid;
   CurRow: TOIPropertyGridRow;
   Persistent: TPersistent;
+  AtLeastOneComponent: Boolean;
+  CanBeDeleted: Boolean;
 begin
   RemoveComponentEditorMenuItems;
   ShowHintsPopupMenuItem.Checked := PropertyGrid.ShowHint;
@@ -5166,11 +5168,13 @@ begin
     if (Selection.Count = 1) and (Selection[0] is TControl) then
       AddZOrderMenuItems;
 
-    CutPopupMenuItem.Visible := (Selection.Count > 0) and (Selection[0] is TComponent);
-    CopyPopupMenuItem.Visible := (Selection.Count > 0) and (Selection[0] is TComponent);
-    PastePopupMenuItem.Visible := (Selection.Count > 0) and (Selection[0] is TComponent);
-    DeletePopupMenuItem.Visible := True;
-    OptionsSeparatorMenuItem2.Visible := True;
+    AtLeastOneComponent:=(Selection.Count > 0) and (Selection[0] is TComponent);
+    CanBeDeleted:=AtLeastOneComponent;
+    CutPopupMenuItem.Visible := CanBeDeleted;
+    CopyPopupMenuItem.Visible := AtLeastOneComponent;
+    PastePopupMenuItem.Visible := AtLeastOneComponent;
+    DeletePopupMenuItem.Visible := CanBeDeleted;
+    OptionsSeparatorMenuItem2.Visible := AtLeastOneComponent;
   end
   else
   begin
