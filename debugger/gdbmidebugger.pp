@@ -6967,7 +6967,7 @@ begin
   Result := False;
   case State of
     dsStop: begin
-      Result := StartDebugging(ectRunTo, [ASource, ALine]);
+      Result := False;
     end;
     dsPause: begin
       CancelBeforeRun;
@@ -7118,7 +7118,7 @@ begin
   Result := False;
   case State of
     dsStop: begin
-      Result := StartDebugging;
+      Result := False;
     end;
     dsPause: begin
       CancelBeforeRun;
