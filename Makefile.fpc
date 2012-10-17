@@ -250,9 +250,13 @@ endif
 #-----------------------------------------------------------------------------
 # Many "make" users expect 'make install' to copy the binaries to somewhere
 # Copy the lazarus tree to the install directory and set some links
+# Copy everything except for 'debian' and 'install' to avoid recursion and other platform files
 install:
 	$(MAKE) installbase
-	$(COPYTREE) . $(LAZARUS_INSTALL_DIR)
+	$(COPYTREE) packager debugger designer converter ide images languages lazarus.app units $(LAZARUS_INSTALL_DIR)
+	$(COPYTREE) components docs doceditor examples ideintf lcl test tools $(LAZARUS_INSTALL_DIR)
+	$(COPYTREE) Makefile* *.txt *.bat *.sh $(LAZARUS_INSTALL_DIR)
+	$(COPYTREE) lazarus startlazarus lazbuild $(LAZARUS_INSTALL_DIR)
 ifneq ($(findstring $(OS_TARGET),win32 win64),)
 
 else
