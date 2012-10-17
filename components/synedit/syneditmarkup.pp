@@ -550,12 +550,28 @@ begin
     if not TSynEditMarkup(fMarkUpList[i]).Enabled then
       continue;
     TSynEditMarkup(fMarkUpList[i]).GetNextMarkupColAfterRowCol(aRow, aStartCol, AnRtlInfo, p, l);
-    if AnRtlInfo.IsRtl then begin
-      if ((p>0) and (p > ANextPhys)) or (ANextPhys<0) then ANextPhys := p;
-    end else begin
-      if ((p>0) and (p < ANextPhys)) or (ANextPhys<0) then ANextPhys := p;
+
+    if p > 0 then begin
+      if AnRtlInfo.IsRtl then begin
+        if p >= aStartCol.Physical then begin
+          debugln(['Bad Next phys pos in GetNextMarkupColAfterRowCol ',p,' wanted < ',aStartCol.Physical, ' from ',TSynEditMarkup(fMarkUpList[i]).ClassName]);
+        end
+        else
+          if (p > ANextPhys) or (ANextPhys<0) then ANextPhys := p;
+      end else begin
+        if p <= aStartCol.Physical then begin
+          debugln(['Bad Next phys pos in GetNextMarkupColAfterRowCol ',p,' wanted > ',aStartCol.Physical, ' from ',TSynEditMarkup(fMarkUpList[i]).ClassName]);
+        end
+        else
+          if (p < ANextPhys) or (ANextPhys<0) then ANextPhys := p;
+      end;
     end;
-    if ((l>0) and (l < ANextLog)) or (ANextLog<0) then ANextLog := l;
+
+    if (l > 0) and (l <= aStartCol.Logical) then begin
+      debugln(['Bad Next logic pos in GetNextMarkupColAfterRowCol ',p,' wanted > ',aStartCol.Physical, ' from ',TSynEditMarkup(fMarkUpList[i]).ClassName]);
+    end
+    else
+      if ((l>0) and (l < ANextLog)) or (ANextLog<0) then ANextLog := l;
   end;
 end;
 
