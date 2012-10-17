@@ -1626,6 +1626,7 @@ var
       rcLine.Left := EraseLeft;
       InternalFillRect(dc, rcLine);
       rcLine.Left := DrawLeft;
+      LineBufferRtlLogPos := -1;
 
       FTokenBreaker.SetHighlighterTokensLine(TV + CurLine, CurTextIndex);
       CharWidths := FTheLinesView.GetPhysicalCharWidths(CurTextIndex);
@@ -1706,7 +1707,6 @@ begin
 
     LineBufferLen := 0;
     LineBuffer := nil;
-    LineBufferRtlLogPos := -1;
     if Assigned(fHighlighter) then begin
       fHighlighter.CurrentLines := FTheLinesView;
     end;
