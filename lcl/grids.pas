@@ -1558,8 +1558,10 @@ type
       procedure CopyToClipboard(AUseSelection: boolean = false);
       procedure LoadFromCSVStream(AStream: TStream; ADelimiter: Char=','; WithHeader: boolean=true);
       procedure LoadFromCSVFile(AFilename: string; ADelimiter: Char=','; WithHeader: boolean=true);
-      procedure SaveToCSVStream(AStream: TStream; ADelimiter: Char=','; WithHeader: boolean=true);
-      procedure SaveToCSVFile(AFileName: string; ADelimiter: Char=','; WithHeader: boolean=true);
+      procedure SaveToCSVStream(AStream: TStream; ADelimiter: Char=','; WithHeader: boolean=true;
+                                VisibleColumnsOnly: boolean=false);
+      procedure SaveToCSVFile(AFileName: string; ADelimiter: Char=','; WithHeader: boolean=true;
+                                VisibleColumnsOnly: boolean=false);
 
       property Cells[ACol, ARow: Integer]: string read GetCells write SetCells;
       property Cols[index: Integer]: TStrings read GetCols write SetCols;
@@ -10367,7 +10369,6 @@ procedure TCustomStringGrid.LoadFromCSVStream(AStream: TStream;
 var
   Lines, HeaderL: TStringList;
   i, j, StartRow: Integer;
-  S: String;
 begin
   Lines := TStringList.Create;
   HeaderL := TStringList.Create;
@@ -10432,9 +10433,10 @@ begin
   end;
 end;
 
-procedure TCustomStringGrid.SaveToCSVStream(AStream: TStream; ADelimiter: Char=','; WithHeader: boolean=true);
+procedure TCustomStringGrid.SaveToCSVStream(AStream: TStream; ADelimiter: Char;
+  WithHeader: boolean=true; VisibleColumnsOnly: boolean=false);
 var
-  i,StartRow: Integer;
+  i,j,StartRow: Integer;
   HeaderL, Lines: TStringList;
   C: TGridColumn;
 begin
@@ -10453,6 +10455,7 @@ begin
               if c=nil then
                 HeaderL.Add(Cells[i, 0])
               else
+                if c.Visible or not VisibleColumnsOnly then
                 HeaderL.Add(c.Title.Caption);
             end;
             HeaderL.Delimiter:=ADelimiter;
@@ -10471,9 +10474,30 @@ begin
     end else
       StartRow := FixedRows;
     for i:=StartRow to RowCount-1 do begin
+      if Columns.Enabled and VisibleColumnsOnly then begin
+        HeaderL := TStringList.Create;
+        try
+        for j := 1 to FixedCols do
+          HeaderL.Add('');
+        for j := 0 to ColCount-1 do begin
+          c := ColumnFromGridColumn(j);
+          if c=nil then Continue;
+          if c.Visible then
+            HeaderL.Add(Cells[j,i]);
+        end;
+        HeaderL.Delimiter:=ADelimiter;
+        HeaderL.StrictDelimiter := False; //force quoting of strings that contain whitespace or Delimiter
+        Lines.Add(HeaderL.DelimitedText); // Add the row in Lines
+        finally
+          HeaderL.Free;
+        end;
+      end
+      else
+      begin
       Rows[i].StrictDelimiter := False; //force quoting of strings that contain whitespace or Delimiter
       Rows[i].Delimiter:=ADelimiter;
       Lines.Add(Rows[i].DelimitedText);
+    end;
     end;
     Lines.SaveToStream(AStream);
   finally
@@ -10481,7 +10505,8 @@ begin
   end;
 end;
 
-procedure TCustomStringGrid.SaveToCSVFile(AFileName: string; ADelimiter: Char=','; WithHeader: boolean=true);
+procedure TCustomStringGrid.SaveToCSVFile(AFileName: string; ADelimiter: Char;
+  WithHeader: boolean=true; VisibleColumnsOnly: boolean=false);
 var
   TheStream: TFileStream;
 begin
