@@ -188,6 +188,15 @@ begin
               HP_HEADERITEMLEFT: Position := QStyleOptionHeaderBeginning;
               HP_HEADERITEMRIGHT: Position := QStyleOptionHeaderEnd;
             end;
+
+            // fix for oxygen weird drawing of header sections. issue #23143
+            if (GetStyleName = 'oxygen') and (Position = QStyleOptionHeaderMiddle) then
+            begin
+              // see if this is needed (in case of fixedRows in grids)
+              // if (ARect.Left > 0) or ((ARect.Left = 0) and (ARect.Top = 0)) then
+              Position := QStyleOptionHeaderBeginning;
+            end;
+
             QStyleOptionHeader_setPosition(QStyleOptionHeaderH(opt), Position);
             QStyleOptionHeader_setOrientation(QStyleOptionHeaderH(opt), QtHorizontal);
           end
