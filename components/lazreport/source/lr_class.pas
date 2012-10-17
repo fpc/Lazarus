@@ -2330,13 +2330,13 @@ end;
 
 procedure TfrView.BeforeChange;
 begin
-  if (frDesigner<>nil) and (fUpdate=0) then
+  if (frDesigner<>nil) and (fUpdate=0) and (DocMode=dmDesigning) then
     frDesigner.BeforeChange;
 end;
 
 procedure TfrView.AfterChange;
 begin
-  if (frDesigner<>nil) and (fUpdate=0) then
+  if (frDesigner<>nil) and (fUpdate=0) and (DocMode=dmDesigning) then
     frDesigner.AfterChange;
 end;
 
