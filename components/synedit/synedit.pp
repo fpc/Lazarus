@@ -6396,7 +6396,7 @@ begin
               {$ENDIF}
 
               //CaretX := CaretX + 1;
-              FCaret.BytePos := LogCaretXY.X + 1;
+              FCaret.BytePos := LogCaretXY.X + length(AChar);
               if CaretX >= LeftChar + CharsInWindow then
                 LeftChar := LeftChar + Min(25, CharsInWindow - 1);
             finally

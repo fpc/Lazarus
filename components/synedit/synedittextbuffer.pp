@@ -238,7 +238,7 @@ type
     function LogicPosAddChars(const ALine: String; ALogicalPos, ACount: integer; AllowPastEOL: Boolean = False): Integer; override;
     function LogicPosIsAtChar(const ALine: String; ALogicalPos: integer): Boolean; override;
     function LogicPosAdjustToChar(const ALine: String; ALogicalPos: integer;
-                                  ANext: Boolean = False): Integer; override;
+                                  ANext: Boolean = False; AllowPastEOL: Boolean = False): Integer; override;
     property UndoList: TSynEditUndoList read GetUndoList write fUndoList;
     property RedoList: TSynEditUndoList read GetRedoList write fRedoList;
     procedure EditInsert(LogX, LogY: Integer; AText: String); override;
@@ -1101,18 +1101,21 @@ begin
 end;
 
 function TSynEditStringList.LogicPosAdjustToChar(const ALine: String; ALogicalPos: integer;
-  ANext: Boolean): Integer;
+  ANext: Boolean; AllowPastEOL: Boolean): Integer;
 begin
   // UTF8 handing of chars
   Result := ALogicalPos;
   if (ALogicalPos < 1) or (ALogicalPos > length(ALine)) then exit;
 
   if ANext then begin
-    while (Result < length(ALine)) and
+    while (Result <= length(ALine)) and
       ( (not(ALine[Result] in [#0..#127, #192..#255])) or LogicPosIsCombining(ALine, Result) )
     do
       inc(Result);
   end;
+
+  if (not AllowPastEOL) and (Result > length(ALine)) then
+    Result := length(ALine);
 
   while (Result > 1) and
     ( (not(ALine[Result] in [#0..#127, #192..#255])) or LogicPosIsCombining(ALine, Result) )

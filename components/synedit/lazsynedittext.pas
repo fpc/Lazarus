@@ -286,7 +286,7 @@ type
     function LogicPosAddChars(const ALine: String; ALogicalPos, ACount: integer; AllowPastEOL: Boolean = False): Integer; virtual; abstract;
     function LogicPosIsAtChar(const ALine: String; ALogicalPos: integer): Boolean; virtual; abstract;
     function LogicPosAdjustToChar(const ALine: String; ALogicalPos: integer;
-                                  ANext: Boolean = False): Integer; virtual; abstract;
+                                  ANext: Boolean = False; AllowPastEOL: Boolean = False): Integer; virtual; abstract;
     // CharWidths
     function GetPhysicalCharWidths(Index: Integer): TPhysicalCharWidths;
     function GetPhysicalCharWidths(Line: PChar; LineLen, Index: Integer): TPhysicalCharWidths;
@@ -408,7 +408,7 @@ type
     function LogicPosAddChars(const ALine: String; ALogicalPos, ACount: integer; AllowPastEOL: Boolean = False): Integer; override;
     function LogicPosIsAtChar(const ALine: String; ALogicalPos: integer): Boolean; override;
     function LogicPosAdjustToChar(const ALine: String; ALogicalPos: integer;
-                                  ANext: Boolean = False): Integer; override;
+                                  ANext: Boolean = False; AllowPastEOL: Boolean = False): Integer; override;
     // LogX, LogY are 1-based
     procedure EditInsert(LogX, LogY: Integer; AText: String); override;
     function  EditDelete(LogX, LogY, ByteLen: Integer): String; override;
@@ -606,15 +606,13 @@ function TSynLogicalPhysicalConvertor.PhysicalToLogical(AIndex, AColumn: Integer
   AColOffset: Integer; ACharSide: TSynPhysCharSide): Integer;
 var
   BytePos, ScreenPos, ScreenPosOld: integer;
-  {$IFDEF WithSynBiDi }
   RtlPos, RtlScreen: Integer;
-  {$ENDIF}
 begin
   PrepareWidthsForLine(AIndex);
 
   ScreenPos := 1;
   BytePos := 0;
-  {$IFDEF WithSynBiDi }
+  {$IFnDEF WithOutSynBiDi }
   while BytePos < FCurrentWidthsLen do begin
     if ((FCurrentWidths[BytePos] and PCWMask) = 0) then begin
       inc(BytePos);
@@ -725,9 +723,7 @@ function TSynLogicalPhysicalConvertor.LogicalToPhysical(AIndex, ABytePos: Intege
   var AColOffset: Integer; ACharSide: TSynLogCharSide): Integer;
 var
   i: integer;
-  {$IFDEF WithSynBiDi }
   RtlLen: Integer;
-  {$ENDIF}
 begin
   {$IFDEF AssertSynMemIndex}
   if (ABytePos <= 0) then
@@ -735,7 +731,7 @@ begin
   {$ENDIF}
 
   assert(ABytePos > 0, 'What uses abytepos = 0 ?');
-  {$IFDEF WithSynBiDi }
+  {$IFnDEF WithOutSynBiDi}
   if (ABytePos = 0) or ((ABytePos = 1) and (AColOffset=0) and (ACharSide in [cslBefore, cslFollowLtr])) then
     exit(ABytePos);
   {$ELSE}
@@ -760,13 +756,11 @@ begin
   end;
 
 
-  {$IFDEF WithSynBiDi }
   RtlLen := 0;
-  {$ENDIF}
   for i := 0 to ABytePos - 1 do begin
     if ((FCurrentWidths[i] and PCWMask) = 0) then
       continue;
-    {$IFDEF WithSynBiDi }
+    {$IFnDEF WithOutSynBiDi}
     If ((FCurrentWidths[i] and PCWFlagRTL) <> 0) then
       RtlLen := RtlLen + (FCurrentWidths[i] and PCWMask)
     else begin
@@ -777,7 +771,7 @@ begin
     Result := Result + (FCurrentWidths[i] and PCWMask);
     {$ENDIF}
   end;
-  {$IFDEF WithSynBiDi }
+  {$IFnDEF WithOutSynBiDi}
 
   if (ABytePos < FCurrentWidthsLen) and
      ((FCurrentWidths[ABytePos] and PCWFlagRTL) <> 0) and // Next Char is Rtl
@@ -1284,7 +1278,7 @@ end;
 function TSynEditStringsLinked.LogicPosAddChars(const ALine: String;
   ALogicalPos, ACount: integer; AllowPastEOL: Boolean): Integer;
 begin
-  Result := fSynStrings.LogicPosAddChars(ALine, ALogicalPos, ACount);
+  Result := fSynStrings.LogicPosAddChars(ALine, ALogicalPos, ACount, AllowPastEOL);
 end;
 
 function TSynEditStringsLinked.LogicPosIsAtChar(const ALine: String;
@@ -1294,9 +1288,9 @@ begin
 end;
 
 function TSynEditStringsLinked.LogicPosAdjustToChar(const ALine: String; ALogicalPos: integer;
-  ANext: Boolean): Integer;
+  ANext: Boolean; AllowPastEOL: Boolean): Integer;
 begin
-  Result := fSynStrings.LogicPosAdjustToChar(ALine, ALogicalPos, ANext);
+  Result := fSynStrings.LogicPosAdjustToChar(ALine, ALogicalPos, ANext, AllowPastEOL);
 end;
 
 procedure TSynEditStringsLinked.IgnoreSendNotification(AReason: TSynEditNotifyReason;

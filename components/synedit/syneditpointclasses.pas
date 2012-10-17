@@ -697,7 +697,7 @@ end;
 procedure TSynEditCaret.SetBytePos(const AValue: Integer);
 begin
   CharPos :=  FLines.LogicalToPhysicalPos(Point(FLines.LogicPosAdjustToChar
-    (LineText, AValue, FAdjustToNextChar or (FForceAdjustToNextChar > 0)),
+    (LineText, AValue, FAdjustToNextChar or (FForceAdjustToNextChar > 0), True),
     LinePos)).X;
 end;
 
