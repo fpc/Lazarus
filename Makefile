@@ -2962,8 +2962,8 @@ endif
 install:
 	$(MAKE) installbase
 	$(COPYTREE) packager debugger designer converter ide images languages lazarus.app units $(LAZARUS_INSTALL_DIR)
-	$(COPYTREE) components docs doceditor examples ideintf lcl test tools $(LAZARUS_INSTALL_DIR)
-	$(COPYTREE) Makefile* *.txt *.bat $(LAZARUS_INSTALL_DIR)
+	$(COPYTREE) components docs doceditor examples ideintf lcl test install tools $(LAZARUS_INSTALL_DIR)
+	$(COPYTREE) Makefile* *.txt *.bat *.sh $(LAZARUS_INSTALL_DIR)
 	$(COPYTREE) lazarus startlazarus lazbuild $(LAZARUS_INSTALL_DIR)
 ifneq ($(findstring $(OS_TARGET),win32 win64),)
 else
