@@ -316,9 +316,7 @@ begin
   if (FNextMarkupPhysPos < 0) or
      (FCurMarkupNextRtlInfo.IsRtl       and (FNextMarkupPhysPos >= FCurMarkupNextStart.Physical)) or
      ((not FCurMarkupNextRtlInfo.IsRtl) and (FNextMarkupPhysPos <= FCurMarkupNextStart.Physical)) or
-     (FNextMarkupLogPos < 0) or
-     (FCurMarkupNextRtlInfo.IsRtl       and (FNextMarkupLogPos >= FCurMarkupNextStart.Logical)) or
-     ((not FCurMarkupNextRtlInfo.IsRtl) and (FNextMarkupLogPos <= FCurMarkupNextStart.Logical))
+     (FNextMarkupLogPos < 0) or (FNextMarkupLogPos <= FCurMarkupNextStart.Logical)
   then begin
     FMarkupManager.GetNextMarkupColAfterRowCol(FCurTxtLineIdx+1,
       FCurMarkupNextStart, FCurMarkupNextRtlInfo, FNextMarkupPhysPos, FNextMarkupLogPos);
