@@ -1484,6 +1484,7 @@ var
     else
     If NeedTransform then begin
       LineBufferRtlLogPos := ATokenInfo.RtlInfo.LogFirst;
+      pt := ATokenInfo.Tk.TokenStart;
       // prepare LineBuffer
       if NeedExpansion then begin
         if (LineBufferLen < Len + ATokenInfo.ExpandedExtraBytes + 1) then begin
@@ -1491,7 +1492,6 @@ var
           ReAllocMem(LineBuffer, LineBufferLen);
         end;
         pl := LineBuffer;
-        pt := ATokenInfo.Tk.TokenStart;
       end;
 
       // Prepare FETOBuf
@@ -1511,13 +1511,15 @@ var
           if j < CWLen
           then k := (CharWidths[j] and PCWMask)
           else k := 1;
-          if (k <> 0) and (FetoBuf <> nil) then begin
+          // combining chars will get 0 widths
+          if (pt^ in [#0..#127, #192..#255]) and (FetoBuf <> nil) then begin
             FEtoBuf.EtoData[e] := k * c;
             inc(e);
           end;
 
           case pt^ of
             #9: begin
+                dec(e);
                 if (vscTabAtFirst in FVisibleSpecialChars) and (j < CWLen) then begin
                   pl^ := #194; inc(pl);
                   pl^ := #187; inc(pl);
@@ -1534,6 +1536,8 @@ var
                 if (vscTabAtLast in FVisibleSpecialChars) and ((pl-1)^=' ') and (j < CWLen) then begin
                   (pl-1)^ := #194;
                   pl^ := #187; inc(pl);
+                  if FetoBuf <> nil then FEtoBuf.EtoData[e] := c;
+                  inc(e);
                 end;
               end;
             ' ': begin
@@ -1566,13 +1570,15 @@ var
       // FETOBuf only
       begin
         for j := ATokenInfo.StartPos.Logical - 1 to ATokenInfo.StartPos.Logical - 1 + Len do begin
-          if j < CWLen
-          then k := (CharWidths[j] and PCWMask)
-          else k := 1;
-          if k <> 0 then begin
+          if pt^ in [#0..#127, #192..#255] then begin
+            // combining chars will get 0 widths
+            if j < CWLen
+            then k := (CharWidths[j] and PCWMask)
+            else k := 1;
             FEtoBuf.EtoData[e] := k * c;
             inc(e);
           end;
+          inc(pt);
         end;
       end;
     end;
