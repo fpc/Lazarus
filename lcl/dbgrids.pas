@@ -540,6 +540,7 @@ type
     property Font;
     property HeaderHotZones;
     property HeaderPushZones;
+    property InplaceEditor;
     //property ImeMode;
     //property ImeName;
     property Options;

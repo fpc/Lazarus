@@ -217,6 +217,7 @@ type
   public
     constructor Create(Aowner : TComponent); override;
     procedure EditingDone; override;
+    property EditText;
     property OnEditingDone;
   end;
 
@@ -1401,6 +1402,7 @@ type
     property GridLineWidth;
     property HeaderHotZones;
     property HeaderPushZones;
+    property InplaceEditor;
     property MouseWheelOption;
     property Options;
     //property ParentBiDiMode;
@@ -1609,6 +1611,7 @@ type
     property GridLineWidth;
     property HeaderHotZones;
     property HeaderPushZones;
+    property InplaceEditor;
     property MouseWheelOption;
     property Options;
     property ParentBiDiMode;
