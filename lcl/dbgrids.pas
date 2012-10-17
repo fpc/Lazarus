@@ -3947,8 +3947,6 @@ type
   end;
 
 function MyCompareBookmarks(ds:Tdataset; b1,b2:pointer): Integer;
-var
-  i: Integer;
 begin
   if b1=b2 then
     result := 0
