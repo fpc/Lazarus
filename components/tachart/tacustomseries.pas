@@ -241,13 +241,14 @@ type
     FUseReticule: Boolean;
 
   strict protected
+    procedure DrawLabels(ADrawer: IChartDrawer);
+    function GetLabelDataPoint(AIndex: Integer): TDoublePoint; virtual;
     procedure UpdateGraphPoints(AIndex: Integer); overload; inline;
     procedure UpdateGraphPoints(AIndex, ALo, AUp: Integer); overload;
   protected
     procedure AfterAdd; override;
     procedure AfterDrawPointer(
       ADrawer: IChartDrawer; AIndex: Integer; const APos: TPoint); virtual;
-    procedure DrawLabels(ADrawer: IChartDrawer);
     procedure DrawPointers(ADrawer: IChartDrawer);
     procedure GetLegendItemsRect(AItems: TChartLegendItems; ABrush: TBrush);
     function GetXRange(AX: Double; AIndex: Integer): Double;
@@ -943,7 +944,7 @@ var
 begin
   if not Marks.IsMarkLabelsVisible then exit;
   for i := 0 to Count - 1 do begin
-    g := GetGraphPoint(i);
+    g := GetLabelDataPoint(i);
     ld := GetLabelDirection(i);
     for si := 0 to Source.YCount - 1 do begin
       if si > 0 then
@@ -976,6 +977,11 @@ begin
     Pointer.Draw(ADrawer, ai, Source[i]^.Color);
     AfterDrawPointer(ADrawer, i, ai);
   end;
+end;
+
+function TBasicPointSeries.GetLabelDataPoint(AIndex: Integer): TDoublePoint;
+begin
+  Result := GetGraphPoint(AIndex);
 end;
 
 function TBasicPointSeries.GetLabelDirection(AIndex: Integer): TLabelDirection;
