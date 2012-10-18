@@ -108,6 +108,7 @@ type
     FHelper: TAxisDrawHelper;
     FInverted: Boolean;
     FMargin: TChartDistance;
+    FMarginsForMarks: Boolean;
     FMinors: TChartMinorAxisList;
     FOnMarkToText: TChartAxisMarkToTextEvent;
     FRange: TChartRange;
@@ -120,6 +121,7 @@ type
     procedure SetGroup(AValue: Integer);
     procedure SetInverted(AValue: Boolean);
     procedure SetMargin(AValue: TChartDistance);
+    procedure SetMarginsForMarks(AValue: Boolean);
     procedure SetMarks(AValue: TChartAxisMarks);
     procedure SetMinors(AValue: TChartMinorAxisList);
     procedure SetOnMarkToText(AValue: TChartAxisMarkToTextEvent);
@@ -158,6 +160,8 @@ type
     // Inverts the axis scale from increasing to decreasing.
     property Inverted: boolean read FInverted write SetInverted default false;
     property Margin: TChartDistance read FMargin write SetMargin default 0;
+    property MarginsForMarks: Boolean
+      read FMarginsForMarks write SetMarginsForMarks default true;
     property Marks: TChartAxisMarks read GetMarks write SetMarks;
     property Minors: TChartMinorAxisList read FMinors write SetMinors;
     property Range: TChartRange read FRange write SetRange;
@@ -404,6 +408,7 @@ begin
       Self.FTitle.Assign(Title);
       Self.FTransformations := Transformations;
       Self.FZPosition := ZPosition;
+      Self.FMarginsForMarks := MarginsForMarks;
 
       Self.FOnMarkToText := OnMarkToText;
     end;
@@ -421,6 +426,7 @@ begin
   FRange := TChartRange.Create(ACollection.Owner as TCustomChart);
   TickLength := DEF_TICK_LENGTH;
   FTitle := TChartAxisTitle.Create(ACollection.Owner as TCustomChart);
+  FMarginsForMarks := true;
 end;
 
 destructor TChartAxis.Destroy;
@@ -625,6 +631,7 @@ var
   var
     sz, fm, lm: Integer;
   begin
+    if not MarginsForMarks or not Marks.Visible then exit;
     // Workaround for issue #19780, fix after upgrade to FPC 2.6.
     with Marks.MeasureLabel(d, FMarkValues[AIndex].FText) do
       sz := IfThen(v, cy, cx) div 2;
@@ -745,6 +752,13 @@ procedure TChartAxis.SetMargin(AValue: TChartDistance);
 begin
   if FMargin = AValue then exit;
   FMargin := AValue;
+  StyleChanged(Self);
+end;
+
+procedure TChartAxis.SetMarginsForMarks(AValue: Boolean);
+begin
+  if FMarginsForMarks = AValue then exit;
+  FMarginsForMarks := AValue;
   StyleChanged(Self);
 end;
 
