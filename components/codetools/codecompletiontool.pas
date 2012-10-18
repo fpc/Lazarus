@@ -7175,6 +7175,7 @@ var
     SectionKeyWord: String;
     ANode: TCodeTreeNode;
     FirstVisibilitySection: TCodeTreeNode;
+    NewCode: String;
   begin
     NewClassSectionInsertPos[Visibility]:=-1;
     NewClassSectionIndent[Visibility]:=0;
@@ -7256,11 +7257,11 @@ var
       NewClassSectionInsertPos[Visibility]:=ANode.EndPos;
     end;
     SectionKeyWord:=PascalClassSectionKeywords[Visibility];
+    NewCode:=ASourceChangeCache.BeautifyCodeOptions.BeautifyKeyWord(SectionKeyWord);
     ASourceChangeCache.Replace(gtNewLine,gtNewLine,
       NewClassSectionInsertPos[Visibility],
       NewClassSectionInsertPos[Visibility],
-      GetIndentStr(NewClassSectionIndent[Visibility])+
-        ASourceChangeCache.BeautifyCodeOptions.BeautifyKeyWord(SectionKeyWord));
+      GetIndentStr(NewClassSectionIndent[Visibility])+NewCode);
   end;
 
 begin
