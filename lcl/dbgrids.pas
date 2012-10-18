@@ -431,6 +431,7 @@ type
                   out HsbRange,VsbRange,HsbPage,VsbPage,HsbPos,VsbPos:Integer); override;
     procedure HeaderClick(IsColumn: Boolean; index: Integer); override;
     procedure HeaderSized(IsColumn: Boolean; Index: Integer); override;
+    function  IsColumnVisible(aCol: Integer): boolean;
     function  IsValidChar(AField: TField; AChar: TUTF8Char): boolean;
     procedure KeyDown(var Key : Word; Shift : TShiftState); override;
     procedure LinkActive(Value: Boolean); virtual;
@@ -490,6 +491,7 @@ type
     function  EditorByStyle(Style: TColumnButtonStyle): TWinControl; override;
     procedure ResetColWidths;
     destructor Destroy; override;
+    property AllowOutboundEvents;
     property SelectedField: TField read GetCurrentField write SetCurrentField;
     property SelectedIndex: Integer read GetSelectedIndex write SetSelectedIndex;
     property SelectedColumn: TColumn read GetCurrentColumn;
@@ -2317,6 +2319,8 @@ begin
   Gz:=MouseToGridZone(X,Y);
   CacheMouseDown(X,Y);
   case Gz of
+    gzInvalid:;
+
     gzFixedCells, gzFixedCols:
       doInherited;
     else
@@ -2495,7 +2499,8 @@ begin
 
   if (aCol>=FirstGridColumn)and(aRow>=FixedRows) then
   begin
-    if ColumnEditorStyle(ACol, SelectedField) = cbsCheckboxColumn then begin
+    if IsColumnVisible(aCol) and
+       (ColumnEditorStyle(ACol, SelectedField) = cbsCheckboxColumn) then begin
       // react only if overriden editor is hidden
       if (Editor=nil) or not EditorMode then
   	    SwapCheckBox
@@ -2999,6 +3004,17 @@ begin
     if Assigned(OnColumnSized) then
       OnColumnSized(Self);
   end;
+end;
+
+function TCustomDBGrid.IsColumnVisible(aCol: Integer): boolean;
+var
+  gridcol: TGridColumn;
+begin
+  if Columns.Enabled then begin
+    gridcol := ColumnFromGridColumn(aCol);
+    result := (gridcol<>nil) and gridCol.Visible;
+  end else
+    result := (aCol>=FirstGridColumn) and (ColWidths[aCol]>0);
 end;
 
 function TCustomDBGrid.IsValidChar(AField: TField; AChar: TUTF8Char): boolean;
