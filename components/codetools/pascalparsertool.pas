@@ -3997,6 +3997,12 @@ begin
         ClassNode.SubDesc:=ClassNode.SubDesc or ctnsForwardDeclaration;
       end else begin
         // very short class found e.g. = class(TAncestor);
+        CreateChildNode;
+        if ClassDesc in [ctnClass,ctnObjCClass] then
+          CurNode.Desc:=ctnClassPublished
+        else
+          CurNode.Desc:=ctnClassPublic;
+        EndChildNode;
       end;
     end;
   end else begin
