@@ -1777,10 +1777,13 @@ begin
 end;
 
 function TCustomDBGrid.ColumnEditorStyle(aCol: Integer; F: TField): TColumnButtonStyle;
+var
+  gridcol: TGridColumn;
 begin
   result := cbsAuto;
-  if Columns.Enabled then
-    result := ColumnFromGridColumn(aCol).ButtonStyle;
+  gridcol := ColumnFromGridColumn(aCol);
+  if Columns.Enabled and assigned(gridcol) then
+    result := gridcol.ButtonStyle;
 
   result := DefaultEditorStyle(result, F);
 end;
