@@ -64,6 +64,7 @@ type
     function  CreatePartList: TSynGutterPartListBase; virtual; abstract;
     function  CreateMouseActions: TSynEditMouseInternalActions; virtual;
     procedure Clear;
+    function GetOwner: TPersistent; override;
   public
     constructor Create(AOwner : TSynEditBase; ASide: TSynGutterSide; ATextDrawer: TheTextDrawer);
     destructor Destroy; override;
@@ -524,6 +525,11 @@ begin
   for i := FGutterPartList.Count - 1 downto 0 do
     FGutterPartList[i].Free;
   FGutterPartList.Clear;
+end;
+
+function TSynGutterBase.GetOwner: TPersistent;
+begin
+  Result := FSynEdit;
 end;
 
 { TSynGutterPartBase }
