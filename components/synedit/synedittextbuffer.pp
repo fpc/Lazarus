@@ -193,7 +193,7 @@ type
     procedure UndoEditLinesDelete(LogY, ACount: Integer);
     procedure IncreaseTextChangeStamp;
     procedure DoGetPhysicalCharWidths(Line: PChar; LineLen, Index: Integer; PWidths: PPhysicalCharWidth); override;
-    function  LogicPosIsCombining(const ALine: String; ALogicalPos: integer): Boolean; inline;
+    function  LogicPosIsCombining(const AChar: PChar): Boolean; inline;
 
     function GetDisplayView: TLazSynDisplayView; override;
   public
@@ -828,30 +828,37 @@ begin
 
   for i := 0 to LineLen-1 do begin
     case Line^ of
+      #$00..#$7F:
+        PWidths^ := 1;
       #$80..#$BF:
         PWidths^ := 0;
-      #$CC:
-        if ((Line+1)^ in [#$80..#$FF]) and (i>0)
-        then PWidths^ := 0  // Combining Diacritical Marks (belongs to previos char) 0300-036F
-        else PWidths^ := 1;
-      #$CD:
-        if ((Line+1)^ in [#$00..#$AF]) and (i>0)
-        then PWidths^ := 0  // Combining Diacritical Marks
-        else PWidths^ := 1;
-      #$E1:
-        if (((Line+1)^ = #$B7) and ((Line+2)^ in [#$80..#$BF])) and (i>0)
-        then PWidths^ := 0  // Combining Diacritical Marks Supplement 1DC0-1DFF
-        else PWidths^ := 1;
-      #$E2:
-        if (((Line+1)^ = #$83) and ((Line+2)^ in [#$90..#$FF])) and (i>0)
-        then PWidths^ := 0  // Combining Diacritical Marks for Symbols 20D0-20FF
-        else PWidths^ := 1;
-      #$EF:
-        if (((Line+1)^ = #$B8) and ((Line+2)^ in [#$A0..#$AF])) and (i>0)
-        then PWidths^ := 0  // Combining half Marks FE20-FE2F
-        else PWidths^ := 1;
       else
-        PWidths^ := 1;
+        if LogicPosIsCombining(Line) then
+          PWidths^ := 0
+        else
+          PWidths^ := 1;
+      //#$CC:
+      //  if ((Line+1)^ in [#$80..#$FF]) and (i>0)
+      //  then PWidths^ := 0  // Combining Diacritical Marks (belongs to previos char) 0300-036F
+      //  else PWidths^ := 1;
+      //#$CD:
+      //  if ((Line+1)^ in [#$00..#$AF]) and (i>0)
+      //  then PWidths^ := 0  // Combining Diacritical Marks
+      //  else PWidths^ := 1;
+      //#$E1:
+      //  if (((Line+1)^ = #$B7) and ((Line+2)^ in [#$80..#$BF])) and (i>0)
+      //  then PWidths^ := 0  // Combining Diacritical Marks Supplement 1DC0-1DFF
+      //  else PWidths^ := 1;
+      //#$E2:
+      //  if (((Line+1)^ = #$83) and ((Line+2)^ in [#$90..#$FF])) and (i>0)
+      //  then PWidths^ := 0  // Combining Diacritical Marks for Symbols 20D0-20FF
+      //  else PWidths^ := 1;
+      //#$EF:
+      //  if (((Line+1)^ = #$B8) and ((Line+2)^ in [#$A0..#$AF])) and (i>0)
+      //  then PWidths^ := 0  // Combining half Marks FE20-FE2F
+      //  else PWidths^ := 1;
+      //else
+      //  PWidths^ := 1;
     end;
     inc(PWidths);
     inc(Line);
@@ -859,18 +866,17 @@ begin
 
 end;
 
-function TSynEditStringList.LogicPosIsCombining(const ALine: String;
-  ALogicalPos: integer): Boolean;
+function TSynEditStringList.LogicPosIsCombining(const AChar: PChar): Boolean;
 begin
-  Result := (ALogicalPos > 1) and (
-     ( (ALine[ALogicalPos] = #$CC) {and (ALine[ALogicalPos+1] in [#$80..#$FF])} ) or  // Combining Diacritical Marks (belongs to previos char) 0300-036F
-     ( (ALine[ALogicalPos] = #$CD) and (ALine[ALogicalPos+1] in [#$80..#$AF]) ) or  // Combining Diacritical Marks
-     ( (ALine[ALogicalPos] = #$E1) and (ALine[ALogicalPos+1] = #$B7) ) or           // Combining Diacritical Marks Supplement 1DC0-1DFF
-                                    // (ALine[ALogicalPos+2] in [#$80..#$BF])
-     ( (ALine[ALogicalPos] = #$E2) and (ALine[ALogicalPos+1] = #$83) and
-       (ALine[ALogicalPos+2] in [#$90..#$FF]) ) or                                  // Combining Diacritical Marks for Symbols 20D0-20FF
-     ( (ALine[ALogicalPos] = #$EF) and (ALine[ALogicalPos+1] = #$B8) and
-       (ALine[ALogicalPos+2] in [#$A0..#$AF]) )                                     // Combining half Marks FE20-FE2F
+  Result := (
+     ( (AChar[0] = #$CC) {and (AChar[1] in [#$80..#$FF])} ) or  // Combining Diacritical Marks (belongs to previos char) 0300-036F
+     ( (AChar[0] = #$CD) and (AChar[1] in [#$80..#$AF]) ) or  // Combining Diacritical Marks
+     ( (AChar[0] = #$E1) and (AChar[1] = #$B7) ) or           // Combining Diacritical Marks Supplement 1DC0-1DFF
+                                    // (AChar[0+2] in [#$80..#$BF])
+     ( (AChar[0] = #$E2) and (AChar[1] = #$83) and
+       (AChar[2] in [#$90..#$FF]) ) or                                  // Combining Diacritical Marks for Symbols 20D0-20FF
+     ( (AChar[0] = #$EF) and (AChar[1] = #$B8) and
+       (AChar[2] in [#$A0..#$AF]) )                                     // Combining half Marks FE20-FE2F
   );
 end;
 
@@ -1066,7 +1072,7 @@ begin
   if ACount > 0 then begin;
     while (Result < l) and (ACount > 0) do begin
       inc(Result);
-      if (ALine[Result] in [#0..#127, #192..#255]) and (not LogicPosIsCombining(ALine, Result)) then
+      if (ALine[Result] in [#0..#127, #192..#255]) and (not LogicPosIsCombining(@ALine[Result])) then
         dec(ACount);
     end;
     if AllowPastEOL then
@@ -1074,14 +1080,14 @@ begin
 
     if (Result <= l) then
       while (Result > 1) and
-            ( (not(ALine[Result] in [#0..#127, #192..#255])) or LogicPosIsCombining(ALine, Result) )
+            ( (not(ALine[Result] in [#0..#127, #192..#255])) or LogicPosIsCombining(@ALine[Result]) )
       do
         dec(Result);
   end else begin
     while (Result > 1) and (ACount < 0) do begin
       dec(Result);
-      if (Result > l) or
-         ( (ALine[Result] in [#0..#127, #192..#255]) and (not LogicPosIsCombining(ALine, Result)) )
+      if (Result > l) or (Result = 1) or
+         ( (ALine[Result] in [#0..#127, #192..#255]) and (not LogicPosIsCombining(@ALine[Result])) )
       then
         inc(ACount);
     end;
@@ -1097,7 +1103,7 @@ begin
   Result := ALine[ALogicalPos] in [#0..#127, #192..#255];
 
   if Result then
-    Result := not LogicPosIsCombining(ALine, ALogicalPos);
+    Result := (ALogicalPos = 1) or (not LogicPosIsCombining(@ALine[ALogicalPos]));
 end;
 
 function TSynEditStringList.LogicPosAdjustToChar(const ALine: String; ALogicalPos: integer;
@@ -1109,7 +1115,8 @@ begin
 
   if ANext then begin
     while (Result <= length(ALine)) and
-      ( (not(ALine[Result] in [#0..#127, #192..#255])) or LogicPosIsCombining(ALine, Result) )
+      ( (not(ALine[Result] in [#0..#127, #192..#255])) or
+        ((Result <> 1) and LogicPosIsCombining(@ALine[Result])) )
     do
       inc(Result);
   end;
@@ -1118,7 +1125,7 @@ begin
     Result := length(ALine);
 
   while (Result > 1) and
-    ( (not(ALine[Result] in [#0..#127, #192..#255])) or LogicPosIsCombining(ALine, Result) )
+    ( (not(ALine[Result] in [#0..#127, #192..#255])) or LogicPosIsCombining(@ALine[Result]) )
   do
     dec(Result);
 end;
