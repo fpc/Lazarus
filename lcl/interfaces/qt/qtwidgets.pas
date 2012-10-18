@@ -2662,7 +2662,7 @@ var
 begin
   Result := False;
   if not CanSendLCLMessage then
-    Exit;
+    Exit(True);
 
   if (QApplication_mouseButtons() = 0) and
      not QWidget_hasMouseTracking(QWidgetH(Sender)) then // in other case MouseMove will be hooked
@@ -2683,6 +2683,8 @@ begin
         end;
     end;
     NotifyApplicationUserInput(LCLObject, Msg.Msg);
+    if not CanSendLCLMessage then
+      exit(True);
     DeliverMessage(Msg);
     SetNoMousePropagation(QWidgetH(Sender), True);
   end;
@@ -3490,7 +3492,15 @@ begin
   Msg.Msg := LM_MOUSEMOVE;
 
   NotifyApplicationUserInput(LCLObject, Msg.Msg);
+
+  if not CanSendLCLMessage then
+    exit(True);
+
   DeliverMessage(Msg, True);
+
+  if not CanSendLCLMessage then
+    exit(True);
+
   SetNoMousePropagation(SenderWidget, True);
 end;
 
@@ -3569,7 +3579,14 @@ begin
   {$ENDIF}
 
   NotifyApplicationUserInput(LCLObject, Msg.Msg);
+
+  if not CanSendLCLMessage then
+    exit(True);
+
   Result := DeliverMessage(Msg, True) <> 0;
+
+  if not CanSendLCLMessage then
+    exit(True);
 
   SetNoMousePropagation(QWidgetH(Sender), False);
 
