@@ -986,10 +986,10 @@ var
   isNeg: Boolean;
 begin
   case MarkPositions of
-    lmpOutside: isNeg := GetGraphPointY(AIndex) < GetZeroLevel;
+    lmpOutside: isNeg := Source[AIndex]^.Y < GetZeroLevel;
     lmpPositive: isNeg := false;
     lmpNegative: isNeg := true;
-    lmpInside: isNeg := GetGraphPointY(AIndex) >= GetZeroLevel;
+    lmpInside: isNeg := Source[AIndex]^.Y >= GetZeroLevel;
   end;
   Result := DIR[IsRotated, isNeg];
 end;
