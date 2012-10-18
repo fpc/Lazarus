@@ -76,6 +76,9 @@ type
     procedure SetParentComponent(AParent: TComponent); override;
 
   strict protected
+    // Set series bounds in axis coordinates.
+    // Some or all bounds may be left unset, in which case they will be ignored.
+    procedure GetBounds(var ABounds: TDoubleRect); virtual; abstract;
     function GetIndex: Integer; override;
     function LegendTextSingle: String;
     procedure SetIndex(AValue: Integer); override;
@@ -232,13 +235,14 @@ type
     FUseReticule: Boolean;
 
   strict protected
+    procedure DrawLabels(ADrawer: IChartDrawer);
+    function GetLabelDataPoint(AIndex: Integer): TDoublePoint; virtual;
     procedure UpdateGraphPoints(AIndex: Integer); overload; inline;
     procedure UpdateGraphPoints(AIndex, ALo, AUp: Integer); overload;
   protected
     procedure AfterAdd; override;
     procedure AfterDrawPointer(
       ADrawer: IChartDrawer; AIndex: Integer; const APos: TPoint); virtual;
-    procedure DrawLabels(ADrawer: IChartDrawer);
     procedure DrawPointers(ADrawer: IChartDrawer);
     procedure GetLegendItemsRect(AItems: TChartLegendItems; ABrush: TBrush);
     function GetXRange(AX: Double; AIndex: Integer): Double;
@@ -666,9 +670,14 @@ begin
 end;
 
 procedure TChartSeries.GetBounds(var ABounds: TDoubleRect);
+var
+  i: Integer;
 begin
   if not Active or (Count = 0) then exit;
-  ABounds := Extent;
+  with Extent do
+    for i := Low(coords) to High(coords) do
+      if not IsInfinite(coords[i]) then
+        ABounds.coords[i] := coords[i];
 end;
 
 function TChartSeries.GetColor(AIndex: Integer): TColor;
@@ -906,7 +915,7 @@ var
 begin
   if not Marks.IsMarkLabelsVisible then exit;
   for i := 0 to Count - 1 do begin
-    g := GetGraphPoint(i);
+    g := GetLabelDataPoint(i);
     ld := GetLabelDirection(i);
     for si := 0 to Source.YCount - 1 do begin
       if si > 0 then
@@ -941,6 +950,11 @@ begin
   end;
 end;
 
+function TBasicPointSeries.GetLabelDataPoint(AIndex: Integer): TDoublePoint;
+begin
+  Result := GetGraphPoint(AIndex);
+end;
+
 function TBasicPointSeries.GetLabelDirection(AIndex: Integer): TLabelDirection;
 const
   DIR: array [Boolean, Boolean] of TLabelDirection =
@@ -949,10 +963,10 @@ var
   isNeg: Boolean;
 begin
   case MarkPositions of
-    lmpOutside: isNeg := GetGraphPointY(AIndex) < GetZeroLevel;
+    lmpOutside: isNeg := Source[AIndex]^.Y < GetZeroLevel;
     lmpPositive: isNeg := false;
     lmpNegative: isNeg := true;
-    lmpInside: isNeg := GetGraphPointY(AIndex) >= GetZeroLevel;
+    lmpInside: isNeg := Source[AIndex]^.Y >= GetZeroLevel;
   end;
   Result := DIR[IsRotated, isNeg];
 end;

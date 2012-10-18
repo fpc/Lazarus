@@ -70,6 +70,8 @@ type
     procedure SetOnBeforeDrawBar(AValue: TBeforeDrawBarEvent);
     procedure SetSeriesColor(AValue: TColor);
     procedure SetZeroLevel(AValue: Double);
+  strict protected
+    function GetLabelDataPoint(AIndex: Integer): TDoublePoint; override;
   protected
     procedure GetLegendItems(AItems: TChartLegendItems); override;
     function GetSeriesColor: TColor; override;
@@ -939,6 +941,15 @@ begin
     BarOffsetWidth(x, i, ofs, w);
     Result.b.X := Max(Result.b.X, x + ofs + w);
   end;
+end;
+
+function TBarSeries.GetLabelDataPoint(AIndex: Integer): TDoublePoint;
+var
+  ofs, w: Double;
+begin
+  Result := inherited GetLabelDataPoint(AIndex);
+  BarOffsetWidth(TDoublePointBoolArr(Result)[IsRotated], AIndex, ofs, w);
+  TDoublePointBoolArr(Result)[IsRotated] += ofs;
 end;
 
 procedure TBarSeries.GetLegendItems(AItems: TChartLegendItems);

@@ -52,9 +52,6 @@ type
     procedure AfterAdd; virtual; abstract;
     procedure AfterDraw; virtual;
     procedure BeforeDraw; virtual;
-    // Set series bounds in axis coordinates.
-    // Some or all bounds may be left unset, in which case they will be ignored.
-    procedure GetBounds(var ABounds: TDoubleRect); virtual; abstract;
     procedure GetGraphBounds(var ABounds: TDoubleRect); virtual; abstract;
     procedure GetLegendItemsBasic(AItems: TChartLegendItems); virtual; abstract;
     function GetShowInLegend: Boolean; virtual; abstract;
@@ -187,6 +184,7 @@ type
     FTitle: TChartTitle;
     FToolset: TBasicChartToolset;
 
+    function ClipRectWithoutFrame(AZPosition: TChartDistance): TRect;
   private
     FActiveToolIndex: Integer;
     FBroadcaster: TBroadcaster;
@@ -527,6 +525,16 @@ begin
   StyleChanged(Self);
 end;
 
+function TChart.ClipRectWithoutFrame(AZPosition: TChartDistance): TRect;
+begin
+  Result := FClipRect;
+  if (AZPosition > 0) or not Frame.Visible or (Frame.Style = psClear) then exit;
+  Result.Left += (Frame.Width + 1) div 2;
+  Result.Top += (Frame.Width + 1) div 2;
+  Result.Bottom -= Frame.Width div 2;
+  Result.Right -= Frame.Width div 2;
+end;
+
 function TChart.Clone: TChart;
 var
   ms: TMemoryStream;
@@ -685,7 +693,7 @@ begin
           if AxisVisible then
             AxisList.Draw(ZPosition, axisIndex);
           OffsetDrawArea(Min(ZPosition, d), Min(Depth, d));
-          ADrawer.ClippingStart(FClipRect);
+          ADrawer.ClippingStart(ClipRectWithoutFrame(ZPosition));
           try
             try
               Draw(ADrawer);

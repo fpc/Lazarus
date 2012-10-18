@@ -461,8 +461,21 @@ end;
 procedure TChartLegend.Assign(Source: TPersistent);
 begin
   if Source is TChartLegend then
-    with TChartLegend(Source) do
-      Self.FAlignment := FAlignment;
+    with TChartLegend(Source) do begin
+      Self.FAlignment := Alignment;
+      Self.FBackgroundBrush.Assign(BackgroundBrush);
+      Self.FColumnCount := ColumnCount;
+      Self.FFont.Assign(Font);
+      Self.FFrame.Assign(Frame);
+      Self.FGroupFont.Assign(GroupFont);
+      Self.FGroupTitles.Assign(GroupTitles);
+      Self.FMarginX := MarginX;
+      Self.FMarginY := MarginY;
+      Self.FSpacing := Spacing;
+      Self.FSymbolFrame.Assign(SymbolFrame);
+      Self.FSymbolWidth := SymbolWidth;
+      Self.FUseSidebar := UseSidebar;
+    end;
 
   inherited Assign(Source);
 end;

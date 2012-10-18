@@ -248,7 +248,7 @@ function LineIntersectsRect(
     dx: Double;
   begin
     dx := AB.X - AA.X;
-    if not IsInfinite(dx) then
+    if not IsInfinite(dx) and not IsInfinite(AP.Y) then
       AP.Y += (AB.Y - AA.Y) / dx * (ANewX - AP.X);
     AP.X := ANewX;
   end;
@@ -258,7 +258,7 @@ function LineIntersectsRect(
     dy: Double;
   begin
     dy := AB.Y - AA.Y;
-    if not IsInfinite(dy) then
+    if not IsInfinite(dy) and not IsInfinite(AP.X) then
       AP.X += (AB.X - AA.X) / dy * (ANewY - AP.Y);
     AP.Y := ANewY;
   end;
