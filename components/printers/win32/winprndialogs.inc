@@ -44,7 +44,11 @@ var
   DevMode    : PDeviceMode;
   DeviceMode : THandle;
   DevNames   : PDevNames;
+  {$IFDEF USEUNICODE}
+  St         : PWidechar;
+  {$ELSE}
   St         : PChar;
+  {$ENDIF}
 begin
   Result := False;
   if not Assigned(Printer) then Exit;
@@ -70,15 +74,24 @@ begin
           GlobalUnlock(DeviceMode);
         end;
         hDevMode := DeviceMode;
+        {$IFDEF USEUNICODE}
+        if PageSetupDlgW(@Lpp) then
+        {$ELSE}
         if PageSetupDlg(@Lpp) then
+        {$ENDIF}
         begin
           St := '';
           if Lpp.HdevNames <> 0 then
           begin
             DevNames := PDevNames(GlobalLock(lpp.hDevNames));
             try
+              {$IFDEF USEUNICODE}
+              St := PWidechar(DEVNames) + DevNames^.wDeviceOffset;
+              Printer.SetPrinter(UTF8Encode(widestring(st)));
+              {$ELSE}
               St := PChar(DevNames) + DevNames^.wDeviceOffset;
               Printer.SetPrinter(St);
+              {$ENDIF}
             finally
               GlobalUnlock(lpp.hDevNames);
               GlobalFree(lpp.hDevNames);
@@ -121,7 +134,11 @@ var
   DevMode    : PDeviceMode;
   DeviceMode : THandle;
   DevNames   : PDevNames;
+  {$IFDEF USEUNICODE}
+  St         : PWidechar;
+  {$ELSE}
   St         : PChar;
+  {$ENDIF}
 begin
   Result:=False;
   if not Assigned(Printer) then Exit;
@@ -146,7 +163,11 @@ begin
           GlobalUnlock(DeviceMode);
         end;
         hDevMode := DeviceMode;
+        {$IFDEF USEUNICODE}
+        if PrintDlgW(@lpp) then
+        {$ELSE}
         if PrintDlg(@lpp) then
+        {$ENDIF}
         begin
           St := '';
           //Change Selected printer
@@ -154,8 +175,13 @@ begin
           begin
             DevNames := PDevNames(GlobalLock(lpp.hDevNames));
             try
+              {$IFDEF USEUNICODE}
+              St := PWidechar(DevNames) + DevNames^.wDeviceOffset;
+              Printer.SetPrinter(UTF8Encode(widestring(st)));
+              {$ELSE}
               St := PChar(DevNames) + DevNames^.wDeviceOffset;
               Printer.SetPrinter(St);
+              {$ENDIF}
             finally
               GlobalUnlock(lpp.hDevNames);
               GlobalFree(lpp.hDevNames);
@@ -194,7 +220,11 @@ var
   DevMode    : PDeviceMode;
   DeviceMode : THandle;
   DevNames   : PDevNames;
+  {$IFDEF USEUNICODE}
+  St         : PWidechar;
+  {$ELSE}
   St         : PChar;
+  {$ENDIF}
 begin
   Result := False;
   if not Assigned(Printer) then Exit;
@@ -244,8 +274,11 @@ begin
         nMinPage := Word(MinPage);
         nMaxPage := Word(MaxPage);
         DevMode^.dmCopies := nCopies;
-        
+        {$IFDEF USEUNICODE}
+        if PrintDlgW(@lpp) then
+        {$ELSE}
         if PrintDlg(@lpp) then
+        {$ENDIF}
         begin
           St:='';
           //Change Selected printer
@@ -253,8 +286,13 @@ begin
           begin
             DevNames := PDevNames(GlobalLock(lpp.hDevNames));
             try
+              {$IFDEF USEUNICODE}
+              St := PWidechar(DevNames) + DevNames^.wDeviceOffset;
+              Printer.SetPrinter(UTF8Encode(widestring(st)));
+              {$ELSE}
               St := PChar(DevNames) + DevNames^.wDeviceOffset;
               Printer.SetPrinter(St);
+              {$ENDIF}
             finally
               GlobalUnlock(lpp.hDevNames);
               GlobalFree(lpp.hDevNames);

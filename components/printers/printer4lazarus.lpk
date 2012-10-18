@@ -6,7 +6,7 @@
     <AddToProjectUsesSection Value="True"/>
     <Author Value="Olivier Guilbaud"/>
     <CompilerOptions>
-      <Version Value="10"/>
+      <Version Value="11"/>
       <PathDelim Value="\"/>
       <SearchPaths>
         <IncludeFiles Value="unix;win32;carbon;qt"/>
@@ -18,18 +18,13 @@
           <UseAnsiStrings Value="False"/>
         </SyntaxOptions>
       </Parsing>
-      <Linking>
-        <Debugging>
-          <GenerateDebugInfo Value="True"/>
-          <DebugInfoType Value="dsAuto"/>
-        </Debugging>
-      </Linking>
       <Other>
         <CompilerMessages>
           <UseMsgFile Value="True"/>
         </CompilerMessages>
         <CustomOptions Value="-dUseCache
--dNativePrint"/>
+-dNativePrint
+-dUSEUNICODE"/>
         <CompilerPath Value="$(CompPath)"/>
       </Other>
     </CompilerOptions>

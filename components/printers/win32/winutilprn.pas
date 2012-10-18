@@ -53,6 +53,8 @@ type
   {$packrecords 1}
 {$endif}
 
+{$define USEUNICODE}
+
   tagPSD = record
     lStructSize: DWORD;
     hWndOwner: HWND;
@@ -94,6 +96,12 @@ type
   end;
   PtagPD = ^tagPD;
 
+  {$IFDEF USEUNICODE}
+  LPTSTR = PWidechar;
+  {$ELSE}
+  LPTSTR = PChar;
+  {$ENDIF}
+
   _PRINTER_DEFAULTSA = record
        pDatatype : LPSTR;
        pDevMode : LPDEVMODE;
@@ -103,19 +111,30 @@ type
   PPRINTER_DEFAULTSA = ^_PRINTER_DEFAULTSA;
   LPPRINTER_DEFAULTSA = ^_PRINTER_DEFAULTSA;
 
+  _PRINTER_DEFAULTSW = record
+    pDatatype: pwidechar;
+    pDevMode: LPDEVMODEW;
+    DesiredAccess: ACCESS_MASK;
+  end;
+  LPPRINTER_DEFAULTSW = ^_PRINTER_DEFAULTSW;
+
   _PRINTER_INFO_2A = record
-       pServerName : LPSTR;
-       pPrinterName : LPSTR;
-       pShareName : LPSTR;
-       pPortName : LPSTR;
-       pDriverName : LPSTR;
-       pComment : LPSTR;
-       pLocation : LPSTR;
+       pServerName : LPTSTR;
+       pPrinterName : LPTSTR;
+       pShareName : LPTSTR;
+       pPortName : LPTSTR;
+       pDriverName : LPTSTR;
+       pComment : LPTSTR;
+       pLocation : LPTSTR;
+       {$IFDEF USEUNICODE}
+       pDevMode : LPDEVMODEW;
+       {$ELSE}
        pDevMode : LPDEVMODE;
-       pSepFile : LPSTR;
-       pPrintProcessor : LPSTR;
-       pDatatype : LPSTR;
-       pParameters : LPSTR;
+       {$ENDIF}
+       pSepFile : LPTSTR;
+       pPrintProcessor : LPTSTR;
+       pDatatype : LPTSTR;
+       pParameters : LPTSTR;
        pSecurityDescriptor : PSECURITY_DESCRIPTOR;
        Attributes : DWORD;
        Priority : DWORD;
@@ -158,24 +177,34 @@ type
     Port: string;
 
     DefaultPaper: Short;
-
+    {$IFDEF USEUNICODE}
+    DevMode: PDeviceModeW;
+    {$ELSE}
     DevMode: PDeviceMode;
+    {$ENDIF}
     DevModeSize: integer;
     destructor Destroy; override;
   end;
 
 function DeviceCapabilities(pDevice, pPort: PChar; fwCapability: word;
   pOutput: PChar; DevMode: PDeviceMode): integer; stdcall; external LibWinSpool Name 'DeviceCapabilitiesA';
+function DeviceCapabilitiesW(pDevice, pPort: PWideChar; fwCapability: word;
+  pOutput: PWideChar; DevMode: PDeviceModeW): integer; stdcall; external LibWinSpool Name 'DeviceCapabilitiesW';
 
 function GetProfileString(lpAppName: PChar; lpKeyName: PChar; lpDefault: PChar;
   lpReturnedString: PChar; nSize: DWORD): DWORD; stdcall; external 'kernel32' Name 'GetProfileStringA';
 
 function PrintDlg(lppd: PtagPD): BOOL; stdcall; external 'comdlg32.dll' Name 'PrintDlgA';
+function PrintDlgW(lppd: PTagPD): BOOL; stdcall; external 'comdlg32.dll' name 'PrintDlgW';
 function PageSetupDlg(lppd: PtagPSD): BOOL; stdcall; external 'comdlg32.dll' Name 'PageSetupDlgA';
+function PageSetupDlgW(lppd: PtagPSD): BOOL; stdcall; external 'comdlg32.dll' Name 'PageSetupDlgW';
 function CommDlgExtendedError: DWORD; stdcall; external 'comdlg32.dll' Name 'CommDlgExtendedError';
 
 function CreateIC(lpszDriver, lpszDevice, lpszOutput: PChar; lpdvmInit: PDeviceMode): HDC; stdcall; external 'gdi32.dll' Name 'CreateICA';
+function CreateICW(lpszDriver, lpszDevice, lpszOutput: pwidechar; lpdvmInit: PDeviceModeW): HDC; stdcall; external 'gdi32.dll' Name 'CreateICW';
 function CreateDC(lpszDriver, lpszDevice, lpszOutput: PChar; lpdvmInit: PDeviceMode): HDC; stdcall; external 'gdi32.dll' Name 'CreateDCA';
+function CreateDCW(lpszDriver, lpszDevice, lpszOutput: pwidechar; lpdvmInit: PDeviceModeW): HDC; stdcall; external 'gdi32.dll' Name 'CreateDCW';
+
 function DeleteDC(DC: HDC): BOOL; stdcall; external 'gdi32.dll' Name 'DeleteDC';
 function StartDoc(DC: HDC; Inf: PDocInfo): integer; stdcall; external 'gdi32.dll' Name 'StartDocA';
 function EndDoc(DC: HDC): integer; stdcall; external 'gdi32.dll' Name 'EndDoc';
@@ -186,9 +215,12 @@ function GlobalFree(HMem: HGlobal): HGlobal; stdcall; external 'kernel32.dll' Na
 
 // todo: remove when WinSpool.pp will be released with fpc
 function OpenPrinter(_para1:LPSTR; _para2:PHANDLE; _para3:LPPRINTER_DEFAULTSA):BOOL;stdcall; external LibWinSpool name 'OpenPrinterA';
+function OpenPrinterW(_para1:pwidechar; _para2:PHANDLE; _para3:LPPRINTER_DEFAULTSW):BOOL;stdcall; external LibWinSpool name 'OpenPrinterW';
 function ClosePrinter(_para1:HANDLE):BOOL;stdcall; external LibWinSpool Name 'ClosePrinter';
 function DocumentProperties(_para1:HWND; _para2:HANDLE; _para3:LPSTR; _para4:PDEVMODE; _para5:PDEVMODE; _para6:DWORD):LONG;stdcall; external LibWinSpool name 'DocumentPropertiesA';
+function DocumentPropertiesW(_para1:HWND; _para2:HANDLE; _para3:pwidechar; _para4:PDEVMODEW; _para5:PDEVMODEW; _para6:DWORD):LONG;stdcall; external LibWinSpool name 'DocumentPropertiesW';
 function EnumPrinters(_para1:DWORD; _para2:LPSTR; _para3:DWORD; _para4:PBYTE; _para5:DWORD; _para6:PDWORD; _para7:PDWORD):BOOL;stdcall; external LibWinSpool name 'EnumPrintersA';
+function EnumPrintersW(_para1:DWORD; _para2:Pwidechar; _para3:DWORD; _para4:PBYTE; _para5:DWORD; _para6:PDWORD; _para7:PDWORD):BOOL;stdcall; external LibWinSpool name 'EnumPrintersW';
 function GetPrinter(_para1:HANDLE; _para2:DWORD; _para3:PBYTE; _para4:DWORD; _para5:PDWORD):BOOL;stdcall; external LibWinSpool name 'GetPrinterA';
 function StartDocPrinter(hPrinter: THANDLE; Level: DWORD; DocInfo: PByte): DWORD; stdcall; external LibWinSpool Name 'StartDocPrinterA';
 function StartPagePrinter(_para1:HANDLE):BOOL;stdcall; external LibWinSpool name 'StartPagePrinter';
