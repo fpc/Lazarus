@@ -1360,12 +1360,19 @@ begin
     exit;
   end;
 
+  if FPTypeReq.Result.Kind = ptprkRecord then begin // Includes pointer to array
+    FTypeCastFixFlag := tcfNoFixNeeded; // TODO: Maybe it is needed?
+    FIsTypeCast := True;
+    exit;
+  end;
+
   if FPTypeReq.Result.Kind in [ptprkProcedure, ptprkFunction] then begin
     FTypeCastFixFlag := tcfNoFixNeeded;
     FIsFunction := True;
     exit;
   end;
 
+  FTypeCastFixFlag := tcfNoFixNeeded;
 end;
 
 constructor TGDBExpressionPartCastCall.Create(ALeadExpresion: TGDBExpressionPart);
