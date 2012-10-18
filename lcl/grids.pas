@@ -1371,6 +1371,8 @@ type
   { TDrawGrid }
 
   TDrawGrid = class(TCustomDrawGrid)
+  public
+    property InplaceEditor;
   published
     property Align;
     property AlternateColor;
@@ -1402,7 +1404,6 @@ type
     property GridLineWidth;
     property HeaderHotZones;
     property HeaderPushZones;
-    property InplaceEditor;
     property MouseWheelOption;
     property Options;
     //property ParentBiDiMode;
@@ -1581,6 +1582,7 @@ type
     class procedure WSRegisterClass; override;
   public
     property Modified;
+    property InplaceEditor;
   published
     property Align;
     property AlternateColor;
@@ -1613,7 +1615,6 @@ type
     property GridLineWidth;
     property HeaderHotZones;
     property HeaderPushZones;
-    property InplaceEditor;
     property MouseWheelOption;
     property Options;
     property ParentBiDiMode;

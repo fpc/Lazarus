@@ -510,6 +510,7 @@ type
     property FocusRectVisible;
     property GridLineColor;
     property GridLineStyle;
+    property InplaceEditor;
     property SelectedColor;
     property SelectedRows;
   published
@@ -540,7 +541,6 @@ type
     property Font;
     property HeaderHotZones;
     property HeaderPushZones;
-    property InplaceEditor;
     //property ImeMode;
     //property ImeName;
     property Options;
