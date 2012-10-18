@@ -1208,7 +1208,7 @@ begin
           ' Position=', dbgs(Message.Pos),' OldPos=',Dbgs(FOldPosition));
   {$endif}
 
-  IsSeq := FDatalink.DataSet.IsSequenced;
+  IsSeq := FDatalink.DataSet.IsSequenced and not FDataLink.DataSet.Filtered;
   case Message.ScrollCode of
     SB_TOP:
       DsGoto(True);
