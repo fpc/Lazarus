@@ -3418,6 +3418,7 @@ var
   FrameBorder: Integer;
   TitleBarHeight: Integer;
   SenderWidget: QWidgetH;
+  SavedLCLObject: PtrUint;
 begin
   Result := False;
   if not CanSendLCLMessage or (Sender = nil) or
@@ -3491,17 +3492,18 @@ begin
 
   Msg.Msg := LM_MOUSEMOVE;
 
+  SetNoMousePropagation(SenderWidget, True);
+  SavedLCLObject := PtrUInt(LCLObject);
+
   NotifyApplicationUserInput(LCLObject, Msg.Msg);
 
-  if not CanSendLCLMessage then
+  if (SavedLCLObject <> PtrUInt(LCLObject)) or not CanSendLCLMessage then
     exit(True);
 
   DeliverMessage(Msg, True);
 
-  if not CanSendLCLMessage then
+  if (SavedLCLObject <> PtrUInt(LCLObject)) or not CanSendLCLMessage then
     exit(True);
-
-  SetNoMousePropagation(SenderWidget, True);
 end;
 
 {------------------------------------------------------------------------------
