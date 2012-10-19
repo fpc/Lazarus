@@ -12857,7 +12857,7 @@ begin
       Result := Result and (R.State <> dsError);
       if (not Result) then begin
         ParseLastError;
-        exit;
+        exit(True);
       end;
       FValidity := ddsValid;
       FTextValue := UnEscapeBackslashed(R.Values, [uefNewLine, uefTab], 3);
