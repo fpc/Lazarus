@@ -832,6 +832,8 @@ begin
   inherited Create(TheOwner);
   Name:=NonModalIDEWindowNames[nmiwProjectInspector];
   Caption:=lisMenuProjectInspector;
+  FSortAlphabetically := True;
+  SortAlphabeticallyButton.Down := FSortAlphabetically;
   KeyPreview:=true;
   SetupComponents;
   KeyPreview:=true;
