@@ -1444,6 +1444,7 @@ type
     property OnEndDrag;
     property OnEnter;
     property OnExit;
+    property OnGetCheckboxState;
     property OnGetEditMask;
     property OnGetEditText;
     property OnHeaderClick;
@@ -1464,6 +1465,7 @@ type
     property OnSelectEditor;
     property OnSelection;
     property OnSelectCell;
+    property OnSetCheckboxState;
     property OnSetEditText;
     property OnStartDock;
     property OnStartDrag;
@@ -9579,8 +9581,11 @@ end;
 procedure TCustomDrawGrid.SetCheckboxState(const aCol, aRow: Integer;
   const aState: TCheckboxState);
 begin
-  if assigned(FOnSetCheckboxState) then
+  if assigned(FOnSetCheckboxState) then begin
     OnSetCheckboxState(self, aCol, aRow, aState);
+    if DefaultDrawing then
+      InvalidateCell(aCol, aRow);
+  end;
 end;
 
 function TCustomDrawGrid.CreateVirtualGrid: TVirtualGrid;
