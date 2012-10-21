@@ -1,5 +1,5 @@
 object Form1: TForm1
-  Left = 1221
+  Left = 1036
   Height = 459
   Top = 154
   Width = 620
@@ -7,7 +7,7 @@ object Form1: TForm1
   ClientHeight = 459
   ClientWidth = 620
   Position = poScreenCenter
-  LCLVersion = '0.9.31'
+  LCLVersion = '1.1'
   object Chart1: TChart
     Left = 0
     Height = 425
@@ -49,10 +49,12 @@ object Form1: TForm1
       Source = RandomChartSource1
     end
     object Chart1BarSeries1: TBarSeries
+      Transparency = 60
       BarBrush.Color = 3059701
       Source = RandomChartSource1
     end
     object Chart1PieSeries1: TPieSeries
+      Transparency = 128
       Active = False
       Source = RandomChartSource1
     end

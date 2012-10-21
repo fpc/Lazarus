@@ -38,7 +38,7 @@ implementation
 {$R *.lfm}
 
 uses
-  BGRABitmap, TADrawerBGRA, TADrawerCanvas, TADrawUtils;
+  BGRABitmap, TAChartUtils, TADrawerBGRA, TADrawerCanvas, TADrawUtils;
 
 { TForm1 }
 
@@ -57,6 +57,7 @@ end;
 
 procedure TForm1.Chart1AfterPaint(ASender: TChart);
 begin
+  Unused(ASender);
   PaintBox1.Invalidate;
 end;
 
