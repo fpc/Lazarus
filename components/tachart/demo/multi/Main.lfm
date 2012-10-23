@@ -57,6 +57,7 @@ object Form1: TForm1
           Marks.Style = smsValue
           BubbleBrush.Color = clRed
           BubbleBrush.Style = bsDiagCross
+          OverrideColor = [bocBrush, bocPen]
           Source = lcsBubble
         end
       end
@@ -305,10 +306,10 @@ object Form1: TForm1
     DataPoints.Strings = (
       '10|50|3|?|'
       '20|30|1|?|'
-      '50|40|6|?|'
-      '80|60|2|?|'
-      '60|50|15|?|'
       '35|20|9|?|'
+      '50|40|6|$00FF00|'
+      '60|50|15|?|'
+      '80|60|2|?|'
     )
     YCount = 2
     left = 130
