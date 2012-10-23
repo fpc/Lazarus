@@ -175,9 +175,14 @@ begin
 
   ColumnIndex := PLCLIntfCellRenderer(cell)^.ColumnIndex;
 
+  AWinControl := GetControl(cell, widget);
+  if (ColumnIndex = -1) and (AWinControl <> nil) and
+    (AWinControl.FCompStyle = csListView) then
+      ColumnIndex := 0;
+
+
   if ColumnIndex > -1 then // listview
   begin
-    AWinControl := GetControl(cell, widget);
     AreaRect := Bounds(background_area^.x, background_area^.y,
                      background_area^.Width, background_area^.Height);
 
@@ -218,7 +223,6 @@ begin
   // do not call DefaultGtkRender when we are custom drawn listbox.issue #23093
   if ColumnIndex < 0 then
   begin
-    AWinControl := GetControl(cell, widget);
     if [csDestroying,csLoading,csDesigning]*AWinControl.ComponentState<>[] then
       AWinControl := nil;
     if AWinControl is TCustomListbox then
@@ -227,7 +231,7 @@ begin
     if AWinControl is TCustomCombobox then
       AWinControl := nil;
   end;
-  // do default draw only if we are customdrawn.
+  // do default draw only if we are not customdrawn.
   if (ColumnIndex > -1) or ((ColumnIndex < 0) and (AWinControl = nil)) then
     CellClass^.DefaultGtkRender(cell, Window, Widget, background_area, cell_area,
       expose_area, flags);

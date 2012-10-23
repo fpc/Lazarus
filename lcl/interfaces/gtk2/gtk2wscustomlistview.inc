@@ -1341,7 +1341,10 @@ begin
   with Widgets^ do
   begin
     if not gtk_widget_realized(MainView) then
+    begin
+      // DebugLn('WARNING: TGtk2WSCustomListView.ItemSetImage: MainView is not realized.');
       Exit;
+    end;
     Path := gtk_tree_path_new_from_indices(AIndex, -1);
     if GTK_IS_TREE_VIEW(MainView) then
       gtk_tree_view_get_cell_area(PGtkTreeView(MainView), Path, nil, @ItemRect)
@@ -1683,7 +1686,9 @@ begin
       TreeSelection := PGtkTreeSelection(gtk_tree_view_get_selection(PGtkTreeView(MainView)));
     end;
     g_object_unref(G_OBJECT(TreeModel));
-    //gtk_tree_view_set_fixed_height_mode(PGtkTreeView(MainView), True);
+
+    // we added +1 because Ord(vsIcon) returns 0, so it's nil ptr
+    g_object_set_data(PGObject(MainView),'lcllistviewstyle', gpointer(PtrInt(Ord(TLVHack(AWinControl).ViewStyle) + 1)));
 
     gtk_container_add(GTK_CONTAINER(ScrollWidget),PGtkWidget(MainView));
   
@@ -1699,17 +1704,9 @@ begin
     Dispose(OrigScrollingData);
     WidgetInfo^.CoreWidget := PGtkWidget(MainView);
     gtk_object_set_data(Pointer(MainView), 'widgetinfo', WidgetInfo);
-    //SetMainWidget(ScrollWidget, MainView);
-    //GetWidgetInfo(ScrollWidget, True)^.CoreWidget := PGtkWidget(MainView);
     gtk_widget_show_all(PGtkWidget(MainView));
     SetListCallbacks(PGtkWidget(ScrollWidget), Widgets, Widgets^.WidgetInfo);
   end;
-
-  (*
-  New(Widgets);
-  Widgets^.WidgetInfo := GetWidgetInfo(ScrollWidget);
-  SetCallbacks(PGtkWidget(ScrollWidget), Widgets^, Widgets^.WidgetInfo);
-  *)
 end;
 
 class procedure TGtk2WSCustomListView.DestroyHandle(const AWinControl: TWinControl);
@@ -2268,7 +2265,10 @@ end;
 
 class procedure TGtk2WSCustomListView.SetViewStyle(const ALV: TCustomListView;
   const AValue: TViewStyle);
-  
+
+var
+  APtrIntData: PtrInt;
+
   procedure ShowColumns(const Widgets: PTVWidgets; const Show: Boolean);
   var
     List: PGList;
@@ -2299,9 +2299,11 @@ begin
   then Exit;
 
   GetCommonTreeViewWidgets({%H-}PGtkWidget(ALV.Handle), Widgets{%H-});
-
-  if (GTK_IS_TREE_VIEW(Widgets^.MainView) and (AValue in [vsIcon, vsSmallIcon])) or
-     (GTK_IS_ICON_VIEW(Widgets^.MainView) and (AValue in [vsReport, vsList])) then
+  if g_object_get_data(PGObject(Widgets^.MainView),'lcllistviewstyle') <> nil then
+    APtrIntData := PtrInt(g_object_get_data(PGObject(Widgets^.MainView),'lcllistviewstyle'))
+  else
+    APtrIntData := -1;
+  if (APtrIntData <> -1) and (APtrIntData - 1 <> Ord(AValue)) then
   begin
     // we have to free the GtkTreeView and Create GtkIconView etc depending on the new style
     //RecreateMainView(ALV);
