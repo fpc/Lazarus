@@ -314,6 +314,8 @@ type
     property SpaceChar;
   end;
 
+procedure SplitEditMask(AEditMask: String; out AMaskPart: String; out AMaskSave: Boolean; out ASpaceChar: Char);
+
 procedure Register;
 
 implementation
@@ -430,6 +432,53 @@ begin
 end;
 
 
+procedure SplitEditMask(AEditMask: String; out AMaskPart: String; out AMaskSave: Boolean; out ASpaceChar: Char);
+{
+  Retrieve the separate fields for a given EditMask:
+  Given an AEditMask of '999.999;0;_'  it will return
+  - AMaskPart = '999.999'
+  - AMaskSave = False
+  - ASpaceChar = '_'
+}
+begin
+  {
+    First see if AEditMask is multifield and if we can extract a value for
+    AMaskSave and/or ASpaceChar
+    If so, extract and remove from AMask (so we know that the remaining part of
+    AMask _IS_ the mask to be set)
+
+    A value for SpaceChar is only valid if also a value for MaskSave is specified
+    (as by Delphi specifications), so Mask must be at least 4 characters
+    These must be the last 2 or 4 characters of EditMask (and there must not be
+    an escape character in front!)
+  }
+  //Assume no SpaceChar and no MaskSave is defined in new mask, so first set it to DefaultBlank and True
+  ASpaceChar := DefaultBlank;
+  AMaskSave := True;
+  if (Length(AEditMask) >= 4) and (AEditMask[Length(AEditMask)-1] = MaskFieldSeparator) and
+     (AEditMask[Length(AEditMask)-3] = MaskFieldSeparator) and
+     (AEditMask[Length(AEditMask)-2] <> cMask_SpecialChar) and
+     //Length = 4 is OK (AEditMask = ";1;_" for example), but if Length > 4 there must be no escape charater in front
+     ((Length(AEditMask) = 4) or ((Length(AEditMask) > 4) and (AEditMask[Length(AEditMask)-4] <> cMask_SpecialChar))) then
+  begin
+    ASpaceChar := AEditMask[Length(AEditMask)];
+    AMaskSave := (AEditMask[Length(AEditMask)-2] <> MaskNosave);
+    System.Delete(AEditMask,Length(AEditMask)-3,4);
+  end
+  //If not both FMaskSave and FSPaceChar are specified, then see if only FMaskSave is specified
+  else if (Length(AEditMask) >= 2) and (AEditMask[Length(AEditMask)-1] = MaskFieldSeparator) and
+          //Length = 2 is OK, but if Length > 2 there must be no escape charater in front
+          ((Length(AEditMask) = 2) or ((Length(AEditMask) > 2) and (AEditMask[Length(AEditMask)-2] <> cMask_SpecialChar))) then
+  begin
+    AMaskSave := (AEditMask[Length(AEditMask)] <> MaskNoSave);
+    //Remove this bit from Mask
+    System.Delete(AEditMask,Length(AEditMask)-1,2);
+  end;
+  //Whatever is left of AEditMask at this point is the MaskPart
+  AMaskPart := AEditMask;
+end;
+
+
 // Create object
 constructor TCustomMaskEdit.Create(TheOwner: TComponent);
 begin
@@ -467,41 +516,12 @@ begin
   if FRealMask <> Value then
   begin
     FRealMask := Value;
-    //Assume no FSpaceChar is defined in new mask, so first set it to DefaultBlank
-    FSpaceChar := DefaultBlank;
     FValidationFailed := False;
     FMaskIsPushed := False;
     FPushedMask := '';
-    {
-      First see if Mask is multifield and if we can extract a value for
-      FMaskSave and/or FSpaceChar
-      If so, extract and remove from Value (so we know the remaining part of
-      Value _IS_ the mask to be set)
 
-      A value for FSpaceChar is only valid if also a value for FMaskSave is specified
-      (as by Delphi specifications), so Mask must be at least 4 characters
-      These must be the last 2 or 4 characters of EditMask (and there must not be
-      an escape character in front!)
-    }
-    if (Length(Value) >= 4) and (Value[Length(Value)-1] = MaskFieldSeparator) and
-       (Value[Length(Value)-3] = MaskFieldSeparator) and
-       (Value[Length(Value)-2] <> cMask_SpecialChar) and
-       //Length = 4 is OK (Value = ";1;_" for example), but if Length > 4 there must be no escape charater in front
-       ((Length(Value) = 4) or ((Length(Value) > 4) and (Value[Length(Value)-4] <> cMask_SpecialChar))) then
-    begin
-      FSpaceChar := Value[Length(Value)];
-      FMaskSave := (Value[Length(Value)-2] <> MaskNosave);
-      System.Delete(Value,Length(Value)-3,4);
-    end
-    //If not both FMaskSave and FSPaceChar are specified, then see if only FMaskSave is specified
-    else if (Length(Value) >= 2) and (Value[Length(Value)-1] = MaskFieldSeparator) and
-            //Length = 2 is OK, but if Length > 2 there must be no escape charater in front
-            ((Length(Value) = 2) or ((Length(Value) > 2) and (Value[Length(Value)-2] <> cMask_SpecialChar))) then
-    begin
-      FMaskSave := (Value[Length(Value)] <> MaskNoSave);
-      //Remove this bit from Mask
-      System.Delete(Value,Length(Value)-1,2);
-    end;
+    SplitEditMask(FRealMask, Value, FMaskSave, FSpaceChar);
+
     // Construct Actual Internal Mask
     // init
     FMask     := '';
