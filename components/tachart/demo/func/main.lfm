@@ -144,6 +144,7 @@ object Form1: TForm1
         Extent.XMin = -1
         Foot.Brush.Color = clBtnFace
         Foot.Font.Color = clBlue
+        Legend.SymbolWidth = 30
         Title.Brush.Color = clBtnFace
         Title.Font.Color = clBlue
         Title.Text.Strings = (
