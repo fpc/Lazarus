@@ -416,6 +416,16 @@ type
     constructor Create(ASeries: TFitSeries);
   end;
 
+  TLegendItemColorMap = class(TLegendItem)
+  strict private
+    FColor2: TColor;
+    FFramePen: TChartPen;
+  public
+    constructor Create(
+      AColor1, AColor2: TColor; AFramePen: TChartPen; const AText: String);
+    procedure Draw(ADrawer: IChartDrawer; const ARect: TRect); override;
+  end;
+
 function DoublePointRotated(AX, AY: Double): TDoublePoint;
 begin
   Result.X := AY;
@@ -434,6 +444,39 @@ end;
 operator := (AEq: TFitSeries.IEquationText): String;
 begin
   Result := AEq.Get;
+end;
+
+{ TColorMapLegendItem }
+
+constructor TLegendItemColorMap.Create(
+  AColor1, AColor2: TColor; AFramePen: TChartPen; const AText: String);
+begin
+  inherited Create(AText);
+  Color := AColor1;
+  FColor2 := AColor2;
+  FFramePen := AFramePen;
+end;
+
+procedure TLegendItemColorMap.Draw(ADrawer: IChartDrawer; const ARect: TRect);
+var
+  x, w, pw: Integer;
+  c: TColor;
+begin
+  inherited Draw(ADrawer, ARect);
+  with FFramePen do
+    pw := IfThen(Visible and (Style <> psClear), (Width + 1) div 2, 0);
+  w := ARect.Right - ARect.Left - 2 * pw;
+  if w <= 0 then exit;
+  for x := ARect.Left + pw to ARect.Right - pw do begin
+    c := InterpolateRGB(Color, FColor2, (x - ARect.Left - pw) / w);
+    ADrawer.SetPenParams(psSolid, c);
+    ADrawer.Line(x, ARect.Top, x, ARect.Bottom - 1);
+  end;
+  if pw > 0 then begin
+    ADrawer.Pen := FFramePen;
+    ADrawer.SetBrushParams(bsClear, clTAColor);
+    ADrawer.Rectangle(ARect);
+  end;
 end;
 
 { TFitSeries.TEquationText }
@@ -1643,10 +1686,9 @@ end;
 
 procedure TColorMapSeries.GetLegendItems(AItems: TChartLegendItems);
 var
-  i: Integer;
   prev: Double;
 
-  function ItemTitle(const AText: String; AX: Double): String;
+  function ItemTitle(AIndex: Integer; const AText: String; AX: Double): String;
   const
     FORMATS: array [1..3] of String = ('z ≤ %1:g', '%g < z ≤ %g', '%g < z');
   var
@@ -1654,28 +1696,44 @@ var
   begin
     if AText <> '' then exit(AText);
     if ColorSource.Count = 1 then exit('');
-    if i = 0 then idx := 1
-    else if i = ColorSource.Count - 1 then idx := 3
+    if AIndex = 0 then idx := 1
+    else if AIndex = ColorSource.Count - 1 then idx := 3
     else idx := 2;
     Result := Format(FORMATS[idx], [prev, AX]);
   end;
 
-var
-  li: TLegendItemBrushRect;
+  procedure MakePointItems;
+  var
+    t: String;
+    prevColor: TColor;
+    li: TLegendItem;
+    i: Integer;
+  begin
+    prev := 0.0;
+    prevColor := clTAColor;
+    for i := 0 to ColorSource.Count - 1 do
+      with ColorSource[i]^ do begin
+        t := ItemTitle(i, Text, X);
+        if Interpolate then
+          li := TLegendItemColorMap.Create(
+            ColorDef(prevColor, Color), Color, ParentChart.Legend.SymbolFrame, t)
+        else begin
+          li := TLegendItemBrushRect.Create(Brush, t);
+          li.Color := Color;
+        end;
+        AItems.Add(li);
+        prev := X;
+        prevColor := Color;
+      end;
+  end;
+
 begin
   case Legend.Multiplicity of
-    lmSingle: AItems.Add(TLegendItemBrushRect.Create(Brush, LegendTextSingle));
+    lmSingle:
+      AItems.Add(TLegendItemBrushRect.Create(Brush, LegendTextSingle));
     lmPoint:
-      if ColorSource <> nil then begin
-        prev := 0.0;
-        for i := 0 to ColorSource.Count - 1 do
-          with ColorSource[i]^ do begin
-            li := TLegendItemBrushRect.Create(Brush, ItemTitle(Text, X));
-            li.Color := Color;
-            AItems.Add(li);
-            prev := X;
-          end;
-      end;
+      if ColorSource <> nil then
+        MakePointItems;
   end;
 end;
 
