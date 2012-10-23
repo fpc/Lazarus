@@ -60,8 +60,6 @@ type
     procedure LoadDEMFile(AFileName: string);
     procedure ReConstructEditmask;
     procedure SetEditMask(AValue: string);
-    function SplitMask(AMask: String; out MaskText: String; out
-      SaveLiterals: Boolean; out BlankChar: Char): Boolean;
     procedure UpdateTestEditor;
   public
     property EditMask: string read GetEditMask write SetEditMask;
@@ -195,7 +193,7 @@ var
   SL: Boolean;
   BC: Char;
 begin
-  SplitMask(InputMaskEdit.Text, S, SL, BC);
+  SplitEditMask(InputMaskEdit.Text, S, SL, BC);
   if (CharactersForBlanksEdit.Text<>'') and (Length(S) > 0) then
     begin
       BC := CharactersForBlanksEdit.Text[1];
@@ -206,35 +204,6 @@ begin
       ReConstructEditMask
 end;
 
-Function TMaskEditorForm.SplitMask(AMask :  String; Out MaskText : String; Out SaveLiterals : Boolean; Out BlankChar : Char) : Boolean;
-begin
-  Result:=False;
-  //Code modified to use same logic as in TCustomMaskEdit
-  BlankChar := DefaultBlank;
-  SaveLiterals := True;
-  if (Length(AMask) >= 4) and (AMask[Length(AMask)-1] = MaskFieldSeparator) and
-     (AMask[Length(AMask)-3] = MaskFieldSeparator) and
-     (AMask[Length(AMask)-2] <> cMask_SpecialChar) and
-     //Length = 4 is OK (AMask = ";1;_" for example), but if Length > 4 there must be no escape charater in front
-     ((Length(AMask) = 4) or ((Length(AMask) > 4) and (AMask[Length(AMask)-4] <> cMask_SpecialChar))) then
-  begin
-    BlankChar := AMask[Length(AMask)];
-    SaveLiterals := (AMask[Length(AMask)-2] <> MaskNosave);
-    Result := True;
-    System.Delete(AMask,Length(AMask)-3,4);
-  end
-  //If not both SaveLiterals and BlankChar are specified, then see if only SaveLiterals is specified
-  else if (Length(AMask) >= 2) and (AMask[Length(AMask)-1] = MaskFieldSeparator) and
-          //Length = 2 is OK, but if Length > 2 there must be no escape charater in front
-          ((Length(AMask) = 2) or ((Length(AMask) > 2) and (AMask[Length(AMask)-2] <> cMask_SpecialChar))) then
-  begin
-    SaveLiterals := (AMask[Length(AMask)] <> MaskNoSave);
-    Result := True;
-    //Remove this bit from Mask
-    System.Delete(AMask,Length(AMask)-1,2);
-  end;
-  MaskText := AMask;
-end;
 
 Function TMaskEditorForm.ConstructEditmask : String;
 
@@ -244,7 +213,7 @@ Var
   L : Boolean;
 
 begin
-  SplitMask(InputMaskEdit.Text,S,L,B);
+  SplitEditMask(InputMaskEdit.Text,S,L,B);
   If (CharactersForBlanksEdit.Text<>'') then
     B:=CharactersForBlanksEdit.Text[1];
   if (Length(S) = 0) then
@@ -312,7 +281,7 @@ Var
   S : Boolean;
 
 begin
-  SplitMask(AValue,M,S,B);
+  SplitEditMask(AValue,M,S,B);
   InputMaskEdit.Text := AValue;
   SaveLiteralCheckBox.Checked := S;
   CharactersForBlanksEdit.Text := B;
