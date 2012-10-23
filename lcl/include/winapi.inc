@@ -1499,6 +1499,24 @@ begin
           );
 end;
 
+// This is found in Windows API but can be implemented in platform independent way.
+function RectInRegion(RGN: HRGN; ARect: TRect): Boolean;
+var
+  RectRgn, EmptyRgn: HRGN;
+begin
+  RectRgn := CreateRectRgnIndirect(ARect);
+  try
+    EmptyRgn := CreateEmptyRegion;
+    try
+      Result := CombineRgn(EmptyRgn, RectRgn, RGN, RGN_AND) <> NULLREGION;
+    finally
+      DeleteObject(EmptyRgn);
+    end;
+  finally
+    DeleteObject(RectRgn);
+  end;
+end;
+
 {------------------------------------------------------------------------------
   Function: RGB
   Params:   R: Red color

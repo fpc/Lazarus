@@ -336,6 +336,7 @@ function OffsetRect(var Rect: TRect; dx,dy: Integer): Boolean; inline;
 function PtInRect(const Rect : TRect; const Point : TPoint) : Boolean; inline;
 function PointToSmallPoint(const P : TPoint) : TSmallPoint; inline;
 
+function RectInRegion(RGN: HRGN; ARect: TRect): Boolean;
 function RGB(R, G, B : Byte) : TColorRef; inline;
 
 function ScrollWindow(hWnd: HWND; XAmount, YAmount: Integer; Rect, ClipRect: PRect): Boolean; inline;
@@ -348,7 +349,6 @@ function SmallPointToPoint(const P : TSmallPoint) : Tpoint;
 function SubtractRect(out lprcDst: TRect; const lprcSrc1, lprcSrc2: TRect): Boolean;
 
 function UnionRect(var DestRect: TRect; const SrcRect1, SrcRect2: TRect): Boolean; //pbd
-
 
 
 //##apiwiz##epi##    // Do not remove
