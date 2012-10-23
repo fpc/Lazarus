@@ -6942,6 +6942,19 @@ begin
   {$ENDIF}
 end;
 
+// This could also be in the platform independent LCLIntf code.
+// Other widgetsets use an API call for this task.
+function TGtk2WidgetSet.PtInRegion(RGN: HRGN; X, Y: Integer) : Boolean;
+var
+  APoint: TPoint;
+  ARect : TRect;
+begin
+  GetRgnBox(RGN, @ARect);
+  APoint.X := X;
+  APoint.Y := Y;
+  Result := PtInRect(ARect, APoint);   // PtInRect is in LCLIntf
+end;
+
 {------------------------------------------------------------------------------
   Method:   RadialArc
   Params:   DC, left, top, right, bottom, sx, sy, ex, ey
