@@ -36,6 +36,8 @@ const
 type
 
   TBubbleRadiusTransform = (brtNone, brtX, brtY);
+  TBubbleOverrideColor = (bocBrush, bocPen);
+  TBubbleOverrideColors = set of TBubbleOverrideColor;
 
   { TBubbleSeries }
 
@@ -43,8 +45,10 @@ type
   private
     FBubbleBrush: TBrush;
     FBubblePen: TPen;
+    FOverrideColor: TBubbleOverrideColors;
     procedure SetBubbleBrush(AValue: TBrush);
     procedure SetBubblePen(AValue: TPen);
+    procedure SetOverrideColor(AValue: TBubbleOverrideColors);
   protected
     procedure GetLegendItems(AItems: TChartLegendItems); override;
     function GetSeriesColor: TColor; override;
@@ -60,6 +64,8 @@ type
     property AxisIndexY;
     property BubbleBrush: TBrush read FBubbleBrush write SetBubbleBrush;
     property BubblePen: TPen read FBubblePen write SetBubblePen;
+    property OverrideColor: TBubbleOverrideColors
+      read FOverrideColor write SetOverrideColor default [];
     property Source;
   end;
 
@@ -154,7 +160,7 @@ type
 implementation
 
 uses
-  Math, SysUtils, TAGeometry, TAGraph, TAMath;
+  Math, SysUtils, TACustomSource, TAGeometry, TAGraph, TAMath;
 
 type
 
@@ -213,6 +219,7 @@ var
   i: Integer;
   pt, d: TPoint;
   r: Double;
+  pi: PChartDataItem;
 begin
   if Source.YCount < 2 then exit;
   r := 0;
@@ -224,9 +231,14 @@ begin
   ADrawer.Brush := BubbleBrush;
   for i := 0 to High(FGraphPoints) do begin
     pt := ParentChart.GraphToImage(FGraphPoints[i]);
-    r := Source[i + FLoBound]^.YList[0];
+    pi := Source[i + FLoBound];
+    r := pi^.YList[0];
     d.X := ParentChart.XGraphToImage(r) - ParentChart.XGraphToImage(0);
     d.Y := ParentChart.YGraphToImage(r) - ParentChart.YGraphToImage(0);
+    if bocPen in OverrideColor then
+      ADrawer.SetPenParams(BubblePen.Style, ColorDef(pi^.Color, BubblePen.Color));
+    if bocBrush in OverrideColor then
+      ADrawer.SetBrushColor(ColorDef(pi^.Color, BubbleBrush.Color));
     ADrawer.Ellipse(pt.X - d.X, pt.Y - d.Y, pt.X + d.X, pt.Y + d.Y);
   end;
   DrawLabels(ADrawer);
@@ -270,6 +282,13 @@ procedure TBubbleSeries.SetBubblePen(AValue: TPen);
 begin
   if FBubblePen = AValue then exit;
   FBubblePen.Assign(AValue);
+  UpdateParentChart;
+end;
+
+procedure TBubbleSeries.SetOverrideColor(AValue: TBubbleOverrideColors);
+begin
+  if FOverrideColor = AValue then exit;
+  FOverrideColor := AValue;
   UpdateParentChart;
 end;
 
