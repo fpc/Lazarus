@@ -6697,6 +6697,8 @@ var
       '');
   end;
 
+const
+  MaxSize = 32000; // some limit to spot endless loops and bad values
 begin
   {$IFDEF VerboseSizeMsg}
   DebugLn(['SetWidgetSizeAndPosition ',DbgSName(LCLControl)]);
@@ -6736,13 +6738,13 @@ begin
   LCLHeight := LCLControl.Height;
   if LCLHeight <= 0 then
     LCLHeight := 1;
-  if (LCLWidth > 10000) or (LCLHeight > 10000) then
+  if (LCLWidth > MaxSize) or (LCLHeight > MaxSize) then
   begin
     WriteBigWarning;
-    if LCLWidth > 10000 then
-      LCLWidth := 10000;
-    if LCLHeight > 10000 then
-      LCLHeight := 10000;
+    if LCLWidth > MaxSize then
+      LCLWidth := MaxSize;
+    if LCLHeight > MaxSize then
+      LCLHeight := MaxSize;
   end;
 
   {$IFDEF VerboseSizeMsg}
