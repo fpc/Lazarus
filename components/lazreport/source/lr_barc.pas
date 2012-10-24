@@ -490,11 +490,22 @@ begin
 end;
 
 function TfrBarCodeView.GenerateBitmap: TBitmap;
-var R: TRect;
+var
+  R: TRect;
+  barcodeFont: TFont;
+  oldFont: TFont;
 begin
   Result := CreateBarcode;
   R := Rect(0,0, Result.Width,Result.Height);
-  DrawLabel(Result.Canvas,r)
+  barcodeFont := CreateLabelFont(Result.Canvas);
+  try
+    oldFont := Result.Canvas.Font;
+    Result.Canvas.Font := barcodeFont;
+    DrawLabel(Result.Canvas,r)
+  finally
+      Result.Canvas.Font := oldFont;
+      barcodeFont.Free
+  end;
 end;
 
 procedure TfrBarCodeView.LoadFromStream(Stream:TStream);
