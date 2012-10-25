@@ -2824,7 +2824,7 @@ begin
 
   ShowPosition;
   RestoreState;
-  //FormResize(nil);
+  FormResize(nil);
 end;
 
 procedure TfrDesignerForm.FormHide(Sender: TObject);
