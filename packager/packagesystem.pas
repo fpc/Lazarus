@@ -2868,6 +2868,13 @@ begin
         if not RequiredPackage.AutoCreated then begin
           Result:=LoadPackageCompiledState(RequiredPackage,false,true);
           if Result<>mrOk then begin
+            // file broken, user was told that file is broken and user had a
+            // choice of cancel or cancel all (=mrAbort).
+            // File broken means that the pkgname.compiled file has an invalid
+            // format, syntax error. The user or some external tool has altered
+            // the file. Maybe on purpose.
+            // The IDE should not silently replace the file.
+            // => pass the mrcancel/mrabort to the caller
             Note+='unable to load state file of '+RequiredPackage.IDAsString;
             exit;
           end;
