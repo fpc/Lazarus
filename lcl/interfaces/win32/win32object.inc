@@ -32,7 +32,7 @@ constructor TWin32WidgetSet.Create;
 begin
   FPendingWaitHandlerIndex := -1;
   inherited Create;
-  FTimerData  := TList.Create;
+  FTimerData  := TFpList.Create;
   FMetrics.cbSize := SizeOf(FMetrics);
   FMetricsFailed := not Windows.SystemParametersInfo(SPI_GETNONCLIENTMETRICS,
     SizeOf(FMetrics), @FMetrics, 0);

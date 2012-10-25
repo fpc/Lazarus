@@ -46,7 +46,7 @@ type
 
 var
   // FTimerData contains the currently running timers
-  FTimerData : TList;   // list of PWin32Timerinfo
+  FTimerData : TFpList;   // list of PWin32Timerinfo
 
 implementation
 
