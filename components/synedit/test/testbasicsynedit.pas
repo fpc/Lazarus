@@ -27,6 +27,7 @@ type
   published
     procedure TestEditEmpty;
     procedure TestEditTabs;
+    procedure TestEditEcChar;
     procedure TestPhysicalLogical;
     procedure TestCaretAutoMove;
     procedure TestCaretDeleteWord_LastWord;
@@ -174,6 +175,266 @@ begin
   TestIsCaretPhys('After delete tab (smart)', 3, 2);
   TestIsText('After delete tab (smart)', ['  abc', '  abcde', '']);
 
+end;
+
+procedure TTestBasicSynEdit.TestEditEcChar;
+var
+  CaretPEol: Boolean;
+
+  function TestText1: TStringArray;
+  begin
+    SetLength(Result, 4);
+    Result[0] := 'abc';
+    Result[1] := 'öbc';
+    Result[2] := #9'abc';
+    Result[3] := '';
+  end;
+  procedure InitEdit;
+  begin
+    ReCreateEdit;
+    SynEdit.Options := [];
+    if CaretPEol then SynEdit.Options := SynEdit.Options + [eoScrollPastEol];
+    SynEdit.TabWidth := 6;
+    SetLines(TestText1);
+  end;
+
+  // All Logical pos
+  Procedure DoTest(ATestName: String; StartX, StartY: Integer;
+                   Char1: String; ExpX1, ExpY1: Integer; Repl1: Array of const;
+                   Char2: String; ExpX2, ExpY2: Integer; Repl2: Array of const;
+                   AStartIsPhys: Boolean = False
+                  );
+  begin
+    BaseTestName := Format('%s -Ins=%s - PastEol=%s - StartXY=(%d,%d) - ',
+                           [ATestName, dbgs(InsertFlag), dbgs(CaretPEol), StartX, StartY]);
+    InitEdit;
+
+    if AStartIsPhys
+    then SetCaretPhys(StartX, StartY)
+    else SetCaret(StartX, StartY);
+
+    SynEdit.TestTypeText(Char1);
+    TestIsCaret('After Char 1', ExpX1, ExpY1);
+    TestIsText ('After Char 1', TestText1, Repl1);
+
+    SynEdit.TestTypeText(Char2);
+    TestIsCaret('After Char 2', ExpX2, ExpY2);
+    TestIsText ('After Char 2', TestText1, Repl2);
+
+    SynEdit.Undo;
+    TestIsCaret('Undo 1', ExpX1, ExpY1);
+    TestIsText ('Undo 1', TestText1, Repl1);
+
+    SynEdit.Redo;
+    TestIsCaret('Redo 1', ExpX2, ExpY2);
+    TestIsText ('Redo 1', TestText1, Repl2);
+
+    SynEdit.Undo;
+    TestIsCaret('Undo 2a', ExpX1, ExpY1);
+    TestIsText ('Undo 2a', TestText1, Repl1);
+
+    SynEdit.Undo;
+    if AStartIsPhys
+    then TestIsCaretPhys('Undo 2b', StartX, StartY)
+    else TestIsCaret('Undo 2b', StartX, StartY);
+    TestIsText ('Undo 2b', TestText1);
+
+    SynEdit.Redo;
+    TestIsCaret('Redo 2a', ExpX1, ExpY1);
+    TestIsText ('Redo 2a', TestText1, Repl1);
+
+    SynEdit.Redo;
+    TestIsCaret('Redo 2b', ExpX2, ExpY2);
+    TestIsText ('Redo 2b', TestText1, Repl2);
+
+    InitEdit;
+
+    if AStartIsPhys
+    then SetCaretPhys(StartX, StartY)
+    else SetCaret(StartX, StartY);
+    SynEdit.TestTypeText(Char1);
+    SynEdit.TestTypeText(Char2);
+    TestIsCaret('After Char 1+2', ExpX2, ExpY2);
+    TestIsText ('After Char 1+2', TestText1, Repl2);
+
+  end;
+begin
+  TrimEnabled := False; // Trim has its own test
+
+  // Testing ecChar. Tab is ecTab, so not included
+
+  {%region  Normal Line}
+    {%region  Normal Line -- Normal Char}
+    InsertFlag := True;
+    CaretPEol := False;
+    DoTest('normal line - BOL',      1, 1,     'X', 2, 1, [1,'Xabc'],    'Y', 3,1, [1,'XYabc']);
+    DoTest('normal line - mid',      2, 1,     'X', 3, 1, [1,'aXbc'],    'Y', 4,1, [1,'aXYbc']);
+    DoTest('normal line - EOL',      4, 1,     'X', 5, 1, [1,'abcX'],    'Y', 6,1, [1,'abcXY']);
+    CaretPEol := True;
+    DoTest('normal line - EOL',      4, 1,     'X', 5, 1, [1,'abcX'],    'Y', 6,1, [1,'abcXY']);
+    DoTest('normal line - Past',     6, 1,     'X', 7, 1, [1,'abc  X'],  'Y', 8,1, [1,'abc  XY']);
+
+    InsertFlag := False;
+    CaretPEol := False;
+    DoTest('normal line - BOL',      1, 1,     'X', 2, 1, [1,'Xbc'],     'Y', 3,1, [1,'XYc']);
+    DoTest('normal line - mid',      2, 1,     'X', 3, 1, [1,'aXc'],     'Y', 4,1, [1,'aXY']);
+    DoTest('normal line - mid',      3, 1,     'X', 4, 1, [1,'abX'],     'Y', 5,1, [1,'abXY']);
+    DoTest('normal line - EOL',      4, 1,     'X', 5, 1, [1,'abcX'],    'Y', 6,1, [1,'abcXY']);
+    CaretPEol := True;
+    DoTest('normal line - EOL',      4, 1,     'X', 5, 1, [1,'abcX'],    'Y', 6,1, [1,'abcXY']);
+    DoTest('normal line - Past',     6, 1,     'X', 7, 1, [1,'abc  X'],  'Y', 8,1, [1,'abc  XY']);
+    {%endregion}
+
+    {%region  Normal Line -- Space (and char)}
+    InsertFlag := True;
+    CaretPEol := False;
+    DoTest('normal line - space,char - BOL',      1, 1,     ' ', 2, 1, [1,' abc'],    'Y', 3,1, [1,' Yabc']);
+    DoTest('normal line - space,char - mid',      2, 1,     ' ', 3, 1, [1,'a bc'],    'Y', 4,1, [1,'a Ybc']);
+    DoTest('normal line - space,char - EOL',      4, 1,     ' ', 5, 1, [1,'abc '],    'Y', 6,1, [1,'abc Y']);
+    CaretPEol := True;
+    DoTest('normal line - space,char - EOL',      4, 1,     ' ', 5, 1, [1,'abc '],    'Y', 6,1, [1,'abc Y']);
+    DoTest('normal line - space,char - Past',     6, 1,     ' ', 7, 1, [1,'abc   '],  'Y', 8,1, [1,'abc   Y']);
+
+    InsertFlag := False;
+    CaretPEol := False;
+    DoTest('normal line - space,char - BOL',      1, 1,     ' ', 2, 1, [1,' bc'],     'Y', 3,1, [1,' Yc']);
+    DoTest('normal line - space,char - mid',      2, 1,     ' ', 3, 1, [1,'a c'],     'Y', 4,1, [1,'a Y']);
+    DoTest('normal line - space,char - mid',      3, 1,     ' ', 4, 1, [1,'ab '],     'Y', 5,1, [1,'ab Y']);
+    DoTest('normal line - space,char - EOL',      4, 1,     ' ', 5, 1, [1,'abc '],    'Y', 6,1, [1,'abc Y']);
+    CaretPEol := True;
+    DoTest('normal line - space,char - EOL',      4, 1,     ' ', 5, 1, [1,'abc '],    'Y', 6,1, [1,'abc Y']);
+    DoTest('normal line - space,char - Past',     6, 1,     ' ', 7, 1, [1,'abc   '],  'Y', 8,1, [1,'abc   Y']);
+    {%endregion}
+
+    {%region  Normal Line -- Space}
+    InsertFlag := True;
+    CaretPEol := False;
+    DoTest('normal line - space - BOL',      1, 1,     ' ', 2, 1, [1,' abc'],    ' ', 3,1, [1,'  abc']);
+    DoTest('normal line - space - mid',      2, 1,     ' ', 3, 1, [1,'a bc'],    ' ', 4,1, [1,'a  bc']);
+    DoTest('normal line - space - EOL',      4, 1,     ' ', 5, 1, [1,'abc '],    ' ', 6,1, [1,'abc  ']);
+    CaretPEol := True;
+    DoTest('normal line - space - EOL',      4, 1,     ' ', 5, 1, [1,'abc '],    ' ', 6,1, [1,'abc  ']);
+    DoTest('normal line - space - Past',     6, 1,     ' ', 7, 1, [1,'abc   '],  ' ', 8,1, [1,'abc    ']);
+
+    InsertFlag := False;
+    CaretPEol := False;
+    DoTest('normal line - space - BOL',      1, 1,     ' ', 2, 1, [1,' bc'],     ' ', 3,1, [1,'  c']);
+    DoTest('normal line - space - mid',      2, 1,     ' ', 3, 1, [1,'a c'],     ' ', 4,1, [1,'a  ']);
+    DoTest('normal line - space - mid',      3, 1,     ' ', 4, 1, [1,'ab '],     ' ', 5,1, [1,'ab  ']);
+    DoTest('normal line - space - EOL',      4, 1,     ' ', 5, 1, [1,'abc '],    ' ', 6,1, [1,'abc  ']);
+    CaretPEol := True;
+    DoTest('normal line - space - EOL',      4, 1,     ' ', 5, 1, [1,'abc '],    ' ', 6,1, [1,'abc  ']);
+    DoTest('normal line - space - Past',     6, 1,     ' ', 7, 1, [1,'abc   '],  ' ', 8,1, [1,'abc    ']);
+    {%endregion}
+
+    {%region  Normal Line -- utf8 2 byte Char}
+    InsertFlag := True;
+    CaretPEol := False;
+    DoTest('normal line - 2byte utf8 - BOL',      1, 1,     'Ä', 3, 1, [1,'Äabc'],    'Ü', 5,1, [1,'ÄÜabc']);
+    DoTest('normal line - 2byte utf8 - mid',      2, 1,     'Ä', 4, 1, [1,'aÄbc'],    'Ü', 6,1, [1,'aÄÜbc']);
+    DoTest('normal line - 2byte utf8 - EOL',      4, 1,     'Ä', 6, 1, [1,'abcÄ'],    'Ü', 8,1, [1,'abcÄÜ']);
+    CaretPEol := True;
+    DoTest('normal line - 2byte utf8 - EOL',      4, 1,     'Ä', 6, 1, [1,'abcÄ'],    'Ü', 8,1, [1,'abcÄÜ']);
+    DoTest('normal line - 2byte utf8 - Past',     6, 1,     'Ä', 8, 1, [1,'abc  Ä'],  'Ü',10,1, [1,'abc  ÄÜ']);
+
+    InsertFlag := False;
+    CaretPEol := False;
+    DoTest('normal line - 2byte utf8 - BOL',      1, 1,     'Ä', 3, 1, [1,'Äbc'],     'Ü', 5,1, [1,'ÄÜc']);
+    DoTest('normal line - 2byte utf8 - mid',      2, 1,     'Ä', 4, 1, [1,'aÄc'],     'Ü', 6,1, [1,'aÄÜ']);
+    DoTest('normal line - 2byte utf8 - mid',      3, 1,     'Ä', 5, 1, [1,'abÄ'],     'Ü', 7,1, [1,'abÄÜ']);
+    DoTest('normal line - 2byte utf8 - EOL',      4, 1,     'Ä', 6, 1, [1,'abcÄ'],    'Ü', 8,1, [1,'abcÄÜ']);
+    CaretPEol := True;
+    DoTest('normal line - 2byte utf8 - EOL',      4, 1,     'Ä', 6, 1, [1,'abcÄ'],    'Ü', 8,1, [1,'abcÄÜ']);
+    DoTest('normal line - 2byte utf8 - Past',     6, 1,     'Ä', 8, 1, [1,'abc  Ä'],  'Ü',10,1, [1,'abc  ÄÜ']);
+    {%endregion}
+
+    {%region  Normal Line -- full width Char - 3 bytes}
+    // May change in future. overwrite only one char
+    InsertFlag := True;
+    CaretPEol := False;
+    DoTest('normal line - 3 byte full witdh - BOL',      1, 1,     'あ', 4, 1, [1,'あabc'],    '吾', 7,1, [1,'あ吾abc']);
+    DoTest('normal line - 3 byte full witdh - mid',      2, 1,     'あ', 5, 1, [1,'aあbc'],    '吾', 8,1, [1,'aあ吾bc']);
+    DoTest('normal line - 3 byte full witdh - EOL',      4, 1,     'あ', 7, 1, [1,'abcあ'],    '吾',10,1, [1,'abcあ吾']);
+    CaretPEol := True;
+    DoTest('normal line - 3 byte full witdh - EOL',      4, 1,     'あ', 7, 1, [1,'abcあ'],    '吾',10,1, [1,'abcあ吾']);
+    DoTest('normal line - 3 byte full witdh - Past',     6, 1,     'あ', 9, 1, [1,'abc  あ'],  '吾',12,1, [1,'abc  あ吾']);
+
+    InsertFlag := False;
+    CaretPEol := False;
+    DoTest('normal line - 3 byte full witdh - BOL',      1, 1,     'あ', 4, 1, [1,'あbc'],     '吾', 7,1, [1,'あ吾c']);
+    DoTest('normal line - 3 byte full witdh - mid',      2, 1,     'あ', 5, 1, [1,'aあc'],     '吾', 8,1, [1,'aあ吾']);
+    DoTest('normal line - 3 byte full witdh - mid',      3, 1,     'あ', 6, 1, [1,'abあ'],     '吾', 9,1, [1,'abあ吾']);
+    DoTest('normal line - 3 byte full witdh - EOL',      4, 1,     'あ', 7, 1, [1,'abcあ'],    '吾',10,1, [1,'abcあ吾']);
+    CaretPEol := True;
+    DoTest('normal line - 3 byte full witdh - EOL',      4, 1,     'あ', 7, 1, [1,'abcあ'],    '吾',10,1, [1,'abcあ吾']);
+    DoTest('normal line - 3 byte full witdh - Past',     6, 1,     'あ', 9, 1, [1,'abc  あ'],  '吾',12,1, [1,'abc  あ吾']);
+    {%endregion}
+  {%endregion}
+
+  {%region  Line with utf8 at start}
+    {%region   Normal Char}
+    InsertFlag := True;
+    CaretPEol := False;
+    DoTest('utf8 at start - BOL',      1, 2,     'X', 2, 2, [2,'Xöbc'],    'Y', 3,2, [2,'XYöbc']);
+    DoTest('utf8 at start - mid',      3, 2,     'X', 4, 2, [2,'öXbc'],    'Y', 5,2, [2,'öXYbc']);
+    DoTest('utf8 at start - EOL',      5, 2,     'X', 6, 2, [2,'öbcX'],    'Y', 7,2, [2,'öbcXY']);
+    CaretPEol := True;
+    DoTest('utf8 at start - EOL',      5, 2,     'X', 6, 2, [2,'öbcX'],    'Y', 7,2, [2,'öbcXY']);
+    DoTest('utf8 at start - Past',     7, 2,     'X', 8, 2, [2,'öbc  X'],  'Y', 9,2, [2,'öbc  XY']);
+
+    InsertFlag := False;
+    CaretPEol := False;
+    DoTest('utf8 at start - BOL',      1, 2,     'X', 2, 2, [2,'Xbc'],     'Y', 3,2, [2,'XYc']);
+    DoTest('utf8 at start - mid',      3, 2,     'X', 4, 2, [2,'öXc'],     'Y', 5,2, [2,'öXY']);
+    DoTest('utf8 at start - mid',      4, 2,     'X', 5, 2, [2,'öbX'],     'Y', 6,2, [2,'öbXY']);
+    DoTest('utf8 at start - EOL',      5, 2,     'X', 6, 2, [2,'öbcX'],    'Y', 7,2, [2,'öbcXY']);
+    CaretPEol := True;
+    DoTest('utf8 at start - EOL',      5, 2,     'X', 6, 2, [2,'öbcX'],    'Y', 7,2, [2,'öbcXY']);
+    DoTest('utf8 at start - Past',     7, 2,     'X', 8, 2, [2,'öbc  X'],  'Y', 9,2, [2,'öbc  XY']);
+    {%endregion}
+
+    {%region   utf8 2 byte Char}
+    InsertFlag := True;
+    CaretPEol := False;
+    DoTest('utf8 at start - 2byte utf8 - BOL',      1, 2,     'Ä', 3, 2, [2,'Äöbc'],    'Ü', 5,2, [2,'ÄÜöbc']);
+    DoTest('utf8 at start - 2byte utf8 - mid',      3, 2,     'Ä', 5, 2, [2,'öÄbc'],    'Ü', 7,2, [2,'öÄÜbc']);
+    DoTest('utf8 at start - 2byte utf8 - EOL',      5, 2,     'Ä', 7, 2, [2,'öbcÄ'],    'Ü', 9,2, [2,'öbcÄÜ']);
+    CaretPEol := True;
+    DoTest('utf8 at start - 2byte utf8 - EOL',      5, 2,     'Ä', 7, 2, [2,'öbcÄ'],    'Ü', 9,2, [2,'öbcÄÜ']);
+    DoTest('utf8 at start - 2byte utf8 - Past',     7, 2,     'Ä', 9, 2, [2,'öbc  Ä'],  'Ü',11,2, [2,'öbc  ÄÜ']);
+
+    InsertFlag := False;
+    CaretPEol := False;
+    DoTest('utf8 at start - 2byte utf8 - BOL',      1, 2,     'Ä', 3, 2, [2,'Äbc'],     'Ü', 5,2, [2,'ÄÜc']);
+    DoTest('utf8 at start - 2byte utf8 - mid',      3, 2,     'Ä', 5, 2, [2,'öÄc'],     'Ü', 7,2, [2,'öÄÜ']);
+    DoTest('utf8 at start - 2byte utf8 - mid',      4, 2,     'Ä', 6, 2, [2,'öbÄ'],     'Ü', 8,2, [2,'öbÄÜ']);
+    DoTest('utf8 at start - 2byte utf8 - EOL',      5, 2,     'Ä', 7, 2, [2,'öbcÄ'],    'Ü', 9,2, [2,'öbcÄÜ']);
+    CaretPEol := True;
+    DoTest('utf8 at start - 2byte utf8 - EOL',      5, 2,     'Ä', 7, 2, [2,'öbcÄ'],    'Ü', 9,2, [2,'öbcÄÜ']);
+    DoTest('utf8 at start - 2byte utf8 - Past',     7, 2,     'Ä', 9, 2, [2,'öbc  Ä'],  'Ü',11,2, [2,'öbc  ÄÜ']);
+    {%endregion}
+
+  {%endregion}
+
+  {%region  Line with tab at start}
+    {%region   Normal Char}
+    InsertFlag := True;
+    CaretPEol := False;
+    // Phys start pos
+    DoTest('tab at start - BOL',       1, 3,     'X', 2, 3, [3,'X'#9'abc'],    'Y', 3,3, [3,'XY'#9'abc'], True);
+    DoTest('tab at start - after tab', 7, 3,     'X', 3, 3, [3,#9'Xabc'],      'Y', 4,3, [3,#9'XYabc'],   True);
+    DoTest('tab at start - in tab',    3, 3,     'X', 2, 3, [3,'X'#9'abc'],    'Y', 3,3, [3,'XY'#9'abc'], True);
+
+    InsertFlag := False;
+    CaretPEol := False;
+    DoTest('tab at start - BOL',       1, 3,     'X', 2, 3, [3,'Xabc'],        'Y', 3,3, [3,'XYbc'],    True);
+    DoTest('tab at start - after tab', 7, 3,     'X', 3, 3, [3,#9'Xbc'],       'Y', 4,3, [3,#9'XYc'],   True);
+    DoTest('tab at start - in tab',    3, 3,     'X', 2, 3, [3,'Xabc'],        'Y', 3,3, [3,'XYbc'],    True);
+    {%endregion}
+  {%endregion}
+
+  // TODO:  2 byte at EOL
+  // TODO Overwrite selection
 end;
 
 procedure TTestBasicSynEdit.TestPhysicalLogical;
