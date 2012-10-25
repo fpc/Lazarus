@@ -562,7 +562,7 @@ begin
   if (Interval > 0) and (TimerFunc <> nil) then begin
     New(TimerInfo);
     TimerInfo^.TimerFunc := TimerFunc;
-    TimerInfo^.TimerID := Windows.SetTimer(0, 0, Interval, @TimerCallBackProc);
+    TimerInfo^.TimerID := Win32Extra.SetTimer(0, 0, Interval, @TimerCallBackProc);
     if TimerInfo^.TimerID=0 then
       dispose(TimerInfo)
     else begin
@@ -587,9 +587,9 @@ begin
   while (n>0) do begin
     dec(n);
     TimerInfo := FTimerData[n];
-    if (TimerInfo^.TimerID=UINT(TimerHandle)) then
+    if (TimerInfo^.TimerID=UINT_PTR(TimerHandle)) then
     begin
-      Result := Boolean(Windows.KillTimer(0, UINT(TimerHandle)));
+      Result := Boolean(Win32Extra.KillTimer(0, UINT_PTR(TimerHandle)));
       FTimerData.Delete(n);
       Dispose(TimerInfo);
     end;

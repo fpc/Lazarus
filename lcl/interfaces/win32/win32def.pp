@@ -40,7 +40,7 @@ type
   { lazarus win32 Interface definition for additional timer data needed to find the callback}
   PWin32TimerInfo = ^TWin32Timerinfo;
   TWin32TimerInfo = record
-    TimerID: UINT;         // the windows timer ID for this timer
+    TimerID: UINT_PTR;       // the windows timer ID for this timer
     TimerFunc: TWSTimerProc; // owner function to handle timer
   end;
 
