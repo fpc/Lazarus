@@ -211,11 +211,12 @@ function PolyBezier(DC: HDC; Points: PPoint;  NumPts: Integer; Filled, Continuou
 function Polygon(DC: HDC; Points: PPoint;  NumPts: Integer; Winding: boolean): boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function Polyline(DC: HDC; Points: PPoint; NumPts: Integer): boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function PostMessage(Handle: HWND; Msg: Cardinal; WParam: WParam; LParam: LParam): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
-function PtInRegion(RGN: HRGN; X, Y: Integer) : Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
+function PtInRegion(RGN: HRGN; X, Y: Integer): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 //function PtInRect --> independent
 
 function RealizePalette(DC: HDC): Cardinal; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function Rectangle(DC: HDC; X1, Y1, X2, Y2: Integer): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
+function RectInRegion(RGN: HRGN; ARect: TRect): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function RectVisible(DC: HDC; const ARect: TRect): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function RedrawWindow(Wnd: HWND; lprcUpdate: PRECT; hrgnUpdate: HRGN; flags: UINT): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function ReleaseCapture : Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
@@ -336,7 +337,6 @@ function OffsetRect(var Rect: TRect; dx,dy: Integer): Boolean; inline;
 function PtInRect(const Rect : TRect; const Point : TPoint) : Boolean; inline;
 function PointToSmallPoint(const P : TPoint) : TSmallPoint; inline;
 
-function RectInRegion(RGN: HRGN; ARect: TRect): Boolean;
 function RGB(R, G, B : Byte) : TColorRef; inline;
 
 function ScrollWindow(hWnd: HWND; XAmount, YAmount: Integer; Rect, ClipRect: PRect): Boolean; inline;

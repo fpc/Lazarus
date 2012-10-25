@@ -6942,17 +6942,17 @@ begin
   {$ENDIF}
 end;
 
-// This could also be in the platform independent LCLIntf code.
-// Other widgetsets use an API call for this task.
-function TGtk2WidgetSet.PtInRegion(RGN: HRGN; X, Y: Integer) : Boolean;
-var
-  APoint: TPoint;
-  ARect : TRect;
+{------------------------------------------------------------------------------
+  Function: PtInRegion
+  Params:   RGN: HRGN; X, Y: Integer
+  Returns:  True if the specified point is in the region.
+
+  Determines whether the specified point is inside the specified region.
+ ------------------------------------------------------------------------------}
+function TGtk2WidgetSet.PtInRegion(RGN: HRGN; X, Y: Integer): Boolean;
 begin
-  GetRgnBox(RGN, @ARect);
-  APoint.X := X;
-  APoint.Y := Y;
-  Result := PtInRect(ARect, APoint);   // PtInRect is in LCLIntf
+  //todo: sanity checks for valid handle etc. eg. like CombineRgn
+  Result := gdk_region_point_in({%H-}PGdiObject(RGN)^.GDIRegionObject, X, Y);
 end;
 
 {------------------------------------------------------------------------------
@@ -6963,7 +6963,6 @@ end;
   Use RadialArc to draw an elliptically curved line with the current Pen. The
   values sx,sy, and ex,ey represent the starting and ending radial-points
   between which the Arc is drawn.
-
 ------------------------------------------------------------------------------}
 function TGtk2WidgetSet.RadialArc(DC: HDC; left, top, right, bottom,
   sx, sy, ex, ey: Integer): Boolean;
@@ -6979,7 +6978,6 @@ end;
   Use RadialChord to draw a filled Chord-shape on the canvas. The values sx,sy,
   and ex,ey represent the starting and ending radial-points between which
   the bounding-Arc is drawn.
-
 ------------------------------------------------------------------------------}
 function TGtk2WidgetSet.RadialChord(DC: HDC; x1, y1, x2, y2,
   sx, sy, ex, ey: Integer): Boolean;
@@ -6991,8 +6989,6 @@ end;
   Function: RealizePalette
   Params:  DC: HDC
   Returns: Nothing
-
-
  ------------------------------------------------------------------------------}
 function TGtk2WidgetSet.RealizePalette(DC: HDC): Cardinal;
 begin
@@ -7008,7 +7004,6 @@ end;
   Function: Rectangle
   Params:  DC: HDC; X1, Y1, X2, Y2: Integer
   Returns: Nothing
-
  ------------------------------------------------------------------------------}
 function TGtk2WidgetSet.Rectangle(DC: HDC; X1, Y1, X2, Y2: Integer): Boolean;
 var
@@ -7058,6 +7053,17 @@ begin
                           Left+DCOrigin.X, Top+DCOrigin.Y, Width, Height);
 
   {$IFDEF DebugGDKTraps}EndGDKErrorTrap;{$ENDIF}
+end;
+
+// Determines if the specified rectangle is within the boundaries of a region.
+function TGtk2WidgetSet.RectInRegion(RGN: HRGN; ARect: TRect): Boolean;
+var
+  AGdkRect: TGdkRectangle;
+begin
+  //todo: sanity checks for valid handle etc.
+  AGdkRect := GdkRectFromRect(ARect);
+  Result := gdk_region_rect_in({%H-}PGdiObject(RGN)^.GDIRegionObject, @AGdkRect)
+             = GDK_OVERLAP_RECTANGLE_IN;
 end;
 
 {------------------------------------------------------------------------------

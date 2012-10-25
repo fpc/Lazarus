@@ -2584,6 +2584,12 @@ begin
   //DebugLn(Format('Trace:< [TWinCEWidgetSet.Rectangle] DC:0x%x, X1:%d, Y1:%d, X2:%d, Y2:%d', [DC, X1, Y1, X2, Y2]));
 end;
 
+// Determines if the specified rectangle is within the boundaries of a region.
+function TWinCEWidgetSet.RectInRegion(RGN: HRGN; ARect: TRect): Boolean;
+begin
+  Result := Windows.RectInRegion(RGN, ARect);
+end;
+
 function TWinCEWidgetSet.RectVisible(dc : hdc; const ARect: TRect) : Boolean;
 begin
   Result := Boolean(Windows.RectVisible(DC, LPRECT(@ARect)^));

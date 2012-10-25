@@ -1646,7 +1646,7 @@ end;
 
 
  ------------------------------------------------------------------------------}
-function TWin32WidgetSet.GetClipRGN(DC : hDC; RGN : hRGN) : Integer;
+function TWin32WidgetSet.GetClipRGN(DC: hDC; RGN: hRGN): Longint;
 begin
   Result := Windows.GetClipRGN(DC, RGN);
 end;
@@ -2738,7 +2738,6 @@ end;
   Use RadialArc to draw an elliptically curved line with the current Pen. The
   values sx,sy, and ex,ey represent the starting and ending radial-points
   between which the Arc is drawn.
-
 ------------------------------------------------------------------------------}
 function TWin32WidgetSet.RadialArc(DC: HDC; left, top, right, bottom, sx, sy, ex, ey: Integer): Boolean;
 begin
@@ -2753,7 +2752,6 @@ end;
   Use RadialChord to draw a filled Chord-shape on the canvas. The values sx,sy,
   and ex,ey represent the starting and ending radial-points between which
   the bounding-Arc is drawn.
-
 ------------------------------------------------------------------------------}
 function TWin32WidgetSet.RadialChord(DC: HDC; x1, y1, x2, y2, sx, sy, ex, ey: Integer): Boolean;
 begin
@@ -2790,20 +2788,17 @@ begin
   Result := Boolean(Windows.Rectangle(DC, X1, Y1, X2, Y2));
 end;
 
+// Determines if the specified rectangle is within the boundaries of a region.
+function TWin32WidgetSet.RectInRegion(RGN: HRGN; ARect: TRect): Boolean;
+begin
+  Result := Windows.RectInRegion(RGN, ARect);
+end;
+
 function TWin32WidgetSet.RectVisible(dc : hdc; const ARect: TRect) : Boolean;
 begin
   Result := Windows.RectVisible(DC, LPRECT(@ARect)^);
 end;
 
-{------------------------------------------------------------------------------
-  Function: RedrawWindow
-  Params: Wnd:
-          lprcUpdate:
-          hrgnUpdate:
-          flags:
-  Returns:
-
- ------------------------------------------------------------------------------}
 function TWin32WidgetSet.RedrawWindow(Wnd: HWND; lprcUpdate: PRECT; hrgnUpdate: HRGN; flags: UINT): Boolean;
 begin
   Result := Windows.RedrawWindow(Wnd,lprcUpdate,hrgnUpdate,flags);
@@ -2814,7 +2809,6 @@ end;
   Params: Handle: Handle of the object
           Str: Name of the property to remove
   Returns: The handle of the property (0=failure)
-
  ------------------------------------------------------------------------------}
 function TWin32WidgetSet.RemoveProp(Handle: hwnd; Str: PChar): THandle;
 begin

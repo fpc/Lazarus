@@ -182,6 +182,7 @@ function PostMessage(Handle: HWND; Msg: Cardinal; wParam: WParam; lParam: LParam
 function RadialChord(DC: HDC; x,y,width,height,sx,sy,ex,ey : Integer): Boolean; override;
 function RealizePalette(DC: HDC): Cardinal; override;}
 function Rectangle(DC: HDC; X1, Y1, X2, Y2: Integer): Boolean; override;
+function RectInRegion(RGN: HRGN; ARect: TRect): Boolean; override;
 function RectVisible(dc : hdc; const ARect: TRect) : Boolean; override;
 function RedrawWindow(Wnd: HWND; lprcUpdate: PRECT; hrgnUpdate: HRGN; flags: UINT): Boolean; override;
 {function RegroupMenuItem(hndMenu: HMENU; GroupIndex: integer): Boolean; override;}

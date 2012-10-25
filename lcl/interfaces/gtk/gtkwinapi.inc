@@ -7586,6 +7586,17 @@ begin
   //DebugLn(Format('trace:< [TGtkWidgetSet.Rectangle] DC:0x%x, X1:%d, Y1:%d, X2:%d, Y2:%d', [DC, X1, Y1, X2, Y2]));
 end;
 
+// Determines if the specified rectangle is within the boundaries of a region.
+function TGtkWidgetSet.RectInRegion(RGN: HRGN; ARect: TRect): Boolean;
+var
+  AGdkRect: TGdkRectangle;
+begin
+  //todo: sanity checks for valid handle etc.
+  AGdkRect := GdkRectFromRect(ARect);
+  Result := gdk_region_rect_in({%H-}PGdiObject(RGN)^.GDIRegionObject, @AGdkRect)
+             = GDK_OVERLAP_RECTANGLE_IN;
+end;
+
 {------------------------------------------------------------------------------
   Function: RectVisible
   Params:  dc : hdc; ARect: TRect

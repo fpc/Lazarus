@@ -756,9 +756,14 @@ begin
   Result := WidgetSet.Rectangle(DC, X1, Y1, X2, Y2);
 end;
 
+function RectInRegion(RGN: HRGN; ARect: TRect): Boolean;
+begin
+  Result := WidgetSet.RectInRegion(RGN, ARect);
+end;
+
 function RectVisible(dc : hdc; const ARect: TRect) : Boolean;
 begin
-  Result := WidgetSet.RectVisible(dc,ARect);
+  Result := WidgetSet.RectVisible(dc, ARect);
 end;
 
 function RedrawWindow(Wnd: HWND; lprcUpdate: PRECT; hrgnUpdate: HRGN; flags: UINT): Boolean;
@@ -1497,24 +1502,6 @@ begin
              (Point.Y >= Rect.Top)  and
              (Point.Y < Rect.Bottom)
           );
-end;
-
-// This is found in Windows API but can be implemented in platform independent way.
-function RectInRegion(RGN: HRGN; ARect: TRect): Boolean;
-var
-  RectRgn, EmptyRgn: HRGN;
-begin
-  RectRgn := CreateRectRgnIndirect(ARect);
-  try
-    EmptyRgn := CreateEmptyRegion;
-    try
-      Result := CombineRgn(EmptyRgn, RectRgn, RGN, RGN_AND) <> NULLREGION;
-    finally
-      DeleteObject(EmptyRgn);
-    end;
-  finally
-    DeleteObject(RectRgn);
-  end;
 end;
 
 {------------------------------------------------------------------------------

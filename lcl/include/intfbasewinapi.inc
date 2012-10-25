@@ -1728,6 +1728,30 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  Determines if the specified rectangle is within the boundaries of a region.
+  Default implementation, widgetsets will implement their own versions
+ ------------------------------------------------------------------------------}
+function TWidgetSet.RectInRegion(RGN: HRGN; ARect: TRect): Boolean;
+var
+  RectRgn, EmptyRgn: HRGN;
+begin
+  with ARect do
+    RectRgn := CreateRectRgn(Left,Top,Right,Bottom);
+  try
+    EmptyRgn := CreateEmptyRegion;
+    try
+      Result := CombineRgn(EmptyRgn, RectRgn, RGN, RGN_AND) <> NULLREGION;
+      if Result then
+        Result := CombineRgn(EmptyRgn, EmptyRgn, RectRgn, RGN_XOR) = NULLREGION;
+    finally
+      DeleteObject(EmptyRgn);
+    end;
+  finally
+    DeleteObject(RectRgn);
+  end;
+end;
+
+{------------------------------------------------------------------------------
   Function: RectVisible
   Params:  dc : hdc; ARect: TRect
   Returns: True if ARect is not completely clipped away.
