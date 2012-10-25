@@ -415,8 +415,8 @@ type
   //todo: remove as soon the last supported fpc version has updated header (rev 22526)
   TIMERPROC = procedure (hWnd: HWND; uMsg: UINT; idEvent: UINT_PTR; dwTime: DWORD); stdcall;
 
-  function SetTimer(hWnd:HWND; nIDEvent:UINT_PTR; uElapse:UINT; lpTimerFunc: TIMERPROC): UINT_PTR; external 'user32' name 'SetTimer';
-  function KillTimer(hWnd:HWND; uIDEvent:UINT_PTR):WINBOOL; external 'user32' name 'KillTimer';
+  function SetTimer(hWnd:HWND; nIDEvent:UINT_PTR; uElapse:UINT; lpTimerFunc: TIMERPROC): UINT_PTR; stdcall; external 'user32' name 'SetTimer';
+  function KillTimer(hWnd:HWND; uIDEvent:UINT_PTR):WINBOOL; stdcall; external 'user32' name 'KillTimer';
 
 implementation
 
