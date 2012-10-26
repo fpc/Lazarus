@@ -14,7 +14,7 @@ procedure x64call(
   _RCX, _RDX, _R8, _R9: IPointer;
   var _XMM0: Double;
   _XMM1, _XMM2, _XMM3: Double;
-  aStack: Pointer; aItems: IntPtr); assembler; {$IFDEF FPC}nostackframe;{$ENDIF}
+  aStack: Pointer; aItems: {$IFDEF FPC}PtrUInt{$ELSE}IntPtr{$ENDIF}); assembler; {$IFDEF FPC}nostackframe;{$ENDIF}
 asm
 (* Registers:
     RCX: Address
@@ -37,7 +37,7 @@ asm
   mov rdx, aStack
   jmp @compareitems
 @work:
-  push [rdx]
+  push qword ptr [rdx]
   dec rcx
   sub rdx,8
 @compareitems:
