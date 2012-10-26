@@ -227,7 +227,7 @@ begin
     RegisterMethod('procedure PasteFromClipboard;');
     RegisterProperty('CanPaste', 'Boolean', iptR);
 
-    // Logigal / Physical
+    // Logical / Physical
     RegisterMethod('function LogicalToPhysicalPos(const p: TPoint): TPoint;');
     RegisterMethod('function LogicalToPhysicalCol(const Line: String; Index, LogicalPos : integer): integer;');
     RegisterMethod('function PhysicalToLogicalPos(const p: TPoint): TPoint;');
@@ -281,7 +281,7 @@ begin
     RegisterMethod(@TSynEdit.PasteFromClipboard, 'PASTEFROMCLIPBOARD');
     RegisterPropertyHelper(@TSynEdit_CanPaste_R, nil, 'CANPASTE');
 
-    // Logigal / Physical
+    // Logical / Physical
     RegisterMethod(@TSynEdit.LogicalToPhysicalPos, 'LOGICALTOPHYSICALPOS');
     RegisterMethod(@TSynEdit.LogicalToPhysicalCol, 'LOGICALTOPHYSICALCOL');
     RegisterMethod(@TSynEdit.PhysicalToLogicalPos, 'PHYSICALTOLOGICALPOS');
