@@ -91,7 +91,6 @@ type
     FLastFormActivated: TCustomForm;
   protected
     FNeedUpdateHighlighters: boolean;
-    FLastWindowMenuUpdate: TDateTime;
 
     function CreateMenuSeparator : TMenuItem;
     procedure CreateMenuItem(Section: TIDEMenuSection;
@@ -131,6 +130,7 @@ type
     procedure mnuWindowSourceItemClick(Sender: TObject); virtual;
 
     procedure ConnectOutputFilter;
+    procedure UpdateWindowMenu;
 
   public
     function DoResetToolStatus(AFlags: TResetToolFlags): boolean; virtual; abstract;
@@ -185,7 +185,6 @@ type
 
     function DoOpenMacroFile(Sender: TObject; const AFilename: string): TModalResult; override;
 
-    procedure UpdateWindowMenu(Immediately: boolean = false); override;
     procedure SetRecentSubMenu(Section: TIDEMenuSection; FileList: TStringList;
                                OnClickEvent: TNotifyEvent); override;
     procedure UpdateHighlighters(Immediately: boolean = false); override;
@@ -451,7 +450,7 @@ end;
 
 procedure TMainIDEBase.DoMnuWindowClicked(Sender: TObject);
 begin
-  UpdateWindowMenu(True);
+  UpdateWindowMenu;
 end;
 
 function TMainIDEBase.CreateMenuSeparator : TMenuItem;
@@ -1226,9 +1225,7 @@ begin
                   [ofOnlyIfExists,ofAddToRecent,ofRegularFile,ofConvertMacros]);
 end;
 
-procedure TMainIDEBase.UpdateWindowMenu(Immediately: boolean = false);
-const
-  UpdatePause = 5/864000; // half a second
+procedure TMainIDEBase.UpdateWindowMenu;
 
   function GetMenuItem(Index: Integer; ASection: TIDEMenuSection): TIDEMenuItem; inline;
   begin
@@ -1253,20 +1250,13 @@ var
   i, j, ItemCount, ItemCountProject, ItemCountOther: Integer;
   CurMenuItem: TIDEMenuItem;
   AForm: TForm;
-  t: TDateTime;
   EdList: TStringList;
   EditorCur: TSourceEditor;
   P: TIDEPackage;
   M: TIDEMenuSection;
   s: String;
 begin
-  t:=Now;
-  if (not Immediately) then begin
-    if (FLastWindowMenuUpdate<>0) and (t-FLastWindowMenuUpdate<UpdatePause) then
-      exit;
-  end;
-  FLastWindowMenuUpdate:=t;
-
+  DebugLn('TMainIDEBase.UpdateWindowMenu: enter');
   WindowsList:=TFPList.Create;
   // add typical IDE windows at the start of the list
   for i := 0 to SourceEditorManager.SourceWindowCount - 1 do
@@ -1294,7 +1284,6 @@ begin
     if (AForm.Designer<>nil) and (WindowsList.IndexOf(AForm)<0) then
       WindowsList.Add(AForm);
   end;
-
   // create menuitems
   ItemCount := WindowsList.Count;
   for i:=0 to WindowsList.Count-1 do
@@ -1304,7 +1293,6 @@ begin
     CurMenuItem.MenuItem.Checked := WindowMenuActiveForm = TCustomForm(WindowsList[i]);
     CurMenuItem.OnClick:=@mnuWindowItemClick;
   end;
-
   //create source page menuitems
   itmTabListProject.Visible := False;
   itmTabListOther.Visible := False;
@@ -1326,12 +1314,10 @@ begin
                        TObject(PtrUInt(i))
                       );
     end;
-
     for i := 0 to EdList.Count - 1 do
     begin
       j := PtrUInt(EdList.Objects[i]);
       EditorCur := SourceEditorManager.SourceEditors[j];
-
       if (EditorCur.GetProjectFile <> nil) and (EditorCur.GetProjectFile.IsPartOfProject) then begin
         M := itmTabListProject;
         CurMenuItem := GetMenuItem(ItemCountProject, M);
@@ -1351,9 +1337,7 @@ begin
           inc(ItemCountOther);
         end;
       end;
-
       M.Visible := True;
-
       if EditorCur.SharedEditorCount > 1 then
         CurMenuItem.Caption := EditorCur.PageName + ' ('+TForm(EditorCur.Owner).Caption+')'
         //CurMenuItem.Caption := EditorCur.PageName
@@ -1367,11 +1351,9 @@ begin
       CurMenuItem.OnClick := @mnuWindowSourceItemClick;
       CurMenuItem.Tag := j;
     end;
-
     EdList.Free;
     ClearMenuItem(ItemCountProject, itmTabListProject);
     ClearMenuItem(ItemCountOther, itmTabListOther);
-
     for i := 0 to itmTabListPackage.Count - 1 do begin
       if itmTabListPackage.Items[i] is TIDEMenuSection then begin
         M := itmTabListPackage.Items[i] as TIDEMenuSection;
@@ -1380,19 +1362,14 @@ begin
     end;
     itmTabListProject.Caption := dlgEnvProject +  Format(' (%d)', [itmTabListProject.Count]);
     itmTabListOther.Caption := lisMEOther +  Format(' (%d)', [itmTabListOther.Count]);
-
-
     if itmTabListPackage.TopSeparator <> nil then
       itmTabListPackage.TopSeparator.Visible := False;
     if itmTabListOther.TopSeparator <> nil then
       itmTabListOther.TopSeparator.Visible := False;
   end;
-
   // remove unused menuitems
   ClearMenuItem(ItemCount, itmWindowLists);
-
-    // clean up
-  WindowsList.Free;
+  WindowsList.Free;           // clean up
 end;
 
 procedure TMainIDEBase.SetRecentSubMenu(Section: TIDEMenuSection;

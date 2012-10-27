@@ -183,7 +183,6 @@ type
     function DoFixupComponentReferences(RootComponent: TComponent;
                         OpenFlags: TOpenFlags): TModalResult; virtual; abstract;
 
-    procedure UpdateWindowMenu(Immediately: boolean = false); virtual; abstract;
     procedure SaveEnvironment(Immediately: boolean = false); virtual; abstract;
     procedure UpdateHighlighters(Immediately: boolean = false); virtual; abstract;
     procedure SetRecentSubMenu(Section: TIDEMenuSection; FileList: TStringList;

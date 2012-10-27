@@ -917,8 +917,6 @@ begin
     ResultsWindow:= ListPage;
     try
       Show; // floating window, not dockable
-      // update Window Menu, the OnIdle event does not occur while searching
-      MainIDEInterface.UpdateWindowMenu;
       Cnt:= DoSearch;
     except
       on E: ERegExpr do
