@@ -1430,8 +1430,6 @@ begin
 
   // load package configs
   HelpBoss.LoadHelpOptions;
-
-  UpdateWindowMenu(true);
 end;
 
 procedure TMainIDE.StartIDE;
@@ -2199,7 +2197,6 @@ begin
         DoNewProject(ProjectDescriptorApplication);
       end;
     end;
-    UpdateWindowMenu(true);
 
     // load the cmd line files
     if CmdLineFiles<>nil then begin
@@ -12518,7 +12515,6 @@ begin
   then
     exit;
   WindowMenuActiveForm := Screen.ActiveForm;
-  UpdateWindowMenu(True);
 end;
 
 procedure TMainIDE.OnScreenRemoveForm(Sender: TObject; AForm: TCustomForm);
