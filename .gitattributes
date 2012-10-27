@@ -3068,6 +3068,7 @@ components/tachart/tachartteechart.pas svneol=native#text/pascal
 components/tachart/tachartutils.pas svneol=native#text/plain
 components/tachart/tachartwmf.lpk svneol=native#text/plain
 components/tachart/tachartwmf.pas svneol=native#text/pascal
+components/tachart/tacustomfuncseries.pas svneol=native#text/pascal
 components/tachart/tacustomseries.pas svneol=native#text/plain
 components/tachart/tacustomsource.pas svneol=native#text/pascal
 components/tachart/tadatatools.pas svneol=native#text/pascal
