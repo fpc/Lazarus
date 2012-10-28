@@ -620,9 +620,9 @@ begin
   while (n>0) do begin
     dec(n);
     TimerInfo := FTimerData[n];
-    if (TimerInfo^.TimerID=UINT(TimerHandle)) then
+    if (TimerInfo^.TimerID=UINT_PTR(TimerHandle)) then
     begin
-      Result := Boolean(Windows.KillTimer(0, UINT(TimerHandle)));
+      Result := Boolean(Windows.KillTimer(0, UINT_PTR(TimerHandle)));
       FTimerData.Delete(n);
       Dispose(TimerInfo);
     end;
