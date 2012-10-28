@@ -1287,7 +1287,7 @@ end;
  Calls the timerfunction in the Timer Object in the LCL
  ------------------------------------------------------------------------------}
 
-procedure TimerCallBackProc(window_hwnd : hwnd; msg , idEvent: UINT; dwTime: DWORD);
+procedure TimerCallBackProc(window_hwnd : hwnd; msg , idEvent: UINT_PTR; dwTime: DWORD);
  {$ifdef win32}stdcall{$else}cdecl{$endif};
 Var
   TimerInfo: PWinCETimerInfo;
