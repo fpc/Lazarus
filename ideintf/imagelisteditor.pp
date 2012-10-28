@@ -237,16 +237,14 @@ var
 begin
   if OpenDialog.Execute then
   begin
+    ImageList.BeginUpdate;
     TreeView.BeginUpdate;
     try
-      ImageList.BeginUpdate;
-      try
-        for I := 0 to OpenDialog.Files.Count - 1 do AddImageToList(OpenDialog.Files[I]);
-      finally
-        ImageList.EndUpdate;
-      end;
+      for I := 0 to OpenDialog.Files.Count - 1 do
+        AddImageToList(TrimRight(OpenDialog.Files[I]));
     finally
       TreeView.EndUpdate;
+      ImageList.EndUpdate;
     end;
     TreeView.SetFocus;
   end;
