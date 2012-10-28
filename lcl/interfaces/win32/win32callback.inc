@@ -2728,7 +2728,7 @@ end;
 
  Calls the timerfunction in the Timer Object in the LCL
  ------------------------------------------------------------------------------}
-procedure TimerCallBackProc(window_hwnd : hwnd; msg : DWORD; idEvent: UINT; dwTime: DWORD); stdcall;
+procedure TimerCallBackProc(window_hwnd : hwnd; msg : DWORD; idEvent: UINT_PTR; dwTime: DWORD); stdcall;
 Var
   TimerInfo: PWin32TimerInfo;
   n: Integer;
