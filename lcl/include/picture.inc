@@ -700,7 +700,7 @@ function TPicture.FindGraphicClassWithFileExt(const Ext: string;
 var
   FileExt: String;
 begin
-  FileExt := Trim(Ext);
+  FileExt := Ext;
   if (FileExt <> '') and (FileExt[1] = '.') then
     FileExt := Copy(FileExt, 2, length(FileExt));
   Result := GetPicFileFormats.FindExt(FileExt);
