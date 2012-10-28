@@ -6,7 +6,7 @@ interface
  
 uses
   Classes, ExtCtrls, StdCtrls, SysUtils, TAGraph, TAFuncSeries,
-  TASources, Forms, Controls, Graphics, Dialogs, TATypes, TATools, types;
+  TASources, Forms, Controls, Graphics, Dialogs, TATypes, TATools, Types;
  
 type
  
@@ -49,11 +49,8 @@ type
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
   private
-    { private declarations }
     ZoomHistory: TChartExtentHistory;
     procedure PopulateColorSource;
-  public
-    { public declarations }
   end;
  
 var
@@ -64,6 +61,7 @@ implementation
 {$R *.lfm}
  
 uses
+  StrUtils,
   TAChartUtils, TAGeometry;
  
 const
@@ -71,22 +69,21 @@ const
   MANDELBROT_ESCAPE_RADIUS = 2.0;
   MANDELBROT_LIMIT = sqr(MANDELBROT_ESCAPE_RADIUS);
  
-function InMandelBrotSet(c: TDoublePoint; out Iterations: Integer;
-  out z: TDoublePoint): Boolean;
+function InMandelBrotSet(
+  AC: TDoublePoint; out AIterations: Integer; out AZ: TDoublePoint): Boolean;
 var
   j: Integer;
 begin
-  Iterations := 0;
-  z := DoublePoint(0.0, 0.0);
-  for j:=0 to MANDELBROT_NUM_ITERATIONS-1 do begin
-    z := DoublePoint(
-      sqr(z.X) - sqr(z.Y) + c.X,
-      2 * z.X * z.Y + c.Y
-    );
-    if sqr(z.X) + sqr(z.Y) > MANDELBROT_LIMIT then
-      // point did escape --> c is not in Mandelbrot set
+  AIterations := 0;
+  AZ := DoublePoint(0.0, 0.0);
+  for j := 0 to MANDELBROT_NUM_ITERATIONS - 1 do begin
+    AZ := DoublePoint(
+      Sqr(AZ.X) - Sqr(AZ.Y) + AC.X,
+      2 * AZ.X * AZ.Y + AC.Y);
+    if Sqr(AZ.X) + Sqr(AZ.Y) > MANDELBROT_LIMIT then
+      // point did escape --> AC is not in Mandelbrot set
       exit(false);
-    Inc(Iterations);
+    AIterations += 1;
   end;
   Result := true;
 end;
@@ -105,8 +102,8 @@ begin
   ZoomHistory.Free;
 end;
  
-procedure TForm1.Chart1ColorMapSeries1Calculate(const AX, AY: Double;
-  out AZ: Double);
+procedure TForm1.Chart1ColorMapSeries1Calculate(
+  const AX, AY: Double; out AZ: Double);
 var
   iterations: Integer;
   z: TDoublePoint;
@@ -122,43 +119,44 @@ end;
 procedure TForm1.Chart1ExtentChanged(ASender: TChart);
 var
   cex, fex: TDoubleRect;
-  factor: double;
+  factor: Double;
 begin
-  cex := Chart1.CurrentExtent;
-  fex := Chart1.GetFullExtent;
+  cex := ASender.CurrentExtent;
+  fex := ASender.GetFullExtent;
   if cex.b.x = cex.a.x then exit;
- 
+
   factor := (fex.b.x - fex.a.x) / (cex.b.x - cex.a.x);
-  if factor > 1e6 then
-    LblMagnification.Caption := Format('Magnification: %.0e', [factor])
-  else
-    LblMagnification.Caption := Format('Magnification: %0.n', [factor]);
- 
+  LblMagnification.Caption :=
+    'Magnification: ' + Format(IfThen(factor > 1e6, '%.0e', '%0.g'), [factor]);
   LblHistoryCount.Caption := Format('History count: %d', [ZoomHistory.Count]);
 end;
 
-procedure TForm1.ChartToolset1PanDragTool1AfterMouseDown(ATool: TChartTool;
-  APoint: TPoint);
+procedure TForm1.ChartToolset1PanDragTool1AfterMouseDown(
+  ATool: TChartTool; APoint: TPoint);
 begin
+  Unused(ATool, APoint);
   ZoomHistory.Add(Chart1.PrevLogicalExtent);
 end;
  
-procedure TForm1.ChartToolset1UserDefinedTool1AfterMouseUp(ATool: TChartTool;
-  APoint: TPoint);
+procedure TForm1.ChartToolset1UserDefinedTool1AfterMouseUp(
+  ATool: TChartTool; APoint: TPoint);
 begin
+  Unused(ATool, APoint);
   if ZoomHistory.Count > 0 then
     Chart1.LogicalExtent := ZoomHistory.Pop;
 end;
  
-procedure TForm1.ChartToolset1UserDefinedTool2AfterMouseUp(ATool: TChartTool;
-  APoint: TPoint);
+procedure TForm1.ChartToolset1UserDefinedTool2AfterMouseUp(
+  ATool: TChartTool; APoint: TPoint);
 begin
+  Unused(ATool, APoint);
   Chart1.ZoomFull;
 end;
  
-procedure TForm1.ChartToolset1ZoomDragTool1AfterMouseUp(ATool: TChartTool;
-  APoint: TPoint);
+procedure TForm1.ChartToolset1ZoomDragTool1AfterMouseUp(
+  ATool: TChartTool; APoint: TPoint);
 begin
+  Unused(ATool, APoint);
   ZoomHistory.Add(Chart1.PrevLogicalExtent);
 end;
  
