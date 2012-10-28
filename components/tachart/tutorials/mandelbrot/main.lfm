@@ -1,0 +1,213 @@
+object Form1: TForm1
+  Left = 326
+  Height = 285
+  Top = 155
+  Width = 468
+  Caption = 'Form1'
+  ClientHeight = 285
+  ClientWidth = 468
+  OnCreate = FormCreate
+  OnDestroy = FormDestroy
+  LCLVersion = '1.1'
+  object Chart1: TChart
+    Left = 4
+    Height = 277
+    Top = 4
+    Width = 288
+    AxisList = <    
+      item
+        Visible = False
+        Minors = <>
+        Title.LabelFont.Orientation = 900
+      end    
+      item
+        Visible = False
+        Alignment = calBottom
+        Minors = <>
+      end>
+    Extent.UseXMax = True
+    Extent.UseXMin = True
+    Extent.UseYMax = True
+    Extent.UseYMin = True
+    Extent.XMax = 0.8
+    Extent.XMin = -2.2
+    Extent.YMax = 1.5
+    Extent.YMin = -1.5
+    Foot.Brush.Color = clBtnFace
+    Foot.Font.Color = clBlue
+    Proportional = True
+    Title.Brush.Color = clBtnFace
+    Title.Font.Color = clBlue
+    Title.Text.Strings = (
+      'TAChart'
+    )
+    Toolset = ChartToolset1
+    OnExtentChanged = Chart1ExtentChanged
+    Align = alClient
+    BorderSpacing.Around = 4
+    DoubleBuffered = True
+    ParentColor = False
+    object Chart1ColorMapSeries1: TColorMapSeries
+      ColorSource = ColorSource
+      Interpolate = True
+      OnCalculate = Chart1ColorMapSeries1Calculate
+      StepX = 1
+      StepY = 1
+    end
+  end
+  object Panel1: TPanel
+    Left = 296
+    Height = 285
+    Top = 0
+    Width = 172
+    Align = alRight
+    BevelOuter = bvNone
+    ClientHeight = 285
+    ClientWidth = 172
+    TabOrder = 1
+    object Panel2: TPanel
+      Left = 0
+      Height = 213
+      Top = 72
+      Width = 172
+      Align = alClient
+      BevelOuter = bvNone
+      ClientHeight = 213
+      ClientWidth = 172
+      TabOrder = 0
+      object Label2: TLabel
+        Left = 6
+        Height = 13
+        Top = 8
+        Width = 69
+        Caption = 'Instructions'
+        Font.Style = [fsBold]
+        ParentColor = False
+        ParentFont = False
+      end
+      object Label1: TLabel
+        Left = 6
+        Height = 13
+        Top = 37
+        Width = 45
+        Caption = 'Left-drag'
+        Font.Style = [fsItalic]
+        ParentColor = False
+        ParentFont = False
+      end
+      object Label3: TLabel
+        Left = 6
+        Height = 13
+        Top = 80
+        Width = 53
+        Caption = 'Middle-click'
+        Font.Style = [fsItalic]
+        ParentColor = False
+        ParentFont = False
+      end
+      object Label4: TLabel
+        Left = 6
+        Height = 13
+        Top = 120
+        Width = 97
+        Caption = 'Middle-click w/SHIFT'
+        Font.Style = [fsItalic]
+        ParentColor = False
+        ParentFont = False
+      end
+      object Label5: TLabel
+        Left = 6
+        Height = 13
+        Top = 161
+        Width = 51
+        Caption = 'Right-drag'
+        Font.Style = [fsItalic]
+        ParentColor = False
+        ParentFont = False
+      end
+      object Label6: TLabel
+        Left = 19
+        Height = 13
+        Top = 56
+        Width = 25
+        Caption = 'zoom'
+        ParentColor = False
+      end
+      object Label7: TLabel
+        Left = 22
+        Height = 13
+        Top = 96
+        Width = 81
+        Caption = 'unzoom (history)'
+        ParentColor = False
+      end
+      object Label8: TLabel
+        Left = 19
+        Height = 13
+        Top = 136
+        Width = 54
+        Caption = 'full unzoom'
+        ParentColor = False
+      end
+      object Label9: TLabel
+        Left = 19
+        Height = 13
+        Top = 177
+        Width = 18
+        Caption = 'pan'
+        ParentColor = False
+      end
+    end
+    object Panel3: TPanel
+      Left = 0
+      Height = 72
+      Top = 0
+      Width = 172
+      Align = alTop
+      BevelOuter = bvNone
+      ClientHeight = 72
+      ClientWidth = 172
+      TabOrder = 1
+      object LblMagnification: TLabel
+        Left = 6
+        Height = 13
+        Top = 8
+        Width = 67
+        Caption = 'Magnification:'
+        ParentColor = False
+      end
+      object LblHistoryCount: TLabel
+        Left = 6
+        Height = 13
+        Top = 29
+        Width = 68
+        Caption = 'History count:'
+        ParentColor = False
+      end
+    end
+  end
+  object ColorSource: TListChartSource
+    left = 115
+    top = 57
+  end
+  object ChartToolset1: TChartToolset
+    left = 115
+    top = 120
+    object ChartToolset1ZoomDragTool1: TZoomDragTool
+      Shift = [ssLeft]
+      OnAfterMouseUp = ChartToolset1ZoomDragTool1AfterMouseUp
+    end
+    object ChartToolset1PanDragTool1: TPanDragTool
+      Shift = [ssRight]
+      OnAfterMouseDown = ChartToolset1PanDragTool1AfterMouseDown
+    end
+    object ChartToolset1UserDefinedTool1: TUserDefinedTool
+      Shift = [ssMiddle]
+      OnAfterMouseUp = ChartToolset1UserDefinedTool1AfterMouseUp
+    end
+    object ChartToolset1UserDefinedTool2: TUserDefinedTool
+      Shift = [ssShift, ssMiddle]
+      OnAfterMouseUp = ChartToolset1UserDefinedTool2AfterMouseUp
+    end
+  end
+end

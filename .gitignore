@@ -251,6 +251,14 @@ components/tachart/test/*.exe
 components/tachart/test/*.lps
 components/tachart/test/*.res
 components/tachart/test/lib
+components/tachart/tutorials/*.exe
+components/tachart/tutorials/*.lps
+components/tachart/tutorials/*.res
+components/tachart/tutorials/lib
+components/tachart/tutorials/mandelbrot/*.exe
+components/tachart/tutorials/mandelbrot/*.lps
+components/tachart/tutorials/mandelbrot/*.res
+components/tachart/tutorials/mandelbrot/lib
 components/tdbf/*.bak
 components/tdbf/languages/*.bak
 components/tdbf/languages/units
