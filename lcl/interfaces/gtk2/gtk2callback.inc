@@ -893,6 +893,7 @@ var
   CurFocusWidget: PGtkWidget;
 {$ENDIF}
   Mask: TGdkModifierType;
+  AInfo: PWidgetInfo;
 begin
   {$IFDEF EventTrace}
   EventTrace('focus', data);
@@ -959,6 +960,24 @@ begin
     end;
   end;
 
+  // we do not show selection (gtk behaviour) when widget is unfocused,
+  // so revert back CursorPos.issues #18164,#21897,#23182
+  if GtkWidgetIsA(Widget, gtk_type_entry) then
+  begin
+    AInfo := GetWidgetInfo(Widget);
+    if AInfo <> nil then
+    begin
+      if AInfo^.CursorPos > 0 then
+      begin
+        // gtk_entry_set_position(PGtkEntry(Widget), AInfo^.CursorPos);
+        // gtk_editable_select_region(PGtkEditable(Widget), AInfo^.CursorPos, AInfo^.CursorPos);
+        // do not trigger signals, only update pos for lcl
+        PGtkEntry(Widget)^.current_pos := AInfo^.CursorPos;
+        PGtkEntry(Widget)^.selection_bound := AInfo^.CursorPos;
+      end;
+    end;
+  end;
+
   ResetDefaultIMContext;
 
   //TODO: fill in old focus
@@ -1012,12 +1031,26 @@ begin
   end;
   DebugLn('');
   {$ENDIF}
-
-  // do not show selection when widget is unfocused
-  if GtkWidgetIsA(Widget, gtk_type_entry) then
-    gtk_editable_select_region(PGtkEditable(Widget), 0, 0);
-
   Result:=CallBackDefaultReturn;
+end;
+
+function GtkEntryDelayClearCursorPos(AGtkWidget: Pointer): GBoolean; cdecl;
+var
+  Info: PWidgetInfo;
+  AStart,AEnd: gint;
+begin
+  Result := AGtkWidget <> nil;
+  if AGtkWidget <> nil then
+  begin
+    g_idle_remove_by_data(AGtkWidget);
+    Info := GetWidgetInfo(AGtkWidget);
+    if Info <> nil then
+    begin
+      gtk_editable_get_selection_bounds(PGtkEditable(AGtkWidget),@AStart, @AEnd);
+      Info^.CursorPos := AEnd;
+      gtk_editable_select_region(PGtkEditable(AGtkWidget), 0, 0);
+    end;
+  end;
 end;
 
 function GTKKillFocusCBAfter(widget: PGtkWidget; event:PGdkEventFocus;
@@ -1075,6 +1108,11 @@ begin
   //DebugLn(Format('Trace:TODO: [gtkkillfocusCB] %s  finish', [TObject(Data).ClassName]));
   
   DeliverMessage(Data,  Mess);
+
+  // do not show selection when widget is unfocused
+  // issues #18164,#21897,#23182
+  if GtkWidgetIsA(Widget, gtk_type_entry) then
+    g_idle_add(@GtkEntryDelayClearCursorPos, Widget);
 
   Result:=true;
 end;
