@@ -1393,7 +1393,7 @@ begin
         ADrawer.BrushColor := ColorByValue(v);
       ADrawer.Rectangle(
         Max(pt.X, r.Left), Max(pt.Y, r.Top),
-        Min(next.X, r.Right + 1), Min(next.Y, r.Bottom + 1));
+        Min(next.X, r.Right) + 1, Min(next.Y, r.Bottom) + 1);
       pt.X := next.X;
     end;
     pt.Y := next.Y;
