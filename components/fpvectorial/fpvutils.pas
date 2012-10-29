@@ -46,7 +46,8 @@ procedure EllipticalArcToBezier(Xc, Yc, Rx, Ry, startAngle, endAngle: Double; va
 procedure CircularArcToBezier(Xc, Yc, R, startAngle, endAngle: Double; var P1, P2, P3, P4: T3DPoint);
 procedure AddBezierToPoints(P1, P2, P3, P4: T3DPoint; var Points: TPointsArray);
 procedure ConvertPathToPoints(APath: TPath; ADestX, ADestY: Integer; AMulX, AMulY: Double; var Points: TPointsArray);
-function Rotate2DPoint(P,Fix :TPoint; alpha:double): TPoint;
+function Rotate2DPoint(P, Fix: TPoint; alpha:double): TPoint;
+function Rotate3DPointInXY(P, Fix: T3DPoint; alpha:double): T3DPoint;
 // LCL-related routines
 {$ifdef USE_LCL_CANVAS}
 function ConvertPathToRegion(APath: TPath; ADestX, ADestY: Integer; AMulX, AMulY: Double): HRGN;
@@ -274,6 +275,7 @@ begin
   end;
 end;
 
+// Rotates a point P around Fix
 function Rotate2DPoint(P,Fix :TPoint; alpha:double): TPoint;
 var
   sinus, cosinus : Extended;
@@ -282,6 +284,18 @@ begin
   P.x := P.x - Fix.x;
   P.y := P.y - Fix.y;
   result.x := Round(p.x*cosinus + p.y*sinus)  +  fix.x ;
+  result.y := Round(-p.x*sinus + p.y*cosinus) +  Fix.y;
+end;
+
+// Rotates a point P around Fix
+function Rotate3DPointInXY(P, Fix: T3DPoint; alpha:double): T3DPoint;
+var
+  sinus, cosinus : Extended;
+begin
+  SinCos(alpha, sinus, cosinus);
+  P.x := P.x - Fix.x;
+  P.y := P.y - Fix.y;
+  result.x := Round(p.x*cosinus + p.y*sinus)  +  fix.x;
   result.y := Round(-p.x*sinus + p.y*cosinus) +  Fix.y;
 end;
 

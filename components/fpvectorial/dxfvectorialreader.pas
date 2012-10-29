@@ -1138,7 +1138,7 @@ Group codes Description
 220, 230 DXF: Y and Z values of extrusion direction  (optional)
 3 Dimension style name
 
-Aligned Dimension Group Codes
+*Aligned Dimension Group Codes
 
 100 Subclass marker (AcDbAlignedDimension)
 12 Insertion point for clones of a dimension-Baseline and Continue (in OCS) DXF: X value; APP: 3D point
@@ -1152,6 +1152,18 @@ Aligned Dimension Group Codes
   |        |
   |        |
   X->14,24 X->13,23
+
+*Radial and Diameter Dimension Group Codes
+http://www.autodesk.com/techpubs/autocad/acadr14/dxf/index.htm
+
+100 Subclass marker (AcDbRadialDimension or AcDbDiametricDimension)
+15  Definition point for diameter, radius, and angular dimensions (in WCS). DXF: X value; APP: 3D point
+25, 35  DXF: Y and Z values of definition point for diameter, radius, and angular dimensions (in WCS).
+40 Leader length for radius and diameter dimensions.
+
+The point (15,25,35) specifies the first point of the dimension line on the circle/arc
+and the point (10,20,30) specifies the point opposite the first point.
+The point (11,21,31) specifies the midpoint of the dimension text.
 }
 procedure TvDXFVectorialReader.ReadENTITIES_DIMENSION(ATokens: TDXFTokens;
   AData: TvVectorialPage; ADoc: TvVectorialDocument);
@@ -1160,7 +1172,10 @@ var
   i: Integer;
   // DIMENSION
   BaseLeft, BaseRight, DimensionRight, DimensionLeft, TmpPoint: T3DPoint;
+  lCenter, Dim1, Dim5: T3DPoint;
   IsAlignedDimension: Boolean = False;
+  IsRadialDimension: Boolean = False;
+  IsDiametricDimension: Boolean = False;
 begin
   // Initial values
   BaseLeft.X := 0;
@@ -1178,7 +1193,7 @@ begin
     CurToken := TDXFToken(ATokens.Items[i]);
 
     // Avoid an exception by previously checking if the conversion can be made
-    if CurToken.GroupCode in [10, 20, 30, 11, 21, 31, 13, 23, 33, 14, 24, 34] then
+    if CurToken.GroupCode in [10, 20, 30, 11, 21, 31, 13, 23, 33, 14, 24, 34, 15, 25, 35] then
     begin
       CurToken.FloatValue :=  StrToFloat(Trim(CurToken.StrValue), FPointSeparator);
     end;
@@ -1187,15 +1202,23 @@ begin
       10: DimensionRight.X := CurToken.FloatValue;
       20: DimensionRight.Y := CurToken.FloatValue;
       30: DimensionRight.Z := CurToken.FloatValue;
+      11: Dim1.X := CurToken.FloatValue;
+      21: Dim1.Y := CurToken.FloatValue;
+      31: Dim1.Z := CurToken.FloatValue;
       13: BaseRight.X := CurToken.FloatValue;
       23: BaseRight.Y := CurToken.FloatValue;
       33: BaseRight.Z := CurToken.FloatValue;
       14: BaseLeft.X := CurToken.FloatValue;
       24: BaseLeft.Y := CurToken.FloatValue;
       34: BaseLeft.Z := CurToken.FloatValue;
+      15: Dim5.X := CurToken.FloatValue;
+      25: Dim5.Y := CurToken.FloatValue;
+      35: Dim5.Z := CurToken.FloatValue;
       100:
       begin
-        if CurToken.StrValue = 'AcDbAlignedDimension' then IsAlignedDimension := True;
+        if CurToken.StrValue = 'AcDbAlignedDimension' then IsAlignedDimension := True
+        else if CurToken.StrValue = 'AcDbRadialDimension' then IsRadialDimension := True
+        else if CurToken.StrValue = 'AcDbDiametricDimension' then IsDiametricDimension := True;
       end;
     end;
   end;
@@ -1257,6 +1280,28 @@ begin
     end;
 
     AData.AddAlignedDimension(BaseLeft, BaseRight, DimensionLeft, DimensionRight);
+  end
+  // Radius and Diameters are very similar
+  else if IsRadialDimension or IsDiametricDimension then
+  begin
+    if IsRadialDimension then
+    begin
+      lCenter.X := DimensionRight.X;
+      lCenter.Y := DimensionRight.Y;
+      DimensionLeft.X := Dim5.X;
+      DimensionLeft.Y := Dim5.Y;
+    end
+    else
+    begin
+      lCenter.X := Dim1.X;
+      lCenter.Y := Dim1.Y;
+      DimensionLeft.X := Dim5.X;
+      DimensionLeft.Y := Dim5.Y;
+      DimensionRight.X := DimensionRight.X;
+      DimensionRight.Y := DimensionRight.Y;
+    end;
+
+    AData.AddRadialDimension(IsDiametricDimension, lCenter, DimensionLeft, DimensionRight);
   end;
 end;
 

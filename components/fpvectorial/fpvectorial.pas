@@ -338,6 +338,21 @@ type
   end;
 
   {@@
+
+  }
+
+  { TvRadialDimension }
+
+  TvRadialDimension = class(TvEntityWithPen)
+  public
+    // Mandatory fields
+    IsDiameter: Boolean; // If false, it is a radius, if true, it is a diameter
+    Center, DimensionLeft, DimensionRight: T3DPoint; // Diameter uses both, Radius uses only DImensionLeft
+    procedure Render(ADest: TFPCustomCanvas; ADestX: Integer = 0;
+      ADestY: Integer = 0; AMulX: Double = 1.0; AMulY: Double = 1.0); override;
+  end;
+
+  {@@
    Vectorial images can contain raster images inside them and this entity
    represents this.
 
@@ -614,6 +629,7 @@ type
     function AddInsert(AX, AY, AZ: Double; ABlock: TvBlock): TvInsert;
     // Dimensions
     procedure AddAlignedDimension(BaseLeft, BaseRight, DimLeft, DimRight: T3DPoint);
+    procedure AddRadialDimension(AIsDiameter: Boolean; ACenter, ADimLeft, ADimRight: T3DPoint);
     //
     function AddPoint(AX, AY, AZ: Double): TvPoint;
     { Debug methods }
@@ -1613,6 +1629,93 @@ begin
   ADest.TextOut(CoordToCanvasX(CurDim.DimensionRight.X), CoordToCanvasY(CurDim.DimensionRight.Y), 'DR');
   ADest.TextOut(CoordToCanvasX(CurDim.DimensionLeft.X), CoordToCanvasY(CurDim.DimensionLeft.Y), 'DL');
   ADest.TextOut(CoordToCanvasX(CurDim.BaseLeft.X), CoordToCanvasY(CurDim.BaseLeft.Y), 'BL');}
+end;
+
+{ TvRadialDimension }
+
+procedure TvRadialDimension.Render(ADest: TFPCustomCanvas; ADestX: Integer;
+  ADestY: Integer; AMulX: Double; AMulY: Double);
+
+  function CoordToCanvasX(ACoord: Double): Integer;
+  begin
+    Result := Round(ADestX + AmulX * ACoord);
+  end;
+
+  function CoordToCanvasY(ACoord: Double): Integer;
+  begin
+    Result := Round(ADestY + AmulY * ACoord);
+  end;
+
+var
+  Points: array of TPoint;
+  lAngle, lRadius: Double;
+  {$ifdef USE_LCL_CANVAS}
+  ALCLDest: TCanvas absolute ADest;
+  {$endif}
+begin
+  // The size of the radius of the circle
+  lRadius := sqrt(sqr(Center.X - DimensionLeft.X) + sqr(Center.Y - DimensionLeft.Y));
+  // The angle to the first dimension
+  lAngle := arctan((DimensionLeft.Y - Center.Y) / (DimensionLeft.X - Center.X));
+
+  // Get an arrow in the right part of the circle
+  SetLength(Points, 3);
+  ADest.Brush.FPColor := colBlack;
+  ADest.Brush.Style := bsSolid;
+  Points[0] := Point(CoordToCanvasX(Center.X + lRadius),     CoordToCanvasY(Center.Y));
+  Points[1] := Point(CoordToCanvasX(Center.X + lRadius*0.8), CoordToCanvasY(Center.Y - lRadius*0.1));
+  Points[2] := Point(CoordToCanvasX(Center.X + lRadius*0.8), CoordToCanvasY(Center.Y + lRadius*0.1));
+  // Now rotate it to the actual position
+  Points[0] := Rotate2DPoint(Points[0], Point(CoordToCanvasX(Center.X), CoordToCanvasY(Center.Y)),  lAngle);
+  Points[1] := Rotate2DPoint(Points[1], Point(CoordToCanvasX(Center.X),  CoordToCanvasY(Center.Y)), lAngle);
+  Points[2] := Rotate2DPoint(Points[2], Point(CoordToCanvasX(Center.X),  CoordToCanvasY(Center.Y)), lAngle);
+
+  if not IsDiameter then
+  begin
+    // Basic line
+    ADest.MoveTo(CoordToCanvasX(Center.X), CoordToCanvasY(Center.Y));
+    ADest.LineTo(CoordToCanvasX(DimensionLeft.X), CoordToCanvasY(DimensionLeft.Y));
+
+    // Draw the arrow
+    ADest.Polygon(Points);
+    ADest.Brush.Style := bsClear;
+
+    // Dimension text
+    Points[0].X := CoordToCanvasX(Center.X);
+    Points[0].Y := CoordToCanvasY(Center.Y);
+    ADest.Font.Size := 10;
+    ADest.TextOut(Points[0].X, Points[0].Y, Format('%.1f', [lRadius]));
+  end
+  else
+  begin
+    // Basic line
+    ADest.MoveTo(CoordToCanvasX(DimensionLeft.X), CoordToCanvasY(DimensionLeft.Y));
+    ADest.LineTo(CoordToCanvasX(DimensionRight.X), CoordToCanvasY(DimensionRight.Y));
+
+    // Draw the first arrow
+    ADest.Polygon(Points);
+    ADest.Brush.Style := bsClear;
+
+    // And the second
+    Points[0] := Point(CoordToCanvasX(Center.X + lRadius),     CoordToCanvasY(Center.Y));
+    Points[1] := Point(CoordToCanvasX(Center.X + lRadius*0.8), CoordToCanvasY(Center.Y - lRadius*0.1));
+    Points[2] := Point(CoordToCanvasX(Center.X + lRadius*0.8), CoordToCanvasY(Center.Y + lRadius*0.1));
+    // Now rotate it to the actual position
+    Points[0] := Rotate2DPoint(Points[0], Point(CoordToCanvasX(Center.X), CoordToCanvasY(Center.Y)),  lAngle + Pi);
+    Points[1] := Rotate2DPoint(Points[1], Point(CoordToCanvasX(Center.X),  CoordToCanvasY(Center.Y)), lAngle + Pi);
+    Points[2] := Rotate2DPoint(Points[2], Point(CoordToCanvasX(Center.X),  CoordToCanvasY(Center.Y)), lAngle + Pi);
+    //
+    ADest.Polygon(Points);
+    ADest.Brush.Style := bsClear;
+
+    // Dimension text
+    Points[0].X := CoordToCanvasX(Center.X);
+    Points[0].Y := CoordToCanvasY(Center.Y);
+    ADest.Font.Size := 10;
+    ADest.TextOut(Points[0].X, Points[0].Y, Format('%.1f', [lRadius * 2]));
+  end;
+
+  SetLength(Points, 0);
 end;
 
 { TvRasterImage }
@@ -2730,6 +2833,19 @@ begin
   lDim.BaseRight := BaseRight;
   lDim.DimensionLeft := DimLeft;
   lDim.DimensionRight := DimRight;
+  AddEntity(lDim);
+end;
+
+procedure TvVectorialPage.AddRadialDimension(AIsDiameter: Boolean; ACenter,
+  ADimLeft, ADimRight: T3DPoint);
+var
+  lDim: TvRadialDimension;
+begin
+  lDim := TvRadialDimension.Create;
+  lDim.IsDiameter := AIsDiameter;
+  lDim.Center := ACenter;
+  lDim.DimensionLeft := ADimLeft;
+  lDim.DimensionRight := ADimRight;
   AddEntity(lDim);
 end;
 
