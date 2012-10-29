@@ -133,7 +133,11 @@ begin
     for i := 0 to PropCount - 1 do begin
       PropInfo:=PropList^[i];
       if (PropInfo^.PropType^.Kind <> tkClass) then continue;
+      {$IFDEF ShowOwnedObjectsOI}
       Pers := TPersistent(GetObjectProp(AComponent, PropInfo, TPersistent));
+      {$ELSE}
+      Pers := TPersistent(GetObjectProp(AComponent, PropInfo, TCollection));
+      {$ENDIF}
       if Pers=nil then continue;
       if GetLookupRootForComponent(Pers)<>FRootComponent then continue;
       PropEdit:=GetEditorClass(PropInfo,AComponent);
@@ -726,8 +730,7 @@ begin
   Result := APersistent.ClassName;
   if APersistent is TComponent then
     Result := TComponent(APersistent).Name + ': ' + Result
-  else
-  if APersistent is TCollection then
+  else if APersistent is TCollection then
     Result := GetCollectionName(TCollection(APersistent)) + ': ' + Result
   else if DefaultName<>'' then
     Result := DefaultName + ':' + Result
