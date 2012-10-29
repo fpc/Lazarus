@@ -1227,6 +1227,13 @@ begin
       DimensionLeft.X := BaseLeft.X;
       DimensionLeft.Y := DimensionRight.Y;
     end
+    // Inverted horizontal where DL was provided
+    else if DimensionRight.X = BaseLeft.X then
+    begin
+      DimensionLeft.X := DimensionRight.X;
+      DimensionLeft.Y := DimensionRight.Y;
+      DimensionRight.X := BaseRight.X;
+    end
     // vertical
     //
     // BL ----|DR
