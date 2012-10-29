@@ -169,11 +169,13 @@ type
     FAdditionalAngle: Double;
     FArrow: TChartArrow;
     FAttachment: TChartMarkAttachment;
+    FAutoMargins: Boolean;
     FFrame: _TFramePen;
     FYIndex: Integer;
     function GetDistanceToCenter: Boolean;
     procedure SetArrow(AValue: TChartArrow);
     procedure SetAttachment(AValue: TChartMarkAttachment);
+    procedure SetAutoMargins(AValue: Boolean);
     procedure SetDistance(AValue: TChartDistance);
     procedure SetDistanceToCenter(AValue: Boolean);
     procedure SetFormat(AValue: String);
@@ -209,6 +211,8 @@ type
     procedure SetAdditionalAngle(AAngle: Double);
   public
     property Arrow: TChartArrow read FArrow write SetArrow;
+    property AutoMargins: Boolean
+      read FAutoMargins write SetAutoMargins default true;
     property DistanceToCenter: Boolean
       read GetDistanceToCenter write SetDistanceToCenter
       stored false default false;
@@ -254,6 +258,7 @@ type
     constructor Create(AOwner: TCustomChart);
   published
     property Arrow;
+    property AutoMargins;
     property CalloutAngle;
     property Distance default DEF_MARKS_DISTANCE;
     property Format;
@@ -596,6 +601,7 @@ begin
   if ASource is Self.ClassType then
     with TGenericChartMarks(ASource) do begin
       Self.FArrow.Assign(FArrow);
+      Self.FAutoMargins := FAutoMargins;
       Self.FAttachment := FAttachment;
       Self.FDistance := FDistance;
       Self.FFormat := FFormat;
@@ -626,6 +632,7 @@ constructor TGenericChartMarks.Create(AOwner: TCustomChart);
 begin
   inherited Create(AOwner);
   FArrow := TChartArrow.Create(AOwner);
+  FAutoMargins := true;
   InitHelper(FFrame, _TFramePen);
   InitHelper(FLabelBrush, _TLabelBrush);
   InitHelper(FLabelFont, TFont);
@@ -703,6 +710,13 @@ procedure TGenericChartMarks.SetAttachment(AValue: TChartMarkAttachment);
 begin
   if FAttachment = AValue then exit;
   FAttachment := AValue;
+  StyleChanged(Self);
+end;
+
+procedure TGenericChartMarks.SetAutoMargins(AValue: Boolean);
+begin
+  if FAutoMargins = AValue then exit;
+  FAutoMargins := AValue;
   StyleChanged(Self);
 end;
 

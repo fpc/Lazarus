@@ -1189,7 +1189,7 @@ var
   dir: TLabelDirection;
   m: array [TLabelDirection] of Integer absolute AMargins;
 begin
-  if not Marks.IsMarkLabelsVisible then exit;
+  if not Marks.IsMarkLabelsVisible or not Marks.AutoMargins then exit;
 
   for i := 0 to Count - 1 do begin
     if not ParentChart.IsPointInViewPort(GetGraphPoint(i)) then continue;
