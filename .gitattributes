@@ -3322,6 +3322,7 @@ debian/po/POTFILES.in svneol=native#text/plain
 debian/po/cs.po svneol=native#text/plain
 debian/po/da.po svneol=native#text/plain
 debian/po/de.po svneol=native#text/plain
+debian/po/es.po svneol=native#text/plain
 debian/po/it.po svneol=native#text/plain
 debian/po/ja.po -text svneol=native#text/plain
 debian/po/pl.po svneol=native#text/plain
