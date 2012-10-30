@@ -17,6 +17,7 @@ lazarus (0.9.30.4-4) unstable; urgency=low
   * Added Italian translation. (Closes: Bug#689970)
   * Added Portuguese translation. (Closes: Bug#689987)
   * Added Spanish translation. (Closes: Bug#690597)
+  * Added French translation. (Closes: Bug#690740)
 
  -- Abou Al Montacir <abou.almontacir@sfr.fr>  Oct, 17 Oct 2012 21:40:00 +0200
 
