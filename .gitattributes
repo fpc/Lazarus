@@ -3330,6 +3330,7 @@ debian/po/pl.po svneol=native#text/plain
 debian/po/pt.po svneol=native#text/plain
 debian/po/ru.po svneol=native#text/plain
 debian/po/sk.po svneol=native#text/plain
+debian/po/sv.po svneol=native#text/plain
 debian/po/templates.pot svneol=native#text/plain
 debian/rules svneol=native#text/plain
 debian/source/format svneol=native#text/plain
