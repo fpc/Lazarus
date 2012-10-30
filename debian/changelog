@@ -12,6 +12,7 @@ lazarus (0.9.30.4-4) unstable; urgency=low
   * Added Russian translation. (Closes: Bug#689195)
   * Added Danish translation. (Closes: Bug#689744)
   * Added Polish translation. (Closes: Bug#689745)
+  * Added Czech translation. (Closes: Bug#689789)
 
  -- Abou Al Montacir <abou.almontacir@sfr.fr>  Thu, 04 Oct 2012 09:13:00 +0200
 

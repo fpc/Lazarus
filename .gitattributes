@@ -3319,6 +3319,7 @@ debian/patches/default_config.diff svneol=native#text/plain
 debian/patches/lcl-with-multple-widget-sets.diff svneol=native#text/plain
 debian/patches/series svneol=native#text/plain
 debian/po/POTFILES.in svneol=native#text/plain
+debian/po/cs.po svneol=native#text/plain
 debian/po/da.po svneol=native#text/plain
 debian/po/de.po svneol=native#text/plain
 debian/po/pl.po svneol=native#text/plain
