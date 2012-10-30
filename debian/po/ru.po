@@ -1,0 +1,77 @@
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the lazarus package.
+#
+# Yuri Kozlov <yuray@komyakino.ru>, 2012.
+msgid ""
+msgstr ""
+"Project-Id-Version: lazarus 0.9.30.4-4\n"
+"Report-Msgid-Bugs-To: lazarus@packages.debian.org\n"
+"POT-Creation-Date: 2012-09-28 11:09-0400\n"
+"PO-Revision-Date: 2012-09-30 08:58+0400\n"
+"Last-Translator: Yuri Kozlov <yuray@komyakino.ru>\n"
+"Language-Team: Russian <debian-l10n-russian@lists.debian.org>\n"
+"Language: ru\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<"
+"=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"X-Generator: Lokalize 1.4\n"
+
+#. Type: boolean
+#. Description
+#: ../lcl-utils.templates.in:2001
+msgid "Rename \"/etc/lazarus\" to \"/etc/lazarus.bak\"?"
+msgstr "Переименовать «/etc/lazarus» в «/etc/lazarus.bak»?"
+
+#. Type: boolean
+#. Description
+#: ../lcl-utils.templates.in:2001
+msgid ""
+"The Lazarus suite now supports keeping multiple versions installed at the "
+"same time and using the alternatives system to set proper defaults. "
+"Normally, the latest version of any component is used."
+msgstr ""
+"Комплект Lazarus теперь поддерживает возможность нахождения в "
+"системе нескольких версий одновременно и использует альтернативную "
+"систему задания настроек по "
+"умолчанию. Обычно, используется только самая новая версия компонентов."
+
+#. Type: boolean
+#. Description
+#: ../lcl-utils.templates.in:2001
+msgid ""
+"To use the alternatives system on the system-wide configuration of the "
+"Lazarus suite, /etc/lazarus needs to be under control of the alternatives "
+"system. Currently there is a real directory at /etc/lazarus, probably from a "
+"previous installation. In order to start using the alternatives system on "
+"the configuration you must accept renaming \"/etc/lazarus\". If you don't, "
+"you will need to review the configuration on every version update of Lazarus "
+"as, unfortunately, the configuration files are not always backward-"
+"compatible. Also switching between different versions might need more "
+"intervention."
+msgstr ""
+"Чтобы использовать альтернативную систему в общесистемных настройках "
+"комплекта Lazarus, /etc/lazarus должен управляться "
+"альтернативной системой. В данный момент /etc/lazarus является каталогом, "
+"вероятно оставшимся от предыдущей установки. Чтобы начать использовать "
+"альтернативную систему настройки, вы должны разрешить переименование "
+"«/etc/lazarus». Если вы откажитесь, то вам будет нужно самостоятельно "
+"следить за настройками "
+"при каждом обновлении версии Lazarus, так как файлы настройки не всегда "
+"обратно совместимы. "
+"Также, для переключения между версиями может потребоваться больше "
+"ручных действий."
+
+#. Type: boolean
+#. Description
+#: ../lcl-utils.templates.in:2001
+msgid ""
+"If you have made changes to your configuration files, you will probably need "
+"to review them and apply them to all versioned configurations, as they will "
+"not automatically propagate."
+msgstr ""
+"Если вы изменяли файлы настройки, то вам, вероятно, "
+"нужно просмотреть их и добавить в настройки для каждой версии, "
+"так как они не добавляются автоматически."
+
