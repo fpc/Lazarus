@@ -3112,6 +3112,7 @@ components/tachart/tutorials/mandelbrot/main.lfm svneol=native#text/plain
 components/tachart/tutorials/mandelbrot/main.pas svneol=native#text/pascal
 components/tachart/tutorials/mandelbrot/mandelbrot.lpi svneol=native#text/plain
 components/tachart/tutorials/mandelbrot/mandelbrot.lpr svneol=native#text/pascal
+components/tachart/tutorials/readme.txt svneol=native#text/plain
 components/tdbf/Makefile svneol=native#text/plain
 components/tdbf/Makefile.compiled svneol=native#text/plain
 components/tdbf/Makefile.fpc svneol=native#text/plain
