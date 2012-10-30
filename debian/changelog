@@ -8,8 +8,9 @@ lazarus (0.9.30.4-4) unstable; urgency=low
 
   * Proofread templates by debian-l10n-english list. (Closes: Bug#686207)
   * Added Slovak translation. (Closes: Bug#689044)
+  * Added German translation. (Closes: Bug#689481)
 
- -- Abou Al Montacir <abou.almontacir@sfr.fr>  Mon, 1 Oct 2012 09:33:00 +0200
+ -- Abou Al Montacir <abou.almontacir@sfr.fr>  Thu, 04 Oct 2012 09:13:00 +0200
 
 lazarus (0.9.30.4-3) unstable; urgency=low
 
