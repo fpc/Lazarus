@@ -57,10 +57,10 @@ msgstr ""
 "doute d'une installation précédente. Afin de commencer à utiliser le système "
 "d'alternatives sur la configuration, vous devez accepter de renommer « /etc/"
 "lazarus ». Si vous ne le faites pas, vous devrez contrôler la configuration "
-"à chaque mise à jour de version de Lazarus, parce que, malheureusement, les "
-"fichiers de configuration ne sont pas toujours rétrocompatibles. Ainsi, une "
-"intervention risque d'être nécessaire lors du passage d'une version à une "
-"autre."
+"à chaque mise à jour de version de Lazarus, parce que les fichiers de "
+"configuration ne sont malheureusement pas toujours rétrocompatibles. Ainsi, "
+"une intervention risque d'être nécessaire lors du passage d'une version à "
+"une autre."
 
 #. Type: boolean
 #. Description
