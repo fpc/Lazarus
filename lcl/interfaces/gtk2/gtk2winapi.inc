@@ -4362,7 +4362,7 @@ function TGtk2WidgetSet.GetClientRect(handle : HWND; var ARect : TRect) : Boolea
 begin
   Result := false;
   if Handle = 0 then Exit;
-  ARect := GetWidgetClientRect(PGtkWidget(Handle));
+  ARect := GetWidgetClientRect({%H-}PGtkWidget(Handle));
   Result := True;
 end;
 
