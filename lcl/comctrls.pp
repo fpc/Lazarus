@@ -723,7 +723,6 @@ type
     function CanChange: Boolean; override;
     function CanShowTab(ATabIndex: Integer): Boolean; virtual;
     procedure Change; override;
-    procedure Loaded; override;
     procedure CreateWnd; override;
     procedure DestroyHandle; override;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;

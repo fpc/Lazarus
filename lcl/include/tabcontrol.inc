@@ -482,11 +482,6 @@ begin
     FOnGetImageIndex(Self, ATabIndex, Result);
 end;
 
-procedure TTabControl.Loaded;
-begin
-  inherited Loaded;
-end;
-
 procedure TTabControl.CreateWnd;
 begin
   BeginUpdate;

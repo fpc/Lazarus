@@ -775,7 +775,7 @@ type
 
   TAnchorSide = class(TPersistent)
   private
-    FKind: TAnchorKind; // keep FKind the first property. see bug 14364
+    FKind: TAnchorKind;
     FControl: TControl;
     FOwner: TControl;
     FSide: TAnchorSideReference;
@@ -3326,20 +3326,13 @@ constructor TControlBorderSpacing.Create(OwnerControl: TControl; ADefault: PCont
 begin
   FControl := OwnerControl;
   FDefault := ADefault;
-  if FDefault = nil
-  then begin
-    FLeft := 0;
-    FRight := 0;
-    FTop := 0;
-    FBottom := 0;
-    FAround := 0;
-  end
-  else begin
-    FLeft := FDefault^.Left;
-    FRight := FDefault^.Right;
-    FTop := FDefault^.Top;
-    FBottom := FDefault^.Bottom;
-    FAround := FDefault^.Around;
+  if ADefault <> nil then
+  begin
+    FLeft := ADefault^.Left;
+    FRight := ADefault^.Right;
+    FTop := ADefault^.Top;
+    FBottom := ADefault^.Bottom;
+    FAround := ADefault^.Around;
   end;
   FCellAlignHorizontal := ccaFill;
   FCellAlignVertical := ccaFill;
@@ -3492,18 +3485,13 @@ end;
 
 constructor TControlChildSizing.Create(OwnerControl: TWinControl);
 begin
-  FControl := OwnerControl;
   inherited Create;
+  FControl := OwnerControl;
   FLayout := cclNone;
   FEnlargeHorizontal :=crsAnchorAligning;
   FEnlargeVertical := crsAnchorAligning;
   FShrinkHorizontal := crsAnchorAligning;
   FShrinkVertical := crsAnchorAligning;
-  FLeftRightSpacing := 0;
-  FTopBottomSpacing := 0;
-  FHorizontalSpacing := 0;
-  FVerticalSpacing := 0;
-  FControlsPerLine := 0;
 end;
 
 procedure TControlChildSizing.Assign(Source: TPersistent);
