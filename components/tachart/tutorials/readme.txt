@@ -14,6 +14,17 @@ topic:
 - axis titles
 
 --------------------------------------------------------------------------------
+folder "func_series"
+--------------------------------------------------------------------------------
+tutorial
+  http://wiki.lazarus.freepascal.org/TAChart_Tutorial:_Function_Series
+  
+topics
+- TFuncSeries
+- domain exclusions
+- TConstantLineSeries
+
+--------------------------------------------------------------------------------
 folder "mandelbrot"
 --------------------------------------------------------------------------------
 tutorial 
