@@ -254,6 +254,10 @@ components/tachart/test/lib
 components/tachart/tutorials/*.exe
 components/tachart/tutorials/*.lps
 components/tachart/tutorials/*.res
+components/tachart/tutorials/func_series/*.lps
+components/tachart/tutorials/func_series/*.res
+components/tachart/tutorials/func_series/backup
+components/tachart/tutorials/func_series/lib
 components/tachart/tutorials/getting_started/*.exe
 components/tachart/tutorials/getting_started/*.lps
 components/tachart/tutorials/getting_started/*.res

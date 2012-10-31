@@ -1,0 +1,76 @@
+object Form1: TForm1
+  Left = 286
+  Height = 250
+  Top = 163
+  Width = 400
+  Caption = 'Form1'
+  ClientHeight = 250
+  ClientWidth = 400
+  OnCreate = FormCreate
+  LCLVersion = '1.0.1.3'
+  object Chart1: TChart
+    Left = 0
+    Height = 250
+    Top = 0
+    Width = 400
+    AxisList = <    
+      item
+        Grid.Color = clSilver
+        Minors = <>
+        Title.LabelFont.Orientation = 900
+        Title.LabelFont.Style = [fsBold]
+        Title.Visible = True
+        Title.Caption = 'y'
+      end    
+      item
+        Grid.Color = clSilver
+        Alignment = calBottom
+        Minors = <>
+        Title.LabelFont.Style = [fsBold]
+        Title.Visible = True
+        Title.Caption = 'x'
+      end>
+    BackColor = clWhite
+    Foot.Brush.Color = clBtnFace
+    Foot.Font.Color = clBlue
+    Title.Brush.Color = clBtnFace
+    Title.Font.Color = clBlue
+    Title.Text.Strings = (
+      'TAChart'
+    )
+    OnAfterDrawBackWall = Chart1AfterDrawBackWall
+    Align = alClient
+    ParentColor = False
+    object Chart1FuncSeries1: TFuncSeries
+      Extent.UseXMax = True
+      Extent.UseXMin = True
+      Extent.UseYMax = True
+      Extent.UseYMin = True
+      Extent.XMax = 10
+      Extent.XMin = -10
+      Extent.YMax = 2
+      Extent.YMin = -2
+      Title = 'y = tan(x)'
+      OnCalculate = Chart1FuncSeries1Calculate
+      Pen.Color = clRed
+    end
+    object Chart1FuncSeries2: TFuncSeries
+      Title = 'y =ln(x)'
+      OnCalculate = Chart1FuncSeries2Calculate
+      Pen.Color = clBlue
+    end
+    object Chart1ConstantLine1: TConstantLine
+      Legend.Visible = False
+      Arrow.BaseLength = 8
+      Arrow.Visible = True
+      Position = 0
+    end
+    object Chart1ConstantLine2: TConstantLine
+      Legend.Visible = False
+      Arrow.BaseLength = 8
+      Arrow.Visible = True
+      LineStyle = lsVertical
+      Position = 0
+    end
+  end
+end
