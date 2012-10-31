@@ -138,7 +138,7 @@ begin
    (AObject.OwnerControl.GetAccessibleObject() = AObject) then
   begin
     lControlHandle := TCarbonControl(TWinControl(AObject.OwnerControl).Handle);
-    AHIObject := lControlHandle.Widget;
+    AHIObject := HIObjectRef(lControlHandle.Widget);
     AID64 := 0;
   end
   else
@@ -147,7 +147,7 @@ begin
     // If this is an internal sub-element, then simply represent it with the
     // memory address of the object
     AID64 := UInt64(PtrInt(AObject));
-    AHIObject := lControlHandle.Widget;
+    AHIObject := HIObjectRef(lControlHandle.Widget);
   end;
 end;
 

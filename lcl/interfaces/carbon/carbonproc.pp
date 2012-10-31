@@ -671,7 +671,7 @@ begin
   Result := nil;
 
   if OSError(
-    HIObjectCreate(CustomControlClassID, nil, Result),
+    HIObjectCreate(CustomControlClassID, nil, HIObjectRef(Result)),
     SName, 'HIObjectCreate') then Exit;
 
   Features := kHIViewFeatureAllowsSubviews;

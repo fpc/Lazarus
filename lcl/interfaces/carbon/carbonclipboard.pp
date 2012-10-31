@@ -124,7 +124,7 @@ end;
 
 function GetImageFromPasteboard(Pasteboard: PasteboardRef; ID: PasteboardItemID; UTI: CFStringRef): CGImageRef;
 var
-  data  : CGImageRef;
+  data  : CFDataRef;
   prov  : CGImageSourceRef;
 begin
   PasteboardCopyItemFlavorData(PasteBoard, ID, UTI, Data{%H-});

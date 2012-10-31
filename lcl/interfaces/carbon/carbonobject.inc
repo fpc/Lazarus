@@ -1515,7 +1515,7 @@ begin
     Target := GetControlEventTarget(Widget.Widget)
   else
   if Widget is TCarbonWindow then
-    Target := GetWindowEventTarget(Widget.Widget)
+    Target := GetWindowEventTarget(TCarbonWindow(Widget).Window)
   else
     Exit;
 

@@ -1004,7 +1004,7 @@ begin
     Result := SetEventParameter( event, EventParamNamePtr(BounName)^, typeQDRectangle,	sizeof( Rect ), @inBounds );
     if Result <> noErr then Exit;
 
-    Result := HIObjectCreate( kCalendarViewClassID, event, outControl );
+    Result := HIObjectCreate( kCalendarViewClassID, event, HIObjectRef(outControl) );
     if Result <> noErr then Exit;
 
     // Get the content root
@@ -1056,7 +1056,7 @@ end;
 
 function isValidCalendarControl(Calendar: ControlRef): Boolean;
 begin
-  Result := Assigned(Calendar) and HIObjectIsOfClass(Calendar, kCalendarViewClassID);
+  Result := Assigned(Calendar) and HIObjectIsOfClass(HIObjectRef(Calendar), kCalendarViewClassID);
 end;
 
 function CalendarGetDate(Calendar: ControlRef; var Date: CFGregorianDate): Boolean;
