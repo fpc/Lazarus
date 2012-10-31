@@ -18,10 +18,10 @@
 unit registersqldb;
 
 {$mode objfpc}{$H+}
+
 {$IFNDEF win64}
 {$DEFINE HASMYSQL4CONNECTION}
 {$DEFINE HASORACLECONNECTION}
-{$DEFINE HASPQCONNECTION}
 {$ENDIF}
 
 {$IF FPC_FULLVERSION> 20402}
@@ -67,11 +67,9 @@ uses
     mssqlconn,
   {$ENDIF}
   odbcconn,
-  {$IFDEF HASPQCONNECTION}
-    pqconnection,
-    {$IFDEF HASPQEVENT}
-    pqteventmonitor,
-    {$ENDIF}
+  pqconnection,
+  {$IFDEF HASPQEVENT}
+  pqteventmonitor,
   {$ENDIF}
   {$IFDEF HASORACLECONNECTION}
     oracleconnection,
@@ -194,11 +192,9 @@ begin
 {$IFDEF HASSYBASECONNECTION}                                
     ,TSybaseConnection
 {$ENDIF}                              
-{$IFDEF HASPQCONNECTION}
-    ,TPQConnection
-  {$IFDEF HASPQEVENT}
-      ,TPQTEventMonitor
-  {$ENDIF}
+  ,TPQConnection
+{$IFDEF HASPQEVENT}
+    ,TPQTEventMonitor
 {$ENDIF}
 {$IFDEF HASORACLECONNECTION}
     ,TOracleConnection
