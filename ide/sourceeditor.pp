@@ -2676,8 +2676,7 @@ begin
 
   // Fill in history items
   LazFindReplaceDialog.TextToFindComboBox.Items.Assign(InputHistories.FindHistory);
-  LazFindReplaceDialog.ReplaceTextComboBox.Items.Assign(
-                                                 InputHistories.ReplaceHistory);
+  LazFindReplaceDialog.ReplaceTextComboBox.Items.Assign(InputHistories.ReplaceHistory);
 
   with EditorComponent do begin
     if EditorOpts.FindTextAtCursor then begin
@@ -2687,7 +2686,7 @@ begin
             ((ComparePoints(BlockBegin, LogicalCaretXY) >= 0) and
              (ComparePoints(BlockEnd, LogicalCaretXY) <= 0))
          )
-       then begin
+      then begin
         //debugln('TSourceEditor.StartFindAndReplace B FindTextAtCursor SelAvail');
         LazFindReplaceDialog.FindText := SelText
       end else begin
@@ -2840,8 +2839,7 @@ begin
     Result:=EditorComponent.SearchReplace(aFindText, aReplaceText, anOptions);
   except
     on E: ERegExpr do begin
-      MessageDlg(lisUEErrorInRegularExpression,
-        E.Message,mtError,[mbCancel],0);
+      MessageDlg(lisUEErrorInRegularExpression, E.Message,mtError,[mbCancel],0);
       exit;
     end;
   end;
