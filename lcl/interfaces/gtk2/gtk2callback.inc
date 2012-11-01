@@ -884,6 +884,9 @@ begin
   end;
 end;
 
+type
+  TCustomEditHack = class(TCustomEdit);
+
 function GTKFocusCB(widget: PGtkWidget; event: PGdkEventFocus; data: gPointer): GBoolean; cdecl;
 var
   Mess : TLMessage;
@@ -967,13 +970,15 @@ begin
     AInfo := GetWidgetInfo(Widget);
     if AInfo <> nil then
     begin
-      if AInfo^.CursorPos > 0 then
+      if (AInfo^.LCLObject is TCustomEdit) and
+        not TCustomEditHack(AInfo^.LCLObject).AutoSelect then
+      if (AInfo^.CursorPos > 0) or (AInfo^.SelLength > 0) then
       begin
         // gtk_entry_set_position(PGtkEntry(Widget), AInfo^.CursorPos);
         // gtk_editable_select_region(PGtkEditable(Widget), AInfo^.CursorPos, AInfo^.CursorPos);
         // do not trigger signals, only update pos for lcl
         PGtkEntry(Widget)^.current_pos := AInfo^.CursorPos;
-        PGtkEntry(Widget)^.selection_bound := AInfo^.CursorPos;
+        PGtkEntry(Widget)^.selection_bound := AInfo^.CursorPos + AInfo^.SelLength;
       end;
     end;
   end;
@@ -1037,7 +1042,7 @@ end;
 function GtkEntryDelayClearCursorPos(AGtkWidget: Pointer): GBoolean; cdecl;
 var
   Info: PWidgetInfo;
-  AStart,AEnd: gint;
+  //AStart,AEnd: gint;
 begin
   Result := AGtkWidget <> nil;
   if AGtkWidget <> nil then
@@ -1046,8 +1051,8 @@ begin
     Info := GetWidgetInfo(AGtkWidget);
     if Info <> nil then
     begin
-      gtk_editable_get_selection_bounds(PGtkEditable(AGtkWidget),@AStart, @AEnd);
-      Info^.CursorPos := AEnd;
+      //gtk_editable_get_selection_bounds(PGtkEditable(AGtkWidget),@AStart, @AEnd);
+      //Info^.CursorPos := AEnd;
       gtk_editable_select_region(PGtkEditable(AGtkWidget), 0, 0);
     end;
   end;
@@ -1057,6 +1062,8 @@ function GTKKillFocusCBAfter(widget: PGtkWidget; event:PGdkEventFocus;
   data: gPointer) : GBoolean; cdecl;
 var
   Mess : TLMessage;
+  Info: PWidgetInfo;
+  AStart,AEnd: gint;
 {$IFDEF VerboseFocus}
   LCLObject: TObject;
   CurFocusWidget: PGtkWidget;
@@ -1112,7 +1119,24 @@ begin
   // do not show selection when widget is unfocused
   // issues #18164,#21897,#23182
   if GtkWidgetIsA(Widget, gtk_type_entry) then
+  begin
     g_idle_add(@GtkEntryDelayClearCursorPos, Widget);
+    //save now CursorPos and SelStart in WidgetInfo
+    if (Widget <> nil) then
+    begin
+      Info := GetWidgetInfo(Widget);
+      if Info <> nil then
+      begin
+        if (Info^.LCLObject is TCustomEdit) and
+          not TCustomEditHack(Info^.LCLObject).AutoSelect then
+        begin
+          gtk_editable_get_selection_bounds(PGtkEditable(Widget),@AStart, @AEnd);
+          Info^.CursorPos := Min(AStart, AEnd);
+          Info^.SelLength := Abs(AEnd - AStart);
+        end;
+      end;
+    end;
+  end;
 
   Result:=true;
 end;
