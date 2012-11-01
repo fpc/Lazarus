@@ -7055,7 +7055,16 @@ begin
   {$IFDEF DebugGDKTraps}EndGDKErrorTrap;{$ENDIF}
 end;
 
-// Determines if the specified rectangle is within the boundaries of a region.
+{------------------------------------------------------------------------------
+  Function: RectInRegion
+  Params:   RGN: HRGN; ARect: TRect
+  Returns:  True if any part of the specified rectangle lies within the
+            boundaries of the region.
+
+  Determines whether any part of the specified rectangle is within the boundaries
+  of a region.
+
+ ------------------------------------------------------------------------------}
 function TGtk2WidgetSet.RectInRegion(RGN: HRGN; ARect: TRect): Boolean;
 var
   AGdkRect: TGdkRectangle;
@@ -7063,7 +7072,7 @@ begin
   //todo: sanity checks for valid handle etc.
   AGdkRect := GdkRectFromRect(ARect);
   Result := gdk_region_rect_in({%H-}PGdiObject(RGN)^.GDIRegionObject, @AGdkRect)
-             = GDK_OVERLAP_RECTANGLE_IN;
+             <> GDK_OVERLAP_RECTANGLE_OUT;
 end;
 
 {------------------------------------------------------------------------------
