@@ -4110,6 +4110,49 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  Function: FillRgn
+  Params:  DC: HDC; RegionHnd: HRGN; hbr: HBRUSH
+  Returns: True if the function succeeds
+
+  Fills a region by using the specified brush
+ ------------------------------------------------------------------------------}
+function TGtkWidgetSet.FillRgn(DC: HDC; RegionHnd: HRGN; hbr: HBRUSH): Bool;
+var
+  GtkDC: Integer;
+  OldRgn: PGdkRegion;
+  DevCtx: TGtkDeviceContext absolute DC;
+  ARect: TRect;
+  CRect : TGDKRectangle;
+  hasClipping: Boolean;
+begin
+  //todo: sanity checks for valid handle etc.
+  Result := IsValidDC(DC) and IsValidGDIObject(hbr) and IsValidGDIObject(RegionHnd);
+  if not Result then Exit;
+
+  GtkDC := SaveDC(DC);
+  DevCtx.ClipRegion := PGdiObject(CreateRegionCopy(RegionHnd));
+  OldRgn:= DevCtx.ClipRegion^.GDIRegionObject;
+
+  hasClipping := Assigned(OldRgn); //todo: Check a better way
+  try
+    if hasClipping then
+      if SelectClipRGN(DC, RegionHnd) <> ERROR then
+      begin
+        gdk_region_get_clipbox(PGDIObject(RegionHnd)^.GDIRegionObject, @CRect);
+        ARect := RectFromGdkRect(CRect);
+        DevCtx.FillRect(ARect, hbr, True);
+        if hasClipping then
+          SelectClipRGN(DC, HRGN(OldRgn));
+        Result := True;
+      end;
+  finally
+    if hasClipping then
+      gdk_region_destroy(OldRgn);
+    RestoreDC(DC, GtkDC);
+  end;
+end;
+
+{------------------------------------------------------------------------------
   Function: Frame3d
   Params: -
   Returns: Nothing
