@@ -1300,6 +1300,13 @@ begin
         finally
           Bmp.Free;
         end;
+      end else
+      if (AImageIndex < 0) then
+      begin
+        if LWI <> nil then
+          QListWidgetItem_setIcon(LWI, nil)
+        else
+          QTreeWidgetItem_setIcon(TWI, ASubIndex, nil);
       end;
     finally
       ImgList.Free;
