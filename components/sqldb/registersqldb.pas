@@ -246,9 +246,7 @@ begin
   Result := [paMultiSelect, paSortList, paValueList, paRevertable];
 end;
 
-procedure TSQLDBConnectorTypePropertyEditor.GetValues(
-  Proc: TGetStrProc);
-
+procedure TSQLDBConnectorTypePropertyEditor.GetValues(Proc: TGetStrProc);
 Var
   L : TStringList;
   I : Integer;
@@ -257,7 +255,7 @@ begin
   try
     GetConnectionList(L);
     for I:=0 to L.Count-1 do
-       Proc(L[i]);
+      Proc(L[i]);
   finally
     L.Free;
   end;
@@ -388,8 +386,7 @@ begin
   IDEMessagesWindow.AddMsg(SourceFileName+' : '+Msg,'',0,Nil);
 end;
 
-procedure TSQLSyntaxChecker.ShowMessage(const Fmt: String;
-  Args: array of const);
+procedure TSQLSyntaxChecker.ShowMessage(const Fmt: String; Args: array of const);
 begin
   ShowMessage(Format(Fmt,Args));
 end;
@@ -517,8 +514,7 @@ begin
   Result:=SSQLScriptDesc;
 end;
 
-function TSQLFileDescriptor.GetResourceSource(const ResourceName: string
-  ): string;
+function TSQLFileDescriptor.GetResourceSource(const ResourceName: string): string;
 begin
   Result:='';
 end;
