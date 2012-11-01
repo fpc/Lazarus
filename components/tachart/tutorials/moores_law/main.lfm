@@ -1,0 +1,112 @@
+object Form1: TForm1
+  Left = 244
+  Height = 356
+  Top = 193
+  Width = 552
+  Caption = 'Form1'
+  ClientHeight = 356
+  ClientWidth = 552
+  OnCreate = FormCreate
+  LCLVersion = '1.0.1.3'
+  object Chart1: TChart
+    Left = 0
+    Height = 356
+    Top = 0
+    Width = 552
+    AxisList = <    
+      item
+        Grid.Color = clSilver
+        Marks.Format = '%0:.0n'
+        Marks.Source = ListChartSource2
+        Marks.Style = smsCustom
+        Minors = <        
+          item
+            Grid.Visible = False
+            Intervals.Count = 9
+            Intervals.MinLength = 5
+            Intervals.Options = [aipUseCount]
+          end>
+        Title.LabelFont.Orientation = 900
+        Title.LabelFont.Style = [fsBold]
+        Title.Visible = True
+        Title.Caption = 'Number of transistors'
+        Transformations = ChartAxisTransformations1
+      end    
+      item
+        Grid.Color = clSilver
+        Intervals.MaxLength = 60
+        Alignment = calBottom
+        Minors = <>
+        Title.LabelFont.Style = [fsBold]
+        Title.Visible = True
+        Title.Caption = 'Year of market introduction'
+      end>
+    BackColor = clWhite
+    Foot.Alignment = taLeftJustify
+    Foot.Brush.Color = clBtnFace
+    Foot.Font.Color = clBlue
+    Foot.Text.Strings = (
+      'Source:'
+      'http://www.intel.com/pressroom/kits/quickreffam.htm'
+    )
+    Foot.Visible = True
+    Margins.Left = 24
+    Margins.Right = 24
+    Title.Brush.Color = clBtnFace
+    Title.Font.Color = clBlue
+    Title.Font.Style = [fsBold]
+    Title.Text.Strings = (
+      'Progress in Microelectronics'
+    )
+    Title.Visible = True
+    Align = alClient
+    ParentColor = False
+    object Chart1LineSeries1: TLineSeries
+      Marks.Format = '%2:s'
+      Marks.LinkPen.Color = clGray
+      Marks.Style = smsLabel
+      AxisIndexY = 0
+      LineType = ltNone
+      Pointer.Brush.Color = clRed
+      Pointer.Style = psCircle
+      ShowPoints = True
+      Source = ListChartSource1
+    end
+    object Chart1FitSeries1: TFitSeries
+      AxisIndexX = 1
+      AxisIndexY = 0
+      FitEquation = feExp
+      OnFitComplete = Chart1FitSeries1FitComplete
+      ParamCount = 2
+      Source = ListChartSource1
+    end
+  end
+  object ListChartSource1: TListChartSource
+    DataPoints.Strings = (
+      '1972|2300|?|4004'
+      '1974|6000|?|8080'
+      '1978|29000|?|8086'
+      '1982|134000|?|80286'
+      '1986|275000|?|80386'
+      '1989|1200000|?|80486'
+      '1993|3100000|?|Pentium'
+      '1997|7500000|?|Pentium II'
+      '2001|42000000|?|Xeon'
+      '2006|152000000|?|Core Duo'
+      '2009|731000000|?|Core i7'
+    )
+    left = 240
+    top = 40
+  end
+  object ChartAxisTransformations1: TChartAxisTransformations
+    left = 243
+    top = 96
+    object ChartAxisTransformations1LogarithmAxisTransform1: TLogarithmAxisTransform
+      Base = 10
+    end
+  end
+  object ListChartSource2: TListChartSource
+    left = 243
+    top = 176
+  end
+end

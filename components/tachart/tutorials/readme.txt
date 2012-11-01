@@ -14,6 +14,19 @@ topic:
 - axis titles
 
 --------------------------------------------------------------------------------
+folder "moores_law"
+--------------------------------------------------------------------------------
+tutorial
+  http://wiki.lazarus.freepascal.org/TAChart_Tutorial:_ListChartSource,_Logarithmic_Axis,_Fitting
+  
+topics
+- enter data at design-time
+- point series
+- series marks
+- logarithmic axis
+- fitting
+
+--------------------------------------------------------------------------------
 folder "func_series"
 --------------------------------------------------------------------------------
 tutorial
