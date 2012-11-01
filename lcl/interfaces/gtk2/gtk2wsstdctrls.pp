@@ -2688,7 +2688,7 @@ class procedure TGtk2WSScrollBar.SetParams(const AScrollBar: TCustomScrollBar);
 var
   Range: PGtkRange;
 begin
-  if not AWinControl.HandleAllocated then
+  if not AScrollBar.HandleAllocated then
     exit;
   with AScrollBar do
   begin
