@@ -3172,7 +3172,10 @@ var
       if not Exporting then
          canvas.TextOut(curx,cury,str)
       else
-        CurReport.InternalOnExportText(CurX, Y, str, Self);
+        if Angle <> 0 then
+          CurReport.InternalOnExportText(CurX, CurY, str, Self)
+        else
+          CurReport.InternalOnExportText(CurX, Y, str, Self);
       Inc(CurStrNo);
       curx := curx + th;
     end;
