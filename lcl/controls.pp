@@ -3215,7 +3215,10 @@ end;
 
 function TControlBorderSpacing.IsInnerBorderStored: boolean;
 begin
-  Result:=Control.IsBorderSpacingInnerBorderStored;
+  if Control <> nil then
+    Result:=Control.IsBorderSpacingInnerBorderStored
+  else
+    Result:=True;
 end;
 
 function TControlBorderSpacing.IsLeftStored: boolean;
@@ -3389,7 +3392,8 @@ end;
 
 procedure TControlBorderSpacing.Change(InnerSpaceChanged: Boolean);
 begin
-  FControl.DoBorderSpacingChange(Self,InnerSpaceChanged);
+  if FControl <> nil then
+    FControl.DoBorderSpacingChange(Self,InnerSpaceChanged);
   if Assigned(OnChange) then OnChange(Self);
 end;
 
