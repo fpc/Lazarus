@@ -2825,6 +2825,7 @@ function TSourceEditor.DoFindAndReplace(aFindText, aReplaceText: String;
   anOptions: TSynSearchOptions): integer;
 var
   AText, ACaption: String;
+  OldEntireScope, Again: Boolean;
 begin
   Result:=0;
   if (ssoReplace in anOptions) and ReadOnly then begin
@@ -2834,26 +2835,40 @@ begin
   if SourceNotebook<>nil then
     Manager.AddJumpPointClicked(Self);
 
-  //debugln('TSourceEditor.DoFindAndReplace A aFindText="',dbgstr(aFindText),'" ssoEntireScope=',dbgs(ssoEntireScope in anOptions),' ssoBackwards=',dbgs(ssoBackwards in anOptions));
-  try
-    Result:=EditorComponent.SearchReplace(aFindText, aReplaceText, anOptions);
-  except
-    on E: ERegExpr do begin
-      MessageDlg(lisUEErrorInRegularExpression, E.Message,mtError,[mbCancel],0);
-      exit;
+  OldEntireScope := ssoEntireScope in anOptions;
+  Again:=False;
+  repeat
+    try
+      Result:=EditorComponent.SearchReplace(aFindText, aReplaceText, anOptions);
+    except
+      on E: ERegExpr do begin
+        MessageDlg(lisUEErrorInRegularExpression, E.Message,mtError,[mbCancel],0);
+        exit;
+      end;
     end;
-  end;
-
-  if (Result = 0) and not (ssoReplaceAll in anOptions)
-  then begin
-    ACaption := lisUENotFound;
-    AText := Format(lisUESearchStringNotFound, [ValidUTF8String(aFindText)]);
-    MessageDlg(ACaption, AText, mtInformation, [mbOk], 0);
-    Manager.DeleteLastJumpPointClicked(Self);
-  end
-  else begin
-    CenterCursor(True);
-  end;
+    if (Result = 0) and not (ssoReplaceAll in anOptions) then begin
+      ACaption:=lisUENotFound;
+      AText:=Format(lisUESearchStringNotFound, [ValidUTF8String(aFindText)]);
+      if not (Again or OldEntireScope) then begin
+        if ssoBackwards in anOptions then
+          AText:=AText+' '+lisUESearchStringContinueEnd
+        else
+          AText:=AText+' '+lisUESearchStringContinueBeg;
+        Again:=MessageDlg(ACaption, AText, mtConfirmation, [mbYes,mbNo], 0) = mrYes;
+        anOptions:=anOptions + [ssoEntireScope];
+      end
+      else begin
+        Again := False;
+        MessageDlg(ACaption, AText, mtInformation, [mbOK], 0);
+      end;
+      if not Again then
+        Manager.DeleteLastJumpPointClicked(Self);
+    end
+    else begin
+      Again := False;
+      CenterCursor(True);
+    end;
+  until not Again;
 end;
 
 procedure TSourceEditor.OnReplace(Sender: TObject; const ASearch, AReplace:

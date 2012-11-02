@@ -3352,6 +3352,8 @@ resourcestring
   lisSearchFor = 'Search For ';
   lisUENotFound = 'Not found';
   lisUESearchStringNotFound = 'Search string ''%s'' not found!';
+  lisUESearchStringContinueBeg = 'Continue search from the beginning?';
+  lisUESearchStringContinueEnd = 'Continue search from the end?';
   lisUEReplaceThisOccurrenceOfWith = 'Replace this occurrence of %s%s%s%s '
     +'with %s%s%s?';
   lisUESearching = 'Searching: %s';
