@@ -3102,8 +3102,8 @@ var
         {$ENDIF}
         case Alignment of
           Classes.taLeftJustify : CurX :=x+gapx;
-          Classes.taRightJustify: CurX :=x+dx-1-gapx-nw;
-          Classes.taCenter      : CurX :=x+gapx+(dx-gapx-gapx-nw) div 2;
+          Classes.taRightJustify: CurX :=x+dx-1-gapx-Canvas.TextWidth(St);
+          Classes.taCenter      : CurX :=x+gapx+(dx-gapx-gapx-Canvas.TextWidth(St)) div 2;
         end;
 
         if not Exporting then
@@ -3149,15 +3149,25 @@ var
     procedure OutLine(str: String);
     var
       cury: Integer;
+      Ts: TTextStyle;
     begin
       SetLength(str, Length(str) - 2);
       if str[Length(str)] = #1 then
         SetLength(str, Length(str) - 1);
       cury := 0;
+
+      Ts := Canvas.TextStyle;
+      Ts.Layout    :=tlTop;
+      Ts.Alignment :=self.Alignment;
+      Ts.Wordbreak :=false;
+      Ts.SingleLine:=True;
+      Ts.Clipping  :=True;
+      Canvas.TextStyle := Ts;
+
       case Alignment of
           Classes.taLeftJustify : CurY :=y + dy-gapy;
-          Classes.taRightJustify: CurY :=y - gapy + Canvas.TextWidth(str);
-          Classes.taCenter      : CurY :=y - gapy + (dy + Canvas.TextWidth(str)) div 2;
+          Classes.taRightJustify: CurY :=y + gapy + 1 + Canvas.TextWidth(str);
+          Classes.taCenter      : CurY :=y + gapy + (dy + Canvas.TextWidth(str)) div 2;
       end;
       if not Exporting then
          canvas.TextOut(curx,cury,str)
