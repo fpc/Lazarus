@@ -513,16 +513,53 @@ begin
       ADecimalSeparator := DefaultFormatSettings.DecimalSeparator;
       {$ENDIF}
       SValue := gtk_entry_get_text(PGtkEntry(Widget));
+
+      {do not try to parse SValue if it's empty, eg started typing on
+       selected value. issue #23190}
+      if (SValue = '') or (SValue = ',') or
+        (SValue = '.') or (SValue = '+') or
+        (SValue = '-') or (SValue = ADecimalSeparator) then
+      begin
+        FillByte(Mess{%H-},SizeOf(Mess),0);
+        Mess.Msg := CM_TEXTCHANGED;
+        DeliverMessage(Data, Mess);
+        exit;
+      end;
+
       SNewValue := SValue;
       AValue := StrToFloatDef(SValue, 0);
+
+      {do not freeze (below) if clocale isn't used. issue #23190}
+      if (ADecimalSeparator <> '.') and (Pos('.', SValue) <> 0) then
+      begin
+        SValue := StringReplace(SValue, '.', ADecimalSeparator, [rfReplaceAll]);
+        if (SValue[1] = ADecimalSeparator) then
+          SValue := '0' + SValue;
+        SNewValue := SValue;
+        AValue := StrToFloatDef(SValue, 0);
+      end else
+      if (ADecimalSeparator <> ',') and (Pos(',', SValue) <> 0) then
+      begin
+        SValue := StringReplace(SValue, ',', ADecimalSeparator, [rfReplaceAll]);
+        if (SValue[1] = ADecimalSeparator) then
+          SValue := '0' + SValue;
+        SNewValue := SValue;
+        AValue := StrToFloatDef(SValue, 0);
+      end;
+
       gtk_spin_button_get_range(PGtkSpinButton(Widget), @AMin, @AMax);
+
 
       // woohoo
       // gtk2 have different meaning how validator should work and trigger
       // so we change it. #18679
-      while (AValue < AMin) or (AValue > AMax) do
+      // do not use while loop, but assign to minimum or maximum allowed. #23190
+      if (AValue < AMin) or (AValue > AMax) then
       begin
-        Delete(SValue, length(SValue), 1);
+        if AValue < AMin then
+          SValue := FloatToStr(AMin);
+        if AValue > AMax then
+          SValue := FloatToStr(AMax);
         AValue := StrToFloatDef(SValue, 0);
       end;
       if (Pos(ADecimalSeparator, SValue) > 0) and (length(SValue) > 1) then
@@ -884,6 +921,9 @@ begin
   end;
 end;
 
+type
+  TCustomEditHack = class(TCustomEdit);
+
 function GTKFocusCB(widget: PGtkWidget; event: PGdkEventFocus; data: gPointer): GBoolean; cdecl;
 var
   Mess : TLMessage;
@@ -967,13 +1007,15 @@ begin
     AInfo := GetWidgetInfo(Widget);
     if AInfo <> nil then
     begin
-      if AInfo^.CursorPos > 0 then
+      if (AInfo^.LCLObject is TCustomEdit) and
+        not TCustomEditHack(AInfo^.LCLObject).AutoSelect then
+      if (AInfo^.CursorPos > 0) or (AInfo^.SelLength > 0) then
       begin
         // gtk_entry_set_position(PGtkEntry(Widget), AInfo^.CursorPos);
         // gtk_editable_select_region(PGtkEditable(Widget), AInfo^.CursorPos, AInfo^.CursorPos);
         // do not trigger signals, only update pos for lcl
         PGtkEntry(Widget)^.current_pos := AInfo^.CursorPos;
-        PGtkEntry(Widget)^.selection_bound := AInfo^.CursorPos;
+        PGtkEntry(Widget)^.selection_bound := AInfo^.CursorPos + AInfo^.SelLength;
       end;
     end;
   end;
@@ -1037,7 +1079,7 @@ end;
 function GtkEntryDelayClearCursorPos(AGtkWidget: Pointer): GBoolean; cdecl;
 var
   Info: PWidgetInfo;
-  AStart,AEnd: gint;
+  //AStart,AEnd: gint;
 begin
   Result := AGtkWidget <> nil;
   if AGtkWidget <> nil then
@@ -1046,8 +1088,8 @@ begin
     Info := GetWidgetInfo(AGtkWidget);
     if Info <> nil then
     begin
-      gtk_editable_get_selection_bounds(PGtkEditable(AGtkWidget),@AStart, @AEnd);
-      Info^.CursorPos := AEnd;
+      //gtk_editable_get_selection_bounds(PGtkEditable(AGtkWidget),@AStart, @AEnd);
+      //Info^.CursorPos := AEnd;
       gtk_editable_select_region(PGtkEditable(AGtkWidget), 0, 0);
     end;
   end;
@@ -1057,6 +1099,8 @@ function GTKKillFocusCBAfter(widget: PGtkWidget; event:PGdkEventFocus;
   data: gPointer) : GBoolean; cdecl;
 var
   Mess : TLMessage;
+  Info: PWidgetInfo;
+  AStart,AEnd: gint;
 {$IFDEF VerboseFocus}
   LCLObject: TObject;
   CurFocusWidget: PGtkWidget;
@@ -1112,7 +1156,24 @@ begin
   // do not show selection when widget is unfocused
   // issues #18164,#21897,#23182
   if GtkWidgetIsA(Widget, gtk_type_entry) then
+  begin
     g_idle_add(@GtkEntryDelayClearCursorPos, Widget);
+    //save now CursorPos and SelStart in WidgetInfo
+    if (Widget <> nil) then
+    begin
+      Info := GetWidgetInfo(Widget);
+      if Info <> nil then
+      begin
+        if (Info^.LCLObject is TCustomEdit) and
+          not TCustomEditHack(Info^.LCLObject).AutoSelect then
+        begin
+          gtk_editable_get_selection_bounds(PGtkEditable(Widget),@AStart, @AEnd);
+          Info^.CursorPos := Min(AStart, AEnd);
+          Info^.SelLength := Abs(AEnd - AStart);
+        end;
+      end;
+    end;
+  end;
 
   Result:=true;
 end;

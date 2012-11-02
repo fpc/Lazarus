@@ -1155,24 +1155,38 @@ class function TGtk2WSCustomEdit.GetSelStart(const ACustomEdit: TCustomEdit
   ): integer;
 var
   Entry: PGtkEntry;
+  AInfo: PWidgetInfo;
 begin
   Result := 0;
   if not WSCheckHandleAllocated(ACustomEdit, 'GetSelStart') then
     Exit;
   Entry := {%H-}PGtkEntry(ACustomEdit.Handle);
-  Result := Min(Entry^.current_pos, Entry^.selection_bound)
+  if gtk_widget_has_focus(PGtkWidget(Entry)) then
+    Result := Min(Entry^.current_pos, Entry^.selection_bound)
+  else begin
+    AInfo := GetWidgetInfo(PGtkWidget(Entry));
+    if AInfo <> nil then
+      Result := AInfo^.CursorPos;
+  end;
 end;
 
 class function TGtk2WSCustomEdit.GetSelLength(const ACustomEdit: TCustomEdit
   ): integer;
 var
   Entry: PGtkEntry;
+  AInfo: PWidgetInfo;
 begin
   Result := 0;
   if not WSCheckHandleAllocated(ACustomEdit, 'GetSelLength') then
     Exit;
   Entry := {%H-}PGtkEntry(ACustomEdit.Handle);
-  Result := ABS(Entry^.current_pos - Entry^.selection_bound);
+  if gtk_widget_has_focus(PGtkWidget(Entry)) then
+    Result := ABS(Entry^.current_pos - Entry^.selection_bound)
+  else begin
+    AInfo := GetWidgetInfo(PGtkWidget(Entry));
+    if AInfo <> nil then
+      Result := AInfo^.SelLength;
+  end;
 end;
 
 function gtk2WSDelayedSelStart(Data: Pointer): gboolean; cdecl;
@@ -2676,6 +2690,8 @@ class procedure TGtk2WSScrollBar.SetParams(const AScrollBar: TCustomScrollBar);
 var
   Range: PGtkRange;
 begin
+  if not AScrollBar.HandleAllocated then
+    exit;
   with AScrollBar do
   begin
     Range := GTK_RANGE({%H-}Pointer(Handle));
