@@ -513,16 +513,53 @@ begin
       ADecimalSeparator := DefaultFormatSettings.DecimalSeparator;
       {$ENDIF}
       SValue := gtk_entry_get_text(PGtkEntry(Widget));
+
+      {do not try to parse SValue if it's empty, eg started typing on
+       selected value. issue #23190}
+      if (SValue = '') or (SValue = ',') or
+        (SValue = '.') or (SValue = '+') or
+        (SValue = '-') or (SValue = ADecimalSeparator) then
+      begin
+        FillByte(Mess{%H-},SizeOf(Mess),0);
+        Mess.Msg := CM_TEXTCHANGED;
+        DeliverMessage(Data, Mess);
+        exit;
+      end;
+
       SNewValue := SValue;
       AValue := StrToFloatDef(SValue, 0);
+
+      {do not freeze (below) if clocale isn't used. issue #23190}
+      if (ADecimalSeparator <> '.') and (Pos('.', SValue) <> 0) then
+      begin
+        SValue := StringReplace(SValue, '.', ADecimalSeparator, [rfReplaceAll]);
+        if (SValue[1] = ADecimalSeparator) then
+          SValue := '0' + SValue;
+        SNewValue := SValue;
+        AValue := StrToFloatDef(SValue, 0);
+      end else
+      if (ADecimalSeparator <> ',') and (Pos(',', SValue) <> 0) then
+      begin
+        SValue := StringReplace(SValue, ',', ADecimalSeparator, [rfReplaceAll]);
+        if (SValue[1] = ADecimalSeparator) then
+          SValue := '0' + SValue;
+        SNewValue := SValue;
+        AValue := StrToFloatDef(SValue, 0);
+      end;
+
       gtk_spin_button_get_range(PGtkSpinButton(Widget), @AMin, @AMax);
+
 
       // woohoo
       // gtk2 have different meaning how validator should work and trigger
       // so we change it. #18679
-      while (AValue < AMin) or (AValue > AMax) do
+      // do not use while loop, but assign to minimum or maximum allowed. #23190
+      if (AValue < AMin) or (AValue > AMax) then
       begin
-        Delete(SValue, length(SValue), 1);
+        if AValue < AMin then
+          SValue := FloatToStr(AMin);
+        if AValue > AMax then
+          SValue := FloatToStr(AMax);
         AValue := StrToFloatDef(SValue, 0);
       end;
       if (Pos(ADecimalSeparator, SValue) > 0) and (length(SValue) > 1) then
