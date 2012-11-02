@@ -53,8 +53,6 @@ type
   {$packrecords 1}
 {$endif}
 
-{$define USEUNICODE}
-
   tagPSD = record
     lStructSize: DWORD;
     hWndOwner: HWND;
