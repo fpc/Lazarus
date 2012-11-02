@@ -438,25 +438,29 @@ end;
 procedure TfrTNPDFExportFilter.OnText(X, Y: Integer; const Text: string;
     View: TfrView);
 var
-    PRTLabel: TPRText;
+    PRTLabel: TPRLabel;
     nx, ny,
         ndx, ndy: Integer;
+    gapx, gapy: integer;
 begin
-    nx := Round(x  * PDFEscx) + 1;
-    ny := Round(y * PDFEscy) + 1;
-    ndx := Round(View.dx * PDFEscx);
-    ndy := Round(View.dy * PDFEscy);
+    gapx := Round(View.FrameWidth / 2) + 2;
+    gapy := Round(View.FrameWidth / 2) div 2 + 1;
+    nx := Round((x+gapx)  * PDFEscx) + 1;
+    ny := Round((y+gapy) * PDFEscy) + 1;
+    ndx := Round((View.dx-gapx) * PDFEscx);
+    ndy := Round((View.dy-gapy) * PDFEscy);
 
-    PRTLabel := TPRText.Create(PRPanel);
+    PRTLabel := TPRLabel.Create(PRPanel);
     PRTLabel.Parent := PRPanel;
     try
-        PRTLabel.Text := Text;
+        PRTLabel.Caption := Text;
         PRTLabel.Left := nx;
         PRTLabel.Top := ny;
         PRTLabel.Width := ndx;
         PRTLabel.Height := ndy;
         if View is TfrMemoView then
         begin
+            PRTLabel.Alignment :=  TfrMemoView_(View).Alignment;
             if Pos('Arial', TfrMemoView_(View).Font.Name) > 0 then
                 PRTLabel.FontName := fnArial
             else if Pos('Courier', TfrMemoView_(View).Font.Name) > 0 then
@@ -474,6 +478,8 @@ begin
     finally
     end;
 end;
+
+
 
 initialization
     frRegisterExportFilter(TfrTNPDFExportFilter, 'Adobe Acrobat PDF ' + ' (*.pdf)',

@@ -3109,8 +3109,8 @@ var
         if not Exporting then
           Canvas.TextRect(DR, CurX, CurY, St)
         else
-          CurReport.InternalOnExportText(curx, cury, St, Self);
-          
+          CurReport.InternalOnExportText(X, CurY, St, Self);
+
         Inc(CurStrNo);
         Result := False;
       end
@@ -3162,7 +3162,7 @@ var
       if not Exporting then
          canvas.TextOut(curx,cury,str)
       else
-        CurReport.InternalOnExportText(curx, cury, str, Self);
+        CurReport.InternalOnExportText(CurX, Y, str, Self);
       Inc(CurStrNo);
       curx := curx + th;
     end;
