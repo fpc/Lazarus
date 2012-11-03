@@ -303,6 +303,7 @@ var
   PRImage: TPRImage;
   r: Double;
   L: Integer;
+  pw, ph: Integer;
 begin
 
   if View.Picture.Graphic is TJpegImage then
@@ -321,23 +322,27 @@ begin
       if (w/h) < r then
       begin
         L := h;
-        h := trunc(w/r + 0.5);
+        ph := trunc(w/r + 0.5);
+        pw := w;
         if (View.Flags and flPictCenter<>0) then
-          y := y + (L-h) div 2;
+          y := y + (L-ph) div 2;
       end
       else
       begin
         L := w;
-        w := trunc(h*r + 0.5);
+        ph := h;
+        pw := trunc(h*r + 0.5);
         if (View.Flags and flPictCenter<>0) then
-          x := x + (L-w) div 2;
+          x := x + (L-pw) div 2;
       end;
     end;
   end
   else
   if (View.Flags and flPictCenter<>0) then begin
-     x := x + (w - View.Picture.Width) div 2 - 1;
-     y := y + (h - View.Picture.Height) div 2 - 1;
+    pw := trunc(View.Picture.Width * PDFEscX + 1.5);
+    ph := trunc(View.Picture.Height * PDFEscY + 1.5);
+     x := x + (w - pw) div 2 - 1;
+     y := y + (h - ph) div 2 - 1;
   end;
 
   PRImage.Stretch := View.Stretched;
@@ -346,8 +351,8 @@ begin
 
   PRImage.Left := x;
   PRImage.Top := y;
-  PRImage.Height := h;
-  PRImage.Width := w;
+  PRImage.Height := ph;
+  PRImage.Width := pw;
 
   PRImage.Picture.Graphic := View.Picture.Graphic;
 end;
