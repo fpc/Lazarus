@@ -476,7 +476,7 @@ var
         if f = Owner then
           List.Add(c.Name)
         else
-        if ((f is TForm) or (f is TDataModule)) then
+        if ((f is TForm) or (f is TDataModule) or (f is TFrame)) then
           List.Add(f.Name + '.' + c.Name)
         else
           List.Add(TControl(f).Owner.Name + '.' + f.Name + '.' + c.Name)
