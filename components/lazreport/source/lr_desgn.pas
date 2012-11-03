@@ -174,6 +174,7 @@ type
   protected
     procedure Paint; override;
     procedure WMEraseBkgnd(var {%H-}Message: TLMEraseBkgnd); message LM_ERASEBKGND;
+    procedure DoContextPopup(MousePos: TPoint; var Handled: Boolean); override;
   public
     constructor Create(AOwner: TComponent); override;
 
@@ -710,6 +711,12 @@ end;
 procedure TfrDesignerPage.WMEraseBkgnd(var Message: TLMEraseBkgnd);
 begin
   //do nothing to avoid flicker
+end;
+
+procedure TfrDesignerPage.DoContextPopup(MousePos: TPoint; var Handled: Boolean
+  );
+begin
+  Handled := true;
 end;
 
 procedure TfrDesignerPage.NormalizeCoord(t: TfrView);
