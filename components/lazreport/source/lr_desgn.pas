@@ -1492,6 +1492,7 @@ begin
     Exit;
   end;
 
+  {$IFDEF LCLQt}Invalidate;{$endif}
   {$IFDEF LCLCarbon}Invalidate;{$endif}
   Down := False;
   if FDesigner.ShapeMode = smFrame then
@@ -1839,6 +1840,7 @@ begin
   Moved := True;
   w := 2;
 
+  {$ifdef LCLQt}if Down then Invalidate;{$endif}
   {$ifdef LCLCarbon}if Down then Invalidate;{$endif}
 
   if FirstChange and Down and not RFlag then
