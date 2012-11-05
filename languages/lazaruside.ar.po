@@ -15504,6 +15504,14 @@ msgstr "هل يتم استبدال ظهور %s%s%s%s ب %s%s%s؟"
 msgid "Searching: %s"
 msgstr "جاري البحث: %s"
 
+#: lazarusidestrconsts.lisuesearchstringcontinuebeg
+msgid "Continue search from the beginning?"
+msgstr ""
+
+#: lazarusidestrconsts.lisuesearchstringcontinueend
+msgid "Continue search from the end?"
+msgstr ""
+
 #: lazarusidestrconsts.lisuesearchstringnotfound
 msgid "Search string '%s' not found!"
 msgstr "نص البحث '%s' لم يتم ايجاده!"

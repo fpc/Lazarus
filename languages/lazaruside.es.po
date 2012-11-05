@@ -16295,6 +16295,14 @@ msgstr "¿Reemplazar esta coincidencia de %s%s%s%s con %s%s%s?"
 msgid "Searching: %s"
 msgstr "Buscando: %s"
 
+#: lazarusidestrconsts.lisuesearchstringcontinuebeg
+msgid "Continue search from the beginning?"
+msgstr ""
+
+#: lazarusidestrconsts.lisuesearchstringcontinueend
+msgid "Continue search from the end?"
+msgstr ""
+
 #: lazarusidestrconsts.lisuesearchstringnotfound
 msgid "Search string '%s' not found!"
 msgstr "¡Cadena de búsqueda '%s' no encontrada!"

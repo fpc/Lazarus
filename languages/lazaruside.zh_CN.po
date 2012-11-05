@@ -16222,6 +16222,14 @@ msgstr "将 %s%s%s%s 用 %s%s%s 替换?"
 msgid "Searching: %s"
 msgstr "查找: %s"
 
+#: lazarusidestrconsts.lisuesearchstringcontinuebeg
+msgid "Continue search from the beginning?"
+msgstr ""
+
+#: lazarusidestrconsts.lisuesearchstringcontinueend
+msgid "Continue search from the end?"
+msgstr ""
+
 #: lazarusidestrconsts.lisuesearchstringnotfound
 msgid "Search string '%s' not found!"
 msgstr "字符串 '%s' 没有找到!"

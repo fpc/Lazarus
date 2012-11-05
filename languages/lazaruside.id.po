@@ -16107,6 +16107,14 @@ msgstr "Ganti %s%s%s%s yang ditemukan ini dengan %s%s%s?"
 msgid "Searching: %s"
 msgstr "Pencarian: %s"
 
+#: lazarusidestrconsts.lisuesearchstringcontinuebeg
+msgid "Continue search from the beginning?"
+msgstr ""
+
+#: lazarusidestrconsts.lisuesearchstringcontinueend
+msgid "Continue search from the end?"
+msgstr ""
+
 #: lazarusidestrconsts.lisuesearchstringnotfound
 msgid "Search string '%s' not found!"
 msgstr "Pencarian string '%s' tidak ditemukan!"

@@ -16352,6 +16352,14 @@ msgstr "%s%s%s%s を %s%s%s に置き換えますか？"
 msgid "Searching: %s"
 msgstr "検索中: %s"
 
+#: lazarusidestrconsts.lisuesearchstringcontinuebeg
+msgid "Continue search from the beginning?"
+msgstr ""
+
+#: lazarusidestrconsts.lisuesearchstringcontinueend
+msgid "Continue search from the end?"
+msgstr ""
+
 #: lazarusidestrconsts.lisuesearchstringnotfound
 msgid "Search string '%s' not found!"
 msgstr "検索文字列 '%s' が見つかりませんでした！"

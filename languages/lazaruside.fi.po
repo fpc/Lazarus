@@ -15449,6 +15449,14 @@ msgstr "Korvataanko tässä esiintyvä %s%s%s%s tekstillä %s%s%s?"
 msgid "Searching: %s"
 msgstr "Etsitään tiedostosta: %s"
 
+#: lazarusidestrconsts.lisuesearchstringcontinuebeg
+msgid "Continue search from the beginning?"
+msgstr ""
+
+#: lazarusidestrconsts.lisuesearchstringcontinueend
+msgid "Continue search from the end?"
+msgstr ""
+
 #: lazarusidestrconsts.lisuesearchstringnotfound
 msgid "Search string '%s' not found!"
 msgstr "Etsittyä merkkijonoa '%s' ei löydetty!"

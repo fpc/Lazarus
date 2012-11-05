@@ -16120,6 +16120,14 @@ msgstr "Zastąpić to wystąpienie %s%s%s%s przez %s%s%s"
 msgid "Searching: %s"
 msgstr "Szukanie: %s"
 
+#: lazarusidestrconsts.lisuesearchstringcontinuebeg
+msgid "Continue search from the beginning?"
+msgstr ""
+
+#: lazarusidestrconsts.lisuesearchstringcontinueend
+msgid "Continue search from the end?"
+msgstr ""
+
 #: lazarusidestrconsts.lisuesearchstringnotfound
 msgid "Search string '%s' not found!"
 msgstr "Nie znalazłem wyrażenia '%s' !"

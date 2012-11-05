@@ -16001,6 +16001,14 @@ msgstr "Voleu substituir aquesta ocurrència de %s%s%s%s amb %s%s%s?"
 msgid "Searching: %s"
 msgstr "Cercant: %s"
 
+#: lazarusidestrconsts.lisuesearchstringcontinuebeg
+msgid "Continue search from the beginning?"
+msgstr ""
+
+#: lazarusidestrconsts.lisuesearchstringcontinueend
+msgid "Continue search from the end?"
+msgstr ""
+
 #: lazarusidestrconsts.lisuesearchstringnotfound
 msgid "Search string '%s' not found!"
 msgstr "No s'ha trobat la cadena '%s'"

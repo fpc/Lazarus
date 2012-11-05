@@ -15915,6 +15915,14 @@ msgstr "Pakeisti rastąjį %s%s%s%s į %s%s%s?"
 msgid "Searching: %s"
 msgstr "Ieškoma: %s"
 
+#: lazarusidestrconsts.lisuesearchstringcontinuebeg
+msgid "Continue search from the beginning?"
+msgstr ""
+
+#: lazarusidestrconsts.lisuesearchstringcontinueend
+msgid "Continue search from the end?"
+msgstr ""
+
 #: lazarusidestrconsts.lisuesearchstringnotfound
 msgid "Search string '%s' not found!"
 msgstr "Ieškomasis tekstas %s nerastas!"
