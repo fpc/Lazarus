@@ -23,6 +23,7 @@ unitdir=../designer \
         ../packager \
         ../packager/frames \
         ../components/custom \
+        $(HEAPTRC_UNIT_PATH) \
         frames \
         .
 includedir=include include/$(OS_TARGET) ../images
@@ -51,6 +52,10 @@ destdir=$(BASEDIR)/dist
 
 [prerules]
 RCPP?=$(firstword $(strip $(subst /,$(PATHSEP),$(wildcard $(addsuffix /cpp$(SRCEXEEXT),$(SEARCHPATH))))))
+
+ifneq ($(findstring $(OS_TARGET),win32 win64),)
+  HEAPTRC_UNIT_PATH=include/win
+endif
 
 #
 # LCL Platform
