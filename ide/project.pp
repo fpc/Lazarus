@@ -6944,7 +6944,9 @@ end;
 function TProjectBuildMode.LazProject: TProject;
 begin
   if Owner is TProjectBuildModes then
-    Result:=TProjectBuildModes(Owner).LazProject;
+    Result:=TProjectBuildModes(Owner).LazProject
+  else
+    Result:=Nil;
 end;
 
 procedure TProjectBuildMode.Clear;
