@@ -313,6 +313,9 @@ begin
 
   PRImage.Parent := PRPanel;
 
+  ph := h;
+  pw := w;
+
   if view.Stretched then
   begin
     if (View.Flags and flPictRatio<>0) and
@@ -323,14 +326,12 @@ begin
       begin
         L := h;
         ph := trunc(w/r + 0.5);
-        pw := w;
         if (View.Flags and flPictCenter<>0) then
           y := y + (L-ph) div 2;
       end
       else
       begin
         L := w;
-        ph := h;
         pw := trunc(h*r + 0.5);
         if (View.Flags and flPictCenter<>0) then
           x := x + (L-pw) div 2;
