@@ -1,4 +1,3 @@
-{  $Id$  }
 {
  /***************************************************************************
                          installpkgsetdlg.pas
@@ -39,66 +38,15 @@ interface
 
 uses
   Classes, SysUtils, contnrs, LCLProc, Forms, Controls, Graphics, Dialogs,
-  KeywordFuncLists, StdCtrls, Buttons, FileUtil, ExtCtrls, ComCtrls, EditBtn,
-  LCLType, ImgList, AvgLvlTree, Laz2_XMLCfg, LazUTF8, TreeFilterEdit,
-  PackageIntf, IDEImagesIntf, IDEHelpIntf, IDEDialogs, LazarusIDEStrConsts,
-  EnvironmentOpts, InputHistory, LazConf, IDEProcs, PackageDefs, PackageSystem,
-  PackageLinks, IDEContextHelpEdit;
+  KeywordFuncLists, BasicCodeTools, StdCtrls, Buttons, FileUtil, ExtCtrls,
+  ComCtrls, EditBtn, LCLType, ImgList, AvgLvlTree, Laz2_XMLCfg, LazUTF8,
+  TreeFilterEdit, PackageIntf, IDEImagesIntf, IDEHelpIntf, IDEDialogs,
+  LazarusIDEStrConsts, EnvironmentOpts, InputHistory, LazConf, IDEProcs,
+  PackageDefs, PackageSystem, PackageLinks, IDEContextHelpEdit, LPKCache;
 
 type
   TOnCheckInstallPackageList =
     procedure(PkgIDs: TObjectList; RemoveConflicts: boolean; out Ok: boolean) of object;
-
-  TIPSInfoState = (
-    ipisNotParsed,
-    ipisParsingMainThread,
-    ipisParsingHelperThread,
-    ipisParsedError,
-    ipisParsed
-    );
-
-  { TIPSPkgInfo }
-
-  TIPSPkgInfo = class
-  public
-    ID: TLazPackageID;
-    LPKFilename: string;
-    InLazSrc: boolean; // lpk is in lazarus source directory
-    Installed: TPackageInstallType;
-    Base: boolean; // is base package, can not be uninstalled
-
-    LPKParsed: TIPSInfoState;
-    LPKError: string;
-
-    // the below is only valid if TIPSInfoState=ipisParsed
-    Author: string;
-    Description: string;
-    License: string;
-    PkgType: TLazPackageType; // design, runtime
-
-    constructor Create(TheID: TLazPackageID);
-    destructor Destroy; override;
-  end;
-
-  TInstallPkgSetDialog = class;
-
-  { TIPSLPKReader }
-
-  TIPSLPKReader = class(TThread)
-  protected
-    procedure SynChangePkgVersion;
-    procedure SynPkgInfosChanged;
-    procedure Log(Msg: string);
-    procedure Execute; override;
-  public
-    Dialog: TInstallPkgSetDialog;
-    NewVersion: TPkgVersion;
-    Info: TIPSPkgInfo; // currently processed info
-    Abort: boolean;
-    PkgIDQueue: TStrings; // list of package ids to parse by the lpkreader thread
-    destructor Destroy; override;
-  end;
-
 
   { TInstallPkgSetDialog }
 
@@ -113,6 +61,7 @@ type
     InstallTreeView: TTreeView;
     lblMiddle: TLabel;
     AvailableFilterEdit: TTreeFilterEdit;
+    LPKParsingTimer: TTimer;
     NoteLabel: TLabel;
     PkgInfoMemo: TMemo;
     PkgInfoGroupBox: TGroupBox;
@@ -122,6 +71,8 @@ type
     SaveAndRebuildButton: TBitBtn;
     UninstallButton: TBitBtn;
     procedure AddToInstallButtonClick(Sender: TObject);
+    procedure LPKParsingTimerTimer(Sender: TObject);
+    procedure OnAllLPKParsed(Sender: TObject);
     procedure TreeViewAdvancedCustomDrawItem(Sender: TCustomTreeView;
       Node: TTreeNode; State: TCustomDrawState; Stage: TCustomDrawStage;
       var PaintImages, DefaultDraw: Boolean);
@@ -140,24 +91,12 @@ type
     procedure SaveAndExitButtonClick(Sender: TObject);
     procedure UninstallButtonClick(Sender: TObject);
   private
-    // multi threaded stuff
-    FCritSec: TRTLCriticalSection;
-    FLPKReader: TIPSLPKReader;
-    fAvailablePackages: TAvgLvlTree; // tree of TIPSPkgInfo (all available packages and links)
-    FSelectedPkg: TIPSPkgInfo;
-    procedure StartLPKReader;
-    procedure EndLPKReader;
-    procedure ParseLPK(LPKFilename: string;
-      out ErrorMsg, Author, License, Description: string;
-      out PkgType: TLazPackageType;
-      var Version: TPkgVersion); // called by main and helper thread
-    function FindPkgInfo(ID: string): TIPSPkgInfo; // requires crit sec
-    function FindPkgInfo(PkgID: TLazPackageID): TIPSPkgInfo; // requires crit sec
-  private
     FNewInstalledPackages: TObjectList; // list of TLazPackageID (not TLazPackage)
     FOldInstalledPackages: TPkgDependency;
     FOnCheckInstallPackageList: TOnCheckInstallPackageList;
     FRebuildIDE: boolean;
+    FSelectedPkgState: TLPKInfoState;
+    FSelectedPkgID: string;
     ImgIndexPackage: integer;
     ImgIndexInstallPackage: integer;
     ImgIndexInstalledPackage: integer;
@@ -176,7 +115,6 @@ type
     function GetPkgImgIndex(Installed: TPackageInstallType; InInstallList: boolean): integer;
     procedure UpdateAvailablePackages(Immediately: boolean = false);
     procedure UpdateNewInstalledPackages;
-    procedure OnIterateAvailablePackages(APackageID: TLazPackageID);
     function DependencyToStr(Dependency: TPkgDependency): string;
     procedure ClearNewInstalledPackages;
     function CheckSelection: boolean;
@@ -190,13 +128,10 @@ type
     function ExtractNameFromPkgID(ID: string): string;
     procedure AddToInstall;
     procedure AddToUninstall;
-    procedure ParseLPKMainThread(PkgInfo: TIPSPkgInfo);
     procedure PkgInfosChanged;
-    procedure ChangePkgVersion(PkgInfo: TIPSPkgInfo; NewVersion: TPkgVersion);
+    procedure ChangePkgVersion(PkgInfo: TLPKInfo; NewVersion: TPkgVersion);
   public
     function GetNewInstalledPackages: TObjectList;
-    procedure EnterCritSection;
-    procedure LeaveCritSection;
     property OldInstalledPackages: TPkgDependency read FOldInstalledPackages
                                                   write SetOldInstalledPackages;
     property NewInstalledPackages: TObjectList read FNewInstalledPackages; // list of TLazPackageID
@@ -209,9 +144,6 @@ function ShowEditInstallPkgsDialog(OldInstalledPackages: TPkgDependency;
   CheckInstallPackageList: TOnCheckInstallPackageList;
   var NewInstalledPackages: TObjectList; // list of TLazPackageID (must be freed)
   var RebuildIDE: boolean): TModalResult;
-
-function CompareIPSPkgInfos(PkgInfo1, PkgInfo2: Pointer): integer;
-function ComparePkgIDWithIPSPkgInfo(PkgID, PkgInfo: Pointer): integer;
 
 implementation
 
@@ -238,136 +170,10 @@ begin
   end;
 end;
 
-function CompareIPSPkgInfos(PkgInfo1, PkgInfo2: Pointer): integer;
-var
-  Info1: TIPSPkgInfo absolute PkgInfo1;
-  Info2: TIPSPkgInfo absolute PkgInfo2;
-begin
-  Result:=CompareLazPackageIDNames(Info1.ID,Info2.ID);
-end;
-
-function ComparePkgIDWithIPSPkgInfo(PkgID, PkgInfo: Pointer): integer;
-var
-  ID: TLazPackageID absolute PkgID;
-  Info: TIPSPkgInfo absolute PkgInfo;
-begin
-  Result:=CompareLazPackageIDNames(ID,Info.ID);
-end;
-
-{ TIPSLPKReader }
-
-procedure TIPSLPKReader.Execute;
-var
-  ErrorMsg: string;
-  Author, License, Description: string;
-  PkgType: TLazPackageType;
-begin
-  try
-    while not Abort do begin
-      // get next lpk to parse
-      Dialog.EnterCritSection;
-      try
-        Info:=nil;
-        while PkgIDQueue.Count>0 do begin
-          Info:=Dialog.FindPkgInfo(PkgIDQueue[PkgIDQueue.Count-1]);
-          PkgIDQueue.Delete(PkgIDQueue.Count-1);
-          if Info=nil then continue;
-          if Info.LPKParsed=ipisNotParsed then begin
-            Info.LPKParsed:=ipisParsingHelperThread;
-            break;
-          end else
-            Info:=nil;
-        end;
-        if Info=nil then break;
-      finally
-        Dialog.LeaveCritSection;
-      end;
-      // parse lpk
-      NewVersion:=TPkgVersion.Create;
-      try
-        Dialog.ParseLPK(Info.LPKFilename,ErrorMsg,Author,License,Description,PkgType,NewVersion);
-        Dialog.EnterCritSection;
-        try
-          if ErrorMsg<>'' then begin
-            Info.LPKError:=ErrorMsg;
-            Info.LPKParsed:=ipisParsedError;
-          end else begin
-            Info.Author:=Author;
-            Info.Description:=Description;
-            Info.License:=License;
-            Info.PkgType:=PkgType;
-            Info.LPKParsed:=ipisParsed;
-          end;
-          if Dialog.FSelectedPkg=Info then
-            Dialog.FSelectedPkg:=nil;
-        finally
-          Dialog.LeaveCritSection;
-        end;
-        if NewVersion.Compare(Info.ID.Version)<>0 then begin
-          Synchronize(@SynChangePkgVersion);
-        end;
-      finally
-        FreeAndNil(NewVersion);
-      end;
-      Info:=nil;
-    end;
-  except
-    on E: Exception do begin
-      Log('ERROR: TIPSLPKReader.Execute: '+E.Message);
-    end;
-  end;
-
-  Synchronize(@SynPkgInfosChanged);
-
-  Dialog.EnterCritSection;
-  try
-    Dialog.FLPKReader:=nil;
-  finally
-    Dialog.LeaveCritSection;
-  end;
-end;
-
-procedure TIPSLPKReader.SynChangePkgVersion;
-begin
-  Dialog.ChangePkgVersion(Info,NewVersion);
-end;
-
-procedure TIPSLPKReader.SynPkgInfosChanged;
-begin
-  Dialog.PkgInfosChanged;
-end;
-
-procedure TIPSLPKReader.Log(Msg: string);
-begin
-  debugln(['TIPSLPKReader.Log: ',Msg]);
-end;
-
-destructor TIPSLPKReader.Destroy;
-begin
-  FreeAndNil(PkgIDQueue);
-  inherited Destroy;
-end;
-
-{ TIPSPkgInfo }
-
-constructor TIPSPkgInfo.Create(TheID: TLazPackageID);
-begin
-  ID:=TLazPackageID.Create;
-  ID.AssignID(TheID);
-end;
-
-destructor TIPSPkgInfo.Destroy;
-begin
-  FreeAndNil(ID);
-  inherited Destroy;
-end;
-
 { TInstallPkgSetDialog }
 
 procedure TInstallPkgSetDialog.InstallPkgSetDialogCreate(Sender: TObject);
 begin
-  InitCriticalSection(FCritSec);
-
   InstallTreeView.Images := IDEImages.Images_16;
   AvailableTreeView.Images := IDEImages.Images_16;
   ImgIndexPackage := IDEImages.LoadImage(16, 'item_package');
@@ -401,8 +207,8 @@ begin
   HelpButton.Caption:=lisMenuHelp;
   CancelButton.Caption:=lisCancel;
 
-  fAvailablePackages:=TAvgLvlTree.Create(@CompareIPSPkgInfos);
-  PackageGraph.IteratePackages(fpfSearchAllExisting,@OnIterateAvailablePackages);
+  LPKInfoCache.StartLPKReaderWithAllAvailable;
+  LPKInfoCache.AddOnQueueEmpty(@OnAllLPKParsed);
   FNewInstalledPackages:=TObjectList.Create(true);
   PkgInfoMemo.Clear;
 
@@ -410,7 +216,6 @@ begin
   UpdateButtonStates;
 
   ActiveControl:=AvailableFilterEdit;
-  StartLPKReader;
 end;
 
 procedure TInstallPkgSetDialog.InstallButtonClick(Sender: TObject);
@@ -485,11 +290,24 @@ begin
   AddToInstall;
 end;
 
+procedure TInstallPkgSetDialog.LPKParsingTimerTimer(Sender: TObject);
+begin
+  UpdateAvailablePackages(false);
+  UpdateNewInstalledPackages;
+end;
+
+procedure TInstallPkgSetDialog.OnAllLPKParsed(Sender: TObject);
+begin
+  LPKParsingTimer.Enabled:=false;
+  UpdateAvailablePackages(false);
+  UpdateNewInstalledPackages;
+end;
+
 procedure TInstallPkgSetDialog.TreeViewAdvancedCustomDrawItem(
   Sender: TCustomTreeView; Node: TTreeNode; State: TCustomDrawState;
   Stage: TCustomDrawStage; var PaintImages, DefaultDraw: Boolean);
 var
-  Info: TIPSPkgInfo;
+  Info: TLPKInfo;
   NodeRect: TRect;
   x: Integer;
   Images: TCustomImageList;
@@ -506,18 +324,18 @@ var
 begin
   Tree:=Sender as TTreeView;
   if Stage=cdPostPaint then begin
-    EnterCritSection;
+    LPKInfoCache.EnterCritSection;
     try
-      Info:=FindPkgInfo(Node.Text);
+      Info:=LPKInfoCache.FindPkgInfoWithIDAsString(Node.Text);
       if Info=nil then exit;
       PkgName:=Info.ID.Name;
-      Unknown:=not (Info.LPKParsed in [ipisParsed,ipisParsedError]);
+      Unknown:=not (Info.LPKParsed in [lpkiParsed,lpkiParsedError]);
       InLazSrc:=Info.InLazSrc;
       IsBase:=Info.Base;
       PkgType:=Info.PkgType;
       Installed:=Info.Installed;
     finally
-      LeaveCritSection;
+      LPKInfoCache.LeaveCritSection;
     end;
     Images:=Tree.Images;
     CurCanvas:=Tree.Canvas;
@@ -555,13 +373,9 @@ end;
 
 procedure TInstallPkgSetDialog.InstallPkgSetDialogDestroy(Sender: TObject);
 begin
-  EndLPKReader;
+  LPKInfoCache.EndLPKReader;
   ClearNewInstalledPackages;
   FreeAndNil(FNewInstalledPackages);
-  fAvailablePackages.FreeAndClear;
-  FreeAndNil(fAvailablePackages);
-
-  DoneCriticalsection(FCritSec);
 end;
 
 procedure TInstallPkgSetDialog.InstallPkgSetDialogResize(Sender: TObject);
@@ -589,77 +403,6 @@ end;
 procedure TInstallPkgSetDialog.UninstallButtonClick(Sender: TObject);
 begin
   AddToUninstall;
-end;
-
-procedure TInstallPkgSetDialog.StartLPKReader;
-var
-  Node: TAvgLvlTreeNode;
-  Info: TIPSPkgInfo;
-begin
-  if FLPKReader<>nil then exit;
-  FLPKReader:=TIPSLPKReader.Create(true);
-  FLPKReader.Dialog:=Self;
-  FLPKReader.FreeOnTerminate:=true;
-  FLPKReader.PkgIDQueue:=TStringList.Create;
-  for Node in fAvailablePackages.GetEnumeratorHighToLow do begin
-    Info:=TIPSPkgInfo(Node.Data);
-    if Info.LPKParsed<>ipisNotParsed then continue;
-    FLPKReader.PkgIDQueue.Add(Info.ID.IDAsString);
-  end;
-  FLPKReader.Start;
-end;
-
-procedure TInstallPkgSetDialog.EndLPKReader;
-begin
-  EnterCritSection;
-  try
-    if FLPKReader=nil then exit;
-    FLPKReader.Abort:=true;
-  finally
-    LeaveCritSection;
-  end;
-  while FLPKReader<>nil do
-    Sleep(10);
-end;
-
-procedure TInstallPkgSetDialog.ParseLPK(LPKFilename: string; out ErrorMsg,
-  Author, License, Description: string; out PkgType: TLazPackageType; var
-  Version: TPkgVersion);
-var
-  Path: String;
-  XMLConfig: TXMLConfig;
-  FileVersion: Integer;
-begin
-  ErrorMsg:='';
-  Author:='';
-  License:='';
-  Description:='';
-  PkgType:=lptRunAndDesignTime;
-  if FilenameIsAbsolute(LPKFilename) and FileExistsUTF8(LPKFilename) then begin
-    // load the package file
-    try
-      XMLConfig:=TXMLConfig.Create(LPKFilename);
-      try
-        Path:='Package/';
-        FileVersion:=XMLConfig.GetValue(Path+'Version',0);
-        Author:=XMLConfig.GetValue(Path+'Author/Value','');
-        Description:=XMLConfig.GetValue(Path+'Description/Value','');
-        License:=XMLConfig.GetValue(Path+'License/Value','');
-        PkgType:=LazPackageTypeIdentToType(XMLConfig.GetValue(Path+'Type/Value',
-                                                LazPackageTypeIdents[lptRunTime]));
-        PkgVersionLoadFromXMLConfig(Version,XMLConfig,Path+'Version/',FileVersion);
-      finally
-        XMLConfig.Free;
-      end;
-    except
-      on E: Exception do begin
-        ErrorMsg:='file="'+LPKFilename+'": '+E.Message;
-        debugln('TInstallPkgSetDialog.ParseLPK ERROR: '+ErrorMsg);
-      end;
-    end;
-  end else begin
-    ErrorMsg:='file not found "'+LPKFilename+'"';
-  end;
 end;
 
 procedure TInstallPkgSetDialog.SetOldInstalledPackages(const AValue: TPkgDependency);
@@ -735,28 +478,29 @@ procedure TInstallPkgSetDialog.UpdateAvailablePackages(Immediately: boolean);
 var
   ANode: TAvgLvlTreeNode;
   FilteredBranch: TTreeFilterBranch;
-  Info: TIPSPkgInfo;
+  Info: TLPKInfo;
   List: TStringList;
   i: Integer;
 begin
   List:=TStringList.Create;
   try
     // collect available packages, not yet installed
-    EnterCritSection;
+    LPKInfoCache.EnterCritSection;
     try
-      ANode:=fAvailablePackages.FindLowest;
+      ANode:=LPKInfoCache.LPKByID.FindLowest;
       while ANode<>nil do begin
-        Info:=TIPSPkgInfo(ANode.Data);
-        if (Info.LPKParsed in [ipisNotParsed,ipisParsingHelperThread])
+        Info:=TLPKInfo(ANode.Data);
+        ANode:=LPKInfoCache.LPKByID.FindSuccessor(ANode);
+        if Info.LPKParsed=lpkiParsedError then continue;
+        if (Info.LPKParsed in [lpkiNotParsed,lpkiParsing])
         or (Info.PkgType in [lptDesignTime,lptRunAndDesignTime])
         then begin
           if (not PackageInInstallList(Info.ID.Name)) then
             List.Add(Info.ID.IDAsString);
         end;
-        ANode:=fAvailablePackages.FindSuccessor(ANode);
       end;
     finally
-      LeaveCritSection;
+      LPKInfoCache.LeaveCritSection;
     end;
     // fill tree view
     FilteredBranch := AvailableFilterEdit.GetBranch(Nil); // All items are top level.
@@ -811,10 +555,9 @@ begin
   UpdateAvailablePackages;
 end;
 
-procedure TInstallPkgSetDialog.ChangePkgVersion(PkgInfo: TIPSPkgInfo;
+procedure TInstallPkgSetDialog.ChangePkgVersion(PkgInfo: TLPKInfo;
   NewVersion: TPkgVersion);
-// called by helper thread via synchronize or by main thread
-// => only main thread is active at the moment
+// called by LPKInfoCache when a lpk has a different version than the IDE list
 var
   OldID, NewID: String;
 
@@ -831,67 +574,10 @@ var
   end;
 
 begin
-  if PkgInfo.ID.Version.Compare(NewVersion)=0 then exit;
   OldID:=PkgInfo.ID.IDAsString;
-  fAvailablePackages.Remove(PkgInfo);
-  PkgInfo.ID.Version.Assign(NewVersion);
-  fAvailablePackages.Add(PkgInfo);
-  NewID:=PkgInfo.ID.IDAsString;
+  NewID:=PkgInfo.ID.Name+' '+NewVersion.AsString;
   ChangeTV(AvailableTreeView);
   ChangeTV(InstallTreeView);
-end;
-
-procedure TInstallPkgSetDialog.OnIterateAvailablePackages(APackageID: TLazPackageID);
-// called in FormCreate, helper thread not yet running, so no crit sec needed
-var
-  Info: TIPSPkgInfo;
-  Pkg: TLazPackage;
-  OldInfo: TIPSPkgInfo;
-  Link: TPackageLink;
-begin
-  //debugln('TInstallPkgSetDialog.OnIteratePackages ',APackageID.IDAsString);
-  if APackageID=nil then exit;
-  OldInfo:=FindPkgInfo(APackageID);
-  if (OldInfo<>nil) and (OldInfo.LPKParsed=ipisParsed) then begin
-    // old is good enough => ignore duplicate
-    exit;
-  end;
-
-  if APackageID is TLazPackage then begin
-    // a loaded package
-    Pkg:=TLazPackage(APackageID);
-    Info:=TIPSPkgInfo.Create(APackageID);
-    Info.LPKFilename:=Pkg.Filename;
-    Info.Installed:=Pkg.Installed;
-    Info.PkgType:=Pkg.PackageType;
-    Info.Author:=Pkg.Author;
-    Info.Description:=Pkg.Description;
-    Info.License:=Pkg.License;
-    Info.LPKParsed:=ipisParsed;
-  end else if APackageID is TPackageLink then begin
-    // only a link to a package
-    Link:=TPackageLink(APackageID);
-    Info:=TIPSPkgInfo.Create(APackageID);
-    Info.LPKFilename:=Link.GetEffectiveFilename;
-  end else
-    exit;
-
-  if OldInfo<>nil then begin
-    if (Info.LPKParsed=ipisParsed)
-    or (not FileExistsCached(OldInfo.LPKFilename)) then begin
-      // the new info is better => remove old
-      fAvailablePackages.Remove(OldInfo);
-      OldInfo.Free;
-    end else begin
-      Info.Free;
-      exit;
-    end;
-  end;
-
-  Info.InLazSrc:=FileIsInPath(Info.LPKFilename,EnvironmentOptions.GetParsedLazarusDirectory);
-  Info.Base:=PackageGraph.IsStaticBasePackage(Info.ID.Name);
-
-  fAvailablePackages.Add(Info);
 end;
 
 function TInstallPkgSetDialog.DependencyToStr(Dependency: TPkgDependency): string;
@@ -956,6 +642,7 @@ var
 
 var
   PkgID: String;
+  Info: TLPKInfo;
 begin
   if Tree = nil then Exit;
   PkgID := '';
@@ -963,38 +650,48 @@ begin
     PkgID := Tree.Selected.Text;
   if PkgID = '' then Exit;
 
-  EnterCritSection;
+  LPKInfoCache.EnterCritSection;
   try
-    if Assigned(FSelectedPkg) and (PkgID = FSelectedPkg.ID.IDAsString) then
-      exit;
+    Info:=LPKInfoCache.FindPkgInfoWithIDAsString(PkgID);
+    if ((Info=nil) and (FSelectedPkgID=''))
+    or ((Info<>nil) and (Info.ID.IDAsString=FSelectedPkgID)
+                    and (Info.LPKParsed=FSelectedPkgState))
+    then
+      exit; // no change
     PkgInfoMemo.Clear;
+    if (Info=nil) then begin
+      FSelectedPkgID:='';
+      exit;
+    end;
+    FSelectedPkgID:=PkgID;
 
-    FSelectedPkg:=FindPkgInfo(PkgID);
-    if FSelectedPkg=nil then exit;
-
-    if FSelectedPkg.LPKParsed=ipisNotParsed then begin
-      ParseLPKMainThread(FSelectedPkg);
-      if FSelectedPkg=nil then exit;
+    if Info.LPKParsed=lpkiNotParsed then begin
+      LPKInfoCache.ParseLPKInfoInMainThread(Info);
+      if FSelectedPkgID='' then begin
+        // version has changed
+        // => has already triggered an update
+        exit;
+      end;
     end;
 
-    if FSelectedPkg.Author<>'' then
-      PkgInfoMemo.Lines.Add(lisPckOptsAuthor + ': ' + FSelectedPkg.Author);
-    if FSelectedPkg.Description<>'' then
+    if Info.Author<>'' then
+      PkgInfoMemo.Lines.Add(lisPckOptsAuthor + ': ' + Info.Author);
+    if Info.Description<>'' then
       PkgInfoMemo.Lines.Add(lisPckOptsDescriptionAbstract
-                            + ': ' + FSelectedPkg.Description);
-    PkgInfoMemo.Lines.Add(Format(lisOIPFilename, [FSelectedPkg.LPKFilename]));
+                            + ': ' + Info.Description);
+    PkgInfoMemo.Lines.Add(Format(lisOIPFilename, [Info.LPKFilename]));
 
     InfoStr:=lisCurrentState;
-    if FSelectedPkg.Installed<>pitNope then
+    if Info.Installed<>pitNope then
       AddState(lisInstalled)
     else
       AddState(lisNotInstalled);
-    if FSelectedPkg.Base then
+    if Info.Base then
       AddState(lisPckExplBase);
-    AddState(LazPackageTypeIdents[FSelectedPkg.PkgType]);
+    AddState(LazPackageTypeIdents[Info.PkgType]);
     PkgInfoMemo.Lines.Add(InfoStr);
   finally
-    LeaveCritSection;
+    LPKInfoCache.LeaveCritSection;
   end;
 end;
 
@@ -1124,12 +821,11 @@ begin
 end;
 
 function TInstallPkgSetDialog.ExtractNameFromPkgID(ID: string): string;
-var
-  p: Integer;
 begin
-  p:=1;
-  while (p<=length(ID)) and IsIdentChar[ID[p]] do inc(p);
-  Result:=copy(ID,1,p-1);
+  if ID='' then
+    Result:=''
+  else
+    Result:=GetIdentifier(PChar(ID));
 end;
 
 procedure TInstallPkgSetDialog.AddToInstall;
@@ -1280,56 +976,6 @@ begin
   end;
 end;
 
-procedure TInstallPkgSetDialog.ParseLPKMainThread(PkgInfo: TIPSPkgInfo);
-var
-  NewVersion: TPkgVersion;
-begin
-  EnterCritSection;
-  try
-    if PkgInfo.LPKParsed<>ipisNotParsed then exit;
-    PkgInfo.LPKParsed:=ipisParsingMainThread;
-  finally
-    LeaveCritSection;
-  end;
-  NewVersion:=TPkgVersion.Create;
-  try
-    ParseLPK(PkgInfo.LPKFilename,PkgInfo.LPKError,PkgInfo.Author,PkgInfo.License,
-      PkgInfo.Description,PkgInfo.PkgType,NewVersion);
-    if PkgInfo.LPKError<>'' then begin
-      PkgInfo.LPKParsed:=ipisParsedError;
-    end else begin
-      PkgInfo.LPKParsed:=ipisParsed;
-    end;
-    if NewVersion.Compare(PkgInfo.ID.Version)<>0 then
-      ChangePkgVersion(PkgInfo,NewVersion);
-  finally
-    NewVersion.Free;
-  end;
-end;
-
-function TInstallPkgSetDialog.FindPkgInfo(ID: string): TIPSPkgInfo;
-var
-  PkgID: TLazPackageID;
-begin
-  Result:=nil;
-  PkgID:=TLazPackageID.Create;
-  try
-    if not PkgID.StringToID(ID) then exit;
-    Result:=FindPkgInfo(PkgID);
-  finally
-    PkgID.Free;
-  end;
-end;
-
-function TInstallPkgSetDialog.FindPkgInfo(PkgID: TLazPackageID): TIPSPkgInfo;
-var
-  Node: TAvgLvlTreeNode;
-begin
-  Node:=fAvailablePackages.FindKey(PkgID,@ComparePkgIDWithIPSPkgInfo);
-  if Node=nil then exit(nil);
-  Result:=TIPSPkgInfo(Node.Data);
-end;
-
 function TInstallPkgSetDialog.GetNewInstalledPackages: TObjectList;
 var
   i: Integer;
@@ -1341,16 +987,6 @@ begin
     NewPackageID.AssignID(TLazPackageID(FNewInstalledPackages[i]));
     Result.Add(NewPackageID);
   end;
-end;
-
-procedure TInstallPkgSetDialog.EnterCritSection;
-begin
-  EnterCriticalsection(FCritSec);
-end;
-
-procedure TInstallPkgSetDialog.LeaveCritSection;
-begin
-  LeaveCriticalsection(FCritSec);
 end;
 
 end.

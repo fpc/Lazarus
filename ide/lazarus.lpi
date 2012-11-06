@@ -63,7 +63,7 @@
         <PackageName Value="SynEdit"/>
       </Item6>
     </RequiredPackages>
-    <Units Count="92">
+    <Units Count="93">
       <Unit0>
         <Filename Value="lazarus.pp"/>
         <IsPartOfProject Value="True"/>
@@ -692,6 +692,11 @@
         <IsPartOfProject Value="True"/>
         <UnitName Value="SourceFileManager"/>
       </Unit91>
+      <Unit92>
+        <Filename Value="../packager/lpkcache.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="LPKCache"/>
+      </Unit92>
     </Units>
   </ProjectOptions>
   <CompilerOptions>
@@ -701,7 +706,7 @@
     </Target>
     <SearchPaths>
       <IncludeFiles Value="include"/>
-      <OtherUnitFiles Value="frames;../converter;../debugger;../debugger/frames;../packager;../designer;../packager/frames"/>
+      <OtherUnitFiles Value="frames;../converter;../debugger;../debugger/frames;../packager;../designer;../packager/frames;../ide"/>
       <UnitOutputDirectory Value="$(LazarusDir)/units/$(TargetCPU)-$(TargetOS)/$(LCLWidgetType)"/>
     </SearchPaths>
     <Other>

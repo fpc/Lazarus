@@ -6687,6 +6687,7 @@ packager/globallinks/turbopoweriprodsgn-0.lpl svneol=native#text/plain
 packager/globallinks/weblaz-0.lpl svneol=native#text/plain
 packager/installpkgsetdlg.lfm svneol=native#text/plain
 packager/installpkgsetdlg.pas svneol=native#text/pascal
+packager/lpkcache.pas svneol=native#text/plain
 packager/missingpkgfilesdlg.lfm svneol=native#text/plain
 packager/missingpkgfilesdlg.pas svneol=native#text/plain
 packager/newpkgcomponentdlg.lfm svneol=native#text/plain

@@ -98,7 +98,7 @@ uses
   // debugger
   RunParamsOpts, BaseDebugManager, DebugManager, debugger, DebuggerDlg,
   // packager
-  PackageSystem, PkgManager, BasePkgManager,
+  PackageSystem, PkgManager, BasePkgManager, LPKCache,
   // source editing
   SourceEditor, CodeToolsOptions, IDEOptionDefs, CheckLFMDlg,
   CodeToolsDefines, DiffDialog, DiskDiffsDialog, UnitInfoDlg, EditorOptions,
@@ -1408,6 +1408,7 @@ begin
 
   PkgBoss:=TPkgManager.Create(nil);
   PkgBoss.ConnectMainBarEvents;
+  LPKInfoCache:=TLPKInfoCache.Create;
   HelpBoss:=TIDEHelpManager.Create(nil);
   HelpBoss.ConnectMainBarEvents;
   {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.Create MANAGERS');{$ENDIF}
@@ -1509,6 +1510,7 @@ begin
   FreeTextConverters;
   FreeStandardIDEQuickFixItems;
   FreeThenNil(GlobalDesignHook);
+  FreeThenNil(LPKInfoCache);
   FreeThenNil(PkgBoss);
   FreeThenNil(HelpBoss);
   FreeThenNil(DebugBoss);
