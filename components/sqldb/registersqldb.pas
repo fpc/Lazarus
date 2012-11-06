@@ -18,7 +18,6 @@
 unit registersqldb;
 
 {$mode objfpc}{$H+}
-
 {$IFNDEF win64}
 {$DEFINE HASMYSQL4CONNECTION}
 {$DEFINE HASORACLECONNECTION}
@@ -30,14 +29,11 @@ unit registersqldb;
 {$ENDIF}
 
 {$IF FPC_FULLVERSION>= 20601}
+{$DEFINE HASPQCONNECTION}
 {$DEFINE HASMYSQL55CONNECTION}
-{$ENDIF}
-
-{$IF FPC_FULLVERSION>= 20601}
 {$IF DEFINED(BEOS) OR DEFINED(HAIKU) OR DEFINED(LINUX) OR DEFINED(FREEBSD) OR DEFINED (NETBSD) OR DEFINED(OPENBSD) OR DEFINED(WIN32) OR DEFINED(WIN64)}
-// MS SQL Server and Sybase ASE connectors were introduced in the FPC 2.7 development branch, and
-// backported to 2.6.1
-// Operating systems should match FPC packages\fcl-db\fpmake.pp
+// MS SQL Server and Sybase ASE connectors were introduced in the FPC 2.7 development branch,
+//  and backported to 2.6.1. Operating systems should match FPC packages\fcl-db\fpmake.pp
 {$DEFINE HASMSSQLCONNECTION}
 {$DEFINE HASSYBASECONNECTION}
 {$ENDIF}
@@ -67,9 +63,11 @@ uses
     mssqlconn,
   {$ENDIF}
   odbcconn,
-  pqconnection,
-  {$IFDEF HASPQEVENT}
-  pqteventmonitor,
+  {$IFDEF HASPQCONNECTION}
+    pqconnection,
+    {$IFDEF HASPQEVENT}
+    pqteventmonitor,
+    {$ENDIF}
   {$ENDIF}
   {$IFDEF HASORACLECONNECTION}
     oracleconnection,
@@ -192,9 +190,11 @@ begin
 {$IFDEF HASSYBASECONNECTION}                                
     ,TSybaseConnection
 {$ENDIF}                              
-  ,TPQConnection
-{$IFDEF HASPQEVENT}
-    ,TPQTEventMonitor
+{$IFDEF HASPQCONNECTION}
+    ,TPQConnection
+  {$IFDEF HASPQEVENT}
+      ,TPQTEventMonitor
+  {$ENDIF}
 {$ENDIF}
 {$IFDEF HASORACLECONNECTION}
     ,TOracleConnection
