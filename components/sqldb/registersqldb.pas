@@ -23,11 +23,6 @@ unit registersqldb;
 {$DEFINE HASORACLECONNECTION}
 {$ENDIF}
 
-{$IF FPC_FULLVERSION> 20402}
-{$DEFINE HASMYSQL51CONNECTION}
-{$DEFINE HASSQLPARSER}
-{$ENDIF}
-
 {$IF FPC_FULLVERSION>= 20601}
 {$DEFINE HASPQCONNECTION}
 {$DEFINE HASMYSQL55CONNECTION}
@@ -76,9 +71,7 @@ uses
     mysql40conn, mysql41conn,
   {$ENDIF}
     mysql50conn,
-  {$IFDEF HASMYSQL51CONNECTION}
-    mysql51conn,
-  {$ENDIF}
+  mysql51conn,
   {$IFDEF HASMYSQL55CONNECTION}
     mysql55conn,
   {$ENDIF}
@@ -96,9 +89,7 @@ uses
   {$IFDEF HASLIBLOADER}
     sqldblib,
   {$ENDIF}
-  {$IFDEF HASSQLPARSER}
-    sqlscript, fpsqltree, fpsqlparser,
-  {$ENDIF HASSQLPARSER}
+  sqlscript, fpsqltree, fpsqlparser,
   LazarusPackageIntf,
   lazideintf,
   srceditorintf,
@@ -154,7 +145,6 @@ Type
 
 {$ENDIF}
 
-{$IFDEF HASSQLPARSER}
   TSQLSyntaxChecker = Class(TComponent)
   private
     FStatementCount,
@@ -169,7 +159,6 @@ Type
     function CheckSource(Sender: TObject; var Handled: boolean): TModalResult;
     Property SourceFileName : String Read FSFN;
  end;
-{$ENDIF HASSQLPARSER}
 
 procedure Register;
 
@@ -205,9 +194,7 @@ begin
     ,TMySQL41Connection
 {$ENDIF}
     ,TMySQL50Connection
-{$IFDEF HASMYSQL51CONNECTION}
     ,TMySQL51Connection
-{$ENDIF}
 {$IFDEF HASMYSQL55CONNECTION}
     ,TMySQL55Connection
 {$ENDIF}
@@ -342,7 +329,6 @@ begin
   Result := [paMultiSelect, paDialog, paRevertable, paReadOnly];
 end;
 
-{$IFDEF HASSQLPARSER}
 { TSQLSyntaxChecker }
 
 procedure TSQLSyntaxChecker.CheckSQLStatement(Sender: TObject;
@@ -464,7 +450,6 @@ end;
 
 Var
   AChecker : TSQLSyntaxChecker;
-{$ENDIF HASSQLPARSER}
 
 procedure Register;
 begin
@@ -486,10 +471,8 @@ begin
   RegisterProjectFileDescriptor(TSQLFileDescriptor.Create);
 
   RegisterUnit('sqldb',@RegisterUnitSQLdb);
-{$IFDEF HASSQLPARSER}
   AChecker:=TSQLSyntaxChecker.Create(Nil);
   LazarusIDE.AddHandlerOnQuickSyntaxCheck(@AChecker.CheckSource,False);
-{$ENDIF HASSQLPARSER}
 end;
 
 { TSQLFileDescriptor }
@@ -528,8 +511,6 @@ end;
 initialization
   {$i registersqldb.lrs}
 
-{$IFDEF HASSQLPARSER}
 finalization
   FreeAndNil(AChecker);
-{$ENDIF HASSQLPARSER}
 end.
