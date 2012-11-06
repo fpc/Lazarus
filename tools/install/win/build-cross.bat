@@ -107,7 +107,7 @@ copy %COMPILER% %INSTALL_BINDIR%
 SET COMPILER=%INSTALL_BINDIR%\%PPCNAME%
 
 gmkdir -p %BUILDDIR%\packager
-%SVN% export %LAZSVNDIR%\packager\registration %BUILDDIR%\packager\registration
+%SVN% export -q %LAZSVNDIR%\packager\registration %BUILDDIR%\packager\registration
 %BUILDDRIVE%
 cd %BUILDDIR%\packager\registration
 %MAKEEXE% FPC=%compiler%
@@ -116,7 +116,7 @@ gmkdir -p %BUILDDIR%\image\packager\units
 cp -pr %BUILDDIR%\packager\units\%FPCFULLTARGET% %BUILDDIR%\image\packager\units\%FPCFULLTARGET%
 
 gmkdir -p %BUILDDIR%\components
-%SVN% export %LAZSVNDIR%\components\lazutils %BUILDDIR%\components\lazutils
+%SVN% export -q %LAZSVNDIR%\components\lazutils %BUILDDIR%\components\lazutils
 %BUILDDRIVE%
 cd %BUILDDIR%\components\lazutils
 %MAKEEXE% FPC=%compiler%
@@ -124,7 +124,7 @@ IF ERRORLEVEL 1 GOTO CLEANUP
 gmkdir -p %BUILDDIR%\image\components\lazutils
 cp -pr %BUILDDIR%\components\lazutils\lib %BUILDDIR%\image\components\lazutils\lib
 
-%SVN% export %LAZSVNDIR%\lcl %BUILDDIR%\lcl
+%SVN% export -q %LAZSVNDIR%\lcl %BUILDDIR%\lcl
 %BUILDDRIVE%
 cd %BUILDDIR%\lcl
 %MAKEEXE% FPC=%compiler%
@@ -132,7 +132,7 @@ IF ERRORLEVEL 1 GOTO CLEANUP
 gmkdir -p %BUILDDIR%\image\lcl\units
 cp -pr %BUILDDIR%\lcl\units\%FPCFULLTARGET% %BUILDDIR%\image\lcl\units\%FPCFULLTARGET%
 
-%SVN% export %LAZSVNDIR%\components\lazcontrols %BUILDDIR%\components\lazcontrols
+%SVN% export -q %LAZSVNDIR%\components\lazcontrols %BUILDDIR%\components\lazcontrols
 %BUILDDRIVE%
 cd %BUILDDIR%\components\lazcontrols
 %MAKEEXE% FPC=%compiler%
@@ -140,9 +140,9 @@ IF ERRORLEVEL 1 GOTO CLEANUP
 gmkdir -p %BUILDDIR%\image\components\lazcontrols
 cp -pr %BUILDDIR%\components\lazcontrols\lib %BUILDDIR%\image\components\lazcontrols\lib
 
-%SVN% export %LAZSVNDIR%\ideintf %BUILDDIR%\ideintf
+%SVN% export -q %LAZSVNDIR%\ideintf %BUILDDIR%\ideintf
 :: export images dir, the ideintf includes them
-%SVN% export %LAZSVNDIR%\images %BUILDDIR%\images
+%SVN% export -q %LAZSVNDIR%\images %BUILDDIR%\images
 cd %BUILDDIR%\ideintf
 IF ERRORLEVEL 1 GOTO CLEANUP
 %MAKEEXE% FPC=%compiler%
@@ -150,7 +150,7 @@ gmkdir -p %BUILDDIR%\image\ideintf\units
 cp -pr %BUILDDIR%\ideintf\units\%FPCFULLTARGET% %BUILDDIR%\image\ideintf\units\%FPCFULLTARGET%
 
 gmkdir -p %BUILDDIR%\components
-%SVN% export %LAZSVNDIR%\components\synedit %BUILDDIR%\components\synedit
+%SVN% export -q %LAZSVNDIR%\components\synedit %BUILDDIR%\components\synedit
 cd %BUILDDIR%\components\synedit
 IF ERRORLEVEL 1 GOTO CLEANUP
 %MAKEEXE% FPC=%compiler%

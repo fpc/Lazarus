@@ -82,14 +82,14 @@ SET PATH=%FPCBINDIR%
 
 :: copy lazarus dir
 rmdir /s /q %BUILDDIR%
-%SVN% export %LAZSVNDIR% %BUILDDIR% >> %LOGFILE%
+%SVN% export -q %LAZSVNDIR% %BUILDDIR% >> %LOGFILE%
 IF %ERRORLEVEL% NEQ 0 GOTO SVNERR
 call svn2revisioninc.bat %LAZSVNDIR% %BUILDDIR%\ide\revision.inc
 
 call build-fpc.bat
 
 :: INSTALL_BINDIR is set by build-fpc.bat
-%SVN% export %FPCBINDIR% %BUILDDIR%\fpcbins >> %LOGFILE%
+%SVN% export -q %FPCBINDIR% %BUILDDIR%\fpcbins >> %LOGFILE%
 IF %ERRORLEVEL% NEQ 0 GOTO SVNERR
 mv %BUILDDIR%\fpcbins\*.* %INSTALL_BINDIR%
 %FPCBINDIR%\rm -rf %BUILDDIR%\fpcbins
@@ -110,7 +110,7 @@ if not exist %BUILDDIR%\lazarus.exe goto END
 if not exist %BUILDDIR%\startlazarus.exe goto END
 
 :: copy gdb into build dir
-if exist %GDBDIR% %SVN% export %GDBDIR% %BUILDDIR%\mingw
+if exist %GDBDIR% %SVN% export -q %GDBDIR% %BUILDDIR%\mingw
 
 :: create the installer
 IF [%BUILDLAZRELEASE%]==[] GOTO SNAPSHOT
