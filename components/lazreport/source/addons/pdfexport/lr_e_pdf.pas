@@ -457,6 +457,7 @@ begin
 
     PRTLabel := TPRLabel.Create(PRPanel);
     PRTLabel.Parent := PRPanel;
+    PRTLabel.Clipping := true;
     try
         PRTLabel.Caption := Text;
         PRTLabel.Left := nx;
