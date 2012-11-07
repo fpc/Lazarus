@@ -6,7 +6,7 @@
     <CompilerOptions>
       <Version Value="11"/>
       <SearchPaths>
-        <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)/"/>
+        <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)"/>
       </SearchPaths>
       <Other>
         <CompilerMessages>
@@ -15,7 +15,7 @@
         <CompilerPath Value="$(CompPath)"/>
       </Other>
     </CompilerOptions>
-    <Description Value="VLC Player component. Needs at least version 2 of the VideoLan player"/>
+    <Description Value="VLC Player component. Needs at least version 2 of the VideoLan player and at least fpc 2.7.1."/>
     <License Value="Modified LGPL"/>
     <Version Major="1"/>
     <Files Count="5">
