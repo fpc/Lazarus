@@ -1,5 +1,9 @@
 unit reglazvlc;
 
+{$IF FPC_FULLVERSION<20701}
+{$ERROR needs at least FPC 2.7.1}
+{$ENDIF}
+
 {$mode objfpc}{$H+}
 
 interface
