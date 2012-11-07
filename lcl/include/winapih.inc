@@ -205,6 +205,7 @@ function MoveToEx(DC: HDC; X, Y: Integer; OldPoint: PPoint): Boolean; {$IFDEF IF
 //function OffsetRect --> independent
 function OffsetRgn(RGN: HRGN; nXOffset, nYOffset: Integer): Integer; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 
+function PaintRgn(DC: HDC; RGN: HRGN): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function PeekMessage(var lpMsg : TMsg; Handle : HWND; wMsgFilterMin, wMsgFilterMax,wRemoveMsg : UINT): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function Pie(DC: HDC; x1, y1, x2, y2, sx, sy, ex, ey: Integer): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function PolyBezier(DC: HDC; Points: PPoint;  NumPts: Integer; Filled, Continuous: boolean): boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}

@@ -171,6 +171,7 @@ function MoveToEx(DC: HDC; X, Y: Integer; OldPoint: PPoint): Boolean; override;
 
 function OffsetRgn(RGN: HRGN; nXOffset, nYOffset: Integer): Integer; override;
 
+function PaintRgn(DC: HDC; RGN: HRGN): Boolean; override;
 function PeekMessage(var lpMsg : TMsg; {%H-}Handle : HWND; {%H-}wMsgFilterMin, {%H-}wMsgFilterMax,wRemoveMsg : UINT): Boolean; override;
 function PolyBezier(DC: HDC; Points: PPoint; NumPts: Integer; Filled, Continuous: boolean): boolean; override;
 function Polygon(DC: HDC; Points: PPoint; NumPts: Integer; Winding: boolean): boolean; override;

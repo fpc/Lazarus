@@ -1682,6 +1682,11 @@ begin
   Result := Error;
 end;
 
+function TWidgetSet.PaintRgn(DC: HDC; RGN: HRGN): Boolean;
+begin
+  Result := False;
+end;
+
 function TWidgetSet.PeekMessage(var lpMsg : TMsg; Handle : HWND;
   wMsgFilterMin, wMsgFilterMax,wRemoveMsg : UINT): Boolean;
 begin

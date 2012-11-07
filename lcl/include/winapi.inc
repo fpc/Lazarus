@@ -707,6 +707,11 @@ begin
   Result := WidgetSet.OffsetRgn(RGN, nXOffset, nYOffset);
 end;
 
+function PaintRgn(DC: HDC; RGN: HRGN): Boolean;
+begin
+  Result := WidgetSet.PaintRgn(DC, RGN);
+end;
+
 function PeekMessage(var lpMsg : TMsg; Handle : HWND;
   wMsgFilterMin, wMsgFilterMax,wRemoveMsg : UINT): Boolean;
 begin

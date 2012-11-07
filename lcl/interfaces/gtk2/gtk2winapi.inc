@@ -6558,6 +6558,25 @@ begin
   Result := RegionType(GdkRGN);
 end;
 
+{------------------------------------------------------------------------------
+  Method:  PaintRgn
+  Params:  DC: HDC; RGN: HRGN
+  Returns: if the function succeeds
+
+  Paints the specified region by using the brush currently selected into the
+  device context.
+ ------------------------------------------------------------------------------}
+function TGtk2WidgetSet.PaintRgn(DC: HDC; RGN: HRGN): Boolean;
+var
+  DevCtx: TGtkDeviceContext absolute DC;
+  CurGdiBrush: PGdiObject;
+  CurHBrush: HBRUSH absolute CurGdiBrush;
+begin
+  CurGdiBrush := DevCtx.CurrentBrush;
+  Result := IsValidDC(DC) and IsValidGDIObject(RGN) and IsValidGDIObject(CurHBrush);
+  if Result then
+    Result := FillRgn(DC, RGN, CurHBrush);
+end;
 
 {------------------------------------------------------------------------------
   Function: PeekMessage

@@ -2596,6 +2596,18 @@ begin
   Result := Windows.OffsetRgn(RGN, nXOffset, nYOffset);
 end;
 
+{------------------------------------------------------------------------------
+  Method:  PaintRgn
+  Params:  DC: HDC; RGN: HRGN
+  Returns: if the function succeeds
+
+  Paints the specified region by using the brush currently selected into the
+  device context.
+ ------------------------------------------------------------------------------}
+function TWin32WidgetSet.PaintRgn(DC: HDC; RGN: HRGN): Boolean;
+begin
+  Result := Windows.PaintRgn(DC, RGN);
+end;
 
 {------------------------------------------------------------------------------
   Method:  PeekMessage
