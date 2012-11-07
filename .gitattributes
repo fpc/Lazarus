@@ -3248,6 +3248,7 @@ components/turbopower_ipro/turbopoweripro.pas svneol=native#text/plain
 components/vlc/README.txt svneol=native#text/plain
 components/vlc/lazvlc.lpk svneol=native#text/plain
 components/vlc/lazvlc.pas svneol=native#text/plain
+components/vlc/lazvlc.res -text svneol=unset#application/octet-stream
 components/vlc/lclvlc.pp svneol=native#text/plain
 components/vlc/reglazvlc.pas svneol=native#text/plain
 components/vlc/test/frmmain.lfm svneol=native#text/plain
