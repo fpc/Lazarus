@@ -221,6 +221,11 @@ begin
   Result := WidgetSet.DPtoLP(DC,Points,Count);
 end;
 
+function Ellipse(DC: HDC; x1,y1,x2,y2: Integer): Boolean;
+begin
+  Result := WidgetSet.Ellipse(DC,x1,y1,x2,y2);
+end;
+
 function EnableScrollBar(Wnd: HWND; wSBflags, wArrows: Cardinal): Boolean;
 begin
   Result := WidgetSet.EnableScrollBar(Wnd, wSBflags, wArrows);
@@ -258,9 +263,9 @@ begin
   Result := WidgetSet.EnumFontFamiliesEx(DC, lpLogFont, Callback, LParam, flags);
 end;
 
-function Ellipse(DC: HDC; x1,y1,x2,y2: Integer): Boolean;
+function EqualRgn(Rgn1: HRGN; Rgn2: HRGN): Boolean;
 begin
-  Result := WidgetSet.Ellipse(DC,x1,y1,x2,y2);
+  Result := WidgetSet.EqualRgn(Rgn1, Rgn2);
 end;
 
 function ExcludeClipRect(dc: hdc; Left, Top, Right, Bottom : Integer) : Integer;

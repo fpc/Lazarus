@@ -3545,7 +3545,6 @@ end;
   Returns:  Nothing
 
   Use Ellipse to draw a filled circle or ellipse.
-
  ------------------------------------------------------------------------------}
 function TGtk2WidgetSet.Ellipse(DC: HDC; X1, Y1, X2, Y2: Integer): Boolean;
 var
@@ -3600,6 +3599,25 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  Method: EqualRgn
+  Params:  Rgn1: HRGN; Rgn2: HRGN
+  Returns: True if the two regions are equal
+
+  Checks the two specified regions to determine whether they are identical. The
+  function considers two regions identical if they are equal in size and shape.
+ ------------------------------------------------------------------------------}
+function TGtk2WidgetSet.EqualRgn(Rgn1: HRGN; Rgn2: HRGN): Boolean;
+var
+  AGdiObject: PGdiObject absolute Rgn1;
+  BGdiObject: PGdiObject absolute Rgn2;
+begin
+  Result := IsValidGDIObject(Rgn1) and IsValidGDIObject(Rgn2);
+  if Result then
+    Result := gdk_region_equal(AGdiObject^.GDIRegionObject,
+                               BGdiObject^.GDIRegionObject);
+end;
+
+{------------------------------------------------------------------------------
   Function: ExcludeClipRect
   Params:  dc: hdc; Left, Top, Right, Bottom : Integer
   Returns: integer
@@ -3613,8 +3631,6 @@ end;
       NullRegion
       SimpleRegion
       ComplexRegion
-
-
  ------------------------------------------------------------------------------}
 function TGtk2WidgetSet.ExcludeClipRect(dc: hdc;
   Left, Top, Right, Bottom : Integer) : Integer;

@@ -3762,6 +3762,26 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  Method: EqualRgn
+  Params:  Rgn1: HRGN; Rgn2: HRGN
+  Returns: True if the two regions are equal
+
+  Checks the two specified regions to determine whether they are identical. The
+  function considers two regions identical if they are equal in size and shape.
+
+ ------------------------------------------------------------------------------}
+function TGtkWidgetSet.EqualRgn(Rgn1: HRGN; Rgn2: HRGN): Boolean;
+var
+  AGdiObject: PGdiObject absolute Rgn1;
+  BGdiObject: PGdiObject absolute Rgn2;
+begin
+  Result := IsValidGDIObject(Rgn1) and IsValidGDIObject(Rgn2);
+  if Result then
+    Result := gdk_region_equal(AGdiObject^.GDIRegionObject,
+                               BGdiObject^.GDIRegionObject);
+end;
+
+{------------------------------------------------------------------------------
   Function: ExcludeClipRect
   Params:  dc: hdc; Left, Top, Right, Bottom : Integer
   Returns: integer

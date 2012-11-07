@@ -1325,6 +1325,19 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  Method: EqualRgn
+  Params:  Rgn1: HRGN; Rgn2: HRGN
+  Returns: True if the two regions are equal
+
+  Checks the two specified regions to determine whether they are identical. The 
+  function considers two regions identical if they are equal in size and shape.
+ ------------------------------------------------------------------------------}
+function TWin32WidgetSet.EqualRgn(Rgn1: HRGN; Rgn2: HRGN): Boolean;
+begin
+  Result := Windows.EqualRgn(Rgn1, Rgn2);
+end;
+
+{------------------------------------------------------------------------------
   Function: ExcludeClipRect
   Params:  dc, Left, Top, Right, Bottom
   Returns: integer
@@ -1338,8 +1351,6 @@ end;
       NullRegion
       SimpleRegion
       ComplexRegion
-
-
  ------------------------------------------------------------------------------}
 function TWin32WidgetSet.ExcludeClipRect(dc: hdc;
   Left, Top, Right, Bottom : Integer) : Integer;

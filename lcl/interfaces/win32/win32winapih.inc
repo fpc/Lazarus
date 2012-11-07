@@ -80,6 +80,7 @@ function EndPaint(Handle : hwnd; var PS : TPaintStruct): Integer; override;
 function EnumDisplayMonitors(hdc: HDC; lprcClip: PRect; lpfnEnum: MonitorEnumProc; dwData: LPARAM): LongBool; override;
 function EnumFontFamilies(DC: HDC; Family:Pchar; EnumFontFamProc: FontEnumProc; LParam:Lparam):longint; override;
 function EnumFontFamiliesEx(DC:HDC; lpLogFont:PLogFont; Callback: FontEnumExProc; LParam:Lparam; flags:dword):longint; override;
+function EqualRgn(Rgn1: HRGN; Rgn2: HRGN): Boolean; override;
 function ExcludeClipRect(dc: hdc; Left, Top, Right, Bottom : Integer) : Integer; override;
 function ExtCreatePen(dwPenStyle, dwWidth: DWord; const lplb: TLogBrush; dwStyleCount: DWord; lpStyle: PDWord): HPEN; override;
 function ExtTextOut(DC: HDC; X, Y: Integer; Options: LongInt; Rect: PRect; Str: PChar; Count: LongInt; Dx: PInteger): Boolean; override;

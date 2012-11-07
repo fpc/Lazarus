@@ -92,6 +92,7 @@ function EnumDisplayMonitors({%H-}hdc: HDC; {%H-}lprcClip: PRect; lpfnEnum: Moni
 function EnumFontFamilies(DC: HDC; Family: Pchar; EnumFontFamProc: FontEnumProc; LParam:Lparam):longint; override;
 {$ENDIF}
 function EnumFontFamiliesEx({%H-}DC: HDC; lpLogFont: PLogFont; Callback: FontEnumExProc; Lparam: LParam; {%H-}Flags: dword): longint; override;
+function EqualRgn(Rgn1: HRGN; Rgn2: HRGN): Boolean; override;
 function ExcludeClipRect(dc: hdc; Left, Top, Right, Bottom : Integer) : Integer; override;
 function ExtCreatePen(dwPenStyle, dwWidth: DWord; const lplb: TLogBrush; dwStyleCount: DWord; lpStyle: PDWord): HPEN; override;
 function ExtSelectClipRGN(dc: hdc; rgn : hrgn; Mode : Longint) : Integer;  override;

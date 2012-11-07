@@ -842,6 +842,11 @@ begin
   Result := True;
 end;
 
+function TWidgetSet.EqualRgn(Rgn1: HRGN; Rgn2: HRGN): Boolean;
+begin
+  Result := False;
+end;
+
 function TWidgetSet.ExcludeClipRect(dc: hdc;
   Left, Top, Right, Bottom : Integer) : Integer;
 var
