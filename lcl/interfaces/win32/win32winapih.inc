@@ -213,6 +213,7 @@ function SetMapMode(DC: HDC; fnMapMode : Integer): Integer; override;
 function SetMenu(AWindowHandle: HWND; AMenuHandle: HMENU): Boolean; override;
 function SetParent(hWndChild: HWND; hWndParent: HWND): HWND; override;
 function SetProp(Handle: hwnd; Str: PChar; Data: Pointer): Boolean; override;
+function SetRectRgn(aRGN: HRGN; X1, Y1, X2, Y2 : Integer): Boolean; override;
 function SetROP2(DC: HDC; Mode: Integer): Integer; override;
 function SetScrollInfo(Handle: HWND; SBStyle: Integer; ScrollInfo: TScrollInfo; BRedraw: Boolean): Integer; override;
 function SetStretchBltMode(DC: HDC; StretchMode: Integer): Integer; override;

@@ -250,6 +250,7 @@ function SetMenu(AWindowHandle: HWND; AMenuHandle: HMENU): Boolean; {$IFDEF IF_B
 function SetParent(hWndChild: HWND; hWndParent: HWND): HWND; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function SetProp(Handle: hwnd; Str : PChar; Data : Pointer) : Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 //function SetRect --> independent
+function SetRectRgn(aRGN: HRGN; X1, Y1, X2, Y2 : Integer): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 //function SetRectEmpty --> independent
 function SetROP2(DC: HDC; Mode: Integer): Integer; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function SetScrollInfo(Handle: HWND; SBStyle: Integer; ScrollInfo: TScrollInfo; Redraw : Boolean): Integer; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}

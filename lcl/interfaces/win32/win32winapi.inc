@@ -3193,6 +3193,19 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  Method: SetRectRgn
+  Params:  aRGN: HRGN; X1, Y1, X2, Y2 : Integer
+  Returns: True if the function succeeds
+
+  Converts a region into a rectangular region with the specified coordinates.
+
+ ------------------------------------------------------------------------------}
+function TWin32WidgetSet.SetRectRgn(aRGN: HRGN; X1, Y1, X2, Y2 : Integer): Boolean;
+begin
+  Result := Boolean(Windows.SetRectRgn(aRGN, X1, Y1, X2, Y2));
+end;
+
+{------------------------------------------------------------------------------
   Method:  SetROP2
   Params:  DC			- Device Context
            Mode		- Foreground mixing mode

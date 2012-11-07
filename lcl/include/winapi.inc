@@ -886,6 +886,11 @@ begin
   Result := WidgetSet.SetProp(Handle,Str,Data);
 end;
 
+function SetRectRgn(aRGN: HRGN; X1, Y1, X2, Y2 : Integer): Boolean;
+begin
+  Result := WidgetSet.SetRectRgn(aRGN, X1, Y1, X2, Y2);
+end;
+
 function SetROP2(DC: HDC; Mode: Integer): Integer;
 begin
   Result := WidgetSet.SetRop2(Dc, Mode);

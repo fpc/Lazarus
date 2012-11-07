@@ -201,6 +201,7 @@ function SetForegroundWindow(hWnd: HWND): boolean; override;
 function SetMapMode(DC: HDC; fnMapMode : Integer): Integer; override;
 function SetParent(hWndChild: HWND; hWndParent: HWND): HWND; override;
 function SetProp(Handle: hwnd; Str : PChar; Data : Pointer) : Boolean; override;
+function SetRectRgn(aRGN: HRGN; X1, Y1, X2, Y2 : Integer): Boolean; override;
 function SetROP2(DC: HDC; Mode: Integer): Integer; override;
 function SetScrollInfo(Handle : HWND; SBStyle : Integer; ScrollInfo: TScrollInfo; bRedraw : Boolean): Integer; override;
 function SetSysColors(cElements: Integer; const lpaElements; const lpaRgbValues): Boolean; override;

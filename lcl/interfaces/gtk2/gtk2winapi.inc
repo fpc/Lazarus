@@ -8468,6 +8468,36 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  Method: SetRectRgn
+  Params:  aRGN: HRGN; X1, Y1, X2, Y2 : Integer
+  Returns: True if the function succeeds
+
+  Converts a region into a rectangular region with the specified coordinates.
+ ------------------------------------------------------------------------------}
+function TGtk2WidgetSet.SetRectRgn(aRGN: HRGN; X1, Y1, X2, Y2 : Integer): Boolean;
+
+  procedure Swap(var A, B: Integer);
+  var
+    Tmp: Integer;
+  begin
+    Tmp := A;
+    A := B;
+    B := Tmp;
+  end;
+
+var
+  AGdiObject: PGdiObject absolute aRGN;
+begin
+  Result := IsValidGDIObject(aRGN);
+  if Result then begin
+    if (X1 > X2) then swap(X1, X2);
+    if (Y1 > Y2) then swap(Y1, Y2);
+    AGdiObject^.GDIRegionObject := CreateRectGDKRegion(Rect(X1,Y1,X2,Y2));
+    Result := True;
+  end;
+end;
+
+{------------------------------------------------------------------------------
   function TGtk2WidgetSet.SetROPMode(Handle: hwnd; Str : PChar;
                               Data : Pointer) : Boolean;
  ------------------------------------------------------------------------------}

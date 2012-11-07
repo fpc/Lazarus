@@ -2019,6 +2019,11 @@ begin
   Result := True;
 end;
 
+function TWidgetSet.SetRectRgn(aRGN: HRGN; X1, Y1, X2, Y2 : Integer): Boolean;
+begin
+  Result := False;
+end;
+
 function TWidgetSet.SetROP2(DC: HDC; Mode: Integer): Integer;
 begin
   Result := 0;
