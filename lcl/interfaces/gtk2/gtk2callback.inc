@@ -1511,7 +1511,7 @@ begin
     ShiftState := GTKEventStateToShiftState(Event^.State);
     // issue #22991 - this fixes rubberbanding
     if [ssShift, ssAlt, ssCtrl, ssLeft, ssRight, ssMiddle, ssDouble] * ShiftState = [] then
-      FixListViewRubberBand(PGtkWidget(TWinControl(AControl).Handle));
+      FixListViewRubberBand({%H-}PGtkWidget(TWinControl(AControl).Handle));
   end;
 end;
 
@@ -1790,7 +1790,7 @@ begin
   begin
     // issue #22991 - this fixes crash after click on listview when modal form
     // is closed
-    FixListViewRubberBand(PGtkWidget(TWinControl(AControl).Handle));
+    FixListViewRubberBand({%H-}PGtkWidget(TWinControl(AControl).Handle));
   end;
 end;
 

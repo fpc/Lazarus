@@ -1688,7 +1688,7 @@ begin
     g_object_unref(G_OBJECT(TreeModel));
 
     // we added +1 because Ord(vsIcon) returns 0, so it's nil ptr
-    g_object_set_data(PGObject(MainView),'lcllistviewstyle', gpointer(PtrInt(Ord(TLVHack(AWinControl).ViewStyle) + 1)));
+    g_object_set_data(PGObject(MainView),'lcllistviewstyle', {%H-}gpointer(PtrInt(Ord(TLVHack(AWinControl).ViewStyle) + 1)));
 
     gtk_container_add(GTK_CONTAINER(ScrollWidget),PGtkWidget(MainView));
   
@@ -2298,7 +2298,7 @@ begin
 
   GetCommonTreeViewWidgets({%H-}PGtkWidget(ALV.Handle), Widgets{%H-});
   if g_object_get_data(PGObject(Widgets^.MainView),'lcllistviewstyle') <> nil then
-    APtrIntData := PtrInt(g_object_get_data(PGObject(Widgets^.MainView),'lcllistviewstyle'))
+    APtrIntData := {%H-}PtrInt(g_object_get_data(PGObject(Widgets^.MainView),'lcllistviewstyle'))
   else
     APtrIntData := -1;
   if (APtrIntData <> -1) and (APtrIntData - 1 <> Ord(AValue)) then

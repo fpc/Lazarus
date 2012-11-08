@@ -3933,7 +3933,7 @@ begin
   if not Result then Exit;
 
   GtkDC := SaveDC(DC);
-  DevCtx.ClipRegion := PGdiObject(CreateRegionCopy(RegionHnd));
+  DevCtx.ClipRegion := {%H-}PGdiObject(CreateRegionCopy(RegionHnd));
   OldRgn:= DevCtx.ClipRegion^.GDIRegionObject;
 
   hasClipping := Assigned(OldRgn); //todo: Check a better way
@@ -3941,11 +3941,11 @@ begin
     if hasClipping then
       if SelectClipRGN(DC, RegionHnd) <> ERROR then
       begin
-        gdk_region_get_clipbox(PGDIObject(RegionHnd)^.GDIRegionObject, @CRect);
+        gdk_region_get_clipbox({%H-}PGDIObject(RegionHnd)^.GDIRegionObject, @CRect);
         ARect := RectFromGdkRect(CRect);
         DevCtx.FillRect(ARect, hbr, True);
         if hasClipping then
-          SelectClipRGN(DC, HRGN(OldRgn));
+          SelectClipRGN(DC, {%H-}HRGN(OldRgn));
         Result := True;
       end;
   finally
