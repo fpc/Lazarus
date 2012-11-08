@@ -2955,8 +2955,8 @@ var
             // output the portion of word that fits maxwidth
             OutLine(UTF8Range(s, beg, last - beg, Desc));
             // if space was found, advance to next no space char
-            if s[last] = ' ' then
-              last := last + 1;
+            while (UTF8Char(s, last, Desc) = ' ') and (last < Length(s)) do
+              Inc(last);
           end;
 
           beg := last;
