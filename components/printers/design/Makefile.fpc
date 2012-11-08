@@ -2,7 +2,7 @@
 #
 #   Makefile.fpc for printers4lazide 0.0
 #
-#   This file was generated on 27-8-12
+#   This file was generated on 8-11-12
 
 [package]
 name=printers4lazide
