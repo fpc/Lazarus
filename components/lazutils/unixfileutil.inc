@@ -116,7 +116,7 @@ begin
   H := FileOpenUtf8(aFilename, fmOpenRead);
   if H <> feInvalidHandle then
   begin
-    if FPFStat(H, FileInfo) = 0 then
+    if FPFStat(H, FileInfo{%H-}) = 0 then
       Result := (FileInfo.st_nlink > 1);
     FileClose(H);
   end;
