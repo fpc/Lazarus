@@ -143,9 +143,9 @@ var
   BuildMacroChangeStamp: integer = 0; // TimeStamp of base value for build macros
 
 procedure IncreaseCompilerParseStamp;
-procedure IncreaseBuildMacroChangeStamp; { called when a package dependency change
-                                or when project build macro values change.
-                                Automatically calls IncreaseCompilerParseStamp }
+// Called when a package dependency changes or when project build macro values change.
+//  Automatically calls IncreaseCompilerParseStamp
+procedure IncreaseBuildMacroChangeStamp;
 
 implementation
 
