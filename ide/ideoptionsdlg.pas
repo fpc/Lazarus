@@ -72,8 +72,8 @@ type
     procedure OkButtonClick(Sender: TObject);
     procedure CancelButtonClick(Sender: TObject);
   private
-    FOnLoadOptions: TOnLoadIDEOptions;
-    FOnSaveOptions: TOnSaveIDEOptions;
+    FOnLoadOptionsHook: TOnLoadIDEOptions;
+    FOnSaveOptionsHook: TOnSaveIDEOptions;
     FOptionsFilter: TIDEOptionsEditorFilter;
     FEditorToOpen: TAbstractIDEOptionsEditorClass;
     FSettings: TIDEOptionsEditorSettings;
@@ -107,8 +107,8 @@ type
   public
     property OptionsFilter: TIDEOptionsEditorFilter read FOptionsFilter write FOptionsFilter;
     property Settings: TIDEOptionsEditorSettings read FSettings write SetSettings;
-    property OnLoadIDEOptions: TOnLoadIDEOptions read FOnLoadOptions write FOnLoadOptions;
-    property OnSaveIDEOptions: TOnSaveIDEOptions read FOnSaveOptions write FOnSaveOptions;
+    property OnLoadIDEOptionsHook: TOnLoadIDEOptions read FOnLoadOptionsHook write FOnLoadOptionsHook;
+    property OnSaveIDEOptionsHook: TOnSaveIDEOptions read FOnSaveOptionsHook write FOnSaveOptionsHook;
   end;
 
 implementation
@@ -427,16 +427,16 @@ end;
 
 procedure TIDEOptionsDialog.LoadIDEOptions(Sender: TObject; AOptions: TAbstractIDEOptions);
 begin
-  if Assigned(OnLoadIDEOptions) then
-    OnLoadIDEOptions(Self, AOptions);
+  if Assigned(OnLoadIDEOptionsHook) then
+    OnLoadIDEOptionsHook(Self, AOptions);
   TraverseSettings(AOptions,iodaRead);
 end;
 
 procedure TIDEOptionsDialog.SaveIDEOptions(Sender: TObject; AOptions: TAbstractIDEOptions);
 begin
   TraverseSettings(AOptions,iodaWrite);
-  if Assigned(OnSaveIDEOptions) then
-    OnSaveIDEOptions(Self, AOptions);
+  if Assigned(OnSaveIDEOptionsHook) then
+    OnSaveIDEOptionsHook(Self, AOptions);
 end;
 
 procedure TIDEOptionsDialog.CreateEditors;

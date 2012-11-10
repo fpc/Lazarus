@@ -4630,8 +4630,8 @@ begin
     IDEOptionsDialog.OptionsFilter := OptionsFilter;
     IDEOptionsDialog.Settings := ASettings;
     IDEOptionsDialog.OpenEditor(AEditor);
-    IDEOptionsDialog.OnLoadIDEOptions:=@Self.OnLoadIDEOptions;
-    IDEOptionsDialog.OnSaveIDEOptions:=@Self.OnSaveIDEOptions;
+    IDEOptionsDialog.OnLoadIDEOptionsHook:=@Self.OnLoadIDEOptions;
+    IDEOptionsDialog.OnSaveIDEOptionsHook:=@Self.OnSaveIDEOptions;
     IDEOptionsDialog.ReadAll;
     if IDEOptionsDialog.ShowModal = mrOk then begin
       IDEOptionsDialog.WriteAll(false);
