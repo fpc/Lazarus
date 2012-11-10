@@ -104,6 +104,24 @@ begin
   Result := FpReadLink(AFilename) <> '';
 end;
 
+{------------------------------------------------------------------------------
+  function FileIsHardLink(const AFilename: string): boolean;
+ ------------------------------------------------------------------------------}
+function FileIsHardLink(const AFilename: string): boolean;
+var
+  H: THandle;
+  FileInfo: stat;
+begin
+  Result := false;
+  H := FileOpenUtf8(aFilename, fmOpenRead);
+  if H <> feInvalidHandle then
+  begin
+    if FPFStat(H, FileInfo) = 0 then
+      Result := (FileInfo.st_nlink > 1);
+    FileClose(H);
+  end;
+end;
+
 
 {------------------------------------------------------------------------------
   FileSize

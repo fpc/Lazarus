@@ -83,6 +83,29 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  function FileIsHardLink(const AFilename: string): boolean;
+ ------------------------------------------------------------------------------}
+function FileIsHardLink(const AFilename: string): boolean;
+var
+  H: THandle;
+  FileInfo: BY_HANDLE_FILE_INFORMATION;
+begin
+  Result := false;
+  {$ifndef wince}
+  //HardLinks are not supported in Win9x platform
+  if (Win32Platform = VER_PLATFORM_WIN32_WINDOWS) then Exit;
+  H := FileOpenUtf8(aFilename, fmOpenRead);
+  if (H <> feInvalidHandle) then
+  begin
+    FillChar(FileInfo, SizeOf(BY_HANDLE_FILE_INFORMATION),0);
+    if GetFileInformationByHandle(H, FileInfo) then
+      Result := (FileInfo.nNumberOfLinks > 1);
+    FileClose(H);
+  end;
+  {$endif}
+end;
+
+{------------------------------------------------------------------------------
   GetFileDescription
  ------------------------------------------------------------------------------}
 function GetFileDescription(const AFilename: string): string;
