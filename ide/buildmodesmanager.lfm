@@ -1,0 +1,148 @@
+object BuildModesForm: TBuildModesForm
+  Left = 473
+  Height = 366
+  Top = 550
+  Width = 612
+  Caption = 'BuildModesForm'
+  ClientHeight = 366
+  ClientWidth = 612
+  OnCreate = FormCreate
+  OnDestroy = FormDestroy
+  OnShow = FormShow
+  LCLVersion = '1.1'
+  object BuildModesGroupBox: TGroupBox
+    Left = 6
+    Height = 305
+    Top = 6
+    Width = 600
+    Align = alTop
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    BorderSpacing.Around = 6
+    Caption = 'BuildModesGroupBox'
+    ClientHeight = 288
+    ClientWidth = 596
+    TabOrder = 0
+    object BuildModesStringGrid: TStringGrid
+      AnchorSideTop.Control = BuildModeAddSpeedButton
+      AnchorSideTop.Side = asrBottom
+      Left = 0
+      Height = 266
+      Top = 22
+      Width = 596
+      Align = alBottom
+      Anchors = [akTop, akLeft, akRight, akBottom]
+      AutoFillColumns = True
+      ColCount = 3
+      Columns = <      
+        item
+          ButtonStyle = cbsCheckboxColumn
+          MaxSize = 50
+          Title.Caption = 'Active'
+          Width = 197
+        end      
+        item
+          ButtonStyle = cbsCheckboxColumn
+          MaxSize = 50
+          Title.Caption = 'InSession'
+          Width = 197
+        end      
+        item
+          MaxSize = 500
+          SizePriority = 100
+          Title.Caption = 'Title'
+          Width = 198
+        end>
+      FixedCols = 0
+      Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goEditing, goSmoothScroll]
+      TabOrder = 0
+      OnCheckboxToggled = BuildModesCheckboxToggled
+      OnSelection = BuildModesStringGridSelection
+      OnValidateEntry = BuildModesStringGridValidateEntry
+      ColWidths = (
+        197
+        197
+        198
+      )
+    end
+    object BuildModeAddSpeedButton: TSpeedButton
+      AnchorSideLeft.Control = BuildModesGroupBox
+      AnchorSideTop.Control = BuildModesGroupBox
+      Left = 0
+      Height = 22
+      Top = 0
+      Width = 23
+      OnClick = BuildModeAddSpeedButtonClick
+      ShowHint = True
+      ParentShowHint = False
+    end
+    object BuildModeDeleteSpeedButton: TSpeedButton
+      AnchorSideLeft.Control = BuildModeAddSpeedButton
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = BuildModesGroupBox
+      Left = 23
+      Height = 22
+      Top = 0
+      Width = 23
+      OnClick = BuildModeDeleteSpeedButtonClick
+      ShowHint = True
+      ParentShowHint = False
+    end
+    object BuildModeMoveUpSpeedButton: TSpeedButton
+      AnchorSideLeft.Control = BuildModeDeleteSpeedButton
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = BuildModesGroupBox
+      Left = 46
+      Height = 22
+      Top = 0
+      Width = 23
+      OnClick = BuildModeMoveUpSpeedButtonClick
+      ShowHint = True
+      ParentShowHint = False
+    end
+    object BuildModeMoveDownSpeedButton: TSpeedButton
+      AnchorSideLeft.Control = BuildModeMoveUpSpeedButton
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = BuildModesGroupBox
+      Left = 69
+      Height = 22
+      Top = 0
+      Width = 23
+      OnClick = BuildModeMoveDownSpeedButtonClick
+      ShowHint = True
+      ParentShowHint = False
+    end
+    object BuildModeDiffSpeedButton: TSpeedButton
+      AnchorSideLeft.Control = BuildModeMoveDownSpeedButton
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = BuildModesGroupBox
+      Left = 102
+      Height = 22
+      Top = 0
+      Width = 23
+      BorderSpacing.Left = 10
+      OnClick = BuildModeDiffSpeedButtonClick
+      ShowHint = True
+      ParentShowHint = False
+    end
+  end
+  object ButtonPanel1: TButtonPanel
+    Left = 6
+    Height = 38
+    Top = 322
+    Width = 600
+    OKButton.Name = 'OKButton'
+    OKButton.DefaultCaption = True
+    HelpButton.Name = 'HelpButton'
+    HelpButton.DefaultCaption = True
+    CloseButton.Name = 'CloseButton'
+    CloseButton.DefaultCaption = True
+    CancelButton.Name = 'CancelButton'
+    CancelButton.DefaultCaption = True
+    TabOrder = 1
+    ShowButtons = [pbOK, pbCancel, pbHelp]
+  end
+  object BuildModesPopupMenu: TPopupMenu
+    left = 208
+    top = 88
+  end
+end
