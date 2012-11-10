@@ -31,10 +31,15 @@ interface
 
 uses
   Classes, SysUtils, Controls, Forms, ComCtrls, LCLProc, LCLType,
-  Buttons, ButtonPanel, ExtCtrls,
-  IDEWindowIntf, IDEOptionsIntf, IDECommands, IDEHelpIntf,
-  EnvironmentOpts, LazarusIDEStrConsts,
-  CompOptsIntf, EditorOptions, TreeFilterEdit, EditBtn, StdCtrls;
+  Buttons, ButtonPanel, ExtCtrls, EditBtn, StdCtrls,
+  TreeFilterEdit, IDEWindowIntf, IDEOptionsIntf, IDECommands, IDEHelpIntf,
+  EnvironmentOpts, LazarusIDEStrConsts, CompOptsIntf, EditorOptions,
+  {$IFDEF NewBuildModeWindow}
+  BuildModesManager, project_save_options,
+  {$ELSE}
+  BuildModesEditor,
+  {$ENDIF}
+  ProjectIntf;
 
 type
   TIDEOptsDlgAction = (
@@ -140,6 +145,9 @@ begin
   ButtonPanel.HelpButton.OnClick := @HelpButtonClick;
 
   OnKeyPress:=@IDEOptionsDialogKeyPress;
+  {$IFnDEF NewBuildModeWindow}
+  BuildModeManageButton.Visible:=False;
+  {$ENDIF}
 end;
 
 procedure TIDEOptionsDialog.HelpButtonClick(Sender: TObject);
@@ -199,8 +207,46 @@ begin
 end;
 
 procedure TIDEOptionsDialog.BuildModeManageButtonClick(Sender: TObject);
+{$IFDEF NewBuildModeWindow}
+var
+  BuildModesForm: TBuildModesForm;
+  ProjectSaveOptions: TProjectSaveOptionsFrame;
+  Rec: PIDEOptionsGroupRec;
+  i: Integer;
+{$ENDIF}
 begin
-  ;
+  {$IFDEF NewBuildModeWindow}
+  BuildModesForm := TBuildModesForm.Create(nil);
+  try
+    BuildModesForm.OnLoadIDEOptionsHook := @LoadIDEOptions;
+    BuildModesForm.OnSaveIDEOptionsHook := @SaveIDEOptions;
+{ Does not really work  (?)
+    ProjectSaveOptions:=Nil;
+    Rec := IDEEditorGroups.GetByIndex(GroupProject);
+    if Rec <> nil then
+    begin
+      for i := 0 to Rec^.Items.Count-1 do begin
+        if Rec^.Items.Items[i]^.EditorClass = TProjectSaveOptionsFrame then begin
+          ProjectSaveOptions:=TProjectSaveOptionsFrame(Rec^.Items.Items[i]^.EditorClass);
+          Break;
+        end;
+      end;
+    end;
+    if ProjectSaveOptions<>nil then
+    begin
+      BuildModesForm.LoadShowSessionFromProject:=false;
+      BuildModesForm.ShowSession:=ProjectSaveOptions.GetSessionLocation in [pssInIDEConfig,pssInProjectDir];
+    end;
+}
+    BuildModesForm.LoadShowSessionFromProject:=false;
+    BuildModesForm.ShowSession:=True;
+    if BuildModesForm.ShowModal = mrOK then begin
+      ;
+    end;
+  finally
+    BuildModesForm.Free;
+  end;
+  {$ENDIF}
 end;
 
 procedure TIDEOptionsDialog.CategoryTreeCollapsed(Sender: TObject; Node: TTreeNode);
@@ -473,9 +519,7 @@ begin
   begin
     Rec := IDEEditorGroups[i];
     //DebugLn(['TIDEOptionsDialog.CreateEditors ',Rec^.GroupClass.ClassName]);
-    if not PassesFilter(Rec) then
-      Continue;
-    if Rec^.Items <> nil then
+    if PassesFilter(Rec) and (Rec^.Items <> nil) then
     begin
       if Rec^.GroupClass<>nil then
         ACaption := Rec^.GroupClass.GetGroupCaption

@@ -6,8 +6,11 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs,
-  StdCtrls, ExtCtrls, Project, IDEOptionsIntf, ProjectIntf, LCLProc,
-  LazarusIDEStrConsts, IDEProcs, BuildModesEditor;
+  StdCtrls, ExtCtrls, Project, IDEOptionsIntf, ProjectIntf, LCLProc, IDEProcs,
+  {$IFnDEF NewBuildModeWindow}
+  BuildModesEditor,
+  {$ENDIF}
+  LazarusIDEStrConsts;
 
 type
 
@@ -22,9 +25,9 @@ type
     procedure SaveSessionLocationRadioGroupClick(Sender: TObject);
   private
     fProject: TProject;
-    function GetSessionLocation: TProjectSessionStorage;
   public
     function GetTitle: string; override;
+    function GetSessionLocation: TProjectSessionStorage;
     procedure Setup(ADialog: TAbstractOptionsEditorDialog); override;
     procedure ReadSettings(AOptions: TAbstractIDEOptions); override;
     procedure WriteSettings(AOptions: TAbstractIDEOptions); override;
@@ -57,24 +60,26 @@ end;
 
 { TProjectSaveOptionsFrame }
 
-procedure TProjectSaveOptionsFrame.SaveSessionLocationRadioGroupClick(
-  Sender: TObject);
+procedure TProjectSaveOptionsFrame.SaveSessionLocationRadioGroupClick(Sender: TObject);
+{$IFnDEF NewBuildModeWindow}
 var
   BuildModesEditor: TBuildModesEditorFrame;
+{$ENDIF}
 begin
+  {$IFnDEF NewBuildModeWindow}
   BuildModesEditor:=TBuildModesEditorFrame(FindOptionControl(TBuildModesEditorFrame));
   if BuildModesEditor<>nil then
   begin
     BuildModesEditor.LoadShowSessionFromProjects:=false;
     BuildModesEditor.ShowSession:=GetSessionLocation in [pssInIDEConfig,pssInProjectDir];
   end;
+  {$ENDIF}
 end;
 
 function TProjectSaveOptionsFrame.GetSessionLocation: TProjectSessionStorage;
 begin
   Result := LocalizedNameToProjectSessionStorage(
-                     SaveSessionLocationRadioGroup.Items[
-                                  SaveSessionLocationRadioGroup.ItemIndex]);
+    SaveSessionLocationRadioGroup.Items[SaveSessionLocationRadioGroup.ItemIndex]);
 end;
 
 function TProjectSaveOptionsFrame.GetTitle: string;

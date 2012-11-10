@@ -6,8 +6,8 @@ object BuildModesEditorFrame: TBuildModesEditorFrame
   ClientHeight = 421
   ClientWidth = 550
   TabOrder = 0
-  DesignLeft = 460
-  DesignTop = 117
+  DesignLeft = 337
+  DesignTop = 116
   object BuildModesGroupBox: TGroupBox
     Left = 6
     Height = 250
@@ -16,16 +16,16 @@ object BuildModesEditorFrame: TBuildModesEditorFrame
     Align = alTop
     BorderSpacing.Around = 6
     Caption = 'BuildModesGroupBox'
-    ClientHeight = 230
-    ClientWidth = 532
+    ClientHeight = 233
+    ClientWidth = 534
     TabOrder = 0
     object BuildModesStringGrid: TStringGrid
       AnchorSideTop.Control = BuildModeAddSpeedButton
       AnchorSideTop.Side = asrBottom
       Left = 0
-      Height = 208
+      Height = 211
       Top = 22
-      Width = 532
+      Width = 534
       Align = alBottom
       Anchors = [akTop, akLeft, akRight, akBottom]
       AutoFillColumns = True
@@ -35,31 +35,30 @@ object BuildModesEditorFrame: TBuildModesEditorFrame
           ButtonStyle = cbsCheckboxColumn
           MaxSize = 50
           Title.Caption = 'Active'
-          Width = 175
+          Width = 176
         end      
         item
           ButtonStyle = cbsCheckboxColumn
           MaxSize = 50
           Title.Caption = 'InSession'
-          Width = 175
+          Width = 176
         end      
         item
           MaxSize = 500
           SizePriority = 100
           Title.Caption = 'Title'
-          Width = 176
+          Width = 178
         end>
       FixedCols = 0
       Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goEditing, goSmoothScroll]
       TabOrder = 0
       OnCheckboxToggled = BuildModesStringGridCheckboxToggled
       OnSelection = BuildModesStringGridSelection
-      OnSelectCell = BuildModesStringGridSelectCell
       OnValidateEntry = BuildModesStringGridValidateEntry
       ColWidths = (
-        175
-        175
         176
+        176
+        178
       )
     end
     object BuildModeAddSpeedButton: TSpeedButton

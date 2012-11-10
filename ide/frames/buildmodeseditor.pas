@@ -58,8 +58,6 @@ type
     procedure BuildModeMoveUpSpeedButtonClick(Sender: TObject);
     procedure BuildModesStringGridCheckboxToggled(sender: TObject; aCol,
       aRow: Integer; aState: TCheckboxState);
-    procedure BuildModesStringGridSelectCell(Sender: TObject; aCol,
-      aRow: Integer; var CanSelect: Boolean);
     procedure BuildModesStringGridSelection(Sender: TObject; aCol, aRow: Integer);
     procedure BuildModesStringGridValidateEntry(sender: TObject; aCol,
       aRow: Integer; const OldValue: string; var NewValue: String);
@@ -71,7 +69,6 @@ type
     fModeActiveCol: integer;
     fModeInSessionCol: integer;
     fModeNameCol: integer;
-    function GetAllBuildMacros: TStrings;
     procedure UpdateInheritedOptions;
     procedure FillBuildModesGrid;
     procedure UpdateBuildModeButtons;
@@ -261,21 +258,14 @@ begin
   end;
 end;
 
-procedure TBuildModesEditorFrame.BuildModesStringGridSelectCell(
-  Sender: TObject; aCol, aRow: Integer; var CanSelect: Boolean);
-begin
-
-end;
-
 procedure TBuildModesEditorFrame.BuildModesStringGridSelection(Sender: TObject;
   aCol, aRow: Integer);
 begin
   UpdateBuildModeButtons;
 end;
 
-procedure TBuildModesEditorFrame.BuildModesStringGridValidateEntry(
-  sender: TObject; aCol, aRow: Integer; const OldValue: string;
-  var NewValue: String);
+procedure TBuildModesEditorFrame.BuildModesStringGridValidateEntry(sender: TObject;
+  aCol, aRow: Integer; const OldValue: string; var NewValue: String);
 var
   CurMode: TProjectBuildMode;
   s: string;
@@ -283,6 +273,7 @@ var
   b: Boolean;
   i: Integer;
 begin
+  debugln(['TBuildModesForm.BuildModesStringGridValidateEntry Row=',aRow,' Col=',aCol]);
   i:=aRow-1;
   if (i<0) or (i>=AProject.BuildModes.Count) then exit;
   CurMode:=AProject.BuildModes[i];
@@ -305,7 +296,8 @@ begin
     // identifier
     s:=NewValue;
     for j:=1 to length(s) do
-      if s[j]<' ' then s[j]:=' ';
+      if s[j]<' ' then
+        s[j]:=' ';
     CurMode.Identifier:=s;
     NewValue:=s;
     UpdateDialogCaption;
@@ -373,48 +365,6 @@ begin
       Result:=Result+', '+copy(AProject.ActiveBuildMode.GetCaption,1,12);
   end else
     Result:='TBuildModesEditorFrame.GetDialogCaption: no project';
-end;
-
-function TBuildModesEditorFrame.GetAllBuildMacros: TStrings;
-
-  procedure Add(aBuildMacro: TLazBuildMacro);
-  begin
-    if GetAllBuildMacros.IndexOf(aBuildMacro.Identifier)>=0 then exit;
-    GetAllBuildMacros.AddObject(aBuildMacro.Identifier,aBuildMacro);
-  end;
-
-  procedure Add(CompOpts: TLazCompilerOptions);
-  var
-    i: Integer;
-  begin
-    for i:=0 to CompOpts.BuildMacros.Count-1 do
-      Add(CompOpts.BuildMacros[i]);
-  end;
-
-var
-  PkgList: TFPList;
-  APackage: TLazPackage;
-  i: Integer;
-begin
-  Result:=TStringList.Create;
-  if AProject=nil then exit;
-  Add(AProject.CompilerOptions);
-  PkgList:=nil;
-  try
-    PackageGraph.GetAllRequiredPackages(AProject.FirstRequiredDependency,PkgList);
-    if PkgList<>nil then begin
-      for i:=0 to PkgList.Count-1 do begin
-        if TObject(PkgList[i]) is TLazPackage then begin
-          APackage:=TLazPackage(PkgList[i]);
-          Add(APackage.CompilerOptions);
-        end;
-      end;
-    end;
-  finally
-    PkgList.Free;
-  end;
-
-  TStringList(Result).Sort;
 end;
 
 procedure TBuildModesEditorFrame.UpdateInheritedOptions;

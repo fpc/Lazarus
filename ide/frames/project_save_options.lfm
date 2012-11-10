@@ -42,7 +42,7 @@ object ProjectSaveOptionsFrame: TProjectSaveOptionsFrame
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 0
-    Height = 4
+    Height = 20
     Top = 108
     Width = 320
     Anchors = [akTop, akLeft, akRight]
@@ -58,6 +58,7 @@ object ProjectSaveOptionsFrame: TProjectSaveOptionsFrame
     ChildSizing.ShrinkVertical = crsScaleChilds
     ChildSizing.Layout = cclLeftToRightThenTopToBottom
     ChildSizing.ControlsPerLine = 1
+    Constraints.MinHeight = 20
     OnClick = SaveSessionLocationRadioGroupClick
     TabOrder = 4
   end

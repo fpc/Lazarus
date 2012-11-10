@@ -18,8 +18,8 @@ inherited IDEOptionsDialog: TIDEOptionsDialog
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = Owner
     Left = 6
-    Height = 41
-    Top = 357
+    Height = 38
+    Top = 360
     Width = 663
     BorderSpacing.Left = 6
     BorderSpacing.Right = 6
@@ -39,18 +39,18 @@ inherited IDEOptionsDialog: TIDEOptionsDialog
   end
   object CatTVSplitter: TSplitter[1]
     Left = 255
-    Height = 357
+    Height = 360
     Top = 0
     Width = 4
   end
   object CategoryPanel: TPanel[2]
     Left = 0
-    Height = 357
+    Height = 360
     Top = 0
     Width = 255
     Align = alLeft
     BevelOuter = bvNone
-    ClientHeight = 357
+    ClientHeight = 360
     ClientWidth = 255
     Constraints.MinWidth = 150
     TabOrder = 2
@@ -62,11 +62,12 @@ inherited IDEOptionsDialog: TIDEOptionsDialog
       AnchorSideRight.Side = asrBottom
       AnchorSideBottom.Control = SettingsPanel
       Left = 6
-      Height = 299
-      Top = 38
+      Height = 304
+      Top = 36
       Width = 249
       Anchors = [akTop, akLeft, akRight, akBottom]
       BorderSpacing.Top = 5
+      DefaultItemHeight = 18
       ReadOnly = True
       TabOrder = 0
       OnChange = CategoryTreeChange
@@ -79,7 +80,7 @@ inherited IDEOptionsDialog: TIDEOptionsDialog
       AnchorSideLeft.Control = CategoryPanel
       AnchorSideRight.Side = asrBottom
       Left = 6
-      Height = 25
+      Height = 23
       Top = 8
       Width = 200
       OnFilterItem = FilterEditFilterItem
@@ -88,6 +89,7 @@ inherited IDEOptionsDialog: TIDEOptionsDialog
       NumGlyphs = 1
       Anchors = [akTop, akLeft, akRight]
       BorderSpacing.Left = 6
+      Font.Color = clBtnShadow
       MaxLength = 0
       ParentFont = False
       TabOrder = 1
@@ -96,7 +98,7 @@ inherited IDEOptionsDialog: TIDEOptionsDialog
     object SettingsPanel: TPanel
       Left = 0
       Height = 20
-      Top = 337
+      Top = 340
       Width = 255
       Align = alBottom
       AutoSize = True
@@ -119,9 +121,9 @@ inherited IDEOptionsDialog: TIDEOptionsDialog
     TabOrder = 3
     object BuildModeLabel: TLabel
       Left = 12
-      Height = 17
+      Height = 15
       Top = 10
-      Width = 70
+      Width = 68
       Caption = 'Build Mode'
       ParentColor = False
     end
@@ -130,9 +132,9 @@ inherited IDEOptionsDialog: TIDEOptionsDialog
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = BuildModeLabel
       AnchorSideTop.Side = asrCenter
-      Left = 89
-      Height = 29
-      Top = 4
+      Left = 87
+      Height = 25
+      Top = 5
       Width = 154
       BorderSpacing.Left = 7
       ItemHeight = 0
@@ -148,9 +150,9 @@ inherited IDEOptionsDialog: TIDEOptionsDialog
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = BuildModeComboBox
       AnchorSideTop.Side = asrCenter
-      Left = 250
+      Left = 248
       Height = 25
-      Top = 6
+      Top = 5
       Width = 27
       BorderSpacing.Left = 7
       Caption = '...'
@@ -159,9 +161,9 @@ inherited IDEOptionsDialog: TIDEOptionsDialog
     end
     object Label1: TLabel
       Left = 286
-      Height = 17
+      Height = 15
       Top = 13
-      Width = 138
+      Width = 137
       Caption = 'Under construction ...'
       Color = clFuchsia
       ParentColor = False
@@ -175,12 +177,12 @@ inherited IDEOptionsDialog: TIDEOptionsDialog
     AnchorSideTop.Side = asrBottom
     AnchorSideBottom.Control = ButtonPanel
     Left = 259
-    Height = 317
+    Height = 320
     Top = 40
     Width = 413
     HorzScrollBar.Page = 409
     HorzScrollBar.Tracking = True
-    VertScrollBar.Page = 313
+    VertScrollBar.Page = 316
     VertScrollBar.Tracking = True
     Anchors = [akTop, akLeft, akRight, akBottom]
     TabOrder = 4
