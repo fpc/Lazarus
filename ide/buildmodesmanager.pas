@@ -390,9 +390,8 @@ end;
 procedure TBuildModesForm.UpdateShowSession;
 begin
   if LoadShowSessionFromProject then
-    ShowSession:=True;
-    //ShowSession:=(FProject<>nil)   Does not work, why?
-    //         and (FProject.SessionStorage in [pssInProjectDir,pssInIDEConfig]);
+    ShowSession:=(FProject<>nil)
+             and (FProject.SessionStorage in [pssInProjectDir,pssInIDEConfig]);
 end;
 
 procedure TBuildModesForm.SetShowSession(const AValue: boolean);
