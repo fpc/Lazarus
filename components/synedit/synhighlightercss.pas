@@ -78,7 +78,7 @@ type
     fToIdent: PChar;
     fTokenPos: Integer;
     FTokenID: TtkTokenKind;
-    fIdentFuncTable: array[0..293] of TIdentFuncTableFunc;
+    fIdentFuncTable: array[0..275] of TIdentFuncTableFunc;
     fCommentAttri: TSynHighlighterAttributes;
     fIdentifierAttri: TSynHighlighterAttributes;
     fKeyAttri: TSynHighlighterAttributes;
@@ -225,10 +225,11 @@ type
     function Func220: TtkTokenKind;
     function Func222: TtkTokenKind;
     function Func224: TtkTokenKind;
+    function Func232: TtkTokenKind;
     function Func242: TtkTokenKind;
     function Func250: TtkTokenKind;
     function Func253: TtkTokenKind;
-    function Func293: TtkTokenKind;
+    function Func275: TtkTokenKind;
     procedure AsciiCharProc;
     procedure CRProc;
     procedure CStyleCommentProc;
@@ -461,10 +462,11 @@ begin
   FIdentFuncTable[220] := @Func220;
   FIdentFuncTable[222] := @Func222;
   FIdentFuncTable[224] := @Func224;
+  FIdentFuncTable[232] := @Func232;
   FIdentFuncTable[242] := @Func242;
   FIdentFuncTable[250] := @Func250;
   FIdentFuncTable[253] := @Func253;
-  FIdentFuncTable[293] := @Func293;
+  FIdentFuncTable[275] := @Func275;
 end;
 
 function TSynCssSyn.KeyHash(ToHash: PChar): Integer;
@@ -1606,6 +1608,14 @@ begin
     Result := tkIdentifier;
 end;
 
+function TSynCssSyn.Func232: TtkTokenKind;
+begin
+  if KeyComp('animation-timing-function') then
+    Result := tkKey
+  else
+    Result := tkIdentifier;
+end;
+
 function TSynCssSyn.Func242: TtkTokenKind;
 begin
   if KeyComp('animation-iteration-count') then
@@ -1616,7 +1626,7 @@ end;
 
 function TSynCssSyn.Func250: TtkTokenKind;
 begin
-  if KeyComp('text-underline-position') or KeyComp('animation-triming-function') then
+  if KeyComp('text-underline-position') then
     Result := tkKey
   else
     Result := tkIdentifier;
@@ -1630,9 +1640,9 @@ begin
     Result := tkIdentifier;
 end;
 
-function TSynCssSyn.Func293: TtkTokenKind;
+function TSynCssSyn.Func275: TtkTokenKind;
 begin
-  if KeyComp('transition-triming-function') then
+  if KeyComp('transition-timing-function') then
     Result := tkKey
   else
     Result := tkIdentifier;
@@ -1649,7 +1659,7 @@ var
 begin
   FToIdent := MayBe;
   HashKey := KeyHash(MayBe);
-  if (HashKey >= 16) and (HashKey <= 293) then
+  if (HashKey >= 16) and (HashKey <= 275) then
     Result := fIdentFuncTable[HashKey]()
   else
     Result := tkIdentifier;
