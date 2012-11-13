@@ -18,6 +18,9 @@ Notes
   procedure TfrPreviewForm.FindInEMF(emf: TMetafile);
 
 *)
+
+{.$define DISABLE_DEFAULT_EXPORT_FILTER}
+
 interface
 
 {$I LR_Vers.inc}
@@ -571,8 +574,13 @@ begin
   if not (csDesigning in TfrReport(Doc).ComponentState) then
   begin
     ZoomBtn.Visible := pbZoom in TfrReport(Doc).PreviewButtons;
-    LoadBtn.Visible := pbLoad in TfrReport(Doc).PreviewButtons;
+    {$ifdef DISABLE_DEFAULT_EXPORT_FILTER}
+    SaveBtn.Visible := (pbSave in TfrReport(Doc).PreviewButtons) and (frFiltersCount > 0);
+    LoadBtn.Visible := False;
+    {$else}
     SaveBtn.Visible := pbSave in TfrReport(Doc).PreviewButtons;
+    LoadBtn.Visible := pbLoad in TfrReport(Doc).PreviewButtons;
+    {$endif}
     PrintBtn.Visible := pbPrint in TfrReport(Doc).PreviewButtons;
     ExitBtn.Visible := pbExit in TfrReport(Doc).PreviewButtons;
     if not ZoomBtn.Visible then
@@ -1123,6 +1131,38 @@ begin
      LoadFromFile(FileName);
 end;
 
+{$ifdef DISABLE_DEFAULT_EXPORT_FILTER}
+procedure TfrPreviewForm.SaveBtnClick(Sender: TObject);
+var
+  i, InitialIndex: Integer;
+  FilterStr, FilterExtension, FileExtension: String;
+  FilterInfo: TfrExportFilterInfo;
+begin
+  if EMFPages = nil then Exit;
+  InitialIndex := 1;
+  FilterStr := '';
+  FileExtension := ExtractFileExt(SaveDialog.FileName);
+  for i := 0 to frFiltersCount - 1 do
+  begin
+    FilterInfo := frFilters[i];
+    if FilterStr <> '' then
+      FilterStr := FilterStr + '|';
+    FilterStr := FilterStr + FilterInfo.FilterDesc + '|' + FilterInfo.FilterExt;
+    FilterExtension := ExtractFileExt(FilterInfo.FilterExt);
+    if (InitialIndex = 1) and (Comparetext(FilterExtension, FileExtension)=0) then
+      InitialIndex := i + 1;
+  end;
+  SaveDialog.Filter := FilterStr;
+  SaveDialog.FilterIndex := InitialIndex;
+  if SaveDialog.Execute then
+  begin
+    ExportToWithFilterIndex(SaveDialog.FilterIndex - 1,
+      ChangeFileExt(SaveDialog.FileName, Copy(frFilters[SaveDialog.FilterIndex - 1].FilterExt, 2, 255)));
+  end;
+end;
+
+{$else}
+
 procedure TfrPreviewForm.SaveBtnClick(Sender: TObject);
 var
   i, AIndex: Integer;
@@ -1153,6 +1193,8 @@ begin
       end;
   end;
 end;
+
+{$endif}
 
 procedure TfrPreviewForm.PrintBtnClick(Sender: TObject);
 begin
