@@ -191,8 +191,8 @@ type
     procedure SetToCurPage;
 //    procedure WMGetMinMaxInfo(var Msg: TWMGetMinMaxInfo); message WM_GETMINMAXINFO;
     procedure RedrawAll;
-    procedure LoadFromFile(aName: String);
-    procedure SaveToFile(aName: String);
+    procedure LoadFromFile(const aName: String);
+    procedure SaveToFile(const aName: String);
 //    procedure FindInEMF(emf: TMetafile);
     function FindInEMFPages:boolean;
     procedure FindText;
@@ -204,7 +204,7 @@ type
       {%H-}MousePos: TPoint; var Handled: Boolean);
     procedure MouseWheelUp(Sender: TObject; Shift: TShiftState;
       {%H-}MousePos: TPoint; var Handled: Boolean);
-    function ExportToWithFilterIndex(AFilterIndex:Integer; AFileName: string): boolean;
+    function ExportToWithFilterIndex(AFilterIndex:Integer; const AFileName: string): boolean;
     function Print: boolean;
   public
     { Public declarations }
@@ -682,7 +682,7 @@ begin
 end;
 
 function TfrPreviewForm.ExportToWithFilterIndex(AFilterIndex: Integer;
-  AFileName: string):boolean;
+  const AFileName: string):boolean;
 begin
   if (AFilterIndex<0) or (AFilterIndex>=frFiltersCount) then
     raise exception.Create(sExportFilterIndexError);
@@ -1209,7 +1209,7 @@ begin
     Close;
 end;
 
-procedure TfrPreviewForm.LoadFromFile(aName: String);
+procedure TfrPreviewForm.LoadFromFile(const aName: String);
 begin
   if Doc = nil then Exit;
   TfrEMFPages(EMFPages).Free;
@@ -1225,12 +1225,11 @@ begin
   PBox.Repaint;
 end;
 
-procedure TfrPreviewForm.SaveToFile(aName:String);
+procedure TfrPreviewForm.SaveToFile(const aName:String);
 begin
   if Doc = nil then Exit;
-  aName := ChangeFileExt(aName, '.frp');
   ConnectBack;
-  TfrReport(Doc).SavePreparedReport(aName);
+  TfrReport(Doc).SavePreparedReport(ChangeFileExt(aName, '.frp'));
   Connect(Doc);
 end;
 
