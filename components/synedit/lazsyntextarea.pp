@@ -24,9 +24,11 @@ type
     PhysicalClipEnd: Integer;            // 1 based - PaintEnd
     RtlInfo: TLazSynDisplayRtlInfo;
     RtlExpandedExtraBytes: Integer;         // tab and space expansion
+    RtlHasTabs: Boolean;
     RtlHasDoubleWidth: Boolean;
 
     ExpandedExtraBytes: Integer;         // tab and space expansion
+    HasTabs: Boolean;                    // ExtraWidth may still be 0
     HasDoubleWidth: Boolean;
 
     NextPos: TLazSynDisplayTokenBound;   // Next toxen, may be BIDI
@@ -64,6 +66,7 @@ type
     FCurViewRtlPhysStart, FCurViewRtlPhysEnd: integer;
     FCurViewRtlLogStart,  FCurViewRtlLogEnd: integer;
     FCurViewRtlExpExtraBytes: Integer;         // tab and space expansion for entire RTL run
+    FCurViewRtlHasTabs: Boolean;
     FCurViewRtlHasDoubleWidth: Boolean;
 
     FNextMarkupPhysPos, FNextMarkupLogPos: Integer;
@@ -384,6 +387,7 @@ begin
     FMarkupTokenAttr.Background := FBackgroundColor;
 
     ATokenInfo.ExpandedExtraBytes := 0;
+    ATokenInfo.HasTabs            := False;
     ATokenInfo.HasDoubleWidth     := False; // TODO: True, but needs charwidth for painter
   end
   else begin
@@ -574,7 +578,7 @@ function TLazSynPaintTokenBreaker.GetNextHighlighterTokenFromView(out
   var
     RtlRunPhysWidth, TabExtra, i, j: Integer;
     pcw: TPhysicalCharWidth;
-    HasDouble: Boolean;
+    HasTabs, HasDouble: Boolean;
     c: Char;
   begin
     FCurViewRtlLogStart := ALogicIdx;
@@ -583,6 +587,7 @@ function TLazSynPaintTokenBreaker.GetNextHighlighterTokenFromView(out
     RtlRunPhysWidth := 0;
     i         := 0;
     HasDouble := False;
+    HasTabs   := False;
     TabExtra  := 0; // Extra bytes needed for expanded Tab/Space(utf8 visible space/dot)
     j := (pcw and PCWMask);
     // must go over token bounds
@@ -592,8 +597,10 @@ function TLazSynPaintTokenBreaker.GetNextHighlighterTokenFromView(out
 
       if j <> 0 then begin
         c := (FCurViewToken.TokenStart + i)^;
-        if c = #9  then
-          inc(TabExtra, j-1 + FTabExtraByteCount)
+        if c = #9  then begin
+          HasTabs := True;
+          inc(TabExtra, j-1 + FTabExtraByteCount);
+        end
         else
         if j > 1 then
           HasDouble := True;
@@ -618,6 +625,7 @@ function TLazSynPaintTokenBreaker.GetNextHighlighterTokenFromView(out
     FCurViewScannerPhysCharPos  := FCurViewRtlPhysEnd;
     FCurViewScannerPos.Physical := FCurViewRtlPhysEnd;
     FCurViewRtlExpExtraBytes    := TabExtra;
+    FCurViewRtlHasTabs          := HasTabs;
     FCurViewRtlHasDoubleWidth   := HasDouble;
   end;
 
@@ -650,7 +658,7 @@ var
   PrevLogicIdx, PrevPhysPos: Integer;
   PhysTokenStop: Integer;
   TabExtra: Integer;
-  HasDouble: Boolean;
+  HasTabs, HasDouble: Boolean;
 begin
   while True do begin
     Result := MaybeFetchToken;    // Get token from View/Highlighter
@@ -688,6 +696,7 @@ begin
           PrevLogicIdx := LogicIdx;
           PrevPhysPos  := PhysPos;
           HasDouble := False;
+          HasTabs := False;
           TabExtra      := 0; // Extra bytes needed for expanded Tab/Space(utf8 visible space/dot)
           i := 0;
 
@@ -705,8 +714,10 @@ begin
             inc(PhysPos, j);
             if j <> 0 then begin
               c := (FCurViewToken.TokenStart + i)^;
-              if c = #9  then
-                inc(TabExtra, j-1 + FTabExtraByteCount)
+              if c = #9  then begin
+                HasTabs := True;
+                inc(TabExtra, j-1 + FTabExtraByteCount);
+              end
               else
               if j > 1 then
                 HasDouble := True;
@@ -747,6 +758,7 @@ begin
           ATokenInfo.Attr               := FCurViewAttr;
 
           ATokenInfo.ExpandedExtraBytes := TabExtra;
+          ATokenInfo.HasTabs            := HasTabs;
           ATokenInfo.HasDoubleWidth     := HasDouble;
           assert(ATokenInfo.StartPos.Offset >= 0, 'FCurViewScannerPos.Offset >= 0');
           assert(ATokenInfo.EndPos.Offset   <= 0, 'FCurViewToken.EndPos.Offset <= 0');
@@ -809,6 +821,7 @@ begin
           PrevLogicIdx := LogicIdx;
           PrevPhysPos  := PhysPos;
           HasDouble := False;
+          HasTabs := False;
           TabExtra      := 0; // Extra bytes needed for expanded Tab/Space(utf8 visible space/dot)
           i := 0;
 
@@ -826,8 +839,10 @@ begin
             dec(PhysPos, j);
             if j <> 0 then begin
               c := (FCurViewToken.TokenStart + i)^;
-              if c = #9  then
-                inc(TabExtra, j-1 + FTabExtraByteCount)
+              if c = #9  then begin
+                HasTabs := True;
+                inc(TabExtra, j-1 + FTabExtraByteCount);
+              end
               else
               if j > 1 then
                 HasDouble := True;
@@ -866,10 +881,12 @@ begin
           ATokenInfo.RtlInfo.LogFirst   := FCurViewRtlLogStart + 1;
           ATokenInfo.RtlInfo.LogLast    := FCurViewRtlLogEnd + 1;
           ATokenInfo.RtlExpandedExtraBytes := FCurViewRtlExpExtraBytes;
+          ATokenInfo.RtlHasTabs         := FCurViewRtlHasTabs;
           ATokenInfo.RtlHasDoubleWidth  := FCurViewRtlHasDoubleWidth;
           ATokenInfo.Attr               := FCurViewAttr;
 
           ATokenInfo.ExpandedExtraBytes := TabExtra;
+          ATokenInfo.HasTabs            := HasTabs;
           ATokenInfo.HasDoubleWidth     := HasDouble;
           assert(ATokenInfo.StartPos.Offset >= 0, 'FCurViewScannerPos.Offset >= 0');
           assert(ATokenInfo.EndPos.Offset   <= 0, 'FCurViewToken.EndPos.Offset <= 0');
@@ -1464,10 +1481,11 @@ var
 
       ATokenInfo.StartPos.Logical   := ATokenInfo.RtlInfo.LogFirst;
       ATokenInfo.ExpandedExtraBytes := ATokenInfo.RtlExpandedExtraBytes;
+      ATokenInfo.HasTabs            := ATokenInfo.RtlHasTabs;
       ATokenInfo.HasDoubleWidth     := ATokenInfo.RtlHasDoubleWidth;
     end;
 
-    NeedExpansion := ATokenInfo.ExpandedExtraBytes > 0;
+    NeedExpansion := (ATokenInfo.ExpandedExtraBytes > 0) or (ATokenInfo.HasTabs);
     NeedTransform := FTextDrawer.NeedsEto or ATokenInfo.HasDoubleWidth or NeedExpansion;
     Len := ATokenInfo.Tk.TokenLength;
     if (not ATokenInfo.RtlInfo.IsRtl) or (LineBufferRtlLogPos <> ATokenInfo.RtlInfo.LogFirst) then
