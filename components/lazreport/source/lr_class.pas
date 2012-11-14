@@ -7806,8 +7806,8 @@ var
   s: TMemoryStream;
 
 begin
+  Compr := 0;
   if AReadHeader then begin
-    compr := 0;
     AStream.Read(compr, 1);
     if not (compr in [0, 1, 255]) then
     begin
