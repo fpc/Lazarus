@@ -72,6 +72,7 @@ type
     FDBGInfo: TDBGType;
     FGridData: TStringGrid;
     FGridMethods: TStringGrid;
+    FUpdateLock, FUpdateNeeded: Boolean;
     procedure Localize;
     procedure InspectClass;
     procedure InspectRecord;
@@ -461,7 +462,6 @@ begin
   MethodsPage.TabVisible:=false;
   GridDataSetup;
   FGridData.Visible := False;
-  FreeAndNil(FDBGInfo);
   StatusBar1.SimpleText:='';
 end;
 
@@ -509,6 +509,7 @@ constructor TIDEInspectDlg.Create(AOwner: TComponent);
 
 begin
   inherited Create(AOwner);
+  //FDBGInfo := nil;
   //FDataGridHook := TPropertyEditorHook.Create;
   //FDataGrid := NewGrid('DataGrid', DataPage, FDataGridHook);
   //
@@ -518,6 +519,8 @@ begin
   //FMethodsGridHook := TPropertyEditorHook.Create;
   //FMethodsGrid := NewGrid('MethodsGrid', MethodsPage, FMethodsGridHook);
 
+  FUpdateLock := False;
+  FUpdateNeeded := False;
   Localize;
 
   FGridData:=TStringGrid.Create(DataPage);
@@ -554,37 +557,55 @@ procedure TIDEInspectDlg.UpdateData;
 var
   Opts: TDBGEvaluateFlags;
 begin
-  FreeAndNil(FDBGInfo);
-  if FExpression = ''
-  then exit;
+  if FUpdateLock then begin
+    FUpdateNeeded := True;
+    exit;
+  end;
 
-  InputHistories.HistoryLists.Add(ClassName, FExpression,rltCaseSensitive);
-  if EdInspect.Items.IndexOf(FExpression) = -1
-  then EdInspect.Items.Insert(0, FExpression);
-
-  Opts := [defFullTypeInfo];
-  if menuClassType.Checked then
-    include(Opts, defClassAutoCast);
-  if not DebugBoss.Evaluate(FExpression, FHumanReadable, FDBGInfo, Opts)
-  or not assigned(FDBGInfo) then
-  begin
+  FUpdateLock := True;
+  FUpdateNeeded := False;
+  try
     FreeAndNil(FDBGInfo);
-    Clear;
-    StatusBar1.SimpleText:=FExpression + ' : unavailable';
-    Exit;
+    if FExpression = ''
+    then begin
+      Clear;
+      StatusBar1.SimpleText := '';
+      exit;
+    end;
+
+    InputHistories.HistoryLists.Add(ClassName, FExpression,rltCaseSensitive);
+    if EdInspect.Items.IndexOf(FExpression) = -1
+    then EdInspect.Items.Insert(0, FExpression);
+
+    Opts := [defFullTypeInfo];
+    if menuClassType.Checked then
+      include(Opts, defClassAutoCast);
+    if not DebugBoss.Evaluate(FExpression, FHumanReadable, FDBGInfo, Opts)
+    or not assigned(FDBGInfo) then
+    begin
+      FreeAndNil(FDBGInfo);
+      Clear;
+      StatusBar1.SimpleText:=FExpression + ' : unavailable';
+      Exit;
+    end;
+    case FDBGInfo.Kind of
+      skClass: InspectClass();
+      skRecord: InspectRecord();
+      skVariant: InspectVariant();
+      skEnum: InspectEnum;
+      skSet: InspectSet;
+      skProcedure: InspectSimple;
+      skFunction: InspectSimple;
+      skSimple: InspectSimple();
+      skPointer: InspectPointer();
+    //  skDecomposable: ;
+    end;
+  finally
+    FUpdateLock := False;
   end;
-  case FDBGInfo.Kind of
-    skClass: InspectClass();
-    skRecord: InspectRecord();
-    skVariant: InspectVariant();
-    skEnum: InspectEnum;
-    skSet: InspectSet;
-    skProcedure: InspectSimple;
-    skFunction: InspectSimple;
-    skSimple: InspectSimple();
-    skPointer: InspectPointer();
-  //  skDecomposable: ;
-  end;
+
+  if FUpdateNeeded then
+    UpdateData;
 end;
 
 { TOIDBGGrid }
