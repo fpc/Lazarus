@@ -147,6 +147,8 @@ end;
 
 procedure TIDEInspectDlg.EdInspectEditingDone(Sender: TObject);
 begin
+  if FExpression = EdInspect.Text then
+    exit;
   FExpression := EdInspect.Text;
   UpdateData;
 end;
