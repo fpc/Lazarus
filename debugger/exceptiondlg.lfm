@@ -10,7 +10,7 @@ object IDEExceptionDlg: TIDEExceptionDlg
   ClientHeight = 113
   ClientWidth = 612
   Position = poScreenCenter
-  LCLVersion = '0.9.31'
+  LCLVersion = '1.1'
   object lblMessage: TLabel
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = Owner
@@ -23,6 +23,7 @@ object IDEExceptionDlg: TIDEExceptionDlg
     Constraints.MinHeight = 70
     Constraints.MinWidth = 600
     ParentColor = False
+    ShowAccelChar = False
     WordWrap = True
   end
   object btnContinue: TBitBtn
