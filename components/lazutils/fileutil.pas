@@ -58,7 +58,8 @@ function FileIsText(const AFilename: string): boolean;
 function FileIsText(const AFilename: string; out FileReadable: boolean): boolean;
 function FileIsExecutable(const AFilename: string): boolean;
 function FileIsSymlink(const AFilename: string): boolean;
-function FileIsHardLink(const AFilename: string): boolean;function FileSize(const Filename: string): int64;
+function FileIsHardLink(const AFilename: string): boolean;
+function FileSize(const Filename: string): int64;
 function GetFileDescription(const AFilename: string): string;
 function ReadAllLinks(const Filename: string;
                       ExceptionOnError: boolean): string; // if a link is broken returns ''
