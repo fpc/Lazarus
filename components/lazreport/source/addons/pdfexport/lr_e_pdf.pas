@@ -338,12 +338,15 @@ begin
       end;
     end;
   end
-  else
-  if (View.Flags and flPictCenter<>0) then begin
-    pw := trunc(View.Picture.Width * PDFEscX + 1.5);
-    ph := trunc(View.Picture.Height * PDFEscY + 1.5);
-     x := x + (w - pw) div 2 - 1;
-     y := y + (h - ph) div 2 - 1;
+  else begin
+    PRImage.ScaleX := PDFEscX;
+    PRImage.ScaleY := PDFEscY;
+    if (View.Flags and flPictCenter<>0) then begin
+      pw := trunc(View.Picture.Width * PDFEscX + 1.5);
+      ph := trunc(View.Picture.Height * PDFEscY + 1.5);
+       x := x + (w - pw) div 2 - 1;
+       y := y + (h - ph) div 2 - 1;
+    end;
   end;
 
   PRImage.Stretch := View.Stretched;
