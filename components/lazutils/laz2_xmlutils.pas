@@ -22,7 +22,7 @@ unit laz2_xmlutils;
 interface
 
 uses
-  SysUtils, Classes;
+  SysUtils, Classes, LazUTF8;
 
 type
   TXMLUtilString = AnsiString;
@@ -41,7 +41,9 @@ procedure NormalizeSpaces(var Value: TXMLUtilString);
 function IsXmlWhiteSpace(c: PXMLUtilChar): Boolean;
 function Hash(InitValue: LongWord; Key: PXMLUtilChar; KeyLen: Integer): LongWord;
 { beware, works in ASCII range only }
-function WStrLIComp(S1, S2: PXMLUtilChar; Len: Integer): Integer;
+function XUStrLIComp(S1, S2: PXMLUtilChar; Len: Integer): Integer;
+
+procedure TranslateUTF8Chars(var s: TXMLUtilString; SrcChars, DstChars: string);
 
 { a simple hash table with TXMLUtilString keys }
 
@@ -359,7 +361,7 @@ begin
   Result := c^ in [#32,#9,#10,#13];
 end;
 
-function WStrLIComp(S1, S2: PXMLUtilChar; Len: Integer): Integer;
+function XUStrLIComp(S1, S2: PXMLUtilChar; Len: Integer): Integer;
 var
   counter: Integer;
   c1, c2: Word;
@@ -384,6 +386,91 @@ begin
     Inc(counter);
   until counter >= Len;
   result := c1 - c2;
+end;
+
+procedure TranslateUTF8Chars(var s: TXMLUtilString; SrcChars, DstChars: string);
+{ replaces characters in s.
+  The mapping is defined by SrcChars and DstChars.
+  The n-th UTF-8 character of SrcChars will be replaced with the n-th
+  character of DstChars. If there is no n-th character in DstChars then the
+  character will be deleted in s.
+}
+var
+  p: PChar;
+  unique: boolean;
+
+  function IsASCII(const h: string): boolean;
+  var
+    i: Integer;
+  begin
+    for i:=1 to length(h) do
+      if ord(h[i])>128 then exit(false);
+    Result:=true;
+  end;
+
+  procedure UniqString; inline;
+  var
+    OldPos: SizeInt;
+  begin
+    if unique then exit;
+    OldPos:=p-PChar(s);
+    UniqueString(s);
+    p:=PChar(s)+OldPos;
+  end;
+
+  procedure ReplaceASCII;
+  var
+    OldPos: SizeInt;
+    i: SizeInt;
+  begin
+    p:=PChar(s);
+    while p^<>#0 do begin
+      i:=Pos(p^,SrcChars);
+      if i<1 then begin
+        // keep character
+        inc(p);
+      end else begin
+        if i<=length(DstChars) then begin
+          // replace a character
+          UniqString;
+          p^:=DstChars[i];
+          inc(p);
+        end else begin
+          // delete a character
+          OldPos:=p-PChar(s);
+          Delete(s,OldPos+1,1);
+          p:=PChar(s)+OldPos;
+        end;
+      end;
+    end;
+  end;
+
+  procedure ReplaceMultiByte;
+  var
+    sp: PChar;
+    clen: Integer;
+    sclen: Integer;
+  begin
+    p:=PChar(s);
+    while p^<>#0 do begin
+      clen:=UTF8CharacterLength(p);
+      if Pos(p^,SrcChars)>0 then begin
+        sp:=PChar(SrcChars);
+      end;
+    end;
+  end;
+
+begin
+  if (SrcChars='') or (s='') or (SrcChars=DstChars) then exit;
+
+  unique:=false;
+  if IsASCII(SrcChars) and IsASCII(DstChars) then begin
+    // search and replace single byte characters
+    ReplaceASCII;
+    exit;
+  end;
+  // search for multi byte UTF-8 characters
+  ReplaceMultiByte;
 end;
 
 function Hash(InitValue: LongWord; Key: PXMLUtilChar; KeyLen: Integer): LongWord;
