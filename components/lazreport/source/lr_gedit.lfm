@@ -13,7 +13,7 @@ object frGEditorForm: TfrGEditorForm
   Font.Color = clBlack
   OnCreate = FormCreate
   Position = poScreenCenter
-  LCLVersion = '0.9.29'
+  LCLVersion = '1.1'
   object Bevel1: TBevel
     Left = 4
     Height = 241
@@ -34,9 +34,10 @@ object frGEditorForm: TfrGEditorForm
     Top = 232
     Width = 53
     HelpContext = 82
-    AllowGrayed = True
     Caption = '&Stretch'
+    Checked = True
     OnClick = CB1Click
+    State = cbChecked
     TabOrder = 3
   end
   object Button1: TButton
