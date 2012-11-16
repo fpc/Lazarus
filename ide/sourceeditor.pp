@@ -1794,6 +1794,7 @@ function TSourceEditCompletion.OnSynCompletionPaintItem(const AKey: string;
 var
   MaxX: Integer;
   t: TCompletionType;
+  hl: TSynCustomHighlighter;
 begin
   with ACanvas do begin
     if (Editor<>nil) then
@@ -1819,8 +1820,10 @@ begin
       t:=ctWordCompletion;
     end;
   end;
-  PaintCompletionItem(AKey,ACanvas,X,Y,MaxX,ItemSelected,Index,self,
-                      t,Editor.Highlighter);
+  hl := nil;
+  if Editor <> nil then
+    hl := Editor.Highlighter;
+  PaintCompletionItem(AKey, ACanvas, X, Y, MaxX, ItemSelected, Index, self, t, hl);
   Result:=true;
 end;
 
@@ -8839,8 +8842,11 @@ end;
 
 procedure TSourceEditorManager.EditorRemoved(AEditor: TSourceEditor);
 begin
-  if FDefaultCompletionForm <> nil then
+  if FDefaultCompletionForm <> nil then begin
+    if FDefaultCompletionForm.Editor = AEditor.EditorComponent then
+      DeactivateCompletionForm;
     FDefaultCompletionForm.RemoveEditor(AEditor.EditorComponent);
+  end;
 end;
 
 procedure TSourceEditorManager.SendEditorCreated(AEditor: TSourceEditor);
