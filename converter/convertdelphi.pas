@@ -69,7 +69,7 @@ type
   protected
     procedure Execute; override;
   public
-    constructor Create(aConverter: TConvertDelphiPBase);
+    constructor Create(aConverter: TConvertDelphiPBase; aPath: string);
     destructor Destroy; override;
   public
     property Searcher: TFileSearcher read fSearcher;
@@ -407,6 +407,7 @@ begin
   fn:=ExtractFileName(RelPath);
   sUnitName:=ExtractFileNameOnly(fn);
   if (SubPath<>'') and (sUnitName<>'') then begin
+    //DebugLn(['RelPath=',RelPath,'SubPath=',SubPath,'fn=',fn,'sUnitName=',sUnitName]);
     // Map path by unit name.
     fConverter.fCachedUnitNames[sUnitName]:=SubPath;
     // Map real unit name by uppercase unit name.
@@ -421,14 +422,14 @@ end;
 
 { TCacheUnitsThread }
 
-constructor TCacheUnitsThread.Create(aConverter: TConvertDelphiPBase);
+constructor TCacheUnitsThread.Create(aConverter: TConvertDelphiPBase; aPath: string);
 begin
   inherited Create(True);
   FreeOnTerminate:=True;
   // Create searcher already now. Its Stop method can be called anytime.
   fSearcher:=TUnitsSearcher.Create(aConverter);
   // The parent directory to be scanned
-  fPath:=TrimFilename(aConverter.fSettings.MainPath+'..'+DirectorySeparator);
+  fPath:=aPath;
 end;
 
 destructor TCacheUnitsThread.Destroy;
@@ -718,10 +719,10 @@ begin
             fOwnerConverter.fPrevSelectedPath:=ExtractFilePath(UnitDirDialog.Filename);
             // Add the new path to project if missing units are found.
             // We use a thread here only to reuse its code. No parallel operations now.
-            CacheUnitsThread:=TCacheUnitsThread.Create(fOwnerConverter);
+            CacheUnitsThread:=TCacheUnitsThread.Create(fOwnerConverter,
+                                              fOwnerConverter.fPrevSelectedPath);
             CacheUnitsThread.Start;
             CacheUnitsThread.WaitFor; // Make sure the thread has finished before continuing.
-//            fOwnerConverter.CacheUnitsInPath(UnitDirDialog.Filename);
             TryAgain:=fOwnerConverter.DoMissingUnits(fUsedUnitsTool)>0;
           end
           else
@@ -815,10 +816,12 @@ begin
   fSettings:=TConvertSettings.Create(ADescription);
   fSettings.MainFilename:=fOrigFilename;
   fIsConsoleApp:=False;                   // Default = GUI app.
+  fPrevSelectedPath:=fSettings.MainPath;
 end;
 
 destructor TConvertDelphiPBase.Destroy;
 begin
+  fSettings.Free;
   inherited Destroy;
 end;
 
@@ -907,14 +910,12 @@ begin
   fAllCommentedUnits:=TStringList.Create;
   fAllCommentedUnits.Sorted:=true;
   fUnitsToAddToProject:=TStringList.Create;
-  fPrevSelectedPath:=fSettings.MainPath;
 end;
 
 destructor TConvertDelphiProjPack.Destroy;
 begin
   fUnitsToAddToProject.Free;
   fAllCommentedUnits.Free;
-  fSettings.Free;
   fCachedRealFileNames.Free;
   fCachedUnitNames.Free;
   fUnitSearchPaths.Free;
@@ -936,7 +937,8 @@ begin
   IDEMessagesWindow.Clear;
   // Start scanning unit files one level above project path. The GUI will appear
   // without delay but then we must wait for the thread before continuing.
-  CacheUnitsThread:=TCacheUnitsThread.Create(Self);
+  CacheUnitsThread:=TCacheUnitsThread.Create(Self,
+                       TrimFilename(fSettings.MainPath+'..'+DirectorySeparator));
   try
     Result:=fSettings.RunForm(CacheUnitsThread); // Get settings from user.
     if Result=mrOK then begin
