@@ -127,6 +127,7 @@ type
     procedure LazDirComboBoxChange(Sender: TObject);
     procedure MakeExeBrowseButtonClick(Sender: TObject);
     procedure MakeExeComboBoxChange(Sender: TObject);
+    procedure OnAppActivate(Sender: TObject);
     procedure PropertiesPageControlChange(Sender: TObject);
     procedure PropertiesTreeViewSelectionChanged(Sender: TObject);
     procedure StartIDEBitBtnClick(Sender: TObject);
@@ -1220,6 +1221,8 @@ begin
   s+=' '+lisAUsefulSettingOnWindowsSystemsIsLazarusDirMingwBin;
   {$ENDIF}
   DebuggerLabel.Caption:=s;
+
+  Application.AddOnActivateHandler(@OnAppActivate);
 end;
 
 procedure TInitialSetupDialog.CompilerComboBoxChange(Sender: TObject);
@@ -1347,6 +1350,12 @@ end;
 procedure TInitialSetupDialog.MakeExeComboBoxChange(Sender: TObject);
 begin
   UpdateMakeExeNote;
+end;
+
+procedure TInitialSetupDialog.OnAppActivate(Sender: TObject);
+begin
+  // switched back from another application
+  InvalidateFileStateCache;
 end;
 
 procedure TInitialSetupDialog.PropertiesPageControlChange(Sender: TObject);
