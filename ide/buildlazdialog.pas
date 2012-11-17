@@ -144,8 +144,6 @@ type
     procedure CopyProfileToUI(AProfile: TBuildLazarusProfile);
     procedure CopyUIToProfile(AProfile: TBuildLazarusProfile);
     procedure UpdateProfileNamesUI;
-  public
-    property  Profiles: TBuildLazarusProfiles read fProfiles;
   end;
 
 function ShowConfigureBuildLazarusDlg(AProfiles: TBuildLazarusProfiles): TModalResult;
@@ -185,10 +183,10 @@ begin
   Result := mrCancel;
   ConfigBuildLazDlg := TConfigureBuildLazarusDlg.Create(nil);
   try
-    ConfigBuildLazDlg.Profiles.Assign(AProfiles); // Copy profiles to dialog.
+    ConfigBuildLazDlg.fProfiles.Assign(AProfiles); // Copy profiles to dialog.
     Result := ConfigBuildLazDlg.ShowModal;
     if Result in [mrOk,mrYes,mrAll] then
-      AProfiles.Assign(ConfigBuildLazDlg.Profiles); // Copy profiles back from dialog.
+      AProfiles.Assign(ConfigBuildLazDlg.fProfiles); // Copy profiles back from dialog.
   finally
     ConfigBuildLazDlg.Free;
   end;
@@ -966,7 +964,7 @@ end;
 
 procedure TConfigureBuildLazarusDlg.ShowOptsMenuItemClick(Sender: TObject);
 begin
-  CopyUIToProfile(Profiles.Current);
+  CopyUIToProfile(fProfiles.Current);
   ShowMessage(fProfiles.Current.ExtraOptions);
 end;
 
@@ -979,7 +977,7 @@ begin
   try
     DirDialog.Options:=DirDialog.Options+[ofPathMustExist];
     DirDialog.Title:=lisLazBuildABOChooseOutputDir+'(lazarus'+
-                      GetExecutableExt(Profiles.Current.FPCTargetOS)+')';
+                      GetExecutableExt(fProfiles.Current.FPCTargetOS)+')';
     if DirDialog.Execute then begin
       AFilename:=CleanAndExpandDirectory(DirDialog.Filename);
       TargetDirectoryComboBox.AddHistoryItem(AFilename,10,true,true);
@@ -1131,11 +1129,11 @@ end;
 
 procedure TConfigureBuildLazarusDlg.PrepareClose;
 begin
-  CopyUIToProfile(Profiles.Current);
+  CopyUIToProfile(fProfiles.Current);
   fProfiles.RestartAfterBuild :=RestartAfterBuildCheckBox.Checked;
   fProfiles.ConfirmBuild      :=ConfirmBuildCheckBox.Checked;
   MainIDEBar.itmToolBuildLazarus.Caption:=
-    Format(lisMenuBuildLazarusProf, [Profiles.Current.Name]);
+    Format(lisMenuBuildLazarusProf, [fProfiles.Current.Name]);
 end;
 
 procedure TConfigureBuildLazarusDlg.CompileAdvancedButtonClick(Sender: TObject);
@@ -1196,7 +1194,7 @@ begin
     EditForm.Caption:=lisLazBuildEditDefinesDialogCaption;
     EditForm.Memo1.Lines.Assign(fProfiles.AllDefines);
     if EditForm.ShowModal=mrOK then begin
-      CopyUIToProfile(Profiles.Current); // Make sure changed fields don't get lost.
+      CopyUIToProfile(fProfiles.Current); // Make sure changed fields don't get lost.
       fProfiles.AllDefines.Assign(EditForm.Memo1.Lines);
       DefinesListBox.Items.Clear;
       for i:=0 to fProfiles.AllDefines.Count-1 do
@@ -1221,7 +1219,7 @@ var
 begin
   Frm:=TBuildProfileManagerForm.Create(nil);
   try
-    CopyUIToProfile(Profiles.Current);     // Make sure changed fields get included.
+    CopyUIToProfile(fProfiles.Current);    // Make sure changed fields get included.
     Frm.Prepare(fProfiles);                // Copy profiles to dialog.
     if Frm.ShowModal = mrOk then begin
       fProfiles.Assign(Frm.ProfsToManage); // Copy profiles back from dialog.
