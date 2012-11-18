@@ -39,7 +39,7 @@ uses
   {$ELSE}
   BuildModesEditor,
   {$ENDIF}
-  Project;
+  ProjectIntf;
 
 type
   TIDEOptsDlgAction = (
@@ -216,11 +216,11 @@ var
 {$ENDIF}
 begin
   {$IFDEF NewBuildModeWindow}
-{  BuildModesForm := TBuildModesForm.Create(nil);
+  BuildModesForm := TBuildModesForm.Create(nil);
   try
     BuildModesForm.OnLoadIDEOptionsHook := @LoadIDEOptions;
     BuildModesForm.OnSaveIDEOptionsHook := @SaveIDEOptions;
- Does not really work  (?)
+{ Does not really work  (?)
     ProjectSaveOptions:=Nil;
     Rec := IDEEditorGroups.GetByIndex(GroupProject);
     if Rec <> nil then
@@ -237,15 +237,14 @@ begin
       BuildModesForm.LoadShowSessionFromProject:=false;
       BuildModesForm.ShowSession:=ProjectSaveOptions.GetSessionLocation in [pssInIDEConfig,pssInProjectDir];
     end;
+}
     BuildModesForm.LoadShowSessionFromProject:=false;
     BuildModesForm.ShowSession:=True;
-    if BuildModesForm.ShowModal = mrOK then begin  end;
+    if BuildModesForm.ShowModal = mrOK then begin
+      ;
+    end;
   finally
     BuildModesForm.Free;
-  end;
-}
-  if ShowBuildModesDlg(Project1.BuildModes) = mrOK then begin
-    ;
   end;
   {$ENDIF}
 end;

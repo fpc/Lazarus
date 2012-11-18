@@ -26,7 +26,6 @@ type
     BuildModesPopupMenu: TPopupMenu;
     BuildModesStringGrid: TStringGrid;
     ButtonPanel1: TButtonPanel;
-    procedure CancelButtonClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure BuildModeDiffSpeedButtonClick(Sender: TObject);
@@ -41,11 +40,9 @@ type
     procedure BuildModesStringGridValidateEntry(Sender: TObject;
       aCol, aRow: Integer; const OldValue: string; var NewValue: String);
     procedure FormShow(Sender: TObject);
-    procedure OKButtonClick(Sender: TObject);
   private
-//    FOnLoadOptionsHook: TOnLoadIDEOptions;
-//    FOnSaveOptionsHook: TOnSaveIDEOptions;
-    fBuildModes: TProjectBuildModes;
+    FOnLoadOptionsHook: TOnLoadIDEOptions;
+    FOnSaveOptionsHook: TOnSaveIDEOptions;
     FLoadShowSessionFromProject: boolean;
     FProject: TProject;
     FShowSession: boolean;
@@ -67,32 +64,16 @@ type
                                               write FLoadShowSessionFromProject;
     function GetSelectedBuildMode: TProjectBuildMode;
   public
-//    property OnLoadIDEOptionsHook: TOnLoadIDEOptions read FOnLoadOptionsHook write FOnLoadOptionsHook;
-//    property OnSaveIDEOptionsHook: TOnSaveIDEOptions read FOnSaveOptionsHook write FOnSaveOptionsHook;
+    property OnLoadIDEOptionsHook: TOnLoadIDEOptions read FOnLoadOptionsHook write FOnLoadOptionsHook;
+    property OnSaveIDEOptionsHook: TOnSaveIDEOptions read FOnSaveOptionsHook write FOnSaveOptionsHook;
   end;
 
-function ShowBuildModesDlg(ABuildModes: TProjectBuildModes): TModalResult;
-
+var
+  BuildModesForm: TBuildModesForm;
 
 implementation
 
 {$R *.lfm}
-
-function ShowBuildModesDlg(ABuildModes: TProjectBuildModes): TModalResult;
-var
-  BuildModesForm: TBuildModesForm;
-begin
-  Result := mrCancel;
-  BuildModesForm := TBuildModesForm.Create(nil);
-  try
-    BuildModesForm.fBuildModes.Assign(ABuildModes); // Copy to dialog.
-    Result := BuildModesForm.ShowModal;
-    if Result = mrOk then
-      ABuildModes.Assign(BuildModesForm.fBuildModes); // Copy back from dialog.
-  finally
-    BuildModesForm.Free;
-  end;
-end;
 
 { TBuildModesForm }
 
@@ -131,12 +112,12 @@ begin
   FSwitchingMode:=true;
   try
     // save changes
-//    OnSaveIDEOptionsHook(Self,FProject.CompilerOptions);
+    OnSaveIDEOptionsHook(Self,FProject.CompilerOptions);
     // show diff dialog
     ShowBuildModeDiffDialog(GetSelectedBuildMode);
     IncreaseBuildMacroChangeStamp;
     // load options
-//    OnLoadIDEOptionsHook(Self,FProject.CompilerOptions);
+    OnLoadIDEOptionsHook(Self,FProject.CompilerOptions);
   finally
     FSwitchingMode:=false;
   end;
@@ -395,12 +376,12 @@ begin
   FSwitchingMode:=true;
   try
     // save changes
-//    OnSaveIDEOptionsHook(Self,FProject.CompilerOptions);
+    OnSaveIDEOptionsHook(Self,FProject.CompilerOptions);
     // switch
     FProject.ActiveBuildMode:=aMode;
     IncreaseBuildMacroChangeStamp;
     // load options
-//    OnLoadIDEOptionsHook(Self,FProject.CompilerOptions);
+    OnLoadIDEOptionsHook(Self,FProject.CompilerOptions);
   finally
     FSwitchingMode:=false;
   end;
@@ -479,16 +460,6 @@ begin
   i:=BuildModesStringGrid.Row-1;
   if (i<0) or (i>=FProject.BuildModes.Count) then exit;
   Result:=FProject.BuildModes[i];
-end;
-
-procedure TBuildModesForm.OKButtonClick(Sender: TObject);
-begin
-  ;
-end;
-
-procedure TBuildModesForm.CancelButtonClick(Sender: TObject);
-begin
-  ;
 end;
 
 end.
