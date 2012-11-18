@@ -221,14 +221,14 @@ function ShowInitialSetupDialog: TModalResult;
 // Lazarus Directory
 function CheckLazarusDirectoryQuality(ADirectory: string; out Note: string): TSDFilenameQuality;
 function SearchLazarusDirectoryCandidates(StopIfFits: boolean): TSDFileInfoList;
-//procedure SetupLazarusDirectory;
+procedure SetupLazarusDirectory;
 
 // Compiler
 function CheckCompilerQuality(AFilename: string; out Note: string;
   TestSrcFilename: string): TSDFilenameQuality;
 function SearchCompilerCandidates(StopIfFits: boolean;
   const TestSrcFilename: string): TSDFileInfoList;
-//procedure SetupCompilerFilename;
+procedure SetupCompilerFilename;
 
 // FPC Source
 function CheckFPCSrcDirQuality(ADirectory: string; out Note: string;
@@ -429,7 +429,7 @@ begin
     EnvironmentOptions.LazarusDirectory:=OldLazarusDir;
   end;
 end;
-{
+
 procedure SetupLazarusDirectory;
 var
   Dir, Note: String;
@@ -463,7 +463,7 @@ begin
     List.Free;
   end;
 end;
-}
+
 function CheckCompilerQuality(AFilename: string; out Note: string;
   TestSrcFilename: string): TSDFilenameQuality;
 var
@@ -654,7 +654,7 @@ begin
     EnvironmentOptions.CompilerFilename:=OldCompilerFilename;
   end;
 end;
-{
+
 procedure SetupCompilerFilename;
 var
   Filename, Note: String;
@@ -688,7 +688,7 @@ begin
     List.Free;
   end;
 end;
-}
+
 function CheckFPCSrcDirQuality(ADirectory: string; out Note: string;
   const FPCVer: String): TSDFilenameQuality;
 
