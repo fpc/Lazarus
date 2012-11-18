@@ -398,6 +398,11 @@ type
 
 { TUnitsSearcher }
 
+constructor TUnitsSearcher.Create(aConverter: TConvertDelphiPBase);
+begin
+  fConverter := aConverter;
+end;
+
 procedure TUnitsSearcher.DoFileFound;
 var
   RelPath, SubPath, sUnitName, fn: String;
@@ -413,11 +418,6 @@ begin
     // Map real unit name by uppercase unit name.
     fConverter.fCachedRealFileNames[UpperCase(sUnitName)]:=fn;
   end;
-end;
-
-constructor TUnitsSearcher.Create(aConverter: TConvertDelphiPBase);
-begin
-  fConverter := aConverter;
 end;
 
 { TCacheUnitsThread }
