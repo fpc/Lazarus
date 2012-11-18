@@ -2056,9 +2056,9 @@ begin
     if not (csQuadClicks in ControlStyle) then
     begin
       case TheMessage.Msg of
-        LM_LBUTTONQUADCLK: TheMessage.Msg:=LM_LBUTTONDOWN;
-        LM_MBUTTONQUADCLK: TheMessage.Msg:=LM_MBUTTONDOWN;
-        LM_RBUTTONQUADCLK: TheMessage.Msg:=LM_RBUTTONDOWN;
+        LM_LBUTTONQUADCLK: TheMessage.Msg:=LM_LBUTTONDBLCLK;
+        LM_MBUTTONQUADCLK: TheMessage.Msg:=LM_MBUTTONDBLCLK;
+        LM_RBUTTONQUADCLK: TheMessage.Msg:=LM_RBUTTONDBLCLK;
       end;
     end;
 
