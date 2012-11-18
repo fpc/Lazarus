@@ -573,6 +573,7 @@ resourcestring
   lisConvTopOff = 'Top offset';
   lisConvLeftOff = 'Left offset';
   lisConvDelphiFunc = 'Delphi Function';
+  lisScanning = 'Scanning';
   lisScanParentDir = 'Scanning parent directory';
   lisReplacement = 'Replacement';
   lisReplacements = 'Replacements';
