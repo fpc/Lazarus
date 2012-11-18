@@ -990,6 +990,7 @@ begin
     end;
   end;
 
+  Note:=lisOk;
   Result:=sddqCompatible;
 end;
 
