@@ -1465,54 +1465,51 @@ var
 
     if FindFirstUTF8(P, faAnyFile, PathInfo) = 0 then
     try
-      begin
-        repeat
-          // skip special files
-          if (PathInfo.Name = '.') or (PathInfo.Name = '..') or
-            (PathInfo.Name = '') then Continue;
+      repeat
+        // skip special files
+        if (PathInfo.Name = '.') or (PathInfo.Name = '..') or
+          (PathInfo.Name = '') then Continue;
 
-          if (PathInfo.Attr and faDirectory) = 0 then
-          begin
-            if (MaskList = nil) or MaskList.Matches(PathInfo.Name) then
-            begin
-              FPath := APath;
-              FLevel := ALevel;
-              FFileInfo := PathInfo;
-              DoFileFound;
-            end;
-          end
-          else
+        if (PathInfo.Attr and faDirectory) = 0 then
+        begin
+          if (MaskList = nil) or MaskList.Matches(PathInfo.Name) then
           begin
             FPath := APath;
             FLevel := ALevel;
             FFileInfo := PathInfo;
-            DoDirectoryFound;
+            DoFileFound;
           end;
+        end
+        else
+        begin
+          FPath := APath;
+          FLevel := ALevel;
+          FFileInfo := PathInfo;
+          DoDirectoryFound;
+        end;
 
-        until (FindNextUTF8(PathInfo) <> 0) or not FSearching;
-      end;
+      until (FindNextUTF8(PathInfo) <> 0) or not FSearching;
     finally
       FindCloseUTF8(PathInfo);
     end;
     
     if ASearchSubDirs or (ALevel > 0) then // search recursively in directories
-      if FindFirstUTF8(P, faAnyFile, PathInfo) = 0 then
+      if FindFirstUTF8(P, faDirectory, PathInfo) = 0 then
       try
-        begin
-          repeat
-            if (PathInfo.Name = '.') or (PathInfo.Name = '..') or
-              (PathInfo.Name = '') or ((PathInfo.Attr and faDirectory) = 0) then Continue;
-              
-            FPath := APath;
-            FLevel := ALevel;
-            FFileInfo := PathInfo;
-            DoDirectoryEnter;
-            if not FSearching then Break;
-            
-            DoSearch(AppendPathDelim(APath + PathInfo.Name), Succ(ALevel));
-            
-          until (FindNextUTF8(PathInfo) <> 0);
-        end;
+        repeat
+          if (PathInfo.Name = '.') or (PathInfo.Name = '..') or
+             (PathInfo.Name = '')
+          then Continue;
+
+          FPath := APath;
+          FLevel := ALevel;
+          FFileInfo := PathInfo;
+          DoDirectoryEnter;
+          if not FSearching then Break;
+
+          DoSearch(AppendPathDelim(APath + PathInfo.Name), Succ(ALevel));
+
+        until (FindNextUTF8(PathInfo) <> 0);
       finally
         FindCloseUTF8(PathInfo);
       end;
