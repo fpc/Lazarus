@@ -1534,7 +1534,6 @@ begin
   ShowDebugInfo := aXMLConfig.GetValue(p+'Verbosity/ShowDebugInfo/Value', false);
   ShowUsedFiles := aXMLConfig.GetValue(p+'Verbosity/ShowUsedFiles/Value', false);
   ShowTriedFiles := aXMLConfig.GetValue(p+'Verbosity/ShowTriedFiles/Value', false);
-  ShowDefMacros := aXMLConfig.GetValue(p+'Verbosity/ShowDefMacros/Value', false);
   ShowCompProc := aXMLConfig.GetValue(p+'Verbosity/ShowCompProc/Value', false);
   ShowCond := aXMLConfig.GetValue(p+'Verbosity/ShowCond/Value', false);
   ShowExecInfo := aXMLConfig.GetValue(p+'Verbosity/ShowExecInfo/Value', false);
@@ -1730,7 +1729,6 @@ begin
   aXMLConfig.SetDeleteValue(p+'Verbosity/ShowDebugInfo/Value', ShowDebugInfo,false);
   aXMLConfig.SetDeleteValue(p+'Verbosity/ShowUsedFiles/Value', ShowUsedFiles,false);
   aXMLConfig.SetDeleteValue(p+'Verbosity/ShowTriedFiles/Value', ShowTriedFiles,false);
-  aXMLConfig.SetDeleteValue(p+'Verbosity/ShowDefMacros/Value', ShowDefMacros,false);
   aXMLConfig.SetDeleteValue(p+'Verbosity/ShowCompProc/Value', ShowCompProc,false);
   aXMLConfig.SetDeleteValue(p+'Verbosity/ShowCond/Value', ShowCond,false);
   aXMLConfig.SetDeleteValue(p+'Verbosity/ShowExecInfo/Value', ShowExecInfo,false);
@@ -2785,7 +2783,6 @@ begin
     { Use Heaptrc Unit }
     if (UseHeaptrc) and (not (ccloNoLinkerOpts in Flags)) then
       switches := switches + ' -g-h'; // heaptrc, without -g
-
   end;
 
   { Generate code gprof }
@@ -2857,8 +2854,6 @@ begin
     tempsw := tempsw + 'u';
   if (ShowTriedFiles) then
     tempsw := tempsw + 't';
-  if (ShowDefMacros) then
-    tempsw := tempsw + 'm';
   if (ShowCompProc) then
     tempsw := tempsw + 'p';
   if (ShowCond) then
@@ -2879,11 +2874,6 @@ begin
 
   if (StopAfterErrCount>1) then
     switches := switches + ' -Se'+IntToStr(StopAfterErrCount);
-
-
-  { Write an FPC logo }
-  if (WriteFPCLogo) then
-    switches := switches + ' -l';
 
   { Ignore Config File }
   if DontUseConfigFile then
@@ -2937,6 +2927,9 @@ begin
       switches := switches + ' '+PrepareCmdLineOption('-FU'+CurOutputDir);
   end;
 
+  // verbosity
+  if (WriteFPCLogo) then
+    switches := switches + ' -l';
   t := GetMsgsIndexesWithState(CompilerMessages, ',', msOff);
   if t <> '' then
     switches := switches + ' ' + PrepareCmdLineOption('-vm'+t);
@@ -3190,7 +3183,6 @@ begin
   fShowDebugInfo := false;
   fShowUsedFiles := false;
   fShowTriedFiles := false;
-  fShowDefMacros := false;
   fShowCompProc := false;
   fShowCond := false;
   fShowExecInfo := false;
@@ -3308,7 +3300,6 @@ begin
   fShowDebugInfo := CompOpts.fShowDebugInfo;
   fShowUsedFiles := CompOpts.fShowUsedFiles;
   fShowTriedFiles := CompOpts.fShowTriedFiles;
-  fShowDefMacros := CompOpts.fShowDefMacros;
   fShowCompProc := CompOpts.fShowCompProc;
   fShowCond := CompOpts.fShowCond;
   fShowCond := CompOpts.fShowExecInfo;
@@ -3457,7 +3448,6 @@ begin
   if Done(Tool.AddDiff('ShowDebugInfo',fShowDebugInfo,CompOpts.fShowDebugInfo)) then exit;
   if Done(Tool.AddDiff('ShowUsedFiles',fShowUsedFiles,CompOpts.fShowUsedFiles)) then exit;
   if Done(Tool.AddDiff('ShowTriedFiles',fShowTriedFiles,CompOpts.fShowTriedFiles)) then exit;
-  if Done(Tool.AddDiff('ShowDefMacros',fShowDefMacros,CompOpts.fShowDefMacros)) then exit;
   if Done(Tool.AddDiff('ShowCompProc',fShowCompProc,CompOpts.fShowCompProc)) then exit;
   if Done(Tool.AddDiff('ShowCond',fShowCond,CompOpts.fShowCond)) then exit;
   if Done(Tool.AddDiff('ShowExecInfo',fShowExecInfo,CompOpts.fShowExecInfo)) then exit;

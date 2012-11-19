@@ -52,7 +52,6 @@ begin
     Items.Add(dlgShowHint + ' (-vh)');
     Items.Add(dlgShowTriedFiles + ' (-vt)');
     Items.Add(dlgShowGeneralInfo + ' (-vi)');
-    Items.Add(dlgShowDefinedMacros + ' (-vm)');
     Items.Add(dlgShowCompilingLineNumbers + ' (-vl)');
     Items.Add(dlgShowCompiledProcedures + ' (-vp)');
     Items.Add(dlgShowProcsError + ' (-vb)');
@@ -70,58 +69,62 @@ begin
 end;
 
 procedure TCompilerVerbosityOptionsFrame.ReadSettings(AOptions: TAbstractIDEOptions);
+var
+  i: Integer;
 begin
+  i:=0;
   with AOptions as TBaseCompilerOptions, grpVerbosity do
   begin
-    Checked[0] := ShowErrors;
-    Checked[1] := ShowHintsForSenderNotUsed;
-    Checked[2] := ShowWarn;
-    Checked[3] := ShowDebugInfo;
-    Checked[4] := ShowNotes;
-    Checked[5] := ShowUsedFiles;
-    Checked[6] := ShowHints;
-    Checked[7] := ShowTriedFiles;
-    Checked[8] := ShowGenInfo;
-    Checked[9] := ShowDefMacros;
-    Checked[10] := ShowLineNum;
-    Checked[11] := ShowCompProc;
-    Checked[12] := ShowAllProcsOnError;
-    Checked[13] := ShowCond;
-    Checked[14] := ShowAll;
-    Checked[15] := ShowExecInfo;
-    Checked[16] := ShowSummary;
-    Checked[17] := ShowNothing;
-    Checked[18] := ShowHintsForUnusedUnitsInMainSrc;
-    Checked[19] := WriteFPCLogo;
+    Checked[i] := ShowErrors;  i+=1;
+    Checked[i] := ShowHintsForSenderNotUsed; i+=1;
+    Checked[i] := ShowWarn; i+=1;
+    Checked[i] := ShowDebugInfo; i+=1;
+    Checked[i] := ShowNotes; i+=1;
+    Checked[i] := ShowUsedFiles; i+=1;
+    Checked[i] := ShowHints; i+=1;
+    Checked[i] := ShowTriedFiles; i+=1;
+    Checked[i] := ShowGenInfo; i+=1;
+    Checked[i] := ShowLineNum; i+=1;
+    Checked[i] := ShowCompProc; i+=1;
+    Checked[i] := ShowAllProcsOnError; i+=1;
+    Checked[i] := ShowCond; i+=1;
+    Checked[i] := ShowAll; i+=1;
+    Checked[i] := ShowExecInfo; i+=1;
+    Checked[i] := ShowSummary; i+=1;
+    Checked[i] := ShowNothing; i+=1;
+    Checked[i] := ShowHintsForUnusedUnitsInMainSrc; i+=1;
+    Checked[i] := WriteFPCLogo; i+=1;
 
     edtErrorCnt.Text := IntToStr(StopAfterErrCount);
   end;
 end;
 
 procedure TCompilerVerbosityOptionsFrame.WriteSettings(AOptions: TAbstractIDEOptions);
+var
+  i: Integer;
 begin
+  i:=0;
   with AOptions as TBaseCompilerOptions, grpVerbosity do
   begin
-    ShowErrors := Checked[0];
-    ShowHintsForSenderNotUsed := Checked[1];
-    ShowWarn := Checked[2];
-    ShowDebugInfo := Checked[3];
-    ShowNotes := Checked[4];
-    ShowUsedFiles := Checked[5];
-    ShowHints := Checked[6];
-    ShowTriedFiles := Checked[7];
-    ShowGenInfo := Checked[8];
-    ShowDefMacros := Checked[9];
-    ShowLineNum := Checked[10];
-    ShowCompProc := Checked[11];
-    ShowAllProcsOnError := Checked[12];
-    ShowCond := Checked[13];
-    ShowAll := Checked[14];
-    ShowExecInfo := Checked[15];
-    ShowSummary := Checked[16];
-    ShowNothing := Checked[17];
-    ShowHintsForUnusedUnitsInMainSrc := Checked[18];
-    WriteFPCLogo := Checked[19];
+    ShowErrors := Checked[i]; i+=1;
+    ShowHintsForSenderNotUsed := Checked[i]; i+=1;
+    ShowWarn := Checked[i]; i+=1;
+    ShowDebugInfo := Checked[i]; i+=1;
+    ShowNotes := Checked[i]; i+=1;
+    ShowUsedFiles := Checked[i]; i+=1;
+    ShowHints := Checked[i]; i+=1;
+    ShowTriedFiles := Checked[i]; i+=1;
+    ShowGenInfo := Checked[i]; i+=1;
+    ShowLineNum := Checked[i]; i+=1;
+    ShowCompProc := Checked[i]; i+=1;
+    ShowAllProcsOnError := Checked[i]; i+=1;
+    ShowCond := Checked[i]; i+=1;
+    ShowAll := Checked[i]; i+=1;
+    ShowExecInfo := Checked[i]; i+=1;
+    ShowSummary := Checked[i]; i+=1;
+    ShowNothing := Checked[i]; i+=1;
+    ShowHintsForUnusedUnitsInMainSrc := Checked[i]; i+=1;
+    WriteFPCLogo := Checked[i]; i+=1;
     StopAfterErrCount := StrToIntDef(edtErrorCnt.Text, 1);
   end;
 end;
