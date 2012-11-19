@@ -1086,7 +1086,7 @@ msgstr "Relocável"
 
 #: lazarusidestrconsts.dlgcosetasdefault
 msgid "Set compiler options as default"
-msgstr ""
+msgstr "Definir opções do compilador como padrão"
 
 #: lazarusidestrconsts.dlgcoshowerr
 #| msgid "Show Errors"
@@ -1937,7 +1937,7 @@ msgstr "Aplicação servidora"
 
 #: lazarusidestrconsts.dlgidemacrovalues
 msgid "IDE Macro Values"
-msgstr ""
+msgstr "Valores das macros IDE"
 
 #: lazarusidestrconsts.dlgidentifiercompletion
 #| msgid "Identifier completion"
@@ -4140,7 +4140,7 @@ msgstr "Sempre ignorar"
 
 #: lazarusidestrconsts.lisamacrowiththisnamealreadyexists
 msgid "A macro with this name already exists."
-msgstr ""
+msgstr "Uma macro com este nome já existe."
 
 #: lazarusidestrconsts.lisambiguousfilefound
 msgid "Ambiguous file found"
@@ -4220,7 +4220,7 @@ msgstr "Nome de classe da &Aplicação"
 
 #: lazarusidestrconsts.lisapplicationprogramdescriptor
 msgid "A graphical Free Pascal application using the cross-platform LCL library for its GUI."
-msgstr ""
+msgstr "Uma aplicação gráfica Free Pascal usando a biblioteca LCL cross-platform como sua GUI."
 
 #: lazarusidestrconsts.lisapplybuildflagsbtodependenciestoo
 msgid "apply build flags (-B) to dependencies too"
@@ -6265,7 +6265,7 @@ msgstr "Aplicação console"
 
 #: lazarusidestrconsts.lisconsoleapplicationprogramdescriptor
 msgid "A Free Pascal command line program using TCustomApplication to easily check command line options, handling exceptions, etc."
-msgstr ""
+msgstr "Um programa de linha de comando Free Pascal usando TCustomApplication para facilmente verificar as opções de linha de comando, tratamento de exceções, etc."
 
 #: lazarusidestrconsts.lisconstructorcode
 msgid "Constructor code"
@@ -6827,7 +6827,7 @@ msgstr "Programa personalizado"
 
 #: lazarusidestrconsts.liscustomprogramprogramdescriptor
 msgid "A Custom Free Pascal program."
-msgstr ""
+msgstr "Um programa Free Pascal customizado."
 
 #: lazarusidestrconsts.liscut
 msgctxt "lazarusidestrconsts.liscut"
@@ -7646,7 +7646,7 @@ msgstr "Valor duplicado encontrado %s%s%s."
 
 #: lazarusidestrconsts.lisduplicatename
 msgid "Duplicate Name"
-msgstr ""
+msgstr "Nome duplicado"
 
 #: lazarusidestrconsts.lisduplicatenameacomponentnamedalreadyexistsintheinhe
 msgid "Duplicate name: A component named %s%s%s already exists in the inherited component %s"
@@ -7679,7 +7679,7 @@ msgstr "Ajuda de edição"
 
 #: lazarusidestrconsts.liseditkey
 msgid "Edit Key"
-msgstr ""
+msgstr "Tecla de edição"
 
 #: lazarusidestrconsts.liseditorfiletypes
 msgid "Editor file types"
@@ -7936,7 +7936,7 @@ msgstr "Laço infinito em macros"
 
 #: lazarusidestrconsts.lisenternewnameformacros
 msgid "Enter new name for Macro \"%s\""
-msgstr ""
+msgstr "Digite novo nome para a macro \"%s\""
 
 #: lazarusidestrconsts.lisenvironmentvariablenameasparameter
 msgid "Environment variable, name as parameter"
@@ -8511,7 +8511,7 @@ msgstr "Localizar todos &os arquivos abertos"
 
 #: lazarusidestrconsts.lisfindfilesearchinactivefile
 msgid "search in &active file"
-msgstr ""
+msgstr "localizar no arquivo &ativo"
 
 #: lazarusidestrconsts.lisfindfilesearchindirectories
 msgid "search in &directories"
@@ -10398,7 +10398,7 @@ msgstr "caminho biblioteca."
 
 #: lazarusidestrconsts.lislibraryprogramdescriptor
 msgid "A Free Pascal shared library (.dll under Windows, .so under Linux, .dylib under MacOS X)."
-msgstr ""
+msgstr "Uma biblioteca compartilhada Free Pascal (.dll no Windows, .so no Linux, .dylib no MacOS X)."
 
 #: lazarusidestrconsts.lisline
 msgid "Line:"
@@ -10692,14 +10692,13 @@ msgid "Clean up Build Files ..."
 msgstr "Limpar arquivos de construção ..."
 
 #: lazarusidestrconsts.lismenucloseall
-#, fuzzy
 #| msgid "Close A&ll Editor Files"
 msgid "Close A&ll"
-msgstr "Fechar &todos os arquivos do editor"
+msgstr "Fechar &tudo"
 
 #: lazarusidestrconsts.lismenucloseeditorfile
 msgid "&Close Editor File"
-msgstr ""
+msgstr "&Fechar o arquivo no editor"
 
 #: lazarusidestrconsts.lismenucloseproject
 msgid "Close Project"
@@ -11895,7 +11894,7 @@ msgstr "Macro %d"
 
 #: lazarusidestrconsts.lisnewmacroname2
 msgid "New Macroname"
-msgstr ""
+msgstr "Novo nome de macro"
 
 #: lazarusidestrconsts.lisnewproject
 #| msgid "%s - (new project)"
@@ -12106,11 +12105,11 @@ msgstr "? (Desligado)"
 
 #: lazarusidestrconsts.lisoifaddtofavoriteproperties
 msgid "Add to favorite properties"
-msgstr ""
+msgstr "Adicionar às propriedades favoritas"
 
 #: lazarusidestrconsts.lisoifchooseabaseclassforthefavoriteproperty
 msgid "Choose a base class for the favorite property %s%s%s."
-msgstr ""
+msgstr "Escolha uma classe base para a propriedade favorita %s%s%s."
 
 #: lazarusidestrconsts.lisoifclassnotfound
 msgid "Class %s%s%s not found."
@@ -12118,7 +12117,7 @@ msgstr "Classe %s%s%s não encontrada."
 
 #: lazarusidestrconsts.lisoifremovefromfavoriteproperties
 msgid "Remove from favorite properties"
-msgstr ""
+msgstr "Excluir das propriedades favoritas"
 
 #: lazarusidestrconsts.lisoipautoinstalldynamic
 msgid "auto install dynamic"
@@ -12535,7 +12534,7 @@ msgstr "Opções do Compilador para o Pacote %s"
 
 #: lazarusidestrconsts.lispckeditcreatefpmakefile
 msgid "Create fpmake.pp"
-msgstr ""
+msgstr "Criar fpmake.pp"
 
 #: lazarusidestrconsts.lispckeditcreatemakefile
 msgctxt "lazarusidestrconsts.lispckeditcreatemakefile"
@@ -12734,7 +12733,7 @@ msgstr "Auto criado"
 
 #: lazarusidestrconsts.lispckexplbase
 msgid "Base, can not be uninstalled"
-msgstr ""
+msgstr "Base, não pode ser desinstalada"
 
 #: lazarusidestrconsts.lispckexplinstalled
 msgid "Installed"
@@ -13854,7 +13853,7 @@ msgstr "Programa %s não encontrado"
 
 #: lazarusidestrconsts.lisprogramprogramdescriptor
 msgid "A Free Pascal command line program with some useful settings added."
-msgstr ""
+msgstr "Um programa de linha de comando Free Pascal com algumas definições úteis adicionadas."
 
 #: lazarusidestrconsts.lisprogramsourcemusthaveapascalextensionlikepaspporlp
 msgid "Program source must have a pascal extension like .pas, .pp or .lpr"
@@ -14728,7 +14727,7 @@ msgstr ""
 
 #: lazarusidestrconsts.lisscanparentdir
 msgid "Scanning parent directory"
-msgstr ""
+msgstr "Escaneando diretório pai"
 
 #: lazarusidestrconsts.lissearchfor
 msgid "Search For "
@@ -14938,11 +14937,11 @@ msgstr "Irmão"
 
 #: lazarusidestrconsts.lissimpleprogram
 msgid "Simple Program"
-msgstr ""
+msgstr "Programa simples"
 
 #: lazarusidestrconsts.lissimpleprogramprogramdescriptor
 msgid "A most simple Free Pascal command line program."
-msgstr ""
+msgstr "Um programa de linha de comando Free Pascal mais simples."
 
 #: lazarusidestrconsts.lissimplesyntax
 #| msgid "Simple Syntax"
@@ -15971,11 +15970,11 @@ msgstr "Localizando: %s"
 
 #: lazarusidestrconsts.lisuesearchstringcontinuebeg
 msgid "Continue search from the beginning?"
-msgstr ""
+msgstr "Continuar a localizar do início?"
 
 #: lazarusidestrconsts.lisuesearchstringcontinueend
 msgid "Continue search from the end?"
-msgstr ""
+msgstr "Continuar a localizar do final?"
 
 #: lazarusidestrconsts.lisuesearchstringnotfound
 msgid "Search string '%s' not found!"
@@ -16559,7 +16558,7 @@ msgstr "Diretório padrão do usuário"
 
 #: lazarusidestrconsts.lisuseselected
 msgid "Use Selected"
-msgstr ""
+msgstr "Usar selecionado"
 
 #: lazarusidestrconsts.lisuseunit
 #| msgid "Add unit to uses section"
@@ -16898,7 +16897,7 @@ msgstr "Adicionar Reverso"
 
 #: lazarusidestrconsts.rsattachto
 msgid "Attach to"
-msgstr ""
+msgstr "Anexar à"
 
 #: lazarusidestrconsts.rsautomaticallyincreasebuildnumber
 msgid "Automatically increase build number"
@@ -16947,7 +16946,7 @@ msgstr "Ativar \"i18n\""
 
 #: lazarusidestrconsts.rsenterpid
 msgid "Enter PID"
-msgstr ""
+msgstr "Digite PID"
 
 #: lazarusidestrconsts.rsfilterthelistwithstring
 msgid "Filter the lines in list with a string"
@@ -17297,7 +17296,7 @@ msgstr "adicionar observador"
 
 #: lazarusidestrconsts.srkmecattach
 msgid "Attach to program"
-msgstr ""
+msgstr "Anexar ao programa"
 
 #: lazarusidestrconsts.srkmecautocompletion
 msgid "Code template completion"
@@ -17507,7 +17506,7 @@ msgstr "Excluir até o final da palavra"
 
 #: lazarusidestrconsts.srkmecdetach
 msgid "Detach from program"
-msgstr ""
+msgstr "Desanexar do programa"
 
 #: lazarusidestrconsts.srkmecdiff
 msgctxt "lazarusidestrconsts.srkmecdiff"
