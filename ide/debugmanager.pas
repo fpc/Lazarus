@@ -1397,6 +1397,13 @@ begin
     then begin
       TAssemblerDlg(CurDialog).SetLocation(FDebugger, FCurrentLocation.Address);
     end;
+    if (CurDialog is TIDEInspectDlg) and (SourceEditorManager.GetActiveSE <> nil)
+    then begin
+      if SourceEditorManager.GetActiveSE.SelectionAvailable then
+        TIDEInspectDlg(CurDialog).Execute(SourceEditorManager.GetActiveSE.Selection)
+      else
+        TIDEInspectDlg(CurDialog).Execute(SourceEditorManager.GetActiveSE.GetOperandAtCurrentCaret);
+    end;
   end;
   if not DoDisableAutoSizing then
     CurDialog.EnableAutoSizing;
