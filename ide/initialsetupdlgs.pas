@@ -40,11 +40,10 @@ unit InitialSetupDlgs;
 interface
 
 uses
-  Classes, SysUtils, contnrs, LCLProc, Forms, Controls, Buttons, Dialogs,
-  FileUtil, Laz2_XMLCfg, lazutf8classes, Graphics, ComCtrls, ExtCtrls, StdCtrls,
-  DefineTemplates, CodeToolManager, TextTools,
-  TransferMacros, LazarusIDEStrConsts, LazConf, EnvironmentOpts, IDEProcs,
-  AboutFrm;
+  Classes, SysUtils, strutils, contnrs, LCLProc, Forms, Controls, Buttons,
+  Dialogs, FileUtil, Laz2_XMLCfg, lazutf8classes, Graphics, ComCtrls, ExtCtrls,
+  StdCtrls, DefineTemplates, CodeToolManager, TransferMacros,
+  LazarusIDEStrConsts, LazConf, EnvironmentOpts, IDEProcs, AboutFrm;
   
 type
   TSDFilenameQuality = (
@@ -232,7 +231,7 @@ procedure SetupCompilerFilename;
 
 // FPC Source
 function CheckFPCSrcDirQuality(ADirectory: string; out Note: string;
-  const FPCVer: String): TSDFilenameQuality;
+  const FPCVer: String; aUseFileCache: Boolean = True): TSDFilenameQuality;
 function SearchFPCSrcDirCandidates(StopIfFits: boolean;
   const FPCVer: string): TSDFileInfoList;
 
@@ -689,13 +688,55 @@ begin
   end;
 end;
 
+function ValueOfKey(const aLine, aKey: string; var aValue: string): boolean;
+// If aKey is found in aLine, separate a quoted number following "aKey =",
+//  save it to aValue and return True. Return False if aKey is not found.
+// Example line:     version_nr = '2';
+var
+  i,j: Integer;
+begin
+  Result:=False;
+  i:=Pos(aKey, aLine);
+  if i>0 then begin            // aKey found
+    i:=PosEx('=', aLine, i+Length(aKey));
+    if i>0 then begin          // '=' found
+      i:=PosEx('''', aLine, i+1);
+      if i>0 then begin        // Opening quote found
+        j:=PosEx('''', aLine, i+1);
+        if j>0 then begin      // Closing quote found
+          aValue:=Copy(aLine, i+1, j-i-1);
+          Result:=True;
+        end;
+      end;
+    end;
+  end;
+end;
+
 function CheckFPCSrcDirQuality(ADirectory: string; out Note: string;
-  const FPCVer: String): TSDFilenameQuality;
+  const FPCVer: String; aUseFileCache: Boolean = True): TSDFilenameQuality;
+// aUseFileCache = False when this function is called from a thread.
+// File Cache is not thread safe.
+
+  function DirPathExistsInternal(const FileName: String): Boolean;
+  begin
+    if aUseFileCache then
+      Result:=DirPathExistsCached(FileName)
+    else
+      Result:=DirPathExists(FileName)
+  end;
+
+  function FileExistsInternal(const Filename: string): boolean;
+  begin
+    if aUseFileCache then
+      Result:=FileExistsCached(FileName)
+    else
+      Result:=FileExistsUTF8(FileName)
+  end;
 
   function SubDirExists(SubDir: string; var q: TSDFilenameQuality): boolean;
   begin
     SubDir:=SetDirSeparators(SubDir);
-    if DirPathExistsCached(ADirectory+SubDir) then exit(true);
+    if DirPathExistsInternal(ADirectory+SubDir) then exit(true);
     Result:=false;
     Note:=Format(lisDirectoryNotFound2, [SubDir]);
     q:=sddqIncomplete;
@@ -704,7 +745,7 @@ function CheckFPCSrcDirQuality(ADirectory: string; out Note: string;
   function SubFileExists(SubFile: string; var q: TSDFilenameQuality): boolean;
   begin
     SubFile:=SetDirSeparators(SubFile);
-    if FileExistsCached(ADirectory+SubFile) then exit(true);
+    if FileExistsInternal(ADirectory+SubFile) then exit(true);
     Result:=false;
     Note:=Format(lisFileNotFound3, [SubFile]);
     q:=sddqIncomplete;
@@ -722,7 +763,7 @@ begin
   Result:=sddqInvalid;
   Note:='';
   ADirectory:=TrimFilename(ADirectory);
-  if not DirPathExistsCached(ADirectory) then
+  if not DirPathExistsInternal(ADirectory) then
   begin
     Note:=lisISDDirectoryNotFound;
     exit;
@@ -735,7 +776,7 @@ begin
   if (FPCVer<>'') then
   begin
     VersionFile:=ADirectory+'compiler'+PathDelim+'version.pas';
-    if FileExistsCached(VersionFile) then
+    if FileExistsInternal(VersionFile) then
     begin
       sl:=TStringListUTF8.Create;
       try
@@ -743,14 +784,10 @@ begin
           sl.LoadFromFile(VersionFile);
           for i:=0 to sl.Count-1 do
           begin
-            if REMatches(sl[i],' version_nr *= *''([0-9]+)''','I') then
-              VersionNr:=REVar(1)
-            else if REMatches(sl[i],' release_nr *= *''([0-9]+)''','I') then
-              ReleaseNr:=REVar(1)
-            else if REMatches(sl[i],' patch_nr *= *''([0-9]+)''','I') then begin
-              PatchNr:=REVar(1);
+            if      ValueOfKey(sl[i],'version_nr', VersionNr) then begin end
+            else if ValueOfKey(sl[i],'release_nr', ReleaseNr) then begin end
+            else if ValueOfKey(sl[i],'patch_nr',   PatchNr) then
               break;
-            end;
           end;
           SrcVer:=VersionNr+'.'+ReleaseNr+'.'+PatchNr;
           if SrcVer<>FPCVer then
@@ -1207,7 +1244,7 @@ begin
   Result:=TSDFileInfo.Create;
   Result.Filename:=RealDir;
   Result.Caption:=Dir;                             // check quality
-  Result.Quality:=CheckFPCSrcDirQuality(RealDir, Result.Note, fFPCVer);
+  Result.Quality:=CheckFPCSrcDirQuality(RealDir, Result.Note, fFPCVer, False);
   if Result.Quality<>sddqCompatible then           // return only exact matches
     FreeAndNil(Result);
 end;
