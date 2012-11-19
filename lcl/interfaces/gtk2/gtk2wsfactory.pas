@@ -290,7 +290,7 @@ end;
 // StdCtrls
 function RegisterCustomScrollBar: Boolean; alias : 'WSRegisterCustomScrollBar';
 begin
-  RegisterWSComponent(TScrollBar, TGtk2WSScrollBar);
+  RegisterWSComponent(TCustomScrollBar, TGtk2WSScrollBar);
   Result := True;
 end;
 
