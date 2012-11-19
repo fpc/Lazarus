@@ -1469,7 +1469,7 @@ var
         // skip special files
         if (PathInfo.Name = '.') or (PathInfo.Name = '..') or
           (PathInfo.Name = '') then Continue;
-
+        // Deal with both files and directories
         if (PathInfo.Attr and faDirectory) = 0 then
         begin
           if (MaskList = nil) or MaskList.Matches(PathInfo.Name) then
@@ -1492,13 +1492,14 @@ var
     finally
       FindCloseUTF8(PathInfo);
     end;
-    
-    if ASearchSubDirs or (ALevel > 0) then // search recursively in directories
+
+    if ASearchSubDirs or (ALevel > 0) then
+      // search recursively in directories
       if FindFirstUTF8(P, faDirectory, PathInfo) = 0 then
       try
         repeat
           if (PathInfo.Name = '.') or (PathInfo.Name = '..') or
-             (PathInfo.Name = '')
+             (PathInfo.Name = '') or ((PathInfo.Attr and faDirectory) = 0)
           then Continue;
 
           FPath := APath;
