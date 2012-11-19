@@ -3099,10 +3099,6 @@ msgstr "Mostra i condizionali"
 msgid "Show debug info"
 msgstr "Mostra le informazioni di debug"
 
-#: lazarusidestrconsts.dlgshowdefinedmacros
-msgid "Show defined macros"
-msgstr "Mostra le macro definite"
-
 #: lazarusidestrconsts.dlgshowedrhints
 msgid "Show editor hints"
 msgstr "Mostra dritte dell'editor"

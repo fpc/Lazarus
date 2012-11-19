@@ -3038,10 +3038,6 @@ msgstr "Показывать условия"
 msgid "Show debug info"
 msgstr "Показывать отладочную информацию"
 
-#: lazarusidestrconsts.dlgshowdefinedmacros
-msgid "Show defined macros"
-msgstr "Показывать определённые макросы"
-
 #: lazarusidestrconsts.dlgshowedrhints
 msgid "Show editor hints"
 msgstr "Показывать подсказки редактора"

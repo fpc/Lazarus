@@ -3058,10 +3058,6 @@ msgstr "Zobraziť podmienky"
 msgid "Show debug info"
 msgstr "Zobraziť ladiace informácie"
 
-#: lazarusidestrconsts.dlgshowdefinedmacros
-msgid "Show defined macros"
-msgstr "Zobraziť definované makrá"
-
 #: lazarusidestrconsts.dlgshowedrhints
 msgid "Show editor hints"
 msgstr "Zobraziť rady editora"

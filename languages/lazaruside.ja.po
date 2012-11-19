@@ -3106,10 +3106,6 @@ msgstr "条件を表示"
 msgid "Show debug info"
 msgstr "デバッグ情報を表示"
 
-#: lazarusidestrconsts.dlgshowdefinedmacros
-msgid "Show defined macros"
-msgstr "定義されたマクロを表示"
-
 #: lazarusidestrconsts.dlgshowedrhints
 msgid "Show editor hints"
 msgstr "エディタのヒントを表示"

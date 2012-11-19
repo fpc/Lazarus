@@ -2988,10 +2988,6 @@ msgstr "Показувати умови"
 msgid "Show debug info"
 msgstr "Показувати налагоджувальну інф-ю"
 
-#: lazarusidestrconsts.dlgshowdefinedmacros
-msgid "Show defined macros"
-msgstr "Показувати означені макроси"
-
 #: lazarusidestrconsts.dlgshowedrhints
 msgid "Show editor hints"
 msgstr "Довідки редактора"

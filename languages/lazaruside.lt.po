@@ -3004,10 +3004,6 @@ msgstr "Rodyti sąlygines instrukcijas"
 msgid "Show debug info"
 msgstr "Rodyti derinimo informaciją"
 
-#: lazarusidestrconsts.dlgshowdefinedmacros
-msgid "Show defined macros"
-msgstr "Rodyti "
-
 #: lazarusidestrconsts.dlgshowedrhints
 msgid "Show editor hints"
 msgstr "Rengyklėje rodyti informacinius langelius"

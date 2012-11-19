@@ -2889,10 +2889,6 @@ msgstr "Näytä ehdolliset"
 msgid "Show debug info"
 msgstr "Näytä virheenjäljitystieto"
 
-#: lazarusidestrconsts.dlgshowdefinedmacros
-msgid "Show defined macros"
-msgstr "Näytä määritellyt makrot"
-
 #: lazarusidestrconsts.dlgshowedrhints
 msgid "Show editor hints"
 msgstr "Näytä editointivihjeet"

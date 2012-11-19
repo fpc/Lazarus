@@ -3038,10 +3038,6 @@ msgstr "Bedingungen anzeigen"
 msgid "Show debug info"
 msgstr "Debug-Informationen anzeigen"
 
-#: lazarusidestrconsts.dlgshowdefinedmacros
-msgid "Show defined macros"
-msgstr "Definierte Makros anzeigen"
-
 #: lazarusidestrconsts.dlgshowedrhints
 msgid "Show editor hints"
 msgstr "Editor-Hinweise anzeigen"

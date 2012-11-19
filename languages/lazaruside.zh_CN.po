@@ -3074,10 +3074,6 @@ msgstr "显示依赖"
 msgid "Show debug info"
 msgstr "显示调试信息"
 
-#: lazarusidestrconsts.dlgshowdefinedmacros
-msgid "Show defined macros"
-msgstr "显示自定义的宏"
-
 #: lazarusidestrconsts.dlgshowedrhints
 msgid "Show editor hints"
 msgstr "显示编辑器提示"

@@ -3090,10 +3090,6 @@ msgstr "הראה מותנים"
 msgid "Show debug info"
 msgstr "הראה מידע ניפוי שגיאות"
 
-#: lazarusidestrconsts.dlgshowdefinedmacros
-msgid "Show defined macros"
-msgstr "הראה מאקרו מוגדרים"
-
 #: lazarusidestrconsts.dlgshowedrhints
 msgid "Show editor hints"
 msgstr "הראה טיפים של העורך"

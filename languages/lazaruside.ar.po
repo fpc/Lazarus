@@ -2908,10 +2908,6 @@ msgstr "عرض الاشتراطات"
 msgid "Show debug info"
 msgstr "عرض معلومات المنقح"
 
-#: lazarusidestrconsts.dlgshowdefinedmacros
-msgid "Show defined macros"
-msgstr "إظهار ماكروات معرفة"
-
 #: lazarusidestrconsts.dlgshowedrhints
 msgid "Show editor hints"
 msgstr "إظهار تلميحات المحرر"

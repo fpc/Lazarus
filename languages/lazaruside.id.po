@@ -3037,10 +3037,6 @@ msgstr "Tampilkan kondisional"
 msgid "Show debug info"
 msgstr "Tampilkan info debug"
 
-#: lazarusidestrconsts.dlgshowdefinedmacros
-msgid "Show defined macros"
-msgstr "Tampilkan makro yang ditetapkan"
-
 #: lazarusidestrconsts.dlgshowedrhints
 msgid "Show editor hints"
 msgstr "Tampilkan petunjuk editor"

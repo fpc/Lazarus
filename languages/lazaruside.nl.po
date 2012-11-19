@@ -3033,10 +3033,6 @@ msgstr "Toon voorwaarden"
 msgid "Show debug info"
 msgstr "Toon debug informatie"
 
-#: lazarusidestrconsts.dlgshowdefinedmacros
-msgid "Show defined macros"
-msgstr "Toon gedefinieerde macros"
-
 #: lazarusidestrconsts.dlgshowedrhints
 msgid "Show editor hints"
 msgstr "Toon bewerker hints"
