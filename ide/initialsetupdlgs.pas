@@ -1258,7 +1258,8 @@ begin
   try
     repeat
       if Terminated then Break;
-      if (PathInfo.Name='') or (PathInfo.Name[1]='.') then Continue;
+      if (PathInfo.Name='') or (PathInfo.Name[1]='.')
+      or ((PathInfo.Attr and faDirectory) = 0) then Continue;
       //fPath := APath; fFileInfo := PathInfo; Synchronize(@Debug);
       DoSearch(AppendPathDelim(APath+PathInfo.Name));  // Recursive call
       FPCSrc:=CheckFPCSrcDir(APath+PathInfo.Name);
