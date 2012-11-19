@@ -14768,6 +14768,10 @@ msgstr "Speichere "
 msgid "Scaling factor:"
 msgstr "Skalierungsfaktor:"
 
+#: lazarusidestrconsts.lisscanning
+msgid "Scanning"
+msgstr ""
+
 #: lazarusidestrconsts.lisscanparentdir
 msgid "Scanning parent directory"
 msgstr ""

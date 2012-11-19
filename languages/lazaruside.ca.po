@@ -14753,6 +14753,10 @@ msgstr "Desa "
 msgid "Scaling factor:"
 msgstr "Factor d'escalat:"
 
+#: lazarusidestrconsts.lisscanning
+msgid "Scanning"
+msgstr ""
+
 #: lazarusidestrconsts.lisscanparentdir
 msgid "Scanning parent directory"
 msgstr ""

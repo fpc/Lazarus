@@ -14280,6 +14280,10 @@ msgstr "حفظ"
 msgid "Scaling factor:"
 msgstr "معامل التقييس:"
 
+#: lazarusidestrconsts.lisscanning
+msgid "Scanning"
+msgstr ""
+
 #: lazarusidestrconsts.lisscanparentdir
 msgid "Scanning parent directory"
 msgstr "فحص دليل أعلى"

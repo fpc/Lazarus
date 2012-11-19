@@ -14722,6 +14722,10 @@ msgstr "Salvar "
 msgid "Scaling factor:"
 msgstr "Fator de Escala:"
 
+#: lazarusidestrconsts.lisscanning
+msgid "Scanning"
+msgstr ""
+
 #: lazarusidestrconsts.lisscanparentdir
 msgid "Scanning parent directory"
 msgstr ""

@@ -14669,6 +14669,10 @@ msgstr "Įrašyti "
 msgid "Scaling factor:"
 msgstr "Santykinis mastelis:"
 
+#: lazarusidestrconsts.lisscanning
+msgid "Scanning"
+msgstr ""
+
 #: lazarusidestrconsts.lisscanparentdir
 msgid "Scanning parent directory"
 msgstr ""

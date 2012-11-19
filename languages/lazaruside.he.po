@@ -15061,6 +15061,10 @@ msgstr "שמור"
 msgid "Scaling factor:"
 msgstr "קנה מידה:"
 
+#: lazarusidestrconsts.lisscanning
+msgid "Scanning"
+msgstr ""
+
 #: lazarusidestrconsts.lisscanparentdir
 msgid "Scanning parent directory"
 msgstr ""

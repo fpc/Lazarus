@@ -14797,6 +14797,10 @@ msgstr "Opslaan "
 msgid "Scaling factor:"
 msgstr "Schaal:"
 
+#: lazarusidestrconsts.lisscanning
+msgid "Scanning"
+msgstr ""
+
 #: lazarusidestrconsts.lisscanparentdir
 msgid "Scanning parent directory"
 msgstr ""

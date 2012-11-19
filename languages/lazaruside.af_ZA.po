@@ -14389,6 +14389,10 @@ msgstr "Stoor"
 msgid "Scaling factor:"
 msgstr ""
 
+#: lazarusidestrconsts.lisscanning
+msgid "Scanning"
+msgstr ""
+
 #: lazarusidestrconsts.lisscanparentdir
 msgid "Scanning parent directory"
 msgstr ""

@@ -14589,6 +14589,10 @@ msgstr "Зберегти "
 msgid "Scaling factor:"
 msgstr "Масштабний фактор:"
 
+#: lazarusidestrconsts.lisscanning
+msgid "Scanning"
+msgstr ""
+
 #: lazarusidestrconsts.lisscanparentdir
 msgid "Scanning parent directory"
 msgstr ""

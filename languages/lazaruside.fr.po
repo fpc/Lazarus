@@ -14904,6 +14904,10 @@ msgstr "Enregistrer "
 msgid "Scaling factor:"
 msgstr "Facteur d'ajustement:"
 
+#: lazarusidestrconsts.lisscanning
+msgid "Scanning"
+msgstr ""
+
 #: lazarusidestrconsts.lisscanparentdir
 msgid "Scanning parent directory"
 msgstr ""

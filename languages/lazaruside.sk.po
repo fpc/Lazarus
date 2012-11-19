@@ -14938,6 +14938,10 @@ msgstr "Uložiť"
 msgid "Scaling factor:"
 msgstr "Mierka:"
 
+#: lazarusidestrconsts.lisscanning
+msgid "Scanning"
+msgstr ""
+
 #: lazarusidestrconsts.lisscanparentdir
 msgid "Scanning parent directory"
 msgstr ""

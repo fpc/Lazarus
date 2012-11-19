@@ -14227,6 +14227,10 @@ msgstr "Tallenna "
 msgid "Scaling factor:"
 msgstr "Skaalauskerroin:"
 
+#: lazarusidestrconsts.lisscanning
+msgid "Scanning"
+msgstr ""
+
 #: lazarusidestrconsts.lisscanparentdir
 msgid "Scanning parent directory"
 msgstr ""

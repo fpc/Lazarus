@@ -14857,6 +14857,10 @@ msgstr "Simpan"
 msgid "Scaling factor:"
 msgstr "Faktor Skala:"
 
+#: lazarusidestrconsts.lisscanning
+msgid "Scanning"
+msgstr ""
+
 #: lazarusidestrconsts.lisscanparentdir
 msgid "Scanning parent directory"
 msgstr ""
