@@ -1215,19 +1215,20 @@ end;
 procedure TSearchFpcSourceThread.DoSearch(const APath: String);
 var
   PathInfo: TSearchRec;
+  FPCSrc: TSDFileInfo;
 begin
   if FindFirstUTF8(APath+AllDirectoryEntriesMask, faDirectory, PathInfo) = 0 then
   try
     repeat
-      if (PathInfo.Name='') or (PathInfo.Name[1]='.') then Continue;
       if Terminated then Break;
-//      fPath := APath; fFileInfo := PathInfo; Synchronize(@Debug);
-      Assert(PathInfo.Name = ChompPathDelim(PathInfo.Name));
-      fFoundFPCSrc:=CheckFPCSrcDir(APath+PathInfo.Name);
-      if Assigned(fFoundFPCSrc) then
-        Terminate                            // An exact match was found.
-      else
-        DoSearch(AppendPathDelim(APath+PathInfo.Name));  // Recursive call
+      if (PathInfo.Name='') or (PathInfo.Name[1]='.') then Continue;
+      //fPath := APath; fFileInfo := PathInfo; Synchronize(@Debug);
+      DoSearch(AppendPathDelim(APath+PathInfo.Name));  // Recursive call
+      FPCSrc:=CheckFPCSrcDir(APath+PathInfo.Name);
+      if Assigned(FPCSrc) then begin
+        fFoundFPCSrc:=FPCSrc;                 // An exact match was found.
+        Terminate;
+      end;
     until (FindNextUTF8(PathInfo) <> 0);
   finally
     FindCloseUTF8(PathInfo);
