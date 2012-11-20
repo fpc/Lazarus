@@ -34,6 +34,18 @@ lazarus (0.9.31-0) unstable; urgency=low
 
  -- Vincent Snijders <vincents@freepascal.org>  Sun, 15 Jun 2012 20:12:12 +0200
 
+lazarus (0.9.30.4-4) unstable; urgency=low
+
+  * Proofread templates by debian-l10n-english list. (Closes: Bug#686207)
+
+ -- Abou Al Montacir <abou.almontacir@sfr.fr>  Thu, 27 Sep 2012 20:15:00 +0200
+
+lazarus (0.9.30.4-3) unstable; urgency=low
+
+  * Fix FTBFS on arm machines: QT4 based LCL WS could not use QTOPIA.
+
+ -- Abou Al Montacir <abou.almontacir@sfr.fr>  Tue, 17 Jul 2012 11:41:00 +0200
+
 lazarus (0.9.30.4-2) unstable; urgency=low
 
   * Package  LCL Qt widget set units. (Closes: Bug#627345)
