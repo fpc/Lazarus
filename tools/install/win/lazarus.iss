@@ -244,7 +244,7 @@ Name: default; MessagesFile: lazarus.def.isl
 Name: ca; MessagesFile: compiler:Languages\Catalan.isl
 Name: cs; MessagesFile: compiler:Languages\Czech.isl
 Name: de; MessagesFile: lazarus.de.isl
-Name: es; MessagesFile: compiler:Languages\Spanish.isl
+Name: es; MessagesFile: lazarus.es.isl
 Name: fi; MessagesFile: compiler:Languages\Finnish.isl
 Name: fr; MessagesFile: compiler:Languages\French.isl
 Name: hu; MessagesFile: compiler:Languages\Hungarian.isl
