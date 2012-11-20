@@ -2229,8 +2229,11 @@ begin
             GridFlags := GridFlags + [gfEditingDone];
             if ssCTRL in shift then
               FDatalink.DataSet.Last
-            else
-              MoveNextSelectable(False, ColCount-1, Row);
+            else begin
+              DeltaCol := GetLastVisibleColumn;
+              if DeltaCol>=0 then
+                MoveNextSelectable(False, DeltaCol, Row);
+            end;
             GridFlags := GridFlags - [gfEditingDone];
             ClearSelection(true);
             Key:=0;
