@@ -320,6 +320,8 @@ type
     function GetCurrentColumn: TColumn;
     function GetCurrentField: TField;
     function GetDataSource: TDataSource;
+    function GetFirstColumn: TColumn;
+    function GetLastColumn: TColumn;
     function GetRecordCount: Integer;
     function GetSelectedFieldRect: TRect;
     function GetSelectedIndex: Integer;
@@ -496,6 +498,8 @@ type
     property SelectedIndex: Integer read GetSelectedIndex write SetSelectedIndex;
     property SelectedColumn: TColumn read GetCurrentColumn;
     property SelectedFieldRect: TRect read GetSelectedFieldRect;
+    property LastColumn: TColumn read GetLastColumn;
+    property FirstColumn: TColumn read GetFirstColumn;
     property ThumbTracking: boolean read GetThumbTracking write SetThumbTracking;
   end;
 
@@ -715,6 +719,28 @@ end;
 function TCustomDBGrid.GetDataSource: TDataSource;
 begin
   Result:= FDataLink.DataSource;
+end;
+
+function TCustomDBGrid.GetFirstColumn: TColumn;
+var
+  i: Integer;
+begin
+  i := ColumnIndexFromGridColumn(GetFirstVisibleColumn);
+  if i>=0 then
+    Result := Columns[i]
+  else
+    Result := nil;
+end;
+
+function TCustomDBGrid.GetLastColumn: TColumn;
+var
+  i: Integer;
+begin
+  i := ColumnIndexFromGridColumn(GetLastVisibleColumn);
+  if i>=0 then
+    Result := Columns[i]
+  else
+    Result := nil;
 end;
 
 function TCustomDBGrid.GetRecordCount: Integer;
