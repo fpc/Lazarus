@@ -37,8 +37,20 @@ lazarus (0.9.31-0) unstable; urgency=low
 lazarus (0.9.30.4-4) unstable; urgency=low
 
   * Proofread templates by debian-l10n-english list. (Closes: Bug#686207)
+  * Added Slovak translation. (Closes: Bug#689044)
+  * Added German translation. (Closes: Bug#689481)
+  * Added Russian translation. (Closes: Bug#689195)
+  * Added Danish translation. (Closes: Bug#689744)
+  * Added Polish translation. (Closes: Bug#689745)
+  * Added Czech translation. (Closes: Bug#689789)
+  * Added Japanese translation. (Closes: Bug#689913)
+  * Added Italian translation. (Closes: Bug#689970)
+  * Added Portuguese translation. (Closes: Bug#689987)
+  * Added Spanish translation. (Closes: Bug#690597)
+  * Added French translation. (Closes: Bug#690740)
+  * Added Swedish translation. (Closes: Bug#690897)
 
- -- Abou Al Montacir <abou.almontacir@sfr.fr>  Thu, 27 Sep 2012 20:15:00 +0200
+ -- Abou Al Montacir <abou.almontacir@sfr.fr>  Oct, 25 Oct 2012 19:44:00 +0200
 
 lazarus (0.9.30.4-3) unstable; urgency=low
 
