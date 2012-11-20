@@ -146,7 +146,7 @@ type
 
   TGridFlagsOption = (gfEditorUpdateLock, gfNeedsSelectActive, gfEditorTab,
     gfRevEditorTab, gfVisualChange, gfDefRowHeightChanged, gfColumnsLocked,
-    gfEditingDone, gfSizingStarted, gfPainting, gfUpdatingSize);
+    gfEditingDone, gfSizingStarted, gfPainting, gfUpdatingSize, gfClientRectChange);
   TGridFlags = set of TGridFlagsOption;
 
   TSortOrder = (soAscending, soDescending);
@@ -848,6 +848,7 @@ type
   protected
     fGridState: TGridState;
     class procedure WSRegisterClass; override;
+    procedure AdjustClientRect(var ARect: TRect); override;
     procedure AdjustEditorBounds(NewCol,NewRow:Integer); virtual;
     procedure AssignTo(Dest: TPersistent); override;
     procedure AutoAdjustColumn(aCol: Integer); virtual;
@@ -3399,13 +3400,13 @@ begin
   R := Canvas.ClipRect;
   DebugLn('TCustomGrid.Paint %s Row=%d Clip=%s',[DbgSName(Self),Row,Dbgs(R)]);
   {$endif}
-  if gfVisualChange in fGridFlags then begin
+  if [gfVisualChange,gfClientRectChange]*fGridFlags<>[] then begin
     {$ifdef DbgVisualChange}
     DebugLnEnter('Resetting Sizes in Paint INIT');
     {$endif}
     FGridFlags := FGridFlags + [gfPainting];
     ResetSizes;
-    FGridFlags := FGridFlags - [gfVisualChange, gfPainting];
+    FGridFlags := FGridFlags - [gfVisualChange, gfPainting, gfClientRectChange];
     {$ifdef DbgVisualChange}
     DebugLnExit('Resetting Sizes in Paint DONE');
     {$endif}
@@ -4506,6 +4507,11 @@ begin
   end;
 end;
 
+procedure TCustomGrid.AdjustClientRect(var ARect: TRect);
+begin
+  inherited AdjustClientRect(ARect);
+  include(FGridFlags, gfClientRectChange);
+end;
 
 procedure TCustomGrid.WndProc(var TheMessage: TLMessage);
 begin
