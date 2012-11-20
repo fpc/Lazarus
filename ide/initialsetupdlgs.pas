@@ -1449,6 +1449,10 @@ var
   d: TSDFilenameType;
 begin
   IdleConnected:=false;
+  if Assigned(fSearchFpcSourceThread) then begin
+    fSearchFpcSourceThread.Terminate;
+    fSearchFpcSourceThread.WaitFor;
+  end;
   for d:=low(FCandidates) to high(FCandidates) do
     FreeAndNil(FCandidates[d]);
   FreeAndNil(FHeadGraphic);
