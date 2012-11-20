@@ -1301,20 +1301,22 @@ uses
 var
   FieldClasses: TFpList;
 
-procedure RegFields(const AFieldClasses: array of TFieldClass);
-var I: Integer;
-    FieldClass: TFieldClass;
+procedure RegField(const FieldClass: TFieldClass);
 begin
   if FieldClasses = nil then FieldClasses := TFpList.Create;
-  for I := Low(AFieldClasses) to High(AFieldClasses) do begin
-    FieldClass := AFieldClasses[I];
-    if (FieldClass <> Nil) And (FieldClasses.IndexOf(FieldClass) = -1) then
-    begin
-      FieldClasses.Add(FieldClass);
-      RegisterNoIcon([FieldClass]);
-      RegisterClass(FieldClass);
-    end;
+  if (FieldClass <> Nil) And (FieldClasses.IndexOf(FieldClass) = -1) then
+  begin
+    FieldClasses.Add(FieldClass);
+    RegisterNoIcon([FieldClass]);
+    RegisterClass(FieldClass);
   end;
+end;
+
+procedure RegFields(const AFieldClasses: array of TFieldClass);
+var I: Integer;
+begin
+  for I := Low(AFieldClasses) to High(AFieldClasses) do
+    RegField(AFieldClasses[I]);
 end;
 
 function ExtractFieldName(const Fields: string; var StartPos: Integer): string;
@@ -1356,6 +1358,7 @@ begin
     TDBImage,TDBListBox,TDBLookupListBox,TDBComboBox,TDBLookupComboBox,
     TDBCheckBox, TDBRadioGroup, TDBCalendar,TDBGroupBox]);
   RegFields(DefaultFieldClasses);
+  RegField(TIntegerField);
 end;
 
 function TFieldDataLink.FieldCanModify: boolean;
