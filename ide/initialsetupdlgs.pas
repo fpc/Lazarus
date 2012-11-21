@@ -103,6 +103,7 @@ type
     procedure FPCSrcDirComboBoxChange(Sender: TObject);
     procedure LazDirBrowseButtonClick(Sender: TObject);
     procedure LazDirComboBoxChange(Sender: TObject);
+    procedure OnAppActivate(Sender: TObject);
     procedure PropertiesPageControlChange(Sender: TObject);
     procedure PropertiesTreeViewSelectionChanged(Sender: TObject);
     procedure StartIDEBitBtnClick(Sender: TObject);
@@ -1122,6 +1123,8 @@ begin
   FPCSrcDirLabel.Caption:=Format(
     lisTheSourcesOfTheFreePascalPackagesAreRequiredForBro, [SetDirSeparators('rtl'
     +'/linux/system.pp')]);
+
+  Application.AddOnActivateHandler(@OnAppActivate);
 end;
 
 procedure TInitialSetupDialog.CompilerComboBoxChange(Sender: TObject);
@@ -1191,6 +1194,12 @@ end;
 procedure TInitialSetupDialog.LazDirComboBoxChange(Sender: TObject);
 begin
   UpdateLazDirNote;
+end;
+
+procedure TInitialSetupDialog.OnAppActivate(Sender: TObject);
+begin
+  // switched back from another application
+  InvalidateFileStateCache;
 end;
 
 procedure TInitialSetupDialog.PropertiesPageControlChange(Sender: TObject);
