@@ -521,6 +521,7 @@ begin
   CurrentGroupBox.Caption:=lisCodeToolsOptsIdentifier;
   ExtraFilesGroupBox.Caption:=lisFRIAdditionalFilesToSearchEGPathPasPath2Pp;
   ButtonPanel1.OKButton.Caption:=lisFRIFindReferences;
+  ButtonPanel1.OKButton.ModalResult:=mrNone;
   ButtonPanel1.CancelButton.Caption:=lisCancel;
   NewGroupBox.Caption:=lisFRIRenameTo;
   RenameCheckBox.Caption:=lisRename;
@@ -584,6 +585,7 @@ begin
     MessageDlg(lisFRIInvalidIdentifier,
       Format(lisSVUOisNotAValidIdentifier, ['"', NewIdentifier, '"']), mtError,
         [mbCancel], 0);
+    ModalResult:=mrNone;
     exit;
   end;
   ModalResult:=mrOk;
