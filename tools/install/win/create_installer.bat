@@ -4,9 +4,16 @@ if [%2]==[] goto USAGE
 if [%3]==[] goto USAGE
 if [%4]==[] goto USAGE
 
+:: set program files 32bits directory in windows 64bits and windows 32bits
+set ProgramFiles32bits=%ProgramFiles%
+if not "%ProgramFiles(x86)%" == "" set ProgramFiles32bits=%ProgramFiles(x86)%
+
 :: These settings are dependent on the configuration of the build machine
 :: Path to the Inno Setup Compiler
-if [%ISCC%]==[] SET ISCC="C:\Program Files\Inno Setup 5\iscc.exe"
+if [%ISCC%]==[] SET ISCC="%ProgramFiles32bits%\Inno Setup 5\iscc.exe"
+
+:: check is Inno Setup 5 exist
+if not exist %ISCC% GOTO ERROR_INNO
 
 :: Path to build directory.
 :: In this directory an image of the installation will be built.
@@ -15,7 +22,13 @@ SET BUILDDIR=c:\temp\lazbuild
 if NOT [%LAZTEMPBUILDDIR%]==[] SET BUILDDIR=%LAZTEMPBUILDDIR%
  
 :: Path to the svn executable
-if [%SVN%]==[] SET SVN="c:\program files\subversion\bin\svn.exe"
+if not [%SVN%]==[] GOTO SVN_BY_USER
+:: set Subversion if no exist try TortoiseSVN 32bits and 64bits else error info
+SET SVN="%ProgramFiles32bits%\subversion\bin\svn.exe"
+if not exist %SVN% SET SVN="%ProgramFiles32bits%\TortoiseSVN\bin\svn.exe"
+if not exist %SVN% SET SVN="%ProgramFiles%\TortoiseSVN\bin\svn.exe"
+:SVN_BY_USER
+if not exist %SVN% GOTO ERROR_SVN
 
 :: Path to the fpc sources checked out of fpcbuild svn repository
 SET FPCSVNDIR=%1
@@ -147,6 +160,18 @@ ECHO Finished at: >> %LOGFILE%
 %FPCBINDIR%\gdate >> %LOGFILE%
 
 goto STOP
+
+:ERROR_INNO
+echo Inno setup instalation %ISCC% no exist.
+echo Please download and install this program is required to create installer.
+echo http://www.jrsoftware.org
+GOTO STOP
+
+:ERROR_SVN
+echo Subversion or TortoiseSVN instalation %SVN% no exist.
+echo Please download and install this program is required to create installer.
+echo http://subversion.apache.org/packages.html or http://tortoisesvn.net/downloads.html
+GOTO STOP
 
 :USAGE
 @echo off
