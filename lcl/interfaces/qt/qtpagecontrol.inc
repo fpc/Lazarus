@@ -87,6 +87,7 @@ var
   Bmp: TBitmap;
   Icon: QIconH;
   B: Boolean;
+  Size: TSize;
 begin
   ImageList := TCustomTabControl(ACustomPage.Parent).Images;
 
@@ -100,6 +101,13 @@ begin
       Bmp := TBitmap.Create;
       try
         ImageList.GetBitmap(ACustomPage.ImageIndex, Bmp);
+        if (TQtPage(ACustomPage.Handle).ChildOfComplexWidget = ccwTabWidget) and
+          (TQtPage(ACustomPage.Handle).getTabWidget <> nil) then
+        begin
+          Size.cx := ImageList.Width;
+          Size.cy := ImageList.Height;
+          QTabWidget_setIconSize(TQtPage(ACustomPage.Handle).getTabWidget, @Size);
+        end;
         TQtPage(ACustomPage.Handle).setIcon(TQtImage(Bmp.Handle).AsIcon);
         B := True;
       finally
