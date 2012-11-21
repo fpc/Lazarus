@@ -6676,7 +6676,7 @@ var
   i: integer;
   PointArray: PGDKPoint;
   Tmp, RGN : hRGN;
-  ClipRect : TRect;
+  R, ClipRect : TRect;
   DCOrigin: TPoint;
   OldNumPts: integer;
 begin
@@ -6733,13 +6733,15 @@ begin
         DevCtx.TransfNormalize(ClipRect.Left, ClipRect.Right);
         DevCtx.TransfNormalize(ClipRect.Top, ClipRect.Bottom);
       end;
+
       // draw polygon area
-      DevCtx.FillRect(ClipRect, HBrush({%H-}PtrUInt(DevCtx.GetBrush)), False);
+      R := ClipRect;
+      LPtoDP(DC, R, 2);
+      DevCtx.FillRect(R, HBrush({%H-}PtrUInt(DevCtx.GetBrush)), False);
       // restore old clipping
       SelectClipRGN(DC, Tmp);
       DeleteObject(Tmp);
-    end
-    else
+    end else
     begin
       DevCtx.SelectBrushProps;
       gdk_draw_polygon(DevCtx.Drawable, DevCtx.GC, 1, PointArray, NumPts);
