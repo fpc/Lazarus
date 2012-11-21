@@ -6676,7 +6676,7 @@ var
   i: integer;
   PointArray: PGDKPoint;
   Tmp, RGN : hRGN;
-  R, ClipRect : TRect;
+  ClipRect : TRect;
   DCOrigin: TPoint;
   OldNumPts: integer;
 begin
@@ -6727,17 +6727,9 @@ begin
       ExtSelectClipRGN(DC, RGN, RGN_AND);
       DeleteObject(RGN);
       GetClipBox(DC, @ClipRect);
-      if DevCtx.HasTransf then
-      begin
-        ClipRect := DevCtx.InvTransfRectIndirect(ClipRect);
-        DevCtx.TransfNormalize(ClipRect.Left, ClipRect.Right);
-        DevCtx.TransfNormalize(ClipRect.Top, ClipRect.Bottom);
-      end;
 
       // draw polygon area
-      R := ClipRect;
-      LPtoDP(DC, R, 2);
-      DevCtx.FillRect(R, HBrush({%H-}PtrUInt(DevCtx.GetBrush)), False);
+      DevCtx.FillRect(ClipRect, HBrush({%H-}PtrUInt(DevCtx.GetBrush)), False);
       // restore old clipping
       SelectClipRGN(DC, Tmp);
       DeleteObject(Tmp);
