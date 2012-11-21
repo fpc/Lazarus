@@ -348,6 +348,19 @@ var
   Len: Integer;
   lIsEndOfLine: Boolean;
 begin
+  // Check if the EPS file starts with a TIFF preview
+  // See http://www.graphicsgroups.com/12-corel/f851f798a0e1ca7a.htm
+  // 00000000: c5d0 d3c6 930b 0000 55f2 0000 0000 0000  ........U.......
+  // 00000010: 0000 0000 1e00 0000 750b 0000 ffff 4949  ........u.....II
+  CurChar := Char(AStream.ReadByte());
+  if Byte(CurChar) = $C5 then
+    AStream.Position := $20
+  else
+    AStream.Position := AStream.Position - 1;
+
+  //
+  // Now actualy read EPS data
+  //
   while AStream.Position < AStream.Size do
   begin
     CurChar := Char(AStream.ReadByte());
@@ -355,7 +368,8 @@ begin
 //    WriteLn(Format('Obtained token %s', [CurChar]));
 //    {$endif}
     if not IsValidPostScriptChar(Byte(CurChar)) then
-      raise Exception.Create('[TPSTokenizer.ReadFromStream] Invalid char: ' + IntToHex(Byte(CurChar), 2));
+      raise Exception.Create(Format('[TPSTokenizer.ReadFromStream] Invalid char: %s at line %d',
+        [IntToHex(Byte(CurChar), 2), CurLine]));
 
     lIsEndOfLine := IsEndOfLine(Byte(CurChar), AStream);
     if lIsEndOfLine then Inc(CurLine);
