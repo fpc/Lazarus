@@ -24,6 +24,7 @@ AllowNoIcons=yes
 AppName={#AppName}
 AppVersion={#AppVersion}
 AppVerName={#AppName} {#AppVersion}
+AppPublisher=Lazarus Team
 AppPublisherURL=http://www.lazarus.freepascal.org/
 AppSupportURL=http://www.lazarus.freepascal.org/
 AppUpdatesURL=http://www.lazarus.freepascal.org/
@@ -48,6 +49,7 @@ PrivilegesRequired=none
 ChangesAssociations=yes
 ; prevent chekbox pre-set (for delete user conf). Latest inno supports unchecked checkedonce
 UsePreviousTasks=no
+UninstallDisplayIcon={app}\lazarus.exe
 
 [Tasks]
 Name: desktopicon; Description: {cm:CreateDesktopIcon}; GroupDescription: {cm:AdditionalIcons}; Flags: unchecked
