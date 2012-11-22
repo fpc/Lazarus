@@ -224,7 +224,8 @@ begin
   end;
   Chart.LogicalExtent := le;
   // Focused ScrollBar is glitchy under Win32, especially after PageSize change.
-  Chart.SetFocus;
+  if (GetParentForm(Chart) <> nil) and GetParentForm(Chart).Active then
+    Chart.SetFocus;
 end;
 
 procedure TChartNavScrollBar.SetAutoPageSize(AValue: Boolean);
