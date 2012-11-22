@@ -184,6 +184,8 @@ type
       read FStep write SetStep default DEF_SPLINE_STEP;
   end;
 
+  TFitParamsState = (fpsUnknown, fpsInvalid, fpsValid);
+
   TFitSeries = class(TBasicPointSeries)
   strict private
     FDrawFitRangeOnly: Boolean;
@@ -192,8 +194,8 @@ type
     FFitRange: TChartRange;
     FOnFitComplete: TNotifyEvent;
     FPen: TChartPen;
+    FState: TFitParamsState;
     FStep: TFuncSeriesStep;
-    FValidFitParams: Boolean;
     function GetParam(AIndex: Integer): Double;
     function GetParamCount: Integer;
     function PrepareIntervals: TIntervalList;
@@ -226,6 +228,7 @@ type
       const AParams: TNearestPointParams;
       out AResults: TNearestPointResults): Boolean; override;
     property Param[AIndex: Integer]: Double read GetParam write SetParam;
+    property State: TFitParamsState read FState;
   published
     property AxisIndexX;
     property AxisIndexY;
@@ -887,7 +890,7 @@ var
 begin
   if IsInfinite(AX) then exit(AX);
   Result := SafeNaN;
-  if IsNaN(AX) or not FValidFitParams then exit;
+  if IsNaN(AX) or (State <> fpsValid) then exit;
 
   case FFitEquation of
     fePolynomial, feLinear:
@@ -944,7 +947,9 @@ procedure TFitSeries.Draw(ADrawer: IChartDrawer);
 var
   de : TIntervalList;
 begin
-  if IsEmpty or not FValidFitParams then exit;
+  if IsEmpty then exit;
+  ExecFit;
+  if State <> fpsValid then exit;
   ADrawer.Pen := Pen;
   de := PrepareIntervals;
   try
@@ -966,57 +971,66 @@ end;
 
 procedure TFitSeries.ExecFit;
 var
-  i, j, term, ns, np, n: Integer;
   xmin, xmax: Double;
-  xv, yv, fp: array of ArbFloat;
 
   function IsValidPoint(AX, AY: Double): Boolean; inline;
   begin
     Result := not IsNaN(AX) and not IsNaN(AY) and InRange(AX, xmin, xmax);
   end;
 
+  procedure TryFit;
+  var
+    i, j, term, ns, np, n: Integer;
+    xv, yv, fp: array of ArbFloat;
+  begin
+    np := ParamCount;
+    ns := Source.Count;
+    if (np <= 0) or (ns = 0) or (ns < np) then exit;
+    CalcXRange(xmin, xmax);
+
+    n := 0;
+    for i := 0 to ns - 1 do
+      with Source.Item[i]^ do
+        n += Ord(IsValidPoint(X, Y));
+    if n < np then exit;
+
+    // Copy data in fit range to temporary arrays.
+    SetLength(xv, n);
+    SetLength(yv, n);
+    j := 0;
+    for i := 0 to ns - 1 do
+      with Source.Item[i]^ do
+        if IsValidPoint(X, Y) then begin
+          Transform(X, Y, xv[j], yv[j]);
+          j += 1;
+        end;
+
+    // Execute the polynomial fit; the degree of the polynomial is np - 1.
+    SetLength(fp, np);
+    term := 0;
+    ipfpol(n, np - 1, xv[0], yv[0], fp[0], term);
+    if term <> 1 then exit;
+    for i := 0 to High(FFitParams) do
+      FFitParams[i] := fp[i];
+
+    // See comment for "Transform": for exponential and power fit equations, the
+    // first fitted parameter is the logarithm of the "real" parameter. It needs
+    // to be transformed back to real units by exp function.
+    if FFitEquation in [feExp, fePower] then
+      FFitParams[0] := Exp(FFitParams[0]);
+    FState := fpsValid;
+  end;
+
 begin
-  FValidFitParams := false;
-
-  np := ParamCount;
-  ns := Source.Count;
-  if (np <= 0) or (ns = 0) or (ns < np) then exit;
-  CalcXRange(xmin, xmax);
-
-  n := 0;
-  for i := 0 to ns - 1 do
-    with Source.Item[i]^ do
-      n += Ord(IsValidPoint(X, Y));
-  if n < np then exit;
-
-  // Copy data in fit range to temporary arrays.
-  SetLength(xv, n);
-  SetLength(yv, n);
-  j := 0;
-  for i := 0 to ns - 1 do
-    with Source.Item[i]^ do
-      if IsValidPoint(X, Y) then begin
-        Transform(X, Y, xv[j], yv[j]);
-        j += 1;
-      end;
-
-  // Execute the polynomial fit; the degree of the polynomial is np - 1.
-  SetLength(fp, np);
-  term := 0;
-  ipfpol(n, np - 1, xv[0], yv[0], fp[0], term);
-  if term <> 1 then exit;
-  for i := 0 to High(FFitParams) do
-    FFitParams[i] := fp[i];
-
-  // See comment for "Transform": for exponential and power fit equations, the
-  // first fitted parameter is the logarithm of the "real" parameter. It needs
-  // to be transformed back to real units by exp function.
-  if FFitEquation in [feExp, fePower] then
-    FFitParams[0] := Exp(FFitParams[0]);
-  FValidFitParams := true;
-  if Assigned(FOnFitComplete) then
-    FOnFitComplete(Self);
-  UpdateParentChart;
+  if State <> fpsUnknown then exit;
+  FState := fpsInvalid;
+  try
+    TryFit;
+  finally
+    if Assigned(FOnFitComplete) then
+      FOnFitComplete(Self);
+    UpdateParentChart;
+  end;
 end;
 
 function TFitSeries.GetFitEquationString(ANumFormat: String; AXText: String;
@@ -1043,6 +1057,8 @@ var
 begin
   Result := false;
   AResults.FIndex := -1;
+  ExecFit;
+  if State <> fpsValid then exit;
   de := PrepareIntervals;
   try
     with TDrawFuncHelper.Create(Self, de, @Calculate, Step) do
@@ -1098,14 +1114,16 @@ begin
   FFitEquation := AValue;
   SetLength(
     FFitParams, IfThen(FFitEquation = fePolynomial, DEF_FIT_PARAM_COUNT, 2));
-  ExecFit;
+  FState := fpsUnknown;
+  UpdateParentChart;
 end;
 
 procedure TFitSeries.SetFitRange(AValue: TChartRange);
 begin
   if FFitRange = AValue then exit;
   FFitRange := AValue;
-  ExecFit;
+  FState := fpsUnknown;
+  UpdateParentChart;
 end;
 
 procedure TFitSeries.SetParam(AIndex: Integer; AValue: Double);
@@ -1120,7 +1138,8 @@ procedure TFitSeries.SetParamCount(AValue: Integer);
 begin
   if (AValue = ParamCount) or (FFitEquation <> fePolynomial) then exit;
   SetLength(FFitParams, AValue);
-  ExecFit;
+  FState := fpsUnknown;
+  UpdateParentChart;
 end;
 
 procedure TFitSeries.SetPen(AValue: TChartPen);
@@ -1140,7 +1159,7 @@ end;
 procedure TFitSeries.SourceChanged(ASender: TObject);
 begin
   inherited;
-  ExecFit;
+  FState := fpsUnknown;
 end;
 
 procedure TFitSeries.Transform(AX, AY: Double; out ANewX, ANewY: Extended);
