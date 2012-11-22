@@ -25,7 +25,7 @@ interface
 uses
   Classes, Graphics, typ, Types,
   TAChartUtils, TACustomFuncSeries, TACustomSeries, TACustomSource,
-  TADrawUtils, TALegend, TATypes;
+  TADrawUtils, TAFitUtils, TALegend, TATypes;
 
 const
   DEF_FUNC_STEP = 2;
@@ -184,46 +184,7 @@ type
       read FStep write SetStep default DEF_SPLINE_STEP;
   end;
 
-  TFitEquation = (
-    fePolynomial, // y = b0 + b1*x + b2*x^2 + ... bn*x^n
-    feLinear,     // y = a + b*x
-    feExp,        // y = a * exp(b * x)
-    fePower       // y = a * x^b
-  );
-
   TFitSeries = class(TBasicPointSeries)
-  public
-  type
-    IEquationText = interface
-      function Equation(AEquation: TFitEquation): IEquationText;
-      function X(AText: String): IEquationText;
-      function Y(AText: String): IEquationText;
-      function NumFormat(AFormat: String): IEquationText;
-      function NumFormats(const AFormats: array of String): IEquationText;
-      function Params(const AParams: array of Double): IEquationText;
-      function Get: String;
-    end;
-
-    TEquationText = class(TInterfacedObject, IEquationText)
-    strict private
-      FEquation: TFitEquation;
-      FX: String;
-      FY: String;
-      FNumFormat: String;
-      FNumFormats: array of String;
-      FParams: array of Double;
-      function GetNumFormat(AIndex: Integer): String;
-    public
-      constructor Create;
-      function Equation(AEquation: TFitEquation): IEquationText;
-      function X(AText: String): IEquationText;
-      function Y(AText: String): IEquationText;
-      function NumFormat(AFormat: String): IEquationText;
-      function NumFormats(const AFormats: array of String): IEquationText;
-      function Params(const AParams: array of Double): IEquationText;
-      function Get: String;
-    end;
-
   strict private
     FDrawFitRangeOnly: Boolean;
     FFitEquation: TFitEquation;
@@ -257,7 +218,7 @@ type
     function Calculate(AX: Double): Double; virtual;
     procedure Draw(ADrawer: IChartDrawer); override;
     procedure ExecFit; virtual;
-    function EquationText: IEquationText;
+    function EquationText: IFitEquationText;
     function GetFitEquationString(
       ANumFormat: String; AXText: String = 'x'; AYText: String = 'y'): String;
       deprecated 'Use EquationText';
@@ -334,8 +295,8 @@ type
   function ParamsToEquation(
     AEquation: TFitEquation; const AParams: array of Double;
     ANumFormat: String; AXText: String = 'x'; AYText: String = 'y'): String;
-    deprecated 'Use TFitSeries.IEquationText';
-  operator :=(AEq: TFitSeries.IEquationText): String; inline;
+    deprecated 'Use TFitSeries.IFitEquationText';
+  operator :=(AEq: TFitSeries.IFitEquationText): String; inline;
 
 implementation
 
@@ -367,11 +328,11 @@ function ParamsToEquation(
   ANumFormat, AXText, AYText: String): String;
 begin
   Result :=
-    TFitSeries.TEquationText.Create.Equation(AEquation).
+    TFitEquationText.Create.Equation(AEquation).
     X(AXText).Y(AYText).NumFormat(ANumFormat).Params(AParams);
 end;
 
-operator := (AEq: TFitSeries.IEquationText): String;
+operator := (AEq: TFitSeries.IFitEquationText): String;
 begin
   Result := AEq.Get;
 end;
@@ -407,94 +368,6 @@ begin
     ADrawer.SetBrushParams(bsClear, clTAColor);
     ADrawer.Rectangle(ARect);
   end;
-end;
-
-{ TFitSeries.TEquationText }
-
-constructor TFitSeries.TEquationText.Create;
-begin
-  FX := 'x';
-  FY := 'y';
-  FNumFormat := '%.9g';
-end;
-
-function TFitSeries.TEquationText.Equation(
-  AEquation: TFitEquation): IEquationText;
-begin
-  FEquation := AEquation;
-  Result := Self;
-end;
-
-function TFitSeries.TEquationText.Get: String;
-var
-  ps: String = '';
-  i: Integer;
-begin
-  if Length(FParams) = 0 then exit('');
-  Result := Format('%s = ' + GetNumFormat(0), [FY, FParams[0]]);
-  if FEquation in [fePolynomial, feLinear] then
-    for i := 1 to High(FParams) do begin
-      if FParams[i] = 0 then continue;
-      if i > 1 then ps := Format('^%d', [i]);
-      Result += Format(
-        ' %s ' + GetNumFormat(i) + '*%s%s',
-        [IfThen(FParams[i] > 0, '+', '-'), Abs(FParams[i]), FX, ps]);
-    end
-  else if (Length(FParams) >= 2) and (FParams[0] <> 0) and (FParams[1] <> 0) then
-    case FEquation of
-      feExp:
-        Result += Format(' * exp(' + GetNumFormat(1) +' * %s)', [FParams[1], FX]);
-      fePower:
-        Result += Format(' * %s^' + GetNumFormat(1), [FX, FParams[1]]);
-    end;
-end;
-
-function TFitSeries.TEquationText.GetNumFormat(AIndex: Integer): String;
-begin
-  if AIndex < Length(FNumFormats) then
-    Result := FNumFormats[AIndex]
-  else
-    Result := FNumFormat;
-end;
-
-function TFitSeries.TEquationText.NumFormat(AFormat: String): IEquationText;
-begin
-  FNumFormat := AFormat;
-  Result := Self;
-end;
-
-function TFitSeries.TEquationText.NumFormats(
-  const AFormats: array of String): IEquationText;
-var
-  i: Integer;
-begin
-  SetLength(FNumFormats, Length(AFormats));
-  for i := 0 to High(AFormats) do
-    FNumFormats[i] := AFormats[i];
-  Result := Self;
-end;
-
-function TFitSeries.TEquationText.Params(
-  const AParams: array of Double): IEquationText;
-var
-  i: Integer;
-begin
-  SetLength(FParams, Length(AParams));
-  for i := 0 to High(AParams) do
-    FParams[i] := AParams[i];
-  Result := Self;
-end;
-
-function TFitSeries.TEquationText.X(AText: String): IEquationText;
-begin
-  FX := AText;
-  Result := Self;
-end;
-
-function TFitSeries.TEquationText.Y(AText: String): IEquationText;
-begin
-  FY := AText;
-  Result := Self;
 end;
 
 { TFitSeriesRange }
@@ -1086,9 +959,9 @@ begin
   end;
 end;
 
-function TFitSeries.EquationText: IEquationText;
+function TFitSeries.EquationText: IFitEquationText;
 begin
-  Result := TEquationText.Create.Equation(FitEquation).Params(FFitParams);
+  Result := TFitEquationText.Create.Equation(FitEquation).Params(FFitParams);
 end;
 
 procedure TFitSeries.ExecFit;

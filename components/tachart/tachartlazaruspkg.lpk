@@ -34,7 +34,7 @@
  for details about the copyright.
 "/>
     <Version Major="1"/>
-    <Files Count="43">
+    <Files Count="44">
       <Item1>
         <Filename Value="tagraph.pas"/>
         <HasRegisterProc Value="True"/>
@@ -226,6 +226,10 @@
         <Filename Value="tacustomfuncseries.pas"/>
         <UnitName Value="TACustomFuncSeries"/>
       </Item43>
+      <Item44>
+        <Filename Value="tafitutils.pas"/>
+        <UnitName Value="TAFitUtils"/>
+      </Item44>
     </Files>
     <LazDoc Paths="$(LazarusDir)\components\tachart\fpdoc"/>
     <Type Value="RunAndDesignTime"/>
