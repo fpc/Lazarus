@@ -24,6 +24,7 @@ AllowNoIcons=yes
 AppName={#AppName}
 AppVersion={#AppVersion}
 AppVerName={#AppName} {#AppVersion}
+AppPublisher=Lazarus Team
 AppPublisherURL=http://www.lazarus.freepascal.org/
 AppSupportURL=http://www.lazarus.freepascal.org/
 AppUpdatesURL=http://www.lazarus.freepascal.org/
@@ -48,6 +49,7 @@ PrivilegesRequired=none
 ChangesAssociations=yes
 ; prevent chekbox pre-set (for delete user conf). Latest inno supports unchecked checkedonce
 UsePreviousTasks=no
+UninstallDisplayIcon={app}\lazarus.exe
 
 [Tasks]
 Name: desktopicon; Description: {cm:CreateDesktopIcon}; GroupDescription: {cm:AdditionalIcons}; Flags: unchecked
@@ -244,7 +246,7 @@ Name: default; MessagesFile: lazarus.def.isl
 Name: ca; MessagesFile: compiler:Languages\Catalan.isl
 Name: cs; MessagesFile: compiler:Languages\Czech.isl
 Name: de; MessagesFile: lazarus.de.isl
-Name: es; MessagesFile: compiler:Languages\Spanish.isl
+Name: es; MessagesFile: lazarus.es.isl
 Name: fi; MessagesFile: compiler:Languages\Finnish.isl
 Name: fr; MessagesFile: compiler:Languages\French.isl
 Name: hu; MessagesFile: compiler:Languages\Hungarian.isl
