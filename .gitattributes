@@ -4399,7 +4399,6 @@ examples/multithreading/criticalsectionunit1.lfm svneol=native#text/plain
 examples/multithreading/criticalsectionunit1.lrs svneol=native#text/pascal
 examples/multithreading/criticalsectionunit1.pas svneol=native#text/plain
 examples/multithreading/mainunit.lfm svneol=native#text/plain
-examples/multithreading/mainunit.lrs svneol=native#text/pascal
 examples/multithreading/mainunit.pas svneol=native#text/plain
 examples/multithreading/multithreadingexample1.lpi svneol=native#text/plain
 examples/multithreading/multithreadingexample1.lpr svneol=native#text/plain

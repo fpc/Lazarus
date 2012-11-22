@@ -31,7 +31,7 @@ unit MainUnit;
 interface
 
 uses
-  Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs; 
+  Classes, SysUtils, Forms, Controls, Graphics, Dialogs;
 
 type
 
@@ -60,6 +60,8 @@ var
 
 implementation
 
+{$R *.lfm}
+
 { TForm1 }
 
 procedure TForm1.FormCreate(Sender: TObject);
@@ -72,7 +74,7 @@ begin
       
   // Here the code initialises anything required before the threads starts executing
 
-  MyThread.Resume;
+  MyThread.Start;
 end;
 
 { TMyThread }
@@ -109,9 +111,6 @@ begin
   FreeOnTerminate := True;
   inherited Create(CreateSuspended);
 end;
-
-initialization
-  {$I mainunit.lrs}
 
 end.
 

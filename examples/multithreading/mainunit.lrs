@@ -1,6 +1,0 @@
-LazarusResources.Add('TForm1','FORMDATA',[
-  'TPF0'#6'TForm1'#5'Form1'#7'Caption'#6#5'Form1'#12'ClientHeight'#2'I'#11'Clie'
-  +'ntWidth'#3#152#1#8'OnCreate'#7#10'FormCreate'#13'PixelsPerInch'#2'p'#18'Hor'
-  +'zScrollBar.Page'#3#151#1#18'VertScrollBar.Page'#2'H'#4'Left'#3'"'#1#6'Heigh'
-  +'t'#2'I'#3'Top'#3#163#0#5'Width'#3#152#1#0#0
-]);
