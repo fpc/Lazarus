@@ -6710,19 +6710,13 @@ begin
       ExtSelectClipRGN(DC, RGN, RGN_AND);
       DeleteObject(RGN);
       GetClipBox(DC, @ClipRect);
-      if DevCtx.HasTransf then
-      begin
-        ClipRect := DevCtx.InvTransfRectIndirect(ClipRect);
-        DevCtx.TransfNormalize(ClipRect.Left, ClipRect.Right);
-        DevCtx.TransfNormalize(ClipRect.Top, ClipRect.Bottom);
-      end;
+
       // draw polygon area
       DevCtx.FillRect(ClipRect, HBrush({%H-}PtrUInt(DevCtx.GetBrush)), False);
       // restore old clipping
       SelectClipRGN(DC, Tmp);
       DeleteObject(Tmp);
-    end
-    else
+    end else
     begin
       DevCtx.SelectBrushProps;
       gdk_draw_polygon(DevCtx.Drawable, DevCtx.GC, 1, PointArray, NumPts);
