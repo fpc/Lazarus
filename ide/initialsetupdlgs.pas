@@ -98,7 +98,7 @@ type
     fFPCVer: string;
     fFoundFPCSrc: TSDFileInfo;
     {$IFDEF VerboseFPCSrcScanThead}
-    fPath: string;          // <- uncomment these for debugln
+    fPath: string;
     fFileInfo: TSearchRec;
     procedure Debug;
     {$ENDIF}
@@ -1241,8 +1241,7 @@ var
   RealDir: String;
 begin
   Result:=Nil;
-  EnvironmentOptions.FPCSourceDirectory:=Dir;
-  RealDir:=EnvironmentOptions.GetParsedFPCSourceDirectory;
+  RealDir:=TrimFilename(Dir);
   if RealDir='' then exit;
   if not DirPathExistsCached(RealDir) then exit;   // check if exists
   Result:=TSDFileInfo.Create;
