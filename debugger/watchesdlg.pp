@@ -39,7 +39,7 @@ interface
 
 uses
   Classes, Forms, Controls, math, sysutils, LazLoggerBase, Clipbrd,
-  IDEWindowIntf, Menus, ComCtrls, ActnList, ExtCtrls, StdCtrls, IDEImagesIntf,
+  IDEWindowIntf, Menus, ComCtrls, ActnList, ExtCtrls, StdCtrls, LCLType, IDEImagesIntf,
   LazarusIDEStrConsts, DebuggerStrConst, Debugger, DebuggerDlg,
   BaseDebugManager;
 
@@ -118,6 +118,7 @@ type
     procedure actPowerExecute(Sender: TObject);
     procedure actToggleInspectSiteExecute(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
+    procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure FormShow(Sender: TObject);
     procedure lvWatchesDblClick(Sender: TObject);
     procedure lvWatchesSelectItem(Sender: TObject; AItem: TListItem; Selected: Boolean);
@@ -415,6 +416,28 @@ end;
 procedure TWatchesDlg.FormDestroy(Sender: TObject);
 begin
   //DebugLn('TWatchesDlg.FormDestroy ',DbgSName(Self));
+end;
+
+procedure TWatchesDlg.FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+var
+  s: String;
+  NewWatch: TCurrentWatch;
+begin
+  if (Shift * [ssShift, ssAlt, ssAltGr, ssCtrl] = [ssCtrl]) and (Key = VK_V)
+  then begin
+    Key := 0;
+    s := Clipboard.AsText;
+    if s <> '' then begin
+      NewWatch := DebugBoss.Watches.CurrentWatches.Add(s);
+      NewWatch.DisplayFormat := wdfDefault;
+      NewWatch.EvaluateFlags := [defClassAutoCast];
+      NewWatch.Enabled       := True;
+    end;
+
+    exit;
+  end;
+
+  inherited FormKeyDown(Sender, Key, Shift);
 end;
 
 procedure TWatchesDlg.FormShow(Sender: TObject);

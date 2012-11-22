@@ -10,7 +10,9 @@ inherited WatchesDlg: TWatchesDlg
   Caption = 'Watch list'
   ClientHeight = 200
   ClientWidth = 500
+  KeyPreview = True
   OnDestroy = FormDestroy
+  OnKeyDown = FormKeyDown
   OnShow = FormShow
   object lvWatches: TListView[0]
     Left = 0
@@ -143,8 +145,8 @@ inherited WatchesDlg: TWatchesDlg
     object Page1: TPage
       object InspectMemo: TMemo
         Left = 0
-        Height = 157
-        Top = 17
+        Height = 159
+        Top = 15
         Width = 200
         Align = alClient
         ReadOnly = True
@@ -154,7 +156,7 @@ inherited WatchesDlg: TWatchesDlg
       end
       object InspectLabel: TLabel
         Left = 0
-        Height = 17
+        Height = 15
         Top = 0
         Width = 200
         Align = alTop
