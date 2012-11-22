@@ -966,7 +966,11 @@ end;
 
 function TFitSeries.EquationText: IFitEquationText;
 begin
-  Result := TFitEquationText.Create.Equation(FitEquation).Params(FFitParams);
+  if State = fpsValid then
+    Result := TFitEquationText.Create
+  else
+    Result := TFitEmptyEquationText.Create;
+  Result.Equation(FitEquation).Params(FFitParams);
 end;
 
 procedure TFitSeries.ExecFit;

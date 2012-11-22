@@ -38,6 +38,17 @@ type
     function Get: String;
   end;
 
+  TFitEmptyEquationText = class(TInterfacedObject, IFitEquationText)
+  public
+    function Equation(AEquation: TFitEquation): IFitEquationText;
+    function X(AText: String): IFitEquationText;
+    function Y(AText: String): IFitEquationText;
+    function NumFormat(AFormat: String): IFitEquationText;
+    function NumFormats(const AFormats: array of String): IFitEquationText;
+    function Params(const AParams: array of Double): IFitEquationText;
+    function Get: String;
+  end;
+
   TFitEquationText = class(TInterfacedObject, IFitEquationText)
   strict private
     FEquation: TFitEquation;
@@ -62,7 +73,53 @@ type
 implementation
 
 uses
-  StrUtils, SysUtils;
+  TAChartUtils, StrUtils, SysUtils;
+
+{ TFitEmptyEquationText }
+
+function TFitEmptyEquationText.Equation(
+  AEquation: TFitEquation): IFitEquationText;
+begin
+  Unused(AEquation);
+  Result := Self;
+end;
+
+function TFitEmptyEquationText.Get: String;
+begin
+  Result := '';
+end;
+
+function TFitEmptyEquationText.NumFormat(AFormat: String): IFitEquationText;
+begin
+  Unused(AFormat);
+  Result := Self;
+end;
+
+function TFitEmptyEquationText.NumFormats(
+  const AFormats: array of String): IFitEquationText;
+begin
+  Unused(AFormats);
+  Result := Self;
+end;
+
+function TFitEmptyEquationText.Params(
+  const AParams: array of Double): IFitEquationText;
+begin
+  Unused(AParams);
+  Result := Self;
+end;
+
+function TFitEmptyEquationText.X(AText: String): IFitEquationText;
+begin
+  Unused(AText);
+  Result := Self;
+end;
+
+function TFitEmptyEquationText.Y(AText: String): IFitEquationText;
+begin
+  Unused(AText);
+  Result := Self;
+end;
 
 { TFitEquationText }
 
