@@ -2949,6 +2949,8 @@ const
 function DBGCommandNameToCommand(const s: string): TDBGCommand;
 function DBGStateNameToState(const s: string): TDBGState;
 function DBGBreakPointActionNameToAction(const s: string): TIDEBreakPointAction;
+function DPtrMin(const a,b: TDBGPtr): TDBGPtr;
+function DPtrMax(const a,b: TDBGPtr): TDBGPtr;
 
 function dbgs(AState: TDBGState): String; overload;
 function dbgs(ADisassRange: TDBGDisassemblerEntryRange): String; overload;
@@ -3138,6 +3140,16 @@ begin
   for Result:=Low(TIDEBreakPointAction) to High(TIDEBreakPointAction) do
     if AnsiCompareText(s,DBGBreakPointActionNames[Result])=0 then exit;
   Result:=bpaStop;
+end;
+
+function DPtrMin(const a, b: TDBGPtr): TDBGPtr;
+begin
+  if a < b then Result := a else Result := b;
+end;
+
+function DPtrMax(const a, b: TDBGPtr): TDBGPtr;
+begin
+  if a > b then Result := a else Result := b;
 end;
 
 { TRegistersFormatList }

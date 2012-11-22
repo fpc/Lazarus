@@ -4016,7 +4016,7 @@ begin
   TryStartAt.GuessedValue := TmpAddr;
   AdjustToRangeOrKnowFunctionStart(TryStartAt, RngBefore);
   // check max size
-  if (TryStartAt.Value < FStartAddr - Min(FStartAddr, DAssMaxRangeSize))
+  if (TryStartAt.Value < FStartAddr - DPtrMin(FStartAddr, DAssMaxRangeSize))
   then begin
     DebugLn(DBG_DISASSEMBLER, ['INFO: Limit Range for Disass: FStartAddr=', FStartAddr, '  TryStartAt.Value=', TryStartAt.Value  ]);
     TryStartAt := InitAddress(TmpAddr, avGuessed);
@@ -4134,7 +4134,7 @@ begin
     then RngBefore := nil;
     {$POP}
     AdjustToRangeOrKnowFunctionStart(TryStartAt, RngBefore);
-    if (TryStartAt.Value < TryEndAt.Value - Min(TryEndAt.Value, DAssMaxRangeSize))
+    if (TryStartAt.Value < TryEndAt.Value - DPtrMin(TryEndAt.Value, DAssMaxRangeSize))
     then begin
       DebugLn(DBG_DISASSEMBLER, ['INFO: Limit Range for Disass: TryEndAt.Value=', TryEndAt.Value, '  TryStartAt.Value=', TryStartAt.Value  ]);
       TryStartAt := InitAddress(TmpAddr, avGuessed);
