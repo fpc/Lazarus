@@ -71,7 +71,7 @@ implementation
 {$R *.lfm}
 
 uses
-  Math, TAChartAxis, TAChartUtils, TACustomSource;
+  Math, TAChartAxis, TAChartUtils, TACustomSource, TAFitUtils;
 
 const
   // Parameters used for data generation; should be reproduced by the fit.
@@ -256,9 +256,9 @@ end;
 
 procedure TfrmMain.FormCreate(Sender: TObject);
 var
-  eq: TFitSeries.IEquationText;
+  eq: IFitEquationText;
 begin
-  eq := TFitSeries.TEquationText.Create;
+  eq := TFitEquationText.Create;
   with cbTestFunction do begin
     Items.Add(eq.Equation(fePolynomial).Params(POLY_PARAMS));
     Items.Add(eq.Equation(feLinear).Params(LIN_PARAMS));

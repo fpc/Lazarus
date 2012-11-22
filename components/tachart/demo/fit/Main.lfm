@@ -8,7 +8,7 @@ object frmMain: TfrmMain
   ClientWidth = 800
   OnCreate = FormCreate
   ShowHint = True
-  LCLVersion = '0.9.31'
+  LCLVersion = '1.1'
   object pnlParams: TPanel
     Left = 8
     Height = 487
@@ -72,7 +72,6 @@ object frmMain: TfrmMain
           FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
           FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00
         }
-        NumGlyphs = 0
         OnClick = btnSaveClick
       end
       object cbTestFunction: TComboBox
@@ -88,25 +87,25 @@ object frmMain: TfrmMain
       end
       object lblTestFunction: TLabel
         Left = 14
-        Height = 14
+        Height = 13
         Top = 12
-        Width = 64
+        Width = 63
         Caption = 'Test function'
         ParentColor = False
       end
       object lblOfRange: TLabel
         Left = 195
-        Height = 14
+        Height = 13
         Top = 46
-        Width = 56
+        Width = 55
         Caption = '% of range'
         ParentColor = False
       end
       object lblNoiseY: TLabel
         Left = 14
-        Height = 14
+        Height = 13
         Top = 46
-        Width = 79
+        Width = 78
         Caption = 'Noise amplitude '
         ParentColor = False
       end
@@ -236,9 +235,9 @@ object frmMain: TfrmMain
       end
       object lblFitOrder: TLabel
         Left = 14
-        Height = 14
+        Height = 13
         Top = 50
-        Width = 102
+        Width = 101
         Caption = 'Degree of polynomial'
         ParentColor = False
       end
@@ -263,9 +262,9 @@ object frmMain: TfrmMain
       end
       object lblFitEquation: TLabel
         Left = 14
-        Height = 14
+        Height = 13
         Top = 19
-        Width = 58
+        Width = 57
         Caption = 'Fit equation'
         ParentColor = False
       end
