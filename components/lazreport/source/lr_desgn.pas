@@ -171,6 +171,7 @@ type
   protected
     procedure Paint; override;
     procedure WMEraseBkgnd(var {%H-}Message: TLMEraseBkgnd); message LM_ERASEBKGND;
+    procedure DoContextPopup(MousePos: TPoint; var Handled: Boolean); override;
   public
     constructor Create(AOwner: TComponent); override;
 
@@ -697,6 +698,12 @@ end;
 procedure TfrDesignerPage.WMEraseBkgnd(var Message: TLMEraseBkgnd);
 begin
   //do nothing to avoid flicker
+end;
+
+procedure TfrDesignerPage.DoContextPopup(MousePos: TPoint; var Handled: Boolean
+  );
+begin
+  Handled := true;
 end;
 
 procedure TfrDesignerPage.NormalizeCoord(t: TfrView);
@@ -1459,6 +1466,7 @@ begin
     Exit;
   end;
 
+  {$IFDEF LCLQt}Invalidate;{$endif}
   {$IFDEF LCLCarbon}Invalidate;{$endif}
   Down := False;
   if FDesigner.ShapeMode = smFrame then
@@ -1768,6 +1776,7 @@ begin
   Moved := True;
   w := 2;
 
+  {$ifdef LCLQt}if Down then Invalidate;{$endif}
   {$ifdef LCLCarbon}if Down then Invalidate;{$endif}
 
   if FirstChange and Down and not RFlag then

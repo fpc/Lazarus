@@ -184,8 +184,8 @@ begin
     PPage.MarginLeft := 0;
     PPage.MarginRight := 0;
 
-    PPage.Height := trunc(CurReport.EMFPages[FPageNo - 1]^.PrnInfo.Pgh*PDFEscy);
-    PPage.Width := trunc(CurReport.EMFPages[FPageNo - 1]^.PrnInfo.Pgw*PDFEscx);
+    PPage.Height := trunc(CurReport.EMFPages[FPageNo - 1]^.PrnInfo.Pgh*PDFEscy + 0.5);
+    PPage.Width := trunc(CurReport.EMFPages[FPageNo - 1]^.PrnInfo.Pgw*PDFEscx + 0.5);
 
     PRPanel := TPRPanel.Create(PPage);
     PRPanel.Parent := PPage;
@@ -276,8 +276,8 @@ begin
 
     Bitmap := TfrBarCodeView(View).GenerateBitmap;
     try
-        w := Round(Bitmap.Width * PDFEscx + 1) ;
-        h := Round(Bitmap.Height * PDFEscy + 1) ;
+        w := trunc(Bitmap.Width * PDFEscx + 1.5) ;
+        h := trunc(Bitmap.Height * PDFEscy + 1.5) ;
 
         PRImage := TPRImage.Create(PRPanel);
         PRImage.Parent := PRPanel;
@@ -303,6 +303,7 @@ var
   PRImage: TPRImage;
   r: Double;
   L: Integer;
+  pw, ph: Integer;
 begin
 
   if View.Picture.Graphic is TJpegImage then
@@ -311,6 +312,9 @@ begin
     PRImage := TPRImage.Create(PRPanel);
 
   PRImage.Parent := PRPanel;
+
+  ph := h;
+  pw := w;
 
   if view.Stretched then
   begin
@@ -321,23 +325,28 @@ begin
       if (w/h) < r then
       begin
         L := h;
-        h := Round(w/r);
+        ph := trunc(w/r + 0.5);
         if (View.Flags and flPictCenter<>0) then
-          y := y + (L-h) div 2;
+          y := y + (L-ph) div 2;
       end
       else
       begin
         L := w;
-        w := Round(h*r);
+        pw := trunc(h*r + 0.5);
         if (View.Flags and flPictCenter<>0) then
-          x := x + (L-w) div 2;
+          x := x + (L-pw) div 2;
       end;
     end;
   end
-  else
-  if (View.Flags and flPictCenter<>0) then begin
-     x := x + (w - View.Picture.Width) div 2 - 1;
-     y := y + (h - View.Picture.Height) div 2 - 1;
+  else begin
+    PRImage.ScaleX := PDFEscX;
+    PRImage.ScaleY := PDFEscY;
+    if (View.Flags and flPictCenter<>0) then begin
+      pw := trunc(View.Picture.Width * PDFEscX + 1.5);
+      ph := trunc(View.Picture.Height * PDFEscY + 1.5);
+       x := x + (w - pw) div 2 - 1;
+       y := y + (h - ph) div 2 - 1;
+    end;
   end;
 
   PRImage.Stretch := View.Stretched;
@@ -346,8 +355,8 @@ begin
 
   PRImage.Left := x;
   PRImage.Top := y;
-  PRImage.Height := h;
-  PRImage.Width := w;
+  PRImage.Height := ph;
+  PRImage.Width := pw;
 
   PRImage.Picture.Graphic := View.Picture.Graphic;
 end;
@@ -366,7 +375,7 @@ begin
   else
   begin
 
-    SWidth := Round((View.RoundRectCurve/2) * PDFEscx);
+    SWidth := trunc((View.RoundRectCurve/2) * PDFEscx + 0.5);
     if View.RoundRect then
       Data.Radius := SWidth
     else
@@ -379,7 +388,7 @@ begin
     Data.FrameColor := Data.FillColor; //ColorToRGB(View.FrameColor);
     Data.FrameWidth := 0;
     Data.FrameStyle := frsSolid;
-    SWidth := Round(View.ShadowWidth * PDFEscx);
+    SWidth := trunc(View.ShadowWidth * PDFEscx + 0.5);
     if View.ShadowWidth>0 then
       AddShape(Data, x + SWidth, y + SWidth, h - SWidth, w - SWidth);
 
@@ -417,10 +426,10 @@ procedure TfrTNPDFExportFilter.OnData(x, y: Integer; View: TfrView);
 var
     nx, ny, ndx, ndy: Integer;
 begin
-    nx := Round(x * PDFEscx);
-    ny := Round(y * PDFEscy);
-    ndx := Round((View.dx) * PDFEscx + 1) ;
-    ndy := Round((View.dy) * PDFEscy + 1) ;
+    nx := trunc(x * PDFEscx + 0.5);
+    ny := trunc(y * PDFEscy + 0.5);
+    ndx := trunc((View.dx) * PDFEscx + 1.5) ;
+    ndy := trunc((View.dy) * PDFEscy + 1.5) ;
 
     if View is TfrShapeView then begin
 
@@ -438,25 +447,29 @@ end;
 procedure TfrTNPDFExportFilter.OnText(X, Y: Integer; const Text: string;
     View: TfrView);
 var
-    PRTLabel: TPRText;
-    nx, ny,
-        ndx, ndy: Integer;
+    PRTLabel: TPRLabel;
+    nx, ny, ndx, ndy: Integer;
+    gapx, gapy: integer;
 begin
-    nx := Round(x  * PDFEscx) + 1;
-    ny := Round(y * PDFEscy) + 1;
-    ndx := Round(View.dx * PDFEscx);
-    ndy := Round(View.dy * PDFEscy);
+    gapx := trunc(View.FrameWidth / 2 + 0.5) + 2;
+    gapy := trunc(View.FrameWidth / 4 + 0.5) + 1;
+    nx := trunc((x+gapx)  * PDFEscx + 0.5);
+    ny := trunc((y+gapy) * PDFEscy + 0.5);
+    ndx := trunc((View.dx-gapx) * PDFEscx + 1.5);
+    ndy := trunc((View.dy-gapy) * PDFEscy + 1.5);
 
-    PRTLabel := TPRText.Create(PRPanel);
+    PRTLabel := TPRLabel.Create(PRPanel);
     PRTLabel.Parent := PRPanel;
+    PRTLabel.Clipping := true;
     try
-        PRTLabel.Text := Text;
+        PRTLabel.Caption := Text;
         PRTLabel.Left := nx;
         PRTLabel.Top := ny;
         PRTLabel.Width := ndx;
         PRTLabel.Height := ndy;
         if View is TfrMemoView then
         begin
+            PRTLabel.Alignment :=  TfrMemoView_(View).Alignment;
             if Pos('Arial', TfrMemoView_(View).Font.Name) > 0 then
                 PRTLabel.FontName := fnArial
             else if Pos('Courier', TfrMemoView_(View).Font.Name) > 0 then
@@ -473,6 +486,8 @@ begin
     finally
     end;
 end;
+
+
 
 initialization
     frRegisterExportFilter(TfrTNPDFExportFilter, 'Adobe Acrobat PDF ' + ' (*.pdf)',

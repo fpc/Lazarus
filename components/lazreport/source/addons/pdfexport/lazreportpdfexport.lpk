@@ -23,7 +23,7 @@
     </CompilerOptions>
     <Description Value="PDF Exporter for PDF
 "/>
-    <Version Minor="7"/>
+    <Version Minor="8"/>
     <Files Count="2">
       <Item1>
         <Filename Value="lr_e_pdf.pas"/>
@@ -45,7 +45,7 @@
       </Item2>
       <Item3>
         <PackageName Value="pack_powerpdf"/>
-        <MinVersion Minor="9" Valid="True" Release="7"/>
+        <MinVersion Minor="9" Release="10" Valid="True"/>
       </Item3>
       <Item4>
         <PackageName Value="lazreport"/>
