@@ -37,6 +37,8 @@ unit InitialSetupDlgs;
 
 {$mode objfpc}{$H+}
 
+{off $DEFINE VerboseFPCSrcScanThead}
+
 interface
 
 uses
@@ -95,9 +97,11 @@ type
     fSetupDialog: TInitialSetupDialog;
     fFPCVer: string;
     fFoundFPCSrc: TSDFileInfo;
-//    fPath: string;          // <- uncomment these for debugln
-//    fFileInfo: TSearchRec;
-//    procedure Debug;
+    {$IFDEF VerboseFPCSrcScanThead}
+    fPath: string;          // <- uncomment these for debugln
+    fFileInfo: TSearchRec;
+    procedure Debug;
+    {$ENDIF}
     function CheckFPCSrcDir(Dir: string): TSDFileInfo;
     procedure DoSearch(const APath: String);
     procedure UpdateFPCSrcDir;
@@ -1260,7 +1264,11 @@ begin
       if Terminated then Break;
       if (PathInfo.Name='') or (PathInfo.Name[1]='.')
       or ((PathInfo.Attr and faDirectory) = 0) then Continue;
-      //fPath := APath; fFileInfo := PathInfo; Synchronize(@Debug);
+      {$IFDEF VerboseFPCSrcScanThead}
+      fPath := APath;
+      fFileInfo := PathInfo;
+      Synchronize(@Debug);
+      {$ENDIF}
       DoSearch(AppendPathDelim(APath+PathInfo.Name));  // Recursive call
       FPCSrc:=CheckFPCSrcDir(APath+PathInfo.Name);
       if Assigned(FPCSrc) then begin
@@ -1272,12 +1280,14 @@ begin
     FindCloseUTF8(PathInfo);
   end;
 end;
-{
+
+{$IFDEF VerboseFPCSrcScanThead}
 procedure TSearchFpcSourceThread.Debug;
 begin
   DebugLn(['* TSearchFpcSourceThread.Debug: Path=', fPath, ', Name=', fFileInfo.Name]);
 end;
-}
+{$ENDIF}
+
 procedure TSearchFpcSourceThread.UpdateFPCSrcDir;
 begin
   DebugLn(['TSearchFpcSourceThread.UpdateFPCSrcDir']);
