@@ -28,7 +28,7 @@ unit ProcessMessagesUnit1;
 interface
 
 uses
-  Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, Buttons,
+  Classes, SysUtils, Forms, Controls, Graphics, Dialogs, Buttons,
   ComCtrls, FileUtil, StdCtrls;
 
 type
@@ -53,6 +53,8 @@ var
   Form1: TForm1; 
 
 implementation
+
+{$R *.lfm}
 
 { TForm1 }
 
@@ -132,9 +134,6 @@ begin
     StartStopButton.Caption:='Start';
   end;
 end;
-
-initialization
-  {$I processmessagesunit1.lrs}
 
 end.
 

@@ -28,7 +28,7 @@ unit WaitForUnit1;
 interface
 
 uses
-  Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, Buttons,
+  Classes, SysUtils, Forms, Controls, Graphics, Dialogs, Buttons,
   StdCtrls, LCLProc;
 
 type
@@ -79,6 +79,8 @@ var
   Form1: TForm1; 
 
 implementation
+
+{$R *.lfm}
 
 { TForm1 }
 
@@ -154,9 +156,6 @@ begin
   Synchronize(@Form1.AddMessage);
   LeaveCriticalsection(Form1.ACriticalSection);
 end;
-
-initialization
-  {$I waitforunit1.lrs}
 
 end.
 

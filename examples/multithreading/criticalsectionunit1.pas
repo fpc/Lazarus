@@ -33,7 +33,7 @@ unit CriticalSectionUnit1;
 interface
 
 uses
-  Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, Buttons,
+  Classes, SysUtils, Forms, Controls, Graphics, Dialogs, Buttons,
   StdCtrls, LCLProc, LCLType, LCLIntf;
 
 type
@@ -68,6 +68,8 @@ var
   Form1: TForm1; 
 
 implementation
+
+{$R *.lfm}
 
 { TForm1 }
 
@@ -142,9 +144,6 @@ begin
   end;
   FAFinished:=true;
 end;
-
-initialization
-  {$I criticalsectionunit1.lrs}
 
 end.
 
