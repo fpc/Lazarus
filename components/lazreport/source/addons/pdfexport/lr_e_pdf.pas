@@ -76,8 +76,8 @@ type
     TPRText_ = class(TPRText);
 
 const
-    PDFEscx = 0.8;
-    PDFEscy = 0.8;
+    PDFEscx = 0.792553191;
+    PDFEscy = 0.785447761;
 
 procedure TfrTNPDFExportFilter.AddShape(Data: TShapeData; x, y, h, w: integer);
 
@@ -481,6 +481,7 @@ begin
             PRTLabel.FontItalic := fsItalic in TfrMemoView_(View).Font.Style;
             PRTLabel.FontColor := TfrMemoView_(View).Font.Color;
             PRTLabel.FontUnderline := fsUnderline in TfrMemoView_(View).Font.Style;
+            PRTLabel.Angle:= (View as TfrMemoView).Angle;
         end;
 
     finally
