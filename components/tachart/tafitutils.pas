@@ -69,11 +69,17 @@ type
     function Get: String;
   end;
 
+  operator :=(AEq: IFitEquationText): String; inline;
 
 implementation
 
 uses
   TAChartUtils, StrUtils, SysUtils;
+
+operator := (AEq: IFitEquationText): String;
+begin
+  Result := AEq.Get;
+end;
 
 { TFitEmptyEquationText }
 

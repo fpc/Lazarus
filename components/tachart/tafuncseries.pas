@@ -298,8 +298,7 @@ type
   function ParamsToEquation(
     AEquation: TFitEquation; const AParams: array of Double;
     ANumFormat: String; AXText: String = 'x'; AYText: String = 'y'): String;
-    deprecated 'Use TFitSeries.IFitEquationText';
-  operator :=(AEq: TFitSeries.IFitEquationText): String; inline;
+    deprecated 'Use IFitEquationText';
 
 implementation
 
@@ -333,11 +332,6 @@ begin
   Result :=
     TFitEquationText.Create.Equation(AEquation).
     X(AXText).Y(AYText).NumFormat(ANumFormat).Params(AParams);
-end;
-
-operator := (AEq: TFitSeries.IFitEquationText): String;
-begin
-  Result := AEq.Get;
 end;
 
 { TColorMapLegendItem }
