@@ -1110,7 +1110,7 @@ begin
   // public void LCLDoShowListViewDialog(String ATitle, String[] AItems, String[] ASubItems)
   DebugLn(':>ShowListViewDialog');
   // First call FindClass for all required classes
-  javaClass_LCLActivity := javaEnvRef^^.FindClass(javaEnvRef, 'com/pascal/lcltest/LCLActivity');
+  javaClass_LCLActivity := javaEnvRef^^.FindClass(javaEnvRef, PChar(CDWidgetset.ActivityClassName));
   javaClass_String := javaEnvRef^^.FindClass(javaEnvRef, 'java/lang/String');
 
   // Now all Method IDs
