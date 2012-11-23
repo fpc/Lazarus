@@ -9864,6 +9864,12 @@ begin
         ShowSetupDialog:=true;
       end;
     end;
+    if (not ShowSetupDialog)
+    and (CheckDebuggerQuality(EnvironmentOptions.GetParsedDebuggerFilename, Note)<>sddqCompatible)
+    then begin
+      debugln(['Warning: missing GDB exe',EnvironmentOptions.GetParsedLazarusDirectory]);
+      ShowSetupDialog:=true;
+    end;
     if ShowSetupDialog then begin
       OldLazDir:=EnvironmentOptions.LazarusDirectory;
       if ShowInitialSetupDialog<>mrOk then
