@@ -1217,6 +1217,11 @@ Name: {app}\lcl\units\i386-win32\qt\qtwsstdctrls.o; Type: files
 Name: {app}\lcl\units\i386-win32\qt\qtwsstdctrls.ppu; Type: files
 Name: {app}\lcl\units\i386-win32\win32\win32uxtheme.o; Type: files
 Name: {app}\lcl\units\i386-win32\win32\win32uxtheme.ppu; Type: files
+Name: {app}\mingw\bin\gdb.exe; Type: files
+Name: {app}\mingw\bin\libexpat-1.dll; Type: files
+Name: {app}\mingw\bin\libgcc_s_dw2-1.dll; Type: files
+Name: {app}\mingw\bin\libiconv-2.dll; Type: files
+Name: {app}\mingw\bin\libintl-8.dll; Type: files
 Name: {app}\packager\adddirtopkgdlg.lrs; Type: files
 Name: {app}\packager\addfiletoapackagedlg.lrs; Type: files
 Name: {app}\packager\addtopackagedlg.lrs; Type: files

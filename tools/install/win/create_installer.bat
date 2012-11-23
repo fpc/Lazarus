@@ -123,7 +123,10 @@ if not exist %BUILDDIR%\lazarus.exe goto END
 if not exist %BUILDDIR%\startlazarus.exe goto END
 
 :: copy gdb into build dir
-if exist %GDBDIR% %SVN% export -q %GDBDIR% %BUILDDIR%\mingw
+if NOT exist %GDBDIR% goto NOGDB
+gmkdir -p %BUILDDIR%\mingw
+%SVN% export -q %GDBDIR% %BUILDDIR%\mingw\%FPCFULLTARGET%
+:NOGDB
 
 :: create the installer
 IF [%BUILDLAZRELEASE%]==[] GOTO SNAPSHOT
