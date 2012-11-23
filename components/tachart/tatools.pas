@@ -1212,6 +1212,7 @@ begin
       // ZoomFull will not cause redraw, force it to erase the tool.
       Chart.StyleChanged(Self);
     DoZoom(FChart.GetFullExtent, true);
+    Handled;
     exit;
   end;
   // If empty rectangle does not cause un-zooming, ignore it to prevent SIGFPE.
