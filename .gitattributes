@@ -1644,6 +1644,17 @@ components/lazreport/source/addons/addfunction/lrAddFunctionLibrary.pas svneol=n
 components/lazreport/source/addons/addfunction/lr_add_function.lpk svneol=native#text/plain
 components/lazreport/source/addons/addfunction/lr_add_function.pas svneol=native#text/pascal
 components/lazreport/source/addons/addfunction/lr_add_function_const.pas svneol=native#text/pascal
+components/lazreport/source/addons/lrcodereport/lr_codereport.lrs svneol=native#text/plain
+components/lazreport/source/addons/lrcodereport/lr_codereport.pas svneol=native#text/pascal
+components/lazreport/source/addons/lrcodereport/lr_codereport_pkg.lpk svneol=native#text/plain
+components/lazreport/source/addons/lrcodereport/lr_codereport_pkg.pas svneol=native#text/pascal
+components/lazreport/source/addons/lrcodereport/sample/main.lfm svneol=native#text/plain
+components/lazreport/source/addons/lrcodereport/sample/main.pas svneol=native#text/pascal
+components/lazreport/source/addons/lrcodereport/sample/testlrcodereport.ico -text
+components/lazreport/source/addons/lrcodereport/sample/testlrcodereport.lpi svneol=native#text/plain
+components/lazreport/source/addons/lrcodereport/sample/testlrcodereport.lpr svneol=native#text/pascal
+components/lazreport/source/addons/lrcodereport/sample/testlrcodereport.res -text
+components/lazreport/source/addons/lrcodereport/tlrcodereport.png -text
 components/lazreport/source/addons/pdfexport/lazreportpdfexport.lpk svneol=native#text/plain
 components/lazreport/source/addons/pdfexport/lazreportpdfexport.pas svneol=native#text/plain
 components/lazreport/source/addons/pdfexport/lr_e_pdf.pas svneol=native#text/plain
