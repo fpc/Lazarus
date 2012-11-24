@@ -318,6 +318,7 @@ type
   TPanDragTool = class(TBasicPanTool)
   strict private
     FDirections: TPanDirectionSet;
+    FMinDragRadius: Cardinal;
     FOrigin: TPoint;
     FPrev: TPoint;
   strict protected
@@ -332,6 +333,8 @@ type
     property Directions: TPanDirectionSet
       read FDirections write FDirections default PAN_DIRECTIONS_ALL;
     property EscapeCancels;
+    property MinDragRadius: Cardinal
+      read FMinDragRadius write FMinDragRadius default 0;
   end;
 
   { TPanClickTool }
@@ -1406,17 +1409,23 @@ end;
 
 procedure TPanDragTool.MouseDown(APoint: TPoint);
 begin
-  Activate;
   FOrigin := APoint;
   FPrev := APoint;
-  Handled;
+  if MinDragRadius = 0 then begin
+    Activate;
+    Handled;
+  end;
 end;
 
 procedure TPanDragTool.MouseMove(APoint: TPoint);
 var
   d: TPoint;
 begin
-  if not IsActive then exit;
+  if not IsActive then begin
+    if PointDist(FOrigin, APoint) < Sqr(MinDragRadius) then
+      exit;
+    Activate;
+  end;
   d := FPrev - APoint;
   FPrev := APoint;
 
@@ -1431,6 +1440,7 @@ end;
 
 procedure TPanDragTool.MouseUp(APoint: TPoint);
 begin
+  if not IsActive then exit;
   Unused(APoint);
   Deactivate;
   Handled;
