@@ -1049,7 +1049,7 @@ msgstr "Přemístitelné"
 
 #: lazarusidestrconsts.dlgcosetasdefault
 msgid "Set compiler options as default"
-msgstr ""
+msgstr "Nastavit volby překladače jako výchozí"
 
 #: lazarusidestrconsts.dlgcoshowerr
 msgid "Show errors"
@@ -1869,7 +1869,7 @@ msgstr "Hostitelská aplikace"
 
 #: lazarusidestrconsts.dlgidemacrovalues
 msgid "IDE Macro Values"
-msgstr ""
+msgstr "Hodnoty IDE makra"
 
 #: lazarusidestrconsts.dlgidentifiercompletion
 msgctxt "lazarusidestrconsts.dlgidentifiercompletion"
@@ -3820,7 +3820,7 @@ msgstr "Přidat požadavky balíčku?"
 
 #: lazarusidestrconsts.lisaddpackagestolistofinstalledpackagescombinewithbui
 msgid "add package(s) to list of installed packages (combine with --build-ide to rebuild IDE)."
-msgstr ""
+msgstr "přidat balíček (balíčky) do seznamu instalovaných balíčků (použijte s --build-ide k opětovnému sestavení IDE)"
 
 #: lazarusidestrconsts.lisaddpackagetoproject
 msgid "Add package %s to project?"
@@ -3987,7 +3987,7 @@ msgstr "Vždy ignorovat"
 
 #: lazarusidestrconsts.lisamacrowiththisnamealreadyexists
 msgid "A macro with this name already exists."
-msgstr ""
+msgstr "Makro s tímto názvem již existuje."
 
 #: lazarusidestrconsts.lisambiguousfilefound
 msgid "Ambiguous file found"
@@ -4067,7 +4067,7 @@ msgstr "&Jméno třídy aplikace"
 
 #: lazarusidestrconsts.lisapplicationprogramdescriptor
 msgid "A graphical Free Pascal application using the cross-platform LCL library for its GUI."
-msgstr ""
+msgstr "Grafická aplikace Free Pascalu používající více platformní knihovny pro své uživatelské prostředí."
 
 #: lazarusidestrconsts.lisapplybuildflagsbtodependenciestoo
 msgid "apply build flags (-B) to dependencies too"
@@ -4107,7 +4107,7 @@ msgstr "Zeptat se na jméno při vytvoření"
 
 #: lazarusidestrconsts.lisausefulsettingonwindowssystemsislazarusdirmingwbin
 msgid "A useful setting on Windows systems is: $(LazarusDir)\\mingw\\bin\\$(TargetCPU)-$(TargetOS)\\gdb.exe"
-msgstr ""
+msgstr "Užitečné nastavení na systémech Windows je: $(LazarusDir)\\mingw\\bin\\$(TargetCPU)-$(TargetOS)\\gdb.exe"
 
 #: lazarusidestrconsts.lisautocompletionoff
 msgid "Auto completion: off"
@@ -6084,7 +6084,7 @@ msgstr "Konzolová aplikace"
 
 #: lazarusidestrconsts.lisconsoleapplicationprogramdescriptor
 msgid "A Free Pascal command line program using TCustomApplication to easily check command line options, handling exceptions, etc."
-msgstr ""
+msgstr "Free Pascal program příkazové řádky používající TCustomApplication pro snadnou kontrolu parametrů příkazové řádky, zpracování výjimek, atd."
 
 #: lazarusidestrconsts.lisconstructorcode
 msgid "Constructor code"
@@ -6633,7 +6633,7 @@ msgstr "Vlastní program"
 
 #: lazarusidestrconsts.liscustomprogramprogramdescriptor
 msgid "A Custom Free Pascal program."
-msgstr ""
+msgstr "Vlastní Free Pascal program."
 
 #: lazarusidestrconsts.liscut
 msgctxt "lazarusidestrconsts.liscut"
@@ -7089,7 +7089,7 @@ msgstr "Smazat vybrané soubory"
 
 #: lazarusidestrconsts.lisdeleteselectedmacro
 msgid "Delete selected macro?"
-msgstr ""
+msgstr "Smazat vybrané makro?"
 
 #: lazarusidestrconsts.lisdeletesetting
 msgid "Delete setting"
@@ -7205,7 +7205,7 @@ msgstr "Pokyny pro novou jednotku"
 
 #: lazarusidestrconsts.lisdirectory
 msgid "Directory: "
-msgstr ""
+msgstr "Adresář: "
 
 #: lazarusidestrconsts.lisdirectorynotfound
 msgid "Directory %s%s%s not found."
@@ -7318,7 +7318,7 @@ msgstr "Rozlišovat velká a malá písmena např. A a a"
 
 #: lazarusidestrconsts.lisdlgchangeclass
 msgid "Change Class ..."
-msgstr ""
+msgstr "Změnit třídu ..."
 
 #: lazarusidestrconsts.lisdlgeditorwindowmanager
 msgid "Editor Window Manager ..."
@@ -7445,7 +7445,7 @@ msgstr "Nalezeno zdvojení hodnoty %s%s%s."
 
 #: lazarusidestrconsts.lisduplicatename
 msgid "Duplicate Name"
-msgstr ""
+msgstr "Duplicitní jméno"
 
 #: lazarusidestrconsts.lisduplicatenameacomponentnamedalreadyexistsintheinhe
 msgid "Duplicate name: A component named %s%s%s already exists in the inherited component %s"
@@ -7478,7 +7478,7 @@ msgstr "Upravit nápovědu"
 
 #: lazarusidestrconsts.liseditkey
 msgid "Edit Key"
-msgstr ""
+msgstr "Upravit klávesu"
 
 #: lazarusidestrconsts.liseditorfiletypes
 msgid "Editor file types"
@@ -7486,7 +7486,7 @@ msgstr "Typy souborů editoru"
 
 #: lazarusidestrconsts.liseditormacros
 msgid "Editor macros"
-msgstr ""
+msgstr "Návrhář maker"
 
 #: lazarusidestrconsts.liseditorwindowmanager
 msgid "Editor Window Manager"
@@ -7735,7 +7735,7 @@ msgstr "Nekonečná smyčka v makrech"
 
 #: lazarusidestrconsts.lisenternewnameformacros
 msgid "Enter new name for Macro \"%s\""
-msgstr ""
+msgstr "Zadejte nové jméno makra \"%s\""
 
 #: lazarusidestrconsts.lisenvironmentvariablenameasparameter
 msgid "Environment variable, name as parameter"
@@ -8108,7 +8108,7 @@ msgstr "Načtení stavu složení selhalo"
 
 #: lazarusidestrconsts.lisfailedtosavefile
 msgid "Failed to save file."
-msgstr ""
+msgstr "Uložení souboru selhalo."
 
 #: lazarusidestrconsts.lisfepaintdesigneritemsonidle
 msgid "Reduce designer painting"
@@ -8125,7 +8125,7 @@ msgstr "Soubor"
 
 #: lazarusidestrconsts.lisfile2
 msgid "File: "
-msgstr ""
+msgstr "Soubor: "
 
 #: lazarusidestrconsts.lisfiledoesnotlooklikeatextfileopenitanyway
 msgctxt "lazarusidestrconsts.lisfiledoesnotlooklikeatextfileopenitanyway"
@@ -8303,7 +8303,7 @@ msgstr "hledat všechny &otevřené soubory"
 
 #: lazarusidestrconsts.lisfindfilesearchinactivefile
 msgid "search in &active file"
-msgstr ""
+msgstr "hledat v aktivním souboru"
 
 #: lazarusidestrconsts.lisfindfilesearchindirectories
 msgid "search in &directories"
@@ -8829,7 +8829,7 @@ msgstr "Komentář provedení pro třídu"
 
 #: lazarusidestrconsts.lisimport
 msgid "Import ..."
-msgstr ""
+msgstr "Importovat ..."
 
 #: lazarusidestrconsts.lisimportlist
 msgid "Import list"
@@ -10143,7 +10143,7 @@ msgstr "cesta knihovny"
 
 #: lazarusidestrconsts.lislibraryprogramdescriptor
 msgid "A Free Pascal shared library (.dll under Windows, .so under Linux, .dylib under MacOS X)."
-msgstr ""
+msgstr "Sdílená knihovna Free Pascalu (.dll ve Windows, .so v Linuxu, .dylib v MacOS X)."
 
 #: lazarusidestrconsts.lisline
 msgid "Line:"
@@ -10179,7 +10179,7 @@ msgstr "Načítání %s selhalo."
 
 #: lazarusidestrconsts.lisloadmacrofrom
 msgid "Load macro from"
-msgstr ""
+msgstr "Nahrát makro z"
 
 #: lazarusidestrconsts.lislocals
 msgid "Locals"
@@ -10421,14 +10421,12 @@ msgid "Clean up Build Files ..."
 msgstr "Vyčistit sestavené soubory ..."
 
 #: lazarusidestrconsts.lismenucloseall
-#, fuzzy
-#| msgid "Close A&ll Editor Files"
 msgid "Close A&ll"
-msgstr "Zavřít &všechny soubory editoru"
+msgstr "Zavřít &vše"
 
 #: lazarusidestrconsts.lismenucloseeditorfile
 msgid "&Close Editor File"
-msgstr ""
+msgstr "Zavřít soubor editoru"
 
 #: lazarusidestrconsts.lismenucloseproject
 msgid "Close Project"
@@ -10720,7 +10718,7 @@ msgstr "Poznámka LGPL"
 
 #: lazarusidestrconsts.lismenuinsertmitnotice
 msgid "MIT Notice"
-msgstr ""
+msgstr "Poznámka MIT"
 
 #: lazarusidestrconsts.lismenuinsertmodifiedlgplnotice
 msgid "Modified LGPL Notice"
@@ -10773,11 +10771,11 @@ msgstr "Změnit výběr na malá písmena"
 
 #: lazarusidestrconsts.lismenumacrolistview
 msgid "Editor Macros ..."
-msgstr ""
+msgstr "Návrhář maker ..."
 
 #: lazarusidestrconsts.lismenumakeresourcestring
 msgid "Make Resource String ..."
-msgstr "Vytvořit zdrojový řetězec..."
+msgstr "Vytvořit zdrojový řetězec ..."
 
 #: lazarusidestrconsts.lismenunewcomponent
 msgctxt "lazarusidestrconsts.lismenunewcomponent"
@@ -11387,7 +11385,7 @@ msgstr "Přesunout vybranou položku nahoru (Ctrl+Nahoru)"
 
 #: lazarusidestrconsts.lismoveto
 msgid "Move to: "
-msgstr ""
+msgstr "Přesunout do: "
 
 #: lazarusidestrconsts.lisms
 msgid "(ms)"
@@ -11506,11 +11504,11 @@ msgstr "Nová skupina - sada režimů"
 
 #: lazarusidestrconsts.lisnewmacroname
 msgid "Macro %d"
-msgstr ""
+msgstr "Makro %d"
 
 #: lazarusidestrconsts.lisnewmacroname2
 msgid "New Macroname"
-msgstr ""
+msgstr "Nové jméno makra"
 
 #: lazarusidestrconsts.lisnewproject
 msgid "(new project)"
@@ -11518,7 +11516,7 @@ msgstr "(nový projekt)"
 
 #: lazarusidestrconsts.lisnewrecordedmacrosnottobesaved
 msgid "New recorded macros. Not to be saved"
-msgstr ""
+msgstr "Nově nahrané makro. Nebude uloženo"
 
 #: lazarusidestrconsts.lisnewsetting
 msgid "New setting"
@@ -11718,11 +11716,11 @@ msgstr "? (Vypnuto)"
 
 #: lazarusidestrconsts.lisoifaddtofavoriteproperties
 msgid "Add to favorite properties"
-msgstr ""
+msgstr "Přidat k oblíbeným vlastnostem"
 
 #: lazarusidestrconsts.lisoifchooseabaseclassforthefavoriteproperty
 msgid "Choose a base class for the favorite property %s%s%s."
-msgstr ""
+msgstr "Zvolte základní třídu oblíbených vlastností %s%s%s."
 
 #: lazarusidestrconsts.lisoifclassnotfound
 msgid "Class %s%s%s not found."
@@ -11730,7 +11728,7 @@ msgstr "Třída %s%s%s nenalezena,"
 
 #: lazarusidestrconsts.lisoifremovefromfavoriteproperties
 msgid "Remove from favorite properties"
-msgstr ""
+msgstr "Odebrat z oblíbených vlastností"
 
 #: lazarusidestrconsts.lisoipautoinstalldynamic
 msgid "auto install dynamic"
@@ -12139,7 +12137,7 @@ msgstr "Volby překladače pro balíček %s"
 
 #: lazarusidestrconsts.lispckeditcreatefpmakefile
 msgid "Create fpmake.pp"
-msgstr ""
+msgstr "Vytvořit fpmake.pp"
 
 #: lazarusidestrconsts.lispckeditcreatemakefile
 msgctxt "lazarusidestrconsts.lispckeditcreatemakefile"
@@ -12334,7 +12332,7 @@ msgstr "Automaticky vytvořeno"
 
 #: lazarusidestrconsts.lispckexplbase
 msgid "Base, can not be uninstalled"
-msgstr ""
+msgstr "Základní, nelze odinstalovat"
 
 #: lazarusidestrconsts.lispckexplinstalled
 msgid "Installed"
@@ -13262,7 +13260,7 @@ msgstr "Nelze číst soubor balíčku %s%s%s.%sChyba: %s"
 
 #: lazarusidestrconsts.lisplay
 msgid "Play"
-msgstr ""
+msgstr "Přehrát"
 
 #: lazarusidestrconsts.lispldexists
 msgid "Exists"
@@ -13438,7 +13436,7 @@ msgstr "Program %s nenalezen"
 
 #: lazarusidestrconsts.lisprogramprogramdescriptor
 msgid "A Free Pascal command line program with some useful settings added."
-msgstr ""
+msgstr "Free Pascal program příkazové řádky s několika přidanými užitečnými nastaveními."
 
 #: lazarusidestrconsts.lisprogramsourcemusthaveapascalextensionlikepaspporlp
 msgid "Program source must have a pascal extension like .pas, .pp or .lpr"
@@ -13854,7 +13852,7 @@ msgstr "Record"
 
 #: lazarusidestrconsts.lisrecordedmacros
 msgid "Recorded"
-msgstr ""
+msgstr "Zaznamenáno"
 
 #: lazarusidestrconsts.lisrecordstruct
 msgid "Record/Structure"
@@ -13946,7 +13944,7 @@ msgstr "Přejmenování"
 
 #: lazarusidestrconsts.lisrename2
 msgid "Rename ..."
-msgstr ""
+msgstr "Přejmenovat ..."
 
 #: lazarusidestrconsts.lisrenamefile
 msgid "Rename file?"
@@ -14236,11 +14234,11 @@ msgstr "Úspěšně uloženo"
 
 #: lazarusidestrconsts.lissavedwithidesettings
 msgid "Saved with IDE settings"
-msgstr ""
+msgstr "Uloženo s nastavením IDE"
 
 #: lazarusidestrconsts.lissavedwithprojectsession
 msgid "Saved with project session"
-msgstr ""
+msgstr "Uloženo se sezením projektu"
 
 #: lazarusidestrconsts.lissaveeditorinfoofnonprojectfiles
 msgid "Save editor info of non project files"
@@ -14260,7 +14258,7 @@ msgstr "Uložit informace zavřených souborů editoru"
 
 #: lazarusidestrconsts.lissavemacroas
 msgid "Save macro as"
-msgstr ""
+msgstr "Uložit makro jako"
 
 #: lazarusidestrconsts.lissaveproject
 msgid "Save project %s (*%s)"
@@ -14284,11 +14282,11 @@ msgstr "Činitel zvětšení:"
 
 #: lazarusidestrconsts.lisscanning
 msgid "Scanning"
-msgstr ""
+msgstr "Prohledávání"
 
 #: lazarusidestrconsts.lisscanparentdir
 msgid "Scanning parent directory"
-msgstr ""
+msgstr "Prohledávání nadřazeného adresáře"
 
 #: lazarusidestrconsts.lissearchfor
 msgid "Search For "
@@ -14498,11 +14496,11 @@ msgstr "Sourozenec"
 
 #: lazarusidestrconsts.lissimpleprogram
 msgid "Simple Program"
-msgstr ""
+msgstr "Jednoduchý program"
 
 #: lazarusidestrconsts.lissimpleprogramprogramdescriptor
 msgid "A most simple Free Pascal command line program."
-msgstr ""
+msgstr "Nejjednodušší Free Pascal program příkazové řádky."
 
 #: lazarusidestrconsts.lissimplesyntax
 msgid "Simple syntax"
@@ -14917,7 +14915,7 @@ msgstr "Ladič %s%s%s%sneexistuje, nebo není spustitelný.%s%sZkontrolujte Nás
 
 #: lazarusidestrconsts.listhedebuggerexecutabletypicallyhasthenamepleasegive
 msgid "The debugger executable typically has the name \"%s\". Please give the full file path."
-msgstr ""
+msgstr "Spouštěcí program ladiče se obvykle jmenuje \"%s\". Prosím, zadejte celou cestu souboru."
 
 #: lazarusidestrconsts.listhedestinationdirectorydoesnotexist
 msgid "The destination directory%s%s%s%s does not exist."
@@ -15062,11 +15060,11 @@ msgstr "Makro \"%s\" nezačíná na \"%s\"."
 
 #: lazarusidestrconsts.listhemakeexecutabletypicallyhasthename
 msgid "The \"make\" executable typically has the name \"%s\". It is needed for building the IDE. Please give the full file path."
-msgstr ""
+msgstr "Spouštěcí soubor \"make\" má obvykle jméno \"%s\". Je potřeba pro sestavení IDE. Prosím, zadejte celou cestu souboru."
 
 #: lazarusidestrconsts.listhenameisnotavalidpascalidentifier
 msgid "The name %s%s%s is not a valid pascal identifier."
-msgstr "Jméno %s%s%s není platný pascalovský identifikátor."
+msgstr "Jméno %s%s%s není platný identifikátor Pascalu."
 
 #: lazarusidestrconsts.listhenewincludefileisnotyetintheincludesearchpathadd
 msgid "The new include file is not yet in the include search path.%sAdd directory %s?"
@@ -15226,7 +15224,7 @@ msgstr "Jednotka se jménem %s%s%s již v projektu existuje.%sZvolte, prosím, j
 
 #: lazarusidestrconsts.listhereisnofpcexeinthedirectoryofusuallythemakeexecu
 msgid "There is no fpc.exe in the directory of %s. Usually the make executable is installed together with the FPC compiler."
-msgstr ""
+msgstr "V adresáři %s není fpc.exe. Obvykle je spouštěcí make soubor instalován společně s překladačem FPC."
 
 #: lazarusidestrconsts.listheremustbeatleastonebuildmode
 msgid "There must be at least one build mode."
@@ -15274,7 +15272,7 @@ msgstr "Adresář testů nelze nalézt:%s%s%s%s%s(viz volby IDE)"
 
 #: lazarusidestrconsts.listheunitalreadyexists
 msgid "The unit %s%s%s already exists."
-msgstr ""
+msgstr "Jednotka %s%s%s již existuje."
 
 #: lazarusidestrconsts.listheunitbelongstopackage
 msgid "The unit belongs to package %s."
@@ -15512,11 +15510,11 @@ msgstr "Hledání: %s"
 
 #: lazarusidestrconsts.lisuesearchstringcontinuebeg
 msgid "Continue search from the beginning?"
-msgstr ""
+msgstr "Pokračovat v hledání od začátku?"
 
 #: lazarusidestrconsts.lisuesearchstringcontinueend
 msgid "Continue search from the end?"
-msgstr ""
+msgstr "Pokračovat v hledání od konce?"
 
 #: lazarusidestrconsts.lisuesearchstringnotfound
 msgid "Search string '%s' not found!"
@@ -16095,7 +16093,7 @@ msgstr "Uživatelský domovský adresář"
 
 #: lazarusidestrconsts.lisuseselected
 msgid "Use Selected"
-msgstr ""
+msgstr "Použít vybrané"
 
 #: lazarusidestrconsts.lisuseunit
 msgctxt "lazarusidestrconsts.lisuseunit"
@@ -16286,7 +16284,7 @@ msgstr "Bez správného překladače nebude procházení kódu a překlad dokona
 
 #: lazarusidestrconsts.liswithoutaproperdebuggerdebuggingwillbedisappointing
 msgid "Without a proper debugger, debugging will be disappointing."
-msgstr ""
+msgstr "Bez správného ladiče bude ladění neuspokojivé."
 
 #: lazarusidestrconsts.liswithoutaproperlazarusdirectoryyouwillgetalotofwarn
 msgid "Without a proper Lazarus directory you will get a lot of warnings."
@@ -16294,7 +16292,7 @@ msgstr "Bez správného adresáře Lazarusu dostanete mnoho varování."
 
 #: lazarusidestrconsts.liswithoutapropermakeexecutablethecompilingoftheideis
 msgid "Without a proper \"make\" executable the compiling of the IDE is not possible."
-msgstr ""
+msgstr "Bez správného spustitelného \"make\" není možný překlad IDE."
 
 #: lazarusidestrconsts.liswithouttheproperfpcsourcescodebrowsingandcompletio
 msgid "Without the proper FPC sources code browsing and completion will be very limited."
@@ -16322,7 +16320,7 @@ msgstr "Výraz"
 
 #: lazarusidestrconsts.liswlinspectpane
 msgid "Inspect pane"
-msgstr ""
+msgstr "Okno průzkumníka"
 
 #: lazarusidestrconsts.liswlproperties
 msgid "&Properties"
@@ -16429,7 +16427,7 @@ msgstr "Přidat inverzi"
 
 #: lazarusidestrconsts.rsattachto
 msgid "Attach to"
-msgstr ""
+msgstr "Připojit k"
 
 #: lazarusidestrconsts.rsautomaticallyincreasebuildnumber
 msgid "Automatically increase build number"
@@ -16477,7 +16475,7 @@ msgstr "Povolit i18n"
 
 #: lazarusidestrconsts.rsenterpid
 msgid "Enter PID"
-msgstr ""
+msgstr "Zadejte PID"
 
 #: lazarusidestrconsts.rsfilterthelistwithstring
 msgid "Filter the lines in list with a string"
@@ -16824,7 +16822,7 @@ msgstr "přidat sledování"
 
 #: lazarusidestrconsts.srkmecattach
 msgid "Attach to program"
-msgstr ""
+msgstr "Připojit k programu"
 
 #: lazarusidestrconsts.srkmecautocompletion
 msgid "Code template completion"
@@ -17033,7 +17031,7 @@ msgstr "Odstranit ke konci slova"
 
 #: lazarusidestrconsts.srkmecdetach
 msgid "Detach from program"
-msgstr ""
+msgstr "Odpojit od programu"
 
 #: lazarusidestrconsts.srkmecdiff
 msgctxt "lazarusidestrconsts.srkmecdiff"
@@ -17244,7 +17242,7 @@ msgstr "Ukončit řádek a nechat kurzor"
 
 #: lazarusidestrconsts.srkmecinsertmitnotice
 msgid "Insert MIT notice"
-msgstr ""
+msgstr "Vložit poznámku MIT"
 
 #: lazarusidestrconsts.srkmecinsertmode
 msgid "Insert Mode"
@@ -17506,10 +17504,8 @@ msgid "Select half-word right"
 msgstr "Vybrat půl slova vpravo"
 
 #: lazarusidestrconsts.srkmecselleft
-#, fuzzy
-#| msgid "SelLeft"
 msgid "Select Left"
-msgstr "SelLeft"
+msgstr "Vybrat vlevo"
 
 #: lazarusidestrconsts.srkmecsellineend
 msgctxt "lazarusidestrconsts.srkmecsellineend"
@@ -17552,26 +17548,24 @@ msgid "Select Page Up"
 msgstr "Vybrat stránku nahoře"
 
 #: lazarusidestrconsts.srkmecselright
-#, fuzzy
-#| msgid "SelRight"
 msgid "Select Right"
-msgstr "SelRight"
+msgstr "Vybrat vpravo"
 
 #: lazarusidestrconsts.srkmecselsticky
 msgid "Start sticky selecting"
-msgstr ""
+msgstr "Začít lepicí výběr"
 
 #: lazarusidestrconsts.srkmecselstickycol
 msgid "Start sticky selecting (Columns)"
-msgstr ""
+msgstr "Začít lepicí výběr (sloupcový)"
 
 #: lazarusidestrconsts.srkmecselstickyline
 msgid "Start sticky selecting (Line)"
-msgstr ""
+msgstr "Začít lepicí výběr (řádkový)"
 
 #: lazarusidestrconsts.srkmecselstickystop
 msgid "Stop sticky selecting"
-msgstr ""
+msgstr "Ukončit lepicí výběr"
 
 #: lazarusidestrconsts.srkmecselup
 msgid "Select Up"
@@ -17664,12 +17658,12 @@ msgstr "Další buňka (všechny vybrané)"
 #: lazarusidestrconsts.srkmecsynpsyncroednextfirstcell
 msgctxt "lazarusidestrconsts.srkmecsynpsyncroednextfirstcell"
 msgid "Next Cell (firsts only)"
-msgstr ""
+msgstr "Další buňka (pouze první)"
 
 #: lazarusidestrconsts.srkmecsynpsyncroednextfirstcellsel
 msgctxt "lazarusidestrconsts.srkmecsynpsyncroednextfirstcellsel"
 msgid "Next Cell (all selected / firsts only)"
-msgstr ""
+msgstr "Další buňka (všechny vybrané / pouze první)"
 
 #: lazarusidestrconsts.srkmecsynpsyncroedprevcell
 msgctxt "lazarusidestrconsts.srkmecsynpsyncroedprevcell"
@@ -17684,12 +17678,12 @@ msgstr "Předchozí buňka (všechny vybrané)"
 #: lazarusidestrconsts.srkmecsynpsyncroedprevfirstcell
 msgctxt "lazarusidestrconsts.srkmecsynpsyncroedprevfirstcell"
 msgid "Previous Cell (firsts only)"
-msgstr ""
+msgstr "Předchozí buňka (pouze první)"
 
 #: lazarusidestrconsts.srkmecsynpsyncroedprevfirstcellsel
 msgctxt "lazarusidestrconsts.srkmecsynpsyncroedprevfirstcellsel"
 msgid "Previous Cell (all selected / firsts only)"
-msgstr ""
+msgstr "Předchozí buňka (všechny vybrané / pouze první)"
 
 #: lazarusidestrconsts.srkmecsynpsyncroedstart
 msgid "Start Syncro edit"
@@ -17739,20 +17733,20 @@ msgstr "Další buňka (rotace / všechny vybrané)"
 #: lazarusidestrconsts.srkmecsynptmplednextfirstcell
 msgctxt "lazarusidestrconsts.srkmecsynptmplednextfirstcell"
 msgid "Next Cell (firsts only)"
-msgstr ""
+msgstr "Další buňka (pouze první)"
 
 #: lazarusidestrconsts.srkmecsynptmplednextfirstcellrotate
 msgid "Next Cell (rotate / firsts only)"
-msgstr ""
+msgstr "Další buňka (kruhově / pouze první)"
 
 #: lazarusidestrconsts.srkmecsynptmplednextfirstcellsel
 msgctxt "lazarusidestrconsts.srkmecsynptmplednextfirstcellsel"
 msgid "Next Cell (all selected / firsts only)"
-msgstr ""
+msgstr "Další buňka (všechny vybrané / pouze první)"
 
 #: lazarusidestrconsts.srkmecsynptmplednextfirstcellselrotate
 msgid "Next Cell (rotate / all selected / firsts only)"
-msgstr ""
+msgstr "Další buňka (kruhově / všechny vybrané / pouze první)"
 
 #: lazarusidestrconsts.srkmecsynptmpledprevcell
 msgctxt "lazarusidestrconsts.srkmecsynptmpledprevcell"
@@ -17767,12 +17761,12 @@ msgstr "Předchozí buňka (všechny vybrané)"
 #: lazarusidestrconsts.srkmecsynptmpledprevfirstcell
 msgctxt "lazarusidestrconsts.srkmecsynptmpledprevfirstcell"
 msgid "Previous Cell (firsts only)"
-msgstr ""
+msgstr "Předchozí buňka (pouze první)"
 
 #: lazarusidestrconsts.srkmecsynptmpledprevfirstcellsel
 msgctxt "lazarusidestrconsts.srkmecsynptmpledprevfirstcellsel"
 msgid "Previous Cell (all selected / firsts only)"
-msgstr ""
+msgstr "Předchozí buňka (všechny vybrané / pouze první)"
 
 #: lazarusidestrconsts.srkmecsyntaxcheck
 msgid "Syntax Check"
@@ -17901,7 +17895,7 @@ msgstr "Zobrazit komponenty"
 
 #: lazarusidestrconsts.srkmecvieweditormacros
 msgid "View editor macros"
-msgstr ""
+msgstr "Zobrazit makra editoru"
 
 #: lazarusidestrconsts.srkmecviewforms
 msgid "View forms"
