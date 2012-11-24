@@ -1016,6 +1016,7 @@ begin
   with FSelectionRect do begin
     if (Left >= Right) or (Top >= Bottom) then begin
       DoZoom(FChart.GetFullExtent, true);
+      Handled;
       exit;
     end;
     ext.a := FChart.ImageToGraph(TopLeft);
