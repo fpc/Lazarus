@@ -8723,10 +8723,9 @@ end;
 procedure TCustomSynEdit.DoOnStatusChange(Changes: TSynStatusChanges);
 begin
   TSynStatusChangedHandlerList(FStatusChangedList).CallStatusChangedHandlers(Self, Changes);
-  if Assigned(fOnStatusChange) then begin
+  if Assigned(fOnStatusChange) then
     fOnStatusChange(Self, fStatusChanges);
-    fStatusChanges := [];
-  end;
+  fStatusChanges := [];
 end;
 
 procedure TCustomSynEdit.UndoRedoAdded(Sender: TObject);
