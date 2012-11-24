@@ -4376,6 +4376,8 @@ var
   r: TRect;
   kx, ky: Double;
   w, h, w1, h1: Integer;
+  ClipRgn, PreviousClipRgn: HRGN;
+  ClipNeeded: Boolean;
 
   procedure PrintBitmap(DestRect: TRect; Bitmap: TBitmap);
   var
@@ -4412,6 +4414,8 @@ begin
   {$ENDIF}
   BeginDraw(aCanvas);
   CalcGaps;
+  w := DRect.Right - DRect.Left;
+  h := DRect.Bottom - DRect.Top;
   with aCanvas do
   begin
     ShowBackground;
@@ -4439,8 +4443,6 @@ begin
           else
             r := Rect(DRect.Left, DRect.Top,
               DRect.Left + Round(Picture.Width * ky), DRect.Bottom);
-          w := DRect.Right - DRect.Left;
-          h := DRect.Bottom - DRect.Top;
           w1 := r.Right - r.Left;
           h1 := r.Bottom - r.Top;
           if (Flags and flPictCenter) <> 0 then
@@ -4456,12 +4458,19 @@ begin
       begin
         r := DRect;
         if (Flags and flPictCenter) <> 0 then
-        begin
-          w := DRect.Right - DRect.Left;
-          h := DRect.Bottom - DRect.Top;
           OffsetRect(r, (w - Picture.Width) div 2, (h - Picture.Height) div 2);
+        ClipNeeded := (Picture.Height > h) or (Picture.Width > w);
+        if ClipNeeded then
+        begin
+          ClipRgn := CreateRectRgn(DRect.Left, DRect.Top, DRect.Right, DRect.Bottom);
+          PreviousClipRgn := SelectClipRgn(Handle, ClipRgn);
         end;
-        Draw(r.Left, r.Top, Picture.Graphic)
+        Draw(r.Left, r.Top, Picture.Graphic);
+        if ClipNeeded then
+        begin
+          SelectClipRGN(Handle, PreviousClipRgn);
+          DeleteObject(ClipRgn);
+        end;
       end;
     end;
     ShowFrame;
