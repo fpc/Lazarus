@@ -4375,7 +4375,7 @@ procedure TfrPictureView.Draw(aCanvas: TCanvas);
 var
   r: TRect;
   kx, ky: Double;
-  w, h, w1, h1: Integer;
+  w, h, w1, h1, PictureHeight, PictureWidth: Integer;
   ClipRgn, PreviousClipRgn: HRGN;
   ClipNeeded: Boolean;
 
@@ -4456,15 +4456,19 @@ begin
       end
       else
       begin
+        PictureWidth := Round(Picture.Width * ScaleX);
+        PictureHeight := Round(Picture.Height * ScaleY);
         if (Flags and flPictCenter) <> 0 then
-          OffsetRect(r, (w - Picture.Width) div 2, (h - Picture.Height) div 2);
-        ClipNeeded := (Picture.Height > h) or (Picture.Width > w);
+          OffsetRect(r, (w - PictureWidth) div 2, (h - PictureHeight) div 2);
+        ClipNeeded := (PictureHeight > h) or (PictureWidth > w);
         if ClipNeeded then
         begin
-          ClipRgn := CreateRectRgn(DRect.Left, DRect.Top, DRect.Right, DRect.Bottom);
+          ClipRgn := CreateRectRgn(r.Left, r.Top, r.Right, r.Bottom);
           PreviousClipRgn := SelectClipRgn(Handle, ClipRgn);
         end;
-        Draw(r.Left, r.Top, Picture.Graphic);
+        r.Right := r.Left + PictureWidth;
+        r.Bottom := r.Top + PictureHeight;
+        StretchDraw(r, Picture.Graphic);
         if ClipNeeded then
         begin
           SelectClipRGN(Handle, PreviousClipRgn);
