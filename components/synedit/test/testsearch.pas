@@ -24,6 +24,7 @@ type
   published
     procedure TestSearchSimple;
     procedure TestSearchSimpleUtf8;
+    procedure TestSearchSimpleRegEx;
   end;
 
 implementation
@@ -155,6 +156,27 @@ begin
   //TestFindNext('none Case',           'ÄÄÄ',   1,1,  1,8,  true,  14,6, 20,6);
 
   fTSearch.Free;
+end;
+
+procedure TTestSynSearch.TestSearchSimpleRegEx;
+begin
+  ReCreateEditWithLinesSimple;
+
+  fTSearch := TSynEditSearch.Create;
+  fTSearch.Sensitive := False;
+  fTSearch.Whole     := False;
+  fTSearch.Backwards := False;
+  fTSearch.RegularExpressions := True;
+  fTSearch.RegExprMultiLine   := False;
+  fTSearch.Replacement := 'a${1}B';
+
+  TestFindNext('RegEx',                '(t...),',   1,2,  25,3,  true,   15,2, 20,2);
+  AssertEquals('RegexRepl', 'aTextB', fTSearch.RegExprReplace);
+
+  fTSearch.Sensitive := True;
+  TestFindNext('RegEx Case',           '(t...),',   1,2,  25,3,  true,   15,3, 20,3);
+  AssertEquals('RegexRepl Case', 'atextB', fTSearch.RegExprReplace);
+
 end;
 
 //more ftsearch:
