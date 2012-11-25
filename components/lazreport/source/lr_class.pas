@@ -4379,35 +4379,6 @@ var
   ClipRgn, PreviousClipRgn: HRGN;
   ClipNeeded: Boolean;
 
-  procedure PrintBitmap(DestRect: TRect; Bitmap: TBitmap);
-  var
-    {%H-}BitmapHeader: pBitmapInfo;
-  begin
-    aCanvas.StretchDraw(DestRect, Bitmap);
-    //**
-    {GetDIBSizes(Bitmap.Handle, HeaderSize, ImageSize);
-    GetMem(BitmapHeader, HeaderSize);
-    GetMem(BitmapImage, ImageSize);
-    try
-      GetDIB(Bitmap.Handle, Bitmap.Palette, BitmapHeader^, BitmapImage^);
-      StretchDIBits(
-        aCanvas.Handle,
-        DestRect.Left, DestRect.Top,     // Destination Origin
-        DestRect.Right - DestRect.Left,  // Destination Width
-        DestRect.Bottom - DestRect.Top,  // Destination Height
-        0, 0,                            // Source Origin
-        Bitmap.Width, Bitmap.Height,     // Source Width & Height
-        BitmapImage,
-        TBitmapInfo(BitmapHeader^),
-        DIB_RGB_COLORS,
-        SRCCOPY)
-    finally
-      FreeMem(BitmapHeader);
-      FreeMem(BitmapImage)
-    end;
-    }
-  end;
-
 begin
   {$IFDEF DebugLR}
   DebugLnEnter('TfrPictureView.Draw INI');
@@ -4448,11 +4419,7 @@ begin
           if (Flags and flPictCenter) <> 0 then
             OffsetRect(r, (w - w1) div 2, (h - h1) div 2);
         end;
-
-        if IsPrinting and (Picture.Graphic is TBitmap) then
-          PrintBitmap(r, Picture.Bitmap)
-        else
-          StretchDraw(r, Picture.Graphic);
+        StretchDraw(r, Picture.Graphic);
       end
       else
       begin
