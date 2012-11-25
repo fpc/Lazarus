@@ -964,7 +964,6 @@ begin
 
   Widget := {%H-}PGtkWidget(AWinControl.Handle);
   LblWidget := (pGtkBin(Widget)^.Child);
-
   if LblWidget <> nil then
   begin
     Gtk2WidgetSet.SetWidgetFont(LblWidget, AFont);
@@ -977,6 +976,7 @@ class procedure TGtk2WSCustomCheckBox.SetText(const AWinControl: TWinControl;
   const AText: String);
 var
   BoxWidget: PGtkWidget;
+  B: Boolean;
 begin
   if not WSCheckHandleAllocated(AWincontrol, 'SetText') then Exit;
   BoxWidget := {%H-}PGtkWidget(AWinControl.Handle);
@@ -986,9 +986,15 @@ begin
     gtk_widget_hide(PGtkBin(BoxWidget)^.child);
   end else
   begin
+    B := gtk_label_get_text(PGtkLabel(PGtkBin(BoxWidget)^.child)) = '';
     gtk_widget_show(PGtkBin(BoxWidget)^.child);
     gtk_button_set_label(PGtkButton(BoxWidget), PChar(Ampersands2Underscore(AText)));
     gtk_button_set_use_underline(PGtkButton(BoxWidget), True);
+    if B then
+    begin
+      SetColor(AWinControl);
+      SetFont(AWinControl, AWinControl.Font);
+    end;
   end;
 end;
 
