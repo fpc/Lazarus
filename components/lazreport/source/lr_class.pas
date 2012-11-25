@@ -4414,8 +4414,8 @@ begin
   {$ENDIF}
   BeginDraw(aCanvas);
   CalcGaps;
-  w := DRect.Right - DRect.Left;
-  h := DRect.Bottom - DRect.Top;
+  w := DRect.Right - DRect.Left - 1;
+  h := DRect.Bottom - DRect.Top - 1;
   with aCanvas do
   begin
     ShowBackground;
@@ -4430,19 +4430,19 @@ begin
     end
     else if not ((Picture.Graphic = nil) or Picture.Graphic.Empty) then
     begin
+      r := DRect;
+      Dec(r.Bottom);
+      Dec(r.Right);
       if (Flags and flStretched) <> 0 then
       begin
-        r := DRect;
         if (Flags and flPictRatio) <> 0 then
         begin
           kx := dx / Picture.Width;
           ky := dy / Picture.Height;
           if kx < ky then
-            r := Rect(DRect.Left, DRect.Top,
-              DRect.Right, DRect.Top + Round(Picture.Height * kx))
+            r.Bottom := r.Top + Round(Picture.Height * kx)
           else
-            r := Rect(DRect.Left, DRect.Top,
-              DRect.Left + Round(Picture.Width * ky), DRect.Bottom);
+            r.Right := r.Left + Round(Picture.Width * ky);
           w1 := r.Right - r.Left;
           h1 := r.Bottom - r.Top;
           if (Flags and flPictCenter) <> 0 then
@@ -4456,7 +4456,6 @@ begin
       end
       else
       begin
-        r := DRect;
         if (Flags and flPictCenter) <> 0 then
           OffsetRect(r, (w - Picture.Width) div 2, (h - Picture.Height) div 2);
         ClipNeeded := (Picture.Height > h) or (Picture.Width > w);
