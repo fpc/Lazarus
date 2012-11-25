@@ -19,8 +19,6 @@ Notes
 
 *)
 
-{.$define DISABLE_DEFAULT_EXPORT_FILTER}
-
 interface
 
 {$I LR_Vers.inc}
@@ -574,13 +572,9 @@ begin
   if not (csDesigning in TfrReport(Doc).ComponentState) then
   begin
     ZoomBtn.Visible := pbZoom in TfrReport(Doc).PreviewButtons;
-    {$ifdef DISABLE_DEFAULT_EXPORT_FILTER}
-    SaveBtn.Visible := (pbSave in TfrReport(Doc).PreviewButtons) and (frFiltersCount > 0);
-    LoadBtn.Visible := False;
-    {$else}
-    SaveBtn.Visible := pbSave in TfrReport(Doc).PreviewButtons;
+    SaveBtn.Visible := (pbSave in TfrReport(Doc).PreviewButtons) and not
+      ((frFiltersCount = 0) and (roHideDefaultFilter in TfrReport(Doc).Options));
     LoadBtn.Visible := pbLoad in TfrReport(Doc).PreviewButtons;
-    {$endif}
     PrintBtn.Visible := pbPrint in TfrReport(Doc).PreviewButtons;
     ExitBtn.Visible := pbExit in TfrReport(Doc).PreviewButtons;
     if not ZoomBtn.Visible then
@@ -1131,16 +1125,24 @@ begin
      LoadFromFile(FileName);
 end;
 
-{$ifdef DISABLE_DEFAULT_EXPORT_FILTER}
 procedure TfrPreviewForm.SaveBtnClick(Sender: TObject);
 var
-  i, InitialIndex: Integer;
+  i, Index, IndexOffset: Integer;
   FilterStr, FilterExtension, FileExtension: String;
   FilterInfo: TfrExportFilterInfo;
 begin
   if EMFPages = nil then Exit;
-  InitialIndex := 1;
-  FilterStr := '';
+  Index := 1;
+  if not (roHideDefaultFilter in TfrReport(Doc).Options) then
+  begin
+    FilterStr := sRepFile + ' (*.frp)|*.frp';
+    IndexOffset := 2;
+  end
+  else
+  begin
+    FilterStr := '';
+    IndexOffset := 1;
+  end;
   FileExtension := ExtractFileExt(SaveDialog.FileName);
   for i := 0 to frFiltersCount - 1 do
   begin
@@ -1149,52 +1151,24 @@ begin
       FilterStr := FilterStr + '|';
     FilterStr := FilterStr + FilterInfo.FilterDesc + '|' + FilterInfo.FilterExt;
     FilterExtension := ExtractFileExt(FilterInfo.FilterExt);
-    if (InitialIndex = 1) and (Comparetext(FilterExtension, FileExtension)=0) then
-      InitialIndex := i + 1;
+    if (Index = 1) and (Comparetext(FilterExtension, FileExtension)=0) then
+      Index := i + IndexOffset;
   end;
   SaveDialog.Filter := FilterStr;
-  SaveDialog.FilterIndex := InitialIndex;
+  SaveDialog.FilterIndex := Index;
   if SaveDialog.Execute then
   begin
-    ExportToWithFilterIndex(SaveDialog.FilterIndex - 1,
-      ChangeFileExt(SaveDialog.FileName, Copy(frFilters[SaveDialog.FilterIndex - 1].FilterExt, 2, 255)));
+    Index := SaveDialog.FilterIndex - IndexOffset;
+    if Index = -1 then
+      SaveToFile(SaveDialog.FileName)
+    else
+    begin
+      FilterExtension := Copy(frFilters[Index].FilterExt, 2, 255);
+      ExportToWithFilterIndex(Index,
+        ChangeFileExt(SaveDialog.FileName, FilterExtension));
+    end;
   end;
 end;
-
-{$else}
-
-procedure TfrPreviewForm.SaveBtnClick(Sender: TObject);
-var
-  i, AIndex: Integer;
-  s,t,fe: String;
-begin
-  if EMFPages = nil then Exit;
-  AIndex := 1;
-  fe := ExtractFileExt(SaveDialog.FileName);
-  s := sRepFile + ' (*.frp)|*.frp';
-  for i := 0 to frFiltersCount-1 do
-  begin
-    s := s + '|' + frFilters[i].FilterDesc + '|' + frFilters[i].FilterExt;
-    t := ExtractFileExt(frFilters[i].FilterExt);
-    if (AIndex=1) and (Comparetext(t, fe)=0) then
-      AIndex := i + 2;
-  end;
-  with SaveDialog do
-  begin
-    Filter := s;
-    FilterIndex := AIndex;
-    if Execute then
-      if FilterIndex = 1 then
-        SaveToFile(FileName)
-      else
-      begin
-        ExportToWithFilterIndex(FilterIndex-2,
-          ChangeFileExt(FileName, Copy(frFilters[FilterIndex - 2].FilterExt, 2, 255)));
-      end;
-  end;
-end;
-
-{$endif}
 
 procedure TfrPreviewForm.PrintBtnClick(Sender: TObject);
 begin
