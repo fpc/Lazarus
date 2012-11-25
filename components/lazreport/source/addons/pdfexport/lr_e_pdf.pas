@@ -304,9 +304,11 @@ var
   r: Double;
   L: Integer;
   pw, ph: Integer;
+  Picture: TPicture;
 begin
+  Picture := View.Picture;
 
-  if View.Picture.Graphic is TJpegImage then
+  if Picture.Graphic is TJpegImage then
     PRImage := TPRJpegImage.Create(PRPanel)
   else
     PRImage := TPRImage.Create(PRPanel);
@@ -319,9 +321,9 @@ begin
   if view.Stretched then
   begin
     if (View.Flags and flPictRatio<>0) and
-       (View.Picture.Width>0) and (View.Picture.Height>0) then
+       (Picture.Width>0) and (Picture.Height>0) then
     begin
-      r  := View.Picture.Width/View.Picture.Height;
+      r  := Picture.Width/Picture.Height;
       if (w/h) < r then
       begin
         L := h;
@@ -342,8 +344,8 @@ begin
     PRImage.ScaleX := PDFEscX;
     PRImage.ScaleY := PDFEscY;
     if (View.Flags and flPictCenter<>0) then begin
-      pw := trunc(View.Picture.Width * PDFEscX + 1.5);
-      ph := trunc(View.Picture.Height * PDFEscY + 1.5);
+      pw := trunc(Picture.Width * PDFEscX + 1.5);
+      ph := trunc(Picture.Height * PDFEscY + 1.5);
        x := x + (w - pw) div 2 - 1;
        y := y + (h - ph) div 2 - 1;
     end;
@@ -358,7 +360,7 @@ begin
   PRImage.Height := ph;
   PRImage.Width := pw;
 
-  PRImage.Picture.Graphic := View.Picture.Graphic;
+  PRImage.Picture.Graphic := Picture.Graphic;
 end;
 
 procedure TfrTNPDFExportFilter.ShowRoundRect(View: TfrRoundRectView; x, y, h,
