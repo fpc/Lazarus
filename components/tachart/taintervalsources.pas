@@ -68,14 +68,16 @@ type
   strict private
     FDateTimeFormat: String;
     FSteps: TDateTimeSteps;
+    procedure SetDateTimeFormat(AValue: String);
+    procedure SetSteps(AValue: TDateTimeSteps);
   public
     constructor Create(AOwner: TComponent); override;
     procedure ValuesInRange(
       AParams: TValuesInRangeParams; var AValues: TChartValueTextArray); override;
   published
-    property DateTimeFormat: String read FDateTimeFormat write FDateTimeFormat;
+    property DateTimeFormat: String read FDateTimeFormat write SetDateTimeFormat;
     property Steps: TDateTimeSteps
-      read FSteps write FSteps default DATE_TIME_STEPS_ALL;
+      read FSteps write SetSteps default DATE_TIME_STEPS_ALL;
   end;
 
 
@@ -110,6 +112,7 @@ type
     procedure CheckStep(AStepCoeff: Double);
     function GraphToAxis(AX: Double): Double;
     function NextValue(AValue: TDateTime): Double;
+    function StartValue(AValue: TDateTime): TDateTime;
   end;
 
 procedure Register;
@@ -158,6 +161,18 @@ begin
         Result := IncYear(AValue, Round(FBestStepCoeff));
     dtsMonth: Result := IncMonth(AValue, Round(FBestStepCoeff));
     otherwise Result := AValue + FStepLen;
+  end;
+end;
+
+function TDateTimeIntervalsHelper.StartValue(AValue: TDateTime): TDateTime;
+begin
+  Result := Int(AValue / FStepLen - 1) * FStepLen;
+  case FBestStep of
+    dtsYear:
+      // DateTime arithmetics fails on large year numbers.
+      if FBestStepCoeff <= 10 then
+        Result := StartOfTheYear(AValue);
+    dtsMonth: Result := StartOfTheMonth(AValue);
   end;
 end;
 
@@ -306,6 +321,8 @@ procedure TIntervalChartSource.SetParams(AValue: TChartAxisIntervalParams);
 begin
   if FParams = AValue then exit;
   FParams.Assign(AValue);
+  InvalidateCaches;
+  Notify;
 end;
 
 procedure TIntervalChartSource.SetYCount(AValue: Cardinal);
@@ -360,6 +377,22 @@ constructor TDateTimeIntervalChartSource.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FSteps := DATE_TIME_STEPS_ALL;
+end;
+
+procedure TDateTimeIntervalChartSource.SetDateTimeFormat(AValue: String);
+begin
+  if FDateTimeFormat = AValue then exit;
+  FDateTimeFormat := AValue;
+  InvalidateCaches;
+  Notify;
+end;
+
+procedure TDateTimeIntervalChartSource.SetSteps(AValue: TDateTimeSteps);
+begin
+  if FSteps = AValue then exit;
+  FSteps := AValue;
+  InvalidateCaches;
+  Notify;
 end;
 
 procedure TDateTimeIntervalChartSource.ValuesInRange(
@@ -443,8 +476,7 @@ begin
 
   if IsInfinite(helper.FBestStepCoeff) then exit;
 
-  with helper do
-    start := Int(FOrigParams.FMin / FStepLen - 1) * FStepLen;
+  start := helper.StartValue(helper.FOrigParams.FMin);
   cnt := 1;
   x := start;
   while (x <= helper.FOrigParams.FMax) and (cnt < MAX_COUNT) do begin
