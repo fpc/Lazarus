@@ -113,16 +113,21 @@ type
     property Source;
   end;
 
-  { TOpenHighLowCloseSeries }
+  TOHLCDownPen = class(TPen)
+  published
+    property Color default clTAColor;
+  end;
 
   TOpenHighLowCloseSeries = class(TBasicPointSeries)
   private
+    FDownLinePen: TOHLCDownPen;
     FLinePen: TPen;
     FTickWidth: Cardinal;
     FYIndexClose: Cardinal;
     FYIndexHigh: Cardinal;
     FYIndexLow: Cardinal;
     FYIndexOpen: Cardinal;
+    procedure SetDownLinePen(AValue: TOHLCDownPen);
     procedure SetLinePen(AValue: TPen);
     procedure SetTickWidth(AValue: Cardinal);
     procedure SetYIndexClose(AValue: Cardinal);
@@ -135,11 +140,12 @@ type
   public
     procedure Assign(ASource: TPersistent); override;
     constructor Create(AOwner: TComponent); override;
-    destructor  Destroy; override;
+    destructor Destroy; override;
 
     procedure Draw(ADrawer: IChartDrawer); override;
     function Extent: TDoubleRect; override;
   published
+    property DownLinePen: TOHLCDownPen read FDownLinePen write SetDownLinePen;
     property LinePen: TPen read FLinePen write SetLinePen;
     property TickWidth: Cardinal
       read FTickWidth write SetTickWidth default DEF_OHLC_TICK_WIDTH;
@@ -483,6 +489,7 @@ procedure TOpenHighLowCloseSeries.Assign(ASource: TPersistent);
 begin
   if ASource is TOpenHighLowCloseSeries then
     with TOpenHighLowCloseSeries(ASource) do begin
+      Self.DownLinePen := FDownLinePen;
       Self.LinePen := FLinePen;
       Self.FTickWidth := FTickWidth;
       Self.FYIndexClose := FYIndexClose;
@@ -496,6 +503,9 @@ end;
 constructor TOpenHighLowCloseSeries.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
+  FDownLinePen := TOHLCDownPen.Create;
+  FDownLinePen.Color := clTAColor;
+  FDownLinePen.OnChange := @StyleChanged;
   FLinePen := TPen.Create;
   FLinePen.OnChange := @StyleChanged;
   FTickWidth := DEF_OHLC_TICK_WIDTH;
@@ -507,8 +517,9 @@ end;
 
 destructor TOpenHighLowCloseSeries.Destroy;
 begin
+  FreeAndNil(FDownLinePen);
   FreeAndNil(FLinePen);
-  inherited Destroy;
+  inherited;
 end;
 
 procedure TOpenHighLowCloseSeries.Draw(ADrawer: IChartDrawer);
@@ -556,7 +567,10 @@ begin
     yclose := GetGraphPointYIndex(i, YIndexClose);
     tw := GetXRange(x, i) * PERCENT * TickWidth;
 
-    ADrawer.Pen := LinePen;
+    if (DownLinePen.Color = clTAColor) or (yopen <= yclose) then
+      ADrawer.Pen := LinePen
+    else
+      ADrawer.Pen := DownLinePen;
     DoLine(x, yhigh, x, ylow);
     DoLine(x - tw, yopen, x, yopen);
     DoLine(x, yclose, x + tw, yclose);
@@ -578,10 +592,17 @@ begin
   Result := LinePen.Color;
 end;
 
+procedure TOpenHighLowCloseSeries.SetDownLinePen(AValue: TOHLCDownPen);
+begin
+  if FDownLinePen = AValue then exit;
+  FDownLinePen.Assign(AValue);
+  UpdateParentChart;
+end;
+
 procedure TOpenHighLowCloseSeries.SetLinePen(AValue: TPen);
 begin
   if FLinePen = AValue then exit;
-  FLinePen := AValue;
+  FLinePen.Assign(AValue);
   UpdateParentChart;
 end;
 
