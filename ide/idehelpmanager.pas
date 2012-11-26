@@ -460,24 +460,17 @@ begin
         Result:=copy(Result,1,p-1)+copy(Result,EndPos,length(Result));
     end else if Result[p]='&' then begin
       // special chars: &lt; &gt; &amp;
-      if (Result[p+1]='l') and (Result[p+2]='t') then begin
-        EndPos:=p+3;
-        if (EndPos<length(Result)) and (Result[EndPos]=';') then
-          inc(EndPos);
-        Result:=copy(Result,1,p-1)+'<'+copy(Result,EndPos,length(Result));
-      end else
-      if (Result[p+1]='g') and (Result[p+2]='t') then begin
-        EndPos:=p+3;
-        if (EndPos<length(Result)) and (Result[EndPos]=';') then
-          inc(EndPos);
-        Result:=copy(Result,1,p-1)+'>'+copy(Result,EndPos,length(Result));
-      end else
-      if (Result[p+1]='a') and (Result[p+2]='m') and (Result[p+3]='p') then begin
-        EndPos:=p+4;
-        if (EndPos<length(Result)) and (Result[EndPos]=';') then
-          inc(EndPos);
-        // double '&' to prevent underlining
-        Result:=copy(Result,1,p-1)+'&&'+copy(Result,EndPos,length(Result));
+        if (p+2<Length(Result)) and (Result[p+1]='l') and (Result[p+2]='t') and (Result[p+3]=';') then begin
+          EndPos:=p+4;
+          Result:=copy(Result,1,p-1)+'<'+copy(Result,EndPos,length(Result));
+        end else
+        if (p+2<Length(Result)) and (Result[p+1]='g') and (Result[p+2]='t') and (Result[p+3]=';') then begin
+          EndPos:=p+4;
+          Result:=copy(Result,1,p-1)+'>'+copy(Result,EndPos,length(Result));
+        end else
+        if (p+3<Length(Result)) and (Result[p+1]='a') and (Result[p+2]='m') and (Result[p+3]='p') and (Result[p+4]=';') then begin
+          EndPos:=p+5;
+        Result:=copy(Result,1,p-1)+'&'+copy(Result,EndPos,length(Result));
       end;
       inc(p);
     end else
@@ -518,6 +511,7 @@ begin
   Alignment := taLeftJustify;
   Font.Color := clInfoText;
   BorderSpacing.Around := 4;
+  ShowAccelChar := False;  //don't underline after &
 end;
 
 function TSimpleHTMLControl.GetURL: string;
