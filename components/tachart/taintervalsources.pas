@@ -108,6 +108,7 @@ type
     procedure CheckStep(AStepCoeff: Double);
     function GraphToAxis(AX: Double): Double;
     function NextValue(AValue: TDateTime): Double;
+    function StartValue(AValue: TDateTime): TDateTime;
   end;
 
 procedure Register;
@@ -156,6 +157,18 @@ begin
         Result := IncYear(AValue, Round(FBestStepCoeff));
     dtsMonth: Result := IncMonth(AValue, Round(FBestStepCoeff));
     otherwise Result := AValue + FStepLen;
+  end;
+end;
+
+function TDateTimeIntervalsHelper.StartValue(AValue: TDateTime): TDateTime;
+begin
+  Result := Int(AValue / FStepLen - 1) * FStepLen;
+  case FBestStep of
+    dtsYear:
+      // DateTime arithmetics fails on large year numbers.
+      if FBestStepCoeff <= 10 then
+        Result := StartOfTheYear(AValue);
+    dtsMonth: Result := StartOfTheMonth(AValue);
   end;
 end;
 
@@ -413,8 +426,7 @@ begin
 
   if IsInfinite(helper.FBestStepCoeff) then exit;
 
-  with helper do
-    start := Int(FOrigParams.FMin / FStepLen - 1) * FStepLen;
+  start := helper.StartValue(helper.FOrigParams.FMin);
   cnt := 1;
   x := start;
   while (x <= helper.FOrigParams.FMax) and (cnt < MAX_COUNT) do begin
