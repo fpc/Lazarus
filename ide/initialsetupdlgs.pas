@@ -1398,6 +1398,7 @@ end;
 procedure TInitialSetupDialog.CompilerComboBoxChange(Sender: TObject);
 begin
   UpdateCompilerNote;
+  UpdateFPCSrcDirNote;
 end;
 
 procedure TInitialSetupDialog.DebuggerBrowseButtonClick(Sender: TObject);
