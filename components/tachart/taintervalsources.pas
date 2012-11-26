@@ -66,14 +66,16 @@ type
   strict private
     FDateTimeFormat: String;
     FSteps: TDateTimeSteps;
+    procedure SetDateTimeFormat(AValue: String);
+    procedure SetSteps(AValue: TDateTimeSteps);
   public
     constructor Create(AOwner: TComponent); override;
     procedure ValuesInRange(
       AParams: TValuesInRangeParams; var AValues: TChartValueTextArray); override;
   published
-    property DateTimeFormat: String read FDateTimeFormat write FDateTimeFormat;
+    property DateTimeFormat: String read FDateTimeFormat write SetDateTimeFormat;
     property Steps: TDateTimeSteps
-      read FSteps write FSteps default DATE_TIME_STEPS_ALL;
+      read FSteps write SetSteps default DATE_TIME_STEPS_ALL;
   end;
 
 
@@ -288,6 +290,8 @@ procedure TIntervalChartSource.SetParams(AValue: TChartAxisIntervalParams);
 begin
   if FParams = AValue then exit;
   FParams.Assign(AValue);
+  InvalidateCaches;
+  Notify;
 end;
 
 procedure TIntervalChartSource.SetYCount(AValue: Cardinal);
@@ -343,6 +347,22 @@ constructor TDateTimeIntervalChartSource.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FSteps := DATE_TIME_STEPS_ALL;
+end;
+
+procedure TDateTimeIntervalChartSource.SetDateTimeFormat(AValue: String);
+begin
+  if FDateTimeFormat = AValue then exit;
+  FDateTimeFormat := AValue;
+  InvalidateCaches;
+  Notify;
+end;
+
+procedure TDateTimeIntervalChartSource.SetSteps(AValue: TDateTimeSteps);
+begin
+  if FSteps = AValue then exit;
+  FSteps := AValue;
+  InvalidateCaches;
+  Notify;
 end;
 
 procedure TDateTimeIntervalChartSource.ValuesInRange(
