@@ -20,11 +20,11 @@ object Form1: TForm1
     TabOrder = 0
     object tsBubble: TTabSheet
       Caption = 'Bubble'
-      ClientHeight = 433
+      ClientHeight = 431
       ClientWidth = 521
       object chBubble: TChart
         Left = 0
-        Height = 433
+        Height = 431
         Top = 0
         Width = 521
         AxisList = <        
@@ -296,8 +296,13 @@ object Form1: TForm1
         ParentColor = False
         object chOHLCOpenHighLowCloseSeries1: TOpenHighLowCloseSeries
           Title = 'test'
+          DownLinePen.Color = clRed
+          DownLinePen.EndCap = pecSquare
+          DownLinePen.Width = 2
+          LinePen.Color = clBlue
           LinePen.EndCap = pecSquare
           LinePen.Width = 2
+          TickWidth = 30
         end
       end
     end

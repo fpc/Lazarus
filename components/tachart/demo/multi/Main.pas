@@ -49,6 +49,9 @@ implementation
 
 {$R *.lfm}
 
+uses
+  TAChartUtils;
+
 { TForm1 }
 
 procedure TForm1.cbPercentageChange(Sender: TObject);
@@ -61,6 +64,7 @@ var
   s: String;
   i: Integer;
 begin
+  Unused(Index);
   s := '';
   for i := 0 to cgShowStackLevels.Items.Count - 1 do begin
     if cgShowStackLevels.Checked[i] then
@@ -96,6 +100,8 @@ begin
       ylist[j] += Random(20) / 10 + 1;
       ylist[j + 1] := ylist[j];
     end;
+    if Random(3) = 1 then
+      Exchange(ylist[1], ylist[2]);
     chOHLCOpenHighLowCloseSeries1.AddXY(i, y, ylist);
   end;
 end;
