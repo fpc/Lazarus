@@ -27,7 +27,7 @@ unit SynGutterLineOverview;
 interface
 
 uses
-  Classes, Graphics, Controls, LCLProc, LCLType, LCLIntf, FPCanvas, sysutils, math,
+  Classes, Graphics, Controls, LCLProc, LCLType, LCLIntf, Forms, FPCanvas, sysutils, math,
   SynGutterBase, SynEditTypes, LazSynEditText, SynEditTextBuffer, SynEditMarks,
   SynEditMiscClasses;
 
@@ -272,14 +272,19 @@ type
   end;
 
   { TSynGutterLineOverview }
+  TSynGutterLOvStateFlag = (losLineCountChanged, losResized, losASyncScheduled, losWaitForPaint);
+  TSynGutterLOvStateFlags = set of TSynGutterLOvStateFlag;
 
   TSynGutterLineOverview = class(TSynGutterPartBase)
   private
     FProviders: TSynGutterLineOverviewProviderList;
     FWinControl: TSynChildWinControl;
     FLineMarks: TSynGutterLOvLineMarksList;
+    FState: TSynGutterLOvStateFlags;
     function GetMarkHeight: Integer;
     procedure SetMarkHeight(const AValue: Integer);
+    procedure ScheduleASync(AStates: TSynGutterLOvStateFlags);
+    procedure ExecASync(Data: PtrInt);
   protected
     function  PreferedWidth: Integer; override;
     procedure Init; override;
@@ -1234,6 +1239,7 @@ end;
 
 destructor TSynGutterLineOverview.Destroy;
 begin
+  Application.RemoveAsyncCalls(Self);
   TSynEditStringList(TextBuffer).RemoveHanlders(self);
   FreeAndNil(FProviders);
   FreeAndNil(FWinControl);
@@ -1246,7 +1252,7 @@ procedure TSynGutterLineOverview.LineCountChanged(Sender: TSynEditStrings; AInde
 begin
   FLineMarks.TextLineCount := TextBuffer.Count;
   if not SynEdit.HandleAllocated then exit;
-  FWinControl.Invalidate;
+  ScheduleASync([losLineCountChanged]);
 end;
 
 procedure TSynGutterLineOverview.BufferChanged(Sender: TObject);
@@ -1329,10 +1335,15 @@ begin
   FWinControl.Left := Left;
   FWinControl.Width := Width;
   FWinControl.Height := Height;
-  FLineMarks.PixelHeight := Height;
-  FWinControl.Invalidate;
-  for i := 0 to FProviders.Count - 1 do
-    FProviders[i].Height := Height;
+
+  ScheduleASync([losResized]); // May only be executed after mouse up
+  if not (losWaitForPaint in FState) then begin
+    FLineMarks.PixelHeight := Height;
+    for i := 0 to FProviders.Count - 1 do
+      FProviders[i].Height := Height;
+    FWinControl.Invalidate;
+    FState := FState + [losWaitForPaint];
+  end;
 end;
 
 procedure TSynGutterLineOverview.PaintWinControl(Sender: TObject);
@@ -1340,6 +1351,7 @@ var
   i: Integer;
   AClip: TRect;
 begin
+  FState := FState - [losWaitForPaint];
   if not Visible then exit;
   AClip := FWinControl.Canvas.ClipRect;
   AClip.Left := 0;
@@ -1362,6 +1374,34 @@ end;
 procedure TSynGutterLineOverview.SetMarkHeight(const AValue: Integer);
 begin
   FLineMarks.ItemHeight := AValue;
+end;
+
+procedure TSynGutterLineOverview.ScheduleASync(AStates: TSynGutterLOvStateFlags);
+begin
+  if not (losASyncScheduled in FState) then
+    Application.QueueAsyncCall(@ExecASync, 0);
+  FState := FState + [losASyncScheduled] + AStates;
+end;
+
+procedure TSynGutterLineOverview.ExecASync(Data: PtrInt);
+var
+  i: Integer;
+begin
+  if losLineCountChanged in FState then begin
+    for i := 0 to FProviders.Count - 1 do
+      FProviders[i].ReCalc;
+    FLineMarks.ReBuild;
+  end;
+
+  if losResized in FState then begin
+    FLineMarks.PixelHeight := Height;
+
+    for i := 0 to FProviders.Count - 1 do
+      FProviders[i].Height := Height;
+  end;
+
+  FWinControl.Invalidate;
+  FState := [];
 end;
 
 function TSynGutterLineOverview.PreferedWidth: Integer;

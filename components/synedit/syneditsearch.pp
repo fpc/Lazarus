@@ -874,7 +874,7 @@ begin
   //          regex multi line whole word
   repeat
     LineStr:=Lines[y];
-    if ASupportUnicodeCase and (not fSensitive) then LineStr := UTF8LowerCase(LineStr);
+    if ASupportUnicodeCase and (not fSensitive) and (not fRegExpr) then LineStr := UTF8LowerCase(LineStr);
     LineLen:=length(LineStr);
     Line:=PChar(LineStr);
     if not IsFirstLine then begin
