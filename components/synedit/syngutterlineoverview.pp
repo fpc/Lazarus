@@ -1429,7 +1429,7 @@ begin
   end;
 
   FWinControl.Invalidate;
-  FState := [];
+  FState := FState - [losASyncScheduled, losResized, losLineCountChanged];
 end;
 
 function TSynGutterLineOverview.PreferedWidth: Integer;
