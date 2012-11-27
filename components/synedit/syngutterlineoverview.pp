@@ -1272,7 +1272,7 @@ procedure TSynGutterLineOverview.LineCountChanged(Sender: TSynEditStrings; AInde
   ACount: Integer);
 begin
   FLineMarks.TextLineCount := TextBuffer.Count;
-  if not SynEdit.HandleAllocated then exit;
+  if (not SynEdit.HandleAllocated) or (not Self.Visible) then exit;
   ScheduleASync([losLineCountChanged]);
 end;
 
@@ -1288,12 +1288,16 @@ procedure TSynGutterLineOverview.SetVisible(const AValue: boolean);
 begin
   inherited SetVisible(AValue);
   FWinControl.Visible := Visible and Gutter.Visible;
+  if FWinControl.Visible then
+    ScheduleASync([losResized, losLineCountChanged]);
 end;
 
 procedure TSynGutterLineOverview.GutterVisibilityChanged;
 begin
   inherited GutterVisibilityChanged;
   FWinControl.Visible := Visible and Gutter.Visible;
+  if FWinControl.Visible then
+    ScheduleASync([losResized, losLineCountChanged]);
 end;
 
 procedure TSynGutterLineOverview.DoChange(Sender: TObject);
@@ -1351,7 +1355,7 @@ var
   i: Integer;
 begin
   inherited DoResize(Sender);
-  if not SynEdit.HandleAllocated then exit;
+  if (not SynEdit.HandleAllocated) or (not Self.Visible) then exit;
   FWinControl.Top := Top;
   FWinControl.Left := Left;
   FWinControl.Width := Width;
