@@ -4860,8 +4860,9 @@ end;
 
 function TCustomSynEdit.GetCanPaste:Boolean;
 begin
-  Result := Clipboard.HasFormat(CF_TEXT)
-    or Clipboard.HasFormat(TSynClipboardStream.ClipboardFormatId)
+  Result := (Clipboard.HasFormat(CF_TEXT) or
+             Clipboard.HasFormat(TSynClipboardStream.ClipboardFormatId)
+            )
 end;
 
 procedure TCustomSynEdit.Redo;
@@ -7949,15 +7950,17 @@ begin
     Result := Focused;
     if Result then
     begin
-      if (TheAction is TEditCut) or (TheAction is TEditCopy) then
+      if (TheAction is TEditCut) then
+        TEditAction(TheAction).Enabled := SelAvail and (not ReadOnly)
+      else if (TheAction is TEditCopy) then
         TEditAction(TheAction).Enabled := SelAvail
       else if TheAction is TEditPaste then
-        TEditAction(TheAction).Enabled := CanPaste
+        TEditAction(TheAction).Enabled := CanPaste and (not ReadOnly)
 {$IFDEF SYN_COMPILER_5_UP}
       else if TheAction is TEditDelete then
-        TEditAction(TheAction).Enabled := TRUE
+        TEditAction(TheAction).Enabled := (not ReadOnly)
       else if TheAction is TEditUndo then
-        TEditAction(TheAction).Enabled := CanUndo
+        TEditAction(TheAction).Enabled := CanUndo and (not ReadOnly)
       else if TheAction is TEditSelectAll then
         TEditAction(TheAction).Enabled := TRUE;
 {$ENDIF}
