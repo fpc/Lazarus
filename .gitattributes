@@ -4022,6 +4022,15 @@ examples/database/dblookup/project1.res -text
 examples/database/dblookup/readme.txt svneol=native#text/plain
 examples/database/dblookup/unit1.lfm svneol=native#text/plain
 examples/database/dblookup/unit1.pas svneol=native#text/plain
+examples/database/sqldbtutorial3/dbconfig.pas svneol=native#text/pascal
+examples/database/sqldbtutorial3/dbconfiggui.lfm svneol=native#text/plain
+examples/database/sqldbtutorial3/dbconfiggui.pas svneol=native#text/pascal
+examples/database/sqldbtutorial3/mainform.lfm svneol=native#text/plain
+examples/database/sqldbtutorial3/mainform.pas svneol=native#text/pascal
+examples/database/sqldbtutorial3/readme.txt svneol=native#text/plain
+examples/database/sqldbtutorial3/sqldbtutorial3.ini svneol=native#text/plain
+examples/database/sqldbtutorial3/sqldbtutorial3.lpi svneol=native#text/plain
+examples/database/sqldbtutorial3/sqldbtutorial3.lpr svneol=native#text/pascal
 examples/dbeditmask/Unit1.lfm svneol=native#text/plain
 examples/dbeditmask/Unit1.pas svneol=native#text/plain
 examples/dbeditmask/project1.lpi svneol=native#text/plain
