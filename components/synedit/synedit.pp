@@ -2998,19 +2998,21 @@ begin
         end;
       emcPasteSelection:
         begin
-          ClipHelper := TSynClipboardStream.Create;
-          try
-            ClipHelper.ReadFromClipboard(PrimarySelection);
-            if ClipHelper.TextP <> nil then begin
-              MoveCaret;
-              if (not FBlockSelection.Persistent) then
-                FBlockSelection.Clear;
-              Result := PasteFromClipboardEx(ClipHelper);
-            end
-            else
-              Result := False;
-          finally
-            ClipHelper.Free;
+          if not ReadOnly then begin
+            ClipHelper := TSynClipboardStream.Create;
+            try
+              ClipHelper.ReadFromClipboard(PrimarySelection);
+              if ClipHelper.TextP <> nil then begin
+                MoveCaret;
+                if (not FBlockSelection.Persistent) then
+                  FBlockSelection.Clear;
+                Result := PasteFromClipboardEx(ClipHelper);
+              end
+              else
+                Result := False;
+            finally
+              ClipHelper.Free;
+            end;
           end;
         end;
       emcMouseLink:
