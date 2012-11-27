@@ -309,6 +309,152 @@ type
     property Items[Index: Integer]: TGDBMIDebuggerCommand read Get write Put; default;
   end;
 
+  {%region       *****  TGDBMIDebuggerCommands  *****   }
+
+  { TGDBMIDebuggerSimpleCommand }
+
+  // not to be used for anything that runs/steps the app
+  TGDBMIDebuggerSimpleCommand = class(TGDBMIDebuggerCommand)
+  private
+    FCommand: String;
+    FFlags: TGDBMICmdFlags;
+    FCallback: TGDBMICallback;
+    FTag: PtrInt;
+    FResult: TGDBMIExecResult;
+  protected
+    procedure DoStateChanged(OldState: TGDBMIDebuggerCommandState); override;
+    function  DoExecute: Boolean; override;
+  public
+    constructor Create(AOwner: TGDBMIDebugger;
+                       const ACommand: String;
+                       const AValues: array of const;
+                       const AFlags: TGDBMICmdFlags;
+                       const ACallback: TGDBMICallback;
+                       const ATag: PtrInt);
+    function  DebugText: String; override;
+    property  Result: TGDBMIExecResult read FResult;
+  end;
+
+  { TGDBMIDebuggerCommandInitDebugger }
+
+  TGDBMIDebuggerCommandInitDebugger = class(TGDBMIDebuggerCommand)
+  protected
+    FSuccess: Boolean;
+    function  DoExecute: Boolean; override;
+  public
+    property Success: Boolean read FSuccess;
+  end;
+
+  { TGDBMIDebuggerCommandChangeFilename }
+
+  TGDBMIDebuggerCommandChangeFilename = class(TGDBMIDebuggerCommand)
+  private
+    FErrorMsg: String;
+    FSuccess: Boolean;
+    FFileName: String;
+  protected
+    function  DoExecute: Boolean; override;
+  public
+    constructor Create(AOwner: TGDBMIDebugger; AFileName: String);
+    property Success: Boolean read FSuccess;
+    property ErrorMsg: String read FErrorMsg;
+  end;
+
+  { TGDBMIDebuggerCommandExecuteBase }
+
+  TGDBMIDebuggerCommandExecuteBase = class(TGDBMIDebuggerCommand)
+  protected
+    function ProcessRunning(var AStoppedParams: String; out AResult: TGDBMIExecResult): Boolean;
+    function ParseBreakInsertError(var AText: String; out AnId: Integer): Boolean;
+  end;
+
+  { TGDBMIDebuggerCommandStartBase }
+
+  TGDBMIDebuggerCommandStartBase = class(TGDBMIDebuggerCommandExecuteBase)
+  protected
+    procedure SetTargetInfo(const AFileType: String);
+    function  CheckFunction(const AFunction: String): Boolean;
+    procedure RetrieveRegcall;
+    procedure CheckAvailableTypes;
+    procedure DetectForceableBreaks;
+  end;
+
+  { TGDBMIDebuggerCommandStartDebugging }
+
+  TGDBMIDebuggerCommandStartDebugging = class(TGDBMIDebuggerCommandStartBase)
+  private
+    FContinueCommand: TGDBMIDebuggerCommand;
+    FSuccess: Boolean;
+  protected
+    function  DoExecute: Boolean; override;
+    function  GdbRunCommand: String; virtual;
+  public
+    constructor Create(AOwner: TGDBMIDebugger; AContinueCommand: TGDBMIDebuggerCommand);
+    destructor Destroy; override;
+    function  DebugText: String; override;
+    property ContinueCommand: TGDBMIDebuggerCommand read FContinueCommand;
+    property Success: Boolean read FSuccess;
+  end;
+
+  { TGDBMIDebuggerCommandAttach }
+
+  TGDBMIDebuggerCommandAttach = class(TGDBMIDebuggerCommandStartBase)
+  private
+    FProcessID: String;
+    FSuccess: Boolean;
+  protected
+    function  DoExecute: Boolean; override;
+  public
+    constructor Create(AOwner: TGDBMIDebugger; AProcessID: String);
+    function  DebugText: String; override;
+    property Success: Boolean read FSuccess;
+  end;
+
+  { TGDBMIDebuggerCommandDetach }
+
+  TGDBMIDebuggerCommandDetach = class(TGDBMIDebuggerCommand)
+  protected
+    function  DoExecute: Boolean; override;
+  end;
+
+  { TGDBMIDebuggerCommandExecute }
+
+  TGDBMIDebuggerCommandExecute = class(TGDBMIDebuggerCommandExecuteBase)
+  private
+    FNextExecQueued: Boolean;
+    FResult: TGDBMIExecResult;
+    FExecType: TGDBMIExecCommandType;
+    FCommand: String;
+    FCanKillNow, FDidKillNow: Boolean;
+    FRunToSrc: String;
+    FRunToLine: Integer;
+    FStepBreakPoint: Integer;
+  protected
+    procedure DoLockQueueExecute; override;
+    procedure DoUnockQueueExecute; override;
+    function  ProcessStopped(const AParams: String; const AIgnoreSigIntState: Boolean): Boolean;
+    {$IFDEF MSWindows}
+    function FixThreadForSigTrap: Boolean;
+    {$ENDIF}
+    function  DoExecute: Boolean; override;
+  public
+    constructor Create(AOwner: TGDBMIDebugger; const ExecType: TGDBMIExecCommandType);
+    constructor Create(AOwner: TGDBMIDebugger; const ExecType: TGDBMIExecCommandType; Args: array of const);
+    function  DebugText: String; override;
+    property  Result: TGDBMIExecResult read FResult;
+    property  NextExecQueued: Boolean read FNextExecQueued;
+    function  KillNow: Boolean;
+  end;
+
+  { TGDBMIDebuggerCommandKill }
+
+  TGDBMIDebuggerCommandKill = class(TGDBMIDebuggerCommand)
+  protected
+    function  DoExecute: Boolean; override;
+  end;
+
+  {%endregion}
+
   { TGDBMIInternalBreakPoint }
 
   TGDBMIInternalBreakPoint = class
@@ -473,6 +619,8 @@ type
     function  GetTargetWidth: Byte; override;
     procedure InterruptTarget; virtual;
     function  ParseInitialization: Boolean; virtual;
+    function  CreateCommandInit: TGDBMIDebuggerCommandInitDebugger; virtual;
+    function  CreateCommandStartDebugging(AContinueCommand: TGDBMIDebuggerCommand): TGDBMIDebuggerCommandStartDebugging; virtual;
     function  RequestCommand(const ACommand: TDBGCommand; const AParams: array of const): Boolean; override;
     procedure ClearCommandQueue;
     function  GetIsIdle: Boolean; override;
@@ -519,6 +667,7 @@ type
     // internal testing
     procedure TestCmd(const ACommand: String); override;
   end;
+
 
 resourcestring
   gdbmiErrorOnRunCommand = 'The debugger encountered an error when trying to '
@@ -632,151 +781,6 @@ const
   GDCMD_PRIOR_LOCALS    = 1;   // Run before watches (also registers etc)
 
 type
-  {%region       *****  TGDBMIDebuggerCommands  *****   }
-
-  { TGDBMIDebuggerSimpleCommand }
-
-  // not to be used for anything that runs/steps the app
-  TGDBMIDebuggerSimpleCommand = class(TGDBMIDebuggerCommand)
-  private
-    FCommand: String;
-    FFlags: TGDBMICmdFlags;
-    FCallback: TGDBMICallback;
-    FTag: PtrInt;
-    FResult: TGDBMIExecResult;
-  protected
-    procedure DoStateChanged(OldState: TGDBMIDebuggerCommandState); override;
-    function  DoExecute: Boolean; override;
-  public
-    constructor Create(AOwner: TGDBMIDebugger;
-                       const ACommand: String;
-                       const AValues: array of const;
-                       const AFlags: TGDBMICmdFlags;
-                       const ACallback: TGDBMICallback;
-                       const ATag: PtrInt);
-    function  DebugText: String; override;
-    property  Result: TGDBMIExecResult read FResult;
-  end;
-
-  { TGDBMIDebuggerCommandInitDebugger }
-
-  TGDBMIDebuggerCommandInitDebugger = class(TGDBMIDebuggerCommand)
-  private
-    FSuccess: Boolean;
-  protected
-    function  DoExecute: Boolean; override;
-  public
-    property Success: Boolean read FSuccess;
-  end;
-
-  { TGDBMIDebuggerCommandChangeFilename }
-
-  TGDBMIDebuggerCommandChangeFilename = class(TGDBMIDebuggerCommand)
-  private
-    FErrorMsg: String;
-    FSuccess: Boolean;
-    FFileName: String;
-  protected
-    function  DoExecute: Boolean; override;
-  public
-    constructor Create(AOwner: TGDBMIDebugger; AFileName: String);
-    property Success: Boolean read FSuccess;
-    property ErrorMsg: String read FErrorMsg;
-  end;
-
-  { TGDBMIDebuggerCommandExecuteBase }
-
-  TGDBMIDebuggerCommandExecuteBase = class(TGDBMIDebuggerCommand)
-  protected
-    function ProcessRunning(var AStoppedParams: String; out AResult: TGDBMIExecResult): Boolean;
-    function ParseBreakInsertError(var AText: String; out AnId: Integer): Boolean;
-  end;
-
-  { TGDBMIDebuggerCommandStartBase }
-
-  TGDBMIDebuggerCommandStartBase = class(TGDBMIDebuggerCommandExecuteBase)
-  protected
-    procedure SetTargetInfo(const AFileType: String);
-    function  CheckFunction(const AFunction: String): Boolean;
-    procedure RetrieveRegcall;
-    procedure CheckAvailableTypes;
-    procedure DetectForceableBreaks;
-  end;
-
-  { TGDBMIDebuggerCommandStartDebugging }
-
-  TGDBMIDebuggerCommandStartDebugging = class(TGDBMIDebuggerCommandStartBase)
-  private
-    FContinueCommand: TGDBMIDebuggerCommand;
-    FSuccess: Boolean;
-  protected
-    function  DoExecute: Boolean; override;
-  public
-    constructor Create(AOwner: TGDBMIDebugger; AContinueCommand: TGDBMIDebuggerCommand);
-    destructor Destroy; override;
-    function  DebugText: String; override;
-    property ContinueCommand: TGDBMIDebuggerCommand read FContinueCommand;
-    property Success: Boolean read FSuccess;
-  end;
-
-  { TGDBMIDebuggerCommandAttach }
-
-  TGDBMIDebuggerCommandAttach = class(TGDBMIDebuggerCommandStartBase)
-  private
-    FProcessID: String;
-    FSuccess: Boolean;
-  protected
-    function  DoExecute: Boolean; override;
-  public
-    constructor Create(AOwner: TGDBMIDebugger; AProcessID: String);
-    function  DebugText: String; override;
-    property Success: Boolean read FSuccess;
-  end;
-
-  { TGDBMIDebuggerCommandDetach }
-
-  TGDBMIDebuggerCommandDetach = class(TGDBMIDebuggerCommand)
-  protected
-    function  DoExecute: Boolean; override;
-  end;
-
-  { TGDBMIDebuggerCommandExecute }
-
-  TGDBMIDebuggerCommandExecute = class(TGDBMIDebuggerCommandExecuteBase)
-  private
-    FNextExecQueued: Boolean;
-    FResult: TGDBMIExecResult;
-    FExecType: TGDBMIExecCommandType;
-    FCommand: String;
-    FCanKillNow, FDidKillNow: Boolean;
-    FRunToSrc: String;
-    FRunToLine: Integer;
-    FStepBreakPoint: Integer;
-  protected
-    procedure DoLockQueueExecute; override;
-    procedure DoUnockQueueExecute; override;
-    function  ProcessStopped(const AParams: String; const AIgnoreSigIntState: Boolean): Boolean;
-    {$IFDEF MSWindows}
-    function FixThreadForSigTrap: Boolean;
-    {$ENDIF}
-    function  DoExecute: Boolean; override;
-  public
-    constructor Create(AOwner: TGDBMIDebugger; const ExecType: TGDBMIExecCommandType);
-    constructor Create(AOwner: TGDBMIDebugger; const ExecType: TGDBMIExecCommandType; Args: array of const);
-    function  DebugText: String; override;
-    property  Result: TGDBMIExecResult read FResult;
-    property  NextExecQueued: Boolean read FNextExecQueued;
-    function  KillNow: Boolean;
-  end;
-
-  { TGDBMIDebuggerCommandKill }
-
-  TGDBMIDebuggerCommandKill = class(TGDBMIDebuggerCommand)
-  protected
-    function  DoExecute: Boolean; override;
-  end;
-
-  {%endregion    *^^^*  TGDBMIDebuggerCommands  *^^^*   }
 
   {%region      *****  Locals  *****   }
 
@@ -4318,7 +4322,7 @@ function TGDBMIDebuggerCommandStartDebugging.DoExecute: Boolean;
       else assert(false, 'RunToMain missing init');
     end;
 
-    Cmd := '-exec-run';
+    Cmd := GdbRunCommand;// '-exec-run';
     rval := '';
     R.State := dsError;
     FTheDebugger.FMainAddrBreak.Clear(Self);
@@ -4493,6 +4497,11 @@ function TGDBMIDebuggerCommandStartDebugging.DoExecute: Boolean;
       s := GetPart(['of process '], [' '], R.Values, True);
       Result := StrToIntDef(s, 0);
       if Result <> 0 then exit;
+
+      // returned by gdb server (maybe others)
+      s := GetPart(['Thread '], [' '], R.Values, True);
+      Result := StrToIntDef(s, 0);
+      if Result <> 0 then exit;
     end;
 
     // no PID found
@@ -4628,6 +4637,11 @@ begin
   end;
 
   FSuccess := True;
+end;
+
+function TGDBMIDebuggerCommandStartDebugging.GdbRunCommand: String;
+begin
+  Result := '-exec-run';
 end;
 
 constructor TGDBMIDebuggerCommandStartDebugging.Create(AOwner: TGDBMIDebugger;
@@ -6557,6 +6571,17 @@ begin
   Result := TGDBMIThreads.Create(Self);
 end;
 
+function TGDBMIDebugger.CreateCommandInit: TGDBMIDebuggerCommandInitDebugger;
+begin
+  Result := TGDBMIDebuggerCommandInitDebugger.Create(Self);
+end;
+
+function TGDBMIDebugger.CreateCommandStartDebugging
+  (AContinueCommand: TGDBMIDebuggerCommand): TGDBMIDebuggerCommandStartDebugging;
+begin
+  Result:= TGDBMIDebuggerCommandStartDebugging.Create(Self, AContinueCommand);
+end;
+
 destructor TGDBMIDebugger.Destroy;
 begin
   LockRelease;
@@ -7640,7 +7665,7 @@ begin
         SetState(dsError);
       end
       else begin
-        Cmd := TGDBMIDebuggerCommandInitDebugger.Create(Self);
+        Cmd :=  CreateCommandInit;
         Cmd.AddReference;
         QueueCommand(Cmd);
         if not Cmd.Success then begin
@@ -8004,7 +8029,7 @@ var
   Cmd: TGDBMIDebuggerCommandStartDebugging;
 begin
   // We expect to be run immediately, no queue
-  Cmd := TGDBMIDebuggerCommandStartDebugging.Create(Self, AContinueCommand);
+  Cmd := CreateCommandStartDebugging(AContinueCommand);
   Cmd.AddReference;
   QueueCommand(Cmd);
   Result := Cmd.Success;
