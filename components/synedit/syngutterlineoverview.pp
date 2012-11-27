@@ -1336,6 +1336,12 @@ begin
   FWinControl.Width := Width;
   FWinControl.Height := Height;
 
+  {$IFDEF DARWIN}
+  FLineMarks.PixelHeight := Height;
+  for i := 0 to FProviders.Count - 1 do
+    FProviders[i].Height := Height;
+  FWinControl.Invalidate;
+  {$ELSE}
   ScheduleASync([losResized]); // May only be executed after mouse up
   if not (losWaitForPaint in FState) then begin
     FLineMarks.PixelHeight := Height;
@@ -1344,6 +1350,7 @@ begin
     FWinControl.Invalidate;
     FState := FState + [losWaitForPaint];
   end;
+  {$ENDIF}
 end;
 
 procedure TSynGutterLineOverview.PaintWinControl(Sender: TObject);
