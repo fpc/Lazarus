@@ -549,6 +549,7 @@ var
   ext2: TDoubleRect;
   i: Integer;
   x, tw, yopen, yhigh, ylow, yclose: Double;
+  p: TPen;
 begin
   my := MaxIntValue([YIndexOpen, YIndexHigh, YIndexLow, YIndexClose]);
   if IsEmpty or (my >= Source.YCount) then exit;
@@ -568,9 +569,14 @@ begin
     tw := GetXRange(x, i) * PERCENT * TickWidth;
 
     if (DownLinePen.Color = clTAColor) or (yopen <= yclose) then
-      ADrawer.Pen := LinePen
+      p := LinePen
     else
-      ADrawer.Pen := DownLinePen;
+      p := DownLinePen;
+    ADrawer.Pen := p;
+    with Source[i]^ do
+      if Color <> clTAColor then
+        ADrawer.SetPenParams(p.Style, Color);
+
     DoLine(x, yhigh, x, ylow);
     DoLine(x - tw, yopen, x, yopen);
     DoLine(x, yclose, x + tw, yclose);
