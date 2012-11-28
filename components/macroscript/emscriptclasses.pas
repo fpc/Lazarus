@@ -22,6 +22,24 @@ procedure ExecRegisterTClipboard(cl: TPSRuntimeClassImporter; AExec: TPSExec);
 
 implementation
 
+function Point(AX, AY: Integer): TPoint;
+begin
+  with Result do
+  begin
+    X := AX;
+    Y := AY;
+  end;
+end;
+
+function test_ord_mt(AType: TMsgDlgType): Integer;
+begin
+  Result := ord(AType);
+end;
+
+function test_ord_mb(ABtn: TMsgDlgBtn): Integer;
+begin
+  Result := ord(ABtn);
+end;
 
 const
   DeclMessageDlg        = 'Function MessageDlg(const Msg: string; DlgType :TMsgDlgType; Buttons :TMsgDlgButtons; HelpCtx: Longint): Integer';
@@ -40,6 +58,13 @@ const
   FuncInputBox:          function(const ACaption, APrompt, ADefault: string): string = @InputBox;
   FuncInputQuery:        function(const ACaption, APrompt: string; var Value : string): Boolean = @InputQuery;
 
+  DeclPoint = 'function Point(AX, AY: Integer): TPoint;';
+  FuncPoint: function(AX, AY: Integer): TPoint = @Point; // @Classes.Point;
+
+  Decltest_ord_mt = 'function test_ord_mt(AType: TMsgDlgType): Integer;';
+  Decltest_ord_mb = 'function test_ord_mb(ABtn: TMsgDlgBtn): Integer;';
+  Functest_ord_mt: function(AType: TMsgDlgType): Integer = @test_ord_mt;
+  Functest_ord_mb: function(ABtn: TMsgDlgBtn): Integer = @test_ord_mb;
 
 procedure CompRegisterBasics(AComp: TPSPascalCompiler);
   procedure AddConst(const Name, FType: TbtString; I: Integer);
@@ -49,7 +74,7 @@ procedure CompRegisterBasics(AComp: TPSPascalCompiler);
 
 begin
   AComp.AddTypeS('TPoint', 'record x,y: Longint; end;');
-  AComp.AddDelphiFunction('function Point(X, Y: Integer): TPoint;');
+  AComp.AddDelphiFunction(DeclPoint);
 
   AddConst('mrNone', 'Integer', mrNone);
   AddConst('mrOk', 'Integer', mrOK);
@@ -73,20 +98,15 @@ begin
   AComp.AddDelphiFunction(DeclShowMessagePos);
   AComp.AddDelphiFunction(DeclInputBox);
   AComp.AddDelphiFunction(DeclInputQuery);
-end;
 
-function Point(AX, AY: Integer): TPoint;
-begin
-  with Result do
-  begin
-    X := AX;
-    Y := AY;
-  end;
+  // for tests
+  AComp.AddDelphiFunction(Decltest_ord_mb);
+  AComp.AddDelphiFunction(Decltest_ord_mt);
 end;
 
 procedure ExecRegisterBasics(AExec: TPSExec);
 begin
-  AExec.RegisterDelphiFunction(@Classes.Point, 'POINT', cdRegister);
+  AExec.RegisterDelphiFunction(FuncPoint, 'POINT', cdRegister);
 
  AExec.RegisterDelphiFunction(FuncMessageDlg, 'MessageDlg', cdRegister);
  AExec.RegisterDelphiFunction(FuncMessageDlgPos, 'MessageDlgPos', cdRegister);
@@ -95,6 +115,10 @@ begin
  AExec.RegisterDelphiFunction(FuncShowMessagePos, 'ShowMessagePos', cdRegister);
  AExec.RegisterDelphiFunction(FuncInputBox, 'InputBox', cdRegister);
  AExec.RegisterDelphiFunction(FuncInputQuery, 'InputQuery', cdRegister);
+
+  // for tests
+  AExec.RegisterDelphiFunction(Functest_ord_mb, 'test_ord_mb', cdRegister);
+  AExec.RegisterDelphiFunction(Functest_ord_mt, 'test_ord_mt', cdRegister);
 end;
 
 {   SynEdit   }

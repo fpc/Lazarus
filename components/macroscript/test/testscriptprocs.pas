@@ -5,7 +5,8 @@ unit TestScriptProcs;
 interface
 
 uses
-  Classes, SysUtils, SynEdit, EMScriptMacro, fpcunit, testutils, testregistry;
+  Classes, SysUtils, SynEdit, EMScriptMacro, Controls, Dialogs, fpcunit, testutils,
+  testregistry;
 
 type
 
@@ -18,9 +19,10 @@ type
 
     procedure DoTestSimple(AName, AStartText, AMacroText, AExpect: String;
       Ax: Integer = 1; Ay: Integer = 1;  ExpX: Integer = -1; ExpY: Integer = -1;
-      AExpIsPart: Boolean = True);
+      AExpIsPart: Boolean = True; ABlockEndX: Integer = -1; ABlockEndY: Integer = -1);
   published
-    procedure TestProcs;
+    procedure TestBasics;
+    procedure TestSynProcs;
     procedure TestInteractiv;
   end;
 
@@ -35,12 +37,17 @@ begin
 end;
 
 procedure TTestCase1.DoTestSimple(AName, AStartText, AMacroText, AExpect: String; Ax: Integer;
-  Ay: Integer; ExpX: Integer; ExpY: Integer; AExpIsPart: Boolean);
+  Ay: Integer; ExpX: Integer; ExpY: Integer; AExpIsPart: Boolean; ABlockEndX: Integer;
+  ABlockEndY: Integer);
 begin
   if pos ('end.', AMacroText) < 1 then
     AMacroText := 'begin' + LineEnding + AMacroText + LineEnding + 'end.';
   FTestSyn.Text := AStartText;
   FTestSyn.CaretXY := Point(aX, AY);
+  if ABlockEndY > 0 then begin
+    FTestSyn.BlockBegin := FTestSyn.LogicalCaretXY;
+    FTestSyn.BlockEnd := Point(ABlockEndX, ABlockEndY);
+  end;
   FTestMacro.SetFromSource(AMacroText);
   AssertTrue(AName+' Macro is valid: ' +FTestMacro.ErrorMsg, not FTestMacro.IsInvalid);
   FTestMacro.PlaybackMacro(FTestSyn);
@@ -53,7 +60,102 @@ begin
   end;
 end;
 
-procedure TTestCase1.TestProcs;
+procedure TTestCase1.TestBasics;
+begin
+  FTestSyn := TSynEdit.Create(nil);
+  FTestMacro := TEMSEditorMacro.Create(nil);
+  try
+    DoTestSimple('SizeOf(TPoint)',   '',
+                 'var p: TPoint; begin if SizeOf(p) = ' +IntToStr(SizeOf(TPoint)) + ' then Caller.InsertTextAtCaret(''Y'', scamEnd); end.',
+                 'Y'
+                 );
+
+    DoTestSimple('mrNone',   '',
+                 'if mrNone = ' +IntToStr(mrNone) + ' then Caller.InsertTextAtCaret(''Y'', scamEnd);',
+                 'Y'
+                 );
+
+    DoTestSimple('mrOk',   '',
+                 'if mrOk = ' +IntToStr(mrOk) + ' then Caller.InsertTextAtCaret(''Y'', scamEnd);',
+                 'Y'
+                 );
+
+
+    DoTestSimple('mtWarning',   '',
+                 'if test_ord_mt(mtWarning) = ' +IntToStr(ord(mtWarning)) + ' then Caller.InsertTextAtCaret(''Y'', scamEnd);',
+                 'Y'
+                 );
+    DoTestSimple('mtError',   '',
+                 'if test_ord_mt(mtError) = ' +IntToStr(ord(mtError)) + ' then Caller.InsertTextAtCaret(''Y'', scamEnd);',
+                 'Y'
+                 );
+    DoTestSimple('mtInformation',   '',
+                 'if test_ord_mt(mtInformation) = ' +IntToStr(ord(mtInformation)) + ' then Caller.InsertTextAtCaret(''Y'', scamEnd);',
+                 'Y'
+                 );
+    DoTestSimple('mtConfirmation',   '',
+                 'if test_ord_mt(mtConfirmation) = ' +IntToStr(ord(mtConfirmation)) + ' then Caller.InsertTextAtCaret(''Y'', scamEnd);',
+                 'Y'
+                 );
+    DoTestSimple('mtCustom',   '',
+                 'if test_ord_mt(mtCustom) = ' +IntToStr(ord(mtCustom)) + ' then Caller.InsertTextAtCaret(''Y'', scamEnd);',
+                 'Y'
+                 );
+
+
+    DoTestSimple('mbYes',   '',
+                 'if test_ord_mb(mbYes) = ' +IntToStr(ord(mbYes)) + ' then Caller.InsertTextAtCaret(''Y'', scamEnd);',
+                 'Y'
+                 );
+    DoTestSimple('mbNo',   '',
+                 'if test_ord_mb(mbNo) = ' +IntToStr(ord(mbNo)) + ' then Caller.InsertTextAtCaret(''Y'', scamEnd);',
+                 'Y'
+                 );
+    DoTestSimple('mbOk',   '',
+                 'if test_ord_mb(mbOk) = ' +IntToStr(ord(mbOk)) + ' then Caller.InsertTextAtCaret(''Y'', scamEnd);',
+                 'Y'
+                 );
+    DoTestSimple('mbCancel',   '',
+                 'if test_ord_mb(mbCancel) = ' +IntToStr(ord(mbCancel)) + ' then Caller.InsertTextAtCaret(''Y'', scamEnd);',
+                 'Y'
+                 );
+    DoTestSimple('mbAbort',   '',
+                 'if test_ord_mb(mbAbort) = ' +IntToStr(ord(mbAbort)) + ' then Caller.InsertTextAtCaret(''Y'', scamEnd);',
+                 'Y'
+                 );
+    DoTestSimple('mbRetry',   '',
+                 'if test_ord_mb(mbRetry) = ' +IntToStr(ord(mbRetry)) + ' then Caller.InsertTextAtCaret(''Y'', scamEnd);',
+                 'Y'
+                 );
+    DoTestSimple('mbIgnore',   '',
+                 'if test_ord_mb(mbIgnore) = ' +IntToStr(ord(mbIgnore)) + ' then Caller.InsertTextAtCaret(''Y'', scamEnd);',
+                 'Y'
+                 );
+    DoTestSimple('mbAll',   '',
+                 'if test_ord_mb(mbAll) = ' +IntToStr(ord(mbAll)) + ' then Caller.InsertTextAtCaret(''Y'', scamEnd);',
+                 'Y'
+                 );
+    DoTestSimple('mbNoToAll',   '',
+                 'if test_ord_mb(mbNoToAll) = ' +IntToStr(ord(mbNoToAll)) + ' then Caller.InsertTextAtCaret(''Y'', scamEnd);',
+                 'Y'
+                 );
+    DoTestSimple('mbYesToAll',   '',
+                 'if test_ord_mb(mbYesToAll) = ' +IntToStr(ord(mbYesToAll)) + ' then Caller.InsertTextAtCaret(''Y'', scamEnd);',
+                 'Y'
+                 );
+    DoTestSimple('mbHelp',   '',
+                 'if test_ord_mb(mbHelp) = ' +IntToStr(ord(mbHelp)) + ' then Caller.InsertTextAtCaret(''Y'', scamEnd);',
+                 'Y'
+                 );
+
+
+  finally
+    FTestMacro.Free;
+    FTestSyn.Free;
+  end;
+end;
+
+procedure TTestCase1.TestSynProcs;
 begin
   FTestSyn := TSynEdit.Create(nil);
   FTestMacro := TEMSEditorMacro.Create(nil);
@@ -221,6 +323,73 @@ begin
 
 
     {%region Selection *}
+    // BlockBegin, BlockEnd
+    DoTestSimple('BlockBegin read',   'Test'+ LineEnding + 'Ö   Foo' + LineEnding,
+                 'var p: TPoint; begin ' + LineEnding +
+                 'p := caller.BlockBegin;' + LineEnding +
+                 'Caller.InsertTextAtCaret(IntToStr(p.x)+'',''+IntToStr(p.y), scamEnd);' + LineEnding +
+                 'end.',
+                 '6,2',
+                 5, 2,   -1, -1, True,   8, 2 // select "Fo"
+                 );
+
+    DoTestSimple('BlockEnd read',   'Test'+ LineEnding + 'Ö   Foo' + LineEnding,
+                 'var p: TPoint; begin ' + LineEnding +
+                 'p := caller.BlockEnd;' + LineEnding +
+                 'Caller.InsertTextAtCaret(IntToStr(p.x)+'',''+IntToStr(p.y), scamEnd);' + LineEnding +
+                 'end.',
+                 '8,2',
+                 5, 2,   -1, -1, True,   8, 2 // select "Fo"
+                 );
+
+    DoTestSimple('BlockBegin/End write',   'Test'+ LineEnding + 'Ö   Foo' + LineEnding,
+                 'begin ' + LineEnding +
+                 'caller.BlockBegin := point(2,1);' + LineEnding +
+                 'caller.BlockEnd := point(5,1);' + LineEnding +
+                 'ecChar(''X'');' + LineEnding + // Replace "est"
+                 'end.',
+                 'TX',
+                 5, 2,   -1, -1, True,   8, 2 // select "Fo"
+                 );
+
+    // SelAvail
+    DoTestSimple('SelAvail',   'Test'+ LineEnding + 'Ö   Foo' + LineEnding,
+                 'if caller.SelAvail then begin' + LineEnding +
+                 '  Caller.CaretXY := point(2,1);' + LineEnding +
+                 '  Caller.InsertTextAtCaret(''Y'', scamEnd);' + LineEnding +
+                 'end;',
+                 'TYest',
+                 5, 2,   -1, -1, True,   8, 2 // select "Fo"
+                 );
+    DoTestSimple('SelAvail (NO)',   'Test'+ LineEnding + 'Ö   Foo' + LineEnding,
+                 'if caller.SelAvail then begin' + LineEnding +
+                 '  Caller.CaretXY := point(2,1);' + LineEnding +
+                 '  Caller.InsertTextAtCaret(''Y'', scamEnd);' + LineEnding +
+                 'end;',
+                 'Test',
+                 5, 2
+                 );
+
+    // SelText
+    DoTestSimple('SelText',   'Test'+ LineEnding + 'Ö   Foo' + LineEnding,
+                 'var s: String; begin ' + LineEnding +
+                 's := caller.SelText;' + LineEnding +
+                 'Caller.CaretXY := point(2,1);' + LineEnding +
+                 'Caller.InsertTextAtCaret(s, scamEnd);' + LineEnding +
+                 'end.',
+                 'TFoest',
+                 5, 2,   -1, -1, True,   8, 2 // select "Fo"
+                 );
+    DoTestSimple('SelText(empty)',   'Test'+ LineEnding + 'Ö   Foo' + LineEnding,
+                 'var s: String; begin ' + LineEnding +
+                 's := caller.SelText;' + LineEnding +
+                 'Caller.CaretXY := point(2,1);' + LineEnding +
+                 'Caller.InsertTextAtCaret(s, scamEnd);' + LineEnding +
+                 'end.',
+                 'Test',
+                 5, 2
+                 );
+
     {%endregion Selection *}
 
 
@@ -229,6 +398,34 @@ begin
 
 
     {%region Search *}
+    DoTestSimple('Find',   'Test abc abcde 123',
+                 'Caller.SearchReplace(''abc'', '''', []);',
+                 'Test abc abcde 123',
+                 1,1,  9,1 // caret at end of "abc"
+                 );
+    DoTestSimple('Find result',   'Test abc abcde 123',
+                 'if Caller.SearchReplace(''abc'', '''', []) > 0 then ecChar(''X'');',
+                 'Test X abcde 123',
+                 1,1,  7,1
+                 );
+    DoTestSimple('Find NO result',   'Test abc abcde 123',
+                 'if Caller.SearchReplace(''aXbc'', '''', []) > 0 then ecChar(''X'');',
+                 'Test abc abcde 123' + LineEnding,
+                 1,1,  -1,-1, False
+                 );
+
+    DoTestSimple('Replace',   'Test abc abcde 123',
+                 'Caller.SearchReplace(''abc'', ''XYZ'', [ssoReplace]);',
+                 'Test XYZ abcde 123'
+                 );
+    DoTestSimple('Replace All',   'Test abc abcde 123',
+                 'Caller.SearchReplace(''abc'', ''XYZ'', [ssoReplaceAll]);',
+                 'Test XYZ XYZde 123'
+                 );
+    DoTestSimple('Replace All whole word',   'Test abc abcde 123',
+                 'Caller.SearchReplace(''abc'', ''XYZ'', [ssoReplaceAll, ssoWholeWord]);',
+                 'Test XYZ abcde 123'
+                 );
     {%endregion Search *}
 
 
