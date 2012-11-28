@@ -5,7 +5,7 @@ unit TestScriptProcs;
 interface
 
 uses
-  Classes, SysUtils, SynEdit, EMScriptMacro, Controls, Dialogs, fpcunit, testutils,
+  Classes, SysUtils, SynEdit, EMScriptMacro, Controls, Dialogs, Clipbrd, fpcunit, testutils,
   testregistry;
 
 type
@@ -410,6 +410,44 @@ begin
                  2, 1,   -1, -1, False,   5, 1 // select "est"
                  );
 
+    // SelectToBrace
+    DoTestSimple('SelectToBrace',   'Test (123);',
+                 'caller.SelectToBrace;' + LineEnding +
+                 'caller.SelText := '''';',
+                 'Test ;'+LineEnding,
+                 6, 1
+                 );
+
+    // SelectWord
+    DoTestSimple('SelectWord',   'Test abc def',
+                 'caller.SelectWord;' + LineEnding +
+                 'caller.SelText := '''';',
+                 'Test  def'+LineEnding,
+                 7, 1
+                 );
+
+    // SelectLine
+    DoTestSimple('SelectLine false',   '  Test abc ',
+                 'caller.SelectLine(False);' + LineEnding +
+                 'caller.SelText := ''X'';',
+                 '  X'+LineEnding,
+                 7, 1
+                 );
+    DoTestSimple('SelectLine true',   '  Test abc ',
+                 'caller.SelectLine(True);' + LineEnding +
+                 'caller.SelText := ''X'';',
+                 'X'+LineEnding,
+                 7, 1,  -1,-1, False
+                 );
+
+    DoTestSimple('SelectParagraph',   'Test'+ LineEnding + 'Foo' + LineEnding + LineEnding +'abc'+ LineEnding,
+                 'caller.SelectParagraph;' + LineEnding +
+                 'caller.SelText := '''';',
+                 'abc',
+                 1, 1
+                 );
+
+
     // SelectionMode
     {%endregion Selection *}
 
@@ -447,10 +485,51 @@ begin
                  'Caller.SearchReplace(''abc'', ''XYZ'', [ssoReplaceAll, ssoWholeWord]);',
                  'Test XYZ abcde 123'
                  );
+
+    DoTestSimple('Replace All EX',   'Test abc abcde 123',
+                 'Caller.SearchReplaceEx(''abc'', ''XYZ'', [ssoReplaceAll], point(8,1));',
+                 'Test abc XYZde 123'
+                 );
+
     {%endregion Search *}
 
 
     {%region Clipboard *}
+    DoTestSimple('Clipboard write AsText',   'Test'+ LineEnding + 'Ö   Foo' + LineEnding,
+                 'Clipboard.AsText:= ''X'';',
+                 'Foo',
+                 5, 2,   -1, -1, True,   8, 2 // select "Fo"
+                 );
+    AssertEquals('Clipboard write AsText', 'X', Clipboard.AsText);
+
+
+    Clipboard.AsText := 'MM';
+    DoTestSimple('Clipboard read AsText',   ' ',
+                 'Caller.InsertTextAtCaret(Clipboard.AsText, scamEnd);',
+                 'MM'
+                 );
+
+    DoTestSimple('CopyToClipboard',   'Test'+ LineEnding + 'Ö   Foo' + LineEnding,
+                 'Caller.CopyToClipboard;',
+                 'Foo',
+                 5, 2,   -1, -1, True,   8, 2 // select "Fo"
+                 );
+    AssertEquals('CopyToClipboard', 'Fo', Clipboard.AsText);
+
+    DoTestSimple('CutToClipboard',   'Test'+ LineEnding + 'Ö   Foo' + LineEnding,
+                 'Caller.CutToClipboard;',
+                 ' o',
+                 5, 2,   -1, -1, True,   8, 2 // select "Fo"
+                 );
+    AssertEquals('CutToClipboard', 'Fo', Clipboard.AsText);
+
+    Clipboard.AsText := 'OO';
+    DoTestSimple('PasteFromClipboard',   ' ',
+                 'Caller.PasteFromClipboard;',
+                 'OO'
+                 );
+
+    // CanPaste
     {%endregion Clipboard *}
 
 
