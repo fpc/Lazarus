@@ -371,7 +371,7 @@ begin
                  );
 
     // SelText
-    DoTestSimple('SelText',   'Test'+ LineEnding + 'Ö   Foo' + LineEnding,
+    DoTestSimple('SelText (read)',   'Test'+ LineEnding + 'Ö   Foo' + LineEnding,
                  'var s: String; begin ' + LineEnding +
                  's := caller.SelText;' + LineEnding +
                  'Caller.CaretXY := point(2,1);' + LineEnding +
@@ -389,7 +389,28 @@ begin
                  'Test',
                  5, 2
                  );
+    DoTestSimple('SelText (write)',   'Test'+ LineEnding + 'Ö   Foo' + LineEnding,
+                 'caller.SelText := ''X'';',
+                 '   Xo',
+                 5, 2,   -1, -1, True,   8, 2 // select "Fo"
+                 );
 
+    // ClearSelection (does delete the text)
+    DoTestSimple('ClearSelection',   'Test123',
+                 'caller.ClearSelection;',
+                 'T123',
+                 2, 1,   -1, -1, True,   5, 1 // select "est"
+                 );
+
+    // SelectAll
+    DoTestSimple('SelectAll',   'Test123',
+                 'caller.SelectAll;' + LineEnding +
+                 'caller.SelText := '''';',
+                 ''+LineEnding,
+                 2, 1,   -1, -1, False,   5, 1 // select "est"
+                 );
+
+    // SelectionMode
     {%endregion Selection *}
 
 
