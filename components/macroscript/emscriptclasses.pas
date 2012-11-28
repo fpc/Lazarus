@@ -22,16 +22,23 @@ procedure ExecRegisterTClipboard(cl: TPSRuntimeClassImporter; AExec: TPSExec);
 
 implementation
 
-function EMSInputQuery(const ACaption, APrompt : String; var Value : String) : Boolean;
-begin
-  Result := InputQuery(ACaption, APrompt, Value);
-end;
 
-function EMSMessageDlg(const Msg: string; DlgType: TMsgDlgType;
-  Buttons: TMsgDlgButtons; const HelpKeyword: Longint): Integer;
-begin
-  Result:=MessageDlg(Msg, DlgType, Buttons, HelpKeyword);
-end;
+const
+  DeclMessageDlg        = 'Function MessageDlg(const Msg: string; DlgType :TMsgDlgType; Buttons :TMsgDlgButtons; HelpCtx: Longint): Integer';
+  DeclMessageDlgPos     = 'Function MessageDlgPos(const Msg: string; DlgType :TMsgDlgType; Buttons :TMsgDlgButtons; HelpCtx: Longint; X, Y: Integer): Integer';
+  DeclMessageDlgPosHelp = 'Function MessageDlgPosHelp(const Msg: string; DlgType :TMsgDlgType; Buttons :TMsgDlgButtons; HelpCtx: Longint; X, Y: Integer; const HelpFileName: string): Integer';
+  DeclShowMessage       = 'Procedure ShowMessage(const Msg: string)';
+  DeclShowMessagePos    = 'Procedure ShowMessagePos(const Msg: string; X, Y :Integer)';
+  DeclInputBox          = 'Function InputBox(const ACaption, APrompt, ADefault: string): string';
+  DeclInputQuery        = 'Function InputQuery(const ACaption, APrompt: string; var Value: string): Boolean';
+
+  FuncMessageDlg:        function(const Msg: string; DlgType: TMsgDlgType; Buttons: TMsgDlgButtons; HelpCtx: Longint): Integer = @MessageDlg;
+  FuncMessageDlgPos:     function(const Msg: string; DlgType: TMsgDlgType; Buttons: TMsgDlgButtons; HelpCtx: Longint; X, Y: Integer): Integer = @MessageDlgPos;
+  FuncMessageDlgPosHelp: function(const Msg: string; DlgType: TMsgDlgType; Buttons: TMsgDlgButtons; HelpCtx: Longint; X, Y: Integer; const HelpFileName: string): Integer = @MessageDlgPosHelp;
+  FuncShowMessage:       procedure(const Msg: string) = @ShowMessage;
+  FuncShowMessagePos:    procedure(const Msg: string; X, Y: Integer) = @ShowMessagePos;
+  FuncInputBox:          function(const ACaption, APrompt, ADefault: string): string = @InputBox;
+  FuncInputQuery:        function(const ACaption, APrompt: string; var Value : string): Boolean = @InputQuery;
 
 
 procedure CompRegisterBasics(AComp: TPSPascalCompiler);
@@ -59,17 +66,16 @@ begin
   AComp.AddTypeS('TMsgDlgBtn', '( mbYes, mbNo, mbOK, mbCancel, mbAbort, mbRetry, mbIgnore, mbAll, mbNoToAll, mbYesToAll, mbHelp )');
   AComp.AddTypeS('TMsgDlgButtons', 'set of TMsgDlgBtn');
 
-  AComp.AddDelphiFunction('Function MessageDlg( const Msg : string; DlgType : TMsgDlgType; Buttons : TMsgDlgButtons; HelpCtx : Longint) : Integer');
-  AComp.AddDelphiFunction('Function MessageDlgPos( const Msg : string; DlgType : TMsgDlgType; Buttons : TMsgDlgButtons; HelpCtx : Longint; X, Y : Integer) : Integer');
-  AComp.AddDelphiFunction('Function MessageDlgPosHelp( const Msg : string; DlgType : TMsgDlgType; Buttons : TMsgDlgButtons; HelpCtx : Longint; X, Y : Integer; const HelpFileName : string) : Integer');
-  AComp.AddDelphiFunction('Procedure ShowMessage( const Msg : string)');
-  AComp.AddDelphiFunction('Procedure ShowMessagePos( const Msg : string; X, Y : Integer)');
-  AComp.AddDelphiFunction('Function InputBox( const ACaption, APrompt, ADefault : string) : string');
-  AComp.AddDelphiFunction('Function InputQuery( const ACaption, APrompt : string; var Value : string) : Boolean');
+  AComp.AddDelphiFunction(DeclMessageDlg);
+  AComp.AddDelphiFunction(DeclMessageDlgPos);
+  AComp.AddDelphiFunction(DeclMessageDlgPosHelp);
+  AComp.AddDelphiFunction(DeclShowMessage);
+  AComp.AddDelphiFunction(DeclShowMessagePos);
+  AComp.AddDelphiFunction(DeclInputBox);
+  AComp.AddDelphiFunction(DeclInputQuery);
 end;
 
 function Point(AX, AY: Integer): TPoint;
-
 begin
   with Result do
   begin
@@ -82,13 +88,13 @@ procedure ExecRegisterBasics(AExec: TPSExec);
 begin
   AExec.RegisterDelphiFunction(@Classes.Point, 'POINT', cdRegister);
 
- AExec.RegisterDelphiFunction(@EMSMessageDlg, 'MessageDlg', cdRegister);
- AExec.RegisterDelphiFunction(@MessageDlgPos, 'MessageDlgPos', cdRegister);
- AExec.RegisterDelphiFunction(@MessageDlgPosHelp, 'MessageDlgPosHelp', cdRegister);
- AExec.RegisterDelphiFunction(@ShowMessage, 'ShowMessage', cdRegister);
- AExec.RegisterDelphiFunction(@ShowMessagePos, 'ShowMessagePos', cdRegister);
- AExec.RegisterDelphiFunction(@InputBox, 'InputBox', cdRegister);
- AExec.RegisterDelphiFunction(@EMSInputQuery, 'InputQuery', cdRegister);
+ AExec.RegisterDelphiFunction(FuncMessageDlg, 'MessageDlg', cdRegister);
+ AExec.RegisterDelphiFunction(FuncMessageDlgPos, 'MessageDlgPos', cdRegister);
+ AExec.RegisterDelphiFunction(FuncMessageDlgPosHelp, 'MessageDlgPosHelp', cdRegister);
+ AExec.RegisterDelphiFunction(FuncShowMessage, 'ShowMessage', cdRegister);
+ AExec.RegisterDelphiFunction(FuncShowMessagePos, 'ShowMessagePos', cdRegister);
+ AExec.RegisterDelphiFunction(FuncInputBox, 'InputBox', cdRegister);
+ AExec.RegisterDelphiFunction(FuncInputQuery, 'InputQuery', cdRegister);
 end;
 
 {   SynEdit   }
