@@ -78,7 +78,7 @@ procedure CompRegisterBasics(AComp: TPSPascalCompiler);
   end;
 
 begin
-  AComp.AddTypeS('TPoint', 'record x,y' {$IFDEF darwin} +',a,b,c'{$ENDIF} + ': Longint; end;');
+  AComp.AddTypeS('TPoint', 'record x,y: Longint; end;');
   AComp.AddDelphiFunction(DeclPoint);
 
   AddConst('mrNone', 'Integer', mrNone);

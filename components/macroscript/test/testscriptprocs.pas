@@ -65,12 +65,10 @@ begin
   FTestSyn := TSynEdit.Create(nil);
   FTestMacro := TEMSEditorMacro.Create(nil);
   try
-{$IFnDEF darwin}
     DoTestSimple('SizeOf(TPoint)',   '',
                  'var p: TPoint; begin if SizeOf(p) = ' +IntToStr(SizeOf(TPoint)) + ' then Caller.InsertTextAtCaret(''Y'', scamEnd); end.',
                  'Y'
                  );
-{$ENDIF}
 
     DoTestSimple('mrNone',   '',
                  'if mrNone = ' +IntToStr(mrNone) + ' then Caller.InsertTextAtCaret(''Y'', scamEnd);',
