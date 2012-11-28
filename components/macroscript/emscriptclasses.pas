@@ -22,7 +22,12 @@ procedure ExecRegisterTClipboard(cl: TPSRuntimeClassImporter; AExec: TPSExec);
 
 implementation
 
-function Point(AX, AY: Integer): TPoint;
+{$IFDEF darwin}
+type
+  TPoint2 = record x,y,a,b,c: Longint; end;
+{$ENDIF}
+
+function Point(AX, AY: Integer): {$IFDEF darwin}TPoint2{$ELSE}TPoint{$ENDIF};
 begin
   with Result do
   begin
@@ -59,7 +64,7 @@ const
   FuncInputQuery:        function(const ACaption, APrompt: string; var Value : string): Boolean = @InputQuery;
 
   DeclPoint = 'function Point(AX, AY: Integer): TPoint;';
-  FuncPoint: function(AX, AY: Integer): TPoint = @Point; // @Classes.Point;
+  FuncPoint: function(AX, AY: Integer): {$IFDEF darwin}TPoint2{$ELSE}TPoint{$ENDIF} = @Point; // @Classes.Point;
 
   Decltest_ord_mt = 'function test_ord_mt(AType: TMsgDlgType): Integer;';
   Decltest_ord_mb = 'function test_ord_mb(ABtn: TMsgDlgBtn): Integer;';
@@ -73,7 +78,7 @@ procedure CompRegisterBasics(AComp: TPSPascalCompiler);
   end;
 
 begin
-  AComp.AddTypeS('TPoint', 'record x,y: Longint; end;');
+  AComp.AddTypeS('TPoint', 'record x,y' {$IFDEF darwin} +',a,b,c'{$ENDIF} + ': Longint; end;');
   AComp.AddDelphiFunction(DeclPoint);
 
   AddConst('mrNone', 'Integer', mrNone);
@@ -145,7 +150,7 @@ procedure TSynEdit_LogicalCaretXY_R(Self: TSynEdit; var P: TPoint);
 begin   P := Self.LogicalCaretXY;   end;
 
 procedure TSynEdit_LogicalCaretX_W(Self: TSynEdit; const I: Integer);
-begin   Self.LogicalCaretXY := Point(I, Self.CaretY);   end;
+begin   Self.LogicalCaretXY := Classes.Point(I, Self.CaretY);   end;
 procedure TSynEdit_LogicalCaretX_R(Self: TSynEdit; var I: Integer);
 begin   I := Self.LogicalCaretXY.X;   end;
 
