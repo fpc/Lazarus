@@ -90,12 +90,12 @@ begin
       begin
         pt.x := Stack.GetInt(-1);
         pt.y := Stack.GetInt(-2);
-        e.SynEdit.ExecuteCommand(i, '', @pt);
+        e.SynEdit.CommandProcessor(i, '', @pt);
       end;
     ecChar:
-      e.SynEdit.ExecuteCommand(i, Stack.GetAnsiString(-1), nil);
+      e.SynEdit.CommandProcessor(i, Stack.GetAnsiString(-1), nil);
     else
-      e.SynEdit.ExecuteCommand(i, '', nil);
+      e.SynEdit.CommandProcessor(i, '', nil);
   end;
   Result := True;
 end;
