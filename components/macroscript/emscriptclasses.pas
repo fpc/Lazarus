@@ -296,7 +296,7 @@ procedure TEmsSynWrapper.EMS_CutToClipboard;     begin   CutToClipboard;   end;
 procedure TEmsSynWrapper.EMS_PasteFromClipboard; begin   PasteFromClipboard;   end;
 
 function TEmsSynWrapper.EMS_LogicalToPhysicalPos(p: TPoint): {$IFDEF NeedTPointFix}TPoint2{$ELSE}TPoint{$ENDIF};
-{$IFDEF NeedTPointFix}var r: TPoint{$ENDIF};
+{$IFDEF NeedTPointFix}var r: TPoint;{$ENDIF}
 begin
   {$IFDEF NeedTPointFix}
   r := LogicalToPhysicalPos(p);
@@ -312,7 +312,7 @@ begin
   Result := LogicalToPhysicalCol(Line, Index, LogicalPos);
 end;
 function TEmsSynWrapper.EMS_PhysicalToLogicalPos(p: TPoint): {$IFDEF NeedTPointFix}TPoint2{$ELSE}TPoint{$ENDIF};
-{$IFDEF NeedTPointFix}var r: TPoint{$ENDIF};
+{$IFDEF NeedTPointFix}var r: TPoint;{$ENDIF}
 begin
   {$IFDEF NeedTPointFix}
   rp:= PhysicalToLogicalPos(p);
