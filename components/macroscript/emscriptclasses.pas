@@ -315,7 +315,7 @@ function TEmsSynWrapper.EMS_PhysicalToLogicalPos(p: TPoint): {$IFDEF NeedTPointF
 {$IFDEF NeedTPointFix}var r: TPoint;{$ENDIF}
 begin
   {$IFDEF NeedTPointFix}
-  rp:= PhysicalToLogicalPos(p);
+  r:= PhysicalToLogicalPos(p);
   Result.x := r.x;
   Result.y := r.y;
   {$ELSE}
