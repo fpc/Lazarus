@@ -295,18 +295,32 @@ procedure TEmsSynWrapper.EMS_CopyToClipboard;    begin   CopyToClipboard;   end;
 procedure TEmsSynWrapper.EMS_CutToClipboard;     begin   CutToClipboard;   end;
 procedure TEmsSynWrapper.EMS_PasteFromClipboard; begin   PasteFromClipboard;   end;
 
-function TEmsSynWrapper.EMS_LogicalToPhysicalPos(p: TPoint): TPoint;
+function TEmsSynWrapper.EMS_LogicalToPhysicalPos(p: TPoint): {$IFDEF NeedTPointFix}TPoint2{$ELSE}TPoint{$ENDIF};
+{$IFDEF NeedTPointFix}var r: TPoint{$ENDIF};
 begin
-   Result := LogicalToPhysicalPos(p);
+  {$IFDEF NeedTPointFix}
+  r := LogicalToPhysicalPos(p);
+  Result.x := r.x;
+  Result.y := r.y;
+  {$ELSE}
+  Result := LogicalToPhysicalPos(p);
+  {$ENDIF}
 end;
 function TEmsSynWrapper.EMS_LogicalToPhysicalCol(Line: String; Index,
   LogicalPos: integer): integer;
 begin
   Result := LogicalToPhysicalCol(Line, Index, LogicalPos);
 end;
-function TEmsSynWrapper.EMS_PhysicalToLogicalPos(p: TPoint): TPoint;
+function TEmsSynWrapper.EMS_PhysicalToLogicalPos(p: TPoint): {$IFDEF NeedTPointFix}TPoint2{$ELSE}TPoint{$ENDIF};
+{$IFDEF NeedTPointFix}var r: TPoint{$ENDIF};
 begin
+  {$IFDEF NeedTPointFix}
+  rp:= PhysicalToLogicalPos(p);
+  Result.x := r.x;
+  Result.y := r.y;
+  {$ELSE}
   Result := PhysicalToLogicalPos(p);
+  {$ENDIF}
 end;
 function TEmsSynWrapper.EMS_PhysicalToLogicalCol(Line: string; Index,
   PhysicalPos: integer): integer;
