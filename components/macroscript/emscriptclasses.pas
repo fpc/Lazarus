@@ -239,9 +239,9 @@ type
     procedure EMS_CutToClipboard;
     procedure EMS_PasteFromClipboard;
 
-    function EMS_LogicalToPhysicalPos(p: TPoint): TPoint;
+    function EMS_LogicalToPhysicalPos(p: TPoint): {$IFDEF NeedTPointFix}TPoint2{$ELSE}TPoint{$ENDIF};
     function EMS_LogicalToPhysicalCol(Line: String; Index, LogicalPos: integer): integer;
-    function EMS_PhysicalToLogicalPos(p: TPoint): TPoint;
+    function EMS_PhysicalToLogicalPos(p: TPoint): {$IFDEF NeedTPointFix}TPoint2{$ELSE}TPoint{$ENDIF};
     function EMS_PhysicalToLogicalCol(Line: string; Index, PhysicalPos: integer): integer;
     function EMS_PhysicalLineLength(Line: String; Index: integer): integer;
   end;
