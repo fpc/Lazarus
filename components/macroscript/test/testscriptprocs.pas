@@ -448,11 +448,51 @@ begin
                  );
 
 
-    // SelectionMode
+    // TODO: SelectionMode
     {%endregion Selection *}
 
 
     {%region Logical / Physical *}
+    // LogicalToPhysicalPos
+    DoTestSimple('LogicalToPhysicalPos', ' öabc',
+                 'var p: TPoint; begin'+LineEnding+
+                 '  p := Caller.LogicalToPhysicalPos(point(4,1));'+LineEnding+ // "a|b"
+                 '  Caller.InsertTextAtCaret(inttostr(p.x)+'',''+inttostr(p.y), scamBegin);'+LineEnding+
+                 'end.',
+                 '3,1');
+
+    // LogicalToPhysicalCol
+    DoTestSimple('LogicalToPhysicalCol', ' öabc'+LineEnding+'x',
+                 'var i: Integer; begin'+LineEnding+
+                 '  i := Caller.LogicalToPhysicalCol(''ööabc'', 2, 6);'+LineEnding+ // "a|b"
+                 '  Caller.InsertTextAtCaret(inttostr(i), scamBegin);'+LineEnding+
+                 'end.',
+                 '4');
+
+    // PhysicalToLogicalPos
+    DoTestSimple('PhysicalToLogicalPos', ' öabc',
+                 'var p: TPoint; begin'+LineEnding+
+                 '  p := Caller.PhysicalToLogicalPos(point(3,1));'+LineEnding+ // "a|b"
+                 '  Caller.InsertTextAtCaret(inttostr(p.x)+'',''+inttostr(p.y), scamBegin);'+LineEnding+
+                 'end.',
+                 '4,1');
+
+    // PhysicalToLogicalCol
+    DoTestSimple('PhysicalToLogicalCol', ' öabc'+LineEnding+'x',
+                 'var i: Integer; begin'+LineEnding+
+                 '  i := Caller.PhysicalToLogicalCol(''ööabc'', 2, 4);'+LineEnding+ // "a|b"
+                 '  Caller.InsertTextAtCaret(inttostr(i), scamBegin);'+LineEnding+
+                 'end.',
+                 '6');
+
+    // PhysicalLineLength
+    DoTestSimple('PhysicalLineLength', ' öabc'+LineEnding+'x',
+                 'var i: Integer; begin'+LineEnding+
+                 '  i := Caller.PhysicalLineLength(''ööabc'', 2);'+LineEnding+
+                 '  Caller.InsertTextAtCaret(inttostr(i), scamBegin);'+LineEnding+
+                 'end.',
+                 '5');
+
     {%endregion Logical / Physical *}
 
 
