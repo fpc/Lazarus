@@ -7,6 +7,10 @@ unit EMScriptClasses;
 
 interface
 
+{$IFDEF darwin}
+  {$DEFINE NeedTPointFix }
+{$ENDIF}
+
 uses
   Classes, SysUtils, SynEdit, SynEditTypes, Clipbrd, Dialogs, Controls, uPSCompiler,
   uPSRuntime, uPSUtils;
@@ -22,9 +26,8 @@ procedure ExecRegisterTClipboard(cl: TPSRuntimeClassImporter; AExec: TPSExec);
 
 implementation
 
-{$IFDEF darwin}
-type
-  TPoint2 = record x,y,a,b,c: Longint; end;
+{$IFDEF NeedTPointFix}
+type TPoint2 = record x,y,a,b,c: Longint; end;
 {$ENDIF}
 
 Function EMS_MessageDlg(Msg: string; DlgType :TMsgDlgType; Buttons :TMsgDlgButtons; HelpCtx: Longint): Integer;
@@ -56,7 +59,7 @@ begin
   Result := InputQuery(ACaption, APrompt, Value);
 end;
 
-function EMS_Point(AX, AY: Integer): {$IFDEF darwin}TPoint2{$ELSE}TPoint{$ENDIF};
+function EMS_Point(AX, AY: Integer): {$IFDEF NeedTPointFix}TPoint2{$ELSE}TPoint{$ENDIF};
 begin
   Result.X := AX;
   Result.Y := AY;
@@ -90,7 +93,7 @@ const
   FuncInputQuery:        function(ACaption, APrompt: string; var Value : string): Boolean = @EMS_InputQuery;
 
   DeclPoint = 'function Point(AX, AY: Integer): TPoint;';
-  FuncPoint: function(AX, AY: Integer): {$IFDEF darwin}TPoint2{$ELSE}TPoint{$ENDIF} = @EMS_Point; // @Classes.Point;
+  FuncPoint: function(AX, AY: Integer): {$IFDEF NeedTPointFix}TPoint2{$ELSE}TPoint{$ENDIF} = @EMS_Point; // @Classes.Point;
 
   Decltest_ord_mt = 'function test_ord_mt(AType: TMsgDlgType): Integer;';
   Decltest_ord_mb = 'function test_ord_mb(ABtn: TMsgDlgBtn): Integer;';
