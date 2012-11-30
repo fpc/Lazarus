@@ -51,7 +51,7 @@ Carlo Kok
 RemObjects Software
 "/>
     <Version Build="1"/>
-    <Files Count="39">
+    <Files Count="43">
       <Item1>
         <Filename Value="uPSRuntime.pas"/>
         <UnitName Value="uPSRuntime"/>
@@ -209,6 +209,22 @@ RemObjects Software
         <Filename Value="uPSR_std.pas"/>
         <UnitName Value="uPSR_std"/>
       </Item39>
+      <Item40>
+        <Filename Value="arm.inc"/>
+        <Type Value="Include"/>
+      </Item40>
+      <Item41>
+        <Filename Value="powerpc.inc"/>
+        <Type Value="Include"/>
+      </Item41>
+      <Item42>
+        <Filename Value="x64.inc"/>
+        <Type Value="Include"/>
+      </Item42>
+      <Item43>
+        <Filename Value="x86.inc"/>
+        <Type Value="Include"/>
+      </Item43>
     </Files>
     <Type Value="RunAndDesignTime"/>
     <RequiredPkgs Count="1">
@@ -224,5 +240,8 @@ RemObjects Software
       <Version Value="2"/>
       <IgnoreBinaries Value="False"/>
     </PublishOptions>
+    <CustomOptions Items="ExternHelp" Version="2">
+      <_ExternHelp Items="Count"/>
+    </CustomOptions>
   </Package>
 </CONFIG>
