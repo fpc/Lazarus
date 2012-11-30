@@ -326,7 +326,9 @@ begin
   if Result <> 0 then exit;
   Result := Column - Other.Column;
   if Result <> 0 then exit;
+  {$PUSH}{$Q-} // Overflow is allowed to occur
   Result := PtrUint(self) - PtrUInt(Other);
+  {$POP}
 end;
 
 function TSynGutterLOvMark.CompareByLine(Other: TSynGutterLOvMark): Integer;
@@ -337,7 +339,9 @@ begin
   if Result <> 0 then exit;
   Result := Priority - Other.Priority;
   if Result <> 0 then exit;
+  {$PUSH}{$Q-} // Overflow is allowed to occur
   Result := PtrUint(self) - PtrUInt(Other);
+  {$POP}
 end;
 
 procedure TSynGutterLOvMark.DoChange;
@@ -436,7 +440,9 @@ function TSynGutterLOvLineMarks.Compare(Other: TSynGutterLOvLineMarks): Integer;
 begin
   Result := PixLine - Other.PixLine;
   if Result <> 0 then exit;
+  {$PUSH}{$Q-} // Overflow is allowed to occur
   Result := PtrUint(self) - PtrUInt(Other);
+  {$POP}
 end;
 
 constructor TSynGutterLOvLineMarks.Create;
