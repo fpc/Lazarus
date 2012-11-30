@@ -620,6 +620,11 @@ begin
           end;
       end;
 {$ENDIF}
+      {$IFDEF WINDOWS}
+      if (length(Stack) mod 16) <> 0 then begin
+        SetLength(Stack, Length(Stack)+16 - (Length(Stack) mod 16));
+      end;
+      {$ENDIF}
       if Stack = nil then pp := nil else pp := @Stack[Length(Stack) -8];
 {$IFDEF WINDOWS}
       x64call(Address, _RAX, _RCX, _RDX, _R8, _R9, _XMM0, _XMM1, _XMM2, _XMM3, pp, Length(Stack) div 8);
@@ -660,6 +665,11 @@ begin
         exit;
       end;
     end else begin
+      {$IFDEF WINDOWS}
+      if (length(Stack) mod 16) <> 0 then begin
+        SetLength(Stack, Length(Stack)+16 - (Length(Stack) mod 16));
+      end;
+      {$ENDIF}
       if Stack = nil then pp := nil else pp := @Stack[Length(Stack) -8];
 {$IFDEF WINDOWS}
        x64call(Address, _RAX, _RCX, _RDX, _R8, _R9, _XMM0, _XMM1, _XMM2, _XMM3, pp, Length(Stack) div 8);
