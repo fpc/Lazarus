@@ -231,17 +231,17 @@ begin
       Editor := TStringGrid(Sender).EditorByStyle(cbsPickList);
       TPickListCellEditor(Editor).Style := csDropDownList;
       TPickListCellEditor(Editor).Clear;
-      TPickListCellEditor(Editor).Items.Add('mrNone');
-      TPickListCellEditor(Editor).Items.Add('mrOK');
-      TPickListCellEditor(Editor).Items.Add('mrCancel');
-      TPickListCellEditor(Editor).Items.Add('mrAbort');
-      TPickListCellEditor(Editor).Items.Add('mrRetry');
-      TPickListCellEditor(Editor).Items.Add('mrIgnore');
-      TPickListCellEditor(Editor).Items.Add('mrYes');
-      TPickListCellEditor(Editor).Items.Add('mrNo');
-      TPickListCellEditor(Editor).Items.Add('mrAll');
-      TPickListCellEditor(Editor).Items.Add('mrNoToAll');
-      TPickListCellEditor(Editor).Items.Add('mrYesToAll');
+      TPickListCellEditor(Editor).Items.Add(ModalResultStr[mrNone]);
+      TPickListCellEditor(Editor).Items.Add(ModalResultStr[mrOK]);
+      TPickListCellEditor(Editor).Items.Add(ModalResultStr[mrCancel]);
+      TPickListCellEditor(Editor).Items.Add(ModalResultStr[mrAbort]);
+      TPickListCellEditor(Editor).Items.Add(ModalResultStr[mrRetry]);
+      TPickListCellEditor(Editor).Items.Add(ModalResultStr[mrIgnore]);
+      TPickListCellEditor(Editor).Items.Add(ModalResultStr[mrYes]);
+      TPickListCellEditor(Editor).Items.Add(ModalResultStr[mrNo]);
+      TPickListCellEditor(Editor).Items.Add(ModalResultStr[mrAll]);
+      TPickListCellEditor(Editor).Items.Add(ModalResultStr[mrNoToAll]);
+      TPickListCellEditor(Editor).Items.Add(ModalResultStr[mrYesToAll]);
     end;
     8: begin
       Editor := TStringGrid(Sender).EditorByStyle(cbsAuto);
@@ -666,28 +666,28 @@ begin
       for indx := 0 to ButtonsCheckGroup.Items.Count-1 do
         if ButtonsCheckGroup.Checked[indx] then begin
           if ButtonsCheckGroup.Items[indx] = 'mbOK' then
-            ListResult.Add('mrOK');
+            ListResult.Add(ModalResultStr[mrOK]);
           if ButtonsCheckGroup.Items[indx] = 'mbCancel' then
-            ListResult.Add('mrCancel');
+            ListResult.Add(ModalResultStr[mrCancel]);
           if ButtonsCheckGroup.Items[indx] = 'mbYes' then
-            ListResult.Add('mrYes');
+            ListResult.Add(ModalResultStr[mrYes]);
           if ButtonsCheckGroup.Items[indx] = 'mbNo' then
-            ListResult.Add('mrNo');
+            ListResult.Add(ModalResultStr[mrNo]);
           if ButtonsCheckGroup.Items[indx] = 'mbAbort' then
-            ListResult.Add('mrAbort');
+            ListResult.Add(ModalResultStr[mrAbort]);
           if ButtonsCheckGroup.Items[indx] = 'mbRetry' then
-            ListResult.Add('mrRetry');
+            ListResult.Add(ModalResultStr[mrRetry]);
           if ButtonsCheckGroup.Items[indx] = 'mbIgnore' then
-            ListResult.Add('mrIgnore');
+            ListResult.Add(ModalResultStr[mrIgnore]);
           if ButtonsCheckGroup.Items[indx] = 'mbAll' then
-            ListResult.Add('mrAll');
+            ListResult.Add(ModalResultStr[mrAll]);
           if ButtonsCheckGroup.Items[indx] = 'mbNoToAll' then
-            ListResult.Add('mrNoToAll');
+            ListResult.Add(ModalResultStr[mrNoToAll]);
           if ButtonsCheckGroup.Items[indx] = 'mbYesToAll' then
-            ListResult.Add('mrYesToAll');
+            ListResult.Add(ModalResultStr[mrYesToAll]);
           if (ButtonsCheckGroup.Items[indx] = 'mbClose')and
-             (ListResult.IndexOf('mrCancel') = -1) then
-            ListResult.Add('mrCancel');
+             (ListResult.IndexOf(ModalResultStr[mrCancel]) = -1) then
+            ListResult.Add(ModalResultStr[mrCancel]);
         end;
       if ListResult.Text<>IfResultComboBox.Items.Text then begin
         IfResultComboBox.Items := ListResult;

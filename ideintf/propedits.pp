@@ -4458,21 +4458,6 @@ end;
 
 { TModalResultPropertyEditor }
 
-const
-  ModalResults: array[mrNone..mrLast] of shortstring = (
-    'mrNone',
-    'mrOk',
-    'mrCancel',
-    'mrAbort',
-    'mrRetry',
-    'mrIgnore',
-    'mrYes',
-    'mrNo',
-    'mrAll',
-    'mrNoToAll',
-    'mrYesToAll',
-    'mrClose');
-
 function TModalResultPropertyEditor.GetAttributes: TPropertyAttributes;
 begin
   Result := [paMultiSelect, paValueList, paRevertable];
@@ -4487,8 +4472,8 @@ var
 begin
   CurValue := OrdValue;
   case CurValue of
-    Low(ModalResults)..High(ModalResults):
-      Result := ModalResults[CurValue];
+    Low(ModalResultStr)..High(ModalResultStr):
+      Result := ModalResultStr[CurValue];
   else
     Result := IntToStr(CurValue);
   end;
@@ -4498,7 +4483,7 @@ procedure TModalResultPropertyEditor.GetValues(Proc: TGetStrProc);
 var
   I: Integer;
 begin
-  for I := Low(ModalResults) to High(ModalResults) do Proc(ModalResults[I]);
+  for I := Low(ModalResultStr) to High(ModalResultStr) do Proc(ModalResultStr[I]);
 end;
 
 procedure TModalResultPropertyEditor.SetValue(const NewValue: ansistring);
@@ -4509,8 +4494,8 @@ begin
     SetOrdValue(0);
     Exit;
   end;
-  for I := Low(ModalResults) to High(ModalResults) do
-    if CompareText(ModalResults[I], NewValue) = 0 then
+  for I := Low(ModalResultStr) to High(ModalResultStr) do
+    if CompareText(ModalResultStr[I], NewValue) = 0 then
     begin
       SetOrdValue(I);
       Exit;

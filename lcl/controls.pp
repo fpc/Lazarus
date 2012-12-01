@@ -47,6 +47,7 @@ uses
 
 
 const
+  // Used for ModalResult
   mrNone = 0;
   mrOK = mrNone + 1;
   mrCancel = mrNone + 2;
@@ -60,6 +61,21 @@ const
   mrYesToAll = mrNone + 10;
   mrClose = mrNone + 11;
   mrLast = mrClose;
+
+  // String representation of ModalResult values
+  ModalResultStr: array[mrNone..mrLast] of shortstring = (
+    'mrNone',
+    'mrOk',
+    'mrCancel',
+    'mrAbort',
+    'mrRetry',
+    'mrIgnore',
+    'mrYes',
+    'mrNo',
+    'mrAll',
+    'mrNoToAll',
+    'mrYesToAll',
+    'mrClose');
 
   // define aliases for Delphi compatibility
   fsSurface = GraphType.fsSurface;
