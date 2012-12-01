@@ -16,9 +16,9 @@ uses
 type
   TSubControl = class;
 
-  { TForm1 }
+  { Tform1 }
 
-  TForm1 = class(TForm)
+  Tform1 = class(TForm)
     Button1: TButton;
     Button2: TButton;
     Button3: TButton;
@@ -74,11 +74,11 @@ type
   end;
 
 var
-  Form1: TForm1; 
+  form1: Tform1;
 
 implementation
 
-uses secondform,
+uses secondform, sqliteform,
   ctypes, //android_sockets,
   {$ifdef Android}
   jni,
@@ -122,40 +122,40 @@ end;
 
 {$R *.lfm}
 
-{ TForm1 }
+{ Tform1 }
 
-procedure TForm1.FormClick(Sender: TObject);
+procedure Tform1.FormClick(Sender: TObject);
 begin
   DebugLn(Format('Form click #%d', [ClickCounter]));
   Inc(ClickCounter);
 //  Invalidate;
 end;
 
-procedure TForm1.Arrow1Click(Sender: TObject);
+procedure Tform1.Arrow1Click(Sender: TObject);
 begin
   Caption := 'Clicked Arrow';
   DebugLn('Clicked Arrow');
 end;
 
-procedure TForm1.Arrow1MouseDown(Sender: TObject; Button: TMouseButton;
+procedure Tform1.Arrow1MouseDown(Sender: TObject; Button: TMouseButton;
   Shift: TShiftState; X, Y: Integer);
 begin
   DebugLn(Format('Arrow Mouse Down X=%d Y=%d', [X, Y]));
 end;
 
-procedure TForm1.Arrow1MouseMove(Sender: TObject; Shift: TShiftState; X,
+procedure Tform1.Arrow1MouseMove(Sender: TObject; Shift: TShiftState; X,
   Y: Integer);
 begin
   DebugLn(Format('Arrow Mouse Move X=%d Y=%d', [X, Y]));
 end;
 
-procedure TForm1.Arrow1MouseUp(Sender: TObject; Button: TMouseButton;
+procedure Tform1.Arrow1MouseUp(Sender: TObject; Button: TMouseButton;
   Shift: TShiftState; X, Y: Integer);
 begin
   DebugLn(Format('Arrow Mouse Up X=%d Y=%d', [X, Y]));
 end;
 
-procedure TForm1.btnShowInfoClick(Sender: TObject);
+procedure Tform1.btnShowInfoClick(Sender: TObject);
 //var
 //  i: Integer;
 begin
@@ -166,7 +166,7 @@ begin
   Device.Vibrate(2000);
 end;
 
-procedure TForm1.Button1Click(Sender: TObject);
+procedure Tform1.Button1Click(Sender: TObject);
 var
   sqliteDLL : Pointer;
 begin
@@ -184,31 +184,31 @@ begin
 //  Self.AutoAdjustLayout(lapAutoAdjustWithoutHorizontalScrolling, 96, 150, 220, 600);
 end;
 
-procedure TForm1.Button1KeyDown(Sender: TObject; var Key: Word;
+procedure Tform1.Button1KeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
   DebugLn('[TForm1.Button1KeyDown] '+ LCLProc.DbgsVKCode(Key));
 //  Caption := 'KeyDown ' + LCLProc.DbgsVKCode(Key);
 end;
 
-procedure TForm1.Button1KeyPress(Sender: TObject; var Key: char);
+procedure Tform1.Button1KeyPress(Sender: TObject; var Key: char);
 begin
   DebugLn('KeyPress: ' + Key);
 end;
 
-procedure TForm1.Button1KeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);
+procedure Tform1.Button1KeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);
 begin
   DebugLn('[TForm1.Button1KeyUp] '+ LCLProc.DbgsVKCode(Key));
 //  Caption := 'KeyUp ' + LCLProc.DbgsVKCode(Key);
 end;
 
-procedure TForm1.Button1UTF8KeyPress(Sender: TObject; var UTF8Key: TUTF8Char);
+procedure Tform1.Button1UTF8KeyPress(Sender: TObject; var UTF8Key: TUTF8Char);
 begin
   DebugLn('UTF8KeyPress: ' + UTF8Key);
   Caption := UTF8Key;
 end;
 
-procedure TForm1.Button2Click(Sender: TObject);
+procedure Tform1.Button2Click(Sender: TObject);
 begin
   Application.OnMessageDialogFinished := @HandleMessageDialogFinished;
   DebugLn('Button2Click A');
@@ -217,13 +217,14 @@ begin
   DebugLn('Button2Click B');
 end;
 
-procedure TForm1.Button3Click(Sender: TObject);
+procedure Tform1.Button3Click(Sender: TObject);
 begin
-  Form2.Show;
+  //Form2.Show;
+  formsqlite.Show;
   DebugLn('Button3Click');
 end;
 
-procedure TForm1.FormCreate(Sender: TObject);
+procedure Tform1.FormCreate(Sender: TObject);
 begin
   SubControl := TSubControl.Create(Self);
   SubControl.Left := 40;
@@ -235,13 +236,13 @@ begin
   OnListViewDialogResult := @MyOnListViewDialogResult;
 end;
 
-procedure TForm1.FormMouseMove(Sender: TObject; Shift: TShiftState; X,
+procedure Tform1.FormMouseMove(Sender: TObject; Shift: TShiftState; X,
   Y: Integer);
 begin
   DebugLn(Format('MouseMove x=%d y=%d', [x, y]));
 end;
 
-procedure TForm1.FormPaint(Sender: TObject);
+procedure Tform1.FormPaint(Sender: TObject);
 var
   lPoints: array[0..2] of TPoint;
 begin
@@ -259,17 +260,17 @@ begin
   Canvas.Rectangle(200, 200, 300, 300);}
 end;
 
-procedure TForm1.MenuItem1Click(Sender: TObject);
+procedure Tform1.MenuItem1Click(Sender: TObject);
 begin
   DebugLn('[TForm1.MenuItem1Click]');
 end;
 
-procedure TForm1.HandleMessageDialogFinished(Sender: TObject; AResult: Integer);
+procedure Tform1.HandleMessageDialogFinished(Sender: TObject; AResult: Integer);
 begin
   DebugLn(Format('[TForm1.HandleMessageDialogFinished] AResult=%d', [AResult]));
 end;
 
-procedure TForm1.SocketProc;
+procedure Tform1.SocketProc;
 const
   RCVBUFSIZE = 64;
 (*var
@@ -330,7 +331,7 @@ begin
   }//-- end main --//*)
 end;
 
-function TForm1.LoadHTMLPageViaJNI(AURL: string): string;
+function Tform1.LoadHTMLPageViaJNI(AURL: string): string;
 {$ifdef Android}
 var
   javaClass_DefaultHttpClient, javaClass_AbstractHttpClient, javaClass_HttpGet,
@@ -466,7 +467,7 @@ begin
 {$endif}
 end;
 
-procedure TForm1.MyOnListViewDialogResult(ASelectedItem: Integer);
+procedure Tform1.MyOnListViewDialogResult(ASelectedItem: Integer);
 begin
   DebugLn(Format('[MyOnListViewDialogResult] ASelectedItem=%d', [ASelectedItem]));
 end;

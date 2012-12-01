@@ -3,10 +3,8 @@ library androidlcltest;
 {$mode objfpc}{$H+}
 
 uses
-  customdrawnint,
-  Interfaces,
-  Forms,
-  mainform, secondform, customdrawn_android, customdrawndrawers;
+  customdrawnint, Interfaces, Forms, mainform, secondform, sqlitejniandroid,
+  customdrawn_android, customdrawndrawers, sqliteform;
 
 exports
   Java_com_pascal_lclproject_LCLActivity_LCLOnTouch name 'Java_com_pascal_lcltest_LCLActivity_LCLOnTouch',
@@ -27,6 +25,7 @@ begin
   Application.Initialize;
   Application.CreateForm(TForm1, Form1);
   Application.CreateForm(TForm2, Form2);
+  Application.CreateForm(TFormSqlite, formSqlite);
   Application.Run;
 end;
 

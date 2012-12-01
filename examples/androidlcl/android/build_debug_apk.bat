@@ -1,9 +1,9 @@
 REM Adjust these paths to yours
-SET PATH=C:\Programas\android-sdk\tools;C:\Programas\android-sdk\platform-tools\;C:\Progra~1\Java\jdk1.6.0_20\bin
+SET PATH=C:\Programas\android-sdk\tools;C:\Programas\android-sdk\platform-tools\;C:\Progra~1\Java\jdk1.6.0_37\bin
 SET APP_NAME=androidlcltest
 SET ANDROID_HOME=C:\Programas\android-sdk
 SET APK_SDK_PLATFORM=C:\Programas\android-sdk\platforms\android-8
-SET APK_PROJECT_PATH=F:\Programas\lazarussvn\examples\androidlcl\android
+SET APK_PROJECT_PATH=C:\Programas\lazarussvn\examples\androidlcl\android
 
 REM Create necessary directory Structure
 mkdir bin

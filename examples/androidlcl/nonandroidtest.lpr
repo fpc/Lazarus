@@ -4,7 +4,8 @@ program nonandroidtest;
 
 uses
   Interfaces, // this includes the LCL widgetset
-  Forms, mainform, secondform, customdrawndrawers, customdrawn_android;
+  Forms, mainform, secondform, sqliteform, customdrawndrawers,
+  customdrawn_android;
 
 {$R *.res}
 

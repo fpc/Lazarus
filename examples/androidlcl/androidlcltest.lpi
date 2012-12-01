@@ -114,12 +114,15 @@
         <FormatVersion Value="1"/>
       </local>
     </RunParams>
-    <RequiredPackages Count="1">
+    <RequiredPackages Count="2">
       <Item1>
-        <PackageName Value="LCL"/>
+        <PackageName Value="FCL"/>
       </Item1>
+      <Item2>
+        <PackageName Value="LCL"/>
+      </Item2>
     </RequiredPackages>
-    <Units Count="5">
+    <Units Count="7">
       <Unit0>
         <Filename Value="androidlcltest.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -128,7 +131,7 @@
       <Unit1>
         <Filename Value="mainform.pas"/>
         <IsPartOfProject Value="True"/>
-        <ComponentName Value="Form1"/>
+        <ComponentName Value="form1"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="mainform"/>
@@ -149,16 +152,29 @@
         <Filename Value="android/AndroidManifest.xml"/>
         <IsPartOfProject Value="True"/>
       </Unit4>
+      <Unit5>
+        <Filename Value="sqlitejniandroid.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="sqlitejniandroid"/>
+      </Unit5>
+      <Unit6>
+        <Filename Value="sqliteform.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="formSqlite"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="sqliteform"/>
+      </Unit6>
     </Units>
   </ProjectOptions>
   <CompilerOptions>
     <Version Value="11"/>
     <Target>
-      <Filename Value="android/libs/armeabi/liblclapp.so"/>
+      <Filename Value="android/libs/armeabi/liblclapp"/>
     </Target>
     <SearchPaths>
       <IncludeFiles Value="$(ProjOutDir)"/>
-      <Libraries Value="../../../android-ndk-r7/platforms/android-8/arch-arm/usr/lib;../../../android-ndk-r7/toolchains/arm-linux-androideabi-4.4.3/prebuilt/linux-x86/lib/gcc/arm-linux-androideabi/4.4.3"/>
+      <Libraries Value="../../../android-ndk-r8c/platforms/android-8/arch-arm/usr/lib;../../../android-ndk-r8c/toolchains/arm-linux-androideabi-4.4.3/prebuilt/linux-x86/lib/gcc/arm-linux-androideabi/4.4.3;../../../android-ndk-r8c/toolchains/arm-linux-androideabi-4.4.3/prebuilt/windows/lib/gcc/arm-linux-androideabi/4.4.3"/>
       <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)"/>
     </SearchPaths>
     <CodeGeneration>

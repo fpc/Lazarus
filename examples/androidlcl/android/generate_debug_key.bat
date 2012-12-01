@@ -1,5 +1,5 @@
 REM Adjust these paths to yours
-SET PATH=C:\Programas\android-sdk\tools;C:\Programas\android-sdk\platform-tools\;C:\Progra~1\Java\jdk1.6.0_20\bin
+SET PATH=C:\Programas\android-sdk\tools;C:\Programas\android-sdk\platform-tools\;C:\Progra~1\Java\jdk1.6.0_37\bin
 SET APP_NAME=androidlcltest
 SET ANDROID_HOME=C:\Programas\android-sdk
 SET APK_SDK_PLATFORM=C:\Programas\android-sdk\platforms\android-8

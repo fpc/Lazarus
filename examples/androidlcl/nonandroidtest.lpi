@@ -46,6 +46,7 @@
             </CompilerMessages>
             <CompilerPath Value="$(CompPath)"/>
           </Other>
+          <LCLWidgetType Value="customdrawn"/>
         </CompilerOptions>
       </Item2>
       <Item3 Name="NotCustomDrawn">
@@ -99,6 +100,7 @@
             </CompilerMessages>
             <CompilerPath Value="$(CompPath)"/>
           </Other>
+          <LCLWidgetType Value="cocoa"/>
         </CompilerOptions>
       </Item4>
     </BuildModes>
@@ -117,7 +119,7 @@
         <PackageName Value="LCL"/>
       </Item1>
     </RequiredPackages>
-    <Units Count="3">
+    <Units Count="4">
       <Unit0>
         <Filename Value="nonandroidtest.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -139,6 +141,14 @@
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="secondform"/>
       </Unit2>
+      <Unit3>
+        <Filename Value="sqliteform.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="Form3"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="sqliteform"/>
+      </Unit3>
     </Units>
   </ProjectOptions>
   <CompilerOptions>
@@ -150,17 +160,13 @@
       <IncludeFiles Value="$(ProjOutDir)"/>
       <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)"/>
     </SearchPaths>
-    <Linking>
-      <Debugging>
-        <DebugInfoType Value="dsDwarf2"/>
-      </Debugging>
-    </Linking>
     <Other>
       <CompilerMessages>
         <UseMsgFile Value="True"/>
       </CompilerMessages>
       <CompilerPath Value="$(CompPath)"/>
     </Other>
+    <LCLWidgetType Value="customdrawn"/>
   </CompilerOptions>
   <Debugging>
     <Exceptions Count="3">
