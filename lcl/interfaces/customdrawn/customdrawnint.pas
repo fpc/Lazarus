@@ -370,6 +370,9 @@ var
   javaActivityClass: JClass = nil;
   javaActivityObject: jobject = nil;
 
+  // The SDK Version
+  android_os_Build_VERSION_SDK_INT: jint;
+
   // Other classes and objects
   javaAndroidAppActivityClass: JClass = nil;
   javaJavaLangSystemClass: JClass = nil;
@@ -377,7 +380,10 @@ var
   javaAndroidOSVibratorClass: JClass = nil;
   javaAndroidContentContextClass: JClass = nil;
   javaJavaLangStringClass: JClass = nil;
+  javaAndroidOSBuildVERSIONClass: JClass = nil;
 
+  // Other fields
+  javaField_VERSION_SDK_INT: JFieldID = nil;
   // Fields of our Activity
   // Strings
   javaField_lcltext: JfieldID=nil;

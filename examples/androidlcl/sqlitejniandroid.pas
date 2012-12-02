@@ -46,13 +46,14 @@ type
 
   TSqliteJNIDataset = class(TCustomSqliteDataset)
   private
+    FLastInsertRowId: Int64;
     // Java Classes
-    FSqliteClosableClass, FSQLiteDatabaseClass, FSQLiteCursor: JClass;
+    FSqliteClosableClass, FSQLiteDatabaseClass, FDBCursorClass: JClass;
     // Java Methods
     FSqliteClosable_releaseReference: JMethodID;
     FSqliteDatabase_ExecSQLMethod, FSqliteDatabase_openOrCreateDatabase,
       FSqliteDatabase_getVersion, FSqliteDatabase_query: JMethodID;
-    FSqliteCursor_getColumnCount: JMethodID;
+    FDBCursor_getColumnCount, FDBCursor_getColumnName, FDBCursor_getType: JMethodID;
     // Java Objects
     AndroidDB: jobject; // SQLiteDatabase
     procedure FindJavaClassesAndMethods;
@@ -75,6 +76,16 @@ implementation
 
 uses
   db, strutils, lclproc;
+
+const
+  //
+  // from android.database.Cursor
+  //
+  FIELD_TYPE_BLOB = 4;   // Added in API level 11
+  FIELD_TYPE_FLOAT = 2;  // Added in API level 11
+  FIELD_TYPE_INTEGER = 1;// Added in API level 11
+  FIELD_TYPE_NULL = 0;   // Added in API level 11
+  FIELD_TYPE_STRING = 3; // Added in API level 11
 
 {
 Java code example
@@ -199,9 +210,12 @@ end;
 procedure TSqliteJNIDataset.RetrieveFieldDefs;
 var
   vm: Pointer;
-  ColumnStr: String;
+  ColumnName: string;
   i, ColumnCount, DataSize: Integer;
+  lColumnType: JInt;
+  lJavaString: JString;
   AType: TFieldType;
+  lNativeString: PChar;
   //
   dbCursor: JObject;
   lParams: array[0..7] of JValue;
@@ -228,99 +242,97 @@ begin
     Exit;
   end;
 
-//    int num = c.getColumnCount();
-//    for (int i = 0; i < num; ++i)
-    {
-      String colname = c.getColumnName(i);
-    }
-
-
   //FReturnCode := sqlite3_prepare(FSqliteHandle, PChar(FEffectiveSQL), -1, @vm, nil);
   //if FReturnCode <> SQLITE_OK then
   //  DatabaseError(ReturnString, Self);
   //sqlite3_step(vm);
   //ColumnCount := sqlite3_column_count(vm);
+
+  //
+  // Obtain the number of columns
+  //
+
+  // abstract String getColumnName(int columnIndex)
+  //    int ColumnCount = c.getColumnCount();
+  ColumnCount := javaEnvRef^^.CallIntMethod(javaEnvRef, AndroidDB, FDBCursor_getColumnCount);
   //Prepare the array of pchar2sql functions
-{  SetLength(FGetSqlStr, ColumnCount);
+  SetLength(FGetSqlStr, ColumnCount);
   for i := 0 to ColumnCount - 1 do
   begin
+    //
+    // First get the column name
+    //
+    // abstract String getColumnName(int columnIndex)
+    lParams[0].i := i;
+    lJavaString := javaEnvRef^^.CallObjectMethodA(javaEnvRef, AndroidDB, FDBCursor_getColumnName, @lParams[0]);
+    lNativeString := javaEnvRef^^.GetStringUTFChars(javaEnvRef, lJavaString, nil);
+    ColumnName := lNativeString;
+    javaEnvRef^^.ReleaseStringUTFChars(javaEnvRef, lJavaString, lNativeString);
+    javaEnvRef^^.DeleteLocalRef(javaEnvRef, lJavaString);
+
+    //
+    // Now obtain the data size and type
+    //
     DataSize := 0;
-    ColumnStr := UpperCase(String(sqlite3_column_decltype(vm, i)));
-    if (ColumnStr = 'INTEGER') or (ColumnStr = 'INT') then
-    begin
-      if AutoIncrementKey and (UpperCase(String(sqlite3_column_name(vm, i))) = UpperCase(PrimaryKey)) then
-      begin
-        AType := ftAutoInc;
-        FAutoIncFieldNo := i;
-      end
-      else
-        AType := ftInteger;
-    end else if Pos('VARCHAR', ColumnStr) = 1 then
+
+    // Before Android 3.0 there is no way to know the type of the field, so just suppose it is string
+    if android_os_Build_VERSION_SDK_INT < 11 then
     begin
       AType := ftString;
-      DataSize := StrToIntDef(Trim(ExtractDelimited(2, ColumnStr, ['(', ')'])), DefaultStringSize);
-    end else if Pos('BOOL', ColumnStr) = 1 then
+      DataSize := DefaultStringSize;
+    end
+    else
+    // In Android 3.0 we can use Cursor.getType
     begin
-      AType := ftBoolean;
-    end else if Pos('AUTOINC', ColumnStr) = 1 then
-    begin
-      AType := ftAutoInc;
-      if FAutoIncFieldNo = -1 then
-        FAutoIncFieldNo := i;
-    end else if (Pos('FLOAT', ColumnStr) = 1) or (Pos('NUMERIC', ColumnStr) = 1) then
-    begin
-      AType := ftFloat;
-    end else if (ColumnStr = 'DATETIME') then
-    begin
-      AType := ftDateTime;
-    end else if (ColumnStr = 'DATE') then
-    begin
-      AType := ftDate;
-    end else if (ColumnStr = 'LARGEINT') or (ColumnStr = 'BIGINT') then
-    begin
-      AType := ftLargeInt;
-    end else if (ColumnStr = 'TIME') then
-    begin
-      AType := ftTime;
-    end else if (ColumnStr = 'TEXT') then
-    begin
-      AType := ftMemo;
-    end else if (ColumnStr = 'CURRENCY') then
-    begin
-      AType := ftCurrency;
-    end else if (ColumnStr = 'WORD') then
-    begin
-      AType := ftWord;
-    end else if (ColumnStr = '') then
-    begin
-      case sqlite3_column_type(vm, i) of
-        SQLITE_INTEGER:
-          AType := ftInteger;
-        SQLITE_FLOAT:
-          AType := ftFloat;
-      else
-	    begin
+      // public abstract int getType (int columnIndex) // Added in API level 11
+      lParams[0].i := i;
+      lColumnType := javaEnvRef^^.CallIntMethodA(javaEnvRef, AndroidDB, FDBCursor_getType, @lParams[0]);
+
+      case lColumnType of
+        FIELD_TYPE_BLOB:
+        begin
           AType := ftString;
-		  DataSize := DefaultStringSize;
-		end;  		
+          DataSize := DefaultStringSize;
+        end;
+        FIELD_TYPE_FLOAT:
+        begin
+          AType := ftFloat;
+        end;
+        FIELD_TYPE_INTEGER:
+        begin
+          {if AutoIncrementKey and (UpperCase(String(sqlite3_column_name(vm, i))) = UpperCase(PrimaryKey)) then
+          begin
+            AType := ftAutoInc;
+            FAutoIncFieldNo := i;
+          end
+          else}
+            AType := ftInteger;
+        end;
+        FIELD_TYPE_NULL:
+        begin
+          AType := ftString;
+          DataSize := DefaultStringSize;
+        end;
+        FIELD_TYPE_STRING:
+        begin
+          AType := ftString;
+          DataSize := DefaultStringSize;
+        end;
       end;
-    end else
-    begin
-      AType := ftString;
-	  DataSize := DefaultStringSize;
     end;
-    FieldDefs.Add(String(sqlite3_column_name(vm, i)), AType, DataSize);
+
+    FieldDefs.Add(ColumnName, AType, DataSize);
     //Set the pchar2sql function
     if AType in [ftString, ftMemo] then
       FGetSqlStr[i] := @Char2SQLStr
     else
       FGetSqlStr[i] := @Num2SQLStr;
     {$ifdef DEBUG_SQLITEDS}
-    WriteLn('  Field[', i, '] Name: ', sqlite3_column_name(vm, i));
-    WriteLn('  Field[', i, '] Type: ', sqlite3_column_decltype(vm, i));
+    DebugLn('  Field[', i, '] Name: ', sqlite3_column_name(vm, i));
+    DebugLn('  Field[', i, '] Type: ', sqlite3_column_decltype(vm, i));
     {$endif}
   end;
-  sqlite3_finalize(vm);}
+  //sqlite3_finalize(vm);
 end;
 
 function TSqliteJNIDataset.GetRowsAffected: Integer;
@@ -345,7 +357,7 @@ procedure TSqliteJNIDataset.FindJavaClassesAndMethods;
 begin
   FSQLiteDatabaseClass := javaEnvRef^^.FindClass(javaEnvRef, 'android/database/sqlite/SQLiteDatabase');
   FSQLiteClosableClass := javaEnvRef^^.FindClass(javaEnvRef, 'android/database/sqlite/SQLiteClosable');
-  FSQLiteCursor := javaEnvRef^^.FindClass(javaEnvRef, 'android/database/Cursor');
+  FDBCursorClass := javaEnvRef^^.FindClass(javaEnvRef, 'android/database/Cursor');
 
   //
   // Methods from SqliteDatabase
@@ -361,10 +373,24 @@ begin
   FSqliteDatabase_query := javaEnvRef^^.GetMethodID(javaEnvRef, FSQLiteDatabaseClass, 'query',
     '(Ljava/lang/String;[Ljava/lang/String;Ljava/lang/String;[Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Landroid/database/Cursor;');
   //
-  // Methods from FSQLiteCursor
+  // Methods from FDBClosable
   //
-  FSqliteCursor_getColumnCount := javaEnvRef^^.GetMethodID(javaEnvRef, FSQLiteCursor, 'getColumnCount',
+  FSqliteClosable_releaseReference := javaEnvRef^^.GetMethodID(javaEnvRef, FSQLiteClosableClass, 'releaseReference',
+    '()V');
+  //
+  // Methods from FDBCursor
+  //
+  FDBCursor_getColumnCount := javaEnvRef^^.GetMethodID(javaEnvRef, FDBCursorClass, 'getColumnCount',
     '()I');
+  // abstract String getColumnName(int columnIndex)
+  FDBCursor_getColumnName := javaEnvRef^^.GetMethodID(javaEnvRef, FDBCursorClass, 'getColumnName',
+    '(I)Ljava/lang/String;');
+  // public abstract int getType (int columnIndex) // Added in API level 11
+  if android_os_Build_VERSION_SDK_INT >= 11 then
+  begin
+    FDBCursor_getType := javaEnvRef^^.GetMethodID(javaEnvRef, FDBCursorClass, 'getType',
+      '(I)I');
+  end;
 end;
 
 procedure TSqliteJNIDataset.BuildLinkedList;
@@ -427,7 +453,8 @@ end;
 
 function TSqliteJNIDataset.GetLastInsertRowId: Int64;
 begin
-  DebugLn('[TSqliteJNIDataset.GetLastInsertRowId]');
+  Result := FLastInsertRowId;
+  DebugLn('[TSqliteJNIDataset.GetLastInsertRowId] Result='+IntToStr(Result));
   //f/Result := sqlite3_last_insert_rowid(FSqliteHandle);
 end;
 
