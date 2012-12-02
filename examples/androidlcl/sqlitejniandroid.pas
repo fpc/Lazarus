@@ -53,8 +53,12 @@ type
     FSqliteClosable_releaseReference: JMethodID;
     FSqliteDatabase_ExecSQLMethod, FSqliteDatabase_openOrCreateDatabase,
       FSqliteDatabase_getVersion, FSqliteDatabase_query,
-      FSqliteDatabase_execSQL: JMethodID;
-    FDBCursor_getColumnCount, FDBCursor_getColumnName, FDBCursor_getType: JMethodID;
+      FSqliteDatabase_execSQL, FSqliteDatabase_rawQuery: JMethodID;
+    FDBCursor_getColumnCount, FDBCursor_getColumnName, FDBCursor_getType,
+      FDBCursor_close, FDBCursor_getCount, FDBCursor_getDouble,
+      FDBCursor_getLong, FDBCursor_getPosition, FDBCursor_getString,
+      FDBCursor_moveToFirst, FDBCursor_moveToNext, FDBCursor_moveToPosition,
+      FDBCursor_moveToPrevious: JMethodID;
     // Java Objects
     AndroidDB: jobject; // SQLiteDatabase
     procedure FindJavaClassesAndMethods;
@@ -214,11 +218,11 @@ var
   vm: Pointer;
   ColumnName: string;
   i, ColumnCount, DataSize: Integer;
+  AType: TFieldType;
+  //
   lColumnType: JInt;
   lJavaString: JString;
-  AType: TFieldType;
   lNativeString: PChar;
-  //
   dbCursor: JObject;
   lParams: array[0..7] of JValue;
 begin
@@ -334,6 +338,7 @@ begin
     {$endif}
   end;
   //sqlite3_finalize(vm);
+  javaEnvRef^^.CallVoidMethod(javaEnvRef, dbCursor, FDBCursor_close);
 end;
 
 function TSqliteJNIDataset.GetRowsAffected: Integer;
@@ -390,6 +395,9 @@ begin
   // void execSQL(String sql)
   FSqliteDatabase_execSQL := javaEnvRef^^.GetMethodID(javaEnvRef, FSQLiteDatabaseClass, 'execSQL',
     '(Ljava/lang/String;)V');
+  // public Cursor rawQuery (String sql, String[] selectionArgs)
+  FSqliteDatabase_rawQuery := javaEnvRef^^.GetMethodID(javaEnvRef, FSQLiteDatabaseClass, 'rawQuery',
+    '(Ljava/lang/String;[Ljava/lang/String;)Landroid/database/Cursor;');
   //
   // Methods from FDBClosable
   //
@@ -409,50 +417,111 @@ begin
     FDBCursor_getType := javaEnvRef^^.GetMethodID(javaEnvRef, FDBCursorClass, 'getType',
       '(I)I');
   end;
+  // abstract void 	close()
+  FDBCursor_close := javaEnvRef^^.GetMethodID(javaEnvRef, FDBCursorClass, 'close',
+    '()V');
+  // public abstract int getCount ()
+  FDBCursor_getCount := javaEnvRef^^.GetMethodID(javaEnvRef, FDBCursorClass, 'getCount',
+    '()I');
+  // public abstract double getDouble (int columnIndex)
+  FDBCursor_getDouble := javaEnvRef^^.GetMethodID(javaEnvRef, FDBCursorClass, 'getDouble',
+    '(I)D');
+  // public abstract long getLong (int columnIndex)
+  FDBCursor_getLong := javaEnvRef^^.GetMethodID(javaEnvRef, FDBCursorClass, 'getLong',
+    '(I)J');
+  // public abstract int getPosition ()
+  FDBCursor_getPosition := javaEnvRef^^.GetMethodID(javaEnvRef, FDBCursorClass, 'getPosition',
+    '()I');
+  // public abstract String getString (int columnIndex)
+  FDBCursor_getString := javaEnvRef^^.GetMethodID(javaEnvRef, FDBCursorClass, 'getString',
+    '(I)Ljava/lang/String;');
+  // public abstract boolean moveToFirst ()
+  FDBCursor_moveToFirst := javaEnvRef^^.GetMethodID(javaEnvRef, FDBCursorClass, 'moveToFirst',
+    '()Z');
+  // public abstract boolean moveToNext ()
+  FDBCursor_moveToNext := javaEnvRef^^.GetMethodID(javaEnvRef, FDBCursorClass, 'moveToNext',
+    '()Z');
+  // public abstract boolean moveToPosition (int position)
+  FDBCursor_moveToPosition := javaEnvRef^^.GetMethodID(javaEnvRef, FDBCursorClass, 'moveToPosition',
+    '(I)Z');
+  // public abstract boolean moveToPrevious ()
+  FDBCursor_moveToPrevious := javaEnvRef^^.GetMethodID(javaEnvRef, FDBCursorClass, 'moveToPrevious',
+    '()Z');
 end;
 
 procedure TSqliteJNIDataset.BuildLinkedList;
 var
   TempItem: PDataRecord;
-  vm: Pointer;
-  Counter, ColumnCount: Integer;
+  Counter, ColumnCount, TrueRowCount: Integer;
+  lIsAfterLastRow: Boolean;
+  //
+  lJavaString: JString;
+  lNativeString: PChar;
+  dbCursor: JObject;
+  lParams: array[0..7] of JValue;
 begin
-  DebugLn('[TSqliteJNIDataset.BuildLinkedList]');
+  DebugLn('[TSqliteJNIDataset.BuildLinkedList] FEffectiveSQL='+FEffectiveSQL);
 {  //Get AutoInc Field initial value
   if FAutoIncFieldNo <> -1 then
     sqlite3_exec(FSqliteHandle, PChar('Select Max(' + FieldDefs[FAutoIncFieldNo].Name +
-      ') from ' + FTableName), @GetAutoIncValue, @FNextAutoInc, nil);
+      ') from ' + FTableName), @GetAutoIncValue, @FNextAutoInc, nil);}
 
-  FReturnCode := sqlite3_prepare(FSqliteHandle, PChar(FEffectiveSQL), -1, @vm, nil);
-  if FReturnCode <> SQLITE_OK then
-    DatabaseError(ReturnString, Self);
+  //FReturnCode := sqlite3_prepare(FSqliteHandle, PChar(FEffectiveSQL), -1, @vm, nil);
+  //if FReturnCode <> SQLITE_OK then
+  //  DatabaseError(ReturnString, Self);
+  //
+  // public Cursor rawQuery (String sql, String[] selectionArgs)
+  lParams[0].l := javaEnvRef^^.NewStringUTF(javaEnvRef, PChar(FEffectiveSQL));
+  lParams[1].l := nil;
+  dbCursor := javaEnvRef^^.CallObjectMethodA(javaEnvRef, AndroidDB, FSqliteDatabase_rawQuery, @lParams[0]);
+  javaEnvRef^^.DeleteLocalRef(javaEnvRef, lParams[0].l);
 
   FDataAllocated := True;
 
   TempItem := FBeginItem;
   FRecordCount := 0;
-  ColumnCount := sqlite3_column_count(vm);
+  ColumnCount := javaEnvRef^^.CallIntMethod(javaEnvRef, dbCursor, FDBCursor_getColumnCount);
+  TrueRowCount := javaEnvRef^^.CallIntMethod(javaEnvRef, dbCursor, FDBCursor_getCount);
   FRowCount := ColumnCount;
   //add extra rows for calculated fields
   if FCalcFieldList <> nil then
     Inc(FRowCount, FCalcFieldList.Count);
   FRowBufferSize := (SizeOf(PPChar) * FRowCount);
-  FReturnCode := sqlite3_step(vm);
-  while FReturnCode = SQLITE_ROW do
+  //FReturnCode := sqlite3_step(vm);
+  //while FReturnCode = SQLITE_ROW do
+  //begin
+  //
+  // public abstract boolean moveToNext ()
+  DebugLn(Format('[TSqliteJNIDataset.BuildLinkedList] ColCount=%d RowCount=%d', [ColumnCount, TrueRowCount]));
+  if TrueRowCount > 0 then
   begin
-    Inc(FRecordCount);
-    New(TempItem^.Next);
-    TempItem^.Next^.Previous := TempItem;
-    TempItem := TempItem^.Next;
-    GetMem(TempItem^.Row, FRowBufferSize);
-    for Counter := 0 to ColumnCount - 1 do
-      TempItem^.Row[Counter] := StrNew(sqlite3_column_text(vm, Counter));
-    //initialize calculated fields with nil
-    for Counter := ColumnCount to FRowCount - 1 do
-      TempItem^.Row[Counter] := nil;
-    FReturnCode := sqlite3_step(vm);
+    lIsAfterLastRow := javaEnvRef^^.CallBooleanMethod(javaEnvRef, dbCursor, FDBCursor_moveToNext) = JNI_TRUE;
+    while not lIsAfterLastRow do
+    begin
+      Inc(FRecordCount);
+      New(TempItem^.Next);
+      TempItem^.Next^.Previous := TempItem;
+      TempItem := TempItem^.Next;
+      GetMem(TempItem^.Row, FRowBufferSize);
+      for Counter := 0 to ColumnCount - 1 do
+      begin
+        // TempItem^.Row[Counter] := StrNew(sqlite3_column_text(vm, Counter));
+        // public abstract String getString (int columnIndex)
+        lJavaString := javaEnvRef^^.CallObjectMethod(javaEnvRef, dbCursor, FDBCursor_getString);
+        lNativeString := javaEnvRef^^.GetStringUTFChars(javaEnvRef, lJavaString, nil);
+        TempItem^.Row[Counter] := StrNew(lNativeString);
+        javaEnvRef^^.ReleaseStringUTFChars(javaEnvRef, lJavaString, lNativeString);
+        javaEnvRef^^.DeleteLocalRef(javaEnvRef, lJavaString);
+      end;
+      //initialize calculated fields with nil
+      for Counter := ColumnCount to FRowCount - 1 do
+        TempItem^.Row[Counter] := nil;
+      //FReturnCode := sqlite3_step(vm);
+      lIsAfterLastRow := javaEnvRef^^.CallBooleanMethod(javaEnvRef, dbCursor, FDBCursor_moveToNext) = JNI_TRUE;
+    end;
   end;
-  sqlite3_finalize(vm);
+  //sqlite3_finalize(vm);
+  javaEnvRef^^.CallVoidMethod(javaEnvRef, dbCursor, FDBCursor_close);
 
   // Attach EndItem
   TempItem^.Next := FEndItem;
@@ -466,7 +535,7 @@ begin
   GetMem(FBeginItem^.Row, FRowBufferSize);
   //Todo: see if is better to nullif using FillDWord
   for Counter := 0 to FRowCount - 1 do
-    FBeginItem^.Row[Counter] := nil;}
+    FBeginItem^.Row[Counter] := nil;
 end;
 
 function TSqliteJNIDataset.GetLastInsertRowId: Int64;
