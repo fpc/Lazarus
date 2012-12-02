@@ -52,7 +52,8 @@ type
     // Java Methods
     FSqliteClosable_releaseReference: JMethodID;
     FSqliteDatabase_ExecSQLMethod, FSqliteDatabase_openOrCreateDatabase,
-      FSqliteDatabase_getVersion, FSqliteDatabase_query: JMethodID;
+      FSqliteDatabase_getVersion, FSqliteDatabase_query,
+      FSqliteDatabase_execSQL: JMethodID;
     FDBCursor_getColumnCount, FDBCursor_getColumnName, FDBCursor_getType: JMethodID;
     // Java Objects
     AndroidDB: jobject; // SQLiteDatabase
@@ -224,6 +225,20 @@ begin
   FAutoIncFieldNo := -1;
   FieldDefs.Clear;
 
+  // Create the table, if necessary
+  //lParams[0].l := lJavaString;
+  //lJavaString := javaEnvRef^^.CallVoidMethodA(javaEnvRef, AndroidDB, FSqliteDatabase_execSQL, @lParams[0]);
+  {db.execSQL("CREATE TABLE IF NOT EXISTS "
+                       + DATABASE_TABLE_USER
+                       + " (userID INT PRIMARY KEY, name VARCHAR(40),"
+                       + " birthdate DATETIME,"
+                       + " weight INT(3), heightInches INT, "
+                       + " smoking BOOLEAN DEFAULT 'FALSE',"
+                       + " school BOOLEAN DEFAULT 'FALSE', "
+                       + " reading BOOLEAN DEFAULT 'FALSE',"
+                       + " religion BOOLEAN DEFAULT 'FALSE',"
+                       + " dating BOOLEAN DEFAULT 'FALSE');");}
+
   // Cursor c = db.query(tableName, null, null, null, null, null, null);
   // public Cursor query (String table, String[] columns, String selection, String[] selectionArgs, String groupBy, String having, String orderBy, String limit)
   lParams[0].l :=javaEnvRef^^.NewStringUTF(javaEnvRef, PChar(TableName));
@@ -246,7 +261,6 @@ begin
   //if FReturnCode <> SQLITE_OK then
   //  DatabaseError(ReturnString, Self);
   //sqlite3_step(vm);
-  //ColumnCount := sqlite3_column_count(vm);
 
   //
   // Obtain the number of columns
@@ -254,7 +268,7 @@ begin
 
   // abstract String getColumnName(int columnIndex)
   //    int ColumnCount = c.getColumnCount();
-  ColumnCount := javaEnvRef^^.CallIntMethod(javaEnvRef, AndroidDB, FDBCursor_getColumnCount);
+  ColumnCount := javaEnvRef^^.CallIntMethod(javaEnvRef, dbCursor, FDBCursor_getColumnCount);
   //Prepare the array of pchar2sql functions
   SetLength(FGetSqlStr, ColumnCount);
   for i := 0 to ColumnCount - 1 do
@@ -264,7 +278,7 @@ begin
     //
     // abstract String getColumnName(int columnIndex)
     lParams[0].i := i;
-    lJavaString := javaEnvRef^^.CallObjectMethodA(javaEnvRef, AndroidDB, FDBCursor_getColumnName, @lParams[0]);
+    lJavaString := javaEnvRef^^.CallObjectMethodA(javaEnvRef, dbCursor, FDBCursor_getColumnName, @lParams[0]);
     lNativeString := javaEnvRef^^.GetStringUTFChars(javaEnvRef, lJavaString, nil);
     ColumnName := lNativeString;
     javaEnvRef^^.ReleaseStringUTFChars(javaEnvRef, lJavaString, lNativeString);
@@ -286,7 +300,7 @@ begin
     begin
       // public abstract int getType (int columnIndex) // Added in API level 11
       lParams[0].i := i;
-      lColumnType := javaEnvRef^^.CallIntMethodA(javaEnvRef, AndroidDB, FDBCursor_getType, @lParams[0]);
+      lColumnType := javaEnvRef^^.CallIntMethodA(javaEnvRef, dbCursor, FDBCursor_getType, @lParams[0]);
 
       case lColumnType of
         FIELD_TYPE_BLOB:
@@ -372,6 +386,9 @@ begin
   // public Cursor query (String table, String[] columns, String selection, String[] selectionArgs, String groupBy, String having, String orderBy, String limit)
   FSqliteDatabase_query := javaEnvRef^^.GetMethodID(javaEnvRef, FSQLiteDatabaseClass, 'query',
     '(Ljava/lang/String;[Ljava/lang/String;Ljava/lang/String;[Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Landroid/database/Cursor;');
+  // void execSQL(String sql)
+  FSqliteDatabase_execSQL := javaEnvRef^^.GetMethodID(javaEnvRef, FSQLiteDatabaseClass, 'execSQL',
+    '(Ljava/lang/String;)V');
   //
   // Methods from FDBClosable
   //
