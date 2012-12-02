@@ -47,6 +47,7 @@ type
   TSqliteJNIDataset = class(TCustomSqliteDataset)
   private
     FLastInsertRowId: Int64;
+    FReturnString: string;
     // Java Classes
     FSqliteClosableClass, FSQLiteDatabaseClass, FDBCursorClass: JClass;
     // Java Methods
@@ -70,6 +71,7 @@ type
     function InternalGetHandle: Pointer; override;
     procedure RetrieveFieldDefs; override;
     function SqliteExec(ASQL: PChar; ACallback: TSqliteCdeclCallback; Data: Pointer): Integer; override;
+    procedure PrepareReturnString;
   public
     procedure ExecuteDirect(const ASQL: String); override;
     function QuickQuery(const ASQL: String; const AStrList: TStrings; FillObjects: Boolean): String; override;
@@ -178,6 +180,42 @@ begin
   javaEnvRef^^.DeleteLocalRef(javaEnvRef, lJavaString);
 end;
 
+procedure TSqliteJNIDataset.PrepareReturnString;
+var
+  exceptionObj: jthrowable;
+  javaLangClass: jclass;
+  javaLangClass_getName: JMethodID;
+  lJavaString: JString;
+  lNativeString: PChar;
+begin
+  FReturnString := '';
+  // There seams to be no way to get any information about the exception in JNI =(
+  //DebugLn('[TSqliteJNIDataset.PrepareReturnString] START');
+
+  if javaEnvRef^^.ExceptionCheck(javaEnvRef) = JNI_FALSE then
+  begin
+    DebugLn('[TSqliteJNIDataset.PrepareReturnString] No exception found');
+    Exit;
+  end;
+
+  exceptionObj := javaEnvRef^^.ExceptionOccurred(javaEnvRef);
+  javaEnvRef^^.ExceptionDescribe(javaEnvRef);
+  javaEnvRef^^.ExceptionClear(javaEnvRef);
+  {DebugLn('[TSqliteJNIDataset.PrepareReturnString] A exceptionObj='+IntToHex(Cardinal(exceptionObj), 8));
+  javaLangClass := javaEnvRef^^.FindClass(javaEnvRef, 'java/lang/Class');
+  javaLangClass_getName := javaEnvRef^^.GetMethodID(javaEnvRef, javaLangClass, 'getName', '()Ljava/lang/String;');
+  DebugLn('[TSqliteJNIDataset.PrepareReturnString] B');
+  lJavaString := javaEnvRef^^.CallObjectMethod(javaEnvRef, exceptionObj, javaLangClass_getName); // <--- crashes here
+  DebugLn('[TSqliteJNIDataset.PrepareReturnString] C lJavaString='+IntToHex(Cardinal(lJavaString), 8));
+  lNativeString := javaEnvRef^^.GetStringUTFChars(javaEnvRef, lJavaString, nil);
+  DebugLn('[TSqliteJNIDataset.PrepareReturnString] D');
+  FReturnString := StrPas(lNativeString);
+  javaEnvRef^^.ReleaseStringUTFChars(javaEnvRef, lJavaString, lNativeString);
+  javaEnvRef^^.DeleteLocalRef(javaEnvRef, lJavaString);
+  javaEnvRef^^.DeleteLocalRef(javaEnvRef, exceptionObj);
+  DebugLn('[TSqliteJNIDataset.PrepareReturnString] FReturnString=' + FReturnString);}
+end;
+
 procedure TSqliteJNIDataset.InternalCloseHandle;
 begin
   DebugLn('[TSqliteJNIDataset.InternalCloseHandle]');
@@ -230,6 +268,10 @@ begin
   FAutoIncFieldNo := -1;
   FieldDefs.Clear;
 
+  //FReturnCode := sqlite3_prepare(FSqliteHandle, PChar(FEffectiveSQL), -1, @vm, nil);
+  //if FReturnCode <> SQLITE_OK then
+  //  DatabaseError(ReturnString, Self);
+  //
   // Cursor c = db.query(tableName, null, null, null, null, null, null);
   // public Cursor query (String table, String[] columns, String selection, String[] selectionArgs, String groupBy, String having, String orderBy, String limit)
   lParams[0].l :=javaEnvRef^^.NewStringUTF(javaEnvRef, PChar(TableName));
@@ -247,10 +289,14 @@ begin
     DebugLn('[TSqliteJNIDataset.RetrieveFieldDefs] dbCursor = nil');
     Exit;
   end;
+  if javaEnvRef^^.ExceptionCheck(javaEnvRef) = JNI_TRUE then
+  begin
+    PrepareReturnString();
+    DebugLn('[TSqliteJNIDataset.RetrieveFieldDefs] Java Exceptiong calling AndroidDB.query ' + ReturnString);
+    DatabaseError(ReturnString, Self);
+    Exit;
+  end;
 
-  //FReturnCode := sqlite3_prepare(FSqliteHandle, PChar(FEffectiveSQL), -1, @vm, nil);
-  //if FReturnCode <> SQLITE_OK then
-  //  DatabaseError(ReturnString, Self);
   //sqlite3_step(vm);
 
   //
@@ -547,8 +593,7 @@ end;
 
 function TSqliteJNIDataset.ReturnString: String;
 begin
-  DebugLn('[TSqliteJNIDataset.ReturnString]');
-  //f/Result := SqliteCode2Str(FReturnCode) + ' - ' + sqlite3_errmsg(FSqliteHandle);
+  Result := FReturnString;
 end;
 
 class function TSqliteJNIDataset.SqliteVersion: String;
