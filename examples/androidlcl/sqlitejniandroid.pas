@@ -161,16 +161,17 @@ var
   lJavaString: JString;
 begin
   DebugLn('[TSqliteJNIDataset.SqliteExec] ' + StrPas(ASQL));
-  {// void execSQL(String sql)
+
+  // void execSQL(String sql)
   // preparations
   lJavaString :=javaEnvRef^^.NewStringUTF(javaEnvRef, ASQL);
   lParams[0].l := lJavaString;
 
   // Call the method
-  javaEnvRef^^.CallVoidMethodA(javaEnvRef, AndroidDB, lExecSQLMethod, @lParams[0]);
+  javaEnvRef^^.CallVoidMethodA(javaEnvRef, AndroidDB, FSqliteDatabase_execSQL, @lParams[0]);
 
   // clean up
-  javaEnvRef^^.DeleteLocalRef(javaEnvRef, lJavaString);}
+  javaEnvRef^^.DeleteLocalRef(javaEnvRef, lJavaString);
 end;
 
 procedure TSqliteJNIDataset.InternalCloseHandle;
@@ -224,20 +225,6 @@ begin
   DebugLn('[TSqliteJNIDataset.RetrieveFieldDefs]');
   FAutoIncFieldNo := -1;
   FieldDefs.Clear;
-
-  // Create the table, if necessary
-  //lParams[0].l := lJavaString;
-  //lJavaString := javaEnvRef^^.CallVoidMethodA(javaEnvRef, AndroidDB, FSqliteDatabase_execSQL, @lParams[0]);
-  {db.execSQL("CREATE TABLE IF NOT EXISTS "
-                       + DATABASE_TABLE_USER
-                       + " (userID INT PRIMARY KEY, name VARCHAR(40),"
-                       + " birthdate DATETIME,"
-                       + " weight INT(3), heightInches INT, "
-                       + " smoking BOOLEAN DEFAULT 'FALSE',"
-                       + " school BOOLEAN DEFAULT 'FALSE', "
-                       + " reading BOOLEAN DEFAULT 'FALSE',"
-                       + " religion BOOLEAN DEFAULT 'FALSE',"
-                       + " dating BOOLEAN DEFAULT 'FALSE');");}
 
   // Cursor c = db.query(tableName, null, null, null, null, null, null);
   // public Cursor query (String table, String[] columns, String selection, String[] selectionArgs, String groupBy, String having, String orderBy, String limit)
@@ -357,9 +344,23 @@ end;
 
 procedure TSqliteJNIDataset.ExecuteDirect(const ASQL: String);
 var
-  vm: Pointer;
+  // array for the parameters
+  lParams: array[0..2] of JValue;
+  lJavaString: JString;
 begin
-  DebugLn('[TSqliteJNIDataset.ExecuteDirect]');
+  DebugLn('[TSqliteJNIDataset.ExecuteDirect] ' + ASQL);
+
+  // void execSQL(String sql)
+  // preparations
+  lJavaString :=javaEnvRef^^.NewStringUTF(javaEnvRef, PChar(ASQL));
+  lParams[0].l := lJavaString;
+
+  // Call the method
+  javaEnvRef^^.CallVoidMethodA(javaEnvRef, AndroidDB, FSqliteDatabase_execSQL, @lParams[0]);
+
+  // clean up
+  javaEnvRef^^.DeleteLocalRef(javaEnvRef, lJavaString);
+
   {FReturnCode := sqlite3_prepare(FSqliteHandle, Pchar(ASQL), -1, @vm, nil);
   if FReturnCode <> SQLITE_OK then
     DatabaseError(ReturnString, Self);

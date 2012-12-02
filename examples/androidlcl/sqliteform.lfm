@@ -2,16 +2,16 @@ object formSqlite: TformSqlite
   Left = 119
   Height = 240
   Top = 244
-  Width = 320
+  Width = 257
   Caption = 'formSqlite'
   ClientHeight = 240
-  ClientWidth = 320
+  ClientWidth = 257
   LCLVersion = '1.1'
   object Button1: TButton
     Left = 8
     Height = 25
-    Top = 8
-    Width = 75
+    Top = 24
+    Width = 112
     Caption = 'Connect'
     OnClick = Button1Click
     TabOrder = 0
@@ -19,8 +19,9 @@ object formSqlite: TformSqlite
   object DBEdit1: TDBEdit
     Left = 8
     Height = 23
-    Top = 104
+    Top = 88
     Width = 80
+    DataField = 'FirstFieldStr'
     DataSource = SqliteDatasource
     CharCase = ecNormal
     MaxLength = 0
@@ -29,7 +30,7 @@ object formSqlite: TformSqlite
   object DBNavigator1: TDBNavigator
     Left = 8
     Height = 25
-    Top = 64
+    Top = 56
     Width = 241
     BevelOuter = bvNone
     ChildSizing.EnlargeHorizontal = crsScaleChilds
@@ -44,8 +45,17 @@ object formSqlite: TformSqlite
     Options = []
     TabOrder = 2
   end
+  object btnCreateDB: TButton
+    Left = 136
+    Height = 25
+    Top = 24
+    Width = 113
+    Caption = 'Create DB'
+    OnClick = btnCreateDBClick
+    TabOrder = 3
+  end
   object SqliteDatasource: TDatasource
-    left = 144
-    top = 16
+    left = 136
+    top = 88
   end
 end
