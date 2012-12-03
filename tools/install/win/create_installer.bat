@@ -71,7 +71,8 @@ SET CP=%FPCBINDIR%\cp.exe
 FOR /F %%F IN ('%LAZSVNDIR%\tools\install\get_lazarus_version.bat') DO set LAZVERSION=%%F
 FOR /F %%F IN ('svnversion.exe %LAZSVNDIR%') DO set LAZREVISION=%%F
 IF [%LAZREVISION%] == [] GOTO SVNVERERR
-
+:: Remove : from revision if present
+SET LAZREVISION=%LAZREVISION::=_%
 
 ECHO Starting at: > %LOGFILE%
 %FPCBINDIR%\gdate >> %LOGFILE%
