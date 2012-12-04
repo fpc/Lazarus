@@ -1944,6 +1944,22 @@ var
   NewChar, OldChar: Word;
   // Language identification
   IsTurkish: Boolean;
+
+  procedure CorrectOutStrSize(AOldCharSize, ANewCharSize: Integer);
+  begin
+    if not (ANewCharSize > AOldCharSize) then Exit; // no correction needed
+    if (ANewCharSize > 20) or (AOldCharSize > 20) then Exit; // sanity check
+    // Fix for bug 23428
+    // If the string wasn't decreased by previous char changes,
+    // and our current operation will make it bigger, then for safety
+    // increase the buffer
+    if (ANewCharSize > AOldCharSize) and (OutCounter >= InCounter-1) then
+    begin
+      SetLength(Result, Length(Result)+ANewCharSize-AOldCharSize);
+      OutStr := PChar(Result);
+    end;
+  end;
+
 begin
   // Start with the same string, and progressively modify
   Result:=AInStr;
@@ -2066,6 +2082,7 @@ begin
         $C8BC: NewChar := $C8BB;
         $C8BF:
         begin
+          CorrectOutStrSize(2, 3);
           OutStr[OutCounter]  := #$E2;
           OutStr[OutCounter+1]:= #$B1;
           OutStr[OutCounter+2]:= #$BE;
@@ -2075,6 +2092,7 @@ begin
         // 0240 = C9 80
         $C980:
         begin
+          CorrectOutStrSize(2, 3);
           OutStr[OutCounter]  := #$E2;
           OutStr[OutCounter+1]:= #$B1;
           OutStr[OutCounter+2]:= #$BF;
@@ -2086,6 +2104,7 @@ begin
         // 0250 = C9 90
         $C990:
         begin
+          CorrectOutStrSize(2, 3);
           OutStr[OutCounter]  := #$E2;
           OutStr[OutCounter+1]:= #$B1;
           OutStr[OutCounter+2]:= #$AF;
@@ -2094,6 +2113,7 @@ begin
         end;
         $C991:
         begin
+          CorrectOutStrSize(2, 3);
           OutStr[OutCounter]  := #$E2;
           OutStr[OutCounter+1]:= #$B1;
           OutStr[OutCounter+2]:= #$AD;
@@ -2102,6 +2122,7 @@ begin
         end;
         $C992:
         begin
+          CorrectOutStrSize(2, 3);
           OutStr[OutCounter]  := #$E2;
           OutStr[OutCounter+1]:= #$B1;
           OutStr[OutCounter+2]:= #$B0;
@@ -2119,6 +2140,7 @@ begin
         $C9A3: NewChar := $C694;
         $C9A5:
         begin
+          CorrectOutStrSize(2, 3);
           OutStr[OutCounter]  := #$EA;
           OutStr[OutCounter+1]:= #$9E;
           OutStr[OutCounter+2]:= #$8D;
@@ -2129,6 +2151,7 @@ begin
         $C9A9: NewChar := $C696;
         $C9AB:
         begin
+          CorrectOutStrSize(2, 3);
           OutStr[OutCounter]  := #$E2;
           OutStr[OutCounter+1]:= #$B1;
           OutStr[OutCounter+2]:= #$A2;
@@ -2139,6 +2162,7 @@ begin
         // 0270 = C9 B0
         $C9B1:
         begin
+          CorrectOutStrSize(2, 3);
           OutStr[OutCounter]  := #$E2;
           OutStr[OutCounter+1]:= #$B1;
           OutStr[OutCounter+2]:= #$AE;
@@ -2149,6 +2173,7 @@ begin
         $C9B5: NewChar := $C69F;
         $C9BD:
         begin
+          CorrectOutStrSize(2, 3);
           OutStr[OutCounter]  := #$E2;
           OutStr[OutCounter+1]:= #$B1;
           OutStr[OutCounter+2]:= #$A4;
