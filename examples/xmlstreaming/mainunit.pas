@@ -127,7 +127,7 @@ begin
     Result.Driver.Free;
     TAbstractObjectReader(p^):=Driver;
   finally
-    DummyStream:=nil;
+    DummyStream.Free;
   end;
 end;
 
@@ -359,6 +359,7 @@ end;
 destructor TMyComponent.Destroy;
 begin
   FreeAndNil(FMyStrings);
+  FreeAndNil(FMyCollection);
   inherited Destroy;
 end;
 
