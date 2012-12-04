@@ -1,34 +1,23 @@
-:: check all the necessary parameters are given
+:: check all the necessary parameters are given and not empty
 if [%1]==[] goto USAGE
 if [%2]==[] goto USAGE
 if [%3]==[] goto USAGE
 if [%4]==[] goto USAGE
-
-:: These settings are dependent on the configuration of the build machine
-:: Path to the Inno Setup Compiler
-if [%ISCC%]==[] SET ISCC="C:\Program Files\Inno Setup 5\iscc.exe"
-
-:: Path to build directory.
-:: In this directory an image of the installation will be built.
-:: If the user specified a LAZTEMPBUILDDIR environment variable, use that instead.
-SET BUILDDIR=c:\temp\lazbuild
-if NOT [%LAZTEMPBUILDDIR%]==[] SET BUILDDIR=%LAZTEMPBUILDDIR%
- 
-:: Path to the svn executable
-if [%SVN%]==[] SET SVN="c:\program files\subversion\bin\svn.exe"
+if [%1]==[""] goto USAGE
+if [%2]==[""] goto USAGE
+if [%3]==[""] goto USAGE
+if [%4]==[""] goto USAGE
 
 :: Path to the fpc sources checked out of fpcbuild svn repository
 SET FPCSVNDIR=%1
-
 :: Path to the lazarus sources checked out of subversion
 SET LAZSVNDIR=%2
-
 :: Path to the lazarus third party binaries checked out of subversion
 SET LAZSVNBINDIR=%3
-
 :: Path to latest release compiler
 SET RELEASE_PPC=%4
 
+::---------------------------------------------------------------------
 :: Optional parameter to indicate the LCL Widget set used by the IDE
 IF [%5]==[] GOTO EMPTY5
 IF [%5]==[""] GOTO EMPTY5
@@ -38,10 +27,65 @@ SET IDE_WIDGETSET=%5
 :: Name of fpc patch file
 IF [%6]==[] GOTO EMPTY6
 IF [%6]==[""] GOTO EMPTY6
-IF NOT [%6]==[] SET PATCHFILE=%6
+SET PATCHFILE=%6
 :EMPTY6
 
 SET CHMHELPFILES=%7
+
+::=====================================================================
+:: Find required programs
+:: These settings are dependent on the configuration of the build machine
+
+:: set program files 32bits directory in windows 64bits and windows 32bits
+set ProgramFiles32bits=%ProgramFiles:"=%
+if not "%ProgramFiles(x86)%" == "" set ProgramFiles32bits=%ProgramFiles(x86):"=%
+
+::---------------------------------------------------------------------
+:: Path to the Inno Setup Compiler
+:: It may or may not have quotes, make sure it has.
+SET ISCC="%ISCC%"
+SET ISCC=%ISCC:"=%
+SET ISCC="%ISCC%"
+if not [%ISCC%]==[""] goto ISCC_BY_USER
+SET ISCC="%ProgramFiles32bits%\Inno Setup 5\iscc.exe"
+if not exist %ISCC% SET SET ISCC="%ProgramFiles%\Inno Setup 5\iscc.exe"
+:ISCC_BY_USER
+if not exist %ISCC% GOTO ERROR_INNO
+
+::---------------------------------------------------------------------
+:: Path to the svn executable
+SET SVN="%SVN%"
+SET SVN=%SVN:"=%
+SET SVN="%SVN%"
+if not [%SVN%]==[""] GOTO SVN_BY_USER
+:: set Subversion if no exist try TortoiseSVN 32bits and 64bits else error info
+SET SVN="%ProgramFiles%\subversion\bin\svn.exe"
+if not exist %SVN% SET SVN="%ProgramFiles%\TortoiseSVN\bin\svn.exe"
+if not exist %SVN% SET SVN="%ProgramFiles32bits%\subversion\bin\svn.exe"
+if not exist %SVN% SET SVN="%ProgramFiles32bits%\TortoiseSVN\bin\svn.exe"
+:SVN_BY_USER
+if not exist %SVN% GOTO ERROR_SVN
+
+::---------------------------------------------------------------------
+:: Path to the svnversion executable
+SET SVNVER="%SVNVER%"
+SET SVNVER=%SVNVER:"=%
+SET SVNVER="%SVNVER%"
+if not [%SVNVER%]==[""] GOTO SVNVER_BY_USER
+:: set Subversion if no exist try TortoiseSVN 32bits and 64bits else error info
+SET SVNVER="%ProgramFiles%\subversion\bin\svnversion.exe"
+if not exist %SVNVER% SET SVNVER="%ProgramFiles%\TortoiseSVN\bin\svnversion.exe"
+if not exist %SVNVER% SET SVNVER="%ProgramFiles32bits%\subversion\bin\svnversion.exe"
+if not exist %SVNVER% SET SVNVER="%ProgramFiles32bits%\TortoiseSVN\bin\svnversion.exe"
+:SVNVER_BY_USER
+if not exist %SVNVER% GOTO ERROR_SVN
+
+::---------------------------------------------------------------------
+:: Path to build directory.
+:: In this directory an image of the installation will be built.
+:: If the user specified a LAZTEMPBUILDDIR environment variable, use that instead.
+SET BUILDDIR=c:\temp\lazbuild
+if NOT [%LAZTEMPBUILDDIR%]==[] SET BUILDDIR=%LAZTEMPBUILDDIR%
 
 ::=====================================================================
 :: no change needed after this.
@@ -65,11 +109,12 @@ SET GDBDIR=%LAZSVNBINDIR%\%FPCFULLTARGET%\gdb
 :: http://users.pandora.be/Jan.Van.hijfte/qtforfpc/fpcqt4.html
 SET QTINFDIR=%LAZSVNBINDIR%\%FPCFULLTARGET%\qt
 
+::---------------------------------------------------------------------
 FOR /F %%L IN ('%FPCBINDIR%\gdate.exe +%%Y%%m%%d') DO SET DATESTAMP=%%L
 SET BUILDDRIVE=%BUILDDIR:~,2%
 SET CP=%FPCBINDIR%\cp.exe
 FOR /F %%F IN ('%LAZSVNDIR%\tools\install\get_lazarus_version.bat') DO set LAZVERSION=%%F
-FOR /F %%F IN ('svnversion.exe %LAZSVNDIR%') DO set LAZREVISION=%%F
+FOR /F %%F IN ('%SVNVER% %LAZSVNDIR%') DO set LAZREVISION=%%F
 IF [%LAZREVISION%] == [] GOTO SVNVERERR
 :: Remove : from revision if present
 SET LAZREVISION=%LAZREVISION::=_%
@@ -81,12 +126,14 @@ ECHO Starting at: > %LOGFILE%
 SET OLDPATH=%PATH%
 SET PATH=%FPCBINDIR%
 
+::---------------------------------------------------------------------
 :: copy lazarus dir
 rmdir /s /q %BUILDDIR%
 %SVN% export -q %LAZSVNDIR% %BUILDDIR% >> %LOGFILE%
 IF %ERRORLEVEL% NEQ 0 GOTO SVNERR
 call svn2revisioninc.bat %LAZSVNDIR% %BUILDDIR%\ide\revision.inc
 
+::---------------------------------------------------------------------
 call build-fpc.bat
 
 :: INSTALL_BINDIR is set by build-fpc.bat
@@ -101,6 +148,7 @@ if not exist %INSTALL_BINDIR%\fpc.exe goto END
 
 %INSTALL_BINDIR%\fpcmkcfg.exe -d "basepath=%INSTALL_BASE%" -o %INSTALL_BINDIR%\fpc.cfg
 
+::---------------------------------------------------------------------
 call build-lazarus.bat
 
 :: remove fpc.cfg, the installer will create a new one
@@ -110,12 +158,14 @@ del %INSTALL_BINDIR%\fpc.cfg
 if not exist %BUILDDIR%\lazarus.exe goto END
 if not exist %BUILDDIR%\startlazarus.exe goto END
 
+::---------------------------------------------------------------------
 :: copy gdb into build dir
 if NOT exist %GDBDIR% goto NOGDB
 gmkdir -p %BUILDDIR%\mingw
 %SVN% export -q %GDBDIR% %BUILDDIR%\mingw\%FPCFULLTARGET%
 :NOGDB
 
+::---------------------------------------------------------------------
 :: create the installer
 IF [%BUILDLAZRELEASE%]==[] GOTO SNAPSHOT
 SET OutputFileName=lazarus-%LAZVERSION%-fpc-%FPCFULLVERSION%-%FPCTARGETOS%
@@ -151,6 +201,18 @@ ECHO Finished at: >> %LOGFILE%
 %FPCBINDIR%\gdate >> %LOGFILE%
 
 goto STOP
+
+:ERROR_INNO
+echo Inno setup instalation %ISCC% no exist.
+echo Please download and install this program is required to create installer.
+echo http://www.jrsoftware.org
+GOTO STOP
+
+:ERROR_SVN
+echo Subversion or TortoiseSVN instalation %SVN% no exist.
+echo Please download and install this program is required to create installer.
+echo http://subversion.apache.org/packages.html or http://tortoisesvn.net/downloads.html
+GOTO STOP
 
 :USAGE
 @echo off
