@@ -19,8 +19,12 @@
       <Item2 Name="debug">
         <CompilerOptions>
           <Version Value="11"/>
+          <Target>
+            <Filename Value="imgviewer"/>
+          </Target>
           <SearchPaths>
-            <SrcPath Value="$(LazarusDir)/lcl;$(LazarusDir)/lcl/interfaces/$(LCLWidgetType)"/>
+            <IncludeFiles Value="$(ProjOutDir)"/>
+            <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)"/>
           </SearchPaths>
           <Parsing>
             <SyntaxOptions>

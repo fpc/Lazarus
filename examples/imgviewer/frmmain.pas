@@ -26,7 +26,8 @@ interface
 
 uses
   LCLIntf, SysUtils, Classes, Graphics, Controls, Forms, FileUtil,
-  Dialogs, StdCtrls, ComCtrls, ExtCtrls, ActnList, Menus, LCLType;
+  Dialogs, StdCtrls, ComCtrls, ExtCtrls, ActnList, Menus, LCLType,
+  fpreadtiff {adds TIFF format read support to TImage};
 
 type
 
@@ -123,7 +124,7 @@ implementation
 {$R *.lfm}
 
 const
-  ImageTypes = '.jpg.jpeg.bmp.xpm.png';
+  ImageTypes = '|.jpg|.jpeg|.bmp|.xpm|.png';
 
 resourcestring
   SSelectImageDir = 'Select directory to add images from';
@@ -147,7 +148,7 @@ begin
 end;
 
 procedure TMainForm.AddFile(FileName: string; ShowFile: boolean);
-
+// Adds a file to the listbox and displays it if ShowFile is true
 var
   Index: integer;
 
@@ -159,7 +160,7 @@ begin
 end;
 
 procedure TMainForm.ShowFile(Index: integer);
-
+// Loads file and displays it into the IMain TImage
 var
   LoadOK: boolean;
 
@@ -177,15 +178,18 @@ begin
         Imain.Stretch := false;
         FImageScale := 1.0;
         IMain.Picture.LoadFromFile(LBFiles.Items[Index]);
-        Caption := SImageViewer + '(' + LBFiles.Items[Index] + ')';
+        Caption := SImageViewer + ' (' + LBFiles.Items[Index] + ')';
         LoadOK := true;
       except
+        // If we can't load the image, try next file unless we're at the end
         if Index < LBFiles.Items.Count - 1 then
           Inc(Index)
         else
           Index := -1;
       end
     until LoadOK or (Index = -1);
+
+  // Now synchronize our listbox to the file we loaded:
   with LBFiles do
   begin
     if Index <> ItemIndex then
@@ -228,12 +232,14 @@ var
   Info: TSearchRec;
   Ext: string;
 begin
-  Directory := IncludeTrailingBackslash(Directory);
+  Directory := IncludeTrailingPathDelimiter(Directory);
   if FindFirstUTF8(Directory + '*.*', 0, Info) = 0 then
     try
       repeat
         Ext := ExtractFileExt(Info.Name);
-        if Pos(Ext, ImageTypes) <> 0 then
+        // Support opening tiff files as well as the built-in image types.
+        // Note: requires fpreadtiff in the uses clause to work.
+        if Pos(lowercase('|'+Ext+'|'), ImageTypes+'|.tif|.tiff|') <> 0 then
           AddFile(Directory + Info.Name, false);
       until (FindNextUTF8(Info) <> 0)
     finally
