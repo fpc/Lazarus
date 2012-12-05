@@ -33,6 +33,8 @@ implementation
 
 {$ifdef CPUARM}
 uses sqlitejniandroid;
+{$else}
+uses sqlite3ds;
 {$endif}
 
 {$R *.lfm}
@@ -40,38 +42,40 @@ uses sqlitejniandroid;
 { TformSqlite }
 
 procedure TformSqlite.Button1Click(Sender: TObject);
-{$ifdef CPUARM}
 var
-  sqlitedb: TSqliteJNIDataset;
-{$endif}
+  sqlitedb: {$ifdef CPUARM}TSqliteJNIDataset;{$else}TSqlite3Dataset;{$endif}
 begin
   {$ifdef CPUARM}
   sqlitedb := TSqliteJNIDataset.Create(Self);
   sqlitedb.FileName := '/sdcard/database.db';
+  {$else}
+  sqlitedb := TSqlite3Dataset.Create(Self);
+  sqlitedb.FileName := 'database.db';
+  {$endif}
   sqlitedb.TableName := 'TestTable';
   sqlitedb.FieldDefs.Add('FirstFieldStr', ftString);
   sqlitedb.FieldDefs.Add('SecondFieldInt', ftInteger);
   sqlitedb.Open();
   SqliteDatasource.DataSet := sqlitedb;
-  {$endif}
 end;
 
 procedure TformSqlite.btnCreateDBClick(Sender: TObject);
-{$ifdef CPUARM}
 var
-  sqlitedb: TSqliteJNIDataset;
-{$endif}
+  sqlitedb: {$ifdef CPUARM}TSqliteJNIDataset;{$else}TSqlite3Dataset;{$endif}
 begin
   {$ifdef CPUARM}
   sqlitedb := TSqliteJNIDataset.Create(Self);
-  //SqliteDatasource.DataSet := sqlitedb;
   sqlitedb.FileName := '/sdcard/database.db';
+  {$else}
+  sqlitedb := TSqlite3Dataset.Create(Self);
+  sqlitedb.FileName := 'database.db';
+  {$endif}
+  //SqliteDatasource.DataSet := sqlitedb;
   sqlitedb.TableName := 'TestTable';
   sqlitedb.FieldDefs.Add('FirstFieldStr', ftString);
   sqlitedb.FieldDefs.Add('SecondFieldInt', ftInteger);
   sqlitedb.CreateTable();
   sqlitedb.Free;
-  {$endif}
 end;
 
 end.

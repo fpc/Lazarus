@@ -79,11 +79,11 @@ var
 implementation
 
 uses secondform, sqliteform,
-  ctypes, //android_sockets,
+  ctypes //android_sockets,
   {$ifdef Android}
-  jni,
+  ,jni,customdrawnint
   {$endif}
-  customdrawnint;
+  ;
 
 { TSubControl }
 
