@@ -47,7 +47,7 @@ ShowTasksTreeLines=yes
 TimeStampRounding=0
 PrivilegesRequired=none
 ChangesAssociations=yes
-; prevent chekbox pre-set (for delete user conf). Latest inno supports unchecked checkedonce
+; prevent checkbox pre-set (for delete user conf). Latest inno supports unchecked checkedonce
 UsePreviousTasks=no
 UninstallDisplayIcon={app}\lazarus.exe
 

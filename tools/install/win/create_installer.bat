@@ -18,7 +18,7 @@ SET LAZSVNBINDIR=%3
 SET RELEASE_PPC=%4
 
 ::---------------------------------------------------------------------
-:: Optional parameter to indicate the LCL Widget set used by the IDE
+:: Optional parameter to indicate the LCL Widgetset used by the IDE
 IF [%5]==[] GOTO EMPTY5
 IF [%5]==[""] GOTO EMPTY5
 SET IDE_WIDGETSET=%5
@@ -53,12 +53,12 @@ if not exist %ISCC% SET SET ISCC="%ProgramFiles%\Inno Setup 5\iscc.exe"
 if not exist %ISCC% GOTO ERROR_INNO
 
 ::---------------------------------------------------------------------
-:: Path to the svn executable
+:: Path to the svn executable; make sure it has quotes
 SET SVN="%SVN%"
 SET SVN=%SVN:"=%
 SET SVN="%SVN%"
 if not [%SVN%]==[""] GOTO SVN_BY_USER
-:: set Subversion if no exist try TortoiseSVN 32bits and 64bits else error info
+:: set Subversion; if it doesn't exist try TortoiseSVN 32bits and 64bits else error info
 SET SVN="%ProgramFiles%\subversion\bin\svn.exe"
 if not exist %SVN% SET SVN="%ProgramFiles%\TortoiseSVN\bin\svn.exe"
 if not exist %SVN% SET SVN="%ProgramFiles32bits%\subversion\bin\svn.exe"
@@ -71,12 +71,12 @@ if not exist %SVN% GOTO ERROR_SVN
 :SVN_DONE
 
 ::---------------------------------------------------------------------
-:: Path to the svnversion executable
+:: Path to the svnversion executable; make sure it has quotes
 SET SVNVER="%SVNVER%"
 SET SVNVER=%SVNVER:"=%
 SET SVNVER="%SVNVER%"
 if not [%SVNVER%]==[""] GOTO SVNVER_BY_USER
-:: set Subversion if no exist try TortoiseSVN 32bits and 64bits else error info
+:: set Subversion if it doesn't exist try TortoiseSVN 32bits and 64bits else error info
 SET SVNVER="%ProgramFiles%\subversion\bin\svnversion.exe"
 if not exist %SVNVER% SET SVNVER="%ProgramFiles%\TortoiseSVN\bin\svnversion.exe"
 if not exist %SVNVER% SET SVNVER="%ProgramFiles32bits%\subversion\bin\svnversion.exe"
@@ -151,7 +151,7 @@ mv %BUILDDIR%\fpcbins\*.* %INSTALL_BINDIR%
 del %INSTALL_BINDIR%\gdb.exe
 
 :: exit if no compiler has been made
-if not exist %INSTALL_BINDIR%\fpc.exe goto END
+if not exist %INSTALL_BINDIR%\fpc.exe goto WARNING_NO_COMPILER_MADE
 
 %INSTALL_BINDIR%\fpcmkcfg.exe -d "basepath=%INSTALL_BASE%" -o %INSTALL_BINDIR%\fpc.cfg
 
@@ -162,8 +162,8 @@ call build-lazarus.bat
 del %INSTALL_BINDIR%\fpc.cfg
 
 :: do not create installer, if the required executables are not there
-if not exist %BUILDDIR%\lazarus.exe goto END
-if not exist %BUILDDIR%\startlazarus.exe goto END
+if not exist %BUILDDIR%\lazarus.exe goto WARNING_NO_LAZARUS
+if not exist %BUILDDIR%\startlazarus.exe goto WARNING_NO_LAZARUS
 
 ::---------------------------------------------------------------------
 :: copy gdb into build dir
@@ -188,7 +188,7 @@ if not [%IDE_WIDGETSET%]==[win32] SET OutputFileName=lazarus-%IDE_WIDGETSET%-%LA
 %ISCC% lazarus.iss >> installer.log
 
 :: do not delete build dir, if installer failed.
-if not exist "output\%OutputFileName%.exe" goto END
+if not exist "output\%OutputFileName%.exe" goto WARNING_INSTALLER_FAILED
 
 :: delete build dir
 rd /s /q %BUILDDIR% > NUL
@@ -209,15 +209,27 @@ ECHO Finished at: >> %LOGFILE%
 
 goto STOP
 
+:WARNING_INSTALLER_FAILED
+echo Installer was not created in output\%OutputFileName%.exe. Ending now.
+GOTO END
+
+:WARNING_NO_COMPILER_MADE
+echo Could not find compiler at %INSTALL_BINDIR%\fpc.exe. Ending now.
+GOTO END
+
+:WARNING_NO_LAZARUS
+echo Could not find %BUILDDIR%\lazarus.exe or %BUILDDIR%\startlazarus.exe. Ending now.
+GOTO END
+
 :ERROR_INNO
-echo Inno setup instalation %ISCC% no exist.
-echo Please download and install this program is required to create installer.
+echo Inno setup instalation %ISCC% does not exist.
+echo Please download and install this program; it is required to create the installer.
 echo http://www.jrsoftware.org
 GOTO STOP
 
 :ERROR_SVN
-echo Subversion or TortoiseSVN instalation %SVN% no exist.
-echo Please download and install this program is required to create installer.
+echo Subversion or TortoiseSVN instalation %SVN% does not exist.
+echo Please download and install this program; it is required to create the installer.
 echo http://subversion.apache.org/packages.html or http://tortoisesvn.net/downloads.html
 GOTO STOP
 
