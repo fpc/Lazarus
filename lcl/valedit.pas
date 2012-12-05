@@ -445,10 +445,9 @@ var
   I: Integer;
 begin
   Result:='';
-  if ARow=0 then begin
-    if doColumnTitles in DisplayOptions then
-      if ACol<FTitleCaptions.Count then
-        Result:=FTitleCaptions[ACol];
+  if (ARow=0) and (doColumnTitles in DisplayOptions) then begin
+    if ACol<FTitleCaptions.Count then
+      Result:=FTitleCaptions[ACol];
     exit;
   end;
   I:=ARow-FixedRows;
