@@ -48,6 +48,8 @@ type
     FOnStringsChange: TNotifyEvent;
     FOnStringsChanging: TNotifyEvent;
     FOnValidate: TOnValidateEvent;
+    function GetFixedRows: Integer;
+    procedure SetFixedRows(AValue: Integer);
     procedure StringsChange(Sender: TObject);
     procedure StringsChanging(Sender: TObject);
     function GetOptions: TGridOptions;
@@ -77,6 +79,7 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+    property FixedRows: Integer read GetFixedRows write SetFixedRows default 1;
     property Modified;
     property Keys[Index: Integer]: string read GetKey write SetKey;
     property Values[const Key: string]: string read GetValue write SetValue;
@@ -92,8 +95,6 @@ type
     property BorderSpacing;
     property BorderStyle;
     property Color;
-    //property ColCount;
-    //property Columns;
     property Constraints;
     property DefaultColWidth;
     property DefaultDrawing;
@@ -105,7 +106,6 @@ type
     property ExtendedSelect;
     property FixedColor;
     property FixedCols;
-    property FixedRows;
     property Flat;
     property Font;
     property GridLineWidth;
@@ -190,8 +190,7 @@ type
     property Strings: TValueListStrings read FStrings write SetStrings;
     property TitleCaptions: TStrings read FTitleCaptions write SetTitleCaptions;
 
-    property OnEditButtonClick: TNotifyEvent read FOnEditButtonClick
-      write SetOnEditButtonClick;
+    property OnEditButtonClick: TNotifyEvent read FOnEditButtonClick write SetOnEditButtonClick;
     property OnGetPickList: TGetPickListEvent read FOnGetPickList write FOnGetPickList;
     property OnMouseEnter;
     property OnMouseLeave;
@@ -283,6 +282,21 @@ begin
     OnStringsChanging(Self);
 end;
 
+function TValueListEditor.GetFixedRows: Integer;
+begin
+  Result := inherited FixedRows;
+end;
+
+procedure TValueListEditor.SetFixedRows(AValue: Integer);
+begin
+  if AValue in [0,1] then begin  // No other values are allowed
+    if AValue = 0 then           // Typically DisplayOptions are changed directly
+      DisplayOptions := DisplayOptions - [doColumnTitles]
+    else
+      DisplayOptions := DisplayOptions + [doColumnTitles]
+  end;
+end;
+
 function TValueListEditor.GetOptions: TGridOptions;
 begin
   Result := inherited Options;
@@ -296,9 +310,9 @@ begin
     if doColumnTitles in AValue then begin
       if RowCount < 2 then
         inherited RowCount := 2;
-      FixedRows := 1;
+      inherited FixedRows := 1;
     end else
-      FixedRows := 0;
+      inherited FixedRows := 0;
   FDisplayOptions := AValue;
   ShowColumnTitles;
   AdjustColumnWidths;
