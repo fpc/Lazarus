@@ -255,7 +255,7 @@ procedure TSqliteJNIDataset.RetrieveFieldDefs;
 var
   vm: Pointer;
   ColumnName: string;
-  i, ColumnCount, DataSize: Integer;
+  i, ColumnCount, RowCount, DataSize: Integer;
   AType: TFieldType;
   //
   lColumnType: JInt;
@@ -306,10 +306,13 @@ begin
   // abstract String getColumnName(int columnIndex)
   //    int ColumnCount = c.getColumnCount();
   ColumnCount := javaEnvRef^^.CallIntMethod(javaEnvRef, dbCursor, FDBCursor_getColumnCount);
+  RowCount := javaEnvRef^^.CallIntMethod(javaEnvRef, dbCursor, FDBCursor_getCount);
+  //DebugLn(Format('[TSqliteJNIDataset.RetrieveFieldDefs] ColumnCount=%d RowCount=%d', [ColumnCount, RowCount]));
   //Prepare the array of pchar2sql functions
   SetLength(FGetSqlStr, ColumnCount);
   for i := 0 to ColumnCount - 1 do
   begin
+    //DebugLn('[TSqliteJNIDataset.RetrieveFieldDefs] for i='+IntToStr(i));
     //
     // First get the column name
     //
@@ -320,6 +323,7 @@ begin
     ColumnName := lNativeString;
     javaEnvRef^^.ReleaseStringUTFChars(javaEnvRef, lJavaString, lNativeString);
     javaEnvRef^^.DeleteLocalRef(javaEnvRef, lJavaString);
+    //DebugLn('[TSqliteJNIDataset.RetrieveFieldDefs] ColumnName='+ColumnName);
 
     //
     // Now obtain the data size and type
@@ -327,17 +331,20 @@ begin
     DataSize := 0;
 
     // Before Android 3.0 there is no way to know the type of the field, so just suppose it is string
-    if android_os_Build_VERSION_SDK_INT < 11 then
+    if (android_os_Build_VERSION_SDK_INT < 11) or (RowCount <= 0) then
     begin
       AType := ftString;
       DataSize := DefaultStringSize;
     end
     else
     // In Android 3.0 we can use Cursor.getType
+    // but it throws a CursorIndexOutOfBoundsException if the cursor is in position -1
+    // so if the database has no rows, getType doesn't work o.O
     begin
       // public abstract int getType (int columnIndex) // Added in API level 11
       lParams[0].i := i;
       lColumnType := javaEnvRef^^.CallIntMethodA(javaEnvRef, dbCursor, FDBCursor_getType, @lParams[0]);
+      //DebugLn('[TSqliteJNIDataset.RetrieveFieldDefs] dbCursor.getType()='+IntToStr(lColumnType));
 
       case lColumnType of
         FIELD_TYPE_BLOB:

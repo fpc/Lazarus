@@ -69,11 +69,11 @@
         <CompilerOptions>
           <Version Value="11"/>
           <Target>
-            <Filename Value="android/libs/armeabi/liblclapp.so"/>
+            <Filename Value="android/libs/armeabi/liblclapp"/>
           </Target>
           <SearchPaths>
             <IncludeFiles Value="$(ProjOutDir)"/>
-            <Libraries Value="C:/Programas/android-ndk-r7b/platforms/android-8/arch-arm/usr/lib/"/>
+            <Libraries Value="C:/Programas/android-ndk-r7b/platforms/android-8/arch-arm/usr/lib/;C:/Programas/android-ndk-r8/platforms/android-8/arch-arm/usr/lib/"/>
             <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)"/>
           </SearchPaths>
           <CodeGeneration>
