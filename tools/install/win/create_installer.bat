@@ -63,8 +63,12 @@ SET SVN="%ProgramFiles%\subversion\bin\svn.exe"
 if not exist %SVN% SET SVN="%ProgramFiles%\TortoiseSVN\bin\svn.exe"
 if not exist %SVN% SET SVN="%ProgramFiles32bits%\subversion\bin\svn.exe"
 if not exist %SVN% SET SVN="%ProgramFiles32bits%\TortoiseSVN\bin\svn.exe"
+:: Use SVN in Path
+if not exist %SVN% SET SVN=svn.exe
+GOTO SVN_DONE
 :SVN_BY_USER
 if not exist %SVN% GOTO ERROR_SVN
+:SVN_DONE
 
 ::---------------------------------------------------------------------
 :: Path to the svnversion executable
@@ -77,8 +81,11 @@ SET SVNVER="%ProgramFiles%\subversion\bin\svnversion.exe"
 if not exist %SVNVER% SET SVNVER="%ProgramFiles%\TortoiseSVN\bin\svnversion.exe"
 if not exist %SVNVER% SET SVNVER="%ProgramFiles32bits%\subversion\bin\svnversion.exe"
 if not exist %SVNVER% SET SVNVER="%ProgramFiles32bits%\TortoiseSVN\bin\svnversion.exe"
+if not exist %SVNVER% SET SVNVER=svnversion.exe
+GOTO SVNVER_DONE
 :SVNVER_BY_USER
 if not exist %SVNVER% GOTO ERROR_SVN
+:SVNVER_DONE
 
 ::---------------------------------------------------------------------
 :: Path to build directory.
