@@ -826,8 +826,8 @@ begin
   else
     CompilerFilename:=Project1.GetCompilerFilename;
   //DebugLn(['TLazBuildApplication.BuildProject CompilerFilename="',CompilerFilename,'" CompilerPath="',Project1.CompilerOptions.CompilerPath,'"']);
-  CompilerParams:=Project1.CompilerOptions.MakeOptionsString(SrcFilename,[])
-                  +' '+PrepareCmdLineOption(SrcFilename);
+  CompilerParams:=Project1.CompilerOptions.MakeOptionsString(SrcFilename,[ccloAbsolutePaths])
+                                         +' '+PrepareCmdLineOption(SrcFilename);
 
   NeedBuildAllFlag:=false;
   if (crCompile in Project1.CompilerOptions.CompileReasons) then begin
