@@ -713,6 +713,9 @@ var
   NewBuildMode: TProjectBuildMode;
   CompilePolicy: TPackageUpdatePolicy;
   i: Integer;
+  Note: String;
+  NeedBuildAllFlag: Boolean;
+  SubResult: TModalResult;
 begin
   Result:=false;
   CloseProject(Project1);
@@ -814,7 +817,7 @@ begin
   if not Project1.ProjResources.Regenerate(SrcFileName, False, True, '') then
   begin
     if ConsoleVerbosity>=-1 then
-      DebugLn('TMainIDE.DoSaveProject Project1.Resources.Regenerate failed');
+      DebugLn('TLazBuildApplication.BuildProject Project1.Resources.Regenerate failed');
   end;
 
   // get compiler parameters
@@ -822,9 +825,31 @@ begin
     CompilerFilename := CompilerOverride
   else
     CompilerFilename:=Project1.GetCompilerFilename;
-  //DebugLn(['TMainIDE.DoBuildProject CompilerFilename="',CompilerFilename,'" CompilerPath="',Project1.CompilerOptions.CompilerPath,'"']);
+  //DebugLn(['TLazBuildApplication.BuildProject CompilerFilename="',CompilerFilename,'" CompilerPath="',Project1.CompilerOptions.CompilerPath,'"']);
   CompilerParams:=Project1.CompilerOptions.MakeOptionsString(SrcFilename,[])
                   +' '+PrepareCmdLineOption(SrcFilename);
+
+  NeedBuildAllFlag:=false;
+  if (crCompile in Project1.CompilerOptions.CompileReasons) then begin
+    // check if project is already uptodate
+    Note:='';
+    SubResult:=MainBuildBoss.DoCheckIfProjectNeedsCompilation(Project1,
+                                                         NeedBuildAllFlag,Note);
+    if (not BuildAll)
+    and (not (pfAlwaysBuild in Project1.Flags)) then begin
+      if SubResult=mrNo then begin
+        if ConsoleVerbosity>=0 then
+          debugln(['TLazBuildApplication.BuildProject MainBuildBoss.DoCheckIfProjectNeedsCompilation nothing to be done']);
+        exit(true);
+      end;
+      if SubResult<>mrYes then
+      begin
+        if ConsoleVerbosity>=0 then
+          debugln(['TLazBuildApplication.BuildProject MainBuildBoss.DoCheckIfProjectNeedsCompilation failed']);
+        exit(false);
+      end;
+    end;
+  end;
 
   // execute compilation tool 'Before'
   ToolBefore:=TProjectCompilationToolOptions(
@@ -843,7 +868,7 @@ begin
       Error(ErrorBuildFailed,'failed saving statefile of project '+AFilename);
     if TheCompiler.Compile(Project1,
                             WorkingDir,CompilerFilename,CompilerParams,
-                            BuildAll,false,false)<>mrOk
+                            BuildAll or NeedBuildAllFlag,false,false)<>mrOk
     then
       Error(ErrorBuildFailed,'failed compiling of project '+AFilename);
     // compilation succeded -> write state file
@@ -854,7 +879,6 @@ begin
   // execute compilation tool 'After'
   ToolAfter:=TProjectCompilationToolOptions(
                                      Project1.CompilerOptions.ExecuteAfter);
-  // no need to check for mrOk, we are exit if it wasn't
   if (crCompile in ToolAfter.CompileReasons) then begin
     if ToolAfter.Execute(
                       Project1.ProjectDirectory,lisExecutingCommandAfter)<>mrOk
@@ -862,6 +886,7 @@ begin
       Error(ErrorBuildFailed,'failed "tool after" of project '+AFilename);
   end;
 
+  // no need to check for mrOk, we are exit if it wasn't
   Result:=true;
 end;
 
