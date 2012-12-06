@@ -826,6 +826,7 @@ begin
   else
     CompilerFilename:=Project1.GetCompilerFilename;
   //DebugLn(['TLazBuildApplication.BuildProject CompilerFilename="',CompilerFilename,'" CompilerPath="',Project1.CompilerOptions.CompilerPath,'"']);
+  // Note: use absolute paths, same as TBuildManager.DoCheckIfProjectNeedsCompilation
   CompilerParams:=Project1.CompilerOptions.MakeOptionsString(SrcFilename,[ccloAbsolutePaths])
                                          +' '+PrepareCmdLineOption(SrcFilename);
 
