@@ -40,7 +40,7 @@ interface
 uses
   Classes, SysUtils, Process, LCLProc, Forms, Controls, FileUtil, InfoBuild,
   LazarusIDEStrConsts, CompilerOptions, Project, OutputFilter, UTF8Process,
-  IDEMsgIntf, LazIDEIntf, ProjectIntf;
+  IDEMsgIntf, LazIDEIntf, ProjectIntf, CompOptsIntf;
 
 type
   TOnCmdLineCreate = procedure(var CmdLine: string; var Abort:boolean)
@@ -136,7 +136,8 @@ begin
   FASyncResult:= mrNone;
   FFinishedCallback := aFinishedCallback;
   {$ENDIF}
-  DebugLn('TCompiler.Compile WorkingDir="',WorkingDir,'" CompilerFilename="',CompilerFilename,'" CompilerParams="',CompilerParams,'"');
+  if ConsoleVerbosity>=0 then
+    DebugLn('TCompiler.Compile WorkingDir="',WorkingDir,'" CompilerFilename="',CompilerFilename,'" CompilerParams="',CompilerParams,'"');
 
   // if we want to show the compile progress, it's now time to show the dialog
   CompileProgress.Show;
@@ -179,7 +180,8 @@ begin
       exit;
     end;
   end;
-  DebugLn('[TCompiler.Compile] CmdLine="',CmdLine,'"');
+  if ConsoleVerbosity>=0 then
+    DebugLn('[TCompiler.Compile] CmdLine="',CmdLine,'"');
 
   try
     if TheProcess=nil then
@@ -229,13 +231,15 @@ begin
       exit;
     end;
     on e: Exception do begin
-      DebugLn('[TCompiler.Compile] exception "',E.Message,'"');
+      if ConsoleVerbosity>=-1 then
+        DebugLn('[TCompiler.Compile] exception "',E.Message,'"');
       WriteError(E.Message);
       Result:=mrCancel;
       exit;
     end;
   end;
-  DebugLn('[TCompiler.Compile] end');
+  if ConsoleVerbosity>=0 then
+    DebugLn('[TCompiler.Compile] end');
 end;
 
 {$IFDEF WithAsyncCompile}
