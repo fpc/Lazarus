@@ -64,6 +64,7 @@ type
     FSkipDependencies: boolean;
     fInitialized: boolean;
     fInitResult: boolean;
+    FVerbosity: integer;
     fWidgetsetOverride: String;
     // external tools
     procedure OnExtToolFreeOutputFilter({%H-}OutputFilter: TOutputFilter;
@@ -164,6 +165,8 @@ type
     property CompilerOverride: String read fCompilerOverride write fCompilerOverride;
     property LazarusDirOverride: String read fLazarusDirOverride write fLazarusDirOverride;
     property BuildModeOverride: String read FBuildModeOverride write FBuildModeOverride;
+
+    property Verbosity: integer read FVerbosity write FVerbosity; // 0=normal, -1=quiet, 1=verbose, 2=very verbose
   end;
 
 var
@@ -473,23 +476,26 @@ begin
     if i<0 then
     begin
       debugln(['ERROR: IDE build mode "'+BuildModeOverride+'" not found']);
-      debugln;
-      debugln('Available IDE build modes:');
-      for i:=0 to BuildLazProfiles.Count-1 do
-      begin
-        if BuildLazProfiles[i]=CurProf then
-          dbgout('* ')
-        else
-          dbgout('  ');
-        debugln(BuildLazProfiles[i].Name);
+      if Verbosity>=-2 then begin
+        debugln;
+        debugln('Available IDE build modes:');
+        for i:=0 to BuildLazProfiles.Count-1 do
+        begin
+          if BuildLazProfiles[i]=CurProf then
+            dbgout('* ')
+          else
+            dbgout('  ');
+          debugln(BuildLazProfiles[i].Name);
+        end;
+        debugln;
       end;
-      debugln;
       Halt(ErrorBuildFailed);
     end;
     CurProf:=BuildLazProfiles[i];
     BuildLazProfiles.CurrentIndex:=i;
   end;
-  debugln(['Building Lazarus IDE with profile "',CurProf.Name,'"']);
+  if Verbosity>=0 then
+    debugln(['Building Lazarus IDE with profile "',CurProf.Name,'"']);
 
   if (Length(OSOverride) <> 0) then
     CurProf.TargetOS:=OSOverride;
@@ -520,7 +526,8 @@ begin
   TargetDir:=CurProf.TargetDirectory;
   IDEMacros.SubstituteMacros(TargetDir);
   if not ForceDirectory(TargetDir) then begin
-    DebugLn('TLazBuildApplication.BuildLazarusIDE: failed creating IDE target directory "',TargetDir,'"');
+    if Verbosity>=-1 then
+      DebugLn('WARNING: failed creating IDE target directory "',TargetDir,'" (TLazBuildApplication.BuildLazarusIDE)');
     exit;
   end;
 
@@ -534,7 +541,8 @@ begin
                 Flags+[blfDontBuild],
                 ProfileChanged);
     if CurResult<>mrOk then begin
-      DebugLn('TLazBuildApplication.BuildLazarusIDE: Clean all failed.');
+      if Verbosity>=-1 then
+        DebugLn('TLazBuildApplication.BuildLazarusIDE: Clean all failed.');
       exit;
     end;
   end;
@@ -542,14 +550,16 @@ begin
   // save configs for 'make'
   CurResult:=PackageGraph.SaveAutoInstallConfig;
   if CurResult<>mrOk then begin
-    DebugLn('TLazBuildApplication.BuildLazarusIDE: failed saving IDE make config files.');
+    if Verbosity>=-1 then
+      DebugLn('TLazBuildApplication.BuildLazarusIDE: failed saving IDE make config files.');
     exit;
   end;
 
   // compile auto install static packages
   if not CompileAutoInstallPackages(BuildLazProfiles.Current.IdeBuildMode<>bmBuild)
   then begin
-    DebugLn('TLazBuildApplication.BuildLazarusIDE: Compile AutoInstall Packages failed.');
+    if Verbosity>=-1 then
+      DebugLn('TLazBuildApplication.BuildLazarusIDE: Compile AutoInstall Packages failed.');
     exit;
   end;
   
@@ -561,7 +571,8 @@ begin
   CurResult:=SaveIDEMakeOptions(BuildLazProfiles.Current,GlobalMacroList,
                                 PkgOptions,Flags+[blfBackupOldExe]);
   if CurResult<>mrOk then begin
-    DebugLn('TLazBuildApplication.BuildLazarusIDE: failed saving idemake.cfg');
+    if Verbosity>=-1 then
+      DebugLn('TLazBuildApplication.BuildLazarusIDE: failed saving idemake.cfg');
     exit;
   end;
 
@@ -573,7 +584,8 @@ begin
                          Flags+[blfUseMakeIDECfg,blfOnlyIDE],
                          ProfileChanged);
   if CurResult<>mrOk then begin
-    DebugLn('TLazBuildApplication.BuildLazarusIDE: Building IDE failed.');
+    if Verbosity>=-1 then
+      DebugLn('TLazBuildApplication.BuildLazarusIDE: Building IDE failed.');
     exit;
   end;
 
@@ -721,22 +733,24 @@ begin
     if NewBuildMode=nil then
     begin
       debugln([Format(lisERRORInvalidBuildMode, [BuildModeOverride])]);
-      debugln;
-      if Project1.BuildModes.Count>1 then
-      begin
-        debugln(lisAvailableProjectBuildModes);
-        for i:=0 to Project1.BuildModes.Count-1 do
+      if Verbosity>=0 then begin
+        debugln;
+        if Project1.BuildModes.Count>1 then
         begin
-          if Project1.BuildModes[i]=Project1.ActiveBuildMode then
-            dbgout('* ')
-          else
-            dbgout('  ');
-          debugln(Project1.BuildModes[i].Name);
+          debugln(lisAvailableProjectBuildModes);
+          for i:=0 to Project1.BuildModes.Count-1 do
+          begin
+            if Project1.BuildModes[i]=Project1.ActiveBuildMode then
+              dbgout('* ')
+            else
+              dbgout('  ');
+            debugln(Project1.BuildModes[i].Name);
+          end;
+        end else begin
+          debugln(lisThisProjectHasOnlyTheDefaultBuildMode);
         end;
-      end else begin
-        debugln(lisThisProjectHasOnlyTheDefaultBuildMode);
+        debugln;
       end;
-      debugln;
       Halt(ErrorBuildFailed);
     end;
     Project1.ActiveBuildMode:=NewBuildMode;
@@ -801,7 +815,10 @@ begin
 
   // regenerate resources
   if not Project1.ProjResources.Regenerate(SrcFileName, False, True, '') then
-    DebugLn('TMainIDE.DoSaveProject Project1.Resources.Regenerate failed');
+  begin
+    if Verbosity>=-1 then
+      DebugLn('TMainIDE.DoSaveProject Project1.Resources.Regenerate failed');
+  end;
 
   // get compiler parameters
   if CompilerOverride <> '' then
@@ -951,7 +968,8 @@ begin
     end;
     PackageName:=Package.Name;
     // set it as (static) autoinstall: select for installation
-    debugln(['adding package "'+PkgFilename+'" to install list of IDE']);
+    if Verbosity>=0 then
+      debugln(['adding package "'+PkgFilename+'" to install list of IDE']);
     if MiscellaneousOptions.BuildLazProfiles.StaticAutoInstallPackages.IndexOf(PackageName)<0 then
       MiscellaneousOptions.BuildLazProfiles.StaticAutoInstallPackages.Add(PackageName);
   end;
@@ -972,7 +990,8 @@ begin
   fInitResult:=false;
   fInitialized:=true;
 
-  debugln(['primary config path: ',GetPrimaryConfigPath]);
+  if Verbosity>=0 then
+    debugln(['primary config path: ',GetPrimaryConfigPath]);
   CreatePrimaryConfigPath;
 
   MainBuildBoss:=TBuildManager.Create(nil);
@@ -1010,8 +1029,9 @@ begin
     fLazarusDirInCfg:=LazarusDirectory;
 
     if Application.HasOption('language') then begin
-      debugln('Note: overriding language with command line: ',
-        Application.GetOptionValue('language'));
+      if Verbosity>=0 then
+        debugln('Note: overriding language with command line: ',
+          Application.GetOptionValue('language'));
       EnvironmentOptions.LanguageID:=Application.GetOptionValue('language');
     end;
     TranslateResourceStrings(EnvironmentOptions.GetParsedLazarusDirectory,
@@ -1028,7 +1048,8 @@ begin
     +SetDirSeparators('packager/registration/fcl.lpk'))
   then begin
     CheckLazarusDirectoryQuality(EnvironmentOptions.GetParsedLazarusDirectory,Note);
-    debugln(['Error: invalid Lazarus directory "'+EnvironmentOptions.LazarusDirectory+'": '+Note]);
+    if Verbosity>=-1 then
+      debugln(['Error: invalid Lazarus directory "'+EnvironmentOptions.LazarusDirectory+'": '+Note]);
     Terminate;
   end;
 end;
@@ -1095,12 +1116,15 @@ begin
   if (not StoreLazDir) and (not StoreCompPath) then exit;
 
   try
-    dbgout('storing');
-    if StoreLazDir then
-      dbgout(' Lazarus directory "',EnvironmentOptions.LazarusDirectory,'"');
-    if StoreCompPath then
-      dbgout(' Compiler path "',EnvironmentOptions.CompilerFilename,'"');
-    debugln(' in "',EnvironmentOptions.Filename,'"');
+    if Verbosity>=-1 then
+    begin
+      dbgout('storing');
+      if StoreLazDir then
+        dbgout(' Lazarus directory "',EnvironmentOptions.LazarusDirectory,'"');
+      if StoreCompPath then
+        dbgout(' Compiler path "',EnvironmentOptions.CompilerFilename,'"');
+      debugln(' in "',EnvironmentOptions.Filename,'"');
+    end;
     Cfg:=TXMLConfig.Create(EnvironmentOptions.Filename);
     try
       if StoreLazDir then
@@ -1221,7 +1245,8 @@ begin
                 begin
                 // Required argument
                 NeedArg:=true;
-                debugln(['P ',P,' J ',J,' ',O[J],' ',l,' Havearg ',HaveArg]);
+                if Verbosity>=-1 then
+                  debugln(['P ',P,' J ',J,' ',O[J],' ',l,' Havearg ',HaveArg]);
                 If ((P+1)=Length(ShortOptions)) or (Shortoptions[P+2]<>':') Then
                   If (J<L) or not haveArg then // Must be last in multi-opt !!
                     Result:=Format(lisErrOptionNeeded,[I,O[J]]);
@@ -1288,7 +1313,8 @@ begin
   // except packages to be added the IDE install list.
   for i:=0 to Files.Count-1 do begin
     if not BuildFile(Files[i]) then begin
-      debugln('Failed building ',Files[i]);
+      if Verbosity>=-1 then
+        debugln('Failed building ',Files[i]);
       ExitCode := ErrorBuildFailed;
       exit;
     end;
@@ -1297,7 +1323,8 @@ begin
   // Add user-requested packages to IDE install list:
   if AddPackage then begin
     if not AddPackagesToInstallList(Files) then begin
-      debugln('Failed adding package(s) ',Files.Text);
+      if Verbosity>=-1 then
+        debugln('Failed adding package(s) ',Files.Text);
       ExitCode := ErrorBuildFailed;
       exit;
     end;
@@ -1305,7 +1332,8 @@ begin
 
   if BuildIDE then begin
     if not BuildLazarusIDE then begin
-      debugln('Failed building Lazarus IDE');
+      if Verbosity>=-1 then
+        debugln('Failed building Lazarus IDE');
       ExitCode := ErrorBuildFailed;
       exit;
     end;
@@ -1318,6 +1346,8 @@ var
   NonOptions: TStringList;
   ErrorMsg: String;
   LongOptions: TStringList;
+  i: Integer;
+  p: String;
 begin
   Result:=false;
   if (ParamCount<=0)
@@ -1337,10 +1367,22 @@ begin
     writeln(VersionStr);
     exit;
   end;
+
+  // verbosity
+  for i:=1 to ParamCount do begin
+    p:=ParamStr(i);
+    if p='--verbose' then
+      inc(fVerbosity)
+    else if (p='-q') or (p='quiet=') then
+      dec(fVerbosity);
+  end;
+
   Options:=TStringList.Create;
   NonOptions:=TStringList.Create;
   LongOptions:=TStringList.Create;
   try
+    LongOptions.Add('quiet');
+    LongOptions.Add('verbose');
     LongOptions.Add('primary-config-path:');
     LongOptions.Add('pcp:');
     LongOptions.Add('secondary-config-path:');
@@ -1361,7 +1403,7 @@ begin
     LongOptions.Add('compiler:');
     LongOptions.Add('lazarusdir:');
     LongOptions.Add('create-makefile');
-    ErrorMsg:=RepairedCheckOptions('lBrd',LongOptions,Options,NonOptions);
+    ErrorMsg:=RepairedCheckOptions('lBrdq',LongOptions,Options,NonOptions);
     if ErrorMsg<>'' then begin
       writeln(ErrorMsg);
       writeln('');
@@ -1471,6 +1513,8 @@ begin
   writeln('-d or --skip-dependencies ', UTF8ToConsole(lisDoNotCompileDependencies));
   writeln('--build-ide=<options>     ', UTF8ToConsole(lisBuildIDEWithPackages));
   writeln('-v or --version           ', UTF8ToConsole(lisShowVersionAndExit));
+  writeln('-q or --quiet             ', UTF8ToConsole('be less verbose, can be given multiple times'));
+  writeln('--verbose                 ', UTF8ToConsole('be more verbose, can be given multiple times'));
   writeln('');
 
   writeln('--add-package');
