@@ -37,7 +37,7 @@ uses
   Classes,
   {$ifdef fpc}
     { lazarus design time }
-    SrcEditorIntf,
+    SrcEditorIntf, LazUTF8,
   {$else}
     { delphi design time }
     ToolsAPI,
@@ -142,16 +142,14 @@ begin
   end;
 
   fsCurrentUnitName := pciUnit.FileName;
-  fcConverter.InputCode := ReadFromIDE(pciUnit);
+  fcConverter.InputCode := UTF8ToUTF16(ReadFromIDE(pciUnit));
 
   // now convert
   fcConverter.Convert;
-
   fsCurrentUnitName := '';
-
   if not ConvertError then
   begin
-    WriteToIDE(pciUnit, fcConverter.OutputCode);
+    WriteToIDE(pciUnit, UTF16ToUTF8(fcConverter.OutputCode));
     SendStatusMessage(pciUnit.FileName, 'Formatted unit', mtProgress, -1, -1);
     Inc(fiConvertCount);
   end;
@@ -174,7 +172,7 @@ begin
     exit;
 
   lcSourceLines := TStringList.Create;
-  lcSourceLines.Text := fcConverter.InputCode;
+  lcSourceLines.Text := UTF16ToUTF8(fcConverter.InputCode);
   lcDestLines := TStringList.Create;
   lcDestLines.Text := psText;
   lcSameStart := TStringList.Create;
