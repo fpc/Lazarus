@@ -606,14 +606,16 @@ end;
 
 procedure TTestGdbType.TestExpressionBreaker;
 
-  procedure InitExpr(e: String; var b: TGDBExpression; out r: PGDBPTypeRequest; out v: Boolean);
+  procedure InitExpr(e: String; var b: TGDBExpression; out r: PGDBPTypeRequest; out v: Boolean; rewritten: string = '');
   begin
     FreeAndNil(b);
     r := nil;
     b := TGDBExpression.Create(e);
     debugln('##### '+e);
     DumpGExp(b);
-    AssertEquals(e+' as text', e, b.Text);
+    if rewritten <> ''
+    then AssertEquals(e+' as text', rewritten, b.Text)
+    else AssertEquals(e+' as text', e, b.Text);
     v := b.NeedValidation(r);
     if r <> nil then DumpReq(r);
     debugln;
@@ -799,13 +801,13 @@ begin
   InitExpr(n, b, r, v);
 
   n := 'abc[1,2,3].x[1]';
-  InitExpr(n, b, r, v);
+  InitExpr(n, b, r, v, 'abc[1][2][3].x[1]');
 
   n := 'abc[1,2,3].x and abc[1,2][3].y';
-  InitExpr(n, b, r, v);
+  InitExpr(n, b, r, v, 'abc[1][2][3].x and abc[1][2][3].y');
 
   n := '1+abc[1,2,3].x and b . cc [ 1 , 2 or x ]';
-  InitExpr(n, b, r, v);
+  InitExpr(n, b, r, v, '1+abc[1][2][3].x and b . cc [ 1 ][ 2 or x ]');
 
 
   b.Free;

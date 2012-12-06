@@ -308,7 +308,7 @@
     {$IFDEF Global_Type}
       //type
       TClassTCast          = class               public b: Integer;  end;
-      TClassTCastObject    = class(TObject)      public b: Integer;  end;
+      TClassTCastObject    = class(TObject)      public b: Integer; l: Array of Integer; end;
       TClassTCastComponent = class(TComponent)   public b: Integer;  end;
 
       {$IFDEF USE_W1}
@@ -359,6 +359,8 @@
       // Declared TObject
       VarOTestTCast               := TClassTCast.Create;
       VarOTestTCastObj            := TClassTCastObject.Create;
+      SetLength(TClassTCastObject(VarOTestTCastObj).l, 3);
+      TClassTCastObject(VarOTestTCastObj).l[1] := 1144;
       VarOTestTCastComp           := TClassTCastComponent.Create(nil);
       VarOTestTCast2              := TClassTCast.Create;
       VarNOTestTCast              := nil;

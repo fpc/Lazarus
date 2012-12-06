@@ -726,7 +726,6 @@ begin
   {%region    * Classes * }
 
   AddFmtDef('ArgTFoo',      Match_ArgTFoo,                 skClass,   'TFoo',  []);
-  AddFmtDef('TFoo(ArgTFoo)',Match_ArgTFoo,                 skClass,   'TFoo',  []);
   AddFmtDef('@ArgTFoo',     '(P|\^T)Foo\('+Match_Pointer,  skPointer, '(P|\^T)Foo',  [fTpMtch]);
   // Only with brackets...
   AddFmtDef('(@ArgTFoo)^',   Match_ArgTFoo,                skClass,   'TFoo',  []);
@@ -742,7 +741,6 @@ begin
 
 
   AddFmtDef('VArgTFoo',     Match_ArgTFoo,                 skClass,   'TFoo',  []);
-  AddFmtDef('TFoo(VArgTFoo)',Match_ArgTFoo,                 skClass,   'TFoo',  []);
   AddFmtDef('@VArgTFoo',    '(P|\^T)Foo\('+Match_Pointer,  skPointer, '(P|\^T)Foo',  [fTpMtch]);
   AddFmtDef('(@VArgTFoo)^',   Match_ArgTFoo,                 skClass,   'TFoo',  []);
 
@@ -775,6 +773,16 @@ begin
 
   Add('ArgTFoo',    wdfPointer,  Match_Pointer,                           skClass,   'TFoo',  []);
   Add('ArgTFoo',    wdfMemDump,  ':.*?6D 65 6D 20 6F 66 20 54 46 6F 6F',  skClass,   'TFoo',  []);
+
+  {%region    * Classes * typecasts }
+  // typecast does not change class
+  AddFmtDef('TFoo(ArgTFoo)',Match_ArgTFoo,                 skClass,   'TFoo',  []);
+  AddFmtDef('TFoo(VArgTFoo)',Match_ArgTFoo,                 skClass,   'TFoo',  []);
+  // typecast does change class
+  AddFmtDef('TObject(ArgTFoo)', '<TObject> = \{.*(<|vptr\$)', skClass,   'TObject',  []);
+  AddFmtDef('TObject(VArgTFoo)', '<TObject> = \{.*(<|vptr\$)', skClass,   'TObject',  []);
+  {%endregion * Classes * typecasts}
+
 
   (*
 
@@ -827,7 +835,7 @@ begin
   //AddFmtDef('not(ArgTFoo=nil)',       'True',         skSimple,      'bool', []);
   //AddFmtDef('ArgTFoo<>nil',           'True',         skSimple,      'bool', []);
 
-  { casting }
+  {%region    * Classes * typecasts }
   { gdb below 6.7.50 with stabs may fail }
   r := AddFmtDef('VarOTestTCast2', [defFullTypeInfo],
                MatchClass('TObject'),          skClass,      'TObject', []);
@@ -877,6 +885,12 @@ begin
                MatchClass('TClassTCast', 'b *='),          skClass,      'TClassTCast', []);
   //if (DebuggerInfo.Version > 0) and (DebuggerInfo.Version < 060750) then
   UpdRes(r, stStabs, '.', skClass, '.', [fTpMtch]);
+
+  // access dyn array in casted object
+
+  {%endregion * Classes * typecasts}
+  r := AddFmtDef('TClassTCastObject(VarOTestTCastObj).l[1]', [], '1144', skSimple, 'Integer|LongInt', [fTpMtch]);
+//  if (DebuggerInfo.Version > 0) and (DebuggerInfo.Version < 060750) then UpdRes(r, stStabs, '.', skClass, '.', [fTpMtch]);
 
 
   {%endregion    * Classes * }
