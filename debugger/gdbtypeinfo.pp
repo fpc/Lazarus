@@ -110,13 +110,19 @@ type
      Cast/Call: "Foo(Bar)"
   *)
 
+  TGDBExprTextOption = (
+    toWithStringFix,   // Adjust index for string (1 based)
+    toSkipArrayIdx     // Replace array index with low bound (for ptype)
+  );
+  TGDBExprTextOptions = set of TGDBExprTextOption;
+
   { TGDBExpressionPart }
 
   TGDBExpressionPart = class
   protected
     FText: TPCharWithLen;
     function GetParts(Index: Integer): TGDBExpressionPart; virtual;
-    function GetTextFixed(AStringFixed: Boolean): String; virtual;
+    function GetTextFixed(AOpts: TGDBExprTextOptions=[]): String; virtual;
     function GetText: String;
     function GetTextStrFixed: String;
     function ParseExpression(AText: PChar; ATextLen: Integer): TGDBExpressionPart;
@@ -134,6 +140,7 @@ type
     property Parts[Index: Integer]: TGDBExpressionPart read GetParts;
     property Text: String read GetText;
     property TextStrFixed: String read GetTextStrFixed;
+    property TextEx[AOpts: TGDBExprTextOptions]: String read GetTextFixed;
   end;
 
   { TGDBExpression }
@@ -143,7 +150,7 @@ type
     FTextStr: String;
   protected
     FExpressionPart: TGDBExpressionPart;
-    function GetTextFixed(AStringFixed: Boolean): String; override;
+    function GetTextFixed(AOpts: TGDBExprTextOptions=[]): String; override;
     function GetParts(Index: Integer): TGDBExpressionPart; override;
   public
     constructor CreateSimple(AText: PChar; ATextLen: Integer);
@@ -158,8 +165,8 @@ type
 
   TGDBExpressionPartBracketed = class(TGDBExpression)
   protected
-    function GetTextFixed(AStringFixed: Boolean): String; override;
-    function GetPlainText: String;
+    function GetTextFixed(AOpts: TGDBExprTextOptions=[]): String; override;
+    function GetPlainText(AOpts: TGDBExprTextOptions=[]): String;
   public
     constructor Create(AText: PChar; ATextLen: Integer); override; overload;
   end;
@@ -171,7 +178,7 @@ type
     FList: TFPList;
   protected
     function GetParts(Index: Integer): TGDBExpressionPart; override;
-    function GetTextFixed(AStringFixed: Boolean): String; override;
+    function GetTextFixed(AOpts: TGDBExprTextOptions=[]): String; override;
   public
     constructor Create;
     destructor Destroy; override;
@@ -192,7 +199,7 @@ type
 
   TGDBExpressionPartCommaList = class(TGDBExpressionPartList)
   protected
-    function GetTextFixed(AStringFixed: Boolean): String; override;
+    function GetTextFixed(AOpts: TGDBExprTextOptions=[]): String; override;
   end;
 
   { TGDBExpressionPartArrayIdx }
@@ -213,7 +220,7 @@ type
     procedure InitReq(var AReqPtr: PGDBPTypeRequest; AReqText: String); overload;
     procedure InitDeRefReq(var AReqPtr: PGDBPTypeRequest; AReqText: String);
     procedure InitIndexReq(var AReqPtr: PGDBPTypeRequest);
-    function GetTextFixed(AStringFixed: Boolean): String; override;
+    function GetTextFixed(AOpts: TGDBExprTextOptions=[]): String; override;
     property VarParam: Boolean read FVarParam write FVarParam;
     property PTypeReq: TGDBPTypeRequest read FPTypeReq write FPTypeReq;
     property PTypeDeRefReq: TGDBPTypeRequest read FPTypeDeRefReq write FPTypeDeRefReq;
@@ -235,8 +242,8 @@ type
     FMaybeString: Boolean;
     function GetIndexParts(Index: Integer): TGDBExpressionPartArrayIdx;
   protected
-    function GetTextFixed(AStringFixed: Boolean): String; override;
-    function GetTextToIdx(AIdx: Integer; AStrFixed: Boolean = False): String;
+    function GetTextFixed(AOpts: TGDBExprTextOptions=[]): String; override;
+    function GetTextToIdx(AIdx: Integer; AOpts: TGDBExprTextOptions=[]): String;
     function IndexCount: Integer;
     property IndexPart[Index: Integer]: TGDBExpressionPartArrayIdx read GetIndexParts;
   public
@@ -258,7 +265,7 @@ type
     FTypeCastFixFlag: TTypeCastFixFlag;
   protected
     procedure Init; override;
-    function GetTextFixed(AStringFixed: Boolean): String; override;
+    function GetTextFixed(AOpts: TGDBExprTextOptions=[]): String; override;
     property PTypeReq: TGDBPTypeRequest read FPTypeReq write FPTypeReq;
   public
     constructor Create(ALeadExpresion: TGDBExpressionPart);
@@ -331,7 +338,7 @@ type
      gptrPTypeExprDeRef, gptrPTypeExprDeDeRef,  // "Foo^", "Foo^^"  for Foo=Object, or &Object
      gptrEvalExpr, gptrEvalExprDeRef, gptrEvalExprCast,
      gptrEvalExpr2, gptrEvalExprDeRef2, gptrEvalExprCast2, // used by MaybeString
-     gptrPtypeCustomFixCast, gptrPtypeCustomAutoCast, gptrPtypeCustomAutoCast2,
+     gptrPtypeCustomAutoCast, gptrPtypeCustomAutoCast2,
      gptrInstanceClassName,
      gptrPtypeCustomEval
     );
@@ -342,7 +349,7 @@ type
     FInternalTypeName: string;
   private
     FEvalStarted: Boolean;
-    FExpression, FOrigExpression: string;
+    FExpression, FPTypeExpression, FOrigExpression: string;
     FHasStringExprEvaluatedAsText: Boolean;
     FCreationFlags: TGDBTypeCreationFlags;
 
@@ -1009,16 +1016,17 @@ end;
 
 { TGDBExpressionPartCommaList }
 
-function TGDBExpressionPartCommaList.GetTextFixed(AStringFixed: Boolean): String;
+function TGDBExpressionPartCommaList.GetTextFixed(AOpts: TGDBExprTextOptions
+  ): String;
 var
   i: Integer;
 begin
   Result := '';
   if PartCount = 0 then
     exit;
-  Result := Parts[0].GetTextFixed(AStringFixed);
+  Result := Parts[0].GetTextFixed(AOpts);
   for i := 1 to PartCount - 1 do
-    Result := Result + ',' + Parts[i].GetTextFixed(AStringFixed);
+    Result := Result + ',' + Parts[i].GetTextFixed(AOpts);
 end;
 
 { TGDBExpressionPartArrayIdx }
@@ -1072,19 +1080,20 @@ end;
 procedure TGDBExpressionPartArrayIdx.InitIndexReq(var AReqPtr: PGDBPTypeRequest);
 begin
   InitReq(AReqPtr, FPTypeIndexReq,
-          GdbCmdEvaluate + Quote(GetPlainText), gcrtEvalExpr);
+          GdbCmdEvaluate + Quote(GetPlainText([toSkipArrayIdx])), gcrtEvalExpr);
 end;
 
-function TGDBExpressionPartArrayIdx.GetTextFixed(AStringFixed: Boolean): String;
+function TGDBExpressionPartArrayIdx.GetTextFixed(AOpts: TGDBExprTextOptions
+  ): String;
 begin
-  if AStringFixed then begin
+  if toWithStringFix in AOpts then begin
     if FExpressionPart = nil
     then Result := PCLenPartToString(FText, 1, FText.Len-2)
-    else Result := FExpressionPart.Text;
+    else Result := FExpressionPart.TextEx[AOpts];
     Result := FText.Ptr^ + Result + '-1' + (FText.Ptr + FText.Len-1)^;
   end
   else
-     Result := inherited GetTextFixed(AStringFixed);
+     Result := inherited GetTextFixed(AOpts);
 end;
 
 function TGDBExpressionPartArrayIdx.CreateExpressionForSubIndex(AIndex: Integer): TGDBExpressionPartArrayIdx;
@@ -1114,12 +1123,15 @@ begin
   Assert(not Result.IsCommaSeparated, 'GetIndexParts not IsCommaSeparated');
 end;
 
-function TGDBExpressionPartArray.GetTextFixed(AStringFixed: Boolean): String;
+function TGDBExpressionPartArray.GetTextFixed(AOpts: TGDBExprTextOptions
+  ): String;
 begin
-  Result := GetTextToIdx(IndexCount-1, AStringFixed);
+  Result := GetTextToIdx(IndexCount-1, AOpts);
 end;
 
-function TGDBExpressionPartArray.GetTextToIdx(AIdx: Integer; AStrFixed: Boolean = False): String;
+function TGDBExpressionPartArray.GetTextToIdx(AIdx: Integer;
+  AOpts: TGDBExprTextOptions): String;
+// toSkipArrayIdx: replace all indexes with 0. For ptype the position does not matter
 
   function GetPointerCast(AnIdxPart: TGDBExpressionPartArrayIdx; out PointerCnt: Integer): String;
   var
@@ -1153,9 +1165,9 @@ var
   IdxPart: TGDBExpressionPartArrayIdx;
   PTResult: TGDBPTypeResult;
   NeedTCast: Boolean;
-  s: String;
+  s, LowVal: String;
 begin
-  Result := Parts[0].Text;
+  Result := Parts[0].TextEx[AOpts];
   PCastCnt := 0;
 
   if AIdx < 0 then exit;
@@ -1163,12 +1175,18 @@ begin
   for i := 0 to AIdx do begin
     IdxPart := TGDBExpressionPartArrayIdx(IndexPart[i]);
     PTResult := IdxPart.ArrayPTypeResult;
+    if toSkipArrayIdx in AOpts then
+      LowVal := '[' + IntToStr(PCLenToInt(PTResult.BoundLow)) + ']';
+
     if PCastCnt > 0 then dec(PCastCnt);
 
     if not (PTResult.Kind = ptprkArray)
     then begin
       // maybe pointer with index access
-      if AStrFixed and (i = IndexCount - 1)
+      if toSkipArrayIdx in AOpts
+      then Result := Result + LowVal
+      else
+      if (toWithStringFix in AOpts) and (i = IndexCount - 1)
       then Result := Result + IdxPart.TextStrFixed
       else Result := Result + IdxPart.Text;
       continue;
@@ -1180,7 +1198,9 @@ begin
       // nested array / no named type known
       if (PCastCnt = 0) and IdxPart.ArrayPTypeIsPointer
       then Result := Result + '^';
-      Result := Result + IdxPart.Text;
+      if toSkipArrayIdx in AOpts
+      then Result := Result + LowVal
+      else Result := Result + IdxPart.Text;
       continue;
     end;
 
@@ -1209,7 +1229,9 @@ begin
         Result := Result + '^';
     end;
 
-    Result := Result + IdxPart.Text;
+    if toSkipArrayIdx in AOpts
+    then Result := Result + LowVal
+    else Result := Result + IdxPart.Text;
 
     if NeedTCast and (PTResult.SubName.Len > 0)
     then
@@ -1298,7 +1320,7 @@ begin
       (* ptype ArrayBaseWithoutIndex *)
       IdxPart.VarParam := False;
       // InitReq sets: PTReq.Result.Kind = ptprkError;
-      IdxPart.InitReq(AReqPtr, GdbCmdPType + GetTextToIdx(i-1));
+      IdxPart.InitReq(AReqPtr, GdbCmdPType + GetTextToIdx(i-1, [toSkipArrayIdx]));
       Result := True;
       exit;
     end
@@ -1308,7 +1330,7 @@ begin
       (* ptype ArrayBaseWithoutIndex^ *)
       // FPC 2.2.4 encoded "var param" in a special way, and we need an extra deref)
       IdxPart.VarParam := True;
-      IdxPart.InitReq(AReqPtr, GdbCmdPType + ApplyBrackets(GetTextToIdx(i-1)) + '^');
+      IdxPart.InitReq(AReqPtr, GdbCmdPType + ApplyBrackets(GetTextToIdx(i-1, [toSkipArrayIdx])) + '^');
       Result := True;
       exit;
     end;
@@ -1323,8 +1345,8 @@ begin
     then begin
       (* ptype ArrayBaseWithoutIndex^ or ptype ArrayBaseWithoutIndex^^ *)
       if IdxPart.VarParam
-      then IdxPart.InitDeRefReq(AReqPtr, GdbCmdPType + ApplyBrackets(GetTextToIdx(i-1)) + '^^')
-      else IdxPart.InitDeRefReq(AReqPtr, GdbCmdPType + ApplyBrackets(GetTextToIdx(i-1)) + '^');
+      then IdxPart.InitDeRefReq(AReqPtr, GdbCmdPType + ApplyBrackets(GetTextToIdx(i-1, [toSkipArrayIdx])) + '^^')
+      else IdxPart.InitDeRefReq(AReqPtr, GdbCmdPType + ApplyBrackets(GetTextToIdx(i-1, [toSkipArrayIdx])) + '^');
       Result := True;
       exit;
     end;
@@ -1417,9 +1439,10 @@ begin
   FPTypeReq.Result.Kind := ptprkNotEvaluated;
 end;
 
-function TGDBExpressionPartCastCall.GetTextFixed(AStringFixed: Boolean): String;
+function TGDBExpressionPartCastCall.GetTextFixed(AOpts: TGDBExprTextOptions
+  ): String;
 begin
-  Result := inherited GetTextFixed(AStringFixed);
+  Result := inherited GetTextFixed(AOpts);
   if FTypeCastFixFlag = tcfFixNeeded then
     Result := '^'+Result;
 end;
@@ -1432,7 +1455,7 @@ begin
     exit;
 
   if FPTypeReq.Result.Kind = ptprkNotEvaluated then begin
-    InitReq(AReqPtr, FPTypeReq, GdbCmdPType + Parts[0].GetText , gcrtPType);
+    InitReq(AReqPtr, FPTypeReq, GdbCmdPType + Parts[0].GetTextFixed([toSkipArrayIdx]) , gcrtPType);
     Result := True;
     exit;
   end;
@@ -1505,18 +1528,20 @@ end;
 
 { TGDBExpressionPartBracketed }
 
-function TGDBExpressionPartBracketed.GetTextFixed(AStringFixed: Boolean): String;
+function TGDBExpressionPartBracketed.GetTextFixed(AOpts: TGDBExprTextOptions
+  ): String;
 begin
   if FExpressionPart = nil
-  then Result := inherited GetTextFixed(AStringFixed)
-  else Result := FText.Ptr^ + FExpressionPart.GetTextFixed(AStringFixed) + (FText.Ptr + FText.Len-1)^;
+  then Result := inherited GetTextFixed(AOpts)
+  else Result := FText.Ptr^ + FExpressionPart.GetTextFixed(AOpts) + (FText.Ptr + FText.Len-1)^;
 end;
 
-function TGDBExpressionPartBracketed.GetPlainText: String;
+function TGDBExpressionPartBracketed.GetPlainText(AOpts: TGDBExprTextOptions
+  ): String;
 begin
   if FExpressionPart = nil
   then Result := PCLenPartToString(FText, 1, FText.Len-2)
-  else Result := FExpressionPart.Text;
+  else Result := FExpressionPart.TextEx[AOpts];
 end;
 
 constructor TGDBExpressionPartBracketed.Create(AText: PChar; ATextLen: Integer);
@@ -1527,14 +1552,14 @@ end;
 
 { TGDBExpressionPart }
 
-function TGDBExpressionPart.GetTextFixed(AStringFixed: Boolean): String;
+function TGDBExpressionPart.GetTextFixed(AOpts: TGDBExprTextOptions): String;
 begin
   Result := PCLenToString(FText);
 end;
 
 function TGDBExpressionPart.GetText: String;
 begin
-  Result := GetTextFixed(False);
+  Result := GetTextFixed([]);
 end;
 
 function TGDBExpressionPart.ParseExpression(AText: PChar; ATextLen: Integer): TGDBExpressionPart;
@@ -1807,7 +1832,7 @@ end;
 
 function TGDBExpressionPart.GetTextStrFixed: String;
 begin
-  Result := GetTextFixed(True);
+  Result := GetTextFixed([toWithStringFix]);
 end;
 
 function TGDBExpressionPart.GetParts(Index: Integer): TGDBExpressionPart;
@@ -1827,13 +1852,14 @@ begin
   Result := TGDBExpressionPart(FList[Index]);
 end;
 
-function TGDBExpressionPartListBase.GetTextFixed(AStringFixed: Boolean): String;
+function TGDBExpressionPartListBase.GetTextFixed(AOpts: TGDBExprTextOptions
+  ): String;
 var
   i: Integer;
 begin
   Result := '';
   for i := 0 to PartCount - 1 do
-    Result := Result + Parts[i].GetTextFixed(AStringFixed);
+    Result := Result + Parts[i].GetTextFixed(AOpts);
 end;
 
 constructor TGDBExpressionPartListBase.Create;
@@ -1884,11 +1910,11 @@ end;
 
 { TGDBExpression }
 
-function TGDBExpression.GetTextFixed(AStringFixed: Boolean): String;
+function TGDBExpression.GetTextFixed(AOpts: TGDBExprTextOptions): String;
 begin
   if FExpressionPart = nil
-  then Result := inherited GetTextFixed(AStringFixed)
-  else Result := FExpressionPart.GetTextFixed(AStringFixed);
+  then Result := inherited GetTextFixed(AOpts)
+  else Result := FExpressionPart.GetTextFixed(AOpts);
 end;
 
 function TGDBExpression.GetParts(Index: Integer): TGDBExpressionPart;
@@ -2026,22 +2052,21 @@ end;
 
 function TGDBType.RequireRequests(ARequired: TGDBTypeProcessRequests; ACustomData: String = ''): Boolean;
 
-
   function GetReqText(AReq: TGDBTypeProcessRequest): String;
   begin
     case areq of
-      gptrPTypeExpr:        Result := GdbCmdPType + FExpression;
-      gptrWhatisExpr:       Result := GdbCmdWhatIs + FExpression;
+      gptrPTypeExpr:        Result := GdbCmdPType + FPTypeExpression;
+      gptrWhatisExpr:       Result := GdbCmdWhatIs + FPTypeExpression;
       gptrPTypeOfWhatis:    Result := GdbCmdPType + PCLenToString(FReqResults[gptrWhatisExpr].Result.BaseName);
-      gptrPTypeExprDeRef:   Result := GdbCmdPType + ApplyBrackets(FExpression) + '^';
-      gptrPTypeExprDeDeRef: Result := GdbCmdPType + ApplyBrackets(FExpression) + '^^';
+      gptrPTypeExprDeRef:   Result := GdbCmdPType + ApplyBrackets(FPTypeExpression) + '^';
+      gptrPTypeExprDeDeRef: Result := GdbCmdPType + ApplyBrackets(FPTypeExpression) + '^^';
       gptrEvalExpr:       Result := GdbCmdEvaluate+Quote(FExpression);
       gptrEvalExprDeRef:  Result := GdbCmdEvaluate+Quote(FExpression+'^');
       gptrEvalExprCast:   Result := GdbCmdEvaluate+Quote(InternalTypeName+'('+FExpression+')');
       gptrEvalExpr2:      Result := GdbCmdEvaluate+Quote(ACustomData);
       gptrEvalExprDeRef2: Result := GdbCmdEvaluate+Quote(ACustomData+'^');
       gptrEvalExprCast2:  Result := GdbCmdEvaluate+Quote(InternalTypeName+'('+ACustomData+')');
-      gptrPtypeCustomFixCast, gptrPtypeCustomAutoCast, gptrPtypeCustomAutoCast2:
+      gptrPtypeCustomAutoCast, gptrPtypeCustomAutoCast2:
                          Result := GdbCmdPType + ACustomData;
       gptrInstanceClassName: Result := GdbCmdEvaluate+Quote('(^^^char('+FExpression+')^+3)^');
       gptrPtypeCustomEval:   Result := GdbCmdEvaluate+Quote(ACustomData);
@@ -2055,7 +2080,7 @@ begin
   NeededReq := ARequired - FProccesReuestsMade;
   Result := NeededReq = [];
   if Result then exit;
-  DebugLn(DBGMI_TYPE_INFO, ['TGDBType.ProcessExpression: Adding Req ', dbgs(NeededReq), ', CD=', ACustomData]);
+  //DebugLn(DBGMI_TYPE_INFO, ['TGDBType.ProcessExpression: Adding Req ', dbgs(NeededReq), ', CD=', ACustomData]);
 
   if (gptrPTypeOfWhatis in NeededReq) and not (gptrWhatisExpr in FProccesReuestsMade)
   then begin
@@ -2511,6 +2536,8 @@ var
     end;
 
     FExpression := s;
+    FPTypeExpression := FExpression; // TODO: keep FPTypeExpression
+
     FReqResults[gptrPTypeExpr] := FReqResults[gptrPtypeCustomAutoCast2];
     exclude(FProccesReuestsMade, gptrWhatisExpr);
     FinishProcessClass;
@@ -2626,6 +2653,11 @@ var
     FProcessState := gtpsEvalExprDynArrayGetData;
 
     if (FLen <= 0) or (FArrayIndexValueLimit <= 0) then begin
+      if FLen > 0 then
+        FExprEvaluatedAsText := '(...)'
+      else
+        FExprEvaluatedAsText := '()';
+      FHasExprEvaluatedAsText := True;
       Result := True;
       exit;
     end;
@@ -2667,7 +2699,7 @@ var
     for i := 0 to m-1 do begin
       FArrayIndexValues[i] := TGDBType.CreateForExpression(FExpression+'['+IntToStr(FRepeatFirstIndex + i)+']',
         FCreationFlags + [gtcfExprEvaluate] - [gtcfForceArrayEval]);
-      if i = 0
+      if i <= 1
       then FArrayIndexValues[i].FArrayIndexValueLimit := FArrayIndexValueLimit - 2
       else FArrayIndexValues[i].FArrayIndexValueLimit := FArrayIndexValueLimit - 3;
       AddSubType(FArrayIndexValues[i]);
@@ -2686,6 +2718,13 @@ var
     FBoundLow :=  -1;
     FBoundHigh := -1;
     FLen := -1;
+
+    if (FArrayIndexValueLimit < 0) then begin
+      FExprEvaluatedAsText := '(...)';
+      FHasExprEvaluatedAsText := True;
+      Result := True;
+      exit;
+    end;
 
     if not RequireRequests([gptrPtypeCustomEval], '^^longint('+FExpression+')[-1]') then exit;
     if not IsReqError(gptrPtypeCustomEval, False) then begin
@@ -3132,6 +3171,7 @@ var
   begin
     FProcessState := gtpsInitial;
     if FExpression = '' then begin;
+      FPTypeExpression := FExpression;
       ProcessInitialSimple;
       exit;
     end;
@@ -3143,6 +3183,7 @@ var
     then exit;
 
     FExpression := FParsedExpression.Text;
+    FPTypeExpression := FParsedExpression.TextEx[[toSkipArrayIdx]];
 
     ProcessInitialSimple;
   end;

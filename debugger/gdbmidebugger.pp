@@ -11728,21 +11728,22 @@ var
     then Result := Result + '''';
   end;
 
-  function FormatResult(const AInput: String): String;
+  function FormatResult(const AInput: String; IsArray: Boolean = False): String;
   const
     INDENTSTRING = '  ';
   var
     Indent: String;
     i: Integer;
     InStr: Boolean;
-    InBrackets: Boolean;
+    InBrackets, InRounds: Integer;
     Limit: Integer;
     Skip: Integer;
   begin
     Indent := '';
     Skip := 0;
     InStr := False;
-    InBrackets := False;
+    InBrackets := 0;
+    InRounds := 0;
     Limit := Length(AInput);
     Result := '';
 
@@ -11767,15 +11768,23 @@ var
         Continue;
       end;
 
-      if InBrackets
+      if InBrackets > 0
       then begin
-        InBrackets := AInput[i] <> ']';
+        if AInput[i] = ']' then
+          dec(InBrackets);
         Continue;
       end;
 
       case AInput[i] of
         '[': begin
-          InBrackets:=true;
+          inc(InBrackets);
+        end;
+        '(': begin
+          inc(InRounds);
+        end;
+        ')': begin
+          if InRounds > 0 then
+            dec(InRounds);
         end;
         '''': begin
           InStr:=true;
@@ -11784,15 +11793,21 @@ var
            if (i < Limit) and (AInput[i+1] <> '}')
            then begin
              Indent := Indent + INDENTSTRING;
-             Result := Result + LineEnding + Indent;
+             if (not IsArray) or (InRounds = 0) then
+               Result := Result + LineEnding + Indent;
            end;
         end;
         '}': begin
-           if (i > 0) and (AInput[i-1] <> '{')
+           if (i > 0) and (AInput[i-1] <> '{') and
+              ((not IsArray) or (InRounds = 0))
            then Delete(Indent, 1, Length(INDENTSTRING));
         end;
         ' ': begin
-           if (i > 0) and (AInput[i-1] = ',')
+           if ((i > 0) and (AInput[i-1] = ',')) and
+              ( (not IsArray) or
+                ((Indent = '') and (InRounds <= 1)) or
+                ((Indent = INDENTSTRING) and (InRounds = 0))
+              )
            then Result := Result + LineEnding + Indent;
         end;
         '0': begin
@@ -12576,7 +12591,7 @@ var
     end;
 
     PutValuesInTree;
-    FTextValue := FormatResult(FTextValue);
+    FTextValue := FormatResult(FTextValue, (ResultInfo.Kind = skSimple) and (ResultInfo.Attributes*[saArray,saDynArray] <> []));
   end;
 
   function AddAddressOfToExpression(const AnExpression: string; TypeInfo: TGDBType): String;
