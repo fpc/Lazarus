@@ -16,6 +16,8 @@ type
   TValueListStrings = class(TStringList)
   private
     FOwner: TValueListEditor;
+  protected
+    procedure SetTextStr(const Value: string); override;
   public
     constructor Create(AOwner: TValueListEditor);
     destructor Destroy; override;
@@ -205,6 +207,20 @@ procedure Register;
 implementation
 
 { TValueListStrings }
+
+procedure TValueListStrings.SetTextStr(const Value: string);
+var
+  IsShowingEditor: Boolean;
+begin
+  with FOwner do begin
+    // Don't show editor while changing values. Edited cell would not be changed.
+    IsShowingEditor := goAlwaysShowEditor in Options;
+    Options := Options - [goAlwaysShowEditor];
+    inherited SetTextStr(Value);
+    if IsShowingEditor then
+      Options := Options + [goAlwaysShowEditor];
+  end;
+end;
 
 constructor TValueListStrings.Create(AOwner: TValueListEditor);
 begin
