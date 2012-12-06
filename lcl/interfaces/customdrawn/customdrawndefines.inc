@@ -84,4 +84,5 @@
 {.$define VerboseCDClipboard}
 {.$define VerboseCDFocus}
 {.$define VerboseCDKeyInput}
+{.$define VerboseCDInjectedControlNames}
 

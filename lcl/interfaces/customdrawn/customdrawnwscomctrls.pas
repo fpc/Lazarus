@@ -290,6 +290,8 @@ begin
   TCDIntfPageControl(ACDControlField).LCLControl := TCustomTabControl(AWinControl);
   ACDControlField.Parent := AWinControl;
   ACDControlField.Align := alClient;
+  ACDControlField.IsCDIntfControl := True;
+  {$ifdef VerboseCDInjectedControlNames}ACDControlField.Name := 'CustomDrawnInternal_' + AWinControl.Name;{$endif}
 end;
 
 class function TCDWSCustomTabControl.CreateHandle(
@@ -426,6 +428,8 @@ begin
   TCDIntfTrackBar(ACDControlField).LCLControl := TCustomTrackBar(AWinControl);
   ACDControlField.Parent := AWinControl;
   ACDControlField.Align := alClient;
+  ACDControlField.IsCDIntfControl := True;
+  {$ifdef VerboseCDInjectedControlNames}ACDControlField.Name := 'CustomDrawnInternal_' + AWinControl.Name;{$endif}
 end;
 
 class function TCDWSTrackBar.CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle;
@@ -565,6 +569,8 @@ begin
   TCDIntfProgressBar(ACDControlField).LCLControl := TCustomProgressBar(AWinControl);
   ACDControlField.Parent := AWinControl;
   ACDControlField.Align := alClient;
+  ACDControlField.IsCDIntfControl := True;
+  {$ifdef VerboseCDInjectedControlNames}ACDControlField.Name := 'CustomDrawnInternal_' + AWinControl.Name;{$endif}
 end;
 
 class function TCDWSProgressBar.CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle;

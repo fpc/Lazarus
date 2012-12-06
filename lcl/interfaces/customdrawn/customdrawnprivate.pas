@@ -216,6 +216,7 @@ var
   lTarget: TWinControl;
   lIsTab, lTabDirForward: Boolean;
   lTabNextControl: TWinControl;
+  i: Integer;
 begin
   lTarget := AWindowHandle.GetFocusedControl();
   {$ifdef VerboseCDEvents}
@@ -242,6 +243,20 @@ begin
   begin
     lTabDirForward := LCLIntf.GetKeyState(VK_SHIFT) = 0;
     lTarget.Parent.SelectNext(lTarget, lTabDirForward, True);
+  end
+  // slightly different code when the currently selected item is the form itself
+  else if lIsTab then
+  begin
+    // find the first TWinControl and select it
+    lTabNextControl := nil;
+    for i := 0 to lTarget.ControlCount - 1 do
+      if lTarget.Controls[i] is TWinControl then
+      begin
+        lTabNextControl := TWinControl(lTarget.Controls[i]);
+        Break;
+      end;
+
+    if lTabNextControl <> nil then lTabNextControl.SetFocus();
   end;
 end;
 
@@ -292,15 +307,15 @@ end;
 
 function IsIntfControl(AControl: TWinControl): Boolean;
 begin
-  Result := (AControl <> nil) and (AControl.Parent <> nil);
-  if Result then Result :=
+  Result := (AControl <> nil) and (AControl.Parent <> nil) and AControl.IsCDIntfControl;
+  {if Result then Result :=
     // Standard Tab
     (AControl is TCDIntfButton) or (AControl is TCDIntfEdit) or (AControl is TCDIntfCheckBox) or
     // Additional Tab
     (AControl is TCDIntfStaticText) or
     // Common Controls Tab
     (AControl is TCDIntfProgressBar) or (AControl is TCDIntfTrackBar) or
-    (AControl is TCDIntfPageControl);
+    (AControl is TCDIntfPageControl);}
 end;
 
 end.
