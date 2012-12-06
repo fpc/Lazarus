@@ -246,7 +246,8 @@ procedure TBuildManager.OnMacroSubstitution(TheMacro: TTransferMacro;
   Abort: boolean; Depth: integer);
 begin
   if TheMacro=nil then begin
-    DebugLn('WARNING: Macro not defined: "'+MacroName+'".');
+    if ConsoleVerbosity>=0 then
+      DebugLn('WARNING: Macro not defined: "'+MacroName+'".');
     {$IFDEF VerboseMacroNotDefined}
     DumpStack;
     {$ENDIF}
@@ -689,7 +690,8 @@ var
     Cfg:=UnitSetCache.GetConfigCache(false);
     if Cfg=nil then exit(true);
     if Cfg.RealCompiler='' then begin
-      debugln(['PPUFilesAndCompilerMatch Compiler=',Cfg.Compiler,' RealComp=',Cfg.RealCompiler,' InPath=',Cfg.RealCompilerInPath]);
+      if ConsoleVerbosity>=0 then
+        debugln(['PPUFilesAndCompilerMatch Compiler=',Cfg.Compiler,' RealComp=',Cfg.RealCompiler,' InPath=',Cfg.RealCompilerInPath]);
       IDEMessageDialog(lisCCOErrorCaption, Format(
         lisCompilerDoesNotSupportTarget, [Cfg.Compiler, Cfg.TargetCPU,
         Cfg.TargetOS]),
@@ -707,9 +709,9 @@ var
 
 begin
   if ClearCaches then begin
-    { $IFDEF VerboseFPCSrcScan}
+    {$IFDEF VerboseFPCSrcScan}
     debugln(['TBuildManager.RescanCompilerDefines clear caches']);
-    { $ENDIF}
+    {$ENDIF}
     CodeToolBoss.FPCDefinesCache.ConfigCaches.Clear;
     CodeToolBoss.FPCDefinesCache.SourceCaches.Clear;
   end;
@@ -888,7 +890,8 @@ begin
     end;
   except
     on E: Exception do begin
-      debugln(['LoadFPCDefinesCaches Error loadinf file '+aFilename+':'+E.Message]);
+      if ConsoleVerbosity>=0 then
+        debugln(['LoadFPCDefinesCaches Error loadinf file '+aFilename+':'+E.Message]);
     end;
   end;
 end;
@@ -913,7 +916,8 @@ begin
     end;
   except
     on E: Exception do begin
-      debugln(['LoadFPCDefinesCaches Error loading file '+aFilename+':'+E.Message]);
+      if ConsoleVerbosity>=0 then
+        debugln(['LoadFPCDefinesCaches Error loading file '+aFilename+':'+E.Message]);
     end;
   end;
 end;
@@ -951,7 +955,8 @@ begin
   Result:=AProject.LoadStateFile(false);
   if Result<>mrOk then exit; // read error and user aborted
   if not (lpsfStateFileLoaded in AProject.StateFlags) then begin
-    DebugLn('TBuildManager.CheckIfPackageNeedsCompilation  No state file for ',AProject.IDAsString);
+    if ConsoleVerbosity>=0 then
+      DebugLn('TBuildManager.CheckIfPackageNeedsCompilation  No state file for ',AProject.IDAsString);
     Note+='State file "'+StateFilename+'" of '+AProject.IDAsString+' is missing.'+LineEnding;
     NeedBuildAllFlag:=true;
     exit(mrYes);
@@ -972,7 +977,8 @@ begin
   // check main source file
   if FileExistsCached(SrcFilename) and (StateFileAge<FileAgeCached(SrcFilename)) then
   begin
-    DebugLn('TBuildManager.CheckIfProjectNeedsCompilation  SrcFile outdated ',AProject.IDAsString);
+    if ConsoleVerbosity>=0 then
+      DebugLn('TBuildManager.CheckIfProjectNeedsCompilation  SrcFile outdated ',AProject.IDAsString);
     Note+='Source file "'+SrcFilename+'" of '+AProject.IDAsString+' outdated:'+LineEnding
       +'  Source age='+FileAgeToStr(FileAgeCached(SrcFilename))+LineEnding
       +'  State file age='+FileAgeToStr(StateFileAge)+LineEnding
@@ -982,9 +988,11 @@ begin
 
   // check compiler and params
   if CompilerFilename<>AProject.LastCompilerFilename then begin
-    DebugLn('TBuildManager.CheckIfProjectNeedsCompilation  Compiler filename changed for ',AProject.IDAsString);
-    DebugLn('  Old="',AProject.LastCompilerFilename,'"');
-    DebugLn('  Now="',CompilerFilename,'"');
+    if ConsoleVerbosity>=0 then begin
+      DebugLn('TBuildManager.CheckIfProjectNeedsCompilation  Compiler filename changed for ',AProject.IDAsString);
+      DebugLn('  Old="',AProject.LastCompilerFilename,'"');
+      DebugLn('  Now="',CompilerFilename,'"');
+    end;
     Note+='Compiler filename changed for '+AProject.IDAsString+':'+LineEnding
       +'  Old="'+AProject.LastCompilerFilename+'"'+LineEnding
       +'  Now="'+CompilerFilename+'"'+LineEnding
@@ -992,14 +1000,18 @@ begin
     exit(mrYes);
   end;
   if not FileExistsCached(CompilerFilename) then begin
-    DebugLn('TBuildManager.CheckIfProjectNeedsCompilation  Compiler file not found for ',AProject.IDAsString);
-    DebugLn('  File="',CompilerFilename,'"');
+    if ConsoleVerbosity>=0 then begin
+      DebugLn('TBuildManager.CheckIfProjectNeedsCompilation  Compiler file not found for ',AProject.IDAsString);
+      DebugLn('  File="',CompilerFilename,'"');
+    end;
     Note+='Compiler file "'+CompilerFilename+'" not found for '+AProject.IDAsString+'.'+LineEnding;
     exit(mrYes);
   end;
   if FileAgeCached(CompilerFilename)<>AProject.LastCompilerFileDate then begin
-    DebugLn('TBuildManager.CheckIfProjectNeedsCompilation  Compiler file changed for ',AProject.IDAsString);
-    DebugLn('  File="',CompilerFilename,'"');
+    if ConsoleVerbosity>=0 then begin
+      DebugLn('TBuildManager.CheckIfProjectNeedsCompilation  Compiler file changed for ',AProject.IDAsString);
+      DebugLn('  File="',CompilerFilename,'"');
+    end;
     Note+='Compiler file "'+CompilerFilename+'" for '+AProject.IDAsString+' changed:'+LineEnding
       +'  Old="'+FileAgeToStr(AProject.LastCompilerFileDate)+'"'+LineEnding
       +'  Now="'+FileAgeToStr(FileAgeCached(CompilerFilename))+'"'+LineEnding
@@ -1007,9 +1019,11 @@ begin
     exit(mrYes);
   end;
   if CompilerParams<>AProject.LastCompilerParams then begin
-    DebugLn('TBuildManager.CheckIfProjectNeedsCompilation  Compiler params changed for ',AProject.IDAsString);
-    DebugLn('  Old="',AProject.LastCompilerParams,'"');
-    DebugLn('  Now="',CompilerParams,'"');
+    if ConsoleVerbosity>=0 then begin
+      DebugLn('TBuildManager.CheckIfProjectNeedsCompilation  Compiler params changed for ',AProject.IDAsString);
+      DebugLn('  Old="',AProject.LastCompilerParams,'"');
+      DebugLn('  Now="',CompilerParams,'"');
+    end;
     Note+='Compiler params changed for '+AProject.IDAsString+':'+LineEnding
       +'  Old="'+AProject.LastCompilerParams+'"'+LineEnding
       +'  Now="'+CompilerParams+'"'+LineEnding
@@ -1022,7 +1036,8 @@ begin
   NeedBuildAllFlag:=false;
 
   if not AProject.LastCompileComplete then begin
-    DebugLn('TBuildManager.CheckIfProjectNeedsCompilation  Compile was incomplete for ',AProject.IDAsString);
+    if ConsoleVerbosity>=0 then
+      DebugLn('TBuildManager.CheckIfProjectNeedsCompilation  Compile was incomplete for ',AProject.IDAsString);
     Note+='Last compile was incomplete.'+LineEnding
       +'  State file='+StateFilename+LineEnding;
     exit(mrYes);
@@ -1041,7 +1056,8 @@ begin
     if (not AnUnitInfo.IsVirtual) and FileExistsCached(AnUnitInfo.Filename) then
     begin
       if (StateFileAge<FileAgeCached(AnUnitInfo.Filename)) then begin
-        DebugLn('TMainIDE.CheckIfProjectNeedsCompilation  Src has changed ',AProject.IDAsString,' ',AnUnitInfo.Filename);
+        if ConsoleVerbosity>=0 then
+          DebugLn('TMainIDE.CheckIfProjectNeedsCompilation  Src has changed ',AProject.IDAsString,' ',AnUnitInfo.Filename);
         Note+='File "'+AnUnitInfo.Filename+'" of '+AProject.IDAsString+' is newer than state file:'+LineEnding
           +'  File age="'+FileAgeToStr(FileAgeCached(AnUnitInfo.Filename))+'"'+LineEnding
           +'  State file age="'+FileAgeToStr(StateFileAge)+'"'+LineEnding
@@ -1052,7 +1068,8 @@ begin
         LFMFilename:=ChangeFileExt(AnUnitInfo.Filename,'.lfm');
         if FileExistsCached(LFMFilename)
         and (StateFileAge<FileAgeCached(LFMFilename)) then begin
-          DebugLn('TMainIDE.CheckIfProjectNeedsCompilation  LFM has changed ',AProject.IDAsString,' ',LFMFilename);
+          if ConsoleVerbosity>=0 then
+            DebugLn('TMainIDE.CheckIfProjectNeedsCompilation  LFM has changed ',AProject.IDAsString,' ',LFMFilename);
           Note+='File "'+LFMFilename+'" of '+AProject.IDAsString+' is newer than state file:'+LineEnding
             +'  File age="'+FileAgeToStr(FileAgeCached(LFMFilename))+'"'+LineEnding
             +'  State file age="'+FileAgeToStr(StateFileAge)+'"'+LineEnding
@@ -1071,7 +1088,8 @@ begin
     and (not AnUnitInfo.IsVirtual)
     and FileExistsCached(AnUnitInfo.Filename)
     and (StateFileAge<FileAgeCached(AnUnitInfo.Filename)) then begin
-      DebugLn('TMainIDE.CheckIfProjectNeedsCompilation  Editor Src has changed ',AProject.IDAsString,' ',AnUnitInfo.Filename);
+      if ConsoleVerbosity>=0 then
+        DebugLn('TMainIDE.CheckIfProjectNeedsCompilation  Editor Src has changed ',AProject.IDAsString,' ',AnUnitInfo.Filename);
       Note+='Editor file "'+AnUnitInfo.Filename+'" is newer than state file:'+LineEnding
         +'  File age="'+FileAgeToStr(FileAgeCached(AnUnitInfo.Filename))+'"'+LineEnding
         +'  State file age="'+FileAgeToStr(StateFileAge)+'"'+LineEnding
@@ -1087,8 +1105,9 @@ begin
   and FilenameIsAbsolute(IcoRes.IcoFileName)
   and FileExistsCached(IcoRes.IcoFileName)
   and (StateFileAge<FileAgeCached(IcoRes.IcoFileName)) then begin
-    debugln(['TBuildManager.DoCheckIfProjectNeedsCompilation icon has changed ',
-      AProject.IDAsString,' "',IcoRes.IcoFileName,'"']);
+    if ConsoleVerbosity>=0 then
+      debugln(['TBuildManager.DoCheckIfProjectNeedsCompilation icon has changed ',
+        AProject.IDAsString,' "',IcoRes.IcoFileName,'"']);
     Note+='Project''s ico file "'+IcoRes.IcoFileName+'" is newer than state file:'+LineEnding
       +'  File age="'+FileAgeToStr(FileAgeCached(IcoRes.IcoFileName))+'"'+LineEnding
       +'  State file age="'+FileAgeToStr(StateFileAge)+'"'+LineEnding
@@ -1339,7 +1358,8 @@ begin
             ANode:=CurUnitTree.FindKey(PChar(CurUnitName),
                                  TListSortCompare(@CompareUnitNameAndUnitFile));
             if (ANode<>nil) and (not IgnoreAll) then begin
-              DebugLn(['TBuildManager.CheckUnitPathForAmbiguousPascalFiles CurUnitName="',CurUnitName,'" CurFilename="',CurFilename,'" OtherUnitName="',PUnitFile(ANode.Data)^.FileUnitName,'" OtherFilename="',PUnitFile(ANode.Data)^.Filename,'"']);
+              if ConsoleVerbosity>=0 then
+                DebugLn(['TBuildManager.CheckUnitPathForAmbiguousPascalFiles CurUnitName="',CurUnitName,'" CurFilename="',CurFilename,'" OtherUnitName="',PUnitFile(ANode.Data)^.FileUnitName,'" OtherFilename="',PUnitFile(ANode.Data)^.Filename,'"']);
               // pascal unit exists twice
               Result:=IDEQuestionDialog(lisAmbiguousUnitFound2,
                 Format(lisTheUnitExistsTwiceInTheUnitPathOfThe, [CurUnitName,
@@ -1646,10 +1666,12 @@ begin
           AnUnitInfo.Source:=CodeToolBoss.LoadFile(AnUnitInfo.Filename,true,false);
           Code:=AnUnitInfo.Source;
           if (Code<>nil) and (Code.DiskEncoding<>EncodingUTF8) then begin
-            DebugLn(['TBuildManager.UpdateProjectAutomaticFiles fixing encoding of ',Code.Filename,' from ',Code.DiskEncoding,' to ',EncodingUTF8]);
+            if ConsoleVerbosity>=0 then
+              DebugLn(['TBuildManager.UpdateProjectAutomaticFiles fixing encoding of ',Code.Filename,' from ',Code.DiskEncoding,' to ',EncodingUTF8]);
             Code.DiskEncoding:=EncodingUTF8;
             if not Code.Save then begin
-              DebugLn(['TBuildManager.UpdateProjectAutomaticFiles failed to save file ',Code.Filename]);
+              if ConsoleVerbosity>=0 then
+                DebugLn(['TBuildManager.UpdateProjectAutomaticFiles failed to save file ',Code.Filename]);
             end;
           end;
         end;
@@ -1703,18 +1725,21 @@ begin
     if Prog<>'' then begin
       List:=nil;
       try
-        debugln(['TBuildManager.MacroFuncInstantFPCCache ',Prog]);
+        if ConsoleVerbosity>=0 then
+          debugln(['TBuildManager.MacroFuncInstantFPCCache ',Prog]);
         List:=RunTool(Prog,'--get-cache');
         if (List<>nil) and (List.Count>0) then
           FMacroInstantFPCCache:=List[0];
         List.Free;
       except
         on E: Exception do begin
-          debugln(['TBuildManager.MacroFuncInstantFPCCache error running '+Prog+': '+E.Message]);
+          if ConsoleVerbosity>=0 then
+            debugln(['TBuildManager.MacroFuncInstantFPCCache error running '+Prog+': '+E.Message]);
         end;
       end;
     end;
-    debugln(['TBuildManager.MacroFuncInstantFPCCache ',FMacroInstantFPCCache]);
+    if ConsoleVerbosity>=0 then
+      debugln(['TBuildManager.MacroFuncInstantFPCCache ',FMacroInstantFPCCache]);
   end;
   Result:=FMacroInstantFPCCache;
 end;
@@ -1735,7 +1760,8 @@ begin
       Result:=Project1.CompilerOptions.GetUnitOutPath(false)
     else begin
       Result:='<Invalid parameter for macro Project:'+Param+'>';
-      debugln('WARNING: TMainIDE.MacroFuncProject: ',Result);
+      if ConsoleVerbosity>=0 then
+        debugln('WARNING: TMainIDE.MacroFuncProject: ',Result);
     end;
   end else begin
     Result:='';
@@ -2217,7 +2243,8 @@ begin
       // compute macro values
 
       if ParseOpts.MacroValuesParsing then begin
-        debugln(['TBuildManager.OnGetBuildMacroValues circle computing macros of ',dbgsname(Options.Owner)]);
+        if ConsoleVerbosity>=-1 then
+          debugln(['TBuildManager.OnGetBuildMacroValues circle computing macros of ',dbgsname(Options.Owner)]);
         exit;
       end;
 
@@ -2235,7 +2262,8 @@ begin
         Result.WriteDebugReport('TPkgManager.OnGetBuildMacroValues before execute: '+dbgstr(Options.Conditionals),'  ');
         {$ENDIF}
         if not ParseOpts.MacroValues.Execute(Options.Conditionals) then begin
-          debugln(['TPkgManager.OnGetBuildMacroValues Error: ',ParseOpts.MacroValues.GetErrorStr(0)]);
+          if ConsoleVerbosity>=0 then
+            debugln(['TPkgManager.OnGetBuildMacroValues Error: ',ParseOpts.MacroValues.GetErrorStr(0)]);
           debugln(Options.Conditionals);
         end;
 
@@ -2257,7 +2285,8 @@ begin
     if ParseOpts.InheritedMacroValuesStamp<>BuildMacroChangeStamp then begin
       // compute inherited values
       if ParseOpts.InheritedMacroValuesParsing then begin
-        debugln(['TPkgManager.OnGetBuildMacroValues circle computing inherited macros of ',dbgsname(Options.Owner)]);
+        if ConsoleVerbosity>=0 then
+          debugln(['TPkgManager.OnGetBuildMacroValues circle computing inherited macros of ',dbgsname(Options.Owner)]);
         exit;
       end;
       ParseOpts.InheritedMacroValuesParsing:=true;
@@ -2379,7 +2408,8 @@ begin
     NewTargetOS:=GetDefaultTargetOS;
   if (NewTargetCPU='') or (NewTargetCPU='default') then
     NewTargetCPU:=GetDefaultTargetCPU;
-  debugln(['TBuildManager.SetBuildTargetIDE OS=',NewTargetOS,' CPU=',NewTargetCPU,' WS=',NewLCLWidgetSet]);
+  if ConsoleVerbosity>=0 then
+    debugln(['TBuildManager.SetBuildTargetIDE OS=',NewTargetOS,' CPU=',NewTargetCPU,' WS=',NewLCLWidgetSet]);
   SetBuildTarget(NewTargetOS,NewTargetCPU,NewLCLWidgetSet,smsfsBackground,false);
 end;
 
