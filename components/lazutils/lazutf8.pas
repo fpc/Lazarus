@@ -811,35 +811,38 @@ begin
     c1 := InStr^;
     case c1 of
     'A'..'Z': Break;
-    #$C3..#$C9, #$CE, #$CF, #$D0..#$D5, #$E1..#$E2,#$E5:
-    begin
-      c2 := InStr[1];
+    #$C3..#$FF:
       case c1 of
-      #$C3: if c2 in [#$80..#$9E] then Break;
-      #$C4:
-      begin
-        case c2 of
-        #$80..#$AF, #$B2..#$B6: if ord(c2) mod 2 = 0 then Break;
-        #$B8..#$FF: if ord(c2) mod 2 = 1 then Break;
-        #$B0: Break;
+      #$C3..#$C9, #$CE, #$CF, #$D0..#$D5, #$E1..#$E2,#$E5:
+        begin
+          c2 := InStr[1];
+          case c1 of
+          #$C3: if c2 in [#$80..#$9E] then Break;
+          #$C4:
+          begin
+            case c2 of
+            #$80..#$AF, #$B2..#$B6: if ord(c2) mod 2 = 0 then Break;
+            #$B8..#$FF: if ord(c2) mod 2 = 1 then Break;
+            #$B0: Break;
+            end;
+          end;
+          #$C5:
+          begin
+            case c2 of
+              #$8A..#$B7: if ord(c2) mod 2 = 0 then Break;
+              #$00..#$88, #$B9..#$FF: if ord(c2) mod 2 = 1 then Break;
+              #$B8: Break;
+            end;
+          end;
+          // Process E5 to avoid stopping on chinese chars
+          #$E5: if (c2 = #$BC) and (InStr[2] in [#$A1..#$BA]) then Break;
+          // Others are too complex, better not to pre-inspect them
+          else
+            Break;
+          end;
+          // already lower, or otherwhise not affected
         end;
       end;
-      #$C5:
-      begin
-        case c2 of
-          #$8A..#$B7: if ord(c2) mod 2 = 0 then Break;
-          #$00..#$88, #$B9..#$FF: if ord(c2) mod 2 = 1 then Break;
-          #$B8: Break;
-        end;
-      end;
-      // Process E5 to avoid stopping on chinese chars
-      #$E5: if (c2 = #$BC) and (InStr[2] in [#$A1..#$BA]) then Break;
-      // Others are too complex, better not to pre-inspect them
-      else
-        Break;
-      end;
-      // already lower, or otherwhise not affected
-    end;
     end;
     inc(InStr);
   end;
