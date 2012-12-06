@@ -52,8 +52,9 @@ type
   TMask = class
   private
     FMask: TMaskString;
+    fCaseSensitive: Boolean;
   public
-    constructor Create(const AValue: String);
+    constructor Create(const AValue: String; const CaseSensitive: Boolean = False);
     destructor Destroy; override;
     
     function Matches(const AFileName: String): Boolean;
@@ -74,7 +75,7 @@ type
     function GetCount: Integer;
     function GetItem(Index: Integer): TMask;
   public
-    constructor Create(const AValue: String; ASeparator: Char = ';');
+    constructor Create(const AValue: String; ASeparator: Char = ';'; const CaseSensitive: Boolean = False);
     destructor Destroy; override;
     
     function Matches(const AFileName: String): Boolean;
@@ -83,16 +84,16 @@ type
     property Items[Index: Integer]: TMask read GetItem;
   end;
 
-function MatchesMask(const FileName, Mask: String): Boolean;
-function MatchesMaskList(const FileName, Mask: String; Separator: Char = ';'): Boolean;
+function MatchesMask(const FileName, Mask: String; const CaseSensitive: Boolean = False): Boolean;
+function MatchesMaskList(const FileName, Mask: String; Separator: Char = ';'; const CaseSensitive: Boolean = False): Boolean;
 
 implementation
 
-function MatchesMask(const FileName, Mask: String): Boolean;
+function MatchesMask(const FileName, Mask: String; const CaseSensitive: Boolean): Boolean;
 var
   AMask: TMask;
 begin
-  AMask := TMask.Create(Mask);
+  AMask := TMask.Create(Mask, CaseSensitive);
   try
     Result := AMask.Matches(FileName);
   finally
@@ -100,11 +101,11 @@ begin
   end;
 end;
 
-function MatchesMaskList(const FileName, Mask: String; Separator: Char): Boolean;
+function MatchesMaskList(const FileName, Mask: String; Separator: Char; const CaseSensitive: Boolean): Boolean;
 var
   AMaskList: TMaskList;
 begin
-  AMaskList := TMaskList.Create(Mask, Separator);
+  AMaskList := TMaskList.Create(Mask, Separator, CaseSensitive);
   try
     Result := AMaskList.Matches(FileName);
   finally
@@ -114,7 +115,7 @@ end;
 
 { TMask }
 
-constructor TMask.Create(const AValue: String);
+constructor TMask.Create(const AValue: String; const CaseSensitive: Boolean);
 var
   I: Integer;
   SkipAnyText: Boolean;
@@ -184,8 +185,16 @@ var
             Inc(I);
             
             if (I > Length(AValue)) then CharSetError;
-            //DebugLn('Set:  ' + Last + '-' + UpCase(AValue[I]));
-            for C := Last to UpCase(AValue[I]) do Include(CharSet, C);
+            if fCaseSensitive then
+            begin
+              //DebugLn('Set:  ' + Last + '-' + (AValue[I]));
+              for C := Last to (AValue[I]) do Include(CharSet, C);
+            end
+            else
+            begin
+              //DebugLn('Set:  ' + Last + '-' + UpCase(AValue[I]));
+              for C := Last to UpCase(AValue[I]) do Include(CharSet, C);
+            end;
             Inc(I);
           end;
         ']':
@@ -195,7 +204,10 @@ var
           end;
         else
         begin
-          Last := UpCase(AValue[I]);
+          if fCaseSensitive then
+            Last := AValue[I]
+          else
+            Last := UpCase(AValue[I]);
           Include(CharSet, Last);
           Inc(I);
         end;
@@ -221,7 +233,10 @@ var
     with FMask.Chars[High(FMask.Chars)] do
     begin
       CharType := mcChar;
-      CharValue := UpCase(AValue[I]);
+      if fCaseSensitive then
+        CharValue := AValue[I]
+      else
+        CharValue := UpCase(AValue[I]);
     end;
 
     Inc(FMask.MinLength);
@@ -231,6 +246,7 @@ var
   end;
   
 begin
+  fCaseSensitive := CaseSensitive;
   SetLength(FMask.Chars, 0);
   FMask.MinLength := 0;
   FMask.MaxLength := 0;
@@ -323,8 +339,10 @@ begin
   end;
   
   if (L < FMask.MinLength) or (L > FMask.MaxLength) then Exit;
-
-  S := UpperCase(AFileName);
+  if fCaseSensitive then
+    S := AFileName
+  else
+    S := UpperCase(AFileName);
   Result := MatchToEnd(0, 1);
 end;
 
@@ -361,7 +379,7 @@ begin
   Result := FMasks.Count;
 end;
 
-constructor TMaskList.Create(const AValue: String; ASeparator: Char);
+constructor TMaskList.Create(const AValue: String; ASeparator: Char; const CaseSensitive: Boolean);
 var
   S: TParseStringList;
   I: Integer;
@@ -371,7 +389,7 @@ begin
   S := TParseStringList.Create(AValue, ASeparator + ' ');
   try
     for I := 0 to S.Count - 1 do
-      FMasks.Add(TMask.Create(S[I]));
+      FMasks.Add(TMask.Create(S[I], CaseSensitive));
   finally
     S.Free;
   end;
