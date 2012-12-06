@@ -730,6 +730,14 @@ msgstr "ショートカットを選択"
 msgid "Set"
 msgstr "設定"
 
+#: objinspstrconsts.oissetmaxconstraints
+msgid "Set MaxHeight=%d, MaxWidth=%d"
+msgstr ""
+
+#: objinspstrconsts.oissetminconstraints
+msgid "Set MinHeight=%d, MinWidth=%d"
+msgstr ""
+
 #: objinspstrconsts.oissettodefault
 msgid "Set to default: %s"
 msgstr "デフォルトに設定: %s"

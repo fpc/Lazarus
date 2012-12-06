@@ -719,6 +719,14 @@ msgstr "Parinkite sparčiųjų klavišų derinį"
 msgid "Set"
 msgstr "Aibė"
 
+#: objinspstrconsts.oissetmaxconstraints
+msgid "Set MaxHeight=%d, MaxWidth=%d"
+msgstr ""
+
+#: objinspstrconsts.oissetminconstraints
+msgid "Set MinHeight=%d, MinWidth=%d"
+msgstr ""
+
 #: objinspstrconsts.oissettodefault
 msgid "Set to default: %s"
 msgstr "Keisti į numatytą: %s"

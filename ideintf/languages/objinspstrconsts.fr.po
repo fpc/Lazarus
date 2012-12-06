@@ -733,6 +733,14 @@ msgstr "Sélectionnez raccourci"
 msgid "Set"
 msgstr "Ensemble"
 
+#: objinspstrconsts.oissetmaxconstraints
+msgid "Set MaxHeight=%d, MaxWidth=%d"
+msgstr ""
+
+#: objinspstrconsts.oissetminconstraints
+msgid "Set MinHeight=%d, MinWidth=%d"
+msgstr ""
+
 #: objinspstrconsts.oissettodefault
 msgid "Set to default: %s"
 msgstr "Mis à  la valeur par défaut: %s"

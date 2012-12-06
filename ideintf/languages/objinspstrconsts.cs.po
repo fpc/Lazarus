@@ -723,6 +723,14 @@ msgstr "Vybrat zkratku"
 msgid "Set"
 msgstr "Množina"
 
+#: objinspstrconsts.oissetmaxconstraints
+msgid "Set MaxHeight=%d, MaxWidth=%d"
+msgstr ""
+
+#: objinspstrconsts.oissetminconstraints
+msgid "Set MinHeight=%d, MinWidth=%d"
+msgstr ""
+
 #: objinspstrconsts.oissettodefault
 msgid "Set to default: %s"
 msgstr "Nastavit na výchozí: %s"

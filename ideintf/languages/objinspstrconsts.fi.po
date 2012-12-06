@@ -719,6 +719,14 @@ msgstr "Valitse pikanäppäin"
 msgid "Set"
 msgstr "Aseta"
 
+#: objinspstrconsts.oissetmaxconstraints
+msgid "Set MaxHeight=%d, MaxWidth=%d"
+msgstr ""
+
+#: objinspstrconsts.oissetminconstraints
+msgid "Set MinHeight=%d, MinWidth=%d"
+msgstr ""
+
 #: objinspstrconsts.oissettodefault
 msgid "Set to default: %s"
 msgstr "Aseta oletusarvo: %s"
