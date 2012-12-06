@@ -8,21 +8,21 @@ object form1: Tform1
   ClientWidth = 220
   OnClick = FormClick
   OnCreate = FormCreate
-  OnKeyDown = Button1KeyDown
+  OnKeyDown = btnProgressKeyDown
   OnMouseMove = FormMouseMove
   OnPaint = FormPaint
   LCLVersion = '1.1'
-  object Button1: TButton
+  object btnProgress: TButton
     Left = 96
     Height = 25
     Top = 8
     Width = 116
     Caption = 'Move Progress'
-    OnClick = Button1Click
-    OnKeyDown = Button1KeyDown
-    OnKeyPress = Button1KeyPress
-    OnKeyUp = Button1KeyUp
-    OnUTF8KeyPress = Button1UTF8KeyPress
+    OnClick = btnProgressClick
+    OnKeyDown = btnProgressKeyDown
+    OnKeyPress = btnProgressKeyPress
+    OnKeyUp = btnProgressKeyUp
+    OnUTF8KeyPress = btnProgressUTF8KeyPress
     TabOrder = 0
   end
   object ProgressBar1: TProgressBar
@@ -49,22 +49,22 @@ object form1: Tform1
     Caption = 'CheckBox1'
     TabOrder = 3
   end
-  object Button2: TButton
+  object btnMsgBox: TButton
     Left = 96
     Height = 25
     Top = 160
     Width = 116
     Caption = 'MessageBox'
-    OnClick = Button2Click
+    OnClick = btnMsgBoxClick
     TabOrder = 4
   end
-  object Button3: TButton
+  object btnOpenForm: TButton
     Left = 95
     Height = 25
     Top = 192
     Width = 117
     Caption = 'Open Form2'
-    OnClick = Button3Click
+    OnClick = btnOpenFormClick
     TabOrder = 5
   end
   object Label1: TLabel

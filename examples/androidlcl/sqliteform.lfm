@@ -1,19 +1,19 @@
 object formSqlite: TformSqlite
-  Left = 119
+  Left = 154
   Height = 240
-  Top = 244
+  Top = 362
   Width = 257
   Caption = 'formSqlite'
   ClientHeight = 240
   ClientWidth = 257
   LCLVersion = '1.1'
-  object Button1: TButton
+  object btnConnect: TButton
     Left = 8
     Height = 25
     Top = 24
     Width = 112
     Caption = 'Connect'
-    OnClick = Button1Click
+    OnClick = btnConnectClick
     TabOrder = 0
   end
   object DBEdit1: TDBEdit
@@ -53,6 +53,15 @@ object formSqlite: TformSqlite
     Caption = 'Create DB'
     OnClick = btnCreateDBClick
     TabOrder = 3
+  end
+  object Edit1: TEdit
+    Left = 8
+    Height = 23
+    Top = 136
+    Width = 80
+    ReadOnly = True
+    TabOrder = 4
+    Text = 'Edit1'
   end
   object SqliteDatasource: TDatasource
     left = 136

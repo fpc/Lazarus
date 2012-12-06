@@ -13,13 +13,14 @@ type
   { TformSqlite }
 
   TformSqlite = class(TForm)
-    Button1: TButton;
+    btnConnect: TButton;
     btnCreateDB: TButton;
+    Edit1: TEdit;
     SqliteDatasource: TDatasource;
     DBEdit1: TDBEdit;
     DBNavigator1: TDBNavigator;
     procedure btnCreateDBClick(Sender: TObject);
-    procedure Button1Click(Sender: TObject);
+    procedure btnConnectClick(Sender: TObject);
   private
     { private declarations }
   public
@@ -41,7 +42,7 @@ uses sqlite3ds;
 
 { TformSqlite }
 
-procedure TformSqlite.Button1Click(Sender: TObject);
+procedure TformSqlite.btnConnectClick(Sender: TObject);
 var
   sqlitedb: {$ifdef CPUARM}TSqliteJNIDataset;{$else}TSqlite3Dataset;{$endif}
 begin
@@ -55,6 +56,7 @@ begin
   sqlitedb.TableName := 'TestTable';
   sqlitedb.FieldDefs.Add('FirstFieldStr', ftString);
   sqlitedb.FieldDefs.Add('SecondFieldInt', ftInteger);
+  sqlitedb.SaveOnClose := True;
   sqlitedb.Open();
   SqliteDatasource.DataSet := sqlitedb;
 end;

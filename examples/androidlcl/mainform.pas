@@ -19,9 +19,9 @@ type
   { Tform1 }
 
   Tform1 = class(TForm)
-    Button1: TButton;
-    Button2: TButton;
-    Button3: TButton;
+    btnProgress: TButton;
+    btnMsgBox: TButton;
+    btnOpenForm: TButton;
     btnShowInfo: TButton;
     CheckBox1: TCheckBox;
     ComboBox1: TComboBox;
@@ -36,14 +36,14 @@ type
     procedure Arrow1MouseUp(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
     procedure btnShowInfoClick(Sender: TObject);
-    procedure Button1Click(Sender: TObject);
-    procedure Button1KeyDown(Sender: TObject; var Key: Word; Shift: TShiftState
+    procedure btnProgressClick(Sender: TObject);
+    procedure btnProgressKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState
       );
-    procedure Button1KeyPress(Sender: TObject; var Key: char);
-    procedure Button1KeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);
-    procedure Button1UTF8KeyPress(Sender: TObject; var UTF8Key: TUTF8Char);
-    procedure Button2Click(Sender: TObject);
-    procedure Button3Click(Sender: TObject);
+    procedure btnProgressKeyPress(Sender: TObject; var Key: char);
+    procedure btnProgressKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);
+    procedure btnProgressUTF8KeyPress(Sender: TObject; var UTF8Key: TUTF8Char);
+    procedure btnMsgBoxClick(Sender: TObject);
+    procedure btnOpenFormClick(Sender: TObject);
     procedure FormClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer);
@@ -166,14 +166,14 @@ begin
   Device.Vibrate(2000);
 end;
 
-procedure Tform1.Button1Click(Sender: TObject);
+procedure Tform1.btnProgressClick(Sender: TObject);
 var
   sqliteDLL : Pointer;
 begin
 (*  sqliteDLL:=DlOpen('/system/lib/libsqlite.so',RTLD_LAZY);
   DebugLn(IntToHex(PtrUInt(sqliteDLL), 8));
   sqliteDLL:=DlOpen('/data/data/com.pascal.lcltest/lib/libsqlite.so',RTLD_LAZY);*)
-  Button1.Caption := IntToHex(PtrUInt(sqliteDLL), 8);
+  btnProgress.Caption := IntToHex(PtrUInt(sqliteDLL), 8);
   DebugLn('Button1Click');
   ProgressBar1.Position := ProgressBar1.Position + 10;
   DebugLn('Cliboard.AsText='+ClipBoard.AsText);
@@ -184,31 +184,31 @@ begin
 //  Self.AutoAdjustLayout(lapAutoAdjustWithoutHorizontalScrolling, 96, 150, 220, 600);
 end;
 
-procedure Tform1.Button1KeyDown(Sender: TObject; var Key: Word;
+procedure Tform1.btnProgressKeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
   DebugLn('[TForm1.Button1KeyDown] '+ LCLProc.DbgsVKCode(Key));
 //  Caption := 'KeyDown ' + LCLProc.DbgsVKCode(Key);
 end;
 
-procedure Tform1.Button1KeyPress(Sender: TObject; var Key: char);
+procedure Tform1.btnProgressKeyPress(Sender: TObject; var Key: char);
 begin
   DebugLn('KeyPress: ' + Key);
 end;
 
-procedure Tform1.Button1KeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);
+procedure Tform1.btnProgressKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);
 begin
   DebugLn('[TForm1.Button1KeyUp] '+ LCLProc.DbgsVKCode(Key));
 //  Caption := 'KeyUp ' + LCLProc.DbgsVKCode(Key);
 end;
 
-procedure Tform1.Button1UTF8KeyPress(Sender: TObject; var UTF8Key: TUTF8Char);
+procedure Tform1.btnProgressUTF8KeyPress(Sender: TObject; var UTF8Key: TUTF8Char);
 begin
   DebugLn('UTF8KeyPress: ' + UTF8Key);
   Caption := UTF8Key;
 end;
 
-procedure Tform1.Button2Click(Sender: TObject);
+procedure Tform1.btnMsgBoxClick(Sender: TObject);
 begin
   Application.OnMessageDialogFinished := @HandleMessageDialogFinished;
   DebugLn('Button2Click A');
@@ -217,7 +217,7 @@ begin
   DebugLn('Button2Click B');
 end;
 
-procedure Tform1.Button3Click(Sender: TObject);
+procedure Tform1.btnOpenFormClick(Sender: TObject);
 begin
   //Form2.Show;
   formsqlite.Show;
