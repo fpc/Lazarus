@@ -1256,7 +1256,7 @@ var
   M: TIDEMenuSection;
   s: String;
 begin
-  DebugLn('TMainIDEBase.UpdateWindowMenu: enter');
+  //DebugLn('TMainIDEBase.UpdateWindowMenu: enter');
   WindowsList:=TFPList.Create;
   // add typical IDE windows at the start of the list
   for i := 0 to SourceEditorManager.SourceWindowCount - 1 do
