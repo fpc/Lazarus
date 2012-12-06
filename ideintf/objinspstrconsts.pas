@@ -66,6 +66,8 @@ resourcestring
   oisOrderBackOne = 'Back One';
   oisSetToDefault = 'Set to default: %s';
   oisSetToDefaultValue = 'Set to default value';
+  oisSetMinConstraints = 'Set MinHeight=%d, MinWidth=%d';
+  oisSetMaxConstraints = 'Set MaxHeight=%d, MaxWidth=%d';
   oisAddToFavorites = 'Add to Favorites';
   oisViewRestrictedProperties = 'View restricted properties';
   oisRemoveFromFavorites = 'Remove from Favorites';

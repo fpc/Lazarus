@@ -605,7 +605,8 @@ type
     PastePopupmenuItem: TMenuItem;
     PropertyGrid: TOICustomPropertyGrid;
     RemoveFromFavoritesPopupMenuItem: TMenuItem;
-    SetDefaultPopupMenuItem: TMenuItem;
+    SetDefault1PopupMenuItem: TMenuItem;
+    SetDefault2PopupMenuItem: TMenuItem;
     ShowComponentTreePopupMenuItem: TMenuItem;
     ShowHintsPopupMenuItem: TMenuItem;
     ShowOptionsPopupMenuItem: TMenuItem;
@@ -622,6 +623,8 @@ type
     procedure OnGridKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure OnGridDblClick(Sender: TObject);
     procedure OnSetDefaultPopupmenuItemClick(Sender: TObject);
+    procedure OnSetMaxContraintsPopupmenuItemClick(Sender: TObject);
+    procedure OnSetMinContraintsPopupmenuItemClick(Sender: TObject);
     procedure OnAddToFavoritesPopupmenuItemClick(Sender: TObject);
     procedure OnRemoveFromFavoritesPopupmenuItemClick(Sender: TObject);
     procedure OnViewRestrictionsPopupmenuItemClick(Sender: TObject);
@@ -3932,9 +3935,12 @@ begin
 
   MainPopupMenu.Images := IDEImages.Images_16;
 
-  AddPopupMenuItem(SetDefaultPopupmenuItem,nil,'SetDefaultPopupMenuItem',
+  AddPopupMenuItem(SetDefault1PopupMenuItem,nil,'SetDefault1PopupMenuItem',
      'Set to Default value','Set property value to Default', '',
      @OnSetDefaultPopupmenuItemClick,false,true,true);
+  AddPopupMenuItem(SetDefault2PopupMenuItem,nil,'SetDefault2PopupMenuItem',
+     'Use current size as Min Contraints','Use current size as Min Contraints', '',
+     @OnSetMinContraintsPopupmenuItemClick,false,true,true);
   AddPopupMenuItem(AddToFavoritesPopupMenuItem,nil,'AddToFavoritePopupMenuItem',
      oisAddtofavorites,'Add property to favorites properties', '',
      @OnAddToFavoritesPopupmenuItemClick,false,true,true);
@@ -4540,6 +4546,34 @@ begin
   RefreshPropertyValues;
 end;
 
+procedure TObjectInspectorDlg.OnSetMaxContraintsPopupmenuItemClick(Sender: TObject);
+var
+  Persistent: TPersistent;
+  c: TControl;
+begin
+  Persistent := GetSelectedPersistent;
+  Assert(Persistent is TControl,'TObjectInspectorDlg.OnSetMinContraintsPopupmenuItemClick:'
+                               +' Persistent is not TControl');
+  c := TControl(Persistent);
+  c.Constraints.MaxHeight := c.Height;
+  c.Constraints.MaxWidth := c.Width;
+  RefreshPropertyValues;
+end;
+
+procedure TObjectInspectorDlg.OnSetMinContraintsPopupmenuItemClick(Sender: TObject);
+var
+  Persistent: TPersistent;
+  c: TControl;
+begin
+  Persistent := GetSelectedPersistent;
+  Assert(Persistent is TControl,'TObjectInspectorDlg.OnSetMinContraintsPopupmenuItemClick:'
+                               +' Persistent is not TControl');
+  c := TControl(Persistent);
+  c.Constraints.MinHeight := c.Height;
+  c.Constraints.MinWidth := c.Width;
+  RefreshPropertyValues;
+end;
+
 procedure TObjectInspectorDlg.OnAddToFavoritesPopupmenuItemClick(Sender: TObject);
 begin
   //debugln('TObjectInspectorDlg.OnAddToFavoritePopupmenuItemClick');
@@ -5136,15 +5170,16 @@ var
   end;
 
 var
-  DefaultStr: String;
-  CurGrid: TOICustomPropertyGrid;
+  s: String;
   CurRow: TOIPropertyGridRow;
   Persistent: TPersistent;
-  AtLeastOneComponent: Boolean;
-  CanBeDeleted: Boolean;
+  c: TControl;
+  b, AtLeastOneComponent, CanBeDeleted: Boolean;
+  DefaultType: TPropEditDefaultValueType;
 begin
   RemoveComponentEditorMenuItems;
   ShowHintsPopupMenuItem.Checked := PropertyGrid.ShowHint;
+  Persistent := GetSelectedPersistent;
   // show component editors only for component treeview
   if MainPopupMenu.PopupComponent = ComponentTree then
   begin
@@ -5155,19 +5190,15 @@ begin
     else
     begin
       // check if it is a TCollection
-      Persistent := GetSelectedPersistent;
       if Persistent is TCollection then
         AddCollectionEditorMenuItems(TCollection(Persistent))
-      else
-      if Persistent is TCollectionItem then
+      else if Persistent is TCollectionItem then
         AddCollectionEditorMenuItems(TCollectionItem(Persistent).Collection);
     end;
 
     // add Z-Order menu
-
     if (Selection.Count = 1) and (Selection[0] is TControl) then
       AddZOrderMenuItems;
-
     AtLeastOneComponent:=(Selection.Count > 0) and (Selection[0] is TComponent);
     CanBeDeleted:=AtLeastOneComponent;
     CutPopupMenuItem.Visible := CanBeDeleted;
@@ -5185,51 +5216,76 @@ begin
     OptionsSeparatorMenuItem2.Visible := False;
   end;
 
+  CurRow := GetActivePropertyRow;
 
+  // let use restore default values and set constraints
   if (MainPopupMenu.PopupComponent is TOICustomPropertyGrid) then
   begin
-    SetDefaultPopupMenuItem.Visible := True;
+    DefaultType:=pesdDefaultValue;
+    if Assigned(CurRow) then
+      DefaultType:=CurRow.Editor.GetDefaultValueType;
+    case DefaultType of
+      // Currently this means every editor except Constraints
+      pesdDefaultValue: begin
+        SetDefault1PopupMenuItem.Visible := Assigned(CurRow)
+                          and (paHasDefaultValue in CurRow.Editor.GetAttributes);
+        if SetDefault1PopupMenuItem.Visible then begin
+          SetDefault1PopupMenuItem.Enabled := CurRow.Editor.IsNotDefaultValue;
+          SetDefault1PopupMenuItem.Caption := Format(oisSetToDefault,
+                                                [CurRow.Editor.GetDefaultValue]);
+          SetDefault1PopupMenuItem.OnClick := @OnSetDefaultPopupmenuItemClick;
+        end;
+        SetDefault2PopupMenuItem.Visible := False;
+      end;
+      // Constraints editor
+      pesdConstraints: begin
+        Assert(Persistent is TControl,'TObjectInspectorDlg.OnMainPopupMenuPopup: Persistent is not TControl');
+        c := TControl(Persistent);
+        // Max Constraints
+        SetDefault1PopupMenuItem.Visible := True;
+        SetDefault1PopupMenuItem.Enabled := (c.Constraints.MaxHeight<>c.Height)
+                                         or (c.Constraints.MaxWidth<>c.Width);
+        SetDefault1PopupMenuItem.Caption := Format(oisSetMaxConstraints,[c.Height, c.Width]);
+        SetDefault1PopupMenuItem.OnClick := @OnSetMaxContraintsPopupmenuItemClick;
+        // Min Constraints
+        SetDefault2PopupMenuItem.Visible := True;
+        SetDefault2PopupMenuItem.Enabled := (c.Constraints.MinHeight<>c.Height)
+                                         or (c.Constraints.MinWidth<>c.Width);
+        SetDefault2PopupMenuItem.Caption := Format(oisSetMinConstraints,[c.Height, c.Width]);
+        SetDefault2PopupMenuItem.OnClick := @OnSetMinContraintsPopupmenuItemClick;
+      end;
+      else begin
+        WriteStr(s, DefaultType);
+        raise Exception.Create('TObjectInspectorDlg.OnMainPopupMenuPopup:'
+                              +' Unsupported TPropEditSetDefaultType'+s);
+      end;
+    end;
 
-    SetDefaultPopupMenuItem.Enabled := GetCurRowDefaultValue(DefaultStr);
-    if SetDefaultPopupMenuItem.Enabled then
-      SetDefaultPopupMenuItem.Caption := Format(oisSetToDefault, [DefaultStr])
-    else
-      SetDefaultPopupMenuItem.Caption := oisSetToDefaultValue;
+    b := (Favorites <> nil) and ShowFavorites and (GetActivePropertyRow <> nil);
+    AddToFavoritesPopupMenuItem.Visible := b and
+      (GetActivePropertyGrid <> FavoriteGrid) and Assigned(OnAddToFavorites);
+    RemoveFromFavoritesPopupMenuItem.Visible := b and
+      (GetActivePropertyGrid = FavoriteGrid) and Assigned(OnRemoveFromFavorites);
 
-    AddToFavoritesPopupMenuItem.Visible :=
-      (Favorites <> nil) and
-      ShowFavorites and
-      (GetActivePropertyGrid <> FavoriteGrid) and
-      Assigned(OnAddToFavorites) and
-      (GetActivePropertyRow <> nil);
-
-    RemoveFromFavoritesPopupMenuItem.Visible :=
-      (Favorites<>nil) and
-      ShowFavorites and
-      (GetActivePropertyGrid = FavoriteGrid) and
-      Assigned(OnRemoveFromFavorites) and
-      (GetActivePropertyRow <> nil);
-
-    CurGrid := GetActivePropertyGrid;
-    CurRow := GetActivePropertyRow;
     UndoPropertyPopupMenuItem.Visible := True;
-    UndoPropertyPopupMenuItem.Enabled := (CurRow<>nil) and (CurRow.Editor.GetVisualValue <> CurGrid.CurrentEditValue);
+    UndoPropertyPopupMenuItem.Enabled := (CurRow<>nil)
+      and (CurRow.Editor.GetVisualValue <> GetActivePropertyGrid.CurrentEditValue);
     if CurRow=nil then begin
       FindDeclarationPopupmenuItem.Visible := False;
     end
     else begin
       FindDeclarationPopupmenuItem.Visible := true;
-      FindDeclarationPopupmenuItem.Caption:=Format(oisJumpToDeclarationOf, [
-        CurRow.Name]);
-      FindDeclarationPopupmenuItem.Hint:=Format(oisJumpToDeclarationOf, [CurRow.
-        Editor.GetPropertyPath(0)]);
+      FindDeclarationPopupmenuItem.Caption := Format(oisJumpToDeclarationOf, [CurRow.Name]);
+      FindDeclarationPopupmenuItem.Hint := Format(oisJumpToDeclarationOf,
+                                              [CurRow.Editor.GetPropertyPath(0)]);
     end;
     ViewRestrictedPropertiesPopupMenuItem.Visible := True;
     OptionsSeparatorMenuItem.Visible := True;
   end
   else
   begin
-    SetDefaultPopupMenuItem.Visible := False;
+    SetDefault1PopupMenuItem.Visible := False;
+    SetDefault2PopupMenuItem.Visible := False;
     AddToFavoritesPopupMenuItem.Visible := False;
     RemoveFromFavoritesPopupMenuItem.Visible := False;
     UndoPropertyPopupMenuItem.Visible := False;

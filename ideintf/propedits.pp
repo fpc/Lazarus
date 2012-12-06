@@ -283,6 +283,9 @@ type
     pehEditButton
     );
 
+  // Used for setting default value from OI popup menu
+  TPropEditDefaultValueType = (pesdDefaultValue, pesdConstraints);
+
   TPropertyEditorHook = class;
 
   { TPropertyEditor }
@@ -336,6 +339,7 @@ type
     function GetWideStrValueAt(Index: Integer): WideString;
     function GetValue: ansistring; virtual;
     function GetHint(HintType: TPropEditHint; x, y: integer): string; virtual;
+    function GetDefaultValueType: TPropEditDefaultValueType; virtual;
     function GetDefaultValue: ansistring; virtual;
     function GetVisualValue: ansistring;
     procedure GetValues(Proc: TGetStrProc); virtual;
@@ -858,7 +862,17 @@ type
     function GetAttributes: TPropertyAttributes; override;
     procedure Edit; override;
   end;
+
   
+{ TConstraintsPropertyEditor
+  PropertyEditor editor for TControl.Constraints properties.
+  Lets a user set the current size as constraints. }
+
+  TConstraintsPropertyEditor = class(TClassPropertyEditor)
+  public
+    function GetDefaultValueType: TPropEditDefaultValueType; override;
+  end;
+
 
 { TListElementPropertyEditor
   A property editor for a single element of a TListPropertyEditor
@@ -2546,6 +2560,13 @@ begin
   end;
   if TypeHint<>'' then
     Result:=Result+LineEnding+TypeHint;
+end;
+
+function TPropertyEditor.GetDefaultValueType: TPropEditDefaultValueType;
+// ToDo: refactor the code so that popup menu in OI gets all info from PropertyEditor
+//  virtual methods. Now there is a case..of based on this return value.
+begin
+  Result:=pesdDefaultValue;
 end;
 
 function TPropertyEditor.GetDefaultValue: ansistring;
@@ -5081,6 +5102,13 @@ begin
     end;
 end;
 
+{ TConstraintsPropertyEditor }
+
+function TConstraintsPropertyEditor.GetDefaultValueType: TPropEditDefaultValueType;
+begin
+  Result:=pesdConstraints;
+end;
+
 //==============================================================================
 
 
@@ -6153,6 +6181,7 @@ begin
   RegisterPropertyEditor(TypeInfo(AnsiString), TCustomForm, 'LCLVersion', THiddenPropertyEditor);
   RegisterPropertyEditor(TypeInfo(AnsiString), TCustomFrame, 'LCLVersion', THiddenPropertyEditor);
   RegisterPropertyEditor(TypeInfo(TCustomPage), TCustomTabControl, 'ActivePage', TNoteBookActiveControlPropertyEditor);
+  RegisterPropertyEditor(TypeInfo(TSizeConstraints), TControl, 'Constraints', TConstraintsPropertyEditor);
 end;
 
 procedure FinalPropEdits;
