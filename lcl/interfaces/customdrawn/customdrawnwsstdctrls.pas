@@ -1302,6 +1302,7 @@ begin
   ACDControlField.Caption := AWinControl.Caption;
   ACDControlField.Parent := AWinControl;
   ACDControlField.Align := alClient;
+  TCDIntfEdit(ACDControlField).ReadOnly := TCustomEdit(AWinControl).ReadOnly;
 end;
 
 {------------------------------------------------------------------------------

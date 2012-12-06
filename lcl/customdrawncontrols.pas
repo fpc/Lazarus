@@ -199,6 +199,7 @@ type
     FCaretTimer: TTimer;
     FLines: TStrings;
     FOnChange: TNotifyEvent;
+    FReadOnly: Boolean;
     function GetLeftTextMargin: Integer;
     function GetMultiLine: Boolean;
     function GetRightTextMargin: Integer;
@@ -253,6 +254,7 @@ type
     property Enabled;
     property Lines: TStrings read FLines write SetLines;
     property MultiLine: Boolean read GetMultiLine write SetMultiLine default False;
+    property ReadOnly: Boolean read FReadOnly write FReadOnly default False;
     property TabStop default True;
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
   end;
@@ -1867,6 +1869,9 @@ var
   lLeftText, lRightText, lOldText: String;
 begin
   inherited UTF8KeyPress(UTF8Key);
+
+  // ReadOnly disables key input
+  if FReadOnly then Exit;
 
   // LCL-Carbon sends Backspace as a UTF-8 Char
   // LCL-Qt sends arrow left,right,up,down (#28..#31), <enter>, ESC, etc
