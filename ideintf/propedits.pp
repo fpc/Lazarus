@@ -898,7 +898,7 @@ type
 
 { TListPropertyEditor
   A property editor with dynamic sub properties representing a list of objects.
-  The items are shown imbedded in the OI and if the user presses the Edit button
+  The items are shown embedded in the OI and if the user presses the Edit button
   as extra window to select items, which are then shown in the OI.
   UNDER CONSTRUCTION by Mattias
   The problem with all properties is, that we don't get notified, when something
@@ -956,7 +956,7 @@ type
   end;
 
 { TCollectionPropertyEditor
-  Default property editor for all TCollections, imbedded in the OI
+  Default property editor for all TCollections, embedded in the OI
   UNDER CONSTRUCTION by Mattias}
 
   TCollectionPropertyEditor = class(TListPropertyEditor)

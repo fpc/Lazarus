@@ -1178,8 +1178,7 @@ begin
   Result:=0;
 end;
 
-procedure TOICustomPropertyGrid.SetSelection(
-  const ASelection: TPersistentSelectionList);
+procedure TOICustomPropertyGrid.SetSelection(const ASelection: TPersistentSelectionList);
 var
   CurRow:TOIPropertyGridRow;
   OldSelectedRowPath:string;
@@ -4276,16 +4275,17 @@ function TObjectInspectorDlg.GetCurRowDefaultValue(var DefaultStr: string): bool
 var
   CurRow: TOIPropertyGridRow;
 begin
-  Result:=false;
+  Result:=False;
   DefaultStr:='';
   CurRow:=GetActivePropertyRow;
-  if (CurRow=nil) or (not (paHasDefaultValue in CurRow.Editor.GetAttributes))
-  then exit;
-  try
-    DefaultStr:=CurRow.Editor.GetDefaultValue;
-    Result:=true;
-  except
-    DefaultStr:='';
+  if Assigned(CurRow) and (paHasDefaultValue in CurRow.Editor.GetAttributes) then
+  begin
+    try
+      DefaultStr:=CurRow.Editor.GetDefaultValue;
+      Result:=true;
+    except
+      DefaultStr:='';
+    end;
   end;
 end;
 
@@ -4580,8 +4580,7 @@ begin
   if Assigned(OnAddToFavorites) then OnAddToFavorites(Self);
 end;
 
-procedure TObjectInspectorDlg.OnRemoveFromFavoritesPopupmenuItemClick(
-  Sender: TObject);
+procedure TObjectInspectorDlg.OnRemoveFromFavoritesPopupmenuItemClick(Sender: TObject);
 begin
   if Assigned(OnRemoveFromFavorites) then OnRemoveFromFavorites(Self);
 end;
