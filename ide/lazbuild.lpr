@@ -1395,7 +1395,7 @@ begin
     p:=ParamStr(i);
     if p='--verbose' then
       inc(ConsoleVerbosity)
-    else if (p='-q') or (p='quiet=') then
+    else if (p='-q') or (p='--quiet') then
       dec(ConsoleVerbosity);
   end;
 
