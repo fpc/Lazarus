@@ -214,6 +214,7 @@ begin
     MessageDlg(lisInvalidProcName,
       Format(lisSVUOisNotAValidIdentifier, ['"', ProcName, '"']),
       mtError,[mbCancel],0);
+    ModalResult:=mrNone;
     exit;
   end;
   ModalResult:=mrOk;
