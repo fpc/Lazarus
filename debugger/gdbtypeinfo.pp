@@ -418,6 +418,8 @@ function dbgs(AState: TGDBTypeProcessState): string; overload;
 function dbgs(AKind: TGDBPTypeResultKind): string; overload;
 function dbgs(AReqType: TGDBCommandRequestType): string; overload;
 function dbgs(AReq: TGDBPTypeRequest): string; overload;
+function dbgs(AReqType: TGDBTypeProcessRequest): string; overload;
+function dbgs(AReqTypes: TGDBTypeProcessRequests): string; overload;
 
 implementation
 
@@ -427,6 +429,23 @@ const
   GdbCmdEvaluate = '-data-evaluate-expression ';
 var
   DBGMI_TYPE_INFO, DBG_WARNINGS: PLazLoggerLogGroup;
+
+function ApplyBrackets(e: string): string;
+var
+  i: Integer;
+  f: Boolean;
+begin
+  Result := e;
+  if (e='') or ( (e[1] = '(') and (e[length(e)] = ')') ) then exit;
+  f := False;
+  i := length(e);
+  while (i > 0) and (not f) do begin
+    f := f or not(e[i] in ['a'..'z', 'A'..'Z', '0'..'9', '_']);
+    dec(i);
+  end;
+  if f then
+    Result := '(' + Result + ')';
+end;
 
 function CreatePTypeValueList(AResultValues: String): TStringList;
 var
@@ -968,6 +987,26 @@ begin
     ;
 end;
 
+function dbgs(AReqType: TGDBTypeProcessRequest): string;
+begin
+  WriteStr(Result, AReqType);
+end;
+
+function dbgs(AReqTypes: TGDBTypeProcessRequests): string;
+var
+  i: TGDBTypeProcessRequest;
+begin
+  Result:='';
+  for i := low(TGDBTypeProcessRequests) to high(TGDBTypeProcessRequests) do
+    if i in AReqTypes then begin
+      if Result <> '' then Result := Result + ', ';
+      Result := Result + dbgs(i);
+    end;
+  if Result <> '' then Result := '[' + Result + ']';
+end;
+
+//TGDBTypeProcessRequests
+
 { TGDBExpressionPartCommaList }
 
 function TGDBExpressionPartCommaList.GetTextFixed(AStringFixed: Boolean): String;
@@ -1070,18 +1109,9 @@ end;
 { TGDBExpressionPartArray }
 
 function TGDBExpressionPartArray.GetIndexParts(Index: Integer): TGDBExpressionPartArrayIdx;
-var
-  j: Integer;
 begin
   Result := TGDBExpressionPartArrayIdx(Parts[Index+1]);
-
-  if Result.IsCommaSeparated then begin
-    Delete(Index+1);
-    For j := 0 to Result.PartCount-1 do
-      Insert(Index + 1 + j, Result.CreateExpressionForSubIndex(j));
-    Result.Free;
-    Result := TGDBExpressionPartArrayIdx(Parts[Index+1]);
-  end;
+  Assert(not Result.IsCommaSeparated, 'GetIndexParts not IsCommaSeparated');
 end;
 
 function TGDBExpressionPartArray.GetTextFixed(AStringFixed: Boolean): String;
@@ -1131,7 +1161,7 @@ begin
   if AIdx < 0 then exit;
 
   for i := 0 to AIdx do begin
-    IdxPart := TGDBExpressionPartArrayIdx(Parts[i + 1]);
+    IdxPart := TGDBExpressionPartArrayIdx(IndexPart[i]);
     PTResult := IdxPart.ArrayPTypeResult;
     if PCastCnt > 0 then dec(PCastCnt);
 
@@ -1202,8 +1232,16 @@ begin
 end;
 
 function TGDBExpressionPartArray.AddIndex(APart: TGDBExpressionPartArrayIdx): Integer;
+var
+  j: Integer;
 begin
-  Result := Add(APart);
+  if APart.IsCommaSeparated then begin
+    For j := 0 to APart.PartCount-1 do
+      Result := Add(APart.CreateExpressionForSubIndex(j));
+    APart.Free;
+  end
+  else
+    Result := Add(APart);
 end;
 
 function TGDBExpressionPartArray.NeedValidation(var AReqPtr: PGDBPTypeRequest): Boolean;
@@ -1257,6 +1295,7 @@ begin
 
     if PTReq.Result.Kind = ptprkNotEvaluated
     then begin
+      (* ptype ArrayBaseWithoutIndex *)
       IdxPart.VarParam := False;
       // InitReq sets: PTReq.Result.Kind = ptprkError;
       IdxPart.InitReq(AReqPtr, GdbCmdPType + GetTextToIdx(i-1));
@@ -1264,11 +1303,12 @@ begin
       exit;
     end
     else
-    if (not IdxPart.VarParam) and (ptprfParamByRef in PTReq.Result.Flags)
+    if (not IdxPart.VarParam) and (ptprfParamByRef in PTReq.Result.Flags) // seen an "&" in the gdb result
     then begin
+      (* ptype ArrayBaseWithoutIndex^ *)
       // FPC 2.2.4 encoded "var param" in a special way, and we need an extra deref)
       IdxPart.VarParam := True;
-      IdxPart.InitReq(AReqPtr, GdbCmdPType + GetTextToIdx(i-1) + '^');
+      IdxPart.InitReq(AReqPtr, GdbCmdPType + ApplyBrackets(GetTextToIdx(i-1)) + '^');
       Result := True;
       exit;
     end;
@@ -1281,16 +1321,17 @@ begin
        (ptprfPointer in PTReq.Result.Flags) and
        (PTDeRefReq.Result.Kind = ptprkNotEvaluated)
     then begin
+      (* ptype ArrayBaseWithoutIndex^ or ptype ArrayBaseWithoutIndex^^ *)
       if IdxPart.VarParam
-      then IdxPart.InitDeRefReq(AReqPtr, GdbCmdPType + GetTextToIdx(i-1) + '^^')
-      else IdxPart.InitDeRefReq(AReqPtr, GdbCmdPType + GetTextToIdx(i-1) + '^');
+      then IdxPart.InitDeRefReq(AReqPtr, GdbCmdPType + ApplyBrackets(GetTextToIdx(i-1)) + '^^')
+      else IdxPart.InitDeRefReq(AReqPtr, GdbCmdPType + ApplyBrackets(GetTextToIdx(i-1)) + '^');
       Result := True;
       exit;
     end;
 
     // we may have nested array (dyn array only):
     // - ^^(array ...)
-    // - array ... oaf array
+    // - array ... of array
     // A combination of both is not expected
 
     ArrRes := IdxPart.ArrayPTypeResult;
@@ -1985,19 +2026,6 @@ end;
 
 function TGDBType.RequireRequests(ARequired: TGDBTypeProcessRequests; ACustomData: String = ''): Boolean;
 
-  function ApplyBrackets(e: string): string;
-  var
-    i: Integer;
-    f: Boolean;
-  begin
-    Result := e;
-    if (e='') or ( (e[1] = '(') and (e[length(e)] = ')') ) then exit;
-    f := False;
-    for i := 1 to length(e) do
-      f := f or not(e[i] in ['a'..'z', 'A'..'Z', '0'..'9', '_']);
-    if f then
-      Result := '(' + Result + ')';
-  end;
 
   function GetReqText(AReq: TGDBTypeProcessRequest): String;
   begin
@@ -2027,6 +2055,7 @@ begin
   NeededReq := ARequired - FProccesReuestsMade;
   Result := NeededReq = [];
   if Result then exit;
+  DebugLn(DBGMI_TYPE_INFO, ['TGDBType.ProcessExpression: Adding Req ', dbgs(NeededReq), ', CD=', ACustomData]);
 
   if (gptrPTypeOfWhatis in NeededReq) and not (gptrWhatisExpr in FProccesReuestsMade)
   then begin
