@@ -204,7 +204,7 @@ var
       then begin
         rint[rindex] := value;
         inc(rindex);
-        addstackdword(value);
+        //addstackdword(value);
       end
       else begin
         addstackdword(value);
@@ -221,7 +221,7 @@ var
           else rfloat[findex] := double(value^);
         inc(findex);
         inc(rindex, size);
-        addstackfloat(value, size);
+        //addstackfloat(value, size);
       end
       else begin
         addstackfloat(value, size);
