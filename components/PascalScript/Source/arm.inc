@@ -209,6 +209,10 @@ begin
       end;
     end;
 
+  if assigned(_Self) then begin
+    addgen(dword(_Self));
+  end;
+
   { process all parameters }
   for i := 0 to Params.Count-1 do begin
     if Params[i] = nil
