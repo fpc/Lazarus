@@ -524,6 +524,11 @@ begin
   // But Forms is not in the uses clause
 end;
 
+function TWidgetSet.IsCDIntfControl(AWinControl: TObject): Boolean;
+begin
+  Result := False;
+end;
+
 function TWidgetSet.MoveWindowOrgEx(dc: hdc; dX,dY: Integer): boolean;
 var
   P: TPoint;

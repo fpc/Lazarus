@@ -356,6 +356,11 @@ begin
   Result := WidgetSet.IsMobilePlatform();
 end;
 
+function IsCDIntfControl(AWinControl: TObject): Boolean;
+begin
+  Result := WidgetSet.IsCDIntfControl(AWinControl);
+end;
+
 function MoveWindowOrgEx(dc: hdc; dX,dY: Integer): boolean;
 begin
   Result := WidgetSet.MoveWindowOrgEx(DC, dX, dY);

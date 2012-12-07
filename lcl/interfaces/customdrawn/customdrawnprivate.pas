@@ -312,15 +312,19 @@ end;
 
 function IsIntfControl(AControl: TWinControl): Boolean;
 begin
-  Result := (AControl <> nil) and (AControl.Parent <> nil) and AControl.IsCDIntfControl;
-  {if Result then Result :=
+  Result := (AControl <> nil) and (AControl.Parent <> nil);
+  if Result then Result :=
     // Standard Tab
     (AControl is TCDIntfButton) or (AControl is TCDIntfEdit) or (AControl is TCDIntfCheckBox) or
+    (AControl is TCDIntfRadioButton) or (AControl is TCDIntfComboBox) or (AControl is TCDIntfScrollBar) or
     // Additional Tab
     (AControl is TCDIntfStaticText) or
     // Common Controls Tab
     (AControl is TCDIntfProgressBar) or (AControl is TCDIntfTrackBar) or
-    (AControl is TCDIntfPageControl);}
+    (AControl is TCDIntfPageControl) or
+    // Common Controls Tab
+    (AControl is TCDIntfSpinEdit)
+    ;
 end;
 
 { TCDIntfEdit }

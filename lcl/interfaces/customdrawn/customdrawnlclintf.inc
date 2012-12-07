@@ -317,6 +317,11 @@ begin
   Result := (ADC = HDC(Self.ScreenDC));
 end;
 
+function TCDWidgetSet.IsCDIntfControl(AWinControl: TObject): Boolean;
+begin
+  Result := IsIntfControl(TWinControl(AWinControl));
+end;
+
 function TCDWidgetSet.RadialPie(DC: HDC; x1, y1, x2, y2, Angle1, Angle2: Integer): Boolean;
 begin
   Result := IsValidDC(DC);

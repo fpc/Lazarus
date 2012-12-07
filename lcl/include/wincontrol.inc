@@ -4601,7 +4601,7 @@ begin
     begin
       lWinControl := TWinControl(FTabList[I]);
       // The tab order list should exclude injected LCL-CustomDrawn controls
-      if lWinControl.CanFocus and (not lWinControl.IsCDIntfControl) then
+      if lWinControl.CanFocus and (not LCLIntf.IsCDIntfControl(lWinControl)) then
         List.Add(lWinControl);
       lWinControl.GetTabOrderList(List);
     end;

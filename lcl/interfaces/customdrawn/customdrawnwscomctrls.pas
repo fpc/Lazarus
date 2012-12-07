@@ -290,7 +290,6 @@ begin
   TCDIntfPageControl(ACDControlField).LCLControl := TCustomTabControl(AWinControl);
   ACDControlField.Parent := AWinControl;
   ACDControlField.Align := alClient;
-  ACDControlField.IsCDIntfControl := True;
   {$ifdef VerboseCDInjectedControlNames}ACDControlField.Name := 'CustomDrawnInternal_' + AWinControl.Name;{$endif}
 end;
 
@@ -428,7 +427,6 @@ begin
   TCDIntfTrackBar(ACDControlField).LCLControl := TCustomTrackBar(AWinControl);
   ACDControlField.Parent := AWinControl;
   ACDControlField.Align := alClient;
-  ACDControlField.IsCDIntfControl := True;
   {$ifdef VerboseCDInjectedControlNames}ACDControlField.Name := 'CustomDrawnInternal_' + AWinControl.Name;{$endif}
 end;
 
@@ -569,7 +567,6 @@ begin
   TCDIntfProgressBar(ACDControlField).LCLControl := TCustomProgressBar(AWinControl);
   ACDControlField.Parent := AWinControl;
   ACDControlField.Align := alClient;
-  ACDControlField.IsCDIntfControl := True;
   {$ifdef VerboseCDInjectedControlNames}ACDControlField.Name := 'CustomDrawnInternal_' + AWinControl.Name;{$endif}
 end;
 

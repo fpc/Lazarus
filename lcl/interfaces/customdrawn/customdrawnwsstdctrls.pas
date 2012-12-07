@@ -355,7 +355,6 @@ begin
   ACDControlField.Caption := AWinControl.Caption;
   ACDControlField.Parent := AWinControl;
   ACDControlField.Align := alClient;
-  ACDControlField.IsCDIntfControl := True;
   {$ifdef VerboseCDInjectedControlNames}ACDControlField.Name := 'CustomDrawnInternal_' + AWinControl.Name;{$endif}
 end;
 
@@ -422,7 +421,6 @@ begin
   ACDControlField.Caption := AWinControl.Caption;
   ACDControlField.Parent := AWinControl;
   ACDControlField.Align := alClient;
-  ACDControlField.IsCDIntfControl := True;
   {$ifdef VerboseCDInjectedControlNames}ACDControlField.Name := 'CustomDrawnInternal_' + AWinControl.Name;{$endif}
 end;
 
@@ -824,7 +822,6 @@ begin
   ACDControlField.Caption := AWinControl.Caption;
   ACDControlField.Parent := AWinControl;
   ACDControlField.Align := alClient;
-  ACDControlField.IsCDIntfControl := True;
   {$ifdef VerboseCDInjectedControlNames}ACDControlField.Name := 'CustomDrawnInternal_' + AWinControl.Name;{$endif}
 end;
 
@@ -1308,7 +1305,6 @@ begin
   ACDControlField.Caption := AWinControl.Caption;
   ACDControlField.Parent := AWinControl;
   ACDControlField.Align := alClient;
-  ACDControlField.IsCDIntfControl := True;
   {$ifdef VerboseCDInjectedControlNames}ACDControlField.Name := 'CustomDrawnInternal_' + AWinControl.Name;{$endif}
   TCDIntfEdit(ACDControlField).ReadOnly := TCustomEdit(AWinControl).ReadOnly;
 end;
@@ -1566,7 +1562,6 @@ begin
   ACDControlField.Parent := AWinControl;
   ACDControlField.Caption := AWinControl.Caption;
   ACDControlField.Align := alClient;
-  ACDControlField.IsCDIntfControl := True;
   {$ifdef VerboseCDInjectedControlNames}ACDControlField.Name := 'CustomDrawnInternal_' + AWinControl.Name;{$endif}
 end;
 
@@ -1637,7 +1632,6 @@ begin
   ACDControlField.Caption := AWinControl.Caption;
   ACDControlField.Parent := AWinControl;
   ACDControlField.Align := alClient;
-  ACDControlField.IsCDIntfControl := True;
   {$ifdef VerboseCDInjectedControlNames}ACDControlField.Name := 'CustomDrawnInternal_' + AWinControl.Name;{$endif}
 end;
 
@@ -1728,7 +1722,6 @@ begin
   ACDControlField.Parent := AWinControl;
   ACDControlField.Caption := AWinControl.Caption;
   ACDControlField.Align := alClient;
-  ACDControlField.IsCDIntfControl := True;
   {$ifdef VerboseCDInjectedControlNames}ACDControlField.Name := 'CustomDrawnInternal_' + AWinControl.Name;{$endif}
 end;
 
@@ -1800,7 +1793,6 @@ begin
   ACDControlField.Parent := AWinControl;
   ACDControlField.Caption := AWinControl.Caption;
   ACDControlField.Align := alClient;
-  ACDControlField.IsCDIntfControl := True;
   {$ifdef VerboseCDInjectedControlNames}ACDControlField.Name := 'CustomDrawnInternal_' + AWinControl.Name;{$endif}
 end;
 

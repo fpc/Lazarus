@@ -1899,7 +1899,6 @@ type
     FDoubleBuffered: Boolean;
     FDockSite: Boolean;
     FUseDockManager: Boolean;
-    FIsCDIntfControl: Boolean;
     procedure AlignControl(AControl: TControl);
     function GetBrush: TBrush;
     function GetControl(const Index: Integer): TControl;
@@ -2108,7 +2107,6 @@ type
     property DoubleBuffered: Boolean read FDoubleBuffered write FDoubleBuffered default False;
     property Handle: HWND read GetHandle write SetHandle;
     property IsResizing: Boolean read GetIsResizing;
-    property IsCDIntfControl: Boolean read FIsCDIntfControl write FIsCDIntfControl default False;
     property TabOrder: TTabOrder read GetTabOrder write SetTaborder default -1;
     property TabStop: Boolean read FTabStop write SetTabStop default false;
     property OnAlignInsertBefore: TAlignInsertBeforeEvent read FOnAlignInsertBefore write FOnAlignInsertBefore;
