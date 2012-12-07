@@ -190,13 +190,13 @@ type
 
   // TWSCustomEdit
 
-{    class procedure SetAlignment(const ACustomEdit: TCustomEdit; const AAlignment: TAlignment); override;
+//    class procedure SetAlignment(const ACustomEdit: TCustomEdit; const AAlignment: TAlignment); override;
     class function GetCaretPos(const ACustomEdit: TCustomEdit): TPoint; override;
-    class function GetCanUndo(const ACustomEdit: TCustomEdit): Boolean; override;
+//    class function GetCanUndo(const ACustomEdit: TCustomEdit): Boolean; override;
     class procedure SetCaretPos(const ACustomEdit: TCustomEdit; const NewPos: TPoint); override;
-    class procedure SetEchoMode(const ACustomEdit: TCustomEdit; NewMode: TEchoMode); override;
-    class procedure SetMaxLength(const ACustomEdit: TCustomEdit; NewLength: integer); override;
-    class procedure SetReadOnly(const ACustomEdit: TCustomEdit; NewReadOnly: boolean); override;}
+{    class procedure SetEchoMode(const ACustomEdit: TCustomEdit; NewMode: TEchoMode); override;
+    class procedure SetMaxLength(const ACustomEdit: TCustomEdit; NewLength: integer); override;}
+    class procedure SetReadOnly(const ACustomEdit: TCustomEdit; NewReadOnly: boolean); override;
     class function GetSelStart(const ACustomEdit: TCustomEdit): integer; override;
     class function GetSelLength(const ACustomEdit: TCustomEdit): integer; override;
     class procedure SetSelStart(const ACustomEdit: TCustomEdit; NewStart: integer); override;
@@ -1358,6 +1358,7 @@ begin
   lCDWinControl := TCDWinControl(AWinControl.Handle);
   if lCDWinControl.CDControl = nil then Exit;
   TCDIntfEdit(lCDWinControl.CDControl).Lines.Text := AText;
+  TCDIntfEdit(lCDWinControl.CDControl).Invalidate();
 end;
 
 class procedure TCDWSCustomEdit.ShowHide(const AWinControl: TWinControl);
@@ -1381,23 +1382,19 @@ begin
   if not WSCheckHandleAllocated(ACustomEdit, 'SetAlignment') then
     Exit;
   TQtLineEdit(ACustomEdit.Handle).setAlignment(AlignmentMap[AAlignment]);
-end;
+end;*)
 
 class function TCDWSCustomEdit.GetCaretPos(const ACustomEdit: TCustomEdit
   ): TPoint;
 var
-  Widget: TQtWidget;
-  QtEdit: IQtEdit;
+  lCDWinControl: TCDWinControl;
 begin
-  Result := Point(0,0);
-  if not WSCheckHandleAllocated(ACustomEdit, 'GetCaretPos') then
-    Exit;
-  Widget := TQtWidget(ACustomEdit.Handle);
-  if Supports(Widget, IQtEdit, QtEdit) then
-    Result.X := QtEdit.getCursorPosition;
+  lCDWinControl := TCDWinControl(ACustomEdit.Handle);
+  if lCDWinControl.CDControl = nil then Exit;
+  Result := TCDIntfEdit(lCDWinControl.CDControl).CaretPos;
 end;
 
-class function TCDWSCustomEdit.GetCanUndo(const ACustomEdit: TCustomEdit): Boolean;
+(*class function TCDWSCustomEdit.GetCanUndo(const ACustomEdit: TCustomEdit): Boolean;
 var
   Widget: TQtWidget;
   QtEdit: IQtEdit;
@@ -1408,22 +1405,19 @@ begin
   Widget := TQtWidget(ACustomEdit.Handle);
   if Supports(Widget, IQtEdit, QtEdit) then
     Result := QtEdit.isUndoAvailable;
-end;
+end;*)
 
 class procedure TCDWSCustomEdit.SetCaretPos(const ACustomEdit: TCustomEdit;
   const NewPos: TPoint);
 var
-  Widget: TQtWidget;
-  QtEdit: IQtEdit;
+  lCDWinControl: TCDWinControl;
 begin
-  if not WSCheckHandleAllocated(ACustomEdit, 'SetCaretPos') then
-    Exit;
-  Widget := TQtWidget(ACustomEdit.Handle);
-  if Supports(Widget, IQtEdit, QtEdit) then
-    QtEdit.setCursorPosition(NewPos.X);
+  lCDWinControl := TCDWinControl(ACustomEdit.Handle);
+  if lCDWinControl.CDControl = nil then Exit;
+  TCDIntfEdit(lCDWinControl.CDControl).CaretPos := NewPos;
 end;
 
-{------------------------------------------------------------------------------
+(*{------------------------------------------------------------------------------
   Method: TCDWSCustomEdit.SetEchoMode
   Params:  None
   Returns: Nothing
@@ -1465,7 +1459,7 @@ begin
     if NewLength <> MaxLength then
       QtEdit.setMaxLength(NewLength);
   end;
-end;
+end;*)
 
 {------------------------------------------------------------------------------
   Method: TCDWSCustomEdit.SetReadOnly
@@ -1474,16 +1468,12 @@ end;
  ------------------------------------------------------------------------------}
 class procedure TCDWSCustomEdit.SetReadOnly(const ACustomEdit: TCustomEdit; NewReadOnly: boolean);
 var
-  Widget: TQtWidget;
-  QtEdit: IQtEdit;
+  lCDWinControl: TCDWinControl;
 begin
-  if not WSCheckHandleAllocated(ACustomEdit, 'SetReadOnly') then
-    Exit;
-
-  Widget := TQtWidget(ACustomEdit.Handle);
-  if Supports(Widget, IQtEdit, QtEdit) then
-    QtEdit.setReadOnly(NewReadOnly);
-end;*)
+  lCDWinControl := TCDWinControl(ACustomEdit.Handle);
+  if lCDWinControl.CDControl = nil then Exit;
+  TCDIntfEdit(lCDWinControl.CDControl).ReadOnly := NewReadOnly;
+end;
 
 class function TCDWSCustomEdit.GetSelStart(const ACustomEdit: TCustomEdit): integer;
 var

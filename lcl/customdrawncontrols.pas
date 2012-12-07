@@ -200,6 +200,7 @@ type
     FLines: TStrings;
     FOnChange: TNotifyEvent;
     FReadOnly: Boolean;
+    function GetCaretPos: TPoint;
     function GetLeftTextMargin: Integer;
     function GetMultiLine: Boolean;
     function GetRightTextMargin: Integer;
@@ -207,6 +208,7 @@ type
     procedure DoDeleteSelection;
     procedure DoClearSelection;
     procedure DoManageVisibleTextStart;
+    procedure SetCaretPost(AValue: TPoint);
     procedure SetLeftTextMargin(AValue: Integer);
     procedure SetLines(AValue: TStrings);
     procedure SetMultiLine(AValue: Boolean);
@@ -245,6 +247,7 @@ type
     function GetSelLength: Integer;
     procedure SetSelStartX(ANewX: Integer);
     procedure SetSelLength(ANewLength: Integer);
+    property CaretPos: TPoint read GetCaretPos write SetCaretPost;
   published
     property Align;
     property Anchors;
@@ -1460,6 +1463,11 @@ begin
   Result := FEditState.LeftTextMargin;
 end;
 
+function TCDEdit.GetCaretPos: TPoint;
+begin
+  Result := FEditState.CaretPos;
+end;
+
 function TCDEdit.GetMultiLine: Boolean;
 begin
   Result := FEditState.MultiLine;
@@ -1538,6 +1546,13 @@ begin
   FEditState.CaretPos.X := Min(FEditState.CaretPos.X, UTF8Length(lLineText));
   FEditState.CaretPos.Y := Min(FEditState.CaretPos.Y, FEditState.Lines.Count-1);
   FEditState.CaretPos.Y := Max(FEditState.CaretPos.Y, 0);
+end;
+
+procedure TCDEdit.SetCaretPost(AValue: TPoint);
+begin
+  FEditState.CaretPos.X := AValue.X;
+  FEditState.CaretPos.Y := AValue.Y;
+  Invalidate;
 end;
 
 // Result.X -> returns a zero-based position of the caret
