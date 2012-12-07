@@ -10,7 +10,7 @@ uses
   // LCL
   Controls, Graphics, stdctrls, extctrls, comctrls,
   customdrawnproc, customdrawncontrols, lcltype, lclproc, lclintf,
-  spin;
+  lmessages, spin;
 
 type
 
@@ -23,7 +23,12 @@ type
     LCLControl: TCustomButton;
   end;
 
+  { TCDIntfEdit }
+
   TCDIntfEdit = class(TCDEdit)
+  protected
+    // for descendents to override
+    procedure DoChange; override;
   public
     LCLControl: TCustomEdit;
   end;
@@ -316,6 +321,20 @@ begin
     // Common Controls Tab
     (AControl is TCDIntfProgressBar) or (AControl is TCDIntfTrackBar) or
     (AControl is TCDIntfPageControl);}
+end;
+
+{ TCDIntfEdit }
+
+procedure TCDIntfEdit.DoChange;
+var
+  Msg: TLMessage;
+begin
+  inherited DoChange;
+
+  // TCustomEdit responds only to CM_TEXTCHANGED, it doesn't respond to LM_CHANGED. TComboBox responds to LM_CHANGED
+  FillChar(Msg{%H-}, SizeOf(Msg), 0);
+  Msg.Msg := CM_TEXTCHANGED;
+  DeliverMessage(LCLControl, Msg);
 end;
 
 end.

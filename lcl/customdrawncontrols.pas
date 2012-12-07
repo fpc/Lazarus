@@ -1406,6 +1406,7 @@ procedure TCDEdit.SetLines(AValue: TStrings);
 begin
   if FLines=AValue then Exit;
   FLines.Assign(AValue);
+  DoChange();
   Invalidate;
 end;
 
@@ -2001,6 +2002,7 @@ begin
     FEditState.CaretPos.Y := 0;
   end
   else FLines.Strings[FEditState.CaretPos.Y] := AStr;
+  DoChange();
 end;
 
 function TCDEdit.GetSelStartX: Integer;
