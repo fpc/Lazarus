@@ -240,6 +240,10 @@ begin
   setlength(st, stindex);
   Result := False;
 
+  if assigned(_Self) then begin
+    addgen(dword(_Self));
+  end;
+
   { the pointer of the result needs to be passed first in the case of some result types }
   if assigned(res)
     then begin
@@ -247,10 +251,6 @@ begin
         btStaticArray, btRecord: addgen(dword(res.dta));
       end;
     end;
-
-  if assigned(_Self) then begin
-    addgen(dword(_Self));
-  end;
 
   { process all parameters }
   for i := 0 to Params.Count-1 do begin
