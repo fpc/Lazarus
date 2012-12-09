@@ -970,10 +970,10 @@ begin
                          //UpdRes(r, stDwarf3,   '''MyAnsi''$',      skSimple,    'AnsiString', []);
 
   // accessing len/refcount
-  r:=AddFmtDef('^longint(ArgTMyAnsiString)[-1]',
-                                               '6',      skSimple,   'longint', []);
-  r:=AddFmtDef('^longint(VArgTMyAnsiString)[-1]',
-                                               '8',      skSimple,   'longint', []);
+  r:=AddFmtDef('^^longint(ArgTMyAnsiString)[-1]',
+                                               '6',      skPointer,   '.', [fTpMtch]);
+  r:=AddFmtDef('^^longint(VArgTMyAnsiString)[-1]',
+                                               '8',      skPointer,   '.', [fTpMtch]);
 
   // accessing char
   // TODO: only works with dwarf 3
