@@ -595,8 +595,11 @@ var
   CurInt64: Int64;
 begin
   //writeln('TXMLObjectReader.ReadNextValue Stay=',Stay,' Element=',FElement.NodeName,' Pos=',FElementPosition);
-  
-  if FElement.NodeName='component' then begin
+  Result:=vaNull;
+
+  if FElement=nil then begin
+    //writeln('TXMLObjectReader.ReadNextValue FElement=nil');
+  end else if FElement.NodeName='component' then begin
     //writeln('TXMLObjectReader.ReadNextValue is start of component');
     Result:=vaString;
     if not Stay then begin
@@ -609,7 +612,6 @@ begin
     // 0: end of property list
     // 1: end of non existing children list
     //writeln('TXMLObjectReader.ReadNextValue FElement is at end of property list');
-    Result:=vaNull;
     if not Stay then begin
       if FElement.NextSibling is TDOMElement then begin
         // leave properties and go to first child component
@@ -634,7 +636,6 @@ begin
   else if FElement.NodeName='children' then begin
     // end of children list
     //writeln('TXMLObjectReader.ReadNextValue End of children list');
-    Result:=vaNull;
     if not Stay then begin
       GoToNextComponent;
     end;
@@ -664,7 +665,6 @@ begin
       
     1:begin
         // end of list
-        Result:=vaNull;
         if not Stay then begin
           if (FElement.NextSibling is TDOMElement) then begin
             //writeln('TXMLObjectReader.ReadNextValue list: end of children, next list');
@@ -683,7 +683,6 @@ begin
   else if FElement.NodeName='collection' then begin
     // FElement is at end of collection
     //writeln('TXMLObjectReader.ReadNextValue FElement is at end of collection');
-    Result:=vaNull;
   end
   else if (FElement.ParentNode.NodeName='properties')
   or (FElement.ParentNode.NodeName='list') then begin
@@ -895,7 +894,10 @@ var
   Node: TDOMNode;
 begin
   //writeln('TXMLObjectReader.BeginRootComponent ');
-  Node:=FElement.FindNode('component');
+  if FElement=nil then
+    Node:=nil
+  else
+    Node:=FElement.FindNode('component');
   if Node=nil then
     RaiseComponentNodeNotFound;
 end;
@@ -914,7 +916,9 @@ begin
     // ToDo
   end;
 
-  if FElement.NodeName='component' then
+  if FElement=nil then
+    ComponentNode:=nil
+  else if FElement.NodeName='component' then
     ComponentNode:=FElement
   else
     ComponentNode:=FElement.FindNode('component');
@@ -929,15 +933,16 @@ begin
   //DebugLn('TXMLObjectReader.BeginComponent CompName="',CompName,'" CompClassName="',CompClassName,'"');
   
   PropertiesNode:=FElement.FindNode('properties');
-  if PropertiesNode=nil then
-    raise Exception.Create('properties node not found');
-  if not (PropertiesNode is TDOMElement) then
-    raise Exception.Create('properties node is not a dom element');
+  if (PropertiesNode<>nil) then begin
+    if not (PropertiesNode is TDOMElement) then
+      raise Exception.Create('properties node is not a dom element');
 
-  // if there are properties, then set FElement to the first property
-  FElement:=TDOMElement(PropertiesNode);
-  if FElement.FirstChild is TDOMElement then
-    FElement:=TDOMElement(FElement.FirstChild);
+    // if there are properties, then set FElement to the first property
+    FElement:=TDOMElement(PropertiesNode);
+    if FElement.FirstChild is TDOMElement then
+      FElement:=TDOMElement(FElement.FirstChild);
+  end else
+    FElement:=nil;
   FElementPosition:=0;
 end;
 
