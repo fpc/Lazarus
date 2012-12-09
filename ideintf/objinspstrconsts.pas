@@ -68,8 +68,8 @@ resourcestring
   oisSetToDefaultHint = 'Set property value to Default';
   oisSetMaxConstraints = 'Set MaxHeight=%d, MaxWidth=%d';
   oisSetMinConstraints = 'Set MinHeight=%d, MinWidth=%d';
-  oisSetMaxConstraintsHint = 'Use current size as Max Contraints';
-  oisSetMinConstraintsHint = 'Use current size as Min Contraints';
+  oisSetMaxConstraintsHint = 'Use current size as Max Constraints';
+  oisSetMinConstraintsHint = 'Use current size as Min Constraints';
   oisAddToFavorites = 'Add to Favorites';
   oisViewRestrictedProperties = 'View restricted properties';
   oisRemoveFromFavorites = 'Remove from Favorites';
