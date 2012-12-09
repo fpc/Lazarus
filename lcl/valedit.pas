@@ -206,6 +206,9 @@ type
 const
   //ToDo: Make this a resourcestring in lclstrconsts unit, once we are satisfied with the implementation of validating
   rsVLEDuplicateKey = 'Duplicate Key:'+LineEnding+'A key with name "%s" already exists at column %d';
+  //ToDo: Make this a resourcestring in lclstrconsts unit, once we are satisfied with ShowColumnTitles
+  rsVLEKey = 'Key';
+  rsVLEName = 'Name';
 
 procedure Register;
 
@@ -413,13 +416,20 @@ begin
 end;
 
 procedure TValueListEditor.ShowColumnTitles;
+var
+  KeyCap, ValCap: String;
 begin
-  if (doColumnTitles in DisplayOptions) and (TitleCaptions.Count > 0) then begin
-    Columns[0].Title.Caption := TitleCaptions[0];
-    Columns[1].Title.Caption := TitleCaptions[1];
-    // or:
-    //Cells[0,0]:=TitleCaptions[0];
-    //Cells[1,0]:=TitleCaptions[1];
+  if (doColumnTitles in DisplayOptions) then
+  begin
+    KeyCap := rsVLEKey;
+    ValCap := rsVLEName;
+    if (TitleCaptions.Count > 0) then KeyCap := TitleCaptions[0];
+    if (TitleCaptions.Count > 1) then ValCap := TitleCaptions[1];
+    Columns[0].Title.Caption := KeyCap;
+    Columns[1].Title.Caption := ValCap;
+    //or:
+    //Cells[0,0] := KeyCap
+    //Cells[1,0] := ValCap;
   end;
 end;
 
