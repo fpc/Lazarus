@@ -701,7 +701,7 @@ begin
   ContinueExpr(b, r, v);
   AssertTrue(n + ' Needexp after dyn array 1', v);
   //AssertTrue(n + ' ptype 2', (r <> nil) and (r^.Request = 'ptype TFooA(abc^[123])'));
-  AssertTrue(n + ' ptype 2', (r <> nil) and (r^.Request = 'ptype abc^[123]'));
+  AssertTrue(n + ' ptype 2', (r <> nil) and (r^.Request = 'ptype abc^[0]'));
   r^.Result := ParseTypeFromGdb('type = ^(array [0..-1] of TFoo)');
   ContinueExpr(b, r, v);
   AssertTrue(n + ' Needexp after dyn array 2', not v);
@@ -710,11 +710,11 @@ begin
 
   n := 'abc[123][456]';
   InitExpr(n, b, r, v);
-  r^.Result := ParseTypeFromGdb('type = array [0..1000] of TFooA');
+  r^.Result := ParseTypeFromGdb('type = array [3..1000] of TFooA');
   ContinueExpr(b, r, v);
   AssertTrue(n + ' Needexp after stat array 1', v);
   //AssertTrue(n + ' ptype 2a', (r <> nil) and (r^.Request = 'ptype TFooA(abc[123])'));
-  AssertTrue(n + ' ptype 2a', (r <> nil) and (r^.Request = 'ptype abc[123]'));
+  AssertTrue(n + ' ptype 2a', (r <> nil) and (r^.Request = 'ptype abc[3]'));
   r^.Result := ParseTypeFromGdb('type = ^(array [0..-1] of TFoo)');
   ContinueExpr(b, r, v);
   AssertTrue(n + ' Needexp after stat,dyn array 2', not v);
@@ -727,7 +727,7 @@ begin
   ContinueExpr(b, r, v);
   AssertTrue(n + ' Needexp after dyn array 1', v);
   //AssertTrue(n + ' ptype 2b', (r <> nil) and (r^.Request = 'ptype TFooA(abc^[123])'));
-  AssertTrue(n + ' ptype 2b', (r <> nil) and (r^.Request = 'ptype abc^[123]'));
+  AssertTrue(n + ' ptype 2b', (r <> nil) and (r^.Request = 'ptype abc^[0]'));
   r^.Result := ParseTypeFromGdb('type = array [0..1000] of TFoo');
   ContinueExpr(b, r, v);
   AssertTrue(n + ' Needexp after dyn,stat array 2', not v);
@@ -785,7 +785,7 @@ begin
 
   r^.Result := ParseTypeFromGdb('type = array [0..1000] of TFoo');
   ContinueExpr(b, r, v);
-  AssertTrue(n + ' ptype outer ', (r <> nil) and (r^.Request = 'ptype abc(x[1])'));
+  AssertTrue(n + ' ptype outer ', (r <> nil) and (r^.Request = 'ptype abc(x[0])'));
 
 
   n := 'abc()[x[123]]';
@@ -802,6 +802,7 @@ begin
 
   n := 'abc[1,2,3].x[1]';
   InitExpr(n, b, r, v, 'abc[1][2][3].x[1]');
+  AssertEquals(n+' toSkipArrayIdx', 'abc[0][0][0].x[0]', b.TextEx[[toSkipArrayIdx]]);
 
   n := 'abc[1,2,3].x and abc[1,2][3].y';
   InitExpr(n, b, r, v, 'abc[1][2][3].x and abc[1][2][3].y');
