@@ -5,7 +5,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2012-12-07 03:43+0400\n"
+"PO-Revision-Date: 2012-12-10 03:35+0400\n"
 "Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
 "Language-Team: \n"
 
@@ -726,16 +726,18 @@ msgid "Set MaxHeight=%d, MaxWidth=%d"
 msgstr "Установить MaxHeight=%d, MaxWidth=%d"
 
 #: objinspstrconsts.oissetmaxconstraintshint
-msgid "Use current size as Max Contraints"
-msgstr ""
+#| msgid "Use current size as Max Contraints"
+msgid "Use current size as Max Constraints"
+msgstr "Использовать текущий размер как ограничение максимума"
 
 #: objinspstrconsts.oissetminconstraints
 msgid "Set MinHeight=%d, MinWidth=%d"
 msgstr "Установить MinHeight=%d, MinWidth=%d"
 
 #: objinspstrconsts.oissetminconstraintshint
-msgid "Use current size as Min Contraints"
-msgstr ""
+#| msgid "Use current size as Min Contraints"
+msgid "Use current size as Min Constraints"
+msgstr "Использовать текущий размер как ограничение минимума"
 
 #: objinspstrconsts.oissettodefault
 msgid "Set to default: %s"
@@ -743,7 +745,7 @@ msgstr "Установить по умолчанию: %s"
 
 #: objinspstrconsts.oissettodefaulthint
 msgid "Set property value to Default"
-msgstr ""
+msgstr "Установить значение свойства по умолчанию"
 
 #: objinspstrconsts.oisshowcomponenttree
 msgid "Show Component Tree"

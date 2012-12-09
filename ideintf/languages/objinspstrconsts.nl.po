@@ -718,7 +718,7 @@ msgid "Set MaxHeight=%d, MaxWidth=%d"
 msgstr ""
 
 #: objinspstrconsts.oissetmaxconstraintshint
-msgid "Use current size as Max Contraints"
+msgid "Use current size as Max Constraints"
 msgstr ""
 
 #: objinspstrconsts.oissetminconstraints
@@ -726,7 +726,7 @@ msgid "Set MinHeight=%d, MinWidth=%d"
 msgstr ""
 
 #: objinspstrconsts.oissetminconstraintshint
-msgid "Use current size as Min Contraints"
+msgid "Use current size as Min Constraints"
 msgstr ""
 
 #: objinspstrconsts.oissettodefault
