@@ -891,8 +891,8 @@ function TSynEditStrings.LogicPosAddChars(const ALine: String; ALogicalPos, ACou
   AllowPastEOL: Boolean): Integer;
 begin
   if AllowPastEOL
-  then LogicPosAddChars(ALine, ALogicalPos, ACount, [lpAllowPastEol])
-  else LogicPosAddChars(ALine, ALogicalPos, ACount, []);
+  then Result := LogicPosAddChars(ALine, ALogicalPos, ACount, [lpAllowPastEol])
+  else Result := LogicPosAddChars(ALine, ALogicalPos, ACount, []);
 end;
 
 function TSynEditStrings.LogicPosAdjustToChar(const ALine: String; ALogicalPos: integer;
@@ -905,7 +905,7 @@ begin
   else f := [];
   if ANext
   then f := f + [lpAdjustToNext];
-  LogicPosAdjustToChar(ALine, ALogicalPos, f);
+  Result := LogicPosAdjustToChar(ALine, ALogicalPos, f);
 end;
 
 function TSynEditStrings.GetPhysicalCharWidths(Index: Integer): TPhysicalCharWidths;
