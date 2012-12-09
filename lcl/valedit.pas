@@ -68,6 +68,7 @@ type
     procedure SetTitleCaptions(const AValue: TStrings);
   protected
     class procedure WSRegisterClass; override;
+    procedure SetFixedCols(const AValue: Integer); override;
     procedure ShowColumnTitles;
     procedure AdjustColumnWidths; virtual;
     procedure AdjustRowCount; virtual;
@@ -309,6 +310,12 @@ end;
 function TValueListEditor.GetFixedRows: Integer;
 begin
   Result := inherited FixedRows;
+end;
+
+procedure TValueListEditor.SetFixedCols(const AValue: Integer);
+begin
+  if (AValue in [0,1]) then
+    inherited SetFixedCols(AValue);
 end;
 
 procedure TValueListEditor.SetFixedRows(AValue: Integer);
@@ -555,6 +562,8 @@ begin
 //  RegisterPropertyToSkip(Self, 'SomeProperty', 'VCL compatibility property', '');
   inherited WSRegisterClass;
 end;
+
+
 
 procedure Register;
 begin
