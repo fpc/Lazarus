@@ -65,9 +65,11 @@ resourcestring
   oisOrderForwardOne = 'Forward One';
   oisOrderBackOne = 'Back One';
   oisSetToDefault = 'Set to default: %s';
-  oisSetToDefaultValue = 'Set to default value';
-  oisSetMinConstraints = 'Set MinHeight=%d, MinWidth=%d';
+  oisSetToDefaultHint = 'Set property value to Default';
   oisSetMaxConstraints = 'Set MaxHeight=%d, MaxWidth=%d';
+  oisSetMinConstraints = 'Set MinHeight=%d, MinWidth=%d';
+  oisSetMaxConstraintsHint = 'Use current size as Max Contraints';
+  oisSetMinConstraintsHint = 'Use current size as Min Contraints';
   oisAddToFavorites = 'Add to Favorites';
   oisViewRestrictedProperties = 'View restricted properties';
   oisRemoveFromFavorites = 'Remove from Favorites';

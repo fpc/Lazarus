@@ -725,17 +725,25 @@ msgstr "Set"
 msgid "Set MaxHeight=%d, MaxWidth=%d"
 msgstr "Установить MaxHeight=%d, MaxWidth=%d"
 
+#: objinspstrconsts.oissetmaxconstraintshint
+msgid "Use current size as Max Contraints"
+msgstr ""
+
 #: objinspstrconsts.oissetminconstraints
 msgid "Set MinHeight=%d, MinWidth=%d"
 msgstr "Установить MinHeight=%d, MinWidth=%d"
+
+#: objinspstrconsts.oissetminconstraintshint
+msgid "Use current size as Min Contraints"
+msgstr ""
 
 #: objinspstrconsts.oissettodefault
 msgid "Set to default: %s"
 msgstr "Установить по умолчанию: %s"
 
-#: objinspstrconsts.oissettodefaultvalue
-msgid "Set to default value"
-msgstr "Установить в значение по умолчанию"
+#: objinspstrconsts.oissettodefaulthint
+msgid "Set property value to Default"
+msgstr ""
 
 #: objinspstrconsts.oisshowcomponenttree
 msgid "Show Component Tree"

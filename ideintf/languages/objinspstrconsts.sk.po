@@ -736,17 +736,25 @@ msgstr "Množina"
 msgid "Set MaxHeight=%d, MaxWidth=%d"
 msgstr ""
 
+#: objinspstrconsts.oissetmaxconstraintshint
+msgid "Use current size as Max Contraints"
+msgstr ""
+
 #: objinspstrconsts.oissetminconstraints
 msgid "Set MinHeight=%d, MinWidth=%d"
+msgstr ""
+
+#: objinspstrconsts.oissetminconstraintshint
+msgid "Use current size as Min Contraints"
 msgstr ""
 
 #: objinspstrconsts.oissettodefault
 msgid "Set to default: %s"
 msgstr "Nastaviť na predvolené: %s"
 
-#: objinspstrconsts.oissettodefaultvalue
-msgid "Set to default value"
-msgstr "Nastaviť na predvolenú hodnotu"
+#: objinspstrconsts.oissettodefaulthint
+msgid "Set property value to Default"
+msgstr ""
 
 #: objinspstrconsts.oisshowcomponenttree
 msgid "Show Component Tree"

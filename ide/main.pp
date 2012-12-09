@@ -12277,7 +12277,7 @@ begin
   ObjectInspector1.ShowFavorites:=True;
   ObjectInspector1.ShowRestricted:=True;
   ObjectInspector1.Favorites:=LoadOIFavoriteProperties;
-  ObjectInspector1.FindDeclarationPopupmenuItem.Visible:=true;
+//  ObjectInspector1.FindDeclarationPopupmenuItem.Visible:=true;
   ObjectInspector1.OnAddToFavorites:=@OIOnAddToFavorites;
   ObjectInspector1.OnFindDeclarationOfProperty:=@OIOnFindDeclarationOfProperty;
   ObjectInspector1.OnUpdateRestricted := @OIOnUpdateRestricted;

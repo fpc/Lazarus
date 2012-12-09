@@ -283,9 +283,6 @@ type
     pehEditButton
     );
 
-  // Used for setting default value from OI popup menu
-  TPropEditDefaultValueType = (pesdDefaultValue, pesdConstraints);
-
   TPropertyEditorHook = class;
 
   { TPropertyEditor }
@@ -339,7 +336,6 @@ type
     function GetWideStrValueAt(Index: Integer): WideString;
     function GetValue: ansistring; virtual;
     function GetHint(HintType: TPropEditHint; x, y: integer): string; virtual;
-    function GetDefaultValueType: TPropEditDefaultValueType; virtual;
     function GetDefaultValue: ansistring; virtual;
     function GetVisualValue: ansistring;
     procedure GetValues(Proc: TGetStrProc); virtual;
@@ -375,6 +371,12 @@ type
     function SubPropertiesNeedsUpdate: boolean; virtual;
     function IsDefaultValue: boolean; virtual;
     function IsNotDefaultValue: boolean; virtual;
+    // These are used for the popup menu in OI
+    function GetVerbCount: Integer; virtual;
+    function GetVerb(Index: Integer; out AHint: string): string; virtual;
+    function GetVerbEnabled(Index: Integer): Boolean; virtual;
+    procedure ExecuteVerb(Index: Integer); virtual;
+  public
     property PropertyHook: TPropertyEditorHook read FPropertyHook;
     property PrivateDirectory: ansistring read GetPrivateDirectory;
     property PropCount:Integer read FPropCount;
@@ -870,7 +872,11 @@ type
 
   TConstraintsPropertyEditor = class(TClassPropertyEditor)
   public
-    function GetDefaultValueType: TPropEditDefaultValueType; override;
+    // These are used for the popup menu in OI
+    function GetVerbCount: Integer; override;
+    function GetVerb(Index: Integer; out AHint: string): string; override;
+    function GetVerbEnabled(Index: Integer): Boolean; override;
+    procedure ExecuteVerb(Index: Integer); override;
   end;
 
 
@@ -2562,13 +2568,6 @@ begin
     Result:=Result+LineEnding+TypeHint;
 end;
 
-function TPropertyEditor.GetDefaultValueType: TPropEditDefaultValueType;
-// ToDo: refactor the code so that popup menu in OI gets all info from PropertyEditor
-//  virtual methods. Now there is a case..of based on this return value.
-begin
-  Result:=pesdDefaultValue;
-end;
-
 function TPropertyEditor.GetDefaultValue: ansistring;
 begin
   if not (paHasDefaultValue in GetAttributes) then
@@ -2909,7 +2908,31 @@ end;
 function TPropertyEditor.IsNotDefaultValue: boolean;
 begin
   Result:=(paHasDefaultValue in GetAttributes)
-           and (GetDefaultValue<>GetVisualValue);
+      and (GetDefaultValue<>GetVisualValue);
+end;
+
+function TPropertyEditor.GetVerbCount: Integer;
+begin
+  if paHasDefaultValue in GetAttributes then
+    Result := 1 // Show a menu item for default value only if there is default value
+  else
+    Result := 0;
+end;
+
+function TPropertyEditor.GetVerb(Index: Integer; out AHint: string): string;
+begin
+  Result := Format(oisSetToDefault, [GetDefaultValue]);
+  AHint := oisSetToDefaultHint;
+end;
+
+function TPropertyEditor.GetVerbEnabled(Index: Integer): Boolean;
+begin
+  Result := IsNotDefaultValue;
+end;
+
+procedure TPropertyEditor.ExecuteVerb(Index: Integer);
+begin
+  SetValue(GetDefaultValue);
 end;
 
 { TOrdinalPropertyEditor }
@@ -2958,8 +2981,7 @@ end;
 
 { TIntegerPropertyEditor }
 
-function TIntegerPropertyEditor.OrdValueToVisualValue(OrdValue: longint
-  ): string;
+function TIntegerPropertyEditor.OrdValueToVisualValue(OrdValue: longint): string;
 begin
   with GetTypeData(GetPropType)^ do begin
     {debugln('TIntegerPropertyEditor.OrdValueToVisualValue ',GetName,' ',dbgs(ord(OrdType)),' ',dbgs(OrdValue));
@@ -5104,9 +5126,58 @@ end;
 
 { TConstraintsPropertyEditor }
 
-function TConstraintsPropertyEditor.GetDefaultValueType: TPropEditDefaultValueType;
+function TConstraintsPropertyEditor.GetVerbCount: Integer;
 begin
-  Result:=pesdConstraints;
+  Result:=2;
+end;
+
+function TConstraintsPropertyEditor.GetVerb(Index: Integer; out AHint: string): string;
+var
+  s: String;
+  c: TControl;
+begin
+  case Index of
+    0: begin
+      s := oisSetMaxConstraints;
+      AHint := oisSetMaxConstraintsHint;
+    end;
+    1: begin
+      s := oisSetMinConstraints;
+      AHint := oisSetMinConstraintsHint;
+    end;
+  end;
+  c := GetComponent(0) as TControl;
+  Result := Format(s, [c.Height, c.Width]);
+end;
+
+function TConstraintsPropertyEditor.GetVerbEnabled(Index: Integer): Boolean;
+var
+  c: TControl;
+begin
+  c := GetComponent(0) as TControl;
+  case Index of
+    0: Result := (c.Constraints.MaxHeight<>c.Height)
+              or (c.Constraints.MaxWidth<>c.Width);
+    1: Result := (c.Constraints.MinHeight<>c.Height)
+              or (c.Constraints.MinWidth<>c.Width);
+  end;
+end;
+
+procedure TConstraintsPropertyEditor.ExecuteVerb(Index: Integer);
+var
+  c: TControl;
+begin
+  c := GetComponent(0) as TControl;
+  case Index of
+    0: begin
+      c.Constraints.MaxHeight := c.Height;
+      c.Constraints.MaxWidth := c.Width;
+    end;
+    1: begin
+      c.Constraints.MinHeight := c.Height;
+      c.Constraints.MinWidth := c.Width;
+    end;
+  end;
 end;
 
 //==============================================================================
