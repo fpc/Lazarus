@@ -249,7 +249,7 @@ end;
 procedure TCompilerTestSimple.checkArrayProperties;
 begin
   CompileRun('var r: TStringList; begin r := TStringList.Create; r.Values[''test''] := ''data''; ResultS(r.text); r.Free;end.');
-  CheckEquals('test=data'#13#10, LastResult);
+  CheckEquals('test=data'+LineEnding, LastResult);
 end;
 
 procedure TCompilerTestSimple.VarDecl;
