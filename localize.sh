@@ -31,7 +31,6 @@ RSTFILES=(
   ". lazarusidestrconsts lazaruside"
   ". debuggerstrconst"
   ". gdbmidebugger"
-  "ideintf objinspstrconsts"
   "components/codetools codetoolsstrconsts"
   "components/tdbf registerdbf"
   "components/turbopower_ipro ipconst"

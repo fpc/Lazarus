@@ -49,11 +49,6 @@ tools\updatepofiles %DBGD_RST% languages\debuggerstrconst.po
 tools\updatepofiles %DBG_RST% languages\gdbmidebugger.po
 @if exist %DBG_RST% echo RST found
 
-@REM IDEIntf
-@set ObjInsp_RST=ideintf\units\%ArchOsWS%\ObjInspStrConsts.rst
-tools\updatepofiles %ObjInsp_RST% ideintf\languages\objinspstrconsts.po
-@if exist %ObjInsp_RST% echo RST found
-
 @REM INSTALLER
 @set Installer_RST=tools\install\win\installerstrconsts.rst
 if not exist %Installer_RST% goto SkipInstaller
