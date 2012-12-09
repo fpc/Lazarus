@@ -6210,7 +6210,6 @@ begin
         begin
           SelectAll;
         end;
-{begin}                                                                         //mh 2000-10-30
       ecDeleteLastChar:
         if not ReadOnly then begin
           if SelAvail and (not FBlockSelection.Persistent) and (eoOverwriteBlock in fOptions2) then
@@ -6236,24 +6235,17 @@ begin
                 FTheLinesView.EditLineJoin(CaretY);
               end;
             end else begin
-                // delete char
-              {$IFDEF USE_UTF8BIDI_LCL}
-              CaretX := CaretX - 1;
-              FTheLinesView.EditDelete(CaretX, LogCaretXY.Y, 1);
-              {$ELSE USE_UTF8BIDI_LCL}
+              // delete char
               LogCounter := LogCaretXY.X;
               if FCaret.BytePosOffset = 0 then begin
-                LogCaretXY.X := FTheLinesView.LogicPosAddChars(Temp, LogCaretXY.X, -1);
+                LogCaretXY.X := FTheLinesView.LogicPosAddChars(Temp, LogCaretXY.X, -1, [lpStopAtCodePoint]);
                 LogCounter := LogCounter - LogCaretXY.X;
               end
               else
                 LogCounter :=  GetCharLen(Temp, LogCaretXY.X);
               FTheLinesView.EditDelete(LogCaretXY.X, LogCaretXY.Y, LogCounter);
               FCaret.BytePos := LogCaretXY.X;
-              {$ENDIF USE_UTF8BIDI_LCL}
-              //end;
             end;
-
           end;
         end;
       ecDeleteChar:

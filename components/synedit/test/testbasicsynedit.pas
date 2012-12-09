@@ -29,6 +29,7 @@ type
     procedure TestEditTabs;
     procedure TestEditEcChar;
     procedure TestPhysicalLogical;
+    procedure TestLogicalAdjust;
     procedure TestCaretAutoMove;
     procedure TestCaretDeleteWord_LastWord;
   end;
@@ -669,6 +670,193 @@ begin
   TestPhysLog('bidi line (mixed arab/latin)',2,  1,      1, 0,    1, 0,    1, 0,    1, 0);
   TestPhysLog('bidi line (mixed arab/latin)',2,  4,      4, 0,   24, 0,    4, 0,   24, 0);
   TestPhysLog('bidi line (mixed arab/latin)',2, 15,      4, 0,   24, 0,   24, 0,    4, 0);
+end;
+
+procedure TTestBasicSynEdit.TestLogicalAdjust;
+var
+  tb: TSynEditStrings;
+begin
+  tb := SynEdit.TextBuffer;
+  // #$CC#$81 Combining
+  AssertEquals('LogicPosIsAtChar 1 ', True, tb.LogicPosIsAtChar('aüb'#$CC#$81'c', 1)); // a
+  AssertEquals('LogicPosIsAtChar 2 ', True, tb.LogicPosIsAtChar('aüb'#$CC#$81'c', 2)); // ü
+  AssertEquals('LogicPosIsAtChar 3 ', False,tb.LogicPosIsAtChar('aüb'#$CC#$81'c', 3)); // mid ü
+  AssertEquals('LogicPosIsAtChar 4 ', True, tb.LogicPosIsAtChar('aüb'#$CC#$81'c', 4)); // b
+  AssertEquals('LogicPosIsAtChar 5 ', False,tb.LogicPosIsAtChar('aüb'#$CC#$81'c', 5)); // AT Combining
+  AssertEquals('LogicPosIsAtChar 6 ', False,tb.LogicPosIsAtChar('aüb'#$CC#$81'c', 6)); // mid Combining
+  AssertEquals('LogicPosIsAtChar 7 ', True, tb.LogicPosIsAtChar('aüb'#$CC#$81'c', 7)); // c
+
+  AssertEquals('LogicPosIsAtChar 1 C', True, tb.LogicPosIsAtChar('aüb'#$CC#$81'c', 1, [lpStopAtCodePoint])); // a
+  AssertEquals('LogicPosIsAtChar 2 C', True, tb.LogicPosIsAtChar('aüb'#$CC#$81'c', 2, [lpStopAtCodePoint])); // ü
+  AssertEquals('LogicPosIsAtChar 3 C', False,tb.LogicPosIsAtChar('aüb'#$CC#$81'c', 3, [lpStopAtCodePoint])); // mid ü
+  AssertEquals('LogicPosIsAtChar 4 C', True, tb.LogicPosIsAtChar('aüb'#$CC#$81'c', 4, [lpStopAtCodePoint])); // b
+  AssertEquals('LogicPosIsAtChar 5 C', True ,tb.LogicPosIsAtChar('aüb'#$CC#$81'c', 5, [lpStopAtCodePoint])); // AT Combining
+  AssertEquals('LogicPosIsAtChar 6 C', False,tb.LogicPosIsAtChar('aüb'#$CC#$81'c', 6, [lpStopAtCodePoint])); // mid Combining
+  AssertEquals('LogicPosIsAtChar 7 C', True, tb.LogicPosIsAtChar('aüb'#$CC#$81'c', 7, [lpStopAtCodePoint])); // c
+
+  // broken text
+  AssertEquals('LogicPosIsAtChar 1 Comb', True, tb.LogicPosIsAtChar(#$CC#$81'c', 1, []));
+  AssertEquals('LogicPosIsAtChar 1 Comb C', True, tb.LogicPosIsAtChar(#$CC#$81'c', 1, [lpStopAtCodePoint]));
+
+
+  AssertEquals('LogicPosAdjustToChar 1 ', 1, tb.LogicPosAdjustToChar('aüb'#$CC#$81'c', 1)); // a
+  AssertEquals('LogicPosAdjustToChar 2 ', 2, tb.LogicPosAdjustToChar('aüb'#$CC#$81'c', 2)); // ü
+  AssertEquals('LogicPosAdjustToChar 3 ', 2, tb.LogicPosAdjustToChar('aüb'#$CC#$81'c', 3)); // mid ü
+  AssertEquals('LogicPosAdjustToChar 4 ', 4, tb.LogicPosAdjustToChar('aüb'#$CC#$81'c', 4)); // b
+  AssertEquals('LogicPosAdjustToChar 5 ', 4, tb.LogicPosAdjustToChar('aüb'#$CC#$81'c', 5)); // AT Combining
+  AssertEquals('LogicPosAdjustToChar 6 ', 4, tb.LogicPosAdjustToChar('aüb'#$CC#$81'c', 6)); // mid Combining
+  AssertEquals('LogicPosAdjustToChar 7 ', 7, tb.LogicPosAdjustToChar('aüb'#$CC#$81'c', 7)); // c
+
+  AssertEquals('LogicPosAdjustToChar 1N ', 1, tb.LogicPosAdjustToChar('aüb'#$CC#$81'c', 1, [lpAdjustToNext])); // a
+  AssertEquals('LogicPosAdjustToChar 2N ', 2, tb.LogicPosAdjustToChar('aüb'#$CC#$81'c', 2, [lpAdjustToNext])); // ü
+  AssertEquals('LogicPosAdjustToChar 3N ', 4, tb.LogicPosAdjustToChar('aüb'#$CC#$81'c', 3, [lpAdjustToNext])); // mid ü
+  AssertEquals('LogicPosAdjustToChar 4N ', 4, tb.LogicPosAdjustToChar('aüb'#$CC#$81'c', 4, [lpAdjustToNext])); // b
+  AssertEquals('LogicPosAdjustToChar 5N ', 7, tb.LogicPosAdjustToChar('aüb'#$CC#$81'c', 5, [lpAdjustToNext])); // AT Combining
+  AssertEquals('LogicPosAdjustToChar 6N ', 7, tb.LogicPosAdjustToChar('aüb'#$CC#$81'c', 6, [lpAdjustToNext])); // mid Combining
+  AssertEquals('LogicPosAdjustToChar 7N ', 7, tb.LogicPosAdjustToChar('aüb'#$CC#$81'ü', 7, [lpAdjustToNext])); // ü
+  AssertEquals('LogicPosAdjustToChar 8N ', 7, tb.LogicPosAdjustToChar('aüb'#$CC#$81'ü', 8, [lpAdjustToNext])); // mid ü
+  AssertEquals('LogicPosAdjustToChar 8NE', 9, tb.LogicPosAdjustToChar('aüb'#$CC#$81'ü', 8, [lpAdjustToNext, lpAllowPastEol])); // mid ü
+
+  AssertEquals('LogicPosAdjustToChar 1 C', 1, tb.LogicPosAdjustToChar('aüb'#$CC#$81'c', 1, [lpStopAtCodePoint])); // a
+  AssertEquals('LogicPosAdjustToChar 2 C', 2, tb.LogicPosAdjustToChar('aüb'#$CC#$81'c', 2, [lpStopAtCodePoint])); // ü
+  AssertEquals('LogicPosAdjustToChar 3 C', 2, tb.LogicPosAdjustToChar('aüb'#$CC#$81'c', 3, [lpStopAtCodePoint])); // mid ü
+  AssertEquals('LogicPosAdjustToChar 4 C', 4, tb.LogicPosAdjustToChar('aüb'#$CC#$81'c', 4, [lpStopAtCodePoint])); // b
+  AssertEquals('LogicPosAdjustToChar 5 C', 5, tb.LogicPosAdjustToChar('aüb'#$CC#$81'c', 5, [lpStopAtCodePoint])); // AT Combining
+  AssertEquals('LogicPosAdjustToChar 6 C', 5, tb.LogicPosAdjustToChar('aüb'#$CC#$81'c', 6, [lpStopAtCodePoint])); // mid Combining
+  AssertEquals('LogicPosAdjustToChar 7 C', 7, tb.LogicPosAdjustToChar('aüb'#$CC#$81'c', 7, [lpStopAtCodePoint])); // c
+
+  AssertEquals('LogicPosAdjustToChar 1N C', 1, tb.LogicPosAdjustToChar('aüb'#$CC#$81'c', 1, [lpStopAtCodePoint, lpAdjustToNext])); // a
+  AssertEquals('LogicPosAdjustToChar 2N C', 2, tb.LogicPosAdjustToChar('aüb'#$CC#$81'c', 2, [lpStopAtCodePoint, lpAdjustToNext])); // ü
+  AssertEquals('LogicPosAdjustToChar 3N C', 4, tb.LogicPosAdjustToChar('aüb'#$CC#$81'c', 3, [lpStopAtCodePoint, lpAdjustToNext])); // mid ü
+  AssertEquals('LogicPosAdjustToChar 4N C', 4, tb.LogicPosAdjustToChar('aüb'#$CC#$81'c', 4, [lpStopAtCodePoint, lpAdjustToNext])); // b
+  AssertEquals('LogicPosAdjustToChar 5N C', 5, tb.LogicPosAdjustToChar('aüb'#$CC#$81'c', 5, [lpStopAtCodePoint, lpAdjustToNext])); // AT Combining
+  AssertEquals('LogicPosAdjustToChar 6N C', 7, tb.LogicPosAdjustToChar('aüb'#$CC#$81'c', 6, [lpStopAtCodePoint, lpAdjustToNext])); // mid Combining
+  AssertEquals('LogicPosAdjustToChar 7N C', 7, tb.LogicPosAdjustToChar('aüb'#$CC#$81'ü', 7, [lpStopAtCodePoint, lpAdjustToNext])); // ü
+  AssertEquals('LogicPosAdjustToChar 8N C', 7, tb.LogicPosAdjustToChar('aüb'#$CC#$81'ü', 8, [lpStopAtCodePoint, lpAdjustToNext])); // mid ü
+  AssertEquals('LogicPosAdjustToChar 8NE C', 9, tb.LogicPosAdjustToChar('aüb'#$CC#$81'ü', 8, [lpStopAtCodePoint, lpAdjustToNext, lpAllowPastEol])); // mid ü
+
+  // broken text
+  AssertEquals('LogicPosAdjustToChar 1 Comb', 1, tb.LogicPosAdjustToChar(#$CC#$81'c', 1, []));
+  AssertEquals('LogicPosAdjustToChar 2 Comb', 1, tb.LogicPosAdjustToChar(#$CC#$81'c', 2, []));
+  AssertEquals('LogicPosAdjustToChar 1 Comb N', 1, tb.LogicPosAdjustToChar(#$CC#$81'c', 1, [lpAdjustToNext]));
+  AssertEquals('LogicPosAdjustToChar 2 Comb N', 3, tb.LogicPosAdjustToChar(#$CC#$81'c', 2, [lpAdjustToNext]));
+  AssertEquals('LogicPosAdjustToChar 1 Comb', 1, tb.LogicPosAdjustToChar(#$CC#$81'c', 1, [lpStopAtCodePoint]));
+  AssertEquals('LogicPosAdjustToChar 2 Comb', 1, tb.LogicPosAdjustToChar(#$CC#$81'c', 2, [lpStopAtCodePoint]));
+  AssertEquals('LogicPosAdjustToChar 1 Comb N', 1, tb.LogicPosAdjustToChar(#$CC#$81'c', 1, [lpStopAtCodePoint, lpAdjustToNext]));
+  AssertEquals('LogicPosAdjustToChar 2 Comb N', 3, tb.LogicPosAdjustToChar(#$CC#$81'c', 2, [lpStopAtCodePoint, lpAdjustToNext]));
+
+
+  AssertEquals('LogicPosAddChars  1, 1  ', 2, tb.LogicPosAddChars('aüb'#$CC#$81'cüü', 1, 1)); // a
+  AssertEquals('LogicPosAddChars  2, 1  ', 4, tb.LogicPosAddChars('aüb'#$CC#$81'cüü', 2, 1)); // ü
+  AssertEquals('LogicPosAddChars  3, 1  ', 4, tb.LogicPosAddChars('aüb'#$CC#$81'cüü', 3, 1)); // mid ü
+  AssertEquals('LogicPosAddChars  4, 1  ', 7, tb.LogicPosAddChars('aüb'#$CC#$81'cüü', 4, 1)); // b
+  AssertEquals('LogicPosAddChars  5, 1  ', 7, tb.LogicPosAddChars('aüb'#$CC#$81'cüü', 5, 1)); // comb
+  AssertEquals('LogicPosAddChars  6, 1  ', 7, tb.LogicPosAddChars('aüb'#$CC#$81'cüü', 6, 1)); // mid
+  AssertEquals('LogicPosAddChars  7, 1  ', 8, tb.LogicPosAddChars('aüb'#$CC#$81'cüü', 7, 1)); // c
+  AssertEquals('LogicPosAddChars  8, 1  ',10, tb.LogicPosAddChars('aüb'#$CC#$81'cüü', 8, 1)); // ü
+  AssertEquals('LogicPosAddChars  9, 1  ',10, tb.LogicPosAddChars('aüb'#$CC#$81'cüü', 9, 1)); // mid ü
+  AssertEquals('LogicPosAddChars 10, 1  ',10, tb.LogicPosAddChars('aüb'#$CC#$81'cüü',10, 1)); // ü
+  AssertEquals('LogicPosAddChars 11, 1  ',10, tb.LogicPosAddChars('aüb'#$CC#$81'cüü',11, 1)); // mid ü
+  AssertEquals('LogicPosAddChars 10, 1 E',12, tb.LogicPosAddChars('aüb'#$CC#$81'cüü',10, 1, [lpAllowPastEol])); // ü
+  AssertEquals('LogicPosAddChars 11, 1 E',12, tb.LogicPosAddChars('aüb'#$CC#$81'cüü',11, 1, [lpAllowPastEol])); // mid ü
+
+  AssertEquals('LogicPosAddChars  1, 2  ', 4, tb.LogicPosAddChars('aüb'#$CC#$81'cüü', 1, 2)); // a
+  AssertEquals('LogicPosAddChars  2, 2  ', 7, tb.LogicPosAddChars('aüb'#$CC#$81'cüü', 2, 2)); // ü
+  AssertEquals('LogicPosAddChars  3, 2  ', 7, tb.LogicPosAddChars('aüb'#$CC#$81'cüü', 3, 2)); // mid ü
+  AssertEquals('LogicPosAddChars  4, 2  ', 8, tb.LogicPosAddChars('aüb'#$CC#$81'cüü', 4, 2)); // b
+  AssertEquals('LogicPosAddChars  5, 2  ', 8, tb.LogicPosAddChars('aüb'#$CC#$81'cüü', 5, 2)); // comb
+  AssertEquals('LogicPosAddChars  6, 2  ', 8, tb.LogicPosAddChars('aüb'#$CC#$81'cüü', 6, 2)); // mid
+  AssertEquals('LogicPosAddChars  7, 2  ',10, tb.LogicPosAddChars('aüb'#$CC#$81'cüü', 7, 2)); // c
+  AssertEquals('LogicPosAddChars  8, 2  ',10, tb.LogicPosAddChars('aüb'#$CC#$81'cüü', 8, 2)); // ü
+  AssertEquals('LogicPosAddChars  9, 2  ',10, tb.LogicPosAddChars('aüb'#$CC#$81'cüü', 9, 2)); // mid ü
+  AssertEquals('LogicPosAddChars 10, 2  ',10, tb.LogicPosAddChars('aüb'#$CC#$81'cüü',10, 2)); // ü
+  AssertEquals('LogicPosAddChars 11, 2  ',10, tb.LogicPosAddChars('aüb'#$CC#$81'cüü',11, 2)); // mid ü
+  AssertEquals('LogicPosAddChars  8, 2 E',12, tb.LogicPosAddChars('aüb'#$CC#$81'cüü', 8, 2, [lpAllowPastEol])); // ü
+  AssertEquals('LogicPosAddChars  9, 2 E',12, tb.LogicPosAddChars('aüb'#$CC#$81'cüü', 9, 2, [lpAllowPastEol])); // mid ü
+  AssertEquals('LogicPosAddChars 10, 2 E',13, tb.LogicPosAddChars('aüb'#$CC#$81'cüü',10, 2, [lpAllowPastEol])); // ü
+  AssertEquals('LogicPosAddChars 11, 2 E',13, tb.LogicPosAddChars('aüb'#$CC#$81'cüü',11, 2, [lpAllowPastEol])); // mid ü
+
+  AssertEquals('LogicPosAddChars  1, -1  ', 1, tb.LogicPosAddChars('aüb'#$CC#$81'cüü', 1, -1)); // a
+  AssertEquals('LogicPosAddChars  2, -1  ', 1, tb.LogicPosAddChars('aüb'#$CC#$81'cüü', 2, -1)); // ü
+//AssertEquals('LogicPosAddChars  3, -1  ', 1, tb.LogicPosAddChars('aüb'#$CC#$81'cüü', 3, -1)); // mid ü
+  AssertEquals('LogicPosAddChars  4, -1  ', 2, tb.LogicPosAddChars('aüb'#$CC#$81'cüü', 4, -1)); // b
+//AssertEquals('LogicPosAddChars  5, -1  ', 2, tb.LogicPosAddChars('aüb'#$CC#$81'cüü', 5, -1)); // comb
+//AssertEquals('LogicPosAddChars  6, -1  ', 2, tb.LogicPosAddChars('aüb'#$CC#$81'cüü', 6, -1)); // mid
+  AssertEquals('LogicPosAddChars  7, -1  ', 4, tb.LogicPosAddChars('aüb'#$CC#$81'cüü', 7, -1)); // c
+  AssertEquals('LogicPosAddChars  8, -1  ', 7, tb.LogicPosAddChars('aüb'#$CC#$81'cüü', 8, -1)); // ü
+//AssertEquals('LogicPosAddChars  9, -1  ', 7, tb.LogicPosAddChars('aüb'#$CC#$81'cüü', 9, -1)); // mid ü
+  AssertEquals('LogicPosAddChars 10, -1  ', 8, tb.LogicPosAddChars('aüb'#$CC#$81'cüü',10, -1)); // ü
+//AssertEquals('LogicPosAddChars 11, -1  ', 8, tb.LogicPosAddChars('aüb'#$CC#$81'cüü',11, -1)); // mid ü
+
+  AssertEquals('LogicPosAddChars  1, -2  ', 1, tb.LogicPosAddChars('aüb'#$CC#$81'cüü', 1, -2)); // a
+  AssertEquals('LogicPosAddChars  2, -2  ', 1, tb.LogicPosAddChars('aüb'#$CC#$81'cüü', 2, -2)); // ü
+//AssertEquals('LogicPosAddChars  3, -2  ', 1, tb.LogicPosAddChars('aüb'#$CC#$81'cüü', 3, -2)); // mid ü
+  AssertEquals('LogicPosAddChars  4, -2  ', 1, tb.LogicPosAddChars('aüb'#$CC#$81'cüü', 4, -2)); // b
+//AssertEquals('LogicPosAddChars  5, -2  ', 1, tb.LogicPosAddChars('aüb'#$CC#$81'cüü', 5, -2)); // comb
+//AssertEquals('LogicPosAddChars  6, -2  ', 1, tb.LogicPosAddChars('aüb'#$CC#$81'cüü', 6, -2)); // mid
+  AssertEquals('LogicPosAddChars  7, -2  ', 2, tb.LogicPosAddChars('aüb'#$CC#$81'cüü', 7, -2)); // c
+  AssertEquals('LogicPosAddChars  8, -2  ', 4, tb.LogicPosAddChars('aüb'#$CC#$81'cüü', 8, -2)); // ü
+//AssertEquals('LogicPosAddChars  9, -2  ', 4, tb.LogicPosAddChars('aüb'#$CC#$81'cüü', 9, -2)); // mid ü
+  AssertEquals('LogicPosAddChars 10, -2  ', 7, tb.LogicPosAddChars('aüb'#$CC#$81'cüü',10, -2)); // ü
+//AssertEquals('LogicPosAddChars 11, -2  ', 7, tb.LogicPosAddChars('aüb'#$CC#$81'cüü',11, -2)); // mid ü
+
+
+  AssertEquals('LogicPosAddChars  1, 1C  ', 2, tb.LogicPosAddChars('aüb'#$CC#$81'cüü', 1, 1, [lpStopAtCodePoint])); // a
+  AssertEquals('LogicPosAddChars  2, 1C  ', 4, tb.LogicPosAddChars('aüb'#$CC#$81'cüü', 2, 1, [lpStopAtCodePoint])); // ü
+  AssertEquals('LogicPosAddChars  3, 1C  ', 4, tb.LogicPosAddChars('aüb'#$CC#$81'cüü', 3, 1, [lpStopAtCodePoint])); // mid ü
+  AssertEquals('LogicPosAddChars  4, 1C  ', 5, tb.LogicPosAddChars('aüb'#$CC#$81'cüü', 4, 1, [lpStopAtCodePoint])); // b
+  AssertEquals('LogicPosAddChars  5, 1C  ', 7, tb.LogicPosAddChars('aüb'#$CC#$81'cüü', 5, 1, [lpStopAtCodePoint])); // comb
+  AssertEquals('LogicPosAddChars  6, 1C  ', 7, tb.LogicPosAddChars('aüb'#$CC#$81'cüü', 6, 1, [lpStopAtCodePoint])); // mid
+  AssertEquals('LogicPosAddChars  7, 1C  ', 8, tb.LogicPosAddChars('aüb'#$CC#$81'cüü', 7, 1, [lpStopAtCodePoint])); // c
+  AssertEquals('LogicPosAddChars  8, 1C  ',10, tb.LogicPosAddChars('aüb'#$CC#$81'cüü', 8, 1, [lpStopAtCodePoint])); // ü
+  AssertEquals('LogicPosAddChars  9, 1C  ',10, tb.LogicPosAddChars('aüb'#$CC#$81'cüü', 9, 1, [lpStopAtCodePoint])); // mid ü
+  AssertEquals('LogicPosAddChars 10, 1C  ',10, tb.LogicPosAddChars('aüb'#$CC#$81'cüü',10, 1, [lpStopAtCodePoint])); // ü
+  AssertEquals('LogicPosAddChars 11, 1C  ',10, tb.LogicPosAddChars('aüb'#$CC#$81'cüü',11, 1, [lpStopAtCodePoint])); // mid ü
+  AssertEquals('LogicPosAddChars 10, 1C E',12, tb.LogicPosAddChars('aüb'#$CC#$81'cüü',10, 1, [lpAllowPastEol, lpStopAtCodePoint])); // ü
+  AssertEquals('LogicPosAddChars 11, 1C E',12, tb.LogicPosAddChars('aüb'#$CC#$81'cüü',11, 1, [lpAllowPastEol, lpStopAtCodePoint])); // mid ü
+
+  AssertEquals('LogicPosAddChars  1, 2C  ', 4, tb.LogicPosAddChars('aüb'#$CC#$81'cüü', 1, 2, [lpStopAtCodePoint])); // a
+  AssertEquals('LogicPosAddChars  2, 2C  ', 5, tb.LogicPosAddChars('aüb'#$CC#$81'cüü', 2, 2, [lpStopAtCodePoint])); // ü
+  AssertEquals('LogicPosAddChars  3, 2C  ', 5, tb.LogicPosAddChars('aüb'#$CC#$81'cüü', 3, 2, [lpStopAtCodePoint])); // mid ü
+  AssertEquals('LogicPosAddChars  4, 2C  ', 7, tb.LogicPosAddChars('aüb'#$CC#$81'cüü', 4, 2, [lpStopAtCodePoint])); // b
+  AssertEquals('LogicPosAddChars  5, 2C  ', 8, tb.LogicPosAddChars('aüb'#$CC#$81'cüü', 5, 2, [lpStopAtCodePoint])); // comb
+  AssertEquals('LogicPosAddChars  6, 2C  ', 8, tb.LogicPosAddChars('aüb'#$CC#$81'cüü', 6, 2, [lpStopAtCodePoint])); // mid
+  AssertEquals('LogicPosAddChars  7, 2C  ',10, tb.LogicPosAddChars('aüb'#$CC#$81'cüü', 7, 2, [lpStopAtCodePoint])); // c
+  AssertEquals('LogicPosAddChars  8, 2C  ',10, tb.LogicPosAddChars('aüb'#$CC#$81'cüü', 8, 2, [lpStopAtCodePoint])); // ü
+  AssertEquals('LogicPosAddChars  9, 2C  ',10, tb.LogicPosAddChars('aüb'#$CC#$81'cüü', 9, 2, [lpStopAtCodePoint])); // mid ü
+  AssertEquals('LogicPosAddChars 10, 2C  ',10, tb.LogicPosAddChars('aüb'#$CC#$81'cüü',10, 2, [lpStopAtCodePoint])); // ü
+  AssertEquals('LogicPosAddChars 11, 2C  ',10, tb.LogicPosAddChars('aüb'#$CC#$81'cüü',11, 2, [lpStopAtCodePoint])); // mid ü
+  AssertEquals('LogicPosAddChars  8, 2C E',12, tb.LogicPosAddChars('aüb'#$CC#$81'cüü', 8, 2, [lpAllowPastEol, lpStopAtCodePoint])); // ü
+  AssertEquals('LogicPosAddChars  9, 2C E',12, tb.LogicPosAddChars('aüb'#$CC#$81'cüü', 9, 2, [lpAllowPastEol, lpStopAtCodePoint])); // mid ü
+  AssertEquals('LogicPosAddChars 10, 2C E',13, tb.LogicPosAddChars('aüb'#$CC#$81'cüü',10, 2, [lpAllowPastEol, lpStopAtCodePoint])); // ü
+  AssertEquals('LogicPosAddChars 11, 2C E',13, tb.LogicPosAddChars('aüb'#$CC#$81'cüü',11, 2, [lpAllowPastEol, lpStopAtCodePoint])); // mid ü
+
+  AssertEquals('LogicPosAddChars  1, -1C  ', 1, tb.LogicPosAddChars('aüb'#$CC#$81'cüü', 1, -1, [lpStopAtCodePoint])); // a
+  AssertEquals('LogicPosAddChars  2, -1C  ', 1, tb.LogicPosAddChars('aüb'#$CC#$81'cüü', 2, -1, [lpStopAtCodePoint])); // ü
+//AssertEquals('LogicPosAddChars  3, -1C  ', 1, tb.LogicPosAddChars('aüb'#$CC#$81'cüü', 3, -1, [lpStopAtCodePoint])); // mid ü
+  AssertEquals('LogicPosAddChars  4, -1C  ', 2, tb.LogicPosAddChars('aüb'#$CC#$81'cüü', 4, -1, [lpStopAtCodePoint])); // b
+  AssertEquals('LogicPosAddChars  5, -1C  ', 4, tb.LogicPosAddChars('aüb'#$CC#$81'cüü', 5, -1, [lpStopAtCodePoint])); // comb
+//AssertEquals('LogicPosAddChars  6, -1C  ', 4, tb.LogicPosAddChars('aüb'#$CC#$81'cüü', 6, -1, [lpStopAtCodePoint])); // mid
+  AssertEquals('LogicPosAddChars  7, -1C  ', 5, tb.LogicPosAddChars('aüb'#$CC#$81'cüü', 7, -1, [lpStopAtCodePoint])); // c
+  AssertEquals('LogicPosAddChars  8, -1C  ', 7, tb.LogicPosAddChars('aüb'#$CC#$81'cüü', 8, -1, [lpStopAtCodePoint])); // ü
+//AssertEquals('LogicPosAddChars  9, -1C  ', 7, tb.LogicPosAddChars('aüb'#$CC#$81'cüü', 9, -1, [lpStopAtCodePoint])); // mid ü
+  AssertEquals('LogicPosAddChars 10, -1C  ', 8, tb.LogicPosAddChars('aüb'#$CC#$81'cüü',10, -1, [lpStopAtCodePoint])); // ü
+//AssertEquals('LogicPosAddChars 11, -1C  ', 8, tb.LogicPosAddChars('aüb'#$CC#$81'cüü',11, -1, [lpStopAtCodePoint])); // mid ü
+
+  AssertEquals('LogicPosAddChars  1, -2C  ', 1, tb.LogicPosAddChars('aüb'#$CC#$81'cüü', 1, -2, [lpStopAtCodePoint])); // a
+  AssertEquals('LogicPosAddChars  2, -2C  ', 1, tb.LogicPosAddChars('aüb'#$CC#$81'cüü', 2, -2, [lpStopAtCodePoint])); // ü
+//AssertEquals('LogicPosAddChars  3, -2C  ', 1, tb.LogicPosAddChars('aüb'#$CC#$81'cüü', 3, -2, [lpStopAtCodePoint])); // mid ü
+  AssertEquals('LogicPosAddChars  4, -2C  ', 1, tb.LogicPosAddChars('aüb'#$CC#$81'cüü', 4, -2, [lpStopAtCodePoint])); // b
+  AssertEquals('LogicPosAddChars  5, -2C  ', 2, tb.LogicPosAddChars('aüb'#$CC#$81'cüü', 5, -2, [lpStopAtCodePoint])); // comb
+//AssertEquals('LogicPosAddChars  6, -2C  ', 2, tb.LogicPosAddChars('aüb'#$CC#$81'cüü', 6, -2, [lpStopAtCodePoint])); // mid
+  AssertEquals('LogicPosAddChars  7, -2C  ', 4, tb.LogicPosAddChars('aüb'#$CC#$81'cüü', 7, -2, [lpStopAtCodePoint])); // c
+  AssertEquals('LogicPosAddChars  8, -2C  ', 5, tb.LogicPosAddChars('aüb'#$CC#$81'cüü', 8, -2, [lpStopAtCodePoint])); // ü
+//AssertEquals('LogicPosAddChars  9, -2C  ', 5, tb.LogicPosAddChars('aüb'#$CC#$81'cüü', 9, -2, [lpStopAtCodePoint])); // mid ü
+  AssertEquals('LogicPosAddChars 10, -2C  ', 7, tb.LogicPosAddChars('aüb'#$CC#$81'cüü',10, -2, [lpStopAtCodePoint])); // ü
+//AssertEquals('LogicPosAddChars 11, -2C  ', 7, tb.LogicPosAddChars('aüb'#$CC#$81'cüü',11, -2, [lpStopAtCodePoint])); // mid ü
+
+
+
 end;
 
 procedure TTestBasicSynEdit.TestCaretAutoMove;

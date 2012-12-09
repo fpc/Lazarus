@@ -208,6 +208,9 @@ type
     procedure FinishHighlighterTokens; override;
   end;
 
+  LPosFlag = (lpAllowPastEol, lpAdjustToNext, lpStopAtCodePoint);
+  LPosFlags = set of LPosFlag;
+
   { TSynEditStrings }
 
   TSynEditStrings = class(TSynEditStringsBase)
@@ -283,10 +286,17 @@ type
    procedure FlushNotificationCache; virtual; abstract;
   public
     // Char bounds // 1 based (1 is the 1st char in the line)
-    function LogicPosAddChars(const ALine: String; ALogicalPos, ACount: integer; AllowPastEOL: Boolean = False): Integer; virtual; abstract;
-    function LogicPosIsAtChar(const ALine: String; ALogicalPos: integer): Boolean; virtual; abstract;
+    function LogicPosAddChars(const ALine: String; ALogicalPos, ACount: integer;
+                              AFlags: LPosFlags = []): Integer; virtual; abstract;
+    function LogicPosIsAtChar(const ALine: String; ALogicalPos: integer;
+                              AFlags: LPosFlags = []): Boolean; virtual; abstract;
     function LogicPosAdjustToChar(const ALine: String; ALogicalPos: integer;
-                                  ANext: Boolean = False; AllowPastEOL: Boolean = False): Integer; virtual; abstract;
+                                  AFlags: LPosFlags = []): Integer; virtual; abstract;
+
+    function LogicPosAddChars(const ALine: String; ALogicalPos, ACount: integer;
+                              AllowPastEOL: Boolean): Integer; // deprecated;
+    function LogicPosAdjustToChar(const ALine: String; ALogicalPos: integer;
+                                  ANext: Boolean; AllowPastEOL: Boolean = False): Integer; // deprecated;
     // CharWidths
     function GetPhysicalCharWidths(Index: Integer): TPhysicalCharWidths;
     function GetPhysicalCharWidths(Line: PChar; LineLen, Index: Integer): TPhysicalCharWidths;
@@ -405,10 +415,12 @@ type
     property NextLines: TSynEditStrings read fSynStrings write SetSynStrings;
   public
     // Char bounds // 1 based (1 is the 1st char in the line)
-    function LogicPosAddChars(const ALine: String; ALogicalPos, ACount: integer; AllowPastEOL: Boolean = False): Integer; override;
-    function LogicPosIsAtChar(const ALine: String; ALogicalPos: integer): Boolean; override;
+    function LogicPosAddChars(const ALine: String; ALogicalPos, ACount: integer;
+                              AFlags: LPosFlags = []): Integer; override;
+    function LogicPosIsAtChar(const ALine: String; ALogicalPos: integer;
+                              AFlags: LPosFlags = []): Boolean; override;
     function LogicPosAdjustToChar(const ALine: String; ALogicalPos: integer;
-                                  ANext: Boolean = False; AllowPastEOL: Boolean = False): Integer; override;
+                                  AFlags: LPosFlags = []): Integer; override;
     // LogX, LogY are 1-based
     procedure EditInsert(LogX, LogY: Integer; AText: String); override;
     function  EditDelete(LogX, LogY, ByteLen: Integer): String; override;
@@ -875,6 +887,27 @@ begin
   SendNotification(senrHighlightChanged, Self, aIndex, aCount);
 end;
 
+function TSynEditStrings.LogicPosAddChars(const ALine: String; ALogicalPos, ACount: integer;
+  AllowPastEOL: Boolean): Integer;
+begin
+  if AllowPastEOL
+  then LogicPosAddChars(ALine, ALogicalPos, ACount, [lpAllowPastEol])
+  else LogicPosAddChars(ALine, ALogicalPos, ACount, []);
+end;
+
+function TSynEditStrings.LogicPosAdjustToChar(const ALine: String; ALogicalPos: integer;
+  ANext: Boolean; AllowPastEOL: Boolean): Integer;
+var
+  f: LPosFlags;
+begin
+  if AllowPastEOL
+  then f := [lpAllowPastEol]
+  else f := [];
+  if ANext
+  then f := f + [lpAdjustToNext];
+  LogicPosAdjustToChar(ALine, ALogicalPos, f);
+end;
+
 function TSynEditStrings.GetPhysicalCharWidths(Index: Integer): TPhysicalCharWidths;
 var
   s: string;
@@ -1275,22 +1308,22 @@ begin
   fSynStrings.FlushNotificationCache;
 end;
 
-function TSynEditStringsLinked.LogicPosAddChars(const ALine: String;
-  ALogicalPos, ACount: integer; AllowPastEOL: Boolean): Integer;
+function TSynEditStringsLinked.LogicPosAddChars(const ALine: String; ALogicalPos,
+  ACount: integer; AFlags: LPosFlags): Integer;
 begin
-  Result := fSynStrings.LogicPosAddChars(ALine, ALogicalPos, ACount, AllowPastEOL);
+  Result := fSynStrings.LogicPosAddChars(ALine, ALogicalPos, ACount, AFlags);
 end;
 
-function TSynEditStringsLinked.LogicPosIsAtChar(const ALine: String;
-  ALogicalPos: integer): Boolean;
+function TSynEditStringsLinked.LogicPosIsAtChar(const ALine: String; ALogicalPos: integer;
+  AFlags: LPosFlags): Boolean;
 begin
-  Result := fSynStrings.LogicPosIsAtChar(ALine, ALogicalPos);
+  Result := fSynStrings.LogicPosIsAtChar(ALine, ALogicalPos, AFlags);
 end;
 
 function TSynEditStringsLinked.LogicPosAdjustToChar(const ALine: String; ALogicalPos: integer;
-  ANext: Boolean; AllowPastEOL: Boolean): Integer;
+  AFlags: LPosFlags): Integer;
 begin
-  Result := fSynStrings.LogicPosAdjustToChar(ALine, ALogicalPos, ANext, AllowPastEOL);
+  Result := fSynStrings.LogicPosAdjustToChar(ALine, ALogicalPos, AFlags);
 end;
 
 procedure TSynEditStringsLinked.IgnoreSendNotification(AReason: TSynEditNotifyReason;

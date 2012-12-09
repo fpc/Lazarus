@@ -235,10 +235,12 @@ type
     property Modified: Boolean read FModified write SetModified;
   public
     // Char bounds // 1 based (1 is the 1st char in the line)
-    function LogicPosAddChars(const ALine: String; ALogicalPos, ACount: integer; AllowPastEOL: Boolean = False): Integer; override;
-    function LogicPosIsAtChar(const ALine: String; ALogicalPos: integer): Boolean; override;
+    function LogicPosAddChars(const ALine: String; ALogicalPos, ACount: integer;
+                              AFlags: LPosFlags = []): Integer; override;
+    function LogicPosIsAtChar(const ALine: String; ALogicalPos: integer;
+                              AFlags: LPosFlags = []): Boolean; override;
     function LogicPosAdjustToChar(const ALine: String; ALogicalPos: integer;
-                                  ANext: Boolean = False; AllowPastEOL: Boolean = False): Integer; override;
+                                  AFlags: LPosFlags = []): Integer; override;
     property UndoList: TSynEditUndoList read GetUndoList write fUndoList;
     property RedoList: TSynEditUndoList read GetRedoList write fRedoList;
     procedure EditInsert(LogX, LogY: Integer; AText: String); override;
@@ -1063,7 +1065,7 @@ begin
 end;
 
 function TSynEditStringList.LogicPosAddChars(const ALine: String; ALogicalPos,
-  ACount: integer; AllowPastEOL: Boolean): Integer;
+  ACount: integer; AFlags: LPosFlags): Integer;
 var
   l: Integer;
 begin
@@ -1073,60 +1075,74 @@ begin
   if ACount > 0 then begin;
     while (Result < l) and (ACount > 0) do begin
       inc(Result);
-      if (ALine[Result] in [#0..#127, #192..#255]) and (not LogicPosIsCombining(@ALine[Result])) then
+      if (ALine[Result] in [#0..#127, #192..#255]) and
+         ( (lpStopAtCodePoint in AFlags) or (not LogicPosIsCombining(@ALine[Result])) )
+      then
         dec(ACount);
     end;
-    if AllowPastEOL then
+    if lpAllowPastEOL in AFlags then
       Result := Result + ACount;
 
     if (Result <= l) then
       while (Result > 1) and
-            ( (not(ALine[Result] in [#0..#127, #192..#255])) or LogicPosIsCombining(@ALine[Result]) )
+            ( (not(ALine[Result] in [#0..#127, #192..#255])) or
+              ( (not(lpStopAtCodePoint in AFlags)) and LogicPosIsCombining(@ALine[Result]) )
+            )
       do
         dec(Result);
   end else begin
     while (Result > 1) and (ACount < 0) do begin
       dec(Result);
       if (Result > l) or (Result = 1) or
-         ( (ALine[Result] in [#0..#127, #192..#255]) and (not LogicPosIsCombining(@ALine[Result])) )
+         ( (ALine[Result] in [#0..#127, #192..#255]) and
+           ( (lpStopAtCodePoint in AFlags) or (not LogicPosIsCombining(@ALine[Result])) )
+         )
       then
         inc(ACount);
     end;
   end;
 end;
 
-function TSynEditStringList.LogicPosIsAtChar(const ALine: String;
-  ALogicalPos: integer): Boolean;
+function TSynEditStringList.LogicPosIsAtChar(const ALine: String; ALogicalPos: integer;
+  AFlags: LPosFlags): Boolean;
 begin
   // UTF8 handing of chars
-  Result := False;
+  Result := (lpAllowPastEol in AFlags) and (ALogicalPos >= 1);
   if (ALogicalPos < 1) or (ALogicalPos > length(ALine)) then exit;
   Result := ALine[ALogicalPos] in [#0..#127, #192..#255];
 
   if Result then
-    Result := (ALogicalPos = 1) or (not LogicPosIsCombining(@ALine[ALogicalPos]));
+    Result := (ALogicalPos = 1) or
+              (lpStopAtCodePoint in AFlags) or
+              (not LogicPosIsCombining(@ALine[ALogicalPos]));
 end;
 
 function TSynEditStringList.LogicPosAdjustToChar(const ALine: String; ALogicalPos: integer;
-  ANext: Boolean; AllowPastEOL: Boolean): Integer;
+  AFlags: LPosFlags): Integer;
 begin
   // UTF8 handing of chars
   Result := ALogicalPos;
   if (ALogicalPos < 1) or (ALogicalPos > length(ALine)) then exit;
 
-  if ANext then begin
+  if lpAdjustToNext in AFlags then begin
     while (Result <= length(ALine)) and
       ( (not(ALine[Result] in [#0..#127, #192..#255])) or
-        ((Result <> 1) and LogicPosIsCombining(@ALine[Result])) )
+        ((Result <> 1) and
+         (not(lpStopAtCodePoint in AFlags)) and LogicPosIsCombining(@ALine[Result])
+        )
+      )
     do
       inc(Result);
   end;
 
-  if (not AllowPastEOL) and (Result > length(ALine)) then
-    Result := length(ALine);
+  if (not (lpAllowPastEol in AFlags)) and (Result > length(ALine)) then
+    Result := length(ALine); // + 1
+  if (Result > length(ALine)) then exit;
 
   while (Result > 1) and
-    ( (not(ALine[Result] in [#0..#127, #192..#255])) or LogicPosIsCombining(@ALine[Result]) )
+    ( (not(ALine[Result] in [#0..#127, #192..#255])) or
+      ( (not(lpStopAtCodePoint in AFlags)) and LogicPosIsCombining(@ALine[Result]) )
+    )
   do
     dec(Result);
 end;
