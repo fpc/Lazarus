@@ -59,6 +59,7 @@ begin
 
     // Also mark in the window information the focus change
     TCDForm(lForm.Handle).FocusedControl := ALCLControl;
+    TCDForm(lForm.Handle).FocusedIntfControl := FocusedIntfControl;
 
     // Verify if the virtual keyboard needs to be shown/hidden
     // Only show if there is no hardware keyboard, but hide always in case

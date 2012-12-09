@@ -2852,8 +2852,10 @@ end;*)
 function TCDWidgetSet.GetFocus: HWND;
 begin
   Result := 0;
-  if FocusedIntfControl <> nil then Result := FocusedIntfControl.Handle
-  else if FocusedControl <> nil then Result := FocusedControl.Handle;
+  // Don't return the intfcontrol, we try to pretend it doesn't exist
+  {if FocusedIntfControl <> nil then Result := FocusedIntfControl.Handle
+  else}
+  if FocusedControl <> nil then Result := FocusedControl.Handle;
 end;
 
 (*function TQtWidgetSet.GetKeyState(nVirtKey: Integer): Smallint;
