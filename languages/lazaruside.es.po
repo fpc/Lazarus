@@ -15041,7 +15041,7 @@ msgstr "Factor de Escala:"
 
 #: lazarusidestrconsts.lisscanning
 msgid "Scanning"
-msgstr ""
+msgstr "Escaneando"
 
 #: lazarusidestrconsts.lisscanparentdir
 msgid "Scanning parent directory"
@@ -16301,11 +16301,11 @@ msgstr "Buscando: %s"
 
 #: lazarusidestrconsts.lisuesearchstringcontinuebeg
 msgid "Continue search from the beginning?"
-msgstr ""
+msgstr "Continuar busqueda desde el principio?"
 
 #: lazarusidestrconsts.lisuesearchstringcontinueend
 msgid "Continue search from the end?"
-msgstr ""
+msgstr "Continuar busqueda desde el final?"
 
 #: lazarusidestrconsts.lisuesearchstringnotfound
 msgid "Search string '%s' not found!"
@@ -18433,7 +18433,7 @@ msgstr "Comenzar seleccionado pegajoso (Columnas)"
 
 #: lazarusidestrconsts.srkmecselstickyline
 msgid "Start sticky selecting (Line)"
-msgstr ""
+msgstr "Comenzar seleccionado pegajoso (Linea)"
 
 #: lazarusidestrconsts.srkmecselstickystop
 msgid "Stop sticky selecting"
