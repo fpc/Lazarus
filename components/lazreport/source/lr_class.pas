@@ -245,6 +245,8 @@ type
     procedure AfterChange;
     procedure ResetLastValue; virtual;
     function GetFrames: TfrFrameBorders; virtual;
+    procedure ModifyFlag(aFlag: Word; aValue:Boolean);
+    procedure MenuItemCheckFlag(Sender:TObject; aFlag: Word);
   public
     Parent: TfrBand;
     ID: Integer;
@@ -328,6 +330,7 @@ type
     function GetHideDuplicates: Boolean;
     function GetIsLastValueSet: boolean;
     function GetLayout: TTextLayout;
+    function GetWordBreak: Boolean;
     function GetWordWrap: Boolean;
     procedure P1Click(Sender: TObject);
     procedure P2Click(Sender: TObject);
@@ -341,6 +344,7 @@ type
     procedure SetHideDuplicates(const AValue: Boolean);
     procedure SetIsLastValueSet(const AValue: boolean);
     procedure SetLayout(const AValue: TTextLayout);
+    procedure SetWordBreak(AValue: Boolean);
     procedure SetWordWrap(const AValue: Boolean);
   protected
     Streaming: Boolean;
@@ -387,6 +391,7 @@ type
     property Alignment : TAlignment read GetAlignment write SetAlignment;
     property Layout    : TTextLayout read GetLayout write SetLayout;
     property Angle     : Byte read GetAngle write SetAngle;
+    property WordBreak : Boolean read GetWordBreak write SetWordBreak;
     property WordWrap  : Boolean read GetWordWrap write SetWordWrap;
     property AutoSize  : Boolean read GetAutoSize write SetAutoSize;
     property HideDuplicates: Boolean read GetHideDuplicates write SetHideDuplicates;
@@ -469,11 +474,15 @@ type
     fPicture: TPicture;
     FSharedName: string;
     
+    function GetCentered: boolean;
+    function GetKeepAspect: boolean;
     procedure P1Click(Sender: TObject);
     procedure P2Click(Sender: TObject);
     function GetPictureType: byte;
     function PictureTypeToGraphic(b: Byte): TGraphic;
     function ExtensionToGraphic(const Ext: string): TGraphic;
+    procedure SetCentered(AValue: boolean);
+    procedure SetKeepAspect(AValue: boolean);
     function StreamToGraphic(M: TMemoryStream): TGraphic;
     procedure SetPicture(const AValue: TPicture);
   protected
@@ -492,6 +501,8 @@ type
   published
     property Picture : TPicture read fPicture write SetPicture;
 
+    property KeepAspect:boolean read GetKeepAspect write SetKeepAspect;
+    property Centered: boolean read GetCentered write SetCentered;
     property Memo;
     property Script;
     property Frames;
@@ -2237,22 +2248,8 @@ begin
 end;
 
 procedure TfrView.P1Click(Sender: TObject);
-var
-  i: Integer;
-  t: TfrView;
 begin
-  frDesigner.BeforeChange;
-  with Sender as TMenuItem do
-  begin
-    Checked := not Checked;
-    for i := 0 to frDesigner.Page.Objects.Count-1 do
-    begin
-      t := TfrView(frDesigner.Page.Objects[i]);
-      if t.Selected then
-        SetBit(t.Flags, Checked, flStretched);
-    end;
-  end;
-  frDesigner.AfterChange;
+  MenuItemCheckFlag(Sender, flStretched);
 end;
 
 function TfrView.GetLeft: Double;
@@ -2279,6 +2276,32 @@ end;
 function TfrView.GetFrames: TfrFrameBorders;
 begin
   result :=  fFrames;
+end;
+
+procedure TfrView.ModifyFlag(aFlag: Word; aValue: Boolean);
+begin
+  BeforeChange;
+  SetBit(Flags, AValue, AFlag);
+  AfterChange;
+end;
+
+procedure TfrView.MenuItemCheckFlag(Sender:TObject; aFlag: Word);
+var
+  i: Integer;
+  t: TfrView;
+begin
+  frDesigner.BeforeChange;
+  with Sender as TMenuItem do
+  begin
+    Checked := not Checked;
+    for i := 0 to frDesigner.Page.Objects.Count - 1 do
+    begin
+      t := TfrView(frDesigner.Page.Objects[i]);
+      if t.Selected then
+        SetBit(t.Flags, Checked, aFlag);
+    end;
+  end;
+  frDesigner.AfterChange;
 end;
 
 function TfrView.GetTop: Double;
@@ -2390,11 +2413,7 @@ end;
 procedure TfrView.SetStretched(const AValue: Boolean);
 begin
   if Stretched<>AValue then
-  begin
-    BeforeChange;
-    SetBit(Flags, AValue, flStretched);
-    AfterChange;
-  end;
+    ModifyFlag(flStretched, AValue);
 end;
 
 procedure TfrView.SetTop(const AValue: Double);
@@ -2455,11 +2474,7 @@ end;
 procedure TfrMemoView.SetHideDuplicates(const AValue: Boolean);
 begin
   if HideDuplicates<>AValue then
-  begin
-    BeforeChange;
-    SetBit(Flags, AValue, flHideDuplicates);
-    AfterChange;
-  end;
+    ModifyFlag(flHideDuplicates, AValue);
 end;
 
 procedure TfrMemoView.SetIsLastValueSet(const AValue: boolean);
@@ -2485,14 +2500,16 @@ begin
   end;
 end;
 
+procedure TfrMemoView.SetWordBreak(AValue: Boolean);
+begin
+  if WordBreak<>AValue then
+    ModifyFlag(flWordBreak, AValue);
+end;
+
 procedure TfrMemoView.SetWordWrap(const AValue: Boolean);
 begin
   if WordWrap<>AValue then
-  begin
-    BeforeChange;
-    SetBit(Flags, AValue, flWordWrap);
-    AfterChange;
-  end;
+    ModifyFlag(flWordWrap, AValue);
 end;
 
 procedure TfrMemoView.Assign(From: TfrView);
@@ -3503,7 +3520,7 @@ begin
   m.OnClick := @P3Click;
   m.Enabled := WordWrap;
   if m.Enabled then
-     m.Checked := (Flags and flWordBreak) <> 0;
+     m.Checked := WordBreak;
   Popup.Items.Add(m);
 
   m := TMenuItem.Create(Popup);
@@ -3569,6 +3586,11 @@ begin
   result := TTextLayout((adjust shr 3) and %11);
 end;
 
+function TfrMemoView.GetWordBreak: Boolean;
+begin
+  Result := ((Flags and flWordBreak)<>0);
+end;
+
 function TfrMemoView.GetAlignment: TAlignment;
 begin
   Result:=Classes.TAlignment(Adjust and %11);
@@ -3588,41 +3610,13 @@ begin
 end;
 
 procedure TfrMemoView.P2Click(Sender: TObject);
-var
-  i: Integer;
-  t: TfrView;
 begin
-  frDesigner.BeforeChange;
-  with Sender as TMenuItem do
-  begin
-    Checked := not Checked;
-    for i := 0 to frDesigner.Page.Objects.Count - 1 do
-    begin
-      t :=TfrView(frDesigner.Page.Objects[i]);
-      if t.Selected then
-        SetBit(t.Flags, Checked, flWordWrap);
-    end;
-  end;
-  frDesigner.AfterChange;
+  MenuItemCheckFlag(Sender, flWordWrap);
 end;
 
 procedure TfrMemoView.P3Click(Sender: TObject);
-var
-  i: Integer;
-  t: TfrView;
 begin
-  frDesigner.BeforeChange;
-  with Sender as TMenuItem do
-  begin
-    Checked := not Checked;
-    for i := 0 to frDesigner.Page.Objects.Count - 1 do
-    begin
-      t :=TfrView(frDesigner.Page.Objects[i]);
-      if t.Selected then
-        t.Flags := (t.Flags and not flWordBreak) + Word(Checked) * flWordBreak;
-    end;
-  end;
-  frDesigner.AfterChange;
+  MenuItemCheckFlag(Sender, flWordBreak);
 end;
 
 procedure TfrMemoView.P4Click(Sender: TObject);
@@ -3660,22 +3654,8 @@ begin
 end;
 
 procedure TfrMemoView.P5Click(Sender: TObject);
-var
-  i: Integer;
-  t: TfrView;
 begin
-  frDesigner.BeforeChange;
-  with Sender as TMenuItem do
-  begin
-    Checked := not Checked;
-    for i := 0 to frDesigner.Page.Objects.Count - 1 do
-    begin
-      t :=TfrView(frDesigner.Page.Objects[i]);
-      if t.Selected then
-        t.Flags := (t.Flags and not flAutoSize) + Word(Checked) * flAutoSize;
-    end;
-  end;
-  frDesigner.AfterChange;
+  MenuItemCheckFlag(Sender, flAutoSize);
 end;
 
 procedure TfrMemoView.SetAlignment(const AValue: TAlignment);
@@ -3704,11 +3684,7 @@ end;
 procedure TfrMemoView.SetAutoSize(const AValue: Boolean);
 begin
   if AutoSize<>AValue then
-  begin
-    BeforeChange;
-    SetBit(Flags, AValue, flAutoSize);
-    AfterChange;
-  end;
+    ModifyFlag(flAutoSize, AValue);
 end;
 
 {----------------------------------------------------------------------------}
@@ -4184,36 +4160,9 @@ procedure TfrPictureView.Draw(aCanvas: TCanvas);
 var
   r: TRect;
   kx, ky: Double;
-  w, h, w1, h1: Integer;
-
-  procedure PrintBitmap(DestRect: TRect; Bitmap: TBitmap);
-  var
-    {%H-}BitmapHeader: pBitmapInfo;
-  begin
-    aCanvas.StretchDraw(DestRect, Bitmap);
-    //**
-    {GetDIBSizes(Bitmap.Handle, HeaderSize, ImageSize);
-    GetMem(BitmapHeader, HeaderSize);
-    GetMem(BitmapImage, ImageSize);
-    try
-      GetDIB(Bitmap.Handle, Bitmap.Palette, BitmapHeader^, BitmapImage^);
-      StretchDIBits(
-        aCanvas.Handle,
-        DestRect.Left, DestRect.Top,     // Destination Origin
-        DestRect.Right - DestRect.Left,  // Destination Width
-        DestRect.Bottom - DestRect.Top,  // Destination Height
-        0, 0,                            // Source Origin
-        Bitmap.Width, Bitmap.Height,     // Source Width & Height
-        BitmapImage,
-        TBitmapInfo(BitmapHeader^),
-        DIB_RGB_COLORS,
-        SRCCOPY)
-    finally
-      FreeMem(BitmapHeader);
-      FreeMem(BitmapImage)
-    end;
-    }
-  end;
+  w, h, w1, h1, PictureHeight, PictureWidth: Integer;
+  ClipRgn, PreviousClipRgn: HRGN;
+  ClipNeeded: Boolean;
 
 begin
   {$IFDEF DebugLR}
@@ -4221,6 +4170,8 @@ begin
   {$ENDIF}
   BeginDraw(aCanvas);
   CalcGaps;
+  w := DRect.Right - DRect.Left - 1;
+  h := DRect.Bottom - DRect.Top - 1;
   with aCanvas do
   begin
     ShowBackground;
@@ -4235,42 +4186,46 @@ begin
     end
     else if not ((Picture.Graphic = nil) or Picture.Graphic.Empty) then
     begin
+      r := DRect;
+      Dec(r.Bottom);
+      Dec(r.Right);
       if (Flags and flStretched) <> 0 then
       begin
-        r := DRect;
         if (Flags and flPictRatio) <> 0 then
         begin
           kx := dx / Picture.Width;
           ky := dy / Picture.Height;
           if kx < ky then
-            r := Rect(DRect.Left, DRect.Top,
-              DRect.Right, DRect.Top + Round(Picture.Height * kx))
+            r.Bottom := r.Top + Round(Picture.Height * kx)
           else
-            r := Rect(DRect.Left, DRect.Top,
-              DRect.Left + Round(Picture.Width * ky), DRect.Bottom);
-          w := DRect.Right - DRect.Left;
-          h := DRect.Bottom - DRect.Top;
+            r.Right := r.Left + Round(Picture.Width * ky);
           w1 := r.Right - r.Left;
           h1 := r.Bottom - r.Top;
           if (Flags and flPictCenter) <> 0 then
             OffsetRect(r, (w - w1) div 2, (h - h1) div 2);
         end;
-
-        if IsPrinting and (Picture.Graphic is TBitmap) then
-          PrintBitmap(r, Picture.Bitmap)
-        else
-          StretchDraw(r, Picture.Graphic);
+        StretchDraw(r, Picture.Graphic);
       end
       else
       begin
-        r := DRect;
+        PictureWidth := Round(Picture.Width * ScaleX);
+        PictureHeight := Round(Picture.Height * ScaleY);
         if (Flags and flPictCenter) <> 0 then
+          OffsetRect(r, (w - PictureWidth) div 2, (h - PictureHeight) div 2);
+        ClipNeeded := (PictureHeight > h) or (PictureWidth > w);
+        if ClipNeeded then
         begin
-          w := DRect.Right - DRect.Left;
-          h := DRect.Bottom - DRect.Top;
-          OffsetRect(r, (w - Picture.Width) div 2, (h - Picture.Height) div 2);
+          ClipRgn := CreateRectRgn(r.Left, r.Top, r.Right, r.Bottom);
+          PreviousClipRgn := SelectClipRgn(Handle, ClipRgn);
         end;
-        Draw(r.Left, r.Top, Picture.Graphic)
+        r.Right := r.Left + PictureWidth;
+        r.Bottom := r.Top + PictureHeight;
+        StretchDraw(r, Picture.Graphic);
+        if ClipNeeded then
+        begin
+          SelectClipRGN(Handle, PreviousClipRgn);
+          DeleteObject(ClipRgn);
+        end;
       end;
     end;
     ShowFrame;
@@ -4519,7 +4474,7 @@ begin
   m := TMenuItem.Create(Popup);
   m.Caption := sPictureCenter;
   m.OnClick := @P1Click;
-  m.Checked := (Flags and flPictCenter) <> 0;
+  m.Checked := Centered;
   Popup.Items.Add(m);
 
   m := TMenuItem.Create(Popup);
@@ -4527,46 +4482,28 @@ begin
   m.OnClick := @P2Click;
   m.Enabled := Stretched;
   if m.Enabled then
-    m.Checked := (Flags and flPictRatio) <> 0;
+    m.Checked := KeepAspect;
   Popup.Items.Add(m);
 end;
 
 procedure TfrPictureView.P1Click(Sender: TObject);
-var
-  i: Integer;
-  t: TfrView;
 begin
-  frDesigner.BeforeChange;
-  with Sender as TMenuItem do
-  begin
-    Checked := not Checked;
-    for i := 0 to frDesigner.Page.Objects.Count - 1 do
-    begin
-      t := TfrView(frDesigner.Page.Objects[i]);
-      if t.Selected then
-        t.Flags := (t.Flags and not flPictCenter) + Word(Checked) * flPictCenter;
-    end;
-  end;
-  frDesigner.AfterChange;
+  MenuItemCheckFlag(Sender, flPictCenter);
+end;
+
+function TfrPictureView.GetKeepAspect: boolean;
+begin
+  Result:=((Flags and flPictRatio)<>0);
+end;
+
+function TfrPictureView.GetCentered: boolean;
+begin
+  Result:=((Flags and flPictCenter)<>0);
 end;
 
 procedure TfrPictureView.P2Click(Sender: TObject);
-var
-  i: Integer;
-  t: TfrView;
 begin
-  frDesigner.BeforeChange;
-  with Sender as TMenuItem do
-  begin
-    Checked := not Checked;
-    for i := 0 to frDesigner.Page.Objects.Count - 1 do
-    begin
-      t :=TfrView(frDesigner.Page.Objects[i]);
-      if t.Selected then
-        t.Flags := (t.Flags and not flPictRatio) + Word(Checked) * flPictRatio;
-    end;
-  end;
-  frDesigner.AfterChange;
+  MenuItemCheckFlag(Sender, flPictRatio);
 end;
 
 function TfrPictureView.GetPictureType: byte;
@@ -4596,6 +4533,18 @@ begin
     result := AGraphicClass.Create
   else
     result := nil;
+end;
+
+procedure TfrPictureView.SetCentered(AValue: boolean);
+begin
+  if Centered<>AValue then
+    ModifyFlag(flPictCenter, AValue);
+end;
+
+procedure TfrPictureView.SetKeepAspect(AValue: boolean);
+begin
+  if KeepAspect<>AValue then
+    ModifyFlag(flPictRatio, AValue);
 end;
 
 function TfrPictureView.StreamToGraphic(M: TMemoryStream): TGraphic;

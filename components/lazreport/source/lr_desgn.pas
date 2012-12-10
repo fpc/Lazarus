@@ -1776,9 +1776,6 @@ begin
   Moved := True;
   w := 2;
 
-  {$ifdef LCLQt}if Down then Invalidate;{$endif}
-  {$ifdef LCLCarbon}if Down then Invalidate;{$endif}
-
   if FirstChange and Down and not RFlag then
   begin
     kx := x - LastX;
@@ -2254,6 +2251,8 @@ begin
     DeleteObject(hr1);
     Draw(10000, hr);
   end;
+  {$IFDEF LCLQt}Invalidate;{$endif}
+  {$IFDEF LCLCarbon}Invalidate;{$endif}
 end;
 
 procedure TfrDesignerPage.CMMouseLeave(var Message: TLMessage);
