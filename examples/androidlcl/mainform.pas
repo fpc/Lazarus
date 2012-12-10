@@ -5,6 +5,7 @@ unit mainform;
 {$ifdef Linux}{$ifdef CPUARM}
   {$define Android}
 {$endif}{$endif}
+{.$define TEST_SQLITE}
 
 interface
 
@@ -219,8 +220,11 @@ end;
 
 procedure Tform1.btnOpenFormClick(Sender: TObject);
 begin
-  //Form2.Show;
-  formsqlite.Show;
+  {$ifdef TEST_SQLITE}formsqlite.Show;
+  {$else}
+  Form2.Show;
+  {$ENDIF}
+
   DebugLn('Button3Click');
 end;
 
