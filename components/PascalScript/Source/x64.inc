@@ -149,7 +149,7 @@ asm
   push qword ptr [rcx]
 {$ELSE}
   push [rcx]
-{$IFEND}
+{$ENDIF}  
   dec r8
   sub rcx,8
 @compareitems:
