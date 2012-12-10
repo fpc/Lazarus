@@ -3,7 +3,7 @@ object SearchResultsView: TSearchResultsView
   Height = 273
   Top = 327
   Width = 799
-  BorderStyle = bsSizeToolWin
+  BorderIcons = [biSystemMenu]
   Caption = 'SearchResultsView'
   ClientHeight = 273
   ClientWidth = 799
@@ -65,12 +65,12 @@ object SearchResultsView: TSearchResultsView
     AnchorSideTop.Control = ToolBar
     AnchorSideTop.Side = asrCenter
     Left = 63
-    Height = 20
+    Height = 21
     Top = 2
     Width = 296
     UseFormActivate = True
     ButtonWidth = 23
-    NumGlyphs = 0
+    NumGlyphs = 1
     BorderSpacing.Left = 6
     MaxLength = 0
     ParentFont = False
