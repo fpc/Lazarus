@@ -1203,15 +1203,28 @@ begin
 
   i := 0;
   while i < IndexCount do begin
+    // IdxPart is the NEXT index. We evaluate the expression BEFORE IdxPart
     IdxPart := IndexPart[i];
     PTReq := IdxPart.PTypeReq;
 
     if PTReq.Result.Kind = ptprkError
-    then exit; // no way to find more info
+    then begin
+      // "Parts[i]" Check if the part before IndexParts[i] needs typecastfixing
+      if (pos('address 0x0', PTReq.Error) > 0) and Parts[i].MayNeedTypeCastFix
+      then begin
+        Result := Parts[i].NeedValidation(AReqPtr);
+        PTReq.Result.Kind := ptprkNotEvaluated; // Reset the request
+        IdxPart.PTypeReq := PTReq;
+      end;
+
+      exit; // If Result = False; // no way to find more info
+            // Todo, simply to next entry, and check for "pointer math on incomplete type"
+    end;
 
     if PTReq.Result.Kind = ptprkNotEvaluated
     then begin
       IdxPart.VarParam := False;
+      // InitReq sets: PTReq.Result.Kind = ptprkError;
       IdxPart.InitReq(AReqPtr, GdbCmdPType + GetTextToIdx(i-1));
       Result := True;
       exit;
