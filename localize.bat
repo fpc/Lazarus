@@ -49,12 +49,6 @@ tools\updatepofiles %DBGD_RST% languages\debuggerstrconst.po
 tools\updatepofiles %DBG_RST% languages\gdbmidebugger.po
 @if exist %DBG_RST% echo RST found
 
-@REM INSTALLER
-@set Installer_RST=tools\install\win\installerstrconsts.rst
-if not exist %Installer_RST% goto SkipInstaller
-tools\updatepofiles %Installer_RST% languages\installerstrconsts.po
-:SkipInstaller
-
 @REM CodeTools
 @set CodeTools_RST=components\codetools\units\%ArchOS%\CodeToolsStrConsts.rst
 tools\updatepofiles %CodeTools_RST% components\codetools\languages\codetoolsstrconsts.po
