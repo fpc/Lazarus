@@ -10,7 +10,7 @@ object formSqlite: TformSqlite
   object btnConnect: TButton
     Left = 8
     Height = 25
-    Top = 24
+    Top = 40
     Width = 112
     Caption = 'Connect'
     OnClick = btnConnectClick
@@ -19,7 +19,7 @@ object formSqlite: TformSqlite
   object DBEdit1: TDBEdit
     Left = 8
     Height = 23
-    Top = 88
+    Top = 104
     Width = 80
     DataField = 'FirstFieldStr'
     DataSource = SqliteDatasource
@@ -30,7 +30,7 @@ object formSqlite: TformSqlite
   object DBNavigator1: TDBNavigator
     Left = 8
     Height = 25
-    Top = 56
+    Top = 72
     Width = 241
     BevelOuter = bvNone
     ChildSizing.EnlargeHorizontal = crsScaleChilds
@@ -48,7 +48,7 @@ object formSqlite: TformSqlite
   object btnCreateDB: TButton
     Left = 136
     Height = 25
-    Top = 24
+    Top = 8
     Width = 113
     Caption = 'Create DB'
     OnClick = btnCreateDBClick
@@ -57,14 +57,23 @@ object formSqlite: TformSqlite
   object Edit1: TEdit
     Left = 8
     Height = 23
-    Top = 136
+    Top = 152
     Width = 80
     ReadOnly = True
     TabOrder = 4
     Text = 'Edit1'
   end
+  object btnSaveDB: TButton
+    Left = 137
+    Height = 25
+    Top = 40
+    Width = 112
+    Caption = 'Save DB'
+    OnClick = btnSaveDBClick
+    TabOrder = 5
+  end
   object SqliteDatasource: TDatasource
     left = 136
-    top = 88
+    top = 104
   end
 end

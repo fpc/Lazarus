@@ -6,7 +6,13 @@ interface
 
 uses
   Classes, SysUtils, db, FileUtil, Forms, Controls, Graphics, Dialogs, StdCtrls,
-  DbCtrls;
+  DbCtrls
+  {$ifdef CPUARM}
+    ,sqlitejniandroid
+  {$else}
+    ,sqlite3ds
+  {$endif}
+  ;
 
 type
 
@@ -14,6 +20,7 @@ type
 
   TformSqlite = class(TForm)
     btnConnect: TButton;
+    btnSaveDB: TButton;
     btnCreateDB: TButton;
     Edit1: TEdit;
     SqliteDatasource: TDatasource;
@@ -21,10 +28,12 @@ type
     DBNavigator1: TDBNavigator;
     procedure btnCreateDBClick(Sender: TObject);
     procedure btnConnectClick(Sender: TObject);
+    procedure btnSaveDBClick(Sender: TObject);
   private
     { private declarations }
   public
     { public declarations }
+    sqlitedb: {$ifdef CPUARM}TSqliteJNIDataset;{$else}TSqlite3Dataset;{$endif}
   end;
 
 var
@@ -32,19 +41,11 @@ var
 
 implementation
 
-{$ifdef CPUARM}
-uses sqlitejniandroid;
-{$else}
-uses sqlite3ds;
-{$endif}
-
 {$R *.lfm}
 
 { TformSqlite }
 
 procedure TformSqlite.btnConnectClick(Sender: TObject);
-var
-  sqlitedb: {$ifdef CPUARM}TSqliteJNIDataset;{$else}TSqlite3Dataset;{$endif}
 begin
   {$ifdef CPUARM}
   sqlitedb := TSqliteJNIDataset.Create(Self);
@@ -61,23 +62,30 @@ begin
   SqliteDatasource.DataSet := sqlitedb;
 end;
 
+procedure TformSqlite.btnSaveDBClick(Sender: TObject);
+begin
+  if sqlitedb = nil then Exit;
+  sqlitedb.Close();
+  sqlitedb.Open();
+end;
+
 procedure TformSqlite.btnCreateDBClick(Sender: TObject);
 var
-  sqlitedb: {$ifdef CPUARM}TSqliteJNIDataset;{$else}TSqlite3Dataset;{$endif}
+  lsqlitedb: {$ifdef CPUARM}TSqliteJNIDataset;{$else}TSqlite3Dataset;{$endif}
 begin
   {$ifdef CPUARM}
-  sqlitedb := TSqliteJNIDataset.Create(Self);
-  sqlitedb.FileName := '/sdcard/database.db';
+  lsqlitedb := TSqliteJNIDataset.Create(Self);
+  lsqlitedb.FileName := '/sdcard/database.db';
   {$else}
-  sqlitedb := TSqlite3Dataset.Create(Self);
-  sqlitedb.FileName := 'database.db';
+  lsqlitedb := TSqlite3Dataset.Create(Self);
+  lsqlitedb.FileName := 'database.db';
   {$endif}
   //SqliteDatasource.DataSet := sqlitedb;
-  sqlitedb.TableName := 'TestTable';
-  sqlitedb.FieldDefs.Add('FirstFieldStr', ftString);
-  sqlitedb.FieldDefs.Add('SecondFieldInt', ftInteger);
-  sqlitedb.CreateTable();
-  sqlitedb.Free;
+  lsqlitedb.TableName := 'TestTable';
+  lsqlitedb.FieldDefs.Add('FirstFieldStr', ftString);
+  lsqlitedb.FieldDefs.Add('SecondFieldInt', ftInteger);
+  lsqlitedb.CreateTable();
+  lsqlitedb.Free;
 end;
 
 end.
