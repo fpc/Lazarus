@@ -905,7 +905,7 @@ var
   Cnt: integer;
 begin
   Cnt:= 0;
-  LazarusIDE.DoShowSearchResultsView(True);
+  LazarusIDE.DoShowSearchResultsView(False);
   ListPage:=SearchResultsView.AddSearch(SearchText,SearchText,
                             ReplaceText,SearchDirectory,SearchMask,SearchOptions);
   try
