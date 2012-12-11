@@ -380,15 +380,21 @@ begin
       GetMem(TempItem^.Row, FRowBufferSize);
       for Counter := 0 to ColumnCount - 1 do
       begin
+        DebugLn(Format('[TSqliteJNIDataset.BuildLinkedList] reading row # %d col # %d', [FRecordCount, Counter]));
         // TempItem^.Row[Counter] := StrNew(sqlite3_column_text(vm, Counter));
         // public abstract String getString (int columnIndex)
         lParams[0].i := Counter;
         lJavaString := javaEnvRef^^.CallObjectMethodA(javaEnvRef, dbCursor, FDBCursor_getString, @lParams[0]);
-        //DebugLn(Format('[TSqliteJNIDataset.BuildLinkedList] reading row # %d', [FRecordCount]));
-        lNativeString := javaEnvRef^^.GetStringUTFChars(javaEnvRef, lJavaString, nil);
-        TempItem^.Row[Counter] := StrNew(lNativeString);
-        javaEnvRef^^.ReleaseStringUTFChars(javaEnvRef, lJavaString, lNativeString);
-        javaEnvRef^^.DeleteLocalRef(javaEnvRef, lJavaString);
+        //DebugLn(Format('[TSqliteJNIDataset.BuildLinkedList] lJavaString=%x', [PtrInt(lJavaString)]));
+        if lJavaString <> nil then
+        begin
+          lNativeString := javaEnvRef^^.GetStringUTFChars(javaEnvRef, lJavaString, nil);
+          TempItem^.Row[Counter] := StrNew(lNativeString);
+          javaEnvRef^^.ReleaseStringUTFChars(javaEnvRef, lJavaString, lNativeString);
+          javaEnvRef^^.DeleteLocalRef(javaEnvRef, lJavaString);
+        end
+        else
+          TempItem^.Row[Counter] := StrNew('');
       end;
       //initialize calculated fields with nil
       for Counter := ColumnCount to FRowCount - 1 do
@@ -611,6 +617,7 @@ begin
   RealInternalGetHandle();
 
   // Split the SQL and execute each part
+  // because SqliteDatabase.execSQL can execute only 1 single SQL statement, not multiple ones
   lSQLStrings := SplitSQLStatements(StrPas(ASQL));
 
   for i := 0 to lSQLStrings.Count-1 do
