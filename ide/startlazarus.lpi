@@ -54,7 +54,7 @@
   <CompilerOptions>
     <Version Value="11"/>
     <Target>
-      <Filename Value="../startlazarus$(ExeExt)"/>
+      <Filename Value="../startlazarus"/>
     </Target>
     <SearchPaths>
       <IncludeFiles Value="include;include/$(TargetOS);include/$(SrcOS)"/>
