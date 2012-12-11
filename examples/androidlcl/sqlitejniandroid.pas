@@ -75,7 +75,7 @@ type
     function  InternalGetHandle: Pointer; override;
     procedure RetrieveFieldDefs; override;
     function  SqliteExec(ASQL: PChar; ACallback: TSqliteCdeclCallback; Data: Pointer): Integer; override;
-    procedure PrepareReturnString;
+    function  CheckJNIException(ARaisePascalException: Boolean): Boolean;
   public
     procedure ExecuteDirect(const ASQL: String); override;
     function  QuickQuery(const ASQL: String; const AStrList: TStrings; FillObjects: Boolean): String; override;
@@ -313,6 +313,7 @@ begin
   lParams[1].l := nil;
   // Call the method
   AndroidDB := javaEnvRef^^.CallStaticObjectMethodA(javaEnvRef, FSqliteDatabaseClass, FSqliteDatabase_openOrCreateDatabase, @lParams[0]);
+  CheckJNIException(True);
   // clean up
   javaEnvRef^^.DeleteLocalRef(javaEnvRef, lJavaString);
 
@@ -489,9 +490,8 @@ begin
     DebugLn('[TSqliteJNIDataset.RetrieveFieldDefs] dbCursor = nil');
     Exit;
   end;
-  if javaEnvRef^^.ExceptionCheck(javaEnvRef) = JNI_TRUE then
+  if CheckJNIException(False) then
   begin
-    PrepareReturnString();
     DebugLn('[TSqliteJNIDataset.RetrieveFieldDefs] Java Exceptiong calling AndroidDB.query ' + ReturnString);
     DatabaseError(ReturnString, Self);
     Exit;
@@ -646,7 +646,7 @@ begin
   DebugLn('[TSqliteJNIDataset.SqliteExec] END');
 end;
 
-procedure TSqliteJNIDataset.PrepareReturnString;
+function TSqliteJNIDataset.CheckJNIException(ARaisePascalException: Boolean): Boolean;
 var
   exceptionObj: jthrowable;
   javaLangClass: jclass;
@@ -654,19 +654,25 @@ var
   lJavaString: JString;
   lNativeString: PChar;
 begin
+  Result := False;
   FReturnString := '';
   // There seams to be no way to get any information about the exception in JNI =(
-  //DebugLn('[TSqliteJNIDataset.PrepareReturnString] START');
+  //DebugLn('[TSqliteJNIDataset.CheckJNIException] START');
 
   if javaEnvRef^^.ExceptionCheck(javaEnvRef) = JNI_FALSE then
   begin
-    DebugLn('[TSqliteJNIDataset.PrepareReturnString] No exception found');
     Exit;
   end;
 
+  DebugLn('[TSqliteJNIDataset.CheckJNIException] Exception found');
+  Result := True;
+  FReturnString := 'JNI Exception! See adb logcat for more details.';
   exceptionObj := javaEnvRef^^.ExceptionOccurred(javaEnvRef);
   javaEnvRef^^.ExceptionDescribe(javaEnvRef);
   javaEnvRef^^.ExceptionClear(javaEnvRef);
+  if ARaisePascalException then raise Exception.Create(FReturnString);
+
+  // Code for reading info from the exception object has failed for me.
   {DebugLn('[TSqliteJNIDataset.PrepareReturnString] A exceptionObj='+IntToHex(Cardinal(exceptionObj), 8));
   javaLangClass := javaEnvRef^^.FindClass(javaEnvRef, 'java/lang/Class');
   javaLangClass_getName := javaEnvRef^^.GetMethodID(javaEnvRef, javaLangClass, 'getName', '()Ljava/lang/String;');
@@ -695,12 +701,12 @@ begin
   // preparations
   lJavaString :=javaEnvRef^^.NewStringUTF(javaEnvRef, PChar(ASQL));
   lParams[0].l := lJavaString;
-
   // Call the method
   javaEnvRef^^.CallVoidMethodA(javaEnvRef, AndroidDB, FSqliteDatabase_execSQL, @lParams[0]);
-
   // clean up
   javaEnvRef^^.DeleteLocalRef(javaEnvRef, lJavaString);
+  // Check for exceptions
+  CheckJNIException(True);
 
   RealInternalCloseHandle();
 
