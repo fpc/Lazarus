@@ -207,7 +207,7 @@ type
       MinQuality: TSDFilenameQuality = sddqCompatible): TSDFileInfo;
     function QualityToImgIndex(Quality: TSDFilenameQuality): integer;
     procedure ShowHideScanControls(aShow: Boolean);
-    procedure ThreadTerminated(Sender: TObject);
+    procedure ThreadTerminated(Sender: TObject); // called in main thread by fSearchFpcSourceThread.OnTerminate
   public
     TVNodeLazarus: TTreeNode;
     TVNodeCompiler: TTreeNode;
@@ -1600,7 +1600,8 @@ end;
 
 procedure TInitialSetupDialog.StopScanButtonClick(Sender: TObject);
 begin
-  fSearchFpcSourceThread.Terminate;
+  if fSearchFpcSourceThread<>nil then
+    fSearchFpcSourceThread.Terminate;
 end;
 
 procedure TInitialSetupDialog.WelcomePaintBoxPaint(Sender: TObject);
@@ -2082,7 +2083,7 @@ begin
     Candidate:=GetFirstCandidate(FCandidates[sddtFPCSrcDir]);
     if Candidate<>nil then begin
       EnvironmentOptions.FPCSourceDirectory:=Candidate.Caption;
-      ThreadTerminated(Nil);    // Hide controls dealing with scanning
+      ShowHideScanControls(false);  // Hide controls dealing with scanning
     end
     else begin
       // No candidates found => start a thread to scan the file system.
