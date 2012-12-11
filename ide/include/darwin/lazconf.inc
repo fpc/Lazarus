@@ -30,7 +30,10 @@
 {For Darwin specific implementations.
  General unix implementations are in ../unix/lazbaseconf.inc}
 uses
-  BaseUnix, Unix;
+  {$IFDEF Linux}
+  BaseUnix,
+  {$ENDIF}
+  Unix;
 
 procedure IfDirectoryExistsAdd(const Directory: string; List: TStrings);
 begin
