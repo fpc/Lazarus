@@ -30,24 +30,22 @@ var
   i : SizeInt;
 Begin
   while F.BufPos>0 do
+  begin
+    if F.BufPos+ErrorLen>ErrorBufferLength then
+      i:=ErrorBufferLength-ErrorLen
+    else
+      i:=F.BufPos;
+    Move(F.BufPtr^,ErrorBuf[ErrorLen],i);
+    inc(ErrorLen,i);
+    ErrorBuf[ErrorLen]:=#0;
+    if ErrorLen >= ErrorBufferLength then
     begin
-      begin
-        if F.BufPos+ErrorLen>ErrorBufferLength then
-          i:=ErrorBufferLength-ErrorLen
-        else
-          i:=F.BufPos;
-        Move(F.BufPtr^,ErrorBuf[ErrorLen],i);
-        inc(ErrorLen,i);
-        ErrorBuf[ErrorLen]:=#0;
-      end;
-      if ErrorLen >= ErrorBufferLength then
-        begin
-          ErrorMsg := ErrorMsg + String(ErrorBuf);
-          ErrorLen:=0;
-          ErrorBuf[ErrorLen]:=#0;
-        end;
-      Dec(F.BufPos,i);
+      ErrorMsg := ErrorMsg + String(ErrorBuf);
+      ErrorLen:=0;
+      ErrorBuf[ErrorLen]:=#0;
     end;
+    Dec(F.BufPos,i);
+  end;
   ErrorWrite:=0;
 End;
 
@@ -55,10 +53,10 @@ End;
 Function ErrorClose(Var F: TextRec): Integer;
 begin
   if ErrorLen>0 then
-   begin
-     ErrorMsg := ErrorMsg + String(ErrorBuf);
-     ErrorLen:=0;     
-   end;
+  begin
+    ErrorMsg := ErrorMsg + String(ErrorBuf);
+    ErrorLen:=0;
+  end;
   If (ErrorMsg <> '') And DoShowWindow Then Begin
     ShowWindow(ErrorMsg);
     ErrorMsg := '';
@@ -96,16 +94,13 @@ End;
 procedure AssignError(Var T: Text);
 begin
   Assign(T,'');
-
   TextRec(T).OpenFunc:=@ErrorOpen;
-
   Rewrite(T);
 end;
 
 initialization
   AssignError(MyStdErr);
   SetHeapTraceOutput(MyStdErr);
-
 
 finalization
 
