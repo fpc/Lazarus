@@ -81,8 +81,7 @@ type
 
   TSDFlag = (
     sdfCompilerFilenameNeedsUpdate,
-    sdfFPCScDirNeedsUpdate,
-    sdfFPCScDirSelectPage,
+    sdfFPCSrcDirNeedsUpdate,
     sdfMakeExeFilenameNeedsUpdate,
     sdfDebuggerFilenameNeedsUpdate
     );
@@ -187,6 +186,7 @@ type
     fSearchFpcSourceThread: TSearchFpcSourceThread;
     procedure SelectPage(const NodeText: string);
     function SelectDirectory(aTitle: string): string;
+    procedure StartFPCSrcThread;
     procedure UpdateLazarusDirCandidates;
     procedure UpdateCompilerFilenameCandidates;
     procedure UpdateFPCSrcDirCandidates;
@@ -1621,12 +1621,9 @@ begin
   if sdfCompilerFilenameNeedsUpdate in FFlags then begin
     UpdateCompilerFilenameCandidates;
     UpdateCompilerNote;
-  end else if sdfFPCScDirNeedsUpdate in FFlags then begin
+  end else if sdfFPCSrcDirNeedsUpdate in FFlags then begin
     UpdateFPCSrcDirCandidates;
     UpdateFPCSrcDirNote;
-  end else if sdfFPCScDirSelectPage in FFlags then begin
-    SelectPage(TVNodeFPCSources.Text);
-    Exclude(FFlags,sdfFPCScDirSelectPage);
   end else if sdfMakeExeFilenameNeedsUpdate in FFlags then begin
     UpdateMakeExeCandidates;
     UpdateMakeExeNote;
@@ -1674,6 +1671,15 @@ begin
   end;
 end;
 
+procedure TInitialSetupDialog.StartFPCSrcThread;
+begin
+  fSearchFpcSourceThread:=TSearchFpcSourceThread.Create(Self);
+  fSearchFpcSourceThread.OnTerminate:=@ThreadTerminated;
+  fSearchFpcSourceThread.fFPCVer:=GetFPCVer;
+  ShowHideScanControls(True); // Show scan controls while thread is running
+  fSearchFpcSourceThread.Start;
+end;
+
 procedure TInitialSetupDialog.UpdateLazarusDirCandidates;
 var
   Dirs: TSDFileInfoList;
@@ -1699,7 +1705,7 @@ procedure TInitialSetupDialog.UpdateFPCSrcDirCandidates;
 var
   Dirs: TSDFileInfoList;
 begin
-  Exclude(FFlags,sdfFPCScDirNeedsUpdate);
+  Exclude(FFlags,sdfFPCSrcDirNeedsUpdate);
   Dirs:=SearchFPCSrcDirCandidates(false,GetFPCVer);
   FreeAndNil(FCandidates[sddtFPCSrcDir]);
   FCandidates[sddtFPCSrcDir]:=Dirs;
@@ -1710,7 +1716,7 @@ procedure TInitialSetupDialog.UpdateFPCSrcDirCandidate(aFPCSrcDirInfo: TSDFileIn
 var
   Dirs: TSDFileInfoList;
 begin
-  Exclude(FFlags,sdfFPCScDirNeedsUpdate);
+  Exclude(FFlags,sdfFPCSrcDirNeedsUpdate);
   FreeAndNil(FCandidates[sddtFPCSrcDir]);
   Dirs:=TSDFileInfoList.Create;
   Dirs.Add(aFPCSrcDirInfo);
@@ -1802,7 +1808,7 @@ begin
   TVNodeLazarus.ImageIndex:=ImageIndex;
   TVNodeLazarus.SelectedIndex:=ImageIndex;
 
-  FFlags:=FFlags+[sdfCompilerFilenameNeedsUpdate,sdfFPCScDirNeedsUpdate,
+  FFlags:=FFlags+[sdfCompilerFilenameNeedsUpdate,sdfFPCSrcDirNeedsUpdate,
                   sdfMakeExeFilenameNeedsUpdate,sdfDebuggerFilenameNeedsUpdate];
   IdleConnected:=true;
 end;
@@ -1843,7 +1849,7 @@ begin
   TVNodeCompiler.ImageIndex:=ImageIndex;
   TVNodeCompiler.SelectedIndex:=ImageIndex;
 
-  FFlags:=FFlags+[sdfFPCScDirNeedsUpdate,
+  FFlags:=FFlags+[sdfFPCSrcDirNeedsUpdate,
                   sdfMakeExeFilenameNeedsUpdate,sdfDebuggerFilenameNeedsUpdate];
   IdleConnected:=true;
 end;
@@ -1994,7 +2000,6 @@ end;
 
 procedure TInitialSetupDialog.ShowHideScanControls(aShow: Boolean);
 begin
-  DebugLn(['TInitialSetupDialog.ShowHideScanControls: aShow=', aShow]);
   // Show ProgressBar and Stop button durin scanning
   ScanLabel.Visible:=aShow;
   ScanProgressBar.Visible:=aShow;
@@ -2008,7 +2013,9 @@ end;
 
 procedure TInitialSetupDialog.ThreadTerminated(Sender: TObject);
 begin
+  debugln(['TInitialSetupDialog.ThreadTerminated ']);
   fSearchFpcSourceThread:=nil; // Thread will free itself. Make the variable nil, too.
+  ShowHideScanControls(false);
 end;
 
 procedure TInitialSetupDialog.Init;
@@ -2051,7 +2058,8 @@ begin
 
   // Lazarus directory
   UpdateLazarusDirCandidates;
-  if IsFirstStart or (not FileExistsCached(EnvironmentOptions.GetParsedLazarusDirectory))
+  if IsFirstStart
+  or (not FileExistsCached(EnvironmentOptions.GetParsedLazarusDirectory))
   then begin
     // first start => choose first best candidate
     Candidate:=GetFirstCandidate(FCandidates[sddtLazarusSrcDir]);
@@ -2064,7 +2072,9 @@ begin
 
   // compiler filename
   UpdateCompilerFilenameCandidates;
-  if IsFirstStart or (not FileExistsCached(EnvironmentOptions.GetParsedCompilerFilename))
+  if IsFirstStart
+  or (EnvironmentOptions.CompilerFilename='')
+  or (not FileExistsCached(EnvironmentOptions.GetParsedCompilerFilename))
   then begin
     // first start => choose first best candidate
     Candidate:=GetFirstCandidate(FCandidates[sddtCompilerFilename]);
@@ -2077,24 +2087,21 @@ begin
 
   // FPC source directory
   UpdateFPCSrcDirCandidates;
-  if IsFirstStart or (not FileExistsCached(EnvironmentOptions.GetParsedFPCSourceDirectory))
+  if IsFirstStart or (EnvironmentOptions.FPCSourceDirectory='')
+  or (not FileExistsCached(EnvironmentOptions.GetParsedFPCSourceDirectory))
   then begin
     // first start => choose first best candidate
     Candidate:=GetFirstCandidate(FCandidates[sddtFPCSrcDir]);
     if Candidate<>nil then begin
       EnvironmentOptions.FPCSourceDirectory:=Candidate.Caption;
-      ShowHideScanControls(false);  // Hide controls dealing with scanning
     end
     else begin
       // No candidates found => start a thread to scan the file system.
-      fSearchFpcSourceThread:=TSearchFpcSourceThread.Create(Self);
-      fSearchFpcSourceThread.OnTerminate:=@ThreadTerminated;
-      fSearchFpcSourceThread.fFPCVer:=GetFPCVer;
-      ShowHideScanControls(True); // Show scan controls while thread is running
-      fSearchFpcSourceThread.Start;
-      FFlags:=FFlags+[sdfFPCScDirSelectPage];
+      StartFPCSrcThread;
+      SelectPage(TVNodeFPCSources.Text);
     end;
   end;
+  ShowHideScanControls(fSearchFpcSourceThread<>nil);
   FPCSrcDirComboBox.Text:=EnvironmentOptions.FPCSourceDirectory;
   fLastParsedFPCSrcDir:='. .';
   UpdateFPCSrcDirNote;
@@ -2127,10 +2134,12 @@ begin
   UpdateDebuggerNote;
 
   // select first error
-  Node:=FirstErrorNode;
-  if Node=nil then
-    Node:=TVNodeLazarus;
-  PropertiesTreeView.Selected:=Node;
+  if PropertiesTreeView.Selected=nil then begin
+    Node:=FirstErrorNode;
+    if Node=nil then
+      Node:=TVNodeLazarus;
+    PropertiesTreeView.Selected:=Node;
+  end;
 end;
 
 end.
