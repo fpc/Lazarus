@@ -45,11 +45,24 @@
    - To install a package into the IDE statically, it must be relinked.
      This creates a new lazarus[.exe] executable. With the help of startlazarus
      the IDE can then automatically restart itself.
-   - Some platforms like windows locks there executable while running.
-     This means the new executable created needs another name.
-   - If the IDE is installed as root/administrator the whole lazarus directory
-     is readonly for users. This means the new executable created will be
-     created in another directory.
+   - What happens when a new executable is created:
+     - If the installation directory is writeable to the user, the current
+       "lazarus.exe" (which is or should be the file from wich the running IDE
+       was started) can not be deleted while the IDE is running (Windows locks
+       the file).
+       It is renamed to lazarus.old instead, which if exists is overwritten.
+       If lazarus.old is locked (due to a previous rebuild/rename without
+       restarting the IDE), then it is renamed to lazarus.old2.
+       In this case a restart could be done without the use of startlazarus.
+       Note that before 1.0 the IDE was compiled into lazarus.exe.new, and
+       startlazarus did the rename.
+     - If the installation directory is not writeable by the user, then the new
+       lazarus.exe is created in the primary config path, which is usually in
+       the users home directory.
+       The IDE will not update any shortcuts/links, such as startmenu entries or
+       desktop icons. The IDE may not even have a complete list of those. They
+       should instead point to startlazarus, which is kept in a fixed location.
+       startlazarus then locates the correct lazarus.exe
    - Building can result in a broken IDE. Therefore backups are created.
    - Copying is slow (especially the huge IDE). So only 'rename' is used for
      backup.
@@ -61,8 +74,6 @@
      style systems like linux, bsd, macosx and {AppData}\Lazarus\bin on windows
      (this is still a todo on windows).
    - For debugging purposes you can work without startlazarus.
-   - To not confuse the user, the running IDE executable is 'lazarus' or
-     'lazarus.exe', not 'lazarus.new' or 'lazarus.old'.
    - The user can define the Target Directory.
    - The IDE can be cross compiled. The resulting executable will be created
      in <primary config path>/bin/<TargetOS>
