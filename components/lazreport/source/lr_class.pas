@@ -4431,7 +4431,9 @@ begin
         if ClipNeeded then
         begin
           ClipRgn := CreateRectRgn(r.Left, r.Top, r.Right, r.Bottom);
-          PreviousClipRgn := SelectClipRgn(Handle, ClipRgn);
+          PreviousClipRgn := CreateRectRgn(0, 0, 0, 0);
+          LCLIntf.GetClipRgn(Handle, PreviousClipRgn);
+          SelectClipRgn(Handle, ClipRgn);
         end;
         r.Right := r.Left + PictureWidth;
         r.Bottom := r.Top + PictureHeight;
@@ -4439,6 +4441,7 @@ begin
         if ClipNeeded then
         begin
           SelectClipRGN(Handle, PreviousClipRgn);
+          DeleteObject(PreviousClipRgn);
           DeleteObject(ClipRgn);
         end;
       end;
