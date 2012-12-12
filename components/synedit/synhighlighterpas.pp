@@ -421,6 +421,7 @@ type
     function Func166: TtkTokenKind;
     function Func167: TtkTokenKind;
     function Func168: TtkTokenKind;
+    function Func170: TtkTokenKind;
     function Func181: TtkTokenKind;
     function Func191: TtkTokenKind;
     function AltFunc: TtkTokenKind;
@@ -653,8 +654,9 @@ begin
     end;
     J := UpCase(I);
     case I of
-      'a'..'z', 'A'..'Z', '_': mHashTable[I] := Ord(J) - 64;
-      '0'..'9': mHashTable[I] := Ord(J) - 48;
+      'a'..'z', 'A'..'Z': mHashTable[I] := Ord(J) - 64;
+      '_': mHashTable[I] := 27; // after Z
+      '0'..'9': mHashTable[I] := Ord(J) - 48 + 28; // after "_"
     else
       mHashTable[Char(I)] := 0;
     end;
@@ -762,6 +764,7 @@ begin
   fIdentFuncTable[166] := @Func166;
   fIdentFuncTable[167] := @Func167;
   fIdentFuncTable[168] := @Func168;
+  fIdentFuncTable[170] := @Func170;
   fIdentFuncTable[181] := @Func181;
   fIdentFuncTable[191] := @Func191;
 end;
@@ -1982,9 +1985,6 @@ function TSynPasSyn.Func142: TtkTokenKind;
 var
   tbf: TPascalCodeFoldBlockType;
 begin
-  if (FStringKeywordMode in [spsmDefault]) and KeyComp('UTF8String') then
-    Result := tkKey
-  else
   if KeyComp('Experimental') then begin
     tbf := TopPascalCodeFoldBlockType;
       if ( ( (tbf in [cfbtVarType, cfbtLocalVarType]) and (rsVarTypeInSpecification in fRange) ) or
@@ -2135,6 +2135,14 @@ begin
     Result := tkKey;
   end
   else Result := tkIdentifier;
+end;
+
+function TSynPasSyn.Func170: TtkTokenKind;
+begin
+  if (FStringKeywordMode in [spsmDefault]) and KeyComp('UTF8String') then
+    Result := tkKey
+  else
+    Result := tkIdentifier;
 end;
 
 function TSynPasSyn.Func181: TtkTokenKind;
