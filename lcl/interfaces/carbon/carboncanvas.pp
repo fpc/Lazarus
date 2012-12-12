@@ -636,6 +636,7 @@ begin
       AData.CurrentBrush.Select;
   end;
   FCurrentBrush := AData.CurrentBrush;
+  FCurrentBrush.Apply(Self);
   
   if (FCurrentPen <> AData.CurrentPen) then
   begin
@@ -645,6 +646,7 @@ begin
       AData.CurrentPen.Select;
   end;
   FCurrentPen := AData.CurrentPen;
+  FCurrentPen.Apply(Self);
   
   if (FCurrentRegion <> AData.CurrentRegion) then
   begin
