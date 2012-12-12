@@ -969,7 +969,7 @@ type
 
     // search results
     function DoJumpToSearchResult(FocusEditor: boolean): boolean;
-    procedure DoShowSearchResultsView(Show: boolean); override;
+    procedure DoShowSearchResultsView(Show: boolean; BringToFront: boolean = False); override;
 
     // form editor and designer
     procedure DoBringToFrontFormOrUnit;
@@ -3960,7 +3960,8 @@ end;
 
 procedure TMainIDE.mnuViewSearchResultsClick(Sender: TObject);
 Begin
-  DoShowSearchResultsView(true);
+  // show and bring to front
+  DoShowSearchResultsView(true, true);
 End;
 
 procedure TMainIDE.mnuNewProjectClicked(Sender: TObject);
@@ -9143,7 +9144,7 @@ begin
     SourceEditorManager.ShowActiveWindowOnTop(False);
 end;
 
-procedure TMainIDE.DoShowSearchResultsView(Show: boolean);
+procedure TMainIDE.DoShowSearchResultsView(Show: boolean; BringToFront: boolean = False);
 begin
   if SearchresultsView=Nil then begin
     SearchresultsView:=TSearchResultsView.Create(OwningComponent);
@@ -9152,7 +9153,8 @@ begin
   if Show then begin
     IDEWindowCreators.ShowForm(SearchresultsView,Show);
     // the sourcenotebook is more interesting than the search results
-    SourceEditorManager.ShowActiveWindowOnTop(False);
+    if BringToFront = false then
+      SourceEditorManager.ShowActiveWindowOnTop(False);
   end;
 end;
 

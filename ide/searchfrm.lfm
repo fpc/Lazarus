@@ -7,8 +7,10 @@ object SearchProgressForm: TSearchProgressForm
   ClientHeight = 167
   ClientWidth = 700
   Constraints.MinWidth = 700
+  OnClose = FormClose
   OnCreate = SearchFormCREATE
   OnDestroy = SearchFormDESTROY
+  OnShow = FormShow
   Position = poScreenCenter
   LCLVersion = '1.1'
   Visible = True
@@ -29,7 +31,7 @@ object SearchProgressForm: TSearchProgressForm
       AnchorSideTop.Side = asrCenter
       Left = 121
       Height = 1
-      Top = 98
+      Top = 88
       Width = 1
       ParentColor = False
       ShowAccelChar = False
@@ -38,9 +40,9 @@ object SearchProgressForm: TSearchProgressForm
       AnchorSideTop.Control = SearchingLabel
       AnchorSideTop.Side = asrBottom
       Left = 16
-      Height = 17
-      Top = 90
-      Width = 54
+      Height = 13
+      Top = 82
+      Width = 40
       BorderSpacing.Top = 18
       Caption = 'Matches'
       ParentColor = False
@@ -50,7 +52,7 @@ object SearchProgressForm: TSearchProgressForm
       AnchorSideTop.Side = asrCenter
       Left = 121
       Height = 1
-      Top = 63
+      Top = 57
       Width = 1
       ParentColor = False
       ShowAccelChar = False
@@ -59,9 +61,9 @@ object SearchProgressForm: TSearchProgressForm
       AnchorSideTop.Control = SearchTextLabel
       AnchorSideTop.Side = asrBottom
       Left = 16
-      Height = 17
-      Top = 55
-      Width = 68
+      Height = 13
+      Top = 51
+      Width = 51
       BorderSpacing.Top = 18
       Caption = 'Searching:'
       ParentColor = False
@@ -69,9 +71,9 @@ object SearchProgressForm: TSearchProgressForm
     object SearchTextLabel: TLabel
       AnchorSideTop.Control = Panel2
       Left = 16
-      Height = 17
+      Height = 13
       Top = 20
-      Width = 78
+      Width = 62
       BorderSpacing.Top = 18
       Caption = 'Search Text:'
       ParentColor = False
@@ -81,7 +83,7 @@ object SearchProgressForm: TSearchProgressForm
       AnchorSideTop.Side = asrCenter
       Left = 121
       Height = 1
-      Top = 28
+      Top = 26
       Width = 1
       ParentColor = False
       ShowAccelChar = False
@@ -93,10 +95,10 @@ object SearchProgressForm: TSearchProgressForm
       AnchorSideRight.Side = asrBottom
       AnchorSideBottom.Control = Panel2
       AnchorSideBottom.Side = asrBottom
-      Left = 306
-      Height = 31
-      Top = 128
-      Width = 89
+      Left = 312
+      Height = 26
+      Top = 133
+      Width = 77
       Anchors = [akLeft, akBottom]
       AutoSize = True
       BorderSpacing.Top = 12

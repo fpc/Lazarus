@@ -54,6 +54,8 @@ type
     lblProgress: TLABEL;
     lblSearchText: TLABEL;
     Panel2: TPANEL;
+    procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
+    procedure FormShow(Sender: TObject);
     procedure OnAddMatch(const Filename: string; const StartPos, EndPos: TPoint;
                          const Lines: string);
     procedure SearchFormCREATE(Sender: TObject);
@@ -81,6 +83,7 @@ type
     fSearchProject: boolean;
     fAborting: boolean;
     fLastUpdateProgress: DWORD;
+    fWasActive: boolean;
     procedure DoFindInFiles(ADirectory: string);
     procedure DoFindInSearchList;
     procedure SetResultsList(const AValue: TStrings);
@@ -639,6 +642,7 @@ begin
   fSearchProject:= false;
   fSearchOpen:= false;
   fSearchFiles:= false;
+  fWasActive:= false;
 end;
 
 procedure TSearchProgressForm.OnAddMatch(const Filename: string; const StartPos,
@@ -659,6 +663,17 @@ begin
   SearchResultsView.AddMatch(fResultsWindow.PageIndex,FileName,StartPos,EndPos,
                              TrimmedLines, TrimmedMatch, MatchLen);
   UpdateMatches;
+end;
+
+procedure TSearchProgressForm.FormClose(Sender: TObject; var CloseAction:
+  TCloseAction);
+begin
+  fWasActive:= Active;
+end;
+
+procedure TSearchProgressForm.FormShow(Sender: TObject);
+begin
+  fWasActive:= true;
 end;
 
 procedure TSearchProgressForm.SearchFormDESTROY(Sender: TObject);
@@ -926,8 +941,8 @@ begin
   finally
     ListPage.Caption:= Format('%s (%d)',[ListPage.Caption,Cnt]);
     SearchResultsView.EndUpdate(ListPage.PageIndex);
-    // bring to front
-    IDEWindowCreators.ShowForm(SearchResultsView,true);
+    // show, but bring to front only if Search Progress dialog was active
+    LazarusIDE.DoShowSearchResultsView(True, fWasActive);
   end;
 end;
 

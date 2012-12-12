@@ -299,7 +299,7 @@ type
     procedure AbortBuild; virtual; abstract;
 
     // search results
-    procedure DoShowSearchResultsView(Show: boolean); virtual; abstract;
+    procedure DoShowSearchResultsView(Show: boolean; BringToFront: boolean = False); virtual; abstract;
 
     // designer
     function GetDesignerForProjectEditor(AEditor: TSourceEditorInterface;
