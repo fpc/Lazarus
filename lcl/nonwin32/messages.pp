@@ -68,6 +68,7 @@ const
   WM_CANCELMODE       = LM_CANCELMODE;
   WM_NOTIFY           = LM_NOTIFY;
   WM_CREATE           = LM_CREATE;
+  WM_ACTIVATE         = LM_ACTIVATE;
 
 type
 
@@ -97,11 +98,9 @@ type
   TWMPaste            = TLMPaste;
   TWMSetCursor        = TLMSetCursor;
   TWMNoParams         = TLMNoParams;
-
-  TWMGetDlgCode = TLMNoParams;
-
-
-  TWMMouseMove = TLMMouseMove;
+  TWMGetDlgCode       = TLMNoParams;
+  TWMMouseMove        = TLMMouseMove;
+  TWMActivate         = TLMActivate;
 
 implementation
 
