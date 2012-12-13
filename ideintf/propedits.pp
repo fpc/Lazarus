@@ -373,8 +373,8 @@ type
     function IsNotDefaultValue: boolean; virtual;
     // These are used for the popup menu in OI
     function GetVerbCount: Integer; virtual;
-    function GetVerb(Index: Integer; out AHint: string): string; virtual;
-    function GetVerbEnabled(Index: Integer): Boolean; virtual;
+    function GetVerb(Index: Integer): string; virtual;
+    procedure PrepareItem(Index: Integer; const AnItem: TMenuItem); virtual;
     procedure ExecuteVerb(Index: Integer); virtual;
   public
     property PropertyHook: TPropertyEditorHook read FPropertyHook;
@@ -874,8 +874,8 @@ type
   public
     // These are used for the popup menu in OI
     function GetVerbCount: Integer; override;
-    function GetVerb(Index: Integer; out AHint: string): string; override;
-    function GetVerbEnabled(Index: Integer): Boolean; override;
+    function GetVerb(Index: Integer): string; override;
+    procedure PrepareItem(Index: Integer; const AnItem: TMenuItem); override;
     procedure ExecuteVerb(Index: Integer); override;
   end;
 
@@ -2919,15 +2919,14 @@ begin
     Result := 0;
 end;
 
-function TPropertyEditor.GetVerb(Index: Integer; out AHint: string): string;
+function TPropertyEditor.GetVerb(Index: Integer): string;
 begin
   Result := Format(oisSetToDefault, [GetDefaultValue]);
-  AHint := oisSetToDefaultHint;
 end;
 
-function TPropertyEditor.GetVerbEnabled(Index: Integer): Boolean;
+procedure TPropertyEditor.PrepareItem(Index: Integer; const AnItem: TMenuItem);
 begin
-  Result := IsNotDefaultValue;
+  // overridden by descendants
 end;
 
 procedure TPropertyEditor.ExecuteVerb(Index: Integer);
@@ -5131,35 +5130,40 @@ begin
   Result:=2;
 end;
 
-function TConstraintsPropertyEditor.GetVerb(Index: Integer; out AHint: string): string;
+function TConstraintsPropertyEditor.GetVerb(Index: Integer): string;
 var
   s: String;
   c: TControl;
 begin
   case Index of
-    0: begin
-      s := oisSetMaxConstraints;
-      AHint := oisSetMaxConstraintsHint;
-    end;
-    1: begin
-      s := oisSetMinConstraints;
-      AHint := oisSetMinConstraintsHint;
-    end;
+    0: s := oisSetMaxConstraints;
+    1: s := oisSetMinConstraints;
   end;
   c := GetComponent(0) as TControl;
   Result := Format(s, [c.Height, c.Width]);
 end;
 
-function TConstraintsPropertyEditor.GetVerbEnabled(Index: Integer): Boolean;
+procedure TConstraintsPropertyEditor.PrepareItem(Index: Integer;
+  const AnItem: TMenuItem);
 var
   c: TControl;
 begin
   c := GetComponent(0) as TControl;
   case Index of
-    0: Result := (c.Constraints.MaxHeight<>c.Height)
-              or (c.Constraints.MaxWidth<>c.Width);
-    1: Result := (c.Constraints.MinHeight<>c.Height)
-              or (c.Constraints.MinWidth<>c.Width);
+  0:
+    begin
+      // set max constraints
+      AnItem.Enabled := (c.Constraints.MaxHeight<>c.Height)
+                     or (c.Constraints.MaxWidth<>c.Width);
+      AnItem.Hint := oisSetMaxConstraintsHint;
+    end;
+  1:
+    begin
+      // set min constraints
+      AnItem.Enabled := (c.Constraints.MinHeight<>c.Height)
+                      or (c.Constraints.MinWidth<>c.Width);
+      AnItem.Hint := oisSetMinConstraintsHint;
+    end;
   end;
 end;
 

@@ -36,7 +36,7 @@ uses
   // IMPORTANT: the object inspector is a tool and can be used in other programs
   //            too. Don't put Lazarus IDE specific things here.
   // FCL
-  SysUtils, Types, Classes, TypInfo,
+  SysUtils, Types, Classes, TypInfo, contnrs,
   // LCL
   InterfaceBase, Forms, Buttons, Graphics, GraphType, LCLProc, StdCtrls,
   LCLType, LCLIntf, Controls, ComCtrls, ExtCtrls, LMessages, LResources,
@@ -47,7 +47,6 @@ uses
 
 const
   OIOptionsFileVersion = 3;
-  EditorPopupMax = 2;  // Number of popup menu items created for PropEditors
 
   DefBackgroundColor = clBtnFace;
   DefReferencesColor = clMaroon;
@@ -564,8 +563,6 @@ type
 
   //============================================================================
 
-  TPropEditPopupMenuItems = array[0..EditorPopupMax-1] of TMenuItem;
-
   TOnAddAvailablePersistent = procedure(APersistent: TPersistent;
     var Allowed: boolean) of object;
 
@@ -671,7 +668,6 @@ type
     FUpdateLock: integer;
     FUpdatingAvailComboBox: boolean;
     FComponentEditor: TBaseComponentEditor;
-    FPropEditPopupMenuItems: TPropEditPopupMenuItems; // Popup menu items for PropEdits
     function GetGridControl(Page: TObjectInspectorPage): TOICustomPropertyGrid;
     procedure SetComponentEditor(const AValue: TBaseComponentEditor);
     procedure SetFavorites(const AValue: TOIFavoriteProperties);
@@ -3931,15 +3927,6 @@ begin
   FilterLabel.Caption := oisComponents;
   MainPopupMenu.Images := IDEImages.Images_16;
 
-  // "EditorPopupMax" menu items are created for PropEditors already here.
-  // If more of them must be created, adjust EditorPopupMax accordingly.
-  for i := 0 to EditorPopupMax-1 do
-  begin
-    s := 'PropEditPopupMenuItem'+IntToStr(i);
-    AddPopupMenuItem(FPropEditPopupMenuItems[i],nil,s,s,'','',@OnPropEditPopupClick,false,true,true);
-    FPropEditPopupMenuItems[i].Tag := i;
-    DebugLn(['Created menu item "', s, '"']);
-  end;
   AddPopupMenuItem(AddToFavoritesPopupMenuItem,nil,'AddToFavoritePopupMenuItem',
      oisAddtofavorites,'Add property to favorites properties', '',
      @OnAddToFavoritesPopupmenuItemClick,false,true,true);
@@ -5068,15 +5055,53 @@ begin
 end;
 
 procedure TObjectInspectorDlg.OnMainPopupMenuPopup(Sender: TObject);
+const
+  PropertyEditorMIPrefix = 'PropertyEditorVerbMenuItem';
+  ComponentEditorMIPrefix = 'ComponentEditorVerbMenuItem';
 var
-  EditorVerbSeparator: TMenuItem;
+  ComponentEditorVerbSeparator: TMenuItem;
+  PropertyEditorVerbSeparator: TMenuItem;
+
+  procedure RemovePropertyEditorMenuItems;
+  var
+    I: Integer;
+  begin
+    PropertyEditorVerbSeparator := nil;
+    for I := MainPopupMenu.Items.Count - 1 downto 0 do
+      if Pos(PropertyEditorMIPrefix, MainPopupMenu.Items[I].Name) = 1 then
+        MainPopupMenu.Items[I].Free;
+  end;
+
+  procedure AddPropertyEditorMenuItems(Editor: TPropertyEditor);
+  var
+    I, VerbCount: Integer;
+    Item: TMenuItem;
+  begin
+    VerbCount := Editor.GetVerbCount;
+    for I := 0 to VerbCount - 1 do
+    begin
+      Item := NewItem(Editor.GetVerb(I), 0, False, True,
+        @OnPropEditPopupClick, 0, PropertyEditorMIPrefix + IntToStr(i));
+      Editor.PrepareItem(I, Item);
+      Item.Tag:=I;
+      MainPopupMenu.Items.Insert(I, Item);
+    end;
+    // insert the separator
+    if VerbCount > 0 then
+    begin
+      PropertyEditorVerbSeparator := Menus.NewLine;
+      PropertyEditorVerbSeparator.Name := PropertyEditorMIPrefix + IntToStr(VerbCount);
+      MainPopupMenu.Items.Insert(VerbCount, PropertyEditorVerbSeparator);
+    end;
+  end;
 
   procedure RemoveComponentEditorMenuItems;
   var
     I: Integer;
   begin
+    ComponentEditorVerbSeparator:=nil;
     for I := MainPopupMenu.Items.Count - 1 downto 0 do
-      if Pos('ComponentEditorVerbMenuItem', MainPopupMenu.Items[I].Name) = 1 then
+      if Pos(ComponentEditorMIPrefix, MainPopupMenu.Items[I].Name) = 1 then
         MainPopupMenu.Items[I].Free;
   end;
 
@@ -5089,16 +5114,17 @@ var
     for I := 0 to VerbCount - 1 do
     begin
       Item := NewItem(ComponentEditor.GetVerb(I), 0, False, True,
-        @DoComponentEditorVerbMenuItemClick, 0, 'ComponentEditorVerbMenuItem' + IntToStr(i));
+        @DoComponentEditorVerbMenuItemClick, 0, ComponentEditorMIPrefix + IntToStr(i));
       ComponentEditor.PrepareItem(I, Item);
+      Item.Tag:=I;
       MainPopupMenu.Items.Insert(I, Item);
     end;
     // insert the separator
     if VerbCount > 0 then
     begin
-      EditorVerbSeparator := NewLine;
-      EditorVerbSeparator.Name := 'ComponentEditorVerbMenuItem' + IntToStr(VerbCount);
-      MainPopupMenu.Items.Insert(VerbCount, EditorVerbSeparator);
+      ComponentEditorVerbSeparator := Menus.NewLine;
+      ComponentEditorVerbSeparator.Name := ComponentEditorMIPrefix + IntToStr(VerbCount);
+      MainPopupMenu.Items.Insert(VerbCount, ComponentEditorVerbSeparator);
     end;
   end;
 
@@ -5107,18 +5133,18 @@ var
     Item: TMenuItem;
   begin
     Item := NewItem(oisAddCollectionItem, 0, False, True,
-      @DoCollectionAddItem, 0, 'ComponentEditorVerbMenuItem0');
+      @DoCollectionAddItem, 0, ComponentEditorMIPrefix+'0');
     MainPopupMenu.Items.Insert(0, Item);
-    EditorVerbSeparator := NewLine;
-    EditorVerbSeparator.Name := 'ComponentEditorVerbMenuItem1';
-    MainPopupMenu.Items.Insert(1, EditorVerbSeparator);
+    ComponentEditorVerbSeparator := NewLine;
+    ComponentEditorVerbSeparator.Name := ComponentEditorMIPrefix+'1';
+    MainPopupMenu.Items.Insert(1, ComponentEditorVerbSeparator);
   end;
 
   procedure AddZOrderMenuItems;
   var
     ZItem, Item: TMenuItem;
   begin
-    ZItem := NewSubMenu(oisZOrder, 0, 'ComponentEditorVerbMenuItemZOrder', [], True);
+    ZItem := NewSubMenu(oisZOrder, 0, ComponentEditorMIPrefix+'ZOrder', [], True);
     Item := NewItem(oisOrderMoveToFront, 0, False, True, @DoZOrderItemClick, 0, '');
     Item.ImageIndex := IDEImages.LoadImage(16, 'Order_move_front');
     Item.Tag := 0;
@@ -5135,12 +5161,12 @@ var
     Item.ImageIndex := IDEImages.LoadImage(16, 'Order_back_one');
     Item.Tag := 3;
     ZItem.Add(Item);
-    if EditorVerbSeparator <> nil then
-      MainPopupMenu.Items.Insert(EditorVerbSeparator.MenuIndex + 1, ZItem)
+    if ComponentEditorVerbSeparator <> nil then
+      MainPopupMenu.Items.Insert(ComponentEditorVerbSeparator.MenuIndex + 1, ZItem)
     else
       MainPopupMenu.Items.Insert(0, ZItem);
     Item := NewLine;
-    Item.Name := 'ComponentEditorVerbMenuItemZOrderSeparator';
+    Item.Name := ComponentEditorMIPrefix+'ZOrderSeparator';
     MainPopupMenu.Items.Insert(ZItem.MenuIndex + 1, Item);
   end;
 
@@ -5151,13 +5177,13 @@ var
   CurRow: TOIPropertyGridRow;
   Persistent: TPersistent;
 begin
+  RemovePropertyEditorMenuItems;
   RemoveComponentEditorMenuItems;
   ShowHintsPopupMenuItem.Checked := PropertyGrid.ShowHint;
   Persistent := GetSelectedPersistent;
   // show component editors only for component treeview
   if MainPopupMenu.PopupComponent = ComponentTree then
   begin
-    EditorVerbSeparator := nil;
     ComponentEditor := GetComponentEditorForSelection;
     if ComponentEditor <> nil then
       AddComponentEditorMenuItems
@@ -5194,19 +5220,9 @@ begin
   CurRow := GetActivePropertyRow;
   if (MainPopupMenu.PopupComponent is TOICustomPropertyGrid) then
   begin
-    for i := 0 to EditorPopupMax-1 do
-    begin
-      Capt := '';
-      if Assigned(CurRow) and (i < CurRow.Editor.GetVerbCount) then
-        Capt := CurRow.Editor.GetVerb(i, sHint);
-      FPropEditPopupMenuItems[i].Visible := Capt<>'';
-      if FPropEditPopupMenuItems[i].Visible then
-      begin
-        FPropEditPopupMenuItems[i].Caption := Capt;
-        FPropEditPopupMenuItems[i].Hint := sHint;
-        FPropEditPopupMenuItems[i].Enabled := CurRow.Editor.GetVerbEnabled(i);
-      end;
-    end;
+    // popup menu of property grid
+    if CurRow<>nil then
+      AddPropertyEditorMenuItems(CurRow.Editor);
 
     b := (Favorites <> nil) and ShowFavorites and (GetActivePropertyRow <> nil);
     AddToFavoritesPopupMenuItem.Visible := b and
@@ -5231,8 +5247,7 @@ begin
   end
   else
   begin
-    for i := 0 to EditorPopupMax-1 do
-      FPropEditPopupMenuItems[i].Visible := False;
+    // default popup menu
     AddToFavoritesPopupMenuItem.Visible := False;
     RemoveFromFavoritesPopupMenuItem.Visible := False;
     UndoPropertyPopupMenuItem.Visible := False;
@@ -5262,8 +5277,7 @@ begin
     AMenuItem := TMenuItem(Sender)
   else
     Exit;
-  // component menu items start from the start of menu
-  Verb := AMenuItem.MenuIndex;
+  Verb := AMenuItem.Tag;
   ComponentEditor.ExecuteVerb(Verb);
 end;
 
