@@ -9,6 +9,10 @@
   {$fatal This code is 32bit specific at the moment!}
 {$endif}
 
+// FPC does not always push a copy of r3 - r10 to the stack (24(r1) - 52(r1)
+// The API states that the space must be reserved, if the regiser contents are not placed there.
+{$define NeedRegCopyOnStack}
+
 const
   rtINT = 0;
   rtINT64 = 1;
@@ -182,6 +186,11 @@ var
   { add a dword to stack }
   procedure addstackdword(value: dword);
   begin
+    {$ifndef NeedRegCopyOnStack}
+    if stindex = 0 then begin
+      stindex := 56; // leave empty space for registers on stack
+    end;
+    {$endif}
     setlength(st, stindex+4);
     pdword(@st[stindex])^ := value;
     inc(stindex, 4);
@@ -190,6 +199,11 @@ var
   { add a float to stack }
   procedure addstackfloat(value: pointer; size: integer);
   begin
+    {$ifndef NeedRegCopyOnStack}
+    if stindex = 0 then begin
+      stindex := 56; // leave empty space for registers on stack
+    end;
+    {$endif}
     setlength(st, stindex + (size * 4));
     if size = 1
       then psingle(@st[stindex])^ := single(value^)
@@ -204,7 +218,9 @@ var
       then begin
         rint[rindex] := value;
         inc(rindex);
-        //addstackdword(value);
+        {$ifdef NeedRegCopyOnStack}
+        addstackdword(value);
+        {$endif}
       end
       else begin
         addstackdword(value);
@@ -221,7 +237,9 @@ var
           else rfloat[findex] := double(value^);
         inc(findex);
         inc(rindex, size);
-        //addstackfloat(value, size);
+        {$ifdef NeedRegCopyOnStack}
+        addstackfloat(value, size);
+        {$endif}
       end
       else begin
         addstackfloat(value, size);
@@ -236,7 +254,11 @@ begin
 
   rindex := 1;
   findex := 1;
+  {$ifdef NeedRegCopyOnStack}
   stindex := 24;
+  {$else}
+  stindex := 0; // do not create a stack, if only registers are used
+  {$endif}
   setlength(st, stindex);
   Result := False;
 
@@ -308,6 +330,11 @@ begin
         end;  { case }
       end;  { else }
   end;  { for }
+
+  if (stindex mod 16) <> 0 then begin
+    stindex := stindex + 16 - (stindex mod 16);
+    setlength(st, stindex);
+  end;
 
   if not assigned(res)
     then begin
