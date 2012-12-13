@@ -20,7 +20,7 @@ uses
   {$IFDEF WIN32}
   Windows,
   {$ENDIF}
-  LCLType,LCLIntf,LCLProc;
+  LCLType,LCLIntf,LCLProc,LazUTF8;
 
 
 procedure frReadMemo(Stream: TStream; l: TStrings);
@@ -123,6 +123,10 @@ begin
       Stream.Read(n, 2);
       SetLength(s, n);
       Stream.Read(s[1], n);
+      if frVersion<=23 then
+        // this string is not UTF-8 encoded, wish it a good
+        // luck and assume it's encoded en current codepage
+        s := SysToUTF8(s);
       l.Add(s);
       b := 0;
       Stream.Read(b, 1);

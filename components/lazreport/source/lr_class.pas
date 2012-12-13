@@ -2119,6 +2119,7 @@ end;
 procedure TfrView.LoadFromStream(Stream: TStream);
 var
   wb : Word;
+  li : Longint;
   S  : Single;
   i  : Integer;
 begin
@@ -2143,11 +2144,32 @@ begin
     Read(dy, 4);
     Read(Flags, 2);
 
-    S := 0;
-    Read(S, SizeOf(S)); fFrameWidth := S;
-    Read(fFrameColor, SizeOf(fFrameColor));
-    Read(fFrames,SizeOf(fFrames));
-    Read(fFrameStyle, SizeOf(fFrameStyle));
+    if frVersion>23 then
+    begin
+      S := 0;
+      Read(S, SizeOf(S)); fFrameWidth := S;
+      Read(fFrameColor, SizeOf(fFrameColor));
+      Read(fFrames, SizeOf(fFrames));
+      Read(fFrameStyle, SizeOf(fFrameStyle));
+    end else
+    begin
+      wb := 0;
+      Read(wb, 2); // frametyp
+      fFrames := [];
+      if (wb and $1) <> 0 then include(fFrames, frbRight);
+      if (wb and $2) <> 0 then include(fFrames, frbBottom);
+      if (wb and $4) <> 0 then include(fFrames, frbLeft);
+      if (wb and $8) <> 0 then include(fFrames, frbTop);
+      li := 0;
+      Read(li, 4);  // framewidth (single)
+      if li <= 10 then
+        li := li * 1000;
+      fFrameWidth := li / 1000;
+      Read(li, 4); // framecolor
+      fFrameColor := li;
+      read(wb, 2); // framestyle
+      fFrameStyle := TfrFrameStyle(wb);
+    end;
 
     Read(fFillColor, 4);
 
@@ -3555,6 +3577,8 @@ begin
     Font.Style := frSetFontStyle(w);
     Read(i, 4);
     Font.Color := i;
+    if frVersion=23 then
+      Read(Adjust, 4);
     Read(w, 2);
     if frVersion < 23 then
       w := frCharset;
@@ -3564,18 +3588,19 @@ begin
       Read(Highlight, 10);
       HighlightStr := ReadString(Stream);
     end;
-    
+    if frVersion>23 then
+    begin
+      Read(TmpAlign{%H-},SizeOf(TmpAlign));
+      Read(TmpLayout{%H-},SizeOf(TmpLayout));
+      tmpAngle := 0;
+      Read(tmpAngle,SizeOf(tmpAngle));
 
-    Read(TmpAlign{%H-},SizeOf(TmpAlign));
-    Read(TmpLayout{%H-},SizeOf(TmpLayout));
-    tmpAngle := 0;
-    Read(tmpAngle,SizeOf(tmpAngle));
-
-    BeginUpdate;
-    Alignment := tmpAlign;
-    Layout := tmpLayout;
-    Angle := tmpAngle;
-    EndUpdate;
+      BeginUpdate;
+      Alignment := tmpAlign;
+      Layout := tmpLayout;
+      Angle := tmpAngle;
+      EndUpdate;
+    end;
   end;
 
   if frVersion = 21 then
@@ -3926,9 +3951,9 @@ end;
 procedure TfrBandView.LoadFromStream(Stream: TStream);
 begin
   inherited LoadFromStream(Stream);
-  
+
   With Stream do
-  begin
+  if frVersion>23 then begin
     Read(fBandType,SizeOf(BandType));
     fCondition :=ReadString(Stream);
     fDataSetStr:=ReadString(Stream);
@@ -4457,7 +4482,7 @@ end;
 const
   pkNone = 0;
   pkBitmap = 1;
-//**  pkMetafile = 2;
+  pkMetafile = 2;
   pkIcon = 3;
   pkJPEG = 4;
   pkPNG  = 5;
@@ -4522,15 +4547,23 @@ begin
   b := 0;
   Stream.Read(b, 1);
 
-  if b=pkAny then
-    Graphic := ExtensionToGraphic(Stream.ReadAnsiString)
-  else
+  if frVersion<=23 then
+  begin
+    n := 0;
+    Stream.Read(n, 4);
     Graphic := PictureTypeToGraphic(b);
-
-  FSharedName := Stream.ReadAnsiString;
-
-  n := 0;
-  Stream.Read(n, 4);
+    if b=pkMetafile then
+      raise exception.Create('LazReport does not support TMetafile');
+  end else
+  begin
+    if b=pkAny then
+      Graphic := ExtensionToGraphic(Stream.ReadAnsiString)
+    else
+      Graphic := PictureTypeToGraphic(b);
+    FSharedName := Stream.ReadAnsiString;
+    n := 0;
+    Stream.Read(n, 4);
+  end;
 
   Picture.Graphic := Graphic;
   if Graphic <> nil then
@@ -7151,8 +7184,9 @@ begin
     UseMargins:=Bool;
     Read(fColCount, 4);
     Read(fColGap, 4);
-    if frVersion>23 then                          //todo: - remove this
-      Read(ord(APageType), SizeOf(TfrPageType));  //todo: - remove this
+    if frVersion>=24 then                         //todo: - remove this
+      Read(APageType, SizeOf(TfrPageType));  //todo: - remove this
+    if frVersion>=25 then
     Read(fLayoutOrder, 4);
   end;
   ChangePaper(pgSize, Width, Height, Orientation);
@@ -7193,7 +7227,9 @@ begin
     Write(Bool, 2);
     Write(ColCount, 4);
     Write(ColGap, 4);
+    // new in 2.4
     Write(ord(PageType), SizeOf(TfrPageType));  //todo: - remove this
+    // new in 2.5
     Write(LayoutOrder, 4);
   end;
 end;
@@ -7299,7 +7335,6 @@ begin
     {$IFDEF DebugLR}
     DebugLn('TfrPages.LoadFromStream');
     {$ENDIF}
-
     Stream.Read(b, 1);
     if b = $FF then  // page info
     begin
@@ -7955,6 +7990,9 @@ end;
 procedure TfrValues.ReadBinaryData(Stream: TStream);
 var
   i, j, n: Integer;
+  li: longint;
+  b: byte;
+  val: TfrValue;
 
   function ReadStr: String;
   var
@@ -7976,10 +8014,21 @@ begin
     for i := 0 to n - 1 do
     begin
       j := AddValue;
-      with Objects[j] do
+      val := Objects[j];
+      with val do
       begin
-        ReadBuffer(Typ, SizeOf(Typ));
-        ReadBuffer(OtherKind, SizeOf(OtherKind));
+        if frVersion=23 then
+        begin
+          Read(b, 1);
+          Read(li, 4);
+          typ := TfrValueType(b);
+          OtherKind := li;
+        end else
+        if frVersion>23 then
+        begin
+          ReadBuffer(Typ, SizeOf(Typ));
+          ReadBuffer(OtherKind, SizeOf(OtherKind));
+        end;
         DataSet := ReadStr;
         Field := ReadStr;
         FItems[j] := ReadStr;
