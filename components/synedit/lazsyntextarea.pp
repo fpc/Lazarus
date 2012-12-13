@@ -1486,7 +1486,9 @@ var
     end;
 
     NeedExpansion := (ATokenInfo.ExpandedExtraBytes > 0) or (ATokenInfo.HasTabs);
-    NeedTransform := FTextDrawer.NeedsEto or ATokenInfo.HasDoubleWidth or NeedExpansion;
+    NeedTransform := FTextDrawer.NeedsEto or ATokenInfo.HasDoubleWidth or NeedExpansion
+                     {$IFDEF Windows} or ATokenInfo.RtlInfo.IsRtl {$ENDIF}
+                     ;
     Len := ATokenInfo.Tk.TokenLength;
     if (not ATokenInfo.RtlInfo.IsRtl) or (LineBufferRtlLogPos <> ATokenInfo.RtlInfo.LogFirst) then
       FEtoBuf := nil;
@@ -1513,7 +1515,9 @@ var
       end;
 
       // Prepare FETOBuf
-      if FTextDrawer.NeedsEto or ATokenInfo.HasDoubleWidth then begin
+      if FTextDrawer.NeedsEto or ATokenInfo.HasDoubleWidth
+         {$IFDEF Windows} or ATokenInfo.RtlInfo.IsRtl {$ENDIF}  // RTL may have script with ligature
+      then begin
         FEtoBuf := FTextDrawer.Eto;
         FEtoBuf.SetMinLength(Len + ATokenInfo.ExpandedExtraBytes + 1);
         c := FTextDrawer.GetCharWidth;
