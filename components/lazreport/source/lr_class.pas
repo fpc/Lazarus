@@ -888,6 +888,7 @@ type
     procedure AddPagesFromStream(AStream: TStream; AReadHeader: boolean=true);
     procedure LoadFromXML({%H-}XML: TLrXMLConfig; const {%H-}Path: String);
     procedure SaveToStream(AStream: TStream);
+    procedure SavePageToStream(PageNo:Integer; AStream: TStream);
     procedure SaveToXML({%H-}XML: TLrXMLConfig; const {%H-}Path: String);
     property Pages[Index: Integer]: PfrPageInfo read GetPages; default;
     property Count: Integer read GetCount;
@@ -7918,6 +7919,50 @@ begin
     AStream.Seek(0, soFromEnd);
     Inc(i);
   until i >= Count;
+end;
+
+procedure TfrEMFPages.SavePageToStream(PageNo:Integer; AStream: TStream);
+var
+  o, n: Integer;
+  b: Byte;
+  s: TMemoryStream;
+begin
+  if (PageNo >= 0) and (PageNo < Count) then  // fool-proof :)
+  begin
+    b := Byte(frCompressor.Enabled);
+    AStream.Write(b, 1);
+    frWriteString(AStream, Prn.Printers[Prn.PrinterIndex]);
+    n := 1;
+    AStream.Write(n, 4);
+    o := AStream.Position;
+    AStream.Write(o, 4); // dummy write
+    with Pages[PageNo]^ do
+    begin
+      AStream.Write(pgSize, 2);
+      AStream.Write(pgWidth, 4);
+      AStream.Write(pgHeight, 4);
+      b := Byte(pgOr);
+      AStream.Write(b, 1);
+      b := Byte(pgMargins);
+      AStream.Write(b, 1);
+      Stream.Position := 0;
+      if frCompressor.Enabled then
+      begin
+        s := TMemoryStream.Create;
+        frCompressor.Compress(Stream, s);
+        AStream.CopyFrom(s, s.Size);
+        s.Free;
+      end
+      else
+        AStream.CopyFrom(Stream, Stream.Size);
+    end;
+    n := AStream.Position;
+    AStream.Seek(o, soFromBeginning);
+    AStream.Write(n, 4);
+    AStream.Seek(0, soFromEnd);
+  end
+  else
+    raise ERangeError.CreateFmt('Save page: PageNo %d out of range [0..%d]', [PageNo, Count-1]);
 end;
 
 procedure TfrEMFPages.SaveToXML(XML: TLrXMLConfig; const Path: String);
