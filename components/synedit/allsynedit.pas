@@ -25,7 +25,8 @@ uses
   SynHighlighterVB, SynHighlighterXML, SynMacroRecorder, SynMemo, SynPluginSyncroEdit, 
   SynPluginSyncronizedEditBase, SynPluginTemplateEdit, LazSynEditText, LazSynTextArea, 
   SynRegExpr, SynTextDrawer, SynEditMarkupGutterMark, SynHighlighterBat, SynHighlighterIni, 
-  SynEditMarkupSpecialChar, SynEditTextDoubleWidthChars, LazarusPackageIntf;
+  SynEditMarkupSpecialChar, SynEditTextDoubleWidthChars, SynEditTextSystemCharWidth, 
+  LazarusPackageIntf;
 
 implementation
 

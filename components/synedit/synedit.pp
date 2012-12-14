@@ -79,6 +79,9 @@ uses
   {$IFDEF USE_UTF8BIDI_LCL}
   FreeBIDI, utf8bidi,
   {$ENDIF}
+  {$IFDEF WithSynExperimentalCharWidth}
+  SynEditTextSystemCharWidth,
+  {$ENDIF}
   Types, LCLIntf, LCLType, LMessages, LazUTF8, LCLProc, LazMethodList, LazLoggerBase,
   SysUtils, Classes, Messages, Controls, Graphics, Forms, StdCtrls, ExtCtrls, Menus,
   SynEditTypes, SynEditSearch, SynEditKeyCmds, SynEditMouseCmds, SynEditMiscProcs,
@@ -472,6 +475,9 @@ type
     FTrimmedLinesView: TSynEditStringTrimmingList;
     FDoubleWidthChrLinesView: SynEditStringDoubleWidthChars;
     FBidiChrLinesView: TSynEditStringBidiChars;
+    {$IFDEF WithSynExperimentalCharWidth}
+    FSysCharWidthLinesView: TSynEditStringSystemWidthChars;
+    {$ENDIF}
     FTabbedLinesView:  TSynEditStringTabExpander;
     FTheLinesView: TSynEditStrings;
     FLines: TSynEditStrings;          // The real (un-mapped) line-buffer
@@ -1871,6 +1877,13 @@ begin
   FDoubleWidthChrLinesView := SynEditStringDoubleWidthChars.Create
                                                             (FTrimmedLinesView);
 
+  {$IFDEF WithSynExperimentalCharWidth}
+  FSysCharWidthLinesView := TSynEditStringSystemWidthChars.Create(FDoubleWidthChrLinesView, Self.Canvas);
+
+  FBidiChrLinesView := TSynEditStringBidiChars.Create(FSysCharWidthLinesView);
+  FTabbedLinesView := TSynEditStringTabExpander.Create(FBidiChrLinesView);
+  {$ELSE}
+
   {$IFnDEF WithOutSynBiDi}
   FBidiChrLinesView := TSynEditStringBidiChars.Create(FDoubleWidthChrLinesView);
   {$ENDIF}
@@ -1881,6 +1894,8 @@ begin
   {$ELSE}
   FTabbedLinesView := TSynEditStringTabExpander.Create(FDoubleWidthChrLinesView);
   {$ENDIF}
+
+  {$ENDIF} // WithSynExperimentalCharWidth
 
   // Pointer to the First/Lowest View
   // TODO: this should be Folded...
@@ -2345,6 +2360,9 @@ begin
   FreeAndNil(FTrimmedLinesView); // has reference to caret
   {$IFnDEF WithOutSynBiDi}
   FreeAndNil(FBidiChrLinesView);
+  {$ENDIF}
+  {$IFDEF WithSynExperimentalCharWidth}
+  FreeAndNil(FSysCharWidthLinesView);
   {$ENDIF}
   FreeAndNil(FDoubleWidthChrLinesView);
   TSynEditStringList(FLines).DetachSynEdit(Self);
