@@ -53,6 +53,9 @@ type
 
 implementation
 
+var
+  LOG_SynSystemWidthChars: PLazLoggerLogGroup;
+
 { TSynEditStringSystemWidthChars }
 
 constructor TSynEditStringSystemWidthChars.Create(ASynStringSource: TSynEditStrings;
@@ -79,8 +82,16 @@ var
   {$endif}
 begin
   inherited DoGetPhysicalCharWidths(Line, LineLen, Index, PWidths);
-  if (not IsUtf8) or (not FHandleOwner.HandleAllocated) then
+  if (not IsUtf8) then
     exit;
+
+  if (FHandleOwner is TControlCanvas) and
+     (not TWinControl(TControlCanvas(FHandleOwner).Control).HandleAllocated) // SynEdit.HandleAllocated
+  then begin
+    debugln(LOG_SynSystemWidthChars, ['TSynEditStringSystemWidthChars NO HANDLE ']);
+    exit;
+  end;
+
 
   {$IFDEF Windows}
   SetLength(s, LineLen+1);  // wide chars of UTF-16 <= bytes of UTF-8 string
@@ -108,7 +119,7 @@ begin
     if Line^ in [#$00..#$7F, #$C0..#$FF] then begin
       if PWidths^ <> 0 then begin
         if (k > 0) and (order[k] = order[k-1]) then begin
-          debugln(['TSynEditStringSystemWidthChars for line ', Index, ' set char at ', j, '(', k, ') to be drawn with previous']);
+          debugln(LOG_SynSystemWidthChars, ['TSynEditStringSystemWidthChars for line ', Index, ' set char at ', j, '(', k, ') to be drawn with previous']);
           PWidths^ := 0;
         end;
       end;
@@ -121,6 +132,10 @@ begin
 
   {$endif}
 end;
+
+
+initialization
+  LOG_SynSystemWidthChars := DebugLogger.RegisterLogGroup('SynSystemWidthChars' {$IFDEF SynSystemWidthChars} , True {$ENDIF} );
 
 end.
 
