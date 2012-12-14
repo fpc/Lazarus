@@ -81,6 +81,8 @@ type
 
   TSynLogCharSide  = (cslBefore, cslAfter,  cslFollowLtr, cslFollowRtl);
   TSynPhysCharSide = (cspLeft,  cspRight, cspFollowLtr, cspFollowRtl);
+  TSynLogPhysFlag  = (lpfAdjustToCharBegin, lpfAdjustToNextChar);
+  TSynLogPhysFlags = set of TSynLogPhysFlag;
 
 (** LRL    // L=Ltr-Char / R=RTl-Char
 
@@ -124,6 +126,8 @@ type
 
   TSynLogicalPhysicalConvertor = class
   private
+    FLastLogicalResultPos: Integer;
+    FLastPhysicalResultPos: Integer;
     FLines: TSynEditStrings;
     FCurrentWidths: TPhysicalCharWidths;
     FCurrentWidthsLen, FCurrentWidthsAlloc: Integer;
@@ -139,11 +143,17 @@ type
     // Line is 0-based // Column is 1-based
     function PhysicalToLogical(AIndex, AColumn: Integer): Integer;
     function PhysicalToLogical(AIndex, AColumn: Integer; out AColOffset: Integer;
-                               ACharSide: TSynPhysCharSide= cspFollowLtr): Integer;
+                               ACharSide: TSynPhysCharSide= cspFollowLtr//;
+                               {AFlags: TSynLogPhysFlags = []}): Integer;
     // ACharPos 1=before 1st char
     function LogicalToPhysical(AIndex, ABytePos: Integer): Integer;
     function LogicalToPhysical(AIndex, ABytePos: Integer; var AColOffset: Integer;
-                               ACharSide: TSynLogCharSide = cslFollowLtr): Integer;
+                               ACharSide: TSynLogCharSide = cslFollowLtr;
+                               AFlags: TSynLogPhysFlags = []): Integer;
+    // properties set, if lpfAdjustTo... is used
+    property LastLogicalResultPos: Integer read FLastLogicalResultPos;
+    //property LastLogicalResultColOffs: Integer read FLastLogicalResultColOffs;
+    property LastPhysicalResultPos: Integer read FLastPhysicalResultPos;
   end;
 
   (*
@@ -615,7 +625,7 @@ begin
 end;
 
 function TSynLogicalPhysicalConvertor.PhysicalToLogical(AIndex, AColumn: Integer; out
-  AColOffset: Integer; ACharSide: TSynPhysCharSide): Integer;
+  AColOffset: Integer; ACharSide: TSynPhysCharSide{; AFlags: TSynLogPhysFlags}): Integer;
 var
   BytePos, ScreenPos, ScreenPosOld: integer;
   RtlPos, RtlScreen: Integer;
@@ -732,11 +742,13 @@ begin
 end;
 
 function TSynLogicalPhysicalConvertor.LogicalToPhysical(AIndex, ABytePos: Integer;
-  var AColOffset: Integer; ACharSide: TSynLogCharSide): Integer;
+  var AColOffset: Integer; ACharSide: TSynLogCharSide; AFlags: TSynLogPhysFlags): Integer;
 var
   i: integer;
   RtlLen: Integer;
 begin
+  FLastLogicalResultPos := ABytePos;
+  FLastPhysicalResultPos := ABytePos;
   {$IFDEF AssertSynMemIndex}
   if (ABytePos <= 0) then
     raise Exception.Create(Format('Bad Bytpos for PhystoLogical BytePos=%d ColOffs= %d idx= %d',[ABytePos, AColOffset, AIndex]));
@@ -753,6 +765,25 @@ begin
   PrepareWidthsForLine(AIndex);
 
   dec(ABytePos);
+  if ABytePos < FCurrentWidthsLen then begin
+    if (FCurrentWidths[ABytePos] and PCWMask) = 0 then begin
+      if lpfAdjustToCharBegin in AFlags then begin
+        while (ABytePos > 0) and ((FCurrentWidths[ABytePos] and PCWMask) = 0) do
+          dec(ABytePos);
+      end
+      else
+      if lpfAdjustToNextChar in AFlags then begin
+        while (ABytePos < FCurrentWidthsLen) and ((FCurrentWidths[ABytePos] and PCWMask) = 0) do
+          inc(ABytePos);
+      end;
+      FLastLogicalResultPos := ABytePos+1;
+      assert((FCurrentWidths[ABytePos] and PCWMask) <> 0, 'LogicalToPhysical at char');
+    end;
+    if ABytePos < FCurrentWidthsLen then
+      AColOffset := Min(AColOffset, (FCurrentWidths[ABytePos] and PCWMask)-1);
+    Result := 1 + AColOffset;
+  end;
+
   if ABytePos >= FCurrentWidthsLen then
   begin
     Result := 1 + ABytePos - FCurrentWidthsLen;
@@ -760,13 +791,7 @@ begin
       ACharSide := cslAfter;
     ABytePos := FCurrentWidthsLen;
     AColOffset := 0;
-  end
-  else begin
-    AColOffset := Min(AColOffset, (FCurrentWidths[ABytePos] and PCWMask)-1);
-    assert((FCurrentWidths[ABytePos] and PCWMask) <> 0, 'LogicalToPhysical at char');
-    Result := 1 + AColOffset;
   end;
-
 
   RtlLen := 0;
   for i := 0 to ABytePos - 1 do begin
@@ -809,6 +834,7 @@ begin
   then
     Result := Result + RtlLen;
   {$ENDIF}
+  FLastPhysicalResultPos := Result;
 end;
 
 { TSynEditStrings }

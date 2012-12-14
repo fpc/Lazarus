@@ -501,6 +501,7 @@ var
   CharWidths: TPhysicalCharWidths;
   GotCharWidths: Boolean;
   MaxOffs: Integer;
+  Flag: TSynLogPhysFlags;
 
   function GetMaxOffs(AlogPos: Integer): Integer;
   begin
@@ -516,6 +517,7 @@ begin
   UpdateBytePos;
 
   If ACount > 0 then begin
+    Flag := [lpfAdjustToNextChar];
     if (FBytePos <= length(L)) and (L[FBytePos] = #9) and (not FSkipTabs) then
       MaxOffs := GetMaxOffs(FBytePos) - 1
     else
@@ -537,6 +539,7 @@ begin
     Result := FBytePos <= length(L) + 1;
   end
   else begin
+    Flag := [lpfAdjustToCharBegin];
     while ACount < 0 do begin
       if FBytePosOffset > 0 then
         dec(FBytePosOffset)
@@ -553,7 +556,12 @@ begin
     end;
     Result := ACount = 0;
   end;
-  CharPos := FLines.LogPhysConvertor.LogicalToPhysical(FLinePos - 1, FBytePos, FBytePosOffset);
+  CharPos := FLines.LogPhysConvertor.LogicalToPhysical(FLinePos - 1, FBytePos,
+    FBytePosOffset, cslFollowLtr, Flag);
+  if FBytePos <> FLines.LogPhysConvertor.LastLogicalResultPos then begin
+    FBytePos := FLines.LogPhysConvertor.LastLogicalResultPos;
+    FBytePosOffset := 0;
+  end;
 end;
 
 procedure TSynEditCaret.setLinePos(const AValue : Integer);
