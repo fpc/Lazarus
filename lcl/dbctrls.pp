@@ -1685,6 +1685,7 @@ end;
 
 
 initialization
+  RegisterPropertyToSkip(TField,'Calculated','VCL compatibility property', '');
   {$I lcl_dbnav_images.lrs}
 
 finalization
