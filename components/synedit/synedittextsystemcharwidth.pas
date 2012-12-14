@@ -110,8 +110,10 @@ begin
 
   i := GetCharacterPlacementW(FHandleOwner.Handle, pwidechar(s), length(s), 0,
                               @cpRes, GCP_DIACRITIC + GCP_KASHIDA + GCP_LIGATE);
-  if i = 0 then
+  if i = 0 then begin
+    debugln(LOG_SynSystemWidthChars, ['TSynEditStringSystemWidthChars FAILED for line ', Index]);
     exit;
+  end;
 
   k := 0; // index for order
 
