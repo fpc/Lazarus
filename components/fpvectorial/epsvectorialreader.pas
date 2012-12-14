@@ -57,12 +57,14 @@ type
   public
     CurElementStr: string;
     ArrayData: TPSTokens;
+    Parent: TArrayToken; // nil indicates a top-level array
     constructor Create; override;
     destructor Destroy; override;
     function Duplicate: TPSToken; override;
     procedure FreeToken(AToken, AData: Pointer);
     procedure AddNumber(ANumber: Double);
     procedure AddIdentityMatrix;
+    procedure ResolveOperators;
   end;
 
   { TProcedureToken }
@@ -89,8 +91,17 @@ type
     function Duplicate: TPSToken; override;
   end;
 
+  { TDictionaryToken }
+
+  TDictionaryToken = class(TPSToken)
+  public
+    Childs: TPSTokens;
+    constructor Create; override;
+    destructor Destroy; override;
+  end;
+
   TPostScriptScannerState = (ssSearchingToken, ssInComment, ssInDefinition,
-    ssInGroup, ssInExpressionElement, ssInArray);
+    ssInGroup, ssInExpressionElement, ssInArray, ssInDictionary);
 
   { TGraphicState }
 
@@ -179,6 +190,22 @@ type
 var
   FPointSeparator: TFormatSettings;
 
+{ TDictionaryToken }
+
+constructor TDictionaryToken.Create;
+begin
+  inherited Create;
+
+  Childs := TPSTokens.Create;
+end;
+
+destructor TDictionaryToken.Destroy;
+begin
+  Childs.Free;
+
+  inherited Destroy;
+end;
+
 { TArrayToken }
 
 constructor TArrayToken.Create;
@@ -222,6 +249,11 @@ begin
   AddNumber(1);
   AddNumber(0);
   AddNumber(0);
+end;
+
+procedure TArrayToken.ResolveOperators;
+begin
+
 end;
 
 { TGraphicState }
@@ -297,11 +329,37 @@ begin
 end;
 
 procedure TExpressionToken.PrepareFloatValue;
+var
+  lRadixPos: SizeInt;
+  i: Integer;
+  Len: Integer;
+  lRadixStr: string;
+  lRadixNum: Integer;
 begin
   //if not IsExpressionOperand() then Exit;
   if ETType <> ettOperand then Exit; // faster, because this field should already be filled
 
-  FloatValue := StrToFloat(StrValue, FPointSeparator);
+  // If this is a radix number, we will have more work
+  // Example of radix in Postscript: 2#1000 = 8
+  // http://en.wikipedia.org/wiki/Radix
+  // The first number is the base, 2 = binary, 10=decimal, 16=hex, etc
+  lRadixPos := Pos('#', StrValue);
+  if lRadixPos <> 0 then
+  begin
+    FloatValue := 0;
+    Len := Length(StrValue);
+    lRadixStr := Copy(StrValue, 1, lRadixPos-1);
+    lRadixNum := StrToInt(lRadixStr); // for now assume only 1
+    for i := Length(StrValue) downto lRadixPos+1 do
+    begin
+      FloatValue := FloatValue + StrToInt(StrValue[i]) * Math.Power(lRadixNum, Len - i);
+    end;
+  end
+  else
+  // Code for normal numbers, decimals
+  begin
+    FloatValue := StrToFloat(StrValue, FPointSeparator);
+  end;
 end;
 
 function TExpressionToken.Duplicate: TPSToken;
@@ -344,8 +402,10 @@ var
   CommentToken: TCommentToken;
   ProcedureToken: TProcedureToken;
   ExpressionToken: TExpressionToken;
-  ArrayToken: TArrayToken;
+  ArrayToken, NewArrayToken: TArrayToken;
+  DictionaryToken: TDictionaryToken;
   Len: Integer;
+  lScannerStateReturn: TPostScriptScannerState = ssSearchingToken;
   lIsEndOfLine: Boolean;
 begin
   // Check if the EPS file starts with a TIFF preview
@@ -399,7 +459,21 @@ begin
         else if CurChar = '[' then
         begin
           ArrayToken := TArrayToken.Create;
+          lScannerStateReturn:= ssInArray;
           State := ssInArray;
+        end
+        else if CurChar = '<' then
+        begin
+          CurChar := Char(AStream.ReadByte());
+          if CurChar = '<' then
+          begin
+            DictionaryToken := TDictionaryToken.Create;
+            State := ssInDictionary;
+            lScannerStateReturn:= ssInDictionary;
+          end
+          else
+            raise Exception.Create(Format('[TPSTokenizer.ReadFromStream] Unexpected char while searching for "<<" token: $%s in Line %d',
+              [IntToHex(Byte(CurChar), 2), CurLine]));
         end
         else if CurChar in ['a'..'z','A'..'Z','0'..'9','-','/'] then
         begin
@@ -442,22 +516,47 @@ begin
       // Starts at [ and ends in ]
       ssInArray:
       begin
-        if (CurChar = ']') then
+        if (CurChar = '[') then
         begin
-          Tokens.Add(ArrayToken);
-          State := ssSearchingToken;
+          // We are starting another array, so save the parent and go to the new one
+          NewArrayToken := TArrayToken.Create;
+          NewArrayToken.Parent := ArrayToken;
+          ArrayToken.ArrayData.Add(NewArrayToken);
+          ArrayToken := NewArrayToken;
         end
-        else if (CurChar = ' ') then
+        else if (CurChar = ']') then
         begin
-          //ArrayToken.ArrayData.Add();
-          //CurElementStr: string;
-          //ArrayData: TPSTokens;
+          ArrayToken.ResolveOperators();
+          if ArrayToken.Parent = nil then
+          begin
+            Tokens.Add(ArrayToken);
+            lScannerStateReturn:= ssSearchingToken;
+            State := ssSearchingToken;
+          end
+          else
+          begin
+            ArrayToken := ArrayToken.Parent;
+          end;
         end
-        else
-        begin;
-          //CurElementStr: string;
-          //ArrayData: TPSTokens;
-        end;
+        else if CurChar in ['a'..'z','A'..'Z','0'..'9','-','/'] then
+        begin
+          ExpressionToken := TExpressionToken.Create;
+          ExpressionToken.Line := CurLine;
+          ExpressionToken.StrValue := '';
+          if CurChar = '/' then
+            ExpressionToken.ETType := ettNamedElement
+          else
+          begin
+            ExpressionToken.StrValue := CurChar;
+            if ExpressionToken.IsExpressionOperand() then
+              ExpressionToken.ETType := ettOperand
+            else
+              ExpressionToken.ETType := ettOperator;
+          end;
+          State := ssInExpressionElement;
+        end
+        else if lIsEndOfLine then Continue
+        else if IsPostScriptSpace(Byte(CurChar)) then Continue;
       end;
 
       // Starts at { and ends in }, passing over nested groups
@@ -483,14 +582,64 @@ begin
         end;
       end;
 
-      // Goes until a space comes, or { or [
+      // Starts at << and ends in >>
+      ssInDictionary:
+      begin
+        if (CurChar = '>') then
+        begin
+          CurChar := Char(AStream.ReadByte());
+          if CurChar = '>' then
+          begin
+            Tokens.Add(DictionaryToken);
+            lScannerStateReturn:= ssSearchingToken;
+            State := ssSearchingToken;
+          end
+          else
+            raise Exception.Create(Format('[TPSTokenizer.ReadFromStream] ssInDictionary: Unexpected char while searching for ">>" token: $%s in Line %d',
+              [IntToHex(Byte(CurChar), 2), CurLine]));
+        end
+        else if CurChar in ['a'..'z','A'..'Z','0'..'9','-','/'] then
+        begin
+          ExpressionToken := TExpressionToken.Create;
+          ExpressionToken.Line := CurLine;
+          ExpressionToken.StrValue := '';
+          if CurChar = '/' then
+            ExpressionToken.ETType := ettNamedElement
+          else
+          begin
+            ExpressionToken.StrValue := CurChar;
+            if ExpressionToken.IsExpressionOperand() then
+              ExpressionToken.ETType := ettOperand
+            else
+              ExpressionToken.ETType := ettOperator;
+          end;
+          State := ssInExpressionElement;
+        end
+        else if lIsEndOfLine then Continue
+        else if IsPostScriptSpace(Byte(CurChar)) then Continue;
+      end;
+
+      // Goes until a space comes, or { or [ ...
       ssInExpressionElement:
       begin
-        if IsPostScriptSpace(Byte(CurChar)) or (CurChar = '{') or (CurChar = '[') then
+        if IsPostScriptSpace(Byte(CurChar)) or (CurChar in ['{', '[', '}', ']', '/', '<', '>', '(', ')']) then
         begin
           ExpressionToken.PrepareFloatValue();
-          Tokens.Add(ExpressionToken);
-          State := ssSearchingToken;
+          if lScannerStateReturn = ssInArray then
+          begin
+            ArrayToken.ArrayData.Add(ExpressionToken);
+            State := ssInArray;
+          end
+          else if lScannerStateReturn = ssInDictionary then
+          begin
+            DictionaryToken.Childs.Add(ExpressionToken);
+            State := ssInDictionary;
+          end
+          else
+          begin
+            Tokens.Add(ExpressionToken);
+            State := ssSearchingToken;
+          end;
           if (CurChar = '{') then AStream.Seek(-1, soFromCurrent)
           else if (CurChar = '[') then AStream.Seek(-1, soFromCurrent);
         end
