@@ -408,6 +408,7 @@ var
   lScannerStateReturn: TPostScriptScannerState = ssSearchingToken;
   lCommentStateReturn: TPostScriptScannerState = ssSearchingToken;
   lIsEndOfLine: Boolean;
+  lIsExpressionFinished: Boolean;
 begin
   // Check if the EPS file starts with a TIFF preview
   // See http://www.graphicsgroups.com/12-corel/f851f798a0e1ca7a.htm
@@ -635,7 +636,11 @@ begin
       // Goes until a space comes, or { or [ ...
       ssInExpressionElement:
       begin
-        if IsPostScriptSpace(Byte(CurChar)) or (CurChar in ['{', '[', '}', ']', '/', '<', '>', '(', ')']) then
+        // Literal strings end only in a ")", while other expressions end in a space or delimiter
+        if ExpressionToken.ETType = ettLiteralString then lIsExpressionFinished := CurChar = ')'
+        else lIsExpressionFinished := IsPostScriptSpace(Byte(CurChar)) or (CurChar in ['{', '[', '}', ']', '/', '<', '>', '(', ')']);
+
+        if lIsExpressionFinished then
         begin
           ExpressionToken.PrepareFloatValue();
           if lScannerStateReturn = ssInArray then
