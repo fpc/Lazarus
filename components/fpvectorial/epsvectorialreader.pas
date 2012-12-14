@@ -79,7 +79,7 @@ type
   end;
 
   TETType = (ettNamedElement, ettOperand, ettOperator, ettDictionary,
-    ettVirtualMemorySnapshot);
+    ettVirtualMemorySnapshot, ettLiteralString);
 
   { TExpressionToken }
 
@@ -358,7 +358,7 @@ begin
   else
   // Code for normal numbers, decimals
   begin
-    FloatValue := StrToFloat(StrValue, FPointSeparator);
+    FloatValue := 0;
   end;
 end;
 
@@ -406,6 +406,7 @@ var
   DictionaryToken: TDictionaryToken;
   Len: Integer;
   lScannerStateReturn: TPostScriptScannerState = ssSearchingToken;
+  lCommentStateReturn: TPostScriptScannerState = ssSearchingToken;
   lIsEndOfLine: Boolean;
 begin
   // Check if the EPS file starts with a TIFF preview
@@ -445,6 +446,7 @@ begin
           CommentToken.Line := CurLine;
           CommentToken.StrValue := '%';
           State := ssInComment;
+          lCommentStateReturn := ssSearchingToken;
 //          {$ifdef FPVECTORIALDEBUG}
 //          WriteLn(Format('Starting Comment at Line %d', [CurLine]));
 //          {$endif}
@@ -459,7 +461,7 @@ begin
         else if CurChar = '[' then
         begin
           ArrayToken := TArrayToken.Create;
-          lScannerStateReturn:= ssInArray;
+          lScannerStateReturn := ssInArray;
           State := ssInArray;
         end
         else if CurChar = '<' then
@@ -469,7 +471,7 @@ begin
           begin
             DictionaryToken := TDictionaryToken.Create;
             State := ssInDictionary;
-            lScannerStateReturn:= ssInDictionary;
+            lScannerStateReturn := ssInDictionary;
           end
           else
             raise Exception.Create(Format('[TPSTokenizer.ReadFromStream] Unexpected char while searching for "<<" token: $%s in Line %d',
@@ -482,6 +484,8 @@ begin
           ExpressionToken.StrValue := '';
           if CurChar = '/' then
             ExpressionToken.ETType := ettNamedElement
+          else if CurChar = '(' then
+            ExpressionToken.ETType := ettLiteralString
           else
           begin
             ExpressionToken.StrValue := CurChar;
@@ -506,7 +510,7 @@ begin
         if lIsEndOfLine then
         begin
           Tokens.Add(CommentToken);
-          State := ssSearchingToken;
+          State := lCommentStateReturn;
 //          {$ifdef FPVECTORIALDEBUG}
 //          WriteLn(Format('Adding Comment "%s" at Line %d', [CommentToken.StrValue, CurLine]));
 //          {$endif}
@@ -516,7 +520,16 @@ begin
       // Starts at [ and ends in ]
       ssInArray:
       begin
-        if (CurChar = '[') then
+        if CurChar = '%' then
+        begin
+          CommentToken := TCommentToken.Create;
+          CommentToken.Line := CurLine;
+          CommentToken.StrValue := '%';
+          State := ssInComment;
+          lCommentStateReturn := ssInArray;
+        end
+        // Another array inside the array
+        else if (CurChar = '[') then
         begin
           // We are starting another array, so save the parent and go to the new one
           NewArrayToken := TArrayToken.Create;
@@ -538,7 +551,7 @@ begin
             ArrayToken := ArrayToken.Parent;
           end;
         end
-        else if CurChar in ['a'..'z','A'..'Z','0'..'9','-','/'] then
+        else if CurChar in ['a'..'z','A'..'Z','0'..'9','-','/','('] then
         begin
           ExpressionToken := TExpressionToken.Create;
           ExpressionToken.Line := CurLine;
