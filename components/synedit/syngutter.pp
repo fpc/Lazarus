@@ -207,7 +207,7 @@ end;
 function TSynGutter.PixelToPartIndex(X: Integer): Integer;
 begin
   Result := 0;
-  x := x - LeftOffset;
+  x := x - Left - LeftOffset;
   while Result < PartCount-1 do begin
     if Parts[Result].Visible then begin
       if x >= Parts[Result].Width then
