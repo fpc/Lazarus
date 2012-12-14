@@ -52,7 +52,7 @@ uses
   SynGutterLineOverview, SynEditMarkup, SynEditMarkupGutterMark, SynEditMarkupSpecialLine,
   SynEditTextBuffer, SynEditFoldedView, SynTextDrawer, SynEditTextBase, LazSynEditText,
   SynPluginTemplateEdit, SynPluginSyncroEdit, LazSynTextArea,
-  SynEditHighlighter, SynEditHighlighterFoldBase, SynHighlighterPas;
+  SynEditHighlighter, SynEditHighlighterFoldBase, SynHighlighterPas, SynEditMouseCmds;
 
 type
 
@@ -311,11 +311,20 @@ type
   { TIDESynGutterDebugHL }
 
   TIDESynGutterDebugHL = class(TSynGutterPartBase)
+    procedure PopContentClicked(Sender: TObject);
+    procedure PopSizeClicked(Sender: TObject);
   private
     FTheLinesView: TSynEditStrings;
+    FPopUp: TPopupMenu;
+    FContent: Integer;
   protected
     function  PreferedWidth: Integer; override;
+    function MaybeHandleMouseAction(var AnInfo: TSynEditMouseActionInfo;
+               HandleActionProc: TSynEditMouseActionHandler): Boolean; override;
+    procedure PaintFoldLvl(Canvas: TCanvas; AClip: TRect; FirstLine, LastLine: integer);
+    procedure PaintCharWidths(Canvas: TCanvas; AClip: TRect; FirstLine, LastLine: integer);
   public
+    constructor Create(AOwner: TComponent); override;
     procedure Paint(Canvas: TCanvas; AClip: TRect; FirstLine, LastLine: integer);
       override;
     property TheLinesView:  TSynEditStrings       read FTheLinesView  write FTheLinesView;
@@ -327,12 +336,34 @@ implementation
 {$IFDEF WithSynDebugGutter}
 { TIDESynGutterDebugHL }
 
-function TIDESynGutterDebugHL.PreferedWidth: Integer;
+procedure TIDESynGutterDebugHL.PopContentClicked(Sender: TObject);
 begin
-  Result := Gutter.TextDrawer.CharWidth * 15;
+  FContent := TMenuItem(Sender).Tag;
+  SynEdit.Invalidate;
 end;
 
-procedure TIDESynGutterDebugHL.Paint(Canvas: TCanvas; AClip: TRect; FirstLine,
+procedure TIDESynGutterDebugHL.PopSizeClicked(Sender: TObject);
+begin
+  Width := TMenuItem(Sender).Tag;
+end;
+
+function TIDESynGutterDebugHL.PreferedWidth: Integer;
+begin
+  Result := 15; // Gutter.TextDrawer.CharWidth * 15;
+end;
+
+function TIDESynGutterDebugHL.MaybeHandleMouseAction(var AnInfo: TSynEditMouseActionInfo;
+  HandleActionProc: TSynEditMouseActionHandler): Boolean;
+begin
+  Result := False;
+  if (AnInfo.Button <> mbXRight) then exit;
+  Result := True;
+  if (AnInfo.Dir = cdUp) then begin
+    FPopUp.PopUp;
+  end;
+end;
+
+procedure TIDESynGutterDebugHL.PaintFoldLvl(Canvas: TCanvas; AClip: TRect; FirstLine,
   LastLine: integer);
 var
   TextDrawer: TheTextDrawer;
@@ -389,6 +420,139 @@ begin
 
   finally
     TextDrawer.EndDrawing;
+  end;
+end;
+
+procedure TIDESynGutterDebugHL.PaintCharWidths(Canvas: TCanvas; AClip: TRect; FirstLine,
+  LastLine: integer);
+var
+  TextDrawer: TheTextDrawer;
+  c, i, iLine, LineHeight: Integer;
+  rcLine: TRect;
+  dc: HDC;
+  s, s2: String;
+  CW: TPhysicalCharWidths;
+  j: Integer;
+begin
+  TextDrawer := Gutter.TextDrawer;
+  dc := Canvas.Handle;
+  TextDrawer.BeginDrawing(dc);
+  try
+    TextDrawer.SetBackColor(Gutter.Color);
+    TextDrawer.SetForeColor(TCustomSynEdit(SynEdit).Font.Color);
+    TextDrawer.SetFrameColor(clNone);
+     with AClip do
+       TextDrawer.ExtTextOut(Left, Top, ETO_OPAQUE, AClip, nil, 0);
+
+    rcLine := AClip;
+    rcLine.Bottom := AClip.Top;
+    LineHeight := TCustomSynEdit(SynEdit).LineHeight;
+    c := TCustomSynEdit(SynEdit).Lines.Count;
+    for i := FirstLine to LastLine do
+    begin
+      iLine := FoldView.DisplayNumber[i];
+      if (iLine < 0) or (iLine >= c) then break;
+      // next line rect
+      rcLine.Top := rcLine.Bottom;
+      rcLine.Bottom := rcLine.Bottom + LineHeight;
+
+      if i >= 0 then begin
+        CW := FTheLinesView.GetPhysicalCharWidths(iLine-1);
+        s2 := FTheLinesView.Strings[iLine-1];
+        s := '';
+        for j := 0 to length(CW) - 1 do begin
+          case FContent of
+            1: s := s + IntToStr(CW[j]) + ',';
+            2: s := s + IntToHex(ord(s2[j+1]),2) + ',';
+            3: s := s + IntToHex(ord(s2[j+1]),2) + '(' + IntToStr(CW[j]) + '),';
+          end;
+          if (j+1 < length(s2)) and (s2[j+2] in [#$00..#$7f,#$C0..#$FF]) then
+            s := s + ' ';
+        end;
+      end
+      else
+        s:= '';
+
+      TextDrawer.ExtTextOut(rcLine.Left, rcLine.Top, ETO_OPAQUE or ETO_CLIPPED, rcLine,
+        PChar(Pointer(S)),Length(S));
+    end;
+
+  finally
+    TextDrawer.EndDrawing;
+  end;
+end;
+
+constructor TIDESynGutterDebugHL.Create(AOwner: TComponent);
+var
+  Item: TMenuItem;
+begin
+  inherited Create(AOwner);
+  FPopUp := TPopupMenu.Create(Self);
+  AutoSize := False;
+  Width := PreferedWidth;
+  FContent := 0;
+
+  Item := TMenuItem.Create(FPopUp);
+  Item.OnClick := @PopSizeClicked;
+  Item.Caption := 'Size 15';
+  Item.Tag := 15;
+  FPopUp.Items.Add(Item);
+
+  Item := TMenuItem.Create(FPopUp);
+  Item.OnClick := @PopSizeClicked;
+  Item.Caption := 'Size 100';
+  Item.Tag := 100;
+  FPopUp.Items.Add(Item);
+
+  Item := TMenuItem.Create(FPopUp);
+  Item.OnClick := @PopSizeClicked;
+  Item.Caption := 'Size 250';
+  Item.Tag := 240;
+  FPopUp.Items.Add(Item);
+
+  Item := TMenuItem.Create(FPopUp);
+  Item.OnClick := @PopSizeClicked;
+  Item.Caption := 'Size 500';
+  Item.Tag := 500;
+  FPopUp.Items.Add(Item);
+
+  Item := TMenuItem.Create(FPopUp);
+  Item.Caption := '-';
+  FPopUp.Items.Add(Item);
+
+  Item := TMenuItem.Create(FPopUp);
+  Item.OnClick := @PopContentClicked;
+  Item.Caption := 'Content: Fold Level';
+  Item.Tag := 0;
+  FPopUp.Items.Add(Item);
+
+  Item := TMenuItem.Create(FPopUp);
+  Item.OnClick := @PopContentClicked;
+  Item.Caption := 'Content: CharWidths';
+  Item.Tag := 1;
+  FPopUp.Items.Add(Item);
+
+  Item := TMenuItem.Create(FPopUp);
+  Item.OnClick := @PopContentClicked;
+  Item.Caption := 'Content: Hex';
+  Item.Tag := 2;
+  FPopUp.Items.Add(Item);
+
+  Item := TMenuItem.Create(FPopUp);
+  Item.OnClick := @PopContentClicked;
+  Item.Caption := 'Content: CharWidths + hex';
+  Item.Tag := 3;
+  FPopUp.Items.Add(Item);
+
+
+end;
+
+procedure TIDESynGutterDebugHL.Paint(Canvas: TCanvas; AClip: TRect; FirstLine,
+  LastLine: integer);
+begin
+  case FContent of
+    0: PaintFoldLvl(Canvas, AClip, FirstLine, LastLine);
+    1,2,3: PaintCharWidths(Canvas, AClip, FirstLine, LastLine);
   end;
 end;
 {$ENDIF}
