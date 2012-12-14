@@ -6527,6 +6527,14 @@ begin
       Result:=KOI8ToUTF8(s);
       Encoded := true;
     end
+    else if AFrom = EncodingUCS2LE then begin
+      Result := UCS2LEToUTF8(s);
+      Encoded := true;
+    end
+    else if AFrom = EncodingUCS2BE then begin
+      Result := UCS2BEToUTF8(s);
+      Encoded := true;
+    end
     else if (AFrom=SysEnc) and Assigned(ConvertAnsiToUTF8) then begin
       Result:=ConvertAnsiToUTF8(s);
       Encoded := true;
@@ -6619,6 +6627,14 @@ begin
       {$ENDIF}
       else if ATo='koi8' then begin
         Result:=UTF8ToKOI8(Result);
+        Encoded := true;
+      end
+      else if ATo = EncodingUCS2LE then begin
+        Result := UTF8ToUCS2LE(Result);
+        Encoded := true;
+      end
+      else if ATo = EncodingUCS2BE then begin
+        Result := UTF8ToUCS2BE(Result);
         Encoded := true;
       end
       else if (ATo=SysEnc) and Assigned(ConvertUTF8ToAnsi) then begin
