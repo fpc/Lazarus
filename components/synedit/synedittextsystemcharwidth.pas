@@ -79,7 +79,7 @@ var
   {$endif}
 begin
   inherited DoGetPhysicalCharWidths(Line, LineLen, Index, PWidths);
-  if not IsUtf8 then
+  if (not IsUtf8) or (not FHandleOwner.HandleAllocated) then
     exit;
 
   {$IFDEF Windows}
