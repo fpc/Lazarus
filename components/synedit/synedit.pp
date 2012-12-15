@@ -1983,7 +1983,9 @@ begin
   // needed before setting color
   fMarkupHighCaret := TSynEditMarkupHighlightAllCaret.Create(self);
   fMarkupHighCaret.Selection := FBlockSelection;
+  fMarkupHighCaret.FoldView := FFoldedLinesView;
   fMarkupHighAll   := TSynEditMarkupHighlightAll.Create(self);
+  fMarkupHighAll.FoldView := FFoldedLinesView;
   fMarkupBracket   := TSynEditMarkupBracket.Create(self);
   fMarkupWordGroup := TSynEditMarkupWordGroup.Create(self);
   fMarkupCtrlMouse := TSynEditMarkupCtrlMouseLink.Create(self);

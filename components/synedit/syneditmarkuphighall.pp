@@ -28,7 +28,7 @@ interface
 uses
   Classes, SysUtils, ExtCtrls, SynEditMarkup, SynEditTypes, SynEditSearch,
   SynEditMiscClasses, Controls, LCLProc, SynEditHighlighter, SynEditPointClasses,
-  SynEditMiscProcs;
+  SynEditMiscProcs, SynEditFoldedView;
 
 type
 
@@ -93,6 +93,7 @@ type
 
   TSynEditMarkupHighlightAll = class(TSynEditMarkup)
   private
+    FFoldView: TSynEditFoldedView;
     fSearchString : string;            // for highlighting all occurences of a word/term
     fSearchOptions: TSynSearchOptions;
     fSearch: TSynEditSearch;
@@ -105,8 +106,10 @@ type
     Procedure FindStartPoint;
     Procedure FindInitialize(Backward: Boolean);
     function GetMatchCount: Integer;
+    procedure SetFoldView(AValue: TSynEditFoldedView);
     Procedure ValidateMatches(RePaint: Boolean = True; KeepStartPoint: Boolean = False);
     procedure SetSearchOptions(const AValue : TSynSearchOptions);
+    procedure DoFoldChanged(aLine: Integer);
   protected
     procedure SetSearchString(const AValue : String); virtual;
     procedure DoTopLineChanged(OldTopLine : Integer); override;
@@ -129,6 +132,8 @@ type
 
     Procedure Invalidate(RePaint: Boolean = True);
     Procedure SendLineInvalidation;
+
+    property FoldView: TSynEditFoldedView read FFoldView write SetFoldView;
 
     property SearchString : String read fSearchString write SetSearchString;
     property SearchOptions : TSynSearchOptions read fSearchOptions write SetSearchOptions;
@@ -327,6 +332,7 @@ end;
 
 destructor TSynEditMarkupHighlightAll.Destroy;
 begin
+  FoldView := nil;
   FreeAndNil(fSearch);
   FreeAndNil(fMatches);
   inherited Destroy;
@@ -381,6 +387,25 @@ end;
 function TSynEditMarkupHighlightAll.GetMatchCount: Integer;
 begin
   Result := fMatches.Count;
+end;
+
+procedure TSynEditMarkupHighlightAll.SetFoldView(AValue: TSynEditFoldedView);
+begin
+  if FFoldView = AValue then Exit;
+
+  if FFoldView <> nil then
+    FFoldView.RemoveFoldChangedHandler(@DoFoldChanged);
+
+  FFoldView := AValue;
+
+  if FFoldView <> nil then
+    FFoldView.AddFoldChangedHandler(@DoFoldChanged);
+end;
+
+procedure TSynEditMarkupHighlightAll.DoFoldChanged(aLine: Integer);
+begin
+  Invalidate(False);
+  ValidateMatches(False, (fStartPoint.y < TopLine) and (fStartPoint.y >= 0));
 end;
 
 procedure TSynEditMarkupHighlightAll.FindStartPoint;
