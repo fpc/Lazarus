@@ -75,6 +75,7 @@ implementation
 
 uses Process, MacroIntf, InterfaceBase, Forms, Dialogs, HelpFPDoc, IDEMsgIntf;
 
+
 { TChmHelpViewer }
 
 function TChmHelpViewer.DBFindViewer(HelpDB: THelpDatabase;
@@ -340,13 +341,18 @@ end;
 function TChmHelpViewer.ShowNode(Node: THelpNode; var ErrMsg: string
   ): TShowHelpResult;
 var
+  DirCounter: integer;
+  i: integer;
   FileName: String;
+  CHMFiles: TStringList;
   Url: String;
   Res: TLHelpResponse;
-  SearchPath: String;
+  SearchPath: String; //; delimited list of directories
+  SearchPathList: tstringlist; //SearchPath as a stringlist
   Proc: TProcessUTF8;
   FoundFileName: String;
   LHelpPath: String;
+  WasRunning: boolean;
 begin
   if Pos('file://', Node.URL) = 1 then
   begin
@@ -382,7 +388,53 @@ begin
   FileName := CleanAndExpandFilename(FoundFileName);
 
   if ExtractFileNameOnly(GetHelpExe) = 'lhelp' then begin
+    WasRunning := fHelpConnection.ServerRunning;
     fHelpConnection.StartHelpServer(HelpLabel, GetHelpExe);
+    // If the server is not already running, open all chm files after it has started
+    // This will allow cross-chm (LCL, FCL etc) searching and browsing in lhelp.
+    if not(WasRunning) then begin
+      // Open registered chm help files (no online html help etc)
+      // Using SupportsMimetype would seem to be the solution here.
+      // This does mean that all classes providing chm file support add
+      // AddSupportedMimeType('application/x-chm');
+      // in their constructors as they normally inherit
+      // text/html from their HTML help parents.
+      // Also, this will not work for other .chm files in the relevant directories.
+      // this still does not open all help files such as rtl.chm
+      {
+      for i := 0 to HelpDatabases.Count-1 do begin
+        if HelpDatabases[i].SupportsMimeType('application/x-chm') then begin
+          HelpDatabases[i].ShowTableOfContents;
+          Sleep(200); //give viewer chance to open file. todo: better way of doing this?
+          Application.ProcessMessages;
+        end;
+      end;
+      }
+      // Just open all CHM files in all directories+subdirs in ;-delimited searchpath:
+      SearchPathList:=TStringList.Create;
+      CHMFiles:=TStringList.Create;
+      try
+        CHMFiles.Sorted:=true;
+        CHMFiles.Duplicates:=dupIgnore;
+        SearchPathList.Delimiter:=';';
+        SearchPathList.StrictDelimiter:=false;
+        SearchPathList.DelimitedText:=SearchPath;
+        for DirCounter := 0 to SearchPathList.Count-1 do begin
+          // Note: FindAllFiles has a SearchPath parameter that is a *single* directory,
+          CHMFiles.AddStrings(FindAllFiles(SearchPathList[DirCounter],'',true));
+        end;
+        for i := 0 to CHMFiles.Count-1 do begin
+          if UpperCase(ExtractFileExt(CHMFiles[i]))='.CHM' then begin
+            fHelpConnection.OpenURL(CHMFiles[i], '/index.html');
+            Sleep(200); //give viewer chance to open file. todo: better way of doing this?
+            Application.ProcessMessages;
+          end;
+        end;
+      finally
+        CHMFiles.Free;
+        SearchPathList.Free;
+      end;
+    end;
     Res := fHelpConnection.OpenURL(FileName, Url);
   end else begin
     if Trim(fHelpExeParams) = '' then
