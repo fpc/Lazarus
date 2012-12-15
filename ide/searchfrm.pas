@@ -239,6 +239,7 @@ var
   LastReplaceColOffset: integer;// bytes added/deleted by replace in last line
   TempSearch: string;    // Temp Storage for the search string.
   RE: TRegExpr;
+  Lines: String;
 
   SrcEditValid: Boolean;// true if SrcEdit is valid
   SrcEdit: TSourceEditorInterface;
@@ -328,6 +329,7 @@ var
     SrcEditStartPos, SrcEditEndPos: TPoint;
     aLastLineLength: integer;
     aLineCount: integer;
+    i: integer;
     
     procedure GetSrcEditPos;
     begin
@@ -398,6 +400,7 @@ var
       SrcEdit.SelectText(SrcEditStartPos.Y,SrcEditStartPos.X,
                          SrcEditEndPos.Y,SrcEditEndPos.X);
       SrcEdit.Selection:=AReplace;
+
       // count total replacements and adjust offsets
       aLineCount:=LineEndCount(AReplace,aLastLineLength);
       //debugln(['DoReplaceLine Replace="',dbgstr(AReplace),'" aLineCount=',aLineCount,' aLastLineLength=',aLastLineLength]);
@@ -418,8 +421,16 @@ var
         end;
       end;
       LastReplaceLine:=FoundEndPos.Y;
-      inc(ReplaceLineOffset,aLineCount-(FoundEndPos.Y-FoundStartPos.Y));
 
+      Lines := '';
+      for i := SrcEditStartPos.Y to SrcEditStartPos.Y + aLineCount do
+        Lines := Lines + SrcEdit.Lines[i-1] + LineEnding;
+      Lines:=ChompOneLineEndAtEnd(Lines);
+      Progress.OnAddMatch(TheFileName,
+        Point(FoundStartPos.x, FoundStartPos.y + ReplaceLineOffset),
+        SrcEdit.CursorTextXY,Lines);
+
+      inc(ReplaceLineOffset,aLineCount-(FoundEndPos.Y-FoundStartPos.Y));
       //DebugLn(['DoReplaceLine FoundStartPos=',dbgs(FoundStartPos),' FoundEndPos=',dbgs(FoundEndPos),' aLastLineLength=',aLastLineLength,' LastReplaceLine=',LastReplaceLine,' LastReplaceColOffset=',LastReplaceColOffset,' ReplaceLineOffset=',ReplaceLineOffset]);
     end else begin
       // change text in memory/disk
@@ -442,6 +453,19 @@ var
       // save original position behind found position
       OriginalFile.LineColToPosition(FoundEndPos.Y,FoundEndPos.X,
                                      ReplacedTextOriginalPos);
+
+      Lines:=copy(OriginalFile.GetLines(FoundStartPos.Y,FoundStartPos.Y), 1, FoundStartPos.X - 1) +
+             AReplace +
+             copy(OriginalFile.GetLines(FoundEndPos.Y,FoundEndPos.Y), FoundEndPos.x, MaxInt);
+      Lines:=ChompOneLineEndAtEnd(Lines);
+      aLineCount:=LineEndCount(AReplace,aLastLineLength);
+      if aLineCount = 0 then aLastLineLength := aLastLineLength + FoundStartPos.X;
+      Progress.OnAddMatch(TheFileName,
+        Point(FoundStartPos.x, FoundStartPos.y + ReplaceLineOffset),
+        Point(aLastLineLength, FoundStartPos.Y + aLineCount + ReplaceLineOffset),
+        Lines);
+
+      inc(ReplaceLineOffset,aLineCount-(FoundEndPos.Y-FoundStartPos.Y));
     end;
   end;
 
@@ -488,7 +512,6 @@ var
   Src: String;
   NewMatchStartPos: PtrInt;
   NewMatchEndPos: PtrInt;
-  Lines: String;
 begin
   //debugln(['SearchInText TheFileName=',TheFileName,' SearchFor=',SearchFor,'" ReplaceText=',ReplaceText,'"']);
 
