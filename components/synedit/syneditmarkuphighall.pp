@@ -411,8 +411,37 @@ end;
 procedure TSynEditMarkupHighlightAll.FindStartPoint;
 var
   ptStart, ptEnd, ptFoundStart, ptFoundEnd: TPoint;
+  i, j: Integer;
 begin
   if fSearchString = '' then exit;
+
+  if (ssoWholeWord in fSearchOptions) and (not HideSingleMatch) then begin
+    // can not wrap around lines
+    fStartPoint := Point(1, TopLine);
+    exit;
+  end;
+
+  if (fSearchOptions * [ssoRegExpr, ssoRegExprMultiLine] = []) and
+     (not HideSingleMatch)
+  then begin
+    // can not wrap around lines
+    j := 0;
+    i := Length(fSearchString);
+    while i > 0 do begin
+      if fSearchString[i] = #13 then begin
+        inc(j);
+        if (i > 1) and (fSearchString[i-1] = #10) then dec(i); // skip alternating
+      end
+      else
+      if fSearchString[i] = #10 then begin
+        inc(j);
+        if (i > 1) and (fSearchString[i-1] = #13) then dec(i); // skip alternating
+      end;
+      dec(i);
+    end;
+    fStartPoint := Point(1, Max(1, TopLine - j));
+    exit;
+  end;
 
   FindInitialize(true);
   ptStart := Point(1, Max(1, TopLine-100));
