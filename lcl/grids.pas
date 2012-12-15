@@ -8588,13 +8588,13 @@ begin
   FreeThenNil(FPickListEditor);
   FreeThenNil(FStringEditor);
   FreeThenNil(FButtonEditor);
+  FreeThenNil(FTitleFont);
+  inherited Destroy;
   FreeThenNil(FColumns);
   FreeThenNil(FGCache.AccumWidth);
   FreeThenNil(FGCache.AccumHeight);
   FreeThenNil(FCols);
   FreeThenNil(FRows);
-  FreeThenNil(FTitleFont);
-  inherited Destroy;
 end;
 
 procedure TCustomGrid.LoadSub(ACfg: TXMLConfig);
