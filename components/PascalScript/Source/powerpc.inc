@@ -175,14 +175,33 @@ asmcall_end:			{ epilogue }
 	blr
 end;
 
+function FlipHiLo(v: byte): byte;
+var
+  i: integer;
+  j, k: byte;
+begin
+  Result := 0;
+  k := $80;
+  j := $01;
+  for i := 0 to 7 do begin
+    if (v and k) <> 0 then
+      Result := Result or j;
+    k := k div 2;
+    j := j * 2;
+  end;
+end;
+
 function TPSExec.InnerfuseCall(_Self, Address: Pointer; CallingConv: TPSCallingConvention; Params: TPSList; res: PPSVariantIFC): Boolean;
 var
   rint: Trint;			{ registers r3 to r10 }
   rfloat: Trfloat;		{ registers f1 to f13 }
   st: packed array of byte;	{ stack }
-  i, j, rindex, findex, stindex: integer;
+  i, j, n, m, rindex, findex, stindex: integer;
   fvar: PPSVariantIFC;
   IsConstructor: Boolean;
+  fSetHelper: dword;
+  fSetP1, fsetP2: PByte;
+
   { add a dword to stack }
   procedure addstackdword(value: dword);
   begin
@@ -270,7 +289,7 @@ begin
   if assigned(res)
     then begin
       case res.atype.basetype of
-        btStaticArray, btRecord: addgen(dword(res.dta));
+        btStaticArray, btRecord, btString: addgen(dword(res.dta));
       end;
     end;
 
@@ -319,6 +338,27 @@ begin
           btRecord:                            for j := 0 to (fvar.atype.realsize div 4)-1 do
                                                  addgen(pdword(fvar.dta + j*4)^);
           btArray:                             addgen(dword(fvar.dta^));
+          btSet: begin
+
+              fSetP1 := fvar.dta;
+              fSetP2 := @fSetHelper;
+              fSetHelper := 0;
+              for n := 1 to TPSTypeRec_Set(fvar.aType).aByteSize do
+              begin
+                fSetP2^ := fliphilo(fSetP1^);
+                inc(fSetP1);
+                inc(fSetP2);
+                if n and 3 = 0
+                then begin
+                  addgen(fSetHelper);
+                  fSetP2 := @fSetHelper;
+                  fSetHelper := 0;
+                end;
+              end;
+              if TPSTypeRec_Set(fvar.aType).aByteSize and 3 <> 0
+              then addgen(fSetHelper);
+
+            end;
 
           { TODO add and test }
 {          btVariant, btSet, btInterface, btClass  }
@@ -343,7 +383,7 @@ begin
     else begin
       case res.atype.basetype of
         { add result types here }
-        btString:                pstring(res.dta)^ := pstring(ppcasmcall(rint, rfloat, address, st, stindex, rtINT))^;
+        btString:                ppcasmcall(rint, rfloat, address, st, stindex, rtINT);
         btU8, btS8:              pbyte(res.dta)^ := byte(pdword(ppcasmcall(rint, rfloat, address, st, stindex, rtINT))^);
         btU16, btS16:            pword(res.dta)^ := word(pdword(ppcasmcall(rint, rfloat, address, st, stindex, rtINT))^);
         btU32, btS32:            pdword(res.dta)^ := pdword(ppcasmcall(rint, rfloat, address, st, stindex, rtINT))^;
