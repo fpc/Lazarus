@@ -68,6 +68,7 @@ type
     procedure SetTitleCaptions(const AValue: TStrings);
   protected
     class procedure WSRegisterClass; override;
+    procedure DoOnResize; override;
     procedure SetFixedCols(const AValue: Integer); override;
     procedure ShowColumnTitles;
     procedure AdjustColumnWidths; virtual;
@@ -446,10 +447,21 @@ begin
 end;
 
 procedure TValueListEditor.AdjustColumnWidths;
+// If key column is fixed in width then adjust only the second column,
+//  otherwise adjust both columns propertionally.
+var
+  CW: Integer;
 begin
-  if not (doAutoColResize in DisplayOptions) then begin
-    // ToDo: If key column is fixed then adjust only the second column,
-    //  otherwise adjust both columns propertionally.
+  CW := ClientWidth;
+  if  (doKeyColFixed in DisplayOptions) then
+  begin
+    //AutoSizeColumn(0);
+    ColWidths[1] := CW - ColWidths[0];
+  end
+  else
+  begin
+    ColWidths[0] := CW div 2;
+    ColWidths[1] := CW div 2;
   end;
 end;
 
@@ -575,6 +587,12 @@ class procedure TValueListEditor.WSRegisterClass;
 begin
 //  RegisterPropertyToSkip(Self, 'SomeProperty', 'VCL compatibility property', '');
   inherited WSRegisterClass;
+end;
+
+procedure TValueListEditor.DoOnResize;
+begin
+  inherited DoOnResize;
+  if (doAutoColResize in DisplayOptions) then AdjustColumnWidths;
 end;
 
 
