@@ -266,14 +266,18 @@ begin
   FStrings.OnChanging:=@StringsChanging;
   FTitleCaptions := TStringList.Create;
   TStringList(FTitleCaptions).OnChange := @TitlesChanged;
+  //Don't use Columns.Add, it interferes with setting FixedCols := 1 (it will then insert an extra column)
+  {
   with Columns.Add do
     Title.Caption := 'Key';
   with Columns.Add do begin
     Title.Caption := 'Value';
     DropDownRows := 8;
   end;
-  // or: ColCount:=2;
-//  inherited RowCount := 2;
+  }
+
+  ColCount:=2;
+  inherited RowCount := 2;
   FixedCols := 0;
 //  DefaultColWidth := 150;
 //  DefaultRowHeight := 18;
@@ -284,6 +288,7 @@ begin
   FDisplayOptions := [doColumnTitles, doAutoColResize, doKeyColFixed];
   Col := 1;
   FDropDownRows := 8;
+  ShowColumnTitles;
 end;
 
 destructor TValueListEditor.Destroy;
@@ -432,11 +437,11 @@ begin
     ValCap := rsVLEName;
     if (TitleCaptions.Count > 0) then KeyCap := TitleCaptions[0];
     if (TitleCaptions.Count > 1) then ValCap := TitleCaptions[1];
-    Columns[0].Title.Caption := KeyCap;
-    Columns[1].Title.Caption := ValCap;
+    //Columns[0].Title.Caption := KeyCap;
+    //Columns[1].Title.Caption := ValCap;
     //or:
-    //Cells[0,0] := KeyCap
-    //Cells[1,0] := ValCap;
+    Cells[0,0] := KeyCap;
+    Cells[1,0] := ValCap;
   end;
 end;
 
@@ -483,17 +488,19 @@ var
   I: Integer;
 begin
   Result:='';
-  if (ARow=0) and (doColumnTitles in DisplayOptions) then begin
-    if ACol<FTitleCaptions.Count then
-      Result:=FTitleCaptions[ACol];
-    exit;
+  if (ARow=0) and (doColumnTitles in DisplayOptions) then
+  begin
+    Result := Inherited GetCells(ACol, ARow);
+  end
+  else
+  begin
+    I:=ARow-FixedRows;
+    if Strings.Count<=I then exit;
+    if ACol=0 then
+      Result:=Strings.Names[I]
+    else if ACol=1 then
+      Result:=Strings.ValueFromIndex[I];
   end;
-  I:=ARow-FixedRows;
-  if Strings.Count<=I then exit;
-  if ACol=0 then
-    Result:=Strings.Names[I]
-  else if ACol=1 then
-    Result:=Strings.ValueFromIndex[I];
 end;
 
 procedure TValueListEditor.SetCells(ACol, ARow: Integer; const AValue: string);
@@ -501,15 +508,22 @@ var
   I: Integer;
   Line: string;
 begin
-  I:=ARow-FixedRows;
-  if ACol=0 then
-    Line:=AValue+'='+Cells[1,ARow]
+  if (ARow = 0) and (doColumnTitles in DisplayOptions) then
+  begin
+    Inherited SetCells(ACol, ARow, AValue);
+  end
   else
-    Line:=Cells[0,ARow]+'='+AValue;
-  if I>=Strings.Count then
-    Strings.Insert(I,Line)
-  else
-    Strings[I]:=Line;
+  begin
+    I:=ARow-FixedRows;
+    if ACol=0 then
+      Line:=AValue+'='+Cells[1,ARow]
+    else
+      Line:=Cells[0,ARow]+'='+AValue;
+    if I>=Strings.Count then
+      Strings.Insert(I,Line)
+    else
+      Strings[I]:=Line;
+  end;
 end;
 
 function TValueListEditor.GetEditText(ACol, ARow: Integer): string;
