@@ -6471,18 +6471,20 @@ end;
 
 procedure TCustomGrid.doExit;
 begin
-  {$IfDef dbgGrid}DebugLn('DoExit - INIT');{$Endif}
-  if FEditorShowing then begin
-    {$IfDef dbgGrid}DebugLn('DoExit - EditorShowing');{$Endif}
-  end else begin
-    {$IfDef dbgGrid}DebugLn('DoExit - Ext');{$Endif}
-    if not EditorAlwaysShown then
-      InvalidateFocused;
-    ResetEditor;
-    if FgridState=gsSelecting then begin
-      if SelectActive then
-        FSelectActive := False;
-      FGridState := gsNormal;
+  if not (csDestroying in ComponentState) then begin
+    {$IfDef dbgGrid}DebugLn('DoExit - INIT');{$Endif}
+    if FEditorShowing then begin
+      {$IfDef dbgGrid}DebugLn('DoExit - EditorShowing');{$Endif}
+    end else begin
+      {$IfDef dbgGrid}DebugLn('DoExit - Ext');{$Endif}
+      if not EditorAlwaysShown then
+        InvalidateFocused;
+      ResetEditor;
+      if FgridState=gsSelecting then begin
+        if SelectActive then
+          FSelectActive := False;
+        FGridState := gsNormal;
+      end;
     end;
   end;
   inherited DoExit;
@@ -8588,13 +8590,13 @@ begin
   FreeThenNil(FPickListEditor);
   FreeThenNil(FStringEditor);
   FreeThenNil(FButtonEditor);
-  FreeThenNil(FTitleFont);
-  inherited Destroy;
   FreeThenNil(FColumns);
   FreeThenNil(FGCache.AccumWidth);
   FreeThenNil(FGCache.AccumHeight);
   FreeThenNil(FCols);
   FreeThenNil(FRows);
+  FreeThenNil(FTitleFont);
+  inherited Destroy;
 end;
 
 procedure TCustomGrid.LoadSub(ACfg: TXMLConfig);
