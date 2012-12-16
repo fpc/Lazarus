@@ -40,7 +40,7 @@ uses
   {$IFDEF MEM_CHECK}
   MemCheck,
   {$ENDIF}
-  Classes, SysUtils, contnrs, LazMethodList, TypInfo, FileProcs, BasicCodeTools,
+  Classes, SysUtils, contnrs, LazMethodList, TypInfo, types, FileProcs, BasicCodeTools,
   CodeToolsStrConsts,
   LazFileCache,
   EventCodeTool, CodeTree, CodeAtom, SourceChanger, DefineTemplates, CodeCache,
@@ -464,7 +464,8 @@ type
     function FindUnitReferences(UnitCode, TargetCode: TCodeBuffer;
           SkipComments: boolean; var ListOfPCodeXYPosition: TFPList): boolean;
     function RenameIdentifier(TreeOfPCodeXYPosition: TAVLTree;
-          const OldIdentifier, NewIdentifier: string): boolean;
+          const OldIdentifier, NewIdentifier: string;
+          DeclarationCode: TCodeBuffer = nil; DeclarationCaretXY: PPoint = nil): boolean;
     function ReplaceWord(Code: TCodeBuffer; const OldWord, NewWord: string;
           ChangeStrings: boolean): boolean;
     function RemoveIdentifierDefinition(Code: TCodeBuffer; X, Y: integer
@@ -2485,12 +2486,15 @@ begin
 end;
 
 function TCodeToolManager.RenameIdentifier(TreeOfPCodeXYPosition: TAVLTree;
-  const OldIdentifier, NewIdentifier: string): boolean;
+  const OldIdentifier, NewIdentifier: string; DeclarationCode: TCodeBuffer;
+  DeclarationCaretXY: PPoint): boolean;
 var
-  ANode: TAVLTreeNode;
-  CurCodePos: PCodeXYPosition;
+  ANode, ANode2: TAVLTreeNode;
+  CurCodePos, LastCodePos: PCodeXYPosition;
   IdentStartPos: integer;
-  IdentLen: Integer;
+  IdentLen, IdentLenDiff: Integer;
+  SameLineCount: Integer;
+  i: Integer;
   Code: TCodeBuffer;
 begin
   Result:=false;
@@ -2505,7 +2509,15 @@ begin
 
   ClearCurCodeTool;
   SourceChangeCache.Clear;
+  CurCodePos := nil;
+  LastCodePos := nil;
+  SameLineCount := 0;
   IdentLen:=length(OldIdentifier);
+  IdentLenDiff := length(NewIdentifier) - IdentLen;
+  if DeclarationCode = nil then
+    DeclarationCaretXY := nil;;
+  if DeclarationCaretXY = nil then
+    DeclarationCode := nil;;
 
   // the tree is sorted for descending line code positions
   // -> go from end of source to start of source, so that replacing does not
@@ -2539,10 +2551,36 @@ begin
       DebugLn('TCodeToolManager.RenameIdentifier Change ');
       SourceChangeCache.ReplaceEx(gtNone,gtNone,1,1,Code,
          IdentStartPos,IdentStartPos+IdentLen,NewIdentifier);
+
+      if (DeclarationCode = Code) and (CurCodePos^.Y = DeclarationCaretXY^.Y) and
+         (CurCodePos^.X < DeclarationCaretXY^.X)
+      then
+        DeclarationCaretXY^.X := DeclarationCaretXY^.X + IdentLenDiff;
+
+      if (LastCodePos <> nil) and (CurCodePos^.Y = LastCodePos^.Y) and
+         (CurCodePos^.Code = LastCodePos^.Code)
+      then
+        inc(SameLineCount);
+
     end else begin
       DebugLn('TCodeToolManager.RenameIdentifier KEPT ',GetIdentifier(@Code.Source[IdentStartPos]));
     end;
+
+    LastCodePos := CurCodePos;
     ANode:=TreeOfPCodeXYPosition.FindSuccessor(ANode);
+
+    if (ANode = nil) or (PCodeXYPosition(ANode.Data)^.Code <> LastCodePos^.Code) or
+       (PCodeXYPosition(ANode.Data)^.Y <> LastCodePos^.Y)
+    then begin
+      if (SameLineCount > 0) then begin
+        ANode2 := TreeOfPCodeXYPosition.FindPrecessor(ANode); // Get to the first node of that line again. That node does not need to be modified
+        for i := 1 to SameLineCount do begin
+          ANode2 := TreeOfPCodeXYPosition.FindPrecessor(ANode2);
+          PCodeXYPosition(ANode2.Data)^.X := PCodeXYPosition(ANode2.Data)^.X + i * IdentLenDiff;
+        end;
+      end;
+      SameLineCount := 0;
+    end;
   end;
   // apply
   DebugLn('TCodeToolManager.RenameIdentifier Apply');

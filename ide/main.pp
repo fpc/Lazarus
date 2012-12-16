@@ -10730,7 +10730,7 @@ begin
       OpenEditorsOnCodeToolChange:=true;
       try
         if not CodeToolBoss.RenameIdentifier(PascalReferences,
-          Identifier,Options.RenameTo)
+          Identifier,Options.RenameTo, DeclarationUnitInfo.Source, @DeclarationCaretXY)
         then begin
           DoJumpToCodeToolBossError;
           debugln('TMainIDE.DoFindRenameIdentifier unable to commit');
@@ -10740,6 +10740,8 @@ begin
       finally
         OpenEditorsOnCodeToolChange:=OldChange;
       end;
+      Result:=ShowIdentifierReferences(DeclarationUnitInfo.Source,
+        DeclarationCaretXY,PascalReferences);
     end;
 
     // show result
