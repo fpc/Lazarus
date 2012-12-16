@@ -291,6 +291,7 @@ ResourceString
 
   // eventcodetool
   ctsMethodTypeDefinitionNotFound = 'method type definition not found';
+  ctsExpectedAMethodTypeButFound = 'expected a method type, but found %s';
   ctsOldMethodNotFound = 'old method not found: %s';
   
   // fileprocs

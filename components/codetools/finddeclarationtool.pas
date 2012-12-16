@@ -56,7 +56,7 @@ interface
 { $DEFINE ShowTriedParentContexts}
 { $DEFINE ShowTriedIdentifiers}
 { $DEFINE ShowTriedUnits}
-{ $DEFINE ShowExprEval}
+{$DEFINE ShowExprEval}
 { $DEFINE ShowForInEval}
 { $DEFINE ShowFoundIdentifier}
 { $DEFINE ShowNodeCache}
@@ -8266,7 +8266,7 @@ var
   SourceExprType: TExpressionType;
 begin
   {$IFDEF CheckNodeTool}CheckNodeTool(FirstSourceParameterNode);{$ENDIF}
-  
+
   // quick check: parameter count
   MinParamCnt:=0;
   ParamNode:=FirstSourceParameterNode;

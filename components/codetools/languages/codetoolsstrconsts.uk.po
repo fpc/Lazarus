@@ -340,6 +340,10 @@ msgstr "немає доступу до виконання %s"
 msgid "\"%s\" expected"
 msgstr "\"%s\" очікується"
 
+#: codetoolsstrconsts.ctsexpectedamethodtypebutfound
+msgid "expected a method type, but found %s"
+msgstr ""
+
 #: codetoolsstrconsts.ctsexpectedbutfound
 msgid "expected (, but found %s"
 msgstr "очікується (, але знайдено %s"

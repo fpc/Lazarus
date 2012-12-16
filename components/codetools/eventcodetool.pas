@@ -528,7 +528,9 @@ var
   
 var TypeName: string;
   Params: TFindDeclarationParams;
+  TypeContext: TFindContext;
 begin
+  Result:=CleanFindContext;
   if AStartUnitName<>'' then begin
     // start searching in another unit
     Tool:=FindCodeToolForUsedUnit(AStartUnitName,'',true);
@@ -563,12 +565,23 @@ begin
         Params.NewCodeTool.MoveCursorToNodeStart(Params.NewNode);
         Params.NewCodeTool.RaiseException(ctsMethodTypeDefinitionNotFound);
       end;
-      Params.NewNode:=Params.NewCodeTool.FindTypeNodeOfDefinition(Params.NewNode);
-      if Params.NewNode.Desc<>ctnProcedureType then begin
-        Params.NewCodeTool.MoveCursorToNodeStart(Params.NewNode);
-        Params.NewCodeTool.RaiseException(ctsMethodTypeDefinitionNotFound);
+      TypeContext:=CreateFindContext(Params);
+    finally
+      Params.Free;
+    end;
+    Params:=TFindDeclarationParams.Create;
+    try
+      Params.Flags:=[fdfExceptionOnNotFound,fdfSearchInParentNodes];
+      Result:=TypeContext.Tool.FindBaseTypeOfNode(Params,TypeContext.Node);
+      if Result.Node=nil then begin
+        TypeContext.Tool.MoveCursorToNodeStart(TypeContext.Node);
+        TypeContext.Tool.RaiseException(ctsMethodTypeDefinitionNotFound);
       end;
-      Result:=CreateFindContext(Params);
+      if Result.Node.Desc<>ctnProcedureType then begin
+        TypeContext.Tool.MoveCursorToNodeStart(TypeContext.Node);
+        TypeContext.Tool.RaiseException(Format(ctsExpectedAMethodTypeButFound, [
+          Result.Node.DescAsString]));
+      end;
     finally
       Params.Free;
     end;

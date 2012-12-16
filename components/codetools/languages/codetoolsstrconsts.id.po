@@ -340,6 +340,10 @@ msgstr "akses eksekusi ditolak untuk %s"
 msgid "\"%s\" expected"
 msgstr ""
 
+#: codetoolsstrconsts.ctsexpectedamethodtypebutfound
+msgid "expected a method type, but found %s"
+msgstr ""
+
 #: codetoolsstrconsts.ctsexpectedbutfound
 msgid "expected (, but found %s"
 msgstr ""
