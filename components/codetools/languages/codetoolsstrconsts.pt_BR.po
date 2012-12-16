@@ -338,6 +338,10 @@ msgstr "acesso de execução negado para %s"
 msgid "\"%s\" expected"
 msgstr "esperado \"%s\""
 
+#: codetoolsstrconsts.ctsexpectedamethodtypebutfound
+msgid "expected a method type, but found %s"
+msgstr ""
+
 #: codetoolsstrconsts.ctsexpectedbutfound
 msgid "expected (, but found %s"
 msgstr "\"(\" esperado, mas encontrado %s"

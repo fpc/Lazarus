@@ -8269,7 +8269,7 @@ var
   SourceExprType: TExpressionType;
 begin
   {$IFDEF CheckNodeTool}CheckNodeTool(FirstSourceParameterNode);{$ENDIF}
-  
+
   // quick check: parameter count
   MinParamCnt:=0;
   ParamNode:=FirstSourceParameterNode;
