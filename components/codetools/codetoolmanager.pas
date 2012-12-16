@@ -2567,13 +2567,13 @@ begin
     end;
 
     LastCodePos := CurCodePos;
+    ANode2 := ANode;
     ANode:=TreeOfPCodeXYPosition.FindSuccessor(ANode);
 
     if (ANode = nil) or (PCodeXYPosition(ANode.Data)^.Code <> LastCodePos^.Code) or
        (PCodeXYPosition(ANode.Data)^.Y <> LastCodePos^.Y)
     then begin
       if (SameLineCount > 0) then begin
-        ANode2 := TreeOfPCodeXYPosition.FindPrecessor(ANode); // Get to the first node of that line again. That node does not need to be modified
         for i := 1 to SameLineCount do begin
           ANode2 := TreeOfPCodeXYPosition.FindPrecessor(ANode2);
           PCodeXYPosition(ANode2.Data)^.X := PCodeXYPosition(ANode2.Data)^.X + i * IdentLenDiff;
