@@ -377,6 +377,8 @@ begin
     ecAutoCompletion          : Result:= srkmecAutoCompletion;
     ecUserFirst               : Result:= srkmecPrevBookmark;
     ecSetFreeBookmark         : Result:= srkmecSetFreeBookmark;
+    ecClearBookmarkForFile    : Result:= srkmecClearBookmarkForFile;
+    ecClearAllBookmark        : Result:= srkmecClearAllBookmark;
     ecPrevBookmark            : Result:= srkmecPrevBookmark;
     ecNextBookmark            : Result:= srkmecNextBookmark;
     ecGotoMarker0 ..
@@ -1019,6 +1021,8 @@ begin
 
   // marker
   ecSetFreeBookmark:     SetSingle(VK_UNKNOWN,[]);
+  ecClearBookmarkForFile:SetSingle(VK_UNKNOWN,[]);
+  ecClearAllBookmark:    SetSingle(VK_UNKNOWN,[]);
   ecPrevBookmark:        SetSingle(VK_UNKNOWN,[]);
   ecNextBookmark:        SetSingle(VK_UNKNOWN,[]);
   ecGotoMarker0:         SetCombo(VK_0,[ssCtrl],VK_UNKNOWN,[], VK_Q,[SSCtrl],VK_0,[]);
@@ -1465,6 +1469,8 @@ begin
 
   // marker
   ecSetFreeBookmark:     SetSingle(VK_UNKNOWN,[]);
+  ecClearBookmarkForFile:SetSingle(VK_UNKNOWN,[]);
+  ecClearAllBookmark:    SetSingle(VK_UNKNOWN,[]);
   ecPrevBookmark:        SetSingle(VK_UNKNOWN,[]);
   ecNextBookmark:        SetSingle(VK_UNKNOWN,[]);
   ecGotoMarker0:         SetCombo(VK_Q,[ssCtrl],VK_0,[]);
@@ -2082,6 +2088,8 @@ begin
 
   // marker
   ecSetFreeBookmark:     SetSingle(VK_UNKNOWN,[]);
+  ecClearBookmarkForFile:SetSingle(VK_UNKNOWN,[]);
+  ecClearAllBookmark:    SetSingle(VK_UNKNOWN,[]);
   ecPrevBookmark:        SetSingle(VK_UNKNOWN,[]);
   ecNextBookmark:        SetSingle(VK_UNKNOWN,[]);
   ecGotoMarker0:         SetSingle(VK_0,[ssCtrl]);
@@ -2647,6 +2655,8 @@ begin
   // marker - without menu items in the IDE bar
   C:=Categories[AddCategory('Marker',srkmCatMarker,IDECmdScopeSrcEditOnly)];
   AddDefault(C, 'Set free Bookmark', lisKMSetFreeBookmark, ecSetFreeBookmark);
+  AddDefault(C, 'Clear Bookmarks for current file', srkmecClearBookmarkForFile, ecClearBookmarkForFile);
+  AddDefault(C, 'Clear all Bookmarks', srkmecClearAllBookmark, ecClearAllBookmark);
   AddDefault(C, 'Previous Bookmark', srkmecPrevBookmark, ecPrevBookmark);
   AddDefault(C, 'Next Bookmark', srkmecNextBookmark, ecNextBookmark);
   AddDefault(C, 'Go to marker 0', lisKMGoToMarker0, ecGotoMarker0);

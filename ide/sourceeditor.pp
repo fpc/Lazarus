@@ -87,6 +87,7 @@ type
   TOnLinesInsertedDeleted = procedure(Sender : TObject;
              FirstLine,Count : Integer) of Object;
   TPlaceBookMarkEvent = procedure(Sender: TObject; var Mark: TSynEditMark) of object;
+  TPlaceBookMarkIdEvent = procedure(Sender: TObject; ID: Integer) of object;
   TBookMarkActionEvent = procedure(Sender: TObject; ID: Integer; Toggle: Boolean) of object;
 
   TCharSet = set of Char;
@@ -1091,6 +1092,7 @@ type
   private
     FOnAddJumpPoint: TOnAddJumpPoint;
     FOnClearBookmark: TPlaceBookMarkEvent;
+    FOnClearBookmarkId: TPlaceBookMarkIdEvent;
     FOnClickLink: TMouseEvent;
     FOnCloseClicked: TOnCloseSrcEditor;
     FOnDeleteLastJumpPoint: TNotifyEvent;
@@ -1144,6 +1146,8 @@ type
              read FOnPlaceMark write FOnPlaceMark;
     property OnClearBookmark: TPlaceBookMarkEvent  // Bookmark was cleared by SynEdit
              read FOnClearBookmark write FOnClearBookmark;
+    property OnClearBookmarkId: TPlaceBookMarkIdEvent
+             read FOnClearBookmarkId write FOnClearBookmarkId;
     property OnSetBookmark: TBookMarkActionEvent  // request to set a Bookmark
              read FOnSetBookmark write FOnSetBookmark;
     property OnGotoBookmark: TBookMarkActionEvent  // request to go to a Bookmark
@@ -1203,6 +1207,8 @@ var
     SrcEditMenuNextBookmark: TIDEMenuCommand;
     SrcEditMenuPrevBookmark: TIDEMenuCommand;
     SrcEditMenuSetFreeBookmark: TIDEMenuCommand;
+    SrcEditMenuClearFileBookmark: TIDEMenuCommand;
+    SrcEditMenuClearAllBookmark: TIDEMenuCommand;
     // debugging
     SrcEditMenuToggleBreakpoint: TIDEMenuCommand;
     SrcEditMenuRunToCursor: TIDEMenuCommand;
@@ -1501,6 +1507,10 @@ begin
                                nil, @ExecuteIdeMenuClick);
       SrcEditMenuSetFreeBookmark:=RegisterIDEMenuCommand
           (AParent, 'Set a free Bookmark',uemSetFreeBookmark, nil, @ExecuteIdeMenuClick);
+      SrcEditMenuClearFileBookmark:=RegisterIDEMenuCommand
+          (AParent, 'Clear Bookmark for current file',srkmecClearBookmarkForFile, nil, @ExecuteIdeMenuClick);
+      SrcEditMenuClearAllBookmark:=RegisterIDEMenuCommand
+          (AParent, 'Clear all Bookmark',srkmecClearAllBookmark, nil, @ExecuteIdeMenuClick);
   {%endregion}
 
   {%region *** Debug Section ***}
@@ -3120,6 +3130,7 @@ Procedure TSourceEditor.ProcessUserCommand(Sender: TObject;
 // define all extra keys here, that should not be handled by synedit
 var
   Handled: boolean;
+  i,x,y: Integer;
 Begin
   //debugln('TSourceEditor.ProcessUserCommand A ',dbgs(Command));
   FSharedValues.SetActiveSharedEditor(Self);
@@ -3295,6 +3306,13 @@ Begin
       else
       If ActiveEditorMacro = EditorMacroForRecording then
         EditorMacroForRecording.Stop;
+    end;
+
+  ecClearBookmarkForFile: begin
+      if Assigned(Manager) and Assigned(Manager.OnClearBookmarkId) then
+        for i := 0 to 9 do
+          if EditorComponent.GetBookMark(i,x,y) then
+            Manager.OnClearBookmarkId(Self, i);
     end;
 
   else
@@ -7745,6 +7763,10 @@ begin
     if Assigned(Manager.OnSetBookmark) then
       Manager.OnSetBookmark(GetActiveSE, -1, False);
 
+  ecClearAllBookmark:
+    if Assigned(Manager) and Assigned(Manager.OnClearBookmarkId) then
+      Manager.OnClearBookmarkId(Self, -1);
+
   ecJumpBack:
     Manager.HistoryJump(Self,jhaBack);
 
@@ -9357,6 +9379,8 @@ begin
   SrcEditMenuNextBookmark.Command:=GetCommand(ecNextBookmark);
   SrcEditMenuPrevBookmark.Command:=GetCommand(ecPrevBookmark);
   SrcEditMenuSetFreeBookmark.Command:=GetCommand(ecSetFreeBookmark);
+  SrcEditMenuClearFileBookmark.Command:=GetCommand(ecClearBookmarkForFile);
+  SrcEditMenuClearAllBookmark.Command:=GetCommand(ecClearAllBookmark);
 
   for i:=0 to 9 do begin
     TIDEMenuCommand(SrcEditSubMenuGotoBookmarks.FindByName('GotoBookmark'+IntToStr(i)))

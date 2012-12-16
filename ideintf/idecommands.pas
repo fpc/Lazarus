@@ -231,6 +231,9 @@ const
   ecSetFreeBookmark         = ecFirstLazarus + 381;
   ecPrevBookmark            = ecFirstLazarus + 382;
   ecNextBookmark            = ecFirstLazarus + 383;
+  ecClearBookmarkForFile    = ecFirstLazarus + 384;
+  ecClearAllBookmark        = ecFirstLazarus + 385;
+
 
   // Macro
   ecSynMacroRecord          = ecFirstLazarus + 390;
@@ -1218,7 +1221,7 @@ begin
 end;
 
 const
-  IDEEditorCommandStrs: array[0..295] of TIdentMapEntry = (
+  IDEEditorCommandStrs: array[0..297] of TIdentMapEntry = (
   // search
     (Value: ecFind;                                   Name: 'ecFind'),
     (Value: ecFindAgain;                              Name: 'ecFindAgain'),
@@ -1396,6 +1399,8 @@ const
     (Value: ecSetFreeBookmark;                        Name: 'ecSetFreeBookmark'),
     (Value: ecPrevBookmark;                           Name: 'ecPrevBookmark'),
     (Value: ecNextBookmark;                           Name: 'ecNextBookmark'),
+    (Value: ecClearBookmarkForFile;                   Name: 'ecClearBookmarkForFile'),
+    (Value: ecClearAllBookmark;                       Name: 'ecClearAllBookmark'),
 
   // Macro
     (Value: ecSynMacroRecord;                         Name: 'ecSynMacroRecord'),

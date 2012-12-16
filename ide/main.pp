@@ -447,6 +447,7 @@ type
     procedure OnSrcNotebookEditorActived(Sender: TObject);
     procedure OnSrcNotebookEditorPlaceBookmark(Sender: TObject; var Mark: TSynEditMark);
     procedure OnSrcNotebookEditorClearBookmark(Sender: TObject; var Mark: TSynEditMark);
+    procedure OnSrcNotebookEditorClearBookmarkId(Sender: TObject; ID: Integer);
     procedure OnSrcNotebookEditorDoSetBookmark(Sender: TObject; ID: Integer; Toggle: Boolean);
     procedure OnSrcNotebookEditorDoGotoBookmark(Sender: TObject; ID: Integer; Backward: Boolean);
     procedure OnSrcNotebookEditorChanged(Sender: TObject);
@@ -2032,6 +2033,7 @@ begin
   SourceEditorManager.RegisterChangeEvent(semEditorDestroy, @OnSrcNotebookEditorClosed);
   SourceEditorManager.OnPlaceBookmark := @OnSrcNotebookEditorPlaceBookmark;
   SourceEditorManager.OnClearBookmark := @OnSrcNotebookEditorClearBookmark;
+  SourceEditorManager.OnClearBookmarkId := @OnSrcNotebookEditorClearBookmarkId;
   SourceEditorManager.OnSetBookmark := @OnSrcNotebookEditorDoSetBookmark;
   SourceEditorManager.OnGotoBookmark := @OnSrcNotebookEditorDoGotoBookmark;
   SourceEditorManager.OnEditorPropertiesClicked := @mnuEnvEditorOptionsClicked;
@@ -11244,6 +11246,35 @@ procedure TMainIDE.OnSrcNotebookEditorClearBookmark(Sender: TObject;
 begin
   Project1.UnitWithEditorComponent(TSourceEditor(Sender)).DeleteBookmark
     (Mark.BookmarkNumber);
+end;
+
+procedure TMainIDE.OnSrcNotebookEditorClearBookmarkId(Sender: TObject;
+  ID: Integer);
+var
+  i: Integer;
+  UInfo: TUnitInfo;
+begin
+  if ID = -1 then begin
+    for i := 0 to 9 do begin
+      //b := Project1.Bookmarks[i];
+      UInfo := TUnitInfo(Project1.Bookmarks.UnitInfoForBookmarkWithIndex(i));
+      if UInfo <> nil then begin
+        if UInfo.OpenEditorInfoCount > 0 then
+          TSourceEditor(UInfo.OpenEditorInfo[0].EditorComponent).EditorComponent.ClearBookMark(i)
+        else
+          UInfo.DeleteBookmark(i);
+      end;
+    end;
+  end
+  else begin
+    UInfo := TUnitInfo(Project1.Bookmarks.UnitInfoForBookmarkWithIndex(Id));
+    if UInfo <> nil then begin
+      if UInfo.OpenEditorInfoCount > 0 then
+        TSourceEditor(UInfo.OpenEditorInfo[0].EditorComponent).EditorComponent.ClearBookMark(Id)
+      else
+        UInfo.DeleteBookmark(Id);
+    end;
+  end;
 end;
 
 procedure TMainIDE.OnSrcNotebookEditorDoSetBookmark(Sender: TObject; ID: Integer; Toggle: Boolean);

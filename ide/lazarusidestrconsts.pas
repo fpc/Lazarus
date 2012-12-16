@@ -2613,6 +2613,8 @@ resourcestring
   srkmecAutoCompletion        = 'Code template completion';
   srkmecUserFirst             = 'User First';
   srkmecSetFreeBookmark       = 'Set a free Bookmark';
+  srkmecClearBookmarkForFile  = 'Clear Bookmarks for current file';
+  srkmecClearAllBookmark      = 'Clear all Bookmarks';
   srkmecPrevBookmark          = 'Previous Bookmark';
   srkmecNextBookmark          = 'Next Bookmark';
   lisKMGoToMarker0 = 'Go to marker 0';
