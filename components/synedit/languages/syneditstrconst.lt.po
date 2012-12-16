@@ -1,4 +1,4 @@
-# Valdas Jankūnas <zmuogs@gmail.com>, 2009, 2010, 2012.
+ Valdas Jankūnas <zmuogs@gmail.com>, 2009, 2010, 2012.
 msgid ""
 msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -9,8 +9,7 @@ msgstr ""
 "X-Generator: Lokalize 1.5\n"
 "MIME-Version: 1.0\n"
 "Last-Translator: Valdas Jankunas <zmuogs@gmail.com>\n"
-"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && (n%"
-"100<10 || n%100>=20) ? 1 : 2);\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 "Language: lt\n"
 
 #: syneditstrconst.syns_attrasp
@@ -96,6 +95,10 @@ msgstr "Kryptis"
 #: syneditstrconst.syns_attrdirective
 msgid "Directive"
 msgstr "Direktyva"
+
+#: syneditstrconst.syns_attrdoctype
+msgid "DOCTYPE"
+msgstr ""
 
 #: syneditstrconst.syns_attrdoctypesection
 msgid "DOCTYPE Section"
@@ -419,10 +422,8 @@ msgstr "Matomas tarpas"
 
 #: syneditstrconst.syns_duplicateshortcutmsg
 #| msgid "Shortcut already exists"
-msgid ""
-"The keystroke \"%s\" is already assigned to another editor command. (%s)"
-msgstr ""
-"Klavišo paspaudimas „%s“ jau yra priskirtas kitai rengyklės komandai. (%s)"
+msgid "The keystroke \"%s\" is already assigned to another editor command. (%s)"
+msgstr "Klavišo paspaudimas „%s“ jau yra priskirtas kitai rengyklės komandai. (%s)"
 
 #: syneditstrconst.syns_eduplicateshortcut
 msgid "Mouse-Shortcut already exists"
@@ -458,8 +459,7 @@ msgstr "Iškylantis meniu"
 
 #: syneditstrconst.syns_emccontextmenucaretmove_opt
 msgid "\"Move caret, when selection exists\", Never, \"Click outside\", Always"
-msgstr ""
-"„Perkelti žymeklį, kai yra žymėjimas, niekada, „spustelėti išorėje“, visados"
+msgstr "„Perkelti žymeklį, kai yra žymėjimas, niekada, „spustelėti išorėje“, visados"
 
 #: syneditstrconst.syns_emcmouselink
 msgid "Source Link"
@@ -535,9 +535,7 @@ msgstr "Slinkti ratuku aukštyn"
 
 #: syneditstrconst.syns_emcwheelscroll_opt
 msgid "Speed,\"System settings\",Lines,Pages,\"Pages (less one line)\""
-msgstr ""
-"Greitis, „Sistemos nuostatos“, Eilutės, Puslapiai, „Puslapiai (viena eilute "
-"mažiau)“"
+msgstr "Greitis, „Sistemos nuostatos“, Eilutės, Puslapiai, „Puslapiai (viena eilute mažiau)“"
 
 #: syneditstrconst.syns_emcwheelvertscrolldown
 msgid "Wheel scroll down (Vertical)"
@@ -744,10 +742,8 @@ msgid "x86 Assembly Files (*.asm)|*.ASM"
 msgstr "x86 asemblerio failai (*.asm)|*.ASM"
 
 #: syneditstrconst.syns_filterxml
-msgid ""
-"XML Document (*.xml,*.xsd,*.xsl,*.xslt,*.dtd)|*.xml;*.xsd;*.xsl;*.xslt;*.dtd"
-msgstr ""
-"XML dokumentas (*.xml,*.xsd,*.xsl,*.xslt,*.dtd)|*.xml;*.xsd;*.xsl;*.xslt;*.dtd"
+msgid "XML Document (*.xml,*.xsd,*.xsl,*.xslt,*.dtd)|*.xml;*.xsd;*.xsl;*.xslt;*.dtd"
+msgstr "XML dokumentas (*.xml,*.xsd,*.xsl,*.xslt,*.dtd)|*.xml;*.xsd;*.xsl;*.xslt;*.dtd"
 
 #: syneditstrconst.syns_previewscrollinfofmt
 msgid "Page: %d"
@@ -768,5 +764,4 @@ msgstr "<nieks>"
 #: syneditstrconst.syns_untitled
 msgid "Untitled"
 msgstr "Bevardis"
-
 

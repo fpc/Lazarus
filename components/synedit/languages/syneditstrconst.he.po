@@ -93,6 +93,10 @@ msgstr "כיוון"
 msgid "Directive"
 msgstr "הוראה"
 
+#: syneditstrconst.syns_attrdoctype
+msgid "DOCTYPE"
+msgstr ""
+
 #: syneditstrconst.syns_attrdoctypesection
 msgid "DOCTYPE Section"
 msgstr "סעיף DOCTYPE"

@@ -218,16 +218,17 @@ const
 
 type
   TtkTokenKind = (tkAmpersand, tkASP, tkCDATA, tkComment, tkIdentifier, tkKey, tkNull,
-    tkSpace, tkString, tkSymbol, tkText, tkUndefKey, tkValue);
+    tkSpace, tkString, tkSymbol, tkText, tkUndefKey, tkValue, tkDOCTYPE);
 
   TRangeState = (rsAmpersand, rsASP, rsCDATA, rsComment, rsKey, rsParam, rsText,
-    rsUnKnown, rsValue);
+    rsUnKnown, rsValue, rsDOCTYPE);
 
  THtmlCodeFoldBlockType = (
     cfbtHtmlNode,     // <foo>...</node>
     cfbtHtmlComment,  // <!-- -->
     cfbtHtmlAsp,  // <% asp  %>
     cfbtHtmlCDATA, // <![CDATA[ data ]]>
+    cfbtHtmlDOCTYPE, // <!DOCTYPE data>
     // internal types / not configurable
     cfbtHtmlNone
   );
@@ -257,6 +258,7 @@ type
     fAndAttri: TSynHighlighterAttributes;
     fASPAttri: TSynHighlighterAttributes;
     fCDATAAttri: TSynHighlighterAttributes;
+    fDOCTYPEAttri: TSynHighlighterAttributes;
     fCommentAttri: TSynHighlighterAttributes;
     fIdentifierAttri: TSynHighlighterAttributes;
     fKeyAttri: TSynHighlighterAttributes;
@@ -434,6 +436,7 @@ type
     procedure MakeMethodTables;
     procedure ASPProc;
     procedure CDATAProc;
+    procedure DOCTYPEProc;
     procedure SetMode(const AValue: TSynHTMLSynMode);
     procedure TextProc;
     procedure CommentProc;
@@ -485,6 +488,7 @@ type
     property AndAttri: TSynHighlighterAttributes read fAndAttri write fAndAttri;
     property ASPAttri: TSynHighlighterAttributes read fASPAttri write fASPAttri;
     property CDATAAttri: TSynHighlighterAttributes read fCDATAAttri write fCDATAAttri;
+    property DOCTYPEAttri: TSynHighlighterAttributes read fDOCTYPEAttri write fDOCTYPEAttri;
     property CommentAttri: TSynHighlighterAttributes read fCommentAttri
       write fCommentAttri;
     property IdentifierAttri: TSynHighlighterAttributes read fIdentifierAttri
@@ -2289,6 +2293,12 @@ begin
   fCDATAAttri.Foreground := clGreen;
   AddAttribute(fCDATAAttri);
 
+  fDOCTYPEAttri := TSynHighlighterAttributes.Create(SYNS_AttrDOCTYPE, SYNS_XML_AttrDOCTYPE);
+  fDOCTYPEAttri.Foreground := clBlack;
+  fDOCTYPEAttri.Background := clYellow;
+  fDOCTYPEAttri.Style := [fsBold];
+  AddAttribute(fDOCTYPEAttri);
+
   fCommentAttri := TSynHighlighterAttributes.Create(SYNS_AttrComment, SYNS_XML_AttrComment);
   AddAttribute(fCommentAttri);
 
@@ -2383,6 +2393,27 @@ begin
   end;
 end;
 
+procedure TSynHTMLSyn.DOCTYPEProc;
+begin
+  fTokenID := tkDOCTYPE;
+  if (fLine[Run] In [#0, #10, #13]) then begin
+    fProcTable[fLine[Run]];
+    Exit;
+  end;
+
+  while not (fLine[Run] in [#0, #10, #13]) do begin
+    if (fLine[Run] = '>')
+    then begin
+      fRange := rsText;
+      Inc(Run);
+      //if TopHtmlCodeFoldBlockType = cfbtHtmlCDATA then
+       // EndHtmlNodeCodeFoldBlock;
+      break;
+    end;
+    Inc(Run);
+  end;
+end;
+
 procedure TSynHTMLSyn.SetMode(const AValue: TSynHTMLSynMode);
 begin
   if FMode = AValue then exit;
@@ -2449,7 +2480,16 @@ begin
     StartHtmlCodeFoldBlock(cfbtHtmlAsp);
     Inc(Run);
   end
-  else begin
+  else if (Run <= length(fLine)-7) and (fLine[Run] = '!') and (upcase(fLine[Run + 1]) = 'D')
+  and (upcase(fLine[Run + 2]) = 'O') and (upcase(fLine[Run + 3]) = 'C') and (upcase(fLine[Run + 4]) = 'T')
+  and (upcase(fLine[Run + 5]) = 'Y') and (upcase(fLine[Run + 6]) = 'P') and (upcase(fLine[Run + 7]) = 'E') then 
+  begin
+    fRange := rsDOCTYPE;
+    fTokenID := tkDOCTYPE;
+    //StartHtmlCodeFoldBlock(cfbtHtmlDOCTYPE);
+    Inc(Run);
+  end else
+  begin
     fRange := rsKey;
     fTokenID := tkSymbol;
   end;
@@ -2610,6 +2650,10 @@ begin
     begin
       CDATAProc;
     end;
+  rsDOCTYPE:
+    begin
+      DOCTYPEProc;
+    end;
   else
     fProcTable[fLine[Run]];
   end;
@@ -2658,6 +2702,7 @@ begin
     tkAmpersand: Result := fAndAttri;
     tkASP: Result := fASPAttri;
     tkCDATA: Result := fCDATAAttri;
+    tkDOCTYPE: Result := fDOCTYPEAttri;
     tkComment: Result := fCommentAttri;
     tkIdentifier: Result := fIdentifierAttri;
     tkKey: Result := fKeyAttri;

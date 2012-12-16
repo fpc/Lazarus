@@ -1,4 +1,3 @@
- Massimo Soricetti <notturno@quipo.it>, 2011.
 msgid ""
 msgstr ""
 "Project-Id-Version: 0.9.3\n"
@@ -95,6 +94,10 @@ msgstr "Direzione"
 #: syneditstrconst.syns_attrdirective
 msgid "Directive"
 msgstr "Direttiva"
+
+#: syneditstrconst.syns_attrdoctype
+msgid "DOCTYPE"
+msgstr ""
 
 #: syneditstrconst.syns_attrdoctypesection
 msgid "DOCTYPE Section"

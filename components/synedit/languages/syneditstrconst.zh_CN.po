@@ -96,6 +96,10 @@ msgstr ""
 msgid "Directive"
 msgstr ""
 
+#: syneditstrconst.syns_attrdoctype
+msgid "DOCTYPE"
+msgstr ""
+
 #: syneditstrconst.syns_attrdoctypesection
 msgid "DOCTYPE Section"
 msgstr ""

@@ -1,7 +1,7 @@
-# Arabic translation of Free Pascal Lazarus Project.
-# Copyright (C) 2012 Lazarus Project
-# This file is distributed under the same license as the Lazarus package.
-# Khaled Shagrouni <shagrouni@gmail.com>, 2012.
+ Arabic translation of Free Pascal Lazarus Project.
+ Copyright (C) 2012 Lazarus Project
+ This file is distributed under the same license as the Lazarus package.
+ Khaled Shagrouni <shagrouni@gmail.com>, 2012.
 msgid ""
 msgstr ""
 "Project-Id-Version: Free Pascal Lazarus Project.\n"
@@ -100,6 +100,10 @@ msgstr "الاتجاه"
 #: syneditstrconst.syns_attrdirective
 msgid "Directive"
 msgstr "الموجه"
+
+#: syneditstrconst.syns_attrdoctype
+msgid "DOCTYPE"
+msgstr ""
 
 #: syneditstrconst.syns_attrdoctypesection
 msgid "DOCTYPE Section"
@@ -764,3 +768,4 @@ msgstr "<بلا>"
 #: syneditstrconst.syns_untitled
 msgid "Untitled"
 msgstr "غير معنون"
+

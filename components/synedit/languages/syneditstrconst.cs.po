@@ -94,6 +94,10 @@ msgstr "Směr"
 msgid "Directive"
 msgstr "Směrnice"
 
+#: syneditstrconst.syns_attrdoctype
+msgid "DOCTYPE"
+msgstr ""
+
 #: syneditstrconst.syns_attrdoctypesection
 msgid "DOCTYPE Section"
 msgstr "Sekce DOCTYPE"
