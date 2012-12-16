@@ -1264,6 +1264,7 @@ begin
   end;
   if FLineInfo.StateMachine.Ended then Exit;
 
+  BuildAddressMap;
   Iter := TMapIterator.Create(FAddressMap);
 
   while FLineInfo.StateMachine.NextLine do
