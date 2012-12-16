@@ -1102,7 +1102,6 @@ end;
 
 function TDwarfLineInfoStateMachine.NextLine: Boolean;
 var
-  pb: PByte absolute FLineInfoPtr;
   p: Pointer;
   Opcode: Byte;
   instrlen: Cardinal;
@@ -1119,10 +1118,10 @@ begin
     FEpilogueBegin := False;
   end;
   
-  while pb <= FMaxPtr do
+  while pbyte(FLineInfoPtr) <= FMaxPtr do
   begin
-    Opcode := pb^;
-    Inc(pb);
+    Opcode := pbyte(FLineInfoPtr)^;
+    Inc(pbyte(FLineInfoPtr));
     if Opcode <= Length(FOwner.FLineInfo.StandardOpcodeLengths)
     then begin
       // Standard opcode
@@ -1132,16 +1131,16 @@ begin
           Exit;
         end;
         DW_LNS_advance_pc: begin
-          Inc(FAddress, ULEB128toOrdinal(pb));
+          Inc(FAddress, ULEB128toOrdinal(pbyte(FLineInfoPtr)));
         end;
         DW_LNS_advance_line: begin
-          Inc(FLine, SLEB128toOrdinal(pb));
+          Inc(FLine, SLEB128toOrdinal(pbyte(FLineInfoPtr)));
         end;
         DW_LNS_set_file: begin
-          SetFileName(ULEB128toOrdinal(pb));
+          SetFileName(ULEB128toOrdinal(pbyte(FLineInfoPtr)));
         end;
         DW_LNS_set_column: begin
-          FColumn := ULEB128toOrdinal(pb);
+          FColumn := ULEB128toOrdinal(pbyte(FLineInfoPtr));
         end;
         DW_LNS_negate_stmt: begin
           FIsStmt := not FIsStmt;
@@ -1156,8 +1155,8 @@ begin
           else Inc(FAddress, (Opcode div FOwner.FLineInfo.LineRange) * FOwner.FLineInfo.MinimumInstructionLength);
         end;
         DW_LNS_fixed_advance_pc: begin
-          Inc(FAddress, PWord(pb)^);
-          Inc(pb, 2);
+          Inc(FAddress, PWord(FLineInfoPtr)^);
+          Inc(pbyte(FLineInfoPtr), 2);
         end;
         DW_LNS_set_prologue_end: begin
           FPrologueEnd := True;
@@ -1166,13 +1165,13 @@ begin
           FEpilogueBegin := True;
         end;
         DW_LNS_set_isa: begin
-          FIsa := ULEB128toOrdinal(pb);
+          FIsa := ULEB128toOrdinal(pbyte(FLineInfoPtr));
         end;
         // Extended opcode
         DW_LNS_extended_opcode: begin
-          instrlen := ULEB128toOrdinal(pb); // instruction length
+          instrlen := ULEB128toOrdinal(pbyte(FLineInfoPtr)); // instruction length
 
-          case pb^ of
+          case pbyte(FLineInfoPtr)^ of
             DW_LNE_end_sequence: begin
               FEndSequence := True;
               Result := True;
@@ -1180,12 +1179,12 @@ begin
             end;
             DW_LNE_set_address: begin
               if FOwner.FLineInfo.Addr64
-              then FAddress := PQWord(pb+1)^
-              else FAddress := PLongWord(pb+1)^;
+              then FAddress := PQWord(pbyte(FLineInfoPtr)+1)^
+              else FAddress := PLongWord(pbyte(FLineInfoPtr)+1)^;
             end;
             DW_LNE_define_file: begin
               // don't move pb, it's done at the end by instruction length
-              p := pb;
+              p := pbyte(FLineInfoPtr);
               FFileName := String(PChar(p));
               Inc(p, Length(FFileName) + 1);
 
@@ -1202,11 +1201,11 @@ begin
           else
             // unknown extendend opcode
           end;
-          Inc(pb, instrlen);
+          Inc(pbyte(FLineInfoPtr), instrlen);
         end;
       else
         // unknown opcode
-        Inc(pb, FOwner.FLineInfo.StandardOpcodeLengths[Opcode])
+        Inc(pbyte(FLineInfoPtr), FOwner.FLineInfo.StandardOpcodeLengths[Opcode])
       end;
       Continue;
     end;
@@ -1255,7 +1254,6 @@ procedure TDwarfCompilationUnit.BuildLineInfo(AAddressInfo: PDwarfAddressInfo; A
 var
   Iter: TMapIterator;
   Info: PDwarfAddressInfo;
-  SM: TDwarfLineInfoStateMachine absolute FLineInfo.StateMachine;
   idx: Integer;
   LineMap: TMap;
 begin
@@ -1264,31 +1262,31 @@ begin
     if AAddressInfo = nil then Exit;
     if AAddressInfo^.StateMachine <> nil then Exit;
   end;
-  if SM.Ended then Exit;
+  if FLineInfo.StateMachine.Ended then Exit;
 
   Iter := TMapIterator.Create(FAddressMap);
 
-  while SM.NextLine do
+  while FLineInfo.StateMachine.NextLine do
   begin
-    idx := FLineNumberMap.IndexOf(SM.FileName);
+    idx := FLineNumberMap.IndexOf(FLineInfo.StateMachine.FileName);
     if idx = -1
     then begin
-      LineMap := TMap.Create(itu4, SizeOf(SM.Address));
-      FLineNumberMap.AddObject(SM.FileName, LineMap);
+      LineMap := TMap.Create(itu4, SizeOf(FLineInfo.StateMachine.Address));
+      FLineNumberMap.AddObject(FLineInfo.StateMachine.FileName, LineMap);
     end
     else begin
       LineMap := TMap(FLineNumberMap.Objects[idx]);
     end;
-    if not LineMap.HasId(SM.Line)
-    then LineMap.Add(SM.Line, SM.Address);
-  
-    if Iter.Locate(SM.Address)
+    if not LineMap.HasId(FLineInfo.StateMachine.Line)
+    then LineMap.Add(FLineInfo.StateMachine.Line, FLineInfo.StateMachine.Address);
+
+    if Iter.Locate(FLineInfo.StateMachine.Address)
     then begin
       // set lineinfo
       Info := Iter.DataPtr;
       if Info^.StateMachine = nil
       then begin
-        Info^.StateMachine := SM.Clone;
+        Info^.StateMachine := FLineInfo.StateMachine.Clone;
         FLineInfo.StateMachines.Add(Info^.StateMachine);
       end;
       if not ADoAll and (Info = AAddressInfo)
@@ -1614,8 +1612,6 @@ procedure TDwarfCompilationUnit.LoadAbbrevs(ANeeded: Cardinal);
   end;
 var
   MaxData: Pointer;
-  pb: PByte absolute FLastAbbrevPtr;
-  pw: PWord absolute FLastAbbrevPtr;
   Def: TDwarfAbbrev;
   abbrev, attrib, form: Cardinal;
   n: Integer;
@@ -1627,16 +1623,16 @@ begin
   // but we cannot go beyond the section limit, so use that as safetylimit
   // in case of corrupt data
   MaxData := FOwner.FSections[dsAbbrev].RawData + FOwner.FSections[dsAbbrev].Size;
-  while (pb < MaxData) and (pb^ <> 0) and (abbrev < ANeeded) do
+  while (pbyte(FLastAbbrevPtr) < MaxData) and (pbyte(FLastAbbrevPtr)^ <> 0) and (abbrev < ANeeded) do
   begin
-    abbrev := ULEB128toOrdinal(pb);
-    Def.tag := ULEB128toOrdinal(pb);
+    abbrev := ULEB128toOrdinal(pbyte(FLastAbbrevPtr));
+    Def.tag := ULEB128toOrdinal(pbyte(FLastAbbrevPtr));
 
     if FMap.HasId(abbrev)
     then begin
       WriteLN('Duplicate abbrev=', abbrev, ' found. Ignoring....');
-      while pw^ <> 0 do Inc(pw);
-      Inc(pw);
+      while pword(FLastAbbrevPtr)^ <> 0 do Inc(pword(FLastAbbrevPtr));
+      Inc(pword(FLastAbbrevPtr));
       abbrev := 0;
       Continue;
     end;
@@ -1645,17 +1641,17 @@ begin
     then begin
       WriteLN('  abbrev:  ', abbrev);
       WriteLN('  tag:     ', Def.tag, '=', DwarfTagToString(Def.tag));
-      WriteLN('  children:', pb^, '=', DwarfChildrenToString(pb^));
+      WriteLN('  children:', pbyte(FLastAbbrevPtr)^, '=', DwarfChildrenToString(pbyte(FLastAbbrevPtr)^));
     end;
-    Def.Children := pb^ = DW_CHILDREN_yes;
-    Inc(pb);
+    Def.Children := pbyte(FLastAbbrevPtr)^ = DW_CHILDREN_yes;
+    Inc(pbyte(FLastAbbrevPtr));
 
     n := 0;
     Def.Index := FAbbrevIndex;
-    while pw^ <> 0 do
+    while pword(FLastAbbrevPtr)^ <> 0 do
     begin
-      attrib := ULEB128toOrdinal(pb);
-      form := ULEB128toOrdinal(pb);
+      attrib := ULEB128toOrdinal(pbyte(FLastAbbrevPtr));
+      form := ULEB128toOrdinal(pbyte(FLastAbbrevPtr));
 
       MakeRoom(FAbbrevIndex + 1);
       FDefinitions[FAbbrevIndex].Attribute := attrib;
@@ -1669,7 +1665,7 @@ begin
     Def.Count := n;
     FMap.Add(abbrev, Def);
 
-    Inc(pw);
+    Inc(pword(FLastAbbrevPtr));
   end;
   if abbrev <> 0
   then FLastAbbrev := abbrev;
