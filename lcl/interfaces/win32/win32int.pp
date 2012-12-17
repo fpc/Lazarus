@@ -282,7 +282,7 @@ var
 
   MMenuItemInfoSize: DWORD; // size depends on windows version;
 
-{$ifdef MSG_DEBUG}
+{$if defined(MSG_DEBUG) or defined(DBG_SendPaintMessage)}
   MessageStackDepth: string = '';
 {$endif}
 

@@ -74,12 +74,12 @@ function CallDefaultWindowProc(Window: HWnd; Msg: UInt; WParam: Windows.WParam;
   end;
 var
   PrevWndProc: Windows.WNDPROC;
-{$ifdef MSG_DEBUG}
+{$if defined(MSG_DEBUG) or defined(DBG_SendPaintMessage)}
   depthLen: integer;
 {$endif}
   setComboWindow: boolean;
 begin
-{$ifdef MSG_DEBUG}
+{$if defined(MSG_DEBUG) or defined(DBG_SendPaintMessage)}
   depthLen := Length(MessageStackDepth);
   if depthLen > 0 then
     MessageStackDepth[depthLen] := '#';
@@ -109,7 +109,7 @@ begin
     if setComboWindow then
       ComboBoxHandleSizeWindow := 0;
   end;
-{$ifdef MSG_DEBUG}
+{$if defined(MSG_DEBUG) or defined(DBG_SendPaintMessage)}
   if depthLen > 0 then
     MessageStackDepth[depthLen] := ' ';
 {$endif}
@@ -149,7 +149,7 @@ const
 var
   EraseBkgndStack: dword = 0;
 
-{$ifdef MSG_DEBUG}
+{$if defined(MSG_DEBUG) or defined(DBG_SendPaintMessage)}
 function EraseBkgndStackToString: string;
 var
   I: dword;
@@ -162,7 +162,7 @@ end;
 
 procedure PushEraseBkgndCommand(Command: TEraseBkgndCommand);
 begin
-{$ifdef MSG_DEBUG}
+{$if defined(MSG_DEBUG) or defined(DBG_SendPaintMessage)}
   case Command of
     ecDiscard: DebugLn(MessageStackDepth,
       ' *forcing next WM_ERASEBKGND to discard message');
@@ -391,6 +391,13 @@ var
       ParentPaintWindow := Windows.GetParent(Window)
     else
       ParentPaintWindow := 0;
+{$IFDEF DBG_SendPaintMessage}
+    DebugLnEnter(['>>> SendPaintMessage for CtrlDC=', dbgs(ControlDC), ' Window=', dbgs(Window),
+       ' WinCtrl=',dbgs(PtrUInt(lWinControl)), ' ', DbgSName(lWinControl),
+       ' NativeCtrl=', dbgs(isNativeControl), ' ndParentPaint=', dbgs(needParentPaint),
+       ' isTab=', dbgs(WindowInfo^.isTabPage)    ]);
+    try
+{$ENDIF}
 
     // if painting background of some control for tabpage, don't handle erase background
     // in parent of tabpage
@@ -442,6 +449,10 @@ var
         if ThemeServices.ThemesEnabled then
           PushEraseBkgndCommand(ecDoubleBufferNoRemove);
         DC := Windows.BeginPaint(Window, @PS);
+{$IFDEF DBG_SendPaintMessage}
+        if ThemeServices.ThemesEnabled then
+          DebugLn(['SendPaintMessage for CtrlDC=', dbgs(ControlDC), ' Remove one from EraseBkgndStack val=', (EraseBkgndStack and 3)]);
+{$ENDIF}
         if ThemeServices.ThemesEnabled then
           EraseBkgndStack := EraseBkgndStack shr EraseBkgndStackShift;
         if useDoubleBuffer then
@@ -496,9 +507,15 @@ var
       begin
         // send through message to allow message override, moreover use SendMessage
         // to allow subclass window proc override this message too
+{$IFDEF DBG_SendPaintMessage}
+        DebugLnEnter('> SendPaintMessage call WM_ERASEBKGND for CtrlDC=', dbgs(ControlDC), ' Window=', dbgs(Window), ' WinCtrl=',dbgs(PtrUInt(lWinControl)), ' ', DbgSName(lWinControl));
+{$ENDIF}
         Include(TWinControlAccess(lWinControl).FWinControlFlags, wcfEraseBackground);
         Windows.SendMessage(lWinControl.Handle, WM_ERASEBKGND, Windows.WPARAM(PaintMsg.DC), 0);
         Exclude(TWinControlAccess(lWinControl).FWinControlFlags, wcfEraseBackground);
+{$IFDEF DBG_SendPaintMessage}
+        DebugLnExit('< SendPaintMessage back from WM_ERASEBKGND for CtrlDC=', dbgs(ControlDC), ' Window=', dbgs(Window), ' WinCtrl=',dbgs(PtrUInt(lWinControl)), ' ', DbgSName(lWinControl));
+{$ENDIF}
       end;
       if ParentPaintWindow <> 0 then
       begin
@@ -521,7 +538,13 @@ var
           IntToStr(ClipBox.Left), ',', IntToStr(ClipBox.Top), ';',
           IntToStr(ClipBox.Right), ',', IntToStr(ClipBox.Bottom), ')');
 {$endif}
+{$IFDEF DBG_SendPaintMessage}
+        DebugLnEnter('> SendPaintMessage call DeliverMessage for CtrlDC=', dbgs(ControlDC), ' Window=', dbgs(Window), ' WinCtrl=',dbgs(PtrUInt(lWinControl)), ' ', DbgSName(lWinControl));
+{$ENDIF}
         DeliverMessage(lWinControl, PaintMsg);
+{$IFDEF DBG_SendPaintMessage}
+        DebugLnExit('< SendPaintMessage back from DeliverMessage Ufor CtrlDC=', dbgs(ControlDC), ' Window=', dbgs(Window), ' WinCtrl=',dbgs(PtrUInt(lWinControl)), ' ', DbgSName(lWinControl));
+{$ENDIF}
         Windows.RestoreDC(PaintMsg.DC, DCIndex);
       end;
       if useDoubleBuffer then
@@ -552,6 +575,13 @@ var
 {$endif}
       end;
     end;
+
+{$IFDEF DBG_SendPaintMessage}
+    finally
+    DebugLnExit('<<< SendPaintMessage for CtrlDC=', dbgs(ControlDC), ' Window=', dbgs(Window), ' WinCtrl=',dbgs(PtrUInt(lWinControl)), ' ', DbgSName(lWinControl));
+    end;
+{$ENDIF}
+
   end;
 
   procedure ClearSiblingRadioButtons(RadioButton: TRadioButton);
@@ -1498,7 +1528,12 @@ begin
     WM_ERASEBKGND:
     begin
       eraseBkgndCommand := TEraseBkgndCommand(EraseBkgndStack and EraseBkgndStackMask);
-{$ifdef MSG_DEBUG}
+{$if defined(MSG_DEBUG) or defined(DBG_SendPaintMessage)}
+      DebugLnEnter(['>>> Do WM_ERASEBKGND for WParam= ', WParam, ' LParam=',LParam,
+          ' CurDbleBuffer.DC=', dbgs(CurDoubleBuffer.DC), ' Window=', dbgs(Window),
+          ' WinCtrl=',PtrUInt(lWinControl), ' ', DbgSName(lWinControl),
+          ' isTab=', dbgs(WindowInfo^.isTabPage)  ]);
+      try
       case eraseBkgndCommand of
         ecDefault: DebugLn(MessageStackDepth, ' *command: default');
         ecDiscardNoRemove, ecDiscard: DebugLn(MessageStackDepth, ' *command: completely ignore');
@@ -1524,16 +1559,29 @@ begin
       end;
       if not GetNeedParentPaint(WindowInfo, lWinControl) or (eraseBkgndCommand = ecDoubleBufferNoRemove) then
       begin
+{$if defined(MSG_DEBUG) or defined(DBG_SendPaintMessage)}
+        DebugLn(['WM_ERASEBKGND  *NO* ParentPaint for WParam= ', WParam, ' LParam=',LParam, ' Window=', dbgs(Window) ]);
+{$endif}
         LMessage.Msg := LM_ERASEBKGND;
         LMessage.WParam := WParam;
         LMessage.LParam := LParam;
       end else
       begin
+{$if defined(MSG_DEBUG) or defined(DBG_SendPaintMessage)}
+        DebugLn(['WM_ERASEBKGND got NeedParentPaint for WParam= ', WParam, ' LParam=',LParam, ' Window=', dbgs(Window) ]);
+{$endif}
         if not ThemeServices.ThemesEnabled then
           SendPaintMessage(HDC(WParam));
         LMessage.Result := 1;
       end;
       WinProcess := False;
+{$if defined(MSG_DEBUG) or defined(DBG_SendPaintMessage)}
+      finally
+      DebugLnExit(['<<< Do WM_ERASEBKGND for WParam= ', WParam, ' LParam=',LParam,
+          ' Window=', dbgs(Window), ' MsgStackDepth=', MessageStackDepth, ' *erasebkgndstack: ', EraseBkgndStackToString
+           ]);
+      end;
+{$endif}
     end;
     WM_EXITMENULOOP:
       // is it a popup menu
