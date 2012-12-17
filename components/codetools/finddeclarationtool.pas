@@ -3543,7 +3543,7 @@ var
                       +(fdfGlobals*SubParams.Flags);
       SubParams.SetIdentifier(Self,@Src[IdentStart],nil);
       SubParams.ContextNode:=StartNode.Parent;
-      if (SubParams.ContextNode.Desc in (AllIdentifierDefinitions+AllPascalTypes))
+      if (SubParams.ContextNode.Desc in (AllIdentifierDefinitions))
       then begin
         // pascal allows things like 'var a: a;' -> skip var definition
         Include(SubParams.Flags,fdfIgnoreCurContextNode);
