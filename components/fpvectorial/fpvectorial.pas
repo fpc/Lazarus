@@ -473,7 +473,7 @@ type
     procedure AddElement(AElement: TvFormulaElement);
     function  AddElementWithKind(AKind: TvFormulaElementKind): TvFormulaElement;
     function  AddElementWithKindAndText(AKind: TvFormulaElementKind; AText: string): TvFormulaElement;
-    procedure Clear;
+    procedure Clear; override;
     //
     function CalculateHeight(ADest: TFPCustomCanvas): Double; // in milimeters
     function CalculateWidth(ADest: TFPCustomCanvas): Double; // in milimeters
@@ -505,7 +505,7 @@ type
     function GetFirstEntity: TvEntity;
     function GetNextEntity: TvEntity;
     procedure AddEntity(AEntity: TvEntity);
-    procedure Clear;
+    procedure Clear; override;
     //
     // Never add a Render() procedure to TvBlock, because blocks are invisible!
   end;
@@ -602,7 +602,7 @@ type
     function  RemoveEntity(AEntity: TvEntity; AFreeAfterRemove: Boolean = True): Boolean;
     { Data writing methods }
     function AddEntity(AEntity: TvEntity): Integer;
-    procedure AddPathCopyMem(APath: TPath);
+    function  AddPathCopyMem(APath: TPath; AOnlyCreate: Boolean = False): TPath;
     procedure StartPath(AX, AY: Double); overload;
     procedure StartPath(); overload;
     procedure AddMoveToPath(AX, AY: Double);
@@ -618,18 +618,18 @@ type
     procedure SetPenStyle(AStyle: TFPPenStyle);
     procedure SetPenWidth(AWidth: Integer);
     procedure SetClipPath(AClipPath: TPath; AClipMode: TvClipMode);
-    procedure EndPath();
-    function  AddText(AX, AY, AZ: Double; FontName: string; FontSize: integer; AText: utf8string): TvText; overload;
-    function  AddText(AX, AY: Double; AStr: utf8string): TvText; overload;
-    function  AddText(AX, AY, AZ: Double; AStr: utf8string): TvText; overload;
-    procedure AddCircle(ACenterX, ACenterY, ARadius: Double);
-    procedure AddCircularArc(ACenterX, ACenterY, ARadius, AStartAngle, AEndAngle: Double; AColor: TFPColor);
-    procedure AddEllipse(CenterX, CenterY, HorzHalfAxis, VertHalfAxis, Angle: Double);
+    function  EndPath(AOnlyCreate: Boolean = False): TPath;
+    function  AddText(AX, AY, AZ: Double; FontName: string; FontSize: integer; AText: utf8string; AOnlyCreate: Boolean = False): TvText; overload;
+    function  AddText(AX, AY: Double; AStr: utf8string; AOnlyCreate: Boolean = False): TvText; overload;
+    function  AddText(AX, AY, AZ: Double; AStr: utf8string; AOnlyCreate: Boolean = False): TvText; overload;
+    function AddCircle(ACenterX, ACenterY, ARadius: Double; AOnlyCreate: Boolean = False): TvCircle;
+    function AddCircularArc(ACenterX, ACenterY, ARadius, AStartAngle, AEndAngle: Double; AColor: TFPColor; AOnlyCreate: Boolean = False): TvCircularArc;
+    function AddEllipse(CenterX, CenterY, HorzHalfAxis, VertHalfAxis, Angle: Double; AOnlyCreate: Boolean = False): TvEllipse;
     function AddBlock(AName: string; AX, AY, AZ: Double): TvBlock;
     function AddInsert(AX, AY, AZ: Double; ABlock: TvBlock): TvInsert;
     // Dimensions
-    procedure AddAlignedDimension(BaseLeft, BaseRight, DimLeft, DimRight: T3DPoint);
-    procedure AddRadialDimension(AIsDiameter: Boolean; ACenter, ADimLeft, ADimRight: T3DPoint);
+    function AddAlignedDimension(BaseLeft, BaseRight, DimLeft, DimRight: T3DPoint; AOnlyCreate: Boolean = False): TvAlignedDimension;
+    function AddRadialDimension(AIsDiameter: Boolean; ACenter, ADimLeft, ADimRight: T3DPoint; AOnlyCreate: Boolean = False): TvRadialDimension;
     //
     function AddPoint(AX, AY, AZ: Double): TvPoint;
     { Debug methods }
@@ -1729,6 +1729,8 @@ var
   PreviousValue: Word;
   PreviousCount: Integer;
 begin
+  lValue := colBlack;
+
   // First setup the map and initialize it
   if RasterImage <> nil then RasterImage.Free;
   RasterImage := TFPMemoryImage.create(AWidth, AHeight);
@@ -2115,7 +2117,7 @@ end;
 
 function TvFormula.AddElementWithKind(AKind: TvFormulaElementKind): TvFormulaElement;
 begin
-  AddElementWithKindAndText(AKind, '');
+  Result := AddElementWithKindAndText(AKind, '');
 end;
 
 function TvFormula.AddElementWithKindAndText(AKind: TvFormulaElementKind;
@@ -2141,6 +2143,7 @@ end;
 
 procedure TvFormula.Clear;
 begin
+  inherited Clear;
   FElements.ForEachCall(CallbackDeleteElement, nil);
   FElements.Clear;
 end;
@@ -2360,6 +2363,7 @@ end;
 
 procedure TvBlock.Clear;
 begin
+  inherited Clear;
   FElements.ForEachCall(CallbackDeleteElement, nil);
   FElements.Clear;
 end;
@@ -2533,14 +2537,15 @@ begin
   FEntities.Add(Pointer(AEntity));
 end;
 
-procedure TvVectorialPage.AddPathCopyMem(APath: TPath);
+function TvVectorialPage.AddPathCopyMem(APath: TPath; AOnlyCreate: Boolean = False): TPath;
 var
   lPath: TPath;
   Len: Integer;
 begin
   lPath := TPath.Create;
   lPath.Assign(APath);
-  AddEntity(lPath);
+  Result := lPath;
+  if not AOnlyCreate then AddEntity(lPath);
   //WriteLn(':>TvVectorialDocument.AddPath 1 Len = ', Len);
 end;
 
@@ -2725,15 +2730,15 @@ end;
 
   @see    StartPath, AddPointToPath
 }
-procedure TvVectorialPage.EndPath;
+function  TvVectorialPage.EndPath(AOnlyCreate: Boolean = False): TPath;
 begin
   if FTmPPath.Len = 0 then Exit;
-  AddPathCopyMem(FTmPPath);
+  Result := AddPathCopyMem(FTmPPath, AOnlyCreate);
   ClearTmpPath();
 end;
 
 function TvVectorialPage.AddText(AX, AY, AZ: Double; FontName: string;
-  FontSize: integer; AText: utf8string): TvText;
+  FontSize: integer; AText: utf8string; AOnlyCreate: Boolean = False): TvText;
 var
   lText: TvText;
 begin
@@ -2744,21 +2749,21 @@ begin
   lText.Z := AZ;
   lText.Font.Name := FontName;
   lText.Font.Size := FontSize;
-  AddEntity(lText);
+  if not AOnlyCreate then AddEntity(lText);
   Result := lText;
 end;
 
-function TvVectorialPage.AddText(AX, AY: Double; AStr: utf8string): TvText;
+function TvVectorialPage.AddText(AX, AY: Double; AStr: utf8string; AOnlyCreate: Boolean = False): TvText;
 begin
-  Result := AddText(AX, AY, 0, '', 10, AStr);
+  Result := AddText(AX, AY, 0, '', 10, AStr, AOnlyCreate);
 end;
 
-function TvVectorialPage.AddText(AX, AY, AZ: Double; AStr: utf8string): TvText;
+function TvVectorialPage.AddText(AX, AY, AZ: Double; AStr: utf8string; AOnlyCreate: Boolean = False): TvText;
 begin
-  Result := AddText(AX, AY, AZ, '', 10, AStr);
+  Result := AddText(AX, AY, AZ, '', 10, AStr, AOnlyCreate);
 end;
 
-procedure TvVectorialPage.AddCircle(ACenterX, ACenterY, ARadius: Double);
+function TvVectorialPage.AddCircle(ACenterX, ACenterY, ARadius: Double; AOnlyCreate: Boolean = False): TvCircle;
 var
   lCircle: TvCircle;
 begin
@@ -2766,11 +2771,12 @@ begin
   lCircle.X := ACenterX;
   lCircle.Y := ACenterY;
   lCircle.Radius := ARadius;
-  AddEntity(lCircle);
+  Result := lCircle;
+  if not AOnlyCreate then AddEntity(lCircle);
 end;
 
-procedure TvVectorialPage.AddCircularArc(ACenterX, ACenterY, ARadius,
-  AStartAngle, AEndAngle: Double; AColor: TFPColor);
+function TvVectorialPage.AddCircularArc(ACenterX, ACenterY, ARadius,
+  AStartAngle, AEndAngle: Double; AColor: TFPColor; AOnlyCreate: Boolean = False): TvCircularArc;
 var
   lCircularArc: TvCircularArc;
 begin
@@ -2781,11 +2787,12 @@ begin
   lCircularArc.StartAngle := AStartAngle;
   lCircularArc.EndAngle := AEndAngle;
   lCircularArc.Pen.Color := AColor;
-  AddEntity(lCircularArc);
+  Result := lCircularArc;
+  if not AOnlyCreate then AddEntity(lCircularArc);
 end;
 
-procedure TvVectorialPage.AddEllipse(CenterX, CenterY, HorzHalfAxis,
-  VertHalfAxis, Angle: Double);
+function TvVectorialPage.AddEllipse(CenterX, CenterY, HorzHalfAxis,
+  VertHalfAxis, Angle: Double; AOnlyCreate: Boolean = False): TvEllipse;
 var
   lEllipse: TvEllipse;
 begin
@@ -2795,7 +2802,8 @@ begin
   lEllipse.HorzHalfAxis := HorzHalfAxis;
   lEllipse.VertHalfAxis := VertHalfAxis;
   lEllipse.Angle := Angle;
-  AddEntity(lEllipse);
+  Result := lEllipse;
+  if not AOnlyCreate then AddEntity(lEllipse);
 end;
 
 function TvVectorialPage.AddBlock(AName: string; AX, AY, AZ: Double): TvBlock;
@@ -2823,8 +2831,8 @@ begin
 end;
 
 
-procedure TvVectorialPage.AddAlignedDimension(BaseLeft, BaseRight, DimLeft,
-  DimRight: T3DPoint);
+function TvVectorialPage.AddAlignedDimension(BaseLeft, BaseRight, DimLeft,
+  DimRight: T3DPoint; AOnlyCreate: Boolean = False): TvAlignedDimension;
 var
   lDim: TvAlignedDimension;
 begin
@@ -2833,11 +2841,12 @@ begin
   lDim.BaseRight := BaseRight;
   lDim.DimensionLeft := DimLeft;
   lDim.DimensionRight := DimRight;
-  AddEntity(lDim);
+  Result := lDim;
+  if not AOnlyCreate then AddEntity(lDim);
 end;
 
-procedure TvVectorialPage.AddRadialDimension(AIsDiameter: Boolean; ACenter,
-  ADimLeft, ADimRight: T3DPoint);
+function TvVectorialPage.AddRadialDimension(AIsDiameter: Boolean; ACenter,
+  ADimLeft, ADimRight: T3DPoint; AOnlyCreate: Boolean = False): TvRadialDimension;
 var
   lDim: TvRadialDimension;
 begin
@@ -2846,7 +2855,8 @@ begin
   lDim.Center := ACenter;
   lDim.DimensionLeft := ADimLeft;
   lDim.DimensionRight := ADimRight;
-  AddEntity(lDim);
+  Result := lDim;
+  if not AOnlyCreate then AddEntity(lDim);
 end;
 
 function TvVectorialPage.AddPoint(AX, AY, AZ: Double): TvPoint;

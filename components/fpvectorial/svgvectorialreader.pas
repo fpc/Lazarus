@@ -119,7 +119,7 @@ const
   Str_Comma: Char = ',';
 var
   i: Integer;
-  lTmpStr: string;
+  lTmpStr: string = '';
   lState: Integer;
   lCurChar: Char;
 begin
