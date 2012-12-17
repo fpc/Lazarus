@@ -358,7 +358,7 @@ begin
   else
   // Code for normal numbers, decimals
   begin
-    FloatValue := 0;
+    FloatValue := StrToFloat(StrValue, FPointSeparator);
   end;
 end;
 
@@ -1095,7 +1095,7 @@ begin
 
     if lIndexN < 0 then raise Exception.Create('[TvEPSVectorialReader.ExecuteStackManipulationOperator] rool operator: n must be positive or zero');
 
-    if lIndexJ = 0 then Exit;
+    if lIndexJ = 0 then Exit(True);
 
     SetLength(lTokens, lIndexN);
 
