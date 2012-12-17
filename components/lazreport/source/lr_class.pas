@@ -3084,7 +3084,7 @@ var
       DebugLn('OutLine Cury=%d + th=%d = %d < dr.bottom=%d == %s',[cury,th,cury+th,dr.bottom,dbgs(cury+th<dr.bottom)]);
       {$ENDIF}
       // TODO: needs to check that th is calculated precisely
-      if not Streaming {and (cury + th <= DR.Bottom)} then
+      if not Streaming and (cury + th <= DR.Bottom) then
       begin
         n := Length(St);
         w := Ord(St[n - 1]) * 256 + Ord(St[n]);
@@ -3506,7 +3506,7 @@ begin
   frInterpretator.DoScript(Script);
   if not Visible then Exit;
   {$IFDEF DebugLR}
-  DebugLnEnter('TfrMemoView.CalcHeight INIT',[]);
+  DebugLnEnter('TfrMemoView.CalcHeight %s INIT',[ViewInfo(Self)]);
   {$ENDIF}
   CanExpandVar := True;
   Memo1.Assign(Memo);
@@ -5449,7 +5449,7 @@ begin
   Result := False;
   with Parent do begin
     {$IFDEF DebugLR}
-    DebugLn('say+dy+ady=%d CurBottomY=%d',[ay+Bands[btColumnFooter].dy+ady,CurBottomY]);
+    DebugLn('ay+dy+ady=%d CurBottomY=%d',[ay+Bands[btColumnFooter].dy+ady,CurBottomY]);
     {$ENDIF}
     if not RowsLayout then begin
       if ay + Bands[btColumnFooter].dy + ady > CurBottomY then
@@ -5546,8 +5546,11 @@ begin
       for i := 0 to Objects.Count - 1 do
       begin
         t :=TfrView(Objects[i]);
-        if t.Selected then
+        if not t.Selected then
+          continue;
+
         if (t.y >= 0) and (t.y < newdy) then
+        begin
           if (t.y + t.dy < newdy) then
           begin
             if aMaxy < t.y + t.dy then
@@ -5572,10 +5575,25 @@ begin
             else
               t.y := newdy
           end
+        end
         else if t is TfrStretcheable then
+        begin
           if (t.y < 0) and (t.y + t.dy >= 0) then
-            if t.y + t.dy < dy then
+          begin
+            // drawing the remaining part of some object
+            if t.y + t.dy > newdy then
             begin
+              // the rest of "t" is too large to fit in the rest of the page
+              oldy := t.y; olddy := t.dy;
+              t.y := 0; t.dy := newdy;
+              Inc(TfrStretcheable(t).ActualHeight, t.dy);
+              TfrStretcheable(t).DrawMode := drPart;
+              DrawObject(t);
+              t.y := oldy; t.dy := olddy;
+              t.Selected := true;
+            end else
+            begin
+              // the rest of "t" fits within the remaining space on page
               oldy := t.y; olddy := t.dy;
               t.dy := t.y + t.dy;
               t.y := 0;
@@ -5591,17 +5609,10 @@ begin
               t.y := oldy; t.dy := olddy;
               CorrY(t, TfrStretcheable(t).ActualHeight - t.dy);
               t.Selected := False;
-            end
-            else
-            begin
-              oldy := t.y; olddy := t.dy;
-              t.y := 0; t.dy := newdy;
-              Inc(TfrStretcheable(t).ActualHeight, t.dy);
-              TfrStretcheable(t).DrawMode := drPart;
-              DrawObject(t);
-              t.y := oldy; t.dy := olddy;
-              t.Selected := False;
             end;
+          end;
+        end;
+
       end;
       Flag := False;
       for i := 0 to Objects.Count - 1 do
