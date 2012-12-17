@@ -33,7 +33,7 @@ uses
   TestLazUtils, TestLazUTF8, TestAvgLvlTree,
   // codetools
   TestBasicCodetools, TestCTXMLFixFragments, TestCTRangeScan, TestCTH2Pas,
-  TestCompleteBlock, TestStdCodetools, TestCfgScript,
+  TestCompleteBlock, TestStdCodetools, TestMethodJumpTool, TestCfgScript,
   // lcltests
   testunicode, testpen, TestPreferredSize
   {$IFNDEF NoSemiAutomatedTests}

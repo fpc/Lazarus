@@ -24,7 +24,8 @@ uses
   Classes, consoletestrunner,
   testglobals, testunits, dom,
   {Unit needed to set the LCL version and widget set name}
-  LCLVersion, InterfaceBase, Interfaces, testlazxml, testavglvltree;
+  LCLVersion, InterfaceBase, Interfaces, testlazxml, testavglvltree, 
+testmethodjumptool;
   
 type
 

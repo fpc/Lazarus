@@ -18,6 +18,8 @@ type
   { TTestCTStdCodetools }
 
   TTestCTStdCodetools = class(TTestCase)
+  private
+    function GetCTMarker(Code: TCodeBuffer; Comment: string; out Position: TPoint): boolean;
   published
     procedure TestCTStdFindBlockStart;
   end;
@@ -25,6 +27,25 @@ type
 implementation
 
 { TTestCTStdCodetools }
+
+function TTestCTStdCodetools.GetCTMarker(Code: TCodeBuffer; Comment: string;
+  out Position: TPoint): boolean;
+var
+  p: SizeInt;
+begin
+  Result:=false;
+  Position:=Point(0,0);
+  if Comment[1]<>'{' then
+    Comment:='{'+Comment+'}';
+  p:=System.Pos(Comment,Code.Source);
+  if p<1 then
+    AssertEquals('searching marker: '+Comment,true,p>=1);
+  Code.AbsoluteToLineCol(p+length(Comment),Position.Y,Position.X);
+  if Position.Y<1 then
+    AssertEquals('Code.AbsoluteToLineCol: '+Comment,true,Position.Y>=1)
+  else
+    Result:=true;
+end;
 
 procedure TTestCTStdCodetools.TestCTStdFindBlockStart;
 var
@@ -46,21 +67,6 @@ var
     +'end.'+LineEnding;
   end;
 
-  function GetMarker(Comment: string): TPoint;
-  var
-    p: SizeInt;
-  begin
-    Result:=Point(0,0);
-    if Comment[1]<>'{' then
-      Comment:='{'+Comment+'}';
-    p:=System.Pos(Comment,Code.Source);
-    if p<1 then
-      AssertEquals('searching marker: '+Comment,true,p>=1);
-    Code.AbsoluteToLineCol(p+length(Comment),Result.Y,Result.X);
-    if Result.Y<1 then
-      AssertEquals('Code.AbsoluteToLineCol: '+Comment,true,Result.Y>=1);
-  end;
-
   function GetInfo(XY: TPoint): string;
   var
     Line: String;
@@ -78,8 +84,8 @@ var
     NewY: integer;
     NewTopline: integer;
   begin
-    BlockStart:=GetMarker(StartMarker);
-    BlockEnd:=GetMarker(EndMarker);
+    if not GetCTMarker(Code,StartMarker,BlockStart) then exit;
+    if not GetCTMarker(Code,EndMarker,BlockEnd) then exit;
     //debugln(['TTestCTStdCodetools.TestCTStdFindBlockStart BlockStart=',GetInfo(BlockStart),' BlockEnd=',GetInfo(BlockEnd)]);
     if not CodeToolBoss.FindBlockStart(Code,BlockEnd.X,BlockEnd.Y,NewCode,NewX,NewY,NewTopline)
     then

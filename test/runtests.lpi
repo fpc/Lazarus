@@ -39,7 +39,7 @@
         <PackageName Value="LCL"/>
       </Item4>
     </RequiredPackages>
-    <Units Count="15">
+    <Units Count="16">
       <Unit0>
         <Filename Value="runtests.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -115,6 +115,11 @@
         <IsPartOfProject Value="True"/>
         <UnitName Value="TestAvgLvlTree"/>
       </Unit14>
+      <Unit15>
+        <Filename Value="codetoolstests\testmethodjumptool.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="TestMethodJumpTool"/>
+      </Unit15>
     </Units>
   </ProjectOptions>
   <CompilerOptions>
