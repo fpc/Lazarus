@@ -10742,8 +10742,9 @@ begin
       finally
         OpenEditorsOnCodeToolChange:=OldChange;
       end;
-      Result:=ShowIdentifierReferences(DeclarationUnitInfo.Source,
-        DeclarationCaretXY,PascalReferences);
+      if Options.RenameShowResult then
+        Result:=ShowIdentifierReferences(DeclarationUnitInfo.Source,
+          DeclarationCaretXY,PascalReferences);
     end;
 
     // show result

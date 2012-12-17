@@ -46,6 +46,7 @@ type
 
   TFindRenameIdentifierDialog = class(TForm)
     ButtonPanel1: TButtonPanel;
+    ShowResultCheckBox: TCheckBox;
     CurrentGroupBox: TGroupBox;
     CurrentListBox: TListBox;
     ExtraFilesEdit: TEdit;
@@ -146,6 +147,8 @@ begin
     FindRenameIdentifierDialog.SetIdentifier(Filename,Position);
     FindRenameIdentifierDialog.AllowRename:=AllowRename;
     FindRenameIdentifierDialog.RenameCheckBox.Checked:=SetRenameActive and AllowRename;
+    if Options<>nil then
+      FindRenameIdentifierDialog.ShowResultCheckBox.Checked:=Options.RenameShowResult and AllowRename;
     Result:=FindRenameIdentifierDialog.ShowModal;
     if Result=mrOk then
       if Options<>nil then
@@ -525,6 +528,7 @@ begin
   ButtonPanel1.CancelButton.Caption:=lisCancel;
   NewGroupBox.Caption:=lisFRIRenameTo;
   RenameCheckBox.Caption:=lisRename;
+  RenameCheckBox.Caption:=lisRenameShowResult;
   ScopeCommentsCheckBox.Caption:=lisFRISearchInCommentsToo;
   ScopeGroupBox.Caption:=lisFRISearchWhere;
   ScopeRadioGroup.Caption:=dlgScope;
@@ -554,6 +558,7 @@ procedure TFindRenameIdentifierDialog.UpdateRename;
 begin
   RenameCheckBox.Enabled:=AllowRename;
   NewEdit.Enabled:=RenameCheckBox.Checked and RenameCheckBox.Enabled;
+  ShowResultCheckBox.Enabled:=RenameCheckBox.Checked and RenameCheckBox.Enabled;
   if NewEdit.Enabled then
     ButtonPanel1.OKButton.Caption:=lisFRIRenameAllReferences
   else
@@ -614,6 +619,7 @@ begin
   RenameCheckBox.Checked:=Options.Rename;
   ExtraFilesEdit.Text:=StringListToText(Options.ExtraFiles,';',true);
   NewEdit.Text:=Options.RenameTo;
+  ShowResultCheckBox.Checked:=Options.RenameShowResult;
   ScopeCommentsCheckBox.Checked:=Options.SearchInComments;
   case Options.Scope of
   frCurrentUnit: ScopeRadioGroup.ItemIndex:=0;
@@ -632,6 +638,7 @@ begin
   if ExtraFilesGroupBox.Enabled then
     SplitString(ExtraFilesEdit.Text,';',Options.ExtraFiles,true);
   Options.RenameTo:=NewEdit.Text;
+  Options.RenameShowResult := ShowResultCheckBox.Checked;
   Options.SearchInComments:=ScopeCommentsCheckBox.Checked;
   if ScopeRadioGroup.Enabled then
     case ScopeRadioGroup.ItemIndex of

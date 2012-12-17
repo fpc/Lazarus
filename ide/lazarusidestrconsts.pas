@@ -51,6 +51,7 @@ resourcestring
   lisRemove = 'Remove';
   lisBtnRemove = '&Remove';
   lisRename = 'Rename';
+  lisRenameShowResult = 'Show list of renamed Identifiers';
   lisReplace = 'Replace';
   lisBtnReplace = '&Replace';
   lisBtnDlgReplace = '&Replace ...';
