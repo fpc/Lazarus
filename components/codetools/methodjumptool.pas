@@ -332,9 +332,14 @@ begin
   NewPos:=CursorPos;
   // build code tree
   {$IFDEF CTDEBUG}
-  DebugLn('TMethodJumpingCodeTool.FindJumpPoint A  CursorPos=',dbgs(CursorPos.X),',',dbgs(CursorPos.Y));
+  DebugLn('TMethodJumpingCodeTool.FindJumpPoint START  CursorPos=',dbgs(CursorPos.X),',',dbgs(CursorPos.Y));
   {$ENDIF}
   BuildTreeAndGetCleanPos(CursorPos,CleanCursorPos);
+  {debugln(['TMethodJumpingCodeTool.FindJumpPoint Clean Src START:']);
+  debugln(DbgText(Src));
+  debugln(['TMethodJumpingCodeTool.FindJumpPoint Clean Src END']);
+  debugln(['TMethodJumpingCodeTool.FindJumpPoint CleanCursorPos=',dbgstr(Src,CleanCursorPos-10,10),'|',dbgstr(Src,CleanCursorPos,10)]);}
+
   GetLineInfo(CleanCursorPos,LineStart,LineEnd,FirstAtomStart,LastAtomEnd);
   if CleanCursorPos<FirstAtomStart then CleanCursorPos:=FirstAtomStart;
   if CleanCursorPos>=LastAtomEnd then CleanCursorPos:=LastAtomEnd-1;
