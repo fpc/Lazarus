@@ -6736,7 +6736,7 @@ var
                 +BeautifyCodeOpts.LineEnd
               +'end;';
             if IsClassProp then
-              ProcBody:='class '+ProcBody+' static;';;
+              ProcBody:='class '+ProcBody;
           end;
         end else begin
           // index, no param list
