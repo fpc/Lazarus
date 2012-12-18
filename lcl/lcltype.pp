@@ -535,6 +535,7 @@ const
   //MWE: And should not be used.
   //     The keys they are on map to another VK
 
+//  VK_SEMICOLON  = 186;
 //  VK_EQUAL      = 187; // $BB
 //  VK_COMMA      = 188;
 //  VK_POINT      = 190;
