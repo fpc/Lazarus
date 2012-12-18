@@ -384,6 +384,13 @@ type
 
   { TAnchorDockSettings }
 
+  TADHeaderStyle = (
+    adhsFrame3D,
+    adhsLine
+    );
+const
+  adhsDefault = adhsFrame3D;
+type
   TAnchorDockSettings = class
   private
     FAllowDragging: boolean;
@@ -395,6 +402,7 @@ type
     FHeaderAlignTop: integer;
     FHeaderButtonSize: integer;
     FHeaderHint: string;
+    FHeaderStyle: TADHeaderStyle;
     FHideHeaderCaptionFloatingControl: boolean;
     FPageAreaInPercent: integer;
     FScaleOnResize: boolean;
@@ -409,6 +417,7 @@ type
     procedure SetHeaderAlignTop(AValue: integer);
     procedure SetHeaderButtonSize(AValue: integer);
     procedure SetHeaderHint(AValue: string);
+    procedure SetHeaderStyle(AValue: TADHeaderStyle);
     procedure SetHideHeaderCaptionFloatingControl(AValue: boolean);
     procedure SetPageAreaInPercent(AValue: integer);
     procedure SetScaleOnResize(AValue: boolean);
@@ -430,6 +439,7 @@ type
     property HideHeaderCaptionFloatingControl: boolean read FHideHeaderCaptionFloatingControl write SetHideHeaderCaptionFloatingControl;
     property AllowDragging: boolean read FAllowDragging write SetAllowDragging;
     property HeaderButtonSize: integer read FHeaderButtonSize write SetHeaderButtonSize;
+    property HeaderStyle: TADHeaderStyle read FHeaderStyle write SetHeaderStyle;
     procedure IncreaseChangeStamp; inline;
     property ChangeStamp: integer read FChangeStamp;
     procedure LoadFromConfig(Config: TConfigStorage);
@@ -460,6 +470,7 @@ type
     FHeaderButtonSize: integer;
     FHeaderClass: TAnchorDockHeaderClass;
     FHeaderHint: string;
+    FHeaderStyle: TADHeaderStyle;
     FIdleConnected: Boolean;
     FManagerClass: TAnchorDockManagerClass;
     FOnCreateControl: TADCreateControlEvent;
@@ -502,6 +513,7 @@ type
     procedure SetDockParentMargin(AValue: integer);
     procedure SetDragTreshold(AValue: integer);
     procedure SetHeaderHint(AValue: string);
+    procedure SetHeaderStyle(AValue: TADHeaderStyle);
     procedure SetPageAreaInPercent(AValue: integer);
     procedure SetScaleOnResize(AValue: boolean);
     procedure SetShowMenuItemShowHeader(AValue: boolean);
@@ -607,18 +619,19 @@ type
     property DockOutsideMargin: integer read FDockOutsideMargin write SetDockOutsideMargin default 10; // max distance for outside mouse snapping
     property DockParentMargin: integer read FDockParentMargin write SetDockParentMargin default 10; // max distance for snap to parent
     property PageAreaInPercent: integer read FPageAreaInPercent write SetPageAreaInPercent default 40; // size of inner mouse snapping area for page docking
-    property HeaderAlignTop: integer read FHeaderAlignTop write SetHeaderAlignTop default 80; // move header to top, when (width/height)*100<=HeaderAlignTop
-    property HeaderAlignLeft: integer read FHeaderAlignLeft write SetHeaderAlignLeft default 120; // move header to left, when (width/height)*100>=HeaderAlignLeft
-    property HeaderHint: string read FHeaderHint write SetHeaderHint;
-    property SplitterWidth: integer read FSplitterWidth write SetSplitterWidth default 4;
-    property ScaleOnResize: boolean read FScaleOnResize write SetScaleOnResize default true; // scale children when resizing a site
     property ShowHeader: boolean read FShowHeader write SetShowHeader default true; // set to false to hide all headers
     property ShowMenuItemShowHeader: boolean read FShowMenuItemShowHeader write SetShowMenuItemShowHeader default false;
     property ShowHeaderCaption: boolean read FShowHeaderCaption write SetShowHeaderCaption default true; // set to false to remove the text in the headers
     property HideHeaderCaptionFloatingControl: boolean read FHideHeaderCaptionFloatingControl
                           write SetHideHeaderCaptionFloatingControl default true; // disables ShowHeaderCaption for floating controls
-    property AllowDragging: boolean read FAllowDragging write SetAllowDragging default true;
+    property HeaderAlignTop: integer read FHeaderAlignTop write SetHeaderAlignTop default 80; // move header to top, when (width/height)*100<=HeaderAlignTop
+    property HeaderAlignLeft: integer read FHeaderAlignLeft write SetHeaderAlignLeft default 120; // move header to left, when (width/height)*100>=HeaderAlignLeft
     property HeaderButtonSize: integer read FHeaderButtonSize write SetHeaderButtonSize default 10;
+    property HeaderHint: string read FHeaderHint write SetHeaderHint;
+    property HeaderStyle: TADHeaderStyle read FHeaderStyle write SetHeaderStyle default adhsDefault;
+    property SplitterWidth: integer read FSplitterWidth write SetSplitterWidth default 4;
+    property ScaleOnResize: boolean read FScaleOnResize write SetScaleOnResize default true; // scale children when resizing a site
+    property AllowDragging: boolean read FAllowDragging write SetAllowDragging default true;
     property OptionsChangeStamp: int64 read FOptionsChangeStamp;
     procedure IncreaseOptionsChangeStamp; inline;
 
@@ -634,6 +647,13 @@ type
 var
   DockMaster: TAnchorDockMaster = nil;
 
+const
+  ADHeaderStyle: array[TADHeaderStyle] of string = (
+    'Frame3D',
+    'Line'
+    );
+
+function StrToADHeaderStyle(const s: string): TADHeaderStyle;
 function dbgs(SiteType: TAnchorDockHostSiteType): string; overload;
 
 procedure CopyAnchorBounds(Source, Target: TControl);
@@ -661,6 +681,13 @@ function GetEnclosingControlRect(ControlList: TFPlist;
 function GetEnclosedControls(const ARect: TAnchorControlsRect): TFPList;
 
 implementation
+
+function StrToADHeaderStyle(const s: string): TADHeaderStyle;
+begin
+  for Result:=Low(TADHeaderStyle) to High(TADHeaderStyle) do
+    if CompareText(ADHeaderStyle[Result],s)=0 then exit;
+  Result:=adhsDefault;
+end;
 
 function dbgs(SiteType: TAnchorDockHostSiteType): string; overload;
 begin
@@ -1094,6 +1121,13 @@ begin
   IncreaseChangeStamp;
 end;
 
+procedure TAnchorDockSettings.SetHeaderStyle(AValue: TADHeaderStyle);
+begin
+  if FHeaderStyle=AValue then Exit;
+  FHeaderStyle:=AValue;
+  IncreaseChangeStamp;
+end;
+
 procedure TAnchorDockSettings.SetHideHeaderCaptionFloatingControl(
   AValue: boolean);
 begin
@@ -1158,6 +1192,7 @@ begin
   HideHeaderCaptionFloatingControl:=Config.GetValue('HideHeaderCaptionFloatingControl',true);
   AllowDragging:=Config.GetValue('AllowDragging',true);
   HeaderButtonSize:=Config.GetValue('HeaderButtonSize',10);
+  HeaderStyle:=StrToADHeaderStyle(Config.GetValue('HeaderStyle',ADHeaderStyle[adhsDefault]));
   Config.UndoAppendBasePath;
 end;
 
@@ -1177,6 +1212,7 @@ begin
   Config.SetDeleteValue('HideHeaderCaptionFloatingControl',HideHeaderCaptionFloatingControl,true);
   Config.SetDeleteValue('AllowDragging',AllowDragging,true);
   Config.SetDeleteValue('HeaderButtonSize',HeaderButtonSize,10);
+  Config.SetDeleteValue('HeaderStyle',ADHeaderStyle[HeaderStyle],ADHeaderStyle[adhsDefault]);
   Config.UndoAppendBasePath;
 end;
 
@@ -1875,6 +1911,13 @@ procedure TAnchorDockMaster.SetHeaderHint(AValue: string);
 begin
   if FHeaderHint=AValue then Exit;
   FHeaderHint:=AValue;
+  OptionsChanged;
+end;
+
+procedure TAnchorDockMaster.SetHeaderStyle(AValue: TADHeaderStyle);
+begin
+  if FHeaderStyle=AValue then Exit;
+  FHeaderStyle:=AValue;
   OptionsChanged;
 end;
 
@@ -4838,9 +4881,32 @@ end;
 procedure TAnchorDockHeader.Paint;
 
   procedure DrawGrabber(r: TRect);
+  var
+    Center: Integer;
   begin
-    Canvas.Frame3d(r,2,bvLowered);
-    Canvas.Frame3d(r,4,bvRaised);
+    case DockMaster.HeaderStyle of
+    adhsFrame3D:
+      begin
+        Canvas.Frame3d(r,2,bvLowered);
+        Canvas.Frame3d(r,4,bvRaised);
+      end;
+    adhsLine:
+      if r.Bottom-r.Top < r.Right-r.Left then
+      begin
+        Center:=r.Top+(r.Bottom-r.Top) div 2;
+        Canvas.Pen.Color:=clltgray;
+        Canvas.Line(r.Left+5,Center-1,r.Right-3,Center-1);
+        Canvas.Pen.Color:=clgray;
+        Canvas.Line(r.Left+5,Center,r.Right-3,Center);
+      end else
+      begin
+        Center:=r.Right+(r.Left-r.Right) div 2;
+        Canvas.Pen.Color:=clltgray;
+        Canvas.Line(Center-1,r.Top+3,Center-1,r.Bottom-5);
+        Canvas.Pen.Color:=clgray;
+        Canvas.Line(Center,r.Top+3,Center,r.Bottom-5);
+      end;
+    end;
   end;
 
 var
