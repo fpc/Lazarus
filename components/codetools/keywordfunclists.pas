@@ -1277,6 +1277,8 @@ begin
     Add('SHR',{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('AS',{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('IN',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('<<',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('>>',{$ifdef FPC}@{$endif}AllwaysTrue);
   end;
   
   WordIsPropertySpecifier:=TKeyWordFunctionList.Create('WordIsPropertySpecifier');
@@ -1533,6 +1535,8 @@ begin
     Add('<=' ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('IS' ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('AS' ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('<<',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('>>',{$ifdef FPC}@{$endif}AllwaysTrue);
   end;
   
   WordIsLvl1Operator:=TKeyWordFunctionList.Create('WordIsLvl1Operator');
@@ -1553,6 +1557,8 @@ begin
     Add('SHL',{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('SHR',{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('AS' ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('<<',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('>>',{$ifdef FPC}@{$endif}AllwaysTrue);
   end;
   
   WordIsLvl3Operator:=TKeyWordFunctionList.Create('WordIsLvl3Operator');
@@ -1639,6 +1645,8 @@ begin
     // FPC operators
     Add('**' ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('><' ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('<<',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('>>',{$ifdef FPC}@{$endif}AllwaysTrue);
   end;
 
   WordIsPredefinedFPCIdentifier:=TKeyWordFunctionList.Create('WordIsPredefinedFPCIdentifier');
