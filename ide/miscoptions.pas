@@ -293,7 +293,7 @@ begin
   Rename:=XMLConfig.GetValue(Path+'Rename/Value',false);
   RenameTo:=XMLConfig.GetValue(Path+'Rename/Identifier','');
   SearchInComments:=XMLConfig.GetValue(Path+'SearchInComments/Value',true);
-  RenameShowResult:=XMLConfig.GetValue(Path+'RenameShowResult/Value',true);
+  RenameShowResult:=XMLConfig.GetValue(Path+'RenameShowResult/Value',false);
   Scope:=FindRenameScopeNameToScope(XMLConfig.GetValue(Path+'Scope/Value',
                            FindRenameScopeNames[frAllOpenProjectsAndPackages]));
   LoadStringList(XMLConfig,ExtraFiles,Path+'ExtraFiles/');
@@ -307,7 +307,7 @@ begin
   XMLConfig.SetDeleteValue(Path+'Rename/Value',Rename,false);
   XMLConfig.SetDeleteValue(Path+'Rename/Identifier',RenameTo,'');
   XMLConfig.SetDeleteValue(Path+'SearchInComments/Value',SearchInComments,true);
-  XMLConfig.SetDeleteValue(Path+'RenameShowResult/Value',RenameShowResult,true);
+  XMLConfig.SetDeleteValue(Path+'RenameShowResult/Value',RenameShowResult,false);
   XMLConfig.SetDeleteValue(Path+'Scope/Value',FindRenameScopeNames[Scope],
                             FindRenameScopeNames[frAllOpenProjectsAndPackages]);
   SaveStringList(XMLConfig,ExtraFiles,Path+'ExtraFiles/');
