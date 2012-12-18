@@ -14523,6 +14523,10 @@ msgstr "Ganti nama file?"
 msgid "Rename file failed"
 msgstr "Penggantian nama file gagal"
 
+#: lazarusidestrconsts.lisrenameshowresult
+msgid "Show list of renamed Identifiers"
+msgstr ""
+
 #: lazarusidestrconsts.lisrenameto
 msgid "Rename to %s"
 msgstr ""
@@ -17512,6 +17516,14 @@ msgstr ""
 #: lazarusidestrconsts.srkmecclearall
 msgid "Delete whole text"
 msgstr "Hapus seluruh teks"
+
+#: lazarusidestrconsts.srkmecclearallbookmark
+msgid "Clear all Bookmarks"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecclearbookmarkforfile
+msgid "Clear Bookmarks for current file"
+msgstr ""
 
 #: lazarusidestrconsts.srkmeccolseldown
 msgid "Column Select Down"

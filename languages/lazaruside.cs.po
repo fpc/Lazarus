@@ -13954,6 +13954,10 @@ msgstr "Přejmenovat soubor?"
 msgid "Rename file failed"
 msgstr "Přejmenování souboru selhalo"
 
+#: lazarusidestrconsts.lisrenameshowresult
+msgid "Show list of renamed Identifiers"
+msgstr ""
+
 #: lazarusidestrconsts.lisrenameto
 msgid "Rename to %s"
 msgstr "Přejmenovat na %s"
@@ -16899,6 +16903,14 @@ msgstr "vyčistit sestavené soubory"
 #: lazarusidestrconsts.srkmecclearall
 msgid "Delete whole text"
 msgstr "Odstranit celý text"
+
+#: lazarusidestrconsts.srkmecclearallbookmark
+msgid "Clear all Bookmarks"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecclearbookmarkforfile
+msgid "Clear Bookmarks for current file"
+msgstr ""
 
 #: lazarusidestrconsts.srkmeccolseldown
 msgid "Column Select Down"

@@ -14251,6 +14251,10 @@ msgstr "Dosya yeniden adlandırılsın mı?"
 msgid "Rename file failed"
 msgstr "Başarısız olan dosyayı yeniden adlandır"
 
+#: lazarusidestrconsts.lisrenameshowresult
+msgid "Show list of renamed Identifiers"
+msgstr ""
+
 #: lazarusidestrconsts.lisrenameto
 msgid "Rename to %s"
 msgstr ""
@@ -17217,6 +17221,14 @@ msgstr ""
 
 #: lazarusidestrconsts.srkmecclearall
 msgid "Delete whole text"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecclearallbookmark
+msgid "Clear all Bookmarks"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecclearbookmarkforfile
+msgid "Clear Bookmarks for current file"
 msgstr ""
 
 #: lazarusidestrconsts.srkmeccolseldown

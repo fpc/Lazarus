@@ -14421,6 +14421,10 @@ msgstr "Voleu canviar el nom del fitxer?"
 msgid "Rename file failed"
 msgstr "Ha fallat el canvi de nom del fitxer"
 
+#: lazarusidestrconsts.lisrenameshowresult
+msgid "Show list of renamed Identifiers"
+msgstr ""
+
 #: lazarusidestrconsts.lisrenameto
 msgid "Rename to %s"
 msgstr ""
@@ -17400,6 +17404,14 @@ msgstr ""
 #: lazarusidestrconsts.srkmecclearall
 msgid "Delete whole text"
 msgstr "Elimina tot el text"
+
+#: lazarusidestrconsts.srkmecclearallbookmark
+msgid "Clear all Bookmarks"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecclearbookmarkforfile
+msgid "Clear Bookmarks for current file"
+msgstr ""
 
 #: lazarusidestrconsts.srkmeccolseldown
 msgid "Column Select Down"

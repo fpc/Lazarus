@@ -14433,6 +14433,10 @@ msgstr "Datei umbenennen?"
 msgid "Rename file failed"
 msgstr "Umbenennen der Datei ist fehlgeschlagen"
 
+#: lazarusidestrconsts.lisrenameshowresult
+msgid "Show list of renamed Identifiers"
+msgstr ""
+
 #: lazarusidestrconsts.lisrenameto
 msgid "Rename to %s"
 msgstr "Zu %s umbenennen"
@@ -17424,6 +17428,14 @@ msgstr "aufräumen und kompilieren"
 #: lazarusidestrconsts.srkmecclearall
 msgid "Delete whole text"
 msgstr "Gesamten Text löschen"
+
+#: lazarusidestrconsts.srkmecclearallbookmark
+msgid "Clear all Bookmarks"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecclearbookmarkforfile
+msgid "Clear Bookmarks for current file"
+msgstr ""
 
 #: lazarusidestrconsts.srkmeccolseldown
 msgid "Column Select Down"

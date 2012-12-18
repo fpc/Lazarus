@@ -13954,6 +13954,10 @@ msgstr "تغيير إسم الملف؟"
 msgid "Rename file failed"
 msgstr "إخفاق عند إعادة تسمية الملف"
 
+#: lazarusidestrconsts.lisrenameshowresult
+msgid "Show list of renamed Identifiers"
+msgstr ""
+
 #: lazarusidestrconsts.lisrenameto
 msgid "Rename to %s"
 msgstr "تغيير الإسم إلى %s"
@@ -16899,6 +16903,14 @@ msgstr "تنظيف ملفات البناء"
 #: lazarusidestrconsts.srkmecclearall
 msgid "Delete whole text"
 msgstr "إلغاء كامل النص"
+
+#: lazarusidestrconsts.srkmecclearallbookmark
+msgid "Clear all Bookmarks"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecclearbookmarkforfile
+msgid "Clear Bookmarks for current file"
+msgstr ""
 
 #: lazarusidestrconsts.srkmeccolseldown
 msgid "Column Select Down"

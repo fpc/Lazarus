@@ -14756,6 +14756,10 @@ msgstr "ファイル名を変更しますか?"
 msgid "Rename file failed"
 msgstr "ファイル名の変更に失敗"
 
+#: lazarusidestrconsts.lisrenameshowresult
+msgid "Show list of renamed Identifiers"
+msgstr ""
+
 #: lazarusidestrconsts.lisrenameto
 msgid "Rename to %s"
 msgstr "%s に名称変更"
@@ -17771,6 +17775,14 @@ msgstr "構築ファイルを掃除"
 #: lazarusidestrconsts.srkmecclearall
 msgid "Delete whole text"
 msgstr "テキスト全体を削除"
+
+#: lazarusidestrconsts.srkmecclearallbookmark
+msgid "Clear all Bookmarks"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecclearbookmarkforfile
+msgid "Clear Bookmarks for current file"
+msgstr ""
 
 #: lazarusidestrconsts.srkmeccolseldown
 msgid "Column Select Down"

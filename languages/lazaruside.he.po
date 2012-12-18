@@ -14722,6 +14722,10 @@ msgstr "לשנות שם קובץ?"
 msgid "Rename file failed"
 msgstr "שינוי שם הקובץ נכשל"
 
+#: lazarusidestrconsts.lisrenameshowresult
+msgid "Show list of renamed Identifiers"
+msgstr ""
+
 #: lazarusidestrconsts.lisrenameto
 msgid "Rename to %s"
 msgstr "שנה שם ל %s"
@@ -17741,6 +17745,14 @@ msgstr ""
 #: lazarusidestrconsts.srkmecclearall
 msgid "Delete whole text"
 msgstr "מחק את כל הטקסט"
+
+#: lazarusidestrconsts.srkmecclearallbookmark
+msgid "Clear all Bookmarks"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecclearbookmarkforfile
+msgid "Clear Bookmarks for current file"
+msgstr ""
 
 #: lazarusidestrconsts.srkmeccolseldown
 msgid "Column Select Down"

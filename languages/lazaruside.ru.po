@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2012-11-20 00:30+0400\n"
+"PO-Revision-Date: 2012-12-19 01:54+0400\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -14417,6 +14417,10 @@ msgstr "Переименовать файл?"
 msgid "Rename file failed"
 msgstr "Не удалось переименовать файл"
 
+#: lazarusidestrconsts.lisrenameshowresult
+msgid "Show list of renamed Identifiers"
+msgstr "Показать список переименованных идентификаторов"
+
 #: lazarusidestrconsts.lisrenameto
 msgid "Rename to %s"
 msgstr "Переименовать в %s"
@@ -17405,6 +17409,14 @@ msgstr "очистить файлы сборки"
 #: lazarusidestrconsts.srkmecclearall
 msgid "Delete whole text"
 msgstr "Удалить весь текст"
+
+#: lazarusidestrconsts.srkmecclearallbookmark
+msgid "Clear all Bookmarks"
+msgstr "Очистить все закладки"
+
+#: lazarusidestrconsts.srkmecclearbookmarkforfile
+msgid "Clear Bookmarks for current file"
+msgstr "Очистить закладки в текущем файле"
 
 #: lazarusidestrconsts.srkmeccolseldown
 msgid "Column Select Down"

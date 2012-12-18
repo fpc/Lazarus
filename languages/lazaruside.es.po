@@ -14701,6 +14701,10 @@ msgstr "¿Renombrar archivo?"
 msgid "Rename file failed"
 msgstr "Fallo al renombrar archivo"
 
+#: lazarusidestrconsts.lisrenameshowresult
+msgid "Show list of renamed Identifiers"
+msgstr ""
+
 #: lazarusidestrconsts.lisrenameto
 msgid "Rename to %s"
 msgstr "Renombrar a %s"
@@ -17715,6 +17719,14 @@ msgstr "Limpiar archivos de construcción"
 #: lazarusidestrconsts.srkmecclearall
 msgid "Delete whole text"
 msgstr "Borrar texto entero"
+
+#: lazarusidestrconsts.srkmecclearallbookmark
+msgid "Clear all Bookmarks"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecclearbookmarkforfile
+msgid "Clear Bookmarks for current file"
+msgstr ""
 
 #: lazarusidestrconsts.srkmeccolseldown
 msgid "Column Select Down"

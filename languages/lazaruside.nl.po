@@ -14463,6 +14463,10 @@ msgstr "Hernoem bestand?"
 msgid "Rename file failed"
 msgstr "Hernoemen van bestand gefaald."
 
+#: lazarusidestrconsts.lisrenameshowresult
+msgid "Show list of renamed Identifiers"
+msgstr ""
+
 #: lazarusidestrconsts.lisrenameto
 msgid "Rename to %s"
 msgstr ""
@@ -17450,6 +17454,14 @@ msgstr ""
 #: lazarusidestrconsts.srkmecclearall
 msgid "Delete whole text"
 msgstr "Verwijder gehele tekst"
+
+#: lazarusidestrconsts.srkmecclearallbookmark
+msgid "Clear all Bookmarks"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecclearbookmarkforfile
+msgid "Clear Bookmarks for current file"
+msgstr ""
 
 #: lazarusidestrconsts.srkmeccolseldown
 msgid "Column Select Down"
