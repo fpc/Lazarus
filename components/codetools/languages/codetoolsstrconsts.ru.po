@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2012-05-23 00:49+0400\n"
+"PO-Revision-Date: 2012-12-19 01:28+0400\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -195,7 +195,7 @@ msgstr "предок классов Java по умолчанию (JLObject) не
 
 #: codetoolsstrconsts.ctsdefaultparameterexpectedbutatomfound
 msgid "default parameter expected, but %s found"
-msgstr "ожидается параметр по умолчанию, найдено %s"
+msgstr "ожидается параметр по умолчанию, но найдено %s"
 
 #: codetoolsstrconsts.ctsdefaultpropertynotfound
 msgid "default property not found"
@@ -340,7 +340,7 @@ msgstr "Ожидается \"%s\""
 
 #: codetoolsstrconsts.ctsexpectedamethodtypebutfound
 msgid "expected a method type, but found %s"
-msgstr ""
+msgstr "ожидается тип метода, но найдено %s"
 
 #: codetoolsstrconsts.ctsexpectedbutfound
 msgid "expected (, but found %s"
@@ -740,7 +740,7 @@ msgstr ". Начало в "
 
 #: codetoolsstrconsts.ctspositionnotinsource
 msgid "Position not in source"
-msgstr "Позиция отсутствует в исходном коде"
+msgstr "Позиция находится вне исходного кода"
 
 #: codetoolsstrconsts.ctsprocedureorfunctionorconstructorordestructor
 msgid "procedure or function or constructor or destructor"
@@ -824,7 +824,7 @@ msgstr "Инициализация путей к исходному коду"
 
 #: codetoolsstrconsts.ctsstrexpectedbutatomfound
 msgid "%s expected, but %s found"
-msgstr "ожидается %s, найдено %s"
+msgstr "ожидается %s, но найдено %s"
 
 #: codetoolsstrconsts.ctsstringconstant
 msgid "string constant"
