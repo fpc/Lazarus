@@ -386,7 +386,8 @@ type
 
   TADHeaderStyle = (
     adhsFrame3D,
-    adhsLine
+    adhsLine,
+    adhsPoints
     );
 const
   adhsDefault = adhsFrame3D;
@@ -650,7 +651,8 @@ var
 const
   ADHeaderStyle: array[TADHeaderStyle] of string = (
     'Frame3D',
-    'Line'
+    'Line',
+    'Points'
     );
 
 function StrToADHeaderStyle(const s: string): TADHeaderStyle;
@@ -4879,10 +4881,13 @@ begin
 end;
 
 procedure TAnchorDockHeader.Paint;
+type
+  TGrabberAlign = (gHorizontal,gVertical);
 
-  procedure DrawGrabber(r: TRect);
+  procedure DrawGrabber(r: TRect; gAlign: TGrabberAlign);
   var
     Center: Integer;
+    lx, ly, d, lt, lb, lm: Integer;
   begin
     case DockMaster.HeaderStyle of
     adhsFrame3D:
@@ -4906,6 +4911,34 @@ procedure TAnchorDockHeader.Paint;
         Canvas.Pen.Color:=clgray;
         Canvas.Line(Center,r.Top+3,Center,r.Bottom-5);
       end;
+    adhsPoints:
+      if gAlign=gHorizontal then begin
+        lx := r.left+2;
+        d := (r.Bottom - r.Top - 5) div 2;
+        lt := r.Top + d;
+        lb := lt + 4;
+        lm := lt + 2;
+        while lx < r.Right do
+        begin
+          Canvas.Pixels[lx, lt] := clBtnShadow;
+          Canvas.Pixels[lx, lb] := clBtnShadow;
+          Canvas.Pixels[lx+2, lm] := clBtnShadow;
+          lx := lx + 4;
+        end;
+      end else begin
+        ly := r.Bottom - 2;
+        d := (r.Right - r.Left - 5) div 2;
+        lt := r.Left + d;
+        lb := lt + 4;
+        lm := lt + 2;
+        while ly > r.Top do
+        begin
+          Canvas.Pixels[lt, ly] := clBtnShadow;
+          Canvas.Pixels[lb, ly] := clBtnShadow;
+          Canvas.Pixels[lm, ly-2] := clBtnShadow;
+          ly := ly - 4;
+        end;
+      end;
     end;
   end;
 
@@ -4916,8 +4949,12 @@ var
   dx,dy: Integer;
 begin
   r:=ClientRect;
-  Canvas.Frame3d(r,1,bvRaised);
+  case DockMaster.HeaderStyle of
+  adhsPoints: Canvas.Brush.Color := clForm;
+  else Canvas.Frame3d(r,1,bvRaised);
+  end;
   Canvas.FillRect(r);
+
   if CloseButton.IsControlVisible and (CloseButton.Parent=Self) then begin
     if Align in [alLeft,alRight] then
       r.Top:=CloseButton.Top+CloseButton.Height+1
@@ -4937,19 +4974,23 @@ begin
       dy:=Max(0,(r.Bottom-r.Top-TxtW) div 2);
       Canvas.Font.Orientation:=900;
       Canvas.TextOut(r.Left+dx,r.Bottom-dy,Caption);
-      DrawGrabber(Rect(r.Left,r.Top,r.Right,r.Bottom-dy-TxtW-1));
-      DrawGrabber(Rect(r.Left,r.Bottom-dy+1,r.Right,r.Bottom));
+      DrawGrabber(Rect(r.Left,r.Top,r.Right,r.Bottom-dy-TxtW-1),gVertical);
+      DrawGrabber(Rect(r.Left,r.Bottom-dy+1,r.Right,r.Bottom),gVertical);
     end else begin
       // horizontal
       dx:=Max(0,(r.Right-r.Left-TxtW) div 2);
       dy:=Max(0,(r.Bottom-r.Top-TxtH) div 2);
       Canvas.Font.Orientation:=0;
       Canvas.TextOut(r.Left+dx,r.Top+dy,Caption);
-      DrawGrabber(Rect(r.Left,r.Top,r.Left+dx-1,r.Bottom));
-      DrawGrabber(Rect(r.Left+dx+TxtW+2,r.Top,r.Right,r.Bottom));
+      DrawGrabber(Rect(r.Left,r.Top,r.Left+dx-1,r.Bottom),gHorizontal);
+      DrawGrabber(Rect(r.Left+dx+TxtW+2,r.Top,r.Right,r.Bottom),gHorizontal);
     end;
-  end else
-    DrawGrabber(r);
+  end else begin
+    if Align in [alLeft,alRight] then
+      DrawGrabber(r,gVertical)
+    else
+      DrawGrabber(r,gHorizontal);
+  end;
 end;
 
 procedure TAnchorDockHeader.CalculatePreferredSize(var PreferredWidth,
