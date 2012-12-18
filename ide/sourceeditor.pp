@@ -2886,6 +2886,16 @@ end;
 
 procedure TSourceEditor.OnReplace(Sender: TObject; const ASearch, AReplace:
   string; Line, Column: integer; var Action: TSynReplaceAction);
+
+  function Shorten(const s: string): string;
+  const
+    MAX_LEN=300;
+  begin
+    Result:=s;
+    if Length(Result)>MAX_LEN then
+      Result:=LeftStr(Result, MAX_LEN)+'...';
+  end;
+
 var a,x,y:integer;
   AText:AnsiString;
 begin
@@ -2896,7 +2906,7 @@ begin
   CenterCursorHoriz(hcmSoftKeepEOL);
 
   AText:=Format(lisUEReplaceThisOccurrenceOfWith,
-                ['"', ASearch, '"', LineEnding, '"', AReplace, '"']);
+                ['"', Shorten(ASearch), '"', LineEnding, '"', Shorten(AReplace), '"']);
 
   GetDialogPosition(300,150,X,Y);
   a:=MessageDlgPos(AText,mtconfirmation,
