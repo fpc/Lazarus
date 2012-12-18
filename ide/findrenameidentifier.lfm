@@ -64,7 +64,7 @@ object FindRenameIdentifierDialog: TFindRenameIdentifierDialog
       Width = 432
       Anchors = [akTop, akLeft, akRight]
       BorderSpacing.Around = 6
-      TabOrder = 0
+      TabOrder = 2
       Text = 'NewEdit'
     end
     object RenameCheckBox: TCheckBox
@@ -76,7 +76,7 @@ object FindRenameIdentifierDialog: TFindRenameIdentifierDialog
       BorderSpacing.Around = 6
       Caption = 'RenameCheckBox'
       OnChange = RenameCheckBoxChange
-      TabOrder = 1
+      TabOrder = 0
     end
     object ShowResultCheckBox: TCheckBox
       AnchorSideLeft.Control = NewGroupBox
@@ -91,7 +91,7 @@ object FindRenameIdentifierDialog: TFindRenameIdentifierDialog
       Anchors = [akTop, akLeft, akRight]
       BorderSpacing.Around = 6
       Caption = 'ShowResultCheckBox'
-      TabOrder = 2
+      TabOrder = 1
     end
   end
   object ScopeGroupBox: TGroupBox
@@ -114,7 +114,7 @@ object FindRenameIdentifierDialog: TFindRenameIdentifierDialog
       Align = alTop
       BorderSpacing.Around = 6
       Caption = 'ScopeCommentsCheckBox'
-      TabOrder = 0
+      TabOrder = 2
     end
     object ScopeRadioGroup: TRadioGroup
       Left = 6
@@ -142,7 +142,7 @@ object FindRenameIdentifierDialog: TFindRenameIdentifierDialog
         'in project/package owning file'
         'in all open projects and packages'
       )
-      TabOrder = 1
+      TabOrder = 0
     end
     object ExtraFilesGroupBox: TGroupBox
       Left = 6
@@ -155,7 +155,7 @@ object FindRenameIdentifierDialog: TFindRenameIdentifierDialog
       Caption = 'ExtraFilesGroupBox'
       ClientHeight = 35
       ClientWidth = 428
-      TabOrder = 2
+      TabOrder = 1
       object ExtraFilesEdit: TEdit
         Left = 6
         Height = 23
