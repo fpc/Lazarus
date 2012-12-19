@@ -1291,21 +1291,38 @@ begin
 end;
 
 procedure TColorMapSeries.GetLegendItems(AItems: TChartLegendItems);
+
+  function PrepareFormats: TStrings;
+  const
+    FORMAT_DEF = 'z ≤ %1:g|%g < z ≤ %g|%g < z';
+  begin
+    Result := TStringList.Create;
+    with Result do
+      try
+        Delimiter := '|';
+        DelimitedText := IfThen(Legend.Format = '', FORMAT_DEF, Legend.Format);
+        while Count < 3 do
+          Add(Strings[Count - 1]);
+      except
+        Result.Free;
+        raise;
+      end;
+  end;
+
 var
   prev: Double;
+  formats: TStrings;
 
   function ItemTitle(AIndex: Integer; const AText: String; AX: Double): String;
-  const
-    FORMATS: array [1..3] of String = ('z ≤ %1:g', '%g < z ≤ %g', '%g < z');
   var
     idx: Integer;
   begin
     if AText <> '' then exit(AText);
     if ColorSource.Count = 1 then exit('');
-    if AIndex = 0 then idx := 1
-    else if AIndex = ColorSource.Count - 1 then idx := 3
-    else idx := 2;
-    Result := Format(FORMATS[idx], [prev, AX]);
+    if AIndex = 0 then idx := 0
+    else if AIndex = ColorSource.Count - 1 then idx := 2
+    else idx := 1;
+    Result := Format(formats[idx], [prev, AX]);
   end;
 
   procedure MakePointItems;
@@ -1315,22 +1332,27 @@ var
     li: TLegendItem;
     i: Integer;
   begin
-    prev := 0.0;
+    prev := ColorSource[0]^.X;
     prevColor := clTAColor;
-    for i := 0 to ColorSource.Count - 1 do
-      with ColorSource[i]^ do begin
-        t := ItemTitle(i, Text, X);
-        if Interpolate then
-          li := TLegendItemColorMap.Create(
-            ColorDef(prevColor, Color), Color, ParentChart.Legend.SymbolFrame, t)
-        else begin
-          li := TLegendItemBrushRect.Create(Brush, t);
-          li.Color := Color;
+    formats := PrepareFormats;
+    try
+      for i := 0 to ColorSource.Count - 1 do
+        with ColorSource[i]^ do begin
+          t := ItemTitle(i, Text, X);
+          if Interpolate then
+            li := TLegendItemColorMap.Create(
+              ColorDef(prevColor, Color), Color, ParentChart.Legend.SymbolFrame, t)
+          else begin
+            li := TLegendItemBrushRect.Create(Brush, t);
+            li.Color := Color;
+          end;
+          AItems.Add(li);
+          prev := X;
+          prevColor := Color;
         end;
-        AItems.Add(li);
-        prev := X;
-        prevColor := Color;
-      end;
+    finally
+      formats.Free;
+    end;
   end;
 
 begin
@@ -1338,7 +1360,7 @@ begin
     lmSingle:
       AItems.Add(TLegendItemBrushRect.Create(Brush, LegendTextSingle));
     lmPoint:
-      if ColorSource <> nil then
+      if (ColorSource <> nil) and (ColorSource.Count > 0) then
         MakePointItems;
   end;
 end;
