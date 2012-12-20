@@ -16,12 +16,12 @@ object EditorKeymappingOptionsFrame: TEditorKeymappingOptionsFrame
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 0
-    Height = 417
-    Top = 33
+    Height = 418
+    Top = 32
     Width = 461
     Anchors = [akTop, akLeft, akRight, akBottom]
     BorderSpacing.Top = 3
-    DefaultItemHeight = 16
+    DefaultItemHeight = 18
     PopupMenu = PopupMenu1
     ReadOnly = True
     RightClickSelect = True
@@ -38,12 +38,12 @@ object EditorKeymappingOptionsFrame: TEditorKeymappingOptionsFrame
     AnchorSideTop.Side = asrBottom
     AnchorSideRight.Control = FindKeyButton
     Left = 0
-    Height = 24
+    Height = 23
     Top = 6
-    Width = 266
+    Width = 250
     OnFilterItem = FilterEditFilterItem
     ButtonWidth = 23
-    NumGlyphs = 0
+    NumGlyphs = 1
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Top = 6
     MaxLength = 0
@@ -54,10 +54,10 @@ object EditorKeymappingOptionsFrame: TEditorKeymappingOptionsFrame
   end
   object ClearButton: TBitBtn
     AnchorSideRight.Side = asrBottom
-    Left = 386
+    Left = 372
     Height = 25
     Top = 455
-    Width = 75
+    Width = 89
     Anchors = [akRight, akBottom]
     AutoSize = True
     BorderSpacing.Bottom = 6
@@ -71,10 +71,10 @@ object EditorKeymappingOptionsFrame: TEditorKeymappingOptionsFrame
     AnchorSideTop.Control = FilterEdit
     AnchorSideTop.Side = asrCenter
     AnchorSideRight.Control = ResetKeyFilterBtn
-    Left = 336
+    Left = 320
     Height = 25
-    Top = 6
-    Width = 88
+    Top = 5
+    Width = 104
     Anchors = [akTop, akRight]
     AutoSize = True
     BorderSpacing.Left = 70
@@ -88,10 +88,10 @@ object EditorKeymappingOptionsFrame: TEditorKeymappingOptionsFrame
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = Owner
     AnchorSideBottom.Side = asrBottom
-    Left = 323
+    Left = 302
     Height = 25
     Top = 485
-    Width = 138
+    Width = 159
     Anchors = [akRight, akBottom]
     AutoSize = True
     Caption = 'ConsistencyCheckButton'
@@ -105,7 +105,7 @@ object EditorKeymappingOptionsFrame: TEditorKeymappingOptionsFrame
     Left = 0
     Height = 25
     Top = 485
-    Width = 123
+    Width = 144
     Anchors = [akLeft, akBottom]
     AutoSize = True
     Caption = 'ChooseSchemeButton'
@@ -117,10 +117,10 @@ object EditorKeymappingOptionsFrame: TEditorKeymappingOptionsFrame
     AnchorSideLeft.Side = asrBottom
     AnchorSideTop.Control = ChooseSchemeButton
     AnchorSideTop.Side = asrCenter
-    Left = 129
+    Left = 150
     Height = 15
     Top = 490
-    Width = 67
+    Width = 70
     BorderSpacing.Around = 6
     Caption = 'SchemeLabel'
     ParentColor = False
@@ -129,10 +129,10 @@ object EditorKeymappingOptionsFrame: TEditorKeymappingOptionsFrame
     AnchorSideTop.Control = ClearButton
     AnchorSideTop.Side = asrCenter
     AnchorSideRight.Control = ClearButton
-    Left = 311
+    Left = 284
     Height = 25
     Top = 455
-    Width = 69
+    Width = 82
     Anchors = [akTop, akRight]
     AutoSize = True
     BorderSpacing.Right = 6
@@ -145,10 +145,10 @@ object EditorKeymappingOptionsFrame: TEditorKeymappingOptionsFrame
     AnchorSideTop.Control = EditButton
     AnchorSideTop.Side = asrCenter
     AnchorSideRight.Control = EditButton
-    Left = 227
+    Left = 193
     Height = 15
     Top = 460
-    Width = 78
+    Width = 85
     Anchors = [akTop, akRight]
     BorderSpacing.Right = 6
     Caption = 'CommandLabel'
@@ -161,11 +161,10 @@ object EditorKeymappingOptionsFrame: TEditorKeymappingOptionsFrame
     AnchorSideRight.Side = asrBottom
     Left = 426
     Height = 22
-    Top = 7
+    Top = 6
     Width = 29
     Anchors = [akTop, akRight]
     BorderSpacing.Right = 6
-    NumGlyphs = 0
     OnClick = ResetKeyFilterBtnClick
   end
   object PopupMenu1: TPopupMenu

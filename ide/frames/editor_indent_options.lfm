@@ -1,0 +1,301 @@
+object EditorIndentOptionsFrame: TEditorIndentOptionsFrame
+  Left = 0
+  Height = 442
+  Top = 0
+  Width = 434
+  ClientHeight = 442
+  ClientWidth = 434
+  TabOrder = 0
+  Visible = False
+  DesignLeft = 664
+  DesignTop = 211
+  object BlockIndentLabel: TLabel
+    AnchorSideLeft.Control = BlockIndentComboBox
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = BlockIndentComboBox
+    AnchorSideTop.Side = asrCenter
+    Left = 324
+    Height = 15
+    Top = 137
+    Width = 91
+    BorderSpacing.Around = 6
+    Caption = 'BlockIndentLabel'
+    ParentColor = False
+  end
+  object TabWidthsLabel: TLabel
+    AnchorSideLeft.Control = TabWidthsComboBox
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = TabWidthsComboBox
+    AnchorSideTop.Side = asrCenter
+    Left = 324
+    Height = 15
+    Top = 31
+    Width = 85
+    BorderSpacing.Around = 6
+    Caption = 'TabWidthsLabel'
+    ParentColor = False
+  end
+  object AutoIndentTypeLabel: TLabel
+    AnchorSideLeft.Control = BlockIndentTypeComboBox
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = BlockIndentTypeComboBox
+    AnchorSideTop.Side = asrCenter
+    Left = 324
+    Height = 15
+    Top = 90
+    Width = 114
+    BorderSpacing.Around = 6
+    Caption = 'AutoIndentTypeLabel'
+    ParentColor = False
+  end
+  object BlockIndentComboBox: TComboBox
+    AnchorSideTop.Control = lblBlockIndentKeys
+    AnchorSideBottom.Control = TabWidthsComboBox
+    Left = 218
+    Height = 23
+    Top = 133
+    Width = 100
+    BorderSpacing.Left = 6
+    BorderSpacing.Top = 3
+    ItemHeight = 15
+    Items.Strings = (
+      '0'
+      '1'
+      '2'
+      '4'
+      '8'
+    )
+    OnChange = ComboboxOnChange
+    OnExit = ComboBoxOnExit
+    OnKeyDown = ComboboxOnKeyDown
+    TabOrder = 0
+  end
+  object TabWidthsComboBox: TComboBox
+    AnchorSideTop.Control = TabsGroupDivider
+    AnchorSideTop.Side = asrBottom
+    AnchorSideBottom.Control = Owner
+    AnchorSideBottom.Side = asrBottom
+    Left = 218
+    Height = 23
+    Top = 27
+    Width = 100
+    BorderSpacing.Top = 6
+    ItemHeight = 15
+    Items.Strings = (
+      '1'
+      '2'
+      '4'
+      '8'
+    )
+    OnChange = ComboboxOnChange
+    OnExit = ComboBoxOnExit
+    OnKeyDown = ComboboxOnKeyDown
+    TabOrder = 1
+  end
+  object AutoIndentCheckBox: TCheckBox
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = IndentsGroupDivider
+    AnchorSideTop.Side = asrBottom
+    Left = 6
+    Height = 19
+    Top = 86
+    Width = 132
+    BorderSpacing.Left = 6
+    Caption = 'AutoIndentCheckBox'
+    OnChange = AutoIndentCheckBoxChange
+    TabOrder = 2
+  end
+  object TabIndentBlocksCheckBox: TCheckBox
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = lblBlockIndentShortcut
+    AnchorSideTop.Side = asrBottom
+    Left = 6
+    Height = 19
+    Top = 166
+    Width = 160
+    BorderSpacing.Left = 6
+    BorderSpacing.Top = 3
+    Caption = 'TabIndentBlocksCheckBox'
+    OnChange = TabIndentBlocksCheckBoxChange
+    TabOrder = 3
+  end
+  object SmartTabsCheckBox: TCheckBox
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = TabsToSpacesCheckBox
+    AnchorSideTop.Side = asrBottom
+    Left = 6
+    Height = 19
+    Top = 46
+    Width = 128
+    BorderSpacing.Left = 6
+    Caption = 'SmartTabsCheckBox'
+    OnChange = SmartTabsCheckBoxChange
+    TabOrder = 4
+  end
+  object TabsToSpacesCheckBox: TCheckBox
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = TabsGroupDivider
+    AnchorSideTop.Side = asrBottom
+    Left = 6
+    Height = 19
+    Top = 27
+    Width = 147
+    BorderSpacing.Left = 6
+    BorderSpacing.Top = 6
+    Caption = 'TabsToSpacesCheckBox'
+    OnChange = TabsToSpacesCheckBoxChange
+    TabOrder = 5
+  end
+  object BlockIndentTypeComboBox: TComboBox
+    AnchorSideTop.Control = AutoIndentCheckBox
+    AnchorSideBottom.Control = TabWidthsComboBox
+    Left = 218
+    Height = 23
+    Top = 86
+    Width = 100
+    ItemHeight = 15
+    ItemWidth = 200
+    OnChange = ComboboxOnChange
+    OnExit = ComboBoxOnExit
+    OnKeyDown = ComboboxOnKeyDown
+    Style = csDropDownList
+    TabOrder = 6
+  end
+  object AutoIndentLink: TLabel
+    AnchorSideLeft.Control = AutoIndentCheckBox
+    AnchorSideTop.Control = AutoIndentCheckBox
+    AnchorSideTop.Side = asrBottom
+    Cursor = crHandPoint
+    Left = 24
+    Height = 15
+    Top = 105
+    Width = 82
+    BorderSpacing.Left = 18
+    Caption = 'AutoIndentLink'
+    Font.Color = clBlue
+    ParentColor = False
+    ParentFont = False
+    OnClick = AutoIndentLinkClick
+    OnMouseEnter = AutoIndentLinkMouseEnter
+    OnMouseLeave = AutoIndentLinkMouseLeave
+  end
+  object CenterLabel: TLabel
+    AnchorSideLeft.Control = Owner
+    AnchorSideLeft.Side = asrCenter
+    Left = 217
+    Height = 1
+    Top = -513
+    Width = 1
+    ParentColor = False
+  end
+  object TabsGroupDivider: TDividerBevel
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = Owner
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 0
+    Height = 15
+    Top = 6
+    Width = 434
+    Caption = 'TabsGroupDivider'
+    Autosize = True
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Top = 6
+    Font.Style = [fsBold]
+    ParentFont = False
+  end
+  object BlockTabIndentComboBox: TComboBox
+    AnchorSideTop.Control = BlockIndentComboBox
+    AnchorSideTop.Side = asrBottom
+    AnchorSideBottom.Control = TabWidthsComboBox
+    Left = 218
+    Height = 23
+    Top = 159
+    Width = 100
+    BorderSpacing.Top = 3
+    ItemHeight = 15
+    Items.Strings = (
+      '0'
+      '1'
+      '2'
+    )
+    OnChange = ComboboxOnChange
+    OnExit = ComboBoxOnExit
+    OnKeyDown = ComboboxOnKeyDown
+    TabOrder = 7
+  end
+  object BlockTabIndentLabel: TLabel
+    AnchorSideLeft.Control = BlockTabIndentComboBox
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = BlockTabIndentComboBox
+    AnchorSideTop.Side = asrCenter
+    Left = 324
+    Height = 15
+    Top = 163
+    Width = 91
+    BorderSpacing.Around = 6
+    Caption = 'BlockIndentLabel'
+    ParentColor = False
+  end
+  object BlockIndentLink: TLabel
+    AnchorSideLeft.Control = lblBlockIndentKeys
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = lblBlockIndentKeys
+    Cursor = crHandPoint
+    Left = 112
+    Height = 15
+    Top = 130
+    Width = 85
+    BorderSpacing.Left = 6
+    Caption = 'BlockIndentLink'
+    Font.Color = clBlue
+    ParentColor = False
+    ParentFont = False
+    OnClick = BlockIndentLinkClick
+    OnMouseEnter = AutoIndentLinkMouseEnter
+    OnMouseLeave = AutoIndentLinkMouseLeave
+  end
+  object lblBlockIndentKeys: TLabel
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = AutoIndentLink
+    AnchorSideTop.Side = asrBottom
+    Left = 6
+    Height = 15
+    Top = 130
+    Width = 100
+    BorderSpacing.Left = 6
+    BorderSpacing.Top = 10
+    Caption = 'lblBlockIndentKeys'
+    ParentColor = False
+  end
+  object IndentsGroupDivider: TDividerBevel
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = SmartTabsCheckBox
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 0
+    Height = 15
+    Top = 71
+    Width = 434
+    Caption = 'IndentsGroupDivider'
+    Autosize = True
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Top = 6
+    Font.Style = [fsBold]
+    ParentFont = False
+  end
+  object lblBlockIndentShortcut: TLabel
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = lblBlockIndentKeys
+    AnchorSideTop.Side = asrBottom
+    Left = 6
+    Height = 15
+    Top = 148
+    Width = 121
+    BorderSpacing.Left = 6
+    BorderSpacing.Top = 3
+    Caption = 'lblBlockIndentShortcut'
+    ParentColor = False
+  end
+end

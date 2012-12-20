@@ -85,6 +85,7 @@ type
     procedure ReadSettings(AOptions: TAbstractIDEOptions); override;
     procedure WriteSettings(AOptions: TAbstractIDEOptions); override;
     class function SupportedOptionsClass: TAbstractIDEOptionsClass; override;
+    procedure SelectByIdeCommand(ACmd: word);
   end;
 
 implementation
@@ -498,6 +499,24 @@ begin
   if fModified then
     s:=s+' (*)';
   SchemeLabel.Caption:=s;
+end;
+
+procedure TEditorKeymappingOptionsFrame.SelectByIdeCommand(ACmd: word);
+var
+  Node: TTreeNode;
+begin
+  Node := TreeView.Items.GetFirstNode;
+  while node <> nil do begin
+    if (node.Data <> nil) and (TObject(Node.Data) is TKeyCommandRelation) and
+       (TKeyCommandRelation(Node.Data).Command = ACmd)
+    then
+      break;
+    node := Node.GetNext;
+  end;
+  if node <> nil then begin
+    Node.MakeVisible;
+    Node.Selected := True;
+  end;
 end;
 
 procedure TEditorKeymappingOptionsFrame.EditCommandMapping(ANode: TTreeNode);

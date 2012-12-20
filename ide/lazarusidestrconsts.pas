@@ -1311,6 +1311,7 @@ resourcestring
 
   // editor options
   dlgEdMisc = 'Misc';
+  dlgEdTabIndent = 'Tab and Indent';
   dlgEdDisplay = 'Display';
   lisEOTabWidths = 'Tab widths';
   dlgKeyMapping = 'Key Mappings';
@@ -1342,7 +1343,8 @@ resourcestring
 
   dlgUndoGroupOptions = 'Undo / Redo';
   dlgScrollGroupOptions = 'Scrolling';
-  dlgIndentsTabsGroupOptions = 'Indent and Tabs';
+  dlgIndentsTabsGroupOptions = 'Tabs';
+  dlgIndentsIndentGroupOptions = 'Indent';
   dlgMouseGroupOptions = 'Mouse:';
   dlgCursorGroupOptions = 'Cursor';
   dlgBlockGroupOptions = 'Selection';
@@ -1540,11 +1542,14 @@ resourcestring
   dlgHomeKeyJumpsToNearestStart = 'Home key jumps to nearest start';
   dlgEndKeyJumpsToNearestStart = 'End key jumps to nearest end';
   dlgColorLink = '(Edit Color)';
+  dlgKeyLink = '(Edit Key)';
   dlgBracketHighlight = 'Bracket highlight';
   dlgNoBracketHighlight = 'No Highlight';
   dlgHighlightLeftOfCursor = 'Left Of Cursor';
   dlgHighlightRightOfCursor = 'Right Of Cursor';
   gldHighlightBothSidesOfCursor = 'On Both Sides';
+  dlgBlockIndentKeys = 'Block indent';
+  dlgBlockIndentLink = '(edit keys)';
   dlgBlockIndent = 'Block indent (spaces)';
   dlgBlockTabIndent = 'Block indent (tabs)';
   dlgAutoIndentType = 'Auto indent';

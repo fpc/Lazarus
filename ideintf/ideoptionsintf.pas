@@ -234,7 +234,8 @@ const
 
   GroupEditor       = 200;
     EdtOptionsGeneral     = 100;
-      EdtOptionsGeneralMisc = 101;
+      EdtOptionsIndent      = 110;
+      EdtOptionsGeneralMisc = 120;
     EdtOptionsDisplay     = 200;
       EdtOptionsColors    = 500;
       EdtOptionsMarkup    = 502;

@@ -34,22 +34,13 @@ type
   { TEditorGeneralOptionsFrame }
 
   TEditorGeneralOptionsFrame = class(TAbstractIDEOptionsEditor)
-    BlockIndentComboBox: TComboBox;
-    BlockTabIndentComboBox: TComboBox;
-    BlockTabIndentLabel: TLabel;
-    BlockIndentTypeComboBox: TComboBox;
-    BlockIndentLabel: TLabel;
-    AutoIndentCheckBox: TCheckBox;
-    BlockIndentTypeLabel: TLabel;
     CursorSkipsTabCheckBox: TCheckBox;
     CaretGroupDivider: TDividerBevel;
     BlockGroupDivider: TDividerBevel;
-    IndentsTabsGroupDivider: TDividerBevel;
     ScrollGroupDivider: TDividerBevel;
     UndoGroupDivider: TDividerBevel;
     EndKeyJumpsToNearestStartCheckBox: TCheckBox;
     KeepCursorXCheckBox: TCheckBox;
-    AutoIndentLink: TLabel;
     CenterLabel:TLabel;
     OverwriteBlockCheckBox: TCheckBox;
     PersistentCursorCheckBox: TCheckBox;
@@ -57,30 +48,17 @@ type
     CursorSkipsSelectionCheckBox: TCheckBox;
     HomeKeyJumpsToNearestStartCheckBox: TCheckBox;
     PersistentBlockCheckBox: TCheckBox;
-    TabIndentBlocksCheckBox: TCheckBox;
-    SmartTabsCheckBox: TCheckBox;
-    TabsToSpacesCheckBox: TCheckBox;
     HalfPageScrollCheckBox: TCheckBox;
     ScrollPastEndFileCheckBox: TCheckBox;
     ScrollPastEndLineCheckBox: TCheckBox;
     ScrollByOneLessCheckBox: TCheckBox;
     UndoAfterSaveCheckBox: TCheckBox;
     GroupUndoCheckBox: TCheckBox;
-    TabWidthsComboBox: TComboBox;
-    TabWidthsLabel: TLabel;
     UndoLimitComboBox: TComboBox;
     UndoLimitLabel: TLabel;
     chkScrollHint: TCheckBox;
     procedure AlwaysVisibleCursorCheckBoxChange(Sender: TObject);
-    procedure AutoIndentCheckBoxChange(Sender: TObject);
-    procedure AutoIndentLinkClick(Sender: TObject);
-    procedure AutoIndentLinkMouseEnter(Sender: TObject);
-    procedure AutoIndentLinkMouseLeave(Sender: TObject);
-    procedure ComboboxOnChange(Sender: TObject);
-    procedure ComboboxOnKeyDown(Sender: TObject; var Key: Word;
-      Shift: TShiftState);
     procedure CursorSkipsSelectionCheckBoxChange(Sender: TObject);
-    procedure ComboBoxOnExit(Sender: TObject);
     procedure CursorSkipsTabCheckBoxChange(Sender: TObject);
     procedure EndKeyJumpsToNearestStartCheckBoxChange(Sender: TObject);
     procedure GroupUndoCheckBoxChange(Sender: TObject);
@@ -93,9 +71,6 @@ type
     procedure ScrollByOneLessCheckBoxChange(Sender: TObject);
     procedure ScrollPastEndFileCheckBoxChange(Sender: TObject);
     procedure ScrollPastEndLineCheckBoxChange(Sender: TObject);
-    procedure SmartTabsCheckBoxChange(Sender: TObject);
-    procedure TabIndentBlocksCheckBoxChange(Sender: TObject);
-    procedure TabsToSpacesCheckBoxChange(Sender: TObject);
   private
     FDefaultBookmarkImages: TImageList;
     FDialog: TAbstractOptionsEditorDialog;
@@ -139,14 +114,6 @@ procedure TEditorGeneralOptionsFrame.Setup(ADialog: TAbstractOptionsEditorDialog
 begin
   FDialog := ADialog;
 
-  BlockIndentLabel.Caption := dlgBlockIndent;
-  BlockTabIndentLabel.Caption := dlgBlockTabIndent;
-  BlockIndentTypeLabel.Caption := dlgAutoIndentType;
-  BlockIndentTypeComboBox.Items.Add(dlgBlockIndentTypeSpace);
-  BlockIndentTypeComboBox.Items.Add(dlgBlockIndentTypeCopy);
-  BlockIndentTypeComboBox.Items.Add(dlgBlockIndentTypePos);
-  TabWidthsLabel.Caption := dlgTabWidths;
-
   // undo
   UndoGroupDivider.Caption := dlgUndoGroupOptions;
   UndoAfterSaveCheckBox.Caption := dlgUndoAfterSave;
@@ -161,13 +128,6 @@ begin
   ScrollPastEndLineCheckBox.Caption := dlgScrollPastEndLine;
   chkScrollHint.Caption := dlgScrollHint;
 
-  // indents, tabs
-  IndentsTabsGroupDivider.Caption := dlgIndentsTabsGroupOptions;
-  AutoIndentCheckBox.Caption := dlgAutoIndent;
-  TabIndentBlocksCheckBox.Caption := dlgTabIndent;
-  SmartTabsCheckBox.Caption := dlgSmartTabs;
-  TabsToSpacesCheckBox.Caption := dlgTabsToSpaces;
-  AutoIndentLink.Caption := dlgAutoIndentLink;
 
   // caret + key navigation
   CaretGroupDivider.Caption := dlgCursorGroupOptions;
@@ -191,11 +151,6 @@ var
 begin
   with AOptions as TEditorOptions do
   begin
-    SetComboBoxText(BlockIndentComboBox, IntToStr(BlockIndent), cstCaseInsensitive);
-    SetComboBoxText(BlockTabIndentComboBox, IntToStr(BlockTabIndent), cstCaseInsensitive);
-    SetComboBoxText(TabWidthsComboBox, IntToStr(TabWidth), cstCaseInsensitive);
-    BlockIndentTypeComboBox.ItemIndex := ord(BlockIndentType);
-
     // undo
     UndoAfterSaveCheckBox.Checked := UndoAfterSave;
     GroupUndoCheckBox.Checked := eoGroupUndo in SynEditOptions;
@@ -207,12 +162,6 @@ begin
     ScrollPastEndFileCheckBox.Checked := eoScrollPastEoF in SynEditOptions;
     ScrollPastEndLineCheckBox.Checked := eoScrollPastEoL in SynEditOptions;
     chkScrollHint.Checked := eoShowScrollHint in SynEditOptions;
-
-    // tabs, indents
-    AutoIndentCheckBox.Checked := eoAutoIndent in SynEditOptions;
-    TabIndentBlocksCheckBox.Checked := eoTabIndent in SynEditOptions;
-    SmartTabsCheckBox.Checked := eoSmartTabs in SynEditOptions;
-    TabsToSpacesCheckBox.Checked := eoTabsToSpaces in SynEditOptions;
 
     // cursor
     KeepCursorXCheckBox.Checked := eoKeepCaretX in SynEditOptions;
@@ -273,35 +222,6 @@ begin
     UpdateOptionFromBool(ScrollPastEndLineCheckBox.Checked, eoScrollPastEoL);
     UpdateOptionFromBool(chkScrollHint.Checked, eoShowScrollHint);
 
-    // tabs, indents
-    UpdateOptionFromBool(AutoIndentCheckBox.Checked, eoAutoIndent);
-    UpdateOptionFromBool(TabIndentBlocksCheckBox.Checked, eoTabIndent);
-    UpdateOptionFromBool(SmartTabsCheckBox.Checked, eoSmartTabs);
-    UpdateOptionFromBool(TabsToSpacesCheckBox.Checked, eoTabsToSpaces);
-
-    i := StrToIntDef(TabWidthsComboBox.Text, 2);
-    if i < 1 then
-      i := 1;
-    if i > 20 then
-      i := 20;
-    TabWidth := i;
-
-    i := StrToIntDef(BlockIndentComboBox.Text, 2);
-    if i < 0 then
-      i := 0;
-    if i > 20 then
-      i := 20;
-    BlockIndent := i;
-
-    i := StrToIntDef(BlockTabIndentComboBox.Text, 0);
-    if i < 0 then
-      i := 0;
-    if i > 20 then
-      i := 20;
-    BlockTabIndent := i;
-
-    BlockIndentType := TSynBeautifierIndentType(BlockIndentTypeComboBox.ItemIndex);
-
     // cursor
     UpdateOptionFromBool(KeepCursorXCheckBox.Checked, eoKeepCaretX);
     UpdateOptionFromBool(PersistentCursorCheckBox.Checked, eoPersistentCaret);
@@ -361,87 +281,16 @@ begin
     end;
 end;
 
-procedure TEditorGeneralOptionsFrame.ComboboxOnChange(Sender: TObject);
-var
-  ComboBox: TComboBox absolute Sender;
-begin
-  if ComboBox.Items.IndexOf(ComboBox.Text) >= 0 then
-    ComboBoxOnExit(Sender);
-end;
-
-procedure TEditorGeneralOptionsFrame.AutoIndentCheckBoxChange(Sender: TObject);
-begin
-  SetPreviewOption(AutoIndentCheckBox.Checked, eoAutoIndent);
-end;
-
-procedure TEditorGeneralOptionsFrame.AutoIndentLinkClick(Sender: TObject);
-begin
-  FDialog.OpenEditor(GroupCodetools,CdtOptionsGeneral);
-end;
-
-procedure TEditorGeneralOptionsFrame.AutoIndentLinkMouseEnter(Sender: TObject);
-begin
-  (Sender as TLabel).Font.Underline := True;
-  (Sender as TLabel).Font.Color := clRed;
-end;
-
-procedure TEditorGeneralOptionsFrame.AutoIndentLinkMouseLeave(Sender: TObject);
-begin
-  (Sender as TLabel).Font.Underline := False;
-  (Sender as TLabel).Font.Color := clBlue;
-end;
-
 procedure TEditorGeneralOptionsFrame.AlwaysVisibleCursorCheckBoxChange(
   Sender: TObject);
 begin
   SetPreviewOption(AlwaysVisibleCursorCheckBox.Checked, eoAlwaysVisibleCaret);
 end;
 
-procedure TEditorGeneralOptionsFrame.ComboboxOnKeyDown(
-  Sender: TObject; var Key: Word; Shift: TShiftState);
-begin
-  if (ssCtrl in Shift) and (Key = VK_S) then
-    ComboBoxOnExit(Sender);
-end;
-
 procedure TEditorGeneralOptionsFrame.CursorSkipsSelectionCheckBoxChange(
   Sender: TObject);
 begin
   SetPreviewOption(CursorSkipsSelectionCheckBox.Checked, eoCaretSkipsSelection);
-end;
-
-procedure TEditorGeneralOptionsFrame.ComboBoxOnExit(Sender: TObject);
-var
-  NewVal, a: Integer;
-begin
-  if Sender = BlockIndentComboBox then
-  begin
-    NewVal := StrToIntDef(BlockIndentComboBox.Text, PreviewEdits[1].BlockIndent);
-    // Todo: min/max
-    SetComboBoxText(BlockIndentComboBox, IntToStr(NewVal), cstCaseInsensitive);
-    for a := Low(PreviewEdits) to High(PreviewEdits) do
-      if PreviewEdits[a] <> nil then
-        PreviewEdits[a].BlockIndent := NewVal;
-  end
-  else
-  if Sender = BlockTabIndentComboBox then
-  begin
-    NewVal := StrToIntDef(BlockTabIndentComboBox.Text, PreviewEdits[1].BlockTabIndent);
-    // Todo: min/max
-    SetComboBoxText(BlockTabIndentComboBox, IntToStr(NewVal), cstCaseInsensitive);
-    for a := Low(PreviewEdits) to High(PreviewEdits) do
-      if PreviewEdits[a] <> nil then
-        PreviewEdits[a].BlockTabIndent := NewVal;
-  end
-  else
-  if Sender = TabWidthsComboBox then
-  begin
-    NewVal := StrToIntDef(TabWidthsComboBox.Text, PreviewEdits[1].TabWidth);
-    SetComboBoxText(TabWidthsComboBox, IntToStr(NewVal), cstCaseInsensitive);
-    for a := Low(PreviewEdits) to High(PreviewEdits) do
-      if PreviewEdits[a] <> nil then
-        PreviewEdits[a].TabWidth := NewVal;
-  end
 end;
 
 procedure TEditorGeneralOptionsFrame.CursorSkipsTabCheckBoxChange(Sender: TObject);
@@ -509,22 +358,6 @@ procedure TEditorGeneralOptionsFrame.ScrollPastEndLineCheckBoxChange(
   Sender: TObject);
 begin
   SetPreviewOption(ScrollPastEndLineCheckBox.Checked, eoScrollPastEoL);
-end;
-
-procedure TEditorGeneralOptionsFrame.SmartTabsCheckBoxChange(Sender: TObject);
-begin
-  SetPreviewOption(SmartTabsCheckBox.Checked, eoSmartTabs);
-end;
-
-procedure TEditorGeneralOptionsFrame.TabIndentBlocksCheckBoxChange(
-  Sender: TObject);
-begin
-  SetPreviewOption(TabIndentBlocksCheckBox.Checked, eoTabIndent);
-end;
-
-procedure TEditorGeneralOptionsFrame.TabsToSpacesCheckBoxChange(Sender: TObject);
-begin
-  SetPreviewOption(TabsToSpacesCheckBox.Checked, eoTabsToSpaces);
 end;
 
 function TEditorGeneralOptionsFrame.DefaultBookmarkImages: TImageList;

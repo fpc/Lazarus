@@ -25,10 +25,10 @@ unit editor_markup_options;
 interface
 
 uses
-  Classes, StdCtrls, ComCtrls, Graphics, sysutils,
-  EditorOptions, LazarusIDEStrConsts, IDEOptionsIntf, Spin, ExtCtrls,
-  SynEditMarkupBracket, editor_color_options, editor_general_options,
-  SynEdit, SynCompletion, SynHighlighterPas, DividerBevel, LCLType;
+  Classes, StdCtrls, ComCtrls, Graphics, sysutils, EditorOptions, LazarusIDEStrConsts,
+  IDEOptionsIntf, Spin, ExtCtrls, SynEditMarkupBracket, editor_color_options,
+  editor_general_options, editor_keymapping_options, SynEdit, SynCompletion, SynHighlighterPas,
+  SynEditKeyCmds, DividerBevel, LCLType;
 
 type
   { TEditorMarkupOptionsFrame }
@@ -44,6 +44,7 @@ type
     divWordGroup: TDividerBevel;
     lblPasStringKeywords: TLabel;
     MarkupColorLink: TLabel;
+    MarkupKeyLink: TLabel;
     MarkupWordDelayLabel: TLabel;
     MarkupWordNoTimerCheckBox: TCheckBox;
     MarkupWordFullLenSpin: TSpinEdit;
@@ -62,6 +63,7 @@ type
     procedure dropPasStringKeywordsChange(Sender: TObject);
     function GeneralPage: TEditorGeneralOptionsFrame; inline;
     procedure MarkupColorLinkClick(Sender: TObject);
+    procedure MarkupKeyLinkClick(Sender: TObject);
   private
     { private declarations }
     FDialog: TAbstractOptionsEditorDialog;
@@ -165,6 +167,16 @@ begin
   col.SelectAhaColor(ahaHighlightWord);
 end;
 
+procedure TEditorMarkupOptionsFrame.MarkupKeyLinkClick(Sender: TObject);
+var
+  col: TEditorKeymappingOptionsFrame;
+begin
+  col := TEditorKeymappingOptionsFrame(FDialog.FindEditor(TEditorKeymappingOptionsFrame));
+  if col = nil then exit;
+  FDialog.OpenEditor(TEditorKeymappingOptionsFrame);
+  col.SelectByIdeCommand(EcToggleMarkupWord);
+end;
+
 function TEditorMarkupOptionsFrame.GetTitle: String;
 begin
   Result := lisAutoMarkup;
@@ -180,6 +192,7 @@ begin
   MarkupWordTrim.Caption := dlgMarkupWordTrim;
   MarkupWordNoTimerCheckBox.Caption := dlgMarkupWordNoTimer;
   MarkupColorLink.Caption := dlgColorLink;
+  MarkupKeyLink.Caption := dlgKeyLink;
 
   divMatchingBrackets.Caption := dlgBracketMatchGroup;
   BracketLabel.Caption := dlgBracketHighlight;
