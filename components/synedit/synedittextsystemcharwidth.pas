@@ -67,9 +67,9 @@ end;
 
 procedure TSynEditStringSystemWidthChars.DoGetPhysicalCharWidths(Line: PChar; LineLen,
   Index: Integer; PWidths: PPhysicalCharWidth);
+  {$IFDEF Windows}
 var
   //s: UnicodeString;// wideString;
-  {$IFDEF Windows}
   i: DWORD;
   cpRes: TGCPRESULTS;
   outs: array of widechar;
