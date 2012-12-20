@@ -2066,7 +2066,10 @@ procedure TAnchorDockMaster.SetHeaderButtonSize(const AValue: integer);
 begin
   if FHeaderButtonSize=AValue then exit;
   FHeaderButtonSize:=Max(1,AValue);
+  debugln(['TAnchorDockMaster.SetHeaderButtonSize ',FHeaderButtonSize]);
   FreeCloseButtonBitmap;
+  if fCloseBtnReferenceCount>0 then
+    CreateCloseButtonBitmap;
   AutoSizeAllHeaders(true);
   OptionsChanged;
 end;
@@ -2125,7 +2128,7 @@ end;
 
 procedure TAnchorDockMaster.FreeCloseButtonBitmap;
 begin
-  fCloseBtnBitmap.Free;
+  FreeAndNil(fCloseBtnBitmap);
 end;
 
 procedure TAnchorDockMaster.AutoSizeAllHeaders(EnableAutoSizing: boolean);
@@ -2223,7 +2226,7 @@ begin
   FreeAndNil(fNeedFree);
   FreeAndNil(fDisabledAutosizing);
   fCloseBtnReferenceCount:=-1;
-  FreeAndNil(fCloseBtnBitmap);
+  FreeCloseButtonBitmap;
   for i:=0 to ComponentCount-1 do begin
     debugln(['TAnchorDockMaster.Destroy ',i,'/',ComponentCount,' ',DbgSName(Components[i])]);
   end;

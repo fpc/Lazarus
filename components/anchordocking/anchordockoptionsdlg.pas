@@ -218,6 +218,7 @@ var
 begin
   CurSettings:=TAnchorDockSettings.Create;
   try
+    Master.SaveSettings(CurSettings);
     SaveToSettings(CurSettings);
     Master.LoadSettings(CurSettings);
   finally
@@ -228,19 +229,12 @@ end;
 procedure TAnchorDockOptionsFrame.LoadFromMaster;
 var
   CurSettings: TAnchorDockSettings;
-  sl: TStringList;
-  hs: TADHeaderStyle;
 begin
   CurSettings:=TAnchorDockSettings.Create;
-  sl:=TStringList.Create;
   try
-    for hs:=Low(TADHeaderStyle) to High(TADHeaderStyle) do
-      sl.Add(ADHeaderStyleNames[hs]);
-    HeaderStyleComboBox.Items.Assign(sl);
     Master.SaveSettings(CurSettings);
     LoadFromSettings(CurSettings);
   finally
-    sl.Free;
     CurSettings.Free;
   end;
 end;
@@ -261,7 +255,18 @@ end;
 
 procedure TAnchorDockOptionsFrame.LoadFromSettings(
   TheSettings: TAnchorDockSettings);
+var
+  hs: TADHeaderStyle;
+  sl: TStringList;
 begin
+  sl:=TStringList.Create;
+  try
+    for hs:=Low(TADHeaderStyle) to High(TADHeaderStyle) do
+      sl.Add(ADHeaderStyleNames[hs]);
+    HeaderStyleComboBox.Items.Assign(sl);
+  finally
+    sl.Free;
+  end;
   HeaderStyleLabel.Caption:=adrsHeaderStyle;
   HeaderStyleComboBox.ItemIndex:=ord(TheSettings.HeaderStyle);
 
