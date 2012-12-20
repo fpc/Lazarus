@@ -196,8 +196,8 @@ type
       // By default indent is the same as for none comment lines (none overrides sciAlignOpen)
       sciNone,      // Does not Indent comment lines (Prefix may contain a fixed indent)
       sciAlignOpen, // Indent to real opening pos on first line, if comment does not start at BOL "Foo(); (*"
-
-      // sciAlignOpenOnce // 2nd line only, thes sciNone or default (must not have sciAlignOpen)
+                    // Will force every new line back to Align.
+                    // To align only once, use IndentFirstLineExtra=MaxInt
 
       // sciAdd...: if (only if) previous line had started with the opening token "(*" or "{".
       //            or if sciAlignOpen is set
@@ -207,6 +207,8 @@ type
                              // in case of scmMatchAtAsterisk, 1 space is added. ("(" only)
       sciAddPastTokenIndent, // Adds any indent found past the opening token  "(*", "{" or "//".
                              // For "//" this is added after the nem "//", but before the prefix.
+      //sciAddPastTokenIndentMatchLine, // Only if first line matches. (Do not specify sciAddPastTokenIndent)
+                             // Adds matched and unmatched spaces.
 
       // flag to ignore spaces, that are matched.
       // flag to be smart, if not matched
@@ -247,7 +249,7 @@ type
     FEolPostfix:           Array [TSynCommentType] of String;
     FEolSkipLongerLine:  Array [TSynCommentType] of Boolean;
 
-    FExtenbSlashCommentMode: TSynCommentExtendMode;
+    FExtendSlashCommentMode: TSynCommentExtendMode;
 
   private
     FPasHighlighter: TSynPasSyn;
@@ -392,8 +394,8 @@ type
     // *** coments with //
     // Continue only, if Extended
 
-    property ExtenbSlashCommentMode: TSynCommentExtendMode read FExtenbSlashCommentMode
-                                                           write FExtenbSlashCommentMode;
+    property ExtendSlashCommentMode: TSynCommentExtendMode read FExtendSlashCommentMode
+                                                           write FExtendSlashCommentMode;
 
     property SlashIndentMode: TSynCommentIndentFlags read FIndentMode[sctSlash]
                                                     write FIndentMode[sctSlash];
@@ -923,8 +925,8 @@ var
   function IsFoldTypeEnabled(AType: TSynCommentType): Boolean;
   begin
   Result := (  ( (AType <> sctSlash) or
-               ( ((not FCaretAtEOL) and (FExtenbSlashCommentMode <> sceNever)) or
-                 ((FCaretAtEOL)     and not(FExtenbSlashCommentMode in [sceNever, sceSplitLine, sceMatchingSplitLine]))
+               ( ((not FCaretAtEOL) and (FExtendSlashCommentMode <> sceNever)) or
+                 ((FCaretAtEOL)     and not(FExtendSlashCommentMode in [sceNever, sceSplitLine, sceMatchingSplitLine]))
                )
              ) and
              ( (FIndentMode[AType] <> []) or
@@ -981,8 +983,8 @@ begin
     else
       begin
         if (FCurrentLines[ToIdx(WorkLine)-1] <> '') and
-           (FExtenbSlashCommentMode <> sceNever) and
-           ( (not FCaretAtEOL) or not(FExtenbSlashCommentMode in [sceSplitLine, sceMatchingSplitLine]) )
+           (FExtendSlashCommentMode <> sceNever) and
+           ( (not FCaretAtEOL) or not(FExtendSlashCommentMode in [sceSplitLine, sceMatchingSplitLine]) )
         then begin
           PrevLineShlasCol := GetSlashStartColumn;
           if PrevLineShlasCol > 0 then
@@ -1004,9 +1006,9 @@ begin
 
   // Check if we need extend
   ExtendSlash := False;
-  if FoldTyp = sctSlash then begin
+  if (FoldTyp = sctSlash) and (ACaret.OldLineBytePos.x > GetSlashStartColumn+2) then begin
     // Check if extension is needed
-    case FExtenbSlashCommentMode of
+    case FExtendSlashCommentMode of
       sceAlways:    ExtendSlash := True;
       sceSplitLine: ExtendSlash := not FCaretAtEOL;
       sceMatching:  ExtendSlash := CheckMatch(FoldTyp);
@@ -1053,7 +1055,7 @@ begin
       end
       else
       if (FIndentMode[FoldTyp] * [sciNone, sciAlignOpen] = [sciAlignOpen]) and
-         (GetCommentStartCol > 1)
+         (GetCommentStartCol > 0)
       then begin
         Indent := FCurrentLines.LogicalToPhysicalCol(FCurrentLines[ToIdx(GetFirstCommentLine)], ToIdx(GetFirstCommentLine), GetCommentStartCol-1);
         if FIndentFirstLineMax[FoldTyp] > 0
@@ -1090,7 +1092,7 @@ begin
              (Matching or ExtendSlash or (sciApplyIndentForNoMatch in FIndentMode[FoldTyp]) or
               (FCommentMode[FoldTyp] = sccPrefixAlways)  );
 
-  // Spaces for (* or {
+  // sciAddTokenLen -- Spaces for (* or {
   if BeSmart and (sciAddTokenLen in FIndentMode[FoldTyp])
   then begin
     case FoldTyp of
@@ -1104,7 +1106,7 @@ begin
     end;
   end;
 
-  // Spaces from after (* or { (to go befare prefix e.g " {  * foo")
+  // sciAddPastTokenIndent -- Spaces from after (* or { (to go befare prefix e.g " {  * foo")
   if BeSmart and (sciAddPastTokenIndent in FIndentMode[FoldTyp]) and (GetCommentStartCol > 0) // foundStartCol
   then begin
     case FoldTyp of
@@ -1136,10 +1138,12 @@ begin
     FGetLineAfterComment := True;
     try
       GetIndentInfo(WorkLine, s, Indent, GetFirstCommentLine);
-      if s <> '' then begin;
+      if s <> '' then begin
         FCurrentLines.EditInsert(1 + FLogicalIndentLen, WorkLine, s);
-        FLogicalIndentLen := FLogicalIndentLen + length(s);
-      end;
+        FLogicalIndentLen := FLogicalIndentLen + length(s); // logical (Indent is phisical)
+      end
+      else
+        FLogicalIndentLen := FLogicalIndentLen + Indent; // maybe position caret
     finally
       FGetLineAfterComment := False;
     end;
@@ -1192,7 +1196,7 @@ begin
   FEolSkipLongerLine[sctBor]    := False;
 
 
-  FExtenbSlashCommentMode         := sceNever;
+  FExtendSlashCommentMode         := sceNever;
 
   FIndentMode[sctSlash]           := [];
   FIndentFirstLineExtra[sctSlash] := '';
@@ -1224,7 +1228,7 @@ begin
   inherited Assign(Src);
   if not(Src is TSynBeautifierPascal) then exit;
 
-  FExtenbSlashCommentMode := TSynBeautifierPascal(Src).FExtenbSlashCommentMode;
+  FExtendSlashCommentMode := TSynBeautifierPascal(Src).FExtendSlashCommentMode;
 
   for i := low(TSynCommentType) to high(TSynCommentType) do begin
     FIndentMode[i]           := TSynBeautifierPascal(Src).FIndentMode[i];

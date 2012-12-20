@@ -903,7 +903,7 @@ type
         end;
       sctSlash:
         with Beautifier do begin
-          ExtenbSlashCommentMode := AExtenbSlash;
+          ExtendSlashCommentMode := AExtenbSlash;
 
           SlashIndentMode           := AIndentMode;
           SlashIndentFirstLineMax   := AIndentFirstLineMax;
@@ -1005,6 +1005,7 @@ begin
   Beautifier.IndentType := sbitCopySpaceTab;
 
   {%region Bor (Curly) }
+
     ConfigBeautifier(sctBor, [sciAddTokenLen, sciAddPastTokenIndent], 0, '',
                      sccPrefixMatch, scmMatchAfterOpening, sclMatchPrev,
                      sbitSpace,
@@ -1015,6 +1016,13 @@ begin
     DoNewLine('',   7, 3,   6, 4,  [3, '   * b', '   * c' ]);  // 3:"   * b|c" => 4:"   * |c"
     DoNewLine('',   7, 4,   6, 5,  [4, '   * c', '   * '  ]);  // 4:"   * c|"
     DoNewLine('',   5, 3,   5, 4,  [3, '   *',   '   * b' ]);  // 3:"   *| b"
+
+    DoSetText('Curly simple 2',  [2, '    {* abc', '  * ']);
+    DoNewLine('',   5, 3,   5, 4,  [3, '  * ', '  * ']);
+
+    DoSetText('Curly simple 3',  [2, '    {*', '  *']);
+    DoNewLine('',   4, 3,   4, 4,  [3, '  *', '  *']);
+
 
     DoSetText('Curly, not matching',  [2, '  {+ abc']);
     DoNewLine('',   7, 2,   3, 3,  [2, '  {+ a', '  bc']);  // 2:"  {* a|bc"
@@ -1188,6 +1196,13 @@ begin
                   DoSetText('not BOL matching',  [2, '  ;;;{* abc']);
                   DoNewLine('after 1st',  10, 2,   8, 3,  [2, '  ;;;{* a', '     * bc']);  // 2:"  ;{* a|bc"
                   DoNewLine('any line',    9, 3,   8, 4,  [3, '     * b', '     * c']);    // 3:"  * b|c"
+
+                  // Check_that_Indent_is_NOT_restored // SEE Check_that_Indent_is_restored
+                  // Indent, not BOL / matching // AnsiIndentFirstLineMax applied
+                  DoSetText('NOT restore Align',  [2, '  ;;;{* abc', '  *']);
+                  if ParentIndentType = sbitPositionCaret
+                  then DoNewLine('after 2nd',   4, 3,   5, 4,  [3, '  *', '  *'])   // NOT added post indent of 1
+                  else DoNewLine('after 2nd',   4, 3,   5, 4,  [3, '  *', '  * ']); // added post indent of 1
                 end
                 else begin // [sciAddTokenLen]
                   // Indent / matching
@@ -1199,6 +1214,13 @@ begin
                   DoSetText('not BOL matching',  [2, '  ;;;{* abc']);
                   DoNewLine('after 1st',  10, 2,   9, 3,  [2, '  ;;;{* a', '      * bc']);  // 2:"  ;{* a|bc"
                   DoNewLine('any line',   10, 3,   9, 4,  [3, '      * b', '      * c']);    // 3:"  * b|c"
+
+                  // Check_that_Indent_is_NOT_restored // SEE Check_that_Indent_is_restored
+                  // Indent, not BOL / matching // AnsiIndentFirstLineMax applied
+                  DoSetText('NOT restore Align',  [2, '  ;;;{* abc', '  *']);
+                  if ParentIndentType = sbitPositionCaret
+                  then DoNewLine('after 2nd',   4, 3,   5, 4,  [3, '  *', '  *'])
+                  else DoNewLine('after 2nd',   4, 3,   5, 4,  [3, '  *', '  * ']);
                 end;
                 PopBaseName;
 
@@ -1659,6 +1681,39 @@ begin
                 PopBaseName;
 **** *)
 
+                // Check_that_Indent_is_restored  SEE Check_that_Indent_is_NOT_restored
+                PushBaseName('Max='+IntToStr(10));
+                ConfigBeautifier(sctBor, [sciAlignOpen] + ExtraIndentFlags, 0, '',
+                                 sccPrefixMatch, scmMatchAfterOpening, MatchLine,
+                                 sbitSpace,
+                                 '^\s*\*', '*');
+                if not (sciAddTokenLen in ExtraIndentFlags) then begin
+                  // Indent, not BOL / matching // AnsiIndentFirstLineMax applied
+                  DoSetText('restore Align',  [2, '  ;;;{* abc', '  *']);
+                  if ParentIndentType = sbitPositionCaret
+                  then DoNewLine('after 2nd',   4, 3,   8, 4,  [3, '  *', '     *'])
+                  else DoNewLine('after 2nd',   4, 3,   8, 4,  [3, '  *', '     * ']);
+
+                  DoSetText('restore Align',  [2, '  ;;;{* abc', '           *', '  *']);
+                  if ParentIndentType = sbitPositionCaret
+                  then DoNewLine('any line',   4, 4,    8, 5,  [4, '  *', '     *'])
+                  else DoNewLine('any line',   4, 4,    8, 5,  [4, '  *', '     * ']);
+                end
+                else begin // [sciAddTokenLen]
+                  // Indent, not BOL / matching // AnsiIndentFirstLineMax applied
+                  DoSetText('restore Align',  [2, '  ;;;{* abc', '  *']);
+                  if ParentIndentType = sbitPositionCaret
+                  then DoNewLine('after 2nd',   4, 3,   9, 4,  [3, '  *', '      *'])
+                  else DoNewLine('after 2nd',   4, 3,   9, 4,  [3, '  *', '      * ']);
+
+                  DoSetText('restore Align',  [2, '  ;;;{* abc', '           *', '  *']);
+                  if ParentIndentType = sbitPositionCaret
+                  then DoNewLine('any line',   4, 4,    9, 5,  [4, '  *', '      *'])
+                  else DoNewLine('any line',   4, 4,    9, 5,  [4, '  *', '      * ']);
+                end;
+                PopBaseName;
+
+
                 PopBaseName;
               {%endregion [sciAlignOpen] }
 
@@ -1717,7 +1772,6 @@ begin
     Beautifier.BorIndentMode := [sciAddTokenLen, sciApplyIndentForNoMatch];
     DoSetText('sccPrefixAlways; NOT matching, apply',   [2, '  {+ abc']);
     DoNewLine('after 1st',   7, 2,   5, 3,  [2, '  {+ a', '   *bc']);  // 2:"  {* a|bc"
-
   {%endregion Bor (Curly) }
 
 
@@ -1813,6 +1867,22 @@ begin
     DoSetText('Slash No match, split',  [2, '  // abc']);
     DoNewLine('',   7, 2,   6, 3,  [2, '  // a', '  // bc']);  // 2:"  // a|bc"
 
+
+    // aligOpen (single and multiline)
+    ConfigBeautifier(sctSlash, [sciAlignOpen, sciAddTokenLen, sciAddPastTokenIndent], 0, '',
+                     sccPrefixAlways, scmMatchAfterOpening, sclMatchPrev,
+                     sbitSpace,
+                     '^.?', '',
+                     sceAlways);
+    DoSetText('Slash sciAlignOpen',  [2, '  ;;; // abc']);
+    DoNewLine('first',  11, 2,  10, 3,  [2, '  ;;; // a', '      // bc']);      // 2:"      // a|bc"
+    DoNewLine('any',    11, 3,  10, 4,  [2,  '      // bc', '      // c']);     // 2:"      // b|c"
+
+    DoSetText('Slash sciAlignOpen realign',  [2, '  ;;; // abc', '    // de']);
+    DoNewLine('2nd',   9, 3,  10, 4,  [3, '    // d', '      // e']);    // 3:"    // d|e"
+
+    DoSetText('Slash sciAlignOpen realign',  [2, '  ;;; // abc', '                //', '    // de']);
+    DoNewLine('3rd',   9, 4,  10, 5,  [4, '    // d', '      // e']);    // 3:"    // d|e"
   {%endregion Slash // }
 
 
