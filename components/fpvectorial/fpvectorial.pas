@@ -20,7 +20,9 @@ unit fpvectorial;
   {$define USE_CANVAS_CLIP_REGION}
   {.$define DEBUG_CANVAS_CLIP_REGION}
 {$endif}
+{.$define FPVECTORIAL_DEBUG_DIMENSIONS}
 {.$define FPVECTORIAL_TOCANVAS_DEBUG}
+{.$define FPVECTORIAL_DEBUG_BLOCKS}
 
 interface
 
@@ -135,6 +137,7 @@ type
     // Fields for linking the list
     Previous: TPathSegment;
     Next: TPathSegment;
+    procedure Move(ADeltaX, ADeltaY: Double); virtual;
   end;
 
   {@@
@@ -144,9 +147,13 @@ type
     holds the starting point for the drawing and should always be of the type
     stMoveTo.
   }
+
+  { T2DSegment }
+
   T2DSegment = class(TPathSegment)
   public
     X, Y: Double;
+    procedure Move(ADeltaX, ADeltaY: Double); override;
   end;
 
   T2DSegmentWithPen = class(T2DSegment)
@@ -159,11 +166,17 @@ type
     The starting point is where the previous segment ended, so that the intermediary
     bezier control points are [X2, Y2] and [X3, Y3].
   }
+
+  { T2DBezierSegment }
+
   T2DBezierSegment = class(T2DSegment)
   public
     X2, Y2: Double;
     X3, Y3: Double;
+    procedure Move(ADeltaX, ADeltaY: Double); override;
   end;
+
+  { T3DSegment }
 
   T3DSegment = class(TPathSegment)
   public
@@ -172,12 +185,16 @@ type
       For the first segment, this is the starting point.
     }
     X, Y, Z: Double;
+    procedure Move(ADeltaX, ADeltaY: Double); override;
   end;
+
+  { T3DBezierSegment }
 
   T3DBezierSegment = class(T3DSegment)
   public
     X2, Y2, Z2: Double;
     X3, Y3, Z3: Double;
+    procedure Move(ADeltaX, ADeltaY: Double); override;
   end;
 
   TvFindEntityResult = (vfrNotFound, vfrFound, vfrSubpartFound);
@@ -202,8 +219,9 @@ type
     procedure ExpandBoundingBox(ADest: TFPCustomCanvas; var ALeft, ATop, ARight, ABottom: Double); // helper to help CalculateBoundingBox
     {@@ ASubpart is only valid if this routine returns vfrSubpartFound }
     function TryToSelect(APos: TPoint; var ASubpart: Cardinal): TvFindEntityResult; virtual;
-    procedure Move(ADeltaX, ADeltaY: Integer); virtual;
-    procedure MoveSubpart(ADeltaX, ADeltaY: Integer; ASubpart: Cardinal); virtual;
+    procedure Move(ADeltaX, ADeltaY: Double); virtual;
+    procedure MoveSubpart(ADeltaX, ADeltaY: Double; ASubpart: Cardinal); virtual;
+    function  GetSubpartCount: Integer; virtual;
     procedure Render(ADest: TFPCustomCanvas; ADestX: Integer = 0;
       ADestY: Integer = 0; AMulX: Double = 1.0; AMulY: Double = 1.0); virtual;
     function GetNormalizedPos(APage: TvVectorialPage; ANewMin, ANewMax: Double): T3DPoint;
@@ -235,6 +253,11 @@ type
   TvClipMode = (vcmNonzeroWindingRule, vcmEvenOddRule);
 
   TPath = class(TvEntityWithPenAndBrush)
+  private
+    // Used to speed up sequencial access in MoveSubpart
+    FCurMoveSubPartIndex: Integer;
+    FCurMoveSubPartSegment: TPathSegment;
+    //
   public
     Len: Integer;
     Points: TPathSegment;   // Beginning of the double-linked list
@@ -242,6 +265,7 @@ type
     CurPoint: TPathSegment; // Used in PrepareForSequentialReading and Next
     ClipPath: TPath;
     ClipMode: TvClipMode;
+    constructor Create; override;
     destructor Destroy; override;
     procedure Clear; override;
     procedure Assign(ASource: TPath);
@@ -251,6 +275,10 @@ type
     procedure AppendSegment(ASegment: TPathSegment);
     procedure AppendMoveToSegment(AX, AY: Double);
     procedure AppendLineToSegment(AX, AY: Double);
+    procedure Move(ADeltaX, ADeltaY: Double); override;
+    procedure MoveSubpart(ADeltaX, ADeltaY: Double; ASubpart: Cardinal); override;
+    function  MoveToSubpart(ASubpart: Cardinal): TPathSegment;
+    function  GetSubpartCount: Integer; override;
     procedure Render(ADest: TFPCustomCanvas; ADestX: Integer = 0;
       ADestY: Integer = 0; AMulX: Double = 1.0; AMulY: Double = 1.0); override;
   end;
@@ -519,6 +547,7 @@ type
   TvInsert = class(TvEntity)
   public
     Block: TvBlock; // The block to be inserted
+    Name: string;
     procedure Render(ADest: TFPCustomCanvas; ADestX: Integer = 0;
       ADestY: Integer = 0; AMulX: Double = 1.0; AMulY: Double = 1.0); override;
   end;
@@ -789,6 +818,51 @@ begin
   Result.Z := 0;
 end;
 
+{ TPathSegment }
+
+procedure TPathSegment.Move(ADeltaX, ADeltaY: Double);
+begin
+
+end;
+
+{ T2DSegment }
+
+procedure T2DSegment.Move(ADeltaX, ADeltaY: Double);
+begin
+  X := X + ADeltaX;
+  Y := Y + ADeltaY;
+end;
+
+{ T2DBezierSegment }
+
+procedure T2DBezierSegment.Move(ADeltaX, ADeltaY: Double);
+begin
+  inherited Move(ADeltaX, ADeltaY);
+  X2 := X2 + ADeltaX;
+  Y2 := Y2 + ADeltaY;
+  X3 := X3 + ADeltaX;
+  Y3 := Y3 + ADeltaY;
+end;
+
+{ T3DSegment }
+
+procedure T3DSegment.Move(ADeltaX, ADeltaY: Double);
+begin
+  X := X + ADeltaX;
+  Y := Y + ADeltaY;
+end;
+
+{ T3DBezierSegment }
+
+procedure T3DBezierSegment.Move(ADeltaX, ADeltaY: Double);
+begin
+  inherited Move(ADeltaX, ADeltaY);
+  X2 := X2 + ADeltaX;
+  Y2 := Y2 + ADeltaY;
+  X3 := X3 + ADeltaX;
+  Y3 := Y3 + ADeltaY;
+end;
+
 { TvEntity }
 
 constructor TvEntity.Create;
@@ -826,16 +900,20 @@ begin
   Result := vfrNotFound;
 end;
 
-procedure TvEntity.Move(ADeltaX, ADeltaY: Integer);
+procedure TvEntity.Move(ADeltaX, ADeltaY: Double);
 begin
   X := X + ADeltaX;
   Y := Y + ADeltaY;
 end;
 
-procedure TvEntity.MoveSubpart(ADeltaX, ADeltaY: Integer;
-  ASubpart: Cardinal);
+procedure TvEntity.MoveSubpart(ADeltaX, ADeltaY: Double; ASubpart: Cardinal);
 begin
 
+end;
+
+function TvEntity.GetSubpartCount: Integer;
+begin
+  Result := 0;
 end;
 
 procedure TvEntity.Render(ADest: TFPCustomCanvas; ADestX: Integer;
@@ -894,6 +972,12 @@ begin
 end;
 
 { TPath }
+
+constructor TPath.Create;
+begin
+  inherited Create;
+  FCurMoveSubPartIndex := -1;
+end;
 
 //GM: Follow the path to cleanly release the chained list!
 destructor TPath.Destroy;
@@ -1040,6 +1124,72 @@ begin
   segment.X := AX;
   segment.Y := AY;
   AppendSegment(segment);
+end;
+
+procedure TPath.Move(ADeltaX, ADeltaY: Double);
+var
+  i: Integer;
+begin
+  inherited Move(ADeltaX, ADeltaY);
+  for i := 0 to GetSubpartCount()-1 do
+  begin
+    MoveSubpart(ADeltaX, ADeltaY, i);
+  end;
+end;
+
+procedure TPath.MoveSubpart(ADeltaX, ADeltaY: Double; ASubpart: Cardinal);
+var
+  lCurPart: TPathSegment;
+begin
+  if (ASubPart < 0) or (ASubPart > Len) then
+    raise Exception.Create(Format('[TPath.MoveSubpart] Invalid index %d', [ASubpart]));
+
+  // Move to the subpart
+  lCurPart := MoveToSubpart(ASubpart);
+
+  // Do the change
+  lCurPart.Move(ADeltaX, ADeltaY);
+end;
+
+function TPath.MoveToSubpart(ASubpart: Cardinal): TPathSegment;
+var
+  i: Integer;
+begin
+  if (ASubPart < 0) or (ASubPart > Len) then
+    raise Exception.Create(Format('[TPath.MoveToSubpart] Invalid index %d', [ASubpart]));
+
+  // Move to the subpart
+  if (ASubPart = FCurMoveSubPartIndex) then
+  begin
+    Result := FCurMoveSubPartSegment;
+  end
+  else if (FCurMoveSubPartSegment <> nil) and (ASubPart = FCurMoveSubPartIndex + 1) then
+  begin
+    Result := FCurMoveSubPartSegment.Next;
+    FCurMoveSubPartIndex := FCurMoveSubPartIndex + 1;
+    FCurMoveSubPartSegment := Result;
+  end
+  else if (FCurMoveSubPartSegment <> nil) and (ASubPart = FCurMoveSubPartIndex - 1) then
+  begin
+    Result := FCurMoveSubPartSegment.Previous;
+    FCurMoveSubPartIndex := FCurMoveSubPartIndex - 1;
+    FCurMoveSubPartSegment := Result;
+  end
+  else
+  begin
+    Result := Points;
+
+    for i := 0 to ASubpart-1 do
+      Result := Result.Next;
+
+    FCurMoveSubPartIndex := ASubpart;
+    FCurMoveSubPartSegment := Result;
+  end;
+end;
+
+function TPath.GetSubpartCount: Integer;
+begin
+  Result := Len;
 end;
 
 procedure TPath.Render(ADest: TFPCustomCanvas; ADestX: Integer;
@@ -1624,6 +1774,12 @@ begin
     ADest.TextOut(Points[0].X, Points[0].Y, Format('%.1f', [LowerDim.Y]));
   end;
   SetLength(Points, 0);
+
+  {$IFDEF FPVECTORIAL_DEBUG_DIMENSIONS}
+  WriteLn(Format('[TvAlignedDimension.Render] BaseRightXY=%f | %f DimensionRightXY=%f | %f DimensionLeftXY=%f | %f',
+    [BaseRight.X, BaseRight.Y, DimensionRight.X, DimensionRight.Y, DimensionLeft.X, DimensionLeft.Y]));
+  {$ENDIF}
+
 {      // Debug info
   ADest.TextOut(CoordToCanvasX(CurDim.BaseRight.X), CoordToCanvasY(CurDim.BaseRight.Y), 'BR');
   ADest.TextOut(CoordToCanvasX(CurDim.DimensionRight.X), CoordToCanvasY(CurDim.DimensionRight.Y), 'DR');
@@ -2380,14 +2536,17 @@ begin
   lEntity := Block.GetFirstEntity();
   while lEntity <> nil do
   begin
+    {$IFDEF FPVECTORIAL_DEBUG_BLOCKS}
+    WriteLn(Format('[TvInsert.Render] Name=%s Block=%s Entity=%s EntityXY=%f | %f BlockXY=%f | %f InsertXY=%f | %f',
+      [Name, Block.Name, lEntity.ClassName, lEntity.X, lEntity.Y, Block.X, Block.Y, X, Y]));
+    {$ENDIF}
+
     // Alter the position of the elements to consider the positioning of the BLOCK and of the INSERT
-    lEntity.X := lEntity.X + Block.X + X;
-    lEntity.Y := lEntity.Y + Block.Y + Y;
+    lEntity.Move(Block.X + X, Block.Y + Y);
     // Render
     lEntity.Render(ADest, ADestX, ADestY, AMulX, AMuly);
     // Change them back
-    lEntity.X := lEntity.X - Block.X - X;
-    lEntity.Y := lEntity.Y - Block.Y - Y;
+    lEntity.Move(- Block.X - X, - Block.Y - Y);
 
     lEntity := Block.GetNextEntity();
   end;

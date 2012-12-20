@@ -26,6 +26,9 @@ unit dxfvectorialreader;
 
 {$mode objfpc}{$H+}
 
+{.$define FPVECTORIALDEBUG}
+{.$define FPVECTORIALDEBUG_POLYLINE}
+
 interface
 
 uses
@@ -130,9 +133,6 @@ type
   end;
 
 implementation
-
-{.$define FPVECTORIALDEBUG}
-{.$define FPVECTORIALDEBUG_POLYLINE}
 
 const
   // Items in the HEADER section
