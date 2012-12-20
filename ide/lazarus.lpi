@@ -63,7 +63,7 @@
         <PackageName Value="SynEdit"/>
       </Item6>
     </RequiredPackages>
-    <Units Count="93">
+    <Units Count="95">
       <Unit0>
         <Filename Value="lazarus.pp"/>
         <IsPartOfProject Value="True"/>
@@ -132,12 +132,12 @@
         <UnitName Value="fpdoc_options"/>
       </Unit9>
       <Unit10>
-        <Filename Value="frames/editor_general_options.pas"/>
+        <Filename Value="frames/editor_indent_options.pas"/>
         <IsPartOfProject Value="True"/>
-        <ComponentName Value="EditorGeneralOptionsFrame"/>
+        <ComponentName Value="EditorIndentOptionsFrame"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Frame"/>
-        <UnitName Value="editor_general_options"/>
+        <UnitName Value="editor_indent_options"/>
       </Unit10>
       <Unit11>
         <Filename Value="frames/editor_display_options.pas"/>
@@ -150,6 +150,7 @@
         <Filename Value="frames/editor_keymapping_options.pas"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="EditorKeymappingOptionsFrame"/>
+        <HasResources Value="True"/>
         <ResourceBaseClass Value="Frame"/>
         <UnitName Value="editor_keymapping_options"/>
       </Unit12>
@@ -178,6 +179,7 @@
         <Filename Value="frames/codetools_general_options.pas"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="CodetoolsGeneralOptionsFrame"/>
+        <HasResources Value="True"/>
         <ResourceBaseClass Value="Frame"/>
         <UnitName Value="codetools_general_options"/>
       </Unit16>
@@ -697,6 +699,22 @@
         <IsPartOfProject Value="True"/>
         <UnitName Value="LPKCache"/>
       </Unit92>
+      <Unit93>
+        <Filename Value="frames/editor_general_options.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="EditorGeneralOptionsFrame"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Frame"/>
+        <UnitName Value="editor_general_options"/>
+      </Unit93>
+      <Unit94>
+        <Filename Value="frames/editor_markup_options.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="EditorMarkupOptionsFrame"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Frame"/>
+        <UnitName Value="editor_markup_options"/>
+      </Unit94>
     </Units>
   </ProjectOptions>
   <CompilerOptions>
