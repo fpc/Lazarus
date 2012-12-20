@@ -1345,6 +1345,7 @@ resourcestring
   dlgScrollGroupOptions = 'Scrolling';
   dlgIndentsTabsGroupOptions = 'Tabs';
   dlgIndentsIndentGroupOptions = 'Indent';
+  dlgCommentIndentGroupOptions = 'Comments';
   dlgMouseGroupOptions = 'Mouse:';
   dlgCursorGroupOptions = 'Cursor';
   dlgBlockGroupOptions = 'Selection';
@@ -1381,6 +1382,27 @@ resourcestring
   dlgTabsToSpaces = 'Tabs to spaces';
   dlgTabIndent = 'Tab indents blocks';
   dlgTrimTrailingSpaces = 'Trim trailing spaces';
+  dlgAnsiCommentTab = 'Ansi (* *)';
+  dlgCurlyCommentTab = 'Curly { }';
+  dlgSlashCommentTab = 'Slash //';
+
+  dlgCommentContinue = 'Prefix comments on linebreak';
+  dlgCommentContinueMatch  = 'Match current line';
+  dlgCommentContinuePrefix = 'Prefix new line';
+  dlgCommentAlignMaxDefault = 'Set default to token pos on 2nd line, if open token before or at column:';
+  dlgCommentAlignMaxToken   = 'Limit indent to';
+  dlgCommentContinueMatchText = 'Match text after token "%s"';
+  dlgCommentContinueMatchToken = 'Match text including token "%s"';
+  dlgCommentContinueMatchLine = 'Match whole line';
+  dlgCommentContinueMatchAsterisk = 'Match text including "*" of token "(*"';
+  dlgCommentContinuePrefixIndDefault = 'Align Prefix at indent of previous line';
+  dlgCommentContinuePrefixIndMatch = 'Align Prefix below start of comment on first comment line';
+  dlgCommentContinuePrefixIndNone = 'Do not indent prefix';
+  dlgCommentShlashExtendMatch = 'Extend, if matched';
+  dlgCommentShlashExtendMatchSplit = 'Extend, if matched and caret in the middle of text (not at EOL)';
+  dlgCommentShlashExtendAlways = 'Extend, if matched or not matched';
+  dlgCommentShlashExtendAlwaysSplit = 'Extend, if matched or not matched (not at EOL)';
+
   dlgUndoAfterSave = 'Undo after save';
   dlgFindTextatCursor = 'Find text at cursor';
   dlgUseSyntaxHighlight = 'Use syntax highlight';

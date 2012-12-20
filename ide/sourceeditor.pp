@@ -54,7 +54,7 @@ uses
   SynEditMiscClasses, SynEditMarkupHighAll, SynEditMarks,
   SynBeautifier, LazSynEditText,
   SynPluginSyncronizedEditBase, SourceSynEditor, SynMacroRecorder,
-  SynExportHTML,
+  SynExportHTML, SynHighlighterPas,
   // Intf
   SrcEditorIntf, MenuIntf, LazIDEIntf, PackageIntf, IDEHelpIntf, IDEImagesIntf,
   IDEWindowIntf, ProjectIntf,
@@ -1284,6 +1284,7 @@ var
   SourceCompletionTimer: TIdleTimer = nil;
   SourceCompletionCaretXY: TPoint;
   AWordCompletion: TWordCompletion = nil;
+  PasBeautifier: TSynBeautifierPascal;
 
 function dbgs(AFlag: TSourceNotebookUpdateFlag): string; overload;
 begin
@@ -2566,6 +2567,8 @@ Begin
     PageName := ASharedEditor.PageName;
     FEditor.ShareTextBufferFrom(ASharedEditor.EditorComponent);
     FEditor.Highlighter := ASharedEditor.EditorComponent.Highlighter;
+    if ASharedEditor.EditorComponent.Beautifier is TSynBeautifierPascal then
+      FEditor.Beautifier := ASharedEditor.EditorComponent.Beautifier;
   end;
 
   FEditPlugin := TSynEditPlugin1.Create(FEditor);
@@ -3959,10 +3962,14 @@ end;
 
 procedure TSourceEditor.SetSyntaxHighlighterType(
   ASyntaxHighlighterType: TLazSyntaxHighlighter);
+var
+  HlIsPas, OldHlIsPas: Boolean;
 begin
   if (ASyntaxHighlighterType=fSyntaxHighlighterType)
   and ((FEditor.Highlighter<>nil) = EditorOpts.UseSyntaxHighlight) then exit;
 
+  OldHlIsPas := FEditor.Highlighter is TSynPasSyn;
+  HlIsPas := False;
   if EditorOpts.UseSyntaxHighlight
   then begin
     if Highlighters[ASyntaxHighlighterType]=nil then begin
@@ -3970,9 +3977,18 @@ begin
         EditorOpts.CreateSyn(ASyntaxHighlighterType);
     end;
     FEditor.Highlighter:=Highlighters[ASyntaxHighlighterType];
+    HlIsPas := FEditor.Highlighter is TSynPasSyn;
   end
   else
     FEditor.Highlighter:=nil;
+
+  if (OldHlIsPas <>  HlIsPas) then begin
+    if HlIsPas then
+      FEditor.Beautifier := PasBeautifier
+    else
+      FEditor.Beautifier := nil; // use default
+    EditorOpts.GetSynEditSettings(FEditor, nil);
+  end;
 
   FSyntaxHighlighterType:=ASyntaxHighlighterType;
   SourceNotebook.UpdateActiveEditColors(FEditor);
@@ -8260,6 +8276,7 @@ begin
   for h:=Low(TLazSyntaxHighlighter) to High(TLazSyntaxHighlighter) do
     Highlighters[h]:=nil;
   IDESearchInText:=@SearchInText;
+  PasBeautifier := TSynBeautifierPascal.Create(nil);
 end;
 
 procedure InternalFinal;
@@ -8268,6 +8285,7 @@ begin
   for h:=Low(TLazSyntaxHighlighter) to High(TLazSyntaxHighlighter) do
     FreeThenNil(Highlighters[h]);
   FreeThenNil(aWordCompletion);
+  FreeAndNil(PasBeautifier);
 end;
 
 { TSourceEditorManagerBase }

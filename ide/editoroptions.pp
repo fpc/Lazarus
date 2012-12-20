@@ -1252,6 +1252,29 @@ type
     FMultiWinEditAccessOrder: TEditorOptionsEditAccessOrderList;
     FCtrlMiddleTabClickClosesOthers: Boolean;
 
+    // Comment Continue
+    FAnsiCommentContinueEnabled: Boolean;
+    FAnsiCommentMatch: String;
+    FAnsiCommentMatchMode: TSynCommentMatchMode;
+    FAnsiCommentPrefix: String;
+    FAnsiIndentMode: TSynCommentIndentFlags;
+    FAnsiIndentAlignMax: integer;
+
+    FCurlyCommentContinueEnabled: Boolean;
+    FCurlyCommentMatch: String;
+    FCurlyCommentMatchMode: TSynCommentMatchMode;
+    FCurlyCommentPrefix: String;
+    FCurlyIndentMode: TSynCommentIndentFlags;
+    FCurlyIndentAlignMax: integer;
+
+    FSlashCommentContinueEnabled: Boolean;
+    FSlashCommentMatch: String;
+    FSlashCommentMatchMode: TSynCommentMatchMode;
+    FSlashCommentPrefix: String;
+    FSlashIndentMode: TSynCommentIndentFlags;
+    FSlashCommentExtend: TSynCommentExtendMode;
+    FSlashIndentAlignMax: integer;
+
     FDefaultValues: TEditorOptions;
 
   public
@@ -1447,6 +1470,48 @@ type
     // Multi window
     property CtrlMiddleTabClickClosesOthers: Boolean
       read FCtrlMiddleTabClickClosesOthers write FCtrlMiddleTabClickClosesOthers default True;
+
+    // Commend Continue
+    property AnsiCommentContinueEnabled: Boolean
+      read FAnsiCommentContinueEnabled write FAnsiCommentContinueEnabled;
+    property AnsiCommentMatch: String
+      read FAnsiCommentMatch write FAnsiCommentMatch;
+    property AnsiCommentPrefix: String
+      read FAnsiCommentPrefix write FAnsiCommentPrefix;
+    property AnsiCommentMatchMode: TSynCommentMatchMode
+      read FAnsiCommentMatchMode write FAnsiCommentMatchMode;
+    property AnsiIndentMode: TSynCommentIndentFlags
+      read FAnsiIndentMode write FAnsiIndentMode;
+    property AnsiIndentAlignMax: integer
+      read FAnsiIndentAlignMax write FAnsiIndentAlignMax;
+
+    property CurlyCommentContinueEnabled: Boolean
+      read FCurlyCommentContinueEnabled write FCurlyCommentContinueEnabled;
+    property CurlyCommentMatch: String
+      read FCurlyCommentMatch write FCurlyCommentMatch;
+    property CurlyCommentPrefix: String
+      read FCurlyCommentPrefix write FCurlyCommentPrefix;
+    property CurlyCommentMatchMode: TSynCommentMatchMode
+      read FCurlyCommentMatchMode write FCurlyCommentMatchMode;
+    property CurlyIndentMode: TSynCommentIndentFlags
+      read FCurlyIndentMode write FCurlyIndentMode;
+    property CurlyIndentAlignMax: integer
+      read FCurlyIndentAlignMax write FCurlyIndentAlignMax;
+
+    property SlashCommentContinueEnabled: Boolean
+      read FSlashCommentContinueEnabled write FSlashCommentContinueEnabled;
+    property SlashCommentMatch: String
+      read FSlashCommentMatch write FSlashCommentMatch;
+    property SlashCommentPrefix: String
+      read FSlashCommentPrefix write FSlashCommentPrefix;
+    property SlashCommentMatchMode: TSynCommentMatchMode
+      read FSlashCommentMatchMode write FSlashCommentMatchMode;
+    property SlashIndentMode: TSynCommentIndentFlags
+      read FSlashIndentMode write FSlashIndentMode;
+    property SlashCommentExtend: TSynCommentExtendMode
+      read FSlashCommentExtend write FSlashCommentExtend;
+    property SlashIndentAlignMax: integer
+      read FSlashIndentAlignMax write FSlashIndentAlignMax;
   end;
 
 const
@@ -3756,6 +3821,41 @@ begin
 
   // Multi window
   FCtrlMiddleTabClickClosesOthers := True;
+
+  // Comment
+  FAnsiCommentContinueEnabled := False;
+  FAnsiCommentMatch := '^\s?(\*)';
+  FAnsiCommentMatchMode := scmMatchAtAsterisk;
+  FAnsiCommentPrefix := '$1';
+  FAnsiIndentMode := [sciAddTokenLen, sciAddPastTokenIndent,
+                      sciAlignOnlyTokenLen, sciAlignOnlyPastTokenIndent,
+                      sciMatchOnlyPastTokenIndent
+                     ];
+  FAnsiIndentAlignMax := 40;
+
+
+  FCurlyCommentContinueEnabled := False;
+  FCurlyCommentMatch := '^\s?(\*)';
+  FCurlyCommentMatchMode := scmMatchAfterOpening;
+  FCurlyCommentPrefix := '$1';
+  FCurlyIndentMode := [sciAddTokenLen, sciAddPastTokenIndent,
+                      sciAlignOnlyTokenLen, sciAlignOnlyPastTokenIndent,
+                      sciMatchOnlyPastTokenIndent
+                     ];
+  FCurlyIndentAlignMax := 40;
+
+  FSlashCommentContinueEnabled := False;
+  FSlashCommentMatch := '^\s?(\*)';
+  FSlashCommentMatchMode := scmMatchAfterOpening;
+  FSlashCommentPrefix := '$1';
+  FSlashIndentMode := [sciAddTokenLen, sciAddPastTokenIndent,
+                      sciAlignOnlyTokenLen, sciAlignOnlyPastTokenIndent,
+                      sciMatchOnlyPastTokenIndent
+                     ];
+  FSlashCommentExtend := sceMatching;
+  FSlashIndentAlignMax := 40;
+
+
 end;
 
 procedure TEditorOptions.Load;
@@ -4672,6 +4772,7 @@ procedure TEditorOptions.GetSynEditSettings(ASynEdit: TSynEdit;
 // if SimilarEdit is given it is used for speed up
 var
   MarkCaret: TSynEditMarkupHighlightAllCaret;
+  b: TSynBeautifierPascal;
 begin
   // general options
   ASynEdit.Options := fSynEditOptions;
@@ -4679,6 +4780,58 @@ begin
   ASynEdit.BlockIndent := fBlockIndent;
   ASynEdit.BlockTabIndent := FBlockTabIndent;
   (ASynEdit.Beautifier as TSynBeautifier).IndentType := fBlockIndentType;
+  if ASynEdit.Beautifier is TSynBeautifierPascal then begin
+    b := ASynEdit.Beautifier as TSynBeautifierPascal;
+
+    if FAnsiCommentContinueEnabled then begin
+      b.AnsiCommentMode := sccPrefixMatch;
+      b.AnsiIndentMode := FAnsiIndentMode;
+      b.AnsiMatch := FAnsiCommentMatch;
+      b.AnsiPrefix := FAnsiCommentPrefix;
+      b.AnsiMatchLine := sclMatchPrev;
+      b.AnsiMatchMode := AnsiCommentMatchMode;
+      b.AnsiCommentIndent := sbitCopySpaceTab;
+      b.AnsiIndentFirstLineMax := AnsiIndentAlignMax;
+    end
+    else begin
+      b.AnsiCommentMode := sccNoPrefix;
+      b.AnsiIndentMode := [];
+    end;
+
+    if FCurlyCommentContinueEnabled then begin
+      b.BorCommentMode := sccPrefixMatch;
+      b.BorIndentMode := FCurlyIndentMode;
+      b.BorMatch := FCurlyCommentMatch;
+      b.BorPrefix := FCurlyCommentPrefix;
+      b.BorMatchLine := sclMatchPrev;
+      b.BorMatchMode := CurlyCommentMatchMode;
+      b.BorCommentIndent := sbitCopySpaceTab;
+      b.BorIndentFirstLineMax := CurlyIndentAlignMax;
+    end
+    else begin
+      b.BorCommentMode := sccNoPrefix;
+      b.BorIndentMode := [];
+    end;
+
+    if FSlashCommentContinueEnabled then begin
+      b.SlashCommentMode := sccPrefixMatch;
+      b.SlashIndentMode := FSlashIndentMode;
+      b.SlashMatch := FSlashCommentMatch;
+      b.SlashPrefix := FSlashCommentPrefix;
+      b.SlashMatchLine := sclMatchPrev;
+      b.SlashMatchMode := SlashCommentMatchMode;
+      b.SlashCommentIndent := sbitCopySpaceTab;
+      b.ExtendSlashCommentMode := FSlashCommentExtend;
+      b.SlashIndentFirstLineMax := SlashIndentAlignMax;
+    end
+    else begin
+      b.SlashCommentMode := sccNoPrefix;
+      b.SlashIndentMode := [];
+    end;
+
+
+  end;
+
   ASynEdit.TrimSpaceType := FTrimSpaceType;
   ASynEdit.TabWidth := fTabWidth;
   ASynEdit.BracketHighlightStyle := FBracketHighlightStyle;
