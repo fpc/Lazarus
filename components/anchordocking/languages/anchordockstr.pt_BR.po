@@ -131,6 +131,10 @@ msgstr "Alinhar cabeçalho topo"
 msgid "Header position"
 msgstr "Posição cabeçalho"
 
+#: anchordockstr.adrsheaderstyle
+msgid "Header Style:"
+msgstr ""
+
 #: anchordockstr.adrshideheadercaptionsforsiteswithonlyonedockedcontrol
 msgid "Hide header captions for sites with only one docked control, as that is already shown in the normal window title"
 msgstr "Ocultar título cabeçalho para locais com somente um controle ancorado, já que é normalmente exibido no título da janela"

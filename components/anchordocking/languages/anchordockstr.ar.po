@@ -1,7 +1,7 @@
-# Arabic translation of Free Pascal Lazarus Project.
-# Copyright (C) 2012 Lazarus Project
-# This file is distributed under the same license as the Lazarus package.
-# Khaled Shagrouni <shagrouni@gmail.com>, 2012.
+ Arabic translation of Free Pascal Lazarus Project.
+ Copyright (C) 2012 Lazarus Project
+ This file is distributed under the same license as the Lazarus package.
+ Khaled Shagrouni <shagrouni@gmail.com>, 2012.
 msgid ""
 msgstr ""
 "Project-Id-Version: Free Pascal Lazarus Project.\n"
@@ -136,6 +136,10 @@ msgstr "محاداة الترويسة لأعلى"
 #: anchordockstr.adrsheaderposition
 msgid "Header position"
 msgstr "موضع الترويسة"
+
+#: anchordockstr.adrsheaderstyle
+msgid "Header Style:"
+msgstr ""
 
 #: anchordockstr.adrshideheadercaptionsforsiteswithonlyonedockedcontrol
 msgid "Hide header captions for sites with only one docked control, as that is already shown in the normal window title"
@@ -280,3 +284,4 @@ msgstr "لإستخدام anchordocking تغليق الإرساء يجب أولا
 #: anchordockstr.adrsundock
 msgid "Undock"
 msgstr "نزع القفل"
+

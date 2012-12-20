@@ -122,6 +122,7 @@ resourcestring
   adrsAllFiles = 'All files';
   adrsAnchorDockingLayout = 'Anchor Docking Layout';
   adrsDockingAnchordocking = 'Docking / Anchordocking';
+  adrsHeaderStyle = 'Header Style:';
 
 implementation
 

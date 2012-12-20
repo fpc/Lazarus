@@ -1,4 +1,4 @@
-# Massimo Soricetti <notturno@quipo.it>, 2011.
+ Massimo Soricetti <notturno@quipo.it>, 2011.
 msgid ""
 msgstr ""
 "PO-Revision-Date: 2011-04-21 23:43+0200\n"
@@ -130,6 +130,10 @@ msgstr "Allinea testata in alto"
 #: anchordockstr.adrsheaderposition
 msgid "Header position"
 msgstr "Posizione testata"
+
+#: anchordockstr.adrsheaderstyle
+msgid "Header Style:"
+msgstr ""
 
 #: anchordockstr.adrshideheadercaptionsforsiteswithonlyonedockedcontrol
 msgid "Hide header captions for sites with only one docked control, as that is already shown in the normal window title"

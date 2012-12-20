@@ -86,11 +86,11 @@
     - http://bugs.freepascal.org/view.php?id=20010 F12 sometimes need twice to get form
     - http://bugs.freepascal.org/view.php?id=19967 disable not always saved
     - http://bugs.freepascal.org/view.php?id=19810 multi monitor
-    - http://bugs.freepascal.org/view.php?id=17026 grabber design
     - http://bugs.freepascal.org/view.php?id=19200 minimize+restore resize
     - http://bugs.freepascal.org/view.php?id=19132 docking already docked
     - http://bugs.freepascal.org/view.php?id=18553 dock designer windows
     - http://bugs.freepascal.org/view.php?id=22149 keep caption of a custom dock site
+    - bug: opening a package editor does not put it to front
 }
 unit AnchorDocking;
 
@@ -649,7 +649,7 @@ var
   DockMaster: TAnchorDockMaster = nil;
 
 const
-  ADHeaderStyle: array[TADHeaderStyle] of string = (
+  ADHeaderStyleNames: array[TADHeaderStyle] of string = (
     'Frame3D',
     'Line',
     'Points'
@@ -657,6 +657,8 @@ const
 
 function StrToADHeaderStyle(const s: string): TADHeaderStyle;
 function dbgs(SiteType: TAnchorDockHostSiteType): string; overload;
+
+procedure DrawADHeader(Canvas: TCanvas; Style: TADHeaderStyle; r: TRect; Horizontal: boolean);
 
 procedure CopyAnchorBounds(Source, Target: TControl);
 procedure AnchorAndChangeBounds(AControl: TControl; Side: TAnchorKind;
@@ -687,8 +689,67 @@ implementation
 function StrToADHeaderStyle(const s: string): TADHeaderStyle;
 begin
   for Result:=Low(TADHeaderStyle) to High(TADHeaderStyle) do
-    if CompareText(ADHeaderStyle[Result],s)=0 then exit;
+    if CompareText(ADHeaderStyleNames[Result],s)=0 then exit;
   Result:=adhsDefault;
+end;
+
+procedure DrawADHeader(Canvas: TCanvas; Style: TADHeaderStyle; r: TRect;
+  Horizontal: boolean);
+var
+  Center: Integer;
+  lx, ly, d, lt, lb, lm: Integer;
+begin
+  case Style of
+  adhsFrame3D:
+    begin
+      Canvas.Frame3d(r,2,bvLowered);
+      Canvas.Frame3d(r,4,bvRaised);
+    end;
+  adhsLine:
+    if Horizontal then
+    begin
+      Center:=r.Top+(r.Bottom-r.Top) div 2;
+      Canvas.Pen.Color:=clltgray;
+      Canvas.Line(r.Left+5,Center-1,r.Right-3,Center-1);
+      Canvas.Pen.Color:=clgray;
+      Canvas.Line(r.Left+5,Center,r.Right-3,Center);
+    end else
+    begin
+      Center:=r.Right+(r.Left-r.Right) div 2;
+      Canvas.Pen.Color:=clltgray;
+      Canvas.Line(Center-1,r.Top+3,Center-1,r.Bottom-5);
+      Canvas.Pen.Color:=clgray;
+      Canvas.Line(Center,r.Top+3,Center,r.Bottom-5);
+    end;
+  adhsPoints:
+    if Horizontal then begin
+      lx := r.left+2;
+      d := (r.Bottom - r.Top - 5) div 2;
+      lt := r.Top + d;
+      lb := lt + 4;
+      lm := lt + 2;
+      while lx < r.Right do
+      begin
+        Canvas.Pixels[lx, lt] := clBtnShadow;
+        Canvas.Pixels[lx, lb] := clBtnShadow;
+        Canvas.Pixels[lx+2, lm] := clBtnShadow;
+        lx := lx + 4;
+      end;
+    end else begin
+      ly := r.Bottom - 2;
+      d := (r.Right - r.Left - 5) div 2;
+      lt := r.Left + d;
+      lb := lt + 4;
+      lm := lt + 2;
+      while ly > r.Top do
+      begin
+        Canvas.Pixels[lt, ly] := clBtnShadow;
+        Canvas.Pixels[lb, ly] := clBtnShadow;
+        Canvas.Pixels[lm, ly-2] := clBtnShadow;
+        ly := ly - 4;
+      end;
+    end;
+  end;
 end;
 
 function dbgs(SiteType: TAnchorDockHostSiteType): string; overload;
@@ -1194,7 +1255,7 @@ begin
   HideHeaderCaptionFloatingControl:=Config.GetValue('HideHeaderCaptionFloatingControl',true);
   AllowDragging:=Config.GetValue('AllowDragging',true);
   HeaderButtonSize:=Config.GetValue('HeaderButtonSize',10);
-  HeaderStyle:=StrToADHeaderStyle(Config.GetValue('HeaderStyle',ADHeaderStyle[adhsDefault]));
+  HeaderStyle:=StrToADHeaderStyle(Config.GetValue('HeaderStyle',ADHeaderStyleNames[adhsDefault]));
   Config.UndoAppendBasePath;
 end;
 
@@ -1214,7 +1275,7 @@ begin
   Config.SetDeleteValue('HideHeaderCaptionFloatingControl',HideHeaderCaptionFloatingControl,true);
   Config.SetDeleteValue('AllowDragging',AllowDragging,true);
   Config.SetDeleteValue('HeaderButtonSize',HeaderButtonSize,10);
-  Config.SetDeleteValue('HeaderStyle',ADHeaderStyle[HeaderStyle],ADHeaderStyle[adhsDefault]);
+  Config.SetDeleteValue('HeaderStyle',ADHeaderStyleNames[HeaderStyle],ADHeaderStyleNames[adhsDefault]);
   Config.UndoAppendBasePath;
 end;
 
@@ -4881,67 +4942,6 @@ begin
 end;
 
 procedure TAnchorDockHeader.Paint;
-type
-  TGrabberAlign = (gHorizontal,gVertical);
-
-  procedure DrawGrabber(r: TRect; gAlign: TGrabberAlign);
-  var
-    Center: Integer;
-    lx, ly, d, lt, lb, lm: Integer;
-  begin
-    case DockMaster.HeaderStyle of
-    adhsFrame3D:
-      begin
-        Canvas.Frame3d(r,2,bvLowered);
-        Canvas.Frame3d(r,4,bvRaised);
-      end;
-    adhsLine:
-      if r.Bottom-r.Top < r.Right-r.Left then
-      begin
-        Center:=r.Top+(r.Bottom-r.Top) div 2;
-        Canvas.Pen.Color:=clltgray;
-        Canvas.Line(r.Left+5,Center-1,r.Right-3,Center-1);
-        Canvas.Pen.Color:=clgray;
-        Canvas.Line(r.Left+5,Center,r.Right-3,Center);
-      end else
-      begin
-        Center:=r.Right+(r.Left-r.Right) div 2;
-        Canvas.Pen.Color:=clltgray;
-        Canvas.Line(Center-1,r.Top+3,Center-1,r.Bottom-5);
-        Canvas.Pen.Color:=clgray;
-        Canvas.Line(Center,r.Top+3,Center,r.Bottom-5);
-      end;
-    adhsPoints:
-      if gAlign=gHorizontal then begin
-        lx := r.left+2;
-        d := (r.Bottom - r.Top - 5) div 2;
-        lt := r.Top + d;
-        lb := lt + 4;
-        lm := lt + 2;
-        while lx < r.Right do
-        begin
-          Canvas.Pixels[lx, lt] := clBtnShadow;
-          Canvas.Pixels[lx, lb] := clBtnShadow;
-          Canvas.Pixels[lx+2, lm] := clBtnShadow;
-          lx := lx + 4;
-        end;
-      end else begin
-        ly := r.Bottom - 2;
-        d := (r.Right - r.Left - 5) div 2;
-        lt := r.Left + d;
-        lb := lt + 4;
-        lm := lt + 2;
-        while ly > r.Top do
-        begin
-          Canvas.Pixels[lt, ly] := clBtnShadow;
-          Canvas.Pixels[lb, ly] := clBtnShadow;
-          Canvas.Pixels[lm, ly-2] := clBtnShadow;
-          ly := ly - 4;
-        end;
-      end;
-    end;
-  end;
-
 var
   r: TRect;
   TxtH: longint;
@@ -4974,22 +4974,22 @@ begin
       dy:=Max(0,(r.Bottom-r.Top-TxtW) div 2);
       Canvas.Font.Orientation:=900;
       Canvas.TextOut(r.Left+dx,r.Bottom-dy,Caption);
-      DrawGrabber(Rect(r.Left,r.Top,r.Right,r.Bottom-dy-TxtW-1),gVertical);
-      DrawGrabber(Rect(r.Left,r.Bottom-dy+1,r.Right,r.Bottom),gVertical);
+      DrawADHeader(Canvas,DockMaster.HeaderStyle,Rect(r.Left,r.Top,r.Right,r.Bottom-dy-TxtW-1),false);
+      DrawADHeader(Canvas,DockMaster.HeaderStyle,Rect(r.Left,r.Bottom-dy+1,r.Right,r.Bottom),false);
     end else begin
       // horizontal
       dx:=Max(0,(r.Right-r.Left-TxtW) div 2);
       dy:=Max(0,(r.Bottom-r.Top-TxtH) div 2);
       Canvas.Font.Orientation:=0;
       Canvas.TextOut(r.Left+dx,r.Top+dy,Caption);
-      DrawGrabber(Rect(r.Left,r.Top,r.Left+dx-1,r.Bottom),gHorizontal);
-      DrawGrabber(Rect(r.Left+dx+TxtW+2,r.Top,r.Right,r.Bottom),gHorizontal);
+      DrawADHeader(Canvas,DockMaster.HeaderStyle,Rect(r.Left,r.Top,r.Left+dx-1,r.Bottom),true);
+      DrawADHeader(Canvas,DockMaster.HeaderStyle,Rect(r.Left+dx+TxtW+2,r.Top,r.Right,r.Bottom),true);
     end;
   end else begin
     if Align in [alLeft,alRight] then
-      DrawGrabber(r,gVertical)
+      DrawADHeader(Canvas,DockMaster.HeaderStyle,r,false)
     else
-      DrawGrabber(r,gHorizontal);
+      DrawADHeader(Canvas,DockMaster.HeaderStyle,r,true);
   end;
 end;
 

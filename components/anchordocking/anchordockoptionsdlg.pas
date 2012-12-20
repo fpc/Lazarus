@@ -35,7 +35,7 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, ButtonPanel,
-  StdCtrls, ComCtrls, LCLProc, AnchorDocking, AnchorDockStr;
+  StdCtrls, ComCtrls, LCLProc, AnchorDocking, AnchorDockStr, types;
 
 type
   TAnchorDockOptionsFlag = (
@@ -52,12 +52,16 @@ type
     HeaderAlignLeftTrackBar: TTrackBar;
     HeaderAlignTopLabel: TLabel;
     HeaderAlignTopTrackBar: TTrackBar;
+    HeaderStyleComboBox: TComboBox;
+    HeaderStyleLabel: TLabel;
     HideHeaderCaptionForFloatingCheckBox: TCheckBox;
     ScaleOnResizeCheckBox: TCheckBox;
     ShowHeaderCaptionCheckBox: TCheckBox;
     ShowHeaderCheckBox: TCheckBox;
     SplitterWidthLabel: TLabel;
     SplitterWidthTrackBar: TTrackBar;
+    procedure HeaderStyleComboBoxDrawItem(Control: TWinControl; Index: Integer;
+      ARect: TRect; {%H-}State: TOwnerDrawState);
     procedure OkClick(Sender: TObject);
     procedure DragThresholdTrackBarChange(Sender: TObject);
     procedure HeaderAlignLeftTrackBarChange(Sender: TObject);
@@ -145,6 +149,12 @@ begin
     SaveToMaster;
 end;
 
+procedure TAnchorDockOptionsFrame.HeaderStyleComboBoxDrawItem(
+  Control: TWinControl; Index: Integer; ARect: TRect; State: TOwnerDrawState);
+begin
+  DrawADHeader(TComboBox(Control).Canvas,TADHeaderStyle(Index),ARect,true);
+end;
+
 procedure TAnchorDockOptionsFrame.DragThresholdTrackBarChange(Sender: TObject);
 begin
   UpdateDragThresholdLabel;
@@ -218,12 +228,19 @@ end;
 procedure TAnchorDockOptionsFrame.LoadFromMaster;
 var
   CurSettings: TAnchorDockSettings;
+  sl: TStringList;
+  hs: TADHeaderStyle;
 begin
   CurSettings:=TAnchorDockSettings.Create;
+  sl:=TStringList.Create;
   try
+    for hs:=Low(TADHeaderStyle) to High(TADHeaderStyle) do
+      sl.Add(ADHeaderStyleNames[hs]);
+    HeaderStyleComboBox.Items.Assign(sl);
     Master.SaveSettings(CurSettings);
     LoadFromSettings(CurSettings);
   finally
+    sl.Free;
     CurSettings.Free;
   end;
 end;
@@ -231,6 +248,7 @@ end;
 procedure TAnchorDockOptionsFrame.SaveToSettings(
   TheSettings: TAnchorDockSettings);
 begin
+  TheSettings.HeaderStyle:=TADHeaderStyle(HeaderStyleComboBox.ItemIndex);
   TheSettings.DragTreshold:=DragThresholdTrackBar.Position;
   TheSettings.HeaderAlignTop:=HeaderAlignTopTrackBar.Position;
   TheSettings.HeaderAlignLeft:=HeaderAlignLeftTrackBar.Position;
@@ -244,6 +262,9 @@ end;
 procedure TAnchorDockOptionsFrame.LoadFromSettings(
   TheSettings: TAnchorDockSettings);
 begin
+  HeaderStyleLabel.Caption:=adrsHeaderStyle;
+  HeaderStyleComboBox.ItemIndex:=ord(TheSettings.HeaderStyle);
+
   DragThresholdTrackBar.Hint:=
     adrsAmountOfPixelTheMouseHasToDragBeforeDragStarts;
   DragThresholdTrackBar.Position:=TheSettings.DragTreshold;

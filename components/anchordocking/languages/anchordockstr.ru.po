@@ -129,6 +129,10 @@ msgstr "Помещение заголовка сверху"
 msgid "Header position"
 msgstr "Положение заголовка"
 
+#: anchordockstr.adrsheaderstyle
+msgid "Header Style:"
+msgstr ""
+
 #: anchordockstr.adrshideheadercaptionsforsiteswithonlyonedockedcontrol
 msgid "Hide header captions for sites with only one docked control, as that is already shown in the normal window title"
 msgstr "Скрывать названия заголовков для областей с единственным пристыкованным объектом (это название уже имеется в обычном заголовке окна)"
