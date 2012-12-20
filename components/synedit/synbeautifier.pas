@@ -40,8 +40,8 @@ unit SynBeautifier;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, SynEditMiscClasses, LazSynEditText, SynEditPointClasses,
-  SynEditKeyCmds;
+  Classes, SysUtils, math, LCLProc, SynEditMiscClasses, LazSynEditText, SynEditPointClasses,
+  SynEditKeyCmds, SynHighlighterPas, SynEditHighlighterFoldBase, SynRegExpr;
 
 type
 
@@ -101,6 +101,7 @@ type
                              StartLinePos, EndLinePos: Integer); virtual; abstract;
   public
     procedure Assign(Src: TPersistent); override;
+    function  GetCopy: TSynCustomBeautifier;
     procedure BeforeCommand(const Editor: TSynEditBase; const Lines: TSynEditStrings;
                             const ACaret: TSynEditCaret; var Command: TSynEditorCommand;
                             InitialCmd: TSynEditorCommand);
@@ -129,13 +130,20 @@ type
   private
     FIndentType: TSynBeautifierIndentType;
   protected
+    FLogicalIndentLen: Integer;
+
+    function GetLine(AnIndex: Integer): String; virtual;
+    procedure GetIndentInfo(const LinePos: Integer;
+                            out ACharMix: String; out AnIndent: Integer;
+                            AStopScanAtLine: Integer = 0);
     // requiring FCurrentEditor, FCurrentLines
     procedure DoBeforeCommand(const ACaret: TSynEditCaret;
                               var Command: TSynEditorCommand); override;
     procedure DoAfterCommand(const ACaret: TSynEditCaret;
                              var Command: TSynEditorCommand;
                              StartLinePos, EndLinePos: Integer); override;
-    function GetIndent(const LinePos: Integer; out BasedOnLine: Integer): Integer;
+    function GetIndent(const LinePos: Integer; out BasedOnLine: Integer;
+                       AStopScanAtLine: Integer = 0): Integer;
     function AdjustCharMix(DesiredIndent: Integer; CharMix, AppendMix: String): String;
     function GetCharMix(const LinePos, Indent: Integer;
                         var IndentCharsFromLinePos: Integer = 0): String;
@@ -159,8 +167,1072 @@ type
     property IndentType: TSynBeautifierIndentType read FIndentType write FIndentType;
   end;
 
+  TSynCommentContineMode = (
+      sccNoPrefix,      // May still do indent, if matched
+      sccPrefixAlways,  // If the pattern did not match all will be done, except the indent AFTER the prefix (can not be detected)
+      sccPrefixMatch
+      //sccPrefixMatchFirst
+      //sccPrefixMatchPrev
+      //sccPrefixMatchPrevTwo           // last 2 lines match
+      //sccPrefixMatchPrevTwoExact      // last 2 lines match and same result for prefix
+    );
+
+  TSynCommentMatchLine = (
+      sclMatchFirst, // Match the first line of the comment to get substitutes for Prefix ($1)
+      sclMatchPrev   // Match the previous line of the comment to get substitutes for Prefix ($1)
+      //sclMatchNestedFirst // For nested comments, first line of this nest.
+    );
+
+  TSynCommentMatchMode = (
+    // Which parts of the first line to match sclMatchFirst or sclMatchPrev (if prev = first)
+      scmMatchAfterOpening, // will not include (*,{,//. The ^ will match the first char after
+      scmMatchOpening,      // will include (*,{,//. The ^ will match the ({/
+      scmMatchWholeLine,    // Match the entire line
+      scmMatchAtAsterisk    // AnsiComment only, will match the * of (*, but not the (
+    );
+
+  TSynCommentIndentFlag = (
+    // * For Matching lines (FCommentMode)
+      // By default indent is the same as for none comment lines (none overrides sciAlignOpen)
+      sciNone,      // Does not Indent comment lines (Prefix may contain a fixed indent)
+      sciAlignOpen, // Indent to real opening pos on first line, if comment does not start at BOL "Foo(); (*"
+
+      // sciAlignOpenOnce // 2nd line only, thes sciNone or default (must not have sciAlignOpen)
+
+      // sciAdd...: if (only if) previous line had started with the opening token "(*" or "{".
+      //            or if sciAlignOpen is set
+      //            This is not done for "//", as Comment Extension will add a new "//"
+      //            But Applies to sciNone
+      sciAddTokenLen,        // add 1 or 2 spaces to indent (for the length of the token)
+                             // in case of scmMatchAtAsterisk, 1 space is added. ("(" only)
+      sciAddPastTokenIndent, // Adds any indent found past the opening token  "(*", "{" or "//".
+                             // For "//" this is added after the nem "//", but before the prefix.
+
+      // flag to ignore spaces, that are matched.
+      // flag to be smart, if not matched
+
+      sciApplyIndentForNoMatch  // Apply above rules For NONE Matching lines (FCommentMode),
+                                // includes FIndentFirstLineExtra
+    );
+  TSynCommentIndentFlags = set of TSynCommentIndentFlag;
+
+  TSynCommentExtendMode = (
+      sceNever,                // Never Extend
+      sceAlways,               // Always
+      sceSplitLine,            // If the line was split (caret was not at EOL, when enter was pressed
+      sceMatching,             // If the line matched (even if sccPrefixAlways or sccNoPrefix
+      sceMatchingSplitLine
+    );
+
+  TSynCommentType = (sctAnsi, sctBor, sctSlash);
+
+    // end mode
+  { TSynBeautifierPascal }
+
+  TSynBeautifierPascal = class(TSynBeautifier)
+  private
+    FIndentMode:           Array [TSynCommentType] of TSynCommentIndentFlags;
+    FIndentFirstLineExtra: Array [TSynCommentType] of String;
+    FIndentFirstLineMax:   Array [TSynCommentType] of Integer;
+
+    FCommentMode:          Array [TSynCommentType] of TSynCommentContineMode;
+    FMatchMode:            Array [TSynCommentType] of TSynCommentMatchMode;
+    FMatchLine:            Array [TSynCommentType] of TSynCommentMatchLine;
+    FMatch:                Array [TSynCommentType] of String;
+    FPrefix:               Array [TSynCommentType] of String;
+    FCommentIndent:        Array [TSynCommentType] of TSynBeautifierIndentType;
+
+    FEolMatch:             Array [TSynCommentType] of String;
+    FEolMode:              Array [TSynCommentType] of TSynCommentContineMode;
+    FEolPostfix:           Array [TSynCommentType] of String;
+    FEolSkipLongerLine:  Array [TSynCommentType] of Boolean;
+
+    FExtenbSlashCommentMode: TSynCommentExtendMode;
+
+  private
+    FPasHighlighter: TSynPasSyn;
+
+    FCaretAtEOL: Boolean;
+    FWorkLine: Integer; // 1 based
+    FWorkFoldType: TSynCommentType;
+    FGetLineAfterComment: Boolean;
+    FRegExprEngine: TRegExpr;
+
+    FCacheFoldEndLvlIdx,         FCacheFoldEndLvl: Integer;
+    FCacheCommentLvlIdx,         FCacheCommentLvl: Integer;
+    FCacheFoldTypeForIdx: Integer;
+                                 FCacheFoldType: TPascalCodeFoldBlockType;
+    FCacheFirstLineForIdx,       FCacheFirstLine: Integer;
+    FCacheSlashColumnForIdx,     FCacheSlashColumn: Integer;
+    FCacheCommentStartColForIdx, FCacheCommentStartCol: Integer;
+
+    FCacheWorkFoldEndLvl: Integer;
+    FCacheWorkCommentLvl: Integer;
+    FCacheWorkFoldType: TPascalCodeFoldBlockType;
+    FCacheWorkFirstLine: Integer;
+    FCacheWorkSlashCol: Integer;
+    FCacheWorkCommentStartCol: Integer;
+
+  protected
+    function  IsPasHighlighter: Boolean;
+    procedure InitCache;
+    procedure InitPasHighlighter;
+    // Generic Helpers
+    function  GetFoldEndLevelForIdx(AIndex: Integer): Integer;
+    function  GetFoldCommentLevelForIdx(AIndex: Integer): Integer;
+    function  GetFoldTypeAtEndOfLineForIdx(AIndex: Integer): TPascalCodeFoldBlockType;
+    function  GetFirstCommentLineForIdx(AIndex: Integer): Integer; // Result is 1 based
+    function  GetSlashStartColumnForIdx(AIndex: Integer): Integer;
+    function  GetCommentStartColForIdx(AIndex: Integer): Integer; // Returns Column (logic) for GetFirstCommentLineForIdx(AIndex)
+    // Values based on FWorkLine
+    function  GetFoldEndLevel: Integer;
+    function  GetFoldCommentLevel: Integer;
+    function  GetFoldTypeAtEndOfLine: TPascalCodeFoldBlockType;
+    function  GetFirstCommentLine: Integer; // Result is 1 based
+    function  GetSlashStartColumn: Integer; // Acts on FWorkLine-1
+    function  GetCommentStartCol: Integer;  // Acts on GetFirstCommentLineForIdx(FWorkLine) / Logical Resulc
+
+    function  GetMatchStartColForIdx(AIndex: Integer): Integer; // Res=1-based
+    function  GetMatchStartPos(AIndex: Integer = -1): TPoint; // Res=1-based / AIndex-1 is only used for sclMatchPrev
+
+  protected
+    function GetLine(AnIndex: Integer): String; override;
+
+    procedure DoBeforeCommand(const ACaret: TSynEditCaret;
+                              var Command: TSynEditorCommand); override;
+    procedure DoAfterCommand(const ACaret: TSynEditCaret;
+                             var Command: TSynEditorCommand;
+                             StartLinePos, EndLinePos: Integer); override;
+  public
+    constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
+    procedure Assign(Src: TPersistent); override;
+    // Retruns a 0-based position (even 0-based physical)
+  published
+    // *** coments with (* *)
+
+    (* AnsiIndentFirstLineMax:
+       * For comments that do NOT start at the BOL in their opening line "  Foo; ( * comment":
+         if AnsiIndentFirstLineMax is is set:
+         - If the comment starts before or at the "Max-Column, then sciAlignOpen is always used.
+         - If the comment starts after max column, then the specified mode is used.
+           If the specified mode is sciAlignOpen it will be cut at Max
+       * For comments that start at BOL in their opening line "  ( * comment":
+         This is ignored
+
+
+       AnsiIndentFirstLineExtra:
+         For comments that do NOT start at the BOL, an extra indent is added
+         on the 2nd line (except if sciAlignOpen is used (in Flags, or via A.I.FirstLineMax))
+    *)
+    property AnsiIndentMode: TSynCommentIndentFlags read FIndentMode[sctAnsi]
+                                                   write FIndentMode[sctAnsi];
+    property AnsiIndentFirstLineMax:   Integer     read FIndentFirstLineMax[sctAnsi]
+                                                   write FIndentFirstLineMax[sctAnsi];
+    property AnsiIndentFirstLineExtra: String      read FIndentFirstLineExtra[sctAnsi]
+                                                   write FIndentFirstLineExtra[sctAnsi];
+
+    (* match should start with ^, and leading spaces should not be in ()  "^\s?(\*\*?\*?)"
+       prefix can refer to $1 and should have spaces to indent after the match "$1 "
+    *)
+    property AnsiCommentMode: TSynCommentContineMode read FCommentMode[sctAnsi]
+                                                     write FCommentMode[sctAnsi];
+    property AnsiMatch:       String                 read FMatch[sctAnsi]
+                                                     write FMatch[sctAnsi];
+    property AnsiPrefix :     String                 read FPrefix[sctAnsi]
+                              write FPrefix[sctAnsi];
+    property AnsiMatchMode:   TSynCommentMatchMode   read FMatchMode[sctAnsi]
+                                                     write FMatchMode[sctAnsi];
+    property AnsiMatchLine:   TSynCommentMatchLine   read FMatchLine[sctAnsi]
+                                                     write FMatchLine[sctAnsi];
+    property AnsiCommentIndent: TSynBeautifierIndentType read FCommentIndent[sctAnsi]
+                                                         write FCommentIndent[sctAnsi];
+
+    // Add postfix at EOL
+    property AnsiEolMode: TSynCommentContineMode read FEolMode[sctAnsi]
+                                                 write FEolMode[sctAnsi];
+    property AnsiEolPostfix: String              read FEolPostfix[sctAnsi]
+                                                 write FEolPostfix[sctAnsi];
+    property AnsiEolMatch:   String              read FEolMatch[sctAnsi]
+                                                 write FEolMatch[sctAnsi];
+    property AnsiEolSkipLongerLine: Boolean      read FEolSkipLongerLine[sctAnsi]
+                                                 write FEolSkipLongerLine[sctAnsi];
+
+    // *** coments with { }
+
+    property BorIndentMode: TSynCommentIndentFlags read FIndentMode[sctBor]
+                                                  write FIndentMode[sctBor];
+    property BorIndentFirstLineMax:   Integer     read FIndentFirstLineMax[sctBor]
+                                                  write FIndentFirstLineMax[sctBor];
+    property BorIndentFirstLineExtra: String      read FIndentFirstLineExtra[sctBor]
+                                                  write FIndentFirstLineExtra[sctBor];
+
+    property BorCommentMode: TSynCommentContineMode read FCommentMode[sctBor]
+                                                    write FCommentMode[sctBor];
+    property BorMatch:       String                 read FMatch[sctBor]
+                                                    write FMatch[sctBor];
+    property BorPrefix :     String                 read FPrefix[sctBor]
+                             write FPrefix[sctBor];
+    property BorMatchMode:   TSynCommentMatchMode   read FMatchMode[sctBor]
+                                                    write FMatchMode[sctBor];
+    property BorMatchLine:   TSynCommentMatchLine   read FMatchLine[sctBor]
+                                                    write FMatchLine[sctBor];
+    property BorCommentIndent: TSynBeautifierIndentType read FCommentIndent[sctBor]
+                                                         write FCommentIndent[sctBor];
+
+    property BorEolMode: TSynCommentContineMode read FEolMode[sctBor]
+                                                write FEolMode[sctBor];
+    property BorEolPostfix : String             read FEolPostfix[sctBor]
+                             write FEolPostfix[sctBor];
+    property BorEolMatch:    String             read FEolMatch[sctBor]
+                                                write FEolMatch[sctBor];
+    property BorEolSkipLongerLine: Boolean      read FEolSkipLongerLine[sctBor]
+                                                write FEolSkipLongerLine[sctBor];
+
+    // *** coments with //
+    // Continue only, if Extended
+
+    property ExtenbSlashCommentMode: TSynCommentExtendMode read FExtenbSlashCommentMode
+                                                           write FExtenbSlashCommentMode;
+
+    property SlashIndentMode: TSynCommentIndentFlags read FIndentMode[sctSlash]
+                                                    write FIndentMode[sctSlash];
+    property SlashIndentFirstLineMax:   Integer     read FIndentFirstLineMax[sctSlash]
+                                                    write FIndentFirstLineMax[sctSlash];
+    property SlashIndentFirstLineExtra: String      read FIndentFirstLineExtra[sctSlash]
+                                                    write FIndentFirstLineExtra[sctSlash];
+
+    property SlashCommentMode: TSynCommentContineMode read FCommentMode[sctSlash]
+                                                      write FCommentMode[sctSlash];
+    property SlashMatch:     String                   read FMatch[sctSlash]
+                                                      write FMatch[sctSlash];
+    property SlashPrefix :   String                   read FPrefix[sctSlash]
+                             write FPrefix[sctSlash];
+    property SlashMatchMode: TSynCommentMatchMode     read FMatchMode[sctSlash]
+                                                      write FMatchMode[sctSlash];
+    property SlashMatchLine:   TSynCommentMatchLine   read FMatchLine[sctSlash]
+                                                      write FMatchLine[sctSlash];
+    property SlashCommentIndent: TSynBeautifierIndentType read FCommentIndent[sctSlash]
+                                                         write FCommentIndent[sctSlash];
+
+    property SlashEolMode: TSynCommentContineMode read FEolMode[sctSlash]
+                                                  write FEolMode[sctSlash];
+    property SlashEolPostfix : String             read FEolPostfix[sctSlash]
+                               write FEolPostfix[sctSlash];
+    property SlashEolMatch:    String             read FEolMatch[sctSlash]
+                                                  write FEolMatch[sctSlash];
+    property SlashEolSkipLongerLine: Boolean      read FEolSkipLongerLine[sctSlash]
+                                                  write FEolSkipLongerLine[sctSlash];
+  end;
+
+function dbgs(ACommentType: TSynCommentType): String; overload;
+function dbgs(AContinueMode: TSynCommentContineMode): String; overload;
+function dbgs(AMatchLine: TSynCommentMatchLine): String; overload;
+function dbgs(AMatchMode: TSynCommentMatchMode): String; overload;
+function dbgs(AIndentFlag: TSynCommentIndentFlag): String; overload;
+function dbgs(AIndentFlags: TSynCommentIndentFlags): String; overload;
+function dbgs(AExtendMode: TSynCommentExtendMode): String; overload;
+
 implementation
 uses SynEdit;
+
+function ToIdx(APos: Integer): Integer; inline;
+begin
+  Result := APos - 1;
+end;
+
+function ToPos(AIdx: Integer): Integer; inline;
+begin
+  Result := AIdx + 1;
+end;
+
+function dbgs(ACommentType: TSynCommentType): String;
+begin
+  Result := ''; WriteStr(Result, ACommentType);
+end;
+
+function dbgs(AContinueMode: TSynCommentContineMode): String;
+begin
+  Result := ''; WriteStr(Result, AContinueMode);
+end;
+
+function dbgs(AMatchLine: TSynCommentMatchLine): String;
+begin
+  Result := ''; WriteStr(Result, AMatchLine);
+end;
+
+function dbgs(AMatchMode: TSynCommentMatchMode): String;
+begin
+  Result := ''; WriteStr(Result, AMatchMode);
+end;
+
+function dbgs(AIndentFlag: TSynCommentIndentFlag): String;
+begin
+  Result := ''; WriteStr(Result, AIndentFlag);
+end;
+
+function dbgs(AIndentFlags: TSynCommentIndentFlags): String;
+var
+  i: TSynCommentIndentFlag;
+begin
+  Result := '';
+  for i := low(TSynCommentIndentFlag) to high(TSynCommentIndentFlag) do
+    if i in AIndentFlags then
+      if Result = ''
+      then Result := dbgs(i)
+      else Result := Result + ',' + dbgs(i);
+  if Result <> '' then
+    Result := '[' + Result + ']';
+end;
+
+function dbgs(AExtendMode: TSynCommentExtendMode): String;
+begin
+  Result := ''; WriteStr(Result, AExtendMode);
+end;
+
+
+{ TSynBeautifierPascal }
+
+function TSynBeautifierPascal.IsPasHighlighter: Boolean;
+begin
+  Result := (TSynEdit(FCurrentEditor).Highlighter <> nil) and
+            (TSynEdit(FCurrentEditor).Highlighter is TSynPasSyn);
+end;
+
+procedure TSynBeautifierPascal.InitCache;
+begin
+  FCacheFoldEndLvlIdx         := -1;
+  FCacheCommentLvlIdx         := -1;
+  FCacheFoldTypeForIdx        := -1;
+  FCacheFirstLineForIdx       := -1;
+  FCacheSlashColumnForIdx     := -1;
+  FCacheCommentStartColForIdx := -1;
+
+  FCacheWorkFoldEndLvl         := -2;
+  FCacheWorkCommentLvl         := -2;
+  FCacheWorkFoldType           := cfbtIfThen; // dummy for not yet cached
+  FCacheWorkFirstLine          := -2;
+  FCacheWorkSlashCol           := -2;
+  FCacheWorkCommentStartCol := -2;
+
+end;
+
+procedure TSynBeautifierPascal.InitPasHighlighter;
+begin
+  FPasHighlighter := TSynPasSyn(TSynEdit(FCurrentEditor).Highlighter);
+  FPasHighlighter.CurrentLines := FCurrentLines;
+  FPasHighlighter.ScanRanges;
+end;
+
+function TSynBeautifierPascal.GetFoldEndLevelForIdx(AIndex: Integer): Integer;
+begin
+  Result := FCacheFoldEndLvl;
+  if AIndex = FCacheFoldEndLvlIdx then
+    exit;
+  FCacheFoldEndLvlIdx := AIndex;
+  FCacheFoldEndLvl := FPasHighlighter.FoldBlockEndLevel(AIndex, FOLDGROUP_PASCAL, [sfbIncludeDisabled]);
+  Result := FCacheFoldEndLvl;
+end;
+
+function TSynBeautifierPascal.GetFoldCommentLevelForIdx(AIndex: Integer): Integer;
+var
+  tmp: TPascalCodeFoldBlockType;
+begin
+  Result := FCacheCommentLvl;
+  if AIndex = FCacheCommentLvlIdx then
+    exit;
+  FCacheCommentLvlIdx := AIndex;
+
+  FCacheCommentLvl := GetFoldEndLevelForIdx(AIndex) - 1;
+  while (FCacheCommentLvl > 0) do begin
+    FPasHighlighter.FoldBlockNestedTypes(AIndex , FCacheCommentLvl - 1, Pointer(tmp), FOLDGROUP_PASCAL, [sfbIncludeDisabled]);
+    if not(tmp in [cfbtAnsiComment, cfbtBorCommand, cfbtSlashComment]) then
+      break;
+    dec(FCacheCommentLvl);
+  end;
+  inc(FCacheCommentLvl);
+  Result := FCacheCommentLvl;
+end;
+
+function TSynBeautifierPascal.GetFoldTypeAtEndOfLineForIdx(AIndex: Integer): TPascalCodeFoldBlockType;
+var
+  EndLevel: Integer;
+begin
+  // TODO cfbtNestedComment
+  Result := FCacheFoldType;
+  if AIndex = FCacheFoldTypeForIdx then
+    exit;
+
+  FCacheFoldTypeForIdx := AIndex;
+  EndLevel := GetFoldEndLevelForIdx(AIndex);
+  if (EndLevel > 0) and
+     (not FPasHighlighter.FoldBlockNestedTypes(AIndex, EndLevel - 1,
+       Pointer(FCacheFoldType), FOLDGROUP_PASCAL, [sfbIncludeDisabled]) )
+  then
+    FCacheFoldType := cfbtNone;
+
+  while (FCacheFoldType = cfbtNestedComment) and (EndLevel > 1) do begin
+    dec(EndLevel);
+    if (not FPasHighlighter.FoldBlockNestedTypes(AIndex, EndLevel - 1,
+         Pointer(FCacheFoldType), FOLDGROUP_PASCAL, [sfbIncludeDisabled]) )
+    then
+      FCacheFoldType := cfbtNone;
+  end;
+
+  Result := FCacheFoldType;
+end;
+
+function TSynBeautifierPascal.GetFirstCommentLineForIdx(AIndex: Integer): Integer;
+var
+  FoldType: TPascalCodeFoldBlockType;
+  EndLvl, CommentLvl: Integer;
+begin
+  Result := FCacheFirstLine;
+  if AIndex = FCacheFirstLineForIdx then
+    exit;
+
+  FoldType := GetFoldTypeAtEndOfLineForIdx(AIndex);
+  EndLvl   := GetFoldEndLevelForIdx(AIndex);
+
+  if (EndLvl = 0) or not(FoldType in [cfbtAnsiComment, cfbtBorCommand, cfbtSlashComment])
+  then begin
+    Result := AIndex; // 1 based - the line above AIndex
+    exit;
+  end;
+
+  FCacheFirstLineForIdx := AIndex;
+  FCacheFirstLine       := AIndex;
+  CommentLvl            := GetFoldCommentLevelForIdx(AIndex);
+
+  while (FCacheFirstLine > 0) do begin
+    if CommentLvl > FPasHighlighter.FoldBlockMinLevel(FCacheFirstLine-1, FOLDGROUP_PASCAL, [sfbIncludeDisabled]) then
+      break;
+    dec(FCacheFirstLine);
+  end;
+
+  Result := FCacheFirstLine;
+//debugln(['FIRST LINE ', FCacheFirstLine]);
+end;
+
+function TSynBeautifierPascal.GetSlashStartColumnForIdx(AIndex: Integer): Integer;
+var
+  Tk, LastTk: TtkTokenKind;
+begin
+  Result := FCacheSlashColumn;
+  if AIndex = FCacheSlashColumnForIdx then
+    exit;
+
+  FCacheSlashColumnForIdx := AIndex;
+  FCacheSlashColumn := -1;
+  if (FCurrentLines[AIndex] <> '') then begin
+    FPasHighlighter.StartAtLineIndex(AIndex);
+    Tk := SynHighlighterPas.tkUnknown;
+    while not FPasHighlighter.GetEol do begin
+      LastTk := Tk;
+      Tk := TtkTokenKind(FPasHighlighter.GetTokenKind);
+      if (Tk = SynHighlighterPas.tkComment) and (LastTk <> SynHighlighterPas.tkComment) and
+         (copy(FPasHighlighter.GetToken,1,2) = '//')
+      then begin
+        FCacheSlashColumn := FPasHighlighter.GetTokenPos + 1;
+        exit;
+      end;
+      FPasHighlighter.Next;
+    end;
+  end;
+  Result := FCacheSlashColumn;
+end;
+
+function TSynBeautifierPascal.GetCommentStartColForIdx(AIndex: Integer): Integer;
+var
+  nl: TLazSynFoldNodeInfoList;
+  i: Integer;
+  FoldCommentLvl: Integer;
+begin
+  Result := FCacheCommentStartCol;
+  if AIndex = FCacheCommentStartColForIdx then
+    exit;
+  FCacheCommentStartColForIdx := AIndex;
+
+  if (GetFoldEndLevelForIdx(AIndex) = 0) or
+     not(GetFoldTypeAtEndOfLineForIdx(AIndex) in [cfbtAnsiComment, cfbtBorCommand, cfbtSlashComment])
+  then begin
+    // must be SlashComment
+    FCacheCommentStartCol := GetSlashStartColumnForIdx(AIndex - 1);
+    Result := FCacheCommentStartCol;
+//debugln(['FIRST COL prev-// ', FCacheCommentStartCol]);
+    exit;
+  end;
+
+  FCacheCommentStartCol := -1;
+  FoldCommentLvl := GetFoldCommentLevelForIdx(AIndex);
+  nl := FPasHighlighter.FoldNodeInfo[GetFirstCommentLineForIdx(AIndex) - 1];
+  nl.AddReference;
+  nl.ClearFilter;
+  nl.ActionFilter := [sfaOpen];
+  nl.GroupFilter  := FOLDGROUP_PASCAL;
+  i := nl.Count - 1;
+  while i >= 0 do  begin
+    if (not (sfaInvalid in nl[i].FoldAction)) and
+       (nl[i].NestLvlEnd = FoldCommentLvl)
+    then begin
+      FCacheCommentStartCol := nl[i].LogXStart + 1;  // Highlighter pos are 0 based
+      break;
+    end;
+    dec(i);
+  end;
+  nl.ReleaseReference;
+//debugln(['FIRST COL ', FCacheCommentStartCol]);
+
+  Result := FCacheCommentStartCol;
+end;
+
+function TSynBeautifierPascal.GetFoldEndLevel: Integer;
+begin
+  Result := FCacheWorkFoldEndLvl;
+  if FCacheWorkFoldEndLvl > -2 then
+    exit;
+  FCacheWorkFoldEndLvl := GetFoldEndLevelForIdx(FWorkLine-1);
+  Result := FCacheWorkFoldEndLvl;
+end;
+
+function TSynBeautifierPascal.GetFoldCommentLevel: Integer;
+begin
+  Result := FCacheWorkCommentLvl;
+  if FCacheWorkCommentLvl > -2 then
+    exit;
+  FCacheWorkCommentLvl := GetFoldCommentLevelForIdx(FWorkLine-1);
+  Result := FCacheWorkCommentLvl;
+end;
+
+function TSynBeautifierPascal.GetFoldTypeAtEndOfLine: TPascalCodeFoldBlockType;
+begin
+  Result := FCacheWorkFoldType;
+  if FCacheWorkFoldType <> cfbtIfThen then
+    exit;
+  FCacheWorkFoldType := GetFoldTypeAtEndOfLineForIdx(FWorkLine-1);
+  Result := FCacheWorkFoldType;
+end;
+
+function TSynBeautifierPascal.GetFirstCommentLine: Integer;
+begin
+  Result := FCacheWorkFirstLine;
+  if FCacheWorkFirstLine > -2 then
+    exit;
+  FCacheWorkFirstLine := GetFirstCommentLineForIdx(FWorkLine-1);
+  Result := FCacheWorkFirstLine;
+end;
+
+function TSynBeautifierPascal.GetSlashStartColumn: Integer;
+begin
+  Result := FCacheWorkSlashCol;
+  if FCacheWorkSlashCol > -2 then
+    exit;
+  FCacheWorkSlashCol := GetSlashStartColumnForIdx(FWorkLine-2);
+  Result := FCacheWorkSlashCol;
+end;
+
+function TSynBeautifierPascal.GetCommentStartCol: Integer;
+begin
+  Result := FCacheWorkCommentStartCol;
+  if FCacheWorkCommentStartCol > -2 then
+    exit;
+  FCacheWorkCommentStartCol := GetCommentStartColForIdx(FWorkLine-1);
+  Result := FCacheWorkCommentStartCol;
+end;
+
+function TSynBeautifierPascal.GetMatchStartColForIdx(AIndex: Integer): Integer;
+begin
+  if ToPos(AIndex) = GetFirstCommentLine then begin
+    // Match on FirstLine
+    case FMatchMode[FWorkFoldType] of
+      scmMatchAfterOpening: begin
+          if FWorkFoldType = sctBor
+          then Result := GetCommentStartCol + 1
+          else Result := GetCommentStartCol + 2;
+        end;
+      scmMatchOpening:    Result := GetCommentStartCol;
+      scmMatchWholeLine:  Result := 1;
+      scmMatchAtAsterisk: Result := GetCommentStartCol + 1;
+    end;
+  end
+  else begin
+    // Match on prev, not first
+    case FMatchMode[FWorkFoldType] of
+      scmMatchAfterOpening, scmMatchOpening, scmMatchAtAsterisk:
+          Result := 1 + GetIndentForLine(nil, FCurrentLines[AIndex], False);
+      scmMatchWholeLine:
+          Result := 1;
+    end;
+  end;
+end;
+
+function TSynBeautifierPascal.GetMatchStartPos(AIndex: Integer): TPoint;
+begin
+  if AIndex < 0 then
+    AIndex := ToIdx(FWorkLine);
+
+  case FMatchLine[FWorkFoldType] of
+    sclMatchFirst: Result.Y := GetFirstCommentLine;
+    sclMatchPrev:  Result.Y := ToPos(AIndex)-1; // FWorkLine - 1
+  end;
+
+  Result.X := GetMatchStartColForIdx(ToIdx(Result.Y));
+end;
+
+
+function TSynBeautifierPascal.GetLine(AnIndex: Integer): String;
+var
+  ReplacedPrefix: String;
+  Indent, PreFixPos: Integer;
+  r: Boolean;
+  p: TPoint;
+begin
+  if not FGetLineAfterComment then begin
+    Result := inherited GetLine(AnIndex);
+    exit;
+  end;
+
+  // Need to cut of existing Prefix to find indent after prefix
+
+  if AnIndex < GetFirstCommentLine-1 then begin
+    Result := '';
+//debugln(['GETLINE FROM (< First) ', AnIndex,' ''', FCurrentLines[AnIndex], ''' to empty']);
+  end;
+
+  // 1) Run the match for this line (match prev, or first)
+  //    and see if we can find the replaced prefix in this line
+  if AnIndex > GetFirstCommentLine-1 then begin
+    p := GetMatchStartPos(AnIndex);
+    FRegExprEngine.InputString:= copy(FCurrentLines[ToIdx(p.y)], p.x, MaxInt);
+    FRegExprEngine.Expression := FMatch[FWorkFoldType];
+    if FRegExprEngine.ExecPos(1) then begin
+      ReplacedPrefix := FRegExprEngine.Substitute(FPrefix[FWorkFoldType]);
+      while (ReplacedPrefix <> '') and (ReplacedPrefix[1] in [#9, ' ']) do
+        delete(ReplacedPrefix, 1, 1);
+      while (ReplacedPrefix <> '') and (ReplacedPrefix[length(ReplacedPrefix)] in [#9, ' ']) do
+        delete(ReplacedPrefix, length(ReplacedPrefix), 1);
+      if ReplacedPrefix <> '' then begin
+        Result := FCurrentLines[AnIndex];
+        PreFixPos := pos(ReplacedPrefix, Result);
+        if (PreFixPos > 0) and (PreFixPos <= GetMatchStartColForIdx(AnIndex)) then begin
+          delete(Result, 1, PreFixPos - 1 + Length(ReplacedPrefix));
+//debugln(['GETLINE FROM (1) ', AnIndex,' ''', FCurrentLines[AnIndex], ''' to ''', Result, '''']);
+          exit;
+        end;
+      end;
+    end;
+  end;
+
+  // 2) See, if the current-1 line can be matched
+  r := False;
+  Result := FCurrentLines[AnIndex];
+  Indent := GetMatchStartColForIdx(AnIndex);
+  FRegExprEngine.InputString:= copy(FCurrentLines[AnIndex], Indent, MaxInt);
+  FRegExprEngine.Expression := FMatch[FWorkFoldType];
+  r := FRegExprEngine.ExecPos(1);
+  if (not r) and (Indent > 1) and
+     ((p.y <> GetFirstCommentLine) or (FMatchMode[FWorkFoldType] = scmMatchWholeLine))
+  then begin
+    // try whole line
+// TODO: only if not first, or if setting
+    FRegExprEngine.InputString := FCurrentLines[AnIndex];
+    r := FRegExprEngine.ExecPos(1);
+    if r then
+      Indent := 1;
+  end;
+  if (r) then begin
+    Indent := Indent + FRegExprEngine.MatchPos[0] - 1 + FRegExprEngine.MatchLen[0];
+    Result := FCurrentLines[AnIndex];
+    if (Indent <= Length(Result)) then
+      while (Indent > 1) and (Result[Indent] in [#9, ' ']) do
+        dec(Indent);
+    inc(Indent);
+    if Indent > 0 then begin
+      Result := copy(Result, Indent, MaxInt);
+//debugln(['GETLINE FROM (2) ', AnIndex,' ''', FCurrentLines[AnIndex], ''' to ''', Result, '''']);
+      exit;
+    end;
+  end;
+
+  // 3) maybe try currest replace, if different from 1?
+
+  // Nothing found
+  Result := '';
+//debugln(['GETLINE FROM (X) ', AnIndex,' ''', FCurrentLines[AnIndex], ''' to empty']);
+end;
+
+procedure TSynBeautifierPascal.DoBeforeCommand(const ACaret: TSynEditCaret;
+  var Command: TSynEditorCommand);
+begin
+  FCaretAtEOL := ACaret.BytePos > Length(FCurrentLines[ToIdx(ACaret.LinePos)]);
+  FGetLineAfterComment := False;
+  inherited DoBeforeCommand(ACaret, Command);
+end;
+
+procedure TSynBeautifierPascal.DoAfterCommand(const ACaret: TSynEditCaret;
+  var Command: TSynEditorCommand; StartLinePos, EndLinePos: Integer);
+
+var
+  WorkLine, PrevLineShlasCol: Integer;
+  ReplacedPrefix: String; // Each run matches only one Type
+  MatchResultIntern, MatchedBOLIntern: Boolean;  // Each run matches only one Type
+
+  function CheckMatch(AType: TSynCommentType; AFailOnNoPattern: Boolean = False): Boolean;
+  var
+    p: TPoint;
+  begin
+    if (FMatch[AType] = '') and AFailOnNoPattern then begin
+      Result := False;
+      exit;
+    end;
+
+    if MatchedBOLIntern then begin
+      Result := MatchResultIntern;
+      exit;
+    end;
+
+    p := GetMatchStartPos;
+
+    FRegExprEngine.InputString:= copy(FCurrentLines[ToIdx(p.y)], p.x, MaxInt);
+    FRegExprEngine.Expression := FMatch[AType];
+    if not FRegExprEngine.ExecPos(1) then begin
+      ReplacedPrefix := FRegExprEngine.Substitute(FPrefix[AType]);
+      MatchedBOLIntern := True;
+      MatchResultIntern := False;
+      Result := MatchResultIntern;
+      exit;
+    end;
+
+    ReplacedPrefix := FRegExprEngine.Substitute(FPrefix[AType]);
+    MatchedBOLIntern := True;
+    MatchResultIntern := True;
+    Result := MatchResultIntern;
+
+  end;
+
+  function IsFoldTypeEnabled(AType: TSynCommentType): Boolean;
+  begin
+  Result := (  ( (AType <> sctSlash) or
+               ( ((not FCaretAtEOL) and (FExtenbSlashCommentMode <> sceNever)) or
+                 ((FCaretAtEOL)     and not(FExtenbSlashCommentMode in [sceNever, sceSplitLine, sceMatchingSplitLine]))
+               )
+             ) and
+             ( (FIndentMode[AType] <> []) or
+               (FCommentMode[AType] <> sccNoPrefix) or
+               (FEolMode[AType] <> sccNoPrefix)
+            ))
+  end;
+
+var
+  Indent, dummy: Integer;
+  s: String;
+  FoldTyp: TSynCommentType;
+  AnyEnabled: Boolean;
+  ExtendSlash, BeSmart, Matching: Boolean;
+  PreviousIsFirst, IsAtBOL, DidAlignOpen: Boolean;
+
+  IndentTypeBackup: TSynBeautifierIndentType;
+
+begin
+  if (EndLinePos < 1) or
+     ((Command <> ecLineBreak) and (Command <> ecInsertLine)) or
+     (not IsPasHighlighter)
+  then begin
+    inherited DoAfterCommand(ACaret, Command, StartLinePos, EndLinePos);
+    exit;
+  end;
+
+  AnyEnabled := False;
+  for FoldTyp := low(TSynCommentType) to high(TSynCommentType) do
+    AnyEnabled := AnyEnabled or IsFoldTypeEnabled(FoldTyp);
+  if not AnyEnabled then begin
+    inherited DoAfterCommand(ACaret, Command, StartLinePos, EndLinePos);
+    exit;
+  end;
+
+  InitCache;
+  InitPasHighlighter;
+  FGetLineAfterComment := False;
+  MatchedBOLIntern := False;
+  PrevLineShlasCol := -1;
+  dummy := 0;
+
+  if (Command = ecLineBreak)
+  then WorkLine := ACaret.LinePos
+  else WorkLine := ACaret.LinePos + 1;
+  FWorkLine := WorkLine;
+
+
+  // Find Foldtype
+  case GetFoldTypeAtEndOfLine of
+    cfbtAnsiComment:  FoldTyp := sctAnsi;
+    cfbtBorCommand:   FoldTyp := sctBor;
+    cfbtSlashComment: FoldTyp := sctSlash;
+    else
+      begin
+        if (FCurrentLines[ToIdx(WorkLine)-1] <> '') and
+           (FExtenbSlashCommentMode <> sceNever) and
+           ( (not FCaretAtEOL) or not(FExtenbSlashCommentMode in [sceSplitLine, sceMatchingSplitLine]) )
+        then begin
+          PrevLineShlasCol := GetSlashStartColumn;
+          if PrevLineShlasCol > 0 then
+            FoldTyp := sctSlash;
+        end;
+        if PrevLineShlasCol < 0 then begin
+          inherited DoAfterCommand(ACaret, Command, StartLinePos, EndLinePos);
+          exit;
+        end;
+      end;
+  end;
+
+  if not IsFoldTypeEnabled(FoldTyp) then begin
+    inherited DoAfterCommand(ACaret, Command, StartLinePos, EndLinePos);
+    exit;
+  end;
+
+  FWorkFoldType := FoldTyp;
+
+  // Check if we need extend
+  ExtendSlash := False;
+  if FoldTyp = sctSlash then begin
+    // Check if extension is needed
+    case FExtenbSlashCommentMode of
+      sceAlways:    ExtendSlash := True;
+      sceSplitLine: ExtendSlash := not FCaretAtEOL;
+      sceMatching:  ExtendSlash := CheckMatch(FoldTyp);
+      sceMatchingSplitLine: ExtendSlash := CheckMatch(FoldTyp) and (not FCaretAtEOL);
+    end;
+
+    if not ExtendSlash then begin
+      inherited DoAfterCommand(ACaret, Command, StartLinePos, EndLinePos);
+      exit;
+    end;
+  end;
+
+  // Indent
+  Matching := CheckMatch(FoldTyp);
+  PreviousIsFirst := (GetFirstCommentLine = WorkLine -1);
+  DidAlignOpen := False;
+  IsAtBOL := True;
+  if PreviousIsFirst then
+    IsAtBOL := GetCommentStartCol = 1 + GetIndentForLine(nil, FCurrentLines[ToIdx(GetFirstCommentLine)], False);
+
+
+  // Aply indent before prefix
+  if Matching or (FCommentMode[FoldTyp] = sccPrefixAlways) or (sciApplyIndentForNoMatch in FIndentMode[FoldTyp])
+  then begin
+    IndentTypeBackup := IndentType;
+    try
+      if IndentType = sbitPositionCaret then
+        IndentType := sbitSpace;
+
+      if PreviousIsFirst and not IsAtBOL and
+         (FIndentFirstLineMax[FoldTyp] > 0) and
+         ( (FIndentFirstLineMax[FoldTyp] + 1 >= GetCommentStartCol) or
+           (FIndentMode[FoldTyp] * [sciNone, sciAlignOpen] = [sciAlignOpen])
+         )
+      then begin
+        // Use sciAlignOpen
+        Indent := Min(
+          FCurrentLines.LogicalToPhysicalCol(FCurrentLines[ToIdx(GetFirstCommentLine)], ToIdx(GetFirstCommentLine), GetCommentStartCol-1),
+          FIndentFirstLineMax[FoldTyp]);
+        s := GetCharMix(WorkLine, Indent, dummy);
+        FLogicalIndentLen := length(s);
+        FCurrentLines.EditInsert(1, WorkLine, s);
+        DidAlignOpen := True;
+      end
+      else
+      if (FIndentMode[FoldTyp] * [sciNone, sciAlignOpen] = [sciAlignOpen]) and
+         (GetCommentStartCol > 1)
+      then begin
+        Indent := FCurrentLines.LogicalToPhysicalCol(FCurrentLines[ToIdx(GetFirstCommentLine)], ToIdx(GetFirstCommentLine), GetCommentStartCol-1);
+        if FIndentFirstLineMax[FoldTyp] > 0
+        then Indent := Min(Indent, FIndentFirstLineMax[FoldTyp]);
+        s := GetCharMix(WorkLine, Indent, dummy);
+        FLogicalIndentLen := length(s);
+        FCurrentLines.EditInsert(1, WorkLine, s);
+        DidAlignOpen := True;
+      end
+      else
+      if (sciNone in FIndentMode[FoldTyp]) then begin
+        // No indent
+      end
+      else
+      begin
+        inherited DoAfterCommand(ACaret, Command, StartLinePos, EndLinePos);
+      end;
+    finally
+      IndentType := IndentTypeBackup;
+    end;
+
+    // AnsiIndentFirstLineExtra
+    if PreviousIsFirst and (not IsAtBOL) and (not DidAlignOpen) then begin
+      FCurrentLines.EditInsert(1 + FLogicalIndentLen, WorkLine, FIndentFirstLineExtra[FoldTyp]);
+      FLogicalIndentLen := FLogicalIndentLen + length(FIndentFirstLineExtra[FoldTyp]);
+    end;
+
+  end
+  else
+    inherited DoAfterCommand(ACaret, Command, StartLinePos, EndLinePos);
+
+  Indent := 0; // Extra Indent
+  BeSmart := (PreviousIsFirst or (sciAlignOpen in FIndentMode[FoldTyp])) and
+             (Matching or ExtendSlash or (sciApplyIndentForNoMatch in FIndentMode[FoldTyp]) or
+              (FCommentMode[FoldTyp] = sccPrefixAlways)  );
+
+  // Spaces for (* or {
+  if BeSmart and (sciAddTokenLen in FIndentMode[FoldTyp])
+  then begin
+    case FoldTyp of
+      sctAnsi:  if FMatchMode[FoldTyp] = scmMatchAtAsterisk
+                then Indent := 1
+                else Indent := 2;
+      sctBor:   Indent := 1;
+      sctSlash: if ExtendSlash
+                then Indent := 0 // do the slashes
+                else Indent := 2;
+    end;
+  end;
+
+  // Spaces from after (* or { (to go befare prefix e.g " {  * foo")
+  if BeSmart and (sciAddPastTokenIndent in FIndentMode[FoldTyp]) and (GetCommentStartCol > 0) // foundStartCol
+  then begin
+    case FoldTyp of
+      // ignores scmMatchAtAsterisk
+      sctAnsi:  s := copy(FCurrentLines[ToIdx(GetFirstCommentLine)], GetCommentStartCol+2, MaxInt);
+      sctBor:   s := copy(FCurrentLines[ToIdx(GetFirstCommentLine)], GetCommentStartCol+1, MaxInt);
+      sctSlash: s := copy(FCurrentLines[ToIdx(GetFirstCommentLine)], GetCommentStartCol+2, MaxInt);
+    end;
+    Indent := Indent + GetIndentForLine(nil, s, False);
+  end;
+  // Extend //
+  if ExtendSlash then begin
+    FCurrentLines.EditInsert(1 + FLogicalIndentLen, WorkLine, '//');
+    FLogicalIndentLen := FLogicalIndentLen + 2;
+  end;
+  if (Indent > 0) then begin
+    FCurrentLines.EditInsert(1 + FLogicalIndentLen, WorkLine, StringOfChar(' ', Indent ));
+    FLogicalIndentLen := FLogicalIndentLen + Indent;
+  end;
+
+  // Apply prefix
+  if (FCommentMode[FoldTyp] = sccPrefixAlways) or
+     ((FCommentMode[FoldTyp] = sccPrefixMatch) and Matching)
+  then begin
+    FCurrentLines.EditInsert(1 + FLogicalIndentLen, WorkLine, ReplacedPrefix);
+    FLogicalIndentLen := FLogicalIndentLen + length(ReplacedPrefix);
+
+    // Post  prefix indent
+    FGetLineAfterComment := True;
+    try
+      GetIndentInfo(WorkLine, s, Indent, GetFirstCommentLine);
+      if s <> '' then begin;
+        FCurrentLines.EditInsert(1 + FLogicalIndentLen, WorkLine, s);
+        FLogicalIndentLen := FLogicalIndentLen + length(s);
+      end;
+    finally
+      FGetLineAfterComment := False;
+    end;
+  end;
+
+
+  if (Command = ecLineBreak) then begin
+    ACaret.IncForcePastEOL;
+    ACaret.BytePos := 1 + FLogicalIndentLen;
+    ACaret.DecForcePastEOL;
+  end;
+
+end;
+
+constructor TSynBeautifierPascal.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  FRegExprEngine := TRegExpr.Create;
+  FRegExprEngine.ModifierI := True;
+
+  FIndentMode[sctAnsi]           := [sciAddTokenLen, sciAddPastTokenIndent];
+  FIndentFirstLineExtra[sctAnsi] := '';
+  FIndentFirstLineMax[sctAnsi]   := 0;
+
+  FCommentMode[sctAnsi]          := sccPrefixMatch;
+  FMatch[sctAnsi]                := '^ ?(\*)';
+  FMatchMode[sctAnsi]            := scmMatchAfterOpening;
+  FMatchLine[sctAnsi]            := sclMatchPrev;
+  FPrefix[sctAnsi]               := '$1';
+
+  FEolMatch[sctAnsi]             := '';
+  FEolMode[sctAnsi]              := sccNoPrefix;
+  FEolPostfix[sctAnsi]           := '';
+  FEolSkipLongerLine[sctAnsi]    := False;
+
+
+  FIndentMode[sctBor]           := [sciAddTokenLen, sciAddPastTokenIndent];
+  FIndentFirstLineExtra[sctBor] := '';
+  FIndentFirstLineMax[sctBor]   := 0;
+
+  FCommentMode[sctBor]          := sccPrefixMatch;
+  FMatch[sctBor]                := '^ ?(\*)';
+  FMatchMode[sctBor]            := scmMatchAfterOpening;
+  FMatchLine[sctBor]            := sclMatchPrev;
+  FPrefix[sctBor]               := '$1';
+
+  FEolMatch[sctBor]             := '';
+  FEolMode[sctBor]              := sccNoPrefix;
+  FEolPostfix[sctBor]           := '';
+  FEolSkipLongerLine[sctBor]    := False;
+
+
+  FExtenbSlashCommentMode         := sceNever;
+
+  FIndentMode[sctSlash]           := [];
+  FIndentFirstLineExtra[sctSlash] := '';
+  FIndentFirstLineMax[sctSlash]   := 0;
+
+  FCommentMode[sctSlash]          := sccPrefixMatch;
+  FMatch[sctSlash]                := '^ ?(\*)';
+  FMatchMode[sctSlash]            := scmMatchAfterOpening;
+  FMatchLine[sctSlash]            := sclMatchPrev;
+  FPrefix[sctSlash]               := '$1';
+
+  FEolMatch[sctSlash]             := '';
+  FEolMode[sctSlash]              := sccNoPrefix;
+  FEolPostfix[sctSlash]           := '';
+  FEolSkipLongerLine[sctSlash]    := False;
+
+end;
+
+destructor TSynBeautifierPascal.Destroy;
+begin
+  inherited Destroy;
+  FreeAndNil(FRegExprEngine);
+end;
+
+procedure TSynBeautifierPascal.Assign(Src: TPersistent);
+var
+  i: TSynCommentType;
+begin
+  inherited Assign(Src);
+  if not(Src is TSynBeautifierPascal) then exit;
+
+  FExtenbSlashCommentMode := TSynBeautifierPascal(Src).FExtenbSlashCommentMode;
+
+  for i := low(TSynCommentType) to high(TSynCommentType) do begin
+    FIndentMode[i]           := TSynBeautifierPascal(Src).FIndentMode[i];
+    FIndentFirstLineExtra[i] := TSynBeautifierPascal(Src).FIndentFirstLineExtra[i];
+    FIndentFirstLineMax[i]   := TSynBeautifierPascal(Src).FIndentFirstLineMax[i];
+
+    FCommentMode[i]          := TSynBeautifierPascal(Src).FCommentMode[i];
+    FMatch[i]                := TSynBeautifierPascal(Src).FMatch[i];
+    FMatchMode[i]            := TSynBeautifierPascal(Src).FMatchMode[i];
+    FMatchLine[i]            := TSynBeautifierPascal(Src).FMatchLine[i];
+    FPrefix[i]               := TSynBeautifierPascal(Src).FPrefix[i];
+
+    FEolMatch[i]             := TSynBeautifierPascal(Src).FEolMatch[i];
+    FEolMode[i]              := TSynBeautifierPascal(Src).FEolMode[i];
+    FEolPostfix[i]           := TSynBeautifierPascal(Src).FEolPostfix[i];
+    FEolSkipLongerLine[i]    := TSynBeautifierPascal(Src).FEolSkipLongerLine[i];
+  end;
+end;
 
 { TSynCustomBeautifier }
 
@@ -176,43 +1248,35 @@ begin
     inherited;
 end;
 
-procedure TSynCustomBeautifier.BeforeCommand(const Editor: TSynEditBase;
-  const Lines: TSynEditStrings; const ACaret: TSynEditCaret;
-  var Command: TSynEditorCommand; InitialCmd: TSynEditorCommand);
-var
-  Worker: TSynCustomBeautifier;
+function TSynCustomBeautifier.GetCopy: TSynCustomBeautifier;
 begin
   // Since all synedits share one beautifier, create a temp instance.
   // Todo: have individual beautifiers
-  Worker := TSynCustomBeautifierClass(self.ClassType).Create(nil);
-  Worker.assign(self);
-  Worker.FCurrentEditor := Editor;
-  Worker.FCurrentLines := Lines;
-  try
-    Worker.DoBeforeCommand(ACaret, Command);
-  finally
-    Worker.Free;
-  end;
+  Result := TSynCustomBeautifierClass(self.ClassType).Create(nil);
+  Result.assign(self);
+end;
+
+procedure TSynCustomBeautifier.BeforeCommand(const Editor: TSynEditBase;
+  const Lines: TSynEditStrings; const ACaret: TSynEditCaret;
+  var Command: TSynEditorCommand; InitialCmd: TSynEditorCommand);
+begin
+  // Must be called on GetCopy
+  // Todo: have individual beautifiers
+  FCurrentEditor := Editor;
+  FCurrentLines := Lines;
+  DoBeforeCommand(ACaret, Command);
 end;
 
 procedure TSynCustomBeautifier.AfterCommand(const Editor: TSynEditBase;
   const Lines: TSynEditStrings; const ACaret: TSynEditCaret;
   var Command: TSynEditorCommand; InitialCmd: TSynEditorCommand;
   StartLinePos, EndLinePos: Integer);
-var
-  Worker: TSynCustomBeautifier;
 begin
-  // Since all synedits share one beautifier, create a temp instance.
+  // Must be called on GetCopy
   // Todo: have individual beautifiers
-  Worker := TSynCustomBeautifierClass(self.ClassType).Create(nil);
-  Worker.assign(self);
-  Worker.FCurrentEditor := Editor;
-  Worker.FCurrentLines := Lines;
-  try
-    Worker.DoAfterCommand(ACaret, Command, StartLinePos, EndLinePos);
-  finally
-    Worker.Free;
-  end;
+  FCurrentEditor := Editor;
+  FCurrentLines := Lines;
+  DoAfterCommand(ACaret, Command, StartLinePos, EndLinePos);
 end;
 
 { TSynBeautifier }
@@ -224,6 +1288,29 @@ begin
     FIndentType := TSynBeautifier(Src).FIndentType;
     FCurrentEditor := TSynBeautifier(Src).FCurrentEditor;
     FCurrentLines := TSynBeautifier(Src).FCurrentLines;
+  end;
+end;
+
+function TSynBeautifier.GetLine(AnIndex: Integer): String;
+begin
+  Result := FCurrentLines[AnIndex];
+end;
+
+procedure TSynBeautifier.GetIndentInfo(const LinePos: Integer; out ACharMix: String; out
+  AnIndent: Integer; AStopScanAtLine: Integer);
+var
+  b: Integer;
+begin
+  ACharMix := '';
+  if (GetLine(LinePos-2) = '') and (GetLine(LinePos-1) <> '') then
+    AnIndent := 0
+  else
+    AnIndent := GetIndent(LinePos, b, AStopScanAtLine);
+
+  if AnIndent > 0 then begin
+    ACharMix := GetCharMix(LinePos, AnIndent, b);
+    if (FIndentType = sbitPositionCaret) and (GetLine(LinePos-1) = '') then
+      ACharMix := '';
   end;
 end;
 
@@ -251,9 +1338,10 @@ end;
 procedure TSynBeautifier.DoAfterCommand(const ACaret: TSynEditCaret;
   var Command: TSynEditorCommand; StartLinePos, EndLinePos: Integer);
 var
-  y, b, Indent: Integer;
+  y, Indent: Integer;
   s: String;
 begin
+  FLogicalIndentLen := 0;
   if EndLinePos < 1 then
     exit;
   if assigned(FOnGetDesiredIndent) and
@@ -269,16 +1357,12 @@ begin
     else
       y := ACaret.LinePos + 1;
 
-    if (FCurrentLines[y-2] = '') and (FCurrentLines[y-1] <> '') then
-      Indent := 0
-    else
-      Indent := GetIndent(y, b);
 
-    if Indent > 0 then begin
-      s := GetCharMix(y, Indent, b);
-      if (FIndentType = sbitPositionCaret) and (FCurrentLines[y-1] = '') then
-        s := '';
+    GetIndentInfo(y, s, Indent);
+
+    if s <> '' then begin;
       FCurrentLines.EditInsert(1, y, s);
+      FLogicalIndentLen := length(s);
     end;
 
     if (Command = ecLineBreak) then begin
@@ -323,21 +1407,25 @@ begin
   Result := True;
 end;
 
-function TSynBeautifier.GetIndent(const LinePos: Integer; out BasedOnLine: Integer): Integer;
+function TSynBeautifier.GetIndent(const LinePos: Integer; out BasedOnLine: Integer;
+  AStopScanAtLine: Integer): Integer;
 var
   Temp: string;
 begin
-  BasedOnLine := LinePos - 1;
-  while (BasedOnLine > 0) do begin
+  if AStopScanAtLine > 0 then
+    dec(AStopScanAtLine); // Convert to index
+  BasedOnLine := LinePos - 1; // Convert to index
+  while (BasedOnLine > AStopScanAtLine) do begin
     dec(BasedOnLine);
-    Temp := FCurrentLines[BasedOnLine];
+    Temp := GetLine(BasedOnLine);
     if Temp <> '' then begin
       Result := GetIndentForLine(FCurrentEditor, Temp, True);
       exit;
     end;
   end;
-  BasedOnLine := LinePos;
-  Result := GetIndentForLine(FCurrentEditor, FCurrentLines[BasedOnLine], True);
+  Result := 0;
+  //BasedOnLine := LinePos;
+  //Result := GetIndentForLine(FCurrentEditor, GetLine(BasedOnLine), True);
 end;
 
 function TSynBeautifier.AdjustCharMix(DesiredIndent: Integer; CharMix, AppendMix: String): String;
@@ -378,7 +1466,7 @@ begin
 
   if (IndentCharsFromLinePos > 0) and (IndentCharsFromLinePos <= FCurrentLines.Count) then
   begin
-    Temp := FCurrentLines[IndentCharsFromLinePos];
+    Temp := GetLine(IndentCharsFromLinePos);
     KnownMix := copy(Temp, 1, GetIndentForLine(FCurrentEditor, Temp, False));
   end
   else
@@ -389,7 +1477,7 @@ begin
   BackCounter := LinePos;
   while (BackCounter > 0) and (KnownPhysLen < Indent) do begin
     dec(BackCounter);
-    Temp := FCurrentLines[BackCounter];
+    Temp := GetLine(BackCounter);
     if Temp <> '' then begin
       Temp := copy(Temp, 1, GetIndentForLine(FCurrentEditor, Temp, False));
       PhysLen := GetIndentForLine(FCurrentEditor, Temp, True);
@@ -417,7 +1505,7 @@ begin
 
   // calculate the final indent needed
   if (RelativeToLinePos > 0) and (RelativeToLinePos <= FCurrentEditor.Lines.Count) then
-    Indent := Indent + GetIndentForLine(FCurrentEditor, FCurrentLines[RelativeToLinePos-1], True);
+    Indent := Indent + GetIndentForLine(FCurrentEditor, GetLine(RelativeToLinePos-1), True);
   if Indent< 0 then
     Indent := 0;
 
@@ -425,7 +1513,7 @@ begin
   CharMix := '';
   if Indent > 0 then begin
     if (IndentCharsFromLinePos > 0) and (IndentCharsFromLinePos <= FCurrentEditor.Lines.Count) then begin
-      CharMix := FCurrentLines[IndentCharsFromLinePos-1];
+      CharMix := GetLine(IndentCharsFromLinePos-1);
       i :=  GetIndentForLine(FCurrentEditor, CharMix, False);
       CharMix := AdjustCharMix(Indent, copy(CharMix, 1, i), IndentChars);
     end
@@ -442,10 +1530,11 @@ begin
   DebugLn(['TSynBeautifier.ApplyIndent IndentChars="',dbgstr(IndentChars),' Indent=',Indent]);
   {$ENDIF}
 
-  i :=  GetIndentForLine(FCurrentEditor, FCurrentLines[LinePos-1], False);
+  i :=  GetIndentForLine(FCurrentEditor, GetLine(LinePos-1), False);
   FCurrentLines.EditDelete(1, LinePos, i);
-  if (CharMix <> '') and not((FIndentType = sbitPositionCaret) and (FCurrentLines[LinePos-1] = '')) then
+  if (CharMix <> '') and not((FIndentType = sbitPositionCaret) and (GetLine(LinePos-1) = '')) then
     FCurrentLines.EditInsert(1, LinePos, CharMix);
+  FLogicalIndentLen := length(CharMix);
 
   {$IFDEF VerboseIndenter}
   DebugLn(['TSynBeautifier.ApplyIndent Line="',dbgstr(FCurrentLines.ExpandedStrings[LinePos-1]),'"']);

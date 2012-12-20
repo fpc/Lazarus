@@ -48,6 +48,7 @@ type
     FBaseTestNames: Array of String;
     FFixedBaseTestNames: Integer;
     FForm : TForm;
+    FUseFullText: Boolean;
     function GetClipBoardText: String;
     procedure SetBaseTestName(const AValue: String);
     procedure SetClipBoardText(const AValue: String);
@@ -93,6 +94,7 @@ type
     property  Form: TForm read FForm;
     procedure ClearClipBoard;
     property  ClipBoardText: String read GetClipBoardText write SetClipBoardText;
+    property  UseFullText: Boolean read FUseFullText write FUseFullText;
   protected
     procedure SetUp; override;
     procedure TearDown; override;
@@ -338,7 +340,7 @@ procedure TTestBase.TestIsText(Name, Text: String; FullText: Boolean = False);
 var
   s: String;
 begin
-  if FullText then
+  if FullText or FUseFullText then
     s := SynEdit.TestFullText
   else
     s := SynEdit.Text;
@@ -375,7 +377,7 @@ end;
 procedure TTestBase.TestFail(Name, Func, Expect, Got: String; Result: Boolean = False);
 begin
   if Result then exit;
-  DebugLn(DbgStr(SynEdit.Text));
+  //DebugLn(DbgStr(SynEdit.Text));
   if BaseTestName <> '' then
     Fail(Format('%s: %s (%s)%sExpected: %s%s     Got: %s', [BaseTestName, Name, Func, LineEnding, Expect, LineEnding, Got]))
   else

@@ -5998,6 +5998,7 @@ procedure TCustomSynEdit.CommandProcessor(Command: TSynEditorCommand;
   Data: pointer);
 var
   InitialCmd: TSynEditorCommand;
+  BeautifyWorker: TSynCustomBeautifier;
 begin
   IncLCLRefCount;
   try
@@ -6015,8 +6016,9 @@ begin
         FBeautifyStartLineIdx := -1;
         FBeautifyEndLineIdx := -1;
         if assigned(FBeautifier) then begin
-          FBeautifier.AutoIndent := (eoAutoIndent in FOptions);
-          FBeautifier.BeforeCommand(self, FTheLinesView, FCaret, Command, InitialCmd);
+          BeautifyWorker := FBeautifier.GetCopy;
+          BeautifyWorker.AutoIndent := (eoAutoIndent in FOptions);
+          BeautifyWorker.BeforeCommand(self, FTheLinesView, FCaret, Command, InitialCmd);
         end;
         // notify hooked command handlers before the command is executed inside of
         // the class
@@ -6032,11 +6034,12 @@ begin
         if Command <> ecNone then
           DoOnCommandProcessed(Command, AChar, Data);
 
-        if assigned(FBeautifier) then begin
+        if assigned(BeautifyWorker) then begin
           tsyneditstringlist(FLines).FlushNotificationCache;
-          FBeautifier.AutoIndent := (eoAutoIndent in FOptions);
-          FBeautifier.AfterCommand(self, FTheLinesView, FCaret, Command, InitialCmd,
+          BeautifyWorker.AutoIndent := (eoAutoIndent in FOptions);
+          BeautifyWorker.AfterCommand(self, FTheLinesView, FCaret, Command, InitialCmd,
                                    FBeautifyStartLineIdx+1, FBeautifyEndLineIdx+1);
+          FreeAndNil(BeautifyWorker);
         end;
       finally
         InternalEndUndoBlock;
