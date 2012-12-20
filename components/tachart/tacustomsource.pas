@@ -338,14 +338,11 @@ end;
 
 procedure TChartAxisIntervalParams.ParseNiceSteps;
 var
-  parts: TStringList;
+  parts: TStrings;
   i: Integer;
 begin
-  parts := TStringList.Create;
+  parts := Split(IfThen(NiceSteps = '', DEF_INTERVAL_STEPS, NiceSteps));
   try
-    parts.Delimiter := '|';
-    parts.StrictDelimiter := true;
-    parts.DelimitedText := IfThen(NiceSteps = '', DEF_INTERVAL_STEPS, NiceSteps);
     SetLength(FStepValues, parts.Count);
     for i := 0 to parts.Count - 1 do
       FStepValues[i] := StrToFloatDefSep(parts[i]);

@@ -317,7 +317,7 @@ procedure TListChartSourceStrings.Parse(
   AString: String; ADataItem: PChartDataItem);
 var
   p: Integer = 0;
-  parts: TStringList;
+  parts: TStrings;
 
   function NextPart: String;
   begin
@@ -331,11 +331,8 @@ var
 var
   i: Integer;
 begin
-  parts := TStringList.Create;
+  parts := Split(AString);
   try
-    parts.Delimiter := '|';
-    parts.StrictDelimiter := true;
-    parts.DelimitedText := AString;
     if FSource.YCount + 3 < Cardinal(parts.Count) then
       FSource.YCount := parts.Count - 3;
     with ADataItem^ do begin

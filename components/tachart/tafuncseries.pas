@@ -1296,11 +1296,9 @@ procedure TColorMapSeries.GetLegendItems(AItems: TChartLegendItems);
   const
     FORMAT_DEF = 'z ≤ %1:g|%g < z ≤ %g|%g < z';
   begin
-    Result := TStringList.Create;
+    Result := Split(IfThen(Legend.Format = '', FORMAT_DEF, Legend.Format));
     with Result do
       try
-        Delimiter := '|';
-        DelimitedText := IfThen(Legend.Format = '', FORMAT_DEF, Legend.Format);
         while Count < 3 do
           Add(Strings[Count - 1]);
       except

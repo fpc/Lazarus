@@ -306,6 +306,9 @@ function RoundChecked(A: Double): Integer; inline;
 
 procedure SetPropDefaults(AObject: TPersistent; APropNames: array of String);
 
+function Split(
+  AString: String; ADest: TStrings = nil; ADelimiter: Char = '|'): TStrings;
+
 // Accept both locale-specific and default decimal separators.
 function StrToFloatDefSep(const AStr: String): Double;
 
@@ -473,6 +476,16 @@ end;
 
 var
   DefSeparatorSettings: TFormatSettings;
+
+function Split(AString: String; ADest: TStrings; ADelimiter: Char): TStrings;
+begin
+  Result := ADest;
+  if Result = nil then
+    Result := TStringList.Create;
+  Result.Delimiter := ADelimiter;
+  Result.StrictDelimiter := true;
+  Result.DelimitedText := AString;
+end;
 
 function StrToFloatDefSep(const AStr: String): Double;
 begin
