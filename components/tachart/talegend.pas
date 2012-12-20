@@ -163,6 +163,7 @@ type
     FAlignment: TLegendAlignment;
     FBackgroundBrush: TChartLegendBrush;
     FColumnCount: TLegendColumnCount;
+    FFixedItemHeight: Cardinal;
     FFont: TFont;
     FFrame: TChartPen;
     FGridHorizontal: TChartLegendGridPen;
@@ -183,6 +184,7 @@ type
     procedure SetAlignment(AValue: TLegendAlignment);
     procedure SetBackgroundBrush(AValue: TChartLegendBrush);
     procedure SetColumnCount(AValue: TLegendColumnCount);
+    procedure SetFixedItemHeight(AValue: Cardinal);
     procedure SetFont(AValue: TFont);
     procedure SetFrame(AValue: TChartPen);
     procedure SetGridHorizontal(AValue: TChartLegendGridPen);
@@ -214,6 +216,8 @@ type
       read FBackgroundBrush write SetBackgroundBrush;
     property ColumnCount: TLegendColumnCount
       read FColumnCount write SetColumnCount default 1;
+    property FixedItemHeight: Cardinal
+      read FFixedItemHeight write SetFixedItemHeight default 0;
     property Font: TFont read FFont write SetFont;
     property Frame: TChartPen read FFrame write SetFrame;
     property GridHorizontal: TChartLegendGridPen
@@ -478,6 +482,7 @@ begin
       Self.FAlignment := Alignment;
       Self.FBackgroundBrush.Assign(BackgroundBrush);
       Self.FColumnCount := ColumnCount;
+      Self.FFixedItemHeight := FixedItemHeight;
       Self.FFont.Assign(Font);
       Self.FFrame.Assign(Frame);
       Self.FGridHorizontal.Assign(GridHorizontal);
@@ -614,6 +619,8 @@ begin
       p.X += SYMBOL_TEXT_SPACING + SymbolWidth;
     Result := MaxPoint(p, Result);
   end;
+  if FixedItemHeight > 0 then
+    Result.Y := FixedItemHeight;
 end;
 
 procedure TChartLegend.Prepare(
@@ -688,6 +695,13 @@ procedure TChartLegend.SetColumnCount(AValue: TLegendColumnCount);
 begin
   if FColumnCount = AValue then exit;
   FColumnCount := AValue;
+  StyleChanged(Self);
+end;
+
+procedure TChartLegend.SetFixedItemHeight(AValue: Cardinal);
+begin
+  if FFixedItemHeight = AValue then exit;
+  FFixedItemHeight := AValue;
   StyleChanged(Self);
 end;
 
