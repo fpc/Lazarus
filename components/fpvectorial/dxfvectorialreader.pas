@@ -131,9 +131,8 @@ type
 
 implementation
 
-{$ifndef Windows}
-{$define FPVECTORIALDEBUG}
-{$endif}
+{.$define FPVECTORIALDEBUG}
+{.$define FPVECTORIALDEBUG_POLYLINE}
 
 const
   // Items in the HEADER section
@@ -1699,7 +1698,6 @@ begin
   end;
 end;
 
-{$define FPVECTORIALDEBUG_POLYLINE}
 function TvDXFVectorialReader.ReadENTITIES_SEQEND(ATokens: TDXFTokens;
   AData: TvVectorialPage; ADoc: TvVectorialDocument; AOnlyCreate: Boolean = False): TPath;
 var
