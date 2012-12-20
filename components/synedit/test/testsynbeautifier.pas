@@ -1004,6 +1004,7 @@ begin
   UseFullText := True;
   Beautifier.IndentType := sbitCopySpaceTab;
 
+
   {%region Bor (Curly) }
 
     ConfigBeautifier(sctBor, [sciAddTokenLen, sciAddPastTokenIndent], 0, '',
@@ -1836,6 +1837,7 @@ begin
     DoNewLine('',   8, 2,   7, 3,  [2, '  (*+ a', '   *+ b']);  // 2:"  (*+ a|b"
     DoSetText('scmMatchAtAsterisk; NO match Ansi',  [2, '  (*- ab']);
     DoNewLine('',   8, 2,   3, 3,  [2, '  (*- a', '  b']);      // 2:"  (*+ a|b"
+  {%endregion Ansi ( * }
 
 
   {%region Slash // }
@@ -1876,13 +1878,13 @@ begin
                      sceAlways);
     DoSetText('Slash sciAlignOpen',  [2, '  ;;; // abc']);
     DoNewLine('first',  11, 2,  10, 3,  [2, '  ;;; // a', '      // bc']);      // 2:"      // a|bc"
-    DoNewLine('any',    11, 3,  10, 4,  [2,  '      // bc', '      // c']);     // 2:"      // b|c"
+    DoNewLine('any',    11, 3,  10, 4,  [3,  '      // b', '      // c']);     // 2:"      // b|c"
 
-    DoSetText('Slash sciAlignOpen realign',  [2, '  ;;; // abc', '    // de']);
-    DoNewLine('2nd',   9, 3,  10, 4,  [3, '    // d', '      // e']);    // 3:"    // d|e"
-
-    DoSetText('Slash sciAlignOpen realign',  [2, '  ;;; // abc', '                //', '    // de']);
-    DoNewLine('3rd',   9, 4,  10, 5,  [4, '    // d', '      // e']);    // 3:"    // d|e"
+    //DoSetText('Slash sciAlignOpen realign',  [2, '  ;;; // abc', '    // de']);
+    //DoNewLine('2nd',   9, 3,  10, 4,  [3, '    // d', '      // e']);    // 3:"    // d|e"
+    //
+    //DoSetText('Slash sciAlignOpen realign',  [2, '  ;;; // abc', '                //', '    // de']);
+    //DoNewLine('3rd',   9, 4,  10, 5,  [4, '    // d', '      // e']);    // 3:"    // d|e"
   {%endregion Slash // }
 
 

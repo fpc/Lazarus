@@ -207,8 +207,12 @@ type
                              // in case of scmMatchAtAsterisk, 1 space is added. ("(" only)
       sciAddPastTokenIndent, // Adds any indent found past the opening token  "(*", "{" or "//".
                              // For "//" this is added after the nem "//", but before the prefix.
-      //sciAddPastTokenIndentMatchLine, // Only if first line matches. (Do not specify sciAddPastTokenIndent)
-                             // Adds matched and unmatched spaces.
+
+
+      sciMatchOnlyTokenLen,        // Apply the Above only if first line matches. (Only if sciAddTokenLen is specified)
+      sciMatchOnlyPastTokenIndent,
+      sciAlignOnlyTokenLen,        // Apply the Above only if sciAlignOpen was used (include via max)
+      sciAlignOnlyPastTokenIndent,
 
       // flag to ignore spaces, that are matched.
       // flag to be smart, if not matched
@@ -295,7 +299,7 @@ type
     function  GetCommentStartCol: Integer;  // Acts on GetFirstCommentLineForIdx(FWorkLine) / Logical Resulc
 
     function  GetMatchStartColForIdx(AIndex: Integer): Integer; // Res=1-based
-    function  GetMatchStartPos(AIndex: Integer = -1): TPoint; // Res=1-based / AIndex-1 is only used for sclMatchPrev
+    function  GetMatchStartPos(AIndex: Integer = -1; AForceFirst: Boolean = False): TPoint; // Res=1-based / AIndex-1 is only used for sclMatchPrev
 
   protected
     function GetLine(AnIndex: Integer): String; override;
@@ -597,29 +601,47 @@ end;
 function TSynBeautifierPascal.GetFirstCommentLineForIdx(AIndex: Integer): Integer;
 var
   FoldType: TPascalCodeFoldBlockType;
-  EndLvl, CommentLvl: Integer;
+  ANewIndex, EndLvl, CommentLvl: Integer;
 begin
   Result := FCacheFirstLine;
   if AIndex = FCacheFirstLineForIdx then
     exit;
 
-  FoldType := GetFoldTypeAtEndOfLineForIdx(AIndex);
-  EndLvl   := GetFoldEndLevelForIdx(AIndex);
+  ANewIndex := AIndex;
+  FoldType := GetFoldTypeAtEndOfLineForIdx(ANewIndex);
+  EndLvl   := GetFoldEndLevelForIdx(ANewIndex);
+
+  //if (EndLvl = 0) or not(FoldType in [cfbtAnsiComment, cfbtBorCommand, cfbtSlashComment]) and
+  //   (AIndex > 0) and (GetSlashStartColumnForIdx(AIndex - 1) > 0)
+  //then begin
+  //  dec(ANewIndex);
+  //  FoldType := GetFoldTypeAtEndOfLineForIdx(ANewIndex);
+  //  EndLvl   := GetFoldEndLevelForIdx(ANewIndex);
+  //end;
 
   if (EndLvl = 0) or not(FoldType in [cfbtAnsiComment, cfbtBorCommand, cfbtSlashComment])
   then begin
-    Result := AIndex; // 1 based - the line above AIndex
+    Result := ToPos(AIndex) - 1; // 1 based - the line above ANewIndex
+    // maybe the line above has a trailing comment
+    //if (AIndex <> ANewIndex) and (ANewIndex > 0) and (GetSlashStartColumnForIdx(ANewIndex-1) > 0) then
+    //  Result := ToPos(ANewIndex) - 1;
     exit;
   end;
 
   FCacheFirstLineForIdx := AIndex;
-  FCacheFirstLine       := AIndex;
-  CommentLvl            := GetFoldCommentLevelForIdx(AIndex);
+  FCacheFirstLine       := ToPos(ANewIndex) - 1;
+  CommentLvl            := GetFoldCommentLevelForIdx(ANewIndex);
 
   while (FCacheFirstLine > 0) do begin
     if CommentLvl > FPasHighlighter.FoldBlockMinLevel(FCacheFirstLine-1, FOLDGROUP_PASCAL, [sfbIncludeDisabled]) then
       break;
     dec(FCacheFirstLine);
+  end;
+
+  if FoldType = cfbtSlashComment then begin
+    // maybe the line above has a trailing comment
+    if GetSlashStartColumnForIdx(ToIdx(FCacheFirstLine)) > 0 then
+      dec(FCacheFirstLine);
   end;
 
   Result := FCacheFirstLine;
@@ -670,6 +692,12 @@ begin
   then begin
     // must be SlashComment
     FCacheCommentStartCol := GetSlashStartColumnForIdx(AIndex - 1);
+    //FCacheCommentStartCol := GetSlashStartColumnForIdx(AIndex);
+    //if FCacheCommentStartCol > 0 then begin
+    //  i := GetSlashStartColumnForIdx(AIndex - 1);
+    //  if i > 0 then
+    //    FCacheCommentStartCol := i;
+    //end;
     Result := FCacheCommentStartCol;
 //debugln(['FIRST COL prev-// ', FCacheCommentStartCol]);
     exit;
@@ -778,15 +806,18 @@ begin
   end;
 end;
 
-function TSynBeautifierPascal.GetMatchStartPos(AIndex: Integer): TPoint;
+function TSynBeautifierPascal.GetMatchStartPos(AIndex: Integer; AForceFirst: Boolean): TPoint;
 begin
   if AIndex < 0 then
     AIndex := ToIdx(FWorkLine);
 
-  case FMatchLine[FWorkFoldType] of
-    sclMatchFirst: Result.Y := GetFirstCommentLine;
-    sclMatchPrev:  Result.Y := ToPos(AIndex)-1; // FWorkLine - 1
-  end;
+  if AForceFirst then
+    Result.Y := GetFirstCommentLine
+  else
+    case FMatchLine[FWorkFoldType] of
+      sclMatchFirst: Result.Y := GetFirstCommentLine;
+      sclMatchPrev:  Result.Y := ToPos(AIndex)-1; // FWorkLine - 1
+    end;
 
   Result.X := GetMatchStartColForIdx(ToIdx(Result.Y));
 end;
@@ -887,9 +918,10 @@ procedure TSynBeautifierPascal.DoAfterCommand(const ACaret: TSynEditCaret;
 var
   WorkLine, PrevLineShlasCol: Integer;
   ReplacedPrefix: String; // Each run matches only one Type
-  MatchResultIntern, MatchedBOLIntern: Boolean;  // Each run matches only one Type
+  MatchResultIntern, MatchedBOLIntern: Array [Boolean] of Boolean;  // Each run matches only one Type
 
-  function CheckMatch(AType: TSynCommentType; AFailOnNoPattern: Boolean = False): Boolean;
+  function CheckMatch(AType: TSynCommentType; AFailOnNoPattern: Boolean = False;
+    AForceFirst: Boolean = False): Boolean;
   var
     p: TPoint;
   begin
@@ -898,27 +930,27 @@ var
       exit;
     end;
 
-    if MatchedBOLIntern then begin
-      Result := MatchResultIntern;
+    if MatchedBOLIntern[AForceFirst] then begin
+      Result := MatchResultIntern[AForceFirst];
       exit;
     end;
 
-    p := GetMatchStartPos;
+    p := GetMatchStartPos(-1, AForceFirst);
 
     FRegExprEngine.InputString:= copy(FCurrentLines[ToIdx(p.y)], p.x, MaxInt);
     FRegExprEngine.Expression := FMatch[AType];
     if not FRegExprEngine.ExecPos(1) then begin
       ReplacedPrefix := FRegExprEngine.Substitute(FPrefix[AType]);
-      MatchedBOLIntern := True;
-      MatchResultIntern := False;
-      Result := MatchResultIntern;
+      MatchedBOLIntern[AForceFirst] := True;
+      MatchResultIntern[AForceFirst] := False;
+      Result := MatchResultIntern[AForceFirst];
       exit;
     end;
 
     ReplacedPrefix := FRegExprEngine.Substitute(FPrefix[AType]);
-    MatchedBOLIntern := True;
-    MatchResultIntern := True;
-    Result := MatchResultIntern;
+    MatchedBOLIntern[AForceFirst] := True;
+    MatchResultIntern[AForceFirst] := True;
+    Result := MatchResultIntern[AForceFirst];
 
   end;
 
@@ -965,7 +997,8 @@ begin
   InitCache;
   InitPasHighlighter;
   FGetLineAfterComment := False;
-  MatchedBOLIntern := False;
+  MatchedBOLIntern[True] := False;
+  MatchedBOLIntern[False] := False;
   PrevLineShlasCol := -1;
   dummy := 0;
 
@@ -1093,7 +1126,11 @@ begin
               (FCommentMode[FoldTyp] = sccPrefixAlways)  );
 
   // sciAddTokenLen -- Spaces for (* or {
-  if BeSmart and (sciAddTokenLen in FIndentMode[FoldTyp])
+  if BeSmart and
+     ( (sciAddTokenLen in FIndentMode[FoldTyp]) and
+       ( (not(sciMatchOnlyTokenLen in FIndentMode[FoldTyp])) or CheckMatch(FoldTyp, False, True) ) and
+       ( (not(sciAlignOnlyTokenLen in FIndentMode[FoldTyp])) or DidAlignOpen )
+     )
   then begin
     case FoldTyp of
       sctAnsi:  if FMatchMode[FoldTyp] = scmMatchAtAsterisk
@@ -1107,7 +1144,12 @@ begin
   end;
 
   // sciAddPastTokenIndent -- Spaces from after (* or { (to go befare prefix e.g " {  * foo")
-  if BeSmart and (sciAddPastTokenIndent in FIndentMode[FoldTyp]) and (GetCommentStartCol > 0) // foundStartCol
+  if BeSmart and
+     ( (sciAddPastTokenIndent in FIndentMode[FoldTyp]) and
+       ( (not(sciMatchOnlyPastTokenIndent in FIndentMode[FoldTyp])) or CheckMatch(FoldTyp, False, True) ) and
+       ( (not(sciAlignOnlyPastTokenIndent in FIndentMode[FoldTyp])) or DidAlignOpen )
+     ) and
+     (GetCommentStartCol > 0) // foundStartCol
   then begin
     case FoldTyp of
       // ignores scmMatchAtAsterisk
