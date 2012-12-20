@@ -127,7 +127,7 @@ end;
 
 procedure TCodetoolsGeneralOptionsFrame.GeneralAutoIndentClick(Sender: TObject);
 begin
-  FDialog.OpenEditor(GroupEditor,EdtOptionsGeneral);
+  FDialog.OpenEditor(GroupEditor,EdtOptionsIndent);
 end;
 
 procedure TCodetoolsGeneralOptionsFrame.GeneralAutoIndentMouseEnter(Sender: TObject);
