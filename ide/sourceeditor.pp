@@ -7911,7 +7911,12 @@ var
   CodeBuf: TCodeBuffer;
 begin
   Result:=false;
-  SrcEdit := FindSourceEditorWithEditorComponent(TComponent(Editor));
+  // SynBeatifier is shared arrcoss SynEdits, and may call the wrong SrcNoteBook
+  if assigned(Manager)
+  then SrcEdit := Manager.FindSourceEditorWithEditorComponent(TComponent(Editor))
+  else SrcEdit := FindSourceEditorWithEditorComponent(TComponent(Editor));
+  if SrcEdit = nil then
+    exit;
   if assigned(Manager) and Assigned(Manager.OnGetIndent) then begin
     Result := Manager.OnGetIndent(Sender, SrcEdit, LogCaret, OldLogCaret, FirstLinePos, LastLinePos,
                           Reason, SetIndentProc);
