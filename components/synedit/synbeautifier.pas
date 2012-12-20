@@ -536,7 +536,8 @@ end;
 
 function TSynBeautifierPascal.GetFoldCommentLevelForIdx(AIndex: Integer): Integer;
 var
-  tmp: TPascalCodeFoldBlockType;
+  tmp: Pointer;
+  Block: TPascalCodeFoldBlockType;
 begin
   Result := FCacheCommentLvl;
   if AIndex = FCacheCommentLvlIdx then
@@ -545,8 +546,10 @@ begin
 
   FCacheCommentLvl := GetFoldEndLevelForIdx(AIndex) - 1;
   while (FCacheCommentLvl > 0) do begin
-    FPasHighlighter.FoldBlockNestedTypes(AIndex , FCacheCommentLvl - 1, Pointer(tmp), FOLDGROUP_PASCAL, [sfbIncludeDisabled]);
-    if not(tmp in [cfbtAnsiComment, cfbtBorCommand, cfbtSlashComment]) then
+    FPasHighlighter.FoldBlockNestedTypes(AIndex , FCacheCommentLvl - 1,
+                 tmp, FOLDGROUP_PASCAL, [sfbIncludeDisabled]);
+    Block:=TPascalCodeFoldBlockType(PtrUInt(tmp));
+    if not (Block in [cfbtAnsiComment, cfbtBorCommand, cfbtSlashComment]) then
       break;
     dec(FCacheCommentLvl);
   end;
@@ -557,6 +560,7 @@ end;
 function TSynBeautifierPascal.GetFoldTypeAtEndOfLineForIdx(AIndex: Integer): TPascalCodeFoldBlockType;
 var
   EndLevel: Integer;
+  tmp: Pointer;
 begin
   // TODO cfbtNestedComment
   Result := FCacheFoldType;
@@ -565,17 +569,23 @@ begin
 
   FCacheFoldTypeForIdx := AIndex;
   EndLevel := GetFoldEndLevelForIdx(AIndex);
-  if (EndLevel > 0) and
-     (not FPasHighlighter.FoldBlockNestedTypes(AIndex, EndLevel - 1,
-       Pointer(FCacheFoldType), FOLDGROUP_PASCAL, [sfbIncludeDisabled]) )
-  then
-    FCacheFoldType := cfbtNone;
+  if (EndLevel > 0) then
+  begin
+    if FPasHighlighter.FoldBlockNestedTypes(AIndex, EndLevel - 1,
+       tmp, FOLDGROUP_PASCAL, [sfbIncludeDisabled])
+    then
+      FCacheFoldType:=TPascalCodeFoldBlockType(PtrUInt(tmp))
+    else
+      FCacheFoldType := cfbtNone;
+  end;
 
   while (FCacheFoldType = cfbtNestedComment) and (EndLevel > 1) do begin
     dec(EndLevel);
-    if (not FPasHighlighter.FoldBlockNestedTypes(AIndex, EndLevel - 1,
-         Pointer(FCacheFoldType), FOLDGROUP_PASCAL, [sfbIncludeDisabled]) )
+    if FPasHighlighter.FoldBlockNestedTypes(AIndex, EndLevel - 1,
+         tmp, FOLDGROUP_PASCAL, [sfbIncludeDisabled])
     then
+      FCacheFoldType:=TPascalCodeFoldBlockType(PtrUInt(tmp))
+    else
       FCacheFoldType := cfbtNone;
   end;
 
