@@ -1295,7 +1295,9 @@ begin
       and (ShowHeaderCaption=Settings.ShowHeaderCaption)
       and (HideHeaderCaptionFloatingControl=Settings.HideHeaderCaptionFloatingControl)
       and (AllowDragging=Settings.AllowDragging)
-      and (HeaderButtonSize=Settings.HeaderButtonSize);
+      and (HeaderButtonSize=Settings.HeaderButtonSize)
+      and (HeaderStyle=Settings.HeaderStyle)
+      ;
 end;
 
 { TAnchorDockMaster }
@@ -2754,6 +2756,7 @@ begin
   HideHeaderCaptionFloatingControl := Settings.HideHeaderCaptionFloatingControl;
   AllowDragging                    := Settings.AllowDragging;
   HeaderButtonSize                 := Settings.HeaderButtonSize;
+  HeaderStyle                      := Settings.HeaderStyle;
 end;
 
 procedure TAnchorDockMaster.SaveSettings(Settings: TAnchorDockSettings);
@@ -2771,6 +2774,7 @@ begin
   Settings.HideHeaderCaptionFloatingControl:=HideHeaderCaptionFloatingControl;
   Settings.AllowDragging:=AllowDragging;
   Settings.HeaderButtonSize:=HeaderButtonSize;
+  Settings.HeaderStyle:=HeaderStyle;
 end;
 
 function TAnchorDockMaster.SettingsAreEqual(Settings: TAnchorDockSettings
