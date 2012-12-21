@@ -78,7 +78,6 @@
     - on show again (hide form, show form): restore layout
     - close button for pages
 
-    - http://bugs.freepascal.org/view.php?id=17026 grabber design
     - http://bugs.freepascal.org/view.php?id=18538 keep size of mainbar
     - http://bugs.freepascal.org/view.php?id=18298 default layout sometimes wrong main bar
     - http://bugs.freepascal.org/view.php?id=19735 main bar on different screen size
@@ -533,6 +532,7 @@ type
     procedure CreateCloseButtonBitmap; virtual;
     procedure DisableControlAutoSizing(AControl: TControl);
     procedure FreeCloseButtonBitmap; virtual;
+    procedure InvalidateHeaders;
     procedure Notification(AComponent: TComponent; Operation: TOperation);
           override;
     procedure SetHeaderAlignLeft(const AValue: integer);
@@ -1985,6 +1985,7 @@ begin
   if FHeaderStyle=AValue then Exit;
   FHeaderStyle:=AValue;
   OptionsChanged;
+  InvalidateHeaders;
 end;
 
 procedure TAnchorDockMaster.SetPageAreaInPercent(AValue: integer);
@@ -2132,6 +2133,19 @@ end;
 procedure TAnchorDockMaster.FreeCloseButtonBitmap;
 begin
   FreeAndNil(fCloseBtnBitmap);
+end;
+
+procedure TAnchorDockMaster.InvalidateHeaders;
+var
+  i: Integer;
+  Site: TAnchorDockHostSite;
+begin
+  for i:=0 to ComponentCount-1 do begin
+    Site:=TAnchorDockHostSite(Components[i]);
+    if not (Site is TAnchorDockHostSite) then continue;
+    if (Site.Header<>nil) and (Site.Header.Parent<>nil) then
+      Site.Header.Invalidate;
+  end;
 end;
 
 procedure TAnchorDockMaster.AutoSizeAllHeaders(EnableAutoSizing: boolean);
