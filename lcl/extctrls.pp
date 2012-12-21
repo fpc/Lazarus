@@ -143,6 +143,7 @@ type
     property Pages: TStrings read FPages;
     // Generic properties
     property Align;
+    property AutoSize;
     property Anchors;
     property BiDiMode;
     property BorderSpacing;
