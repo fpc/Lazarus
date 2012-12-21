@@ -730,9 +730,13 @@ begin
     end
     else if CurToken.StrValue = '$DWGCODEPAGE' then
     begin
-      CurToken := TDXFToken(ATokens.Items[i+1]);
-      lStr := CurToken.StrValue;
-      if lStr = 'ANSI_1252' then ENCODING := 'CP1252';
+      // if we are forcing an encoding, don't use the value from the HEADER
+      if ADoc.ForcedEncodingOnRead = '' then
+      begin
+        CurToken := TDXFToken(ATokens.Items[i+1]);
+        lStr := CurToken.StrValue;
+        if lStr = 'ANSI_1252' then ENCODING := 'CP1252';
+      end;
       Inc(i);
     end;
 
@@ -1926,7 +1930,7 @@ end;
 
 function TvDXFVectorialReader.ConvertDXFStringToUTF8(AStr: string): string;
 begin
-  if ENCODING = 'UTF-8' then
+  if (ENCODING = 'UTF-8') or (ENCODING = '') then
   begin
     Result := AStr;
     Exit;
@@ -1951,10 +1955,6 @@ begin
   FPointSeparator.DecimalSeparator := '.';
   FPointSeparator.ThousandSeparator := '#';// disable the thousand separator
 
-  // Default HEADER data
-  ANGBASE := 0.0; // Starts pointing to the right / east
-  ANGDIR := 0; // counter-clock wise
-
   Tokenizer := TDXFTokenizer.Create;
 end;
 
@@ -1976,8 +1976,13 @@ var
   CurToken, CurTokenFirstChild: TDXFToken;
   lPage: TvVectorialPage;
 begin
-  // Start with default header values
-  ENCODING := 'UTF-8';
+  // Default HEADER data
+  ANGBASE := 0.0; // Starts pointing to the right / east
+  ANGDIR := 0; // counter-clock wise
+  // The default encoding of DXF files if a ($DWGCODEPAGE) header is not present
+  // See http://www.gdal.org/ogr/drv_dxf.html
+  if AData.ForcedEncodingOnRead <> '' then ENCODING := AData.ForcedEncodingOnRead
+  else ENCODING := 'cp1252';
 
   Tokenizer.ReadFromStrings(AStrings);
 
@@ -1997,6 +2002,9 @@ begin
     else if CurTokenFirstChild.StrValue = 'ENTITIES' then
       ReadENTITIES(CurToken.Childs, lPage, AData);
   end;
+
+  // Update properties from the document
+  AData.Encoding := ENCODING;
 end;
 
 initialization

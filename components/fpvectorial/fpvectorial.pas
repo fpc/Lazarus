@@ -564,10 +564,12 @@ type
   public
     Width, Height: Double; // in millimeters
     Name: string;
+    Encoding: string; // The encoding on which to save the file, if empty UTF-8 will be utilized. This value is filled when reading
+    ForcedEncodingOnRead: string; // if empty, no encoding will be forced when reading, but it can be set to a LazUtils compatible value
     // User-Interface information
     ZoomLevel: Double; // 1 = 100%
     { Selection fields }
-    SelectedvElement: TvEntity;
+    SelectedElement: TvEntity;
     { Base methods }
     constructor Create; virtual;
     destructor Destroy; override;
@@ -2649,7 +2651,7 @@ begin
 
     if Result <> vfrNotFound then
     begin
-      Owner.SelectedvElement := lEntity;
+      Owner.SelectedElement := lEntity;
       Exit;
     end;
   end;
