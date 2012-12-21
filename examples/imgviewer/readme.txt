@@ -11,6 +11,6 @@ It also demonstrates
 - setting the cursor to hourglass and reset it to indicate a long-running operation is going on (e.g. when recursively loading directories with a large amount of images)
 
 Possible improvements:
-= add support for other file formats (e.g. tiff)
+- add support for other file formats
 - add a setting that allows automatic scaling down if a picture is larger than the control
 - use a cache in a different thread to preload images the user is likely to look at next

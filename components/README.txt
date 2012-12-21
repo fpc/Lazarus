@@ -5,7 +5,7 @@ chmhelp
   Package lhelpcontrolpkg for using chm files in the IDE.
 
 codetools
-  The builtin pascal parser and pascal completion/refactoring tools of the IDE.
+  The builtin Pascal parser and Pascal completion/refactoring tools of the IDE.
 
 compilers
   Work in progress. Packages to extend the IDE for other languages.
@@ -17,7 +17,7 @@ custom
 customform
   Registering custom form descendants in the IDE.
 
-daemon:
+daemon
   Package to create programs that run as daemon under linux or service under
   windows.
 
@@ -28,7 +28,7 @@ dbexport
   Export databases to various file formats.
 
 editortoolbar
-  A customizable tolbar for the source editor.
+  A customizable toolbar for the source editor.
 
 educationlaz
   Extends/configures the IDE for education, training, courses
@@ -40,7 +40,7 @@ fpcunit
   template for a fpcunit gui test runner
 
 fpweb
-  ?
+  Units that support web server and web client programming.
 
 h2pas
   Adds graphical interface to the IDE for the h2pas command line tool.
@@ -49,7 +49,7 @@ images
   More image formats for LCL applications.
 
 interbase
-  Database support for interbase.
+  Database support for Interbase/Firebird.
 
 jcf2
   Jedi code formatter 2.
@@ -79,13 +79,16 @@ mouseandkeyinput
   A package demonstrating how to manipulate mouse and keyboard input.
 
 mpaslex
-  A small and fast pascal parser.
+  A small and fast Pascal parser.
 
 opengl
-  A OpenGL control.
+  An OpenGL control.
 
 paradox
   Support for paradox databases.
+	
+PascalScript
+  Version of RemObjects Pascal Script adapted for use in the Lazarus IDE.
 
 plotfunction
   A LCL control for drawing plots and graphs.
@@ -103,15 +106,15 @@ projecttemplates
   Create project templates from your projects.
 
 rtticontrols
-  A set of controls using the run time type information. For example a checkbox
+  A set of controls using the Run Time Type Information. For example, a checkbox
   can be connected to a published boolean property of an arbitrary class without
   writing any code.
 
 rx
-  ?
+  Controls based on rxlib.
 
 sdf
-  SDF database package.
+  SDF (CSV+fixed length dataset) database package.
 
 simpleideintf
   A test environment for IDE packages.
@@ -137,3 +140,8 @@ trayicon
 turbopower_ipro
   A HTML control.
 
+vlc
+  A video player component based on the VLC libraries.
+	
+wiki
+  Tools to convert a wiki to offline help.
