@@ -78,19 +78,18 @@
     - on show again (hide form, show form): restore layout
     - close button for pages
 
-    - http://bugs.freepascal.org/view.php?id=18538 keep size of mainbar
     - http://bugs.freepascal.org/view.php?id=18298 default layout sometimes wrong main bar
+    - http://bugs.freepascal.org/view.php?id=18538 keep size of mainbar
+    - http://bugs.freepascal.org/view.php?id=18553 dock designer windows
+    - http://bugs.freepascal.org/view.php?id=19132 docking already docked
+    - http://bugs.freepascal.org/view.php?id=19200 minimize+restore resize
     - http://bugs.freepascal.org/view.php?id=19735 main bar on different screen size
+    - http://bugs.freepascal.org/view.php?id=19810 multi monitor
+    - http://bugs.freepascal.org/view.php?id=19967 disable not always saved
+    - http://bugs.freepascal.org/view.php?id=20010 F12 sometimes need twice to get form
     - http://bugs.freepascal.org/view.php?id=20845 restore/load tabs
     - http://bugs.freepascal.org/view.php?id=21076 views
-    - http://bugs.freepascal.org/view.php?id=20010 F12 sometimes need twice to get form
-    - http://bugs.freepascal.org/view.php?id=19967 disable not always saved
-    - http://bugs.freepascal.org/view.php?id=19810 multi monitor
-    - http://bugs.freepascal.org/view.php?id=19200 minimize+restore resize
-    - http://bugs.freepascal.org/view.php?id=19132 docking already docked
-    - http://bugs.freepascal.org/view.php?id=18553 dock designer windows
     - http://bugs.freepascal.org/view.php?id=22149 keep caption of a custom dock site
-    - bug: opening a package editor does not put it to front
 }
 unit AnchorDocking;
 

@@ -29,8 +29,8 @@
 
   ToDo:
     - save settings after options dialog
+    - bug: opening a package editor does not put it to front
     - close source editor and show again
-    - show anchor editor => too small
     - qt: focus on close page
     - gtk2: focus on cancel completion box
     - gtk2: focus on execute completion box
@@ -50,7 +50,8 @@ uses
   AnchorDockOptionsDlg;
 
 const
-  DefaultConfigFileName = 'anchordocklayout.xml';
+  DefaultLayoutFileName = 'anchordocklayout.xml';
+  DefaultConfigFileName = 'anchordockoptions.xml';
 var
   mnuAnchorDockSection: TIDEMenuSection;
     mnuADSaveLayoutAsDefault: TIDEMenuCommand;
@@ -80,28 +81,33 @@ type
   public
     constructor Create;
     destructor Destroy; override;
-    procedure MakeIDEWindowDockSite(AForm: TCustomForm; ASides: TDockSides = [alBottom]); override;
-    procedure MakeIDEWindowDockable(AControl: TWinControl); override;
-    function AddableInWindowMenu(AForm: TCustomForm): boolean; override;
+    procedure IncreaseChangeStamp; inline;
+    property ChangeStamp: int64 read FChangeStamp;
+    property Modified: boolean read GetModified write SetModified;
+    procedure LoadOptions;
+    procedure SaveOptions;
+    // layouts
     function GetDefaultLayoutFilename(Full: boolean): string;
     procedure LoadDefaultLayout;
     procedure LoadUserLayout;
     procedure SaveUserLayout;
     procedure LoadLayoutFromFile(Filename: string);
     procedure SaveLayoutToFile(Filename: string);
+    property UserLayoutLoaded: boolean read FUserLayoutLoaded write SetUserLayoutLoaded;
+    property Enabled: boolean read FEnabled write SetEnabled;
+    // events
+    procedure MakeIDEWindowDockSite(AForm: TCustomForm; ASides: TDockSides = [alBottom]); override;
+    procedure MakeIDEWindowDockable(AControl: TWinControl); override;
+    function AddableInWindowMenu(AForm: TCustomForm): boolean; override;
     procedure ShowForm(AForm: TCustomForm; BringToFront: boolean); override;
     procedure CloseAll; override;
     procedure OnIDERestoreWindows(Sender: TObject);
     function OnProjectClose(Sender: TObject; AProject: TLazProject): TModalResult;
+    // menu items
     procedure RestoreDefaultLayoutClicked(Sender: TObject);
     procedure LoadLayoutFromFileClicked(Sender: TObject);
     procedure SaveLayoutToFileClicked(Sender: TObject);
     procedure SaveLayoutAsDefaultClicked(Sender: TObject);
-    property UserLayoutLoaded: boolean read FUserLayoutLoaded write SetUserLayoutLoaded;
-    property Enabled: boolean read FEnabled write SetEnabled;
-    procedure IncreaseChangeStamp; inline;
-    property ChangeStamp: int64 read FChangeStamp;
-    property Modified: boolean read GetModified write SetModified;
   end;
 
   { TAnchorDockIDEFrame }
@@ -130,6 +136,8 @@ procedure Register;
 
 implementation
 
+{$R *.lfm}
+
 procedure Register;
 begin
   if not (IDEDockMaster is TIDEAnchorDockMaster) then exit;
@@ -155,9 +163,9 @@ begin
     @IDEAnchorDockMaster.RestoreDefaultLayoutClicked);
 
   // add options frame
-  {$R *.lfm}
   AnchorDockOptionsID:=RegisterIDEOptionsEditor(GroupEnvironment,TAnchorDockIDEFrame,
                                                 AnchorDockOptionsID)^.Index;
+  IDEAnchorDockMaster.LoadOptions;
 end;
 
 { TIDEAnchorDockMaster }
@@ -280,7 +288,7 @@ end;
 
 function TIDEAnchorDockMaster.GetDefaultLayoutFilename(Full: boolean): string;
 begin
-  Result:=DefaultConfigFileName;
+  Result:=DefaultLayoutFileName;
   if Full then
     Result:=AppendPathDelim(LazarusIDE.GetPrimaryConfigPath)+Result;
 end;
@@ -313,7 +321,6 @@ begin
       if not DockMaster.ConfigIsEmpty(Config) then begin
         // loading last layout
         debugln(['TIDEAnchorDockMaster.LoadUserLayout restoring ...']);
-        DockMaster.LoadSettingsFromConfig(Config);
         DockMaster.LoadLayoutFromConfig(Config,true);
         UserLayoutLoaded:=true;
       end else begin
@@ -341,7 +348,6 @@ begin
     debugln(['TIDEAnchorDockMaster.SaveDefaultLayout ',Filename]);
     Config:=GetIDEConfigStorage(Filename,false);
     try
-      DockMaster.SaveSettingsToConfig(Config);
       DockMaster.SaveLayoutToConfig(Config);
     finally
       Config.Free;
@@ -580,6 +586,42 @@ begin
   LUIncreaseChangeStamp64(FChangeStamp);
 end;
 
+procedure TIDEAnchorDockMaster.LoadOptions;
+var
+  Config: TConfigStorage;
+begin
+  try
+    Config:=GetIDEConfigStorage(DefaultConfigFileName,true);
+    try
+      DockMaster.LoadSettingsFromConfig(Config);
+    finally
+      Config.Free;
+    end;
+  except
+    on E: Exception do begin
+      DebugLn(['TIDEAnchorDockMaster.LoadOptions failed: ',E.Message]);
+    end;
+  end;
+end;
+
+procedure TIDEAnchorDockMaster.SaveOptions;
+var
+  Config: TConfigStorage;
+begin
+  try
+    Config:=GetIDEConfigStorage(DefaultConfigFileName,false);
+    try
+      DockMaster.SaveSettingsToConfig(Config);
+    finally
+      Config.Free;
+    end;
+  except
+    on E: Exception do begin
+      DebugLn(['TIDEAnchorDockMaster.SaveOptions failed: ',E.Message]);
+    end;
+  end;
+end;
+
 { TAnchorDockIDEFrame }
 
 constructor TAnchorDockIDEFrame.Create(TheOwner: TComponent);
@@ -645,6 +687,7 @@ begin
   then begin
     DockMaster.LoadSettings(FSettings);
     IDEAnchorDockMaster.SaveUserLayout;
+    IDEAnchorDockMaster.SaveOptions;
   end;
 end;
 
