@@ -79,7 +79,6 @@
     - close button for pages
 
     - http://bugs.freepascal.org/view.php?id=17026 grabber design
-    - http://bugs.freepascal.org/view.php?id=23519 make filebrowser dockable
     - http://bugs.freepascal.org/view.php?id=18538 keep size of mainbar
     - http://bugs.freepascal.org/view.php?id=18298 default layout sometimes wrong main bar
     - http://bugs.freepascal.org/view.php?id=19735 main bar on different screen size
