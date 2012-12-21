@@ -67,8 +67,8 @@ unit SynTextDrawer;
 interface
 
 uses
-  LCLProc, LCLType, LCLIntf, GraphType, SysUtils, Classes, Graphics, GraphUtil, Types,
-  SynEditTypes, SynEditMiscProcs, LazSynEditText;
+  LCLProc, LCLType, LCLIntf, SysUtils, Classes, Graphics, GraphUtil, Types,
+  SynEditTypes, SynEditMiscProcs;
 
 type
   TheStockFontPatterns = 0..(1 shl (1 + Ord(High(TFontStyle))));
