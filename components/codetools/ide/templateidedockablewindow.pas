@@ -94,7 +94,7 @@ begin
   TemplateNameCreator:=IDEWindowCreators.Add(
     'TemplateName',
     @CreateTemplateName,nil,
-    '100','100','300','300'  // default place at left=100, top=100, width=300, height=300
+    '100','100','300','300'  // default place at left=100, top=100, right=300, bottom=300
      // you can also define percentage values of screen or relative positions, see wiki
     );
 end;
