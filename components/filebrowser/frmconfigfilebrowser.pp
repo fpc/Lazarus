@@ -89,8 +89,7 @@ begin
   RB.Checked := True;
 end;
 
-initialization
-  {$I frmconfigfilebrowser.lrs}
+{$R *.lfm}
 
 end.
 

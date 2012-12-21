@@ -1047,7 +1047,6 @@ components/externhelp/languages/externhelpfrm.pt_BR.po svneol=native#text/plain
 components/externhelp/languages/externhelpfrm.ru.po svneol=native#text/plain
 components/externhelp/languages/externhelpfrm.uk.po svneol=native#text/plain
 components/filebrowser/frmconfigfilebrowser.lfm svneol=native#text/plain
-components/filebrowser/frmconfigfilebrowser.lrs svneol=native#text/pascal
 components/filebrowser/frmconfigfilebrowser.pp svneol=native#text/plain
 components/filebrowser/frmfilebrowser.lfm svneol=native#text/plain
 components/filebrowser/frmfilebrowser.lrs svneol=native#text/pascal
