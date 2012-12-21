@@ -1,13 +1,19 @@
 <?xml version="1.0"?>
 <CONFIG>
-  <Package Version="3">
+  <Package Version="4">
     <Name Value="idefilebrowser"/>
+    <AddToProjectUsesSection Value="True"/>
     <Author Value="Graeme Geldenhuys"/>
     <CompilerOptions>
-      <Version Value="8"/>
+      <Version Value="11"/>
       <SearchPaths>
         <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)"/>
       </SearchPaths>
+      <Parsing>
+        <SyntaxOptions>
+          <UseAnsiStrings Value="False"/>
+        </SyntaxOptions>
+      </Parsing>
       <Other>
         <CompilerPath Value="$(CompPath)"/>
       </Other>
@@ -15,28 +21,24 @@
     <Description Value="File browsing window for the Lazarus IDE"/>
     <License Value="Modified LGPL"/>
     <Version Minor="2"/>
-    <Files Count="5">
+    <Files Count="4">
       <Item1>
         <Filename Value="frmfilebrowser.lfm"/>
         <Type Value="LFM"/>
       </Item1>
       <Item2>
-        <Filename Value="frmfilebrowser.lrs"/>
-        <Type Value="LRS"/>
-      </Item2>
-      <Item3>
         <Filename Value="frmfilebrowser.pas"/>
         <UnitName Value="frmFileBrowser"/>
-      </Item3>
-      <Item4>
+      </Item2>
+      <Item3>
         <Filename Value="regidefilebrowser.pp"/>
         <HasRegisterProc Value="True"/>
         <UnitName Value="regidefilebrowser"/>
-      </Item4>
-      <Item5>
+      </Item3>
+      <Item4>
         <Filename Value="frmconfigfilebrowser.pp"/>
         <UnitName Value="frmconfigfilebrowser"/>
-      </Item5>
+      </Item4>
     </Files>
     <Type Value="DesignTime"/>
     <RequiredPkgs Count="3">

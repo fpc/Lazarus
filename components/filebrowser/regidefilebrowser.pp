@@ -1,29 +1,34 @@
-unit regidefilebrowser;
+unit RegIDEFileBrowser;
 
 {$mode objfpc}{$H+}
 
 interface
 
 uses
-  Classes,
-  SysUtils,
-  frmfilebrowser,
-  frmconfigfilebrowser;
+  Classes, SysUtils,
+  LazLogger,
+  Controls, Forms,
+  LazIDEIntf, MenuIntf, IDECommands, IDEWindowIntf, BaseIDEIntf,
+  frmFileBrowser, frmConfigFileBrowser;
 
 type
+
+  { TFileBrowserController }
+
   TFileBrowserController = class(TComponent)
   private
     FStartDir: TStartDir;
     FCustomDir: string;
-    FWindow: TFileBrowserForm;
+    FWindow: TFileBrowserForm; // same as FileBrowserForm, which one is redundant?
     FNeedSave: Boolean;
-    procedure DoLoadLayout(Sender: TObject);
+    FSplitterPos: integer;
     procedure DoSelectDir(Sender: TObject);
-    procedure DoSaveLayout(Sender: TObject);
     procedure ReadConfig; virtual;
+    procedure SetSplitterPos(AValue: integer);
     procedure WriteConfig; virtual;
+    procedure OnFormClose(Sender: TObject; var {%H-}CloseAction: TCloseAction);
   protected
-    procedure CreateWindow; virtual;
+    procedure CreateWindow(AForm: TFileBrowserForm); virtual;
     { Called by file browser window }
     procedure DoOpenFile(Sender: TObject; const AFileName: string); virtual;
     { Called by file browser window }
@@ -31,25 +36,21 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    procedure ShowWindow;
     function ShowConfig: Boolean;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     property StartDir: TStartDir read FStartDir write FStartDir;
     property CustomDir: string read FCustomDir write FCustomDir;
+    property SplitterPos: integer read FSplitterPos write SetSplitterPos;
   end;
 
+var
+  FileBrowserCreator: TIDEWindowCreator; // set by Register procedure
+
+procedure ShowFileBrowser(Sender: TObject);
 procedure Register;
 
 
 implementation
-
-uses
-  Controls,
-  Forms,
-  lazideintf,
-  menuintf,
-  baseideintf,
-  idewindowintf;
 
 const
   SConfigFile         = 'idebrowserwin.xml';
@@ -58,7 +59,6 @@ const
   KeySplitterPos      = 'SplitterPos';
 
 resourcestring
-  SFileBrowserIDEMenu = 'IDEFileBrowser';
   SFileBrowserIDEMenuCaption = 'File Browser';
 
 
@@ -70,37 +70,45 @@ begin
     try
       FStartDir  := TStartDir(GetValue(KeyStartDir, Ord(sdProjectDir)));
       FCustomDir := GetValue(KeyCustomDir, '');
+      FSplitterPos:=GetValue(KeySplitterPos, 150);
     finally
       Free;
     end;
+end;
+
+procedure TFileBrowserController.SetSplitterPos(AValue: integer);
+begin
+  if FSplitterPos=AValue then Exit;
+  FSplitterPos:=AValue;
+  FNeedSave:=true;
 end;
 
 procedure TFileBrowserController.WriteConfig;
 begin
   with GetIDEConfigStorage(SConfigFile, True) do
     try
-      SetValue(KeyStartDir, Ord(FstartDir));
-      SetValue(KeyCustomDir, CustomDir);
+      SetDeleteValue(KeyStartDir, Ord(FStartDir), ord('C'));
+      SetDeleteValue(KeyCustomDir, CustomDir, '');
+      SetDeleteValue(KeySplitterPos, FSplitterPos, 150);
       FNeedSave := False;
     finally
       Free;
     end;
 end;
 
-procedure TFileBrowserController.CreateWindow;
+procedure TFileBrowserController.CreateWindow(AForm: TFileBrowserForm);
 var
   D: string;
 begin
-  FWindow := TFileBrowserForm.Create(Self);
+  FWindow := AForm;
   FWindow.Caption:=SFileBrowserIDEMenuCaption;
   FWindow.FreeNotification(Self);
   FWindow.OnOpenFile := @DoOpenFile;
   FWindow.OnConfigure := @DoConfig;
   FWindow.OnSelectDir := @DoSelectDir;
-  FWindow.OnSaveLayout := @DoSaveLayout;
-  FWindow.OnLoadLayout := @DoLoadLayout;
-  IDEDialogLayoutList.ApplyLayout(FWindow);
-  D       := FCustomDir;
+  FWindow.AddHandlerClose(@OnFormClose);
+  FWindow.TV.Height:=FSplitterPos;
+  D := FCustomDir;
   if (FStartDir = sdProjectDir) and Assigned(LazarusIDE.ActiveProject) then
     D := ExtractFilePath(LazarusIDE.ActiveProject.ProjectInfoFile);
   FWindow.Directory := D;
@@ -115,18 +123,10 @@ begin
   LazarusIDE.DoOpenEditorFile(AFileName, 0, 0, Flags);
 end;
 
-procedure TFileBrowserController.DoLoadLayout(Sender: TObject);
+procedure TFileBrowserController.OnFormClose(Sender: TObject;
+  var CloseAction: TCloseAction);
 begin
-  with GetIDEConfigStorage(SConfigFile, True) do
-  begin
-    try
-      FWindow.Top := GetValue('Position/Top', FWindow.Top);
-      FWindow.Left := GetValue('Position/Left', FWindow.Left);
-      FWindow.TV.Height := GetValue(KeySplitterPos, FWindow.TV.Height);
-    finally
-      Free;
-    end;
-  end;
+  SplitterPos:=FWindow.Splitter1.Top;
 end;
 
 procedure TFileBrowserController.DoSelectDir(Sender: TObject);
@@ -136,20 +136,6 @@ begin
     FCustomDir := FWindow.Directory;
     FNeedSave  := True;
   end;
-end;
-
-procedure TFileBrowserController.DoSaveLayout(Sender: TObject);
-begin
-  IDEDialogLayoutList.SaveLayout(FWindow);
-  with GetIDEConfigStorage(SConfigFile, True) do
-    try
-      SetValue(KeySplitterPos, FWindow.TV.Height);
-      SetValue('Position/Top', FWindow.Top);
-      SetValue('Position/Left', FWindow.Left);
-      FNeedSave := False;
-    finally
-      Free;
-    end;
 end;
 
 procedure TFileBrowserController.DoConfig(Sender: TObject);
@@ -172,17 +158,6 @@ begin
   if Assigned(FWindow) then
     FreeAndNil(FWindow);
   inherited;
-end;
-
-procedure TFileBrowserController.ShowWindow;
-begin
-  if (FWindow = nil) then
-  begin
-    CreateWindow;
-    FWindow.Show;
-  end
-  else
-    FWindow.BringToFront;
 end;
 
 function TFileBrowserController.ShowConfig: Boolean;
@@ -212,19 +187,54 @@ begin
 end;
 
 procedure ShowFileBrowser(Sender: TObject);
+begin
+  IDEWindowCreators.ShowForm(FileBrowserCreator.FormName,true);
+end;
+
+procedure CreateFileBrowser(Sender: TObject; aFormName: string;
+  var AForm: TCustomForm; DoDisableAutoSizing: boolean);
 var
   C: TFileBrowserController;
 begin
-  C := Application.FindComponent('IDEFileBrowserController') as TFileBrowserController;
+  // sanity check to avoid clashing with another package that has registered a window with the same name
+  if CompareText(aFormName,'FileBrowser')<>0 then begin
+    DebugLn(['ERROR: CreateFileBrowser: there is already a form with this name']);
+    exit;
+  end;
+  C := LazarusIDE.OwningComponent.FindComponent('IDEFileBrowserController') as TFileBrowserController;
   if (C = nil) then
-    C := TFileBrowserController.Create(Application);
-  C.ShowWindow;
+    C := TFileBrowserController.Create(LazarusIDE.OwningComponent);
+  IDEWindowCreators.CreateForm(AForm,TFileBrowserForm,true,C);
+  AForm.Name:=aFormName;
+  FileBrowserForm:=AForm as TFileBrowserForm;
+  C.CreateWindow(FileBrowserForm);
+  if not DoDisableAutoSizing then
+    AForm.EnableAutoSizing;
 end;
 
 procedure Register;
+var
+  CmdCatViewMenu: TIDECommandCategory;
+  ViewFileBrowserCommand: TIDECommand;
 begin
-  RegisterIDEMenuCommand(itmViewMainWindows, SFileBrowserIDEMEnu,
-    SFileBrowserIDEMenuCaption, nil, @ShowFileBrowser, nil, '');
+  // search shortcut category
+  CmdCatViewMenu:=IDECommandList.FindCategoryByName(CommandCategoryViewName);
+  // register shortcut
+  ViewFileBrowserCommand:=RegisterIDECommand(CmdCatViewMenu,
+    'ViewFileBrowser',SFileBrowserIDEMenuCaption,
+    CleanIDEShortCut,nil,@ShowFileBrowser);
+  // register menu item in View menu
+  RegisterIDEMenuCommand(itmViewMainWindows,
+    ViewFileBrowserCommand.Name,
+    SFileBrowserIDEMenuCaption, nil, nil, ViewFileBrowserCommand);
+
+  // register dockable Window
+  FileBrowserCreator:=IDEWindowCreators.Add(
+    'FileBrowser',
+    @CreateFileBrowser,nil,
+    '200','100','400','400'  // default place at left=200, top=100, right=400, bottom=400
+     // you can also define percentage values of screen or relative positions, see wiki
+    );
 end;
 
 end.

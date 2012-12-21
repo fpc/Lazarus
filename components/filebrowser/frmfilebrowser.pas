@@ -38,12 +38,10 @@ type
   private
     FOnConfigure: TNotifyEvent;
     FOnOpenFile: TOpenFileEvent;
-    FOnSaveLayout: TNotifyEvent;
     FOnSelectDir: TNotifyEvent;
     FRootDir: string;
     FDir: string;
     FShowHidden: Boolean;
-    FOnLoadLayout: TNotifyEvent;
     procedure AddDirectories(Node: TTreeNode; Dir: string);
     function GetAbsolutePath(Node: TTreeNode): string;
     procedure SetDir(const Value: string);
@@ -67,9 +65,6 @@ type
     property OnConfigure: TNotifyEvent read FOnConfigure write FOnConfigure;
     { Called when a new directory is selected }
     property OnSelectDir: TNotifyEvent read FOnSelectDir write FOnSelectDir;
-    { OnLoadLayout }
-    property OnSaveLayout: TNotifyEvent read FOnSaveLayout write FOnSaveLayout;
-    property OnLoadLayout: TNotifyEvent read FOnLoadLayout write FOnLoadLayout;
   end;
 
 var
@@ -202,9 +197,7 @@ end;
 
 procedure TFileBrowserForm.FormClose(Sender: TObject; var CloseAction: TCloseAction);
 begin
-  if Assigned(FOnSaveLayout) then
-    FOnSaveLayout(Self);
-  CloseAction := caFree;
+
 end;
 
 procedure TFileBrowserForm.FormCreate(Sender: TObject);
@@ -216,8 +209,6 @@ end;
 
 procedure TFileBrowserForm.FormShow(Sender: TObject);
 begin
-  if Assigned(FOnLoadLayout) then
-    FOnLoadLayout(Self);
   if TV.Selected <> nil then
     TV.Selected.Expand(False);
 end;

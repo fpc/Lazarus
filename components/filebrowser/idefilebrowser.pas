@@ -1,21 +1,21 @@
-{ This file was automatically created by Lazarus. do not edit!
+{ This file was automatically created by Lazarus. Do not edit!
   This source is only used to compile and install the package.
  }
 
-unit idefilebrowser; 
+unit idefilebrowser;
 
 interface
 
 uses
-  frmFileBrowser, regidefilebrowser, frmconfigfilebrowser, LazarusPackageIntf;
+  frmFileBrowser, RegIDEFileBrowser, frmConfigFileBrowser, LazarusPackageIntf;
 
 implementation
 
-procedure Register; 
+procedure Register;
 begin
-  RegisterUnit('regidefilebrowser', @regidefilebrowser.Register); 
-end; 
+  RegisterUnit('RegIDEFileBrowser', @RegIDEFileBrowser.Register);
+end;
 
 initialization
-  RegisterPackage('idefilebrowser', @Register); 
+  RegisterPackage('idefilebrowser', @Register);
 end.

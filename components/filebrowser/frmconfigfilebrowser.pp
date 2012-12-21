@@ -1,4 +1,4 @@
-unit frmconfigfilebrowser;
+unit frmConfigFileBrowser;
 
 {$mode objfpc}{$H+}
 
