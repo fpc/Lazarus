@@ -8157,6 +8157,10 @@ var
         fHighlighter.Next;
       i := TokenListCnt;
       while not fHighlighter.GetEol do begin
+        if i >= l then begin
+          l := l * 4;
+          SetLength(TokenPosList, l);
+        end;
         TokenPosList[i].X := fHighlighter.GetTokenPos + 1;
         TokenPosList[i].Attr := fHighlighter.GetTokenKind;
         if TokenPosList[i].X > PosX then begin
@@ -8166,10 +8170,6 @@ var
           exit;
         end;
         inc(i);
-        if i >= l then begin
-          l := l * 4;
-          SetLength(TokenPosList, l);
-        end;
         fHighlighter.Next;
       end;
       MaxKnownTokenPos := Length(Line) + 1;             // 1 based end+1 of last token (start pos of none existing after eol token)
