@@ -1223,6 +1223,8 @@ end;
 class procedure TWin32WSCustomEdit.SetPasswordChar(const ACustomEdit: TCustomEdit; NewChar: char);
 begin
   SendMessage(ACustomEdit.Handle, EM_SETPASSWORDCHAR, WParam(NewChar), 0);
+  //it does not propagate immediately to the control otherwise...
+  ACustomEdit.Invalidate;
 end;
 
 class procedure TWin32WSCustomEdit.SetReadOnly(const ACustomEdit: TCustomEdit; NewReadOnly: boolean);
