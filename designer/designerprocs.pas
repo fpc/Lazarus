@@ -45,11 +45,13 @@ type
   );
   TDesignerDCFlags = set of TDesignerDCFlag;
 
+  { TDesignerDeviceContext }
+
   TDesignerDeviceContext = class
   private
     FCanvas: TCanvas;
     FDC: HDC;
-    FDCControl: TWinControl;
+    FDCControl: TControl;
     FDCOrigin: TPoint;   // DC origin on desktop
     FFlags: TDesignerDCFlags;
     FFormClientOrigin: TPoint; // Form client origin on desktop
@@ -65,7 +67,7 @@ type
   public
     constructor Create;
     destructor Destroy; override;
-    procedure SetDC(AForm: TCustomForm; ADCControl: TWinControl; ADC: HDC);
+    procedure SetDC(AForm: TCustomForm; ADCControl: TControl; ADC: HDC);
     procedure Clear;
     procedure BeginPainting;
     procedure EndPainting;
@@ -446,7 +448,8 @@ begin
   inherited Destroy;
 end;
 
-procedure TDesignerDeviceContext.SetDC(AForm: TCustomForm; ADCControl: TWinControl; ADC: HDC);
+procedure TDesignerDeviceContext.SetDC(AForm: TCustomForm;
+  ADCControl: TControl; ADC: HDC);
 begin
   Clear;
   FDC := ADC;
