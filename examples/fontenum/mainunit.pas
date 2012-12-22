@@ -71,6 +71,8 @@ var
 implementation
 {.$define Debug}
 
+{$R *.lfm}
+
 { TfrmMain }
 var
   LStyles,
@@ -353,9 +355,9 @@ begin
   L := TStringList.Create;
   L.Add('abcdefhijklmnopqrstuvwxyz');
   L.Add('ABCDEFGHIJKLMNOPQRSTUVWXYZ');
-  L.Add('01234567891   ¢£¤¥§');
-  L.Add('àáâãäåæçèéêëìíîïğñòóôõöøùúûü');
-  L.add('ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏĞÑÒÓÔÕÕØÙÚÛÜİß');
+  L.Add('01234567891   ÑĞˆÂ¤ÒÂ§');
+  L.Add('Ğ°Ğ±Ğ²Ğ³Ğ´ĞµĞ¶Ğ·Ğ¸Ğ¹ĞºĞ»Ğ¼Ğ½Ğ¾Ğ¿Ñ€ÑÑ‚ÑƒÑ„Ñ…Ñ†ÑˆÑ‰ÑŠÑ‹ÑŒ');
+  L.add('ĞĞ‘Ğ’Ğ“Ğ”Ğ•Ğ–Ğ—Ğ˜Ğ™ĞšĞ›ĞœĞĞĞŸĞ Ğ¡Ğ¢Ğ£Ğ¤Ğ¥Ğ¥Ğ¨Ğ©ĞªĞ«Ğ¬Ğ­Ğ¯');
   grid.Cols[0] := L;
   l.Free;
 end;
@@ -574,11 +576,8 @@ end;
 procedure TfrmMain.UpdateFont(F: TFont);
 begin
   grid.Font := F;
-  grid.DefaultRowHeight := grid.canvas.textHeight('Áj') + 5;
+  grid.DefaultRowHeight := grid.canvas.textHeight('Ğ‘j') + 5;
 end;
-
-initialization
-  {$I mainunit.lrs}
 
 end.
 

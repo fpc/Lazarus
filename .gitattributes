@@ -4207,7 +4207,6 @@ examples/fbadmin/formunit.pas svneol=native#text/plain
 examples/fontenum/fontenumeration.lpi svneol=native#text/plain
 examples/fontenum/fontenumeration.lpr svneol=native#text/pascal
 examples/fontenum/mainunit.lfm svneol=native#text/plain
-examples/fontenum/mainunit.lrs svneol=native#text/pascal
 examples/fontenum/mainunit.pas svneol=native#text/pascal
 examples/fpdocmanager/FPDocManager.lpi svneol=native#text/plain
 examples/fpdocmanager/FPDocManager.lpr svneol=native#text/plain

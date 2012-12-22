@@ -7,62 +7,59 @@ object frmMain: TfrmMain
   VertScrollBar.Page = 439
   ActiveControl = lbFamily
   Caption = 'frmMain'
+  ClientHeight = 440
+  ClientWidth = 714
   OnCloseQuery = FormCloseQuery
   OnCreate = FormCreate
   OnShow = FormShow
   ShowHint = True
+  LCLVersion = '1.1'
   object Label3: TLabel
     Left = 548
     Height = 13
     Top = 257
-    Width = 29
+    Width = 24
     Caption = 'Filtro'
-    Color = clNone
     ParentColor = False
   end
   object Label4: TLabel
     Left = 216
     Height = 13
     Top = 16
-    Width = 73
+    Width = 62
     Caption = 'Face font list'
-    Color = clNone
     ParentColor = False
   end
   object Label5: TLabel
     Left = 424
     Height = 13
     Top = 11
-    Width = 35
+    Width = 29
     Caption = 'Styles'
-    Color = clNone
     ParentColor = False
   end
   object Sizes: TLabel
     Left = 648
     Height = 13
     Top = 11
-    Width = 31
+    Width = 24
     Caption = 'Sizes'
-    Color = clNone
     ParentColor = False
   end
   object lblCharset: TLabel
     Left = 424
     Height = 13
     Top = 176
-    Width = 57
+    Width = 48
     Caption = 'lblCharset'
-    Color = clNone
     ParentColor = False
   end
   object Label6: TLabel
     Left = 11
     Height = 13
     Top = 16
-    Width = 29
+    Width = 24
     Caption = 'Filter'
-    Color = clNone
     ParentColor = False
   end
   object lbFamily: TListBox
@@ -70,17 +67,16 @@ object frmMain: TfrmMain
     Height = 272
     Top = 32
     Width = 200
+    ItemHeight = 0
     OnClick = lbFamilyClick
     TabOrder = 0
-    TopIndex = -1
   end
   object cbCharset: TComboBox
     Left = 8
     Height = 21
     Top = 37
     Width = 194
-    AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
-    MaxLength = 0
+    ItemHeight = 13
     TabOrder = 1
     Text = 'ANSI_CHARSET'
   end
@@ -99,34 +95,34 @@ object frmMain: TfrmMain
     Height = 128
     Top = 32
     Width = 208
+    ItemHeight = 0
     OnClick = lbStylesClick
     TabOrder = 3
-    TopIndex = -1
   end
   object lbSizes: TListBox
     Left = 640
     Height = 272
     Top = 32
     Width = 56
+    ItemHeight = 0
     OnClick = lbSizesClick
     TabOrder = 4
-    TopIndex = -1
   end
   object lbCharset: TListBox
     Left = 424
     Height = 112
     Top = 192
     Width = 208
+    ItemHeight = 0
     OnClick = lbCharsetClick
     TabOrder = 5
-    TopIndex = -1
   end
   object cbPitch: TComboBox
     Left = 8
     Height = 21
     Top = 61
     Width = 194
-    AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
+    ItemHeight = 13
     ItemIndex = 0
     Items.Strings = (
       'DEFAULT_PITCH'
@@ -134,7 +130,6 @@ object frmMain: TfrmMain
       'VARIABLE_PITCH'
       'MONO_FONT'
     )
-    MaxLength = 0
     TabOrder = 6
     Text = 'DEFAULT_PITCH'
   end
@@ -150,17 +145,17 @@ object frmMain: TfrmMain
   end
   object chkStrike: TCheckBox
     Left = 591
-    Height = 20
+    Height = 17
     Top = 312
-    Width = 72
+    Width = 61
     Caption = 'Strikeout'
     TabOrder = 8
   end
   object chkUnderLine: TCheckBox
     Left = 592
-    Height = 20
+    Height = 17
     Top = 336
-    Width = 81
+    Width = 66
     Caption = 'UnderLine'
     TabOrder = 9
   end
@@ -182,17 +177,18 @@ object frmMain: TfrmMain
     AutoFillColumns = True
     ColCount = 1
     DefaultRowHeight = 17
-    FixedColor = clBtnFace
     FixedCols = 0
     FixedRows = 0
     Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goEditing, goSmoothScroll]
-    RowCount = 5
-    ScrollBars = ssAutoBoth
     TabOrder = 11
-    TabStop = True
+    ColWidths = (
+      364
+    )
   end
   object FontDialog1: TFontDialog
     Title = 'Select a font'
+    MinFontSize = 0
+    MaxFontSize = 0
     left = 312
     top = 384
   end
