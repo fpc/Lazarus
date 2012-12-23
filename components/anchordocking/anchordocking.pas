@@ -67,6 +67,7 @@
     - dnd move page to another pagecontrol
     - on close button: save a restore layout
     - option to show/hide dock headers
+    - option HeaderStyle to change appearance of grabbers
 
   ToDo:
     - keep custom dock site content visible
@@ -74,7 +75,7 @@
     - undock on hide
     - popup menu
        - shrink side left, top, right, bottom
-    - simple way to make designer forms dockable at designtime without any code
+    - simple way to make forms dockable at designtime without any code
     - on show again (hide form, show form): restore layout
     - close button for pages
 
