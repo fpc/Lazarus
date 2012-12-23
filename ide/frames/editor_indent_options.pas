@@ -47,7 +47,6 @@ type
     CommentsGroupDivider: TDividerBevel;
     lblBlockIndentShortcut: TLabel;
 
-    AnsiCenterLabel: TLabel;
     cbAnsiEnableAutoContinue: TCheckBox;
     edAnsiMatch: TEdit;
     edAnsiPrefix: TEdit;
@@ -59,7 +58,6 @@ type
     edAnsiAlignMax: TSpinEdit;
 
 
-    CurlyCenterLabel: TLabel;
     cbCurlyEnableAutoContinue: TCheckBox;
     edCurlyMatch: TEdit;
     edCurlyPrefix: TEdit;
@@ -70,7 +68,6 @@ type
     lbCurlyAlignMax: TLabel;
     edCurlyAlignMax: TSpinEdit;
 
-    SlashCenterLabel: TLabel;
     cbSlashEnableAutoContinue: TCheckBox;
     edSlashMatch: TEdit;
     edSlashPrefix: TEdit;
