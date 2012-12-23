@@ -34,7 +34,8 @@ uses
   FindDeclarationCache, CodeToolManager, CodeCache;
 
 const
-  UDFileVersion = 1;
+  // Version 2: added unit and group use count
+  UDFileVersion = 2;
   UDFileHeader = 'UnitDirectory:';
 type
   TUDIdentifier = class;
@@ -62,6 +63,7 @@ type
   public
     Dictionary: TUnitDictionary;
     Units: TMTAVLTree; // tree of TIDUnit sorted with CompareIDItems
+    UseCount: int64;
     constructor Create(const aName, aFilename: string);
     destructor Destroy; override;
     function AddUnit(NewUnit: TUDUnit): TUDUnit; overload;
@@ -76,6 +78,7 @@ type
     ToolStamp: integer;
     FirstIdentifier, LastIdentifier: TUDIdentifier;
     Groups: TMTAVLTree; // tree of TUDUnitGroup sorted with CompareIDItems
+    UseCount: int64;
     constructor Create(const aName, aFilename: string);
     destructor Destroy; override;
     function AddIdentifier(Item: TUDIdentifier): TUDIdentifier;
@@ -615,8 +618,10 @@ begin
       CurUnit:=TUDUnit(AVLNode.Data);
       inc(i);
       UnitID.Add(CurUnit.Filename,GetBase32(i));
-      // write unit number ; unit name ; unit file name
+      // write unit number ; usecount ; unit name ; unit file name
       w(UnitID[CurUnit.Filename]);
+      w(';');
+      w(IntToStr(CurUnit.UseCount));
       w(';');
       w(CurUnit.Name);
       w(';');
@@ -641,8 +646,10 @@ begin
     AVLNode:=FUnitGroupsByFilename.FindLowest;
     while AVLNode<>nil do begin
       Group:=TUDUnitGroup(AVLNode.Data);
-      // write group name
+      // write group name ; usecount ; group file name
       w(Group.Name);
+      w(';');
+      w(IntToStr(Group.UseCount));
       w(';');
       w(Group.Filename);
       w(LineEnding);
@@ -755,10 +762,11 @@ var
   procedure ReadUnits;
   var
     StartP: PChar;
-    UnitID, CurUnitName, UnitFilename, Identifier: string;
+    UnitID, s, CurUnitName, UnitFilename, Identifier: string;
     CurUnit: TUDUnit;
     Item: TUDIdentifier;
     Skip: boolean;
+    UseCount: Integer;
   begin
     ReadConstant('//BeginUnits','missing //BeginUnits header');
     ReadLineEnding;
@@ -772,6 +780,19 @@ var
       SetLength(UnitID,p-StartP);
       Move(StartP^,UnitID[1],length(UnitID));
       inc(p); // skip semicolon
+
+      // read usecount
+      UseCount:=0;
+      if Version>=2 then begin
+        StartP:=p;
+        while (p<EndP) and (p^ in ['0'..'9']) do inc(p);
+        if (StartP=p) or (p^<>';') then
+          e('unit use count expected, but found "'+dbgstr(p^)+'"');
+        SetLength(s,p-StartP);
+        Move(StartP^,s[1],length(s));
+        UseCount:=StrToInt64Def(s,0);
+        inc(p); // skip semicolon
+      end;
 
       // read unit name
       StartP:=p;
@@ -793,9 +814,11 @@ var
 
       CurUnit:=FindUnitWithFilename(UnitFilename);
       Skip:=false;
-      if CurUnit=nil then
-        CurUnit:=AddUnit(UnitFilename,CurUnitName) // new unit
-      else
+      if CurUnit=nil then begin
+        // new unit
+        CurUnit:=AddUnit(UnitFilename,CurUnitName);
+        CurUnit.UseCount:=UseCount;
+      end else
         Skip:=KeepData; // old unit
       IDToUnit[UnitID]:=CurUnit;
 
@@ -826,10 +849,11 @@ var
 
   procedure ReadGroups;
   var
-    GroupName, GroupFilename, UnitID: string;
+    s, GroupName, GroupFilename, UnitID: string;
     StartP: PChar;
     Group: TUDUnitGroup;
     CurUnit: TUDUnit;
+    UseCount: Integer;
   begin
     ReadConstant('//BeginGroups','missing //BeginGroups header');
     ReadLineEnding;
@@ -845,6 +869,19 @@ var
         Move(StartP^,GroupName[1],length(GroupName));
       inc(p); // skip semicolon
 
+      // read usecount
+      UseCount:=0;
+      if Version>=2 then begin
+        StartP:=p;
+        while (p<EndP) and (p^ in ['0'..'9']) do inc(p);
+        if (StartP=p) or (p^<>';') then
+          e('group use count expected, but found "'+dbgstr(p^)+'"');
+        SetLength(s,p-StartP);
+        Move(StartP^,s[1],length(s));
+        UseCount:=StrToInt64Def(s,0);
+        inc(p); // skip semicolon
+      end;
+
       // read file name
       StartP:=p;
       while (p<EndP) and (not (p^ in [#10,#13])) do inc(p);
@@ -858,6 +895,7 @@ var
       Group:=FindGroupWithFilename(GroupFilename);
       if Group=nil then
         Group:=AddUnitGroup(GroupFilename,GroupName);
+      Group.UseCount:=UseCount;
 
       // read units of group until empty line
       repeat
@@ -895,7 +933,7 @@ begin
   LineStart:=p;
   Y:=1;
   Version:=ReadFileFormat;
-  if Version<1 then
+  if Version>UDFileVersion then
     E('invalid version '+IntToStr(Version));
   //debugln(['TUnitDictionary.LoadFromStream Version=',Version]);
   IDToUnit:=TStringToPointerTree.Create(true);
