@@ -144,12 +144,17 @@ type
     InfoLabel: TLabel;
     ItemsListBox: TListBox;
     JumpMenuItem: TMenuItem;
+    DeleteSeparatorMenuItem: TMenuItem;
+    DeleteUnitMenuItem: TMenuItem;
+    DeletePackageMenuItem: TMenuItem;
     UseMenuItem: TMenuItem;
     PackageLabel: TLabel;
     PopupMenu1: TPopupMenu;
     StartsSpeedButton: TSpeedButton;
     UnitLabel: TLabel;
     procedure ButtonPanel1HelpButtonClick(Sender: TObject);
+    procedure DeletePackageClick(Sender: TObject);
+    procedure DeleteUnitClick(Sender: TObject);
     procedure UseIdentifierClick(Sender: TObject);
     procedure ContainsSpeedButtonClick(Sender: TObject);
     procedure FilterEditChange(Sender: TObject);
@@ -184,6 +189,7 @@ type
     procedure SortItems;
     procedure UpdateIdentifierInfo;
     function GetFilterEditText: string;
+    function FindSelectedIdentifier: TCodyIdentifier;
     function FindSelectedItem(out Identifier, UnitFilename,
       GroupName, GroupFilename: string): boolean;
     procedure UpdateCurOwnerOfUnit;
@@ -740,6 +746,55 @@ begin
   OpenCodyHelp('#Identifier_Dictionary');
 end;
 
+procedure TCodyIdentifiersDlg.DeletePackageClick(Sender: TObject);
+var
+  Identifier: string;
+  UnitFilename: string;
+  GroupName: string;
+  GroupFilename: string;
+  Group: TUDUnitGroup;
+  s: String;
+begin
+  if not FindSelectedItem(Identifier, UnitFilename, GroupName, GroupFilename)
+  then exit;
+  if GroupFilename='' then exit;
+  s:='Really delete the package from the database?'#13
+    +'Note: This is does not change the source or any configuration.'#13
+    +#13'"'+GroupFilename+'"';
+  if IDEMessageDialog('Delete package?',s,mtConfirmation,[mbYes,mbNo],'')<>mrYes
+  then exit;
+  Group:=CodyUnitDictionary.FindGroupWithFilename(GroupFilename);
+  if Group=nil then exit;
+  CodyUnitDictionary.DeleteGroup(Group,true);
+  UpdateGeneralInfo;
+  UpdateItemsList;
+end;
+
+procedure TCodyIdentifiersDlg.DeleteUnitClick(Sender: TObject);
+var
+  Identifier: string;
+  UnitFilename: string;
+  GroupName: string;
+  GroupFilename: string;
+  CurUnit: TUDUnit;
+  s: String;
+begin
+  if not FindSelectedItem(Identifier, UnitFilename, GroupName, GroupFilename)
+  then exit;
+  s:='Really delete the unit from the database?'#13
+    +'Note: This is does not change the source or any configuration.'#13
+    +#13'unit: "'+UnitFilename+'"';
+  if GroupFilename<>'' then
+    s+=#13'in "'+GroupFilename+'"';
+  if IDEMessageDialog('Delete unit?',s,mtConfirmation,[mbYes,mbNo],'')<>mrYes
+  then exit;
+  CurUnit:=CodyUnitDictionary.FindUnitWithFilename(UnitFilename);
+  if CurUnit=nil then exit;
+  CodyUnitDictionary.DeleteUnit(CurUnit,true);
+  UpdateGeneralInfo;
+  UpdateItemsList;
+end;
+
 procedure TCodyIdentifiersDlg.ContainsSpeedButtonClick(Sender: TObject);
 begin
   UpdateItemsList;
@@ -862,11 +917,19 @@ var
 begin
   if FindSelectedItem(Identifier, UnitFilename, GroupName, GroupFilename) then
   begin
+    UseMenuItem.Caption:='Use '+Identifier;
     UseMenuItem.Enabled:=true;
+    JumpMenuItem.Caption:='Jump to '+Identifier;
     JumpMenuItem.Enabled:=true;
+    DeleteUnitMenuItem.Caption:='Delete unit '+ExtractFilename(UnitFilename);
+    DeleteUnitMenuItem.Enabled:=true;
+    DeletePackageMenuItem.Caption:='Delete package '+ExtractFilename(GroupFilename);
+    DeletePackageMenuItem.Enabled:=true;
   end else begin
     UseMenuItem.Enabled:=false;
     JumpMenuItem.Enabled:=false;
+    DeleteUnitMenuItem.Enabled:=false;
+    DeletePackageMenuItem.Enabled:=false;
   end;
 end;
 
@@ -1123,10 +1186,20 @@ begin
     Result:='';
 end;
 
+function TCodyIdentifiersDlg.FindSelectedIdentifier: TCodyIdentifier;
+var
+  i: Integer;
+begin
+  Result:=nil;
+  if FItems=nil then exit;
+  i:=ItemsListBox.ItemIndex;
+  if (i<0) or (i>=FItems.Count) then exit;
+  Result:=TCodyIdentifier(FItems[i]);
+end;
+
 function TCodyIdentifiersDlg.FindSelectedItem(out Identifier, UnitFilename,
   GroupName, GroupFilename: string): boolean;
 var
-  i: Integer;
   Item: TCodyIdentifier;
 begin
   Result:=false;
@@ -1134,10 +1207,8 @@ begin
   UnitFilename:='';
   GroupName:='';
   GroupFilename:='';
-  if FItems=nil then exit;
-  i:=ItemsListBox.ItemIndex;
-  if (i<0) or (i>=FItems.Count) then exit;
-  Item:=TCodyIdentifier(FItems[i]);
+  Item:=FindSelectedIdentifier;
+  if Item=nil then exit;
   Identifier:=Item.Identifier;
   UnitFilename:=Item.UnitFile;
   GroupName:=Item.GroupName;

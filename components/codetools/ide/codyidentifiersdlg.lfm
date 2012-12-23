@@ -178,5 +178,16 @@ object CodyIdentifiersDlg: TCodyIdentifiersDlg
       Caption = 'UseMenuItem'
       OnClick = UseIdentifierClick
     end
+    object DeleteSeparatorMenuItem: TMenuItem
+      Caption = '-'
+    end
+    object DeleteUnitMenuItem: TMenuItem
+      Caption = 'DeleteUnitMenuItem'
+      OnClick = DeleteUnitClick
+    end
+    object DeletePackageMenuItem: TMenuItem
+      Caption = 'DeletePackageMenuItem'
+      OnClick = DeletePackageClick
+    end
   end
 end
