@@ -1404,18 +1404,19 @@ var
 begin
   if Immediately then begin
     FNeedUpdateHighlighters:=false;
-    Project1.UpdateAllSyntaxHighlighter;
     for h := Low(TLazSyntaxHighlighter) to High(TLazSyntaxHighlighter) do
       if Highlighters[h]<>nil then begin
         Highlighters[h].BeginUpdate;
         EditorOpts.GetHighlighterSettings(Highlighters[h]);
         Highlighters[h].EndUpdate;
       end;
-    for i := 0 to SourceEditorManager.SourceEditorCount - 1 do begin
-      ASrcEdit := SourceEditorManager.SourceEditors[i];
-      AnEditorInfo:=Project1.EditorInfoWithEditorComponent(ASrcEdit);
-      if AnEditorInfo <> nil then
-        ASrcEdit.SyntaxHighlighterType := AnEditorInfo.SyntaxHighlighter;
+    if Project1<>nil then begin
+      for i := 0 to SourceEditorManager.SourceEditorCount - 1 do begin
+        ASrcEdit := SourceEditorManager.SourceEditors[i];
+        AnEditorInfo:=Project1.EditorInfoWithEditorComponent(ASrcEdit);
+        if AnEditorInfo <> nil then
+          ASrcEdit.SyntaxHighlighterType := AnEditorInfo.SyntaxHighlighter;
+      end;
     end;
   end else begin
     FNeedUpdateHighlighters:=true;
