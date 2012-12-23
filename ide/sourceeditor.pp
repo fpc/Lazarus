@@ -8303,6 +8303,7 @@ procedure TSourceEditorManagerBase.FreeSourceWindows;
 var
   s: TSourceEditorWindowInterface;
 begin
+  PasBeautifier.OnGetDesiredIndent := nil;
   FSourceWindowByFocusList.Clear;
   while FSourceWindowList.Count > 0 do begin
     s := TSourceEditorWindowInterface(FSourceWindowList[0]);
@@ -9870,6 +9871,8 @@ begin
   FSourceWindowList.Add(Result);
   FSourceWindowList.Sort(TListSortCompare(@SortSourceWindows));
   FSourceWindowByFocusList.Add(Result);
+  PasBeautifier.OnGetDesiredIndent :=
+    @TSourceNotebook(FSourceWindowList[0]).EditorGetIndent;
   if Activate then begin
     ActiveSourceWindow := Result;
     ShowActiveWindowOnTop(False);
@@ -9891,6 +9894,11 @@ begin
     ActiveSourceWindow := nil
   else if ActiveSourceWindow = AWindow then
     ActiveSourceWindow := SourceWindows[Max(0, Min(i, SourceWindowCount-1))];
+  if FSourceWindowList.Count > 0 then
+    PasBeautifier.OnGetDesiredIndent :=
+      @TSourceNotebook(FSourceWindowList[0]).EditorGetIndent
+  else
+    PasBeautifier.OnGetDesiredIndent := nil;
   if i >= 0 then
     FChangeNotifyLists[semWindowDestroy].CallNotifyEvents(AWindow);
 end;
