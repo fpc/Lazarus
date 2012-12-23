@@ -145,6 +145,7 @@ type
     function ParseUnit(Code: TCodeBuffer; Group: TUDUnitGroup = nil): TUDUnit; overload;
     function ParseUnit(Tool: TCodeTool; Group: TUDUnitGroup = nil): TUDUnit; overload;
     function FindUnitWithFilename(const aFilename: string): TUDUnit;
+    procedure IncreaseUnitUseCount(TheUnit: TUDUnit);
     property UnitsByName: TMTAVLTree read FUnitsByName;
     property UnitsByFilename: TMTAVLTree read FUnitsByFilename;
 
@@ -1267,6 +1268,17 @@ begin
     Result:=TUDUnit(AVLNode.Data)
   else
     Result:=nil;
+end;
+
+procedure TUnitDictionary.IncreaseUnitUseCount(TheUnit: TUDUnit);
+var
+  Cnt: Int64;
+begin
+  Cnt:=TheUnit.UseCount;
+  if Cnt<High(Cnt) then inc(Cnt);
+  if TheUnit.UseCount=Cnt then exit;
+  TheUnit.UseCount:=Cnt;
+  IncreaseChangeStamp;
 end;
 
 end.

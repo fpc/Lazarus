@@ -129,6 +129,7 @@ type
     DirectUnit: boolean; // belongs to same owner
     InUsedPackage: boolean;
     PathDistance: integer; // how far is UnitFile from the current unit
+    UseCount: int64;
     constructor Create(const TheIdentifier, TheUnitName, TheUnitFile,
       ThePackageName, ThePackageFile: string; TheMatchExactly: boolean);
   end;
@@ -235,10 +236,11 @@ var
 procedure ShowUnitDictionaryDialog(Sender: TObject);
 procedure InitUnitDictionary;
 
-function CompareCodyIdentifiersAlphaScope(Item1, Item2: Pointer): integer;
+function CompareCodyIdentifiersAlphaScopeUse(Item1, Item2: Pointer): integer;
 function CompareCodyIdentifiersScopeAlpha(Item1, Item2: Pointer): integer;
 function CompareCodyIdentifiersAlpha(Item1, Item2: Pointer): integer;
 function CompareCodyIdentifiersScope(Item1, Item2: Pointer): integer;
+function CompareCodyIdentifiersUseCount(Item1, Item2: Pointer): integer;
 
 implementation
 
@@ -267,11 +269,16 @@ begin
   CodyUnitDictionary:=TCodyUnitDictionary.Create;
 end;
 
-function CompareCodyIdentifiersAlphaScope(Item1, Item2: Pointer): integer;
+function CompareCodyIdentifiersAlphaScopeUse(Item1, Item2: Pointer): integer;
 begin
   Result:=CompareCodyIdentifiersAlpha(Item1,Item2);
+  //if Result<>0 then debugln(['CompareCodyIdentifiersAlphaScopeUse Alpha diff: ',TCodyIdentifier(Item1).Identifier,' ',TCodyIdentifier(Item2).Identifier]);
   if Result<>0 then exit;
   Result:=CompareCodyIdentifiersScope(Item1,Item2);
+  //if Result<>0 then debugln(['CompareCodyIdentifiersAlphaScopeUse Scope diff: ',TCodyIdentifier(Item1).Identifier,' ',TCodyIdentifier(Item1).UnitFile,' ',TCodyIdentifier(Item2).UnitFile]);
+  if Result<>0 then exit;
+  Result:=CompareCodyIdentifiersUseCount(Item1,Item2);
+  //if Result<>0 then debugln(['CompareCodyIdentifiersAlphaScopeUse UseCount diff: ',TCodyIdentifier(Item1).Identifier,' ',TCodyIdentifier(Item1).UseCount,' ',TCodyIdentifier(Item2).UseCount]);
 end;
 
 function CompareCodyIdentifiersScopeAlpha(Item1, Item2: Pointer): integer;
@@ -309,15 +316,43 @@ var
 begin
   Result:=0;
   // an exact match is better
-  if CheckFlag(i1.MatchExactly,i2.MatchExactly,Result) then exit;
+  if CheckFlag(i1.MatchExactly,i2.MatchExactly,Result) then begin
+    //debugln(['CompareCodyIdentifiersScope ',i1.Identifier,' MatchExactly 1=',i1.MatchExactly,' 2=',i2.MatchExactly]);
+    exit;
+  end;
   // an unit of the owner is better
-  if CheckFlag(i1.DirectUnit,i2.DirectUnit,Result) then exit;
+  if CheckFlag(i1.DirectUnit,i2.DirectUnit,Result) then begin
+    //debugln(['CompareCodyIdentifiersScope ',i1.Identifier,' DirectUnit 1=',i1.DirectUnit,' 2=',i2.DirectUnit]);
+    exit;
+  end;
   // an unit in a used package is better
-  if CheckFlag(i1.InUsedPackage,i2.InUsedPackage,Result) then exit;
+  if CheckFlag(i1.InUsedPackage,i2.InUsedPackage,Result) then begin
+    //debugln(['CompareCodyIdentifiersScope ',i1.Identifier,' InUsedPackage 1=',i1.InUsedPackage,' 2=',i2.InUsedPackage]);
+    exit;
+  end;
   // a fpc unit is better
-  if CheckFlag(i1.GroupName=PackageNameFPCSrcDir,i2.GroupName=PackageNameFPCSrcDir,Result) then exit;
+  if CheckFlag(i1.GroupName=PackageNameFPCSrcDir,i2.GroupName=PackageNameFPCSrcDir,Result) then begin
+    //debugln(['CompareCodyIdentifiersScope fpc unit ',i1.Identifier,' GroupName 1=',i1.GroupName,' 2=',i2.GroupName]);
+    exit;
+  end;
   // a near directory is better
-  Result:=i2.PathDistance-i1.PathDistance;
+  Result:=i1.PathDistance-i2.PathDistance;
+  if Result<>0 then begin
+    //debugln(['CompareCodyIdentifiersScope ',i1.Identifier,' PathDistance 1=',i1.PathDistance,' 2=',i2.PathDistance]);
+  end;
+end;
+
+function CompareCodyIdentifiersUseCount(Item1, Item2: Pointer): integer;
+var
+  i1: TCodyIdentifier absolute Item1;
+  i2: TCodyIdentifier absolute Item2;
+begin
+  if i1.UseCount>i2.UseCount then
+    exit(-1)
+  else if i1.UseCount<i2.UseCount then
+    exit(1)
+  else
+    exit(0);
 end;
 
 { TCodyIdentifier }
@@ -1114,10 +1149,16 @@ var
   DepOwner: TObject;
   BaseDir: String;
   Dir: String;
+  CurUnit: TUDUnit;
 begin
   BaseDir:=ExtractFilePath(CurMainFilename);
   for i:=0 to FItems.Count-1 do begin
     Item:=TCodyIdentifier(FItems[i]);
+    Item.DirectUnit:=false;
+    Item.UseCount:=0;
+    CurUnit:=CodyUnitDictionary.FindUnitWithFilename(Item.UnitFile);
+    if CurUnit<>nil then
+      Item.UseCount:=CurUnit.UseCount;
     Item.PathDistance:=length(CreateRelativePath(ExtractFilePath(Item.UnitFile),BaseDir));
     Dir:=ChompPathDelim(ExtractFilePath(Item.UnitFile));
     if (not FilenameIsAbsolute(Item.UnitFile)) or (Dir='') then begin
@@ -1142,7 +1183,7 @@ begin
     Item.InUsedPackage:=PackageEditingInterface.IsOwnerDependingOnPkg(CurOwner,
                                                        Item.GroupName,DepOwner);
   end;
-  FItems.Sort(@CompareCodyIdentifiersAlphaScope);
+  FItems.Sort(@CompareCodyIdentifiersAlphaScopeUse);
 end;
 
 procedure TCodyIdentifiersDlg.UpdateIdentifierInfo;
@@ -1285,6 +1326,7 @@ var
   NewX: integer;
   NewY: integer;
   NewTopLine: integer;
+  CurUnit: TUDUnit;
 
   function OpenDependency: boolean;
   // returns false to abort
@@ -1494,6 +1536,10 @@ begin
   finally
     CurSrcEdit.EndUndoBlock{$IFDEF SynUndoDebugBeginEnd}('TCodyIdentifiersDlg.UseIdentifier'){$ENDIF};
   end;
+
+  CurUnit:=CodyUnitDictionary.FindUnitWithFilename(NewUnitFilename);
+  if CurUnit<>nil then
+    CodyUnitDictionary.IncreaseUnitUseCount(CurUnit);
 end;
 
 procedure TCodyIdentifiersDlg.JumpToIdentifier;
