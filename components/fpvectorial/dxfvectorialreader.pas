@@ -934,7 +934,7 @@ procedure TvDXFVectorialReader.ReadENTITIES(ATokens: TDXFTokens; AData: TvVector
 var
   i: Integer;
   CurToken: TDXFToken;
-  lEntity: TvEntity;
+  lEntity: TvEntity; // only to help debugging
 begin
   IsReadingPolyline := False;
 
@@ -1417,11 +1417,11 @@ var
   lName: string;
   lBlock: TvBlock;
   PosX, PosY, PosZ: Double;
-  lCurEntity: TvEntity;
 begin
   PosX := 0.0;
   PosY := 0.0;
   PosZ := 0.0;
+  Result := nil;
 
   for i := 0 to ATokens.Count - 1 do
   begin
@@ -1443,15 +1443,7 @@ begin
   end;
 
   // Find the block by its name
-  for i := 0 to AData.GetEntitiesCount()-1 do
-  begin
-    lCurEntity := AData.GetEntity(i);
-    if (lCurEntity is TvBlock) and (TvBlock(lCurEntity).Name = lName) then
-    begin
-      lBlock := TvBlock(lCurEntity);
-      Break;
-    end;
-  end;
+  lBlock := TvBlock(AData.FindEntityWithNameAndType(lName, TvBlock));
   if lBlock = nil then Exit;
 
   // write the data

@@ -211,6 +211,7 @@ type
   TvEntity = class
   public
     X, Y, Z: Double;
+    Name: string;
     constructor Create; virtual;
     procedure Clear; virtual;
     // in CalculateBoundingBox always remember to treat correctly the case of ADest=nil!!!
@@ -227,6 +228,8 @@ type
     function GetNormalizedPos(APage: TvVectorialPage; ANewMin, ANewMax: Double): T3DPoint;
     function GenerateDebugTree(ADestRoutine: TvDebugAddItemProc; APageItem: Pointer): Pointer; virtual;
   end;
+
+  TvEntityClass = class of TvEntity;
 
   { TvEntityWithPen }
 
@@ -526,7 +529,6 @@ type
   protected
     FElements: TFPList; // of TvEntity
   public
-    Name: string;
     constructor Create; override;
     destructor Destroy; override;
     //
@@ -547,7 +549,6 @@ type
   TvInsert = class(TvEntity)
   public
     Block: TvBlock; // The block to be inserted
-    Name: string;
     procedure Render(ADest: TFPCustomCanvas; ADestX: Integer = 0;
       ADestY: Integer = 0; AMulX: Double = 1.0; AMulY: Double = 1.0); override;
   end;
@@ -627,6 +628,7 @@ type
     function  GetEntitiesCount: Integer;
     function  GetLastEntity(): TvEntity;
     function  FindAndSelectEntity(Pos: TPoint): TvFindEntityResult;
+    function  FindEntityWithNameAndType(AName: string; AType: TvEntityClass): TvEntity;
     { Data removing methods }
     procedure Clear; virtual;
     function  DeleteEntity(AIndex: Cardinal): Boolean;
@@ -2653,6 +2655,24 @@ begin
     begin
       Owner.SelectedElement := lEntity;
       Exit;
+    end;
+  end;
+end;
+
+function TvVectorialPage.FindEntityWithNameAndType(AName: string;
+  AType: TvEntityClass): TvEntity;
+var
+  i: Integer;
+  lCurEntity: TvEntity;
+begin
+  Result := nil;
+  for i := 0 to GetEntitiesCount()-1 do
+  begin
+    lCurEntity := GetEntity(i);
+    if (lCurEntity is AType) and (lCurEntity.Name = AName) then
+    begin
+      Result := lCurEntity;
+      Break;
     end;
   end;
 end;
