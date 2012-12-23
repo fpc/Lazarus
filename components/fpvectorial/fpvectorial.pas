@@ -2485,7 +2485,7 @@ end;
 
 procedure TvBlock.CallbackDeleteElement(data, arg: pointer);
 begin
-  TvFormulaElement(data).Free;
+  TvEntity(data).Free;
 end;
 
 constructor TvBlock.Create;

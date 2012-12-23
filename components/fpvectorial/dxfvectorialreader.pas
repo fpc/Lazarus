@@ -533,6 +533,11 @@ begin
       begin
         Exit;
       end
+      // Comments can be in the beginning of the file and start with 999
+      else if (IntSectionGroupCode = 999) then
+      begin
+        // nothing to be done, let it add the token
+      end
       else
       begin
         raise Exception.Create(Format(
@@ -1991,6 +1996,7 @@ begin
   for i := 0 to Tokenizer.Tokens.Count - 1 do
   begin
     CurToken := TDXFToken(Tokenizer.Tokens.Items[i]);
+    if (CurToken.Childs = nil) or (CurToken.Childs.Count=0) then Continue;
     CurTokenFirstChild := TDXFToken(CurToken.Childs.Items[0]);
 
     if CurTokenFirstChild.StrValue = 'HEADER' then
