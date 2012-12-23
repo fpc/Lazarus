@@ -15377,6 +15377,8 @@ end;
 procedure TQtCalendar.signalCurrentPageChanged(p1, p2: Integer); cdecl;
 var
   Msg: TLMessage;
+  ADate: QDateH;
+  HasChanges: Boolean;
 begin
   {$IFDEF VerboseQt}
   writeln('TQtCalendar.SignalCurrentPageChanged p1=',p1,' p2=',p2);
@@ -15384,9 +15386,12 @@ begin
   if InUpdate then
     exit;
   FillChar(Msg, SizeOf(Msg), #0);
+  HasChanges := (AYear <> p1) or (AMonth <> p2);
   if AYear <> p1 then
   begin
     Msg.Msg := LM_YEARCHANGED;
+    DeliverMessage(Msg);
+    Msg.Msg := LM_CHANGED;
     DeliverMessage(Msg);
   end;
 
@@ -15394,6 +15399,20 @@ begin
   begin
     Msg.Msg := LM_MONTHCHANGED;
     DeliverMessage(Msg);
+    Msg.Msg := LM_CHANGED;
+    DeliverMessage(Msg);
+  end;
+
+  if HasChanges then
+  begin
+    ADate := QDate_create();
+    try
+      QCalendarWidget_selectedDate(QCalendarWidgetH(Widget), ADate);
+      QDate_setYMD(ADate, p1, p2, QDate_day(ADate));
+      SetSelectedDate(ADate);
+    finally
+      QDate_destroy(ADate);
+    end;
   end;
 end;
 
