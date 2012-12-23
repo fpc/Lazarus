@@ -793,7 +793,7 @@ begin
   if not FindSelectedItem(Identifier, UnitFilename, GroupName, GroupFilename)
   then exit;
   if GroupFilename='' then exit;
-  s:=Format(crsReallyDeleteThePackageFromTheDatabaseNoteThisIsDoe, [#13, #13,
+  s:=Format(crsReallyDeleteThePackageFromTheDatabaseNoteThisDoe, [#13, #13,
     #13, GroupFilename]);
   if IDEMessageDialog(crsDeletePackage, s, mtConfirmation, [mbYes, mbNo], '')<>
     mrYes
@@ -816,7 +816,7 @@ var
 begin
   if not FindSelectedItem(Identifier, UnitFilename, GroupName, GroupFilename)
   then exit;
-  s:=Format(crsReallyDeleteTheUnitFromTheDatabaseNoteThisIsDoesNo, [#13, #13,
+  s:=Format(crsReallyDeleteTheUnitFromTheDatabaseNoteThisDoesNo, [#13, #13,
     #13, UnitFilename]);
   if GroupFilename<>'' then
     s+=#13+Format(crsIn, [GroupFilename]);

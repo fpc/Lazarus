@@ -181,11 +181,11 @@ resourcestring
   crsUseIdentifier = '&Use identifier';
   crsAndMoreIdentifiers = '... and %s more identifiers';
   crsCodyIdentifierDictionary = 'Identifier Dictionary';
-  crsReallyDeleteTheUnitFromTheDatabaseNoteThisIsDoesNo = 'Really delete the '
-    +'unit from the database?%sNote: This is does not change the source or any'
+  crsReallyDeleteTheUnitFromTheDatabaseNoteThisDoesNo = 'Really delete the '
+    +'unit from the database?%sNote: This does not change the source or any'
     +' configuration.%s%sunit: "%s"';
-  crsReallyDeleteThePackageFromTheDatabaseNoteThisIsDoe = 'Really delete the '
-    +'package from the database?%sNote: This is does not change the source or '
+  crsReallyDeleteThePackageFromTheDatabaseNoteThisDoe = 'Really delete the '
+    +'package from the database?%sNote: This does not change the source or '
     +'any configuration.%s%s"%s"';
   crsDeletePackage = 'Delete package?';
   crsDeleteUnit = 'Delete unit?';
