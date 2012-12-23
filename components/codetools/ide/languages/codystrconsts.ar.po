@@ -156,7 +156,7 @@ msgstr "?رؤية?"
 
 #: codystrconsts.crscamwrittenbyproperty
 msgid "%s, written by property %s"
-msgstr "s% ، كتبت بواسطة الخاصية %s"
+msgstr "%s ، كتبت بواسطة الخاصية %s"
 
 #: codystrconsts.crscheetaheditor
 msgid "Cheetah Editor"
