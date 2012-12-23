@@ -40,10 +40,10 @@ interface
 uses
   Classes, SysUtils, FileProcs, LResources, LCLProc, avl_tree, contnrs, Forms,
   Controls, Graphics, Dialogs, ButtonPanel, StdCtrls, ExtCtrls, LCLType,
-  Buttons, PackageIntf, LazIDEIntf, SrcEditorIntf, ProjectIntf, CompOptsIntf,
-  IDEDialogs, CodeCache, BasicCodeTools, CustomCodeTool, CodeToolManager,
-  UnitDictionary, CodeTree, LinkScanner, DefineTemplates, CodeToolsStructs,
-  FindDeclarationTool, CodyStrConsts, CodyUtils, CodyOpts;
+  Buttons, Menus, PackageIntf, LazIDEIntf, SrcEditorIntf, ProjectIntf,
+  CompOptsIntf, IDEDialogs, CodeCache, BasicCodeTools, CustomCodeTool,
+  CodeToolManager, UnitDictionary, CodeTree, LinkScanner, DefineTemplates,
+  CodeToolsStructs, FindDeclarationTool, CodyStrConsts, CodyUtils, CodyOpts;
 
 const
   PackageNameFPCSrcDir = 'FPCSrcDir';
@@ -143,11 +143,14 @@ type
     HideOtherProjectsCheckBox: TCheckBox;
     InfoLabel: TLabel;
     ItemsListBox: TListBox;
+    JumpMenuItem: TMenuItem;
+    UseMenuItem: TMenuItem;
     PackageLabel: TLabel;
+    PopupMenu1: TPopupMenu;
     StartsSpeedButton: TSpeedButton;
     UnitLabel: TLabel;
     procedure ButtonPanel1HelpButtonClick(Sender: TObject);
-    procedure ButtonPanel1OKButtonClick(Sender: TObject);
+    procedure UseIdentifierClick(Sender: TObject);
     procedure ContainsSpeedButtonClick(Sender: TObject);
     procedure FilterEditChange(Sender: TObject);
     procedure FilterEditExit(Sender: TObject);
@@ -161,6 +164,7 @@ type
     procedure ItemsListBoxClick(Sender: TObject);
     procedure ItemsListBoxSelectionChange(Sender: TObject; {%H-}User: boolean);
     procedure OnIdle(Sender: TObject; var {%H-}Done: Boolean);
+    procedure PopupMenu1Popup(Sender: TObject);
     procedure StartsSpeedButtonClick(Sender: TObject);
   private
     FDlgAction: TCodyIdentifierDlgAction;
@@ -726,7 +730,7 @@ begin
   IdleConnected:=true;
 end;
 
-procedure TCodyIdentifiersDlg.ButtonPanel1OKButtonClick(Sender: TObject);
+procedure TCodyIdentifiersDlg.UseIdentifierClick(Sender: TObject);
 begin
   SetDlgAction(cidaUseIdentifier);
 end;
@@ -792,7 +796,7 @@ begin
   Caption:=crsCodyIdentifierDictionary;
   ButtonPanel1.HelpButton.OnClick:=@ButtonPanel1HelpButtonClick;
   ButtonPanel1.OKButton.Caption:=crsUseIdentifier;
-  ButtonPanel1.OKButton.OnClick:=@ButtonPanel1OKButtonClick;
+  ButtonPanel1.OKButton.OnClick:=@UseIdentifierClick;
   FMaxItems:=40;
   FNoFilterText:=crsFilter;
   FItems:=TObjectList.Create;
@@ -847,6 +851,23 @@ begin
   or (FLastFilterType<>GetFilterType) then
     UpdateItemsList;
   IdleConnected:=false;
+end;
+
+procedure TCodyIdentifiersDlg.PopupMenu1Popup(Sender: TObject);
+var
+  Identifier: string;
+  UnitFilename: string;
+  GroupName: string;
+  GroupFilename: string;
+begin
+  if FindSelectedItem(Identifier, UnitFilename, GroupName, GroupFilename) then
+  begin
+    UseMenuItem.Enabled:=true;
+    JumpMenuItem.Enabled:=true;
+  end else begin
+    UseMenuItem.Enabled:=false;
+    JumpMenuItem.Enabled:=false;
+  end;
 end;
 
 procedure TCodyIdentifiersDlg.StartsSpeedButtonClick(Sender: TObject);

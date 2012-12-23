@@ -11,11 +11,11 @@ object CodyIdentifiersDlg: TCodyIdentifiersDlg
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   Position = poScreenCenter
-  LCLVersion = '0.9.31'
+  LCLVersion = '1.1'
   object ButtonPanel1: TButtonPanel
     Left = 6
-    Height = 42
-    Top = 276
+    Height = 36
+    Top = 282
     Width = 540
     OKButton.Name = 'OKButton'
     OKButton.DefaultCaption = True
@@ -32,7 +32,7 @@ object CodyIdentifiersDlg: TCodyIdentifiersDlg
     Left = 8
     Height = 15
     Top = 8
-    Width = 52
+    Width = 51
     Caption = 'InfoLabel'
     ParentColor = False
     WordWrap = True
@@ -43,9 +43,9 @@ object CodyIdentifiersDlg: TCodyIdentifiersDlg
     AnchorSideTop.Side = asrBottom
     AnchorSideRight.Control = StartsSpeedButton
     Left = 6
-    Height = 24
-    Top = 61
-    Width = 425
+    Height = 25
+    Top = 63
+    Width = 426
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Left = 6
     BorderSpacing.Top = 10
@@ -63,8 +63,8 @@ object CodyIdentifiersDlg: TCodyIdentifiersDlg
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = UnitLabel
     Left = 6
-    Height = 128
-    Top = 85
+    Height = 129
+    Top = 88
     Width = 540
     Anchors = [akTop, akLeft, akRight, akBottom]
     BorderSpacing.Left = 6
@@ -73,6 +73,7 @@ object CodyIdentifiersDlg: TCodyIdentifiersDlg
     ItemHeight = 0
     OnClick = ItemsListBoxClick
     OnSelectionChange = ItemsListBoxSelectionChange
+    PopupMenu = PopupMenu1
     ScrollWidth = 538
     TabOrder = 2
     TopIndex = -1
@@ -82,8 +83,8 @@ object CodyIdentifiersDlg: TCodyIdentifiersDlg
     AnchorSideBottom.Control = PackageLabel
     Left = 8
     Height = 15
-    Top = 214
-    Width = 53
+    Top = 218
+    Width = 52
     Anchors = [akLeft, akBottom]
     BorderSpacing.Bottom = 1
     Caption = 'UnitLabel'
@@ -94,8 +95,8 @@ object CodyIdentifiersDlg: TCodyIdentifiersDlg
     AnchorSideBottom.Control = AddToImplementationUsesCheckBox
     Left = 8
     Height = 15
-    Top = 230
-    Width = 78
+    Top = 234
+    Width = 74
     Anchors = [akLeft, akBottom]
     BorderSpacing.Bottom = 1
     Caption = 'PackageLabel'
@@ -106,9 +107,9 @@ object CodyIdentifiersDlg: TCodyIdentifiersDlg
     AnchorSideTop.Control = InfoLabel
     AnchorSideTop.Side = asrBottom
     Left = 8
-    Height = 22
+    Height = 24
     Top = 29
-    Width = 178
+    Width = 183
     BorderSpacing.Top = 6
     Caption = 'HideOtherProjectsCheckBox'
     OnChange = HideOtherProjectsCheckBoxChange
@@ -118,9 +119,9 @@ object CodyIdentifiersDlg: TCodyIdentifiersDlg
     AnchorSideLeft.Control = PackageLabel
     AnchorSideBottom.Control = ButtonPanel1
     Left = 8
-    Height = 22
-    Top = 248
-    Width = 226
+    Height = 24
+    Top = 252
+    Width = 227
     Anchors = [akLeft, akBottom]
     BorderSpacing.Top = 3
     BorderSpacing.Bottom = 3
@@ -134,15 +135,14 @@ object CodyIdentifiersDlg: TCodyIdentifiersDlg
     AnchorSideRight.Control = ContainsSpeedButton
     AnchorSideBottom.Control = FilterEdit
     AnchorSideBottom.Side = asrBottom
-    Left = 431
-    Height = 24
-    Top = 61
-    Width = 62
+    Left = 432
+    Height = 25
+    Top = 63
+    Width = 63
     Anchors = [akTop, akRight, akBottom]
     AutoSize = True
     Caption = 'Starts with'
     GroupIndex = 1
-    NumGlyphs = 0
     OnClick = StartsSpeedButtonClick
     ShowHint = True
     ParentShowHint = False
@@ -153,18 +153,30 @@ object CodyIdentifiersDlg: TCodyIdentifiersDlg
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = FilterEdit
     AnchorSideBottom.Side = asrBottom
-    Left = 493
-    Height = 24
-    Top = 61
-    Width = 53
+    Left = 495
+    Height = 25
+    Top = 63
+    Width = 51
     Anchors = [akTop, akRight, akBottom]
     AutoSize = True
     BorderSpacing.Right = 6
     Caption = 'Contains'
     GroupIndex = 1
-    NumGlyphs = 0
     OnClick = ContainsSpeedButtonClick
     ShowHint = True
     ParentShowHint = False
+  end
+  object PopupMenu1: TPopupMenu
+    OnPopup = PopupMenu1Popup
+    left = 177
+    top = 133
+    object JumpMenuItem: TMenuItem
+      Caption = 'JumpMenuItem'
+      OnClick = JumpButtonClick
+    end
+    object UseMenuItem: TMenuItem
+      Caption = 'UseMenuItem'
+      OnClick = UseIdentifierClick
+    end
   end
 end
