@@ -22,7 +22,7 @@ unit LazConfigStorage;
 interface
 
 uses
-  Classes, SysUtils, typinfo, AvgLvlTree, LCLProc;
+  Classes, SysUtils, typinfo, AvgLvlTree, LazLogger;
   
 type
   { TConfigStorage }
@@ -51,7 +51,7 @@ type
                             PropInfo: Pointer; DefInstance: TPersistent = nil;
                             OnlyProperty: String= '');
   public
-    constructor Create(const Filename: string; LoadFromDisk: Boolean); virtual;
+    constructor Create(const {%H-}Filename: string; {%H-}LoadFromDisk: Boolean); virtual;
     destructor Destroy; override;
     procedure Clear; virtual; abstract;
     function  GetValue(const APath, ADefault: String): String;

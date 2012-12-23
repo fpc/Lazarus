@@ -15,7 +15,7 @@ uses
   TTCalc, TTCMap, TTDebug, TTError, TTFile, TTGLoad, TTInterp, TTLoad, 
   TTMemory, TTObjs, TTProfile, TTRASTER, TTTables, TTTypes, EasyLazFreeType, 
   LazLoggerBase, LazLoggerDummy, LazClasses, LazFreeTypeFontCollection, 
-  LazarusPackageIntf;
+  LazConfigStorage, LazarusPackageIntf;
 
 implementation
 
