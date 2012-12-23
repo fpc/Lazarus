@@ -83,7 +83,6 @@ begin
     t.Dependencies.AddUnit('inipropstorage');
     t.Dependencies.AddUnit('interfacebase');
     t.Dependencies.AddUnit('intfgraphics');
-    t.Dependencies.AddUnit('lazconfigstorage');
     t.Dependencies.AddUnit('lazhelphtml');
     t.Dependencies.AddUnit('lazhelpintf');
     t.Dependencies.AddUnit('lazlinkedlist');
@@ -204,7 +203,6 @@ begin
     T:=P.Targets.AddUnit('inipropstorage.pas');
     T:=P.Targets.AddUnit('interfacebase.pp');
     T:=P.Targets.AddUnit('intfgraphics.pas');
-    T:=P.Targets.AddUnit('lazconfigstorage.pas');
     T:=P.Targets.AddUnit('lazhelphtml.pas');
     T:=P.Targets.AddUnit('lazhelpintf.pas');
     T:=P.Targets.AddUnit('lazlinkedlist.pas');
