@@ -260,6 +260,14 @@ msgstr "Deklariere Variable ..."
 msgid "Declare variable \"%s\""
 msgstr "Deklariere Variable \"%s\""
 
+#: codystrconsts.crsdeletepackage
+msgid "Delete package?"
+msgstr ""
+
+#: codystrconsts.crsdeleteunit
+msgid "Delete unit?"
+msgstr ""
+
 #: codystrconsts.crsdvisakeyword
 msgid "\"%s\" is a keyword."
 msgstr "\"%s\" ist ein Schlüsselwort."
@@ -348,6 +356,10 @@ msgstr ""
 #: codystrconsts.crsimpossibledependency
 msgid "Impossible dependency"
 msgstr "Unmögliche Abhängigkeit"
+
+#: codystrconsts.crsin
+msgid "in \"%s\""
+msgstr ""
 
 #: codystrconsts.crsinimplementation
 msgid "In implementation"
@@ -527,6 +539,14 @@ msgstr ""
 
 #: codystrconsts.crspublished
 msgid "Published"
+msgstr ""
+
+#: codystrconsts.crsreallydeletethepackagefromthedatabasenotethisisdoe
+msgid "Really delete the package from the database?%sNote: This is does not change the source or any configuration.%s%s\"%s\""
+msgstr ""
+
+#: codystrconsts.crsreallydeletetheunitfromthedatabasenotethisisdoesno
+msgid "Really delete the unit from the database?%sNote: This is does not change the source or any configuration.%s%sunit: \"%s\""
 msgstr ""
 
 #: codystrconsts.crsrefresh

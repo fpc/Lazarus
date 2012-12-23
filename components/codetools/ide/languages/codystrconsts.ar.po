@@ -1,7 +1,7 @@
-# Arabic translation of Free Pascal Lazarus Project.
-# Copyright (C) 2012 Lazarus Project
-# This file is distributed under the same license as the Lazarus package.
-# Khaled Shagrouni <shagrouni@gmail.com>, 2012.
+ Arabic translation of Free Pascal Lazarus Project.
+ Copyright (C) 2012 Lazarus Project
+ This file is distributed under the same license as the Lazarus package.
+ Khaled Shagrouni <shagrouni@gmail.com>, 2012.
 msgid ""
 msgstr ""
 "Project-Id-Version: Free Pascal Lazarus Project.\n"
@@ -268,6 +268,14 @@ msgstr ""
 msgid "Declare variable \"%s\""
 msgstr ""
 
+#: codystrconsts.crsdeletepackage
+msgid "Delete package?"
+msgstr ""
+
+#: codystrconsts.crsdeleteunit
+msgid "Delete unit?"
+msgstr ""
+
 #: codystrconsts.crsdvisakeyword
 msgid "\"%s\" is a keyword."
 msgstr "\"%s\" هي كلمة مفتاحية"
@@ -355,6 +363,10 @@ msgstr ""
 
 #: codystrconsts.crsimpossibledependency
 msgid "Impossible dependency"
+msgstr ""
+
+#: codystrconsts.crsin
+msgid "in \"%s\""
 msgstr ""
 
 #: codystrconsts.crsinimplementation
@@ -537,6 +549,14 @@ msgstr "العام"
 msgid "Published"
 msgstr "منشور"
 
+#: codystrconsts.crsreallydeletethepackagefromthedatabasenotethisisdoe
+msgid "Really delete the package from the database?%sNote: This is does not change the source or any configuration.%s%s\"%s\""
+msgstr ""
+
+#: codystrconsts.crsreallydeletetheunitfromthedatabasenotethisisdoesno
+msgid "Really delete the unit from the database?%sNote: This is does not change the source or any configuration.%s%sunit: \"%s\""
+msgstr ""
+
 #: codystrconsts.crsrefresh
 msgid "Refresh"
 msgstr "إنعاش"
@@ -704,3 +724,4 @@ msgstr "الوحدة الافتراضية"
 #: codystrconsts.crswhere
 msgid "Where"
 msgstr "أين"
+

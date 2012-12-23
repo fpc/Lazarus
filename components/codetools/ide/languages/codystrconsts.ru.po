@@ -266,6 +266,14 @@ msgstr "Объявить переменную ..."
 msgid "Declare variable \"%s\""
 msgstr "Объявление переменной \"%s\""
 
+#: codystrconsts.crsdeletepackage
+msgid "Delete package?"
+msgstr ""
+
+#: codystrconsts.crsdeleteunit
+msgid "Delete unit?"
+msgstr ""
+
 #: codystrconsts.crsdvisakeyword
 msgid "\"%s\" is a keyword."
 msgstr "\"%s\" является ключевым словом."
@@ -355,6 +363,10 @@ msgstr "Если при добавлении идентификатора в с�
 #: codystrconsts.crsimpossibledependency
 msgid "Impossible dependency"
 msgstr "Недопустимая зависимость"
+
+#: codystrconsts.crsin
+msgid "in \"%s\""
+msgstr ""
 
 #: codystrconsts.crsinimplementation
 msgid "In implementation"
@@ -541,6 +553,14 @@ msgstr "Public"
 #: codystrconsts.crspublished
 msgid "Published"
 msgstr "Published"
+
+#: codystrconsts.crsreallydeletethepackagefromthedatabasenotethisisdoe
+msgid "Really delete the package from the database?%sNote: This is does not change the source or any configuration.%s%s\"%s\""
+msgstr ""
+
+#: codystrconsts.crsreallydeletetheunitfromthedatabasenotethisisdoesno
+msgid "Really delete the unit from the database?%sNote: This is does not change the source or any configuration.%s%sunit: \"%s\""
+msgstr ""
 
 #: codystrconsts.crsrefresh
 msgid "Refresh"

@@ -266,6 +266,14 @@ msgstr "Declarar Variável ..."
 msgid "Declare variable \"%s\""
 msgstr "Declarar variável \"%s\""
 
+#: codystrconsts.crsdeletepackage
+msgid "Delete package?"
+msgstr ""
+
+#: codystrconsts.crsdeleteunit
+msgid "Delete unit?"
+msgstr ""
+
 #: codystrconsts.crsdvisakeyword
 msgid "\"%s\" is a keyword."
 msgstr "\"%s\" é uma palavra-chave."
@@ -355,6 +363,10 @@ msgstr "Se o identificador for adicionado à seção de implementação e a unid
 #: codystrconsts.crsimpossibledependency
 msgid "Impossible dependency"
 msgstr "Dependência impossível"
+
+#: codystrconsts.crsin
+msgid "in \"%s\""
+msgstr ""
 
 #: codystrconsts.crsinimplementation
 msgid "In implementation"
@@ -539,6 +551,14 @@ msgstr "Public"
 #: codystrconsts.crspublished
 msgid "Published"
 msgstr "Published"
+
+#: codystrconsts.crsreallydeletethepackagefromthedatabasenotethisisdoe
+msgid "Really delete the package from the database?%sNote: This is does not change the source or any configuration.%s%s\"%s\""
+msgstr ""
+
+#: codystrconsts.crsreallydeletetheunitfromthedatabasenotethisisdoesno
+msgid "Really delete the unit from the database?%sNote: This is does not change the source or any configuration.%s%sunit: \"%s\""
+msgstr ""
 
 #: codystrconsts.crsrefresh
 msgid "Refresh"

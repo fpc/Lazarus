@@ -181,6 +181,15 @@ resourcestring
   crsUseIdentifier = '&Use identifier';
   crsAndMoreIdentifiers = '... and %s more identifiers';
   crsCodyIdentifierDictionary = 'Identifier Dictionary';
+  crsReallyDeleteTheUnitFromTheDatabaseNoteThisIsDoesNo = 'Really delete the '
+    +'unit from the database?%sNote: This is does not change the source or any'
+    +' configuration.%s%sunit: "%s"';
+  crsReallyDeleteThePackageFromTheDatabaseNoteThisIsDoe = 'Really delete the '
+    +'package from the database?%sNote: This is does not change the source or '
+    +'any configuration.%s%s"%s"';
+  crsDeletePackage = 'Delete package?';
+  crsDeleteUnit = 'Delete unit?';
+  crsIn = 'in "%s"';
   crsUnableToRenameTo = 'unable to rename "%s" to "%s"';
   crsUnableToDelete = 'Unable to delete "%s"';
   crsPackagesUnitsIdentifiersFile = 'Packages: %s, Units: %s, Identifiers: %s%'

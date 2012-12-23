@@ -758,10 +758,10 @@ begin
   if not FindSelectedItem(Identifier, UnitFilename, GroupName, GroupFilename)
   then exit;
   if GroupFilename='' then exit;
-  s:='Really delete the package from the database?'#13
-    +'Note: This is does not change the source or any configuration.'#13
-    +#13'"'+GroupFilename+'"';
-  if IDEMessageDialog('Delete package?',s,mtConfirmation,[mbYes,mbNo],'')<>mrYes
+  s:=Format(crsReallyDeleteThePackageFromTheDatabaseNoteThisIsDoe, [#13, #13,
+    #13, GroupFilename]);
+  if IDEMessageDialog(crsDeletePackage, s, mtConfirmation, [mbYes, mbNo], '')<>
+    mrYes
   then exit;
   Group:=CodyUnitDictionary.FindGroupWithFilename(GroupFilename);
   if Group=nil then exit;
@@ -781,12 +781,12 @@ var
 begin
   if not FindSelectedItem(Identifier, UnitFilename, GroupName, GroupFilename)
   then exit;
-  s:='Really delete the unit from the database?'#13
-    +'Note: This is does not change the source or any configuration.'#13
-    +#13'unit: "'+UnitFilename+'"';
+  s:=Format(crsReallyDeleteTheUnitFromTheDatabaseNoteThisIsDoesNo, [#13, #13,
+    #13, UnitFilename]);
   if GroupFilename<>'' then
-    s+=#13'in "'+GroupFilename+'"';
-  if IDEMessageDialog('Delete unit?',s,mtConfirmation,[mbYes,mbNo],'')<>mrYes
+    s+=#13+Format(crsIn, [GroupFilename]);
+  if IDEMessageDialog(crsDeleteUnit, s, mtConfirmation, [mbYes, mbNo], '')<>
+    mrYes
   then exit;
   CurUnit:=CodyUnitDictionary.FindUnitWithFilename(UnitFilename);
   if CurUnit=nil then exit;
