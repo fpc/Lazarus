@@ -565,6 +565,10 @@ msgstr "الإجراء عند وجود ملف غامض:"
 msgid "Warn on compile"
 msgstr "تحذير عند الترجمة"
 
+#: lazarusidestrconsts.dlgansicommenttab
+msgid "Ansi (* *)"
+msgstr ""
+
 #: lazarusidestrconsts.dlgapplicationsettings
 msgid "Application settings"
 msgstr "إعدادات التطبيق"
@@ -648,6 +652,14 @@ msgstr "الاختيار"
 #: lazarusidestrconsts.dlgblockindent
 msgid "Block indent (spaces)"
 msgstr "تهميش كتلة (مسافة)"
+
+#: lazarusidestrconsts.dlgblockindentkeys
+msgid "Block indent"
+msgstr ""
+
+#: lazarusidestrconsts.dlgblockindentlink
+msgid "(edit keys)"
+msgstr ""
 
 #: lazarusidestrconsts.dlgblockindenttype
 msgid "Indent method"
@@ -988,6 +1000,74 @@ msgstr "ضوابط سطر الأمر"
 msgid "Command line parameters (without application name)"
 msgstr "ضوابط سطر الأمر (بدون اسم التطبيق)"
 
+#: lazarusidestrconsts.dlgcommentalignmaxdefault
+msgid "Make default indent for new line if comment opens at column:"
+msgstr ""
+
+#: lazarusidestrconsts.dlgcommentalignmaxtoken
+msgid "Limit indent to"
+msgstr ""
+
+#: lazarusidestrconsts.dlgcommentcontinue
+msgid "Prefix comments on linebreak"
+msgstr ""
+
+#: lazarusidestrconsts.dlgcommentcontinuematch
+msgid "Match current line"
+msgstr ""
+
+#: lazarusidestrconsts.dlgcommentcontinuematchasterisk
+msgid "Match text including \"*\" of token \"(*\""
+msgstr ""
+
+#: lazarusidestrconsts.dlgcommentcontinuematchline
+msgid "Match whole line"
+msgstr ""
+
+#: lazarusidestrconsts.dlgcommentcontinuematchtext
+msgid "Match text after token \"%s\""
+msgstr ""
+
+#: lazarusidestrconsts.dlgcommentcontinuematchtoken
+msgid "Match text including token \"%s\""
+msgstr ""
+
+#: lazarusidestrconsts.dlgcommentcontinueprefix
+msgid "Prefix new line"
+msgstr ""
+
+#: lazarusidestrconsts.dlgcommentcontinueprefixinddefault
+msgid "Align Prefix at indent of previous line"
+msgstr ""
+
+#: lazarusidestrconsts.dlgcommentcontinueprefixindmatch
+msgid "Align Prefix below start of comment on first comment line"
+msgstr ""
+
+#: lazarusidestrconsts.dlgcommentcontinueprefixindnone
+msgid "Do not indent prefix"
+msgstr ""
+
+#: lazarusidestrconsts.dlgcommentindentgroupoptions
+msgid "Comments"
+msgstr ""
+
+#: lazarusidestrconsts.dlgcommentshlashextendalways
+msgid "Extend, if matched or not matched"
+msgstr ""
+
+#: lazarusidestrconsts.dlgcommentshlashextendalwayssplit
+msgid "Extend, if matched or not matched (not at EOL)"
+msgstr ""
+
+#: lazarusidestrconsts.dlgcommentshlashextendmatch
+msgid "Extend, if matched"
+msgstr ""
+
+#: lazarusidestrconsts.dlgcommentshlashextendmatchsplit
+msgid "Extend, if matched and caret in the middle of text (not at EOL)"
+msgstr ""
+
 #: lazarusidestrconsts.dlgcompilermessage
 msgid "Compiler messages"
 msgstr "رسائل المترجم"
@@ -1122,6 +1202,10 @@ msgstr "INLINE بنمط س++"
 #: lazarusidestrconsts.dlgctrlmiddletabcloseotherpages
 msgid "Ctrl-middle-click on tab closes all others"
 msgstr "النقر على ctrl والزر الأوسط على اللسان يغلق كل الألسنة الأخرى"
+
+#: lazarusidestrconsts.dlgcurlycommenttab
+msgid "Curly { }"
+msgstr ""
 
 #: lazarusidestrconsts.dlgcursorbeyondeol
 msgid "Cursor beyond EOL"
@@ -1425,6 +1509,10 @@ msgstr "Off"
 #: lazarusidestrconsts.dlgedon
 msgid "On"
 msgstr "On"
+
+#: lazarusidestrconsts.dlgedtabindent
+msgid "Tab and Indent"
+msgstr ""
 
 #: lazarusidestrconsts.dlgedunder
 msgid "Underline"
@@ -1895,8 +1983,14 @@ msgstr "تضمين متغيرات النظام"
 msgid "Indent code to"
 msgstr "تهميش الكود إلى"
 
+#: lazarusidestrconsts.dlgindentsindentgroupoptions
+msgid "Indent"
+msgstr ""
+
 #: lazarusidestrconsts.dlgindentstabsgroupoptions
-msgid "Indent and Tabs"
+#, fuzzy
+#| msgid "Indent and Tabs"
+msgid "Tabs"
 msgstr "الهامش و الجدولة"
 
 #: lazarusidestrconsts.dlginfrontofmethods
@@ -1946,6 +2040,10 @@ msgstr "القفز (مثل قفز النهجية)"
 #: lazarusidestrconsts.dlgkeepcursorx
 msgid "Keep cursor X position"
 msgstr "الاحتفاظ بموضع المؤشر X"
+
+#: lazarusidestrconsts.dlgkeylink
+msgid "(Edit Key)"
+msgstr ""
 
 #: lazarusidestrconsts.dlgkeymapping
 msgid "Key Mappings"
@@ -2982,6 +3080,10 @@ msgstr "عرض زرّ مفرد في شريط االمهام"
 #: lazarusidestrconsts.dlgskipforwardclassdeclarations
 msgid "Skip forward class declarations"
 msgstr "تخطي لأمام تصريح الصنفية"
+
+#: lazarusidestrconsts.dlgslashcommenttab
+msgid "Slash //"
+msgstr ""
 
 #: lazarusidestrconsts.dlgsmarttabs
 msgid "Smart tabs"

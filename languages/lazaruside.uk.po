@@ -566,6 +566,10 @@ msgstr "Двозначна дія з файлом:"
 msgid "Warn on compile"
 msgstr "Попередж. при компіляції"
 
+#: lazarusidestrconsts.dlgansicommenttab
+msgid "Ansi (* *)"
+msgstr ""
+
 #: lazarusidestrconsts.dlgapplicationsettings
 #| msgid "Application Settings"
 msgid "Application settings"
@@ -654,6 +658,14 @@ msgstr "Виділення"
 #| msgid "Block indent"
 msgid "Block indent (spaces)"
 msgstr "Відступ блоку (пробіли)"
+
+#: lazarusidestrconsts.dlgblockindentkeys
+msgid "Block indent"
+msgstr ""
+
+#: lazarusidestrconsts.dlgblockindentlink
+msgid "(edit keys)"
+msgstr ""
 
 #: lazarusidestrconsts.dlgblockindenttype
 msgid "Indent method"
@@ -1010,6 +1022,74 @@ msgstr "Параметри командного рядка"
 msgid "Command line parameters (without application name)"
 msgstr "Параметри командного рядка (без назви програми)"
 
+#: lazarusidestrconsts.dlgcommentalignmaxdefault
+msgid "Make default indent for new line if comment opens at column:"
+msgstr ""
+
+#: lazarusidestrconsts.dlgcommentalignmaxtoken
+msgid "Limit indent to"
+msgstr ""
+
+#: lazarusidestrconsts.dlgcommentcontinue
+msgid "Prefix comments on linebreak"
+msgstr ""
+
+#: lazarusidestrconsts.dlgcommentcontinuematch
+msgid "Match current line"
+msgstr ""
+
+#: lazarusidestrconsts.dlgcommentcontinuematchasterisk
+msgid "Match text including \"*\" of token \"(*\""
+msgstr ""
+
+#: lazarusidestrconsts.dlgcommentcontinuematchline
+msgid "Match whole line"
+msgstr ""
+
+#: lazarusidestrconsts.dlgcommentcontinuematchtext
+msgid "Match text after token \"%s\""
+msgstr ""
+
+#: lazarusidestrconsts.dlgcommentcontinuematchtoken
+msgid "Match text including token \"%s\""
+msgstr ""
+
+#: lazarusidestrconsts.dlgcommentcontinueprefix
+msgid "Prefix new line"
+msgstr ""
+
+#: lazarusidestrconsts.dlgcommentcontinueprefixinddefault
+msgid "Align Prefix at indent of previous line"
+msgstr ""
+
+#: lazarusidestrconsts.dlgcommentcontinueprefixindmatch
+msgid "Align Prefix below start of comment on first comment line"
+msgstr ""
+
+#: lazarusidestrconsts.dlgcommentcontinueprefixindnone
+msgid "Do not indent prefix"
+msgstr ""
+
+#: lazarusidestrconsts.dlgcommentindentgroupoptions
+msgid "Comments"
+msgstr ""
+
+#: lazarusidestrconsts.dlgcommentshlashextendalways
+msgid "Extend, if matched or not matched"
+msgstr ""
+
+#: lazarusidestrconsts.dlgcommentshlashextendalwayssplit
+msgid "Extend, if matched or not matched (not at EOL)"
+msgstr ""
+
+#: lazarusidestrconsts.dlgcommentshlashextendmatch
+msgid "Extend, if matched"
+msgstr ""
+
+#: lazarusidestrconsts.dlgcommentshlashextendmatchsplit
+msgid "Extend, if matched and caret in the middle of text (not at EOL)"
+msgstr ""
+
 #: lazarusidestrconsts.dlgcompilermessage
 #| msgid "Compiler Messages"
 msgid "Compiler messages"
@@ -1154,6 +1234,10 @@ msgstr "INLINE стилю C++"
 #: lazarusidestrconsts.dlgctrlmiddletabcloseotherpages
 msgid "Ctrl-middle-click on tab closes all others"
 msgstr "Натискання Ctrl-Середня Кнопка Миші на вкладці закриває інші"
+
+#: lazarusidestrconsts.dlgcurlycommenttab
+msgid "Curly { }"
+msgstr ""
 
 #: lazarusidestrconsts.dlgcursorbeyondeol
 msgid "Cursor beyond EOL"
@@ -1462,6 +1546,10 @@ msgstr "Викл"
 #: lazarusidestrconsts.dlgedon
 msgid "On"
 msgstr "Вкл"
+
+#: lazarusidestrconsts.dlgedtabindent
+msgid "Tab and Indent"
+msgstr ""
 
 #: lazarusidestrconsts.dlgedunder
 msgid "Underline"
@@ -1941,9 +2029,14 @@ msgstr "Включити системні змінні"
 msgid "Indent code to"
 msgstr "Зсунути вправо код за"
 
+#: lazarusidestrconsts.dlgindentsindentgroupoptions
+msgid "Indent"
+msgstr ""
+
 #: lazarusidestrconsts.dlgindentstabsgroupoptions
-#| msgid "Indent and Tabs:"
-msgid "Indent and Tabs"
+#, fuzzy
+#| msgid "Indent and Tabs"
+msgid "Tabs"
 msgstr "Відступи і Табуляція"
 
 #: lazarusidestrconsts.dlginfrontofmethods
@@ -1993,6 +2086,10 @@ msgstr "Перехід (напр. Метод Переходу)"
 #: lazarusidestrconsts.dlgkeepcursorx
 msgid "Keep cursor X position"
 msgstr "Зберігати позицію курсору по осі X"
+
+#: lazarusidestrconsts.dlgkeylink
+msgid "(Edit Key)"
+msgstr ""
 
 #: lazarusidestrconsts.dlgkeymapping
 msgid "Key Mappings"
@@ -3068,6 +3165,10 @@ msgstr "Показувати одну кнопку на панелі завда�
 #: lazarusidestrconsts.dlgskipforwardclassdeclarations
 msgid "Skip forward class declarations"
 msgstr "Пропускати попередні оголошення класів"
+
+#: lazarusidestrconsts.dlgslashcommenttab
+msgid "Slash //"
+msgstr ""
 
 #: lazarusidestrconsts.dlgsmarttabs
 msgid "Smart tabs"

@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2012-12-19 01:54+0400\n"
+"PO-Revision-Date: 2012-12-23 23:11+0400\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -584,6 +584,10 @@ msgstr "Неясное действие с файлом:"
 msgid "Warn on compile"
 msgstr "Предупредить при компиляции"
 
+#: lazarusidestrconsts.dlgansicommenttab
+msgid "Ansi (* *)"
+msgstr "ANSI (* *)"
+
 #: lazarusidestrconsts.dlgapplicationsettings
 #| msgid "Application Settings"
 msgid "Application settings"
@@ -672,6 +676,14 @@ msgstr "Выделение"
 #| msgid "Block indent"
 msgid "Block indent (spaces)"
 msgstr "Отступ блока в пробелах"
+
+#: lazarusidestrconsts.dlgblockindentkeys
+msgid "Block indent"
+msgstr "Отступ блока"
+
+#: lazarusidestrconsts.dlgblockindentlink
+msgid "(edit keys)"
+msgstr "(изменить клавиши)"
 
 #: lazarusidestrconsts.dlgblockindenttype
 msgid "Indent method"
@@ -1028,6 +1040,75 @@ msgstr "Параметры командной строки"
 msgid "Command line parameters (without application name)"
 msgstr "Параметры командной строки (без имени приложения)"
 
+#: lazarusidestrconsts.dlgcommentalignmaxdefault
+#| msgid "Set token pos on 2nd line to default if open token is at column:"
+msgid "Make default indent for new line if comment opens at column:"
+msgstr "Сделать отступ на новой строке по умолчанию, если комментарий открывается на столбце:"
+
+#: lazarusidestrconsts.dlgcommentalignmaxtoken
+msgid "Limit indent to"
+msgstr "Ограничение отступа"
+
+#: lazarusidestrconsts.dlgcommentcontinue
+msgid "Prefix comments on linebreak"
+msgstr "Добавлять префикс в новую строку комментария"
+
+#: lazarusidestrconsts.dlgcommentcontinuematch
+msgid "Match current line"
+msgstr "Искать в текущей строке"
+
+#: lazarusidestrconsts.dlgcommentcontinuematchasterisk
+msgid "Match text including \"*\" of token \"(*\""
+msgstr "Взять текст, включая \"*\" элемента \"(*\""
+
+#: lazarusidestrconsts.dlgcommentcontinuematchline
+msgid "Match whole line"
+msgstr "Взять всю строку"
+
+#: lazarusidestrconsts.dlgcommentcontinuematchtext
+msgid "Match text after token \"%s\""
+msgstr "Взять текст после элемента \"%s\""
+
+#: lazarusidestrconsts.dlgcommentcontinuematchtoken
+msgid "Match text including token \"%s\""
+msgstr "Взять текст, включая элемент \"%s\""
+
+#: lazarusidestrconsts.dlgcommentcontinueprefix
+msgid "Prefix new line"
+msgstr "Префикс новой строки"
+
+#: lazarusidestrconsts.dlgcommentcontinueprefixinddefault
+msgid "Align Prefix at indent of previous line"
+msgstr "Выровнять префикс по отступу предыдущей строки"
+
+#: lazarusidestrconsts.dlgcommentcontinueprefixindmatch
+msgid "Align Prefix below start of comment on first comment line"
+msgstr "Выровнять префикс по началу комментария на первой строке"
+
+#: lazarusidestrconsts.dlgcommentcontinueprefixindnone
+msgid "Do not indent prefix"
+msgstr "Не делать отступ префикса"
+
+#: lazarusidestrconsts.dlgcommentindentgroupoptions
+msgid "Comments"
+msgstr "Комментарии"
+
+#: lazarusidestrconsts.dlgcommentshlashextendalways
+msgid "Extend, if matched or not matched"
+msgstr "Добавлять строку в любом случае"
+
+#: lazarusidestrconsts.dlgcommentshlashextendalwayssplit
+msgid "Extend, if matched or not matched (not at EOL)"
+msgstr "Добавлять строку, если курсор не находится в конце строки"
+
+#: lazarusidestrconsts.dlgcommentshlashextendmatch
+msgid "Extend, if matched"
+msgstr "Добавлять строку при соответствии"
+
+#: lazarusidestrconsts.dlgcommentshlashextendmatchsplit
+msgid "Extend, if matched and caret in the middle of text (not at EOL)"
+msgstr "Добавлять строку при соответствии (курсор не в конце строки)"
+
 #: lazarusidestrconsts.dlgcompilermessage
 #| msgid "Compiler Messages"
 msgid "Compiler messages"
@@ -1175,6 +1256,10 @@ msgstr "INLINE в стиле C++"
 #: lazarusidestrconsts.dlgctrlmiddletabcloseotherpages
 msgid "Ctrl-middle-click on tab closes all others"
 msgstr "По Ctrl-средней кнопке мыши на вкладке закрывать остальные"
+
+#: lazarusidestrconsts.dlgcurlycommenttab
+msgid "Curly { }"
+msgstr "Фигурные скобки { }"
 
 #: lazarusidestrconsts.dlgcursorbeyondeol
 msgid "Cursor beyond EOL"
@@ -1495,6 +1580,10 @@ msgstr "Выкл."
 #: lazarusidestrconsts.dlgedon
 msgid "On"
 msgstr "Вкл."
+
+#: lazarusidestrconsts.dlgedtabindent
+msgid "Tab and Indent"
+msgstr "Табуляция и отступ"
 
 #: lazarusidestrconsts.dlgedunder
 msgid "Underline"
@@ -1975,10 +2064,14 @@ msgstr "Включить системные переменные"
 msgid "Indent code to"
 msgstr "Выровнять код по"
 
+#: lazarusidestrconsts.dlgindentsindentgroupoptions
+msgid "Indent"
+msgstr "Отступ"
+
 #: lazarusidestrconsts.dlgindentstabsgroupoptions
-#| msgid "Indent and Tabs:"
-msgid "Indent and Tabs"
-msgstr "Отступ и табуляция"
+#| msgid "Indent and Tabs"
+msgid "Tabs"
+msgstr "Табуляция"
 
 #: lazarusidestrconsts.dlginfrontofmethods
 msgid "In front of methods"
@@ -2027,6 +2120,10 @@ msgstr "Переход (например, по методу)"
 #: lazarusidestrconsts.dlgkeepcursorx
 msgid "Keep cursor X position"
 msgstr "Сохранять позицию курсора по оси X"
+
+#: lazarusidestrconsts.dlgkeylink
+msgid "(Edit Key)"
+msgstr "(Изменить клавиши)"
 
 #: lazarusidestrconsts.dlgkeymapping
 msgid "Key Mappings"
@@ -3114,6 +3211,10 @@ msgstr "Показывать одну кнопку в панели задач"
 #: lazarusidestrconsts.dlgskipforwardclassdeclarations
 msgid "Skip forward class declarations"
 msgstr "Пропускать предваряющие объявления классов"
+
+#: lazarusidestrconsts.dlgslashcommenttab
+msgid "Slash //"
+msgstr "Косые черты //"
 
 #: lazarusidestrconsts.dlgsmarttabs
 msgid "Smart tabs"

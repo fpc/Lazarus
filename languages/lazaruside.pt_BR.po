@@ -579,6 +579,10 @@ msgstr "Ação ambígua de arquivos:"
 msgid "Warn on compile"
 msgstr "Aviso ao compilar"
 
+#: lazarusidestrconsts.dlgansicommenttab
+msgid "Ansi (* *)"
+msgstr ""
+
 #: lazarusidestrconsts.dlgapplicationsettings
 #| msgid "Application Settings"
 msgid "Application settings"
@@ -667,6 +671,14 @@ msgstr "Seleção"
 #| msgid "Block indent"
 msgid "Block indent (spaces)"
 msgstr "Identação de bloco (espaços)"
+
+#: lazarusidestrconsts.dlgblockindentkeys
+msgid "Block indent"
+msgstr ""
+
+#: lazarusidestrconsts.dlgblockindentlink
+msgid "(edit keys)"
+msgstr ""
 
 #: lazarusidestrconsts.dlgblockindenttype
 msgid "Indent method"
@@ -1023,6 +1035,74 @@ msgstr "Parâmetros da linha de comando"
 msgid "Command line parameters (without application name)"
 msgstr "Parâmetros da linha de comando (sem nome da aplicação)"
 
+#: lazarusidestrconsts.dlgcommentalignmaxdefault
+msgid "Make default indent for new line if comment opens at column:"
+msgstr ""
+
+#: lazarusidestrconsts.dlgcommentalignmaxtoken
+msgid "Limit indent to"
+msgstr ""
+
+#: lazarusidestrconsts.dlgcommentcontinue
+msgid "Prefix comments on linebreak"
+msgstr ""
+
+#: lazarusidestrconsts.dlgcommentcontinuematch
+msgid "Match current line"
+msgstr ""
+
+#: lazarusidestrconsts.dlgcommentcontinuematchasterisk
+msgid "Match text including \"*\" of token \"(*\""
+msgstr ""
+
+#: lazarusidestrconsts.dlgcommentcontinuematchline
+msgid "Match whole line"
+msgstr ""
+
+#: lazarusidestrconsts.dlgcommentcontinuematchtext
+msgid "Match text after token \"%s\""
+msgstr ""
+
+#: lazarusidestrconsts.dlgcommentcontinuematchtoken
+msgid "Match text including token \"%s\""
+msgstr ""
+
+#: lazarusidestrconsts.dlgcommentcontinueprefix
+msgid "Prefix new line"
+msgstr ""
+
+#: lazarusidestrconsts.dlgcommentcontinueprefixinddefault
+msgid "Align Prefix at indent of previous line"
+msgstr ""
+
+#: lazarusidestrconsts.dlgcommentcontinueprefixindmatch
+msgid "Align Prefix below start of comment on first comment line"
+msgstr ""
+
+#: lazarusidestrconsts.dlgcommentcontinueprefixindnone
+msgid "Do not indent prefix"
+msgstr ""
+
+#: lazarusidestrconsts.dlgcommentindentgroupoptions
+msgid "Comments"
+msgstr ""
+
+#: lazarusidestrconsts.dlgcommentshlashextendalways
+msgid "Extend, if matched or not matched"
+msgstr ""
+
+#: lazarusidestrconsts.dlgcommentshlashextendalwayssplit
+msgid "Extend, if matched or not matched (not at EOL)"
+msgstr ""
+
+#: lazarusidestrconsts.dlgcommentshlashextendmatch
+msgid "Extend, if matched"
+msgstr ""
+
+#: lazarusidestrconsts.dlgcommentshlashextendmatchsplit
+msgid "Extend, if matched and caret in the middle of text (not at EOL)"
+msgstr ""
+
 #: lazarusidestrconsts.dlgcompilermessage
 #| msgid "Compiler Messages"
 msgid "Compiler messages"
@@ -1170,6 +1250,10 @@ msgstr "INLINE estilo C++"
 #: lazarusidestrconsts.dlgctrlmiddletabcloseotherpages
 msgid "Ctrl-middle-click on tab closes all others"
 msgstr "Ctrl-clique-central na aba fecha todas as outras"
+
+#: lazarusidestrconsts.dlgcurlycommenttab
+msgid "Curly { }"
+msgstr ""
 
 #: lazarusidestrconsts.dlgcursorbeyondeol
 msgid "Cursor beyond EOL"
@@ -1485,6 +1569,10 @@ msgstr "Desligado"
 #: lazarusidestrconsts.dlgedon
 msgid "On"
 msgstr "Ligado"
+
+#: lazarusidestrconsts.dlgedtabindent
+msgid "Tab and Indent"
+msgstr ""
 
 #: lazarusidestrconsts.dlgedunder
 msgid "Underline"
@@ -1965,9 +2053,14 @@ msgstr "Incluir variáveis de sistema"
 msgid "Indent code to"
 msgstr "Identar código para"
 
+#: lazarusidestrconsts.dlgindentsindentgroupoptions
+msgid "Indent"
+msgstr ""
+
 #: lazarusidestrconsts.dlgindentstabsgroupoptions
-#| msgid "Indent and Tabs:"
-msgid "Indent and Tabs"
+#, fuzzy
+#| msgid "Indent and Tabs"
+msgid "Tabs"
 msgstr "Identações e Tabulações"
 
 #: lazarusidestrconsts.dlginfrontofmethods
@@ -2018,6 +2111,10 @@ msgstr "Saltando (ex. Saltando Métodos)"
 #: lazarusidestrconsts.dlgkeepcursorx
 msgid "Keep cursor X position"
 msgstr "Manter posição X cursor"
+
+#: lazarusidestrconsts.dlgkeylink
+msgid "(Edit Key)"
+msgstr ""
 
 #: lazarusidestrconsts.dlgkeymapping
 msgid "Key Mappings"
@@ -3103,6 +3200,10 @@ msgstr "Exibir um único botão na Barra de Tarefas"
 #: lazarusidestrconsts.dlgskipforwardclassdeclarations
 msgid "Skip forward class declarations"
 msgstr "Saltar declarações de classe situadas à frente"
+
+#: lazarusidestrconsts.dlgslashcommenttab
+msgid "Slash //"
+msgstr ""
 
 #: lazarusidestrconsts.dlgsmarttabs
 msgid "Smart tabs"

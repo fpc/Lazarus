@@ -566,6 +566,10 @@ msgstr "Nejednoznačná akcia súboru:"
 msgid "Warn on compile"
 msgstr "Upozorniť pri preklade"
 
+#: lazarusidestrconsts.dlgansicommenttab
+msgid "Ansi (* *)"
+msgstr ""
+
 #: lazarusidestrconsts.dlgapplicationsettings
 #, fuzzy
 #| msgid "Application Settings"
@@ -657,6 +661,14 @@ msgstr ""
 #| msgid "Block indent"
 msgid "Block indent (spaces)"
 msgstr "Odsadenie bloku"
+
+#: lazarusidestrconsts.dlgblockindentkeys
+msgid "Block indent"
+msgstr ""
+
+#: lazarusidestrconsts.dlgblockindentlink
+msgid "(edit keys)"
+msgstr ""
 
 #: lazarusidestrconsts.dlgblockindenttype
 msgid "Indent method"
@@ -1029,6 +1041,74 @@ msgstr "Parametre príkazového riadka"
 msgid "Command line parameters (without application name)"
 msgstr "Parametre príkazového riadka (bez mena aplikácie)"
 
+#: lazarusidestrconsts.dlgcommentalignmaxdefault
+msgid "Make default indent for new line if comment opens at column:"
+msgstr ""
+
+#: lazarusidestrconsts.dlgcommentalignmaxtoken
+msgid "Limit indent to"
+msgstr ""
+
+#: lazarusidestrconsts.dlgcommentcontinue
+msgid "Prefix comments on linebreak"
+msgstr ""
+
+#: lazarusidestrconsts.dlgcommentcontinuematch
+msgid "Match current line"
+msgstr ""
+
+#: lazarusidestrconsts.dlgcommentcontinuematchasterisk
+msgid "Match text including \"*\" of token \"(*\""
+msgstr ""
+
+#: lazarusidestrconsts.dlgcommentcontinuematchline
+msgid "Match whole line"
+msgstr ""
+
+#: lazarusidestrconsts.dlgcommentcontinuematchtext
+msgid "Match text after token \"%s\""
+msgstr ""
+
+#: lazarusidestrconsts.dlgcommentcontinuematchtoken
+msgid "Match text including token \"%s\""
+msgstr ""
+
+#: lazarusidestrconsts.dlgcommentcontinueprefix
+msgid "Prefix new line"
+msgstr ""
+
+#: lazarusidestrconsts.dlgcommentcontinueprefixinddefault
+msgid "Align Prefix at indent of previous line"
+msgstr ""
+
+#: lazarusidestrconsts.dlgcommentcontinueprefixindmatch
+msgid "Align Prefix below start of comment on first comment line"
+msgstr ""
+
+#: lazarusidestrconsts.dlgcommentcontinueprefixindnone
+msgid "Do not indent prefix"
+msgstr ""
+
+#: lazarusidestrconsts.dlgcommentindentgroupoptions
+msgid "Comments"
+msgstr ""
+
+#: lazarusidestrconsts.dlgcommentshlashextendalways
+msgid "Extend, if matched or not matched"
+msgstr ""
+
+#: lazarusidestrconsts.dlgcommentshlashextendalwayssplit
+msgid "Extend, if matched or not matched (not at EOL)"
+msgstr ""
+
+#: lazarusidestrconsts.dlgcommentshlashextendmatch
+msgid "Extend, if matched"
+msgstr ""
+
+#: lazarusidestrconsts.dlgcommentshlashextendmatchsplit
+msgid "Extend, if matched and caret in the middle of text (not at EOL)"
+msgstr ""
+
 #: lazarusidestrconsts.dlgcompilermessage
 msgid "Compiler messages"
 msgstr ""
@@ -1182,6 +1262,10 @@ msgstr "INLINE v štýle C++"
 
 #: lazarusidestrconsts.dlgctrlmiddletabcloseotherpages
 msgid "Ctrl-middle-click on tab closes all others"
+msgstr ""
+
+#: lazarusidestrconsts.dlgcurlycommenttab
+msgid "Curly { }"
 msgstr ""
 
 #: lazarusidestrconsts.dlgcursorbeyondeol
@@ -1498,6 +1582,10 @@ msgstr "Off"
 #: lazarusidestrconsts.dlgedon
 msgid "On"
 msgstr "On"
+
+#: lazarusidestrconsts.dlgedtabindent
+msgid "Tab and Indent"
+msgstr ""
 
 #: lazarusidestrconsts.dlgedunder
 msgid "Underline"
@@ -1984,8 +2072,12 @@ msgstr "Vrátane systémových premenných"
 msgid "Indent code to"
 msgstr "Odsadiť kód na"
 
+#: lazarusidestrconsts.dlgindentsindentgroupoptions
+msgid "Indent"
+msgstr ""
+
 #: lazarusidestrconsts.dlgindentstabsgroupoptions
-msgid "Indent and Tabs"
+msgid "Tabs"
 msgstr ""
 
 #: lazarusidestrconsts.dlginfrontofmethods
@@ -2035,6 +2127,10 @@ msgstr "Skákanie (tj. Skákanie na metódy)"
 #: lazarusidestrconsts.dlgkeepcursorx
 msgid "Keep cursor X position"
 msgstr "Ponechať X pozíciu kurzora"
+
+#: lazarusidestrconsts.dlgkeylink
+msgid "(Edit Key)"
+msgstr ""
 
 #: lazarusidestrconsts.dlgkeymapping
 msgid "Key Mappings"
@@ -3140,6 +3236,10 @@ msgstr ""
 
 #: lazarusidestrconsts.dlgskipforwardclassdeclarations
 msgid "Skip forward class declarations"
+msgstr ""
+
+#: lazarusidestrconsts.dlgslashcommenttab
+msgid "Slash //"
 msgstr ""
 
 #: lazarusidestrconsts.dlgsmarttabs

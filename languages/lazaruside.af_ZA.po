@@ -563,6 +563,10 @@ msgstr ""
 msgid "Warn on compile"
 msgstr ""
 
+#: lazarusidestrconsts.dlgansicommenttab
+msgid "Ansi (* *)"
+msgstr ""
+
 #: lazarusidestrconsts.dlgapplicationsettings
 msgid "Application settings"
 msgstr ""
@@ -645,6 +649,14 @@ msgstr ""
 
 #: lazarusidestrconsts.dlgblockindent
 msgid "Block indent (spaces)"
+msgstr ""
+
+#: lazarusidestrconsts.dlgblockindentkeys
+msgid "Block indent"
+msgstr ""
+
+#: lazarusidestrconsts.dlgblockindentlink
+msgid "(edit keys)"
 msgstr ""
 
 #: lazarusidestrconsts.dlgblockindenttype
@@ -986,6 +998,74 @@ msgstr ""
 msgid "Command line parameters (without application name)"
 msgstr ""
 
+#: lazarusidestrconsts.dlgcommentalignmaxdefault
+msgid "Make default indent for new line if comment opens at column:"
+msgstr ""
+
+#: lazarusidestrconsts.dlgcommentalignmaxtoken
+msgid "Limit indent to"
+msgstr ""
+
+#: lazarusidestrconsts.dlgcommentcontinue
+msgid "Prefix comments on linebreak"
+msgstr ""
+
+#: lazarusidestrconsts.dlgcommentcontinuematch
+msgid "Match current line"
+msgstr ""
+
+#: lazarusidestrconsts.dlgcommentcontinuematchasterisk
+msgid "Match text including \"*\" of token \"(*\""
+msgstr ""
+
+#: lazarusidestrconsts.dlgcommentcontinuematchline
+msgid "Match whole line"
+msgstr ""
+
+#: lazarusidestrconsts.dlgcommentcontinuematchtext
+msgid "Match text after token \"%s\""
+msgstr ""
+
+#: lazarusidestrconsts.dlgcommentcontinuematchtoken
+msgid "Match text including token \"%s\""
+msgstr ""
+
+#: lazarusidestrconsts.dlgcommentcontinueprefix
+msgid "Prefix new line"
+msgstr ""
+
+#: lazarusidestrconsts.dlgcommentcontinueprefixinddefault
+msgid "Align Prefix at indent of previous line"
+msgstr ""
+
+#: lazarusidestrconsts.dlgcommentcontinueprefixindmatch
+msgid "Align Prefix below start of comment on first comment line"
+msgstr ""
+
+#: lazarusidestrconsts.dlgcommentcontinueprefixindnone
+msgid "Do not indent prefix"
+msgstr ""
+
+#: lazarusidestrconsts.dlgcommentindentgroupoptions
+msgid "Comments"
+msgstr ""
+
+#: lazarusidestrconsts.dlgcommentshlashextendalways
+msgid "Extend, if matched or not matched"
+msgstr ""
+
+#: lazarusidestrconsts.dlgcommentshlashextendalwayssplit
+msgid "Extend, if matched or not matched (not at EOL)"
+msgstr ""
+
+#: lazarusidestrconsts.dlgcommentshlashextendmatch
+msgid "Extend, if matched"
+msgstr ""
+
+#: lazarusidestrconsts.dlgcommentshlashextendmatchsplit
+msgid "Extend, if matched and caret in the middle of text (not at EOL)"
+msgstr ""
+
 #: lazarusidestrconsts.dlgcompilermessage
 msgid "Compiler messages"
 msgstr ""
@@ -1119,6 +1199,10 @@ msgstr ""
 
 #: lazarusidestrconsts.dlgctrlmiddletabcloseotherpages
 msgid "Ctrl-middle-click on tab closes all others"
+msgstr ""
+
+#: lazarusidestrconsts.dlgcurlycommenttab
+msgid "Curly { }"
 msgstr ""
 
 #: lazarusidestrconsts.dlgcursorbeyondeol
@@ -1422,6 +1506,10 @@ msgstr ""
 
 #: lazarusidestrconsts.dlgedon
 msgid "On"
+msgstr ""
+
+#: lazarusidestrconsts.dlgedtabindent
+msgid "Tab and Indent"
 msgstr ""
 
 #: lazarusidestrconsts.dlgedunder
@@ -1893,8 +1981,12 @@ msgstr ""
 msgid "Indent code to"
 msgstr ""
 
+#: lazarusidestrconsts.dlgindentsindentgroupoptions
+msgid "Indent"
+msgstr ""
+
 #: lazarusidestrconsts.dlgindentstabsgroupoptions
-msgid "Indent and Tabs"
+msgid "Tabs"
 msgstr ""
 
 #: lazarusidestrconsts.dlginfrontofmethods
@@ -1943,6 +2035,10 @@ msgstr ""
 
 #: lazarusidestrconsts.dlgkeepcursorx
 msgid "Keep cursor X position"
+msgstr ""
+
+#: lazarusidestrconsts.dlgkeylink
+msgid "(Edit Key)"
 msgstr ""
 
 #: lazarusidestrconsts.dlgkeymapping
@@ -2981,6 +3077,10 @@ msgstr ""
 
 #: lazarusidestrconsts.dlgskipforwardclassdeclarations
 msgid "Skip forward class declarations"
+msgstr ""
+
+#: lazarusidestrconsts.dlgslashcommenttab
+msgid "Slash //"
 msgstr ""
 
 #: lazarusidestrconsts.dlgsmarttabs
