@@ -543,12 +543,12 @@ msgstr ""
 msgid "Published"
 msgstr ""
 
-#: codystrconsts.crsreallydeletethepackagefromthedatabasenotethisisdoe
-msgid "Really delete the package from the database?%sNote: This is does not change the source or any configuration.%s%s\"%s\""
+#: codystrconsts.crsreallydeletethepackagefromthedatabasenotethisdoe
+msgid "Really delete the package from the database?%sNote: This does not change the source or any configuration.%s%s\"%s\""
 msgstr ""
 
-#: codystrconsts.crsreallydeletetheunitfromthedatabasenotethisisdoesno
-msgid "Really delete the unit from the database?%sNote: This is does not change the source or any configuration.%s%sunit: \"%s\""
+#: codystrconsts.crsreallydeletetheunitfromthedatabasenotethisdoesno
+msgid "Really delete the unit from the database?%sNote: This does not change the source or any configuration.%s%sunit: \"%s\""
 msgstr ""
 
 #: codystrconsts.crsrefresh

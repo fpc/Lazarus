@@ -1,4 +1,3 @@
- Valdas Jankunas <zmuogs@gmail.com>, 2012.
 msgid ""
 msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -544,12 +543,12 @@ msgstr "Public"
 msgid "Published"
 msgstr "Published"
 
-#: codystrconsts.crsreallydeletethepackagefromthedatabasenotethisisdoe
-msgid "Really delete the package from the database?%sNote: This is does not change the source or any configuration.%s%s\"%s\""
+#: codystrconsts.crsreallydeletethepackagefromthedatabasenotethisdoe
+msgid "Really delete the package from the database?%sNote: This does not change the source or any configuration.%s%s\"%s\""
 msgstr ""
 
-#: codystrconsts.crsreallydeletetheunitfromthedatabasenotethisisdoesno
-msgid "Really delete the unit from the database?%sNote: This is does not change the source or any configuration.%s%sunit: \"%s\""
+#: codystrconsts.crsreallydeletetheunitfromthedatabasenotethisdoesno
+msgid "Really delete the unit from the database?%sNote: This does not change the source or any configuration.%s%sunit: \"%s\""
 msgstr ""
 
 #: codystrconsts.crsrefresh

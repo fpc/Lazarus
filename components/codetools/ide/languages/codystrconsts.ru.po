@@ -268,11 +268,11 @@ msgstr "Объявление переменной \"%s\""
 
 #: codystrconsts.crsdeletepackage
 msgid "Delete package?"
-msgstr ""
+msgstr "Удалить пакет?"
 
 #: codystrconsts.crsdeleteunit
 msgid "Delete unit?"
-msgstr ""
+msgstr "Удалить модуль?"
 
 #: codystrconsts.crsdvisakeyword
 msgid "\"%s\" is a keyword."
@@ -366,7 +366,7 @@ msgstr "Недопустимая зависимость"
 
 #: codystrconsts.crsin
 msgid "in \"%s\""
-msgstr ""
+msgstr "в \"%s\""
 
 #: codystrconsts.crsinimplementation
 msgid "In implementation"
@@ -554,13 +554,13 @@ msgstr "Public"
 msgid "Published"
 msgstr "Published"
 
-#: codystrconsts.crsreallydeletethepackagefromthedatabasenotethisisdoe
-msgid "Really delete the package from the database?%sNote: This is does not change the source or any configuration.%s%s\"%s\""
-msgstr ""
+#: codystrconsts.crsreallydeletethepackagefromthedatabasenotethisdoe
+msgid "Really delete the package from the database?%sNote: This does not change the source or any configuration.%s%s\"%s\""
+msgstr "Действительно удалить пакет из базы данных?%sПримечание: эта операция не меняет исходный код или какие-либо параметры.%s%s\"%s\""
 
-#: codystrconsts.crsreallydeletetheunitfromthedatabasenotethisisdoesno
-msgid "Really delete the unit from the database?%sNote: This is does not change the source or any configuration.%s%sunit: \"%s\""
-msgstr ""
+#: codystrconsts.crsreallydeletetheunitfromthedatabasenotethisdoesno
+msgid "Really delete the unit from the database?%sNote: This does not change the source or any configuration.%s%sunit: \"%s\""
+msgstr "Действительно удалить модуль из базы данных?%sПримечание: эта операция не меняет исходный код или какие-либо параметры.%s%sмодуль: \"%s\""
 
 #: codystrconsts.crsrefresh
 msgid "Refresh"

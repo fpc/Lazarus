@@ -1,7 +1,3 @@
- Arabic translation of Free Pascal Lazarus Project.
- Copyright (C) 2012 Lazarus Project
- This file is distributed under the same license as the Lazarus package.
- Khaled Shagrouni <shagrouni@gmail.com>, 2012.
 msgid ""
 msgstr ""
 "Project-Id-Version: Free Pascal Lazarus Project.\n"
@@ -549,12 +545,12 @@ msgstr "العام"
 msgid "Published"
 msgstr "منشور"
 
-#: codystrconsts.crsreallydeletethepackagefromthedatabasenotethisisdoe
-msgid "Really delete the package from the database?%sNote: This is does not change the source or any configuration.%s%s\"%s\""
+#: codystrconsts.crsreallydeletethepackagefromthedatabasenotethisdoe
+msgid "Really delete the package from the database?%sNote: This does not change the source or any configuration.%s%s\"%s\""
 msgstr ""
 
-#: codystrconsts.crsreallydeletetheunitfromthedatabasenotethisisdoesno
-msgid "Really delete the unit from the database?%sNote: This is does not change the source or any configuration.%s%sunit: \"%s\""
+#: codystrconsts.crsreallydeletetheunitfromthedatabasenotethisdoesno
+msgid "Really delete the unit from the database?%sNote: This does not change the source or any configuration.%s%sunit: \"%s\""
 msgstr ""
 
 #: codystrconsts.crsrefresh
