@@ -229,30 +229,24 @@ end;
 
 procedure TCollectionPropertyEditorForm.PersistentAdded(APersistent: TPersistent; Select: boolean);
 begin
-  DebugLn('*** TCollectionPropertyEditorForm.PersistentAdded called ***');
+  //DebugLn('*** TCollectionPropertyEditorForm.PersistentAdded called ***');
   FillCollectionListBox;
 end;
 
 procedure TCollectionPropertyEditorForm.ComponentRenamed(AComponent: TComponent);
 begin
-  DebugLn('*** TCollectionPropertyEditorForm.ComponentRenamed called ***');
+  //DebugLn('*** TCollectionPropertyEditorForm.ComponentRenamed called ***');
   if AComponent = OwnerPersistent then
     UpdateCaption;
 end;
 
 procedure TCollectionPropertyEditorForm.PersistentDeleting(APersistent: TPersistent);
 var
-  OldCollection: TCollection;
   AIndex, I: Integer;
 begin
   if APersistent = OwnerPersistent then
   begin
-    OldCollection := Collection;
     SetCollection(nil, nil, '');
-    GlobalDesignHook.Unselect(OldCollection);
-    if GlobalDesignHook.LookupRoot = OldCollection then
-      GlobalDesignHook.LookupRoot := nil;
-
     Hide;
   end
   else
@@ -273,13 +267,13 @@ begin
   end;
   UpdateButtons;
   UpdateCaption;
-  DebugLn('*** TCollectionPropertyEditorForm.PersistentDeleting called ***');
+  //DebugLn('*** TCollectionPropertyEditorForm.PersistentDeleting called ***');
 end;
 
 procedure TCollectionPropertyEditorForm.RefreshPropertyValues;
 begin
   FillCollectionListBox;
-  DebugLn('*** TCollectionPropertyEditorForm.RefreshPropertyValues called ***');
+  //DebugLn('*** TCollectionPropertyEditorForm.RefreshPropertyValues called ***');
 end;
 
 procedure TCollectionPropertyEditorForm.FillCollectionListBox;
@@ -354,19 +348,16 @@ begin
   FCollection := NewCollection;
   FOwnerPersistent := NewOwnerPersistent;
   FPropertyName := NewPropName;
-  debugln('TCollectionPropertyEditorForm.SetCollection A Collection=',dbgsName(FCollection),' OwnerPersistent=',dbgsName(OwnerPersistent),' PropName=',PropertyName);
+  //debugln('TCollectionPropertyEditorForm.SetCollection A Collection=',dbgsName(FCollection),' OwnerPersistent=',dbgsName(OwnerPersistent),' PropName=',PropertyName);
   if GlobalDesignHook <> nil then
   begin
+    GlobalDesignHook.RemoveAllHandlersForObject(Self);
     if FOwnerPersistent <> nil then
     begin
       GlobalDesignHook.AddHandlerPersistentAdded(@PersistentAdded);
       GlobalDesignHook.AddHandlerComponentRenamed(@ComponentRenamed);
       GlobalDesignHook.AddHandlerPersistentDeleting(@PersistentDeleting);
       GlobalDesignHook.AddHandlerRefreshPropertyValues(@RefreshPropertyValues);
-    end
-    else
-    begin
-      GlobalDesignHook.RemoveAllHandlersForObject(Self);
     end;
   end;
 
