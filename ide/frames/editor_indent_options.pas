@@ -25,9 +25,10 @@ unit editor_indent_options;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, LCLType, StdCtrls, Controls, ExtCtrls, Graphics, Forms, ComCtrls,
-  Spin, EditorOptions, LazarusIDEStrConsts, IDEProcs, KeyMapping, editor_keymapping_options,
-  IDEOptionsIntf, SynEdit, SynBeautifier, SynHighlighterPas, SynEditKeyCmds, DividerBevel;
+  Classes, SysUtils, LCLProc, LCLType, StdCtrls, Controls, ExtCtrls, Graphics,
+  Forms, ComCtrls, Spin, EditorOptions, LazarusIDEStrConsts, IDEProcs,
+  KeyMapping, editor_keymapping_options, editor_general_options, IDEOptionsIntf,
+  SynEdit, SynBeautifier, SynHighlighterPas, SynEditKeyCmds, DividerBevel;
 
 type
   TPreviewEditor = TSynEdit;
@@ -123,9 +124,8 @@ type
     function DefaultBookmarkImages: TImageList;
     procedure SetExtendedKeywordsMode(const AValue: Boolean);
     procedure SetStringKeywordMode(const AValue: TSynPasStringMode);
+    function GeneralPage: TEditorGeneralOptionsFrame; inline;
   public
-    PreviewEdits: array of TPreviewEditor;
-    procedure AddPreviewEdit(AEditor: TPreviewEditor);
     procedure SetPreviewOption(AValue: Boolean; AnOption: TSynEditorOption); overload;
     procedure SetPreviewOption(AValue: Boolean; AnOption: TSynEditorOption2); overload;
     procedure UpdatePrevieEdits;
@@ -266,10 +266,6 @@ begin
     TabIndentBlocksCheckBox.Checked := eoTabIndent in SynEditOptions;
     SmartTabsCheckBox.Checked := eoSmartTabs in SynEditOptions;
     TabsToSpacesCheckBox.Checked := eoTabsToSpaces in SynEditOptions;
-
-    for i := Low(PreviewEdits) to High(PreviewEdits) do
-      if PreviewEdits[i] <> nil then
-        GetSynEditPreviewSettings(PreviewEdits[i]);
 
     lblBlockIndentShortcut.Caption := '';
     K := KeyMap.FindByCommand(ecBlockIndent);
@@ -443,39 +439,42 @@ procedure TEditorIndentOptionsFrame.SetPreviewOption(AValue: Boolean; AnOption: 
 var
   a: Integer;
 begin
-  for a := Low(PreviewEdits) to High(PreviewEdits) do
-  begin
-    if PreviewEdits[a] <> nil then
-      if AValue then
-        PreviewEdits[a].Options := PreviewEdits[a].Options + [AnOption]
-      else
-        PreviewEdits[a].Options := PreviewEdits[a].Options - [AnOption];
-  end;
+  with GeneralPage do
+    for a := Low(PreviewEdits) to High(PreviewEdits) do
+    begin
+      if PreviewEdits[a] <> nil then
+        if AValue then
+          PreviewEdits[a].Options := PreviewEdits[a].Options + [AnOption]
+        else
+          PreviewEdits[a].Options := PreviewEdits[a].Options - [AnOption];
+    end;
 end;
 
 procedure TEditorIndentOptionsFrame.SetPreviewOption(AValue: Boolean; AnOption: TSynEditorOption2);
 var
   a: Integer;
 begin
-  for a := Low(PreviewEdits) to High(PreviewEdits) do
-  begin
-    if PreviewEdits[a] <> nil then
-      if AValue then
-        PreviewEdits[a].Options2 := PreviewEdits[a].Options2 + [AnOption]
-      else
-        PreviewEdits[a].Options2 := PreviewEdits[a].Options2 - [AnOption];
-  end;
+  with GeneralPage do
+    for a := Low(PreviewEdits) to High(PreviewEdits) do
+    begin
+      if PreviewEdits[a] <> nil then
+        if AValue then
+          PreviewEdits[a].Options2 := PreviewEdits[a].Options2 + [AnOption]
+        else
+          PreviewEdits[a].Options2 := PreviewEdits[a].Options2 - [AnOption];
+    end;
 end;
 
 procedure TEditorIndentOptionsFrame.UpdatePrevieEdits;
 var
   a: Integer;
 begin
-  for a := Low(PreviewEdits) to High(PreviewEdits) do
-    if PreviewEdits[a].Highlighter is TSynPasSyn then begin
-      TSynPasSyn(PreviewEdits[a].Highlighter).ExtendedKeywordsMode := PasExtendedKeywordsMode;
-      TSynPasSyn(PreviewEdits[a].Highlighter).StringKeywordMode := PasStringKeywordMode;
-    end;
+  with GeneralPage do
+    for a := Low(PreviewEdits) to High(PreviewEdits) do
+      if PreviewEdits[a].Highlighter is TSynPasSyn then begin
+        TSynPasSyn(PreviewEdits[a].Highlighter).ExtendedKeywordsMode := PasExtendedKeywordsMode;
+        TSynPasSyn(PreviewEdits[a].Highlighter).StringKeywordMode := PasStringKeywordMode;
+      end;
 end;
 
 procedure TEditorIndentOptionsFrame.ComboboxOnChange(Sender: TObject);
@@ -580,31 +579,31 @@ var
 begin
   if Sender = BlockIndentComboBox then
   begin
-    NewVal := StrToIntDef(BlockIndentComboBox.Text, PreviewEdits[1].BlockIndent);
+    NewVal := StrToIntDef(BlockIndentComboBox.Text, GeneralPage.PreviewEdits[1].BlockIndent);
     // Todo: min/max
     SetComboBoxText(BlockIndentComboBox, IntToStr(NewVal), cstCaseInsensitive);
-    for a := Low(PreviewEdits) to High(PreviewEdits) do
-      if PreviewEdits[a] <> nil then
-        PreviewEdits[a].BlockIndent := NewVal;
+    for a := Low(GeneralPage.PreviewEdits) to High(GeneralPage.PreviewEdits) do
+      if GeneralPage.PreviewEdits[a] <> nil then
+        GeneralPage.PreviewEdits[a].BlockIndent := NewVal;
   end
   else
   if Sender = BlockTabIndentComboBox then
   begin
-    NewVal := StrToIntDef(BlockTabIndentComboBox.Text, PreviewEdits[1].BlockTabIndent);
+    NewVal := StrToIntDef(BlockTabIndentComboBox.Text, GeneralPage.PreviewEdits[1].BlockTabIndent);
     // Todo: min/max
     SetComboBoxText(BlockTabIndentComboBox, IntToStr(NewVal), cstCaseInsensitive);
-    for a := Low(PreviewEdits) to High(PreviewEdits) do
-      if PreviewEdits[a] <> nil then
-        PreviewEdits[a].BlockTabIndent := NewVal;
+    for a := Low(GeneralPage.PreviewEdits) to High(GeneralPage.PreviewEdits) do
+      if GeneralPage.PreviewEdits[a] <> nil then
+        GeneralPage.PreviewEdits[a].BlockTabIndent := NewVal;
   end
   else
   if Sender = TabWidthsComboBox then
   begin
-    NewVal := StrToIntDef(TabWidthsComboBox.Text, PreviewEdits[1].TabWidth);
+    NewVal := StrToIntDef(TabWidthsComboBox.Text, GeneralPage.PreviewEdits[1].TabWidth);
     SetComboBoxText(TabWidthsComboBox, IntToStr(NewVal), cstCaseInsensitive);
-    for a := Low(PreviewEdits) to High(PreviewEdits) do
-      if PreviewEdits[a] <> nil then
-        PreviewEdits[a].TabWidth := NewVal;
+    for a := Low(GeneralPage.PreviewEdits) to High(GeneralPage.PreviewEdits) do
+      if GeneralPage.PreviewEdits[a] <> nil then
+        GeneralPage.PreviewEdits[a].TabWidth := NewVal;
   end
 end;
 
@@ -658,18 +657,14 @@ begin
   UpdatePrevieEdits;
 end;
 
-procedure TEditorIndentOptionsFrame.AddPreviewEdit(AEditor: TPreviewEditor);
+function TEditorIndentOptionsFrame.GeneralPage: TEditorGeneralOptionsFrame;
 begin
-  SetLength(PreviewEdits, Length(PreviewEdits) + 1);
-  PreviewEdits[Length(PreviewEdits)-1] := AEditor;
-  if AEditor.BookMarkOptions.BookmarkImages = nil then
-    AEditor.BookMarkOptions.BookmarkImages := DefaultBookmarkImages;
+  Result := TEditorGeneralOptionsFrame(FDialog.FindEditor(TEditorGeneralOptionsFrame));
 end;
 
 constructor TEditorIndentOptionsFrame.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  PreviewEdits := nil;
   if EditorOpts <> nil then begin
     FPasExtendedKeywordsMode := EditorOpts.PasExtendedKeywordsMode;
     FPasStringKeywordMode := EditorOpts.PasStringKeywordMode;
