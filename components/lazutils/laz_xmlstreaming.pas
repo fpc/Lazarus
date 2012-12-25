@@ -51,6 +51,7 @@ type
     procedure StackPush(const Element: string = '';
                         ElementType: TXMLObjectWriterStackElType = elUnknown);
     procedure StackPop;
+  protected
     function GetPropertyElement(const TypeName: String): TDOMElement;
   public
     constructor Create(ADoc: TDOMDocument; const APath: string; Append: Boolean);
@@ -750,6 +751,8 @@ begin
         {$ENDIF}
         else if FElement.NodeName='collectionproperty' then
           Result:=vaCollection
+        else if FElement.NodeName='binary' then
+          Result:=vaBinary
         else
           RaiseUnknownNode(FElement);
         if not Stay then begin
