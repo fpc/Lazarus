@@ -248,7 +248,6 @@ end;
 
 procedure TEditorIndentOptionsFrame.ReadSettings(AOptions: TAbstractIDEOptions);
 var
-  i: integer;
   K: TKeyCommandRelation;
 const
   MatchModeToIdx: array [TSynCommentMatchMode] of integer = (0,1,2,3);
