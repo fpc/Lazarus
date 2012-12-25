@@ -1215,7 +1215,7 @@ begin
   Entry := PGtkEntry(PWidgetInfo(Data)^.CoreWidget);
   gtk_entry_select_region(Entry,
       PWidgetInfo(Data)^.CursorPos,
-      PWidgetInfo(Data)^.SelLength);
+      PWidgetInfo(Data)^.CursorPos + PWidgetInfo(Data)^.SelLength);
   g_idle_remove_by_data(Data);
 end;
 
@@ -1302,10 +1302,10 @@ begin
     NewPos := Min(NewStart, Entry^.text_max_length)
   else
     NewPos := Min(NewStart, Entry^.text_length);
+  WidgetInfo := GetWidgetInfo(Entry);
+  WidgetInfo^.CursorPos := NewPos;
   if LockOnChange(PgtkObject(Entry),0) > 0 then
   begin
-    WidgetInfo := GetWidgetInfo(Entry);
-    WidgetInfo^.CursorPos := NewPos;
     // postpone
     g_idle_add(@gtk2WSDelayedSelStart, WidgetInfo);
   end else
@@ -1324,15 +1324,14 @@ begin
   Entry := {%H-}PGtkEntry(ACustomEdit.Handle);
   SelStart := GetSelStart(ACustomEdit);
 
+  WidgetInfo := GetWidgetInfo(Entry);
+  if WidgetInfo^.CursorPos = 0 then
+    WidgetInfo^.CursorPos := SelStart;
+  WidgetInfo^.SelLength := NewLength;
   if LockOnChange(PgtkObject(Entry),0) > 0 then
-  begin
     // delay setting of selection length. issue #20890
-    WidgetInfo := GetWidgetInfo(Entry);
-    if WidgetInfo^.CursorPos = 0 then
-      WidgetInfo^.CursorPos := SelStart;
-    WidgetInfo^.SelLength := SelStart + NewLength;
-    g_idle_add(@gtk2WSDelayedSetSelLength, WidgetInfo);
-  end else
+    g_idle_add(@gtk2WSDelayedSetSelLength, WidgetInfo)
+  else
     gtk_entry_select_region(Entry,
       SelStart,
       SelStart + NewLength);
