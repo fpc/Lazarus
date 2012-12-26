@@ -5,26 +5,71 @@ unit ValEdit;
 interface
 
 uses
-  Classes, SysUtils, Grids, LResources, Dialogs, LazUtf8;
+  Classes, SysUtils, Grids, LResources, Dialogs, LazUtf8, variants;
 
 type
 
-  { TValueListStrings }
+  TValueListEditor = class;    // Forward declaration
 
-  TValueListEditor = class;
+  TEditStyle = (esSimple, esEllipsis, esPickList);
+
+  { TItemProp }
+
+  TItemProp = class(TPersistent)
+  private
+    FOwner: TValueListEditor;
+    FEditMask: string;
+    FEditStyle: TEditStyle;
+    FPickList: TStrings;
+    FMaxLength: Integer;
+    FReadOnly: Boolean;
+    FKeyDesc: string;
+    function GetPickList: TStrings;
+    procedure PickListChange(Sender: TObject);
+    procedure SetEditMask(const AValue: string);
+    procedure SetMaxLength(const AValue: Integer);
+    procedure SetReadOnly(const AValue: Boolean);
+    procedure SetEditStyle(const AValue: TEditStyle);
+    procedure SetPickList(const AValue: TStrings);
+    procedure SetKeyDesc(const AValue: string);
+  protected
+//    procedure AssignTo(Dest: TPersistent); override;
+  public
+    constructor Create(AOwner: TValueListEditor);
+    destructor Destroy; override;
+//    function HasPickList: Boolean;
+  published
+    property EditMask: string read FEditMask write SetEditMask;
+    property EditStyle: TEditStyle read FEditStyle write SetEditStyle;
+    property KeyDesc: string read FKeyDesc write SetKeyDesc;
+    property PickList: TStrings read GetPickList write SetPickList;
+    property MaxLength: Integer read FMaxLength write SetMaxLength;
+    property ReadOnly: Boolean read FReadOnly write SetReadOnly;
+  end;
+
+  TItemProps = array of TItemProp;
+
+  { TValueListStrings }
 
   TValueListStrings = class(TStringList)
   private
     FOwner: TValueListEditor;
+    FItemProps: TItemProps;
+    function GetItemProp(const AKeyOrIndex: Variant): TItemProp;
   protected
     procedure SetTextStr(const Value: string); override;
+    procedure InsertItem(Index: Integer; const S: string; AObject: TObject); override;
+    procedure Put(Index: Integer; const S: String); override;
   public
     constructor Create(AOwner: TValueListEditor);
     destructor Destroy; override;
     procedure Assign(Source: TPersistent); override;
+    procedure Clear; override;
+    procedure CustomSort(Compare: TStringListSortCompare); override;
+    procedure Delete(Index: Integer); override;
+    procedure Exchange(Index1, Index2: Integer); override;
   end;
 
-  { TValueListEditor }
 
   TDisplayOption = (doColumnTitles, doAutoColResize, doKeyColFixed);
   TDisplayOptions = set of TDisplayOption;
@@ -37,6 +82,8 @@ type
 
   TOnValidateEvent = procedure(Sender: TObject; ACol, ARow: Longint;
     const KeyName, KeyValue: string) of object;
+
+  { TValueListEditor }
 
   TValueListEditor = class(TCustomStringGrid)
   private
@@ -51,7 +98,9 @@ type
     FOnStringsChanging: TNotifyEvent;
     FOnValidate: TOnValidateEvent;
     function GetFixedRows: Integer;
+    function GetItemProp(const AKeyOrIndex: Variant): TItemProp;
     procedure SetFixedRows(AValue: Integer);
+    procedure SetItemProp(const AKeyOrIndex: Variant; AValue: TItemProp);
     procedure StringsChange(Sender: TObject);
     procedure StringsChanging(Sender: TObject);
     function GetOptions: TGridOptions;
@@ -88,6 +137,7 @@ type
     property Modified;
     property Keys[Index: Integer]: string read GetKey write SetKey;
     property Values[const Key: string]: string read GetValue write SetValue;
+    property ItemProps[const AKeyOrIndex: Variant]: TItemProp read GetItemProp write SetItemProp;
   published
     // Same as in TStringGrid
     property Align;
@@ -216,6 +266,87 @@ procedure Register;
 
 implementation
 
+{ TItemProp }
+
+constructor TItemProp.Create(AOwner: TValueListEditor);
+begin
+  inherited Create;
+  FOwner := AOwner;
+end;
+
+destructor TItemProp.Destroy;
+begin
+  FPickList.Free;
+  inherited Destroy;
+end;
+
+function TItemProp.GetPickList: TStrings;
+begin
+  if FPickList = Nil then
+  begin
+    FPickList := TStringList.Create;
+    TStringList(FPickList).OnChange := @PickListChange;
+  end;
+  Result := FPickList;
+end;
+
+procedure TItemProp.PickListChange(Sender: TObject);
+begin
+  if PickList.Count > 0 then begin
+    if EditStyle = esSimple then
+      EditStyle := esPickList;
+  end
+  else begin
+    if EditStyle = esPickList then
+      EditStyle := esSimple;
+  end;
+end;
+
+procedure TItemProp.SetEditMask(const AValue: string);
+begin
+  FEditMask := AValue;
+  with FOwner do
+    if EditorMode and (FStrings.UpdateCount = 0) then
+      InvalidateCell(Col, Row);
+end;
+
+procedure TItemProp.SetMaxLength(const AValue: Integer);
+begin
+  FMaxLength := AValue;
+  with FOwner do
+    if EditorMode and (FStrings.UpdateCount = 0) then
+      InvalidateCell(Col, Row);
+end;
+
+procedure TItemProp.SetReadOnly(const AValue: Boolean);
+begin
+  FReadOnly := AValue;
+  with FOwner do
+    if EditorMode and (FStrings.UpdateCount = 0) then
+      InvalidateCell(Col, Row);
+end;
+
+procedure TItemProp.SetEditStyle(const AValue: TEditStyle);
+begin
+  FEditStyle := AValue;
+  with FOwner do
+    if EditorMode and (FStrings.UpdateCount = 0) then
+      InvalidateCell(Col, Row);
+end;
+
+procedure TItemProp.SetPickList(const AValue: TStrings);
+begin
+  GetPickList.Assign(AValue);
+  with FOwner do
+    if EditorMode and (FStrings.UpdateCount = 0) then
+      InvalidateCell(Col, Row);
+end;
+
+procedure TItemProp.SetKeyDesc(const AValue: string);
+begin
+  FKeyDesc := AValue;
+end;
+
 { TValueListStrings }
 
 procedure TValueListStrings.SetTextStr(const Value: string);
@@ -230,6 +361,26 @@ begin
     if IsShowingEditor then
       Options := Options + [goAlwaysShowEditor];
   end;
+end;
+
+procedure TValueListStrings.InsertItem(Index: Integer; const S: string; AObject: TObject);
+var
+  i: Integer;
+begin
+  // ToDo: Check validity of key
+  Changing;
+  inherited InsertItem(Index, S, AObject);
+  SetLength(FItemProps, Count);
+  for i := Count-2 downto Index do
+    FItemProps[i+1] := FItemProps[i];
+  FItemProps[Index] := nil;
+  Changed;
+end;
+
+procedure TValueListStrings.Put(Index: Integer; const S: String);
+begin
+  // ToDo: Check validity of key
+  inherited Put(Index, S);
 end;
 
 constructor TValueListStrings.Create(AOwner: TValueListEditor);
@@ -251,9 +402,66 @@ begin
     // Don't show editor while changing values. Edited cell would not be changed.
     IsShowingEditor := goAlwaysShowEditor in Options;
     Options := Options - [goAlwaysShowEditor];
+    // ToDo: Assign also ItemProps if Source is TValueListStrings
     inherited Assign(Source);
     if IsShowingEditor then
       Options := Options + [goAlwaysShowEditor];
+  end;
+end;
+
+procedure TValueListStrings.Clear;
+var
+  i: Integer;
+begin
+  inherited Clear;
+  for i := 0 to Length(FItemProps)-1 do
+    FItemProps[i].Free;
+  SetLength(FItemProps, 0);
+end;
+
+procedure TValueListStrings.CustomSort(Compare: TStringListSortCompare);
+begin
+  inherited CustomSort(Compare);
+  // ToDo: Sort also ItemProps using a copy of the orignal order
+end;
+
+procedure TValueListStrings.Delete(Index: Integer);
+begin
+  Changing;
+  inherited Delete(Index);
+  // ToDo: Delete also ItemProps
+  Changed;
+end;
+
+procedure TValueListStrings.Exchange(Index1, Index2: Integer);
+begin
+  Changing;
+  inherited Exchange(Index1, Index2);
+  // ToDo: Exchange also ItemProps
+  Changed;
+end;
+
+function TValueListStrings.GetItemProp(const AKeyOrIndex: Variant): TItemProp;
+var
+  i: Integer;
+  s: string;
+begin
+  Result := Nil;
+  if Count > 0 then
+  begin
+    if VarIsOrdinal(AKeyOrIndex) then
+      i := AKeyOrIndex
+    else begin
+      s := AKeyOrIndex;
+      i := IndexOfName(s);
+      if i = -1 then
+        raise Exception.Create('TValueListStrings.GetItemProp: Key not found: '+s);
+    end;
+    Result := FItemProps[i];
+    if not Assigned(Result) then begin
+      Result := TItemProp.Create(FOwner);
+      FItemProps[i] := Result;
+    end;
   end;
 end;
 
@@ -332,6 +540,16 @@ begin
     else
       DisplayOptions := DisplayOptions + [doColumnTitles]
   end;
+end;
+
+function TValueListEditor.GetItemProp(const AKeyOrIndex: Variant): TItemProp;
+begin
+  Result := FStrings.GetItemProp(AKeyOrIndex);
+end;
+
+procedure TValueListEditor.SetItemProp(const AKeyOrIndex: Variant; AValue: TItemProp);
+begin
+  FStrings.GetItemProp(AKeyOrIndex).Assign(AValue);
 end;
 
 function TValueListEditor.GetOptions: TGridOptions;
