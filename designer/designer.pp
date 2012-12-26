@@ -1850,7 +1850,6 @@ var
     NewParentControl: TWinControl;
     NewComponent: TComponent;
     NewComponentClass: TComponentClass;
-    NewName: String;
     DisableAutoSize: Boolean;
     NewControl: TControl;
   begin
@@ -1961,12 +1960,9 @@ var
     if Assigned(FOnSetDesigning) then
       FOnSetDesigning(Self,NewComponent,True);
 
-    if EnvironmentOptions.CreateComponentFocusNameProperty then begin
+    if EnvironmentOptions.CreateComponentFocusNameProperty then
       // ask user for name
-      NewName:=NewComponent.Name;
-      ShowComponentNameDialog(LookupRoot,NewComponent,NewName);
-      NewComponent.Name:=NewName;
-    end;
+      NewComponent.Name:=ShowComponentNameDialog(LookupRoot,NewComponent);
 
     // tell IDE about the new component (e.g. add it to the source)
     NotifyPersistentAdded(NewComponent);
@@ -2317,7 +2313,9 @@ var
   Shift: TShiftState;
   Command: word;
   Handled: boolean;
-  
+  Current: TComponent;
+  NewName: String;
+
   procedure Nudge(x, y: integer);
   begin
     if (ssCtrl in Shift) then
@@ -2341,16 +2339,12 @@ begin
   {$IFDEF VerboseDesigner}
   DebugLn(['TDesigner.KEYDOWN ',TheMessage.CharCode,' ',TheMessage.KeyData]);
   {$ENDIF}
-
   Shift := KeyDataToShiftState(TheMessage.KeyData);
-
   Handled := False;
-
   if Mediator<>nil then
     Mediator.KeyDown(Sender,TheMessage.CharCode,Shift);
 
-  Command := FTheFormEditor.TranslateKeyToDesignerCommand(
-                                                    TheMessage.CharCode, Shift);
+  Command := FTheFormEditor.TranslateKeyToDesignerCommand(TheMessage.CharCode, Shift);
   //DebugLn(['TDesigner.KEYDOWN Command=',dbgs(Command),' ',TheMessage.CharCode,' ',dbgs(Shift)]);
   DoProcessCommand(Self, Command, Handled);
   //DebugLn(['TDesigner.KeyDown Command=',Command,' Handled=',Handled,' TheMessage.CharCode=',TheMessage.CharCode]);
@@ -2395,6 +2389,17 @@ begin
           DoSelectAll
         else
           Handled := False;
+
+      VK_F2:
+        if (ControlSelection.Count=1) and ControlSelection[0].IsTComponent then begin
+          Current := TComponent(ControlSelection[0].Persistent);
+          NewName := ShowComponentNameDialog(LookupRoot, Current);
+          if NewName <> Current.Name then begin
+            Current.Name:=NewName;
+            GlobalDesignHook.ComponentRenamed(Current);
+          end;
+        end
+
       else
         Handled := False;
     end;

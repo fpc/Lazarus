@@ -53,15 +53,13 @@ type
     property NewComponent: TComponent read FNewComponent write SetNewComponent;
   end; 
 
-function ShowComponentNameDialog(LookupRoot: TComponent; NewComponent: TComponent;
-  var NewName: string): TModalResult;
+function ShowComponentNameDialog(LookupRoot: TComponent; NewComponent: TComponent): string;
 
 implementation
 
 {$R *.lfm}
 
-function ShowComponentNameDialog(LookupRoot: TComponent; NewComponent: TComponent;
-  var NewName: string): TModalResult;
+function ShowComponentNameDialog(LookupRoot: TComponent; NewComponent: TComponent): string;
 var
   AskCompNameDialog: TAskCompNameDialog;
 begin
@@ -69,10 +67,10 @@ begin
   try
     AskCompNameDialog.LookupRoot:=LookupRoot;
     AskCompNameDialog.NewComponent:=NewComponent;
-    AskCompNameDialog.NewName:=NewName;
-    Result:=AskCompNameDialog.ShowModal;
-    if Result=mrOk then
-      NewName:=AskCompNameDialog.NewName;
+    AskCompNameDialog.NewName:=NewComponent.Name;
+    Result:=NewComponent.Name;   // Default name is the component's current name.
+    if AskCompNameDialog.ShowModal=mrOk then
+      Result:=AskCompNameDialog.NewName;
   finally
     AskCompNameDialog.Free;
   end;

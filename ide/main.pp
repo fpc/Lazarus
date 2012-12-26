@@ -13276,6 +13276,10 @@ end;
 procedure TMainIDE.OnPropHookComponentRenamed(AComponent: TComponent);
 begin
   FormEditor1.UpdateComponentName(AComponent);
+  // Component can be renamed in designer and OI must be updated
+  if ObjectInspector1<>nil then
+    // This does not update the Name property on Windows. ToDo: find out how to update it.
+    ObjectInspector1.Update;
 end;
 
 procedure TMainIDE.OnPropHookModified(Sender: TObject);
