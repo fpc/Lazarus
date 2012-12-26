@@ -476,7 +476,9 @@ type
     function LinkIndexAtCleanPos(ACleanPos: integer): integer;
     function LinkIndexAtCursorPos(ACursorPos: integer; ACode: Pointer): integer;
     function LinkSize(Index: integer): integer;
+    function LinkSize_Inline(Index: integer): integer; inline;
     function LinkCleanedEndPos(Index: integer): integer;
+    function LinkCleanedEndPos_Inline(Index: integer): integer; inline;
     function LinkSourceLog(Index: integer): TSourceLog;
     function FindFirstSiblingLink(LinkIndex: integer): integer;
     function FindParentLink(LinkIndex: integer): integer;
@@ -864,21 +866,40 @@ function TLinkScanner.LinkSize(Index: integer): integer;
   procedure IndexOutOfBounds;
   begin
     RaiseConsistencyException('TLinkScanner.LinkSize  index '
-       +IntToStr(Index)+' out of bounds: 0-'+IntToStr(LinkCount));
+       +IntToStr(Index)+' out of bounds: 0..'+IntToStr(LinkCount-1));
   end;
 
 begin
   if (Index<0) or (Index>=LinkCount) then
     IndexOutOfBounds;
-  if Index<LinkCount-1 then
-    Result:=FLinks[Index+1].CleanedPos-FLinks[Index].CleanedPos
+  Result:=LinkSize_Inline(Index);
+end;
+
+function TLinkScanner.LinkSize_Inline(Index: integer): integer;
+var
+  Link: PSourceLink;
+begin
+  Link:=@FLinks[Index];
+  if Index+1<LinkCount then
+    Result:=Link[1].CleanedPos-Link^.CleanedPos
   else
-    Result:=CleanedLen-FLinks[Index].CleanedPos+1;
+    Result:=CleanedLen-Link^.CleanedPos+1;
 end;
 
 function TLinkScanner.LinkCleanedEndPos(Index: integer): integer;
 begin
-  Result:=FLinks[Index].CleanedPos+LinkSize(Index);
+  Result:=LinkSize(Index)+FLinks[Index].CleanedPos;
+end;
+
+function TLinkScanner.LinkCleanedEndPos_Inline(Index: integer): integer;
+var
+  Link: PSourceLink;
+begin
+  Link:=@FLinks[Index];
+  if Index+1<LinkCount then
+    Result:=Link[1].CleanedPos
+  else
+    Result:=CleanedLen+1;
 end;
 
 function TLinkScanner.LinkSourceLog(Index: integer): TSourceLog;
@@ -3927,11 +3948,7 @@ begin
       // link in same code found
       ACleanPos:=ACursorPos-Link^.SrcPos+Link^.CleanedPos;
       //DebugLn(['[TLinkScanner.CursorToCleanPos] Same code ACursorPos=',ACursorPos,', Code=',Link^.Code=ACode,', Link^.SrcPos=',Link^.SrcPos,', Link^.CleanedPos=',Link^.CleanedPos,' EndCleanPos=',Link^.CleanedPos+LinkSize(i)]);
-      if i+1<LinkCount then begin
-        // link has successor
-        LinkEnd:=FLinks[i+1].CleanedPos;
-      end else
-        LinkEnd:=CleanedLen+1;
+      LinkEnd:=LinkCleanedEndPos_Inline(i);
       if ACleanPos<LinkEnd then begin
         // link covers the cursor position
         //debugln(['TLinkScanner.CursorToCleanPos Found LinkStartInSrc="',dbgstr(LinkSourceLog(i).Source,Link^.SrcPos,40),'" LinkStartInCleanSrc="',dbgstr(FCleanedSrc,Link^.CleanedPos,40),'" CursorSrc="',dbgstr(copy(LinkSourceLog(i).Source,ACursorPos-20,20)),'|',dbgstr(copy(LinkSourceLog(i).Source,ACursorPos,20)),'" CleanCursorSrc="',dbgstr(FCleanedSrc,ACleanPos-20,20),'|',dbgstr(FCleanedSrc,ACleanPos,20),'"']);
@@ -3946,8 +3963,7 @@ begin
             BestCleanPos:=ACleanPos;
           end;
         end;
-      end;
-      if BestQuality<qSkipped then begin
+      end else if BestQuality<qSkipped then begin
         BestQuality:=qSkipped;
         BestCleanPos:=LinkEnd;
       end;
@@ -3955,7 +3971,7 @@ begin
     inc(i);
   end;
   ACleanPos:=BestCleanPos;
-  if BestQuality=qSkipped then begin
+  if (BestQuality=qSkipped) and (ACleanPos<=CleanedLen) then begin
     // cursor position lies between two links
     Result:=-1;
   end else if BestQuality=qDisabled then begin

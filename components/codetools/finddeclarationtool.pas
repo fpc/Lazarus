@@ -1407,14 +1407,15 @@ begin
   try
     // build code tree
     {$IFDEF CTDEBUG}
-    DebugLn('TFindDeclarationTool.FindDeclaration A CursorPos=X',dbgs(CursorPos.X),',Y',dbgs(CursorPos.Y));
+    DebugLn('TFindDeclarationTool.FindDeclaration A CursorPos=X',dbgs(CursorPos.X),',Y',dbgs(CursorPos.Y),' ',CursorPos.Code.Filename);
+    debugln(['TFindDeclarationTool.FindDeclaration B ',dbgtext(copy(CursorPos.Code.GetLine(CursorPos.Y),1,CursorPos.X-1)),'|',dbgtext(copy(CursorPos.Code.GetLine(CursorPos.Y),CursorPos.X,120))]);
     {$ENDIF}
     BuildTreeAndGetCleanPos(trTillCursor,lsrEnd,CursorPos,CleanCursorPos,
                   [btSetIgnoreErrorPos,btCursorPosOutAllowed]);
     {$IFDEF CTDEBUG}
-    DebugLn('TFindDeclarationTool.FindDeclaration C CleanCursorPos=',dbgs(CleanCursorPos));
+    debugLn('TFindDeclarationTool.FindDeclaration B CleanCursorPos=',dbgs(CleanCursorPos));
+    debugln(['TFindDeclarationTool.FindDeclaration C ',dbgtext(copy(Src,CleanCursorPos-30,30)),'|',dbgtext(copy(Src,CleanCursorPos,30))]);
     {$ENDIF}
-    //debugln(['TFindDeclarationTool.FindDeclaration ',dbgtext(copy(Src,CleanCursorPos-30,30)),'|',dbgtext(copy(Src,CleanCursorPos,30))]);
 
     // find CodeTreeNode at cursor
     if (Tree.Root<>nil) and (Tree.Root.StartPos<=CleanCursorPos) then begin
