@@ -2796,7 +2796,6 @@ begin
         RaiseStrExpectedWithBlockStartHint('"end"');
     end else if UpAtomIs('THEN') then begin
       if (BlockType=ebtIf) and (IfType=itNone) then begin
-        debugln(['TPascalParserTool.ReadTilBlockEnd BBB1']);
         if StopOnBlockMiddlePart then break;
         IfType:=itThen;
       end else
