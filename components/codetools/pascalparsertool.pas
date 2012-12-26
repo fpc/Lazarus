@@ -283,9 +283,10 @@ implementation
 
 
 type
-  TEndBlockType = (ebtBegin, ebtAsm, ebtTry, ebtCase, ebtRepeat, ebtRecord,
-                   ebtClass, ebtObject);
+  TEndBlockType = (ebtBegin, ebtAsm, ebtTry, ebtCase, ebtRepeat, ebtIf,
+    ebtRecord, ebtClass, ebtObject);
   TTryType = (ttNone, ttFinally, ttExcept);
+  TIfType = (itNone, itThen, itElse);
 
 function ProcHeadAttributesToStr(Attr: TProcHeadAttributes): string;
 var
@@ -2649,11 +2650,12 @@ end;
 
 function TPascalParserTool.ReadTilBlockEnd(
   StopOnBlockMiddlePart, CreateNodes: boolean): boolean;
-// after reading cursor will be on the keyword ending the block (e.g. 'end')
+// after reading cursor will be on the atom ending the block (e.g. 'end', 'until', or ';')
 var BlockType: TEndBlockType;
   TryType: TTryType;
   BlockStartPos: integer;
   Desc: TCodeTreeNodeDesc;
+  IfType: TIfType;
 
   procedure SaveRaiseExceptionWithBlockStartHint(const AMessage: string);
   var CaretXY: TCodeXYPosition;
@@ -2698,7 +2700,9 @@ var BlockType: TEndBlockType;
 begin
   Result:=true;
   TryType:=ttNone;
+  IfType:=itNone;
   Desc:=ctnNone;
+  //debugln(['TPascalParserTool.ReadTilBlockEnd START ',GetAtom]);
   if UpAtomIs('BEGIN') then begin
     BlockType:=ebtBegin;
     Desc:=ctnBeginBlock;
@@ -2706,6 +2710,8 @@ begin
     BlockType:=ebtRepeat
   else if UpAtomIs('TRY') then
     BlockType:=ebtTry
+  else if UpAtomIs('IF') then
+    BlockType:=ebtIf
   else if UpAtomIs('CASE') then
     BlockType:=ebtCase
   else if UpAtomIs('ASM') then
@@ -2724,18 +2730,20 @@ begin
   BlockStartPos:=CurPos.StartPos;
   repeat
     ReadNextAtom;
+    //debugln(['TPascalParserTool.ReadTilBlockEnd next=',GetAtom]);
     if (CurPos.StartPos>SrcLen) then
       SaveRaiseExceptionWithBlockStartHint(ctsUnexpectedEndOfSource);
       
-    if not (CurPos.Flag in AllCommonAtomWords) then continue;
-    
     if (CurPos.Flag=cafEND) then begin
+      // end
       if (BlockType<>ebtAsm) or (CurPos.StartPos=1) or (Src[CurPos.StartPos-1]<>'@')
       then begin
         if BlockType=ebtRepeat then
           RaiseStrExpectedWithBlockStartHint('"until"');
         if (BlockType=ebtTry) and (TryType=ttNone) then
           RaiseStrExpectedWithBlockStartHint('"finally"');
+        if (BlockType=ebtIf) and (IfType=itNone) then
+          RaiseStrExpectedWithBlockStartHint('"then"');
         if Desc<>ctnNone then begin
           CurNode.EndPos:=CurPos.EndPos;
           EndChildNode;
@@ -2747,12 +2755,24 @@ begin
         UndoReadNextAtom;
         break;
       end;
-    end else if EndKeyWordFuncList.DoIdentifier(@Src[CurPos.StartPos])
-      or UpAtomIs('REPEAT') then
-    begin
+    end else if CurPos.Flag=cafSemicolon then begin
+      // ;
+      if BlockType=ebtIf then begin
+        if (IfType=itNone) then
+          RaiseStrExpectedWithBlockStartHint('"then"');
+        if Desc<>ctnNone then begin
+          CurNode.EndPos:=CurPos.EndPos;
+          EndChildNode;
+        end;
+        break;
+      end;
+    end else if CurPos.Flag<>cafWord then begin
+      continue;
+    end else if BlockStatementStartKeyWordFuncList.DoIdentifier(@Src[CurPos.StartPos])
+    then begin
       if BlockType=ebtAsm then
         SaveRaiseUnexpectedKeyWordInAsmBlock;
-      if (BlockType<>ebtRecord) or (not UpAtomIs('CASE')) then
+      if (BlockType<>ebtRecord) then
         ReadTilBlockEnd(false,CreateNodes);
     end else if UpAtomIs('UNTIL') then begin
       if BlockType<>ebtRepeat then
@@ -2774,6 +2794,19 @@ begin
         TryType:=ttExcept;
       end else
         RaiseStrExpectedWithBlockStartHint('"end"');
+    end else if UpAtomIs('THEN') then begin
+      if (BlockType=ebtIf) and (IfType=itNone) then begin
+        debugln(['TPascalParserTool.ReadTilBlockEnd BBB1']);
+        if StopOnBlockMiddlePart then break;
+        IfType:=itThen;
+      end else
+        RaiseStrExpectedWithBlockStartHint('"if"');
+    end else if UpAtomIs('ELSE') then begin
+      if (BlockType=ebtIf) and (IfType=itThen) then begin
+        if StopOnBlockMiddlePart then break;
+        IfType:=itElse;
+      end else
+        RaiseStrExpectedWithBlockStartHint('"if"');
     end else if CreateNodes and UpAtomIs('WITH') then begin
       ReadWithStatement(true,CreateNodes);
     end else if CreateNodes and UpAtomIs('ON') and (BlockType=ebtTry)
@@ -2783,7 +2816,7 @@ begin
       // check for unexpected keywords
       case BlockType of
       
-      ebtBegin,ebtTry,ebtCase,ebtRepeat:
+      ebtBegin,ebtTry,ebtIf,ebtCase,ebtRepeat:
         if UnexpectedKeyWordInBeginBlock.DoIdentifier(@Src[CurPos.StartPos]) then
           SaveRaiseUnexpectedKeyWordInBeginEndBlock;
           

@@ -1361,6 +1361,7 @@ begin
     Add('TRY'   ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('ASM'   ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('CASE'  ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('IF'    ,{$ifdef FPC}@{$endif}AllwaysTrue);
   end;
   
   UnexpectedKeyWordInBeginBlock:=TKeyWordFunctionList.Create('UnexpectedKeyWordInBeginBlock');
