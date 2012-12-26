@@ -2650,7 +2650,7 @@ end;
 
 function TPascalParserTool.ReadTilBlockEnd(
   StopOnBlockMiddlePart, CreateNodes: boolean): boolean;
-// after reading cursor will be on the atom ending the block (e.g. 'end', 'until', or ';')
+// after reading cursor will be on the atom ending the block (e.g. 'end', 'until', ';')
 var BlockType: TEndBlockType;
   TryType: TTryType;
   BlockStartPos: integer;
@@ -2696,6 +2696,26 @@ var BlockType: TEndBlockType;
     SaveRaiseExceptionWithBlockStartHint(
       Format(ctsUnexpectedKeywordInBeginEndBlock,[GetAtom]));
   end;
+
+  procedure CloseNode; inline;
+  begin
+    if Desc<>ctnNone then begin
+      CurNode.EndPos:=CurPos.EndPos;
+      EndChildNode;
+    end;
+  end;
+
+  function AutomaticallyEnded: boolean;
+  begin
+    if BlockType=ebtIf then begin
+      if (IfType=itNone) then
+        RaiseStrExpectedWithBlockStartHint('"then"');
+      CloseNode;
+      UndoReadNextAtom;
+      Result:=true;
+    end else
+      Result:=false;
+  end;
   
 begin
   Result:=true;
@@ -2738,16 +2758,12 @@ begin
       // end
       if (BlockType<>ebtAsm) or (CurPos.StartPos=1) or (Src[CurPos.StartPos-1]<>'@')
       then begin
+        if AutomaticallyEnded then break;
         if BlockType=ebtRepeat then
           RaiseStrExpectedWithBlockStartHint('"until"');
         if (BlockType=ebtTry) and (TryType=ttNone) then
           RaiseStrExpectedWithBlockStartHint('"finally"');
-        if (BlockType=ebtIf) and (IfType=itNone) then
-          RaiseStrExpectedWithBlockStartHint('"then"');
-        if Desc<>ctnNone then begin
-          CurNode.EndPos:=CurPos.EndPos;
-          EndChildNode;
-        end;
+        CloseNode;
         ReadNextAtom;
         if (CurPos.Flag=cafPoint) and (BlockType<>ebtBegin) then begin
           SaveRaiseCharExpectedButAtomFound(';');
@@ -2760,10 +2776,7 @@ begin
       if BlockType=ebtIf then begin
         if (IfType=itNone) then
           RaiseStrExpectedWithBlockStartHint('"then"');
-        if Desc<>ctnNone then begin
-          CurNode.EndPos:=CurPos.EndPos;
-          EndChildNode;
-        end;
+        CloseNode;
         break;
       end;
     end else if CurPos.Flag<>cafWord then begin
@@ -2772,23 +2785,26 @@ begin
     then begin
       if BlockType=ebtAsm then
         SaveRaiseUnexpectedKeyWordInAsmBlock;
-      if (BlockType<>ebtRecord) then
+      if (BlockType<>ebtRecord) then begin
         ReadTilBlockEnd(false,CreateNodes);
+        if (BlockType=ebtIf) and (CurPos.Flag in [cafSemicolon]) then
+          break;
+      end;
     end else if UpAtomIs('UNTIL') then begin
+      if AutomaticallyEnded then break;
       if BlockType<>ebtRepeat then
         RaiseStrExpectedWithBlockStartHint('"end"');
-      if Desc<>ctnNone then begin
-        CurNode.EndPos:=CurPos.EndPos;
-        EndChildNode;
-      end;
+      CloseNode;
       break;
     end else if UpAtomIs('FINALLY') then begin
+      if AutomaticallyEnded then break;
       if (BlockType=ebtTry) and (TryType=ttNone) then begin
         if StopOnBlockMiddlePart then break;
         TryType:=ttFinally;
       end else
         RaiseStrExpectedWithBlockStartHint('"end"');
     end else if UpAtomIs('EXCEPT') then begin
+      if AutomaticallyEnded then break;
       if (BlockType=ebtTry) and (TryType=ttNone) then begin
         if StopOnBlockMiddlePart then break;
         TryType:=ttExcept;
@@ -2796,14 +2812,13 @@ begin
         RaiseStrExpectedWithBlockStartHint('"end"');
     end else if UpAtomIs('THEN') then begin
       if (BlockType=ebtIf) and (IfType=itNone) then begin
-        if StopOnBlockMiddlePart then break;
         IfType:=itThen;
       end else
         RaiseStrExpectedWithBlockStartHint('"if"');
     end else if UpAtomIs('ELSE') then begin
       if (BlockType=ebtIf) and (IfType=itThen) then begin
-        if StopOnBlockMiddlePart then break;
         IfType:=itElse;
+      end else if BlockType=ebtCase then begin
       end else
         RaiseStrExpectedWithBlockStartHint('"if"');
     end else if CreateNodes and UpAtomIs('WITH') then begin
