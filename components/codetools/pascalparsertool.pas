@@ -2816,8 +2816,16 @@ begin
       end else
         RaiseStrExpectedWithBlockStartHint('"if"');
     end else if UpAtomIs('ELSE') then begin
-      if (BlockType=ebtIf) and (IfType=itThen) then begin
-        IfType:=itElse;
+      if (BlockType=ebtIf) then begin
+        if (IfType=itThen) then
+          IfType:=itElse
+        else if IfType=itElse then begin
+          // e.g. if then if then else |else ;
+          CloseNode;
+          UndoReadNextAtom;
+          break;
+        end else
+          RaiseStrExpectedWithBlockStartHint('"then"');
       end else if BlockType=ebtCase then begin
       end else
         RaiseStrExpectedWithBlockStartHint('"if"');
