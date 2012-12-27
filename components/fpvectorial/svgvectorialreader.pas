@@ -14,7 +14,7 @@ interface
 
 uses
   Classes, SysUtils, math,
-  xmlread, dom, fgl,
+  fpimage, fpcanvas, xmlread, dom, fgl,
   fpvectorial, fpvutils;
 
 type
@@ -45,15 +45,22 @@ type
   private
     FPointSeparator, FCommaSeparator: TFormatSettings;
     FSVGPathTokenizer: TSVGPathTokenizer;
-    procedure ReadPathFromNode(APath: TDOMNode; AData: TvVectorialPage; ADoc: TvVectorialDocument);
+    function ReadSVGColor(AValue: string): TFPColor;
+    procedure ReadSVGStyle(AValue: string; ADestEntity: TvEntityWithPenAndBrush);
+    procedure ReadSVGStyleWithKeyAndValue(AKey, AValue: string; ADestEntity: TvEntityWithPenAndBrush);
+    function IsAttributeFromStyle(AStr: string): Boolean;
+    //
+    procedure ReadEntityFromNode(ANode: TDOMNode; AData: TvVectorialPage; ADoc: TvVectorialDocument);
+    procedure ReadCircleFromNode(ANode: TDOMNode; AData: TvVectorialPage; ADoc: TvVectorialDocument);
+    procedure ReadPathFromNode(ANode: TDOMNode; AData: TvVectorialPage; ADoc: TvVectorialDocument);
     procedure ReadPathFromString(AStr: string; AData: TvVectorialPage; ADoc: TvVectorialDocument);
-    function  StringWithUnitToFloat(AStr: string): Single;
+    function  StringWithUnitToFloat(AStr: string): Double;
     procedure ConvertSVGCoordinatesToFPVCoordinates(
       const AData: TvVectorialPage;
-      const ASrcX, ASrcY: Float; var ADestX, ADestY: Float);
+      const ASrcX, ASrcY: Double; var ADestX, ADestY: Double);
     procedure ConvertSVGDeltaToFPVDelta(
       const AData: TvVectorialPage;
-      const ASrcX, ASrcY: Float; var ADestX, ADestY: Float);
+      const ASrcX, ASrcY: Double; var ADestX, ADestY: Double);
   public
     { General reading methods }
     constructor Create; override;
@@ -193,19 +200,152 @@ end;
 
 { TvSVGVectorialReader }
 
-procedure TvSVGVectorialReader.ReadPathFromNode(APath: TDOMNode;
+function TvSVGVectorialReader.ReadSVGColor(AValue: string): TFPColor;
+begin
+  case AValue of
+  'black': Result := colBlack;
+  'white': Result := colWhite;
+  'red':   Result := colRed;
+  'blue': Result := colBlue;
+  'green': Result := colGreen;
+  'yellow': Result := colYellow;
+  end;
+end;
+
+// style="fill:none;stroke:black;stroke-width:3"
+procedure TvSVGVectorialReader.ReadSVGStyle(AValue: string;
+  ADestEntity: TvEntityWithPenAndBrush);
+var
+  lStr, lStyleKeyStr, lStyleValueStr: String;
+  lStrings: TStringList;
+  i, lPosEqual: Integer;
+begin
+  if AValue = '' then Exit;
+
+  // Now split using ";" separator
+  lStrings := TStringList.Create;
+  try
+    lStrings.Delimiter := ';';
+    lStrings.DelimitedText := AValue;
+    for i := 0 to lStrings.Count-1 do
+    begin
+      lStr := lStrings.Strings[i];
+      lPosEqual := Pos('=', lStr);
+      lStyleKeyStr := Copy(lStr, 0, lPosEqual);
+      lStyleValueStr := Copy(lStr, lPosEqual+1, Length(lStr));
+      ReadSVGStyleWithKeyAndValue(lStyleKeyStr, lStyleValueStr, ADestEntity);
+    end;
+  finally
+    lStrings.Free;
+  end;
+end;
+
+procedure TvSVGVectorialReader.ReadSVGStyleWithKeyAndValue(AKey,
+  AValue: string; ADestEntity: TvEntityWithPenAndBrush);
+begin
+  if AKey = 'stroke' then
+  begin
+    if ADestEntity.Brush.Style = bsClear then ADestEntity.Brush.Style := bsSolid;
+
+    if AValue = 'none'  then ADestEntity.Pen.Style := fpcanvas.psClear
+    else ADestEntity.Pen.Color := ReadSVGColor(AValue)
+  end
+  else if AKey = 'stroke-width' then
+    ADestEntity.Pen.Width := StrToInt(AValue)
+  else if AKey = 'fill' then
+  begin
+    if AValue = 'none'  then ADestEntity.Brush.Style := fpcanvas.bsClear
+    else ADestEntity.Brush.Color := ReadSVGColor(AValue)
+  end;
+end;
+
+function TvSVGVectorialReader.IsAttributeFromStyle(AStr: string): Boolean;
+begin
+  Result := (AStr = 'stroke') or (AStr = 'stroke-width') or
+    (AStr = 'fill');
+end;
+
+procedure TvSVGVectorialReader.ReadEntityFromNode(ANode: TDOMNode;
+  AData: TvVectorialPage; ADoc: TvVectorialDocument);
+var
+  lEntityName, lLayerName: DOMString;
+  lCurNode, lLayerNameNode: TDOMNode;
+  lLayer: TvLayer;
+begin
+  lEntityName := ANode.NodeName;
+  case lEntityName of
+    'circle': ReadCircleFromNode(ANode, AData, ADoc);
+    'path': ReadPathFromNode(ANode, AData, ADoc);
+    // Layers
+    'g':
+    begin
+      // if we are already inside a layer, something may be wrong...
+      //if ALayer <> nil then raise Exception.Create('[TvSVGVectorialReader.ReadEntityFromNode] A layer inside a layer was found!');
+
+      lLayerNameNode := ANode.Attributes.GetNamedItem('id');
+      lLayerName := '';
+      if lLayerNameNode <> nil then lLayerName := lLayerNameNode.NodeValue;
+      lLayer := AData.AddLayerAndSetAsCurrent(lLayerName);
+
+      lCurNode := ANode.FirstChild;
+      while Assigned(lCurNode) do
+      begin
+        ReadEntityFromNode(lCurNode, AData, ADoc);
+        lCurNode := lCurNode.NextSibling;
+      end;
+    end;
+  end;
+end;
+
+procedure TvSVGVectorialReader.ReadCircleFromNode(ANode: TDOMNode;
+  AData: TvVectorialPage; ADoc: TvVectorialDocument);
+var
+  cx, cy, cr, dtmp: double;
+  lCircle: TvCircle;
+  i: Integer;
+  lNodeName: DOMString;
+begin
+  cx := 0.0;
+  cy := 0.0;
+  cr := 0.0;
+
+  lCircle := TvCircle.Create;
+
+  // read the attributes
+  for i := 0 to ANode.Attributes.Length - 1 do
+  begin
+    lNodeName := ANode.Attributes.Item[i].NodeName;
+    if  lNodeName = 'cx' then
+      cx := StringWithUnitToFloat(ANode.Attributes.Item[i].NodeValue)
+    else if lNodeName = 'cy' then
+      cy := StringWithUnitToFloat(ANode.Attributes.Item[i].NodeValue)
+    else if lNodeName = 'r' then
+      cr := StringWithUnitToFloat(ANode.Attributes.Item[i].NodeValue)
+    else if IsAttributeFromStyle(lNodeName) then
+      ReadSVGStyleWithKeyAndValue(lNodeName, ANode.Attributes.Item[i].NodeValue, lCircle);
+  end;
+
+  ConvertSVGCoordinatesToFPVCoordinates(
+        AData, cx, cy, lCircle.X, lCircle.Y);
+  ConvertSVGCoordinatesToFPVCoordinates(
+        AData, cr, 0, lCircle.Radius, dtmp);
+
+  AData.AddEntity(lCircle);
+end;
+
+procedure TvSVGVectorialReader.ReadPathFromNode(ANode: TDOMNode;
   AData: TvVectorialPage; ADoc: TvVectorialDocument);
 var
   lNodeName, lStyleStr, lDStr: WideString;
   i: Integer;
 begin
-  for i := 0 to APath.Attributes.Length - 1 do
+  for i := 0 to ANode.Attributes.Length - 1 do
   begin
-    lNodeName := APath.Attributes.Item[i].NodeName;
+    lNodeName := ANode.Attributes.Item[i].NodeName;
     if  lNodeName = 'style' then
-      lStyleStr := APath.Attributes.Item[i].NodeValue
+      lStyleStr := ANode.Attributes.Item[i].NodeValue
     else if lNodeName = 'd' then
-      lDStr := APath.Attributes.Item[i].NodeValue
+      lDStr := ANode.Attributes.Item[i].NodeValue
   end;
 
   AData.StartPath();
@@ -217,8 +357,8 @@ procedure TvSVGVectorialReader.ReadPathFromString(AStr: string;
   AData: TvVectorialPage; ADoc: TvVectorialDocument);
 var
   i: Integer;
-  X, Y, X2, Y2, X3, Y3: Float;
-  CurX, CurY: Float;
+  X, Y, X2, Y2, X3, Y3: Double;
+  CurX, CurY: Double;
 begin
   FSVGPathTokenizer.Tokens.Clear;
   FSVGPathTokenizer.TokenizePathString(AStr);
@@ -280,11 +420,13 @@ begin
   end;
 end;
 
-function TvSVGVectorialReader.StringWithUnitToFloat(AStr: string): Single;
+function TvSVGVectorialReader.StringWithUnitToFloat(AStr: string): Double;
 var
   UnitStr, ValueStr: string;
   Len: Integer;
 begin
+  if AStr = '' then Exit(0.0);
+
   // Check the unit
   Len := Length(AStr);
   UnitStr := Copy(AStr, Len-1, 2);
@@ -292,20 +434,24 @@ begin
   begin
     ValueStr := Copy(AStr, 1, Len-2);
     Result := StrToInt(ValueStr);
+  end
+  else // If there is no unit, just use StrToFloat
+  begin
+    Result := StrToFloat(AStr);
   end;
 end;
 
 procedure TvSVGVectorialReader.ConvertSVGCoordinatesToFPVCoordinates(
-  const AData: TvVectorialPage; const ASrcX, ASrcY: Float;
-  var ADestX,ADestY: Float);
+  const AData: TvVectorialPage; const ASrcX, ASrcY: Double;
+  var ADestX,ADestY: Double);
 begin
   ADestX := ASrcX * FLOAT_MILIMETERS_PER_PIXEL;
   ADestY := AData.Height - ASrcY * FLOAT_MILIMETERS_PER_PIXEL;
 end;
 
 procedure TvSVGVectorialReader.ConvertSVGDeltaToFPVDelta(
-  const AData: TvVectorialPage; const ASrcX, ASrcY: Float; var ADestX,
-  ADestY: Float);
+  const AData: TvVectorialPage; const ASrcX, ASrcY: Double; var ADestX,
+  ADestY: Double);
 begin
   ADestX := ASrcX * FLOAT_MILIMETERS_PER_PIXEL;
   ADestY := - ASrcY * FLOAT_MILIMETERS_PER_PIXEL;
@@ -333,7 +479,7 @@ procedure TvSVGVectorialReader.ReadFromStream(AStream: TStream;
   AData: TvVectorialDocument);
 var
   Doc: TXMLDocument;
-  lFirstLayer, lCurNode: TDOMNode;
+  lCurNode: TDOMNode;
   lPage: TvVectorialPage;
 begin
   try
@@ -344,15 +490,14 @@ begin
     AData.Width := StringWithUnitToFloat(Doc.DocumentElement.GetAttribute('width'));
     AData.Height := StringWithUnitToFloat(Doc.DocumentElement.GetAttribute('height'));
 
-    // Now process the elements inside the first layer
-    lFirstLayer := Doc.DocumentElement.FirstChild;
-    lCurNode := lFirstLayer.FirstChild;
+    // Now process the elements
+    lCurNode := Doc.DocumentElement.FirstChild;
     lPage := AData.AddPage();
     lPage.Width := AData.Width;
     lPage.Height := AData.Height;
     while Assigned(lCurNode) do
     begin
-      ReadPathFromNode(lCurNode, lPage, AData);
+      ReadEntityFromNode(lCurNode, lPage, AData);
       lCurNode := lCurNode.NextSibling;
     end;
   finally

@@ -14,68 +14,68 @@
     </CompilerOptions>
     <Files Count="16">
       <Item1>
-        <Filename Value="svgvectorialwriter.pas"/>
-        <UnitName Value="svgvectorialwriter"/>
+        <Filename Value="fpvectorial.pas"/>
+        <UnitName Value="fpvectorial"/>
       </Item1>
       <Item2>
         <Filename Value="fpvtocanvas.pas"/>
         <UnitName Value="fpvtocanvas"/>
       </Item2>
       <Item3>
-        <Filename Value="fpvectorial.pas"/>
-        <UnitName Value="fpvectorial"/>
-      </Item3>
-      <Item4>
         <Filename Value="fpvectbuildunit.pas"/>
         <UnitName Value="fpvectbuildunit"/>
-      </Item4>
-      <Item5>
-        <Filename Value="dxfvectorialreader.pas"/>
-        <UnitName Value="dxfvectorialreader"/>
-      </Item5>
-      <Item6>
-        <Filename Value="cdrvectorialreader.pas"/>
-        <UnitName Value="cdrvectorialreader"/>
-      </Item6>
-      <Item7>
-        <Filename Value="avisozlib.pas"/>
-        <UnitName Value="avisozlib"/>
-      </Item7>
-      <Item8>
-        <Filename Value="avisocncgcodewriter.pas"/>
-        <UnitName Value="avisocncgcodewriter"/>
-      </Item8>
-      <Item9>
-        <Filename Value="avisocncgcodereader.pas"/>
-        <UnitName Value="avisocncgcodereader"/>
-      </Item9>
-      <Item10>
-        <Filename Value="svgvectorialreader.pas"/>
-        <UnitName Value="svgvectorialreader"/>
-      </Item10>
-      <Item11>
-        <Filename Value="epsvectorialreader.pas"/>
-        <UnitName Value="epsvectorialreader"/>
-      </Item11>
-      <Item12>
+      </Item3>
+      <Item4>
         <Filename Value="fpvutils.pas"/>
         <UnitName Value="fpvutils"/>
-      </Item12>
-      <Item13>
+      </Item4>
+      <Item5>
+        <Filename Value="avisozlib.pas"/>
+        <UnitName Value="avisozlib"/>
+      </Item5>
+      <Item6>
+        <Filename Value="avisocncgcodewriter.pas"/>
+        <UnitName Value="avisocncgcodewriter"/>
+      </Item6>
+      <Item7>
+        <Filename Value="avisocncgcodereader.pas"/>
+        <UnitName Value="avisocncgcodereader"/>
+      </Item7>
+      <Item8>
+        <Filename Value="cdrvectorialreader.pas"/>
+        <UnitName Value="cdrvectorialreader"/>
+      </Item8>
+      <Item9>
+        <Filename Value="dxfvectorialreader.pas"/>
+        <UnitName Value="dxfvectorialreader"/>
+      </Item9>
+      <Item10>
+        <Filename Value="epsvectorialreader.pas"/>
+        <UnitName Value="epsvectorialreader"/>
+      </Item10>
+      <Item11>
         <Filename Value="lasvectorialreader.pas"/>
         <UnitName Value="lasvectorialreader"/>
+      </Item11>
+      <Item12>
+        <Filename Value="lazvectorialreader.pas"/>
+        <UnitName Value="lazvectorialreader"/>
+      </Item12>
+      <Item13>
+        <Filename Value="mathmlvectorialreader.pas"/>
+        <UnitName Value="mathmlvectorialreader"/>
       </Item13>
       <Item14>
         <Filename Value="rawvectorialreadwrite.pas"/>
         <UnitName Value="rawvectorialreadwrite"/>
       </Item14>
       <Item15>
-        <Filename Value="mathmlvectorialreader.pas"/>
-        <UnitName Value="mathmlvectorialreader"/>
+        <Filename Value="svgvectorialreader.pas"/>
+        <UnitName Value="svgvectorialreader"/>
       </Item15>
       <Item16>
-        <Filename Value="lazvectorialreader.pas"/>
-        <UnitName Value="lasvectorialreader"/>
+        <Filename Value="svgvectorialwriter.pas"/>
+        <UnitName Value="svgvectorialwriter"/>
       </Item16>
     </Files>
     <Type Value="RunAndDesignTime"/>

@@ -7,11 +7,11 @@ unit fpvectorialpkg;
 interface
 
 uses
-  svgvectorialwriter, fpvtocanvas, fpvectorial, fpvectbuildunit, 
-  dxfvectorialreader, cdrvectorialreader, avisozlib, avisocncgcodewriter, 
-  avisocncgcodereader, svgvectorialreader, epsvectorialreader, fpvutils, 
-  lasvectorialreader, rawvectorialreadwrite, mathmlvectorialreader, 
-  lazvectorialreader, LazarusPackageIntf;
+  fpvectorial, fpvtocanvas, fpvectbuildunit, fpvutils, avisozlib, 
+  avisocncgcodewriter, avisocncgcodereader, cdrvectorialreader, 
+  dxfvectorialreader, epsvectorialreader, lasvectorialreader, 
+  lazvectorialreader, mathmlvectorialreader, rawvectorialreadwrite, 
+  svgvectorialreader, svgvectorialwriter, LazarusPackageIntf;
 
 implementation
 

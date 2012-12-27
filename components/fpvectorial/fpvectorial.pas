@@ -240,6 +240,8 @@ type
     Pen: TvPen;
     constructor Create; override;
     procedure ApplyPenToCanvas(ADest: TFPCustomCanvas);
+    procedure Render(ADest: TFPCustomCanvas; ADestX: Integer = 0;
+      ADestY: Integer = 0; AMulX: Double = 1.0; AMulY: Double = 1.0); override;
   end;
 
   { TvEntityWithPenAndBrush }
@@ -251,6 +253,8 @@ type
     Brush: TvBrush;
     constructor Create; override;
     procedure ApplyBrushToCanvas(ADest: TFPCustomCanvas);
+    procedure Render(ADest: TFPCustomCanvas; ADestX: Integer = 0;
+      ADestY: Integer = 0; AMulX: Double = 1.0; AMulY: Double = 1.0); override;
   end;
 
   TvClipMode = (vcmNonzeroWindingRule, vcmEvenOddRule);
@@ -515,14 +519,7 @@ type
     function GenerateDebugTree(ADestRoutine: TvDebugAddItemProc; APageItem: Pointer): Pointer; override;
   end;
 
-  {@@
-    A block is a group of other elements. It is not rendered directly into the drawing,
-    but instead is rendered via another item, called TvInsert
-  }
-
-  { TvBlock }
-
-  TvBlock = class(TvEntity)
+  TvEntityWithSubEntities = class(TvEntity)
   private
     FCurIndex: Integer;
     procedure CallbackDeleteElement(data,arg:pointer);
@@ -541,6 +538,16 @@ type
   end;
 
   {@@
+    A block is a group of other elements. It is not rendered directly into the drawing,
+    but instead is rendered via another item, called TvInsert
+  }
+
+  { TvBlock }
+
+  TvBlock = class(TvEntityWithSubEntities)
+  end;
+
+  {@@
     A "Insert" inserts a block into the drawing in the specified position
   }
 
@@ -549,6 +556,20 @@ type
   TvInsert = class(TvEntity)
   public
     Block: TvBlock; // The block to be inserted
+    procedure Render(ADest: TFPCustomCanvas; ADestX: Integer = 0;
+      ADestY: Integer = 0; AMulX: Double = 1.0; AMulY: Double = 1.0); override;
+  end;
+
+  {@@
+    Layers are groups of elements.
+    Layers are similar to blocks and the diference is that the layer draws
+    its contents, while the block doesnt, and it cannot be pasted with an TvInsert.
+  }
+
+  { TvLayer }
+
+  TvLayer = class(TvEntityWithSubEntities)
+  public
     procedure Render(ADest: TFPCustomCanvas; ADestX: Integer = 0;
       ADestY: Integer = 0; AMulX: Double = 1.0; AMulY: Double = 1.0); override;
   end;
@@ -609,6 +630,7 @@ type
     FEntities: TFPList; // of TvEntity
     FTmpPath: TPath;
     FTmpText: TvText;
+    FCurrentLayer: TvLayer;
     //procedure RemoveCallback(data, arg: pointer);
     procedure ClearTmpPath();
     procedure AppendSegmentToTmpPath(ASegment: TPathSegment);
@@ -660,6 +682,8 @@ type
     function AddEllipse(CenterX, CenterY, HorzHalfAxis, VertHalfAxis, Angle: Double; AOnlyCreate: Boolean = False): TvEllipse;
     function AddBlock(AName: string; AX, AY, AZ: Double): TvBlock;
     function AddInsert(AX, AY, AZ: Double; ABlock: TvBlock): TvInsert;
+    // Layers
+    function AddLayerAndSetAsCurrent(AName: string): TvLayer;
     // Dimensions
     function AddAlignedDimension(BaseLeft, BaseRight, DimLeft, DimRight: T3DPoint; AOnlyCreate: Boolean = False): TvAlignedDimension;
     function AddRadialDimension(AIsDiameter: Boolean; ACenter, ADimLeft, ADimRight: T3DPoint; AOnlyCreate: Boolean = False): TvRadialDimension;
@@ -960,6 +984,13 @@ begin
   ADest.Pen.Style := Pen.Style;
 end;
 
+procedure TvEntityWithPen.Render(ADest: TFPCustomCanvas; ADestX: Integer;
+  ADestY: Integer; AMulX: Double; AMulY: Double);
+begin
+  inherited Render(ADest, ADestX, ADestY, AMulX, AMulY);
+  ApplyPenToCanvas(ADest);
+end;
+
 { TvEntityWithPenAndBrush }
 
 constructor TvEntityWithPenAndBrush.Create;
@@ -973,6 +1004,13 @@ procedure TvEntityWithPenAndBrush.ApplyBrushToCanvas(ADest: TFPCustomCanvas);
 begin
   ADest.Brush.FPColor := Brush.Color;
   ADest.Brush.Style := Brush.Style;
+end;
+
+procedure TvEntityWithPenAndBrush.Render(ADest: TFPCustomCanvas;
+  ADestX: Integer; ADestY: Integer; AMulX: Double; AMulY: Double);
+begin
+  inherited Render(ADest, ADestX, ADestY, AMulX, AMulY);
+  ApplyBrushToCanvas(ADest);
 end;
 
 { TPath }
@@ -1490,6 +1528,7 @@ procedure TvCircle.Render(ADest: TFPCustomCanvas; ADestX: Integer;
   end;
 
 begin
+  inherited Render(ADest, ADestX, ADestY, AMulX, AMulY);
   ADest.Ellipse(
     CoordToCanvasX(X - Radius),
     CoordToCanvasY(Y - Radius),
@@ -2483,45 +2522,45 @@ begin
   end;
 end;
 
-{ TvBlock }
+{ TvEntityWithSubEntities }
 
-procedure TvBlock.CallbackDeleteElement(data, arg: pointer);
+procedure TvEntityWithSubEntities.CallbackDeleteElement(data, arg: pointer);
 begin
   TvEntity(data).Free;
 end;
 
-constructor TvBlock.Create;
+constructor TvEntityWithSubEntities.Create;
 begin
   inherited Create;
   FElements := TFPList.Create;
 end;
 
-destructor TvBlock.Destroy;
+destructor TvEntityWithSubEntities.Destroy;
 begin
   FElements.Free;
   inherited Destroy;
 end;
 
-function TvBlock.GetFirstEntity: TvEntity;
+function TvEntityWithSubEntities.GetFirstEntity: TvEntity;
 begin
   if FElements.Count = 0 then Exit(nil);
   Result := FElements.Items[0];
   FCurIndex := 1;
 end;
 
-function TvBlock.GetNextEntity: TvEntity;
+function TvEntityWithSubEntities.GetNextEntity: TvEntity;
 begin
   if FElements.Count <= FCurIndex then Exit(nil);
   Result := FElements.Items[FCurIndex];
   Inc(FCurIndex);
 end;
 
-procedure TvBlock.AddEntity(AEntity: TvEntity);
+procedure TvEntityWithSubEntities.AddEntity(AEntity: TvEntity);
 begin
   FElements.Add(AEntity);
 end;
 
-procedure TvBlock.Clear;
+procedure TvEntityWithSubEntities.Clear;
 begin
   inherited Clear;
   FElements.ForEachCall(CallbackDeleteElement, nil);
@@ -2553,6 +2592,29 @@ begin
     lEntity.Move(- Block.X - X, - Block.Y - Y);
 
     lEntity := Block.GetNextEntity();
+  end;
+end;
+
+{ TvLayer }
+
+procedure TvLayer.Render(ADest: TFPCustomCanvas; ADestX: Integer;
+  ADestY: Integer; AMulX: Double; AMulY: Double);
+var
+  lEntity: TvEntity;
+begin
+  inherited Render(ADest, ADestX, ADestY, AMulX, AMulY);
+  lEntity := GetFirstEntity();
+  while lEntity <> nil do
+  begin
+    {$IFDEF FPVECTORIAL_DEBUG_BLOCKS}
+    //WriteLn(Format('[TvInsert.Render] Name=%s Block=%s Entity=%s EntityXY=%f | %f BlockXY=%f | %f InsertXY=%f | %f',
+    //  [Name, Block.Name, lEntity.ClassName, lEntity.X, lEntity.Y, Block.X, Block.Y, X, Y]));
+    {$ENDIF}
+
+    // Render
+    lEntity.Render(ADest, ADestX, ADestY, AMulX, AMuly);
+
+    lEntity := GetNextEntity();
   end;
 end;
 
@@ -3009,6 +3071,11 @@ begin
   lInsert.Block := ABlock;
   AddEntity(lInsert);
   Result := lInsert;
+end;
+
+function TvVectorialPage.AddLayerAndSetAsCurrent(AName: string): TvLayer;
+begin
+  Result := nil;//TvLayer.Create;
 end;
 
 
