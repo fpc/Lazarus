@@ -1937,7 +1937,6 @@ end;
 
 procedure TSynHighlighterMultiScheme.SetVirtualLines(const AValue: TSynHLightMultiVirtualLines);
 begin
-  if FVirtualLines = AValue then exit;
   FVirtualLines := AValue;
   if FHighlighter <> nil then
     FHighlighter.CurrentLines := AValue;
