@@ -354,6 +354,17 @@ type
       ADestY: Integer = 0; AMulX: Double = 1.0; AMulY: Double = 1.0); override;
   end;
 
+  { TvRectangle }
+
+  TvRectangle = class(TvEntityWithPenAndBrush)
+  public
+    // Mandatory fields
+    CX, CY, CZ: Double;
+    procedure CalculateBoundingBox(ADest: TFPCustomCanvas; var ALeft, ATop, ARight, ABottom: Double); override;
+    procedure Render(ADest: TFPCustomCanvas; ADestX: Integer = 0;
+      ADestY: Integer = 0; AMulX: Double = 1.0; AMulY: Double = 1.0); override;
+  end;
+
   {@@
    DimensionLeft ---text--- DimensionRight
                  |        |
@@ -1688,7 +1699,7 @@ var
   ALCLDest: TCanvas absolute ADest;
   {$endif}
 begin
-  ApplyPenToCanvas(ADest);
+  inherited Render(ADest, ADestX, ADestY, AMulX, AMulY);
 
   CalculateBoundingBox(ADest, fx1, fy1, fx2, fy2);
   x1 := CoordToCanvasX(fx1);
@@ -1722,6 +1733,45 @@ begin
   begin
     ADest.Ellipse(x1, y1, x2, y2);
   end;
+end;
+
+{ TvRectangle }
+
+procedure TvRectangle.CalculateBoundingBox(ADest: TFPCustomCanvas; var ALeft,
+  ATop, ARight, ABottom: Double);
+begin
+  ALeft := X;
+  ARight := X + CX;
+  ATop := Y;
+  ABottom := Y + CY;
+end;
+
+procedure TvRectangle.Render(ADest: TFPCustomCanvas; ADestX: Integer;
+  ADestY: Integer; AMulX: Double; AMulY: Double);
+
+  function CoordToCanvasX(ACoord: Double): Integer;
+  begin
+    Result := Round(ADestX + AmulX * ACoord);
+  end;
+
+  function CoordToCanvasY(ACoord: Double): Integer;
+  begin
+    Result := Round(ADestY + AmulY * ACoord);
+  end;
+
+var
+  x1, x2, y1, y2: Integer;
+  fx1, fy1, fx2, fy2: Double;
+begin
+  inherited Render(ADest, ADestX, ADestY, AMulX, AMulY);
+
+  CalculateBoundingBox(ADest, fx1, fy1, fx2, fy2);
+  x1 := CoordToCanvasX(fx1);
+  x2 := CoordToCanvasX(fx2);
+  y1 := CoordToCanvasY(fy1);
+  y2 := CoordToCanvasY(fy2);
+
+  ADest.Rectangle(x1, y1, x2, y2);
 end;
 
 { TvAlignedDimension }

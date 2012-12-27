@@ -46,14 +46,18 @@ type
     FPointSeparator, FCommaSeparator: TFormatSettings;
     FSVGPathTokenizer: TSVGPathTokenizer;
     function ReadSVGColor(AValue: string): TFPColor;
-    procedure ReadSVGStyle(AValue: string; ADestEntity: TvEntityWithPenAndBrush);
-    procedure ReadSVGStyleWithKeyAndValue(AKey, AValue: string; ADestEntity: TvEntityWithPenAndBrush);
+    procedure ReadSVGStyle(AValue: string; ADestEntity: TvEntityWithPen);
+    procedure ReadSVGPenStyleWithKeyAndValue(AKey, AValue: string; ADestEntity: TvEntityWithPen);
+    procedure ReadSVGBrushStyleWithKeyAndValue(AKey, AValue: string; ADestEntity: TvEntityWithPenAndBrush);
     function IsAttributeFromStyle(AStr: string): Boolean;
     //
     procedure ReadEntityFromNode(ANode: TDOMNode; AData: TvVectorialPage; ADoc: TvVectorialDocument);
     procedure ReadCircleFromNode(ANode: TDOMNode; AData: TvVectorialPage; ADoc: TvVectorialDocument);
+    procedure ReadEllipseFromNode(ANode: TDOMNode; AData: TvVectorialPage; ADoc: TvVectorialDocument);
+    procedure ReadLineFromNode(ANode: TDOMNode; AData: TvVectorialPage; ADoc: TvVectorialDocument);
     procedure ReadPathFromNode(ANode: TDOMNode; AData: TvVectorialPage; ADoc: TvVectorialDocument);
     procedure ReadPathFromString(AStr: string; AData: TvVectorialPage; ADoc: TvVectorialDocument);
+    procedure ReadRectFromNode(ANode: TDOMNode; AData: TvVectorialPage; ADoc: TvVectorialDocument);
     function  StringWithUnitToFloat(AStr: string): Double;
     procedure ConvertSVGCoordinatesToFPVCoordinates(
       const AData: TvVectorialPage;
@@ -202,19 +206,197 @@ end;
 
 function TvSVGVectorialReader.ReadSVGColor(AValue: string): TFPColor;
 begin
+  Result := colBlack;
   case AValue of
-  'black': Result := colBlack;
-  'white': Result := colWhite;
+  'black':   Result := colBlack;
+  'navy':    Result.Blue := $8080;
+  'darkblue':Result.Blue := $8B8B;
+  'mediumblue':Result.Blue := $CDCD;
+  'blue':    Result := colBlue;
+  'darkgreen':Result.Green := $6464;
+  'green':   Result.Green := $8080;
+  'teal':
+  begin
+    Result.Green := $8080;
+    Result.Blue := $8080;
+  end;
+  'darkcyan':
+  begin
+    Result.Green := $8B8B;
+    Result.Blue := $8B8B;
+  end;
+  'deepskyblue':
+  begin
+    Result.Green := $BFBF;
+    Result.Blue := $FFFF;
+  end;
+  'darkturquoise':
+  begin
+    Result.Green := $CECE;
+    Result.Blue := $D1D1;
+  end;
+  'mediumspringgreen':
+  begin
+    Result.Green := $FAFA;
+    Result.Blue := $9A9A;
+  end;
+  'lime': Result := colGreen;
+  'springgreen':
+  begin
+    Result.Green := $FFFF;
+    Result.Blue := $7F7F;
+  end;
+  'cyan':   Result := colCyan;
+  'aqua':   Result := colCyan;
+  'midnightblue':
+  begin
+    Result.Red := $1919;
+    Result.Green := $1919;
+    Result.Blue := $7070;
+  end;
+  'dodgerblue':
+  begin
+    Result.Red := $1E1E;
+    Result.Green := $9090;
+    Result.Blue := $FFFF;
+  end;
+  'lightseagreen':
+  begin
+    Result.Red := $2020;
+    Result.Green := $B2B2;
+    Result.Blue := $AAAA;
+  end;
+  'forestgreen':
+  begin
+    Result.Red := $2222;
+    Result.Green := $8B8B;
+    Result.Blue := $2222;
+  end;
+  'seagreen':
+  begin
+    Result.Red := $2E2E;
+    Result.Green := $8B8B;
+    Result.Blue := $5757;
+  end;
+{
+darkslategray #2F4F4F
+ 	darkslategrey #2F4F4F		limegreen #32CD32
+mediumseagreen #3CB371
+ 	turquoise #40E0D0		royalblue #4169E1
+steelblue #4682B4
+ 	darkslateblue #483D8B		mediumturquoise #48D1CC
+indigo #4B0082
+ 	darkolivegreen #556B2F		cadetblue #5F9EA0
+cornflowerblue #6495ED
+ 	mediumaquamarine #66CDAA		dimgrey #696969
+dimgray #696969
+ 	slateblue #6A5ACD		olivedrab #6B8E23
+slategrey #708090
+ 	slategray #708090		lightslategray(Hex3) #778899
+lightslategrey(Hex3) #778899
+ 	mediumslateblue #7B68EE		lawngreen #7CFC00
+chartreuse #7FFF00
+}
+  'aquamarine':
+  begin
+    Result.Red := $7F7F;
+    Result.Green := $FFFF;
+    Result.Blue := $D4D4;
+  end;
+  'maroon': Result.Red := $8080;
+  'purple': Result := colPurple;
+  'olive':  Result := colOlive;
+  'gray', 'grey': Result := colGray;
+{
+ 	skyblue #87CEEB		lightskyblue #87CEFA
+blueviolet #8A2BE2
+ 	darkred #8B0000		darkmagenta #8B008B
+saddlebrown #8B4513
+ 	darkseagreen #8FBC8F		lightgreen #90EE90
+mediumpurple #9370DB
+ 	darkviolet #9400D3		palegreen #98FB98
+darkorchid #9932CC
+ 	yellowgreen #9ACD32		sienna #A0522D
+brown #A52A2A
+ 	darkgray #A9A9A9		darkgrey #A9A9A9
+lightblue #ADD8E6
+ 	greenyellow #ADFF2F		paleturquoise #AFEEEE
+lightsteelblue #B0C4DE
+ 	powderblue #B0E0E6		firebrick #B22222
+darkgoldenrod #B8860B
+ 	mediumorchid #BA55D3		rosybrown #BC8F8F
+darkkhaki #BDB76B
+ 	silver(16) #C0C0C0		mediumvioletred #C71585
+indianred #CD5C5C
+ 	peru #CD853F		chocolate #D2691E
+tan #D2B48C
+ 	lightgray #D3D3D3		lightgrey #D3D3D3
+thistle #D8BFD8
+ 	orchid #DA70D6		goldenrod #DAA520
+palevioletred #DB7093
+ 	crimson #DC143C		gainsboro #DCDCDC
+plum #DDA0DD
+ 	burlywood #DEB887		lightcyan #E0FFFF
+lavender #E6E6FA
+ 	darksalmon #E9967A		violet #EE82EE
+palegoldenrod #EEE8AA
+ 	lightcoral #F08080		khaki #F0E68C
+aliceblue #F0F8FF
+ 	honeydew #F0FFF0		azure #F0FFFF
+sandybrown #F4A460
+ 	wheat #F5DEB3		beige #F5F5DC
+whitesmoke #F5F5F5
+ 	mintcream #F5FFFA		ghostwhite #F8F8FF
+salmon #FA8072
+ 	antiquewhite #FAEBD7		linen #FAF0E6
+lightgoldenrodyellow #FAFAD2
+ 	oldlace #FDF5E6
+}
   'red':   Result := colRed;
-  'blue': Result := colBlue;
-  'green': Result := colGreen;
+  'fuchsia':   Result := colFuchsia;
+  'magenta':   Result := colMagenta;
+{	deeppink #FF1493
+orangered #FF4500
+ 	tomato #FF6347		hotpink #FF69B4
+coral #FF7F50
+ 	darkorange #FF8C00		lightsalmon #FFA07A
+orange #FFA500
+ 	lightpink #FFB6C1		pink #FFC0CB
+gold #FFD700
+ 	peachpuff #FFDAB9		navajowhite #FFDEAD
+moccasin #FFE4B5
+ 	bisque #FFE4C4		mistyrose #FFE4E1
+blanchedalmond #FFEBCD
+ 	papayawhip #FFEFD5		lavenderblush #FFF0F5
+seashell #FFF5EE
+ 	cornsilk #FFF8DC		lemonchiffon #FFFACD
+floralwhite #FFFAF0
+}
+  'snow':
+  begin
+    Result.Red := $FFFF;
+    Result.Green := $FAFA;
+    Result.Blue := $FAFA;
+  end;
   'yellow': Result := colYellow;
+  'lightyellow':
+  begin
+    Result.Red := $FFFF;
+    Result.Green := $FEFE;
+  end;
+  'ivory':
+  begin
+    Result.Red := $FFFF;
+    Result.Green := $FFFF;
+    Result.Blue := $F0F0;
+  end;
+  'white': Result := colWhite;
   end;
 end;
 
 // style="fill:none;stroke:black;stroke-width:3"
 procedure TvSVGVectorialReader.ReadSVGStyle(AValue: string;
-  ADestEntity: TvEntityWithPenAndBrush);
+  ADestEntity: TvEntityWithPen);
 var
   lStr, lStyleKeyStr, lStyleValueStr: String;
   lStrings: TStringList;
@@ -230,29 +412,36 @@ begin
     for i := 0 to lStrings.Count-1 do
     begin
       lStr := lStrings.Strings[i];
-      lPosEqual := Pos('=', lStr);
-      lStyleKeyStr := Copy(lStr, 0, lPosEqual);
+      lPosEqual := Pos(':', lStr);
+      lStyleKeyStr := Copy(lStr, 0, lPosEqual-1);
       lStyleValueStr := Copy(lStr, lPosEqual+1, Length(lStr));
-      ReadSVGStyleWithKeyAndValue(lStyleKeyStr, lStyleValueStr, ADestEntity);
+      ReadSVGPenStyleWithKeyAndValue(lStyleKeyStr, lStyleValueStr, ADestEntity);
+      if ADestEntity is TvEntityWithPenAndBrush then
+        ReadSVGBrushStyleWithKeyAndValue(lStyleKeyStr, lStyleValueStr, ADestEntity as TvEntityWithPenAndBrush);
     end;
   finally
     lStrings.Free;
   end;
 end;
 
-procedure TvSVGVectorialReader.ReadSVGStyleWithKeyAndValue(AKey,
-  AValue: string; ADestEntity: TvEntityWithPenAndBrush);
+procedure TvSVGVectorialReader.ReadSVGPenStyleWithKeyAndValue(AKey,
+  AValue: string; ADestEntity: TvEntityWithPen);
 begin
   if AKey = 'stroke' then
   begin
-    if ADestEntity.Brush.Style = bsClear then ADestEntity.Brush.Style := bsSolid;
+    if ADestEntity.Pen.Style = psClear then ADestEntity.Pen.Style := psSolid;
 
     if AValue = 'none'  then ADestEntity.Pen.Style := fpcanvas.psClear
     else ADestEntity.Pen.Color := ReadSVGColor(AValue)
   end
   else if AKey = 'stroke-width' then
-    ADestEntity.Pen.Width := StrToInt(AValue)
-  else if AKey = 'fill' then
+    ADestEntity.Pen.Width := StrToInt(AValue);
+end;
+
+procedure TvSVGVectorialReader.ReadSVGBrushStyleWithKeyAndValue(AKey,
+  AValue: string; ADestEntity: TvEntityWithPenAndBrush);
+begin
+  if AKey = 'fill' then
   begin
     if AValue = 'none'  then ADestEntity.Brush.Style := fpcanvas.bsClear
     else ADestEntity.Brush.Color := ReadSVGColor(AValue)
@@ -275,7 +464,10 @@ begin
   lEntityName := ANode.NodeName;
   case lEntityName of
     'circle': ReadCircleFromNode(ANode, AData, ADoc);
+    'ellipse': ReadEllipseFromNode(ANode, AData, ADoc);
+    'line': ReadLineFromNode(ANode, AData, ADoc);
     'path': ReadPathFromNode(ANode, AData, ADoc);
+    'rect': ReadRectFromNode(ANode, AData, ADoc);
     // Layers
     'g':
     begin
@@ -310,6 +502,10 @@ begin
   cr := 0.0;
 
   lCircle := TvCircle.Create;
+  // SVG entities start without any pen drawing, but with a black brush
+  lCircle.Pen.Style := psClear;
+  lCircle.Brush.Style := bsSolid;
+  lCircle.Brush.Color := colBlack;
 
   // read the attributes
   for i := 0 to ANode.Attributes.Length - 1 do
@@ -321,8 +517,13 @@ begin
       cy := StringWithUnitToFloat(ANode.Attributes.Item[i].NodeValue)
     else if lNodeName = 'r' then
       cr := StringWithUnitToFloat(ANode.Attributes.Item[i].NodeValue)
+    else if lNodeName = 'style' then
+      ReadSVGStyle(ANode.Attributes.Item[i].NodeValue, lCircle)
     else if IsAttributeFromStyle(lNodeName) then
-      ReadSVGStyleWithKeyAndValue(lNodeName, ANode.Attributes.Item[i].NodeValue, lCircle);
+    begin
+      ReadSVGPenStyleWithKeyAndValue(lNodeName, ANode.Attributes.Item[i].NodeValue, lCircle);
+      ReadSVGBrushStyleWithKeyAndValue(lNodeName, ANode.Attributes.Item[i].NodeValue, lCircle);
+    end;
   end;
 
   ConvertSVGCoordinatesToFPVCoordinates(
@@ -331,6 +532,93 @@ begin
         AData, cr, 0, lCircle.Radius, dtmp);
 
   AData.AddEntity(lCircle);
+end;
+
+procedure TvSVGVectorialReader.ReadEllipseFromNode(ANode: TDOMNode;
+  AData: TvVectorialPage; ADoc: TvVectorialDocument);
+var
+  cx, cy, crx, cry: double;
+  lEllipse: TvEllipse;
+  i: Integer;
+  lNodeName: DOMString;
+begin
+  cx := 0.0;
+  cy := 0.0;
+  crx := 0.0;
+  cry := 0.0;
+
+  lEllipse := TvEllipse.Create;
+  // SVG entities start without any pen drawing, but with a black brush
+  lEllipse.Pen.Style := psClear;
+  lEllipse.Brush.Style := bsSolid;
+  lEllipse.Brush.Color := colBlack;
+
+  // read the attributes
+  for i := 0 to ANode.Attributes.Length - 1 do
+  begin
+    lNodeName := ANode.Attributes.Item[i].NodeName;
+    if  lNodeName = 'cx' then
+      cx := StringWithUnitToFloat(ANode.Attributes.Item[i].NodeValue)
+    else if lNodeName = 'cy' then
+      cy := StringWithUnitToFloat(ANode.Attributes.Item[i].NodeValue)
+    else if lNodeName = 'rx' then
+      crx := StringWithUnitToFloat(ANode.Attributes.Item[i].NodeValue)
+    else if lNodeName = 'ry' then
+      cry := StringWithUnitToFloat(ANode.Attributes.Item[i].NodeValue)
+    else if lNodeName = 'style' then
+      ReadSVGStyle(ANode.Attributes.Item[i].NodeValue, lEllipse)
+    else if IsAttributeFromStyle(lNodeName) then
+    begin
+      ReadSVGPenStyleWithKeyAndValue(lNodeName, ANode.Attributes.Item[i].NodeValue, lEllipse);
+      ReadSVGBrushStyleWithKeyAndValue(lNodeName, ANode.Attributes.Item[i].NodeValue, lEllipse);
+    end;
+  end;
+
+  ConvertSVGCoordinatesToFPVCoordinates(
+        AData, cx, cy, lEllipse.X, lEllipse.Y);
+  ConvertSVGCoordinatesToFPVCoordinates(
+        AData, crx, cry, lEllipse.HorzHalfAxis, lEllipse.VertHalfAxis);
+
+  AData.AddEntity(lEllipse);
+end;
+
+procedure TvSVGVectorialReader.ReadLineFromNode(ANode: TDOMNode;
+  AData: TvVectorialPage; ADoc: TvVectorialDocument);
+var
+  x1, y1, x2, y2: double;
+  i: Integer;
+  lNodeName: DOMString;
+begin
+  x1 := 0.0;
+  y1 := 0.0;
+  x2 := 0.0;
+  y2 := 0.0;
+
+  // read the attributes
+  for i := 0 to ANode.Attributes.Length - 1 do
+  begin
+    lNodeName := ANode.Attributes.Item[i].NodeName;
+    if  lNodeName = 'x1' then
+      x1 := StringWithUnitToFloat(ANode.Attributes.Item[i].NodeValue)
+    else if lNodeName = 'y1' then
+      y1 := StringWithUnitToFloat(ANode.Attributes.Item[i].NodeValue)
+    else if lNodeName = 'x2' then
+      x2 := StringWithUnitToFloat(ANode.Attributes.Item[i].NodeValue)
+    else if lNodeName = 'y2' then
+      y2 := StringWithUnitToFloat(ANode.Attributes.Item[i].NodeValue);{
+    else if lNodeName = 'style' then
+      ReadSVGStyle(ANode.Attributes.Item[i].NodeValue, lEllipse)
+    else if IsAttributeFromStyle(lNodeName) then
+    begin
+      ReadSVGPenStyleWithKeyAndValue(lNodeName, ANode.Attributes.Item[i].NodeValue, lEllipse);
+      ReadSVGBrushStyleWithKeyAndValue(lNodeName, ANode.Attributes.Item[i].NodeValue, lEllipse);
+    end;}
+  end;
+
+  AData.StartPath();
+  AData.AddMoveToPath(x1, y1);
+  AData.AddLineToPath(x2, y2);
+  AData.EndPath();
 end;
 
 procedure TvSVGVectorialReader.ReadPathFromNode(ANode: TDOMNode;
@@ -420,6 +708,55 @@ begin
   end;
 end;
 
+//          <rect width="90" height="90" stroke="green" stroke-width="3" fill="yellow" filter="url(#f1)" />
+procedure TvSVGVectorialReader.ReadRectFromNode(ANode: TDOMNode;
+  AData: TvVectorialPage; ADoc: TvVectorialDocument);
+var
+  lx, ly, cx, cy: double;
+  lRect: TvRectangle;
+  i: Integer;
+  lNodeName: DOMString;
+begin
+  lx := 0.0;
+  ly := 0.0;
+  cx := 0.0;
+  cy := 0.0;
+
+  lRect := TvRectangle.Create;
+  // SVG entities start without any pen drawing, but with a black brush
+  lRect.Pen.Style := psClear;
+  lRect.Brush.Style := bsSolid;
+  lRect.Brush.Color := colBlack;
+
+  // read the attributes
+  for i := 0 to ANode.Attributes.Length - 1 do
+  begin
+    lNodeName := ANode.Attributes.Item[i].NodeName;
+    if  lNodeName = 'x' then
+      lx := StringWithUnitToFloat(ANode.Attributes.Item[i].NodeValue)
+    else if lNodeName = 'y' then
+      ly := StringWithUnitToFloat(ANode.Attributes.Item[i].NodeValue)
+    else if lNodeName = 'width' then
+      cx := StringWithUnitToFloat(ANode.Attributes.Item[i].NodeValue)
+    else if lNodeName = 'height' then
+      cy := StringWithUnitToFloat(ANode.Attributes.Item[i].NodeValue)
+    else if lNodeName = 'style' then
+      ReadSVGStyle(ANode.Attributes.Item[i].NodeValue, lRect)
+    else if IsAttributeFromStyle(lNodeName) then
+    begin
+      ReadSVGPenStyleWithKeyAndValue(lNodeName, ANode.Attributes.Item[i].NodeValue, lRect);
+      ReadSVGBrushStyleWithKeyAndValue(lNodeName, ANode.Attributes.Item[i].NodeValue, lRect);
+    end;
+  end;
+
+  ConvertSVGCoordinatesToFPVCoordinates(
+        AData, lx, ly, lRect.X, lRect.Y);
+  ConvertSVGCoordinatesToFPVCoordinates(
+        AData, cx, cy, lRect.CX, lRect.CY);
+
+  AData.AddEntity(lRect);
+end;
+
 function TvSVGVectorialReader.StringWithUnitToFloat(AStr: string): Double;
 var
   UnitStr, ValueStr: string;
@@ -434,6 +771,11 @@ begin
   begin
     ValueStr := Copy(AStr, 1, Len-2);
     Result := StrToInt(ValueStr);
+  end
+  else if UnitStr = 'cm' then
+  begin
+    ValueStr := Copy(AStr, 1, Len-2);
+    Result := StrToInt(ValueStr) * 10;
   end
   else // If there is no unit, just use StrToFloat
   begin
