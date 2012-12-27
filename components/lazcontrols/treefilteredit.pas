@@ -1,4 +1,4 @@
-{ DividerBevel
+{ TreeFilterEdit
 
   Copyright (C) 2012 Lazarus team
 
@@ -17,7 +17,7 @@ interface
 
 uses
   Classes, SysUtils, Forms, LResources, Graphics,
-  Controls, ComCtrls, EditBtn, LCLType, FileUtil, AvgLvlTree, fgl;
+  Controls, ComCtrls, EditBtn, LCLType, FileUtil, LazUTF8, AvgLvlTree, fgl;
 
 type
 
@@ -393,12 +393,13 @@ begin
   while Node<>nil do
   begin
     // Call OnFilterItem handler.
-    Pass:=False;
     if Assigned(OnFilterItem) then
-      Pass:=OnFilterItem(TObject(Node.Data), Done);
+      Pass:=OnFilterItem(TObject(Node.Data), Done)
+    else
+      Pass:=False;
     // Filter by item's title text if needed.
     if not (Pass or Done) then
-      Pass:=(Filter='') or (Pos(Filter,lowercase(Node.Text))>0);
+      Pass:=(Filter='') or (Pos(Filter,UTF8LowerCase(Node.Text))>0);
     // Recursive call for child nodes.
     Node.Visible:=FilterTree(Node.GetFirstChild) or Pass;
     if Node.Visible then

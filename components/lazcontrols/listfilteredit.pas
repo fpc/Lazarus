@@ -1,4 +1,4 @@
-{ DividerBevel
+{ ListFilterEdit
 
   Copyright (C) 2012 Lazarus team
 
@@ -17,7 +17,7 @@ interface
 
 uses
   Classes, SysUtils, Forms, LResources, Graphics, Controls, StdCtrls,
-  LCLProc, LCLType, EditBtn, CheckLst, FileUtil, AvgLvlTree;
+  LCLProc, LCLType, EditBtn, CheckLst, FileUtil, LazUTF8, AvgLvlTree;
 
 type
 
@@ -151,12 +151,13 @@ begin
   for Origi:=0 to fOriginalData.Count-1 do begin
     s:=fOriginalData[Origi];
     // Filter with event handler if there is one.
-    Pass:=False;
     if Assigned(OnFilterItem) then
-      Pass:=OnFilterItem(fOriginalData.Objects[Origi], Done);
+      Pass:=OnFilterItem(fOriginalData.Objects[Origi], Done)
+    else
+      Pass:=False;
     // Filter by item's title text if needed.
     if not (Pass or Done) then
-      Pass:=(Filter='') or (Pos(Filter,lowercase(s))>0);
+      Pass:=(Filter='') or (Pos(Filter,UTF8LowerCase(s))>0);
     if Pass then begin
       i:=fSortedData.Count-1;
       while i>=0 do begin
