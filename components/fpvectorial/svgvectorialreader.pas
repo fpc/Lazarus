@@ -109,16 +109,29 @@ end;
 procedure TSVGPathTokenizer.AddToken(AStr: string);
 var
   lToken: TSVGToken;
+  lStr: string;
 begin
   lToken := TSVGToken.Create;
 
-  if AStr = 'm' then lToken.TokenType := sttMoveTo
-  else if AStr = 'l' then lToken.TokenType := sttLineTo
-  else if AStr = 'c' then lToken.TokenType := sttBezierTo
+  lStr := LowerCase(AStr);
+  if lStr = '' then Exit;
+
+  if lStr[1] = 'm' then lToken.TokenType := sttMoveTo
+  else if lStr[1] = 'l' then lToken.TokenType := sttLineTo
+  else if lStr[1] = 'c' then lToken.TokenType := sttBezierTo
   else
   begin
     lToken.TokenType := sttFloatValue;
     lToken.Value := StrToFloat(AStr, FPointSeparator);
+  end;
+
+  // Sometimes we get a command glued to a value, for example M150
+  if (lToken.TokenType <> sttFloatValue) and (Length(lStr) > 1) then
+  begin
+    Tokens.Add(lToken);
+    lToken.TokenType := sttFloatValue;
+    lStr := Copy(AStr, 2, Length(AStr));
+    lToken.Value := StrToFloat(lStr, FPointSeparator);
   end;
 
   Tokens.Add(lToken);
@@ -526,9 +539,9 @@ begin
     end;
   end;
 
-  ConvertSVGCoordinatesToFPVCoordinates(
+  ConvertSVGDeltaToFPVDelta(
         AData, cx, cy, lCircle.X, lCircle.Y);
-  ConvertSVGCoordinatesToFPVCoordinates(
+  ConvertSVGDeltaToFPVDelta(
         AData, cr, 0, lCircle.Radius, dtmp);
 
   AData.AddEntity(lCircle);
@@ -574,9 +587,9 @@ begin
     end;
   end;
 
-  ConvertSVGCoordinatesToFPVCoordinates(
+  ConvertSVGDeltaToFPVDelta(
         AData, cx, cy, lEllipse.X, lEllipse.Y);
-  ConvertSVGCoordinatesToFPVCoordinates(
+  ConvertSVGDeltaToFPVDelta(
         AData, crx, cry, lEllipse.HorzHalfAxis, lEllipse.VertHalfAxis);
 
   AData.AddEntity(lEllipse);
@@ -586,6 +599,7 @@ procedure TvSVGVectorialReader.ReadLineFromNode(ANode: TDOMNode;
   AData: TvVectorialPage; ADoc: TvVectorialDocument);
 var
   x1, y1, x2, y2: double;
+  vx1, vy1, vx2, vy2: double;
   i: Integer;
   lNodeName: DOMString;
 begin
@@ -615,9 +629,14 @@ begin
     end;}
   end;
 
+  ConvertSVGCoordinatesToFPVCoordinates(
+        AData, x1, y1, vx1, vy1);
+  ConvertSVGCoordinatesToFPVCoordinates(
+        AData, x2, y2, vx2, vy2);
+
   AData.StartPath();
-  AData.AddMoveToPath(x1, y1);
-  AData.AddLineToPath(x2, y2);
+  AData.AddMoveToPath(vx1, vy1);
+  AData.AddLineToPath(vx2, vy2);
   AData.EndPath();
 end;
 
@@ -626,6 +645,7 @@ procedure TvSVGVectorialReader.ReadPathFromNode(ANode: TDOMNode;
 var
   lNodeName, lStyleStr, lDStr: WideString;
   i: Integer;
+  lTmpPen: TvEntityWithPen;
 begin
   for i := 0 to ANode.Attributes.Length - 1 do
   begin
@@ -638,6 +658,14 @@ begin
 
   AData.StartPath();
   ReadPathFromString(UTF8Encode(lDStr), AData, ADoc);
+  // Add the pen
+  lTmpPen := TvEntityWithPen.Create;
+  ReadSVGStyle(lStyleStr, lTmpPen);
+  AData.SetPenColor(lTmpPen.Pen.Color);
+  AData.SetPenStyle(lTmpPen.Pen.Style);
+  AData.SetPenWidth(lTmpPen.Pen.Width);
+  lTmpPen.Free;
+  //
   AData.EndPath();
 end;
 
@@ -749,9 +777,9 @@ begin
     end;
   end;
 
-  ConvertSVGCoordinatesToFPVCoordinates(
+  ConvertSVGDeltaToFPVDelta(
         AData, lx, ly, lRect.X, lRect.Y);
-  ConvertSVGCoordinatesToFPVCoordinates(
+  ConvertSVGDeltaToFPVDelta(
         AData, cx, cy, lRect.CX, lRect.CY);
 
   AData.AddEntity(lRect);
