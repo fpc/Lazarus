@@ -227,15 +227,15 @@ end;
 function TCustomPage.IsControlVisible: Boolean;
 begin
   Result := inherited IsControlVisible;
-  if Parent is TCustomTabControl then
-    Result := Result and (PageIndex = TCustomTabControl(Parent).PageIndex);
+  if Result and (Parent is TCustomTabControl) then
+    Result := PageIndex = TCustomTabControl(Parent).PageIndex;
 end;
 
 function TCustomPage.HandleObjectShouldBeVisible: boolean;
 begin
   Result := inherited HandleObjectShouldBeVisible;
-  if Parent is TCustomTabControl then
-    Result := Result and (PageIndex = TCustomTabControl(Parent).PageIndex);
+  if Result and (Parent is TCustomTabControl) then
+    Result := PageIndex = TCustomTabControl(Parent).PageIndex;
 end;
 
 function TCustomPage.VisibleIndex: integer;
@@ -247,7 +247,7 @@ begin
 (* Removed PageList dependency.
   Added missing result value.
 *)
-  if (Parent <> nil) and (Parent is TCustomTabControl) then
+  if Parent is TCustomTabControl then
   begin
     Result := 0;
     //List := TCustomTabControl(Parent).PageList;
