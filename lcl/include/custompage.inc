@@ -152,6 +152,15 @@ begin
     ' Message.Result=',Message.Result);}
 end;
 
+procedure TCustomPage.CMVisibleChanged(var Message: TLMessage);
+begin
+  inherited CMVisibleChanged(Message);
+  if Visible then
+    DoShow
+  else
+    DoHide;
+end;
+
 {------------------------------------------------------------------------------
   function TCustomPage.PageIndex: integer;
 

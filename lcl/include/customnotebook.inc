@@ -1043,14 +1043,11 @@ begin
       //DebugLn(['TCustomTabControl.ShowCurrentPage CurPage.AutoSizeDelayed=',CurPage.AutoSizeDelayed,' ',dbgs(CurPage.ComponentState),' ',CurPage.HandleAllocated]);
     end;
     FPageIndexOnLastShow := FPageIndex;
-    CurPage.DoShow;
   end;
   if (FPageIndexOnLastChange >= 0) and (FPageIndexOnLastChange < PageCount) and
      (FPageIndexOnLastChange <> FPageIndex) then
   begin
-    // Page[FPageIndexOnLastChange].Visible := False; <-- this will be better,
-    // but this does not work on gtk (tab hides too)
-    Page[FPageIndexOnLastChange].DoHide;
+    Page[FPageIndexOnLastChange].Visible := False;
   end;
 end;
 
