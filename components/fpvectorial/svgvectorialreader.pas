@@ -46,7 +46,7 @@ type
     FPointSeparator, FCommaSeparator: TFormatSettings;
     FSVGPathTokenizer: TSVGPathTokenizer;
     function ReadSVGColor(AValue: string): TFPColor;
-    procedure ReadSVGStyle(AValue: string; ADestEntity: TvEntityWithPen);
+    procedure ReadSVGStyle(AValue: string; ADestEntity: TvEntityWithPen; AUseFillAsPen: Boolean = False);
     procedure ReadSVGPenStyleWithKeyAndValue(AKey, AValue: string; ADestEntity: TvEntityWithPen);
     procedure ReadSVGBrushStyleWithKeyAndValue(AKey, AValue: string; ADestEntity: TvEntityWithPenAndBrush);
     function IsAttributeFromStyle(AStr: string): Boolean;
@@ -57,7 +57,10 @@ type
     procedure ReadLineFromNode(ANode: TDOMNode; AData: TvVectorialPage; ADoc: TvVectorialDocument);
     procedure ReadPathFromNode(ANode: TDOMNode; AData: TvVectorialPage; ADoc: TvVectorialDocument);
     procedure ReadPathFromString(AStr: string; AData: TvVectorialPage; ADoc: TvVectorialDocument);
+    procedure ReadPointsFromString(AStr: string; AData: TvVectorialPage; ADoc: TvVectorialDocument; AClosePath: Boolean);
+    procedure ReadPolyFromNode(ANode: TDOMNode; AData: TvVectorialPage; ADoc: TvVectorialDocument);
     procedure ReadRectFromNode(ANode: TDOMNode; AData: TvVectorialPage; ADoc: TvVectorialDocument);
+    procedure ReadTextFromNode(ANode: TDOMNode; AData: TvVectorialPage; ADoc: TvVectorialDocument);
     function  StringWithUnitToFloat(AStr: string): Double;
     procedure ConvertSVGCoordinatesToFPVCoordinates(
       const AData: TvVectorialPage;
@@ -218,9 +221,51 @@ end;
 { TvSVGVectorialReader }
 
 function TvSVGVectorialReader.ReadSVGColor(AValue: string): TFPColor;
+var
+  lValue, lStr: string;
+  lStrings: TStringList;
+  i: Integer;
 begin
   Result := colBlack;
-  case AValue of
+  lValue := Trim(LowerCase(AValue));
+
+  // Support for rgb(255,255,0)
+  if (Length(lValue) > 3) and (Copy(lValue, 0, 3) = 'rgb') then
+  begin
+    lStrings := TStringList.Create;
+    try
+      lStr := Copy(lValue, 5, Length(lValue)-5);
+      lStrings.Delimiter := ',';
+      lStrings.DelimitedText := lStr;
+      if lStrings.Count = 3 then
+      begin
+        Result.Red := StrToInt(lStrings.Strings[0]);
+        Result.Blue := StrToInt(lStrings.Strings[1]);
+        Result.Green := StrToInt(lStrings.Strings[2]);
+      end
+      else
+        raise Exception.Create(Format('[TvSVGVectorialReader.ReadSVGColor] An unexpected number of channels was found: %d', [lStrings.Count]));
+    finally
+      lStrings.Free;
+    end;
+    Exit;
+  end;
+
+  // Support for RGB hex
+  // ex: #0000ff
+  if (Length(lValue) > 1) and (lValue[1] = '#') then
+  begin
+    lStr := Copy(lValue, 2, 2);
+    Result.Red := StrToInt('$'+lStr);
+    lStr := Copy(lValue, 4, 2);
+    Result.Blue := StrToInt('$'+lStr);
+    lStr := Copy(lValue, 6, 2);
+    Result.Green := StrToInt('$'+lStr);
+    Exit;
+  end;
+
+  // Support for named colors
+  case lValue of
   'black':   Result := colBlack;
   'navy':    Result.Blue := $8080;
   'darkblue':Result.Blue := $8B8B;
@@ -409,7 +454,7 @@ end;
 
 // style="fill:none;stroke:black;stroke-width:3"
 procedure TvSVGVectorialReader.ReadSVGStyle(AValue: string;
-  ADestEntity: TvEntityWithPen);
+  ADestEntity: TvEntityWithPen; AUseFillAsPen: Boolean = False);
 var
   lStr, lStyleKeyStr, lStyleValueStr: String;
   lStrings: TStringList;
@@ -421,7 +466,7 @@ begin
   lStrings := TStringList.Create;
   try
     lStrings.Delimiter := ';';
-    lStrings.DelimitedText := AValue;
+    lStrings.DelimitedText := LowerCase(AValue);
     for i := 0 to lStrings.Count-1 do
     begin
       lStr := lStrings.Strings[i];
@@ -429,7 +474,9 @@ begin
       lStyleKeyStr := Copy(lStr, 0, lPosEqual-1);
       lStyleValueStr := Copy(lStr, lPosEqual+1, Length(lStr));
       ReadSVGPenStyleWithKeyAndValue(lStyleKeyStr, lStyleValueStr, ADestEntity);
-      if ADestEntity is TvEntityWithPenAndBrush then
+      if AUseFillAsPen and (lStyleKeyStr = 'fill') then
+        ReadSVGPenStyleWithKeyAndValue('stroke', lStyleValueStr, ADestEntity)
+      else if ADestEntity is TvEntityWithPenAndBrush then
         ReadSVGBrushStyleWithKeyAndValue(lStyleKeyStr, lStyleValueStr, ADestEntity as TvEntityWithPenAndBrush);
     end;
   finally
@@ -448,7 +495,7 @@ begin
     else ADestEntity.Pen.Color := ReadSVGColor(AValue)
   end
   else if AKey = 'stroke-width' then
-    ADestEntity.Pen.Width := StrToInt(AValue);
+    ADestEntity.Pen.Width := Round(StringWithUnitToFloat(AValue));
 end;
 
 procedure TvSVGVectorialReader.ReadSVGBrushStyleWithKeyAndValue(AKey,
@@ -456,6 +503,8 @@ procedure TvSVGVectorialReader.ReadSVGBrushStyleWithKeyAndValue(AKey,
 begin
   if AKey = 'fill' then
   begin
+    if ADestEntity.Brush.Style = bsClear then ADestEntity.Brush.Style := bsSolid;
+
     if AValue = 'none'  then ADestEntity.Brush.Style := fpcanvas.bsClear
     else ADestEntity.Brush.Color := ReadSVGColor(AValue)
   end;
@@ -474,13 +523,15 @@ var
   lCurNode, lLayerNameNode: TDOMNode;
   lLayer: TvLayer;
 begin
-  lEntityName := ANode.NodeName;
+  lEntityName := LowerCase(ANode.NodeName);
   case lEntityName of
     'circle': ReadCircleFromNode(ANode, AData, ADoc);
     'ellipse': ReadEllipseFromNode(ANode, AData, ADoc);
     'line': ReadLineFromNode(ANode, AData, ADoc);
     'path': ReadPathFromNode(ANode, AData, ADoc);
+    'polygon', 'polyline': ReadPolyFromNode(ANode, AData, ADoc);
     'rect': ReadRectFromNode(ANode, AData, ADoc);
+    'text': ReadTextFromNode(ANode, AData, ADoc);
     // Layers
     'g':
     begin
@@ -645,7 +696,7 @@ procedure TvSVGVectorialReader.ReadPathFromNode(ANode: TDOMNode;
 var
   lNodeName, lStyleStr, lDStr: WideString;
   i: Integer;
-  lTmpPen: TvEntityWithPen;
+  lPath: TPath;
 begin
   for i := 0 to ANode.Attributes.Length - 1 do
   begin
@@ -658,15 +709,9 @@ begin
 
   AData.StartPath();
   ReadPathFromString(UTF8Encode(lDStr), AData, ADoc);
+  lPath := AData.EndPath();
   // Add the pen
-  lTmpPen := TvEntityWithPen.Create;
-  ReadSVGStyle(lStyleStr, lTmpPen);
-  AData.SetPenColor(lTmpPen.Pen.Color);
-  AData.SetPenStyle(lTmpPen.Pen.Style);
-  AData.SetPenWidth(lTmpPen.Pen.Width);
-  lTmpPen.Free;
-  //
-  AData.EndPath();
+  ReadSVGStyle(lStyleStr, lPath);
 end;
 
 procedure TvSVGVectorialReader.ReadPathFromString(AStr: string;
@@ -736,6 +781,84 @@ begin
   end;
 end;
 
+procedure TvSVGVectorialReader.ReadPointsFromString(AStr: string;
+  AData: TvVectorialPage; ADoc: TvVectorialDocument; AClosePath: Boolean);
+var
+  i: Integer;
+  X, Y: Double;
+  FirstPtX, FirstPtY, CurX, CurY: Double;
+begin
+  FSVGPathTokenizer.Tokens.Clear;
+  FSVGPathTokenizer.TokenizePathString(AStr);
+  CurX := 0;
+  CurY := 0;
+
+  if FSVGPathTokenizer.Tokens.Count <= 2 then
+    raise Exception.Create('[TvSVGVectorialReader.ReadPointsFromString] There are too few points in the element');
+
+  // The first point
+  CurX := FSVGPathTokenizer.Tokens.Items[0].Value;
+  CurY := FSVGPathTokenizer.Tokens.Items[1].Value;
+  ConvertSVGCoordinatesToFPVCoordinates(AData, CurX, CurY, CurX, CurY);
+  FirstPtX := CurX;
+  FirstPtY := CurY;
+  AData.AddMoveToPath(CurX, CurY);
+
+  // Now all other points
+  i := 2;
+  while i < FSVGPathTokenizer.Tokens.Count do
+  begin
+    X := FSVGPathTokenizer.Tokens.Items[i].Value;
+    Y := FSVGPathTokenizer.Tokens.Items[i].Value;
+    ConvertSVGDeltaToFPVDelta(AData, X, Y, CurX, CurY);
+    AData.AddLineToPath(CurX, CurY);
+
+    Inc(i, 2);
+  end;
+
+  // and if we want, close the path
+  if AClosePath then
+    AData.AddLineToPath(FirstPtX, FirstPtY);
+end;
+
+// polygon and polyline are very similar
+procedure TvSVGVectorialReader.ReadPolyFromNode(ANode: TDOMNode;
+  AData: TvVectorialPage; ADoc: TvVectorialDocument);
+var
+  lPointsStr: string = '';
+  i: Integer;
+  lNodeName: DOMString;
+  lPath: TPath;
+  lIsPolygon: Boolean = False;
+begin
+  lIsPolygon := LowerCase(ANode.NodeName) = 'polygon';
+
+  // first get the points
+  for i := 0 to ANode.Attributes.Length - 1 do
+  begin
+    lNodeName := ANode.Attributes.Item[i].NodeName;
+    if  lNodeName = 'points' then
+      lPointsStr := ANode.Attributes.Item[i].NodeValue;
+  end;
+
+  AData.StartPath();
+  ReadPointsFromString(lPointsStr, AData, ADoc, lIsPolygon);
+  lPath := AData.EndPath();
+
+  // now read the other attributes
+  for i := 0 to ANode.Attributes.Length - 1 do
+  begin
+    lNodeName := ANode.Attributes.Item[i].NodeName;
+    if lNodeName = 'style' then
+      ReadSVGStyle(ANode.Attributes.Item[i].NodeValue, lPath)
+    else if IsAttributeFromStyle(lNodeName) then
+    begin
+      ReadSVGPenStyleWithKeyAndValue(lNodeName, ANode.Attributes.Item[i].NodeValue, lPath);
+      ReadSVGBrushStyleWithKeyAndValue(lNodeName, ANode.Attributes.Item[i].NodeValue, lPath);
+    end;
+  end;
+end;
+
 //          <rect width="90" height="90" stroke="green" stroke-width="3" fill="yellow" filter="url(#f1)" />
 procedure TvSVGVectorialReader.ReadRectFromNode(ANode: TDOMNode;
   AData: TvVectorialPage; ADoc: TvVectorialDocument);
@@ -785,6 +908,69 @@ begin
   AData.AddEntity(lRect);
 end;
 
+procedure TvSVGVectorialReader.ReadTextFromNode(ANode: TDOMNode;
+  AData: TvVectorialPage; ADoc: TvVectorialDocument);
+var
+  lTextStr: string = '';
+  lx, ly: double;
+  lText: TvText;
+  i: Integer;
+  lNodeName: DOMString;
+  lCurNode: TDOMNode;
+begin
+  lx := 0.0;
+  ly := 0.0;
+
+  lText := TvText.Create;
+
+  // read the attributes
+  for i := 0 to ANode.Attributes.Length - 1 do
+  begin
+    lNodeName := ANode.Attributes.Item[i].NodeName;
+    if  lNodeName = 'x' then
+      lx := StringWithUnitToFloat(ANode.Attributes.Item[i].NodeValue)
+    else if lNodeName = 'y' then
+      ly := StringWithUnitToFloat(ANode.Attributes.Item[i].NodeValue)
+    else if lNodeName = 'style' then
+      ReadSVGStyle(ANode.Attributes.Item[i].NodeValue, lText, True)
+    // SVG text uses "fill" to indicate the pen color of the text, very unintuitive as
+    // "fill" is usually for brush in other elements
+    else if  lNodeName = 'fill' then
+      ReadSVGPenStyleWithKeyAndValue('stroke', ANode.Attributes.Item[i].NodeValue, lText);
+  end;
+
+  // The text contents are inside as a child text, not as a attribute
+  // ex:   <text x="0" y="15" fill="red" transform="rotate(30 20,40)">I love SVG</text>
+  if Anode.FirstChild <> nil then
+    lTextStr := Anode.FirstChild.NodeValue;
+  // Add the first line
+  lText.Value.Add(lTextStr);
+
+  // Set the coordinates
+  ConvertSVGDeltaToFPVDelta(
+        AData, lx, ly, lText.X, lText.Y);
+
+  // Now add other lines, which appear as <tspan ...>another line</tspan>
+  // Example:
+  // <text x="10" y="20" style="fill:red;">Several lines:
+  //   <tspan x="10" y="45">First line</tspan>
+  //   <tspan x="10" y="70">Second line</tspan>
+  // </text>
+  // These other lines can be positioned, so they need to appear as independent TvText elements
+{  lCurNode := Anode.FirstChild;
+  while lCurNode <> nil do
+  begin
+    lNodeName := LowerCase(lCurNode.NodeName);
+    if lNodeName <> 'tspan' then Continue;
+    ReadTextFromNode(lCurNode, AData, ADoc);
+
+    lCurNode := lCurNode.NextSibling;
+  end;}
+
+  // Finalization
+  AData.AddEntity(lText);
+end;
+
 function TvSVGVectorialReader.StringWithUnitToFloat(AStr: string): Double;
 var
   UnitStr, ValueStr: string;
@@ -804,6 +990,11 @@ begin
   begin
     ValueStr := Copy(AStr, 1, Len-2);
     Result := StrToInt(ValueStr) * 10;
+  end
+  else if UnitStr = 'px' then
+  begin
+    ValueStr := Copy(AStr, 1, Len-2);
+    Result := StrToInt(ValueStr);
   end
   else // If there is no unit, just use StrToFloat
   begin

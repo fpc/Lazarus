@@ -1499,10 +1499,12 @@ var
   //
   LowerDim: T3DPoint;
 begin
+  inherited Render(ADest, ADestX, ADestY, AMulX, AMulY);
+
   ADest.Font.Size := Round(AmulX * Font.Size);
-  ADest.Pen.Style := psSolid;
+{  ADest.Pen.Style := psSolid;
   ADest.Pen.FPColor := colBlack;
-  ADest.Brush.Style := bsClear;
+  ADest.Brush.Style := bsClear;}
   {$ifdef USE_LCL_CANVAS}
   ALCLDest.Font.Orientation := Round(Font.Orientation * 16);
   {$endif}
