@@ -25,10 +25,13 @@ type
     sttClosePath,
     // lines
     sttLineTo, sttRelativeLineTo,
+    sttHorzLineTo, sttRelativeHorzLineTo, sttVertLineTo, sttRelativeVertLineTo,
     // cubic beziers
     sttBezierTo, sttRelativeBezierTo,
     // quadratic beziers
     sttQuadraticBezierTo, sttRelativeQuadraticBezierTo,
+    // Elliptic curves
+    sttEllipticArcTo, sttRelativeEllipticArcTo,
     // numbers
     sttFloatValue);
 
@@ -140,12 +143,19 @@ begin
   // Lines
   else if lStr[1] = 'L' then lToken.TokenType := sttLineTo
   else if lStr[1] = 'l' then lToken.TokenType := sttRelativeLineTo
+  else if lStr[1] = 'H' then lToken.TokenType := sttHorzLineTo
+  else if lStr[1] = 'h' then lToken.TokenType := sttRelativeHorzLineTo
+  else if lStr[1] = 'V' then lToken.TokenType := sttVertLineTo
+  else if lStr[1] = 'v' then lToken.TokenType := sttRelativeVertLineTo
   // cubic Bézier curve commands
   else if lStr[1] = 'C' then lToken.TokenType := sttBezierTo
   else if lStr[1] = 'c' then lToken.TokenType := sttRelativeBezierTo
   // quadratic beziers
   else if lStr[1] = 'Q' then lToken.TokenType := sttQuadraticBezierTo
   else if lStr[1] = 'q' then lToken.TokenType := sttRelativeQuadraticBezierTo
+  // Elliptic curves
+  else if lStr[1] = 'A' then lToken.TokenType := sttEllipticArcTo
+  else if lStr[1] = 'a' then lToken.TokenType := sttRelativeEllipticArcTo
   else
   begin
     lToken.TokenType := sttFloatValue;
@@ -936,14 +946,25 @@ begin
     // --------------
     // Lines
     // --------------
-    else if lCurTokenType in [sttLineTo, sttRelativeLineTo] then
+    else if lCurTokenType in [sttLineTo, sttRelativeLineTo, sttHorzLineTo,
+      sttRelativeHorzLineTo, sttVertLineTo, sttRelativeVertLineTo] then
     begin
       X := FSVGPathTokenizer.Tokens.Items[i+1].Value;
-      Y := FSVGPathTokenizer.Tokens.Items[i+2].Value;
+      if not (lCurTokenType in [sttHorzLineTo, sttRelativeHorzLineTo, sttVertLineTo, sttRelativeVertLineTo]) then
+        Y := FSVGPathTokenizer.Tokens.Items[i+2].Value;
       ConvertSVGDeltaToFPVDelta(AData, X, Y, X, Y);
 
+      // horizontal and vertical line corrections
+      if lCurTokenType in [sttHorzLineTo, sttRelativeHorzLineTo] then
+        Y := 0
+      else if lCurTokenType in [sttVertLineTo, sttRelativeVertLineTo] then
+      begin
+        Y := X;
+        X := 0;
+      end;
+
       // "l" LineTo uses relative coordenates in SVG
-      if lCurTokenType = sttRelativeLineTo then
+      if lCurTokenType in [sttRelativeLineTo, sttRelativeHorzLineTo, sttRelativeVertLineTo] then
       begin
         CurX := CurX + X;
         CurY := CurY + Y;
@@ -955,7 +976,9 @@ begin
       end;
       AData.AddLineToPath(CurX, CurY);
 
-      Inc(i, 3);
+      if not (lCurTokenType in [sttHorzLineTo, sttRelativeHorzLineTo, sttVertLineTo, sttRelativeVertLineTo]) then
+        Inc(i, 3)
+      else Inc(i, 2);
     end
     // --------------
     // Cubic Bezier
@@ -1015,6 +1038,34 @@ begin
       end;
 
       Inc(i, 5);
+    end
+    // --------------
+    // Elliptical arcs
+    // --------------
+    else if lCurTokenType in [sttEllipticArcTo, sttRelativeEllipticArcTo] then
+    begin
+      {X2 := FSVGPathTokenizer.Tokens.Items[i+1].Value;
+      Y2 := FSVGPathTokenizer.Tokens.Items[i+2].Value;
+      X := FSVGPathTokenizer.Tokens.Items[i+3].Value;
+      Y := FSVGPathTokenizer.Tokens.Items[i+4].Value;
+
+      ConvertSVGDeltaToFPVDelta(AData, X2, Y2, X2, Y2);
+      ConvertSVGDeltaToFPVDelta(AData, X, Y, X, Y);
+
+      if lCurTokenType = sttRelativeQuadraticBezierTo then
+      begin
+        AData.AddBezierToPath(X2 + CurX, Y2 + CurY, X2 + CurX, Y2 + CurY, X + CurX, Y + CurY);
+        CurX := CurX + X;
+        CurY := CurY + Y;
+      end
+      else
+      begin
+        AData.AddBezierToPath(X2, Y2, X2, Y2, X, Y);
+        CurX := X;
+        CurY := Y;
+      end; }
+
+      Inc(i, 8);
     end
     else
     begin

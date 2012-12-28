@@ -1806,7 +1806,7 @@ var
 begin
   //
   // Draws this shape:
-  // vertical     horizontal
+  // horizontal     vertical
   // ___
   // | |     or   ---| X cm
   //   |           --|
@@ -1838,7 +1838,8 @@ begin
     Points[0].Y := CoordToCanvasY(DimensionLeft.Y);
     LowerDim.X := DimensionRight.X-DimensionLeft.X;
     ADest.Font.Size := 10;
-    ADest.TextOut(Points[0].X, Points[0].Y, Format('%.1f', [LowerDim.X]));
+    ADest.Font.Orientation := 0;
+    ADest.TextOut(Points[0].X, Points[0].Y-Round(ADest.Font.Size*1.5), Format('%.1f', [LowerDim.X]));
   end
   else
   begin
@@ -1872,7 +1873,9 @@ begin
     LowerDim.Y := DimensionRight.Y-DimensionLeft.Y;
     if LowerDim.Y < 0 then LowerDim.Y := -1 * LowerDim.Y;
     ADest.Font.Size := 10;
-    ADest.TextOut(Points[0].X, Points[0].Y, Format('%.1f', [LowerDim.Y]));
+    ADest.Font.Orientation := 900;
+    ADest.TextOut(Points[0].X-Round(ADest.Font.Size*1.5), Points[0].Y, Format('%.1f', [LowerDim.Y]));
+    ADest.Font.Orientation := 0;
   end;
   SetLength(Points, 0);
 
