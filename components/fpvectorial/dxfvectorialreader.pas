@@ -1567,6 +1567,7 @@ begin
   Result.X := PosX;
   Result.Y := PosY;
   Result.Font.Size := Round(FontSize);
+  Result.Font.Color := colWhite;
   if not AOnlyCreate then AData.AddEntity(Result);
 end;
 
@@ -1804,6 +1805,7 @@ begin
 
   //
   Result := AData.AddText(PosX, PosY, 0, '', Round(FontSize), Str, AOnlyCreate);
+  Result.Font.Color := colWhite;
 end;
 
 function TvDXFVectorialReader.ReadENTITIES_LEADER(ATokens: TDXFTokens;
@@ -2020,6 +2022,7 @@ begin
   Tokenizer.ReadFromStrings(AStrings);
 
   lPage := AData.AddPage();
+  lPage.BackgroundColor := colBlack;
 
   for i := 0 to Tokenizer.Tokens.Count - 1 do
   begin

@@ -212,6 +212,7 @@ type
   public
     X, Y, Z: Double;
     Name: string;
+    Page: TvVectorialPage;
     constructor Create; virtual;
     procedure Clear; virtual;
     // in CalculateBoundingBox always remember to treat correctly the case of ADest=nil!!!
@@ -654,6 +655,9 @@ type
     Width, Height: Double; // in millimeters
     // Document size for other documents
     MinX, MinY, MinZ, MaxX, MaxY, MaxZ: Double;
+    //
+    BackgroundColor: TFPColor;
+    //
     Owner: TvVectorialDocument;
     { Base methods }
     constructor Create(AOwner: TvVectorialDocument); virtual;
@@ -706,6 +710,10 @@ type
     function AddRadialDimension(AIsDiameter: Boolean; ACenter, ADimLeft, ADimRight: T3DPoint; AOnlyCreate: Boolean = False): TvRadialDimension;
     //
     function AddPoint(AX, AY, AZ: Double): TvPoint;
+    { Drawing methods }
+    procedure DrawBackground(ADest: TFPCustomCanvas);
+    function GetInvertedBackgroundColor: TFPColor;
+    function GetContranstingColor: TFPColor;
     { Debug methods }
     procedure GenerateDebugTree(ADestRoutine: TvDebugAddItemProc; APageItem: Pointer);
     //
@@ -1628,7 +1636,7 @@ begin
     BoundsLeft, BoundsTop, BoundsRight, BoundsBottom,
     IntStartAngle, IntAngleLength
     );
-  ADest.Pen.FPColor := colBlack;
+  ADest.Pen.FPColor := Page.GetContranstingColor();
   // Debug info
 //      {$define FPVECTORIALDEBUG}
 //      {$ifdef FPVECTORIALDEBUG}
@@ -1804,6 +1812,7 @@ var
   ALCLDest: TCanvas absolute ADest;
   {$endif}
 begin
+  ADest.Pen.FPColor := Page.GetContranstingColor();
   //
   // Draws this shape:
   // horizontal     vertical
@@ -1820,7 +1829,7 @@ begin
   SetLength(Points, 3);
   if DimensionRight.Y = DimensionLeft.Y then
   begin
-    ADest.Brush.FPColor := colBlack;
+    ADest.Brush.FPColor := Page.GetContranstingColor();
     ADest.Brush.Style := bsSolid;
     // Left arrow
     Points[0] := Point(CoordToCanvasX(DimensionLeft.X), CoordToCanvasY(DimensionLeft.Y));
@@ -1839,11 +1848,12 @@ begin
     LowerDim.X := DimensionRight.X-DimensionLeft.X;
     ADest.Font.Size := 10;
     ADest.Font.Orientation := 0;
+    ADest.Font.FPColor := Page.GetContranstingColor();
     ADest.TextOut(Points[0].X, Points[0].Y-Round(ADest.Font.Size*1.5), Format('%.1f', [LowerDim.X]));
   end
   else
   begin
-    ADest.Brush.FPColor := colBlack;
+    ADest.Brush.FPColor := Page.GetContranstingColor();
     ADest.Brush.Style := bsSolid;
     // There is no upper/lower preference for DimensionLeft/Right, so we need to check
     if DimensionLeft.Y > DimensionRight.Y then
@@ -1874,6 +1884,7 @@ begin
     if LowerDim.Y < 0 then LowerDim.Y := -1 * LowerDim.Y;
     ADest.Font.Size := 10;
     ADest.Font.Orientation := 900;
+    ADest.Font.FPColor := Page.GetContranstingColor();
     ADest.TextOut(Points[0].X-Round(ADest.Font.Size*1.5), Points[0].Y, Format('%.1f', [LowerDim.Y]));
     ADest.Font.Orientation := 0;
   end;
@@ -1913,6 +1924,8 @@ var
   ALCLDest: TCanvas absolute ADest;
   {$endif}
 begin
+  ADest.Pen.FPColor := Page.GetContranstingColor();
+
   // The size of the radius of the circle
   lRadius := sqrt(sqr(Center.X - DimensionLeft.X) + sqr(Center.Y - DimensionLeft.Y));
   // The angle to the first dimension
@@ -1920,7 +1933,7 @@ begin
 
   // Get an arrow in the right part of the circle
   SetLength(Points, 3);
-  ADest.Brush.FPColor := colBlack;
+  ADest.Brush.FPColor := Page.GetContranstingColor();
   ADest.Brush.Style := bsSolid;
   Points[0] := Point(CoordToCanvasX(Center.X + lRadius),     CoordToCanvasY(Center.Y));
   Points[1] := Point(CoordToCanvasX(Center.X + lRadius*0.8), CoordToCanvasY(Center.Y - lRadius*0.1));
@@ -1944,6 +1957,7 @@ begin
     Points[0].X := CoordToCanvasX(Center.X);
     Points[0].Y := CoordToCanvasY(Center.Y);
     ADest.Font.Size := 10;
+    ADest.Font.FPColor := Page.GetContranstingColor();
     ADest.TextOut(Points[0].X, Points[0].Y, Format('%.1f', [lRadius]));
   end
   else
@@ -1972,6 +1986,7 @@ begin
     Points[0].X := CoordToCanvasX(Center.X);
     Points[0].Y := CoordToCanvasY(Center.Y);
     ADest.Font.Size := 10;
+    ADest.Font.FPColor := Page.GetContranstingColor();
     ADest.TextOut(Points[0].X, Points[0].Y, Format('%.1f', [lRadius * 2]));
   end;
 
@@ -2719,6 +2734,7 @@ begin
   FEntities := TFPList.Create;
   FTmpPath := TPath.Create;
   Owner := AOwner;
+  BackgroundColor := colWhite;
 end;
 
 destructor TvVectorialPage.Destroy;
@@ -2844,6 +2860,8 @@ end;
 }
 function TvVectorialPage.AddEntity(AEntity: TvEntity): Integer;
 begin
+  AEntity.Page := Self;
+
   if FCurrentLayer = nil then
   begin
     Result := FEntities.Count;
@@ -3218,6 +3236,30 @@ begin
   lPoint.Z := AZ;
   AddEntity(lPoint);
   Result := lPoint;
+end;
+
+procedure TvVectorialPage.DrawBackground(ADest: TFPCustomCanvas);
+begin
+  ADest.Pen.Style := psClear;
+  ADest.Brush.Style := bsSolid;
+  ADest.Brush.FPColor := BackgroundColor;
+  ADest.FillRect(0, 0, ADest.Width, ADest.Height);
+  ADest.Pen.Style := psSolid;
+end;
+
+function TvVectorialPage.GetInvertedBackgroundColor: TFPColor;
+begin
+  Result.Red := $FFFF-BackgroundColor.Red;
+  Result.Green := $FFFF-BackgroundColor.Green;
+  Result.Blue := $FFFF-BackgroundColor.Blue;
+  Result.Alpha := BackgroundColor.Alpha;
+end;
+
+function TvVectorialPage.GetContranstingColor: TFPColor;
+begin
+  if (BackgroundColor.Red <= $1000) and (BackgroundColor.Green <= $1000) and (BackgroundColor.Blue <= $1000) then
+    Result := colWhite
+  else Result := colBlack;
 end;
 
 procedure TvVectorialPage.GenerateDebugTree(ADestRoutine: TvDebugAddItemProc;

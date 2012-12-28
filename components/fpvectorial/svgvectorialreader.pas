@@ -64,6 +64,7 @@ type
     procedure ReadSVGStyle(AValue: string; ADestEntity: TvEntityWithPen; AUseFillAsPen: Boolean = False);
     procedure ReadSVGPenStyleWithKeyAndValue(AKey, AValue: string; ADestEntity: TvEntityWithPen);
     procedure ReadSVGBrushStyleWithKeyAndValue(AKey, AValue: string; ADestEntity: TvEntityWithPenAndBrush);
+    procedure ReadSVGFontStyleWithKeyAndValue(AKey, AValue: string; ADestEntity: TvText);
     function IsAttributeFromStyle(AStr: string): Boolean;
     //
     procedure ReadEntityFromNode(ANode: TDOMNode; AData: TvVectorialPage; ADoc: TvVectorialDocument);
@@ -644,6 +645,8 @@ begin
       ReadSVGPenStyleWithKeyAndValue(lStyleKeyStr, lStyleValueStr, ADestEntity);
       if AUseFillAsPen and (lStyleKeyStr = 'fill') then
         ReadSVGPenStyleWithKeyAndValue('stroke', lStyleValueStr, ADestEntity)
+      else if ADestEntity is TvText then
+        ReadSVGFontStyleWithKeyAndValue(lStyleKeyStr, lStyleValueStr, ADestEntity as TvText)
       else if ADestEntity is TvEntityWithPenAndBrush then
         ReadSVGBrushStyleWithKeyAndValue(lStyleKeyStr, lStyleValueStr, ADestEntity as TvEntityWithPenAndBrush);
     end;
@@ -675,6 +678,17 @@ begin
 
     if AValue = 'none'  then ADestEntity.Brush.Style := fpcanvas.bsClear
     else ADestEntity.Brush.Color := ReadSVGColor(AValue)
+  end;
+end;
+
+procedure TvSVGVectorialReader.ReadSVGFontStyleWithKeyAndValue(AKey,
+  AValue: string; ADestEntity: TvText);
+begin
+  // SVG text uses "fill" to indicate the pen color of the text, very unintuitive as
+  // "fill" is usually for brush in other elements
+  if AKey = 'fill' then
+  begin
+    ADestEntity.Font.Color := ReadSVGColor(AValue);
   end;
 end;
 
@@ -1226,10 +1240,8 @@ begin
       ly := StringWithUnitToFloat(ANode.Attributes.Item[i].NodeValue)
     else if lNodeName = 'style' then
       ReadSVGStyle(ANode.Attributes.Item[i].NodeValue, lText, True)
-    // SVG text uses "fill" to indicate the pen color of the text, very unintuitive as
-    // "fill" is usually for brush in other elements
-    else if  lNodeName = 'fill' then
-      ReadSVGPenStyleWithKeyAndValue('stroke', ANode.Attributes.Item[i].NodeValue, lText);
+    else if IsAttributeFromStyle(lNodeName) then
+      ReadSVGFontStyleWithKeyAndValue(lNodeName, ANode.Attributes.Item[i].NodeValue, lText);
   end;
 
   // The text contents are inside as a child text, not as a attribute
