@@ -18,7 +18,19 @@ uses
   fpvectorial, fpvutils;
 
 type
-  TSVGTokenType = (sttMoveTo, sttLineTo, sttBezierTo, sttFloatValue);
+  TSVGTokenType = (
+    // moves
+    sttMoveTo, sttRelativeMoveTo,
+    // Close Path
+    sttClosePath,
+    // lines
+    sttLineTo, sttRelativeLineTo,
+    // cubic beziers
+    sttBezierTo, sttRelativeBezierTo,
+    // quadratic beziers
+    sttQuadraticBezierTo, sttRelativeQuadraticBezierTo,
+    // numbers
+    sttFloatValue);
 
   TSVGToken = class
     TokenType: TSVGTokenType;
@@ -116,12 +128,24 @@ var
 begin
   lToken := TSVGToken.Create;
 
-  lStr := LowerCase(AStr);
+  lStr := Trim(AStr);
   if lStr = '' then Exit;
 
-  if lStr[1] = 'm' then lToken.TokenType := sttMoveTo
-  else if lStr[1] = 'l' then lToken.TokenType := sttLineTo
-  else if lStr[1] = 'c' then lToken.TokenType := sttBezierTo
+  // Moves
+  if lStr[1] = 'M' then lToken.TokenType := sttMoveTo
+  else if lStr[1] = 'm' then lToken.TokenType := sttRelativeMoveTo
+  // Close Path
+  else if lStr[1] = 'Z' then lToken.TokenType := sttClosePath
+  else if lStr[1] = 'z' then lToken.TokenType := sttClosePath
+  // Lines
+  else if lStr[1] = 'L' then lToken.TokenType := sttLineTo
+  else if lStr[1] = 'l' then lToken.TokenType := sttRelativeLineTo
+  // cubic Bézier curve commands
+  else if lStr[1] = 'C' then lToken.TokenType := sttBezierTo
+  else if lStr[1] = 'c' then lToken.TokenType := sttRelativeBezierTo
+  // quadratic beziers
+  else if lStr[1] = 'Q' then lToken.TokenType := sttQuadraticBezierTo
+  else if lStr[1] = 'q' then lToken.TokenType := sttRelativeQuadraticBezierTo
   else
   begin
     lToken.TokenType := sttFloatValue;
@@ -148,7 +172,7 @@ var
   i: Integer;
   lTmpStr: string = '';
   lState: Integer;
-  lCurChar: Char;
+  lFirstTmpStrChar, lCurChar: Char;
 begin
   lState := 0;
 
@@ -171,7 +195,22 @@ begin
         lTmpStr := '';
       end
       else
+      begin
+        // Check for a break, from letter to number
+        if (Length(lTmpStr) >= 1) then
+        begin
+          lFirstTmpStrChar := lTmpStr[1];
+          if ((lFirstTmpStrChar in ['a'..'z', 'A'..'Z']) and not (lCurChar  in ['a'..'z', 'A'..'Z'])) or
+             (not (lFirstTmpStrChar in ['a'..'z', 'A'..'Z']) and (lCurChar  in ['a'..'z', 'A'..'Z'])) then
+          begin
+            AddToken(lTmpStr);
+            lTmpStr := '';
+            Continue;
+          end;
+        end;
+
         lTmpStr := lTmpStr + lCurChar;
+      end;
 
       Inc(i);
     end;
@@ -182,6 +221,9 @@ begin
     end;
     end;
   end;
+
+  // If there is a token still to be added, add it now
+  if (lState = 0) and (lTmpStr <> '') then AddToken(lTmpStr);
 end;
 
 { Example of a supported SVG image:
@@ -256,15 +298,16 @@ begin
   if (Length(lValue) > 1) and (lValue[1] = '#') then
   begin
     lStr := Copy(lValue, 2, 2);
-    Result.Red := StrToInt('$'+lStr);
+    Result.Red := StrToInt('$'+lStr)*$101;
     lStr := Copy(lValue, 4, 2);
-    Result.Blue := StrToInt('$'+lStr);
+    Result.Green := StrToInt('$'+lStr)*$101;
     lStr := Copy(lValue, 6, 2);
-    Result.Green := StrToInt('$'+lStr);
+    Result.Blue := StrToInt('$'+lStr)*$101;
     Exit;
   end;
 
   // Support for named colors
+  // List here: http://www.december.com/html/spec/colorsvghex.html
   case lValue of
   'black':   Result := colBlack;
   'navy':    Result.Blue := $8080;
@@ -336,13 +379,55 @@ begin
     Result.Green := $8B8B;
     Result.Blue := $5757;
   end;
+  'darkslategray', 'darkslategrey':
+  begin
+    Result.Red := $2F2F;
+    Result.Green := $4F4F;
+    Result.Blue := $4F4F;
+  end;
+  'limegreen':
+  begin
+    Result.Red := $3232;
+    Result.Green := $CDCD;
+    Result.Blue := $3232;
+  end;
+  'mediumseagreen':
+  begin
+    Result.Red := $3C3C;
+    Result.Green := $CBCB;
+    Result.Blue := $7171;
+  end;
+  'turquoise':
+  begin
+    Result.Red := $4040;
+    Result.Green := $E0E0;
+    Result.Blue := $D0D0;
+  end;
+  'royalblue':
+  begin
+    Result.Red := $4141;
+    Result.Green := $6969;
+    Result.Blue := $E1E1;
+  end;
+  'steelblue':
+  begin
+    Result.Red := $4646;
+    Result.Green := $8282;
+    Result.Blue := $B4B4;
+  end;
+  'darkslateblue':
+  begin
+    Result.Red := $4848;
+    Result.Green := $3D3D;
+    Result.Blue := $8B8B;
+  end;
+  'mediumturquoise':
+  begin
+    Result.Red := $4848;
+    Result.Green := $D1D1;
+    Result.Blue := $CCCC;
+  end;
 {
-darkslategray #2F4F4F
- 	darkslategrey #2F4F4F		limegreen #32CD32
-mediumseagreen #3CB371
- 	turquoise #40E0D0		royalblue #4169E1
-steelblue #4682B4
- 	darkslateblue #483D8B		mediumturquoise #48D1CC
 indigo #4B0082
  	darkolivegreen #556B2F		cadetblue #5F9EA0
 cornflowerblue #6495ED
@@ -365,10 +450,31 @@ chartreuse #7FFF00
   'purple': Result := colPurple;
   'olive':  Result := colOlive;
   'gray', 'grey': Result := colGray;
+  'skyblue':
+  begin
+    Result.Red := $8787;
+    Result.Green := $CECE;
+    Result.Blue := $EBEB;
+  end;
+  'lightskyblue':
+  begin
+    Result.Red := $8787;
+    Result.Green := $CECE;
+    Result.Blue := $FAFA;
+  end;
+  'blueviolet':
+  begin
+    Result.Red := $8A8A;
+    Result.Green := $2B2B;
+    Result.Blue := $E2E2;
+  end;
+  'darkred': Result.Red := $8B8B;
+  'darkmagenta':
+  begin
+    Result.Red := $8B8B;
+    Result.Blue := $8B8B;
+  end;
 {
- 	skyblue #87CEEB		lightskyblue #87CEFA
-blueviolet #8A2BE2
- 	darkred #8B0000		darkmagenta #8B008B
 saddlebrown #8B4513
  	darkseagreen #8FBC8F		lightgreen #90EE90
 mediumpurple #9370DB
@@ -384,8 +490,15 @@ lightsteelblue #B0C4DE
 darkgoldenrod #B8860B
  	mediumorchid #BA55D3		rosybrown #BC8F8F
 darkkhaki #BDB76B
- 	silver(16) #C0C0C0		mediumvioletred #C71585
-indianred #CD5C5C
+}
+  'silver': Result := colSilver;
+  'mediumvioletred':
+  begin
+    Result.Red := $C7C7;
+    Result.Green := $1515;
+    Result.Blue := $8585;
+  end;
+{indianred #CD5C5C
  	peru #CD853F		chocolate #D2691E
 tan #D2B48C
  	lightgray #D3D3D3		lightgrey #D3D3D3
@@ -396,11 +509,56 @@ palevioletred #DB7093
 plum #DDA0DD
  	burlywood #DEB887		lightcyan #E0FFFF
 lavender #E6E6FA
- 	darksalmon #E9967A		violet #EE82EE
-palegoldenrod #EEE8AA
- 	lightcoral #F08080		khaki #F0E68C
-aliceblue #F0F8FF
- 	honeydew #F0FFF0		azure #F0FFFF
+}
+  'darksalmon':
+  begin
+    Result.Red := $E9E9;
+    Result.Green := $9696;
+    Result.Blue := $7A7A;
+  end;
+  'violet':
+  begin
+    Result.Red := $EEEE;
+    Result.Green := $8282;
+    Result.Blue := $EEEE;
+  end;
+  'palegoldenrod':
+  begin
+    Result.Red := $EEEE;
+    Result.Green := $E8E8;
+    Result.Blue := $AAAA;
+  end;
+  'lightcoral':
+  begin
+    Result.Red := $F0F0;
+    Result.Green := $8080;
+    Result.Blue := $8080;
+  end;
+  'khaki':
+  begin
+    Result.Red := $F0F0;
+    Result.Green := $E6E6;
+    Result.Blue := $8C8C;
+  end;
+  'aliceblue':
+  begin
+    Result.Red := $F0F0;
+    Result.Green := $F8F8;
+    Result.Blue := $FFFF;
+  end;
+  'honeydew':
+  begin
+    Result.Red := $F0F0;
+    Result.Green := $FFFF;
+    Result.Blue := $F0F0;
+  end;
+  'azure':
+  begin
+    Result.Red := $F0F0;
+    Result.Green := $FFFF;
+    Result.Blue := $FFFF;
+  end;
+{
 sandybrown #F4A460
  	wheat #F5DEB3		beige #F5F5DC
 whitesmoke #F5F5F5
@@ -710,16 +868,22 @@ begin
   AData.StartPath();
   ReadPathFromString(UTF8Encode(lDStr), AData, ADoc);
   lPath := AData.EndPath();
-  // Add the pen
+  // Add default SVG pen/brush
+  lPath.Pen.Style := psClear;
+  lPath.Brush.Color := colBlack;
+  lPath.Brush.Style := bsSolid;
+  // Add the pen/brush
   ReadSVGStyle(lStyleStr, lPath);
 end;
 
+// Documentation: http://www.w3.org/TR/SVG/paths.html
 procedure TvSVGVectorialReader.ReadPathFromString(AStr: string;
   AData: TvVectorialPage; ADoc: TvVectorialDocument);
 var
   i: Integer;
   X, Y, X2, Y2, X3, Y3: Double;
   CurX, CurY: Double;
+  lCurTokenType: TSVGTokenType;
 begin
   FSVGPathTokenizer.Tokens.Clear;
   FSVGPathTokenizer.TokenizePathString(AStr);
@@ -729,31 +893,74 @@ begin
   i := 0;
   while i < FSVGPathTokenizer.Tokens.Count do
   begin
-    if FSVGPathTokenizer.Tokens.Items[i].TokenType = sttMoveTo then
+    lCurTokenType := FSVGPathTokenizer.Tokens.Items[i].TokenType;
+    // --------------
+    // Moves
+    // --------------
+    if lCurTokenType in [sttMoveTo, sttRelativeMoveTo] then
     begin
-      CurX := FSVGPathTokenizer.Tokens.Items[i+1].Value;
-      CurY := FSVGPathTokenizer.Tokens.Items[i+2].Value;
-      ConvertSVGCoordinatesToFPVCoordinates(AData, CurX, CurY, CurX, CurY);
+      X := FSVGPathTokenizer.Tokens.Items[i+1].Value;
+      Y := FSVGPathTokenizer.Tokens.Items[i+2].Value;
+      ConvertSVGCoordinatesToFPVCoordinates(AData, X, Y, X, Y);
 
+      // take care of relative or absolute
+      if lCurTokenType = sttRelativeMoveTo then
+      begin
+        CurX := CurX + X;
+        CurY := CurY + Y;
+      end
+      else
+      begin
+        CurX := X;
+        CurY := Y;
+      end;
       AData.AddMoveToPath(CurX, CurY);
 
       Inc(i, 3);
     end
-    else if FSVGPathTokenizer.Tokens.Items[i].TokenType = sttLineTo then
+    // --------------
+    // Close Path
+    // --------------
+    else if lCurTokenType = sttClosePath then
+    begin
+      // Get the first point
+      AData.GetTmpPathStartPos(X, Y);
+
+      // And repeat it
+      CurX := X;
+      CurY := Y;
+      AData.AddLineToPath(CurX, CurY);
+
+      Inc(i, 3);
+    end
+    // --------------
+    // Lines
+    // --------------
+    else if lCurTokenType in [sttLineTo, sttRelativeLineTo] then
     begin
       X := FSVGPathTokenizer.Tokens.Items[i+1].Value;
       Y := FSVGPathTokenizer.Tokens.Items[i+2].Value;
       ConvertSVGDeltaToFPVDelta(AData, X, Y, X, Y);
 
-      // LineTo uses relative coordenates in SVG
-      CurX := CurX + X;
-      CurY := CurY + Y;
-
+      // "l" LineTo uses relative coordenates in SVG
+      if lCurTokenType = sttRelativeLineTo then
+      begin
+        CurX := CurX + X;
+        CurY := CurY + Y;
+      end
+      else
+      begin
+        CurX := X;
+        CurY := Y;
+      end;
       AData.AddLineToPath(CurX, CurY);
 
       Inc(i, 3);
     end
-    else if FSVGPathTokenizer.Tokens.Items[i].TokenType = sttBezierTo then
+    // --------------
+    // Cubic Bezier
+    // --------------
+    else if lCurTokenType in [sttBezierTo, sttRelativeBezierTo] then
     begin
       X2 := FSVGPathTokenizer.Tokens.Items[i+1].Value;
       Y2 := FSVGPathTokenizer.Tokens.Items[i+2].Value;
@@ -766,13 +973,48 @@ begin
       ConvertSVGDeltaToFPVDelta(AData, X3, Y3, X3, Y3);
       ConvertSVGDeltaToFPVDelta(AData, X, Y, X, Y);
 
-      AData.AddBezierToPath(X2 + CurX, Y2 + CurY, X3 + CurX, Y3 + CurY, X + CurX, Y + CurY);
-
-      // BezierTo uses relative coordenates in SVG
-      CurX := CurX + X;
-      CurY := CurY + Y;
+      if lCurTokenType = sttRelativeBezierTo then
+      begin
+        AData.AddBezierToPath(X2 + CurX, Y2 + CurY, X3 + CurX, Y3 + CurY, X + CurX, Y + CurY);
+        CurX := CurX + X;
+        CurY := CurY + Y;
+      end
+      else
+      begin
+        AData.AddBezierToPath(X2, Y2, X3, Y3, X, Y);
+        CurX := X;
+        CurY := Y;
+      end;
 
       Inc(i, 7);
+    end
+    // --------------
+    // Quadratic Bezier
+    // --------------
+    else if lCurTokenType in [sttQuadraticBezierTo, sttRelativeQuadraticBezierTo] then
+    begin
+      X2 := FSVGPathTokenizer.Tokens.Items[i+1].Value;
+      Y2 := FSVGPathTokenizer.Tokens.Items[i+2].Value;
+      X := FSVGPathTokenizer.Tokens.Items[i+3].Value;
+      Y := FSVGPathTokenizer.Tokens.Items[i+4].Value;
+
+      ConvertSVGDeltaToFPVDelta(AData, X2, Y2, X2, Y2);
+      ConvertSVGDeltaToFPVDelta(AData, X, Y, X, Y);
+
+      if lCurTokenType = sttRelativeQuadraticBezierTo then
+      begin
+        AData.AddBezierToPath(X2 + CurX, Y2 + CurY, X2 + CurX, Y2 + CurY, X + CurX, Y + CurY);
+        CurX := CurX + X;
+        CurY := CurY + Y;
+      end
+      else
+      begin
+        AData.AddBezierToPath(X2, Y2, X2, Y2, X, Y);
+        CurX := X;
+        CurY := Y;
+      end;
+
+      Inc(i, 5);
     end
     else
     begin
@@ -998,7 +1240,7 @@ begin
   end
   else // If there is no unit, just use StrToFloat
   begin
-    Result := StrToFloat(AStr);
+    Result := StrToFloat(AStr, FPointSeparator);
   end;
 end;
 

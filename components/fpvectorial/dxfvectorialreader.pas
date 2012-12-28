@@ -1922,7 +1922,7 @@ begin
 
 {  if Length(AStr) <= 1 then Exit;
 
-  Result := StrToFloat(Copy(AStr, 2, Length(AStr) - 1));}
+  Result := StrToFloat(Copy(AStr, 2, Length(AStr) - 1), FPointSeparator);}
 end;
 
 function TvDXFVectorialReader.ConvertDXFStringToUTF8(AStr: string): string;

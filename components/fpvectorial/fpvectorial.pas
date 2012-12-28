@@ -530,6 +530,8 @@ type
     function GenerateDebugTree(ADestRoutine: TvDebugAddItemProc; APageItem: Pointer): Pointer; override;
   end;
 
+  { TvEntityWithSubEntities }
+
   TvEntityWithSubEntities = class(TvEntity)
   private
     FCurIndex: Integer;
@@ -544,8 +546,8 @@ type
     function GetNextEntity: TvEntity;
     procedure AddEntity(AEntity: TvEntity);
     procedure Clear; override;
-    //
-    // Never add a Render() procedure to TvBlock, because blocks are invisible!
+    procedure Render(ADest: TFPCustomCanvas; ADestX: Integer = 0;
+      ADestY: Integer = 0; AMulX: Double = 1.0; AMulY: Double = 1.0); override;
   end;
 
   {@@
@@ -556,6 +558,9 @@ type
   { TvBlock }
 
   TvBlock = class(TvEntityWithSubEntities)
+  public
+    procedure Render(ADest: TFPCustomCanvas; ADestX: Integer = 0;
+      ADestY: Integer = 0; AMulX: Double = 1.0; AMulY: Double = 1.0); override;
   end;
 
   {@@
@@ -581,8 +586,6 @@ type
 
   TvLayer = class(TvEntityWithSubEntities)
   public
-    procedure Render(ADest: TFPCustomCanvas; ADestX: Integer = 0;
-      ADestY: Integer = 0; AMulX: Double = 1.0; AMulY: Double = 1.0); override;
   end;
 
   { TvVectorialDocument }
@@ -676,6 +679,7 @@ type
     procedure AddLineToPath(AX, AY: Double; AColor: TFPColor); overload;
     procedure AddLineToPath(AX, AY, AZ: Double); overload;
     procedure GetCurrentPathPenPos(var AX, AY: Double);
+    procedure GetTmpPathStartPos(var AX, AY: Double);
     procedure AddBezierToPath(AX1, AY1, AX2, AY2, AX3, AY3: Double); overload;
     procedure AddBezierToPath(AX1, AY1, AZ1, AX2, AY2, AZ2, AX3, AY3, AZ3: Double); overload;
     procedure SetBrushColor(AColor: TFPColor);
@@ -694,7 +698,9 @@ type
     function AddBlock(AName: string; AX, AY, AZ: Double): TvBlock;
     function AddInsert(AX, AY, AZ: Double; ABlock: TvBlock): TvInsert;
     // Layers
+    function AddLayer(AName: string): TvLayer;
     function AddLayerAndSetAsCurrent(AName: string): TvLayer;
+    procedure ClearLayerSelection();
     // Dimensions
     function AddAlignedDimension(BaseLeft, BaseRight, DimLeft, DimRight: T3DPoint; AOnlyCreate: Boolean = False): TvAlignedDimension;
     function AddRadialDimension(AIsDiameter: Boolean; ACenter, ADimLeft, ADimRight: T3DPoint; AOnlyCreate: Boolean = False): TvRadialDimension;
@@ -2619,6 +2625,27 @@ begin
   FElements.Clear;
 end;
 
+procedure TvEntityWithSubEntities.Render(ADest: TFPCustomCanvas;
+  ADestX: Integer; ADestY: Integer; AMulX: Double; AMulY: Double);
+var
+  lEntity: TvEntity;
+begin
+  inherited Render(ADest, ADestX, ADestY, AMulX, AMulY);
+  lEntity := GetFirstEntity();
+  while lEntity <> nil do
+  begin
+    {$IFDEF FPVECTORIAL_DEBUG_BLOCKS}
+    //WriteLn(Format('[TvInsert.Render] Name=%s Block=%s Entity=%s EntityXY=%f | %f BlockXY=%f | %f InsertXY=%f | %f',
+    //  [Name, Block.Name, lEntity.ClassName, lEntity.X, lEntity.Y, Block.X, Block.Y, X, Y]));
+    {$ENDIF}
+
+    // Render
+    lEntity.Render(ADest, ADestX, ADestY, AMulX, AMuly);
+
+    lEntity := GetNextEntity();
+  end;
+end;
+
 { TvInsert }
 
 procedure TvInsert.Render(ADest: TFPCustomCanvas; ADestX: Integer;
@@ -2647,27 +2674,12 @@ begin
   end;
 end;
 
-{ TvLayer }
+{ TvBlock }
 
-procedure TvLayer.Render(ADest: TFPCustomCanvas; ADestX: Integer;
+procedure TvBlock.Render(ADest: TFPCustomCanvas; ADestX: Integer;
   ADestY: Integer; AMulX: Double; AMulY: Double);
-var
-  lEntity: TvEntity;
 begin
-  inherited Render(ADest, ADestX, ADestY, AMulX, AMulY);
-  lEntity := GetFirstEntity();
-  while lEntity <> nil do
-  begin
-    {$IFDEF FPVECTORIAL_DEBUG_BLOCKS}
-    //WriteLn(Format('[TvInsert.Render] Name=%s Block=%s Entity=%s EntityXY=%f | %f BlockXY=%f | %f InsertXY=%f | %f',
-    //  [Name, Block.Name, lEntity.ClassName, lEntity.X, lEntity.Y, Block.X, Block.Y, X, Y]));
-    {$ENDIF}
-
-    // Render
-    lEntity.Render(ADest, ADestX, ADestY, AMulX, AMuly);
-
-    lEntity := GetNextEntity();
-  end;
+  // TvBlock.Render must be empty! Because blocks are invisible by themselves
 end;
 
 { TvVectorialPage }
@@ -2796,6 +2808,7 @@ begin
   FEntities.ForEachCall(CallbackDeleteEntity, nil);
   FEntities.Clear();
   ClearTmpPath();
+  ClearLayerSelection();
 end;
 
 {@@
@@ -2828,8 +2841,17 @@ end;
 }
 function TvVectorialPage.AddEntity(AEntity: TvEntity): Integer;
 begin
-  Result := FEntities.Count;
-  FEntities.Add(Pointer(AEntity));
+  if FCurrentLayer = nil then
+  begin
+    Result := FEntities.Count;
+    FEntities.Add(Pointer(AEntity));
+  end
+  // If a layer is selected as current, add elements to it instead
+  else
+  begin
+    Result := FCurrentLayer.GetSubpartCount();
+    FCurrentLayer.AddEntity(AEntity);
+  end;
 end;
 
 function TvVectorialPage.AddPathCopyMem(APath: TPath; AOnlyCreate: Boolean = False): TPath;
@@ -2942,6 +2964,18 @@ begin
 
   AX := T2DSegment(FTmpPath.PointsEnd).X;
   AY := T2DSegment(FTmpPath.PointsEnd).Y;
+end;
+
+procedure TvVectorialPage.GetTmpPathStartPos(var AX, AY: Double);
+begin
+  AX := 0;
+  AY := 0;
+  if (FTmpPath = nil) or (FTmpPath.GetSubpartCount() <= 0) or (FTmpPath.Points = nil) then Exit;
+  if FTmpPath.Points is T2DSegment then
+  begin
+    AX := T2DSegment(FTmpPath.Points).X;
+    AY := T2DSegment(FTmpPath.Points).Y;
+  end;
 end;
 
 {@@
@@ -3125,9 +3159,21 @@ begin
   Result := lInsert;
 end;
 
+function TvVectorialPage.AddLayer(AName: string): TvLayer;
+begin
+  Result := TvLayer.Create;
+  AddEntity(Result);
+end;
+
 function TvVectorialPage.AddLayerAndSetAsCurrent(AName: string): TvLayer;
 begin
-  Result := nil;//TvLayer.Create;
+  Result := AddLayer(AName);
+  FCurrentLayer := Result;
+end;
+
+procedure TvVectorialPage.ClearLayerSelection;
+begin
+  FCurrentLayer := nil;
 end;
 
 
