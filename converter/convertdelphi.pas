@@ -866,34 +866,39 @@ var
 begin
   IDEMessagesWindow.Clear;
   DelphiUnit := TDelphiUnit.Create(Self, fOrigFilename, []);
-  Result:=fSettings.RunForm(Nil);
-  if Result=mrOK then
-    with DelphiUnit do
-    try
-      Result:=CopyAndLoadFile;
-      if Result=mrOK then begin
-        Result:=ConvertUnitFile;
-        if Result=mrOk then begin
-          Result:=SaveCodeBufferToFile(fPascalBuffer,fLazUnitFilename);
+  try
+    Result:=fSettings.RunForm(Nil);
+    if Result=mrOK then begin
+      with DelphiUnit do
+      try
+        Result:=CopyAndLoadFile;
+        if Result=mrOK then begin
+          Result:=ConvertUnitFile;
           if Result=mrOk then begin
-            Result:=LazarusIDE.DoOpenEditorFile(fLazUnitFilename,0,0,
-                                                [ofAddToRecent,ofQuiet]);
+            Result:=SaveCodeBufferToFile(fPascalBuffer,fLazUnitFilename);
             if Result=mrOk then begin
-              Result:=ConvertFormFile;
+              Result:=LazarusIDE.DoOpenEditorFile(fLazUnitFilename,0,0,
+                                                  [ofAddToRecent,ofQuiet]);
+              if Result=mrOk then begin
+                Result:=ConvertFormFile;
+              end;
             end;
           end;
         end;
+      except
+        on e: EDelphiConverterError do begin
+          fErrorMsg:=e.Message;
+        end;
+        else begin
+          fErrorMsg:=CodeToolBoss.ErrorMessage;
+        end;
+        Result:=mrAbort;
       end;
-    except
-      on e: EDelphiConverterError do begin
-        fErrorMsg:=e.Message;
-      end;
-      else begin
-        fErrorMsg:=CodeToolBoss.ErrorMessage;
-      end;
-      Result:=mrAbort;
     end;
-  ShowEndingMessage(Result);
+    ShowEndingMessage(Result);
+  finally
+    DelphiUnit.Free;
+  end;
 end;
 
 { TConvertDelphiProjPack }
@@ -1311,8 +1316,7 @@ end;
 
 destructor TConvertDelphiProject.Destroy;
 begin
-  if Assigned(fMainUnitConverter) then
-    fMainUnitConverter.Free;
+  fMainUnitConverter.Free;
   inherited Destroy;
 end;
 
