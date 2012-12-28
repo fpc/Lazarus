@@ -28,6 +28,7 @@ unit dxfvectorialreader;
 
 {.$define FPVECTORIALDEBUG}
 {.$define FPVECTORIALDEBUG_POLYLINE}
+{.$define FPVECTORIALDEBUG_LINE}
 
 interface
 
@@ -994,8 +995,9 @@ begin
   LineEndY := LineEndY - DOC_OFFSET.Y;
 
   // And now write it
-  {$ifdef FPVECTORIALDEBUG}
- // WriteLn(Format('Adding Line from %f,%f to %f,%f', [LineStartX, LineStartY, LineEndX, LineEndY]));
+  {$ifdef FPVECTORIALDEBUG_LINE}
+  WriteLn(Format('Adding Line from %f^%f to %f^%f RGB=%d %d %d A=%d', [LineStartX, LineStartY, LineEndX, LineEndY,
+    LLineColor.red div $100, LLineColor.Green div $100, LLineColor.Blue div $100, LLineColor.Alpha div $100]));
   {$endif}
   if AOnlyCreate then
   begin
@@ -1353,13 +1355,36 @@ end;
 40 Ratio of minor axis to major axis
 41 Start parameter (this value is 0.0 for a full ellipse)
 42 End parameter (this value is 2pi for a full ellipse)
+
+Example:
+0
+ELLIPSE
+10
+284.1193488089
+20
+246.9070153869
+30
+0.0
+11
+-0.0880072471
+21
+1.1224779542
+31
+0.0
+40
+0.6532930174
+41
+-0.0511763442
+42
+1.5196199825
 }
 function TvDXFVectorialReader.ReadENTITIES_ELLIPSE(ATokens: TDXFTokens;
   AData: TvVectorialPage; ADoc: TvVectorialDocument; AOnlyCreate: Boolean = False): TvEllipse;
 var
   CurToken: TDXFToken;
   i: Integer;
-  CenterX, CenterY, CenterZ, MajorHalfAxis, MinorHalfAxis, Angle: Double;
+  CenterX, CenterY, CenterZ, MajorAxisEndX, MajorAxisEndY, MajorAxisEndZ, MinorAxisRatio: Double;
+  MajorHalfAxis, MinorHalfAxis, Angle: Double;
 begin
   for i := 0 to ATokens.Count - 1 do
   begin
@@ -1376,12 +1401,23 @@ begin
       10: CenterX := CurToken.FloatValue;
       20: CenterY := CurToken.FloatValue;
       30: CenterZ := CurToken.FloatValue;
+      11: MajorAxisEndX := CurToken.FloatValue;
+      21: MajorAxisEndY := CurToken.FloatValue;
+      31: MajorAxisEndZ := CurToken.FloatValue;
+      40: MinorAxisRatio := CurToken.FloatValue;
+      41: MinorAxisRatio := CurToken.FloatValue;
+      42: MinorAxisRatio := CurToken.FloatValue;
     end;
   end;
 
   // Position fixing for documents with negative coordinates
   CenterX := CenterX - DOC_OFFSET.X;
   CenterY := CenterY - DOC_OFFSET.Y;
+
+  // Calculate the axis info
+  MajorHalfAxis := Sqrt(Sqr(MajorAxisEndX - CenterX)+Sqr(MajorAxisEndY - CenterY));
+  MinorHalfAxis := MajorHalfAxis * MinorAxisRatio;
+  Angle := 0.0;
 
   //
   Result := AData.AddEllipse(CenterX, CenterY, MajorHalfAxis, MinorHalfAxis, Angle, AOnlyCreate);
