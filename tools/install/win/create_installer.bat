@@ -1,3 +1,5 @@
+SETLOCAL
+
 :: check all the necessary parameters are given and not empty
 if [%1]==[] goto USAGE
 if [%2]==[] goto USAGE
@@ -246,3 +248,6 @@ echo PATCHFILE: optional patch file for the fpc sources
 echo CHMHELPFILES: optional directory with chm helpfiles
 
 :STOP
+
+ENDLOCAL
+
