@@ -866,6 +866,10 @@ begin
   ecScrollRight:         SetSingle(VK_UNKNOWN,[]);
 
   // selection
+  ecSelLeft:             SetSingle(VK_LEFT,[ssShift]);
+  ecSelRight:            SetSingle(VK_RIGHT,[ssShift]);
+  ecSelUp:               SetSingle(VK_UP,[ssShift]);
+  ecSelDown:             SetSingle(VK_DOWN,[ssShift]);
   ecCopy:                SetSingle(VK_C,[ssCtrl],         VK_Insert,[ssCtrl]);
   ecCut:                 SetSingle(VK_X,[ssCtrl],         VK_Delete,[ssShift]);
   ecPaste:               SetSingle(VK_V,[ssCtrl],         VK_Insert,[ssShift]);
@@ -1310,6 +1314,10 @@ begin
   ecScrollRight:         SetSingle(VK_UNKNOWN,[]);
 
   // selection
+  ecSelLeft:             SetSingle(VK_LEFT,[ssShift]);
+  ecSelRight:            SetSingle(VK_RIGHT,[ssShift]);
+  ecSelUp:               SetSingle(VK_UP,[ssShift]);
+  ecSelDown:             SetSingle(VK_DOWN,[ssShift]);
   ecCopy:                SetSingle(VK_Insert,[ssCtrl]);
   ecCut:                 SetSingle(VK_Delete,[ssShift]);
   ecPaste:               SetSingle(VK_Insert,[ssShift]);
@@ -1917,6 +1925,10 @@ begin
   ecScrollRight:         SetSingle(VK_UNKNOWN,[]);
 
   // selection
+  ecSelLeft:             SetSingle(VK_LEFT,[ssShift]);
+  ecSelRight:            SetSingle(VK_RIGHT,[ssShift]);
+  ecSelUp:               SetSingle(VK_UP,[ssShift]);
+  ecSelDown:             SetSingle(VK_DOWN,[ssShift]);
   ecCopy:                SetSingle(VK_C,[ssMeta],    VK_Insert,[ssCtrl]);
   ecCut:                 SetSingle(VK_X,[ssMeta],    VK_Delete,[ssShift]);
   ecPaste:               SetSingle(VK_V,[ssMeta],    VK_Insert,[ssShift]);
@@ -2338,6 +2350,10 @@ begin
   ecEditorBottom:        SetSingle(VK_DOWN,[ssMeta]);
 
   // selection
+  ecSelLeft:             SetSingle(VK_LEFT,[ssShift]);
+  ecSelRight:            SetSingle(VK_RIGHT,[ssShift]);
+  ecSelUp:               SetSingle(VK_UP,[ssShift]);
+  ecSelDown:             SetSingle(VK_DOWN,[ssShift]);
   ecSelLineStart:        SetSingle(VK_HOME,[ssShift], VK_LEFT,[ssMeta,ssShift]);
   ecSelLineEnd:          SetSingle(VK_END,[ssShift],  VK_RIGHT,[ssMeta,ssShift]);
   ecSelEditorTop:        SetSingle(VK_HOME,[ssShift,ssCtrl]);
@@ -2430,6 +2446,11 @@ begin
 
   // selection
   C:=Categories[AddCategory('Selection',srkmCatSelection, IDECmdScopeSrcEditOnly)];
+  AddDefault(C, 'Select cursor left', srkmecSelLeft, ecSelLeft);
+  AddDefault(C, 'Select cursor right', srkmecSelRight, ecSelRight);
+  AddDefault(C, 'Select cursor up', srkmecSelUp, ecSelUp);
+  AddDefault(C, 'Select cursor down', srkmecSelDown, ecSelDown);
+
   AddDefault(C, 'Copy selection to clipboard', srkmecCopy, ecCopy);
   AddDefault(C, 'Cut selection to clipboard', srkmecCut, ecCut);
   AddDefault(C, 'Paste clipboard to current position', srkmecPaste, ecPaste);

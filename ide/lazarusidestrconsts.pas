@@ -2528,8 +2528,8 @@ resourcestring
   srkmecEditorBottom          = 'Move cursor to absolute end';
   srkmecGotoXY                = 'Goto XY';
   srkmecLineTextStart         = 'Move cursor to text start in line';
-  srkmecSelLeft               = 'SelLeft';
-  srkmecSelRight              = 'SelRight';
+  srkmecSelLeft               = 'Select Left';
+  srkmecSelRight              = 'Select Right';
   srkmecSelUp                 = 'Select Up';
   srkmecSelDown               = 'Select Down';
   srkmecSelWordLeft           = 'Select Word Left';
