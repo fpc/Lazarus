@@ -3142,6 +3142,8 @@ function TPascalParserTool.ReadOnStatement(ExceptionOnError,
 // on Unit.Exception do ;
 // on Unit.Exception do else ;
 // on Unit.Exception do ; else ;
+var
+  NeedUndo: Boolean;
 begin
   if CreateNodes then begin
     CreateChildNode;
@@ -3205,15 +3207,20 @@ begin
     CurNode.EndPos:=CurPos.EndPos;
     EndChildNode; // ctnOnVariable
   end;
+  NeedUndo:=false;
   if CurPos.Flag=cafSemicolon then begin
     // for example: on E: Exception do ; else ;
     ReadNextAtom;
+    NeedUndo:=true;
   end;
   if UpAtomIs('ELSE') then begin
     // for example: on E: Exception do else ;
     ReadNextAtom;
     ReadTilStatementEnd(true,CreateNodes);
+    NeedUndo:=false;
   end;
+  if NeedUndo then
+    UndoReadNextAtom;
   Result:=true;
 end;
 
