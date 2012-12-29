@@ -334,7 +334,6 @@ type
     FOwnerDraw: Boolean;
     FPageIndex: Integer;
     FPageIndexOnLastChange: integer;// needed for unique OnChange events
-    FPageIndexOnLastShow: integer;
     FPageList: TList;  // TListWithEvent of TCustomPage
     FRaggedRight: Boolean;
     FScrollOpposite: Boolean;

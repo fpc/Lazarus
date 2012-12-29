@@ -226,7 +226,6 @@ begin
 
   FPageIndex := -1;
   FLoadedPageIndex:=-1;
-  FPageIndexOnLastShow:=-1;
 
   ControlStyle := []; // do not add csAcceptsControls
   TabPosition := tpTop;
@@ -943,7 +942,6 @@ begin
   FLoadedPageIndex := -1;
   //DebugLn(['TCustomTabControl.Loaded ',DbgSName(Self),' fPageIndex=',fPageIndex]);
   FPageIndexOnLastChange := PageIndex;
-  FPageIndexOnLastShow := FPageIndexOnLastChange;
   if HandleAllocated then DoCreateWnd;
 end;
 
@@ -1022,27 +1020,8 @@ begin
   if (FPageIndex >= 0) and (FPageIndex < PageCount) then
   begin
     CurPage := Page[FPageIndex];
-    // first make the new page visible
-    //DebugLn(['TCustomTabControl.ShowCurrentPage ',DbgSName(CurPage),' CurPage.Visible=',CurPage.Visible]);
-    CurPage.UpdateControlState;
-    if CurPage.Visible then
-    begin
-      if FPageIndexOnLastShow <> FPageIndex then
-      begin
-        // some widgetsets like win32/64 do not send WM_SIZE messages for
-        // hidden pages. Force resizing page (it is alClient).
-        //DebugLn(['TCustomTabControl.ShowCurrentPage ',dbgsName(Self),' ',DbgSName(CurPage),' CurPage.Visible=',CurPage.Visible,' BoundsRect=',dbgs(BoundsRect),' ClientRect=',dbgs(ClientRect),' CurPage.BoundsRect=',dbgs(CurPage.BoundsRect),' CurPage.ClientRect=',dbgs(CurPage.ClientRect)]);
-        ReAlign;
-        // TCustomPage.IsControlVisible is overriden
-        // therefore AutoSizing of children was skipped => do it now
-        CurPage.ReAlign;
-      end;
-    end else
-    begin
-      CurPage.Visible := true;
-      //DebugLn(['TCustomTabControl.ShowCurrentPage CurPage.AutoSizeDelayed=',CurPage.AutoSizeDelayed,' ',dbgs(CurPage.ComponentState),' ',CurPage.HandleAllocated]);
-    end;
-    FPageIndexOnLastShow := FPageIndex;
+    CurPage.Visible := True;
+    //DebugLn(['TCustomTabControl.ShowCurrentPage CurPage.AutoSizeDelayed=',CurPage.AutoSizeDelayed,' ',dbgs(CurPage.ComponentState),' ',CurPage.HandleAllocated]);
   end;
   if (FPageIndexOnLastChange >= 0) and (FPageIndexOnLastChange < PageCount) and
      (FPageIndexOnLastChange <> FPageIndex) then
