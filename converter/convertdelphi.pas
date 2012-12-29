@@ -1568,9 +1568,11 @@ begin
       Result:=AddUnit(fUnitsToAddToProject[i], CurUnitInfo);
       if Result=mrNo then Continue;
       if Result=mrAbort then Exit;
-      Result:=ConvertOne(CurUnitInfo);
-      if Result=mrIgnore then Continue;
-      if Result=mrAbort then Exit;
+      if Assigned(CurUnitInfo) then begin
+        Result:=ConvertOne(CurUnitInfo);
+        if Result=mrIgnore then Continue;
+        if Result=mrAbort then Exit;
+      end;
     end;
     if Result=mrOK then begin
       if fUseThreads then begin
