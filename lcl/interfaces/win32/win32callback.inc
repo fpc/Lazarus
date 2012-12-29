@@ -1330,8 +1330,10 @@ begin
             end;
             CBN_CLOSEUP:
             begin
-              if TCustomComboBox(lWinControl).Style in [csSimple, csDropDown] then
-                UpdateComboBoxText(TCustomComboBox(lWinControl));
+              // according to msdn CBN_CLOSEUP can happen before CBN_SELCHANGE and
+              // unfortunately it is simple truth. but we need correct order in the LCL
+              PostMessage(lWinControl.Handle, CN_COMMAND, WParam, LParam);
+              Exit;
             end;
           end;
       end;
