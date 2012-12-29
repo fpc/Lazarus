@@ -2831,7 +2831,7 @@ begin
         RaiseStrExpectedWithBlockStartHint('"if"');
     end else if CreateNodes and UpAtomIs('WITH') then begin
       ReadWithStatement(true,CreateNodes);
-    end else if CreateNodes and UpAtomIs('ON') and (BlockType=ebtTry)
+    end else if UpAtomIs('ON') and (BlockType=ebtTry)
     and (TryType=ttExcept) then begin
       ReadOnStatement(true,CreateNodes);
     end else begin
@@ -2849,6 +2849,7 @@ begin
       end;
     end;
   until false;
+  //debugln(['TPascalParserTool.ReadTilBlockEnd end=',GetAtom]);
 end;
 
 function TPascalParserTool.ReadTilBlockStatementEnd(
@@ -3139,6 +3140,8 @@ function TPascalParserTool.ReadOnStatement(ExceptionOnError,
 // on E: Exception do ;
 // on Exception do ;
 // on Unit.Exception do ;
+// on Unit.Exception do else ;
+// on Unit.Exception do ; else ;
 begin
   if CreateNodes then begin
     CreateChildNode;
@@ -3201,6 +3204,15 @@ begin
     EndChildNode; // ctnOnStatement
     CurNode.EndPos:=CurPos.EndPos;
     EndChildNode; // ctnOnVariable
+  end;
+  if CurPos.Flag=cafSemicolon then begin
+    // for example: on E: Exception do ; else ;
+    ReadNextAtom;
+  end;
+  if UpAtomIs('ELSE') then begin
+    // for example: on E: Exception do else ;
+    ReadNextAtom;
+    ReadTilStatementEnd(true,CreateNodes);
   end;
   Result:=true;
 end;
