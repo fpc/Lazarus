@@ -173,6 +173,7 @@ type
     procedure GutterVisibilityChanged; virtual;
     procedure SetWidth(const AValue : integer); virtual;
     procedure Init; override;
+    procedure VisibilityOrSize(aCallDoChange: Boolean = False);
     procedure DoResize(Sender: TObject); virtual;
     procedure DoChange(Sender: TObject); virtual;
     property GutterParts: TSynGutterPartListBase read GetGutterParts;
@@ -581,24 +582,27 @@ begin
   NewWidth := PreferedWidth;
   if FWidth = NewWidth then exit;
   FWidth := NewWidth;
-  Gutter.SetChildBounds;
-  DoResize(Self);
+  VisibilityOrSize;
 end;
 
 procedure TSynGutterPartBase.SetAutoSize(const AValue : boolean);
+var
+  OldSize: Integer;
 begin
   if FAutoSize=AValue then exit;
   FAutoSize:=AValue;
+  OldSize := FWidth;
   if FAutoSize then
     DoAutoSize;
+  if FWidth = OldSize then
+    DoChange(Self); // Size Did not Change
 end;
 
 procedure TSynGutterPartBase.SetVisible(const AValue : boolean);
 begin
   if FVisible=AValue then exit;
   FVisible:=AValue;
-  Gutter.SetChildBounds;
-  DoChange(self);
+  VisibilityOrSize(True);
 end;
 
 procedure TSynGutterPartBase.GutterVisibilityChanged;
@@ -610,8 +614,7 @@ procedure TSynGutterPartBase.SetWidth(const AValue : integer);
 begin
   if (FWidth=AValue) or (FAutoSize) then exit;
   FWidth:=AValue;
-  Gutter.SetChildBounds;
-  DoResize(Self);
+  VisibilityOrSize;
 end;
 
 procedure TSynGutterPartBase.DoChange(Sender : TObject);
@@ -649,6 +652,21 @@ begin
   FriendEdit := FSynEdit;
 end;
 
+procedure TSynGutterPartBase.VisibilityOrSize(aCallDoChange: Boolean);
+begin
+  Gutter.IncChangeLock;
+  try
+    if Gutter.AutoSize then
+      Gutter.DoAutoSize;  // Calculate new total width of gutter
+    Gutter.RecalcBounds;  // New Bounds (needs Gutter.Width) and call SetChildBounds
+    DoResize(Self);
+    if aCallDoChange then
+      DoChange(Self);
+  finally
+    Gutter.DecChangeLock;
+  end;
+end;
+
 procedure TSynGutterPartBase.DoResize(Sender: TObject);
 begin
   DoChange(Sender);
@@ -673,6 +691,7 @@ begin
     FAutoSize := Src.FAutoSize;
     MarkupInfo.Assign(Src.MarkupInfo);
     DoChange(Self);
+    // Todo, maybe on Resize?
   end else
     inherited;
 end;
