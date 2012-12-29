@@ -411,6 +411,24 @@ begin
   with fOmitProjUnits do begin
     Add('FastMM4');
     Add('FastMM4Messages');
+    Add('GR32');
+    Add('GR32_Blend');
+    Add('GR32_Containers');
+    Add('GR32_DrawingEx');
+    Add('GR32_Filters');
+    Add('GR32_Image');
+    Add('GR32_Layers');
+    Add('GR32_LowLevel');
+    Add('GR32_Math');
+    Add('GR32_MicroTiles');
+    Add('GR32_OrdinalMaps');
+    Add('GR32_RangeBars');
+    Add('GR32_Rasterizers');
+    Add('GR32_RepaintOpt');
+    Add('GR32_Resamplers');
+    Add('GR32_System');
+    Add('GR32_Transforms');
+    Add('GR32_VectorMaps');
     Add('OpenGL');
     Add('SynEdit');
     Add('SynEditMiscProcs');
