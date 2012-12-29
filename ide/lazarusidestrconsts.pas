@@ -5345,6 +5345,7 @@ resourcestring
   lisConvDelphiReplacedUnitInUsesSection = 'Replaced unit "%s" with "%s" in uses section.';
   lisConvDelphiRemovedUnitInUsesSection = 'Removed unit "%s" in uses section.';
   lisConvDelphiUnitsToReplaceIn = 'Units to replace in %s';
+  lisConvDelphiConversionTook = 'Conversion took: %s';
   lisConvDelphiConversionReady = 'Conversion Ready.';
   lisConvDelphiConversionAborted = 'Conversion Aborted.';
   lisConvDelphiBeginCodeToolsFailed = 'BeginCodeTools failed!';

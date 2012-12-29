@@ -935,6 +935,8 @@ function TConvertDelphiProjPack.Convert: TModalResult;
 var
   // The initial unit name cache is done in a thread so that GUI shows at once.
   CacheUnitsThread: TCacheUnitsThread;
+  StartTime, EndTime: TDateTime;
+  s: string;
 begin
   if CompareFileExt(fOrigFilename,'.dproj',false)=0 then begin
     fErrorMsg:=
@@ -950,6 +952,7 @@ begin
   try
     Result:=fSettings.RunForm(CacheUnitsThread); // Get settings from user.
     if Result=mrOK then begin
+      StartTime:=Now;
       // create/open lazarus project or package file
       fLazPFilename:=fSettings.DelphiToLazFilename(fOrigFilename, fLazPSuffix, false);
 
@@ -964,6 +967,10 @@ begin
 
       // Actual conversion.
       Result:=ConvertSub;
+      EndTime:=Now;
+      s:=FormatDateTime('hh:nn:ss', EndTime-StartTime);
+      if s<>'00:00:00' then
+        IDEMessagesWindow.AddMsg(Format(lisConvDelphiConversionTook, [s]), '', -1)
     end;
   except
     on e: EDelphiConverterError do begin
