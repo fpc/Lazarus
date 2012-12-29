@@ -12,6 +12,15 @@ type
 
   // used by Fold / MarkupWord
 
+  TTestExpValuesForLine = record
+    Line: integer;
+    Exp: Array of integer;
+  end;
+
+  function ExpVLine(ALine: Integer; AExp: Array of integer): TTestExpValuesForLine;
+
+type
+
   { TTestBaseHighlighterPas }
 
   { TTestBaseHighlighterFoldBase }
@@ -25,6 +34,9 @@ type
     procedure ReCreateEdit; reintroduce;
 
     procedure CheckFoldOpenCounts(Name: String; Expected: Array of Integer);
+    procedure CheckFoldLengths(Name: String; Expected: Array of TTestExpValuesForLine);
+    procedure CheckFoldEndLines(Name: String; Expected: Array of TTestExpValuesForLine);
+
     procedure CheckFoldInfoCounts(Name: String; Filter: TSynFoldActions; Expected: Array of Integer);
     procedure CheckFoldInfoCounts(Name: String; Filter: TSynFoldActions; Group: Integer; Expected: Array of Integer);
 
@@ -33,6 +45,16 @@ type
 
 
 implementation
+
+function ExpVLine(ALine: Integer; AExp: array of integer): TTestExpValuesForLine;
+var
+  i: Integer;
+begin
+  Result.Line := ALine;
+  SetLength(Result.Exp, Length(AExp));
+  for i := low(AExp) to high(AExp) do
+    Result.Exp[i] := AExp[i];
+end;
 
 { TTestBaseHighlighterFoldBase }
 
@@ -70,6 +92,28 @@ begin
 
   for i := 0 to high(Expected) do
     AssertEquals(Name + 'OpenCount Line='+IntToStr(i),  Expected[i], FTheHighLighter.FoldBlockOpeningCount(i));
+end;
+
+procedure TTestBaseHighlighterFoldBase.CheckFoldLengths(Name: String;
+  Expected: array of TTestExpValuesForLine);
+var
+  i, j: Integer;
+begin
+  for i := 0 to high(Expected) do
+    for j := 0 to high(Expected[i].Exp) do
+      AssertEquals(Name + 'FoldLength Line='+IntToStr(Expected[i].Line) + ' idx='+IntToStr(j),
+        Expected[i].Exp[j], FTheHighLighter.FoldLineLength(Expected[i].Line, j));
+end;
+
+procedure TTestBaseHighlighterFoldBase.CheckFoldEndLines(Name: String;
+  Expected: array of TTestExpValuesForLine);
+var
+  i, j: Integer;
+begin
+  for i := 0 to high(Expected) do
+    for j := 0 to high(Expected[i].Exp) do
+      AssertEquals(Name + 'FoldEnd Line='+IntToStr(Expected[i].Line) + ' idx='+IntToStr(j),
+        Expected[i].Exp[j], FTheHighLighter.FoldEndLine(Expected[i].Line, j));
 end;
 
 procedure TTestBaseHighlighterFoldBase.CheckFoldInfoCounts(Name: String;
