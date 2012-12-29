@@ -76,6 +76,7 @@ type
     constructor Create(ACTLink: TCodeToolLink; aOwnerTool: TUsedUnitsTool);
     destructor Destroy; override;
     procedure CommentAutomatic(ACommentedUnits: TStringList);
+    procedure OmitUnits;
   public
     property UnitsToRemove: TStringList read fUnitsToRemove;
     property UnitsToRename: TStringToStringTree read fUnitsToRename;
@@ -211,6 +212,7 @@ var
   NewUnitName, NewInFilename: String;
   AFilename, s, LowNU: String;
   x: Integer;
+  OmitUnit: Boolean;
 begin
   UsesNode:=UsesSectionNode;
   if UsesNode=nil then exit(true);
@@ -234,16 +236,19 @@ begin
       if NewInFilename<>'' then
         s:=s+' in '''+NewInFilename+'''';
       if AFilename<>'' then begin                         // unit found
-        if (NewUnitName<>OldUnitName) and not Settings.OmitProjUnits.Find(NewUnitName,x)
-        then begin
+        OmitUnit := Settings.OmitProjUnits.Find(NewUnitName,x);
+        if (NewUnitName<>OldUnitName) and not OmitUnit then begin
           // Character case differs, fix it.
           fUnitsToFixCase[OldUnitName]:=NewUnitName;
           IDEMessagesWindow.AddMsg(Format(lisConvDelphiFixedUnitCase,
                                           [OldUnitName, NewUnitName]), '', -1);
         end;
+        // Report omitted units as missing, pretend they don't exist here,
+        if OmitUnit then                       // but they can have replacements.
+          fMissingUnits.Add(NewUnitName)
         // Report Windows specific units as missing if target is MultiPlatform.
         //  Needed if work-platform is Windows (kind of a hack).
-        if Settings.MultiPlatform and IsWinSpecificUnit(LowNU) then
+        else if Settings.MultiPlatform and IsWinSpecificUnit(LowNU) then
           fMissingUnits.Add(s);
         // Check if the unit is not part of project and needs conversion, too.
         if Assigned(fOwnerTool.OnCheckUnitForConversion) then
@@ -432,6 +437,17 @@ begin
       fMissingUnits.Delete(i);
     end;
   end;
+end;
+
+procedure TUsedUnits.OmitUnits;
+// Remove globally omitted units from MissingUnits.
+// Those units were added to MissingUnits to find possible replacements.
+var
+  i, x: Integer;
+begin
+  for i:=fMissingUnits.Count-1 downto 0 do
+    if fCTLink.Settings.OmitProjUnits.Find(fMissingUnits[i], x) then
+      fMissingUnits.Delete(i);
 end;
 
 function TUsedUnits.RemoveUnits: boolean;

@@ -617,6 +617,9 @@ function TDelphiUnit.ConvertUnitFile: TModalResult;
     // Comment out automatically units that were commented in other files.
     fUsedUnitsTool.MainUsedUnits.CommentAutomatic(fOwnerConverter.fAllCommentedUnits);
     fUsedUnitsTool.ImplUsedUnits.CommentAutomatic(fOwnerConverter.fAllCommentedUnits);
+    // Remove omitted units from MissingUnits.
+    fUsedUnitsTool.MainUsedUnits.OmitUnits;
+    fUsedUnitsTool.ImplUsedUnits.OmitUnits;
     if fUsedUnitsTool.MissingUnitCount=0 then exit;
     // Interactive dialog for searching unit.
     Result:=AskUnitPathFromUser;
@@ -1017,8 +1020,10 @@ var
   Converter: TDelphiUnit;
   i: Integer;
 begin
-  if not fSettings.SameDfmFile then
+  if not fSettings.SameDfmFile then begin
+    IDEMessagesWindow.AddMsg('', '', -1);
     IDEMessagesWindow.AddMsg(lisConvDelphiRepairingFormFiles, '', -1);
+  end;
   Application.ProcessMessages;
   Screen.Cursor:=crHourGlass;
   try
@@ -1484,6 +1489,7 @@ begin
   MisUnits:=nil;
   NormalUnits:=nil;
   try
+    IDEMessagesWindow.AddMsg('', '', -1);
     IDEMessagesWindow.AddMsg(lisConvDelphiFindAllUnitFiles, '', -1);
     Application.ProcessMessages;
     if not CodeToolBoss.FindDelphiProjectUnits(fMainUnitConverter.fPascalBuffer,
@@ -1552,6 +1558,7 @@ begin
   ConvUnits:=TObjectList.Create;
   try
     // convert all units and fix .lfm files
+    IDEMessagesWindow.AddMsg('', '', -1);
     IDEMessagesWindow.AddMsg(lisConvDelphiConvertingUnitFiles, '', -1);
     Application.ProcessMessages;
     for i:=0 to LazProject.UnitCount-1 do begin
@@ -1732,6 +1739,7 @@ begin
   ConvUnits:=TObjectList.create;
   try
     // convert all units and fix .lfm files
+    IDEMessagesWindow.AddMsg('', '', -1);
     IDEMessagesWindow.AddMsg(lisConvDelphiConvertingUnitFiles, '', -1);
     Application.ProcessMessages;
     for i:=0 to LazPackage.FileCount-1 do begin

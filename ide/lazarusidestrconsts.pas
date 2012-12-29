@@ -5331,10 +5331,10 @@ resourcestring
   lisConvDelphiConvertDelphiUnit = 'Convert Delphi unit';
   lisConvDelphiConvertDelphiProject = 'Convert Delphi project';
   lisConvDelphiConvertDelphiPackage = 'Convert Delphi package';
-  lisConvDelphiFindAllUnitFiles = '*** Find all unit files ... ***';
-  lisConvDelphiRepairingFormFiles = '*** Repairing form files ... ***';
+  lisConvDelphiFindAllUnitFiles = '*** Find all unit files ***';
+  lisConvDelphiRepairingFormFiles = '*** Fixing used units and Repairing form files ***';
+  lisConvDelphiConvertingUnitFiles = '*** Converting unit files ***';
   lisConvDelphiRepairingFormFile = '* Repairing form file %s *';
-  lisConvDelphiConvertingUnitFiles = '*** Converting unit files ... ***';
   lisConvDelphiConvertingFile = '* Converting file %s *';
   lisConvDelphiFixingUsedUnits = '* Fixing used units for file %s *';
   lisConvDelphiChangedEncodingToUTF8 = 'Changed encoding from %s to UTF-8';
