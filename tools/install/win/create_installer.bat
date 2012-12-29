@@ -1,3 +1,5 @@
+:: Note: This script sets various ENV variables as output.
+
 :: check all the necessary parameters are given and not empty
 if [%1]==[] goto USAGE
 if [%2]==[] goto USAGE
@@ -46,18 +48,18 @@ if not "%ProgramFiles(x86)%" == "" set ProgramFiles32bits=%ProgramFiles(x86):"=%
 SET ISCC="%ISCC%"
 SET ISCC=%ISCC:"=%
 SET ISCC="%ISCC%"
-if not [%ISCC%]==[""] goto ISCC_BY_USER
+if not [%ISCC%]==[""] goto ISCC_DONE
 SET ISCC="%ProgramFiles32bits%\Inno Setup 5\iscc.exe"
 if not exist %ISCC% SET SET ISCC="%ProgramFiles%\Inno Setup 5\iscc.exe"
-:ISCC_BY_USER
-if not exist %ISCC% GOTO ERROR_INNO
+:: NO fallback to PATH
+:ISCC_DONE
 
 ::---------------------------------------------------------------------
 :: Path to the svn executable; make sure it has quotes
 SET SVN="%SVN%"
 SET SVN=%SVN:"=%
 SET SVN="%SVN%"
-if not [%SVN%]==[""] GOTO SVN_BY_USER
+if not [%SVN%]==[""] GOTO SVN_DONE
 :: set Subversion; if it doesn't exist try TortoiseSVN 32bits and 64bits else error info
 SET SVN="%ProgramFiles%\subversion\bin\svn.exe"
 if not exist %SVN% SET SVN="%ProgramFiles%\TortoiseSVN\bin\svn.exe"
@@ -65,9 +67,6 @@ if not exist %SVN% SET SVN="%ProgramFiles32bits%\subversion\bin\svn.exe"
 if not exist %SVN% SET SVN="%ProgramFiles32bits%\TortoiseSVN\bin\svn.exe"
 :: Use SVN in Path
 if not exist %SVN% SET SVN=svn.exe
-GOTO SVN_DONE
-:SVN_BY_USER
-if not exist %SVN% GOTO ERROR_SVN
 :SVN_DONE
 
 ::---------------------------------------------------------------------
@@ -75,16 +74,14 @@ if not exist %SVN% GOTO ERROR_SVN
 SET SVNVER="%SVNVER%"
 SET SVNVER=%SVNVER:"=%
 SET SVNVER="%SVNVER%"
-if not [%SVNVER%]==[""] GOTO SVNVER_BY_USER
+if not [%SVNVER%]==[""] GOTO SVNVER_DONE
 :: set Subversion if it doesn't exist try TortoiseSVN 32bits and 64bits else error info
 SET SVNVER="%ProgramFiles%\subversion\bin\svnversion.exe"
 if not exist %SVNVER% SET SVNVER="%ProgramFiles%\TortoiseSVN\bin\svnversion.exe"
 if not exist %SVNVER% SET SVNVER="%ProgramFiles32bits%\subversion\bin\svnversion.exe"
 if not exist %SVNVER% SET SVNVER="%ProgramFiles32bits%\TortoiseSVN\bin\svnversion.exe"
+:: Use SVN in Path
 if not exist %SVNVER% SET SVNVER=svnversion.exe
-GOTO SVNVER_DONE
-:SVNVER_BY_USER
-if not exist %SVNVER% GOTO ERROR_SVN
 :SVNVER_DONE
 
 ::---------------------------------------------------------------------
@@ -197,9 +194,17 @@ GOTO END
 
 :SVNVERERR
 echo SVNVersion failed
+echo
+echo This script requires SVN.
+echo If not installed, then please download at:
+echo http://subversion.apache.org/packages.html or http://tortoisesvn.net/downloads.html
 GOTO END
 :SVNERR
 echo SVN failed
+echo
+echo This script requires SVN.
+echo If not installed, then please download at:
+echo http://subversion.apache.org/packages.html or http://tortoisesvn.net/downloads.html
 :END
 
 SET PATH=%OLDPATH%
@@ -211,6 +216,10 @@ goto STOP
 
 :WARNING_INSTALLER_FAILED
 echo Installer was not created in output\%OutputFileName%.exe. Ending now.
+echo 
+echo This script requires inno setup. 
+echo If not installed, then please download at:
+echo http://www.jrsoftware.org
 GOTO END
 
 :WARNING_NO_COMPILER_MADE
@@ -220,18 +229,6 @@ GOTO END
 :WARNING_NO_LAZARUS
 echo Could not find %BUILDDIR%\lazarus.exe or %BUILDDIR%\startlazarus.exe. Ending now.
 GOTO END
-
-:ERROR_INNO
-echo Inno setup instalation %ISCC% does not exist.
-echo Please download and install this program; it is required to create the installer.
-echo http://www.jrsoftware.org
-GOTO STOP
-
-:ERROR_SVN
-echo Subversion or TortoiseSVN instalation %SVN% does not exist.
-echo Please download and install this program; it is required to create the installer.
-echo http://subversion.apache.org/packages.html or http://tortoisesvn.net/downloads.html
-GOTO STOP
 
 :USAGE
 @echo off
