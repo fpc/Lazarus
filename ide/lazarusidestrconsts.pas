@@ -547,8 +547,8 @@ resourcestring
   lisStartConversion = 'Start Conversion';
   lisConvertTarget = 'Target';
   lisConvertTargetHint = 'Converter adds conditional compilation to support different targets';
-  lisConvertTargetMultiPlatform = 'Multi-Platform';
-  lisConvertTargetMultiPlatformHint = 'Multi-Platform versus Windows-only';
+  lisConvertTargetCrossPlatform = 'Cross-platform';
+  lisConvertTargetCrossPlatformHint = 'Cross-platform versus Windows-only';
   lisConvertTargetSupportDelphi = 'Support Delphi';
   lisConvertTargetSupportDelphiHint = 'Use conditional compilation to support Delphi';
   lisConvertTargetSameDfmFile = 'Use the same DFM form file';

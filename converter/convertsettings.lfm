@@ -17,7 +17,7 @@ object ConvertSettingsForm: TConvertSettingsForm
     AnchorSideLeft.Control = Owner
     AnchorSideRight.Control = UnitReplaceDivider
     Left = 9
-    Height = 21
+    Height = 19
     Hint = 'Directory where project''s main file must be'
     Top = 32
     Width = 330
@@ -32,8 +32,8 @@ object ConvertSettingsForm: TConvertSettingsForm
     EditLabel.AnchorSideRight.Side = asrBottom
     EditLabel.AnchorSideBottom.Control = ProjectPathEdit
     EditLabel.Left = 9
-    EditLabel.Height = 13
-    EditLabel.Top = 12
+    EditLabel.Height = 15
+    EditLabel.Top = 10
     EditLabel.Width = 330
     EditLabel.Caption = 'Project Path:'
     EditLabel.ParentColor = False
@@ -48,10 +48,10 @@ object ConvertSettingsForm: TConvertSettingsForm
     AnchorSideTop.Control = TargetGroupBox
     AnchorSideTop.Side = asrBottom
     Left = 12
-    Height = 17
+    Height = 21
     Hint = 'Creates a Backup directory under project directory'
-    Top = 181
-    Width = 159
+    Top = 179
+    Width = 210
     BorderSpacing.Left = 3
     BorderSpacing.Top = 9
     Caption = 'Make backup of changed files'
@@ -63,8 +63,8 @@ object ConvertSettingsForm: TConvertSettingsForm
   end
   object ButtonPanel1: TButtonPanel
     Left = 6
-    Height = 34
-    Top = 315
+    Height = 38
+    Top = 311
     Width = 587
     OKButton.Name = 'OKButton'
     OKButton.DefaultCaption = True
@@ -84,10 +84,10 @@ object ConvertSettingsForm: TConvertSettingsForm
     AnchorSideTop.Control = BackupCheckBox
     AnchorSideTop.Side = asrBottom
     Left = 12
-    Height = 17
+    Height = 21
     Hint = 'Separate form files allow different properties'
-    Top = 203
-    Width = 185
+    Top = 205
+    Width = 241
     BorderSpacing.Top = 5
     Caption = 'Keep converted files open in editor'
     ParentShowHint = False
@@ -259,23 +259,23 @@ object ConvertSettingsForm: TConvertSettingsForm
     Left = 9
     Height = 108
     Hint = 'xxx'
-    Top = 64
+    Top = 62
     Width = 255
     BorderSpacing.Top = 11
     Caption = 'Target'
-    ClientHeight = 90
+    ClientHeight = 91
     ClientWidth = 251
     ParentShowHint = False
     ShowHint = True
     TabOrder = 8
     object SupportDelphiCheckBox: TCheckBox
-      AnchorSideLeft.Control = MultiPlatformCheckBox
-      AnchorSideTop.Control = MultiPlatformCheckBox
+      AnchorSideLeft.Control = CrossPlatformCheckBox
+      AnchorSideTop.Control = CrossPlatformCheckBox
       AnchorSideTop.Side = asrBottom
       Left = 10
-      Height = 17
-      Top = 26
-      Width = 88
+      Height = 21
+      Top = 30
+      Width = 116
       BorderSpacing.Top = 5
       Caption = 'Support Delphi'
       OnChange = SupportDelphiCheckBoxChange
@@ -288,9 +288,9 @@ object ConvertSettingsForm: TConvertSettingsForm
       AnchorSideTop.Control = SupportDelphiCheckBox
       AnchorSideTop.Side = asrBottom
       Left = 10
-      Height = 17
-      Top = 48
-      Width = 149
+      Height = 21
+      Top = 56
+      Width = 194
       BorderSpacing.Top = 5
       Caption = 'Use the same DFM form file'
       OnChange = SameDfmCheckBoxChange
@@ -298,14 +298,14 @@ object ConvertSettingsForm: TConvertSettingsForm
       ShowHint = True
       TabOrder = 1
     end
-    object MultiPlatformCheckBox: TCheckBox
+    object CrossPlatformCheckBox: TCheckBox
       AnchorSideTop.Control = TargetGroupBox
       Left = 10
-      Height = 17
+      Height = 21
       Top = 4
-      Width = 84
+      Width = 114
       BorderSpacing.Top = 4
-      Caption = 'Multi-Platform'
+      Caption = 'Cross-platform'
       ParentShowHint = False
       ShowHint = True
       TabOrder = 2
@@ -317,11 +317,11 @@ object ConvertSettingsForm: TConvertSettingsForm
     AnchorSideTop.Control = UnitReplaceButton
     AnchorSideTop.Side = asrCenter
     Left = 447
-    Height = 21
-    Top = 29
+    Height = 27
+    Top = 26
     Width = 136
     BorderSpacing.Left = 23
-    ItemHeight = 13
+    ItemHeight = 0
     Style = csDropDownList
     TabOrder = 9
   end
@@ -330,11 +330,11 @@ object ConvertSettingsForm: TConvertSettingsForm
     AnchorSideTop.Control = UnknownPropsDivider
     AnchorSideTop.Side = asrBottom
     Left = 447
-    Height = 21
+    Height = 27
     Top = 84
     Width = 136
     BorderSpacing.Top = 2
-    ItemHeight = 13
+    ItemHeight = 0
     Style = csDropDownList
     TabOrder = 10
   end
@@ -344,11 +344,11 @@ object ConvertSettingsForm: TConvertSettingsForm
     AnchorSideTop.Control = FuncReplaceButton
     AnchorSideTop.Side = asrCenter
     Left = 447
-    Height = 21
-    Top = 197
+    Height = 27
+    Top = 194
     Width = 136
     BorderSpacing.Left = 23
-    ItemHeight = 13
+    ItemHeight = 0
     Style = csDropDownList
     TabOrder = 11
   end
@@ -358,11 +358,11 @@ object ConvertSettingsForm: TConvertSettingsForm
     AnchorSideTop.Control = CoordOffsButton
     AnchorSideTop.Side = asrCenter
     Left = 447
-    Height = 21
-    Top = 253
+    Height = 27
+    Top = 250
     Width = 136
     BorderSpacing.Left = 23
-    ItemHeight = 13
+    ItemHeight = 0
     Style = csDropDownList
     TabOrder = 12
   end
@@ -372,11 +372,11 @@ object ConvertSettingsForm: TConvertSettingsForm
     AnchorSideTop.Control = TypeReplaceButton
     AnchorSideTop.Side = asrCenter
     Left = 447
-    Height = 21
-    Top = 141
+    Height = 27
+    Top = 138
     Width = 136
     BorderSpacing.Left = 23
-    ItemHeight = 13
+    ItemHeight = 0
     Style = csDropDownList
     TabOrder = 13
   end
@@ -385,9 +385,9 @@ object ConvertSettingsForm: TConvertSettingsForm
     AnchorSideLeft.Side = asrBottom
     AnchorSideTop.Control = KeepFileOpenCheckBox
     AnchorSideTop.Side = asrBottom
-    Left = 142
+    Left = 181
     Height = 20
-    Top = 244
+    Top = 250
     Width = 102
     BorderSpacing.Left = 6
     BorderSpacing.Top = 24
@@ -399,9 +399,9 @@ object ConvertSettingsForm: TConvertSettingsForm
     AnchorSideTop.Control = ScanProgressBar
     AnchorSideTop.Side = asrCenter
     Left = 12
-    Height = 13
-    Top = 248
-    Width = 124
+    Height = 15
+    Top = 253
+    Width = 163
     Caption = 'Scanning parent directory'
     ParentColor = False
   end
@@ -411,9 +411,9 @@ object ConvertSettingsForm: TConvertSettingsForm
     AnchorSideTop.Side = asrBottom
     AnchorSideRight.Control = ScanProgressBar
     AnchorSideRight.Side = asrBottom
-    Left = 142
+    Left = 181
     Height = 25
-    Top = 265
+    Top = 271
     Width = 102
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Top = 1

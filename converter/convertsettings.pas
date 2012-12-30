@@ -58,7 +58,7 @@ type
     // Actual user settings.
     fBackupFiles: boolean;
     fKeepFileOpen: boolean;
-    fMultiPlatform: boolean;
+    fCrossPlatform: boolean;
     fSupportDelphi: boolean;
     fSameDfmFile: boolean;
     // Modes for replacements:
@@ -108,7 +108,7 @@ type
     property Enabled: Boolean read fEnabled write SetEnabled;
     property BackupFiles: boolean read fBackupFiles;
     property KeepFileOpen: boolean read fKeepFileOpen;
-    property MultiPlatform: boolean read fMultiPlatform;
+    property CrossPlatform: boolean read fCrossPlatform;
     property SupportDelphi: boolean read fSupportDelphi;
     property SameDfmFile: boolean read fSameDfmFile;
     property UnitsReplaceMode: TReplaceModeLong read fUnitsReplaceMode;
@@ -132,7 +132,7 @@ type
     ScanLabel: TLabel;
     ScanProgressBar: TProgressBar;
     UnitReplaceComboBox: TComboBox;
-    MultiPlatformCheckBox: TCheckBox;
+    CrossPlatformCheckBox: TCheckBox;
     SameDfmCheckBox: TCheckBox;
     SupportDelphiCheckBox: TCheckBox;
     TargetGroupBox: TGroupBox;
@@ -391,7 +391,7 @@ begin
   fConfigStorage:=GetIDEConfigStorage('delphiconverter.xml', true);
   fBackupFiles                      :=fConfigStorage.GetValue('BackupFiles', true);
   fKeepFileOpen                     :=fConfigStorage.GetValue('KeepFileOpen', false);
-  fMultiPlatform                    :=fConfigStorage.GetValue('MultiPlatform', true);
+  fCrossPlatform                    :=fConfigStorage.GetValue('CrossPlatform', true);
   fSupportDelphi                    :=fConfigStorage.GetValue('SupportDelphi', false);
   fSameDfmFile                      :=fConfigStorage.GetValue('SameDfmFile', false);
   fUnitsReplaceMode:=TReplaceModeLong(fConfigStorage.GetValue('UnitsReplaceMode', 2));
@@ -612,7 +612,7 @@ begin
   // Save possibly modified settings to ConfigStorage.
   fConfigStorage.SetDeleteValue('BackupFiles',      fBackupFiles, true);
   fConfigStorage.SetDeleteValue('KeepFileOpen',     fKeepFileOpen, false);
-  fConfigStorage.SetDeleteValue('MultiPlatform',    fMultiPlatform, true);
+  fConfigStorage.SetDeleteValue('CrossPlatform',    fCrossPlatform, true);
   fConfigStorage.SetDeleteValue('SupportDelphi',    fSupportDelphi, false);
   fConfigStorage.SetDeleteValue('SameDfmFile',      fSameDfmFile, false);
   fConfigStorage.SetDeleteValue('UnitsReplaceMode', integer(fUnitsReplaceMode), 2);
@@ -653,7 +653,7 @@ begin
       // Settings --> UI. Loaded from ConfigSettings earlier.
       BackupCheckBox.Checked          :=fBackupFiles;
       KeepFileOpenCheckBox.Checked    :=fKeepFileOpen;
-      MultiPlatformCheckBox.Checked   :=fMultiPlatform;
+      CrossPlatformCheckBox.Checked   :=fCrossPlatform;
       SupportDelphiCheckBox.Checked   :=fSupportDelphi;
       SameDfmCheckBox.Checked         :=fSameDfmFile;
       UnitReplaceComboBox.ItemIndex   :=integer(fUnitsReplaceMode);
@@ -668,7 +668,7 @@ begin
         // UI --> Settings. Will be saved to ConfigSettings later.
         fBackupFiles     :=BackupCheckBox.Checked;
         fKeepFileOpen    :=KeepFileOpenCheckBox.Checked;
-        fMultiPlatform   :=MultiPlatformCheckBox.Checked;
+        fCrossPlatform   :=CrossPlatformCheckBox.Checked;
         fSupportDelphi   :=SupportDelphiCheckBox.Checked;
         fSameDfmFile     :=SameDfmCheckBox.Checked;
         fUnitsReplaceMode:=TReplaceModeLong(UnitReplaceComboBox.ItemIndex);
@@ -801,8 +801,8 @@ begin
   KeepFileOpenCheckBox.Caption:=lisKeepFileOpen;
   KeepFileOpenCheckBox.Hint:=lisKeepFileOpenHint;
   // Target
-  MultiPlatformCheckBox.Caption:=lisConvertTargetMultiPlatform;
-  MultiPlatformCheckBox.Hint:=lisConvertTargetMultiPlatformHint;
+  CrossPlatformCheckBox.Caption:=lisConvertTargetCrossPlatform;
+  CrossPlatformCheckBox.Hint:=lisConvertTargetCrossPlatformHint;
   SupportDelphiCheckBox.Caption:=lisConvertTargetSupportDelphi;
   SupportDelphiCheckBox.Hint:=lisConvertTargetSupportDelphiHint;
   SameDfmCheckBox.Caption:=lisConvertTargetSameDfmFile;

@@ -619,7 +619,7 @@ var
           // UTF8 funcs are in LCL which console apps don't have -> don't change.
           and not (aIsConsoleApp and (FuncDefInfo.Category='UTF8Names'))
           // Keep Windows funcs in a Windows application.
-          and (fCTLink.Settings.MultiPlatform or (FuncDefInfo.Category<>'WindowsAPI'))
+          and (fCTLink.Settings.CrossPlatform or (FuncDefInfo.Category<>'WindowsAPI'))
           then begin
             // Create a new replacement object for params, position and other info.
             FuncCallInfo:=TFuncReplacement.Create(FuncDefInfo);
