@@ -654,31 +654,40 @@ end;
 
 procedure TSynEditCaret.InternalSetLineCharPos(NewLine, NewCharPos: Integer;
   KeepLastCharPos: Boolean = False; ForceSet: Boolean = False);
+
+  function GetMaxLeftPastEOL: Integer;
+  begin
+    if FMaxLeftChar <> nil then
+      Result := FMaxLeftChar()
+    else
+      Result := MaxInt;
+  end;
+
 var
   nMaxX, i: Integer;
-  Line: string;
 begin
   Lock;
   FTouched := True;
   try
     if (fCharPos <> NewCharPos) or (fLinePos <> NewLine) or ForceSet then begin
-      if FMaxLeftChar <> nil then
-        nMaxX := FMaxLeftChar()
-      else
-        nMaxX := MaxInt;
       if NewLine > FLines.Count then
         NewLine := FLines.Count;
+
       if NewLine < 1 then begin
+        nMaxX := 1;
+        if (NewCharPos > 1) and (FAllowPastEOL or (FForcePastEOL > 0)) then
+          nMaxX := GetMaxLeftPastEOL;
         // this is just to make sure if Lines stringlist should be empty
         NewLine := 1;
-        if (not FAllowPastEOL) and (FForcePastEOL = 0) then
-          nMaxX := 1;
       end else begin
-        Line := Lines[NewLine - 1];
-        i := Lines.LogicalToPhysicalCol(Line, NewLine - 1, length(Line)+1);
-        if ((not FAllowPastEOL) and (FForcePastEOL = 0)) or (nMaxX < i) then
+        i := Lines.LogPhysConvertor.LogicalToPhysical(NewLine-1, length(Lines[NewLine - 1])+1);
+        nMaxX := i;
+        if (NewCharPos > i) and (FAllowPastEOL or (FForcePastEOL > 0)) then
+          nMaxX := GetMaxLeftPastEOL;
+        if (nMaxX < i) then
           nMaxX := i;
       end;
+
       if NewCharPos > nMaxX then
         NewCharPos := nMaxX;
       if NewCharPos < 1 then
