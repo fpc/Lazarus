@@ -2944,10 +2944,21 @@ var
   hl: TSynCustomFoldHighlighter;
 begin
   Result := nil;
+
+  if HasCount and
+     ( (Index >= Count - OpeningOnLineCount) or // OpeningOnLine
+       ( (Index >= FEvaluationIndex) and (nfeHasHNode in FNestInfo[Index].FFLags) )
+     )
+  then begin
+    Result := HLNode[Index].FoldType;
+    exit;
+  end;
+
   hl := FFoldProvider.HighLighterWithLines;
   if hl = nil then exit;
 
-  if hl.FoldBlockNestedTypes(Line - 1, Index, Result, FFoldGroup, FFoldFlags) then
+  // TODO: Cache
+  if (FFoldGroup > 0) and (hl.FoldBlockNestedTypes(Line - 1, Index, Result, FFoldGroup, FFoldFlags)) then
     exit;
 
   Result := HLNode[Index].FoldType;
@@ -4304,19 +4315,22 @@ begin
 
     // TODO: missing check, that hl-node is hideable
     fldinf := FoldProvider.InfoForFoldAtTextIndex(AStartIndex, ColIndex, IsHide);
-    if not NFolded.IsInFold then
-      fFoldTree.InsertNewFold(AStartIndex+1+AVisibleLines, ColIndex,
-                              fldinf.Column, fldinf.ColumnLen, fldinf.LineCount,
-                              AVisibleLines,
-                              fldinf.Classification, fldinf.FoldTypeCompatible)
-    else
-    if (AVisibleLines=0) and (not NFolded.IsHide) then begin
-      // upgrade to hide
-      fFoldTree.RemoveFoldForNodeAtLine(NFolded, -1);
-      fFoldTree.InsertNewFold(AStartIndex+1, ColIndex,
-                              fldinf.Column, fldinf.ColumnLen, fldinf.LineCount,
-                              AVisibleLines,
-                              fldinf.Classification, fldinf.FoldTypeCompatible);
+    if not NFolded.IsInFold then begin
+      if fldinf.LineCount > 0 then
+        fFoldTree.InsertNewFold(AStartIndex+1+AVisibleLines, ColIndex,
+                                fldinf.Column, fldinf.ColumnLen, fldinf.LineCount,
+                                AVisibleLines,
+                                fldinf.Classification, fldinf.FoldTypeCompatible)
+    end
+    else begin
+      if (AVisibleLines=0) and (not NFolded.IsHide) and (fldinf.LineCount > 0) then begin
+        // upgrade to hide
+        fFoldTree.RemoveFoldForNodeAtLine(NFolded, -1);
+        fFoldTree.InsertNewFold(AStartIndex+1, ColIndex,
+                                fldinf.Column, fldinf.ColumnLen, fldinf.LineCount,
+                                AVisibleLines,
+                                fldinf.Classification, fldinf.FoldTypeCompatible);
+      end;
     end;
     if down
     then dec(ColIndex)
