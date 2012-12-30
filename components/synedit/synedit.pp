@@ -8131,7 +8131,7 @@ var
   BracketKind, TmpStart: Integer;
   TmpAttr : TSynHighlighterAttributes;
   // for IsContextBracket
-  MaxKnownTokenPos, TokenListCnt: Integer;
+  MaxKnownTokenPos, LastUsedTokenIdx, TokenListCnt: Integer;
   TokenPosList: Array of TokenPos;
 
   // remove all text, that is not of desired attribute
@@ -8167,6 +8167,7 @@ var
           TokenListCnt := i + 1;
           MaxKnownTokenPos := TokenPosList[i].X;
           Result := TokenPosList[i-1].Attr = BracketKind;
+          LastUsedTokenIdx := i-1;
           exit;
         end;
         inc(i);
@@ -8176,13 +8177,16 @@ var
       TokenPosList[i].X := MaxKnownTokenPos;
       TokenListCnt := i + 1;
       Result := TokenPosList[i-1].Attr = BracketKind;
+      LastUsedTokenIdx := i-1;
       exit;
     end;
+
     // Token is in previously retrieved values
-    i := 1;
-    while (i < TokenListCnt) and (TokenPosList[i].X <= PosX) do
-      inc(i);
-    Result := TokenPosList[i-1].Attr = BracketKind;
+    i := LastUsedTokenIdx;
+    while (i > 0) and (TokenPosList[i-1].X <= PosX) do
+      dec(i);
+    Result := TokenPosList[i].Attr = BracketKind;
+    LastUsedTokenIdx := i;
   end;
 
   procedure DoMatchingBracketFound;
