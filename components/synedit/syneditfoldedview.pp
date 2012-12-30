@@ -438,6 +438,9 @@ type
       *TextIndex = Line (0-based) in the complete text(folded and unfolded)
   }
 
+  TSynEditFoldedViewFlag = (fvfNeedCaretCheck, fvfNeedCalcMaps);
+  TSynEditFoldedViewFlags = set of TSynEditFoldedViewFlag;
+
   { TSynEditFoldedView }
 
   TSynEditFoldedView = class
@@ -456,7 +459,7 @@ type
     fOnFoldChanged : TFoldChangedEvent;
     fLockCount : Integer;
     fNeedFixFrom, fNeedFixMinEnd : Integer;
-    fNeedCaretCheck : Boolean;
+    FFlags: TSynEditFoldedViewFlags;
     FInTopLineChanged: Boolean;
     FDisplayView: TLazSynDisplayFold;
     FFoldChangedHandlerList: TFoldChangedHandlerList;
@@ -3666,8 +3669,7 @@ begin
   if fLockCount=0 then begin
     fNeedFixFrom := -1;
     fNeedFixMinEnd := -1;
-    fNeedCaretCheck := false;
-  end;;
+  end;
   inc(fLockCount);
 end;
 
@@ -3677,8 +3679,10 @@ begin
   if (fLockCount=0) then begin
     if (fNeedFixFrom >= 0) then
       FixFolding(fNeedFixFrom, fNeedFixMinEnd, fFoldTree);
-    if fNeedCaretCheck then
+    if fvfNeedCaretCheck in FFlags then
       DoCaretChanged(fCaret);
+    if fvfNeedCalcMaps in FFlags then
+      CalculateMaps;
   end;
 end;
 
@@ -3757,6 +3761,11 @@ var
   NewClassifications :TFoldNodeClassifications;
 begin
   if fLinesInWindow < 0 then exit;
+  if fLockCount > 0 then begin
+    Include(FFlags, fvfNeedCalcMaps);
+    exit;
+  end;
+  Exclude(FFlags, fvfNeedCalcMaps);
 
   node := fFoldTree.FindFoldForFoldedLine(fTopLine, true);
   // ftopline is not a folded line
@@ -4612,7 +4621,7 @@ begin
   {$IFDEF SynFoldDebug}try DebugLnEnter(['>>FOLD-- FixFolding: Start=', AStart, '  AMinEnd=',AMinEnd]);{$ENDIF}
   Result := false;
   if fLockCount > 0 then begin
-    fNeedCaretCheck := true; // We may be here as a result of lines deleted/inserted
+    Include(FFlags, fvfNeedCaretCheck);
     if fNeedFixFrom < 0 then fNeedFixFrom := AStart
     else fNeedFixFrom := Min(fNeedFixFrom, AStart);
     fNeedFixMinEnd := Max(fNeedFixMinEnd, AMinEnd);
@@ -4651,9 +4660,10 @@ var
   i: Integer;
 begin
   if fLockCount > 0 then begin
-    fNeedCaretCheck := true;
+    Include(FFlags, fvfNeedCaretCheck);
     exit;
   end;
+  Exclude(FFlags, fvfNeedCaretCheck);
   i := TSynEditCaret(Sender).LinePos-1;
   {$IFDEF SynFoldDebug}if FoldedAtTextIndex[i] then debugln(['FOLD-- DoCaretChanged  about to unfold at Index=', i]);{$ENDIF}
   if FoldedAtTextIndex[i] then
