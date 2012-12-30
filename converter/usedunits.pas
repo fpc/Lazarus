@@ -247,7 +247,7 @@ begin
         if OmitUnit then                       // but they can have replacements.
           fMissingUnits.Add(NewUnitName)
         // Report Windows specific units as missing if target is CrossPlatform.
-        //  Needed if work-platform is Windows (kind of a hack).
+        //  Needed if work-platform is Windows.
         else if Settings.CrossPlatform and IsWinSpecificUnit(LowNU) then
           fMissingUnits.Add(s);
         // Check if the unit is not part of project and needs conversion, too.
@@ -257,7 +257,7 @@ begin
       else begin
         // If the unit is not found, add it to fMissingUnits, but don't add
         //  Windows specific units if target is "Windows only".
-        //  Needed if work-platform is different from Windows (kind of a hack).
+        //  Needed if work-platform is different from Windows.
         if Settings.CrossPlatform or not IsWinSpecificUnit(LowNU) then
           fMissingUnits.Add(s);
       end;
@@ -618,7 +618,7 @@ begin
         if not CodeTool.AddUnitToSpecificUsesSection(
                           fUsesSection, fUnitsToAdd[i], '', SrcCache) then exit;
     end;
-    if fIsMainFile or (Settings.CrossPlatform and not Settings.SupportDelphi) then begin
+    if fIsMainFile or not Settings.SupportDelphi then begin
       // One way conversion (or main file) -> remove and rename units.
       if not fMainUsedUnits.RemoveUnits then exit;    // Remove
       if not fImplUsedUnits.RemoveUnits then exit;
