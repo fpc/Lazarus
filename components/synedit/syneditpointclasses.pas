@@ -171,6 +171,9 @@ type
 
   { TSynEditCaret }
 
+  TSynEditCaretFlag = (scLinesEditedRegistered);
+  TSynEditCaretFlags = set of TSynEditCaretFlag;
+
   TSynEditCaret = class(TSynEditPointBase)
   private
     FAllowPastEOL: Boolean;
@@ -178,17 +181,22 @@ type
     FForcePastEOL: Integer;
     FForceAdjustToNextChar: Integer;
     FKeepCaretX: Boolean;
+
     FLinePos: Integer;     // 1 based
     FCharPos: Integer;     // 1 based
     FLastCharPos: Integer; // used by KeepCaretX
+
     FBytePos, FBytePosOffset: Integer;     // 1 based
+
     FOldLinePos: Integer; // 1 based
     FOldCharPos: Integer; // 1 based
+
     FAdjustToNextChar: Boolean;
     FMaxLeftChar: TMaxLeftCharFunc;
     FChangeOnTouch: Boolean;
     FSkipTabs: Boolean;
     FTouched: Boolean;
+    FFlags: TSynEditCaretFlags;
 
     procedure AdjustToChar;
     procedure UpdateBytePos;
@@ -197,7 +205,7 @@ type
     procedure InternalSetLineCharPos(NewLine, NewCharPos: Integer;
                                      KeepLastCharPos: Boolean = False;
                                      ForceSet: Boolean = False);
-    procedure setCharPos(const AValue: Integer);
+    procedure SetCharPos(const AValue: Integer);
     procedure SetAllowPastEOL(const AValue: Boolean);
     procedure SetKeepCaretX(const AValue: Boolean);
     procedure setLinePos(const AValue: Integer);
@@ -211,6 +219,7 @@ type
     function  GetLineText: string;
     procedure SetLineText(const AValue : string);
     procedure SetSkipTabs(const AValue: Boolean);
+    procedure RegisterLinesEditedHandler;
   protected
     procedure SetLines(const AValue: TSynEditStrings); override;
     procedure DoLock; override;
@@ -452,8 +461,10 @@ end;
 
 procedure TSynEditCaret.IncAutoMoveOnEdit;
 begin
-  if FAutoMoveOnEdit =0 then
+  if FAutoMoveOnEdit = 0 then begin
+    RegisterLinesEditedHandler;
     UpdateBytePos;
+  end;
   inc(FAutoMoveOnEdit);
 end;
 
@@ -621,7 +632,7 @@ begin
   Result := Point(FOldCharPos, FOldLinePos);
 end;
 
-procedure TSynEditCaret.setCharPos(const AValue : Integer);
+procedure TSynEditCaret.SetCharPos(const AValue : Integer);
 begin
   InternalSetLineCharPos(FLinePos, AValue);
 end;
@@ -756,14 +767,23 @@ begin
   end;
 end;
 
+procedure TSynEditCaret.RegisterLinesEditedHandler;
+begin
+  if (scLinesEditedRegistered in FFlags) or (FLines = nil) then
+    exit;
+  Include(FFlags, scLinesEditedRegistered);
+  FLines.AddEditHandler(@DoLinesEdited);
+end;
+
 procedure TSynEditCaret.SetLines(const AValue: TSynEditStrings);
 begin
   if FLines = AValue then exit;
-  if FLines <> nil then
+  if (FLines <> nil) then
     FLines.RemoveEditHandler(@DoLinesEdited);
+  Exclude(FFlags, scLinesEditedRegistered);
   inherited SetLines(AValue);
-  if FLines <> nil then
-    FLines.AddEditHandler(@DoLinesEdited);
+  if FAutoMoveOnEdit > 0 then
+    RegisterLinesEditedHandler;
 end;
 
 procedure TSynEditCaret.DoLock;
