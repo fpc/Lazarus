@@ -6421,6 +6421,10 @@ msgstr "Konvertavimas nutrauktas."
 msgid "Conversion Ready."
 msgstr "Pasirengta konvertavimui."
 
+#: lazarusidestrconsts.lisconvdelphiconversiontook
+msgid "Conversion took: %s"
+msgstr ""
+
 #: lazarusidestrconsts.lisconvdelphiconvertdelphipackage
 msgid "Convert Delphi package"
 msgstr "Konvertuoti Delphi paketą"
@@ -6438,7 +6442,9 @@ msgid "* Converting file %s *"
 msgstr "* Konvertuojamas failas „%s“ *"
 
 #: lazarusidestrconsts.lisconvdelphiconvertingunitfiles
-msgid "*** Converting unit files ... ***"
+#, fuzzy
+#| msgid "*** Converting unit files ... ***"
+msgid "*** Converting unit files ***"
 msgstr "*** Konvertuojami modulio failai… ***"
 
 #: lazarusidestrconsts.lisconvdelphidelphipackagemainsourcedpkfilenotfoundforpackage
@@ -6462,7 +6468,9 @@ msgid "Failed to convert unit%s%s%s"
 msgstr "Nepavyko konvertuoti modulį%s%s%s"
 
 #: lazarusidestrconsts.lisconvdelphifindallunitfiles
-msgid "*** Find all unit files ... ***"
+#, fuzzy
+#| msgid "*** Find all unit files ... ***"
+msgid "*** Find all unit files ***"
 msgstr "*** Ieškoma visų modulio… ***"
 
 #: lazarusidestrconsts.lisconvdelphifixedunitcase
@@ -6514,7 +6522,9 @@ msgid "* Repairing form file %s *"
 msgstr "* Taisomas formos failas „%s“ *"
 
 #: lazarusidestrconsts.lisconvdelphirepairingformfiles
-msgid "*** Repairing form files ... ***"
+#, fuzzy
+#| msgid "*** Repairing form files ... ***"
+msgid "*** Fixing used units and Repairing form files ***"
 msgstr "*** Taisomi formos failai… ***"
 
 #: lazarusidestrconsts.lisconvdelphireplacedunitinusessection
@@ -6564,17 +6574,17 @@ msgstr "Konvertuoti projektą ar paketą"
 msgid "Target"
 msgstr "Paskirtis"
 
+#: lazarusidestrconsts.lisconverttargetcrossplatform
+msgid "Cross-platform"
+msgstr ""
+
+#: lazarusidestrconsts.lisconverttargetcrossplatformhint
+msgid "Cross-platform versus Windows-only"
+msgstr ""
+
 #: lazarusidestrconsts.lisconverttargethint
 msgid "Converter adds conditional compilation to support different targets"
 msgstr "Kad būtų palaikomos skirtingos paskirtys, konverteris įdės sąlyginį kompiliavimą"
-
-#: lazarusidestrconsts.lisconverttargetmultiplatform
-msgid "Multi-Platform"
-msgstr "Daugeliui platformų"
-
-#: lazarusidestrconsts.lisconverttargetmultiplatformhint
-msgid "Multi-Platform versus Windows-only"
-msgstr "Daugeliui platformų, ne tik Windows"
 
 #: lazarusidestrconsts.lisconverttargetsamedfmfile
 msgid "Use the same DFM form file"

@@ -6229,6 +6229,10 @@ msgstr "Muunnos on keskeytetty."
 msgid "Conversion Ready."
 msgstr "Muunnos on valmis."
 
+#: lazarusidestrconsts.lisconvdelphiconversiontook
+msgid "Conversion took: %s"
+msgstr ""
+
 #: lazarusidestrconsts.lisconvdelphiconvertdelphipackage
 msgid "Convert Delphi package"
 msgstr "Muunna Delphi paketti"
@@ -6246,7 +6250,9 @@ msgid "* Converting file %s *"
 msgstr "* Muunnetaan tiedostoa %s *"
 
 #: lazarusidestrconsts.lisconvdelphiconvertingunitfiles
-msgid "*** Converting unit files ... ***"
+#, fuzzy
+#| msgid "*** Converting unit files ... ***"
+msgid "*** Converting unit files ***"
 msgstr "*** Muunnetaan käännösyksiköitä ... ***"
 
 #: lazarusidestrconsts.lisconvdelphidelphipackagemainsourcedpkfilenotfoundforpackage
@@ -6270,7 +6276,9 @@ msgid "Failed to convert unit%s%s%s"
 msgstr "käännösyksikön%s%s%s muunnos epäonnistui"
 
 #: lazarusidestrconsts.lisconvdelphifindallunitfiles
-msgid "*** Find all unit files ... ***"
+#, fuzzy
+#| msgid "*** Find all unit files ... ***"
+msgid "*** Find all unit files ***"
 msgstr "*** Etsi kaikki käännösyksiköt ... ***"
 
 #: lazarusidestrconsts.lisconvdelphifixedunitcase
@@ -6322,7 +6330,9 @@ msgid "* Repairing form file %s *"
 msgstr "* Korjataan lomaketiedostoa %s *"
 
 #: lazarusidestrconsts.lisconvdelphirepairingformfiles
-msgid "*** Repairing form files ... ***"
+#, fuzzy
+#| msgid "*** Repairing form files ... ***"
+msgid "*** Fixing used units and Repairing form files ***"
 msgstr "*** Korjataan lomakkeita ... ***"
 
 #: lazarusidestrconsts.lisconvdelphireplacedunitinusessection
@@ -6369,17 +6379,17 @@ msgstr "Muunna projekti tai paketti"
 msgid "Target"
 msgstr ""
 
+#: lazarusidestrconsts.lisconverttargetcrossplatform
+msgid "Cross-platform"
+msgstr ""
+
+#: lazarusidestrconsts.lisconverttargetcrossplatformhint
+msgid "Cross-platform versus Windows-only"
+msgstr ""
+
 #: lazarusidestrconsts.lisconverttargethint
 msgid "Converter adds conditional compilation to support different targets"
 msgstr "Muunnin lisää ehdollista koodia (IFDEF) tukeakseen eri alustoja"
-
-#: lazarusidestrconsts.lisconverttargetmultiplatform
-msgid "Multi-Platform"
-msgstr "Monta alustaa"
-
-#: lazarusidestrconsts.lisconverttargetmultiplatformhint
-msgid "Multi-Platform versus Windows-only"
-msgstr "Monen alustan tuki vastaan pelkkä Windows tuki"
 
 #: lazarusidestrconsts.lisconverttargetsamedfmfile
 msgid "Use the same DFM form file"

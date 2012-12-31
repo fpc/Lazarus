@@ -6518,6 +6518,10 @@ msgstr ""
 msgid "Conversion Ready."
 msgstr ""
 
+#: lazarusidestrconsts.lisconvdelphiconversiontook
+msgid "Conversion took: %s"
+msgstr ""
+
 #: lazarusidestrconsts.lisconvdelphiconvertdelphipackage
 msgid "Convert Delphi package"
 msgstr ""
@@ -6535,7 +6539,7 @@ msgid "* Converting file %s *"
 msgstr ""
 
 #: lazarusidestrconsts.lisconvdelphiconvertingunitfiles
-msgid "*** Converting unit files ... ***"
+msgid "*** Converting unit files ***"
 msgstr ""
 
 #: lazarusidestrconsts.lisconvdelphidelphipackagemainsourcedpkfilenotfoundforpackage
@@ -6559,7 +6563,7 @@ msgid "Failed to convert unit%s%s%s"
 msgstr ""
 
 #: lazarusidestrconsts.lisconvdelphifindallunitfiles
-msgid "*** Find all unit files ... ***"
+msgid "*** Find all unit files ***"
 msgstr ""
 
 #: lazarusidestrconsts.lisconvdelphifixedunitcase
@@ -6611,7 +6615,7 @@ msgid "* Repairing form file %s *"
 msgstr ""
 
 #: lazarusidestrconsts.lisconvdelphirepairingformfiles
-msgid "*** Repairing form files ... ***"
+msgid "*** Fixing used units and Repairing form files ***"
 msgstr ""
 
 #: lazarusidestrconsts.lisconvdelphireplacedunitinusessection
@@ -6662,16 +6666,16 @@ msgstr "Konvertovať projekt alebo balíček"
 msgid "Target"
 msgstr ""
 
+#: lazarusidestrconsts.lisconverttargetcrossplatform
+msgid "Cross-platform"
+msgstr ""
+
+#: lazarusidestrconsts.lisconverttargetcrossplatformhint
+msgid "Cross-platform versus Windows-only"
+msgstr ""
+
 #: lazarusidestrconsts.lisconverttargethint
 msgid "Converter adds conditional compilation to support different targets"
-msgstr ""
-
-#: lazarusidestrconsts.lisconverttargetmultiplatform
-msgid "Multi-Platform"
-msgstr ""
-
-#: lazarusidestrconsts.lisconverttargetmultiplatformhint
-msgid "Multi-Platform versus Windows-only"
 msgstr ""
 
 #: lazarusidestrconsts.lisconverttargetsamedfmfile

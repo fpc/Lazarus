@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2012-12-23 23:11+0400\n"
+"PO-Revision-Date: 2012-12-31 21:50+0400\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -6451,6 +6451,10 @@ msgstr "Преобразование прервано."
 msgid "Conversion Ready."
 msgstr "Преобразование завершено."
 
+#: lazarusidestrconsts.lisconvdelphiconversiontook
+msgid "Conversion took: %s"
+msgstr "Преобразование заняло: %s"
+
 #: lazarusidestrconsts.lisconvdelphiconvertdelphipackage
 msgid "Convert Delphi package"
 msgstr "Преобразование пакета Delphi"
@@ -6470,9 +6474,9 @@ msgid "* Converting file %s *"
 msgstr "* Преобразование файла %s *"
 
 #: lazarusidestrconsts.lisconvdelphiconvertingunitfiles
-#| msgid "*** Converting unit files... ***"
-msgid "*** Converting unit files ... ***"
-msgstr "*** Преобразование файлов модулей ... ***"
+#| msgid "*** Converting unit files ... ***"
+msgid "*** Converting unit files ***"
+msgstr "*** Преобразование файлов модулей ***"
 
 #: lazarusidestrconsts.lisconvdelphidelphipackagemainsourcedpkfilenotfoundforpackage
 msgid "Delphi package main source (.dpk) file not found for package%s%s"
@@ -6495,9 +6499,9 @@ msgid "Failed to convert unit%s%s%s"
 msgstr "Не удалось преобразовать модуль%s%s%s"
 
 #: lazarusidestrconsts.lisconvdelphifindallunitfiles
-#| msgid "*** Find all unit files... ***"
-msgid "*** Find all unit files ... ***"
-msgstr "*** Поиск всех файлов модулей ... ***"
+#| msgid "*** Find all unit files ... ***"
+msgid "*** Find all unit files ***"
+msgstr "*** Поиск всех файлов модулей ***"
 
 #: lazarusidestrconsts.lisconvdelphifixedunitcase
 msgid "Fixed character case of unit \"%s\" to \"%s\"."
@@ -6549,9 +6553,9 @@ msgid "* Repairing form file %s *"
 msgstr "* Исправление файла формы %s *"
 
 #: lazarusidestrconsts.lisconvdelphirepairingformfiles
-#| msgid "*** Repairing form files... ***"
-msgid "*** Repairing form files ... ***"
-msgstr "*** Исправление файлов форм ... ***"
+#| msgid "*** Repairing form files ... ***"
+msgid "*** Fixing used units and Repairing form files ***"
+msgstr "*** Исправление списков используемых модулей и файлов форм ***"
 
 #: lazarusidestrconsts.lisconvdelphireplacedunitinusessection
 msgctxt "lazarusidestrconsts.lisconvdelphireplacedunitinusessection"
@@ -6600,21 +6604,21 @@ msgstr "Преобразование проекта либо пакета"
 msgid "Target"
 msgstr "Цель"
 
+#: lazarusidestrconsts.lisconverttargetcrossplatform
+msgid "Cross-platform"
+msgstr "Кроссплатформенность"
+
+#: lazarusidestrconsts.lisconverttargetcrossplatformhint
+msgid "Cross-platform versus Windows-only"
+msgstr "Обеспечить кроссплатформенность или привязать к Windows"
+
 #: lazarusidestrconsts.lisconverttargethint
 msgid "Converter adds conditional compilation to support different targets"
 msgstr "Добавление директив условной компиляции для поддержки различных целей"
 
-#: lazarusidestrconsts.lisconverttargetmultiplatform
-msgid "Multi-Platform"
-msgstr "Кроссплатформенное приложение"
-
-#: lazarusidestrconsts.lisconverttargetmultiplatformhint
-msgid "Multi-Platform versus Windows-only"
-msgstr "Приложение кроссплатформенно или только для Windows"
-
 #: lazarusidestrconsts.lisconverttargetsamedfmfile
 msgid "Use the same DFM form file"
-msgstr "Использовать файл формы DFM совместно"
+msgstr "Совместное использование файла формы DFM"
 
 #: lazarusidestrconsts.lisconverttargetsamedfmfilehint
 msgid "Same DFM file for Lazarus and Delphi instead of copying it to LFM"
@@ -6622,7 +6626,7 @@ msgstr "Использовать файл DFM совместно для Lazarus 
 
 #: lazarusidestrconsts.lisconverttargetsupportdelphi
 msgid "Support Delphi"
-msgstr "Поддерживать Delphi"
+msgstr "Поддержка Delphi"
 
 #: lazarusidestrconsts.lisconverttargetsupportdelphihint
 msgid "Use conditional compilation to support Delphi"

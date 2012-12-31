@@ -6557,6 +6557,10 @@ msgstr "Conversión Abortada."
 msgid "Conversion Ready."
 msgstr "Conversion Preparada."
 
+#: lazarusidestrconsts.lisconvdelphiconversiontook
+msgid "Conversion took: %s"
+msgstr ""
+
 #: lazarusidestrconsts.lisconvdelphiconvertdelphipackage
 msgid "Convert Delphi package"
 msgstr "Convertir paquete de Delphi"
@@ -6575,8 +6579,8 @@ msgstr "* Convirtiendo archivo %s *"
 
 #: lazarusidestrconsts.lisconvdelphiconvertingunitfiles
 #, fuzzy
-#| msgid "*** Converting unit files... ***"
-msgid "*** Converting unit files ... ***"
+#| msgid "*** Converting unit files ... ***"
+msgid "*** Converting unit files ***"
 msgstr "*** Convirtiendo archivos de unidades ... ***"
 
 #: lazarusidestrconsts.lisconvdelphidelphipackagemainsourcedpkfilenotfoundforpackage
@@ -6601,8 +6605,8 @@ msgstr "Falló convirtiendo unidad%s%s%s"
 
 #: lazarusidestrconsts.lisconvdelphifindallunitfiles
 #, fuzzy
-#| msgid "*** Find all unit files... ***"
-msgid "*** Find all unit files ... ***"
+#| msgid "*** Find all unit files ... ***"
+msgid "*** Find all unit files ***"
 msgstr "*** Encontrar todos los archivos de unidad ... ***"
 
 #: lazarusidestrconsts.lisconvdelphifixedunitcase
@@ -6656,8 +6660,8 @@ msgstr "* Reparando archivo de formulario %s *"
 
 #: lazarusidestrconsts.lisconvdelphirepairingformfiles
 #, fuzzy
-#| msgid "*** Repairing form files... ***"
-msgid "*** Repairing form files ... ***"
+#| msgid "*** Repairing form files ... ***"
+msgid "*** Fixing used units and Repairing form files ***"
 msgstr "*** Reparando archivos de formularios ... ***"
 
 #: lazarusidestrconsts.lisconvdelphireplacedunitinusessection
@@ -6708,17 +6712,17 @@ msgstr "Convertir proyecto o paquete"
 msgid "Target"
 msgstr "Objetivo"
 
+#: lazarusidestrconsts.lisconverttargetcrossplatform
+msgid "Cross-platform"
+msgstr ""
+
+#: lazarusidestrconsts.lisconverttargetcrossplatformhint
+msgid "Cross-platform versus Windows-only"
+msgstr ""
+
 #: lazarusidestrconsts.lisconverttargethint
 msgid "Converter adds conditional compilation to support different targets"
 msgstr "El convertidor añade compilación condicional para soportar diferentes objetivos"
-
-#: lazarusidestrconsts.lisconverttargetmultiplatform
-msgid "Multi-Platform"
-msgstr "Multi-Plataforma"
-
-#: lazarusidestrconsts.lisconverttargetmultiplatformhint
-msgid "Multi-Platform versus Windows-only"
-msgstr "Multi-Plataforma contra Solo-Windows"
 
 #: lazarusidestrconsts.lisconverttargetsamedfmfile
 msgid "Use the same DFM form file"

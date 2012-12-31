@@ -6581,6 +6581,10 @@ msgstr "変換を中止しました。"
 msgid "Conversion Ready."
 msgstr "変換の準備ができました"
 
+#: lazarusidestrconsts.lisconvdelphiconversiontook
+msgid "Conversion took: %s"
+msgstr ""
+
 #: lazarusidestrconsts.lisconvdelphiconvertdelphipackage
 msgid "Convert Delphi package"
 msgstr "Delphiパッケージを変換"
@@ -6599,8 +6603,8 @@ msgstr "ファイル %s を変換中"
 
 #: lazarusidestrconsts.lisconvdelphiconvertingunitfiles
 #, fuzzy
-#| msgid "*** Converting unit files... ***"
-msgid "*** Converting unit files ... ***"
+#| msgid "*** Converting unit files ... ***"
+msgid "*** Converting unit files ***"
 msgstr "*** ユニットファイルを変換中... ***"
 
 #: lazarusidestrconsts.lisconvdelphidelphipackagemainsourcedpkfilenotfoundforpackage
@@ -6625,8 +6629,8 @@ msgstr "変換に失敗したユニット%s%s%s"
 
 #: lazarusidestrconsts.lisconvdelphifindallunitfiles
 #, fuzzy
-#| msgid "*** Find all unit files... ***"
-msgid "*** Find all unit files ... ***"
+#| msgid "*** Find all unit files ... ***"
+msgid "*** Find all unit files ***"
 msgstr "*** すべてのユニットファイルを検索... ***"
 
 #: lazarusidestrconsts.lisconvdelphifixedunitcase
@@ -6681,8 +6685,8 @@ msgstr "フォームファイル %sを修復中"
 
 #: lazarusidestrconsts.lisconvdelphirepairingformfiles
 #, fuzzy
-#| msgid "*** Repairing form files... ***"
-msgid "*** Repairing form files ... ***"
+#| msgid "*** Repairing form files ... ***"
+msgid "*** Fixing used units and Repairing form files ***"
 msgstr "***フォームファイルを修復中...***"
 
 #: lazarusidestrconsts.lisconvdelphireplacedunitinusessection
@@ -6732,17 +6736,17 @@ msgstr "プロジェクトもしくはパッケージを変換"
 msgid "Target"
 msgstr "対象"
 
+#: lazarusidestrconsts.lisconverttargetcrossplatform
+msgid "Cross-platform"
+msgstr ""
+
+#: lazarusidestrconsts.lisconverttargetcrossplatformhint
+msgid "Cross-platform versus Windows-only"
+msgstr ""
+
 #: lazarusidestrconsts.lisconverttargethint
 msgid "Converter adds conditional compilation to support different targets"
 msgstr "コンバータは異なるターゲットをサポートするために条件コンパイルを追加します"
-
-#: lazarusidestrconsts.lisconverttargetmultiplatform
-msgid "Multi-Platform"
-msgstr "マルチプラットフォーム"
-
-#: lazarusidestrconsts.lisconverttargetmultiplatformhint
-msgid "Multi-Platform versus Windows-only"
-msgstr "マルチプラットフォーム vs Windows専用"
 
 #: lazarusidestrconsts.lisconverttargetsamedfmfile
 msgid "Use the same DFM form file"

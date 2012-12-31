@@ -6258,6 +6258,10 @@ msgstr "Převod přerušen."
 msgid "Conversion Ready."
 msgstr "Převod připraven"
 
+#: lazarusidestrconsts.lisconvdelphiconversiontook
+msgid "Conversion took: %s"
+msgstr ""
+
 #: lazarusidestrconsts.lisconvdelphiconvertdelphipackage
 msgid "Convert Delphi package"
 msgstr "Převod balíčku Delphi"
@@ -6275,7 +6279,9 @@ msgid "* Converting file %s *"
 msgstr "* Převádění souboru %s *"
 
 #: lazarusidestrconsts.lisconvdelphiconvertingunitfiles
-msgid "*** Converting unit files ... ***"
+#, fuzzy
+#| msgid "*** Converting unit files ... ***"
+msgid "*** Converting unit files ***"
 msgstr "*** Převádění souborů jednotek ... ***"
 
 #: lazarusidestrconsts.lisconvdelphidelphipackagemainsourcedpkfilenotfoundforpackage
@@ -6299,7 +6305,9 @@ msgid "Failed to convert unit%s%s%s"
 msgstr "Selhal převod jednotky%s%s%s"
 
 #: lazarusidestrconsts.lisconvdelphifindallunitfiles
-msgid "*** Find all unit files ... ***"
+#, fuzzy
+#| msgid "*** Find all unit files ... ***"
+msgid "*** Find all unit files ***"
 msgstr "*** Najít všechny soubory jednotek ... ***"
 
 #: lazarusidestrconsts.lisconvdelphifixedunitcase
@@ -6351,7 +6359,9 @@ msgid "* Repairing form file %s *"
 msgstr "* Oprava formulářového souboru %s *"
 
 #: lazarusidestrconsts.lisconvdelphirepairingformfiles
-msgid "*** Repairing form files ... ***"
+#, fuzzy
+#| msgid "*** Repairing form files ... ***"
+msgid "*** Fixing used units and Repairing form files ***"
 msgstr "*** Opravování formulářových souborů ... ***"
 
 #: lazarusidestrconsts.lisconvdelphireplacedunitinusessection
@@ -6400,17 +6410,17 @@ msgstr "Převést projekt nebo balíček"
 msgid "Target"
 msgstr "Cíl"
 
+#: lazarusidestrconsts.lisconverttargetcrossplatform
+msgid "Cross-platform"
+msgstr ""
+
+#: lazarusidestrconsts.lisconverttargetcrossplatformhint
+msgid "Cross-platform versus Windows-only"
+msgstr ""
+
 #: lazarusidestrconsts.lisconverttargethint
 msgid "Converter adds conditional compilation to support different targets"
 msgstr "Převaděč přidá podmíněný překlad k podpoře různých cílů"
-
-#: lazarusidestrconsts.lisconverttargetmultiplatform
-msgid "Multi-Platform"
-msgstr "Multi platformní"
-
-#: lazarusidestrconsts.lisconverttargetmultiplatformhint
-msgid "Multi-Platform versus Windows-only"
-msgstr "Multi platformní versus Pouze pro Windows"
 
 #: lazarusidestrconsts.lisconverttargetsamedfmfile
 msgid "Use the same DFM form file"
