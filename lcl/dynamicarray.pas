@@ -35,13 +35,13 @@ type
 
   TArray=Class
   private
-    FCols: TList;
+    FCols: TFpList;
     FOnDestroyItem: TOnNotifyItem;
     FOnNewItem: TonNotifyItem;
     function Getarr(Col, Row: Integer): Pointer;
     procedure Setarr(Col, Row: Integer; const AValue: Pointer);
-    procedure ClearCol(L: TList; Col: Integer);
-    procedure Aumentar_Rows(col,Rows: Integer; L: TList);
+    procedure ClearCol(L: TFpList; Col: Integer);
+    procedure Aumentar_Rows(col,Rows: Integer; L: TFpList);
     procedure DestroyItem(Col,Row: Integer; P: Pointer);
   public
     constructor Create;
@@ -65,16 +65,16 @@ implementation
 function TArray.Getarr(Col, Row: Integer): Pointer;
 begin
   // Checar dimensiones
-  Result := TList(FCols[Col])[Row];
+  Result := TFpList(FCols[Col])[Row];
 end;
 
 procedure TArray.Setarr(Col, Row: Integer; const AValue: Pointer);
 begin
   // Checar dimensiones
-  TList(FCols[Col])[Row] := AValue;
+  TFpList(FCols[Col])[Row] := AValue;
 end;
 
-procedure TArray.ClearCol(L: TList; Col: Integer);
+procedure TArray.ClearCol(L: TFpList; Col: Integer);
 var
    j: Integer;
 begin
@@ -90,8 +90,8 @@ var
 begin
   {$Ifdef dbgMem}DebugLn('TArray.Clear');{$endif}
   for i:=0 to FCols.Count-1 do begin
-    ClearCol(TList(FCols[i]), i);
-    TList(FCols[i]).Free;
+    ClearCol(TFpList(FCols[i]), i);
+    TFpList(FCols[i]).Free;
   end;
   FCols.Clear;
 end;
@@ -99,7 +99,7 @@ end;
 constructor TArray.Create;
 begin
   inherited Create;
-  FCols := TList.Create;
+  FCols := TFpList.Create;
 end;
 
 destructor TArray.Destroy;
@@ -110,7 +110,7 @@ begin
   inherited Destroy;
 end;
 
-procedure TArray.Aumentar_Rows(col,rows: Integer; L: TList);
+procedure TArray.Aumentar_Rows(col,rows: Integer; L: TFpList);
 var
    i,j: Integer;
    P: Pointer;
@@ -135,7 +135,7 @@ end;
 procedure TArray.SetLength(Cols, Rows: Integer);
 var
    i,j: integer;
-   L: TList;
+   L: TFpList;
    //P: Pointer;
 Begin
   {$IfDef DbgMem}DebugLn('TArray.SetLength: Cols=',dbgs(Cols),' Rows=',dbgs(Rows));{$Endif}
@@ -146,10 +146,9 @@ Begin
     // Hay mas columnas de las que debe.
     // Destruir las columnas innecesarias
     for i:=Cols to fCols.Count-1 do begin
-      L:=TList(FCols[i]);
+      L:=TFpList(FCols[i]);
       ClearCol(L, i);
-      L.Free;
-      L:=nil;
+      FreeAndNil(L);
     end;
   end;
   FCols.Count:=Cols;
@@ -158,8 +157,8 @@ Begin
   // Ajustar Renglones
   //
   for i:=0 to fCols.Count-1 do begin
-    L:=TList(FCols[i]);
-    if L=nil then L:=TList.Create;
+    L:=TFpList(FCols[i]);
+    if L=nil then L:=TFpList.Create;
     if L.Count>Rows then begin
       for j:=Rows to L.Count-1 do DestroyItem(i,j,L[j]);
       L.Count:=Rows;
@@ -172,11 +171,11 @@ end;
 procedure TArray.DeleteColRow(IsColumn: Boolean; Index: Integer);
 var
   i: Integer;
-  L: TList;
+  L: TFpList;
 begin
   if IsColumn then begin
     {$Ifdef dbgMem}DebugLn('TArray.DeleteColRow Col=',dbgs(Index));{$endif}
-    L:=TList(FCols[Index]);
+    L:=TFpList(FCols[Index]);
     If L<>nil then begin
       ClearCol(L, Index);
       FCols.Delete(Index);
@@ -185,7 +184,7 @@ begin
   end else begin
     {$Ifdef dbgMem}DebugLn('TArray.DeleteColRow Row=',dbgs(Index));{$endif}
     for i:=0 to fCols.Count - 1 do begin
-      L:=TList(fcols[i]);
+      L:=TFpList(fcols[i]);
       if L<>nil then begin
         DestroyItem(i, Index, L[Index]);
         L.Delete(Index);
@@ -202,7 +201,7 @@ begin
     FCols.Move(FromIndex, ToIndex);
   end else begin
     for i:=0 to FCols.Count-1 do
-      TList(Fcols[i]).Move(FromIndex,ToIndex);
+      TFpList(Fcols[i]).Move(FromIndex,ToIndex);
   end;
 end;
 
@@ -214,7 +213,7 @@ begin
     FCols.Exchange(Index, WithIndex);
   end else begin
     for i:=0 to FCols.Count-1 do
-      TList(FCols[i]).Exchange(Index, WithIndex);
+      TFpList(FCols[i]).Exchange(Index, WithIndex);
   end;
 end;
 
