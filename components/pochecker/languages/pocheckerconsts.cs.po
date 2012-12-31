@@ -1,0 +1,203 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Václav Valíček <Valicek1994@gmail.com>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 1.5.4\n"
+
+#: pocheckerconsts.rspochecker
+msgid "PO File Checker"
+msgstr "PO File Checker"
+
+#: pocheckerconsts.scannotfindmaster
+msgid ""
+"Cannot find master po file:\n"
+"%s\n"
+"for selected file\n"
+"%s\n"
+msgstr ""
+"Nemůžu najít hlavní po soubor:\n"
+"%s\n"
+"pro vybraný soubor\n"
+"%s\n"
+
+#: pocheckerconsts.scheckforduplicateuntranslatedvalues
+msgid "Check for duplicate untranslated values"
+msgstr "Zkontrolovat výskyt duplikátních nepřeložených hodnot"
+
+#: pocheckerconsts.scheckforincompatibleformatarguments
+msgid "Check for incompatible format arguments"
+msgstr "Zkontrolovat výskyt nekompatibilních argumentů fce format"
+
+#: pocheckerconsts.scheckformismatchesinuntranslatedstrings
+msgid "Check for mismatches in untranslated strings"
+msgstr "Zkontrolovat výskyt chyb v nepřeložených řetězcích"
+
+#: pocheckerconsts.scheckmissingidentifiers
+msgid "Check missing identifiers"
+msgstr "Kontrola chybějících identifikátorů"
+
+#: pocheckerconsts.schecknumberofitems
+msgid "Check number of items"
+msgstr "Zkontrolovat počet položek"
+
+#: pocheckerconsts.scopycaption
+msgid "Copy to clipboard"
+msgstr "Kopírovat do schránky"
+
+#: pocheckerconsts.scurrentpofile
+msgid "Current po-file:"
+msgstr "Aktuální PO soubor:"
+
+#: pocheckerconsts.scurrenttest
+msgid "Current Test:"
+msgstr "Aktuální test:"
+
+#: pocheckerconsts.sduplicatelinenrwithvalue
+msgid "[Line %d] %s"
+msgstr "[Řádek %d] %s"
+
+#: pocheckerconsts.sduplicateoriginals
+msgid "The (untranslated) value \"%s\" is used for more than 1 entry:"
+msgstr "(Nepřeložený) řetězec \"%s\" je využitý na více než jednom místě:"
+
+#: pocheckerconsts.serroroncleanup
+msgid ""
+"An unrecoverable error occurred\n"
+"%s\n"
+"Please close the program\n"
+msgstr ""
+"Stala se neopravitelná chyba\n"
+"%s\n"
+"Prosím ukončete program\n"
+
+#: pocheckerconsts.serroroncreate
+msgid ""
+"Error creating an instance of TPoFamily:\n"
+"%s\n"
+msgstr ""
+"Chyba vytváření instance z TPoRodiny:\n"
+"%s\n"
+
+#: pocheckerconsts.serrorsbytest
+msgid "Errors / warnings reported by %s for:"
+msgstr "Chyby / varování nahlášená %s pro:"
+
+#: pocheckerconsts.sfindalltranslatedpofiles
+msgid "Find all translated po-files"
+msgstr "Najít všechny přeložené po soubory"
+
+#: pocheckerconsts.sguipofilecheckingtool
+msgid "GUI Po-file checking tool"
+msgstr "GUI pomůcka pro kontrolu po souborů"
+
+#: pocheckerconsts.sidentifiernotfoundin
+msgid "Identifier [%s] not found in %s"
+msgstr "Identifikátor [%s] nenalezen v %s"
+
+#: pocheckerconsts.sincompatibleformatargs
+msgid "[Line: %d] Incompatible format() arguments for:"
+msgstr "[Řádek %d] Nekompatibilní argumenty fce format() pro:"
+
+#: pocheckerconsts.slineinfilename
+msgid "[Line %d] in %s:"
+msgstr "[Řádek %d] v %s:"
+
+#: pocheckerconsts.slinenr
+msgid "[Line: %d]"
+msgstr "[Řádek: %d]"
+
+#: pocheckerconsts.smissingmasteridentifier
+msgid "Identifier [%s] found in %s, but it does not exist in %s"
+msgstr "Identifikátor [%s] nalezen v %s, ale neexistuje v %s"
+
+#: pocheckerconsts.snoerrorsfound
+msgid "No errors found"
+msgstr "Žádné chyby nenalezeny"
+
+#: pocheckerconsts.snotaproperfilename
+msgid ""
+"Selected filename\n"
+"%s\n"
+"does not seem to be a proper name for a po-file\n"
+msgstr ""
+"Vybraný název souboru\n"
+"%s\n"
+"nevypadá jako korektní jméno po souboru\n"
+
+#: pocheckerconsts.snotestselected
+msgid "There are no tests selected."
+msgstr "Nejsou vybrány žádné testy."
+
+#: pocheckerconsts.snrerrorsfound
+msgid "Found %d errors."
+msgstr "Nalezeno %d chyb."
+
+#: pocheckerconsts.snrofitemsmismatch
+msgid "Mismatch in number of items for master and child"
+msgstr "Chyba v počtu položek pro předka a potomka"
+
+#: pocheckerconsts.snrofitemsmismatchd
+msgid "%s: %d items"
+msgstr "%s: %d položek"
+
+#: pocheckerconsts.snrwarningsfound
+msgid "Found %d warnings."
+msgstr "Nalezeno %d varování"
+
+#: pocheckerconsts.sopenapofile
+msgid "&Open a po-file"
+msgstr "&Otevřít po soubor"
+
+#: pocheckerconsts.soriginal
+msgid "Original"
+msgstr "Originál"
+
+#: pocheckerconsts.sresults
+msgid "Results"
+msgstr "Výsledky"
+
+#: pocheckerconsts.srunselectedtests
+msgid "&Run Selected Tests"
+msgstr "&Spustit vybrané testy"
+
+#: pocheckerconsts.ssavecaption
+msgid "Save to file"
+msgstr "Uložit do souboru"
+
+#: pocheckerconsts.ssaveerror
+msgid ""
+"Error saving file:\n"
+"%s\n"
+msgstr ""
+"Chyba ukládání souboru:\n"
+"%s\n"
+
+#: pocheckerconsts.sselectalltests
+msgid "Select all tests"
+msgstr "Vybrat všechny testy"
+
+#: pocheckerconsts.sselecttesttypes
+msgid "Select test types"
+msgstr "Vybrat typy testu"
+
+#: pocheckerconsts.stotalerrors
+msgid "Total errors / warnings found: %d"
+msgstr "Nalezeno celkem %d chyb / varování."
+
+#: pocheckerconsts.stotalwarnings
+msgid "Total warnings found: %d"
+msgstr "Celkem nalezeno varování:"
+
+#: pocheckerconsts.stranslation
+msgid "Translation"
+msgstr "Překlad"
+
+#: pocheckerconsts.sunselectalltests
+msgid "Unselect all tests"
+msgstr "Zruš výběr všech testů"
