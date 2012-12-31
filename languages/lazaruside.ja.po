@@ -18272,7 +18272,9 @@ msgid "Select half-word right"
 msgstr "右側の単語の中程選択"
 
 #: lazarusidestrconsts.srkmecselleft
-msgid "SelLeft"
+#, fuzzy
+#| msgid "SelLeft"
+msgid "Select Left"
 msgstr "左側選択"
 
 #: lazarusidestrconsts.srkmecsellineend
@@ -18316,7 +18318,9 @@ msgid "Select Page Up"
 msgstr "ページの上方を選択"
 
 #: lazarusidestrconsts.srkmecselright
-msgid "SelRight"
+#, fuzzy
+#| msgid "SelRight"
+msgid "Select Right"
 msgstr "右側選択"
 
 #: lazarusidestrconsts.srkmecselup

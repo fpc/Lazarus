@@ -17685,7 +17685,9 @@ msgid "Select half-word right"
 msgstr "Вибрати півслова вправо"
 
 #: lazarusidestrconsts.srkmecselleft
-msgid "SelLeft"
+#, fuzzy
+#| msgid "SelLeft"
+msgid "Select Left"
 msgstr "Виділити зліва"
 
 #: lazarusidestrconsts.srkmecsellineend
@@ -17729,7 +17731,9 @@ msgid "Select Page Up"
 msgstr "Виділити сторінку зверху"
 
 #: lazarusidestrconsts.srkmecselright
-msgid "SelRight"
+#, fuzzy
+#| msgid "SelRight"
+msgid "Select Right"
 msgstr "Виділити справа"
 
 #: lazarusidestrconsts.srkmecselup

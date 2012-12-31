@@ -17797,8 +17797,8 @@ msgstr "Pažymėti puse žodžio dešinėje"
 
 #: lazarusidestrconsts.srkmecselleft
 #, fuzzy
-#| msgid "Select Left"
-msgid "SelLeft"
+#| msgid "SelLeft"
+msgid "Select Left"
 msgstr "Žymėti simboliu kairiau"
 
 #: lazarusidestrconsts.srkmecsellineend
@@ -17843,8 +17843,8 @@ msgstr "Žymėti lapu aukščiau"
 
 #: lazarusidestrconsts.srkmecselright
 #, fuzzy
-#| msgid "Select Right"
-msgid "SelRight"
+#| msgid "SelRight"
+msgid "Select Right"
 msgstr "Žymėti simboliu dešiniau"
 
 #: lazarusidestrconsts.srkmecselup

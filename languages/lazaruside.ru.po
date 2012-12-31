@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2012-08-10 00:30+0400\n"
+"PO-Revision-Date: 2012-12-31 22:32+0400\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -17885,8 +17885,8 @@ msgid "Select half-word right"
 msgstr "Выделить полслова справа"
 
 #: lazarusidestrconsts.srkmecselleft
-#| msgid "Select Left"
-msgid "SelLeft"
+#| msgid "SelLeft"
+msgid "Select Left"
 msgstr "Выделить слева"
 
 #: lazarusidestrconsts.srkmecsellineend
@@ -17930,8 +17930,8 @@ msgid "Select Page Up"
 msgstr "Выделить страницу сверху"
 
 #: lazarusidestrconsts.srkmecselright
-#| msgid "Select Right"
-msgid "SelRight"
+#| msgid "SelRight"
+msgid "Select Right"
 msgstr "Выделить справа"
 
 #: lazarusidestrconsts.srkmecselup

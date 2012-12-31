@@ -17893,7 +17893,9 @@ msgid "Select half-word right"
 msgstr ""
 
 #: lazarusidestrconsts.srkmecselleft
-msgid "SelLeft"
+#, fuzzy
+#| msgid "SelLeft"
+msgid "Select Left"
 msgstr "Alinea a l'esquerra"
 
 #: lazarusidestrconsts.srkmecsellineend
@@ -17937,7 +17939,9 @@ msgid "Select Page Up"
 msgstr "Selecciona la pàgina d'amunt"
 
 #: lazarusidestrconsts.srkmecselright
-msgid "SelRight"
+#, fuzzy
+#| msgid "SelRight"
+msgid "Select Right"
 msgstr "Alinea a la dreta"
 
 #: lazarusidestrconsts.srkmecselup

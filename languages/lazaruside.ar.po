@@ -17344,8 +17344,8 @@ msgstr "اختيلر نصف كلمية يمين"
 
 #: lazarusidestrconsts.srkmecselleft
 #, fuzzy
-#| msgid "Select Left"
-msgid "SelLeft"
+#| msgid "SelLeft"
+msgid "Select Left"
 msgstr "الاختيار لليسار"
 
 #: lazarusidestrconsts.srkmecsellineend
@@ -17390,8 +17390,8 @@ msgstr "اختيار صفحة أعلى"
 
 #: lazarusidestrconsts.srkmecselright
 #, fuzzy
-#| msgid "Select Right"
-msgid "SelRight"
+#| msgid "SelRight"
+msgid "Select Right"
 msgstr "الاختيار لليمين"
 
 #: lazarusidestrconsts.srkmecselup
