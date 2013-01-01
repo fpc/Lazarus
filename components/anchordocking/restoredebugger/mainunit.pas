@@ -34,8 +34,8 @@ unit MainUnit;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, LazFileUtils, SynEdit,
-  SynHighlighterXML, AnchorDocking, Forms, Controls, Graphics, Dialogs,
+  Classes, SysUtils, FileUtil, LazFileUtils, SynEdit, SynHighlighterXML,
+  AnchorDocking, AnchorDockStorage, Forms, Controls, Graphics, Dialogs,
   ComCtrls, ExtCtrls, Buttons, StdCtrls, XMLPropStorage;
 
 type
@@ -61,11 +61,17 @@ type
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
   private
+    FRestoredLayout: TAnchorDockLayoutTree;
+    FOriginalFilename: string;
+    FOriginalLayout: TAnchorDockLayoutTree;
     FSettings: TAnchorDockSettings;
   public
     procedure OpenLayout(Filename: string);
     procedure LoadSettingsFromOriginalSynedit;
     property Settings: TAnchorDockSettings read FSettings;
+    property OriginalLayout: TAnchorDockLayoutTree read FOriginalLayout;
+    property OriginalFilename: string read FOriginalFilename;
+    property RestoredLayout: TAnchorDockLayoutTree read FRestoredLayout;
   end;
 
 var
@@ -81,6 +87,13 @@ procedure TADRestDbg.FormCreate(Sender: TObject);
 begin
   Caption:='Anchordocking Restore Debugger';
   FSettings:=TAnchorDockSettings.Create;
+  FOriginalLayout:=TAnchorDockLayoutTree.Create;
+  FRestoredLayout:=TAnchorDockLayoutTree.Create;
+
+  OriginalFileLabel.Caption:='Original: '+OriginalFilename;
+  RestoredFileLabel.Caption:='Restored XML:';
+  OpenToolButton.Caption:='Open Config File';
+  OpenRecentToolButton.Caption:='Open Recent';
 
   if Paramcount>0 then
     OpenLayout(ParamStrUTF8(1));
@@ -89,6 +102,8 @@ end;
 procedure TADRestDbg.FormDestroy(Sender: TObject);
 begin
   FreeAndNil(FSettings);
+  FreeAndNil(FOriginalLayout);
+  FreeAndNil(FRestoredLayout);
 end;
 
 procedure TADRestDbg.OpenLayout(Filename: string);
@@ -100,6 +115,7 @@ begin
       [mbCancel],0);
     exit;
   end;
+  FOriginalFilename:=Filename;
   try
     OriginalSynEdit.Lines.LoadFromFile(Filename);
   except
@@ -125,6 +141,9 @@ begin
     ms.Position:=0;
     Config:=TXMLConfigStorage.Create(ms);
     FSettings.LoadFromConfig(Config);
+    Config.AppendBasePath('MainConfig/');
+    FOriginalLayout.LoadFromConfig(Config);
+    Config.UndoAppendBasePath;
   finally
     Config.Free;
     ms.Free;

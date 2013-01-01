@@ -584,7 +584,7 @@ type
     function CreateRestoreLayout(AControl: TControl): TAnchorDockRestoreLayout;
     function ConfigIsEmpty(Config: TConfigStorage): boolean;
     function LoadLayoutFromConfig(Config: TConfigStorage; Scale: Boolean): boolean;
-    property RestoreLayouts: TAnchorDockRestoreLayouts read FRestoreLayouts;
+    property RestoreLayouts: TAnchorDockRestoreLayouts read FRestoreLayouts; // layout information for restoring hidden forms
     property Restoring: boolean read FRestoring write SetRestoring;
     property IdleConnected: Boolean read FIdleConnected write SetIdleConnected;
     procedure LoadSettingsFromConfig(Config: TConfigStorage);
@@ -2675,13 +2675,20 @@ begin
   fTreeNameToDocker:=TADNameToControl.Create;
   Tree:=TAnchorDockLayoutTree.Create;
   try
-    // load tree
+    // load layout
     Config.AppendBasePath('MainConfig/');
-    Tree.LoadFromConfig(Config);
-    Config.UndoAppendBasePath;
+    try
+      Tree.LoadFromConfig(Config);
+    finally
+      Config.UndoAppendBasePath;
+    end;
+    // load restore layouts for hidden forms
     Config.AppendBasePath('Restores/');
-    RestoreLayouts.LoadFromConfig(Config);
-    Config.UndoAppendBasePath;
+    try
+      RestoreLayouts.LoadFromConfig(Config);
+    finally
+      Config.UndoAppendBasePath;
+    end;
 
     {$IFDEF VerboseAnchorDockRestore}
     WriteDebugLayout('TAnchorDockMaster.LoadLayoutFromConfig ',Tree.Root);
