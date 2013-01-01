@@ -71,6 +71,9 @@ type
 
   TChartUnits = (cuPercent, cuAxis, cuGraph, cuPixel);
 
+  TOverrideColor = (ocBrush, ocPen);
+  TOverrideColors = set of TOverrideColor;
+
   TSeriesMarksStyle = (
     smsCustom,         { user-defined }
     smsNone,           { no labels }
