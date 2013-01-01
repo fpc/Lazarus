@@ -2887,19 +2887,25 @@ end;
 
 procedure TMainIDE.mnuSetFreeBookmark(Sender: TObject);
 begin
-  OnSrcNotebookEditorDoSetBookmark(SourceEditorManager.ActiveEditor, -1, False);
+  OnSrcNotebookEditorDoSetBookmark(SourceEditorManager.SenderToEditor(Sender), -1, False);
 end;
 
 procedure TMainIDE.mnuSaveClicked(Sender: TObject);
+var
+  SrcEdit: TSourceEditor;
 begin
-  if SourceEditorManager.ActiveEditor = nil then exit;
-  DoSaveEditorFile(SourceEditorManager.ActiveEditor, [sfCheckAmbiguousFiles]);
+  SrcEdit:=SourceEditorManager.SenderToEditor(Sender);
+  if SrcEdit = nil then exit;
+  DoSaveEditorFile(SrcEdit, [sfCheckAmbiguousFiles]);
 end;
 
 procedure TMainIDE.mnuSaveAsClicked(Sender: TObject);
+var
+  SrcEdit: TSourceEditor;
 begin
-  if SourceEditorManager.ActiveEditor = nil then exit;
-  DoSaveEditorFile(SourceEditorManager.ActiveEditor, [sfSaveAs, sfCheckAmbiguousFiles]);
+  SrcEdit:=SourceEditorManager.SenderToEditor(Sender);
+  if SrcEdit = nil then exit;
+  DoSaveEditorFile(SrcEdit, [sfSaveAs, sfCheckAmbiguousFiles]);
 end;
 
 procedure TMainIDE.mnuSaveAllClicked(Sender: TObject);
@@ -10508,6 +10514,7 @@ var
 begin
   GetCurrentUnit(ActiveSrcEdit,ActiveUnitInfo);
   if ActiveSrcEdit=nil then exit;
+  debugln(['TMainIDE.DoFindDeclarationAtCursor ',ActiveSrcEdit.Filename,' ',GetParentForm(ActiveSrcEdit.EditorComponent).Name]);
   DoFindDeclarationAtCaret(ActiveSrcEdit.EditorComponent.LogicalCaretXY);
 end;
 
@@ -11218,16 +11225,15 @@ var
   ActiveUnitInfo: TUnitInfo;
   ASrcEdit: TSourceEditor;
 begin
-  if SourceEditorManager.SourceEditorCount = 0 then Exit;
-  ASrcEdit := TSourceEditor(Sender);
+  ASrcEdit := SourceEditorManager.SenderToEditor(Sender);
+  if ASrcEdit=nil then exit;
 
-  if Sender <> nil then
-    Project1.UpdateVisibleUnit(ASrcEdit,
-      SourceEditorManager.IndexOfSourceWindow(ASrcEdit.SourceNotebook));
+  Project1.UpdateVisibleUnit(ASrcEdit,
+    SourceEditorManager.IndexOfSourceWindow(ASrcEdit.SourceNotebook));
 
-  ActiveUnitInfo := Project1.UnitWithEditorComponent(SourceEditorManager.ActiveEditor);
+  ActiveUnitInfo := Project1.UnitWithEditorComponent(ASrcEdit);
   if ActiveUnitInfo = nil then Exit;
-  ActiveUnitInfo.SetLastUsedEditor(SourceEditorManager.ActiveEditor);
+  ActiveUnitInfo.SetLastUsedEditor(ASrcEdit);
 
   UpdateSaveMenuItemsAndButtons(false);
   MainIDEBar.itmViewToggleFormUnit.Enabled := Assigned(ActiveUnitInfo.Component)
@@ -11402,10 +11408,10 @@ var
   AnEditorInfo: TUnitEditorInfo;
   NewXY: TPoint;
 begin
+  AnEditor := SourceEditorManager.SenderToEditor(Sender);
   if ID < 0 then begin
     // ID < 0  => next/prev
     if Project1.BookMarks.Count = 0 then exit;
-    AnEditor := SourceEditorManager.ActiveEditor;
     if AnEditor = nil then exit;
 
     CurWin := SourceEditorManager.IndexOfSourceWindow(AnEditor.SourceNotebook);

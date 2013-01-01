@@ -1080,6 +1080,7 @@ type
     destructor Destroy; override;
     function CreateNewWindow(Activate: Boolean= False;
                              DoDisableAutoSizing: boolean = False): TSourceNotebook;
+    function SenderToEditor(Sender: TObject): TSourceEditor;
   private
     // Context-Menu
     procedure CloseOtherPagesClicked(Sender: TObject);
@@ -1259,6 +1260,7 @@ var
 
 procedure RegisterStandardSourceTabMenuItems;
 procedure RegisterStandardSourceEditorMenuItems;
+function dbgSourceNoteBook(snb: TSourceNotebook): string;
 
 var
   Highlighters: array[TLazSyntaxHighlighter] of TSynCustomHighlighter;
@@ -1584,6 +1586,25 @@ begin
 
   SrcEditMenuEditorProperties:=RegisterIDEMenuCommand(SourceEditorMenuRoot,
            'EditorProperties', dlgFROpts, nil, nil, nil, 'menu_environment_options');
+end;
+
+function dbgSourceNoteBook(snb: TSourceNotebook): string;
+var
+  i: Integer;
+begin
+  Result:='';
+  if snb=nil then begin
+    Result:='nil';
+  end else if snb.Count=0 then begin
+    Result:='empty';
+  end else begin
+    for i:=0 to 4 do begin
+      if i>=snb.Count then break;
+      Result+='"'+ExtractFilename(snb.Items[i].FileName)+'",';
+    end;
+  end;
+  if RightStr(Result,1)=',' then Result:=LeftStr(Result,length(Result)-1);
+  Result:='['+Result+']';
 end;
 
 
@@ -8335,14 +8356,19 @@ end;
 
 procedure TSourceEditorManagerBase.SetActiveSourceWindow(
   const AValue: TSourceEditorWindowInterface);
+var
+  NewWindow: TSourceNotebook;
 begin
-  if AValue = FActiveWindow then exit;
-  if (FActiveWindow <> nil) and (AValue <> nil) and (FActiveWindow.Focused) then
-    AValue.SetFocus;
+  NewWindow:= AValue as TSourceNotebook;
+  if NewWindow = FActiveWindow then exit;
 
-  FActiveWindow := AValue as TSourceNotebook;
-  FSourceWindowByFocusList.Remove(AValue);
-  FSourceWindowByFocusList.Insert(0, AValue);
+  //debugln(['TSourceEditorManagerBase.SetActiveSourceWindow ',dbgSourceNoteBook(FActiveWindow),' ',dbgSourceNoteBook(NewWindow)]);
+  if (FActiveWindow <> nil) and (NewWindow <> nil) and (FActiveWindow.Focused) then
+    NewWindow.SetFocus;
+
+  FActiveWindow := NewWindow;
+  FSourceWindowByFocusList.Remove(NewWindow);
+  FSourceWindowByFocusList.Insert(0, NewWindow);
 
   if Assigned(OnCurrentCodeBufferChanged) then
     OnCurrentCodeBufferChanged(nil);
@@ -9880,6 +9906,16 @@ begin
   FChangeNotifyLists[semWindowCreate].CallNotifyEvents(Result);
   if not DoDisableAutoSizing then
     Result.EnableAutoSizing;
+end;
+
+function TSourceEditorManager.SenderToEditor(Sender: TObject): TSourceEditor;
+begin
+  if Sender is TSourceEditor then
+    Result:=TSourceEditor(Sender)
+  else if Sender is TSourceNotebook then
+    Result:=TSourceNotebook(Sender).ActiveEditor as TSourceEditor
+  else
+    Result:=ActiveEditor;
 end;
 
 procedure TSourceEditorManager.RemoveWindow(AWindow: TSourceNotebook);
