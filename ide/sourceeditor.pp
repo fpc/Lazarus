@@ -482,6 +482,7 @@ type
     procedure Activate;
     function PageIndex: integer;
     function IsActiveOnNoteBook: boolean;
+    procedure CheckActiveWindow;
 
     // debugging
     procedure DoRequestExecutionMarks(Data: PtrInt);
@@ -3170,10 +3171,7 @@ Begin
   FSharedValues.SetActiveSharedEditor(Self);
   Handled:=true;
 
-  if Manager.ActiveSourceWindow <> SourceNotebook then begin
-    debugln('Warning: ActiveSourceWindow is set incorrectly');
-    Manager.ActiveSourceWindow := SourceNotebook;
-  end;
+  CheckActiveWindow;
 
   case Command of
 
@@ -4840,7 +4838,8 @@ end;
 Procedure TSourceEditor.EditorKeyDown(Sender: TObject; var Key: Word; Shift :
   TShiftState);
 begin
-  //DebugLn('TSourceEditor.EditorKeyDown A ',dbgsName(Sender),' ',IntToStr(Key));
+  //DebugLn(['TSourceEditor.EditorKeyDown A ',dbgsName(Sender),' Key=',IntToStr(Key),' File=',ExtractFileName(Filename),' Wnd=',dbgSourceNoteBook(SourceNotebook)]);
+  CheckActiveWindow;
   if Assigned(OnKeyDown) then
     OnKeyDown(Sender, Key, Shift);
 end;
@@ -5133,6 +5132,13 @@ begin
     Result:=(FSourceNoteBook.GetActiveSE=Self)
   else
     Result:=false;
+end;
+
+procedure TSourceEditor.CheckActiveWindow;
+begin
+  if Manager.ActiveSourceWindow = SourceNotebook then exit;
+  debugln('Warning: ActiveSourceWindow is set incorrectly Active=',dbgSourceNoteBook(Manager.ActiveSourceWindow),' Me=',dbgSourceNoteBook(SourceNotebook));
+  Manager.ActiveSourceWindow := SourceNotebook;
 end;
 
 procedure TSourceEditor.DoRequestExecutionMarks(Data: PtrInt);
