@@ -12239,12 +12239,13 @@ end;
 procedure TMainIDE.OnSrcNoteBookMouseLink(
   Sender: TObject; X, Y: Integer; var AllowMouseLink: Boolean);
 var
-  ActiveSrcEdit: TSourceEditor;
   ActiveUnitInfo: TUnitInfo;
   NewSource: TCodeBuffer;
   NewX, NewY, NewTopLine: integer;
+  SrcEdit: TSourceEditor;
 begin
-  if not BeginCodeTool(ActiveSrcEdit,ActiveUnitInfo,[]) then exit;
+  SrcEdit:=SourceEditorManager.SenderToEditor(Sender);
+  if not BeginCodeTool(SrcEdit,ActiveUnitInfo,[]) then exit;
   AllowMouseLink := CodeToolBoss.FindDeclaration(
     ActiveUnitInfo.Source,X,Y,NewSource,NewX,NewY,NewTopLine);
 end;
