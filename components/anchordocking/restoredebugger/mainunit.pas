@@ -34,9 +34,9 @@ unit MainUnit;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, LazFileUtils, Laz2_XMLCfg, SynEdit,
+  Classes, SysUtils, FileUtil, LazFileUtils, SynEdit,
   SynHighlighterXML, AnchorDocking, Forms, Controls, Graphics, Dialogs,
-  ComCtrls, ExtCtrls, Buttons, StdCtrls, LazConfigStorage;
+  ComCtrls, ExtCtrls, Buttons, StdCtrls, XMLPropStorage;
 
 type
 
@@ -116,22 +116,17 @@ end;
 procedure TADRestDbg.LoadSettingsFromOriginalSynedit;
 var
   ms: TMemoryStream;
-  XML: TXMLConfig;
   Config: TXMLConfigStorage;
 begin
   ms:=TMemoryStream.Create;
-  XML:=TXMLConfig.Create(nil);
   Config:=nil;
   try
     OriginalSynEdit.Lines.SaveToStream(ms);
     ms.Position:=0;
-    XML.Filename:=;
-    Config:=TConfigStorage.Create(XML);
+    Config:=TXMLConfigStorage.Create(ms);
     FSettings.LoadFromConfig(Config);
-    txmlcon
   finally
     Config.Free;
-    XML.Free;
     ms.Free;
   end;
 end;
