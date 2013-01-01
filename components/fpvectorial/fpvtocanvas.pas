@@ -76,26 +76,21 @@ procedure DrawFPVPathToCanvas(ASource: TvVectorialPage; CurPath: TPath;
   ADest: TFPCustomCanvas;
   ADestX: Integer = 0; ADestY: Integer = 0; AMulX: Double = 1.0; AMulY: Double = 1.0);
 begin
-  CurPath.Render(ADest, ADestX, ADestY, AMulX, AMulY);
+  CurPath.Render(ADest, colWhite, ADestX, ADestY, AMulX, AMulY);
 end;
 
 procedure DrawFPVEntityToCanvas(ASource: TvVectorialPage; CurEntity: TvEntity;
   ADest: TFPCustomCanvas;
   ADestX: Integer = 0; ADestY: Integer = 0; AMulX: Double = 1.0; AMulY: Double = 1.0);
 begin
-  if CurEntity is TvEntityWithPenAndBrush then
-    TvEntityWithPenAndBrush(CurEntity).ApplyBrushToCanvas(ADest);
-  if CurEntity is TvEntityWithPen then
-    TvEntityWithPen(CurEntity).ApplyPenToCanvas(ADest);
-
-  CurEntity.Render(ADest, ADestX, ADestY, AMulX, AMulY);
+  CurEntity.Render(ADest, colWhite, ADestX, ADestY, AMulX, AMulY);
 end;
 
 procedure DrawFPVTextToCanvas(ASource: TvVectorialPage; CurText: TvText;
   ADest: TFPCustomCanvas;
   ADestX: Integer = 0; ADestY: Integer = 0; AMulX: Double = 1.0; AMulY: Double = 1.0);
 begin
-  CurText.Render(ADest, ADestX, ADestY, AMulX, AMulY);
+  CurText.Render(ADest, colWhite, ADestX, ADestY, AMulX, AMulY);
 end;
 
 end.
