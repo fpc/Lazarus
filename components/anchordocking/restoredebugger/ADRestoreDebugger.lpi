@@ -36,7 +36,7 @@
         <PackageName Value="SynEdit"/>
       </Item2>
     </RequiredPackages>
-    <Units Count="2">
+    <Units Count="3">
       <Unit0>
         <Filename Value="ADRestoreDebugger.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -50,6 +50,11 @@
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="MainUnit"/>
       </Unit1>
+      <Unit2>
+        <Filename Value="adlayoutviewer.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="ADLayoutViewer"/>
+      </Unit2>
     </Units>
   </ProjectOptions>
   <CompilerOptions>

@@ -557,6 +557,7 @@ components/anchordocking/minide/unit1.lfm svneol=native#text/plain
 components/anchordocking/minide/unit1.pas svneol=native#text/plain
 components/anchordocking/restoredebugger/ADRestoreDebugger.lpi svneol=native#text/plain
 components/anchordocking/restoredebugger/ADRestoreDebugger.lpr svneol=native#text/plain
+components/anchordocking/restoredebugger/adlayoutviewer.pas svneol=native#text/plain
 components/anchordocking/restoredebugger/mainunit.lfm svneol=native#text/plain
 components/anchordocking/restoredebugger/mainunit.pas svneol=native#text/plain
 components/chmhelp/README.txt svneol=native#text/plain

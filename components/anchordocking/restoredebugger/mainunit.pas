@@ -35,8 +35,8 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, LazFileUtils, SynEdit, SynHighlighterXML,
-  AnchorDocking, AnchorDockStorage, Forms, Controls, Graphics, Dialogs,
-  ComCtrls, ExtCtrls, Buttons, StdCtrls, XMLPropStorage;
+  AnchorDocking, AnchorDockStorage, ADLayoutViewer, Forms, Controls, Graphics,
+  Dialogs, ComCtrls, ExtCtrls, Buttons, StdCtrls, XMLPropStorage;
 
 type
 
@@ -66,6 +66,8 @@ type
     FOriginalLayout: TAnchorDockLayoutTree;
     FSettings: TAnchorDockSettings;
   public
+    OriginalView: TADLayoutTreeView;
+    RestoredView: TADLayoutTreeView;
     procedure OpenLayout(Filename: string);
     procedure LoadSettingsFromOriginalSynedit;
     property Settings: TAnchorDockSettings read FSettings;
@@ -94,6 +96,20 @@ begin
   RestoredFileLabel.Caption:='Restored XML:';
   OpenToolButton.Caption:='Open Config File';
   OpenRecentToolButton.Caption:='Open Recent';
+
+  OriginalView:=TADLayoutTreeView.Create(Self);
+  with OriginalView do begin
+    Name:='OriginalView';
+    Parent:=OriginalLayoutPanel;
+    Align:=alClient;
+  end;
+
+  RestoredView:=TADLayoutTreeView.Create(Self);
+  with RestoredView do begin
+    Name:='RestoredView';
+    Parent:=RestoredLayoutPanel;
+    Align:=alClient;
+  end;
 
   if Paramcount>0 then
     OpenLayout(ParamStrUTF8(1));
