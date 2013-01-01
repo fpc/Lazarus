@@ -5,7 +5,8 @@ unit ADLayoutViewer;
 interface
 
 uses
-  Classes, SysUtils, types, math, Controls, Graphics, AnchorDockStorage;
+  Classes, SysUtils, types, math, Controls, Graphics, AnchorDockStorage,
+  LazLogger;
 
 type
   TADLTVMonitor = class
@@ -30,6 +31,7 @@ type
     function GetLayoutMaxY: integer;
     function GetLayoutMinX: integer;
     function GetLayoutMinY: integer;
+    function GetMonitors(Index: integer): TADLTVMonitor;
     function GetScaledMaxX: integer;
     function GetScaledMaxY: integer;
     function GetScaledMinX: integer;
@@ -46,6 +48,7 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure Paint; override;
+    function ScaleRect(const r: TRect): TRect;
     procedure LayoutChanged; virtual;
     property Layout: TAnchorDockLayoutTree read FLayout;
     property Scale: double read FScale write SetScale;
@@ -59,6 +62,8 @@ type
     property ScaledMinY: integer read GetScaledMinY;
     property ScaledMaxX: integer read GetScaledMaxX;
     property ScaledMaxY: integer read GetScaledMaxY;
+    function MonitorCount: integer;
+    property Monitors[Index: integer]: TADLTVMonitor read GetMonitors;
   end;
 
 implementation
@@ -69,6 +74,8 @@ procedure TADLayoutTreeView.SetScale(AValue: double);
 begin
   if FScale=AValue then Exit;
   FScale:=AValue;
+  FScaledBounds:=ScaleRect(FBounds);
+  Invalidate;
 end;
 
 function TADLayoutTreeView.GetLayoutMaxX: integer;
@@ -89,6 +96,11 @@ end;
 function TADLayoutTreeView.GetLayoutMinY: integer;
 begin
   Result:=FBounds.Top;
+end;
+
+function TADLayoutTreeView.GetMonitors(Index: integer): TADLTVMonitor;
+begin
+  Result:=FMonitors[Index];
 end;
 
 function TADLayoutTreeView.GetScaledMaxX: integer;
@@ -125,12 +137,14 @@ procedure TADLayoutTreeView.SetScaledOffsetX(AValue: integer);
 begin
   if FScaledScroll.X=AValue then Exit;
   FScaledScroll.X:=AValue;
+  Invalidate;
 end;
 
 procedure TADLayoutTreeView.SetScaledOffsetY(AValue: integer);
 begin
   if FScaledScroll.Y=AValue then Exit;
   FScaledScroll.Y:=AValue;
+  Invalidate;
 end;
 
 procedure TADLayoutTreeView.ComputeLayout;
@@ -151,6 +165,8 @@ procedure TADLayoutTreeView.ComputeLayout;
         Monitor.Monitor:=Node.Monitor;
         Monitor.WorkArea:=Node.WorkAreaRect;
         Monitor.Bounds:=Node.BoundsRect;
+        SetLength(FMonitors,length(FMonitors)+1);
+        FMonitors[length(FMonitors)-1]:=Monitor;
       end else begin
         // another window on this monitor
         r:=Rect(0,0,0,0);
@@ -174,6 +190,7 @@ var
   TileRow: Integer;
   TileLeft: Integer;
   TileTop: Integer;
+  r: TRect;
 begin
   if FLayout=nil then exit;
   // clear computed values
@@ -207,7 +224,22 @@ begin
     // move left/topmost to left,top of tile
     Monitor.X:=TileLeft-LeftMost;
     Monitor.Y:=TileTop-TopMost;
+    // compute total bounds
+    r.Left:=Monitor.X+Min(Monitor.WorkArea.Left,Monitor.Bounds.Left);
+    r.Top:=Monitor.Y+Min(Monitor.WorkArea.Top,Monitor.Bounds.Top);
+    r.Right:=Monitor.X+Min(Monitor.WorkArea.Right,Monitor.Bounds.Right);
+    r.Bottom:=Monitor.Y+Min(Monitor.WorkArea.Bottom,Monitor.Bounds.Bottom);
+    if i=0 then
+      FBounds:=r
+    else begin
+      FBounds.Left:=Min(FBounds.Left,r.Left);
+      FBounds.Right:=Max(FBounds.Right,r.Right);
+      FBounds.Top:=Min(FBounds.Top,r.Top);
+      FBounds.Bottom:=Max(FBounds.Bottom,r.Bottom);
+    end;
+    DebugLn(['TADLayoutTreeView.ComputeLayout ',i,'/',length(FMonitors),' WorkArea=',dbgs(Monitor.WorkArea),' Bounds=',dbgs(Monitor.Bounds),' X=',Monitor.X,' Y=',Monitor.Y]);
   end;
+  FScaledBounds:=ScaleRect(FBounds);
 end;
 
 procedure TADLayoutTreeView.ClearMonitors;
@@ -233,6 +265,7 @@ constructor TADLayoutTreeView.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FLayout:=TAnchorDockLayoutTree.Create;
+  FScale:=0.25;
 end;
 
 destructor TADLayoutTreeView.Destroy;
@@ -243,17 +276,48 @@ begin
 end;
 
 procedure TADLayoutTreeView.Paint;
+
+
+
+var
+  i: Integer;
+  Monitor: TADLTVMonitor;
+  r: TRect;
 begin
-  Canvas.Brush.Color:=clWhite;
+  Canvas.Brush.Color:=clGray;
   Canvas.FillRect(0,0,ClientWidth,ClientHeight);
+
+  // draw monitor workareas
+  Canvas.Pen.Color:=clBlue;
+  Canvas.Brush.Color:=clWhite;
+  for i:=0 to MonitorCount-1 do begin
+    Monitor:=fMonitors[i];
+    r:=ScaleRect(Monitor.WorkArea);
+    Canvas.Rectangle(r);
+  end;
+
+  //DrawMonitors(Layout.Root);
 
   // call event
   inherited Paint;
 end;
 
+function TADLayoutTreeView.ScaleRect(const r: TRect): TRect;
+begin
+  Result.Left:=floor(r.Left*Scale)+FScaledScroll.X;
+  Result.Top:=floor(r.Top*Scale)+FScaledScroll.Y;
+  Result.Right:=ceil(r.Right*Scale)+FScaledScroll.X;
+  Result.Bottom:=ceil(r.Bottom*Scale)+FScaledScroll.Y;
+end;
+
 procedure TADLayoutTreeView.LayoutChanged;
 begin
   ComputeLayout;
+end;
+
+function TADLayoutTreeView.MonitorCount: integer;
+begin
+  Result:=length(FMonitors);
 end;
 
 end.
