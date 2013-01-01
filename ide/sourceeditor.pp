@@ -4831,6 +4831,7 @@ end;
 Procedure TSourceEditor.EditorMouseDown(Sender: TObject; Button: TMouseButton;
    Shift: TShiftState; X, Y: Integer);
 begin
+  CheckActiveWindow;
   if Assigned(OnMouseDown) then
     OnMouseDown(Sender, Button, Shift, X,Y);
 end;
