@@ -22,14 +22,17 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, LCLProc, Forms, PropertyStorage, XMLConf, DOM,
-  LazConfigStorage;
+  XMLRead, XMLWrite, LazConfigStorage;
 
 type
   { TPropStorageXMLConfig }
 
   TPropStorageXMLConfig = class(TXMLConfig)
   Public
-    procedure DeleteSubNodes (const ARootNode: String);
+    procedure DeleteSubNodes(const ARootNode: String);
+    procedure LoadFromStream(s: TStream); virtual;
+    procedure SaveToStream(s: TStream); virtual;
+    property XMLDoc: TXMLDocument read Doc;
   end;
   
   { TCustomXMLPropStorage }
@@ -93,6 +96,7 @@ type
     constructor Create(const Filename: string; LoadFromDisk: Boolean); override;
     constructor Create(TheXMLConfig: TXMLConfig);
     constructor Create(TheXMLConfig: TXMLConfig; const StartPath: string);
+    constructor Create(s: TStream; const StartPath: string = '');
     destructor Destroy; override;
     property XMLConfig: TXMLConfig read FXMLConfig;
     property FreeXMLConfig: boolean read FFreeXMLConfig write FFreeXMLConfig;
@@ -141,7 +145,7 @@ end;
 function TCustomXMLPropStorage.GetXMLFileName: string;
 begin
   if (FFileName<>'') then
-    Result:=FFIleName
+    Result:=FFileName
   else
     {$ifdef unix}
     Result:=IncludeTrailingPathDelimiter(GetEnvironmentVariableUTF8('HOME'))
@@ -213,6 +217,19 @@ begin
     //debugln('TPropStorageXMLConfig.DeleteSubNodes ',ARootNode);
     Node.Free;
   end;
+end;
+
+procedure TPropStorageXMLConfig.LoadFromStream(s: TStream);
+var
+  NewDoc: TXMLDocument;
+begin
+  FreeAndNil(Doc);
+  ReadXMLFile(Doc,s);
+end;
+
+procedure TPropStorageXMLConfig.SaveToStream(s: TStream);
+begin
+  WriteXMLFile(Doc,s);
 end;
 
 { TXMLConfigStorage }
@@ -288,7 +305,7 @@ end;
 constructor TXMLConfigStorage.Create(const Filename: string;
   LoadFromDisk: Boolean);
 begin
-  FXMLConfig:=TXMLConfig.Create(nil);
+  FXMLConfig:=TPropStorageXMLConfig.Create(nil);
   FXMLConfig.StartEmpty:=not LoadFromDisk;
   FXMLConfig.Filename:=Filename;
   FFreeXMLConfig:=true;
@@ -306,6 +323,15 @@ constructor TXMLConfigStorage.Create(TheXMLConfig: TXMLConfig;
 begin
   Create(TheXMLConfig);
   AppendBasePath(StartPath);
+end;
+
+constructor TXMLConfigStorage.Create(s: TStream; const StartPath: string);
+begin
+  FXMLConfig:=TPropStorageXMLConfig.Create(nil);
+  FFreeXMLConfig:=true;
+  TPropStorageXMLConfig(FXMLConfig).LoadFromStream(s);
+  if StartPath<>'' then
+    AppendBasePath(StartPath);
 end;
 
 destructor TXMLConfigStorage.Destroy;
