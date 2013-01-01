@@ -99,12 +99,14 @@ type
   strict private
     FBrush: TBrush;
     FHorizSize: Integer;
+    FOverrideColor: TOverrideColors;
     FPen: TChartPen;
     FStyle: TSeriesPointerStyle;
     FVertSize: Integer;
 
     procedure SetBrush(AValue: TBrush);
     procedure SetHorizSize(AValue: Integer);
+    procedure SetOverrideColor(AValue: TOverrideColors);
     procedure SetPen(AValue: TChartPen);
     procedure SetStyle(AValue: TSeriesPointerStyle);
     procedure SetVertSize(AValue: Integer);
@@ -121,6 +123,8 @@ type
   published
     property Brush: TBrush read FBrush write SetBrush;
     property HorizSize: Integer read FHorizSize write SetHorizSize default DEF_POINTER_SIZE;
+    property OverrideColor: TOverrideColors
+      read FOverrideColor write SetOverrideColor default [ocBrush];
     property Pen: TChartPen read FPen write SetPen;
     property Style: TSeriesPointerStyle read FStyle write SetStyle default psRectangle;
     property VertSize: Integer read FVertSize write SetVertSize default DEF_POINTER_SIZE;
@@ -312,6 +316,7 @@ begin
     with TSeriesPointer(Source) do begin
       Self.FBrush.Assign(Brush);
       Self.FHorizSize := HorizSize;
+      Self.FOverrideColor := OverrideColor;
       Self.FPen.Assign(Pen);
       Self.FStyle := Style;
       Self.FVertSize := VertSize;
@@ -327,7 +332,7 @@ begin
   InitHelper(FPen, TChartPen);
 
   FHorizSize := DEF_POINTER_SIZE;
-  SetPropDefaults(Self, ['Style']);
+  SetPropDefaults(Self, ['OverrideColor', 'Style']);
   FVertSize  := DEF_POINTER_SIZE;
   FVisible := true;
 end;
@@ -392,9 +397,11 @@ const
     '183', '842', '862', '82', '46');
 begin
   ADrawer.Brush := Brush;
-  if AColor <> clTAColor then
+  if (ocBrush in OverrideColor) and (AColor <> clTAColor) then
     ADrawer.BrushColor := AColor;
   ADrawer.Pen := Pen;
+  if (ocPen in OverrideColor) and (AColor <> clTAColor) then
+    ADrawer.SetPenParams(Pen.Style, AColor);
 
   if Style = psCircle then
     ADrawer.Ellipse(
@@ -414,6 +421,13 @@ procedure TSeriesPointer.SetHorizSize(AValue: Integer);
 begin
   if FHorizSize = AValue then exit;
   FHorizSize := AValue;
+  StyleChanged(Self);
+end;
+
+procedure TSeriesPointer.SetOverrideColor(AValue: TOverrideColors);
+begin
+  if FOverrideColor = AValue then exit;
+  FOverrideColor := AValue;
   StyleChanged(Self);
 end;
 
