@@ -5844,7 +5844,8 @@ begin
        +LazarusSrcDir+'/lcl;'
        +LazarusSrcDir+'/lcl/interfaces;'
        +LazarusSrcDir+'/lcl/interfaces/'+WidgetType+';'
-       +LazarusSrcDir+'/components/custom;')
+       +LazarusSrcDir+'/components/custom;'
+       +SrcPath)
     ,da_DefineRecurse));
   // include path addition
   DirTempl.AddChild(TDefineTemplate.Create('includepath addition',
