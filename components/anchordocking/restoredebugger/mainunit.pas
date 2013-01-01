@@ -61,19 +61,19 @@ type
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
   private
-    FRestoredLayout: TAnchorDockLayoutTree;
     FOriginalFilename: string;
-    FOriginalLayout: TAnchorDockLayoutTree;
     FSettings: TAnchorDockSettings;
+    function GetOriginalLayout: TAnchorDockLayoutTree;
+    function GetRestoredLayout: TAnchorDockLayoutTree;
   public
     OriginalView: TADLayoutTreeView;
     RestoredView: TADLayoutTreeView;
     procedure OpenLayout(Filename: string);
     procedure LoadSettingsFromOriginalSynedit;
     property Settings: TAnchorDockSettings read FSettings;
-    property OriginalLayout: TAnchorDockLayoutTree read FOriginalLayout;
+    property OriginalLayout: TAnchorDockLayoutTree read GetOriginalLayout;
     property OriginalFilename: string read FOriginalFilename;
-    property RestoredLayout: TAnchorDockLayoutTree read FRestoredLayout;
+    property RestoredLayout: TAnchorDockLayoutTree read GetRestoredLayout;
   end;
 
 var
@@ -89,8 +89,6 @@ procedure TADRestDbg.FormCreate(Sender: TObject);
 begin
   Caption:='Anchordocking Restore Debugger';
   FSettings:=TAnchorDockSettings.Create;
-  FOriginalLayout:=TAnchorDockLayoutTree.Create;
-  FRestoredLayout:=TAnchorDockLayoutTree.Create;
 
   OriginalFileLabel.Caption:='Original: '+OriginalFilename;
   RestoredFileLabel.Caption:='Restored XML:';
@@ -118,8 +116,16 @@ end;
 procedure TADRestDbg.FormDestroy(Sender: TObject);
 begin
   FreeAndNil(FSettings);
-  FreeAndNil(FOriginalLayout);
-  FreeAndNil(FRestoredLayout);
+end;
+
+function TADRestDbg.GetOriginalLayout: TAnchorDockLayoutTree;
+begin
+  Result:=OriginalView.Layout;
+end;
+
+function TADRestDbg.GetRestoredLayout: TAnchorDockLayoutTree;
+begin
+  Result:=RestoredView.Layout;
 end;
 
 procedure TADRestDbg.OpenLayout(Filename: string);
@@ -158,11 +164,12 @@ begin
     Config:=TXMLConfigStorage.Create(ms);
     FSettings.LoadFromConfig(Config);
     Config.AppendBasePath('MainConfig/');
-    FOriginalLayout.LoadFromConfig(Config);
+    OriginalLayout.LoadFromConfig(Config);
     Config.UndoAppendBasePath;
   finally
     Config.Free;
     ms.Free;
+    OriginalView.LayoutChanged;
   end;
 end;
 
