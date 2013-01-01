@@ -944,6 +944,7 @@ var
 begin
   if not Marks.IsMarkLabelsVisible then exit;
   for i := 0 to Count - 1 do begin
+    if IsNan(Source[i]^.Point) then continue;
     g := GetLabelDataPoint(i);
     ld := GetLabelDirection(i);
     for si := 0 to Source.YCount - 1 do begin
