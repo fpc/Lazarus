@@ -173,8 +173,9 @@ type
   TAnchorDockLayoutTree = class
   private
     FChangeStamp: int64;
-    FModified: boolean;
+    FSavedChangeStamp: int64;
     FRoot: TAnchorDockLayoutTreeRootNode;
+    function GetModified: boolean;
     procedure SetModified(const AValue: boolean);
   public
     constructor Create;
@@ -184,7 +185,7 @@ type
     procedure SaveToConfig(Config: TConfigStorage);
     procedure IncreaseChangeStamp;
     property ChangeStamp: int64 read FChangeStamp;
-    property Modified: boolean read FModified write SetModified;
+    property Modified: boolean read GetModified write SetModified;
     property Root: TAnchorDockLayoutTreeRootNode read FRoot;
     function NewNode(aParent: TAnchorDockLayoutTreeNode): TAnchorDockLayoutTreeNode;
   end;
@@ -1640,13 +1641,20 @@ end;
 
 procedure TAnchorDockLayoutTree.SetModified(const AValue: boolean);
 begin
-  if AValue then IncreaseChangeStamp;
-  if FModified=AValue then exit;
-  FModified:=AValue;
+  if AValue then
+    IncreaseChangeStamp
+  else
+    FSavedChangeStamp:=FChangeStamp;
+end;
+
+function TAnchorDockLayoutTree.GetModified: boolean;
+begin
+  Result:=FSavedChangeStamp<>FChangeStamp;
 end;
 
 constructor TAnchorDockLayoutTree.Create;
 begin
+  FSavedChangeStamp:=Low(FChangeStamp);
   FRoot:=TAnchorDockLayoutTreeRootNode.Create;
   Root.FTree:=Self;
 end;
@@ -1683,7 +1691,7 @@ begin
   if FChangeStamp<High(FChangeStamp) then
     inc(FChangeStamp)
   else
-    FChangeStamp:=Low(FChangeStamp);
+    FChangeStamp:=Low(FChangeStamp)+1;
 end;
 
 function TAnchorDockLayoutTree.NewNode(aParent: TAnchorDockLayoutTreeNode
