@@ -6,6 +6,7 @@ object ADRestDbg: TADRestDbg
   Caption = 'ADRestDbg'
   ClientHeight = 567
   ClientWidth = 715
+  OnClose = FormClose
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   LCLVersion = '1.1'

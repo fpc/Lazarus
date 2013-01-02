@@ -34,9 +34,10 @@ unit MainUnit;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, LazFileUtils, SynEdit, SynHighlighterXML,
-  AnchorDocking, AnchorDockStorage, ADLayoutViewer, Forms, Controls, Graphics,
-  Dialogs, ComCtrls, ExtCtrls, Buttons, StdCtrls, XMLPropStorage;
+  Classes, SysUtils, FileUtil, LazFileUtils, LazLogger, SynEdit,
+  SynHighlighterXML, AnchorDocking, AnchorDockStorage, ADLayoutViewer, Forms,
+  Controls, Graphics, Dialogs, ComCtrls, ExtCtrls, Buttons, StdCtrls,
+  XMLPropStorage;
 
 type
 
@@ -58,13 +59,17 @@ type
     OpenToolButton: TToolButton;
     OpenRecentToolButton: TToolButton;
     OriginalLayoutToolBar: TToolBar;
+    procedure FormClose(Sender: TObject; var {%H-}CloseAction: TCloseAction);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
   private
+    FConfigFilename: string;
     FOriginalFilename: string;
     FSettings: TAnchorDockSettings;
     function GetOriginalLayout: TAnchorDockLayoutTree;
     function GetRestoredLayout: TAnchorDockLayoutTree;
+    procedure LoadConfig;
+    procedure SaveConfig;
   public
     OriginalView: TADLayoutTreeView;
     RestoredView: TADLayoutTreeView;
@@ -74,6 +79,7 @@ type
     property OriginalLayout: TAnchorDockLayoutTree read GetOriginalLayout;
     property OriginalFilename: string read FOriginalFilename;
     property RestoredLayout: TAnchorDockLayoutTree read GetRestoredLayout;
+    property ConfigFilename: string read FConfigFilename write FConfigFilename;
   end;
 
 var
@@ -87,6 +93,9 @@ implementation
 
 procedure TADRestDbg.FormCreate(Sender: TObject);
 begin
+  FConfigFilename:=GetAppConfigFileUTF8(false);
+  DebugLn(['TADRestDbg.FormCreate ',FConfigFilename]);
+
   Caption:='Anchordocking Restore Debugger';
   FSettings:=TAnchorDockSettings.Create;
 
@@ -109,8 +118,15 @@ begin
     Align:=alClient;
   end;
 
+  LoadConfig;
+
   if Paramcount>0 then
     OpenLayout(ParamStrUTF8(1));
+end;
+
+procedure TADRestDbg.FormClose(Sender: TObject; var CloseAction: TCloseAction);
+begin
+  SaveConfig;
 end;
 
 procedure TADRestDbg.FormDestroy(Sender: TObject);
@@ -126,6 +142,49 @@ end;
 function TADRestDbg.GetRestoredLayout: TAnchorDockLayoutTree;
 begin
   Result:=RestoredView.Layout;
+end;
+
+procedure TADRestDbg.LoadConfig;
+var
+  Cfg: TXMLConfigStorage;
+  NewBounds: TRect;
+begin
+  try
+    Cfg:=TXMLConfigStorage.Create(ConfigFilename,true);
+    try
+      Cfg.GetValue('Bounds',NewBounds,Rect(0,0,0,0));
+      if (NewBounds.Right>NewBounds.Left)
+      and (NewBounds.Bottom>NewBounds.Top) then
+        BoundsRect:=NewBounds;
+    finally
+      Cfg.Free;
+    end;
+  except
+    on E:Exception do begin
+      debugln(['TADRestDbg.LoadConfig ',E.Message]);
+    end;
+  end;
+end;
+
+procedure TADRestDbg.SaveConfig;
+var
+  Cfg: TXMLConfigStorage;
+begin
+  if not ForceDirectoriesUTF8(ExtractFilePath(ConfigFilename)) then begin
+    debugln(['WARNING: TADRestDbg.SaveConfig: can not create directory  ',ExtractFilePath(ConfigFilename)]);
+  end;
+  try
+    Cfg:=TXMLConfigStorage.Create(ConfigFilename,false);
+    try
+      Cfg.SetDeleteValue('Bounds',BoundsRect,Rect(0,0,0,0));
+    finally
+      Cfg.Free;
+    end;
+  except
+    on E:Exception do begin
+      debugln(['TADRestDbg.SaveConfig ',E.Message]);
+    end;
+  end;
 end;
 
 procedure TADRestDbg.OpenLayout(Filename: string);
