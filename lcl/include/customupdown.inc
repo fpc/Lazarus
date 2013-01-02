@@ -87,7 +87,7 @@ begin
     case FButtonType of
       btPrev :
         begin
-          FCanChange.Dir := updUp;
+          FCanChange.Dir := updDown;
 
           if Position - Increment >= Min then
             FCanChange.Pos := Position - Increment
