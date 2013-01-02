@@ -199,6 +199,12 @@ type
 
   TvFindEntityResult = (vfrNotFound, vfrFound, vfrSubpartFound);
 
+  TvRenderInfo = record
+    BackgroundColor: TFPColor;
+    AdjustPenColorToBackground: Boolean;
+    Selected: Boolean;
+  end;
+
   { Now all elements }
 
   {@@
@@ -223,9 +229,9 @@ type
     procedure Move(ADeltaX, ADeltaY: Double); virtual;
     procedure MoveSubpart(ADeltaX, ADeltaY: Double; ASubpart: Cardinal); virtual;
     function  GetSubpartCount: Integer; virtual;
-    procedure Render(ADest: TFPCustomCanvas; ABackgroundColor: TFPColor; ADestX: Integer = 0;
+    procedure Render(ADest: TFPCustomCanvas; ARenderInfo: TvRenderInfo; ADestX: Integer = 0;
       ADestY: Integer = 0; AMulX: Double = 1.0; AMulY: Double = 1.0); virtual;
-    function AdjustColorToBackground(AColor, ABackgroundColor: TFPColor): TFPColor;
+    function AdjustColorToBackground(AColor: TFPColor; ARenderInfo: TvRenderInfo): TFPColor;
     function GetNormalizedPos(APage: TvVectorialPage; ANewMin, ANewMax: Double): T3DPoint;
     function GenerateDebugTree(ADestRoutine: TvDebugAddItemProc; APageItem: Pointer): Pointer; virtual;
   end;
@@ -240,8 +246,8 @@ type
         elements might be able to override this setting. }
     Pen: TvPen;
     constructor Create; override;
-    procedure ApplyPenToCanvas(ADest: TFPCustomCanvas; ABackgroundColor: TFPColor);
-    procedure Render(ADest: TFPCustomCanvas; ABackgroundColor: TFPColor; ADestX: Integer = 0;
+    procedure ApplyPenToCanvas(ADest: TFPCustomCanvas; ARenderInfo: TvRenderInfo);
+    procedure Render(ADest: TFPCustomCanvas; ARenderInfo: TvRenderInfo; ADestX: Integer = 0;
       ADestY: Integer = 0; AMulX: Double = 1.0; AMulY: Double = 1.0); override;
   end;
 
@@ -254,7 +260,7 @@ type
     Brush: TvBrush;
     constructor Create; override;
     procedure ApplyBrushToCanvas(ADest: TFPCustomCanvas);
-    procedure Render(ADest: TFPCustomCanvas; ABackgroundColor: TFPColor; ADestX: Integer = 0;
+    procedure Render(ADest: TFPCustomCanvas; ARenderInfo: TvRenderInfo; ADestX: Integer = 0;
       ADestY: Integer = 0; AMulX: Double = 1.0; AMulY: Double = 1.0); override;
   end;
 
@@ -287,7 +293,7 @@ type
     procedure MoveSubpart(ADeltaX, ADeltaY: Double; ASubpart: Cardinal); override;
     function  MoveToSubpart(ASubpart: Cardinal): TPathSegment;
     function  GetSubpartCount: Integer; override;
-    procedure Render(ADest: TFPCustomCanvas; ABackgroundColor: TFPColor; ADestX: Integer = 0;
+    procedure Render(ADest: TFPCustomCanvas; ARenderInfo: TvRenderInfo; ADestX: Integer = 0;
       ADestY: Integer = 0; AMulX: Double = 1.0; AMulY: Double = 1.0); override;
   end;
 
@@ -308,7 +314,7 @@ type
     constructor Create; override;
     destructor Destroy; override;
     function TryToSelect(APos: TPoint; var ASubpart: Cardinal): TvFindEntityResult; override;
-    procedure Render(ADest: TFPCustomCanvas; ABackgroundColor: TFPColor; ADestX: Integer = 0;
+    procedure Render(ADest: TFPCustomCanvas; ARenderInfo: TvRenderInfo; ADestX: Integer = 0;
       ADestY: Integer = 0; AMulX: Double = 1.0; AMulY: Double = 1.0); override;
   end;
 
@@ -320,7 +326,7 @@ type
   TvCircle = class(TvEntityWithPenAndBrush)
   public
     Radius: Double;
-    procedure Render(ADest: TFPCustomCanvas; ABackgroundColor: TFPColor; ADestX: Integer = 0;
+    procedure Render(ADest: TFPCustomCanvas; ARenderInfo: TvRenderInfo; ADestX: Integer = 0;
       ADestY: Integer = 0; AMulX: Double = 1.0; AMulY: Double = 1.0); override;
   end;
 
@@ -334,7 +340,7 @@ type
     Radius: Double;
     {@@ The Angle is measured in degrees in relation to the positive X axis }
     StartAngle, EndAngle: Double;
-    procedure Render(ADest: TFPCustomCanvas; ABackgroundColor: TFPColor; ADestX: Integer = 0;
+    procedure Render(ADest: TFPCustomCanvas; ARenderInfo: TvRenderInfo; ADestX: Integer = 0;
       ADestY: Integer = 0; AMulX: Double = 1.0; AMulY: Double = 1.0); override;
   end;
 
@@ -351,7 +357,7 @@ type
     {@@ The Angle is measured in degrees in relation to the positive X axis }
     Angle: Double;
     procedure CalculateBoundingBox(ADest: TFPCustomCanvas; var ALeft, ATop, ARight, ABottom: Double); override;
-    procedure Render(ADest: TFPCustomCanvas; ABackgroundColor: TFPColor; ADestX: Integer = 0;
+    procedure Render(ADest: TFPCustomCanvas; ARenderInfo: TvRenderInfo; ADestX: Integer = 0;
       ADestY: Integer = 0; AMulX: Double = 1.0; AMulY: Double = 1.0); override;
   end;
 
@@ -362,7 +368,7 @@ type
     // Mandatory fields
     CX, CY, CZ: Double;
     procedure CalculateBoundingBox(ADest: TFPCustomCanvas; var ALeft, ATop, ARight, ABottom: Double); override;
-    procedure Render(ADest: TFPCustomCanvas; ABackgroundColor: TFPColor; ADestX: Integer = 0;
+    procedure Render(ADest: TFPCustomCanvas; ARenderInfo: TvRenderInfo; ADestX: Integer = 0;
       ADestY: Integer = 0; AMulX: Double = 1.0; AMulY: Double = 1.0); override;
   end;
 
@@ -380,7 +386,7 @@ type
   public
     // Mandatory fields
     BaseLeft, BaseRight, DimensionLeft, DimensionRight: T3DPoint;
-    procedure Render(ADest: TFPCustomCanvas; ABackgroundColor: TFPColor; ADestX: Integer = 0;
+    procedure Render(ADest: TFPCustomCanvas; ARenderInfo: TvRenderInfo; ADestX: Integer = 0;
       ADestY: Integer = 0; AMulX: Double = 1.0; AMulY: Double = 1.0); override;
   end;
 
@@ -395,7 +401,7 @@ type
     // Mandatory fields
     IsDiameter: Boolean; // If false, it is a radius, if true, it is a diameter
     Center, DimensionLeft, DimensionRight: T3DPoint; // Diameter uses both, Radius uses only DImensionLeft
-    procedure Render(ADest: TFPCustomCanvas; ABackgroundColor: TFPColor; ADestX: Integer = 0;
+    procedure Render(ADest: TFPCustomCanvas; ARenderInfo: TvRenderInfo; ADestX: Integer = 0;
       ADestY: Integer = 0; AMulX: Double = 1.0; AMulY: Double = 1.0); override;
   end;
 
@@ -447,7 +453,7 @@ type
     ArrowLength: Double;
     ArrowBaseLength: Double;
     procedure CalculateBoundingBox(ADest: TFPCustomCanvas; var ALeft, ATop, ARight, ABottom: Double); override;
-    procedure Render(ADest: TFPCustomCanvas; ABackgroundColor: TFPColor; ADestX: Integer = 0;
+    procedure Render(ADest: TFPCustomCanvas; ARenderInfo: TvRenderInfo; ADestX: Integer = 0;
       ADestY: Integer = 0; AMulX: Double = 1.0; AMulY: Double = 1.0); override;
   end;
 
@@ -496,7 +502,7 @@ type
     function CalculateHeight(ADest: TFPCustomCanvas): Double; // in milimeters
     function CalculateWidth(ADest: TFPCustomCanvas): Double; // in milimeters
     function AsText: string;
-    procedure Render(ADest: TFPCustomCanvas; ABackgroundColor: TFPColor; ADestX: Integer = 0;
+    procedure Render(ADest: TFPCustomCanvas; ARenderInfo: TvRenderInfo; ADestX: Integer = 0;
       ADestY: Integer = 0; AMulX: Double = 1.0; AMulY: Double = 1.0); virtual;
     procedure GenerateDebugTree(ADestRoutine: TvDebugAddItemProc; APageItem: Pointer); virtual;
   end;
@@ -526,7 +532,7 @@ type
     function CalculateWidth(ADest: TFPCustomCanvas): Double; // in milimeters
     procedure PositionElements(ADest: TFPCustomCanvas; ABaseX, ABaseY: Double);
     procedure CalculateBoundingBox(ADest: TFPCustomCanvas; var ALeft, ATop, ARight, ABottom: Double); override;
-    procedure Render(ADest: TFPCustomCanvas; ABackgroundColor: TFPColor; ADestX: Integer = 0;
+    procedure Render(ADest: TFPCustomCanvas; ARenderInfo: TvRenderInfo; ADestX: Integer = 0;
       ADestY: Integer = 0; AMulX: Double = 1.0; AMulY: Double = 1.0); override;
     function GenerateDebugTree(ADestRoutine: TvDebugAddItemProc; APageItem: Pointer): Pointer; override;
   end;
@@ -547,7 +553,7 @@ type
     function GetNextEntity: TvEntity;
     procedure AddEntity(AEntity: TvEntity);
     procedure Clear; override;
-    procedure Render(ADest: TFPCustomCanvas; ABackgroundColor: TFPColor; ADestX: Integer = 0;
+    procedure Render(ADest: TFPCustomCanvas; ARenderInfo: TvRenderInfo; ADestX: Integer = 0;
       ADestY: Integer = 0; AMulX: Double = 1.0; AMulY: Double = 1.0); override;
   end;
 
@@ -560,7 +566,7 @@ type
 
   TvBlock = class(TvEntityWithSubEntities)
   public
-    procedure Render(ADest: TFPCustomCanvas; ABackgroundColor: TFPColor; ADestX: Integer = 0;
+    procedure Render(ADest: TFPCustomCanvas; ARenderInfo: TvRenderInfo; ADestX: Integer = 0;
       ADestY: Integer = 0; AMulX: Double = 1.0; AMulY: Double = 1.0); override;
   end;
 
@@ -573,7 +579,7 @@ type
   TvInsert = class(TvEntity)
   public
     Block: TvBlock; // The block to be inserted
-    procedure Render(ADest: TFPCustomCanvas; ABackgroundColor: TFPColor; ADestX: Integer = 0;
+    procedure Render(ADest: TFPCustomCanvas; ARenderInfo: TvRenderInfo; ADestX: Integer = 0;
       ADestY: Integer = 0; AMulX: Double = 1.0; AMulY: Double = 1.0); override;
   end;
 
@@ -969,21 +975,24 @@ begin
   Result := 0;
 end;
 
-procedure TvEntity.Render(ADest: TFPCustomCanvas; ABackgroundColor: TFPColor; ADestX: Integer;
+procedure TvEntity.Render(ADest: TFPCustomCanvas; ARenderInfo: TvRenderInfo; ADestX: Integer;
   ADestY: Integer; AMulX: Double; AMulY: Double);
 begin
 
 end;
 
-function TvEntity.AdjustColorToBackground(AColor, ABackgroundColor: TFPColor
-  ): TFPColor;
+function TvEntity.AdjustColorToBackground(AColor: TFPColor; ARenderInfo: TvRenderInfo): TFPColor;
 begin
   Result := AColor;
-  if (Abs(AColor.Red - ABackgroundColor.Red) < $100) and
-     (Abs(AColor.Green - ABackgroundColor.Green) < $100) and
-     (Abs(AColor.Blue - ABackgroundColor.Blue) < $100) then
+  if not ARenderInfo.AdjustPenColorToBackground then Exit;
+  // Adjust only if the contranst is really low
+  if (Abs(AColor.Red - ARenderInfo.BackgroundColor.Red) <= $100) and
+     (Abs(AColor.Green - ARenderInfo.BackgroundColor.Green) <= $100) and
+     (Abs(AColor.Blue - ARenderInfo.BackgroundColor.Blue) <= $100) then
   begin
-    if (ABackgroundColor.Red <= $1000) and (ABackgroundColor.Green <= $1000) and (ABackgroundColor.Blue <= $1000) then
+    if (ARenderInfo.BackgroundColor.Red <= $1000) and
+       (ARenderInfo.BackgroundColor.Green <= $1000) and
+       (ARenderInfo.BackgroundColor.Blue <= $1000) then
       Result := colWhite
     else Result := colBlack;
   end;
@@ -1016,18 +1025,18 @@ begin
   Pen.Width := 1;
 end;
 
-procedure TvEntityWithPen.ApplyPenToCanvas(ADest: TFPCustomCanvas; ABackgroundColor: TFPColor);
+procedure TvEntityWithPen.ApplyPenToCanvas(ADest: TFPCustomCanvas; ARenderInfo: TvRenderInfo);
 begin
-  ADest.Pen.FPColor := AdjustColorToBackground(Pen.Color, ABackgroundColor);
+  ADest.Pen.FPColor := AdjustColorToBackground(Pen.Color, ARenderInfo);
   ADest.Pen.Width := 1;//Pen.Width;
   ADest.Pen.Style := Pen.Style;
 end;
 
-procedure TvEntityWithPen.Render(ADest: TFPCustomCanvas; ABackgroundColor: TFPColor; ADestX: Integer;
+procedure TvEntityWithPen.Render(ADest: TFPCustomCanvas; ARenderInfo: TvRenderInfo; ADestX: Integer;
   ADestY: Integer; AMulX: Double; AMulY: Double);
 begin
-  inherited Render(ADest, ABackgroundColor, ADestX, ADestY, AMulX, AMulY);
-  ApplyPenToCanvas(ADest, ABackgroundColor);
+  inherited Render(ADest, ARenderInfo, ADestX, ADestY, AMulX, AMulY);
+  ApplyPenToCanvas(ADest, ARenderInfo);
 end;
 
 { TvEntityWithPenAndBrush }
@@ -1046,9 +1055,9 @@ begin
 end;
 
 procedure TvEntityWithPenAndBrush.Render(ADest: TFPCustomCanvas;
-   ABackgroundColor: TFPColor; ADestX: Integer; ADestY: Integer; AMulX: Double; AMulY: Double);
+   ARenderInfo: TvRenderInfo; ADestX: Integer; ADestY: Integer; AMulX: Double; AMulY: Double);
 begin
-  inherited Render(ADest, ABackgroundColor, ADestX, ADestY, AMulX, AMulY);
+  inherited Render(ADest, ARenderInfo, ADestX, ADestY, AMulX, AMulY);
   ApplyBrushToCanvas(ADest);
 end;
 
@@ -1273,7 +1282,7 @@ begin
   Result := Len;
 end;
 
-procedure TPath.Render(ADest: TFPCustomCanvas; ABackgroundColor: TFPColor; ADestX: Integer;
+procedure TPath.Render(ADest: TFPCustomCanvas; ARenderInfo: TvRenderInfo; ADestX: Integer;
   ADestY: Integer; AMulX: Double; AMulY: Double);
 
   function CoordToCanvasX(ACoord: Double): Integer;
@@ -1318,7 +1327,7 @@ begin
   if ADest.Pen.Width < 1 then ADest.Pen.Width := 1;
   if (Pen.Width <= 2) and (ADest.Pen.Width > 2) then ADest.Pen.Width := 2;
   if (Pen.Width <= 5) and (ADest.Pen.Width > 5) then ADest.Pen.Width := 5;
-  ADest.Pen.FPColor := AdjustColorToBackground(Pen.Color, ABackgroundColor);
+  ADest.Pen.FPColor := AdjustColorToBackground(Pen.Color, ARenderInfo);
   ADest.Brush.FPColor := Brush.Color;
 
   // Prepare the Clipping Region, if any
@@ -1400,7 +1409,7 @@ begin
     // This element can override temporarely the Pen
     st2DLineWithPen:
     begin
-      ADest.Pen.FPColor := AdjustColorToBackground(T2DSegmentWithPen(Cur2DSegment).Pen.Color, ABackgroundColor);
+      ADest.Pen.FPColor := AdjustColorToBackground(T2DSegmentWithPen(Cur2DSegment).Pen.Color, ARenderInfo);
 
       CoordX := CoordToCanvasX(PosX);
       CoordY := CoordToCanvasY(PosY);
@@ -1506,7 +1515,7 @@ begin
   else Result := vfrNotFound;
 end;
 
-procedure TvText.Render(ADest: TFPCustomCanvas; ABackgroundColor: TFPColor; ADestX: Integer;
+procedure TvText.Render(ADest: TFPCustomCanvas; ARenderInfo: TvRenderInfo; ADestX: Integer;
   ADestY: Integer; AMulX: Double; AMulY: Double);
 
   function CoordToCanvasX(ACoord: Double): Integer;
@@ -1527,7 +1536,7 @@ var
   //
   LowerDim: T3DPoint;
 begin
-  inherited Render(ADest, ABackgroundColor, ADestX, ADestY, AMulX, AMulY);
+  inherited Render(ADest, ARenderInfo, ADestX, ADestY, AMulX, AMulY);
 
   ADest.Font.Size := Round(AmulX * Font.Size);
 {  ADest.Pen.Style := psSolid;
@@ -1555,7 +1564,7 @@ end;
 
 { TvCircle }
 
-procedure TvCircle.Render(ADest: TFPCustomCanvas; ABackgroundColor: TFPColor; ADestX: Integer;
+procedure TvCircle.Render(ADest: TFPCustomCanvas; ARenderInfo: TvRenderInfo; ADestX: Integer;
   ADestY: Integer; AMulX: Double; AMulY: Double);
 
   function CoordToCanvasX(ACoord: Double): Integer;
@@ -1569,7 +1578,7 @@ procedure TvCircle.Render(ADest: TFPCustomCanvas; ABackgroundColor: TFPColor; AD
   end;
 
 begin
-  inherited Render(ADest, ABackgroundColor, ADestX, ADestY, AMulX, AMulY);
+  inherited Render(ADest, ARenderInfo, ADestX, ADestY, AMulX, AMulY);
   ADest.Ellipse(
     CoordToCanvasX(X - Radius),
     CoordToCanvasY(Y - Radius),
@@ -1580,7 +1589,7 @@ end;
 
 { TvCircularArc }
 
-procedure TvCircularArc.Render(ADest: TFPCustomCanvas; ABackgroundColor: TFPColor; ADestX: Integer;
+procedure TvCircularArc.Render(ADest: TFPCustomCanvas; ARenderInfo: TvRenderInfo; ADestX: Integer;
   ADestY: Integer; AMulX: Double; AMulY: Double);
 
   function CoordToCanvasX(ACoord: Double): Integer;
@@ -1601,7 +1610,7 @@ var
   ALCLDest: TCanvas absolute ADest;
   {$endif}
 begin
-  inherited Render(ADest, ABackgroundColor, ADestX, ADestY, AMulX, AMulY);
+  inherited Render(ADest, ARenderInfo, ADestX, ADestY, AMulX, AMulY);
   {$ifdef USE_LCL_CANVAS}
   // ToDo: Consider a X axis inversion
   // If the Y axis is inverted, then we need to mirror our angles as well
@@ -1706,7 +1715,7 @@ begin
   end;
 end;
 
-procedure TvEllipse.Render(ADest: TFPCustomCanvas; ABackgroundColor: TFPColor; ADestX: Integer;
+procedure TvEllipse.Render(ADest: TFPCustomCanvas; ARenderInfo: TvRenderInfo; ADestX: Integer;
   ADestY: Integer; AMulX: Double; AMulY: Double);
 
   function CoordToCanvasX(ACoord: Double): Integer;
@@ -1728,7 +1737,7 @@ var
   ALCLDest: TCanvas absolute ADest;
   {$endif}
 begin
-  inherited Render(ADest, ABackgroundColor, ADestX, ADestY, AMulX, AMulY);
+  inherited Render(ADest, ARenderInfo, ADestX, ADestY, AMulX, AMulY);
 
   CalculateBoundingBox(ADest, fx1, fy1, fx2, fy2);
   x1 := CoordToCanvasX(fx1);
@@ -1775,7 +1784,7 @@ begin
   ABottom := Y + CY;
 end;
 
-procedure TvRectangle.Render(ADest: TFPCustomCanvas; ABackgroundColor: TFPColor; ADestX: Integer;
+procedure TvRectangle.Render(ADest: TFPCustomCanvas; ARenderInfo: TvRenderInfo; ADestX: Integer;
   ADestY: Integer; AMulX: Double; AMulY: Double);
 
   function CoordToCanvasX(ACoord: Double): Integer;
@@ -1792,7 +1801,7 @@ var
   x1, x2, y1, y2: Integer;
   fx1, fy1, fx2, fy2: Double;
 begin
-  inherited Render(ADest, ABackgroundColor, ADestX, ADestY, AMulX, AMulY);
+  inherited Render(ADest, ARenderInfo, ADestX, ADestY, AMulX, AMulY);
 
   CalculateBoundingBox(ADest, fx1, fy1, fx2, fy2);
   x1 := CoordToCanvasX(fx1);
@@ -1805,7 +1814,7 @@ end;
 
 { TvAlignedDimension }
 
-procedure TvAlignedDimension.Render(ADest: TFPCustomCanvas; ABackgroundColor: TFPColor; ADestX: Integer;
+procedure TvAlignedDimension.Render(ADest: TFPCustomCanvas; ARenderInfo: TvRenderInfo; ADestX: Integer;
   ADestY: Integer; AMulX: Double; AMulY: Double);
 
   function CoordToCanvasX(ACoord: Double): Integer;
@@ -1825,7 +1834,7 @@ var
   ALCLDest: TCanvas absolute ADest;
   {$endif}
 begin
-  ADest.Pen.FPColor := AdjustColorToBackground(colBlack, ABackgroundColor);
+  ADest.Pen.FPColor := AdjustColorToBackground(colBlack, ARenderInfo);
   //
   // Draws this shape:
   // horizontal     vertical
@@ -1842,7 +1851,7 @@ begin
   SetLength(Points, 3);
   if DimensionRight.Y = DimensionLeft.Y then
   begin
-    ADest.Brush.FPColor := AdjustColorToBackground(colBlack, ABackgroundColor);
+    ADest.Brush.FPColor := AdjustColorToBackground(colBlack, ARenderInfo);
     ADest.Brush.Style := bsSolid;
     // Left arrow
     Points[0] := Point(CoordToCanvasX(DimensionLeft.X), CoordToCanvasY(DimensionLeft.Y));
@@ -1861,12 +1870,12 @@ begin
     LowerDim.X := DimensionRight.X-DimensionLeft.X;
     ADest.Font.Size := 10;
     ADest.Font.Orientation := 0;
-    ADest.Font.FPColor := AdjustColorToBackground(colBlack, ABackgroundColor);
+    ADest.Font.FPColor := AdjustColorToBackground(colBlack, ARenderInfo);
     ADest.TextOut(Points[0].X, Points[0].Y-Round(ADest.Font.Size*1.5), Format('%.1f', [LowerDim.X]));
   end
   else
   begin
-    ADest.Brush.FPColor := AdjustColorToBackground(colBlack, ABackgroundColor);
+    ADest.Brush.FPColor := AdjustColorToBackground(colBlack, ARenderInfo);
     ADest.Brush.Style := bsSolid;
     // There is no upper/lower preference for DimensionLeft/Right, so we need to check
     if DimensionLeft.Y > DimensionRight.Y then
@@ -1897,7 +1906,7 @@ begin
     if LowerDim.Y < 0 then LowerDim.Y := -1 * LowerDim.Y;
     ADest.Font.Size := 10;
     ADest.Font.Orientation := 900;
-    ADest.Font.FPColor := AdjustColorToBackground(colBlack, ABackgroundColor);
+    ADest.Font.FPColor := AdjustColorToBackground(colBlack, ARenderInfo);
     ADest.TextOut(Points[0].X-Round(ADest.Font.Size*1.5), Points[0].Y, Format('%.1f', [LowerDim.Y]));
     ADest.Font.Orientation := 0;
   end;
@@ -1917,7 +1926,7 @@ end;
 
 { TvRadialDimension }
 
-procedure TvRadialDimension.Render(ADest: TFPCustomCanvas; ABackgroundColor: TFPColor; ADestX: Integer;
+procedure TvRadialDimension.Render(ADest: TFPCustomCanvas; ARenderInfo: TvRenderInfo; ADestX: Integer;
   ADestY: Integer; AMulX: Double; AMulY: Double);
 
   function CoordToCanvasX(ACoord: Double): Integer;
@@ -1937,7 +1946,7 @@ var
   ALCLDest: TCanvas absolute ADest;
   {$endif}
 begin
-  ADest.Pen.FPColor := AdjustColorToBackground(colBlack, ABackgroundColor);
+  ADest.Pen.FPColor := AdjustColorToBackground(colBlack, ARenderInfo);
 
   // The size of the radius of the circle
   lRadius := sqrt(sqr(Center.X - DimensionLeft.X) + sqr(Center.Y - DimensionLeft.Y));
@@ -1946,7 +1955,7 @@ begin
 
   // Get an arrow in the right part of the circle
   SetLength(Points, 3);
-  ADest.Brush.FPColor := AdjustColorToBackground(colBlack, ABackgroundColor);
+  ADest.Brush.FPColor := AdjustColorToBackground(colBlack, ARenderInfo);
   ADest.Brush.Style := bsSolid;
   Points[0] := Point(CoordToCanvasX(Center.X + lRadius),     CoordToCanvasY(Center.Y));
   Points[1] := Point(CoordToCanvasX(Center.X + lRadius*0.8), CoordToCanvasY(Center.Y - lRadius*0.1));
@@ -1970,7 +1979,7 @@ begin
     Points[0].X := CoordToCanvasX(Center.X);
     Points[0].Y := CoordToCanvasY(Center.Y);
     ADest.Font.Size := 10;
-    ADest.Font.FPColor := AdjustColorToBackground(colBlack, ABackgroundColor);
+    ADest.Font.FPColor := AdjustColorToBackground(colBlack, ARenderInfo);
     ADest.TextOut(Points[0].X, Points[0].Y, Format('%.1f', [lRadius]));
   end
   else
@@ -1999,7 +2008,7 @@ begin
     Points[0].X := CoordToCanvasX(Center.X);
     Points[0].Y := CoordToCanvasY(Center.Y);
     ADest.Font.Size := 10;
-    ADest.Font.FPColor := AdjustColorToBackground(colBlack, ABackgroundColor);
+    ADest.Font.FPColor := AdjustColorToBackground(colBlack, ARenderInfo);
     ADest.TextOut(Points[0].X, Points[0].Y, Format('%.1f', [lRadius * 2]));
   end;
 
@@ -2063,7 +2072,7 @@ begin
 
 end;
 
-procedure TvArrow.Render(ADest: TFPCustomCanvas; ABackgroundColor: TFPColor; ADestX: Integer;
+procedure TvArrow.Render(ADest: TFPCustomCanvas; ARenderInfo: TvRenderInfo; ADestX: Integer;
   ADestY: Integer; AMulX: Double; AMulY: Double);
 
   function CoordToCanvasX(ACoord: Double): Integer;
@@ -2082,7 +2091,7 @@ var
   lPoints: array[0..2] of TPoint;
   AlfaAngle: Double;
 begin
-  ApplyPenToCanvas(ADest, ABackgroundColor);
+  ApplyPenToCanvas(ADest, ARenderInfo);
   ApplyBrushToCanvas(ADest);
 
   lArrow.X := CoordToCanvasX(X);
@@ -2232,7 +2241,7 @@ begin
   end;
 end;
 
-procedure TvFormulaElement.Render(ADest: TFPCustomCanvas; ABackgroundColor: TFPColor; ADestX: Integer;
+procedure TvFormulaElement.Render(ADest: TFPCustomCanvas; ARenderInfo: TvRenderInfo; ADestX: Integer;
   ADestY: Integer; AMulX: Double; AMulY: Double);
 
   function CoordToCanvasX(ACoord: Double): Integer;
@@ -2271,8 +2280,8 @@ begin
     fekGreaterOrEqualThan: ADest.TextOut(LeftC, TopC, '≥');
     fekFraction:
     begin
-      Formula.Render(ADest, ABackgroundColor, ADestX, ADestY, AMulX, AMulY);
-      AdjacentFormula.Render(ADest, ABackgroundColor, ADestX, ADestY, AMulX, AMulY);
+      Formula.Render(ADest, ARenderInfo, ADestX, ADestY, AMulX, AMulY);
+      AdjacentFormula.Render(ADest, ARenderInfo, ADestX, ADestY, AMulX, AMulY);
 
       // Division line
       lPt[0].X := CoordToCanvasX(Formula.Left);
@@ -2283,7 +2292,7 @@ begin
     end;
     fekRoot:
     begin
-      Formula.Render(ADest, ABackgroundColor, ADestX, ADestY, AMulX, AMulY);
+      Formula.Render(ADest, ARenderInfo, ADestX, ADestY, AMulX, AMulY);
 
       // Root drawing
       lPt[0].X := CoordToCanvasX(Left);
@@ -2302,22 +2311,22 @@ begin
     end;
     fekPower:
     begin
-      Formula.Render(ADest, ABackgroundColor, ADestX, ADestY, AMulX, AMulY);
+      Formula.Render(ADest, ARenderInfo, ADestX, ADestY, AMulX, AMulY);
       // The superscripted power
       lOldFontSize := ADest.Font.Size;
       if lOldFontSize = 0 then ADest.Font.Size := 5
       else ADest.Font.Size := lOldFontSize div 2;
-      AdjacentFormula.Render(ADest, ABackgroundColor, ADestX, ADestY, AMulX, AMulY);
+      AdjacentFormula.Render(ADest, ARenderInfo, ADestX, ADestY, AMulX, AMulY);
       ADest.Font.Size := lOldFontSize;
     end;
     fekSubscript:
     begin
-      Formula.Render(ADest, ABackgroundColor, ADestX, ADestY, AMulX, AMulY);
+      Formula.Render(ADest, ARenderInfo, ADestX, ADestY, AMulX, AMulY);
       // The subscripted item
       lOldFontSize := ADest.Font.Size;
       if lOldFontSize = 0 then ADest.Font.Size := 5
       else ADest.Font.Size := lOldFontSize div 2;
-      AdjacentFormula.Render(ADest, ABackgroundColor, ADestX, ADestY, AMulX, AMulY);
+      AdjacentFormula.Render(ADest, ARenderInfo, ADestX, ADestY, AMulX, AMulY);
       ADest.Font.Size := lOldFontSize;
     end;
     fekSummation:
@@ -2330,10 +2339,10 @@ begin
       ADest.Font.Size := lOldFontSize;
 
       // Draw the bottom/main formula
-      Formula.Render(ADest, ABackgroundColor, ADestX, ADestY, AMulX, AMulY);
+      Formula.Render(ADest, ARenderInfo, ADestX, ADestY, AMulX, AMulY);
 
       // Draw the top formula
-      AdjacentFormula.Render(ADest, ABackgroundColor, ADestX, ADestY, AMulX, AMulY);
+      AdjacentFormula.Render(ADest, ARenderInfo, ADestX, ADestY, AMulX, AMulY);
     end;
   end;
 end;
@@ -2573,7 +2582,7 @@ begin
   ABottom := Y + ABottom;
 end;
 
-procedure TvFormula.Render(ADest: TFPCustomCanvas; ABackgroundColor: TFPColor; ADestX: Integer;
+procedure TvFormula.Render(ADest: TFPCustomCanvas; ARenderInfo: TvRenderInfo; ADestX: Integer;
   ADestY: Integer; AMulX: Double; AMulY: Double);
 var
   lElement: TvFormulaElement;
@@ -2586,7 +2595,7 @@ begin
   if lElement = nil then Exit;
   while lElement <> nil do
   begin
-    lElement.Render(ADest, ABackgroundColor, ADestX, ADestY, AMulX, AMulY);
+    lElement.Render(ADest, ARenderInfo, ADestX, ADestY, AMulX, AMulY);
 
     lElement := GetNextElement();
   end;
@@ -2656,12 +2665,12 @@ begin
   FElements.Clear;
 end;
 
-procedure TvEntityWithSubEntities.Render(ADest: TFPCustomCanvas; ABackgroundColor: TFPColor;
+procedure TvEntityWithSubEntities.Render(ADest: TFPCustomCanvas; ARenderInfo: TvRenderInfo;
   ADestX: Integer; ADestY: Integer; AMulX: Double; AMulY: Double);
 var
   lEntity: TvEntity;
 begin
-  inherited Render(ADest, ABackgroundColor, ADestX, ADestY, AMulX, AMulY);
+  inherited Render(ADest, ARenderInfo, ADestX, ADestY, AMulX, AMulY);
   lEntity := GetFirstEntity();
   while lEntity <> nil do
   begin
@@ -2671,7 +2680,7 @@ begin
     {$ENDIF}
 
     // Render
-    lEntity.Render(ADest, ABackgroundColor, ADestX, ADestY, AMulX, AMuly);
+    lEntity.Render(ADest, ARenderInfo, ADestX, ADestY, AMulX, AMuly);
 
     lEntity := GetNextEntity();
   end;
@@ -2679,12 +2688,12 @@ end;
 
 { TvInsert }
 
-procedure TvInsert.Render(ADest: TFPCustomCanvas; ABackgroundColor: TFPColor; ADestX: Integer;
+procedure TvInsert.Render(ADest: TFPCustomCanvas; ARenderInfo: TvRenderInfo; ADestX: Integer;
   ADestY: Integer; AMulX: Double; AMulY: Double);
 var
   lEntity: TvEntity;
 begin
-  inherited Render(ADest, ABackgroundColor, ADestX, ADestY, AMulX, AMulY);
+  inherited Render(ADest, ARenderInfo, ADestX, ADestY, AMulX, AMulY);
   if Block = nil then Exit;
   lEntity := Block.GetFirstEntity();
   while lEntity <> nil do
@@ -2697,7 +2706,7 @@ begin
     // Alter the position of the elements to consider the positioning of the BLOCK and of the INSERT
     lEntity.Move(Block.X + X, Block.Y + Y);
     // Render
-    lEntity.Render(ADest, ABackgroundColor, ADestX, ADestY, AMulX, AMuly);
+    lEntity.Render(ADest, ARenderInfo, ADestX, ADestY, AMulX, AMuly);
     // Change them back
     lEntity.Move(- Block.X - X, - Block.Y - Y);
 
@@ -2707,7 +2716,7 @@ end;
 
 { TvBlock }
 
-procedure TvBlock.Render(ADest: TFPCustomCanvas; ABackgroundColor: TFPColor; ADestX: Integer;
+procedure TvBlock.Render(ADest: TFPCustomCanvas; ARenderInfo: TvRenderInfo; ADestX: Integer;
   ADestY: Integer; AMulX: Double; AMulY: Double);
 begin
   // TvBlock.Render must be empty! Because blocks are invisible by themselves
@@ -3258,11 +3267,26 @@ begin
   ADest.Pen.Style := psSolid;
 end;
 
+{@@
+  This function draws a FPVectorial vectorial page to a TFPCustomCanvas
+  descendent, such as TCanvas from the LCL.
+
+  Be careful that by default this routine does not execute coordinate transformations,
+  and that FPVectorial works with a start point in the bottom-left corner, with
+  the X growing to the right and the Y growing to the top. This will result in
+  an image in TFPCustomCanvas mirrored in the Y axis in relation with the document
+  as seen in a PDF viewer, for example. This can be easily changed with the
+  provided parameters. To have the standard view of an image viewer one could
+  use this function like this:
+
+  ASource.Render(ADest, 0, ASource.Height, 1.0, -1.0);
+}
 procedure TvVectorialPage.Render(ADest: TFPCustomCanvas;
   ADestX: Integer; ADestY: Integer; AMulX: Double; AMulY: Double);
 var
   i: Integer;
   CurEntity: TvEntity;
+  lRenderInfo: TvRenderInfo;
 begin
   {$ifdef FPVECTORIAL_TOCANVAS_DEBUG}
   WriteLn(':>DrawFPVectorialToCanvas');
@@ -3276,7 +3300,9 @@ begin
 
     CurEntity := GetEntity(i);
 
-    CurEntity.Render(ADest, BackgroundColor, ADestX, ADestY, AMulX, AMulY);
+    lRenderInfo.AdjustPenColorToBackground := BackgroundColor = colBlack;
+    lRenderInfo.BackgroundColor := BackgroundColor;
+    CurEntity.Render(ADest, lRenderInfo, ADestX, ADestY, AMulX, AMulY);
   end;
 
   {$ifdef FPVECTORIAL_TOCANVAS_DEBUG}
