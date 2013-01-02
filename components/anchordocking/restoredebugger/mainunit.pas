@@ -34,7 +34,7 @@ unit MainUnit;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, LazFileUtils, LazLogger, SynEdit,
+  Classes, SysUtils, math, FileUtil, LazFileUtils, LazLogger, SynEdit,
   SynHighlighterXML, AnchorDocking, AnchorDockStorage, ADLayoutViewer, Forms,
   Controls, Graphics, Dialogs, ComCtrls, ExtCtrls, Buttons, StdCtrls,
   XMLPropStorage;
@@ -156,6 +156,9 @@ begin
       if (NewBounds.Right>NewBounds.Left)
       and (NewBounds.Bottom>NewBounds.Top) then
         BoundsRect:=NewBounds;
+      SplitterXMLLayout.Left:=Max(1,Cfg.GetValue('Splitter/BetweenXMLAndLayout/Left',SplitterXMLLayout.Left));
+      SplitterBetweenXML.Top:=Max(1,Cfg.GetValue('Splitter/BetweenXML/Top',SplitterBetweenXML.Top));
+      SplitterBetweenLayouts.Top:=Max(1,Cfg.GetValue('Splitter/BetweenLayout/Top',SplitterBetweenLayouts.Top));
     finally
       Cfg.Free;
     end;
@@ -177,6 +180,9 @@ begin
     Cfg:=TXMLConfigStorage.Create(ConfigFilename,false);
     try
       Cfg.SetDeleteValue('Bounds',BoundsRect,Rect(0,0,0,0));
+      Cfg.SetDeleteValue('Splitter/BetweenXMLAndLayout/Left',SplitterXMLLayout.Left,-1);
+      Cfg.SetDeleteValue('Splitter/BetweenXML/Top',SplitterBetweenXML.Top,-1);
+      Cfg.SetDeleteValue('Splitter/BetweenLayout/Top',SplitterBetweenLayouts.Top,-1);
     finally
       Cfg.Free;
     end;
