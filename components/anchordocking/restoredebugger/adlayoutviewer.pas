@@ -277,6 +277,50 @@ end;
 
 procedure TADLayoutTreeView.Paint;
 
+  procedure DrawContent(Node: TAnchorDockLayoutTreeNode;
+    OriginX, OriginY: integer);
+  var
+    r: TRect;
+    i: Integer;
+  begin
+    r:=Node.BoundsRect;
+    OffsetRect(r,OriginX,OriginY);
+    case Node.NodeType of
+    adltnLayout,adltnCustomSite:
+      begin
+        Canvas.Brush.Color:=clWhite;
+        Canvas.Pen.Color:=clBlue;
+      end;
+    adltnControl:
+      begin
+        Canvas.Brush.Color:=clGray;
+        Canvas.Pen.Color:=clBlack;
+      end;
+    adltnSplitterHorizontal:
+      begin
+        Canvas.Brush.Color:=clGreen;
+        Canvas.Pen.Color:=clGreen;
+      end;
+    adltnSplitterVertical:
+      begin
+        Canvas.Brush.Color:=clLime;
+        Canvas.Pen.Color:=clLime;
+      end;
+    adltnPages:
+      begin
+        Canvas.Brush.Color:=clYellow;
+        Canvas.Pen.Color:=clYellow;
+      end;
+    else
+      exit;
+    end;
+    Canvas.Rectangle(ScaleRect(r));
+    if Node.NodeType in [adltnLayout] then begin
+      for i:=0 to Node.Count-1 do
+        DrawContent(Node[i],r.Left,r.Top);
+    end;
+  end;
+
   procedure DrawWindows(Node: TAnchorDockLayoutTreeNode);
   var
     i: Integer;
@@ -287,12 +331,13 @@ procedure TADLayoutTreeView.Paint;
       // top level window
       Monitor:=FindMonitor(Node.Monitor);
       if Monitor=nil then exit;
-      Canvas.Brush.Color:=clWhite;
-      Canvas.Pen.Color:=clRed;
       r:=Node.BoundsRect;
       OffsetRect(r,Monitor.X,Monitor.Y);
-      r:=ScaleRect(r);
-      Canvas.Rectangle(r);
+      Canvas.Brush.Color:=clWhite;
+      Canvas.Pen.Color:=clRed;
+      Canvas.Rectangle(ScaleRect(r));
+      for i:=0 to Node.Count-1 do
+        DrawContent(Node[i],r.Left,r.Top);
     end else begin
       for i:=0 to Node.Count-1 do
         DrawWindows(Node[i]);

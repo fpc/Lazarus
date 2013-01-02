@@ -62,6 +62,8 @@ type
     procedure FormClose(Sender: TObject; var {%H-}CloseAction: TCloseAction);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
+    procedure OpenRecentToolButtonClick(Sender: TObject);
+    procedure OpenToolButtonClick(Sender: TObject);
   private
     FConfigFilename: string;
     FOriginalFilename: string;
@@ -132,6 +134,16 @@ end;
 procedure TADRestDbg.FormDestroy(Sender: TObject);
 begin
   FreeAndNil(FSettings);
+end;
+
+procedure TADRestDbg.OpenRecentToolButtonClick(Sender: TObject);
+begin
+  ShowMessage('Not implemented yet');
+end;
+
+procedure TADRestDbg.OpenToolButtonClick(Sender: TObject);
+begin
+  ShowMessage('not implemented yet');
 end;
 
 function TADRestDbg.GetOriginalLayout: TAnchorDockLayoutTree;

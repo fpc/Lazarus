@@ -23,11 +23,13 @@ object ADRestDbg: TADRestDbg
       Left = 1
       Top = 2
       Caption = 'Open Layout'
+      OnClick = OpenToolButtonClick
     end
     object OpenRecentToolButton: TToolButton
       Left = 79
       Top = 2
       Caption = 'Open Recent'
+      OnClick = OpenRecentToolButtonClick
       Style = tbsDropDown
     end
   end
