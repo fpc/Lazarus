@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, testregistry, LCLProc, LCLType, Forms, TestBase,
-  SynEdit, SynEditTextTrimmer, SynEditKeyCmds, SynEditSearch;
+  SynEdit, SynEditTextTrimmer, SynEditKeyCmds, SynEditSearch, SynHighlighterPas;
 
 type
 
@@ -25,6 +25,7 @@ type
     procedure TestSearchSimple;
     procedure TestSearchSimpleUtf8;
     procedure TestSearchSimpleRegEx;
+    procedure FindMatchingBracket;
   end;
 
 implementation
@@ -177,6 +178,77 @@ begin
   TestFindNext('RegEx Case',           '(t...),',   1,2,  25,3,  true,   15,3, 20,3);
   AssertEquals('RegexRepl Case', 'atextB', fTSearch.RegExprReplace);
 
+end;
+
+procedure TTestSynSearch.FindMatchingBracket;
+var
+  p: TPoint;
+  y,a : Integer;
+  hl: TSynPasSyn;
+begin
+  ReCreateEdit;
+  SetLines(['program a; begin',
+            ' if (A or (B> 0)) and (C > length(L)) then ;',
+           'a:=''(A or (B> 0)) and (C > length(L)) then '';',
+           '  a := ('')'');',
+            'end.',
+            '']);
+
+  hl := TSynPasSyn.Create(nil);
+
+  for a := 0 to 1 do begin
+    if a = 1 then
+      SynEdit.Highlighter := hl;
+
+    for y := 2 to 3 do begin
+      //  if |(A or (B> 0)) and (C > length(L)) then ;
+      p := SynEdit.FindMatchingBracket(point(5, y), False, False, False, False);
+      AssertEquals('', y, p.y);
+      AssertEquals('',17, p.x);
+
+      p := SynEdit.FindMatchingBracket(point(6, y), True, False, False, False);
+      AssertEquals('', y, p.y);
+      AssertEquals('',17, p.x);
+
+      p := SynEdit.FindMatchingBracket(point(6, y), False, False, False, False);
+      AssertEquals('',-1, p.y);
+      AssertEquals('',-1, p.x);
+
+      //  if (A or |(B> 0)) and (C > length(L)) then ;
+      p := SynEdit.FindMatchingBracket(point(11, y), False, False, False, False);
+      AssertEquals('', y, p.y);
+      AssertEquals('',16, p.x);
+
+      p := SynEdit.FindMatchingBracket(point(12, y), True, False, False, False);
+      AssertEquals('', y, p.y);
+      AssertEquals('',16, p.x);
+
+      //  if (A or (B> 0|)) and (C > length(L)) then ;
+      p := SynEdit.FindMatchingBracket(point(16, y), False, False, False, False);
+      AssertEquals('', y, p.y);
+      AssertEquals('',11, p.x);
+
+      p := SynEdit.FindMatchingBracket(point(17, y), True, False, False, False);
+      AssertEquals('', y, p.y);
+      AssertEquals('', 5, p.x);
+
+      //  if (A or (B> 0))| and (C > length(L)) then ;
+      p := SynEdit.FindMatchingBracket(point(18, y), True, False, False, False);
+      AssertEquals('', y, p.y);
+      AssertEquals('', 5, p.x);
+    end;
+
+    if a = 1 then begin
+      //  a := |('')'');
+      p := SynEdit.FindMatchingBracket(point(8, 4), False, False, False, False);
+      AssertEquals('', 4, p.y);
+      AssertEquals('',12, p.x);
+    end;
+
+    SynEdit.Highlighter := nil;
+  end;
+
+  hl.Free;
 end;
 
 //more ftsearch:
