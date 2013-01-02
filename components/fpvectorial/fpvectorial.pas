@@ -209,6 +209,7 @@ type
     BackgroundColor: TFPColor;
     AdjustPenColorToBackground: Boolean;
     Selected: Boolean;
+    ForceRenderBlock: Boolean; // Blocks are usually invisible, but when rendering an insert, their drawing can be forced
   end;
 
   { Now all elements }
@@ -394,6 +395,8 @@ type
   public
     // Mandatory fields
     CX, CY, CZ: Double;
+    // Corner rounding, zero indicates no rounding
+    RX, RY: Double;
     procedure CalculateBoundingBox(ADest: TFPCustomCanvas; var ALeft, ATop, ARight, ABottom: Double); override;
     procedure Render(ADest: TFPCustomCanvas; ARenderInfo: TvRenderInfo; ADestX: Integer = 0;
       ADestY: Integer = 0; AMulX: Double = 1.0; AMulY: Double = 1.0); override;
@@ -605,14 +608,15 @@ type
   end;
 
   {@@
-    A "Insert" inserts a block into the drawing in the specified position
+    A "Insert" inserts a copy of any other element in the specified position.
+    Usually TvBlock entities are inserted, but any entity can be inserted.
   }
 
   { TvInsert }
 
   TvInsert = class(TvNamedEntity)
   public
-    Block: TvBlock; // The block to be inserted
+    InsertEntity: TvEntity; // The entity to be inserted
     procedure Render(ADest: TFPCustomCanvas; ARenderInfo: TvRenderInfo; ADestX: Integer = 0;
       ADestY: Integer = 0; AMulX: Double = 1.0; AMulY: Double = 1.0); override;
   end;
@@ -741,7 +745,7 @@ type
     function AddCircularArc(ACenterX, ACenterY, ARadius, AStartAngle, AEndAngle: Double; AColor: TFPColor; AOnlyCreate: Boolean = False): TvCircularArc;
     function AddEllipse(CenterX, CenterY, HorzHalfAxis, VertHalfAxis, Angle: Double; AOnlyCreate: Boolean = False): TvEllipse;
     function AddBlock(AName: string; AX, AY, AZ: Double): TvBlock;
-    function AddInsert(AX, AY, AZ: Double; ABlock: TvBlock): TvInsert;
+    function AddInsert(AX, AY, AZ: Double; AInsertEntity: TvEntity): TvInsert;
     // Layers
     function AddLayer(AName: string): TvLayer;
     function AddLayerAndSetAsCurrent(AName: string): TvLayer;
@@ -1950,7 +1954,14 @@ begin
   y1 := CoordToCanvasY(fy1);
   y2 := CoordToCanvasY(fy2);
 
-  ADest.Rectangle(x1, y1, x2, y2);
+  {$ifdef USE_LCL_CANVAS}
+  if (RX = 0) and (RY = 0) then
+    ADest.Rectangle(x1, y1, x2, y2)
+  else
+    LCLIntf.RoundRect(TCanvas(ADest).Handle, x1, y1, x2, y2, Round(rx), Round(ry));
+  {$else}
+  ADest.Rectangle(x1, y1, x2, y2)
+  {$endif}
 end;
 
 { TvAlignedDimension }
@@ -1976,6 +1987,8 @@ var
   {$endif}
 begin
   ADest.Pen.FPColor := AdjustColorToBackground(colBlack, ARenderInfo);
+  ADest.Pen.Width := 1;
+  ADest.Pen.Style := psSolid;
   //
   // Draws this shape:
   // horizontal     vertical
@@ -2088,6 +2101,8 @@ var
   {$endif}
 begin
   ADest.Pen.FPColor := AdjustColorToBackground(colBlack, ARenderInfo);
+  ADest.Pen.Width := 1;
+  ADest.Pen.Style := psSolid;
 
   // The size of the radius of the circle
   lRadius := sqrt(sqr(Center.X - DimensionLeft.X) + sqr(Center.Y - DimensionLeft.Y));
@@ -2852,10 +2867,34 @@ procedure TvInsert.Render(ADest: TFPCustomCanvas; ARenderInfo: TvRenderInfo; ADe
   ADestY: Integer; AMulX: Double; AMulY: Double);
 var
   lEntity: TvEntity;
+  OldForceRenderBlock: Boolean;
 begin
   inherited Render(ADest, ARenderInfo, ADestX, ADestY, AMulX, AMulY);
-  if Block = nil then Exit;
-  lEntity := Block.GetFirstEntity();
+  if InsertEntity = nil then Exit;
+  // If we are inserting a block, make sure it will render its contents
+  OldForceRenderBlock := ARenderInfo.ForceRenderBlock;
+  ARenderInfo.ForceRenderBlock := True;
+  // Alter the position of the elements to consider the positioning of the BLOCK and of the INSERT
+  InsertEntity.Move(X, Y);
+  // Render
+  InsertEntity.Render(ADest, ARenderInfo, ADestX, ADestY, AMulX, AMuly);
+  // Change them back
+  InsertEntity.Move(-X, -Y);
+  ARenderInfo.ForceRenderBlock := OldForceRenderBlock;
+end;
+
+{ TvBlock }
+
+procedure TvBlock.Render(ADest: TFPCustomCanvas; ARenderInfo: TvRenderInfo; ADestX: Integer;
+  ADestY: Integer; AMulX: Double; AMulY: Double);
+var
+  lEntity: TvEntity;
+begin
+  // blocks are invisible by themselves
+  //inherited Render(ADest, ARenderInfo, ADestX, ADestY, AMulX, AMulY);
+  if not ARenderInfo.ForceRenderBlock then Exit;
+
+  lEntity := GetFirstEntity();
   while lEntity <> nil do
   begin
     {$IFDEF FPVECTORIAL_DEBUG_BLOCKS}
@@ -2864,22 +2903,14 @@ begin
     {$ENDIF}
 
     // Alter the position of the elements to consider the positioning of the BLOCK and of the INSERT
-    lEntity.Move(Block.X + X, Block.Y + Y);
+    lEntity.Move(X, Y);
     // Render
     lEntity.Render(ADest, ARenderInfo, ADestX, ADestY, AMulX, AMuly);
     // Change them back
-    lEntity.Move(- Block.X - X, - Block.Y - Y);
+    lEntity.Move(-X, -Y);
 
-    lEntity := Block.GetNextEntity();
+    lEntity := GetNextEntity();
   end;
-end;
-
-{ TvBlock }
-
-procedure TvBlock.Render(ADest: TFPCustomCanvas; ARenderInfo: TvRenderInfo; ADestX: Integer;
-  ADestY: Integer; AMulX: Double; AMulY: Double);
-begin
-  // TvBlock.Render must be empty! Because blocks are invisible by themselves
 end;
 
 { TvVectorialPage }
@@ -3352,14 +3383,14 @@ begin
   Result := lBlock;
 end;
 
-function TvVectorialPage.AddInsert(AX, AY, AZ: Double; ABlock: TvBlock): TvInsert;
+function TvVectorialPage.AddInsert(AX, AY, AZ: Double; AInsertEntity: TvEntity): TvInsert;
 var
   lInsert: TvInsert;
 begin
   lInsert := TvInsert.Create;
   lInsert.X := AX;
   lInsert.Y := AY;
-  lInsert.Block := ABlock;
+  lInsert.InsertEntity := AInsertEntity;
   AddEntity(lInsert);
   Result := lInsert;
 end;

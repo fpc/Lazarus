@@ -80,6 +80,7 @@ type
     procedure ReadPolyFromNode(ANode: TDOMNode; AData: TvVectorialPage; ADoc: TvVectorialDocument);
     procedure ReadRectFromNode(ANode: TDOMNode; AData: TvVectorialPage; ADoc: TvVectorialDocument);
     procedure ReadTextFromNode(ANode: TDOMNode; AData: TvVectorialPage; ADoc: TvVectorialDocument);
+    procedure ReadUseFromNode(ANode: TDOMNode; AData: TvVectorialPage; ADoc: TvVectorialDocument);
     function  StringWithUnitToFloat(AStr: string): Double;
     procedure ConvertSVGCoordinatesToFPVCoordinates(
       const AData: TvVectorialPage;
@@ -309,14 +310,17 @@ begin
 
   // Support for RGB hex
   // ex: #0000ff
+  // Another wierd valid variant: #000
   if (Length(lValue) > 1) and (lValue[1] = '#') then
   begin
     lStr := Copy(lValue, 2, 2);
     Result.Red := StrToInt('$'+lStr)*$101;
     lStr := Copy(lValue, 4, 2);
-    Result.Green := StrToInt('$'+lStr)*$101;
+    if lStr = '' then Result.Green := 0
+    else Result.Green := StrToInt('$'+lStr)*$101;
     lStr := Copy(lValue, 6, 2);
-    Result.Blue := StrToInt('$'+lStr)*$101;
+    if lStr = '' then Result.Blue := 0
+    else Result.Blue := StrToInt('$'+lStr)*$101;
     Exit;
   end;
 
@@ -682,27 +686,53 @@ end;
 
 procedure TvSVGVectorialReader.ReadSVGPenStyleWithKeyAndValue(AKey,
   AValue: string; ADestEntity: TvEntityWithPen);
+var
+  OldAlpha: Word;
 begin
   if AKey = 'stroke' then
   begin
+    // We store and restore the old alpha to support the "-opacity" element
+    OldAlpha := ADestEntity.Pen.Color.Alpha;
     if ADestEntity.Pen.Style = psClear then ADestEntity.Pen.Style := psSolid;
 
     if AValue = 'none'  then ADestEntity.Pen.Style := fpcanvas.psClear
-    else ADestEntity.Pen.Color := ReadSVGColor(AValue)
+    else
+    begin
+      ADestEntity.Pen.Color := ReadSVGColor(AValue);
+      ADestEntity.Pen.Color.Alpha := OldAlpha;
+    end;
   end
   else if AKey = 'stroke-width' then
-    ADestEntity.Pen.Width := Round(StringWithUnitToFloat(AValue));
+    ADestEntity.Pen.Width := Round(StringWithUnitToFloat(AValue))
+  else if AKey = 'stroke-opacity' then
+    ADestEntity.Pen.Color.Alpha := StrToInt(AValue)*$101
+  else if AKey = 'stroke-linecap' then
+  begin
+    {case LowerCase(AValue) of
+    'butt':
+    'round':
+    'square': ADestEntity.Pen;
+    end;}
+  end;
 end;
 
 procedure TvSVGVectorialReader.ReadSVGBrushStyleWithKeyAndValue(AKey,
   AValue: string; ADestEntity: TvEntityWithPenAndBrush);
+var
+  OldAlpha: Word;
 begin
   if AKey = 'fill' then
   begin
+    // We store and restore the old alpha to support the "-opacity" element
+    OldAlpha := ADestEntity.Brush.Color.Alpha;
     if ADestEntity.Brush.Style = bsClear then ADestEntity.Brush.Style := bsSolid;
 
     if AValue = 'none'  then ADestEntity.Brush.Style := fpcanvas.bsClear
-    else ADestEntity.Brush.Color := ReadSVGColor(AValue)
+    else
+    begin
+      ADestEntity.Brush.Color := ReadSVGColor(AValue);
+      ADestEntity.Brush.Color.Alpha := OldAlpha;
+    end;
   end
   else if AKey = 'fill-opacity' then
     ADestEntity.Brush.Color.Alpha := StrToInt(AValue)*$101;
@@ -732,7 +762,11 @@ end;
 function TvSVGVectorialReader.IsAttributeFromStyle(AStr: string): Boolean;
 begin
   Result := (AStr = 'stroke') or (AStr = 'stroke-width') or
+    (AStr = 'stroke-dasharray') or (AStr = 'stroke-opacity') or
+    (AStr = 'stroke-linecap') or
+    // brush
     (AStr = 'fill') or (AStr = 'fill-opacity') or
+    // font
     (AStr = 'font-size') or (AStr = 'fill-family') or
     (AStr = 'font-weight');
 end;
@@ -767,12 +801,13 @@ begin
   case lEntityName of
     'circle': ReadCircleFromNode(ANode, AData, ADoc);
     'ellipse': ReadEllipseFromNode(ANode, AData, ADoc);
+    'g': ReadLayerFromNode(ANode, AData, ADoc);
     'line': ReadLineFromNode(ANode, AData, ADoc);
     'path': ReadPathFromNode(ANode, AData, ADoc);
     'polygon', 'polyline': ReadPolyFromNode(ANode, AData, ADoc);
     'rect': ReadRectFromNode(ANode, AData, ADoc);
     'text': ReadTextFromNode(ANode, AData, ADoc);
-    'g': ReadLayerFromNode(ANode, AData, ADoc);
+    'use': ReadUseFromNode(ANode, AData, ADoc);
   end;
 end;
 
@@ -1278,7 +1313,7 @@ end;
 procedure TvSVGVectorialReader.ReadRectFromNode(ANode: TDOMNode;
   AData: TvVectorialPage; ADoc: TvVectorialDocument);
 var
-  lx, ly, cx, cy: double;
+  lx, ly, cx, cy, lrx, lry: double;
   lRect: TvRectangle;
   i: Integer;
   lNodeName: DOMString;
@@ -1287,6 +1322,8 @@ begin
   ly := 0.0;
   cx := 0.0;
   cy := 0.0;
+  lrx := 0.0;
+  lry := 0.0;
 
   lRect := TvRectangle.Create;
   // SVG entities start without any pen drawing, but with a black brush
@@ -1302,6 +1339,10 @@ begin
       lx := StringWithUnitToFloat(ANode.Attributes.Item[i].NodeValue)
     else if lNodeName = 'y' then
       ly := StringWithUnitToFloat(ANode.Attributes.Item[i].NodeValue)
+    else if lNodeName = 'rx' then
+      lrx := StringWithUnitToFloat(ANode.Attributes.Item[i].NodeValue)
+    else if lNodeName = 'ry' then
+      lry := StringWithUnitToFloat(ANode.Attributes.Item[i].NodeValue)
     else if lNodeName = 'width' then
       cx := StringWithUnitToFloat(ANode.Attributes.Item[i].NodeValue)
     else if lNodeName = 'height' then
@@ -1321,6 +1362,10 @@ begin
         AData, lx, ly, lRect.X, lRect.Y);
   ConvertSVGDeltaToFPVDelta(
         AData, cx, cy, lRect.CX, lRect.CY);
+  ConvertSVGDeltaToFPVDelta(
+        AData, lrx, lry, lRect.RX, lRect.RY);
+  lRect.RX := Abs(lRect.RX) * 2;
+  lRect.RY := Abs(lRect.RY) * 2;
 
   AData.AddEntity(lRect);
 end;
@@ -1386,6 +1431,12 @@ begin
 
   // Finalization
   AData.AddEntity(lText);
+end;
+
+procedure TvSVGVectorialReader.ReadUseFromNode(ANode: TDOMNode;
+  AData: TvVectorialPage; ADoc: TvVectorialDocument);
+begin
+
 end;
 
 function TvSVGVectorialReader.StringWithUnitToFloat(AStr: string): Double;

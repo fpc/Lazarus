@@ -1487,7 +1487,7 @@ begin
   Result.X := PosX;
   Result.Y := PosY;
   Result.Z := PosZ;
-  Result.Block := lBlock;
+  Result.InsertEntity := lBlock;
   if not AOnlyCreate then AData.AddEntity(Result);
 end;
 
