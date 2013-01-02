@@ -4,6 +4,7 @@
 
  Test specific with:
      ./runtests --format=plain --suite=TestReplaceSubstring
+     ./runtests --format=plain --suite=TestSplitCmdLineParams
 }
 unit TestLazUtils;
 
@@ -12,7 +13,7 @@ unit TestLazUtils;
 interface
 
 uses
-  Classes, SysUtils, fpcunit, testglobals, LazLogger;
+  Classes, SysUtils, fpcunit, testglobals, LazLogger, FileUtil;
 
 type
 
@@ -22,6 +23,7 @@ type
   public
   published
     procedure TestReplaceSubstring;
+    procedure TestSplitCmdLineParams;
   end;
 
 implementation
@@ -60,6 +62,41 @@ begin
   AssertEquals('last multi','adef',r('abc',2,2,'def'));
   AssertEquals('middle chars same','abcde',r('abcde',2,3,'bcd'));
   AssertEquals('middle chars shorten','axe',r('abcde',2,3,'x'));
+end;
+
+procedure TTestLazUtils.TestSplitCmdLineParams;
+
+  function r(Params: string; ReadBackslash: boolean = false): string;
+  var
+    ParamList: TStringList;
+    i: Integer;
+  begin
+    Result:='';
+    ParamList:=TStringList.Create;
+    try
+      SplitCmdLineParams(Params,ParamList,ReadBackslash);
+      for i:=0 to ParamList.Count-1 do begin
+        if i>0 then Result+='|';
+        Result+=ParamList[i];
+      end;
+    finally
+      ParamList.Free;
+    end;
+  end;
+
+begin
+  AssertEquals('empty','',r(''));
+  AssertEquals('simple','a',r('a'));
+  AssertEquals('two simple','a|b',r('a b'));
+  AssertEquals('one quote "','a b',r('"a b"'));
+  AssertEquals('one quote ''','a b',r('''a b'''));
+  AssertEquals('two with backslash disabled','a\|b',r('a\ b'));
+  AssertEquals('two with backslash enabled','a b',r('a\ b',true));
+  AssertEquals('two with backslashed quote','a"b',r('"a\"b"',true));
+  AssertEquals('two with backslashed apos','a''b',r('"a\''b"',true));
+  AssertEquals('two with backslashed backslash','a\b',r('"a\\b"',true));
+  AssertEquals('quoted quote','''|"',r('"''" ''"''',true));
+  AssertEquals('empty params','|',r('"" '''''));
 end;
 
 initialization

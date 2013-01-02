@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0"?>
 <fpdoc-descriptions>
   <package name="lazutils">
     <!--
@@ -1059,8 +1059,8 @@ else
       <element name="TFileSearcher.Search">
         <short>Searches for files in specified path with passed options.</short>
         <descr>Searches for files in specified path. When file is found the OnFileFound event is invoked, for directories
-		  OnDirectoryFound event. You can abort searching process by calling Stop method in this events.
-		</descr>
+&#x9;&#x9;  OnDirectoryFound event. You can abort searching process by calling Stop method in this events.
+&#x9;&#x9;</descr>
         <errors/>
         <seealso>
           <link id="TFileSearcher.OnFileFound"/>
@@ -1181,6 +1181,12 @@ else
       <!-- argument Visibility: default -->
       <element name="GetTempFilename.Prefix">
         <short>The <var>Prefix</var> to which an integer will be attached to generate a temporary filename</short>
+      </element>
+    <element name="SplitCmdLineParams"><short>Splits parameters separated by one or more spaces.</short><descr>Parameters are separated by one or more spaces (#9,#10,#13,#32).
+Quotes are parsed as single parameter.
+if ReadBackslash=true then \" is replaced to " and not treated as quote.
+#0 is always end.
+</descr>
       </element>
     </module>
     <!-- FileUtil -->
