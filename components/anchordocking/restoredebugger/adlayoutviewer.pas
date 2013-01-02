@@ -277,7 +277,27 @@ end;
 
 procedure TADLayoutTreeView.Paint;
 
-
+  procedure DrawWindows(Node: TAnchorDockLayoutTreeNode);
+  var
+    i: Integer;
+    Monitor: TADLTVMonitor;
+    r: TRect;
+  begin
+    if Node.NodeType in [adltnCustomSite,adltnLayout] then begin
+      // top level window
+      Monitor:=FindMonitor(Node.Monitor);
+      if Monitor=nil then exit;
+      Canvas.Brush.Color:=clWhite;
+      Canvas.Pen.Color:=clRed;
+      r:=Node.BoundsRect;
+      OffsetRect(r,Monitor.X,Monitor.Y);
+      r:=ScaleRect(r);
+      Canvas.Rectangle(r);
+    end else begin
+      for i:=0 to Node.Count-1 do
+        DrawWindows(Node[i]);
+    end;
+  end;
 
 var
   i: Integer;
@@ -289,14 +309,14 @@ begin
 
   // draw monitor workareas
   Canvas.Pen.Color:=clBlue;
-  Canvas.Brush.Color:=clWhite;
+  Canvas.Brush.Color:=RGBToColor(128,128,255);
   for i:=0 to MonitorCount-1 do begin
     Monitor:=fMonitors[i];
     r:=ScaleRect(Monitor.WorkArea);
     Canvas.Rectangle(r);
   end;
 
-  //DrawMonitors(Layout.Root);
+  DrawWindows(Layout.Root);
 
   // call event
   inherited Paint;
