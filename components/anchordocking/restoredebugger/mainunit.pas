@@ -77,6 +77,8 @@ type
     RestoredView: TADLayoutTreeView;
     procedure OpenLayout(Filename: string);
     procedure LoadSettingsFromOriginalSynedit;
+    procedure ComputeRestoredLayout;
+    procedure LoadRestoredXML;
     property Settings: TAnchorDockSettings read FSettings;
     property OriginalLayout: TAnchorDockLayoutTree read GetOriginalLayout;
     property OriginalFilename: string read FOriginalFilename;
@@ -102,7 +104,7 @@ begin
   FSettings:=TAnchorDockSettings.Create;
 
   OriginalFileLabel.Caption:='Original: '+OriginalFilename;
-  RestoredFileLabel.Caption:='Restored XML:';
+  RestoredFileLabel.Caption:='Restored as XML:';
   OpenToolButton.Caption:='Open Config File';
   OpenRecentToolButton.Caption:='Open Recent';
 
@@ -224,8 +226,10 @@ begin
       exit;
     end;
   end;
-
+  OriginalFileLabel.Caption:='Original: '+Filename;
   LoadSettingsFromOriginalSynedit;
+  ComputeRestoredLayout;
+  LoadRestoredXML;
 end;
 
 procedure TADRestDbg.LoadSettingsFromOriginalSynedit;
@@ -247,6 +251,31 @@ begin
     Config.Free;
     ms.Free;
     OriginalView.LayoutChanged;
+  end;
+end;
+
+procedure TADRestDbg.ComputeRestoredLayout;
+begin
+  RestoredLayout.Assign(OriginalLayout);
+  // ToDo
+  RestoredView.LayoutChanged;
+end;
+
+procedure TADRestDbg.LoadRestoredXML;
+var
+  Config: TXMLConfigStorage;
+  ms: TMemoryStream;
+begin
+  ms:=TMemoryStream.Create;
+  Config:=TXMLConfigStorage.Create('dummy.xml',false);
+  try
+    RestoredLayout.SaveToConfig(Config);
+    Config.SaveToStream(ms);
+    ms.Position:=0;
+    RestoredSynEdit.Lines.LoadFromStream(ms);
+  finally
+    Config.Free;
+    ms.Free;
   end;
 end;
 
