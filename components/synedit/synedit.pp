@@ -8167,23 +8167,27 @@ var
           TokenListCnt := i + 1;
           MaxKnownTokenPos := TokenPosList[i].X;
           Result := TokenPosList[i-1].Attr = BracketKind;
-          LastUsedTokenIdx := i-1;
+          LastUsedTokenIdx := i; // -1; TODO: -1 only if searching backwards
           exit;
         end;
         inc(i);
         fHighlighter.Next;
       end;
       MaxKnownTokenPos := Length(Line) + 1;             // 1 based end+1 of last token (start pos of none existing after eol token)
+      if i >= l then begin
+        l := l * 4;
+        SetLength(TokenPosList, l);
+      end;
       TokenPosList[i].X := MaxKnownTokenPos;
       TokenListCnt := i + 1;
       Result := TokenPosList[i-1].Attr = BracketKind;
-      LastUsedTokenIdx := i-1;
+      LastUsedTokenIdx := i; // -1; TODO: -1 only if searching backwards
       exit;
     end;
 
     // Token is in previously retrieved values
     i := LastUsedTokenIdx;
-    while (i > 0) and (TokenPosList[i-1].X <= PosX) do
+    while (i > 0) and (TokenPosList[i].X > PosX) do
       dec(i);
     Result := TokenPosList[i].Attr = BracketKind;
     LastUsedTokenIdx := i;
