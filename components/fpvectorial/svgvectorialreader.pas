@@ -60,12 +60,14 @@ type
   private
     FPointSeparator, FCommaSeparator: TFormatSettings;
     FSVGPathTokenizer: TSVGPathTokenizer;
+    FLayerStylesKeys, FLayerStylesValues: TFPList; // of TStringList;
     function ReadSVGColor(AValue: string): TFPColor;
     procedure ReadSVGStyle(AValue: string; ADestEntity: TvEntityWithPen; AUseFillAsPen: Boolean = False);
     procedure ReadSVGPenStyleWithKeyAndValue(AKey, AValue: string; ADestEntity: TvEntityWithPen);
     procedure ReadSVGBrushStyleWithKeyAndValue(AKey, AValue: string; ADestEntity: TvEntityWithPenAndBrush);
-    procedure ReadSVGFontStyleWithKeyAndValue(AKey, AValue: string; ADestEntity: TvText);
+    procedure ReadSVGFontStyleWithKeyAndValue(AKey, AValue: string; ADestEntity: TvEntityWithPenBrushAndFont);
     function IsAttributeFromStyle(AStr: string): Boolean;
+    procedure ApplyLayerStyles(ADestEntity: TvEntity);
     //
     procedure ReadEntityFromNode(ANode: TDOMNode; AData: TvVectorialPage; ADoc: TvVectorialDocument);
     procedure ReadCircleFromNode(ANode: TDOMNode; AData: TvVectorialPage; ADoc: TvVectorialDocument);
@@ -707,7 +709,7 @@ begin
 end;
 
 procedure TvSVGVectorialReader.ReadSVGFontStyleWithKeyAndValue(AKey,
-  AValue: string; ADestEntity: TvText);
+  AValue: string; ADestEntity: TvEntityWithPenBrushAndFont);
 begin
   // SVG text uses "fill" to indicate the pen color of the text, very unintuitive as
   // "fill" is usually for brush in other elements
@@ -733,6 +735,27 @@ begin
     (AStr = 'fill') or (AStr = 'fill-opacity') or
     (AStr = 'font-size') or (AStr = 'fill-family') or
     (AStr = 'font-weight');
+end;
+
+procedure TvSVGVectorialReader.ApplyLayerStyles(ADestEntity: TvEntity);
+var
+  lStringsKeys, lStringsValues: TStringList;
+  i, j: Integer;
+begin
+  for i := 0 to FLayerStylesKeys.Count-1 do
+  begin
+    lStringsKeys := TStringList(FLayerStylesKeys.Items[i]);
+    lStringsValues := TStringList(FLayerStylesValues.Items[i]);
+    for j := 0 to lStringsKeys.Count-1 do
+    begin
+      if ADestEntity is TvEntityWithPen then
+        ReadSVGPenStyleWithKeyAndValue(lStringsKeys.Strings[j], lStringsValues.Strings[j], ADestEntity as TvEntityWithPen);
+      if ADestEntity is TvEntityWithPenAndBrush then
+        ReadSVGBrushStyleWithKeyAndValue(lStringsKeys.Strings[j], lStringsValues.Strings[j], ADestEntity as TvEntityWithPenAndBrush);
+      if ADestEntity is TvEntityWithPenBrushAndFont then
+        ReadSVGFontStyleWithKeyAndValue(lStringsKeys.Strings[j], lStringsValues.Strings[j], ADestEntity as TvEntityWithPenBrushAndFont);
+    end;
+  end;
 end;
 
 procedure TvSVGVectorialReader.ReadEntityFromNode(ANode: TDOMNode;
@@ -858,12 +881,24 @@ var
   lCurNode, lLayerNameNode: TDOMNode;
   lLayer: TvLayer;
   i: Integer;
+  lLayerStyleKeys, lLayerStyleValues: TStringList;
 begin
+  // Store the style of this layer in the list
+  lLayerStyleKeys := TStringList.Create;
+  lLayerStyleValues := TStringList.Create;
+  FLayerStylesKeys.Add(lLayerStyleKeys);
+  FLayerStylesValues.Add(lLayerStyleValues);
+
   for i := 0 to ANode.Attributes.Length - 1 do
   begin
     lNodeName := ANode.Attributes.Item[i].NodeName;
-    if  lNodeName = 'id' then
-      lLayerName := UTF16ToUTF8(ANode.Attributes.Item[i].NodeValue);
+    if lNodeName = 'id' then
+      lLayerName := UTF16ToUTF8(ANode.Attributes.Item[i].NodeValue)
+    else if IsAttributeFromStyle(lNodeName) then
+    begin
+      lLayerStyleKeys.Add(lNodeName);
+      lLayerStyleValues.Add(UTF16ToUTF8(ANode.Attributes.Item[i].NodeValue));
+    end;
   end;
 
   lLayer := AData.AddLayerAndSetAsCurrent(lLayerName);
@@ -874,6 +909,12 @@ begin
     ReadEntityFromNode(lCurNode, AData, ADoc);
     lCurNode := lCurNode.NextSibling;
   end;
+
+  // Now remove the style from this layer
+  FLayerStylesKeys.Remove(lLayerStyleKeys);
+  lLayerStyleKeys.Free;
+  FLayerStylesValues.Remove(lLayerStyleValues);
+  lLayerStyleValues.Free;
 end;
 
 procedure TvSVGVectorialReader.ReadLineFromNode(ANode: TDOMNode;
@@ -947,6 +988,8 @@ begin
   lPath.Pen.Style := psClear;
   lPath.Brush.Color := colBlack;
   lPath.Brush.Style := bsSolid;
+  // Apply the layer style
+  ApplyLayerStyles(lPath);
   // Add the pen/brush/name
   for i := 0 to ANode.Attributes.Length - 1 do
   begin
@@ -1401,10 +1444,14 @@ begin
   FPointSeparator.ThousandSeparator := '#';// disable the thousand separator
 
   FSVGPathTokenizer := TSVGPathTokenizer.Create;
+  FLayerStylesKeys := TFPList.Create;
+  FLayerStylesValues := TFPList.Create;
 end;
 
 destructor TvSVGVectorialReader.Destroy;
 begin
+  FLayerStylesKeys.Free;
+  FLayerStylesValues.Free;
   FSVGPathTokenizer.Free;
 
   inherited Destroy;
