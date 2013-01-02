@@ -2772,8 +2772,6 @@ begin
     end else if CurPos.Flag=cafSemicolon then begin
       // ;
       if BlockType=ebtIf then begin
-        if (IfType=itNone) then
-          RaiseStrExpectedWithBlockStartHint('"then"');
         CloseNode;
         break;
       end;
@@ -2811,22 +2809,19 @@ begin
     end else if UpAtomIs('THEN') then begin
       if (BlockType=ebtIf) and (IfType=itNone) then begin
         IfType:=itThen;
-      end else
-        RaiseStrExpectedWithBlockStartHint('"if"');
+      end;
     end else if UpAtomIs('ELSE') then begin
       if (BlockType=ebtIf) then begin
         if (IfType=itThen) then
           IfType:=itElse
-        else if IfType=itElse then begin
+        else begin
           // e.g. if then if then else |else ;
           CloseNode;
           UndoReadNextAtom;
           break;
-        end else
-          RaiseStrExpectedWithBlockStartHint('"then"');
+        end;
       end else if BlockType=ebtCase then begin
-      end else
-        RaiseStrExpectedWithBlockStartHint('"if"');
+      end;
     end else if CreateNodes and UpAtomIs('WITH') then begin
       ReadWithStatement(true,CreateNodes);
     end else if UpAtomIs('ON') and (BlockType=ebtTry)
