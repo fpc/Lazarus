@@ -217,7 +217,6 @@ type
   TvEntity = class
   public
     X, Y, Z: Double;
-    Name: string;
     constructor Create; virtual;
     procedure Clear; virtual;
     // in CalculateBoundingBox always remember to treat correctly the case of ADest=nil!!!
@@ -238,9 +237,16 @@ type
 
   TvEntityClass = class of TvEntity;
 
+  { TvNamedEntity }
+
+  TvNamedEntity = class(TvEntity)
+  public
+    Name: string;
+  end;
+
   { TvEntityWithPen }
 
-  TvEntityWithPen = class(TvEntity)
+  TvEntityWithPen = class(TvNamedEntity)
   public
     {@@ The global Pen for the entire entity. In the case of paths, individual
         elements might be able to override this setting. }
@@ -419,7 +425,7 @@ type
 
   { TvRasterImage }
 
-  TvRasterImage = class(TvEntity)
+  TvRasterImage = class(TvNamedEntity)
   public
     RasterImage: TFPCustomImage;
     Top, Left, Width, Height: Double;
@@ -428,8 +434,14 @@ type
 
   { TvPoint }
 
-  TvPoint = class(TvEntityWithPen)
+  // Keep TvPoint as small as possible in memory foot-print for LAS support
+  TvPoint = class(TvEntity)
   public
+    Pen: TvPen;
+    {constructor Create; override;
+    procedure ApplyPenToCanvas(ADest: TFPCustomCanvas; ARenderInfo: TvRenderInfo);
+    procedure Render(ADest: TFPCustomCanvas; ARenderInfo: TvRenderInfo; ADestX: Integer = 0;
+      ADestY: Integer = 0; AMulX: Double = 1.0; AMulY: Double = 1.0); override;}
   end;
 
   { TvArrow }
@@ -539,7 +551,7 @@ type
 
   { TvEntityWithSubEntities }
 
-  TvEntityWithSubEntities = class(TvEntity)
+  TvEntityWithSubEntities = class(TvNamedEntity)
   private
     FCurIndex: Integer;
     procedure CallbackDeleteElement(data,arg:pointer);
@@ -576,7 +588,7 @@ type
 
   { TvInsert }
 
-  TvInsert = class(TvEntity)
+  TvInsert = class(TvNamedEntity)
   public
     Block: TvBlock; // The block to be inserted
     procedure Render(ADest: TFPCustomCanvas; ARenderInfo: TvRenderInfo; ADestX: Integer = 0;
@@ -1359,6 +1371,7 @@ begin
     Write(' Solid Path Internal Area');
     {$endif}
     ADest.Brush.Style := Brush.Style;
+    ADest.Pen.Style := psClear;
 
     SetLength(Points, Len);
 
@@ -1388,6 +1401,7 @@ begin
   //
   // For other paths, draw more carefully
   //
+  ADest.Pen.Style := Pen.Style;
   PrepareForSequentialReading;
 
   for j := 0 to Len - 1 do
@@ -2840,7 +2854,8 @@ begin
   for i := 0 to GetEntitiesCount()-1 do
   begin
     lCurEntity := GetEntity(i);
-    if (lCurEntity is AType) and (lCurEntity.Name = AName) then
+    if (lCurEntity is AType) and
+      (lCurEntity is TvNamedEntity) and (TvNamedEntity(lCurEntity).Name = AName) then
     begin
       Result := lCurEntity;
       Break;
