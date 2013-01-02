@@ -138,6 +138,7 @@ type
     Previous: TPathSegment;
     Next: TPathSegment;
     procedure Move(ADeltaX, ADeltaY: Double); virtual;
+    function GenerateDebugTree(ADestRoutine: TvDebugAddItemProc; APageItem: Pointer): Pointer; virtual;
   end;
 
   {@@
@@ -154,6 +155,7 @@ type
   public
     X, Y: Double;
     procedure Move(ADeltaX, ADeltaY: Double); override;
+    function GenerateDebugTree(ADestRoutine: TvDebugAddItemProc; APageItem: Pointer): Pointer; override;
   end;
 
   T2DSegmentWithPen = class(T2DSegment)
@@ -228,11 +230,13 @@ type
     procedure Move(ADeltaX, ADeltaY: Double); virtual;
     procedure MoveSubpart(ADeltaX, ADeltaY: Double; ASubpart: Cardinal); virtual;
     function  GetSubpartCount: Integer; virtual;
+    procedure PositionSubparts(ADest: TFPCustomCanvas; ABaseX, ABaseY: Double); virtual;
     procedure Render(ADest: TFPCustomCanvas; ARenderInfo: TvRenderInfo; ADestX: Integer = 0;
       ADestY: Integer = 0; AMulX: Double = 1.0; AMulY: Double = 1.0); virtual;
     function AdjustColorToBackground(AColor: TFPColor; ARenderInfo: TvRenderInfo): TFPColor;
     function GetNormalizedPos(APage: TvVectorialPage; ANewMin, ANewMax: Double): T3DPoint;
     function GenerateDebugTree(ADestRoutine: TvDebugAddItemProc; APageItem: Pointer): Pointer; virtual;
+    function GenerateDebugStrForFPColor(AColor: TFPColor): string;
   end;
 
   TvEntityClass = class of TvEntity;
@@ -242,6 +246,7 @@ type
   TvNamedEntity = class(TvEntity)
   public
     Name: string;
+    function GenerateDebugTree(ADestRoutine: TvDebugAddItemProc; APageItem: Pointer): Pointer; override;
   end;
 
   { TvEntityWithPen }
@@ -301,6 +306,7 @@ type
     function  GetSubpartCount: Integer; override;
     procedure Render(ADest: TFPCustomCanvas; ARenderInfo: TvRenderInfo; ADestX: Integer = 0;
       ADestY: Integer = 0; AMulX: Double = 1.0; AMulY: Double = 1.0); override;
+    function GenerateDebugTree(ADestRoutine: TvDebugAddItemProc; APageItem: Pointer): Pointer; override;
   end;
 
   {@@
@@ -322,6 +328,7 @@ type
     function TryToSelect(APos: TPoint; var ASubpart: Cardinal): TvFindEntityResult; override;
     procedure Render(ADest: TFPCustomCanvas; ARenderInfo: TvRenderInfo; ADestX: Integer = 0;
       ADestY: Integer = 0; AMulX: Double = 1.0; AMulY: Double = 1.0); override;
+    function GenerateDebugTree(ADestRoutine: TvDebugAddItemProc; APageItem: Pointer): Pointer; override;
   end;
 
   {@@
@@ -542,7 +549,7 @@ type
     //
     function CalculateHeight(ADest: TFPCustomCanvas): Double; // in milimeters
     function CalculateWidth(ADest: TFPCustomCanvas): Double; // in milimeters
-    procedure PositionElements(ADest: TFPCustomCanvas; ABaseX, ABaseY: Double);
+    procedure PositionSubparts(ADest: TFPCustomCanvas; ABaseX, ABaseY: Double); override;
     procedure CalculateBoundingBox(ADest: TFPCustomCanvas; var ALeft, ATop, ARight, ABottom: Double); override;
     procedure Render(ADest: TFPCustomCanvas; ARenderInfo: TvRenderInfo; ADestX: Integer = 0;
       ADestY: Integer = 0; AMulX: Double = 1.0; AMulY: Double = 1.0); override;
@@ -567,6 +574,7 @@ type
     procedure Clear; override;
     procedure Render(ADest: TFPCustomCanvas; ARenderInfo: TvRenderInfo; ADestX: Integer = 0;
       ADestY: Integer = 0; AMulX: Double = 1.0; AMulY: Double = 1.0); override;
+    function GenerateDebugTree(ADestRoutine: TvDebugAddItemProc; APageItem: Pointer): Pointer; override;
   end;
 
   {@@
@@ -730,6 +738,7 @@ type
     //
     function AddPoint(AX, AY, AZ: Double): TvPoint;
     { Drawing methods }
+    procedure PositionEntitySubparts(ADest: TFPCustomCanvas; ABaseX, ABaseY: Double);
     procedure DrawBackground(ADest: TFPCustomCanvas);
     procedure Render(ADest: TFPCustomCanvas;
       ADestX: Integer = 0; ADestY: Integer = 0; AMulX: Double = 1.0; AMulY: Double = 1.0);
@@ -897,12 +906,30 @@ begin
 
 end;
 
+function TPathSegment.GenerateDebugTree(ADestRoutine: TvDebugAddItemProc;
+  APageItem: Pointer): Pointer;
+var
+  lStr: string;
+begin
+  lStr := Format('[%s]', [Self.ClassName]);
+  Result := ADestRoutine(lStr, APageItem);
+end;
+
 { T2DSegment }
 
 procedure T2DSegment.Move(ADeltaX, ADeltaY: Double);
 begin
   X := X + ADeltaX;
   Y := Y + ADeltaY;
+end;
+
+function T2DSegment.GenerateDebugTree(ADestRoutine: TvDebugAddItemProc;
+  APageItem: Pointer): Pointer;
+var
+  lStr: string;
+begin
+  lStr := Format('[%s] X=%f Y=%f', [Self.ClassName, X, Y]);
+  Result := ADestRoutine(lStr, APageItem);
 end;
 
 { T2DBezierSegment }
@@ -988,6 +1015,12 @@ begin
   Result := 0;
 end;
 
+procedure TvEntity.PositionSubparts(ADest: TFPCustomCanvas; ABaseX,
+  ABaseY: Double);
+begin
+
+end;
+
 procedure TvEntity.Render(ADest: TFPCustomCanvas; ARenderInfo: TvRenderInfo; ADestX: Integer;
   ADestY: Integer; AMulX: Double; AMulY: Double);
 begin
@@ -1024,7 +1057,23 @@ function TvEntity.GenerateDebugTree(ADestRoutine: TvDebugAddItemProc;
 var
   lStr: string;
 begin
-  lStr := Format('[%s]', [Self.ClassName]);
+  lStr := Format('[%s] X=%f Y=%f', [Self.ClassName, X, Y]);
+  Result := ADestRoutine(lStr, APageItem);
+end;
+
+function TvEntity.GenerateDebugStrForFPColor(AColor: TFPColor): string;
+begin
+  Result := IntToHex(AColor.Red div $100, 2) + IntToHex(AColor.Green div $100, 2) + IntToHex(AColor.Blue div $100, 2) + IntToHex(AColor.Alpha div $100, 2);
+end;
+
+{ TvNamedEntity }
+
+function TvNamedEntity.GenerateDebugTree(ADestRoutine: TvDebugAddItemProc;
+  APageItem: Pointer): Pointer;
+var
+  lStr: string;
+begin
+  lStr := Format('[%s] Name=%s X=%f Y=%f', [Self.ClassName, Name, X, Y]);
   Result := ADestRoutine(lStr, APageItem);
 end;
 
@@ -1505,6 +1554,30 @@ begin
   {$endif}
 end;
 
+function TPath.GenerateDebugTree(ADestRoutine: TvDebugAddItemProc;
+  APageItem: Pointer): Pointer;
+var
+  lStr: string;
+  lCurPathSeg: TPathSegment;
+begin
+  lStr := Format('[%s] Name=%s Pen.Color=%s Pen.Style=%s Brush.Color=%s Brush.Style=%s',
+    [Self.ClassName, Self.Name,
+    GenerateDebugStrForFPColor(Pen.Color),
+    GetEnumName(TypeInfo(TFPPenStyle), integer(Pen.Style)),
+    GenerateDebugStrForFPColor(Brush.Color),
+    GetEnumName(TypeInfo(TFPBrushStyle), integer(Brush.Style))
+    ]);
+  Result := ADestRoutine(lStr, APageItem);
+  // Add sub-entities
+  PrepareForSequentialReading();
+  lCurPathSeg := Next();
+  while lCurPathSeg <> nil do
+  begin
+    lCurPathSeg.GenerateDebugTree(ADestRoutine, Result);
+    lCurPathSeg := Next();
+  end;
+end;
+
 { TvText }
 
 constructor TvText.Create;
@@ -1575,6 +1648,15 @@ begin
     ADest.Font.FPColor := AdjustColorToBackground(Font.Color, ARenderInfo);
     ADest.TextOut(CoordToCanvasX(X), Round(LowerDim.Y), Value.Strings[i]);
   end;
+end;
+
+function TvText.GenerateDebugTree(ADestRoutine: TvDebugAddItemProc;
+  APageItem: Pointer): Pointer;
+var
+  lStr: string;
+begin
+  lStr := Format('[%s] Name=%s X=%f Y=%f Text=%s', [Self.ClassName, Name, X, Y, Value.Text]);
+  Result := ADestRoutine(lStr, APageItem);
 end;
 
 { TvCircle }
@@ -2498,7 +2580,7 @@ begin
   Width := Result;
 end;
 
-procedure TvFormula.PositionElements(ADest: TFPCustomCanvas; ABaseX, ABaseY: Double);
+procedure TvFormula.PositionSubparts(ADest: TFPCustomCanvas; ABaseX, ABaseY: Double);
 var
   lElement: TvFormulaElement;
   lPosX: Double = 0;
@@ -2539,30 +2621,30 @@ begin
           lCentralizeFactorAdj := 0;
         end;
 
-        lElement.Formula.PositionElements(ADest, lElement.Left + lCentralizeFactor, lElement.Top);
-        lElement.AdjacentFormula.PositionElements(ADest, lElement.Left + lCentralizeFactorAdj, lElement.Top - lElement.Formula.Height - 3);
+        lElement.Formula.PositionSubparts(ADest, lElement.Left + lCentralizeFactor, lElement.Top);
+        lElement.AdjacentFormula.PositionSubparts(ADest, lElement.Left + lCentralizeFactorAdj, lElement.Top - lElement.Formula.Height - 3);
       end;
       fekRoot:
       begin
         // Give a factor for the root drawing
-        lElement.Formula.PositionElements(ADest, lElement.Left + 10, lElement.Top);
+        lElement.Formula.PositionSubparts(ADest, lElement.Left + 10, lElement.Top);
       end;
       fekPower:
       begin
-        lElement.Formula.PositionElements(ADest, lElement.Left, lElement.Top);
-        lElement.AdjacentFormula.PositionElements(ADest, lElement.Left + lElement.Formula.Width, lElement.Top);
+        lElement.Formula.PositionSubparts(ADest, lElement.Left, lElement.Top);
+        lElement.AdjacentFormula.PositionSubparts(ADest, lElement.Left + lElement.Formula.Width, lElement.Top);
       end;
       fekSubscript:
       begin
-        lElement.Formula.PositionElements(ADest, lElement.Left, lElement.Top);
-        lElement.AdjacentFormula.PositionElements(ADest, lElement.Left + lElement.Formula.Width, lElement.Top - lElement.Formula.Height / 2);
+        lElement.Formula.PositionSubparts(ADest, lElement.Left, lElement.Top);
+        lElement.AdjacentFormula.PositionSubparts(ADest, lElement.Left + lElement.Formula.Width, lElement.Top - lElement.Formula.Height / 2);
       end;
       fekSummation:
       begin
         // main/bottom formula
-        lElement.Formula.PositionElements(ADest, lElement.Left, lElement.Top - 30);
+        lElement.Formula.PositionSubparts(ADest, lElement.Left, lElement.Top - 30);
         // top formula
-        lElement.AdjacentFormula.PositionElements(ADest, lElement.Left, lElement.Top);
+        lElement.AdjacentFormula.PositionSubparts(ADest, lElement.Left, lElement.Top);
       end;
     end;
 
@@ -2603,7 +2685,7 @@ var
   lElement: TvFormulaElement;
 begin
   // First position all elements
-  PositionElements(ADest, Left, Top);
+  PositionSubparts(ADest, Left, Top);
 
   // Now draw them all
   lElement := GetFirstElement();
@@ -2698,6 +2780,23 @@ begin
     lEntity.Render(ADest, ARenderInfo, ADestX, ADestY, AMulX, AMuly);
 
     lEntity := GetNextEntity();
+  end;
+end;
+
+function TvEntityWithSubEntities.GenerateDebugTree(
+  ADestRoutine: TvDebugAddItemProc; APageItem: Pointer): Pointer;
+var
+  lStr: string;
+  lCurEntity: TvEntity;
+begin
+  lStr := Format('[%s] Name=%s', [Self.ClassName, Self.Name]);
+  Result := ADestRoutine(lStr, APageItem);
+  // Add sub-entities
+  lCurEntity := GetFirstEntity();
+  while lCurEntity <> nil do
+  begin
+    lCurEntity.GenerateDebugTree(ADestRoutine, Result);
+    lCurEntity := GetNextEntity();
   end;
 end;
 
@@ -3275,6 +3374,15 @@ begin
   lPoint.Z := AZ;
   AddEntity(lPoint);
   Result := lPoint;
+end;
+
+procedure TvVectorialPage.PositionEntitySubparts(ADest: TFPCustomCanvas; ABaseX,
+  ABaseY: Double);
+var
+  i: Integer;
+begin
+  for i := 0 to GetEntitiesCount()-1 do
+    GetEntity(0).PositionSubparts(ADest, ABaseX, ABaseY);
 end;
 
 procedure TvVectorialPage.DrawBackground(ADest: TFPCustomCanvas);

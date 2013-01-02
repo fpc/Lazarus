@@ -15,7 +15,7 @@ interface
 uses
   Classes, SysUtils, math,
   fpimage, fpcanvas, xmlread, dom, fgl,
-  fpvectorial, fpvutils;
+  fpvectorial, fpvutils, lazutf8;
 
 type
   TSVGTokenType = (
@@ -785,6 +785,8 @@ begin
       cy := StringWithUnitToFloat(ANode.Attributes.Item[i].NodeValue)
     else if lNodeName = 'r' then
       cr := StringWithUnitToFloat(ANode.Attributes.Item[i].NodeValue)
+    else if lNodeName = 'id' then
+      lCircle.Name := UTF16ToUTF8(ANode.Attributes.Item[i].NodeValue)
     else if lNodeName = 'style' then
       ReadSVGStyle(ANode.Attributes.Item[i].NodeValue, lCircle)
     else if IsAttributeFromStyle(lNodeName) then
@@ -833,6 +835,8 @@ begin
       crx := StringWithUnitToFloat(ANode.Attributes.Item[i].NodeValue)
     else if lNodeName = 'ry' then
       cry := StringWithUnitToFloat(ANode.Attributes.Item[i].NodeValue)
+    else if lNodeName = 'id' then
+      lEllipse.Name := UTF16ToUTF8(ANode.Attributes.Item[i].NodeValue)
     else if lNodeName = 'style' then
       ReadSVGStyle(ANode.Attributes.Item[i].NodeValue, lEllipse)
     else if IsAttributeFromStyle(lNodeName) then
@@ -903,17 +907,15 @@ end;
 procedure TvSVGVectorialReader.ReadPathFromNode(ANode: TDOMNode;
   AData: TvVectorialPage; ADoc: TvVectorialDocument);
 var
-  lNodeName, lStyleStr, lDStr: WideString;
+  lNodeName, lDStr: WideString;
   i: Integer;
   lPath: TPath;
 begin
   for i := 0 to ANode.Attributes.Length - 1 do
   begin
     lNodeName := ANode.Attributes.Item[i].NodeName;
-    if  lNodeName = 'style' then
-      lStyleStr := ANode.Attributes.Item[i].NodeValue
-    else if lNodeName = 'd' then
-      lDStr := ANode.Attributes.Item[i].NodeValue
+    if lNodeName = 'd' then
+      lDStr := ANode.Attributes.Item[i].NodeValue;
   end;
 
   AData.StartPath();
@@ -923,8 +925,20 @@ begin
   lPath.Pen.Style := psClear;
   lPath.Brush.Color := colBlack;
   lPath.Brush.Style := bsSolid;
-  // Add the pen/brush
-  ReadSVGStyle(lStyleStr, lPath);
+  // Add the pen/brush/name
+  for i := 0 to ANode.Attributes.Length - 1 do
+  begin
+    lNodeName := ANode.Attributes.Item[i].NodeName;
+    if lNodeName = 'id' then
+      lPath.Name := UTF16ToUTF8(ANode.Attributes.Item[i].NodeValue)
+    else if lNodeName = 'style' then
+      ReadSVGStyle(ANode.Attributes.Item[i].NodeValue, lPath)
+    else if IsAttributeFromStyle(lNodeName) then
+    begin
+      ReadSVGPenStyleWithKeyAndValue(lNodeName, ANode.Attributes.Item[i].NodeValue, lPath);
+      ReadSVGBrushStyleWithKeyAndValue(lNodeName, ANode.Attributes.Item[i].NodeValue, lPath);
+    end;
+  end;
 end;
 
 // Documentation: http://www.w3.org/TR/SVG/paths.html
@@ -1183,7 +1197,9 @@ begin
   for i := 0 to ANode.Attributes.Length - 1 do
   begin
     lNodeName := ANode.Attributes.Item[i].NodeName;
-    if lNodeName = 'style' then
+    if lNodeName = 'id' then
+      lPath.Name := UTF16ToUTF8(ANode.Attributes.Item[i].NodeValue)
+    else if lNodeName = 'style' then
       ReadSVGStyle(ANode.Attributes.Item[i].NodeValue, lPath)
     else if IsAttributeFromStyle(lNodeName) then
     begin
@@ -1225,6 +1241,8 @@ begin
       cx := StringWithUnitToFloat(ANode.Attributes.Item[i].NodeValue)
     else if lNodeName = 'height' then
       cy := StringWithUnitToFloat(ANode.Attributes.Item[i].NodeValue)
+    else if lNodeName = 'id' then
+      lRect.Name := UTF16ToUTF8(ANode.Attributes.Item[i].NodeValue)
     else if lNodeName = 'style' then
       ReadSVGStyle(ANode.Attributes.Item[i].NodeValue, lRect)
     else if IsAttributeFromStyle(lNodeName) then
@@ -1265,6 +1283,8 @@ begin
       lx := StringWithUnitToFloat(ANode.Attributes.Item[i].NodeValue)
     else if lNodeName = 'y' then
       ly := StringWithUnitToFloat(ANode.Attributes.Item[i].NodeValue)
+    else if lNodeName = 'id' then
+      lText.Name := UTF16ToUTF8(ANode.Attributes.Item[i].NodeValue)
     else if lNodeName = 'style' then
       ReadSVGStyle(ANode.Attributes.Item[i].NodeValue, lText, True)
     else if IsAttributeFromStyle(lNodeName) then
