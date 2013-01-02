@@ -70,6 +70,7 @@ type
     procedure ReadEntityFromNode(ANode: TDOMNode; AData: TvVectorialPage; ADoc: TvVectorialDocument);
     procedure ReadCircleFromNode(ANode: TDOMNode; AData: TvVectorialPage; ADoc: TvVectorialDocument);
     procedure ReadEllipseFromNode(ANode: TDOMNode; AData: TvVectorialPage; ADoc: TvVectorialDocument);
+    procedure ReadLayerFromNode(ANode: TDOMNode; AData: TvVectorialPage; ADoc: TvVectorialDocument);
     procedure ReadLineFromNode(ANode: TDOMNode; AData: TvVectorialPage; ADoc: TvVectorialDocument);
     procedure ReadPathFromNode(ANode: TDOMNode; AData: TvVectorialPage; ADoc: TvVectorialDocument);
     procedure ReadPathFromString(AStr: string; AData: TvVectorialPage; ADoc: TvVectorialDocument);
@@ -700,7 +701,9 @@ begin
 
     if AValue = 'none'  then ADestEntity.Brush.Style := fpcanvas.bsClear
     else ADestEntity.Brush.Color := ReadSVGColor(AValue)
-  end;
+  end
+  else if AKey = 'fill-opacity' then
+    ADestEntity.Brush.Color.Alpha := StrToInt(AValue)*$101;
 end;
 
 procedure TvSVGVectorialReader.ReadSVGFontStyleWithKeyAndValue(AKey,
@@ -709,23 +712,33 @@ begin
   // SVG text uses "fill" to indicate the pen color of the text, very unintuitive as
   // "fill" is usually for brush in other elements
   if AKey = 'fill' then
+    ADestEntity.Font.Color := ReadSVGColor(AValue)
+  else if AKey = 'fill-opacity' then
+    ADestEntity.Font.Color.Alpha := StrToInt(AValue)*$101
+  else if AKey = 'font-size' then
+    ADestEntity.Font.Size := StrToInt(AValue)
+  else if AKey = 'font-family' then
+    ADestEntity.Font.Name := AValue
+  else if AKey = 'font-weight' then
   begin
-    ADestEntity.Font.Color := ReadSVGColor(AValue);
+    case LowerCase(AValue) of
+    'bold': ADestEntity.Font.Bold := True;
+    end;
   end;
 end;
 
 function TvSVGVectorialReader.IsAttributeFromStyle(AStr: string): Boolean;
 begin
   Result := (AStr = 'stroke') or (AStr = 'stroke-width') or
-    (AStr = 'fill');
+    (AStr = 'fill') or (AStr = 'fill-opacity') or
+    (AStr = 'font-size') or (AStr = 'fill-family') or
+    (AStr = 'font-weight');
 end;
 
 procedure TvSVGVectorialReader.ReadEntityFromNode(ANode: TDOMNode;
   AData: TvVectorialPage; ADoc: TvVectorialDocument);
 var
-  lEntityName, lLayerName: DOMString;
-  lCurNode, lLayerNameNode: TDOMNode;
-  lLayer: TvLayer;
+  lEntityName: DOMString;
 begin
   lEntityName := LowerCase(ANode.NodeName);
   case lEntityName of
@@ -736,24 +749,7 @@ begin
     'polygon', 'polyline': ReadPolyFromNode(ANode, AData, ADoc);
     'rect': ReadRectFromNode(ANode, AData, ADoc);
     'text': ReadTextFromNode(ANode, AData, ADoc);
-    // Layers
-    'g':
-    begin
-      // if we are already inside a layer, something may be wrong...
-      //if ALayer <> nil then raise Exception.Create('[TvSVGVectorialReader.ReadEntityFromNode] A layer inside a layer was found!');
-
-      lLayerNameNode := ANode.Attributes.GetNamedItem('id');
-      lLayerName := '';
-      if lLayerNameNode <> nil then lLayerName := lLayerNameNode.NodeValue;
-      lLayer := AData.AddLayerAndSetAsCurrent(lLayerName);
-
-      lCurNode := ANode.FirstChild;
-      while Assigned(lCurNode) do
-      begin
-        ReadEntityFromNode(lCurNode, AData, ADoc);
-        lCurNode := lCurNode.NextSibling;
-      end;
-    end;
+    'g': ReadLayerFromNode(ANode, AData, ADoc);
   end;
 end;
 
@@ -852,6 +848,32 @@ begin
         AData, crx, cry, lEllipse.HorzHalfAxis, lEllipse.VertHalfAxis);
 
   AData.AddEntity(lEllipse);
+end;
+
+procedure TvSVGVectorialReader.ReadLayerFromNode(ANode: TDOMNode;
+  AData: TvVectorialPage; ADoc: TvVectorialDocument);
+var
+  lNodeName: DOMString;
+  lLayerName: string = '';
+  lCurNode, lLayerNameNode: TDOMNode;
+  lLayer: TvLayer;
+  i: Integer;
+begin
+  for i := 0 to ANode.Attributes.Length - 1 do
+  begin
+    lNodeName := ANode.Attributes.Item[i].NodeName;
+    if  lNodeName = 'id' then
+      lLayerName := UTF16ToUTF8(ANode.Attributes.Item[i].NodeValue);
+  end;
+
+  lLayer := AData.AddLayerAndSetAsCurrent(lLayerName);
+
+  lCurNode := ANode.FirstChild;
+  while Assigned(lCurNode) do
+  begin
+    ReadEntityFromNode(lCurNode, AData, ADoc);
+    lCurNode := lCurNode.NextSibling;
+  end;
 end;
 
 procedure TvSVGVectorialReader.ReadLineFromNode(ANode: TDOMNode;

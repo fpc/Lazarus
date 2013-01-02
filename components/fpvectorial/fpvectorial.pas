@@ -110,6 +110,10 @@ type
       Zero is the normal, horizontal, orientation, directed to the right.
     }
     Orientation: Double;
+    Bold: boolean;
+    Italic: boolean;
+    Underline: boolean;
+    StrikeTrough: boolean;
   end;
 
   { Coordinates and polyline segments }
@@ -275,6 +279,17 @@ type
       ADestY: Integer = 0; AMulX: Double = 1.0; AMulY: Double = 1.0); override;
   end;
 
+  { TvEntityWithPenBrushAndFont }
+
+  TvEntityWithPenBrushAndFont = class(TvEntityWithPenAndBrush)
+  public
+    Font: TvFont;
+    constructor Create; override;
+    procedure ApplyFontToCanvas(ADest: TFPCustomCanvas; ARenderInfo: TvRenderInfo; AMulX: Double = 1.0);
+    procedure Render(ADest: TFPCustomCanvas; ARenderInfo: TvRenderInfo; ADestX: Integer = 0;
+      ADestY: Integer = 0; AMulX: Double = 1.0; AMulY: Double = 1.0); override;
+  end;
+
   TvClipMode = (vcmNonzeroWindingRule, vcmEvenOddRule);
 
   TPath = class(TvEntityWithPenAndBrush)
@@ -319,10 +334,9 @@ type
 
   { TvText }
 
-  TvText = class(TvEntityWithPenAndBrush)
+  TvText = class(TvEntityWithPenBrushAndFont)
   public
     Value: TStringList;
-    Font: TvFont;
     constructor Create; override;
     destructor Destroy; override;
     function TryToSelect(APos: TPoint; var ASubpart: Cardinal): TvFindEntityResult; override;
@@ -528,7 +542,7 @@ type
 
   { TvFormula }
 
-  TvFormula = class(TvEntityWithPenAndBrush)
+  TvFormula = class(TvEntityWithPenBrushAndFont)
   private
     FCurIndex: Integer;
     SpacingBetweenElementsX: Integer;
@@ -1123,6 +1137,43 @@ begin
   ApplyBrushToCanvas(ADest);
 end;
 
+
+{ TvEntityWithPenBrushAndFont }
+
+constructor TvEntityWithPenBrushAndFont.Create;
+begin
+  inherited Create;
+  Font.Color := colBlack;
+end;
+
+procedure TvEntityWithPenBrushAndFont.ApplyFontToCanvas(ADest: TFPCustomCanvas; ARenderInfo: TvRenderInfo; AMulX: Double = 1.0);
+var
+  i: Integer;
+  {$ifdef USE_LCL_CANVAS}
+  ALCLDest: TCanvas absolute ADest;
+  {$endif}
+  //
+  LowerDim: T3DPoint;
+begin
+  ADest.Font.Size := Round(AmulX * Font.Size);
+  ADest.Font.Bold := Font.Bold;
+  ADest.Font.Italic := Font.Italic;
+  ADest.Font.Underline := Font.Underline;
+  ADest.Font.StrikeTrough := Font.StrikeTrough;
+  {$ifdef USE_LCL_CANVAS}
+  ALCLDest.Font.Orientation := Round(Font.Orientation * 16);
+  {$endif}
+  ADest.Font.FPColor := AdjustColorToBackground(Font.Color, ARenderInfo);
+end;
+
+procedure TvEntityWithPenBrushAndFont.Render(ADest: TFPCustomCanvas;
+  ARenderInfo: TvRenderInfo; ADestX: Integer; ADestY: Integer; AMulX: Double;
+  AMulY: Double);
+begin
+  inherited Render(ADest, ARenderInfo, ADestX, ADestY, AMulX, AMulY);
+  ApplyFontToCanvas(ADest, ARenderInfo, AMulX);
+end;
+
 { TPath }
 
 constructor TPath.Create;
@@ -1584,6 +1635,7 @@ constructor TvText.Create;
 begin
   inherited Create;
   Value := TStringList.Create;
+  Font.Color := colBlack;
 end;
 
 destructor TvText.Destroy;
@@ -1618,21 +1670,13 @@ procedure TvText.Render(ADest: TFPCustomCanvas; ARenderInfo: TvRenderInfo; ADest
 
 var
   i: Integer;
-  {$ifdef USE_LCL_CANVAS}
-  ALCLDest: TCanvas absolute ADest;
-  {$endif}
   //
   LowerDim: T3DPoint;
 begin
   inherited Render(ADest, ARenderInfo, ADestX, ADestY, AMulX, AMulY);
 
-  ADest.Font.Size := Round(AmulX * Font.Size);
-{  ADest.Pen.Style := psSolid;
-  ADest.Pen.FPColor := colBlack;
-  ADest.Brush.Style := bsClear;}
-  {$ifdef USE_LCL_CANVAS}
-  ALCLDest.Font.Orientation := Round(Font.Orientation * 16);
-  {$endif}
+  // Don't draw anything if we have alpha=zero
+  if Font.Color.Alpha = 0 then Exit;
 
   // TvText supports multiple lines
   for i := 0 to Value.Count - 1 do
@@ -2684,6 +2728,8 @@ procedure TvFormula.Render(ADest: TFPCustomCanvas; ARenderInfo: TvRenderInfo; AD
 var
   lElement: TvFormulaElement;
 begin
+  inherited Render(ADest, ARenderInfo, ADestX, ADestY, AMulX, AMulY);
+
   // First position all elements
   PositionSubparts(ADest, Left, Top);
 
@@ -3321,6 +3367,7 @@ end;
 function TvVectorialPage.AddLayer(AName: string): TvLayer;
 begin
   Result := TvLayer.Create;
+  Result.Name := AName;
   AddEntity(Result);
 end;
 
