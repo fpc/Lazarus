@@ -292,9 +292,9 @@ begin
       lStrings.DelimitedText := lStr;
       if lStrings.Count = 3 then
       begin
-        Result.Red := StrToInt(lStrings.Strings[0]);
-        Result.Blue := StrToInt(lStrings.Strings[1]);
-        Result.Green := StrToInt(lStrings.Strings[2]);
+        Result.Red := StrToInt(lStrings.Strings[0]) * $101;
+        Result.Blue := StrToInt(lStrings.Strings[1]) * $101;
+        Result.Green := StrToInt(lStrings.Strings[2]) * $101;
       end
       else
         raise Exception.Create(Format('[TvSVGVectorialReader.ReadSVGColor] An unexpected number of channels was found: %d', [lStrings.Count]));
@@ -509,8 +509,25 @@ darkkhaki #BDB76B
     Result.Green := $1515;
     Result.Blue := $8585;
   end;
-{indianred #CD5C5C
- 	peru #CD853F		chocolate #D2691E
+  'indianred':
+  begin
+    Result.Red := $CDCD;
+    Result.Green := $5C5C;
+    Result.Blue := $5C5C;
+  end;
+  'peru':
+  begin
+    Result.Red := $CDCD;
+    Result.Green := $8585;
+    Result.Blue := $3F3F;
+  end;
+  'chocolate':
+  begin
+    Result.Red := $D2D2;
+    Result.Green := $6969;
+    Result.Blue := $1E1E;
+  end;
+{
 tan #D2B48C
  	lightgray #D3D3D3		lightgrey #D3D3D3
 thistle #D8BFD8
@@ -569,8 +586,13 @@ lavender #E6E6FA
     Result.Green := $FFFF;
     Result.Blue := $FFFF;
   end;
+  'sandybrown':
+  begin
+    Result.Red := $F4F4;
+    Result.Green := $A4A4;
+    Result.Blue := $6060;
+  end;
 {
-sandybrown #F4A460
  	wheat #F5DEB3		beige #F5F5DC
 whitesmoke #F5F5F5
  	mintcream #F5FFFA		ghostwhite #F8F8FF
@@ -835,6 +857,8 @@ var
   vx1, vy1, vx2, vy2: double;
   i: Integer;
   lNodeName: DOMString;
+  lPath: TPath;
+  lStyleStr, lStrokeStr, lStrokeWidthStr: DOMString;
 begin
   x1 := 0.0;
   y1 := 0.0;
@@ -852,14 +876,13 @@ begin
     else if lNodeName = 'x2' then
       x2 := StringWithUnitToFloat(ANode.Attributes.Item[i].NodeValue)
     else if lNodeName = 'y2' then
-      y2 := StringWithUnitToFloat(ANode.Attributes.Item[i].NodeValue);{
+      y2 := StringWithUnitToFloat(ANode.Attributes.Item[i].NodeValue)
     else if lNodeName = 'style' then
-      ReadSVGStyle(ANode.Attributes.Item[i].NodeValue, lEllipse)
-    else if IsAttributeFromStyle(lNodeName) then
-    begin
-      ReadSVGPenStyleWithKeyAndValue(lNodeName, ANode.Attributes.Item[i].NodeValue, lEllipse);
-      ReadSVGBrushStyleWithKeyAndValue(lNodeName, ANode.Attributes.Item[i].NodeValue, lEllipse);
-    end;}
+      lStyleStr := ANode.Attributes.Item[i].NodeValue
+    else if lNodeName = 'stroke' then
+      lStrokeStr := ANode.Attributes.Item[i].NodeValue
+    else if lNodeName = 'stroke-width' then
+      lStrokeWidthStr := ANode.Attributes.Item[i].NodeValue;
   end;
 
   ConvertSVGCoordinatesToFPVCoordinates(
@@ -870,7 +893,11 @@ begin
   AData.StartPath();
   AData.AddMoveToPath(vx1, vy1);
   AData.AddLineToPath(vx2, vy2);
-  AData.EndPath();
+  lPath := AData.EndPath();
+  // Add the pen/brush
+  ReadSVGStyle(lStyleStr, lPath);
+  ReadSVGStyle(lStrokeStr, lPath);
+  ReadSVGStyle(lStrokeWidthStr, lPath);
 end;
 
 procedure TvSVGVectorialReader.ReadPathFromNode(ANode: TDOMNode;
@@ -1116,7 +1143,7 @@ begin
   while i < FSVGPathTokenizer.Tokens.Count do
   begin
     X := FSVGPathTokenizer.Tokens.Items[i].Value;
-    Y := FSVGPathTokenizer.Tokens.Items[i].Value;
+    Y := FSVGPathTokenizer.Tokens.Items[i+1].Value;
     ConvertSVGDeltaToFPVDelta(AData, X, Y, CurX, CurY);
     AData.AddLineToPath(CurX, CurY);
 

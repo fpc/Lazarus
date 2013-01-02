@@ -2757,7 +2757,9 @@ begin
   FEntities := TFPList.Create;
   FTmpPath := TPath.Create;
   Owner := AOwner;
+  Clear();
   BackgroundColor := colWhite;
+  System.FillChar(RenderInfo, SizeOf(RenderInfo), #0);
   RenderInfo.BackgroundColor := colWhite;
 end;
 
