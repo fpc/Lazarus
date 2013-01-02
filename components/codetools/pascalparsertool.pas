@@ -2708,8 +2708,6 @@ var BlockType: TEndBlockType;
   function AutomaticallyEnded: boolean;
   begin
     if BlockType=ebtIf then begin
-      if (IfType=itNone) then
-        RaiseStrExpectedWithBlockStartHint('"then"');
       CloseNode;
       UndoReadNextAtom;
       Result:=true;
