@@ -2023,6 +2023,8 @@ begin
 
   lPage := AData.AddPage();
   lPage.BackgroundColor := colBlack;
+  lPage.RenderInfo.AdjustPenColorToBackground := True;
+  lPage.RenderInfo.BackgroundColor := colBlack;
 
   for i := 0 to Tokenizer.Tokens.Count - 1 do
   begin

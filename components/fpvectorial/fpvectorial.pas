@@ -663,6 +663,7 @@ type
     MinX, MinY, MinZ, MaxX, MaxY, MaxZ: Double;
     //
     BackgroundColor: TFPColor;
+    RenderInfo: TvRenderInfo; // Prepared by the reader with info on how to draw the page
     //
     Owner: TvVectorialDocument;
     { Base methods }
@@ -1557,7 +1558,7 @@ begin
       LowerDim.Y := CoordToCanvasY(LowerDim.Y);
     end;
 
-    ADest.Font.FPColor:=Font.Color;
+    ADest.Font.FPColor := AdjustColorToBackground(Font.Color, ARenderInfo);
     ADest.TextOut(CoordToCanvasX(X), Round(LowerDim.Y), Value.Strings[i]);
   end;
 end;
@@ -2757,6 +2758,7 @@ begin
   FTmpPath := TPath.Create;
   Owner := AOwner;
   BackgroundColor := colWhite;
+  RenderInfo.BackgroundColor := colWhite;
 end;
 
 destructor TvVectorialPage.Destroy;
@@ -3286,7 +3288,6 @@ procedure TvVectorialPage.Render(ADest: TFPCustomCanvas;
 var
   i: Integer;
   CurEntity: TvEntity;
-  lRenderInfo: TvRenderInfo;
 begin
   {$ifdef FPVECTORIAL_TOCANVAS_DEBUG}
   WriteLn(':>DrawFPVectorialToCanvas');
@@ -3300,9 +3301,8 @@ begin
 
     CurEntity := GetEntity(i);
 
-    lRenderInfo.AdjustPenColorToBackground := BackgroundColor = colBlack;
-    lRenderInfo.BackgroundColor := BackgroundColor;
-    CurEntity.Render(ADest, lRenderInfo, ADestX, ADestY, AMulX, AMulY);
+    RenderInfo.BackgroundColor := BackgroundColor;
+    CurEntity.Render(ADest, RenderInfo, ADestX, ADestY, AMulX, AMulY);
   end;
 
   {$ifdef FPVECTORIAL_TOCANVAS_DEBUG}
