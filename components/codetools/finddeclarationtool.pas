@@ -1394,6 +1394,9 @@ var
     CodePos: integer;
     LinkIndex: Integer;
     Link: TSourceLink;
+    i: Integer;
+    SrcCodes: TAVLTree;
+    SrcNode: TAVLTreeNode;
   begin
     debugln(['TFindDeclarationTool.FindDeclaration failed',
       ' CursorPos=X=',CursorPos.X,',Y=',CursorPos.Y,
@@ -1410,6 +1413,28 @@ var
     if LinkIndex>=0 then begin
       Link:=Scanner.Links[LinkIndex];
       dbgout([',CleanedPos=',Link.CleanedPos,',Size=',Scanner.LinkSize(LinkIndex),',SrcPos=',Link.SrcPos,',Kind=',dbgs(Link.Kind),',CodeSame=',Link.Code=Pointer(CursorPos.Code)]);
+    end else begin
+      dbgout([' LinkCount=',Scanner.LinkCount]);
+      i:=0;
+      while (i<Scanner.LinkCount-1) do begin
+        Link:=Scanner.Links[i];
+        if Link.Code=Pointer(CursorPos.Code) then begin
+          LinkIndex:=i;
+          dbgout([' First Link in Code: CleanedPos=',Link.CleanedPos,',Size=',Scanner.LinkSize(i),',SrcPos=',Link.SrcPos,',Kind=',dbgs(Link.Kind)]);
+          break;
+        end;
+        inc(i);
+      end;
+      if (LinkIndex<0) then begin
+        SrcCodes:=Scanner.CreateTreeOfSourceCodes;
+        try
+          for SrcNode in SrcCodes do begin
+            dbgout(',LinkFile="',TCodeBuffer(SrcNode.Data).Filename,'"');
+          end;
+        finally
+          SrcCodes.Free;
+        end;
+      end;
     end;
     debugln;
   end;
