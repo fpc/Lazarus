@@ -41,12 +41,14 @@ type
     FCurrentDirectoryUTF8: string;
     FDesktopUTF8: string;
     FEnvironmentUTF8: TStrings;
+    FParametersUTF8: TStrings;
     procedure SetApplicationNameUTF8(const AValue: string);
     procedure SetCommandLineUTF8(const AValue: string);
     procedure SetConsoleTitleUTF8(const AValue: string);
     procedure SetCurrentDirectoryUTF8(const AValue: string);
     procedure SetDesktopUTF8(const AValue: string);
     procedure SetEnvironmentUTF8(const AValue: TStrings);
+    procedure SetParametersUTF8(AValue: TStrings);
     procedure UpdateEnvironment;
   public
     constructor Create(AOwner: TComponent); override;
@@ -58,6 +60,7 @@ type
     property CurrentDirectory: string read FCurrentDirectoryUTF8 write SetCurrentDirectoryUTF8;
     property Desktop: string read FDesktopUTF8 write SetDesktopUTF8;
     property Environment: TStrings read FEnvironmentUTF8 write SetEnvironmentUTF8;
+    property Parameters: TStrings read FParametersUTF8 write SetParametersUTF8;
   end;
 
 procedure RunCmdFromPath(ProgramFilename, CmdLineParameters: string);
@@ -113,6 +116,13 @@ begin
   FEnvironmentUTF8.Assign(AValue);
 end;
 
+procedure TProcessUTF8.SetParametersUTF8(AValue: TStrings);
+begin
+  if (FParametersUTF8=AValue)
+  or ((AValue<>nil) and FParametersUTF8.Equals(AValue)) then exit;
+  FParametersUTF8.Assign(AValue);
+end;
+
 procedure TProcessUTF8.UpdateEnvironment;
 var
   sl: TStringList;
@@ -123,6 +133,10 @@ begin
     for i:=0 to FEnvironmentUTF8.Count-1 do
       sl.Add(UTF8ToSys(FEnvironmentUTF8[i]));
     inherited Environment:=sl;
+    sl.Clear;
+    for i:=0 to FParametersUTF8.Count-1 do
+      sl.Add(UTF8ToSys(FParametersUTF8[i]));
+    inherited Parameters:=sl;
   finally
     sl.Free;
   end;
@@ -132,11 +146,13 @@ constructor TProcessUTF8.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FEnvironmentUTF8:=TStringList.Create;
+  FParametersUTF8:=TStringList.Create;
 end;
 
 destructor TProcessUTF8.Destroy;
 begin
   FreeAndNil(FEnvironmentUTF8);
+  FreeAndNil(FParametersUTF8);
   inherited Destroy;
 end;
 
