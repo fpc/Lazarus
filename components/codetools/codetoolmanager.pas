@@ -1916,7 +1916,12 @@ begin
   {$IFDEF CTDEBUG}
   DebugLn(['TCodeToolManager.FindDeclaration A ',Code.Filename,' x=',x,' y=',y]);
   {$ENDIF}
-  if not InitCurCodeTool(Code) then exit;
+  if not InitCurCodeTool(Code) then begin
+    {$IFDEF VerboseFindDeclarationFail}
+    debugln(['TCodeToolManager.FindDeclaration InitCurCodeTool failed']);
+    {$ENDIF}
+    exit;
+  end;
   CursorPos.X:=X;
   CursorPos.Y:=Y;
   CursorPos.Code:=Code;
@@ -1945,7 +1950,18 @@ begin
   end;
   {$ELSE}
   except
-    on e: Exception do Result:=HandleException(e);
+    on e: Exception do begin
+      Result:=HandleException(e);
+      {$IFDEF VerboseFindDeclarationFail}
+      if not Result then
+        debugln(['TCodeToolManager.FindDeclaration Exception=',e.Message]);
+      {$ENDIF}
+    end;
+  end;
+  {$ENDIF}
+  {$IFDEF VerboseFindDeclarationFail}
+  if not Result then begin
+    debugln(['TCodeToolManager.FindDeclaration FAILED at ',dbgs(CursorPos)]);
   end;
   {$ENDIF}
   {$IFDEF CTDEBUG}

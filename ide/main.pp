@@ -12245,7 +12245,18 @@ var
   SrcEdit: TSourceEditor;
 begin
   SrcEdit:=SourceEditorManager.SenderToEditor(Sender);
-  if not BeginCodeTool(SrcEdit,ActiveUnitInfo,[]) then exit;
+  if SrcEdit=nil then begin
+    {$IFDEF VerboseFindDeclarationFail}
+    debugln(['TMainIDE.OnSrcNoteBookMouseLink SrcEdit=nil']);
+    {$ENDIF}
+    exit;
+  end;
+  if not BeginCodeTool(SrcEdit,ActiveUnitInfo,[]) then begin
+    {$IFDEF VerboseFindDeclarationFail}
+    debugln(['TMainIDE.OnSrcNoteBookMouseLink BeginCodeTool failed ',SrcEdit.FileName,' X=',X,' Y=',Y]);
+    {$ENDIF}
+    exit;
+  end;
   AllowMouseLink := CodeToolBoss.FindDeclaration(
     ActiveUnitInfo.Source,X,Y,NewSource,NewX,NewY,NewTopLine);
 end;

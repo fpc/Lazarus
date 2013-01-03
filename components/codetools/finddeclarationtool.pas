@@ -1398,10 +1398,20 @@ begin
   SkipChecks:=false;
   // check cursor in source
   if (CursorPos.Y<1) or (CursorPos.Y>CursorPos.Code.LineCount)
-  or (CursorPos.X<1) then exit;
+  or (CursorPos.X<1) then begin
+    {$IFDEF VerboseFindDeclarationFail}
+    debugln(['TFindDeclarationTool.FindDeclaration invalid CursorPos=X=',CursorPos.X,' Y=',CursorPos.Y,' File=',CursorPos.Code.Filename,' LineCount=',CursorPos.Code.LineCount]);
+    {$ENDIF}
+    exit;
+  end;
   CursorPos.Code.GetLineRange(CursorPos.Y-1,LineRange);
-  if LineRange.EndPos-LineRange.StartPos+1<CursorPos.X then
-    exit; // beyond end of line
+  if LineRange.EndPos-LineRange.StartPos+1<CursorPos.X then begin
+    // beyond end of line
+    {$IFDEF VerboseFindDeclarationFail}
+    debugln(['TFindDeclarationTool.FindDeclaration beyond end of line: CursorPos=X=',CursorPos.X,' Y=',CursorPos.Y,' File=',CursorPos.Code.Filename,' LineLen=',LineRange.EndPos-LineRange.StartPos]);
+    {$ENDIF}
+    exit;
+  end;
 
   ActivateGlobalWriteLock;
   try
@@ -1438,6 +1448,11 @@ begin
 
         Result:=JumpToCleanPos(CleanCursorPos,CleanCursorPos,CleanCursorPos,
                                NewPos,NewTopLine,false);
+        {$IFDEF VerboseFindDeclarationFail}
+        if not Result then begin
+          debugln(['TFindDeclarationTool.FindDeclaration cursor at declaration, but JumpToCleanPos failed']);
+        end;
+        {$ENDIF}
         exit;
       end;
       CleanPosInFront:=CursorNode.StartPos;
@@ -1455,6 +1470,11 @@ begin
       NewNode:=nil;
       NewTool:=Self;
       Result:=(fsfIncludeDirective in SearchSmartFlags);
+      {$IFDEF VerboseFindDeclarationFail}
+      if not Result then begin
+        debugln(['TFindDeclarationTool.FindDeclaration cursor at include directive and fsfIncludeDirective not set']);
+      end;
+      {$ENDIF}
       exit;
     end;
     if CursorNode=nil then begin
@@ -1471,8 +1491,19 @@ begin
                                            NewPos,NewTopLine);
       NewNode:=nil;
       NewTool:=nil;
-      if Result and (fsfSearchSourceName in SearchSmartFlags) then
+      {$IFDEF VerboseFindDeclarationFail}
+      if not Result then begin
+        debugln(['TFindDeclarationTool.FindDeclaration cursor in uses and FindDeclarationInUsesSection failed']);
+      end;
+      {$ENDIF}
+      if Result and (fsfSearchSourceName in SearchSmartFlags) then begin
         Result:=FindSourceName(NewPos.Code);
+        {$IFDEF VerboseFindDeclarationFail}
+        if not Result then begin
+          debugln(['TFindDeclarationTool.FindDeclaration cursor in uses and FindSourceName failed']);
+        end;
+        {$ENDIF}
+      end;
       exit;
     end;
     DirectSearch:=false;
@@ -1504,12 +1535,22 @@ begin
           Include(Params.Flags,fdfSkipClassForward);
         if not DirectSearch then begin
           Result:=FindDeclarationOfIdentAtParam(Params);
+          {$IFDEF VerboseFindDeclarationFail}
+          if not Result then begin
+            debugln(['TFindDeclarationTool.FindDeclaration FindDeclarationOfIdentAtParam failed']);
+          end;
+          {$ENDIF}
         end else begin
           Include(Params.Flags,fdfIgnoreCurContextNode);
           if SearchForward then
             Include(Params.Flags,fdfSearchForward);
           //debugln(['TFindDeclarationTool.FindDeclaration Flags=',dbgs(Params.Flags),' FindIdentifierInContext ...']);
           Result:=FindIdentifierInContext(Params);
+          {$IFDEF VerboseFindDeclarationFail}
+          if not Result then begin
+            debugln(['TFindDeclarationTool.FindDeclaration FindIdentifierInContext failed']);
+          end;
+          {$ENDIF}
         end;
         if Result then begin
           Params.PrettifyResult;
@@ -1532,7 +1573,11 @@ begin
       end;
     end else begin
       // find declaration of non identifier, e.g. numeric label
-
+      {$IFDEF VerboseFindDeclarationFail}
+      if not Result then begin
+        debugln(['TFindDeclarationTool.FindDeclaration cursor at non identifier']);
+      end;
+      {$ENDIF}
     end;
   finally
     ClearIgnoreErrorAfter;
