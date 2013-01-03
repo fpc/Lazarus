@@ -1077,6 +1077,12 @@
 <short></short>
 </element>
 
+    <element name="SplitCmdLineParams"><short>Splits parameters separated by one or more spaces.</short><descr>Parameters are separated by one or more spaces (#9,#10,#13,#32).
+Quotes are parsed as single parameter.
+if ReadBackslash=true then \" is replaced to " and not treated as quote.
+#0 is always end.
+</descr>
+      </element>
 </module> <!-- LazFileUtils -->
 
 </package>

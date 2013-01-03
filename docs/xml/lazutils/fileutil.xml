@@ -1182,12 +1182,6 @@ else
       <element name="GetTempFilename.Prefix">
         <short>The <var>Prefix</var> to which an integer will be attached to generate a temporary filename</short>
       </element>
-    <element name="SplitCmdLineParams"><short>Splits parameters separated by one or more spaces.</short><descr>Parameters are separated by one or more spaces (#9,#10,#13,#32).
-Quotes are parsed as single parameter.
-if ReadBackslash=true then \" is replaced to " and not treated as quote.
-#0 is always end.
-</descr>
-      </element>
     </module>
     <!-- FileUtil -->
   </package>
