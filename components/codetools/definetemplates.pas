@@ -1223,7 +1223,6 @@ var
   OutputLine: String;
   OutLen: Integer;
   LineStart, i: Integer;
-  CmdLine: String;
 begin
   if not FileIsExecutable(Filename) then exit(nil);
   Result:=TStringList.Create;
@@ -1232,9 +1231,9 @@ begin
     DbgOut(['RunTool ',Filename]);
     for i:=0 to Params.Count-1 do
       dbgout(' "',Params[i],'"');
+    Debugln;
     TheProcess := TProcess.Create(nil);
     try
-      //DebugLn(['RunTool ',Params]);
       TheProcess.Executable := UTF8ToSys(Filename);
       TheProcess.Parameters:=Params;
       TheProcess.Options:= [poUsePipes, poStdErrToOutPut];
