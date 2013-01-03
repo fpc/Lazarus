@@ -17,6 +17,7 @@ object ADRestDbg: TADRestDbg
     Width = 715
     ButtonWidth = 50
     Caption = 'MainToolBar'
+    Flat = False
     ShowCaptions = True
     TabOrder = 0
     object OpenToolButton: TToolButton
@@ -1119,6 +1120,7 @@ object ADRestDbg: TADRestDbg
     BorderSpacing.Top = 6
     BorderSpacing.Right = 6
     Caption = 'OriginalLayoutToolBar'
+    Flat = False
     TabOrder = 6
   end
   object RestoredLayoutToolBar: TToolBar
@@ -1138,6 +1140,7 @@ object ADRestDbg: TADRestDbg
     BorderSpacing.Top = 6
     BorderSpacing.Right = 6
     Caption = 'RestoredLayoutToolBar'
+    Flat = False
     TabOrder = 7
   end
   object OriginalLayoutPanel: TPanel

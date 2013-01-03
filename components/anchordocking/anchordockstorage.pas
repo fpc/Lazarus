@@ -188,6 +188,7 @@ type
     property Modified: boolean read GetModified write SetModified;
     property Root: TAnchorDockLayoutTreeRootNode read FRoot;
     function NewNode(aParent: TAnchorDockLayoutTreeNode): TAnchorDockLayoutTreeNode;
+    procedure Assign(Source: TObject);
   end;
 
   { TAnchorDockRestoreLayout }
@@ -1699,6 +1700,16 @@ function TAnchorDockLayoutTree.NewNode(aParent: TAnchorDockLayoutTreeNode
 begin
   Result:=TAnchorDockLayoutTreeNode.Create;
   Result.Parent:=aParent;
+end;
+
+procedure TAnchorDockLayoutTree.Assign(Source: TObject);
+begin
+  if Source is TAnchorDockLayoutTree then
+    Root.Assign(TAnchorDockLayoutTree(Source).Root)
+  else if Source is TAnchorDockLayoutTreeNode then
+    Root.Assign(TAnchorDockLayoutTreeNode(Source))
+  else
+    raise Exception.Create('TAnchorDockLayoutTree.Assign not implemented '+DbgSName(Source));
 end;
 
 { TADNameToControl }

@@ -78,6 +78,8 @@
     - simple way to make forms dockable at designtime without any code
     - on show again (hide form, show form): restore layout
     - close button for pages
+    - event for drawing grabbers+headers
+    - save/restore other splitters
 
     - http://bugs.freepascal.org/view.php?id=18298 default layout sometimes wrong main bar
     - http://bugs.freepascal.org/view.php?id=18538 keep size of mainbar
