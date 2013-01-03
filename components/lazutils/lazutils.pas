@@ -15,12 +15,13 @@ uses
   TTCalc, TTCMap, TTDebug, TTError, TTFile, TTGLoad, TTInterp, TTLoad, 
   TTMemory, TTObjs, TTProfile, TTRASTER, TTTables, TTTypes, EasyLazFreeType, 
   LazLoggerBase, LazLoggerDummy, LazClasses, LazFreeTypeFontCollection, 
-  LazConfigStorage, LazarusPackageIntf;
+  LazConfigStorage, UTF8Process, LazarusPackageIntf;
 
 implementation
 
 procedure Register;
 begin
+  RegisterUnit('UTF8Process', @UTF8Process.Register);
 end;
 
 initialization

@@ -253,10 +253,6 @@ msgctxt "lclstrconsts.ifsvk_up"
 msgid "Up"
 msgstr "Aukštyn"
 
-#: lclstrconsts.liscannotexecute
-msgid "can not execute %s"
-msgstr "negalima vykdyti %s"
-
 #: lclstrconsts.liscefilter
 msgid "(filter)"
 msgstr "(filtras)"
@@ -265,10 +261,6 @@ msgstr "(filtras)"
 msgctxt "lclstrconsts.lislclresourcesnotfound"
 msgid "Resource %s not found"
 msgstr "Resursas %s nerastas"
-
-#: lclstrconsts.lisprogramfilenotfound
-msgid "program file not found %s"
-msgstr "programos failas nerastas %s"
 
 #: lclstrconsts.rs3ddkshadowcolorcaption
 msgid "3D Dark Shadow"

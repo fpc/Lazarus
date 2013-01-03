@@ -250,10 +250,6 @@ msgctxt "lclstrconsts.ifsvk_up"
 msgid "Up"
 msgstr "Acima"
 
-#: lclstrconsts.liscannotexecute
-msgid "can not execute %s"
-msgstr "impossível executar %s"
-
 #: lclstrconsts.liscefilter
 msgid "(filter)"
 msgstr "(filtro)"
@@ -262,10 +258,6 @@ msgstr "(filtro)"
 msgctxt "lclstrconsts.lislclresourcesnotfound"
 msgid "Resource %s not found"
 msgstr "Recurso %s não encontrado"
-
-#: lclstrconsts.lisprogramfilenotfound
-msgid "program file not found %s"
-msgstr "arquivo programa não encontrado %s"
 
 #: lclstrconsts.rs3ddkshadowcolorcaption
 msgid "3D Dark Shadow"

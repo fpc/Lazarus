@@ -1,4 +1,4 @@
-# Valdas Jankunas <zmuogs@gmail.com>, 2012.
+ Valdas Jankunas <zmuogs@gmail.com>, 2012.
 msgid ""
 msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -9,25 +9,18 @@ msgstr ""
 "Language: lt\n"
 "Content-Transfer-Encoding: 8bit\n"
 "MIME-Version: 1.0\n"
-"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && (n%"
-"100<10 || n%100>=20) ? 1 : 2);\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 "X-Generator: Lokalize 1.5\n"
 
 #: lazutilsstrconsts.lrsadirectorycomponentindoesnotexistorisadanglingsyml
-msgctxt ""
-"lazutilsstrconsts.lrsadirectorycomponentindoesnotexistorisadanglingsyml"
+msgctxt "lazutilsstrconsts.lrsadirectorycomponentindoesnotexistorisadanglingsyml"
 msgid "a directory component in %s does not exist or is a dangling symlink"
-msgstr ""
-"%s esantis aplanko komponentas neegzistuoja arba jis yra betikslis simbolinis "
-"saitas"
+msgstr "%s esantis aplanko komponentas neegzistuoja arba jis yra betikslis simbolinis saitas"
 
 #: lazutilsstrconsts.lrsadirectorycomponentindoesnotexistorisadanglingsyml2
-msgctxt ""
-"lazutilsstrconsts.lrsadirectorycomponentindoesnotexistorisadanglingsyml2"
+msgctxt "lazutilsstrconsts.lrsadirectorycomponentindoesnotexistorisadanglingsyml2"
 msgid "a directory component in %s does not exist or is a dangling symlink"
-msgstr ""
-"%s esantis aplanko komponentas neegzistuoja arba jis yra betikslis simbolinis "
-"saitas"
+msgstr "%s esantis aplanko komponentas neegzistuoja arba jis yra betikslis simbolinis saitas"
 
 #: lazutilsstrconsts.lrsadirectorycomponentinisnotadirectory
 msgctxt "lazutilsstrconsts.lrsadirectorycomponentinisnotadirectory"
@@ -38,6 +31,10 @@ msgstr "%s esantis aplanko komponentas nėra aplankas"
 msgctxt "lazutilsstrconsts.lrsadirectorycomponentinisnotadirectory2"
 msgid "a directory component in %s is not a directory"
 msgstr "%s esantis aplanko komponentas nėra aplankas"
+
+#: lazutilsstrconsts.lrscannotexecute
+msgid "can not execute %s"
+msgstr ""
 
 #: lazutilsstrconsts.lrsfiledoesnotexist
 msgid "file \"%s\" does not exist"
@@ -73,6 +70,10 @@ msgctxt "lazutilsstrconsts.lrsmodified"
 msgid "  modified "
 msgstr "  pakeista "
 
+#: lazutilsstrconsts.lrsprogramfilenotfound
+msgid "program file not found %s"
+msgstr ""
+
 #: lazutilsstrconsts.lrsreadaccessdeniedfor
 msgid "read access denied for %s"
 msgstr "iš %s skaityti draudžiama"
@@ -85,5 +86,4 @@ msgstr "  dydis "
 #: lazutilsstrconsts.lrsunabletocreateconfigdirectorys
 msgid "Unable to create config directory \"%s\""
 msgstr "Nepavyko sukurti aplanko „%s“ konfigūracijai"
-
 

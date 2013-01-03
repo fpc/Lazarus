@@ -48,6 +48,8 @@ resourceString
   lrsIsNotASymbolicLink = '%s is not a symbolic link';
   lrsIsNotExecutable = '%s is not executable';
   lrsUnableToCreateConfigDirectoryS = 'Unable to create config directory "%s"';
+  lrsProgramFileNotFound = 'program file not found %s';
+  lrsCanNotExecute = 'can not execute %s';
 
 implementation
 

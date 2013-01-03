@@ -29,6 +29,10 @@ msgctxt "lazutilsstrconsts.lrsadirectorycomponentinisnotadirectory2"
 msgid "a directory component in %s is not a directory"
 msgstr "um componente diretório em %s não é um diretório"
 
+#: lazutilsstrconsts.lrscannotexecute
+msgid "can not execute %s"
+msgstr ""
+
 #: lazutilsstrconsts.lrsfiledoesnotexist
 msgid "file \"%s\" does not exist"
 msgstr "arquivo \"%s\" não existe"
@@ -62,6 +66,10 @@ msgstr "%s não é um executável"
 msgctxt "lazutilsstrconsts.lrsmodified"
 msgid "  modified "
 msgstr "  modificado"
+
+#: lazutilsstrconsts.lrsprogramfilenotfound
+msgid "program file not found %s"
+msgstr ""
 
 #: lazutilsstrconsts.lrsreadaccessdeniedfor
 msgid "read access denied for %s"

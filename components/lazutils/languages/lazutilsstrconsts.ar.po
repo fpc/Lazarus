@@ -1,7 +1,7 @@
-# Arabic translation of Free Pascal Lazarus Project.
-# Copyright (C) 2012 Lazarus Project
-# This file is distributed under the same license as the Lazarus package.
-# Khaled Shagrouni <shagrouni@gmail.com>, 2012.
+ Arabic translation of Free Pascal Lazarus Project.
+ Copyright (C) 2012 Lazarus Project
+ This file is distributed under the same license as the Lazarus package.
+ Khaled Shagrouni <shagrouni@gmail.com>, 2012.
 msgid ""
 msgstr ""
 "Project-Id-Version: Free Pascal Lazarus Project.\n"
@@ -37,6 +37,10 @@ msgctxt "lazutilsstrconsts.lrsadirectorycomponentinisnotadirectory2"
 msgid "a directory component in %s is not a directory"
 msgstr "مكون دليل في %s ليس دليل"
 
+#: lazutilsstrconsts.lrscannotexecute
+msgid "can not execute %s"
+msgstr ""
+
 #: lazutilsstrconsts.lrsfiledoesnotexist
 msgid "file \"%s\" does not exist"
 msgstr "ملف \"%s\" غير موجود"
@@ -71,6 +75,10 @@ msgctxt "lazutilsstrconsts.lrsmodified"
 msgid "  modified "
 msgstr " تمّ تحويره"
 
+#: lazutilsstrconsts.lrsprogramfilenotfound
+msgid "program file not found %s"
+msgstr ""
+
 #: lazutilsstrconsts.lrsreadaccessdeniedfor
 msgid "read access denied for %s"
 msgstr "ولوج التنفيذ مرفوض ل %s"
@@ -83,3 +91,4 @@ msgstr " حجم"
 #: lazutilsstrconsts.lrsunabletocreateconfigdirectorys
 msgid "Unable to create config directory \"%s\""
 msgstr "عدم التمكّن من إنشاء دليل توصيف \"%s\""
+

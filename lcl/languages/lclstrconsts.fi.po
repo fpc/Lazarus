@@ -245,10 +245,6 @@ msgctxt "lclstrconsts.ifsvk_up"
 msgid "Up"
 msgstr "Ylös"
 
-#: lclstrconsts.liscannotexecute
-msgid "can not execute %s"
-msgstr "ei voi suorittaa %s"
-
 #: lclstrconsts.liscefilter
 msgid "(filter)"
 msgstr "(suodatin)"
@@ -257,10 +253,6 @@ msgstr "(suodatin)"
 msgctxt "lclstrconsts.lislclresourcesnotfound"
 msgid "Resource %s not found"
 msgstr "Resurssia %s ei löydy"
-
-#: lclstrconsts.lisprogramfilenotfound
-msgid "program file not found %s"
-msgstr "ohjelmatiedostoa %s ei löydy"
 
 #: lclstrconsts.rs3ddkshadowcolorcaption
 msgid "3D Dark Shadow"

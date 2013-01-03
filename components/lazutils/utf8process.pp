@@ -28,7 +28,7 @@ unit UTF8Process;
 interface
 
 uses
-  Classes, SysUtils, Process, FileUtil, LazUTF8, LCLStrConsts;
+  Classes, SysUtils, Process, FileUtil, LazUTF8, LazUtilsStrConsts;
 
 type
   { TProcessUTF8 }
@@ -211,10 +211,10 @@ begin
   ProgramFilename:=FindFilenameOfCmd(ProgramFilename);
 
   if ProgramFilename='' then
-    raise EFOpenError.Create(Format(lisProgramFileNotFound, [OldProgramFilename]
+    raise EFOpenError.Create(Format(lrsProgramFileNotFound, [OldProgramFilename]
       ));
   if not FileIsExecutable(ProgramFilename) then
-    raise EFOpenError.Create(Format(lisCanNotExecute, [ProgramFilename]));
+    raise EFOpenError.Create(Format(lrsCanNotExecute, [ProgramFilename]));
 
   // run
   BrowserProcess := TProcessUTF8.Create(nil);
