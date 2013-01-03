@@ -53,8 +53,8 @@ interface
 
 uses
   Classes, SysUtils, LazUTF8, CodeToolsStrConsts, ExprEval, DirectoryCacher,
-  BasicCodeTools, Laz2_XMLCfg, lazutf8classes, AVL_Tree, CodeToolsStructs,
-  Process, KeywordFuncLists, LinkScanner, FileProcs;
+  BasicCodeTools, Laz2_XMLCfg, lazutf8classes, LazFileUtils, AVL_Tree,
+  CodeToolsStructs, Process, KeywordFuncLists, LinkScanner, FileProcs;
 
 const
   ExternalMacroStart = ExprEval.ExternalMacroStart;
@@ -934,6 +934,8 @@ function GatherFilesInFPCSources(Directory: string;
 function MakeRelativeFileList(Files: TStrings; out BaseDir: string): TStringList;
 function Compress1FileList(Files: TStrings): TStringList;
 function Decompress1FileList(Files: TStrings): TStringList;
+function RunTool(const Filename: string; Params: TStrings;
+                 WorkingDirectory: string = ''): TStringList;
 function RunTool(const Filename, Params: string;
                  WorkingDirectory: string = ''): TStringList;
 function ParseFPCInfo(FPCInfo: string; InfoTypes: TFPCInfoTypes;
@@ -1213,7 +1215,7 @@ begin
   end;
 end;
 
-function RunTool(const Filename, Params: string;
+function RunTool(const Filename: string; Params: TStrings;
   WorkingDirectory: string): TStringList;
 var
   buf: string;
@@ -1226,16 +1228,15 @@ begin
   if not FileIsExecutable(Filename) then exit(nil);
   Result:=TStringList.Create;
   try
-    debugln(['RunTool ',Filename,' ',Params]);
+    buf:='';
+    DbgOut(['RunTool ',Filename]);
+    for i:=0 to Params.Count-1 do
+      dbgout(' "',Params[i],'"');
     TheProcess := TProcess.Create(nil);
     try
-      CmdLine:=Filename;
-      if (System.Pos(' ',CmdLine)>0) and (CmdLine[1]<>'"') then
-        CmdLine:='"'+CmdLine+'"';
-      if Params<>'' then
-        CmdLine:=CmdLine+' '+Params;
       //DebugLn(['RunTool ',Params]);
-      TheProcess.CommandLine := UTF8ToSys(CmdLine);
+      TheProcess.Executable := UTF8ToSys(Filename);
+      TheProcess.Parameters:=Params;
       TheProcess.Options:= [poUsePipes, poStdErrToOutPut];
       TheProcess.ShowWindow := swoHide;
       TheProcess.CurrentDirectory:=UTF8ToSys(WorkingDirectory);
@@ -1273,6 +1274,20 @@ begin
     end;
   except
     FreeAndNil(Result);
+  end;
+end;
+
+function RunTool(const Filename, Params: string;
+  WorkingDirectory: string): TStringList;
+var
+  ParamList: TStringList;
+begin
+  ParamList:=TStringList.Create;
+  try
+    SplitCmdLineParams(Params,ParamList);
+    Result:=RunTool(Filename,ParamList,WorkingDirectory);
+  finally
+    ParamList.Free;
   end;
 end;
 
