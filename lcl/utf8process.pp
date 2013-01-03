@@ -41,6 +41,7 @@ type
     FCurrentDirectoryUTF8: string;
     FDesktopUTF8: string;
     FEnvironmentUTF8: TStrings;
+    FExecutableUTF8: string;
     FParametersUTF8: TStrings;
     procedure SetApplicationNameUTF8(const AValue: string);
     procedure SetCommandLineUTF8(const AValue: string);
@@ -48,6 +49,7 @@ type
     procedure SetCurrentDirectoryUTF8(const AValue: string);
     procedure SetDesktopUTF8(const AValue: string);
     procedure SetEnvironmentUTF8(const AValue: TStrings);
+    procedure SetExecutableUTF8(AValue: string);
     procedure SetParametersUTF8(AValue: TStrings);
     procedure UpdateEnvironment;
   public
@@ -60,6 +62,7 @@ type
     property CurrentDirectory: string read FCurrentDirectoryUTF8 write SetCurrentDirectoryUTF8;
     property Desktop: string read FDesktopUTF8 write SetDesktopUTF8;
     property Environment: TStrings read FEnvironmentUTF8 write SetEnvironmentUTF8;
+    property Executable: string read FExecutableUTF8 Write SetExecutableUTF8;
     property Parameters: TStrings read FParametersUTF8 write SetParametersUTF8;
   end;
 
@@ -82,10 +85,19 @@ begin
 end;
 
 procedure TProcessUTF8.SetCommandLineUTF8(const AValue: string);
+var
+  Src: TStrings;
+  i: Integer;
 begin
   if FCommandLineUTF8=AValue then exit;
   FCommandLineUTF8:=AValue;
   inherited CommandLine:=UTF8ToSys(FCommandLineUTF8);
+  FExecutableUTF8:=SysToUTF8(inherited Executable);
+  FParametersUTF8.Clear;
+  Src:=inherited Parameters;
+  if Src<>nil then
+    for i:=0 to Src.Count-1 do
+      FParametersUTF8.Add(SysToUTF8(Src[i]));
 end;
 
 procedure TProcessUTF8.SetConsoleTitleUTF8(const AValue: string);
@@ -114,6 +126,13 @@ begin
   if (FEnvironmentUTF8=AValue)
   or ((AValue<>nil) and FEnvironmentUTF8.Equals(AValue)) then exit;
   FEnvironmentUTF8.Assign(AValue);
+end;
+
+procedure TProcessUTF8.SetExecutableUTF8(AValue: string);
+begin
+  if FExecutableUTF8=AValue then Exit;
+  FExecutableUTF8:=AValue;
+  inherited Executable:=UTF8ToSys(FExecutableUTF8);
 end;
 
 procedure TProcessUTF8.SetParametersUTF8(AValue: TStrings);
