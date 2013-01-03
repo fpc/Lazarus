@@ -102,6 +102,7 @@ type
     property FreeXMLConfig: boolean read FFreeXMLConfig write FFreeXMLConfig;
     procedure WriteToDisk; override;
     function GetFilename: string; override;
+    procedure SaveToStream(s: TStream); virtual;
   end;
 
 procedure Register;
@@ -348,6 +349,14 @@ end;
 function TXMLConfigStorage.GetFilename: string;
 begin
   Result:=FXMLConfig.Filename;
+end;
+
+procedure TXMLConfigStorage.SaveToStream(s: TStream);
+begin
+  if FXMLConfig is TPropStorageXMLConfig then begin
+    TPropStorageXMLConfig(FXMLConfig).SaveToStream(s);
+  end else
+    raise Exception.Create('TXMLConfigStorage.SaveToStream not supported for '+DbgSName(FXMLConfig));
 end;
 
 end.
