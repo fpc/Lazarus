@@ -1269,7 +1269,8 @@ function TFindDeclarationTool.FindDeclaration(const CursorPos: TCodeXYPosition;
   SearchSmartFlags: TFindSmartFlags;
   out NewTool: TFindDeclarationTool; out NewNode: TCodeTreeNode;
   out NewPos: TCodeXYPosition; out NewTopLine: integer): boolean;
-var CleanCursorPos: integer;
+var
+  CleanCursorPos: integer;
   CursorNode, ClassNode: TCodeTreeNode;
   Params: TFindDeclarationParams;
   DirectSearch, SkipChecks, SearchForward: boolean;
@@ -1387,6 +1388,33 @@ var CleanCursorPos: integer;
     Result:=true;
   end;
 
+  {$IFDEF VerboseFindDeclarationFail}
+  procedure WriteFailReport;
+  var
+    CodePos: integer;
+    LinkIndex: Integer;
+    Link: TSourceLink;
+  begin
+    debugln(['TFindDeclarationTool.FindDeclaration failed',
+      ' CursorPos=X=',CursorPos.X,',Y=',CursorPos.Y,
+      ',File=',CursorPos.Code.Filename,
+      ',LineCount=',CursorPos.Code.LineCount]);
+    if CursorPos.Y<=CursorPos.Code.LineCount then
+      debugln([' Line="',dbgstr(CursorPos.Code.GetLine(CursorPos.Y-1),1,CursorPos.X-1),'|',dbgstr(CursorPos.Code.GetLine(CursorPos.Y-1),CursorPos.X,1000),'"']);
+    if CleanCursorPos>0 then begin
+      debugln([ ' CleanCursorPos=',CleanCursorPos,' CleanCode="',dbgstr(Src,CleanCursorPos-40,40),'|',dbgstr(Src,CleanCursorPos,30),'"']);
+    end;
+    CursorPos.Code.LineColToPosition(CursorPos.Y,CursorPos.X,CodePos);
+    LinkIndex:=Scanner.LinkIndexAtCursorPos(CodePos,CursorPos.Code);
+    dbgout([' CodePos=',CodePos,' LinkIndex=',LinkIndex]);
+    if LinkIndex>=0 then begin
+      Link:=Scanner.Links[LinkIndex];
+      dbgout([',CleanedPos=',Link.CleanedPos,',Size=',Scanner.LinkSize(LinkIndex),',SrcPos=',Link.SrcPos,',Kind=',dbgs(Link.Kind),',CodeSame=',Link.Code=Pointer(CursorPos.Code)]);
+    end;
+    debugln;
+  end;
+  {$ENDIF}
+
 var
   CleanPosInFront: integer;
   CursorAtIdentifier: boolean;
@@ -1414,6 +1442,7 @@ begin
     exit;
   end;
 
+  CleanCursorPos:=0;
   ActivateGlobalWriteLock;
   try
     // build code tree
@@ -1584,12 +1613,7 @@ begin
     ClearIgnoreErrorAfter;
     DeactivateGlobalWriteLock;
     {$IFDEF VerboseFindDeclarationFail}
-    debugln(['TFindDeclarationTool.FindDeclaration failed',
-      ' CursorPos=X=',CursorPos.X,',Y=',CursorPos.Y,
-      ',File=',CursorPos.Code.Filename,
-      ',LineCount=',CursorPos.Code.LineCount]);
-    if CursorPos.Y<=CursorPos.Code.LineCount then
-      debugln([' Line="',dbgstr(CursorPos.Code.GetLine(CursorPos.Y-1),1,CursorPos.X-1),'|',dbgstr(CursorPos.Code.GetLine(CursorPos.Y-1),CursorPos.X,1000),'"']);
+    WriteFailReport;
     {$ENDIF}
   end;
 end;
