@@ -64,6 +64,7 @@ interface
 { $DEFINE ShowCacheDependencies}
 { $DEFINE ShowCollect}
 { $DEFINE ShowProcSearch}
+{ $DEFINE VerboseFindDeclarationFail}
 { $DEFINE DebugAddToolDependency}
 
 {$IFDEF CTDEBUG}{$DEFINE DebugPrefix}{$ENDIF}
@@ -1582,6 +1583,14 @@ begin
   finally
     ClearIgnoreErrorAfter;
     DeactivateGlobalWriteLock;
+    {$IFDEF VerboseFindDeclarationFail}
+    debugln(['TFindDeclarationTool.FindDeclaration failed',
+      ' CursorPos=X=',CursorPos.X,',Y=',CursorPos.Y,
+      ',File=',CursorPos.Code.Filename,
+      ',LineCount=',CursorPos.Code.LineCount]);
+    if CursorPos.Y<=CursorPos.Code.LineCount then
+      debugln([' Line="',dbgstr(CursorPos.Code.GetLine(CursorPos.Y-1),1,CursorPos.X-1),'|',dbgstr(CursorPos.Code.GetLine(CursorPos.Y-1),CursorPos.X,1000),'"']);
+    {$ENDIF}
   end;
 end;
 
