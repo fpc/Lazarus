@@ -53,8 +53,8 @@ interface
 
 uses
   Classes, SysUtils, LazUTF8, CodeToolsStrConsts, ExprEval, DirectoryCacher,
-  BasicCodeTools, Laz2_XMLCfg, lazutf8classes, LazFileUtils, AVL_Tree,
-  CodeToolsStructs, Process, KeywordFuncLists, LinkScanner, FileProcs;
+  BasicCodeTools, Laz2_XMLCfg, lazutf8classes, LazFileUtils, AVL_Tree, process,
+  CodeToolsStructs, UTF8Process, KeywordFuncLists, LinkScanner, FileProcs;
 
 const
   ExternalMacroStart = ExprEval.ExternalMacroStart;
@@ -1219,7 +1219,7 @@ function RunTool(const Filename: string; Params: TStrings;
   WorkingDirectory: string): TStringList;
 var
   buf: string;
-  TheProcess: TProcess;
+  TheProcess: TProcessUTF8;
   OutputLine: String;
   OutLen: Integer;
   LineStart, i: Integer;
@@ -1232,13 +1232,13 @@ begin
     for i:=0 to Params.Count-1 do
       dbgout(' "',Params[i],'"');
     Debugln;
-    TheProcess := TProcess.Create(nil);
+    TheProcess := TProcessUTF8.Create(nil);
     try
-      TheProcess.Executable := UTF8ToSys(Filename);
+      TheProcess.Executable := Filename;
       TheProcess.Parameters:=Params;
       TheProcess.Options:= [poUsePipes, poStdErrToOutPut];
       TheProcess.ShowWindow := swoHide;
-      TheProcess.CurrentDirectory:=UTF8ToSys(WorkingDirectory);
+      TheProcess.CurrentDirectory:=WorkingDirectory;
       TheProcess.Execute;
       OutputLine:='';
       SetLength(buf,4096);
@@ -4929,7 +4929,7 @@ var
   
 var CmdLine: string;
   i, OutLen, LineStart: integer;
-  TheProcess: TProcess;
+  TheProcess: TProcessUTF8;
   OutputLine, Buf: String;
   NewDefTempl: TDefineTemplate;
   SrcOS: string;
@@ -4960,8 +4960,8 @@ begin
     CmdLine:=CmdLine+TestPascalFile;
     DebugLn('TDefinePool.CreateFPCTemplate CmdLine="',CmdLine,'"');
 
-    TheProcess := TProcess.Create(nil);
-    TheProcess.CommandLine := UTF8ToSys(CmdLine);
+    TheProcess := TProcessUTF8.Create(nil);
+    TheProcess.CommandLine := CmdLine;
     TheProcess.Options:= [poUsePipes, poStdErrToOutPut];
     TheProcess.ShowWindow := swoHide;
     Step:='Running '+CmdLine;
@@ -5004,8 +5004,8 @@ begin
       CmdLine:=CmdLine+' '+CompilerOptions;
     CmdLine:=CmdLine+' -iTO';
 
-    TheProcess := TProcess.Create(nil);
-    TheProcess.CommandLine := UTF8ToSys(CmdLine);
+    TheProcess := TProcessUTF8.Create(nil);
+    TheProcess.CommandLine := CmdLine;
     TheProcess.Options:= [poUsePipes, poStdErrToOutPut];
     TheProcess.ShowWindow := swoHide;
     Step:='Running '+CmdLine;
@@ -5050,12 +5050,12 @@ begin
     end;
     
     // ask for target processor -> ask compiler with switch -iTP
-    TheProcess := TProcess.Create(nil);
+    TheProcess := TProcessUTF8.Create(nil);
     CmdLine:=CompilerPath;
     if CompilerOptions<>'' then
       CmdLine:=CmdLine+' '+CompilerOptions;
     CmdLine:=CmdLine+' -iTP';
-    TheProcess.CommandLine := UTF8ToSys(CmdLine);
+    TheProcess.CommandLine := CmdLine;
     TheProcess.Options:= [poUsePipes, poStdErrToOutPut];
     TheProcess.ShowWindow := swoHide;
     Step:='Running '+CmdLine;
