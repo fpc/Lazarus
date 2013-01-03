@@ -1419,13 +1419,16 @@ var
       while (i<Scanner.LinkCount-1) do begin
         Link:=Scanner.Links[i];
         if Link.Code=Pointer(CursorPos.Code) then begin
+          if LinkIndex<0 then
+            dbgout([', First Link of Code: ID=',i,'CleanedPos=',Link.CleanedPos,',Size=',Scanner.LinkSize(i),',SrcPos=',Link.SrcPos,',Kind=',dbgs(Link.Kind)]);
           LinkIndex:=i;
-          dbgout([' First Link in Code: CleanedPos=',Link.CleanedPos,',Size=',Scanner.LinkSize(i),',SrcPos=',Link.SrcPos,',Kind=',dbgs(Link.Kind)]);
-          break;
         end;
         inc(i);
       end;
-      if (LinkIndex<0) then begin
+      if LinkIndex>=0 then begin
+        Link:=Scanner.Links[LinkIndex];
+        dbgout([', Last Link of Code: ID=',LinkIndex,',CleanedPos=',Link.CleanedPos,',Size=',Scanner.LinkSize(i),',SrcPos=',Link.SrcPos,',Kind=',dbgs(Link.Kind)]);
+      end else begin
         SrcCodes:=Scanner.CreateTreeOfSourceCodes;
         try
           for SrcNode in SrcCodes do begin
