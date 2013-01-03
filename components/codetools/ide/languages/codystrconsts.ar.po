@@ -393,6 +393,10 @@ msgstr "ك بايت"
 msgid "Linked files"
 msgstr "الملفات المرتبطة"
 
+#: codystrconsts.crslinks
+msgid "Links"
+msgstr ""
+
 #: codystrconsts.crsloaddictionaryafter
 msgid "Load dictionary after %s"
 msgstr ""

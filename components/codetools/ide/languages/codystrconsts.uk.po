@@ -401,6 +401,10 @@ msgstr "кБ"
 msgid "Linked files"
 msgstr "Зв'язані файли"
 
+#: codystrconsts.crslinks
+msgid "Links"
+msgstr ""
+
 #: codystrconsts.crsloaddictionaryafter
 msgid "Load dictionary after %s"
 msgstr ""

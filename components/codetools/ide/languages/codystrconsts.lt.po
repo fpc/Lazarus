@@ -391,6 +391,10 @@ msgstr "kiB"
 msgid "Linked files"
 msgstr "Saistyti failai"
 
+#: codystrconsts.crslinks
+msgid "Links"
+msgstr ""
+
 #: codystrconsts.crsloaddictionaryafter
 msgid "Load dictionary after %s"
 msgstr "Žodyną įkelti po %s"

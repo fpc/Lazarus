@@ -389,6 +389,10 @@ msgstr "Kbyte"
 msgid "Linked files"
 msgstr ""
 
+#: codystrconsts.crslinks
+msgid "Links"
+msgstr ""
+
 #: codystrconsts.crsloaddictionaryafter
 msgid "Load dictionary after %s"
 msgstr ""

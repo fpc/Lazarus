@@ -73,6 +73,7 @@ resourcestring
   crsProjectOutput = 'Project Output';
   crsHelp = '&Help';
   crsClose = '&Close';
+  crsLinks = 'Links';
   crsCodeBuffers = 'CodeBuffers';
   crsAddAssignMethod = 'Add Assign Method';
   crsShowCodeToolsNodeInfo = 'Show CodeTools Node Info ...';

@@ -398,6 +398,10 @@ msgstr "kbytes"
 msgid "Linked files"
 msgstr "Arquivos vinculados"
 
+#: codystrconsts.crslinks
+msgid "Links"
+msgstr ""
+
 #: codystrconsts.crsloaddictionaryafter
 msgid "Load dictionary after %s"
 msgstr "Carregar dicionário após %s"

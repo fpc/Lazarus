@@ -47,10 +47,12 @@ type
     ButtonPanel1: TButtonPanel;
     CodeBufferMemo: TMemo;
     CodeBuffersComboBox: TComboBox;
+    LinksMemo: TMemo;
     PageControl1: TPageControl;
     ReportMemo: TMemo;
     ReportTabSheet: TTabSheet;
     CodeBuffersTabSheet: TTabSheet;
+    LinksTabSheet: TTabSheet;
     procedure CodeBuffersComboBoxSelect(Sender: TObject);
     procedure FormCreate(Sender: TObject);
   private
@@ -86,6 +88,7 @@ begin
   Caption:=crsCodeNodeInformation;
   ReportTabSheet.Caption:=crsReport;
   CodeBuffersTabSheet.Caption:=crsCodeBuffers;
+  LinksTabSheet.Caption:=crsLinks;
   ButtonPanel1.CloseButton.Caption:=crsClose;
   PageControl1.PageIndex:=0;
   UpdateReport;
@@ -217,7 +220,12 @@ var
   AVLNode: TAVLTreeNode;
   Filenames: TStringList;
   CodeBuf: TCodeBuffer;
+  Scanner: TLinkScanner;
+  Link: TSourceLink;
+  LinkSize: Integer;
+  s: String;
 begin
+  Tool:=nil;
   sl:=TStringList.Create;
   try
     SrcEdit:=SourceEditorManagerIntf.ActiveEditor;
@@ -241,6 +249,8 @@ begin
         sl.Add('Unit='+Tool.MainFilename);
       Tool.BuildTreeAndGetCleanPos(trTillCursor,lsrEnd,CursorPos,CleanPos,
                                    [btSetIgnoreErrorPos]);
+
+      // nodes
       sl.Add('Scanner.ScannedRange='+dbgs(Tool.Scanner.ScannedRange));
       sl.Add('Tool.ScannedRange='+dbgs(Tool.ScannedRange));
       Node:=Tool.FindDeepestNodeAtPos(CleanPos,false);
@@ -269,6 +279,7 @@ begin
         ReportAllNodes(sl,Tool);
       end;
 
+      // codebuffers
       Filenames:=TStringList.Create;
       if Tool.Scanner<>nil then begin
         UsedCodeBuffers:=Tool.Scanner.CreateTreeOfSourceCodes;
@@ -288,6 +299,7 @@ begin
       end else begin
         CodeBuffersComboBox.Text:='';
       end;
+
     except
       on e: Exception do CodeToolBoss.HandleException(e);
     end;
@@ -301,6 +313,45 @@ begin
       end;
     end;
     ReportMemo.Lines.Assign(sl);
+    sl.Free;
+  end;
+  // links
+  sl:=TStringList.Create;
+  try
+    sl.Clear;
+    if Tool.Scanner<>nil then begin
+      Scanner:=Tool.Scanner;
+      sl.Add('MainFilename:'+Scanner.MainFilename);
+      sl.Add('ScannedRange='+dbgs(Scanner.ScannedRange));
+      sl.Add('===================================');
+      sl.Add('InitialValues:');
+      sl.Add(Scanner.InitialValues.AsString);
+      sl.Add('===================================');
+      sl.Add('Values:');
+      sl.Add(Scanner.Values.AsString);
+      sl.Add('===================================');
+      sl.Add('IsUnit='+dbgs(Scanner.IsUnit));
+      sl.Add('SourceName='+Scanner.SourceName);
+      sl.Add('===================================');
+      sl.Add('Links:');
+      for i:=0 to Scanner.LinkCount-1 do begin
+        Link:=Scanner.Links[i];
+        s:=dbgs(i)+'/'+dbgs(Scanner.LinkCount)+': Kind='+dbgs(Link.Kind);
+        if Link.Code<>nil then
+          s+=',Code='+ExtractFileName(TCodeBuffer(Link.Code).Filename);
+        s+=',CleanedPos='+dbgs(Link.CleanedPos)+',SrcPos='+dbgs(Link.SrcPos);
+        LinkSize:=Scanner.LinkSize(i);
+        s+=',Size='+dbgs(LinkSize);
+        if LinkSize>60 then
+          s+=dbgstr(Scanner.CleanedSrc,Link.CleanedPos,30)+'...'+dbgstr(Scanner.CleanedSrc,Link.CleanedPos+LinkSize-30,30)
+        else
+          s+=dbgstr(Scanner.CleanedSrc,Link.CleanedPos,LinkSize);
+        sl.Add(s);
+      end;
+      sl.Add('===================================');
+    end;
+    LinksMemo.Lines.Assign(sl);
+  finally
     sl.Free;
   end;
 end;
