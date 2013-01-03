@@ -38,6 +38,7 @@ type
     procedure BufferChanged(Sender: TObject);
     procedure FontChanged(Sender: TObject);
     procedure SetAutoSize(const AValue : boolean); override;
+    procedure SetVisible(const AValue: boolean); override;
     function CreateMouseActions: TSynEditMouseInternalActions; override;
   public
     constructor Create(AOwner: TComponent); override;
@@ -208,6 +209,12 @@ end;
 procedure TSynGutterLineNumber.SetAutoSize(const AValue: boolean);
 begin
   inherited SetAutoSize(AValue);
+  if AValue then LineCountChanged(nil, 0, 0);
+end;
+
+procedure TSynGutterLineNumber.SetVisible(const AValue: boolean);
+begin
+  inherited SetVisible(AValue);
   if AValue then LineCountChanged(nil, 0, 0);
 end;
 
