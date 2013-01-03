@@ -86,12 +86,12 @@ type
     destructor Destroy; override;
 
     { ITestListener interface requirements }
-    procedure AddFailure(ATest: TTest; AFailure: TTestFailure);
-    procedure AddError(ATest: TTest; AError: TTestFailure);
-    procedure StartTest(ATest: TTest);
-    procedure EndTest(ATest: TTest);
-    procedure StartTestSuite(ATestSuite: TTestSuite);
-    procedure EndTestSuite(ATestSuite: TTestSuite);
+    procedure AddFailure({%H-}ATest: TTest; {%H-}AFailure: TTestFailure);
+    procedure AddError({%H-}ATest: TTest; {%H-}AError: TTestFailure);
+    procedure StartTest({%H-}ATest: TTest);
+    procedure EndTest({%H-}ATest: TTest);
+    procedure StartTestSuite({%H-}ATestSuite: TTestSuite);
+    procedure EndTestSuite({%H-}ATestSuite: TTestSuite);
   end;
 
 procedure TProgressWriter.WriteChar(c: char);
