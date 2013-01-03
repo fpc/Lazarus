@@ -239,8 +239,6 @@ function GetAppConfigFileUTF8(Global: Boolean; SubDir: boolean = false;
 
 // other
 function SysErrorMessageUTF8(ErrorCode: Integer): String;
-procedure SplitCmdLineParams(const Params: string; ParamList: TStrings;
-                             ReadBackslash: boolean = false);
 
 implementation
 

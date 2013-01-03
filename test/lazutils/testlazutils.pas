@@ -13,7 +13,7 @@ unit TestLazUtils;
 interface
 
 uses
-  Classes, SysUtils, fpcunit, testglobals, LazLogger, FileUtil;
+  Classes, SysUtils, fpcunit, testglobals, LazLogger, LazFileUtils;
 
 type
 

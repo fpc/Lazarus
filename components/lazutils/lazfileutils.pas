@@ -87,6 +87,9 @@ function ForceDirectoriesUTF8(const Dir: string): Boolean;
 function IsUNCPath(const {%H-}Path: String): Boolean;
 function ExtractUNCVolume(const {%H-}Path: String): String;
 
+procedure SplitCmdLineParams(const Params: string; ParamList: TStrings;
+                             ReadBackslash: boolean = false);
+
 type
   TInvalidateFileStateCacheEvent = procedure(const Filename: string);
 var
@@ -1293,6 +1296,94 @@ procedure InvalidateFileStateCache(const Filename: string);
 begin
   if Assigned(OnInvalidateFileStateCache) then
     OnInvalidateFileStateCache(Filename);
+end;
+
+procedure SplitCmdLineParams(const Params: string; ParamList: TStrings;
+                             ReadBackslash: boolean = false);
+// split spaces, quotes are parsed as single parameter
+// if ReadBackslash=true then \" is replaced to " and not treated as quote
+// #0 is always end
+type
+  TMode = (mNormal,mApostrophe,mQuote);
+var
+  p: Integer;
+  Mode: TMode;
+  Param: String;
+begin
+  p:=1;
+  while p<=length(Params) do
+  begin
+    // skip whitespace
+    while (p<=length(Params)) and (Params[p] in [' ',#9,#10,#13]) do inc(p);
+    if (p>length(Params)) or (Params[p]=#0) then
+      break;
+    //writeln('SplitCmdLineParams After Space p=',p,'=[',Params[p],']');
+    // read param
+    Param:='';
+    Mode:=mNormal;
+    while p<=length(Params) do
+    begin
+      case Params[p] of
+      #0:
+        break;
+      '\':
+        begin
+          inc(p);
+          if ReadBackslash then
+            begin
+            // treat next character as normal character
+            if (p>length(Params)) or (Params[p]=#0) then
+              break;
+            if ord(Params[p])<128 then
+            begin
+              Param+=Params[p];
+              inc(p);
+            end else begin
+              // next character is already a normal character
+            end;
+          end else begin
+            // treat backslash as normal character
+            Param+='\';
+          end;
+        end;
+      '''':
+        begin
+          inc(p);
+          case Mode of
+          mNormal:
+            Mode:=mApostrophe;
+          mApostrophe:
+            Mode:=mNormal;
+          mQuote:
+            Param+='''';
+          end;
+        end;
+      '"':
+        begin
+          inc(p);
+          case Mode of
+          mNormal:
+            Mode:=mQuote;
+          mApostrophe:
+            Param+='"';
+          mQuote:
+            Mode:=mNormal;
+          end;
+        end;
+      ' ',#9,#10,#13:
+        begin
+          if Mode=mNormal then break;
+          Param+=Params[p];
+          inc(p);
+        end;
+      else
+        Param+=Params[p];
+        inc(p);
+      end;
+    end;
+    //writeln('SplitCmdLineParams Param=#'+Param+'#');
+    ParamList.Add(Param);
+  end;
 end;
 
 function IsUNCPath(const Path: String): Boolean;
