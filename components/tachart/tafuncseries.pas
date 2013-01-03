@@ -552,6 +552,8 @@ procedure TBSplineSeries.Draw(ADrawer: IChartDrawer);
 var
   p: array of TDoublePoint;
   startIndex: Integer;
+  splineStart: Integer = 0;
+  splineEnd: Integer = -2;
 
   function SplinePoint(APos: Double): TPoint;
   var
@@ -561,7 +563,7 @@ var
     // Duplicate end points Degree times to fix spline to them.
     for i := 0 to Degree do
       p[i] := FGraphPoints[
-        EnsureRange(startIndex - Degree + i, 0, High(FGraphPoints))];
+        EnsureRange(startIndex - Degree + i, splineStart, splineEnd)];
     // De Boor's algorithm, source points used as control points.
     // Parametric coordinate is equal to point index.
     for d := 1 to Degree do begin
@@ -616,9 +618,11 @@ begin
 
   SetLength(p, Degree + 1);
   ADrawer.Pen := Pen;
-  ADrawer.MoveTo(ParentChart.GraphToImage(FGraphPoints[0]));
-  for startIndex := 0 to High(FGraphPoints) + Degree - 1 do
-    SplineSegment(0.0, 1.0, SplinePoint(0.0), SplinePoint(1.0));
+  while NextNumberSeq(FGraphPoints, splineStart, splineEnd) do begin
+    ADrawer.MoveTo(ParentChart.GraphToImage(FGraphPoints[splineStart]));
+    for startIndex := splineStart to splineEnd + Degree - 1 do
+      SplineSegment(0.0, 1.0, SplinePoint(0.0), SplinePoint(1.0));
+  end;
   DrawLabels(ADrawer);
   DrawPointers(ADrawer);
 end;

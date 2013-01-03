@@ -77,6 +77,8 @@ function MakeCallout(
   AAngle: Double): TPointArray;
 function MaxPoint(const A, B: TPoint): TPoint; inline;
 function MeasureRotatedRect(const ASize: TPoint; AAngle: Double): TSize;
+function NextNumberSeq(
+  const APoints: array of TDoublePoint; var AStart, AEnd: Integer): Boolean;
 function PointDist(const A, B: TPoint): Integer; inline;
 function PointDistX(const A, B: TPoint): Integer; inline;
 function PointDistY(const A, B: TPoint): Integer; inline;
@@ -517,6 +519,18 @@ begin
   a1x := A1.X;
   a1y := A1.Y;
   Result := Sign((AP.X - a1x) * (A2.Y - a1y) - (AP.Y - a1y) * (A2.X - a1x));
+end;
+
+function NextNumberSeq(
+  const APoints: array of TDoublePoint; var AStart, AEnd: Integer): Boolean;
+begin
+  AStart := AEnd + 2;
+  while (AStart <= High(APoints)) and IsNan(APoints[AStart]) do
+    AStart += 1;
+  AEnd := AStart;
+  while (AEnd + 1 <= High(APoints)) and not IsNan(APoints[AEnd + 1]) do
+    AEnd += 1;
+  Result := AStart <= High(APoints);
 end;
 
 function PointDist(const A, B: TPoint): Integer;
