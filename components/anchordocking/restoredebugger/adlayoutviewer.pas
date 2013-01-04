@@ -5,8 +5,8 @@ unit ADLayoutViewer;
 interface
 
 uses
-  Classes, SysUtils, types, math, Controls, Graphics, ComCtrls,
-  AnchorDockStorage, LazLogger;
+  Classes, SysUtils, types, math, Controls, Graphics, ComCtrls, LCLType,
+  LMessages, LCLIntf, AnchorDockStorage, LazLogger;
 
 type
   TADLTVMonitor = class
@@ -54,9 +54,15 @@ type
     procedure SetZoomTrackbar(AValue: TCustomTrackBar);
     procedure UpdateZoomTrackBar;
     procedure ZoomTrackbarChange(Sender: TObject);
+    procedure WMVScroll(var Msg: TLMScroll); message LM_VSCROLL;
+    procedure WMHScroll(var Msg: TLMScroll); message LM_HSCROLL;
+    procedure WMMouseWheel(var Message: TLMMouseEvent); message LM_MOUSEWHEEL;
+    procedure UpdateScrollBar;
   protected
     procedure Notification(AComponent: TComponent; Operation: TOperation);
       override;
+    procedure CreateWnd; override;
+    procedure DoSetBounds(ALeft, ATop, AWidth, AHeight: integer); override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -67,6 +73,8 @@ type
     property Scale: double read FScale write SetScale;
     property ScaledOffsetX: integer read GetScaledOffsetX write SetScaledOffsetX;
     property ScaledOffsetY: integer read GetScaledOffsetY write SetScaledOffsetY;
+    function ScaledOffsetYMax: integer;
+    function ScaledOffsetXMax: integer;
     property LayoutMinX: integer read GetLayoutMinX;
     property LayoutMinY: integer read GetLayoutMinY;
     property LayoutMaxX: integer read GetLayoutMaxX;
@@ -104,6 +112,9 @@ begin
   if FScale=AValue then Exit;
   FScale:=AValue;
   FScaledBounds:=ScaleRect(FBounds);
+  FScaledScroll.X:=Min(FScaledScroll.X,ScaledMaxX);
+  FScaledScroll.Y:=Min(FScaledScroll.Y,ScaledMaxY);
+  UpdateScrollBar;
   UpdateZoomTrackBar;
   Invalidate;
 end;
@@ -114,6 +125,89 @@ begin
     Scale:=ZoomTrackBarPosToScale(ZoomTrackbar.Position);
   if Assigned(FOldZoombarOnChange) then
     FOldZoombarOnChange(Sender);
+end;
+
+procedure TADCustomLayoutTreeView.WMVScroll(var Msg: TLMScroll);
+begin
+  case Msg.ScrollCode of
+      // Scrolls to start / end of the text
+    SB_TOP:        ScaledOffsetY := 0;
+    SB_BOTTOM:     ScaledOffsetY := ScaledOffsetYMax;
+      // Scrolls one line up / down
+    SB_LINEDOWN:   ScaledOffsetY := ScaledOffsetY + 10 div 2;
+    SB_LINEUP:     ScaledOffsetY := ScaledOffsetY - 10 div 2;
+      // Scrolls one page of lines up / down
+    SB_PAGEDOWN:   ScaledOffsetY := ScaledOffsetY + ClientHeight - 10;
+    SB_PAGEUP:     ScaledOffsetY := ScaledOffsetY - ClientHeight + 10;
+      // Scrolls to the current scroll bar position
+    SB_THUMBPOSITION,
+    SB_THUMBTRACK: ScaledOffsetY := Msg.Pos;
+      // Ends scrolling
+    SB_ENDSCROLL:  SetCaptureControl(nil); // release scrollbar capture
+  end;
+end;
+
+procedure TADCustomLayoutTreeView.WMHScroll(var Msg: TLMScroll);
+begin
+  case Msg.ScrollCode of
+      // Scrolls to start / end of the text
+    SB_TOP:        ScaledOffsetX := 0;
+    SB_BOTTOM:     ScaledOffsetX := ScaledOffsetXMax;
+      // Scrolls one line up / down
+    SB_LINEDOWN:   ScaledOffsetX := ScaledOffsetX + 10 div 2;
+    SB_LINEUP:     ScaledOffsetX := ScaledOffsetX - 10 div 2;
+      // Scrolls one page of lines up / down
+    SB_PAGEDOWN:   ScaledOffsetX := ScaledOffsetX + ClientWidth - 10;
+    SB_PAGEUP:     ScaledOffsetX := ScaledOffsetX - ClientWidth + 10;
+      // Scrolls to the current scroll bar position
+    SB_THUMBPOSITION,
+    SB_THUMBTRACK: ScaledOffsetX := Msg.Pos;
+      // Ends scrolling
+    SB_ENDSCROLL:  SetCaptureControl(nil); // release scrollbar capture
+  end;
+end;
+
+procedure TADCustomLayoutTreeView.WMMouseWheel(var Message: TLMMouseEvent);
+begin
+  if Mouse.WheelScrollLines=-1 then
+  begin
+    // -1 : scroll by page
+    ScaledOffsetY := ScaledOffsetY -
+              (Message.WheelDelta * (ClientHeight - 10)) div 120;
+  end else begin
+    // scrolling one line -> scroll half an item, see SB_LINEDOWN and SB_LINEUP
+    // handler in WMVScroll
+    ScaledOffsetY := ScaledOffsetY -
+        (Message.WheelDelta * Mouse.WheelScrollLines*10) div 240;
+  end;
+  Message.Result := 1;
+end;
+
+procedure TADCustomLayoutTreeView.UpdateScrollBar;
+var
+  ScrollInfo: TScrollInfo;
+begin
+  if HandleAllocated then begin
+    ScrollInfo.cbSize := SizeOf(ScrollInfo);
+    ScrollInfo.fMask := SIF_ALL or SIF_DISABLENOSCROLL;
+    ScrollInfo.nMin := 0;
+    ScrollInfo.nTrackPos := 0;
+    ScrollInfo.nMax := Max(1,ScaledMaxY-1);
+    ScrollInfo.nPage := Max(1,ClientHeight-10);
+    ScrollInfo.nPos := ScaledOffsetY;
+    ShowScrollBar(Handle, SB_Vert, True);
+    SetScrollInfo(Handle, SB_Vert, ScrollInfo, True);
+
+    ScrollInfo.cbSize := SizeOf(ScrollInfo);
+    ScrollInfo.fMask := SIF_ALL or SIF_DISABLENOSCROLL;
+    ScrollInfo.nMin := 0;
+    ScrollInfo.nTrackPos := 0;
+    ScrollInfo.nMax := Max(1,ScaledMaxX-1);
+    ScrollInfo.nPage := Max(1,ClientWidth-10);
+    ScrollInfo.nPos := ScaledOffsetX;
+    ShowScrollBar(Handle, SB_Horz, True);
+    SetScrollInfo(Handle, SB_Horz, ScrollInfo, True);
+  end;
 end;
 
 function TADCustomLayoutTreeView.GetLayoutMaxX: integer;
@@ -193,15 +287,19 @@ end;
 
 procedure TADCustomLayoutTreeView.SetScaledOffsetX(AValue: integer);
 begin
+  AValue:=Max(0,Min(ScaledMaxX,AValue));
   if FScaledScroll.X=AValue then Exit;
   FScaledScroll.X:=AValue;
+  UpdateScrollBar;
   Invalidate;
 end;
 
 procedure TADCustomLayoutTreeView.SetScaledOffsetY(AValue: integer);
 begin
+  AValue:=Max(0,Min(ScaledMaxY,AValue));
   if FScaledScroll.Y=AValue then Exit;
   FScaledScroll.Y:=AValue;
+  UpdateScrollBar;
   Invalidate;
 end;
 
@@ -298,6 +396,7 @@ begin
     DebugLn(['TADLayoutTreeView.ComputeLayout ',i,'/',length(FMonitors),' WorkArea=',dbgs(Monitor.WorkArea),' Bounds=',dbgs(Monitor.Bounds),' X=',Monitor.X,' Y=',Monitor.Y]);
   end;
   FScaledBounds:=ScaleRect(FBounds);
+  UpdateScrollBar;
 end;
 
 procedure TADCustomLayoutTreeView.ClearMonitors;
@@ -357,6 +456,19 @@ begin
     if AComponent=ZoomTrackbar then
       ZoomTrackbar:=nil;
   end;
+end;
+
+procedure TADCustomLayoutTreeView.CreateWnd;
+begin
+  inherited CreateWnd;
+  UpdateScrollBar;
+end;
+
+procedure TADCustomLayoutTreeView.DoSetBounds(ALeft, ATop, AWidth,
+  AHeight: integer);
+begin
+  inherited DoSetBounds(ALeft, ATop, AWidth, AHeight);
+  UpdateScrollBar;
 end;
 
 constructor TADCustomLayoutTreeView.Create(AOwner: TComponent);
@@ -469,15 +581,25 @@ end;
 
 function TADCustomLayoutTreeView.ScaleRect(const r: TRect): TRect;
 begin
-  Result.Left:=floor(r.Left*Scale)+FScaledScroll.X;
-  Result.Top:=floor(r.Top*Scale)+FScaledScroll.Y;
-  Result.Right:=ceil(r.Right*Scale)+FScaledScroll.X;
-  Result.Bottom:=ceil(r.Bottom*Scale)+FScaledScroll.Y;
+  Result.Left:=floor(r.Left*Scale)-FScaledScroll.X;
+  Result.Top:=floor(r.Top*Scale)-FScaledScroll.Y;
+  Result.Right:=ceil(r.Right*Scale)-FScaledScroll.X;
+  Result.Bottom:=ceil(r.Bottom*Scale)-FScaledScroll.Y;
 end;
 
 procedure TADCustomLayoutTreeView.LayoutChanged;
 begin
   ComputeLayout;
+end;
+
+function TADCustomLayoutTreeView.ScaledOffsetYMax: integer;
+begin
+  Result:=ScaledMaxY-ClientHeight;
+end;
+
+function TADCustomLayoutTreeView.ScaledOffsetXMax: integer;
+begin
+  Result:=ScaledMaxY-ClientWidth;
 end;
 
 function TADCustomLayoutTreeView.MonitorCount: integer;
