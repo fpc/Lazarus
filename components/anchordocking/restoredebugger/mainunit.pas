@@ -191,6 +191,8 @@ begin
       SplitterXMLLayout.Left:=Max(1,Cfg.GetValue('Splitter/BetweenXMLAndLayout/Left',SplitterXMLLayout.Left));
       SplitterBetweenXML.Top:=Max(1,Cfg.GetValue('Splitter/BetweenXML/Top',SplitterBetweenXML.Top));
       SplitterBetweenLayouts.Top:=Max(1,Cfg.GetValue('Splitter/BetweenLayout/Top',SplitterBetweenLayouts.Top));
+      OriginalView.Scale:=Cfg.GetValue('Original/Layout/Scale',250)/1000;
+      RestoredView.Scale:=Cfg.GetValue('Restored/Layout/Scale',250)/1000;
     finally
       Cfg.Free;
     end;
@@ -215,6 +217,8 @@ begin
       Cfg.SetDeleteValue('Splitter/BetweenXMLAndLayout/Left',SplitterXMLLayout.Left,-1);
       Cfg.SetDeleteValue('Splitter/BetweenXML/Top',SplitterBetweenXML.Top,-1);
       Cfg.SetDeleteValue('Splitter/BetweenLayout/Top',SplitterBetweenLayouts.Top,-1);
+      Cfg.SetDeleteValue('Original/Layout/Scale',round(OriginalView.Scale*1000),250);
+      Cfg.SetDeleteValue('Restored/Layout/Scale',round(RestoredView.Scale*1000),250);
     finally
       Cfg.Free;
     end;
