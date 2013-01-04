@@ -341,23 +341,23 @@ msgstr "\"%s\" esperado"
 
 #: codetoolsstrconsts.ctsexpectedamethodtypebutfound
 msgid "expected a method type, but found %s"
-msgstr ""
+msgstr "esperado un tipo de método, pero se han encontrado %s"
 
 #: codetoolsstrconsts.ctsexpectedbutfound
 msgid "expected (, but found %s"
-msgstr "esperando (, pero encontrado %s"
+msgstr "esperado (, pero encontrado %s"
 
 #: codetoolsstrconsts.ctsexpectedbutfound2
 msgid "expected ), but found %s"
-msgstr "esperando ), pero encontrado %s"
+msgstr "esperado ), pero encontrado %s"
 
 #: codetoolsstrconsts.ctsexpectedbutfound3
 msgid "expected :=, but %s found"
-msgstr "esperando :=, pero encontrado %s"
+msgstr "esperado :=, pero encontrado %s"
 
 #: codetoolsstrconsts.ctsexpectedidentifierbutfound
 msgid "expected identifier, but found %s"
-msgstr "esperando identificador, pero encontrado %s"
+msgstr "esperado identificador, pero encontrado %s"
 
 #: codetoolsstrconsts.ctsexpectedsemicolonofstatementbutfound
 msgid "expected ; of statement, but found %s"

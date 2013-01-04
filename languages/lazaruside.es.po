@@ -572,7 +572,7 @@ msgstr "Advertencia al compilar"
 
 #: lazarusidestrconsts.dlgansicommenttab
 msgid "Ansi (* *)"
-msgstr ""
+msgstr "Ansi (* *)"
 
 #: lazarusidestrconsts.dlgapplicationsettings
 #, fuzzy
@@ -670,11 +670,11 @@ msgstr "Sangrado de bloque (espacios)"
 
 #: lazarusidestrconsts.dlgblockindentkeys
 msgid "Block indent"
-msgstr ""
+msgstr "Sangrado de bloque"
 
 #: lazarusidestrconsts.dlgblockindentlink
 msgid "(edit keys)"
-msgstr ""
+msgstr "(editar llaves)"
 
 #: lazarusidestrconsts.dlgblockindenttype
 msgid "Indent method"
@@ -1049,71 +1049,71 @@ msgstr "Parámetros de la línea de comandos (sin el nombre de la aplicación)"
 
 #: lazarusidestrconsts.dlgcommentalignmaxdefault
 msgid "Make default indent for new line if comment opens at column:"
-msgstr ""
+msgstr "Hacer por defecto sangrado para nueva línea si un comentario se abre en columna:"
 
 #: lazarusidestrconsts.dlgcommentalignmaxtoken
 msgid "Limit indent to"
-msgstr ""
+msgstr "Límite de sangrado a"
 
 #: lazarusidestrconsts.dlgcommentcontinue
 msgid "Prefix comments on linebreak"
-msgstr ""
+msgstr "Prefijos de comentarios en salto de linea"
 
 #: lazarusidestrconsts.dlgcommentcontinuematch
 msgid "Match current line"
-msgstr ""
+msgstr "Concide la linea actual"
 
 #: lazarusidestrconsts.dlgcommentcontinuematchasterisk
 msgid "Match text including \"*\" of token \"(*\""
-msgstr ""
+msgstr "Concide el texto incluiendo \"*\" de muestra \"(*\""
 
 #: lazarusidestrconsts.dlgcommentcontinuematchline
 msgid "Match whole line"
-msgstr ""
+msgstr "Coincidir toda la línea"
 
 #: lazarusidestrconsts.dlgcommentcontinuematchtext
 msgid "Match text after token \"%s\""
-msgstr ""
+msgstr "Coincidir texto después de muestra \"%s\""
 
 #: lazarusidestrconsts.dlgcommentcontinuematchtoken
 msgid "Match text including token \"%s\""
-msgstr ""
+msgstr "Coincide texto incluido muestra \"%s\""
 
 #: lazarusidestrconsts.dlgcommentcontinueprefix
 msgid "Prefix new line"
-msgstr ""
+msgstr "Prefijo nueva linea"
 
 #: lazarusidestrconsts.dlgcommentcontinueprefixinddefault
 msgid "Align Prefix at indent of previous line"
-msgstr ""
+msgstr "Alinear Prefijo con el sangrado de la linea anterior"
 
 #: lazarusidestrconsts.dlgcommentcontinueprefixindmatch
 msgid "Align Prefix below start of comment on first comment line"
-msgstr ""
+msgstr "Alinear Prefijo a continuación inicio de comentario en primera línea de comentario"
 
 #: lazarusidestrconsts.dlgcommentcontinueprefixindnone
 msgid "Do not indent prefix"
-msgstr ""
+msgstr "No sangrar el prefijo"
 
 #: lazarusidestrconsts.dlgcommentindentgroupoptions
 msgid "Comments"
-msgstr ""
+msgstr "Comentarios"
 
 #: lazarusidestrconsts.dlgcommentshlashextendalways
 msgid "Extend, if matched or not matched"
-msgstr ""
+msgstr "Extender, si coincide o no coincide"
 
 #: lazarusidestrconsts.dlgcommentshlashextendalwayssplit
 msgid "Extend, if matched or not matched (not at EOL)"
-msgstr ""
+msgstr "Extender, si coincide o no coincide (no en EOL)"
 
 #: lazarusidestrconsts.dlgcommentshlashextendmatch
 msgid "Extend, if matched"
-msgstr ""
+msgstr "Extender, si coincide"
 
 #: lazarusidestrconsts.dlgcommentshlashextendmatchsplit
 msgid "Extend, if matched and caret in the middle of text (not at EOL)"
-msgstr ""
+msgstr "Extender, si coincide y cursor en el medio de texto (no en EOL)"
 
 #: lazarusidestrconsts.dlgcompilermessage
 #, fuzzy
@@ -1273,7 +1273,7 @@ msgstr "Ctrl + clic del botón central del ratón en una pestaña cierra todas l
 
 #: lazarusidestrconsts.dlgcurlycommenttab
 msgid "Curly { }"
-msgstr ""
+msgstr "Llaves {}"
 
 #: lazarusidestrconsts.dlgcursorbeyondeol
 msgid "Cursor beyond EOL"
@@ -1595,7 +1595,7 @@ msgstr "Usar"
 
 #: lazarusidestrconsts.dlgedtabindent
 msgid "Tab and Indent"
-msgstr ""
+msgstr "Tabulación y Sangrado"
 
 #: lazarusidestrconsts.dlgedunder
 msgid "Underline"
@@ -2085,7 +2085,7 @@ msgstr "Sangrar código a"
 
 #: lazarusidestrconsts.dlgindentsindentgroupoptions
 msgid "Indent"
-msgstr ""
+msgstr "Sangrado"
 
 #: lazarusidestrconsts.dlgindentstabsgroupoptions
 #, fuzzy
@@ -2143,7 +2143,7 @@ msgstr "Mantener posición X del cursor"
 
 #: lazarusidestrconsts.dlgkeylink
 msgid "(Edit Key)"
-msgstr ""
+msgstr "(Editar Llave)"
 
 #: lazarusidestrconsts.dlgkeymapping
 msgid "Key Mappings"
@@ -3272,7 +3272,7 @@ msgstr "Omitir declaraciones de clase forward"
 
 #: lazarusidestrconsts.dlgslashcommenttab
 msgid "Slash //"
-msgstr ""
+msgstr "Barra oblicua //"
 
 #: lazarusidestrconsts.dlgsmarttabs
 msgid "Smart tabs"
@@ -4498,7 +4498,7 @@ msgstr "Invocar automáticamente despues del punto"
 
 #: lazarusidestrconsts.lisautomaticallyonlinebreak
 msgid "line break"
-msgstr "romper línea"
+msgstr "salto de línea"
 
 #: lazarusidestrconsts.lisautomaticallyonspace
 msgid "space"
@@ -6559,7 +6559,7 @@ msgstr "Conversion Preparada."
 
 #: lazarusidestrconsts.lisconvdelphiconversiontook
 msgid "Conversion took: %s"
-msgstr ""
+msgstr "Conversión tuvo: %s"
 
 #: lazarusidestrconsts.lisconvdelphiconvertdelphipackage
 msgid "Convert Delphi package"
@@ -6714,11 +6714,11 @@ msgstr "Objetivo"
 
 #: lazarusidestrconsts.lisconverttargetcrossplatform
 msgid "Cross-platform"
-msgstr ""
+msgstr "Multiplataforma"
 
 #: lazarusidestrconsts.lisconverttargetcrossplatformhint
 msgid "Cross-platform versus Windows-only"
-msgstr ""
+msgstr "Multiplataforma contra Solo-Windows"
 
 #: lazarusidestrconsts.lisconverttargethint
 msgid "Converter adds conditional compilation to support different targets"
@@ -14807,7 +14807,7 @@ msgstr "Fallo al renombrar archivo"
 
 #: lazarusidestrconsts.lisrenameshowresult
 msgid "Show list of renamed Identifiers"
-msgstr ""
+msgstr "Mostrar lista de Identificadores renombrados"
 
 #: lazarusidestrconsts.lisrenameto
 msgid "Rename to %s"
@@ -17826,11 +17826,11 @@ msgstr "Borrar texto entero"
 
 #: lazarusidestrconsts.srkmecclearallbookmark
 msgid "Clear all Bookmarks"
-msgstr ""
+msgstr "Borrar todos los marcadores"
 
 #: lazarusidestrconsts.srkmecclearbookmarkforfile
 msgid "Clear Bookmarks for current file"
-msgstr ""
+msgstr "Borrar marcadores de archivo actual"
 
 #: lazarusidestrconsts.srkmeccolseldown
 msgid "Column Select Down"
@@ -18206,7 +18206,7 @@ msgstr "Insertar aviso LGPL"
 
 #: lazarusidestrconsts.srkmecinsertline
 msgid "Break line, leave cursor"
-msgstr "Romper línea, dejar el cursor"
+msgstr "Saltar línea, dejar el cursor"
 
 #: lazarusidestrconsts.srkmecinsertmitnotice
 msgid "Insert MIT notice"
@@ -18241,7 +18241,7 @@ msgstr "Mover cursor a la izquierda"
 
 #: lazarusidestrconsts.srkmeclinebreak
 msgid "Break line and move cursor"
-msgstr "Romper línea y mover el cursor"
+msgstr "Saltar línea y mover el cursor"
 
 #: lazarusidestrconsts.srkmeclineend
 msgid "Move cursor to line end"
